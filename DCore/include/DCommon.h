@@ -9,7 +9,7 @@
 #include <stdarg.h>
 
 // #include "auto_ptr.h"
-#include <boost/smart_ptr.hpp>
+// #include <boost/smart_ptr.hpp>
 
 using namespace std;
 
