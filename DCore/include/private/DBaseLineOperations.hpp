@@ -25,12 +25,7 @@ class StrElt
     StrElt(UINT s=1) : seT(stGeneric), size(s) 
     {
     }
-    StrElt(StrElt &rhs) : seT(rhs.seT), size(rhs.size) 
-    {
-	for (int i=0;i<rhs.points.size();i++)
-	  points.push_back(rhs.points[i]);
-    }
-    vector<Point> points;
+vector<Point> points;
     inline void addPoint(int x, int y, int z=0)
     {
 	Point p;

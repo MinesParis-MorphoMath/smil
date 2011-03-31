@@ -57,7 +57,7 @@ inline RES_T gradientIm(Image<T> &imIn, Image<T> &imOut, StrElt dilSe=DEFAULT_SE
 template <class T>
 inline RES_T geoDilIm(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE)
 {
-    StrElt tmpSe(se);
+    StrElt tmpSe(StrElt(se));
     tmpSe.size = 1;
     
     RES_T res = infIm(imIn, imMask, imOut);
