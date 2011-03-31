@@ -25,14 +25,23 @@ struct arith
   typedef unaryLineFunction<T, copyPixel<T> > fillLine;
 };*/
 // 
+
+template <template <typename> class funcT>
+class interm
+{
+};
+
+// template <typename T>
+// class fin : public interm
+// {
+// };
+
 template <class T>
 struct fillLine : public unaryLineFunction<T, copyPixel<T> >
 {
-    fillLine(T *lInOut, int size, T value)
-    {
-	_exec(lInOut, size, value);
-    }
 };
+
+// #define fillLine unaryLineFunction<T, copyPixel> 
 
 // template <class T>
 // struct fillLine : public unaryLineFunctionBase<T>
@@ -44,15 +53,25 @@ struct fillLine : public unaryLineFunction<T, copyPixel<T> >
 //     }
 // };
 
+template <class T>
+struct invPixel
+{
+    inline void _exec(T &pIn, T &pOut)
+    {
+	pOut = ~pIn;
+    }
+};
+
+// #define invLine unaryLineFunction<T, invPixel> 
 
 template <class T>
-struct invLine : public unaryLineFunctionBase<T>
+struct invLine : public unaryLineFunction<T, invPixel<T> >
 {
-    inline void _exec(T *lineIn, int size, T *lOut)
+/*    inline void _exec(T *lineIn, int size, T *lOut)
     {
 	for (int i=0;i<size;i++)
 	  lOut[i] = ~lineIn[i];
-    }
+    }*/
 };
 
 template <class T>
@@ -96,29 +115,29 @@ struct subNoSatLine : public binaryLineFunctionBase<T>
     }
 };
 
+// template <class T>
+// struct supLine : public binaryLineFunctionBase<T> 
+// {
+//     inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+//     {
+// 	for(int i=0;i<size;i++)
+// 	  lOut[i] = lIn1[i]>lIn2[i] ? lIn1[i] : lIn2[i];
+//     }
+// };
+
 template <class T>
-struct supLine : public binaryLineFunctionBase<T> 
+struct supPixel
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    inline void _exec(T &pIn1, T &pIn2, T &pOut)
     {
-	for(int i=0;i<size;i++)
-	  lOut[i] = lIn1[i]>lIn2[i] ? lIn1[i] : lIn2[i];
+	pOut = pIn1 > pIn2 ? pIn1 : pIn2;
     }
 };
 
-// template <class T>
-// struct supPixel
-// {
-//     inline void _exec(T &pIn1, T &pIn2, T &pOut)
-//     {
-// 	pOut = pIn1 > pIn2 ? pIn1 : pIn2;
-//     }
-// };
-// 
-// template <class T>
-// struct supLine : public binaryLineFunction<T, supPixel<T> >
-// {
-// };
+template <class T>
+struct supLine : public binaryLineFunction<T, supPixel<T> >
+{
+};
 
 
 template <class T>

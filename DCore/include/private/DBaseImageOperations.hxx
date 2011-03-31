@@ -105,7 +105,7 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, T &v
     UINT alStart;
     
     // Fill the first aligned buffer with the constant value
-    fillLine<T>(constBuf, lineLen, value);
+    fillLine<T>::_exec(constBuf, lineLen, value);
 
     // Use it for operations on lines
     for (int i=0;i<lineCount;i++)
@@ -230,7 +230,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T va
     T *lin, *lout;
     
     // Fill the const buffer with the value
-    fillLine<T>(constBuf, lineLen, value);
+    fillLine<T>::_exec(constBuf, lineLen, value);
     
     UINT alStart;
     

@@ -10,7 +10,9 @@
 #include "DImageMorph.hpp"
 // #include "D_ImageIO_PNG.h"
 
+#ifdef USE_QT
 #include <QApplication>
+#endif // USE_QT
 
 
 #define bench(func, args) \
@@ -55,9 +57,23 @@ void testAdd(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
 #endif // __SSE__
 
 
+void func(StrElt *se)
+{
+    cout << "se base" << endl;
+}
+
+void func(hSE *se)
+{
+    cout << "hSE" << endl;
+}
+
+
+
 int main(int argc, char *argv[])
 {
+#ifdef USE_QT
     QApplication qapp(argc, argv);
+#endif // USE_QT
     
       int c;
       Image_UINT8 im1(10,10);
@@ -131,7 +147,7 @@ int main(int argc, char *argv[])
       
       supLine<UINT8> f;
 //       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
-      bench(dilateIm, (im1, im3, se));
+      bench(dilateIm, (im1, im3));
       bench(volIm, (im1));
 //       im6.show();
       
@@ -146,11 +162,16 @@ int main(int argc, char *argv[])
       fillIm(im3, UINT8(0));
       
       dilateIm(im1, im3, se);
+      
 //       im1.show();
 //       im3.show();
 //       qapp.exec();
 
 //       baseImage *im = createImage(c);
 //       copy(im, im);
+      
+//       maFunc<UINT8> fi;
+      
+//       fi.test((UINT8)5);
 }
 

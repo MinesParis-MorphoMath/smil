@@ -17,7 +17,9 @@
 /*#include "D_BaseOperations.h"*/
 #include "DImageIO_PNG.h"
 #include "memory"
+#ifdef USE_QT
 #include "gui/Qt/QtApp.h"
+#endif // USE_QT
 %}
  
 %include <std_string.i>
@@ -26,12 +28,12 @@
 
 /*%rename(__int__) *::operator int; */
 /* %rename(__float__) *::operator float; */
-/*%rename(__assign__) *::operator=; */
-%ignore *::operator=;
 /* %rename(__irshift__) *::operator>>=; */
 %rename(__lshift__)  operator<<; 
 /* %rename(__rshift__)  *::operator>>; */
 %rename(__add__) *::operator+; 
+/*%ignore *::operator=;*/
+%rename(__assign__) *::operator=;
 
 
 %include "DImage.hpp"
@@ -46,7 +48,9 @@
 %include "DLineArith.hpp"
 %include "DImageArith.hpp"
 %include "DImageMorph.hpp"
+#ifdef USE_QT
 %include "gui/Qt/QtApp.h"
+#endif // USE_QT
 
 %extend Image 
 {
@@ -98,6 +102,7 @@ TEMPLATE_WRAP_FUNC_TYPE(dilateIm);
 TEMPLATE_WRAP_FUNC_TYPE(erodeIm);
 TEMPLATE_WRAP_FUNC_TYPE(closeIm);
 TEMPLATE_WRAP_FUNC_TYPE(openIm);
+TEMPLATE_WRAP_FUNC_TYPE(gradientIm);
 
 TEMPLATE_WRAP_FUNC_TYPE(volIm);
 

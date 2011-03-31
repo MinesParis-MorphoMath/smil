@@ -51,11 +51,11 @@ class unaryImageFunction : public imageFunctionBase<T>
 	return this->_exec(ImOut, value);
     }
     
-    inline RES_T _exec(imageType &imIn, imageType &imOut);
-    inline RES_T _exec(imageType &imOut, T &value);
+    static RES_T _exec(imageType &imIn, imageType &imOut);
+    static RES_T _exec(imageType &imOut, T &value);
     
   protected:	    
-    lineFunction_T lineFunction;
+    static lineFunction_T lineFunction;
 };
 
 
@@ -72,12 +72,12 @@ class binaryImageFunction : public imageFunctionBase<T>
     inline RES_T operator()(imageType &imIn1, imageType &imIn2, imageType &ImOut) { return this->_exec(imIn1, imIn2, ImOut); }
     inline RES_T operator()(imageType &imIn, T value, imageType &ImOut) { return this->_exec(imIn, value, ImOut); }
     
-    inline RES_T _exec(imageType &imIn1, imageType &imIn2, imageType &imOut);
-    inline RES_T _exec(imageType &imIn, imageType &imInOut);
-    inline RES_T _exec(imageType &imIn, T value, imageType &imOut);
+    static RES_T _exec(imageType &imIn1, imageType &imIn2, imageType &imOut);
+    static RES_T _exec(imageType &imIn, imageType &imInOut);
+    static RES_T _exec(imageType &imIn, T value, imageType &imOut);
     
   protected:	    
-    lineFunction_T lineFunction;
+    static lineFunction_T lineFunction;
 };
 
 

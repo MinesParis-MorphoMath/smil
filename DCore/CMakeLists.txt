@@ -26,7 +26,7 @@ ENDIF(USE_QT)
 
 OPTION(USE_OPTIMIZATION "Use optimizations" ON)
 IF(USE_OPTIMIZATION)
-    ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=1 -ffast-math -msse -msse2")
+    ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=1 ")
 #     ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=5 -g -ffast-math  -march=core2  -fdump-tree-optimized")
 ENDIF(USE_OPTIMIZATION)
 

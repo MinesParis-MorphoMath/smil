@@ -52,7 +52,7 @@ im1 << 0
 #im1.show()
 #im2.show()
 
-nruns = 5E3
+nruns = 1 # 5E3
 t1 = time.time()
 
 for i in range(int(nruns)):

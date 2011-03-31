@@ -17,11 +17,19 @@ struct Point
   int z;
 };
 
+enum seType { stGeneric, stHSE };
 
 class StrElt
 {
   public:
-    StrElt(UINT s=1) : size(s) {}
+    StrElt(UINT s=1) : seT(stGeneric), size(s) 
+    {
+    }
+    StrElt(StrElt &rhs) : seT(rhs.seT), size(rhs.size) 
+    {
+	for (int i=0;i<rhs.points.size();i++)
+	  points.push_back(rhs.points[i]);
+    }
     vector<Point> points;
     inline void addPoint(int x, int y, int z=0)
     {
@@ -38,13 +46,17 @@ class StrElt
     }
     bool odd;
     UINT size;
+    virtual seType getType() { return seT; }
+    seType seT;
 };
 
 class hSE : public StrElt
 {
   public:
-    hSE(UINT s=1) : StrElt(s)
+    hSE(UINT s=1) 
     {
+	seT = stHSE;
+	size = s;
 	odd = true;
 	addPoint(0,0);
 	addPoint(1,0);
@@ -101,14 +113,14 @@ class lineFunctionBase
 template <class T, class unaryPixelFunction_T>
 struct unaryLineFunction
 {
-    unaryPixelFunction_T pixelFunction;
+    static unaryPixelFunction_T pixelFunction;
     
-    inline void _exec(T *lineIn, int size, T *lineOut)
+    static void _exec(T *lineIn, int size, T *lineOut)
     {
 	for(int i=0;i<size;i++)
 	  pixelFunction._exec(lineIn[i], lineOut[i]);
     }
-    inline void _exec(T *lineInOut, int size, T value)
+    static void _exec(T *lineInOut, int size, T value)
     {
 	for(int i=0;i<size;i++)
 	  pixelFunction._exec(value, lineInOut[i]);
@@ -125,13 +137,13 @@ struct unaryLineFunction
 template <class T, class binaryPixelFunction_T>
 struct binaryLineFunction
 {
-    binaryPixelFunction_T pixelFunction;
-    inline void _exec(T *lineIn1, T *lineIn2, int size, T *lineOut)
+    static binaryPixelFunction_T pixelFunction;
+    static void _exec(T *lineIn1, T *lineIn2, int size, T *lineOut)
     {
 	for(int i=0;i<size;i++)
 	  pixelFunction._exec(lineIn1[i], lineIn2[i], lineOut[i]);
     }
-    inline void _exec(T *lineIn, T value, int size, T *lineOut)
+    static void _exec(T *lineIn, T value, int size, T *lineOut)
     {
 	for(int i=0;i<size;i++)
 	  pixelFunction._exec(lineIn[i], value, lineOut[i]);

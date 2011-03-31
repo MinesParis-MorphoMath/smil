@@ -6,16 +6,16 @@
 template <class T>
 inline RES_T invIm(Image<T> &imIn, Image<T> &imOut)
 {
-    unaryImageFunction<T, invLine<T> > iFunc;
-    return iFunc(imIn, imOut);
+//     unaryImageFunction<T, invLine<T> > iFunc;
+    return unaryImageFunction<T, invLine<T> >::_exec(imIn, imOut);
 }
 
 
 template <class T>
 inline RES_T addIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
-    binaryImageFunction<T, addLine<T> > iFunc;
-    return iFunc(imIn1, imIn2, imOut);
+    return binaryImageFunction<T, addLine<T> >::_exec(imIn1, imIn2, imOut);
+//     return iFunc(imIn1, imIn2, imOut);
 
 /*    T *pix1 = imIn1.getPixels();
     T *pix2 = imIn2.getPixels();
@@ -95,8 +95,8 @@ inline RES_T subNoSatIm(Image<T> &imIn1, T value, Image<T> &imOut)
 template <class T>
 inline RES_T supIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
-    binaryImageFunction<T, supLine<T> > iFunc;
-    return iFunc(imIn1, imIn2, imOut);
+    return binaryImageFunction<T, supLine<T> >::_exec(imIn1, imIn2, imOut);
+//     return iFunc(imIn1, imIn2, imOut);
     
 /*    T *pix1 = imIn1.getPixels();
     T *pix2 = imIn2.getPixels();
@@ -212,7 +212,7 @@ inline RES_T fillIm(Image<T> &imOut, const T value)
     int lineCount = imOut.getLineCount();
     
     // Fill first line
-    fillLine<T>(lineOut[0], lineLen, value);
+    fillLine<T>::_exec(lineOut[0], lineLen, value);
     
     for (int i=1;i<lineCount;i++)
       memcpy(lineOut[i], lineOut[0], lineLen*sizeof(T));
