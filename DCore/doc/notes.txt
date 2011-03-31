@@ -1,0 +1,4 @@
+Fichiers hxx :
+Utilisation de fichiers d'implémentation hxx pour les templates 
+pour que swig ne "voit" pas les retours de fonctions avec auto_ptr.
+

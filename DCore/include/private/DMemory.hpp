@@ -1,0 +1,111 @@
+#ifndef _DMEMORY_HPP
+#define _DMEMORY_HPP
+
+
+#if defined(__MINGW32__)
+
+#if __GNUC__ < 4
+#include <malloc.h>
+#define MALLOC(ptr,size, align)  ptr = __mingw_aligned_malloc(size,align)
+#define FREE(p)                  __mingw_aligned_free(p)
+#else
+#include <mm_malloc.h>
+#define MALLOC(ptr,size,align)   ptr = _mm_malloc(size,align)
+#define FREE(p)                  _mm_free(p)
+#endif
+
+#elif defined(_MSC_VER)
+
+#include <malloc.h>
+#define MALLOC(ptr,size,align)   ptr = _aligned_malloc(size,align)
+#define FREE(p)                  _aligned_free(p)
+
+#else
+
+#include <mm_malloc.h>
+#define MALLOC(ptr,size,align)   ptr = _mm_malloc(size,align)
+#define FREE(p)                  _mm_free(p)
+
+#endif
+
+
+#define SIMD_VEC_SIZE 16
+
+template<typename T> 
+T *createAlignedBuffer(int size) {
+  void* ptr;
+  
+  MALLOC(ptr,(size+32)*sizeof(T),SIMD_VEC_SIZE);
+//   posix_memalign (&ptr, 16, (size+32)*sizeof(T));
+
+  return ((T*) (ptr));
+//   return new T[size];
+}
+
+template<typename T> 
+void deleteAlignedBuffer(T *ptr) {
+  FREE( (void*)(ptr) );
+}
+
+template<typename T> 
+inline void Dmemcpy(T *out, const T *in, unsigned int size)
+{
+    while (size--)
+    {
+        *out++ = *in++;
+    }
+}
+
+
+template<typename T> 
+void t_LineCopyFromImage2D(T *rawImagePointerIn, const int lineSize, int y, T *lineout) {
+
+  T *ptrin = rawImagePointerIn + y*lineSize;
+
+  memcpy(lineout,ptrin,lineSize*sizeof(T));
+
+}
+
+
+template<typename T> 
+void t_LineCopyToImage2D(T *linein, const int lineSize, int y, T *rawImagePointerOut) {
+
+  T *ptrout = rawImagePointerOut + y*lineSize;
+
+  memcpy(ptrout,linein,lineSize*sizeof(T));
+
+}
+
+template<typename T> 
+void t_LineShiftRight1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) {
+  int i;
+
+  for(i=0 ; i<nbshift ; i++)  {
+    lineout[i] = shiftValue;
+  }
+
+  memcpy(lineout+nbshift,linein,(lineWidth-nbshift)*sizeof(T));
+
+}
+
+
+template<typename T> 
+void t_LineShiftLeft1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) {
+  int i;
+
+  for(i=lineWidth-nbshift ; i<lineWidth ; i++)  {
+    lineout[i] = shiftValue;
+  }
+
+  memcpy(lineout,linein+nbshift,(lineWidth-nbshift)*sizeof(T));
+
+}
+
+
+
+// bool IsAligned(const void* const ptr, unsigned long long align=SIMD_VEC_SIZE) { return ((((unsigned long long)ptr) & (align-1)) == 0ULL) ; } 
+
+
+
+#endif // _DMEMORY_HPP
+

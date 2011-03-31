@@ -1,0 +1,102 @@
+
+INCLUDE_DIRECTORIES(. include include/private)
+
+# FILE(GLOB SRCS src/*.cpp c/*.cpp)
+# ADD_LIBRARY(mambaCore ${SRCS})
+# TARGET_LINK_LIBRARIES(mambaCore ${MB_EXTERNAL_DEPS})
+
+# FILE(GLOB SRCS c/*.cpp)
+# ADD_LIBRARY(mambaCore_C ${SRCS})
+# TARGET_LINK_LIBRARIES(mambaCore_C ${MB_EXTERNAL_DEPS})
+
+
+FIND_PACKAGE(PNG)
+
+
+OPTION(USE_QT "Use Qt for GUI" OFF)
+IF(USE_QT)
+      FIND_PACKAGE(Qt4 REQUIRED)
+      INCLUDE_DIRECTORIES(${QT_INCLUDES})
+      LINK_DIRECTORIES(${VTK_LIBRARY_DIRS})
+      ADD_DEFINITIONS(${QT_DEFINITIONS} -DUSE_QT)
+      ADD_SUBDIRECTORY(gui)
+ENDIF(USE_QT)
+
+
+
+OPTION(USE_OPTIMIZATION "Use optimizations" ON)
+IF(USE_OPTIMIZATION)
+    ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=1 -ffast-math -msse -msse2")
+#     ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=5 -g -ffast-math  -march=core2  -fdump-tree-optimized")
+ENDIF(USE_OPTIMIZATION)
+
+
+FILE(GLOB SRCS src/*.cpp)
+ADD_LIBRARY(smilCore ${SRCS})
+TARGET_LINK_LIBRARIES(smilCore png gomp pthread)
+
+IF(USE_QT)
+      TARGET_LINK_LIBRARIES(smilCore smilCoreGui)
+ENDIF(USE_QT)
+
+
+
+
+
+
+FILE(GLOB SRCS test/*.cpp)
+ADD_EXECUTABLE(test ${SRCS})
+TARGET_LINK_LIBRARIES(test smilCore)
+
+
+
+
+
+
+
+IF(WRAP_PYTHON OR WRAP_JAVA)
+      FIND_PACKAGE(SWIG REQUIRED)
+      SET(CMAKE_SWIG_OUTDIR ${LIBRARY_OUTPUT_PATH})
+
+      INCLUDE(${SWIG_USE_FILE})
+ENDIF(WRAP_PYTHON OR WRAP_JAVA)
+
+IF(WRAP_JAVA)
+      FIND_PACKAGE(Java)
+      FIND_PACKAGE(JNI)
+      
+      IF(JNI_FOUND)
+	  INCLUDE_DIRECTORIES(${JNI_INCLUDE_DIRS})
+      ENDIF(JNI_FOUND)
+ENDIF(WRAP_JAVA)
+
+
+IF(WRAP_PYTHON)
+      FIND_PACKAGE(PythonLibs)
+      INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
+
+      IF(SWIG_FOUND AND PYTHONLIBS_FOUND)
+	  SET_SOURCE_FILES_PROPERTIES(smilCorePython.i PROPERTIES CPLUSPLUS ON)
+ 	  
+	  IF(USE_QT)
+	      SET(CMAKE_SWIG_FLAGS -DUSE_QT)
+	  ENDIF(USE_QT)
+
+	  SWIG_ADD_MODULE(smilCorePython python smilCorePython.i)
+	  
+# 	  SWIG_ADD_MODULE(smilCoreJava java smilCore.i)
+      #     SET_SOURCE_FILES_PROPERTIES(mambaCore.i PROPERTIES CPLUSPLUS ON)
+      #     SWIG_ADD_MODULE(mambaCore python mambaCore.i)
+ 	  SWIG_LINK_LIBRARIES(smilCorePython smilCore ${PYTHON_LIBRARIES})
+	  IF(USE_QT)
+	      SWIG_LINK_LIBRARIES(smilCorePython smilCoreGui)
+	  ENDIF(USE_QT)
+# 	  SWIG_LINK_LIBRARIES(smilCoreJava smilCore)
+	  
+ 	  SET_TARGET_PROPERTIES(_smilCorePython PROPERTIES LINKER_LANGUAGE CXX)
+#  	  SET_TARGET_PROPERTIES(smilCoreJava PROPERTIES LINKER_LANGUAGE CXX)
+
+      ENDIF(SWIG_FOUND AND PYTHONLIBS_FOUND)
+
+
+ENDIF(WRAP_PYTHON)
