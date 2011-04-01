@@ -257,6 +257,7 @@ RES_T copyIm(Image<T> &imIn, Image<T> &imOut)
 	imOut.modified();
 	return RES_OK;
     }
+	return RES_OK;
 }
 
 

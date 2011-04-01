@@ -54,9 +54,9 @@
 
 %extend Image 
 {
-	std::string  __str__() {
-	    self->printSelf();
-	}
+//	std::string  __str__() {
+//	    self->printSelf();
+//	}
 }
 
 %define TEMPLATE_WRAP_CLASS_TYPE(_class) 

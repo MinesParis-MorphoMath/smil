@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     QApplication qapp(argc, argv);
 #endif // USE_QT
     
-      int c;
+//      int c;
       Image_UINT8 im1(10,10);
       Image_UINT8 im2;
       Image_UINT8 im3;
@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
      
       int t1 = clock();
 
-      int nRuns = 1E3;
+      int nRuns = (int)1E3;
       UINT8 val = 10;
       
 //       bench(fillIm, (im3, val));
@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
       se.addPoint(-1,-1);
       se.addPoint(0,-1);*/
       
-      supLine<UINT8> f;
+//      supLine<UINT8> f;
 //       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
       bench(dilateIm, (im1, im3));
       bench(volIm, (im1));

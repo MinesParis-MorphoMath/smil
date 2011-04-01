@@ -197,11 +197,11 @@ RES_T Image<T>::restruct(void)
     
     int pixelsPerSlice = width * height;
     
-    for (int k=0; k<depth; k++, cur_slice++)
+    for (int k=0; k<(int)depth; k++, cur_slice++)
     {
       *cur_slice = cur_line;
       
-      for (int j=0; j<height; j++, cur_line++)
+      for (int j=0; j<(int)height; j++, cur_line++)
 	*cur_line = pixels + k*pixelsPerSlice + j*width;
     }
 	
@@ -267,7 +267,7 @@ void Image<T>::printSelf(bool displayPixVals)
     lineType *cur_line;
     pixelType *cur_pixel;
     
-    int i, j, k;
+    UINT i, j, k;
     
     for (k=0, cur_slice = slices; k<depth; k++, cur_slice++)
     {

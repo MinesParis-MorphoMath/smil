@@ -100,8 +100,8 @@ public:
     Image<T>& operator > (Image<T> &rhs);
     Image<T>& operator > (T value);
 
-    Image<T>& operator << (const char *s) {};
-    Image<T>& operator >> (const char *s) {};
+    Image<T>& operator << (const char *s) { return *this; };
+    Image<T>& operator >> (const char *s) { return *this; };
 protected:
     pixelType *pixels;
     lineType  *lines;

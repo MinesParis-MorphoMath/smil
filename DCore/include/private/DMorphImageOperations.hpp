@@ -37,7 +37,7 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     UINT vectorSize;
     
     inline void _exec_translated_line(T *inBuf1, T *inBuf2, int dx, int lineLen, T *outBuf);
-    inline void _exec_line(T *inBuf, Image<T> *imIn, int &x, int &y, int &z, T *outBuf);
+    inline void _exec_line(T *inBuf, Image<T> *imIn, UINT &x, UINT &y, UINT &z, T *outBuf);
 };
 
 template <class T, class lineFunction_T>
@@ -79,7 +79,7 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_translated_line(T 
 
 
 template <class T, class lineFunction_T>
-inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(T *inBuf, Image<T> *imIn, int &x, int &y, int &z, T *outBuf)
+inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(T *inBuf, Image<T> *imIn, UINT &x, UINT &y, UINT &z, T *outBuf)
 {
     if (z<0 || z>=imIn->getSliceCount()) return;
     else if (y<0 || y>=imIn->getLineCount()) return;
@@ -103,6 +103,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(imageType 
       case stHSE:
 	return _exec_single_hSE(imIn, imOut);
     }
+	return RES_NOT_IMPLEMENTED;
 }
 
 template <class T, class lineFunction_T>
@@ -133,7 +134,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
     sliceType *srcSlices = tmpIm->getSlices();
     sliceType *destSlices = imOut.getSlices();
     
-    lineType *srcLines;
+    //lineType *srcLines;
     lineType *destLines;
     
     bool oddSe = se.odd, oddLine;
@@ -143,7 +144,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
     for (int s=0;s<nSlices;s++)
     {
 	destLines = destSlices[s];
-	oddLine = !s%2;
+	oddLine = s%2!=0;
 	
 	for (int l=0;l<nLines;l++)
 	{
@@ -155,7 +156,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 	    
 	    for (int p=0;p<sePtsNumber;p++)
 	    {
-		int x, y, z;
+		UINT x, y, z;
 		bool pass = false;
 		
 		x = se.points[p].x + !oddLine;
@@ -207,6 +208,8 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
       delete tmpIm;
     
     imOut.modified();
+
+	return RES_OK;
 }
 
 
@@ -245,13 +248,13 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hSE(imageT
     lineType *srcLines;
     lineType *destLines;
     
-    bool oddLine;
+//    bool oddLine;
     
     for (int s=0;s<nSlices;s++)
     {
 	srcLines = srcSlices[s];
 	destLines = destSlices[s];
-	oddLine = !s%2;
+//	oddLine = !s%2;
 	
 	// Process first line
 	memcpy(inBuf, srcLines[0], lineLen*sizeof(T));
@@ -307,6 +310,8 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hSE(imageT
       delete tmpIm;
     
     imOut.modified();
+
+	return RES_OK;
 }
 
 

@@ -6,7 +6,9 @@ typedef unsigned int UINT;
 typedef unsigned char UINT8;
 typedef unsigned short UINT16;
 typedef unsigned int UINT32;
+#ifndef _MSC_VER
 typedef char INT8;
+#endif // _MSC_VER
 typedef short INT16;
 typedef int INT32;
 
@@ -14,7 +16,8 @@ enum RES_T
 {
     RES_OK = 0,
     RES_ERR = -1,
-    RES_ERR_BAD_ALLOCATION
+    RES_ERR_BAD_ALLOCATION,
+	RES_NOT_IMPLEMENTED
 };
 
 #endif

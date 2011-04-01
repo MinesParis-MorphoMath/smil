@@ -93,8 +93,6 @@ IF(WRAP_PYTHON)
 	  SWIG_ADD_MODULE(smilCorePython python smilCorePython.i)
 	  
 # 	  SWIG_ADD_MODULE(smilCoreJava java smilCore.i)
-      #     SET_SOURCE_FILES_PROPERTIES(mambaCore.i PROPERTIES CPLUSPLUS ON)
-      #     SWIG_ADD_MODULE(mambaCore python mambaCore.i)
  	  SWIG_LINK_LIBRARIES(smilCorePython smilCore ${PYTHON_LIBRARIES})
 	  IF(USE_QT)
 	      SWIG_LINK_LIBRARIES(smilCorePython smilCoreGui)

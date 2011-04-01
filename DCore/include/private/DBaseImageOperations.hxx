@@ -36,7 +36,7 @@ inline void imageFunctionBase<T>::deleteAlignedBuffers()
 {
     if (!alignedBuffers) return;
     
-    for (int i=0;i<bufferNumber;i++)
+    for (UINT i=0;i<bufferNumber;i++)
       deleteAlignedBuffer<T>(alignedBuffers[i]);
 }
 
@@ -86,6 +86,8 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, image
       
     }
     imOut.modified();
+
+	return RES_OK;
 }
 
 
@@ -169,6 +171,8 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, ima
 	
     }
     imOut.modified();
+
+	return RES_OK;
 }
 
 // Binary image function
@@ -186,7 +190,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imag
     
     T *tmpBuf = createAlignedBuffer<T>(lineLen);
     
-    T *l1, *l2, *l3;
+    T *l1, *l2;
     
     UINT alStart;
     
@@ -210,6 +214,8 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imag
     }
     deleteAlignedBuffer<T>(tmpBuf);
     imInOut.modified();
+
+	return RES_OK;
 }
 
 

@@ -14,7 +14,6 @@ int readPNGFile(const char *filename, Image<UINT8> *image)
   int bit_depth, color_type;
   FILE *fp = NULL;
   png_bytep *row_pointers = NULL;
-  int i;
   png_uint_32 width, height;
 
   /* open image file */
@@ -136,7 +135,6 @@ int writePNGFile(Image<UINT8> *image, const char *filename)
 
 	png_structp png_ptr;
 	png_infop info_ptr;
-	int number_of_passes;
 	png_bytep * row_pointers = image->getLines();
 
 	/* create file */
@@ -206,6 +204,7 @@ int writePNGFile(Image<UINT8> *image, const char *filename)
 
 
         fclose(fp);
+	return 0;
 }
 
 
