@@ -25,7 +25,7 @@ class StrElt
     StrElt(UINT s=1) : seT(stGeneric), size(s) 
     {
     }
-vector<Point> points;
+    vector<Point> points;
     inline void addPoint(int x, int y, int z=0)
     {
 	Point p;

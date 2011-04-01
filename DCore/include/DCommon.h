@@ -26,6 +26,23 @@ using namespace std;
 
 #define INLINE inline
 
+#ifdef __MSC_VER__
+  #ifdef __BUILD_LIB__
+    // the dll exports
+    #define D_EXPORT __declspec(dllexport)
+  #else
+    // the exe imports
+    #define D_EXPORT __declspec(dllimport)
+  #endif
+#else // __MSC_VER__
+  #define D_EXPORT extern
+#endif // __MSC_VER__
+
+
+
+#endif
+
+
 #define SMART_POINTER(T) boost::shared_ptr< T >
 #define SMART_IMAGE(T) SMART_POINTER( D_Image< T > )
 
