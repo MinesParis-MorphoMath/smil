@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <time.h>
 
-#include <boost/signal.hpp>
-#include <boost/bind.hpp>
+//#include <boost/signal.hpp>
+//#include <boost/bind.hpp>
 
 #include "DImage.h"
 #include "DImageArith.hpp"

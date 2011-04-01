@@ -55,6 +55,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, 
 	     copyIm(imOut, tmpIm);
 	}
     }
+	return RES_OK;
 }
 
 
