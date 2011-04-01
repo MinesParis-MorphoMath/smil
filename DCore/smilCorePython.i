@@ -2,9 +2,11 @@
 
 %feature("autodoc", "1");
 
+%include <windows.i>
 
 %{
 /* Includes the header in the wrapper code */
+#include "DCommon.h"
 #include "DImage.h"
 #include "DImage.hpp"
 #include "DImage.hxx"
@@ -36,6 +38,7 @@
 %rename(__assign__) *::operator=;
 
 
+%include "DCommon.h"
 %include "DImage.hpp"
 %include "DImage.hxx"
 %include "DImage.h"

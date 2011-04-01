@@ -2,8 +2,10 @@
 #define _D_BASE_IMAGE_H
 
 #include "D_Types.h"
+#include "DCommon.h"
 
-class baseImage
+
+class _SMIL baseImage
 {
 public:
     baseImage();

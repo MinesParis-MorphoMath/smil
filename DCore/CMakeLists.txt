@@ -11,9 +11,6 @@ INCLUDE_DIRECTORIES(. include include/private)
 
 SET(EXTERNAL_DEPS)
 
-FIND_PACKAGE(PNG)
-
-
 OPTION(USE_QT "Use Qt for GUI" OFF)
 IF(USE_QT)
       FIND_PACKAGE(Qt4 REQUIRED)
@@ -25,6 +22,7 @@ ENDIF(USE_QT)
 
 OPTION(USE_PNG "Use PNG" ON)
 IF(USE_PNG)
+	ADD_DEFINITIONS("-DUSE_PNG")
 	FIND_PACKAGE(PNG)
       INCLUDE_DIRECTORIES(${PNG_INCLUDE_DIR})
       LINK_DIRECTORIES(${PNG_LIBRARY})
@@ -34,8 +32,8 @@ ENDIF(USE_PNG)
 
 OPTION(USE_OPTIMIZATION "Use optimizations" ON)
 IF(USE_OPTIMIZATION)
-    ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=1 ")
-#     ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=5 -g -ffast-math  -march=core2  -fdump-tree-optimized")
+#    ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=1")
+     ADD_DEFINITIONS("-ftree-vectorize -g -ffast-math  -march=core2  -fdump-tree-optimized")
 ENDIF(USE_OPTIMIZATION)
 
 

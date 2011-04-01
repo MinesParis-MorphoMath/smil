@@ -26,21 +26,18 @@ using namespace std;
 
 #define INLINE inline
 
-#ifdef __MSC_VER__
-  #ifdef __BUILD_LIB__
+#ifdef _MSC_VER
+  #ifdef smilCore_EXPORTS
     // the dll exports
-    #define D_EXPORT __declspec(dllexport)
-  #else
+    #define _SMIL __declspec(dllexport)
+  #else // smilCore_EXPORTS
     // the exe imports
-    #define D_EXPORT __declspec(dllimport)
-  #endif
-#else // __MSC_VER__
-  #define D_EXPORT extern
-#endif // __MSC_VER__
+    #define _SMIL __declspec(dllimport)
+  #endif // smilCore_EXPORTS
+#else // _MSC_VER
+  #define _SMIL
+#endif // _MSC_VER
 
-
-
-#endif
 
 
 #define SMART_POINTER(T) boost::shared_ptr< T >

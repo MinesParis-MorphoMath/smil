@@ -231,7 +231,7 @@ RES_T Image<T>::deallocate(void)
     if (lines)
 	delete[] lines;
     if (pixels)
-	delete[] pixels;
+		delete[] pixels;
     
     slices = NULL;
     lines = NULL;

@@ -86,7 +86,7 @@ class sSE : public StrElt
 
 // Base abstract struct of line unary function
 template <class T>
-struct unaryLineFunctionBase
+struct _SMIL unaryLineFunctionBase
 {
     virtual void _exec(T *lineIn, int size, T *lineOut) = 0;
     virtual inline void operator()(T *lineIn, int size, T *lineOut) { _exec(lineIn, size, lineOut); }

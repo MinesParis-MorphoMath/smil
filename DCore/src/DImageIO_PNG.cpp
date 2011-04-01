@@ -1,3 +1,4 @@
+#ifdef USE_PNG
 
 #include "DImageIO_PNG.h"
 #include "DImage.h"
@@ -208,3 +209,4 @@ int writePNGFile(Image<UINT8> *image, const char *filename)
 }
 
 
+#endif // USE_PNG

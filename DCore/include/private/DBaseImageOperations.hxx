@@ -258,6 +258,8 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T va
     }
     deleteAlignedBuffer<T>(constBuf);
     imOut.modified();
+
+	return RES_OK;
 }
 
 
