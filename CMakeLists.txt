@@ -33,7 +33,7 @@ IF(USE_OPTIMIZATION)
 #     ADD_DEFINITIONS("-ftree-vectorize -g -ffast-math  -march=core2 -mtune=core2  -msse2 -fdump-tree-optimized")
 	AddCompilerFlag("-ftree-vectorize")
 	OptimizeForArchitecture()
-	MESSAGE("Compiler flags: "${CMAKE_CXX_FLAGS})
+	MESSAGE(STATUS "Compiler flags: "${CMAKE_CXX_FLAGS})
 ENDIF(USE_OPTIMIZATION)
 
 
