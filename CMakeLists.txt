@@ -3,6 +3,10 @@ PROJECT(Smil)
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
 
+
+LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/DCore/cmake")
+INCLUDE(OptimizeForArchitecture)
+
 ###### COMPILATION PATHS ######
 
 IF(NOT LIBRARY_OUTPUT_PATH)
@@ -23,10 +27,14 @@ IF(NOT EXECUTABLE_OUTPUT_PATH)
 	MARK_AS_ADVANCED(EXECUTABLE_OUTPUT_PATH)
 ENDIF(NOT EXECUTABLE_OUTPUT_PATH)
 
-
-LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/DCore/cmake")
-INCLUDE(OptimizeForArchitecture)
-OptimizeForArchitecture()
+OPTION(USE_OPTIMIZATION "Use optimizations" ON)
+IF(USE_OPTIMIZATION)
+#    ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=1")
+#     ADD_DEFINITIONS("-ftree-vectorize -g -ffast-math  -march=core2 -mtune=core2  -msse2 -fdump-tree-optimized")
+	AddCompilerFlag("-ftree-vectorize")
+	OptimizeForArchitecture()
+	MESSAGE("Compiler flags: "${CMAKE_CXX_FLAGS})
+ENDIF(USE_OPTIMIZATION)
 
 
 OPTION(BUILD_SHARED_LIBS "Build shared libs" ON)

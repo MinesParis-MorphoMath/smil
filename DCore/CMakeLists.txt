@@ -1,7 +1,6 @@
 
 INCLUDE_DIRECTORIES(. include include/private)
 
-
 # FILE(GLOB SRCS src/*.cpp c/*.cpp)
 # ADD_LIBRARY(mambaCore ${SRCS})
 # TARGET_LINK_LIBRARIES(mambaCore ${MB_EXTERNAL_DEPS})
@@ -15,7 +14,6 @@ SET(EXTERNAL_DEPS)
 OPTION(USE_QT "Use Qt for GUI" OFF)
 IF(USE_QT)
       FIND_PACKAGE(Qt4 REQUIRED)
-      INCLUDE(${QT_USE_FILE})
       INCLUDE_DIRECTORIES(${QT_INCLUDES})
       LINK_DIRECTORIES(${QT_LIBRARY_DIRS})
       ADD_DEFINITIONS(${QT_DEFINITIONS} -DUSE_QT)
@@ -31,12 +29,6 @@ IF(USE_PNG)
 	LIST(APPEND EXTERNAL_DEPS ${PNG_LIBRARIES})
 ENDIF(USE_PNG)
 
-
-OPTION(USE_OPTIMIZATION "Use optimizations" ON)
-IF(USE_OPTIMIZATION)
-#    ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=1")
-     ADD_DEFINITIONS("-ftree-vectorize -g -ffast-math  -march=core2  -fdump-tree-optimized")
-ENDIF(USE_OPTIMIZATION)
 
 
 FILE(GLOB SRCS src/*.cpp)

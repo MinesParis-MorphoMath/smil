@@ -91,7 +91,7 @@ struct addNoSatLine : public binaryLineFunctionBase<T>
     inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
     {
 	for (int i=0;i<size;i++)
-	  lIn1[i] + lIn2[i];
+	  lOut[i] = lIn1[i] + lIn2[i];
     }
 };
 
@@ -111,7 +111,7 @@ struct subNoSatLine : public binaryLineFunctionBase<T>
     inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
     {
 	for (int i=0;i<size;i++)
-	  lIn1[i] - lIn2[i];
+	  lOut[i] = lIn1[i] - lIn2[i];
     }
 };
 
