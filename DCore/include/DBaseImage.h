@@ -36,6 +36,13 @@ public:
     virtual void* getVoidPointer() = 0;
     virtual void modified() = 0;
 
+    inline int getOffsetFromCoords(int x, int y, int z)
+    {
+	if (x<0 || x>=width) return -1;
+	if (y<0 || y>=height) return -1;
+	if (z<0 || z>=depth) return -1;
+	return z*width*height + y*width + x;
+    }
 
 protected:
     UINT dataTypeSize;

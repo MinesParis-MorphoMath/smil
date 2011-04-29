@@ -6,6 +6,17 @@
 #include "DImageArith.hpp"
 
 template <class T>
+inline RES_T labelIm(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE)
+{
+    T curLabel = 0;
+    for (UINT z=0;z<imIn.getSliceCount();z++)
+    {
+    }
+    unaryMorphImageFunction<T, equLine<T> > iFunc(numeric_limits<T>::min());
+    return iFunc(imIn, imOut, se);
+}
+
+template <class T>
 inline RES_T dilateIm(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE)
 {
     unaryMorphImageFunction<T, supLine<T> > iFunc(numeric_limits<T>::min());
