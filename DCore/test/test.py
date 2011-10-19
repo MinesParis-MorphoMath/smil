@@ -1,10 +1,8 @@
  
-from PyQt4 import QtGui, QtCore
 import sys
 import time
 
-from smilCorePython import *
-import smilCorePython as sc
+from smil import *
 
 
 from threading import Thread
@@ -17,33 +15,14 @@ class testit(Thread):
       self.app._exec()
 
 
-      
-import gc, sys
-def find_names(obj):
-  frame = sys._getframe()
-  for frame in iter(lambda: frame.f_back, None):
-      frame.f_locals
-  result = []
-  for referrer in gc.get_referrers(obj):
-      if isinstance(referrer, dict):
-	  for k, v in referrer.iteritems():
-	      if v is obj:
-		  result.append(k)
-  return result
-
-def showImage(img):
-  imName = find_names(img)[1]
-  img.setName(imName)
-  img.show()
      
-      
-if ('app' in locals())==0:
-  app = QtGui.QApplication(sys.argv)
+if ('im1' in locals())==0:
+  #app = QtGui.QApplication(sys.argv)
   #im1 = Image_UINT8(1024, 1024)
   #tapp = QtApp()
-  im1 = Image_UINT8(1000, 1000)
-  im2 = Image_UINT8(im1)
-  im3 = Image_UINT8(im1)
+  im1 = Image(1000, 1000)
+  im2 = Image(im1)
+  im3 = Image(im1)
   #app = QtApp()
   #app._exec()
   #im1.show()

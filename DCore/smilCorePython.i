@@ -1,8 +1,7 @@
 %module smilCorePython
 
-%feature("autodoc", "1");
+%include "../smilCommon.i"
 
-%include <windows.i>
 
 %{
 /* Includes the header in the wrapper code */
@@ -24,21 +23,6 @@
 #endif // USE_QT
 %}
  
-%include <std_string.i>
-%include <typemaps.i>
-
-
-/*%rename(__int__) *::operator int; */
-/* %rename(__float__) *::operator float; */
-/* %rename(__irshift__) *::operator>>=; */
-%rename(__lshift__)  operator<<; 
-/* %rename(__rshift__)  *::operator>>; */
-%rename(__add__) *::operator+; 
-/*%ignore *::operator=;*/
-%rename(__assign__) *::operator=;
-
-#define __attribute__(x)
-
 %extend Image 
 {
 	std::string  __str__() {
@@ -68,48 +52,24 @@
 %include "gui/Qt/QtApp.h"
 #endif // USE_QT
 
-%define TEMPLATE_WRAP_CLASS_TYPE(_class) 
-  %template(_class ## _UINT8) _class<UINT8>;
-  %template(_class ## _UINT16) _class<UINT16>;
-/*  %template(_class ## _UINT32) _class<UINT32>;*/
-%enddef
 
-%define TEMPLATE_WRAP_FUNC_TYPE(func)
-  %template(func) func<UINT8>;
-/*  %template(func) func<UINT16>; */
-/*  %template(func) func<UINT32>; */
-%enddef
-
-%define TEMPLATE_WRAP_FUNC_TYPE2(func)
-  %template(func) func<UINT8,UINT8>;
-  %template(func) func<UINT8,UINT16>;
-  %template(func) func<UINT16,UINT8>;
-  %template(func) func<UINT32>;
-%enddef
-
-%define TEMPLATE_WRAP_FUNC_IMG_TYPE(func) 
-  %template(func) func<Image_UINT8>;
-  %template(func) func<Image_UINT16>;
-  %template(func) func<Image_UINT32>;
-%enddef
-
-TEMPLATE_WRAP_CLASS_TYPE(Image);
+TEMPLATE_WRAP_CLASS(Image);
 
 
-TEMPLATE_WRAP_FUNC_TYPE(createImage);
+TEMPLATE_WRAP_FUNC(createImage);
 
-TEMPLATE_WRAP_FUNC_TYPE(copy);
-TEMPLATE_WRAP_FUNC_TYPE(inv);
-TEMPLATE_WRAP_FUNC_TYPE(fill);
-TEMPLATE_WRAP_FUNC_TYPE(add);
-TEMPLATE_WRAP_FUNC_TYPE(addNoSat);
-TEMPLATE_WRAP_FUNC_TYPE(sub);
-TEMPLATE_WRAP_FUNC_TYPE(subNoSat);
+TEMPLATE_WRAP_FUNC(copy);
+TEMPLATE_WRAP_FUNC(inv);
+TEMPLATE_WRAP_FUNC(fill);
+TEMPLATE_WRAP_FUNC(add);
+TEMPLATE_WRAP_FUNC(addNoSat);
+TEMPLATE_WRAP_FUNC(sub);
+TEMPLATE_WRAP_FUNC(subNoSat);
 
-TEMPLATE_WRAP_FUNC_TYPE(sup);
-TEMPLATE_WRAP_FUNC_TYPE(inf);
+TEMPLATE_WRAP_FUNC(sup);
+TEMPLATE_WRAP_FUNC(inf);
 
-TEMPLATE_WRAP_FUNC_TYPE(vol);
+TEMPLATE_WRAP_FUNC(vol);
 
 
 

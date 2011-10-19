@@ -33,6 +33,8 @@ def Image(*args):
     img = 0
     if argNbr==0:
 	img = imageTypes[0]()
+    elif argNbr>=2:
+	img = imageTypes[0](*args)
     else:
 	if argTypeStr[0].rfind("Image_")!=-1:
 	  srcIm = args[0]
