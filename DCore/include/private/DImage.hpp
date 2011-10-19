@@ -59,6 +59,22 @@ public:
     sliceType *getSlices() const {
         return slices;
     }
+    
+    inline pixelType getPixel(UINT x, UINT y, UINT z=0)
+    {
+	if (x>=width || y>=height || z>=depth)
+	    return RES_ERR;
+	return pixels[z*width*height+y*width+x];
+    }
+
+    inline RES_T setPixel(pixelType value, UINT x, UINT y, UINT z=0)
+    {
+	if (x>=width || y>=height || z>=depth)
+	    return RES_ERR;
+	pixels[z*width*height+y*width+x] = value;
+	modified();
+	return RES_OK;
+    }
 
     void init();
     inline Image<T>& clone(Image<T> &rhs);
@@ -69,6 +85,8 @@ public:
     void setSize(baseImage &rhs, bool doAllocate = true) { setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); }
     RES_T allocate(void);
     RES_T deallocate(void);
+
+    void printSelf(ostream &os, bool displayPixVals = false);
     void printSelf(bool displayPixVals = false);
 
     inline void* getVoidPointer(void) {

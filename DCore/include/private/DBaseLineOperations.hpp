@@ -10,79 +10,6 @@ struct stat;
 template <class T> class Image;
 
 
-struct Point
-{
-  int x;
-  int y;
-  int z;
-};
-
-enum seType { stGeneric, stHSE };
-
-class StrElt
-{
-  public:
-    StrElt(UINT s=1) : seT(stGeneric), size(s) 
-    {
-    }
-    vector<Point> points;
-    inline void addPoint(int x, int y, int z=0)
-    {
-	Point p;
-	p.x = x;
-	p.y = y;
-	p.z = z;
-	points.push_back(p);
-    }
-    inline StrElt& operator()(int s=1)
-    {
-	this->size = s;
-	return *this;
-    }
-    bool odd;
-    UINT size;
-    virtual seType getType() { return seT; }
-    seType seT;
-};
-
-class hSE : public StrElt
-{
-  public:
-    hSE(UINT s=1) 
-    {
-	seT = stHSE;
-	size = s;
-	odd = true;
-	addPoint(0,0);
-	addPoint(1,0);
-	addPoint(-1,0);
-	addPoint(-1,1);
-	addPoint(0,1);
-	addPoint(-1,-1);
-	addPoint(0,-1);
-    }
-};
-
-class sSE : public StrElt
-{
-  public:
-    sSE(UINT s=1) : StrElt(s)
-    {
-	odd = false;
-	addPoint(0,0);
-	addPoint(1,0);
-	addPoint(1,1);
-	addPoint(0,1);
-	addPoint(-1,1);
-	addPoint(-1,0);
-	addPoint(-1,-1);
-	addPoint(0,-1);
-	addPoint(1,-1);
-    }
-};
-
-#define DEFAULT_SE hSE()
-
 
 // Base abstract struct of line unary function
 template <class T>
@@ -95,7 +22,7 @@ struct _SMIL unaryLineFunctionBase
 
 // Base abstract struct of line binary function
 template <class T>
-struct binaryLineFunctionBase
+struct _SMIL binaryLineFunctionBase
 {
     virtual void _exec(T *lineIn1, T *lineIn2, int size, T *lineOut) = 0;
     virtual inline void operator()(T *lineIn1, T *lineIn2, int size, T *lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }

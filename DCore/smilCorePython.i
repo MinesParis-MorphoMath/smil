@@ -19,6 +19,7 @@
 /*#include "D_BaseOperations.h"*/
 #include "DImageIO_PNG.h"
 #include "memory"
+
 #ifdef USE_QT
 #include "gui/Qt/QtApp.h"
 #endif // USE_QT
@@ -37,6 +38,7 @@
 /*%ignore *::operator=;*/
 %rename(__assign__) *::operator=;
 
+#define __attribute__(x)
 
 %include "DCommon.h"
 %include "DImage.hpp"
@@ -50,6 +52,7 @@
 %include "DBaseLineOperations.hpp"
 %include "DLineArith.hpp"
 %include "DImageArith.hpp"
+%include "DStructuringElement.h"
 %include "DImageMorph.hpp"
 #ifdef USE_QT
 %include "gui/Qt/QtApp.h"
@@ -57,9 +60,24 @@
 
 %extend Image 
 {
-//	std::string  __str__() {
-//	    self->printSelf();
-//	}
+	std::string  __str__() {
+	    std::stringstream os;
+	    os << *self;
+	    return os.str();
+	}
+	void show()
+	{
+	    
+	}
+}
+
+%extend StrElt
+{
+	std::string  __str__() {
+	    std::stringstream os;
+	    os << *self;
+	    return os.str();
+	}
 }
 
 %define TEMPLATE_WRAP_CLASS_TYPE(_class) 
@@ -70,7 +88,7 @@
 
 %define TEMPLATE_WRAP_FUNC_TYPE(func)
   %template(func) func<UINT8>;
-  %template(func) func<UINT16>;
+/*  %template(func) func<UINT16>; */
 /*  %template(func) func<UINT32>; */
 %enddef
 
@@ -92,24 +110,30 @@ TEMPLATE_WRAP_CLASS_TYPE(Image);
 
 TEMPLATE_WRAP_FUNC_TYPE(createImage);
 
-TEMPLATE_WRAP_FUNC_TYPE(copyIm);
-TEMPLATE_WRAP_FUNC_TYPE(fillIm);
-TEMPLATE_WRAP_FUNC_TYPE(addIm);
-TEMPLATE_WRAP_FUNC_TYPE(addNoSatIm);
-TEMPLATE_WRAP_FUNC_TYPE(subIm);
-TEMPLATE_WRAP_FUNC_TYPE(subNoSatIm);
+TEMPLATE_WRAP_FUNC_TYPE(copy);
+TEMPLATE_WRAP_FUNC_TYPE(inv);
+TEMPLATE_WRAP_FUNC_TYPE(fill);
+TEMPLATE_WRAP_FUNC_TYPE(add);
+TEMPLATE_WRAP_FUNC_TYPE(addNoSat);
+TEMPLATE_WRAP_FUNC_TYPE(sub);
+TEMPLATE_WRAP_FUNC_TYPE(subNoSat);
 
-TEMPLATE_WRAP_FUNC_TYPE(supIm);
+TEMPLATE_WRAP_FUNC_TYPE(sup);
+TEMPLATE_WRAP_FUNC_TYPE(inf);
 
-//TEMPLATE_WRAP_FUNC_TYPE(labelIm);
+//TEMPLATE_WRAP_FUNC_TYPE(label);
 
-TEMPLATE_WRAP_FUNC_TYPE(dilateIm);
-TEMPLATE_WRAP_FUNC_TYPE(erodeIm);
-TEMPLATE_WRAP_FUNC_TYPE(closeIm);
-TEMPLATE_WRAP_FUNC_TYPE(openIm);
-TEMPLATE_WRAP_FUNC_TYPE(gradientIm);
+TEMPLATE_WRAP_FUNC_TYPE(dilate);
+TEMPLATE_WRAP_FUNC_TYPE(erode);
+TEMPLATE_WRAP_FUNC_TYPE(close);
+TEMPLATE_WRAP_FUNC_TYPE(open);
+TEMPLATE_WRAP_FUNC_TYPE(gradient);
+TEMPLATE_WRAP_FUNC_TYPE(geoDil);
+TEMPLATE_WRAP_FUNC_TYPE(geoEro);
+TEMPLATE_WRAP_FUNC_TYPE(build);
+TEMPLATE_WRAP_FUNC_TYPE(dualBuild);
 
-TEMPLATE_WRAP_FUNC_TYPE(volIm);
+TEMPLATE_WRAP_FUNC_TYPE(vol);
 
 
 

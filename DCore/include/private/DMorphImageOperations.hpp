@@ -5,6 +5,7 @@
 #include "DMemory.hpp"
 #include "DLineArith.hpp"
 #include "DBaseLineOperations.hpp"
+#include "DStructuringElement.h"
 
 
 
@@ -52,7 +53,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, 
 	{
 	   _exec_single(tmpIm, imOut, se);
 	   if (i<seSize-1)
-	     copyIm(imOut, tmpIm);
+	     copy(imOut, tmpIm);
 	}
     }
 	return RES_OK;
@@ -137,29 +138,27 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
     //lineType *srcLines;
     lineType *destLines;
     
-    bool oddSe = se.odd, oddLine;
+    bool oddSe = se.odd, oddLine = 0;
     
     int vec_size = SIMD_VEC_SIZE / sizeof(T);
     
     for (int s=0;s<nSlices;s++)
     {
 	destLines = destSlices[s];
-	oddLine = s%2!=0;
+	if (oddSe)
+	  oddLine = s%2!=0;
 	
 	for (int l=0;l<nLines;l++)
 	{
 	    memcpy(outBuf, borderBuf, bufSize);
 	    T *lineOut = destLines[l];
 	    
-	    if (oddSe)
-	      oddLine = !oddLine;
-	    
 	    for (int p=0;p<sePtsNumber;p++)
 	    {
 		UINT x, y, z;
 		bool pass = false;
 		
-		x = se.points[p].x + !oddLine;
+		x = se.points[p].x + oddLine;
 		y = l + se.points[p].y;
 		z = s + se.points[p].z;
 		
@@ -197,6 +196,9 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 		}*/
 	    }
 	    memcpy(lineOut, outBuf, lineLen*sizeof(T));
+	    if (oddSe)
+	      oddLine = !oddLine;
+	    
 	}
     }
 

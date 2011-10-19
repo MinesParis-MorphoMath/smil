@@ -3,32 +3,45 @@
 
 #include "DLineArith.hpp"
 
+#ifndef SWIG
+// extern "C" {
+#include <stdio.h>
+   // Get declaration for f(int i, char c, float x)
+typedef UINT8 aUINT8 __attribute__ ((__aligned__(16)));
+//  }
+
+// inline void invAligned(aUINT8 * __restrict__ p, int n, aUINT8 * __restrict__ q) 
+inline void invAligned(UINT8 * p, int n, UINT8 * q) 
+{
+    while(n--)
+      *q++ = ~*p++;
+}
+#endif
+
 template <class T>
-inline RES_T invIm(Image<T> &imIn, Image<T> &imOut)
+inline RES_T inv(Image<T> &imIn, Image<T> &imOut)
 {
 //     unaryImageFunction<T, invLine<T> > iFunc;
-    return unaryImageFunction<T, invLine<T> >::_exec(imIn, imOut);
+//     return iFunc(imIn, imOut);
+//     return unaryImageFunction<T, invLine<T> >::_exec(imIn, imOut);
+
+    int nlines = imIn.getLineCount();
+    int npix = imIn.getPixelCount();
+    aUINT8 *pixIn = imIn.getPixels();
+    aUINT8 *pixOut = imOut.getPixels();
+    
+    invAligned(pixIn, npix, pixOut);
+    
 }
 
-
 template <class T>
-inline RES_T addIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+inline RES_T add(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
-    return binaryImageFunction<T, addLine<T> >::_exec(imIn1, imIn2, imOut);
-//     return iFunc(imIn1, imIn2, imOut);
-
-/*    T *pix1 = imIn1.getPixels();
-    T *pix2 = imIn2.getPixels();
-    T *pix3 = imOut.getPixels();
-    
-    int npix = imIn1.getPixelCount();
-    
-    for(int i=0;i<npix;i++)
-      pix3[i] = pix1[i] > (T)(numeric_limits<T>::max() - pix2[i]) ? numeric_limits<T>::max() : pix1[i] + pix2[i];*/
+     return binaryImageFunction<T, addLine<T> >::_exec(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline double volIm(Image<T> &imIn)
+inline double vol(Image<T> &imIn)
 {
     if (!imIn.isAllocated())
       return RES_ERR_BAD_ALLOCATION;
@@ -44,56 +57,56 @@ inline double volIm(Image<T> &imIn)
 }
 
 template <class T>
-inline RES_T addIm(Image<T> &imIn1, const T value, Image<T> &imOut)
+inline RES_T add(Image<T> &imIn1, const T value, Image<T> &imOut)
 {
     binaryImageFunction<T, addLine<T> > iFunc;
     return iFunc(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T addNoSatIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+inline RES_T addNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     binaryImageFunction<T, addNoSatLine<T> > iFunc;
     return iFunc(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T addNoSatIm(Image<T> &imIn1, const T value, Image<T> &imOut)
+inline RES_T addNoSat(Image<T> &imIn1, const T value, Image<T> &imOut)
 {
     binaryImageFunction<T, addNoSatLine<T> > iFunc;
     return iFunc(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T subIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+inline RES_T sub(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     binaryImageFunction<T, subLine<T> > iFunc;
     return iFunc(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T subIm(Image<T> &imIn1, T value, Image<T> &imOut)
+inline RES_T sub(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     binaryImageFunction<T, subLine<T> > iFunc;
     return iFunc(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T subNoSatIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+inline RES_T subNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     binaryImageFunction<T, subNoSatLine<T> > iFunc;
     return iFunc(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T subNoSatIm(Image<T> &imIn1, T value, Image<T> &imOut)
+inline RES_T subNoSat(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     binaryImageFunction<T, subNoSatLine<T> > iFunc;
     return iFunc(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T supIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+inline RES_T sup(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, supLine<T> >::_exec(imIn1, imIn2, imOut);
 //     return iFunc(imIn1, imIn2, imOut);
@@ -117,91 +130,91 @@ inline RES_T supIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 }
 
 template <class T>
-inline RES_T infIm(Image<T> &imIn1, T value, Image<T> &imOut)
+inline RES_T inf(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     binaryImageFunction<T, infLine<T> > iFunc;
     return iFunc(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T infIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+inline RES_T inf(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     binaryImageFunction<T, infLine<T> > iFunc;
     return iFunc(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T supIm(Image<T> &imIn1, T value, Image<T> &imOut)
+inline RES_T sup(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     binaryImageFunction<T, supLine<T> > iFunc;
     return iFunc(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T grtIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+inline RES_T grt(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     binaryImageFunction<T, grtLine<T> > iFunc;
     return iFunc(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T grtIm(Image<T> &imIn1, T value, Image<T> &imOut)
+inline RES_T grt(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     binaryImageFunction<T, grtLine<T> > iFunc;
     return iFunc(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T lowIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+inline RES_T low(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     binaryImageFunction<T, lowLine<T> > iFunc;
     return iFunc(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T lowIm(Image<T> &imIn1, T value, Image<T> &imOut)
+inline RES_T low(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     binaryImageFunction<T, lowLine<T> > iFunc;
     return iFunc(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T divIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+inline RES_T div(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     binaryImageFunction<T, divLine<T> > iFunc;
     return iFunc(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T mulIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+inline RES_T mul(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     binaryImageFunction<T, mulLine<T> > iFunc;
     return iFunc(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T mulIm(Image<T> &imIn1, T value, Image<T> &imOut)
+inline RES_T mul(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     binaryImageFunction<T, mulLine<T> > iFunc;
     return iFunc(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T mulNoSatIm(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+inline RES_T mulNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     binaryImageFunction<T, mulLine<T> > iFunc;
     return iFunc(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T mulNoSatIm(Image<T> &imIn1, T value, Image<T> &imOut)
+inline RES_T mulNoSat(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     binaryImageFunction<T, mulLine<T> > iFunc;
     return iFunc(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T fillIm(Image<T> &imOut, const T value)
+inline RES_T fill(Image<T> &imOut, const T value)
 {
     if (!areAllocated(&imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
@@ -223,7 +236,7 @@ inline RES_T fillIm(Image<T> &imOut, const T value)
 
 // Copy/cast (two images with different types)
 template <class T1, class T2>
-RES_T copyIm(Image<T1> &imIn, Image<T2> &imOut)
+RES_T copy(Image<T1> &imIn, Image<T2> &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
@@ -245,7 +258,7 @@ RES_T copyIm(Image<T1> &imIn, Image<T2> &imOut)
 
 // Copy (two images of same type)
 template <class T>
-RES_T copyIm(Image<T> &imIn, Image<T> &imOut)
+RES_T copy(Image<T> &imIn, Image<T> &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;

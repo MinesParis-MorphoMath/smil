@@ -8,7 +8,7 @@
 #include "DImage.h"
 #include "DImageArith.hpp"
 #include "DImageMorph.hpp"
-// #include "D_ImageIO_PNG.h"
+#include "DImageIO_PNG.h"
 
 #ifdef USE_QT
 #include <QApplication>
@@ -82,8 +82,8 @@ int main(int argc, char *argv[])
       
       Image_UINT16 im4;
       
-      int sx = 1000;
-      int sy = 1000;
+      int sx = 1024;
+      int sy = 1024;
 /*      sx = 40;
       sy = 20;*/
       
@@ -92,36 +92,36 @@ int main(int argc, char *argv[])
       im3.setSize(sx, sy);
       im4.setSize(sx, sy);
       
-     fillIm(im1, UINT8(100));
-     fillIm(im2, UINT8(5));
+     fill(im1, UINT8(100));
+     fill(im2, UINT8(5));
      
       int t1 = clock();
 
       int nRuns = (int)1E3;
       UINT8 val = 10;
       
-//       bench(fillIm, (im3, val));
-//       bench(copyIm, (im1, im3));
-//       bench(copyIm, (im1, im4));
-//       bench(invIm, (im1, im2));
-//       bench(infIm, (im1, im2, im3));
-//       bench(infIm, (im1, val, im3));
-      bench(supIm, (im1, im2, im3));
-//       bench(supIm, (im1, val, im3));
-//       bench(addIm, (im1, im2, im3));
-//       bench(addNoSatIm, (im1, im2, im3));
-//       bench(addIm, (im1, val, im3));
-//       bench(subIm, (im1, im2, im3));
-//       bench(subIm, (im1, val, im3));
-//       bench(grtIm, (im1, im2, im3));
-//       bench(divIm, (im1, im2, im3));
-//       bench(mulIm, (im1, im2, im3));
-//       bench(mulIm, (im1, val, im3));
-//       bench(mulNoSatIm, (im1, im2, im3));
-//       bench(mulNoSatIm, (im1, val, im3));
+//       bench(fill, (im3, val));
+//       bench(copy, (im1, im3));
+//       bench(copy, (im1, im4));
+      bench(inv, (im1, im2));
+//       bench(inf, (im1, im2, im3));
+//       bench(inf, (im1, val, im3));
+//       bench(sup, (im1, im2, im3));
+//       bench(sup, (im1, val, im3));
+      bench(add, (im1, im2, im3));
+      bench(addNoSat, (im1, im2, im3));
+//       bench(add, (im1, val, im3));
+//       bench(sub, (im1, im2, im3));
+//       bench(sub, (im1, val, im3));
+//       bench(grt, (im1, im2, im3));
+//       bench(div, (im1, im2, im3));
+//       bench(mul, (im1, im2, im3));
+//       bench(mul, (im1, val, im3));
+//       bench(mulNoSat, (im1, im2, im3));
+//       bench(mulNoSat, (im1, val, im3));
       
-// 	bench(testAdd, (im1, im2, im3));
-//       bench(supIm, (im1, im2, im3));
+	bench(testAdd, (im1, im2, im3));
+//       bench(sup, (im1, im2, im3));
       
       im3.printSelf(sx < 50);
       
@@ -132,7 +132,7 @@ int main(int argc, char *argv[])
 //       fill(UINT8(5), im6);
 //       im5 = im1 + im2;
 
-      fillIm(im5, UINT8(100));
+//       fill(im5, UINT8(100));
       StrElt se = hSE();
 //       se.addPoint(5,5);
 //       se.addPoint(5,0);
@@ -147,23 +147,26 @@ int main(int argc, char *argv[])
       
 //      supLine<UINT8> f;
 //       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
-      bench(dilateIm, (im1, im3));
-      bench(volIm, (im1));
+      bench(dilate, (im1, im3));
+//       bench(volIm, (im1));
 //       im6.show();
       
-//       addIm(im1, im2, im5);
-//       im5.printSelf(sx < 50);
+//       add(im1, im2, im5);
+      im5.printSelf(sx < 50);
+      cout << im5;
 
 //       im5.show();
       
 //       qapp.Exec();
       
-      fillIm(im1, UINT8(100));
-      fillIm(im3, UINT8(0));
+//       fill(im1, UINT8(100));
+//       fill(im3, UINT8(0));
       
-      dilateIm(im1, im3, se);
+//       readPNGFile("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", &im1);
+      im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
+//       dilate(im1, im3, se);
       
-//       im1.show();
+      im1.show();
 //       im3.show();
 //       qapp.exec();
 

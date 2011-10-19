@@ -134,7 +134,7 @@ inline Image<T>& Image<T>::clone(Image<T2> &rhs)
     bool isAlloc = rhs.isAllocated();
     setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
     if (isAlloc)
-      copyIm(rhs, *this);
+      copy(rhs, *this);
     modified();
     return *this;
 }
@@ -172,6 +172,7 @@ inline RES_T Image<T>::allocate(void)
     if (allocated)
 	return RES_ERR_BAD_ALLOCATION;
     
+//     pixels = createAlignedBuffer<T>(pixelCount);
     pixels = new pixelType[pixelCount];
     
     restruct();
@@ -209,7 +210,10 @@ RES_T Image<T>::restruct(void)
     int n = SIMD_VEC_SIZE / sizeof(T);
     int w = width%SIMD_VEC_SIZE;
     for (int i=0;i<n;i++)
+    {
       lineAlignment[i] = (SIMD_VEC_SIZE - (i*w)%SIMD_VEC_SIZE)%SIMD_VEC_SIZE;
+//       cout << i << " " << lineAlignment[i] << endl;
+    }
     
     return RES_OK;
 }
@@ -243,26 +247,26 @@ RES_T Image<T>::deallocate(void)
 }
 
 template <class T>
-void Image<T>::printSelf(bool displayPixVals)
+void Image<T>::printSelf(ostream &os, bool displayPixVals)
 {
     if (depth>1)
     {
-      cout << "3D image" << endl;
-      cout << "Size: " << width << "x" << height << "x" << depth << endl;
+      os << "3D image" << endl;
+      os << "Size: " << width << "x" << height << "x" << depth << endl;
     }
     else
     {
-      cout << "2D image" << endl;
-      cout << "Size: " << width << "x" << height << endl;
+      os << "2D image" << endl;
+      os << "Size: " << width << "x" << height << endl;
     }
     
-    if (allocated) cout << "Allocated (" << pixelCount*sizeof(T) << " bits)" << endl;
-    else cout << "Not allocated" << endl;
+    if (allocated) os << "Allocated (" << pixelCount*sizeof(T) << " bits)" << endl;
+    else os << "Not allocated" << endl;
     
     if (!displayPixVals)
       return;
     
-    cout << "Pixels value:" << endl;
+    os << "Pixels value:" << endl;
     sliceType *cur_slice;
     lineType *cur_line;
     pixelType *cur_pixel;
@@ -275,16 +279,29 @@ void Image<T>::printSelf(bool displayPixVals)
       for (j=0, cur_line = *cur_slice; j<height; j++, cur_line++)
       {
 	for (i=0, cur_pixel = *cur_line; i<width; i++, cur_pixel++)
-	  cout << (double)*cur_pixel << "  ";
-	cout << endl;
+	  os << (double)*cur_pixel << "  ";
+	os << endl;
       }
-      cout << endl;
+      os << endl;
     }
-    cout << endl;
+    os << endl;
+}
+
+template <class T>
+void Image<T>::printSelf(bool displayPixVals)
+{
+    printSelf(std::cout, displayPixVals);
 }
 
 
+
 // OPERATORS
+
+template <class T>
+void operator << (ostream &os, Image<T> &im)
+{
+    im.printSelf(os);
+}
 
 template <class T>
 Image<T>& Image<T>::operator = (Image<T> &rhs)
@@ -297,14 +314,14 @@ Image<T>& Image<T>::operator = (Image<T> &rhs)
 template <class T>
 Image<T>& Image<T>::operator << (Image<T> &rhs)
 {
-    copyIm(rhs, *this);
+    copy(rhs, *this);
     return *this;
 }
 
 template <class T>
 Image<T>& Image<T>::operator << (T value)
 {
-    fillIm(*this, value);
+    fill(*this, value);
     return *this;
 }
 
@@ -312,7 +329,7 @@ template <class T>
 Image<T>& Image<T>::operator ~()
 {
     static Image<T> newIm(*this);
-    invIm(*this, newIm);
+    inv(*this, newIm);
     return newIm;
 }
 
@@ -320,7 +337,7 @@ template <class T>
 Image<T>& Image<T>::operator + (Image<T> &rhs)
 {
     static Image<T> newIm(*this);
-    addIm(*this, rhs, newIm);
+    add(*this, rhs, newIm);
     return newIm;
 }
 
@@ -328,21 +345,21 @@ template <class T>
 Image<T>& Image<T>::operator + (T value)
 {
     static Image<T> newIm(*this);
-    addIm(*this, value, newIm);
+    add(*this, value, newIm);
     return newIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator += (Image<T> &rhs)
 {
-    addIm(*this, rhs, *this);
+    add(*this, rhs, *this);
     return *this;
 }
 
 template <class T>
 Image<T>& Image<T>::operator += (T value)
 {
-    addIm(*this, value, *this);
+    add(*this, value, *this);
     return *this;
 }
 
@@ -350,7 +367,7 @@ template <class T>
 Image<T>& Image<T>::operator - (Image<T> &rhs)
 {
     static Image<T> newIm(*this);
-    subIm(*this, rhs, newIm);
+    sub(*this, rhs, newIm);
     return newIm;
 }
 
@@ -358,21 +375,21 @@ template <class T>
 Image<T>& Image<T>::operator - (T value)
 {
     static Image<T> newIm(*this);
-    subIm(*this, value, newIm);
+    sub(*this, value, newIm);
     return newIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator -= (Image<T> &rhs)
 {
-    subIm(*this, rhs, *this);
+    sub(*this, rhs, *this);
     return *this;
 }
 
 template <class T>
 Image<T>& Image<T>::operator -= (T value)
 {
-    subIm(*this, value, *this);
+    sub(*this, value, *this);
     return *this;
 }
 
@@ -380,7 +397,7 @@ template <class T>
 Image<T>& Image<T>::operator < (Image<T> &rhs)
 {
     static Image<T> newIm(*this);
-    lowIm(*this, rhs, newIm);
+    low(*this, rhs, newIm);
     return newIm;
 }
 
@@ -388,7 +405,7 @@ template <class T>
 Image<T>& Image<T>::operator < (T value)
 {
     static Image<T> newIm(*this);
-    lowIm(*this, value, newIm);
+    low(*this, value, newIm);
     return newIm;
 }
 
@@ -396,7 +413,7 @@ template <class T>
 Image<T>& Image<T>::operator > (Image<T> &rhs)
 {
     static Image<T> newIm(*this);
-    grtIm(*this, rhs, newIm);
+    grt(*this, rhs, newIm);
     return newIm;
 }
 
@@ -404,7 +421,7 @@ template <class T>
 Image<T>& Image<T>::operator > (T value)
 {
     static Image<T> newIm(*this);
-    grtIm(*this, value, newIm);
+    grt(*this, value, newIm);
     return newIm;
 }
 

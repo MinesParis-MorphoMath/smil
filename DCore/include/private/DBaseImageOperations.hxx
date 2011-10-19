@@ -58,32 +58,35 @@ inline void imageFunctionBase<T>::copyBufferToLine(UINT32 bufIndex, T *line)
 template <class T, class lineFunction_T>
 inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imOut)
 {
-    if (!areAllocated(&imOut, NULL))
+    if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imOut.getWidth();
-    int lineCount = imOut.getLineCount();
-
+    int lineLen = imIn.getWidth();
+    int bufSize = lineLen * sizeof(T);
+    int lineCount = imIn.getLineCount();
+    
     lineType *srcLine = imIn.getLines();
     lineType *destLine = imOut.getLines();
-    T *lin, *lout;
+    
+    T *l1, *l2;
     
     UINT alStart;
     
     for (int i=0;i<lineCount;i++)
     {
-	lin = srcLine[i];
-	lout = destLine[i];
+	l1 = srcLine[i];
+	l2 = destLine[i];
 	
 	alStart = imIn.getLineAlignment(i);
-	
 	if (alStart)
 	{
-	    lineFunction._exec(lin, alStart, lout);
-	    lout += alStart;
+	    lineFunction._exec(l1, alStart, l2);
+	    l1 += alStart;
+	    l2 += alStart;
 	}
-	lineFunction._exec(lin, lineLen-alStart, lout);
-      
+	int remLen = lineLen-alStart;
+	lineFunction._exec(l1, remLen, l2);
+	
     }
     imOut.modified();
 

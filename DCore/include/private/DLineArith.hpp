@@ -65,13 +65,14 @@ struct invPixel
 // #define invLine unaryLineFunction<T, invPixel> 
 
 template <class T>
-struct invLine : public unaryLineFunction<T, invPixel<T> >
+//struct invLine : public unaryLineFunction<T, invPixel<T> >
+struct invLine : public unaryLineFunctionBase<T>
 {
-/*    inline void _exec(T *lineIn, int size, T *lOut)
+    inline void _exec(T *lineIn, int size, T *lOut)
     {
 	for (int i=0;i<size;i++)
 	  lOut[i] = ~lineIn[i];
-    }*/
+    }
 };
 
 template <class T>

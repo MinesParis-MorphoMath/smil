@@ -25,7 +25,7 @@ typedef Image<UINT32> Image_UINT32;
 // { return invIm<UINT8>(im1, im2); }
 
 
-inline RES_T labelIm(Image<UINT8> &imIn, Image<UINT8> &imOut, StrElt se=DEFAULT_SE);
+// inline RES_T labelIm(Image<UINT8> &imIn, Image<UINT8> &imOut, StrElt se=DEFAULT_SE);
 
 #endif // _DIMAGE_H
 
