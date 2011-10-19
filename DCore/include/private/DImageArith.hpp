@@ -3,35 +3,11 @@
 
 #include "DLineArith.hpp"
 
-#ifndef SWIG
-// extern "C" {
-#include <stdio.h>
-   // Get declaration for f(int i, char c, float x)
-typedef UINT8 aUINT8 __attribute__ ((__aligned__(16)));
-//  }
-
-// inline void invAligned(aUINT8 * __restrict__ p, int n, aUINT8 * __restrict__ q) 
-inline void invAligned(UINT8 * p, int n, UINT8 * q) 
-{
-    while(n--)
-      *q++ = ~*p++;
-}
-#endif
-
 template <class T>
 inline RES_T inv(Image<T> &imIn, Image<T> &imOut)
 {
-//     unaryImageFunction<T, invLine<T> > iFunc;
-//     return iFunc(imIn, imOut);
-//     return unaryImageFunction<T, invLine<T> >::_exec(imIn, imOut);
-
-    int nlines = imIn.getLineCount();
-    int npix = imIn.getPixelCount();
-    aUINT8 *pixIn = imIn.getPixels();
-    aUINT8 *pixOut = imOut.getPixels();
-    
-    invAligned(pixIn, npix, pixOut);
-    
+    unaryImageFunction<T, invLine<T> > iFunc;
+    return iFunc(imIn, imOut);
 }
 
 template <class T>

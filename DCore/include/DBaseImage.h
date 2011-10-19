@@ -59,6 +59,42 @@ protected:
 
 };
 
+// Check if images have the same size
+inline bool haveSameSize(const baseImage *im, ...)
+{
+    va_list vargs;
+
+    va_start(vargs, im);
+    int w = im->getWidth();
+    int h = im->getHeight();
+    int d = im->getDepth();
+
+    const baseImage *obj;
+    while (obj = va_arg(vargs, const baseImage*))
+    {
+        if (obj->getWidth()!=w) return false;
+        if (obj->getHeight()!=h) return false;
+        if (obj->getDepth()!=d) return false;
+    }
+    va_end(vargs);
+    return true;
+}
+
+// Check if images are allocated
+inline bool areAllocated(const baseImage *im, ...)
+{
+    va_list vargs;
+
+    va_start(vargs, im);
+    if (!im->isAllocated())
+        return false;
+
+    const baseImage *obj;
+    while (obj = va_arg(vargs, const baseImage*))
+        if (!obj->isAllocated()) return false;
+    va_end(vargs);
+    return true;
+}
 
 
 #endif // _DBASE_IMAGE_H

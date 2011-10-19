@@ -15,7 +15,6 @@
 #include "DBaseImageOperations.hpp"
 #include "DBaseLineOperations.hpp"
 #include "DImageArith.hpp"
-#include "DImageMorph.hpp"
 /*#include "D_BaseOperations.h"*/
 #include "DImageIO_PNG.h"
 #include "memory"
@@ -40,6 +39,15 @@
 
 #define __attribute__(x)
 
+%extend Image 
+{
+	std::string  __str__() {
+	    std::stringstream os;
+	    os << *self;
+	    return os.str();
+	}
+}
+
 %include "DCommon.h"
 %include "DImage.hpp"
 %include "DImage.hxx"
@@ -52,33 +60,9 @@
 %include "DBaseLineOperations.hpp"
 %include "DLineArith.hpp"
 %include "DImageArith.hpp"
-%include "DStructuringElement.h"
-%include "DImageMorph.hpp"
 #ifdef USE_QT
 %include "gui/Qt/QtApp.h"
 #endif // USE_QT
-
-%extend Image 
-{
-	std::string  __str__() {
-	    std::stringstream os;
-	    os << *self;
-	    return os.str();
-	}
-	void show()
-	{
-	    
-	}
-}
-
-%extend StrElt
-{
-	std::string  __str__() {
-	    std::stringstream os;
-	    os << *self;
-	    return os.str();
-	}
-}
 
 %define TEMPLATE_WRAP_CLASS_TYPE(_class) 
   %template(_class ## _UINT8) _class<UINT8>;
@@ -120,18 +104,6 @@ TEMPLATE_WRAP_FUNC_TYPE(subNoSat);
 
 TEMPLATE_WRAP_FUNC_TYPE(sup);
 TEMPLATE_WRAP_FUNC_TYPE(inf);
-
-//TEMPLATE_WRAP_FUNC_TYPE(label);
-
-TEMPLATE_WRAP_FUNC_TYPE(dilate);
-TEMPLATE_WRAP_FUNC_TYPE(erode);
-TEMPLATE_WRAP_FUNC_TYPE(close);
-TEMPLATE_WRAP_FUNC_TYPE(open);
-TEMPLATE_WRAP_FUNC_TYPE(gradient);
-TEMPLATE_WRAP_FUNC_TYPE(geoDil);
-TEMPLATE_WRAP_FUNC_TYPE(geoEro);
-TEMPLATE_WRAP_FUNC_TYPE(build);
-TEMPLATE_WRAP_FUNC_TYPE(dualBuild);
 
 TEMPLATE_WRAP_FUNC_TYPE(vol);
 

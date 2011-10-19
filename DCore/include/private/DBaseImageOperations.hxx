@@ -3,9 +3,9 @@
 
 #include "DImage.hpp"
 #include "DMemory.hpp"
-#include "DLineArith.hpp"
 
-
+template <class T>
+struct fillLine;
 
 template <class T>
 inline typename Image<T>::lineType *imageFunctionBase<T>::createAlignedBuffers(UINT8 nbr, UINT32 len)

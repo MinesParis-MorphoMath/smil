@@ -4,7 +4,6 @@
 #include "DBaseImage.h"
 #include "DImage.hpp"
 #include "DImageArith.hpp"
-#include "DImageMorph.hpp"
 
 
 typedef Image<UINT8> Image_UINT8;

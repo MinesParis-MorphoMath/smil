@@ -51,21 +51,6 @@ if ('app' in locals())==0:
   se = hSE()
 
 
-createImageFunctions = ( Image_UINT8, Image_UINT16 )
-
-def Image(*args):
-    argNbr = len(args)
-    argTypeStr = [ str(type(a)) for a in args ]
-    
-    if argTypeStr[0].rfind("Image_")!=-1:
-      srcIm = args[0]
-      if argNbr==1:
-	return createImage(srcIm)
-    else:
-	return createImageFunctions[args[1]](srcIm.getWidth(), srcIm.getHeight(), srcIm.getDepth())
-    if args==():
-	return Image_UINT8()
-	
 
 im1 << 0
 
@@ -91,7 +76,7 @@ def testInv():
   im1.show()
   for i in range(50):
       im1.setPixel(255, 25, i)
-  im2 = createImage(im1)
+  im2.setSize(im1)
   inv(im1, im2)
   im2.show()
 
