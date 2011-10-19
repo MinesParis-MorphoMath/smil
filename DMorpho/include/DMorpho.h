@@ -1,3 +1,4 @@
 #include "DImage.h"
-#include "DImageMorph.hpp"
+#include "DMorphoBase.hpp"
+#include "DMorphoGeodesic.hpp"
  
