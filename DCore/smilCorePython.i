@@ -46,6 +46,10 @@
 	    os << *self;
 	    return os.str();
 	}
+	void _show(const char* name=NULL)
+	{
+	    self->show(name);
+	}
 }
 
 %include "DCommon.h"

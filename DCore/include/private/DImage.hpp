@@ -135,7 +135,6 @@ protected:
 public:
     inline void setName(const char* name);
     inline void show(const char* name=NULL);
-    inline void _show(const char* name=NULL) { return show(name); }
 #endif // USE_QT
 
 };
