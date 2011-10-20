@@ -52,7 +52,8 @@ Image<T>::~Image()
 { 
     deallocate();
 #ifdef USE_QT
-    delete viewer;
+    if (viewer)
+	delete viewer;
 //     viewer = new ImageViewer();
 #endif // USE_QT
     
@@ -70,8 +71,9 @@ void Image<T>::init()
     dataTypeSize = sizeof(pixelType); 
     
 #ifdef USE_QT
-    viewer = new ImageViewerWidget();
+//     viewer = new ImageViewerWidget();
 //     viewer = new ImageViewer();
+     viewer = NULL;
 #endif // USE_QT
 }
 

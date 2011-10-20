@@ -1,5 +1,6 @@
 
-SET(MODULE_NAME DCore)
+SET(MODULE_NAME Core)
+SET(MODULE_DEPS c)
 
 
 # FILE(GLOB SRCS src/*.cpp c/*.cpp)
@@ -13,17 +14,13 @@ SET(MODULE_NAME DCore)
 SET(EXTERNAL_DEPS)
 
 IF(USE_QT)
-      ADD_SUBDIRECTORY(gui)
+#       ADD_SUBDIRECTORY(gui)
 ENDIF(USE_QT)
 
 
 
-FILE(GLOB SRCS src/*.cpp)
-ADD_LIBRARY(smilCore ${SRCS})
-TARGET_LINK_LIBRARIES(smilCore ${EXTERNAL_DEPS}) #gomp pthread)
-
 IF(USE_QT)
-      TARGET_LINK_LIBRARIES(smilCore smilCoreGui)
+#       TARGET_LINK_LIBRARIES(smilCore smilCoreGui)
 ENDIF(USE_QT)
 
 
@@ -36,7 +33,7 @@ ENDIF(USE_QT)
 
 
 
-
+ADD_SMIL_LIBRARY(${MODULE_NAME} ${MODULE_DEPS})
 
 
 
@@ -64,7 +61,7 @@ IF(WRAP_PYTHON)
 # 	  SWIG_ADD_MODULE(smilCoreJava java smilCore.i)
  	  SWIG_LINK_LIBRARIES(smilCorePython smilCore ${PYTHON_LIBRARIES})
 	  IF(USE_QT)
-	      SWIG_LINK_LIBRARIES(smilCorePython smilCoreGui)
+# 	      SWIG_LINK_LIBRARIES(smilCorePython smilCoreGui)
 	  ENDIF(USE_QT)
 # 	  SWIG_LINK_LIBRARIES(smilCoreJava smilCore)
 	  

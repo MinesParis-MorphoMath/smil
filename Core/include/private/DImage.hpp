@@ -11,10 +11,10 @@
 
 
 #ifdef USE_QT
-#include <QApplication>
-#include "gui/Qt/ImageViewer.h"
-#include "gui/Qt/ImageViewerWidget.h"
-#include "gui/Qt/QtApp.h"
+// #include <QApplication>
+// #include "gui/Qt/ImageViewer.h"
+// #include "gui/Qt/ImageViewerWidget.h"
+// #include "gui/Qt/QtApp.h"
 #endif // USE_QT
 
 #include "DBaseImage.h"
@@ -26,9 +26,16 @@
 //     return "Unknown";
 // }
 
+class baseImageViewer
+{
+public:
+    virtual void show() {}
+    virtual bool isVisible() { return false; }
+    virtual void setName(const char* name) {}
+    virtual void loadFromData(void *pixels, UINT w, UINT h) {}
+};
 
-
-//! Base images class
+//! Image class
 //
 //!
 //
@@ -130,7 +137,8 @@ protected:
     RES_T restruct(void);
 
 #ifdef USE_QT
-    ImageViewerWidget *viewer;
+    baseImageViewer *viewer;
+//     ImageViewerWidget *viewer;
     inline void updateViewerData();
 public:
     inline void setName(const char* name);

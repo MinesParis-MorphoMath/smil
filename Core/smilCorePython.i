@@ -1,6 +1,6 @@
 %module smilCorePython
 
-%include "../smilCommon.i"
+%include "smilCommon.i"
 
 
 %{
@@ -18,9 +18,6 @@
 #include "DImageIO_PNG.h"
 #include "memory"
 
-#ifdef USE_QT
-#include "gui/Qt/QtApp.h"
-#endif // USE_QT
 %}
  
 %extend Image 
@@ -48,9 +45,6 @@
 %include "DBaseLineOperations.hpp"
 %include "DLineArith.hpp"
 %include "DImageArith.hpp"
-#ifdef USE_QT
-%include "gui/Qt/QtApp.h"
-#endif // USE_QT
 
 
 TEMPLATE_WRAP_CLASS(Image);
