@@ -6,7 +6,7 @@
 #include <png.h>
 
 
-int readPNGFile(const char *filename, Image<UINT8> *image)
+int readPNG(const char *filename, Image<UINT8> *image)
 {
   
   png_byte magic[8];
@@ -129,7 +129,7 @@ int readPNGFile(const char *filename, Image<UINT8> *image)
 
 
 /* write a png file */
-int writePNGFile(Image<UINT8> *image, const char *filename)
+int writePNG(Image<UINT8> *image, const char *filename)
 {
 	png_byte color_type = PNG_COLOR_TYPE_GRAY;
 	png_byte bit_depth = 8;

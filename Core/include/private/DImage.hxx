@@ -81,7 +81,7 @@ template <class T>
 inline void Image<T>::modified()
 { 
 #ifdef USE_QT
-    if (viewer->isVisible())
+    if (viewer && viewer->isVisible())
       updateViewerData();
 #endif // USE_QT    
 }
@@ -92,7 +92,8 @@ inline void Image<T>::modified()
 template <class T>
 inline void Image<T>::setName(const char *name)
 { 	
-    viewer->setName(name);
+    if (viewer)
+	viewer->setName(name);
 }
 
 template <class T>
@@ -112,7 +113,8 @@ inline void Image<T>::updateViewerData()
 template <>
 inline void Image<UINT8>::updateViewerData()
 { 
-    viewer->loadFromData(pixels, width, height);
+    if (viewer)
+	viewer->loadFromData(pixels, width, height);
 }
 
 #endif // USE_QT    

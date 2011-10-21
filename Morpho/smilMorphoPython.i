@@ -1,13 +1,12 @@
-%module smilMorphoPython
 
-%include "../smilCommon.i"
+%include "smilCommon.i"
 
 
 %{
 /* Includes the header in the wrapper code */
+#include "D_Types.h"
 #include "DMorphoBase.hpp"
 #include "DMorphoGeodesic.hpp"
-#include "D_Types.h"
 %}
  
 

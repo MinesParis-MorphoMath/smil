@@ -13,24 +13,9 @@
 using namespace std;
 
 
-_SMIL int readPNGFile (const char* filename, Image<UINT8> *image);
+_SMIL int readPNG(const char* filename, Image<UINT8> *image);
+_SMIL int writePNG(Image<UINT8> *image, const char *filename);
 
-_SMIL int writePNGFile (Image<UINT8> *image, const char *filename);
-
-template <>
-Image<UINT8>& Image<UINT8>::operator << (const char *filename)
-{
-    readPNGFile(filename, this);
-    modified();
-    return *this;
-}
-
-template <>
-Image<UINT8>& Image<UINT8>::operator >> (const char *filename)
-{
-    writePNGFile(this, filename);
-    return *this;
-}
 
 #endif // USE_PNG
 

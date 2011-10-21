@@ -1,5 +1,6 @@
+%module smilCorePython
 
-
+%include "smilCommon.i"
 
 
 %{
@@ -14,8 +15,12 @@
 #include "DBaseLineOperations.hpp"
 #include "DImageArith.hpp"
 /*#include "D_BaseOperations.h"*/
+#include "DImageIO_PNG.h"
 #include "memory"
 
+#ifdef USE_QT
+#include "gui/Qt/QtApp.h"
+#endif // USE_QT
 %}
  
 %extend Image 
@@ -31,18 +36,21 @@
 	}
 }
 
-
 %include "DCommon.h"
 %include "DImage.hpp"
 %include "DImage.hxx"
 %include "DImage.h"
 %include "DBaseImage.h"
 %include "D_Types.h"
+%include "DImageIO_PNG.h"
 /*%include "D_BaseOperations.h" */
 %include "DBaseImageOperations.hpp"
 %include "DBaseLineOperations.hpp"
 %include "DLineArith.hpp"
 %include "DImageArith.hpp"
+#ifdef USE_QT
+%include "gui/Qt/QtApp.h"
+#endif // USE_QT
 
 
 TEMPLATE_WRAP_CLASS(Image);
