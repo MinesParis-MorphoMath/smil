@@ -51,11 +51,9 @@ template <class T>
 Image<T>::~Image()
 { 
     deallocate();
-#ifdef USE_QT
     if (viewer)
 	delete viewer;
 //     viewer = new ImageViewer();
-#endif // USE_QT
     
 }
 
@@ -70,24 +68,19 @@ void Image<T>::init()
 
     dataTypeSize = sizeof(pixelType); 
     
-#ifdef USE_QT
 //     viewer = new ImageViewerWidget();
 //     viewer = new ImageViewer();
      viewer = NULL;
-#endif // USE_QT
 }
 
 template <class T>
 inline void Image<T>::modified()
 { 
-#ifdef USE_QT
     if (viewer && viewer->isVisible())
       updateViewerData();
-#endif // USE_QT    
 }
 
 
-#ifdef USE_QT    
 
 template <class T>
 inline void Image<T>::setName(const char *name)
@@ -97,27 +90,12 @@ inline void Image<T>::setName(const char *name)
 }
 
 template <class T>
-inline void Image<T>::show(const char *name)
-{ 
-    if (name)
-      setName(name);
-    updateViewerData();
-    viewer->show();
-//     qapp->exec();
-}
-
-template <class T>
 inline void Image<T>::updateViewerData()
-{ 
-}
-template <>
-inline void Image<UINT8>::updateViewerData()
 { 
     if (viewer)
 	viewer->loadFromData(pixels, width, height);
 }
 
-#endif // USE_QT    
 
 
 template <class T>

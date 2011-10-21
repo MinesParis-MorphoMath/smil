@@ -1,6 +1,4 @@
 
-%include "smilCommon.i"
-
 
 %{
 /* Includes the header in the wrapper code */

@@ -38,6 +38,7 @@
 
 ${SWIG_INCLUDE_DEFINITIONS}
 
+TEMPLATE_WRAP_CLASS(Image);
 
 
 %pythoncode %{
@@ -62,9 +63,9 @@ def find_names(obj):
 		  result.append(k)
   return result
 
-#def show_with_name(img):
-    #name = find_names(img)[1]
-    #img._show(name)
+def show_with_name(img):
+    name = find_names(img)[1]
+    img._show(name)
 
 imageTypes = ( Image_UINT8, Image_UINT16 )
 
@@ -85,7 +86,7 @@ def Image(*args):
 	else:
 	    img = imageTypes[args[1]](srcIm.getWidth(), srcIm.getHeight(), srcIm.getDepth())
     # la classe python...
-    #img.show = new.instancemethod(show_with_name, img, img.__class__)
+    img.show = new.instancemethod(show_with_name, img, img.__class__)
     return img
 
 %}

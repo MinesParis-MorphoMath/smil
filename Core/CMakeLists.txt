@@ -1,6 +1,6 @@
 
 SET(MODULE_NAME Core)
-SET(MODULE_DEPS c)
+SET(MODULE_DEPS)
 
 
 # FILE(GLOB SRCS src/*.cpp c/*.cpp)

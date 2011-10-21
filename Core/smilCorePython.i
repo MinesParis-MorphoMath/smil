@@ -25,10 +25,6 @@
 	    os << *self;
 	    return os.str();
 	}
-	void _show(const char* name=NULL)
-	{
-	    self->show(name);
-	}
 }
 
 
@@ -45,7 +41,6 @@
 %include "DImageArith.hpp"
 
 
-TEMPLATE_WRAP_CLASS(Image);
 
 
 TEMPLATE_WRAP_FUNC(createImage);

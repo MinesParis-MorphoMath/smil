@@ -29,18 +29,12 @@
 class baseImageViewer
 {
 public:
-    virtual void show() {}
-    virtual bool isVisible() { return false; }
-    virtual void setName(const char* name) {}
-    virtual void loadFromData(void *pixels, UINT w, UINT h) {}
+    virtual void show() = 0;
+    virtual bool isVisible() =0;
+    virtual void setName(const char* name) = 0;
+    virtual void loadFromData(void *pixels, UINT w, UINT h) = 0;
 };
 
-
-template <class T> class Image;
-template <class T> inline void readImage(const char *fName, Image<T> &img)
-{
-    cout << "here" << endl;
-}
 
 
 //! Image class
@@ -133,7 +127,7 @@ public:
     Image<T>& operator > (Image<T> &rhs);
     Image<T>& operator > (T value);
 
-    Image<T>& operator << (const char *s) { readImage<T>(s, *this); return *this; };
+    Image<T>& operator << (const char *s) { cout << "Not implemented" << endl; return *this; };
     Image<T>& operator >> (const char *s) { cout << "Not implemented" << endl; return *this; };
 protected:
     pixelType *pixels;
@@ -144,14 +138,12 @@ protected:
 
     RES_T restruct(void);
 
-#ifdef USE_QT
     baseImageViewer *viewer;
 //     ImageViewerWidget *viewer;
     inline void updateViewerData();
 public:
     inline void setName(const char* name);
-    inline void show(const char* name=NULL);
-#endif // USE_QT
+    void show(const char* name=NULL) {  cout << "Not implemented" << endl; }
 
 };
 
