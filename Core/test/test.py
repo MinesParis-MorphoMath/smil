@@ -2,7 +2,7 @@
 import sys
 import time
 
-from smil import *
+from smilPython import *
 
 
 from threading import Thread

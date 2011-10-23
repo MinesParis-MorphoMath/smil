@@ -7,9 +7,9 @@
 class imageViewer : public baseImageViewer
 {
 public:
-    imageViewer() { qtViewer = new ImageViewerWidget(); }
-    ~imageViewer() { delete qtViewer; }
-    virtual void show() { qtViewer->show(); }
+    imageViewer();
+    ~imageViewer();
+    virtual void show();
     virtual bool isVisible();
     virtual void setName(const char* name);
     virtual void loadFromData(void *pixels, UINT w, UINT h);
