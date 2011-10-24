@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string>
 
-#include "D_Types.h"
+#include "DTypes.h"
 #include "DImage.h"
 
 using namespace std;
