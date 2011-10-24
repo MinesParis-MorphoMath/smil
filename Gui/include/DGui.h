@@ -6,11 +6,10 @@
 #include "DImageViewer.h"
 
 
-// template <>
-// void Image<UINT8>::show(const char *name);
-
-
 template <> 
 void Image<UINT8>::show(const char* name);
+
+template <> 
+void Image<UINT16>::show(const char* name);
 
 #endif // _D_GUI_H

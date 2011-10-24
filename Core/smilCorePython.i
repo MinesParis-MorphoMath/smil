@@ -8,7 +8,7 @@
 #include "DImage.h"
 #include "DImage.hpp"
 #include "DImage.hxx"
-#include "DTypes.h"
+#include "DTypes.hpp"
 #include "DBaseObject.h"
 #include "DBaseImageOperations.hpp"
 #include "DBaseLineOperations.hpp"
@@ -33,7 +33,7 @@
 %include "DImage.hxx"
 %include "DImage.h"
 %include "DBaseImage.h"
-%include "DTypes.h"
+%include "DTypes.hpp"
 /*%include "D_BaseOperations.h" */
 %include "DBaseImageOperations.hpp"
 %include "DBaseLineOperations.hpp"
@@ -45,7 +45,8 @@
 
 TEMPLATE_WRAP_FUNC(createImage);
 
-TEMPLATE_WRAP_FUNC(copy);
+TEMPLATE_WRAP_FUNC_CROSS2(copy);
+
 TEMPLATE_WRAP_FUNC(inv);
 TEMPLATE_WRAP_FUNC(fill);
 TEMPLATE_WRAP_FUNC(add);

@@ -14,10 +14,6 @@
 
 %extend Image 
 {
-	void _show(const char* name=NULL)
-	{
-	    self->show(name);
-	}
 }
 
 %include "DGui.h"

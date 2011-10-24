@@ -1,7 +1,6 @@
 #ifndef _D_BASE_IMAGE_H
 #define _D_BASE_IMAGE_H
 
-#include "DTypes.h"
 #include "DCommon.h"
 
 

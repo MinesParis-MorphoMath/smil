@@ -233,42 +233,50 @@ RES_T Image<T>::deallocate(void)
 template <class T>
 void Image<T>::printSelf(ostream &os, bool displayPixVals)
 {
+    if (name)
+      os << name << endl;
+    
     if (depth>1)
-    {
       os << "3D image" << endl;
-      os << "Size: " << width << "x" << height << "x" << depth << endl;
-    }
     else
-    {
       os << "2D image" << endl;
+
+    T val;
+    os << "Data type: " << getDataTypeAsString(val) << endl;
+    
+    if (depth>1)
+      os << "Size: " << width << "x" << height << "x" << depth << endl;
+    else
       os << "Size: " << width << "x" << height << endl;
-    }
     
     if (allocated) os << "Allocated (" << pixelCount*sizeof(T) << " bits)" << endl;
     else os << "Not allocated" << endl;
     
-    if (!displayPixVals)
-      return;
-    
-    os << "Pixels value:" << endl;
-    sliceType *cur_slice;
-    lineType *cur_line;
-    pixelType *cur_pixel;
-    
-    UINT i, j, k;
-    
-    for (k=0, cur_slice = slices; k<depth; k++, cur_slice++)
+   
+    if (displayPixVals)
     {
-      cur_line = *cur_slice;
-      for (j=0, cur_line = *cur_slice; j<height; j++, cur_line++)
-      {
-	for (i=0, cur_pixel = *cur_line; i<width; i++, cur_pixel++)
-	  os << (double)*cur_pixel << "  ";
+	os << "Pixels value:" << endl;
+	sliceType *cur_slice;
+	lineType *cur_line;
+	pixelType *cur_pixel;
+	
+	UINT i, j, k;
+	
+	for (k=0, cur_slice = slices; k<depth; k++, cur_slice++)
+	{
+	  cur_line = *cur_slice;
+	  for (j=0, cur_line = *cur_slice; j<height; j++, cur_line++)
+	  {
+	    for (i=0, cur_pixel = *cur_line; i<width; i++, cur_pixel++)
+	      os << (double)*cur_pixel << "  ";
+	    os << endl;
+	  }
+	  os << endl;
+	}
 	os << endl;
-      }
-      os << endl;
     }
-    os << endl;
+    
+    cout << endl;   
 }
 
 template <class T>

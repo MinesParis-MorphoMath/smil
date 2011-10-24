@@ -1,8 +1,8 @@
 %module smilPython
 
 
-
 %feature("autodoc", "1");
+
 
 /*%include <windows.i> */
 %include <std_string.i>
@@ -10,33 +10,16 @@
 
 %rename(__lshift__)  operator<<; 
 
-%define TEMPLATE_WRAP_CLASS(_class) 
-  %template(_class ## _UINT8) _class<UINT8>;
-  %template(_class ## _UINT16) _class<UINT16>;
-/*  %template(_class ## _UINT32) _class<UINT32>;*/
-%enddef
 
-%define TEMPLATE_WRAP_FUNC(func)
-  %template(func) func<UINT8>;
-/*  %template(func) func<UINT16>; */
-/*  %template(func) func<UINT32>; */
-%enddef
+// CMake generated wrap macros
 
-%define TEMPLATE_WRAP_FUNC2(func)
-  %template(func) func<UINT8,UINT8>;
-  %template(func) func<UINT8,UINT16>;
-  %template(func) func<UINT16,UINT8>;
-  %template(func) func<UINT32>;
-%enddef
+${SWIG_TEMPLATE_WRAP_DEFINITIONS}
 
-%define TEMPLATE_WRAP_FUNC_IMG(func) 
-  %template(func) func<Image_UINT8>;
-  %template(func) func<Image_UINT16>;
-  %template(func) func<Image_UINT32>;
-%enddef
 
+// CMake generated list of interface files
 
 ${SWIG_INCLUDE_DEFINITIONS}
+
 
 TEMPLATE_WRAP_CLASS(Image);
 
@@ -51,23 +34,8 @@ if ('qtApp' in locals())==0:
   _qtApp = QtGui.QApplication(sys.argv)
 
 
-def find_names(obj):
-  frame = sys._getframe()
-  for frame in iter(lambda: frame.f_back, None):
-      frame.f_locals
-  result = []
-  for referrer in gc.get_referrers(obj):
-      if isinstance(referrer, dict):
-	  for k, v in referrer.iteritems():
-	      if v is obj:
-		  result.append(k)
-  return result
+${SWIG_IMAGE_TYPES}
 
-def show_with_name(img):
-    name = find_names(img)[1]
-    img._show(name)
-
-imageTypes = ( Image_UINT8, Image_UINT16 )
 
 def Image(*args):
     argNbr = len(args)
@@ -85,8 +53,28 @@ def Image(*args):
 	    img = createImage(srcIm)
 	else:
 	    img = imageTypes[args[1]](srcIm.getWidth(), srcIm.getHeight(), srcIm.getDepth())
-    # la classe python...
-    img.show = new.instancemethod(show_with_name, img, img.__class__)
+    # img.show = new.instancemethod(show_with_name, img, img.__class__)
     return img
+
+def find_object_names(obj):
+  frame = sys._getframe()
+  for frame in iter(lambda: frame.f_back, None):
+      frame.f_locals
+  result = []
+  for referrer in gc.get_referrers(obj):
+      if isinstance(referrer, dict):
+	  for k, v in referrer.iteritems():
+	      if v is obj:
+		  result.append(k)
+  return result
+
+def show_with_name(img, name=None):
+    if not name:
+	name = find_object_names(img)[1]
+    img.c_show(name)
+
+for t in imageTypes:
+    t.c_show = t.show
+    t.show = show_with_name
 
 %}

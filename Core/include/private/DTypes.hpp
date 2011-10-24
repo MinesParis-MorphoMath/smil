@@ -20,4 +20,23 @@ enum RES_T
 	RES_NOT_IMPLEMENTED
 };
 
+template <class T>
+inline const char *getDataTypeAsString(T &val)
+{
+    return "Unknown";
+}
+
+template <>
+inline const char *getDataTypeAsString(UINT8 &val)
+{
+    return "UINT8 (unsigned char)";
+}
+
+template <>
+inline const char *getDataTypeAsString(UINT16 &val)
+{
+    return "UINT16 (unsigned short)";
+}
+
+
 #endif

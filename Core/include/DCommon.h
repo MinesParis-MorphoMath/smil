@@ -8,6 +8,7 @@
 #include <vector>
 #include <stdarg.h>
 
+#include "DTypes.hpp"
 // #include "auto_ptr.h"
 // #include <boost/smart_ptr.hpp>
 

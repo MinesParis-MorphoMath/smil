@@ -4,7 +4,7 @@
 
 #include "DCommon.h"
 
-#include "DTypes.h"
+#include "DTypes.hpp"
 #include "DBaseObject.h"
 #include "DBaseImageOperations.hpp"
 
@@ -19,12 +19,6 @@
 
 #include "DBaseImage.h"
 
-
-// template <class T>
-// const char *getDataTypeAsString(Image<T> &im)
-// {
-//     return "Unknown";
-// }
 
 class baseImageViewer
 {

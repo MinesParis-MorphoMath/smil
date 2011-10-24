@@ -2,7 +2,7 @@
 
 %{
 /* Includes the header in the wrapper code */
-#include "DTypes.h"
+#include "DTypes.hpp"
 #include "DMorphoBase.hpp"
 #include "DMorphoGeodesic.hpp"
 %}
@@ -18,7 +18,7 @@
 }
 
 
-%include "DTypes.h"
+%include "DTypes.hpp"
 %include "DStructuringElement.h"
 %include "DMorphoBase.hpp"
 %include "DMorphoGeodesic.hpp"
