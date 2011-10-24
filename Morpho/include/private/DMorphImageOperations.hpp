@@ -41,6 +41,7 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     inline void _exec_line(T *inBuf, Image<T> *imIn, UINT &x, UINT &y, UINT &z, T *outBuf);
 };
 
+
 template <class T, class lineFunction_T>
 inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imOut, StrElt se)
 {

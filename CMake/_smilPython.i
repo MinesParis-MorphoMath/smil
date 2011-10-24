@@ -4,7 +4,7 @@
 
 %feature("autodoc", "1");
 
-%include <windows.i> 
+/*%include <windows.i> */
 %include <std_string.i>
 %include <typemaps.i>
 

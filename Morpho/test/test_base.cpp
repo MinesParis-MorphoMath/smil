@@ -7,8 +7,9 @@
 
 #include "DImage.h"
 #include "DImageArith.hpp"
-#include "DImageMorph.hpp"
-#include "DImageIO_PNG.h"
+#include "DMorpho.h"
+#include "DImageIO.h"
+#include "DGui.h"
 
 #ifdef USE_QT
 #include <QApplication>
@@ -103,13 +104,13 @@ int main(int argc, char *argv[])
 //       bench(fill, (im3, val));
 //       bench(copy, (im1, im3));
 //       bench(copy, (im1, im4));
-      bench(inv, (im1, im2));
+//       bench(inv, (im1, im2));
 //       bench(inf, (im1, im2, im3));
 //       bench(inf, (im1, val, im3));
-//       bench(sup, (im1, im2, im3));
+      bench(sup, (im1, im2, im3));
 //       bench(sup, (im1, val, im3));
-      bench(add, (im1, im2, im3));
-      bench(addNoSat, (im1, im2, im3));
+//       bench(add, (im1, im2, im3));
+//       bench(addNoSat, (im1, im2, im3));
 //       bench(add, (im1, val, im3));
 //       bench(sub, (im1, im2, im3));
 //       bench(sub, (im1, val, im3));
@@ -120,7 +121,7 @@ int main(int argc, char *argv[])
 //       bench(mulNoSat, (im1, im2, im3));
 //       bench(mulNoSat, (im1, val, im3));
       
-	bench(testAdd, (im1, im2, im3));
+// 	bench(testAdd, (im1, im2, im3));
 //       bench(sup, (im1, im2, im3));
       
       im3.printSelf(sx < 50);
@@ -147,7 +148,8 @@ int main(int argc, char *argv[])
       
 //      supLine<UINT8> f;
 //       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
-      bench(dilate, (im1, im3));
+      bench(dilate, (im1, im3, se));
+      bench(erode, (im1, im3, se));
 //       bench(volIm, (im1));
 //       im6.show();
       
