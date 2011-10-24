@@ -27,7 +27,7 @@ if ('im1' in locals())==0:
   #app._exec()
   #im1.show()
 
-  se = hSE()
+  se = sSE()
 
 
 
