@@ -71,6 +71,7 @@ void Image<T>::init()
 //     viewer = new ImageViewerWidget();
 //     viewer = new ImageViewer();
      viewer = NULL;
+     name = NULL;
 }
 
 template <class T>
@@ -83,10 +84,11 @@ inline void Image<T>::modified()
 
 
 template <class T>
-inline void Image<T>::setName(const char *name)
+inline void Image<T>::setName(const char *_name)
 { 	
+    name = _name;
     if (viewer)
-	viewer->setName(name);
+	viewer->setName(_name);
 }
 
 template <class T>

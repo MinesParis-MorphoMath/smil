@@ -140,6 +140,8 @@ protected:
 
     baseImageViewer *viewer;
 //     ImageViewerWidget *viewer;
+    
+    const char* name;
     inline void updateViewerData();
 public:
     inline void setName(const char* name);
