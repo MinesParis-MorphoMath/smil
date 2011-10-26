@@ -137,7 +137,7 @@ int main(int argc, char *argv[])
       StrElt se = hSE();
       
       im5 << 127;
-      erode(im5, im6, sSE(5));
+      erode(im5, im6, hSE(5));
 //       im5.show();
       im6.show();
       
@@ -154,7 +154,7 @@ int main(int argc, char *argv[])
       
 //      supLine<UINT8> f;
 //       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
-//       bench(dilate, (im1, im3, se));
+      bench(dilate, (im1, im3, se));
       bench(erode, (im1, im3, se));
 //       bench(volIm, (im1));
 //       im6.show();

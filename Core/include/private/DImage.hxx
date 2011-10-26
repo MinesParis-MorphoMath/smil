@@ -417,6 +417,13 @@ Image<T>& Image<T>::operator > (T value)
     return newIm;
 }
 
+template <class T>
+Image<T>& Image<T>::operator << (const T *tab)
+{
+    for (int i=0;i<pixelCount;i++)
+      pixels[i] = tab[i];
+    modified();
+}
 
 
 #endif // _IMAGE_HXX

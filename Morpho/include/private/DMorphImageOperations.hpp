@@ -18,7 +18,7 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     typedef typename imageType::sliceType sliceType;
     typedef typename imageType::lineType lineType;
     
-    unaryMorphImageFunction(T border=T(0)) 
+    unaryMorphImageFunction(T border=numeric_limits<T>::min()) 
       : borderValue(border), 
 	vectorSize(SIMD_VEC_SIZE/sizeof(T)) 
 	{}
@@ -38,8 +38,9 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     T *borderBuf, *cpBuf;
     UINT vectorSize;
     
+    inline void _extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, T *outBuf);
     inline void _exec_translated_line(T *inBuf1, T *inBuf2, int dx, int lineLen, T *outBuf);
-    inline void _exec_line(T *inBuf, Image<T> *imIn, UINT &x, UINT &y, UINT &z, T *outBuf);
+    inline void _exec_line(T *inBuf, Image<T> *imIn, int &x, int &y, int &z, T *outBuf);
 };
 
 
@@ -50,7 +51,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, 
     borderBuf = createAlignedBuffer<T>(lineLen);
     cpBuf = createAlignedBuffer<T>(lineLen);
     fillLine<T>::_exec(borderBuf, lineLen, borderValue);
-    
+//     cout << "bord val " << (int)borderValue << endl;
     int seSize = se.size;
     if (seSize==1) _exec_single(imIn, imOut, se);
     else
@@ -68,51 +69,6 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, 
     return RES_OK;
 }
 
-
-template <class T, class lineFunction_T>
-inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_translated_line(T *inBuf1, T *inBuf2, int dx, int lineLen, T *outBuf)
-{
-    if (dx==0)
-      lineFunction._exec(inBuf1, inBuf2, lineLen, outBuf);
-    else if (dx>0)
-    {
-      int alStart = (dx/vectorSize + 1)*vectorSize;
-      
-//       memcpy(cpBuf, borderBuf, dx*sizeof(T));
-//       memcpy(cpBuf+dx, inBuf2, (lineLen-dx)*sizeof(T));
-//       lineFunction._exec(inBuf1, cpBuf, lineLen, outBuf);
-      
-      
-      lineFunction._exec(inBuf1, borderBuf, dx, outBuf);
-      lineFunction._exec(inBuf1+dx, inBuf2, alStart-dx, outBuf+dx);
-      lineFunction._exec(inBuf1+alStart, inBuf2+alStart-dx, lineLen-alStart, outBuf+alStart);
-    }
-    else
-    {
-      int dxp = -dx;
-      
-//       memcpy(cpBuf, inBuf2+dxp, (lineLen-dxp)*sizeof(T));
-//       memcpy(cpBuf+lineLen-dxp, borderBuf, dxp*sizeof(T));
-//       lineFunction._exec(inBuf1, cpBuf, lineLen, outBuf);
-      
-      lineFunction._exec(inBuf1, inBuf2-dx, lineLen+dx, outBuf);
-      lineFunction._exec(inBuf1+lineLen+dx, borderBuf, -dx, outBuf+lineLen+dx);
-    }
-}
-
-
-template <class T, class lineFunction_T>
-inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(T *inBuf, Image<T> *imIn, UINT &x, UINT &y, UINT &z, T *outBuf)
-{
-    int lineLen = imIn->getWidth();
-    
-    if (z<0 || z>=imIn->getSliceCount() || y<0 || y>=imIn->getLineCount())
-	_exec_translated_line(inBuf, borderBuf, 0, lineLen, outBuf);
-    else 
-	_exec_translated_line(inBuf, imIn->getSlices()[z][y], x, lineLen, outBuf);
-}
-
-
 template <class T, class lineFunction_T>
 inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(imageType &imIn, imageType &imOut, StrElt se)
 {
@@ -128,6 +84,63 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(imageType 
 	return RES_NOT_IMPLEMENTED;
 }
 
+void printLine(UINT8 *buf, int size)
+{
+  for (int i=0;i<size;i++)
+    cout << (int)(*(buf+i)) << " ";
+  cout << endl;
+}
+
+template <class T, class lineFunction_T>
+inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, T *outBuf)
+{
+    int lineLen = imIn->getWidth();
+    
+    if (z<0 || z>=imIn->getSliceCount() || y<0 || y>=imIn->getLineCount())
+	memcpy(outBuf, borderBuf, lineLen*sizeof(T));
+    else if (x>0)
+    {
+	memcpy(outBuf, borderBuf, x*sizeof(T));
+	memcpy(outBuf+x, imIn->getSlices()[z][y], (lineLen-x)*sizeof(T));
+    }
+    else
+    {
+	memcpy(outBuf, imIn->getSlices()[z][y]-x, (lineLen+x)*sizeof(T));
+	memcpy(outBuf+lineLen+x, borderBuf, -x*sizeof(T));
+    }
+}
+
+template <class T, class lineFunction_T>
+inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_translated_line(T *inBuf1, T *inBuf2, int dx, int lineLen, T *outBuf)
+{
+    if (dx==0)
+      lineFunction._exec(inBuf1, inBuf2, lineLen, outBuf);
+    else if (dx>0)
+    {
+      lineFunction._exec(inBuf1, borderBuf, dx, outBuf);
+      lineFunction._exec(inBuf1+dx, inBuf2, lineLen-dx, outBuf+dx);
+    }
+    else
+    {
+      lineFunction._exec(inBuf1, inBuf2-dx, lineLen+dx, outBuf);
+      lineFunction._exec(inBuf1+lineLen+dx, borderBuf, -dx, outBuf+lineLen+dx);
+    }
+}
+
+
+template <class T, class lineFunction_T>
+inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(T *inBuf, Image<T> *imIn, int &x, int &y, int &z, T *outBuf)
+{
+    int lineLen = imIn->getWidth();
+    
+    if (z<0 || z>=imIn->getSliceCount() || y<0 || y>=imIn->getLineCount())
+	_exec_translated_line(inBuf, borderBuf, 0, lineLen, outBuf);
+    else 
+	_exec_translated_line(inBuf, imIn->getSlices()[z][y], x, lineLen, outBuf);
+}
+
+
+
 template <class T, class lineFunction_T>
 inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(imageType &imIn, imageType &imOut, StrElt se)
 {
@@ -139,13 +152,13 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
     int lineCount = imIn.getLineCount();
     
     int sePtsNumber = se.points.size();
+    if (sePtsNumber==0)
+	return RES_OK;
+    
     int nSlices = imIn.getSliceCount();
     int nLines = imIn.getHeight();
 
-//     T *borderBuf = createAlignedBuffer<T>(lineLen);
     T *outBuf = createAlignedBuffer<T>(lineLen);
-        
-//     fillLine<T>::_exec(borderBuf, bufSize, borderValue);
 
     Image<T> *tmpIm;
     
@@ -161,7 +174,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
     
     bool oddSe = se.odd, oddLine = 0;
     
-    int vec_size = SIMD_VEC_SIZE / sizeof(T);
+    int x, y, z;
     
     for (int s=0;s<nSlices;s++)
     {
@@ -171,61 +184,32 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 	
 	for (int l=0;l<nLines;l++)
 	{
-	    memcpy(outBuf, borderBuf, bufSize);
+	    x = se.points[0].x + oddLine;
+	    y = l + se.points[0].y;
+	    z = s + se.points[0].z;
+
+	    _extract_translated_line(tmpIm, x, y, z, outBuf);
+	    
 	    T *lineOut = destLines[l];
 	    
-	    for (int p=0;p<sePtsNumber;p++)
+	    for (int p=1;p<sePtsNumber;p++)
 	    {
-		UINT x, y, z;
 		bool pass = false;
 		
 		x = se.points[p].x + oddLine;
 		y = l + se.points[p].y;
 		z = s + se.points[p].z;
 		
-		  _exec_line(outBuf, tmpIm, x, y, z, outBuf);   
-		/*
 		
-		if (z<0 || z>=nSlices) pass = true;
-		else if (y<0 || y>=nLines) pass = true;
-
-		if(!pass)
-		{
-		    lineIn = srcSlices[z][y];
-// 		    memcpy(lineIn, srcSlices[z][y], lineLen*sizeof(T));
-// 		    t_LineCopyFromImage2D(pixIn, lineLen, y, lineIn);
-		
-		    if (x==0)
-		    {
-// 		      memcpy(bufs[p], lineIn, lineLen*sizeof(T));
-		      lineFunction._exec_aligned(outBuf, lineIn, lineLen, outBuf);
-// 		      memcpy(borderBuf, lineIn, lineLen*sizeof(T));
-// 		      lineFunction._exec_aligned(outBuf, borderBuf, lineLen, outBuf);
-		    }
-		    else if (x>0)
-		    {
-		      t_LineShiftRight1D(lineIn, lineLen, x, borderValue, borderBuf);
-		      lineFunction._exec_aligned(outBuf, borderBuf, lineLen, outBuf);
-// 		      lineFunction._exec(outBuf+x, lineIn, lineLen-x, outBuf+x);
-		    }
-		    else
-		    {
-		      t_LineShiftLeft1D(lineIn, lineLen, -x, borderValue, borderBuf);
-		      lineFunction._exec_aligned(outBuf, borderBuf, lineLen, outBuf);
-// 		      lineFunction._exec(outBuf, lineIn-x, lineLen+x, outBuf);
-		    }
-		}*/
+		_exec_line(outBuf, tmpIm, x, y, z, outBuf);   
 	    }
 	    memcpy(lineOut, outBuf, bufSize);
 	    if (oddSe)
 	      oddLine = !oddLine;
-	    
 	}
     }
 
     deleteAlignedBuffer<T>(outBuf);
-//     deleteAlignedBuffer<T>(borderBuf);
-//     deleteAlignedBuffer<T>(lineIn);
     
     if (&imIn==&imOut)
       delete tmpIm;
@@ -285,6 +269,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
 	memcpy(inBuf, srcLines[1], lineLen*sizeof(T));
 	_exec_translated_line(inBuf, inBuf, 1, lineLen, tmpBuf2);
 	lineFunction._exec(tmpBuf4, tmpBuf2, lineLen, outBuf);
+	lineFunction._exec(borderBuf, outBuf, lineLen, outBuf);
 	memcpy(destLines[0], outBuf, lineLen*sizeof(T));
 	
 // imOut.modified();
@@ -317,6 +302,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
 	else
 	  _exec_translated_line(tmpBuf2, tmpBuf2, -1, lineLen, tmpBuf4);
 	lineFunction._exec(tmpBuf4, tmpBuf1, lineLen, outBuf);
+	lineFunction._exec(borderBuf, outBuf, lineLen, outBuf);
 	memcpy(destLines[nLines-1], outBuf, lineLen*sizeof(T));
 	
     }

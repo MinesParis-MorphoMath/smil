@@ -32,8 +32,8 @@ class StrElt
     }
     bool odd;
     UINT size;
-    virtual seType getType() { return seT; }
     seType seT;
+    virtual seType getType() { return seT; }
     
     void printSelf(ostream &os=std::cout)
     {

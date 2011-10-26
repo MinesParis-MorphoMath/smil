@@ -121,6 +121,8 @@ public:
     Image<T>& operator > (Image<T> &rhs);
     Image<T>& operator > (T value);
 
+    Image<T>& operator << (const T *tab);
+    
     Image<T>& operator << (const char *s) { cout << "Not implemented" << endl; return *this; };
     Image<T>& operator >> (const char *s) { cout << "Not implemented" << endl; return *this; };
 protected:
