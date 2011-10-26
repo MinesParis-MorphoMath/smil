@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
 //       bench(inv, (im1, im2));
 //       bench(inf, (im1, im2, im3));
 //       bench(inf, (im1, val, im3));
-      bench(sup, (im1, im2, im3));
+//       bench(sup, (im1, im2, im3));
 //       bench(sup, (im1, val, im3));
 //       bench(add, (im1, im2, im3));
 //       bench(addNoSat, (im1, im2, im3));
@@ -129,12 +129,18 @@ int main(int argc, char *argv[])
 /*      fill((UINT8)1, im1);
       fill((UINT8)2, im2);*/
       
-      Image_UINT8 im5(10,10), im6(10,10);
+      Image_UINT8 im5(50,50), im6(50,50);
 //       fill(UINT8(5), im6);
 //       im5 = im1 + im2;
 
 //       fill(im5, UINT8(100));
       StrElt se = hSE();
+      
+      im5 << 127;
+      erode(im5, im6, sSE(5));
+//       im5.show();
+      im6.show();
+      
 //       se.addPoint(5,5);
 //       se.addPoint(5,0);
 /*       se.addPoint(0,0);
@@ -148,14 +154,14 @@ int main(int argc, char *argv[])
       
 //      supLine<UINT8> f;
 //       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
-      bench(dilate, (im1, im3, se));
+//       bench(dilate, (im1, im3, se));
       bench(erode, (im1, im3, se));
 //       bench(volIm, (im1));
 //       im6.show();
       
 //       add(im1, im2, im5);
-      im5.printSelf(sx < 50);
-      cout << im5;
+//       im5.printSelf(sx < 50);
+//       cout << im5;
 
 //       im5.show();
       
@@ -165,12 +171,12 @@ int main(int argc, char *argv[])
 //       fill(im3, UINT8(0));
       
 //       readPNGFile("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", &im1);
-      im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
+//       im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
 //       dilate(im1, im3, se);
       
-      im1.show();
+//       im1.show();
 //       im3.show();
-//       qapp.exec();
+      qapp.exec();
 
 //       baseImage *im = createImage(c);
 //       copy(im, im);

@@ -27,7 +27,7 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     
     inline RES_T _exec_single(imageType &imIn, imageType &imOut, StrElt se);
     inline RES_T _exec_single_generic(imageType &imIn, imageType &imOut, StrElt se);
-    inline RES_T _exec_single_hSE(imageType &imIn, imageType &imOut);
+    inline RES_T _exec_single_hexSE(imageType &imIn, imageType &imOut);
     
     inline RES_T operator()(imageType &imIn, imageType &imOut, StrElt se) { return this->_exec(imIn, imOut, se); }
 
@@ -35,6 +35,7 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     
   protected:
     T borderValue;
+    T *borderBuf, *cpBuf;
     UINT vectorSize;
     
     inline void _exec_translated_line(T *inBuf1, T *inBuf2, int dx, int lineLen, T *outBuf);
@@ -45,6 +46,11 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
 template <class T, class lineFunction_T>
 inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imOut, StrElt se)
 {
+    int lineLen = imIn.getWidth();
+    borderBuf = createAlignedBuffer<T>(lineLen);
+    cpBuf = createAlignedBuffer<T>(lineLen);
+    fillLine<T>::_exec(borderBuf, lineLen, borderValue);
+    
     int seSize = se.size;
     if (seSize==1) _exec_single(imIn, imOut, se);
     else
@@ -57,7 +63,9 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, 
 	     copy(imOut, tmpIm);
 	}
     }
-	return RES_OK;
+    deleteAlignedBuffer<T>(borderBuf);
+    deleteAlignedBuffer<T>(cpBuf);
+    return RES_OK;
 }
 
 
@@ -69,13 +77,26 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_translated_line(T 
     else if (dx>0)
     {
       int alStart = (dx/vectorSize + 1)*vectorSize;
-//       lineFunction._exec(outBuf+x, lineIn, lineLen-x, outBuf+x);
+      
+//       memcpy(cpBuf, borderBuf, dx*sizeof(T));
+//       memcpy(cpBuf+dx, inBuf2, (lineLen-dx)*sizeof(T));
+//       lineFunction._exec(inBuf1, cpBuf, lineLen, outBuf);
+      
+      
+      lineFunction._exec(inBuf1, borderBuf, dx, outBuf);
       lineFunction._exec(inBuf1+dx, inBuf2, alStart-dx, outBuf+dx);
       lineFunction._exec(inBuf1+alStart, inBuf2+alStart-dx, lineLen-alStart, outBuf+alStart);
     }
     else
     {
+      int dxp = -dx;
+      
+//       memcpy(cpBuf, inBuf2+dxp, (lineLen-dxp)*sizeof(T));
+//       memcpy(cpBuf+lineLen-dxp, borderBuf, dxp*sizeof(T));
+//       lineFunction._exec(inBuf1, cpBuf, lineLen, outBuf);
+      
       lineFunction._exec(inBuf1, inBuf2-dx, lineLen+dx, outBuf);
+      lineFunction._exec(inBuf1+lineLen+dx, borderBuf, -dx, outBuf+lineLen+dx);
     }
 }
 
@@ -83,13 +104,12 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_translated_line(T 
 template <class T, class lineFunction_T>
 inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(T *inBuf, Image<T> *imIn, UINT &x, UINT &y, UINT &z, T *outBuf)
 {
-    if (z<0 || z>=imIn->getSliceCount()) return;
-    else if (y<0 || y>=imIn->getLineCount()) return;
-
-    T *lineIn = imIn->getSlices()[z][y];
     int lineLen = imIn->getWidth();
-
-    _exec_translated_line(inBuf, lineIn, x, lineLen, outBuf);
+    
+    if (z<0 || z>=imIn->getSliceCount() || y<0 || y>=imIn->getLineCount())
+	_exec_translated_line(inBuf, borderBuf, 0, lineLen, outBuf);
+    else 
+	_exec_translated_line(inBuf, imIn->getSlices()[z][y], x, lineLen, outBuf);
 }
 
 
@@ -102,8 +122,8 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(imageType 
     {
       case stGeneric:
 	return _exec_single_generic(imIn, imOut, se);
-      case stHSE:
-	return _exec_single_hSE(imIn, imOut);
+      case stHexSE:
+	return _exec_single_hexSE(imIn, imOut);
     }
 	return RES_NOT_IMPLEMENTED;
 }
@@ -122,10 +142,10 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
     int nSlices = imIn.getSliceCount();
     int nLines = imIn.getHeight();
 
-    T *borderBuf = createAlignedBuffer<T>(lineLen);
+//     T *borderBuf = createAlignedBuffer<T>(lineLen);
     T *outBuf = createAlignedBuffer<T>(lineLen);
         
-    fillLine<T>::_exec(borderBuf, bufSize, borderValue);
+//     fillLine<T>::_exec(borderBuf, bufSize, borderValue);
 
     Image<T> *tmpIm;
     
@@ -163,7 +183,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 		y = l + se.points[p].y;
 		z = s + se.points[p].z;
 		
-		_exec_line(outBuf, tmpIm, x, y, z, outBuf);   
+		  _exec_line(outBuf, tmpIm, x, y, z, outBuf);   
 		/*
 		
 		if (z<0 || z>=nSlices) pass = true;
@@ -196,7 +216,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 		    }
 		}*/
 	    }
-	    memcpy(lineOut, outBuf, lineLen*sizeof(T));
+	    memcpy(lineOut, outBuf, bufSize);
 	    if (oddSe)
 	      oddLine = !oddLine;
 	    
@@ -204,7 +224,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
     }
 
     deleteAlignedBuffer<T>(outBuf);
-    deleteAlignedBuffer<T>(borderBuf);
+//     deleteAlignedBuffer<T>(borderBuf);
 //     deleteAlignedBuffer<T>(lineIn);
     
     if (&imIn==&imOut)
@@ -217,7 +237,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 
 
 template <class T, class lineFunction_T>
-inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hSE(imageType &imIn, imageType &imOut)
+inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imageType &imIn, imageType &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
@@ -237,8 +257,6 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hSE(imageT
     T *tmpBuf4 = createAlignedBuffer<T>(lineLen);
     T *tmpBuf;
         
-//     fillLine<T>::_exec(borderBuf, bufSize, borderValue);
-
     Image<T> *tmpIm;
     
     if (&imIn==&imOut)
@@ -269,6 +287,8 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hSE(imageT
 	lineFunction._exec(tmpBuf4, tmpBuf2, lineLen, outBuf);
 	memcpy(destLines[0], outBuf, lineLen*sizeof(T));
 	
+// imOut.modified();
+// return RES_OK;
 	for (int l=2;l<nLines;l++)
 	{
 	    memcpy(inBuf, srcLines[l], lineLen*sizeof(T));
@@ -284,7 +304,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hSE(imageT
 	    }
 	    lineFunction._exec(tmpBuf1, tmpBuf3, lineLen, outBuf);
 	    lineFunction._exec(tmpBuf4, outBuf, lineLen, outBuf);
-	    memcpy(destLines[l], outBuf, lineLen*sizeof(T));
+	    memcpy(destLines[l-1], outBuf, lineLen*sizeof(T));
 	    
 	    tmpBuf = tmpBuf1;
 	    tmpBuf1 = tmpBuf2;
@@ -292,7 +312,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hSE(imageT
 	    tmpBuf3 = tmpBuf;
 	}
 	
-	if (nLines%2 == 0)
+	if (nLines%2 != 0)
 	  _exec_translated_line(tmpBuf2, tmpBuf2, 1, lineLen, tmpBuf4);
 	else
 	  _exec_translated_line(tmpBuf2, tmpBuf2, -1, lineLen, tmpBuf4);

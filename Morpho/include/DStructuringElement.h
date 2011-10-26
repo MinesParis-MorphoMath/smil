@@ -8,7 +8,7 @@ struct Point
   int z;
 };
 
-enum seType { stGeneric, stHSE };
+enum seType { stGeneric, stHexSE, stSquSE };
 
 class StrElt
 {
@@ -58,7 +58,7 @@ class hSE : public StrElt
   public:
     hSE(UINT s=1) 
     {
-	seT = stHSE;
+	seT = stHexSE;
 	size = s;
 	odd = true;
 	addPoint(0,0);
@@ -76,6 +76,7 @@ class sSE : public StrElt
   public:
     sSE(UINT s=1) : StrElt(s)
     {
+// 	seT = stSquSE;
 	odd = false;
 	addPoint(0,0);
 	addPoint(1,0);

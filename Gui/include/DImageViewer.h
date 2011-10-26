@@ -9,10 +9,10 @@ class imageViewer : public baseImageViewer
 public:
     imageViewer();
     ~imageViewer();
-    virtual void show();
-    virtual bool isVisible();
-    virtual void setName(const char* name);
-    virtual void loadFromData(void *pixels, UINT w, UINT h);
+    virtual inline void show();
+    virtual inline bool isVisible();
+    virtual inline void setName(const char* name);
+    virtual inline void loadFromData(void *pixels, UINT w, UINT h);
 private:
     ImageViewerWidget *qtViewer;
 };
