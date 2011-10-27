@@ -32,23 +32,26 @@ int main(int argc, char *argv[])
 #endif // USE_QT
     
 //      int c;
-      Image_UINT8 im1;
-      im1 << "/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
-      Image_UINT8 im2(im1);
+      Image_UINT8 im1(4,4);
+      Image_UINT8 im2(4,4);
+      Image_UINT8 im3(4,4);
 
-//       hMinima(im1, 2, im2);
-      add(im1, UINT8(10), im2);
-      dualBuild(im1, im2, im2);
-      im1.show();
-      im2.show();
+      UINT8 vec1[16] = { 50, 51, 52, 50, \
+			 50, 55, 60, 45, \
+			 98, 54, 65, 50, \
+			 35, 59, 20, 48 };
+			 
+      UINT8 vec2[16] = { 10, 51, 20, 10, \
+			 40, 15, 10, 15, \
+			 58, 24, 25, 50, \
+			 15, 29, 10, 48 };
+      im1 << vec1;
+      im2 << vec2;
+  
+      geoDil(im2, im1, im3);
       
-      im1.setSize(4, 4);
-      UINT8 vec[16] = { 2, 3, 4, 1, \
-			2, 5, 7, 1, \
-			2, 5, 7, 1, \
-			2, 5, 7, 1 };
-      im1 << vec;
-
-       qapp.exec();
+      im3.printSelf(1);
+      
+//        qapp.exec();
 }
 

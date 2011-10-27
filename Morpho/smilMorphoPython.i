@@ -5,6 +5,7 @@
 #include "DTypes.hpp"
 #include "DMorphoBase.hpp"
 #include "DMorphoGeodesic.hpp"
+#include "DMorphoExtrema.hpp"
 %}
  
 
@@ -22,6 +23,7 @@
 %include "DStructuringElement.h"
 %include "DMorphoBase.hpp"
 %include "DMorphoGeodesic.hpp"
+%include "DMorphoExtrema.hpp"
 
 //TEMPLATE_WRAP_FUNC(label);
 

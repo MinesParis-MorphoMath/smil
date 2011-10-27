@@ -117,13 +117,15 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_translated_line(T 
       lineFunction._exec(inBuf1, inBuf2, lineLen, outBuf);
     else if (dx>0)
     {
-      lineFunction._exec(inBuf1, borderBuf, dx, outBuf);
-      lineFunction._exec(inBuf1+dx, inBuf2, lineLen-dx, outBuf+dx);
+      memcpy(cpBuf, borderBuf, dx*sizeof(T));
+      memcpy(cpBuf+dx, inBuf2, (lineLen-dx)*sizeof(T));
+      lineFunction._exec(inBuf1, cpBuf, lineLen, outBuf);
     }
     else
     {
-      lineFunction._exec(inBuf1, inBuf2-dx, lineLen+dx, outBuf);
-      lineFunction._exec(inBuf1+lineLen+dx, borderBuf, -dx, outBuf+lineLen+dx);
+      memcpy(cpBuf, inBuf2-dx, (lineLen+dx)*sizeof(T));
+      memcpy(cpBuf+(lineLen+dx), borderBuf, -dx*sizeof(T));
+      lineFunction._exec(inBuf1, cpBuf, lineLen, outBuf);
     }
 }
 

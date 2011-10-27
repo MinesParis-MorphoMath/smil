@@ -18,7 +18,7 @@ inline RES_T geoDil(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se
     
     for (int i=0;i<se.size;i++)
     {
-	res = dilate(imOut, imOut, tmpSe);
+	res = dilate<T>(imOut, imOut, tmpSe);
 	if (res==RES_OK)
 	  res = inf(imOut, imMask, imOut);
 	if (res!=RES_OK)
@@ -58,7 +58,7 @@ inline RES_T build(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=
     
     while (true)
     {
-	res = dilate(imOut, imOut, tmpSe);
+	res = dilate<T>(imOut, imOut, tmpSe);
 	if (res==RES_OK)
 	  res = inf(imOut, imMask, imOut);
 	if (res!=RES_OK)
