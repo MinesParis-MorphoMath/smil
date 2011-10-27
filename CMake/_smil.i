@@ -1,4 +1,11 @@
+
+#ifdef SWIGPYTHON
 %module smilPython
+#endif // SWIGPYTHON
+
+#ifdef SWIGJAVA
+%module smilJava
+#endif // SWIGJAVA
 
 
 %feature("autodoc", "1");
@@ -23,6 +30,7 @@ ${SWIG_INCLUDE_DEFINITIONS}
 
 TEMPLATE_WRAP_CLASS(Image);
 
+#ifdef SWIGPYTHON
 
 %pythoncode %{
 
@@ -73,3 +81,5 @@ for t in imageTypes:
     t.show = show_with_name
 
 %}
+
+#endif // SWIGPYTHON
