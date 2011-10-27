@@ -3,6 +3,7 @@
 
 #include "DImage.h"
 #include "Qt/ImageViewerWidget.h"
+#include <QApplication>
 
 class imageViewer : public baseImageViewer
 {
@@ -13,6 +14,7 @@ public:
     virtual inline bool isVisible();
     virtual inline void setName(const char* name);
     virtual inline void loadFromData(void *pixels, UINT w, UINT h);
+    QApplication *_qapp;
 private:
     ImageViewerWidget *qtViewer;
 };

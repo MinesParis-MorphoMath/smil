@@ -3,6 +3,13 @@
 
 imageViewer::imageViewer()
 {
+    if (!qApp)
+    {
+      cout << "created" << endl;
+	int ac = 1;
+	char **av = NULL;
+	_qapp = new QApplication(ac, av);
+    }
     qtViewer = new ImageViewerWidget();
 }
 

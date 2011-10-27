@@ -3,7 +3,6 @@
 
 
 #include "DImage.hpp"
-#include "DBaseVectorOperations.hpp"
 
 struct stat;
 

@@ -22,7 +22,9 @@
 
 
 #ifdef __SSE__
-   
+
+#include <xmmintrin.h>
+
 void testAdd(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
 {
     __m128i r0,r1;

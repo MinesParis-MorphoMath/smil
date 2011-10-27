@@ -26,13 +26,8 @@ TEMPLATE_WRAP_CLASS(Image);
 
 %pythoncode %{
 
-from PyQt4 import QtGui, QtCore
-import gc, sys, time
-import new
-
-if ('qtApp' in locals())==0:
-  _qtApp = QtGui.QApplication(sys.argv)
-
+import sys, gc
+import time, new
 
 ${SWIG_IMAGE_TYPES}
 
