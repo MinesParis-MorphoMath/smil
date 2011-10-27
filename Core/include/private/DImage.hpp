@@ -10,13 +10,6 @@
 
 
 
-#ifdef USE_QT
-// #include <QApplication>
-// #include "gui/Qt/ImageViewer.h"
-// #include "gui/Qt/ImageViewerWidget.h"
-// #include "gui/Qt/QtApp.h"
-#endif // USE_QT
-
 #include "DBaseImage.h"
 
 

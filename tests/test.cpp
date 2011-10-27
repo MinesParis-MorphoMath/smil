@@ -9,9 +9,9 @@
 #include "DImageArith.hpp"
 #include "DImageIO_PNG.h"
 
-#ifdef USE_QT
+#ifdef BUILD_GUI
 #include <QApplication>
-#endif // USE_QT
+#endif // BUILD_GUI
 
 
 #define bench(func, args) \
@@ -59,9 +59,9 @@ void testAdd(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
 
 int main(int argc, char *argv[])
 {
-#ifdef USE_QT
+#ifdef BUILD_GUI
     QApplication qapp(argc, argv);
-#endif // USE_QT
+#endif // BUILD_GUI
     
 //      int c;
       Image_UINT8 im1(10,10);

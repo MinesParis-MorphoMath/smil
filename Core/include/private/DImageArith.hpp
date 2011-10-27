@@ -201,10 +201,11 @@ inline RES_T fill(Image<T> &imOut, const T value)
     int lineCount = imOut.getLineCount();
     
     // Fill first line
-    fillLine<T>::_exec(lineOut[0], lineLen, value);
+//     fillLine<T>::_exec(lineOut[0], lineLen, value);
+    fillLine<T>::_exec(imOut.getPixels(), imOut.getPixelCount(), value);
     
-    for (int i=1;i<lineCount;i++)
-      memcpy(lineOut[i], lineOut[0], lineLen*sizeof(T));
+//     for (int i=1;i<lineCount;i++)
+//       memcpy(lineOut[i], lineOut[0], lineLen*sizeof(T));
     
     imOut.modified();
     return RES_OK;

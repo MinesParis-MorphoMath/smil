@@ -9,11 +9,11 @@
 #include "DImageArith.hpp"
 #include "DMorpho.h"
 #include "DImageIO.h"
-#include "DGui.h"
 
-#ifdef USE_QT
+#ifdef BUILD_GUI
+#include "DGui.h"
 #include <QApplication>
-#endif // USE_QT
+#endif // BUILD_GUI
 
 
 #define bench(func, args) \
@@ -27,9 +27,9 @@
 
 int main(int argc, char *argv[])
 {
-#ifdef USE_QT
+#ifdef BUILD_GUI
     QApplication qapp(argc, argv);
-#endif // USE_QT
+#endif // BUILD_GUI
     
 //      int c;
       Image_UINT8 im1(4,4);
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
       im1 << vec1;
       im2 << vec2;
   
-      geoDil(im2, im1, im3);
+//       geoDil(im2, im1, im3);
       
       im3.printSelf(1);
       

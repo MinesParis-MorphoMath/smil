@@ -9,11 +9,11 @@
 #include "DImageArith.hpp"
 #include "DMorpho.h"
 #include "DImageIO.h"
-#include "DGui.h"
 
-#ifdef USE_QT
+#ifdef BUILD_GUI
+#include "DGui.h"
 #include <QApplication>
-#endif // USE_QT
+#endif // BUILD_GUI
 
 
 #define bench(func, args) \
@@ -72,9 +72,9 @@ void func(hSE *se)
 
 int main(int argc, char *argv[])
 {
-#ifdef USE_QT
+#ifdef BUILD_GUI
     QApplication qapp(argc, argv);
-#endif // USE_QT
+#endif // BUILD_GUI
     
 //      int c;
       Image_UINT8 im1(10,10);
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
       int nRuns = (int)1E3;
       UINT8 val = 10;
       
-//       bench(fill, (im3, val));
+      bench(fill, (im3, val));
 //       bench(copy, (im1, im3));
 //       bench(copy, (im1, im4));
 //       bench(inv, (im1, im2));
@@ -176,7 +176,9 @@ int main(int argc, char *argv[])
       
 //       im1.show();
 //       im3.show();
+#ifdef BUILD_GUI
       qapp.exec();
+#endif // BUILD_GUI
 
 //       baseImage *im = createImage(c);
 //       copy(im, im);
