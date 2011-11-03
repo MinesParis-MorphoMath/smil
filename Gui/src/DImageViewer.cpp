@@ -10,7 +10,8 @@ imageViewer::imageViewer()
 	char **av = NULL;
 	_qapp = new QApplication(ac, av);
     }
-    qtViewer = new ImageViewerWidget();
+//     qtViewer = new ImageViewerWidget();
+    qtViewer = new ImageViewer();
 }
 
 imageViewer::~imageViewer()
@@ -30,7 +31,7 @@ bool imageViewer::isVisible()
 
 void imageViewer::setName(const char* name)
 {
-    qtViewer->setName(name);
+//     qtViewer->setName(name);
 }
 
 void imageViewer::loadFromData(void *pixels, UINT w, UINT h)

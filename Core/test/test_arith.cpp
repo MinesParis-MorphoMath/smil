@@ -8,6 +8,10 @@
 #include "DImage.h"
 #include "DImageArith.hpp"
 
+#ifdef BUILD_GUI
+#include <QApplication>
+#endif // BUILD_GUI
+
 #define bench(func, args) \
       t1 = clock(); \
       for (int i=0;i<nRuns;i++) \
@@ -55,6 +59,10 @@ void testAdd(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
 
 int main(int argc, char *argv[])
 {
+#ifdef BUILD_GUI
+    QApplication qapp(argc, argv);
+#endif // BUILD_GUI
+    
       Image_UINT8 im1(10,10);
       Image_UINT8 im2;
       Image_UINT8 im3;
@@ -82,13 +90,13 @@ int main(int argc, char *argv[])
 //       bench(fill, (im3, val));
 //       bench(copy, (im1, im3));
 //       bench(copy, (im1, im4));
-      bench(inv, (im1, im2));
+//       bench(inv, (im1, im2));
 //       bench(inf, (im1, im2, im3));
 //       bench(inf, (im1, val, im3));
 //       bench(sup, (im1, im2, im3));
 //       bench(sup, (im1, val, im3));
-      bench(add, (im1, im2, im3));
-      bench(addNoSat, (im1, im2, im3));
+//       bench(add, (im1, im2, im3));
+//       bench(addNoSat, (im1, im2, im3));
 //       bench(add, (im1, val, im3));
 //       bench(sub, (im1, im2, im3));
 //       bench(sub, (im1, val, im3));
@@ -132,9 +140,9 @@ int main(int argc, char *argv[])
       im5.printSelf(sx < 50);
       cout << im5;
 
-//       im5.show();
+      im5.show();
       
-//       qapp.Exec();
+      qapp.exec();
       
 //       fill(im1, UINT8(100));
 //       fill(im3, UINT8(0));
