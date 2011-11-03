@@ -386,6 +386,66 @@ Image<T>& Image<T>::operator -= (T value)
 }
 
 template <class T>
+Image<T>& Image<T>::operator * (Image<T> &rhs)
+{
+    static Image<T> newIm(*this);
+    mul(*this, rhs, newIm);
+    return newIm;
+}
+
+template <class T>
+Image<T>& Image<T>::operator * (T value)
+{
+    static Image<T> newIm(*this);
+    mul(*this, value, newIm);
+    return newIm;
+}
+
+template <class T>
+Image<T>& Image<T>::operator *= (Image<T> &rhs)
+{
+    mul(*this, rhs, *this);
+    return *this;
+}
+
+template <class T>
+Image<T>& Image<T>::operator *= (T value)
+{
+    mul(*this, value, *this);
+    return *this;
+}
+
+template <class T>
+Image<T>& Image<T>::operator / (Image<T> &rhs)
+{
+    static Image<T> newIm(*this);
+    div(*this, rhs, newIm);
+    return newIm;
+}
+
+template <class T>
+Image<T>& Image<T>::operator / (T value)
+{
+    static Image<T> newIm(*this);
+    div(*this, value, newIm);
+    return newIm;
+}
+
+template <class T>
+Image<T>& Image<T>::operator /= (Image<T> &rhs)
+{
+    div(*this, rhs, *this);
+    return *this;
+}
+
+template <class T>
+Image<T>& Image<T>::operator /= (T value)
+{
+    div(*this, value, *this);
+    return *this;
+}
+
+template <class T>
 Image<T>& Image<T>::operator < (Image<T> &rhs)
 {
     static Image<T> newIm(*this);

@@ -161,6 +161,18 @@ struct divLine : public binaryLineFunctionBase<T>
     }
 };
 
+template <class T>
+struct testLine : public tertiaryLineFunctionBase<T>
+{
+    static void _exec(T *lIn1, T *lIn2, T *lIn3, int size, T *lOut)
+    {
+	for (int i=0;i<size;i++)
+	{
+	    lOut[i] = lIn1[i] ? lIn2[i] : lIn3[i];
+	}
+    }
+};
+
 
 
 

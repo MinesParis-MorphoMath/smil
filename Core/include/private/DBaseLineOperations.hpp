@@ -27,6 +27,14 @@ struct _SMIL binaryLineFunctionBase
     inline void operator()(T *lineIn1, T *lineIn2, int size, T *lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
 };
 
+// Base abstract struct of line binary function
+template <class T>
+struct _SMIL tertiaryLineFunctionBase
+{
+    static void _exec(T *lineIn1, T *lineIn2, T *lineIn3, int size, T *lineOut);
+    inline void operator()(T *lineIn1, T *lineIn2, T *lineIn3, int size, T *lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
+};
+
 
 
 #endif

@@ -162,6 +162,13 @@ inline RES_T div(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 }
 
 template <class T>
+inline RES_T div(Image<T> &imIn, T value, Image<T> &imOut)
+{
+    binaryImageFunction<T, divLine<T> > iFunc;
+    return iFunc(imIn, value, imOut);
+}
+
+template <class T>
 inline RES_T mul(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     binaryImageFunction<T, mulLine<T> > iFunc;
@@ -187,6 +194,34 @@ inline RES_T mulNoSat(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     binaryImageFunction<T, mulLine<T> > iFunc;
     return iFunc(imIn1, value, imOut);
+}
+
+template <class T>
+inline RES_T test(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imIn3, Image<T> &imOut)
+{
+    tertiaryImageFunction<T, testLine<T> > iFunc;
+    return iFunc(imIn1, imIn2, imIn3, imOut);
+}
+
+template <class T>
+inline RES_T test(Image<T> &imIn1, Image<T> &imIn2, T value, Image<T> &imOut)
+{
+    tertiaryImageFunction<T, testLine<T> > iFunc;
+    return iFunc(imIn1, imIn2, value, imOut);
+}
+
+template <class T>
+inline RES_T test(Image<T> &imIn1, T value, Image<T> &imIn2, Image<T> &imOut)
+{
+    tertiaryImageFunction<T, testLine<T> > iFunc;
+    return iFunc(imIn1, value, imIn2, imOut);
+}
+
+template <class T>
+inline RES_T test(Image<T> &imIn, T value1, T value2, Image<T> &imOut)
+{
+    tertiaryImageFunction<T, testLine<T> > iFunc;
+    return iFunc(imIn, value1, value2, imOut);
 }
 
 template <class T>

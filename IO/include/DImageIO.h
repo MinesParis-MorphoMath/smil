@@ -4,6 +4,12 @@
 
 // #include "D_Types.h"
 #include "DImage.h"
+#include "DImageIO_BMP.h"
+
+#ifdef USE_PNG
+#include "DImageIO_PNG.h"
+#endif // USE_PNG
+
 
 using namespace std;
 

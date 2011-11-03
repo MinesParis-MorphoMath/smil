@@ -37,17 +37,19 @@ im1 << 0
 #im1.show()
 #im2.show()
 
-nruns = 1E3 # 5E3
-t1 = time.time()
 
-for i in range(int(nruns)):
-  dilate(im1, im2, se)
-  #addIm(im1, im2, im3)
-  #supIm(im1, im2, im3)
+def testBench():
+  nruns = 1E3 # 5E3
+  t1 = time.time()
 
-t2 = time.time()
+  for i in range(int(nruns)):
+    dilate(im1, im2, se)
+    #addIm(im1, im2, im3)
+    #supIm(im1, im2, im3)
 
-print (t2-t1)*1E3/nruns
+  t2 = time.time()
+
+  print (t2-t1)*1E3/nruns
 
 
 def testInv():
@@ -59,25 +61,18 @@ def testInv():
   im2.setSize(im1)
   inv(im1, im2)
   im2.show()
-
-testInv()
-
-#def dilate(imIn, imOut, se=sSE()):
-  #tmpIm = Image(imIn)
-  #copyIm(imIn, tmpIm)
-  #for s in range(se.size):
-    #dilIm(tmpIm, imOut, se)
-    #copyIm(imOut, tmpIm)
-    
-#im1.setSize(40, 40)
-#im2.setSize(40, 40)
-#im1 << 100
-##im2 << 0
+  
+def testMax():
+  im1 << "/home/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp"
+  im2.setSize(im1)
+  im3.setSize(im1)
+  hMaxima(im1, 1, im2)
+  im1.show()
+  im2.show()
 
 
 
-#im1 << "birds_gradmosa.png"
-#im2 = Image(im1)
-#im1.show()
-#dilateIm(im1, im2, hSE(10))
-#im2.show()
+#testBench()
+#testInv()
+testMax()
+
