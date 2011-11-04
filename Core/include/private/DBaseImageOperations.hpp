@@ -54,7 +54,7 @@ class unaryImageFunction : public imageFunctionBase<T>
     static RES_T _exec(imageType &imIn, imageType &imOut);
     static RES_T _exec(imageType &imOut, T &value);
     
-  protected:	    
+//   protected:	    
     static lineFunction_T lineFunction;
 };
 
@@ -76,7 +76,7 @@ class binaryImageFunction : public imageFunctionBase<T>
     static RES_T _exec(imageType &imIn, imageType &imInOut);
     static RES_T _exec(imageType &imIn, T value, imageType &imOut);
     
-  protected:	    
+//   protected:	    
     static lineFunction_T lineFunction;
 };
 
@@ -102,7 +102,7 @@ class tertiaryImageFunction : public imageFunctionBase<T>
     static RES_T _exec(imageType &imIn1, imageType &imIn2, T value, imageType &imOut);
     static RES_T _exec(imageType &imIn, T value1, T value2, imageType &imOut);
     
-  protected:	    
+//   protected:	    
     static lineFunction_T lineFunction;
 };
 

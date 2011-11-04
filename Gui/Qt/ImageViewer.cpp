@@ -42,6 +42,11 @@ ImageViewer::~ImageViewer()
     delete ui;
 }
 
+void ImageViewer::setName(const char *new_name)
+{
+    name = new_name;
+    setWindowTitle(name);
+}
 
 void ImageViewer::load(const QString fileName)
 {
@@ -112,8 +117,8 @@ void ImageViewer::connectActions()
      connect(graphicsView, SIGNAL(onCursorPixelValueChanged(int,int,int,bool)), this, SLOT(displayPixelData(int,int,int,bool)));
 
 
-     ui->menuView->addAction(ui->zoomInAct);
-     ui->menuView->addAction(ui->zoomOutAct);
+//      ui->menuView->addAction(ui->zoomInAct);
+//      ui->menuView->addAction(ui->zoomOutAct);
 
 //     normalSizeAct = new QAction(tr("&Normal Size"), this);
 //     normalSizeAct->setShortcut(tr("Ctrl+S"));

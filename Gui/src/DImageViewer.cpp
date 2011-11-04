@@ -31,7 +31,7 @@ bool imageViewer::isVisible()
 
 void imageViewer::setName(const char* name)
 {
-//     qtViewer->setName(name);
+    qtViewer->setName(name);
 }
 
 void imageViewer::loadFromData(void *pixels, UINT w, UINT h)

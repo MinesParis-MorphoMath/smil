@@ -51,14 +51,14 @@ int main(int argc, char *argv[])
 			 58, 54, 58, 50, \
 			 35, 58, 20, 48 }; 
 			 
-      im1 << vec1;
-      im2 << vec2;
-  
+//       im1 << vec1;
+//       im2 << vec2;
+//       inf(im1, im2, im3);
       build(im2, im1, im3);
 //       inf(im1, im2, im3);
       
       im3.printSelf(1);
-      
-//        qapp.exec();
+      im3.show();
+       qapp.exec();
 }
 

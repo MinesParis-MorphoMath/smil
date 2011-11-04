@@ -22,6 +22,8 @@ void QImageGraphicsScene::mouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     : QGraphicsView(parent)
 {
+    setFrameShape(NoFrame);
+    
     scaleFactor = 1.0;
     image = new QImage();
 
@@ -203,12 +205,12 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
     emit onKeyPressEvent(event);
 }
 
-
+#include <iostream>
 
 void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 {
-    QPoint p = event->scenePos().toPoint();
-    int x = p.x(), y = p.y();
+    int x = int(event->scenePos().rx());
+    int y = int(event->scenePos().ry());
     bool isOnImage;
     int pixVal = -1;
 

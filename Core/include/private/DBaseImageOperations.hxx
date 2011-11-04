@@ -142,12 +142,10 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imag
     
     T *tmpBuf = createAlignedBuffer<T>(lineLen);
     
-    T *l1, *l2;
-    
     for (int i=0;i<lineCount;i++)
     {
 	lineFunction._exec(srcLine1[i], srcLine2[i], lineLen, tmpBuf);
-	memcpy(l2, tmpBuf, lineLen*sizeof(T));
+	memcpy(srcLine2[i], tmpBuf, lineLen*sizeof(T));
     }
       
     deleteAlignedBuffer<T>(tmpBuf);

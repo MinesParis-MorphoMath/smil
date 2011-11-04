@@ -24,6 +24,7 @@ public:
     explicit ImageViewer(QWidget *parent = 0);
     ~ImageViewer();
 
+    void setName(const char *name);
 public slots:
     void load(const QString fileName);
     void loadFromData(const uchar *data, int w, int h);
@@ -39,7 +40,7 @@ private:
 
     void connectActions();
 
-
+    QString name;
 protected:
 
 private slots:

@@ -13,6 +13,8 @@
 #include "DBaseImageOperations.hpp"
 #include "DBaseLineOperations.hpp"
 #include "DImageArith.hpp"
+#include "DLineHistogram.hpp"
+#include "DImageHistogram.hpp"
 /*#include "D_BaseOperations.h"*/
 #include "memory"
 
@@ -39,6 +41,8 @@
 %include "DBaseLineOperations.hpp"
 %include "DLineArith.hpp"
 %include "DImageArith.hpp"
+%include "DLineHistogram.hpp"
+%include "DImageHistogram.hpp"
 
 
 
@@ -64,6 +68,7 @@ TEMPLATE_WRAP_FUNC(test);
 TEMPLATE_WRAP_FUNC(vol);
 
 
+TEMPLATE_WRAP_FUNC(thresh);
 
 
 
