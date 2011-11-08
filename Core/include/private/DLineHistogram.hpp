@@ -4,6 +4,10 @@
 
 #include "DImage.hpp"
 
+//! \ingroup Core
+//! \defgroup Histogram
+//! @{
+
 template <class T>
 struct threshLine : public unaryLineFunctionBase<T>
 {
@@ -17,5 +21,6 @@ struct threshLine : public unaryLineFunctionBase<T>
 };
 
 
+//! @}
 
 #endif // _D_LINE_HISTOGRAM_HPP

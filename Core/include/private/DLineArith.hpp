@@ -4,6 +4,13 @@
 
 #include "DImage.hpp"
 
+
+/**
+ * \ingroup Core
+ * \defgroup Arith
+ * @{
+ */
+
 struct stat;
 
 template <class T>
@@ -99,12 +106,32 @@ struct grtLine : public binaryLineFunctionBase<T>
 };
 
 template <class T>
+struct grtOrEquLine : public binaryLineFunctionBase<T>
+{
+    static void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    {
+	for (int i=0;i<size;i++)
+	  lOut[i] = lIn1[i] >= lIn2[i] ? numeric_limits<T>::max() : 0;
+    }
+};
+
+template <class T>
 struct lowLine : public binaryLineFunctionBase<T>
 {
     static void _exec(T *lIn1, T *lIn2, int size, T *lOut)
     {
 	for (int i=0;i<size;i++)
 	  lOut[i] = lIn1[i] < lIn2[i] ? numeric_limits<T>::max() : 0;
+    }
+};
+
+template <class T>
+struct lowOrEquLine : public binaryLineFunctionBase<T>
+{
+    static void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    {
+	for (int i=0;i<size;i++)
+	  lOut[i] = lIn1[i] <= lIn2[i] ? numeric_limits<T>::max() : 0;
     }
 };
 
@@ -174,6 +201,6 @@ struct testLine : public tertiaryLineFunctionBase<T>
 };
 
 
-
+/** @}*/
 
 #endif // _D_LINE_ARITH_HPP

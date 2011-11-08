@@ -1,7 +1,6 @@
 #ifndef _DIMAGE_HPP
 #define _DIMAGE_HPP
 
-
 #include "DCommon.h"
 
 #include "DTypes.hpp"
@@ -12,7 +11,15 @@
 
 #include "DBaseImage.h"
 
+/**
+ * \defgroup Core
+ * @{
+ */
 
+/**
+ * Base image viewer.
+ * 
+ */  
 class baseImageViewer
 {
 public:
@@ -24,10 +31,10 @@ public:
 
 
 
-//! Image class
-//
-//!
-//
+/**
+ * Main Image class.
+ * 
+ */  
 template <class T>
 class Image : public baseImage
 {
@@ -36,9 +43,9 @@ public:
     //! Default constructor
     Image();
     Image(UINT w, UINT h, UINT d = 1);
-    Image(Image<T> &rhs, bool cloneit=false);
+    Image(const Image<T> &rhs, bool cloneit=false);
     template <class T2>
-    Image(Image<T2> &rhs, bool cloneit=false);
+    Image(const Image<T2> &rhs, bool cloneit=false);
 
     ~Image();
     
@@ -73,9 +80,9 @@ public:
     }
 
     void init();
-    inline Image<T>& clone(Image<T> &rhs);
+    inline Image<T>& clone(const Image<T> &rhs);
     template <class T2>
-    inline Image<T>& clone(Image<T2> &rhs);
+    inline Image<T>& clone(const Image<T2> &rhs);
     inline Image<T>& clone(void);
     void setSize(int w, int h, int d = 1, bool doAllocate = true);
     void setSize(baseImage &rhs, bool doAllocate = true) { setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); }
@@ -119,9 +126,15 @@ public:
     Image<T>& operator /= (T value);
     Image<T>& operator < (Image<T> &rhs);
     Image<T>& operator < (T value);
+    Image<T>& operator <= (Image<T> &rhs);
+    Image<T>& operator <= (T value);
     Image<T>& operator > (Image<T> &rhs);
     Image<T>& operator > (T value);
+    Image<T>& operator >= (Image<T> &rhs);
+    Image<T>& operator >= (T value);
 
+    operator bool() { return vol(*this)==numeric_limits<T>::max()*pixelCount; }
+    
     Image<T>& operator << (const T *tab);
     
     Image<T>& operator << (const char *s) { cout << "Not implemented" << endl; return *this; };
@@ -145,7 +158,7 @@ public:
     void show(const char* name=NULL) {  cout << "Not implemented" << endl; }
 
 };
-
+  
 #include "DImage.hxx"
 
 
@@ -157,13 +170,13 @@ enum DType
     dtUINT8, dtUINT16
 };
 
-// Image<UINT8> *createImage();
-//
 template <class T>
 Image<T> *createImage(Image<T> &src)
 {
     return new Image<T>(src);
 }
 
+
+/** @}*/
 
 #endif // _DIMAGE_HPP

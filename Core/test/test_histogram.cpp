@@ -10,6 +10,7 @@
 
 #ifdef BUILD_GUI
 #include <QApplication>
+// #include "DGui.h"
 #endif // BUILD_GUI
 
 #define bench(func, args) \

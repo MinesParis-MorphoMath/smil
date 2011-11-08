@@ -26,7 +26,7 @@ Image<T>::Image(UINT w, UINT h, UINT d)
 }
 
 template <class T>
-Image<T>::Image(Image<T> &rhs, bool cloneit)
+Image<T>::Image(const Image<T> &rhs, bool cloneit)
   : dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
@@ -37,7 +37,7 @@ Image<T>::Image(Image<T> &rhs, bool cloneit)
 
 template <class T>
 template <class T2>
-Image<T>::Image(Image<T2> &rhs, bool cloneit)
+Image<T>::Image(const Image<T2> &rhs, bool cloneit)
   : dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
@@ -101,7 +101,7 @@ inline void Image<T>::updateViewerData()
 
 
 template <class T>
-inline Image<T>& Image<T>::clone(Image<T> &rhs)
+inline Image<T>& Image<T>::clone(const Image<T> &rhs)
 { 
     bool isAlloc = rhs.isAllocated();
     setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
@@ -113,7 +113,7 @@ inline Image<T>& Image<T>::clone(Image<T> &rhs)
 
 template <class T>
 template <class T2>
-inline Image<T>& Image<T>::clone(Image<T2> &rhs)
+inline Image<T>& Image<T>::clone(const Image<T2> &rhs)
 { 
     bool isAlloc = rhs.isAllocated();
     setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
@@ -234,7 +234,7 @@ template <class T>
 void Image<T>::printSelf(ostream &os, bool displayPixVals)
 {
     if (name)
-      os << name << endl;
+      os << "Image name: " << name << endl;
     
     if (depth>1)
       os << "3D image" << endl;
@@ -462,6 +462,22 @@ Image<T>& Image<T>::operator < (T value)
 }
 
 template <class T>
+Image<T>& Image<T>::operator <= (Image<T> &rhs)
+{
+    static Image<T> newIm(*this);
+    lowOrEqu(*this, rhs, newIm);
+    return newIm;
+}
+
+template <class T>
+Image<T>& Image<T>::operator <= (T value)
+{
+    static Image<T> newIm(*this);
+    lowOrEqu(*this, value, newIm);
+    return newIm;
+}
+
+template <class T>
 Image<T>& Image<T>::operator > (Image<T> &rhs)
 {
     static Image<T> newIm(*this);
@@ -478,12 +494,29 @@ Image<T>& Image<T>::operator > (T value)
 }
 
 template <class T>
+Image<T>& Image<T>::operator >= (Image<T> &rhs)
+{
+    static Image<T> newIm(*this);
+    grtOrEqu(*this, rhs, newIm);
+    return newIm;
+}
+
+template <class T>
+Image<T>& Image<T>::operator >= (T value)
+{
+    static Image<T> newIm(*this);
+    grtOrEqu(*this, value, newIm);
+    return newIm;
+}
+
+template <class T>
 Image<T>& Image<T>::operator << (const T *tab)
 {
     for (int i=0;i<pixelCount;i++)
       pixels[i] = tab[i];
     modified();
 }
+
 
 
 #endif // _IMAGE_HXX

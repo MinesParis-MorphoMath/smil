@@ -16,7 +16,7 @@
 %include <typemaps.i>
 
 %rename(__lshift__)  operator<<; 
-
+%ignore *::operator=;
 
 // CMake generated wrap macros
 
@@ -83,3 +83,5 @@ for t in imageTypes:
 %}
 
 #endif // SWIGPYTHON
+
+%feature("autodoc", "1");

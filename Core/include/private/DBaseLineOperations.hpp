@@ -14,7 +14,7 @@ template <class T> class Image;
 template <class T>
 struct _SMIL unaryLineFunctionBase
 {
-    static void _exec(T *lineIn, int size, T *lineOut) {};
+    inline void _exec(T *lineIn, int size, T *lineOut) {};
     inline void operator()(T *lineIn, int size, T *lineOut) { _exec(lineIn, size, lineOut); }
 };
 
@@ -23,7 +23,7 @@ struct _SMIL unaryLineFunctionBase
 template <class T>
 struct _SMIL binaryLineFunctionBase
 {
-    static void _exec(T *lineIn1, T *lineIn2, int size, T *lineOut);
+    inline void _exec(T *lineIn1, T *lineIn2, int size, T *lineOut);
     inline void operator()(T *lineIn1, T *lineIn2, int size, T *lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
 };
 
@@ -31,7 +31,7 @@ struct _SMIL binaryLineFunctionBase
 template <class T>
 struct _SMIL tertiaryLineFunctionBase
 {
-    static void _exec(T *lineIn1, T *lineIn2, T *lineIn3, int size, T *lineOut);
+    inline void _exec(T *lineIn1, T *lineIn2, T *lineIn3, int size, T *lineOut);
     inline void operator()(T *lineIn1, T *lineIn2, T *lineIn3, int size, T *lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
 };
 

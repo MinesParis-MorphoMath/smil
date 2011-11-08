@@ -3,6 +3,44 @@
 
 #include "DLineArith.hpp"
 
+/**
+ * \ingroup Core
+ * \defgroup Arith
+ * @{
+ */
+
+  
+
+/**
+ * Volume of an image
+ * 
+ * Returns the sum of the pixel values.
+ * \param imIn Input image.
+ */
+template <class T>
+inline double vol(Image<T> &imIn)
+{
+    if (!imIn.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+
+    int npix = imIn.getPixelCount();
+    T *pixels = imIn.getPixels();
+    double vol = 0;
+
+    for (int i=0;i<npix;i++)
+        vol += pixels[i];
+
+    return vol;
+}
+
+/** 
+ * Invert an image.
+ * 
+ * \param imIn Input image.
+ * \param imOut Output image.
+ * 
+ * \sa Image::operator<<
+ */
 template <class T>
 inline RES_T inv(Image<T> &imIn, Image<T> &imOut)
 {
@@ -10,28 +48,28 @@ inline RES_T inv(Image<T> &imIn, Image<T> &imOut)
     return iFunc(imIn, imOut);
 }
 
+/**
+ * Add two images.
+ * 
+ * \param "imIn1 imIn2" Input images.
+ * \param imOut Output image.
+ * \see addNoSat
+ */
 template <class T>
 inline RES_T add(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
-     return binaryImageFunction<T, addLine<T> >::_exec(imIn1, imIn2, imOut);
+    binaryImageFunction<T, addLine<T> > iFunc;
+    return iFunc(imIn1, imIn2, imOut);
 }
 
-template <class T>
-inline double vol(Image<T> &imIn)
-{
-    if (!imIn.isAllocated())
-      return RES_ERR_BAD_ALLOCATION;
-    
-    int npix = imIn.getPixelCount();
-    T *pixels = imIn.getPixels();
-    double vol = 0;
-    
-    for (int i=0;i<npix;i++)
-      vol += pixels[i];
-    
-    return vol;
-}
-
+/**
+ * Add a constant value to an image.
+ * 
+ * \param imIn Input image.
+ * \param value The constant value to add.
+ * \param imOut Output image.
+ * \see addNoSat
+ */
 template <class T>
 inline RES_T add(Image<T> &imIn1, const T value, Image<T> &imOut)
 {
@@ -39,6 +77,13 @@ inline RES_T add(Image<T> &imIn1, const T value, Image<T> &imOut)
     return iFunc(imIn1, value, imOut);
 }
 
+/**
+ * Add two images without checking saturation.
+ * 
+ * \param "imIn1 imIn2" Input images.
+ * \param imOut Output image.
+ * \see add
+ */
 template <class T>
 inline RES_T addNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
@@ -46,6 +91,14 @@ inline RES_T addNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
     return iFunc(imIn1, imIn2, imOut);
 }
 
+/**
+ * Add a constant value to an image without checking saturation.
+ * 
+ * \param imIn Input image.
+ * \param value The constant value to add.
+ * \param imOut Output image.
+ * \see add
+ */
 template <class T>
 inline RES_T addNoSat(Image<T> &imIn1, const T value, Image<T> &imOut)
 {
@@ -84,25 +137,23 @@ inline RES_T subNoSat(Image<T> &imIn1, T value, Image<T> &imOut)
 template <class T>
 inline RES_T sup(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
-    return binaryImageFunction<T, supLine<T> >::_exec(imIn1, imIn2, imOut);
-//     return iFunc(imIn1, imIn2, imOut);
-    
-/*    T *pix1 = imIn1.getPixels();
-    T *pix2 = imIn2.getPixels();
-    T *pix3 = imOut.getPixels();
-    
-    int npix = imIn1.getPixelCount();
-    int vec_size = SIMD_VEC_SIZE / sizeof(T);
-    int ndivs = npix / vec_size;
-    
-    for (int n=0;n<ndivs;n++)
-    {
-	for(int i=0;i<vec_size;i++)
-	  pix3[i] = pix1[i] > pix2[i] ? pix1[i] : pix2[i];
-	pix1 += vec_size;
-	pix2 += vec_size;
-	pix3 += vec_size;
-    }*/
+    binaryImageFunction<T, supLine<T> > iFunc;
+    return iFunc(imIn1, imIn2, imOut);
+}
+
+template <class T>
+Image<T>& sup(Image<T> &imIn1, Image<T> &imIn2)
+{
+    static Image<T> newIm(imIn1);
+    sup(imIn1, imIn2, newIm);
+    return newIm;
+}
+
+template <class T>
+inline RES_T sup(Image<T> &imIn1, T value, Image<T> &imOut)
+{
+    binaryImageFunction<T, supLine<T> > iFunc;
+    return iFunc(imIn1, value, imOut);
 }
 
 template <class T>
@@ -113,17 +164,18 @@ inline RES_T inf(Image<T> &imIn1, T value, Image<T> &imOut)
 }
 
 template <class T>
+Image<T>& inf(Image<T> &imIn1, Image<T> &imIn2)
+{
+    static Image<T> newIm(imIn1);
+    inf(imIn1, imIn2, newIm);
+    return newIm;
+}
+
+template <class T>
 inline RES_T inf(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     binaryImageFunction<T, infLine<T> > iFunc;
     return iFunc(imIn1, imIn2, imOut);
-}
-
-template <class T>
-inline RES_T sup(Image<T> &imIn1, T value, Image<T> &imOut)
-{
-    binaryImageFunction<T, supLine<T> > iFunc;
-    return iFunc(imIn1, value, imOut);
 }
 
 template <class T>
@@ -141,6 +193,20 @@ inline RES_T grt(Image<T> &imIn1, T value, Image<T> &imOut)
 }
 
 template <class T>
+inline RES_T grtOrEqu(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+{
+    binaryImageFunction<T, grtOrEquLine<T> > iFunc;
+    return iFunc(imIn1, imIn2, imOut);
+}
+
+template <class T>
+inline RES_T grtOrEqu(Image<T> &imIn1, T value, Image<T> &imOut)
+{
+    binaryImageFunction<T, grtOrEquLine<T> > iFunc;
+    return iFunc(imIn1, value, imOut);
+}
+
+template <class T>
 inline RES_T low(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     binaryImageFunction<T, lowLine<T> > iFunc;
@@ -149,6 +215,20 @@ inline RES_T low(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 
 template <class T>
 inline RES_T low(Image<T> &imIn1, T value, Image<T> &imOut)
+{
+    binaryImageFunction<T, lowLine<T> > iFunc;
+    return iFunc(imIn1, value, imOut);
+}
+
+template <class T>
+inline RES_T lowOrEqu(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+{
+    binaryImageFunction<T, lowOrEquLine<T> > iFunc;
+    return iFunc(imIn1, imIn2, imOut);
+}
+
+template <class T>
+inline RES_T lowOrEqu(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     binaryImageFunction<T, lowLine<T> > iFunc;
     return iFunc(imIn1, value, imOut);
@@ -228,66 +308,65 @@ template <class T>
 inline RES_T fill(Image<T> &imOut, const T value)
 {
     if (!areAllocated(&imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
-    
+        return RES_ERR_BAD_ALLOCATION;
+
     typedef typename Image<T>::lineType lineType;
     lineType *lineOut = imOut.getLines();
     int lineLen = imOut.getWidth();
     int lineCount = imOut.getLineCount();
-    
+
     // Fill first line
 //     fillLine<T>::_exec(lineOut[0], lineLen, value);
     fillLine<T>::_exec(imOut.getPixels(), imOut.getPixelCount(), value);
-    
+
 //     for (int i=1;i<lineCount;i++)
 //       memcpy(lineOut[i], lineOut[0], lineLen*sizeof(T));
-    
+
     imOut.modified();
     return RES_OK;
 }
 
-// Copy/cast (two images with different types)
+//! Copy/cast (two images with different types)
 template <class T1, class T2>
 RES_T copy(Image<T1> &imIn, Image<T2> &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
-    
+        return RES_ERR_BAD_ALLOCATION;
+
     if (haveSameSize(&imIn, &imOut, NULL))
     {
-	T1 *pix1 = imIn.getPixels();
-	T2 *pix2 = imOut.getPixels();
-	
-	int pixCount = imIn.getPixelCount();
-	
-	for (int i=0;i<pixCount;i++)
-	  pix2[i] = static_cast<T2>(pix1[i]);
+        T1 *pix1 = imIn.getPixels();
+        T2 *pix2 = imOut.getPixels();
 
-	imOut.modified();
-	return RES_OK;
+        int pixCount = imIn.getPixelCount();
+
+        for (int i=0;i<pixCount;i++)
+            pix2[i] = static_cast<T2>(pix1[i]);
+
+        imOut.modified();
+        return RES_OK;
     }
 }
 
-// Copy (two images of same type)
+//! Copy (two images of same type)
 template <class T>
 RES_T copy(Image<T> &imIn, Image<T> &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
-    
+        return RES_ERR_BAD_ALLOCATION;
+
     if (haveSameSize(&imIn, &imOut, NULL))
     {
-	memcpy(imOut.getPixels(), imIn.getPixels(), imIn.getPixelCount());
+        memcpy(imOut.getPixels(), imIn.getPixels(), imIn.getPixelCount());
 
-	imOut.modified();
-	return RES_OK;
+        imOut.modified();
+        return RES_OK;
     }
-	return RES_OK;
+    return RES_OK;
 }
 
 
-
-
+/** @}*/
 
 #endif // _D_IMAGE_ARITH_HPP
 

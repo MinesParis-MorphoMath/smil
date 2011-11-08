@@ -8,6 +8,7 @@
 #include <vector>
 #include <stdarg.h>
 
+
 #include "DTypes.hpp"
 // #include "auto_ptr.h"
 // #include <boost/smart_ptr.hpp>
@@ -79,6 +80,7 @@ using namespace std;
 #define FREE(p)                  _mm_free(p)
 
 #endif
+
 
 
 #endif // _DCOMMON_H

@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 //       fill(im5, UINT8(100));
       StrElt se = hSE();
       
-      im5 << 127;
+      im5 << UINT8(127);
       erode(im5, im6, sSE(5));
 //       im5.show();
       im6.show();
