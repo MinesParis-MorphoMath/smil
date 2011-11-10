@@ -14,6 +14,7 @@
 /*%include <windows.i> */
 %include <std_string.i>
 %include <typemaps.i>
+//%include cpointer.i
 
 %rename(__lshift__)  operator<<; 
 %ignore *::operator=;

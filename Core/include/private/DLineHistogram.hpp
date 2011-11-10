@@ -20,6 +20,29 @@ struct threshLine : public unaryLineFunctionBase<T>
     }
 };
 
+template <class T>
+struct stretchHistLine : public unaryLineFunctionBase<T>
+{
+    T inOrig, outOrig;
+    double coeff;
+    
+    inline void _exec(T* lIn, int size, T* lOut)
+    {
+	double newVal;
+	
+	for(int i=0;i<size;i++)
+	{
+	    newVal = outOrig + (lIn[i]-inOrig)*coeff;
+	    if (newVal > numeric_limits<T>::max())
+		newVal = numeric_limits<T>::max();
+	    else if (newVal < numeric_limits<T>::min())
+		newVal = numeric_limits<T>::min();
+	    lOut[i] = T(newVal);
+	    
+	}
+    }
+};
+
 
 //! @}
 

@@ -6,16 +6,10 @@
 #include "DGui.h"
 #include "DImage.hxx"
 
-#ifdef USE_QT
-#include "Qt/QtApp.h"
-#endif // USE_QT
 %}
 
 
 %include "DGui.h"
-#ifdef USE_QT
-%include "Qt/QtApp.h"
-#endif // USE_QT
 
 
 #ifdef SWIGPYTHON

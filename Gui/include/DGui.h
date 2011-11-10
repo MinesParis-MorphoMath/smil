@@ -9,6 +9,7 @@
 
 #include "DImage.h"
 #include "DImageViewer.h"
+#include "Qt/QtApp.h"
 
 
 template <> 

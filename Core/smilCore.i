@@ -29,6 +29,17 @@
 	}
 }
 
+%define PTR_ARG_OUT_APPLY(name)
+  %apply unsigned char *OUTPUT{ unsigned char *name };
+  %apply unsigned short *OUTPUT{ unsigned short *name };
+  %apply unsigned int *OUTPUT{ unsigned int *name };
+  %apply char *OUTPUT{ char *name };
+  %apply short *OUTPUT{ short *name };
+  %apply int *OUTPUT{ int *name };
+%enddef
+
+PTR_ARG_OUT_APPLY(ret_min)
+PTR_ARG_OUT_APPLY(ret_max)
 
 %include "DCommon.h"
 %include "DImage.hpp"
@@ -70,10 +81,13 @@ TEMPLATE_WRAP_FUNC(grtOrEqu);
 TEMPLATE_WRAP_FUNC(test);
 
 TEMPLATE_WRAP_FUNC(vol);
+TEMPLATE_WRAP_FUNC(minVal);
+TEMPLATE_WRAP_FUNC(maxVal);
+TEMPLATE_WRAP_FUNC(range);
 
 
 TEMPLATE_WRAP_FUNC(thresh);
-
+TEMPLATE_WRAP_FUNC(stretchHist);
 
 
 /* %template(smartImage) boost::shared_ptr< D_Image<UINT8> >; */

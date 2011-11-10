@@ -139,7 +139,16 @@ int main(int argc, char *argv[])
 //       add(im1, im2, im5);
       im5.printSelf(sx < 50);
       cout << im5;
-
+      
+      UINT8 v[2];
+      
+      im2 << "/home/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp";
+      im2 << 50;
+      im2.setPixel(155, 25,25);
+      range(im2, &v[0], &v[1]);
+      cout << (int)minVal(im2) << ", " << (int)maxVal(im2) << endl;
+      cout << (int)v[0] << ", " << (int)v[1] << endl;
+      
       im5.show();
       
       qapp.exec();

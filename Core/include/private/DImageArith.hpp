@@ -33,6 +33,80 @@ inline double vol(Image<T> &imIn)
     return vol;
 }
 
+/**
+ * Min value of an image
+ * 
+ * Returns the min of the pixel values.
+ * \param imIn Input image.
+ */
+template <class T>
+inline T minVal(Image<T> &imIn)
+{
+    if (!imIn.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+
+    int npix = imIn.getPixelCount();
+    T *p = imIn.getPixels();
+    T minVal = numeric_limits<T>::max();
+
+    for (int i=0;i<npix;i++,p++)
+      if (*p<minVal)
+	minVal = *p;
+
+    return minVal;
+}
+
+/**
+ * Max value of an image
+ * 
+ * Returns the min of the pixel values.
+ * \param imIn Input image.
+ */
+template <class T>
+inline T maxVal(Image<T> &imIn)
+{
+    if (!imIn.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+
+    int npix = imIn.getPixelCount();
+    T *p = imIn.getPixels();
+    T maxVal = numeric_limits<T>::min();
+
+    for (int i=0;i<npix;i++,p++)
+      if (*p>maxVal)
+	maxVal = *p;
+
+    return maxVal;
+}
+
+/**
+ * Min and Max values of an image
+ * 
+ * Returns the min and the max of the pixel values.
+ * \param imIn Input image.
+ */
+template <class T>
+inline RES_T range(Image<T> &imIn, T *ret_min, T *ret_max)
+{
+    if (!imIn.isAllocated())
+        return RES_ERR;
+
+    int npix = imIn.getPixelCount();
+    T *p = imIn.getPixels();
+    *ret_min = numeric_limits<T>::max();
+    *ret_max = numeric_limits<T>::min();
+
+    for (int i=0;i<npix;i++,p++)
+    {
+      if (*p<*ret_min)
+	*ret_min = *p;
+      if (*p>*ret_max)
+	*ret_max = *p;
+    }
+
+    return RES_OK;
+}
+
 /** 
  * Invert an image.
  * 

@@ -106,9 +106,6 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, T &v
 template <class T, class lineFunction_T>
 inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, imageType &imIn2, imageType &imOut)
 {
-    if (&imOut==&imIn2) return _exec(imIn1, imIn2);
-    else if (&imOut==&imIn1) return _exec(imIn2, imIn1);
-    
     if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
 
@@ -124,7 +121,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, ima
       
     imOut.modified();
 
-	return RES_OK;
+    return RES_OK;
 }
 
 // Binary image function
