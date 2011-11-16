@@ -116,8 +116,16 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, ima
     lineType *srcLine2 = imIn2.getLines();
     lineType *destLine = imOut.getLines();
     
+    int alStart, alLen;
+    
     for (int i=0;i<lineCount;i++)
-	lineFunction._exec(srcLine1[i], srcLine2[i], lineLen, destLine[i]);
+    {
+	alStart = min(imIn1.getLineAlignment(i), lineLen);
+	alLen = int((lineLen-alStart)/SIMD_VEC_SIZE) * SIMD_VEC_SIZE;
+	lineFunction._exec(srcLine1[i], srcLine2[i], alStart, destLine[i]);
+	lineFunction._exec_aligned(srcLine1[i]+alStart, srcLine2[i]+alStart, alLen, destLine[i]+alStart);
+	lineFunction._exec(srcLine1[i]+alStart+alLen, srcLine2[i]+alStart+alLen, lineLen-alStart-alLen, destLine[i]+alStart+alLen);
+    }
       
     imOut.modified();
 
@@ -168,7 +176,8 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T va
     T *constBuf = createAlignedBuffer<T>(lineLen);
     
     // Fill the const buffer with the value
-    fillLine<T>::_exec(constBuf, lineLen, value);
+    fillLine<T> f;
+    f(constBuf, lineLen, value);
     
     for (int i=0;i<lineCount;i++)
 	lineFunction._exec(srcLines[i], constBuf, lineLen, destLines[i]);
@@ -222,7 +231,8 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
     T *constBuf = createAlignedBuffer<T>(lineLen);
     
     // Fill the const buffer with the value
-    fillLine<T>::_exec(constBuf, lineLen, value);
+    fillLine<T> f;
+    f(constBuf, lineLen, value);
     
     for (int i=0;i<lineCount;i++)
 	lineFunction._exec(srcLines1[i], srcLines2[i], constBuf, lineLen, destLines[i]);
@@ -256,8 +266,9 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T 
     T *constBuf2 = createAlignedBuffer<T>(lineLen);
     
     // Fill the const buffers with the values
-    fillLine<T>::_exec(constBuf1, lineLen, value1);
-    fillLine<T>::_exec(constBuf2, lineLen, value2);
+    fillLine<T> f;
+    f(constBuf1, lineLen, value1);
+    f(constBuf2, lineLen, value2);
     
     for (int i=0;i<lineCount;i++)
 	lineFunction._exec(srcLines[i], constBuf1, constBuf2, lineLen, destLines[i]);

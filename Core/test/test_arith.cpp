@@ -69,8 +69,8 @@ int main(int argc, char *argv[])
       
       Image_UINT16 im4;
       
-      int sx = 1024;
-      int sy = 1024;
+      int sx = 48; //24;
+      int sy = 48; //24;
 /*      sx = 40;
       sy = 20;*/
       
@@ -79,6 +79,9 @@ int main(int argc, char *argv[])
       im3.setSize(sx, sy);
       im4.setSize(sx, sy);
       
+      sup(im1, im2, im3);
+      
+      return 0;
      fill(im1, UINT8(100));
      fill(im2, UINT8(5));
      
@@ -143,9 +146,9 @@ int main(int argc, char *argv[])
       UINT8 v[2];
       
       im2 << "/home/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp";
-      im2 << 50;
+      im2 << (UINT8)50;
       im2.setPixel(155, 25,25);
-      range(im2, &v[0], &v[1]);
+      rangeVal(im2, &v[0], &v[1]);
       cout << (int)minVal(im2) << ", " << (int)maxVal(im2) << endl;
       cout << (int)v[0] << ", " << (int)v[1] << endl;
       

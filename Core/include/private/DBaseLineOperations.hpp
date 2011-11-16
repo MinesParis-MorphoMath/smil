@@ -14,8 +14,10 @@ template <class T> class Image;
 template <class T>
 struct _SMIL unaryLineFunctionBase
 {
-    inline void _exec(T *lineIn, int size, T *lineOut) {};
+    virtual void _exec(T *lineIn, int size, T *lineOut) {}
+    virtual void _exec(T *lInOut, int size, T value) {}
     inline void operator()(T *lineIn, int size, T *lineOut) { _exec(lineIn, size, lineOut); }
+    inline void operator()(T *lineIn, int size, T value) { _exec(lineIn, size, value); }
 };
 
 
@@ -23,7 +25,8 @@ struct _SMIL unaryLineFunctionBase
 template <class T>
 struct _SMIL binaryLineFunctionBase
 {
-    inline void _exec(T *lineIn1, T *lineIn2, int size, T *lineOut);
+    virtual void _exec(T *lineIn1, T *lineIn2, int size, T *lineOut) {}
+    virtual void _exec_aligned(T *lineIn1, T *lineIn2, int size, T *lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
     inline void operator()(T *lineIn1, T *lineIn2, int size, T *lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
 };
 
@@ -31,7 +34,8 @@ struct _SMIL binaryLineFunctionBase
 template <class T>
 struct _SMIL tertiaryLineFunctionBase
 {
-    inline void _exec(T *lineIn1, T *lineIn2, T *lineIn3, int size, T *lineOut);
+    virtual void _exec(T *lineIn1, T *lineIn2, T *lineIn3, int size, T *lineOut) {}
+    virtual void _exec_aligned(T *lineIn1, T *lineIn2, T *lineIn3, int size, T *lineOut) { _exec(lineIn1, lineIn2, lineIn3, size, lineOut); }
     inline void operator()(T *lineIn1, T *lineIn2, T *lineIn3, int size, T *lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
 };
 

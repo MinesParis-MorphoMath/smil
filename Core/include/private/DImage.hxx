@@ -203,7 +203,7 @@ RES_T Image<T>::restruct(void)
 }
 
 template <class T>
-int Image<T>::getLineAlignment(UINT l)
+inline int Image<T>::getLineAlignment(UINT l)
 {
     return lineAlignment[l%(SIMD_VEC_SIZE/sizeof(T))];
 }

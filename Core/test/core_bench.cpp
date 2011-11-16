@@ -7,6 +7,7 @@
 
 #include "DImage.h"
 #include "DImageArith.hpp"
+#include "DBaseLineOperations.hpp"
 
 #define bench(func, args) \
       t1 = clock(); \
@@ -61,7 +62,7 @@ int main(int argc, char *argv[])
 
     Image_UINT16 im4;
 
-    int sx = 1024;
+    int sx = 1000; //24;
     int sy = 1024;
 //     sx = 40;
 //     sy = 20;
@@ -90,6 +91,7 @@ int main(int argc, char *argv[])
     bench(addNoSat, (im1, im2, im3));
 //     bench(add, (im1, val, im3));
     bench(sub, (im1, im2, im3));
+    bench(subNoSat, (im1, im2, im3));
 //     bench(sub, (im1, val, im3));
     bench(grt, (im1, im2, im3));
     bench(div, (im1, im2, im3));
@@ -98,7 +100,7 @@ int main(int argc, char *argv[])
     bench(mulNoSat, (im1, im2, im3));
 //     bench(mulNoSat, (im1, val, im3));
       
-    bench(testAdd, (im1, im2, im3));
+//     bench(testAdd, (im1, im2, im3));
       
      
 //      supLine<UINT8> f;

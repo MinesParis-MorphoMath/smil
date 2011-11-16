@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
       int nRuns = (int)1E3;
       UINT8 val = 10;
       
-      bench(fill, (im3, val));
+//       bench(fill, (im3, val));
 //       bench(copy, (im1, im3));
 //       bench(copy, (im1, im4));
 //       bench(inv, (im1, im2));
@@ -120,8 +120,8 @@ int main(int argc, char *argv[])
       
 //      supLine<UINT8> f;
 //       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
-      bench(dilate, (im1, im3, se));
-      bench(erode, (im1, im3, se));
+//       bench(dilate, (im1, im3, se));
+//       bench(erode, (im1, im3, se));
 //       bench(volIm, (im1));
 //       im6.show();
       

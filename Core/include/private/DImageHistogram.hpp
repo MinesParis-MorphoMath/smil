@@ -52,7 +52,7 @@ inline RES_T stretchHist(Image<T> &imIn, Image<T> &imOut, T outMinVal=numeric_li
 {
     unaryImageFunction<T, stretchHistLine<T> > iFunc;
     T rmin, rmax;
-    range(imIn, &rmin, &rmax);
+    rangeVal(imIn, &rmin, &rmax);
     iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (rmax-rmin);
     iFunc.lineFunction.inOrig = rmin;
     iFunc.lineFunction.outOrig = outMinVal;

@@ -86,7 +86,7 @@ inline T maxVal(Image<T> &imIn)
  * \param imIn Input image.
  */
 template <class T>
-inline RES_T range(Image<T> &imIn, T *ret_min, T *ret_max)
+inline RES_T rangeVal(Image<T> &imIn, T *ret_min, T *ret_max)
 {
     if (!imIn.isAllocated())
         return RES_ERR;
@@ -391,7 +391,8 @@ inline RES_T fill(Image<T> &imOut, const T value)
 
     // Fill first line
 //     fillLine<T>::_exec(lineOut[0], lineLen, value);
-    fillLine<T>::_exec(imOut.getPixels(), imOut.getPixelCount(), value);
+    fillLine<T> f;
+    f(imOut.getPixels(), imOut.getPixelCount(), value);
 
 //     for (int i=1;i<lineCount;i++)
 //       memcpy(lineOut[i], lineOut[0], lineLen*sizeof(T));

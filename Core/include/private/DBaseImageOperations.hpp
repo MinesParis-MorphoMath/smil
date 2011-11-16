@@ -79,7 +79,7 @@ class binaryImageFunction : public imageFunctionBase<T>
     inline RES_T _exec(imageType &imIn, T value, imageType &imOut);
     
 //   protected:	    
-    static lineFunction_T lineFunction;
+    lineFunction_T lineFunction;
 };
 
 
