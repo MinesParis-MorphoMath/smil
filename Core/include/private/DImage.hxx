@@ -6,6 +6,7 @@
 // {
 //     return "UINT8 (unsigned char)";
 // }
+#include "DMemory.hpp"
 
 
 template <class T>
@@ -156,8 +157,8 @@ inline RES_T Image<T>::allocate(void)
     if (allocated)
 	return RES_ERR_BAD_ALLOCATION;
     
-//     pixels = createAlignedBuffer<T>(pixelCount);
-    pixels = new pixelType[pixelCount];
+    pixels = createAlignedBuffer<T>(pixelCount);
+//     pixels = new pixelType[pixelCount];
     
     restruct();
     
@@ -219,8 +220,8 @@ RES_T Image<T>::deallocate(void)
     if (lines)
 	delete[] lines;
     if (pixels)
-		delete[] pixels;
-    
+// 		delete[] pixels;
+		deleteAlignedBuffer<T>(pixels)    ;
     slices = NULL;
     lines = NULL;
     pixels = NULL;

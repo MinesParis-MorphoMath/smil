@@ -53,8 +53,6 @@ using namespace std;
 
 
 
-
-
 #if defined(__MINGW32__)
 
 #if __GNUC__ < 4

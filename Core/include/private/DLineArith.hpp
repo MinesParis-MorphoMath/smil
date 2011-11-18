@@ -4,9 +4,9 @@
 
 #include "DImage.hpp"
 
-#ifdef __SSE__
+#if defined SMIL_USE_SSE_INT && defined __SSE__
 #include <emmintrin.h>
-#endif // __SSE__
+#endif // SMIL_USE_SSE_INT
 
 
 /**
@@ -47,7 +47,7 @@ struct addLine : public binaryLineFunctionBase<T>
     inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) { _exec(lIn1, lIn2, size, lOut); }
 };
 
-#ifdef __SSE__
+#if defined SMIL_USE_SSE_INT && defined __SSE__
 
 template <>
 inline void addLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
@@ -60,12 +60,12 @@ inline void addLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UI
     {
 	r0 = _mm_load_si128(l1);
 	r1 = _mm_load_si128(l2);
-	_mm_adds_epu8(r0, r1);
+	r1 = _mm_adds_epu8(r0, r1);
 	_mm_store_si128(l3, r1);
     }
 }
 
-#endif // __SSE__
+#endif // SMIL_USE_SSE_INT
 
 
 template <class T>
@@ -79,7 +79,7 @@ struct addNoSatLine : public binaryLineFunctionBase<T>
     inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) { _exec(lIn1, lIn2, size, lOut); }
 };
 
-#ifdef __SSE__
+#if defined SMIL_USE_SSE_INT && defined __SSE__
 
 template <>
 inline void addNoSatLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
@@ -92,12 +92,12 @@ inline void addNoSatLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int siz
     {
 	r0 = _mm_load_si128(l1);
 	r1 = _mm_load_si128(l2);
-	_mm_add_epi8(r0, r1);
+	r1 = _mm_add_epi8(r0, r1);
 	_mm_store_si128(l3, r1);
     }
 }
 
-#endif // __SSE__
+#endif // SMIL_USE_SSE_INT
 
 template <class T>
 struct subLine : public binaryLineFunctionBase<T>
@@ -110,7 +110,7 @@ struct subLine : public binaryLineFunctionBase<T>
     inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) { _exec(lIn1, lIn2, size, lOut); }
 };
 
-#ifdef __SSE__
+#if defined SMIL_USE_SSE_INT && defined __SSE__
 
 template <>
 inline void subLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
@@ -123,12 +123,12 @@ inline void subLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UI
     {
 	r0 = _mm_load_si128(l1);
 	r1 = _mm_load_si128(l2);
-	_mm_subs_epu8(r0, r1);
+	r1 = _mm_subs_epu8(r0, r1);
 	_mm_store_si128(l3, r1);
     }
 }
 
-#endif // __SSE__
+#endif // SMIL_USE_SSE_INT
 
 template <class T>
 struct subNoSatLine : public binaryLineFunctionBase<T>
@@ -141,7 +141,7 @@ struct subNoSatLine : public binaryLineFunctionBase<T>
     inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) { _exec(lIn1, lIn2, size, lOut); }
 };
 
-#ifdef __SSE__
+#if defined SMIL_USE_SSE_INT && defined __SSE__
 
 template <>
 inline void subNoSatLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
@@ -154,12 +154,12 @@ inline void subNoSatLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int siz
     {
 	r0 = _mm_load_si128(l1);
 	r1 = _mm_load_si128(l2);
-	_mm_sub_epi8(r0, r1);
+	r1 = _mm_sub_epi8(r0, r1);
 	_mm_store_si128(l3, r1);
     }
 }
 
-#endif // __SSE__
+#endif // SMIL_USE_SSE_INT
 
 template <class T>
 struct supLine : public binaryLineFunctionBase<T>
@@ -172,7 +172,7 @@ struct supLine : public binaryLineFunctionBase<T>
     inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) { _exec(lIn1, lIn2, size, lOut); }
 };
 
-#ifdef __SSE__
+#if defined SMIL_USE_SSE_INT && defined __SSE__
 
 template <>
 inline void supLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
@@ -185,12 +185,12 @@ inline void supLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UI
     {
 	r0 = _mm_load_si128(l1);
 	r1 = _mm_load_si128(l2);
-	_mm_max_epu8(r0, r1);
+	r1 = _mm_max_epu8(r0, r1);
 	_mm_store_si128(l3, r1);
     }
 }
 
-#endif // __SSE__
+#endif // SMIL_USE_SSE_INT
 
 template <class T>
 struct infLine : public binaryLineFunctionBase<T>
@@ -203,7 +203,7 @@ struct infLine : public binaryLineFunctionBase<T>
     inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) { _exec(lIn1, lIn2, size, lOut); }
 };
 
-#ifdef __SSE__
+#if defined SMIL_USE_SSE_INT && defined __SSE__
 
 template <>
 inline void infLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
@@ -214,14 +214,14 @@ inline void infLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UI
     __m128i *l3 = (__m128i*) lOut;
     for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
     {
-	r0 = _mm_load_si128((__m128i*) lIn1);
-	r1 = _mm_load_si128((__m128i*) lIn2);
-	_mm_min_epu8(r0, r1);
-	_mm_store_si128((__m128i*) lOut, r1);
+	r0 = _mm_load_si128(l1);
+	r1 = _mm_load_si128(l2);
+	r1 = _mm_min_epu8(r0, r1);
+	_mm_store_si128(l3, r1);
     }
 }
 
-#endif // __SSE__
+#endif // SMIL_USE_SSE_INT
 
 
 template <class T>
@@ -296,7 +296,7 @@ struct mulLine : public binaryLineFunctionBase<T>
     inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) { _exec(lIn1, lIn2, size, lOut); }
 };
 
-#ifdef __SSE__
+#if defined SMIL_USE_SSE_INT && defined __SSE__
 
 template <>
 inline void mulLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
@@ -309,12 +309,12 @@ inline void mulLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UI
     {
 	r0 = _mm_load_si128(l1);
 	r1 = _mm_load_si128(l2);
-	_mm_mullo_epi16(r0, r1);
+	r1 = _mm_mullo_epi16(r0, r1);
 	_mm_store_si128(l3, r1);
     }
 }
 
-#endif // __SSE__
+#endif // SMIL_USE_SSE_INT
 
 template <class T>
 struct mulNoSatLine : public binaryLineFunctionBase<T>

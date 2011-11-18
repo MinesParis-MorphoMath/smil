@@ -23,45 +23,75 @@
 
 #include <emmintrin.h>
 	
-void testAdd(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
-{
-    __m128i r0,r1;
-    int size = im1.getWidth();
-    int nlines = im1.getLineCount();
-    
-//     addLine<UINT8> al;
-        
-    for(int l=0;l<nlines;l++)
-    {
-    UINT8 *lineIn1 = im1.getLines()[l];
-    UINT8 *lineIn2 = im2.getLines()[l];
-    UINT8 *lineOut = im3.getLines()[l];
-    
-//     al._exec(lineIn1, lineIn2, size, lineOut);
-	for(int i=0 ; i<size+16 ; i+=16)  
-	{
-	  r0 = _mm_load_si128((__m128i *) lineIn1);
-	  r1 = _mm_load_si128((__m128i *) lineIn2);
-// 	  _mm_add_epi8(r0, r1);
-	  _mm_adds_epi8(r0, r1);
-	  _mm_store_si128((__m128i *) lineOut,r1);
-
-	  lineIn1 += 16;
-	  lineIn2 += 16;
-	  lineOut += 16;
-	}
-    }
-};
+// void testAdd(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
+// {
+//     __m128i r0,r1;
+//     int size = im1.getWidth();
+//     int nlines = im1.getLineCount();
+//     
+// //     addLine<UINT8> al;
+//         
+//     for(int l=0;l<nlines;l++)
+//     {
+//     UINT8 *lineIn1 = im1.getLines()[l];
+//     UINT8 *lineIn2 = im2.getLines()[l];
+//     UINT8 *lineOut = im3.getLines()[l];
+//     
+// //     al._exec(lineIn1, lineIn2, size, lineOut);
+// 	for(int i=0 ; i<size+16 ; i+=16)  
+// 	{
+// 	  r0 = _mm_load_si128((__m128i *) lineIn1);
+// 	  r1 = _mm_load_si128((__m128i *) lineIn2);
+// // 	  _mm_add_epi8(r0, r1);
+// 	  _mm_adds_epi8(r0, r1);
+// 	  _mm_store_si128((__m128i *) lineOut,r1);
+// 
+// 	  lineIn1 += 16;
+// 	  lineIn2 += 16;
+// 	  lineOut += 16;
+// 	}
+//     }
+// };
 
 #endif // __SSE__
 
 
+int testAdd()
+{
+    int w = 20	;
+    int h = 2;
+    Image_UINT8 im1(w,h), im2(w,h), im3(w,h);
+    
+    for (int i=0;i<im1.getPixelCount();i++)
+    {
+	im1.getPixels()[i] = i;
+	im2.getPixels()[i] = i;
+    }
+    
+    UINT8 vec1[20] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+    UINT8 vec2[20] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+    UINT8 vec3[20] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+
+//     im1 << vec1;
+//     im2 << vec2;
+    
+/*    im1.setSize(100,100);
+    im2.setSize(100,100);
+    im3.setSize(100,100);*/
+    
+    inf(im1, im2, im3);
+    
+    im3.printSelf(1);
+}
 
 int main(int argc, char *argv[])
 {
 #ifdef BUILD_GUI
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
+    
+    testAdd();
+    return 0;
     
       Image_UINT8 im1(10,10);
       Image_UINT8 im2;

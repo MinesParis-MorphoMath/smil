@@ -36,6 +36,7 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
   protected:
     T borderValue;
     T *borderBuf, *cpBuf;
+    UINT alLen, remainLen;
     UINT vectorSize;
     
     inline void _extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, T *outBuf);
@@ -50,6 +51,8 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, 
     int lineLen = imIn.getWidth();
     borderBuf = createAlignedBuffer<T>(lineLen);
     cpBuf = createAlignedBuffer<T>(lineLen);
+    alLen = int((lineLen/SIMD_VEC_SIZE))*SIMD_VEC_SIZE;
+    remainLen = lineLen - alLen;
     fillLine<T> f;
     f(borderBuf, lineLen, borderValue);
 //     cout << "bord val " << (int)borderValue << endl;
@@ -121,12 +124,14 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_translated_line(T 
       memcpy(cpBuf, borderBuf, dx*sizeof(T));
       memcpy(cpBuf+dx, inBuf2, (lineLen-dx)*sizeof(T));
       lineFunction._exec_aligned(inBuf1, cpBuf, lineLen, outBuf);
+//       lineFunction._exec(inBuf1+alLen, cpBuf+alLen, remainLen, outBuf+alLen);
     }
     else
     {
       memcpy(cpBuf, inBuf2-dx, (lineLen+dx)*sizeof(T));
       memcpy(cpBuf+(lineLen+dx), borderBuf, -dx*sizeof(T));
       lineFunction._exec_aligned(inBuf1, cpBuf, lineLen, outBuf);
+//       lineFunction._exec(inBuf1+alLen, cpBuf+alLen, remainLen, outBuf+alLen);
     }
 }
 

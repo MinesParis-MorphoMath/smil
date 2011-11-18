@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 //      supLine<UINT8> f;
 //       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
 //       bench(dilate, (im1, im3, se));
-//       bench(erode, (im1, im3, se));
+      bench(erode, (im1, im3, se));
 //       bench(volIm, (im1));
 //       im6.show();
       
