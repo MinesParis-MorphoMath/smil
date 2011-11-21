@@ -73,7 +73,8 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, image
     for (int i=0;i<lineCount;i++)
     {
 	alStart = min(imIn.getLineAlignment(i), lineLen);
-	lineFunction(srcLines[i], lineLen, destLines[i], alStart);
+	lineFunction._exec(srcLines[i], alStart, destLines[i]);
+	lineFunction._exec_aligned(srcLines[i]+alStart, lineLen-alStart, destLines[i]+alStart);
     }
 	
     imOut.modified();
