@@ -351,6 +351,20 @@ inline RES_T mulNoSat(Image<T> &imIn1, T value, Image<T> &imOut)
 }
 
 template <class T>
+inline RES_T logicAnd(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+{
+    binaryImageFunction<T, logicAndLine<T> > iFunc;
+    return iFunc(imIn1, imIn2, imOut);
+}
+
+template <class T>
+inline RES_T logicOr(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+{
+    binaryImageFunction<T, logicOrLine<T> > iFunc;
+    return iFunc(imIn1, imIn2, imOut);
+}
+
+template <class T>
 inline RES_T test(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imIn3, Image<T> &imOut)
 {
     tertiaryImageFunction<T, testLine<T> > iFunc;

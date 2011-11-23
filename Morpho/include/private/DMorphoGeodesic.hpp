@@ -96,6 +96,33 @@ inline RES_T dualBuild(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt
     return res;
 }
 
+template <class T>
+inline RES_T fillHoles(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE)
+{
+    StrElt tmpSe(se);
+    tmpSe.size = 1;
+    
+    RES_T res;
+    
+    Image<T> tmpIm(imIn);
+    
+    fill(tmpIm, numeric_limits<T>::max());
+    dualBuild(tmpIm, imIn, imOut);
+    
+    return res;
+}
+
+template <class T>
+inline RES_T levelPics(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE)
+{
+    Image<T> tmpIm(imIn);
+    inv(imIn, tmpIm);
+    fillHoles(tmpIm, imOut);
+    inv(imOut, imOut);
+    
+//     return res;
+}
+
 
 
 #endif // _D_MORPHO_GEODESIC_HPP

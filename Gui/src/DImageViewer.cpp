@@ -10,8 +10,8 @@ imageViewer::imageViewer()
 	char **av = NULL;
 	_qapp = new QApplication(ac, av);
     }
-//     qtViewer = new ImageViewerWidget();
-    qtViewer = new ImageViewer();
+    qtViewer = new ImageViewerWidget();
+//     qtViewer = new ImageViewer();
 }
 
 imageViewer::~imageViewer()

@@ -230,8 +230,8 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
     {
 	alStart = min(imIn1.getLineAlignment(i), lineLen);
 // 	lineFunction(srcLines1[i], srcLines2[i], srcLines3[i], lineLen, destLines[i], alStart);
-	lineFunction._exec(srcLines1[i], srcLines2[i], alStart, destLines[i]);
-	lineFunction._exec_aligned(srcLines1[i]+alStart, srcLines2[i]+alStart, lineLen-alStart, destLines[i]+alStart);
+	lineFunction._exec(srcLines1[i], srcLines2[i], srcLines3[i], alStart, destLines[i]);
+	lineFunction._exec_aligned(srcLines1[i]+alStart, srcLines2[i]+alStart, srcLines3[i]+alStart, lineLen-alStart, destLines[i]+alStart);
     }
     
     imOut.modified();

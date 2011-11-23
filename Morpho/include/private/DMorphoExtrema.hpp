@@ -29,7 +29,7 @@ inline RES_T hMinima(Image<T> &imIn, UINT height, Image<T> &imOut, StrElt se=DEF
     if (res!=RES_OK)
       return res;
     
-    low(*tmpIm, imIn, imOut);
+    low(imIn, *tmpIm, imOut);
     
     return res;
 }
@@ -56,7 +56,7 @@ inline RES_T hMaxima(Image<T> &imIn, UINT height, Image<T> &imOut, StrElt se=DEF
     if (res!=RES_OK)
       return res;
     
-    grt(*tmpIm, imIn, imOut);
+    grt(imIn, *tmpIm, imOut);
     
     return res;
 }

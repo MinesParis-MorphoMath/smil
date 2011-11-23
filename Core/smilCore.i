@@ -13,6 +13,7 @@
 #include "DBaseImageOperations.hpp"
 #include "DBaseLineOperations.hpp"
 #include "DImageArith.hpp"
+#include "DImageDraw.hpp"
 #include "DLineHistogram.hpp"
 #include "DImageHistogram.hpp"
 /*#include "D_BaseOperations.h"*/
@@ -40,6 +41,9 @@
 
 PTR_ARG_OUT_APPLY(ret_min)
 PTR_ARG_OUT_APPLY(ret_max)
+PTR_ARG_OUT_APPLY(w)
+PTR_ARG_OUT_APPLY(h)
+PTR_ARG_OUT_APPLY(d)
 
 %include "DCommon.h"
 %include "DImage.hpp"
@@ -52,6 +56,7 @@ PTR_ARG_OUT_APPLY(ret_max)
 %include "DBaseLineOperations.hpp"
 %include "DLineArith.hpp"
 %include "DImageArith.hpp"
+%include "DImageDraw.hpp"
 %include "DLineHistogram.hpp"
 %include "DImageHistogram.hpp"
 
@@ -78,6 +83,8 @@ TEMPLATE_WRAP_FUNC(low);
 TEMPLATE_WRAP_FUNC(lowOrEqu);
 TEMPLATE_WRAP_FUNC(grt);
 TEMPLATE_WRAP_FUNC(grtOrEqu);
+TEMPLATE_WRAP_FUNC(logicAnd);
+TEMPLATE_WRAP_FUNC(logicOr);
 TEMPLATE_WRAP_FUNC(test);
 
 TEMPLATE_WRAP_FUNC(vol);
@@ -88,6 +95,8 @@ TEMPLATE_WRAP_FUNC(rangeVal);
 
 TEMPLATE_WRAP_FUNC(thresh);
 TEMPLATE_WRAP_FUNC(stretchHist);
+
+TEMPLATE_WRAP_FUNC(drawRectangle);
 
 
 /* %template(smartImage) boost::shared_ptr< D_Image<UINT8> >; */

@@ -18,6 +18,13 @@ public:
         return depth;
     }
 
+    inline void getSize(UINT *w, UINT *h, UINT *d)
+    {
+	*w = width;
+	*h = height;
+	*d = depth;
+    }
+    
     inline UINT getPixelCount() const {
         return pixelCount;
     }

@@ -3,6 +3,7 @@
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QStatusBar>
 
 #include "MagnifyView.h"
 
@@ -32,6 +33,8 @@ public:
     virtual void keyPressEvent(QKeyEvent *);
 
     void setName(const char *name);
+    
+    QStatusBar *statusBar;
 private:
     QImage *image;
     double scaleFactor;

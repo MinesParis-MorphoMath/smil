@@ -35,7 +35,7 @@ inline RES_T close(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE)
 {
     RES_T res = dilate(imIn, imOut, se);
     if (res==RES_OK)
-      res = erode(imIn, imOut, se);
+      res = erode(imOut, imOut, se);
     return res;
 }
 
@@ -44,7 +44,7 @@ inline RES_T open(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE)
 {
     RES_T res = erode(imIn, imOut, se);
     if (res==RES_OK)
-      res = dilate(imIn, imOut, se);
+      res = dilate(imOut, imOut, se);
     return res;
 }
 
