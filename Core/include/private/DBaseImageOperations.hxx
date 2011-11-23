@@ -68,14 +68,8 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, image
     lineType *srcLines = imIn.getLines();
     lineType *destLines = imOut.getLines();
     
-    int alStart;
-    
     for (int i=0;i<lineCount;i++)
-    {
-	alStart = min(imIn.getLineAlignment(i), lineLen);
-	lineFunction._exec(srcLines[i], alStart, destLines[i]);
-	lineFunction._exec_aligned(srcLines[i]+alStart, lineLen-alStart, destLines[i]+alStart);
-    }
+	lineFunction(srcLines[i], lineLen, destLines[i]);
 	
     imOut.modified();
 
@@ -122,16 +116,8 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, ima
     lineType *srcLines2 = imIn2.getLines();
     lineType *destLines = imOut.getLines();
     
-    int alStart;
-    
     for (int i=0;i<lineCount;i++)
-    {
-	alStart = min(imIn1.getLineAlignment(i), lineLen);
-// 	lineFunction(srcLine1[i], srcLine2[i], lineLen, destLine[i], alStart);
-	lineFunction._exec(srcLines1[i], srcLines2[i], alStart, destLines[i]);
-	lineFunction._exec_aligned(srcLines1[i]+alStart, srcLines2[i]+alStart, lineLen-alStart, destLines[i]+alStart);
-// 	lineFunction._exec(srcLine1[i]+alStart+alLen, srcLine2[i]+alStart+alLen, lineLen-alStart-alLen, destLine[i]+alStart+alLen);
-    }
+	lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
       
     imOut.modified();
 
@@ -153,16 +139,8 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imag
     
     T *tmpBuf = createAlignedBuffer<T>(lineLen);
     
-    int alStart;
-    
     for (int i=0;i<lineCount;i++)
-    {
-	alStart = min(imIn.getLineAlignment(i), lineLen);
-// 	lineFunction(srcLine1[i], srcLine2[i], lineLen, tmpBuf, alStart);
-	lineFunction._exec(srcLines1[i], srcLines2[i], alStart, tmpBuf);
-	lineFunction._exec_aligned(srcLines1[i]+alStart, srcLines2[i]+alStart, lineLen-alStart, tmpBuf+alStart);
-	memcpy(srcLines2[i], tmpBuf, lineLen*sizeof(T));
-    }
+	lineFunction(srcLines1[i], srcLines2[i], lineLen, tmpBuf);
       
     deleteAlignedBuffer<T>(tmpBuf);
     imInOut.modified();
@@ -190,15 +168,8 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T va
     fillLine<T> f;
     f(constBuf, lineLen, value);
 
-    int alStart;
-    
     for (int i=0;i<lineCount;i++)
-    {
-	alStart = min(imIn.getLineAlignment(i), lineLen);
-// 	lineFunction(srcLines[i], constBuf, lineLen, destLines[i], alStart);
-	lineFunction._exec(srcLines[i], constBuf, alStart, destLines[i]);
-	lineFunction._exec_aligned(srcLines[i]+alStart, constBuf+alStart, lineLen-alStart, destLines[i]+alStart);
-    }
+	lineFunction(srcLines[i], constBuf, lineLen, destLines[i]);
       
     deleteAlignedBuffer<T>(constBuf);
     imOut.modified();
@@ -224,15 +195,8 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
     lineType *srcLines3 = imIn3.getLines();
     lineType *destLines = imOut.getLines();
     
-    int alStart;
-    
     for (int i=0;i<lineCount;i++)
-    {
-	alStart = min(imIn1.getLineAlignment(i), lineLen);
-// 	lineFunction(srcLines1[i], srcLines2[i], srcLines3[i], lineLen, destLines[i], alStart);
-	lineFunction._exec(srcLines1[i], srcLines2[i], srcLines3[i], alStart, destLines[i]);
-	lineFunction._exec_aligned(srcLines1[i]+alStart, srcLines2[i]+alStart, srcLines3[i]+alStart, lineLen-alStart, destLines[i]+alStart);
-    }
+	lineFunction(srcLines1[i], srcLines2[i], srcLines3[i], lineLen, destLines[i]);
     
     imOut.modified();
 
@@ -259,15 +223,8 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
     fillLine<T> f;
     f(constBuf, lineLen, value);
     
-    int alStart;
-    
     for (int i=0;i<lineCount;i++)
-    {
-	alStart = min(imIn1.getLineAlignment(i), lineLen);
-// 	lineFunction(srcLines1[i], srcLines2[i], constBuf, lineLen, destLines[i], alStart);
-	lineFunction._exec(srcLines1[i], srcLines2[i], constBuf, alStart, destLines[i]);
-	lineFunction._exec_aligned(srcLines1[i]+alStart, srcLines2[i]+alStart, constBuf+alStart, lineLen-alStart, destLines[i]+alStart);
-    }
+	lineFunction(srcLines1[i], srcLines2[i], constBuf, lineLen, destLines[i]);
 
     deleteAlignedBuffer<T>(constBuf);
     imOut.modified();
@@ -302,15 +259,8 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T 
     f(constBuf1, lineLen, value1);
     f(constBuf2, lineLen, value2);
     
-    int alStart;
-    
     for (int i=0;i<lineCount;i++)
-    {
-	alStart = min(imIn.getLineAlignment(i), lineLen);
-// 	lineFunction(srcLines[i], constBuf1, constBuf2, lineLen, destLines[i], alStart);
-	lineFunction._exec(srcLines[i], constBuf1, constBuf2, alStart, destLines[i]);
-	lineFunction._exec_aligned(srcLines[i]+alStart, constBuf1+alStart, constBuf2+alStart, lineLen-alStart, destLines[i]+alStart);
-    }
+	lineFunction(srcLines[i], constBuf1, constBuf2, lineLen, destLines[i]);
       
     deleteAlignedBuffer<T>(constBuf1);
     deleteAlignedBuffer<T>(constBuf2);

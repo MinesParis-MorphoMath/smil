@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
       
       Image_UINT16 im4;
       
-      int sx = 1024;
+      int sx = 1000;
       int sy = 1024;
 /*      sx = 40;
       sy = 20;*/

@@ -101,10 +101,10 @@ void t_LineShiftLeft1D(const T *linein, const int lineWidth, const int nbshift, 
 
 }
 
-
-
-// bool IsAligned(const void* const ptr, unsigned long long align=SIMD_VEC_SIZE) { return ((((unsigned long long)ptr) & (align-1)) == 0ULL) ; } 
-
+inline unsigned long PTR_OFFSET(void *p, unsigned long n=SIMD_VEC_SIZE)
+{
+    return ((unsigned long)p) & (n-1);
+}
 
 
 #endif // _DMEMORY_HPP

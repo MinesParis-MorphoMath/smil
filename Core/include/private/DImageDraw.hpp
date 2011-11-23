@@ -33,12 +33,12 @@ inline RES_T drawRectangle(Image<T> &imOut, UINT centerX, UINT centerY, UINT wid
     if (fill)
     {
 	for (int j=y1;j<=y2;j++)
-	  fillFunc._exec(lines[j]+x1, width, value);
+	  fillFunc(lines[j]+x1, width, value);
     }
     else
     {
-	fillFunc._exec(lines[y1]+x1, width, value);
-	fillFunc._exec(lines[y2]+x1, width, value);
+	fillFunc(lines[y1]+x1, width, value);
+	fillFunc(lines[y2]+x1, width, value);
 	for (int j=y1+1;j<=y2;j++)
 	{
 	    lines[j][x1] = value;

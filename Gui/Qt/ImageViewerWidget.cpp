@@ -34,8 +34,8 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     valueLabel = new QLabel(this);
     valueLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
     valueLabel->setAutoFillBackground(true);
-    valueLabel->hide();
-    valueLblActivated = false;
+//     valueLabel->hide();
+    valueLblActivated = true;
 
     imScene = new QImageGraphicsScene();
     pixItem = imScene->addPixmap( QPixmap() );
@@ -154,7 +154,7 @@ void ImageViewerWidget::scale(double factor)
 void ImageViewerWidget::update()
 {
     pixItem->setPixmap(QPixmap::fromImage(*image));
-    imScene->setSceneRect(0, 0, image->width(), image->height());
+//     imScene->setSceneRect(0, 0, image->width(), image->height());
 }
 
 

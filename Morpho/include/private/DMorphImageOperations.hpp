@@ -118,20 +118,21 @@ template <class T, class lineFunction_T>
 inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_translated_line(T *inBuf1, T *inBuf2, int dx, int lineLen, T *outBuf)
 {
     if (dx==0)
-      lineFunction._exec(inBuf1, inBuf2, lineLen, outBuf);
+    {
+      memcpy(cpBuf, inBuf2, lineLen*sizeof(T));
+      lineFunction(inBuf1, cpBuf, lineLen, outBuf);
+    }
     else if (dx>0)
     {
       memcpy(cpBuf, borderBuf, dx*sizeof(T));
       memcpy(cpBuf+dx, inBuf2, (lineLen-dx)*sizeof(T));
       lineFunction._exec_aligned(inBuf1, cpBuf, lineLen, outBuf);
-//       lineFunction._exec(inBuf1+alLen, cpBuf+alLen, remainLen, outBuf+alLen);
     }
     else
     {
       memcpy(cpBuf, inBuf2-dx, (lineLen+dx)*sizeof(T));
       memcpy(cpBuf+(lineLen+dx), borderBuf, -dx*sizeof(T));
       lineFunction._exec_aligned(inBuf1, cpBuf, lineLen, outBuf);
-//       lineFunction._exec(inBuf1+alLen, cpBuf+alLen, remainLen, outBuf+alLen);
     }
 }
 
