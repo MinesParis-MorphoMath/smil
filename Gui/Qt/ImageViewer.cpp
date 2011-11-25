@@ -1,3 +1,26 @@
+/*
+ * Smil
+ * Copyright (c) 2010 Matthieu Faessel
+ *
+ * This file is part of Smil.
+ *
+ * Smil is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Smil is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Smil.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneMouseEvent>
 
@@ -7,8 +30,8 @@
 
 
 ImageViewer::ImageViewer(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::ImageViewer)
+        QMainWindow(parent),
+        ui(new Ui::ImageViewer)
 {
     ui->setupUi(this);
 
@@ -97,7 +120,7 @@ void ImageViewer::displayScaleFactor(double sf)
 }
 
 void ImageViewer::connectActions()
- {
+{
 //     openAct = new QAction(tr("&Open..."), this);
 //     openAct->setShortcut(tr("Ctrl+O"));
 //     connect(openAct, SIGNAL(triggered()), this, SLOT(open()));
@@ -111,10 +134,10 @@ void ImageViewer::connectActions()
 //     exitAct->setShortcut(tr("Ctrl+Q"));
 //     connect(exitAct, SIGNAL(triggered()), this, SLOT(close()));
 
-     connect(ui->zoomInAct, SIGNAL(triggered()), graphicsView, SLOT(zoomIn()));
-     connect(ui->zoomOutAct, SIGNAL(triggered()), graphicsView, SLOT(zoomOut()));
+    connect(ui->zoomInAct, SIGNAL(triggered()), graphicsView, SLOT(zoomIn()));
+    connect(ui->zoomOutAct, SIGNAL(triggered()), graphicsView, SLOT(zoomOut()));
 
-     connect(graphicsView, SIGNAL(onCursorPixelValueChanged(int,int,int,bool)), this, SLOT(displayPixelData(int,int,int,bool)));
+    connect(graphicsView, SIGNAL(onCursorPixelValueChanged(int,int,int,bool)), this, SLOT(displayPixelData(int,int,int,bool)));
 
 
 //      ui->menuView->addAction(ui->zoomInAct);

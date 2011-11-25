@@ -1,3 +1,26 @@
+/*
+ * Smil
+ * Copyright (c) 2010 Matthieu Faessel
+ *
+ * This file is part of Smil.
+ *
+ * Smil is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Smil is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Smil.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
 #ifndef _D_IMAGE_ARITH_HPP
 #define _D_IMAGE_ARITH_HPP
 
@@ -9,11 +32,11 @@
  * @{
  */
 
-  
+
 
 /**
  * Volume of an image
- * 
+ *
  * Returns the sum of the pixel values.
  * \param imIn Input image.
  */
@@ -35,7 +58,7 @@ inline double vol(Image<T> &imIn)
 
 /**
  * Min value of an image
- * 
+ *
  * Returns the min of the pixel values.
  * \param imIn Input image.
  */
@@ -50,15 +73,15 @@ inline T minVal(Image<T> &imIn)
     T minVal = numeric_limits<T>::max();
 
     for (int i=0;i<npix;i++,p++)
-      if (*p<minVal)
-	minVal = *p;
+        if (*p<minVal)
+            minVal = *p;
 
     return minVal;
 }
 
 /**
  * Max value of an image
- * 
+ *
  * Returns the min of the pixel values.
  * \param imIn Input image.
  */
@@ -73,15 +96,15 @@ inline T maxVal(Image<T> &imIn)
     T maxVal = numeric_limits<T>::min();
 
     for (int i=0;i<npix;i++,p++)
-      if (*p>maxVal)
-	maxVal = *p;
+        if (*p>maxVal)
+            maxVal = *p;
 
     return maxVal;
 }
 
 /**
  * Min and Max values of an image
- * 
+ *
  * Returns the min and the max of the pixel values.
  * \param imIn Input image.
  */
@@ -98,21 +121,21 @@ inline RES_T rangeVal(Image<T> &imIn, T *ret_min, T *ret_max)
 
     for (int i=0;i<npix;i++,p++)
     {
-      if (*p<*ret_min)
-	*ret_min = *p;
-      if (*p>*ret_max)
-	*ret_max = *p;
+        if (*p<*ret_min)
+            *ret_min = *p;
+        if (*p>*ret_max)
+            *ret_max = *p;
     }
 
     return RES_OK;
 }
 
-/** 
+/**
  * Invert an image.
- * 
+ *
  * \param imIn Input image.
  * \param imOut Output image.
- * 
+ *
  * \sa Image::operator<<
  */
 template <class T>
@@ -124,7 +147,7 @@ inline RES_T inv(Image<T> &imIn, Image<T> &imOut)
 
 /**
  * Add two images.
- * 
+ *
  * \param "imIn1 imIn2" Input images.
  * \param imOut Output image.
  * \see addNoSat
@@ -138,7 +161,7 @@ inline RES_T add(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 
 /**
  * Add a constant value to an image.
- * 
+ *
  * \param imIn Input image.
  * \param value The constant value to add.
  * \param imOut Output image.
@@ -153,7 +176,7 @@ inline RES_T add(Image<T> &imIn1, const T value, Image<T> &imOut)
 
 /**
  * Add two images without checking saturation.
- * 
+ *
  * \param "imIn1 imIn2" Input images.
  * \param imOut Output image.
  * \see add
@@ -167,7 +190,7 @@ inline RES_T addNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 
 /**
  * Add a constant value to an image without checking saturation.
- * 
+ *
  * \param imIn Input image.
  * \param value The constant value to add.
  * \param imOut Output image.

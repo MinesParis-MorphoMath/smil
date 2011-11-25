@@ -1,3 +1,26 @@
+/*
+ * Smil
+ * Copyright (c) 2010 Matthieu Faessel
+ *
+ * This file is part of Smil.
+ *
+ * Smil is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Smil is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Smil.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
 #ifndef _DCOMMON_H
 #define _DCOMMON_H
 
@@ -29,15 +52,15 @@ using namespace std;
 #define INLINE inline
 
 #ifdef _MSC_VER
-  #ifdef smilCore_EXPORTS
-    // the dll exports
-    #define _SMIL __declspec(dllexport)
-  #else // smilCore_EXPORTS
-    // the exe imports
-    #define _SMIL __declspec(dllimport)
-  #endif // smilCore_EXPORTS
+#ifdef smilCore_EXPORTS
+// the dll exports
+#define _SMIL __declspec(dllexport)
+#else // smilCore_EXPORTS
+// the exe imports
+#define _SMIL __declspec(dllimport)
+#endif // smilCore_EXPORTS
 #else // _MSC_VER
-  #define _SMIL
+#define _SMIL
 #endif // _MSC_VER
 
 

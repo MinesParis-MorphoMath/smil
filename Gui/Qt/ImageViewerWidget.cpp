@@ -1,3 +1,26 @@
+/*
+ * Smil
+ * Copyright (c) 2010 Matthieu Faessel
+ *
+ * This file is part of Smil.
+ *
+ * Smil is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Smil is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Smil.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QTimer>
@@ -7,7 +30,7 @@
 
 
 QImageGraphicsScene::QImageGraphicsScene(QObject *parent)
-    : QGraphicsScene(parent)
+        : QGraphicsScene(parent)
 {
 }
 
@@ -20,10 +43,10 @@ void QImageGraphicsScene::mouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 
 
 ImageViewerWidget::ImageViewerWidget(QWidget *parent)
-    : QGraphicsView(parent)
+        : QGraphicsView(parent)
 {
     setFrameShape(NoFrame);
-    
+
     scaleFactor = 1.0;
     image = new QImage();
 
@@ -75,7 +98,7 @@ void ImageViewerWidget::createActions()
 void ImageViewerWidget::connectActions()
 {
     connect(this, SIGNAL(onDataChanged()), this, SLOT(update()));
-    
+
     connect(imScene, SIGNAL(onMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(sceneMouseMoveEvent(QGraphicsSceneMouseEvent*)));
 
     connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
@@ -106,8 +129,8 @@ void ImageViewerWidget::setImageSize(int w, int h)
     image = new QImage(QSize(w, h), QImage::Format_Indexed8);
 
     image->setNumColors(256);
-   for(int i=0; i<256; i++)
-     image->setColor(i,qRgb(i,i,i));
+    for (int i=0; i<256; i++)
+        image->setColor(i,qRgb(i,i,i));
 }
 
 
@@ -127,7 +150,7 @@ void ImageViewerWidget::loadFromData(const uchar *data, int w, int h)
         memcpy(image->scanLine(j), data+(j*w), sizeof(uchar) * w);
 
     magnView->setImage(image);
-    
+
     emit onDataChanged();
 }
 
@@ -145,10 +168,10 @@ void ImageViewerWidget::zoomOut()
 
 void ImageViewerWidget::scale(double factor)
 {
-     scaleFactor *= factor;
-     QGraphicsView::scale(factor, factor);
+    scaleFactor *= factor;
+    QGraphicsView::scale(factor, factor);
 
-     emit(onRescaled(scaleFactor));
+    emit(onRescaled(scaleFactor));
 }
 
 void ImageViewerWidget::update()
@@ -182,7 +205,7 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
 {
     QGraphicsView::keyPressEvent(event);
 
-    switch(event->key())
+    switch (event->key())
     {
     case Qt::Key_Z:
         zoomIn();
@@ -201,7 +224,7 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
         else valueLabel->hide();
         break;
     }
-    
+
     emit onKeyPressEvent(event);
 }
 

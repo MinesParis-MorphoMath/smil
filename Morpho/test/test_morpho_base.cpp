@@ -1,3 +1,26 @@
+/*
+ * Smil
+ * Copyright (c) 2010 Matthieu Faessel
+ *
+ * This file is part of Smil.
+ *
+ * Smil is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * Smil is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with Smil.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ *
+ */
+
+
 
 #include <stdio.h>
 #include <time.h>
@@ -41,32 +64,32 @@ int main(int argc, char *argv[])
 #ifdef BUILD_GUI
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
-    
-//      int c;
-      Image_UINT8 im1(10,10);
-      Image_UINT8 im2;
-      Image_UINT8 im3;
-      
-      Image_UINT16 im4;
-      
-      int sx = 1000;
-      int sy = 1024;
-/*      sx = 40;
-      sy = 20;*/
-      
-      im1.setSize(sx, sy);
-      im2.setSize(sx, sy);
-      im3.setSize(sx, sy);
-      im4.setSize(sx, sy);
-      
-     fill(im1, UINT8(100));
-     fill(im2, UINT8(5));
-     
-      int t1 = clock();
 
-      int nRuns = (int)1E3;
-      UINT8 val = 10;
-      
+//      int c;
+    Image_UINT8 im1(10,10);
+    Image_UINT8 im2;
+    Image_UINT8 im3;
+
+    Image_UINT16 im4;
+
+    int sx = 1000;
+    int sy = 1024;
+    /*      sx = 40;
+          sy = 20;*/
+
+    im1.setSize(sx, sy);
+    im2.setSize(sx, sy);
+    im3.setSize(sx, sy);
+    im4.setSize(sx, sy);
+
+    fill(im1, UINT8(100));
+    fill(im2, UINT8(5));
+
+    int t1 = clock();
+
+    int nRuns = (int)1E3;
+    UINT8 val = 10;
+
 //       bench(fill, (im3, val));
 //       bench(copy, (im1, im3));
 //       bench(copy, (im1, im4));
@@ -86,71 +109,71 @@ int main(int argc, char *argv[])
 //       bench(mul, (im1, val, im3));
 //       bench(mulNoSat, (im1, im2, im3));
 //       bench(mulNoSat, (im1, val, im3));
-      
+
 // 	bench(testAdd, (im1, im2, im3));
 //       bench(sup, (im1, im2, im3));
-      
-      im3.printSelf(sx < 50);
-      
-/*      fill((UINT8)1, im1);
-      fill((UINT8)2, im2);*/
-      
-      Image_UINT8 im5(50,50), im6(50,50);
+
+    im3.printSelf(sx < 50);
+
+    /*      fill((UINT8)1, im1);
+          fill((UINT8)2, im2);*/
+
+    Image_UINT8 im5(50,50), im6(50,50);
 //       fill(UINT8(5), im6);
 //       im5 = im1 + im2;
 
 //       fill(im5, UINT8(100));
-      StrElt se = hSE();
-      
-      im5 << UINT8(127);
-      erode(im5, im6, sSE(5));
+    StrElt se = hSE();
+
+    im5 << UINT8(127);
+    erode(im5, im6, sSE(5));
 //       im5.show();
-      im6.show();
-      
+    im6.show();
+
 //       se.addPoint(5,5);
 //       se.addPoint(5,0);
-/*       se.addPoint(0,0);
-      se.addPoint(1,0);
-      se.addPoint(1,1);
-      se.addPoint(0,1);
-      se.addPoint(-1,1);
-      se.addPoint(-1,0);
-      se.addPoint(-1,-1);
-      se.addPoint(0,-1);*/
-      
+    /*       se.addPoint(0,0);
+          se.addPoint(1,0);
+          se.addPoint(1,1);
+          se.addPoint(0,1);
+          se.addPoint(-1,1);
+          se.addPoint(-1,0);
+          se.addPoint(-1,-1);
+          se.addPoint(0,-1);*/
+
 //      supLine<UINT8> f;
 //       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
 //       bench(dilate, (im1, im3, se));
-      bench(erode, (im1, im3, se));
+    bench(erode, (im1, im3, se));
 //       bench(volIm, (im1));
 //       im6.show();
-      
+
 //       add(im1, im2, im5);
 //       im5.printSelf(sx < 50);
 //       cout << im5;
 
 //       im5.show();
-      
+
 //       qapp.Exec();
-      
+
 //       fill(im1, UINT8(100));
 //       fill(im3, UINT8(0));
-      
+
 //       readPNGFile("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", &im1);
 //       im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
 //       dilate(im1, im3, se);
-      
+
 //       im1.show();
 //       im3.show();
 #ifdef BUILD_GUI
-      qapp.exec();
+    qapp.exec();
 #endif // BUILD_GUI
 
 //       baseImage *im = createImage(c);
 //       copy(im, im);
-      
+
 //       maFunc<UINT8> fi;
-      
+
 //       fi.test((UINT8)5);
 }
 

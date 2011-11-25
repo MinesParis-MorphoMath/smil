@@ -20,37 +20,37 @@ const char *getFileExtension(const char *fileName)
 int read(const char* filename, Image<UINT8> *image)
 {
     string fileExt = getFileExtension(filename);
-    
+
     if (fileExt=="BMP")
-	readBMP(filename, image);
-    
-    #ifdef USE_PNG
+        readBMP(filename, image);
+
+#ifdef USE_PNG
     else if (fileExt=="PNG")
-      readPNG(filename, image);
+        readPNG(filename, image);
 //     image->modified();
-    #endif // USE_PNG
-      
-    else 
+#endif // USE_PNG
+
+    else
     {
-      cout << "File type not supported" << endl;
+        cout << "File type not supported" << endl;
     }
 }
 
 int write(Image<UINT8> *image, const char *filename)
 {
     string fileExt = getFileExtension(filename);
-    
+
     if (fileExt=="BMP")
-	writeBMP(image, filename);
-    
-    #ifdef USE_PNG
+        writeBMP(image, filename);
+
+#ifdef USE_PNG
     else if (fileExt=="PNG")
-      writePNG(image, filename);
-    #endif // USE_PNG
-      
-    else 
+        writePNG(image, filename);
+#endif // USE_PNG
+
+    else
     {
-      cout << "File type not supported" << endl;
+        cout << "File type not supported" << endl;
     }
 }
 
