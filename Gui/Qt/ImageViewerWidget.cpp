@@ -160,6 +160,29 @@ void ImageViewerWidget::loadFromData(const uchar *data, int w, int h)
     emit onDataChanged();
 }
 
+void ImageViewerWidget::loadFromData(const BIN *data, int w, int h)
+{
+    setImageSize(w, h);
+    const BIN *lIn;
+    UINT8 *lOut, *lEnd;
+    UINT bCount = (w-1)/BIN::SIZE + 1; 
+
+    for (int j=0;j<h;j++)
+    {
+	lIn = data + j*bCount;
+	lOut = image->scanLine(j);
+	lEnd = lOut + w;
+	
+	for (int b=0;b<bCount;b++,lIn++)
+	  for (int i=0;i<BIN::SIZE,lOut<lEnd;i++,lOut++)
+	    *lOut = ((*lIn).val & (1 << i)) * 255;
+    }
+
+    magnView->setImage(image);
+
+    emit onDataChanged();
+}
+
 
 void ImageViewerWidget::zoomIn()
 {

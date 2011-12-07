@@ -42,6 +42,9 @@
 
 
 template <> 
+void Image<bool>::show(const char* name);
+
+template <> 
 void Image<UINT8>::show(const char* name);
 
 template <> 

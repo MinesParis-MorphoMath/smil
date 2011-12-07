@@ -67,3 +67,8 @@ void imageViewer::loadFromData(void *pixels, UINT w, UINT h)
 {
     qtViewer->loadFromData((UINT8*)pixels, w, h);
 }
+
+void binImageViewer::loadFromData(void *pixels, UINT w, UINT h)
+{
+    qtViewer->loadFromData((BIN*)pixels, w, h);
+}

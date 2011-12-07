@@ -37,7 +37,7 @@
 // Extrema
 
 template <class T>
-inline RES_T hMinima(Image<T> &imIn, UINT height, Image<T> &imOut, StrElt se=DEFAULT_SE)
+inline RES_T hMinima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE)
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -64,7 +64,7 @@ inline RES_T hMinima(Image<T> &imIn, UINT height, Image<T> &imOut, StrElt se=DEF
 }
 
 template <class T>
-inline RES_T hMaxima(Image<T> &imIn, UINT height, Image<T> &imOut, StrElt se=DEFAULT_SE)
+inline RES_T hMaxima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE)
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -93,13 +93,13 @@ inline RES_T hMaxima(Image<T> &imIn, UINT height, Image<T> &imOut, StrElt se=DEF
 template <class T>
 inline RES_T minima(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE)
 {
-    return hMinima(imIn, 1, imOut, se);
+    return hMinima(imIn, T(1), imOut, se);
 }
 
 template <class T>
 inline RES_T maxima(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE)
 {
-    return hMaxima(imIn, 1, imOut, se);
+    return hMaxima(imIn, T(1), imOut, se);
 }
 
 #endif // _D_MORPHO_EXTREMA_HPP

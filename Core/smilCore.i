@@ -37,6 +37,7 @@
 #include "DBaseImageOperations.hpp"
 #include "DBaseLineOperations.hpp"
 #include "DImageArith.hpp"
+#include "DLineArith_BIN.hxx"
 #include "DImageDraw.hpp"
 #include "DLineHistogram.hpp"
 #include "DImageHistogram.hpp"

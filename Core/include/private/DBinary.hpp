@@ -27,17 +27,23 @@
  */
 
 
-#ifndef _bitArray_HPP
-#define _bitArray_HPP
+#ifndef _DBINARY_BIN_H
+#define _DBINARY_BIN_H
+
+#include <iostream>
+#include "DTypes.hpp"
+
+using namespace std;
 
 #ifndef CHAR_BIT
 #define CHAR_BIT 8
 #endif
 
-template <class T>
+typedef UINT32 BIN_TYPE;
+
 struct bitIndex
 {
-    T *byte;
+    BIN_TYPE *byte;
     unsigned int index;
     
     bitIndex& operator=(bool val)
@@ -54,23 +60,25 @@ struct bitIndex
     }
 };
 
-template <class T>
-struct bitArray
+struct BIN
 {
-    bitArray(int v = 0) : val(v) {}
-    bitArray(bool b) : val(b ? ~0 : 0) {}
-    T val;
+    BIN(int v = 0) : val(v) {}
+    BIN(bool b) : val(b ? ~0 : 0) {}
+    BIN(double v) : val(v==0 ? 0 : ~0) {}
+    BIN_TYPE val;
     
-    static const UINT64 SIZE = sizeof(T)*CHAR_BIT;
+    static const UINT SIZE = sizeof(BIN_TYPE)*CHAR_BIT;
     
     //! Most significant bit
-    static const T MS_BIT = (1 << (SIZE - 2));
+    static const BIN_TYPE MS_BIT = (1 << (SIZE - 2));
     
-    typedef T Type;
+    typedef BIN_TYPE Type;
+    typedef Type *lineType;
+    typedef lineType *sliceType;
 
-    inline bitIndex<T>& operator[] (UINT8 pos)
+    inline bitIndex& operator[] (UINT8 pos)
     {
-	static bitIndex<T> b;
+	static bitIndex b;
 	b.byte = &val;
 	b.index = pos;
  	return b;
@@ -81,17 +89,17 @@ struct bitArray
 	  os << this->operator[](i) << " ";
 	return os;
     }
-    inline bitArray& operator=(T v)
+    inline BIN& operator=(BIN_TYPE v)
     {
 	val = v;
 	return *this;
     }
-    inline bitArray& operator=(bool b)
+    inline BIN& operator=(bool b)
     {
 	val = b ? ~0 : 0;
 	return *this;
     }
-    inline bitArray& operator=(const char* s)
+    inline BIN& operator=(const char* s)
     {
 	UINT iMax = strlen(s) < SIZE ? strlen(s) : SIZE;
 	
@@ -106,14 +114,12 @@ struct bitArray
     }
 };
 
-template <class T>
-inline ostream& operator << (ostream &os, bitArray<T> &b)
+inline ostream& operator << (ostream &os, BIN &b)
 {
     return b.printSelf(os);
 }
 
-#define BIN bitArray<UINT32>
-
+// #define BIN BIN<UINT32>
 
 
 
@@ -145,4 +151,4 @@ inline ostream& operator << (ostream &os, bitArray<T> &b)
 
 
 
-#endif // _bitArray_HPP
+#endif // _DBINARY_BIN_H

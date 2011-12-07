@@ -35,7 +35,7 @@
 #include <QStatusBar>
 
 #include "MagnifyView.h"
-
+#include "DBinary.hpp"
 
 
 class QImageGraphicsScene : public QGraphicsScene
@@ -97,6 +97,7 @@ private:
 public slots:
     void load(const QString fileName);
     void loadFromData(const uchar *data, int w, int h);
+    void loadFromData(const BIN *data, int w, int h);
     void zoomIn();
     void zoomOut();
     void scale(double factor);

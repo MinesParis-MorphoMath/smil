@@ -66,14 +66,6 @@ void func(hSE *se)
 
 
 
-struct BIT_ARRAY
-{
-    unsigned char *array;
-    unsigned int index;
-};
-
-
-
 
 #include "DLineArith_BIN.hxx"
 
@@ -117,7 +109,7 @@ int main(int argc, char *argv[])
     b1[3] = 1;
     b2.val = 4;
     
-    b3 = BIN::Type(~(b1.val^b2.val));
+    b3 = BIN_TYPE(~(b1.val^b2.val));
     
     cout << b1 << endl;
     cout << b2 << endl;
@@ -128,15 +120,19 @@ int main(int argc, char *argv[])
     
     UINT w = 1000, h = 1024;
     
-    Image<BIN> bim1(w, h);
-    Image<BIN> bim2(w, h);
-    Image<BIN> bim3(w, h);
+    Image<bool> bim1(w, h);
+    Image<bool> bim2(w, h);
+    Image<bool> bim3(w, h);
     
     b1 = "01010001";
     b2 = "01100111";
-    bim1 << BIN(b1);
-    bim2 << b2;
+//     bim1 << BIN(0);
+//     bim2 << b2;
 
+//     bim1 << false;
+    bim1.show();
+    
+    qapp.exec();
 //     fillLine<BIN> fillLine;
 //     fillLine(bim1.getPixels(), 3, 0);
     
@@ -147,7 +143,7 @@ int main(int argc, char *argv[])
 //     iFunc._exec(bim1, bim2, bim3);
 //     sup(bim1, bim2, bim3);
     
-    bench(dilate, (bim1, bim3, hSE()));
+//     bench(dilate, (bim1, bim3, hSE()));
     bench(sup, (bim1, bim2, bim3));
     
 //     bim1.printSelf(1);

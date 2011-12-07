@@ -32,6 +32,17 @@
 #include "DImageViewer.h"
 
 template <>
+void Image<bool>::show(const char* name)
+{
+    if (!viewer)
+        viewer = new binImageViewer();
+    if (name)
+        setName(name);
+    updateViewerData();
+    viewer->show();
+}
+
+template <>
 void Image<UINT8>::show(const char* name)
 {
     if (!viewer)
