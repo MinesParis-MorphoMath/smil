@@ -98,6 +98,8 @@ void Image<T>::init()
 
     dataTypeSize = sizeof(pixelType); 
     
+    allocatedSize = 0;
+    
 //     viewer = new ImageViewerWidget();
 //     viewer = new ImageViewer();
      viewer = NULL;
@@ -189,9 +191,12 @@ inline RES_T Image<T>::allocate(void)
     pixels = createAlignedBuffer<T>(pixelCount);
 //     pixels = new pixelType[pixelCount];
     
+    allocatedWidth = width;
+    
     restruct();
     
     allocated = true;
+    allocatedSize = pixelCount*sizeof(T);
     
     return RES_OK;
 }
@@ -210,14 +215,14 @@ RES_T Image<T>::restruct(void)
     lineType *cur_line = lines;
     sliceType *cur_slice = slices;
     
-    int pixelsPerSlice = width * height;
+    int pixelsPerSlice = allocatedWidth * height;
     
     for (int k=0; k<(int)depth; k++, cur_slice++)
     {
       *cur_slice = cur_line;
       
       for (int j=0; j<(int)height; j++, cur_line++)
-	*cur_line = pixels + k*pixelsPerSlice + j*width;
+	*cur_line = pixels + k*pixelsPerSlice + j*allocatedWidth;
     }
 	
     // Calc. line (mis)alignment
@@ -256,6 +261,7 @@ RES_T Image<T>::deallocate(void)
     pixels = NULL;
 
     allocated = false;
+    allocatedSize = 0;
     
     return RES_OK;
 }
@@ -279,26 +285,21 @@ void Image<T>::printSelf(ostream &os, bool displayPixVals)
     else
       os << "Size: " << width << "x" << height << endl;
     
-    if (allocated) os << "Allocated (" << pixelCount*sizeof(T) << " bits)" << endl;
+    if (allocated) os << "Allocated (" << allocatedSize << " bytes)" << endl;
     else os << "Not allocated" << endl;
     
    
     if (displayPixVals)
     {
-	os << "Pixels value:" << endl;
-	sliceType *cur_slice;
-	lineType *cur_line;
-	pixelType *cur_pixel;
-	
+	os << "Pixel values:" << endl;
 	UINT i, j, k;
 	
-	for (k=0, cur_slice = slices; k<depth; k++, cur_slice++)
+	for (k=0;k<depth;k++)
 	{
-	  cur_line = *cur_slice;
-	  for (j=0, cur_line = *cur_slice; j<height; j++, cur_line++)
+	  for (j=0;j<height;j++)
 	  {
-	    for (i=0, cur_pixel = *cur_line; i<width; i++, cur_pixel++)
-	      os << (double)*cur_pixel << "  ";
+	    for (i=0;i<width;i++)
+	      os << getPixel(i,j,k) << "  ";
 	    os << endl;
 	  }
 	  os << endl;

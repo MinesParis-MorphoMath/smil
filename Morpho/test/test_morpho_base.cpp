@@ -36,6 +36,7 @@
 
 #include "DImage.h"
 #include "DImageArith.hpp"
+#include "DLineArith_BIN.hxx"
 #include "DMorpho.h"
 #include "DImageIO.h"
 
@@ -65,12 +66,96 @@ void func(hSE *se)
 
 
 
+struct BIT_ARRAY
+{
+    unsigned char *array;
+    unsigned int index;
+};
+
+
+
+
+#include "DLineArith_BIN.hxx"
+
 int main(int argc, char *argv[])
 {
 #ifdef BUILD_GUI
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
 
+    int t1 = clock();
+    int nRuns = (int)1E3;
+
+   
+//     unsigned char uc = 0;
+//     BIT bit;
+//     bit.array = &uc;
+//     bit.index = 2;
+//     
+//     bit = 1;
+//     cout << bit << endl;
+//     
+//     bool bv = bit;
+//     
+//     for (int i=0;i<8;i++)
+//       cout << ((uc & (1<<i)) != 0) << " ";
+//     cout << endl;
+//     
+//     
+//     Image<BIT> bitIm, bitIm2;
+//     bitIm2.clone(bitIm);
+// //     bitIm.getSize();
+//     
+//     return 0;
+    
+    UINT8 c1 = 0;
+    UINT8 c2 = 4;
+    UINT8 c3;
+    
+    BIN b1, b2, b3;
+    b1 = numeric_limits<BIN>::max();
+    b1[3] = 1;
+    b2.val = 4;
+    
+    b3 = BIN::Type(~(b1.val^b2.val));
+    
+    cout << b1 << endl;
+    cout << b2 << endl;
+    cout << b3 << endl;
+    
+    cout << sizeof(b1) << endl;
+//     b1[0] = 1;
+    
+    UINT w = 1000, h = 1024;
+    
+    Image<BIN> bim1(w, h);
+    Image<BIN> bim2(w, h);
+    Image<BIN> bim3(w, h);
+    
+    b1 = "01010001";
+    b2 = "01100111";
+    bim1 << BIN(b1);
+    bim2 << b2;
+
+//     fillLine<BIN> fillLine;
+//     fillLine(bim1.getPixels(), 3, 0);
+    
+//     infLine<BIN> infL;
+//     infL._exec(bim1.getPixels(), bim2.getPixels(), 3, bim3.getPixels());
+    
+// //     binaryImageFunction<BIN, infLine<BIN> > iFunc;
+//     iFunc._exec(bim1, bim2, bim3);
+//     sup(bim1, bim2, bim3);
+    
+    bench(dilate, (bim1, bim3, hSE()));
+    bench(sup, (bim1, bim2, bim3));
+    
+//     bim1.printSelf(1);
+//     bim2.printSelf(1);
+//     bim3.printSelf(1);
+    
+    return 0;
+    
 //      int c;
     Image_UINT8 im1(10,10);
     Image_UINT8 im2;
@@ -91,9 +176,7 @@ int main(int argc, char *argv[])
     fill(im1, UINT8(100));
     fill(im2, UINT8(5));
 
-    int t1 = clock();
 
-    int nRuns = (int)1E3;
     UINT8 val = 10;
 
 //       bench(fill, (im3, val));
@@ -172,7 +255,7 @@ int main(int argc, char *argv[])
 //       im1.show();
 //       im3.show();
 #ifdef BUILD_GUI
-    qapp.exec();
+//     qapp.exec();
 #endif // BUILD_GUI
 
 //       baseImage *im = createImage(c);

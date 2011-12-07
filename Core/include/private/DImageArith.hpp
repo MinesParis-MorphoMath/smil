@@ -429,13 +429,13 @@ inline RES_T fill(Image<T> &imOut, const T value)
 
     typedef typename Image<T>::lineType lineType;
     lineType *lineOut = imOut.getLines();
-    int lineLen = imOut.getWidth();
+    int lineLen = imOut.getAllocatedWidth();
     int lineCount = imOut.getLineCount();
 
     // Fill first line
 //     fillLine<T>::_exec(lineOut[0], lineLen, value);
     fillLine<T> f;
-    f(imOut.getPixels(), imOut.getPixelCount(), value);
+    f(imOut.getPixels(), lineLen*lineCount, value);
 
 //     for (int i=1;i<lineCount;i++)
 //       memcpy(lineOut[i], lineOut[0], lineLen*sizeof(T));

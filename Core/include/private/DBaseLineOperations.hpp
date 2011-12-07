@@ -33,8 +33,6 @@
 
 #include "DImage.hpp"
 
-struct stat;
-
 template <class T> class Image;
 
 
@@ -80,7 +78,16 @@ struct _SMIL binaryLineFunctionBase
 	  _exec(lineIn1, lineIn2, misAlignSize, lineOut); 
 	_exec_aligned(lineIn1+misAlignSize, lineIn2+misAlignSize, size-misAlignSize, lineOut+misAlignSize); 
     }
+    inline void operator()(T *lineIn1, T value, int size, T *lineOut)
+    { 
+	unsigned long ptrOffset = PTR_OFFSET(lineIn1);
+	unsigned long misAlignSize = ptrOffset==0 ? 0 : SIMD_VEC_SIZE - ptrOffset;
+	if (misAlignSize)
+	  _exec(lineIn1, value, misAlignSize, lineOut); 
+	_exec_aligned(lineIn1+misAlignSize, value, size-misAlignSize, lineOut+misAlignSize); 
+    }
 };
+
 
 // Base abstract struct of line binary function
 template <class T>
@@ -97,6 +104,8 @@ struct _SMIL tertiaryLineFunctionBase
 	_exec_aligned(lineIn1+misAlignSize, lineIn2+misAlignSize, lineIn3+misAlignSize, size-misAlignSize, lineOut+misAlignSize); 
     }
 };
+
+
 
 
 

@@ -63,7 +63,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     valueLabel = new QLabel(this);
     valueLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
     valueLabel->setAutoFillBackground(true);
-//     valueLabel->hide();
+    valueLabel->hide();
     valueLblActivated = true;
 
     imScene = new QImageGraphicsScene();

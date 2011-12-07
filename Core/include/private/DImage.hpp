@@ -92,18 +92,41 @@ public:
         return slices;
     }
     
+    //! Return the value of the pixel at pos x,y(,z)
     inline pixelType getPixel(UINT x, UINT y, UINT z=0)
     {
 	if (x>=width || y>=height || z>=depth)
 	    return RES_ERR;
 	return pixels[z*width*height+y*width+x];
     }
+    inline pixelType getPixel(UINT offset)
+    {
+	if (offset >= pixelCount)
+	    return RES_ERR;
+	return pixels[offset];
+    }
 
-    inline RES_T setPixel(pixelType value, UINT x, UINT y, UINT z=0)
+    inline RES_T setPixel(UINT x, UINT y, UINT z, pixelType value)
     {
 	if (x>=width || y>=height || z>=depth)
 	    return RES_ERR;
 	pixels[z*width*height+y*width+x] = value;
+	modified();
+	return RES_OK;
+    }
+    inline RES_T setPixel(UINT x, UINT y, pixelType value)
+    {
+	if (x>=width || y>=height)
+	    return RES_ERR;
+	pixels[height+y*width+x] = value;
+	modified();
+	return RES_OK;
+    }
+    inline RES_T setPixel(UINT offset, pixelType value)
+    {
+	if (offset >= pixelCount)
+	    return RES_ERR;
+	pixels[offset] = value;
 	modified();
 	return RES_OK;
     }
@@ -189,6 +212,7 @@ public:
 };
   
 #include "DImage.hxx"
+#include "DImage_BIN.hxx"
 
 
 

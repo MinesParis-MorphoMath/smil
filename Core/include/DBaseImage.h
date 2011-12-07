@@ -47,6 +47,10 @@ public:
         return depth;
     }
 
+    inline UINT getAllocatedWidth() const {
+        return allocatedWidth;
+    }
+    
     inline void getSize(UINT *w, UINT *h, UINT *d)
     {
 	*w = width;
@@ -86,11 +90,15 @@ protected:
     UINT height;
     UINT depth;
 
+    UINT allocatedWidth;
+    
     UINT sliceCount;
     UINT lineCount;
     UINT pixelCount;
 
     bool allocated;
+    
+    UINT allocatedSize;
 
 };
 

@@ -65,11 +65,11 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
   protected:
     T borderValue;
     T *borderBuf, *cpBuf;
-    UINT alLen, remainLen;
     UINT vectorSize;
+    UINT lineLen;
     
     inline void _extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, T *outBuf);
-    inline void _exec_translated_line(T *inBuf1, T *inBuf2, int dx, int lineLen, T *outBuf);
+    inline void _exec_shifted_line(T *inBuf1, T *inBuf2, int dx, int lineLen, T *outBuf);
     inline void _exec_line(T *inBuf, Image<T> *imIn, int &x, int &y, int &z, T *outBuf);
 };
 
@@ -77,11 +77,9 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
 template <class T, class lineFunction_T>
 inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imOut, StrElt se)
 {
-    int lineLen = imIn.getWidth();
+    lineLen = imIn.getAllocatedWidth();
     borderBuf = createAlignedBuffer<T>(lineLen);
     cpBuf = createAlignedBuffer<T>(lineLen);
-    alLen = int((lineLen/SIMD_VEC_SIZE))*SIMD_VEC_SIZE;
-    remainLen = lineLen - alLen;
     fillLine<T> f;
     f(borderBuf, lineLen, borderValue);
 //     cout << "bord val " << (int)borderValue << endl;
@@ -127,54 +125,25 @@ void printLine(UINT8 *buf, int size)
 template <class T, class lineFunction_T>
 inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, T *outBuf)
 {
-    int lineLen = imIn->getWidth();
-    
     if (z<0 || z>=imIn->getSliceCount() || y<0 || y>=imIn->getLineCount())
 	memcpy(outBuf, borderBuf, lineLen*sizeof(T));
-    else if (x>0)
-    {
-	memcpy(outBuf, borderBuf, x*sizeof(T));
-	memcpy(outBuf+x, imIn->getSlices()[z][y], (lineLen-x)*sizeof(T));
-    }
     else
-    {
-	memcpy(outBuf, imIn->getSlices()[z][y]-x, (lineLen+x)*sizeof(T));
-	memcpy(outBuf+lineLen+x, borderBuf, -x*sizeof(T));
-    }
+	shiftLine<T>(imIn->getSlices()[z][y], x, lineLen, outBuf, borderValue);
 }
 
 template <class T, class lineFunction_T>
-inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_translated_line(T *inBuf1, T *inBuf2, int dx, int lineLen, T *outBuf)
+inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line(T *inBuf1, T *inBuf2, int dx, int lineLen, T *outBuf)
 {
-    if (dx==0)
-    {
-      memcpy(cpBuf, inBuf2, lineLen*sizeof(T));
-      lineFunction(inBuf1, cpBuf, lineLen, outBuf);
-    }
-    else if (dx>0)
-    {
-      memcpy(cpBuf, borderBuf, dx*sizeof(T));
-      memcpy(cpBuf+dx, inBuf2, (lineLen-dx)*sizeof(T));
-      lineFunction._exec_aligned(inBuf1, cpBuf, lineLen, outBuf);
-    }
-    else
-    {
-      memcpy(cpBuf, inBuf2-dx, (lineLen+dx)*sizeof(T));
-      memcpy(cpBuf+(lineLen+dx), borderBuf, -dx*sizeof(T));
-      lineFunction._exec_aligned(inBuf1, cpBuf, lineLen, outBuf);
-    }
+    shiftLine<T>(inBuf2, dx, lineLen, cpBuf, borderValue);
+    lineFunction(inBuf1, cpBuf, lineLen, outBuf);
 }
 
 
 template <class T, class lineFunction_T>
 inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(T *inBuf, Image<T> *imIn, int &x, int &y, int &z, T *outBuf)
 {
-    int lineLen = imIn->getWidth();
-    
-    if (z<0 || z>=imIn->getSliceCount() || y<0 || y>=imIn->getLineCount())
-	_exec_translated_line(inBuf, borderBuf, 0, lineLen, outBuf);
-    else 
-	_exec_translated_line(inBuf, imIn->getSlices()[z][y], x, lineLen, outBuf);
+    _extract_translated_line(imIn, x, y, z, cpBuf);
+    lineFunction(inBuf, cpBuf, lineLen, outBuf);
 }
 
 
@@ -185,7 +154,6 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imIn.getWidth();
     int bufSize = lineLen * sizeof(T);
     int lineCount = imIn.getLineCount();
     
@@ -264,7 +232,6 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imIn.getWidth();
     int bufSize = lineLen * sizeof(T);
     int lineCount = imIn.getLineCount();
     
@@ -301,11 +268,11 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
 	
 	// Process first line
 	memcpy(inBuf, srcLines[0], lineLen*sizeof(T));
-	_exec_translated_line(inBuf, inBuf, -1, lineLen, tmpBuf1);
-	_exec_translated_line(tmpBuf1, tmpBuf1, 1, lineLen, tmpBuf4);
+	_exec_shifted_line(inBuf, inBuf, -1, lineLen, tmpBuf1);
+	_exec_shifted_line(tmpBuf1, tmpBuf1, 1, lineLen, tmpBuf4);
 	
 	memcpy(inBuf, srcLines[1], lineLen*sizeof(T));
-	_exec_translated_line(inBuf, inBuf, 1, lineLen, tmpBuf2);
+	_exec_shifted_line(inBuf, inBuf, 1, lineLen, tmpBuf2);
 	lineFunction._exec(tmpBuf4, tmpBuf2, lineLen, outBuf);
 	lineFunction._exec(borderBuf, outBuf, lineLen, outBuf);
 	memcpy(destLines[0], outBuf, lineLen*sizeof(T));
@@ -317,13 +284,13 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
 	    memcpy(inBuf, srcLines[l], lineLen*sizeof(T));
 	    if((l%2)==0)
 	    {
-		_exec_translated_line(inBuf, inBuf, -1, lineLen, tmpBuf3);
-		_exec_translated_line(tmpBuf2, tmpBuf2, -1, lineLen, tmpBuf4);
+		_exec_shifted_line(inBuf, inBuf, -1, lineLen, tmpBuf3);
+		_exec_shifted_line(tmpBuf2, tmpBuf2, -1, lineLen, tmpBuf4);
 	    }
 	    else
 	    {
-		_exec_translated_line(inBuf, inBuf, 1, lineLen, tmpBuf3);
-		_exec_translated_line(tmpBuf2, tmpBuf2, 1, lineLen, tmpBuf4);
+		_exec_shifted_line(inBuf, inBuf, 1, lineLen, tmpBuf3);
+		_exec_shifted_line(tmpBuf2, tmpBuf2, 1, lineLen, tmpBuf4);
 	    }
 	    lineFunction._exec(tmpBuf1, tmpBuf3, lineLen, outBuf);
 	    lineFunction._exec(tmpBuf4, outBuf, lineLen, outBuf);
@@ -336,9 +303,9 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
 	}
 	
 	if (nLines%2 != 0)
-	  _exec_translated_line(tmpBuf2, tmpBuf2, 1, lineLen, tmpBuf4);
+	  _exec_shifted_line(tmpBuf2, tmpBuf2, 1, lineLen, tmpBuf4);
 	else
-	  _exec_translated_line(tmpBuf2, tmpBuf2, -1, lineLen, tmpBuf4);
+	  _exec_shifted_line(tmpBuf2, tmpBuf2, -1, lineLen, tmpBuf4);
 	lineFunction._exec(tmpBuf4, tmpBuf1, lineLen, outBuf);
 	lineFunction._exec(borderBuf, outBuf, lineLen, outBuf);
 	memcpy(destLines[nLines-1], outBuf, lineLen*sizeof(T));

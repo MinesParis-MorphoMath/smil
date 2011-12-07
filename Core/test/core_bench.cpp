@@ -89,6 +89,8 @@ int main(int argc, char *argv[])
 //     sx = 40;
 //     sy = 20;
 
+    Image<BIN> b1(sx, sy), b2(sx, sy), b3(sx, sy);
+    
     im1.setSize(sx, sy);
     im2.setSize(sx, sy);
     im3.setSize(sx, sy);
@@ -100,6 +102,8 @@ int main(int argc, char *argv[])
     int t1;
     int nRuns = (int)1E3;
     UINT8 val = 10;
+    
+    bench(sup, (b1, b2, b3))
 
     bench(fill, (im3, val));
     bench(copy, (im1, im3));
