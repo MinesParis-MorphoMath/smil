@@ -83,7 +83,6 @@ Image<T>::~Image()
     deallocate();
     if (viewer)
 	delete viewer;
-//     viewer = new ImageViewer();
     
 }
 
@@ -98,10 +97,9 @@ void Image<T>::init()
 
     dataTypeSize = sizeof(pixelType); 
     
+    allocatedWidth = 0;
     allocatedSize = 0;
     
-//     viewer = new ImageViewerWidget();
-//     viewer = new ImageViewer();
      viewer = NULL;
      name = NULL;
 }
@@ -138,7 +136,7 @@ inline Image<T>& Image<T>::clone(const Image<T> &rhs)
     bool isAlloc = rhs.isAllocated();
     setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
     if (isAlloc)
-      memcpy(pixels, rhs.getPixels(), pixelCount*sizeof(T));
+      memcpy(pixels, rhs.getPixels(), allocatedSize*sizeof(T));
     modified();
     return *this;
 }
@@ -191,12 +189,12 @@ inline RES_T Image<T>::allocate(void)
     pixels = createAlignedBuffer<T>(pixelCount);
 //     pixels = new pixelType[pixelCount];
     
-    allocatedWidth = width;
-    
-    restruct();
     
     allocated = true;
+    allocatedWidth = width;
     allocatedSize = pixelCount*sizeof(T);
+    
+    restruct();
     
     return RES_OK;
 }
@@ -261,6 +259,7 @@ RES_T Image<T>::deallocate(void)
     pixels = NULL;
 
     allocated = false;
+    allocatedWidth = 0;
     allocatedSize = 0;
     
     return RES_OK;

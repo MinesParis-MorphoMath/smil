@@ -174,8 +174,16 @@ void ImageViewerWidget::loadFromData(const BIN *data, int w, int h)
 	lEnd = lOut + w;
 	
 	for (int b=0;b<bCount;b++,lIn++)
-	  for (int i=0;i<BIN::SIZE,lOut<lEnd;i++,lOut++)
-	    *lOut = ((*lIn).val & (1 << i)) * 255;
+	{
+	  BIN_TYPE bVal = (*lIn).val;
+	  
+	  for (int i=0;i<BIN::SIZE;i++,lOut++)
+	  {
+	    if (lOut==lEnd)
+	      break;
+	    *lOut = bVal & (1 << i) ? 255 : 0;
+	  }
+	}
     }
 
     magnView->setImage(image);

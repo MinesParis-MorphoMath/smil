@@ -116,11 +116,7 @@ public:
     }
     inline RES_T setPixel(UINT x, UINT y, pixelType value)
     {
-	if (x>=width || y>=height)
-	    return RES_ERR;
-	pixels[height+y*width+x] = value;
-	modified();
-	return RES_OK;
+	return setPixel(x, y, 0, value);
     }
     inline RES_T setPixel(UINT offset, pixelType value)
     {

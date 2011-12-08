@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 //     sx = 40;
 //     sy = 20;
 
-    Image<BIN> b1(sx, sy), b2(sx, sy), b3(sx, sy);
+    Image<bool> b1(sx, sy), b2(sx, sy), b3(sx, sy);
     
     im1.setSize(sx, sy);
     im2.setSize(sx, sy);

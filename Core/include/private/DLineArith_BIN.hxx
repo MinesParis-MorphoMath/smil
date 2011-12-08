@@ -39,6 +39,25 @@
  * @{
  */
 
+template <>
+inline void copyLine<bool>(bool *lIn, int size, bool *lOut)
+{
+    memcpy(lOut, lIn, size*sizeof(BIN_TYPE));
+}
+
+
+template <>
+struct fillLine<bool> : public unaryLineFunctionBase<bool>
+{
+    inline void _exec(bool *lInOut, int size, bool value)
+    {
+	BIN *bInOut = (BIN*)lInOut;
+	BIN v = value;
+	
+        for (int i=0;i<size;i++)
+            bInOut[i] = value;
+    }
+};
 
 inline void bitShiftLeft(bool *lIn, int dx, int lineLen, bool *lOut, BIN borderValue)
 {
@@ -127,12 +146,12 @@ inline void bitShiftRight(bool *lIn, int dx, int lineLen, bool *lOut, BIN border
 template <>
 inline void shiftLine<bool>(bool *lIn, int dx, int lineLen, bool *lOut, bool borderValue)
 {
-    if (dx==0)
-        copyLine(lIn, lineLen, lOut);
-    else if (dx>0)
-      bitShiftLeft(lIn, dx, lineLen, lOut, borderValue);
-    else
-      bitShiftRight(lIn, dx, lineLen, lOut, borderValue);
+//     if (dx==0)
+//         copyLine(lIn, lineLen, lOut);
+//     else if (dx>0)
+//       bitShiftLeft(lIn, dx, lineLen, lOut, borderValue);
+//     else
+//       bitShiftRight(lIn, -dx, lineLen, lOut, borderValue);
 }
 
 

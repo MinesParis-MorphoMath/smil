@@ -475,7 +475,9 @@ RES_T copy(Image<T> &imIn, Image<T> &imOut)
 
     if (haveSameSize(&imIn, &imOut, NULL))
     {
-        memcpy(imOut.getPixels(), imIn.getPixels(), imIn.getPixelCount());
+// 	for (int j=0;j<imIn.getLineCount();j++)
+// 	  copyLine(imIn.getLines()[j], imIn.getAllocatedWidth(), imOut.getLines()[j]);
+        memcpy(imOut.getPixels(), imIn.getPixels(), imIn.getAllocatedSize());
 
         imOut.modified();
         return RES_OK;

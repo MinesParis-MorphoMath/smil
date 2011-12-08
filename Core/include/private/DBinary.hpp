@@ -39,7 +39,7 @@ using namespace std;
 #define CHAR_BIT 8
 #endif
 
-typedef UINT32 BIN_TYPE;
+typedef UINT64 BIN_TYPE;
 
 struct bitIndex
 {
@@ -108,10 +108,10 @@ struct BIN
 	  val += (s[i]-48) * (1<<i);
 	return *this;
     }
-    inline operator bool()
-    {
-	return val!=0;
-    }
+//     inline operator bool()
+//     {
+// 	return val!=0;
+//     }
 };
 
 inline ostream& operator << (ostream &os, BIN &b)

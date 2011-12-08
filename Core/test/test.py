@@ -39,6 +39,10 @@ im1 << 0
 
 
 def testBench():
+  im1.setSize(768, 576)
+  im2.setSize(im1)
+  im3.setSize(im1)
+  
   nruns = 1E3 # 5E3
   t1 = time.time()
 

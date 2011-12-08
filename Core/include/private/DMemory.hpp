@@ -30,6 +30,7 @@
 #ifndef _DMEMORY_HPP
 #define _DMEMORY_HPP
 
+#include "DBinary.hpp"
 
 #if defined(__MINGW32__)
 
@@ -61,9 +62,9 @@
 #define SIMD_VEC_SIZE 16
 
 template<typename T> 
-T *createAlignedBuffer(int size) {
+inline T *createAlignedBuffer(int size) {
   void* ptr;
-  
+
   MALLOC(ptr,(size+32)*sizeof(T),SIMD_VEC_SIZE);
 //   posix_memalign (&ptr, 16, (size+32)*sizeof(T));
 

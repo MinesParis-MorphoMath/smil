@@ -118,33 +118,16 @@ int main(int argc, char *argv[])
     cout << sizeof(b1) << endl;
 //     b1[0] = 1;
     
-    UINT w = 1000, h = 1024;
+    UINT w = 1024, h = 1024;
     
-    Image<bool> bim1(w, h);
-    Image<bool> bim2(w, h);
-    Image<bool> bim3(w, h);
+    typedef Image<bool> imType;
     
-    b1 = "01010001";
-    b2 = "01100111";
-//     bim1 << BIN(0);
-//     bim2 << b2;
-
-//     bim1 << false;
-    bim1.show();
+    imType bim1(w, h);
+    imType bim2(w, h);
+    imType bim3(w, h);
     
-    qapp.exec();
-//     fillLine<BIN> fillLine;
-//     fillLine(bim1.getPixels(), 3, 0);
-    
-//     infLine<BIN> infL;
-//     infL._exec(bim1.getPixels(), bim2.getPixels(), 3, bim3.getPixels());
-    
-// //     binaryImageFunction<BIN, infLine<BIN> > iFunc;
-//     iFunc._exec(bim1, bim2, bim3);
-//     sup(bim1, bim2, bim3);
-    
-//     bench(dilate, (bim1, bim3, hSE()));
-    bench(sup, (bim1, bim2, bim3));
+    bench(dilate, (bim1, bim3, hSE()));
+//     bench(sup, (bim1, bim2, bim3));
     
 //     bim1.printSelf(1);
 //     bim2.printSelf(1);

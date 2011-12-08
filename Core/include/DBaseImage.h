@@ -51,6 +51,10 @@ public:
         return allocatedWidth;
     }
     
+    inline UINT getAllocatedSize() const {
+        return allocatedSize;
+    }
+    
     inline void getSize(UINT *w, UINT *h, UINT *d)
     {
 	*w = width;
