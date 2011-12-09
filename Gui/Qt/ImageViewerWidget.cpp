@@ -32,7 +32,7 @@
 #include <QTimer>
 
 #include "ImageViewerWidget.h"
-
+#include "DLineArith.hpp"
 
 
 QImageGraphicsScene::QImageGraphicsScene(QObject *parent)

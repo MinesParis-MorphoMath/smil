@@ -48,9 +48,7 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     typedef typename imageType::lineType lineType;
     
     unaryMorphImageFunction(T border=numeric_limits<T>::min()) 
-      : borderValue(border), 
-	vectorSize(SIMD_VEC_SIZE/sizeof(T)) 
-	{}
+      : borderValue(border) {}
     
     inline RES_T _exec(imageType &imIn, imageType &imOut, StrElt se);
     
@@ -65,7 +63,6 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
   protected:
     T borderValue;
     T *borderBuf, *cpBuf;
-    UINT vectorSize;
     UINT lineLen;
     
     inline void _extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, T *outBuf);
@@ -126,7 +123,7 @@ template <class T, class lineFunction_T>
 inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, T *outBuf)
 {
     if (z<0 || z>=imIn->getSliceCount() || y<0 || y>=imIn->getLineCount())
-      copyLine(borderBuf, lineLen, outBuf);
+      copyLine<T,T>(borderBuf, lineLen, outBuf);
 // 	memcpy(outBuf, borderBuf, lineLen*sizeof(T));
     else
 	shiftLine<T>(imIn->getSlices()[z][y], x, lineLen, outBuf, borderValue);
@@ -210,7 +207,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 		
 		_exec_line(outBuf, tmpIm, x, y, z, outBuf);   
 	    }
-	    copyLine(outBuf, lineLen, lineOut);
+	    copyLine<T,T>(outBuf, lineLen, lineOut);
 	    if (oddSe)
 	      oddLine = !oddLine;
 	}
@@ -268,21 +265,21 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
 //	oddLine = !s%2;
 	
 	// Process first line
-	copyLine(srcLines[0], lineLen, inBuf);
+	copyLine<T,T>(srcLines[0], lineLen, inBuf);
 	_exec_shifted_line(inBuf, inBuf, -1, lineLen, tmpBuf1);
 	_exec_shifted_line(tmpBuf1, tmpBuf1, 1, lineLen, tmpBuf4);
 	
-	copyLine(srcLines[1], lineLen, inBuf);
+	copyLine<T,T>(srcLines[1], lineLen, inBuf);
 	_exec_shifted_line(inBuf, inBuf, 1, lineLen, tmpBuf2);
 	lineFunction._exec(tmpBuf4, tmpBuf2, lineLen, outBuf);
-	lineFunction._exec(borderBuf, outBuf, lineLen, outBuf);
-	copyLine(outBuf, lineLen, destLines[0]);
+	lineFunction._exec(borderBuf, outBuf, lineLen, destLines[0]);
+// 	copyLine(outBuf, lineLen, destLines[0]);
 	
 // imOut.modified();
 // return RES_OK;
 	for (int l=2;l<nLines;l++)
 	{
-	    copyLine(srcLines[l], lineLen, inBuf);
+	    copyLine<T,T>(srcLines[l], lineLen, inBuf);
 	    if((l%2)==0)
 	    {
 		_exec_shifted_line(inBuf, inBuf, -1, lineLen, tmpBuf3);
@@ -294,8 +291,8 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
 		_exec_shifted_line(tmpBuf2, tmpBuf2, 1, lineLen, tmpBuf4);
 	    }
 	    lineFunction._exec(tmpBuf1, tmpBuf3, lineLen, outBuf);
-	    lineFunction._exec(tmpBuf4, outBuf, lineLen, outBuf);
-	    copyLine(outBuf, lineLen, destLines[l-1]);
+	    lineFunction._exec(tmpBuf4, outBuf, lineLen, destLines[l-1]);
+// 	    copyLine(outBuf, lineLen, destLines[l-1]);
 	    
 	    tmpBuf = tmpBuf1;
 	    tmpBuf1 = tmpBuf2;
@@ -308,8 +305,8 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
 	else
 	  _exec_shifted_line(tmpBuf2, tmpBuf2, -1, lineLen, tmpBuf4);
 	lineFunction._exec(tmpBuf4, tmpBuf1, lineLen, outBuf);
-	lineFunction._exec(borderBuf, outBuf, lineLen, outBuf);
-	copyLine(outBuf, lineLen, destLines[nLines-1]);
+	lineFunction._exec(borderBuf, outBuf, lineLen, destLines[nLines-1]);
+// 	copyLine(outBuf, lineLen, destLines[nLines-1]);
 	
     }
 

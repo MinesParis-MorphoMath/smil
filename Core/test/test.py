@@ -4,8 +4,11 @@ import time
 
 from smilPython import *
 
-
 from threading import Thread
+
+
+sys.path.append("/home/faessel/src/ivp/faessel/")
+
 
 class testit(Thread):
    def __init__ (self):
@@ -14,13 +17,14 @@ class testit(Thread):
    def run(self):
       self.app._exec()
 
-
+bench_sx = 1000
+bench_sy = 1000
      
 if ('im1' in locals())==0:
   #app = QtGui.QApplication(sys.argv)
   #im1 = Image_UINT8(1024, 1024)
   #tapp = QtApp()
-  im1 = Image(1000, 1000)
+  im1 = Image(bench_sx, bench_sy)
   im2 = Image(im1)
   im3 = Image(im1)
   #app = QtApp()
@@ -38,16 +42,47 @@ im1 << 0
 #im2.show()
 
 
-def testBench():
-  im1.setSize(768, 576)
-  im2.setSize(im1)
-  im3.setSize(im1)
+def testBench(binIm=False):
+  if binIm:
+    tim1 = Image_bool(bench_sx, bench_sy)
+    tim2 = Image_bool(bench_sx, bench_sy)
+  else:
+    tim1 = Image_UINT8(bench_sx, bench_sy)
+    tim2 = Image_UINT8(bench_sx, bench_sy)
+  
+  tse = sSE()
   
   nruns = 1E3 # 5E3
   t1 = time.time()
 
   for i in range(int(nruns)):
-    dilate(im1, im2, se)
+    dilate(tim1, tim2, tse)
+    #addIm(im1, im2, im3)
+    #supIm(im1, im2, im3)
+
+  t2 = time.time()
+
+  print (t2-t1)*1E3/nruns
+
+def testBenchMb(binIm=False):
+  import mamba as mb
+  if (binIm):
+    mIm1 = mb.imageMb(1)
+    mIm2 = mb.imageMb(1)
+  else:
+    mIm1 = mb.imageMb()
+    mIm2 = mb.imageMb()
+  
+  mIm1.setSize(bench_sx, bench_sy)
+  mIm2.setSize(bench_sx, bench_sy)
+  
+  mse = mb.sSE(1)
+  
+  nruns = 1E3 # 5E3
+  t1 = time.time()
+
+  for i in range(int(nruns)):
+    mb.dilate(mIm1, mIm2, mse)
     #addIm(im1, im2, im3)
     #supIm(im1, im2, im3)
 

@@ -31,15 +31,17 @@
 #define _DBINARY_BIN_H
 
 #include <iostream>
+#include "limits.h"
+
 #include "DTypes.hpp"
 
 using namespace std;
 
-#ifndef CHAR_BIT
-#define CHAR_BIT 8
-#endif
+// #ifndef CHAR_BIT
+// #define CHAR_BIT 8
+// #endif
 
-typedef UINT64 BIN_TYPE;
+typedef UINT8 BIN_TYPE;
 
 struct bitIndex
 {
@@ -62,15 +64,16 @@ struct bitIndex
 
 struct BIN
 {
+    BIN_TYPE val;
+    
     BIN(int v = 0) : val(v) {}
     BIN(bool b) : val(b ? ~0 : 0) {}
     BIN(double v) : val(v==0 ? 0 : ~0) {}
-    BIN_TYPE val;
     
     static const UINT SIZE = sizeof(BIN_TYPE)*CHAR_BIT;
     
     //! Most significant bit
-    static const BIN_TYPE MS_BIT = (1 << (SIZE - 2));
+    static const BIN_TYPE MS_BIT = (1UL << (SIZE - 2));
     
     typedef BIN_TYPE Type;
     typedef Type *lineType;

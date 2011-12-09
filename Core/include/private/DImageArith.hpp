@@ -39,102 +39,63 @@
  */
 
 
-
-/**
- * Volume of an image
- *
- * Returns the sum of the pixel values.
- * \param imIn Input image.
- */
 template <class T>
-inline double vol(Image<T> &imIn)
+inline RES_T fill(Image<T> &imOut, const T value)
 {
-    if (!imIn.isAllocated())
+    if (!areAllocated(&imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    int npix = imIn.getPixelCount();
-    T *pixels = imIn.getPixels();
-    double vol = 0;
+    typedef typename Image<T>::lineType lineType;
+    lineType *lineOut = imOut.getLines();
+    int lineLen = imOut.getAllocatedWidth();
+    int lineCount = imOut.getLineCount();
 
-    for (int i=0;i<npix;i++)
-        vol += pixels[i];
+    fillLine<T> f;
+    f(imOut.getPixels(), lineLen*lineCount, value);
 
-    return vol;
-}
-
-/**
- * Min value of an image
- *
- * Returns the min of the pixel values.
- * \param imIn Input image.
- */
-template <class T>
-inline T minVal(Image<T> &imIn)
-{
-    if (!imIn.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-
-    int npix = imIn.getPixelCount();
-    T *p = imIn.getPixels();
-    T minVal = numeric_limits<T>::max();
-
-    for (int i=0;i<npix;i++,p++)
-        if (*p<minVal)
-            minVal = *p;
-
-    return minVal;
-}
-
-/**
- * Max value of an image
- *
- * Returns the min of the pixel values.
- * \param imIn Input image.
- */
-template <class T>
-inline T maxVal(Image<T> &imIn)
-{
-    if (!imIn.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-
-    int npix = imIn.getPixelCount();
-    T *p = imIn.getPixels();
-    T maxVal = numeric_limits<T>::min();
-
-    for (int i=0;i<npix;i++,p++)
-        if (*p>maxVal)
-            maxVal = *p;
-
-    return maxVal;
-}
-
-/**
- * Min and Max values of an image
- *
- * Returns the min and the max of the pixel values.
- * \param imIn Input image.
- */
-template <class T>
-inline RES_T rangeVal(Image<T> &imIn, T *ret_min, T *ret_max)
-{
-    if (!imIn.isAllocated())
-        return RES_ERR;
-
-    int npix = imIn.getPixelCount();
-    T *p = imIn.getPixels();
-    *ret_min = numeric_limits<T>::max();
-    *ret_max = numeric_limits<T>::min();
-
-    for (int i=0;i<npix;i++,p++)
-    {
-        if (*p<*ret_min)
-            *ret_min = *p;
-        if (*p>*ret_max)
-            *ret_max = *p;
-    }
-
+    imOut.modified();
     return RES_OK;
 }
+
+//! Copy/cast (two images with different types)
+template <class T1, class T2>
+RES_T copy(Image<T1> &imIn, Image<T2> &imOut)
+{
+    if (!areAllocated(&imIn, &imOut, NULL))
+        return RES_ERR_BAD_ALLOCATION;
+
+    if (haveSameSize(&imIn, &imOut, NULL))
+    {
+        typename Image<T1>::lineType *l1 = imIn.getLines();
+        typename Image<T2>::lineType *l2 = imOut.getLines();
+
+        for (int i=0;i<imIn.getLineCount();i++)
+	  copyLine<T1,T2>(l1[i], l2[i]);
+
+        imOut.modified();
+        return RES_OK;
+    }
+}
+
+//! Copy (two images of same type)
+template <class T>
+RES_T copy(Image<T> &imIn, Image<T> &imOut)
+{
+    if (!areAllocated(&imIn, &imOut, NULL))
+        return RES_ERR_BAD_ALLOCATION;
+
+    if (haveSameSize(&imIn, &imOut, NULL))
+    {
+// 	for (int j=0;j<imIn.getLineCount();j++)
+// 	  copyLine(imIn.getLines()[j], imIn.getAllocatedWidth(), imOut.getLines()[j]);
+        memcpy(imOut.getPixels(), imIn.getPixels(), imIn.getAllocatedSize());
+
+        imOut.modified();
+        return RES_OK;
+    }
+    return RES_OK;
+}
+
 
 /**
  * Invert an image.
@@ -421,70 +382,102 @@ inline RES_T test(Image<T> &imIn, T value1, T value2, Image<T> &imOut)
     return iFunc(imIn, value1, value2, imOut);
 }
 
+
+/**
+ * Volume of an image
+ *
+ * Returns the sum of the pixel values.
+ * \param imIn Input image.
+ */
 template <class T>
-inline RES_T fill(Image<T> &imOut, const T value)
+inline double vol(Image<T> &imIn)
 {
-    if (!areAllocated(&imOut, NULL))
+    if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
 
-    typedef typename Image<T>::lineType lineType;
-    lineType *lineOut = imOut.getLines();
-    int lineLen = imOut.getAllocatedWidth();
-    int lineCount = imOut.getLineCount();
+    int npix = imIn.getPixelCount();
+    T *pixels = imIn.getPixels();
+    double vol = 0;
 
-    // Fill first line
-//     fillLine<T>::_exec(lineOut[0], lineLen, value);
-    fillLine<T> f;
-    f(imOut.getPixels(), lineLen*lineCount, value);
+    for (int i=0;i<npix;i++)
+        vol += pixels[i];
 
-//     for (int i=1;i<lineCount;i++)
-//       memcpy(lineOut[i], lineOut[0], lineLen*sizeof(T));
+    return vol;
+}
 
-    imOut.modified();
+/**
+ * Min value of an image
+ *
+ * Returns the min of the pixel values.
+ * \param imIn Input image.
+ */
+template <class T>
+inline T minVal(Image<T> &imIn)
+{
+    if (!imIn.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+
+    int npix = imIn.getPixelCount();
+    T *p = imIn.getPixels();
+    T minVal = numeric_limits<T>::max();
+
+    for (int i=0;i<npix;i++,p++)
+        if (*p<minVal)
+            minVal = *p;
+
+    return minVal;
+}
+
+/**
+ * Max value of an image
+ *
+ * Returns the min of the pixel values.
+ * \param imIn Input image.
+ */
+template <class T>
+inline T maxVal(Image<T> &imIn)
+{
+    if (!imIn.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+
+    int npix = imIn.getPixelCount();
+    T *p = imIn.getPixels();
+    T maxVal = numeric_limits<T>::min();
+
+    for (int i=0;i<npix;i++,p++)
+        if (*p>maxVal)
+            maxVal = *p;
+
+    return maxVal;
+}
+
+/**
+ * Min and Max values of an image
+ *
+ * Returns the min and the max of the pixel values.
+ * \param imIn Input image.
+ */
+template <class T>
+inline RES_T rangeVal(Image<T> &imIn, T *ret_min, T *ret_max)
+{
+    if (!imIn.isAllocated())
+        return RES_ERR;
+
+    int npix = imIn.getPixelCount();
+    T *p = imIn.getPixels();
+    *ret_min = numeric_limits<T>::max();
+    *ret_max = numeric_limits<T>::min();
+
+    for (int i=0;i<npix;i++,p++)
+    {
+        if (*p<*ret_min)
+            *ret_min = *p;
+        if (*p>*ret_max)
+            *ret_max = *p;
+    }
+
     return RES_OK;
 }
-
-//! Copy/cast (two images with different types)
-template <class T1, class T2>
-RES_T copy(Image<T1> &imIn, Image<T2> &imOut)
-{
-    if (!areAllocated(&imIn, &imOut, NULL))
-        return RES_ERR_BAD_ALLOCATION;
-
-    if (haveSameSize(&imIn, &imOut, NULL))
-    {
-        T1 *pix1 = imIn.getPixels();
-        T2 *pix2 = imOut.getPixels();
-
-        int pixCount = imIn.getPixelCount();
-
-        for (int i=0;i<pixCount;i++)
-            pix2[i] = static_cast<T2>(pix1[i]);
-
-        imOut.modified();
-        return RES_OK;
-    }
-}
-
-//! Copy (two images of same type)
-template <class T>
-RES_T copy(Image<T> &imIn, Image<T> &imOut)
-{
-    if (!areAllocated(&imIn, &imOut, NULL))
-        return RES_ERR_BAD_ALLOCATION;
-
-    if (haveSameSize(&imIn, &imOut, NULL))
-    {
-// 	for (int j=0;j<imIn.getLineCount();j++)
-// 	  copyLine(imIn.getLines()[j], imIn.getAllocatedWidth(), imOut.getLines()[j]);
-        memcpy(imOut.getPixels(), imIn.getPixels(), imIn.getAllocatedSize());
-
-        imOut.modified();
-        return RES_OK;
-    }
-    return RES_OK;
-}
-
 
 /** @}*/
 

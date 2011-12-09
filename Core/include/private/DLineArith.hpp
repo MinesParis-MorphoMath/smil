@@ -41,11 +41,19 @@
  */
 
 
+template <class T1, class T2>
+inline void copyLine(T1 *lIn, int size, T2 *lOut)
+{
+    for (int i=0;i<size;i++)
+      lOut[i] = static_cast<T2>(lIn[i]);
+}
+
 template <class T>
 inline void copyLine(T *lIn, int size, T *lOut)
 {
     memcpy(lOut, lIn, size*sizeof(T));
 }
+
 
 
 template <class T>

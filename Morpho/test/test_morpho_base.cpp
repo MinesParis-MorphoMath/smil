@@ -108,6 +108,10 @@ int main(int argc, char *argv[])
     b1 = numeric_limits<BIN>::max();
     b1[3] = 1;
     b2.val = 4;
+
+    BIN::Type *bt = (BIN::Type*)(&b1);
+    
+    cout << b1.val << " -> " << *bt << endl;
     
     b3 = BIN_TYPE(~(b1.val^b2.val));
     
@@ -126,8 +130,12 @@ int main(int argc, char *argv[])
     imType bim2(w, h);
     imType bim3(w, h);
     
-    bench(dilate, (bim1, bim3, hSE()));
-//     bench(sup, (bim1, bim2, bim3));
+    cout << "Width: " << w << endl;
+    
+//     sup(bim1, bim2, bim3);
+    
+//     bench(dilate, (bim1, bim3, hSE()));
+    bench(sup, (bim1, bim2, bim3));
     
 //     bim1.printSelf(1);
 //     bim2.printSelf(1);
@@ -142,7 +150,7 @@ int main(int argc, char *argv[])
 
     Image_UINT16 im4;
 
-    int sx = 1000;
+    int sx = 1024;
     int sy = 1024;
     /*      sx = 40;
           sy = 20;*/
