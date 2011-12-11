@@ -37,6 +37,8 @@ typedef unsigned short UINT16;
 typedef unsigned int UINT32;
 typedef unsigned long UINT64;
 
+typedef unsigned char alUINT8 __attribute__ ((vector_size (16)));
+
 #ifndef _MSC_VER
 typedef char INT8;
 #endif // _MSC_VER

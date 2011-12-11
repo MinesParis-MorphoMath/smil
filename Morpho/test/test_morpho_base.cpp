@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
     
 //     sup(bim1, bim2, bim3);
     
-//     bench(dilate, (bim1, bim3, hSE()));
+    bench(dilate, (bim1, bim3, hSE()));
     bench(sup, (bim1, bim2, bim3));
     
 //     bim1.printSelf(1);
