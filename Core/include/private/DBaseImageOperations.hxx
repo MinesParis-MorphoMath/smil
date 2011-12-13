@@ -97,7 +97,7 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, image
     lineType *srcLines = imIn.getLines();
     lineType *destLines = imOut.getLines();
 
-#pragma omp for
+#pragma omp parallel for
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines[i], lineLen, destLines[i]);
 
@@ -124,7 +124,7 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, T &v
 
     // Use it for operations on lines
 
-#pragma omp for
+#pragma omp parallel for
     for (int i=0;i<lineCount;i++)
         lineFunction._exec_aligned(constBuf, lineLen, destLines[i]);
 
@@ -147,7 +147,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, ima
     lineType *srcLines2 = imIn2.getLines();
     lineType *destLines = imOut.getLines();
 
-#pragma omp for
+#pragma omp parallel for
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
 
@@ -171,7 +171,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imag
 
     T *tmpBuf = createAlignedBuffer<T>(lineLen);
 
-#pragma omp for
+#pragma omp parallel for
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines1[i], srcLines2[i], lineLen, tmpBuf);
 
@@ -201,7 +201,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T va
     fillLine<T> f;
     f(constBuf, lineLen, value);
 
-#pragma omp for
+#pragma omp parallel for
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines[i], constBuf, lineLen, destLines[i]);
 
@@ -229,7 +229,7 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
     lineType *srcLines3 = imIn3.getLines();
     lineType *destLines = imOut.getLines();
 
-#pragma omp for
+#pragma omp parallel for
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines1[i], srcLines2[i], srcLines3[i], lineLen, destLines[i]);
 
@@ -258,7 +258,7 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
     fillLine<T> f;
     f(constBuf, lineLen, value);
 
-#pragma omp for
+#pragma omp parallel for
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines1[i], srcLines2[i], constBuf, lineLen, destLines[i]);
 
@@ -295,7 +295,7 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T 
     f(constBuf1, lineLen, value1);
     f(constBuf2, lineLen, value2);
 
-#pragma omp for
+#pragma omp parallel for
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines[i], constBuf1, constBuf2, lineLen, destLines[i]);
 
