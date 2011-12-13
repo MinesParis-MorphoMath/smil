@@ -59,6 +59,9 @@ inline void copyLine(T *lIn, int size, T *lOut)
 template <class T>
 struct fillLine : public unaryLineFunctionBase<T>
 {
+    fillLine() {}
+    fillLine(T *lIn, int size, T value) { this->_exec(lIn, size, value); }
+    
     inline void _exec(T *lIn, int size, T *lOut)
     {
 	memcpy(lOut, lIn, size*sizeof(T));
@@ -107,9 +110,6 @@ struct addLine : public binaryLineFunctionBase<T>
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] > (T)(numeric_limits<T>::max()- lIn2[i]) ? numeric_limits<T>::max() : lIn1[i] + lIn2[i];
     }
-    inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) {
-        _exec(lIn1, lIn2, size, lOut);
-    }
 };
 
 template <class T>
@@ -119,9 +119,6 @@ struct addNoSatLine : public binaryLineFunctionBase<T>
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] + lIn2[i];
-    }
-    inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) {
-        _exec(lIn1, lIn2, size, lOut);
     }
 };
 
@@ -133,9 +130,6 @@ struct subLine : public binaryLineFunctionBase<T>
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] < (T)(numeric_limits<T>::max() + lIn2[i]) ? numeric_limits<T>::min() : lIn1[i] - lIn2[i];
     }
-    inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) {
-        _exec(lIn1, lIn2, size, lOut);
-    }
 };
 
 template <class T>
@@ -146,21 +140,15 @@ struct subNoSatLine : public binaryLineFunctionBase<T>
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] - lIn2[i];
     }
-    inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) {
-        _exec(lIn1, lIn2, size, lOut);
-    }
 };
 
 template <class T>
 struct supLine : public binaryLineFunctionBase<T>
 {
     inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
-    {
+    {cout << "ok" << endl;
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] > lIn2[i] ? lIn1[i] : lIn2[i];
-    }
-    inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) {
-        _exec(lIn1, lIn2, size, lOut);
     }
 };
 
@@ -171,9 +159,6 @@ struct infLine : public binaryLineFunctionBase<T>
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] < lIn2[i] ? lIn1[i] : lIn2[i];
-    }
-    inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) {
-        _exec(lIn1, lIn2, size, lOut);
     }
 };
 
@@ -245,9 +230,6 @@ struct mulLine : public binaryLineFunctionBase<T>
     {
         for (int i=0;i<size;i++)
             lOut[i] = double(lIn1[i]) * double(lIn2[i]) > double(numeric_limits<T>::max()) ? numeric_limits<T>::max() : lIn1[i] * lIn2[i];
-    }
-    inline void _exec_aligned(T *lIn1, T *lIn2, int size, T *lOut) {
-        _exec(lIn1, lIn2, size, lOut);
     }
 };
 

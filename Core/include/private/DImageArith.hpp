@@ -352,8 +352,39 @@ inline RES_T test(Image<T> &imIn, T value1, T value2, Image<T> &imOut)
 }
 
 template <class T>
-inline RES_T translate(Image<T> &imIn, UINT x, UINT y, UINT z, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
+inline RES_T translate(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
 {
+    if (!imIn.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+    
+    UINT lineLen = imIn.getAllocatedWidth();
+    T *borderBuf = createAlignedBuffer<T>(lineLen);
+    fillLine<T>(borderBuf, lineLen, borderValue);
+    
+    UINT height = imIn.getHeight();
+    UINT depth  = imIn.getDepth();
+    
+    for (int k=0;k<depth;k++)
+    {
+	typename Image<T>::lineType *lOut = *(imOut.getSlices()[k]);
+	
+	UINT z = k+dz;
+	for (int j=0;j<height;j++, lOut++)
+	{
+	    UINT y = j+dy;
+	    
+	    if (z<0 || z>=depth || y<0 || y>=height)
+		copyLine<T,T>(borderBuf, lineLen, *lOut);
+	    else 
+		shiftLine<T>(imIn.getSlices()[z][y], dx, lineLen, *lOut, borderValue);
+	}
+    }
+    
+    deleteAlignedBuffer<T>(borderBuf);
+    
+    imOut.modified();
+    
+    return RES_OK;
 }
 
 

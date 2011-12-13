@@ -43,116 +43,172 @@
 
 
 template <>
-inline void addLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+struct addLine<UINT8> : public binaryLineFunctionBase<UINT8>
 {
-     __m128i r0,r1;
-    __m128i *l1 = (__m128i*) lIn1;
-    __m128i *l2 = (__m128i*) lIn2;
-    __m128i *l3 = (__m128i*) lOut;
-    for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+    inline void _exec(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
     {
-	r0 = _mm_load_si128(l1);
-	r1 = _mm_load_si128(l2);
-	r1 = _mm_adds_epu8(r0, r1);
-	_mm_store_si128(l3, r1);
+        for (int i=0;i<size;i++)
+            lOut[i] = lIn1[i] > (UINT8)(numeric_limits<UINT8>::max()- lIn2[i]) ? numeric_limits<UINT8>::max() : lIn1[i] + lIn2[i];
     }
-}
+    inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+    {
+	__m128i r0,r1;
+	__m128i *l1 = (__m128i*) lIn1;
+	__m128i *l2 = (__m128i*) lIn2;
+	__m128i *l3 = (__m128i*) lOut;
+	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	{
+	    r0 = _mm_load_si128(l1);
+	    r1 = _mm_load_si128(l2);
+	    r1 = _mm_adds_epu8(r0, r1);
+	    _mm_store_si128(l3, r1);
+	}
+    }
+};
 
 template <>
-inline void addNoSatLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+struct addNoSatLine<UINT8> : public binaryLineFunctionBase<UINT8>
 {
-     __m128i r0,r1;
-    __m128i *l1 = (__m128i*) lIn1;
-    __m128i *l2 = (__m128i*) lIn2;
-    __m128i *l3 = (__m128i*) lOut;
-    for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+    inline void _exec(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
     {
-	r0 = _mm_load_si128(l1);
-	r1 = _mm_load_si128(l2);
-	r1 = _mm_add_epi8(r0, r1);
-	_mm_store_si128(l3, r1);
+        for (int i=0;i<size;i++)
+            lOut[i] = lIn1[i] + lIn2[i];
     }
-}
+    inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+    {
+	__m128i r0,r1;
+	__m128i *l1 = (__m128i*) lIn1;
+	__m128i *l2 = (__m128i*) lIn2;
+	__m128i *l3 = (__m128i*) lOut;
+	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	{
+	    r0 = _mm_load_si128(l1);
+	    r1 = _mm_load_si128(l2);
+	    r1 = _mm_add_epi8(r0, r1);
+	    _mm_store_si128(l3, r1);
+	}
+    }
+};
 
 template <>
-inline void subLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+struct subLine<UINT8> : public binaryLineFunctionBase<UINT8>
 {
-     __m128i r0,r1;
-    __m128i *l1 = (__m128i*) lIn1;
-    __m128i *l2 = (__m128i*) lIn2;
-    __m128i *l3 = (__m128i*) lOut;
-    for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+    inline void _exec(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
     {
-	r0 = _mm_load_si128(l1);
-	r1 = _mm_load_si128(l2);
-	r1 = _mm_subs_epu8(r0, r1);
-	_mm_store_si128(l3, r1);
+        for (int i=0;i<size;i++)
+            lOut[i] = lIn1[i] < (UINT8)(numeric_limits<UINT8>::max() + lIn2[i]) ? numeric_limits<UINT8>::min() : lIn1[i] - lIn2[i];
     }
-}
+    inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+    {
+	__m128i r0,r1;
+	__m128i *l1 = (__m128i*) lIn1;
+	__m128i *l2 = (__m128i*) lIn2;
+	__m128i *l3 = (__m128i*) lOut;
+	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	{
+	    r0 = _mm_load_si128(l1);
+	    r1 = _mm_load_si128(l2);
+	    r1 = _mm_subs_epu8(r0, r1);
+	    _mm_store_si128(l3, r1);
+	}
+    }
+};
 
 template <>
-inline void subNoSatLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+struct subNoSatLine<UINT8> : public binaryLineFunctionBase<UINT8>
 {
-     __m128i r0,r1;
-    __m128i *l1 = (__m128i*) lIn1;
-    __m128i *l2 = (__m128i*) lIn2;
-    __m128i *l3 = (__m128i*) lOut;
-    for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+    inline void _exec(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
     {
-	r0 = _mm_load_si128(l1);
-	r1 = _mm_load_si128(l2);
-	r1 = _mm_sub_epi8(r0, r1);
-	_mm_store_si128(l3, r1);
+        for (int i=0;i<size;i++)
+            lOut[i] = lIn1[i] - lIn2[i];
     }
-}
+    inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+    {
+	__m128i r0,r1;
+	__m128i *l1 = (__m128i*) lIn1;
+	__m128i *l2 = (__m128i*) lIn2;
+	__m128i *l3 = (__m128i*) lOut;
+	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	{
+	    r0 = _mm_load_si128(l1);
+	    r1 = _mm_load_si128(l2);
+	    r1 = _mm_sub_epi8(r0, r1);
+	    _mm_store_si128(l3, r1);
+	}
+    }
+};
 
 template <>
-inline void supLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+struct supLine<UINT8> : public binaryLineFunctionBase<UINT8>
 {
-     __m128i r0,r1;
-    __m128i *l1 = (__m128i*) lIn1;
-    __m128i *l2 = (__m128i*) lIn2;
-    __m128i *l3 = (__m128i*) lOut;
-    for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+    inline void _exec(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
     {
-	r0 = _mm_load_si128(l1);
-	r1 = _mm_load_si128(l2);
-	r1 = _mm_max_epu8(r0, r1);
-	_mm_store_si128(l3, r1);
+        for (int i=0;i<size;i++)
+            lOut[i] = lIn1[i] > lIn2[i] ? lIn1[i] : lIn2[i];
     }
-}
+    inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+    {
+	__m128i r0,r1;
+	__m128i *l1 = (__m128i*) lIn1;
+	__m128i *l2 = (__m128i*) lIn2;
+	__m128i *l3 = (__m128i*) lOut;
+	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	{
+	    r0 = _mm_load_si128(l1);
+	    r1 = _mm_load_si128(l2);
+	    r1 = _mm_max_epu8(r0, r1);
+	    _mm_store_si128(l3, r1);
+	}
+    }
+};
 
 template <>
-inline void infLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+struct infLine<UINT8> : public binaryLineFunctionBase<UINT8>
 {
-     __m128i r0,r1;
-    __m128i *l1 = (__m128i*) lIn1;
-    __m128i *l2 = (__m128i*) lIn2;
-    __m128i *l3 = (__m128i*) lOut;
-    for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+    inline void _exec(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
     {
-	r0 = _mm_load_si128(l1);
-	r1 = _mm_load_si128(l2);
-	r1 = _mm_min_epu8(r0, r1);
-	_mm_store_si128(l3, r1);
+        for (int i=0;i<size;i++)
+            lOut[i] = lIn1[i] < lIn2[i] ? lIn1[i] : lIn2[i];
     }
-}
+    inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+    {
+	__m128i r0,r1;
+	__m128i *l1 = (__m128i*) lIn1;
+	__m128i *l2 = (__m128i*) lIn2;
+	__m128i *l3 = (__m128i*) lOut;
+	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	{
+	    r0 = _mm_load_si128(l1);
+	    r1 = _mm_load_si128(l2);
+	    r1 = _mm_min_epu8(r0, r1);
+	    _mm_store_si128(l3, r1);
+	}
+    }
+};
 
 template <>
-inline void mulLine<UINT8>::_exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+struct mulLine<UINT8> : public binaryLineFunctionBase<UINT8>
 {
-     __m128i r0,r1;
-    __m128i *l1 = (__m128i*) lIn1;
-    __m128i *l2 = (__m128i*) lIn2;
-    __m128i *l3 = (__m128i*) lOut;
-    for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+    inline void _exec(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
     {
-	r0 = _mm_load_si128(l1);
-	r1 = _mm_load_si128(l2);
-	r1 = _mm_mullo_epi16(r0, r1);
-	_mm_store_si128(l3, r1);
+        for (int i=0;i<size;i++)
+            lOut[i] = lIn1[i] * lIn2[i];
     }
-}
+    inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
+    {
+	__m128i r0,r1;
+	__m128i *l1 = (__m128i*) lIn1;
+	__m128i *l2 = (__m128i*) lIn2;
+	__m128i *l3 = (__m128i*) lOut;
+	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	{
+	    r0 = _mm_load_si128(l1);
+	    r1 = _mm_load_si128(l2);
+	    r1 = _mm_mullo_epi16(r0, r1);
+	    _mm_store_si128(l3, r1);
+	}
+    }
+};
 
 
 /** @}*/

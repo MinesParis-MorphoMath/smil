@@ -112,6 +112,9 @@ inline void copyLine(T1 *lIn, int size, bool *lOut)
 template <>
 struct fillLine<bool> : public unaryLineFunctionBase<bool>
 {
+    fillLine() {}
+    fillLine(bool *lInOut, int size, bool value) { this->_exec(lInOut, size, value); }
+    
     inline void _exec(bool *lIn, int size, bool *lOut)
     {
 	copyLine<bool,bool>(lIn, size, lOut);
