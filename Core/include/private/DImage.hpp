@@ -181,6 +181,15 @@ public:
     Image<T>& operator >= (Image<T> &rhs);
     Image<T>& operator >= (T value);
 
+    Image<T>& operator | (Image<T> &rhs);
+    Image<T>& operator | (T value);
+    Image<T>& operator |= (Image<T> &rhs);
+    Image<T>& operator |= (T value);
+    Image<T>& operator & (Image<T> &rhs);
+    Image<T>& operator & (T value);
+    Image<T>& operator &= (Image<T> &rhs);
+    Image<T>& operator &= (T value);
+    
     operator bool() { return vol(*this)==numeric_limits<T>::max()*pixelCount; }
     
     Image<T>& operator << (const T *tab);

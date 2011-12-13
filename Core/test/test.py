@@ -50,7 +50,7 @@ def testBench(binIm=False):
     tim1 = Image_UINT8(bench_sx, bench_sy)
     tim2 = Image_UINT8(bench_sx, bench_sy)
   
-  tse = sSE()
+  tse = hSE()
   
   nruns = 1E3 # 5E3
   t1 = time.time()
@@ -76,7 +76,7 @@ def testBenchMb(binIm=False):
   mIm1.setSize(bench_sx, bench_sy)
   mIm2.setSize(bench_sx, bench_sy)
   
-  mse = mb.sSE(1)
+  mse = mb.hSE(1)
   
   nruns = 1E3 # 5E3
   t1 = time.time()

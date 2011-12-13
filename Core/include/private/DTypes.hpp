@@ -30,14 +30,15 @@
 #ifndef _D_TYPES_H
 #define _D_TYPES_H
 
+#include <stdint.h>
 
 typedef unsigned int UINT;
 typedef unsigned char UINT8;
 typedef unsigned short UINT16;
 typedef unsigned int UINT32;
-typedef unsigned long UINT64;
+typedef uint64_t UINT64;
 
-typedef unsigned char alUINT8 __attribute__ ((vector_size (16)));
+// typedef unsigned char __attribute__ ((vector_size (16))) alUINT8;
 
 #ifndef _MSC_VER
 typedef char INT8;

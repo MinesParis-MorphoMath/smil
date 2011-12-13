@@ -48,6 +48,8 @@ public:
     UINT32 bufferNumber;
     UINT32 bufferLength;
     UINT32 bufferSize;
+    
+    RES_T retVal;
 
     imageFunctionBase() : alignedBuffers ( NULL ) {};
     ~imageFunctionBase()
@@ -59,6 +61,8 @@ public:
     inline void deleteAlignedBuffers();
     inline void copyLineToBuffer ( T *line, UINT32 bufIndex );
     inline void copyBufferToLine ( UINT32 bufIndex, T *line );
+    
+    operator RES_T() { return retVal; }
 };
 
 template <class T, class lineFunction_T>
@@ -71,6 +75,15 @@ public:
     typedef typename imageType::pixelType pixelType;
 
     unaryImageFunction() {}
+    unaryImageFunction( imageType &imIn, imageType &ImOut ) 
+    {
+        this->retVal = this->_exec ( imIn, ImOut );
+    }
+    unaryImageFunction( imageType &imIn, T value ) 
+    {
+        this->retVal = this->_exec (imIn, value);
+    }
+    
     inline RES_T operator() ( imageType &imIn, imageType &ImOut )
     {
         return this->_exec ( imIn, ImOut );
@@ -100,12 +113,13 @@ public:
     binaryImageFunction() {}
     binaryImageFunction ( imageType &imIn1, imageType &imIn2, imageType &ImOut )
     {
-        this->_exec ( imIn1, imIn2, ImOut );
+        this->retVal = this->_exec ( imIn1, imIn2, ImOut );
     }
     binaryImageFunction ( imageType &imIn, T value, imageType &ImOut )
     {
-        this->_exec ( imIn, value, ImOut );
+        this->retVal = this->_exec ( imIn, value, ImOut );
     }
+    
     inline RES_T operator() ( imageType &imIn1, imageType &imIn2, imageType &ImOut )
     {
         return this->_exec ( imIn1, imIn2, ImOut );
@@ -123,7 +137,6 @@ public:
     lineFunction_T lineFunction;
 };
 
-
 template <class T, class lineFunction_T>
 class tertiaryImageFunction : public imageFunctionBase<T>
 {
@@ -134,6 +147,24 @@ public:
     typedef typename imageType::pixelType pixelType;
 
     tertiaryImageFunction() {}
+    tertiaryImageFunction( imageType &imIn1, imageType &imIn2, imageType &imIn3, imageType &ImOut )
+    {
+        this->retVal = this->_exec ( imIn1, imIn2, imIn3, ImOut );
+    }
+    tertiaryImageFunction( imageType &imIn1, T value, imageType &imIn2, imageType &ImOut )
+    {
+        this->retVal = this->_exec ( imIn1, value, imIn2, ImOut );
+    }
+    tertiaryImageFunction( imageType &imIn1, imageType &imIn2, T value, imageType &ImOut )
+    {
+        this->retVal = this->_exec ( imIn1, imIn2, value, ImOut );
+    }
+    tertiaryImageFunction( imageType &imIn, T value1, T value2, imageType &ImOut )
+    {
+        this->retVal = this->_exec ( imIn, value1, value2, ImOut );
+    }
+    
+    
     inline RES_T operator() ( imageType &imIn1, imageType &imIn2, imageType &imIn3, imageType &ImOut )
     {
         return this->_exec ( imIn1, imIn2, imIn3, ImOut );

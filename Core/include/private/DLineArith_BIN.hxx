@@ -39,11 +39,11 @@
  * @{
  */
 
-// template <>
-// inline void copyLine<bool,bool>(bool *lIn, int size, bool *lOut)
-// {
-//     memcpy(lOut, lIn, size*sizeof(BIN_TYPE));
-// }
+template <>
+inline void copyLine<bool,bool>(bool *lIn, int size, bool *lOut)
+{
+    memcpy(lOut, lIn, size*sizeof(BIN_TYPE));
+}
 
 template <class T1>
 inline void copyLine(T1 *lIn, int size, bool *lOut)
@@ -112,6 +112,10 @@ inline void copyLine(T1 *lIn, int size, bool *lOut)
 template <>
 struct fillLine<bool> : public unaryLineFunctionBase<bool>
 {
+    inline void _exec(bool *lIn, int size, bool *lOut)
+    {
+	copyLine<bool,bool>(lIn, size, lOut);
+    }
     inline void _exec(bool *lInOut, int size, bool value)
     {
 	BIN::Type *bInOut = (BIN::Type*)lInOut;
@@ -154,12 +158,10 @@ inline void bitShiftLeft(bool *lIn, int dx, int lineLen, bool *lOut, BIN borderV
 
     for(int i=0;i<dx%BIN::SIZE;i++)
     {
-        for (int j=lineLen-1;j>=0;j--)
+        bOut[lineLen-1] = (bOut[lineLen-1] >> 1) | (bVal & BIN::MS_BIT);
+        for (int j=lineLen-2;j>=0;j--)
         {
-            bOut[j] <<= 1;
-	    
-            if (bOut[j] & BIN::MS_BIT)
-	      bOut[j+1] |= 0x01;
+            bOut[j] = (bOut[j]<< 1) | (bOut[j+1] & BIN::MS_BIT);
 	}
     }
 
@@ -197,12 +199,10 @@ inline void bitShiftRight(bool *lIn, int dx, int lineLen, bool *lOut, BIN border
 
     for(int i=0;i<dx%BIN::SIZE;i++)
     {
+        bOut[0] = (bOut[0] >> 1) | (bVal & BIN::LS_BIT);
         for (int j=0;j<lineLen;j++)
         {
-            bOut[j] >>= 1;
-	    
-            if (bOut[j+1] & 0x01)
-	      bOut[j] |= BIN::MS_BIT;
+            bOut[j] = (bOut[j] >> 1) | (bOut[j-1] & BIN::LS_BIT);
 	}
     }
 

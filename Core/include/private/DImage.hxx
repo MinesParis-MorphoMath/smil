@@ -253,7 +253,7 @@ RES_T Image<T>::deallocate(void)
 	delete[] lines;
     if (pixels)
 // 		delete[] pixels;
-		deleteAlignedBuffer<T>(pixels)    ;
+		deleteAlignedBuffer<T>(pixels);
     slices = NULL;
     lines = NULL;
     pixels = NULL;
@@ -537,6 +537,66 @@ Image<T>& Image<T>::operator >= (T value)
     static Image<T> newIm(*this);
     grtOrEqu(*this, value, newIm);
     return newIm;
+}
+
+template <class T>
+Image<T>& Image<T>::operator | (Image<T> &rhs)
+{
+    static Image<T> newIm(*this);
+    sup(*this, rhs, newIm);
+    return newIm;
+}
+
+template <class T>
+Image<T>& Image<T>::operator | (T value)
+{
+    static Image<T> newIm(*this);
+    sup(*this, value, newIm);
+    return newIm;
+}
+
+template <class T>
+Image<T>& Image<T>::operator |= (Image<T> &rhs)
+{
+    sup(*this, rhs, *this);
+    return *this;
+}
+
+template <class T>
+Image<T>& Image<T>::operator |= (T value)
+{
+    sup(*this, value, *this);
+    return *this;
+}
+
+template <class T>
+Image<T>& Image<T>::operator & (Image<T> &rhs)
+{
+    static Image<T> newIm(*this);
+    inf(*this, rhs, newIm);
+    return newIm;
+}
+
+template <class T>
+Image<T>& Image<T>::operator & (T value)
+{
+    static Image<T> newIm(*this);
+    inf(*this, value, newIm);
+    return newIm;
+}
+
+template <class T>
+Image<T>& Image<T>::operator &= (Image<T> &rhs)
+{
+    inf(*this, rhs, *this);
+    return *this;
+}
+
+template <class T>
+Image<T>& Image<T>::operator &= (T value)
+{
+    inf(*this, value, *this);
+    return *this;
 }
 
 template <class T>

@@ -59,6 +59,10 @@ inline void copyLine(T *lIn, int size, T *lOut)
 template <class T>
 struct fillLine : public unaryLineFunctionBase<T>
 {
+    inline void _exec(T *lIn, int size, T *lOut)
+    {
+	memcpy(lOut, lIn, size*sizeof(T));
+    }
     inline void _exec(T *lInOut, int size, T value)
     {
         for (int i=0;i<size;i++)

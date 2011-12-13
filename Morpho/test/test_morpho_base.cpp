@@ -79,50 +79,8 @@ int main(int argc, char *argv[])
     int nRuns = (int)1E3;
 
    
-//     unsigned char uc = 0;
-//     BIT bit;
-//     bit.array = &uc;
-//     bit.index = 2;
-//     
-//     bit = 1;
-//     cout << bit << endl;
-//     
-//     bool bv = bit;
-//     
-//     for (int i=0;i<8;i++)
-//       cout << ((uc & (1<<i)) != 0) << " ";
-//     cout << endl;
-//     
-//     
-//     Image<BIT> bitIm, bitIm2;
-//     bitIm2.clone(bitIm);
-// //     bitIm.getSize();
-//     
-//     return 0;
-    
-    UINT8 c1 = 0;
-    UINT8 c2 = 4;
-    UINT8 c3;
-    
-    BIN b1, b2, b3;
-    b1 = numeric_limits<BIN>::max();
-    b1[3] = 1;
-    b2.val = 4;
-
-    BIN::Type *bt = (BIN::Type*)(&b1);
-    
-    cout << b1.val << " -> " << *bt << endl;
-    
-    b3 = BIN_TYPE(~(b1.val^b2.val));
-    
-    cout << b1 << endl;
-    cout << b2 << endl;
-    cout << b3 << endl;
-    
-    cout << sizeof(b1) << endl;
-//     b1[0] = 1;
-    
     UINT w = 1024, h = 1024;
+//     UINT w = 768, h = 576;
     
     typedef Image<bool> imType;
     
@@ -132,22 +90,23 @@ int main(int argc, char *argv[])
     
     cout << "Width: " << w << endl;
     
-//     sup(bim1, bim2, bim3);
+    Image_UINT8 im1(w,h);
+    Image_UINT8 im2(w,h);
+    Image_UINT8 im3(w,h);
+
+    fill(im1, UINT8(100));
+    fill(im2, UINT8(5));
     
-    bench(dilate, (bim1, bim3, hSE()));
     bench(sup, (bim1, bim2, bim3));
+    bench(sup, (im1, im2, im3));
+    bench(dilate, (bim1, bim3, hSE()));
+    bench(dilate, (im1, im3, hSE()));
+    bench(erode, (bim1, bim3, hSE()));
+    bench(erode, (im1, im3, hSE()));
     
-//     bim1.printSelf(1);
-//     bim2.printSelf(1);
-//     bim3.printSelf(1);
-    
+
     return 0;
     
-//      int c;
-    Image_UINT8 im1(10,10);
-    Image_UINT8 im2;
-    Image_UINT8 im3;
-
     Image_UINT16 im4;
 
     int sx = 1024;
@@ -202,7 +161,7 @@ int main(int argc, char *argv[])
     StrElt se = hSE();
 
     im5 << UINT8(127);
-    erode(im5, im6, sSE(5));
+//     erode(im5, im6, sSE(5));
 //       im5.show();
     im6.show();
 
@@ -220,7 +179,7 @@ int main(int argc, char *argv[])
 //      supLine<UINT8> f;
 //       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
 //       bench(dilate, (im1, im3, se));
-    bench(erode, (im1, im3, se));
+//     bench(erode, (im1, im3, se));
 //       bench(volIm, (im1));
 //       im6.show();
 

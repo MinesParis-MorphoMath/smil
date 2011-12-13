@@ -188,7 +188,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 	
 	for (int l=0;l<nLines;l++)
 	{
-	    x = se.points[0].x + oddLine;
+	    x = se.points[0].x + (oddLine && oddSe);
 	    y = l + se.points[0].y;
 	    z = s + se.points[0].z;
 
@@ -198,12 +198,9 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 	    
 	    for (int p=1;p<sePtsNumber;p++)
 	    {
-		bool pass = false;
-		
-		x = se.points[p].x + oddLine;
+		x = se.points[p].x + (oddLine && oddSe);
 		y = l + se.points[p].y;
 		z = s + se.points[p].z;
-		
 		
 		_exec_line(outBuf, tmpIm, x, y, z, outBuf);   
 	    }
@@ -265,33 +262,35 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
 //	oddLine = !s%2;
 	
 	// Process first line
-	copyLine<T,T>(srcLines[0], lineLen, inBuf);
-	_exec_shifted_line(inBuf, inBuf, -1, lineLen, tmpBuf1);
+// 	copyLine<T,T>(srcLines[0], lineLen, inBuf);
+	_exec_shifted_line(srcLines[0], srcLines[0], -1, lineLen, tmpBuf1);
 	_exec_shifted_line(tmpBuf1, tmpBuf1, 1, lineLen, tmpBuf4);
 	
-	copyLine<T,T>(srcLines[1], lineLen, inBuf);
-	_exec_shifted_line(inBuf, inBuf, 1, lineLen, tmpBuf2);
-	lineFunction._exec(tmpBuf4, tmpBuf2, lineLen, outBuf);
-	lineFunction._exec(borderBuf, outBuf, lineLen, destLines[0]);
+// 	copyLine<T,T>(srcLines[1], lineLen, inBuf);
+	_exec_shifted_line(srcLines[1], srcLines[1], 1, lineLen, tmpBuf2);
+	lineFunction(tmpBuf4, tmpBuf2, lineLen, outBuf);
+	lineFunction(borderBuf, outBuf, lineLen, destLines[0]);
 // 	copyLine(outBuf, lineLen, destLines[0]);
 	
 // imOut.modified();
 // return RES_OK;
 	for (int l=2;l<nLines;l++)
 	{
-	    copyLine<T,T>(srcLines[l], lineLen, inBuf);
+// 	    copyLine<T,T>(srcLines[l], lineLen, inBuf);
 	    if((l%2)==0)
 	    {
-		_exec_shifted_line(inBuf, inBuf, -1, lineLen, tmpBuf3);
+// 		_exec_shifted_line(inBuf, inBuf, -1, lineLen, tmpBuf3);
+		_exec_shifted_line(srcLines[l], srcLines[l], -1, lineLen, tmpBuf3);
 		_exec_shifted_line(tmpBuf2, tmpBuf2, -1, lineLen, tmpBuf4);
 	    }
 	    else
 	    {
-		_exec_shifted_line(inBuf, inBuf, 1, lineLen, tmpBuf3);
+// 		_exec_shifted_line(inBuf, inBuf, 1, lineLen, tmpBuf3);
+		_exec_shifted_line(srcLines[l], srcLines[l], 1, lineLen, tmpBuf3);
 		_exec_shifted_line(tmpBuf2, tmpBuf2, 1, lineLen, tmpBuf4);
 	    }
-	    lineFunction._exec(tmpBuf1, tmpBuf3, lineLen, outBuf);
-	    lineFunction._exec(tmpBuf4, outBuf, lineLen, destLines[l-1]);
+	    lineFunction(tmpBuf1, tmpBuf3, lineLen, outBuf);
+	    lineFunction(tmpBuf4, outBuf, lineLen, destLines[l-1]);
 // 	    copyLine(outBuf, lineLen, destLines[l-1]);
 	    
 	    tmpBuf = tmpBuf1;
@@ -304,7 +303,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
 	  _exec_shifted_line(tmpBuf2, tmpBuf2, 1, lineLen, tmpBuf4);
 	else
 	  _exec_shifted_line(tmpBuf2, tmpBuf2, -1, lineLen, tmpBuf4);
-	lineFunction._exec(tmpBuf4, tmpBuf1, lineLen, outBuf);
+	lineFunction(tmpBuf4, tmpBuf1, lineLen, outBuf);
 	lineFunction._exec(borderBuf, outBuf, lineLen, destLines[nLines-1]);
 // 	copyLine(outBuf, lineLen, destLines[nLines-1]);
 	
