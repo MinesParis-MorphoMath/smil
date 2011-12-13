@@ -351,6 +351,11 @@ inline RES_T test(Image<T> &imIn, T value1, T value2, Image<T> &imOut)
     return tertiaryImageFunction<T, testLine<T> >(imIn, value1, value2, imOut);
 }
 
+template <class T>
+inline RES_T translate(Image<T> &imIn, UINT x, UINT y, UINT z, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
+{
+}
+
 
 /**
  * Volume of an image

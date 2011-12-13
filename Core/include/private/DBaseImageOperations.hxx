@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -39,34 +39,34 @@ struct fillLine;
 template <class T>
 inline typename Image<T>::lineType *imageFunctionBase<T>::createAlignedBuffers(UINT8 nbr, UINT32 len)
 {
-    if (alignedBuffers) 
+    if (alignedBuffers)
     {
-	if (nbr==bufferNumber && len==bufferLength)
-	  return alignedBuffers;
-	
-	deleteAlignedBuffers();
+        if (nbr==bufferNumber && len==bufferLength)
+            return alignedBuffers;
+
+        deleteAlignedBuffers();
     }
-    
-    
+
+
     bufferNumber = nbr;
     bufferLength = len;
     bufferSize = bufferLength * sizeof(T);
-    
+
     alignedBuffers = new lineType[bufferNumber];
     for (int i=0;i<bufferNumber;i++)
-      alignedBuffers[i] = createAlignedBuffer<T>(len);
-    
+        alignedBuffers[i] = createAlignedBuffer<T>(len);
+
     return alignedBuffers;
 }
-    
+
 
 template <class T>
 inline void imageFunctionBase<T>::deleteAlignedBuffers()
 {
     if (!alignedBuffers) return;
-    
+
     for (UINT i=0;i<bufferNumber;i++)
-      deleteAlignedBuffer<T>(alignedBuffers[i]);
+        deleteAlignedBuffer<T>(alignedBuffers[i]);
 }
 
 template <class T>
@@ -88,18 +88,19 @@ template <class T, class lineFunction_T>
 inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
+        return RES_ERR_BAD_ALLOCATION;
 
     int lineLen = imIn.getAllocatedWidth();
     int bufSize = lineLen * sizeof(T);
     int lineCount = imIn.getLineCount();
-    
+
     lineType *srcLines = imIn.getLines();
     lineType *destLines = imOut.getLines();
-    
+
+#pragma omp for
     for (int i=0;i<lineCount;i++)
-	lineFunction(srcLines[i], lineLen, destLines[i]);
-	
+        lineFunction(srcLines[i], lineLen, destLines[i]);
+
     imOut.modified();
 
     return RES_OK;
@@ -110,22 +111,23 @@ template <class T, class lineFunction_T>
 inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, T &value)
 {
     if (!areAllocated(&imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
+        return RES_ERR_BAD_ALLOCATION;
 
     int lineLen = imOut.getAllocatedWidth();
     int lineCount = imOut.getLineCount();
 
     lineType *destLines = imOut.getLines();
     T *constBuf = createAlignedBuffer<T>(lineLen);
-    
+
     // Fill the first aligned buffer with the constant value
     fillLine<T>::_exec(constBuf, lineLen, value);
 
     // Use it for operations on lines
-    
+
+#pragma omp for
     for (int i=0;i<lineCount;i++)
-	lineFunction._exec_aligned(constBuf, lineLen, destLines[i]);
-      
+        lineFunction._exec_aligned(constBuf, lineLen, destLines[i]);
+
     deleteAlignedBuffer<T>(constBuf);
     imOut.modified();
 }
@@ -136,18 +138,19 @@ template <class T, class lineFunction_T>
 inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, imageType &imIn2, imageType &imOut)
 {
     if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
+        return RES_ERR_BAD_ALLOCATION;
 
     int lineLen = imIn1.getAllocatedWidth();
     int lineCount = imIn1.getLineCount();
-    
+
     lineType *srcLines1 = imIn1.getLines();
     lineType *srcLines2 = imIn2.getLines();
     lineType *destLines = imOut.getLines();
-    
+
+#pragma omp for
     for (int i=0;i<lineCount;i++)
-	lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
-      
+        lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
+
     imOut.modified();
 
     return RES_OK;
@@ -158,23 +161,24 @@ template <class T, class lineFunction_T>
 inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imInOut)
 {
     if (!areAllocated(&imIn, &imInOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
+        return RES_ERR_BAD_ALLOCATION;
 
     int lineLen = imIn.getAllocatedWidth();
     int lineCount = imIn.getLineCount();
-    
+
     lineType *srcLines1 = imIn.getLines();
     lineType *srcLines2 = imInOut.getLines();
-    
+
     T *tmpBuf = createAlignedBuffer<T>(lineLen);
-    
+
+#pragma omp for
     for (int i=0;i<lineCount;i++)
-	lineFunction(srcLines1[i], srcLines2[i], lineLen, tmpBuf);
-      
+        lineFunction(srcLines1[i], srcLines2[i], lineLen, tmpBuf);
+
     deleteAlignedBuffer<T>(tmpBuf);
     imInOut.modified();
 
-	return RES_OK;
+    return RES_OK;
 }
 
 
@@ -183,27 +187,28 @@ template <class T, class lineFunction_T>
 inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T value, imageType &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
+        return RES_ERR_BAD_ALLOCATION;
 
     int lineLen = imIn.getAllocatedWidth();
     int lineCount = imIn.getLineCount();
-    
+
     lineType *srcLines = imIn.getLines();
     lineType *destLines = imOut.getLines();
-    
+
     T *constBuf = createAlignedBuffer<T>(lineLen);
-    
+
     // Fill the const buffer with the value
     fillLine<T> f;
     f(constBuf, lineLen, value);
 
+#pragma omp for
     for (int i=0;i<lineCount;i++)
-	lineFunction(srcLines[i], constBuf, lineLen, destLines[i]);
-      
+        lineFunction(srcLines[i], constBuf, lineLen, destLines[i]);
+
     deleteAlignedBuffer<T>(constBuf);
     imOut.modified();
 
-	return RES_OK;
+    return RES_OK;
 }
 
 
@@ -213,20 +218,21 @@ template <class T, class lineFunction_T>
 inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, imageType &imIn2, imageType &imIn3, imageType &imOut)
 {
     if (!areAllocated(&imIn1, &imIn2, &imIn3, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
+        return RES_ERR_BAD_ALLOCATION;
 
     int lineLen = imIn1.getAllocatedWidth();
     int bufSize = lineLen * sizeof(T);
     int lineCount = imIn1.getLineCount();
-    
+
     lineType *srcLines1 = imIn1.getLines();
     lineType *srcLines2 = imIn2.getLines();
     lineType *srcLines3 = imIn3.getLines();
     lineType *destLines = imOut.getLines();
-    
+
+#pragma omp for
     for (int i=0;i<lineCount;i++)
-	lineFunction(srcLines1[i], srcLines2[i], srcLines3[i], lineLen, destLines[i]);
-    
+        lineFunction(srcLines1[i], srcLines2[i], srcLines3[i], lineLen, destLines[i]);
+
     imOut.modified();
 
     return RES_OK;
@@ -237,28 +243,29 @@ template <class T, class lineFunction_T>
 inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, imageType &imIn2, T value, imageType &imOut)
 {
     if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
+        return RES_ERR_BAD_ALLOCATION;
 
     int lineLen = imIn1.getAllocatedWidth();
     int lineCount = imIn1.getLineCount();
-    
+
     lineType *srcLines1 = imIn2.getLines();
     lineType *srcLines2 = imIn2.getLines();
     lineType *destLines = imOut.getLines();
-    
+
     T *constBuf = createAlignedBuffer<T>(lineLen);
-    
+
     // Fill the const buffer with the value
     fillLine<T> f;
     f(constBuf, lineLen, value);
-    
+
+#pragma omp for
     for (int i=0;i<lineCount;i++)
-	lineFunction(srcLines1[i], srcLines2[i], constBuf, lineLen, destLines[i]);
+        lineFunction(srcLines1[i], srcLines2[i], constBuf, lineLen, destLines[i]);
 
     deleteAlignedBuffer<T>(constBuf);
     imOut.modified();
 
-	return RES_OK;
+    return RES_OK;
 }
 
 template <class T, class lineFunction_T>
@@ -272,25 +279,26 @@ template <class T, class lineFunction_T>
 inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T value1, T value2, imageType &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
+        return RES_ERR_BAD_ALLOCATION;
 
     int lineLen = imIn.getAllocatedWidth();
     int lineCount = imIn.getLineCount();
-    
+
     lineType *srcLines = imIn.getLines();
     lineType *destLines = imOut.getLines();
-    
+
     T *constBuf1 = createAlignedBuffer<T>(lineLen);
     T *constBuf2 = createAlignedBuffer<T>(lineLen);
-    
+
     // Fill the const buffers with the values
     fillLine<T> f;
     f(constBuf1, lineLen, value1);
     f(constBuf2, lineLen, value2);
-    
+
+#pragma omp for
     for (int i=0;i<lineCount;i++)
-	lineFunction(srcLines[i], constBuf1, constBuf2, lineLen, destLines[i]);
-      
+        lineFunction(srcLines[i], constBuf1, constBuf2, lineLen, destLines[i]);
+
     deleteAlignedBuffer<T>(constBuf1);
     deleteAlignedBuffer<T>(constBuf2);
     imOut.modified();

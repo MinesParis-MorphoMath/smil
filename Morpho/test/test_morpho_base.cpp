@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 #endif // BUILD_GUI
 
     int t1 = clock();
-    int nRuns = (int)1E3;
+    int nRuns = (int)5E3;
 
    
     UINT w = 1024, h = 1024;
@@ -99,10 +99,10 @@ int main(int argc, char *argv[])
     
     bench(sup, (bim1, bim2, bim3));
     bench(sup, (im1, im2, im3));
-    bench(dilate, (bim1, bim3, hSE()));
-    bench(dilate, (im1, im3, hSE()));
-    bench(erode, (bim1, bim3, hSE()));
-    bench(erode, (im1, im3, hSE()));
+//     bench(dilate, (bim1, bim3, hSE()));
+//     bench(dilate, (im1, im3, hSE()));
+//     bench(erode, (bim1, bim3, hSE()));
+//     bench(erode, (im1, im3, hSE()));
     
 
     return 0;
