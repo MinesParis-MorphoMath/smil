@@ -146,7 +146,7 @@ template <class T>
 struct supLine : public binaryLineFunctionBase<T>
 {
     inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
-    {cout << "ok" << endl;
+    {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] > lIn2[i] ? lIn1[i] : lIn2[i];
     }

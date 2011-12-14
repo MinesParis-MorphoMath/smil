@@ -366,7 +366,7 @@ inline RES_T translate(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOu
     
     for (int k=0;k<depth;k++)
     {
-	typename Image<T>::lineType *lOut = *(imOut.getSlices()[k]);
+	typename Image<T>::lineType *lOut = imOut.getSlices()[k];
 	
 	UINT z = k+dz;
 	for (int j=0;j<height;j++, lOut++)
