@@ -33,6 +33,8 @@
 #include "DImage.hpp"
 #include "DMemory.hpp"
 
+#include <omp.h>
+
 template <class T>
 struct fillLine;
 
@@ -147,10 +149,14 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, ima
     lineType *srcLines2 = imIn2.getLines();
     lineType *destLines = imOut.getLines();
 
-#pragma omp parallel for
-    for (int i=0;i<lineCount;i++)
-        lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
-
+    int i, chunk = 100;
+    
+    #pragma omp parallel shared(srcLines1,srcLines2,destLines,chunk) private(i)
+    {
+	#pragma omp for schedule(dynamic,chunk) nowait
+	for (i=0;i<lineCount;i++)
+	    lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
+    }
     imOut.modified();
 
     return RES_OK;

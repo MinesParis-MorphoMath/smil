@@ -78,21 +78,31 @@ int main(int argc, char *argv[])
     int t1 = clock();
     int nRuns = (int)1E3;
 
+  int iam = 0, np = 1;
+
+  #pragma omp parallel private(iam, np)
+  {
+    #if defined (_OPENMP)
+      np = omp_get_num_threads();
+      iam = omp_get_thread_num();
+    #endif
+    printf("Hello from thread %d out of %d\n", iam, np);
+  }
    
-    UINT w = 1024, h = 1024;
+    UINT w = 1024, h = 1024, d = 1;
 //     UINT w = 768, h = 576;
     
     typedef Image<bool> imType;
     
-    imType bim1(w, h);
-    imType bim2(w, h);
-    imType bim3(w, h);
+    imType bim1(w, h, d);
+    imType bim2(bim1);
+    imType bim3(bim1);
     
     cout << "Width: " << w << endl;
     
     Image_UINT8 im1(w,h);
-    Image_UINT8 im2(w,h);
-    Image_UINT8 im3(w,h);
+    Image_UINT8 im2(im1);
+    Image_UINT8 im3(im1);
 
     fill(im1, UINT8(100));
     fill(im2, UINT8(5));
@@ -101,8 +111,8 @@ int main(int argc, char *argv[])
     bench(sup, (im1, im2, im3));
     bench(dilate, (bim1, bim3, hSE()));
     bench(dilate, (im1, im3, hSE()));
-    bench(erode, (bim1, bim3, hSE()));
-    bench(erode, (im1, im3, hSE()));
+//     bench(erode, (bim1, bim3, hSE()));
+//     bench(erode, (im1, im3, hSE()));
     
 
     return 0;
