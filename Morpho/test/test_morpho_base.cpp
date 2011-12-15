@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
     printf("Hello from thread %d out of %d\n", iam, np);
   }
    
-    UINT w = 1024, h = 1024, d = 1;
+    UINT w = 1E3, h = 1E4, d = 1;
 //     UINT w = 768, h = 576;
     
     typedef Image<bool> imType;
