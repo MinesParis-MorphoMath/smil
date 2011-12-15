@@ -117,7 +117,6 @@ struct fillLine<bool> : public unaryLineFunctionBase<bool>
     
     inline void _exec(bool *lIn, int size, bool *lOut)
     {
-	copyLine<bool,bool>(lIn, size, lOut);
     }
     inline void _exec(bool *lInOut, int size, bool value)
     {
@@ -125,7 +124,7 @@ struct fillLine<bool> : public unaryLineFunctionBase<bool>
 	BIN v = value;
 	
         for (int i=0;i<size;i++)
-            bInOut[i] = value;
+            bInOut[i] = v.val;
     }
 };
 
@@ -140,75 +139,55 @@ inline void bitShiftLeft(bool *lIn, int dx, int lineLen, bool *lOut, BIN borderV
     
     if (dx>=bitLen)
     {
-	for (int i=0;i<lineLen;i++)
-	  bOut[i] = bVal;
+	fillLine<bool>(lOut, lineLen, bVal);
 	return;
     }
     
-    if (dxBytes > 0)
-    {
-	BIN::Type *l1 = bIn;
-	BIN::Type *l2 = bOut + dxBytes;
-	
-        for(int i=dxBytes;i<lineLen;i++, l1++, l2++)
-            *l2 = *l1;
-	
-        for(int i=0;i<dxBytes;i++)
-	    bOut[i] = bVal;
-    }
-    else
-      memcpy(bOut, bIn, lineLen*sizeof(BIN));
-
-    for(int i=0;i<dx%BIN::SIZE;i++)
-    {
-        bOut[lineLen-1] = (bOut[lineLen-1] >> 1) | (bVal & BIN::MS_BIT);
-        for (int j=lineLen-2;j>=0;j--)
-        {
-            bOut[j] = (bOut[j]<< 1) | (bOut[j+1] & BIN::MS_BIT);
-	}
-    }
-
+    for (int i=0;i<dxBytes;i++,bOut++)
+	*bOut = bVal;
+    
+    UINT rMov = dx%BIN::SIZE;
+    UINT lMov = BIN::SIZE - dx%BIN::SIZE;
+    
+    // First run with border to keep the loop clean for vectorization
+    *bOut++ = (*bIn++ << rMov) | (bVal >> lMov);
+    
+    for (int i=dxBytes+1;i<lineLen;i++,bIn++,bOut++)
+	*bOut = (*bIn << rMov) | (*(bIn-1) >> lMov);
 }
 
 inline void bitShiftRight(bool *lIn, int dx, int lineLen, bool *lOut, BIN borderValue)
 {
+    // lineLen = 100;
+    UINT binLineLen = 104; // <----------- change this !!
+    UINT lenDiff = 4;
+    
     UINT dxBytes = dx/BIN::SIZE;
     UINT bitLen = lineLen * BIN::SIZE;
     
-    BIN::Type *bIn = (BIN::Type*)lIn;
-    BIN::Type *bOut = (BIN::Type*)lOut;
+    BIN::Type *bIn = (BIN::Type*)lIn + lineLen-1;
+    BIN::Type *bOut = (BIN::Type*)lOut + lineLen-1;
     BIN::Type bVal = borderValue.val;
-
+    
     if (dx>=bitLen)
     {
-	for (int i=0;i<lineLen;i++)
-	  bOut[i] = bVal;
+	fillLine<bool>(lOut, lineLen, bVal);
 	return;
     }
     
-    if (dxBytes > 0)
-    {
-	BIN::Type *l1 = bIn + dxBytes;
-	BIN::Type *l2 = bOut;
-	
-        for(int i=0;i<lineLen-dxBytes;i++,l1++,l2++)
-            *l2 = *l1;
-	
-        for(int i=lineLen-dxBytes;i<lineLen;i++)
-	    bOut[i] = bVal;
-    }
-    else
-      memcpy(bOut, bIn, lineLen*sizeof(BIN_TYPE));
-
-    for(int i=0;i<dx%BIN::SIZE;i++)
-    {
-        bOut[0] = (bOut[0] >> 1) | (bVal & BIN::LS_BIT);
-        for (int j=0;j<lineLen;j++)
-        {
-            bOut[j] = (bOut[j] >> 1) | (bOut[j-1] & BIN::LS_BIT);
-	}
-    }
-
+    for (int i=0;i<dxBytes;i++,bOut--)
+	*bOut = bVal;
+    
+    UINT lMov = BIN::SIZE - dx%BIN::SIZE;
+    UINT rMov = dx%BIN::SIZE;
+    
+    
+    // First run with border to keep the loop clean for vectorization
+    BIN::Type rightMask = *bIn-- & (numeric_limits<BIN::Type>::max() >> lenDiff);
+    *bOut-- = (rightMask >> rMov) | (bVal << lMov);
+    
+    for (int i=dxBytes+1;i<lineLen;i++,bIn--,bOut--)
+	*bOut = (*bIn >> rMov) | (*(bIn+1) << lMov);
 }
 
 template <>

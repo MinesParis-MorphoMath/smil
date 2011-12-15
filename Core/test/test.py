@@ -17,8 +17,9 @@ class testit(Thread):
    def run(self):
       self.app._exec()
 
-bench_sx = 1000
-bench_sy = 1000
+bench_sx = 7680
+bench_sy = 5760
+nruns = 1E2
      
 if ('im1' in locals())==0:
   #app = QtGui.QApplication(sys.argv)
@@ -52,7 +53,6 @@ def testBench(binIm=False):
   
   tse = sSE()
   
-  nruns = 1E3 # 5E3
   t1 = time.time()
 
   for i in range(int(nruns)):
@@ -78,7 +78,6 @@ def testBenchMb(binIm=False):
   
   mse = mb.sSE(1)
   
-  nruns = 1E3 # 5E3
   t1 = time.time()
 
   for i in range(int(nruns)):

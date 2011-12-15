@@ -65,8 +65,6 @@ void func(hSE *se)
 }
 
 
-
-
 #include "DLineArith_BIN.hxx"
 
 int main(int argc, char *argv[])
@@ -89,7 +87,7 @@ int main(int argc, char *argv[])
     printf("Hello from thread %d out of %d\n", iam, np);
   }
    
-    UINT w = 1E3, h = 1E4, d = 1;
+    UINT w = 100, h = 1, d = 1;
 //     UINT w = 768, h = 576;
     
     typedef Image<bool> imType;
@@ -99,81 +97,100 @@ int main(int argc, char *argv[])
     imType bim3(bim1);
     
     cout << "Width: " << w << endl;
+    cout << "Line count: " << bim1.getLineCount() << endl;
+    
+    BIN b1 = (~0<<1);
+    BIN b2 = 0;
+    
+    b2.val = (b2.val << 1) | (b1.val & 0x01);
+    
+    cout << b1 << ", " << b2 << endl;
+    
+    fill(bim1, true);
+    for (int i=0;i<bim1.getAllocatedWidth();i++)
+    {
+      if (i%2)
+	bim1.getPixels()[i] = 0;
+    }
+//     bitShiftLeft(bim1.getLines()[0], 10, bim1.getAllocatedWidth(), bim2.getLines()[0], BIN(0));
+    bitShiftRight(bim1.getLines()[0], 2, bim1.getAllocatedWidth(), bim2.getLines()[0], BIN(0));
+    bim1.printSelf(1);
+    bim2.printSelf(1);
     
     Image_UINT8 im1(w,h);
     Image_UINT8 im2(im1);
     Image_UINT8 im3(im1);
 
-    fill(im1, UINT8(100));
-    fill(im2, UINT8(5));
-    
-    bench(sup, (bim1, bim2, bim3));
-    bench(sup, (im1, im2, im3));
-    bench(dilate, (bim1, bim3, hSE()));
-    bench(dilate, (im1, im3, hSE()));
+//     fill(im1, UINT8(100));
+//     fill(im2, UINT8(5));
+//     
+//     bench(sup, (bim1, bim2, bim3));
+//     bench(sup, (im1, im2, im3));
+//     bench(dilate, (bim1, bim3, hSE()));
+//     bench(dilate, (im1, im3, hSE()));
 //     bench(erode, (bim1, bim3, hSE()));
 //     bench(erode, (im1, im3, hSE()));
     
 
     return 0;
     
-    Image_UINT16 im4;
-
-    int sx = 1024;
-    int sy = 1024;
-    /*      sx = 40;
-          sy = 20;*/
-
-    im1.setSize(sx, sy);
-    im2.setSize(sx, sy);
-    im3.setSize(sx, sy);
-    im4.setSize(sx, sy);
-
-    fill(im1, UINT8(100));
-    fill(im2, UINT8(5));
-
-
-    UINT8 val = 10;
-
-//       bench(fill, (im3, val));
-//       bench(copy, (im1, im3));
-//       bench(copy, (im1, im4));
-//       bench(inv, (im1, im2));
-//       bench(inf, (im1, im2, im3));
-//       bench(inf, (im1, val, im3));
-//       bench(sup, (im1, im2, im3));
-//       bench(sup, (im1, val, im3));
-//       bench(add, (im1, im2, im3));
-//       bench(addNoSat, (im1, im2, im3));
-//       bench(add, (im1, val, im3));
-//       bench(sub, (im1, im2, im3));
-//       bench(sub, (im1, val, im3));
-//       bench(grt, (im1, im2, im3));
-//       bench(div, (im1, im2, im3));
-//       bench(mul, (im1, im2, im3));
-//       bench(mul, (im1, val, im3));
-//       bench(mulNoSat, (im1, im2, im3));
-//       bench(mulNoSat, (im1, val, im3));
-
-// 	bench(testAdd, (im1, im2, im3));
-//       bench(sup, (im1, im2, im3));
-
-    im3.printSelf(sx < 50);
-
-    /*      fill((UINT8)1, im1);
-          fill((UINT8)2, im2);*/
-
-    Image_UINT8 im5(50,50), im6(50,50);
-//       fill(UINT8(5), im6);
-//       im5 = im1 + im2;
-
-//       fill(im5, UINT8(100));
-    StrElt se = hSE();
-
-    im5 << UINT8(127);
-//     erode(im5, im6, sSE(5));
-//       im5.show();
-    im6.show();
+//     Image_UINT16 im4;
+// 
+//     int sx = 1024;
+//     int sy = 1024;
+//     /*      sx = 40;
+//           sy = 20;*/
+// 
+//     im1.setSize(sx, sy);
+//     im2.setSize(sx, sy);
+//     im3.setSize(sx, sy);
+//     im4.setSize(sx, sy);
+// 
+//     fill(im1, UINT8(100));
+//     fill(im2, UINT8(5));
+// 
+// 
+//     UINT8 val = 10;
+// 
+// //       bench(fill, (im3, val));
+// //       bench(copy, (im1, im3));
+// //       bench(copy, (im1, im4));
+// //       bench(inv, (im1, im2));
+// //       bench(inf, (im1, im2, im3));
+// //       bench(inf, (im1, val, im3));
+// //       bench(sup, (im1, im2, im3));
+// //       bench(sup, (im1, val, im3));
+// //       bench(add, (im1, im2, im3));
+// //       bench(addNoSat, (im1, im2, im3));
+// //       bench(add, (im1, val, im3));
+// //       bench(sub, (im1, im2, im3));
+// //       bench(sub, (im1, val, im3));
+// //       bench(grt, (im1, im2, im3));
+// //       bench(div, (im1, im2, im3));
+// //       bench(mul, (im1, im2, im3));
+// //       bench(mul, (im1, val, im3));
+// //       bench(mulNoSat, (im1, im2, im3));
+// //       bench(mulNoSat, (im1, val, im3));
+// 
+// // 	bench(testAdd, (im1, im2, im3));
+// //       bench(sup, (im1, im2, im3));
+// 
+//     im3.printSelf(sx < 50);
+// 
+//     /*      fill((UINT8)1, im1);
+//           fill((UINT8)2, im2);*/
+// 
+//     Image_UINT8 im5(50,50), im6(50,50);
+// //       fill(UINT8(5), im6);
+// //       im5 = im1 + im2;
+// 
+// //       fill(im5, UINT8(100));
+//     StrElt se = hSE();
+// 
+//     im5 << UINT8(127);
+// //     erode(im5, im6, sSE(5));
+// //       im5.show();
+//     im6.show();
 
 //       se.addPoint(5,5);
 //       se.addPoint(5,0);

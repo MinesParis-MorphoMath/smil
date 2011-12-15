@@ -41,7 +41,7 @@ using namespace std;
 // #define CHAR_BIT 8
 // #endif
 
-typedef UINT64 BIN_TYPE;
+typedef UINT8 BIN_TYPE;
 
 struct bitIndex
 {
@@ -75,6 +75,7 @@ struct BIN
     //! Most significant bit
     static const BIN_TYPE MS_BIT = (1UL << (SIZE - 2));
     static const BIN_TYPE LS_BIT = 0x01;
+    
     
     typedef BIN_TYPE Type;
     typedef Type *lineType;
