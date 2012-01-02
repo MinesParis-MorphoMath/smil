@@ -64,7 +64,7 @@ RES_T TestSuite::run()
 	
 	if (tc->retVal==RES_OK)
 	{
-	    cout << "Passed\t" << displayElapsedTime(tElapsed) << endl;
+	    cout << "Passed\t" << displayTime(tElapsed) << endl;
 	    nPassed += 1;
 	}
 	else

@@ -39,16 +39,12 @@
 
 using namespace std;
 
-#define TIME_IN_SEC(t) double(t) / CLOCKS_PER_SEC; // secs
-#define TIME_IN_MSEC(t) 1E3 * double(t) / CLOCKS_PER_SEC; // msecs
-#define TIME_IN_MUSEC(t) 1E6 * double(t) / CLOCKS_PER_SEC; // µsecs
-
-inline const char *displayElapsedTime(int t)
+inline const char *displayTime(int t)
 {
     stringstream s;
     double tSec = double(t) / CLOCKS_PER_SEC;
     
-    if (int(tSec)!=0)
+    if (int(tSec)!=0 || tSec==0)
       s << tSec << " secs";
     else if (int(tSec*1E3)!=0)
       s << tSec*1E3 << " msecs";
@@ -61,14 +57,15 @@ inline const char *displayElapsedTime(int t)
 class TestCase
 {
 public:
-  TestCase() : outStream(NULL) {}
+  TestCase() : stopIfError(true), outStream(NULL) {}
   virtual void init() {}
   virtual void run() = 0;
   virtual void end() {}
   const char *name;
   stringstream *outStream;
   RES_T retVal;
-  int tElapsed;  
+  int tElapsed;
+  bool stopIfError;
 };
 
 
@@ -79,6 +76,38 @@ public:
 	    if (outStream) \
 		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " assert " << #expr;	\
 	    retVal = RES_ERR; \
+	    if (stopIfError) \
+	      return; \
+    } \
+}
+
+#define TEST_NO_THROW(expr) \
+{ \
+    bool _throw = false; \
+    try { expr; } \
+    catch(...) { _throw = true; } \
+    if (_throw) \
+    { \
+	    if (outStream) \
+		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " no throw " << #expr;	\
+	    retVal = RES_ERR; \
+	    if (stopIfError) \
+	      return; \
+    } \
+}
+
+#define TEST_THROW(expr) \
+{ \
+    bool _throw = false; \
+    try { expr; } \
+    catch(...) { _throw = true; } \
+    if (!_throw) \
+    { \
+	    if (outStream) \
+		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " throw " << #expr;	\
+	    retVal = RES_ERR; \
+	    if (stopIfError) \
+	      return; \
     } \
 }
 

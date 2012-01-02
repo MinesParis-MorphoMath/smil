@@ -75,17 +75,18 @@ class test_base_BIN : public TestCase
     {
 	im1.setSize(1024,1024);
 	im2.setSize(1024,1024);
-	fill(im1, false);
+	fill(im1, UINT8(1));
+	fill(im2, UINT8(1));
 	try
 	{
-// 	  TEST_ASSERT(im1==im2);
+	  TEST_NO_THROW(im1==im2);
 	}
 	catch(...)
 	{
 	}
 	dilate(im1, im2);
     }
-    Image<bool> im1, im2;
+    Image<UINT8> im1, im2;
 };
 
 #include "DLineArith_BIN.hxx"
