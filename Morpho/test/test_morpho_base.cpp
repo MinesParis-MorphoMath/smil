@@ -31,6 +31,8 @@
 #include <stdio.h>
 #include <time.h>
 
+#include <cassert>
+
 //#include <boost/signal.hpp>
 //#include <boost/bind.hpp>
 
@@ -39,6 +41,7 @@
 #include "DLineArith_BIN.hxx"
 #include "DMorpho.h"
 #include "DImageIO.h"
+#include "DTest.h"
 
 #ifdef BUILD_GUI
 #include "DGui.h"
@@ -65,6 +68,26 @@ void func(hSE *se)
 }
 
 
+
+class test_base_BIN : public TestCase
+{
+    void run()
+    {
+	im1.setSize(1024,1024);
+	im2.setSize(1024,1024);
+	fill(im1, false);
+	try
+	{
+// 	  TEST_ASSERT(im1==im2);
+	}
+	catch(...)
+	{
+	}
+	dilate(im1, im2);
+    }
+    Image<bool> im1, im2;
+};
+
 #include "DLineArith_BIN.hxx"
 
 int main(int argc, char *argv[])
@@ -73,9 +96,18 @@ int main(int argc, char *argv[])
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
 
+   
+    for (int i=0;i<argc;i++)
+      cout << argv[i] << " ";
+    cout << endl;
     int t1 = clock();
     int nRuns = (int)1E3;
 
+    TestSuite t;
+    ADD_TEST(t, test_base_BIN);
+    
+    return t.run();
+    
   int iam = 0, np = 1;
 
   #pragma omp parallel private(iam, np)
@@ -87,7 +119,7 @@ int main(int argc, char *argv[])
     printf("Hello from thread %d out of %d\n", iam, np);
   }
    
-    UINT w = 100, h = 1, d = 1;
+    UINT w = 1024, h = 1024, d = 1;
 //     UINT w = 768, h = 576;
     
     typedef Image<bool> imType;
@@ -98,41 +130,38 @@ int main(int argc, char *argv[])
     
     cout << "Width: " << w << endl;
     cout << "Line count: " << bim1.getLineCount() << endl;
-    
-    BIN b1 = (~0<<1);
-    BIN b2 = 0;
-    
-    b2.val = (b2.val << 1) | (b1.val & 0x01);
-    
-    cout << b1 << ", " << b2 << endl;
-    
+        
     fill(bim1, true);
-    for (int i=0;i<bim1.getAllocatedWidth();i++)
-    {
-      if (i%2)
-	bim1.getPixels()[i] = 0;
-    }
-//     bitShiftLeft(bim1.getLines()[0], 10, bim1.getAllocatedWidth(), bim2.getLines()[0], BIN(0));
-    bitShiftRight(bim1.getLines()[0], 2, bim1.getAllocatedWidth(), bim2.getLines()[0], BIN(0));
-    bim1.printSelf(1);
-    bim2.printSelf(1);
+    fill(bim2, false);
     
     Image_UINT8 im1(w,h);
     Image_UINT8 im2(im1);
     Image_UINT8 im3(im1);
 
-//     fill(im1, UINT8(100));
-//     fill(im2, UINT8(5));
-//     
-//     bench(sup, (bim1, bim2, bim3));
-//     bench(sup, (im1, im2, im3));
-//     bench(dilate, (bim1, bim3, hSE()));
-//     bench(dilate, (im1, im3, hSE()));
-//     bench(erode, (bim1, bim3, hSE()));
-//     bench(erode, (im1, im3, hSE()));
+    fill(im1, UINT8(100));
+    fill(im2, UINT8(5));
     
-
-    return 0;
+    sup(bim1, bim2, bim3);
+    dilate(bim1, bim2);
+    
+    bench(sup, (bim1, bim2, bim3));
+    bench(sup, (im1, im2, im3));
+    bench(dilate, (bim1, bim2, hSE()));
+    bench(dilate, (im1, im3, hSE()));
+    bench(erode, (bim1, bim3, hSE()));
+    bench(erode, (im1, im3, hSE()));
+    
+    try
+    {
+	1/0;
+    }
+    catch(...)
+    {
+        cout << "err: " << __FILE__ << endl;
+    }
+    
+cout << "err: " << __FILE__ << __LINE__ << __FUNCTION__ << endl;
+    return -1;
     
 //     Image_UINT16 im4;
 // 

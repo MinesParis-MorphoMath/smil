@@ -34,6 +34,7 @@
 #include "limits.h"
 
 #include "DTypes.hpp"
+#include <limits>
 
 using namespace std;
 
@@ -41,7 +42,7 @@ using namespace std;
 // #define CHAR_BIT 8
 // #endif
 
-typedef UINT8 BIN_TYPE;
+typedef UINT64 BIN_TYPE;
 
 struct bitIndex
 {
@@ -51,14 +52,14 @@ struct bitIndex
     bitIndex& operator=(bool val)
     {
       if (val)
-	(*byte) |= (1<<index);
+	(*byte) |= (1UL<<index);
       else
-	(*byte) &= ~(1<<index);
+	(*byte) &= ~(1UL<<index);
       return *this;
     }
     operator bool()
     {
-      return (*byte) & (1<<index);
+      return (*byte) & (1UL<<index);
     }
 };
 
@@ -66,11 +67,14 @@ struct BIN
 {
     BIN_TYPE val;
     
-    BIN(int v = 0) : val(v) {}
-    BIN(bool b) : val(b ? ~0 : 0) {}
-    BIN(double v) : val(v==0 ? 0 : ~0) {}
+    BIN(BIN_TYPE v = numeric_limits<BIN_TYPE>::min()) : val(v) {}
+    BIN(bool b) : val(b ? this->max() : this->min()) {}
+    BIN(double v) : val(v==0 ? this->min() : this->max()) {}
     
-    static const UINT SIZE = sizeof(BIN_TYPE)*CHAR_BIT;
+    static const BIN_TYPE SIZE = sizeof(BIN_TYPE)*CHAR_BIT;
+    
+    static inline BIN_TYPE min() { return numeric_limits<BIN_TYPE>::min(); }
+    static inline BIN_TYPE max() { return numeric_limits<BIN_TYPE>::max(); }
     
     //! Most significant bit
     static const BIN_TYPE MS_BIT = (1UL << (SIZE - 2));
@@ -80,6 +84,8 @@ struct BIN
     typedef BIN_TYPE Type;
     typedef Type *lineType;
     typedef lineType *sliceType;
+    
+    static inline BIN_TYPE binLen(BIN_TYPE bitCount) { return (bitCount-1)/BIN::SIZE + 1; }
 
     inline bitIndex& operator[] (UINT8 pos)
     {
@@ -101,7 +107,7 @@ struct BIN
     }
     inline BIN& operator=(bool b)
     {
-	val = b ? ~0 : 0;
+	val = b ? this->max() : this->min();
 	return *this;
     }
     inline BIN& operator=(const char* s)

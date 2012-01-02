@@ -34,15 +34,10 @@
 #include "DBinary.hpp"
 
 template<> 
-inline bool *createAlignedBuffer<bool>(int size) {
-  void* ptr;
-  
-  UINT s = size*CHAR_BIT*sizeof(BIN_TYPE);
-  MALLOC(ptr,(size*CHAR_BIT*sizeof(BIN_TYPE)),SIMD_VEC_SIZE);
-//   posix_memalign (&ptr, 16, (size+32)*sizeof(T));
-
-  return ((bool*) (ptr));
-//   return new T[size];
+inline bool *createAlignedBuffer<bool>(int size) 
+{
+    UINT realSize = BIN::binLen(size);
+    return ((bool*) createAlignedBuffer<BIN_TYPE>(realSize));
 }
 
 
@@ -61,14 +56,15 @@ inline RES_T Image<bool>::restruct(void)
     BIN::lineType *cur_line = (BIN::lineType*)lines;
     BIN::sliceType *cur_slice = (BIN::sliceType*)slices;
     
-    int pixelsPerSlice = allocatedWidth * height;
+    UINT realWidth = BIN::binLen(width);
+    UINT pixelsPerSlice = realWidth * height;
     
     for (int k=0; k<(int)depth; k++, cur_slice++)
     {
       *cur_slice = cur_line;
       
       for (int j=0; j<(int)height; j++, cur_line++)
-	*cur_line = bPixels + k*pixelsPerSlice + j*allocatedWidth;
+	*cur_line = bPixels + k*pixelsPerSlice + j*realWidth;
     }
     
     return RES_OK;
@@ -80,14 +76,13 @@ inline RES_T Image<bool>::allocate(void)
     if (allocated)
 	return RES_ERR_BAD_ALLOCATION;
     
-    UINT realWidth = (width-1)/BIN::SIZE + 1;
+    UINT realWidth = BIN::binLen(width);
     UINT realPixelCount = realWidth*height*depth;
     
     pixels = (bool*)createAlignedBuffer<BIN>(realPixelCount);
 //     pixels = new pixelType[pixelCount];
     
     allocated = true;
-    allocatedWidth = realWidth;
     allocatedSize = realPixelCount*sizeof(BIN_TYPE);
     
     restruct();
@@ -113,7 +108,6 @@ inline RES_T Image<bool>::deallocate(void)
     pixels = NULL;
 
     allocated = false;
-    allocatedWidth = 0;
     allocatedSize = 0;
     
     return RES_OK;
@@ -127,7 +121,7 @@ inline bool Image<bool>::getPixel(UINT x, UINT y, UINT z)
 	return RES_ERR;
     UINT byteCount = width / BIN::SIZE + 1;
     BIN *bLine = (BIN*)slices[z][y];
-    return (bLine[int(x/BIN::SIZE)].val & (1<<(x%BIN::SIZE)))!=0;
+    return (bLine[int(x/BIN::SIZE)].val & (1UL<<(x%BIN::SIZE)))!=0;
 }
 
 template <>
@@ -139,7 +133,7 @@ inline bool Image<bool>::getPixel(UINT offset)
     UINT lNum = offset / width;
     UINT realOffset = offset + lNum*(realWidth-width);
     BIN *bPixels = (BIN*)pixels;
-    return (bPixels[realOffset/BIN::SIZE].val & (1<<(realOffset%BIN::SIZE)))!=0;
+    return (bPixels[realOffset/BIN::SIZE].val & (1UL<<(realOffset%BIN::SIZE)))!=0;
 }
 
 template <>
@@ -150,9 +144,9 @@ inline RES_T Image<bool>::setPixel(UINT x, UINT y, UINT z, bool value)
     UINT byteCount = width / BIN::SIZE + 1;
     BIN *bLine = (BIN*)slices[z][y];
     if (value)
-      bLine[int(x/BIN::SIZE)].val |= (1<<(x%BIN::SIZE));
+      bLine[int(x/BIN::SIZE)].val |= (1UL<<(x%BIN::SIZE));
     else
-      bLine[int(x/BIN::SIZE)].val &= ~(1<<(x%BIN::SIZE));
+      bLine[int(x/BIN::SIZE)].val &= ~(1UL<<(x%BIN::SIZE));
     modified();
     return RES_OK;
 }

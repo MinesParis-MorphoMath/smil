@@ -47,10 +47,6 @@ public:
         return depth;
     }
 
-    inline UINT getAllocatedWidth() const {
-        return allocatedWidth;
-    }
-    
     inline UINT getAllocatedSize() const {
         return allocatedSize;
     }
@@ -94,8 +90,6 @@ protected:
     UINT height;
     UINT depth;
 
-    UINT allocatedWidth;
-    
     UINT sliceCount;
     UINT lineCount;
     UINT pixelCount;

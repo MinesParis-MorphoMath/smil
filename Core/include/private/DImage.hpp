@@ -172,6 +172,7 @@ public:
     Image<T>& operator / (T value);
     Image<T>& operator /= (Image<T> &rhs);
     Image<T>& operator /= (T value);
+    Image<T>& operator == (Image<T> &rhs);
     Image<T>& operator < (Image<T> &rhs);
     Image<T>& operator < (T value);
     Image<T>& operator <= (Image<T> &rhs);

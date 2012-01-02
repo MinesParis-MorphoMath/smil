@@ -42,15 +42,14 @@
 template <>
 inline void copyLine<bool,bool>(bool *lIn, int size, bool *lOut)
 {
-    memcpy(lOut, lIn, size*sizeof(BIN_TYPE));
+    UINT realSize = BIN::binLen(size);
+    memcpy(lOut, lIn, realSize*sizeof(BIN_TYPE));
 }
 
 template <class T1>
 inline void copyLine(T1 *lIn, int size, bool *lOut)
 {
-    // size must correspond here to the imIn width, i.e. the real number of pixels (see DImageArith.hpp)
-    
-    UINT nBin = (size-1)/BIN::SIZE + 1;
+    UINT nBin = BIN::binLen(size);
     T1 *pIn = lIn;
     BIN::Type *bOut = (BIN::Type*)lOut;
     BIN::Type tmp;
@@ -120,24 +119,25 @@ struct fillLine<bool> : public unaryLineFunctionBase<bool>
     }
     inline void _exec(bool *lInOut, int size, bool value)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bInOut = (BIN::Type*)lInOut;
 	BIN v = value;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bInOut[i] = v.val;
     }
 };
 
 inline void bitShiftLeft(bool *lIn, int dx, int lineLen, bool *lOut, BIN borderValue)
 {
+    UINT realLen = BIN::binLen(lineLen);
     UINT dxBytes = dx/BIN::SIZE;
-    UINT bitLen = lineLen * BIN::SIZE;
     
-    BIN::Type *bIn = (BIN::Type*)lIn;
-    BIN::Type *bOut = (BIN::Type*)lOut;
-    BIN::Type bVal = borderValue.val;
+    BIN_TYPE *bIn = (BIN_TYPE*)lIn;
+    BIN_TYPE *bOut = (BIN_TYPE*)lOut;
+    BIN_TYPE bVal = borderValue.val;
     
-    if (dx>=bitLen)
+    if (dx>=lineLen)
     {
 	fillLine<bool>(lOut, lineLen, bVal);
 	return;
@@ -146,30 +146,29 @@ inline void bitShiftLeft(bool *lIn, int dx, int lineLen, bool *lOut, BIN borderV
     for (int i=0;i<dxBytes;i++,bOut++)
 	*bOut = bVal;
     
-    UINT rMov = dx%BIN::SIZE;
-    UINT lMov = BIN::SIZE - dx%BIN::SIZE;
+    BIN_TYPE lMov = dx%BIN::SIZE;
+    BIN_TYPE rMov = BIN::SIZE - rMov;
     
     // First run with border to keep the loop clean for vectorization
-    *bOut++ = (*bIn++ << rMov) | (bVal >> lMov);
+    *bOut++ = (*bIn++ << lMov) | (bVal >> rMov);
     
-    for (int i=dxBytes+1;i<lineLen;i++,bIn++,bOut++)
-	*bOut = (*bIn << rMov) | (*(bIn-1) >> lMov);
+    for (int i=dxBytes+1;i<realLen;i++,bIn++,bOut++)
+	*bOut = (*bIn << lMov) | (*(bIn-1) >> rMov);
 }
 
 inline void bitShiftRight(bool *lIn, int dx, int lineLen, bool *lOut, BIN borderValue)
 {
-    // lineLen = 100;
-    UINT binLineLen = 104; // <----------- change this !!
-    UINT lenDiff = 4;
+    UINT realLen = BIN::binLen(lineLen);
+    UINT binLineLen = realLen * BIN::SIZE;
+    BIN_TYPE lenDiff = binLineLen - lineLen;
     
     UINT dxBytes = dx/BIN::SIZE;
-    UINT bitLen = lineLen * BIN::SIZE;
     
-    BIN::Type *bIn = (BIN::Type*)lIn + lineLen-1;
-    BIN::Type *bOut = (BIN::Type*)lOut + lineLen-1;
-    BIN::Type bVal = borderValue.val;
+    BIN_TYPE *bIn = (BIN_TYPE*)lIn + realLen-1;
+    BIN_TYPE *bOut = (BIN_TYPE*)lOut + realLen-1;
+    BIN_TYPE bVal = borderValue.val;
     
-    if (dx>=bitLen)
+    if (dx>=lineLen)
     {
 	fillLine<bool>(lOut, lineLen, bVal);
 	return;
@@ -178,15 +177,17 @@ inline void bitShiftRight(bool *lIn, int dx, int lineLen, bool *lOut, BIN border
     for (int i=0;i<dxBytes;i++,bOut--)
 	*bOut = bVal;
     
-    UINT lMov = BIN::SIZE - dx%BIN::SIZE;
-    UINT rMov = dx%BIN::SIZE;
-    
+    BIN_TYPE rMov = dx%BIN::SIZE;
+    BIN_TYPE lMov = BIN::SIZE - rMov;
     
     // First run with border to keep the loop clean for vectorization
-    BIN::Type rightMask = *bIn-- & (numeric_limits<BIN::Type>::max() >> lenDiff);
+    BIN_TYPE rightMask = *bIn-- & (numeric_limits<BIN::Type>::max() >> lenDiff);
     *bOut-- = (rightMask >> rMov) | (bVal << lMov);
     
-    for (int i=dxBytes+1;i<lineLen;i++,bIn--,bOut--)
+    if (dxBytes+1<realLen)
+	*bOut-- = (*bIn-- >> rMov) | (rightMask << lMov);
+    
+    for (int i=dxBytes+2;i<realLen;i++,bIn--,bOut--)
 	*bOut = (*bIn >> rMov) | (*(bIn+1) << lMov);
 }
 
@@ -207,10 +208,11 @@ struct invLine<bool> : public unaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lineIn, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn = (BIN::Type*)lineIn;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = ~bIn[i];
     }
 };
@@ -220,11 +222,12 @@ struct addLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(BIN* lIn1, BIN* lIn2, int size, BIN* lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] | bIn2[i];
     }
 };
@@ -234,11 +237,12 @@ struct addNoSatLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] ^ bIn2[i];
     }
 };
@@ -248,11 +252,12 @@ struct subLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] & ~bIn2[i];
     }
 };
@@ -262,11 +267,12 @@ struct subNoSatLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] ^ bIn2[i];
     }
 };
@@ -279,11 +285,12 @@ struct supLine<bool> : public binaryLineFunctionBase<bool>
 // 	logicOrLine<BIN_TYPE> f;
 // 	f._exec((BIN_TYPE*)lIn1, (BIN_TYPE*)lIn2, size, (BIN_TYPE*)lOut);
 	
+	UINT realSize = BIN::binLen(size);
 	BIN_TYPE *bIn1 = (BIN_TYPE*)lIn1;
 	BIN_TYPE *bIn2 = (BIN_TYPE*)lIn2;
 	BIN_TYPE *bOut = (BIN_TYPE*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] | bIn2[i];
     }
 };
@@ -293,11 +300,12 @@ struct infLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] & bIn2[i];
     }
 };
@@ -307,11 +315,12 @@ struct grtLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] & ~bIn2[i];
     }
 };
@@ -321,11 +330,12 @@ struct grtOrEquLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] | ~bIn2[i];
     }
 };
@@ -335,11 +345,12 @@ struct lowLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = ~bIn1[i] & bIn2[i];
     }
 };
@@ -349,11 +360,12 @@ struct lowOrEquLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = ~bIn1[i] | bIn2[i];
     }
 };
@@ -363,11 +375,12 @@ struct equLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = ~(bIn1[i] ^ bIn2[i]);
     }
 };
@@ -377,11 +390,12 @@ struct difLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] ^ bIn2[i];
     }
 };
@@ -391,11 +405,12 @@ struct mulLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] & bIn2[i];
     }
 };
@@ -405,11 +420,12 @@ struct mulNoSatLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] & bIn2[i];
     }
 };
@@ -419,11 +435,12 @@ struct divLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] | ~bIn2[i];
     }
 };
@@ -433,11 +450,12 @@ struct logicAndLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] & bIn2[i];
     }
 };
@@ -447,11 +465,12 @@ struct logicOrLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = bIn1[i] | bIn2[i];
     }
 };
@@ -461,12 +480,13 @@ struct testLine<bool> : public tertiaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, bool *lIn3, int size, bool *lOut)
     {
+	UINT realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bIn3 = (BIN::Type*)lIn3;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
-        for (int i=0;i<size;i++)
+        for (int i=0;i<realSize;i++)
             bOut[i] = (bIn1[i] & bIn2[i]) | (~bIn1[i] & bIn3[i]);
     }
 };

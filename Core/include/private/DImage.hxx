@@ -97,7 +97,6 @@ void Image<T>::init()
 
     dataTypeSize = sizeof(pixelType); 
     
-    allocatedWidth = 0;
     allocatedSize = 0;
     
      viewer = NULL;
@@ -136,7 +135,7 @@ inline Image<T>& Image<T>::clone(const Image<T> &rhs)
     bool isAlloc = rhs.isAllocated();
     setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
     if (isAlloc)
-      memcpy(pixels, rhs.getPixels(), allocatedSize*sizeof(T));
+      memcpy(this->pixels, rhs.getPixels(), allocatedSize*sizeof(T));
     modified();
     return *this;
 }
@@ -191,7 +190,6 @@ inline RES_T Image<T>::allocate(void)
     
     
     allocated = true;
-    allocatedWidth = width;
     allocatedSize = pixelCount*sizeof(T);
     
     restruct();
@@ -213,14 +211,14 @@ RES_T Image<T>::restruct(void)
     lineType *cur_line = lines;
     sliceType *cur_slice = slices;
     
-    int pixelsPerSlice = allocatedWidth * height;
+    int pixelsPerSlice = width * height;
     
     for (int k=0; k<(int)depth; k++, cur_slice++)
     {
       *cur_slice = cur_line;
       
       for (int j=0; j<(int)height; j++, cur_line++)
-	*cur_line = pixels + k*pixelsPerSlice + j*allocatedWidth;
+	*cur_line = pixels + k*pixelsPerSlice + j*width;
     }
 	
     // Calc. line (mis)alignment
@@ -259,7 +257,6 @@ RES_T Image<T>::deallocate(void)
     pixels = NULL;
 
     allocated = false;
-    allocatedWidth = 0;
     allocatedSize = 0;
     
     return RES_OK;
@@ -473,6 +470,14 @@ Image<T>& Image<T>::operator /= (T value)
 {
     div(*this, value, *this);
     return *this;
+}
+
+template <class T>
+Image<T>& Image<T>::operator == (Image<T> &rhs)
+{
+    static Image<T> newIm(*this);
+    equ(*this, rhs, newIm);
+    return newIm;
 }
 
 template <class T>

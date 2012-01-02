@@ -47,11 +47,13 @@ inline RES_T fill(Image<T> &imOut, const T value)
 
     typedef typename Image<T>::lineType lineType;
     lineType *lineOut = imOut.getLines();
-    int lineLen = imOut.getAllocatedWidth();
+    int lineLen = imOut.getWidth();
     int lineCount = imOut.getLineCount();
 
-    fillLine<T> f;
-    f(imOut.getPixels(), lineLen*lineCount, value);
+    fillLine<T>(lineOut[0], lineLen, value);
+    
+    for (int i=1;i<lineCount;i++)
+      copyLine<T,T>(lineOut[0], lineLen, lineOut[i]);
 
     imOut.modified();
     return RES_OK;
@@ -69,7 +71,7 @@ RES_T copy(Image<T1> &imIn, Image<T2> &imOut)
         typename Image<T1>::lineType *l1 = imIn.getLines();
         typename Image<T2>::lineType *l2 = imOut.getLines();
 
-	UINT width = imIn.getAllocatedWidth();
+	UINT width = imIn.getWidth();
 	
         for (int i=0;i<imIn.getLineCount();i++)
 	  copyLine<T1,T2>(l1[i], width, l2[i]);
@@ -89,7 +91,7 @@ RES_T copy(Image<T> &imIn, Image<T> &imOut)
     if (haveSameSize(&imIn, &imOut, NULL))
     {
 // 	for (int j=0;j<imIn.getLineCount();j++)
-// 	  copyLine(imIn.getLines()[j], imIn.getAllocatedWidth(), imOut.getLines()[j]);
+// 	  copyLine(imIn.getLines()[j], imIn.getWidth(), imOut.getLines()[j]);
         memcpy(imOut.getPixels(), imIn.getPixels(), imIn.getAllocatedSize());
 
         imOut.modified();
@@ -232,6 +234,12 @@ inline RES_T inf(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 }
 
 template <class T>
+inline RES_T equ(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+{
+    return binaryImageFunction<T, equLine<T> >(imIn1, imIn2, imOut);
+}
+
+template <class T>
 inline RES_T grt(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, grtLine<T> >(imIn1, imIn2, imOut);
@@ -357,7 +365,7 @@ inline RES_T translate(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOu
     if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
     
-    UINT lineLen = imIn.getAllocatedWidth();
+    UINT lineLen = imIn.getWidth();
     T *borderBuf = createAlignedBuffer<T>(lineLen);
     fillLine<T>(borderBuf, lineLen, borderValue);
     

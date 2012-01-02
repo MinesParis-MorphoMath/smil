@@ -74,7 +74,7 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
 template <class T, class lineFunction_T>
 inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imOut, StrElt se)
 {
-    lineLen = imIn.getAllocatedWidth();
+    lineLen = imIn.getWidth();
     borderBuf = createAlignedBuffer<T>(lineLen);
     cpBuf = createAlignedBuffer<T>(lineLen);
     fillLine<T> f;

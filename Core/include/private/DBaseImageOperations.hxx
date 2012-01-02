@@ -92,7 +92,7 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, image
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imIn.getAllocatedWidth();
+    int lineLen = imIn.getWidth();
     int bufSize = lineLen * sizeof(T);
     int lineCount = imIn.getLineCount();
 
@@ -115,7 +115,7 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, T &v
     if (!areAllocated(&imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imOut.getAllocatedWidth();
+    int lineLen = imOut.getWidth();
     int lineCount = imOut.getLineCount();
 
     lineType *destLines = imOut.getLines();
@@ -142,7 +142,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, ima
     if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imIn1.getAllocatedWidth();
+    int lineLen = imIn1.getWidth();
     int lineCount = imIn1.getLineCount();
 
     lineType *srcLines1 = imIn1.getLines();
@@ -169,7 +169,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imag
     if (!areAllocated(&imIn, &imInOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imIn.getAllocatedWidth();
+    int lineLen = imIn.getWidth();
     int lineCount = imIn.getLineCount();
 
     lineType *srcLines1 = imIn.getLines();
@@ -195,7 +195,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T va
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imIn.getAllocatedWidth();
+    int lineLen = imIn.getWidth();
     int lineCount = imIn.getLineCount();
 
     lineType *srcLines = imIn.getLines();
@@ -226,7 +226,7 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
     if (!areAllocated(&imIn1, &imIn2, &imIn3, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imIn1.getAllocatedWidth();
+    int lineLen = imIn1.getWidth();
     int bufSize = lineLen * sizeof(T);
     int lineCount = imIn1.getLineCount();
 
@@ -251,7 +251,7 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
     if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imIn1.getAllocatedWidth();
+    int lineLen = imIn1.getWidth();
     int lineCount = imIn1.getLineCount();
 
     lineType *srcLines1 = imIn2.getLines();
@@ -287,7 +287,7 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T 
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imIn.getAllocatedWidth();
+    int lineLen = imIn.getWidth();
     int lineCount = imIn.getLineCount();
 
     lineType *srcLines = imIn.getLines();

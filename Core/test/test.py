@@ -3,11 +3,13 @@ import sys
 import time
 
 from smilPython import *
+import mamba as mb
 
 from threading import Thread
 
 
 sys.path.append("/home/faessel/src/ivp/faessel/")
+sys.path.append("/home/mat/src/ivp/faessel/")
 
 
 class testit(Thread):
@@ -17,8 +19,8 @@ class testit(Thread):
    def run(self):
       self.app._exec()
 
-bench_sx = 7680
-bench_sy = 5760
+bench_sx = 1024
+bench_sy = 1024
 nruns = 1E2
      
 if ('im1' in locals())==0:
@@ -43,7 +45,7 @@ im1 << 0
 #im2.show()
 
 
-def testBench(binIm=False):
+def testBench(func=dilate, se=hSE(), binIm=False, prnt=1):
   if binIm:
     tim1 = Image_bool(bench_sx, bench_sy)
     tim2 = Image_bool(bench_sx, bench_sy)
@@ -51,21 +53,19 @@ def testBench(binIm=False):
     tim1 = Image_UINT8(bench_sx, bench_sy)
     tim2 = Image_UINT8(bench_sx, bench_sy)
   
-  tse = sSE()
-  
   t1 = time.time()
 
   for i in range(int(nruns)):
-    dilate(tim1, tim2, tse)
-    #addIm(im1, im2, im3)
-    #supIm(im1, im2, im3)
+    func(tim1, tim2, se)
 
   t2 = time.time()
 
-  print (t2-t1)*1E3/nruns
+  retval = (t2-t1)*1E3/nruns
+  if prnt:
+    print retval
+  return retval
 
-def testBenchMb(binIm=False):
-  import mamba as mb
+def testBenchMb(func=dilate, se=mb.hSE(1), binIm=False, prnt=1):
   if (binIm):
     mIm1 = mb.imageMb(1)
     mIm2 = mb.imageMb(1)
@@ -76,20 +76,26 @@ def testBenchMb(binIm=False):
   mIm1.setSize(bench_sx, bench_sy)
   mIm2.setSize(bench_sx, bench_sy)
   
-  mse = mb.sSE(1)
-  
   t1 = time.time()
 
   for i in range(int(nruns)):
-    mb.dilate(mIm1, mIm2, mse)
-    #addIm(im1, im2, im3)
-    #supIm(im1, im2, im3)
+    func(mIm1, mIm2, se)
 
   t2 = time.time()
+  
+  retval = (t2-t1)*1E3/nruns
+  if prnt:
+    print retval
+  return retval
 
-  print (t2-t1)*1E3/nruns
-
-
+def bench_comp():
+    print "imSize:", bench_sx, ",", bench_sy
+    print "\t\t\tMb\t\tSmil"
+    print "dilate squ UINT8:\t", testBenchMb(mb.dilate, mb.sSE(1), 0, 0), "\t", testBench(dilate, sSE(), 0, 0)
+    print "dilate hex UINT8:\t", testBenchMb(mb.dilate, mb.hSE(1), 0, 0), "\t", testBench(dilate, hSE(), 0, 0)
+    print "dilate squ bin:\t\t", testBenchMb(mb.dilate, mb.sSE(1), 1, 0), "\t", testBench(dilate, sSE(), 1, 0)
+    print "dilate hex bin:\t\t", testBenchMb(mb.dilate, mb.hSE(1), 1, 0), "\t", testBench(dilate, hSE(), 1, 0)
+    
 def testInv():
   im1.setSize(50,50)
   im1 << 127
