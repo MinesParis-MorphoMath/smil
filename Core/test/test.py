@@ -3,13 +3,14 @@ import sys
 import time
 
 from smilPython import *
-import mamba as mb
 
 from threading import Thread
 
 
 sys.path.append("/home/faessel/src/ivp/faessel/")
 sys.path.append("/home/mat/src/ivp/faessel/")
+
+import mamba as mb
 
 
 class testit(Thread):
@@ -19,7 +20,7 @@ class testit(Thread):
    def run(self):
       self.app._exec()
 
-bench_sx = 1024
+bench_sx = 1024*5
 bench_sy = 1024
 nruns = 1E2
      

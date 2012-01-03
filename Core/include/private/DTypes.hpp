@@ -63,13 +63,19 @@ inline const char *getDataTypeAsString(T &val)
 template <>
 inline const char *getDataTypeAsString(UINT8 &val)
 {
-    return "UINT8 (unsigned char)";
+    return "UINT8";
 }
 
 template <>
 inline const char *getDataTypeAsString(UINT16 &val)
 {
-    return "UINT16 (unsigned short)";
+    return "UINT16";
+}
+
+template <>
+inline const char *getDataTypeAsString(bool &val)
+{
+    return "BIN";
 }
 
 

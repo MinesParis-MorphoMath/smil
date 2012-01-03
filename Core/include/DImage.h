@@ -40,6 +40,8 @@ typedef Image<UINT8> Image_UINT8;
 typedef Image<UINT16> Image_UINT16;
 typedef Image<UINT32> Image_UINT32;
 
+typedef Image<bool> Image_bool;
+
 // class Image_UINT8 : public Image<UINT8> {};
 
 // #ifdef SWIG

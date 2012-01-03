@@ -49,13 +49,6 @@
 #endif // BUILD_GUI
 
 
-#define bench(func, args) \
-      t1 = clock(); \
-      for (int i=0;i<nRuns;i++) \
-	func args; \
-        cout << #func << ": " << 1E3 * double(clock() - t1) / CLOCKS_PER_SEC / nRuns << " ms" << endl;
-
-
 
 void func(StrElt *se)
 {
@@ -80,6 +73,7 @@ class test_base_BIN : public TestCase
 	try
 	{
 	  TEST_NO_THROW(im1==im2);
+	  TEST_THROW(im1==im2);
 	}
 	catch(...)
 	{
@@ -91,6 +85,44 @@ class test_base_BIN : public TestCase
 
 #include "DLineArith_BIN.hxx"
 
+class BenchCase
+{
+public:
+  BenchCase() {}
+  BenchCase(UINT _sx, UINT _sy, UINT _sz, UINT _n) 
+    : sx(_sx), sy(_sy), sz(_sz), nbrRuns(_n) {}
+  BenchCase(UINT _sx, UINT _sy, UINT _n) 
+    : sx(_sx), sy(_sy), sz(1), nbrRuns(_n) {}
+    
+  UINT nbrRuns;
+  UINT sx, sy, sz;
+};
+
+template <typename T>
+void func_infos(T &f, ...)
+{
+    cout << "none" << endl;
+}
+
+template <class T>
+void func_infos(RES_T (*f)(Image<T>&, Image<T>&, Image<T>&), Image<T>&im1, Image<T>&im2, Image<T>&im3, UINT nbrRuns=1E3)
+{
+    cout << "ok" << endl;
+}
+
+
+#define bench(func, arg0, args...) \
+{ \
+      int t1 = clock(); \
+      for (int i=0;i<nRuns;i++) \
+	func(arg0, args); \
+      int t2 = clock(); \
+      cout << #func << "\t" << arg0.getTypeAsString() << "\t"; \
+      cout << arg0.getWidth() << "x" << arg0.getHeight(); \
+      if (arg0.getDepth()>1) cout << "x" << arg0.getDepth(); \
+      cout << "\t" << displayTime(double(t2-t1)/nRuns) << endl; \
+}
+
 int main(int argc, char *argv[])
 {
 #ifdef BUILD_GUI
@@ -101,13 +133,12 @@ int main(int argc, char *argv[])
     for (int i=0;i<argc;i++)
       cout << argv[i] << " ";
     cout << endl;
-    int t1 = clock();
     int nRuns = (int)1E3;
 
     TestSuite t;
     ADD_TEST(t, test_base_BIN);
     
-    return t.run();
+//     return t.run();
     
   int iam = 0, np = 1;
 
@@ -144,13 +175,17 @@ int main(int argc, char *argv[])
     
     sup(bim1, bim2, bim3);
     dilate(bim1, bim2);
+
+//     BenchCase bc(1024, 1024, 1E3);
+    func_infos(sup, bim1, bim2, bim3);
+    func_infos(dilate<bool>);
     
-    bench(sup, (bim1, bim2, bim3));
-    bench(sup, (im1, im2, im3));
-    bench(dilate, (bim1, bim2, hSE()));
-    bench(dilate, (im1, im3, hSE()));
-    bench(erode, (bim1, bim3, hSE()));
-    bench(erode, (im1, im3, hSE()));
+    BENCH_IMG(vol, im1);
+    BENCH(sup, bim1, bim2, bim3);
+    BENCH(dilate, im1, im3, hSE());
+    BENCH(dilate, bim1, bim2, hSE());
+    BENCH(erode, im1, im3, hSE());
+    BENCH(erode, bim1, bim3, hSE());
     
     try
     {
@@ -161,7 +196,7 @@ int main(int argc, char *argv[])
         cout << "err: " << __FILE__ << endl;
     }
     
-cout << "err: " << __FILE__ << __LINE__ << __FUNCTION__ << endl;
+// cout << "err: " << __FILE__ << __LINE__ << __FUNCTION__ << endl;
     return -1;
     
 //     Image_UINT16 im4;
@@ -182,28 +217,28 @@ cout << "err: " << __FILE__ << __LINE__ << __FUNCTION__ << endl;
 // 
 //     UINT8 val = 10;
 // 
-// //       bench(fill, (im3, val));
-// //       bench(copy, (im1, im3));
-// //       bench(copy, (im1, im4));
-// //       bench(inv, (im1, im2));
-// //       bench(inf, (im1, im2, im3));
-// //       bench(inf, (im1, val, im3));
-// //       bench(sup, (im1, im2, im3));
-// //       bench(sup, (im1, val, im3));
-// //       bench(add, (im1, im2, im3));
-// //       bench(addNoSat, (im1, im2, im3));
-// //       bench(add, (im1, val, im3));
-// //       bench(sub, (im1, im2, im3));
-// //       bench(sub, (im1, val, im3));
-// //       bench(grt, (im1, im2, im3));
-// //       bench(div, (im1, im2, im3));
-// //       bench(mul, (im1, im2, im3));
-// //       bench(mul, (im1, val, im3));
-// //       bench(mulNoSat, (im1, im2, im3));
-// //       bench(mulNoSat, (im1, val, im3));
+// //       BENCH(fill, (im3, val));
+// //       BENCH(copy, (im1, im3));
+// //       BENCH(copy, (im1, im4));
+// //       BENCH(inv, (im1, im2));
+// //       BENCH(inf, (im1, im2, im3));
+// //       BENCH(inf, (im1, val, im3));
+// //       BENCH(sup, (im1, im2, im3));
+// //       BENCH(sup, (im1, val, im3));
+// //       BENCH(add, (im1, im2, im3));
+// //       BENCH(addNoSat, (im1, im2, im3));
+// //       BENCH(add, (im1, val, im3));
+// //       BENCH(sub, (im1, im2, im3));
+// //       BENCH(sub, (im1, val, im3));
+// //       BENCH(grt, (im1, im2, im3));
+// //       BENCH(div, (im1, im2, im3));
+// //       BENCH(mul, (im1, im2, im3));
+// //       BENCH(mul, (im1, val, im3));
+// //       BENCH(mulNoSat, (im1, im2, im3));
+// //       BENCH(mulNoSat, (im1, val, im3));
 // 
-// // 	bench(testAdd, (im1, im2, im3));
-// //       bench(sup, (im1, im2, im3));
+// // 	BENCH(testAdd, (im1, im2, im3));
+// //       BENCH(sup, (im1, im2, im3));
 // 
 //     im3.printSelf(sx < 50);
 // 
@@ -235,9 +270,9 @@ cout << "err: " << __FILE__ << __LINE__ << __FUNCTION__ << endl;
 
 //      supLine<UINT8> f;
 //       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
-//       bench(dilate, (im1, im3, se));
-//     bench(erode, (im1, im3, se));
-//       bench(volIm, (im1));
+//       BENCH(dilate, (im1, im3, se));
+//     BENCH(erode, (im1, im3, se));
+//       BENCH(volIm, (im1));
 //       im6.show();
 
 //       add(im1, im2, im5);

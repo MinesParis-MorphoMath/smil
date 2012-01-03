@@ -78,6 +78,11 @@ public:
 
     ~Image();
     
+    const char* getTypeAsString()
+    {
+	T val;
+	return getDataTypeAsString(val);
+    }
     typedef T pixelType;
     typedef pixelType *lineType;
     typedef lineType *sliceType;
