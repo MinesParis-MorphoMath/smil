@@ -30,7 +30,8 @@
 #ifndef _D_IMAGE_ARITH_BIN_HPP
 #define _D_IMAGE_ARITH_BIN_HPP
 
-#include "DLineArith.hpp"
+#include "DBinary.hpp"
+#include "DLineArith_BIN.hxx"
 
 /**
  * \ingroup Core
@@ -45,21 +46,26 @@
  * Returns the sum of the pixel values.
  * \param imIn Input image.
  */
-// template <class T>
-// inline double vol(Image<T> &imIn)
-// {
-//     if (!imIn.isAllocated())
-//         return RES_ERR_BAD_ALLOCATION;
-// 
-//     int npix = imIn.getPixelCount();
-//     T *pixels = imIn.getPixels();
-//     double vol = 0;
-// 
-//     for (int i=0;i<npix;i++)
-//         vol += pixels[i];
-// 
-//     return vol;
-// }
+template <>
+inline double vol<bool>(Image<bool> &imIn)
+{
+    if (!imIn.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+
+    UINT lineLen = imIn.getWidth();
+    BIN::lineType *cur_line = (BIN::lineType*)imIn.getLines();
+    double vol = 0;
+    
+    for (int j=0;j<imIn.getLineCount();j++,cur_line++)
+    {
+	BIN_TYPE *pix = *cur_line;
+	for (int i=0;i<lineLen;i++)
+	  if (pix[i/BIN::SIZE] & (1UL<<(i%BIN::SIZE)))
+	    vol += 1;
+    }
+
+    return vol;
+}
 
 /**
  * Min value of an image
@@ -133,6 +139,29 @@
 //     }
 // 
 //     return RES_OK;
+// }
+
+// template <>
+// inline bool equ(Image<bool> &imIn1, Image<bool> &imIn2)
+// {
+//     if (!imIn1.isAllocated())
+//         return RES_ERR_BAD_ALLOCATION;
+// 
+//     UINT lineLen = imIn1.getWidth();
+//     BIN::lineType *line1 = (BIN::lineType*)imIn1.getLines();
+//     BIN::lineType *line2 = (BIN::lineType*)imIn2.getLines();
+//     double vol = 0;
+//     
+//     for (int j=0;j<imIn1.getLineCount();j++,line1++,line2++)
+//     {
+// 	BIN_TYPE *pix1 = *line1;
+// 	BIN_TYPE *pix2 = *line2;
+// 	for (int i=0;i<lineLen;i++)
+// 	  if (pix1[i/BIN::SIZE] & (1UL<<(i%BIN::SIZE)) != pix2[i/BIN::SIZE] & (1UL<<(i%BIN::SIZE)))
+// 	    return false;
+//     }
+// 
+//     return true;
 // }
 
 /** @}*/

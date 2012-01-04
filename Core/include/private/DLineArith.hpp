@@ -40,7 +40,6 @@
  * @{
  */
 
-
 template <class T1, class T2>
 inline void copyLine(T1 *lIn, int size, T2 *lOut)
 {
@@ -49,7 +48,7 @@ inline void copyLine(T1 *lIn, int size, T2 *lOut)
 }
 
 template <class T>
-inline void copyLine(T *lIn, int size, T *lOut)
+inline void copyLine(typename Image<T>::lineType lIn, int size, typename Image<T>::lineType lOut)
 {
     memcpy(lOut, lIn, size*sizeof(T));
 }
@@ -59,14 +58,15 @@ inline void copyLine(T *lIn, int size, T *lOut)
 template <class T>
 struct fillLine : public unaryLineFunctionBase<T>
 {
+    typedef typename Image<T>::lineType lineType;
     fillLine() {}
-    fillLine(T *lIn, int size, T value) { this->_exec(lIn, size, value); }
+    fillLine(lineType lIn, int size, T value) { this->_exec(lIn, size, value); }
     
-    inline void _exec(T *lIn, int size, T *lOut)
+    inline void _exec(lineType lIn, int size, lineType lOut)
     {
 	memcpy(lOut, lIn, size*sizeof(T));
     }
-    inline void _exec(T *lInOut, int size, T value)
+    inline void _exec(lineType lInOut, int size, T value)
     {
         for (int i=0;i<size;i++)
             lInOut[i] = value;
@@ -74,7 +74,7 @@ struct fillLine : public unaryLineFunctionBase<T>
 };
 
 template <class T>
-inline void shiftLine(T *lIn, int dx, int lineLen, T *lOut, T borderValue = numeric_limits<T>::min())
+inline void shiftLine(typename Image<T>::lineType lIn, int dx, int lineLen, typename Image<T>::lineType lOut, T borderValue = numeric_limits<T>::min())
 {
     fillLine<T> fillFunc;
 
@@ -95,7 +95,8 @@ inline void shiftLine(T *lIn, int dx, int lineLen, T *lOut, T borderValue = nume
 template <class T>
 struct invLine : public unaryLineFunctionBase<T>
 {
-    inline void _exec(T *lineIn, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lineIn, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = ~lineIn[i];
@@ -105,7 +106,8 @@ struct invLine : public unaryLineFunctionBase<T>
 template <class T>
 struct addLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T* lIn1, T* lIn2, int size, T* lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] > (T)(numeric_limits<T>::max()- lIn2[i]) ? numeric_limits<T>::max() : lIn1[i] + lIn2[i];
@@ -115,7 +117,8 @@ struct addLine : public binaryLineFunctionBase<T>
 template <class T>
 struct addNoSatLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] + lIn2[i];
@@ -125,7 +128,8 @@ struct addNoSatLine : public binaryLineFunctionBase<T>
 template <class T>
 struct subLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] < (T)(numeric_limits<T>::max() + lIn2[i]) ? numeric_limits<T>::min() : lIn1[i] - lIn2[i];
@@ -135,7 +139,8 @@ struct subLine : public binaryLineFunctionBase<T>
 template <class T>
 struct subNoSatLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] - lIn2[i];
@@ -145,7 +150,8 @@ struct subNoSatLine : public binaryLineFunctionBase<T>
 template <class T>
 struct supLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType &lIn1, lineType &lIn2, int size, lineType &lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] > lIn2[i] ? lIn1[i] : lIn2[i];
@@ -155,7 +161,8 @@ struct supLine : public binaryLineFunctionBase<T>
 template <class T>
 struct infLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] < lIn2[i] ? lIn1[i] : lIn2[i];
@@ -165,7 +172,8 @@ struct infLine : public binaryLineFunctionBase<T>
 template <class T>
 struct grtLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] > lIn2[i] ? numeric_limits<T>::max() : 0;
@@ -175,7 +183,8 @@ struct grtLine : public binaryLineFunctionBase<T>
 template <class T>
 struct grtOrEquLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] >= lIn2[i] ? numeric_limits<T>::max() : 0;
@@ -185,7 +194,8 @@ struct grtOrEquLine : public binaryLineFunctionBase<T>
 template <class T>
 struct lowLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] < lIn2[i] ? numeric_limits<T>::max() : 0;
@@ -195,7 +205,8 @@ struct lowLine : public binaryLineFunctionBase<T>
 template <class T>
 struct lowOrEquLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] <= lIn2[i] ? numeric_limits<T>::max() : 0;
@@ -205,7 +216,8 @@ struct lowOrEquLine : public binaryLineFunctionBase<T>
 template <class T>
 struct equLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] == lIn2[i] ? numeric_limits<T>::max() : 0;
@@ -215,7 +227,8 @@ struct equLine : public binaryLineFunctionBase<T>
 template <class T>
 struct difLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] != lIn2[i] ? numeric_limits<T>::max() : 0;
@@ -226,7 +239,8 @@ struct difLine : public binaryLineFunctionBase<T>
 template <class T>
 struct mulLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = double(lIn1[i]) * double(lIn2[i]) > double(numeric_limits<T>::max()) ? numeric_limits<T>::max() : lIn1[i] * lIn2[i];
@@ -236,7 +250,8 @@ struct mulLine : public binaryLineFunctionBase<T>
 template <class T>
 struct mulNoSatLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = (T)(lIn1[i] * lIn2[i]);
@@ -246,7 +261,8 @@ struct mulNoSatLine : public binaryLineFunctionBase<T>
 template <class T>
 struct divLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
         {
@@ -258,7 +274,8 @@ struct divLine : public binaryLineFunctionBase<T>
 template <class T>
 struct logicAndLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = (T)(lIn1[i] && lIn2[i]);
@@ -268,7 +285,8 @@ struct logicAndLine : public binaryLineFunctionBase<T>
 template <class T>
 struct logicOrLine : public binaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = (T)(lIn1[i] || lIn2[i]);
@@ -279,7 +297,8 @@ struct logicOrLine : public binaryLineFunctionBase<T>
 template <class T>
 struct testLine : public tertiaryLineFunctionBase<T>
 {
-    inline void _exec(T *lIn1, T *lIn2, T *lIn3, int size, T *lOut)
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, lineType lIn3, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
         {

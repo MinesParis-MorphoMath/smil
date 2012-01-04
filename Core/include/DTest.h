@@ -74,7 +74,7 @@ public:
     if (!(expr)) \
     { \
 	    if (outStream) \
-		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " assert " << #expr;	\
+		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " assert " << #expr << endl;	\
 	    retVal = RES_ERR; \
 	    if (stopIfError) \
 	      return; \
@@ -89,7 +89,7 @@ public:
     if (_throw) \
     { \
 	    if (outStream) \
-		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " no throw " << #expr;	\
+		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " no throw " << #expr << endl;	\
 	    retVal = RES_ERR; \
 	    if (stopIfError) \
 	      return; \
@@ -104,7 +104,7 @@ public:
     if (!_throw) \
     { \
 	    if (outStream) \
-		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " throw " << #expr;	\
+		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " throw " << #expr << endl;	\
 	    retVal = RES_ERR; \
 	    if (stopIfError) \
 	      return; \
@@ -127,41 +127,6 @@ private:
   tc_inst.name = #tc; \
   ts.add(&tc_inst, #tc); \
 }
-
-
-
-#define FIRST_OF(arg0, ...) arg0
-
-#define BENCH(func, args...) \
-{ \
-      int t1 = clock(); \
-      for (int i=0;i<nRuns;i++) \
-	func(args); \
-      int t2 = clock(); \
-      cout << #func << "\t" << displayTime(double(t2-t1)/nRuns) << endl; \
-}
-
-#define BENCH_STR(func, str, args...) \
-{ \
-      int t1 = clock(); \
-      for (int i=0;i<nRuns;i++) \
-	func(args); \
-      int t2 = clock(); \
-      cout << #func << " " << str << "\t" << displayTime(double(t2-t1)/nRuns) << endl; \
-}
-
-#define BENCH_IMG(func, args...) \
-{ \
-      int t1 = clock(); \
-      for (int i=0;i<nRuns;i++) \
-	func(args); \
-      int t2 = clock(); \
-      cout << #func << "\t" << FIRST_OF(args).getTypeAsString() << "\t"; \
-      cout << FIRST_OF(args).getWidth() << "x" << FIRST_OF(args).getHeight(); \
-      if (FIRST_OF(args).getDepth()>1) cout << "x" << FIRST_OF(args).getDepth(); \
-      cout << "\t" << displayTime(double(t2-t1)/nRuns) << endl; \
-}
-
 
 
 #endif // _DTEST_H

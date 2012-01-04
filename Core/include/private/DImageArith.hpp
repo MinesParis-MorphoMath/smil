@@ -240,6 +240,20 @@ inline RES_T equ(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 }
 
 template <class T>
+inline bool equ(Image<T> &imIn1, Image<T> &imIn2)
+{
+    typedef typename Image<T>::lineType lineType;
+    lineType pix1 = imIn1.getPixels();
+    lineType pix2 = imIn2.getPixels();
+    
+    for (int i=0;i<imIn1.getPixelCount();i++)
+      if (pix1[i]!=pix2[i])
+	return false;
+      
+    return true;
+}
+
+template <class T>
 inline RES_T grt(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, grtLine<T> >(imIn1, imIn2, imOut);
@@ -491,6 +505,8 @@ inline RES_T rangeVal(Image<T> &imIn, T *ret_min, T *ret_max)
 
     return RES_OK;
 }
+
+#include "DImageArith_BIN.hpp"
 
 /** @}*/
 

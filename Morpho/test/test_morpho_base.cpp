@@ -42,6 +42,7 @@
 #include "DMorpho.h"
 #include "DImageIO.h"
 #include "DTest.h"
+#include "DBench.h"
 
 #ifdef BUILD_GUI
 #include "DGui.h"
@@ -68,60 +69,44 @@ class test_base_BIN : public TestCase
     {
 	im1.setSize(1024,1024);
 	im2.setSize(1024,1024);
-	fill(im1, UINT8(1));
-	fill(im2, UINT8(1));
-	try
-	{
-	  TEST_NO_THROW(im1==im2);
-	  TEST_THROW(im1==im2);
-	}
-	catch(...)
-	{
-	}
+	fill(im1, true);
+	fill(im2, true);
+	
+	TEST_ASSERT(vol(im1)==im1.getWidth()*im1.getHeight());
+	TEST_ASSERT(equ(im1,im2));
+
 	dilate(im1, im2);
     }
-    Image<UINT8> im1, im2;
+    Image<bool> im1, im2;
 };
 
 #include "DLineArith_BIN.hxx"
 
-class BenchCase
+class BMAT;
+
+class BMAT_index
 {
 public:
-  BenchCase() {}
-  BenchCase(UINT _sx, UINT _sy, UINT _sz, UINT _n) 
-    : sx(_sx), sy(_sy), sz(_sz), nbrRuns(_n) {}
-  BenchCase(UINT _sx, UINT _sy, UINT _n) 
-    : sx(_sx), sy(_sy), sz(1), nbrRuns(_n) {}
-    
-  UINT nbrRuns;
-  UINT sx, sy, sz;
+  BMAT *mat;
+  UINT index;
 };
 
-template <typename T>
-void func_infos(T &f, ...)
+class BMAT
 {
-    cout << "none" << endl;
-}
-
-template <class T>
-void func_infos(RES_T (*f)(Image<T>&, Image<T>&, Image<T>&), Image<T>&im1, Image<T>&im2, Image<T>&im3, UINT nbrRuns=1E3)
-{
-    cout << "ok" << endl;
-}
-
-
-#define bench(func, arg0, args...) \
-{ \
-      int t1 = clock(); \
-      for (int i=0;i<nRuns;i++) \
-	func(arg0, args); \
-      int t2 = clock(); \
-      cout << #func << "\t" << arg0.getTypeAsString() << "\t"; \
-      cout << arg0.getWidth() << "x" << arg0.getHeight(); \
-      if (arg0.getDepth()>1) cout << "x" << arg0.getDepth(); \
-      cout << "\t" << displayTime(double(t2-t1)/nRuns) << endl; \
-}
+public:
+  BIN_TYPE *array;
+  UINT width;
+  UINT height;
+  UINT bitWidth;
+  UINT curX, curY;
+  
+  inline BMAT_index& operator [] (UINT i)
+  {
+    curX = i%bitWidth;
+    curY = i/bitWidth;
+    return *this;
+  }
+};
 
 int main(int argc, char *argv[])
 {
@@ -129,16 +114,22 @@ int main(int argc, char *argv[])
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
 
+   BMAT b;
+   b.array = new BIN_TYPE[4];
+   for (int i=0;i<4;i++)
+     b.array[i] = 0;
+   b.bitWidth = 70;
    
+   b[0];
     for (int i=0;i<argc;i++)
       cout << argv[i] << " ";
     cout << endl;
-    int nRuns = (int)1E3;
+    int BENCH_NRUNS = 1E3;
 
     TestSuite t;
     ADD_TEST(t, test_base_BIN);
     
-//     return t.run();
+    t.run();
     
   int iam = 0, np = 1;
 
@@ -176,28 +167,20 @@ int main(int argc, char *argv[])
     sup(bim1, bim2, bim3);
     dilate(bim1, bim2);
 
-//     BenchCase bc(1024, 1024, 1E3);
-    func_infos(sup, bim1, bim2, bim3);
-    func_infos(dilate<bool>);
+    equ(im1, im2);
     
     BENCH_IMG(vol, im1);
-    BENCH(sup, bim1, bim2, bim3);
-    BENCH(dilate, im1, im3, hSE());
-    BENCH(dilate, bim1, bim2, hSE());
-    BENCH(erode, im1, im3, hSE());
-    BENCH(erode, bim1, bim3, hSE());
+    BENCH_IMG(vol, bim1);
+    BENCH_IMG(sup, im1, im2, im3);
+    BENCH_IMG(sup, bim1, bim2, bim3);
+    BENCH_IMG_STR(dilate, "hSE", im1, im3, hSE());
+    BENCH_IMG_STR(dilate, "hSE", bim1, bim2, hSE());
+    BENCH_IMG_STR(erode, "hSE", im1, im3, hSE());
+    BENCH_IMG_STR(erode, "hSE", bim1, bim3, hSE());
     
-    try
-    {
-	1/0;
-    }
-    catch(...)
-    {
-        cout << "err: " << __FILE__ << endl;
-    }
     
 // cout << "err: " << __FILE__ << __LINE__ << __FUNCTION__ << endl;
-    return -1;
+    return 0;
     
 //     Image_UINT16 im4;
 // 
