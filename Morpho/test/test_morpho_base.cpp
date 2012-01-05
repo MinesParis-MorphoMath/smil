@@ -82,24 +82,19 @@ class test_base_BIN : public TestCase
 
 #include "DLineArith_BIN.hxx"
 
-class BitArray;
-
-class Bit
-{
-public:
-  BitArray *mat;
-  UINT index;
-};
+class Bit;
 
 class BitArray
 {
 public:
+  BitArray() : index(0) {}
   BIN_TYPE *array;
   UINT width;
   UINT height;
   UINT bitWidth;
   UINT curX, curY;
   UINT padX;
+  UINT index;
   
   inline bool getValue(UINT ind)
   {
@@ -108,7 +103,7 @@ public:
       int x = ind % BIN::SIZE;
       return (array[X] & (1UL << x))!=0;
   }
-  inline void setValue(bool val, UINT ind)
+  inline void setValue(UINT ind, bool val)
   {
       int Y = ind / bitWidth;
       int X = (ind + Y*padX) / BIN::SIZE;
@@ -117,14 +112,78 @@ public:
 	array[X] |= (1UL << x);
       else array[X] &= ~(1UL << x);
   }
-  inline Bit operator [] (UINT i)
+  inline Bit operator [] (UINT i);
+  inline Bit operator * ();
+  inline BitArray& operator ++ (int dummy);
+  inline BitArray& operator ++ ();
+};
+
+class Bit
+{
+public:
+  Bit() : bitArray(NULL), value(false) {}
+  Bit(bool v) : bitArray(NULL), value(v) {}
+  BitArray *bitArray;
+  UINT index;
+  bool value;
+  inline operator bool()
   {
-    Bit b;
-    b.mat = this;
-    b.index = i;
-    return b;
+      return bitArray->getValue(index);
+  }
+  inline Bit& operator = (bool v)
+  {
+      if (bitArray)
+	bitArray->setValue(index, v);
+      else value = v;
+      return *this;
+  }
+  inline Bit& operator = (Bit &src)
+  {
+      if (bitArray)
+      {
+	if (src.bitArray)
+	  bitArray->setValue(index, src.bitArray->getValue(index));
+	else
+	  bitArray->setValue(index, src.value);
+      }
+      else
+      {
+	if (src.bitArray)
+	  value = src.bitArray->getValue(index);
+	else
+	  value = src.value;
+      }
+      return *this;
   }
 };
+
+Bit BitArray::operator [] (UINT i)
+{
+  Bit b;
+  b.bitArray = this;
+  b.index = i;
+  return b;
+}
+
+Bit BitArray::operator * ()
+{
+  Bit b;
+  b.bitArray = this;
+  b.index = index;
+  return b;
+}
+
+BitArray& BitArray::operator++(int dummy)
+{
+  index++;
+  return *this;
+}
+
+BitArray& BitArray::operator++()
+{
+  index++;
+  return *this;
+}
 
 int main(int argc, char *argv[])
 {
@@ -142,8 +201,16 @@ int main(int argc, char *argv[])
    b.padX = b.width*BIN::SIZE - b.bitWidth;
    
    cout << b.getValue(74) << endl;
-   b.setValue(1, 74);
-   cout << b.getValue(74) << endl;
+   Bit bit = 1;
+   *b = bit;
+   *++b = *b;
+   
+   for (int i=0;i<10;i++,++b)
+     *b = 1;
+   
+   for (int i=0;i<140;i++)
+      cout << (bool)b[i] << " ";
+   cout <<  endl;
    
    
    return 0;
