@@ -82,16 +82,16 @@ class test_base_BIN : public TestCase
 
 #include "DLineArith_BIN.hxx"
 
-class BMAT;
+class BitArray;
 
-class BMAT_index
+class Bit
 {
 public:
-  BMAT *mat;
+  BitArray *mat;
   UINT index;
 };
 
-class BMAT
+class BitArray
 {
 public:
   BIN_TYPE *array;
@@ -99,12 +99,30 @@ public:
   UINT height;
   UINT bitWidth;
   UINT curX, curY;
+  UINT padX;
   
-  inline BMAT_index& operator [] (UINT i)
+  inline bool getValue(UINT ind)
   {
-    curX = i%bitWidth;
-    curY = i/bitWidth;
-    return *this;
+      int Y = ind / bitWidth;
+      int X = (ind + Y*padX) / BIN::SIZE;
+      int x = ind % BIN::SIZE;
+      return (array[X] & (1UL << x))!=0;
+  }
+  inline void setValue(bool val, UINT ind)
+  {
+      int Y = ind / bitWidth;
+      int X = (ind + Y*padX) / BIN::SIZE;
+      int x = ind % BIN::SIZE;
+      if (val)
+	array[X] |= (1UL << x);
+      else array[X] &= ~(1UL << x);
+  }
+  inline Bit operator [] (UINT i)
+  {
+    Bit b;
+    b.mat = this;
+    b.index = i;
+    return b;
   }
 };
 
@@ -114,13 +132,22 @@ int main(int argc, char *argv[])
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
 
-   BMAT b;
+   BitArray b;
+   b.width = 2;
+   b.height = 2;
    b.array = new BIN_TYPE[4];
    for (int i=0;i<4;i++)
      b.array[i] = 0;
    b.bitWidth = 70;
+   b.padX = b.width*BIN::SIZE - b.bitWidth;
    
-   b[0];
+   cout << b.getValue(74) << endl;
+   b.setValue(1, 74);
+   cout << b.getValue(74) << endl;
+   
+   
+   return 0;
+   
     for (int i=0;i<argc;i++)
       cout << argv[i] << " ";
     cout << endl;
