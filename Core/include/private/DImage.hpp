@@ -59,6 +59,14 @@ public:
 };
 
 
+template <class T>
+struct types
+{
+    typedef T pixelType;
+    typedef pixelType *lineType;
+    typedef lineType *sliceType;
+};
+
 
 /**
  * Main Image class.
@@ -83,14 +91,14 @@ public:
 	T val;
 	return getDataTypeAsString(val);
     }
-    typedef T pixelType;
-    typedef pixelType *lineType;
-    typedef lineType *sliceType;
+    typedef typename types<T>::pixelType pixelType;
+    typedef typename types<T>::lineType lineType;
+    typedef typename types<T>::sliceType sliceType;
 
-    pixelType *getPixels() const {
+    lineType getPixels() const {
         return pixels;
     }
-    lineType *getLines() const {
+    sliceType getLines() const {
         return lines;
     }
     sliceType *getSlices() const {

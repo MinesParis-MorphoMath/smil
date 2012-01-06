@@ -30,6 +30,7 @@
 #ifndef _DBINARY_BIN_H
 #define _DBINARY_BIN_H
 
+#include <cstring>
 #include <iostream>
 #include "limits.h"
 
