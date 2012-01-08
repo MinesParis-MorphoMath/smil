@@ -72,11 +72,6 @@ inline const char *getDataTypeAsString(UINT16 &val)
     return "UINT16";
 }
 
-template <>
-inline const char *getDataTypeAsString(bool &val)
-{
-    return "BIN";
-}
 
 
 #endif

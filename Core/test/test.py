@@ -48,8 +48,8 @@ im1 << 0
 
 def testBench(func=dilate, se=hSE(), binIm=False, prnt=1):
   if binIm:
-    tim1 = Image_bool(bench_sx, bench_sy)
-    tim2 = Image_bool(bench_sx, bench_sy)
+    tim1 = Image_Bit(bench_sx, bench_sy)
+    tim2 = Image_Bit(bench_sx, bench_sy)
   else:
     tim1 = Image_UINT8(bench_sx, bench_sy)
     tim2 = Image_UINT8(bench_sx, bench_sy)

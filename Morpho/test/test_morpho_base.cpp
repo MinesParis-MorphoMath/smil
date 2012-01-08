@@ -38,7 +38,6 @@
 
 #include "DImage.h"
 #include "DImageArith.hpp"
-#include "DLineArith_BIN.hxx"
 #include "DMorpho.h"
 #include "DImageIO.h"
 #include "DTest.h"
@@ -64,34 +63,36 @@ void func(hSE *se)
 
 
 
-class test_base_BIN : public TestCase
-{
-    void run()
-    {
-	im1.setSize(1024,1024);
-	im2.setSize(1024,1024);
-	fill(im1, true);
-	fill(im2, true);
-	
-	TEST_ASSERT(vol(im1)==im1.getWidth()*im1.getHeight());
-	TEST_ASSERT(equ(im1,im2));
-
-	dilate(im1, im2);
-    }
-    Image<bool> im1, im2;
-};
-
-#include "DLineArith_BIN.hxx"
+// class test_base_BIN : public TestCase
+// {
+//     void run()
+//     {
+// 	im1.setSize(1024,1024);
+// 	im2.setSize(1024,1024);
+// 	fill(im1, true);
+// 	fill(im2, true);
+// 	
+// 	TEST_ASSERT(vol(im1)==im1.getWidth()*im1.getHeight());
+// 	TEST_ASSERT(equ(im1,im2));
+// 
+// 	dilate(im1, im2);
+//     }
+//     Image<bool> im1, im2;
+// };
 
 
-template <>
-class Image<Bit> : public baseImage
-{
-public:
-    void printSelf(bool displayPixVals = false) { Image<Bit>::printSelf(); }
-    virtual void* getVoidPointer() {}
-    virtual void modified() {}
-};
+
+
+
+
+// template <>
+// class Image<Bit> : public baseImage
+// {
+// public:
+//     void printSelf(bool displayPixVals = false) { Image<Bit>::printSelf(); }
+//     virtual void* getVoidPointer() {}
+//     virtual void modified() {}
+// };
 
 int main(int argc, char *argv[])
 {
@@ -99,28 +100,16 @@ int main(int argc, char *argv[])
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
 
-   BitArray b(70, 2);
-   b.intArray = new BIN_TYPE[4];
-   for (int i=0;i<4;i++)
-     b.intArray[i] = 0;
    
-   cout << b.getValue(74) << endl;
-   Bit bit = 1;
-   *b = bit;
-   bit = *b;
-   *b++ = *b;
+   Image<Bit> imb(70, 2);
+   fill(imb, Bit(1));
+   imb.printSelf(1);
    
-   for (int i=0;i<10;i++,b++)
-     *b = bit;
+   cout << vol(imb) << endl;
    
-   for (int i=0;i<140;i++)
-      cout << (bool)b[i] << " ";
-   cout <<  endl;
+    
    
-   Image<Bit> imb;
-   imb.printSelf();
-   
-   return 0;
+//    return 0;
    
     for (int i=0;i<argc;i++)
       cout << argv[i] << " ";
@@ -128,7 +117,7 @@ int main(int argc, char *argv[])
     int BENCH_NRUNS = 1E3;
 
     TestSuite t;
-    ADD_TEST(t, test_base_BIN);
+//     ADD_TEST(t, test_base_BIN);
     
     t.run();
     
@@ -146,7 +135,7 @@ int main(int argc, char *argv[])
     UINT w = 1024, h = 1024, d = 1;
 //     UINT w = 768, h = 576;
     
-    typedef Image<bool> imType;
+    typedef Image<Bit> imType;
     
     imType bim1(w, h, d);
     imType bim2(bim1);
@@ -155,8 +144,8 @@ int main(int argc, char *argv[])
     cout << "Width: " << w << endl;
     cout << "Line count: " << bim1.getLineCount() << endl;
         
-    fill(bim1, true);
-    fill(bim2, false);
+    fill(bim1, Bit(1));
+    fill(bim2, Bit(1));
     
     Image_UINT8 im1(w,h);
     Image_UINT8 im2(im1);

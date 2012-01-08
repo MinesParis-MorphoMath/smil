@@ -605,7 +605,7 @@ Image<T>& Image<T>::operator &= (T value)
 }
 
 template <class T>
-Image<T>& Image<T>::operator << (const T *tab)
+Image<T>& Image<T>::operator << (lineType tab)
 {
     for (int i=0;i<pixelCount;i++)
       pixels[i] = tab[i];

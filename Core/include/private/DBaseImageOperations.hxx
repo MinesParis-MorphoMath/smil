@@ -56,7 +56,7 @@ inline typename Image<T>::lineType *imageFunctionBase<T>::createAlignedBuffers(U
 
     alignedBuffers = new lineType[bufferNumber];
     for (int i=0;i<bufferNumber;i++)
-        alignedBuffers[i] = createAlignedBuffer<T>(len);
+        alignedBuffers[i] = ImDtTypes<T>::createLine(len);
 
     return alignedBuffers;
 }
@@ -68,7 +68,7 @@ inline void imageFunctionBase<T>::deleteAlignedBuffers()
     if (!alignedBuffers) return;
 
     for (UINT i=0;i<bufferNumber;i++)
-        deleteAlignedBuffer<T>(alignedBuffers[i]);
+      ImDtTypes<T>::deleteLine(alignedBuffers[i]);
 }
 
 template <class T>
@@ -119,7 +119,7 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, T &v
     int lineCount = imOut.getLineCount();
 
     lineType *destLines = imOut.getLines();
-    T *constBuf = createAlignedBuffer<T>(lineLen);
+    T *constBuf = ImDtTypes<T>::createLine(lineLen);
 
     // Fill the first aligned buffer with the constant value
     fillLine<T>::_exec(constBuf, lineLen, value);
@@ -130,7 +130,7 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, T &v
     for (int i=0;i<lineCount;i++)
         lineFunction._exec_aligned(constBuf, lineLen, destLines[i]);
 
-    deleteAlignedBuffer<T>(constBuf);
+    ImDtTypes<T>::deleteLine(constBuf);
     imOut.modified();
 }
 
@@ -175,13 +175,13 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imag
     lineType *srcLines1 = imIn.getLines();
     lineType *srcLines2 = imInOut.getLines();
 
-    T *tmpBuf = createAlignedBuffer<T>(lineLen);
+    T *tmpBuf = ImDtTypes<T>::createLine(lineLen);
 
 #pragma omp parallel for
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines1[i], srcLines2[i], lineLen, tmpBuf);
 
-    deleteAlignedBuffer<T>(tmpBuf);
+    ImDtTypes<T>::deleteLine(tmpBuf);
     imInOut.modified();
 
     return RES_OK;
@@ -198,10 +198,10 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T va
     int lineLen = imIn.getWidth();
     int lineCount = imIn.getLineCount();
 
-    lineType *srcLines = imIn.getLines();
-    lineType *destLines = imOut.getLines();
+    sliceType srcLines = imIn.getLines();
+    sliceType destLines = imOut.getLines();
 
-    T *constBuf = createAlignedBuffer<T>(lineLen);
+    lineType constBuf = ImDtTypes<T>::createLine(lineLen);
 
     // Fill the const buffer with the value
     fillLine<T> f;
@@ -211,7 +211,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T va
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines[i], constBuf, lineLen, destLines[i]);
 
-    deleteAlignedBuffer<T>(constBuf);
+    ImDtTypes<T>::deleteLine(constBuf);
     imOut.modified();
 
     return RES_OK;
@@ -254,11 +254,11 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
     int lineLen = imIn1.getWidth();
     int lineCount = imIn1.getLineCount();
 
-    lineType *srcLines1 = imIn2.getLines();
-    lineType *srcLines2 = imIn2.getLines();
-    lineType *destLines = imOut.getLines();
+    sliceType srcLines1 = imIn2.getLines();
+    sliceType srcLines2 = imIn2.getLines();
+    sliceType destLines = imOut.getLines();
 
-    T *constBuf = createAlignedBuffer<T>(lineLen);
+    lineType constBuf = ImDtTypes<T>::createLine(lineLen);
 
     // Fill the const buffer with the value
     fillLine<T> f;
@@ -268,7 +268,7 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines1[i], srcLines2[i], constBuf, lineLen, destLines[i]);
 
-    deleteAlignedBuffer<T>(constBuf);
+    ImDtTypes<T>::deleteLine(constBuf);
     imOut.modified();
 
     return RES_OK;
@@ -290,11 +290,11 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T 
     int lineLen = imIn.getWidth();
     int lineCount = imIn.getLineCount();
 
-    lineType *srcLines = imIn.getLines();
-    lineType *destLines = imOut.getLines();
+    sliceType srcLines = imIn.getLines();
+    sliceType destLines = imOut.getLines();
 
-    T *constBuf1 = createAlignedBuffer<T>(lineLen);
-    T *constBuf2 = createAlignedBuffer<T>(lineLen);
+    lineType constBuf1 = ImDtTypes<T>::createLine(lineLen);
+    lineType constBuf2 = ImDtTypes<T>::createLine(lineLen);
 
     // Fill the const buffers with the values
     fillLine<T> f;
@@ -305,8 +305,8 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T 
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines[i], constBuf1, constBuf2, lineLen, destLines[i]);
 
-    deleteAlignedBuffer<T>(constBuf1);
-    deleteAlignedBuffer<T>(constBuf2);
+    ImDtTypes<T>::deleteLine(constBuf1);
+    ImDtTypes<T>::deleteLine(constBuf2);
     imOut.modified();
 
     return RES_OK;

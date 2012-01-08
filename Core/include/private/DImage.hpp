@@ -59,14 +59,6 @@ public:
 };
 
 
-template <class T>
-struct types
-{
-    typedef T pixelType;
-    typedef pixelType *lineType;
-    typedef lineType *sliceType;
-};
-
 
 /**
  * Main Image class.
@@ -91,9 +83,10 @@ public:
 	T val;
 	return getDataTypeAsString(val);
     }
-    typedef typename types<T>::pixelType pixelType;
-    typedef typename types<T>::lineType lineType;
-    typedef typename types<T>::sliceType sliceType;
+    typedef typename ImDtTypes<T>::pixelType pixelType;
+    typedef typename ImDtTypes<T>::lineType lineType;
+    typedef typename ImDtTypes<T>::sliceType sliceType;
+    typedef typename ImDtTypes<T>::volType volType;
 
     lineType getPixels() const {
         return pixels;
@@ -101,7 +94,7 @@ public:
     sliceType getLines() const {
         return lines;
     }
-    sliceType *getSlices() const {
+    volType getSlices() const {
         return slices;
     }
     
@@ -206,14 +199,14 @@ public:
     
     operator bool() { return vol(*this)==numeric_limits<T>::max()*pixelCount; }
     
-    Image<T>& operator << (const T *tab);
+    Image<T>& operator << (const lineType tab);
     
     Image<T>& operator << (const char *s) { cout << "Not implemented" << endl; return *this; };
     Image<T>& operator >> (const char *s) { cout << "Not implemented" << endl; return *this; };
 protected:
-    pixelType *pixels;
-    lineType  *lines;
-    sliceType *slices;
+    lineType pixels;
+    sliceType  lines;
+    volType slices;
 
     UINT lineAlignment[SIMD_VEC_SIZE];
 
@@ -231,9 +224,9 @@ public:
 };
   
 #include "DImage.hxx"
-#include "DImage_BIN.hxx"
 
 
+#include "DImage_Bit.hxx"
 
 
 

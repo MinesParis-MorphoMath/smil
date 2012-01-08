@@ -44,8 +44,9 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
   public:
     typedef imageFunctionBase<T> parentClass;
     typedef Image<T> imageType;
-    typedef typename imageType::sliceType sliceType;
     typedef typename imageType::lineType lineType;
+    typedef typename imageType::sliceType sliceType;
+    typedef typename imageType::volType volType;
     
     unaryMorphImageFunction(T border=numeric_limits<T>::min()) 
       : borderValue(border) {}
@@ -62,12 +63,12 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     
   protected:
     T borderValue;
-    T *borderBuf, *cpBuf;
+    lineType borderBuf, cpBuf;
     UINT lineLen;
     
-    inline void _extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, T *outBuf);
-    inline void _exec_shifted_line(T *inBuf1, T *inBuf2, int dx, int lineLen, T *outBuf);
-    inline void _exec_line(T *inBuf, Image<T> *imIn, int &x, int &y, int &z, T *outBuf);
+    inline void _extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, lineType outBuf);
+    inline void _exec_shifted_line(lineType inBuf1, lineType inBuf2, int dx, int lineLen, lineType outBuf);
+    inline void _exec_line(lineType inBuf, Image<T> *imIn, int &x, int &y, int &z, lineType outBuf);
 };
 
 
@@ -75,8 +76,8 @@ template <class T, class lineFunction_T>
 inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imOut, StrElt se)
 {
     lineLen = imIn.getWidth();
-    borderBuf = createAlignedBuffer<T>(lineLen);
-    cpBuf = createAlignedBuffer<T>(lineLen);
+    borderBuf = ImDtTypes<T>::createLine(lineLen);
+    cpBuf = ImDtTypes<T>::createLine(lineLen);
     fillLine<T> f;
     f(borderBuf, lineLen, borderValue);
 //     cout << "bord val " << (int)borderValue << endl;
@@ -92,8 +93,8 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, 
 	     copy(imOut, tmpIm);
 	}
     }
-    deleteAlignedBuffer<T>(borderBuf);
-    deleteAlignedBuffer<T>(cpBuf);
+    ImDtTypes<T>::deleteLine(borderBuf);
+    ImDtTypes<T>::deleteLine(cpBuf);
     return RES_OK;
 }
 
@@ -120,17 +121,17 @@ void printLine(UINT8 *buf, int size)
 }
 
 template <class T, class lineFunction_T>
-inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, T *outBuf)
+inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, lineType outBuf)
 {
     if (z<0 || z>=imIn->getSliceCount() || y<0 || y>=imIn->getLineCount())
-      copyLine<T,T>(borderBuf, lineLen, outBuf);
+      copyLine<T>(borderBuf, lineLen, outBuf);
 // 	memcpy(outBuf, borderBuf, lineLen*sizeof(T));
     else
 	shiftLine<T>(imIn->getSlices()[z][y], x, lineLen, outBuf, borderValue);
 }
 
 template <class T, class lineFunction_T>
-inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line(T *inBuf1, T *inBuf2, int dx, int lineLen, T *outBuf)
+inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line(lineType inBuf1, lineType inBuf2, int dx, int lineLen, lineType outBuf)
 {
     shiftLine<T>(inBuf2, dx, lineLen, cpBuf, borderValue);
     lineFunction(inBuf1, cpBuf, lineLen, outBuf);
@@ -138,7 +139,7 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line(T *in
 
 
 template <class T, class lineFunction_T>
-inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(T *inBuf, Image<T> *imIn, int &x, int &y, int &z, T *outBuf)
+inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(lineType inBuf, Image<T> *imIn, int &x, int &y, int &z, lineType outBuf)
 {
     _extract_translated_line(imIn, x, y, z, cpBuf);
     lineFunction(inBuf, cpBuf, lineLen, outBuf);
@@ -162,7 +163,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
     int nSlices = imIn.getSliceCount();
     int nLines = imIn.getHeight();
 
-    T *outBuf = createAlignedBuffer<T>(lineLen);
+    lineType outBuf = ImDtTypes<T>::createLine(lineLen);
 
     Image<T> *tmpIm;
     
@@ -170,8 +171,8 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
       tmpIm = new Image<T>(imIn, true); // clone
     else tmpIm = &imIn;
     
-    sliceType *srcSlices = tmpIm->getSlices();
-    sliceType *destSlices = imOut.getSlices();
+    volType srcSlices = tmpIm->getSlices();
+    volType destSlices = imOut.getSlices();
     
     //lineType *srcLines;
     lineType *destLines;
@@ -194,7 +195,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 
 	    _extract_translated_line(tmpIm, x, y, z, outBuf);
 	    
-	    T *lineOut = destLines[l];
+	    lineType lineOut = destLines[l];
 	    
 	    for (int p=1;p<sePtsNumber;p++)
 	    {
@@ -210,7 +211,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 	}
     }
 
-    deleteAlignedBuffer<T>(outBuf);
+    ImDtTypes<T>::deleteLine(outBuf);
     
     if (&imIn==&imOut)
       delete tmpIm;
@@ -233,13 +234,13 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
     int nSlices = imIn.getSliceCount();
     int nLines = imIn.getHeight();
 
-    T *inBuf = createAlignedBuffer<T>(lineLen);
-    T *outBuf = createAlignedBuffer<T>(lineLen);
-    T *tmpBuf1 = createAlignedBuffer<T>(lineLen);
-    T *tmpBuf2 = createAlignedBuffer<T>(lineLen);
-    T *tmpBuf3 = createAlignedBuffer<T>(lineLen);
-    T *tmpBuf4 = createAlignedBuffer<T>(lineLen);
-    T *tmpBuf;
+    lineType inBuf = ImDtTypes<T>::createLine(lineLen);
+    lineType outBuf = ImDtTypes<T>::createLine(lineLen);
+    lineType tmpBuf1 = ImDtTypes<T>::createLine(lineLen);
+    lineType tmpBuf2 = ImDtTypes<T>::createLine(lineLen);
+    lineType tmpBuf3 = ImDtTypes<T>::createLine(lineLen);
+    lineType tmpBuf4 = ImDtTypes<T>::createLine(lineLen);
+    lineType tmpBuf;
         
     Image<T> *tmpIm;
     
@@ -309,13 +310,13 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imag
 	
     }
 
-    deleteAlignedBuffer<T>(inBuf);
-    deleteAlignedBuffer<T>(outBuf);
-    deleteAlignedBuffer<T>(tmpBuf1);
-    deleteAlignedBuffer<T>(tmpBuf2);
-    deleteAlignedBuffer<T>(tmpBuf3);
-    deleteAlignedBuffer<T>(tmpBuf4);
-//     deleteAlignedBuffer<T>(lineIn);
+    ImDtTypes<T>::deleteLine(inBuf);
+    ImDtTypes<T>::deleteLine(outBuf);
+    ImDtTypes<T>::deleteLine(tmpBuf1);
+    ImDtTypes<T>::deleteLine(tmpBuf2);
+    ImDtTypes<T>::deleteLine(tmpBuf3);
+    ImDtTypes<T>::deleteLine(tmpBuf4);
+//     ImDtTypes<T>::deleteLine(lineIn);
     
     if (&imIn==&imOut)
       delete tmpIm;

@@ -31,12 +31,25 @@
 #define _DBITARRAY_H
 
 #include "DBinary.hpp"
+#include <qshareddata.h>
 
 class Bit;
 
 class BitArray
 {
 public:
+    typedef UINT64 INT_TYPE;
+    static const INT_TYPE INT_TYPE_SIZE = sizeof(INT_TYPE)*CHAR_BIT;
+    static inline INT_TYPE INT_TYPE_MIN() { return numeric_limits<INT_TYPE>::min(); }
+    static inline INT_TYPE INT_TYPE_MAX() { return numeric_limits<INT_TYPE>::max(); }
+    static inline UINT INT_SIZE(UINT bitCount) { return (bitCount-1)/INT_TYPE_SIZE + 1; }
+    
+    //! Most significant bit
+    static const INT_TYPE INT_MS_BIT = (1UL << (INT_TYPE_SIZE - 2));
+    //! Less significant bit
+    static const INT_TYPE INT_LS_BIT = 0x01;
+    
+    
     BitArray()
             : index(0), intArray(NULL), bitWidth(0), intWidth(0), height(0)
     {}
@@ -45,13 +58,14 @@ public:
     {
         setSize(_bitWidth, _bitHeight);
     }
-    BitArray(BIN_TYPE *arr, UINT _bitWidth, UINT _bitHeight=1)
+    BitArray(INT_TYPE *arr, UINT _bitWidth, UINT _bitHeight=1)
             : index(0), intArray(arr)
     {
         setSize(_bitWidth, _bitHeight);
     }
     
-    BIN_TYPE *intArray;
+    
+    INT_TYPE *intArray;
     
     UINT getBitWidth() { return bitWidth; }
     UINT getIntWidth() { return intWidth; }
@@ -59,10 +73,22 @@ public:
     UINT getHeight() { return height; }
 
     void setSize(UINT _bitWidth, UINT _bitHeight=1);
+    void createIntArray()
+    {
+	intArray = createAlignedBuffer<INT_TYPE>(intWidth*height);
+    }
+    void deleteIntArray()
+    {
+	deleteAlignedBuffer<INT_TYPE>(intArray);
+	intArray = NULL;
+    }
+    
     bool getValue(UINT ind);
     void setValue(UINT ind, bool val);
     Bit operator [] (UINT i);
     Bit operator * ();
+    BitArray& operator + (int dp);
+    BitArray& operator - (int dp);
     BitArray& operator ++ (int);
     BitArray& operator ++ ();
 private:
@@ -77,8 +103,8 @@ private:
 class Bit
 {
 public:
-    Bit() : bitArray(NULL), value(false) {}
-    Bit(bool v) : bitArray(NULL), value(v) {}
+    Bit() : bitArray(NULL), value(false), index(0) {}
+    Bit(bool v) : bitArray(NULL), value(v), index(0) {}
     BitArray *bitArray;
     UINT index;
     bool value;
@@ -91,24 +117,24 @@ public:
 inline void BitArray::setSize(UINT _bitWidth, UINT _bitHeight)
 {
     bitWidth = _bitWidth;
-    intWidth = BIN::binLen(bitWidth);
-    bitPadX = intWidth*BIN::SIZE - bitWidth;
+    intWidth = INT_SIZE(bitWidth);
+    bitPadX = intWidth*INT_TYPE_SIZE - bitWidth;
     height = _bitHeight;
 }
 
 inline bool BitArray::getValue(UINT ind)
 {
     int Y = ind / bitWidth;
-    int X = (ind + Y*bitPadX) / BIN::SIZE;
-    int x = ind % BIN::SIZE;
+    int X = (ind + Y*bitPadX) / INT_TYPE_SIZE;
+    int x = (ind-Y*bitWidth) % INT_TYPE_SIZE;
     return (intArray[X] & (1UL << x))!=0;
 }
 
 inline void BitArray::setValue(UINT ind, bool val)
 {
     int Y = ind / bitWidth;
-    int X = (ind + Y*bitPadX) / BIN::SIZE;
-    int x = ind % BIN::SIZE;
+    int X = (ind + Y*bitPadX) / INT_TYPE_SIZE;
+    int x = (ind-Y*bitWidth) % INT_TYPE_SIZE;
     if (val)
         intArray[X] |= (1UL << x);
     else intArray[X] &= ~(1UL << x);
@@ -130,6 +156,18 @@ inline Bit BitArray::operator * ()
     return b;
 }
 
+inline BitArray& BitArray::operator+(int dp)
+{
+    index += dp;
+    return *this;
+}
+
+inline BitArray& BitArray::operator-(int dp)
+{
+    index -= dp;
+    return *this;
+}
+
 inline BitArray& BitArray::operator++(int)
 {
     index++;
@@ -145,7 +183,9 @@ inline BitArray& BitArray::operator++()
 
 inline Bit::operator bool()
 {
-    return bitArray->getValue(index);
+    if (bitArray)
+	return bitArray->getValue(index);
+    else return value;
 }
 
 inline Bit& Bit::operator = (bool v)
@@ -175,6 +215,11 @@ inline Bit& Bit::operator = (Bit &src)
     return *this;
 }
 
+template <>
+inline const char *getDataTypeAsString(Bit &val)
+{
+    return "Bit";
+}
 
 #endif // _DBITARRAY_H
 

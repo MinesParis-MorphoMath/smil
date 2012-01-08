@@ -32,7 +32,6 @@
 
 #include "DBaseImage.h"
 #include "DImage.hpp"
-#include "DImage_BIN.hxx"
 #include "DImageArith.hpp"
 
 

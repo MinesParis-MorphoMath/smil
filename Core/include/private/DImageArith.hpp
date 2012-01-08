@@ -45,15 +45,15 @@ inline RES_T fill(Image<T> &imOut, const T value)
     if (!areAllocated(&imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    typedef typename Image<T>::lineType lineType;
-    lineType *lineOut = imOut.getLines();
+    typedef typename Image<T>::sliceType sliceType;
+    sliceType lineOut = imOut.getLines();
     int lineLen = imOut.getWidth();
     int lineCount = imOut.getLineCount();
 
     fillLine<T>(lineOut[0], lineLen, value);
     
     for (int i=1;i<lineCount;i++)
-      copyLine<T,T>(lineOut[0], lineLen, lineOut[i]);
+      copyLine<T>(lineOut[0], lineLen, lineOut[i]);
 
     imOut.modified();
     return RES_OK;
@@ -68,8 +68,8 @@ RES_T copy(Image<T1> &imIn, Image<T2> &imOut)
 
     if (haveSameSize(&imIn, &imOut, NULL))
     {
-        typename Image<T1>::lineType *l1 = imIn.getLines();
-        typename Image<T2>::lineType *l2 = imOut.getLines();
+        typename Image<T1>::lineType* l1 = imIn.getLines();
+        typename Image<T2>::lineType* l2 = imOut.getLines();
 
 	UINT width = imIn.getWidth();
 	
@@ -92,7 +92,9 @@ RES_T copy(Image<T> &imIn, Image<T> &imOut)
     {
 // 	for (int j=0;j<imIn.getLineCount();j++)
 // 	  copyLine(imIn.getLines()[j], imIn.getWidth(), imOut.getLines()[j]);
-        memcpy(imOut.getPixels(), imIn.getPixels(), imIn.getAllocatedSize());
+//         memcpy(imOut.getPixels(), imIn.getPixels(), imIn.getAllocatedSize());
+	for (int i=0;i<imIn.getLineCount();i++)
+	  copyLine<T>(imIn.getLines()[i], imIn.getWidth(), imOut.getLines()[i]);
 
         imOut.modified();
         return RES_OK;
@@ -380,7 +382,7 @@ inline RES_T translate(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOu
         return RES_ERR_BAD_ALLOCATION;
     
     UINT lineLen = imIn.getWidth();
-    T *borderBuf = createAlignedBuffer<T>(lineLen);
+    typename ImDtTypes<T>::lineType borderBuf = ImDtTypes<T>::createLine(lineLen);
     fillLine<T>(borderBuf, lineLen, borderValue);
     
     UINT height = imIn.getHeight();
@@ -388,7 +390,7 @@ inline RES_T translate(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOu
     
     for (int k=0;k<depth;k++)
     {
-	typename Image<T>::lineType *lOut = imOut.getSlices()[k];
+	typename Image<T>::sliceType lOut = imOut.getSlices()[k];
 	
 	UINT z = k+dz;
 	for (int j=0;j<height;j++, lOut++)
@@ -396,13 +398,13 @@ inline RES_T translate(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOu
 	    UINT y = j+dy;
 	    
 	    if (z<0 || z>=depth || y<0 || y>=height)
-		copyLine<T,T>(borderBuf, lineLen, *lOut);
+		copyLine<T>(borderBuf, lineLen, *lOut);
 	    else 
 		shiftLine<T>(imIn.getSlices()[z][y], dx, lineLen, *lOut, borderValue);
 	}
     }
     
-    deleteAlignedBuffer<T>(borderBuf);
+    ImDtTypes<T>::deleteLine(borderBuf);
     
     imOut.modified();
     
@@ -423,7 +425,7 @@ inline double vol(Image<T> &imIn)
         return RES_ERR_BAD_ALLOCATION;
 
     int npix = imIn.getPixelCount();
-    T *pixels = imIn.getPixels();
+    typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
     double vol = 0;
 
     for (int i=0;i<npix;i++)
@@ -445,7 +447,7 @@ inline T minVal(Image<T> &imIn)
         return RES_ERR_BAD_ALLOCATION;
 
     int npix = imIn.getPixelCount();
-    T *p = imIn.getPixels();
+    typename ImDtTypes<T>::lineType p = imIn.getPixels();
     T minVal = numeric_limits<T>::max();
 
     for (int i=0;i<npix;i++,p++)
@@ -468,7 +470,7 @@ inline T maxVal(Image<T> &imIn)
         return RES_ERR_BAD_ALLOCATION;
 
     int npix = imIn.getPixelCount();
-    T *p = imIn.getPixels();
+    typename ImDtTypes<T>::lineType p = imIn.getPixels();
     T maxVal = numeric_limits<T>::min();
 
     for (int i=0;i<npix;i++,p++)
@@ -491,7 +493,7 @@ inline RES_T rangeVal(Image<T> &imIn, T *ret_min, T *ret_max)
         return RES_ERR;
 
     int npix = imIn.getPixelCount();
-    T *p = imIn.getPixels();
+    typename ImDtTypes<T>::lineType p = imIn.getPixels();
     *ret_min = numeric_limits<T>::max();
     *ret_max = numeric_limits<T>::min();
 
@@ -505,8 +507,6 @@ inline RES_T rangeVal(Image<T> &imIn, T *ret_min, T *ret_max)
 
     return RES_OK;
 }
-
-#include "DImageArith_BIN.hpp"
 
 /** @}*/
 

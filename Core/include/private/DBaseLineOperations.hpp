@@ -41,20 +41,23 @@ template <class T> class Image;
 template <class T>
 struct _SMIL unaryLineFunctionBase
 {
+    typedef typename Image<T>::lineType lineType;
+    typedef typename Image<T>::sliceType sliceType;
+    
     unaryLineFunctionBase() {}
-    unaryLineFunctionBase(T *lineIn, int size, T *lineOut)
+    unaryLineFunctionBase(lineType lineIn, int size, lineType lineOut)
     {
 	this->_exec(lineIn, size, lineOut);
     }
     
-    virtual void _exec(T *lineIn, int size, T *lineOut) {}
-    virtual void _exec_aligned(T *lineIn, int size, T *lineOut) { _exec(lineIn, size, lineOut); }
-    virtual void _exec(T *lInOut, int size, T value) {}
-    virtual void _exec_aligned(T *lineIn, int size, T value) { _exec(lineIn, size, value); }
-    inline void operator()(T *lineIn, int size, T *lineOut)
+    virtual void _exec(lineType lineIn, int size, lineType lineOut) {}
+    virtual void _exec_aligned(lineType lineIn, int size, lineType lineOut) { _exec(lineIn, size, lineOut); }
+    virtual void _exec(lineType lInOut, int size, T value) {}
+    virtual void _exec_aligned(lineType lineIn, int size, T value) { _exec(lineIn, size, value); }
+    inline void operator()(lineType lineIn, int size, lineType lineOut)
     { 
-	unsigned long ptrOffset1 = PTR_OFFSET(lineIn);
-	unsigned long ptrOffset2 = PTR_OFFSET(lineOut);
+	unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn);
+	unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineOut);
 	
 	// both aligned
 	if (!ptrOffset1 && !ptrOffset2)
@@ -74,9 +77,9 @@ struct _SMIL unaryLineFunctionBase
 	    _exec(lineIn, size, lineOut); 
 	}
     }
-    inline void operator()(T *lineIn, int size, T value)
+    inline void operator()(lineType lineIn, int size, T value)
     { 
-	unsigned long ptrOffset = PTR_OFFSET(lineIn);
+	unsigned long ptrOffset = ImDtTypes<T>::ptrOffset(lineIn);
 	unsigned long misAlignSize = ptrOffset==0 ? 0 : SIMD_VEC_SIZE - ptrOffset;
 	if (misAlignSize)
 	  _exec(lineIn, misAlignSize, value); 
@@ -89,13 +92,16 @@ struct _SMIL unaryLineFunctionBase
 template <class T>
 struct _SMIL binaryLineFunctionBase
 {
-    virtual void _exec(T *lineIn1, T *lineIn2, int size, T *lineOut) {}
-    virtual void _exec_aligned(T *lineIn1, T *lineIn2, int size, T *lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
-    inline void operator()(T *lineIn1, T *lineIn2, int size, T *lineOut)
+    typedef typename Image<T>::lineType lineType;
+    typedef typename Image<T>::sliceType sliceType;
+    
+    virtual void _exec(lineType lineIn1, lineType lineIn2, int size, lineType lineOut) {}
+    virtual void _exec_aligned(lineType lineIn1, lineType lineIn2, int size, lineType lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
+    inline void operator()(lineType lineIn1, lineType lineIn2, int size, lineType lineOut)
     { 
-	unsigned long ptrOffset1 = PTR_OFFSET(lineIn1);
-	unsigned long ptrOffset2 = PTR_OFFSET(lineIn2);
-	unsigned long ptrOffset3 = PTR_OFFSET(lineOut);
+	unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn1);
+	unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineIn2);
+	unsigned long ptrOffset3 = ImDtTypes<T>::ptrOffset(lineOut);
 	
 	// all aligned
 	if (!ptrOffset1 && !ptrOffset2 && !ptrOffset3)
@@ -116,10 +122,10 @@ struct _SMIL binaryLineFunctionBase
 	}
 	
     }
-    inline void operator()(T *lineIn1, T value, int size, T *lineOut)
+    inline void operator()(lineType lineIn1, T value, int size, lineType lineOut)
     { 
-	unsigned long ptrOffset1 = PTR_OFFSET(lineIn1);
-	unsigned long ptrOffset2 = PTR_OFFSET(lineOut);
+	unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn1);
+	unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineOut);
 	
 	// all aligned
 	if (!ptrOffset1 && !ptrOffset2)
@@ -147,14 +153,17 @@ struct _SMIL binaryLineFunctionBase
 template <class T>
 struct _SMIL tertiaryLineFunctionBase
 {
-    virtual void _exec(T *lineIn1, T *lineIn2, T *lineIn3, int size, T *lineOut) {}
-    virtual void _exec_aligned(T *lineIn1, T *lineIn2, T *lineIn3, int size, T *lineOut) { _exec(lineIn1, lineIn2, lineIn3, size, lineOut); }
-    virtual void operator()(T *lineIn1, T *lineIn2, T *lineIn3, int size, T *lineOut)
+    typedef typename Image<T>::lineType lineType;
+    typedef typename Image<T>::sliceType sliceType;
+    
+    virtual void _exec(lineType lineIn1, lineType lineIn2, lineType lineIn3, int size, lineType lineOut) {}
+    virtual void _exec_aligned(lineType lineIn1, lineType lineIn2, lineType lineIn3, int size, lineType lineOut) { _exec(lineIn1, lineIn2, lineIn3, size, lineOut); }
+    virtual void operator()(lineType lineIn1, lineType lineIn2, lineType lineIn3, int size, lineType lineOut)
     { 
-	unsigned long ptrOffset1 = PTR_OFFSET(lineIn1);
-	unsigned long ptrOffset2 = PTR_OFFSET(lineIn2);
-	unsigned long ptrOffset3 = PTR_OFFSET(lineIn3);
-	unsigned long ptrOffset4 = PTR_OFFSET(lineOut);
+	unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn1);
+	unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineIn2);
+	unsigned long ptrOffset3 = ImDtTypes<T>::ptrOffset(lineIn3);
+	unsigned long ptrOffset4 = ImDtTypes<T>::ptrOffset(lineOut);
 	
 	// all aligned
 	if (!ptrOffset1 && !ptrOffset2 && !ptrOffset3 && !ptrOffset4)

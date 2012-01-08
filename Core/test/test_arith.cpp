@@ -85,7 +85,7 @@ int testAdd()
     Image_UINT8 im1(w,h), im2(w,h), im3(w,h);
 
     for (int i=0;i<h;i++)
-        cout << PTR_OFFSET(im1.getLines()[i]) << endl;
+        cout << ImDtTypes<UINT8>::ptrOffset(im1.getLines()[i]) << endl;
     return 0;
 
     for (int i=0;i<im1.getPixelCount();i++)

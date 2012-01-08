@@ -71,8 +71,9 @@ class unaryImageFunction : public imageFunctionBase<T>
 public:
     typedef imageFunctionBase<T> parentClass;
     typedef Image<T> imageType;
-    typedef typename imageType::lineType lineType;
     typedef typename imageType::pixelType pixelType;
+    typedef typename imageType::lineType lineType;
+    typedef typename imageType::sliceType sliceType;
 
     unaryImageFunction() {}
     unaryImageFunction( imageType &imIn, imageType &ImOut ) 
@@ -107,8 +108,9 @@ class binaryImageFunction : public imageFunctionBase<T>
 public:
     typedef imageFunctionBase<T> parentClass;
     typedef Image<T> imageType;
-    typedef typename imageType::lineType lineType;
     typedef typename imageType::pixelType pixelType;
+    typedef typename imageType::lineType lineType;
+    typedef typename imageType::sliceType sliceType;
 
     binaryImageFunction() {}
     binaryImageFunction ( imageType &imIn1, imageType &imIn2, imageType &ImOut )
@@ -143,8 +145,9 @@ class tertiaryImageFunction : public imageFunctionBase<T>
 public:
     typedef imageFunctionBase<T> parentClass;
     typedef Image<T> imageType;
-    typedef typename imageType::lineType lineType;
     typedef typename imageType::pixelType pixelType;
+    typedef typename imageType::lineType lineType;
+    typedef typename imageType::sliceType sliceType;
 
     tertiaryImageFunction() {}
     tertiaryImageFunction( imageType &imIn1, imageType &imIn2, imageType &imIn3, imageType &ImOut )
