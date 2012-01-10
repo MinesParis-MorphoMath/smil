@@ -42,7 +42,7 @@
 template <>
 inline void copyLine<Bit>(typename Image<Bit>::lineType lIn, int size, typename Image<Bit>::lineType lOut)
 {
-    memcpy(lOut.intArray, lIn.intArray, BitArray::INT_SIZE(size)*sizeof(BitArray::INT_TYPE_SIZE));
+    memcpy(lOut.intArray, lIn.intArray, BitArray::INT_SIZE(size)*sizeof(BitArray::INT_TYPE));
 }
 
 // template <class T1>
