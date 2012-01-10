@@ -226,8 +226,9 @@ public:
 #include "DImage.hxx"
 
 
-#include "DImage_Bit.hxx"
 
+#include "DImage_BIN.hxx"
+#include "DImage_Bit.hxx"
 
 
 enum DType

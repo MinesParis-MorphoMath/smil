@@ -40,41 +40,41 @@
  */
 
 template <>
-inline void copyLine<bool,bool>(bool *lIn, int size, bool *lOut)
+inline void copyLine<bool>(typename Image<bool>::lineType lIn, int size, typename Image<bool>::lineType lOut)
 {
     UINT realSize = BIN::binLen(size);
     memcpy(lOut, lIn, realSize*sizeof(BIN_TYPE));
 }
 
-template <class T1>
-inline void copyLine(T1 *lIn, int size, bool *lOut)
-{
-    UINT nBin = BIN::binLen(size);
-    T1 *pIn = lIn;
-    BIN::Type *bOut = (BIN::Type*)lOut;
-    BIN::Type tmp;
-    
-    for (int b=0;b<nBin-1;b++,bOut++)
-    {
-      for (int i=0;i<BIN::SIZE;i++,pIn++)
-      {
-	if (*pIn!=0)
-	  tmp |= (1<<i);
-	else 
-	  tmp &= ~(1<<i);
-      }
-      *bOut = tmp;
-    }
-    for (int i=0;i<size%BIN::SIZE;i++,pIn++)
-    {
-      if (*pIn!=0)
-	tmp |= (1<<i);
-      else 
-	tmp &= ~(1<<i);
-    }
-    *bOut = tmp;
-	
-}
+// template <class T1>
+// inline void copyLine(typename Image<bool>::lineType lIn, int size, typename Image<bool>::lineType lOut)
+// {
+//     UINT nBin = BIN::binLen(size);
+//     T1 *pIn = lIn;
+//     BIN::Type *bOut = (BIN::Type*)lOut;
+//     BIN::Type tmp;
+//     
+//     for (int b=0;b<nBin-1;b++,bOut++)
+//     {
+//       for (int i=0;i<BIN::SIZE;i++,pIn++)
+//       {
+// 	if (*pIn!=0)
+// 	  tmp |= (1<<i);
+// 	else 
+// 	  tmp &= ~(1<<i);
+//       }
+//       *bOut = tmp;
+//     }
+//     for (int i=0;i<size%BIN::SIZE;i++,pIn++)
+//     {
+//       if (*pIn!=0)
+// 	tmp |= (1<<i);
+//       else 
+// 	tmp &= ~(1<<i);
+//     }
+//     *bOut = tmp;
+// 	
+// }
 
 // template <class T2>
 // inline void copyLine(bool *lIn, int size, T2 *lOut)
@@ -192,7 +192,7 @@ inline void bitShiftRight(bool *lIn, int dx, int lineLen, bool *lOut, BIN border
 }
 
 template <>
-inline void shiftLine<bool>(bool *lIn, int dx, int lineLen, bool *lOut, bool borderValue)
+inline void shiftLine<bool>(typename Image<bool>::lineType lIn, int dx, int lineLen, typename Image<bool>::lineType lOut, bool borderValue)
 {
     if (dx==0)
         copyLine<bool,bool>(lIn, lineLen, lOut);
@@ -280,7 +280,7 @@ struct subNoSatLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct supLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(typename Image<bool>::lineType lIn1, typename Image<bool>::lineType lIn2, int size, typename Image<bool>::lineType lOut)
     {
 // 	logicOrLine<BIN_TYPE> f;
 // 	f._exec((BIN_TYPE*)lIn1, (BIN_TYPE*)lIn2, size, (BIN_TYPE*)lOut);

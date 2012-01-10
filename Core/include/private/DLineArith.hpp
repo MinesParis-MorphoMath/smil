@@ -54,6 +54,7 @@ inline void copyLine(typename Image<T>::lineType lIn, int size, typename Image<T
 }
 
 
+
 template <class T>
 struct fillLine : public unaryLineFunctionBase<T>
 {
@@ -63,7 +64,7 @@ struct fillLine : public unaryLineFunctionBase<T>
     
     inline void _exec(lineType lIn, int size, lineType lOut)
     {
-	copyLine<T>(lIn, size, lOut);
+	memcpy(lOut, lIn, size*sizeof(T));
     }
     inline void _exec(lineType lInOut, int size, T value)
     {
@@ -73,7 +74,7 @@ struct fillLine : public unaryLineFunctionBase<T>
 };
 
 template <class T>
-inline void shiftLine(typename Image<T>::lineType &lIn, int dx, int lineLen, typename Image<T>::lineType &lOut, T borderValue = ImDtTypes<T>::min())
+inline void shiftLine(typename Image<T>::lineType lIn, int dx, int lineLen, typename Image<T>::lineType lOut, T borderValue = numeric_limits<T>::min())
 {
     fillLine<T> fillFunc;
 
@@ -109,7 +110,7 @@ struct addLine : public binaryLineFunctionBase<T>
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] > (T)(ImDtTypes<T>::max()- lIn2[i]) ? ImDtTypes<T>::max() : T(lIn1[i] + lIn2[i]);
+            lOut[i] = lIn1[i] > (T)(numeric_limits<T>::max()- lIn2[i]) ? numeric_limits<T>::max() : lIn1[i] + lIn2[i];
     }
 };
 
@@ -131,7 +132,7 @@ struct subLine : public binaryLineFunctionBase<T>
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] < (T)(ImDtTypes<T>::max() + lIn2[i]) ? ImDtTypes<T>::min() : T(lIn1[i] - lIn2[i]);
+            lOut[i] = lIn1[i] < (T)(numeric_limits<T>::max() + lIn2[i]) ? numeric_limits<T>::min() : lIn1[i] - lIn2[i];
     }
 };
 
@@ -150,7 +151,7 @@ template <class T>
 struct supLine : public binaryLineFunctionBase<T>
 {
     typedef typename Image<T>::lineType lineType;
-    inline void _exec(lineType &lIn1, lineType &lIn2, int size, lineType &lOut)
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] > lIn2[i] ? lIn1[i] : lIn2[i];
@@ -175,7 +176,7 @@ struct grtLine : public binaryLineFunctionBase<T>
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] > lIn2[i] ? ImDtTypes<T>::max() : T(0);
+            lOut[i] = lIn1[i] > lIn2[i] ? numeric_limits<T>::max() : 0;
     }
 };
 
@@ -186,7 +187,7 @@ struct grtOrEquLine : public binaryLineFunctionBase<T>
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] >= lIn2[i] ? ImDtTypes<T>::max() : T(0);
+            lOut[i] = lIn1[i] >= lIn2[i] ? numeric_limits<T>::max() : 0;
     }
 };
 
@@ -197,7 +198,7 @@ struct lowLine : public binaryLineFunctionBase<T>
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] < lIn2[i] ? ImDtTypes<T>::max() : T(0);
+            lOut[i] = lIn1[i] < lIn2[i] ? numeric_limits<T>::max() : 0;
     }
 };
 
@@ -208,7 +209,7 @@ struct lowOrEquLine : public binaryLineFunctionBase<T>
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] <= lIn2[i] ? ImDtTypes<T>::max() : T(0);
+            lOut[i] = lIn1[i] <= lIn2[i] ? numeric_limits<T>::max() : 0;
     }
 };
 
@@ -219,7 +220,7 @@ struct equLine : public binaryLineFunctionBase<T>
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] == lIn2[i] ? ImDtTypes<T>::max() : T(0);
+            lOut[i] = lIn1[i] == lIn2[i] ? numeric_limits<T>::max() : 0;
     }
 };
 
@@ -230,7 +231,7 @@ struct difLine : public binaryLineFunctionBase<T>
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] != lIn2[i] ? ImDtTypes<T>::max() : T(0);
+            lOut[i] = lIn1[i] != lIn2[i] ? numeric_limits<T>::max() : 0;
     }
 };
 
@@ -242,7 +243,7 @@ struct mulLine : public binaryLineFunctionBase<T>
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = double(lIn1[i]) * double(lIn2[i]) > double(ImDtTypes<T>::max()) ? ImDtTypes<T>::max() : T(lIn1[i] * lIn2[i]);
+            lOut[i] = double(lIn1[i]) * double(lIn2[i]) > double(numeric_limits<T>::max()) ? numeric_limits<T>::max() : lIn1[i] * lIn2[i];
     }
 };
 
@@ -265,7 +266,7 @@ struct divLine : public binaryLineFunctionBase<T>
     {
         for (int i=0;i<size;i++)
         {
-            lOut[i] = lIn2[i]==0 ? ImDtTypes<T>::max() : T(lIn1[i] / lIn2[i]);
+            lOut[i] = lIn2[i]==0 ? numeric_limits<T>::max() : lIn1[i] / lIn2[i];
         }
     }
 };
@@ -306,6 +307,7 @@ struct testLine : public tertiaryLineFunctionBase<T>
     }
 };
 
+#include "DLineArith_BIN.hxx"
 #include "DLineArith_Bit.hxx"
 
 #if defined  __SSE__ && defined SMIL_USE_SSE_INT

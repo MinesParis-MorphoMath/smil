@@ -93,8 +93,11 @@ RES_T copy(Image<T> &imIn, Image<T> &imOut)
 // 	for (int j=0;j<imIn.getLineCount();j++)
 // 	  copyLine(imIn.getLines()[j], imIn.getWidth(), imOut.getLines()[j]);
 //         memcpy(imOut.getPixels(), imIn.getPixels(), imIn.getAllocatedSize());
+	typename Image<T>::sliceType slIn = imIn.getLines();
+	typename Image<T>::sliceType slOut = imOut.getLines();
+	
 	for (int i=0;i<imIn.getLineCount();i++)
-	  copyLine<T>(imIn.getLines()[i], imIn.getWidth(), imOut.getLines()[i]);
+	  copyLine<T>(slIn[i], imIn.getWidth(), slOut[i]);
 
         imOut.modified();
         return RES_OK;

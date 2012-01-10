@@ -158,14 +158,16 @@ inline Bit BitArray::operator * ()
 
 inline BitArray& BitArray::operator+(int dp)
 {
-    index += dp;
-    return *this;
+    static BitArray ba(this->intArray, this->bitWidth, this->height);
+    ba.index = this->index + dp;
+    return ba;
 }
 
 inline BitArray& BitArray::operator-(int dp)
 {
-    index -= dp;
-    return *this;
+    static BitArray ba(this->intArray, this->bitWidth, this->height);
+    ba.index = this->index - dp;
+    return ba;
 }
 
 inline BitArray& BitArray::operator++(int)

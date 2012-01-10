@@ -97,6 +97,11 @@ def bench_comp():
     print "dilate squ bin:\t\t", testBenchMb(mb.dilate, mb.sSE(1), 1, 0), "\t", testBench(dilate, sSE(), 1, 0)
     print "dilate hex bin:\t\t", testBenchMb(mb.dilate, mb.hSE(1), 1, 0), "\t", testBench(dilate, hSE(), 1, 0)
     
+    print "erode squ UINT8:\t", testBenchMb(mb.erode, mb.sSE(1), 0, 0), "\t", testBench(erode, sSE(), 0, 0)
+    print "erode hex UINT8:\t", testBenchMb(mb.erode, mb.hSE(1), 0, 0), "\t", testBench(erode, hSE(), 0, 0)
+    print "erode squ bin:\t\t", testBenchMb(mb.erode, mb.sSE(1), 1, 0), "\t", testBench(erode, sSE(), 1, 0)
+    print "erode hex bin:\t\t", testBenchMb(mb.erode, mb.hSE(1), 1, 0), "\t", testBench(erode, hSE(), 1, 0)
+    
 def testInv():
   im1.setSize(50,50)
   im1 << 127

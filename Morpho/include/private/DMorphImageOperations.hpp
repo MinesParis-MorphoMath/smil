@@ -126,8 +126,8 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line
     if (z<0 || z>=imIn->getSliceCount() || y<0 || y>=imIn->getLineCount())
       copyLine<T>(borderBuf, lineLen, outBuf);
 // 	memcpy(outBuf, borderBuf, lineLen*sizeof(T));
-    else
-	shiftLine<T>(imIn->getSlices()[z][y], x, lineLen, outBuf, borderValue);
+//     else
+// 	shiftLine<T>(imIn->getSlices()[z][y], x, lineLen, outBuf, borderValue);
 }
 
 template <class T, class lineFunction_T>
@@ -205,7 +205,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 		
 		_exec_line(outBuf, tmpIm, x, y, z, outBuf);   
 	    }
-	    copyLine<T,T>(outBuf, lineLen, lineOut);
+	    copyLine<T>(outBuf, lineLen, lineOut);
 	    if (oddSe)
 	      oddLine = !oddLine;
 	}

@@ -118,8 +118,8 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, T &v
     int lineLen = imOut.getWidth();
     int lineCount = imOut.getLineCount();
 
-    lineType *destLines = imOut.getLines();
-    T *constBuf = ImDtTypes<T>::createLine(lineLen);
+    sliceType destLines = imOut.getLines();
+    lineType constBuf = ImDtTypes<T>::createLine(lineLen);
 
     // Fill the first aligned buffer with the constant value
     fillLine<T>::_exec(constBuf, lineLen, value);
@@ -172,10 +172,10 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imag
     int lineLen = imIn.getWidth();
     int lineCount = imIn.getLineCount();
 
-    lineType *srcLines1 = imIn.getLines();
-    lineType *srcLines2 = imInOut.getLines();
+    sliceType srcLines1 = imIn.getLines();
+    sliceType srcLines2 = imInOut.getLines();
 
-    T *tmpBuf = ImDtTypes<T>::createLine(lineLen);
+    lineType tmpBuf = ImDtTypes<T>::createLine(lineLen);
 
 #pragma omp parallel for
     for (int i=0;i<lineCount;i++)
@@ -230,10 +230,10 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
     int bufSize = lineLen * sizeof(T);
     int lineCount = imIn1.getLineCount();
 
-    lineType *srcLines1 = imIn1.getLines();
-    lineType *srcLines2 = imIn2.getLines();
-    lineType *srcLines3 = imIn3.getLines();
-    lineType *destLines = imOut.getLines();
+    sliceType srcLines1 = imIn1.getLines();
+    sliceType srcLines2 = imIn2.getLines();
+    sliceType srcLines3 = imIn3.getLines();
+    sliceType destLines = imOut.getLines();
 
 #pragma omp parallel for
     for (int i=0;i<lineCount;i++)

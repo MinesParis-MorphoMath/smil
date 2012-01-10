@@ -190,7 +190,7 @@ inline void bitShiftRight(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit 
 }
 
 template <>
-inline void shiftLine<Bit>(typename Image<Bit>::lineType &lIn, int dx, int lineLen, typename Image<Bit>::lineType &lOut, Bit borderValue)
+inline void shiftLine<Bit>(typename Image<Bit>::lineType lIn, int dx, int lineLen, typename Image<Bit>::lineType lOut, Bit borderValue)
 {
     if (dx==0)
         copyLine<Bit,Bit>(lIn, lineLen, lOut);

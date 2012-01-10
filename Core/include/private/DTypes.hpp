@@ -31,6 +31,10 @@
 #define _D_TYPES_H
 
 #include <stdint.h>
+#include <limits>
+#include "DMemory.hpp"
+
+using namespace std;
 
 typedef unsigned int UINT;
 typedef unsigned char UINT8;
@@ -45,6 +49,23 @@ typedef char INT8;
 #endif // _MSC_VER
 typedef short INT16;
 typedef int INT32;
+
+template <class T>
+struct ImDtTypes
+{
+    typedef T pixelType;
+    typedef pixelType *lineType;
+    typedef lineType *sliceType;
+    typedef sliceType *volType;
+    
+    static pixelType min() { return numeric_limits<T>::min(); }
+    static pixelType max() { return numeric_limits<T>::max(); }
+    static lineType createLine(UINT lineLen) { return createAlignedBuffer<T>(lineLen); }
+    static void deleteLine(lineType &line) { deleteAlignedBuffer<T>(line); }
+    static unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)p) & (n-1); }
+};
+
+
 
 enum RES_T
 {
@@ -70,6 +91,12 @@ template <>
 inline const char *getDataTypeAsString(UINT16 &val)
 {
     return "UINT16";
+}
+
+template <>
+inline const char *getDataTypeAsString(bool &val)
+{
+    return "BIN";
 }
 
 

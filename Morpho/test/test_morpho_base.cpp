@@ -27,6 +27,23 @@
  */
 
 
+/*
+Démarrage : /home/faessel/src/Smil/prev-build/bin/test_morpho_base
+/home/faessel/src/Smil/prev-build/bin/test_morpho_base 
+Hello from thread 0 out of 1
+Width: 1024
+vol	UINT8	1024x1024	0 secs
+sup	UINT8	1024x1024	210 µsecs
+sup	BIN	1024x1024	30 µsecs
+dilate hSE	UINT8	1024x1024	840 µsecs
+dilate hSE	BIN	1024x1024	180 µsecs
+dilate sSE	UINT8	1024x1024	2.92 msecs
+dilate sSE	BIN	1024x1024	570 µsecs
+erode hSE	UINT8	1024x1024	880 µsecs
+erode hSE	BIN	1024x1024	200 µsecs
+erode sSE	UINT8	1024x1024	3 msecs
+erode sSE	BIN	1024x1024	550 µsecs
+*/
 
 #include <stdio.h>
 #include <time.h>
@@ -102,10 +119,10 @@ int main(int argc, char *argv[])
 
    
    Image<Bit> imb(70, 2);
-   fill(imb, Bit(1));
-   imb.printSelf(1);
+//    fill(imb, Bit(1));
+//    imb.printSelf(1);
    
-   cout << vol(imb) << endl;
+//    cout << vol(imb) << endl;
    
     
    
@@ -136,26 +153,31 @@ int main(int argc, char *argv[])
 //     UINT w = 768, h = 576;
     
     typedef Image<Bit> imType;
+    typedef Image<bool> imType2;
     
     imType bim1(w, h, d);
     imType bim2(bim1);
     imType bim3(bim1);
     
     cout << "Width: " << w << endl;
-    cout << "Line count: " << bim1.getLineCount() << endl;
+//     cout << "Line count: " << bim1.getLineCount() << endl;
         
-    fill(bim1, Bit(1));
-    fill(bim2, Bit(1));
+//     fill(bim1, Bit(1));
+//     fill(bim2, Bit(1));
     
     Image_UINT8 im1(w,h);
     Image_UINT8 im2(im1);
     Image_UINT8 im3(im1);
 
+    imType2 imb1(w,h);
+    imType2 imb2(imb1);
+    imType2 imb3(imb1);
+
     fill(im1, UINT8(100));
     fill(im2, UINT8(5));
     
-    sup(bim1, bim2, bim3);
-    dilate(bim1, bim2);
+//     sup(bim1, bim2, bim3);
+//     dilate(imb1, imb2);
 
     equ(im1, im2);
     
@@ -163,10 +185,21 @@ int main(int argc, char *argv[])
     BENCH_IMG(vol, bim1);
     BENCH_IMG(sup, im1, im2, im3);
     BENCH_IMG(sup, bim1, bim2, bim3);
+    BENCH_IMG(sup, imb1, imb2, imb3);
+    
     BENCH_IMG_STR(dilate, "hSE", im1, im3, hSE());
     BENCH_IMG_STR(dilate, "hSE", bim1, bim2, hSE());
+    BENCH_IMG_STR(dilate, "hSE", imb1, imb2, hSE());
+    BENCH_IMG_STR(dilate, "sSE", im1, im3, sSE());
+    BENCH_IMG_STR(dilate, "sSE", bim1, bim2, hSE());
+    BENCH_IMG_STR(dilate, "sSE", imb1, imb2, sSE());
+    
     BENCH_IMG_STR(erode, "hSE", im1, im3, hSE());
     BENCH_IMG_STR(erode, "hSE", bim1, bim3, hSE());
+    BENCH_IMG_STR(erode, "hSE", imb1, imb3, hSE());
+    BENCH_IMG_STR(erode, "sSE", im1, im3, sSE());
+    BENCH_IMG_STR(erode, "sSE", bim1, bim3, sSE());
+    BENCH_IMG_STR(erode, "sSE", imb1, imb3, sSE());
     
     
 // cout << "err: " << __FILE__ << __LINE__ << __FUNCTION__ << endl;

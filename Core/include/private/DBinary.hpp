@@ -32,16 +32,17 @@
 
 #include <cstring>
 #include <iostream>
-#include "limits.h"
+
+#include <limits>
 
 #include "DTypes.hpp"
-#include <limits>
+#include "DMemory.hpp"
 
 using namespace std;
 
-// #ifndef CHAR_BIT
-// #define CHAR_BIT 8
-// #endif
+#ifndef CHAR_BIT
+#define CHAR_BIT 8
+#endif
 
 typedef UINT64 BIN_TYPE;
 

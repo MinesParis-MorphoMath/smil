@@ -30,7 +30,6 @@
 #ifndef _DMEMORY_HPP
 #define _DMEMORY_HPP
 
-#include "DBinary.hpp"
 
 #if defined(__MINGW32__)
 
@@ -131,22 +130,10 @@ void t_LineShiftLeft1D(const T *linein, const int lineWidth, const int nbshift, 
 
 }
 
-
-template <class T>
-struct ImDtTypes
+inline unsigned long PTR_OFFSET(void *p, unsigned long n=SIMD_VEC_SIZE)
 {
-    typedef T pixelType;
-    typedef pixelType *lineType;
-    typedef lineType *sliceType;
-    typedef sliceType *volType;
-    
-    static pixelType min() { return numeric_limits<T>::min(); }
-    static pixelType max() { return numeric_limits<T>::max(); }
-    static lineType createLine(UINT lineLen) { return createAlignedBuffer<T>(lineLen); }
-    static void deleteLine(lineType &line) { deleteAlignedBuffer<T>(line); }
-    static unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)p) & (n-1); }
-};
-
+    return ((unsigned long)p) & (n-1);
+}
 
 
 #endif // _DMEMORY_HPP
