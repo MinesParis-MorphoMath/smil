@@ -117,21 +117,28 @@ int main(int argc, char *argv[])
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
 
+    int BENCH_NRUNS = 1E4;
    
    Image<Bit> imb(70, 2);
-//    fill(imb, Bit(1));
+   fill(imb, Bit(1));
 //    imb.printSelf(1);
    
-//    cout << vol(imb) << endl;
+   BitArray ba1 = imb.getLines()[0], ba2 = imb.getLines()[1];
+//    ba1.createIntArray();
+//    ba2.createIntArray();
+//    
+//    fillLine<Bit>(ba1, 10, Bit(1));
+   shiftLine<Bit>(ba1, -2, 70, ba2);
+   cout << ba1 << endl;
+   cout << ba2 << endl;
    
-    
+//    cout << vol(imb) << endl;
    
 //    return 0;
    
     for (int i=0;i<argc;i++)
       cout << argv[i] << " ";
     cout << endl;
-    int BENCH_NRUNS = 1E3;
 
     TestSuite t;
 //     ADD_TEST(t, test_base_BIN);
@@ -159,7 +166,7 @@ int main(int argc, char *argv[])
     imType bim2(bim1);
     imType bim3(bim1);
     
-    cout << "Width: " << w << endl;
+//     cout << "Width: " << w << endl;
 //     cout << "Line count: " << bim1.getLineCount() << endl;
         
 //     fill(bim1, Bit(1));
@@ -181,6 +188,11 @@ int main(int argc, char *argv[])
 
     equ(im1, im2);
     
+    BENCH_IMG(copy, imb1, imb2);
+    BENCH_IMG(copy, bim1, bim2);
+    
+    return 0;
+    
     BENCH_IMG(vol, im1);
     BENCH_IMG(vol, bim1);
     BENCH_IMG(sup, im1, im2, im3);
@@ -191,7 +203,7 @@ int main(int argc, char *argv[])
     BENCH_IMG_STR(dilate, "hSE", bim1, bim2, hSE());
     BENCH_IMG_STR(dilate, "hSE", imb1, imb2, hSE());
     BENCH_IMG_STR(dilate, "sSE", im1, im3, sSE());
-    BENCH_IMG_STR(dilate, "sSE", bim1, bim2, hSE());
+    BENCH_IMG_STR(dilate, "sSE", bim1, bim2, sSE());
     BENCH_IMG_STR(dilate, "sSE", imb1, imb2, sSE());
     
     BENCH_IMG_STR(erode, "hSE", im1, im3, hSE());

@@ -42,7 +42,15 @@
 template <>
 inline void copyLine<Bit>(typename Image<Bit>::lineType lIn, int size, typename Image<Bit>::lineType lOut)
 {
-    memcpy(lOut.intArray, lIn.intArray, BitArray::INT_SIZE(size)*sizeof(BitArray::INT_TYPE));
+    if (lIn.index==0 && lOut.index==0)
+    {
+	memcpy(lOut.intArray, lIn.intArray, BitArray::INT_SIZE(size)*sizeof(BitArray::INT_TYPE));
+    }
+    else
+    {
+	for (int i=0;i<size;i++)
+	  lOut[i] = lIn[i];
+    }
 }
 
 // template <class T1>
@@ -193,7 +201,7 @@ template <>
 inline void shiftLine<Bit>(typename Image<Bit>::lineType lIn, int dx, int lineLen, typename Image<Bit>::lineType lOut, Bit borderValue)
 {
     if (dx==0)
-        copyLine<Bit,Bit>(lIn, lineLen, lOut);
+        copyLine<Bit>(lIn, lineLen, lOut);
     else if (dx>0)
       bitShiftLeft(lIn, dx, lineLen, lOut, borderValue);
     else

@@ -72,6 +72,8 @@ public:
     UINT getIntNbr() { return intWidth*height; }
     UINT getHeight() { return height; }
 
+    UINT index;
+    
     void setSize(UINT _bitWidth, UINT _bitHeight=1);
     void createIntArray()
     {
@@ -91,14 +93,22 @@ public:
     BitArray& operator - (int dp);
     BitArray& operator ++ (int);
     BitArray& operator ++ ();
+    
+    ostream& printSelf(ostream &os=cout);
+
 private:
     UINT intWidth;
     UINT bitWidth;
     UINT height;
     
     UINT bitPadX;
-    UINT index;
 };
+
+
+inline ostream& operator << (ostream &os, BitArray &b)
+{
+    return b.printSelf(os);
+}
 
 class Bit
 {
@@ -181,6 +191,15 @@ inline BitArray& BitArray::operator++()
     index++;
     return *this;
 }
+
+
+inline ostream& BitArray::printSelf(ostream &os)
+{
+    for (int i=0;i<bitWidth;i++)
+      os << this->operator[](i) << " ";
+    return os;
+}
+
 
 
 inline Bit::operator bool()
