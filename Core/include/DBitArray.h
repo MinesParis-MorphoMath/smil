@@ -40,7 +40,7 @@ class BitArray
 public:
 
 #ifdef USE_64BIT_IDS
-    typedef UINT8 INT_TYPE;
+    typedef UINT64 INT_TYPE;
 #else    
     typedef UINT32 INT_TYPE;
 #endif // USE_64BIT_IDS 
@@ -78,17 +78,20 @@ public:
     UINT getIntWidth() { return intWidth; }
     UINT getIntNbr() { return intWidth*height; }
     UINT getHeight() { return height; }
+    UINT getBitPadX() { return bitPadX; }
 
     UINT index;
     
     void setSize(UINT _bitWidth, UINT _bitHeight=1);
     void createIntArray()
     {
-	intArray = createAlignedBuffer<INT_TYPE>(intWidth*height);
+	if (!intArray)
+	  intArray = createAlignedBuffer<INT_TYPE>(intWidth*height);
     }
     void deleteIntArray()
     {
-	deleteAlignedBuffer<INT_TYPE>(intArray);
+	if (intArray)
+	  deleteAlignedBuffer<INT_TYPE>(intArray);
 	intArray = NULL;
     }
     

@@ -126,8 +126,8 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line
     if (z<0 || z>=imIn->getSliceCount() || y<0 || y>=imIn->getLineCount())
       copyLine<T>(borderBuf, lineLen, outBuf);
 // 	memcpy(outBuf, borderBuf, lineLen*sizeof(T));
-//     else
-// 	shiftLine<T>(imIn->getSlices()[z][y], x, lineLen, outBuf, borderValue);
+    else
+	shiftLine<T>(imIn->getSlices()[z][y], x, lineLen, outBuf, borderValue);
 }
 
 template <class T, class lineFunction_T>

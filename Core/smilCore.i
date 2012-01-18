@@ -37,7 +37,6 @@
 #include "DBaseImageOperations.hpp"
 #include "DBaseLineOperations.hpp"
 #include "DImageArith.hpp"
-#include "DLineArith_BIN.hxx"
 #include "DImageDraw.hpp"
 #include "DLineHistogram.hpp"
 #include "DImageHistogram.hpp"
@@ -71,6 +70,7 @@ PTR_ARG_OUT_APPLY(h)
 PTR_ARG_OUT_APPLY(d)
 
 %include "DCommon.h"
+%include "DTypes.hpp"
 %include "DImage.hpp"
 %include "DImage.hxx"
 %include "DImage.h"

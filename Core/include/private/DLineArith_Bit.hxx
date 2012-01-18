@@ -134,24 +134,9 @@ struct fillLine<Bit> : public unaryLineFunctionBase<Bit>
     }
     inline void _exec(BitArray lInOut, int size, Bit value)
     {
-	if ((bool)value) // set size bits to 1
-	{
-	    BitArray::INT_TYPE intVal = BitArray::INT_TYPE_MAX();
-	    UINT fullNbr = size/BitArray::INT_TYPE_SIZE; 
-	    UINT bitRes  = size - fullNbr*BitArray::INT_TYPE_SIZE;
-	    
-	    for (int i=0;i<fullNbr;i++)
-	      lInOut.intArray[i] = intVal;
-	    
-	    if (bitRes)
-	      lInOut.intArray[fullNbr] = intVal >> (BitArray::INT_TYPE_SIZE-bitRes);
-	}
-	else // set all bits to 0
-	{
-	    BitArray::INT_TYPE intVal = BitArray::INT_TYPE_MIN();
-	    for (int i=0;i<BitArray::INT_SIZE(size);i++)
-	      lInOut.intArray[i] = intVal;
-	}
+	BitArray::INT_TYPE intVal = (bool)value ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
+	for (int i=0;i<BitArray::INT_SIZE(size);i++)
+	  lInOut.intArray[i] = intVal;
     }
 };
 
@@ -174,7 +159,7 @@ inline void bitShiftLeft(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit b
 	*bOut = bBorder;
     
     UINT lMov = dx%BitArray::INT_TYPE_SIZE;
-    UINT rMov = BitArray::INT_TYPE_SIZE - rMov;
+    UINT rMov = BitArray::INT_TYPE_SIZE - lMov;
     
     // First run with border to keep the loop clean for vectorization
     *bOut++ = (*bIn++ << lMov) | (bBorder >> rMov);
@@ -186,16 +171,16 @@ inline void bitShiftLeft(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit b
 inline void bitShiftRight(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit borderValue)
 {
     UINT realLen = BitArray::INT_SIZE(lineLen);
-    UINT binLineLen = realLen * BitArray::INT_TYPE_SIZE;
-    BitArray::INT_TYPE lenDiff = binLineLen - lineLen;
+    UINT lenDiff = lIn.getBitPadX();
+    UINT dxReal = dx + lenDiff;
     
-    UINT dxBytes = dx/BitArray::INT_TYPE_SIZE;
+    UINT dxBytes = dxReal/BitArray::INT_TYPE_SIZE;
     
     BitArray::INT_TYPE *bIn = lIn.intArray + realLen-1;
     BitArray::INT_TYPE *bOut = lOut.intArray + realLen-1;
     BitArray::INT_TYPE bBorder = (bool)borderValue ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
     
-    if (dx>=lineLen)
+    if (dxReal>=lineLen)
     {
 	fillLine<Bit>(lOut, lineLen, borderValue);
 	return;
@@ -208,7 +193,7 @@ inline void bitShiftRight(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit 
     BitArray::INT_TYPE lMov = BitArray::INT_TYPE_SIZE - rMov;
     
     // First run with border to keep the loop clean for vectorization
-    BitArray::INT_TYPE rightMask = *bIn-- & (1UL >> lenDiff);
+    BitArray::INT_TYPE rightMask = *bIn-- & (BitArray::INT_TYPE_MAX() >> lenDiff);
     *bOut-- = (rightMask >> rMov) | (bBorder << lMov);
     
     if (dxBytes+1<realLen)

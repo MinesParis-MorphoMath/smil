@@ -32,6 +32,7 @@
 
 #include "DImage.hpp"
 #include "DBitArray.h"
+#include "DTypes.hpp"
 
 template <>
 struct ImDtTypes<Bit>
@@ -43,9 +44,9 @@ struct ImDtTypes<Bit>
 
     static pixelType min() { return Bit(0); }
     static pixelType max() { return Bit(1); }
-    static lineType& createLine(UINT lineLen) 
+    static lineType createLine(UINT lineLen) 
     { 
-	static BitArray ba(lineLen);
+	BitArray ba(lineLen);
 	ba.createIntArray();
 	return ba; 
     }

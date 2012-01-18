@@ -111,68 +111,6 @@ void func(hSE *se)
 //     virtual void modified() {}
 // };
 
-inline void bShiftLeft(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit borderValue)
-{
-    UINT realLen = BitArray::INT_SIZE(lineLen);
-    UINT dxBytes = dx/BitArray::INT_TYPE_SIZE;
-    
-    BitArray::INT_TYPE *bIn = lIn.intArray;
-    BitArray::INT_TYPE *bOut = lOut.intArray;
-    BitArray::INT_TYPE bBorder = (bool)borderValue ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
-    
-    if (dx>=lineLen)
-    {
-	fillLine<Bit>(lOut, lineLen, borderValue);
-	return;
-    }
-    
-    for (int i=0;i<dxBytes;i++,bOut++)
-	*bOut = bBorder;
-    
-    UINT lMov = dx%BitArray::INT_TYPE_SIZE;
-    UINT rMov = BitArray::INT_TYPE_SIZE - rMov;
-    
-    // First run with border to keep the loop clean for vectorization
-    *bOut++ = (*bIn++ << lMov) | (bBorder >> rMov);
-    
-    for (int i=dxBytes+1;i<realLen;i++,bIn++,bOut++)
-	*bOut = (*bIn << lMov) | (*(bIn-1) >> rMov);
-}
-
-inline void bShiftRight(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit borderValue)
-{
-    UINT realLen = BitArray::INT_SIZE(lineLen);
-    UINT binLineLen = realLen * BitArray::INT_TYPE_SIZE;
-    BitArray::INT_TYPE lenDiff = binLineLen - lineLen;
-    
-    UINT dxBytes = dx/BitArray::INT_TYPE_SIZE;
-    
-    BitArray::INT_TYPE *bIn = lIn.intArray + realLen-1;
-    BitArray::INT_TYPE *bOut = lOut.intArray + realLen-1;
-    BitArray::INT_TYPE bBorder = (bool)borderValue ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
-    
-    if (dx>=lineLen)
-    {
-	fillLine<Bit>(lOut, lineLen, borderValue);
-	return;
-    }
-    
-    for (int i=0;i<dxBytes;i++,bOut--)
-	*bOut = bBorder;
-    
-    BitArray::INT_TYPE rMov = dx%BitArray::INT_TYPE_SIZE;
-    BitArray::INT_TYPE lMov = BitArray::INT_TYPE_SIZE - rMov;
-    
-    // First run with border to keep the loop clean for vectorization
-    BitArray::INT_TYPE rightMask = *bIn-- & (1UL >> lenDiff);
-    *bOut-- = (rightMask >> rMov) | (bBorder << lMov);
-    
-    if (dxBytes+1<realLen)
-	*bOut-- = (*bIn-- >> rMov) | (rightMask << lMov);
-    
-    for (int i=dxBytes+2;i<realLen;i++,bIn--,bOut--)
-	*bOut = (*bIn >> rMov) | (*(bIn+1) << lMov);
-}
 
 
 int main(int argc, char *argv[])
@@ -181,56 +119,8 @@ int main(int argc, char *argv[])
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
 
-    int BENCH_NRUNS = 1E4;
+    int BENCH_NRUNS = 1E3;
    
-   Image<Bit> imb(70, 2);
-   fill(imb, Bit(1));
-//    imb.printSelf(1);
-   
-   BitArray ba1 = imb.getLines()[0], ba2 = imb.getLines()[1];
-//    ba1.createIntArray();
-//    ba2.createIntArray();
-//    
-//    fillLine<Bit>(ba1, 10, Bit(1));
-   shiftLine<Bit>(ba1, -2, 70, ba2);
-   cout << ba1 << endl;
-   cout << ba2 << endl;
-   
-//    cout << vol(imb) << endl;
-   
-   UINT s = 70;
-   BitArray b1(s);
-   BitArray b2(s);
-   b1.createIntArray();
-   b2.createIntArray();
-   
-//    b1.index = 11;
-   UINT cpSize = 23;
-   
-   UINT fullNbr = s/BitArray::INT_TYPE_SIZE; 
-   UINT bitRes  = s - fullNbr*BitArray::INT_TYPE_SIZE;
-
-   fillLine< Bit >(b1, s, Bit(1));
-   fillLine< Bit >(b2, s, Bit(0));
-//    shiftLine< Bit >(b1, -2, s, b2);
-   bShiftLeft(b1, 4, 70, b2, Bit(0));
-//    bShiftRight(b1, 4, 70, b2, Bit(0));
-
-   UINT startX = b1.index/BitArray::INT_TYPE_SIZE;
-   UINT startx = b1.index%BitArray::INT_TYPE_SIZE;
-   
-   UINT startY = b2.index/BitArray::INT_TYPE_SIZE;
-   UINT starty = b2.index%BitArray::INT_TYPE_SIZE;
-   
-//    copyLine< Bit >(b1, 70, b2);
-   cout << endl << b2 << endl;
-   for (int i=0;i<BitArray::INT_SIZE(s);i++)
-    {
-	BitArray u(b2.intArray+i, BitArray::INT_TYPE_SIZE);
-	cout << u << endl;
-    }
-   
-   return 0;
    
 
     TestSuite t;
@@ -249,7 +139,7 @@ int main(int argc, char *argv[])
     printf("Hello from thread %d out of %d\n", iam, np);
   }
    
-    UINT w = 1024, h = 1024, d = 1;
+    UINT w = 5*1024, h = 1024, d = 1;
 //     UINT w = 768, h = 576;
     
     typedef Image<Bit> imType;
@@ -281,10 +171,14 @@ int main(int argc, char *argv[])
 
     equ(im1, im2);
     
+    dilate(bim1, bim2, sSE());
+    
+//     return 0;
+    
     BENCH_IMG(copy, imb1, imb2);
     BENCH_IMG(copy, bim1, bim2);
     
-    return 0;
+//     return 0;
     
     BENCH_IMG(vol, im1);
     BENCH_IMG(vol, bim1);
@@ -297,14 +191,14 @@ int main(int argc, char *argv[])
     BENCH_IMG_STR(dilate, "hSE", imb1, imb2, hSE());
     BENCH_IMG_STR(dilate, "sSE", im1, im3, sSE());
     BENCH_IMG_STR(dilate, "sSE", bim1, bim2, sSE());
-    BENCH_IMG_STR(dilate, "sSE", imb1, imb2, sSE());
+//     BENCH_IMG_STR(dilate, "sSE", imb1, imb2, sSE());
     
     BENCH_IMG_STR(erode, "hSE", im1, im3, hSE());
     BENCH_IMG_STR(erode, "hSE", bim1, bim3, hSE());
     BENCH_IMG_STR(erode, "hSE", imb1, imb3, hSE());
     BENCH_IMG_STR(erode, "sSE", im1, im3, sSE());
     BENCH_IMG_STR(erode, "sSE", bim1, bim3, sSE());
-    BENCH_IMG_STR(erode, "sSE", imb1, imb3, sSE());
+//     BENCH_IMG_STR(erode, "sSE", imb1, imb3, sSE());
     
     
 // cout << "err: " << __FILE__ << __LINE__ << __FUNCTION__ << endl;
