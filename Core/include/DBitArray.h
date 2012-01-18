@@ -38,7 +38,14 @@ class Bit;
 class BitArray
 {
 public:
-    typedef UINT64 INT_TYPE;
+
+#ifdef USE_64BIT_IDS
+    typedef UINT8 INT_TYPE;
+#else    
+    typedef UINT32 INT_TYPE;
+#endif // USE_64BIT_IDS 
+    
+    
     static const INT_TYPE INT_TYPE_SIZE = sizeof(INT_TYPE)*CHAR_BIT;
     static inline INT_TYPE INT_TYPE_MIN() { return numeric_limits<INT_TYPE>::min(); }
     static inline INT_TYPE INT_TYPE_MAX() { return numeric_limits<INT_TYPE>::max(); }

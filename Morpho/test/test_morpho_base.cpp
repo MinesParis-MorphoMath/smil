@@ -111,6 +111,70 @@ void func(hSE *se)
 //     virtual void modified() {}
 // };
 
+inline void bShiftLeft(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit borderValue)
+{
+    UINT realLen = BitArray::INT_SIZE(lineLen);
+    UINT dxBytes = dx/BitArray::INT_TYPE_SIZE;
+    
+    BitArray::INT_TYPE *bIn = lIn.intArray;
+    BitArray::INT_TYPE *bOut = lOut.intArray;
+    BitArray::INT_TYPE bBorder = (bool)borderValue ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
+    
+    if (dx>=lineLen)
+    {
+	fillLine<Bit>(lOut, lineLen, borderValue);
+	return;
+    }
+    
+    for (int i=0;i<dxBytes;i++,bOut++)
+	*bOut = bBorder;
+    
+    UINT lMov = dx%BitArray::INT_TYPE_SIZE;
+    UINT rMov = BitArray::INT_TYPE_SIZE - rMov;
+    
+    // First run with border to keep the loop clean for vectorization
+    *bOut++ = (*bIn++ << lMov) | (bBorder >> rMov);
+    
+    for (int i=dxBytes+1;i<realLen;i++,bIn++,bOut++)
+	*bOut = (*bIn << lMov) | (*(bIn-1) >> rMov);
+}
+
+inline void bShiftRight(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit borderValue)
+{
+    UINT realLen = BitArray::INT_SIZE(lineLen);
+    UINT binLineLen = realLen * BitArray::INT_TYPE_SIZE;
+    BitArray::INT_TYPE lenDiff = binLineLen - lineLen;
+    
+    UINT dxBytes = dx/BitArray::INT_TYPE_SIZE;
+    
+    BitArray::INT_TYPE *bIn = lIn.intArray + realLen-1;
+    BitArray::INT_TYPE *bOut = lOut.intArray + realLen-1;
+    BitArray::INT_TYPE bBorder = (bool)borderValue ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
+    
+    if (dx>=lineLen)
+    {
+	fillLine<Bit>(lOut, lineLen, borderValue);
+	return;
+    }
+    
+    for (int i=0;i<dxBytes;i++,bOut--)
+	*bOut = bBorder;
+    
+    BitArray::INT_TYPE rMov = dx%BitArray::INT_TYPE_SIZE;
+    BitArray::INT_TYPE lMov = BitArray::INT_TYPE_SIZE - rMov;
+    
+    // First run with border to keep the loop clean for vectorization
+    BitArray::INT_TYPE rightMask = *bIn-- & (1UL >> lenDiff);
+    *bOut-- = (rightMask >> rMov) | (bBorder << lMov);
+    
+    if (dxBytes+1<realLen)
+	*bOut-- = (*bIn-- >> rMov) | (rightMask << lMov);
+    
+    for (int i=dxBytes+2;i<realLen;i++,bIn--,bOut--)
+	*bOut = (*bIn >> rMov) | (*(bIn+1) << lMov);
+}
+
+
 int main(int argc, char *argv[])
 {
 #ifdef BUILD_GUI
@@ -134,11 +198,40 @@ int main(int argc, char *argv[])
    
 //    cout << vol(imb) << endl;
    
-//    return 0;
+   UINT s = 70;
+   BitArray b1(s);
+   BitArray b2(s);
+   b1.createIntArray();
+   b2.createIntArray();
    
-    for (int i=0;i<argc;i++)
-      cout << argv[i] << " ";
-    cout << endl;
+//    b1.index = 11;
+   UINT cpSize = 23;
+   
+   UINT fullNbr = s/BitArray::INT_TYPE_SIZE; 
+   UINT bitRes  = s - fullNbr*BitArray::INT_TYPE_SIZE;
+
+   fillLine< Bit >(b1, s, Bit(1));
+   fillLine< Bit >(b2, s, Bit(0));
+//    shiftLine< Bit >(b1, -2, s, b2);
+   bShiftLeft(b1, 4, 70, b2, Bit(0));
+//    bShiftRight(b1, 4, 70, b2, Bit(0));
+
+   UINT startX = b1.index/BitArray::INT_TYPE_SIZE;
+   UINT startx = b1.index%BitArray::INT_TYPE_SIZE;
+   
+   UINT startY = b2.index/BitArray::INT_TYPE_SIZE;
+   UINT starty = b2.index%BitArray::INT_TYPE_SIZE;
+   
+//    copyLine< Bit >(b1, 70, b2);
+   cout << endl << b2 << endl;
+   for (int i=0;i<BitArray::INT_SIZE(s);i++)
+    {
+	BitArray u(b2.intArray+i, BitArray::INT_TYPE_SIZE);
+	cout << u << endl;
+    }
+   
+   return 0;
+   
 
     TestSuite t;
 //     ADD_TEST(t, test_base_BIN);
