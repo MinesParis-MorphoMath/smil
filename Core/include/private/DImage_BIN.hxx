@@ -33,12 +33,33 @@
 #include "DImage.hpp"
 #include "DBinary.hpp"
 
-template<> 
-inline bool *createAlignedBuffer<bool>(int size) 
+
+template <>
+struct ImDtTypes<bool>
 {
-    UINT realSize = BIN::binLen(size);
-    return ((bool*) createAlignedBuffer<BIN_TYPE>(realSize));
-}
+    typedef bool pixelType;
+    typedef pixelType *lineType;
+    typedef lineType *sliceType;
+    typedef sliceType *volType;
+
+    static pixelType min() { return numeric_limits<bool>::min(); }
+    static pixelType max() { return numeric_limits<bool>::max(); }
+    static lineType createLine(UINT lineLen) 
+    { 
+	UINT realSize = BIN::binLen(lineLen);
+	return ((bool*) createAlignedBuffer<BIN_TYPE>(realSize));
+    }
+    static void deleteLine(lineType line) { if (line) deleteAlignedBuffer<BIN::Type>((BIN::Type*)line); }
+    static unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)p) & (n-1); }
+};
+
+
+// template<> 
+// inline bool *createAlignedBuffer<bool>(int size) 
+// {
+//     UINT realSize = BIN::binLen(size);
+//     return ((bool*) createAlignedBuffer<BIN_TYPE>(realSize));
+// }
 
 
 template <>

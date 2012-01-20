@@ -50,7 +50,7 @@ struct ImDtTypes<Bit>
 	ba.createIntArray();
 	return ba; 
     }
-    static void deleteLine(lineType &line) 
+    static void deleteLine(lineType line) 
     { 
 	line.deleteIntArray();
     }

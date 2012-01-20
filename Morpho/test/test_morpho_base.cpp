@@ -112,6 +112,16 @@ void func(hSE *se)
 // };
 
 
+void cpy(BitArray r1, int size, BitArray r2)
+{
+    int intSize = BitArray::INT_SIZE(size);
+    
+    int startX = r1.index/BitArray::INT_TYPE_SIZE;
+    int startY = r2.index/BitArray::INT_TYPE_SIZE;
+    
+    BitArray::INT_TYPE *b1 = r1.intArray + startX;
+    BitArray::INT_TYPE *b2 = r2.intArray + startY;
+}
 
 int main(int argc, char *argv[])
 {
@@ -119,7 +129,7 @@ int main(int argc, char *argv[])
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
 
-    int BENCH_NRUNS = 1E3;
+    int BENCH_NRUNS = 1E8;
    
    
 
@@ -139,7 +149,7 @@ int main(int argc, char *argv[])
     printf("Hello from thread %d out of %d\n", iam, np);
   }
    
-    UINT w = 5*1024, h = 1024, d = 1;
+    UINT w = 1024, h = 1024, d = 1;
 //     UINT w = 768, h = 576;
     
     typedef Image<Bit> imType;
@@ -152,7 +162,23 @@ int main(int argc, char *argv[])
 //     cout << "Width: " << w << endl;
 //     cout << "Line count: " << bim1.getLineCount() << endl;
         
-//     fill(bim1, Bit(1));
+    fill(bim1, Bit(1));
+    
+    BitArray b1(64);
+    b1.createIntArray();
+    
+    BitArray b2(64);
+    b2.createIntArray();
+    
+    fillLine< Bit >(b1, 64, Bit(0));
+    fillLine< Bit >(b1, 6, Bit(1));
+    
+    cpy(b1+2, 10, b2);
+    
+//     shiftLine< Bit >(b1, 2, 64, b2);
+    
+    cout << b1 << endl;
+    cout << b2 << endl;
 //     fill(bim2, Bit(1));
     
     Image_UINT8 im1(w,h);
@@ -163,22 +189,33 @@ int main(int argc, char *argv[])
     imType2 imb2(imb1);
     imType2 imb3(imb1);
 
-    fill(im1, UINT8(100));
-    fill(im2, UINT8(5));
+//     fill(im1, UINT8(100));
+//     fill(im2, UINT8(5));
     
 //     sup(bim1, bim2, bim3);
 //     dilate(imb1, imb2);
 
-    equ(im1, im2);
+//     equ(im1, im2);
     
-    dilate(bim1, bim2, sSE());
+    copy(imb1, imb2);
+    copy(bim1, bim2);
     
-//     return 0;
+    return 0;
     
-    BENCH_IMG(copy, imb1, imb2);
-    BENCH_IMG(copy, bim1, bim2);
+    int t1 = clock();
+    for (int i=0;i<BENCH_NRUNS;i++)
+      copyLine<Bit>(bim1.getLines()[0], w, bim2.getLines()[0]);
+    cout << clock()-t1 << endl;
     
-//     return 0;
+    t1 = clock();
+    for (int i=0;i<BENCH_NRUNS;i++)
+      copyLine<bool>(imb1.getLines()[0], w, imb2.getLines()[0]);
+    cout << clock()-t1 << endl;
+    
+//     BENCH_IMG(copy, imb1, imb2);
+//     BENCH_IMG(copy, bim1, bim2);
+    
+    return 0;
     
     BENCH_IMG(vol, im1);
     BENCH_IMG(vol, bim1);
@@ -191,14 +228,14 @@ int main(int argc, char *argv[])
     BENCH_IMG_STR(dilate, "hSE", imb1, imb2, hSE());
     BENCH_IMG_STR(dilate, "sSE", im1, im3, sSE());
     BENCH_IMG_STR(dilate, "sSE", bim1, bim2, sSE());
-//     BENCH_IMG_STR(dilate, "sSE", imb1, imb2, sSE());
+    BENCH_IMG_STR(dilate, "sSE", imb1, imb2, sSE());
     
     BENCH_IMG_STR(erode, "hSE", im1, im3, hSE());
     BENCH_IMG_STR(erode, "hSE", bim1, bim3, hSE());
     BENCH_IMG_STR(erode, "hSE", imb1, imb3, hSE());
     BENCH_IMG_STR(erode, "sSE", im1, im3, sSE());
     BENCH_IMG_STR(erode, "sSE", bim1, bim3, sSE());
-//     BENCH_IMG_STR(erode, "sSE", imb1, imb3, sSE());
+    BENCH_IMG_STR(erode, "sSE", imb1, imb3, sSE());
     
     
 // cout << "err: " << __FILE__ << __LINE__ << __FUNCTION__ << endl;

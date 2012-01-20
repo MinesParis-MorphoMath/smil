@@ -48,8 +48,8 @@ im1 << 0
 
 def testBench(func=dilate, se=hSE(), binIm=False, prnt=1):
   if binIm:
-    tim1 = Image_bool(bench_sx, bench_sy)
-    tim2 = Image_bool(bench_sx, bench_sy)
+    tim1 = Image_Bit(bench_sx, bench_sy)
+    tim2 = Image_Bit(bench_sx, bench_sy)
   else:
     tim1 = Image_UINT8(bench_sx, bench_sy)
     tim2 = Image_UINT8(bench_sx, bench_sy)
@@ -99,7 +99,7 @@ def bench_comp():
     
     print "erode squ UINT8:\t", testBenchMb(mb.erode, mb.sSE(1), 0, 0), "\t", testBench(erode, sSE(), 0, 0)
     print "erode hex UINT8:\t", testBenchMb(mb.erode, mb.hSE(1), 0, 0), "\t", testBench(erode, hSE(), 0, 0)
-    #print "erode squ bin:\t\t", testBenchMb(mb.erode, mb.sSE(1), 1, 0), "\t", testBench(erode, sSE(), 1, 0)
+    print "erode squ bin:\t\t", testBenchMb(mb.erode, mb.sSE(1), 1, 0), "\t", testBench(erode, sSE(), 1, 0)
     print "erode hex bin:\t\t", testBenchMb(mb.erode, mb.hSE(1), 1, 0), "\t", testBench(erode, hSE(), 1, 0)
     
 def testInv():
@@ -155,7 +155,11 @@ def levels(imIn, imOut):
     inf(tmpIm, tmpIm2, tmpIm)
     sup(imOut, tmpIm, imOut)
 
-    
+def run():
+    tim1 = Image_Bit(bench_sx, bench_sy)
+    tim2 = Image_Bit(bench_sx, bench_sy)
+    dilate(tim1, tim2, hSE())
+
 #testBench()
 #testInv()
 #testMax()

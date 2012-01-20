@@ -42,23 +42,24 @@
 template <>
 inline void copyLine<Bit>(typename Image<Bit>::lineType lIn, int size, typename Image<Bit>::lineType lOut)
 {
-      memcpy(lOut.intArray, lIn.intArray, BitArray::INT_SIZE(size)*sizeof(BitArray::INT_TYPE));
-//     if (lIn.index==0 && lOut.index==0)
-//     {
-// 	UINT fullNbr = size/BitArray::INT_TYPE_SIZE; 
-// 	UINT bitRes  = size - fullNbr*BitArray::INT_TYPE_SIZE;
-// 	
-// 	for (int i=0;i<fullNbr;i++)
-// 	  lOut.intArray[i] = lIn.intArray[i];
-// 	
-// 	if (bitRes)
-// 	  lOut.intArray[fullNbr] = (lIn.intArray[fullNbr] >> (BitArray::INT_TYPE_SIZE-bitRes)) | (lOut.intArray[fullNbr] << bitRes);
-//     }
-//     else
-//     {
-// 	for (int i=0;i<size;i++)
-// 	  lOut[i] = lIn[i];
-//     }
+//     copyLine<BitArray::INT_TYPE>(lIn.intArray, BitArray::INT_SIZE(size), lOut.intArray);
+//       memcpy(lOut.intArray, lIn.intArray, BitArray::INT_SIZE(size)*sizeof(BitArray::INT_TYPE));
+
+    if (lIn.index==0 && lOut.index==0)
+    {
+	UINT fullNbr = size/BitArray::INT_TYPE_SIZE; 
+	UINT bitRes  = size - fullNbr*BitArray::INT_TYPE_SIZE;
+	
+	memcpy(lOut.intArray, lIn.intArray, fullNbr*sizeof(BitArray::INT_TYPE));
+	
+	if (bitRes)
+	  lOut.intArray[fullNbr] = ((lIn.intArray[fullNbr] >> (BitArray::INT_TYPE_SIZE-bitRes))) | ((lOut.intArray[fullNbr] << bitRes));
+    }
+    else
+    {
+	for (int i=0;i<size;i++)
+	  lOut[i] = lIn[i];
+    }
 }
 
 // template <class T1>
@@ -135,8 +136,15 @@ struct fillLine<Bit> : public unaryLineFunctionBase<Bit>
     inline void _exec(BitArray lInOut, int size, Bit value)
     {
 	BitArray::INT_TYPE intVal = (bool)value ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
-	for (int i=0;i<BitArray::INT_SIZE(size);i++)
+	
+	UINT fullNbr = size/BitArray::INT_TYPE_SIZE; 
+	UINT bitRes  = size - fullNbr*BitArray::INT_TYPE_SIZE;
+	
+	for (int i=0;i<fullNbr;i++)
 	  lInOut.intArray[i] = intVal;
+	
+	if (bitRes)
+	  lInOut.intArray[fullNbr] = ((intVal >> (BitArray::INT_TYPE_SIZE-bitRes))) | ((lInOut.intArray[fullNbr] << bitRes));
     }
 };
 
@@ -204,7 +212,7 @@ inline void bitShiftRight(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit 
 }
 
 template <>
-inline void shiftLine<Bit>(typename Image<Bit>::lineType lIn, int dx, int lineLen, typename Image<Bit>::lineType lOut, Bit borderValue)
+inline void shiftLine<Bit>(typename Image<Bit>::lineType &lIn, int dx, int lineLen, typename Image<Bit>::lineType &lOut, Bit borderValue)
 {
     if (dx==0)
         copyLine<Bit>(lIn, lineLen, lOut);

@@ -77,6 +77,8 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, 
 {
     lineLen = imIn.getWidth();
     borderBuf = ImDtTypes<T>::createLine(lineLen);
+//     ImDtTypes<T>::deleteLine(borderBuf);
+//     return RES_OK;
     cpBuf = ImDtTypes<T>::createLine(lineLen);
     fillLine<T> f;
     f(borderBuf, lineLen, borderValue);

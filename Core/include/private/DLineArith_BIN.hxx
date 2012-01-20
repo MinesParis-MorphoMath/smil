@@ -192,10 +192,10 @@ inline void bitShiftRight(bool *lIn, int dx, int lineLen, bool *lOut, BIN border
 }
 
 template <>
-inline void shiftLine<bool>(typename Image<bool>::lineType lIn, int dx, int lineLen, typename Image<bool>::lineType lOut, bool borderValue)
+inline void shiftLine<bool>(typename Image<bool>::lineType &lIn, int dx, int lineLen, typename Image<bool>::lineType &lOut, bool borderValue)
 {
     if (dx==0)
-        copyLine<bool,bool>(lIn, lineLen, lOut);
+        copyLine<bool>(lIn, lineLen, lOut);
     else if (dx>0)
       bitShiftLeft(lIn, dx, lineLen, lOut, borderValue);
     else

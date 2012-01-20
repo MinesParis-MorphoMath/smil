@@ -40,10 +40,13 @@ class BitArray
 public:
 
 #ifdef USE_64BIT_IDS
-    typedef UINT64 INT_TYPE;
+    typedef UINT8 INT_TYPE;
 #else    
     typedef UINT32 INT_TYPE;
 #endif // USE_64BIT_IDS 
+    
+
+    INT_TYPE *intArray;
     
     
     static const INT_TYPE INT_TYPE_SIZE = sizeof(INT_TYPE)*CHAR_BIT;
@@ -60,6 +63,12 @@ public:
     BitArray()
             : index(0), intArray(NULL), bitWidth(0), intWidth(0), height(0)
     {}
+    BitArray(const BitArray &rhs)
+    {
+	this->setSize(rhs.bitWidth, rhs.height);
+	this->intArray = rhs.intArray;
+	this->index = rhs.index;
+    }
     BitArray(UINT _bitWidth, UINT _bitHeight=1)
             : index(0), intArray(NULL)
     {
@@ -70,9 +79,11 @@ public:
     {
         setSize(_bitWidth, _bitHeight);
     }
+    ~BitArray()
+    {
+	intArray = NULL;
+    }
     
-    
-    INT_TYPE *intArray;
     
     UINT getBitWidth() { return bitWidth; }
     UINT getIntWidth() { return intWidth; }
@@ -99,10 +110,18 @@ public:
     void setValue(UINT ind, bool val);
     Bit operator [] (UINT i);
     Bit operator * ();
-    BitArray& operator + (int dp);
-    BitArray& operator - (int dp);
+    BitArray operator + (int dp);
+    BitArray operator - (int dp);
     BitArray& operator ++ (int);
     BitArray& operator ++ ();
+    
+    BitArray& operator = (const BitArray &rhs)
+    {
+	this->setSize(rhs.bitWidth, rhs.height);
+	this->intArray = rhs.intArray;
+	this->index = rhs.index;
+	return *this;
+    }
     
     ostream& printSelf(ostream &os=cout);
 
@@ -176,16 +195,16 @@ inline Bit BitArray::operator * ()
     return b;
 }
 
-inline BitArray& BitArray::operator+(int dp)
+inline BitArray BitArray::operator+(int dp)
 {
-    static BitArray ba(this->intArray, this->bitWidth, this->height);
+    BitArray ba(this->intArray, this->bitWidth, this->height);
     ba.index = this->index + dp;
     return ba;
 }
 
-inline BitArray& BitArray::operator-(int dp)
+inline BitArray BitArray::operator-(int dp)
 {
-    static BitArray ba(this->intArray, this->bitWidth, this->height);
+    BitArray ba(this->intArray, this->bitWidth, this->height);
     ba.index = this->index - dp;
     return ba;
 }
@@ -205,6 +224,9 @@ inline BitArray& BitArray::operator++()
 
 inline ostream& BitArray::printSelf(ostream &os)
 {
+    if (!this->intArray)
+      return os;
+    
     for (int i=0;i<bitWidth;i++)
       os << this->operator[](i) << " ";
     return os;
