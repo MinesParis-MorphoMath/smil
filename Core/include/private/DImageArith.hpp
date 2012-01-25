@@ -68,8 +68,8 @@ RES_T copy(Image<T1> &imIn, Image<T2> &imOut)
 
     if (haveSameSize(&imIn, &imOut, NULL))
     {
-        typename Image<T1>::lineType* l1 = imIn.getLines();
-        typename Image<T2>::lineType* l2 = imOut.getLines();
+        typename Image<T1>::sliceType l1 = imIn.getLines();
+        typename Image<T2>::sliceType l2 = imOut.getLines();
 
 	UINT width = imIn.getWidth();
 	
@@ -96,8 +96,10 @@ RES_T copy(Image<T> &imIn, Image<T> &imOut)
 	typename Image<T>::sliceType slIn = imIn.getLines();
 	typename Image<T>::sliceType slOut = imOut.getLines();
 	
+	UINT width = imIn.getWidth();
+	
 	for (int i=0;i<imIn.getLineCount();i++)
-	  copyLine<T>(slIn[i], imIn.getWidth(), slOut[i]);
+	  copyLine<T>(slIn[i], width, slOut[i]);
 
         imOut.modified();
         return RES_OK;

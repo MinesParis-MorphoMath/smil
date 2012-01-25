@@ -40,10 +40,11 @@
  */
 
 template <>
-inline void copyLine<Bit>(typename Image<Bit>::lineType lIn, int size, typename Image<Bit>::lineType lOut)
+inline void copyLine<Bit>(typename Image<Bit>::lineType &lIn, int size, typename Image<Bit>::lineType &lOut)
 {
 //     copyLine<BitArray::INT_TYPE>(lIn.intArray, BitArray::INT_SIZE(size), lOut.intArray);
-//       memcpy(lOut.intArray, lIn.intArray, BitArray::INT_SIZE(size)*sizeof(BitArray::INT_TYPE));
+//     UINT realSize = BitArray::INT_SIZE(size)*sizeof(BitArray::INT_TYPE);
+//       memcpy(&lOut, &lIn, realSize);
 
     if (lIn.index==0 && lOut.index==0)
     {

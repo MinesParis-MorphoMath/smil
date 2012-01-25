@@ -38,7 +38,7 @@
 // Geodesy
 
 template <class T>
-inline RES_T geoDil(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE)
+inline RES_T geoDil(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -57,7 +57,7 @@ inline RES_T geoDil(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se
 }
 
 template <class T>
-inline RES_T geoEro(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE)
+inline RES_T geoEro(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -76,7 +76,7 @@ inline RES_T geoEro(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se
 }
 
 template <class T>
-inline RES_T build(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE)
+inline RES_T build(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -101,7 +101,7 @@ inline RES_T build(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=
 }
 
 template <class T>
-inline RES_T dualBuild(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE)
+inline RES_T dualBuild(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -126,7 +126,7 @@ inline RES_T dualBuild(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt
 }
 
 template <class T>
-inline RES_T fillHoles(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE)
+inline RES_T fillHoles(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -142,7 +142,7 @@ inline RES_T fillHoles(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE)
 }
 
 template <class T>
-inline RES_T levelPics(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE)
+inline RES_T levelPics(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     Image<T> tmpIm(imIn);
     inv(imIn, tmpIm);

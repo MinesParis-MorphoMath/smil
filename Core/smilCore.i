@@ -54,6 +54,20 @@
 	}
 }
 
+%rename(Index) operator[](UINT i);
+%extend BitArray
+{
+	std::string  __str__() {
+	    std::stringstream os;
+	    os << *self;
+	    return os.str();
+	}
+	bool operator[] (UINT i)
+	{
+	}
+}
+%ignore BitArray::operator++;
+
 %define PTR_ARG_OUT_APPLY(name)
   %apply unsigned char *OUTPUT{ unsigned char *name };
   %apply unsigned short *OUTPUT{ unsigned short *name };
@@ -75,6 +89,7 @@ PTR_ARG_OUT_APPLY(d)
 %include "DImage.hxx"
 %include "DImage.h"
 %include "DBaseImage.h"
+%include "DBitArray.h"
 %include "DTypes.hpp"
 /*%include "D_BaseOperations.h" */
 %include "DBaseImageOperations.hpp"

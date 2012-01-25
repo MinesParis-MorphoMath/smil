@@ -42,19 +42,19 @@ struct ImDtTypes<Bit>
     typedef lineType* sliceType;
     typedef sliceType* volType;
 
-    static pixelType min() { return Bit(0); }
-    static pixelType max() { return Bit(1); }
-    static lineType createLine(UINT lineLen) 
+    static inline pixelType min() { return Bit(0); }
+    static inline pixelType max() { return Bit(1); }
+    static inline lineType createLine(UINT lineLen) 
     { 
 	BitArray ba(lineLen);
 	ba.createIntArray();
 	return ba; 
     }
-    static void deleteLine(lineType line) 
+    static inline void deleteLine(lineType line) 
     { 
 	line.deleteIntArray();
     }
-    static unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)p.intArray) & (n-1); }
+    static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)(p.intArray)) & (n-1); }
 };
 
 template <>
@@ -89,7 +89,7 @@ inline RES_T Image<Bit>::restruct(void)
     lines =  new lineType[lineCount];
     slices = new sliceType[sliceCount];
     
-    lineType *cur_line = lines;
+    lineType *cur_array = lines;
     sliceType *cur_slice = slices;
     
     UINT intWidth = pixels.getIntWidth();
@@ -98,12 +98,12 @@ inline RES_T Image<Bit>::restruct(void)
     
     for (int k=0; k<(int)depth; k++, cur_slice++)
     {
-      *cur_slice = cur_line;
+      *cur_slice = cur_array;
       
-      for (int j=0; j<(int)height; j++, cur_line++)
+      for (int j=0; j<(int)height; j++, cur_array++)
       {
-	cur_line->setSize(width);
-	cur_line->intArray = int0 + k*intNbrPerSlice + j*intWidth;
+	cur_array->setSize(width);
+	cur_array->intArray = int0 + k*intNbrPerSlice + j*intWidth;
       }
     }
     

@@ -119,6 +119,6 @@ class sSE : public StrElt
     }
 };
 
-#define DEFAULT_SE sSE()
+#define DEFAULT_SE sSE
 
 #endif

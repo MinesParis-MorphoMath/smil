@@ -40,7 +40,8 @@ class BitArray
 public:
 
 #ifdef USE_64BIT_IDS
-    typedef UINT8 INT_TYPE;
+//     typedef UINT8 INT_TYPE;
+    typedef UINT64 INT_TYPE;
 #else    
     typedef UINT32 INT_TYPE;
 #endif // USE_64BIT_IDS 
@@ -85,11 +86,11 @@ public:
     }
     
     
-    UINT getBitWidth() { return bitWidth; }
-    UINT getIntWidth() { return intWidth; }
-    UINT getIntNbr() { return intWidth*height; }
-    UINT getHeight() { return height; }
-    UINT getBitPadX() { return bitPadX; }
+    inline UINT getBitWidth() { return bitWidth; }
+    inline UINT getIntWidth() { return intWidth; }
+    inline UINT getIntNbr() { return intWidth*height; }
+    inline UINT getHeight() { return height; }
+    inline UINT getBitPadX() { return intWidth*INT_TYPE_SIZE - bitWidth; }
 
     UINT index;
     
@@ -129,8 +130,6 @@ private:
     UINT intWidth;
     UINT bitWidth;
     UINT height;
-    
-    UINT bitPadX;
 };
 
 
@@ -157,14 +156,13 @@ inline void BitArray::setSize(UINT _bitWidth, UINT _bitHeight)
 {
     bitWidth = _bitWidth;
     intWidth = INT_SIZE(bitWidth);
-    bitPadX = intWidth*INT_TYPE_SIZE - bitWidth;
     height = _bitHeight;
 }
 
 inline bool BitArray::getValue(UINT ind)
 {
     int Y = ind / bitWidth;
-    int X = (ind + Y*bitPadX) / INT_TYPE_SIZE;
+    int X = (ind + Y*this->getBitPadX()) / INT_TYPE_SIZE;
     int x = (ind-Y*bitWidth) % INT_TYPE_SIZE;
     return (intArray[X] & (1UL << x))!=0;
 }
@@ -172,7 +170,7 @@ inline bool BitArray::getValue(UINT ind)
 inline void BitArray::setValue(UINT ind, bool val)
 {
     int Y = ind / bitWidth;
-    int X = (ind + Y*bitPadX) / INT_TYPE_SIZE;
+    int X = (ind + Y*this->getBitPadX()) / INT_TYPE_SIZE;
     int x = (ind-Y*bitWidth) % INT_TYPE_SIZE;
     if (val)
         intArray[X] |= (1UL << x);
@@ -228,7 +226,16 @@ inline ostream& BitArray::printSelf(ostream &os)
       return os;
     
     for (int i=0;i<bitWidth;i++)
-      os << this->operator[](i) << " ";
+    {
+      os << this->operator[](i);
+      if (i<bitWidth-1)
+      {
+	  if ((i+1)%INT_TYPE_SIZE==0) 
+	    os << "-";
+	  else
+	    os << " ";
+      }
+    }
     return os;
 }
 

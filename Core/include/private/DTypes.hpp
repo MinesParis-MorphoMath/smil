@@ -58,11 +58,11 @@ struct ImDtTypes
     typedef lineType *sliceType;
     typedef sliceType *volType;
     
-    static pixelType min() { return numeric_limits<T>::min(); }
-    static pixelType max() { return numeric_limits<T>::max(); }
-    static lineType createLine(UINT lineLen) { return createAlignedBuffer<T>(lineLen); }
-    static void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
-    static unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)p) & (n-1); }
+    static inline pixelType min() { return numeric_limits<T>::min(); }
+    static inline pixelType max() { return numeric_limits<T>::max(); }
+    static inline lineType createLine(UINT lineLen) { return createAlignedBuffer<T>(lineLen); }
+    static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
+    static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)p) & (n-1); }
 };
 
 

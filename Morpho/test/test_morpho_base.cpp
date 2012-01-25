@@ -111,16 +111,37 @@ void func(hSE *se)
 //     virtual void modified() {}
 // };
 
+inline void copyBits(BitArray &bArr, UINT pos, BitArray::INT_TYPE &intOut)
+{
+    BitArray::INT_TYPE *intIn = bArr.intArray + pos/BitArray::INT_TYPE_SIZE;
+    UINT rPos = pos%BitArray::INT_TYPE_SIZE;
+    if (rPos==0)
+	intOut = *intIn;
+    else
+	intOut = (*intIn >> rPos) | (*(intIn+1) << (BitArray::INT_TYPE_SIZE-rPos));
+}
 
 void cpy(BitArray r1, int size, BitArray r2)
 {
     int intSize = BitArray::INT_SIZE(size);
+    int curSize = 0;
     
     int startX = r1.index/BitArray::INT_TYPE_SIZE;
     int startY = r2.index/BitArray::INT_TYPE_SIZE;
+    int endX = (r1.index+size)/BitArray::INT_TYPE_SIZE;
+    int endY = (r2.index+size)/BitArray::INT_TYPE_SIZE;
     
     BitArray::INT_TYPE *b1 = r1.intArray + startX;
     BitArray::INT_TYPE *b2 = r2.intArray + startY;
+    
+    int startx = r1.index % BitArray::INT_TYPE_SIZE;
+    int endx = MIN(startx + size, BitArray::INT_TYPE_SIZE);
+    
+    BitArray::INT_TYPE maskIn, maskOut;
+    BitArray::INT_TYPE intMax = BitArray::INT_TYPE_MAX();
+    maskIn = (intMax << startx) & (intMax >> (BitArray::INT_TYPE_SIZE-endx));
+    
+    *b2 = maskIn;
 }
 
 int main(int argc, char *argv[])
@@ -129,7 +150,7 @@ int main(int argc, char *argv[])
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
 
-    int BENCH_NRUNS = 1E8;
+    int BENCH_NRUNS = 1E3;
    
    
 
@@ -162,7 +183,7 @@ int main(int argc, char *argv[])
 //     cout << "Width: " << w << endl;
 //     cout << "Line count: " << bim1.getLineCount() << endl;
         
-    fill(bim1, Bit(1));
+//     fill(bim1, Bit(1));
     
     BitArray b1(64);
     b1.createIntArray();
@@ -170,16 +191,28 @@ int main(int argc, char *argv[])
     BitArray b2(64);
     b2.createIntArray();
     
-    fillLine< Bit >(b1, 64, Bit(0));
-    fillLine< Bit >(b1, 6, Bit(1));
+    invLine<Bit> invF;
     
-    cpy(b1+2, 10, b2);
+    erode(bim1, bim2, 2);
+    
+    fillLine< Bit >(b1, 64, Bit(1));
+    invF(b1, 64, b1);
+    
+    fillLine< Bit >(b1, 6, Bit(1));
+    fillLine< Bit >(b2, 64, Bit(0));
+    b1[10] = Bit(1);
+    
+//     cpy(b1+5, 2, b2);
+    copyBits(b1, 5, *b2.intArray);
+    
     
 //     shiftLine< Bit >(b1, 2, 64, b2);
     
     cout << b1 << endl;
     cout << b2 << endl;
 //     fill(bim2, Bit(1));
+    
+//     return 0;
     
     Image_UINT8 im1(w,h);
     Image_UINT8 im2(im1);
@@ -200,7 +233,7 @@ int main(int argc, char *argv[])
     copy(imb1, imb2);
     copy(bim1, bim2);
     
-    return 0;
+//     return 0;
     
     int t1 = clock();
     for (int i=0;i<BENCH_NRUNS;i++)
@@ -212,10 +245,10 @@ int main(int argc, char *argv[])
       copyLine<bool>(imb1.getLines()[0], w, imb2.getLines()[0]);
     cout << clock()-t1 << endl;
     
-//     BENCH_IMG(copy, imb1, imb2);
-//     BENCH_IMG(copy, bim1, bim2);
+    BENCH_IMG(copy, imb1, imb2);
+    BENCH_IMG(copy, bim1, bim2);
     
-    return 0;
+//     return 0;
     
     BENCH_IMG(vol, im1);
     BENCH_IMG(vol, bim1);

@@ -40,7 +40,7 @@
  */
 
 template <>
-inline void copyLine<bool>(typename Image<bool>::lineType lIn, int size, typename Image<bool>::lineType lOut)
+inline void copyLine<bool>(typename Image<bool>::lineType &lIn, int size, typename Image<bool>::lineType &lOut)
 {
     UINT realSize = BIN::binLen(size);
     memcpy(lOut, lIn, realSize*sizeof(BIN_TYPE));

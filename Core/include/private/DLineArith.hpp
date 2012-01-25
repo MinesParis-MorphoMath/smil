@@ -48,7 +48,7 @@ inline void copyLine(typename Image<T1>::lineType lIn, int size, typename Image<
 }
 
 template <class T>
-inline void copyLine(typename Image<T>::lineType lIn, int size, typename Image<T>::lineType lOut)
+inline void copyLine(typename Image<T>::lineType &lIn, int size, typename Image<T>::lineType &lOut)
 {
     memcpy(lOut, lIn, size*sizeof(T));
 }

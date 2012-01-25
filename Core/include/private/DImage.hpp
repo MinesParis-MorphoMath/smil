@@ -99,20 +99,20 @@ public:
     }
     
     //! Return the value of the pixel at pos x,y(,z)
-    inline pixelType getPixel(UINT x, UINT y, UINT z=0)
+    inline T getPixel(UINT x, UINT y, UINT z=0)
     {
 	if (x>=width || y>=height || z>=depth)
 	    return RES_ERR;
 	return pixels[z*width*height+y*width+x];
     }
-    inline pixelType getPixel(UINT offset)
+    inline T getPixel(UINT offset)
     {
 	if (offset >= pixelCount)
 	    return RES_ERR;
 	return pixels[offset];
     }
 
-    inline RES_T setPixel(UINT x, UINT y, UINT z, pixelType value)
+    inline RES_T setPixel(UINT x, UINT y, UINT z, T value)
     {
 	if (x>=width || y>=height || z>=depth)
 	    return RES_ERR;
@@ -120,11 +120,11 @@ public:
 	modified();
 	return RES_OK;
     }
-    inline RES_T setPixel(UINT x, UINT y, pixelType value)
+    inline RES_T setPixel(UINT x, UINT y, T value)
     {
 	return setPixel(x, y, 0, value);
     }
-    inline RES_T setPixel(UINT offset, pixelType value)
+    inline RES_T setPixel(UINT offset, T value)
     {
 	if (offset >= pixelCount)
 	    return RES_ERR;
