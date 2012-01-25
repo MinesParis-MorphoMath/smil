@@ -144,13 +144,33 @@ void cpy(BitArray r1, int size, BitArray r2)
     *b2 = maskIn;
 }
 
+void cpy(Image<Bit> &imIn, Image<Bit> &imOut)
+{
+    typename ImDtTypes<Bit>::sliceType lIn = imIn.getLines();
+    typename ImDtTypes<Bit>::sliceType lOut = imOut.getLines();
+    UINT realWidth = BitArray::INT_SIZE(imIn.getWidth());
+    UINT64 *pixIn = imIn.getPixels().intArray;
+    UINT64 *pixOut = imOut.getPixels().intArray;
+
+    for (int i=0;i<imIn.getLineCount();i++)
+    {
+      UINT64 *pIn = lIn[i].intArray;
+      UINT64 *pOut = lOut[i].intArray;
+      memcpy(pOut, pIn, realWidth*sizeof(UINT64));
+      
+//       memcpy(pixOut, pixIn, realWidth*sizeof(UINT64));
+//       pixIn+=realWidth;
+//       pixOut+=realWidth;
+    }
+}
+
 int main(int argc, char *argv[])
 {
 #ifdef BUILD_GUI
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
 
-    int BENCH_NRUNS = 1E3;
+    int BENCH_NRUNS = 1E5;
    
    
 
@@ -193,7 +213,7 @@ int main(int argc, char *argv[])
     
     invLine<Bit> invF;
     
-    erode(bim1, bim2, 2);
+//     erode(bim1, bim2, 2);
     
     fillLine< Bit >(b1, 64, Bit(1));
     invF(b1, 64, b1);
@@ -247,8 +267,9 @@ int main(int argc, char *argv[])
     
     BENCH_IMG(copy, imb1, imb2);
     BENCH_IMG(copy, bim1, bim2);
+    BENCH_IMG(cpy, bim1, bim2);
     
-//     return 0;
+    return 0;
     
     BENCH_IMG(vol, im1);
     BENCH_IMG(vol, bim1);
