@@ -48,14 +48,15 @@
 /**
  * Base image viewer.
  * 
- */  
+ */
+template <class T>
 class baseImageViewer
 {
 public:
     virtual void show() = 0;
     virtual bool isVisible() =0;
     virtual void setName(const char* name) = 0;
-    virtual void loadFromData(void *pixels, UINT w, UINT h) = 0;
+    virtual void loadFromData(typename ImDtTypes<T>::lineType pixels, UINT w, UINT h) = 0;
 };
 
 
@@ -212,7 +213,7 @@ protected:
 
     RES_T restruct(void);
 
-    baseImageViewer *viewer;
+    baseImageViewer<T> *viewer;
 //     ImageViewerWidget *viewer;
     
     const char* name;

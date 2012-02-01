@@ -35,7 +35,8 @@
 #include "Qt/ImageViewer.h"
 #include <QApplication>
 
-class imageViewer : public baseImageViewer
+template <class T>
+class imageViewer : public baseImageViewer<T>
 {
 public:
     imageViewer();
@@ -43,19 +44,61 @@ public:
     virtual void show();
     virtual bool isVisible();
     virtual void setName(const char* name);
-    virtual void loadFromData(void *pixels, UINT w, UINT h);
+    virtual void loadFromData(typename Image<T>::lineType pixels, UINT w, UINT h);
     QApplication *_qapp;
 protected:
     ImageViewerWidget *qtViewer;
 //     ImageViewer *qtViewer;
 };
 
-class binImageViewer : public imageViewer
+template <class T>
+imageViewer<T>::imageViewer()
 {
-public:
-    binImageViewer() {}
-    ~binImageViewer() {}
-    virtual void loadFromData(void *pixels, UINT w, UINT h);
-};
+    if (!qApp)
+    {
+        cout << "created" << endl;
+        int ac = 1;
+        char **av = NULL;
+        _qapp = new QApplication(ac, av);
+    }
+    qtViewer = new ImageViewerWidget();
+//     qtViewer = new ImageViewer();
+}
+
+template <class T>
+imageViewer<T>::~imageViewer()
+{
+    delete qtViewer;
+}
+
+template <class T>
+void imageViewer<T>::show()
+{
+    qtViewer->show();
+}
+
+template <class T>
+bool imageViewer<T>::isVisible()
+{
+    qtViewer->isVisible();
+}
+
+template <class T>
+void imageViewer<T>::setName(const char* name)
+{
+    qtViewer->setName(name);
+}
+
+template <class T>
+void imageViewer<T>::loadFromData(typename Image<T>::lineType pixels, UINT w, UINT h)
+{
+    qtViewer->loadFromData((UINT8*)pixels, w, h);
+}
+
+template <>
+inline void imageViewer<Bit>::loadFromData(typename Image<Bit>::lineType pixels, UINT w, UINT h)
+{
+    qtViewer->loadFromData((BIN*)pixels.intArray, w, h);
+}
 
 #endif // _D_IMAGE_VIEWER_H

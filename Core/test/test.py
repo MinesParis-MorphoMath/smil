@@ -20,9 +20,9 @@ class testit(Thread):
    def run(self):
       self.app._exec()
 
-bench_sx = 1024*5
+bench_sx = 1024
 bench_sy = 1024
-nruns = 1E2
+nruns = 1E3
      
 if ('im1' in locals())==0:
   #app = QtGui.QApplication(sys.argv)
@@ -48,6 +48,8 @@ im1 << 0
 
 def testBench(func=dilate, se=hSE(), binIm=False, prnt=1):
   if binIm:
+    #tim1 = Image_bool(bench_sx, bench_sy)
+    #tim2 = Image_bool(bench_sx, bench_sy)
     tim1 = Image_Bit(bench_sx, bench_sy)
     tim2 = Image_Bit(bench_sx, bench_sy)
   else:
@@ -89,7 +91,11 @@ def testBenchMb(func=dilate, se=mb.hSE(1), binIm=False, prnt=1):
     print retval
   return retval
 
-def bench_comp():
+def bench_comp(new_sx=bench_sx, new_sy=bench_sy, new_nruns=nruns):
+    global bench_sx, bench_sy, nruns
+    bench_sx = new_sx
+    bench_sy = new_sy
+    nruns = new_nruns
     print "imSize:", bench_sx, ",", bench_sy
     print "\t\t\tMb\t\tSmil"
     print "dilate squ UINT8:\t", testBenchMb(mb.dilate, mb.sSE(1), 0, 0), "\t", testBench(dilate, sSE(), 0, 0)
