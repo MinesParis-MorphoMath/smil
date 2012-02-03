@@ -165,8 +165,8 @@ inline Image<Bit>& Image<Bit>::clone(const Image<Bit> &rhs)
 template <>
 inline void Image<Bit>::updateViewerData()
 { 
-//     if (viewer)
-// 	viewer->loadFromData(pixels, width, height);
+    if (viewer)
+	viewer->loadFromData(pixels, width, height);
 }
 
 

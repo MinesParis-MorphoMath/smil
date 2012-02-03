@@ -42,7 +42,11 @@ if ('im1' in locals())==0:
 
 im1 << 0
 
-#im1.show()
+im1.show()
+im1 = Image(50, 50)
+im1 = Image(50, 50)
+im1.show()
+
 #im2.show()
 
 

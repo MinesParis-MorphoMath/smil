@@ -54,6 +54,7 @@ class baseImageViewer
 {
 public:
     virtual void show() = 0;
+    virtual void hide() = 0;
     virtual bool isVisible() =0;
     virtual void setName(const char* name) = 0;
     virtual void loadFromData(typename ImDtTypes<T>::lineType pixels, UINT w, UINT h) = 0;
@@ -221,6 +222,7 @@ protected:
 public:
     inline void setName(const char* name);
     void show(const char* name=NULL) {  cout << "Not implemented" << endl; }
+    void hide() {  if (viewer) viewer->hide(); }
 
 };
   

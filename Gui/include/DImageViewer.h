@@ -42,6 +42,7 @@ public:
     imageViewer();
     ~imageViewer();
     virtual void show();
+    virtual void hide();
     virtual bool isVisible();
     virtual void setName(const char* name);
     virtual void loadFromData(typename Image<T>::lineType pixels, UINT w, UINT h);
@@ -68,6 +69,7 @@ imageViewer<T>::imageViewer()
 template <class T>
 imageViewer<T>::~imageViewer()
 {
+    hide();
     delete qtViewer;
 }
 
@@ -75,6 +77,12 @@ template <class T>
 void imageViewer<T>::show()
 {
     qtViewer->show();
+}
+
+template <class T>
+void imageViewer<T>::hide()
+{
+    qtViewer->hide();
 }
 
 template <class T>

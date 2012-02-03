@@ -163,6 +163,31 @@ void cpy(Image<Bit> &imIn, Image<Bit> &imOut)
 //       pixOut+=realWidth;
     }
 }
+template<class T = float, int i = 5> class A
+{
+   public:
+      A();
+      int value;
+};
+
+template<> class A<> { public: A(); };
+template<> class A<double, 10> { public: A(); };
+
+template<class T, int i> A<T, i>::A() : value(i) {
+   cout << "Primary template, "
+        << "non-type argument is " << value << endl;
+}
+
+A<>::A() {
+   cout << "Explicit specialization "
+        << "default arguments" << endl;
+}
+
+A<double, 10>::A() {
+   cout << "Explicit specialization "
+        << "<double, 10>" << endl;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -264,10 +289,15 @@ int main(int argc, char *argv[])
     for (int i=0;i<BENCH_NRUNS;i++)
       copyLine<bool>(imb1.getLines()[0], w, imb2.getLines()[0]);
     cout << clock()-t1 << endl;
+
+    bim1 << Bit(0);
+    bim1.show();
     
-    BENCH_IMG(copy, imb1, imb2);
-    BENCH_IMG(copy, bim1, bim2);
-    BENCH_IMG(cpy, bim1, bim2);
+    qapp.exec();
+    
+//     BENCH_IMG(copy, imb1, imb2);
+//     BENCH_IMG(copy, bim1, bim2);
+//     BENCH_IMG(cpy, bim1, bim2);
     
     return 0;
     

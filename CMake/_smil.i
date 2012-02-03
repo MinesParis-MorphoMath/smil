@@ -104,9 +104,13 @@ def show_with_name(img, name=None):
 	name = find_object_names(img)[1]
     img.c_show(name)
 
+def deleteImage(img):
+    img.hide()
+
 for t in imageTypes:
     t.c_show = t.show
     t.show = show_with_name
+    t.__del__ = deleteImage
 
 %}
 
