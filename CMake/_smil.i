@@ -110,7 +110,7 @@ def deleteImage(img):
 for t in imageTypes:
     t.c_show = t.show
     t.show = show_with_name
-    t.__del__ = deleteImage
+#    t.__del__ = deleteImage
 
 %}
 
