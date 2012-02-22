@@ -39,13 +39,21 @@ public:
 Thread(QApplication *a): qa(a) {}
 void run() 
 { 
-    while(true)
-    {
-      usleep(100000); 
-      qa->processEvents(); /*qApp->exec();*/ 
-    }
+      if (!qApp)
+      {
+	cout << "created" << endl;
+	  int ac = 1;
+	  char **av = NULL;
+	  qapp = new QApplication(ac, av, true);
+      }
+//     while(true)
+//     {
+//       usleep(100000); 
+      qApp->exec();
+//     }
 }
 private:
+  QApplication *qapp;
     QApplication *qa;
 };
 
@@ -54,16 +62,16 @@ class QtApp
 public:
   QtApp()
   {
-      if (!qApp)
-      {
-	cout << "created" << endl;
-	  int ac = 1;
-	  char **av = NULL;
-	  qapp = new QApplication(ac, av);
-      }
-      else qapp = qApp;
+//       if (!qApp)
+//       {
+// 	cout << "created" << endl;
+// 	  int ac = 1;
+// 	  char **av = NULL;
+// 	  qapp = new QApplication(ac, av, true);
+//       }
+//       else qapp = qApp;
       th = new Thread(qapp);
-//       th->start();
+      th->start();
   }
   void start() { th->start(); }
   void _exe() { qApp->exec(); }

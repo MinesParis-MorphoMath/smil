@@ -60,7 +60,9 @@ int main(int argc, char *argv[])
     im2 << "/home/faessel/tmp/tmp.bmp";
     im2.show();
 //       im3.show();
+#ifdef BUILD_GUI
     qapp.exec();
+#endif // BUILD_GUI
 
 }
 

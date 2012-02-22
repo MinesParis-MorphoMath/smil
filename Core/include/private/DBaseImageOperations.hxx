@@ -33,7 +33,9 @@
 #include "DImage.hpp"
 #include "DMemory.hpp"
 
+#ifdef SMIL_USE_OPEN_MP
 #include <omp.h>
+#endif // SMIL_USE_OPEN_MP
 
 template <class T>
 struct fillLine;

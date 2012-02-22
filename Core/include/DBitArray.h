@@ -31,7 +31,7 @@
 #define _DBITARRAY_H
 
 #include "DBinary.hpp"
-#include <qshareddata.h>
+// #include <qshareddata.h>
 
 class Bit;
 

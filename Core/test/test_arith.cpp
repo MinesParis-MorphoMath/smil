@@ -210,7 +210,9 @@ int main(int argc, char *argv[])
 
     im5.show();
 
+#ifdef BUILD_GUI
     qapp.exec();
+#endif // BUILD_GUI
 
 //       fill(im1, UINT8(100));
 //       fill(im3, UINT8(0));

@@ -129,7 +129,7 @@ int main(int argc, char *argv[])
 //     bench(mulNoSat, (im1, im2, im3));
 //     bench(mulNoSat, (im1, val, im3));
 
-    bench(testSup, (im1, im2, im3));
+//     bench(testSup, (im1, im2, im3));
 
 
 //      supLine<UINT8> f;

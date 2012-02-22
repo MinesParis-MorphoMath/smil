@@ -91,6 +91,8 @@ int main(int argc, char *argv[])
 
     im3.printSelf(1);
     im3.show();
+#ifdef BUILD_GUI
     qapp.exec();
+#endif // BUILD_GUI
 }
 

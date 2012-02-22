@@ -68,6 +68,9 @@ int main(int argc, char *argv[])
     im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
 
     im1.show();
+    
+#ifdef BUILD_GUI
     qapp.exec();
+#endif // BUILD_GUI
 }
 

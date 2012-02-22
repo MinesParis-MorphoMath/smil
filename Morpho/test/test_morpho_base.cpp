@@ -121,48 +121,48 @@ inline void copyBits(BitArray &bArr, UINT pos, BitArray::INT_TYPE &intOut)
 	intOut = (*intIn >> rPos) | (*(intIn+1) << (BitArray::INT_TYPE_SIZE-rPos));
 }
 
-void cpy(BitArray r1, int size, BitArray r2)
-{
-    int intSize = BitArray::INT_SIZE(size);
-    int curSize = 0;
-    
-    int startX = r1.index/BitArray::INT_TYPE_SIZE;
-    int startY = r2.index/BitArray::INT_TYPE_SIZE;
-    int endX = (r1.index+size)/BitArray::INT_TYPE_SIZE;
-    int endY = (r2.index+size)/BitArray::INT_TYPE_SIZE;
-    
-    BitArray::INT_TYPE *b1 = r1.intArray + startX;
-    BitArray::INT_TYPE *b2 = r2.intArray + startY;
-    
-    int startx = r1.index % BitArray::INT_TYPE_SIZE;
-    int endx = MIN(startx + size, BitArray::INT_TYPE_SIZE);
-    
-    BitArray::INT_TYPE maskIn, maskOut;
-    BitArray::INT_TYPE intMax = BitArray::INT_TYPE_MAX();
-    maskIn = (intMax << startx) & (intMax >> (BitArray::INT_TYPE_SIZE-endx));
-    
-    *b2 = maskIn;
-}
+// void cpy(BitArray r1, int size, BitArray r2)
+// {
+//     int intSize = BitArray::INT_SIZE(size);
+//     int curSize = 0;
+//     
+//     int startX = r1.index/BitArray::INT_TYPE_SIZE;
+//     int startY = r2.index/BitArray::INT_TYPE_SIZE;
+//     int endX = (r1.index+size)/BitArray::INT_TYPE_SIZE;
+//     int endY = (r2.index+size)/BitArray::INT_TYPE_SIZE;
+//     
+//     BitArray::INT_TYPE *b1 = r1.intArray + startX;
+//     BitArray::INT_TYPE *b2 = r2.intArray + startY;
+//     
+//     int startx = r1.index % BitArray::INT_TYPE_SIZE;
+//     int endx = MIN(startx + size, BitArray::INT_TYPE_SIZE);
+//     
+//     BitArray::INT_TYPE maskIn, maskOut;
+//     BitArray::INT_TYPE intMax = BitArray::INT_TYPE_MAX();
+//     maskIn = (intMax << startx) & (intMax >> (BitArray::INT_TYPE_SIZE-endx));
+//     
+//     *b2 = maskIn;
+// }
 
-void cpy(Image<Bit> &imIn, Image<Bit> &imOut)
-{
-    typename ImDtTypes<Bit>::sliceType lIn = imIn.getLines();
-    typename ImDtTypes<Bit>::sliceType lOut = imOut.getLines();
-    UINT realWidth = BitArray::INT_SIZE(imIn.getWidth());
-    UINT64 *pixIn = imIn.getPixels().intArray;
-    UINT64 *pixOut = imOut.getPixels().intArray;
-
-    for (int i=0;i<imIn.getLineCount();i++)
-    {
-      UINT64 *pIn = lIn[i].intArray;
-      UINT64 *pOut = lOut[i].intArray;
-      memcpy(pOut, pIn, realWidth*sizeof(UINT64));
-      
-//       memcpy(pixOut, pixIn, realWidth*sizeof(UINT64));
-//       pixIn+=realWidth;
-//       pixOut+=realWidth;
-    }
-}
+// void cpy(Image<Bit> &imIn, Image<Bit> &imOut)
+// {
+//     typename ImDtTypes<Bit>::sliceType lIn = imIn.getLines();
+//     typename ImDtTypes<Bit>::sliceType lOut = imOut.getLines();
+//     UINT realWidth = BitArray::INT_SIZE(imIn.getWidth());
+//     UINT64 *pixIn = imIn.getPixels().intArray;
+//     UINT64 *pixOut = imOut.getPixels().intArray;
+// 
+//     for (int i=0;i<imIn.getLineCount();i++)
+//     {
+//       UINT64 *pIn = lIn[i].intArray;
+//       UINT64 *pOut = lOut[i].intArray;
+//       memcpy(pOut, pIn, realWidth*sizeof(UINT64));
+//       
+// //       memcpy(pixOut, pixIn, realWidth*sizeof(UINT64));
+// //       pixIn+=realWidth;
+// //       pixOut+=realWidth;
+//     }
+// }
 template<class T = float, int i = 5> class A
 {
    public:
@@ -195,7 +195,7 @@ int main(int argc, char *argv[])
     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
 
-    int BENCH_NRUNS = 1E5;
+    int BENCH_NRUNS = 1E3;
    
    
 
@@ -299,7 +299,7 @@ int main(int argc, char *argv[])
 //     BENCH_IMG(copy, bim1, bim2);
 //     BENCH_IMG(cpy, bim1, bim2);
     
-    return 0;
+//     return 0;
     
     BENCH_IMG(vol, im1);
     BENCH_IMG(vol, bim1);
