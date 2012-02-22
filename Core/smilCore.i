@@ -46,29 +46,6 @@
 %}
  
 
-%define TEMPLATE_WRAP_CLASS(_class)
-  %template(_class ## _UINT8) _class<UINT8>;
-  %template(_class ## _bool) _class<bool>;
-  %template(_class ## _Bit) _class<Bit>;
-%enddef
-
-%define TEMPLATE_WRAP_FUNC(func)
-  %template(func) func<UINT8>;
-  %template(func) func<bool>;
-  %template(func) func<Bit>;
-%enddef
-
-%define TEMPLATE_WRAP_FUNC_CROSS2(func)
-  %template(func) func<UINT8,UINT8>;
-  %template(func) func<UINT8,bool>;
-  %template(func) func<UINT8,Bit>;
-  %template(func) func<bool,UINT8>;
-  %template(func) func<bool,bool>;
-  %template(func) func<bool,Bit>;
-  %template(func) func<Bit,UINT8>;
-  %template(func) func<Bit,bool>;
-  %template(func) func<Bit,Bit>;
-%enddef
 
 
 

@@ -41,11 +41,14 @@
 #ifdef SWIGPYTHON
 %pythoncode %{
 
-from PyQt4 import QtGui, QtCore
-import sys
 
-if ('qtApp' in locals())==0:
-  _qtApp = QtGui.QApplication(sys.argv)
+if ('qApp' in locals())==0:
+  import sys
+  try:
+    from PyQt4 import QtGui
+    qApp = QtGui.QApplication(sys.argv)
+  except:
+    qApp = None
 
 %}
 #endif // SWIGPYTHON

@@ -43,6 +43,10 @@
 	}
 }
 
+#ifdef SWIGJAVA
+%ignore StrElt::operator ();
+#endif // SWIGJAVA
+
 
 %include "DTypes.hpp"
 %include "DStructuringElement.h"

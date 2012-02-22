@@ -40,7 +40,7 @@
 
 
 template <class T>
-inline RES_T fill(Image<T> &imOut, const T value)
+inline RES_T fill(Image<T> &imOut, const T &value)
 {
     if (!areAllocated(&imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
@@ -144,7 +144,7 @@ inline RES_T add(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
  * \see addNoSat
  */
 template <class T>
-inline RES_T add(Image<T> &imIn1, const T value, Image<T> &imOut)
+inline RES_T add(Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, addLine<T> >(imIn1, value, imOut);
 }
@@ -171,7 +171,7 @@ inline RES_T addNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
  * \see add
  */
 template <class T>
-inline RES_T addNoSat(Image<T> &imIn1, const T value, Image<T> &imOut)
+inline RES_T addNoSat(Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, addNoSatLine<T> >(imIn1, value, imOut);
 }

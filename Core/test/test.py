@@ -21,8 +21,8 @@ class testit(Thread):
       self.app._exec()
 
 bench_sx = 1024
-bench_sy = 1024
-nruns = 1E3
+bench_sy = 40000
+nruns = 5
      
 if ('im1' in locals())==0:
   #app = QtGui.QApplication(sys.argv)
@@ -72,6 +72,38 @@ def testBench(func=dilate, se=hSE(), binIm=False, prnt=1):
     print retval
   return retval
 
+def testBench16(func=dilate, se=hSE(), binIm=False, prnt=1):
+  tim1 = Image_UINT16(bench_sx, bench_sy)
+  tim2 = Image_UINT16(bench_sx, bench_sy)
+  
+  t1 = time.time()
+
+  for i in range(int(nruns)):
+    func(tim1, tim2, se)
+
+  t2 = time.time()
+
+  retval = (t2-t1)*1E3/nruns
+  if prnt:
+    print retval
+  return retval
+
+def testBench32(func=dilate, se=hSE(), binIm=False, prnt=1):
+  tim1 = Image_UINT32(bench_sx, bench_sy)
+  tim2 = Image_UINT32(bench_sx, bench_sy)
+  
+  t1 = time.time()
+
+  for i in range(int(nruns)):
+    func(tim1, tim2, se)
+
+  t2 = time.time()
+
+  retval = (t2-t1)*1E3/nruns
+  if prnt:
+    print retval
+  return retval
+
 def testBenchMb(func=dilate, se=mb.hSE(1), binIm=False, prnt=1):
   if (binIm):
     mIm1 = mb.imageMb(1)
@@ -103,6 +135,8 @@ def bench_comp(new_sx=bench_sx, new_sy=bench_sy, new_nruns=nruns):
     print "imSize:", bench_sx, ",", bench_sy
     print "\t\t\tMb\t\tSmil"
     print "dilate squ UINT8:\t", testBenchMb(mb.dilate, mb.sSE(1), 0, 0), "\t", testBench(dilate, sSE(), 0, 0)
+    print "dilate squ UINT16:\t", "\t", "\t", testBench16(dilate, sSE(), 0, 0)
+    print "dilate squ UINT32:\t", "\t", "\t", testBench32(dilate, sSE(), 0, 0)
     print "dilate hex UINT8:\t", testBenchMb(mb.dilate, mb.hSE(1), 0, 0), "\t", testBench(dilate, hSE(), 0, 0)
     print "dilate squ bin:\t\t", testBenchMb(mb.dilate, mb.sSE(1), 1, 0), "\t", testBench(dilate, sSE(), 1, 0)
     print "dilate hex bin:\t\t", testBenchMb(mb.dilate, mb.hSE(1), 1, 0), "\t", testBench(dilate, hSE(), 1, 0)

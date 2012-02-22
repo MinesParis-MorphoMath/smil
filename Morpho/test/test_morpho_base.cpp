@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
     bim1 << Bit(0);
     bim1.show();
     
-    qapp.exec();
+//     qapp.exec();
     
 //     BENCH_IMG(copy, imb1, imb2);
 //     BENCH_IMG(copy, bim1, bim2);
