@@ -44,7 +44,12 @@ using namespace std;
 #define CHAR_BIT 8
 #endif
 
-typedef UINT64 BIN_TYPE;
+#ifdef USE_64BIT_IDS
+//     typedef UINT8 INT_TYPE;
+    typedef UINT64 BIN_TYPE;
+#else    
+    typedef UINT32 BIN_TYPE;
+#endif // USE_64BIT_IDS 
 
 struct bitIndex
 {
