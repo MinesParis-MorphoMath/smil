@@ -104,7 +104,7 @@ void imageViewer<T>::loadFromData(typename Image<T>::lineType pixels, UINT w, UI
 }
 
 template <>
-inline void imageViewer<Bit>::loadFromData(typename Image<Bit>::lineType pixels, UINT w, UINT h)
+inline void imageViewer<Bit>::loadFromData(Image<Bit>::lineType pixels, UINT w, UINT h)
 {
     qtViewer->loadFromData((BIN*)pixels.intArray, w, h);
 }

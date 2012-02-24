@@ -40,7 +40,7 @@
  */
 
 template <>
-inline void copyLine<Bit>(typename Image<Bit>::lineType &lIn, int size, typename Image<Bit>::lineType &lOut)
+inline void copyLine<Bit>(Image<Bit>::lineType &lIn, int size, Image<Bit>::lineType &lOut)
 {
 //     copyLine<BitArray::INT_TYPE>(lIn.intArray, BitArray::INT_SIZE(size), lOut.intArray);
 //     UINT realSize = BitArray::INT_SIZE(size)*sizeof(BitArray::INT_TYPE);
@@ -204,7 +204,7 @@ inline void bitShiftRight(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit 
 }
 
 template <>
-inline void shiftLine<Bit>(typename Image<Bit>::lineType &lIn, int dx, int lineLen, typename Image<Bit>::lineType &lOut, Bit borderValue)
+inline void shiftLine<Bit>(Image<Bit>::lineType &lIn, int dx, int lineLen, Image<Bit>::lineType &lOut, Bit borderValue)
 {
     if (dx==0)
         copyLine<Bit>(lIn, lineLen, lOut);
