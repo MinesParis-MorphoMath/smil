@@ -495,19 +495,22 @@ inline RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
     if (!imIn.isAllocated() || !imOut.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
   
-    typename Image<T>::sliceType linesIn = imIn.getLines();
-    typename Image<T>::sliceType linesOut = imOut.getLines();
-    UINT lineCount = imIn.getLineCount();
-    UINT w = imIn.getWidth();
-
-    if (linesIn==linesOut)
-    {
-    }
+    typename Image<T>::sliceType *slicesIn = imIn.getSlices();
+    typename Image<T>::sliceType *slicesOut = imOut.getSlices();
+    typename Image<T>::sliceType linesIn;
+    typename Image<T>::sliceType linesOut;
     
-    else
+    UINT width = imIn.getWidth();
+    UINT height = imIn.getHeight();
+    UINT depth = imIn.getDepth();
+
+    for (int k=0;k<depth;k++)
     {
-	for (int j=0;j<lineCount;j++)
-	  copyLine<T>(linesIn[j], w, linesOut[lineCount-1-j]);
+	linesIn = slicesIn[k];
+	linesOut = slicesOut[k];
+	
+	for (int j=0;j<height;j++)
+	  copyLine<T>(linesIn[j], width, linesOut[height-1-j]);
     }
     
     imOut.modified();
