@@ -100,11 +100,24 @@ void imageViewer<T>::setName(const char* name)
 template <class T>
 void imageViewer<T>::loadFromData(typename Image<T>::lineType pixels, UINT w, UINT h)
 {
-    qtViewer->loadFromData((UINT8*)pixels, w, h);
+    cout << "Not implemented for this data type." << endl;
 }
 
 template <>
-inline void imageViewer<Bit>::loadFromData(Image<Bit>::lineType pixels, UINT w, UINT h)
+inline void imageViewer<UINT8>::loadFromData(typename Image<UINT8>::lineType pixels, UINT w, UINT h)
+{
+    qtViewer->loadFromData(pixels, w, h);
+}
+
+template <>
+inline void imageViewer<UINT16>::loadFromData(typename Image<UINT16>::lineType pixels, UINT w, UINT h)
+{
+    qtViewer->loadFromData(pixels, w, h);
+}
+
+
+template <>
+inline void imageViewer<Bit>::loadFromData(typename Image<Bit>::lineType pixels, UINT w, UINT h)
 {
     qtViewer->loadFromData((BIN*)pixels.intArray, w, h);
 }
