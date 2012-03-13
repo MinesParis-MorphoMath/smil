@@ -386,7 +386,7 @@ struct equLine<bool> : public binaryLineFunctionBase<bool>
 };
 
 template <>
-struct difLine<bool> : public binaryLineFunctionBase<bool>
+struct diffLine<bool> : public binaryLineFunctionBase<bool>
 {
     inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
     {

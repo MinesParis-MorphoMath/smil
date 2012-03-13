@@ -160,6 +160,26 @@ void ImageViewerWidget::loadFromData(const uchar *data, int w, int h)
     emit onDataChanged();
 }
 
+void ImageViewerWidget::loadFromData(const UINT16 *data, int w, int h)
+{
+    setImageSize(w, h);
+    UINT8 *destLine;
+    double coeff = double(numeric_limits<UINT8>::max()) / double(numeric_limits<UINT16>::max());
+
+    for (int j=0;j<h;j++)
+    {
+	destLine = image->scanLine(j);
+	for (int i=0;i<w;i++)
+	    destLine[i] = (UINT8)(coeff * double(data[i]));
+	
+	data += w;
+    }
+
+    magnView->setImage(image);
+
+    emit onDataChanged();
+}
+
 void ImageViewerWidget::loadFromData(const BIN *data, int w, int h)
 {
     setImageSize(w, h);

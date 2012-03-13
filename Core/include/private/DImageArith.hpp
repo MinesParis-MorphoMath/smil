@@ -260,6 +260,19 @@ inline bool equ(Image<T> &imIn1, Image<T> &imIn2)
     return true;
 }
 
+/**
+ * Difference ("vertical distance") between two images.
+ * 
+ * Returns abs(p1-p2) for each pixels pair.
+ */
+
+template <class T>
+inline RES_T diff(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+{
+    return binaryImageFunction<T, diffLine<T> >(imIn1, imIn2, imOut);
+}
+
+
 template <class T>
 inline RES_T grt(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
@@ -414,6 +427,90 @@ inline RES_T translate(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOu
     imOut.modified();
     
     return RES_OK;
+}
+
+/**
+ * 2D bilinear resize algorithm.
+ * 
+ * Quick implementation (needs better integration and optimization).
+ */
+template <class T>
+inline RES_T resize(Image<T> &imIn, Image<T> &imOut)
+{
+    if (!imIn.isAllocated() || !imOut.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+  
+    UINT w = imIn.getWidth();
+    UINT h = imIn.getHeight();
+    
+    UINT w2 = imOut.getWidth();
+    UINT h2 = imOut.getHeight();
+    
+    typedef typename Image<T>::pixelType pixelType;
+    typedef typename Image<T>::lineType lineType;
+    
+    lineType pixIn = imIn.getPixels();
+    lineType pixOut = imOut.getPixels();
+    
+    pixelType A, B, C, D, maxVal = numeric_limits<T>::max() ;
+    int x, y, index;
+    
+    float x_ratio = ((float)(w-1))/w2 ;
+    float y_ratio = ((float)(h-1))/h2 ;
+    float x_diff, y_diff, ya, yb ;
+    int offset = 0 ;
+    
+    for (int i=0;i<h2;i++) 
+    {
+        for (int j=0;j<w2;j++) 
+	{
+            x = (int)(x_ratio * j) ;
+            y = (int)(y_ratio * i) ;
+            x_diff = (x_ratio * j) - x ;
+            y_diff = (y_ratio * i) - y ;
+            index = y*w+x ;
+
+            A = pixIn[index] & maxVal ;
+            B = pixIn[index+1] & maxVal ;
+            C = pixIn[index+w] & maxVal ;
+            D = pixIn[index+w+1] & maxVal ;
+            
+            // Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
+            pixOut[offset++] = A*(1-x_diff)*(1-y_diff) +  B*(x_diff)*(1-y_diff) + C*(y_diff)*(1-x_diff)   +  D*(x_diff*y_diff);
+        }
+    }
+    
+    return RES_OK;
+}
+
+
+/**
+ * Horizontal mirror
+ * 
+ * Quick implementation (needs better integration and optimization).
+ */
+template <class T>
+inline RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
+{
+    if (!imIn.isAllocated() || !imOut.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+  
+    typename Image<T>::sliceType linesIn = imIn.getLines();
+    typename Image<T>::sliceType linesOut = imOut.getLines();
+    UINT lineCount = imIn.getLineCount();
+    UINT w = imIn.getWidth();
+
+    if (linesIn==linesOut)
+    {
+    }
+    
+    else
+    {
+	for (int j=0;j<lineCount;j++)
+	  copyLine<T>(linesIn[j], w, linesOut[lineCount-1-j]);
+    }
+    
+    imOut.modified();
 }
 
 

@@ -40,12 +40,12 @@ if ('im1' in locals())==0:
 
 
 
-im1 << 0
+#im1 << 0
 
-im1.show()
-im1 = Image(50, 50)
-im1 = Image(50, 50)
-im1.show()
+#im1.show()
+#im1 = Image(50, 50)
+#im1 = Image(50, 50)
+#im1.show()
 
 #im2.show()
 
@@ -165,10 +165,10 @@ def testMax():
   im2.show()
 
 
-im1 << "/home/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp"
-im2.setSize(im1)
-im3.setSize(im1)
-im4 = Image(im1)
+#im1 << "/home/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp"
+#im2.setSize(im1)
+#im3.setSize(im1)
+#im4 = Image(im1)
 
 def levels(imIn, imOut):
     s = imIn.getSize()

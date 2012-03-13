@@ -226,14 +226,21 @@ struct equLine : public binaryLineFunctionBase<T>
     }
 };
 
+
+/**
+ * Difference ("vertical distance") between two lines.
+ * 
+ * Returns abs(p1-p2) for each pixels pair
+ */
+
 template <class T>
-struct difLine : public binaryLineFunctionBase<T>
+struct diffLine : public binaryLineFunctionBase<T>
 {
     typedef typename Image<T>::lineType lineType;
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] != lIn2[i] ? numeric_limits<T>::max() : 0;
+            lOut[i] = lIn1[i] > lIn2[i] ? lIn1[i]-lIn2[i] : lIn2[i]-lIn1[i];
     }
 };
 

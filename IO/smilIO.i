@@ -37,7 +37,10 @@
 
 %include "DImageIO.h"
 
+%include "DImageIO_RAW.hpp"
 
+
+TEMPLATE_WRAP_FUNC(readRAW);
 
 
 /*TEMPLATE_WRAP_FUNC(<<);*/

@@ -336,7 +336,7 @@ struct equLine<Bit> : public binaryLineFunctionBase<Bit>
 };
 
 template <>
-struct difLine<Bit> : public binaryLineFunctionBase<Bit>
+struct diffLine<Bit> : public binaryLineFunctionBase<Bit>
 {
     inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
     {

@@ -27,32 +27,49 @@
  */
 
 
-#ifndef _D_IMAGE_IO_H
-#define _D_IMAGE_IO_H
+#ifndef _D_IMAGE_IO_RAW_H
+#define _D_IMAGE_IO_RAW_H
 
 
-// #include "D_Types.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string>
+
+#include "DTypes.hpp"
 #include "DImage.h"
-#include "DImageIO_BMP.h"
-#include "DImageIO_RAW.hpp"
-
-#ifdef USE_PNG
-#include "DImageIO_PNG.h"
-#endif // USE_PNG
-
 
 using namespace std;
 
+template <class T>
+_SMIL int readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T> *image)
+{
+    FILE *fp = NULL;
 
-int read(const char* filename, Image<UINT8> *image);
-int write(Image<UINT8> *image, const char *filename);
-
-template <>
-Image<UINT8>& Image<UINT8>::operator << (const char *filename);
-
-template <>
-Image<UINT8>& Image<UINT8>::operator >> (const char *filename);
-
+    /* open image file */
+    fp = fopen (filename, "rb");
+    if (!fp)
+    {
+        fprintf (stderr, "error: couldn't open \"%s\"!\n", filename);
+        return -1;
+    }
 
 
-#endif // _D_IMAGE_IO_H
+    image->setSize(width, height, depth);
+//   image->allocate();
+
+    size_t result = fread(image->getVoidPointer(), sizeof(T), image->getPixelCount(), fp);
+      
+
+
+    fclose (fp);
+    return 0;
+}
+
+template <class T>
+_SMIL int writeRAW(Image<T> *image, const char *filename)
+{
+}
+
+
+
+#endif // _D_IMAGE_IO_RAW_H

@@ -37,6 +37,7 @@
 
 %feature("autodoc", "1");
 
+%include cpointer.i
 
 /*%include <windows.i> */
 %include <std_string.i>

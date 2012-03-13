@@ -42,3 +42,4 @@
 // {
 //     qtViewer->loadFromData((BIN*)((BitArray.intArray), w, h);
 // }
+

@@ -98,6 +98,7 @@ public slots:
     void load(const QString fileName);
     void loadFromData(const uchar *data, int w, int h);
     void loadFromData(const BIN *data, int w, int h);
+    void loadFromData(const UINT16 *data, int w, int h);
     void zoomIn();
     void zoomOut();
     void scale(double factor);
