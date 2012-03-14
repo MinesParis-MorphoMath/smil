@@ -208,3 +208,9 @@ def run():
 #testInv()
 #testMax()
 
+im1 = Image(10, 10)
+im1 << "/home/mat/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp"
+im1.show()
+im2 = Image(im1)
+im2.show()
+enhanceContrast(im1, im2)

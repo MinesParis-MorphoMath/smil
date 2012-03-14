@@ -31,14 +31,30 @@
 #define _D_IMAGE_HISTOGRAM_HPP
 
 #include "DLineHistogram.hpp"
+#include "DImageArith.hpp"
 
 //! \ingroup Core
 //! \ingroup Histogram
 //! @{
 
+template <class T>
+vector<UINT> histo(Image<T> &imIn)
+{
+    T dx = ImDtTypes<T>::min();
+    vector<UINT> h;
+    for (int i=0;i<ImDtTypes<T>::max()-dx;i++)
+	h.push_back(0);
+    
+    typename Image<T>::lineType pixels = imIn.getPixels();
+    for (int i=0;i<imIn.getPixelCount();i++)
+	h[pixels[i]-dx] += 1;
+    
+    return h;
+}
+
 //! Image threshold
 template <class T>
-inline RES_T thresh(Image<T> &imIn, T minVal, T maxVal, T trueVal, T falseVal, Image<T> &imOut)
+RES_T thresh(Image<T> &imIn, T minVal, T maxVal, T trueVal, T falseVal, Image<T> &imOut)
 {
     unaryImageFunction<T, threshLine<T> > iFunc;
     
@@ -51,7 +67,7 @@ inline RES_T thresh(Image<T> &imIn, T minVal, T maxVal, T trueVal, T falseVal, I
 }
 
 template <class T>
-inline RES_T thresh(Image<T> &imIn, T minVal, T maxVal, Image<T> &imOut)
+RES_T thresh(Image<T> &imIn, T minVal, T maxVal, Image<T> &imOut)
 {
     unaryImageFunction<T, threshLine<T> > iFunc;
     
@@ -98,6 +114,31 @@ inline RES_T stretchHist(Image<T> &imIn, T inMinVal, T inMaxVal, Image<T> &imOut
     iFunc.lineFunction.outOrig = outMinVal;
     
     return iFunc(imIn, imOut);
+}
+
+template <class T>
+inline RES_T enhanceContrast(Image<T> &imIn, Image<T> &imOut, double sat=0.5)
+{
+    vector<UINT> h = histo(imIn);
+    double imVol = imIn.getWidth() * imIn.getHeight() * imIn.getDepth();
+    double satVol = imVol * sat / 100.;
+    double v = 0;
+    T dx = ImDtTypes<T>::min();
+    T minV = minVal(imIn);
+    T maxV = ImDtTypes<T>::max();
+    
+    for (UINT i=ImDtTypes<T>::max()-1-dx; i>0; i--)
+    {
+	v += h[i];
+	if (v>satVol)
+	    break;
+	maxV = i + dx;
+    }
+    
+    stretchHist(imIn, minV, maxV, imOut);
+    imOut.modified();
+    
+    return RES_OK;
 }
 
 

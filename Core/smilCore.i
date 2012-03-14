@@ -87,6 +87,8 @@ PTR_ARG_OUT_APPLY(w)
 PTR_ARG_OUT_APPLY(h)
 PTR_ARG_OUT_APPLY(d)
 
+%include std_vector.i
+
 %include "DCommon.h"
 %include "DTypes.hpp"
 %include "DImage.hpp"
@@ -106,6 +108,7 @@ PTR_ARG_OUT_APPLY(d)
 
 
 
+%template(UINTVector) vector<UINT>;
 
 /* TEMPLATE_WRAP_CLASS(Image); */
 
@@ -146,8 +149,11 @@ TEMPLATE_WRAP_FUNC(maxVal);
 TEMPLATE_WRAP_FUNC(rangeVal);
 
 
+TEMPLATE_WRAP_FUNC(histo);
+
 TEMPLATE_WRAP_FUNC(thresh);
 TEMPLATE_WRAP_FUNC(stretchHist);
+TEMPLATE_WRAP_FUNC(enhanceContrast);
 
 TEMPLATE_WRAP_FUNC(drawRectangle);
 
