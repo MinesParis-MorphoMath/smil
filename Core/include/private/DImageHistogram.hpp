@@ -124,8 +124,8 @@ inline RES_T enhanceContrast(Image<T> &imIn, Image<T> &imOut, double sat=0.5)
     double satVol = imVol * sat / 100.;
     double v = 0;
     T dx = ImDtTypes<T>::min();
-    T minV = minVal(imIn);
-    T maxV = ImDtTypes<T>::max();
+    T minV, maxV;
+    rangeVal(imIn, &minV, &maxV);
     
     for (UINT i=ImDtTypes<T>::max()-1-dx; i>0; i--)
     {
