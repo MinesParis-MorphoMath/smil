@@ -104,22 +104,12 @@ void imageViewer<T>::loadFromData(typename Image<T>::lineType pixels, UINT w, UI
 }
 
 template <>
-inline void imageViewer<UINT8>::loadFromData(typename Image<UINT8>::lineType pixels, UINT w, UINT h)
-{
-    qtViewer->loadFromData(pixels, w, h);
-}
+void imageViewer<UINT8>::loadFromData(typename Image<UINT8>::lineType pixels, UINT w, UINT h);
 
 template <>
-inline void imageViewer<UINT16>::loadFromData(typename Image<UINT16>::lineType pixels, UINT w, UINT h)
-{
-    qtViewer->loadFromData(pixels, w, h);
-}
-
+void imageViewer<UINT16>::loadFromData(typename Image<UINT16>::lineType pixels, UINT w, UINT h);
 
 template <>
-inline void imageViewer<Bit>::loadFromData(typename Image<Bit>::lineType pixels, UINT w, UINT h)
-{
-    qtViewer->loadFromData((BIN*)pixels.intArray, w, h);
-}
+void imageViewer<Bit>::loadFromData(typename Image<Bit>::lineType pixels, UINT w, UINT h);
 
 #endif // _D_IMAGE_VIEWER_H

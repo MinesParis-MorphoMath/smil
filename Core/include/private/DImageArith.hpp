@@ -613,6 +613,18 @@ inline RES_T rangeVal(Image<T> &imIn, T *ret_min, T *ret_max)
     return RES_OK;
 }
 
+template <class T>
+inline T rangeVal[2](Image<T> &imIn)
+{
+    T minV, maxV;
+    vector<INT32> retVec;
+    rangeVal(imIn, &minV, &maxV);
+    T[2] vals = { minV, maxV };
+    retVec.push_back(minV);
+    retVec.push_back(maxV);
+    
+    return vals;
+}
 /** @}*/
 
 #endif // _D_IMAGE_ARITH_HPP

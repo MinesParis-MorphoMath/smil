@@ -31,15 +31,21 @@
 #include "DImageViewer.h"
 
 
-// template <class T>
-// void binImageViewer<T>::loadFromData(void *pixels, UINT w, UINT h)
-// {
-//     qtViewer->loadFromData((BIN*)pixels, w, h);
-// }
-// 
-// template <class T>
-// void bitImageViewer<T>::loadFromData(void *pixels, UINT w, UINT h)
-// {
-//     qtViewer->loadFromData((BIN*)((BitArray.intArray), w, h);
-// }
+template <>
+void imageViewer<UINT8>::loadFromData(typename Image<UINT8>::lineType pixels, UINT w, UINT h)
+{
+    qtViewer->loadFromData(pixels, w, h);
+}
 
+template <>
+void imageViewer<UINT16>::loadFromData(typename Image<UINT16>::lineType pixels, UINT w, UINT h)
+{
+    qtViewer->loadFromData(pixels, w, h);
+}
+
+
+template <>
+void imageViewer<Bit>::loadFromData(typename Image<Bit>::lineType pixels, UINT w, UINT h)
+{
+    qtViewer->loadFromData((BIN*)pixels.intArray, w, h);
+}
