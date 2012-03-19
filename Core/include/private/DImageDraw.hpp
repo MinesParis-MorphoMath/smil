@@ -51,10 +51,10 @@ inline RES_T drawRectangle(Image<T> &imOut, UINT centerX, UINT centerY, UINT wid
     if (!imOut.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
 
-    UINT x1 = centerX - width/2;
-    UINT x2 = x1+width-1;
-    UINT y1 = centerY - height/2;
-    UINT y2 = y1+height-1;
+    UINT x1 = MAX(centerX - width/2, 0);
+    UINT x2 = MIN(x1+width-1, imOut.getWidth()-1);
+    UINT y1 = MAX(centerY - height/2, 0);
+    UINT y2 = MIN(y1+height-1, imOut.getHeight()-1);
     
     typename Image<T>::lineType *lines = imOut.getLines();
     fillLine<T> fillFunc;

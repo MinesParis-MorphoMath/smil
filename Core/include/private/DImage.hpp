@@ -135,6 +135,9 @@ public:
 	return RES_OK;
     }
 
+    baseImageViewer<T> *getViewer() { return viewer; }
+    bool isVisible() { return (viewer && viewer->isVisible()); }
+    
     void init();
     inline Image<T>& clone(const Image<T> &rhs);
     template <class T2>

@@ -81,8 +81,8 @@
   %apply int *OUTPUT{ int *name };
 %enddef
 
-//PTR_ARG_OUT_APPLY(ret_min)
-//PTR_ARG_OUT_APPLY(ret_max)
+PTR_ARG_OUT_APPLY(ret_min)
+PTR_ARG_OUT_APPLY(ret_max)
 PTR_ARG_OUT_APPLY(w)
 PTR_ARG_OUT_APPLY(h)
 PTR_ARG_OUT_APPLY(d)
@@ -109,6 +109,7 @@ PTR_ARG_OUT_APPLY(d)
 
 
 %template(UINTVector) vector<UINT>;
+%template(INTVector) vector<INT>;
 
 /* TEMPLATE_WRAP_CLASS(Image); */
 

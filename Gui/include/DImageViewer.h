@@ -88,7 +88,7 @@ void imageViewer<T>::hide()
 template <class T>
 bool imageViewer<T>::isVisible()
 {
-    qtViewer->isVisible();
+    return qtViewer->isVisible();
 }
 
 template <class T>

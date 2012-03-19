@@ -80,7 +80,7 @@ RES_T thresh(Image<T> &imIn, T minVal, T maxVal, Image<T> &imOut)
 }
 
 template <class T>
-inline RES_T thresh(Image<T> &imIn, T maxVal, Image<T> &imOut)
+RES_T thresh(Image<T> &imIn, T maxVal, Image<T> &imOut)
 {
     unaryImageFunction<T, threshLine<T> > iFunc;
     
@@ -93,7 +93,7 @@ inline RES_T thresh(Image<T> &imIn, T maxVal, Image<T> &imOut)
 }
 
 template <class T>
-inline RES_T stretchHist(Image<T> &imIn, Image<T> &imOut, T outMinVal=numeric_limits<T>::min(), T outMaxVal=numeric_limits<T>::max())
+RES_T stretchHist(Image<T> &imIn, Image<T> &imOut, T outMinVal=numeric_limits<T>::min(), T outMaxVal=numeric_limits<T>::max())
 {
     unaryImageFunction<T, stretchHistLine<T> > iFunc;
     T rmin, rmax;
@@ -106,7 +106,7 @@ inline RES_T stretchHist(Image<T> &imIn, Image<T> &imOut, T outMinVal=numeric_li
 }
 
 template <class T>
-inline RES_T stretchHist(Image<T> &imIn, T inMinVal, T inMaxVal, Image<T> &imOut, T outMinVal=numeric_limits<T>::min(), T outMaxVal=numeric_limits<T>::max())
+RES_T stretchHist(Image<T> &imIn, T inMinVal, T inMaxVal, Image<T> &imOut, T outMinVal=numeric_limits<T>::min(), T outMaxVal=numeric_limits<T>::max())
 {
     unaryImageFunction<T, stretchHistLine<T> > iFunc;
     iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (inMaxVal-inMinVal);
@@ -116,9 +116,14 @@ inline RES_T stretchHist(Image<T> &imIn, T inMinVal, T inMaxVal, Image<T> &imOut
     return iFunc(imIn, imOut);
 }
 
+
+
 template <class T>
-inline RES_T enhanceContrast(Image<T> &imIn, Image<T> &imOut, double sat=0.5)
+RES_T enhanceContrast(Image<T> &imIn, Image<T> &imOut, double sat=0.5)
 {
+    if (!areAllocated(&imIn, &imOut, NULL))
+        return RES_ERR_BAD_ALLOCATION;
+    
     vector<UINT> h = histo(imIn);
     double imVol = imIn.getWidth() * imIn.getHeight() * imIn.getDepth();
     double satVol = imVol * sat / 100.;

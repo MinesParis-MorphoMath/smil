@@ -40,7 +40,7 @@
 
 
 template <class T>
-inline RES_T fill(Image<T> &imOut, const T &value)
+RES_T fill(Image<T> &imOut, const T &value)
 {
     if (!areAllocated(&imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
@@ -117,7 +117,7 @@ RES_T copy(Image<T> &imIn, Image<T> &imOut)
  * \sa Image::operator<<
  */
 template <class T>
-inline RES_T inv(Image<T> &imIn, Image<T> &imOut)
+RES_T inv(Image<T> &imIn, Image<T> &imOut)
 {
     return unaryImageFunction<T, invLine<T> >(imIn, imOut);
 }
@@ -130,7 +130,7 @@ inline RES_T inv(Image<T> &imIn, Image<T> &imOut)
  * \see addNoSat
  */
 template <class T>
-inline RES_T add(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T add(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, addLine<T> >(imIn1, imIn2, imOut);
 }
@@ -144,7 +144,7 @@ inline RES_T add(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
  * \see addNoSat
  */
 template <class T>
-inline RES_T add(Image<T> &imIn1, const T &value, Image<T> &imOut)
+RES_T add(Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, addLine<T> >(imIn1, value, imOut);
 }
@@ -157,7 +157,7 @@ inline RES_T add(Image<T> &imIn1, const T &value, Image<T> &imOut)
  * \see add
  */
 template <class T>
-inline RES_T addNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T addNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, addNoSatLine<T> >(imIn1, imIn2, imOut);
 }
@@ -171,37 +171,37 @@ inline RES_T addNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
  * \see add
  */
 template <class T>
-inline RES_T addNoSat(Image<T> &imIn1, const T &value, Image<T> &imOut)
+RES_T addNoSat(Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, addNoSatLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T sub(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T sub(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, subLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T sub(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T sub(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     return binaryImageFunction<T, subLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T subNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T subNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, subNoSatLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T subNoSat(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T subNoSat(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     return binaryImageFunction<T, subNoSatLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T sup(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T sup(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, supLine<T> >(imIn1, imIn2, imOut);
 }
@@ -215,13 +215,13 @@ Image<T>& sup(Image<T> &imIn1, Image<T> &imIn2)
 }
 
 template <class T>
-inline RES_T sup(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T sup(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     return binaryImageFunction<T, supLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T inf(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T inf(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     return binaryImageFunction<T, infLine<T> >(imIn1, value, imOut);
 }
@@ -235,19 +235,19 @@ Image<T>& inf(Image<T> &imIn1, Image<T> &imIn2)
 }
 
 template <class T>
-inline RES_T inf(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T inf(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, infLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T equ(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T equ(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, equLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline bool equ(Image<T> &imIn1, Image<T> &imIn2)
+bool equ(Image<T> &imIn1, Image<T> &imIn2)
 {
     typedef typename Image<T>::lineType lineType;
     lineType pix1 = imIn1.getPixels();
@@ -267,134 +267,134 @@ inline bool equ(Image<T> &imIn1, Image<T> &imIn2)
  */
 
 template <class T>
-inline RES_T diff(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T diff(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, diffLine<T> >(imIn1, imIn2, imOut);
 }
 
 
 template <class T>
-inline RES_T grt(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T grt(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, grtLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T grt(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T grt(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     return binaryImageFunction<T, grtLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T grtOrEqu(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T grtOrEqu(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, grtOrEquLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T grtOrEqu(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T grtOrEqu(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     return binaryImageFunction<T, grtOrEquLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T low(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T low(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, lowLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T low(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T low(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     return binaryImageFunction<T, lowLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T lowOrEqu(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T lowOrEqu(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, lowOrEquLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T lowOrEqu(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T lowOrEqu(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     return binaryImageFunction<T, lowLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T div(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T div(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, divLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T div(Image<T> &imIn, T value, Image<T> &imOut)
+RES_T div(Image<T> &imIn, T value, Image<T> &imOut)
 {
     return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
 }
 
 template <class T>
-inline RES_T mul(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T mul(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, mulLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T mul(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T mul(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T mulNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T mulNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, mulLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T mulNoSat(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T mulNoSat(Image<T> &imIn1, T value, Image<T> &imOut)
 {
     return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-inline RES_T logicAnd(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T logicAnd(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, logicAndLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T logicOr(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T logicOr(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, logicOrLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T test(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imIn3, Image<T> &imOut)
+RES_T test(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imIn3, Image<T> &imOut)
 {
     return tertiaryImageFunction<T, testLine<T> >(imIn1, imIn2, imIn3, imOut);
 }
 
 template <class T>
-inline RES_T test(Image<T> &imIn1, Image<T> &imIn2, T value, Image<T> &imOut)
+RES_T test(Image<T> &imIn1, Image<T> &imIn2, T value, Image<T> &imOut)
 {
     return tertiaryImageFunction<T, testLine<T> >(imIn1, imIn2, value, imOut);
 }
 
 template <class T>
-inline RES_T test(Image<T> &imIn1, T value, Image<T> &imIn2, Image<T> &imOut)
+RES_T test(Image<T> &imIn1, T value, Image<T> &imIn2, Image<T> &imOut)
 {
     return tertiaryImageFunction<T, testLine<T> >(imIn1, value, imIn2, imOut);
 }
 
 template <class T>
-inline RES_T test(Image<T> &imIn, T value1, T value2, Image<T> &imOut)
+RES_T test(Image<T> &imIn, T value1, T value2, Image<T> &imOut)
 {
     return tertiaryImageFunction<T, testLine<T> >(imIn, value1, value2, imOut);
 }
 
 template <class T>
-inline RES_T translate(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
+RES_T translate(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
 {
     if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
@@ -435,7 +435,7 @@ inline RES_T translate(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOu
  * Quick implementation (needs better integration and optimization).
  */
 template <class T>
-inline RES_T resize(Image<T> &imIn, Image<T> &imOut)
+RES_T resize(Image<T> &imIn, Image<T> &imOut)
 {
     if (!imIn.isAllocated() || !imOut.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
@@ -490,7 +490,7 @@ inline RES_T resize(Image<T> &imIn, Image<T> &imOut)
  * Quick implementation (needs better integration and optimization).
  */
 template <class T>
-inline RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
+RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
 {
     if (!imIn.isAllocated() || !imOut.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
@@ -524,7 +524,7 @@ inline RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
  * \param imIn Input image.
  */
 template <class T>
-inline double vol(Image<T> &imIn)
+double vol(Image<T> &imIn)
 {
     if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
@@ -546,7 +546,7 @@ inline double vol(Image<T> &imIn)
  * \param imIn Input image.
  */
 template <class T>
-inline T minVal(Image<T> &imIn)
+T minVal(Image<T> &imIn)
 {
     if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
@@ -569,7 +569,7 @@ inline T minVal(Image<T> &imIn)
  * \param imIn Input image.
  */
 template <class T>
-inline T maxVal(Image<T> &imIn)
+T maxVal(Image<T> &imIn)
 {
     if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
@@ -592,10 +592,14 @@ inline T maxVal(Image<T> &imIn)
  * \param imIn Input image.
  */
 template <class T>
-inline RES_T rangeVal(Image<T> &imIn, T *ret_min, T *ret_max)
+void rangeVal(Image<T> &imIn, T *ret_min, T *ret_max)
 {
     if (!imIn.isAllocated())
-        return RES_ERR;
+    {
+	*ret_min = 0;
+	*ret_max = 0;
+        return;
+    }
 
     int npix = imIn.getPixelCount();
     typename ImDtTypes<T>::lineType p = imIn.getPixels();
@@ -610,21 +614,8 @@ inline RES_T rangeVal(Image<T> &imIn, T *ret_min, T *ret_max)
             *ret_max = *p;
     }
 
-    return RES_OK;
 }
 
-template <class T>
-inline T rangeVal[2](Image<T> &imIn)
-{
-    T minV, maxV;
-    vector<INT32> retVec;
-    rangeVal(imIn, &minV, &maxV);
-    T[2] vals = { minV, maxV };
-    retVec.push_back(minV);
-    retVec.push_back(maxV);
-    
-    return vals;
-}
 /** @}*/
 
 #endif // _D_IMAGE_ARITH_HPP

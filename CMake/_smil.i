@@ -41,7 +41,7 @@
 
 /*%include <windows.i> */
 %include <std_string.i>
-%include <typemaps.i>
+%include "typemaps.i"
 //%include cpointer.i
 
 %rename(__lshift__)  operator<<; 
@@ -57,6 +57,7 @@ ${SWIG_TEMPLATE_WRAP_DEFINITIONS}
 ${SWIG_INCLUDE_DEFINITIONS}
 
 
+TEMPLATE_WRAP_CLASS(baseImageViewer);
 TEMPLATE_WRAP_CLASS(Image);
 
 #ifdef SWIGPYTHON

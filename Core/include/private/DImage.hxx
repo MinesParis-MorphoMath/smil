@@ -106,8 +106,7 @@ void Image<T>::init()
 template <class T>
 inline void Image<T>::modified()
 { 
-    if (viewer && viewer->isVisible())
-      updateViewerData();
+    updateViewerData();
 }
 
 
@@ -123,7 +122,7 @@ inline void Image<T>::setName(const char *_name)
 template <class T>
 inline void Image<T>::updateViewerData()
 { 
-    if (viewer)
+    if (viewer && viewer->isVisible())
 	viewer->loadFromData(pixels, width, height);
 }
 
