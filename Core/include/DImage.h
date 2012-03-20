@@ -32,6 +32,7 @@
 
 #include "DBaseImage.h"
 #include "DImage.hpp"
+
 #include "DImage_BIN.hxx"
 #include "DImageArith.hpp"
 
@@ -42,21 +43,31 @@ typedef Image<UINT32> Image_UINT32;
 
 typedef Image<bool> Image_bool;
 
-// class Image_UINT8 : public Image<UINT8> {};
 
-// #ifdef SWIG
-// %{
-// #define Image<UINT8> Image_UINT8;
-// typedef Image<UINT16> Image_UINT16;
-// typedef Image<UINT32> Image_UINT32;
-// %}
-// #endif // SWIG
+// Gui specializations 
 
-// inline RES_T invIm(Image_UINT8 &im1, Image_UINT8 &im2) 
-// { return invIm<UINT8>(im1, im2); }
+template <> 
+void Image<bool>::show(const char* name);
+
+template <> 
+void Image<UINT8>::show(const char* name);
+
+template <> 
+void Image<UINT16>::show(const char* name);
+
+template <> 
+void Image<Bit>::show(const char* name);
 
 
-// inline RES_T labelIm(Image<UINT8> &imIn, Image<UINT8> &imOut, StrElt se=DEFAULT_SE);
+// IO specializations 
+
+template <>
+Image<UINT8>& Image<UINT8>::operator << (const char *filename);
+
+template <>
+Image<UINT8>& Image<UINT8>::operator >> (const char *filename);
+
+
 
 #endif // _DIMAGE_H
 

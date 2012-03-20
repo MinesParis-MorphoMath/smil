@@ -25,6 +25,16 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+#ifdef SWIGPYTHON
+%module smilGuiPython
+#endif // SWIGPYTHON
+
+#ifdef SWIGJAVA
+%module smilGuiJava
+#endif // SWIGJAVA
+
+
+%include smilCommon.i
 
 %{
 /* Includes the header in the wrapper code */

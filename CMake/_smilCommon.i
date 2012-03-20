@@ -25,34 +25,17 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#ifdef SWIGPYTHON
-%module smilIOPython
-#endif // SWIGPYTHON
+%feature("autodoc", "1");
 
-#ifdef SWIGJAVA
-%module smilIOJava
-#endif // SWIGJAVA
+%include cpointer.i
+%include std_string.i
+%include typemaps.i
 
+%rename(__lshift__)  operator<<; 
+%ignore *::operator=;
 
-%include smilCommon.i
+// CMake generated wrap macros
 
-%{
-/* Includes the header in the wrapper code */
-#include "DImage.hpp"
-#include "DImageIO.h"
-#include "DImage.hxx"
-
-%}
- 
-
-%include "DImageIO.h"
-
-%include "DImageIO_RAW.hpp"
-
-
-TEMPLATE_WRAP_FUNC(readRAW);
-
-
-/*TEMPLATE_WRAP_FUNC(<<);*/
+${SWIG_TEMPLATE_WRAP_DEFINITIONS}
 
 

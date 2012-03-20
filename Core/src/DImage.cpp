@@ -27,26 +27,76 @@
  */
 
 
-#ifndef _D_IMAGE_IO_H
-#define _D_IMAGE_IO_H
-
-
-// #include "D_Types.h"
 #include "DImage.h"
-#include "DImageIO_BMP.h"
-#include "DImageIO_RAW.hpp"
-
-#ifdef USE_PNG
-#include "DImageIO_PNG.h"
-#endif // USE_PNG
+#include "DImageIO.h"
+#include "DGui.h"
 
 
-using namespace std;
+// Gui specializations
 
 
-int read(const char* filename, Image<UINT8> *image);
-int write(Image<UINT8> *image, const char *filename);
+template <>
+void Image<UINT8>::show(const char* name)
+{
+    if (!viewer)
+        viewer = new imageViewer<UINT8>();
+    if (name)
+        setName(name);
+    updateViewerData();
+    viewer->show();
+}
+
+template <>
+void Image<UINT16>::show(const char* name)
+{
+    if (!viewer)
+        viewer = new imageViewer<UINT16>();
+    if (name)
+        setName(name);
+    updateViewerData();
+    viewer->show();
+}
 
 
+// IO specializations
 
-#endif // _D_IMAGE_IO_H
+template <>
+Image<UINT8>& Image<UINT8>::operator << (const char *filename)
+{
+//     cout << "here ok" << endl;
+    read(filename, this);
+    modified();
+    return *this;
+}
+
+template <>
+Image<UINT8>& Image<UINT8>::operator >> (const char *filename)
+{
+    write(this, filename);
+    return *this;
+}
+
+
+template <>
+void Image<bool>::show(const char* name)
+{
+    if (!viewer)
+        viewer = new imageViewer<bool>();
+    if (name)
+        setName(name);
+    updateViewerData();
+    viewer->show();
+}
+
+template <>
+void Image<Bit>::show(const char* name)
+{
+    if (!viewer)
+        viewer = new imageViewer<Bit>();
+    if (name)
+        setName(name);
+    updateViewerData();
+    viewer->show();
+}
+
+

@@ -37,28 +37,12 @@
 
 %feature("autodoc", "1");
 
-%include cpointer.i
-
-/*%include <windows.i> */
-%include <std_string.i>
-%include "typemaps.i"
-//%include cpointer.i
-
-%rename(__lshift__)  operator<<; 
-%ignore *::operator=;
-
-// CMake generated wrap macros
-
-${SWIG_TEMPLATE_WRAP_DEFINITIONS}
-
-
 // CMake generated list of interface files
 
 ${SWIG_INCLUDE_DEFINITIONS}
 
 
-TEMPLATE_WRAP_CLASS(baseImageViewer);
-TEMPLATE_WRAP_CLASS(Image);
+
 
 #ifdef SWIGPYTHON
 
@@ -66,6 +50,8 @@ TEMPLATE_WRAP_CLASS(Image);
 
 import sys, gc
 import time, new
+
+${PYTHON_IMPORT_MODULES}
 
 ${SWIG_IMAGE_TYPES}
 
@@ -117,5 +103,3 @@ for t in imageTypes:
 %}
 
 #endif // SWIGPYTHON
-
-%feature("autodoc", "1");

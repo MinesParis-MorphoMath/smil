@@ -25,8 +25,20 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+#ifdef SWIGPYTHON
+%module smilMorphoPython
+#endif // SWIGPYTHON
+
+#ifdef SWIGJAVA
+%module smilMorphoJava
+#endif // SWIGJAVA
+
+
+%include smilCommon.i
+
 %{
 /* Includes the header in the wrapper code */
+#include "DImage.hpp"
 #include "DTypes.hpp"
 #include "DMorphoBase.hpp"
 #include "DMorphoGeodesic.hpp"

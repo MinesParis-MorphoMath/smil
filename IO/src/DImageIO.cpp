@@ -83,18 +83,3 @@ int write(Image<UINT8> *image, const char *filename)
     }
 }
 
-template <>
-Image<UINT8>& Image<UINT8>::operator << (const char *filename)
-{
-//     cout << "here ok" << endl;
-    read(filename, this);
-    modified();
-    return *this;
-}
-
-template <>
-Image<UINT8>& Image<UINT8>::operator >> (const char *filename)
-{
-    write(this, filename);
-    return *this;
-}

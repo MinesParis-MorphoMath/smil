@@ -24,7 +24,16 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
+#ifdef SWIGPYTHON
 %module smilCorePython
+#endif // SWIGPYTHON
+
+#ifdef SWIGJAVA
+%module smilCoreJava
+#endif // SWIGJAVA
+
+%include smilCommon.i
 
 %{
 /* Includes the header in the wrapper code */
@@ -73,7 +82,7 @@
 %ignore BitArray::operator++;
 
 %define PTR_ARG_OUT_APPLY(name)
-  %apply unsigned char *OUTPUT{ unsigned char *name };
+  %apply UINT8 *OUTPUT{ UINT8 *name };
   %apply unsigned short *OUTPUT{ unsigned short *name };
   %apply unsigned int *OUTPUT{ unsigned int *name };
   %apply char *OUTPUT{ char *name };
@@ -111,7 +120,7 @@ PTR_ARG_OUT_APPLY(d)
 %template(UINTVector) vector<UINT>;
 %template(INTVector) vector<INT>;
 
-/* TEMPLATE_WRAP_CLASS(Image); */
+TEMPLATE_WRAP_CLASS(Image);
 
 TEMPLATE_WRAP_FUNC(createImage);
 
@@ -158,28 +167,4 @@ TEMPLATE_WRAP_FUNC(enhanceContrast);
 
 TEMPLATE_WRAP_FUNC(drawRectangle);
 
-
-/* %template(smartImage) boost::shared_ptr< D_Image<UINT8> >; */
-
-/*%extend UINT8
-
-{
-  void operator << (UINT8 val)
-  {
-      cout << "ok" << endl;
-  }
-}*/
-
-
-
-/* %rename(__eq__) setVal; */
-
-/* %template(Create) createImage<UINT8>; */
-
-/*%template(__lshift__) D_Image::operator << <UINT16>;
-%template(__lshift__) D_Image::operator << <UINT8>;*/
-
-/* %template(__rshift__) D_Image::operator >> <UINT8>(string filename); */
-
-/* %template(Int) Int<UINT8>; */
 

@@ -41,7 +41,7 @@
 using namespace std;
 
 template <class T>
-_SMIL int readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T> *image)
+int readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T> *image)
 {
     FILE *fp = NULL;
 
@@ -66,7 +66,7 @@ _SMIL int readRAW(const char *filename, UINT width, UINT height, UINT depth, Ima
 }
 
 template <class T>
-_SMIL int writeRAW(Image<T> *image, const char *filename)
+int writeRAW(Image<T> *image, const char *filename)
 {
 }
 
