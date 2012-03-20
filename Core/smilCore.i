@@ -81,14 +81,6 @@
 }
 %ignore BitArray::operator++;
 
-%define PTR_ARG_OUT_APPLY(name)
-  %apply UINT8 *OUTPUT{ UINT8 *name };
-  %apply unsigned short *OUTPUT{ unsigned short *name };
-  %apply unsigned int *OUTPUT{ unsigned int *name };
-  %apply char *OUTPUT{ char *name };
-  %apply short *OUTPUT{ short *name };
-  %apply int *OUTPUT{ int *name };
-%enddef
 
 PTR_ARG_OUT_APPLY(ret_min)
 PTR_ARG_OUT_APPLY(ret_max)

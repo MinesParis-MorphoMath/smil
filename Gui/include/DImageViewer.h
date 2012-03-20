@@ -104,12 +104,12 @@ void imageViewer<T>::loadFromData(typename Image<T>::lineType pixels, UINT w, UI
 }
 
 template <>
-void imageViewer<UINT8>::loadFromData(typename Image<UINT8>::lineType pixels, UINT w, UINT h);
+void imageViewer<UINT8>::loadFromData(Image<UINT8>::lineType pixels, UINT w, UINT h);
 
 template <>
-void imageViewer<UINT16>::loadFromData(typename Image<UINT16>::lineType pixels, UINT w, UINT h);
+void imageViewer<UINT16>::loadFromData(Image<UINT16>::lineType pixels, UINT w, UINT h);
 
 template <>
-void imageViewer<Bit>::loadFromData(typename Image<Bit>::lineType pixels, UINT w, UINT h);
+void imageViewer<Bit>::loadFromData(Image<Bit>::lineType pixels, UINT w, UINT h);
 
 #endif // _D_IMAGE_VIEWER_H
