@@ -290,6 +290,8 @@ IF(WRAP_PYTHON OR WRAP_JAVA)
 # 		  
 # 	IF(WRAP_PYTHON)
 		SWIG_ADD_MODULE(smilPython python ${SWIG_MAIN_INTERFACE})
+		SWIG_LINK_LIBRARIES(smilPython ${SMIL_LIBS} ${PYTHON_LIBRARIES})
+		
 # 		SWIG_ADD_MODULE(smilPython python smil.i)
 # 		SWIG_ADD_MODULE(smilCorePython python Core/smilCore.i)
 # 		SWIG_LINK_LIBRARIES(smilPython ${SMIL_LIBS} ${PYTHON_LIBRARIES})
