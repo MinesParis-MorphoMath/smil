@@ -27,8 +27,8 @@
  */
 
 
-#ifndef _D_LINE_ARITH_SSE_HXX
-#define _D_LINE_ARITH_SSE_HXX
+#ifndef _D_LINE_ARITH_SSE_H
+#define _D_LINE_ARITH_SSE_H
 
 
 
@@ -213,4 +213,4 @@ struct mulLine<UINT8> : public binaryLineFunctionBase<UINT8>
 
 /** @}*/
 
-#endif // _D_LINE_ARITH_SSE_HXX
+#endif // _D_LINE_ARITH_SSE_H

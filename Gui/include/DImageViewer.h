@@ -30,7 +30,9 @@
 #ifndef _D_IMAGE_VIEWER_H
 #define _D_IMAGE_VIEWER_H
 
+#include "DTypes.h"
 #include "DImage.h"
+
 #include "Qt/ImageViewerWidget.h"
 #include "Qt/ImageViewer.h"
 #include <QApplication>

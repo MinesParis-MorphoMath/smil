@@ -30,7 +30,7 @@
 #ifndef _D_MORPHO_BASE_HPP
 #define _D_MORPHO_BASE_HPP
 
-#include "DLineArith.hpp"
+#include "DLineArith.h"
 #include "DMorphImageOperations.hpp"
 #include "DImageArith.hpp"
 

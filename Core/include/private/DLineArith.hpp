@@ -316,12 +316,6 @@ struct testLine : public tertiaryLineFunctionBase<T>
     }
 };
 
-#include "DLineArith_BIN.hxx"
-#include "DLineArith_Bit.hxx"
-
-#if defined  __SSE__ && defined SMIL_USE_SSE_INT
-#include "DLineArith_SSE.hxx"
-#endif
 
 /** @}*/
 

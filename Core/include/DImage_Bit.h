@@ -27,12 +27,13 @@
  */
 
 
-#ifndef _IMAGE_BIT_HXX
-#define _IMAGE_BIT_HXX
+#ifndef _IMAGE_BIT_H
+#define _IMAGE_BIT_H
+
 
 #include "DImage.hpp"
-#include "DBitArray.h"
-#include "DTypes.hpp"
+#include "DTypes.h"
+
 
 template <>
 struct ImDtTypes<Bit>
@@ -57,117 +58,29 @@ struct ImDtTypes<Bit>
     static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)(p.intArray)) & (n-1); }
 };
 
-template <>
-inline void Image<Bit>::init() 
-{ 
-    slices = NULL;
-    lines = NULL;
-//     pixels = NULL;
-
-    dataTypeSize = 1;
-    
-    allocatedSize = 0;
-    
-     viewer = NULL;
-     name = NULL;
-}
 
 template <>
-inline void* Image<Bit>::getVoidPointer(void) {
-    return pixels.intArray;
-}
+void Image<Bit>::init();
+
+template <>
+void* Image<Bit>::getVoidPointer(void);
+
+template <>
+RES_T Image<Bit>::restruct(void);
+
+template <>
+RES_T Image<Bit>::allocate(void);
+
+template <>
+RES_T Image<Bit>::deallocate(void);
 
 
 template <>
-inline RES_T Image<Bit>::restruct(void)
-{
-    if (slices)
-	delete[] slices;
-    if (lines)
-	delete[] lines;
-    
-    lines =  new lineType[lineCount];
-    slices = new sliceType[sliceCount];
-    
-    lineType *cur_array = lines;
-    sliceType *cur_slice = slices;
-    
-    UINT intWidth = pixels.getIntWidth();
-    UINT intNbrPerSlice = intWidth * height;
-    BitArray::INT_TYPE *int0 = pixels.intArray;
-    
-    for (int k=0; k<(int)depth; k++, cur_slice++)
-    {
-      *cur_slice = cur_array;
-      
-      for (int j=0; j<(int)height; j++, cur_array++)
-      {
-	cur_array->setSize(width);
-	cur_array->intArray = int0 + k*intNbrPerSlice + j*intWidth;
-      }
-    }
-    
-    return RES_OK;
-}
-
-template <>
-inline RES_T Image<Bit>::allocate(void)
-{
-    if (allocated)
-	return RES_ERR_BAD_ALLOCATION;
-    
-    pixels.setSize(width, height*depth);
-    pixels.createIntArray();
-    
-    allocated = true;
-    allocatedSize = pixels.getIntNbr()*BitArray::INT_TYPE_SIZE;
-    
-    restruct();
-    
-    return RES_OK;
-}
-
-template <>
-inline RES_T Image<Bit>::deallocate(void)
-{
-    if (!allocated)
-	return RES_OK;
-    
-    if (slices)
-	delete[] slices;
-    if (lines)
-	delete[] lines;
-    if (pixels.intArray)
-	pixels.deleteIntArray();
-    
-    slices = NULL;
-    lines = NULL;
-//     pixels = NULL;
-
-    allocated = false;
-    allocatedSize = 0;
-    
-    return RES_OK;
-}
+Image<Bit>& Image<Bit>::clone(const Image<Bit> &rhs);
 
 
 template <>
-inline Image<Bit>& Image<Bit>::clone(const Image<Bit> &rhs)
-{ 
-    bool isAlloc = rhs.isAllocated();
-    setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
-    if (isAlloc)
-      memcpy(this->pixels.intArray, rhs.getPixels().intArray, allocatedSize*sizeof(CHAR_BIT));
-    modified();
-    return *this;
-}
-
-template <>
-inline void Image<Bit>::updateViewerData()
-{ 
-    if (viewer)
-	viewer->loadFromData(pixels, width, height);
-}
+void Image<Bit>::updateViewerData();
 
 
-#endif // _IMAGE_BIT_HXX
+#endif // _IMAGE_BIN_HXX

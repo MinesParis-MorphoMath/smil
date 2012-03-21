@@ -27,65 +27,40 @@
  */
 
 
-#ifndef _D_TYPES_HPP
-#define _D_TYPES_HPP
-
-#include <stdint.h>
-#include <limits>
-#include "DMemory.hpp"
-
-using namespace std;
-
-typedef int INT;
-typedef unsigned int UINT;
-typedef unsigned char UINT8;
-typedef unsigned short UINT16;
-typedef unsigned int UINT32;
-typedef uint64_t UINT64;
-
-// typedef unsigned char __attribute__ ((vector_size (16))) alUINT8;
-
-#ifndef _MSC_VER
-typedef char INT8;
-#endif // _MSC_VER
-typedef short INT16;
-typedef int INT32;
+#ifndef _D_TYPES_H
+#define _D_TYPES_H
 
 
+#include "DTypes.hpp"
 
-enum RES_T
+#ifdef SMIL_WRAP_BIN
+#include "DBinary.hpp"
+#endif // SMIL_WRAP_BIN
+
+
+#ifdef SMIL_WRAP_Bit
+#include "DBitArray.h"
+#endif // SMIL_WRAP_Bit
+
+
+template <>
+inline const char *getDataTypeAsString(UINT8 &val)
 {
-    RES_OK = 0,
-    RES_ERR = -1,
-    RES_ERR_BAD_ALLOCATION,
-    RES_NOT_IMPLEMENTED
-};
+    return "UINT8";
+}
 
-
-template <class T>
-struct ImDtTypes
+template <>
+inline const char *getDataTypeAsString(UINT16 &val)
 {
-    typedef T pixelType;
-    typedef pixelType *lineType;
-    typedef lineType *sliceType;
-    typedef sliceType *volType;
-    
-    static inline pixelType min() { return numeric_limits<T>::min(); }
-    static inline pixelType max() { return numeric_limits<T>::max(); }
-    static inline lineType createLine(UINT lineLen) { return createAlignedBuffer<T>(lineLen); }
-    static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
-    static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)p) & (n-1); }
-};
+    return "UINT16";
+}
 
-
-
-template <class T>
-inline const char *getDataTypeAsString(T &val)
+template <>
+inline const char *getDataTypeAsString(bool &val)
 {
-    return "Unknown";
+    return "BIN";
 }
 
 
 
-
-#endif // _D_TYPES_HPP
+#endif // _D_TYPES_H

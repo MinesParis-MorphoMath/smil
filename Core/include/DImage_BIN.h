@@ -27,65 +27,39 @@
  */
 
 
-#ifndef _D_TYPES_HPP
-#define _D_TYPES_HPP
-
-#include <stdint.h>
-#include <limits>
-#include "DMemory.hpp"
-
-using namespace std;
-
-typedef int INT;
-typedef unsigned int UINT;
-typedef unsigned char UINT8;
-typedef unsigned short UINT16;
-typedef unsigned int UINT32;
-typedef uint64_t UINT64;
-
-// typedef unsigned char __attribute__ ((vector_size (16))) alUINT8;
-
-#ifndef _MSC_VER
-typedef char INT8;
-#endif // _MSC_VER
-typedef short INT16;
-typedef int INT32;
+#ifndef _IMAGE_BIN_H
+#define _IMAGE_BIN_H
 
 
-
-enum RES_T
-{
-    RES_OK = 0,
-    RES_ERR = -1,
-    RES_ERR_BAD_ALLOCATION,
-    RES_NOT_IMPLEMENTED
-};
+#include "DImage.hpp"
+#include "DBinary.hpp"
 
 
-template <class T>
-struct ImDtTypes
-{
-    typedef T pixelType;
-    typedef pixelType *lineType;
-    typedef lineType *sliceType;
-    typedef sliceType *volType;
-    
-    static inline pixelType min() { return numeric_limits<T>::min(); }
-    static inline pixelType max() { return numeric_limits<T>::max(); }
-    static inline lineType createLine(UINT lineLen) { return createAlignedBuffer<T>(lineLen); }
-    static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
-    static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)p) & (n-1); }
-};
+template <>
+struct ImDtTypes<bool>;
+
+
+template <>
+inline RES_T Image<bool>::restruct(void);
+
+template <>
+inline RES_T Image<bool>::allocate(void);
+
+template <>
+inline RES_T Image<bool>::deallocate(void);
+
+template <>
+inline bool Image<bool>::getPixel(UINT x, UINT y, UINT z);
+
+template <>
+inline bool Image<bool>::getPixel(UINT offset);
+
+template <>
+inline RES_T Image<bool>::setPixel(UINT x, UINT y, UINT z, bool value);
+
+template <>
+inline RES_T Image<bool>::setPixel(UINT x, UINT y, bool value);
 
 
 
-template <class T>
-inline const char *getDataTypeAsString(T &val)
-{
-    return "Unknown";
-}
-
-
-
-
-#endif // _D_TYPES_HPP
+#endif // _IMAGE_BIN_HXX

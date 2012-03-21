@@ -27,10 +27,10 @@
  */
 
 
-#ifndef _IMAGE_BIN_HXX
-#define _IMAGE_BIN_HXX
+#ifdef SMIL_WRAP_BIN
 
-#include "DImage.hpp"
+
+#include "DImage.h"
 #include "DBinary.hpp"
 
 
@@ -207,4 +207,4 @@ inline RES_T Image<bool>::setPixel(UINT x, UINT y, bool value)
 
 
 
-#endif // _IMAGE_BIN_HXX
+#endif // SMIL_WRAP_BIN

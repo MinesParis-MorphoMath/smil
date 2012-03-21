@@ -27,11 +27,11 @@
  */
 
 
-#ifndef _D_LINE_ARITH_BIT_HXX
-#define _D_LINE_ARITH_BIT_HXX
+#ifndef _D_LINE_ARITH_BIT_H
+#define _D_LINE_ARITH_BIT_H
 
 
-#include "DImage_Bit.hxx"
+#include "DImage.h"
 
 /**
  * \ingroup Core
@@ -409,4 +409,4 @@ struct testLine<Bit> : public tertiaryLineFunctionBase<Bit>
 
 /** @}*/
 
-#endif // _D_LINE_ARITH_BIT_HXX
+#endif // _D_LINE_ARITH_BIT_H

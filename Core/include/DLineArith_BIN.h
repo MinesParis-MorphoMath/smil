@@ -31,7 +31,7 @@
 #define _D_LINE_ARIBINH_BIN_HXX
 
 
-#include "DImage_BIN.hxx"
+#include "DImage.h"
 
 /**
  * \ingroup Core

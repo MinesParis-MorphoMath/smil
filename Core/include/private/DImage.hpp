@@ -139,10 +139,10 @@ public:
     bool isVisible() { return (viewer && viewer->isVisible()); }
     
     void init();
-    inline Image<T>& clone(const Image<T> &rhs);
+    Image<T>& clone(const Image<T> &rhs);
     template <class T2>
-    inline Image<T>& clone(const Image<T2> &rhs);
-    inline Image<T>& clone(void);
+    Image<T>& clone(const Image<T2> &rhs);
+    Image<T>& clone(void);
     void setSize(int w, int h, int d = 1, bool doAllocate = true);
     void setSize(baseImage &rhs, bool doAllocate = true) { setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); }
     RES_T allocate(void);
@@ -151,13 +151,13 @@ public:
     void printSelf(ostream &os, bool displayPixVals = false);
     void printSelf(bool displayPixVals = false);
 
-    inline void* getVoidPointer(void) {
+    void* getVoidPointer(void) {
         return pixels;
     }
 
     inline int getLineAlignment(UINT l);
 
-    inline void modified();
+    void modified();
 
     const T dataTypeMax;
     const T dataTypeMin;
@@ -221,26 +221,14 @@ protected:
 //     ImageViewerWidget *viewer;
     
     const char* name;
-    inline void updateViewerData();
+    void updateViewerData();
 public:
-    inline void setName(const char* name);
+    void setName(const char* name);
     void show(const char* name=NULL) {  cout << "Not implemented" << endl; }
     void hide() {  if (viewer) viewer->hide(); }
 
 };
   
-#include "DImage.hxx"
-
-
-
-#include "DImage_BIN.hxx"
-#include "DImage_Bit.hxx"
-
-
-enum DType
-{
-    dtUINT8, dtUINT16
-};
 
 template <class T>
 Image<T> *createImage(Image<T> &src)

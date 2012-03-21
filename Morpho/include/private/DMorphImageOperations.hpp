@@ -30,10 +30,7 @@
 #ifndef _MORPH_IMAGE_OPERATIONS_HXX
 #define _MORPH_IMAGE_OPERATIONS_HXX
 
-#include "DImage.hpp"
-#include "DMemory.hpp"
-#include "DLineArith.hpp"
-#include "DBaseLineOperations.hpp"
+#include "DCore.h"
 #include "DStructuringElement.h"
 
 

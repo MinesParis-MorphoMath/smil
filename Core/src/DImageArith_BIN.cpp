@@ -27,11 +27,11 @@
  */
 
 
-#ifndef _D_IMAGE_ARITH_BIN_HPP
-#define _D_IMAGE_ARITH_BIN_HPP
+#ifdef SMIL_WRAP_BIN
+
 
 #include "DBinary.hpp"
-#include "DLineArith_BIN.hxx"
+#include "DLineArith.h"
 
 /**
  * \ingroup Core
@@ -166,5 +166,6 @@ inline double vol<bool>(Image<bool> &imIn)
 
 /** @}*/
 
-#endif // _D_IMAGE_ARITH_BIN_HPP
+
+#endif // SMIL_WRAP_BIN
 

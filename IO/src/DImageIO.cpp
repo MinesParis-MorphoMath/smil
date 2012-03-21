@@ -28,7 +28,6 @@
 
 
 #include "DImageIO.h"
-#include "DImage.h"
 
 #include <string>
 #include <algorithm>

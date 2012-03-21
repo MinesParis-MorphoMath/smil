@@ -37,7 +37,6 @@
 // }
 #include "DMemory.hpp"
 
-
 template <class T>
 Image<T>::Image()
   : dataTypeMin(numeric_limits<T>::min()),
@@ -104,7 +103,7 @@ void Image<T>::init()
 }
 
 template <class T>
-inline void Image<T>::modified()
+void Image<T>::modified()
 { 
     updateViewerData();
 }
@@ -112,7 +111,7 @@ inline void Image<T>::modified()
 
 
 template <class T>
-inline void Image<T>::setName(const char *_name)
+void Image<T>::setName(const char *_name)
 { 	
     name = _name;
     if (viewer)
@@ -120,7 +119,7 @@ inline void Image<T>::setName(const char *_name)
 }
 
 template <class T>
-inline void Image<T>::updateViewerData()
+void Image<T>::updateViewerData()
 { 
     if (viewer && viewer->isVisible())
 	viewer->loadFromData(pixels, width, height);
@@ -129,7 +128,7 @@ inline void Image<T>::updateViewerData()
 
 
 template <class T>
-inline Image<T>& Image<T>::clone(const Image<T> &rhs)
+Image<T>& Image<T>::clone(const Image<T> &rhs)
 { 
     bool isAlloc = rhs.isAllocated();
     setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
@@ -141,7 +140,7 @@ inline Image<T>& Image<T>::clone(const Image<T> &rhs)
 
 template <class T>
 template <class T2>
-inline Image<T>& Image<T>::clone(const Image<T2> &rhs)
+Image<T>& Image<T>::clone(const Image<T2> &rhs)
 { 
     bool isAlloc = rhs.isAllocated();
     setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
@@ -152,7 +151,7 @@ inline Image<T>& Image<T>::clone(const Image<T2> &rhs)
 }
 
 template <class T>
-inline Image<T>& Image<T>::clone(void)
+Image<T>& Image<T>::clone(void)
 { 
     static Image<T> newIm(*this, true);
     return newIm;
@@ -179,7 +178,7 @@ void Image<T>::setSize(int w, int h, int d, bool doAllocate)
 }
 
 template <class T>
-inline RES_T Image<T>::allocate(void)
+RES_T Image<T>::allocate(void)
 {
     if (allocated)
 	return RES_ERR_BAD_ALLOCATION;
