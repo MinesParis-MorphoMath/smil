@@ -34,5 +34,8 @@
 #include "DLineArith.h"
 #include "DImageArith.h"
 
+#include "DTest.h"
+#include "DBench.h"
+
 #endif // _DCORE_H
 
