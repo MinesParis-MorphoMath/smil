@@ -37,7 +37,7 @@
 // }
 
 #include "DMemory.hpp"
-#include "DImageIO.h"
+#include "DIO.h"
 
 template <class T>
 Image<T>::Image()
