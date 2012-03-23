@@ -39,13 +39,13 @@
 %{
 /* Includes the header in the wrapper code */
 #include "DImage.hpp"
-#include "DImageIO.h"
 #include "DImage.hxx"
+#include "DIO.h"
 
 %}
  
 
-%include "DImageIO.h"
+%include "DIO.h"
 
 %include "DImageIO_RAW.hpp"
 

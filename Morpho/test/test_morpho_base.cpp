@@ -53,11 +53,9 @@ erode sSE	BIN	1024x1024	550 µsecs
 //#include <boost/signal.hpp>
 //#include <boost/bind.hpp>
 
-#include "DImage.h"
+#include "DCore.h"
 #include "DMorpho.h"
-#include "DImageIO.h"
-#include "DTest.h"
-#include "DBench.h"
+#include "DIO.h"
 
 #ifdef BUILD_GUI
 #include "DGui.h"

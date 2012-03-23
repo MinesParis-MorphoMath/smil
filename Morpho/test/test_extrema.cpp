@@ -34,10 +34,9 @@
 //#include <boost/signal.hpp>
 //#include <boost/bind.hpp>
 
-#include "DImage.h"
-#include "DImageArith.hpp"
+#include "DCore.h"
 #include "DMorpho.h"
-#include "DImageIO.h"
+#include "DIO.h"
 
 #ifdef BUILD_GUI
 #include "DGui.h"

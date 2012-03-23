@@ -30,7 +30,7 @@
 #ifndef _D_IMAGE_IO_BMP_H
 #define _D_IMAGE_IO_BMP_H
 
-#include "DImageIO.h"
+#include "DIO.h"
 #include <fstream>
 #include <iostream> 
 

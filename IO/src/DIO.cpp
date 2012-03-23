@@ -27,7 +27,7 @@
  */
 
 
-#include "DImageIO.h"
+#include "DIO.h"
 
 const char *getFileExtension(const char *fileName)
 {

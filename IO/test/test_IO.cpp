@@ -33,8 +33,8 @@
 //#include <boost/signal.hpp>
 //#include <boost/bind.hpp>
 
-#include "DImage.h"
-#include "DImageIO.h"
+#include "DCore.h"
+#include "DIO.h"
 
 #ifdef BUILD_GUI
 #include "DGui.h"
