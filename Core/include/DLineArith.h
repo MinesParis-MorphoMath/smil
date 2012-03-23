@@ -30,8 +30,11 @@
 #ifndef _D_LINE_ARITH_H
 #define _D_LINE_ARITH_H
 
-
 #include "DLineArith.hpp"
+
+#if defined  __SSE__ && defined SMIL_USE_SSE_INT
+#include "DLineArith_SSE.h"
+#endif // defined  __SSE__ && defined SMIL_USE_SSE_INT
 
 #ifdef SMIL_WRAP_BIN
 #include "DLineArith_BIN.h"
@@ -40,10 +43,6 @@
 #ifdef SMIL_WRAP_Bit
 #include "DLineArith_Bit.h"
 #endif // SMIL_WRAP_BIN
-
-#if defined  __SSE__ && defined SMIL_USE_SSE_INT
-#include "DLineArith_SSE.h"
-#endif // defined  __SSE__ && defined SMIL_USE_SSE_INT
 
 /** @}*/
 

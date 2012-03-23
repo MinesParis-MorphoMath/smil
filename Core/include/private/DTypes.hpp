@@ -52,6 +52,11 @@ typedef short INT16;
 typedef int INT32;
 
 
+#ifndef CHAR_BIT
+#define CHAR_BIT 8
+#endif
+
+
 
 enum RES_T
 {

@@ -30,8 +30,6 @@
 #ifndef _DIMAGE_H
 #define _DIMAGE_H
 
-#include "DTypes.h"
-#include "DBaseImage.h"
 #include "DImage.hpp"
 #include "DImage.hxx"
 
@@ -43,7 +41,6 @@
 #include "DImage_Bit.h"
 #endif // SMIL_WRAP_BIN
 
-#include "DImageArith.h"
 
 enum DType
 {
@@ -54,35 +51,18 @@ enum DType
 typedef Image<UINT8> Image_UINT8;
 typedef Image<UINT16> Image_UINT16;
 typedef Image<UINT32> Image_UINT32;
-
 typedef Image<bool> Image_bool;
 
 
 
-
-// Gui specializations 
-
-template <> 
-void Image<bool>::show(const char* name);
-
-template <> 
-void Image<UINT8>::show(const char* name);
-
-template <> 
-void Image<UINT16>::show(const char* name);
-
-template <> 
-void Image<Bit>::show(const char* name);
-
-
 // IO specializations 
 
-template <>
-Image<UINT8>& Image<UINT8>::operator << (const char *filename);
-
-template <>
-Image<UINT8>& Image<UINT8>::operator >> (const char *filename);
-
+// template <>
+// Image<UINT8>& Image<UINT8>::operator << (const char *filename);
+// 
+// template <>
+// Image<UINT8>& Image<UINT8>::operator >> (const char *filename);
+// 
 
 
 #endif // _DIMAGE_H

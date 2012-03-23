@@ -27,85 +27,95 @@
  */
 
 
-#ifndef _D_MORPHO_BASE_HPP
-#define _D_MORPHO_BASE_HPP
+#ifndef _D_QT_IMAGE_VIEWER_HPP
+#define _D_QT_IMAGE_VIEWER_HPP
 
-#include "DImage.h"
-#include "DImageArith.h"
-#include "DMorphImageOperations.hpp"
+#include "DImageViewer.hpp"
+#include "DTypes.h"
+
+#include "Qt/ImageViewerWidget.h"
+#include "Qt/ImageViewer.h"
+#include <QApplication>
 
 template <class T>
-inline RES_T label(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+class qtImageViewer : public imageViewer<T>
 {
-    T curLabel = 0;
-    for (UINT z=0;z<imIn.getSliceCount();z++)
+public:
+    qtImageViewer();
+    ~qtImageViewer();
+    virtual void show();
+    virtual void hide();
+    virtual bool isVisible();
+    virtual void setName(const char* name);
+    virtual void loadFromData(typename ImDtTypes<T>::lineType pixels, UINT w, UINT h);
+    QApplication *_qapp;
+protected:
+    ImageViewerWidget *qtViewer;
+//     ImageViewer *qtViewer;
+};
+
+
+template <class T>
+qtImageViewer<T>::qtImageViewer()
+{
+    if (!qApp)
     {
+        cout << "created" << endl;
+        int ac = 1;
+        char **av = NULL;
+        _qapp = new QApplication(ac, av);
     }
-    unaryMorphImageFunction<T, equLine<T> > iFunc(numeric_limits<T>::min());
-    return iFunc(imIn, imOut, se);
+    qtViewer = new ImageViewerWidget();
+//     qtViewer = new ImageViewer();
 }
 
 template <class T>
-inline RES_T dilate(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+qtImageViewer<T>::~qtImageViewer()
 {
-    unaryMorphImageFunction<T, supLine<T> > iFunc(numeric_limits<T>::min());
-    return iFunc(imIn, imOut, se);
+    hide();
+    delete qtViewer;
 }
 
 template <class T>
-inline RES_T dilate(Image<T> &imIn, Image<T> &imOut, UINT seSize)
+void qtImageViewer<T>::show()
 {
-    unaryMorphImageFunction<T, supLine<T> > iFunc(numeric_limits<T>::min());
-    return iFunc(imIn, imOut, DEFAULT_SE(seSize));
+    qtViewer->show();
 }
 
 template <class T>
-inline RES_T erode(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+void qtImageViewer<T>::hide()
 {
-    unaryMorphImageFunction<T, infLine<T> > iFunc(numeric_limits<T>::max());
-    return iFunc(imIn, imOut, se);
+    qtViewer->hide();
 }
 
 template <class T>
-inline RES_T close(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+bool qtImageViewer<T>::isVisible()
 {
-    RES_T res = dilate(imIn, imOut, se);
-    if (res==RES_OK)
-      res = erode(imOut, imOut, se);
-    return res;
+    return qtViewer->isVisible();
 }
 
 template <class T>
-inline RES_T open(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+void qtImageViewer<T>::setName(const char* name)
 {
-    RES_T res = erode(imIn, imOut, se);
-    if (res==RES_OK)
-      res = dilate(imOut, imOut, se);
-    return res;
+    qtViewer->setName(name);
 }
 
 template <class T>
-inline RES_T gradient(Image<T> &imIn, Image<T> &imOut, StrElt dilSe, StrElt eroSe)
+void qtImageViewer<T>::loadFromData(typename ImDtTypes<T>::lineType pixels, UINT w, UINT h)
 {
-    Image<T> dilIm(imIn);
-    Image<T> eroIm(imIn);
-    
-    RES_T res = dilate(imIn, dilIm, dilSe);
-    if (res==RES_OK)
-      res = erode(imIn, eroIm, eroSe);
-    if (res==RES_OK)
-      res = sub(dilIm, eroIm, imOut);
-    return res;
+    cout << "Not implemented for this data type." << endl;
 }
 
-template <class T>
-inline RES_T gradient(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
-{
-    return gradient(imIn, imOut, se, se);
-}
+template <>
+void qtImageViewer<UINT8>::loadFromData(ImDtTypes<UINT8>::lineType pixels, UINT w, UINT h);
+
+template <>
+void qtImageViewer<UINT16>::loadFromData(ImDtTypes<UINT16>::lineType pixels, UINT w, UINT h);
+
+#ifdef SMIL_WRAP_Bit
+template <>
+void qtImageViewer<Bit>::loadFromData(ImDtTypes<Bit>::lineType pixels, UINT w, UINT h);
+#endif // SMIL_WRAP_Bit
 
 
-
-
-#endif // _D_MORPHO_BASE_HPP
-
+#endif // _D_QT_IMAGE_VIEWER_HPP

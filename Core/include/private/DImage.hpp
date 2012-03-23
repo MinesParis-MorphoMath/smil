@@ -32,34 +32,21 @@
 
 #include "DCommon.h"
 
-#include "DTypes.hpp"
+#include "DTypes.h"
 #include "DBaseObject.h"
 #include "DBaseImageOperations.hpp"
 
 
 
 #include "DBaseImage.h"
+#include "DImageViewer.hpp"
+#include "DImageViewer.h"
+
 
 /**
  * \defgroup Core
  * @{
  */
-
-/**
- * Base image viewer.
- * 
- */
-template <class T>
-class baseImageViewer
-{
-public:
-    virtual void show() = 0;
-    virtual void hide() = 0;
-    virtual bool isVisible() =0;
-    virtual void setName(const char* name) = 0;
-    virtual void loadFromData(typename ImDtTypes<T>::lineType pixels, UINT w, UINT h) = 0;
-};
-
 
 
 /**
@@ -135,7 +122,7 @@ public:
 	return RES_OK;
     }
 
-    baseImageViewer<T> *getViewer() { return viewer; }
+    imageViewer<T> *getViewer() { return viewer; }
     bool isVisible() { return (viewer && viewer->isVisible()); }
     
     void init();
@@ -206,8 +193,8 @@ public:
     
     Image<T>& operator << (const lineType tab);
     
-    Image<T>& operator << (const char *s) { cout << "Not implemented" << endl; return *this; };
-    Image<T>& operator >> (const char *s) { cout << "Not implemented" << endl; return *this; };
+    Image<T>& operator << (const char *s);
+    Image<T>& operator >> (const char *s);
 protected:
     lineType pixels;
     sliceType  lines;
@@ -217,14 +204,14 @@ protected:
 
     RES_T restruct(void);
 
-    baseImageViewer<T> *viewer;
+    imageViewer<T> *viewer;
 //     ImageViewerWidget *viewer;
     
     const char* name;
-    void updateViewerData();
+    void updateViewerData(bool force=false);
 public:
     void setName(const char* name);
-    void show(const char* name=NULL) {  cout << "Not implemented" << endl; }
+    void show(const char* name=NULL);
     void hide() {  if (viewer) viewer->hide(); }
 
 };

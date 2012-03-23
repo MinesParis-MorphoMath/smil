@@ -137,12 +137,6 @@ Image<Bit>& Image<Bit>::clone(const Image<Bit> &rhs)
     return *this;
 }
 
-template <>
-void Image<Bit>::updateViewerData()
-{ 
-    if (viewer)
-	viewer->loadFromData(pixels, width, height);
-}
 
 
 #endif // SMIL_WRAP_Bit

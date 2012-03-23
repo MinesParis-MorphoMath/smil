@@ -35,7 +35,9 @@
 // {
 //     return "UINT8 (unsigned char)";
 // }
+
 #include "DMemory.hpp"
+#include "DImageIO.h"
 
 template <class T>
 Image<T>::Image()
@@ -119,10 +121,21 @@ void Image<T>::setName(const char *_name)
 }
 
 template <class T>
-void Image<T>::updateViewerData()
+void Image<T>::updateViewerData(bool force)
 { 
-    if (viewer && viewer->isVisible())
+    if ((viewer && viewer->isVisible()) || force)
 	viewer->loadFromData(pixels, width, height);
+}
+
+template <class T>
+void Image<T>::show(const char* name)
+{
+    if (!viewer)
+        viewer = createViewer<T>(); // new imageViewer<T>();
+    if (name)
+        setName(name);
+    updateViewerData(true);
+    viewer->show();
 }
 
 
@@ -260,6 +273,8 @@ RES_T Image<T>::deallocate(void)
     return RES_OK;
 }
 
+
+
 template <class T>
 void Image<T>::printSelf(ostream &os, bool displayPixVals)
 {
@@ -325,6 +340,20 @@ Image<T>& Image<T>::operator = (Image<T> &rhs)
 {
     cout << "= op" << endl;
     this->clone(rhs);
+    return *this;
+}
+
+template <class T>
+Image<T>& Image<T>::operator << (const char *s) 
+{ 
+    read(s, this); 
+    return *this; 
+}
+
+template <class T>
+Image<T>& Image<T>::operator >> (const char *s) 
+{ 
+    write(this, s); 
     return *this;
 }
 

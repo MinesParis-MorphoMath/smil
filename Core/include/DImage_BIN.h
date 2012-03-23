@@ -32,7 +32,8 @@
 
 
 #include "DImage.hpp"
-#include "DBinary.hpp"
+#include "DImage.hxx"
+#include "DBinary.h"
 
 
 template <>

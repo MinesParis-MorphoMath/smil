@@ -32,7 +32,7 @@
 #include <QTimer>
 
 #include "ImageViewerWidget.h"
-#include "DLineArith.hpp"
+#include "DImage.hpp"
 
 
 QImageGraphicsScene::QImageGraphicsScene(QObject *parent)
@@ -148,6 +148,12 @@ void ImageViewerWidget::load(const QString fileName)
     emit onDataChanged();
 }
 
+void ImageViewerWidget::dataChanged()
+{
+    magnView->setImage(image);
+    emit onDataChanged();
+}
+
 void ImageViewerWidget::loadFromData(const uchar *data, int w, int h)
 {
     setImageSize(w, h);
@@ -159,58 +165,6 @@ void ImageViewerWidget::loadFromData(const uchar *data, int w, int h)
 
     emit onDataChanged();
 }
-
-void ImageViewerWidget::loadFromData(const UINT16 *data, int w, int h)
-{
-    setImageSize(w, h);
-    UINT8 *destLine;
-    double coeff = double(numeric_limits<UINT8>::max()) / double(numeric_limits<UINT16>::max());
-
-    for (int j=0;j<h;j++)
-    {
-	destLine = image->scanLine(j);
-	for (int i=0;i<w;i++)
-	    destLine[i] = (UINT8)(coeff * double(data[i]));
-	
-	data += w;
-    }
-
-    magnView->setImage(image);
-
-    emit onDataChanged();
-}
-
-void ImageViewerWidget::loadFromData(const BIN *data, int w, int h)
-{
-    setImageSize(w, h);
-    const BIN *lIn;
-    UINT8 *lOut, *lEnd;
-    UINT bCount = (w-1)/BIN::SIZE + 1; 
-
-    for (int j=0;j<h;j++)
-    {
-	lIn = data + j*bCount;
-	lOut = image->scanLine(j);
-	lEnd = lOut + w;
-	
-	for (int b=0;b<bCount;b++,lIn++)
-	{
-	  BIN_TYPE bVal = (*lIn).val;
-	  
-	  for (int i=0;i<BIN::SIZE;i++,lOut++)
-	  {
-	    if (lOut==lEnd)
-	      break;
-	    *lOut = bVal & (1 << i) ? 255 : 0;
-	  }
-	}
-    }
-
-    magnView->setImage(image);
-
-    emit onDataChanged();
-}
-
 
 void ImageViewerWidget::zoomIn()
 {

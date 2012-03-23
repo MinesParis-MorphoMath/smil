@@ -35,27 +35,6 @@
 // Gui specializations
 
 
-template <>
-void Image<UINT8>::show(const char* name)
-{
-    if (!viewer)
-        viewer = new imageViewer<UINT8>();
-    if (name)
-        setName(name);
-    updateViewerData();
-    viewer->show();
-}
-
-template <>
-void Image<UINT16>::show(const char* name)
-{
-    if (!viewer)
-        viewer = new imageViewer<UINT16>();
-    if (name)
-        setName(name);
-    updateViewerData();
-    viewer->show();
-}
 
 
 // IO specializations
@@ -76,27 +55,5 @@ Image<UINT8>& Image<UINT8>::operator >> (const char *filename)
     return *this;
 }
 
-
-template <>
-void Image<bool>::show(const char* name)
-{
-    if (!viewer)
-        viewer = new imageViewer<bool>();
-    if (name)
-        setName(name);
-    updateViewerData();
-    viewer->show();
-}
-
-template <>
-void Image<Bit>::show(const char* name)
-{
-    if (!viewer)
-        viewer = new imageViewer<Bit>();
-    if (name)
-        setName(name);
-    updateViewerData();
-    viewer->show();
-}
 
 

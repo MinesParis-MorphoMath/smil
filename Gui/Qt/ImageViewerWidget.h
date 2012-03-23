@@ -35,7 +35,7 @@
 #include <QStatusBar>
 
 #include "MagnifyView.h"
-#include "DBinary.hpp"
+#include "DBinary.h"
 
 
 class QImageGraphicsScene : public QGraphicsScene
@@ -62,21 +62,22 @@ public:
     virtual void keyPressEvent(QKeyEvent *);
 
     void setName(const char *name);
+    void setImageSize(int w, int h);
+    void dataChanged();
     
     QStatusBar *statusBar;
-private:
     QImage *image;
+private:
     double scaleFactor;
     QImageGraphicsScene *imScene;
     QGraphicsPixmapItem *pixItem;
 
-    MagnifyView *magnView;
     QLabel *valueLabel;
+    MagnifyView *magnView;
 
     bool magnActivated;
     bool valueLblActivated;
     
-    void setImageSize(int w, int h);
     void createActions();
     void connectActions();
     
@@ -97,8 +98,6 @@ private:
 public slots:
     void load(const QString fileName);
     void loadFromData(const uchar *data, int w, int h);
-    void loadFromData(const BIN *data, int w, int h);
-    void loadFromData(const UINT16 *data, int w, int h);
     void zoomIn();
     void zoomOut();
     void scale(double factor);

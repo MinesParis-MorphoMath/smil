@@ -31,6 +31,7 @@
 #define _DCORE_H
 
 #include "DImage.h"
+#include "DLineArith.h"
 #include "DImageArith.h"
 
 #endif // _DCORE_H

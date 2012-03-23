@@ -28,7 +28,7 @@
 SET(MODULE_NAME Core)
 SET(MODULE_DEPS ${SMIL_LIB_PREFIX}IO ${SMIL_LIB_PREFIX}Gui)
 
-INCLUDE_DIRECTORIES(../IO/include ../Gui ../Gui/include)
+INCLUDE_DIRECTORIES(../IO/include ../IO/include/private ../Gui ../Gui/include ../Gui/include/private)
 
 ADD_SMIL_LIBRARY(${MODULE_NAME} ${MODULE_DEPS})
 ADD_SMIL_TESTS(${MODULE_NAME} ${MODULE_DEPS})

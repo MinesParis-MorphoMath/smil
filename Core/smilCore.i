@@ -39,8 +39,6 @@
 /* Includes the header in the wrapper code */
 #include "DCommon.h"
 #include "DImage.h"
-#include "DImage.hpp"
-#include "DImage.hxx"
 #include "DTypes.hpp"
 #include "DBaseObject.h"
 #include "DBaseImageOperations.hpp"

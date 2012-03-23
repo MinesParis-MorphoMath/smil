@@ -34,9 +34,10 @@
 //#include <boost/bind.hpp>
 
 #include "DImage.h"
-#include "DImageArith.hpp"
-#include "DImageIO.h"
-#include "DImageIO_PNG.h"
+// #include "DImage.hxx"
+// #include "DImageArith.hpp"
+// #include "DImageIO.h"
+// #include "DImageIO_PNG.h"
 
 #ifdef BUILD_GUI
 #include <QApplication>
@@ -68,6 +69,7 @@ int main(int argc, char *argv[])
     im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
 
     im1.show();
+    im1.modified();
     
 #ifdef BUILD_GUI
     qapp.exec();

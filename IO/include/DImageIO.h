@@ -32,21 +32,14 @@
 
 
 #include "DTypes.h"
-#include "DImage.h"
-#include "DImageIO_BMP.h"
-#include "DImageIO_RAW.hpp"
+// #include "DImage.h"
+#include "DImageIO.hpp"
 
-#ifdef USE_PNG
-#include "DImageIO_PNG.h"
-#endif // USE_PNG
+
 
 
 using namespace std;
 
-
-int read(const char* filename, Image<UINT8> *image);
-int write(Image<UINT8> *image, const char *filename);
-
-
+const char *getFileExtension(const char *fileName);
 
 #endif // _D_IMAGE_IO_H

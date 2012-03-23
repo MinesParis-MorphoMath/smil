@@ -40,10 +40,6 @@
 
 using namespace std;
 
-#ifndef CHAR_BIT
-#define CHAR_BIT 8
-#endif
-
 #ifdef USE_64BIT_IDS
 //     typedef UINT8 INT_TYPE;
     typedef UINT64 BIN_TYPE;

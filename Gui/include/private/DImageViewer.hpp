@@ -27,25 +27,26 @@
  */
 
 
-#ifndef _D_IMAGE_IO_PNG_H
-#define _D_IMAGE_IO_PNG_H
-
-#ifdef USE_PNG
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
+#ifndef _D_IMAGE_VIEWER_HPP
+#define _D_IMAGE_VIEWER_HPP
 
 #include "DTypes.hpp"
-#include "DImage.h"
 
-using namespace std;
+/**
+ * Base image viewer.
+ * 
+ */
+template <class T>
+class imageViewer
+{
+public:
+    virtual void show() {}
+    virtual void hide() {}
+    virtual bool isVisible() { return false; }
+    virtual void setName(const char* name) {}
+    virtual void loadFromData(typename ImDtTypes<T>::lineType pixels, UINT w, UINT h) {}
+};
 
 
-_SMIL int readPNG(const char* filename, Image<UINT8> *image);
-_SMIL int writePNG(Image<UINT8> *image, const char *filename);
 
-
-#endif // USE_PNG
-
-#endif // _D_IMAGE_IO_PNG_H
+#endif // _D_BASE_IMAGE_VIEWER_H

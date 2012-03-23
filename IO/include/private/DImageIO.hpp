@@ -27,6 +27,68 @@
  */
 
 
-#include "DImageViewer.h"
+#ifndef _D_IMAGE_IO_HPP
+#define _D_IMAGE_IO_HPP
 
 
+#include <string>
+#include <algorithm>
+
+
+#include "DTypes.h"
+#include "DImage.hpp"
+
+#include "DImageIO_BMP.hpp"
+#include "DImageIO_RAW.hpp"
+
+#ifdef USE_PNG
+#include "DImageIO_PNG.hpp"
+#endif // USE_PNG
+
+
+extern const char *getFileExtension(const char *fileName);
+
+template <class T>
+int read(const char* filename, Image<T> *image)
+{
+    string fileExt = getFileExtension(filename);
+
+    if (fileExt=="BMP")
+        readBMP(filename, image);
+
+#ifdef USE_PNG
+    else if (fileExt=="PNG")
+        readPNG(filename, image);
+#endif // USE_PNG
+
+    else
+    {
+        cout << "File type not supported" << endl;
+    }
+}
+
+
+template <class T>
+int write(Image<T> *image, const char *filename)
+{
+    string fileExt = getFileExtension(filename);
+
+    if (fileExt=="BMP")
+        writeBMP(image, filename);
+
+#ifdef USE_PNG
+    else if (fileExt=="PNG")
+        writePNG(image, filename);
+#endif // USE_PNG
+
+    else
+    {
+        cout << "File type not supported" << endl;
+    }
+}
+
+
+
+
+
+#endif // _D_IMAGE_IO_HPP

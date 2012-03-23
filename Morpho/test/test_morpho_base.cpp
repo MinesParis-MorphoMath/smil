@@ -54,19 +54,15 @@ erode sSE	BIN	1024x1024	550 µsecs
 //#include <boost/bind.hpp>
 
 #include "DImage.h"
-#include "DImageArith.hpp"
 #include "DMorpho.h"
 #include "DImageIO.h"
 #include "DTest.h"
 #include "DBench.h"
-#include "DBitArray.h"
 
 #ifdef BUILD_GUI
 #include "DGui.h"
 #include <QApplication>
 #endif // BUILD_GUI
-
-
 
 void func(StrElt *se)
 {

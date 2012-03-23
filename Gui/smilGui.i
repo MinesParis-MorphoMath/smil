@@ -40,7 +40,6 @@
 /* Includes the header in the wrapper code */
 #include "DImage.hpp"
 #include "DGui.h"
-#include "DImage.hxx"
 
 %}
 

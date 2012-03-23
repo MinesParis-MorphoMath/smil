@@ -27,8 +27,8 @@
  */
 
 
-#ifndef _D_IMAGE_IO_RAW_H
-#define _D_IMAGE_IO_RAW_H
+#ifndef _D_IMAGE_IO_RAW_HPP
+#define _D_IMAGE_IO_RAW_HPP
 
 
 #include <stdio.h>

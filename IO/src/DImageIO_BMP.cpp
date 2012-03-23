@@ -27,11 +27,12 @@
  */
 
 
-#include "DImageIO_BMP.h"
+#include "DImageIO_BMP.hpp"
 #include "DImage.h"
 
 
-RES_T readBMP(const char *filename, Image<UINT8> *image)
+template <>
+_SMIL RES_T readBMP(const char *filename, Image<UINT8> *image)
 {
     FILE* fp = fopen( filename, "rb" );
 
@@ -79,7 +80,8 @@ RES_T readBMP(const char *filename, Image<UINT8> *image)
 
 
 /* write a png file */
-RES_T writeBMP(Image<UINT8> *image, const char *filename)
+template <>
+_SMIL RES_T writeBMP(Image<UINT8> *image, const char *filename)
 {
     FILE* fp = fopen( filename, "wb" );
 

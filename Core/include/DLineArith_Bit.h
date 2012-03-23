@@ -31,7 +31,8 @@
 #define _D_LINE_ARITH_BIT_H
 
 
-#include "DImage.h"
+#include "DBitArray.h"
+#include "DLineArith.hpp"
 
 /**
  * \ingroup Core

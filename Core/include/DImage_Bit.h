@@ -32,31 +32,9 @@
 
 
 #include "DImage.hpp"
+#include "DImage.hxx"
 #include "DTypes.h"
 
-
-template <>
-struct ImDtTypes<Bit>
-{
-    typedef Bit pixelType;
-    typedef BitArray lineType;
-    typedef lineType* sliceType;
-    typedef sliceType* volType;
-
-    static inline pixelType min() { return Bit(0); }
-    static inline pixelType max() { return Bit(1); }
-    static inline lineType createLine(UINT lineLen) 
-    { 
-	BitArray ba(lineLen);
-	ba.createIntArray();
-	return ba; 
-    }
-    static inline void deleteLine(lineType line) 
-    { 
-	line.deleteIntArray();
-    }
-    static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)(p.intArray)) & (n-1); }
-};
 
 
 template <>
@@ -78,9 +56,6 @@ RES_T Image<Bit>::deallocate(void);
 template <>
 Image<Bit>& Image<Bit>::clone(const Image<Bit> &rhs);
 
-
-template <>
-void Image<Bit>::updateViewerData();
 
 
 #endif // _IMAGE_BIN_HXX

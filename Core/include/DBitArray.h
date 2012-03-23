@@ -30,7 +30,9 @@
 #ifndef _DBITARRAY_H
 #define _DBITARRAY_H
 
-#include "DBinary.hpp"
+#include <iostream>
+
+// #include "DBinary.hpp"
 #include "DTypes.hpp"
 // #include <qshareddata.h>
 
@@ -281,6 +283,31 @@ inline const char *getDataTypeAsString(Bit &val)
 {
     return "Bit";
 }
+
+
+template <>
+struct ImDtTypes<Bit>
+{
+    typedef Bit pixelType;
+    typedef BitArray lineType;
+    typedef lineType* sliceType;
+    typedef sliceType* volType;
+
+    static inline pixelType min() { return Bit(0); }
+    static inline pixelType max() { return Bit(1); }
+    static inline lineType createLine(UINT lineLen) 
+    { 
+	BitArray ba(lineLen);
+	ba.createIntArray();
+	return ba; 
+    }
+    static inline void deleteLine(lineType line) 
+    { 
+	line.deleteIntArray();
+    }
+    static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)(p.intArray)) & (n-1); }
+};
+
 
 #endif // _DBITARRAY_H
 

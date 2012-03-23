@@ -30,88 +30,27 @@
 #ifndef _D_IMAGE_VIEWER_H
 #define _D_IMAGE_VIEWER_H
 
-#include "DTypes.h"
-#include "DImage.h"
+#include "DImageViewer.hpp"
 
-#include "Qt/ImageViewerWidget.h"
-#include "Qt/ImageViewer.h"
-#include <QApplication>
+#ifdef BUILD_GUI
+#include "DQtImageViewer.hpp"
 
 template <class T>
-class imageViewer : public baseImageViewer<T>
+imageViewer<T> *createViewer()
 {
-public:
-    imageViewer();
-    ~imageViewer();
-    virtual void show();
-    virtual void hide();
-    virtual bool isVisible();
-    virtual void setName(const char* name);
-    virtual void loadFromData(typename Image<T>::lineType pixels, UINT w, UINT h);
-    QApplication *_qapp;
-protected:
-    ImageViewerWidget *qtViewer;
-//     ImageViewer *qtViewer;
-};
-
-template <class T>
-imageViewer<T>::imageViewer()
-{
-    if (!qApp)
-    {
-        cout << "created" << endl;
-        int ac = 1;
-        char **av = NULL;
-        _qapp = new QApplication(ac, av);
-    }
-    qtViewer = new ImageViewerWidget();
-//     qtViewer = new ImageViewer();
+    return new qtImageViewer<T>();
 }
 
-template <class T>
-imageViewer<T>::~imageViewer()
-{
-    hide();
-    delete qtViewer;
-}
+#else // BUILD_GUI
 
 template <class T>
-void imageViewer<T>::show()
+imageViewer<T> *createViewer()
 {
-    qtViewer->show();
+    return NULL;
 }
 
-template <class T>
-void imageViewer<T>::hide()
-{
-    qtViewer->hide();
-}
+#endif // BUILD_GUI
 
-template <class T>
-bool imageViewer<T>::isVisible()
-{
-    return qtViewer->isVisible();
-}
 
-template <class T>
-void imageViewer<T>::setName(const char* name)
-{
-    qtViewer->setName(name);
-}
-
-template <class T>
-void imageViewer<T>::loadFromData(typename Image<T>::lineType pixels, UINT w, UINT h)
-{
-    cout << "Not implemented for this data type." << endl;
-}
-
-template <>
-void imageViewer<UINT8>::loadFromData(Image<UINT8>::lineType pixels, UINT w, UINT h);
-
-template <>
-void imageViewer<UINT16>::loadFromData(Image<UINT16>::lineType pixels, UINT w, UINT h);
-
-template <>
-void imageViewer<Bit>::loadFromData(Image<Bit>::lineType pixels, UINT w, UINT h);
 
 #endif // _D_IMAGE_VIEWER_H
