@@ -28,7 +28,7 @@
 
 
 #include "DImage.h"
-#include "DImageIO.h"
+#include "DIO.h"
 #include "DGui.h"
 
 
