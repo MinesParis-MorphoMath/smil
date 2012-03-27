@@ -55,5 +55,3 @@ Image<UINT8>& Image<UINT8>::operator >> (const char *filename)
     return *this;
 }
 
-
-

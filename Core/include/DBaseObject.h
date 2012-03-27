@@ -33,32 +33,44 @@
 #include <iostream>
 #include <sstream>
 
+#include "DCoreInstance.h"
+
 using namespace std;
 
 
 #include <string>
 
-class D_BaseObject
+class baseObject
 {
 public:
-    D_BaseObject() {};
+    baseObject()
+      :	className("baseObject")
+    {
+	coreInstance::getInstance()->registerObject(this);
+    }
+    ~baseObject() 
+    {
+	coreInstance::getInstance()->unregisterObject(this);
+    }
+    
+    coreInstance *getCoreInstance() { return coreInstance::getInstance(); }
 
     typedef void parentClass;
 
-    virtual string getInfoString(string indent = "") {};
+    virtual string getInfoString(string indent = "") 
+    {}
 
-    virtual void printSelf() {};
+    virtual void printSelf(ostream &os=std::cout) 
+    {}
 
-    inline virtual const char * getClassName();
-
+    virtual const char * getClassName()
+    {
+	return className;
+    }
 
 protected:
     const char * className;
 
 };
-inline const char * D_BaseObject::getClassName()
-{
-    return className;
-}
 
 #endif

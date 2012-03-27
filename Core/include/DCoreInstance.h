@@ -27,85 +27,73 @@
  */
 
 
-#ifndef _D_IMAGE_IO_HPP
-#define _D_IMAGE_IO_HPP
+#ifndef _DCORE_INSTANCE_H
+#define _DCORE_INSTANCE_H
 
-
-#include <string>
+#include <iostream>
 #include <algorithm>
 
+#include "DCommon.h"
 
-#include "DTypes.h"
-#include "DImage.hpp"
+class baseObject;
 
-#include "DImageIO_BMP.hpp"
-#include "DImageIO_RAW.hpp"
+struct stat;
 
-#ifdef USE_PNG
-#include "DImageIO_PNG.hpp"
-#endif // USE_PNG
-
-
-extern const char *getFileExtension(const char *fileName);
-
-template <class T>
-RES_T read(const char* filename, Image<T> *image)
+class coreInstance
 {
-    string fileExt = getFileExtension(filename);
-    RES_T res;
+private:
+  coreInstance ()
+    : _value (0), keepAlive(false) { }
+  ~coreInstance () { }
 
-    if (fileExt=="BMP")
-        res = readBMP(filename, image);
+public:
+  // Public interface
+  bool keepAlive;
+  void setValue (int val) { _value = val; }
+  int getValue () { return _value; }
+  
+  void registerObject(baseObject *obj);
 
-#ifdef USE_PNG
-    else if (fileExt=="PNG")
-        res = readPNG(filename, image);
-#endif // USE_PNG
-
-//     else if (fileExt=="RAW")
-//         res = readRAW(filename, image);
-    
+  void unregisterObject(baseObject *obj);
+  
+  vector<baseObject*> getRegisteredObjects() { return registeredObjects; }
+  
+  static coreInstance *getInstance ()
+  {
+    if (NULL == _singleton)
+      {
+//         std::cout << "creating singleton." << std::endl;
+        _singleton =  new coreInstance;
+      }
     else
-    {
-        cout << "File type not supported" << endl;
-	res = RES_ERR;
-    }
+      {
+//         std::cout << "singleton already created!" << std::endl;
+      }
+
+    return _singleton;
+  }
+
+  static void kill ()
+  {
+    if (_singleton==NULL)
+      return;
     
-    if (res==RES_OK)
-	image->modified();
+//       std::cout << "Bye" << std::endl;
     
-    return res;
-}
-
-
-template <class T>
-RES_T write(Image<T> *image, const char *filename)
-{
-    string fileExt = getFileExtension(filename);
-    RES_T res;
-
-    if (fileExt=="BMP")
-        res = writeBMP(image, filename);
-
-#ifdef USE_PNG
-    else if (fileExt=="PNG")
-        res = writePNG(image, filename);
-#endif // USE_PNG
-
-    else if (fileExt=="RAW")
-        res = writeRAW(image, filename);
+      delete _singleton;
+      _singleton = NULL;
     
-    else
-    {
-        cout << "File type not supported" << endl;
-	res = RES_ERR;
-    }
-    
-    return res;
-}
+  }
+  
+
+private:
+  // Variables membres
+  int _value;
+  vector<baseObject*> registeredObjects;
+  static coreInstance *_singleton;
+};
 
 
 
+#endif // _DCORE_INSTANCE_H
 
-
-#endif // _D_IMAGE_IO_HPP

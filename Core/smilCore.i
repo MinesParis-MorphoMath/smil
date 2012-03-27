@@ -41,6 +41,7 @@
 #include "DImage.h"
 #include "DTypes.hpp"
 #include "DBaseObject.h"
+#include "DCoreInstance.h"
 #include "DBaseImageOperations.hpp"
 #include "DBaseLineOperations.hpp"
 #include "DImageArith.h"
@@ -90,11 +91,17 @@ PTR_ARG_OUT_APPLY(d)
 
 %include "DCommon.h"
 %include "DTypes.hpp"
+%include "DBaseObject.h"
+%include "DCoreInstance.h"
+%include "DBaseImage.h"
 %include "DImage.hpp"
 %include "DImage.hxx"
 %include "DImage.h"
-%include "DBaseImage.h"
+
+#ifdef SMIL_WRAP_Bit
 %include "DBitArray.h"
+#endif // SMIL_WRAP_Bit
+
 %include "DTypes.hpp"
 /*%include "D_BaseOperations.h" */
 %include "DBaseImageOperations.hpp"
@@ -110,6 +117,7 @@ PTR_ARG_OUT_APPLY(d)
 
 %template(UINTVector) vector<UINT>;
 %template(INTVector) vector<INT>;
+%template(objVector) vector<baseObject*>;
 
 TEMPLATE_WRAP_CLASS(Image);
 

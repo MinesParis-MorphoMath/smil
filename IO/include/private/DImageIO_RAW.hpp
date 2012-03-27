@@ -41,7 +41,7 @@
 using namespace std;
 
 template <class T>
-int readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T> *image)
+RES_T readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T> *image)
 {
     FILE *fp = NULL;
 
@@ -50,7 +50,7 @@ int readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T> 
     if (!fp)
     {
         fprintf (stderr, "error: couldn't open \"%s\"!\n", filename);
-        return -1;
+        return RES_ERR;
     }
 
 
@@ -62,11 +62,11 @@ int readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T> 
 
 
     fclose (fp);
-    return 0;
+    return RES_OK;
 }
 
 template <class T>
-int writeRAW(Image<T> *image, const char *filename)
+RES_T writeRAW(Image<T> *image, const char *filename)
 {
 }
 

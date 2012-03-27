@@ -56,13 +56,18 @@ struct addLine<UINT8> : public binaryLineFunctionBase<UINT8>
 	__m128i *l1 = (__m128i*) lIn1;
 	__m128i *l2 = (__m128i*) lIn2;
 	__m128i *l3 = (__m128i*) lOut;
-	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	
+	unsigned long alignLen = size-size%SIMD_VEC_SIZE;
+	
+	for(int i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
 	{
 	    r0 = _mm_load_si128(l1);
 	    r1 = _mm_load_si128(l2);
 	    r1 = _mm_adds_epu8(r0, r1);
 	    _mm_store_si128(l3, r1);
 	}
+	
+	_exec(lIn1+alignLen, lIn2+alignLen, size%SIMD_VEC_SIZE, lOut+alignLen);
     }
 };
 
@@ -80,13 +85,18 @@ struct addNoSatLine<UINT8> : public binaryLineFunctionBase<UINT8>
 	__m128i *l1 = (__m128i*) lIn1;
 	__m128i *l2 = (__m128i*) lIn2;
 	__m128i *l3 = (__m128i*) lOut;
-	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	
+	unsigned long alignLen = size-size%SIMD_VEC_SIZE;
+	
+	for(int i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
 	{
 	    r0 = _mm_load_si128(l1);
 	    r1 = _mm_load_si128(l2);
 	    r1 = _mm_add_epi8(r0, r1);
 	    _mm_store_si128(l3, r1);
 	}
+	
+	_exec(lIn1+alignLen, lIn2+alignLen, size%SIMD_VEC_SIZE, lOut+alignLen);
     }
 };
 
@@ -104,13 +114,18 @@ struct subLine<UINT8> : public binaryLineFunctionBase<UINT8>
 	__m128i *l1 = (__m128i*) lIn1;
 	__m128i *l2 = (__m128i*) lIn2;
 	__m128i *l3 = (__m128i*) lOut;
-	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	
+	unsigned long alignLen = size-size%SIMD_VEC_SIZE;
+	
+	for(int i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
 	{
 	    r0 = _mm_load_si128(l1);
 	    r1 = _mm_load_si128(l2);
 	    r1 = _mm_subs_epu8(r0, r1);
 	    _mm_store_si128(l3, r1);
 	}
+	
+	_exec(lIn1+alignLen, lIn2+alignLen, size%SIMD_VEC_SIZE, lOut+alignLen);
     }
 };
 
@@ -128,13 +143,18 @@ struct subNoSatLine<UINT8> : public binaryLineFunctionBase<UINT8>
 	__m128i *l1 = (__m128i*) lIn1;
 	__m128i *l2 = (__m128i*) lIn2;
 	__m128i *l3 = (__m128i*) lOut;
-	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	
+	unsigned long alignLen = size-size%SIMD_VEC_SIZE;
+	
+	for(int i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
 	{
 	    r0 = _mm_load_si128(l1);
 	    r1 = _mm_load_si128(l2);
 	    r1 = _mm_sub_epi8(r0, r1);
 	    _mm_store_si128(l3, r1);
 	}
+	
+	_exec(lIn1+alignLen, lIn2+alignLen, size%SIMD_VEC_SIZE, lOut+alignLen);
     }
 };
 
@@ -152,13 +172,18 @@ struct supLine<UINT8> : public binaryLineFunctionBase<UINT8>
 	__m128i *l1 = (__m128i*) lIn1;
 	__m128i *l2 = (__m128i*) lIn2;
 	__m128i *l3 = (__m128i*) lOut;
-	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	
+	unsigned long alignLen = size-size%SIMD_VEC_SIZE;
+	
+	for(int i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
 	{
 	    r0 = _mm_load_si128(l1);
 	    r1 = _mm_load_si128(l2);
 	    r1 = _mm_max_epu8(r0, r1);
 	    _mm_store_si128(l3, r1);
 	}
+	
+	_exec(lIn1+alignLen, lIn2+alignLen, size%SIMD_VEC_SIZE, lOut+alignLen);
     }
 };
 
@@ -176,37 +201,18 @@ struct infLine<UINT8> : public binaryLineFunctionBase<UINT8>
 	__m128i *l1 = (__m128i*) lIn1;
 	__m128i *l2 = (__m128i*) lIn2;
 	__m128i *l3 = (__m128i*) lOut;
-	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
+	
+	unsigned long alignLen = size-size%SIMD_VEC_SIZE;
+	
+	for(int i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
 	{
 	    r0 = _mm_load_si128(l1);
 	    r1 = _mm_load_si128(l2);
 	    r1 = _mm_min_epu8(r0, r1);
 	    _mm_store_si128(l3, r1);
 	}
-    }
-};
-
-template <>
-struct mulLine<UINT8> : public binaryLineFunctionBase<UINT8>
-{
-    inline void _exec(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
-    {
-        for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] * lIn2[i];
-    }
-    inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, int size, UINT8 *lOut)
-    {
-	__m128i r0,r1;
-	__m128i *l1 = (__m128i*) lIn1;
-	__m128i *l2 = (__m128i*) lIn2;
-	__m128i *l3 = (__m128i*) lOut;
-	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
-	{
-	    r0 = _mm_load_si128(l1);
-	    r1 = _mm_load_si128(l2);
-	    r1 = _mm_mullo_epi16(r0, r1);
-	    _mm_store_si128(l3, r1);
-	}
+	
+	_exec(lIn1+alignLen, lIn2+alignLen, size%SIMD_VEC_SIZE, lOut+alignLen);
     }
 };
 

@@ -135,8 +135,15 @@ public:
     RES_T allocate(void);
     RES_T deallocate(void);
 
-    void printSelf(ostream &os, bool displayPixVals = false);
-    void printSelf(bool displayPixVals = false);
+    void printSelf(ostream &os, bool displayPixVals);
+    virtual void printSelf(ostream &os=std::cout)
+    {
+	printSelf(os, false);
+    }
+    void printSelf(bool displayPixVals)
+    {
+	printSelf(std::cout, displayPixVals);
+    }
 
     void* getVoidPointer(void) {
         return pixels;

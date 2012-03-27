@@ -62,6 +62,8 @@ erode sSE	BIN	1024x1024	550 µsecs
 #include <QApplication>
 #endif // BUILD_GUI
 
+// #include "DBitArray.h"
+
 void func(StrElt *se)
 {
     cout << "se base" << endl;
@@ -193,128 +195,128 @@ int main(int argc, char *argv[])
    
    
 
-    TestSuite t;
-//     ADD_TEST(t, test_base_BIN);
-    
-    t.run();
-    
-  int iam = 0, np = 1;
-
-  #pragma omp parallel private(iam, np)
-  {
-    #if defined (_OPENMP)
-      np = omp_get_num_threads();
-      iam = omp_get_thread_num();
-    #endif
-    printf("Hello from thread %d out of %d\n", iam, np);
-  }
-   
-    UINT w = 1024, h = 1024, d = 1;
-//     UINT w = 768, h = 576;
-    
-    typedef Image<Bit> imType;
-    typedef Image<bool> imType2;
-    
-    imType bim1(w, h, d);
-    imType bim2(bim1);
-    imType bim3(bim1);
-    
-//     cout << "Width: " << w << endl;
-//     cout << "Line count: " << bim1.getLineCount() << endl;
-        
-//     fill(bim1, Bit(1));
-    
-    BitArray b1(64);
-    b1.createIntArray();
-    
-    BitArray b2(64);
-    b2.createIntArray();
-    
-    invLine<Bit> invF;
-    
-//     erode(bim1, bim2, 2);
-    
-    fillLine< Bit >(b1, 64, Bit(1));
-    invF(b1, 64, b1);
-    
-    fillLine< Bit >(b1, 6, Bit(1));
-    fillLine< Bit >(b2, 64, Bit(0));
-    b1[10] = Bit(1);
-    
-//     cpy(b1+5, 2, b2);
-    copyBits(b1, 5, *b2.intArray);
-    
-    
-//     shiftLine< Bit >(b1, 2, 64, b2);
-    
-    cout << b1 << endl;
-    cout << b2 << endl;
-//     fill(bim2, Bit(1));
-    
-//     return 0;
-    
-    Image_UINT8 im1(w,h);
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
-
-    imType2 imb1(w,h);
-    imType2 imb2(imb1);
-    imType2 imb3(imb1);
-
-//     fill(im1, UINT8(100));
-//     fill(im2, UINT8(5));
-    
-//     sup(bim1, bim2, bim3);
-//     dilate(imb1, imb2);
-
-//     equ(im1, im2);
-    
-    copy(imb1, imb2);
-    copy(bim1, bim2);
-    
-//     return 0;
-    
-    int t1 = clock();
-    for (int i=0;i<BENCH_NRUNS;i++)
-      copyLine<Bit>(bim1.getLines()[0], w, bim2.getLines()[0]);
-    cout << clock()-t1 << endl;
-    
-    t1 = clock();
-    for (int i=0;i<BENCH_NRUNS;i++)
-      copyLine<bool>(imb1.getLines()[0], w, imb2.getLines()[0]);
-    cout << clock()-t1 << endl;
-
-    bim1 << Bit(0);
-    bim1.show();
-    
-//     qapp.exec();
-    
-//     BENCH_IMG(copy, imb1, imb2);
-//     BENCH_IMG(copy, bim1, bim2);
-//     BENCH_IMG(cpy, bim1, bim2);
-    
-//     return 0;
-    
-    BENCH_IMG(vol, im1);
-    BENCH_IMG(vol, bim1);
-    BENCH_IMG(sup, im1, im2, im3);
-    BENCH_IMG(sup, bim1, bim2, bim3);
-    BENCH_IMG(sup, imb1, imb2, imb3);
-    
-    BENCH_IMG_STR(dilate, "hSE", im1, im3, hSE());
-    BENCH_IMG_STR(dilate, "hSE", bim1, bim2, hSE());
-    BENCH_IMG_STR(dilate, "hSE", imb1, imb2, hSE());
-    BENCH_IMG_STR(dilate, "sSE", im1, im3, sSE());
-    BENCH_IMG_STR(dilate, "sSE", bim1, bim2, sSE());
-    BENCH_IMG_STR(dilate, "sSE", imb1, imb2, sSE());
-    
-    BENCH_IMG_STR(erode, "hSE", im1, im3, hSE());
-    BENCH_IMG_STR(erode, "hSE", bim1, bim3, hSE());
-    BENCH_IMG_STR(erode, "hSE", imb1, imb3, hSE());
-    BENCH_IMG_STR(erode, "sSE", im1, im3, sSE());
-    BENCH_IMG_STR(erode, "sSE", bim1, bim3, sSE());
-    BENCH_IMG_STR(erode, "sSE", imb1, imb3, sSE());
-    
+//     TestSuite t;
+// //     ADD_TEST(t, test_base_BIN);
+//     
+//     t.run();
+//     
+//   int iam = 0, np = 1;
+// 
+//   #pragma omp parallel private(iam, np)
+//   {
+//     #if defined (_OPENMP)
+//       np = omp_get_num_threads();
+//       iam = omp_get_thread_num();
+//     #endif
+//     printf("Hello from thread %d out of %d\n", iam, np);
+//   }
+//    
+//     UINT w = 1024, h = 1024, d = 1;
+// //     UINT w = 768, h = 576;
+//     
+//     typedef Image<Bit> imType;
+//     typedef Image<bool> imType2;
+//     
+//     imType bim1(w, h, d);
+//     imType bim2(bim1);
+//     imType bim3(bim1);
+//     
+// //     cout << "Width: " << w << endl;
+// //     cout << "Line count: " << bim1.getLineCount() << endl;
+//         
+// //     fill(bim1, Bit(1));
+//     
+//     BitArray b1(64);
+//     b1.createIntArray();
+//     
+//     BitArray b2(64);
+//     b2.createIntArray();
+//     
+//     invLine<Bit> invF;
+//     
+// //     erode(bim1, bim2, 2);
+//     
+//     fillLine< Bit >(b1, 64, Bit(1));
+//     invF(b1, 64, b1);
+//     
+//     fillLine< Bit >(b1, 6, Bit(1));
+//     fillLine< Bit >(b2, 64, Bit(0));
+//     b1[10] = Bit(1);
+//     
+// //     cpy(b1+5, 2, b2);
+//     copyBits(b1, 5, *b2.intArray);
+//     
+//     
+// //     shiftLine< Bit >(b1, 2, 64, b2);
+//     
+//     cout << b1 << endl;
+//     cout << b2 << endl;
+// //     fill(bim2, Bit(1));
+//     
+// //     return 0;
+//     
+//     Image_UINT8 im1(w,h);
+//     Image_UINT8 im2(im1);
+//     Image_UINT8 im3(im1);
+// 
+//     imType2 imb1(w,h);
+//     imType2 imb2(imb1);
+//     imType2 imb3(imb1);
+// 
+// //     fill(im1, UINT8(100));
+// //     fill(im2, UINT8(5));
+//     
+// //     sup(bim1, bim2, bim3);
+// //     dilate(imb1, imb2);
+// 
+// //     equ(im1, im2);
+//     
+//     copy(imb1, imb2);
+//     copy(bim1, bim2);
+//     
+// //     return 0;
+//     
+//     int t1 = clock();
+//     for (int i=0;i<BENCH_NRUNS;i++)
+//       copyLine<Bit>(bim1.getLines()[0], w, bim2.getLines()[0]);
+//     cout << clock()-t1 << endl;
+//     
+//     t1 = clock();
+//     for (int i=0;i<BENCH_NRUNS;i++)
+//       copyLine<bool>(imb1.getLines()[0], w, imb2.getLines()[0]);
+//     cout << clock()-t1 << endl;
+// 
+//     bim1 << Bit(0);
+//     bim1.show();
+//     
+// //     qapp.exec();
+//     
+// //     BENCH_IMG(copy, imb1, imb2);
+// //     BENCH_IMG(copy, bim1, bim2);
+// //     BENCH_IMG(cpy, bim1, bim2);
+//     
+// //     return 0;
+//     
+//     BENCH_IMG(vol, im1);
+//     BENCH_IMG(vol, bim1);
+//     BENCH_IMG(sup, im1, im2, im3);
+//     BENCH_IMG(sup, bim1, bim2, bim3);
+//     BENCH_IMG(sup, imb1, imb2, imb3);
+//     
+//     BENCH_IMG_STR(dilate, "hSE", im1, im3, hSE());
+//     BENCH_IMG_STR(dilate, "hSE", bim1, bim2, hSE());
+//     BENCH_IMG_STR(dilate, "hSE", imb1, imb2, hSE());
+//     BENCH_IMG_STR(dilate, "sSE", im1, im3, sSE());
+//     BENCH_IMG_STR(dilate, "sSE", bim1, bim2, sSE());
+//     BENCH_IMG_STR(dilate, "sSE", imb1, imb2, sSE());
+//     
+//     BENCH_IMG_STR(erode, "hSE", im1, im3, hSE());
+//     BENCH_IMG_STR(erode, "hSE", bim1, bim3, hSE());
+//     BENCH_IMG_STR(erode, "hSE", imb1, imb3, hSE());
+//     BENCH_IMG_STR(erode, "sSE", im1, im3, sSE());
+//     BENCH_IMG_STR(erode, "sSE", bim1, bim3, sSE());
+//     BENCH_IMG_STR(erode, "sSE", imb1, imb3, sSE());
+//     
     
 // cout << "err: " << __FILE__ << __LINE__ << __FUNCTION__ << endl;
     return 0;

@@ -33,7 +33,7 @@
 //#include <boost/signal.hpp>
 //#include <boost/bind.hpp>
 
-#include "DImage.h"
+#include "DCore.h"
 // #include "DImage.hxx"
 // #include "DImageArith.hpp"
 // #include "DImageIO.h"

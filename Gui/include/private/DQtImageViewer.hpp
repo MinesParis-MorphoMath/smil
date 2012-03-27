@@ -60,7 +60,7 @@ qtImageViewer<T>::qtImageViewer()
 {
     if (!qApp)
     {
-        cout << "created" << endl;
+//         cout << "created" << endl;
         int ac = 1;
         char **av = NULL;
         _qapp = new QApplication(ac, av);
@@ -79,7 +79,12 @@ qtImageViewer<T>::~qtImageViewer()
 template <class T>
 void qtImageViewer<T>::show()
 {
+    if (qtViewer->isVisible())
+      return;
+    
     qtViewer->show();
+    qtViewer->repaint();
+    qApp->processEvents();
 }
 
 template <class T>

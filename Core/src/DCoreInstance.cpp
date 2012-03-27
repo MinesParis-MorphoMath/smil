@@ -27,85 +27,25 @@
  */
 
 
-#ifndef _D_IMAGE_IO_HPP
-#define _D_IMAGE_IO_HPP
+#include "DBaseObject.h"
+#include "DCoreInstance.h"
 
+// Initialization of singleton to NULL
+coreInstance *coreInstance::_singleton = NULL;
 
-#include <string>
-#include <algorithm>
-
-
-#include "DTypes.h"
-#include "DImage.hpp"
-
-#include "DImageIO_BMP.hpp"
-#include "DImageIO_RAW.hpp"
-
-#ifdef USE_PNG
-#include "DImageIO_PNG.hpp"
-#endif // USE_PNG
-
-
-extern const char *getFileExtension(const char *fileName);
-
-template <class T>
-RES_T read(const char* filename, Image<T> *image)
+void coreInstance::registerObject(baseObject *obj)
 {
-    string fileExt = getFileExtension(filename);
-    RES_T res;
-
-    if (fileExt=="BMP")
-        res = readBMP(filename, image);
-
-#ifdef USE_PNG
-    else if (fileExt=="PNG")
-        res = readPNG(filename, image);
-#endif // USE_PNG
-
-//     else if (fileExt=="RAW")
-//         res = readRAW(filename, image);
-    
-    else
-    {
-        cout << "File type not supported" << endl;
-	res = RES_ERR;
-    }
-    
-    if (res==RES_OK)
-	image->modified();
-    
-    return res;
+    registeredObjects.push_back(obj);
+//     cout << obj->getClassName() << " created." << endl;
 }
 
-
-template <class T>
-RES_T write(Image<T> *image, const char *filename)
+void coreInstance::unregisterObject(baseObject *obj)
 {
-    string fileExt = getFileExtension(filename);
-    RES_T res;
+    std::vector<baseObject*>::iterator newEnd = std::remove(registeredObjects.begin(), registeredObjects.end(), obj);
 
-    if (fileExt=="BMP")
-        res = writeBMP(image, filename);
-
-#ifdef USE_PNG
-    else if (fileExt=="PNG")
-        res = writePNG(image, filename);
-#endif // USE_PNG
-
-    else if (fileExt=="RAW")
-        res = writeRAW(image, filename);
+    registeredObjects.erase(newEnd, registeredObjects.end());
+//     cout << obj->getClassName() << " deleted." << endl;
     
-    else
-    {
-        cout << "File type not supported" << endl;
-	res = RES_ERR;
-    }
-    
-    return res;
+    if (!keepAlive && registeredObjects.size()==0)
+	kill();
 }
-
-
-
-
-
-#endif // _D_IMAGE_IO_HPP

@@ -479,6 +479,7 @@ RES_T resize(Image<T> &imIn, Image<T> &imOut)
             pixOut[offset++] = A*(1-x_diff)*(1-y_diff) +  B*(x_diff)*(1-y_diff) + C*(y_diff)*(1-x_diff)   +  D*(x_diff*y_diff);
         }
     }
+    imOut.modified();
     
     return RES_OK;
 }

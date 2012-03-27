@@ -31,12 +31,19 @@
 #define _D_BASE_IMAGE_H
 
 #include "DCommon.h"
+#include "DBaseObject.h"
 
 
-class _SMIL baseImage
+class _SMIL baseImage : public baseObject
 {
 public:
-    baseImage();
+    baseImage()
+      :	width(0), height(0), depth(0),
+	allocated(false)
+    {
+	className = "baseImage";
+    }
+      
     inline UINT getWidth() const {
         return width;
     }
@@ -100,7 +107,10 @@ protected:
 
 };
 
-// Check if images have the same size
+/**
+ * Check if all images in a list have the same size.
+ * The list of images must be finished by NULL.
+ */
 inline bool haveSameSize(const baseImage *im, ...)
 {
     va_list vargs;
@@ -121,7 +131,11 @@ inline bool haveSameSize(const baseImage *im, ...)
     return true;
 }
 
-// Check if images are allocated
+/**
+ * Check if all images in a list are allocated.
+ * The list of images must be finished by NULL.
+ */
+
 inline bool areAllocated(const baseImage *im, ...)
 {
     va_list vargs;

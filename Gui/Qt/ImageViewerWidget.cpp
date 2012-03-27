@@ -151,6 +151,8 @@ void ImageViewerWidget::load(const QString fileName)
 void ImageViewerWidget::dataChanged()
 {
     magnView->setImage(image);
+    repaint();
+    qApp->processEvents();
     emit onDataChanged();
 }
 
@@ -161,9 +163,7 @@ void ImageViewerWidget::loadFromData(const uchar *data, int w, int h)
     for (int j=0;j<h;j++)
         memcpy(image->scanLine(j), data+(j*w), sizeof(uchar) * w);
 
-    magnView->setImage(image);
-
-    emit onDataChanged();
+    dataChanged();
 }
 
 void ImageViewerWidget::zoomIn()

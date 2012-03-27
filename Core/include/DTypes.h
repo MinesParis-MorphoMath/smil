@@ -38,9 +38,9 @@
 #endif // SMIL_WRAP_BIN
 
 
-#ifdef SMIL_WRAP_Bit
+// #ifdef SMIL_WRAP_Bit
 #include "DBitArray.h"
-#endif // SMIL_WRAP_Bit
+// #endif // SMIL_WRAP_Bit
 
 
 template <>
