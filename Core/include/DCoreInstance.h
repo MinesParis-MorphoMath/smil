@@ -57,7 +57,12 @@ public:
   void unregisterObject(baseObject *obj);
   
   vector<baseObject*> getRegisteredObjects() { return registeredObjects; }
+
+protected:
+  void deleteRegisteredObjects();
+
   
+public:
   static coreInstance *getInstance ()
   {
     if (NULL == _singleton)
@@ -79,7 +84,7 @@ public:
       return;
     
 //       std::cout << "Bye" << std::endl;
-    
+      _singleton->deleteRegisteredObjects();
       delete _singleton;
       _singleton = NULL;
     
