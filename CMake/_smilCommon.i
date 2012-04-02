@@ -50,3 +50,6 @@
 ${SWIG_TEMPLATE_WRAP_DEFINITIONS}
 
 
+// CMAke generated includes
+
+${SWIG_COMMON_INCLUDES}
