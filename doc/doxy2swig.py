@@ -43,11 +43,14 @@ def my_open_read(source):
     else:
         return open(source)
 
-def my_open_write(dest):
+def my_open_write(dest, append=False):
     if hasattr(dest, "write"):
         return dest
     else:
-        return open(dest, 'w')
+	if append:
+	  return open(dest, 'a')
+	else:
+	  return open(dest, 'w')
 
 
 class Doxy2SWIG:    
@@ -58,7 +61,7 @@ class Doxy2SWIG:
 
     """    
     
-    def __init__(self, src, include_function_definition=True, quiet=False):
+    def __init__(self, src, include_function_definition=True, quiet=False, append=False):
         """Initialize the instance given a source object.  `src` can
         be a file or filename.  If you do not want to include function
         definitions from doxygen then set
@@ -92,6 +95,7 @@ class Doxy2SWIG:
             self.ignores.append('argsstring')
 
         self.quiet = quiet
+        self.append = append
             
         
     def generate(self):
@@ -377,7 +381,7 @@ class Doxy2SWIG:
             self.pieces.extend(self.clean_pieces(p.pieces))
 
     def write(self, fname):
-        o = my_open_write(fname)
+        o = my_open_write(fname, self.append)
         if self.multi:
             o.write("".join(self.pieces))
         else:
@@ -420,8 +424,8 @@ class Doxy2SWIG:
         return ret
 
 
-def convert(input, output, include_function_definition=True, quiet=False):
-    p = Doxy2SWIG(input, include_function_definition, quiet)
+def convert(input, output, include_function_definition=True, quiet=False, append=False):
+    p = Doxy2SWIG(input, include_function_definition, quiet, append)
     p.generate()
     p.write(output)
 
@@ -438,12 +442,16 @@ def main():
                       default=False,
                       dest='quiet',
                       help='be quiet and minimise output')
+    parser.add_option("-a", '--append',
+                      action='store_true',
+                      default=False,
+                      dest='append',
+                      help='append to output file')
     
     options, args = parser.parse_args()
-    if len(args) != 2:
+    if len(args) < 2:
         parser.error("error: no input and output specified")
-
-    convert(args[0], args[1], not options.func_def, options.quiet)
+    convert(args[0], args[1], not options.func_def, options.quiet, options.append)
     
 
 if __name__ == '__main__':
