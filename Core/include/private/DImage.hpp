@@ -199,6 +199,7 @@ public:
     operator bool() { return vol(*this)==numeric_limits<T>::max()*pixelCount; }
     
     Image<T>& operator << (const lineType tab);
+    Image<T>& operator << (vector<T> vect);
     
     Image<T>& operator << (const char *s);
     Image<T>& operator >> (const char *s);

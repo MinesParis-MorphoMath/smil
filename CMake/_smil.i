@@ -34,6 +34,10 @@
 %module smilJava
 #endif // SWIGJAVA
 
+#ifdef SWIGOCTAVE
+%module smilOctave
+#endif // SWIGOCTAVE
+
 
 %feature("autodoc", "1");
 

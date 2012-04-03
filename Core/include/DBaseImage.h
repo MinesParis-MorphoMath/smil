@@ -39,9 +39,8 @@ class _SMIL baseImage : public baseObject
 public:
     baseImage()
       :	width(0), height(0), depth(0),
-	allocated(false)
+	allocated(false), baseObject("baseImage")
     {
-	className = "baseImage";
     }
       
     inline UINT getWidth() const {

@@ -114,7 +114,7 @@ RES_T copy(Image<T> &imIn, Image<T> &imOut)
  * \param imIn Input image.
  * \param imOut Output image.
  *
- * \sa Image::operator<<
+ * \sa Image::operator~
  */
 template <class T>
 RES_T inv(Image<T> &imIn, Image<T> &imOut)

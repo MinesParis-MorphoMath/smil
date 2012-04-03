@@ -48,6 +48,11 @@ public:
     {
 	coreInstance::getInstance()->registerObject(this);
     }
+    baseObject(const char *name)
+      :	className(name)
+    {
+	coreInstance::getInstance()->registerObject(this);
+    }
     ~baseObject() 
     {
 	coreInstance::getInstance()->unregisterObject(this);

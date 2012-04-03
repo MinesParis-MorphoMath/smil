@@ -33,11 +33,18 @@
 %module smilCoreJava
 #endif // SWIGJAVA
 
+#ifdef SWIGOCTAVE
+%module smilCoreOctave
+#endif // SWIGOCTAVE
+
 %include smilCommon.i
 
 %{
 /* Includes the header in the wrapper code */
 #include "DCommon.h"
+#include "DEvent.h"
+#include "DEventHandler.h"
+#include "DEventReceptor.h"
 #include "DImage.h"
 #include "DTypes.hpp"
 #include "DBaseObject.h"
@@ -54,7 +61,9 @@
 %}
  
 
-
+%include "DEvent.h"
+%include "DEventHandler.h"
+%include "DEventReceptor.h"
 
 
 %extend Image 
@@ -115,10 +124,9 @@ PTR_ARG_OUT_APPLY(d)
 
 
 
-%template(UINTVector) vector<UINT>;
-%template(INTVector) vector<INT>;
 %template(objVector) vector<baseObject*>;
 
+TEMPLATE_WRAP_CLASS(vector);
 TEMPLATE_WRAP_CLASS(Image);
 
 TEMPLATE_WRAP_FUNC(createImage);

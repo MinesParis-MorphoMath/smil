@@ -663,6 +663,16 @@ Image<T>& Image<T>::operator << (lineType tab)
     modified();
 }
 
+template <class T>
+Image<T>& Image<T>::operator << (vector<T> vect)
+{
+    typename vector<T>::iterator it = vect.begin();
+    typename vector<T>::iterator it_end = vect.end();
+    
+    for (int i=0;i<pixelCount, it!=it_end;i++, it++)
+      pixels[i] = *it;
+    modified();
+}
 
 
 #endif // _IMAGE_HXX

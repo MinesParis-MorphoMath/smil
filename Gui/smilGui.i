@@ -33,6 +33,10 @@
 %module smilGuiJava
 #endif // SWIGJAVA
 
+#ifdef SWIGOCTAVE
+%module smilGuiOctave
+#endif // SWIGOCTAVE
+
 
 %include smilCommon.i
 

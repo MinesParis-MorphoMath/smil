@@ -174,55 +174,80 @@ struct infLine : public binaryLineFunctionBase<T>
 template <class T>
 struct grtLine : public binaryLineFunctionBase<T>
 {
+    grtLine() 
+      : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+      
+    T trueVal, falseVal;
+      
     typedef typename Image<T>::lineType lineType;
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] > lIn2[i] ? numeric_limits<T>::max() : 0;
+            lOut[i] = lIn1[i] > lIn2[i] ? trueVal : falseVal;
     }
 };
 
 template <class T>
 struct grtOrEquLine : public binaryLineFunctionBase<T>
 {
+    grtOrEquLine() 
+      : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+      
+    T trueVal, falseVal;
+      
     typedef typename Image<T>::lineType lineType;
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] >= lIn2[i] ? numeric_limits<T>::max() : 0;
+            lOut[i] = lIn1[i] >= lIn2[i] ? trueVal : falseVal;
     }
 };
 
 template <class T>
 struct lowLine : public binaryLineFunctionBase<T>
 {
+    lowLine() 
+      : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+      
+    T trueVal, falseVal;
+      
     typedef typename Image<T>::lineType lineType;
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] < lIn2[i] ? numeric_limits<T>::max() : 0;
+            lOut[i] = lIn1[i] < lIn2[i] ? trueVal : falseVal;
     }
 };
 
 template <class T>
 struct lowOrEquLine : public binaryLineFunctionBase<T>
 {
+    lowOrEquLine() 
+      : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+      
+    T trueVal, falseVal;
+      
     typedef typename Image<T>::lineType lineType;
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] <= lIn2[i] ? numeric_limits<T>::max() : 0;
+            lOut[i] = lIn1[i] <= lIn2[i] ? trueVal : falseVal;
     }
 };
 
 template <class T>
 struct equLine : public binaryLineFunctionBase<T>
 {
+    equLine() 
+      : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+      
+    T trueVal, falseVal;
+      
     typedef typename Image<T>::lineType lineType;
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] == lIn2[i] ? numeric_limits<T>::max() : 0;
+            lOut[i] = lIn1[i] == lIn2[i] ? trueVal : falseVal;
     }
 };
 
