@@ -111,6 +111,7 @@ template <class T>
 void Image<T>::modified()
 { 
     updateViewerData();
+    getCoreInstance()->processEvents();
 }
 
 

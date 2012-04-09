@@ -2,14 +2,15 @@
 import sys
 import time
 
-from smilPython import *
 
 from threading import Thread
 
 
+sys.path.append(".")
 sys.path.append("/home/faessel/src/ivp/faessel/")
 sys.path.append("/home/mat/src/ivp/faessel/")
 
+from smilPython import *
 import mamba as mb
 
 
@@ -214,3 +215,5 @@ im1.show()
 im2 = Image(im1)
 im2.show()
 enhanceContrast(im1, im2)
+
+#coreInstance.getInstance()._exec()

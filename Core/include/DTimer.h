@@ -27,20 +27,36 @@
  */
 
 
- 
-#ifndef _D_GUI_H
-#define _D_GUI_H
+#ifndef _DTIMER_H
+#define _DTIMER_H
 
-/**
- * \defgroup Gui Gui
- */
-/*@{*/
-
-#include "DImage.hpp"
-#include "DImageViewer.h"
-#include "Qt/QtApp.h"
+#include <iostream>
+#include <pthread.h>
 
 
-/*@}*/
+class timer
+{
+public:
+  timer()
+    : running(false)
+  {
+     
+  }
+  ~timer()
+  {
+      running = false;
+      end();
+  }
+  void start();
+  void stop();
+protected:
+  bool running;
+  pthread_t thread;
+  void end()
+  {
+        pthread_join(thread, NULL);
+  }
+};
 
-#endif // _D_GUI_H
+#endif // _DTIMER_H
+

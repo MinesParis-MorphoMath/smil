@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
 #ifdef BUILD_GUI
 //     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
-    coreInstance::getInstance();
+//     coreInstance::getInstance();
 //     QtApp qapp;
 
 //      int c;

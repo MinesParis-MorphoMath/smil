@@ -32,6 +32,10 @@
 
 #include <QApplication>
 #include <QThread>
+#include <QTimer>
+#include <iostream>
+
+using namespace std;
 
 class Thread : public QThread
 {
@@ -44,16 +48,16 @@ void run()
 	cout << "created" << endl;
 	  int ac = 1;
 	  char **av = NULL;
-	  qapp = new QApplication(ac, av, true);
+	  _qapp = new QApplication(ac, av, true);
       }
 //     while(true)
 //     {
 //       usleep(100000); 
-      qApp->exec();
+      qApp->processEvents();
 //     }
 }
 private:
-  QApplication *qapp;
+  QApplication *_qapp;
     QApplication *qa;
 };
 
@@ -61,22 +65,54 @@ class QtApp
 {
 public:
   QtApp()
+    : _qapp(NULL)
   {
-//       if (!qApp)
-//       {
-// 	cout << "created" << endl;
-// 	  int ac = 1;
-// 	  char **av = NULL;
-// 	  qapp = new QApplication(ac, av, true);
-//       }
-//       else qapp = qApp;
-      th = new Thread(qapp);
-      th->start();
+      if (!qApp)
+      {
+	cout << "QtApp: qt app created" << endl;
+	  int ac = 1;
+	  char **av = NULL;
+	  _qapp = new QApplication(ac, av);
+      }
+//       else _qapp = qApp;
+//       th = new Thread(_qapp);
+//       th->start();
   }
-  void start() { th->start(); }
-  void _exe() { qApp->exec(); }
-  QApplication *qapp;
-  Thread *th;
+//   void start() { th->start(); }
+  void exec() { if (_qapp) _qapp->exec(); }
+  void processEvents() { if (_qapp) _qapp->processEvents(); }
+  QApplication *_qapp;
+//   Thread *th;
+  QTimer *timer;
+};
+
+
+class appTimer : public QObject
+{
+  Q_OBJECT
+public:
+  appTimer()
+  {
+      timer = new QTimer(this);
+      QObject::connect( timer, SIGNAL(timeout()), this, SLOT(upd()) );
+  }
+  ~appTimer()
+  {
+      delete timer;
+  }
+  void start()
+  {
+      timer->start(1000);
+  }
+private slots:
+  void upd()
+  {
+      qApp->processEvents();
+      cout << "ok" << endl;
+  }
+protected:
+  QTimer *timer;
+  
 };
 
 #endif // QT_APP_H

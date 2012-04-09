@@ -33,21 +33,23 @@
 #include <iostream>
 #include <algorithm>
 
-#include <QApplication>
+// #include "DGui.h"
+#include "Qt/QtApp.h"
 
 #include "DCommon.h"
+#include <qtimer.h>
+#include "DTimer.h"
 
 class baseObject;
 
 struct stat;
 
-class coreInstance
+class guiInstance
 {
-private:
-  coreInstance ()
-    : _value (0), keepAlive(false), _qapp(NULL)
-    { 
-	cout << "core created" << endl;
+public:
+  guiInstance()
+    : _qapp(NULL)
+  {
 	if (!qApp)
 	{
 	    cout << "core qt created" << endl;
@@ -55,6 +57,36 @@ private:
 	    char **av = NULL;
 	    _qapp = new QApplication(ac, av);
 	}
+	_timer = new timer();
+	_timer->start();
+  }
+  ~guiInstance()
+  {
+      delete _timer;
+  }
+  void exec() 
+  { 
+      if (_qapp)
+	_qapp->exec(); 
+  }
+  void processEvents() 
+  { 
+      if (_qapp)
+	_qapp->processEvents(); 
+  }
+protected:
+  QApplication *_qapp;
+  timer *_timer;
+};
+
+class coreInstance
+{
+private:
+  coreInstance ()
+    : _value (0), keepAlive(false)
+    { 
+	cout << "core created" << endl;
+	guiInst = new guiInstance();
       
     }
   ~coreInstance () 
@@ -76,18 +108,17 @@ public:
   
   void exec() 
   { 
-      if (_qapp)
-	_qapp->exec(); 
+      guiInst->exec();
   }
   void processEvents() 
   { 
-      if (_qapp)
-	_qapp->processEvents(); 
+      guiInst->processEvents();
   }
 
 protected:
   void deleteRegisteredObjects();
-  QApplication *_qapp;
+//   QApplication *_qapp;
+  guiInstance *guiInst;
 
   
 public:

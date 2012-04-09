@@ -152,7 +152,7 @@ void ImageViewerWidget::dataChanged()
 {
     magnView->setImage(image);
     repaint();
-    qApp->processEvents();
+//     qApp->processEvents();
     emit onDataChanged();
 }
 
