@@ -58,8 +58,10 @@
 int main(int argc, char *argv[])
 {
 #ifdef BUILD_GUI
-    QApplication qapp(argc, argv);
+//     QApplication qapp(argc, argv);
 #endif // BUILD_GUI
+    coreInstance::getInstance();
+//     QtApp qapp;
 
 //      int c;
     Image_UINT8 im1(10,10);
@@ -68,11 +70,16 @@ int main(int argc, char *argv[])
 
     im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
 
+//     if (QCoreApplication::instance())
+//       qApp->processEvents();
     im1.show();
     im1.modified();
     
+    
+    coreInstance::getInstance()->exec();
+    
 #ifdef BUILD_GUI
-    qapp.exec();
+//     qApp->exec();
 #endif // BUILD_GUI
 }
 

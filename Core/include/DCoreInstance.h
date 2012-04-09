@@ -33,6 +33,8 @@
 #include <iostream>
 #include <algorithm>
 
+#include <QApplication>
+
 #include "DCommon.h"
 
 class baseObject;
@@ -43,8 +45,22 @@ class coreInstance
 {
 private:
   coreInstance ()
-    : _value (0), keepAlive(false) { }
-  ~coreInstance () { }
+    : _value (0), keepAlive(false), _qapp(NULL)
+    { 
+	cout << "core created" << endl;
+	if (!qApp)
+	{
+	    cout << "core qt created" << endl;
+	    int ac = 1;
+	    char **av = NULL;
+	    _qapp = new QApplication(ac, av);
+	}
+      
+    }
+  ~coreInstance () 
+  {
+	cout << "core destroyed" << endl;
+  }
 
 public:
   // Public interface
@@ -57,9 +73,21 @@ public:
   void unregisterObject(baseObject *obj);
   
   vector<baseObject*> getRegisteredObjects() { return registeredObjects; }
+  
+  void exec() 
+  { 
+      if (_qapp)
+	_qapp->exec(); 
+  }
+  void processEvents() 
+  { 
+      if (_qapp)
+	_qapp->processEvents(); 
+  }
 
 protected:
   void deleteRegisteredObjects();
+  QApplication *_qapp;
 
   
 public:

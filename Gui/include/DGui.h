@@ -38,7 +38,6 @@
 
 #include "DImage.hpp"
 #include "DImageViewer.h"
-#include "Qt/QtApp.h"
 
 
 

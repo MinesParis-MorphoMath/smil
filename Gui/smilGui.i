@@ -55,13 +55,6 @@
 %pythoncode %{
 
 
-if ('qApp' in locals())==0:
-  import sys
-  try:
-    from PyQt4 import QtGui
-    qApp = QtGui.QApplication(sys.argv)
-  except:
-    qApp = None
 
 %}
 #endif // SWIGPYTHON
