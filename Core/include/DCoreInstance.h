@@ -58,6 +58,7 @@ public:
 	    _qapp = new QApplication(ac, av);
 	}
 	_timer = new timer();
+	_timer->app = _qapp;
 	_timer->start();
   }
   ~guiInstance()

@@ -1,30 +1,32 @@
 
 #include "DTimer.h"
 #include <iostream>
+#include <QApplication>
 
 using namespace std;
 
-bool timerRunning;
 
-void * fun (void * args) {
-      while(timerRunning)
+void * fun (void * _timer) {
+      timer *t = (timer*)_timer;
+      while(t->running)
       {
 	  sleep(1);
-	  cout << "ok" << endl;
+	  t->app->processEvents();
       }
 }
 
 
 void timer::start()
 {
-    timerRunning = true;
+    running = true;
     pthread_attr_t thread_attr;
+    pthread_attr_init(&thread_attr);
     if (pthread_attr_setdetachstate (&thread_attr, PTHREAD_CREATE_DETACHED) != 0)
       cout << "err" << endl;
-    pthread_create (&thread, &thread_attr, &fun, NULL);
+    pthread_create (&thread, &thread_attr, &fun, this);
     end();
 }
 void timer::stop()
 {
-    timerRunning = false;
+    running = false;
 }

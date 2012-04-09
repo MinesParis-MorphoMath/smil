@@ -32,6 +32,7 @@
 
 #include <iostream>
 #include <pthread.h>
+#include <QApplication>
 
 
 class timer
@@ -40,7 +41,6 @@ public:
   timer()
     : running(false)
   {
-     
   }
   ~timer()
   {
@@ -49,8 +49,9 @@ public:
   }
   void start();
   void stop();
-protected:
   bool running;
+  QApplication *app;
+protected:
   pthread_t thread;
   void end()
   {
