@@ -61,7 +61,6 @@ if ('qApp' in locals())==0:
     from PyQt4 import QtGui
     qApp = QtGui.QApplication(sys.argv)
   except:
-    print "Warning: no Qt application created !"
     qApp = None
 
 %}
