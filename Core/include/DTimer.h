@@ -34,6 +34,8 @@
 #include <pthread.h>
 #include <QApplication>
 
+#include <unistd.h>
+
 
 class timer
 {
@@ -55,7 +57,7 @@ protected:
   pthread_t thread;
   void end()
   {
-        pthread_join(thread, NULL);
+//         pthread_join(thread, NULL);
   }
 };
 

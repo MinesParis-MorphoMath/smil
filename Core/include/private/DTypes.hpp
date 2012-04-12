@@ -46,7 +46,7 @@ typedef uint64_t UINT64;
 // typedef unsigned char __attribute__ ((vector_size (16))) alUINT8;
 
 #ifndef _MSC_VER
-typedef char INT8;
+typedef signed char INT8;
 #endif // _MSC_VER
 typedef short INT16;
 typedef int INT32;
