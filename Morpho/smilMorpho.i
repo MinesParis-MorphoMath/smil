@@ -47,6 +47,7 @@
 #include "DMorphoBase.hpp"
 #include "DMorphoGeodesic.hpp"
 #include "DMorphoExtrema.hpp"
+#include "DMorphoArrow.hpp"
 %}
  
 
@@ -69,6 +70,7 @@
 %include "DMorphoBase.hpp"
 %include "DMorphoGeodesic.hpp"
 %include "DMorphoExtrema.hpp"
+%include "DMorphoArrow.hpp"
 
 //TEMPLATE_WRAP_FUNC(label);
 
@@ -91,3 +93,7 @@ TEMPLATE_WRAP_FUNC(hMinima);
 TEMPLATE_WRAP_FUNC(hMaxima);
 TEMPLATE_WRAP_FUNC(minima);
 TEMPLATE_WRAP_FUNC(maxima);
+
+TEMPLATE_WRAP_FUNC(arrowGrt);
+TEMPLATE_WRAP_FUNC(arrowGrtOrEqu);
+TEMPLATE_WRAP_FUNC(arrowEqu);

@@ -37,7 +37,7 @@ coreInstance *coreInstance::_singleton = NULL;
 void coreInstance::registerObject(baseObject *obj)
 {
     registeredObjects.push_back(obj);
-    cout << obj->getClassName() << " created." << endl;
+//     cout << obj->getClassName() << " created." << endl;
 }
 
 void coreInstance::unregisterObject(baseObject *obj)
@@ -45,7 +45,7 @@ void coreInstance::unregisterObject(baseObject *obj)
     std::vector<baseObject*>::iterator newEnd = std::remove(registeredObjects.begin(), registeredObjects.end(), obj);
 
     registeredObjects.erase(newEnd, registeredObjects.end());
-    cout << obj->getClassName() << " deleted." << endl;
+//     cout << obj->getClassName() << " deleted." << endl;
     
     if (!keepAlive && registeredObjects.size()==0)
 	kill();

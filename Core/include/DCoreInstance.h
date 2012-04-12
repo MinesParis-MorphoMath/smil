@@ -52,7 +52,7 @@ public:
   {
 	if (!qApp)
 	{
-	    cout << "core qt created" << endl;
+// 	    cout << "core qt created" << endl;
 	    int ac = 1;
 	    char **av = NULL;
 	    _qapp = new QApplication(ac, av);
@@ -86,13 +86,13 @@ private:
   coreInstance ()
     : _value (0), keepAlive(false)
     { 
-	cout << "core created" << endl;
+// 	cout << "core created" << endl;
 	guiInst = new guiInstance();
       
     }
   ~coreInstance () 
   {
-	cout << "core destroyed" << endl;
+// 	cout << "core destroyed" << endl;
   }
 
 public:

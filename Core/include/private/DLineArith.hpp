@@ -188,6 +188,22 @@ struct grtLine : public binaryLineFunctionBase<T>
 };
 
 template <class T>
+struct grtSupLine : public binaryLineFunctionBase<T>
+{
+    grtSupLine() 
+      : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+      
+    T trueVal, falseVal;
+      
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
+    {
+        for (int i=0;i<size;i++)
+            lOut[i] |= lIn1[i] > lIn2[i] ? trueVal : falseVal;
+    }
+};
+
+template <class T>
 struct grtOrEquLine : public binaryLineFunctionBase<T>
 {
     grtOrEquLine() 
@@ -200,6 +216,22 @@ struct grtOrEquLine : public binaryLineFunctionBase<T>
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] >= lIn2[i] ? trueVal : falseVal;
+    }
+};
+
+template <class T>
+struct grtOrEquSupLine : public binaryLineFunctionBase<T>
+{
+    grtOrEquSupLine() 
+      : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+      
+    T trueVal, falseVal;
+      
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
+    {
+        for (int i=0;i<size;i++)
+            lOut[i] |= lIn1[i] >= lIn2[i] ? trueVal : falseVal;
     }
 };
 
@@ -248,6 +280,22 @@ struct equLine : public binaryLineFunctionBase<T>
     {
         for (int i=0;i<size;i++)
             lOut[i] = lIn1[i] == lIn2[i] ? trueVal : falseVal;
+    }
+};
+
+template <class T>
+struct equSupLine : public binaryLineFunctionBase<T>
+{
+    equSupLine() 
+      : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+      
+    T trueVal, falseVal;
+      
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
+    {
+        for (int i=0;i<size;i++)
+            lOut[i] |= lIn1[i] == lIn2[i] ? trueVal : falseVal;
     }
 };
 

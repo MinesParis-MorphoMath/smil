@@ -37,7 +37,7 @@
 // Extrema
 
 template <class T>
-inline RES_T hMinima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T hMinima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -64,7 +64,7 @@ inline RES_T hMinima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAUL
 }
 
 template <class T>
-inline RES_T hMaxima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T hMaxima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -91,13 +91,13 @@ inline RES_T hMaxima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAUL
 }
 
 template <class T>
-inline RES_T minima(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T minima(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     return hMinima(imIn, T(1), imOut, se);
 }
 
 template <class T>
-inline RES_T maxima(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T maxima(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     return hMaxima(imIn, T(1), imOut, se);
 }

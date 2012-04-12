@@ -46,13 +46,15 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     typedef typename imageType::volType volType;
     
     unaryMorphImageFunction(T border=numeric_limits<T>::min()) 
-      : borderValue(border) {}
+      : borderValue(border) 
+    {
+    }
     
-    inline RES_T _exec(imageType &imIn, imageType &imOut, StrElt se);
+    virtual RES_T _exec(imageType &imIn, imageType &imOut, StrElt &se);
     
-    inline RES_T _exec_single(imageType &imIn, imageType &imOut, StrElt se);
-    inline RES_T _exec_single_generic(imageType &imIn, imageType &imOut, StrElt se);
-    inline RES_T _exec_single_hexSE(imageType &imIn, imageType &imOut);
+    virtual RES_T _exec_single(imageType &imIn, imageType &imOut, StrElt &se);
+    virtual RES_T _exec_single_generic(imageType &imIn, imageType &imOut, StrElt &se);
+    virtual RES_T _exec_single_hexSE(imageType &imIn, imageType &imOut);
     
     inline RES_T operator()(imageType &imIn, imageType &imOut, StrElt se) { return this->_exec(imIn, imOut, se); }
 
@@ -70,7 +72,7 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
 
 
 template <class T, class lineFunction_T>
-inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imOut, StrElt se)
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imOut, StrElt &se)
 {
     lineLen = imIn.getWidth();
     borderBuf = ImDtTypes<T>::createLine(lineLen);
@@ -98,7 +100,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, 
 }
 
 template <class T, class lineFunction_T>
-inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(imageType &imIn, imageType &imOut, StrElt se)
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(imageType &imIn, imageType &imOut, StrElt &se)
 {
     seType st = se.getType();
     
@@ -109,14 +111,8 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(imageType 
       case stHexSE:
 	return _exec_single_hexSE(imIn, imOut);
     }
-	return RES_NOT_IMPLEMENTED;
-}
-
-void printLine(UINT8 *buf, int size)
-{
-  for (int i=0;i<size;i++)
-    cout << (int)(*(buf+i)) << " ";
-  cout << endl;
+    
+    return RES_NOT_IMPLEMENTED;
 }
 
 template <class T, class lineFunction_T>
@@ -147,7 +143,7 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(lineType inBu
 
 
 template <class T, class lineFunction_T>
-inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(imageType &imIn, imageType &imOut, StrElt se)
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(imageType &imIn, imageType &imOut, StrElt &se)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
@@ -222,7 +218,7 @@ inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(im
 
 
 template <class T, class lineFunction_T>
-inline RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imageType &imIn, imageType &imOut)
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imageType &imIn, imageType &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;

@@ -27,59 +27,28 @@
  */
 
 
-#include <stdio.h>
-#include <time.h>
-
-//#include <boost/signal.hpp>
-//#include <boost/bind.hpp>
-
 #include "DCore.h"
-// #include "DImage.hxx"
-// #include "DImageArith.hpp"
-// #include "DImageIO.h"
-// #include "DImageIO_PNG.h"
 
-#ifdef BUILD_GUI
-#include <QApplication>
-#include "DGui.h"
-#endif // BUILD_GUI
-
-
-#define bench(func, args) \
-      t1 = clock(); \
-      for (int i=0;i<nRuns;i++) \
-	func args; \
-        cout << #func << ": " << 1E3 * double(clock() - t1) / CLOCKS_PER_SEC / nRuns << " ms" << endl;
-
-
-
+#include "DMorphoArrow.hpp"
 
 
 int main(int argc, char *argv[])
 {
-#ifdef BUILD_GUI
-//     QApplication qapp(argc, argv);
-#endif // BUILD_GUI
-//     coreInstance::getInstance();
-//     QtApp qapp;
-
-//      int c;
-    Image_UINT8 im1(10,10);
-    Image_UINT8 im2;
-    Image_UINT8 im3;
-
+    Image_UINT8 im1;
     im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
 
-//     if (QCoreApplication::instance())
-//       qApp->processEvents();
+    Image_UINT8 im2(im1);
+    im2 << UINT8(0);
+    Image_UINT8 im3(im1);
+    
+    arrowGrt(im1, im2, sSE());
+    
     im1.show();
+    im2.show();
     im1.modified();
     
     
     coreInstance::getInstance()->exec();
     
-#ifdef BUILD_GUI
-//     qApp->exec();
-#endif // BUILD_GUI
 }
 

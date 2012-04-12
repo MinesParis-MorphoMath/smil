@@ -82,6 +82,17 @@ inline void operator << (ostream &os, StrElt &se)
     se.printSelf(os);
 }
 
+/**
+ * Hexagonal structuring element.
+ * 
+ * Points :
+ * 
+ * 3 2
+ * 4 0 1
+ * 5 6
+ * 
+ */
+
 class hSE : public StrElt
 {
   public:
@@ -92,13 +103,25 @@ class hSE : public StrElt
 	odd = true;
 	addPoint(0,0);
 	addPoint(1,0);
-	addPoint(-1,0);
-	addPoint(-1,1);
 	addPoint(0,1);
+	addPoint(-1,1);
+	addPoint(-1,0);
 	addPoint(-1,-1);
 	addPoint(0,-1);
     }
 };
+
+
+/**
+ * Square structuring element.
+ * 
+ * Points :
+ * 
+ * 4 3 2
+ * 5 0 1
+ * 6 7 8
+ * 
+ */
 
 class sSE : public StrElt
 {
@@ -107,15 +130,15 @@ class sSE : public StrElt
     {
 // 	seT = stSquSE;
 	odd = false;
-	addPoint(0,0);
-	addPoint(1,0);
-	addPoint(1,1);
-	addPoint(0,1);
-	addPoint(-1,1);
-	addPoint(-1,0);
-	addPoint(-1,-1);
-	addPoint(0,-1);
-	addPoint(1,-1);
+	addPoint(0,0); 	// 0
+	addPoint(1,0);	// 1
+	addPoint(1,1);	// 2
+	addPoint(0,1);	// 3
+	addPoint(-1,1);	// 4
+	addPoint(-1,0);	// 5
+	addPoint(-1,-1);// 6
+	addPoint(0,-1);	// 7
+	addPoint(1,-1);	// 8
     }
 };
 
