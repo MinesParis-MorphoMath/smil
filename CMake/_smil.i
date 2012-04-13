@@ -104,6 +104,10 @@ for t in imageTypes:
     t.show = show_with_name
 #    t.__del__ = deleteImage
 
+print "SMIL (Simple Morphological Image Library)"
+print "Copyright (c) 2011, Matthieu FAESSEL and ARMINES"
+print "All rights reserved."
+
 %}
 
 #endif // SWIGPYTHON
