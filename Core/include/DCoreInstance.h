@@ -132,13 +132,13 @@ protected:
 
   
 public:
-  static core &getInstance ()
+  static core *getInstance ()
   {
-//     if (NULL == _singleton)
-//       {
-// //         std::cout << "creating singleton." << std::endl;
-//         _singleton =  new core;
-//       }
+    if (_singleton == NULL)
+      {
+//         std::cout << "creating singleton." << std::endl;
+        _singleton =  new core;
+      }
 //     else
 //       {
 // //         std::cout << "singleton already created!" << std::endl;
@@ -166,7 +166,7 @@ private:
   // Variables membres
   int _value;
   vector<baseObject*> registeredObjects;
-  static core _singleton;
+  static core *_singleton;
 };
 
 

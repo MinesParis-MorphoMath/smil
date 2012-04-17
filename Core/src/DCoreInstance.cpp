@@ -32,7 +32,8 @@
 #include "DCoreInstance.h"
 
 // Initialization of singleton to NULL
-core core::_singleton;
+// core core::_singleton;
+core *core::_singleton = NULL;
 
 void core::registerObject(baseObject *obj)
 {

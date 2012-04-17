@@ -48,7 +48,7 @@ public:
 
     ~baseObject() ;
     
-    core &getCoreInstance();
+    core *getCoreInstance();
     typedef void parentClass;
     virtual string getInfoString(string indent = "") {}
     virtual void printSelf(ostream &os=std::cout) {}

@@ -34,21 +34,21 @@
 baseObject::baseObject()
   :	className("baseObject")
 {
-    core::getInstance().registerObject(this);
+    core::getInstance()->registerObject(this);
 }
 
 baseObject::baseObject(const char *name)
   :	className(name)
 {
-    core::getInstance().registerObject(this);
+    core::getInstance()->registerObject(this);
 }
 
 baseObject::~baseObject() 
 {
-    core::getInstance().unregisterObject(this);
+    core::getInstance()->unregisterObject(this);
 }
 
-core &baseObject::getCoreInstance() 
+core *baseObject::getCoreInstance() 
 { 
     return core::getInstance(); 
 }

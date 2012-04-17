@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     im1.modified();
     
 //     core::getInstance()->kill();
-    core::getInstance().execLoop();
+    core::getInstance()->execLoop();
     
 }
 
