@@ -32,8 +32,7 @@
 
 #include "DBaseObject.h"
 
-
-class event : public baseObject 
+class event : public baseObject
 {
   public:
     event();

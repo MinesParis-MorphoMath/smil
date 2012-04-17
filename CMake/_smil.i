@@ -107,6 +107,7 @@ for t in imageTypes:
 print "SMIL (Simple Morphological Image Library)"
 print "Copyright (c) 2011, Matthieu FAESSEL and ARMINES"
 print "All rights reserved."
+print ""
 
 %}
 

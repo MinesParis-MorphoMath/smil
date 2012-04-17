@@ -97,7 +97,7 @@ RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single_generic(imag
 	srcLines = srcSlices[s];
 	destLines = destSlices[s];
 	if (oddSe)
-	  oddLine = s%2!=0;
+	  oddLine = (s%2!=0 && oddSe);
 	
 	for (int l=0;l<nLines;l++)
 	{
@@ -106,16 +106,15 @@ RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single_generic(imag
 	    
 	    fillLine<T>(lineOut, parentClass::lineLen, 0);
 	    
-	    // We start at p=1 because the first point is supposed to be (0,0,0).
-	    for (int p=1;p<sePtsNumber;p++)
+	    for (int p=0;p<sePtsNumber;p++)
 	    {
-		x = se.points[p].x + (oddLine && oddSe);
-		y = l + se.points[p].y;
-		z = s + se.points[p].z;
+		x = - se.points[p].x + oddLine;
+		y = l - se.points[p].y;
+		z = s - se.points[p].z;
 		
-		parentClass::lineFunction.trueVal = (1UL << (p-1));
+		parentClass::lineFunction.trueVal = (1UL << p);
 		
-		_exec_line(lineIn, tmpIm, x, y, z, lineOut);   
+		this->_exec_line(lineIn, tmpIm, x, y, z, lineOut);   
 	    }
 	    if (oddSe)
 	      oddLine = !oddLine;
@@ -133,7 +132,20 @@ RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single_generic(imag
 }
 
 
-// 
+template <class T>
+RES_T arrowLow(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+{
+    unaryMorphArrowImageFunction<T, lowSupLine<T> > iFunc(numeric_limits<T>::min());
+    return iFunc(imIn, imOut, se);
+}
+
+template <class T>
+RES_T arrowLowOrEqu(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+{
+    unaryMorphArrowImageFunction<T, lowOrEquSupLine<T> > iFunc(numeric_limits<T>::min());
+    return iFunc(imIn, imOut, se);
+}
+
 template <class T>
 RES_T arrowGrt(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
@@ -153,6 +165,23 @@ RES_T arrowEqu(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     unaryMorphArrowImageFunction<T, equSupLine<T> > iFunc(numeric_limits<T>::min());
     return iFunc(imIn, imOut, se);
+}
+
+template <class T>
+RES_T arrow(Image<T> &imIn, const char *operation, Image<T> &imOut, StrElt se=DEFAULT_SE())
+{
+    if (strcmp(operation, "==")==0)
+      return arrowEqu(imIn, imOut, se);
+    else if (strcmp(operation, ">")==0)
+      return arrowGrt(imIn, imOut, se);
+    else if (strcmp(operation, ">=")==0)
+      return arrowGrtOrEqu(imIn, imOut, se);
+    else if (strcmp(operation, "<")==0)
+      return arrowLow(imIn, imOut, se);
+    else if (strcmp(operation, "<=")==0)
+      return arrowLowOrEqu(imIn, imOut, se);
+      
+    else return RES_ERR;
 }
 
 

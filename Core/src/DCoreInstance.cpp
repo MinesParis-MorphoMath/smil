@@ -32,15 +32,15 @@
 #include "DCoreInstance.h"
 
 // Initialization of singleton to NULL
-coreInstance *coreInstance::_singleton = NULL;
+core core::_singleton;
 
-void coreInstance::registerObject(baseObject *obj)
+void core::registerObject(baseObject *obj)
 {
     registeredObjects.push_back(obj);
 //     cout << obj->getClassName() << " created." << endl;
 }
 
-void coreInstance::unregisterObject(baseObject *obj)
+void core::unregisterObject(baseObject *obj)
 {
     std::vector<baseObject*>::iterator newEnd = std::remove(registeredObjects.begin(), registeredObjects.end(), obj);
 
@@ -51,13 +51,15 @@ void coreInstance::unregisterObject(baseObject *obj)
 	kill();
 }
 
-void coreInstance::deleteRegisteredObjects()
+void core::deleteRegisteredObjects()
 {
     baseObject *obj;
+    vector<baseObject*>::iterator it = registeredObjects.begin();
     
-    for (int i=0;i<registeredObjects.size();i++)
+    while (it!=registeredObjects.end())
     {
-	obj = registeredObjects.back();
+	obj = *it++;
 	delete obj;
     }
 }
+

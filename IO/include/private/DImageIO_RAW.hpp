@@ -41,7 +41,7 @@
 using namespace std;
 
 template <class T>
-RES_T readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T> *image)
+RES_T readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T> &image)
 {
     FILE *fp = NULL;
 
@@ -54,10 +54,10 @@ RES_T readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T
     }
 
 
-    image->setSize(width, height, depth);
+    image.setSize(width, height, depth);
 //   image->allocate();
 
-    size_t result = fread(image->getVoidPointer(), sizeof(T), image->getPixelCount(), fp);
+    size_t result = fread(image.getVoidPointer(), sizeof(T), image.getPixelCount(), fp);
       
 
 
@@ -66,7 +66,7 @@ RES_T readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T
 }
 
 template <class T>
-RES_T writeRAW(Image<T> *image, const char *filename)
+RES_T writeRAW(Image<T> &image, const char *filename)
 {
 }
 

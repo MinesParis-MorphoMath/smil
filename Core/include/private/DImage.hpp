@@ -219,8 +219,8 @@ protected:
     void updateViewerData(bool force=false);
 public:
     void setName(const char* name);
-    void show(const char* name=NULL);
-    void hide() {  if (viewer) viewer->hide(); }
+    virtual void show(const char* name=NULL);
+    virtual void hide() {  if (viewer) viewer->hide(); }
 
 };
   

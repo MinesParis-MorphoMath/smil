@@ -237,8 +237,8 @@ MESSAGE(STATUS "Image types generated: ${IMAGE_TYPES_STR}")
 
 
 
-SET(MODULES	Core
-		Gui
+SET(MODULES	Gui
+		Core
 		IO
 		Morpho
 )

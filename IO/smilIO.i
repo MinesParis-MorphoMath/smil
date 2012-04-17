@@ -44,19 +44,20 @@
 /* Includes the header in the wrapper code */
 #include "DImage.hpp"
 #include "DImage.hxx"
+#include "DTypes.hpp"
 #include "DIO.h"
 
 %}
  
 
+%include "DTypes.hpp"
 %include "DIO.h"
+%include "DImageIO.hpp"
 
 %include "DImageIO_RAW.hpp"
 
 
+TEMPLATE_WRAP_FUNC(read);
 TEMPLATE_WRAP_FUNC(readRAW);
-
-
-/*TEMPLATE_WRAP_FUNC(<<);*/
 
 

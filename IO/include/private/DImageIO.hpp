@@ -49,7 +49,7 @@
 extern const char *getFileExtension(const char *fileName);
 
 template <class T>
-RES_T read(const char* filename, Image<T> *image)
+RES_T read(const char* filename, Image<T> &image)
 {
     string fileExt = getFileExtension(filename);
     RES_T res;
@@ -72,14 +72,14 @@ RES_T read(const char* filename, Image<T> *image)
     }
     
     if (res==RES_OK)
-	image->modified();
+	image.modified();
     
     return res;
 }
 
 
 template <class T>
-RES_T write(Image<T> *image, const char *filename)
+RES_T write(Image<T> &image, const char *filename)
 {
     string fileExt = getFileExtension(filename);
     RES_T res;

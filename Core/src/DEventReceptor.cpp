@@ -32,7 +32,7 @@
 
 slotOwner::slotOwner()
 {
-    this->className = "SlotOwner";
+//     this->className = "SlotOwner";
 }
 
 slotOwner::~slotOwner()

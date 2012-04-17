@@ -32,7 +32,7 @@
 
 
 template <>
-_SMIL RES_T readBMP(const char *filename, Image<UINT8> *image)
+_SMIL RES_T readBMP(const char *filename, Image<UINT8> &image)
 {
     FILE* fp = fopen( filename, "rb" );
 
@@ -64,8 +64,8 @@ _SMIL RES_T readBMP(const char *filename, Image<UINT8> *image)
     int width = iHeader.biWidth;
     int height = iHeader.biHeight;
 
-    image->setSize(width, height);
-    Image<UINT8>::lineType *lines = image->getLines();
+    image.setSize(width, height);
+    Image<UINT8>::lineType *lines = image.getLines();
 
     for (int i=height-1;i>=0;i--)
         if (!fread(lines[i], width*sizeof(UINT8), 1, fp))
@@ -81,7 +81,7 @@ _SMIL RES_T readBMP(const char *filename, Image<UINT8> *image)
 
 /* write a png file */
 template <>
-_SMIL RES_T writeBMP(Image<UINT8> *image, const char *filename)
+_SMIL RES_T writeBMP(Image<UINT8> &image, const char *filename)
 {
     FILE* fp = fopen( filename, "wb" );
 
@@ -93,8 +93,8 @@ _SMIL RES_T writeBMP(Image<UINT8> *image, const char *filename)
     bmpFileHeader fHeader;
     bmpInfoHeader iHeader;
 
-    int width = image->getWidth();
-    int height = image->getHeight();
+    int width = image.getWidth();
+    int height = image.getHeight();
 
     int nColors = 256;
 
@@ -132,7 +132,7 @@ _SMIL RES_T writeBMP(Image<UINT8> *image, const char *filename)
         fputc(0, fp);
     }
 
-    Image<UINT8>::lineType *lines = image->getLines();
+    Image<UINT8>::lineType *lines = image.getLines();
 
     for (int i=height-1;i>=0;i--)
         fwrite(lines[i], width*sizeof(UINT8), 1, fp);

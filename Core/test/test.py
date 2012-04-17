@@ -158,7 +158,9 @@ def testInv():
   im2.show()
   
 def testMax():
-  im1 << "/home/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp"
+  if read("/home/mat/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp", im1)==RES_ERR:
+    read("/home/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp", im1)
+    
   im2.setSize(im1)
   im3.setSize(im1)
   hMaxima(im1, 1, im2)
@@ -210,7 +212,8 @@ def run():
 #testMax()
 
 im1 = Image(10, 10)
-im1 << "/home/mat/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp"
+#if read("/home/mat/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp", im1)==RES_ERR:
+  #read("/home/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp", im1)
 im1.show()
 im2 = Image(im1)
 im2.show()

@@ -61,10 +61,6 @@
 %}
  
 
-%include "DEvent.h"
-%include "DEventHandler.h"
-%include "DEventReceptor.h"
-
 
 %extend Image 
 {
@@ -121,6 +117,10 @@ PTR_ARG_OUT_APPLY(d)
 %include "DImageDraw.hpp"
 %include "DLineHistogram.hpp"
 %include "DImageHistogram.hpp"
+
+%include "DEvent.h"
+%include "DEventHandler.h"
+%include "DEventReceptor.h"
 
 
 

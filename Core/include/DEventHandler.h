@@ -32,7 +32,6 @@
 
 
 #include "DEvent.h"
-#include "DBaseObject.h"
 #include <map>
 using namespace std;
 
@@ -45,16 +44,18 @@ class slotBase
   public:
     inline virtual ~slotBase() {};
 
-    inline R exec(const A *arg) { call(arg); };
+    inline R _exec(const A *arg) { call(arg); };
 
 
   private:
     virtual R call(const A * ) {};
 };
 
-class slot : public slotBase<void, event>
-{
-};
+// class slot : public slotBase<void, event>
+// {
+// };
+
+typedef slotBase<void, event> slot;
 
 // class slot 
 // {
@@ -89,7 +90,7 @@ class memberFunctionSlot : public slotBase<T, eventT>
 
 };
 
-class eventHandler : public baseObject 
+class eventHandler/* : public baseObject */
 {
   public:
     eventHandler(baseObject * obj);
@@ -124,7 +125,7 @@ inline void eventHandler::trigger(const event * event)
     while(it != _handlers.end())
     {
 	slot* f = it->first;
-	f->exec(event);
+	f->_exec(event);
 	++it;
     }
 }

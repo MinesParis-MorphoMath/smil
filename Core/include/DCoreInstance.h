@@ -36,6 +36,8 @@
 // #include "DGui.h"
 #include "Qt/QtApp.h"
 
+#include "DBaseObject.h"
+
 #include "DCommon.h"
 #include <qtimer.h>
 #include "DTimer.h"
@@ -65,7 +67,7 @@ public:
   {
       delete _timer;
   }
-  void exec() 
+  void execLoop() 
   { 
       if (_qapp)
 	_qapp->exec(); 
@@ -80,20 +82,26 @@ protected:
   timer *_timer;
 };
 
-class coreInstance
+class core
 {
 private:
-  coreInstance ()
+  core ()
     : _value (0), keepAlive(false)
     { 
 // 	cout << "core created" << endl;
 	guiInst = new guiInstance();
       
     }
-  ~coreInstance () 
+  ~core () 
   {
-// 	cout << "core destroyed" << endl;
+      deleteRegisteredObjects();
+      delete guiInst;
+      kill();
+//       cout << "core deleted" << endl;
   }
+  
+  core(const core&);
+  void operator=(const core&);
 
 public:
   // Public interface
@@ -107,15 +115,16 @@ public:
   
   vector<baseObject*> getRegisteredObjects() { return registeredObjects; }
   
-  void exec() 
+  void execLoop() 
   { 
-      guiInst->exec();
+      guiInst->execLoop();
   }
   void processEvents() 
   { 
       guiInst->processEvents();
   }
 
+  
 protected:
   void deleteRegisteredObjects();
 //   QApplication *_qapp;
@@ -123,30 +132,32 @@ protected:
 
   
 public:
-  static coreInstance *getInstance ()
+  static core &getInstance ()
   {
-    if (NULL == _singleton)
-      {
-//         std::cout << "creating singleton." << std::endl;
-        _singleton =  new coreInstance;
-      }
-    else
-      {
-//         std::cout << "singleton already created!" << std::endl;
-      }
+//     if (NULL == _singleton)
+//       {
+// //         std::cout << "creating singleton." << std::endl;
+//         _singleton =  new core;
+//       }
+//     else
+//       {
+// //         std::cout << "singleton already created!" << std::endl;
+//       }
 
     return _singleton;
   }
 
   static void kill ()
   {
-    if (_singleton==NULL)
-      return;
+//     if (_singleton==NULL)
+//       return;
     
 //       std::cout << "Bye" << std::endl;
-      _singleton->deleteRegisteredObjects();
-      delete _singleton;
-      _singleton = NULL;
+      
+//       qApp->exit(0);
+      
+//       delete _singleton;
+//       _singleton = NULL;
     
   }
   
@@ -155,7 +166,7 @@ private:
   // Variables membres
   int _value;
   vector<baseObject*> registeredObjects;
-  static coreInstance *_singleton;
+  static core _singleton;
 };
 
 

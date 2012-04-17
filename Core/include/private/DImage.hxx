@@ -38,6 +38,7 @@
 
 #include "DMemory.hpp"
 #include "DIO.h"
+#include "DCoreInstance.h"
 
 template <class T>
 Image<T>::Image()
@@ -111,7 +112,7 @@ template <class T>
 void Image<T>::modified()
 { 
     updateViewerData();
-    getCoreInstance()->processEvents();
+    getCoreInstance().processEvents();
 }
 
 
@@ -317,7 +318,7 @@ void Image<T>::printSelf(ostream &os, bool displayPixVals)
 	  for (j=0;j<height;j++)
 	  {
 	    for (i=0;i<width;i++)
-	      os << getPixel(i,j,k) << "  ";
+	      os << (int)getPixel(i,j,k) << "  ";
 	    os << endl;
 	  }
 	  os << endl;
@@ -349,14 +350,14 @@ Image<T>& Image<T>::operator = (Image<T> &rhs)
 template <class T>
 Image<T>& Image<T>::operator << (const char *s) 
 { 
-    read(s, this); 
+    read(s, *this); 
     return *this; 
 }
 
 template <class T>
 Image<T>& Image<T>::operator >> (const char *s) 
 { 
-    write(this, s); 
+    write(*this, s); 
     return *this;
 }
 

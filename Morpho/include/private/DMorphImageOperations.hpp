@@ -194,9 +194,9 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(imageType
 	    
 	    for (int p=1;p<sePtsNumber;p++)
 	    {
-		x = se.points[p].x + (oddLine && oddSe);
-		y = l + se.points[p].y;
-		z = s + se.points[p].z;
+		x = -se.points[p].x + (oddLine && oddSe);
+		y = l + -se.points[p].y;
+		z = s + -se.points[p].z;
 		
 		_exec_line(outBuf, tmpIm, x, y, z, outBuf);   
 	    }

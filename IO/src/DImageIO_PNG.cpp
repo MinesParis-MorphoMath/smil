@@ -35,7 +35,7 @@
 #include <png.h>
 
 template <>
-_SMIL RES_T readPNG<UINT8>(const char *filename, Image<UINT8> *image)
+_SMIL RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
 {
 
     png_byte magic[8];
@@ -55,10 +55,9 @@ _SMIL RES_T readPNG<UINT8>(const char *filename, Image<UINT8> *image)
     }
 
     /* read magic number */
-    fread (magic, 1, sizeof (magic), fp);
-
+    if (fread (magic, 1, sizeof (magic), fp)!=sizeof(magic) ||
     /* check for valid magic number */
-    if (!png_check_sig (magic, sizeof (magic)))
+      !png_check_sig (magic, sizeof (magic)))
     {
         fprintf (stderr, "error: \"%s\" is not a valid PNG image!\n",
                  filename);
@@ -116,7 +115,7 @@ _SMIL RES_T readPNG<UINT8>(const char *filename, Image<UINT8> *image)
     /* convert 1-2-4 bits grayscale images to 8 bits
        grayscale. */
     if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
-        png_set_gray_1_2_4_to_8 (png_ptr);
+        png_set_expand_gray_1_2_4_to_8 (png_ptr);
 
     if (png_get_valid (png_ptr, info_ptr, PNG_INFO_tRNS))
         png_set_tRNS_to_alpha (png_ptr);
@@ -136,11 +135,11 @@ _SMIL RES_T readPNG<UINT8>(const char *filename, Image<UINT8> *image)
                   &bit_depth, &color_type,
                   NULL, NULL, NULL);
 
-    image->setSize(width, height);
+    image.setSize(width, height);
 //   image->allocate();
 
     /* setup a pointer array.  Each one points at the begening of a row. */
-    row_pointers = image->getLines();
+    row_pointers = image.getLines();
 
     /* read pixel data using row pointers */
     png_read_image (png_ptr, row_pointers);
@@ -159,14 +158,14 @@ _SMIL RES_T readPNG<UINT8>(const char *filename, Image<UINT8> *image)
 
 /* write a png file */
 template <>
-_SMIL RES_T writePNG(Image<UINT8> *image, const char *filename)
+_SMIL RES_T writePNG(Image<UINT8> &image, const char *filename)
 {
     png_byte color_type = PNG_COLOR_TYPE_GRAY;
     png_byte bit_depth = 8;
 
     png_structp png_ptr;
     png_infop info_ptr;
-    png_bytep * row_pointers = image->getLines();
+    png_bytep * row_pointers = image.getLines();
 
     /* create file */
     FILE *fp = fopen(filename, "wb");
@@ -207,7 +206,7 @@ _SMIL RES_T writePNG(Image<UINT8> *image, const char *filename)
         return RES_ERR;
     }
 
-    png_set_IHDR(png_ptr, info_ptr, image->getWidth(), image->getHeight(),
+    png_set_IHDR(png_ptr, info_ptr, image.getWidth(), image.getHeight(),
                  bit_depth, color_type, PNG_INTERLACE_NONE,
                  PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 

@@ -87,9 +87,9 @@ inline void operator << (ostream &os, StrElt &se)
  * 
  * Points :
  * 
- * 3 2
- * 4 0 1
- * 5 6
+ * 4 3
+ * 5 1 2
+ * 6 7
  * 
  */
 
@@ -101,13 +101,41 @@ class hSE : public StrElt
 	seT = stHexSE;
 	size = s;
 	odd = true;
-	addPoint(0,0);
-	addPoint(1,0);
-	addPoint(0,1);
-	addPoint(-1,1);
-	addPoint(-1,0);
-	addPoint(-1,-1);
-	addPoint(0,-1);
+	addPoint(0,0);	// 1
+	addPoint(1,0);	// 2
+	addPoint(0,1);	// 3
+	addPoint(-1,1);	// 4
+	addPoint(-1,0);	// 5
+	addPoint(-1,-1);// 6
+	addPoint(0,-1);	// 7
+    }
+};
+
+/**
+ * Hexagonal structuring element without center point.
+ * 
+ * Points :
+ * 
+ * 3 2
+ * 4 x 1
+ * 5 6
+ * 
+ */
+
+class hSE0 : public StrElt
+{
+  public:
+    hSE0(UINT s=1) 
+    {
+	seT = stHexSE;
+	size = s;
+	odd = true;
+	addPoint(1,0);	// 1
+	addPoint(0,1);	// 2
+	addPoint(-1,1);	// 3
+	addPoint(-1,0);	// 4
+	addPoint(-1,-1);// 5
+	addPoint(0,-1);	// 6
     }
 };
 
@@ -117,9 +145,9 @@ class hSE : public StrElt
  * 
  * Points :
  * 
- * 4 3 2
- * 5 0 1
- * 6 7 8
+ * 5 4 3
+ * 6 1 2
+ * 7 8 9
  * 
  */
 
@@ -130,7 +158,36 @@ class sSE : public StrElt
     {
 // 	seT = stSquSE;
 	odd = false;
-	addPoint(0,0); 	// 0
+	addPoint(0,0); 	// 1
+	addPoint(1,0);	// 2
+	addPoint(1,1);	// 3
+	addPoint(0,1);	// 4
+	addPoint(-1,1);	// 5
+	addPoint(-1,0);	// 6
+	addPoint(-1,-1);// 7
+	addPoint(0,-1);	// 8
+	addPoint(1,-1);	// 9
+    }
+};
+
+/**
+ * Square structuring element without center point.
+ * 
+ * Points :
+ * 
+ * 4 3 2
+ * 5 x 1
+ * 6 7 8
+ * 
+ */
+
+class sSE0 : public StrElt
+{
+  public:
+    sSE0(UINT s=1) : StrElt(s)
+    {
+// 	seT = stSquSE;
+	odd = false;
 	addPoint(1,0);	// 1
 	addPoint(1,1);	// 2
 	addPoint(0,1);	// 3

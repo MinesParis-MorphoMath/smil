@@ -41,14 +41,17 @@ int main(int argc, char *argv[])
     im2 << UINT8(0);
     Image_UINT8 im3(im1);
     
-    arrowGrt(im1, im2, sSE());
+    UINT8 vals[] = { 0, 1, 2, 3, 4 };
+    
+    
+    arrowGrt(im1, im2, sSE0());
     
     im1.show();
     im2.show();
     im1.modified();
     
-    
-    coreInstance::getInstance()->exec();
+//     core::getInstance()->kill();
+    core::getInstance().execLoop();
     
 }
 

@@ -32,14 +32,16 @@
 
 
 #include "DBaseObject.h"
+#include "DEventHandler.h"
+
 #include <map>
 using namespace std;
 
-class slot;
+// class slot;
 class eventHandler;
 
 
-class slotOwner : public baseObject 
+class slotOwner/* : public baseObject */
 {
   public:
     slotOwner();

@@ -33,7 +33,7 @@
 eventHandler::eventHandler(baseObject * obj)
 {
     owner = obj;
-    this->className = "Event";
+//     this->className = "Event";
 }
 
 eventHandler::~eventHandler()

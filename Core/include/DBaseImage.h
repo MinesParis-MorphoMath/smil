@@ -89,6 +89,8 @@ public:
 	return z*width*height + y*width + x;
     }
 
+    virtual void show(const char* name=NULL) {}
+    virtual void hide() = 0;
 protected:
     UINT dataTypeSize;
 

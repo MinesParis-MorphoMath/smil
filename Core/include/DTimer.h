@@ -31,7 +31,7 @@
 #define _DTIMER_H
 
 #include <iostream>
-#include <pthread.h>
+// #include <pthread.h>
 #include <QApplication>
 
 #include <unistd.h>
@@ -54,7 +54,7 @@ public:
   bool running;
   QApplication *app;
 protected:
-  pthread_t thread;
+//   pthread_t thread;
   void end()
   {
 //         pthread_join(thread, NULL);
