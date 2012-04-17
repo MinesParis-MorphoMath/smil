@@ -1,0 +1,10 @@
+
+Général :
+------- 
+- Harmoniser le type de la 1° lettre des noms des classes/fonctions (minuscule/maj).
+
+
+Gui :
+---
+
+- Trouver une méthode pour gérer l'event loop de Qt en interne.
