@@ -37,15 +37,23 @@ core *core::_singleton = NULL;
 
 void core::registerObject(baseObject *obj)
 {
+    if (obj->registered)
+      return;
+    
     registeredObjects.push_back(obj);
+    obj->registered = true;
 //     cout << obj->getClassName() << " created." << endl;
 }
 
 void core::unregisterObject(baseObject *obj)
 {
+    if (!obj->registered)
+      return;
+    
     std::vector<baseObject*>::iterator newEnd = std::remove(registeredObjects.begin(), registeredObjects.end(), obj);
 
     registeredObjects.erase(newEnd, registeredObjects.end());
+    obj->registered = false;
 //     cout << obj->getClassName() << " deleted." << endl;
     
     if (!keepAlive && registeredObjects.size()==0)

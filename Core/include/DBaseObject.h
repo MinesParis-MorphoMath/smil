@@ -44,7 +44,9 @@ class baseObject
 {
 public:
     baseObject();
+    baseObject(bool _register);
     baseObject(const char *name);
+    baseObject(const char *name, bool _register);
 
     ~baseObject() ;
     
@@ -56,7 +58,9 @@ public:
 
 protected:
     const char * className;
+    bool registered;
 
+    friend class core;
 };
 
 #endif

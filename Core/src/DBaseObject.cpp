@@ -32,15 +32,29 @@
 
 
 baseObject::baseObject()
-  :	className("baseObject")
+  : className("baseObject"), registered(false)
 {
     core::getInstance()->registerObject(this);
 }
 
+baseObject::baseObject(bool _register)
+  : className("baseObject"), registered(false)
+{
+    if (_register)
+      core::getInstance()->registerObject(this);
+}
+
 baseObject::baseObject(const char *name)
-  :	className(name)
+  : className(name), registered(false)
 {
     core::getInstance()->registerObject(this);
+}
+
+baseObject::baseObject(const char *name, bool _register)
+  : className(name), registered(false)
+{
+    if (_register)
+      core::getInstance()->registerObject(this);
 }
 
 baseObject::~baseObject() 

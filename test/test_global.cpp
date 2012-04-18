@@ -44,7 +44,6 @@ int main(int argc, char *argv[])
     im1 << UINT8(50);
     im2 << UINT8(100);
     
-    
     UINT8 vals[] = { 0, 1, 2, 3, 4 };
 
     im3 << (im1 + im2);

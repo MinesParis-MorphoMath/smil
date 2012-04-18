@@ -82,11 +82,11 @@ protected:
   timer *_timer;
 };
 
-class core
+class core : private baseObject
 {
 private:
   core ()
-    : _value (0), keepAlive(false)
+    : baseObject("core", false), _value (0), keepAlive(false)
     { 
 // 	cout << "core created" << endl;
 	guiInst = new guiInstance();
