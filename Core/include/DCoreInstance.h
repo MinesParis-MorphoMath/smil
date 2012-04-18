@@ -96,7 +96,6 @@ private:
   {
       deleteRegisteredObjects();
       delete guiInst;
-      kill();
 //       cout << "core deleted" << endl;
   }
   
@@ -149,15 +148,15 @@ public:
 
   static void kill ()
   {
-//     if (_singleton==NULL)
-//       return;
+    if (_singleton==NULL)
+      return;
     
 //       std::cout << "Bye" << std::endl;
       
 //       qApp->exit(0);
       
-//       delete _singleton;
-//       _singleton = NULL;
+      delete _singleton;
+      _singleton = NULL;
     
   }
   

@@ -34,21 +34,22 @@
 
 int main(int argc, char *argv[])
 {
-    Image_UINT8 im1;
-    im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
-
+    Image_UINT8 im1(50,50);
     Image_UINT8 im2(im1);
-    im2 << UINT8(0);
     Image_UINT8 im3(im1);
     
+//     im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
+
+    
+    im1 << UINT8(50);
+    im2 << UINT8(100);
+    
+    
     UINT8 vals[] = { 0, 1, 2, 3, 4 };
+
+    im3 << (im1 + im2);
     
-    
-    arrowGrt(im1, im2, sSE0());
-    
-    im1.show();
-    im2.show();
-    im1.modified();
+    im3.show();
     
 //     core::getInstance()->kill();
     core::getInstance()->execLoop();

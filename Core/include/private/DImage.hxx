@@ -86,7 +86,8 @@ Image<T>::~Image()
     deallocate();
     if (viewer)
 	delete viewer;
-    
+    if (operIm)
+      delete operIm;
 }
 
 
@@ -106,13 +107,23 @@ void Image<T>::init()
     
      viewer = NULL;
      name = NULL;
+     
+     operIm = NULL;
+}
+
+template <class T>
+void Image<T>::updateOperIm()
+{
+    if (!operIm)
+      operIm = new Image<T>(*this);
+    setSize(*this);
 }
 
 template <class T>
 void Image<T>::modified()
 { 
     updateViewerData();
-    getCoreInstance()->processEvents();
+//     getCoreInstance()->processEvents();
 }
 
 
@@ -176,8 +187,8 @@ Image<T>& Image<T>::clone(const Image<T2> &rhs)
 template <class T>
 Image<T>& Image<T>::clone(void)
 { 
-    static Image<T> newIm(*this, true);
-    return newIm;
+    updateOperIm();
+    return *operIm;
 }
 
 template <class T>
@@ -378,28 +389,25 @@ Image<T>& Image<T>::operator << (T value)
 template <class T>
 Image<T>& Image<T>::operator ~()
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    inv(*this, newIm);
-    return newIm;
+    updateOperIm();
+    inv(*this, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator + (Image<T> &rhs)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    add(*this, rhs, newIm);
-    return newIm;
+    updateOperIm();
+    add(*this, rhs, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator + (T value)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    add(*this, value, newIm);
-    return newIm;
+    updateOperIm();
+    add(*this, value, *operIm);
+    return *operIm;
 }
 
 template <class T>
@@ -419,19 +427,17 @@ Image<T>& Image<T>::operator += (T value)
 template <class T>
 Image<T>& Image<T>::operator - (Image<T> &rhs)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    sub(*this, rhs, newIm);
-    return newIm;
+    updateOperIm();
+    sub(*this, rhs, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator - (T value)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    sub(*this, value, newIm);
-    return newIm;
+    updateOperIm();
+    sub(*this, value, *operIm);
+    return *operIm;
 }
 
 template <class T>
@@ -451,19 +457,17 @@ Image<T>& Image<T>::operator -= (T value)
 template <class T>
 Image<T>& Image<T>::operator * (Image<T> &rhs)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    mul(*this, rhs, newIm);
-    return newIm;
+    updateOperIm();
+    mul(*this, rhs, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator * (T value)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    mul(*this, value, newIm);
-    return newIm;
+    updateOperIm();
+    mul(*this, value, *operIm);
+    return *operIm;
 }
 
 template <class T>
@@ -483,19 +487,17 @@ Image<T>& Image<T>::operator *= (T value)
 template <class T>
 Image<T>& Image<T>::operator / (Image<T> &rhs)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    div(*this, rhs, newIm);
-    return newIm;
+    updateOperIm();
+    div(*this, rhs, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator / (T value)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    div(*this, value, newIm);
-    return newIm;
+    updateOperIm();
+    div(*this, value, *operIm);
+    return *operIm;
 }
 
 template <class T>
@@ -515,100 +517,89 @@ Image<T>& Image<T>::operator /= (T value)
 template <class T>
 Image<T>& Image<T>::operator == (Image<T> &rhs)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    equ(*this, rhs, newIm);
-    return newIm;
+    updateOperIm();
+    equ(*this, rhs, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator < (Image<T> &rhs)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    low(*this, rhs, newIm);
-    return newIm;
+    updateOperIm();
+    low(*this, rhs, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator < (T value)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    low(*this, value, newIm);
-    return newIm;
+    updateOperIm();
+    low(*this, value, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator <= (Image<T> &rhs)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    lowOrEqu(*this, rhs, newIm);
-    return newIm;
+    updateOperIm();
+    lowOrEqu(*this, rhs, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator <= (T value)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    lowOrEqu(*this, value, newIm);
-    return newIm;
+    updateOperIm();
+    lowOrEqu(*this, value, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator > (Image<T> &rhs)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    grt(*this, rhs, newIm);
-    return newIm;
+    updateOperIm();
+    grt(*this, rhs, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator > (T value)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    grt(*this, value, newIm);
-    return newIm;
+    updateOperIm();
+    grt(*this, value, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator >= (Image<T> &rhs)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    grtOrEqu(*this, rhs, newIm);
-    return newIm;
+    updateOperIm();
+    grtOrEqu(*this, rhs, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator >= (T value)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    grtOrEqu(*this, value, newIm);
-    return newIm;
+    updateOperIm();
+    grtOrEqu(*this, value, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator | (Image<T> &rhs)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    sup(*this, rhs, newIm);
-    return newIm;
+    updateOperIm();
+    sup(*this, rhs, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator | (T value)
 {
-    static Image<T> newIm(*this);
-    sup(*this, value, newIm);
-    newIm.setSize(*this);
-    return newIm;
+    updateOperIm();
+    sup(*this, value, *operIm);
+    return *operIm;
 }
 
 template <class T>
@@ -628,19 +619,17 @@ Image<T>& Image<T>::operator |= (T value)
 template <class T>
 Image<T>& Image<T>::operator & (Image<T> &rhs)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    inf(*this, rhs, newIm);
-    return newIm;
+    updateOperIm();
+    inf(*this, rhs, *operIm);
+    return *operIm;
 }
 
 template <class T>
 Image<T>& Image<T>::operator & (T value)
 {
-    static Image<T> newIm(*this);
-    newIm.setSize(*this);
-    inf(*this, value, newIm);
-    return newIm;
+    updateOperIm();
+    inf(*this, value, *operIm);
+    return *operIm;
 }
 
 template <class T>

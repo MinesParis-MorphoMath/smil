@@ -204,6 +204,10 @@ public:
     Image<T>& operator << (const char *s);
     Image<T>& operator >> (const char *s);
 protected:
+  
+    Image<T> *operIm;
+    void updateOperIm();
+    
     lineType pixels;
     sliceType  lines;
     volType slices;
