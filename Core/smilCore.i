@@ -79,9 +79,11 @@
 	    os << *self;
 	    return os.str();
 	}
+/*
 	bool operator[] (UINT i)
 	{
 	}
+*/
 }
 %ignore BitArray::operator++;
 
