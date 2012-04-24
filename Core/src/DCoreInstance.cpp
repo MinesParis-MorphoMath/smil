@@ -32,10 +32,93 @@
 #include "DCoreInstance.h"
 
 // Initialization of singleton to NULL
-// core core::_singleton;
-core *core::_singleton = NULL;
+// Core Core::_singleton;
+Core *Core::_singleton = NULL;
 
-void core::registerObject(baseObject *obj)
+
+guiInstance::guiInstance()
+  : _qapp(NULL)
+{
+      if (!qApp)
+      {
+	    cout << "Core qt created" << endl;
+	  int ac = 1;
+	  char **av = NULL;
+	  _qapp = new QApplication(ac, av);
+      }
+      _timer = new timer();
+      _timer->app = _qapp;
+      _timer->start();
+}
+
+guiInstance::~guiInstance()
+{
+    delete _timer;
+}
+
+void guiInstance::execLoop() 
+{ 
+    if (_qapp)
+      _qapp->exec(); 
+    else if (qApp)
+      qApp->exec();
+}
+
+
+
+Core::Core ()
+: baseObject("Core", false), 
+  _value (0), 
+  keepAlive(false)
+{ 
+	cout << "Core created" << endl;
+    guiInst = new guiInstance();
+  
+}
+
+Core::~Core () 
+{
+  deleteRegisteredObjects();
+  delete guiInst;
+      cout << "Core deleted" << endl;
+}
+
+
+Core *Core::getInstance ()
+{
+  initialize();
+  return _singleton;
+}
+
+void Core::kill ()
+{
+  if (_singleton==NULL)
+    return;
+  
+//       std::cout << "Bye" << std::endl;
+    
+//       qApp->exit(0);
+    
+    delete _singleton;
+    _singleton = NULL;
+  
+}
+
+
+void Core::initialize()
+{
+  if (_singleton == NULL)
+  {
+      _singleton =  new Core;
+  }
+}
+
+void Core::execLoop() 
+{ 
+    getInstance()->guiInst->execLoop();
+}
+
+void Core::registerObject(baseObject *obj)
 {
     if (obj->registered)
       return;
@@ -45,7 +128,7 @@ void core::registerObject(baseObject *obj)
 //     cout << obj->getClassName() << " created." << endl;
 }
 
-void core::unregisterObject(baseObject *obj)
+void Core::unregisterObject(baseObject *obj)
 {
     if (!obj->registered)
       return;
@@ -60,7 +143,7 @@ void core::unregisterObject(baseObject *obj)
 	kill();
 }
 
-void core::deleteRegisteredObjects()
+void Core::deleteRegisteredObjects()
 {
     baseObject *obj;
     vector<baseObject*>::iterator it = registeredObjects.begin();

@@ -31,7 +31,7 @@
 #define _D_LINE_HISTOGRAM_HPP
 
 
-#include "DImage.hpp"
+#include "DBaseLineOperations.hpp"
 
 //! \ingroup Core
 //! \defgroup Histogram

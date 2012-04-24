@@ -30,9 +30,11 @@
 #ifndef _D_IMAGE_IO_BMP_H
 #define _D_IMAGE_IO_BMP_H
 
-#include "DIO.h"
 #include <fstream>
 #include <iostream> 
+
+#include "DCore.h"
+
 
 #ifndef DWORD
 #define DWORD unsigned long

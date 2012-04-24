@@ -30,17 +30,9 @@
 #ifndef _DIMAGE_HPP
 #define _DIMAGE_HPP
 
-#include "DCommon.h"
-
-#include "DTypes.h"
-#include "DBaseObject.h"
-#include "DBaseImageOperations.hpp"
-
-
-
 #include "DBaseImage.h"
-#include "DImageViewer.hpp"
 #include "DImageViewer.h"
+#include <DSignal.h>
 
 
 /**
@@ -235,6 +227,16 @@ Image<T> *createImage(Image<T> &src)
     return new Image<T>(src);
 }
 
+template <class T>
+class ImageCreatedEvent : public Event
+{
+public:
+  ImageCreatedEvent(Image<T> *img=NULL)
+    : image(img)
+  {
+  }
+  Image<T> *image;
+};
 
 /** @}*/
 

@@ -33,34 +33,36 @@
 #include <iostream>
 #include <sstream>
 
+#include <string>
+
+
+#include "DCommon.h"
 
 using namespace std;
 
-#include <string>
-
-class core;
+class Core;
 
 class baseObject
 {
 public:
-    baseObject();
-    baseObject(bool _register);
-    baseObject(const char *name);
-    baseObject(const char *name, bool _register);
+    baseObject(bool _register=true);
+    baseObject(const char *name, bool _register=true);
 
     ~baseObject() ;
     
-    core *getCoreInstance();
+    Core *getCoreInstance();
     typedef void parentClass;
     virtual string getInfoString(string indent = "") {}
     virtual void printSelf(ostream &os=std::cout) {}
     virtual const char * getClassName();
 
+    typedef void(baseObject::*voidMemberFunc)();
+    virtual void connect(voidMemberFunc, baseObject, voidMemberFunc);
 protected:
     const char * className;
     bool registered;
 
-    friend class core;
+    friend class Core;
 };
 
 #endif

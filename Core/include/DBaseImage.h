@@ -30,11 +30,10 @@
 #ifndef _D_BASE_IMAGE_H
 #define _D_BASE_IMAGE_H
 
-#include "DCommon.h"
 #include "DBaseObject.h"
 
 
-class _SMIL baseImage : public baseObject
+class /*_SMIL*/ baseImage : public baseObject
 {
 public:
     baseImage()

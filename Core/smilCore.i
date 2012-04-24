@@ -42,9 +42,8 @@
 %{
 /* Includes the header in the wrapper code */
 #include "DCommon.h"
-#include "DEvent.h"
-#include "DEventHandler.h"
-#include "DEventReceptor.h"
+#include "DSignal.h"
+#include "DSlot.h"
 #include "DImage.h"
 #include "DTypes.hpp"
 #include "DBaseObject.h"
@@ -120,9 +119,8 @@ PTR_ARG_OUT_APPLY(d)
 %include "DLineHistogram.hpp"
 %include "DImageHistogram.hpp"
 
-%include "DEvent.h"
-%include "DEventHandler.h"
-%include "DEventReceptor.h"
+%include "DSignal.h"
+%include "DSlot.h"
 
 
 

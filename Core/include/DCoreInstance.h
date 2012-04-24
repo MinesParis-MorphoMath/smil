@@ -36,11 +36,10 @@
 // #include "DGui.h"
 #include "Qt/QtApp.h"
 
-#include "DBaseObject.h"
-
 #include "DCommon.h"
 #include <qtimer.h>
 #include "DTimer.h"
+#include "DSignal.h"
 
 class baseObject;
 
@@ -49,58 +48,33 @@ struct stat;
 class guiInstance
 {
 public:
-  guiInstance()
-    : _qapp(NULL)
-  {
-	if (!qApp)
-	{
-// 	    cout << "core qt created" << endl;
-	    int ac = 1;
-	    char **av = NULL;
-	    _qapp = new QApplication(ac, av);
-	}
-	_timer = new timer();
-	_timer->app = _qapp;
-	_timer->start();
-  }
-  ~guiInstance()
-  {
-      delete _timer;
-  }
-  void execLoop() 
-  { 
-      if (_qapp)
-	_qapp->exec(); 
-  }
-  void processEvents() 
+  guiInstance();
+  ~guiInstance();
+  
+  void execLoop();
+  inline void processEvents()
   { 
       if (_qapp)
 	_qapp->processEvents(); 
+      else if (qApp)
+	qApp->processEvents();
   }
+  
 protected:
   QApplication *_qapp;
   timer *_timer;
 };
 
-class core : private baseObject
+
+
+class Core : private baseObject
 {
 private:
-  core ()
-    : baseObject("core", false), _value (0), keepAlive(false)
-    { 
-// 	cout << "core created" << endl;
-	guiInst = new guiInstance();
-      
-    }
-  ~core () 
-  {
-      deleteRegisteredObjects();
-      delete guiInst;
-//       cout << "core deleted" << endl;
-  }
+  Core ();
+  ~Core ();
   
-  core(const core&);
-  void operator=(const core&);
+  Core(const Core&);
+  void operator=(const Core&);
 
 public:
   // Public interface
@@ -114,15 +88,12 @@ public:
   
   vector<baseObject*> getRegisteredObjects() { return registeredObjects; }
   
-  void execLoop() 
-  { 
-      guiInst->execLoop();
-  }
-  void processEvents() 
+  inline void processEvents() 
   { 
       guiInst->processEvents();
   }
 
+  Signal onImageCreated;
   
 protected:
   void deleteRegisteredObjects();
@@ -131,41 +102,17 @@ protected:
 
   
 public:
-  static core *getInstance ()
-  {
-    if (_singleton == NULL)
-      {
-//         std::cout << "creating singleton." << std::endl;
-        _singleton =  new core;
-      }
-//     else
-//       {
-// //         std::cout << "singleton already created!" << std::endl;
-//       }
-
-    return _singleton;
-  }
-
-  static void kill ()
-  {
-    if (_singleton==NULL)
-      return;
-    
-//       std::cout << "Bye" << std::endl;
-      
-//       qApp->exit(0);
-      
-      delete _singleton;
-      _singleton = NULL;
-    
-  }
+  static Core *getInstance();
+  static void kill();
+  static void initialize();
+  static void execLoop();
   
 
 private:
   // Variables membres
   int _value;
   vector<baseObject*> registeredObjects;
-  static core *_singleton;
+  static Core *_singleton;
 };
 
 

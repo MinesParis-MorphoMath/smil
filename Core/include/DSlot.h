@@ -26,14 +26,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef _DSLOT_H
+#define _DSLOT_H
 
-#include "DEvent.h"
+#include <vector>
 
-event::event()
+using namespace std;
+
+class Event;
+class Signal;
+
+class Slot
 {
-}
+  friend class Signal;
+public:
+  Slot() {}
+  ~Slot() 
+  {
+    unregisterAll();
+  }
+protected:
+  virtual void run(Event *e) = 0;
+  virtual void registerSignal(Signal *signal);
+  virtual void unregisterSignal(Signal *signal, bool _disconnect=true);
+  virtual void unregisterAll();
+  vector<Signal*> _signals;
+};
 
-event::~event()
+
+template <class T, class eventT=Event>
+class MemberFunctionSlot : public Slot
 {
-}
+public:
+  typedef void(T::*memberFunc)(eventT*);
+  MemberFunctionSlot(T *inst, memberFunc func)
+  {
+    _instance = inst;
+    _function = func;
+  }
+protected:
+  T *_instance;
+  memberFunc _function;
+  virtual void run(Event *e) 
+  { 
+    (_instance->*_function)(static_cast<eventT*>(e));
+  }
+};
 
+
+
+#endif // _DSLOT_H

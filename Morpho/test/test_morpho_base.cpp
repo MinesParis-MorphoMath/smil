@@ -57,12 +57,7 @@ erode sSE	BIN	1024x1024	550 µsecs
 #include "DMorpho.h"
 #include "DIO.h"
 
-#ifdef BUILD_GUI
-#include "DGui.h"
-#include <QApplication>
-#endif // BUILD_GUI
-
-// #include "DBitArray.h"
+#include "DBitArray.h"
 
 void func(StrElt *se)
 {

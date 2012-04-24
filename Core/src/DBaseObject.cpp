@@ -30,45 +30,39 @@
 #include "DBaseObject.h"
 #include "DCoreInstance.h"
 
-
-baseObject::baseObject()
-  : className("baseObject"), registered(false)
-{
-    core::getInstance()->registerObject(this);
-}
-
 baseObject::baseObject(bool _register)
-  : className("baseObject"), registered(false)
+  : className("baseObject"), 
+    registered(false)
 {
     if (_register)
-      core::getInstance()->registerObject(this);
-}
-
-baseObject::baseObject(const char *name)
-  : className(name), registered(false)
-{
-    core::getInstance()->registerObject(this);
+      Core::getInstance()->registerObject(this);
 }
 
 baseObject::baseObject(const char *name, bool _register)
-  : className(name), registered(false)
+  : className(name), 
+    registered(false)
 {
     if (_register)
-      core::getInstance()->registerObject(this);
+      Core::getInstance()->registerObject(this);
 }
 
 baseObject::~baseObject() 
 {
-    core::getInstance()->unregisterObject(this);
+    Core::getInstance()->unregisterObject(this);
 }
 
-core *baseObject::getCoreInstance() 
+Core *baseObject::getCoreInstance() 
 { 
-    return core::getInstance(); 
+    return Core::getInstance(); 
 }
 
 const char * baseObject::getClassName()
 {
     return className;
+}
+
+void baseObject::connect(voidMemberFunc, baseObject, voidMemberFunc)
+{
+  voidMemberFunc();
 }
 

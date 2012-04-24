@@ -31,7 +31,7 @@
 #define _D_LINE_ARITH_HPP
 
 
-#include "DImage.h"
+#include "DBaseLineOperations.hpp"
 
 
 /**

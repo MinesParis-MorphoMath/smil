@@ -30,6 +30,11 @@
 #ifndef _DCORE_H
 #define _DCORE_H
 
+#include "DSignal.h"
+#include "DSlot.h"
+#include "DBaseObject.h"
+#include "DCoreInstance.h"
+#include "DBaseImage.h"
 #include "DImage.h"
 #include "DLineArith.h"
 #include "DImageArith.h"

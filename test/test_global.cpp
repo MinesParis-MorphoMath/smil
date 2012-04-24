@@ -30,13 +30,36 @@
 #include "DCore.h"
 
 #include "DMorphoArrow.hpp"
+#include <vector>
 
+class maClass
+{
+public:
+  void func(Event *e)
+  {
+    cout << "oki" << endl;
+  }
+};
 
 int main(int argc, char *argv[])
 {
+//     QApplication app(argc, argv);
+    Core::initialize();
+    
     Image_UINT8 im1(50,50);
     Image_UINT8 im2(im1);
     Image_UINT8 im3(im1);
+    
+    maClass c;
+    
+    MemberFunctionSlot<maClass> s(&c, &maClass::func);
+    Signal sign;
+    
+    sign.connect(&s);
+    
+    sign.trigger();
+    
+//     im1.connect(
     
 //     im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
 
@@ -51,7 +74,7 @@ int main(int argc, char *argv[])
     im3.show();
     
 //     core::getInstance()->kill();
-    core::getInstance()->execLoop();
+//     core::execLoop();
     
 }
 

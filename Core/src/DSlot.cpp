@@ -26,37 +26,40 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "DSlot.h"
+#include "DSignal.h"
 
-#include "DEventHandler.h"
-#include "DEventReceptor.h"
+#include <algorithm>
 
-eventHandler::eventHandler(baseObject * obj)
+void Slot::registerSignal(Signal* signal)
 {
-    owner = obj;
-//     this->className = "Event";
+  if (std::find(_signals.begin(), _signals.end(), signal)==_signals.end())
+    _signals.push_back(signal);
 }
 
-eventHandler::~eventHandler()
+void Slot::unregisterSignal(Signal* signal, bool _disconnect)
 {
-    handlers::iterator it = _handlers.begin();
-    while(it != _handlers.end())
-    {
-	it->second->unregisterFunctionHandler(it->first);
-	delete it->first;
-	_handlers.erase(it);
-	++it;
-    }
-    _handlers.clear();
+  vector<Signal*>::iterator it = std::find(_signals.begin(), _signals.end(), signal);
+  
+  if (it==_signals.end())
+    return;
+  
+  if (_disconnect)
+    (*it)->disconnect(this, false);
+  
+  _signals.erase(it);
 }
 
-void eventHandler::disconnect(slot * hf) 
+void Slot::unregisterAll()
 {
-    handlers::iterator it = _handlers.find(hf);
-    if(it != _handlers.end())
-    {
-	it->second->unregisterFunctionHandler(it->first);
-	delete it->first;
-	_handlers.erase(it);
-    }
+  vector<Signal*>::iterator it = _signals.begin();
+  
+  while(it!=_signals.end())
+  {
+    (*it)->disconnect(this, false);
+    it++;
+  }
+  _signals.clear();
 }
+
 

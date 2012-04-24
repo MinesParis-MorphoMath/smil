@@ -26,32 +26,54 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "DSlot.h"
+#include "DSignal.h"
 
-#include "DEventReceptor.h"
-#include "DEventHandler.h"
+#include <algorithm>
 
-slotOwner::slotOwner()
+void Signal::connect(Slot* slot, bool _register)
 {
-//     this->className = "SlotOwner";
+  vector<Slot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
+  
+  if (it!=_slots.end())
+    return;
+  
+  _slots.push_back(slot);
+  if (_register)
+    slot->registerSignal(this);
 }
 
-slotOwner::~slotOwner()
+void Signal::disconnect(Slot* slot, bool _unregister)
 {
-    handlers::iterator it = connectedHandlers.begin();
-    while(it != connectedHandlers.end())
-    {
-	it->second->disconnect(it->first);
-	++it;
-    }
+  vector<Slot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
+  
+  if (it==_slots.end())
+    return;
+  
+  _slots.erase(it);
+  
+  if (_unregister)
+    slot->unregisterSignal(this, false);
 }
 
-void slotOwner::registerFunctionHandler(eventHandler * h, slot * hf) 
+void Signal::disconnectAll()
 {
-    connectedHandlers[hf] = h;
+  vector<Slot*>::iterator it = _slots.begin();
+  
+  while(it!=_slots.end())
+  {
+    (*it)->unregisterSignal(this, false);
+    it++;
+  }
 }
 
-void slotOwner::unregisterFunctionHandler(slot * hf) 
+void Signal::trigger(Event *e)
 {
-    connectedHandlers.erase(connectedHandlers.find(hf));
+  vector<Slot*>::iterator it = _slots.begin();
+  
+  while(it!=_slots.end())
+  {
+    (*it)->run(e);
+    it++;
+  }
 }
-

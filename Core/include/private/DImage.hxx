@@ -30,15 +30,14 @@
 #ifndef _IMAGE_HXX
 #define _IMAGE_HXX
 
+#include "DIO.h"
+
 // template <>
 // const char *getImageDataTypeAsString<UINT8>(Image<UINT8> &im)
 // {
 //     return "UINT8 (unsigned char)";
 // }
 
-#include "DMemory.hpp"
-#include "DIO.h"
-#include "DCoreInstance.h"
 
 template <class T>
 Image<T>::Image()
@@ -109,6 +108,9 @@ void Image<T>::init()
      name = NULL;
      
      operIm = NULL;
+     
+     ImageCreatedEvent<T> event(this);
+     Core::getInstance()->onImageCreated.trigger(&event);
 }
 
 template <class T>
@@ -151,6 +153,9 @@ void Image<T>::show(const char* name)
     
     if (name)
         setName(name);
+    
+    if (!viewer)
+      return;
     
     if (viewer->isVisible())
       return;

@@ -35,9 +35,6 @@
 #include <algorithm>
 
 
-#include "DTypes.h"
-#include "DImage.hpp"
-
 #include "DImageIO_BMP.hpp"
 #include "DImageIO_RAW.hpp"
 

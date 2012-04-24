@@ -31,8 +31,6 @@
 #define _D_IMAGE_IO_H
 
 
-#include "DTypes.h"
-// #include "DImage.h"
 #include "DImageIO.hpp"
 
 

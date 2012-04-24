@@ -26,40 +26,39 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef _DSIGNAL_H
+#define _DSIGNAL_H
 
-#ifndef _DEVENTRECEPTOR_H
-#define _DEVENTRECEPTOR_H
+#include <iostream>
+#include <vector>
 
-
-#include "DBaseObject.h"
-#include "DEventHandler.h"
-
-#include <map>
 using namespace std;
 
-// class slot;
-class eventHandler;
+class Slot;
 
-
-class slotOwner/* : public baseObject */
+class Event
 {
-  public:
-    slotOwner();
-
-    ~slotOwner();
-
-    typedef baseObject parentClass;
-
-  friend class eventHandler;
-    typedef map<slot*,eventHandler*> handlers;
-
-
-  protected:
-    handlers connectedHandlers;
-
-    void registerFunctionHandler(eventHandler * h, slot * hf);
-
-    void unregisterFunctionHandler(slot * hf);
-
 };
-#endif // _DEVENTRECEPTOR_H
+
+class Signal
+{
+  friend class Slot;
+public:
+  Signal() {}
+  ~Signal() 
+  {
+    disconnectAll();
+  }
+  virtual void connect(Slot *slot, bool _register=true);
+  virtual void disconnect(Slot *slot, bool _unregister=true);
+  virtual void disconnectAll();
+  virtual void trigger(Event *e=NULL);
+protected:
+  vector<Slot*> _slots;
+  
+};
+
+
+
+#endif // _DSIGNAL_H
+

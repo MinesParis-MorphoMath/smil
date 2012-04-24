@@ -30,7 +30,8 @@
 #ifndef _D_IMAGE_ARITH_HPP
 #define _D_IMAGE_ARITH_HPP
 
-#include "DLineArith.h"
+#include "DBaseImageOperations.hpp"
+#include "DLineArith.hpp"
 
 /**
  * \ingroup Core
