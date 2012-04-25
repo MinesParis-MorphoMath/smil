@@ -51,12 +51,13 @@ class Image : public baseImage
 public:
 
     //! Default constructor
-    Image();
+    Image(bool _triggerEvents=true);
     Image(UINT w, UINT h, UINT d = 1);
     Image(const Image<T> &rhs, bool cloneit=false);
     template <class T2>
     Image(const Image<T2> &rhs, bool cloneit=false);
-
+  
+public:
     ~Image();
     
     const char* getTypeAsString()
@@ -68,7 +69,7 @@ public:
     typedef typename ImDtTypes<T>::lineType lineType;
     typedef typename ImDtTypes<T>::sliceType sliceType;
     typedef typename ImDtTypes<T>::volType volType;
-
+    
     lineType getPixels() const {
         return pixels;
     }

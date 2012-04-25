@@ -36,9 +36,10 @@
 class /*_SMIL*/ baseImage : public baseObject
 {
 public:
-    baseImage()
-      :	width(0), height(0), depth(0),
-	allocated(false), baseObject("baseImage")
+    baseImage(const char *_className="baseImage")
+      :	baseObject(_className),
+	width(0), height(0), depth(0),
+	allocated(false)
     {
     }
       

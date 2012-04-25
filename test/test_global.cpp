@@ -35,7 +35,7 @@
 class maClass
 {
 public:
-  void func(Event *e)
+  void func(Event &e)
   {
     cout << "oki" << endl;
   }
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
     MemberFunctionSlot<maClass> s(&c, &maClass::func);
     Signal sign;
     
-    sign.connect(&s);
+    sign.connect(s);
     
     sign.trigger();
     

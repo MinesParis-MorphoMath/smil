@@ -38,8 +38,8 @@ baseObject::baseObject(bool _register)
       Core::getInstance()->registerObject(this);
 }
 
-baseObject::baseObject(const char *name, bool _register)
-  : className(name), 
+baseObject::baseObject(const char *_className, bool _register)
+  : className(_className), 
     registered(false)
 {
     if (_register)
@@ -59,10 +59,5 @@ Core *baseObject::getCoreInstance()
 const char * baseObject::getClassName()
 {
     return className;
-}
-
-void baseObject::connect(voidMemberFunc, baseObject, voidMemberFunc)
-{
-  voidMemberFunc();
 }
 

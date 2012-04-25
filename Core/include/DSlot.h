@@ -41,14 +41,14 @@ class Slot
   friend class Signal;
 public:
   Slot() {}
-  ~Slot() 
+  virtual ~Slot() 
   {
     unregisterAll();
   }
+  virtual void run(Event &e) = 0;
 protected:
-  virtual void run(Event *e) = 0;
-  virtual void registerSignal(Signal *signal);
-  virtual void unregisterSignal(Signal *signal, bool _disconnect=true);
+  virtual void registerSignal(Signal &signal);
+  virtual void unregisterSignal(Signal &signal, bool _disconnect=true);
   virtual void unregisterAll();
   vector<Signal*> _signals;
 };
@@ -58,7 +58,7 @@ template <class T, class eventT=Event>
 class MemberFunctionSlot : public Slot
 {
 public:
-  typedef void(T::*memberFunc)(eventT*);
+  typedef void(T::*memberFunc)(eventT&);
   MemberFunctionSlot(T *inst, memberFunc func)
   {
     _instance = inst;
@@ -67,9 +67,10 @@ public:
 protected:
   T *_instance;
   memberFunc _function;
-  virtual void run(Event *e) 
+  virtual void run(Event &e) 
   { 
-    (_instance->*_function)(static_cast<eventT*>(e));
+    eventT *ePtr = static_cast<eventT*>(&e);
+    (_instance->*_function)(*ePtr);
   }
 };
 

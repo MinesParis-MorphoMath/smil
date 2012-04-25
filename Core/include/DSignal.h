@@ -45,14 +45,15 @@ class Signal
   friend class Slot;
 public:
   Signal() {}
-  ~Signal() 
+  virtual ~Signal() 
   {
     disconnectAll();
   }
-  virtual void connect(Slot *slot, bool _register=true);
-  virtual void disconnect(Slot *slot, bool _unregister=true);
+  virtual void connect(Slot &slot, bool _register=true);
+  virtual void disconnect(Slot &slot, bool _unregister=true);
   virtual void disconnectAll();
-  virtual void trigger(Event *e=NULL);
+  virtual void trigger();
+  virtual void trigger(Event &e);
 protected:
   vector<Slot*> _slots;
   

@@ -26,18 +26,20 @@
 
 
 #ifdef SWIGPYTHON
-%module smilCorePython
+%module(directors="1") smilCorePython
 #endif // SWIGPYTHON
 
 #ifdef SWIGJAVA
-%module smilCoreJava
+%module(directors="1") smilCoreJava
 #endif // SWIGJAVA
 
 #ifdef SWIGOCTAVE
-%module smilCoreOctave
+%module(directors="1") smilCoreOctave
 #endif // SWIGOCTAVE
 
 %include smilCommon.i
+
+
 
 %{
 /* Includes the header in the wrapper code */
@@ -118,6 +120,11 @@ PTR_ARG_OUT_APPLY(d)
 %include "DImageDraw.hpp"
 %include "DLineHistogram.hpp"
 %include "DImageHistogram.hpp"
+
+
+// generate directors for Signal and Slot (for virtual methods overriding)
+%feature("director") Signal;
+%feature("director") Slot;
 
 %include "DSignal.h"
 %include "DSlot.h"

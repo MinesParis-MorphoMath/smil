@@ -40,27 +40,33 @@
 
 
 template <class T>
-Image<T>::Image()
-  : dataTypeMin(numeric_limits<T>::min()),
+Image<T>::Image(bool _triggerEvents)
+  : baseImage("Image"),
+    dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
+    triggerEvents = _triggerEvents;
     init();
 }
 
 template <class T>
 Image<T>::Image(UINT w, UINT h, UINT d)
-  : dataTypeMin(numeric_limits<T>::min()),
+  : baseImage("Image"),
+    dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
+    triggerEvents = true;
     init(); 
     setSize(w, h, d);
 }
 
 template <class T>
 Image<T>::Image(const Image<T> &rhs, bool cloneit)
-  : dataTypeMin(numeric_limits<T>::min()),
+  : baseImage("Image"),
+    dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
+    triggerEvents = true;
     init();
     if (cloneit) clone(rhs);
     else setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth());
@@ -69,9 +75,11 @@ Image<T>::Image(const Image<T> &rhs, bool cloneit)
 template <class T>
 template <class T2>
 Image<T>::Image(const Image<T2> &rhs, bool cloneit)
-  : dataTypeMin(numeric_limits<T>::min()),
+  : baseImage("Image"),
+    dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
+    triggerEvents = true;
     init();
     if (cloneit) clone(rhs);
     else setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth());
@@ -109,15 +117,18 @@ void Image<T>::init()
      
      operIm = NULL;
      
-     ImageCreatedEvent<T> event(this);
-     Core::getInstance()->onImageCreated.trigger(&event);
+     if (triggerEvents)
+     {
+	ImageCreatedEvent<T> event(this);
+	Core::getInstance()->onImageCreated.trigger(event);
+     }
 }
 
 template <class T>
 void Image<T>::updateOperIm()
 {
     if (!operIm)
-      operIm = new Image<T>(*this);
+      operIm = new Image<T>(false);
     setSize(*this);
 }
 

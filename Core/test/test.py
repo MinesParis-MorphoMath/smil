@@ -207,6 +207,11 @@ def run():
     tim2 = Image_Bit(bench_sx, bench_sy)
     dilate(tim1, tim2, hSE())
 
+    
+    
+class mySignal(Signal):
+  def __init(self):
+    
 #testBench()
 #testInv()
 #testMax()

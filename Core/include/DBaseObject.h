@@ -46,9 +46,9 @@ class baseObject
 {
 public:
     baseObject(bool _register=true);
-    baseObject(const char *name, bool _register=true);
+    baseObject(const char *_className, bool _register=true);
 
-    ~baseObject() ;
+    virtual ~baseObject() ;
     
     Core *getCoreInstance();
     typedef void parentClass;
@@ -57,7 +57,8 @@ public:
     virtual const char * getClassName();
 
     typedef void(baseObject::*voidMemberFunc)();
-    virtual void connect(voidMemberFunc, baseObject, voidMemberFunc);
+
+    bool triggerEvents;
 protected:
     const char * className;
     bool registered;
