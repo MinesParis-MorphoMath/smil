@@ -96,12 +96,20 @@ def show_with_name(img, name=None):
 	name = find_object_names(img)[1]
     img.c_show(name)
 
+def imInit(img, *args):
+    img.__init0__(args)
+    name = find_object_names(img)
+    print name
+    
 def deleteImage(img):
     img.hide()
+    img.__del0__()
 
 for t in imageTypes:
     t.c_show = t.show
     t.show = show_with_name
+    t.__del0__ = t.__del__
+    t.__del__ = deleteImage
 #    t.__del__ = deleteImage
 
 print "SMIL (Simple Morphological Image Library)"

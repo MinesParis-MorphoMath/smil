@@ -38,6 +38,7 @@
 #include "DImage.h"
 #include "DLineArith.h"
 #include "DImageArith.h"
+#include "DCoreEvents.h"
 
 #include "DTest.h"
 #include "DBench.h"

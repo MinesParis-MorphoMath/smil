@@ -34,7 +34,7 @@
 
 using namespace std;
 
-class Slot;
+class BaseSlot;
 
 class Event
 {
@@ -42,20 +42,19 @@ class Event
 
 class Signal
 {
-  friend class Slot;
+  friend class BaseSlot;
 public:
   Signal() {}
   virtual ~Signal() 
   {
     disconnectAll();
   }
-  virtual void connect(Slot &slot, bool _register=true);
-  virtual void disconnect(Slot &slot, bool _unregister=true);
+  virtual void connect(BaseSlot *slot, bool _register=true);
+  virtual void disconnect(BaseSlot *slot, bool _unregister=true);
   virtual void disconnectAll();
-  virtual void trigger();
-  virtual void trigger(Event &e);
+  virtual void trigger(Event *e=NULL);
 protected:
-  vector<Slot*> _slots;
+  vector<BaseSlot*> _slots;
   
 };
 

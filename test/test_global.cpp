@@ -35,9 +35,18 @@
 class maClass
 {
 public:
-  void func(Event &e)
+  void func(Event *e)
   {
     cout << "oki" << endl;
+  }
+};
+
+class imCSlot : public baseImageSlot
+{
+public:
+  virtual void run(baseImageEvent *e)
+  {
+    cout << "la oui" << endl;
   }
 };
 
@@ -53,9 +62,10 @@ int main(int argc, char *argv[])
     maClass c;
     
     MemberFunctionSlot<maClass> s(&c, &maClass::func);
+    imCSlot sl;
     Signal sign;
     
-    sign.connect(s);
+    sign.connect(&sl);
     
     sign.trigger();
     

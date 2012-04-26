@@ -31,32 +31,32 @@
 
 #include <algorithm>
 
-void Slot::registerSignal(Signal &signal)
+void BaseSlot::registerSignal(Signal *signal)
 {
-  if (std::find(_signals.begin(), _signals.end(), &signal)==_signals.end())
-    _signals.push_back(&signal);
+  if (std::find(_signals.begin(), _signals.end(), signal)==_signals.end())
+    _signals.push_back(signal);
 }
 
-void Slot::unregisterSignal(Signal &signal, bool _disconnect)
+void BaseSlot::unregisterSignal(Signal *signal, bool _disconnect)
 {
-  vector<Signal*>::iterator it = std::find(_signals.begin(), _signals.end(), &signal);
+  vector<Signal*>::iterator it = std::find(_signals.begin(), _signals.end(), signal);
   
   if (it==_signals.end())
     return;
   
   if (_disconnect)
-    (*it)->disconnect(*this, false);
+    (*it)->disconnect(this, false);
   
   _signals.erase(it);
 }
 
-void Slot::unregisterAll()
+void BaseSlot::unregisterAll()
 {
   vector<Signal*>::iterator it = _signals.begin();
   
   while(it!=_signals.end())
   {
-    (*it)->disconnect(*this, false);
+    (*it)->disconnect(this, false);
     it++;
   }
   _signals.clear();

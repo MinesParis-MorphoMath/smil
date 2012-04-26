@@ -27,95 +27,17 @@
  */
 
 
-#ifndef _DCORE_INSTANCE_H
-#define _DCORE_INSTANCE_H
+#include "DBaseImage.h"
+#include "DCoreInstance.h"
+#include "DCoreEvents.h"
 
-#include <iostream>
-#include <algorithm>
 
-// #include "DGui.h"
-#include "Qt/QtApp.h"
-
-#include "DCommon.h"
-#include <qtimer.h>
-#include "DTimer.h"
-#include "DSignal.h"
-
-class baseObject;
-
-struct stat;
-
-class guiInstance
+void baseImage::init()
 {
-public:
-  guiInstance();
-  ~guiInstance();
-  
-  void execLoop();
-  inline void processEvents()
-  { 
-      if (_qapp)
-	_qapp->processEvents(); 
-      else if (qApp)
-	qApp->processEvents();
-  }
-  
-protected:
-  QApplication *_qapp;
-  timer *_timer;
-};
-
-
-
-class Core : private baseObject
-{
-private:
-  Core ();
-  ~Core ();
-  
-  Core(const Core&);
-  void operator=(const Core&);
-
-public:
-  // Public interface
-  bool keepAlive;
-  void setValue (int val) { _value = val; }
-  int getValue () { return _value; }
-  
-  void registerObject(baseObject *obj);
-
-  void unregisterObject(baseObject *obj);
-  
-  vector<baseObject*> getRegisteredObjects() { return registeredObjects; }
-  
-  inline void processEvents() 
-  { 
-      guiInst->processEvents();
+  if (triggerEvents)
+  {
+    baseImageEvent event(this);
+    Core::getInstance()->onBaseImageCreated.trigger(&event);
   }
 
-  Signal onBaseImageCreated;
-  
-protected:
-  void deleteRegisteredObjects();
-//   QApplication *_qapp;
-  guiInstance *guiInst;
-
-  
-public:
-  static Core *getInstance();
-  static void kill();
-  static void initialize();
-  static void execLoop();
-  
-
-private:
-  // Variables membres
-  int _value;
-  vector<baseObject*> registeredObjects;
-  static Core *_singleton;
-};
-
-
-
-#endif // _DCORE_INSTANCE_H
-
+}

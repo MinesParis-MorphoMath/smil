@@ -31,10 +31,12 @@
 #define _D_BASE_IMAGE_H
 
 #include "DBaseObject.h"
-
+#include "DSignal.h"
+#include "DSlot.h"
 
 class /*_SMIL*/ baseImage : public baseObject
 {
+    typedef baseObject parentClass;
 public:
     baseImage(const char *_className="baseImage")
       :	baseObject(_className),
@@ -42,7 +44,9 @@ public:
 	allocated(false)
     {
     }
-      
+
+    virtual void init();
+    
     inline UINT getWidth() const {
         return width;
     }
@@ -107,6 +111,7 @@ protected:
     UINT allocatedSize;
 
 };
+
 
 /**
  * Check if all images in a list have the same size.

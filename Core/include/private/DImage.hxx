@@ -117,11 +117,7 @@ void Image<T>::init()
      
      operIm = NULL;
      
-     if (triggerEvents)
-     {
-	ImageCreatedEvent<T> event(this);
-	Core::getInstance()->onImageCreated.trigger(event);
-     }
+     parentClass::init();
 }
 
 template <class T>
@@ -157,13 +153,18 @@ void Image<T>::updateViewerData(bool force)
 }
 
 template <class T>
-void Image<T>::show(const char* name)
+void Image<T>::show(const char* _name)
 {
     if (!viewer)
+    {
         viewer = createViewer<T>();
+	if (name)
+	  viewer->setName(name);
+    }
     
-    if (name)
+    if (_name)
         setName(name);
+    
     
     if (!viewer)
       return;

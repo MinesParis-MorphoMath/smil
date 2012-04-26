@@ -58,6 +58,7 @@
 #include "DImageHistogram.hpp"
 /*#include "D_BaseOperations.h"*/
 #include "memory"
+#include <DCoreEvents.h>
 
 %}
  
@@ -125,11 +126,13 @@ PTR_ARG_OUT_APPLY(d)
 // generate directors for Signal and Slot (for virtual methods overriding)
 %feature("director") Signal;
 %feature("director") Slot;
+%feature("director") baseImageSlot;
 
 %include "DSignal.h"
 %include "DSlot.h"
+%include "DCoreEvents.h"
 
-
+%template(baseImageSlot) Slot<baseImageEvent>;
 
 %template(objVector) vector<baseObject*>;
 

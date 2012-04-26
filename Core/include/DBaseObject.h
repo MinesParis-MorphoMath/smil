@@ -56,11 +56,20 @@ public:
     virtual void printSelf(ostream &os=std::cout) {}
     virtual const char * getClassName();
 
+    virtual void setName(const char *_name)
+    {
+      name = _name;
+    }
+    virtual const char *getName()
+    {
+      return name;
+    }
     typedef void(baseObject::*voidMemberFunc)();
 
     bool triggerEvents;
 protected:
     const char * className;
+    const char* name;
     bool registered;
 
     friend class Core;

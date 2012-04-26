@@ -209,8 +209,8 @@ def run():
 
     
     
-class mySignal(Signal):
-  def __init(self):
+#class mySignal(Signal):
+  #def __init(self):
     
 #testBench()
 #testInv()
@@ -223,5 +223,23 @@ im1.show()
 im2 = Image(im1)
 im2.show()
 enhanceContrast(im1, im2)
+
+class A(object):
+    _dict = dict()
+
+    def __new__(cls):
+        if 'key' in dict():
+                print "EXISTS"
+                return A._dict['key']
+        else:
+                print "NEW"
+                return super(A, cls).__new__(cls)
+
+    def __init__(self):
+        if 'key' in dict():
+                print "EXISTS"
+        print "INIT"
+        A._dict['key'] = self
+        print ""
 
 #coreInstance.getInstance()._exec()

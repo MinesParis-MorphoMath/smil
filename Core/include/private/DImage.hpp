@@ -48,6 +48,7 @@
 template <class T>
 class Image : public baseImage
 {
+    typedef baseImage parentClass;
 public:
 
     //! Default constructor
@@ -118,7 +119,7 @@ public:
     imageViewer<T> *getViewer() { return viewer; }
     bool isVisible() { return (viewer && viewer->isVisible()); }
     
-    void init();
+    virtual void init();
     Image<T>& clone(const Image<T> &rhs);
     template <class T2>
     Image<T>& clone(const Image<T2> &rhs);
@@ -212,11 +213,10 @@ protected:
     imageViewer<T> *viewer;
 //     ImageViewerWidget *viewer;
     
-    const char* name;
     void updateViewerData(bool force=false);
 public:
-    void setName(const char* name);
-    virtual void show(const char* name=NULL);
+    virtual void setName(const char *_name);
+    virtual void show(const char* _name=NULL);
     virtual void hide() {  if (viewer) viewer->hide(); }
 
 };
@@ -227,17 +227,6 @@ Image<T> *createImage(Image<T> &src)
 {
     return new Image<T>(src);
 }
-
-template <class T>
-class ImageCreatedEvent : public Event
-{
-public:
-  ImageCreatedEvent(Image<T> *img=NULL)
-    : image(img)
-  {
-  }
-  Image<T> *image;
-};
 
 /** @}*/
 

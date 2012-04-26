@@ -31,21 +31,21 @@
 
 #include <algorithm>
 
-void Signal::connect(Slot &slot, bool _register)
+void Signal::connect(BaseSlot *slot, bool _register)
 {
-  vector<Slot*>::iterator it = std::find(_slots.begin(), _slots.end(), &slot);
+  vector<BaseSlot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
   
   if (it!=_slots.end())
     return;
   
-  _slots.push_back(&slot);
+  _slots.push_back(slot);
   if (_register)
-    slot.registerSignal(*this);
+    slot->registerSignal(this);
 }
 
-void Signal::disconnect(Slot &slot, bool _unregister)
+void Signal::disconnect(BaseSlot *slot, bool _unregister)
 {
-  vector<Slot*>::iterator it = std::find(_slots.begin(), _slots.end(), &slot);
+  vector<BaseSlot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
   
   if (it==_slots.end())
     return;
@@ -53,40 +53,27 @@ void Signal::disconnect(Slot &slot, bool _unregister)
   _slots.erase(it);
   
   if (_unregister)
-    slot.unregisterSignal(*this, false);
+    slot->unregisterSignal(this, false);
 }
 
 void Signal::disconnectAll()
 {
-  vector<Slot*>::iterator it = _slots.begin();
+  vector<BaseSlot*>::iterator it = _slots.begin();
   
   while(it!=_slots.end())
   {
-    (*it)->unregisterSignal(*this, false);
+    (*it)->unregisterSignal(this, false);
     it++;
   }
 }
 
-void Signal::trigger()
+void Signal::trigger(Event *e)
 {
-  vector<Slot*>::iterator it = _slots.begin();
-  
-  Event e;
+  vector<BaseSlot*>::iterator it = _slots.begin();
   
   while(it!=_slots.end())
   {
-    (*it)->run(e);
-    it++;
-  }
-}
-
-void Signal::trigger(Event &e)
-{
-  vector<Slot*>::iterator it = _slots.begin();
-  
-  while(it!=_slots.end())
-  {
-    (*it)->run(e);
+    (*it)->_run(e);
     it++;
   }
 }

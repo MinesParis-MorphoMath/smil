@@ -30,35 +30,49 @@
 #define _DSLOT_H
 
 #include <vector>
+#include <iostream>
 
 using namespace std;
 
 class Event;
 class Signal;
 
-class Slot
+class BaseSlot
 {
   friend class Signal;
 public:
-  Slot() {}
-  virtual ~Slot() 
+  BaseSlot() {}
+  virtual ~BaseSlot() 
   {
     unregisterAll();
   }
-  virtual void run(Event &e) = 0;
 protected:
-  virtual void registerSignal(Signal &signal);
-  virtual void unregisterSignal(Signal &signal, bool _disconnect=true);
+  virtual void _run(Event *e) = 0;
+  virtual void registerSignal(Signal *signal);
+  virtual void unregisterSignal(Signal *signal, bool _disconnect=true);
   virtual void unregisterAll();
   vector<Signal*> _signals;
 };
 
-
-template <class T, class eventT=Event>
-class MemberFunctionSlot : public Slot
+template <class eventT>
+class Slot : public BaseSlot
 {
 public:
-  typedef void(T::*memberFunc)(eventT&);
+  virtual void run(eventT *e)
+  {
+  }
+protected:
+  virtual void _run(Event *e)
+  {
+    run(static_cast<eventT*>(e));
+  }
+};
+
+template <class T, class eventT=Event>
+class MemberFunctionSlot : public Slot<eventT>
+{
+public:
+  typedef void(T::*memberFunc)(eventT*);
   MemberFunctionSlot(T *inst, memberFunc func)
   {
     _instance = inst;
@@ -67,10 +81,26 @@ public:
 protected:
   T *_instance;
   memberFunc _function;
-  virtual void run(Event &e) 
+  virtual void run(eventT *e) 
   { 
-    eventT *ePtr = static_cast<eventT*>(&e);
-    (_instance->*_function)(*ePtr);
+    (_instance->*_function)(e);
+  }
+};
+
+template <class eventT=Event>
+class FunctionSlot : public Slot<eventT>
+{
+public:
+  typedef void(*funcPtr)(eventT*);
+  FunctionSlot(funcPtr func)
+  {
+    _function = func;
+  }
+protected:
+  funcPtr _function;
+  virtual void run(eventT *e) 
+  { 
+    (*_function)(e);
   }
 };
 
