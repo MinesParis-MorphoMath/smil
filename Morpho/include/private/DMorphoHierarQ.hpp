@@ -27,64 +27,62 @@
  */
 
 
-#include "DCore.h"
+#ifndef _D_MORPHO_HIERARQ_HPP
+#define _D_MORPHO_HIERARQ_HPP
 
-#include "DMorphoHierarQ.hpp"
-#include <vector>
+#include <queue>
 
-class maClass
+#include "DTypes.hpp"
+
+
+template <class T>
+class PriorityQueueToken
 {
 public:
-  void func(Event *e)
-  {
-    cout << "oki" << endl;
-  }
+  
 };
 
-class imCSlot : public baseImageSlot
+template <class T, class labelT>
+RES_T initPriorityQueue(Image<T> &imIn, Image<labelT> &imLbl, priority_queue<T> &pq)
 {
-public:
-  virtual void run(baseImageEvent *e)
-  {
-    cout << "la oui" << endl;
-  }
-};
-
-int main(int argc, char *argv[])
-{
-//     QApplication app(argc, argv);
-    Core::initialize();
+    // Empty the priority queue
+    pq.empty();
     
-    Image_UINT8 im1(50,50);
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
+    typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
     
-    maClass c;
-    
-    MemberFunctionSlot<maClass> s(&c, &maClass::func);
-    imCSlot sl;
-    Signal sign;
-    
-    sign.connect(&sl);
-    
-    sign.trigger();
-    
-//     im1.connect(
-    
-//     im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
-
-    
-    im1 << UINT8(50);
-    im2 << UINT8(100);
-    
-    UINT8 vals[] = { 0, 1, 2, 3, 4 };
-
-    im3 << (im1 + im2);
-    
-    im3.show();
-    
-//     core::getInstance()->kill();
-//     core::execLoop();
-    
+    for (int i=0;i<imIn.getPixelCount();i++)
+    {
+    }
 }
+
+// /**
+//  * Initializes the hierarchical list with the marker image
+//  * \param local_ctx pointer to the structure holding all the information needed 
+//  * by the algorithm
+//  */
+// static INLINE void MB_HierarchyInit(MB_Watershed_Ctx *local_ctx)
+// {
+//     Uint32 i,j;
+//     PIX32 *p;
+//     
+//     /*All the control are reset */
+//     for(i=0;i<256;i++) {
+//         local_ctx->HierarchicalList[i].firstx = local_ctx->HierarchicalList[i].lastx = MB_LIST_END;
+//         local_ctx->HierarchicalList[i].firsty = local_ctx->HierarchicalList[i].lasty = MB_LIST_END;
+//     }
+//      
+//     /* The first marker are inserted inside the hierarchical list */
+//     local_ctx->current_water_level = 0;
+//     for(i=0; i<local_ctx->height; i++) {
+//         for(j=0; j<local_ctx->bytes_marker; j+=4) {
+//              p = (PIX32 *) (local_ctx->plines_marker[i] + local_ctx->linoff_marker + j);
+//              if ((*p)!=0) {
+//                  MB_InsertInHierarchicalList(local_ctx,j/4,i,0);
+//              }
+//         }
+//     }
+// }
+// 
+
+#endif // _D_MORPHO_HIERARQ_HPP
 

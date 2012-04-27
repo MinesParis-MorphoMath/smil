@@ -34,6 +34,8 @@
 #include "DSlot.h"
 #include "DBaseImage.h"
 
+template <class T>
+class Image;
 
 class baseImageEvent : public Event
 {
@@ -46,6 +48,21 @@ public:
 };
 
 typedef Slot<baseImageEvent> baseImageSlot;
+
+
+template <class T>
+class imageEvent : public Event
+{
+public:
+  imageEvent(Image<T> *im)
+    : image(im)
+    {
+    }
+    const Image<T>* image;
+};
+
+typedef Slot< imageEvent<UINT8> > imageSlot_UINT8;
+typedef Slot< imageEvent<UINT16> > imageSlot_UINT16;
 
 #endif // _D_CORE_EVENTS_H
 

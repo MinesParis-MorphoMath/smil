@@ -32,7 +32,7 @@
 
 #include "DBaseImage.h"
 #include "DImageViewer.h"
-#include <DSignal.h>
+#include "DSignal.h"
 
 
 /**
