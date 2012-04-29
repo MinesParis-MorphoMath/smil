@@ -41,6 +41,10 @@
 
 %feature("autodoc", "1");
 
+%{
+#include "stddef.h"
+%}
+
 // CMake generated list of interface files
 
 ${SWIG_INCLUDE_DEFINITIONS}
