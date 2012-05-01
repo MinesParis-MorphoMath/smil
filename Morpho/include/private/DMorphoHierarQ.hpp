@@ -31,28 +31,94 @@
 #define _D_MORPHO_HIERARQ_HPP
 
 #include <queue>
+#include <deque>
 
 #include "DTypes.hpp"
 
 
+
+enum HQ_STATUS
+{
+  CANDIDATE,
+  QUEUED,
+  LABELED,
+  WS_LINE
+};
+
 template <class T>
-class PriorityQueueToken
+class PQToken
 {
 public:
-  
+    T value;
+    
+    unsigned int x, y, z;
+};
+
+template <class T>
+class PriorityQueueContainer
+{
+};
+
+template <class T>
+class PQStack : public deque< PQToken<T> >
+{
+public:
+    T value;
+    bool operator < (const PQStack<T> &s ) const 
+    {
+        return value < s.value;
+    }
+};
+
+template <class T>
+class PriorityQueue
+{
+public:
+    typedef typename std::pair<T, UINT> elementType;
+    typedef typename std::vector< elementType > containerType;
+    typedef typename std::less<typename containerType::value_type > compareType;
+    
+    inline bool empty()
+    {
+      return priorityQueue.empty();
+    }
+    
+protected:
+    priority_queue<elementType, containerType, compareType > priorityQueue;
 };
 
 template <class T, class labelT>
-RES_T initPriorityQueue(Image<T> &imIn, Image<labelT> &imLbl, priority_queue<T> &pq)
+RES_T initPriorityQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, PriorityQueue<T> *pq)
 {
     // Empty the priority queue
-    pq.empty();
+    pq->clear();
     
-    typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
+    typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
+    typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
+    typename ImDtTypes<labelT>::lineType statPixels = imStatus.getPixels();
     
-    for (int i=0;i<imIn.getPixelCount();i++)
-    {
-    }
+    UINT x, y, z;
+    UINT s[3];
+    
+    imIn.getSize(s);
+    
+    for (UINT k=0;k<s[2];k++)
+      for (UINT j=0;j<s[1];j++)
+	for (UINT i=0;i<s[0];i++)
+	{
+	  if (*lblPixels!=0)
+	  {
+	      *statPixels = QUEUED;
+	  }
+	  else 
+	  {
+	      *statPixels = CANDIDATE;
+	  }
+	  inPixels++;
+	  lblPixels++;
+	  statPixels++;
+	}
+    
 }
 
 // /**

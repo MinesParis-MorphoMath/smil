@@ -68,6 +68,13 @@ public:
 	*d = depth;
     }
     
+    inline void getSize(UINT s[3])
+    {
+	s[0] = width;
+	s[1] = height;
+	s[2] = depth;
+    }
+    
     inline UINT getPixelCount() const {
         return pixelCount;
     }
@@ -85,12 +92,19 @@ public:
     virtual void* getVoidPointer() = 0;
     virtual void modified() = 0;
 
-    inline int getOffsetFromCoords(int x, int y, int z)
+    inline UINT getOffsetFromCoords(UINT x, UINT y, UINT z)
     {
 	if (x<0 || x>=width) return -1;
 	if (y<0 || y>=height) return -1;
 	if (z<0 || z>=depth) return -1;
 	return z*width*height + y*width + x;
+    }
+
+    inline void getCoordsFromOffset(UINT off, UINT &x, UINT &y, UINT &z)
+    {
+	z = off / (width*height);
+	y = (off % (width*height))/width;
+	x = off % width;
     }
 
     virtual void show(const char* name=NULL) {}
