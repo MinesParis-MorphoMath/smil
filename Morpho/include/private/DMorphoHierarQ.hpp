@@ -34,64 +34,104 @@
 #include <deque>
 
 #include "DTypes.hpp"
+#include <DStructuringElement.h>
 
 
 
 enum HQ_STATUS
 {
-  CANDIDATE,
-  QUEUED,
-  LABELED,
-  WS_LINE
+  HQ_CANDIDATE,
+  HQ_QUEUED,
+  HQ_LABELED,
+  HQ_WS_LINE
 };
 
 template <class T>
 class PQToken
 {
 public:
-    T value;
-    
-    unsigned int x, y, z;
-};
-
-template <class T>
-class PriorityQueueContainer
-{
-};
-
-template <class T>
-class PQStack : public deque< PQToken<T> >
-{
-public:
-    T value;
-    bool operator < (const PQStack<T> &s ) const 
+    PQToken(T _value, UINT _offset, UINT _index)
+      : value(_value), offset(_offset), index(_index)
     {
-        return value < s.value;
     }
+    T value;
+    UINT offset;
+    bool operator > (const PQToken<T> &s ) const 
+    {
+	T sVal = s.value;
+	if (value!=sVal)
+	  return value > sVal;
+	else return index > s.index;
+    }
+protected:
+    UINT index;
 };
+
 
 template <class T>
 class PriorityQueue
 {
 public:
-    typedef typename std::pair<T, UINT> elementType;
+//     typedef typename std::pair<T, UINT> elementType;
+    typedef PQToken<T> elementType;
     typedef typename std::vector< elementType > containerType;
-    typedef typename std::less<typename containerType::value_type > compareType;
+    typedef typename std::greater<typename containerType::value_type > compareType;
+    
+    PriorityQueue()
+    {
+      reset();
+    }
+    
+    void reset()
+    {
+      while(!priorityQueue.empty())
+	priorityQueue.pop();
+      index = 0;
+    }
     
     inline bool empty()
     {
       return priorityQueue.empty();
     }
     
+    inline void push(T value, UINT offset)
+    {
+      priorityQueue.push(PQToken<T>(value, offset, index++));
+    }
+    
+    inline const elementType& top()
+    {
+      return priorityQueue.top();
+    }
+    
+    inline void pop()
+    {
+      priorityQueue.pop();
+    }
+    
+    inline UINT size()
+    {
+      return priorityQueue.size();
+    }
+    
+    void printSelf()
+    {
+	while(!priorityQueue.empty())
+	{
+	    cout << (int)(priorityQueue.top().value) << ", " << (int)(priorityQueue.top().offset) << endl;
+	    priorityQueue.pop();
+	}
+    }
 protected:
     priority_queue<elementType, containerType, compareType > priorityQueue;
+    UINT index;
 };
 
 template <class T, class labelT>
 RES_T initPriorityQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, PriorityQueue<T> *pq)
 {
     // Empty the priority queue
-    pq->clear();
+    pq->reset();
     
     typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
     typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
@@ -101,6 +141,7 @@ RES_T initPriorityQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imSt
     UINT s[3];
     
     imIn.getSize(s);
+    UINT offset = 0;
     
     for (UINT k=0;k<s[2];k++)
       for (UINT j=0;j<s[1];j++)
@@ -108,17 +149,96 @@ RES_T initPriorityQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imSt
 	{
 	  if (*lblPixels!=0)
 	  {
-	      *statPixels = QUEUED;
+	      pq->push(*inPixels, offset);
+	      *statPixels = HQ_LABELED;
 	  }
 	  else 
 	  {
-	      *statPixels = CANDIDATE;
+	      *statPixels = HQ_CANDIDATE;
 	  }
 	  inPixels++;
 	  lblPixels++;
 	  statPixels++;
+	  offset++;
 	}
     
+}
+
+template <class T, class labelT>
+RES_T processPriorityQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, PriorityQueue<T> *pq, StrElt *e)
+{
+    typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
+    typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
+    typename ImDtTypes<labelT>::lineType statPixels = imStatus.getPixels();
+    
+    vector<int> dOffsets;
+    
+    vector<Point>::iterator it_start = e->points.begin();
+    vector<Point>::iterator it_end = e->points.end();
+    vector<Point>::iterator it;
+    
+    UINT s[3];
+    imIn.getSize(s);
+    
+    // set an offset distance for each se point
+    for(it=it_start;it!=it_end;it++)
+    {
+	dOffsets.push_back(it->x + it->y*s[0] + it->z*s[0]*s[1]);
+    }
+    
+    vector<int>::iterator it_off_start = dOffsets.begin();
+    vector<int>::iterator it_off;
+    
+    
+    while(!pq->empty())
+    {
+	PQToken<T> token = pq->top();
+	UINT x0, y0, z0;
+	UINT curOffset = token.offset;
+	imIn.getCoordsFromOffset(curOffset, x0, y0, z0);
+	
+	int x, y, z;
+	UINT nbOffset;
+	UINT8 nbStat;
+	
+	for(it=it_start,it_off=it_off_start;it!=it_end;it++,it_off++)
+	{
+	    x = x0 + it->x;
+	    y = y0 + it->y;
+	    z = z0 + it->z;
+	    
+	    if (it->x!=0 || it->y!=0 || it->z!=0)
+	    if (x>=0 && x<s[0] && y>=0 && y<s[1] && z>=0 && z<s[2])
+	    {
+		nbOffset = curOffset + *it_off;
+		nbStat = statPixels[nbOffset];
+		
+		if (nbStat==HQ_CANDIDATE) // Add it to the queue
+		{
+// 		    pq->push(inPixels[nbOffset], nbOffset);
+		    statPixels[nbOffset] = HQ_QUEUED;
+		}
+		else if (nbStat==HQ_LABELED)
+		{
+		    if (statPixels[curOffset]==HQ_LABELED)
+		    {
+			if (statPixels[curOffset]==HQ_LABELED && lblPixels[curOffset]!=lblPixels[nbOffset])
+			{
+			    statPixels[curOffset] = HQ_WS_LINE;
+			    lblPixels[curOffset] = 0;
+			}
+			else 
+			{
+			  statPixels[curOffset] = HQ_LABELED;
+			  lblPixels[curOffset] = lblPixels[nbOffset];
+			}
+		    }
+		}
+		
+	    }
+	}
+	pq->pop();
+    }
 }
 
 // /**

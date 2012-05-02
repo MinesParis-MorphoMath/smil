@@ -50,6 +50,11 @@ public:
   }
 };
 
+struct obj
+{
+  int a,b;
+};
+
 int main(int argc, char *argv[])
 {
 //     QApplication app(argc, argv);
@@ -73,11 +78,6 @@ int main(int argc, char *argv[])
     
 //     im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
 
-    PriorityQueue<UINT8> pq;
-//     initPriorityQueue<UINT8, UINT8>(im1, im2, im3, &pq);
-    
-//     priority_queue< pair<UINT8, UINT> > pq;
-//     pq.push(make_pair(2, 0));
     
     im1 << UINT8(50);
     im2 << UINT8(100);

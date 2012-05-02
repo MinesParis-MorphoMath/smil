@@ -41,7 +41,7 @@ guiInstance::guiInstance()
 {
       if (!qApp)
       {
-	    cout << "Core qt created" << endl;
+// 	    cout << "Core qt created" << endl;
 	  int ac = 1;
 	  char **av = NULL;
 	  _qapp = new QApplication(ac, av);
@@ -71,7 +71,7 @@ Core::Core ()
   _value (0), 
   keepAlive(false)
 { 
-	cout << "Core created" << endl;
+// 	cout << "Core created" << endl;
     guiInst = new guiInstance();
   
 }
@@ -80,7 +80,7 @@ Core::~Core ()
 {
   deleteRegisteredObjects();
   delete guiInst;
-      cout << "Core deleted" << endl;
+//       cout << "Core deleted" << endl;
 }
 
 
