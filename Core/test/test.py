@@ -217,29 +217,25 @@ def run():
 #testMax()
 
 im1 = Image(10, 10)
+if read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)==RES_ERR:
+  read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)
 #if read("/home/mat/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp", im1)==RES_ERR:
   #read("/home/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp", im1)
-im1.show()
 im2 = Image(im1)
 im2.show()
 enhanceContrast(im1, im2)
 
-class A(object):
-    _dict = dict()
 
-    def __new__(cls):
-        if 'key' in dict():
-                print "EXISTS"
-                return A._dict['key']
-        else:
-                print "NEW"
-                return super(A, cls).__new__(cls)
+imGrad = Image(im1)
+gradient(im1, imGrad)
 
-    def __init__(self):
-        if 'key' in dict():
-                print "EXISTS"
-        print "INIT"
-        A._dict['key'] = self
-        print ""
+imWs = Image(im1)
+imWs << 0
+imWs.setPixel(75, 40, 100)
+imWs.setPixel(120, 80, 200)
 
-#coreInstance.getInstance()._exec()
+watershed(imGrad, imWs)
+imGrad.show()
+imWs.show()
+
+Core.getInstance().execLoop()

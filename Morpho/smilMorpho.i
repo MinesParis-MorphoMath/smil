@@ -48,6 +48,7 @@
 #include "DMorphoGeodesic.hpp"
 #include "DMorphoExtrema.hpp"
 #include "DMorphoArrow.hpp"
+#include "DMorphoWatershed.hpp"
 %}
  
 
@@ -71,6 +72,7 @@
 %include "DMorphoGeodesic.hpp"
 %include "DMorphoExtrema.hpp"
 %include "DMorphoArrow.hpp"
+%include "DMorphoWatershed.hpp"
 
 //TEMPLATE_WRAP_FUNC(label);
 
@@ -98,3 +100,5 @@ TEMPLATE_WRAP_FUNC(arrow);
 TEMPLATE_WRAP_FUNC(arrowGrt);
 TEMPLATE_WRAP_FUNC(arrowGrtOrEqu);
 TEMPLATE_WRAP_FUNC(arrowEqu);
+
+TEMPLATE_WRAP_FUNC_CROSS2(watershed);

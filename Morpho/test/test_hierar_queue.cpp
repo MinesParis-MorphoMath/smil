@@ -27,9 +27,9 @@
  */
 
 
-
+#include "DCore.h"
 #include "DMorpho.h"
-#include "DMorphoHierarQ.hpp"
+#include "DMorphoWatershed.hpp"
 
 class Test_HierarchicalQueue : public TestCase
 {
@@ -95,7 +95,6 @@ class Test_InitHierarchicalQueue : public TestCase
       StrElt se = hSE();
       
       initHierarchicalQueue(imIn, imLbl, imStatus, &pq);
-      processHierarchicalQueue(imIn, imLbl, imStatus, &pq, &se);
       
   }
 };
@@ -135,24 +134,24 @@ class Test_Watershed : public TestCase
       StrElt se = hSE();
       
       initHierarchicalQueue(imIn, imLbl, imStatus, &pq);
-      processHierarchicalQueue(imIn, imLbl, imStatus, &pq, &se);
+      processWatershedHierarchicalQueue(imIn, imLbl, imStatus, &pq, &se);
       
       UINT8 vecLblTruth[] = { 
 	1, 1, 1, 1, 1, 1,
 	1, 1, 1, 1, 1, 1,
-	2, 1, 3, 3, 3, 3,
+	2, 3, 3, 3, 3, 3,
+	2, 3, 3, 3, 3, 3,
 	2, 2, 3, 3, 3, 3,
-	2, 2, 2, 3, 3, 3,
 	2, 2, 2, 3, 3, 3,
 	2, 2, 2, 2, 3, 3
       };
       
       UINT8 vecStatusTruth[] = { 
 	2, 2, 2, 2, 2, 2,
-	3, 2, 3, 3, 3, 3,
-	2, 3, 3, 2, 2, 2,
-	2, 2, 3, 2, 2, 2,
-	2, 2, 2, 3, 2, 2,
+	3, 3, 3, 3, 3, 3,
+	2, 3, 2, 2, 2, 2,
+	2, 3, 2, 2, 2, 2,
+	2, 2, 3, 3, 2, 2,
 	2, 2, 2, 3, 2, 2,
 	2, 2, 2, 2, 3, 2
       };
@@ -165,6 +164,21 @@ class Test_Watershed : public TestCase
       
       TEST_ASSERT(imLbl==imLblTruth);
       TEST_ASSERT(imStatus==imStatusTruth);
+      
+      UINT8 vecLblTruth2[] = { 
+	1, 1, 1, 1, 1, 1,
+	0, 0, 0, 0, 0, 0,
+	2, 2, 2, 0, 3, 3,
+	2, 2, 2, 0, 3, 3,
+	2, 2, 2, 0, 3, 3,
+	2, 2, 2, 0, 0, 3,
+	2, 2, 2, 2, 0, 3
+      };
+      
+      imLbl << vecLbl;
+      imLblTruth << vecLblTruth2;
+      watershed(imIn, imLbl);
+      TEST_ASSERT(imLbl==imLblTruth);
       
 //       imStatusTruth.printSelf(1);
 //       imStatus.printSelf(1);
