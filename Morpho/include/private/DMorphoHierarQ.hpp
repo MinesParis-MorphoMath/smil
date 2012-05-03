@@ -207,7 +207,7 @@ RES_T processHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8
 	UINT nbOffset;
 	UINT8 nbStat;
 	
-	if (token.value > 3)
+	if (token.value > 5)
 	  break;
 	
 	int oddLine = e->odd * y0%2;
