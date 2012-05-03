@@ -35,7 +35,7 @@ class Test_HierarchicalQueue : public TestCase
 {
   virtual void run()
   {
-      PriorityQueue<UINT8> pq;
+      HierarchicalQueue<UINT8> pq;
       pq.push(2, 10);
       pq.push(2, 11);
       pq.push(2, 15);
@@ -90,17 +90,87 @@ class Test_InitHierarchicalQueue : public TestCase
       imIn << vecIn;
       imLbl << vecLbl;
       
-      PriorityQueue<UINT8> pq;
+      HierarchicalQueue<UINT8> pq;
       
-      StrElt se = sSE();
+      StrElt se = hSE();
       
-      initPriorityQueue(imIn, imLbl, imStatus, &pq);
-      imStatus.printSelf(1);
-      processPriorityQueue(imIn, imLbl, imStatus, &pq, &se);
-      pq.printSelf();
+      initHierarchicalQueue(imIn, imLbl, imStatus, &pq);
+      processHierarchicalQueue(imIn, imLbl, imStatus, &pq, &se);
       
-      imStatus.printSelf(1);
-      imLbl.printSelf(1);
+  }
+};
+
+class Test_Watershed : public TestCase
+{
+  virtual void run()
+  {
+      UINT8 vecIn[] = { 
+	2, 2, 2, 2, 2, 2,
+	7, 7, 7, 7, 7, 7,
+	2, 7, 5, 6, 2, 2,
+	2, 6, 5, 6, 2, 2,
+	2, 2, 6, 4, 3, 2,
+	2, 2, 3, 4, 2, 2,
+	2, 2, 2, 2, 4, 2
+      };
+      
+      UINT8 vecLbl[] = { 
+	1, 1, 1, 1, 1, 1,
+	0, 0, 0, 0, 0, 0,
+	2, 0, 0, 0, 3, 3,
+	2, 0, 0, 0, 3, 3,
+	2, 2, 0, 0, 0, 3,
+	2, 2, 0, 0, 3, 3,
+	2, 2, 2, 2, 0, 3
+      };
+      
+      Image_UINT8 imIn(6,7);
+      Image_UINT8 imLbl(imIn);
+      Image_UINT8 imStatus(imIn);
+
+      imIn << vecIn;
+      imLbl << vecLbl;
+      
+      HierarchicalQueue<UINT8> pq;
+      StrElt se = hSE();
+      
+      initHierarchicalQueue(imIn, imLbl, imStatus, &pq);
+      processHierarchicalQueue(imIn, imLbl, imStatus, &pq, &se);
+      
+      UINT8 vecLblTruth[] = { 
+	1, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 1,
+	2, 1, 3, 3, 3, 3,
+	2, 2, 3, 3, 3, 3,
+	2, 2, 2, 3, 3, 3,
+	2, 2, 2, 3, 3, 3,
+	2, 2, 2, 2, 3, 3
+      };
+      
+      UINT8 vecStatusTruth[] = { 
+	2, 2, 2, 2, 2, 2,
+	3, 2, 3, 3, 3, 3,
+	2, 3, 3, 2, 2, 2,
+	2, 2, 3, 2, 2, 2,
+	2, 2, 2, 3, 2, 2,
+	2, 2, 2, 3, 2, 2,
+	2, 2, 2, 2, 3, 2
+      };
+      
+      Image_UINT8 imLblTruth(imIn);
+      Image_UINT8 imStatusTruth(imIn);
+      
+      imLblTruth << vecLblTruth;
+      imStatusTruth << vecStatusTruth;
+      
+      TEST_ASSERT(imLbl==imLblTruth);
+      TEST_ASSERT(imStatus==imStatusTruth);
+      
+//       imStatusTruth.printSelf(1);
+//       imStatus.printSelf(1);
+//     
+//       grt(imStatus, imStatusTruth, imIn);
+//       imIn.printSelf(1);
   }
 };
 
@@ -109,7 +179,8 @@ int main(int argc, char *argv[])
 {
       TestSuite ts;
 //       ADD_TEST(ts, Test_HierarchicalQueue);
-      ADD_TEST(ts, Test_InitHierarchicalQueue);
+//       ADD_TEST(ts, Test_InitHierarchicalQueue);
+      ADD_TEST(ts, Test_Watershed);
       
       
       return ts.run();

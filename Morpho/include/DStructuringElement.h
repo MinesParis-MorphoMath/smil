@@ -87,9 +87,9 @@ inline void operator << (ostream &os, StrElt &se)
  * 
  * Points :
  * 
- * 4 3
+ * 4 3 x
  * 5 1 2
- * 6 7
+ * 6 7 x
  * 
  */
 
@@ -116,9 +116,9 @@ class hSE : public StrElt
  * 
  * Points :
  * 
- * 3 2
+ * 3 2 x
  * 4 x 1
- * 5 6
+ * 5 6 x
  * 
  */
 

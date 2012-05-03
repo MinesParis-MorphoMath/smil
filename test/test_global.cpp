@@ -29,7 +29,6 @@
 
 #include "DCore.h"
 
-#include "DMorphoHierarQ.hpp"
 #include <vector>
 
 class maClass

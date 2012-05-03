@@ -125,7 +125,7 @@ void Image<T>::updateOperIm()
 {
     if (!operIm)
       operIm = new Image<T>(false);
-    setSize(*this);
+    operIm->setSize(*this);
 }
 
 template <class T>
@@ -346,7 +346,7 @@ void Image<T>::printSelf(ostream &os, bool displayPixVals)
 	  for (j=0;j<height;j++)
 	  {
 	    for (i=0;i<width;i++)
-	      os << (int)getPixel(i,j,k) << "  ";
+	      os << (int)getPixel(i,j,k) << ", ";
 	    os << endl;
 	  }
 	  os << endl;

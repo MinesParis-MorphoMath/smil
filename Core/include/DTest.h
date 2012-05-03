@@ -57,7 +57,11 @@ inline const char *displayTime(int t)
 class TestCase
 {
 public:
-  TestCase() : stopIfError(true), outStream(NULL) {}
+  TestCase() 
+    : stopIfError(false), 
+      outStream(NULL) 
+  {
+  }
   virtual void init() {}
   virtual void run() = 0;
   virtual void end() {}
@@ -114,19 +118,19 @@ public:
 class TestSuite
 {
 public:
-  void add(TestCase *f, const char *s);
+  void add(TestCase *f);
   RES_T run();
 private:
   list<TestCase*> funcList;
   int tElapsed;
 };
 
-#define ADD_TEST(ts, tc) \
-{ \
-  tc tc_inst; \
-  tc_inst.name = #tc; \
-  ts.add(&tc_inst, #tc); \
-}
+
+#define ADD_TEST(TS, TC) \
+TC TC##_inst; \
+TC##_inst.name = #TC; \
+TS.add(& TC##_inst); 
+
 
 
 #endif // _DTEST_H

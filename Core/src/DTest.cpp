@@ -29,7 +29,7 @@
 
 #include "DTest.h"
 
-void TestSuite::add(TestCase *f, const char *s)
+void TestSuite::add(TestCase *f)
 {
     funcList.push_back(f);
 }

@@ -47,16 +47,16 @@ enum HQ_STATUS
 };
 
 template <class T>
-class PQToken
+class HQToken
 {
 public:
-    PQToken(T _value, UINT _offset, UINT _index)
+    HQToken(T _value, UINT _offset, UINT _index)
       : value(_value), offset(_offset), index(_index)
     {
     }
     T value;
     UINT offset;
-    bool operator > (const PQToken<T> &s ) const 
+    bool operator > (const HQToken<T> &s ) const 
     {
 	T sVal = s.value;
 	if (value!=sVal)
@@ -69,15 +69,15 @@ protected:
 
 
 template <class T>
-class PriorityQueue
+class HierarchicalQueue
 {
 public:
 //     typedef typename std::pair<T, UINT> elementType;
-    typedef PQToken<T> elementType;
+    typedef HQToken<T> elementType;
     typedef typename std::vector< elementType > containerType;
     typedef typename std::greater<typename containerType::value_type > compareType;
     
-    PriorityQueue()
+    HierarchicalQueue()
     {
       reset();
     }
@@ -96,7 +96,7 @@ public:
     
     inline void push(T value, UINT offset)
     {
-      priorityQueue.push(PQToken<T>(value, offset, index++));
+      priorityQueue.push(HQToken<T>(value, offset, index++));
     }
     
     inline const elementType& top()
@@ -128,10 +128,10 @@ protected:
 };
 
 template <class T, class labelT>
-RES_T initPriorityQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, PriorityQueue<T> *pq)
+RES_T initHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> *hq)
 {
     // Empty the priority queue
-    pq->reset();
+    hq->reset();
     
     typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
     typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
@@ -149,7 +149,7 @@ RES_T initPriorityQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imSt
 	{
 	  if (*lblPixels!=0)
 	  {
-	      pq->push(*inPixels, offset);
+	      hq->push(*inPixels, offset);
 	      *statPixels = HQ_LABELED;
 	  }
 	  else 
@@ -165,7 +165,7 @@ RES_T initPriorityQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imSt
 }
 
 template <class T, class labelT>
-RES_T processPriorityQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, PriorityQueue<T> *pq, StrElt *e)
+RES_T processHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> *hq, StrElt *e)
 {
     typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
     typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
@@ -177,68 +177,98 @@ RES_T processPriorityQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &i
     vector<Point>::iterator it_end = e->points.end();
     vector<Point>::iterator it;
     
+    vector<UINT> tmpOffsets;
+    
     UINT s[3];
     imIn.getSize(s);
     
     // set an offset distance for each se point
     for(it=it_start;it!=it_end;it++)
     {
-	dOffsets.push_back(it->x + it->y*s[0] + it->z*s[0]*s[1]);
+	dOffsets.push_back(it->x - it->y*s[0] + it->z*s[0]*s[1]);
     }
     
     vector<int>::iterator it_off_start = dOffsets.begin();
     vector<int>::iterator it_off;
     
     
-    while(!pq->empty())
+    while(!hq->empty())
     {
-	PQToken<T> token = pq->top();
+	
+	HQToken<T> token = hq->top();
 	UINT x0, y0, z0;
+	
 	UINT curOffset = token.offset;
+	
+	
 	imIn.getCoordsFromOffset(curOffset, x0, y0, z0);
 	
 	int x, y, z;
 	UINT nbOffset;
 	UINT8 nbStat;
 	
+	if (token.value > 3)
+	  break;
+	
+	int oddLine = e->odd * y0%2;
+	
 	for(it=it_start,it_off=it_off_start;it!=it_end;it++,it_off++)
+	    if (it->x!=0 || it->y!=0 || it->z!=0) // useless if x=0 & y=0 & z=0
 	{
+	    
 	    x = x0 + it->x;
-	    y = y0 + it->y;
+	    y = y0 - it->y;
 	    z = z0 + it->z;
 	    
-	    if (it->x!=0 || it->y!=0 || it->z!=0)
+	    if (oddLine)
+	      x += (y+1)%2;
+	  
 	    if (x>=0 && x<s[0] && y>=0 && y<s[1] && z>=0 && z<s[2])
 	    {
 		nbOffset = curOffset + *it_off;
+		
+		if (oddLine)
+		  nbOffset += (y+1)%2;
+		
 		nbStat = statPixels[nbOffset];
 		
-		if (nbStat==HQ_CANDIDATE) // Add it to the queue
-		{
-// 		    pq->push(inPixels[nbOffset], nbOffset);
-		    statPixels[nbOffset] = HQ_QUEUED;
-		}
+		if (nbStat==HQ_CANDIDATE) // Add it to the tmp offsets queue
+		    tmpOffsets.push_back(nbOffset);
 		else if (nbStat==HQ_LABELED)
 		{
 		    if (statPixels[curOffset]==HQ_LABELED)
 		    {
-			if (statPixels[curOffset]==HQ_LABELED && lblPixels[curOffset]!=lblPixels[nbOffset])
-			{
+			if (lblPixels[curOffset]!=lblPixels[nbOffset])
 			    statPixels[curOffset] = HQ_WS_LINE;
-			    lblPixels[curOffset] = 0;
-			}
-			else 
-			{
-			  statPixels[curOffset] = HQ_LABELED;
-			  lblPixels[curOffset] = lblPixels[nbOffset];
-			}
+		    }
+		    else if (statPixels[curOffset]!=HQ_WS_LINE)
+		    {
+		      statPixels[curOffset] = HQ_LABELED;
+		      lblPixels[curOffset] = lblPixels[nbOffset];
 		    }
 		}
 		
 	    }
 	}
-	pq->pop();
+
+	if (statPixels[curOffset]==HQ_LABELED && !tmpOffsets.empty())
+	{
+	    typename vector<UINT>::iterator t_it = tmpOffsets.begin();
+	    while (t_it!=tmpOffsets.end())
+	    {
+		hq->push(inPixels[*t_it], *t_it);
+		statPixels[*t_it] = HQ_QUEUED;
+		
+		t_it++;
+	    }
+	    
+	    tmpOffsets.clear();
+	}
+	hq->pop();
     }
+    imLbl.printSelf(1);
+    imStatus.printSelf(1);
+    hq->printSelf();
 }
 
 // /**
