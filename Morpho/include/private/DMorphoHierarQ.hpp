@@ -141,7 +141,7 @@ RES_T initHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &
     
     typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
     typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
-    typename ImDtTypes<labelT>::lineType statPixels = imStatus.getPixels();
+    typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
     
     UINT x, y, z;
     UINT s[3];

@@ -62,7 +62,7 @@ RES_T fill(Image<T> &imOut, const T &value)
 
 //! Copy/cast (two images with different types)
 template <class T1, class T2>
-RES_T copy(Image<T1> &imIn, Image<T2> &imOut)
+RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
@@ -84,7 +84,7 @@ RES_T copy(Image<T1> &imIn, Image<T2> &imOut)
 
 //! Copy (two images of same type)
 template <class T>
-RES_T copy(Image<T> &imIn, Image<T> &imOut)
+RES_T copy(const Image<T> &imIn, Image<T> &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
@@ -126,7 +126,8 @@ RES_T inv(Image<T> &imIn, Image<T> &imOut)
 /**
  * Add two images.
  *
- * \param "imIn1 imIn2" Input images.
+ * \param[in] imIn1 Input image 1.
+ * \param[in] imIn2 Input image 2.
  * \param imOut Output image.
  * \see addNoSat
  */

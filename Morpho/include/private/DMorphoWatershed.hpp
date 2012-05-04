@@ -43,7 +43,7 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
 {
     typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
     typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
-    typename ImDtTypes<labelT>::lineType statPixels = imStatus.getPixels();
+    typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
     
     vector<int> dOffsets;
     
@@ -157,15 +157,15 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
 template <class T, class labelT>
 RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
-      Image_UINT8 imStatus(imIn);
+      Image<UINT8> imStatus(imIn);
 
-      HierarchicalQueue<UINT8> pq;
+      HierarchicalQueue<T> pq;
       
-      initHierarchicalQueue(imIn, imMarkers, imStatus, &pq);
+      initHierarchicalQueue<T,labelT>(imIn, imMarkers, imStatus, &pq);
       processWatershedHierarchicalQueue(imIn, imMarkers, imStatus, &pq, &se);
       
       ImDtTypes<UINT8>::lineType pixStat = imStatus.getPixels();
-      typename ImDtTypes<labelT>::lineType pixOut = imOut.getPixels();
+      typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();
       
       // Create the image containing the ws lines
       fill(imOut, T(0));
