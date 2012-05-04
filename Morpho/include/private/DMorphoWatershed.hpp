@@ -30,6 +30,10 @@
 #ifndef _D_MORPHO_WATERSHED_HPP
 #define _D_MORPHO_WATERSHED_HPP
 
+/**
+ * \ingroup HierarQ
+ * @{
+ */
 
 #include "DMorphoHierarQ.hpp"
 #include "DImage.hpp"
@@ -77,8 +81,6 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
 	int x, y, z;
 	UINT nbOffset;
 	UINT8 nbStat;
-	
-// 	if (token.value > 5) break;
 	
 	int oddLine = e->odd * y0%2;
 	
@@ -143,26 +145,39 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
 	statPixels[i] = HQ_WS_LINE;
 }
 
+/**
+ * Constrained watershed.
+ * 
+ * \param[in] imIn Input image.
+ * \param[in,out] imMarkers Label image containing the markers. 
+ * After processing, this image will contain the basins with the same label values as the initial markers.
+ * \param[out] imOut The output image containing the watershed lines.
+ */
+
 template <class T, class labelT>
-RES_T watershed(Image<T> &imIn, Image<labelT> &imLabel, StrElt se=DEFAULT_SE())
+RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
       Image_UINT8 imStatus(imIn);
 
       HierarchicalQueue<UINT8> pq;
       
-      initHierarchicalQueue(imIn, imLabel, imStatus, &pq);
-      processWatershedHierarchicalQueue(imIn, imLabel, imStatus, &pq, &se);
+      initHierarchicalQueue(imIn, imMarkers, imStatus, &pq);
+      processWatershedHierarchicalQueue(imIn, imMarkers, imStatus, &pq, &se);
       
       ImDtTypes<UINT8>::lineType pixStat = imStatus.getPixels();
-      typename ImDtTypes<labelT>::lineType pixLbl = imLabel.getPixels();
+      typename ImDtTypes<labelT>::lineType pixOut = imOut.getPixels();
       
-      for (int i=0;i<imIn.getPixelCount();i++,pixStat++,pixLbl++)
+      // Create the image containing the ws lines
+      fill(imOut, T(0));
+      T wsVal = ImDtTypes<T>::max();
+      for (int i=0;i<imIn.getPixelCount();i++,pixStat++,pixOut++)
 	if (*pixStat==HQ_WS_LINE) 
-	  *pixLbl = 0;
+	  *pixOut = wsVal;
 	
-      imLabel.modified();
+      imOut.modified();
 }
 
+/** @}*/
 
 #endif // _D_MORPHO_WATERSHED_HPP
 

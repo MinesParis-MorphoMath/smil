@@ -230,12 +230,13 @@ imGrad = Image(im1)
 gradient(im1, imGrad)
 
 imWs = Image(im1)
-imWs << 0
-imWs.setPixel(75, 40, 100)
-imWs.setPixel(120, 80, 200)
+imMark = Image(im1)
+imMark << 0
+imMark.setPixel(75, 40, 100)
+imMark.setPixel(120, 80, 200)
 
-watershed(imGrad, imWs)
-imGrad.show()
+watershed(imGrad, imMark, imWs)
+imMark.show()
 imWs.show()
 
-Core.getInstance().execLoop()
+#Core.getInstance().execLoop()

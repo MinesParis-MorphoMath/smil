@@ -30,6 +30,12 @@
 #ifndef _STR_ELT_HPP
 #define _STR_ELT_HPP
 
+/**
+ * \defgroup StrElt Structuring Elements
+ * \ingroup Morpho
+ * @{
+ */
+
 struct Point
 {
   int x;
@@ -87,9 +93,11 @@ inline void operator << (ostream &os, StrElt &se)
  * 
  * Points :
  * 
- * 4 3 x
- * 5 1 2
- * 6 7 x
+ * <table>
+ *   <tr>  <th>4</th> <th>3</th> <th>x</th>  </tr>
+ *   <tr>  <th>5</th> <th>1</th> <th>2</th>  </tr>
+ *   <tr>  <th>6</th> <th>7</th> <th>x</th>  </tr>
+ * </table>
  * 
  */
 
@@ -116,9 +124,11 @@ class hSE : public StrElt
  * 
  * Points :
  * 
- * 3 2 x
- * 4 x 1
- * 5 6 x
+ * <table>
+ *   <tr>  <th>3</th> <th>2</th> <th>x</th>  </tr>
+ *   <tr>  <th>4</th> <th>x</th> <th>1</th>  </tr>
+ *   <tr>  <th>5</th> <th>6</th> <th>x</th>  </tr>
+ * </table>
  * 
  */
 
@@ -145,9 +155,11 @@ class hSE0 : public StrElt
  * 
  * Points :
  * 
- * 5 4 3
- * 6 1 2
- * 7 8 9
+ * <table>
+ *   <tr>  <th>5</th> <th>4</th> <th>3</th>  </tr>
+ *   <tr>  <th>6</th> <th>1</th> <th>2</th>  </tr>
+ *   <tr>  <th>7</th> <th>8</th> <th>9</th>  </tr>
+ * </table>
  * 
  */
 
@@ -175,6 +187,11 @@ class sSE : public StrElt
  * 
  * Points :
  * 
+ * <table>
+ *   <tr>  <th>4</th> <th>3</th> <th>2</th>  </tr>
+ *   <tr>  <th>5</th> <th>x</th> <th>1</th>  </tr>
+ *   <tr>  <th>6</th> <th>7</th> <th>8</th>  </tr>
+ * </table>
  * 4 3 2
  * 5 x 1
  * 6 7 8
@@ -200,5 +217,7 @@ class sSE0 : public StrElt
 };
 
 #define DEFAULT_SE sSE
+
+/** @} */
 
 #endif

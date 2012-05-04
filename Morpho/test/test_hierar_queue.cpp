@@ -177,7 +177,7 @@ class Test_Watershed : public TestCase
       
       imLbl << vecLbl;
       imLblTruth << vecLblTruth2;
-      watershed(imIn, imLbl);
+      watershed(imIn, imLbl, imLbl);
       TEST_ASSERT(imLbl==imLblTruth);
       
   }

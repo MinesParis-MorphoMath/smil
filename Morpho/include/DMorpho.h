@@ -30,9 +30,18 @@
 #ifndef _DMORPHO_H
 #define _DMORPHO_H
 
+/**
+ * \defgroup Morpho
+ * @{
+ */
+
 #include "DImage.h"
 #include "DMorphoBase.hpp"
 #include "DMorphoGeodesic.hpp"
 #include "DMorphoExtrema.hpp"
+#include "DMorphoHierarQ.hpp"
+#include "DMorphoWatershed.hpp"
  
+/** @}*/
+
 #endif // _DMORPHO_H

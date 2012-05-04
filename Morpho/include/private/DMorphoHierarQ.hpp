@@ -30,6 +30,12 @@
 #ifndef _D_MORPHO_HIERARQ_HPP
 #define _D_MORPHO_HIERARQ_HPP
 
+/**
+ * \ingroup Morpho
+ * \defgroup HierarQ
+ * @{
+ */
+
 #include <queue>
 #include <deque>
 
@@ -164,6 +170,7 @@ RES_T initHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &
     
 }
 
+/** @}*/
 
 #endif // _D_MORPHO_HIERARQ_HPP
 
