@@ -66,6 +66,7 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
     {
 	
 	HQToken<T> token = hq->top();
+	hq->pop();
 	UINT x0, y0, z0;
 	
 	UINT curOffset = token.offset;
@@ -133,8 +134,13 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
 	    
 	    tmpOffsets.clear();
 	}
-	hq->pop();
     }
+    
+    // Potential remaining candidate points (points surrounded by WS_LINE points)
+    // Put their state to WS_LINE
+    for (int i=0;i<imLbl.getPixelCount();i++)
+      if (statPixels[i]==HQ_CANDIDATE)
+	statPixels[i] = HQ_WS_LINE;
 }
 
 template <class T, class labelT>
@@ -151,7 +157,7 @@ RES_T watershed(Image<T> &imIn, Image<labelT> &imLabel, StrElt se=DEFAULT_SE())
       typename ImDtTypes<labelT>::lineType pixLbl = imLabel.getPixels();
       
       for (int i=0;i<imIn.getPixelCount();i++,pixStat++,pixLbl++)
-	if (*pixStat==HQ_WS_LINE)
+	if (*pixStat==HQ_WS_LINE) 
 	  *pixLbl = 0;
 	
       imLabel.modified();

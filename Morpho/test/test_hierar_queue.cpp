@@ -180,11 +180,6 @@ class Test_Watershed : public TestCase
       watershed(imIn, imLbl);
       TEST_ASSERT(imLbl==imLblTruth);
       
-//       imStatusTruth.printSelf(1);
-//       imStatus.printSelf(1);
-//     
-//       grt(imStatus, imStatusTruth, imIn);
-//       imIn.printSelf(1);
   }
 };
 
