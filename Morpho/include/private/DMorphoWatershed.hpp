@@ -174,6 +174,7 @@ RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrEl
 	if (*pixStat==HQ_WS_LINE) 
 	  *pixOut = wsVal;
 	
+      imMarkers.modified();
       imOut.modified();
 }
 

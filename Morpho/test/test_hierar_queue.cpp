@@ -99,7 +99,7 @@ class Test_InitHierarchicalQueue : public TestCase
   }
 };
 
-class Test_Watershed : public TestCase
+class Test_ProcessWatershedHierarchicalQueue : public TestCase
 {
   virtual void run()
   {
@@ -165,21 +165,70 @@ class Test_Watershed : public TestCase
       TEST_ASSERT(imLbl==imLblTruth);
       TEST_ASSERT(imStatus==imStatusTruth);
       
-      UINT8 vecLblTruth2[] = { 
+  }
+};
+
+class Test_Watershed : public TestCase
+{
+  virtual void run()
+  {
+      UINT8 vecIn[] = { 
+	2, 2, 2, 2, 2, 2,
+	7, 7, 7, 7, 7, 7,
+	2, 7, 5, 6, 2, 2,
+	2, 6, 5, 6, 2, 2,
+	2, 2, 6, 4, 3, 2,
+	2, 2, 3, 4, 2, 2,
+	2, 2, 2, 2, 4, 2
+      };
+      
+      UINT8 vecLbl[] = { 
 	1, 1, 1, 1, 1, 1,
 	0, 0, 0, 0, 0, 0,
-	2, 2, 2, 0, 3, 3,
-	2, 2, 2, 0, 3, 3,
-	2, 2, 2, 0, 3, 3,
-	2, 2, 2, 0, 0, 3,
+	2, 0, 0, 0, 3, 3,
+	2, 0, 0, 0, 3, 3,
+	2, 2, 0, 0, 0, 3,
+	2, 2, 0, 0, 3, 3,
 	2, 2, 2, 2, 0, 3
       };
       
+      Image_UINT8 imIn(6,7);
+      Image_UINT8 imLbl(imIn);
+      Image_UINT8 imWs(imIn);
+
+      imIn << vecIn;
       imLbl << vecLbl;
-      imLblTruth << vecLblTruth2;
-      watershed(imIn, imLbl, imLbl);
-      TEST_ASSERT(imLbl==imLblTruth);
       
+      watershed(imIn, imLbl, imWs, sSE());
+      
+      UINT8 vecLblTruth[] = { 
+	1, 1, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 1,
+	2, 2, 2, 3, 3, 3,
+	2, 2, 2, 3, 3, 3,
+	2, 2, 2, 3, 3, 3,
+	2, 2, 2, 3, 3, 3,
+	2, 2, 2, 2, 3, 3
+      };
+      
+      UINT8 vecWsTruth[] = { 
+	0, 0, 0, 0, 0, 0,
+	255, 255, 255, 255, 255, 255,
+	0, 0, 0, 255, 0, 0,
+	0, 0, 0, 255, 0, 0,
+	0, 0, 0, 255, 0, 0,
+	0, 0, 0, 255, 255, 0,
+	0, 0, 0, 0, 255, 0
+      };
+      
+      Image_UINT8 imLblTruth(imIn);
+      Image_UINT8 imWsTruth(imIn);
+      
+      imLblTruth << vecLblTruth;
+      imWsTruth << vecWsTruth;
+      
+      TEST_ASSERT(imLbl==imLblTruth);
+      TEST_ASSERT(imWs==imWsTruth);
   }
 };
 
@@ -187,8 +236,9 @@ class Test_Watershed : public TestCase
 int main(int argc, char *argv[])
 {
       TestSuite ts;
-//       ADD_TEST(ts, Test_HierarchicalQueue);
-//       ADD_TEST(ts, Test_InitHierarchicalQueue);
+      ADD_TEST(ts, Test_HierarchicalQueue);
+      ADD_TEST(ts, Test_InitHierarchicalQueue);
+      ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
       ADD_TEST(ts, Test_Watershed);
       
       

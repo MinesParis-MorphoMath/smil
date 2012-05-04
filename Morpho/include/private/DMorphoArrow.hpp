@@ -97,7 +97,7 @@ RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single_generic(imag
 	srcLines = srcSlices[s];
 	destLines = destSlices[s];
 	if (oddSe)
-	  oddLine = (s%2!=0 && oddSe);
+	  oddLine = s%2!=0;
 	
 	for (int l=0;l<nLines;l++)
 	{
@@ -108,9 +108,9 @@ RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single_generic(imag
 	    
 	    for (int p=0;p<sePtsNumber;p++)
 	    {
-		x = - se.points[p].x + oddLine;
+		x = se.points[p].x + oddLine;
 		y = l - se.points[p].y;
-		z = s - se.points[p].z;
+		z = s + se.points[p].z;
 		
 		parentClass::lineFunction.trueVal = (1UL << p);
 		
