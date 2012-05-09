@@ -134,10 +134,10 @@ protected:
 };
 
 template <class T, class labelT>
-RES_T initHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> *hq)
+RES_T initHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq)
 {
     // Empty the priority queue
-    hq->reset();
+    hq.reset();
     
     typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
     typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
@@ -155,7 +155,7 @@ RES_T initHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &
 	{
 	  if (*lblPixels!=0)
 	  {
-	      hq->push(*inPixels, offset);
+	      hq.push(*inPixels, offset);
 	      *statPixels = HQ_LABELED;
 	  }
 	  else 

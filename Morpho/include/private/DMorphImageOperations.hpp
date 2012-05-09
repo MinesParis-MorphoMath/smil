@@ -185,7 +185,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(imageType
 	for (int l=0;l<nLines;l++)
 	{
 	    x = se.points[0].x + (oddLine && oddSe);
-	    y = l + se.points[0].y;
+	    y = l - se.points[0].y;
 	    z = s + se.points[0].z;
 
 	    _extract_translated_line(tmpIm, x, y, z, outBuf);
@@ -195,8 +195,8 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(imageType
 	    for (int p=1;p<sePtsNumber;p++)
 	    {
 		x = -se.points[p].x + (oddLine && oddSe);
-		y = l + -se.points[p].y;
-		z = s + -se.points[p].z;
+		y = l - se.points[p].y;
+		z = s + se.points[p].z;
 		
 		_exec_line(outBuf, tmpIm, x, y, z, outBuf);   
 	    }

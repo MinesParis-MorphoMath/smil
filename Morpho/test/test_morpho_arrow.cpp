@@ -47,24 +47,332 @@ class TestArrow : public TestCase
       };
       
       im1 << vec1;
-      arrowGrt(im1, im2, sSE0());
+      arrowGrt(im1, im2, sSE0(), UINT8(255));
       
       UINT8 vecTruth[] = { 
-	 62,  30, 255,  14, 223, 	// 62 = 0b00111110
-	126,  44,  10, 245, 139,
-	 56, 144, 221, 226, 231,
-	127, 173,  65, 128, 195,
-	248, 255, 224, 255,   0
+	0,  16, 241,  0, 80, 	// 16 = 0b00010000
+	70, 44, 10, 245, 8, 
+	0, 144, 221, 226, 100, 
+	71, 173, 65, 128, 64, 
+	0, 31, 0, 31, 0, 
       };
       
+//       im2.printSelf(1);
       imTruth << vecTruth;
       TEST_ASSERT(im2==imTruth);
   }
 };
 
+struct A
+{
+  A(const char* _name=NULL)
+  {
+    name = _name;
+    if (name)
+      cout << name << " created" << endl;
+  }
+  ~A()
+  {
+    if (name)
+      cout << name << " destroyed" << endl;
+  }
+  const char *name;
+  virtual void func()
+  {
+    cout << "A" << endl;
+  }
+  virtual inline A& operator()(int i=0)
+  {
+    clone.reset(new A("clone"));
+    return *(clone.get());
+  }
+    auto_ptr<A> clone;
+protected:
+};
+
+struct B : public A
+{
+  virtual void func()
+  {
+    cout << "B" << endl;
+  }
+  virtual inline B& operator()(int i=0)
+  {
+    static B clone = *this;
+    return clone;
+  }
+};
+
+B defA;
+void expose(A &a=defA)
+{
+  a.func();
+}
+
+void expose2(A &a=defA)
+{
+  expose(a);
+}
+
+struct C
+{
+  virtual void func(A &a)
+  {
+    expose(a);
+  }
+};
+
+
+
+struct D : public C
+{
+  virtual void func(A &a)
+  {
+    C::func(a);
+  }
+  virtual void func(B &b)
+  {
+    cout << "oké" << endl;
+    expose(b);
+  }
+};
+
+template <class T>
+class unaryMorphImageFunctionGeneric : public imageFunctionBase<T>
+{
+public:
+    unaryMorphImageFunctionGeneric(T _borderValue = numeric_limits<T>::min())
+      : borderValue(_borderValue),
+	initialValue(_borderValue)
+    {
+    }
+    
+    unaryMorphImageFunctionGeneric(T _borderValue, T _initialValue = numeric_limits<T>::min())
+      : borderValue(_borderValue),
+	initialValue(_initialValue)
+    {
+    }
+    
+    typedef Image<T> imageType;
+    typedef typename imageType::lineType lineType;
+    typedef typename imageType::sliceType sliceType;
+    typedef typename imageType::volType volType;
+    
+    virtual RES_T initialize(imageType &imIn, imageType &imOut, StrElt &se)
+    {
+	imIn.getSize(imSize);
+	
+	slicesIn = imIn.getSlices();
+	slicesOut = imOut.getSlices();
+	pixelsIn = imIn.getPixels();
+	pixelsOut = imOut.getPixels();
+	
+	sePoints = se.points;
+	Point p0 = sePoints[0];
+	if (p0.x==0 && p0.y==0 && p0.z==0)
+	{
+	    copy(imIn, imOut);
+	    sePoints.erase(sePoints.begin());
+	}
+	else fill(imOut, initialValue);
+	
+	sePointNbr = sePoints.size();
+	relativeOffsets.clear();
+	vector<Point>::iterator pt = sePoints.begin();
+	se_xmin = numeric_limits<int>::max();
+	se_xmax = numeric_limits<int>::min();
+	se_ymin = numeric_limits<int>::max();
+	se_ymax = numeric_limits<int>::min();
+	se_zmin = numeric_limits<int>::max();
+	se_zmax = numeric_limits<int>::min();
+	while(pt!=sePoints.end())
+	{
+	    if(pt->x < se_xmin) se_xmin = pt->x;
+	    if(pt->x > se_xmax) se_xmax = pt->x;
+	    if(pt->y < se_ymin) se_ymin = pt->y;
+	    if(pt->y > se_ymax) se_ymax = pt->y;
+	    if(pt->z < se_zmin) se_zmin = pt->z;
+	    if(pt->z > se_zmax) se_zmax = pt->z;
+	    
+	    relativeOffsets.push_back(pt->x - pt->y*imSize[0] + pt->z*imSize[0]*imSize[1]);
+	    pt++;
+	}
+	
+    }
+    
+    virtual RES_T _exec(Image<T> &imIn, Image<T> &imOut, StrElt &se)
+    {
+	initialize(imIn, imOut, se);
+	
+	seType st = se.getType();
+	
+	switch(st)
+	{
+	  case stGeneric:
+	    return processImage(imIn, imOut, se);
+	  case stHexSE:
+	    return processImage(imIn, imOut, *static_cast<HexagonalSE*>(&se));
+	  case stSquSE:
+	    return processImage(imIn, imOut, *static_cast<SquareSE*>(&se));
+	}
+	
+	return RES_NOT_IMPLEMENTED;
+	
+    }
+    virtual RES_T processImage(Image<T> &imIn, Image<T> &imOut, StrElt &se)
+    {
+	for(curSlice=0;curSlice<imSize[2];curSlice++)
+	{
+	    curLine = 0;
+	    processSlice(*slicesIn, *slicesOut, imSize[1], se);
+	    slicesIn++;
+	    slicesOut++;
+	}
+	    
+    }
+    virtual RES_T processImage(Image<T> &imIn, Image<T> &imOut, HexagonalSE &se)
+    {
+    }
+    virtual inline void processSlice(sliceType linesIn, sliceType linesOut, UINT &lineNbr, StrElt &se)
+    {
+	while(curLine<lineNbr)
+	{
+	    curPixel = 0;
+	    processLine(*linesIn, *linesOut, imSize[0], se);
+	    curLine++;
+	    linesIn++;
+	    linesOut++;
+	}
+    }
+    virtual inline void processLine(lineType pixIn, lineType pixOut, UINT &pixNbr, StrElt &se)
+    {
+	int x, y, z;
+	Point p;
+	UINT offset = pixIn - pixelsIn;
+	vector<Point> ptList;
+	vector<UINT> relOffsetList;
+	vector<UINT> offsetList;
+	
+	// Remove points wich are outside image
+	for (UINT i=0;i<sePointNbr;i++)
+	{
+	    p = sePoints[i];
+	    y = curLine - p.y;
+	    z = curSlice + p.z;
+	    if (y>=0 && y<imSize[1] && z>=0 && z<imSize[2])
+	    {
+	      ptList.push_back(p);
+	      relOffsetList.push_back(relativeOffsets[i]);
+	    }
+	}
+	UINT ptNbr = ptList.size();
+	
+	// Left border
+	while(curPixel < -se_xmin)
+	{
+	    offsetList.clear();
+	    for (UINT i=0;i<ptNbr;i++)
+	    {
+		x = curPixel + ptList[i].x;
+		
+		if (x>=0 && x<imSize[0])
+		  offsetList.push_back(relOffsetList[i]);
+	    }
+	    processPixel(offset, offsetList.begin(), offsetList.end());
+	    curPixel++;
+	    offset++;
+	}
+	
+	// Midle
+	offsetList.clear();
+	for (UINT i=0;i<ptNbr;i++)
+	  offsetList.push_back(relOffsetList[i]);
+	while(curPixel < pixNbr-se_xmax)
+	{
+	    processPixel(offset, offsetList.begin(), offsetList.end());
+	    curPixel++;
+	    offset++;
+	}
+	
+	// Right border
+	while(curPixel<pixNbr)
+	{
+	    offsetList.clear();
+	    for (UINT i=0;i<ptNbr;i++)
+	    {
+		x = curPixel + ptList[i].x;
+		
+		if (x>=0 && x<imSize[0])
+		  offsetList.push_back(relOffsetList[i]);
+	    }
+	    processPixel(offset, offsetList.begin(), offsetList.end());
+	    curPixel++;
+	    offset++;
+	}
+    }
+    virtual inline void processPixel(UINT &pointOffset, vector<UINT>::iterator dOffset, vector<UINT>::iterator dOffsetEnd)
+    {
+	while(dOffset!=dOffsetEnd)
+	{
+	    pixelsOut[pointOffset] = max(pixelsOut[pointOffset], pixelsIn[pointOffset + *dOffset]);
+	    dOffset++;
+	}
+    }
+protected:
+      UINT imSize[3];
+      volType slicesIn;
+      volType slicesOut;
+      lineType pixelsIn;
+      lineType pixelsOut;
+      
+      UINT curSlice;
+      UINT curLine;
+      UINT curPixel;
+      
+      vector<Point> sePoints;
+      UINT sePointNbr;
+      vector<int> relativeOffsets;
+      
+      int se_xmin;
+      int se_xmax;
+      int se_ymin;
+      int se_ymax;
+      int se_zmin;
+      int se_zmax;
+public:
+    T initialValue;
+    T borderValue;
+};
+
+template<class T>
+RES_T testDil(Image<T> &imIn, Image<T> &imOut, StrElt &se)
+{
+  unaryMorphImageFunctionGeneric<T> f;
+  f._exec(imIn, imOut, se());
+
+}
+
+#include "DCore.h"
+#include "DMorphoBase.hpp"
 
 int main(int argc, char *argv[])
 {
+//     B b;
+//      expose2(b);
+    
+	
+      Image_UINT8 im1(5,5);
+      im1 << "/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
+      Image_UINT8 im2(im1);
+      testDil(im1, im2, sSE());
+      
+      int BENCH_NRUNS = 1E2;
+      BENCH_IMG(testDil, im1, im2, sSE);
+//       BENCH_IMG(dilate, im1, im2, sSE);
+      
+      im2.show();
+      Core::execLoop();
+      
       TestSuite ts;
       ADD_TEST(ts, TestArrow);
       

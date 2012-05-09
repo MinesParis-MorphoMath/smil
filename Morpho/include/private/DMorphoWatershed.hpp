@@ -39,7 +39,7 @@
 #include "DImage.hpp"
 
 template <class T, class labelT>
-RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> *hq, StrElt *e)
+RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq, StrElt &se)
 {
     typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
     typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
@@ -47,8 +47,8 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
     
     vector<int> dOffsets;
     
-    vector<Point>::iterator it_start = e->points.begin();
-    vector<Point>::iterator it_end = e->points.end();
+    vector<Point>::iterator it_start = se.points.begin();
+    vector<Point>::iterator it_end = se.points.end();
     vector<Point>::iterator it;
     
     vector<UINT> tmpOffsets;
@@ -66,11 +66,11 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
     vector<int>::iterator it_off;
     
     
-    while(!hq->empty())
+    while(!hq.empty())
     {
 	
-	HQToken<T> token = hq->top();
-	hq->pop();
+	HQToken<T> token = hq.top();
+	hq.pop();
 	UINT x0, y0, z0;
 	
 	UINT curOffset = token.offset;
@@ -82,7 +82,7 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
 	UINT nbOffset;
 	UINT8 nbStat;
 	
-	int oddLine = e->odd * y0%2;
+	int oddLine = se.odd * y0%2;
 	
 	for(it=it_start,it_off=it_off_start;it!=it_end;it++,it_off++)
 	    if (it->x!=0 || it->y!=0 || it->z!=0) // useless if x=0 & y=0 & z=0
@@ -128,7 +128,7 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
 	    typename vector<UINT>::iterator t_it = tmpOffsets.begin();
 	    while (t_it!=tmpOffsets.end())
 	    {
-		hq->push(inPixels[*t_it], *t_it);
+		hq.push(inPixels[*t_it], *t_it);
 		statPixels[*t_it] = HQ_QUEUED;
 		
 		t_it++;
@@ -155,14 +155,14 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
  */
 
 template <class T, class labelT>
-RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrElt &se=DEFAULT_SE)
 {
       Image<UINT8> imStatus(imIn);
 
       HierarchicalQueue<T> pq;
       
-      initHierarchicalQueue<T,labelT>(imIn, imMarkers, imStatus, &pq);
-      processWatershedHierarchicalQueue(imIn, imMarkers, imStatus, &pq, &se);
+      initHierarchicalQueue<T,labelT>(imIn, imMarkers, imStatus, pq);
+      processWatershedHierarchicalQueue(imIn, imMarkers, imStatus, pq, se);
       
       ImDtTypes<UINT8>::lineType pixStat = imStatus.getPixels();
       typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();

@@ -64,7 +64,7 @@ void func(StrElt *se)
     cout << "se base" << endl;
 }
 
-void func(hSE *se)
+void func(StrElt &se)
 {
     cout << "hSE" << endl;
 }
@@ -182,109 +182,22 @@ A<double, 10>::A() {
 
 int main(int argc, char *argv[])
 {
-#ifdef BUILD_GUI
-    QApplication qapp(argc, argv);
-#endif // BUILD_GUI
-
-    int BENCH_NRUNS = 1E3;
-   
-   
-
-//     TestSuite t;
-// //     ADD_TEST(t, test_base_BIN);
-//     
-//     t.run();
-//     
-//   int iam = 0, np = 1;
-// 
-//   #pragma omp parallel private(iam, np)
-//   {
-//     #if defined (_OPENMP)
-//       np = omp_get_num_threads();
-//       iam = omp_get_thread_num();
-//     #endif
-//     printf("Hello from thread %d out of %d\n", iam, np);
-//   }
-//    
-//     UINT w = 1024, h = 1024, d = 1;
-// //     UINT w = 768, h = 576;
-//     
-//     typedef Image<Bit> imType;
-//     typedef Image<bool> imType2;
-//     
-//     imType bim1(w, h, d);
-//     imType bim2(bim1);
-//     imType bim3(bim1);
-//     
-// //     cout << "Width: " << w << endl;
-// //     cout << "Line count: " << bim1.getLineCount() << endl;
-//         
-// //     fill(bim1, Bit(1));
-//     
-//     BitArray b1(64);
-//     b1.createIntArray();
-//     
-//     BitArray b2(64);
-//     b2.createIntArray();
-//     
-//     invLine<Bit> invF;
-//     
-// //     erode(bim1, bim2, 2);
-//     
-//     fillLine< Bit >(b1, 64, Bit(1));
-//     invF(b1, 64, b1);
-//     
-//     fillLine< Bit >(b1, 6, Bit(1));
-//     fillLine< Bit >(b2, 64, Bit(0));
-//     b1[10] = Bit(1);
-//     
-// //     cpy(b1+5, 2, b2);
-//     copyBits(b1, 5, *b2.intArray);
-//     
-//     
-// //     shiftLine< Bit >(b1, 2, 64, b2);
-//     
-//     cout << b1 << endl;
-//     cout << b2 << endl;
-// //     fill(bim2, Bit(1));
-//     
-// //     return 0;
-//     
-//     Image_UINT8 im1(w,h);
-//     Image_UINT8 im2(im1);
-//     Image_UINT8 im3(im1);
-// 
-//     imType2 imb1(w,h);
-//     imType2 imb2(imb1);
-//     imType2 imb3(imb1);
-// 
-// //     fill(im1, UINT8(100));
-// //     fill(im2, UINT8(5));
-//     
-// //     sup(bim1, bim2, bim3);
-// //     dilate(imb1, imb2);
-// 
-// //     equ(im1, im2);
-//     
-//     copy(imb1, imb2);
-//     copy(bim1, bim2);
-//     
-// //     return 0;
-//     
-//     int t1 = clock();
-//     for (int i=0;i<BENCH_NRUNS;i++)
-//       copyLine<Bit>(bim1.getLines()[0], w, bim2.getLines()[0]);
-//     cout << clock()-t1 << endl;
-//     
-//     t1 = clock();
-//     for (int i=0;i<BENCH_NRUNS;i++)
-//       copyLine<bool>(imb1.getLines()[0], w, imb2.getLines()[0]);
-//     cout << clock()-t1 << endl;
-// 
-//     bim1 << Bit(0);
-//     bim1.show();
-//     
-// //     qapp.exec();
+  
+  Image_UINT8 im1(5,5);
+  Image_UINT8 im2(im1);
+  
+  UINT8 vec1[] = {
+    0, 0, 1, 1, 0,
+    0, 1, 0, 0, 0,
+    1, 1, 0, 0, 0,
+    1, 0, 1, 0, 1,
+    0, 0, 1, 1, 1
+  };
+  
+  im1 << vec1;
+  
+  label(im1, im2, sSE());
+  im2.printSelf(1);
 //     
 // //     BENCH_IMG(copy, imb1, imb2);
 // //     BENCH_IMG(copy, bim1, bim2);
@@ -312,112 +225,5 @@ int main(int argc, char *argv[])
 //     BENCH_IMG_STR(erode, "sSE", bim1, bim3, sSE());
 //     BENCH_IMG_STR(erode, "sSE", imb1, imb3, sSE());
 //     
-    
-// cout << "err: " << __FILE__ << __LINE__ << __FUNCTION__ << endl;
-    return 0;
-    
-//     Image_UINT16 im4;
-// 
-//     int sx = 1024;
-//     int sy = 1024;
-//     /*      sx = 40;
-//           sy = 20;*/
-// 
-//     im1.setSize(sx, sy);
-//     im2.setSize(sx, sy);
-//     im3.setSize(sx, sy);
-//     im4.setSize(sx, sy);
-// 
-//     fill(im1, UINT8(100));
-//     fill(im2, UINT8(5));
-// 
-// 
-//     UINT8 val = 10;
-// 
-// //       BENCH(fill, (im3, val));
-// //       BENCH(copy, (im1, im3));
-// //       BENCH(copy, (im1, im4));
-// //       BENCH(inv, (im1, im2));
-// //       BENCH(inf, (im1, im2, im3));
-// //       BENCH(inf, (im1, val, im3));
-// //       BENCH(sup, (im1, im2, im3));
-// //       BENCH(sup, (im1, val, im3));
-// //       BENCH(add, (im1, im2, im3));
-// //       BENCH(addNoSat, (im1, im2, im3));
-// //       BENCH(add, (im1, val, im3));
-// //       BENCH(sub, (im1, im2, im3));
-// //       BENCH(sub, (im1, val, im3));
-// //       BENCH(grt, (im1, im2, im3));
-// //       BENCH(div, (im1, im2, im3));
-// //       BENCH(mul, (im1, im2, im3));
-// //       BENCH(mul, (im1, val, im3));
-// //       BENCH(mulNoSat, (im1, im2, im3));
-// //       BENCH(mulNoSat, (im1, val, im3));
-// 
-// // 	BENCH(testAdd, (im1, im2, im3));
-// //       BENCH(sup, (im1, im2, im3));
-// 
-//     im3.printSelf(sx < 50);
-// 
-//     /*      fill((UINT8)1, im1);
-//           fill((UINT8)2, im2);*/
-// 
-//     Image_UINT8 im5(50,50), im6(50,50);
-// //       fill(UINT8(5), im6);
-// //       im5 = im1 + im2;
-// 
-// //       fill(im5, UINT8(100));
-//     StrElt se = hSE();
-// 
-//     im5 << UINT8(127);
-// //     erode(im5, im6, sSE(5));
-// //       im5.show();
-//     im6.show();
-
-//       se.addPoint(5,5);
-//       se.addPoint(5,0);
-    /*       se.addPoint(0,0);
-          se.addPoint(1,0);
-          se.addPoint(1,1);
-          se.addPoint(0,1);
-          se.addPoint(-1,1);
-          se.addPoint(-1,0);
-          se.addPoint(-1,-1);
-          se.addPoint(0,-1);*/
-
-//      supLine<UINT8> f;
-//       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
-//       BENCH(dilate, (im1, im3, se));
-//     BENCH(erode, (im1, im3, se));
-//       BENCH(volIm, (im1));
-//       im6.show();
-
-//       add(im1, im2, im5);
-//       im5.printSelf(sx < 50);
-//       cout << im5;
-
-//       im5.show();
-
-//       qapp.Exec();
-
-//       fill(im1, UINT8(100));
-//       fill(im3, UINT8(0));
-
-//       readPNGFile("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", &im1);
-//       im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
-//       dilate(im1, im3, se);
-
-//       im1.show();
-//       im3.show();
-#ifdef BUILD_GUI
-//     qapp.exec();
-#endif // BUILD_GUI
-
-//       baseImage *im = createImage(c);
-//       copy(im, im);
-
-//       maFunc<UINT8> fi;
-
-//       fi.test((UINT8)5);
 }
 

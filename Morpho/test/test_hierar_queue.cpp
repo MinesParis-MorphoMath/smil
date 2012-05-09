@@ -92,9 +92,9 @@ class Test_InitHierarchicalQueue : public TestCase
       
       HierarchicalQueue<UINT8> pq;
       
-      StrElt se = hSE();
+      StrElt se = hSE;
       
-      initHierarchicalQueue(imIn, imLbl, imStatus, &pq);
+      initHierarchicalQueue(imIn, imLbl, imStatus, pq);
       
   }
 };
@@ -133,8 +133,8 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       HierarchicalQueue<UINT8> pq;
       StrElt se = hSE();
       
-      initHierarchicalQueue(imIn, imLbl, imStatus, &pq);
-      processWatershedHierarchicalQueue(imIn, imLbl, imStatus, &pq, &se);
+      initHierarchicalQueue(imIn, imLbl, imStatus, pq);
+      processWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq, se);
       
       UINT8 vecLblTruth[] = { 
 	1, 1, 1, 1, 1, 1,

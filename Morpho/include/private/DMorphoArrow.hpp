@@ -108,7 +108,7 @@ RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single_generic(imag
 	    
 	    for (int p=0;p<sePtsNumber;p++)
 	    {
-		x = se.points[p].x + oddLine;
+		x = - se.points[p].x + oddLine;
 		y = l - se.points[p].y;
 		z = s + se.points[p].z;
 		
@@ -133,53 +133,53 @@ RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single_generic(imag
 
 
 template <class T>
-RES_T arrowLow(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T arrowLow(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE(), T borderValue=numeric_limits<T>::min())
 {
-    unaryMorphArrowImageFunction<T, lowSupLine<T> > iFunc(numeric_limits<T>::min());
+    unaryMorphArrowImageFunction<T, lowSupLine<T> > iFunc(borderValue);
     return iFunc(imIn, imOut, se);
 }
 
 template <class T>
-RES_T arrowLowOrEqu(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T arrowLowOrEqu(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE(), T borderValue=numeric_limits<T>::min())
 {
-    unaryMorphArrowImageFunction<T, lowOrEquSupLine<T> > iFunc(numeric_limits<T>::min());
+    unaryMorphArrowImageFunction<T, lowOrEquSupLine<T> > iFunc(borderValue);
     return iFunc(imIn, imOut, se);
 }
 
 template <class T>
-RES_T arrowGrt(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T arrowGrt(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE(), T borderValue=numeric_limits<T>::min())
 {
-    unaryMorphArrowImageFunction<T, grtSupLine<T> > iFunc(numeric_limits<T>::min());
+    unaryMorphArrowImageFunction<T, grtSupLine<T> > iFunc(borderValue);
     return iFunc(imIn, imOut, se);
 }
 
 template <class T>
-RES_T arrowGrtOrEqu(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T arrowGrtOrEqu(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE(), T borderValue=numeric_limits<T>::min())
 {
-    unaryMorphArrowImageFunction<T, grtOrEquSupLine<T> > iFunc(numeric_limits<T>::min());
+    unaryMorphArrowImageFunction<T, grtOrEquSupLine<T> > iFunc(borderValue);
     return iFunc(imIn, imOut, se);
 }
 
 template <class T>
-RES_T arrowEqu(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T arrowEqu(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE(), T borderValue=numeric_limits<T>::min())
 {
-    unaryMorphArrowImageFunction<T, equSupLine<T> > iFunc(numeric_limits<T>::min());
+    unaryMorphArrowImageFunction<T, equSupLine<T> > iFunc(borderValue);
     return iFunc(imIn, imOut, se);
 }
 
 template <class T>
-RES_T arrow(Image<T> &imIn, const char *operation, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T arrow(Image<T> &imIn, const char *operation, Image<T> &imOut, StrElt se=DEFAULT_SE(), T borderValue=numeric_limits<T>::min())
 {
     if (strcmp(operation, "==")==0)
-      return arrowEqu(imIn, imOut, se);
+      return arrowEqu(imIn, imOut, se, borderValue);
     else if (strcmp(operation, ">")==0)
-      return arrowGrt(imIn, imOut, se);
+      return arrowGrt(imIn, imOut, se, borderValue);
     else if (strcmp(operation, ">=")==0)
-      return arrowGrtOrEqu(imIn, imOut, se);
+      return arrowGrtOrEqu(imIn, imOut, se, borderValue);
     else if (strcmp(operation, "<")==0)
-      return arrowLow(imIn, imOut, se);
+      return arrowLow(imIn, imOut, se, borderValue);
     else if (strcmp(operation, "<=")==0)
-      return arrowLowOrEqu(imIn, imOut, se);
+      return arrowLowOrEqu(imIn, imOut, se, borderValue);
       
     else return RES_ERR;
 }

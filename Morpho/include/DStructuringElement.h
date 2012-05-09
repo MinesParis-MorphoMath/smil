@@ -43,7 +43,7 @@ struct Point
   int z;
 };
 
-enum seType { stGeneric, stHexSE, stSquSE };
+enum seType { stGeneric, stHexSE, stHexSE0, stSquSE, stSquSE0 };
 
 class StrElt
 {
@@ -60,10 +60,11 @@ class StrElt
 	p.z = z;
 	points.push_back(p);
     }
-    inline StrElt& operator()(int s=1)
+    virtual inline StrElt& operator()(int s=1)
     {
-	this->size = s;
-	return *this;
+	static StrElt clone = *this;
+	clone.size = s;
+	return clone;
     }
     bool odd;
     UINT size;
@@ -101,10 +102,10 @@ inline void operator << (ostream &os, StrElt &se)
  * 
  */
 
-class hSE : public StrElt
+class HexagonalSE : public StrElt
 {
   public:
-    hSE(UINT s=1) 
+    HexagonalSE(UINT s=1) 
     {
 	seT = stHexSE;
 	size = s;
@@ -116,6 +117,12 @@ class hSE : public StrElt
 	addPoint(-1,0);	// 5
 	addPoint(-1,-1);// 6
 	addPoint(0,-1);	// 7
+    }
+    virtual inline HexagonalSE& operator()(int s=1)
+    {
+	static HexagonalSE clone = *this;
+	clone.size = s;
+	return clone;
     }
 };
 
@@ -132,12 +139,12 @@ class hSE : public StrElt
  * 
  */
 
-class hSE0 : public StrElt
+class Hexagonal0SE : public StrElt
 {
   public:
-    hSE0(UINT s=1) 
+    Hexagonal0SE(UINT s=1) 
     {
-	seT = stHexSE;
+	seT = stHexSE0;
 	size = s;
 	odd = true;
 	addPoint(1,0);	// 1
@@ -146,6 +153,12 @@ class hSE0 : public StrElt
 	addPoint(-1,0);	// 4
 	addPoint(-1,-1);// 5
 	addPoint(0,-1);	// 6
+    }
+    virtual inline Hexagonal0SE& operator()(int s=1)
+    {
+	static Hexagonal0SE clone = *this;
+	clone.size = s;
+	return clone;
     }
 };
 
@@ -163,12 +176,12 @@ class hSE0 : public StrElt
  * 
  */
 
-class sSE : public StrElt
+class SquareSE : public StrElt
 {
   public:
-    sSE(UINT s=1) : StrElt(s)
+    SquareSE(UINT s=1) : StrElt(s)
     {
-// 	seT = stSquSE;
+	seT = stSquSE;
 	odd = false;
 	addPoint(0,0); 	// 1
 	addPoint(1,0);	// 2
@@ -179,6 +192,12 @@ class sSE : public StrElt
 	addPoint(-1,-1);// 7
 	addPoint(0,-1);	// 8
 	addPoint(1,-1);	// 9
+    }
+    virtual inline SquareSE& operator()(int s=1)
+    {
+	static SquareSE clone = *this;
+	clone.size = s;
+	return clone;
     }
 };
 
@@ -198,12 +217,12 @@ class sSE : public StrElt
  * 
  */
 
-class sSE0 : public StrElt
+class Square0SE : public StrElt
 {
   public:
-    sSE0(UINT s=1) : StrElt(s)
+    Square0SE(UINT s=1) : StrElt(s)
     {
-// 	seT = stSquSE;
+	seT = stSquSE0;
 	odd = false;
 	addPoint(1,0);	// 1
 	addPoint(1,1);	// 2
@@ -214,9 +233,21 @@ class sSE0 : public StrElt
 	addPoint(0,-1);	// 7
 	addPoint(1,-1);	// 8
     }
+    virtual inline Square0SE& operator()(int s=1)
+    {
+	static Square0SE clone = *this;
+	clone.size = s;
+	return clone;
+    }
 };
 
-#define DEFAULT_SE sSE
+// #define DEFAULT_SE sSE
+SquareSE sSE;
+Square0SE sSE0;
+HexagonalSE hSE;
+Hexagonal0SE hSE0;
+
+StrElt DEFAULT_SE = sSE;
 
 /** @} */
 
