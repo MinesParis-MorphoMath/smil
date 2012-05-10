@@ -92,7 +92,7 @@ class Test_InitHierarchicalQueue : public TestCase
       
       HierarchicalQueue<UINT8> pq;
       
-      StrElt se = hSE;
+      StrElt se = hSE();
       
       initHierarchicalQueue(imIn, imLbl, imStatus, pq);
       

@@ -155,7 +155,7 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
  */
 
 template <class T, class labelT>
-RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrElt &se=DEFAULT_SE)
+RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
       Image<UINT8> imStatus(imIn);
 

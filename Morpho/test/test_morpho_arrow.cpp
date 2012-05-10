@@ -211,9 +211,9 @@ public:
 	  case stGeneric:
 	    return processImage(imIn, imOut, se);
 	  case stHexSE:
-	    return processImage(imIn, imOut, *static_cast<HexagonalSE*>(&se));
+	    return processImage(imIn, imOut, *static_cast<hSE*>(&se));
 	  case stSquSE:
-	    return processImage(imIn, imOut, *static_cast<SquareSE*>(&se));
+	    return processImage(imIn, imOut, *static_cast<sSE*>(&se));
 	}
 	
 	return RES_NOT_IMPLEMENTED;
@@ -230,7 +230,7 @@ public:
 	}
 	    
     }
-    virtual RES_T processImage(Image<T> &imIn, Image<T> &imOut, HexagonalSE &se)
+    virtual RES_T processImage(Image<T> &imIn, Image<T> &imOut, hSE &se)
     {
     }
     virtual inline void processSlice(sliceType linesIn, sliceType linesOut, UINT &lineNbr, StrElt &se)
@@ -345,7 +345,7 @@ public:
 };
 
 template<class T>
-RES_T testDil(Image<T> &imIn, Image<T> &imOut, StrElt &se)
+RES_T testDil(Image<T> &imIn, Image<T> &imOut, StrElt se)
 {
   unaryMorphImageFunctionGeneric<T> f;
   f._exec(imIn, imOut, se());
@@ -367,7 +367,7 @@ int main(int argc, char *argv[])
       testDil(im1, im2, sSE());
       
       int BENCH_NRUNS = 1E2;
-      BENCH_IMG(testDil, im1, im2, sSE);
+      BENCH_IMG(testDil, im1, im2, sSE());
 //       BENCH_IMG(dilate, im1, im2, sSE);
       
       im2.show();
