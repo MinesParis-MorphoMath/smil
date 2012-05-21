@@ -31,20 +31,32 @@
 #define _D_IMAGE_VIEWER_HPP
 
 #include "DTypes.hpp"
+#include "DBaseObject.h"
+
+template <class T> class Image;
 
 /**
  * Base image viewer.
  * 
  */
 template <class T>
-class imageViewer
+class imageViewer : public baseObject
 {
 public:
+    typedef baseObject parentClass;
+    
+    imageViewer(Image<T> *im)
+      : image(im)
+      {
+      }
     virtual void show() {}
     virtual void hide() {}
     virtual bool isVisible() { return false; }
-    virtual void setName(const char* name) {}
+    virtual void setName(const char* _name) { parentClass::setName(_name); }
     virtual void loadFromData(typename ImDtTypes<T>::lineType pixels, UINT w, UINT h) {}
+    Image<T> *getImage() { return image; }
+protected:
+    Image<T> *image;
 };
 
 

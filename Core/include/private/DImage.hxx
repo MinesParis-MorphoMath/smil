@@ -85,6 +85,16 @@ Image<T>::Image(const Image<T2> &rhs, bool cloneit)
     else setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth());
 }
 
+template <class T>
+Image<T>::Image(const char *fileName)
+  : baseImage("Image"),
+    dataTypeMin(numeric_limits<T>::min()),
+    dataTypeMax(numeric_limits<T>::max())
+{ 
+    triggerEvents = true;
+    init();
+    read(fileName, *this);
+}
 
 template <class T>
 Image<T>::~Image()
@@ -113,7 +123,7 @@ void Image<T>::init()
     allocatedSize = 0;
     
      viewer = NULL;
-     name = NULL;
+     name = "";
      
      operIm = NULL;
      
@@ -140,7 +150,8 @@ void Image<T>::modified()
 template <class T>
 void Image<T>::setName(const char *_name)
 { 	
-    name = _name;
+    parentClass::setName(_name);
+    
     if (viewer)
 	viewer->setName(_name);
 }
@@ -156,14 +167,10 @@ template <class T>
 void Image<T>::show(const char* _name)
 {
     if (!viewer)
-    {
-        viewer = createViewer<T>();
-	if (name)
-	  viewer->setName(name);
-    }
+        viewer = createViewer<T>(this);
     
     if (_name)
-        setName(name);
+        setName(_name);
     
     
     if (!viewer)
@@ -316,7 +323,7 @@ RES_T Image<T>::deallocate(void)
 template <class T>
 void Image<T>::printSelf(ostream &os, bool displayPixVals)
 {
-    if (name)
+    if (name!="")
       os << "Image name: " << name << endl;
     
     if (depth>1)

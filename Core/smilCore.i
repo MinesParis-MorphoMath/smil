@@ -58,7 +58,7 @@
 #include "DImageHistogram.hpp"
 /*#include "D_BaseOperations.h"*/
 #include "memory"
-#include <DCoreEvents.h>
+#include "DCoreEvents.h"
 
 %}
  
@@ -135,6 +135,7 @@ PTR_ARG_OUT_APPLY(d)
 %template(baseImageSlot) Slot<baseImageEvent>;
 
 %template(objVector) vector<baseObject*>;
+%template(uintVector) vector<UINT>;
 
 TEMPLATE_WRAP_CLASS(vector);
 TEMPLATE_WRAP_CLASS(Image);

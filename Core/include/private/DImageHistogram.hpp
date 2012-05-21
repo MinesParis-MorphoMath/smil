@@ -80,12 +80,12 @@ RES_T thresh(Image<T> &imIn, T minVal, T maxVal, Image<T> &imOut)
 }
 
 template <class T>
-RES_T thresh(Image<T> &imIn, T maxVal, Image<T> &imOut)
+RES_T thresh(Image<T> &imIn, T minVal, Image<T> &imOut)
 {
     unaryImageFunction<T, threshLine<T> > iFunc;
     
-    iFunc.lineFunction.minVal = numeric_limits<T>::min();
-    iFunc.lineFunction.maxVal = maxVal;
+    iFunc.lineFunction.minVal = minVal;
+    iFunc.lineFunction.maxVal = numeric_limits<T>::max();
     iFunc.lineFunction.trueVal = numeric_limits<T>::max();
     iFunc.lineFunction.falseVal = numeric_limits<T>::min();
     

@@ -37,16 +37,19 @@
 #include "Qt/ImageViewer.h"
 #include <QApplication>
 
+template <class T> class Image;
+
 template <class T>
 class qtImageViewer : public imageViewer<T>
 {
 public:
-    qtImageViewer();
+    typedef imageViewer<T> parentClass;
+    qtImageViewer(Image<T> *im);
     ~qtImageViewer();
     virtual void show();
     virtual void hide();
     virtual bool isVisible();
-    virtual void setName(const char* name);
+    virtual void setName(const char* _name);
     virtual void loadFromData(typename ImDtTypes<T>::lineType pixels, UINT w, UINT h);
     QApplication *_qapp;
 protected:
@@ -56,7 +59,8 @@ protected:
 
 
 template <class T>
-qtImageViewer<T>::qtImageViewer()
+qtImageViewer<T>::qtImageViewer(Image<T> *im)
+  : imageViewer<T>(im)
 {
     if (!qApp)
     {
@@ -66,6 +70,8 @@ qtImageViewer<T>::qtImageViewer()
         _qapp = new QApplication(ac, av);
     }
     qtViewer = new ImageViewerWidget();
+    if (this->image->getName())
+      setName(this->image->getName());
 //     qtViewer = new ImageViewer();
 }
 
@@ -100,9 +106,10 @@ bool qtImageViewer<T>::isVisible()
 }
 
 template <class T>
-void qtImageViewer<T>::setName(const char* name)
+void qtImageViewer<T>::setName(const char* _name)
 {
-    qtViewer->setName(name);
+    parentClass::setName(_name);
+    qtViewer->setName(_name);
 }
 
 template <class T>

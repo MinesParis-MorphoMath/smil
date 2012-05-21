@@ -407,6 +407,17 @@ struct logicOrLine : public binaryLineFunctionBase<T>
     }
 };
 
+template <class T>
+struct logicXOrLine : public binaryLineFunctionBase<T>
+{
+    typedef typename Image<T>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
+    {
+        for (int i=0;i<size;i++)
+            lOut[i] = (T)(lIn1[i] ^ lIn2[i]);
+    }
+};
+
 
 template <class T>
 struct testLine : public tertiaryLineFunctionBase<T>

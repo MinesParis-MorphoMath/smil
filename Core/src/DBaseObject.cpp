@@ -56,8 +56,8 @@ Core *baseObject::getCoreInstance()
     return Core::getInstance(); 
 }
 
-const char * baseObject::getClassName()
+const char *baseObject::getClassName()
 {
-    return className;
+    return className.c_str();
 }
 

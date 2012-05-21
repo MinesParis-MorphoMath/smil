@@ -69,7 +69,16 @@ RES_T read(const char* filename, Image<T> &image)
     }
     
     if (res==RES_OK)
+    {
+// 	if (!image.getName())
+// 	{
+// 	    string fName = filename;
+// 	    int pos = fName.find_last_of("/\\");
+// 	    fName = fName.substr(pos+1);
+// 	    image.setName(fName.c_str());
+// 	}
 	image.modified();
+    }
     
     return res;
 }

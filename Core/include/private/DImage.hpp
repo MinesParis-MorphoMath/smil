@@ -57,6 +57,7 @@ public:
     Image(const Image<T> &rhs, bool cloneit=false);
     template <class T2>
     Image(const Image<T2> &rhs, bool cloneit=false);
+    Image(const char *fileName);
   
 public:
     ~Image();

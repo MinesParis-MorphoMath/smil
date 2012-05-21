@@ -62,14 +62,16 @@ public:
     }
     virtual const char *getName()
     {
-      return name;
+      if (name.empty())
+	return NULL;
+      return name.c_str();
     }
     typedef void(baseObject::*voidMemberFunc)();
 
     bool triggerEvents;
 protected:
-    const char * className;
-    const char* name;
+    string className;
+    string name;
     bool registered;
 
     friend class Core;

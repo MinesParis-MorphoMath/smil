@@ -372,6 +372,12 @@ RES_T logicOr(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 }
 
 template <class T>
+RES_T logicXOr(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+{
+    return binaryImageFunction<T, logicXOrLine<T> >(imIn1, imIn2, imOut);
+}
+
+template <class T>
 RES_T test(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imIn3, Image<T> &imOut)
 {
     return tertiaryImageFunction<T, testLine<T> >(imIn1, imIn2, imIn3, imOut);

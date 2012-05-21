@@ -36,15 +36,15 @@
 #include "DQtImageViewer.hpp"
 
 template <class T>
-imageViewer<T> *createViewer()
+imageViewer<T> *createViewer(Image<T> *im)
 {
-    return new qtImageViewer<T>();
+    return new qtImageViewer<T>(im);
 }
 
 #else // BUILD_GUI
 
 template <class T>
-imageViewer<T> *createViewer()
+imageViewer<T> *createViewer(Image<T> *im)
 {
     return NULL;
 }

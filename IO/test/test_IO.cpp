@@ -57,8 +57,10 @@ int main(int argc, char *argv[])
     im1 << "/home/faessel/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0603_C1_1_20100326-105102/1.bmp";
     im1 >> "/home/faessel/tmp/tmp.bmp";
     cout << endl;
+    const char *str = im2.getName();
     im2 << "/home/faessel/tmp/tmp.bmp";
     im2.show();
+//     im2.setName("ok");
 //       im3.show();
 #ifdef BUILD_GUI
     qapp.exec();

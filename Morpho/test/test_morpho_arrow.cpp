@@ -137,28 +137,33 @@ struct D : public C
   }
 };
 
-template <class T>
-class unaryMorphImageFunctionGeneric : public imageFunctionBase<T>
+template <class T_in, class T_out=T_in>
+class unaryMorphImageFunctionGeneric : public imageFunctionBase<T_in>
 {
 public:
-    unaryMorphImageFunctionGeneric(T _borderValue = numeric_limits<T>::min())
+    unaryMorphImageFunctionGeneric(T_in _borderValue = numeric_limits<T_in>::min())
       : borderValue(_borderValue),
 	initialValue(_borderValue)
     {
     }
     
-    unaryMorphImageFunctionGeneric(T _borderValue, T _initialValue = numeric_limits<T>::min())
+    unaryMorphImageFunctionGeneric(T_in _borderValue, T_out _initialValue = numeric_limits<T_out>::min())
       : borderValue(_borderValue),
 	initialValue(_initialValue)
     {
     }
     
-    typedef Image<T> imageType;
-    typedef typename imageType::lineType lineType;
-    typedef typename imageType::sliceType sliceType;
-    typedef typename imageType::volType volType;
+    typedef Image<T_in> imageInType;
+    typedef typename imageInType::lineType lineInType;
+    typedef typename imageInType::sliceType sliceInType;
+    typedef typename imageInType::volType volInType;
     
-    virtual RES_T initialize(imageType &imIn, imageType &imOut, StrElt &se)
+    typedef Image<T_out> imageOutType;
+    typedef typename imageOutType::lineType lineOutType;
+    typedef typename imageOutType::sliceType sliceOutType;
+    typedef typename imageOutType::volType volOutType;
+    
+    virtual RES_T initialize(imageInType &imIn, imageOutType &imOut, StrElt &se)
     {
 	imIn.getSize(imSize);
 	
@@ -199,27 +204,37 @@ public:
 	}
 	
     }
+    virtual RES_T finalize(imageInType &imIn, imageOutType &imOut, StrElt &se)
+    {
+    }
     
-    virtual RES_T _exec(Image<T> &imIn, Image<T> &imOut, StrElt &se)
+    virtual RES_T _exec(imageInType &imIn, imageOutType &imOut, StrElt &se)
     {
 	initialize(imIn, imOut, se);
 	
 	seType st = se.getType();
+	RES_T retVal;
 	
 	switch(st)
 	{
 	  case stGeneric:
-	    return processImage(imIn, imOut, se);
+	    retVal = processImage(imIn, imOut, se);
+	    break;
 	  case stHexSE:
-	    return processImage(imIn, imOut, *static_cast<hSE*>(&se));
+	    retVal = processImage(imIn, imOut, *static_cast<hSE*>(&se));
+	    break;
 	  case stSquSE:
-	    return processImage(imIn, imOut, *static_cast<sSE*>(&se));
+	    retVal = processImage(imIn, imOut, *static_cast<sSE*>(&se));
+	    break;
+	  default:
+	    retVal = RES_NOT_IMPLEMENTED;
 	}
 	
-	return RES_NOT_IMPLEMENTED;
+	finalize(imIn, imOut, se);
+	return retVal;
 	
     }
-    virtual RES_T processImage(Image<T> &imIn, Image<T> &imOut, StrElt &se)
+    virtual RES_T processImage(imageInType &imIn, imageOutType &imOut, StrElt &se)
     {
 	for(curSlice=0;curSlice<imSize[2];curSlice++)
 	{
@@ -228,12 +243,11 @@ public:
 	    slicesIn++;
 	    slicesOut++;
 	}
-	    
     }
-    virtual RES_T processImage(Image<T> &imIn, Image<T> &imOut, hSE &se)
-    {
-    }
-    virtual inline void processSlice(sliceType linesIn, sliceType linesOut, UINT &lineNbr, StrElt &se)
+//     virtual RES_T processImage(imageInType &imIn, imageOutType &imOut, hSE &se)
+//     {
+//     }
+    virtual inline void processSlice(sliceInType linesIn, sliceOutType linesOut, UINT &lineNbr, StrElt &se)
     {
 	while(curLine<lineNbr)
 	{
@@ -244,7 +258,7 @@ public:
 	    linesOut++;
 	}
     }
-    virtual inline void processLine(lineType pixIn, lineType pixOut, UINT &pixNbr, StrElt &se)
+    virtual inline void processLine(lineInType pixIn, lineOutType pixOut, UINT &pixNbr, StrElt &se)
     {
 	int x, y, z;
 	Point p;
@@ -283,7 +297,7 @@ public:
 	    offset++;
 	}
 	
-	// Midle
+	// Middle
 	offsetList.clear();
 	for (UINT i=0;i<ptNbr;i++)
 	  offsetList.push_back(relOffsetList[i]);
@@ -312,6 +326,7 @@ public:
     }
     virtual inline void processPixel(UINT &pointOffset, vector<UINT>::iterator dOffset, vector<UINT>::iterator dOffsetEnd)
     {
+	// Example: dilation function
 	while(dOffset!=dOffsetEnd)
 	{
 	    pixelsOut[pointOffset] = max(pixelsOut[pointOffset], pixelsIn[pointOffset + *dOffset]);
@@ -320,10 +335,10 @@ public:
     }
 protected:
       UINT imSize[3];
-      volType slicesIn;
-      volType slicesOut;
-      lineType pixelsIn;
-      lineType pixelsOut;
+      volInType slicesIn;
+      volOutType slicesOut;
+      lineInType pixelsIn;
+      lineOutType pixelsOut;
       
       UINT curSlice;
       UINT curLine;
@@ -340,8 +355,8 @@ protected:
       int se_zmin;
       int se_zmax;
 public:
-    T initialValue;
-    T borderValue;
+    T_out initialValue;
+    T_in borderValue;
 };
 
 template<class T>
@@ -352,6 +367,106 @@ RES_T testDil(Image<T> &imIn, Image<T> &imOut, StrElt se)
 
 }
 
+template <class T1, class T2>
+class labelFunct : public unaryMorphImageFunctionGeneric<T1, T2>
+{
+public:
+    typedef unaryMorphImageFunctionGeneric<T1, T2> parentClass;
+    virtual RES_T initialize(typename parentClass::imageInType &imIn, typename parentClass::imageOutType &imOut, StrElt &se)
+    {
+	parentClass::initialize(imIn, imOut, se);
+	fill(imOut, T2(0));
+	labels = 100;
+    }
+    
+    // The generic way
+    virtual inline void processPixel(UINT &pointOffset, vector<UINT>::iterator dOffset, vector<UINT>::iterator dOffsetEnd)
+    {
+	T1 pVal = this->pixelsIn[pointOffset];
+	
+	if (pVal==0)
+	  return;
+
+	if (pointOffset == 8899)
+	{
+// 	  if (this->pixelsOut[pointOffset]==0)
+// 	    this->pixelsOut[pointOffset] = 255;
+// 	  return;
+	  pointOffset = pointOffset;
+	}
+// 	else if (this->pixelsIn[pointOffset]!=0)
+// 	  this->pixelsOut[pointOffset] = 100;
+// 	return;
+	
+	T2 curLabel = this->pixelsOut[pointOffset];
+	
+	if (curLabel==0)
+	{
+	  curLabel = ++labels;
+	  this->pixelsOut[pointOffset] = curLabel;
+	}
+	
+	while(dOffset!=dOffsetEnd)
+	{
+	    UINT curDOffset = pointOffset + *dOffset;
+	    
+	    if (this->pixelsIn[curDOffset] == pVal)
+	    {
+	      T2 outPixVal = this->pixelsOut[curDOffset];
+	      if (outPixVal==0)
+		this->pixelsOut[curDOffset] = curLabel;
+ 	      else if (outPixVal != curLabel)
+	      {
+		T2 minV = min(outPixVal, curLabel);
+		T2 maxV = max(outPixVal, curLabel);
+		if (lut[maxV]==0)
+		  lut[maxV] = minV;
+		else lut[lut[maxV]] = minV;
+	      }
+	    }
+	    dOffset++;
+	}
+    }
+    virtual RES_T finalize(typename parentClass::imageInType &imIn, typename parentClass::imageOutType &imOut, StrElt &se)
+    {
+	this->pixelsOut = imOut.getPixels();
+	UINT lutVal;
+	
+// 	return RES_OK;
+	
+	for (int i=0;i<imOut.getPixelCount();i++,this->pixelsOut++)
+	  if (*this->pixelsOut!=0)
+	  {
+	    lutVal = *this->pixelsOut;
+	    while (lut[lutVal]!=0)
+	      lutVal = lut[lutVal];
+// 	    cout << (int)*this->pixelsOut << " -> " << (int)lutVal << endl;
+	    *this->pixelsOut = lutVal;
+	  }
+	  
+	  map<UINT, UINT>::iterator it = lut.begin();
+	  while(it!=lut.end())
+	  {
+	    cout << (int)(*it).first << " -> " << (int)(*it).second << endl;
+	    it++;
+	  }
+    }
+protected:
+  UINT labels;
+  vector<UINT> lblVect;
+  map<UINT, UINT> lut;
+  map<UINT, UINT*> lblMap;
+};
+
+template<class T>
+RES_T testLabel(Image<T> &imIn, Image<T> &imOut, StrElt se)
+{
+  labelFunct<T,T> f;
+  f._exec(imIn, imOut, se());
+
+}
+
+
 #include "DCore.h"
 #include "DMorphoBase.hpp"
 
@@ -359,22 +474,24 @@ int main(int argc, char *argv[])
 {
 //     B b;
 //      expose2(b);
-    
+      Core::initialize();
 	
       Image_UINT8 im1(5,5);
-      im1 << "/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
+      im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
       Image_UINT8 im2(im1);
-      testDil(im1, im2, sSE());
+      thresh(im1, (UINT8)127, im1);
+      
+      testLabel(im1, im2, sSE());
       
       int BENCH_NRUNS = 1E2;
-      BENCH_IMG(testDil, im1, im2, sSE());
+//       BENCH_IMG(testDil, im1, im2, sSE());
 //       BENCH_IMG(dilate, im1, im2, sSE);
       
       im2.show();
       Core::execLoop();
       
       TestSuite ts;
-      ADD_TEST(ts, TestArrow);
+//       ADD_TEST(ts, TestArrow);
       
       
       return ts.run();
