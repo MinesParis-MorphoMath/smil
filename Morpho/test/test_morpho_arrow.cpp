@@ -377,7 +377,9 @@ public:
     {
 	parentClass::initialize(imIn, imOut, se);
 	fill(imOut, T2(0));
-	labels = 100;
+	labels = 0;
+	pairs.clear();
+	lut.clear();
     }
     
     // The generic way
@@ -394,12 +396,6 @@ public:
 	{
 	  curLabel = ++labels;
 	  this->pixelsOut[pointOffset] = curLabel;
-// 	  pairs.insert(make_pair<UINT,UINT>(curLabel, curLabel));
-	}
-	
-	if (pointOffset == 8899)
-	{
-	  pointOffset = pointOffset;
 	}
 	
 	while(dOffset!=dOffsetEnd)
@@ -412,15 +408,7 @@ public:
 	      if (outPixVal==0)
 		this->pixelsOut[curDOffset] = curLabel;
  	      else if (outPixVal != curLabel)
-	      {
-		T2 minV = min(outPixVal, curLabel);
-		T2 maxV = max(outPixVal, curLabel);
-// 		if (lut[maxV]==0)
-// 		  lut[maxV] = minV;
-// 		else lut[lut[maxV]] = minV;
-		  pairs.insert(make_pair<UINT,UINT>(curLabel, outPixVal));
-// 		  pairs.insert(make_pair<UINT,UINT>(minV, maxV));
-	      }
+		pairs.insert(make_pair<UINT,UINT>(curLabel, outPixVal));
 	    }
 	    dOffset++;
 	}
@@ -428,18 +416,8 @@ public:
     virtual RES_T finalize(typename parentClass::imageInType &imIn, typename parentClass::imageOutType &imOut, StrElt &se)
     {
 	this->pixelsOut = imOut.getPixels();
-	UINT lutVal;
-	
-// 	return RES_OK;
 	
 	set<pair<UINT, UINT> >::iterator pair_it = pairs.begin();
-	while(pair_it!=pairs.end())
-	{
-	  cout << (int)(*pair_it).first << " -> " << (int)(*pair_it).second << endl;
-	  pair_it++;
-	}
-	
-	cout << "---------" << endl;
 	
 	vector< set<UINT> > stacks;
 	
@@ -452,7 +430,7 @@ public:
 	{
 	    UINT val1 = (*pair_it).first;
 	    UINT val2 = (*pair_it).second;
-	    // find in the stack a set containing one of the values
+	    // find in the stack a set containing one of the pair values
 	    stack_it = stacks.begin();
 	    while(stack_it!=stacks.end())
 	    {
@@ -487,26 +465,11 @@ public:
 	typedef vector< set<UINT> >::iterator stackIterT;
 	typedef set<UINT>::iterator setIterT;
 	
-	stack_it = stacks.begin();
-	
-	for( ; stack_it!=stacks.end() ; stack_it++)
+	for(stack_it=stacks.begin() ; stack_it!=stacks.end() ; stack_it++)
 	  stackMap[*(*stack_it).begin()] = &(*stack_it);
 	
 	
-	
-
-	for(stackIterT stack_it=stacks.begin() ; stack_it!=stacks.end() ; stack_it++)
-	{
-	    for(setIterT set_it=(*stack_it).begin();set_it!=(*stack_it).end();set_it++)
-	      cout << (int)(*set_it) << " ";
-	    cout << endl;
-	}
-	
-// 	for(stackIterT stack_it=stacks.begin() ; stack_it!=stacks.end() ; stack_it++, index++)
-// 	    for(setIterT set_it=(*stack_it).begin();set_it!=(*stack_it).end();set_it++)
-// 		lut[*set_it] = index;
-	
-	UINT index = 101;
+	UINT index = 1;
 	
 	for(UINT i=index;i<=labels;i++)
 	{
@@ -516,36 +479,24 @@ public:
 	    {
 	      set<UINT> *curStack = stackMap[i];
 	      if (curStack)
+	      {
 		for(setIterT set_it=(*curStack).begin() ; set_it!=(*curStack).end() ; set_it++)
 		  lut[*set_it] = index;
+		index++;
+	      }
+		
 	    }
 	}
 	    
-	cout << "---------" << endl;
-	
-	for(map<UINT,UINT>::iterator it=lut.begin() ; it!=lut.end() ; it++)
-	  cout << (*it).first << " -> " << (*it).second << endl;
-	  
-	  
-// 	  mit = lut.begin();
-// 	  while(mit!=lut.end())
-// 	  {
-// 	    cout << (int)(*mit).first << " -> " << (int)(*mit).second << endl;
-// 	    mit++;
-// 	  }
 	  
 	for (int i=0;i<imOut.getPixelCount();i++,this->pixelsOut++)
 	  if (*this->pixelsOut!=0)
-	  {
 	    *this->pixelsOut = lut[*this->pixelsOut];
-	  }
 	  
     }
 protected:
   UINT labels;
-  vector<UINT> lblVect;
   map<UINT, UINT> lut;
-  map<UINT, UINT*> lblMap;
   set<pair<UINT, UINT> > pairs;
 };
 
@@ -568,14 +519,16 @@ int main(int argc, char *argv[])
       Core::initialize();
 	
       Image_UINT8 im1(5,5);
-      im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
+      if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1)!=RES_OK)
+	  read("/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1);
       Image_UINT8 im2(im1);
       thresh(im1, (UINT8)127, im1);
       
-      testLabel(im1, im2, sSE());
+//       testLabel(im1, im2, sSE());
       
       int BENCH_NRUNS = 1E2;
-//       BENCH_IMG(testDil, im1, im2, sSE());
+      BENCH_IMG(testLabel, im1, im2, hSE());
+      im2 += ((im2>0) & 100);
 //       BENCH_IMG(dilate, im1, im2, sSE);
       
       im2.show();
