@@ -86,7 +86,7 @@ public:
     inline T getPixel(UINT x, UINT y, UINT z=0)
     {
 	if (x>=width || y>=height || z>=depth)
-	    return RES_ERR;
+	    return T(NULL);
 	return pixels[z*width*height+y*width+x];
     }
     inline T getPixel(UINT offset)

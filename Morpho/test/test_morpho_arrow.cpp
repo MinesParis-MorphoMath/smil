@@ -366,6 +366,7 @@ RES_T testDil(Image<T> &imIn, Image<T> &imOut, StrElt se)
   f._exec(imIn, imOut, se());
 
 }
+#include <set>
 
 template <class T1, class T2>
 class labelFunct : public unaryMorphImageFunctionGeneric<T1, T2>
@@ -387,23 +388,18 @@ public:
 	if (pVal==0)
 	  return;
 
-	if (pointOffset == 8899)
-	{
-// 	  if (this->pixelsOut[pointOffset]==0)
-// 	    this->pixelsOut[pointOffset] = 255;
-// 	  return;
-	  pointOffset = pointOffset;
-	}
-// 	else if (this->pixelsIn[pointOffset]!=0)
-// 	  this->pixelsOut[pointOffset] = 100;
-// 	return;
-	
 	T2 curLabel = this->pixelsOut[pointOffset];
 	
 	if (curLabel==0)
 	{
 	  curLabel = ++labels;
 	  this->pixelsOut[pointOffset] = curLabel;
+// 	  pairs.insert(make_pair<UINT,UINT>(curLabel, curLabel));
+	}
+	
+	if (pointOffset == 8899)
+	{
+	  pointOffset = pointOffset;
 	}
 	
 	while(dOffset!=dOffsetEnd)
@@ -419,9 +415,11 @@ public:
 	      {
 		T2 minV = min(outPixVal, curLabel);
 		T2 maxV = max(outPixVal, curLabel);
-		if (lut[maxV]==0)
-		  lut[maxV] = minV;
-		else lut[lut[maxV]] = minV;
+// 		if (lut[maxV]==0)
+// 		  lut[maxV] = minV;
+// 		else lut[lut[maxV]] = minV;
+		  pairs.insert(make_pair<UINT,UINT>(curLabel, outPixVal));
+// 		  pairs.insert(make_pair<UINT,UINT>(minV, maxV));
 	      }
 	    }
 	    dOffset++;
@@ -434,28 +432,121 @@ public:
 	
 // 	return RES_OK;
 	
+	set<pair<UINT, UINT> >::iterator pair_it = pairs.begin();
+	while(pair_it!=pairs.end())
+	{
+	  cout << (int)(*pair_it).first << " -> " << (int)(*pair_it).second << endl;
+	  pair_it++;
+	}
+	
+	cout << "---------" << endl;
+	
+	vector< set<UINT> > stacks;
+	
+	lut.clear();
+	
+	vector< set<UINT> >::iterator stack_it = stacks.begin();
+	
+	pair_it = pairs.begin();
+	while(pair_it!=pairs.end())
+	{
+	    UINT val1 = (*pair_it).first;
+	    UINT val2 = (*pair_it).second;
+	    // find in the stack a set containing one of the values
+	    stack_it = stacks.begin();
+	    while(stack_it!=stacks.end())
+	    {
+		if (find((*stack_it).begin(), (*stack_it).end(), val1)!=(*stack_it).end())
+		{
+		  (*stack_it).insert(val2);
+		  lut[val2] = 1;
+		  break;
+		}
+		else if (find((*stack_it).begin(), (*stack_it).end(), val2)!=(*stack_it).end())
+		{
+		  (*stack_it).insert(val1);
+		  lut[val1] = 1;
+		  break;
+		}
+		stack_it++;
+	    }
+	    if (stack_it==stacks.end()) // not found
+	    {
+	      set<UINT> newSet;
+	      newSet.insert(val1);
+	      newSet.insert(val2);
+	      lut[val1] = 1;
+	      lut[val2] = 1;
+	      stacks.push_back(newSet);
+	    }
+	  pair_it++;
+	}
+      
+	map<UINT, set<UINT> *> stackMap;
+	
+	typedef vector< set<UINT> >::iterator stackIterT;
+	typedef set<UINT>::iterator setIterT;
+	
+	stack_it = stacks.begin();
+	
+	for( ; stack_it!=stacks.end() ; stack_it++)
+	  stackMap[*(*stack_it).begin()] = &(*stack_it);
+	
+	
+	
+
+	for(stackIterT stack_it=stacks.begin() ; stack_it!=stacks.end() ; stack_it++)
+	{
+	    for(setIterT set_it=(*stack_it).begin();set_it!=(*stack_it).end();set_it++)
+	      cout << (int)(*set_it) << " ";
+	    cout << endl;
+	}
+	
+// 	for(stackIterT stack_it=stacks.begin() ; stack_it!=stacks.end() ; stack_it++, index++)
+// 	    for(setIterT set_it=(*stack_it).begin();set_it!=(*stack_it).end();set_it++)
+// 		lut[*set_it] = index;
+	
+	UINT index = 101;
+	
+	for(UINT i=index;i<=labels;i++)
+	{
+	    if (lut[i]==0)
+	      lut[i] = index++;
+	    else
+	    {
+	      set<UINT> *curStack = stackMap[i];
+	      if (curStack)
+		for(setIterT set_it=(*curStack).begin() ; set_it!=(*curStack).end() ; set_it++)
+		  lut[*set_it] = index;
+	    }
+	}
+	    
+	cout << "---------" << endl;
+	
+	for(map<UINT,UINT>::iterator it=lut.begin() ; it!=lut.end() ; it++)
+	  cout << (*it).first << " -> " << (*it).second << endl;
+	  
+	  
+// 	  mit = lut.begin();
+// 	  while(mit!=lut.end())
+// 	  {
+// 	    cout << (int)(*mit).first << " -> " << (int)(*mit).second << endl;
+// 	    mit++;
+// 	  }
+	  
 	for (int i=0;i<imOut.getPixelCount();i++,this->pixelsOut++)
 	  if (*this->pixelsOut!=0)
 	  {
-	    lutVal = *this->pixelsOut;
-	    while (lut[lutVal]!=0)
-	      lutVal = lut[lutVal];
-// 	    cout << (int)*this->pixelsOut << " -> " << (int)lutVal << endl;
-	    *this->pixelsOut = lutVal;
+	    *this->pixelsOut = lut[*this->pixelsOut];
 	  }
 	  
-	  map<UINT, UINT>::iterator it = lut.begin();
-	  while(it!=lut.end())
-	  {
-	    cout << (int)(*it).first << " -> " << (int)(*it).second << endl;
-	    it++;
-	  }
     }
 protected:
   UINT labels;
   vector<UINT> lblVect;
   map<UINT, UINT> lut;
   map<UINT, UINT*> lblMap;
+  set<pair<UINT, UINT> > pairs;
 };
 
 template<class T>
