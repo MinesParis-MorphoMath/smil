@@ -36,6 +36,8 @@
  */
 
 #include "DMorphoHierarQ.hpp"
+#include "DMorphoExtrema.hpp"
+#include "DMorphoLabel.hpp"
 #include "DImage.hpp"
 
 template <class T, class labelT>
@@ -157,25 +159,35 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
 template <class T, class labelT>
 RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
-      Image<UINT8> imStatus(imIn);
+    Image<UINT8> imStatus(imIn);
 
-      HierarchicalQueue<T> pq;
+    HierarchicalQueue<T> pq;
+
+    initHierarchicalQueue<T,labelT>(imIn, imMarkers, imStatus, pq);
+    processWatershedHierarchicalQueue(imIn, imMarkers, imStatus, pq, se);
+
+    ImDtTypes<UINT8>::lineType pixStat = imStatus.getPixels();
+    typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();
+
+    // Create the image containing the ws lines
+    fill(imOut, T(0));
+    T wsVal = ImDtTypes<T>::max();
+    for (int i=0;i<imIn.getPixelCount();i++,pixStat++,pixOut++)
+      if (*pixStat==HQ_WS_LINE) 
+	*pixOut = wsVal;
       
-      initHierarchicalQueue<T,labelT>(imIn, imMarkers, imStatus, pq);
-      processWatershedHierarchicalQueue(imIn, imMarkers, imStatus, pq, se);
-      
-      ImDtTypes<UINT8>::lineType pixStat = imStatus.getPixels();
-      typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();
-      
-      // Create the image containing the ws lines
-      fill(imOut, T(0));
-      T wsVal = ImDtTypes<T>::max();
-      for (int i=0;i<imIn.getPixelCount();i++,pixStat++,pixOut++)
-	if (*pixStat==HQ_WS_LINE) 
-	  *pixOut = wsVal;
-	
-      imMarkers.modified();
-      imOut.modified();
+    imMarkers.modified();
+    imOut.modified();
+}
+
+template <class T>
+RES_T watershed(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+{
+    Image<T> imMin(imIn);
+    minima(imIn, imMin, se);
+    Image<UINT> imLbl(imIn);
+    label(imMin, imLbl, se);
+    return watershed(imIn, imLbl, imOut, se);
 }
 
 /** @}*/

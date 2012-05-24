@@ -82,11 +82,6 @@ void ImageViewer::load(const QString fileName)
     graphicsView->load(fileName);
 }
 
-void ImageViewer::loadFromData(const uchar *data, int w, int h)
-{
-    graphicsView->loadFromData(data, w, h);
-}
-
 
 
 void ImageViewer::viewMouseMoveEvent ( QMouseEvent * event )

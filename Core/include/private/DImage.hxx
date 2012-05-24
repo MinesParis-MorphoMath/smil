@@ -160,7 +160,7 @@ template <class T>
 void Image<T>::updateViewerData(bool force)
 { 
     if ((viewer && viewer->isVisible()) || force)
-	viewer->loadFromData(pixels, width, height);
+	viewer->update();
 }
 
 template <class T>

@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
     const char *str = im2.getName();
     im2 << "/home/faessel/tmp/tmp.bmp";
     im2.show();
+//     im2.getViewer()->overlay(im1);
 //     im2.setName("ok");
 //       im3.show();
 #ifdef BUILD_GUI

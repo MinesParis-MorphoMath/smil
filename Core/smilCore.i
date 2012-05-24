@@ -137,7 +137,6 @@ PTR_ARG_OUT_APPLY(d)
 %template(objVector) vector<baseObject*>;
 %template(uintVector) vector<UINT>;
 
-TEMPLATE_WRAP_CLASS(vector);
 TEMPLATE_WRAP_CLASS(Image);
 
 TEMPLATE_WRAP_FUNC(createImage);

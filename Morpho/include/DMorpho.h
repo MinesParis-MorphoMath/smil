@@ -41,6 +41,8 @@
 #include "DMorphoExtrema.hpp"
 #include "DMorphoHierarQ.hpp"
 #include "DMorphoWatershed.hpp"
+#include "DMorphoLabel.hpp"
+#include "DMorphoArrow.hpp"
  
 /** @}*/
 

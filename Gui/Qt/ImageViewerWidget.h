@@ -58,6 +58,7 @@ public:
     ~ImageViewerWidget();
 
     virtual void mouseMoveEvent ( QMouseEvent * event );
+    virtual void imageMouseMoveEvent ( QGraphicsSceneMouseEvent * event ) {}
     virtual void wheelEvent( QWheelEvent* );
     virtual void keyPressEvent(QKeyEvent *);
 
@@ -66,8 +67,8 @@ public:
     void dataChanged();
     
     QStatusBar *statusBar;
-    QImage *image;
-private:
+    QImage *qImage;
+protected:
     double scaleFactor;
     QImageGraphicsScene *imScene;
     QGraphicsPixmapItem *pixItem;
@@ -97,7 +98,6 @@ private:
 
 public slots:
     void load(const QString fileName);
-    void loadFromData(const uchar *data, int w, int h);
     void zoomIn();
     void zoomOut();
     void scale(double factor);
@@ -107,7 +107,6 @@ private slots:
     void sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event );
 
 signals:
-    void onCursorPixelValueChanged(int x, int y, int pixVal, bool insideImage);
     void onRescaled(double scaleFactor);
     void onDataChanged();
     void onKeyPressEvent(QKeyEvent *);

@@ -30,17 +30,21 @@
 #ifndef _D_QT_IMAGE_VIEWER_HPP
 #define _D_QT_IMAGE_VIEWER_HPP
 
+#include <QApplication>
+#include <QGraphicsSceneEvent>
+
 #include "DImageViewer.hpp"
 #include "DTypes.h"
 
 #include "Qt/ImageViewerWidget.h"
 #include "Qt/ImageViewer.h"
-#include <QApplication>
+
+#define BASE_QT_VIEWER ImageViewerWidget
 
 template <class T> class Image;
 
 template <class T>
-class qtImageViewer : public imageViewer<T>
+class qtImageViewer : public imageViewer<T>, protected BASE_QT_VIEWER
 {
 public:
     typedef imageViewer<T> parentClass;
@@ -50,10 +54,24 @@ public:
     virtual void hide();
     virtual bool isVisible();
     virtual void setName(const char* _name);
-    virtual void loadFromData(typename ImDtTypes<T>::lineType pixels, UINT w, UINT h);
+    virtual void update();
+    
+    virtual void overlay(Image<T> &im);
+    
     QApplication *_qapp;
+    
+    virtual void imageMouseMoveEvent ( QGraphicsSceneMouseEvent * event ) 
+    {
+	int x = int(event->scenePos().rx());
+	int y = int(event->scenePos().ry());
+	T pixVal;
+
+	pixVal = this->image->getPixel(x, y);
+	valueLabel->setText("(" + QString::number(x) + ", " + QString::number(y) + ") " + QString::number(pixVal));
+	valueLabel->adjustSize();
+    }
 protected:
-    ImageViewerWidget *qtViewer;
+//     ImageViewerWidget *qtViewer;
 //     ImageViewer *qtViewer;
 };
 
@@ -69,7 +87,7 @@ qtImageViewer<T>::qtImageViewer(Image<T> *im)
         char **av = NULL;
         _qapp = new QApplication(ac, av);
     }
-    qtViewer = new ImageViewerWidget();
+//     qtViewer = new ImageViewerWidget();
     if (this->image->getName())
       setName(this->image->getName());
 //     qtViewer = new ImageViewer();
@@ -79,50 +97,90 @@ template <class T>
 qtImageViewer<T>::~qtImageViewer()
 {
     hide();
-    delete qtViewer;
+//     delete qtViewer;
 }
 
 template <class T>
 void qtImageViewer<T>::show()
 {
-    if (qtViewer->isVisible())
-      return;
+    BASE_QT_VIEWER::show();
+    return;
     
-    qtViewer->show();
-    qtViewer->repaint();
+//     if (qtViewer->isVisible())
+//       return;
+//     
+//     qtViewer->show();
+//     qtViewer->repaint();
     qApp->processEvents();
 }
 
 template <class T>
 void qtImageViewer<T>::hide()
 {
-    qtViewer->hide();
+     BASE_QT_VIEWER::hide();
 }
 
 template <class T>
 bool qtImageViewer<T>::isVisible()
 {
-    return qtViewer->isVisible();
+     return BASE_QT_VIEWER::isVisible();
 }
 
 template <class T>
 void qtImageViewer<T>::setName(const char* _name)
 {
     parentClass::setName(_name);
-    qtViewer->setName(_name);
+//     qtViewer->setName(_name);
 }
 
 template <class T>
-void qtImageViewer<T>::loadFromData(typename ImDtTypes<T>::lineType pixels, UINT w, UINT h)
+void qtImageViewer<T>::update()
 {
-    cout << "Not implemented for this data type." << endl;
+    typename Image<T>::lineType pixels = this->image->getPixels();
+    UINT w = this->image->getWidth();
+    UINT h = this->image->getHeight();
+    
+    this->setImageSize(w, h);
+    
+    UINT8 *destLine;
+    double coeff = double(numeric_limits<UINT8>::max()) / double(numeric_limits<T>::max());
+
+    for (int j=0;j<h;j++)
+    {
+	destLine = this->qImage->scanLine(j);
+	for (int i=0;i<w;i++)
+	    destLine[i] = (UINT8)(coeff * double(pixels[i]));
+	
+	pixels += w;
+    }
+
+     this->dataChanged();
 }
 
-template <>
-void qtImageViewer<UINT8>::loadFromData(ImDtTypes<UINT8>::lineType pixels, UINT w, UINT h);
+template <class T>
+void qtImageViewer<T>::overlay(Image<T> &im)
+{
+  QImage ovIm(qImage->width(), qImage->height(), QImage::Format_ARGB32);
+//   qImage->fill(Qt::transparent);
+  ovIm.fill(Qt::transparent);
+//   pit->setShapeMode(QGraphicsPixmapItem::MaskShape);
+  
+  qImage->setColor(280,qRgb(255,0,0));
+  for (int i=0;i<100;i++)
+    ovIm.setPixel(i,10, 256);
+  
+//   QGraphicsPixmapItem *pit = imScene->addPixmap(QPixmap::fromImage(ovIm));
+  
+  qImage->setAlphaChannel(ovIm);
+  
+  this->repaint();
+  this->dataChanged();
+}
 
+// Specialization for UINT8 type
 template <>
-void qtImageViewer<UINT16>::loadFromData(ImDtTypes<UINT16>::lineType pixels, UINT w, UINT h);
+void qtImageViewer<UINT8>::update();
+
 
 #ifdef SMIL_WRAP_Bit
 template <>

@@ -35,29 +35,18 @@
 
 
 template <>
-void qtImageViewer<UINT8>::loadFromData(Image<UINT8>::lineType pixels, UINT w, UINT h)
+void qtImageViewer<UINT8>::update()
 {
-    qtViewer->loadFromData(pixels, w, h);
-}
-
-template <>
-void qtImageViewer<UINT16>::loadFromData(Image<UINT16>::lineType pixels, UINT w, UINT h)
-{
-    qtViewer->setImageSize(w, h);
+    Image<UINT8>::lineType pixels = this->image->getPixels();
+    UINT w = this->image->getWidth();
+    UINT h = this->image->getHeight();
     
-    UINT8 *destLine;
-    double coeff = double(numeric_limits<UINT8>::max()) / double(numeric_limits<UINT16>::max());
+    this->setImageSize(w, h);
 
     for (int j=0;j<h;j++)
-    {
-	destLine = qtViewer->image->scanLine(j);
-	for (int i=0;i<w;i++)
-	    destLine[i] = (UINT8)(coeff * double(pixels[i]));
-	
-	pixels += w;
-    }
+        memcpy(qImage->scanLine(j), pixels+(j*w), sizeof(uchar) * w);
 
-    qtViewer->dataChanged();
+    this->dataChanged();
 }
 
 
@@ -66,9 +55,13 @@ void qtImageViewer<UINT16>::loadFromData(Image<UINT16>::lineType pixels, UINT w,
 // #include "DBitArray.h"
 
 template <>
-void qtImageViewer<BIN>::loadFromData(Image<BIN>::lineType pixels, UINT w, UINT h)
+void qtImageViewer<BIN>::update()
 {
-    qtViewer->setImageSize(w, h);
+    Image<BIN>::lineType pixels = this->image->getPixels();
+    UINT w = this->image->getWidth();
+    UINT h = this->image->getHeight();
+    
+    this->setImageSize(w, h);
     
     const BIN *lIn;
     UINT8 *lOut, *lEnd;
@@ -77,7 +70,7 @@ void qtImageViewer<BIN>::loadFromData(Image<BIN>::lineType pixels, UINT w, UINT 
     for (int j=0;j<h;j++)
     {
 	lIn = pixels + j*bCount;
-	lOut = qtViewer->image->scanLine(j);
+	lOut = this->qImage->scanLine(j);
 	lEnd = lOut + w;
 	
 	for (int b=0;b<bCount;b++,lIn++)
@@ -93,7 +86,7 @@ void qtImageViewer<BIN>::loadFromData(Image<BIN>::lineType pixels, UINT w, UINT 
 	}
     }
 
-    qtViewer->dataChanged();
+    this->dataChanged();
 }
 
 #endif // SMIL_WRAP_BIN
@@ -104,9 +97,13 @@ void qtImageViewer<BIN>::loadFromData(Image<BIN>::lineType pixels, UINT w, UINT 
 // #include "DBitArray.h"
 
 template <>
-void qtImageViewer<Bit>::loadFromData(Image<Bit>::lineType pixels, UINT w, UINT h)
+void qtImageViewer<Bit>::update()
 {
-    qtViewer->setImageSize(w, h);
+    Image<Bit>::lineType pixels = this->image->getPixels();
+    UINT w = this->image->getWidth();
+    UINT h = this->image->getHeight();
+    
+    this->setImageSize(w, h);
     
     BIN* data = (BIN*)pixels.intArray;
     const BIN *lIn;
@@ -116,7 +113,7 @@ void qtImageViewer<Bit>::loadFromData(Image<Bit>::lineType pixels, UINT w, UINT 
     for (int j=0;j<h;j++)
     {
 	lIn = data + j*bCount;
-	lOut = qtViewer->image->scanLine(j);
+	lOut = qtViewer->qImage->scanLine(j);
 	lEnd = lOut + w;
 	
 	for (int b=0;b<bCount;b++,lIn++)
@@ -132,7 +129,7 @@ void qtImageViewer<Bit>::loadFromData(Image<Bit>::lineType pixels, UINT w, UINT 
 	}
     }
 
-    qtViewer->dataChanged();
+    this->dataChanged();
 }
 
 #endif // SMIL_WRAP_Bit

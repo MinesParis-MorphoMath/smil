@@ -32,7 +32,6 @@
 #include <QTimer>
 
 #include "ImageViewerWidget.h"
-#include "DImage.hpp"
 
 
 QImageGraphicsScene::QImageGraphicsScene(QObject *parent)
@@ -54,7 +53,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     setFrameShape(NoFrame);
 
     scaleFactor = 1.0;
-    image = new QImage();
+    qImage = new QImage();
 
     magnView = new MagnifyView(this);
     magnView->hide();
@@ -82,7 +81,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
 
 ImageViewerWidget::~ImageViewerWidget()
 {
-    delete image;
+    delete qImage;
     delete imScene;
     delete magnView;
 
@@ -127,43 +126,34 @@ void ImageViewerWidget::updateTitle()
 
 void ImageViewerWidget::setImageSize(int w, int h)
 {
-    if (w==image->width() && h==image->height())
+    if (w==qImage->width() && h==qImage->height())
         return;
 
-    delete image;
+    delete qImage;
 
-    image = new QImage(QSize(w, h), QImage::Format_Indexed8);
+    qImage = new QImage(w, h, QImage::Format_ARGB32);
 
-    image->setNumColors(256);
-    for (int i=0; i<256; i++)
-        image->setColor(i,qRgb(i,i,i));
+//      qImage->setNumColors(512);
+//     for (int i=0; i<256; i++)
+//         qImage->setColor(i,qRgb(i,i,i));
+//     qImage->setColorTable();
 }
 
 
 void ImageViewerWidget::load(const QString fileName)
 {
-    image->load(fileName);
-    magnView->setImage(image);
+    qImage->load(fileName);
+    magnView->setImage(qImage);
 
     emit onDataChanged();
 }
 
 void ImageViewerWidget::dataChanged()
 {
-    magnView->setImage(image);
+    magnView->setImage(qImage);
     repaint();
 //     qApp->processEvents();
     emit onDataChanged();
-}
-
-void ImageViewerWidget::loadFromData(const uchar *data, int w, int h)
-{
-    setImageSize(w, h);
-
-    for (int j=0;j<h;j++)
-        memcpy(image->scanLine(j), data+(j*w), sizeof(uchar) * w);
-
-    dataChanged();
 }
 
 void ImageViewerWidget::zoomIn()
@@ -187,8 +177,8 @@ void ImageViewerWidget::scale(double factor)
 
 void ImageViewerWidget::update()
 {
-    pixItem->setPixmap(QPixmap::fromImage(*image));
-//     imScene->setSceneRect(0, 0, image->width(), image->height());
+    pixItem->setPixmap(QPixmap::fromImage(*qImage));
+//     imScene->setSceneRect(0, 0, qImage->width(), qImage->height());
 }
 
 
@@ -205,6 +195,23 @@ void ImageViewerWidget::mouseMoveEvent ( QMouseEvent * event )
 
 void ImageViewerWidget::wheelEvent ( QWheelEvent * event )
 {
+  QImage ovIm(qImage->width(), qImage->height(), QImage::Format_ARGB32);
+//   qImage->fill(Qt::transparent);
+  ovIm.fill(Qt::transparent);
+//   pit->setShapeMode(QGraphicsPixmapItem::MaskShape);
+  
+//   qImage->setColor(280,qRgb(255,0,0));
+  for (int i=0;i<qImage->width();i++)
+    ovIm.setPixel(i,10, 256);
+  
+//   QGraphicsPixmapItem *pit = imScene->addPixmap(QPixmap::fromImage(ovIm));
+  
+  qImage->setAlphaChannel(ovIm);
+  
+  this->repaint();
+  this->dataChanged();
+  
+  return;
     if (event->delta()>0)
         zoomIn();
     else zoomOut();
@@ -245,29 +252,22 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 {
     int x = int(event->scenePos().rx());
     int y = int(event->scenePos().ry());
-    bool isOnImage;
-    int pixVal = -1;
 
-    if (x>=0 && x<image->width() && y>=0 && y<image->height())
+    if (x>=0 && x<qImage->width() && y>=0 && y<qImage->height())
     {
-        isOnImage = true;
-        pixVal = image->scanLine(y)[x];
-        valueLabel->setText("(" + QString::number(x) + ", " + QString::number(y) + ") " + QString::number(pixVal));
-        valueLabel->adjustSize();
         magnView->displayAt(x, y);
         if (valueLblActivated)
             valueLabel->show();
         if (magnActivated)
             magnView->show();
+	imageMouseMoveEvent(event);
     }
     else
     {
-        isOnImage = false;
         valueLabel->adjustSize();
         valueLabel->hide();
         magnView->hide();
     }
-
-    emit(onCursorPixelValueChanged(x, y, pixVal, isOnImage));
+    
 }
 

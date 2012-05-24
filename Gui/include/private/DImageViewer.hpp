@@ -53,7 +53,8 @@ public:
     virtual void hide() {}
     virtual bool isVisible() { return false; }
     virtual void setName(const char* _name) { parentClass::setName(_name); }
-    virtual void loadFromData(typename ImDtTypes<T>::lineType pixels, UINT w, UINT h) {}
+    virtual void update() {}
+    virtual void overlay(Image<T> &im) {}
     Image<T> *getImage() { return image; }
 protected:
     Image<T> *image;
