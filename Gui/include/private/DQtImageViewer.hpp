@@ -54,9 +54,10 @@ public:
     virtual void hide();
     virtual bool isVisible();
     virtual void setName(const char* _name);
-    virtual void update();
+    virtual void drawImage(bool labelized=false);
+    virtual void drawOverlayImage(Image<T> &im);
     
-    virtual void overlay(Image<T> &im);
+    virtual void switchLabelMode();
     
     QApplication *_qapp;
     
@@ -134,8 +135,17 @@ void qtImageViewer<T>::setName(const char* _name)
 }
 
 template <class T>
-void qtImageViewer<T>::update()
+void qtImageViewer<T>::switchLabelMode()
 {
+    BASE_QT_VIEWER::switchLabelMode();
+    parentClass::labelImage = BASE_QT_VIEWER::drawLabelized;
+}
+
+template <class T>
+void qtImageViewer<T>::drawImage(bool labelized)
+{
+    drawLabelized = labelized;
+    
     typename Image<T>::lineType pixels = this->image->getPixels();
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
@@ -154,11 +164,21 @@ void qtImageViewer<T>::update()
 	pixels += w;
     }
 
-     this->dataChanged();
+    if (labelized)
+      qImage->setColorTable(labelColorTable);
+    else qImage->setColorTable(baseColorTable);
+    
+    this->dataChanged();
 }
 
+
+// Specialization for UINT8 type
+template <>
+void qtImageViewer<UINT8>::drawImage(bool labelized);
+
+
 template <class T>
-void qtImageViewer<T>::overlay(Image<T> &im)
+void qtImageViewer<T>::drawOverlayImage(Image<T> &im)
 {
   QImage ovIm(qImage->width(), qImage->height(), QImage::Format_ARGB32);
 //   qImage->fill(Qt::transparent);
@@ -176,10 +196,6 @@ void qtImageViewer<T>::overlay(Image<T> &im)
   this->repaint();
   this->dataChanged();
 }
-
-// Specialization for UINT8 type
-template <>
-void qtImageViewer<UINT8>::update();
 
 
 #ifdef SMIL_WRAP_Bit

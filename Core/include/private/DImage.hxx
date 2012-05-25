@@ -164,7 +164,7 @@ void Image<T>::updateViewerData(bool force)
 }
 
 template <class T>
-void Image<T>::show(const char* _name)
+void Image<T>::show(const char* _name, bool labelImage)
 {
     if (!viewer)
         viewer = createViewer<T>(this);
@@ -176,9 +176,10 @@ void Image<T>::show(const char* _name)
     if (!viewer)
       return;
     
-    if (viewer->isVisible())
+    if (viewer->isVisible() && viewer->labelImage==labelImage)
       return;
     
+    viewer->labelImage = labelImage;
     updateViewerData(true);
     viewer->show();
 }

@@ -46,16 +46,21 @@ public:
     typedef baseObject parentClass;
     
     imageViewer(Image<T> *im)
-      : image(im)
-      {
-      }
+      : image(im), labelImage(false)
+    {
+    }
     virtual void show() {}
     virtual void hide() {}
     virtual bool isVisible() { return false; }
     virtual void setName(const char* _name) { parentClass::setName(_name); }
-    virtual void update() {}
-    virtual void overlay(Image<T> &im) {}
+    virtual void update()
+    {
+	drawImage(labelImage);
+    }
+    virtual void drawImage(bool labelized=false) {}
+    virtual void drawOverlayImage(Image<T> &im) {}
     Image<T> *getImage() { return image; }
+    bool labelImage;
 protected:
     Image<T> *image;
 };

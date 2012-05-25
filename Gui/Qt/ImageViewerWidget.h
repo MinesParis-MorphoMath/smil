@@ -61,6 +61,7 @@ public:
     virtual void imageMouseMoveEvent ( QGraphicsSceneMouseEvent * event ) {}
     virtual void wheelEvent( QWheelEvent* );
     virtual void keyPressEvent(QKeyEvent *);
+    virtual void switchLabelMode();
 
     void setName(const char *name);
     void setImageSize(int w, int h);
@@ -68,10 +69,19 @@ public:
     
     QStatusBar *statusBar;
     QImage *qImage;
+    QImage *qOverlayImage;
+    
+    bool drawLabelized;
 protected:
+    QVector<QRgb> baseColorTable;
+    QVector<QRgb> labelColorTable;
+    QVector<QRgb> overlayColorTable;
+    void initColorTables();
+    
     double scaleFactor;
     QImageGraphicsScene *imScene;
-    QGraphicsPixmapItem *pixItem;
+    QGraphicsPixmapItem *imagePixmap;
+    QGraphicsPixmapItem *overlayPixmap;
 
     QLabel *valueLabel;
     MagnifyView *magnView;

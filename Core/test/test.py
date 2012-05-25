@@ -229,6 +229,9 @@ enhanceContrast(im1, im2)
 imGrad = Image(im1)
 gradient(im1, imGrad)
 
+imMin = Image(im1)
+minima(imGrad, imMin)
+
 imWs = Image(im1)
 imMark = Image(im1)
 imMark << 0

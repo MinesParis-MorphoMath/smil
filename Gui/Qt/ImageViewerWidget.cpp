@@ -33,6 +33,7 @@
 
 #include "ImageViewerWidget.h"
 
+#define RAND_UINT8 int(double(qrand())/RAND_MAX*255)
 
 QImageGraphicsScene::QImageGraphicsScene(QObject *parent)
         : QGraphicsScene(parent)
@@ -54,6 +55,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
 
     scaleFactor = 1.0;
     qImage = new QImage();
+    qOverlayImage = new QImage();
 
     magnView = new MagnifyView(this);
     magnView->hide();
@@ -66,7 +68,10 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     valueLblActivated = true;
 
     imScene = new QImageGraphicsScene();
-    pixItem = imScene->addPixmap( QPixmap() );
+    imagePixmap = imScene->addPixmap( QPixmap() );
+    overlayPixmap = imScene->addPixmap( QPixmap() );
+    initColorTables();
+    drawLabelized = false;
     this->setScene( imScene );
 
     setMouseTracking(true);
@@ -89,6 +94,30 @@ ImageViewerWidget::~ImageViewerWidget()
     delete zoomOutAct;
 }
 
+void ImageViewerWidget::initColorTables()
+{
+    baseColorTable.clear();
+    for (int i=0;i<256;i++)
+      baseColorTable.append(qRgb(i, i, i));
+    
+    labelColorTable.clear();
+    qsrand(3*206);
+    labelColorTable.append(qRgb(0, 0, 0));
+    for (int i=1;i<256;i++)
+      labelColorTable.append(qRgb(RAND_UINT8, RAND_UINT8, RAND_UINT8));
+    
+    overlayColorTable.clear();
+}
+
+void ImageViewerWidget::switchLabelMode()
+{
+    drawLabelized = !drawLabelized;
+    if (drawLabelized)
+      qImage->setColorTable(labelColorTable);
+    else
+      qImage->setColorTable(baseColorTable);
+    imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
+}
 
 void ImageViewerWidget::createActions()
 {
@@ -130,8 +159,11 @@ void ImageViewerWidget::setImageSize(int w, int h)
         return;
 
     delete qImage;
+    delete qOverlayImage;
 
-    qImage = new QImage(w, h, QImage::Format_ARGB32);
+    qImage = new QImage(w, h, QImage::Format_Indexed8);
+    
+    qOverlayImage = new QImage(w, h, QImage::Format_ARGB32_Premultiplied);
 
 //      qImage->setNumColors(512);
 //     for (int i=0; i<256; i++)
@@ -151,7 +183,8 @@ void ImageViewerWidget::load(const QString fileName)
 void ImageViewerWidget::dataChanged()
 {
     magnView->setImage(qImage);
-    repaint();
+    imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
+//     repaint();
 //     qApp->processEvents();
     emit onDataChanged();
 }
@@ -177,8 +210,9 @@ void ImageViewerWidget::scale(double factor)
 
 void ImageViewerWidget::update()
 {
-    pixItem->setPixmap(QPixmap::fromImage(*qImage));
-//     imScene->setSceneRect(0, 0, qImage->width(), qImage->height());
+//     this->dataChanged();
+    repaint();
+    qApp->processEvents();
 }
 
 
@@ -195,23 +229,6 @@ void ImageViewerWidget::mouseMoveEvent ( QMouseEvent * event )
 
 void ImageViewerWidget::wheelEvent ( QWheelEvent * event )
 {
-  QImage ovIm(qImage->width(), qImage->height(), QImage::Format_ARGB32);
-//   qImage->fill(Qt::transparent);
-  ovIm.fill(Qt::transparent);
-//   pit->setShapeMode(QGraphicsPixmapItem::MaskShape);
-  
-//   qImage->setColor(280,qRgb(255,0,0));
-  for (int i=0;i<qImage->width();i++)
-    ovIm.setPixel(i,10, 256);
-  
-//   QGraphicsPixmapItem *pit = imScene->addPixmap(QPixmap::fromImage(ovIm));
-  
-  qImage->setAlphaChannel(ovIm);
-  
-  this->repaint();
-  this->dataChanged();
-  
-  return;
     if (event->delta()>0)
         zoomIn();
     else zoomOut();
@@ -241,6 +258,9 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
         if (valueLblActivated) valueLabel->show();
         else valueLabel->hide();
         break;
+    case Qt::Key_L:
+	switchLabelMode();
+	break;
     }
 
     emit onKeyPressEvent(event);
