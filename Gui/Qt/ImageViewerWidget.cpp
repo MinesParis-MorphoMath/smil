@@ -101,10 +101,27 @@ void ImageViewerWidget::initColorTables()
       baseColorTable.append(qRgb(i, i, i));
     
     labelColorTable.clear();
-    qsrand(3*206);
+//     qsrand(3);
     labelColorTable.append(qRgb(0, 0, 0));
-    for (int i=1;i<256;i++)
-      labelColorTable.append(qRgb(RAND_UINT8, RAND_UINT8, RAND_UINT8));
+    UINT8 r = 255, g = 0, b = 0;
+    UINT8 minTh = 50;
+    for (int i=0;i<3;i++)
+    {
+	r+=RAND_UINT8/2;
+	g+=RAND_UINT8/2;
+	b+=RAND_UINT8/2;
+    }
+    for (int i=1;i<255;i++)
+    {	
+	labelColorTable.append(qRgb(r+=RAND_UINT8/2, g+=RAND_UINT8/2, b+=RAND_UINT8/2));
+	// Avoid to have both r, g and b to low (->black)
+	while (r<minTh && g <minTh && b<minTh)
+	{
+	    r += RAND_UINT8/2;
+	    g += RAND_UINT8/2;
+	    b += RAND_UINT8/2;
+	}
+    }
     
     overlayColorTable.clear();
 }

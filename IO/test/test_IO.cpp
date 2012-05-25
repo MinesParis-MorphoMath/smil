@@ -59,7 +59,12 @@ int main(int argc, char *argv[])
     cout << endl;
     const char *str = im2.getName();
     im2 << "/home/faessel/tmp/tmp.bmp";
-    im2.show();
+    im2.showLabel();
+    
+    fill(im2, UINT8(0));
+    for (int j=0;j<im2.getHeight();j++)
+      for (int i=0;i<10;i++)
+	im2.setPixel(i, j, j);
 //     im2.getViewer()->overlay(im1);
 //     im2.setName("ok");
 //       im3.show();
