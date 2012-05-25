@@ -212,7 +212,7 @@ void ImageViewerWidget::update()
 {
 //     this->dataChanged();
     repaint();
-    qApp->processEvents();
+//     qApp->processEvents();
 }
 
 
