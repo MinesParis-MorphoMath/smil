@@ -54,20 +54,14 @@ int main(int argc, char *argv[])
 
 
 //       im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
-    im1 << "/home/faessel/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0603_C1_1_20100326-105102/1.bmp";
-    im1 >> "/home/faessel/tmp/tmp.bmp";
+    if(read("/home/faessel/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0603_C1_1_20100326-105102/1.bmp", im1)!=RES_OK)
+	read("/home/mat/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0603_C1_1_20100326-105102/1.bmp", im1);
+//     im1 >> "/home/faessel/tmp/tmp.bmp";
     cout << endl;
     const char *str = im2.getName();
     im2 << "/home/faessel/tmp/tmp.bmp";
-    im2.showLabel();
+    im1.showLabel();
     
-    fill(im2, UINT8(0));
-    for (int j=0;j<im2.getHeight();j++)
-      for (int i=0;i<10;i++)
-	im2.setPixel(i, j, j);
-//     im2.getViewer()->overlay(im1);
-//     im2.setName("ok");
-//       im3.show();
 #ifdef BUILD_GUI
     qapp.exec();
 #endif // BUILD_GUI

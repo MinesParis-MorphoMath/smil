@@ -37,6 +37,8 @@
 template <>
 void qtImageViewer<UINT8>::drawImage(bool labelized)
 {
+    drawLabelized = labelized;
+    
     Image<UINT8>::lineType pixels = this->image->getPixels();
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
