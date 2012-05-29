@@ -34,18 +34,22 @@
 // Initialization of singleton to NULL
 // Core Core::_singleton;
 Core *Core::_singleton = NULL;
+QApplication *QAPP = NULL;
 
 
 guiInstance::guiInstance()
   : _qapp(NULL)
 {
-      if (!qApp)
+      if (!QApplication::instance())
       {
-// 	    cout << "Core qt created" << endl;
+// 	    cout << "Core qt created (guiInst)" << endl;
 	  int ac = 1;
 	  char **av = NULL;
 	  _qapp = new QApplication(ac, av);
+	  _qapp->processEvents();
       }
+      else _qapp = qApp;
+      
       _timer = new timer();
       _timer->app = _qapp;
       _timer->start();
@@ -67,11 +71,11 @@ void guiInstance::execLoop()
 
 
 Core::Core ()
-: baseObject("Core", false), 
-  _value (0), 
+// : baseObject("Core", false), 
+  :_value (0), 
   keepAlive(false)
 { 
-// 	cout << "Core created" << endl;
+//     cout << "Core created" << endl;
     guiInst = new guiInstance();
   
 }

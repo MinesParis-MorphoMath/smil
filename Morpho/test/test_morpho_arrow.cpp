@@ -63,80 +63,6 @@ class TestArrow : public TestCase
   }
 };
 
-struct A
-{
-  A(const char* _name=NULL)
-  {
-    name = _name;
-    if (name)
-      cout << name << " created" << endl;
-  }
-  ~A()
-  {
-    if (name)
-      cout << name << " destroyed" << endl;
-  }
-  const char *name;
-  virtual void func()
-  {
-    cout << "A" << endl;
-  }
-  virtual inline A& operator()(int i=0)
-  {
-    clone.reset(new A("clone"));
-    return *(clone.get());
-  }
-    auto_ptr<A> clone;
-protected:
-};
-
-struct B : public A
-{
-  virtual void func()
-  {
-    cout << "B" << endl;
-  }
-  virtual inline B& operator()(int i=0)
-  {
-    static B clone = *this;
-    return clone;
-  }
-};
-
-B defA;
-void expose(A &a=defA)
-{
-  a.func();
-}
-
-void expose2(A &a=defA)
-{
-  expose(a);
-}
-
-struct C
-{
-  virtual void func(A &a)
-  {
-    expose(a);
-  }
-};
-
-
-
-struct D : public C
-{
-  virtual void func(A &a)
-  {
-    C::func(a);
-  }
-  virtual void func(B &b)
-  {
-    cout << "oké" << endl;
-    expose(b);
-  }
-};
-
 
 #include "DCore.h"
 #include "DMorphoBase.hpp"
@@ -157,7 +83,7 @@ int main(int argc, char *argv[])
       
       int BENCH_NRUNS = 1E2;
       BENCH_IMG(label, im1, im2, hSE());
-      im2 += ((im2>0) & 100);
+      im2 += ((im2>(UINT8)0) & (UINT8)100);
 //       BENCH_IMG(dilate, im1, im2, sSE);
       
       im2.show();

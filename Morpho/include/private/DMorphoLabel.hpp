@@ -77,7 +77,7 @@ public:
 	      if (outPixVal==0)
 		this->pixelsOut[curDOffset] = curLabel;
  	      else if (outPixVal != curLabel)
-		pairs.insert(make_pair<UINT,UINT>(curLabel, outPixVal));
+		pairs.insert(make_pair<UINT,UINT>(max(curLabel, outPixVal), min(curLabel, outPixVal)));
 	    }
 	    dOffset++;
 	}
@@ -92,7 +92,11 @@ public:
 	
 	lut.clear();
 	
-	vector< set<UINT> >::iterator stack_it = stacks.begin();
+	vector< set<UINT> >::iterator stack_it = stacks.begin(), sf1, sf2;
+	
+// 	for (pair_it = pairs.begin();pair_it!=pairs.end();pair_it++)
+// 	    cout << (*pair_it).first << " -> " << (*pair_it).second << endl;
+	
 	
 	pair_it = pairs.begin();
 	while(pair_it!=pairs.end())
@@ -101,23 +105,18 @@ public:
 	    UINT val2 = (*pair_it).second;
 	    // find in the stack a set containing one of the pair values
 	    stack_it = stacks.begin();
+	    sf1 = stacks.end();
+	    sf2 = stacks.end();
 	    while(stack_it!=stacks.end())
 	    {
 		if (find((*stack_it).begin(), (*stack_it).end(), val1)!=(*stack_it).end())
-		{
-		  (*stack_it).insert(val2);
-		  lut[val2] = 1;
-		  break;
-		}
-		else if (find((*stack_it).begin(), (*stack_it).end(), val2)!=(*stack_it).end())
-		{
-		  (*stack_it).insert(val1);
-		  lut[val1] = 1;
-		  break;
-		}
+		  sf1 = stack_it;
+		if (find((*stack_it).begin(), (*stack_it).end(), val2)!=(*stack_it).end())
+		  sf2 = stack_it;
+		
 		stack_it++;
 	    }
-	    if (stack_it==stacks.end()) // not found
+	    if (sf1==stacks.end() && sf2==stacks.end()) // not found
 	    {
 	      set<UINT> newSet;
 	      newSet.insert(val1);
@@ -126,9 +125,29 @@ public:
 	      lut[val2] = 1;
 	      stacks.push_back(newSet);
 	    }
+	    else if (sf1!=stacks.end() && sf2!=stacks.end() && sf1!=sf2)
+	    {
+	      (*sf1).insert((*sf2).begin(), (*sf2).end());
+	      stacks.erase(sf2);
+	    }
+	    else if (sf1!=stacks.end())
+	      (*sf1).insert(val2);
+	    else if (sf2!=stacks.end())
+	      (*sf2).insert(val1);
+	      
 	  pair_it++;
 	}
-      
+	
+// 	cout << "----------" << endl;
+//       
+// 	for (stack_it = stacks.begin();stack_it!=stacks.end();stack_it++)
+// 	{
+// 	  for (set<UINT>::iterator it=(*stack_it).begin();it!=(*stack_it).end();it++)
+// 	    cout << int(*it) << " ";
+// 	  cout << endl;
+// 	}
+	    
+	  
 	map<UINT, set<UINT> *> stackMap;
 	
 	typedef vector< set<UINT> >::iterator stackIterT;
@@ -157,6 +176,10 @@ public:
 	    }
 	}
 	    
+// 	cout << "----------" << endl;
+//       
+// 	for (map<UINT, UINT>::iterator it = lut.begin();it!=lut.end();it++)
+// 	    cout << int((*it).first) << " " << int((*it).second) << endl;
 	  
 	for (int i=0;i<imOut.getPixelCount();i++,this->pixelsOut++)
 	  if (*this->pixelsOut!=0)
@@ -177,7 +200,6 @@ RES_T label(Image<T1> &imIn, Image<T2> &imOut, StrElt se=DEFAULT_SE())
   f._exec(imIn, imOut, se());
 
 }
-
 
 
 #endif // _D_MORPHO_LABEL_HPP

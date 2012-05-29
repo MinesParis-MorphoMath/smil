@@ -28,67 +28,40 @@
 
 
 #include "DCore.h"
+#include "DMorpho.h"
+
+#include "DGraph.hpp"
 
 #include <vector>
 
-class maClass
-{
-public:
-  void func(Event *e)
-  {
-    cout << "oki" << endl;
-  }
-};
 
-class imCSlot : public baseImageSlot
-{
-public:
-  virtual void run(baseImageEvent *e)
-  {
-    cout << "oki 2" << endl;
-  }
-};
 
-struct obj
-{
-  int a,b;
-};
 
 int main(int argc, char *argv[])
 {
-//     QApplication app(argc, argv);
-    Core::initialize();
+    Image_UINT8 im1;
+    if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
+      read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
     
-    Image_UINT8 im1(50,50);
+//     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1)!=RES_OK)
+//       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1);
+    
+    
     Image_UINT8 im2(im1);
     Image_UINT8 im3(im1);
     
-    maClass c;
+    Image_UINT16 imLbl(im1);
     
-    MemberFunctionSlot<maClass> s(&c, &maClass::func);
-    imCSlot sl;
-    Signal sign;
+    gradient(im1, im2);
+    hMinima(im2, UINT8(10), im3);
+//     im3.show();
     
-    sign.connect(&sl);
+//     thresh(im1, UINT8(10), im3);
     
-    sign.trigger();
+    label(im3, imLbl, sSE());
+    imLbl.showLabel("ok");
     
-//     im1.connect(
-    
-//     im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
-
-    
-    im1 << UINT8(50);
-    im2 << UINT8(100);
-    
-    UINT8 vals[] = { 0, 1, 2, 3, 4 };
-
-    im3 << (im1 + im2);
-    
-    im3.show();
-    
-//     core::getInstance()->kill();
-//     core::execLoop();
+    Core::execLoop();
     
 }
 

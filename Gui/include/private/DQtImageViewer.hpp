@@ -79,19 +79,10 @@ protected:
 
 template <class T>
 qtImageViewer<T>::qtImageViewer(Image<T> *im)
-  : imageViewer<T>(im)
+  : imageViewer<T>(im), BASE_QT_VIEWER(NULL)
 {
-    if (!qApp)
-    {
-        cout << "created" << endl;
-        int ac = 1;
-        char **av = NULL;
-        _qapp = new QApplication(ac, av);
-    }
-//     qtViewer = new ImageViewerWidget();
     if (this->image->getName())
       setName(this->image->getName());
-//     qtViewer = new ImageViewer();
 }
 
 template <class T>
@@ -105,14 +96,6 @@ template <class T>
 void qtImageViewer<T>::show()
 {
     BASE_QT_VIEWER::show();
-    return;
-    
-//     if (qtViewer->isVisible())
-//       return;
-//     
-//     qtViewer->show();
-//     qtViewer->repaint();
-    qApp->processEvents();
 }
 
 template <class T>
@@ -131,7 +114,7 @@ template <class T>
 void qtImageViewer<T>::setName(const char* _name)
 {
     parentClass::setName(_name);
-//     qtViewer->setName(_name);
+    BASE_QT_VIEWER::setName(_name);
 }
 
 template <class T>
@@ -139,6 +122,7 @@ void qtImageViewer<T>::switchLabelMode()
 {
     BASE_QT_VIEWER::switchLabelMode();
     parentClass::labelImage = BASE_QT_VIEWER::drawLabelized;
+    drawImage(BASE_QT_VIEWER::drawLabelized);
 }
 
 template <class T>
@@ -153,7 +137,12 @@ void qtImageViewer<T>::drawImage(bool labelized)
     this->setImageSize(w, h);
     
     UINT8 *destLine;
-    double coeff = double(numeric_limits<UINT8>::max()) / double(numeric_limits<T>::max());
+    double coeff;
+    
+    if (labelized)
+      coeff = 1.0;
+    else
+      coeff = double(numeric_limits<UINT8>::max()) / double(numeric_limits<T>::max());
 
     for (int j=0;j<h;j++)
     {

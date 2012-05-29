@@ -222,15 +222,20 @@ if read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)=
 #if read("/home/mat/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp", im1)==RES_ERR:
   #read("/home/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp", im1)
 im2 = Image(im1)
-im2.show()
-enhanceContrast(im1, im2)
+im1.show()
+enhanceContrast(im1, im1)
 
 
 imGrad = Image(im1)
 gradient(im1, imGrad)
 
 imMin = Image(im1)
-minima(imGrad, imMin)
+hMinima(imGrad, 15, imMin)
+
+imLbl = Image_UINT16()
+imLbl.setSize(im1)
+label(imMin, imLbl)
+imLbl.showLabel()
 
 imWs = Image(im1)
 imMark = Image(im1)
@@ -238,8 +243,7 @@ imMark << 0
 imMark.setPixel(75, 40, 100)
 imMark.setPixel(120, 80, 200)
 
-watershed(imGrad, imMark, imWs)
-imMark.show()
+watershed(imGrad, imLbl, imWs)
 imWs.show()
 
 #Core.getInstance().execLoop()

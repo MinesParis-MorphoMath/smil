@@ -54,20 +54,20 @@ public:
   void execLoop();
   inline void processEvents()
   { 
-      if (_qapp)
-	_qapp->processEvents(); 
-      else if (qApp)
-	qApp->processEvents();
+//       if (_qapp)
+// 	_qapp->processEvents(); 
+//       else if (qApp)
+// 	qApp->processEvents();
   }
   
-protected:
+// protected:
   QApplication *_qapp;
   timer *_timer;
 };
 
 
 
-class Core : private baseObject
+class Core //: private baseObject
 {
 private:
   Core ();

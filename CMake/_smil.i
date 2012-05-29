@@ -95,11 +95,17 @@ def find_object_names(obj):
 		  result.append(k)
   return result
 
-def show_with_name(img, name=None):
+def show_with_name(img, name=None, labelImage = False):
     if not name:
 	name = find_object_names(img)[1]
 	img.setName(name)
-    img.c_show()
+    img.c_show(name, labelImage)
+
+def showLabel_with_name(img, name=None):
+    if not name:
+	name = find_object_names(img)[1]
+	img.setName(name)
+    img.c_showLabel(name)
 
 def imInit(img, *args):
     img.__init0__(args)
@@ -109,6 +115,8 @@ def imInit(img, *args):
 for t in imageTypes:
     t.c_show = t.show
     t.show = show_with_name
+    t.c_showLabel = t.showLabel
+    t.showLabel = showLabel_with_name
 #    t.__del0__ = t.__del__
 #    t.__del__ = deleteImage
 
