@@ -242,7 +242,7 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_Watershed);
       
       Image<UINT8> im1, im2;
-      watershed(im1, im2);
+//       watershed(im1, im2);
       
       return ts.run();
       

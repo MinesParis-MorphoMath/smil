@@ -56,11 +56,12 @@ ${SWIG_INCLUDE_DEFINITIONS}
 
 %pythoncode %{
 
-import sys, gc
+import sys, gc, os
 import time, new
 
 ${PYTHON_IMPORT_MODULES}
 
+${SWIG_DATA_TYPES}
 ${SWIG_IMAGE_TYPES}
 
 
@@ -69,18 +70,35 @@ def Image(*args):
     argTypeStr = [ str(type(a)) for a in args ]
     
     img = 0
-    if argNbr==0:
+    
+    if argNbr==0: # No argument -> return default image type
 	img = imageTypes[0]()
-    elif argNbr>=2:
-	img = imageTypes[0](*args)
-    else:
-	if argTypeStr[0].rfind("Image_")!=-1:
-	  srcIm = args[0]
-	  if argNbr==1:
-	    img = createImage(srcIm)
+	
+    elif type(args[0]) in imageTypes: # First arg is an image
+	srcIm = args[0]
+	srcImgType = type(args[0])
+	if argNbr>1:
+	  if args[1] in dataTypes: # Second arg is an image type string ("UINT8", ...)
+	      imgType = imageTypes[dataTypes.index(args[1])]
+	      img = imgType()
+	      img.setSize(srcIm)
+	  else:
+	      img = srcImgType(*args[1:])
 	else:
-	    img = imageTypes[args[1]](srcIm.getWidth(), srcIm.getHeight(), srcIm.getDepth())
-    # img.show = new.instancemethod(show_with_name, img, img.__class__)
+	    img = srcImgType(srcIm)
+	    
+    elif args[0] in dataTypes:
+	imgType = imageTypes[dataTypes.index(args[0])]
+	print args[1:]
+	img = imgType(*args[1:])
+
+    elif argNbr==1 and os.path.exists(args[0]):
+	img = imageTypes[0]()
+	read(args[0], img)
+    
+    else:
+	img = imageTypes[0](*args)
+	
     return img
 
 def find_object_names(obj):

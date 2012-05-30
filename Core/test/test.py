@@ -232,18 +232,19 @@ gradient(im1, imGrad)
 imMin = Image(im1)
 hMinima(imGrad, 15, imMin)
 
-imLbl = Image_UINT16()
+imLbl = Image(im1, "UINT16")
 imLbl.setSize(im1)
 label(imMin, imLbl)
-imLbl.showLabel()
+#imLbl.showLabel()
 
 imWs = Image(im1)
-imMark = Image(im1)
+imMark = Image(im1, "UINT16")
 imMark << 0
 imMark.setPixel(75, 40, 100)
 imMark.setPixel(120, 80, 200)
+imMark.showLabel()
 
-watershed(imGrad, imLbl, imWs)
+watershed(imGrad, imMark, imWs)
 imWs.show()
 
 #Core.getInstance().execLoop()

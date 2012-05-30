@@ -59,7 +59,14 @@ RES_T TestSuite::run()
 	cout << "Test #" << (curTestNbr++) << "/" << totTestsNbr << ": " << (*f)->name << "\t";
 	
 	int tStart = clock();
-	tc->run();
+	try
+	{
+	  tc->run();
+	}
+	catch(...)
+	{
+	    tc->retVal = RES_ERR;
+	}
 	int tElapsed =  clock() - tStart;
 	
 	if (tc->retVal==RES_OK)
