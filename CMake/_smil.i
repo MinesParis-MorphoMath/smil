@@ -61,11 +61,22 @@ import time, new
 
 ${PYTHON_IMPORT_MODULES}
 
-${SWIG_DATA_TYPES}
-${SWIG_IMAGE_TYPES}
+dataTypes = [ ${DATA_TYPES_STR}, ]
+imageTypes = [ ${IMAGE_TYPES_STR}, ]
 
 
 def Image(*args):
+    """
+    * Image(): create an empty ${DEFAULT_IMAGE_TYPE} image.
+    * Image(width, height [, depth]): create a ${DEFAULT_IMAGE_TYPE} image with size 'width'x'height'[x'depth'].
+    * Image(im): create an image with same type and same size than 'im'.
+    * imageMb("TYPE"): create an empty image with the desired type.
+      The available image types are: ${DATA_TYPES_STR}
+    * Image("TYPE", width, height [, depth]): will create an image with the desired type and dimensions.
+    * Image(im, "TYPE"): create an image with type 'TYPE' and with same type and same size than 'im'.
+    * Image("fileName"): create an image and load the file "fileName".
+    """
+
     argNbr = len(args)
     argTypeStr = [ str(type(a)) for a in args ]
     
@@ -78,10 +89,14 @@ def Image(*args):
 	srcIm = args[0]
 	srcImgType = type(args[0])
 	if argNbr>1:
-	  if args[1] in dataTypes: # Second arg is an image type string ("UINT8", ...)
-	      imgType = imageTypes[dataTypes.index(args[1])]
-	      img = imgType()
-	      img.setSize(srcIm)
+	  if type(args[1])==type(""):
+	      if args[1] in dataTypes: # Second arg is an image type string ("UINT8", ...)
+		  imgType = imageTypes[dataTypes.index(args[1])]
+		  img = imgType()
+		  img.setSize(srcIm)
+	      else:
+		  print "Unknown image type: " + args[1]
+		  print "List of available image types: " +  ", ".join(dataTypes)
 	  else:
 	      img = srcImgType(*args[1:])
 	else:
@@ -100,6 +115,8 @@ def Image(*args):
 	img = imageTypes[0](*args)
 	
     return img
+
+
 
 def find_object_names(obj):
   frame = sys._getframe()
