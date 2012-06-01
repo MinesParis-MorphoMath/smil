@@ -61,7 +61,7 @@ import time, new
 
 ${PYTHON_IMPORT_MODULES}
 
-dataTypes = [ ${DATA_TYPES_STR}, ]
+dataTypes = [ ${DATA_TYPES_QUOTE_STR}, ]
 imageTypes = [ ${IMAGE_TYPES_STR}, ]
 
 
