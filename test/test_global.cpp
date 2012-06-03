@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1);
     
-    
+//     im1.setSize(1024,1024);
     Image_UINT8 im2(im1);
     Image_UINT8 im3(im1);
     
@@ -58,8 +58,13 @@ int main(int argc, char *argv[])
     
 //     thresh(im1, UINT8(10), im3);
     
-    label(im3, imLbl, sSE());
-    imLbl.showLabel("ok");
+
+    im2.show();
+//     qApp->processEvents();
+//     qApp->processEvents();
+//     sleep(1);
+    qApp->processEvents();
+    open(im1, im2, hSE(40));
     
     Core::execLoop();
     

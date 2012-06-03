@@ -50,14 +50,15 @@ public:
     {
     }
     virtual void show() {}
+    virtual void showLabel() {}
     virtual void hide() {}
     virtual bool isVisible() { return false; }
     virtual void setName(const char* _name) { parentClass::setName(_name); }
     virtual void update()
     {
-	drawImage(labelImage);
+	drawImage();
     }
-    virtual void drawImage(bool labelized=false) {}
+    virtual void drawImage() {}
     virtual void drawOverlayImage(Image<T> &im) {}
     Image<T> *getImage() { return image; }
     bool labelImage;

@@ -30,6 +30,7 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsSceneMouseEvent>
 #include <QTimer>
+#include <QApplication>
 
 #include "ImageViewerWidget.h"
 
@@ -134,6 +135,7 @@ void ImageViewerWidget::switchLabelMode()
     else
       qImage->setColorTable(baseColorTable);
     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
+    QGraphicsView::update();
 }
 
 void ImageViewerWidget::createActions()
@@ -148,7 +150,7 @@ void ImageViewerWidget::createActions()
 
 void ImageViewerWidget::connectActions()
 {
-    connect(this, SIGNAL(onDataChanged()), this, SLOT(update()));
+//     connect(this, SIGNAL(onDataChanged()), this, SLOT(update()));
 
     connect(imScene, SIGNAL(onMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(sceneMouseMoveEvent(QGraphicsSceneMouseEvent*)));
 
@@ -227,9 +229,10 @@ void ImageViewerWidget::scale(double factor)
 
 void ImageViewerWidget::update()
 {
-//     this->dataChanged();
-    repaint();
-//     qApp->processEvents();
+    this->dataChanged();
+    QGraphicsView::update();
+//     repaint();
+    qApp->processEvents();
 }
 
 

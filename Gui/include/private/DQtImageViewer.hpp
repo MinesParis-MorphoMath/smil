@@ -50,11 +50,13 @@ public:
     typedef imageViewer<T> parentClass;
     qtImageViewer(Image<T> *im);
     ~qtImageViewer();
-    virtual void show();
     virtual void hide();
+    virtual void show();
+    virtual void showLabel();
     virtual bool isVisible();
     virtual void setName(const char* _name);
-    virtual void drawImage(bool labelized=false);
+    virtual void update();
+    virtual void drawImage();
     virtual void drawOverlayImage(Image<T> &im);
     
     virtual void switchLabelMode();
@@ -122,14 +124,19 @@ void qtImageViewer<T>::switchLabelMode()
 {
     BASE_QT_VIEWER::switchLabelMode();
     parentClass::labelImage = BASE_QT_VIEWER::drawLabelized;
-    drawImage(BASE_QT_VIEWER::drawLabelized);
+    drawImage();
 }
 
 template <class T>
-void qtImageViewer<T>::drawImage(bool labelized)
+void qtImageViewer<T>::update()
 {
-    drawLabelized = labelized;
-    
+    drawImage();
+    BASE_QT_VIEWER::update();    
+}
+
+template <class T>
+void qtImageViewer<T>::drawImage()
+{
     typename Image<T>::lineType pixels = this->image->getPixels();
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
@@ -139,7 +146,7 @@ void qtImageViewer<T>::drawImage(bool labelized)
     UINT8 *destLine;
     double coeff;
     
-    if (labelized)
+    if (parentClass::labelImage)
       coeff = 1.0;
     else
       coeff = double(numeric_limits<UINT8>::max()) / double(numeric_limits<T>::max());
@@ -153,17 +160,15 @@ void qtImageViewer<T>::drawImage(bool labelized)
 	pixels += w;
     }
 
-    if (labelized)
+    if (parentClass::labelImage)
       qImage->setColorTable(labelColorTable);
     else qImage->setColorTable(baseColorTable);
-    
-    this->dataChanged();
 }
 
 
 // Specialization for UINT8 type
 template <>
-void qtImageViewer<UINT8>::drawImage(bool labelized);
+void qtImageViewer<UINT8>::drawImage();
 
 
 template <class T>
