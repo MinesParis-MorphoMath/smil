@@ -54,6 +54,7 @@ void qtImageViewer<UINT8>::drawImage()
 }
 
 
+
 #ifdef SMIL_WRAP_BIN
 
 // #include "DBitArray.h"

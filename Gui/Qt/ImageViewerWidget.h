@@ -61,7 +61,7 @@ public:
     virtual void imageMouseMoveEvent ( QGraphicsSceneMouseEvent * event ) {}
     virtual void wheelEvent( QWheelEvent* );
     virtual void keyPressEvent(QKeyEvent *);
-    virtual void switchLabelMode();
+    virtual void setLabelImage(bool val);
 
     void setName(const char *name);
     void setImageSize(int w, int h);

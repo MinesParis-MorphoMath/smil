@@ -127,6 +127,8 @@ void Image<T>::init()
      
      operIm = NULL;
      
+     updatesEnabled = true;
+     
      parentClass::init();
 }
 
@@ -141,7 +143,8 @@ void Image<T>::updateOperIm()
 template <class T>
 void Image<T>::modified()
 { 
-    updateViewerData();
+    if (updatesEnabled)
+      updateViewerData();
 //     getCoreInstance()->processEvents();
 }
 
@@ -164,6 +167,14 @@ void Image<T>::updateViewerData(bool force)
 }
 
 template <class T>
+imageViewer<T> *Image<T>::getViewer()
+{
+    if (!viewer)
+        viewer = createViewer<T>(this);
+    return viewer;
+}
+
+template <class T>
 void Image<T>::show(const char* _name, bool labelImage)
 {
     if (!viewer)
@@ -172,16 +183,15 @@ void Image<T>::show(const char* _name, bool labelImage)
     if (_name)
         setName(_name);
     
-    
     if (!viewer)
       return;
     
-    if (viewer->isVisible() && viewer->labelImage==labelImage)
-      return;
-    
-    viewer->labelImage = labelImage;
     updateViewerData(true);
-    viewer->show();
+    
+    if (!labelImage)
+      viewer->show();
+    else
+      viewer->showLabel();
 }
 
 

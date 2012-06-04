@@ -117,7 +117,7 @@ public:
 	return RES_OK;
     }
 
-    imageViewer<T> *getViewer() { return viewer; }
+    imageViewer<T> *getViewer();
     bool isVisible() { return (viewer && viewer->isVisible()); }
     
     virtual void init();
@@ -202,6 +202,8 @@ protected:
   
     Image<T> *operIm;
     void updateOperIm();
+    
+    bool updatesEnabled;
     
     lineType pixels;
     sliceType  lines;

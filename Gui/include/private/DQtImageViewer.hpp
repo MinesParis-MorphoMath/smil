@@ -56,10 +56,10 @@ public:
     virtual bool isVisible();
     virtual void setName(const char* _name);
     virtual void update();
-    virtual void drawImage();
-    virtual void drawOverlayImage(Image<T> &im);
+    virtual void drawOverlay(Image<T> &im);
+    virtual void clearOverlay();
     
-    virtual void switchLabelMode();
+    virtual void setLabelImage(bool val);
     
     QApplication *_qapp;
     
@@ -74,6 +74,7 @@ public:
 	valueLabel->adjustSize();
     }
 protected:
+    virtual void drawImage();
 //     ImageViewerWidget *qtViewer;
 //     ImageViewer *qtViewer;
 };
@@ -83,6 +84,7 @@ template <class T>
 qtImageViewer<T>::qtImageViewer(Image<T> *im)
   : imageViewer<T>(im), BASE_QT_VIEWER(NULL)
 {
+    setImageSize(im->getWidth(), im->getHeight());
     if (this->image->getName())
       setName(this->image->getName());
 }
@@ -97,6 +99,13 @@ qtImageViewer<T>::~qtImageViewer()
 template <class T>
 void qtImageViewer<T>::show()
 {
+    BASE_QT_VIEWER::show();
+}
+
+template <class T>
+void qtImageViewer<T>::showLabel()
+{
+    setLabelImage(true);
     BASE_QT_VIEWER::show();
 }
 
@@ -120,9 +129,12 @@ void qtImageViewer<T>::setName(const char* _name)
 }
 
 template <class T>
-void qtImageViewer<T>::switchLabelMode()
+void qtImageViewer<T>::setLabelImage(bool val)
 {
-    BASE_QT_VIEWER::switchLabelMode();
+    if (parentClass::labelImage==val)
+      return;
+    
+    BASE_QT_VIEWER::setLabelImage(val);
     parentClass::labelImage = BASE_QT_VIEWER::drawLabelized;
     drawImage();
 }
@@ -131,7 +143,7 @@ template <class T>
 void qtImageViewer<T>::update()
 {
     drawImage();
-    BASE_QT_VIEWER::update();    
+    BASE_QT_VIEWER::update();
 }
 
 template <class T>
@@ -163,6 +175,8 @@ void qtImageViewer<T>::drawImage()
     if (parentClass::labelImage)
       qImage->setColorTable(labelColorTable);
     else qImage->setColorTable(baseColorTable);
+
+    qOverlayImage->fill(Qt::transparent);
 }
 
 
@@ -172,23 +186,33 @@ void qtImageViewer<UINT8>::drawImage();
 
 
 template <class T>
-void qtImageViewer<T>::drawOverlayImage(Image<T> &im)
+void qtImageViewer<T>::clearOverlay()
 {
-  QImage ovIm(qImage->width(), qImage->height(), QImage::Format_ARGB32);
-//   qImage->fill(Qt::transparent);
-  ovIm.fill(Qt::transparent);
-//   pit->setShapeMode(QGraphicsPixmapItem::MaskShape);
-  
-  qImage->setColor(280,qRgb(255,0,0));
-  for (int i=0;i<100;i++)
-    ovIm.setPixel(i,10, 256);
-  
-//   QGraphicsPixmapItem *pit = imScene->addPixmap(QPixmap::fromImage(ovIm));
-  
-  qImage->setAlphaChannel(ovIm);
-  
-  this->repaint();
-  this->dataChanged();
+    qOverlayImage->fill(Qt::transparent);
+    overlayPixmap->setPixmap(QPixmap::fromImage(*qOverlayImage));
+
+    BASE_QT_VIEWER::update();
+}
+
+template <class T>
+void qtImageViewer<T>::drawOverlay(Image<T> &im)
+{
+    qOverlayImage->fill(Qt::transparent);
+
+    typename Image<T>::lineType pixels = *im.getSlices()[0];
+    UINT pixNbr = im.getWidth()*im.getHeight();
+      
+    for (int j=0;j<im.getHeight();j++)
+      for (int i=0;i<im.getWidth();i++)
+      {
+	if (*pixels!=0)
+	  qOverlayImage->setPixel(i, j, overlayColorTable[(UINT8)*pixels]);
+	pixels++;
+      }
+	
+    overlayPixmap->setPixmap(QPixmap::fromImage(*qOverlayImage));
+
+    BASE_QT_VIEWER::update();
 }
 
 

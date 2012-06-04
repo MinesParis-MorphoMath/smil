@@ -58,11 +58,12 @@ public:
     {
 	drawImage();
     }
-    virtual void drawImage() {}
-    virtual void drawOverlayImage(Image<T> &im) {}
-    Image<T> *getImage() { return image; }
-    bool labelImage;
+    virtual void drawOverlay(Image<T> &im) {}
+    virtual void clearOverlay() {}
 protected:
+    Image<T> *getImage() { return image; }
+    virtual void drawImage() {}
+    bool labelImage;
     Image<T> *image;
 };
 

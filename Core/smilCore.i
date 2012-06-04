@@ -122,6 +122,7 @@ PTR_ARG_OUT_APPLY(d)
 %include "DLineHistogram.hpp"
 %include "DImageHistogram.hpp"
 
+%include "DImageViewer.hpp"
 
 // generate directors for Signal and Slot (for virtual methods overriding)
 %feature("director") Signal;
@@ -137,6 +138,7 @@ PTR_ARG_OUT_APPLY(d)
 %template(objVector) vector<baseObject*>;
 %template(uintVector) vector<UINT>;
 
+TEMPLATE_WRAP_CLASS(imageViewer);
 TEMPLATE_WRAP_CLASS(Image);
 
 TEMPLATE_WRAP_FUNC(createImage);

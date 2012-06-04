@@ -88,6 +88,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
 ImageViewerWidget::~ImageViewerWidget()
 {
     delete qImage;
+    delete qOverlayImage;
     delete imScene;
     delete magnView;
 
@@ -112,7 +113,7 @@ void ImageViewerWidget::initColorTables()
 	g+=RAND_UINT8/2;
 	b+=RAND_UINT8/2;
     }
-    for (int i=1;i<255;i++)
+    for (int i=1;i<256;i++)
     {	
 	labelColorTable.append(qRgb(r+=RAND_UINT8/2, g+=RAND_UINT8/2, b+=RAND_UINT8/2));
 	// Avoid to have both r, g and b to low (->black)
@@ -125,11 +126,15 @@ void ImageViewerWidget::initColorTables()
     }
     
     overlayColorTable.clear();
+    overlayColorTable = labelColorTable;
 }
 
-void ImageViewerWidget::switchLabelMode()
+void ImageViewerWidget::setLabelImage(bool val)
 {
-    drawLabelized = !drawLabelized;
+    if (drawLabelized==val)
+      return;
+    
+    drawLabelized = val;
     if (drawLabelized)
       qImage->setColorTable(labelColorTable);
     else
@@ -181,13 +186,9 @@ void ImageViewerWidget::setImageSize(int w, int h)
     delete qOverlayImage;
 
     qImage = new QImage(w, h, QImage::Format_Indexed8);
-    
     qOverlayImage = new QImage(w, h, QImage::Format_ARGB32_Premultiplied);
-
-//      qImage->setNumColors(512);
-//     for (int i=0; i<256; i++)
-//         qImage->setColor(i,qRgb(i,i,i));
-//     qImage->setColorTable();
+    // Clear overlay
+    overlayPixmap->setPixmap(QPixmap::fromImage(*qOverlayImage));
 }
 
 
@@ -279,7 +280,7 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
         else valueLabel->hide();
         break;
     case Qt::Key_L:
-	switchLabelMode();
+	setLabelImage(!drawLabelized);
 	break;
     }
 
