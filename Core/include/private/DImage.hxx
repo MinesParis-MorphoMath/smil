@@ -143,9 +143,13 @@ void Image<T>::updateOperIm()
 template <class T>
 void Image<T>::modified()
 { 
-    if (updatesEnabled)
-      updateViewerData();
-//     getCoreInstance()->processEvents();
+    if (viewer)
+    {
+	viewer->dataModified = true;
+	
+	if (updatesEnabled && viewer->isVisible())
+	  viewer->update();
+    }
 }
 
 
@@ -157,13 +161,6 @@ void Image<T>::setName(const char *_name)
     
     if (viewer)
 	viewer->setName(_name);
-}
-
-template <class T>
-void Image<T>::updateViewerData(bool force)
-{ 
-    if ((viewer && viewer->isVisible()) || force)
-	viewer->update();
 }
 
 template <class T>
@@ -185,8 +182,6 @@ void Image<T>::show(const char* _name, bool labelImage)
     
     if (!viewer)
       return;
-    
-    updateViewerData(true);
     
     if (!labelImage)
       viewer->show();

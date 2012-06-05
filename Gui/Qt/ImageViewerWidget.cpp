@@ -280,7 +280,7 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
         else valueLabel->hide();
         break;
     case Qt::Key_L:
-	setLabelImage(!drawLabelized);
+	setLabelImage(!drawLabelized); // Switch label mode
 	break;
     }
 

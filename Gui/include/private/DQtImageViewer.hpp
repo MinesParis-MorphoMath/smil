@@ -99,13 +99,15 @@ qtImageViewer<T>::~qtImageViewer()
 template <class T>
 void qtImageViewer<T>::show()
 {
+    update();
     BASE_QT_VIEWER::show();
 }
 
 template <class T>
 void qtImageViewer<T>::showLabel()
 {
-    setLabelImage(true);
+    this->setLabelImage(true);
+    update();
     BASE_QT_VIEWER::show();
 }
 
@@ -125,7 +127,8 @@ template <class T>
 void qtImageViewer<T>::setName(const char* _name)
 {
     parentClass::setName(_name);
-    BASE_QT_VIEWER::setName(_name);
+    QString buf = _name + QString(" (") + QString(parentClass::image->getTypeAsString()) + QString(")");
+    BASE_QT_VIEWER::setName(buf.toStdString().c_str());
 }
 
 template <class T>
@@ -135,15 +138,25 @@ void qtImageViewer<T>::setLabelImage(bool val)
       return;
     
     BASE_QT_VIEWER::setLabelImage(val);
-    parentClass::labelImage = BASE_QT_VIEWER::drawLabelized;
-    drawImage();
+    parentClass::labelImage = val;
+    
+    if (val)
+      qImage->setColorTable(labelColorTable);
+    else qImage->setColorTable(baseColorTable);
+    
+    parentClass::dataModified = true;
 }
 
 template <class T>
 void qtImageViewer<T>::update()
 {
+    if (!parentClass::dataModified)
+      return;
+    
     drawImage();
     BASE_QT_VIEWER::update();
+    
+    parentClass::dataModified = false;
 }
 
 template <class T>
@@ -171,16 +184,10 @@ void qtImageViewer<T>::drawImage()
 	
 	pixels += w;
     }
-
-    if (parentClass::labelImage)
-      qImage->setColorTable(labelColorTable);
-    else qImage->setColorTable(baseColorTable);
-
-    qOverlayImage->fill(Qt::transparent);
 }
 
 
-// Specialization for UINT8 type
+// Specialization for UINT8 type (faster)
 template <>
 void qtImageViewer<UINT8>::drawImage();
 

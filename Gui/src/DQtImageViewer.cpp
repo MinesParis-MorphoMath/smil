@@ -45,12 +45,6 @@ void qtImageViewer<UINT8>::drawImage()
 
     for (int j=0;j<h;j++)
         memcpy(qImage->scanLine(j), pixels+(j*w), sizeof(uchar) * w);
-
-    if (parentClass::labelImage)
-      qImage->setColorTable(labelColorTable);
-    else qImage->setColorTable(baseColorTable);
-    
-//     this->dataChanged();
 }
 
 
@@ -90,8 +84,6 @@ void qtImageViewer<BIN>::drawImage()
 	  }
 	}
     }
-
-    this->dataChanged();
 }
 
 #endif // SMIL_WRAP_BIN
@@ -133,8 +125,6 @@ void qtImageViewer<Bit>::drawImage()
 	  }
 	}
     }
-
-    this->dataChanged();
 }
 
 #endif // SMIL_WRAP_Bit

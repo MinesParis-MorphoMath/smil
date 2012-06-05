@@ -118,6 +118,7 @@ public:
     }
 
     imageViewer<T> *getViewer();
+    bool updatesEnabled;
     bool isVisible() { return (viewer && viewer->isVisible()); }
     
     virtual void init();
@@ -203,8 +204,6 @@ protected:
     Image<T> *operIm;
     void updateOperIm();
     
-    bool updatesEnabled;
-    
     lineType pixels;
     sliceType  lines;
     volType slices;
@@ -216,7 +215,6 @@ protected:
     imageViewer<T> *viewer;
 //     ImageViewerWidget *viewer;
     
-    void updateViewerData(bool force=false);
 public:
     virtual void setName(const char *_name);
     virtual void show(const char* _name=NULL, bool labelImage=false);

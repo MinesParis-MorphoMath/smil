@@ -48,14 +48,14 @@ int main(int argc, char *argv[])
     
 //     im1.setSize(1024,1024);
     Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
+    Image_UINT16 im3(im1);
     
-    im1.show();
-    im2.show();
+    im1.show("im1");
+    im2.show("im2");
     
     thresh(im1, (UINT8)20, im2);
-    dist(im2, im3);
-    im3.show();
+    label(im2, im3);
+    im3.showLabel("im3");
 
     
     Core::execLoop();

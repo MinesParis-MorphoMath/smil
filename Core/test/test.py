@@ -235,7 +235,7 @@ hMinima(imGrad, 15, imMin)
 imLbl = Image(im1, "UINT16")
 imLbl.setSize(im1)
 label(imMin, imLbl)
-#imLbl.showLabel()
+imLbl.showLabel()
 
 imWs = Image(im1)
 imMark = Image(im1, "UINT16")
