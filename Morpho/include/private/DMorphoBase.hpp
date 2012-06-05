@@ -44,8 +44,7 @@ RES_T dilate(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 template <class T>
 RES_T dilate(Image<T> &imIn, Image<T> &imOut, UINT seSize)
 {
-    unaryMorphImageFunction<T, supLine<T> > iFunc(numeric_limits<T>::min());
-    return iFunc(imIn, imOut, DEFAULT_SE(seSize));
+    return dilate(imIn, imOut, DEFAULT_SE(seSize));
 }
 
 template <class T>
@@ -53,6 +52,12 @@ RES_T erode(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     unaryMorphImageFunction<T, infLine<T> > iFunc(numeric_limits<T>::max());
     return iFunc(imIn, imOut, se);
+}
+
+template <class T>
+RES_T erode(Image<T> &imIn, Image<T> &imOut, UINT seSize)
+{
+    return erode(imIn, imOut, DEFAULT_SE(seSize));
 }
 
 template <class T>
@@ -65,12 +70,24 @@ RES_T close(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 }
 
 template <class T>
+RES_T close(Image<T> &imIn, Image<T> &imOut, UINT seSize)
+{
+    return close(imIn, imOut, DEFAULT_SE(seSize));
+}
+
+template <class T>
 RES_T open(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     RES_T res = erode(imIn, imOut, se);
     if (res==RES_OK)
       res = dilate(imOut, imOut, se);
     return res;
+}
+
+template <class T>
+RES_T open(Image<T> &imIn, Image<T> &imOut, UINT seSize)
+{
+    return open(imIn, imOut, DEFAULT_SE(seSize));
 }
 
 template <class T>

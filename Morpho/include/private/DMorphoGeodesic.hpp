@@ -153,6 +153,30 @@ RES_T levelPics(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 }
 
 
+/**
+ * Ugly temporary distance function
+ */
+template <class T>
+RES_T dist(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+{
+    Image<T> tmpIm(imIn);
+    
+    // Set image to 1 when pixels are !=0
+    inf(imIn, T(1), tmpIm);
+    
+    copy(tmpIm, imOut);
+    
+    do
+    {
+	erode(tmpIm, tmpIm, se);
+	add(tmpIm, imOut, imOut);
+	
+    } while (vol(tmpIm)!=0);
+
+    imOut.modified();
+}
+
+
 
 #endif // _D_MORPHO_GEODESIC_HPP
 

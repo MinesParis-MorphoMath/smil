@@ -50,21 +50,13 @@ int main(int argc, char *argv[])
     Image_UINT8 im2(im1);
     Image_UINT8 im3(im1);
     
-    Image_UINT16 imLbl(im1);
-    
-    gradient(im1, im2);
-    hMinima(im2, UINT8(10), im3);
-//     im3.show();
-    
-//     thresh(im1, UINT8(10), im3);
-    
-
+    im1.show();
     im2.show();
-//     qApp->processEvents();
-//     qApp->processEvents();
-//     sleep(1);
-    qApp->processEvents();
-    open(im1, im2, hSE(40));
+    
+    thresh(im1, (UINT8)20, im2);
+    dist(im2, im3);
+    im3.show();
+
     
     Core::execLoop();
     
