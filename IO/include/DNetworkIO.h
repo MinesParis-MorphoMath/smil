@@ -27,40 +27,10 @@
  */
 
 
-#include <stdio.h>
-#include <time.h>
-
-//#include <boost/signal.hpp>
-//#include <boost/bind.hpp>
-
-#include "DCore.h"
-#include "DIO.h"
-
-#ifdef BUILD_GUI
-#include "DGui.h"
-#include <QApplication>
-#endif // BUILD_GUI
+#ifndef _D_NETWORK_IO_H
+#define _D_NETWORK_IO_H
 
 
-int main(int argc, char *argv[])
-{
-    Image_UINT8 im1;
-    Image_UINT8 im2;
-    Image_UINT8 im3;
+int getHttpFile(const char *url, const char *outfilename) ;
 
-
-//       im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
-//     if(read("/home/faessel/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0603_C1_1_20100326-105102/1.bmp", im1)!=RES_OK)
-// 	read("/home/mat/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0603_C1_1_20100326-105102/1.bmp", im1);
-// //     im1 >> "/home/faessel/tmp/tmp.bmp";
-//     cout << endl;
-    const char *str = im2.getName();
-    im2 << "http://cmm.ensmp.fr/~faessel/smil/images/barbara.png";
-    
-    
-    im2.show();
-    
-
-    Core::execLoop();
-}
-
+#endif // _D_NETWORK_IO_H

@@ -34,6 +34,8 @@
 #include <string>
 #include <algorithm>
 
+#include <curl/curl.h>
+
 
 #include "DImageIO_BMP.hpp"
 #include "DImageIO_RAW.hpp"
@@ -45,11 +47,31 @@
 
 extern const char *getFileExtension(const char *fileName);
 
+#ifdef USE_CURL
+extern int getHttpFile(const char *url, const char *outfilename);
+#endif // USE_CURL
+
 template <class T>
 RES_T read(const char* filename, Image<T> &image)
 {
     string fileExt = getFileExtension(filename);
+    string filePrefix = (string(filename).substr(0, 7));
+    string tmpFileName;
+    
     RES_T res;
+    
+    if (filePrefix=="http://")
+    {
+#ifdef USE_CURL
+	tmpFileName = "_smilTmpIO." + fileExt;
+	getHttpFile(filename, tmpFileName.c_str());
+	res = read(tmpFileName.c_str(), image);
+	remove(tmpFileName.c_str());
+	return res;
+#else // USE_CURL
+	return RES_ERR;
+#endif // USE_CURL
+    }
 
     if (fileExt=="BMP")
         res = readBMP(filename, image);

@@ -33,6 +33,9 @@
 
 #include "DImageIO.hpp"
 
+#ifdef USE_CURL
+#include "DNetworkIO.h"
+#endif // USE_CURL
 
 
 
