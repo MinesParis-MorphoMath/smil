@@ -49,13 +49,17 @@ int main(int argc, char *argv[])
 //     im1.setSize(1024,1024);
     Image_UINT8 im2(im1);
     Image_UINT16 im3(im1);
+
+    im1.setSize(256, 256);
     
-    im1.show("im1");
-    im2.show("im2");
+    for(int j=0;j<im1.getHeight();j++)
+      for(int i=0;i<im1.getWidth();i++)
+      {
+	  im1.setPixel(i,j, i);
+      }
+      
+    im1.showLabel("im1");
     
-    thresh(im1, (UINT8)20, im2);
-    label(im2, im3);
-    im3.showLabel("im3");
 
     
     Core::execLoop();

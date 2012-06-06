@@ -69,11 +69,11 @@ public:
     
     QStatusBar *statusBar;
     QImage *qImage;
-    QImage *qOverlayImage;
     
     bool drawLabelized;
 protected:
     QVector<QRgb> baseColorTable;
+    QVector<QRgb> rainbowColorTable;
     QVector<QRgb> labelColorTable;
     QVector<QRgb> overlayColorTable;
     void initColorTables();

@@ -52,7 +52,7 @@ guiInstance::guiInstance()
       
       _timer = new timer();
       _timer->app = _qapp;
-      _timer->start();
+//       _timer->start();
 }
 
 guiInstance::~guiInstance()

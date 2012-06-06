@@ -63,16 +63,7 @@ public:
     
     QApplication *_qapp;
     
-    virtual void imageMouseMoveEvent ( QGraphicsSceneMouseEvent * event ) 
-    {
-	int x = int(event->scenePos().rx());
-	int y = int(event->scenePos().ry());
-	T pixVal;
-
-	pixVal = this->image->getPixel(x, y);
-	valueLabel->setText("(" + QString::number(x) + ", " + QString::number(y) + ") " + QString::number(pixVal));
-	valueLabel->adjustSize();
-    }
+    virtual void imageMouseMoveEvent ( QGraphicsSceneMouseEvent * event );
 protected:
     virtual void drawImage();
 //     ImageViewerWidget *qtViewer;
@@ -197,16 +188,20 @@ void qtImageViewer<UINT8>::drawImage();
 template <class T>
 void qtImageViewer<T>::clearOverlay()
 {
-    qOverlayImage->fill(Qt::transparent);
-    overlayPixmap->setPixmap(QPixmap::fromImage(*qOverlayImage));
+    overlayPixmap->setPixmap(QPixmap());
 
-    BASE_QT_VIEWER::repaint();
+    BASE_QT_VIEWER::update();
 }
 
 template <class T>
 void qtImageViewer<T>::drawOverlay(Image<T> &im)
 {
-    qOverlayImage->fill(Qt::transparent);
+    UINT w = im.getWidth();
+    UINT h = im.getHeight();
+    
+    QImage qOverlayImage(w, h, QImage::Format_ARGB32_Premultiplied);
+//     qOverlayImage.setColorTable(overlayColorTable);
+    qOverlayImage.fill(Qt::transparent);
 
     typename Image<T>::lineType pixels = *im.getSlices()[0];
     UINT pixNbr = im.getWidth()*im.getHeight();
@@ -215,15 +210,26 @@ void qtImageViewer<T>::drawOverlay(Image<T> &im)
       for (int i=0;i<im.getWidth();i++)
       {
 	if (*pixels!=0)
-	  qOverlayImage->setPixel(i, j, overlayColorTable[(UINT8)*pixels]);
+	  qOverlayImage.setPixel(i, j, overlayColorTable[(UINT8)*pixels]);
 	pixels++;
       }
 	
-    overlayPixmap->setPixmap(QPixmap::fromImage(*qOverlayImage));
+    overlayPixmap->setPixmap(QPixmap::fromImage(qOverlayImage));
 
-    BASE_QT_VIEWER::repaint();
+    BASE_QT_VIEWER::update();
 }
 
+template <class T>
+void qtImageViewer<T>::imageMouseMoveEvent ( QGraphicsSceneMouseEvent * event ) 
+{
+    int x = int(event->scenePos().rx());
+    int y = int(event->scenePos().ry());
+    T pixVal;
+
+    pixVal = this->image->getPixel(x, y);
+    valueLabel->setText("(" + QString::number(x) + ", " + QString::number(y) + ") " + QString::number(pixVal));
+    valueLabel->adjustSize();
+}
 
 #ifdef SMIL_WRAP_Bit
 template <>

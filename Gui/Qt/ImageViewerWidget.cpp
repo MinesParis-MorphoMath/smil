@@ -56,7 +56,6 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
 
     scaleFactor = 1.0;
     qImage = new QImage();
-    qOverlayImage = new QImage();
 
     magnView = new MagnifyView(this);
     magnView->hide();
@@ -88,7 +87,6 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
 ImageViewerWidget::~ImageViewerWidget()
 {
     delete qImage;
-    delete qOverlayImage;
     delete imScene;
     delete magnView;
 
@@ -102,28 +100,17 @@ void ImageViewerWidget::initColorTables()
     for (int i=0;i<256;i++)
       baseColorTable.append(qRgb(i, i, i));
     
+    rainbowColorTable.clear();
+    
+    rainbowColorTable.clear();
+    for(int i=0;i<256;i++)
+      rainbowColorTable.append(QColor::fromHsvF(double(i)/256., 1.0, 1.0).rgb());
+    
     labelColorTable.clear();
-//     qsrand(3);
-    labelColorTable.append(qRgb(0, 0, 0));
-    UINT8 r = 255, g = 0, b = 0;
-    UINT8 minTh = 50;
-    for (int i=0;i<3;i++)
-    {
-	r+=RAND_UINT8/2;
-	g+=RAND_UINT8/2;
-	b+=RAND_UINT8/2;
-    }
-    for (int i=1;i<256;i++)
-    {	
-	labelColorTable.append(qRgb(r+=RAND_UINT8/2, g+=RAND_UINT8/2, b+=RAND_UINT8/2));
-	// Avoid to have both r, g and b to low (->black)
-	while (r<minTh && g <minTh && b<minTh)
-	{
-	    r += RAND_UINT8/2;
-	    g += RAND_UINT8/2;
-	    b += RAND_UINT8/2;
-	}
-    }
+    labelColorTable.append(qRgb(0,0,0));
+    unsigned char curC = 0;
+    for(int i=0;i<256;i++,curC+=47)
+      labelColorTable.append(rainbowColorTable[curC]);
     
     overlayColorTable.clear();
     overlayColorTable = labelColorTable;
@@ -183,12 +170,15 @@ void ImageViewerWidget::setImageSize(int w, int h)
         return;
 
     delete qImage;
-    delete qOverlayImage;
 
     qImage = new QImage(w, h, QImage::Format_Indexed8);
-    qOverlayImage = new QImage(w, h, QImage::Format_ARGB32_Premultiplied);
+    imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
+    
+    hide();
+    show();
+    
     // Clear overlay
-    overlayPixmap->setPixmap(QPixmap::fromImage(*qOverlayImage));
+    overlayPixmap->setPixmap(QPixmap());
 }
 
 
@@ -204,7 +194,7 @@ void ImageViewerWidget::dataChanged()
 {
     magnView->setImage(qImage);
     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
-    repaint();
+//     repaint();
 //     update();
 //     qApp->processEvents();
     emit onDataChanged();
@@ -242,7 +232,7 @@ void ImageViewerWidget::mouseMoveEvent ( QMouseEvent * event )
 {
     QPoint p = event->pos();
 
-    int dx = 40, dy = -20;
+    int dx = 30, dy = -20;
     magnView->move(p + QPoint(dx, dy));
     valueLabel->move(p + QPoint(dx, dy-valueLabel->height()));
 
@@ -295,18 +285,24 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
     int x = int(event->scenePos().rx());
     int y = int(event->scenePos().ry());
 
-    if (x>=0 && x<qImage->width() && y>=0 && y<qImage->height())
+    UINT w = qImage->width();
+    UINT h = qImage->height();
+    
+    if (x>=0 && x<w && y>=0 && y<h)
     {
-        magnView->displayAt(x, y);
         if (valueLblActivated)
+	{
             valueLabel->show();
+	}
         if (magnActivated)
+	{
+	    magnView->displayAt(x, y);
             magnView->show();
+	}
 	imageMouseMoveEvent(event);
     }
     else
     {
-        valueLabel->adjustSize();
         valueLabel->hide();
         magnView->hide();
     }
