@@ -145,6 +145,7 @@ void qtImageViewer<T>::setLabelImage(bool val)
     else qImage->setColorTable(baseColorTable);
     
     parentClass::dataModified = true;
+    BASE_QT_VIEWER::dataChanged();
 }
 
 template <class T>
@@ -199,7 +200,7 @@ void qtImageViewer<T>::clearOverlay()
     qOverlayImage->fill(Qt::transparent);
     overlayPixmap->setPixmap(QPixmap::fromImage(*qOverlayImage));
 
-    BASE_QT_VIEWER::update();
+    BASE_QT_VIEWER::repaint();
 }
 
 template <class T>
@@ -220,7 +221,7 @@ void qtImageViewer<T>::drawOverlay(Image<T> &im)
 	
     overlayPixmap->setPixmap(QPixmap::fromImage(*qOverlayImage));
 
-    BASE_QT_VIEWER::update();
+    BASE_QT_VIEWER::repaint();
 }
 
 

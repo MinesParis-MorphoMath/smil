@@ -204,8 +204,8 @@ void ImageViewerWidget::dataChanged()
 {
     magnView->setImage(qImage);
     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
-//     repaint();
-    update();
+    repaint();
+//     update();
 //     qApp->processEvents();
     emit onDataChanged();
 }
