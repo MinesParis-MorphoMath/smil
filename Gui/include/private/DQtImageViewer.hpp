@@ -99,16 +99,16 @@ qtImageViewer<T>::~qtImageViewer()
 template <class T>
 void qtImageViewer<T>::show()
 {
-    update();
     BASE_QT_VIEWER::show();
+    update();
 }
 
 template <class T>
 void qtImageViewer<T>::showLabel()
 {
+    BASE_QT_VIEWER::show();
     this->setLabelImage(true);
     update();
-    BASE_QT_VIEWER::show();
 }
 
 template <class T>
@@ -150,13 +150,14 @@ void qtImageViewer<T>::setLabelImage(bool val)
 template <class T>
 void qtImageViewer<T>::update()
 {
-    if (!parentClass::dataModified)
-      return;
-    
-    drawImage();
+    if (parentClass::dataModified)
+    {
+	drawImage();
+	BASE_QT_VIEWER::dataChanged();
+	parentClass::dataModified = false;
+    }
     BASE_QT_VIEWER::update();
-    
-    parentClass::dataModified = false;
+    qApp->processEvents();
 }
 
 template <class T>

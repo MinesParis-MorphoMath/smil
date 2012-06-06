@@ -111,7 +111,7 @@ public slots:
     void zoomIn();
     void zoomOut();
     void scale(double factor);
-    void update();
+//     void update();
 
 private slots:
     void sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event );

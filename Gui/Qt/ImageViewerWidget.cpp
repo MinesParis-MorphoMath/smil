@@ -204,7 +204,7 @@ void ImageViewerWidget::dataChanged()
 {
     magnView->setImage(qImage);
     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
-//     repaint();
+    repaint();
 //     qApp->processEvents();
     emit onDataChanged();
 }
@@ -228,13 +228,13 @@ void ImageViewerWidget::scale(double factor)
     emit(onRescaled(scaleFactor));
 }
 
-void ImageViewerWidget::update()
-{
-    this->dataChanged();
-    QGraphicsView::update();
+// void ImageViewerWidget::update()
+// {
+//     this->dataChanged();
+//     QGraphicsView::update();
 //     repaint();
-    qApp->processEvents();
-}
+//     qApp->processEvents();
+// }
 
 
 void ImageViewerWidget::mouseMoveEvent ( QMouseEvent * event )

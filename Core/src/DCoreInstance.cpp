@@ -42,13 +42,13 @@ guiInstance::guiInstance()
 {
       if (!QApplication::instance())
       {
-// 	    cout << "Core qt created (guiInst)" << endl;
+	    cout << "Core qt created (guiInst)" << endl;
 	  int ac = 1;
 	  char **av = NULL;
 	  _qapp = new QApplication(ac, av);
 	  _qapp->processEvents();
       }
-      else _qapp = qApp;
+//       else _qapp = qApp;
       
       _timer = new timer();
       _timer->app = _qapp;
@@ -57,6 +57,8 @@ guiInstance::guiInstance()
 
 guiInstance::~guiInstance()
 {
+    if (_qapp)
+      _qapp->exit();
     delete _timer;
 }
 
