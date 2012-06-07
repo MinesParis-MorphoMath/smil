@@ -59,16 +59,19 @@ private:
     double scaleFactor;
 
     void mouseMoveEvent(QMouseEvent* pEvent);
-signals:
+    
+public:
+    void setGridSize(int s);
+    inline int getGridSize() { return gridSize; }
+    inline QGraphicsPixmapItem *getPixItem() { return pixItem; }
+    inline QList<QGraphicsTextItem*> *getTextItemList() { return textItemList; }
+    void displayAt(int x, int y);
+    void setImage(QImage *img);
 
 public slots:
     void zoomIn();
     void zoomOut();
     void scaleImage(double factor);
-    void displayAt(int x, int y);
-    void setGridSize(int s);
-
-    void setImage(QImage *img);
 };
 
 #endif // MagnifyView_H

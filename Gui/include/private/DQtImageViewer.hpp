@@ -63,8 +63,9 @@ public:
     
     QApplication *_qapp;
     
-    virtual void imageMouseMoveEvent ( QGraphicsSceneMouseEvent * event );
 protected:
+    virtual void displayPixelValue(UINT x, UINT y);
+    virtual void displayMagnifyView(UINT x, UINT y);
     virtual void drawImage();
 //     ImageViewerWidget *qtViewer;
 //     ImageViewer *qtViewer;
@@ -220,15 +221,65 @@ void qtImageViewer<T>::drawOverlay(Image<T> &im)
 }
 
 template <class T>
-void qtImageViewer<T>::imageMouseMoveEvent ( QGraphicsSceneMouseEvent * event ) 
+void qtImageViewer<T>::displayPixelValue(UINT x, UINT y)
 {
-    int x = int(event->scenePos().rx());
-    int y = int(event->scenePos().ry());
     T pixVal;
 
     pixVal = this->image->getPixel(x, y);
     valueLabel->setText("(" + QString::number(x) + ", " + QString::number(y) + ") " + QString::number(pixVal));
     valueLabel->adjustSize();
+}
+
+
+template <class T>
+void qtImageViewer<T>::displayMagnifyView(UINT x, UINT y)
+{
+    magnView->displayAt(x, y);
+
+    int gridSize = magnView->getGridSize();
+    
+    int xi = x-gridSize/2;
+    int yi = y-gridSize/2;
+
+    int imW = qImage->width();
+    int imH = qImage->height();
+
+    double s = scaleFactor / gridSize;
+
+    typename ImDtTypes<T>::sliceType pSlice = parentClass::image->getSlices()[0];
+    typename ImDtTypes<T>::lineType pLine;
+    T pVal;
+    
+    QGraphicsTextItem *textItem;
+    QList<QGraphicsTextItem*>::Iterator txtIt = magnView->getTextItemList()->begin();
+    
+    QColor lightCol = QColor::fromRgb(255,255,255);
+    QColor darkCol = QColor::fromRgb(0,0,0);
+    T lightThresh = double(ImDtTypes<T>::max()-ImDtTypes<T>::min()) * 0.55;
+
+    for (int j=0;j<gridSize;j++,yi++)
+    {
+        if (yi>=0 && yi<imH)
+            pLine = pSlice[yi];
+        else pLine = NULL;
+
+        for (int i=0,xi=x-gridSize/2; i<gridSize; i++,xi++)
+        {
+            textItem = *txtIt++;
+            if (pLine && xi>=0 && xi<imW)
+            {
+                pVal = pLine[xi];
+                if (pVal<lightThresh)
+                    textItem->setDefaultTextColor(lightCol);
+                else
+                    textItem->setDefaultTextColor(darkCol);
+                textItem->setPlainText(QString::number(pVal));
+            }
+            else textItem->setPlainText("");
+
+        }
+    }
+
 }
 
 #ifdef SMIL_WRAP_Bit

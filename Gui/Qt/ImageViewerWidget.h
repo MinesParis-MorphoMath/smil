@@ -44,8 +44,10 @@ class QImageGraphicsScene : public QGraphicsScene
 public:
     QImageGraphicsScene(QObject *parent=0);
     void mouseMoveEvent ( QGraphicsSceneMouseEvent * event );
+    void mousePressEvent ( QGraphicsSceneMouseEvent * event );
 signals:
     void onMouseMove(QGraphicsSceneMouseEvent* event);
+    void onMousePressed(QGraphicsSceneMouseEvent* event);
 };
 
 
@@ -58,10 +60,14 @@ public:
     ~ImageViewerWidget();
 
     virtual void mouseMoveEvent ( QMouseEvent * event );
-    virtual void imageMouseMoveEvent ( QGraphicsSceneMouseEvent * event ) {}
+    virtual void mousePressEvent ( QMouseEvent * event );
+    virtual void mouseReleaseEvent ( QMouseEvent * event );
     virtual void wheelEvent( QWheelEvent* );
     virtual void keyPressEvent(QKeyEvent *);
+    
     virtual void setLabelImage(bool val);
+    virtual void displayPixelValue(UINT x, UINT y) {}
+    virtual void displayMagnifyView(UINT x, UINT y) {}
 
     void setName(const char *name);
     void setImageSize(int w, int h);
@@ -86,6 +92,8 @@ protected:
     QLabel *valueLabel;
     MagnifyView *magnView;
 
+    int lastPixX, lastPixY;
+    
     bool magnActivated;
     bool valueLblActivated;
     

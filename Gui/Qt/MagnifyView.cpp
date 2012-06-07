@@ -110,38 +110,6 @@ void MagnifyView::displayAt(int x, int y)
     QPixmap px = QPixmap::fromImage(img);
     pixItem->setPixmap(px);
 
-    int imW = fullImage->width();
-    int imH = fullImage->height();
-
-    double s = scaleFactor / gridSize;
-
-    uchar *pLine, pVal;
-    QGraphicsTextItem *textItem;
-    QList<QGraphicsTextItem*>::Iterator txtIt = textItemList->begin();
-
-    for (int j=0;j<gridSize;j++,yi++)
-    {
-        if (yi>=0 && yi<imH)
-            pLine = fullImage->scanLine(yi);
-        else pLine = NULL;
-
-        for (int i=0,xi=x-gridSize/2; i<gridSize; i++,xi++)
-        {
-            textItem = *txtIt++;
-            if (pLine && xi>=0 && xi<imW)
-            {
-                pVal = pLine[xi];
-                if (pVal<140)
-                    textItem->setDefaultTextColor(QColor::fromRgb(255,255,255));
-                else
-                    textItem->setDefaultTextColor(QColor::fromRgb(0,0,0));
-                textItem->setPlainText(QString::number(pVal));
-            }
-            else textItem->setPlainText("");
-
-        }
-    }
-
 }
 
 void MagnifyView::zoomIn()

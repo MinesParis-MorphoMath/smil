@@ -47,6 +47,12 @@ void QImageGraphicsScene::mouseMoveEvent ( QGraphicsSceneMouseEvent * event )
     QGraphicsScene::mouseMoveEvent(event);
 }
 
+void QImageGraphicsScene::mousePressEvent ( QGraphicsSceneMouseEvent * event )
+{
+    emit(onMousePressed(event));
+    QGraphicsScene::mousePressEvent(event);
+}
+
 
 
 ImageViewerWidget::ImageViewerWidget(QWidget *parent)
@@ -148,8 +154,8 @@ void ImageViewerWidget::setLabelImage(bool val)
       qImage->setColorTable(baseColorTable);
     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
     
-//     if (magnActivated)
-//       magnView->refresh();
+    if (magnActivated && lastPixX>=0)
+	displayMagnifyView(lastPixX, lastPixY);
 }
 
 void ImageViewerWidget::createActions()
@@ -237,11 +243,42 @@ void ImageViewerWidget::mouseMoveEvent ( QMouseEvent * event )
 {
     QPoint p = event->pos();
 
-    int dx = 30, dy = -20;
-    magnView->move(p + QPoint(dx, dy));
-    valueLabel->move(p + QPoint(dx, dy-valueLabel->height()));
+    int dx = 10, dy = 20;
+    int newX = p.x(), newY = p.y();
 
+    if (newX+valueLabel->width() > width())
+      newX -= dx + valueLabel->width();
+    else 
+      newX += dx;
+    
+    if (newY-valueLabel->height() < 0)
+      newY += dy;
+    else 
+      newY -= dy;
+    
+    valueLabel->move(QPoint(newX, newY));
+    magnView->move(p + QPoint(20, 20));
     QGraphicsView::mouseMoveEvent(event);
+}
+
+void ImageViewerWidget::mousePressEvent ( QMouseEvent * event )
+{
+    Qt::MouseButton btn = event->button();
+    
+    if (btn==Qt::LeftButton)
+      setDragMode(QGraphicsView::ScrollHandDrag);
+    
+    QGraphicsView::mousePressEvent(event);
+}
+
+void ImageViewerWidget::mouseReleaseEvent ( QMouseEvent * event )
+{
+    Qt::MouseButton btn = event->button();
+    
+    if (btn==Qt::LeftButton)
+      setDragMode(QGraphicsView::NoDrag);
+    
+    QGraphicsView::mousePressEvent(event);
 }
 
 void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
@@ -257,18 +294,22 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
         if (valueLblActivated)
 	{
             valueLabel->show();
+	    displayPixelValue(x, y);
 	}
         if (magnActivated)
 	{
-	    magnView->displayAt(x, y);
+	    displayMagnifyView(x, y);
             magnView->show();
 	}
-	imageMouseMoveEvent(event);
+	lastPixX = x;
+	lastPixY = y;
     }
     else
     {
         valueLabel->hide();
         magnView->hide();
+	lastPixX = -1;
+	lastPixY = -1;
     }
     
 }
@@ -296,12 +337,17 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_M:
         magnActivated = !magnActivated;
-        if (magnActivated) magnView->show();
+        if (magnActivated && lastPixX>=0) 
+	{
+	    displayMagnifyView(lastPixX, lastPixY);
+	    magnView->show();
+	}
         else magnView->hide();
         break;
     case Qt::Key_V:
         valueLblActivated = !valueLblActivated;
-        if (valueLblActivated) valueLabel->show();
+        if (valueLblActivated && lastPixX>=0) 
+	    valueLabel->show();
         else valueLabel->hide();
         break;
     case Qt::Key_L:
