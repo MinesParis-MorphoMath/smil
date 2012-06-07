@@ -26,6 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifdef USE_CURL
 
 #include "DNetworkIO.h"
 
@@ -116,3 +117,5 @@ int getHttpFile(const char *url, struct MemoryStruct &chunk)
 
     return 0;
 }
+
+#endif // USE_CURL

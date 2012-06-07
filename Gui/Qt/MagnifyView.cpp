@@ -66,7 +66,7 @@ void MagnifyView::mouseMoveEvent(QMouseEvent *pEvent)
 void MagnifyView::setImage(QImage *img)
 {
     fullImage = img;
-    hide();
+//     hide();
 }
 
 void MagnifyView::setGridSize(int s)

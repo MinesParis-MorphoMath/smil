@@ -97,8 +97,8 @@ void qtImageViewer<T>::show()
 template <class T>
 void qtImageViewer<T>::showLabel()
 {
-    BASE_QT_VIEWER::show();
     this->setLabelImage(true);
+    BASE_QT_VIEWER::show();
     update();
 }
 

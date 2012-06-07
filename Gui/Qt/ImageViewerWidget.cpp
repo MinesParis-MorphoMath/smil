@@ -54,6 +54,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
 {
     setFrameShape(NoFrame);
 
+    initColorTables();
     scaleFactor = 1.0;
     qImage = new QImage();
 
@@ -70,7 +71,6 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     imScene = new QImageGraphicsScene();
     imagePixmap = imScene->addPixmap( QPixmap() );
     overlayPixmap = imScene->addPixmap( QPixmap() );
-    initColorTables();
     drawLabelized = false;
     this->setScene( imScene );
 
@@ -109,11 +109,31 @@ void ImageViewerWidget::initColorTables()
     labelColorTable.clear();
     labelColorTable.append(qRgb(0,0,0));
     unsigned char curC = 0;
-    for(int i=0;i<256;i++,curC+=47)
+    for(int i=0;i<255;i++,curC+=47)
       labelColorTable.append(rainbowColorTable[curC]);
     
     overlayColorTable.clear();
     overlayColorTable = labelColorTable;
+}
+
+void ImageViewerWidget::setImageSize(int w, int h)
+{
+    if (w==qImage->width() && h==qImage->height())
+        return;
+
+    delete qImage;
+
+    qImage = new QImage(w, h, QImage::Format_Indexed8);
+    imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
+    magnView->setImage(qImage);
+    qImage->setColorTable(baseColorTable);
+    
+    // Todo : find a cleaner way...
+    hide();
+    show();
+    
+    // Clear overlay
+    overlayPixmap->setPixmap(QPixmap());
 }
 
 void ImageViewerWidget::setLabelImage(bool val)
@@ -127,7 +147,9 @@ void ImageViewerWidget::setLabelImage(bool val)
     else
       qImage->setColorTable(baseColorTable);
     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
-    QGraphicsView::update();
+    
+//     if (magnActivated)
+//       magnView->refresh();
 }
 
 void ImageViewerWidget::createActions()
@@ -164,22 +186,6 @@ void ImageViewerWidget::updateTitle()
     setWindowTitle(name);
 }
 
-void ImageViewerWidget::setImageSize(int w, int h)
-{
-    if (w==qImage->width() && h==qImage->height())
-        return;
-
-    delete qImage;
-
-    qImage = new QImage(w, h, QImage::Format_Indexed8);
-    imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
-    
-    hide();
-    show();
-    
-    // Clear overlay
-    overlayPixmap->setPixmap(QPixmap());
-}
 
 
 void ImageViewerWidget::load(const QString fileName)
@@ -192,7 +198,6 @@ void ImageViewerWidget::load(const QString fileName)
 
 void ImageViewerWidget::dataChanged()
 {
-    magnView->setImage(qImage);
     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
 //     repaint();
 //     update();
@@ -239,6 +244,35 @@ void ImageViewerWidget::mouseMoveEvent ( QMouseEvent * event )
     QGraphicsView::mouseMoveEvent(event);
 }
 
+void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
+{
+    int x = int(event->scenePos().rx());
+    int y = int(event->scenePos().ry());
+
+    UINT w = qImage->width();
+    UINT h = qImage->height();
+    
+    if (x>=0 && x<w && y>=0 && y<h)
+    {
+        if (valueLblActivated)
+	{
+            valueLabel->show();
+	}
+        if (magnActivated)
+	{
+	    magnView->displayAt(x, y);
+            magnView->show();
+	}
+	imageMouseMoveEvent(event);
+    }
+    else
+    {
+        valueLabel->hide();
+        magnView->hide();
+    }
+    
+}
+
 void ImageViewerWidget::wheelEvent ( QWheelEvent * event )
 {
     if (event->delta()>0)
@@ -278,34 +312,4 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
     emit onKeyPressEvent(event);
 }
 
-#include <iostream>
-
-void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
-{
-    int x = int(event->scenePos().rx());
-    int y = int(event->scenePos().ry());
-
-    UINT w = qImage->width();
-    UINT h = qImage->height();
-    
-    if (x>=0 && x<w && y>=0 && y<h)
-    {
-        if (valueLblActivated)
-	{
-            valueLabel->show();
-	}
-        if (magnActivated)
-	{
-	    magnView->displayAt(x, y);
-            magnView->show();
-	}
-	imageMouseMoveEvent(event);
-    }
-    else
-    {
-        valueLabel->hide();
-        magnView->hide();
-    }
-    
-}
 

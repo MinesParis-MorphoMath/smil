@@ -39,9 +39,14 @@
 
 int main(int argc, char *argv[])
 {
+    QApplication app(argc, argv);
+    
     Image_UINT8 im1;
-    if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
-      read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
+    
+    im1 << "http://cmm.ensmp.fr/~faessel/smil/images/lena.png";
+    
+//     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
+//       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
     
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1);
@@ -50,15 +55,15 @@ int main(int argc, char *argv[])
     Image_UINT8 im2(im1);
     Image_UINT16 im3(im1);
 
-    im1.setSize(256, 256);
-    
-    for(int j=0;j<im1.getHeight();j++)
-      for(int i=0;i<im1.getWidth();i++)
-      {
-	  im1.setPixel(i,j, i);
-      }
+//     im1.setSize(256, 256);
+//     
+//     for(int j=0;j<im1.getHeight();j++)
+//       for(int i=0;i<im1.getWidth();i++)
+//       {
+// 	  im1.setPixel(i,j, i);
+//       }
       
-    im1.showLabel("im1");
+    im1.show("im1");
     
 
     
