@@ -34,7 +34,6 @@
 #include <string>
 #include <algorithm>
 
-#include <curl/curl.h>
 
 
 #include "DImageIO_BMP.hpp"
