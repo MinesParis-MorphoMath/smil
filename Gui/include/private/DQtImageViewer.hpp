@@ -235,16 +235,18 @@ template <class T>
 void qtImageViewer<T>::displayMagnifyView(UINT x, UINT y)
 {
     magnView->displayAt(x, y);
+//   return;
 
     int gridSize = magnView->getGridSize();
+    int halfGrid = (gridSize-1)/2;
     
-    int xi = x-gridSize/2;
-    int yi = y-gridSize/2;
+    int xi = x-halfGrid;
+    int yi = y-halfGrid;
 
     int imW = qImage->width();
     int imH = qImage->height();
 
-    double s = scaleFactor / gridSize;
+    double s = magnView->getScaleFactor() / gridSize;
 
     typename ImDtTypes<T>::sliceType pSlice = parentClass::image->getSlices()[0];
     typename ImDtTypes<T>::lineType pLine;
@@ -279,7 +281,6 @@ void qtImageViewer<T>::displayMagnifyView(UINT x, UINT y)
 
         }
     }
-
 }
 
 #ifdef SMIL_WRAP_Bit

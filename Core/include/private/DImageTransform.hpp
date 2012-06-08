@@ -26,55 +26,53 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MagnifyView_H
-#define MagnifyView_H
 
-#include <QLabel>
-#include <QMouseEvent>
-#include <QAction>
-#include <QGraphicsView>
-#include <QGraphicsPixmapItem>
-#include <QGraphicsTextItem>
-#include <QGraphicsScene>
-#include <QGraphicsPathItem>
+#ifndef _D_IMAGE_TRANSFORM_HPP
+#define _D_IMAGE_TRANSFORM_HPP
 
-class MagnifyView : public QGraphicsView
+#include "DBaseImageOperations.hpp"
+#include "DLineArith.hpp"
+
+/**
+ * \ingroup Core
+ * \defgroup Transform
+ * @{
+ */
+
+
+/**
+ * Horizontal mirror
+ * 
+ * Quick implementation (needs better integration and optimization).
+ */
+template <class T>
+RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
 {
-    Q_OBJECT
-public:
-    explicit MagnifyView(QWidget *parent = 0);
-
-    ~MagnifyView();
-
-private:
-    QImage *fullImage;
-
-    int gridSize;
-    QGraphicsScene *scene;
-    QGraphicsPixmapItem *pixItem;
-    QGraphicsPathItem *pathItem;
-    QGraphicsPathItem *centerRectPathItem;
-
-    QList<QGraphicsTextItem*> *textItemList;
-
-    double scaleFactor;
-
-    void mouseMoveEvent(QMouseEvent* pEvent);
+    if (!imIn.isAllocated() || !imOut.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+  
+    typename Image<T>::sliceType *slicesIn = imIn.getSlices();
+    typename Image<T>::sliceType *slicesOut = imOut.getSlices();
+    typename Image<T>::sliceType linesIn;
+    typename Image<T>::sliceType linesOut;
     
-public:
-    void setGridSize(int s);
-    inline int getGridSize() { return gridSize; }
-    inline double getScaleFactor() { return scaleFactor; }
-    inline QGraphicsPixmapItem *getPixItem() { return pixItem; }
-    inline QList<QGraphicsTextItem*> *getTextItemList() { return textItemList; }
-    inline QGraphicsPathItem *getCenterRectPathItem() { return centerRectPathItem; }
-    void displayAt(int x, int y);
-    void setImage(QImage *img);
+    UINT width = imIn.getWidth();
+    UINT height = imIn.getHeight();
+    UINT depth = imIn.getDepth();
 
-public slots:
-    void zoomIn();
-    void zoomOut();
-    void scaleImage(double factor);
-};
+    for (int k=0;k<depth;k++)
+    {
+	linesIn = slicesIn[k];
+	linesOut = slicesOut[k];
+	
+	for (int j=0;j<height;j++)
+	  copyLine<T>(linesIn[j], width, linesOut[height-1-j]);
+    }
+    
+    imOut.modified();
+}
 
-#endif // MagnifyView_H
+/** @}*/
+
+#endif // _D_IMAGE_TRANSFORM_HPP
+

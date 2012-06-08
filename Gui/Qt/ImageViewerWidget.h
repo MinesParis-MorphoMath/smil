@@ -68,6 +68,7 @@ public:
     virtual void setLabelImage(bool val);
     virtual void displayPixelValue(UINT x, UINT y) {}
     virtual void displayMagnifyView(UINT x, UINT y) {}
+    virtual void displayMagnifyView() { displayMagnifyView(lastPixX, lastPixY); }
 
     void setName(const char *name);
     void setImageSize(int w, int h);

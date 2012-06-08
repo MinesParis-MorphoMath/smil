@@ -26,55 +26,16 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef MagnifyView_H
-#define MagnifyView_H
 
-#include <QLabel>
-#include <QMouseEvent>
-#include <QAction>
-#include <QGraphicsView>
-#include <QGraphicsPixmapItem>
-#include <QGraphicsTextItem>
-#include <QGraphicsScene>
-#include <QGraphicsPathItem>
+#ifndef _D_MORPHO_FILTER_HPP
+#define _D_MORPHO_FILTER_HPP
 
-class MagnifyView : public QGraphicsView
-{
-    Q_OBJECT
-public:
-    explicit MagnifyView(QWidget *parent = 0);
+#include "DImage.h"
+#include "DImageArith.h"
+#include "DMorphImageOperations.hpp"
 
-    ~MagnifyView();
 
-private:
-    QImage *fullImage;
 
-    int gridSize;
-    QGraphicsScene *scene;
-    QGraphicsPixmapItem *pixItem;
-    QGraphicsPathItem *pathItem;
-    QGraphicsPathItem *centerRectPathItem;
 
-    QList<QGraphicsTextItem*> *textItemList;
+#endif // _D_MORPHO_FILTER_HPP
 
-    double scaleFactor;
-
-    void mouseMoveEvent(QMouseEvent* pEvent);
-    
-public:
-    void setGridSize(int s);
-    inline int getGridSize() { return gridSize; }
-    inline double getScaleFactor() { return scaleFactor; }
-    inline QGraphicsPixmapItem *getPixItem() { return pixItem; }
-    inline QList<QGraphicsTextItem*> *getTextItemList() { return textItemList; }
-    inline QGraphicsPathItem *getCenterRectPathItem() { return centerRectPathItem; }
-    void displayAt(int x, int y);
-    void setImage(QImage *img);
-
-public slots:
-    void zoomIn();
-    void zoomOut();
-    void scaleImage(double factor);
-};
-
-#endif // MagnifyView_H

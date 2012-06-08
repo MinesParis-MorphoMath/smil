@@ -134,12 +134,11 @@ void ImageViewerWidget::setImageSize(int w, int h)
     magnView->setImage(qImage);
     qImage->setColorTable(baseColorTable);
     
-    // Todo : find a cleaner way...
-    hide();
-    show();
-    
     // Clear overlay
     overlayPixmap->setPixmap(QPixmap());
+    
+//     resize(imScene->width(), imScene->height());
+    adjustSize();
 }
 
 void ImageViewerWidget::setLabelImage(bool val)
@@ -155,7 +154,7 @@ void ImageViewerWidget::setLabelImage(bool val)
     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
     
     if (magnActivated && lastPixX>=0)
-	displayMagnifyView(lastPixX, lastPixY);
+	displayMagnifyView();
 }
 
 void ImageViewerWidget::createActions()
@@ -243,21 +242,32 @@ void ImageViewerWidget::mouseMoveEvent ( QMouseEvent * event )
 {
     QPoint p = event->pos();
 
-    int dx = 10, dy = 20;
-    int newX = p.x(), newY = p.y();
-
-    if (newX+valueLabel->width() > width())
-      newX -= dx + valueLabel->width();
-    else 
-      newX += dx;
+    int dx = 20, dy = 20;
+    int newVlX = p.x(), newVlY = p.y();
     
-    if (newY-valueLabel->height() < 0)
-      newY += dy;
+    if (newVlX+valueLabel->width()+dx > width())
+      newVlX -= dx + valueLabel->width();
     else 
-      newY -= dy;
+      newVlX += dx;
     
-    valueLabel->move(QPoint(newX, newY));
-    magnView->move(p + QPoint(20, 20));
+    if (newVlY-dy < 0)
+      newVlY += dy;
+    else 
+      newVlY -= dy;
+    valueLabel->move(QPoint(newVlX, newVlY));
+    
+    
+    int newMvX = p.x(), newMvY = p.y();
+    
+    if (newMvX+magnView->width()+dx > width()  &&  newMvX-dx-magnView->width()>=0)
+      newMvX -= dx + magnView->width();
+    else 
+      newMvX += dx;
+    
+    if (newMvY+magnView->height() > height()  &&  newMvY-magnView->height()>=0)
+      newMvY -= magnView->height();
+    
+    magnView->move(QPoint(newMvX, newMvY));
     QGraphicsView::mouseMoveEvent(event);
 }
 
@@ -330,16 +340,26 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
     case Qt::Key_Z:
-        zoomIn();
+	if (magnView->isVisible())
+	{
+	    magnView->zoomIn();
+	    displayMagnifyView();
+	}
+	else zoomIn();
         break;
     case Qt::Key_A:
-        zoomOut();
+	if (magnView->isVisible())
+	{
+	    magnView->zoomOut();
+	    displayMagnifyView();
+	}
+	else zoomOut();
         break;
     case Qt::Key_M:
         magnActivated = !magnActivated;
         if (magnActivated && lastPixX>=0) 
 	{
-	    displayMagnifyView(lastPixX, lastPixY);
+	    displayMagnifyView();
 	    magnView->show();
 	}
         else magnView->hide();

@@ -8,3 +8,4 @@ Gui :
 ---
 
 - Trouver une méthode pour gérer l'event loop de Qt en interne.
+- Viewer : taille des images limitées à 32768.

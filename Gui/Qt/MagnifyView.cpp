@@ -38,16 +38,11 @@ MagnifyView::MagnifyView(QWidget *parent) :
     fullImage = NULL;
     scaleFactor = 250;
 
-    scene = new QGraphicsScene();
-    pixItem = scene->addPixmap(QPixmap());
-    pathItem = scene->addPath(QPainterPath());
-    setScene(scene);
+    scene = NULL;
 
     textItemList = new QList<QGraphicsTextItem*>();
 
     setGridSize(7);
-
-    hide();
 }
 
 MagnifyView::~MagnifyView()
@@ -74,13 +69,14 @@ void MagnifyView::setGridSize(int s)
     gridSize = s;
     double cellSize = scaleFactor / gridSize;
 
-    for (int i=0;i<textItemList->count();i++)
-    {
-        QGraphicsTextItem *item = textItemList->first();
-        textItemList->pop_front();
-        scene->removeItem(item);
-    }
-
+    if (scene)
+      delete scene;
+    
+    scene = new QGraphicsScene(this);
+    setScene(scene);
+    pixItem = scene->addPixmap(QPixmap());
+    textItemList->clear();
+    
     QPainterPath path;
 
     for (int j=0;j<gridSize;j++)
@@ -93,8 +89,15 @@ void MagnifyView::setGridSize(int s)
             textItemList->append(textItem);
         }
     int c = gridSize/2;
+    pathItem = scene->addPath(path);
+    
+    path = QPainterPath();
     path.addRect(c*cellSize+1, c*cellSize+1, cellSize-2, cellSize-2);
-    pathItem->setPath(path);
+    centerRectPathItem = scene->addPath(path);
+    centerRectPathItem->setPen(QColor(255,0,0));
+    
+    adjustSize();
+    resize(width()+1, height()+1); // adjusted size is sometimes to short...
 }
 
 
@@ -103,29 +106,31 @@ void MagnifyView::displayAt(int x, int y)
     if (!fullImage)
         return;
 
-    int xi = x-gridSize/2;
-    int yi = y-gridSize/2;
+    int xi = x-(gridSize-1)/2;
+    int yi = y-(gridSize-1)/2;
 
     QImage img = fullImage->copy(xi, yi, gridSize, gridSize).scaled(scaleFactor, scaleFactor);
-    QPixmap px = QPixmap::fromImage(img);
-    pixItem->setPixmap(px);
+    pixItem->setPixmap(QPixmap::fromImage(img));
 
 }
 
 void MagnifyView::zoomIn()
 {
-    scaleImage(1.25);
+    if (gridSize>20)
+      return;
+    scaleFactor *= double(gridSize+2)/double(gridSize);
+    setGridSize(gridSize+2);
 }
 
 void MagnifyView::zoomOut()
 {
-    scaleImage(0.8);
+    if (gridSize==1)
+      return;
+    scaleFactor *= double(gridSize-2)/double(gridSize);
+    setGridSize(gridSize-2);
 }
 
 void MagnifyView::scaleImage(double factor)
 {
-//     Q_ASSERT(pixmap());
-//     scaleFactor *= factor;
-//     resize(scaleFactor * pixmap()->size());
 }
 

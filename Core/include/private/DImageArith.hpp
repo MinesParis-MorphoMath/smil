@@ -493,38 +493,6 @@ RES_T resize(Image<T> &imIn, Image<T> &imOut)
 }
 
 
-/**
- * Horizontal mirror
- * 
- * Quick implementation (needs better integration and optimization).
- */
-template <class T>
-RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
-{
-    if (!imIn.isAllocated() || !imOut.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-  
-    typename Image<T>::sliceType *slicesIn = imIn.getSlices();
-    typename Image<T>::sliceType *slicesOut = imOut.getSlices();
-    typename Image<T>::sliceType linesIn;
-    typename Image<T>::sliceType linesOut;
-    
-    UINT width = imIn.getWidth();
-    UINT height = imIn.getHeight();
-    UINT depth = imIn.getDepth();
-
-    for (int k=0;k<depth;k++)
-    {
-	linesIn = slicesIn[k];
-	linesOut = slicesOut[k];
-	
-	for (int j=0;j<height;j++)
-	  copyLine<T>(linesIn[j], width, linesOut[height-1-j]);
-    }
-    
-    imOut.modified();
-}
-
 
 /**
  * Volume of an image

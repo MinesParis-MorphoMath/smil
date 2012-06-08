@@ -54,6 +54,7 @@
 #include "DBaseLineOperations.hpp"
 #include "DImageArith.h"
 #include "DImageDraw.hpp"
+#include "DImageTransform.hpp"
 #include "DLineHistogram.hpp"
 #include "DImageHistogram.hpp"
 /*#include "D_BaseOperations.h"*/
@@ -167,8 +168,6 @@ TEMPLATE_WRAP_FUNC(logicAnd);
 TEMPLATE_WRAP_FUNC(logicOr);
 TEMPLATE_WRAP_FUNC(test);
 
-TEMPLATE_WRAP_FUNC(vFlip);
-
 TEMPLATE_WRAP_FUNC(translate);
 TEMPLATE_WRAP_FUNC(resize);
 
@@ -185,5 +184,9 @@ TEMPLATE_WRAP_FUNC(stretchHist);
 TEMPLATE_WRAP_FUNC(enhanceContrast);
 
 TEMPLATE_WRAP_FUNC(drawRectangle);
+
+%include "DImageTransform.hpp"
+
+TEMPLATE_WRAP_FUNC(vFlip);
 
 
