@@ -48,6 +48,9 @@
 template <class T>
 RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
 {
+    if (&imIn==&imOut)
+	return vFlip(imIn);
+    
     if (!imIn.isAllocated() || !imOut.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
   
@@ -70,6 +73,37 @@ RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
     }
     
     imOut.modified();
+}
+
+template <class T>
+RES_T vFlip(Image<T> &imInOut)
+{
+    if (!imInOut.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+  
+    typename Image<T>::sliceType *slicesIn = imInOut.getSlices();
+    typename Image<T>::sliceType linesIn;
+    
+    UINT width = imInOut.getWidth();
+    UINT height = imInOut.getHeight();
+    UINT depth = imInOut.getDepth();
+
+    typename Image<T>::lineType tmpLine = ImDtTypes<T>::createLine(width);
+      
+    for (int k=0;k<depth;k++)
+    {
+	linesIn = slicesIn[k];
+	
+	for (int j=0;j<height/2;j++)
+	{
+	    copyLine<T>(linesIn[j], width, tmpLine);
+	    copyLine<T>(linesIn[height-1-j], width, linesIn[j]);
+	    copyLine<T>(tmpLine, width, linesIn[height-1-j]);
+	}
+    }
+    
+    ImDtTypes<T>::deleteLine(tmpLine);
+    imInOut.modified();
 }
 
 /** @}*/
