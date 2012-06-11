@@ -175,7 +175,7 @@ void ImageViewerWidget::setImageSize(int w, int h)
 //     QImage im = qImage->copy(50,0,200,200);
 
     //     magnView->setImage(qImage);
-//     qImage->setColorTable(baseColorTable);
+    qImage->setColorTable(baseColorTable);
     
     // Clear overlay
 //     overlayPixmap->setPixmap(QPixmap());
