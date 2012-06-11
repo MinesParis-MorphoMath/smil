@@ -51,7 +51,7 @@ RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
     if (&imIn==&imOut)
 	return vFlip(imIn);
     
-    if (!imIn.isAllocated() || !imOut.isAllocated())
+    if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
   
     if (!haveSameSize(&imIn, &imOut, NULL))

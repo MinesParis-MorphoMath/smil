@@ -73,9 +73,12 @@ public:
     void setName(const char *name);
     void setImageSize(int w, int h);
     void dataChanged();
+    void overlayDataChanged();
+    virtual void clearOverlay();
     
     QStatusBar *statusBar;
     QImage *qImage;
+    QImage *qOverlayImage;
     
     bool drawLabelized;
 protected:
@@ -87,9 +90,9 @@ protected:
     
     double scaleFactor;
     QImageGraphicsScene *imScene;
-    QGraphicsPixmapItem *imagePixmap;
-    QGraphicsPixmapItem *overlayPixmap;
-
+    QList<QGraphicsPixmapItem*> imagePixmaps;
+    QList<QGraphicsPixmapItem*> overlayPixmaps;
+    
     QLabel *valueLabel;
     MagnifyView *magnView;
 

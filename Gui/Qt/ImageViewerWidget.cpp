@@ -36,6 +36,9 @@
 
 #define RAND_UINT8 int(double(qrand())/RAND_MAX*255)
 
+
+#define PIXMAP_MAX_DIM 32767
+
 QImageGraphicsScene::QImageGraphicsScene(QObject *parent)
         : QGraphicsScene(parent)
 {
@@ -63,6 +66,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     initColorTables();
     scaleFactor = 1.0;
     qImage = new QImage();
+    qOverlayImage = NULL;
 
     magnView = new MagnifyView(this);
     magnView->hide();
@@ -74,9 +78,10 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     valueLabel->hide();
     valueLblActivated = true;
 
+    imagePixmaps.clear();
+    overlayPixmaps.clear();
+    
     imScene = new QImageGraphicsScene();
-    imagePixmap = imScene->addPixmap( QPixmap() );
-    overlayPixmap = imScene->addPixmap( QPixmap() );
     drawLabelized = false;
     this->setScene( imScene );
 
@@ -128,14 +133,52 @@ void ImageViewerWidget::setImageSize(int w, int h)
         return;
 
     delete qImage;
-
+    
     qImage = new QImage(w, h, QImage::Format_Indexed8);
-    imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
-    magnView->setImage(qImage);
-    qImage->setColorTable(baseColorTable);
+    
+    
+    // Create tiled pixmaps
+    
+    QList<QGraphicsPixmapItem*>::iterator it = imagePixmaps.begin();
+    while(it!=imagePixmaps.end())
+    {
+	imScene->removeItem(*it);
+	it++;
+    }
+    imagePixmaps.clear();
+    
+    UINT pixNbrX = w/PIXMAP_MAX_DIM + 1;
+    UINT pixNbrY = h/PIXMAP_MAX_DIM + 1;
+    UINT pixW = PIXMAP_MAX_DIM, pixH = PIXMAP_MAX_DIM;
+    
+    for (int j=0;j<pixNbrY;j++)
+    {
+	if (j==pixNbrY-1)
+	  pixH = h%PIXMAP_MAX_DIM;
+	
+	for (int i=0;i<pixNbrX;i++)
+	{
+	    if (i==pixNbrX-1)
+	      pixW = w%PIXMAP_MAX_DIM;
+	    
+	  QGraphicsPixmapItem *item = imScene->addPixmap(QPixmap(pixW, pixH));
+	  item->moveBy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM);
+	  imagePixmaps.append(item);
+	  
+	  item = imScene->addPixmap(QPixmap());
+	  item->moveBy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM);
+	  overlayPixmaps.append(item);
+	}
+    }
+    
+//     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
+//     QImage im = qImage->copy(50,0,200,200);
+
+    //     magnView->setImage(qImage);
+//     qImage->setColorTable(baseColorTable);
     
     // Clear overlay
-    overlayPixmap->setPixmap(QPixmap());
+//     overlayPixmap->setPixmap(QPixmap());
     
 //     resize(imScene->width(), imScene->height());
     adjustSize();
@@ -151,7 +194,7 @@ void ImageViewerWidget::setLabelImage(bool val)
       qImage->setColorTable(labelColorTable);
     else
       qImage->setColorTable(baseColorTable);
-    imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
+//     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
     
     if (magnActivated && lastPixX>=0)
 	displayMagnifyView();
@@ -203,12 +246,89 @@ void ImageViewerWidget::load(const QString fileName)
 
 void ImageViewerWidget::dataChanged()
 {
-    imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
+    UINT w = qImage->width(), h = qImage->height();
+    
+    UINT pixNbrX = w/PIXMAP_MAX_DIM + 1;
+    UINT pixNbrY = h/PIXMAP_MAX_DIM + 1;
+    UINT pixW = PIXMAP_MAX_DIM, pixH = PIXMAP_MAX_DIM;
+    
+    QList<QGraphicsPixmapItem*>::iterator it = imagePixmaps.begin();
+    
+    for (int j=0;j<pixNbrY;j++)
+    {
+	if (j==pixNbrY-1)
+	  pixH = h%PIXMAP_MAX_DIM;
+	
+	for (int i=0;i<pixNbrX;i++)
+	{
+	    if (i==pixNbrX-1)
+	      pixW = w%PIXMAP_MAX_DIM;
+	    
+	    QGraphicsPixmapItem *item = *it;
+	    item->setPixmap(QPixmap::fromImage(qImage->copy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM, pixW, pixH)));
+	    it++;
+	}
+    }
+  
+  
+//     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
 //     repaint();
 //     update();
 //     qApp->processEvents();
     emit onDataChanged();
 }
+
+void ImageViewerWidget::overlayDataChanged()
+{
+    UINT w = qImage->width(), h = qImage->height();
+    
+    UINT pixNbrX = w/PIXMAP_MAX_DIM + 1;
+    UINT pixNbrY = h/PIXMAP_MAX_DIM + 1;
+    UINT pixW = PIXMAP_MAX_DIM, pixH = PIXMAP_MAX_DIM;
+    
+    QList<QGraphicsPixmapItem*>::iterator it = overlayPixmaps.begin();
+    
+    for (int j=0;j<pixNbrY;j++)
+    {
+	if (j==pixNbrY-1)
+	  pixH = h%PIXMAP_MAX_DIM;
+	
+	for (int i=0;i<pixNbrX;i++)
+	{
+	    if (i==pixNbrX-1)
+	      pixW = w%PIXMAP_MAX_DIM;
+	    
+	    QGraphicsPixmapItem *item = *it;
+	    item->setPixmap(QPixmap::fromImage(qOverlayImage->copy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM, pixW, pixH)));
+	    it++;
+	}
+    }
+  
+  
+//     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
+//     repaint();
+//     update();
+//     qApp->processEvents();
+}
+
+
+
+void ImageViewerWidget::clearOverlay()
+{
+    QList<QGraphicsPixmapItem*>::iterator it = overlayPixmaps.begin();
+
+    while(it!=overlayPixmaps.end())
+    {
+	(*it)->setPixmap(QPixmap());
+	it++;
+    }
+    
+    delete qOverlayImage;
+    qOverlayImage = NULL;
+
+    update();
+}
+
 
 void ImageViewerWidget::zoomIn()
 {

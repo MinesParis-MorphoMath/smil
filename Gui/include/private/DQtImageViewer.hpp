@@ -57,7 +57,7 @@ public:
     virtual void setName(const char* _name);
     virtual void update();
     virtual void drawOverlay(Image<T> &im);
-    virtual void clearOverlay();
+    virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
     
     virtual void setLabelImage(bool val);
     
@@ -187,22 +187,17 @@ void qtImageViewer<UINT8>::drawImage();
 
 
 template <class T>
-void qtImageViewer<T>::clearOverlay()
-{
-    overlayPixmap->setPixmap(QPixmap());
-
-    BASE_QT_VIEWER::update();
-}
-
-template <class T>
 void qtImageViewer<T>::drawOverlay(Image<T> &im)
 {
     UINT w = im.getWidth();
     UINT h = im.getHeight();
     
-    QImage qOverlayImage(w, h, QImage::Format_ARGB32_Premultiplied);
+    if (qOverlayImage)
+      delete qOverlayImage;
+    
+    qOverlayImage = new QImage(w, h, QImage::Format_ARGB32_Premultiplied);
 //     qOverlayImage.setColorTable(overlayColorTable);
-    qOverlayImage.fill(Qt::transparent);
+    qOverlayImage->fill(Qt::transparent);
 
     typename Image<T>::lineType pixels = *im.getSlices()[0];
     UINT pixNbr = im.getWidth()*im.getHeight();
@@ -211,12 +206,11 @@ void qtImageViewer<T>::drawOverlay(Image<T> &im)
       for (int i=0;i<im.getWidth();i++)
       {
 	if (*pixels!=0)
-	  qOverlayImage.setPixel(i, j, overlayColorTable[(UINT8)*pixels]);
+	  qOverlayImage->setPixel(i, j, overlayColorTable[(UINT8)*pixels]);
 	pixels++;
       }
 	
-    overlayPixmap->setPixmap(QPixmap::fromImage(qOverlayImage));
-
+    BASE_QT_VIEWER::overlayDataChanged();
     BASE_QT_VIEWER::update();
 }
 
