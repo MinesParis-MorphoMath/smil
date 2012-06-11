@@ -41,7 +41,7 @@
 
 
 /**
- * Horizontal mirror
+ * Vertical flip (horizontal mirror).
  * 
  * Quick implementation (needs better integration and optimization).
  */
@@ -53,6 +53,9 @@ RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
     
     if (!imIn.isAllocated() || !imOut.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
+  
+    if (!haveSameSize(&imIn, &imOut, NULL))
+        return RES_ERR;
   
     typename Image<T>::sliceType *slicesIn = imIn.getSlices();
     typename Image<T>::sliceType *slicesOut = imOut.getSlices();
