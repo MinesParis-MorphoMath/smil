@@ -81,9 +81,8 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     imagePixmaps.clear();
     overlayPixmaps.clear();
     
-    imScene = new QImageGraphicsScene();
+    imScene = NULL;
     drawLabelized = false;
-    this->setScene( imScene );
 
     setMouseTracking(true);
 //     this->grabKeyboard();
@@ -98,6 +97,8 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
 ImageViewerWidget::~ImageViewerWidget()
 {
     delete qImage;
+    if (qOverlayImage)
+      delete qOverlayImage;
     delete imScene;
     delete magnView;
 
@@ -139,12 +140,12 @@ void ImageViewerWidget::setImageSize(int w, int h)
     
     // Create tiled pixmaps
     
-    QList<QGraphicsPixmapItem*>::iterator it = imagePixmaps.begin();
-    while(it!=imagePixmaps.end())
-    {
-	imScene->removeItem(*it);
-	it++;
-    }
+    if (imScene)
+      delete imScene;
+    imScene = new QImageGraphicsScene();
+    setScene(imScene);
+    connect(imScene, SIGNAL(onMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(sceneMouseMoveEvent(QGraphicsSceneMouseEvent*)));
+    
     imagePixmaps.clear();
     
     UINT pixNbrX = w/PIXMAP_MAX_DIM + 1;
@@ -214,7 +215,7 @@ void ImageViewerWidget::connectActions()
 {
 //     connect(this, SIGNAL(onDataChanged()), this, SLOT(update()));
 
-    connect(imScene, SIGNAL(onMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(sceneMouseMoveEvent(QGraphicsSceneMouseEvent*)));
+//     connect(imScene, SIGNAL(onMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(sceneMouseMoveEvent(QGraphicsSceneMouseEvent*)));
 
     connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
     connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
@@ -271,6 +272,8 @@ void ImageViewerWidget::dataChanged()
     }
   
   
+    magnView->setImage(qImage);
+    
 //     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
 //     repaint();
 //     update();

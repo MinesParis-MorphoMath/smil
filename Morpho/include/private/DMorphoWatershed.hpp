@@ -41,6 +41,43 @@
 #include "DImage.hpp"
 
 template <class T, class labelT>
+RES_T initWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq)
+{
+    // Empty the priority queue
+    hq.reset();
+    
+    typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
+    typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
+    typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
+    
+    UINT x, y, z;
+    UINT s[3];
+    
+    imIn.getSize(s);
+    UINT offset = 0;
+    
+    for (UINT k=0;k<s[2];k++)
+      for (UINT j=0;j<s[1];j++)
+	for (UINT i=0;i<s[0];i++)
+	{
+	  if (*lblPixels!=0)
+	  {
+	      hq.push(*inPixels, offset);
+	      *statPixels = HQ_LABELED;
+	  }
+	  else 
+	  {
+	      *statPixels = HQ_CANDIDATE;
+	  }
+	  inPixels++;
+	  lblPixels++;
+	  statPixels++;
+	  offset++;
+	}
+    
+}
+
+template <class T, class labelT>
 RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq, StrElt &se)
 {
     typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
@@ -154,6 +191,8 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
  * \param[in,out] imMarkers Label image containing the markers. 
  * After processing, this image will contain the basins with the same label values as the initial markers.
  * \param[out] imOut The output image containing the watershed lines.
+ * 
+ * Inspired from http://cmm.ensmp.fr/~beucher/publi/HQ_algo_desc.pdf
  */
 
 template <class T, class labelT>
@@ -163,7 +202,7 @@ RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrEl
 
     HierarchicalQueue<T> pq;
 
-    initHierarchicalQueue<T,labelT>(imIn, imMarkers, imStatus, pq);
+    initWatershedHierarchicalQueue<T,labelT>(imIn, imMarkers, imStatus, pq);
     processWatershedHierarchicalQueue(imIn, imMarkers, imStatus, pq, se);
 
     ImDtTypes<UINT8>::lineType pixStat = imStatus.getPixels();

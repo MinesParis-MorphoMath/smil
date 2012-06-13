@@ -49,7 +49,8 @@ enum HQ_STATUS
   HQ_CANDIDATE,
   HQ_QUEUED,
   HQ_LABELED,
-  HQ_WS_LINE
+  HQ_WS_LINE,
+  HQ_FINAL
 };
 
 template <class T>
@@ -69,19 +70,26 @@ public:
 	  return value > sVal;
 	else return index > s.index;
     }
+    bool operator < (const HQToken<T> &s ) const 
+    {
+	T sVal = s.value;
+	if (value!=sVal)
+	  return value < sVal;
+	else return index > s.index;
+    }
 protected:
     UINT index;
 };
 
 
-template <class T>
+template <class T, class compareType=std::greater<HQToken<T> > >
 class HierarchicalQueue
 {
 public:
 //     typedef typename std::pair<T, UINT> elementType;
     typedef HQToken<T> elementType;
     typedef typename std::vector< elementType > containerType;
-    typedef typename std::greater<typename containerType::value_type > compareType;
+//     typedef typename std::greater<typename containerType::value_type > compareType;
     
     HierarchicalQueue()
     {
@@ -120,7 +128,7 @@ public:
       return priorityQueue.size();
     }
     
-    void printSelf()
+    inline void printSelf()
     {
 	while(!priorityQueue.empty())
 	{
@@ -133,42 +141,6 @@ protected:
     UINT index;
 };
 
-template <class T, class labelT>
-RES_T initHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq)
-{
-    // Empty the priority queue
-    hq.reset();
-    
-    typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
-    typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
-    typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
-    
-    UINT x, y, z;
-    UINT s[3];
-    
-    imIn.getSize(s);
-    UINT offset = 0;
-    
-    for (UINT k=0;k<s[2];k++)
-      for (UINT j=0;j<s[1];j++)
-	for (UINT i=0;i<s[0];i++)
-	{
-	  if (*lblPixels!=0)
-	  {
-	      hq.push(*inPixels, offset);
-	      *statPixels = HQ_LABELED;
-	  }
-	  else 
-	  {
-	      *statPixels = HQ_CANDIDATE;
-	  }
-	  inPixels++;
-	  lblPixels++;
-	  statPixels++;
-	  offset++;
-	}
-    
-}
 
 /** @}*/
 

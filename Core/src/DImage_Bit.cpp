@@ -35,16 +35,24 @@
 template <>
 void Image<Bit>::init() 
 { 
+    className = "Image";
+    
     slices = NULL;
     lines = NULL;
 //     pixels = NULL;
 
-    dataTypeSize = 1;
+    dataTypeSize = sizeof(pixelType); 
     
     allocatedSize = 0;
     
      viewer = NULL;
-     name = NULL;
+     name = "";
+     
+     operIm = NULL;
+     
+     updatesEnabled = true;
+     
+     parentClass::init();
 }
 
 template <>

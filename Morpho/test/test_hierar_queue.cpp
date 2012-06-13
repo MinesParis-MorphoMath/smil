@@ -28,6 +28,7 @@
 
 
 #include "DCore.h"
+#include "DGui.h"
 #include "DMorpho.h"
 #include "DMorphoWatershed.hpp"
 
@@ -94,7 +95,7 @@ class Test_InitHierarchicalQueue : public TestCase
       
       StrElt se = hSE();
       
-      initHierarchicalQueue(imIn, imLbl, imStatus, pq);
+      initWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq);
       
   }
 };
@@ -133,7 +134,7 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       HierarchicalQueue<UINT8> pq;
       StrElt se = hSE();
       
-      initHierarchicalQueue(imIn, imLbl, imStatus, pq);
+      initWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq);
       processWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq, se);
       
       UINT8 vecLblTruth[] = { 
@@ -233,18 +234,56 @@ class Test_Watershed : public TestCase
 };
 
 
+// int main(int argc, char *argv[])
+// {
+//       TestSuite ts;
+//       ADD_TEST(ts, Test_HierarchicalQueue);
+//       ADD_TEST(ts, Test_InitHierarchicalQueue);
+//       ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
+//       ADD_TEST(ts, Test_Watershed);
+//       
+//       Image<UINT8> im1, im2;
+// //       watershed(im1, im2);
+//       
+//       return ts.run();
+//       
+// }
+
+
+
 int main(int argc, char *argv[])
 {
-      TestSuite ts;
-      ADD_TEST(ts, Test_HierarchicalQueue);
-      ADD_TEST(ts, Test_InitHierarchicalQueue);
-      ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
-      ADD_TEST(ts, Test_Watershed);
+    QApplication qapp(argc, argv);
+    
+      UINT8 vecIn[]   = { 1, 2, 0, 5, 5, 5, 3, 3, 3, 1, 1 };
+      UINT8 vecMark[] = { 0, 0, 0, 0, 4, 1, 1, 2, 0, 0, 0 };
       
-      Image<UINT8> im1, im2;
-//       watershed(im1, im2);
+      Image_UINT8 imIn(11, 1);
+      imIn << vecIn;
       
-      return ts.run();
+      Image_UINT8 imMark(imIn);
+      imMark << vecMark;
+      
+      Image_UINT8 imOut(imIn);
+      
+      inv(imIn, imIn);
+      inv(imMark, imMark);
+      
+      build(imIn, imMark, imOut);
+      cout << endl;
+//       dualBuild(imIn, imMark, imOut);
+      
+      Image_UINT8 im1("func.png");
+      Image_UINT8 im2("mark.png");
+      im2.show();
+      
+      Image_UINT8 im3(im1);
+      
+//       dualBuild(im1, im2, im3);
+      
+      im3.show();
+      
+      Core::execLoop();
       
 }
 

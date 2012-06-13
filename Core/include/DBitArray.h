@@ -112,6 +112,7 @@ public:
     
     bool getValue(UINT ind);
     void setValue(UINT ind, bool val);
+    operator bool() { return intArray!=NULL; }
     Bit operator [] (UINT i);
     Bit operator * ();
     BitArray operator + (int dp);

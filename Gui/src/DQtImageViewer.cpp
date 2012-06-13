@@ -110,7 +110,7 @@ void qtImageViewer<Bit>::drawImage()
     for (int j=0;j<h;j++)
     {
 	lIn = data + j*bCount;
-	lOut = qtViewer->qImage->scanLine(j);
+	lOut = this->qImage->scanLine(j);
 	lEnd = lOut + w;
 	
 	for (int b=0;b<bCount;b++,lIn++)

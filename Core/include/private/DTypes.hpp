@@ -63,6 +63,7 @@ enum RES_T
     RES_OK = 0,
     RES_ERR = -1,
     RES_ERR_BAD_ALLOCATION,
+    RES_ERR_BAD_SIZE,
     RES_NOT_IMPLEMENTED
 };
 

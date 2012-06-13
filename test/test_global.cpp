@@ -43,8 +43,10 @@ int main(int argc, char *argv[])
     
     Image_UINT8 im1;
     
-    im1 << "http://cmm.ensmp.fr/~faessel/smil/images/lena.png";
+    
     im1 << "/home/faessel/DATA/HGH/MinesDeParis/Png/850.png";
+    im1.show();
+    im1 << "http://cmm.ensmp.fr/~faessel/smil/images/lena.png";
     
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);

@@ -230,6 +230,15 @@ Image<T> *createImage(Image<T> &src)
     return new Image<T>(src);
 }
 
+
+#define SLEEP(im) \
+bool im##savedUpdateState = im.updatesEnabled; \
+im.updatesEnabled = false;
+
+#define WAKE_UP(im) \
+im.updatesEnabled = im##savedUpdateState;
+
+
 /** @}*/
 
 #endif // _DIMAGE_HPP

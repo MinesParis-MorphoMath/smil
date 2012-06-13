@@ -186,6 +186,12 @@ template <>
 void qtImageViewer<UINT8>::drawImage();
 
 
+#ifdef SMIL_WRAP_Bit
+template <>
+void qtImageViewer<Bit>::drawImage();
+#endif // SMIL_WRAP_Bit
+
+
 template <class T>
 void qtImageViewer<T>::drawOverlay(Image<T> &im)
 {
@@ -276,11 +282,6 @@ void qtImageViewer<T>::displayMagnifyView(UINT x, UINT y)
         }
     }
 }
-
-#ifdef SMIL_WRAP_Bit
-template <>
-void qtImageViewer<Bit>::loadFromData(ImDtTypes<Bit>::lineType pixels, UINT w, UINT h);
-#endif // SMIL_WRAP_Bit
 
 
 #endif // _D_QT_IMAGE_VIEWER_HPP
