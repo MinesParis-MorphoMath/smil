@@ -30,7 +30,8 @@
 #endif // SWIGPYTHON
 
 #ifdef SWIGJAVA
-%module(directors="1") smilCoreJava
+%module(directors="0") smilCoreJava 
+// Problemes de directors avec Java... (a resoudre)
 #endif // SWIGJAVA
 
 #ifdef SWIGOCTAVE
@@ -125,10 +126,12 @@ PTR_ARG_OUT_APPLY(d)
 
 %include "DImageViewer.hpp"
 
+#ifndef SWIGJAVA
 // generate directors for Signal and Slot (for virtual methods overriding)
 %feature("director") Signal;
 %feature("director") Slot;
 %feature("director") baseImageSlot;
+#endif // SWIGJAVA
 
 %include "DSignal.h"
 %include "DSlot.h"

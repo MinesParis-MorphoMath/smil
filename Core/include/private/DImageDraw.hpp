@@ -46,32 +46,30 @@
  * \param imOut Output image.
  */
 template <class T>
-inline RES_T drawRectangle(Image<T> &imOut, UINT centerX, UINT centerY, UINT width, UINT height, T value=numeric_limits<T>::max(), bool fill=false)
+inline RES_T drawRectangle(Image<T> &imOut, UINT x0, UINT y0, UINT width, UINT height, T value=numeric_limits<T>::max(), bool fill=false)
 {
     if (!imOut.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
 
-    UINT x1 = MAX(centerX - width/2, 0);
-    UINT x2 = MIN(x1+width-1, imOut.getWidth()-1);
-    UINT y1 = MAX(centerY - height/2, 0);
-    UINT y2 = MIN(y1+height-1, imOut.getHeight()-1);
+    UINT x1 = x0 + width - 1;
+    UINT y1 = y0 + height -1;
     
     typename Image<T>::lineType *lines = imOut.getLines();
     fillLine<T> fillFunc;
     
     if (fill)
     {
-	for (int j=y1;j<=y2;j++)
-	  fillFunc(lines[j]+x1, width, value);
+	for (int j=y0;j<=y1;j++)
+	  fillFunc(lines[j]+x1, width-1, value);
     }
     else
     {
-	fillFunc(lines[y1]+x1, width, value);
-	fillFunc(lines[y2]+x1, width, value);
-	for (int j=y1+1;j<=y2;j++)
+	fillFunc(lines[y0]+x0, width, value);
+	fillFunc(lines[y1]+x0, width, value);
+	for (int j=y0+1;j<=y1;j++)
 	{
+	    lines[j][x0] = value;
 	    lines[j][x1] = value;
-	    lines[j][x2] = value;
 	}
     }
     
