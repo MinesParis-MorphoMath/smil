@@ -76,6 +76,8 @@
 }
 
 %rename(Index) operator[](UINT i);
+
+#ifdef SMIL_WRAP_Bit
 %extend BitArray
 {
 	std::string  __str__() {
@@ -90,7 +92,7 @@
 */
 }
 %ignore BitArray::operator++;
-
+#endif // SMIL_WRAP_Bit
 
 PTR_ARG_OUT_APPLY(ret_min)
 PTR_ARG_OUT_APPLY(ret_max)

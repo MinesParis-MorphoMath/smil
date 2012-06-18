@@ -19,6 +19,8 @@ public class test
       smilCoreJava.fill(im, (short)127);
       smilCoreJava.drawRectangle(im, 128, 128, 256, 256);
       smilMorphoJava.dilate(im, im);
+      
+      // Warning: gui (Qt) stuff seems to crash in debug mode...
       im.show();
       Core.execLoop();
   }

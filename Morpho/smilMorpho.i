@@ -42,8 +42,6 @@
 
 %{
 /* Includes the header in the wrapper code */
-#include "DImage.hpp"
-#include "DTypes.hpp"
 #include "DMorphoBase.hpp"
 #include "DMorphoGeodesic.hpp"
 #include "DMorphoExtrema.hpp"
@@ -67,7 +65,6 @@
 #endif // SWIGJAVA
 
 
-%include "DTypes.hpp"
 %include "DStructuringElement.h"
 %include "DMorphoBase.hpp"
 %include "DMorphoGeodesic.hpp"
@@ -75,7 +72,9 @@
 %include "DMorphoArrow.hpp"
 %include "DMorphoWatershed.hpp"
 
-//TEMPLATE_WRAP_FUNC(label);
+// Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
+%import smilCore.i
+
 
 TEMPLATE_WRAP_FUNC(dilate);
 TEMPLATE_WRAP_FUNC(erode);

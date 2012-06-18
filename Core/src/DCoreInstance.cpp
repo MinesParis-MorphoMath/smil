@@ -42,7 +42,7 @@ guiInstance::guiInstance()
 {
       if (!QApplication::instance())
       {
-	    cout << "Core qt created (guiInst)" << endl;
+// 	    cout << "Core qt created (guiInst)" << endl;
 	  int ac = 1;
 	  char **av = NULL;
 	  _qapp = new QApplication(ac, av);

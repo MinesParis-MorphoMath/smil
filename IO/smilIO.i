@@ -56,6 +56,8 @@
 
 %include "DImageIO_RAW.hpp"
 
+// Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
+%import smilCore.i
 
 TEMPLATE_WRAP_FUNC(read);
 TEMPLATE_WRAP_FUNC(readRAW);
