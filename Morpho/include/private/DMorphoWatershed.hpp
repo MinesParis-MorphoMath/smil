@@ -196,14 +196,21 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
  */
 
 template <class T, class labelT>
-RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, StrElt se=DEFAULT_SE())
 {
+    if (!areAllocated(&imIn, &imMarkers, &imOut, &imBasinsOut, NULL))
+      return RES_ERR_BAD_ALLOCATION;
+    
+    if (!haveSameSize(&imIn, &imMarkers, &imOut, &imBasinsOut, NULL))
+      return RES_ERR_BAD_SIZE;
+    
     Image<UINT8> imStatus(imIn);
+    copy(imMarkers, imBasinsOut);
 
     HierarchicalQueue<T> pq;
 
-    initWatershedHierarchicalQueue<T,labelT>(imIn, imMarkers, imStatus, pq);
-    processWatershedHierarchicalQueue(imIn, imMarkers, imStatus, pq, se);
+    initWatershedHierarchicalQueue<T,labelT>(imIn, imBasinsOut, imStatus, pq);
+    processWatershedHierarchicalQueue(imIn, imBasinsOut, imStatus, pq, se);
 
     ImDtTypes<UINT8>::lineType pixStat = imStatus.getPixels();
     typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();
@@ -215,13 +222,32 @@ RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrEl
       if (*pixStat==HQ_WS_LINE) 
 	*pixOut = wsVal;
       
-    imMarkers.modified();
+    imBasinsOut.modified();
     imOut.modified();
+}
+
+template <class T, class labelT>
+RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrElt se=DEFAULT_SE())
+{
+    if (!areAllocated(&imIn, &imMarkers, &imOut, NULL))
+      return RES_ERR_BAD_ALLOCATION;
+    
+    if (!haveSameSize(&imIn, &imMarkers, &imOut, NULL))
+      return RES_ERR_BAD_SIZE;
+    
+    Image<labelT> imBasinsOut(imMarkers);
+    return watershed(imIn, imMarkers, imOut, imBasinsOut);
 }
 
 template <class T>
 RES_T watershed(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
+    if (!areAllocated(&imIn, &imOut, NULL))
+      return RES_ERR_BAD_ALLOCATION;
+    
+    if (!haveSameSize(&imIn, &imOut, NULL))
+      return RES_ERR_BAD_SIZE;
+    
     Image<T> imMin(imIn);
     minima(imIn, imMin, se);
     Image<UINT> imLbl(imIn);
