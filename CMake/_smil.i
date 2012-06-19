@@ -155,7 +155,7 @@ for t in imageTypes:
 #    t.__del0__ = t.__del__
 #    t.__del__ = deleteImage
 
-print "SMIL (Simple Morphological Image Library)"
+print "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}"
 print "Copyright (c) 2011, Matthieu FAESSEL and ARMINES"
 print "All rights reserved."
 print ""
