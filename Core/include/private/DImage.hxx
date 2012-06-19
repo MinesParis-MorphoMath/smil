@@ -197,7 +197,7 @@ Image<T>& Image<T>::clone(const Image<T> &rhs)
     bool isAlloc = rhs.isAllocated();
     setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
     if (isAlloc)
-      memcpy(this->pixels, rhs.getPixels(), allocatedSize*sizeof(T));
+      memcpy(this->pixels, rhs.getPixels(), allocatedSize);
     modified();
     return *this;
 }
