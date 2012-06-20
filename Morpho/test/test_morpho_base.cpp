@@ -59,6 +59,7 @@ int main(int argc, char *argv[])
   im1.setSize(512, 512);
   im2.setSize(im1);
   
+  im1.setPixel(256,256,32700);
   dilate(im1, im2, sSE(10));
 //   dilate(im2, im2, sSE(1));
   
