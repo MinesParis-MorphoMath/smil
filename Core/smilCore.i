@@ -107,14 +107,7 @@ void printArray(UINT8 *arr, int size);
 
 %init
 %{
-    try
-    {
 	import_array();
-    }
-    catch(...)
-    {
-	std::cout << "Problem importing NumPy package." << std::endl;
-    }
 %}
 #endif // defined SWIGPYTHON && defined USE_NUMPY
 

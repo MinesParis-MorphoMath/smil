@@ -45,6 +45,8 @@ template <> int getNumpyType(Image<UINT32> &im) { return NPY_UINT; }
 template <> int getNumpyType(Image<INT32> &im) { return NPY_INT; }
 template <> int getNumpyType(Image<unsigned long> &im) { return NPY_ULONG; }
 template <> int getNumpyType(Image<long> &im) { return NPY_LONG; }
+template <> int getNumpyType(Image<float> &im) { return NPY_FLOAT; }
+template <> int getNumpyType(Image<double> &im) { return NPY_DOUBLE; }
 
 
 // NPY_BOOL=0,
