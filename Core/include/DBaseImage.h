@@ -61,6 +61,15 @@ public:
         return allocatedSize;
     }
     
+    inline UINT getDimension()
+    {
+	if (depth > 1)
+	  return 3;
+	else if (height > 1)
+	  return 2;
+	else return 1;
+    }
+    
     inline void getSize(UINT *w, UINT *h, UINT *d)
     {
 	*w = width;

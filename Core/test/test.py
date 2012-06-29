@@ -248,3 +248,14 @@ watershed(imGrad, imMark, imWs)
 imWs.show()
 
 #Core.getInstance().execLoop()
+
+def ptrcast(t,ptr):
+   import re
+   if type(t)!=type(""):
+      if len(t.__bases__)==1:
+         t=t.__bases__[0].__name__
+      else: t=t.__name__
+   if hasattr(ptr,"this"):
+      ptr=ptr.this
+   return re.sub(r"(_p)+_\w+$","_p_"+t,ptr)
+

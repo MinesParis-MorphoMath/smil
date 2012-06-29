@@ -213,7 +213,19 @@ class sSE0 : public StrElt
     }
 };
 
-#define DEFAULT_SE sSE
+StrElt DEFAULT_SE = sSE();
+
+StrElt getDefaultSE()
+{
+    return DEFAULT_SE;
+}
+
+void setDefaultSE(StrElt &se)
+{
+    DEFAULT_SE = se;
+}
+
+// #define DEFAULT_SE sSE
 
 /** @} */
 

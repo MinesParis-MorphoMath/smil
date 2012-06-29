@@ -45,6 +45,18 @@
 #include "stddef.h"
 %}
 
+
+%init
+%{
+    #include <iostream>
+
+    std::cout << "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}" << std::endl;
+    std::cout << "Copyright (c) 2011, Matthieu FAESSEL and ARMINES" << std::endl;
+    std::cout << "All rights reserved." << std::endl;
+    std::cout << std::endl;
+%}
+
+
 // CMake generated list of interface files
 
 ${SWIG_INCLUDE_DEFINITIONS}
@@ -155,10 +167,6 @@ for t in imageTypes:
 #    t.__del0__ = t.__del__
 #    t.__del__ = deleteImage
 
-print "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}"
-print "Copyright (c) 2011, Matthieu FAESSEL and ARMINES"
-print "All rights reserved."
-print ""
 
 %}
 

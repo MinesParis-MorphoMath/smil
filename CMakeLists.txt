@@ -197,6 +197,22 @@ IF(USE_CURL)
 	LIST(APPEND SMIL_EXT_DEPS ${CURL_LIBRARIES})
 ENDIF(USE_CURL)
 
+
+###### MISC ######
+
+IF(WRAP_PYTHON)
+	OPTION(USE_NUMPY "Use Numpy for python pixels manipulation." OFF)
+	IF(USE_NUMPY)
+		FIND_PATH(PYTHON_NUMPY_INCLUDE_DIR arrayobject.h
+			  "${PYTHON_INCLUDE_PATH}"
+			  DOC "Directory where the arrayobject.h header file can be found. This file is part of the numpy package"
+		)
+	
+		ADD_DEFINITIONS("-DUSE_NUMPY")
+		INCLUDE_DIRECTORIES(${PYTHON_NUMPY_INCLUDE_DIR})
+	ENDIF(USE_NUMPY)
+ENDIF(WRAP_PYTHON)
+
 ###### DOC ######
 
 OPTION(BUILD_DOC "Generate documentation" OFF)
@@ -258,6 +274,20 @@ SET(_STWD "${_STWD}%enddef\n\n")
 SET(SWIG_TEMPLATE_WRAP_DEFINITIONS ${_STWD})
 
 MESSAGE(STATUS "Image types generated: ${DATA_TYPES_STR}")
+
+
+
+# Retrieve all compile flags
+GET_DIRECTORY_PROPERTY(COMP_DEFS COMPILE_DEFINITIONS)
+SET(COMPILE_FLAGS)
+FOREACH(_DEF ${COMP_DEFS})
+	SET(COMPILE_FLAGS ${COMPILE_FLAGS} -D${_DEF})
+ENDFOREACH(_DEF ${COMP_DEFS})
+
+
+IF(USE_WRAPPER)
+ 	SET(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} ${COMPILE_FLAGS})
+ENDIF(USE_WRAPPER)
 
 
 

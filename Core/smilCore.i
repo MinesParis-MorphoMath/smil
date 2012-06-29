@@ -60,15 +60,63 @@
 #include "DImageHistogram.hpp"
 /*#include "D_BaseOperations.h"*/
 #include "memory"
+#include <listobject.h>
 #include "DCoreEvents.h"
 
 %}
+
+%include "carrays.i"
+%array_class(double, dArray);
+//%array_class(void, voidArray);
+%array_class(UINT8, uint8Array);
  
+
+%{
+UINT8 *createArray(int size)
+{
+  return (UINT8*)malloc(size_t(size));
+}
+void printArray(UINT8 *arr, int size)
+{
+  for (int i=0;i<size;i++)
+{
+  cout << (int)arr[i] << endl;
+}
+}
+%}
+
+UINT8 *createArray(int size);
+void printArray(UINT8 *arr, int size);
+
+
+
+///// Numpy /////
+#if defined SWIGPYTHON && defined USE_NUMPY
+%{
+    #include "DNumpy.h"
+%}
+
+%extend Image 
+{
+	PyObject * getNumArray()
+	{
+	    npy_intp m = self->getPixelCount();
+	    PyArrayObject * c =(PyArrayObject*)PyArray_SimpleNewFromData(1, &m, getNumpyType(*self), self->getPixels());
+	    return (PyObject *)c;
+	}
+}
+
+%init
+%{
+    import_array();
+%}
+#endif // defined SWIGPYTHON && defined USE_NUMPY
 
 
 %extend Image 
 {
-	std::string  __str__() {
+	std::string  __str__() 
+	{
 	    std::stringstream os;
 	    os << *self;
 	    return os.str();
