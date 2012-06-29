@@ -26,40 +26,17 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-#ifndef _D_NUMPY_H
-#define _D_NUMPY_H
-
-
-#include "numpy/arrayobject.h"
-
-template <class T> class Image;
-
-template <class T> int getNumpyType(Image<T> &im) { return NPY_VOID; } // Default
-
-template <> int getNumpyType(Image<UINT8> &im) { return NPY_UBYTE; }
-template <> int getNumpyType(Image<INT8> &im) { return NPY_BYTE; }
-template <> int getNumpyType(Image<UINT16> &im) { return NPY_USHORT; }
-template <> int getNumpyType(Image<INT16> &im) { return NPY_SHORT; }
-template <> int getNumpyType(Image<UINT32> &im) { return NPY_UINT; }
-template <> int getNumpyType(Image<INT32> &im) { return NPY_INT; }
-template <> int getNumpyType(Image<unsigned long> &im) { return NPY_ULONG; }
-template <> int getNumpyType(Image<long> &im) { return NPY_LONG; }
-
-
-// NPY_BOOL=0,
-//                     NPY_BYTE, NPY_UBYTE,
-//                     NPY_SHORT, NPY_USHORT,
-//                     NPY_INT, NPY_UINT,
-//                     NPY_LONG, NPY_ULONG,
-//                     NPY_LONGLONG, NPY_ULONGLONG,
-//                     NPY_FLOAT, NPY_DOUBLE, NPY_LONGDOUBLE,
-//                     NPY_CFLOAT, NPY_CDOUBLE, NPY_CLONGDOUBLE,
-//                     NPY_OBJECT=17,
-//                     NPY_STRING, NPY_UNICODE,
-//                     NPY_VOID,
-//                     /*
-
-
-
-#endif // _D_NUMPY_H
+/**
+ * \page numpy_page Python NumPy interface
+ * 
+ * <a href="http://numpy.scipy.org/" target="_blank"><b>NumPy</b></a> is a package for scientific computing with Python.
+ * Smil allows to create a NumPy array containing the image pixels with the method <b>getNumArray()</b>.
+ * This is <b>not</b> a copy of the data but a real access to the image pixels via NumPy.
+ * \warning This function is available only for python.
+ * 
+ * Here is an example of python script:
+ * 
+ * \include numpy_array.py
+ * \example numpy_array.py
+ * 
+ */

@@ -53,7 +53,7 @@ IF(DOXYGEN_FOUND AND DOXYGEN_CONFIG_FILE)
      LIST(APPEND DOXY_INPUT_DIRS ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
      STRING(REGEX REPLACE ";" " \\\\ \n" DOXY_INPUT_DIRS "${DOXY_INPUT_DIRS}")
 
-     SET(DOXY_FILES_PATTERN *.cpp   *.cc   *.h   *.hh   *.hpp *.hxx *.txt *.doxy)
+     SET(DOXY_FILES_PATTERN *.cpp *.cc   *.h   *.hh   *.hpp *.hxx *.txt *.doxygen)
      STRING(REGEX REPLACE ";" " \\\\ \n" DOXY_FILES_PATTERN "${DOXY_FILES_PATTERN}")
      
      SET(DOXYGEN_IMAGE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/images)

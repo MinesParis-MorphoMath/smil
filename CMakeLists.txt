@@ -203,9 +203,9 @@ ENDIF(USE_CURL)
 IF(WRAP_PYTHON)
 	OPTION(USE_NUMPY "Use Numpy for python pixels manipulation." OFF)
 	IF(USE_NUMPY)
-		FIND_PATH(PYTHON_NUMPY_INCLUDE_DIR arrayobject.h
+		FIND_PATH(PYTHON_NUMPY_INCLUDE_DIR numpy/arrayobject.h
 			  "${PYTHON_INCLUDE_PATH}"
-			  DOC "Directory where the arrayobject.h header file can be found. This file is part of the numpy package"
+			  DOC "Directory where the numpy/arrayobject.h header file can be found. This file is part of the numpy package"
 		)
 	
 		ADD_DEFINITIONS("-DUSE_NUMPY")
