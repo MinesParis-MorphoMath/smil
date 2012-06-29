@@ -101,14 +101,20 @@ void printArray(UINT8 *arr, int size);
 	PyObject * getNumArray()
 	{
 	    npy_intp m = self->getPixelCount();
-	    PyArrayObject * c =(PyArrayObject*)PyArray_SimpleNewFromData(1, &m, getNumpyType(*self), self->getPixels());
-	    return (PyObject *)c;
+	    return PyArray_SimpleNewFromData(1, &m, getNumpyType(*self), self->getPixels());
 	}
 }
 
 %init
 %{
-    import_array();
+    try
+    {
+	import_array();
+    }
+    catch(...)
+    {
+	std::cout << "Problem importing NumPy package." << std::endl;
+    }
 %}
 #endif // defined SWIGPYTHON && defined USE_NUMPY
 
