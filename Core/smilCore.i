@@ -9,7 +9,7 @@
 //     * Redistributions in binary form must reproduce the above copyright
 //       notice, this list of conditions and the following disclaimer in the
 //       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the University of California, Berkeley nor the
+//     * Neither the name of Matthieu FAESSEL, or ARMINES nor the
 //       names of its contributors may be used to endorse or promote products
 //       derived from this software without specific prior written permission.
 //
@@ -100,8 +100,17 @@ void printArray(UINT8 *arr, int size);
 {
 	PyObject * getNumArray()
 	{
-	    npy_intp m = self->getPixelCount();
-	    return PyArray_SimpleNewFromData(1, &m, getNumpyType(*self), self->getPixels());
+	    npy_intp d[] = { self->getHeight(), self->getWidth(), self->getDepth() }; // axis are inverted...
+	    PyObject *array = PyArray_SimpleNewFromData(self->getDimension(), d, getNumpyType(*self), self->getPixels());
+	    
+	    npy_intp t[] = { 1, 0, 2 };
+	    PyArray_Dims trans_dims;
+	    trans_dims.ptr = t;
+	    trans_dims.len = self->getDimension();
+	    
+	    PyObject *res = PyArray_Transpose((PyArrayObject*) array, &trans_dims);
+	    Py_DECREF(array);
+	    return res;
 	}
 }
 
