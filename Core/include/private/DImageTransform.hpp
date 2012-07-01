@@ -109,6 +109,116 @@ RES_T vFlip(Image<T> &imInOut)
     imInOut.modified();
 }
 
+/**
+ * Image translation.
+ * 
+ */
+template <class T>
+RES_T trans(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
+{
+    if (!imIn.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+    
+    UINT lineLen = imIn.getWidth();
+    typename ImDtTypes<T>::lineType borderBuf = ImDtTypes<T>::createLine(lineLen);
+    fillLine<T>(borderBuf, lineLen, borderValue);
+    
+    UINT height = imIn.getHeight();
+    UINT depth  = imIn.getDepth();
+    
+    for (int k=0;k<depth;k++)
+    {
+	typename Image<T>::sliceType lOut = imOut.getSlices()[k];
+	
+	UINT z = k+dz;
+	for (int j=0;j<height;j++, lOut++)
+	{
+	    UINT y = j+dy;
+	    
+	    if (z<0 || z>=depth || y<0 || y>=height)
+		copyLine<T>(borderBuf, lineLen, *lOut);
+	    else 
+		shiftLine<T>(imIn.getSlices()[z][y], dx, lineLen, *lOut, borderValue);
+	}
+    }
+    
+    ImDtTypes<T>::deleteLine(borderBuf);
+    
+    imOut.modified();
+    
+    return RES_OK;
+}
+
+template <class T>
+RES_T trans(Image<T> &imIn, UINT dx, UINT dy, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
+{
+    return trans<T>(imIn, dx, dy, 0, imOut, borderValue);
+}
+
+// template <class T>
+// Image<T> trans(Image<T> &imIn, UINT dx, UINT dy, T borderValue = numeric_limits<T>::min())
+// {
+//     Image<T> imOut(imIn);
+//     trans<T>(imIn, dx, dy, imOut, borderValue);
+//     return imOut;
+// }
+
+/**
+ * 2D bilinear resize algorithm.
+ * 
+ * Quick implementation (needs better integration and optimization).
+ */
+template <class T>
+RES_T resize(Image<T> &imIn, Image<T> &imOut)
+{
+    if (!imIn.isAllocated() || !imOut.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+  
+    UINT w = imIn.getWidth();
+    UINT h = imIn.getHeight();
+    
+    UINT w2 = imOut.getWidth();
+    UINT h2 = imOut.getHeight();
+    
+    typedef typename Image<T>::pixelType pixelType;
+    typedef typename Image<T>::lineType lineType;
+    
+    lineType pixIn = imIn.getPixels();
+    lineType pixOut = imOut.getPixels();
+    
+    pixelType A, B, C, D, maxVal = numeric_limits<T>::max() ;
+    int x, y, index;
+    
+    float x_ratio = ((float)(w-1))/w2 ;
+    float y_ratio = ((float)(h-1))/h2 ;
+    float x_diff, y_diff, ya, yb ;
+    int offset = 0 ;
+    
+    for (int i=0;i<h2;i++) 
+    {
+        for (int j=0;j<w2;j++) 
+	{
+            x = (int)(x_ratio * j) ;
+            y = (int)(y_ratio * i) ;
+            x_diff = (x_ratio * j) - x ;
+            y_diff = (y_ratio * i) - y ;
+            index = y*w+x ;
+
+            A = pixIn[index] & maxVal ;
+            B = pixIn[index+1] & maxVal ;
+            C = pixIn[index+w] & maxVal ;
+            D = pixIn[index+w+1] & maxVal ;
+            
+            // Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
+            pixOut[offset++] = A*(1-x_diff)*(1-y_diff) +  B*(x_diff)*(1-y_diff) + C*(y_diff)*(1-x_diff)   +  D*(x_diff*y_diff);
+        }
+    }
+    imOut.modified();
+    
+    return RES_OK;
+}
+
+
 /** @}*/
 
 #endif // _D_IMAGE_TRANSFORM_HPP

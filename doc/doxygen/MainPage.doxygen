@@ -27,16 +27,23 @@
  */
 
 /**
- * \mainpage SMIL Documentation
+ * \mainpage About
+ * \f$ SMIL:~Simple~Morphological~Image~Library \f$
  * \author Matthieu Faessel
  * \email faessel@mines-paristech.fr
  * 
+ * \copyright
+ * Copyright (c) 2011, Matthieu FAESSEL and ARMINES. \n
+ * All rights reserved (see \ref licence_page "licence").
+ * 
  * \section intro_sec Introduction
- * SMIL: Simple (but efficient) Morphological Image Library
+ * 
+ * Smil is free software, available under a BSD-style open source license. 
+ * See the \ref licence_page "licence" page for more information.
  * 
  * \section demo_sec Demo
  * A \ref webstart_page "Web Start" version can be executed online.
- * 
+ * \tableofcontents
  * 
  */
 

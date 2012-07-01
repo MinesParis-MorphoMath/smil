@@ -229,9 +229,6 @@ TEMPLATE_WRAP_FUNC(logicAnd);
 TEMPLATE_WRAP_FUNC(logicOr);
 TEMPLATE_WRAP_FUNC(test);
 
-TEMPLATE_WRAP_FUNC(translate);
-TEMPLATE_WRAP_FUNC(resize);
-
 TEMPLATE_WRAP_FUNC(vol);
 TEMPLATE_WRAP_FUNC(minVal);
 TEMPLATE_WRAP_FUNC(maxVal);
@@ -249,5 +246,8 @@ TEMPLATE_WRAP_FUNC(drawRectangle);
 %include "DImageTransform.hpp"
 
 TEMPLATE_WRAP_FUNC(vFlip);
+TEMPLATE_WRAP_FUNC(trans);
+TEMPLATE_WRAP_FUNC(resize);
+
 
 
