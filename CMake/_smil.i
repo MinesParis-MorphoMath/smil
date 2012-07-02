@@ -46,15 +46,15 @@
 %}
 
 
+#ifndef SWIGJAVA
 %init
 %{
-    #include <iostream>
-
     std::cout << "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}" << std::endl;
     std::cout << "Copyright (c) 2011, Matthieu FAESSEL and ARMINES" << std::endl;
     std::cout << "All rights reserved." << std::endl;
     std::cout << std::endl;
 %}
+#endif // SWIGJAVA
 
 
 // CMake generated list of interface files

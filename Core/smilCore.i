@@ -38,6 +38,10 @@
 %module(directors="1") smilCoreOctave
 #endif // SWIGOCTAVE
 
+#ifdef SWIGRUBY
+%module(directors="1") smilCoreRuby
+#endif // SWIGRUBY
+
 %include smilCommon.i
 
 
@@ -60,7 +64,6 @@
 #include "DImageHistogram.hpp"
 /*#include "D_BaseOperations.h"*/
 #include "memory"
-#include <listobject.h>
 #include "DCoreEvents.h"
 
 %}
@@ -70,25 +73,6 @@
 //%array_class(void, voidArray);
 %array_class(UINT8, uint8Array);
  
-
-%{
-UINT8 *createArray(int size)
-{
-  return (UINT8*)malloc(size_t(size));
-}
-void printArray(UINT8 *arr, int size)
-{
-  for (int i=0;i<size;i++)
-{
-  cout << (int)arr[i] << endl;
-}
-}
-%}
-
-UINT8 *createArray(int size);
-void printArray(UINT8 *arr, int size);
-
-
 
 ///// Numpy /////
 #if defined SWIGPYTHON && defined USE_NUMPY

@@ -134,7 +134,7 @@ struct subLine : public binaryLineFunctionBase<T>
     inline void _exec(lineType lIn1, lineType lIn2, int size, lineType lOut)
     {
         for (int i=0;i<size;i++)
-            lOut[i] = lIn1[i] < (T)(numeric_limits<T>::max() + lIn2[i]) ? numeric_limits<T>::min() : lIn1[i] - lIn2[i];
+            lOut[i] = lIn1[i] < (T)(numeric_limits<T>::min() + lIn2[i]) ? numeric_limits<T>::min() : lIn1[i] - lIn2[i];
     }
 };
 

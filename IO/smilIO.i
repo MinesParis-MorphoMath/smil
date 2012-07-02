@@ -37,6 +37,10 @@
 %module smilIOOctave
 #endif // SWIGOCTAVE
 
+#ifdef SWIGRUBY
+%module smilIORuby
+#endif // SWIGRUBY
+
 
 %include smilCommon.i
 

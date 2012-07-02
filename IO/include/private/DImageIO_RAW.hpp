@@ -57,9 +57,7 @@ RES_T readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T
     image.setSize(width, height, depth);
 //   image->allocate();
 
-    size_t result = fread(image.getVoidPointer(), sizeof(T), image.getPixelCount(), fp);
-      
-
+    size_t result = fread(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
 
     fclose (fp);
     return RES_OK;
@@ -68,6 +66,20 @@ RES_T readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T
 template <class T>
 RES_T writeRAW(Image<T> &image, const char *filename)
 {
+    FILE *fp = NULL;
+
+    /* open image file */
+    fp = fopen (filename, "wb");
+    if (!fp)
+    {
+        fprintf (stderr, "error: couldn't open \"%s\"!\n", filename);
+        return RES_ERR;
+    }
+
+    size_t result = fwrite(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
+
+    fclose (fp);
+    return RES_OK;
 }
 
 

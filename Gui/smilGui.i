@@ -37,6 +37,10 @@
 %module smilGuiOctave
 #endif // SWIGOCTAVE
 
+#ifdef SWIGRUBY
+%module smilGuiRuby
+#endif // SWIGRUBY
+
 
 %include smilCommon.i
 
