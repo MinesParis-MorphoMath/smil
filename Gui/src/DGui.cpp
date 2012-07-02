@@ -31,3 +31,18 @@
 #include "DGui.h"
 #include "DImageViewer.h"
 
+#ifdef USE_QT
+
+#include "DQtGuiInstance.h"
+Gui *createGuiInstance()
+{
+    return new qtGui();
+}
+
+#else // USE_QT
+
+Gui *createGuiInstance()
+{
+    return new Gui();
+}
+#endif // USE_QT

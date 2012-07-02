@@ -26,7 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef BUILD_GUI
+#ifdef USE_QT
 
 
 #include "DQtImageViewer.hpp"
@@ -130,4 +130,4 @@ void qtImageViewer<Bit>::drawImage()
 #endif // SMIL_WRAP_Bit
 
 
-#endif // BUILD_GUI
+#endif // USE_QT

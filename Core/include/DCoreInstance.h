@@ -33,37 +33,14 @@
 #include <iostream>
 #include <algorithm>
 
-// #include "DGui.h"
-#include "Qt/QtApp.h"
-
 #include "DCommon.h"
-#include <qtimer.h>
 #include "DTimer.h"
 #include "DSignal.h"
+#include "DGuiInstance.h"
 
 class baseObject;
 
 struct stat;
-
-class guiInstance
-{
-public:
-  guiInstance();
-  ~guiInstance();
-  
-  void execLoop();
-  inline void processEvents()
-  { 
-//       if (_qapp)
-// 	_qapp->processEvents(); 
-//       else if (qApp)
-// 	qApp->processEvents();
-  }
-  
-// protected:
-  QApplication *_qapp;
-  timer *_timer;
-};
 
 
 
@@ -97,8 +74,7 @@ public:
   
 protected:
   void deleteRegisteredObjects();
-//   QApplication *_qapp;
-  guiInstance *guiInst;
+  Gui *guiInst;
 
   
 public:

@@ -30,46 +30,10 @@
 #include "DBaseObject.h"
 #include "DBaseImage.h"
 #include "DCoreInstance.h"
+#include "DGui.h"
 
 // Initialization of singleton to NULL
-// Core Core::_singleton;
 Core *Core::_singleton = NULL;
-QApplication *QAPP = NULL;
-
-
-guiInstance::guiInstance()
-  : _qapp(NULL)
-{
-      if (!QApplication::instance())
-      {
-// 	    cout << "Core qt created (guiInst)" << endl;
-	  int ac = 1;
-	  char **av = NULL;
-	  _qapp = new QApplication(ac, av);
-	  _qapp->processEvents();
-      }
-//       else _qapp = qApp;
-      
-      _timer = new timer();
-      _timer->app = _qapp;
-//       _timer->start();
-}
-
-guiInstance::~guiInstance()
-{
-    if (_qapp)
-      _qapp->exit();
-    delete _timer;
-}
-
-void guiInstance::execLoop() 
-{ 
-    if (_qapp)
-      _qapp->exec(); 
-    else if (qApp)
-      qApp->exec();
-}
-
 
 
 Core::Core ()
@@ -78,28 +42,28 @@ Core::Core ()
   keepAlive(false)
 { 
 //     cout << "Core created" << endl;
-    guiInst = new guiInstance();
+    guiInst = createGuiInstance();
   
 }
 
 Core::~Core () 
 {
-  deleteRegisteredObjects();
-  delete guiInst;
+    deleteRegisteredObjects();
+    delete guiInst;
 //       cout << "Core deleted" << endl;
 }
 
 
 Core *Core::getInstance ()
 {
-  initialize();
-  return _singleton;
+    initialize();
+    return _singleton;
 }
 
 void Core::kill ()
 {
-  if (_singleton==NULL)
-    return;
+    if (_singleton==NULL)
+      return;
   
 //       std::cout << "Bye" << std::endl;
     

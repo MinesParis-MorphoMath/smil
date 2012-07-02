@@ -253,7 +253,7 @@ class Test_Watershed : public TestCase
 
 int main(int argc, char *argv[])
 {
-    QApplication qapp(argc, argv);
+      Core::initialize();
     
       UINT8 vecIn[]   = { 1, 2, 0, 5, 5, 5, 3, 3, 3, 1, 1 };
       UINT8 vecMark[] = { 0, 0, 0, 0, 4, 1, 1, 2, 0, 0, 0 };
@@ -273,15 +273,7 @@ int main(int argc, char *argv[])
       cout << endl;
 //       dualBuild(imIn, imMark, imOut);
       
-      Image_UINT8 im1("func.png");
-      Image_UINT8 im2("mark.png");
-      im2.show();
       
-      Image_UINT8 im3(im1);
-      
-//       dualBuild(im1, im2, im3);
-      
-      im3.show();
       
       Core::execLoop();
       

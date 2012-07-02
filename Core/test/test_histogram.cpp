@@ -30,10 +30,7 @@
 #include "DImage.h"
 #include "DImageHistogram.hpp"
 
-#ifdef BUILD_GUI
-#include <QApplication>
-// #include "DGui.h"
-#endif // BUILD_GUI
+#include "DGui.h"
 
 #define bench(func, args) \
       t1 = clock(); \
@@ -70,10 +67,6 @@ int testStretchHist()
 
 int main(int argc, char *argv[])
 {
-#ifdef BUILD_GUI
-    QApplication qapp(argc, argv);
-#endif // BUILD_GUI
-
     Image_UINT8 im1(4,4);
     Image_UINT8 im2(4,4);
     Image_UINT8 im3(4,4);

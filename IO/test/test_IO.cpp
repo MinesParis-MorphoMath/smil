@@ -36,10 +36,7 @@
 #include "DCore.h"
 #include "DIO.h"
 
-#ifdef BUILD_GUI
 #include "DGui.h"
-#include <QApplication>
-#endif // BUILD_GUI
 
 
 int main(int argc, char *argv[])

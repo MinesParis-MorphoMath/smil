@@ -30,6 +30,8 @@
 #ifndef _DTIMER_H
 #define _DTIMER_H
 
+#ifdef USE_QT
+
 #include <iostream>
 // #include <pthread.h>
 #include <QApplication>
@@ -60,6 +62,8 @@ protected:
 //         pthread_join(thread, NULL);
   }
 };
+
+#endif // USE_QT
 
 #endif // _DTIMER_H
 

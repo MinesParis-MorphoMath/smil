@@ -36,6 +36,7 @@
 
 
 #include <set>
+#include <map>
 
 template <class T1, class T2>
 class labelFunct : public unaryMorphImageFunctionGeneric<T1, T2>

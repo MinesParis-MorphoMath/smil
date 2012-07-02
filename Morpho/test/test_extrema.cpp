@@ -38,10 +38,7 @@
 #include "DMorpho.h"
 #include "DIO.h"
 
-#ifdef BUILD_GUI
 #include "DGui.h"
-#include <QApplication>
-#endif // BUILD_GUI
 
 
 #define bench(func, args) \
@@ -55,10 +52,9 @@
 
 int main(int argc, char *argv[])
 {
-#ifdef BUILD_GUI
-    QApplication qapp(argc, argv);
-#endif // BUILD_GUI
 
+    Core::initialize();
+    
 //      int c;
     Image_UINT8 im1(4,4);
     Image_UINT8 im2(4,4);
@@ -90,8 +86,7 @@ int main(int argc, char *argv[])
 
     im3.printSelf(1);
     im3.show();
-#ifdef BUILD_GUI
-    qapp.exec();
-#endif // BUILD_GUI
+    
+    Core::execLoop();
 }
 

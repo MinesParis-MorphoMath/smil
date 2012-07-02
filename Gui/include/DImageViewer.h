@@ -32,7 +32,7 @@
 
 #include "DImageViewer.hpp"
 
-#ifdef BUILD_GUI
+#ifdef USE_QT
 #include "DQtImageViewer.hpp"
 
 template <class T>
@@ -41,12 +41,12 @@ imageViewer<T> *createViewer(Image<T> *im)
     return new qtImageViewer<T>(im);
 }
 
-#else // BUILD_GUI
+#else // USE_QT
 
 template <class T>
 imageViewer<T> *createViewer(Image<T> *im)
 {
-    return NULL;
+    return new imageViewer<T>(im);
 }
 
 #endif // BUILD_GUI

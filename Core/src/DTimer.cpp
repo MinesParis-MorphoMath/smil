@@ -1,4 +1,6 @@
 
+#ifdef USE_QT
+
 #include "DTimer.h"
 #include <iostream>
 #include <QApplication>
@@ -46,3 +48,5 @@ void timer::stop()
 {
     running = false;
 }
+
+#endif // USE_QT

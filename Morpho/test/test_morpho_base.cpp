@@ -36,7 +36,7 @@
 
 int main(int argc, char *argv[])
 {
-  QApplication qapp(argc, argv);
+  Core::initialize();
   
   typedef UINT16 dataType;
   typedef Image<dataType> imType;

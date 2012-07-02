@@ -37,9 +37,10 @@
 /*@{*/
 
 #include "DImage.hpp"
+#include "DGuiInstance.h"
 #include "DImageViewer.h"
-#include "Qt/QtApp.h"
 
+Gui *createGuiInstance();
 
 /*@}*/
 
