@@ -695,5 +695,32 @@ Image<T>& Image<T>::operator << (vector<T> vect)
     modified();
 }
 
+#if defined SWIGPYTHON && defined USE_NUMPY
+#include "DNumpy.h"
+
+template <class T>
+PyObject * Image<T>::getNumArray(bool c_contigous)
+{
+    npy_intp d[] = { this->getHeight(), this->getWidth(), this->getDepth() }; // axis are inverted...
+    PyObject *array = PyArray_SimpleNewFromData(this->getDimension(), d, getNumpyType(*this), this->getPixels());
+    
+    if (c_contigous)
+    {
+	return array;
+    }
+    else
+    {
+	npy_intp t[] = { 1, 0, 2 };
+	PyArray_Dims trans_dims;
+	trans_dims.ptr = t;
+	trans_dims.len = this->getDimension();
+	
+	PyObject *res = PyArray_Transpose((PyArrayObject*) array, &trans_dims);
+	Py_DECREF(array);
+	return res;
+    }
+}
+#endif // defined SWIGPYTHON && defined USE_NUMPY
+
 
 #endif // _IMAGE_HXX

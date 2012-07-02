@@ -76,31 +76,10 @@
 
 ///// Numpy /////
 #if defined SWIGPYTHON && defined USE_NUMPY
-%{
-    #include "DNumpy.h"
-%}
-
-%extend Image 
-{
-	PyObject * getNumArray()
-	{
-	    npy_intp d[] = { self->getHeight(), self->getWidth(), self->getDepth() }; // axis are inverted...
-	    PyObject *array = PyArray_SimpleNewFromData(self->getDimension(), d, getNumpyType(*self), self->getPixels());
-	    
-	    npy_intp t[] = { 1, 0, 2 };
-	    PyArray_Dims trans_dims;
-	    trans_dims.ptr = t;
-	    trans_dims.len = self->getDimension();
-	    
-	    PyObject *res = PyArray_Transpose((PyArrayObject*) array, &trans_dims);
-	    Py_DECREF(array);
-	    return res;
-	}
-}
-
 %init
 %{
-	import_array();
+    // Required by NumPy in Python initialization
+    import_array();
 %}
 #endif // defined SWIGPYTHON && defined USE_NUMPY
 

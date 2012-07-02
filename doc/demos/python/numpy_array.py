@@ -2,7 +2,7 @@ from smilPython import *
 import numpy as np
 
 # Create an image
-im1 = Image(256, 256)
+im1 = Image(256, 512)
 im1.show()
 
 # Create a numpy array containing the real image pixels
