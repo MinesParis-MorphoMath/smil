@@ -34,9 +34,9 @@
  * To download the latest version of the JRE corresponding to your browser, click <a href="http://java.com/getjava">here</a>. \n
  * 
  * \section run_sec Launch the application
- * Click <a href="http://cmm.ensmp.fr/~faessel/smil/launch.jnlp"><b>here</b></a> to launch the application.
+ * Click <a href="http://cmm.ensmp.fr/~faessel/smil_ws/launch.jnlp"><b>here</b></a> to launch the application.
  * 
- * The first time you will execute the application, the JRE will need to download native libraries corresponding to your platform (about 50Mb). The download may take several seconds.
+ * The first time you will execute the application, the JRE will need to download native libraries corresponding to your platform. The download may take several seconds.
  * 
  * \section trouble_sec Troubleshooting
  * Windows users: \n
