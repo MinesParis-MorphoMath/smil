@@ -34,7 +34,9 @@
  * To download the latest version of the JRE corresponding to your browser, click <a href="http://java.com/getjava">here</a>. \n
  * 
  * \section run_sec Launch the application
- * Click <a href="http://cmm.ensmp.fr/~faessel/smil_ws/launch.php"><b>here</b></a> to launch the application.
+ * Click <a href="http://cmm.ensmp.fr/~faessel/smil_ws/launch.php"><b>here</b></a> to launch the application
+ * (or <a href="http://cmm.ensmp.fr/~faessel/smil_ws/launch.php?open&http://cmm.ensmp.fr/~faessel/smil/images/lena.png">here</a>
+ * to open it with the Lena image).
  * 
  * The first time you will execute the application, the JRE will need to download native libraries corresponding to your platform. The download may take several seconds.
  * 

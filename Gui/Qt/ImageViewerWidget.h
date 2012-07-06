@@ -94,6 +94,8 @@ protected:
     QList<QGraphicsPixmapItem*> overlayPixmaps;
     
     QLabel *valueLabel;
+    QLabel *hintLabel;
+    QTimer *hintTimer;
     MagnifyView *magnView;
 
     int lastPixX, lastPixY;
@@ -105,6 +107,7 @@ protected:
     void connectActions();
     
     void updateTitle();
+    void displayHint(QString msg);
 
     QAction *openAct;
     QAction *printAct;

@@ -92,7 +92,7 @@ def Image(*args):
     argNbr = len(args)
     argTypeStr = [ str(type(a)) for a in args ]
     
-    img = 0
+    img = None
     
     if argNbr==0: # No argument -> return default image type
 	img = imageTypes[0]()
@@ -126,6 +126,9 @@ def Image(*args):
     else:
 	img = imageTypes[0](*args)
 	
+    if img!=None:
+	fill(img, 0)
+
     return img
 
 

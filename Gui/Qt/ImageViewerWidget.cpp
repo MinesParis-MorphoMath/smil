@@ -78,6 +78,18 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     valueLabel->hide();
     valueLblActivated = true;
 
+    hintLabel = new QLabel(this);
+    hintLabel->setFrameStyle(QFrame::Panel | QFrame::Raised);
+    hintLabel->setAutoFillBackground(true);
+    hintLabel->hide();
+    hintLabel->move(QPoint(10,10));
+    hintLabel->setText("ok");
+    hintLabel->setEnabled(false);
+    
+    hintTimer = new QTimer();
+    hintTimer->setSingleShot(true);
+    connect( hintTimer, SIGNAL(timeout()), hintLabel, SLOT(hide()) );
+    
     imagePixmaps.clear();
     overlayPixmaps.clear();
     
@@ -92,6 +104,8 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
 
     createActions();
     connectActions();
+    
+    hintLabel->setEnabled(true);
 }
 
 ImageViewerWidget::~ImageViewerWidget()
@@ -101,6 +115,10 @@ ImageViewerWidget::~ImageViewerWidget()
       delete qOverlayImage;
     delete imScene;
     delete magnView;
+    
+    delete valueLabel;
+    delete hintLabel;
+    delete hintTimer;
 
     delete zoomInAct;
     delete zoomOutAct;
@@ -235,7 +253,15 @@ void ImageViewerWidget::updateTitle()
     setWindowTitle(name);
 }
 
-
+void ImageViewerWidget::displayHint(QString msg)
+{
+    if (!hintLabel->isEnabled())
+      return;
+    
+    hintLabel->setText(msg);
+    hintLabel->show();
+    hintTimer->start(1000);
+}
 
 void ImageViewerWidget::load(const QString fileName)
 {
@@ -349,6 +375,9 @@ void ImageViewerWidget::scale(double factor)
     scaleFactor *= factor;
     QGraphicsView::scale(factor, factor);
 
+//     QTimer 
+//     QWidget::setToolTip(QString::number(scaleFactor));
+    displayHint(QString::number(int(scaleFactor*100)) + "%");
     emit(onRescaled(scaleFactor));
 }
 
