@@ -114,19 +114,15 @@ void qtImageViewer<T>::setLabelImage(bool val)
       qImage->setColorTable(labelColorTable);
     else qImage->setColorTable(baseColorTable);
     
-    parentClass::dataModified = true;
     BASE_QT_VIEWER::dataChanged();
 }
 
 template <class T>
 void qtImageViewer<T>::update()
 {
-    if (parentClass::dataModified)
-    {
-	drawImage();
-	BASE_QT_VIEWER::dataChanged();
-	parentClass::dataModified = false;
-    }
+    drawImage();
+    BASE_QT_VIEWER::dataChanged();
+
     BASE_QT_VIEWER::update();
     qApp->processEvents();
 }

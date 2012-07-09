@@ -46,12 +46,12 @@ public:
     friend class Image<T>;
     
     imageViewer()
-      : image(NULL), labelImage(false), dataModified(true)
+      : image(NULL), labelImage(false)
     {
     }
     
     imageViewer(Image<T> *im)
-      : labelImage(false), dataModified(true)
+      : labelImage(false)
     {
 	setImage(im);
     }
@@ -68,10 +68,7 @@ public:
     virtual void setName(string _name) { parentClass::setName(_name); }
     virtual void update()
     {
-	if (!dataModified)
-	  return;
 	drawImage();
-	dataModified = false;
     }
     virtual void drawOverlay(Image<T> &im) {}
     virtual void clearOverlay() {}
@@ -80,7 +77,6 @@ protected:
     Image<T> *getImage() { return image; }
     virtual void drawImage() {}
     bool labelImage;
-    bool dataModified;
     Image<T> *image;
 };
 

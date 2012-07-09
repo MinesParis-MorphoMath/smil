@@ -63,10 +63,8 @@
 %include "DSlot.h"
 %include "DSignal.h"
 
-// generate directors for Signal and Slot (for virtual methods overriding)
-%feature("director") imageViewer;
 
-TEMPLATE_WRAP_CLASS(imageViewer);
+//TEMPLATE_WRAP_CLASS(imageViewer);
 
 
 #ifdef USE_QT
@@ -77,10 +75,6 @@ TEMPLATE_WRAP_CLASS(imageViewer);
 
 %}
 
-%include "DQtImageViewer.hpp"
-%include "DQtImageViewer.hxx"
-
-TEMPLATE_WRAP_CLASS(qtImageViewer);
 
 #ifdef SWIGPYTHON
 %pythoncode %{

@@ -38,7 +38,7 @@ public:
     typedef baseObject parentClass;
     
     baseImageViewer()
-      : labelImage(false), dataModified(true)
+      : labelImage(false)
     {
 	updateSlot.init(this, &baseImageViewer::update);
     }
@@ -56,7 +56,6 @@ public:
 protected:
     virtual void drawImage() {}
     bool labelImage;
-    bool dataModified;
 };
 
 #endif // _D_BASE_IMAGE_VIEWER_H

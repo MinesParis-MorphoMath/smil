@@ -65,7 +65,6 @@
 /*#include "D_BaseOperations.h"*/
 #include "memory"
 #include "DCoreEvents.h"
-
 %}
 
 %include "carrays.i"
@@ -121,6 +120,7 @@ PTR_ARG_OUT_APPLY(d)
 
 %include std_vector.i
 
+
 %include "DCommon.h"
 %include "DTypes.hpp"
 %include "DBaseObject.h"
@@ -145,7 +145,22 @@ PTR_ARG_OUT_APPLY(d)
 %include "DLineHistogram.hpp"
 %include "DImageHistogram.hpp"
 
-//%include "DImageViewer.hpp"
+// generate directors (for virtual methods overriding)
+//%feature("director") imageViewer;
+
+
+%include "DBaseImageViewer.h"
+%include "DImageViewer.hpp"
+
+TEMPLATE_WRAP_CLASS(imageViewer);
+
+#ifdef USE_QT
+%include "DQtImageViewer.hpp"
+%include "DQtImageViewer.hxx"
+TEMPLATE_WRAP_CLASS(qtImageViewer);
+#endif // USE_QT
+
+
 
 #ifndef SWIGJAVA
 // generate directors for Signal and Slot (for virtual methods overriding)
@@ -163,7 +178,6 @@ PTR_ARG_OUT_APPLY(d)
 %template(objVector) vector<baseObject*>;
 %template(uintVector) vector<UINT>;
 
-//TEMPLATE_WRAP_CLASS(imageViewer);
 TEMPLATE_WRAP_CLASS(Image);
 
 TEMPLATE_WRAP_FUNC(createImage);
