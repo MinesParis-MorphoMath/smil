@@ -37,12 +37,16 @@
 
 
 template <class T>
+qtImageViewer<T>::qtImageViewer()
+  : BASE_QT_VIEWER(NULL)
+{
+}
+
+template <class T>
 qtImageViewer<T>::qtImageViewer(Image<T> *im)
   : imageViewer<T>(im), BASE_QT_VIEWER(NULL)
 {
-    setImageSize(im->getWidth(), im->getHeight());
-    if (this->image->getName()!="")
-      setName(this->image->getName());
+    setImage(im);
 }
 
 template <class T>
@@ -50,6 +54,16 @@ qtImageViewer<T>::~qtImageViewer()
 {
     hide();
 //     delete qtViewer;
+}
+
+
+template <class T>
+void qtImageViewer<T>::setImage(Image<T> *im)
+{
+    imageViewer<T>::setImage(im);
+    setImageSize(im->getWidth(), im->getHeight());
+    if (im->getName()!="")
+      setName(this->image->getName());
 }
 
 template <class T>

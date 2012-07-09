@@ -63,8 +63,6 @@ public:
     }
     virtual string getName()
     {
-      if (name.empty())
-	return NULL;
       return name;
     }
     typedef void(baseObject::*voidMemberFunc)();

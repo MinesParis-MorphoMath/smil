@@ -49,6 +49,8 @@
 #include "DBaseObject.h"
 #include "DImageViewer.hpp"
 
+#include "DSlot.h"
+#include "DSignal.h"
 %}
 
 
@@ -57,6 +59,9 @@
 %include "DBaseObject.h"
 %include "DBaseImageViewer.h"
 %include "DImageViewer.hpp"
+
+%include "DSlot.h"
+%include "DSignal.h"
 
 // generate directors for Signal and Slot (for virtual methods overriding)
 %feature("director") imageViewer;

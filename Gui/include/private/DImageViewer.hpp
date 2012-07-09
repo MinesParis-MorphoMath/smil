@@ -51,9 +51,16 @@ public:
     }
     
     imageViewer(Image<T> *im)
-      : image(im), labelImage(false), dataModified(true)
+      : labelImage(false), dataModified(true)
     {
+	setImage(im);
     }
+    
+    virtual void setImage(Image<T> *im)
+    {
+	image = im;
+    }
+    
     virtual void show() {}
     virtual void showLabel() {}
     virtual void hide() {}

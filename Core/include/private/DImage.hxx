@@ -87,14 +87,14 @@ Image<T>::Image(const Image<T2> &rhs, bool cloneit)
 }
 
 template <class T>
-Image<T>::Image(const char *fileName)
+Image<T>::Image(string fileName)
   : baseImage("Image"),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
     triggerEvents = true;
     init();
-    read(fileName, *this);
+    read(fileName.c_str(), *this);
 }
 
 template <class T>
@@ -152,7 +152,7 @@ void Image<T>::modified()
 
 
 template <class T>
-void Image<T>::setName(const char *_name)
+void Image<T>::setName(string _name)
 { 	
     parentClass::setName(_name);
     
@@ -172,7 +172,7 @@ imageViewer<T> *Image<T>::getViewer()
 }
 
 template <class T>
-void Image<T>::show(const char* _name, bool labelImage)
+void Image<T>::show(string _name, bool labelImage)
 {
     if (!viewer)
     {
@@ -180,7 +180,7 @@ void Image<T>::show(const char* _name, bool labelImage)
 	onModified.connect(&viewer->updateSlot);
     }
     
-    if (_name)
+    if (_name!="")
         setName(_name);
     
     if (!viewer)

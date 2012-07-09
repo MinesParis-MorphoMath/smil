@@ -48,8 +48,11 @@ class qtImageViewer : public imageViewer<T>, protected BASE_QT_VIEWER
 {
 public:
     typedef imageViewer<T> parentClass;
+    qtImageViewer();
     qtImageViewer(Image<T> *im);
     ~qtImageViewer();
+    
+    virtual void setImage(Image<T> *im);
     virtual void hide();
     virtual void show();
     virtual void showLabel();
