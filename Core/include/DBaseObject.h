@@ -37,6 +37,7 @@
 
 
 #include "DCommon.h"
+#include "DSlot.h"
 
 using namespace std;
 
@@ -54,17 +55,17 @@ public:
     typedef void parentClass;
     virtual string getInfoString(string indent = "") {}
     virtual void printSelf(ostream &os=std::cout) {}
-    virtual const char * getClassName();
+    virtual string getClassName();
 
-    virtual void setName(const char *_name)
+    virtual void setName(string _name)
     {
       name = _name;
     }
-    virtual const char *getName()
+    virtual string getName()
     {
       if (name.empty())
 	return NULL;
-      return name.c_str();
+      return name;
     }
     typedef void(baseObject::*voidMemberFunc)();
 

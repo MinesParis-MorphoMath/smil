@@ -30,7 +30,7 @@
 #ifdef USE_PNG
 
 #include "DImageIO_PNG.hpp"
-#include "DImage.h"
+#include "DCore.h"
 
 #include <png.h>
 

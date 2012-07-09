@@ -70,7 +70,7 @@ public:
     virtual void displayMagnifyView(UINT x, UINT y) {}
     virtual void displayMagnifyView() { displayMagnifyView(lastPixX, lastPixY); }
 
-    void setName(const char *name);
+    void setName(QString name);
     void setImageSize(int w, int h);
     void dataChanged();
     void overlayDataChanged();

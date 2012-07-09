@@ -27,50 +27,36 @@
  */
 
 
-#ifndef _D_QT_IMAGE_VIEWER_HPP
-#define _D_QT_IMAGE_VIEWER_HPP
+#ifndef _D_BASE_IMAGE_VIEWER_H
+#define _D_BASE_IMAGE_VIEWER_H
 
-#include <QApplication>
-#include <QGraphicsSceneEvent>
+#include "DBaseObject.h"
 
-#include "DImageViewer.hpp"
-#include "DTypes.h"
-
-#include "Qt/ImageViewerWidget.h"
-#include "Qt/ImageViewer.h"
-
-#define BASE_QT_VIEWER ImageViewerWidget
-
-template <class T> class Image;
-
-template <class T>
-class qtImageViewer : public imageViewer<T>, protected BASE_QT_VIEWER
+class baseImageViewer : public baseObject
 {
 public:
-    typedef imageViewer<T> parentClass;
-    qtImageViewer(Image<T> *im);
-    ~qtImageViewer();
-    virtual void hide();
-    virtual void show();
-    virtual void showLabel();
-    virtual bool isVisible();
-    virtual void setName(string _name);
-    virtual void update();
-    virtual void drawOverlay(Image<T> &im);
-    virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
+    typedef baseObject parentClass;
     
-    virtual void setLabelImage(bool val);
+    baseImageViewer()
+      : labelImage(false), dataModified(true)
+    {
+	updateSlot.init(this, &baseImageViewer::update);
+    }
     
-    QApplication *_qapp;
+    virtual void show() {}
+    virtual void showLabel() {}
+    virtual void hide() {}
+    virtual bool isVisible() { return false; }
+    virtual void setName(string _name) { parentClass::setName(_name); }
+    virtual void update() {}
+    
+    // Slots
+    MemberFunctionSlot<baseImageViewer> updateSlot;
     
 protected:
-    virtual void displayPixelValue(UINT x, UINT y);
-    virtual void displayMagnifyView(UINT x, UINT y);
-    virtual void drawImage();
-//     ImageViewerWidget *qtViewer;
-//     ImageViewer *qtViewer;
+    virtual void drawImage() {}
+    bool labelImage;
+    bool dataModified;
 };
 
-
-
-#endif // _D_QT_IMAGE_VIEWER_HPP
+#endif // _D_BASE_IMAGE_VIEWER_H

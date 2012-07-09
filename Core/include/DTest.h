@@ -49,7 +49,7 @@ inline const char *displayTime(int t)
     else if (int(tSec*1E3)!=0)
       s << tSec*1E3 << " msecs";
     else 
-      s << tSec*1E6 << " µsecs";
+      s << tSec*1E6 << " usecs";
     
     return s.str().c_str();
 }

@@ -118,6 +118,8 @@ public:
 
     virtual void show(const char* name=NULL) {}
     virtual void hide() = 0;
+    
+    Signal onModified;
 protected:
     UINT dataTypeSize;
 

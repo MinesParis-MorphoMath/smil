@@ -31,6 +31,7 @@
 #define _IMAGE_HXX
 
 #include "DIO.h"
+#include "DImageViewer.h"
 
 // template <>
 // const char *getImageDataTypeAsString<UINT8>(Image<UINT8> &im)
@@ -101,8 +102,10 @@ Image<T>::~Image()
 { 
     hide();
     deallocate();
+    
     if (viewer)
 	delete viewer;
+    
     if (operIm)
       delete operIm;
 }
@@ -143,13 +146,7 @@ void Image<T>::updateOperIm()
 template <class T>
 void Image<T>::modified()
 { 
-    if (viewer)
-    {
-	viewer->dataModified = true;
-	
-	if (updatesEnabled && viewer->isVisible())
-	  viewer->update();
-    }
+    onModified.trigger();
 }
 
 
@@ -167,7 +164,10 @@ template <class T>
 imageViewer<T> *Image<T>::getViewer()
 {
     if (!viewer)
+    {
         viewer = createViewer<T>(this);
+	onModified.connect(&viewer->updateSlot);
+    }
     return viewer;
 }
 
@@ -175,7 +175,10 @@ template <class T>
 void Image<T>::show(const char* _name, bool labelImage)
 {
     if (!viewer)
+    {
         viewer = createViewer<T>(this);
+	onModified.connect(&viewer->updateSlot);
+    }
     
     if (_name)
         setName(_name);

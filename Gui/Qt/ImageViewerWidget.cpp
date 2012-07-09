@@ -242,7 +242,7 @@ void ImageViewerWidget::connectActions()
 //    connect(ui->zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
 }
 
-void ImageViewerWidget::setName(const char *new_name)
+void ImageViewerWidget::setName(QString new_name)
 {
     name = new_name;
     updateTitle();

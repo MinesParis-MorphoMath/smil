@@ -31,9 +31,9 @@
 #define _DIMAGE_HPP
 
 #include "DBaseImage.h"
-#include "DImageViewer.h"
 #include "DSignal.h"
 
+template <class T> class imageViewer;
 
 /**
  * \defgroup Core
@@ -118,6 +118,7 @@ public:
     }
 
     imageViewer<T> *getViewer();
+    
     bool updatesEnabled;
     bool isVisible() { return (viewer && viewer->isVisible()); }
     
@@ -225,6 +226,7 @@ protected:
     RES_T restruct(void);
 
     imageViewer<T> *viewer;
+    // Specify if the viewer has been created internally
 //     ImageViewerWidget *viewer;
     
 public:

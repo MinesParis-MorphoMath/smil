@@ -32,14 +32,15 @@
 
 #ifdef USE_PNG
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string>
+#include <iostream>
 
 #include "DTypes.hpp"
-#include "DImage.h"
+#include "DCommon.h"
 
 using namespace std;
+
+template <class T> class Image;
+
 
 template <class T>
 _SMIL RES_T readPNG(const char* filename, Image<T> &image)

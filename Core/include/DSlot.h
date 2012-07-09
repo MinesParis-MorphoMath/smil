@@ -58,7 +58,10 @@ template <class eventT>
 class Slot : public BaseSlot
 {
 public:
-  virtual void run(eventT *e)
+  virtual void run(eventT *e=NULL)
+  {
+  }
+  void operator() (eventT *e=NULL)
   {
   }
 protected:
@@ -73,17 +76,43 @@ class MemberFunctionSlot : public Slot<eventT>
 {
 public:
   typedef void(T::*memberFunc)(eventT*);
+  typedef void(T::*voidMemberFunc)();
+  MemberFunctionSlot()
+  {
+    _instance = NULL;
+    _function = NULL;
+  }
   MemberFunctionSlot(T *inst, memberFunc func)
+  {
+      init(inst, func);
+  }
+  MemberFunctionSlot(T *inst, voidMemberFunc func)
+  {
+      init(inst, func);
+  }
+  void init(T *inst, memberFunc func)
   {
     _instance = inst;
     _function = func;
   }
+  void init(T *inst, voidMemberFunc func)
+  {
+    _instance = inst;
+    _void_function = func;
+  }
 protected:
   T *_instance;
   memberFunc _function;
-  virtual void run(eventT *e) 
+  voidMemberFunc _void_function;
+  virtual void run(eventT *e=NULL) 
   { 
-    (_instance->*_function)(e);
+    if (!_instance)
+      return;
+    
+    if (_function)
+      (_instance->*_function)(e);
+    if (_void_function)
+      (_instance->*_void_function)();
   }
 };
 
@@ -92,6 +121,7 @@ class FunctionSlot : public Slot<eventT>
 {
 public:
   typedef void(*funcPtr)(eventT*);
+  typedef void(*voidFuncPtr)();
   FunctionSlot(funcPtr func)
   {
     _function = func;

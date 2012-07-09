@@ -27,15 +27,7 @@
 //#include <boost/signal.hpp>
 //#include <boost/bind.hpp>
 
-#include "DImage.h"
-#include "DImageArith.hpp"
-#include "DBaseLineOperations.hpp"
-
-#define bench(func, args) \
-      t1 = clock(); \
-      for (int i=0;i<nRuns;i++) \
-	func args; \
-        cout << #func << ": " << 1E3 * double(clock() - t1) / CLOCKS_PER_SEC / nRuns << " ms" << endl;
+#include "DCore.h"
 
 
 #ifdef __SSE__
@@ -81,7 +73,7 @@ void testSup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
 
 int main(int argc, char *argv[])
 {
-    Image_UINT8 im1(10,10);
+    Image_UINT8 im1(1024,1024);
     Image_UINT8 im2;
     Image_UINT8 im3;
 
@@ -106,35 +98,36 @@ int main(int argc, char *argv[])
     int nRuns = (int)5E3;
     UINT8 val = 10;
     
-    bench(sup, (b1, b2, b3))
+    UINT BENCH_NRUNS = 1E3;
+    
+//     BENCH_IMG(sup, b1, b2, b3);
+    BENCH_IMG(fill, im1, val);
+    BENCH_IMG(copy, im1, im3);
+    BENCH_IMG(copy, im1, im4);
+    BENCH_IMG(inv, im1, im2);
+    BENCH_IMG(inf, im1, im2, im3);
+    BENCH_IMG(inf, im1, val, im3);
+    BENCH_IMG(sup, im1, im2, im3);
+    BENCH_IMG(sup, im1, val, im3);
+    BENCH_IMG(add, im1, im2, im3);
+    BENCH_IMG(addNoSat, im1, im2, im3);
+    BENCH_IMG(add, im1, val, im3);
+    BENCH_IMG(sub, im1, im2, im3);
+    BENCH_IMG(subNoSat, im1, im2, im3);
+    BENCH_IMG(sub, im1, val, im3);
+    BENCH_IMG(grt, im1, im2, im3);
+    BENCH_IMG(div, im1, im2, im3);
+    BENCH_IMG(mul, im1, im2, im3);
+    BENCH_IMG(mul, im1, val, im3);
+    BENCH_IMG(mulNoSat, im1, im2, im3);
+    BENCH_IMG(mulNoSat, im1, val, im3);
 
-//     bench(fill, (im3, val));
-//     bench(copy, (im1, im3));
-//     bench(copy, (im1, im4));
-//     bench(inv, (im1, im2));
-//     bench(inf, (im1, im2, im3));
-//     bench(inf, (im1, val, im3));
-    bench(sup, (im1, im2, im3));
-//     bench(sup, (im1, val, im3));
-//     bench(add, (im1, im2, im3));
-//     bench(addNoSat, (im1, im2, im3));
-//     bench(add, (im1, val, im3));
-//     bench(sub, (im1, im2, im3));
-//     bench(subNoSat, (im1, im2, im3));
-//     bench(sub, (im1, val, im3));
-//     bench(grt, (im1, im2, im3));
-//     bench(div, (im1, im2, im3));
-//     bench(mul, (im1, im2, im3));
-//     bench(mul, (im1, val, im3));
-//     bench(mulNoSat, (im1, im2, im3));
-//     bench(mulNoSat, (im1, val, im3));
-
-//     bench(testSup, (im1, im2, im3));
+//     BENCH_IMG(testSup, (im1, im2, im3));
 
 
 //      supLine<UINT8> f;
 //       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
-//       bench(volIm, (im1));
+//       BENCH_IMG(volIm, (im1));
 //       im6.show();
 
 //       add(im1, im2, im5);

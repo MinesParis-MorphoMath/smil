@@ -6,7 +6,7 @@
 #include <QApplication>
 #include <QWidget>
 
-#include <pthread.h>
+// #include <pthread.h>
 
 // #include <X11/X.h>
 // #include <X11/Xlib.h>

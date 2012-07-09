@@ -30,10 +30,11 @@
 #ifndef _D_IMAGE_VIEWER_H
 #define _D_IMAGE_VIEWER_H
 
-#include "DImageViewer.hpp"
+
 
 #ifdef USE_QT
 #include "DQtImageViewer.hpp"
+#include "DQtImageViewer.hxx"
 
 template <class T>
 imageViewer<T> *createViewer(Image<T> *im)
@@ -41,7 +42,21 @@ imageViewer<T> *createViewer(Image<T> *im)
     return new qtImageViewer<T>(im);
 }
 
-#else // USE_QT
+//#else // USE_QT
+
+#elif USE_AALIB
+
+#include "AALib/DAAImageViewer.hpp"
+
+template <class T>
+imageViewer<T> *createViewer(Image<T> *im)
+{
+    return new aaImageViewer<T>(im);
+}
+
+#else
+
+#include "DImageViewer.hpp"
 
 template <class T>
 imageViewer<T> *createViewer(Image<T> *im)
@@ -49,8 +64,6 @@ imageViewer<T> *createViewer(Image<T> *im)
     return new imageViewer<T>(im);
 }
 
-#endif // BUILD_GUI
-
-
+#endif 
 
 #endif // _D_IMAGE_VIEWER_H

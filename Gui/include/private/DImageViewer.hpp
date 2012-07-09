@@ -30,8 +30,7 @@
 #ifndef _D_IMAGE_VIEWER_HPP
 #define _D_IMAGE_VIEWER_HPP
 
-#include "DTypes.hpp"
-#include "DBaseObject.h"
+#include "DBaseImageViewer.h"
 
 template <class T> class Image;
 
@@ -40,11 +39,16 @@ template <class T> class Image;
  * 
  */
 template <class T>
-class imageViewer : public baseObject
+class imageViewer : public baseImageViewer
 {
 public:
-    typedef baseObject parentClass;
+    typedef baseImageViewer parentClass;
     friend class Image<T>;
+    
+    imageViewer()
+      : image(NULL), labelImage(false), dataModified(true)
+    {
+    }
     
     imageViewer(Image<T> *im)
       : image(im), labelImage(false), dataModified(true)
@@ -54,7 +58,7 @@ public:
     virtual void showLabel() {}
     virtual void hide() {}
     virtual bool isVisible() { return false; }
-    virtual void setName(const char* _name) { parentClass::setName(_name); }
+    virtual void setName(string _name) { parentClass::setName(_name); }
     virtual void update()
     {
 	if (!dataModified)
@@ -64,6 +68,7 @@ public:
     }
     virtual void drawOverlay(Image<T> &im) {}
     virtual void clearOverlay() {}
+    
 protected:
     Image<T> *getImage() { return image; }
     virtual void drawImage() {}

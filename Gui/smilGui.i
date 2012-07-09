@@ -26,19 +26,19 @@
 
 
 #ifdef SWIGPYTHON
-%module smilGuiPython
+%module(directors="1") smilGuiPython
 #endif // SWIGPYTHON
 
 #ifdef SWIGJAVA
-%module smilGuiJava
+%module(directors="0") smilGuiJava
 #endif // SWIGJAVA
 
 #ifdef SWIGOCTAVE
-%module smilGuiOctave
+%module(directors="1") smilGuiOctave
 #endif // SWIGOCTAVE
 
 #ifdef SWIGRUBY
-%module smilGuiRuby
+%module(directors="1") smilGuiRuby
 #endif // SWIGRUBY
 
 
@@ -46,18 +46,39 @@
 
 %{
 /* Includes the header in the wrapper code */
-#include "DImage.hpp"
-#include "DGui.h"
+#include "DBaseObject.h"
+#include "DImageViewer.hpp"
 
 %}
 
 
-%include "DGui.h"
+//%include "DGui.h"
+//%include "DCore.h"
+%include "DBaseObject.h"
+%include "DBaseImageViewer.h"
+%include "DImageViewer.hpp"
 
+// generate directors for Signal and Slot (for virtual methods overriding)
+%feature("director") imageViewer;
+
+TEMPLATE_WRAP_CLASS(imageViewer);
+
+
+#ifdef USE_QT
+
+%{
+#include "DQtImageViewer.hpp"
+#include "DQtImageViewer.hxx"
+
+%}
+
+%include "DQtImageViewer.hpp"
+%include "DQtImageViewer.hxx"
+
+TEMPLATE_WRAP_CLASS(qtImageViewer);
 
 #ifdef SWIGPYTHON
 %pythoncode %{
-
 
 if ('qApp' in locals())==0:
   import sys
@@ -69,3 +90,7 @@ if ('qApp' in locals())==0:
 
 %}
 #endif // SWIGPYTHON
+
+#endif // USE_QT
+
+

@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
 // 	read("/home/mat/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0603_C1_1_20100326-105102/1.bmp", im1);
 // //     im1 >> "/home/faessel/tmp/tmp.bmp";
 //     cout << endl;
-    const char *str = im2.getName();
+    string str = im2.getName();
     im2 << "http://cmm.ensmp.fr/~faessel/smil/images/barbara.png";
     
     
