@@ -45,7 +45,7 @@ struct Point
 
 enum seType { stGeneric, stHexSE, stSquSE };
 
-class StrElt
+class StrElt : public baseObject
 {
   public:
     StrElt(UINT s=1) : seT(stGeneric), size(s) 
@@ -70,7 +70,7 @@ class StrElt
     seType seT;
     virtual seType getType() { return seT; }
     
-    void printSelf(ostream &os=std::cout)
+    virtual void printSelf(ostream &os=std::cout)
     {
 	os << "Structuring Element" << endl;
 	os << "Size: " << size << endl;

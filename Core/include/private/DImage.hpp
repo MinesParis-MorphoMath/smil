@@ -117,7 +117,7 @@ public:
 	return RES_OK;
     }
 
-    imageViewer<T> *getViewer();
+    const imageViewer<T> *getViewer();
     
     bool updatesEnabled;
     bool isVisible() { return (viewer && viewer->isVisible()); }
@@ -166,28 +166,49 @@ public:
     const T dataTypeMin;
 
     Image<T>& operator = (Image<T> &rhs);
+    //! Copy image
     Image<T>& operator << (Image<T> &rhs);
-    //! Fill operator
+    //! Fill image
     Image<T>& operator << (T value);
+    //! Negate image
     Image<T>& operator ~ ();
+    //! Add image
     Image<T>& operator + (Image<T> &rhs);
+    //! Add value
     Image<T>& operator + (T value);
+    //! Image addition assignment
     Image<T>& operator += (Image<T> &rhs);
+    //! Value addition assignment
     Image<T>& operator += (T value);
+    //! Sub image
     Image<T>& operator - (Image<T> &rhs);
+    //! Sub value
     Image<T>& operator - (T value);
+    //! Image subtraction assignment
     Image<T>& operator -= (Image<T> &rhs);
+    //! Value subtraction assignment
     Image<T>& operator -= (T value);
+    //! Multiply by image
     Image<T>& operator * (Image<T> &rhs);
+    //! Multiply by value
     Image<T>& operator * (T value);
+    //! Image multiplication assignment
     Image<T>& operator *= (Image<T> &rhs);
+    //! Value multiplication assignment
     Image<T>& operator *= (T value);
+    //! Divide by image
     Image<T>& operator / (Image<T> &rhs);
+    //! Divide by value
     Image<T>& operator / (T value);
+    //! Image division assignment
     Image<T>& operator /= (Image<T> &rhs);
+    //! Value division assignment
     Image<T>& operator /= (T value);
+    //! Equal boolean operator (see \ref equ).
     Image<T>& operator == (Image<T> &rhs);
+    //! Inferior boolean operator (see \ref low)
     Image<T>& operator < (Image<T> &rhs);
+    //! Inferior boolean operator (see \ref low)
     Image<T>& operator < (T value);
     Image<T>& operator <= (Image<T> &rhs);
     Image<T>& operator <= (T value);

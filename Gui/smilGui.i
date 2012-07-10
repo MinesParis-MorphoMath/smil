@@ -53,18 +53,17 @@
 #include "DSignal.h"
 %}
 
+%import smilCore.i
 
-//%include "DGui.h"
-//%include "DCore.h"
+
 %include "DBaseObject.h"
 %include "DBaseImageViewer.h"
 %include "DImageViewer.hpp"
 
-%include "DSlot.h"
-%include "DSignal.h"
 
-
-//TEMPLATE_WRAP_CLASS(imageViewer);
+// generate directors (for virtual methods overriding)
+%feature("director") imageViewer;
+TEMPLATE_WRAP_CLASS(imageViewer);
 
 
 #ifdef USE_QT
@@ -75,6 +74,8 @@
 
 %}
 
+%include "DQtImageViewer.hpp"
+TEMPLATE_WRAP_CLASS(qtImageViewer);
 
 #ifdef SWIGPYTHON
 %pythoncode %{
@@ -93,3 +94,13 @@ if ('qApp' in locals())==0:
 #endif // USE_QT
 
 
+
+#ifdef USE_AALIB
+%{
+#include "AALib/DAAImageViewer.hpp"
+%}
+
+%include "AALib/DAAImageViewer.hpp"
+TEMPLATE_WRAP_CLASS(aaImageViewer);
+
+#endif // USE_AALIB

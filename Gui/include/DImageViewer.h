@@ -35,7 +35,15 @@
 #ifdef USE_QT
 #include "DQtImageViewer.hpp"
 #include "DQtImageViewer.hxx"
+#endif // USE_QT
 
+#ifdef USE_AALIB
+#include "AALib/DAAImageViewer.hpp"
+#endif // USE_AALIB
+
+
+
+#ifdef USE_QT
 template <class T>
 imageViewer<T> *createViewer(Image<T> *im)
 {
@@ -46,7 +54,6 @@ imageViewer<T> *createViewer(Image<T> *im)
 
 #elif USE_AALIB
 
-#include "AALib/DAAImageViewer.hpp"
 
 template <class T>
 imageViewer<T> *createViewer(Image<T> *im)

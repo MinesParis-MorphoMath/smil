@@ -48,13 +48,12 @@ public:
     virtual void show();
     virtual bool isVisible();
     virtual void setName(const char* _name);
-    virtual void update();
-    virtual void drawImage();
     virtual void clearOverlay() { }
 
 protected:
     aa_context *context;
     int createContext();
+    virtual void drawImage();
 };
 
 
@@ -158,15 +157,6 @@ void aaImageViewer<T>::setName(const char* _name)
 {
 }
 
-template <class T>
-void aaImageViewer<T>::update()
-{
-    if (parentClass::dataModified)
-    {
-	drawImage();
-	parentClass::dataModified = false;
-    }
-}
 
 
 

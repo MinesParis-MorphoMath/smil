@@ -27,12 +27,74 @@
 
 %feature("autodoc", "1");
 
+
+// Module definitions
+
+#ifdef SWIGPYTHON
+%define SMIL_MODULE(libname)
+    %module(directors="1") libname ## Python
+%enddef
+#endif // SWIGPYTHON
+
+#ifdef SWIGJAVA
+%define SMIL_MODULE(libname)
+    %module(directors="0") libname ## Java
+%enddef
+// Problemes de directors avec Java... (a resoudre)
+#endif // SWIGJAVA
+
+#ifdef SWIGOCTAVE
+%define SMIL_MODULE(libname)
+    %module(directors="1") libname ## Octave
+%enddef
+#endif // SWIGOCTAVE
+
+#ifdef SWIGRUBY
+%define SMIL_MODULE(libname)
+    %module(directors="1") libname ## Ruby
+%enddef
+#endif // SWIGRUBY
+
+
+
+
+
 %include cpointer.i
 %include std_string.i
 %include typemaps.i
 
+
+
+
 %rename(__lshift__)  operator<<; 
 %ignore *::operator=;
+
+
+#ifdef SWIGJAVA
+%ignore *::operator+;
+%ignore *::operator+=;
+%ignore *::operator-;
+%ignore *::operator-=;
+%ignore *::operator*;
+%ignore *::operator*=;
+%ignore *::operator/;
+%ignore *::operator/=;
+%ignore *::operator>>;
+%ignore *::operator~;
+%ignore *::operator==;
+%ignore *::operator>;
+%ignore *::operator>=;
+%ignore *::operator<;
+%ignore *::operator<=;
+%ignore *::operator|;
+%ignore *::operator|=;
+%ignore *::operator&;
+%ignore *::operator&=;
+%ignore *::operator bool;
+%ignore *::operator~;
+%ignore *::operator();
+#endif // SWIGJAVA
+
 
 
 %define PTR_ARG_OUT_APPLY(name)

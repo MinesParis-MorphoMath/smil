@@ -25,24 +25,10 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#ifdef SWIGPYTHON
-%module smilMorphoPython
-#endif // SWIGPYTHON
-
-#ifdef SWIGJAVA
-%module smilMorphoJava
-#endif // SWIGJAVA
-
-#ifdef SWIGOCTAVE
-%module smilMorphoOctave
-#endif // SWIGOCTAVE
-
-#ifdef SWIGRUBY
-%module smilMorphoRuby
-#endif // SWIGRUBY
-
-
 %include smilCommon.i
+
+SMIL_MODULE(smilMorpho)
+
 
 %{
 /* Includes the header in the wrapper code */
@@ -55,14 +41,9 @@
 %}
  
 
-%extend StrElt
-{
-	std::string  __str__() {
-	    std::stringstream os;
-	    os << *self;
-	    return os.str();
-	}
-}
+// Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
+%import smilCore.i
+
 
 #ifdef SWIGJAVA
 %ignore StrElt::operator ();
@@ -76,8 +57,6 @@
 %include "DMorphoArrow.hpp"
 %include "DMorphoWatershed.hpp"
 
-// Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
-%import smilCore.i
 
 
 TEMPLATE_WRAP_FUNC(dilate);

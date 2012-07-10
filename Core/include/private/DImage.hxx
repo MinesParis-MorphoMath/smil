@@ -146,6 +146,9 @@ void Image<T>::updateOperIm()
 template <class T>
 void Image<T>::modified()
 { 
+    if (viewer)
+      viewer->update();
+    
     onModified.trigger();
 }
 
@@ -161,24 +164,20 @@ void Image<T>::setName(string _name)
 }
 
 template <class T>
-imageViewer<T> *Image<T>::getViewer()
+const imageViewer<T> *Image<T>::getViewer()
 {
     if (!viewer)
-    {
         viewer = createViewer<T>(this);
-	onModified.connect(&viewer->updateSlot);
-    }
+    
     return viewer;
 }
+
 
 template <class T>
 void Image<T>::show(string _name, bool labelImage)
 {
     if (!viewer)
-    {
         viewer = createViewer<T>(this);
-	onModified.connect(&viewer->updateSlot);
-    }
     
     if (_name!="")
         setName(_name);

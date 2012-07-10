@@ -25,53 +25,16 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#ifdef SWIGPYTHON
-%module(directors="1") smilCorePython
-#endif // SWIGPYTHON
 
-#ifdef SWIGJAVA
-%module(directors="0") smilCoreJava 
-// Problemes de directors avec Java... (a resoudre)
-#endif // SWIGJAVA
-
-#ifdef SWIGOCTAVE
-%module(directors="1") smilCoreOctave
-#endif // SWIGOCTAVE
-
-#ifdef SWIGRUBY
-%module(directors="1") smilCoreRuby
-#endif // SWIGRUBY
 
 %include smilCommon.i
 
+SMIL_MODULE(smilCore)
 
 
-%{
-/* Includes the header in the wrapper code */
-#include "DCommon.h"
-#include "DSignal.h"
-#include "DSlot.h"
-#include "DImage.h"
-#include "DTypes.hpp"
-#include "DBaseObject.h"
-#include "DCoreInstance.h"
-#include "DBaseImageOperations.hpp"
-#include "DBaseLineOperations.hpp"
-#include "DImageArith.h"
-#include "DImageDraw.hpp"
-#include "DImageTransform.hpp"
-#include "DLineHistogram.hpp"
-#include "DImageHistogram.hpp"
-/*#include "D_BaseOperations.h"*/
-#include "memory"
-#include "DCoreEvents.h"
-%}
-
-%include "carrays.i"
-%array_class(double, dArray);
-//%array_class(void, voidArray);
-%array_class(UINT8, uint8Array);
- 
+//////////////////////////////////////////////////////////
+// Init
+//////////////////////////////////////////////////////////
 
 ///// Numpy /////
 #if defined SWIGPYTHON && defined USE_NUMPY
@@ -83,18 +46,21 @@
 #endif // defined SWIGPYTHON && defined USE_NUMPY
 
 
-%extend Image 
-{
-	std::string  __str__() 
-	{
-	    std::stringstream os;
-	    os << *self;
-	    return os.str();
-	}
-}
+//////////////////////////////////////////////////////////
+// Types
+//////////////////////////////////////////////////////////
 
-%rename(Index) operator[](UINT i);
+%{
+/* Includes the header in the wrapper code */
+#include "DTypes.hpp"
+%}
 
+%include "carrays.i"
+%array_class(double, dArray);
+//%array_class(void, voidArray);
+%array_class(UINT8, uint8Array);
+
+// BitArray
 #ifdef SMIL_WRAP_Bit
 %extend BitArray
 {
@@ -110,7 +76,17 @@
 */
 }
 %ignore BitArray::operator++;
+%include "DBitArray.h"
 #endif // SMIL_WRAP_Bit
+
+%include "DTypes.hpp"
+
+
+//////////////////////////////////////////////////////////
+// Typemaps
+//////////////////////////////////////////////////////////
+
+%rename(Index) operator[](UINT i);
 
 PTR_ARG_OUT_APPLY(ret_min)
 PTR_ARG_OUT_APPLY(ret_max)
@@ -118,49 +94,44 @@ PTR_ARG_OUT_APPLY(w)
 PTR_ARG_OUT_APPLY(h)
 PTR_ARG_OUT_APPLY(d)
 
+
+
+//////////////////////////////////////////////////////////
+// baseObject
+//////////////////////////////////////////////////////////
+
+%{
+#include "DBaseObject.h"
+%}
+
+%extend baseObject 
+{
+	std::string  __str__() 
+	{
+	    std::stringstream os;
+	    self->printSelf(os);
+	    return os.str();
+	}
+}
+
+%include "DBaseObject.h"
+
+
+//////////////////////////////////////////////////////////
+// Vectors
+//////////////////////////////////////////////////////////
+
 %include std_vector.i
 
-
-%include "DCommon.h"
-%include "DTypes.hpp"
-%include "DBaseObject.h"
-%include "DCoreInstance.h"
-%include "DBaseImage.h"
-%include "DImage.hpp"
-%include "DImage.hxx"
-%include "DImage.h"
-
-#ifdef SMIL_WRAP_Bit
-%include "DBitArray.h"
-#endif // SMIL_WRAP_Bit
-
-%include "DTypes.hpp"
-/*%include "D_BaseOperations.h" */
-%include "DBaseImageOperations.hpp"
-%include "DBaseLineOperations.hpp"
-%include "DLineArith.h"
-%include "DLineArith.hpp"
-%include "DImageArith.hpp"
-%include "DImageDraw.hpp"
-%include "DLineHistogram.hpp"
-%include "DImageHistogram.hpp"
-
-// generate directors (for virtual methods overriding)
-//%feature("director") imageViewer;
+%template(objVector) vector<baseObject*>;
+%template(uintVector) vector<UINT>;
 
 
-%include "DBaseImageViewer.h"
-%include "DImageViewer.hpp"
-
-TEMPLATE_WRAP_CLASS(imageViewer);
-
-#ifdef USE_QT
-%include "DQtImageViewer.hpp"
-%include "DQtImageViewer.hxx"
-TEMPLATE_WRAP_CLASS(qtImageViewer);
-#endif // USE_QT
 
 
+//////////////////////////////////////////////////////////
+// Signals/Slots
+//////////////////////////////////////////////////////////
 
 #ifndef SWIGJAVA
 // generate directors for Signal and Slot (for virtual methods overriding)
@@ -173,14 +144,52 @@ TEMPLATE_WRAP_CLASS(qtImageViewer);
 %include "DSlot.h"
 %include "DCoreEvents.h"
 
-%template(baseImageSlot) Slot<baseImageEvent>;
 
-%template(objVector) vector<baseObject*>;
-%template(uintVector) vector<UINT>;
+%template(baseImageSlot) Slot<baseImageEvent>;
+%template(baseSlot) Slot<Event>;
+%template(viewerFunctionSlot) MemberFunctionSlot<baseImageViewer, Event>;
+
+
+//////////////////////////////////////////////////////////
+// Image
+//////////////////////////////////////////////////////////
+
+%{
+/* Includes the header in the wrapper code */
+#include "DImage.hpp"
+#include "DImage.hxx"
+%}
+
+// Import smilGui for viewers stuff
+%import smilGui.i
+
+%include "DBaseImage.h"
+%include "DImage.hpp"
 
 TEMPLATE_WRAP_CLASS(Image);
-
 TEMPLATE_WRAP_FUNC(createImage);
+
+
+//////////////////////////////////////////////////////////
+// Functions
+//////////////////////////////////////////////////////////
+
+%{
+/* Includes the header in the wrapper code */
+#include "DImageArith.hpp"
+#include "DImageDraw.hpp"
+#include "DLineHistogram.hpp"
+#include "DImageHistogram.hpp"
+#include "DImageTransform.hpp"
+%}
+
+
+%include "DImageArith.hpp"
+%include "DImageDraw.hpp"
+%include "DLineHistogram.hpp"
+%include "DImageHistogram.hpp"
+%include "DImageTransform.hpp"
+
 
 TEMPLATE_WRAP_FUNC_CROSS2(copy);
 
@@ -220,11 +229,11 @@ TEMPLATE_WRAP_FUNC(enhanceContrast);
 
 TEMPLATE_WRAP_FUNC(drawRectangle);
 
-%include "DImageTransform.hpp"
 
 TEMPLATE_WRAP_FUNC(vFlip);
 TEMPLATE_WRAP_FUNC(trans);
 TEMPLATE_WRAP_FUNC(resize);
+
 
 
 

@@ -27,60 +27,45 @@
  */
 
 
-#ifndef _D_IMAGE_VIEWER_HPP
-#define _D_IMAGE_VIEWER_HPP
+#ifndef _D_INSTANCE_HPP
+#define _D_INSTANCE_HPP
 
-#include "DBaseImageViewer.h"
 
-template <class T> class Image;
-
-/**
- * Base image viewer.
- * 
- */
-template <class T>
-class imageViewer : public baseImageViewer
+template <typename T>
+class Instance
 {
-public:
-    typedef baseImageViewer parentClass;
-    friend class Image<T>;
-    
-    imageViewer()
-      : image(NULL), labelImage(false)
-    {
-    }
-    
-    imageViewer(Image<T> *im)
-      : labelImage(false)
-    {
-	setImage(im);
-    }
-    
-    virtual void setImage(Image<T> *im)
-    {
-	image = im;
-    }
-    
-    virtual void show() {}
-    virtual void showLabel() {}
-    virtual void hide() {}
-    virtual bool isVisible() { return false; }
-    virtual void setName(string _name) { parentClass::setName(_name); }
-    virtual void update()
-    {
-	if (image)
-	  drawImage();
-    }
-    virtual void drawOverlay(Image<T> &im) {}
-    virtual void clearOverlay() {}
-    
 protected:
-    Image<T> *getImage() { return image; }
-    virtual void drawImage() {}
-    bool labelImage;
-    Image<T> *image;
+  Instance () { }
+  ~Instance () { }
+
+public:
+  static T *getInstance ()
+  {
+    if (NULL == _instance)
+      {
+        _instance = new T;
+      }
+
+    return (static_cast<T*> (_instance));
+  }
+
+  static void kill ()
+  {
+    if (_instance)
+    {
+        delete _instance;
+        _instance = NULL;
+    }
+  }
+
+private:
+  // Unique instance
+  static T *_instance;
 };
 
+template <typename T>
+T *Instance<T>::_instance = NULL;
 
 
-#endif // _D_BASE_IMAGE_VIEWER_H
+#endif // _D_INSTANCE_HPP
+

@@ -242,6 +242,10 @@ RES_T inf(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
     return binaryImageFunction<T, infLine<T> >(imIn1, imIn2, imOut);
 }
 
+/**
+ * Test equality between two images
+ * \return[imOut] image with max(T) when true and 0 else
+ */
 template <class T>
 RES_T equ(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
@@ -265,9 +269,8 @@ bool equ(Image<T> &imIn1, Image<T> &imIn2)
 /**
  * Difference ("vertical distance") between two images.
  * 
- * Returns abs(p1-p2) for each pixels pair.
+ * \return abs(p1-p2) for each pixels pair.
  */
-
 template <class T>
 RES_T diff(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
