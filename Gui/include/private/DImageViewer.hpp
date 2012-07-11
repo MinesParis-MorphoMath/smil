@@ -59,6 +59,23 @@ public:
     virtual void setImage(Image<T> *im)
     {
 	image = im;
+	
+	if (!im)
+	  return;
+	
+	setName(im->getName());
+    }
+    void connect(Image<T> *im)
+    {
+	if (image)
+	  disconnect(image);
+	this->setImage(im);
+	image->onModified.connect(&this->updateSlot);
+    }
+    virtual void disconnect(Image<T> *im)
+    {
+	image->onModified.disconnect(&this->updateSlot);
+	image = NULL;
     }
     
     virtual void show() {}

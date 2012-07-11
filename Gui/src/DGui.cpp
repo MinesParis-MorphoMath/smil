@@ -29,7 +29,6 @@
 
 
 #include "DGui.h"
-#include "DImageViewer.h"
 
 #ifdef USE_QT
 
@@ -45,4 +44,5 @@ Gui *createGuiInstance()
 {
     return new Gui();
 }
+
 #endif // USE_QT

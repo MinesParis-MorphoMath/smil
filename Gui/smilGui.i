@@ -25,44 +25,30 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-#ifdef SWIGPYTHON
-%module(directors="1") smilGuiPython
-#endif // SWIGPYTHON
-
-#ifdef SWIGJAVA
-%module(directors="0") smilGuiJava
-#endif // SWIGJAVA
-
-#ifdef SWIGOCTAVE
-%module(directors="1") smilGuiOctave
-#endif // SWIGOCTAVE
-
-#ifdef SWIGRUBY
-%module(directors="1") smilGuiRuby
-#endif // SWIGRUBY
-
-
 %include smilCommon.i
+
+SMIL_MODULE(smilGui)
 
 %{
 /* Includes the header in the wrapper code */
-#include "DBaseObject.h"
+#include "DGui.h"
+#include "DImage.h"
 #include "DImageViewer.hpp"
-
-#include "DSlot.h"
-#include "DSignal.h"
 %}
 
 %import smilCore.i
 
+
+%include "DGui.h"
+
+// generate directors for all classes that have virtual methods
+%feature("director");
 
 %include "DBaseObject.h"
 %include "DBaseImageViewer.h"
 %include "DImageViewer.hpp"
 
 
-// generate directors (for virtual methods overriding)
-%feature("director") imageViewer;
 TEMPLATE_WRAP_CLASS(imageViewer);
 
 

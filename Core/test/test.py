@@ -208,7 +208,14 @@ def run():
     dilate(tim1, tim2, hSE())
 
     
-    
+class myViewer(qtImageViewer_UINT8):
+    def __init__(self):
+      self.this = qtImageViewer_UINT8()
+      self.this.own = 1
+    def update(self):
+      print "okii"
+    def connect(self, im):
+      imageViewer_UINT8.connect(self.this, im)
 #class mySignal(Signal):
   #def __init(self):
     

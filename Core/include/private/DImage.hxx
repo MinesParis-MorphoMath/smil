@@ -185,6 +185,8 @@ void Image<T>::show(string _name, bool labelImage)
     if (!viewer)
       return;
     
+    modified();
+    
     if (!labelImage)
       viewer->show();
     else

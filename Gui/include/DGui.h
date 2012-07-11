@@ -36,9 +36,7 @@
  */
 /*@{*/
 
-#include "DImage.hpp"
 #include "DGuiInstance.h"
-#include "DImageViewer.h"
 
 Gui *createGuiInstance();
 

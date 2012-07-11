@@ -70,7 +70,6 @@ template <class T>
 void qtImageViewer<T>::show()
 {
     BASE_QT_VIEWER::show();
-    update();
 }
 
 template <class T>
@@ -120,6 +119,9 @@ void qtImageViewer<T>::setLabelImage(bool val)
 template <class T>
 void qtImageViewer<T>::update()
 {
+    if (!this->image)
+      return;
+    
     drawImage();
     BASE_QT_VIEWER::dataChanged();
 
