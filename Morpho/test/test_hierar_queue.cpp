@@ -275,7 +275,7 @@ int main(int argc, char *argv[])
       
       
       
-      Core::execLoop();
+      Gui::execLoop();
       
 }
 

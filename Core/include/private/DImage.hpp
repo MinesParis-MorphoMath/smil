@@ -57,7 +57,7 @@ public:
     Image(const Image<T> &rhs, bool cloneit=false);
     template <class T2>
     Image(const Image<T2> &rhs, bool cloneit=false);
-    Image(string fileName);
+    Image(const char *fileName);
   
 public:
     ~Image();
@@ -251,9 +251,9 @@ protected:
 //     ImageViewerWidget *viewer;
     
 public:
-    virtual void setName(string _name);
-    virtual void show(string _name=NULL, bool labelImage=false);
-    virtual void showLabel(string _name=NULL) { show(_name, true); }
+    virtual void setName(const char *_name);
+    virtual void show(const char *_name=NULL, bool labelImage=false);
+    virtual void showLabel(const char *_name=NULL) { show(_name, true); }
     virtual void hide() {  if (viewer) viewer->hide(); }
 
 };

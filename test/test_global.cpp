@@ -29,17 +29,17 @@
 
 #include "DCore.h"
 #include "DMorpho.h"
+#include "DGui.h"
 
 // #include "DGraph.hpp"
 
 #include <vector>
 
 
-
-
 int main(int argc, char *argv[])
 {
-    Core::initialize();
+//     Core::initialize();
+//     Gui::getInstance();
     
     Image_UINT8 im1;
     
@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
     
 
     
-    Core::execLoop();
+    Gui::execLoop();
     
 }
 

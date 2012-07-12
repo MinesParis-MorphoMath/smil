@@ -93,10 +93,10 @@ bool qtImageViewer<T>::isVisible()
 }
 
 template <class T>
-void qtImageViewer<T>::setName(string _name)
+void qtImageViewer<T>::setName(const char *_name)
 {
     parentClass::setName(_name);
-    QString buf = _name.c_str() + QString(" (") + QString(parentClass::image->getTypeAsString()) + QString(")");
+    QString buf = _name + QString(" (") + QString(parentClass::image->getTypeAsString()) + QString(")");
     BASE_QT_VIEWER::setName(buf);
 }
 

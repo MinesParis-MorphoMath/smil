@@ -32,24 +32,25 @@
 #include "DCoreInstance.h"
 #include "DGui.h"
 
+QApplication *qapp;
+
 // Initialization of singleton to NULL
 Core *Core::_singleton = NULL;
 
 
 Core::Core ()
 // : baseObject("Core", false), 
-  :_value (0), 
-  keepAlive(false)
+  : keepAlive(false)
 { 
 //     cout << "Core created" << endl;
-    guiInst = createGuiInstance();
+//     guiInst = createGuiInstance();
   
 }
 
 Core::~Core () 
 {
     deleteRegisteredObjects();
-    delete guiInst;
+//     delete guiInst;
 //       cout << "Core deleted" << endl;
 }
 
@@ -81,12 +82,13 @@ void Core::initialize()
   {
       _singleton =  new Core;
   }
+  Gui::initialize();
 }
 
-void Core::execLoop() 
-{ 
-    getInstance()->guiInst->execLoop();
-}
+// void Core::execLoop() 
+// { 
+// //     getInstance()->guiInst->execLoop();
+// }
 
 void Core::registerObject(baseObject *obj)
 {

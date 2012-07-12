@@ -87,6 +87,6 @@ int main(int argc, char *argv[])
     im3.printSelf(1);
     im3.show();
     
-    Core::execLoop();
+    Gui::execLoop();
 }
 

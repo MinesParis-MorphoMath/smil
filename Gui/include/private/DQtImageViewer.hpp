@@ -57,7 +57,7 @@ public:
     virtual void show();
     virtual void showLabel();
     virtual bool isVisible();
-    virtual void setName(string _name);
+    virtual void setName(const char *_name);
     virtual void update();
     virtual void drawOverlay(Image<T> &im);
     virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }

@@ -35,7 +35,7 @@
 #include "DQtGuiInstance.h"
 Gui *createGuiInstance()
 {
-    return new qtGui();
+    return Gui::getInstance();
 }
 
 #else // USE_QT

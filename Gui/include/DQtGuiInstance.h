@@ -46,13 +46,12 @@ class qtGui : public Gui
 public:
     qtGui();
     ~qtGui();
-  
-    virtual void execLoop();
-    virtual void processEvents();
     
 protected:
+    virtual void _execLoop();
+    virtual void _processEvents();
+private:
     QApplication *_qapp;
-    timer *_timer;
 };
 
 

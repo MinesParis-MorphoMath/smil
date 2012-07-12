@@ -31,22 +31,39 @@
 #ifndef _D_GUI_INSTANCE_H
 #define _D_GUI_INSTANCE_H
 
+#include "DInstance.hpp"
+
 /**
  * \defgroup Gui Gui
  */
 /*@{*/
 
 
-class Gui
+class Gui : public uniqueInstance<Gui>
 {
+    friend class uniqueInstance<Gui>;
+
+protected:
+    Gui () { }
+    ~Gui () { }
+
 public:
-    Gui()
-    {
-    }
-    ~Gui() {}
+    // Public interface
+    static void initialize();
+    static void kill();
   
-    virtual void execLoop() {}
-    virtual void processEvents() {}
+    static void execLoop() 
+    {
+	getInstance()->_execLoop();
+    }
+    static void processEvents() 
+    {
+	getInstance()->_processEvents();
+    }
+protected:    
+    virtual void _execLoop() {}
+    virtual void _processEvents() {}
+private:
 };
 
 

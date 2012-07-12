@@ -36,7 +36,7 @@
 
 int main(int argc, char *argv[])
 {
-  Core::initialize();
+  Gui::initialize();
   
   typedef UINT16 dataType;
   typedef Image<dataType> imType;
@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
   
   im2.show();
   
-  Core::execLoop();
+  Gui::execLoop();
   
   
 //   im2.printSelf(1);

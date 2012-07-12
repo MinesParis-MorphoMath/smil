@@ -32,6 +32,7 @@
 #include "DQtGuiInstance.h"
 
 
+
 qtGui::qtGui()
   : _qapp(NULL)
 {
@@ -41,12 +42,12 @@ qtGui::qtGui()
 	  int ac = 1;
 	  char **av = NULL;
 	  _qapp = new QApplication(ac, av);
-	  _qapp->processEvents();
+// 	  _qapp->processEvents();
       }
 //       else _qapp = qApp;
       
-      _timer = new timer();
-      _timer->app = _qapp;
+//       _timer = new timer();
+//       _timer->app = _qapp;
 //       _timer->start();
 }
 
@@ -55,10 +56,10 @@ qtGui::~qtGui()
 {
     if (_qapp)
       _qapp->exit();
-    delete _timer;
+//     delete _timer;
 }
 
-void qtGui::execLoop() 
+void qtGui::_execLoop() 
 { 
     if (_qapp)
       _qapp->exec(); 
@@ -66,7 +67,7 @@ void qtGui::execLoop()
       qApp->exec();
 }
 
-void qtGui::processEvents() 
+void qtGui::_processEvents() 
 { 
     if (_qapp)
       _qapp->processEvents(); 

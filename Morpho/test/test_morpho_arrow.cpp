@@ -65,6 +65,7 @@ class TestArrow : public TestCase
 
 
 #include "DCore.h"
+#include "DGui.h"
 #include "DMorphoBase.hpp"
 
 int main(int argc, char *argv[])
@@ -87,7 +88,7 @@ int main(int argc, char *argv[])
 //       BENCH_IMG(dilate, im1, im2, sSE);
       
       im2.show();
-      Core::execLoop();
+      Gui::execLoop();
       
       TestSuite ts;
 //       ADD_TEST(ts, TestArrow);

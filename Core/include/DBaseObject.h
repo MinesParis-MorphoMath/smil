@@ -53,17 +53,17 @@ public:
     
     Core *getCoreInstance();
     typedef void parentClass;
-    virtual string getInfoString(string indent = "") {}
+    virtual const char *getInfoString(string indent = "") {}
     virtual void printSelf(ostream &os=std::cout) {}
-    virtual string getClassName();
+    virtual const char *getClassName();
 
-    virtual void setName(string _name)
+    virtual void setName(const char *_name)
     {
-      name = _name;
+	name = _name;
     }
-    virtual string getName()
+    virtual const char *getName()
     {
-      return name;
+	return name.c_str();
     }
     typedef void(baseObject::*voidMemberFunc)();
 

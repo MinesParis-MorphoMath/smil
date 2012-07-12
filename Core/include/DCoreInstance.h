@@ -36,7 +36,6 @@
 #include "DCommon.h"
 #include "DTimer.h"
 #include "DSignal.h"
-#include "DGuiInstance.h"
 
 class baseObject;
 
@@ -56,8 +55,6 @@ private:
 public:
   // Public interface
   bool keepAlive;
-  void setValue (int val) { _value = val; }
-  int getValue () { return _value; }
   
   void registerObject(baseObject *obj);
 
@@ -65,28 +62,19 @@ public:
   
   vector<baseObject*> getRegisteredObjects() { return registeredObjects; }
   
-  inline void processEvents() 
-  { 
-      guiInst->processEvents();
-  }
-
   Signal onBaseImageCreated;
   
 protected:
   void deleteRegisteredObjects();
-  Gui *guiInst;
 
   
 public:
   static Core *getInstance();
   static void kill();
   static void initialize();
-  static void execLoop();
   
 
 private:
-  // Variables membres
-  int _value;
   vector<baseObject*> registeredObjects;
   static Core *_singleton;
 };

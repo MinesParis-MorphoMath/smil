@@ -30,41 +30,45 @@
 #ifndef _D_INSTANCE_HPP
 #define _D_INSTANCE_HPP
 
+#include <iostream>
 
 template <typename T>
-class Instance
+class uniqueInstance
 {
 protected:
-  Instance () { }
-  ~Instance () { }
+    uniqueInstance () { }
+    ~uniqueInstance () { }
 
 public:
-  static T *getInstance ()
-  {
-    if (NULL == _instance)
-      {
-        _instance = new T;
-      }
-
-    return (static_cast<T*> (_instance));
-  }
-
-  static void kill ()
-  {
-    if (_instance)
+    static T *getInstance ()
     {
-        delete _instance;
-        _instance = NULL;
+	T::initialize();
+	return (static_cast<T*> (_instance));
     }
-  }
 
-private:
+    // Can be overloaded because of the T::initialize call
+    static void initialize ()
+    {
+	if (_instance == NULL)
+	    _instance = new T;
+    }
+
+    static void kill ()
+    {
+      if (_instance)
+      {
+	  delete _instance;
+	  _instance = NULL;
+      }
+    }
+
+protected:
   // Unique instance
   static T *_instance;
 };
 
 template <typename T>
-T *Instance<T>::_instance = NULL;
+T *uniqueInstance<T>::_instance = NULL;
 
 
 #endif // _D_INSTANCE_HPP

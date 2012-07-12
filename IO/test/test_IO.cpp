@@ -58,6 +58,6 @@ int main(int argc, char *argv[])
     im2.show();
     
 
-    Core::execLoop();
+    Gui::execLoop();
 }
 

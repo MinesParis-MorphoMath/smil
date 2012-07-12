@@ -47,7 +47,7 @@ public:
     virtual void showLabel() {}
     virtual void hide() {}
     virtual bool isVisible() { return false; }
-    virtual void setName(string _name) { parentClass::setName(_name); }
+    virtual void setName(const char *_name) { parentClass::setName(_name); }
     virtual void update() {}
     
     // Slots
