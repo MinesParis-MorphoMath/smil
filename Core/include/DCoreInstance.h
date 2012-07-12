@@ -41,17 +41,17 @@ class baseObject;
 
 struct stat;
 
+#include "DInstance.hpp"
 
 
-class Core //: private baseObject
+class Core : public uniqueInstance<Core>
 {
-private:
+    friend class uniqueInstance<Core>;
+
+protected:
   Core ();
   ~Core ();
   
-  Core(const Core&);
-  void operator=(const Core&);
-
 public:
   // Public interface
   bool keepAlive;
@@ -65,18 +65,13 @@ public:
   Signal onBaseImageCreated;
   
 protected:
-  void deleteRegisteredObjects();
+    vector<baseObject*> registeredObjects;
+    void deleteRegisteredObjects();
 
   
 public:
-  static Core *getInstance();
-  static void kill();
   static void initialize();
   
-
-private:
-  vector<baseObject*> registeredObjects;
-  static Core *_singleton;
 };
 
 

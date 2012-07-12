@@ -38,14 +38,15 @@
  */
 /*@{*/
 
+class baseImageViewer;
 
 class Gui : public uniqueInstance<Gui>
 {
     friend class uniqueInstance<Gui>;
 
 protected:
-    Gui () { }
-    ~Gui () { }
+    Gui ();
+    ~Gui ();
 
 public:
     // Public interface
@@ -63,6 +64,7 @@ public:
 protected:    
     virtual void _execLoop() {}
     virtual void _processEvents() {}
+    baseImageViewer *_defaultViewer;
 private:
 };
 

@@ -247,6 +247,7 @@ protected:
     RES_T restruct(void);
 
     imageViewer<T> *viewer;
+    void createViewer();
     // Specify if the viewer has been created internally
 //     ImageViewerWidget *viewer;
     

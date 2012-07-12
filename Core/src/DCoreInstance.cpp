@@ -32,12 +32,6 @@
 #include "DCoreInstance.h"
 #include "DGui.h"
 
-QApplication *qapp;
-
-// Initialization of singleton to NULL
-Core *Core::_singleton = NULL;
-
-
 Core::Core ()
 // : baseObject("Core", false), 
   : keepAlive(false)
@@ -55,32 +49,11 @@ Core::~Core ()
 }
 
 
-Core *Core::getInstance ()
-{
-    initialize();
-    return _singleton;
-}
-
-void Core::kill ()
-{
-    if (_singleton==NULL)
-      return;
-  
-//       std::cout << "Bye" << std::endl;
-    
-//       qApp->exit(0);
-    
-    delete _singleton;
-    _singleton = NULL;
-  
-}
-
-
 void Core::initialize()
 {
-  if (_singleton == NULL)
+  if (_instance == NULL)
   {
-      _singleton =  new Core;
+      _instance =  new Core;
   }
   Gui::initialize();
 }

@@ -32,17 +32,8 @@
 
 #ifdef USE_QT
 
-#include "DQtGuiInstance.h"
-Gui *createGuiInstance()
-{
-    return Gui::getInstance();
-}
 
 #else // USE_QT
 
-Gui *createGuiInstance()
-{
-    return new Gui();
-}
 
 #endif // USE_QT

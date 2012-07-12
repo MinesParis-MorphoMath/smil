@@ -164,11 +164,19 @@ void Image<T>::setName(const char *_name)
 }
 
 template <class T>
+void Image<T>::createViewer()
+{
+    if (viewer)
+      return;
+    
+    viewer = getDefaultViewer<T>(this);
+
+}
+
+template <class T>
 const imageViewer<T> *Image<T>::getViewer()
 {
-    if (!viewer)
-        viewer = createViewer<T>(this);
-    
+    createViewer();
     return viewer;
 }
 
@@ -176,9 +184,8 @@ const imageViewer<T> *Image<T>::getViewer()
 template <class T>
 void Image<T>::show(const char *_name, bool labelImage)
 {
-    if (!viewer)
-        viewer = createViewer<T>(this);
-    
+    createViewer();
+  
     if (_name)
         setName(_name);
     

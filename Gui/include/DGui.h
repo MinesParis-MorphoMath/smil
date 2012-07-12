@@ -38,7 +38,6 @@
 
 #include "DGuiInstance.h"
 
-Gui *createGuiInstance();
 
 /*@}*/
 

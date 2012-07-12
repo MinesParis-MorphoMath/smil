@@ -36,7 +36,9 @@ template <typename T>
 class uniqueInstance
 {
 protected:
-    uniqueInstance () { }
+    uniqueInstance () 
+    {
+    }
     ~uniqueInstance () { }
 
 public:
@@ -62,9 +64,11 @@ public:
       }
     }
 
+    
+    
 protected:
-  // Unique instance
-  static T *_instance;
+    // Unique instance
+    static T *_instance;
 };
 
 template <typename T>

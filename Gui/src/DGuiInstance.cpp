@@ -28,14 +28,29 @@
 
 
 #include "DGuiInstance.h"
-#include "DQtGuiInstance.h"
 
+#ifdef USE_QT
+#include "DQtGuiInstance.h"
+#include "DQtImageViewer.hpp"
+#endif // USE_QT
+
+Gui::Gui()
+{
+}
+
+Gui::~Gui()
+{
+}
 
 void Gui::initialize()
 {
     if (_instance == NULL)
     {
+#ifdef USE_QT
 	_instance =  new qtGui;
+#else // USE_QT
+	_instance =  new Gui;
+#endif // USE_QT
     }
 //     return _instance;
 }
