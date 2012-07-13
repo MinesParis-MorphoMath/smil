@@ -35,6 +35,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <curl/curl.h>
+#include </home/faessel/src/Smil/trunk/Core/include/private/DTypes.hpp>
 
 size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) 
 {
@@ -73,22 +74,26 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
  
  
 
-int getHttpFile(const char *url, const char *outfilename) 
+RES_T getHttpFile(const char *url, const char *outfilename) 
 {
-    CURL *curl;
+    CURL *curl_handle;
     FILE *fp;
     CURLcode res;
-    curl = curl_easy_init();
-    if (curl) {
+    curl_handle = curl_easy_init();
+    if (curl_handle) 
+    {
         fp = fopen(outfilename,"wb");
-        curl_easy_setopt(curl, CURLOPT_URL, url);
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_data);
-        curl_easy_setopt(curl, CURLOPT_WRITEDATA, fp);
-        res = curl_easy_perform(curl);
-        curl_easy_cleanup(curl);
+        curl_easy_setopt(curl_handle, CURLOPT_URL, url);
+        curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
+        curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, fp);
+        res = curl_easy_perform(curl_handle);
+        curl_easy_cleanup(curl_handle);
         fclose(fp);
     }
-    return 0;
+    else res = CURLE_FAILED_INIT;
+    if (res==CURLE_OK)
+      return RES_OK;
+    else return RES_ERR;
 }
 
 /**
@@ -105,17 +110,21 @@ int getHttpFile(const char *url, struct MemoryStruct &chunk)
     chunk.size = 0;
 
     curl_global_init(CURL_GLOBAL_ALL);
-
+    CURLcode res;
     curl_handle = curl_easy_init();
-    curl_easy_setopt(curl_handle, CURLOPT_URL, "http://www.example.com/");
-    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
-    curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-    curl_easy_perform(curl_handle);
-    curl_easy_cleanup(curl_handle);
-    curl_global_cleanup();
+    if (curl_handle)
+    {
+	curl_easy_setopt(curl_handle, CURLOPT_URL, "http://www.example.com/");
+	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
+	curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+	res = curl_easy_perform(curl_handle);
+	curl_easy_cleanup(curl_handle);
+	curl_global_cleanup();
+    }
+    else res = CURLE_FAILED_INIT;
 
-    return 0;
+    return res==CURLE_OK;
 }
 
 #endif // USE_CURL

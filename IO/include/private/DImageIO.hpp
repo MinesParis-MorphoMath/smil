@@ -47,7 +47,7 @@
 extern const char *getFileExtension(const char *fileName);
 
 #ifdef USE_CURL
-extern int getHttpFile(const char *url, const char *outfilename);
+extern RES_T getHttpFile(const char *url, const char *outfilename);
 #endif // USE_CURL
 
 template <class T>
@@ -63,11 +63,16 @@ RES_T read(const char* filename, Image<T> &image)
     {
 #ifdef USE_CURL
 	tmpFileName = "_smilTmpIO." + fileExt;
-	getHttpFile(filename, tmpFileName.c_str());
+	if (getHttpFile(filename, tmpFileName.c_str())!=RES_OK)
+	{
+	    cout << "Error reading file " << filename << endl;
+	    return RES_ERR;
+	}
 	res = read(tmpFileName.c_str(), image);
 	remove(tmpFileName.c_str());
 	return res;
 #else // USE_CURL
+	cout << "Error: to use this functionality you must compile smil with the Curl option" << endl;
 	return RES_ERR;
 #endif // USE_CURL
     }
@@ -98,7 +103,7 @@ RES_T read(const char* filename, Image<T> &image)
 // 	    fName = fName.substr(pos+1);
 // 	    image.setName(fName.c_str());
 // 	}
-	image.modified();
+// 	image.modified();
     }
     
     return res;

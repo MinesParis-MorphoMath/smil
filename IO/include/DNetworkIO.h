@@ -30,7 +30,8 @@
 #ifndef _D_NETWORK_IO_H
 #define _D_NETWORK_IO_H
 
+#include "DTypes.h"
 
-int getHttpFile(const char *url, const char *outfilename) ;
+RES_T getHttpFile(const char *url, const char *outfilename) ;
 
 #endif // _D_NETWORK_IO_H
