@@ -253,7 +253,6 @@ class Test_Watershed : public TestCase
 
 int main(int argc, char *argv[])
 {
-      Core::initialize();
     
       UINT8 vecIn[]   = { 1, 2, 0, 5, 5, 5, 3, 3, 3, 1, 1 };
       UINT8 vecMark[] = { 0, 0, 0, 0, 4, 1, 1, 2, 0, 0, 0 };
@@ -270,12 +269,10 @@ int main(int argc, char *argv[])
       inv(imMark, imMark);
       
       build(imIn, imMark, imOut);
-      cout << endl;
 //       dualBuild(imIn, imMark, imOut);
       
       
       
-      Gui::execLoop();
       
 }
 

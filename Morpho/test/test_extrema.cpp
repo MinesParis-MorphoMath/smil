@@ -53,7 +53,6 @@
 int main(int argc, char *argv[])
 {
 
-    Core::initialize();
     
 //      int c;
     Image_UINT8 im1(4,4);
@@ -85,8 +84,6 @@ int main(int argc, char *argv[])
 //       inf(im1, im2, im3);
 
     im3.printSelf(1);
-    im3.show();
     
-    Gui::execLoop();
 }
 

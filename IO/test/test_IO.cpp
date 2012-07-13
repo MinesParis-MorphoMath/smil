@@ -55,9 +55,5 @@ int main(int argc, char *argv[])
     im2 << "http://cmm.ensmp.fr/~faessel/smil/images/barbara.png";
     
     
-    im2.show();
-    
-
-    Gui::execLoop();
 }
 
