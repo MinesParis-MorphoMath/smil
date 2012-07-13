@@ -130,10 +130,10 @@ RES_T trans(Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut, T borderVal
     {
 	typename Image<T>::sliceType lOut = imOut.getSlices()[k];
 	
-	UINT z = k+dz;
+	int z = k+dz;
 	for (int j=0;j<height;j++, lOut++)
 	{
-	    UINT y = j+dy;
+	    int y = j+dy;
 	    
 	    if (z<0 || z>=depth || y<0 || y>=height)
 		copyLine<T>(borderBuf, lineLen, *lOut);
