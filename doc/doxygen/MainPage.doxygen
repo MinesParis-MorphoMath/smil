@@ -28,7 +28,8 @@
 
 /**
  * \mainpage About
- * \f$ SMIL:~Simple~Morphological~Image~Library \f$
+ * \image html smil.png
+ * \image latex smil.eps
  * \author Matthieu Faessel
  * \email faessel@mines-paristech.fr
  * 

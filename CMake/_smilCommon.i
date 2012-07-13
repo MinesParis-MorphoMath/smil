@@ -106,6 +106,7 @@
   %apply char *OUTPUT{ char *name };
   %apply short *OUTPUT{ short *name };
   %apply int *OUTPUT{ int *name };
+  %apply char *OUTPUT{const char *name};
 %enddef
 
 

@@ -41,10 +41,13 @@ SMIL_MODULE(smilGui)
 
 %include "DGui.h"
 
-// generate directors for all classes that have virtual methods
-%feature("director");
 
-%include "DBaseObject.h"
+// generate directors for virtual methods (except those returning const char ptr)
+%feature("director") baseImageViewer;
+%feature("nodirector") baseImageViewer::getInfoString;
+%feature("nodirector") baseImageViewer::getClassName;
+%feature("nodirector") baseImageViewer::getName;
+
 %include "DBaseImageViewer.h"
 %include "DImageViewer.hpp"
 
