@@ -70,7 +70,7 @@ RES_T read(const char* filename, Image<T> &image)
 	}
 	res = read(tmpFileName.c_str(), image);
 	remove(tmpFileName.c_str());
-	return res;
+	res = RES_OK;
 #else // USE_CURL
 	cout << "Error: to use this functionality you must compile smil with the Curl option" << endl;
 	return RES_ERR;
@@ -103,7 +103,7 @@ RES_T read(const char* filename, Image<T> &image)
 // 	    fName = fName.substr(pos+1);
 // 	    image.setName(fName.c_str());
 // 	}
-// 	image.modified();
+	image.modified();
     }
     
     return res;

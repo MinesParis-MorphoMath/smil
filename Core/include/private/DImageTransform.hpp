@@ -114,7 +114,7 @@ RES_T vFlip(Image<T> &imInOut)
  * 
  */
 template <class T>
-RES_T trans(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
+RES_T trans(Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
 {
     if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
@@ -150,7 +150,7 @@ RES_T trans(Image<T> &imIn, UINT dx, UINT dy, UINT dz, Image<T> &imOut, T border
 }
 
 template <class T>
-RES_T trans(Image<T> &imIn, UINT dx, UINT dy, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
+RES_T trans(Image<T> &imIn, int dx, int dy, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
 {
     return trans<T>(imIn, dx, dy, 0, imOut, borderValue);
 }
