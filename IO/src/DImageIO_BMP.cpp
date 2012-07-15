@@ -72,6 +72,8 @@ _SMIL RES_T readBMP(const char *filename, Image<UINT8> &image)
             break;
 
     fclose(fp);
+    
+    image.modified();
 
     return RES_OK;
 }

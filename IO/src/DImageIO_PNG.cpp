@@ -150,6 +150,9 @@ _SMIL RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
 
 
     fclose (fp);
+    
+    image.modified();
+    
     return RES_OK;
 }
 

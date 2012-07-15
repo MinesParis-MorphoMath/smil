@@ -41,10 +41,10 @@ int main(int argc, char *argv[])
 //     Core::initialize();
 //     Gui::getInstance();
     
-    Image_UINT8 im1;
+//     Image_UINT8 im1;
     
     
-    im1 << "http://cmm.ensmp.fr/~faessel/smil/images/lena.png";
+    Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/lena.png");
     
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
