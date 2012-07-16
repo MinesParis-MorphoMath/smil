@@ -300,10 +300,6 @@ void ImageViewerWidget::dataChanged()
   
     magnView->setImage(qImage);
     
-//     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
-//     repaint();
-//     update();
-//     qApp->processEvents();
     emit onDataChanged();
 }
 
@@ -332,12 +328,6 @@ void ImageViewerWidget::overlayDataChanged()
 	    it++;
 	}
     }
-  
-  
-//     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
-//     repaint();
-//     update();
-//     qApp->processEvents();
 }
 
 
@@ -359,35 +349,27 @@ void ImageViewerWidget::clearOverlay()
 }
 
 
-void ImageViewerWidget::zoomIn()
+void ImageViewerWidget::zoomIn(const QPoint *pos)
 {
-    scale(1.25);
+    scale(1.25, pos);
 }
 
-void ImageViewerWidget::zoomOut()
+void ImageViewerWidget::zoomOut(const QPoint *pos)
 {
-    scale(0.8);
+    scale(0.8, pos);
 }
 
 
-void ImageViewerWidget::scale(double factor)
+void ImageViewerWidget::scale(double factor, const QPoint *pos)
 {
     scaleFactor *= factor;
     QGraphicsView::scale(factor, factor);
+    if (pos)
+      centerOn(mapToScene(*pos));
 
-//     QTimer 
-//     QWidget::setToolTip(QString::number(scaleFactor));
     displayHint(QString::number(int(scaleFactor*100)) + "%");
     emit(onRescaled(scaleFactor));
 }
-
-// void ImageViewerWidget::update()
-// {
-//     this->dataChanged();
-//     QGraphicsView::update();
-//     repaint();
-//     qApp->processEvents();
-// }
 
 
 void ImageViewerWidget::mouseMoveEvent ( QMouseEvent * event )
@@ -478,9 +460,21 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 
 void ImageViewerWidget::wheelEvent ( QWheelEvent * event )
 {
-    if (event->delta()>0)
-        zoomIn();
-    else zoomOut();
+    Qt::KeyboardModifiers mod = event->modifiers();
+    if (!mod)
+    {
+	if (event->delta()>0)
+	    zoomIn(&event->pos());
+	else zoomOut(&event->pos());
+    }
+    // Default behavior without modifier is translate
+    // change it to Ctrl
+     else if (mod & Qt::ControlModifier)
+	if (!(mod & Qt::ShiftModifier))
+	{
+	    mod &= ~Qt::ControlModifier;
+	    event->setModifiers(mod);
+	}
 
     QGraphicsView::wheelEvent(event);
 }
