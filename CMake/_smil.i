@@ -114,13 +114,13 @@ def Image(*args):
 	      img = srcImgType(*args[1:])
 	else:
 	    img = srcImgType(srcIm)
-	img.fill(0)
+	fill(img, 0)
 	    
     elif args[0] in dataTypes: # First arg is an image type string ("UINT8", ...)
 	imgType = imageTypes[dataTypes.index(args[0])]
 	print args[1:]
 	img = imgType(*args[1:])
-	img.fill(0)
+	fill(img, 0)
 
     # Create/load from an existing image fileName
     elif argNbr==1 and (os.path.exists(args[0]) or args[0][:7]=="http://"):
@@ -128,7 +128,7 @@ def Image(*args):
     
     else:
 	img = imageTypes[0](*args)
-	img.fill(0)
+	fill(img, 0)
 	
     return img
 
