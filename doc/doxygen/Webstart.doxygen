@@ -34,15 +34,15 @@
  * To download the latest version of the JRE corresponding to your browser, click <a href="http://java.com/getjava">here</a>. \n
  * 
  * \section run_sec Launch the application
- * Click <a href="http://cmm.ensmp.fr/~faessel/smil_ws/launch.php"><b>here</b></a> to launch the application
- * (or <a href="http://cmm.ensmp.fr/~faessel/smil_ws/launch.php?open&http://cmm.ensmp.fr/~faessel/smil/images/lena.png">here</a>
- * to open it with the Lena image).
+ * Click <a href=\smilApp>here</a> to launch the application
+ * (or \smilImageLink{lena.png, here} to open it with the Lena image).
  * 
  * The first time you will execute the application, the JRE will need to download native libraries corresponding to your platform. The download may take several seconds.
  * \section demo_sec Run an example script
- * <a href="http://cmm.ensmp.fr/~faessel/smil_ws/launch.php?exec&http://cmm.ensmp.fr/~faessel/smil/scripts/test.py">Watershed example</a>
+ * <a href="http://cmm.ensmp.fr/~faessel/smil_ws/launch.php?exec&http://cmm.ensmp.fr/~faessel/smil/demos/test.py">Watershed example</a>
  * \section trouble_sec Troubleshooting
  * Windows users: \n
+ * 
  * 	In case of <b>java.lang.UnsatisfiedLinkError</b> error, please install the Microsoft Visual C++ 2008 (x86)
  * 	<a href="http://www.microsoft.com/fr-fr/download/details.aspx?id=29" target="_blank">redistribuable package</a>.
  * 
