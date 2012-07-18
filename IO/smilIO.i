@@ -54,6 +54,8 @@
 %}
  
 
+%include "DNetworkIO.h"
+
 %include "DTypes.hpp"
 %include "DIO.h"
 %include "DImageIO.hpp"

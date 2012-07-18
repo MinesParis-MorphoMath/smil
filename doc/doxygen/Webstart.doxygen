@@ -39,7 +39,8 @@
  * to open it with the Lena image).
  * 
  * The first time you will execute the application, the JRE will need to download native libraries corresponding to your platform. The download may take several seconds.
- * 
+ * \section demo_sec Run an example script
+ * <a href="http://cmm.ensmp.fr/~faessel/smil_ws/launch.php?exec&http://cmm.ensmp.fr/~faessel/smil/scripts/test.py">Watershed example</a>
  * \section trouble_sec Troubleshooting
  * Windows users: \n
  * 	In case of <b>java.lang.UnsatisfiedLinkError</b> error, please install the Microsoft Visual C++ 2008 (x86)
