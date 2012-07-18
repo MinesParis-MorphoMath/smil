@@ -71,6 +71,7 @@ public:
 	  disconnect(image);
 	this->setImage(im);
 	image->onModified.connect(&this->updateSlot);
+	update();
     }
     virtual void disconnect(Image<T> *im)
     {
