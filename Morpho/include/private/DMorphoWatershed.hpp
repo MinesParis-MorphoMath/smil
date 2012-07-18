@@ -192,6 +192,7 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
  * \param[out] imOut Output image containing the watershed lines.
  * \param[out] imBasinsOut Output image containing the basins.
  * After processing, this image will contain the basins with the same label values as the initial markers.
+ * \demo{test.py}
  * 
  * Inspired from http://cmm.ensmp.fr/~beucher/publi/HQ_algo_desc.pdf
  */

@@ -39,7 +39,8 @@
  * 
  * The first time you will execute the application, the JRE will need to download native libraries corresponding to your platform. The download may take several seconds.
  * \section demo_sec Run an example script
- * <a href="http://cmm.ensmp.fr/~faessel/smil_ws/launch.php?exec&http://cmm.ensmp.fr/~faessel/smil/demos/test.py">Watershed example</a>
+ * See the \ref demos_xref "demos" page.
+ * 
  * \section trouble_sec Troubleshooting
  * Windows users: \n
  * 
