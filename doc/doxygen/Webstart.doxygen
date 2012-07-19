@@ -34,12 +34,13 @@
  * To download the latest version of the JRE corresponding to your browser, click <a href="http://java.com/getjava">here</a>. \n
  * 
  * \section run_sec Launch the application
- * Click <a href=\smilApp>here</a> to launch the application
- * (or \smilImageLink{lena.png, here} to open it with the Lena image).
+ * Click \ws_main_link{here} to launch the application
+ * (or \ws_open_image_link{lena.png,here} to open it with the Lena image).
  * 
  * The first time you will execute the application, the JRE will need to download native libraries corresponding to your platform. The download may take several seconds.
  * \section demo_sec Run an example script
- * See the \ref demos_xref "demos" page.
+ * See the <a href=examples.html>examples</a> page.
+ * In a script page, click on "Execute script online" to run it.
  * 
  * \section trouble_sec Troubleshooting
  * Windows users: \n

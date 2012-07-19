@@ -216,13 +216,7 @@ TAB_SIZE               = 8
 # will result in a user-defined paragraph with heading "Side Effects:". 
 # You can put \n's in the value part of an alias to insert newlines.
 
-ALIASES += rootpage=http://cmm.ensmp.fr/~faessel
-ALIASES += webpage=\rootpage/smil
-ALIASES += smilApp=\rootpage/smil_ws/launch.php
-ALIASES += smilOpen{1}=\smilApp?open&\1
-ALIASES += smilImageLink{2}="<a href=\smilApp?open&\webpage/images/\1>\2</a>"
-
-ALIASES += demo{1}="\xrefitem demos_xref \"Run demo\" \"Demos\" <a href=\smilApp?exec&\webpage/demos/\1>\1</a>"
+@DOXY_ALIASES@
 
 # Set the OPTIMIZE_OUTPUT_FOR_C tag to YES if your project consists of C 
 # sources only. Doxygen will then generate output that is more tailored for C. 
