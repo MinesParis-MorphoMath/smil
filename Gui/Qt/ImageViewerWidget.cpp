@@ -363,9 +363,17 @@ void ImageViewerWidget::zoomOut(const QPoint *pos)
 void ImageViewerWidget::scale(double factor, const QPoint *pos)
 {
     scaleFactor *= factor;
+    
     QGraphicsView::scale(factor, factor);
+    int w = width();
+    int h = height();
     if (pos)
-      centerOn(mapToScene(*pos));
+    {
+	double dx = double(width()/2. - pos->x()) * scaleFactor;
+	double dy = double(height()/2. - pos->y()) * scaleFactor;
+	
+	centerOn(mapToScene(*pos)-QPointF(dx, dy));
+    }
 
     displayHint(QString::number(int(scaleFactor*100)) + "%");
     emit(onRescaled(scaleFactor));
@@ -460,21 +468,14 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 
 void ImageViewerWidget::wheelEvent ( QWheelEvent * event )
 {
-    Qt::KeyboardModifiers mod = event->modifiers();
-    if (!mod)
+    if (event->modifiers() & Qt::ControlModifier)
     {
 	if (event->delta()>0)
 	    zoomIn(&event->pos());
 	else zoomOut(&event->pos());
+	
+	return;
     }
-    // Default behavior without modifier is translate
-    // change it to Ctrl
-     else if (mod & Qt::ControlModifier)
-	if (!(mod & Qt::ShiftModifier))
-	{
-	    mod &= ~Qt::ControlModifier;
-	    event->setModifiers(mod);
-	}
 
     QGraphicsView::wheelEvent(event);
 }

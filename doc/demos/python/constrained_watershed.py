@@ -17,7 +17,7 @@ imMark.setPixel(75, 40, 1)
 imMark.setPixel(78, 86, 2)
 imMark.setPixel(88, 76, 3)
 
-# Dilate markers to avoid to be blocked in a minimum
+# Dilate the markers to avoid to be blocked in a minimum
 dilate(imMark, imMark, 2)
 
 # Create the watershed
