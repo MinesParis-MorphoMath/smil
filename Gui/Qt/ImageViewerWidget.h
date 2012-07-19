@@ -123,9 +123,9 @@ protected:
 
 public slots:
     void load(const QString fileName);
-    void zoomIn(const QPoint *pos=NULL);
-    void zoomOut(const QPoint *pos=NULL);
-    void scale(double factor, const QPoint *pos=NULL);
+    void zoomIn();
+    void zoomOut();
+    void scale(double factor);
 //     void update();
 
 private slots:
