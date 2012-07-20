@@ -43,6 +43,10 @@ using namespace std;
 
 class Core;
 
+/**
+ * Base Smil Object
+ */
+
 class baseObject
 {
 public:

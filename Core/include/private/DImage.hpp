@@ -44,6 +44,7 @@ template <class T> class imageViewer;
 /**
  * Main Image class.
  * 
+ * \tparam T Image data type (UINT8, UINT16, ...)
  */  
 template <class T>
 class Image : public baseImage
@@ -61,7 +62,8 @@ public:
   
 public:
     ~Image();
-    
+    //! Get the image type.
+    //! \return The type of the image data as a string ("UINT8", "UINT16", ...)
     const char* getTypeAsString()
     {
 	T val;
@@ -89,6 +91,7 @@ public:
 	    return T(NULL);
 	return pixels[z*width*height+y*width+x];
     }
+    //! Return the value of the pixel at a given offset
     inline T getPixel(UINT offset)
     {
 	if (offset >= pixelCount)
@@ -96,6 +99,7 @@ public:
 	return pixels[offset];
     }
 
+    //! Set the value of the pixel at pos x,y,z (for 3D image)
     inline RES_T setPixel(UINT x, UINT y, UINT z, T value)
     {
 	if (x>=width || y>=height || z>=depth)
@@ -104,10 +108,14 @@ public:
 	modified();
 	return RES_OK;
     }
+    
+    //! Set the value of the pixel at pos x,y
     inline RES_T setPixel(UINT x, UINT y, T value)
     {
 	return setPixel(x, y, 0, value);
     }
+    
+    //! Set the value of the pixel at a given offset
     inline RES_T setPixel(UINT offset, T value)
     {
 	if (offset >= pixelCount)
@@ -117,9 +125,13 @@ public:
 	return RES_OK;
     }
 
+    //! Get the image viewer (create one if needed)
     const imageViewer<T> *getViewer();
     
     bool updatesEnabled;
+    
+    //! Check if the image is visible
+    //! \return \b true if the viewer is visible, \b false otherwise
     bool isVisible() { return (viewer && viewer->isVisible()); }
     
     virtual void init();
@@ -206,15 +218,21 @@ public:
     Image<T>& operator /= (T value);
     //! Equal boolean operator (see \ref equ).
     Image<T>& operator == (Image<T> &rhs);
-    //! Inferior boolean operator (see \ref low)
+    //! Lower boolean operator (see \ref low)
     Image<T>& operator < (Image<T> &rhs);
-    //! Inferior boolean operator (see \ref low)
+    //! Lower boolean operator (see \ref low)
     Image<T>& operator < (T value);
+    //! Lower or equal boolean operator (see \ref lowOrEqu)
     Image<T>& operator <= (Image<T> &rhs);
+    //! Lower or equal boolean operator (see \ref lowOrEqu)
     Image<T>& operator <= (T value);
+    //! Greater boolean operator (see \ref grt)
     Image<T>& operator > (Image<T> &rhs);
+    //! Greater boolean operator (see \ref grt)
     Image<T>& operator > (T value);
+    //! Greater or equal boolean operator (see \ref grt)
     Image<T>& operator >= (Image<T> &rhs);
+    //! Greater or equal boolean operator (see \ref grt)
     Image<T>& operator >= (T value);
 
     Image<T>& operator | (Image<T> &rhs);

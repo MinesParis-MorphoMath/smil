@@ -244,7 +244,7 @@ RES_T inf(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 
 /**
  * Test equality between two images
- * \return[imOut] image with max(T) when true and 0 else
+ * \return[imOut] image with max(T) when true and 0 otherwise
  */
 template <class T>
 RES_T equ(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)

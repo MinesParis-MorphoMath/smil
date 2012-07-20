@@ -332,7 +332,7 @@ struct equSupLine : public binaryLineFunctionBase<T>
 };
 
 
-/**
+/*
  * Difference ("vertical distance") between two lines.
  * 
  * Returns abs(p1-p2) for each pixels pair

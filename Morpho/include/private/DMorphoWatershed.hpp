@@ -187,13 +187,12 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
 /**
  * Constrained watershed.
  * 
+ * Hierachical queue based algorithm as described by S. Beucher (2011) \cite beucher_hierarchical_2011
  * \param[in] imIn Input image.
  * \param[in] imMarkers Label image containing the markers. 
  * \param[out] imOut Output image containing the watershed lines.
  * \param[out] imBasinsOut (optional) Output image containing the basins.
  * After processing, this image will contain the basins with the same label values as the initial markers.
- * 
- * Inspired from http://cmm.ensmp.fr/~beucher/publi/HQ_algo_desc.pdf
  * 
  * \demo{constrained_watershed.py}
  */
