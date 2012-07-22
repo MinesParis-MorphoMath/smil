@@ -48,7 +48,9 @@ enum seType { stGeneric, stHexSE, stSquSE };
 class StrElt : public baseObject
 {
   public:
-    StrElt(UINT s=1) : seT(stGeneric), size(s) 
+    StrElt(UINT s=1)
+      : baseObject("StrElt"), 
+	seT(stGeneric), size(s) 
     {
     }
     vector<Point> points;
@@ -104,8 +106,9 @@ inline void operator << (ostream &os, StrElt &se)
 class hSE : public StrElt
 {
   public:
-    hSE(UINT s=1) 
+    hSE(UINT s=1)
     {
+	className = "hSE";
 	seT = stHexSE;
 	size = s;
 	odd = true;
@@ -137,6 +140,7 @@ class hSE0 : public StrElt
   public:
     hSE0(UINT s=1) 
     {
+	className = "hSE0";
 	seT = stHexSE;
 	size = s;
 	odd = true;
@@ -168,6 +172,7 @@ class sSE : public StrElt
   public:
     sSE(UINT s=1) : StrElt(s)
     {
+	className = "sSE";
 // 	seT = stSquSE;
 	odd = false;
 	addPoint(0,0); 	// 1
@@ -198,8 +203,10 @@ class sSE : public StrElt
 class sSE0 : public StrElt
 {
   public:
+    typedef StrElt parentClass;
     sSE0(UINT s=1) : StrElt(s)
     {
+	className = "sSE0";
 // 	seT = stSquSE;
 	odd = false;
 	addPoint(1,0);	// 1
