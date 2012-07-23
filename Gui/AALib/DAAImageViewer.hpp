@@ -42,6 +42,7 @@ class aaImageViewer : public imageViewer<T>
 {
 public:
     typedef imageViewer<T> parentClass;
+    aaImageViewer();
     aaImageViewer(Image<T> *im);
     ~aaImageViewer();
     virtual void hide();
@@ -58,6 +59,12 @@ protected:
 
 
 template <class T>
+aaImageViewer<T>::aaImageViewer()
+{
+    context = NULL;
+}
+
+template <class T>
 aaImageViewer<T>::aaImageViewer(Image<T> *im)
   : imageViewer<T>(im)
 {
@@ -70,7 +77,7 @@ int aaImageViewer<T>::createContext()
     context = aa_autoinit(&aa_defparams);
     if(context == NULL) 
     {
-      fprintf(stderr,"Cannot initialize AA-lib. Sorry\n");
+      fprintf(stderr,"Cannot initialize AA-lib. Sorry.\n");
       return -1;
     }
     return 0;
