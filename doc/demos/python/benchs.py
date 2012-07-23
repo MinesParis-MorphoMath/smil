@@ -64,7 +64,7 @@ def bench(func, *args, **keywords):
 imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/DNA_small.png")
 #imIn.show()
 
-for imType in imageTypes:
+for imType in (Image_UINT8,):
   tmpIm = imType(imIn)
   im1 = imType(sx, sy)
   im2 = imType(im1)
