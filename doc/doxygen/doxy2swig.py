@@ -88,7 +88,7 @@ class Doxy2SWIG:
                         'references', 'referencedby', 'location',
                         'collaborationgraph', 'reimplements',
                         'reimplementedby', 'derivedcompoundref',
-                        'basecompoundref']
+                        'basecompoundref', 'ulink']
         #self.generics = []
         self.include_function_definition = include_function_definition
         if not include_function_definition:
