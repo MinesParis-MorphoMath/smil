@@ -2,16 +2,23 @@
 
 # the name of the target operating system
 SET(CMAKE_SYSTEM_NAME Windows)
-
 # which compilers to use for C and C++
-SET(CMAKE_C_COMPILER x86_64-w64-mingw32-gcc)
-SET(CMAKE_RC_COMPILER x86_64-w64-mingw32-windres)
-SET(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
+SET(CMAKE_C_COMPILER i686-w64-mingw32-gcc)
+SET(CMAKE_RC_COMPILER i686-w64-mingw32-windres)
+SET(CMAKE_CXX_COMPILER i686-w64-mingw32-g++)
+# SET(CMAKE_AR i686-w64-mingw32-ar)
+# SET(CMAKE_LD i686-w64-mingw32-ld)
+# SET(CMAKE_NM i686-w64-mingw32-nm)
+# SET(CMAKE_OBJCOPY i686-w64-mingw32-objcopy)
+# SET(CMAKE_OBJDUMP i686-w64-mingw32-objdump)
+# SET(CMAKE_RANLIB i686-w64-mingw32-ranlib)
+# SET(CMAKE_STRIP i686-w64-mingw32-strip)
 
 # here is the target environment located
 SET(CMAKE_FIND_ROOT_PATH  
-	/usr/x86_64-w64-mingw32/
-	/usr/lib/gcc/x86_64-w64-mingw32/
+	/usr/i686-w64-mingw32/sys-root/mingw/ 
+	/usr/i686-pc-mingw32/sys-root/mingw/
+	/usr/lib/gcc/i686-w64-mingw32/4.6/
 	~/src/w32libs/
 	~/src/w32libs/GnuWin32/
 	~/src/w32libs/GnuWin32/bin/
@@ -28,8 +35,6 @@ SET(CMAKE_FIND_ROOT_PATH
 	~/src/w32libs/java_jdk1.6.0_25/lib/
     )
 
-SET(USE_64BIT_IDS ON)
-   
 # adjust the default behaviour of the FIND_XXX() commands:
 # search headers and libraries in the target environment, search 
 # programs in the host environment

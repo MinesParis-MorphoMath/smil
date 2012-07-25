@@ -32,6 +32,10 @@
 
 #include "DTypes.h"
 
+#ifdef USE_CURL
+
 RES_T getHttpFile(const char *url, const char *outfilename) ;
+
+#endif // USE_CURL
 
 #endif // _D_NETWORK_IO_H
