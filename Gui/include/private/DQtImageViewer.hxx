@@ -62,7 +62,7 @@ void qtImageViewer<T>::setImage(Image<T> *im)
 {
     imageViewer<T>::setImage(im);
     setImageSize(im->getWidth(), im->getHeight());
-    if (im->getName()!="")
+    if (im->getName()!=string(""))
       setName(this->image->getName());
 }
 

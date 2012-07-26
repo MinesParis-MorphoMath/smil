@@ -29,6 +29,7 @@ void * fun (void * _timer) {
      }
 	  t->app->processEvents();
       }
+     return NULL;
 }
 
 
