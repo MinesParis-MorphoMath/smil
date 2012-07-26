@@ -64,16 +64,16 @@ SMIL_MODULE(smilCore)
 #ifdef SMIL_WRAP_Bit
 %extend BitArray
 {
-	std::string  __str__() {
-	    std::stringstream os;
-	    os << *self;
-	    return os.str();
-	}
-/*
-	bool operator[] (UINT i)
-	{
-	}
-*/
+//	std::string  __str__() {
+//	    std::stringstream os;
+//	    os << *self;
+//	    return os.str();
+//	}
+
+//	bool operator[] (UINT i)
+//	{
+//	}
+
 }
 %ignore BitArray::operator++;
 %include "DBitArray.h"
