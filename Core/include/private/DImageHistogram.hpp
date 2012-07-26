@@ -42,7 +42,7 @@ vector<UINT> histo(Image<T> &imIn)
 {
     T dx = ImDtTypes<T>::min();
     vector<UINT> h;
-    for (int i=0;i<ImDtTypes<T>::max()-dx;i++)
+    for (int i=0;i<=ImDtTypes<T>::max()-dx;i++)
 	h.push_back(0);
     
     typename Image<T>::lineType pixels = imIn.getPixels();
