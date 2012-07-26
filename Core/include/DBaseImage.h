@@ -103,9 +103,9 @@ public:
 
     inline UINT getOffsetFromCoords(UINT x, UINT y, UINT z)
     {
-	if (x<0 || x>=width) return -1;
-	if (y<0 || y>=height) return -1;
-	if (z<0 || z>=depth) return -1;
+	if (x>=width) return -1;
+	if (y>=height) return -1;
+	if (z>=depth) return -1;
 	return z*width*height + y*width + x;
     }
 
@@ -152,7 +152,7 @@ inline bool haveSameSize(const baseImage *im, ...)
     int d = im->getDepth();
 
     const baseImage *obj;
-    while (obj = va_arg(vargs, const baseImage*))
+    while ((obj = va_arg(vargs, const baseImage*)))
     {
         if (obj->getWidth()!=w) return false;
         if (obj->getHeight()!=h) return false;
@@ -176,7 +176,7 @@ inline bool areAllocated(const baseImage *im, ...)
         return false;
 
     const baseImage *obj;
-    while (obj = va_arg(vargs, const baseImage*))
+    while ((obj = va_arg(vargs, const baseImage*)))
         if (!obj->isAllocated()) return false;
     va_end(vargs);
     return true;

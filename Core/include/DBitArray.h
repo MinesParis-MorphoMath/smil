@@ -115,7 +115,11 @@ public:
     operator bool() { return intArray!=NULL; }
     Bit operator [] (UINT i);
     Bit operator * ();
-    BitArray operator + (int dp);
+    inline BitArray operator + (int dp);
+    inline BitArray operator + (long unsigned int dp)
+    {
+	return operator+((int)dp);
+    }
     BitArray operator - (int dp);
     BitArray& operator ++ (int);
     BitArray& operator ++ ();

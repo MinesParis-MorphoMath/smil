@@ -139,8 +139,7 @@ Image<Bit>& Image<Bit>::clone(const Image<Bit> &rhs)
 { 
     bool isAlloc = rhs.isAllocated();
     setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
-    if (isAlloc)
-      memcpy(this->pixels.intArray, rhs.getPixels().intArray, allocatedSize*sizeof(CHAR_BIT));
+    copy(rhs, *this);
     modified();
     return *this;
 }

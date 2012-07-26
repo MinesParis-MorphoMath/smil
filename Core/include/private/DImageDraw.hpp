@@ -54,7 +54,7 @@ inline RES_T drawRectangle(Image<T> &imOut, UINT x0, UINT y0, UINT width, UINT h
     UINT x1 = x0 + width - 1;
     UINT y1 = y0 + height -1;
     
-    typename Image<T>::lineType *lines = imOut.getLines();
+    typename Image<T>::sliceType lines = imOut.getLines();
     fillLine<T> fillFunc;
     
     if (fill)

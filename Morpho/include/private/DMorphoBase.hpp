@@ -34,6 +34,22 @@
 #include "DImageArith.h"
 #include "DMorphImageOperations.hpp"
 
+/**
+ * \addtogroup Morpho Mathematical Morphology
+ * \{
+ */
+
+
+/**
+ * Morphological grayscale dilation
+ * 
+ * \begintheory{dilation}
+ * Denoting an image by \f$ f(x) \f$  and the \ref StrElt "structuring function" by \f$ B(x) \f$, 
+ * the grayscale dilation of \f$ f \f$ by \f$ B \f$ is given by \cite serra_image_1982 :
+ * \f[ (f\oplus B)(x)=\sup_{y \in \Re^3 }[f(y)+B(x-y)] \f] 
+ * \endtheory
+ * 
+ */
 template <class T>
 RES_T dilate(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
@@ -47,6 +63,15 @@ RES_T dilate(Image<T> &imIn, Image<T> &imOut, UINT seSize)
     return dilate(imIn, imOut, DEFAULT_SE(seSize));
 }
 
+/**
+ * Morphological grayscale erosion
+ * 
+ * \begintheory{erosion}
+ * Denoting an image by \f$ f(x) \f$  and the \ref StrElt "structuring function" by \f$ B(x) \f$, 
+ * the grayscale dilation of \f$ f \f$ by \f$ B \f$ is given by \cite serra_image_1982 :
+ * \f[ (f\ominus B)(x)=\inf_{y \in \Re^3 }[f(y)-B(x-y)] \f]
+ * \endtheory
+ */
 template <class T>
 RES_T erode(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
@@ -111,7 +136,7 @@ RES_T gradient(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 }
 
 
-
+/** \} */
 
 #endif // _D_MORPHO_BASE_HPP
 
