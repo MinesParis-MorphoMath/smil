@@ -76,3 +76,26 @@ ALIASES += ws_demo{1}="\xrefitem ws_demos \"Run demo\" \"Demos\" \ws_exec_demo_l
 ALIASES += demo{1}="\xrefitem examples \"Examples\" \"Examples\"  \ref \1 \"\1\" \t \ws_exec_demo_link{\1,execute online}"
 
 
+########################################################
+# DYNAMIC SECTIONS
+########################################################
+
+ALIASES += begin_dynsection{2}=" \
+\htmlonly \
+<script src=\"dynsections.js\" type=\"text/javascript\"></script> \
+<div id=\"\2\" class=\"dynheader closed\" style=\"cursor:pointer;\" onclick=\"return toggleVisibility(this)\"> \
+  <img id=\"\2-trigger\" alt=\"+\" src=\"closed.png\"> \
+  \1 \
+</div> \
+<div id=\"\2-summary\" class=\"dynsummary\" style=\"display: none;\"> </div> \
+<div id=\"\2-content\" class=\"dyncontent\" style=\"display: none;\"> \
+\endhtmlonly"
+
+ALIASES += end_dynsection=" \
+\htmlonly \
+</div> \
+\endhtmlonly"
+
+
+ALIASES += begintheory{1}=\begin_dynsection{"Theoretical Details:",\1}
+ALIASES += endtheory=\end_dynsection

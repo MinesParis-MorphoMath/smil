@@ -49,6 +49,8 @@ int main(int argc, char *argv[])
     BENCH_IMG_STR(close, "sSE", im1, im2, sSE());
     
 #ifdef SMIL_WRAP_Bit
+    cout << endl;
+    
     Image<Bit> bit_im1(im1);
     Image<Bit> bit_im2(bit_im1);
     

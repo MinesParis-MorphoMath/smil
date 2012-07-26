@@ -469,11 +469,11 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imageType &
       tmpIm = new Image<T>(imIn, true); // clone
     else tmpIm = &imIn;
     
-    sliceType *srcSlices = tmpIm->getSlices();
-    sliceType *destSlices = imOut.getSlices();
+    volType srcSlices = tmpIm->getSlices();
+    volType destSlices = imOut.getSlices();
     
-    lineType *srcLines;
-    lineType *destLines;
+    sliceType srcLines;
+    sliceType destLines;
     
 //    bool oddLine;
     
