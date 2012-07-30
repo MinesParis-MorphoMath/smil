@@ -76,6 +76,8 @@ RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
     }
     
     imOut.modified();
+    
+    return RES_OK;
 }
 
 template <class T>
@@ -107,6 +109,7 @@ RES_T vFlip(Image<T> &imInOut)
     
     ImDtTypes<T>::deleteLine(tmpLine);
     imInOut.modified();
+    return RES_OK;
 }
 
 /**

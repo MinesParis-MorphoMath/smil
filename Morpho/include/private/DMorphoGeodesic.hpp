@@ -160,6 +160,7 @@ RES_T initBuildHierarchicalQueue(Image<T> &imIn, HierarchicalQueue<T, HQcompT> &
     }
     
 //     hq.printSelf();
+    return RES_OK;
 }
 
 
@@ -244,7 +245,7 @@ RES_T processBuildHierarchicalQueue(Image<T> &imIn, Image<T> &imMark, Image<UINT
 	}
 
     }
-    
+    return RES_OK;    
 }
 
 template <class T>
@@ -369,6 +370,7 @@ RES_T levelPics(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
     inv(imOut, imOut);
     
 //     return res;
+    return RES_OK;
 }
 
 
@@ -393,6 +395,7 @@ RES_T dist(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
     } while (vol(tmpIm)!=0);
 
     imOut.modified();
+    return RES_OK;
 }
 
 

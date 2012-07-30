@@ -80,6 +80,7 @@ RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
         imOut.modified();
         return RES_OK;
     }
+    return RES_ERR;
 }
 
 //! Copy (two images of same type)

@@ -41,6 +41,11 @@ LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/CMake")
 INCLUDE(GenMacros)
 
+# clang compiler support
+IF(${CMAKE_C_COMPILER_ID} MATCHES "Clang")
+	INCLUDE(Clang)
+ENDIF(${CMAKE_C_COMPILER_ID} MATCHES "Clang")
+
 SET(SMIL_LIB_PREFIX smil)
 SET(SMIL_EXT_DEPS)
 
@@ -117,14 +122,16 @@ IF(USE_OPTIMIZATION)
 #    ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=1")
 #     ADD_DEFINITIONS("-ftree-vectorize -g -ffast-math  -march=core2 -mtune=core2  -msse2 -fdump-tree-optimized")
 	OptimizeForArchitecture()
-	IF(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-		AddCompilerFlag("-ftree-vectorize -ftree-slp-vectorize")
-	ENDIF(NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-	MESSAGE(STATUS "Compiler flags: "${CMAKE_CXX_FLAGS})
+	
 	OPTION(VERBOSE_OPTIMIZATION "Show verbose optimizations" OFF)
-	IF(VERBOSE_OPTIMIZATION)
-		ADD_DEFINITIONS("-ftree-vectorizer-verbose=5")
-	ENDIF(VERBOSE_OPTIMIZATION)
+	
+	IF(CMAKE_COMPILER_IS_GNUCC)
+		AddCompilerFlag("-ftree-vectorize -ftree-slp-vectorize")
+		IF(VERBOSE_OPTIMIZATION)
+			ADD_DEFINITIONS("-ftree-vectorizer-verbose=5")
+		ENDIF(VERBOSE_OPTIMIZATION)
+	ENDIF(CMAKE_COMPILER_IS_GNUCC)
+	MESSAGE(STATUS "Compiler flags: "${CMAKE_CXX_FLAGS})
 ENDIF(USE_OPTIMIZATION)
 
 

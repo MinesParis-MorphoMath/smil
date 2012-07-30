@@ -53,6 +53,7 @@ template <class T>
 _SMIL RES_T writePNG(Image<T> &image, const char *filename)
 {
     cout << "writePNG error: data type not implemented." << endl;
+    return RES_ERR;
 }
 
 

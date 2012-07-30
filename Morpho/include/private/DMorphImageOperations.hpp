@@ -100,10 +100,11 @@ public:
 	    relativeOffsets.push_back(pt->x - pt->y*imSize[0] + pt->z*imSize[0]*imSize[1]);
 	    pt++;
 	}
-	
+	return RES_OK;
     }
     virtual RES_T finalize(imageInType &imIn, imageOutType &imOut, StrElt &se)
     {
+	return RES_OK;
     }
     
     virtual RES_T _exec(imageInType &imIn, imageOutType &imOut, StrElt &se)
@@ -142,6 +143,7 @@ public:
 	    slicesIn++;
 	    slicesOut++;
 	}
+	return RES_OK;
     }
 //     virtual RES_T processImage(imageInType &imIn, imageOutType &imOut, hSE &se)
 //     {
@@ -328,7 +330,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageTy
 template <class T, class lineFunction_T>
 RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(imageType &imIn, imageType &imOut, StrElt &se)
 {
-    seType st = se.getType();
+    int st = se.getType();
     
     switch(st)
     {

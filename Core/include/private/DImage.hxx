@@ -693,6 +693,7 @@ Image<T>& Image<T>::operator << (lineType tab)
     for (int i=0;i<pixelCount;i++)
       pixels[i] = tab[i];
     modified();
+    return *this;
 }
 
 template <class T>
@@ -701,9 +702,14 @@ Image<T>& Image<T>::operator << (vector<T> vect)
     typename vector<T>::iterator it = vect.begin();
     typename vector<T>::iterator it_end = vect.end();
     
-    for (int i=0;i<pixelCount, it!=it_end;i++, it++)
+    for (int i=0;i<pixelCount;i++, it++)
+    {
+      if (it==it_end)
+	break;
       pixels[i] = *it;
+    }
     modified();
+    return *this;
 }
 
 #if defined SWIGPYTHON && defined USE_NUMPY

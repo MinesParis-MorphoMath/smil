@@ -50,6 +50,7 @@ public:
 	labels = 0;
 	pairs.clear();
 	lut.clear();
+	return RES_OK;
     }
     
     // The generic way
@@ -185,7 +186,8 @@ public:
 	for (int i=0;i<imOut.getPixelCount();i++,this->pixelsOut++)
 	  if (*this->pixelsOut!=0)
 	    *this->pixelsOut = lut[*this->pixelsOut];
-	  
+	
+	return RES_OK;
     }
 protected:
   UINT labels;
@@ -197,9 +199,8 @@ protected:
 template<class T1, class T2>
 RES_T label(Image<T1> &imIn, Image<T2> &imOut, StrElt se=DEFAULT_SE())
 {
-  labelFunct<T1,T2> f;
-  f._exec(imIn, imOut, se());
-
+    labelFunct<T1,T2> f;
+    return f._exec(imIn, imOut, se());
 }
 
 

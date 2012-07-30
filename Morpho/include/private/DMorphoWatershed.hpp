@@ -75,6 +75,7 @@ RES_T initWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image
 	  offset++;
 	}
     
+    return RES_OK;
 }
 
 template <class T, class labelT>
@@ -182,6 +183,7 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
     for (int i=0;i<imLbl.getPixelCount();i++)
       if (statPixels[i]==HQ_CANDIDATE)
 	statPixels[i] = HQ_WS_LINE;
+    return RES_OK;
 }
 
 /**
@@ -226,6 +228,7 @@ RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, Image
       
     imBasinsOut.modified();
     imOut.modified();
+    return RES_OK;
 }
 
 template <class T, class labelT>
