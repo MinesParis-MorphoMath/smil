@@ -45,6 +45,7 @@ int main(int argc, char *argv[])
     
     
     Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/lena.png");
+    Image_UINT8 im2("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png");
     
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
@@ -53,8 +54,6 @@ int main(int argc, char *argv[])
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1);
     
 //     im1.setSize(1024,1024);
-    Image_UINT8 im2(im1);
-    Image_UINT16 im3(im1);
 
 //     im1.setSize(256, 256);
 //     
@@ -63,8 +62,13 @@ int main(int argc, char *argv[])
 //       {
 // 	  im1.setPixel(i,j, i);
 //       }
-      
+    Image_UINT8 im3(im1);
+    
+    
     im1.show("im1");
+    im2.show("im2");
+    
+    copy(im2, 256, 0, 0, im1);
     
 
     

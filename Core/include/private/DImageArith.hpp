@@ -60,6 +60,82 @@ RES_T fill(Image<T> &imOut, const T &value)
     return RES_OK;
 }
 
+
+/**
+ * Copy/crop images
+ * 
+ * Copy a zone of the input image into the output image
+ * \param imIn input image
+ * \param "inX, inY, inZ" start position of the zone in the input image
+ * \param "sX, sY, sZ" size of the zone in the input image
+ * \param imOut output image
+ * \param "outX, outY, outZ" (optional) position to copy the selected zone in the output image (default is 0,0,0)
+ */
+template <class T1, class T2>
+RES_T copy(const Image<T1> &imIn, UINT inX, UINT inY, UINT inZ, UINT sx, UINT sy, UINT sz, Image<T2> &imOut, UINT outX=0, UINT outY=0, UINT outZ=0)
+{
+    if (!areAllocated(&imIn, &imOut, NULL))
+        return RES_ERR_BAD_ALLOCATION;
+
+    UINT inW = imIn.getWidth();
+    UINT inH = imIn.getHeight();
+    UINT inD = imIn.getDepth();
+    
+    UINT outW = imOut.getWidth();
+    UINT outH = imOut.getHeight();
+    UINT outD = imOut.getDepth();
+    
+    UINT realSx = min( min(sx, inW-inX), outW-outX );
+    UINT realSy = min( min(sy, inH-inY), outH-outY );
+    UINT realSz = min( min(sz, inD-inZ), outD-outZ );
+
+    typename Image<T1>::volType slIn = imIn.getSlices() + inZ;
+    typename Image<T2>::volType slOut = imOut.getSlices() + outZ;
+    
+    for (UINT z=0;z<realSz;z++)
+    {
+	typename Image<T1>::sliceType lnIn = *slIn + inY;
+	typename Image<T2>::sliceType lnOut = *slOut + outY;
+	
+	for (UINT y=0;y<realSy;y++)
+	  copyLine<T1,T2>(lnIn[y]+inX, realSx, lnOut[y]+outX);
+	
+	slIn++;
+	slOut++;
+    }
+      
+    imOut.modified();
+    return RES_OK;
+}
+
+//! 2D overload
+template <class T1, class T2>
+RES_T copy(const Image<T1> &imIn, UINT inX, UINT inY, UINT sx, UINT sy, Image<T2> &imOut, UINT outX=0, UINT outY=0, UINT outZ=0)
+{
+    return copy(imIn, inX, inY, 0, sx, sy, 1, imOut, outX, outY, outZ);
+}
+
+template <class T1, class T2>
+RES_T copy(const Image<T1> &imIn, UINT inX, UINT inY, UINT inZ, Image<T2> &imOut, UINT outX=0, UINT outY=0, UINT outZ=0)
+{
+    return copy(imIn, inX, inY, inZ, imIn.getWidth(), imIn.getHeight(), imIn.getDepth(), imOut, outX, outY, outZ);
+}
+
+//! 2D overload
+template <class T1, class T2>
+RES_T copy(const Image<T1> &imIn, UINT inX, UINT inY, Image<T2> &imOut, UINT outX=0, UINT outY=0, UINT outZ=0)
+{
+    return copy(imIn, inX, inY, 0, imIn.getWidth(), imIn.getHeight(), 1, imOut, outX, outY, outZ);
+}
+
+
+template <class T1, class T2>
+RES_T copy(const Image<T1> &imIn, Image<T2> &imOut, UINT outX, UINT outY, UINT outZ=0)
+{
+    return copy(imIn, 0, 0, 0, imIn.getWidth(), imIn.getHeight(), imIn.getDepth(), imOut, outX, outY, outZ);
+}
+
+
 //! Copy/cast (two images with different types)
 template <class T1, class T2>
 RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
@@ -67,20 +143,19 @@ RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    if (haveSameSize(&imIn, &imOut, NULL))
-    {
-        typename Image<T1>::sliceType l1 = imIn.getLines();
-        typename Image<T2>::sliceType l2 = imOut.getLines();
+    if (!haveSameSize(&imIn, &imOut, NULL))
+	return copy<T1,T2>(imIn, 0, 0, 0, imOut, 0, 0, 0);
 
-	UINT width = imIn.getWidth();
-	
-        for (int i=0;i<imIn.getLineCount();i++)
-	  copyLine<T1,T2>(l1[i], width, l2[i]);
+    typename Image<T1>::sliceType l1 = imIn.getLines();
+    typename Image<T2>::sliceType l2 = imOut.getLines();
 
-        imOut.modified();
-        return RES_OK;
-    }
-    return RES_ERR;
+    UINT width = imIn.getWidth();
+    
+    for (int i=0;i<imIn.getLineCount();i++)
+      copyLine<T1,T2>(l1[i], width, l2[i]);
+
+    imOut.modified();
+    return RES_OK;
 }
 
 //! Copy (two images of same type)
@@ -90,24 +165,21 @@ RES_T copy(const Image<T> &imIn, Image<T> &imOut)
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    if (haveSameSize(&imIn, &imOut, NULL))
-    {
-// 	for (int j=0;j<imIn.getLineCount();j++)
-// 	  copyLine(imIn.getLines()[j], imIn.getWidth(), imOut.getLines()[j]);
-//         memcpy(imOut.getPixels(), imIn.getPixels(), imIn.getAllocatedSize());
-	typename Image<T>::sliceType slIn = imIn.getLines();
-	typename Image<T>::sliceType slOut = imOut.getLines();
-	
-	UINT width = imIn.getWidth();
-	
-	for (int i=0;i<imIn.getLineCount();i++)
-	  copyLine<T>(slIn[i], width, slOut[i]);
+    if (!haveSameSize(&imIn, &imOut, NULL))
+	return copy<T,T>(imIn, 0, 0, 0, imOut, 0, 0, 0);
 
-        imOut.modified();
-        return RES_OK;
-    }
+    typename Image<T>::sliceType slIn = imIn.getLines();
+    typename Image<T>::sliceType slOut = imOut.getLines();
+    
+    UINT width = imIn.getWidth();
+    
+    for (int i=0;i<imIn.getLineCount();i++)
+      copyLine<T>(slIn[i], width, slOut[i]);
+
+    imOut.modified();
     return RES_OK;
 }
+
 
 
 /**
