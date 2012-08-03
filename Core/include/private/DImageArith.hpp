@@ -35,7 +35,7 @@
 
 /**
  * \ingroup Core
- * \defgroup Arith
+ * \defgroup Arith Base/arithmetic operations
  * @{
  */
 
@@ -62,17 +62,19 @@ RES_T fill(Image<T> &imOut, const T &value)
 
 
 /**
- * Copy/crop images
+ * Copy image
  * 
- * Copy a zone of the input image into the output image
+ * Copy an image (or a zone) into an output image
  * \param imIn input image
- * \param "inX, inY, inZ" start position of the zone in the input image
- * \param "sX, sY, sZ" size of the zone in the input image
+ * \param "startX startY [startZ]" (optional) start position of the zone in the input image
+ * \param "sizeX sizeY [sizeZ]" (optional) size of the zone in the input image
  * \param imOut output image
- * \param "outX, outY, outZ" (optional) position to copy the selected zone in the output image (default is 0,0,0)
+ * \param "outStartX outStartY [outStartZ]" (optional) position to copy the selected zone in the output image (default is the origin (0,0,0))
+ * 
+ * \demo{copy_crop.py}
  */
 template <class T1, class T2>
-RES_T copy(const Image<T1> &imIn, UINT inX, UINT inY, UINT inZ, UINT sx, UINT sy, UINT sz, Image<T2> &imOut, UINT outX=0, UINT outY=0, UINT outZ=0)
+RES_T copy(const Image<T1> &imIn, UINT startX, UINT startY, UINT startZ, UINT sizeX, UINT sizeY, UINT sizeZ, Image<T2> &imOut, UINT outStartX=0, UINT outStartY=0, UINT outStartZ=0)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
@@ -85,20 +87,20 @@ RES_T copy(const Image<T1> &imIn, UINT inX, UINT inY, UINT inZ, UINT sx, UINT sy
     UINT outH = imOut.getHeight();
     UINT outD = imOut.getDepth();
     
-    UINT realSx = min( min(sx, inW-inX), outW-outX );
-    UINT realSy = min( min(sy, inH-inY), outH-outY );
-    UINT realSz = min( min(sz, inD-inZ), outD-outZ );
+    UINT realSx = min( min(sizeX, inW-startX), outW-outStartX );
+    UINT realSy = min( min(sizeY, inH-startY), outH-outStartY );
+    UINT realSz = min( min(sizeZ, inD-startZ), outD-outStartZ );
 
-    typename Image<T1>::volType slIn = imIn.getSlices() + inZ;
-    typename Image<T2>::volType slOut = imOut.getSlices() + outZ;
+    typename Image<T1>::volType slIn = imIn.getSlices() + startZ;
+    typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
     
     for (UINT z=0;z<realSz;z++)
     {
-	typename Image<T1>::sliceType lnIn = *slIn + inY;
-	typename Image<T2>::sliceType lnOut = *slOut + outY;
+	typename Image<T1>::sliceType lnIn = *slIn + startY;
+	typename Image<T2>::sliceType lnOut = *slOut + outStartY;
 	
 	for (UINT y=0;y<realSy;y++)
-	  copyLine<T1,T2>(lnIn[y]+inX, realSx, lnOut[y]+outX);
+	  copyLine<T1,T2>(lnIn[y]+startX, realSx, lnOut[y]+outStartX);
 	
 	slIn++;
 	slOut++;
@@ -108,35 +110,35 @@ RES_T copy(const Image<T1> &imIn, UINT inX, UINT inY, UINT inZ, UINT sx, UINT sy
     return RES_OK;
 }
 
-//! 2D overload
+// 2D overload
 template <class T1, class T2>
-RES_T copy(const Image<T1> &imIn, UINT inX, UINT inY, UINT sx, UINT sy, Image<T2> &imOut, UINT outX=0, UINT outY=0, UINT outZ=0)
+RES_T copy(const Image<T1> &imIn, UINT startX, UINT startY, UINT sizeX, UINT sizeY, Image<T2> &imOut, UINT outStartX=0, UINT outStartY=0, UINT outStartZ=0)
 {
-    return copy(imIn, inX, inY, 0, sx, sy, 1, imOut, outX, outY, outZ);
+    return copy(imIn, startX, startY, 0, sizeX, sizeY, 1, imOut, outStartX, outStartY, outStartZ);
 }
 
 template <class T1, class T2>
-RES_T copy(const Image<T1> &imIn, UINT inX, UINT inY, UINT inZ, Image<T2> &imOut, UINT outX=0, UINT outY=0, UINT outZ=0)
+RES_T copy(const Image<T1> &imIn, UINT startX, UINT startY, UINT startZ, Image<T2> &imOut, UINT outStartX=0, UINT outStartY=0, UINT outStartZ=0)
 {
-    return copy(imIn, inX, inY, inZ, imIn.getWidth(), imIn.getHeight(), imIn.getDepth(), imOut, outX, outY, outZ);
+    return copy(imIn, startX, startY, startZ, imIn.getWidth(), imIn.getHeight(), imIn.getDepth(), imOut, outStartX, outStartY, outStartZ);
 }
 
-//! 2D overload
+// 2D overload
 template <class T1, class T2>
-RES_T copy(const Image<T1> &imIn, UINT inX, UINT inY, Image<T2> &imOut, UINT outX=0, UINT outY=0, UINT outZ=0)
+RES_T copy(const Image<T1> &imIn, UINT startX, UINT startY, Image<T2> &imOut, UINT outStartX=0, UINT outStartY=0, UINT outStartZ=0)
 {
-    return copy(imIn, inX, inY, 0, imIn.getWidth(), imIn.getHeight(), 1, imOut, outX, outY, outZ);
+    return copy(imIn, startX, startY, 0, imIn.getWidth(), imIn.getHeight(), 1, imOut, outStartX, outStartY, outStartZ);
 }
 
 
 template <class T1, class T2>
-RES_T copy(const Image<T1> &imIn, Image<T2> &imOut, UINT outX, UINT outY, UINT outZ=0)
+RES_T copy(const Image<T1> &imIn, Image<T2> &imOut, UINT outStartX, UINT outStartY, UINT outStartZ=0)
 {
-    return copy(imIn, 0, 0, 0, imIn.getWidth(), imIn.getHeight(), imIn.getDepth(), imOut, outX, outY, outZ);
+    return copy(imIn, 0, 0, 0, imIn.getWidth(), imIn.getHeight(), imIn.getDepth(), imOut, outStartX, outStartY, outStartZ);
 }
 
 
-//! Copy/cast (two images with different types)
+// Copy/cast two images with different types but same size (quick way)
 template <class T1, class T2>
 RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
 {
@@ -158,28 +160,46 @@ RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
     return RES_OK;
 }
 
-//! Copy (two images of same type)
+
+/**
+ * Crop image
+ * 
+ * Crop an image into an output image
+ * \param imIn input image
+ * \param "startX startY [startZ]" start position of the zone in the input image
+ * \param "sizeX sizeY [sizeZ]" size of the zone in the input image
+ * \param imOut output image
+ * 
+ * \demo{copy_crop.py}
+ */
 template <class T>
-RES_T copy(const Image<T> &imIn, Image<T> &imOut)
+RES_T crop(const Image<T> &imIn, UINT startX, UINT startY, UINT startZ, UINT sizeX, UINT sizeY, UINT sizeZ, Image<T> &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    if (!haveSameSize(&imIn, &imOut, NULL))
-	return copy<T,T>(imIn, 0, 0, 0, imOut, 0, 0, 0);
-
-    typename Image<T>::sliceType slIn = imIn.getLines();
-    typename Image<T>::sliceType slOut = imOut.getLines();
+    UINT inW = imIn.getWidth();
+    UINT inH = imIn.getHeight();
+    UINT inD = imIn.getDepth();
     
-    UINT width = imIn.getWidth();
+    UINT outW = imOut.getWidth();
+    UINT outH = imOut.getHeight();
+    UINT outD = imOut.getDepth();
     
-    for (int i=0;i<imIn.getLineCount();i++)
-      copyLine<T>(slIn[i], width, slOut[i]);
-
-    imOut.modified();
-    return RES_OK;
+    UINT realSx = min(sizeX, inW-startX);
+    UINT realSy = min(sizeY, inH-startY);
+    UINT realSz = min(sizeZ, inD-startZ);
+    
+    imOut.setSize(realSx, realSy, realSz);
+    return copy(imIn, startX, startY, startZ, imOut, 0, 0, 0);
 }
 
+// 2D overload
+template <class T>
+RES_T crop(const Image<T> &imIn, UINT startX, UINT startY, UINT sizeX, UINT sizeY, Image<T> &imOut)
+{
+    return crop(imIn, startX, startY, 0, sizeX, sizeY, 1, imOut);
+}
 
 
 /**
@@ -188,7 +208,7 @@ RES_T copy(const Image<T> &imIn, Image<T> &imOut)
  * \param imIn Input image.
  * \param imOut Output image.
  *
- * \sa Image::operator~
+ * \see Image::operator~
  */
 template <class T>
 RES_T inv(Image<T> &imIn, Image<T> &imOut)
@@ -197,12 +217,13 @@ RES_T inv(Image<T> &imIn, Image<T> &imOut)
 }
 
 /**
- * Add two images.
- *
- * \param[in] imIn1 Input image 1.
- * \param[in] imIn2 Input image 2.
- * \param imOut Output image.
- * \see addNoSat
+ * Addition
+ * 
+ * Addition between two images (or between an image and a constant value)
+ * \param imIn1 input image 1
+ * \param "imIn2 (or val)" input image 2 (or constant value)
+ * \param imOut output image
+ * \see Image::operator+
  */
 template <class T>
 RES_T add(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
@@ -210,14 +231,6 @@ RES_T add(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
     return binaryImageFunction<T, addLine<T> >(imIn1, imIn2, imOut);
 }
 
-/**
- * Add a constant value to an image.
- *
- * \param imIn Input image.
- * \param value The constant value to add.
- * \param imOut Output image.
- * \see addNoSat
- */
 template <class T>
 RES_T add(Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
@@ -225,11 +238,12 @@ RES_T add(Image<T> &imIn1, const T &value, Image<T> &imOut)
 }
 
 /**
- * Add two images without checking saturation.
- *
- * \param "imIn1 imIn2" Input images.
- * \param imOut Output image.
- * \see add
+ * Addition (without saturation check)
+ * 
+ * Addition between two images (or between an image and a constant value) without checking the saturation
+ * \param imIn1 input image 1
+ * \param "imIn2 (or val)" input image 2 (or constant value)
+ * \param imOut output image
  */
 template <class T>
 RES_T addNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
@@ -237,20 +251,21 @@ RES_T addNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
     return binaryImageFunction<T, addNoSatLine<T> >(imIn1, imIn2, imOut);
 }
 
-/**
- * Add a constant value to an image without checking saturation.
- *
- * \param imIn Input image.
- * \param value The constant value to add.
- * \param imOut Output image.
- * \see add
- */
 template <class T>
 RES_T addNoSat(Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, addNoSatLine<T> >(imIn1, value, imOut);
 }
 
+
+/**
+ * Subtraction
+ * 
+ * Subtraction between two images (or between an image and a constant value)
+ * \param imIn1 input image 1
+ * \param "imIn2 (or val)" input image 2 (or a constant value)
+ * \param imOut output image containing \c imIn1-imIn2 (or \c imIn1-val)
+ */
 template <class T>
 RES_T sub(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
 {
