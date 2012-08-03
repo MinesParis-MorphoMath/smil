@@ -64,26 +64,25 @@ def bench(func, *args, **keywords):
 imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/DNA_small.png")
 #imIn.show()
 
-for imType in (Image_UINT8,):
-  tmpIm = imType(imIn)
-  im1 = imType(sx, sy)
-  im2 = imType(im1)
-  im3 = imType(im1)
-  
-  copy(imIn, tmpIm)
-  resize(tmpIm, im1)
+tmpIm = Image(imIn)
+im1 = Image(sx, sy)
+im2 = Image(im1)
+im3 = Image(im1)
 
-  bench(fill,im1, 0)
-  bench(inv, im1, im2)
-  bench(sup, im1, im2, im3)
+copy(imIn, tmpIm)
+resize(tmpIm, im1)
 
-  bench(dilate, im1, im2, hSE(1))
-  bench(dilate, im1, im2, sSE(1))
-  bench(erode, im1, im2, hSE(1))
-  bench(erode, im1, im2, sSE(1))
-  bench(open, im1, im2, hSE(1))
-  bench(open, im1, im2, sSE(1))
-  bench(close	, im1, im2, hSE(1))
-  bench(close	, im1, im2, sSE(1))
+bench(fill,im1, 0)
+bench(inv, im1, im2)
+bench(sup, im1, im2, im3)
 
-  print 
+bench(dilate, im1, im2, hSE(1))
+bench(dilate, im1, im2, sSE(1))
+bench(erode, im1, im2, hSE(1))
+bench(erode, im1, im2, sSE(1))
+bench(open, im1, im2, hSE(1))
+bench(open, im1, im2, sSE(1))
+bench(close	, im1, im2, hSE(1))
+bench(close	, im1, im2, sSE(1))
+
+print 
