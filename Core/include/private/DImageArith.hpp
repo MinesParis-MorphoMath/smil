@@ -160,6 +160,21 @@ RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
     return RES_OK;
 }
 
+template <class T>
+RES_T copy(const Image<T> &imIn, Image<T> &imOut)
+{
+    if (!areAllocated(&imIn, &imOut, NULL))
+        return RES_ERR_BAD_ALLOCATION;
+
+    if (!haveSameSize(&imIn, &imOut, NULL))
+	return copy<T,T>(imIn, 0, 0, 0, imOut, 0, 0, 0);
+
+    typename Image<T>::lineType pixIn = imIn.getPixels();
+    typename Image<T>::lineType pixOut = imOut.getPixels();
+    
+//     copyLine<T>(pixIn, imIn.getPixelCount(), pixOut);
+    memcpy(pixOut, pixIn, imIn.getPixelCount());
+}
 
 /**
  * Crop image
