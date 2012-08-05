@@ -76,16 +76,16 @@ public:
     typedef typename imageType::sliceType sliceType;
 
     unaryImageFunction() {}
-    unaryImageFunction( imageType &imIn, imageType &ImOut ) 
+    unaryImageFunction( const imageType &imIn, imageType &ImOut ) 
     {
         this->retVal = this->_exec ( imIn, ImOut );
     }
-    unaryImageFunction( imageType &imIn, T value ) 
+    unaryImageFunction( const imageType &imIn, const T &value ) 
     {
         this->retVal = this->_exec (imIn, value);
     }
     
-    inline RES_T operator() ( imageType &imIn, imageType &ImOut )
+    inline RES_T operator() ( const imageType &imIn, imageType &ImOut )
     {
         return this->_exec ( imIn, ImOut );
     }
@@ -94,8 +94,8 @@ public:
         return this->_exec ( ImOut, value );
     }
 
-    inline RES_T _exec ( imageType &imIn, imageType &imOut );
-    inline RES_T _exec ( imageType &imOut, T &value );
+    inline RES_T _exec ( const imageType &imIn, imageType &imOut );
+    inline RES_T _exec ( imageType &imOut, const T &value );
 
 //   protected:
     lineFunction_T lineFunction;
@@ -113,27 +113,27 @@ public:
     typedef typename imageType::sliceType sliceType;
 
     binaryImageFunction() {}
-    binaryImageFunction ( imageType &imIn1, imageType &imIn2, imageType &ImOut )
+    binaryImageFunction ( const imageType &imIn1, const imageType &imIn2, imageType &ImOut )
     {
         this->retVal = this->_exec ( imIn1, imIn2, ImOut );
     }
-    binaryImageFunction ( imageType &imIn, T value, imageType &ImOut )
+    binaryImageFunction ( const imageType &imIn, const T &value, imageType &ImOut )
     {
         this->retVal = this->_exec ( imIn, value, ImOut );
     }
     
-    inline RES_T operator() ( imageType &imIn1, imageType &imIn2, imageType &ImOut )
+    inline RES_T operator() ( const imageType &imIn1, const imageType &imIn2, imageType &ImOut )
     {
         return this->_exec ( imIn1, imIn2, ImOut );
     }
-    inline RES_T operator() ( imageType &imIn, T value, imageType &ImOut )
+    inline RES_T operator() ( const imageType &imIn, const T &value, imageType &ImOut )
     {
         return this->_exec ( imIn, value, ImOut );
     }
 
-    inline RES_T _exec ( imageType &imIn1, imageType &imIn2, imageType &imOut );
-    inline RES_T _exec ( imageType &imIn, imageType &imInOut );
-    inline RES_T _exec ( imageType &imIn, T value, imageType &imOut );
+    inline RES_T _exec ( const imageType &imIn1, const imageType &imIn2, imageType &imOut );
+    inline RES_T _exec ( const imageType &imIn, imageType &imInOut );
+    inline RES_T _exec ( const imageType &imIn, const T &value, imageType &imOut );
 
 //   protected:
     lineFunction_T lineFunction;
@@ -150,46 +150,46 @@ public:
     typedef typename imageType::sliceType sliceType;
 
     tertiaryImageFunction() {}
-    tertiaryImageFunction( imageType &imIn1, imageType &imIn2, imageType &imIn3, imageType &ImOut )
+    tertiaryImageFunction( const imageType &imIn1, const imageType &imIn2, const imageType &imIn3, imageType &ImOut )
     {
         this->retVal = this->_exec ( imIn1, imIn2, imIn3, ImOut );
     }
-    tertiaryImageFunction( imageType &imIn1, T value, imageType &imIn2, imageType &ImOut )
+    tertiaryImageFunction( const imageType &imIn1, const T &value, const imageType &imIn2, imageType &ImOut )
     {
         this->retVal = this->_exec ( imIn1, value, imIn2, ImOut );
     }
-    tertiaryImageFunction( imageType &imIn1, imageType &imIn2, T value, imageType &ImOut )
+    tertiaryImageFunction( const imageType &imIn1, const imageType &imIn2, const T &value, imageType &ImOut )
     {
         this->retVal = this->_exec ( imIn1, imIn2, value, ImOut );
     }
-    tertiaryImageFunction( imageType &imIn, T value1, T value2, imageType &ImOut )
+    tertiaryImageFunction( const imageType &imIn, const T &value1, const T &value2, imageType &ImOut )
     {
         this->retVal = this->_exec ( imIn, value1, value2, ImOut );
     }
     
     
-    inline RES_T operator() ( imageType &imIn1, imageType &imIn2, imageType &imIn3, imageType &ImOut )
+    inline RES_T operator() ( const imageType &imIn1, const imageType &imIn2, const imageType &imIn3, imageType &ImOut )
     {
         return this->_exec ( imIn1, imIn2, imIn3, ImOut );
     }
-    inline RES_T operator() ( imageType &imIn1, T value, imageType &imIn2, imageType &ImOut )
+    inline RES_T operator() ( const imageType &imIn1, const T &value, const imageType &imIn2, imageType &ImOut )
     {
         return this->_exec ( imIn1, value, imIn2, ImOut );
     }
-    inline RES_T operator() ( imageType &imIn1, imageType &imIn2, T value, imageType &ImOut )
+    inline RES_T operator() ( const imageType &imIn1, const imageType &imIn2, const T &value, imageType &ImOut )
     {
         return this->_exec ( imIn1, imIn2, value, ImOut );
     }
-    inline RES_T operator() ( imageType &imIn, T value1, T value2, imageType &ImOut )
+    inline RES_T operator() ( const imageType &imIn, const T &value1, const T &value2, imageType &ImOut )
     {
         return this->_exec ( imIn, value1, value2, ImOut );
     }
 
-    inline RES_T _exec ( imageType &imIn1, imageType &imIn2, imageType &imIn3, imageType &imOut );
+    inline RES_T _exec ( const imageType &imIn1, const imageType &imIn2, const imageType &imIn3, imageType &imOut );
 //     static RES_T _exec(imageType &imIn1, imageType &imInOut);
-    inline RES_T _exec ( imageType &imIn1, T value, imageType &imIn2, imageType &imOut );
-    inline RES_T _exec ( imageType &imIn1, imageType &imIn2, T value, imageType &imOut );
-    inline RES_T _exec ( imageType &imIn, T value1, T value2, imageType &imOut );
+    inline RES_T _exec ( const imageType &imIn1, const T &value, const imageType &imIn2, imageType &imOut );
+    inline RES_T _exec ( const imageType &imIn1, const imageType &imIn2, const T &value, imageType &imOut );
+    inline RES_T _exec ( const imageType &imIn, const T &value1, const T &value2, imageType &imOut );
 
 //   protected:
     lineFunction_T lineFunction;
