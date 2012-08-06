@@ -70,7 +70,7 @@ void Core::registerObject(baseObject *obj)
     
     registeredObjects.push_back(obj);
     obj->registered = true;
-//     cout << obj->getClassName() << " created." << endl;
+    cout << obj->getClassName() << " created." << endl;
 }
 
 void Core::unregisterObject(baseObject *obj)
@@ -82,7 +82,7 @@ void Core::unregisterObject(baseObject *obj)
 
     registeredObjects.erase(newEnd, registeredObjects.end());
     obj->registered = false;
-//     cout << obj->getClassName() << " deleted." << endl;
+    cout << obj->getClassName() << " deleted." << endl;
     
     if (!keepAlive && registeredObjects.size()==0)
 	kill();

@@ -226,7 +226,7 @@ RES_T crop(const Image<T> &imIn, UINT startX, UINT startY, UINT sizeX, UINT size
  * \see Image::operator~
  */
 template <class T>
-RES_T inv(Image<T> &imIn, Image<T> &imOut)
+RES_T inv(const Image<T> &imIn, Image<T> &imOut)
 {
     return unaryImageFunction<T, invLine<T> >(imIn, imOut);
 }
@@ -241,13 +241,13 @@ RES_T inv(Image<T> &imIn, Image<T> &imOut)
  * \see Image::operator+
  */
 template <class T>
-RES_T add(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T add(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, addLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T add(Image<T> &imIn1, const T &value, Image<T> &imOut)
+RES_T add(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, addLine<T> >(imIn1, value, imOut);
 }
@@ -261,13 +261,13 @@ RES_T add(Image<T> &imIn1, const T &value, Image<T> &imOut)
  * \param imOut output image
  */
 template <class T>
-RES_T addNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T addNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, addNoSatLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T addNoSat(Image<T> &imIn1, const T &value, Image<T> &imOut)
+RES_T addNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, addNoSatLine<T> >(imIn1, value, imOut);
 }
@@ -282,37 +282,37 @@ RES_T addNoSat(Image<T> &imIn1, const T &value, Image<T> &imOut)
  * \param imOut output image containing \c imIn1-imIn2 (or \c imIn1-val)
  */
 template <class T>
-RES_T sub(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T sub(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, subLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T sub(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T sub(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, subLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-RES_T subNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T subNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, subNoSatLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T subNoSat(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T subNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, subNoSatLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-RES_T sup(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T sup(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, supLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-Image<T>& sup(Image<T> &imIn1, Image<T> &imIn2)
+Image<T>& sup(const Image<T> &imIn1, const Image<T> &imIn2)
 {
     static Image<T> newIm(imIn1);
     sup(imIn1, imIn2, newIm);
@@ -320,27 +320,27 @@ Image<T>& sup(Image<T> &imIn1, Image<T> &imIn2)
 }
 
 template <class T>
-RES_T sup(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T sup(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, supLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-RES_T inf(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T inf(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, infLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-Image<T>& inf(Image<T> &imIn1, Image<T> &imIn2)
+Image<T> inf(const Image<T> &imIn1, const Image<T> &imIn2)
 {
-    static Image<T> newIm(imIn1);
+    Image<T> newIm(imIn1);
     inf(imIn1, imIn2, newIm);
     return newIm;
 }
 
 template <class T>
-RES_T inf(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T inf(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, infLine<T> >(imIn1, imIn2, imOut);
 }
@@ -350,13 +350,13 @@ RES_T inf(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
  * \return[imOut] image with max(T) when true and 0 otherwise
  */
 template <class T>
-RES_T equ(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T equ(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, equLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-bool equ(Image<T> &imIn1, Image<T> &imIn2)
+bool equ(const Image<T> &imIn1, const Image<T> &imIn2)
 {
     typedef typename Image<T>::lineType lineType;
     lineType pix1 = imIn1.getPixels();
@@ -375,134 +375,134 @@ bool equ(Image<T> &imIn1, Image<T> &imIn2)
  * \return abs(p1-p2) for each pixels pair.
  */
 template <class T>
-RES_T diff(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T diff(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, diffLine<T> >(imIn1, imIn2, imOut);
 }
 
 
 template <class T>
-RES_T grt(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T grt(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, grtLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T grt(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T grt(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, grtLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-RES_T grtOrEqu(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T grtOrEqu(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, grtOrEquLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T grtOrEqu(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T grtOrEqu(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, grtOrEquLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-RES_T low(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T low(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, lowLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T low(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T low(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, lowLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-RES_T lowOrEqu(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T lowOrEqu(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, lowOrEquLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T lowOrEqu(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T lowOrEqu(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, lowLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-RES_T div(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T div(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, divLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T div(Image<T> &imIn, T value, Image<T> &imOut)
+RES_T div(const Image<T> &imIn, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
 }
 
 template <class T>
-RES_T mul(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T mul(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, mulLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T mul(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T mul(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-RES_T mulNoSat(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T mulNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, mulLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T mulNoSat(Image<T> &imIn1, T value, Image<T> &imOut)
+RES_T mulNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
     return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
 }
 
 template <class T>
-RES_T logicAnd(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T logicAnd(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, logicAndLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T logicOr(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T logicOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, logicOrLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T logicXOr(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imOut)
+RES_T logicXOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, logicXOrLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
-RES_T test(Image<T> &imIn1, Image<T> &imIn2, Image<T> &imIn3, Image<T> &imOut)
+RES_T test(const Image<T> &imIn1, const Image<T> &imIn2, const Image<T> &imIn3, Image<T> &imOut)
 {
     return tertiaryImageFunction<T, testLine<T> >(imIn1, imIn2, imIn3, imOut);
 }
 
 template <class T>
-RES_T test(Image<T> &imIn1, Image<T> &imIn2, T value, Image<T> &imOut)
+RES_T test(const Image<T> &imIn1, const Image<T> &imIn2, const T &value, Image<T> &imOut)
 {
     return tertiaryImageFunction<T, testLine<T> >(imIn1, imIn2, value, imOut);
 }
 
 template <class T>
-RES_T test(Image<T> &imIn1, T value, Image<T> &imIn2, Image<T> &imOut)
+RES_T test(const Image<T> &imIn1, const T &value, const Image<T> &imIn2, Image<T> &imOut)
 {
     return tertiaryImageFunction<T, testLine<T> >(imIn1, value, imIn2, imOut);
 }
 
 template <class T>
-RES_T test(Image<T> &imIn, T value1, T value2, Image<T> &imOut)
+RES_T test(const Image<T> &imIn, const T &value1, const T &value2, Image<T> &imOut)
 {
     return tertiaryImageFunction<T, testLine<T> >(imIn, value1, value2, imOut);
 }
@@ -516,7 +516,7 @@ RES_T test(Image<T> &imIn, T value1, T value2, Image<T> &imOut)
  * \param imIn Input image.
  */
 template <class T>
-double vol(Image<T> &imIn)
+double vol(const Image<T> &imIn)
 {
     if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
@@ -538,7 +538,7 @@ double vol(Image<T> &imIn)
  * \param imIn Input image.
  */
 template <class T>
-T minVal(Image<T> &imIn)
+T minVal(const Image<T> &imIn)
 {
     if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
@@ -561,7 +561,7 @@ T minVal(Image<T> &imIn)
  * \param imIn Input image.
  */
 template <class T>
-T maxVal(Image<T> &imIn)
+T maxVal(const Image<T> &imIn)
 {
     if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
@@ -584,7 +584,7 @@ T maxVal(Image<T> &imIn)
  * \param imIn Input image.
  */
 template <class T>
-void rangeVal(Image<T> &imIn, T *ret_min, T *ret_max)
+void rangeVal(const Image<T> &imIn, T *ret_min, T *ret_max)
 {
     if (!imIn.isAllocated())
     {

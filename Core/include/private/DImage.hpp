@@ -55,7 +55,7 @@ public:
     //! Default constructor
     Image(bool _triggerEvents=true);
     Image(UINT w, UINT h, UINT d = 1);
-    Image(const Image<T> &rhs, bool cloneit=false);
+    Image(const Image<T> & rhs, bool cloneit=false);
     template <class T2>
     Image(const Image<T2> &rhs, bool cloneit=false);
     Image(const char *fileName);
@@ -85,14 +85,14 @@ public:
     }
     
     //! Return the value of the pixel at pos x,y(,z)
-    inline T getPixel(UINT x, UINT y, UINT z=0)
+    inline T getPixel(UINT x, UINT y, UINT z=0) const
     {
 	if (x>=width || y>=height || z>=depth)
 	    return T(NULL);
 	return pixels[z*width*height+y*width+x];
     }
     //! Return the value of the pixel at a given offset
-    inline T getPixel(UINT offset)
+    inline T getPixel(UINT offset) const
     {
 	if (offset >= pixelCount)
 	    return RES_ERR;
@@ -100,7 +100,7 @@ public:
     }
 
     //! Set the value of the pixel at pos x,y,z (for 3D image)
-    inline RES_T setPixel(UINT x, UINT y, UINT z, T value)
+    inline RES_T setPixel(UINT x, UINT y, UINT z, const T &value)
     {
 	if (x>=width || y>=height || z>=depth)
 	    return RES_ERR;
@@ -110,13 +110,13 @@ public:
     }
     
     //! Set the value of the pixel at pos x,y
-    inline RES_T setPixel(UINT x, UINT y, T value)
+    inline RES_T setPixel(UINT x, UINT y, const T &value)
     {
 	return setPixel(x, y, 0, value);
     }
     
     //! Set the value of the pixel at a given offset
-    inline RES_T setPixel(UINT offset, T value)
+    inline RES_T setPixel(UINT offset, const T &value)
     {
 	if (offset >= pixelCount)
 	    return RES_ERR;
@@ -135,17 +135,17 @@ public:
     bool isVisible() { return (viewer && viewer->isVisible()); }
     
     virtual void init();
-    Image<T>& clone(const Image<T> &rhs);
+    inline void clone(const Image<T> &rhs);
     template <class T2>
-    Image<T>& clone(const Image<T2> &rhs);
+    inline void clone(const Image<T2> &rhs);
     Image<T>& clone(void);
     void setSize(int w, int h, int d = 1, bool doAllocate = true);
     void setSize(baseImage &rhs, bool doAllocate = true) { setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); }
     RES_T allocate(void);
     RES_T deallocate(void);
 
-    void printSelf(ostream &os, bool displayPixVals);
-    virtual void printSelf(ostream &os=std::cout)
+    void printSelf(ostream &os, bool displayPixVals) const;
+    virtual void printSelf(ostream &os=std::cout) const
     {
 	printSelf(os, false);
     }
@@ -174,88 +174,85 @@ public:
 
     void modified();
 
-    const T dataTypeMax;
-    const T dataTypeMin;
+    T dataTypeMax;
+    T dataTypeMin;
 
-    Image<T>& operator = (Image<T> &rhs);
+    Image<T>& operator = (const Image<T> &rhs);
     //! Copy image
-    Image<T>& operator << (Image<T> &rhs);
+    Image<T>& operator << (const Image<T> &rhs);
     //! Fill image
-    Image<T>& operator << (T value);
+    Image<T>& operator << (const T &value);
     //! Negate image
-    Image<T>& operator ~ ();
+    Image<T> operator ~ () const;
     //! Add image
-    Image<T>& operator + (Image<T> &rhs);
+    Image<T> operator + (const Image<T> &rhs);
     //! Add value
-    Image<T>& operator + (T value);
+    Image<T> operator + (const T &value);
     //! Image addition assignment
-    Image<T>& operator += (Image<T> &rhs);
+    Image<T>& operator += (const Image<T> &rhs);
     //! Value addition assignment
-    Image<T>& operator += (T value);
+    Image<T>& operator += (const T &value);
     //! Sub image
-    Image<T>& operator - (Image<T> &rhs);
+    Image<T> operator - (const Image<T> &rhs);
     //! Sub value
-    Image<T>& operator - (T value);
+    Image<T> operator - (const T &value);
     //! Image subtraction assignment
-    Image<T>& operator -= (Image<T> &rhs);
+    Image<T>& operator -= (const Image<T> &rhs);
     //! Value subtraction assignment
-    Image<T>& operator -= (T value);
+    Image<T>& operator -= (const T &value);
     //! Multiply by image
-    Image<T>& operator * (Image<T> &rhs);
+    Image<T> operator * (const Image<T> &rhs);
     //! Multiply by value
-    Image<T>& operator * (T value);
+    Image<T> operator * (const T &value);
     //! Image multiplication assignment
-    Image<T>& operator *= (Image<T> &rhs);
+    Image<T>& operator *= (const Image<T> &rhs);
     //! Value multiplication assignment
-    Image<T>& operator *= (T value);
+    Image<T>& operator *= (const T &value);
     //! Divide by image
-    Image<T>& operator / (Image<T> &rhs);
+    Image<T> operator / (const Image<T> &rhs);
     //! Divide by value
-    Image<T>& operator / (T value);
+    Image<T> operator / (const T &value);
     //! Image division assignment
-    Image<T>& operator /= (Image<T> &rhs);
+    Image<T>& operator /= (const Image<T> &rhs);
     //! Value division assignment
-    Image<T>& operator /= (T value);
+    Image<T>& operator /= (const T &value);
     //! Equal boolean operator (see \ref equ).
-    Image<T>& operator == (Image<T> &rhs);
+    Image<T> operator == (const Image<T> &rhs);
     //! Lower boolean operator (see \ref low)
-    Image<T>& operator < (Image<T> &rhs);
+    Image<T> operator < (const Image<T> &rhs);
     //! Lower boolean operator (see \ref low)
-    Image<T>& operator < (T value);
+    Image<T> operator < (const T &value);
     //! Lower or equal boolean operator (see \ref lowOrEqu)
-    Image<T>& operator <= (Image<T> &rhs);
+    Image<T> operator <= (const Image<T> &rhs);
     //! Lower or equal boolean operator (see \ref lowOrEqu)
-    Image<T>& operator <= (T value);
+    Image<T> operator <= (const T &value);
     //! Greater boolean operator (see \ref grt)
-    Image<T>& operator > (Image<T> &rhs);
+    Image<T> operator > (const Image<T> &rhs);
     //! Greater boolean operator (see \ref grt)
-    Image<T>& operator > (T value);
+    Image<T> operator > (const T &value);
     //! Greater or equal boolean operator (see \ref grt)
-    Image<T>& operator >= (Image<T> &rhs);
+    Image<T> operator >= (const Image<T> &rhs);
     //! Greater or equal boolean operator (see \ref grt)
-    Image<T>& operator >= (T value);
+    Image<T> operator >= (const T &value);
 
-    Image<T>& operator | (Image<T> &rhs);
-    Image<T>& operator | (T value);
-    Image<T>& operator |= (Image<T> &rhs);
-    Image<T>& operator |= (T value);
-    Image<T>& operator & (Image<T> &rhs);
-    Image<T>& operator & (T value);
-    Image<T>& operator &= (Image<T> &rhs);
-    Image<T>& operator &= (T value);
+    Image<T> operator | (const Image<T> &rhs);
+    Image<T> operator | (const T &value);
+    Image<T>& operator |= (const Image<T> &rhs);
+    Image<T>& operator |= (const T &value);
+    Image<T> operator & (const Image<T> &rhs);
+    Image<T> operator & (const T &value);
+    Image<T>& operator &= (const Image<T> &rhs);
+    Image<T>& operator &= (const T &value);
     
     operator bool() { return vol(*this)==numeric_limits<T>::max()*pixelCount; }
     
-    Image<T>& operator << (const lineType tab);
-    Image<T>& operator << (vector<T> vect);
+    Image<T>& operator << (const lineType &tab);
+    Image<T>& operator << (vector<T> &vect);
     
     Image<T>& operator << (const char *s);
     Image<T>& operator >> (const char *s);
 protected:
   
-    Image<T> *operIm;
-    void updateOperIm();
-    
     lineType pixels;
     sliceType  lines;
     volType slices;

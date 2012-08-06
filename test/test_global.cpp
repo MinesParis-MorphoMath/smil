@@ -35,6 +35,26 @@
 
 #include <vector>
 
+class A
+{
+public:
+  void func(const A &a)
+  {
+    cout << a.val << endl;
+  }
+  int val;
+};
+
+Image_UINT8 create(void)
+{
+    Image_UINT8 a;
+    return a;
+}
+
+void outFunc(const Image_UINT8 &a)
+{
+    cout << a.getPixelCount() << endl;
+}
 
 int main(int argc, char *argv[])
 {
@@ -45,8 +65,13 @@ int main(int argc, char *argv[])
     
     
     Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/lena.png");
-    Image_UINT8 im2("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png");
-    
+    Image_UINT8 im2(im1);
+
+    im2 = (~im1);
+    cout << "-------------" << endl;
+    (im1+(unsigned char)100).printSelf();
+//     outFunc(create());
+//     return 1;
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
     
@@ -62,13 +87,13 @@ int main(int argc, char *argv[])
 //       {
 // 	  im1.setPixel(i,j, i);
 //       }
-    Image_UINT8 im3(im1);
+//     Image_UINT8 im3(im1);
     
     
     im1.show("im1");
     im2.show("im2");
     
-    copy(im2, 256, 0, 0, im1);
+//     copy(im2, 256, 0, 0, im1);
     
 
     

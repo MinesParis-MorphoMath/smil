@@ -67,6 +67,7 @@ Image<T>::Image(const Image<T> &rhs, bool cloneit)
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
+  cout << "copy" << endl;
     triggerEvents = true;
     init();
     if (cloneit) clone(rhs);
@@ -106,8 +107,6 @@ Image<T>::~Image()
     if (viewer)
 	delete viewer;
     
-    if (operIm)
-      delete operIm;
 }
 
 
@@ -128,19 +127,9 @@ void Image<T>::init()
      viewer = NULL;
      name = "";
      
-     operIm = NULL;
-     
      updatesEnabled = true;
      
      parentClass::init();
-}
-
-template <class T>
-void Image<T>::updateOperIm()
-{
-    if (!operIm)
-      operIm = new Image<T>(false);
-    operIm->setSize(*this);
 }
 
 template <class T>
@@ -203,33 +192,30 @@ void Image<T>::show(const char *_name, bool labelImage)
 
 
 template <class T>
-Image<T>& Image<T>::clone(const Image<T> &rhs)
+void Image<T>::clone(const Image<T> &rhs)
 { 
     bool isAlloc = rhs.isAllocated();
     setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
     if (isAlloc)
       memcpy(this->pixels, rhs.getPixels(), allocatedSize);
     modified();
-    return *this;
 }
 
 template <class T>
 template <class T2>
-Image<T>& Image<T>::clone(const Image<T2> &rhs)
+void Image<T>::clone(const Image<T2> &rhs)
 { 
     bool isAlloc = rhs.isAllocated();
     setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
     if (isAlloc)
       copy(rhs, *this);
     modified();
-    return *this;
 }
 
 template <class T>
 Image<T>& Image<T>::clone(void)
 { 
-    updateOperIm();
-    return *operIm;
+    return *this;
 }
 
 template <class T>
@@ -338,7 +324,7 @@ RES_T Image<T>::deallocate(void)
 
 
 template <class T>
-void Image<T>::printSelf(ostream &os, bool displayPixVals)
+void Image<T>::printSelf(ostream &os, bool displayPixVals) const
 {
     if (name!="")
       os << "Image name: " << name << endl;
@@ -386,16 +372,19 @@ void Image<T>::printSelf(ostream &os, bool displayPixVals)
 // OPERATORS
 
 template <class T>
-void operator << (ostream &os, Image<T> &im)
+void operator << (ostream &os, const Image<T> &im)
 {
     im.printSelf(os);
 }
 
 template <class T>
-Image<T>& Image<T>::operator = (Image<T> &rhs)
+Image<T>& Image<T>::operator = (const Image<T> &rhs)
 {
     cout << "= op" << endl;
-    this->clone(rhs);
+    rhs.printSelf();
+    this->allocatedSize = rhs.getAllocatedSize();
+//     this->clone(rhs);
+    copy(rhs, *this);
     return *this;
 }
 
@@ -414,281 +403,281 @@ Image<T>& Image<T>::operator >> (const char *s)
 }
 
 template <class T>
-Image<T>& Image<T>::operator << (Image<T> &rhs)
+Image<T>& Image<T>::operator << (const Image<T> &rhs)
 {
     copy(rhs, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator << (T value)
+Image<T>& Image<T>::operator << (const T &value)
 {
     fill(*this, value);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator ~()
+Image<T> Image<T>::operator ~() const
 {
-    updateOperIm();
-    inv(*this, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    inv(*this, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator + (Image<T> &rhs)
+Image<T> Image<T>::operator + (const Image<T> &rhs)
 {
-    updateOperIm();
-    add(*this, rhs, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    add(*this, rhs, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator + (T value)
+Image<T> Image<T>::operator + (const T &value)
 {
-    updateOperIm();
-    add(*this, value, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    add(*this, value, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator += (Image<T> &rhs)
+Image<T>& Image<T>::operator += (const Image<T> &rhs)
 {
     add(*this, rhs, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator += (T value)
+Image<T>& Image<T>::operator += (const T &value)
 {
     add(*this, value, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator - (Image<T> &rhs)
+Image<T> Image<T>::operator - (const Image<T> &rhs)
 {
-    updateOperIm();
-    sub(*this, rhs, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    sub(*this, rhs, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator - (T value)
+Image<T> Image<T>::operator - (const T &value)
 {
-    updateOperIm();
-    sub(*this, value, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    sub(*this, value, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator -= (Image<T> &rhs)
+Image<T>& Image<T>::operator -= (const Image<T> &rhs)
 {
     sub(*this, rhs, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator -= (T value)
+Image<T>& Image<T>::operator -= (const T &value)
 {
     sub(*this, value, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator * (Image<T> &rhs)
+Image<T> Image<T>::operator * (const Image<T> &rhs)
 {
-    updateOperIm();
-    mul(*this, rhs, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    mul(*this, rhs, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator * (T value)
+Image<T> Image<T>::operator * (const T &value)
 {
-    updateOperIm();
-    mul(*this, value, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    mul(*this, value, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator *= (Image<T> &rhs)
+Image<T>& Image<T>::operator *= (const Image<T> &rhs)
 {
     mul(*this, rhs, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator *= (T value)
+Image<T>& Image<T>::operator *= (const T &value)
 {
     mul(*this, value, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator / (Image<T> &rhs)
+Image<T> Image<T>::operator / (const Image<T> &rhs)
 {
-    updateOperIm();
-    div(*this, rhs, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    div(*this, rhs, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator / (T value)
+Image<T> Image<T>::operator / (const T &value)
 {
-    updateOperIm();
-    div(*this, value, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    div(*this, value, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator /= (Image<T> &rhs)
+Image<T>& Image<T>::operator /= (const Image<T> &rhs)
 {
     div(*this, rhs, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator /= (T value)
+Image<T>& Image<T>::operator /= (const T &value)
 {
     div(*this, value, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator == (Image<T> &rhs)
+Image<T> Image<T>::operator == (const Image<T> &rhs)
 {
-    updateOperIm();
-    equ(*this, rhs, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    equ(*this, rhs, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator < (Image<T> &rhs)
+Image<T> Image<T>::operator < (const Image<T> &rhs)
 {
-    updateOperIm();
-    low(*this, rhs, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    low(*this, rhs, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator < (T value)
+Image<T> Image<T>::operator < (const T &value)
 {
-    updateOperIm();
-    low(*this, value, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    low(*this, value, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator <= (Image<T> &rhs)
+Image<T> Image<T>::operator <= (const Image<T> &rhs)
 {
-    updateOperIm();
-    lowOrEqu(*this, rhs, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    lowOrEqu(*this, rhs, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator <= (T value)
+Image<T> Image<T>::operator <= (const T &value)
 {
-    updateOperIm();
-    lowOrEqu(*this, value, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    lowOrEqu(*this, value, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator > (Image<T> &rhs)
+Image<T> Image<T>::operator > (const Image<T> &rhs)
 {
-    updateOperIm();
-    grt(*this, rhs, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    grt(*this, rhs, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator > (T value)
+Image<T> Image<T>::operator > (const T &value)
 {
-    updateOperIm();
-    grt(*this, value, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    grt(*this, value, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator >= (Image<T> &rhs)
+Image<T> Image<T>::operator >= (const Image<T> &rhs)
 {
-    updateOperIm();
-    grtOrEqu(*this, rhs, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    grtOrEqu(*this, rhs, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator >= (T value)
+Image<T> Image<T>::operator >= (const T &value)
 {
-    updateOperIm();
-    grtOrEqu(*this, value, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    grtOrEqu(*this, value, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator | (Image<T> &rhs)
+Image<T> Image<T>::operator | (const Image<T> &rhs)
 {
-    updateOperIm();
-    sup(*this, rhs, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    sup(*this, rhs, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator | (T value)
+Image<T> Image<T>::operator | (const T &value)
 {
-    updateOperIm();
-    sup(*this, value, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    sup(*this, value, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator |= (Image<T> &rhs)
+Image<T>& Image<T>::operator |= (const Image<T> &rhs)
 {
     sup(*this, rhs, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator |= (T value)
+Image<T>& Image<T>::operator |= (const T &value)
 {
     sup(*this, value, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator & (Image<T> &rhs)
+Image<T> Image<T>::operator & (const Image<T> &rhs)
 {
-    updateOperIm();
-    inf(*this, rhs, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    inf(*this, rhs, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator & (T value)
+Image<T> Image<T>::operator & (const T &value)
 {
-    updateOperIm();
-    inf(*this, value, *operIm);
-    return *operIm;
+    Image<T> im(*this);
+    inf(*this, value, im);
+    return im;
 }
 
 template <class T>
-Image<T>& Image<T>::operator &= (Image<T> &rhs)
+Image<T>& Image<T>::operator &= (const Image<T> &rhs)
 {
     inf(*this, rhs, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator &= (T value)
+Image<T>& Image<T>::operator &= (const T &value)
 {
     inf(*this, value, *this);
     return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator << (lineType tab)
+Image<T>& Image<T>::operator << (const lineType &tab)
 {
     for (int i=0;i<pixelCount;i++)
       pixels[i] = tab[i];
@@ -697,7 +686,7 @@ Image<T>& Image<T>::operator << (lineType tab)
 }
 
 template <class T>
-Image<T>& Image<T>::operator << (vector<T> vect)
+Image<T>& Image<T>::operator << (vector<T> &vect)
 {
     typename vector<T>::iterator it = vect.begin();
     typename vector<T>::iterator it_end = vect.end();

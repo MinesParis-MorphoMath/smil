@@ -156,6 +156,7 @@ PTR_ARG_OUT_APPLY(d)
 
 %{
 /* Includes the header in the wrapper code */
+#include "DBaseImage.h"
 #include "DImage.hpp"
 #include "DImage.hxx"
 %}
@@ -165,6 +166,7 @@ PTR_ARG_OUT_APPLY(d)
 
 %include "DBaseImage.h"
 %include "DImage.hpp"
+%include "DImage.hxx"
 
 TEMPLATE_WRAP_CLASS(Image);
 TEMPLATE_WRAP_FUNC(createImage);

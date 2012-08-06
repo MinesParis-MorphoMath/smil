@@ -89,7 +89,7 @@ inline void imageFunctionBase<T>::copyBufferToLine(UINT32 bufIndex, T *line)
 
 
 template <class T, class lineFunction_T>
-inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imOut)
+inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
@@ -112,7 +112,7 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, image
 
 
 template <class T, class lineFunction_T>
-inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, T &value)
+inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, const T &value)
 {
     if (!areAllocated(&imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
@@ -139,7 +139,7 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, T &v
 
 // Binary image function
 template <class T, class lineFunction_T>
-inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, imageType &imIn2, imageType &imOut)
+inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const imageType &imIn2, imageType &imOut)
 {
     if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
@@ -166,7 +166,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, ima
 
 // Binary image function
 template <class T, class lineFunction_T>
-inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imInOut)
+inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imInOut)
 {
     if (!areAllocated(&imIn, &imInOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
@@ -192,7 +192,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imag
 
 // Binary image function
 template <class T, class lineFunction_T>
-inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T value, imageType &imOut)
+inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, const T &value, imageType &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
@@ -223,7 +223,7 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T va
 
 // Tertiary image function
 template <class T, class lineFunction_T>
-inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, imageType &imIn2, imageType &imIn3, imageType &imOut)
+inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const imageType &imIn2, const imageType &imIn3, imageType &imOut)
 {
     if (!areAllocated(&imIn1, &imIn2, &imIn3, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
@@ -248,7 +248,7 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
 
 // Tertiary image function
 template <class T, class lineFunction_T>
-inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, imageType &imIn2, T value, imageType &imOut)
+inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const imageType &imIn2, const T &value, imageType &imOut)
 {
     if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
@@ -277,14 +277,14 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, i
 }
 
 template <class T, class lineFunction_T>
-inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn1, T value, imageType &imIn2, imageType &imOut)
+inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const T &value, const imageType &imIn2, imageType &imOut)
 {
     return tertiaryImageFunction<T, lineFunction_T>::_exec(imIn1, imIn2, value, imOut);
 }
 
 
 template <class T, class lineFunction_T>
-inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(imageType &imIn, T value1, T value2, imageType &imOut)
+inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, const T &value1, const T &value2, imageType &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
