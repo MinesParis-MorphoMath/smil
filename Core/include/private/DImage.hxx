@@ -65,6 +65,7 @@ Image<T>::Image(const Image<T> &rhs, bool cloneData)
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
+    cout << "copy " << &rhs << "->" << this << endl;
     init();
     if (cloneData)
       this->clone(rhs);
@@ -87,9 +88,14 @@ Image<T>::Image(const Image<T2> &rhs, bool cloneData)
 template <class T>
 void Image<T>::clone(const Image<T> &rhs)
 { 
-//     bool isAlloc = rhs.isAllocated();
+    bool isAlloc = rhs.isAllocated();
+    cout << "clone: ";
+    if (isAlloc)
+      cout << "alloc" << endl;
+    else
+      cout << "not alloc" << endl;
     this->setSize(rhs);
-//     if (isAlloc)
+    if (isAlloc)
       memcpy(this->pixels, rhs.getPixels(), this->allocatedSize);
     modified();
 }
@@ -121,11 +127,10 @@ template <class T>
 Image<T>::~Image()
 { 
     hide();
-    deallocate();
-    
-    if (viewer)
+    if (viewer)      
 	delete viewer;
     
+    this->deallocate();
 }
 
 
@@ -234,8 +239,8 @@ RES_T Image<T>::allocate(void)
     if (this->allocated)
 	return RES_ERR_BAD_ALLOCATION;
     
-    this->pixels = createAlignedBuffer<T>(pixelCount);
-//     pixels = new pixelType[pixelCount];
+//     this->pixels = createAlignedBuffer<T>(pixelCount);
+    pixels = new pixelType[pixelCount];
     
     
     this->allocated = true;
@@ -291,22 +296,22 @@ inline int Image<T>::getLineAlignment(UINT l)
 template <class T>
 RES_T Image<T>::deallocate(void)
 {
-    if (!allocated)
+    if (!this->allocated)
 	return RES_OK;
     
-    if (slices)
-	delete[] slices;
-    if (lines)
-	delete[] lines;
-    if (pixels)
-// 		delete[] pixels;
-		deleteAlignedBuffer<T>(pixels);
-    slices = NULL;
-    lines = NULL;
-    pixels = NULL;
+    if (this->slices)
+	delete[] this->slices;
+    if (this->lines)
+	delete[] this->lines;
+    if (this->pixels)
+		delete[] pixels;
+// 		deleteAlignedBuffer<T>(pixels);
+    this->slices = NULL;
+    this->lines = NULL;
+    this->pixels = NULL;
 
-    allocated = false;
-    allocatedSize = 0;
+    this->allocated = false;
+    this->allocatedSize = 0;
     
     return RES_OK;
 }

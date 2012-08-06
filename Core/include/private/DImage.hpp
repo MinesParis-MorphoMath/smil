@@ -67,6 +67,7 @@ public:
     // Assignment operator
     Image<T>& operator = (const Image<T> &rhs)
     {
+	cout << "= assignment: " << this << "=" << &rhs << endl;
 	this->clone(rhs);
 	return *this;
     }
