@@ -53,15 +53,24 @@ class Image : public baseImage
 public:
 
     //! Default constructor
-    Image(bool _triggerEvents=true);
+    Image();
     Image(UINT w, UINT h, UINT d = 1);
-    Image(const Image<T> & rhs, bool cloneit=false);
-    template <class T2>
-    Image(const Image<T2> &rhs, bool cloneit=false);
     Image(const char *fileName);
   
-public:
     ~Image();
+    
+    // Provide explicit copy constructor and assignment operator
+    // Copy constructor
+    Image(const Image<T> & rhs, bool cloneData=true);
+    template <class T2>
+    Image(const Image<T2> &rhs, bool cloneData=true);
+    // Assignment operator
+    Image<T>& operator = (const Image<T> &rhs)
+    {
+	this->clone(rhs);
+	return *this;
+    }
+    
     //! Get the image type.
     //! \return The type of the image data as a string ("UINT8", "UINT16", ...)
     const char* getTypeAsString()
@@ -135,12 +144,15 @@ public:
     bool isVisible() { return (viewer && viewer->isVisible()); }
     
     virtual void init();
-    inline void clone(const Image<T> &rhs);
+    void clone(const Image<T> &rhs);
     template <class T2>
-    inline void clone(const Image<T2> &rhs);
-    Image<T>& clone(void);
+    void clone(const Image<T2> &rhs);
+//     Image<T> clone(void);
     void setSize(int w, int h, int d = 1, bool doAllocate = true);
-    void setSize(baseImage &rhs, bool doAllocate = true) { setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); }
+    void setSize(const baseImage &rhs, bool doAllocate = true) 
+    { 
+	setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); 
+    }
     RES_T allocate(void);
     RES_T deallocate(void);
 
@@ -177,7 +189,6 @@ public:
     T dataTypeMax;
     T dataTypeMin;
 
-    Image<T>& operator = (const Image<T> &rhs);
     //! Copy image
     Image<T>& operator << (const Image<T> &rhs);
     //! Fill image

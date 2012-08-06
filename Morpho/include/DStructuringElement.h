@@ -53,6 +53,25 @@ class StrElt : public baseObject
 	seT(stGeneric), size(s) 
     {
     }
+    StrElt(const StrElt &rhs)
+      : baseObject(rhs)
+    {
+	this->clone(rhs);
+    }
+    StrElt& operator=(const StrElt &rhs)
+    {
+	this->clone(rhs);
+	return *this;
+    }
+    
+    void clone(const StrElt &rhs)
+    {
+	this->seT = rhs.seT;
+	this->size = rhs.size;
+	this->odd = rhs.odd;
+	this->points = rhs.points;
+    }
+    
     vector<Point> points;
     inline void addPoint(int x, int y, int z=0)
     {

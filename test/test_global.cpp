@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/lena.png");
     Image_UINT8 im2(im1);
 
-    im2 = (~im1);
+    im2 = ~im1;
     cout << "-------------" << endl;
     (im1+(unsigned char)100).printSelf();
 //     outFunc(create());

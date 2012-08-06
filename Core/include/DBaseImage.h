@@ -41,10 +41,24 @@ public:
     baseImage(const char *_className="baseImage")
       :	baseObject(_className),
 	width(0), height(0), depth(0),
+	allocatedSize(0),
 	allocated(false)
     {
     }
+    
+    baseImage(const baseImage &rhs)
+      :	baseObject(rhs),
+	allocated(false)
+    {
+    }
+    
+    
+private:
+    // Forbid implicit assignment operator
+    baseImage& operator=(const baseImage &rhs);
 
+public:
+  
     virtual void init();
     
     inline UINT getWidth() const {
