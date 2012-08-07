@@ -114,7 +114,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     
     slider = new QSlider(Qt::Horizontal, this);
     slider->setSliderPosition(0);
-    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(_repaintImage()) );
+    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(sliderChanged(int)) );
     slider->hide();
     layout->addWidget(slider);
     

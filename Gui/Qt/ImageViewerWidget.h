@@ -72,7 +72,7 @@ public:
     virtual void displayPixelValue(UINT x, UINT y) {}
     virtual void displayMagnifyView(UINT x, UINT y) {}
     virtual void displayMagnifyView() { displayMagnifyView(lastPixX, lastPixY); }
-    virtual void repaintImage() {}
+    virtual void setCurSlice(int n) {}
 
     void setName(QString name);
     void setImageSize(int w, int h, int d=1);
@@ -134,9 +134,10 @@ public slots:
     void zoomIn();
     void zoomOut();
     void scale(double factor);
-    void _repaintImage()
+    void sliderChanged(int newVal)
     {
-	repaintImage();
+	displayHint("Slice #" + QString::number(newVal));
+	setCurSlice(newVal);
     }
 //     void update();
 

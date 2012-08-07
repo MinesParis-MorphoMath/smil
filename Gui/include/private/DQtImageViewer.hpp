@@ -61,7 +61,7 @@ public:
     virtual void update();
     virtual void drawOverlay(Image<T> &im);
     virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
-    virtual void repaintImage()
+    virtual void setCurSlice(int n)
     {
 	this->update();
     }

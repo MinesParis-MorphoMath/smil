@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 //       }
 //     Image_UINT8 im3(im1);
     
-    readRAW("/home/faessel/src/Smil/build/lib/test_256_256_10.raw", 256,256,10, im1);
+    readRAW("/home/mat/tmp/test_256_256_10.raw", 256,256,10, im1);
     
     im1.show("im1");
     im2.show("im2");

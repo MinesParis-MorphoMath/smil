@@ -61,7 +61,7 @@ template <class T>
 void qtImageViewer<T>::setImage(Image<T> *im)
 {
     imageViewer<T>::setImage(im);
-    setImageSize(im->getWidth(), im->getHeight());
+    setImageSize(im->getWidth(), im->getHeight(), im->getDepth());
     if (im->getName()!=string(""))
       setName(this->image->getName());
 }

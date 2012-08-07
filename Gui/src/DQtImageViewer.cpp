@@ -37,12 +37,13 @@
 template <>
 void qtImageViewer<UINT8>::drawImage()
 {
-    Image<UINT8>::sliceType lines = this->image->getSlices()[0];
+    Image<UINT8>::sliceType lines = this->image->getSlices()[slider->value()];
     
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
+    UINT d = this->image->getDepth();
     
-    this->setImageSize(w, h);
+    this->setImageSize(w, h, d);
 
     for (int j=0;j<h;j++, lines++)
         memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
