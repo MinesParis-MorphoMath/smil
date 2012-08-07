@@ -135,7 +135,7 @@ public:
     }
 
     //! Get the image viewer (create one if needed)
-    imageViewer<T> const *getViewer();
+    imageViewer<T> *getViewer();
     
     bool updatesEnabled;
     

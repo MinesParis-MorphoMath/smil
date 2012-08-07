@@ -43,8 +43,8 @@ class QImageGraphicsScene : public QGraphicsScene
     Q_OBJECT
 public:
     QImageGraphicsScene(QObject *parent=0);
-    void mouseMoveEvent ( QGraphicsSceneMouseEvent * event );
-    void mousePressEvent ( QGraphicsSceneMouseEvent * event );
+    void mouseMoveEvent (QGraphicsSceneMouseEvent *event);
+    void mousePressEvent (QGraphicsSceneMouseEvent *event);
 signals:
     void onMouseMove(QGraphicsSceneMouseEvent* event);
     void onMousePressed(QGraphicsSceneMouseEvent* event);
@@ -64,6 +64,7 @@ public:
     virtual void mouseReleaseEvent ( QMouseEvent * event );
     virtual void wheelEvent( QWheelEvent* );
     virtual void keyPressEvent(QKeyEvent *);
+    virtual void leaveEvent (QEvent *event);
     
     virtual void setLabelImage(bool val);
     virtual void displayPixelValue(UINT x, UINT y) {}

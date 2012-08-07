@@ -369,6 +369,13 @@ void ImageViewerWidget::scale(double factor)
     emit(onRescaled(scaleFactor));
 }
 
+void ImageViewerWidget::leaveEvent (QEvent *event)
+{
+    // Hide valueLabel and magnView when mouse quits the window
+    valueLabel->hide();
+    magnView->hide();
+}
+
 void ImageViewerWidget::mouseMoveEvent ( QMouseEvent * event )
 {
     QPoint p = event->pos();

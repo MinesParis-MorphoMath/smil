@@ -175,7 +175,7 @@ void Image<T>::createViewer()
 }
 
 template <class T>
-imageViewer<T> const * Image<T>::getViewer()
+imageViewer<T> *Image<T>::getViewer()
 {
     createViewer();
     return viewer;
