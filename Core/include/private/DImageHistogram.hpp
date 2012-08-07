@@ -46,7 +46,7 @@ vector<UINT> histo(Image<T> &imIn)
 	h.push_back(0);
     
     typename Image<T>::lineType pixels = imIn.getPixels();
-    for (int i=0;i<imIn.getPixelCount();i++)
+    for (UINT i=0;i<imIn.getPixelCount();i++)
 	h[pixels[i]-dx] += 1;
     
     return h;

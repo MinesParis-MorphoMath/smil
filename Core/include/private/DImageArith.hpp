@@ -153,7 +153,7 @@ RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
 
     UINT width = imIn.getWidth();
     
-    for (int i=0;i<imIn.getLineCount();i++)
+    for (UINT i=0;i<imIn.getLineCount();i++)
       copyLine<T1,T2>(l1[i], width, l2[i]);
 
     imOut.modified();
@@ -181,10 +181,6 @@ RES_T crop(const Image<T> &imIn, UINT startX, UINT startY, UINT startZ, UINT siz
     UINT inW = imIn.getWidth();
     UINT inH = imIn.getHeight();
     UINT inD = imIn.getDepth();
-    
-    UINT outW = imOut.getWidth();
-    UINT outH = imOut.getHeight();
-    UINT outD = imOut.getDepth();
     
     UINT realSx = min(sizeX, inW-startX);
     UINT realSy = min(sizeY, inH-startY);
@@ -347,7 +343,7 @@ bool equ(const Image<T> &imIn1, const Image<T> &imIn2)
     lineType pix1 = imIn1.getPixels();
     lineType pix2 = imIn2.getPixels();
     
-    for (int i=0;i<imIn1.getPixelCount();i++)
+    for (UINT i=0;i<imIn1.getPixelCount();i++)
       if (pix1[i]!=pix2[i])
 	return false;
       

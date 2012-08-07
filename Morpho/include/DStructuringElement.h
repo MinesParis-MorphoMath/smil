@@ -87,8 +87,8 @@ class StrElt : public baseObject
 	return *this;
     }
     bool odd;
-    UINT size;
     seType seT;
+    UINT size;
     virtual seType getType() { return seT; }
     
     virtual void printSelf(ostream &os=std::cout)

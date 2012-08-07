@@ -64,9 +64,6 @@ RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single_generic(imag
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
 
-    int bufSize = parentClass::lineLen * sizeof(T);
-    int lineCount = imIn.getLineCount();
-    
     int sePtsNumber = se.points.size();
     if (sePtsNumber==0)
 	return RES_OK;

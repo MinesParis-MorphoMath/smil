@@ -65,7 +65,6 @@ Image<T>::Image(const Image<T> &rhs, bool cloneData)
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
-    cout << "copy " << &rhs << "->" << this << endl;
     init();
     if (cloneData)
       this->clone(rhs);
@@ -89,12 +88,7 @@ template <class T>
 void Image<T>::clone(const Image<T> &rhs)
 { 
     bool isAlloc = rhs.isAllocated();
-    cout << "clone: ";
-    if (isAlloc)
-      cout << "alloc" << endl;
-    else
-      cout << "not alloc" << endl;
-    this->setSize(rhs);
+    this->setSize(rhs, isAlloc);
     if (isAlloc)
       memcpy(this->pixels, rhs.getPixels(), this->allocatedSize);
     modified();
@@ -211,7 +205,7 @@ void Image<T>::show(const char *_name, bool labelImage)
 
 
 template <class T>
-void Image<T>::setSize(int w, int h, int d, bool doAllocate)
+void Image<T>::setSize(UINT w, UINT h, UINT d, bool doAllocate)
 {
     if (w==this->width && h==this->height && d==this->depth)
 	return;
@@ -321,6 +315,9 @@ RES_T Image<T>::deallocate(void)
 template <class T>
 void Image<T>::printSelf(ostream &os, bool displayPixVals) const
 {
+#if DEBUG_LEVEL > 1
+    cout << "Image::printSelf: " << this << endl;
+#endif // DEBUG_LEVEL > 1
     if (name!="")
       os << "Image name: " << name << endl;
     
@@ -663,7 +660,7 @@ Image<T>& Image<T>::operator &= (const T &value)
 template <class T>
 Image<T>& Image<T>::operator << (const lineType &tab)
 {
-    for (int i=0;i<pixelCount;i++)
+    for (UINT i=0;i<pixelCount;i++)
       pixels[i] = tab[i];
     modified();
     return *this;
@@ -675,7 +672,7 @@ Image<T>& Image<T>::operator << (vector<T> &vect)
     typename vector<T>::iterator it = vect.begin();
     typename vector<T>::iterator it_end = vect.end();
     
-    for (int i=0;i<pixelCount;i++, it++)
+    for (UINT i=0;i<pixelCount;i++, it++)
     {
       if (it==it_end)
 	break;

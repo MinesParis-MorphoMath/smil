@@ -41,14 +41,16 @@ public:
     baseImage(const char *_className="baseImage")
       :	baseObject(_className),
 	width(0), height(0), depth(0),
-	allocatedSize(0),
-	allocated(false)
+	allocated(false),
+	allocatedSize(0)
     {
     }
     
     baseImage(const baseImage &rhs)
       :	baseObject(rhs),
-	allocated(false)
+	width(0), height(0), depth(0),
+	allocated(false),
+	allocatedSize(0)
     {
     }
     
@@ -86,30 +88,30 @@ public:
     
     inline void getSize(UINT *w, UINT *h, UINT *d)
     {
-	*w = width;
-	*h = height;
-	*d = depth;
+	*w = this->width;
+	*h = this->height;
+	*d = this->depth;
     }
     
     inline void getSize(UINT s[3])
     {
-	s[0] = width;
-	s[1] = height;
-	s[2] = depth;
+	s[0] = this->width;
+	s[1] = this->height;
+	s[2] = this->depth;
     }
     
     inline UINT getPixelCount() const {
-        return pixelCount;
+        return this->pixelCount;
     }
     inline UINT getLineCount() const {
-        return lineCount;
+        return this->lineCount;
     }
     inline UINT getSliceCount() const {
-        return sliceCount;
+        return this->sliceCount;
     }
 
     inline bool isAllocated() const {
-        return allocated;
+        return this->allocated;
     }
 
     virtual void* getVoidPointer() = 0;
@@ -117,17 +119,17 @@ public:
 
     inline UINT getOffsetFromCoords(UINT x, UINT y, UINT z)
     {
-	if (x>=width) return -1;
-	if (y>=height) return -1;
-	if (z>=depth) return -1;
-	return z*width*height + y*width + x;
+	if (x>=this->width) return -1;
+	if (y>=this->height) return -1;
+	if (z>=this->depth) return -1;
+	return z*this->width*this->height + y*this->width + x;
     }
 
     inline void getCoordsFromOffset(UINT off, UINT &x, UINT &y, UINT &z)
     {
-	z = off / (width*height);
-	y = (off % (width*height))/width;
-	x = off % width;
+	z = off / (this->width*this->height);
+	y = (off % (this->width*this->height))/this->width;
+	x = off % this->width;
     }
 
     virtual void show(const char* name=NULL) {}
@@ -161,9 +163,9 @@ inline bool haveSameSize(const baseImage *im, ...)
     va_list vargs;
 
     va_start(vargs, im);
-    int w = im->getWidth();
-    int h = im->getHeight();
-    int d = im->getDepth();
+    UINT w = im->getWidth();
+    UINT h = im->getHeight();
+    UINT d = im->getDepth();
 
     const baseImage *obj;
     while ((obj = va_arg(vargs, const baseImage*)))

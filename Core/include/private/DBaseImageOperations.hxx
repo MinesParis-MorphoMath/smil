@@ -33,9 +33,9 @@
 #include "DImage.hpp"
 #include "DMemory.hpp"
 
-#ifdef SMIL_USE_OPEN_MP
+#ifdef USE_OPEN_MP
 #include <omp.h>
-#endif // SMIL_USE_OPEN_MP
+#endif // USE_OPEN_MP
 
 template <class T>
 struct fillLine;
@@ -95,7 +95,6 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn,
         return RES_ERR_BAD_ALLOCATION;
 
     int lineLen = imIn.getWidth();
-    int bufSize = lineLen * sizeof(T);
     int lineCount = imIn.getLineCount();
 
     lineType *srcLines = imIn.getLines();
@@ -144,19 +143,17 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn
     if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imIn1.getWidth();
-    int lineCount = imIn1.getLineCount();
+    UINT lineLen = imIn1.getWidth();
+    UINT lineCount = imIn1.getLineCount();
 
     lineType *srcLines1 = imIn1.getLines();
     lineType *srcLines2 = imIn2.getLines();
     lineType *destLines = imOut.getLines();
 
-    int i, chunk = 100;
-    
     #pragma omp parallel shared(srcLines1,srcLines2,destLines,chunk) private(i)
     {
 	#pragma omp for schedule(dynamic,chunk) nowait
-	for (i=0;i<lineCount;i++)
+	for (UINT i=0;i<lineCount;i++)
 	    lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
     }
     imOut.modified();
@@ -229,7 +226,6 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &im
         return RES_ERR_BAD_ALLOCATION;
 
     int lineLen = imIn1.getWidth();
-    int bufSize = lineLen * sizeof(T);
     int lineCount = imIn1.getLineCount();
 
     sliceType srcLines1 = imIn1.getLines();

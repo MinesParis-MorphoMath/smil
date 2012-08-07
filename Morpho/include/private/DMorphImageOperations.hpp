@@ -174,7 +174,7 @@ public:
 	    p = sePoints[i];
 	    y = curLine - p.y;
 	    z = curSlice + p.z;
-	    if (y>=0 && y<imSize[1] && z>=0 && z<imSize[2])
+	    if (y>=0 && y<int(imSize[1]) && z>=0 && z<int(imSize[2]))
 	    {
 	      ptList.push_back(p);
 	      relOffsetList.push_back(relativeOffsets[i]);
@@ -217,7 +217,7 @@ public:
 	    {
 		x = curPixel + ptList[i].x;
 		
-		if (x>=0 && x<imSize[0])
+		if (x>=0 && x<int(imSize[0]))
 		  offsetList.push_back(relOffsetList[i]);
 	    }
 	    processPixel(offset, offsetList.begin(), offsetList.end());
@@ -346,7 +346,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(imageType &imIn, 
 template <class T, class lineFunction_T>
 inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, lineType outBuf)
 {
-    if (z<0 || z>=imIn->getSliceCount() || y<0 || y>=imIn->getLineCount())
+    if (z<0 || z>=int(imIn->getSliceCount()) || y<0 || y>=int(imIn->getLineCount()))
       copyLine<T>(borderBuf, lineLen, outBuf);
 // 	memcpy(outBuf, borderBuf, lineLen*sizeof(T));
     else

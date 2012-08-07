@@ -345,7 +345,7 @@ RES_T fillHoles(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
     StrElt tmpSe(se);
     tmpSe.size = 1;
     
-    RES_T res;
+    RES_T res = RES_OK;
     
     Image<T> tmpIm(imIn);
     

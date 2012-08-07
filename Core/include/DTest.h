@@ -66,10 +66,10 @@ public:
   virtual void run() = 0;
   virtual void end() {}
   const char *name;
+  bool stopIfError;
   stringstream *outStream;
   RES_T retVal;
   int tElapsed;
-  bool stopIfError;
 };
 
 

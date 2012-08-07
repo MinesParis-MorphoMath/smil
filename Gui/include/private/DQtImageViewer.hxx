@@ -146,10 +146,10 @@ void qtImageViewer<T>::drawImage()
     else
       coeff = double(numeric_limits<UINT8>::max()) / double(numeric_limits<T>::max());
 
-    for (int j=0;j<h;j++)
+    for (UINT j=0;j<h;j++)
     {
 	destLine = this->qImage->scanLine(j);
-	for (int i=0;i<w;i++)
+	for (UINT i=0;i<w;i++)
 	    destLine[i] = (UINT8)(coeff * double(pixels[i]));
 	
 	pixels += w;
@@ -182,10 +182,9 @@ void qtImageViewer<T>::drawOverlay(Image<T> &im)
     qOverlayImage->fill(Qt::transparent);
 
     typename Image<T>::lineType pixels = *im.getSlices()[0];
-    UINT pixNbr = im.getWidth()*im.getHeight();
       
-    for (int j=0;j<im.getHeight();j++)
-      for (int i=0;i<im.getWidth();i++)
+    for (UINT j=0;j<im.getHeight();j++)
+      for (UINT i=0;i<im.getWidth();i++)
       {
 	if (*pixels!=0)
 	  qOverlayImage->setPixel(i, j, overlayColorTable[(UINT8)*pixels]);
@@ -216,13 +215,10 @@ void qtImageViewer<T>::displayMagnifyView(UINT x, UINT y)
     int gridSize = magnView->getGridSize();
     int halfGrid = (gridSize-1)/2;
     
-    int xi = x-halfGrid;
     int yi = y-halfGrid;
 
     int imW = qImage->width();
     int imH = qImage->height();
-
-    double s = magnView->getScaleFactor() / gridSize;
 
     typename ImDtTypes<T>::sliceType pSlice = parentClass::image->getSlices()[0];
     typename ImDtTypes<T>::lineType pLine;

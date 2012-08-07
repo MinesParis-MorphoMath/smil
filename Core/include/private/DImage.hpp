@@ -67,7 +67,6 @@ public:
     // Assignment operator
     Image<T>& operator = (const Image<T> &rhs)
     {
-	cout << "= assignment: " << this << "=" << &rhs << endl;
 	this->clone(rhs);
 	return *this;
     }
@@ -145,12 +144,12 @@ public:
     bool isVisible() { return (viewer && viewer->isVisible()); }
     
     virtual void init();
-    void clone(const Image<T> &rhs);
+    inline void clone(const Image<T> &rhs);
     template <class T2>
-    void clone(const Image<T2> &rhs);
+    inline void clone(const Image<T2> &rhs);
 //     Image<T> clone(void);
-    void setSize(int w, int h, int d = 1, bool doAllocate = true);
-    void setSize(const baseImage &rhs, bool doAllocate = true) 
+    inline void setSize(UINT w, UINT h, UINT d = 1, bool doAllocate = true);
+    inline void setSize(const baseImage &rhs, bool doAllocate = true) 
     { 
 	setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); 
     }
@@ -187,8 +186,8 @@ public:
 
     void modified();
 
-    T dataTypeMax;
     T dataTypeMin;
+    T dataTypeMax;
 
     //! Copy image
     Image<T>& operator << (const Image<T> &rhs);
