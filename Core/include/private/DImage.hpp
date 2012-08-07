@@ -71,19 +71,6 @@ public:
 	return *this;
     }
     
-#if defined(GNU_CXX_0X) && !defined(SWIG)
-private:
-    // gnu++0x move
-    void swap(Image<T> &rhs);
-public:
-    // Move assignment operator (with rvalue reference)
-    Image<T>& operator = (Image<T> &&rhs)
-    {
-	swap(rhs);
-	return *this;
-    }
-#endif // defined(GNU_CXX_0X) && !defined(SWIG)
-
   
     //! Get the image type.
     //! \return The type of the image data as a string ("UINT8", "UINT16", ...)
