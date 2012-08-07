@@ -346,7 +346,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(imageType &imIn, 
 template <class T, class lineFunction_T>
 inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, lineType outBuf)
 {
-    if (z<0 || z>=int(imIn->getSliceCount()) || y<0 || y>=int(imIn->getLineCount()))
+    if (z<0 || z>=int(imIn->getDepth()) || y<0 || y>=int(imIn->getHeight()))
       copyLine<T>(borderBuf, lineLen, outBuf);
 // 	memcpy(outBuf, borderBuf, lineLen*sizeof(T));
     else

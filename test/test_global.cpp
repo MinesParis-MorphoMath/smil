@@ -64,10 +64,10 @@ int main(int argc, char *argv[])
 //     Image_UINT8 im1;
     
     
-    Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/lena.png");
+    Image_UINT8 im1(200, 200, 50);
     Image_UINT8 im2(im1);
 
-    im2 << ( (im1>UINT8(100)) & im1 );
+//     im2 << ( (im1>UINT8(100)) & im1 );
 //     return 1;
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
@@ -86,7 +86,12 @@ int main(int argc, char *argv[])
 //       }
 //     Image_UINT8 im3(im1);
     
-    readRAW("/home/mat/tmp/test_256_256_10.raw", 256,256,10, im1);
+//     readRAW("/home/mat/tmp/test_256_256_10.raw", 256,256,10, im1);
+    im1 << UINT8(0);
+    im1.setPixel(100,100,25,  255);
+    im2.setSize(im1);
+    
+    dilate(im1, im2, cubeSE(10));
     
     im1.show("im1");
     im2.show("im2");

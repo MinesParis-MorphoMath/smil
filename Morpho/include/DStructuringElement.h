@@ -239,6 +239,56 @@ class sSE0 : public StrElt
     }
 };
 
+
+/**
+ * 3D Cubic structuring element.
+ * 
+ * Points :
+ * 
+ * z=-1
+ * <table>
+ *   <tr>  <th>14</th> <th>13</th> <th>12</th>  </tr>
+ *   <tr>  <th>15</th> <th>10</th> <th>11</th>  </tr>
+ *   <tr>  <th>16</th> <th>17</th> <th>18</th>  </tr>
+ * </table>
+ * z=0
+ * <table>
+ *   <tr>  <th>5</th> <th>4</th> <th>3</th>  </tr>
+ *   <tr>  <th>6</th> <th>1</th> <th>2</th>  </tr>
+ *   <tr>  <th>7</th> <th>8</th> <th>9</th>  </tr>
+ * </table>
+ * z=1
+ * <table>
+ *   <tr>  <th>23</th> <th>22</th> <th>21</th>  </tr>
+ *   <tr>  <th>24</th> <th>19</th> <th>20</th>  </tr>
+ *   <tr>  <th>25</th> <th>26</th> <th>27</th>  </tr>
+ * </table>
+ * 
+ */
+class cubeSE : public StrElt
+{
+  public:
+    cubeSE(UINT s=1) : StrElt(s)
+    {
+	className = "cubeSE";
+	odd = false;
+	int zList[] = { 0, -1, 1 };
+	for (int i=0;i<3;i++)
+	{
+	    int z = zList[i];
+	    addPoint(0,0,z);	// 1
+	    addPoint(1,0,z);	// 2
+	    addPoint(1,1,z);	// 3
+	    addPoint(0,1,z);	// 4
+	    addPoint(-1,1,z);	// 5
+	    addPoint(-1,0,z);	// 6
+	    addPoint(-1,-1,z);	// 7
+	    addPoint(0,-1,z);	// 8
+	    addPoint(1,-1,z);	// 9
+	}
+    }
+};
+
 StrElt DEFAULT_SE = sSE();
 
 StrElt getDefaultSE()
