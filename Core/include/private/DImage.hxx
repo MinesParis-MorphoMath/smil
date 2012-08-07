@@ -175,7 +175,7 @@ void Image<T>::createViewer()
 }
 
 template <class T>
-const imageViewer<T> *Image<T>::getViewer()
+imageViewer<T> const * Image<T>::getViewer()
 {
     createViewer();
     return viewer;
@@ -679,6 +679,17 @@ Image<T>& Image<T>::operator << (vector<T> &vect)
       pixels[i] = *it;
     }
     modified();
+    return *this;
+}
+
+template <class T>
+Image<T>& Image<T>::operator >> (vector<T> &vect)
+{
+    vect.clear();
+    for (UINT i=0;i<pixelCount;i++)
+    {
+	vect.push_back(pixels[i]);
+    }
     return *this;
 }
 

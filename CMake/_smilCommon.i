@@ -67,7 +67,6 @@
 
 
 
-
 %rename(__lshift__)  operator<<; 
 %ignore *::operator=;
 

@@ -158,13 +158,22 @@ RES_T trans(Image<T> &imIn, int dx, int dy, Image<T> &imOut, T borderValue = num
     return trans<T>(imIn, dx, dy, 0, imOut, borderValue);
 }
 
-// template <class T>
-// Image<T> trans(Image<T> &imIn, UINT dx, UINT dy, T borderValue = numeric_limits<T>::min())
-// {
-//     Image<T> imOut(imIn);
-//     trans<T>(imIn, dx, dy, imOut, borderValue);
-//     return imOut;
-// }
+template <class T>
+Image<T> trans(Image<T> &imIn, int dx, int dy, int dz, T borderValue = numeric_limits<T>::min())
+{
+    Image<T> imOut(imIn);
+    trans<T>(imIn, dx, dy, dz, imOut, borderValue);
+    return imOut;
+}
+
+template <class T>
+Image<T> trans(Image<T> &imIn, int dx, int dy, T borderValue = numeric_limits<T>::min())
+{
+    Image<T> imOut(imIn);
+    trans<T>(imIn, dx, dy, 0, imOut, borderValue);
+    return imOut;
+}
+
 
 /**
  * 2D bilinear resize algorithm.

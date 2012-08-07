@@ -123,9 +123,14 @@ PTR_ARG_OUT_APPLY(d)
 
 %include std_vector.i
 
-%template(objVector) vector<baseObject*>;
-%template(uintVector) vector<UINT>;
-
+// Expose std::vector<> as a Python list
+namespace std 
+{
+    %template(objVector) vector<baseObject*>;
+    %template(uintVector) vector<UINT>;
+    %template(ucharVector) vector<UINT8>;
+    %template(ushortVector) vector<UINT16>;
+}
 
 
 

@@ -172,8 +172,10 @@ RES_T copy(const Image<T> &imIn, Image<T> &imOut)
     typename Image<T>::lineType pixIn = imIn.getPixels();
     typename Image<T>::lineType pixOut = imOut.getPixels();
     
-//     copyLine<T>(pixIn, imIn.getPixelCount(), pixOut);
-    memcpy(pixOut, pixIn, imIn.getPixelCount());
+    copyLine<T>(pixIn, imIn.getPixelCount(), pixOut);
+//     memcpy(pixOut, pixIn, imIn.getPixelCount());
+    imOut.modified();
+    return RES_OK;
 }
 
 /**

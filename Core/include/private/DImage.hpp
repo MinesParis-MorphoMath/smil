@@ -135,7 +135,7 @@ public:
     }
 
     //! Get the image viewer (create one if needed)
-    const imageViewer<T> *getViewer();
+    imageViewer<T> const *getViewer();
     
     bool updatesEnabled;
     
@@ -257,8 +257,12 @@ public:
     
     operator bool() { return vol(*this)==numeric_limits<T>::max()*pixelCount; }
     
+    //! Import image data from an array
     Image<T>& operator << (const lineType &tab);
+    //! Import image data from a vector
     Image<T>& operator << (vector<T> &vect);
+    //! Export image data to a vector
+    Image<T>& operator >> (vector<T> &vect);
     
     Image<T>& operator << (const char *s);
     Image<T>& operator >> (const char *s);
