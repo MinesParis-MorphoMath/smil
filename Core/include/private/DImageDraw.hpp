@@ -59,14 +59,14 @@ inline RES_T drawRectangle(Image<T> &imOut, UINT x0, UINT y0, UINT width, UINT h
     
     if (fill)
     {
-	for (int j=y0;j<=y1;j++)
+	for (UINT j=y0;j<=y1;j++)
 	  fillFunc(lines[j]+x1, width-1, value);
     }
     else
     {
 	fillFunc(lines[y0]+x0, width, value);
 	fillFunc(lines[y1]+x0, width, value);
-	for (int j=y0+1;j<=y1;j++)
+	for (UINT j=y0+1;j<=y1;j++)
 	{
 	    lines[j][x0] = value;
 	    lines[j][x1] = value;

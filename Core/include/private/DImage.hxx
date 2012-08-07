@@ -41,12 +41,11 @@
 
 
 template <class T>
-Image<T>::Image(bool _triggerEvents)
+Image<T>::Image()
   : baseImage("Image"),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
-    triggerEvents = _triggerEvents;
     init();
 }
 
@@ -56,36 +55,56 @@ Image<T>::Image(UINT w, UINT h, UINT d)
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
-    triggerEvents = true;
     init(); 
     setSize(w, h, d);
 }
 
 template <class T>
-Image<T>::Image(const Image<T> &rhs, bool cloneit)
-  : baseImage("Image"),
+Image<T>::Image(const Image<T> &rhs, bool cloneData)
+  : baseImage(rhs),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
-  cout << "copy" << endl;
-    triggerEvents = true;
     init();
-    if (cloneit) clone(rhs);
-    else setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth());
+    if (cloneData)
+      this->clone(rhs);
+    else this->setSize(rhs);
 }
 
 template <class T>
 template <class T2>
-Image<T>::Image(const Image<T2> &rhs, bool cloneit)
-  : baseImage("Image"),
+Image<T>::Image(const Image<T2> &rhs, bool cloneData)
+  : baseImage(rhs),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
-    triggerEvents = true;
     init();
-    if (cloneit) clone(rhs);
-    else setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth());
+    if (cloneData) 
+      this->clone(rhs);
+    else setSize(rhs);
 }
+
+template <class T>
+void Image<T>::clone(const Image<T> &rhs)
+{ 
+    bool isAlloc = rhs.isAllocated();
+    this->setSize(rhs, isAlloc);
+    if (isAlloc)
+      memcpy(this->pixels, rhs.getPixels(), this->allocatedSize);
+    modified();
+}
+
+template <class T>
+template <class T2>
+void Image<T>::clone(const Image<T2> &rhs)
+{ 
+    bool isAlloc = rhs.isAllocated();
+    this->setSize(rhs, isAlloc);
+    if (isAlloc)
+      copy(rhs, *this);
+    modified();
+}
+
 
 template <class T>
 Image<T>::Image(const char *fileName)
@@ -102,11 +121,10 @@ template <class T>
 Image<T>::~Image()
 { 
     hide();
-    deallocate();
-    
-    if (viewer)
+    if (viewer)      
 	delete viewer;
     
+    this->deallocate();
 }
 
 
@@ -114,22 +132,16 @@ Image<T>::~Image()
 template <class T>
 void Image<T>::init() 
 { 
-    className = "Image";
-    
-    slices = NULL;
-    lines = NULL;
-    pixels = NULL;
+    this->slices = NULL;
+    this->lines = NULL;
+    this->pixels = NULL;
 
-    dataTypeSize = sizeof(pixelType); 
+    this->dataTypeSize = sizeof(pixelType); 
     
-    allocatedSize = 0;
-    
-     viewer = NULL;
-     name = "";
+    this->viewer = NULL;
+    this->updatesEnabled = true;
      
-     updatesEnabled = true;
-     
-     parentClass::init();
+    parentClass::init();
 }
 
 template <class T>
@@ -191,67 +203,44 @@ void Image<T>::show(const char *_name, bool labelImage)
 
 
 
-template <class T>
-void Image<T>::clone(const Image<T> &rhs)
-{ 
-    bool isAlloc = rhs.isAllocated();
-    setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
-    if (isAlloc)
-      memcpy(this->pixels, rhs.getPixels(), allocatedSize);
-    modified();
-}
 
 template <class T>
-template <class T2>
-void Image<T>::clone(const Image<T2> &rhs)
-{ 
-    bool isAlloc = rhs.isAllocated();
-    setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
-    if (isAlloc)
-      copy(rhs, *this);
-    modified();
-}
-
-template <class T>
-Image<T>& Image<T>::clone(void)
-{ 
-    return *this;
-}
-
-template <class T>
-void Image<T>::setSize(int w, int h, int d, bool doAllocate)
+void Image<T>::setSize(UINT w, UINT h, UINT d, bool doAllocate)
 {
-    if (w==width && h==height && d==depth)
+    if (w==this->width && h==this->height && d==this->depth)
 	return;
     
-    if (allocated) deallocate();
+    if (this->allocated) 
+      this->deallocate();
     
-    width = w;
-    height = h;
-    depth = d;
+    this->width = w;
+    this->height = h;
+    this->depth = d;
     
-    sliceCount = d;
-    lineCount = sliceCount * h;
-    pixelCount = lineCount * w;
+    this->sliceCount = d;
+    this->lineCount = d * h;
+    this->pixelCount = this->lineCount * w;
     
-    if (doAllocate) allocate();
-    modified();
+    if (doAllocate) 
+      this->allocate();
+    
+    this->modified();
 }
 
 template <class T>
 RES_T Image<T>::allocate(void)
 {
-    if (allocated)
+    if (this->allocated)
 	return RES_ERR_BAD_ALLOCATION;
     
-    pixels = createAlignedBuffer<T>(pixelCount);
-//     pixels = new pixelType[pixelCount];
+//     this->pixels = createAlignedBuffer<T>(pixelCount);
+    pixels = new pixelType[pixelCount];
     
     
-    allocated = true;
-    allocatedSize = pixelCount*sizeof(T);
+    this->allocated = true;
+    this->allocatedSize = this->pixelCount*sizeof(T);
     
-    restruct();
+    this->restruct();
     
     return RES_OK;
 }
@@ -259,18 +248,18 @@ RES_T Image<T>::allocate(void)
 template <class T>
 RES_T Image<T>::restruct(void)
 {
-    if (slices)
-	delete[] slices;
-    if (lines)
-	delete[] lines;
+    if (this->slices)
+	delete[] this->slices;
+    if (this->lines)
+	delete[] this->lines;
     
-    lines =  new lineType[lineCount];
-    slices = new sliceType[sliceCount];
+    this->lines =  new lineType[lineCount];
+    this->slices = new sliceType[sliceCount];
     
-    lineType *cur_line = lines;
-    sliceType *cur_slice = slices;
+    lineType *cur_line = this->lines;
+    sliceType *cur_slice = this->slices;
     
-    int pixelsPerSlice = width * height;
+    int pixelsPerSlice = this->width * this->height;
     
     for (int k=0; k<(int)depth; k++, cur_slice++)
     {
@@ -285,7 +274,7 @@ RES_T Image<T>::restruct(void)
     int w = width%SIMD_VEC_SIZE;
     for (int i=0;i<n;i++)
     {
-      lineAlignment[i] = (SIMD_VEC_SIZE - (i*w)%SIMD_VEC_SIZE)%SIMD_VEC_SIZE;
+      this->lineAlignment[i] = (SIMD_VEC_SIZE - (i*w)%SIMD_VEC_SIZE)%SIMD_VEC_SIZE;
 //       cout << i << " " << lineAlignment[i] << endl;
     }
     
@@ -301,22 +290,22 @@ inline int Image<T>::getLineAlignment(UINT l)
 template <class T>
 RES_T Image<T>::deallocate(void)
 {
-    if (!allocated)
+    if (!this->allocated)
 	return RES_OK;
     
-    if (slices)
-	delete[] slices;
-    if (lines)
-	delete[] lines;
-    if (pixels)
-// 		delete[] pixels;
-		deleteAlignedBuffer<T>(pixels);
-    slices = NULL;
-    lines = NULL;
-    pixels = NULL;
+    if (this->slices)
+	delete[] this->slices;
+    if (this->lines)
+	delete[] this->lines;
+    if (this->pixels)
+		delete[] pixels;
+// 		deleteAlignedBuffer<T>(pixels);
+    this->slices = NULL;
+    this->lines = NULL;
+    this->pixels = NULL;
 
-    allocated = false;
-    allocatedSize = 0;
+    this->allocated = false;
+    this->allocatedSize = 0;
     
     return RES_OK;
 }
@@ -326,6 +315,9 @@ RES_T Image<T>::deallocate(void)
 template <class T>
 void Image<T>::printSelf(ostream &os, bool displayPixVals) const
 {
+#if DEBUG_LEVEL > 1
+    cout << "Image::printSelf: " << this << endl;
+#endif // DEBUG_LEVEL > 1
     if (name!="")
       os << "Image name: " << name << endl;
     
@@ -375,17 +367,6 @@ template <class T>
 void operator << (ostream &os, const Image<T> &im)
 {
     im.printSelf(os);
-}
-
-template <class T>
-Image<T>& Image<T>::operator = (const Image<T> &rhs)
-{
-    cout << "= op" << endl;
-    rhs.printSelf();
-    this->allocatedSize = rhs.getAllocatedSize();
-//     this->clone(rhs);
-    copy(rhs, *this);
-    return *this;
 }
 
 template <class T>
@@ -679,7 +660,7 @@ Image<T>& Image<T>::operator &= (const T &value)
 template <class T>
 Image<T>& Image<T>::operator << (const lineType &tab)
 {
-    for (int i=0;i<pixelCount;i++)
+    for (UINT i=0;i<pixelCount;i++)
       pixels[i] = tab[i];
     modified();
     return *this;
@@ -691,7 +672,7 @@ Image<T>& Image<T>::operator << (vector<T> &vect)
     typename vector<T>::iterator it = vect.begin();
     typename vector<T>::iterator it_end = vect.end();
     
-    for (int i=0;i<pixelCount;i++, it++)
+    for (UINT i=0;i<pixelCount;i++, it++)
     {
       if (it==it_end)
 	break;

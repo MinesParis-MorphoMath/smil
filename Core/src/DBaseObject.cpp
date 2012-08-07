@@ -31,7 +31,9 @@
 #include "DCoreInstance.h"
 
 baseObject::baseObject(bool _register)
-  : className("baseObject"), 
+  : className("baseObject"),
+    name(""),
+    triggerEvents(true),
     registered(false)
 {
     if (_register)
@@ -40,10 +42,27 @@ baseObject::baseObject(bool _register)
 
 baseObject::baseObject(const char *_className, bool _register)
   : className(_className), 
+    name(""),
+    triggerEvents(true),
     registered(false)
 {
     if (_register)
       Core::getInstance()->registerObject(this);
+}
+
+baseObject::baseObject(const baseObject &rhs, bool _register)
+  : registered(false),
+    name("")
+{
+    this->_clone(rhs);
+    if (_register)
+      Core::getInstance()->registerObject(this);
+}
+
+void baseObject::_clone(const baseObject &rhs)
+{
+    this->className = rhs.getClassName();
+    this->triggerEvents = rhs.triggerEvents;
 }
 
 baseObject::~baseObject() 
@@ -56,7 +75,7 @@ Core *baseObject::getCoreInstance()
     return Core::getInstance(); 
 }
 
-const char *baseObject::getClassName()
+const char *baseObject::getClassName() const
 {
     return className.c_str();
 }

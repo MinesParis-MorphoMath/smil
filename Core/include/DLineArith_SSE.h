@@ -59,7 +59,7 @@ struct addLine<UINT8> : public binaryLineFunctionBase<UINT8>
 	
 	unsigned long alignLen = size-size%SIMD_VEC_SIZE;
 	
-	for(int i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
+	for(UINT i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
 	{
 	    r0 = _mm_load_si128(l1);
 	    r1 = _mm_load_si128(l2);
@@ -88,7 +88,7 @@ struct addNoSatLine<UINT8> : public binaryLineFunctionBase<UINT8>
 	
 	unsigned long alignLen = size-size%SIMD_VEC_SIZE;
 	
-	for(int i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
+	for(UINT i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
 	{
 	    r0 = _mm_load_si128(l1);
 	    r1 = _mm_load_si128(l2);
@@ -117,7 +117,7 @@ struct subLine<UINT8> : public binaryLineFunctionBase<UINT8>
 	
 	unsigned long alignLen = size-size%SIMD_VEC_SIZE;
 	
-	for(int i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
+	for(UINT i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
 	{
 	    r0 = _mm_load_si128(l1);
 	    r1 = _mm_load_si128(l2);
@@ -146,7 +146,7 @@ struct subNoSatLine<UINT8> : public binaryLineFunctionBase<UINT8>
 	
 	unsigned long alignLen = size-size%SIMD_VEC_SIZE;
 	
-	for(int i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
+	for(UINT i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
 	{
 	    r0 = _mm_load_si128(l1);
 	    r1 = _mm_load_si128(l2);
@@ -175,7 +175,7 @@ struct supLine<UINT8> : public binaryLineFunctionBase<UINT8>
 	
 	unsigned long alignLen = size-size%SIMD_VEC_SIZE;
 	
-	for(int i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
+	for(UINT i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
 	{
 	    r0 = _mm_load_si128(l1);
 	    r1 = _mm_load_si128(l2);
@@ -204,7 +204,7 @@ struct infLine<UINT8> : public binaryLineFunctionBase<UINT8>
 	
 	unsigned long alignLen = size-size%SIMD_VEC_SIZE;
 	
-	for(int i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
+	for(UINT i=0 ; i<alignLen ; i+=16, l1++, l2++, l3++)
 	{
 	    r0 = _mm_load_si128(l1);
 	    r1 = _mm_load_si128(l2);

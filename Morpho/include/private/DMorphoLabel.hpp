@@ -183,7 +183,7 @@ public:
 // 	for (map<UINT, UINT>::iterator it = lut.begin();it!=lut.end();it++)
 // 	    cout << int((*it).first) << " " << int((*it).second) << endl;
 	  
-	for (int i=0;i<imOut.getPixelCount();i++,this->pixelsOut++)
+	for (UINT i=0;i<imOut.getPixelCount();i++,this->pixelsOut++)
 	  if (*this->pixelsOut!=0)
 	    *this->pixelsOut = lut[*this->pixelsOut];
 	

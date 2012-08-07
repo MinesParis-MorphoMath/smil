@@ -52,20 +52,33 @@ class baseObject
 public:
     baseObject(bool _register=true);
     baseObject(const char *_className, bool _register=true);
+    baseObject(const baseObject &rhs, bool _register=true);
+    
+    // Assignment operator
+    baseObject& operator=(const baseObject &rhs)
+    {
+	this->_clone(rhs);
+	return *this;
+    }
+    
+private:    
+    void _clone(const baseObject &rhs);
+    
+public:
 
     virtual ~baseObject() ;
     
     Core *getCoreInstance();
     typedef void parentClass;
-    virtual const char *getInfoString(string indent = "") { return NULL; }
+    virtual const char *getInfoString(string indent = "") const { return NULL; }
     virtual void printSelf(ostream &os=std::cout) const {}
-    virtual const char *getClassName();
+    virtual const char *getClassName() const;
 
     virtual void setName(const char *_name)
     {
 	name = _name;
     }
-    virtual const char *getName()
+    virtual const char *getName() const
     {
 	return name.c_str();
     }

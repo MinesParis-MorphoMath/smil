@@ -66,12 +66,12 @@ RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
     UINT height = imIn.getHeight();
     UINT depth = imIn.getDepth();
 
-    for (int k=0;k<depth;k++)
+    for (UINT k=0;k<depth;k++)
     {
 	linesIn = slicesIn[k];
 	linesOut = slicesOut[k];
 	
-	for (int j=0;j<height;j++)
+	for (UINT j=0;j<height;j++)
 	  copyLine<T>(linesIn[j], width, linesOut[height-1-j]);
     }
     
@@ -95,11 +95,11 @@ RES_T vFlip(Image<T> &imInOut)
 
     typename Image<T>::lineType tmpLine = ImDtTypes<T>::createLine(width);
       
-    for (int k=0;k<depth;k++)
+    for (UINT k=0;k<depth;k++)
     {
 	linesIn = slicesIn[k];
 	
-	for (int j=0;j<height/2;j++)
+	for (UINT j=0;j<height/2;j++)
 	{
 	    copyLine<T>(linesIn[j], width, tmpLine);
 	    copyLine<T>(linesIn[height-1-j], width, linesIn[j]);
@@ -129,16 +129,16 @@ RES_T trans(Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut, T borderVal
     UINT height = imIn.getHeight();
     UINT depth  = imIn.getDepth();
     
-    for (int k=0;k<depth;k++)
+    for (UINT k=0;k<depth;k++)
     {
 	typename Image<T>::sliceType lOut = imOut.getSlices()[k];
 	
 	int z = k+dz;
-	for (int j=0;j<height;j++, lOut++)
+	for (UINT j=0;j<height;j++, lOut++)
 	{
 	    int y = j+dy;
 	    
-	    if (z<0 || z>=depth || y<0 || y>=height)
+	    if (z<0 || z>=(int)depth || y<0 || y>=(int)height)
 		copyLine<T>(borderBuf, lineLen, *lOut);
 	    else 
 		shiftLine<T>(imIn.getSlices()[z][y], dx, lineLen, *lOut, borderValue);
@@ -194,12 +194,12 @@ RES_T resize(Image<T> &imIn, Image<T> &imOut)
     
     float x_ratio = ((float)(w-1))/w2 ;
     float y_ratio = ((float)(h-1))/h2 ;
-    float x_diff, y_diff, ya, yb ;
+    float x_diff, y_diff;
     int offset = 0 ;
     
-    for (int i=0;i<h2;i++) 
+    for (UINT i=0;i<h2;i++) 
     {
-        for (int j=0;j<w2;j++) 
+        for (UINT j=0;j<w2;j++) 
 	{
             x = (int)(x_ratio * j) ;
             y = (int)(y_ratio * i) ;

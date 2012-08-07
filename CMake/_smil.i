@@ -113,7 +113,7 @@ def Image(*args):
 	  else:
 	      img = srcImgType(*args[1:])
 	else:
-	    img = srcImgType(srcIm)
+	    img = srcImgType(srcIm, False) # (don't clone data)
 	fill(img, 0)
 	    
     elif args[0] in dataTypes: # First arg is an image type string ("UINT8", ...)

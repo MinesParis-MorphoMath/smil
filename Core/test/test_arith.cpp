@@ -45,7 +45,7 @@ class Test_Equal : public TestCase
       
       equ(im1, im2, im3);
       pix = im3.getPixels();
-      for (int i=0;i<im1.getPixelCount();i++)
+      for (UINT i=0;i<im1.getPixelCount();i++)
 	TEST_ASSERT(pix[i]==vecEqu[i]);
       
       imTruth << vecEqu;

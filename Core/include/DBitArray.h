@@ -233,7 +233,7 @@ inline ostream& BitArray::printSelf(ostream &os)
     if (!this->intArray)
       return os;
     
-    for (int i=0;i<bitWidth;i++)
+    for (UINT i=0;i<bitWidth;i++)
     {
       os << this->operator[](i);
       if (i<bitWidth-1)
