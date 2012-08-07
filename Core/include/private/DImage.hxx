@@ -105,6 +105,29 @@ void Image<T>::clone(const Image<T2> &rhs)
     modified();
 }
 
+#if defined(GNU_CXX_0X) && !defined(SWIG)
+template <class T>
+void Image<T>::swap(Image<T> &rhs)
+{
+    this->width = rhs.width;
+    this->height = rhs.height;
+    this->depth = rhs.depth;
+    this->allocated = rhs.allocated;
+    this->pixelCount = rhs.pixelCount;
+    this->lineCount = rhs.lineCount;
+    this->sliceCount = rhs.sliceCount;
+    this->pixels = std::move(rhs.pixels);
+    this->lines = std::move(rhs.lines);
+    this->slices = std::move(rhs.slices);
+    this->viewer = rhs.viewer;
+    
+    rhs.slices = NULL;
+    rhs.lines = NULL;
+    rhs.pixels = NULL;
+    rhs.viewer = NULL;
+}
+#endif // defined(GNU_CXX_0X) && !defined(SWIG)
+
 
 template <class T>
 Image<T>::Image(const char *fileName)

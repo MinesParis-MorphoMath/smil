@@ -67,11 +67,7 @@ int main(int argc, char *argv[])
     Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/lena.png");
     Image_UINT8 im2(im1);
 
-    for (int i=0;i<100;i++)
-      im2 = (im1 & (~im1 + UINT8(100) ));
-    cout << "-------------" << endl;
-    (im1+(unsigned char)100).printSelf();
-//     outFunc(create());
+    im2 << ( (im1>UINT8(100)) & im1 );
 //     return 1;
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);

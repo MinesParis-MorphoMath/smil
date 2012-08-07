@@ -79,7 +79,7 @@ public:
 	      if (outPixVal==0)
 		this->pixelsOut[curDOffset] = curLabel;
  	      else if (outPixVal != curLabel)
-		pairs.insert(make_pair<UINT,UINT>(max(curLabel, outPixVal), min(curLabel, outPixVal)));
+		pairs.insert(make_pair(max(curLabel, outPixVal), min(curLabel, outPixVal)));
 	    }
 	    dOffset++;
 	}
