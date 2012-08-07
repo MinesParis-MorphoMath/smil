@@ -57,15 +57,13 @@ RES_T readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T
     image.setSize(width, height, depth);
 //   image->allocate();
 
-    size_t result = fread(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
+    fread(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
 
     fclose (fp);
     
     image.modified();
     
-    if (result==image.getAllocatedSize())
-      return RES_OK;
-    else return RES_ERR;
+    return RES_OK;
 }
 
 template <class T>
@@ -81,13 +79,11 @@ RES_T writeRAW(Image<T> &image, const char *filename)
         return RES_ERR;
     }
 
-    size_t result = fwrite(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
+    fwrite(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
 
     fclose (fp);
     
-    if (result==image.getAllocatedSize())
-      return RES_OK;
-    else return RES_ERR;
+    return RES_OK;
 }
 
 

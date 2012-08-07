@@ -37,14 +37,15 @@
 template <>
 void qtImageViewer<UINT8>::drawImage()
 {
-    Image<UINT8>::lineType pixels = this->image->getPixels();
+    Image<UINT8>::sliceType lines = this->image->getSlices()[0];
+    
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
     
     this->setImageSize(w, h);
 
-    for (int j=0;j<h;j++)
-        memcpy(qImage->scanLine(j), pixels+(j*w), sizeof(uchar) * w);
+    for (int j=0;j<h;j++, lines++)
+        memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
 }
 
 

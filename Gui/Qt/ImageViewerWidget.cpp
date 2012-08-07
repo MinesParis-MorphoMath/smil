@@ -62,6 +62,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
         : QGraphicsView(parent)
 {
     setFrameShape(NoFrame);
+    // Allows to zoom under the mouse pixel
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
 
     initColorTables();
@@ -107,10 +108,23 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     connectActions();
     
     hintLabel->setEnabled(true);
+    
+    layout = new QGridLayout(this);
+    layout->setAlignment(Qt::AlignBottom);
+    
+    slider = new QSlider(Qt::Horizontal, this);
+    slider->setSliderPosition(0);
+    connect(slider, SIGNAL(valueChanged(int)), this, SLOT(_repaintImage()) );
+    slider->hide();
+    layout->addWidget(slider);
+    
 }
 
 ImageViewerWidget::~ImageViewerWidget()
 {
+    delete slider;
+    delete layout;
+    
     delete qImage;
     if (qOverlayImage)
       delete qOverlayImage;
@@ -147,8 +161,17 @@ void ImageViewerWidget::initColorTables()
     overlayColorTable = labelColorTable;
 }
 
-void ImageViewerWidget::setImageSize(int w, int h)
+void ImageViewerWidget::setImageSize(int w, int h, int d)
 {
+    if (d<=slider->sliderPosition())
+      slider->setSliderPosition(d-1);
+    if (d>1)
+    {
+	slider->setMaximum(d-1);
+	slider->show();
+    }
+    else slider->hide();
+    
     if (w==qImage->width() && h==qImage->height())
         return;
 

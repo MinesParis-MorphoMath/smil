@@ -33,6 +33,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QStatusBar>
+#include <QSlider>
+#include <QGridLayout>
 
 #include "MagnifyView.h"
 #include "DBinary.h"
@@ -70,9 +72,10 @@ public:
     virtual void displayPixelValue(UINT x, UINT y) {}
     virtual void displayMagnifyView(UINT x, UINT y) {}
     virtual void displayMagnifyView() { displayMagnifyView(lastPixX, lastPixY); }
+    virtual void repaintImage() {}
 
     void setName(QString name);
-    void setImageSize(int w, int h);
+    void setImageSize(int w, int h, int d=1);
     void dataChanged();
     void overlayDataChanged();
     virtual void clearOverlay();
@@ -83,6 +86,8 @@ public:
     
     bool drawLabelized;
 protected:
+    QGridLayout *layout;
+    
     QVector<QRgb> baseColorTable;
     QVector<QRgb> rainbowColorTable;
     QVector<QRgb> labelColorTable;
@@ -121,12 +126,18 @@ protected:
     QAction *aboutQtAct;
     
     QString name;
+    
+    QSlider *slider;
 
 public slots:
     void load(const QString fileName);
     void zoomIn();
     void zoomOut();
     void scale(double factor);
+    void _repaintImage()
+    {
+	repaintImage();
+    }
 //     void update();
 
 private slots:
