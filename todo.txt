@@ -8,3 +8,4 @@ Gui :
 ---
 
 - Trouver une méthode pour gérer l'event loop de Qt en interne.
+- Problème avec show viewer en release avec petites images.
