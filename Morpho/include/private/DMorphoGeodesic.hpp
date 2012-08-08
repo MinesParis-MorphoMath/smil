@@ -35,6 +35,10 @@
 #include "DImageArith.hpp"
 #include "DMorphoHierarQ.hpp"
 
+/**
+ * \addtogroup Morpho
+ * \{
+ */
 
 // Geodesy
 
@@ -332,7 +336,9 @@ RES_T build(Image<T> &imIn, Image<T> &imMark, Image<T> &imOut, StrElt se=DEFAULT
 
 
 
-
+/**
+ * Hole filling
+ */
 template <class T>
 RES_T fillHoles(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
@@ -355,6 +361,9 @@ RES_T fillHoles(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
     return res;
 }
 
+/**
+ * Dual hole filling
+ */
 template <class T>
 RES_T levelPics(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
@@ -398,6 +407,7 @@ RES_T dist(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
     return RES_OK;
 }
 
+/** \} */
 
 
 #endif // _D_MORPHO_GEODESIC_HPP

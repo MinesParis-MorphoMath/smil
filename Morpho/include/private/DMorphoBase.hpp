@@ -85,6 +85,10 @@ RES_T erode(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
     return erode(imIn, imOut, DEFAULT_SE(seSize));
 }
 
+/**
+ * Morphological grayscale closing
+ * 
+ */
 template <class T>
 RES_T close(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
@@ -100,6 +104,10 @@ RES_T close(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
     return close(imIn, imOut, DEFAULT_SE(seSize));
 }
 
+/**
+ * Morphological grayscale opening
+ * 
+ */
 template <class T>
 RES_T open(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
@@ -115,6 +123,10 @@ RES_T open(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
     return open(imIn, imOut, DEFAULT_SE(seSize));
 }
 
+/**
+ * Morphological gradient
+ * 
+ */
 template <class T>
 RES_T gradient(const Image<T> &imIn, Image<T> &imOut, const StrElt &dilSe, const StrElt &eroSe)
 {

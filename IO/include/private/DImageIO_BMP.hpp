@@ -35,6 +35,10 @@
 
 #include "DCore.h"
 
+/** \addtogroup IO
+ * \{
+ */
+
 
 #ifndef DWORD
 #define DWORD unsigned long
@@ -70,7 +74,9 @@ struct bmpInfoHeader
 };
 #pragma pack(pop)
 
-
+/**
+ * BMP file read
+ */
 template <class T>
 /*_SMIL*/ RES_T readBMP(const char* filename, Image<T> &image)
 {
@@ -78,6 +84,9 @@ template <class T>
     return RES_ERR;
 }
 
+/**
+ * BMP file write
+ */
 template <class T>
 /*_SMIL*/ RES_T writeBMP(Image<T> &image, const char *filename)
 {
@@ -92,5 +101,7 @@ template <>
 
 template <>
 /*_SMIL*/ RES_T writeBMP<UINT8>(Image<UINT8> &image, const char *filename);
+
+/** \} */
 
 #endif // _D_IMAGE_IO_BMP_H

@@ -44,6 +44,10 @@
 #include "DImageIO_PNG.hpp"
 #endif // USE_PNG
 
+/**
+ * \addtogroup IO
+ * \{
+ */
 
 extern const char *getFileExtension(const char *fileName);
 
@@ -51,6 +55,9 @@ extern const char *getFileExtension(const char *fileName);
 extern RES_T getHttpFile(const char *url, const char *outfilename);
 #endif // USE_CURL
 
+/**
+ * Read image file
+ */
 template <class T>
 RES_T read(const char* filename, Image<T> &image)
 {
@@ -111,7 +118,9 @@ RES_T read(const char* filename, Image<T> &image)
     return res;
 }
 
-
+/**
+ * Write image file
+ */
 template <class T>
 RES_T write(Image<T> &image, const char *filename)
 {
@@ -142,7 +151,7 @@ RES_T write(Image<T> &image, const char *filename)
 }
 
 
-
+/** \} */
 
 
 #endif // _D_IMAGE_IO_HPP

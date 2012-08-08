@@ -33,10 +33,15 @@
 #include "DLineHistogram.hpp"
 #include "DImageArith.hpp"
 
-//! \ingroup Core
-//! \ingroup Histogram
-//! @{
+/**
+ * \ingroup Core
+ * \defgroup Histogram
+ * \{
+ */
 
+/**
+ * Image histogram
+ */
 template <class T>
 vector<UINT> histo(Image<T> &imIn)
 {
@@ -52,7 +57,9 @@ vector<UINT> histo(Image<T> &imIn)
     return h;
 }
 
-//! Image threshold
+/**
+ * Image threshold
+ */
 template <class T>
 RES_T thresh(Image<T> &imIn, T minVal, T maxVal, T trueVal, T falseVal, Image<T> &imOut)
 {
@@ -93,7 +100,7 @@ RES_T thresh(Image<T> &imIn, T minVal, Image<T> &imOut)
 }
 
 /**
- * 
+ * Stretch histogram
  */
 template <class T>
 RES_T stretchHist(Image<T> &imIn, T inMinVal, T inMaxVal, Image<T> &imOut, T outMinVal=numeric_limits<T>::min(), T outMaxVal=numeric_limits<T>::max())
@@ -106,9 +113,6 @@ RES_T stretchHist(Image<T> &imIn, T inMinVal, T inMaxVal, Image<T> &imOut, T out
     return iFunc(imIn, imOut);
 }
 
-/**
- * 
- */
 template <class T>
 RES_T stretchHist(Image<T> &imIn, Image<T> &imOut, T outMinVal=numeric_limits<T>::min(), T outMaxVal=numeric_limits<T>::max())
 {
@@ -123,7 +127,9 @@ RES_T stretchHist(Image<T> &imIn, Image<T> &imOut, T outMinVal=numeric_limits<T>
 }
 
 
-
+/**
+ * Enhance contrast
+ */
 template <class T>
 RES_T enhanceContrast(Image<T> &imIn, Image<T> &imOut, double sat=0.5)
 {
@@ -152,7 +158,7 @@ RES_T enhanceContrast(Image<T> &imIn, Image<T> &imOut, double sat=0.5)
     return RES_OK;
 }
 
-
+/** \} */
 
 #endif // _D_IMAGE_HISTOGRAM_HPP
 

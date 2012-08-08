@@ -37,11 +37,17 @@
 #include "DTypes.hpp"
 #include "DCommon.h"
 
+/** \addtogroup IO
+ * \{
+ */
+
 using namespace std;
 
 template <class T> class Image;
 
-
+/**
+ * PNG file read
+ */
 template <class T>
 /*_SMIL*/ RES_T readPNG(const char* filename, Image<T> &image)
 {
@@ -49,6 +55,9 @@ template <class T>
     return RES_ERR;
 }
 
+/**
+ * PNG file write
+ */
 template <class T>
 /*_SMIL*/ RES_T writePNG(Image<T> &image, const char *filename)
 {
@@ -65,6 +74,11 @@ template <>
 template <>
 /*_SMIL*/ RES_T writePNG<UINT8>(Image<UINT8> &image, const char *filename);
 
+
+/** \} */
+
 #endif // USE_PNG
+
+
 
 #endif // _D_IMAGE_IO_PNG_H

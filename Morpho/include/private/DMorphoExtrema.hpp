@@ -33,9 +33,17 @@
 #include "DMorphoGeodesic.hpp"
 #include "DImageArith.hpp"
 
+/**
+ * \addtogroup Morpho
+ * \{
+ */
+
 
 // Extrema
 
+/**
+ * h-Minima
+ */
 template <class T>
 RES_T hMinima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
@@ -63,6 +71,9 @@ RES_T hMinima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE())
     return res;
 }
 
+/**
+ * h-Maxima
+ */
 template <class T>
 RES_T hMaxima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
@@ -90,17 +101,25 @@ RES_T hMaxima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE())
     return res;
 }
 
+/**
+ * Minima
+ */
 template <class T>
 RES_T minima(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     return hMinima(imIn, T(1), imOut, se);
 }
 
+/**
+ * Maxima
+ */
 template <class T>
 RES_T maxima(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
 {
     return hMaxima(imIn, T(1), imOut, se);
 }
+
+/** \} */
 
 #endif // _D_MORPHO_EXTREMA_HPP
 

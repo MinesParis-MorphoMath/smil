@@ -40,6 +40,13 @@
 
 using namespace std;
 
+/** \addtogroup IO
+ * \{
+ */
+
+/**
+ * RAW file read 
+ */
 template <class T>
 RES_T readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T> &image)
 {
@@ -66,6 +73,9 @@ RES_T readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T
     return RES_OK;
 }
 
+/**
+ * RAW file write
+ */
 template <class T>
 RES_T writeRAW(Image<T> &image, const char *filename)
 {
@@ -87,5 +97,6 @@ RES_T writeRAW(Image<T> &image, const char *filename)
 }
 
 
+/** \} */
 
 #endif // _D_IMAGE_IO_RAW_H

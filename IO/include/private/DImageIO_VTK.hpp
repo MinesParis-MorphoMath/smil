@@ -40,6 +40,10 @@
 
 using namespace std;
 
+/** \addtogroup IO
+ * \{
+ */
+
 inline int split(const std::string &s, char delim, std::vector<std::string> &elems) 
 {
     std::stringstream ss(s);
@@ -53,7 +57,9 @@ inline int split(const std::string &s, char delim, std::vector<std::string> &ele
     return nbr;
 }
 
-
+/**
+ * VTK file read
+ */
 template <class T>
 RES_T readVTK(const char *filename, Image<T> &image)
 {
@@ -160,7 +166,6 @@ RES_T readVTK(const char *filename, Image<T> &image)
 	if (fp)
 	    fp.read((char*)pixels, sizeof(char));
     }
-image.printSelf();
 
     fp.close();
 
@@ -169,6 +174,9 @@ image.printSelf();
     return RES_OK;
 }
 
+/**
+ * VTK file write
+ */
 template <class T>
 RES_T writeVTK(Image<T> &image, const char *filename, bool binary=true)
 {
@@ -220,5 +228,6 @@ RES_T writeVTK(Image<T> &image, const char *filename, bool binary=true)
 }
 
 
+/** \} */
 
 #endif // _D_IMAGE_IO_VTK_HPP

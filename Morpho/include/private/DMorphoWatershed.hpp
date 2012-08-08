@@ -30,6 +30,7 @@
 #ifndef _D_MORPHO_WATERSHED_HPP
 #define _D_MORPHO_WATERSHED_HPP
 
+
 /**
  * \ingroup HierarQ
  * @{

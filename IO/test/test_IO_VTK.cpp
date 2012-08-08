@@ -58,7 +58,6 @@ class Test_VTK_RW : public TestCase
     Image<T> im2;
     
     TEST_ASSERT( readVTK(fName, im2)==RES_OK );
-    im2.printSelf(1);
     
     TEST_ASSERT(im1==im2);
   }
