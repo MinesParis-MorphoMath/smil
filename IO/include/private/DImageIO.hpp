@@ -38,6 +38,7 @@
 
 #include "DImageIO_BMP.hpp"
 #include "DImageIO_RAW.hpp"
+#include "DImageIO_VTK.hpp"
 
 #ifdef USE_PNG
 #include "DImageIO_PNG.hpp"
@@ -86,8 +87,8 @@ RES_T read(const char* filename, Image<T> &image)
         res = readPNG(filename, image);
 #endif // USE_PNG
 
-//     else if (fileExt=="RAW")
-//         res = readRAW(filename, image);
+    else if (fileExt=="VTK")
+        res = readVTK(filename, image);
     
     else
     {
@@ -127,6 +128,9 @@ RES_T write(Image<T> &image, const char *filename)
 
     else if (fileExt=="RAW")
         res = writeRAW(image, filename);
+    
+    else if (fileExt=="VTK")
+        res = writeVTK(image, filename);
     
     else
     {

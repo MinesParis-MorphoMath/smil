@@ -27,29 +27,50 @@
  */
 
 
-#ifndef _D_TYPES_H
-#define _D_TYPES_H
+#include <stdio.h>
+#include <time.h>
+
+//#include <boost/signal.hpp>
+//#include <boost/bind.hpp>
+
+#include "DCore.h"
+#include "DIO.h"
+
+#include "DGui.h"
+
+class Test_VTK_RW : public TestCase
+{
+  virtual void run()
+  {
+    typedef UINT8 T;
+    const char *fName = "_smil_io_tmp.vtk";
+    
+    Image<T> im1(3, 3, 2);
+    T tab[] = { 1, 2, 3,
+		 2, 5, 6,
+		 3, 8, 9,
+		 4, 11, 12,
+		 5, 15, 16,
+		 6, 18, 19 };
+    im1 << tab;
+    TEST_ASSERT( writeVTK(im1, fName)==RES_OK );
+    
+    Image<T> im2;
+    
+    TEST_ASSERT( readVTK(fName, im2)==RES_OK );
+    
+    TEST_ASSERT(im1==im2);
+  }
+};
+
+int main(int argc, char *argv[])
+{
+      TestSuite ts;
+
+      ADD_TEST(ts, Test_VTK_RW);
+      
+      return ts.run();
+      
+}
 
 
-#include "DTypes.hpp"
-
-#ifdef SMIL_WRAP_BIN
-#include "DBinary.hpp"
-#endif // SMIL_WRAP_BIN
-
-
-// #ifdef SMIL_WRAP_Bit
-#include "DBitArray.h"
-// #endif // SMIL_WRAP_Bit
-
-#define DECL_DATA_TYPE_STR(_type) \
-template <> \
-inline const char *getDataTypeAsString(_type &val) { return #_type; } 
-
-DECL_DATA_TYPE_STR(UINT8)
-DECL_DATA_TYPE_STR(UINT16)
-DECL_DATA_TYPE_STR(float)
-DECL_DATA_TYPE_STR(double)
-
-
-#endif // _D_TYPES_H

@@ -222,6 +222,9 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
     // Clear overlay
 //     overlayPixmap->setPixmap(QPixmap());
     
+//     int minSize = min(width(), height());
+//     
+//     scale(2);
 //     resize(imScene->width(), imScene->height());
     adjustSize();
 }

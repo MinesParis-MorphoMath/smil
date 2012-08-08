@@ -132,11 +132,12 @@ void qtImageViewer<T>::update()
 template <class T>
 void qtImageViewer<T>::drawImage()
 {
-    typename Image<T>::lineType pixels = this->image->getPixels();
+    typename Image<T>::sliceType lines = this->image->getSlices()[slider->value()];
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
+    UINT d = this->image->getDepth();
     
-    this->setImageSize(w, h);
+    this->setImageSize(w, h, d);
     
     UINT8 *destLine;
     double coeff;
@@ -148,11 +149,11 @@ void qtImageViewer<T>::drawImage()
 
     for (UINT j=0;j<h;j++)
     {
+	typename Image<T>::lineType pixels = *lines++;;
+	
 	destLine = this->qImage->scanLine(j);
 	for (UINT i=0;i<w;i++)
 	    destLine[i] = (UINT8)(coeff * double(pixels[i]));
-	
-	pixels += w;
     }
 }
 

@@ -61,13 +61,30 @@
 %include "DImageIO.hpp"
 
 %include "DImageIO_RAW.hpp"
+%include "DImageIO_BMP.hpp"
+%include "DImageIO_VTK.hpp"
+
+#ifdef USE_PNG
+%include "DImageIO_PNG.hpp"
+#endif // USE_PNG
 
 // Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
 %import smilCore.i
 
 TEMPLATE_WRAP_FUNC(read);
-TEMPLATE_WRAP_FUNC(readRAW);
 TEMPLATE_WRAP_FUNC(write);
+
+TEMPLATE_WRAP_FUNC(readRAW);
 TEMPLATE_WRAP_FUNC(writeRAW);
 
+TEMPLATE_WRAP_FUNC(readBMP);
+TEMPLATE_WRAP_FUNC(writeBMP);
+
+TEMPLATE_WRAP_FUNC(readVTK);
+TEMPLATE_WRAP_FUNC(writeVTK);
+
+#ifdef USE_PNG
+TEMPLATE_WRAP_FUNC(readPNG);
+TEMPLATE_WRAP_FUNC(writePNG);
+#endif // USE_PNG
 
