@@ -46,7 +46,7 @@ class Test_VTK_RW : public TestCase
     const char *fName = "_smil_io_tmp.vtk";
     
     Image<T> im1(3, 3, 2);
-    T tab[] = { 1, 2, 3,
+    T tab[] = { 28, 2, 3,
 		 2, 5, 6,
 		 3, 8, 9,
 		 4, 11, 12,
@@ -58,6 +58,7 @@ class Test_VTK_RW : public TestCase
     Image<T> im2;
     
     TEST_ASSERT( readVTK(fName, im2)==RES_OK );
+    im2.printSelf(1);
     
     TEST_ASSERT(im1==im2);
   }
