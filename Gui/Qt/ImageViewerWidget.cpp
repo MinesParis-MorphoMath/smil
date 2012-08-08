@@ -85,7 +85,6 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     hintLabel->setAutoFillBackground(true);
     hintLabel->hide();
     hintLabel->move(QPoint(10,10));
-    hintLabel->setText("ok");
     hintLabel->setEnabled(false);
     
     hintTimer = new QTimer();
@@ -283,6 +282,7 @@ void ImageViewerWidget::displayHint(QString msg)
       return;
     
     hintLabel->setText(msg);
+    hintLabel->adjustSize();
     hintLabel->show();
     hintTimer->start(1000);
 }
@@ -456,6 +456,7 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 {
     int x = int(event->scenePos().rx());
     int y = int(event->scenePos().ry());
+    int z = slider->value();
 
     UINT w = qImage->width();
     UINT h = qImage->height();
@@ -465,15 +466,16 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
         if (valueLblActivated)
 	{
             valueLabel->show();
-	    displayPixelValue(x, y);
+	    displayPixelValue(x, y, z);
 	}
         if (magnActivated)
 	{
-	    displayMagnifyView(x, y);
+	    displayMagnifyView(x, y, z);
             magnView->show();
 	}
 	lastPixX = x;
 	lastPixY = y;
+	lastPixZ = z;
     }
     else
     {

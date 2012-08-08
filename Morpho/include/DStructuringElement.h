@@ -81,15 +81,16 @@ class StrElt : public baseObject
 	p.z = z;
 	points.push_back(p);
     }
-    inline StrElt& operator()(int s=1)
+    inline const StrElt operator()(int s=1)
     {
-	this->size = s;
-	return *this;
+	StrElt se(*this);
+	se.size = s;
+	return se;
     }
     bool odd;
     seType seT;
     UINT size;
-    virtual seType getType() { return seT; }
+    virtual seType getType() const { return seT; }
     
     virtual void printSelf(ostream &os=std::cout)
     {
@@ -291,7 +292,7 @@ class cubeSE : public StrElt
 
 StrElt DEFAULT_SE = sSE();
 
-StrElt getDefaultSE()
+StrElt& getDefaultSE()
 {
     return DEFAULT_SE;
 }

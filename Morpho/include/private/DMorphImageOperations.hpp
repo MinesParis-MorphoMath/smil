@@ -61,7 +61,7 @@ public:
     typedef typename imageOutType::sliceType sliceOutType;
     typedef typename imageOutType::volType volOutType;
     
-    virtual RES_T initialize(imageInType &imIn, imageOutType &imOut, StrElt &se)
+    virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
     {
 	imIn.getSize(imSize);
 	
@@ -102,12 +102,12 @@ public:
 	}
 	return RES_OK;
     }
-    virtual RES_T finalize(imageInType &imIn, imageOutType &imOut, StrElt &se)
+    virtual RES_T finalize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
     {
 	return RES_OK;
     }
     
-    virtual RES_T _exec(imageInType &imIn, imageOutType &imOut, StrElt &se)
+    virtual RES_T _exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
     {
 	initialize(imIn, imOut, se);
 	
@@ -120,10 +120,10 @@ public:
 	    retVal = processImage(imIn, imOut, se);
 	    break;
 	  case stHexSE:
-	    retVal = processImage(imIn, imOut, *static_cast<hSE*>(&se));
+	    retVal = processImage(imIn, imOut, *static_cast<const hSE*>(&se));
 	    break;
 	  case stSquSE:
-	    retVal = processImage(imIn, imOut, *static_cast<sSE*>(&se));
+	    retVal = processImage(imIn, imOut, *static_cast<const sSE*>(&se));
 	    break;
 	  default:
 	    retVal = RES_NOT_IMPLEMENTED;
@@ -134,7 +134,7 @@ public:
 	return retVal;
 	
     }
-    virtual RES_T processImage(imageInType &imIn, imageOutType &imOut, StrElt &se)
+    virtual RES_T processImage(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
     {
 	for(curSlice=0;curSlice<imSize[2];curSlice++)
 	{
@@ -148,7 +148,7 @@ public:
 //     virtual RES_T processImage(imageInType &imIn, imageOutType &imOut, hSE &se)
 //     {
 //     }
-    virtual inline void processSlice(sliceInType linesIn, sliceOutType linesOut, UINT &lineNbr, StrElt &se)
+    virtual inline void processSlice(sliceInType &linesIn, sliceOutType &linesOut, UINT &lineNbr, const StrElt &se)
     {
 	while(curLine<lineNbr)
 	{
@@ -159,7 +159,7 @@ public:
 	    linesOut++;
 	}
     }
-    virtual inline void processLine(lineInType pixIn, lineOutType pixOut, UINT &pixNbr, StrElt &se)
+    virtual inline void processLine(const lineInType pixIn, lineOutType pixOut, UINT &pixNbr, const StrElt &se)
     {
 	int x, y, z;
 	Point p;
@@ -278,13 +278,13 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     {
     }
     
-    virtual RES_T _exec(imageType &imIn, imageType &imOut, StrElt &se);
+    virtual RES_T _exec(const imageType &imIn, imageType &imOut, const StrElt &se);
     
-    virtual RES_T _exec_single(imageType &imIn, imageType &imOut, StrElt &se);
-    virtual RES_T _exec_single_generic(imageType &imIn, imageType &imOut, StrElt &se);
-    virtual RES_T _exec_single_hexSE(imageType &imIn, imageType &imOut);
+    virtual RES_T _exec_single(const imageType &imIn, imageType &imOut, const StrElt &se);
+    virtual RES_T _exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se);
+    virtual RES_T _exec_single_hexSE(const imageType &imIn, imageType &imOut);
     
-    inline RES_T operator()(imageType &imIn, imageType &imOut, StrElt se) { return this->_exec(imIn, imOut, se); }
+    inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt se) { return this->_exec(imIn, imOut, se); }
 
     lineFunction_T lineFunction;
     
@@ -293,14 +293,14 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     lineType borderBuf, cpBuf;
     UINT lineLen;
     
-    inline void _extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, lineType outBuf);
-    inline void _exec_shifted_line(lineType inBuf1, lineType inBuf2, int dx, int lineLen, lineType outBuf);
-    inline void _exec_line(lineType inBuf, Image<T> *imIn, int &x, int &y, int &z, lineType outBuf);
+    inline void _extract_translated_line(const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf);
+    inline void _exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf);
+    inline void _exec_line(const lineType inBuf, const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf);
 };
 
 
 template <class T, class lineFunction_T>
-RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageType &imOut, StrElt &se)
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imOut, const StrElt &se)
 {
     lineLen = imIn.getWidth();
     borderBuf = ImDtTypes<T>::createLine(lineLen);
@@ -328,7 +328,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(imageType &imIn, imageTy
 }
 
 template <class T, class lineFunction_T>
-RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(imageType &imIn, imageType &imOut, StrElt &se)
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(const imageType &imIn, imageType &imOut, const StrElt &se)
 {
     int st = se.getType();
     
@@ -344,7 +344,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(imageType &imIn, 
 }
 
 template <class T, class lineFunction_T>
-inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line(Image<T> *imIn, int &x, int &y, int &z, lineType outBuf)
+inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line(const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf)
 {
     if (z<0 || z>=int(imIn->getDepth()) || y<0 || y>=int(imIn->getHeight()))
       copyLine<T>(borderBuf, lineLen, outBuf);
@@ -354,7 +354,7 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line
 }
 
 template <class T, class lineFunction_T>
-inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line(lineType inBuf1, lineType inBuf2, int dx, int lineLen, lineType outBuf)
+inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf)
 {
     shiftLine<T>(inBuf2, dx, lineLen, cpBuf, borderValue);
     lineFunction(inBuf1, cpBuf, lineLen, outBuf);
@@ -362,7 +362,7 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line(lineT
 
 
 template <class T, class lineFunction_T>
-inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(lineType inBuf, Image<T> *imIn, int &x, int &y, int &z, lineType outBuf)
+inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(const lineType inBuf, const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf)
 {
     _extract_translated_line(imIn, x, y, z, cpBuf);
     lineFunction(inBuf, cpBuf, lineLen, outBuf);
@@ -371,7 +371,7 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(lineType inBu
 
 
 template <class T, class lineFunction_T>
-RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(imageType &imIn, imageType &imOut, StrElt &se)
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
@@ -388,7 +388,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(imageType
 
     lineType outBuf = ImDtTypes<T>::createLine(lineLen);
 
-    Image<T> *tmpIm;
+    const Image<T> *tmpIm;
     
     if (&imIn==&imOut)
       tmpIm = new Image<T>(imIn, true); // clone
@@ -446,7 +446,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(imageType
 
 
 template <class T, class lineFunction_T>
-RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imageType &imIn, imageType &imOut)
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(const imageType &imIn, imageType &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
@@ -465,7 +465,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(imageType &
     lineType tmpBuf4 = ImDtTypes<T>::createLine(lineLen);
     lineType tmpBuf;
         
-    Image<T> *tmpIm;
+    const Image<T> *tmpIm;
     
     if (&imIn==&imOut)
       tmpIm = new Image<T>(imIn, true); // clone

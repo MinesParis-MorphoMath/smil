@@ -71,8 +71,8 @@ public:
     QApplication *_qapp;
     
 protected:
-    virtual void displayPixelValue(UINT x, UINT y);
-    virtual void displayMagnifyView(UINT x, UINT y);
+    virtual void displayPixelValue(UINT x, UINT y, UINT z);
+    virtual void displayMagnifyView(UINT x, UINT y, UINT z);
     virtual void drawImage();
 //     ImageViewerWidget *qtViewer;
 //     ImageViewer *qtViewer;

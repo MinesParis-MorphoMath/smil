@@ -196,18 +196,22 @@ void qtImageViewer<T>::drawOverlay(Image<T> &im)
 }
 
 template <class T>
-void qtImageViewer<T>::displayPixelValue(UINT x, UINT y)
+void qtImageViewer<T>::displayPixelValue(UINT x, UINT y, UINT z)
 {
     T pixVal;
 
-    pixVal = this->image->getPixel(x, y);
-    valueLabel->setText("(" + QString::number(x) + ", " + QString::number(y) + ") " + QString::number(pixVal));
+    pixVal = this->image->getPixel(x, y, z);
+    QString txt = "(" + QString::number(x) + ", " + QString::number(y);
+    if (this->image->getDepth()>1)
+      txt = txt + ", " + QString::number(z);
+    txt = txt + ") " + QString::number(pixVal);
+    valueLabel->setText(txt);
     valueLabel->adjustSize();
 }
 
 
 template <class T>
-void qtImageViewer<T>::displayMagnifyView(UINT x, UINT y)
+void qtImageViewer<T>::displayMagnifyView(UINT x, UINT y, UINT z)
 {
     magnView->displayAt(x, y);
 //   return;
@@ -220,7 +224,7 @@ void qtImageViewer<T>::displayMagnifyView(UINT x, UINT y)
     int imW = qImage->width();
     int imH = qImage->height();
 
-    typename ImDtTypes<T>::sliceType pSlice = parentClass::image->getSlices()[0];
+    typename ImDtTypes<T>::sliceType pSlice = parentClass::image->getSlices()[z];
     typename ImDtTypes<T>::lineType pLine;
     T pVal;
     

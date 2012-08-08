@@ -57,7 +57,7 @@ RES_T readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T
     image.setSize(width, height, depth);
 //   image->allocate();
 
-    fread(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
+    size_t ret = fread(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
 
     fclose (fp);
     

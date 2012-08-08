@@ -86,14 +86,14 @@ public:
 	else return 1;
     }
     
-    inline void getSize(UINT *w, UINT *h, UINT *d)
+    inline void getSize(UINT *w, UINT *h, UINT *d) const
     {
 	*w = this->width;
 	*h = this->height;
 	*d = this->depth;
     }
     
-    inline void getSize(UINT s[3])
+    inline void getSize(UINT s[3]) const
     {
 	s[0] = this->width;
 	s[1] = this->height;

@@ -41,14 +41,14 @@
  */
 
 template <class T1, class T2>
-inline void copyLine(typename Image<T1>::lineType lIn, int size, typename Image<T2>::lineType lOut)
+inline void copyLine(const typename Image<T1>::lineType lIn, const int &size, typename Image<T2>::lineType lOut)
 {
     for (int i=0;i<size;i++)
       lOut[i] = static_cast<T2>(lIn[i]);
 }
 
 template <class T>
-inline void copyLine(typename Image<T>::lineType &lIn, int size, typename Image<T>::lineType &lOut)
+inline void copyLine(const typename Image<T>::lineType &lIn, const int &size, typename Image<T>::lineType &lOut)
 {
     memcpy(lOut, lIn, size*sizeof(T));
 }
@@ -60,9 +60,9 @@ struct fillLine : public unaryLineFunctionBase<T>
 {
     typedef typename Image<T>::lineType lineType;
     fillLine() {}
-    fillLine(lineType lIn, int size, T value) { this->_exec(lIn, size, value); }
+    fillLine(const lineType &lIn, const int &size, const T &value) { this->_exec(lIn, size, value); }
     
-    inline void _exec(lineType lIn, int size, lineType lOut)
+    inline void _exec(const lineType &lIn, const int &size, lineType &lOut)
     {
 	memcpy(lOut, lIn, size*sizeof(T));
     }
@@ -74,7 +74,7 @@ struct fillLine : public unaryLineFunctionBase<T>
 };
 
 template <class T>
-inline void shiftLine(typename Image<T>::lineType &lIn, int dx, int lineLen, typename Image<T>::lineType &lOut, T borderValue = numeric_limits<T>::min())
+inline void shiftLine(const typename Image<T>::lineType &lIn, int dx, int lineLen, typename Image<T>::lineType &lOut, T borderValue = numeric_limits<T>::min())
 {
     fillLine<T> fillFunc;
 
