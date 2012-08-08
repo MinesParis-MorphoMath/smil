@@ -116,7 +116,7 @@ RES_T open(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
 }
 
 template <class T>
-RES_T gradient(const Image<T> &imIn, Image<T> &imOut, StrElt &dilSe, StrElt &eroSe)
+RES_T gradient(const Image<T> &imIn, Image<T> &imOut, const StrElt &dilSe, const StrElt &eroSe)
 {
     Image<T> dilIm(imIn);
     Image<T> eroIm(imIn);
