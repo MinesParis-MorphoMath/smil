@@ -43,7 +43,7 @@
 // Geodesy
 
 template <class T>
-RES_T geoDil(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T geoDil(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -62,7 +62,7 @@ RES_T geoDil(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAUL
 }
 
 template <class T>
-RES_T geoEro(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T geoEro(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -81,7 +81,7 @@ RES_T geoEro(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAUL
 }
 
 template <class T>
-RES_T geoBuild(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T geoBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -109,7 +109,7 @@ RES_T geoBuild(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFA
 }
 
 template <class T>
-RES_T geoDualBuild(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T geoDualBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -143,7 +143,7 @@ RES_T geoDualBuild(Image<T> &imIn, Image<T> &imMask, Image<T> &imOut, StrElt se=
 
 
 template <class T, class HQcompT>
-RES_T initBuildHierarchicalQueue(Image<T> &imIn, HierarchicalQueue<T, HQcompT> &hq)
+RES_T initBuildHierarchicalQueue(const Image<T> &imIn, HierarchicalQueue<T, HQcompT> &hq)
 {
     // Empty the priority queue
     hq.reset();
@@ -170,7 +170,7 @@ RES_T initBuildHierarchicalQueue(Image<T> &imIn, HierarchicalQueue<T, HQcompT> &
 
 
 template <class T, class operatorT, class HQcompT>
-RES_T processBuildHierarchicalQueue(Image<T> &imIn, Image<T> &imMark, Image<UINT8> &imStatus, HierarchicalQueue<T, HQcompT> &hq, StrElt &se)
+RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Image<UINT8> &imStatus, HierarchicalQueue<T, HQcompT> &hq, const StrElt &se)
 {
     typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
     typename ImDtTypes<T>::lineType markPixels = imMark.getPixels();
@@ -179,9 +179,9 @@ RES_T processBuildHierarchicalQueue(Image<T> &imIn, Image<T> &imMark, Image<UINT
     vector<int> dOffsets;
     operatorT oper;
     
-    vector<Point>::iterator it_start = se.points.begin();
-    vector<Point>::iterator it_end = se.points.end();
-    vector<Point>::iterator it;
+    vector<Point>::const_iterator it_start = se.points.begin();
+    vector<Point>::const_iterator it_end = se.points.end();
+    vector<Point>::const_iterator it;
     
     vector<UINT> tmpOffsets;
     
@@ -268,7 +268,7 @@ struct maxFunctor
  * Dual reconstruction (using hierarchical queues).
  */
 template <class T>
-RES_T dualBuild(Image<T> &imIn, Image<T> &imMark, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T dualBuild(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     if (!areAllocated(&imIn, &imMark, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
@@ -301,7 +301,7 @@ RES_T dualBuild(Image<T> &imIn, Image<T> &imMark, Image<T> &imOut, StrElt se=DEF
  * Reconstruction (using hierarchical queues).
  */
 template <class T>
-RES_T build(Image<T> &imIn, Image<T> &imMark, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T build(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     if (!areAllocated(&imIn, &imMark, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
@@ -340,7 +340,7 @@ RES_T build(Image<T> &imIn, Image<T> &imMark, Image<T> &imOut, StrElt se=DEFAULT
  * Hole filling
  */
 template <class T>
-RES_T fillHoles(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T fillHoles(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
@@ -365,7 +365,7 @@ RES_T fillHoles(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
  * Dual hole filling
  */
 template <class T>
-RES_T levelPics(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T levelPics(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
@@ -387,7 +387,7 @@ RES_T levelPics(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
  * Ugly temporary distance function
  */
 template <class T>
-RES_T dist(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T dist(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     Image<T> tmpIm(imIn);
     

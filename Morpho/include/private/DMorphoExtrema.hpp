@@ -45,7 +45,7 @@
  * h-Minima
  */
 template <class T>
-RES_T hMinima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T hMinima(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -75,7 +75,7 @@ RES_T hMinima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE())
  * h-Maxima
  */
 template <class T>
-RES_T hMaxima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T hMaxima(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     StrElt tmpSe(se);
     tmpSe.size = 1;
@@ -105,7 +105,7 @@ RES_T hMaxima(Image<T> &imIn, T height, Image<T> &imOut, StrElt se=DEFAULT_SE())
  * Minima
  */
 template <class T>
-RES_T minima(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T minima(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     return hMinima(imIn, T(1), imOut, se);
 }
@@ -114,7 +114,7 @@ RES_T minima(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
  * Maxima
  */
 template <class T>
-RES_T maxima(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T maxima(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     return hMaxima(imIn, T(1), imOut, se);
 }

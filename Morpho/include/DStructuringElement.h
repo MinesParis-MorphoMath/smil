@@ -297,7 +297,7 @@ StrElt& getDefaultSE()
     return DEFAULT_SE;
 }
 
-void setDefaultSE(StrElt &se)
+void setDefaultSE(const StrElt &se)
 {
     DEFAULT_SE = se;
 }

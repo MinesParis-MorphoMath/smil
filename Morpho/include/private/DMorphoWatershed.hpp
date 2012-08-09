@@ -42,7 +42,7 @@
 #include "DImage.hpp"
 
 template <class T, class labelT>
-RES_T initWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq)
+RES_T initWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq)
 {
     // Empty the priority queue
     hq.reset();
@@ -80,7 +80,7 @@ RES_T initWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image
 }
 
 template <class T, class labelT>
-RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq, StrElt &se)
+RES_T processWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq, const StrElt &se)
 {
     typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
     typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
@@ -88,9 +88,9 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
     
     vector<int> dOffsets;
     
-    vector<Point>::iterator it_start = se.points.begin();
-    vector<Point>::iterator it_end = se.points.end();
-    vector<Point>::iterator it;
+    vector<Point>::const_iterator it_start = se.points.begin();
+    vector<Point>::const_iterator it_end = se.points.end();
+    vector<Point>::const_iterator it;
     
     vector<UINT> tmpOffsets;
     
@@ -201,7 +201,7 @@ RES_T processWatershedHierarchicalQueue(Image<T> &imIn, Image<labelT> &imLbl, Im
  */
 
 template <class T, class labelT>
-RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, StrElt se=DEFAULT_SE())
+RES_T watershed(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
 {
     if (!areAllocated(&imIn, &imMarkers, &imOut, &imBasinsOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
@@ -233,7 +233,7 @@ RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, Image
 }
 
 template <class T, class labelT>
-RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T watershed(const Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     if (!areAllocated(&imIn, &imMarkers, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
@@ -246,7 +246,7 @@ RES_T watershed(Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, StrEl
 }
 
 template <class T>
-RES_T watershed(Image<T> &imIn, Image<T> &imOut, StrElt se=DEFAULT_SE())
+RES_T watershed(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;

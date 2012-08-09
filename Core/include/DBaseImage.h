@@ -119,7 +119,7 @@ public:
     virtual void* getVoidPointer() = 0;
     virtual void modified() = 0;
 
-    inline UINT getOffsetFromCoords(UINT x, UINT y, UINT z)
+    inline UINT getOffsetFromCoords(UINT x, UINT y, UINT z) const
     {
 	if (x>=this->width) return -1;
 	if (y>=this->height) return -1;
@@ -127,7 +127,7 @@ public:
 	return z*this->width*this->height + y*this->width + x;
     }
 
-    inline void getCoordsFromOffset(UINT off, UINT &x, UINT &y, UINT &z)
+    inline void getCoordsFromOffset(UINT off, UINT &x, UINT &y, UINT &z) const
     {
 	z = off / (this->width*this->height);
 	y = (off % (this->width*this->height))/this->width;
