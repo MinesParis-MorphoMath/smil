@@ -192,12 +192,13 @@ void Image<T>::show(const char *_name, bool labelImage)
     if (!viewer)
       return;
     
-    modified();
-    
     if (!labelImage)
       viewer->show();
     else
       viewer->showLabel();
+    
+    modified();
+    
 }
 
 
@@ -223,6 +224,9 @@ void Image<T>::setSize(UINT w, UINT h, UINT d, bool doAllocate)
     if (doAllocate) 
       this->allocate();
     
+    if (viewer)
+      viewer->setImage(this);
+    
     this->modified();
 }
 
@@ -232,8 +236,8 @@ RES_T Image<T>::allocate(void)
     if (this->allocated)
 	return RES_ERR_BAD_ALLOCATION;
     
-//     this->pixels = createAlignedBuffer<T>(pixelCount);
-    pixels = new pixelType[pixelCount];
+    this->pixels = createAlignedBuffer<T>(pixelCount);
+//     pixels = new pixelType[pixelCount];
     
     
     this->allocated = true;
@@ -255,8 +259,8 @@ RES_T Image<T>::restruct(void)
     this->lines =  new lineType[lineCount];
     this->slices = new sliceType[sliceCount];
     
-    lineType *cur_line = this->lines;
-    sliceType *cur_slice = this->slices;
+    sliceType cur_line = this->lines;
+    volType cur_slice = this->slices;
     
     int pixelsPerSlice = this->width * this->height;
     

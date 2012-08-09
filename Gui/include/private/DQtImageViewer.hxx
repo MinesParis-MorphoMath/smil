@@ -61,7 +61,7 @@ template <class T>
 void qtImageViewer<T>::setImage(Image<T> *im)
 {
     imageViewer<T>::setImage(im);
-    setImageSize(im->getWidth(), im->getHeight(), im->getDepth());
+    BASE_QT_VIEWER::setImageSize(im->getWidth(), im->getHeight(), im->getDepth());
     if (im->getName()!=string(""))
       setName(this->image->getName());
 }
@@ -137,15 +137,13 @@ void qtImageViewer<T>::drawImage()
     UINT h = this->image->getHeight();
     UINT d = this->image->getDepth();
     
-    this->setImageSize(w, h, d);
-    
     UINT8 *destLine;
     double coeff;
     
     if (parentClass::labelImage)
       coeff = 1.0;
     else
-      coeff = double(numeric_limits<UINT8>::max()) / double(numeric_limits<T>::max());
+      coeff = double(numeric_limits<UINT8>::max()) / ( double(numeric_limits<T>::max()) - double(numeric_limits<T>::min()) );
 
     for (UINT j=0;j<h;j++)
     {
@@ -153,7 +151,7 @@ void qtImageViewer<T>::drawImage()
 	
 	destLine = this->qImage->scanLine(j);
 	for (UINT i=0;i<w;i++)
-	    destLine[i] = (UINT8)(coeff * double(pixels[i]));
+	    destLine[i] = (UINT8)(coeff * (double(pixels[i]) - double(numeric_limits<T>::min())));
     }
 }
 

@@ -31,6 +31,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QTimer>
 #include <QApplication>
+#include <math.h>
 
 #include "ImageViewerWidget.h"
 
@@ -222,10 +223,12 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
     // Clear overlay
 //     overlayPixmap->setPixmap(QPixmap());
     
-//     int minSize = min(width(), height());
-//     
-//     scale(2);
-//     resize(imScene->width(), imScene->height());
+    double minSize = 256;
+    if (imScene->height()<minSize)
+    {
+	int scaleFact = log(minSize/imScene->height())/log(1.25);
+	scale(pow(1.25, scaleFact));
+    }
     adjustSize();
 }
 

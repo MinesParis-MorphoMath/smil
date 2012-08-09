@@ -86,17 +86,16 @@ int main(int argc, char *argv[])
 //       }
 //     Image_UINT8 im3(im1);
     
-    readRAW("/home/mat/tmp/test_256_256_10.raw", 256,256,10, im1);
-//     readVTK("/home/mat/tmp/test_bin.vtk", im1);
+    readVTK("/home/faessel/src/divers/2012-MSME/kelvin.vtk", im1);
 //     im1 << UINT8(0);
 //     im1.setPixel(100,100,5,  255);
-    im2.setSize(im1);
-    
-    dilate(im1, im2, cubeSE(3));
+//     im2.setSize(im1);
+//     
+//     dilate(im1, im2, cubeSE(3));
 //     im1 << UINT8(127);
-    
+//     im1.modified();
     im1.show("im1");
-    im2.show("im2");
+//     im2.show("im2");
     
 //     copy(im2, 256, 0, 0, im1);
     

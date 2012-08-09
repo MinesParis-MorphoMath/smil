@@ -41,6 +41,7 @@ public:
     baseImage(const char *_className="baseImage")
       :	baseObject(_className),
 	width(0), height(0), depth(0),
+	pixelCount(0), lineCount(0), sliceCount(0),
 	allocated(false),
 	allocatedSize(0)
     {
@@ -49,6 +50,7 @@ public:
     baseImage(const baseImage &rhs)
       :	baseObject(rhs),
 	width(0), height(0), depth(0),
+	pixelCount(0), lineCount(0), sliceCount(0),
 	allocated(false),
 	allocatedSize(0)
     {
