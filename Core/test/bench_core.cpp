@@ -27,99 +27,30 @@
  */
 
 
-#ifndef _D_MORPHO_EXTREMA_HPP
-#define _D_MORPHO_EXTREMA_HPP
 
-#include "DMorphoGeodesic.hpp"
-#include "DImageArith.hpp"
+#include "DCore.h"
 
-/**
- * \addtogroup Morpho
- * \{
- */
-
-
-// Extrema
-
-/**
- * h-Minima
- */
-template <class T>
-RES_T hMinima(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+int main(int argc, char *argv[])
 {
-    if (&imIn==&imOut)
-    {
-	Image<T> tmpIm = imIn;
-	return hMinima(tmpIm, height, imOut, se);
-    }
+  
+    Image_UINT8 im1(1024, 1024);
+    Image_UINT8 im2(im1);
+    Image_UINT8 im3(im1);
     
-    StrElt tmpSe(se);
-    tmpSe.size = 1;
+    UINT BENCH_NRUNS = 1E4;
     
-    RES_T res;
+    BENCH_IMG(fill, im1, UINT8(127));
+    BENCH_IMG(copy, im1, im2);
+    BENCH_IMG(inv, im1, im2);
+    BENCH_IMG(add, im1, im2, im3);
+//     BENCH_IMG(addNoSat, im1, im2, im3);
+    BENCH_IMG(sub, im1, im2, im3);
+//     BENCH_IMG(subNoSat, im1, im2, im3);
+//     BENCH_IMG(mul, im1, im2, im3);
+//     BENCH_IMG(div, im1, im2, im3);
+    BENCH_IMG(inf, im1, im2, im3);
+    BENCH_IMG(sup, im1, im2, im3);
+    BENCH_IMG(sup, im1, im2, im3);
     
-    res = add(imIn, T(height), imOut);
-    if (res!=RES_OK)
-      return res;
-    
-    res = dualBuild(imOut, imIn, imOut, tmpSe);
-    if (res!=RES_OK)
-      return res;
-    
-    low(imIn, imOut, imOut);
-    
-    return res;
 }
-
-/**
- * h-Maxima
- */
-template <class T>
-RES_T hMaxima(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
-{
-    if (&imIn==&imOut)
-    {
-	Image<T> tmpIm = imIn;
-	return hMaxima(tmpIm, height, imOut, se);
-    }
-    
-    StrElt tmpSe(se);
-    tmpSe.size = 1;
-    
-    RES_T res;
-    
-    res = sub(imIn, T(height), imOut);
-    if (res!=RES_OK)
-      return res;
-    
-    res = build(imOut, imIn, imOut, tmpSe);
-    if (res!=RES_OK)
-      return res;
-    
-    grt(imIn, imOut, imOut);
-    
-    return res;
-}
-
-/**
- * Minima
- */
-template <class T>
-RES_T minima(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
-{
-    return hMinima(imIn, T(1), imOut, se);
-}
-
-/**
- * Maxima
- */
-template <class T>
-RES_T maxima(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
-{
-    return hMaxima(imIn, T(1), imOut, se);
-}
-
-/** \} */
-
-#endif // _D_MORPHO_EXTREMA_HPP
 

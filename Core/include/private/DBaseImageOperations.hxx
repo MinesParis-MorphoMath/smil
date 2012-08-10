@@ -150,10 +150,11 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn
     lineType *srcLines2 = imIn2.getLines();
     lineType *destLines = imOut.getLines();
 
+    UINT i, chunk = 100;
     #pragma omp parallel shared(srcLines1,srcLines2,destLines,chunk) private(i)
     {
 	#pragma omp for schedule(dynamic,chunk) nowait
-	for (UINT i=0;i<lineCount;i++)
+	for (i=0;i<lineCount;i++)
 	    lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
     }
     imOut.modified();

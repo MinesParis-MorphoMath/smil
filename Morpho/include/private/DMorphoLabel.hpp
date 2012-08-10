@@ -43,7 +43,7 @@ class labelFunct : public unaryMorphImageFunctionGeneric<T1, T2>
 {
 public:
     typedef unaryMorphImageFunctionGeneric<T1, T2> parentClass;
-    virtual RES_T initialize(typename parentClass::imageInType &imIn, typename parentClass::imageOutType &imOut, StrElt &se)
+    virtual RES_T initialize(const typename parentClass::imageInType &imIn, typename parentClass::imageOutType &imOut, const StrElt &se)
     {
 	parentClass::initialize(imIn, imOut, se);
 	fill(imOut, T2(0));
@@ -84,7 +84,7 @@ public:
 	    dOffset++;
 	}
     }
-    virtual RES_T finalize(typename parentClass::imageInType &imIn, typename parentClass::imageOutType &imOut, StrElt &se)
+    virtual RES_T finalize(const typename parentClass::imageInType &imIn, typename parentClass::imageOutType &imOut, StrElt &se)
     {
 	this->pixelsOut = imOut.getPixels();
 	
@@ -197,10 +197,10 @@ protected:
 
 
 template<class T1, class T2>
-RES_T label(Image<T1> &imIn, Image<T2> &imOut, StrElt se=DEFAULT_SE())
+RES_T label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
 {
     labelFunct<T1,T2> f;
-    return f._exec(imIn, imOut, se());
+    return f._exec(imIn, imOut, se);
 }
 
 

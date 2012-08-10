@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 //       }
 //     Image_UINT8 im3(im1);
     
-    readVTK("/home/mat/tmp/tessel.vtk", im1);
+    readVTK("/home/faessel/src/divers/2012-MSME/tessel.vtk", im1);
 //     im1 << UINT8(0);
 //     im1.setPixel(100,100,5,  255);
 //     im2.setSize(im1);
@@ -94,11 +94,13 @@ int main(int argc, char *argv[])
 //     dilate(im1, im2, cubeSE(3));
 //     im1 << UINT8(127);
 //     im1.modified();
-    setDefaultSE(cubeSE());
+//     setDefaultSE(cubeSE());
     
     im2.setSize(im1);
-//     hMinima(im1, UINT16(200), im2);
-    dilate(im1, im2);
+    hMinima(im1, UINT16(200), im2);
+    watershed(im1, im2);
+//     sup(im1, im2, im2);
+//     dilate(im1, im2);
     im1.show("im1");
     im2.show("im2");
     

@@ -36,8 +36,6 @@
 
 int main(int argc, char *argv[])
 {
-  Gui::initialize();
-  
   typedef UINT16 dataType;
   typedef Image<dataType> imType;
   
@@ -54,7 +52,7 @@ int main(int argc, char *argv[])
   
   im1 << vec1;
   
-  label(im1, im2, sSE(10));
+  label(im1, im2, sSE());
   
   im1.setSize(512, 512);
   im2.setSize(im1);

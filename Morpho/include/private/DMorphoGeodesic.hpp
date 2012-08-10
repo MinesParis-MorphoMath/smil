@@ -191,7 +191,7 @@ RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Imag
     // set an offset distance for each se point
     for(it=it_start;it!=it_end;it++)
     {
-	dOffsets.push_back(it->x - it->y*s[0] + it->z*s[0]*s[1]);
+	dOffsets.push_back(it->x + it->y*s[0] + it->z*s[0]*s[1]);
     }
     
     vector<int>::iterator it_off_start = dOffsets.begin();
@@ -235,6 +235,9 @@ RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Imag
 		
 		if (oddLine)
 		  nbOffset += (y+1)%2;
+		
+		if (nbOffset < 0 || nbOffset >= imIn.getPixelCount())
+		  nbOffset = 0;
 		
 		nbStat = statPixels[nbOffset];
 		
