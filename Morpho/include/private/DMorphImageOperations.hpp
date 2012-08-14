@@ -97,7 +97,7 @@ public:
 	    if(pt->z < se_zmin) se_zmin = pt->z;
 	    if(pt->z > se_zmax) se_zmax = pt->z;
 	    
-	    relativeOffsets.push_back(pt->x - pt->y*imSize[0] + pt->z*imSize[0]*imSize[1]);
+	    relativeOffsets.push_back(pt->x + pt->y*imSize[0] + pt->z*imSize[0]*imSize[1]);
 	    pt++;
 	}
 	return RES_OK;
@@ -159,7 +159,7 @@ public:
 	    linesOut++;
 	}
     }
-    virtual inline void processLine(const lineInType pixIn, lineOutType pixOut, UINT &pixNbr, const StrElt &se)
+    virtual inline void processLine(lineInType pixIn, lineOutType pixOut, UINT &pixNbr, const StrElt &se)
     {
 	int x, y, z;
 	Point p;
@@ -172,7 +172,7 @@ public:
 	for (UINT i=0;i<sePointNbr;i++)
 	{
 	    p = sePoints[i];
-	    y = curLine - p.y;
+	    y = curLine + p.y;
 	    z = curSlice + p.z;
 	    if (y>=0 && y<int(imSize[1]) && z>=0 && z<int(imSize[2]))
 	    {

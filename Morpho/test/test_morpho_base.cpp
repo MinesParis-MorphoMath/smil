@@ -32,40 +32,52 @@
 #include "DGui.h"
 #include "DIO.h"
 
-
+class Test_Label : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT16 dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(6,6);
+      imType im2(im1);
+      imType im3(im1);
+      
+      dataType vec1[] = {
+	0, 0, 1, 0, 1, 0,
+	0, 1, 0, 0, 0, 0,
+	1, 1, 0, 0, 0, 0,
+	1, 0, 0, 0, 0, 0,
+	1, 0, 1, 0, 0, 1,
+	0, 0, 1, 0, 1, 1
+      };
+      
+      im1 << vec1;
+      
+      label(im1, im2, sSE());
+      
+      im1.show();
+      Gui::execLoop();
+      dataType vec3[] = {
+	0, 0, 1, 0, 2, 0,
+	0, 1, 0, 0, 0, 0,
+	1, 1, 0, 0, 0, 0,
+	1, 0, 0, 0, 0, 0,
+	1, 0, 3, 0, 0, 4,
+	0, 0, 3, 0, 4, 4
+      };
+      im3 << vec3;
+      
+      TEST_ASSERT(im2==im3);
+  }
+};
 
 int main(int argc, char *argv[])
 {
-  typedef UINT16 dataType;
-  typedef Image<dataType> imType;
+      TestSuite ts;
+      ADD_TEST(ts, Test_Label);
+      
+      return ts.run();
   
-  imType im1(5,5);
-  imType im2(im1);
-  
-  dataType vec1[] = {
-    0, 0, 1, 1, 0,
-    0, 1, 0, 0, 0,
-    1, 1, 0, 0, 0,
-    1, 0, 1, 0, 1,
-    0, 0, 1, 1, 1
-  };
-  
-  im1 << vec1;
-  
-  label(im1, im2, sSE());
-  
-  im1.setSize(512, 512);
-  im2.setSize(im1);
-  
-  im1.setPixel(256,256,32700);
-  dilate(im1, im2, sSE(10));
-//   dilate(im2, im2, sSE(1));
-  
-  im2.show();
-  
-  Gui::execLoop();
-  
-  
-//   im2.printSelf(1);
 }
 

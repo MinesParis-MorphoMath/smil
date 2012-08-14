@@ -132,7 +132,8 @@ void qtImageViewer<T>::update()
 template <class T>
 void qtImageViewer<T>::drawImage()
 {
-    typename Image<T>::sliceType lines = this->image->getSlices()[slider->value()];
+    UINT s = BASE_QT_VIEWER::slider->value();
+    typename Image<T>::sliceType lines = this->image->getSlices()[s];
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
     UINT d = this->image->getDepth();
@@ -145,13 +146,14 @@ void qtImageViewer<T>::drawImage()
     else
       coeff = double(numeric_limits<UINT8>::max()) / ( double(numeric_limits<T>::max()) - double(numeric_limits<T>::min()) );
 
-    for (UINT j=0;j<h;j++)
+    for (UINT j=0;j<h;j++,lines++)
     {
-	typename Image<T>::lineType pixels = *lines++;;
+	typename Image<T>::lineType pixels = lines[j];
 	
 	destLine = this->qImage->scanLine(j);
 	for (UINT i=0;i<w;i++)
-	    destLine[i] = (UINT8)(coeff * (double(pixels[i]) - double(numeric_limits<T>::min())));
+	  pixels[i] = 0;
+// 	    destLine[i] = (UINT8)(coeff * (double(pixels[i]) - double(numeric_limits<T>::min())));
     }
 }
 

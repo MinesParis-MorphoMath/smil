@@ -228,29 +228,31 @@ class Test_Watershed : public TestCase
       imLblTruth << vecLblTruth;
       imWsTruth << vecWsTruth;
       
+//       imLbl.printSelf(1);
+      
       TEST_ASSERT(imLbl==imLblTruth);
       TEST_ASSERT(imWs==imWsTruth);
   }
 };
 
 
-// int main(int argc, char *argv[])
-// {
-//       TestSuite ts;
-//       ADD_TEST(ts, Test_HierarchicalQueue);
-//       ADD_TEST(ts, Test_InitHierarchicalQueue);
-//       ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
-//       ADD_TEST(ts, Test_Watershed);
-//       
-//       Image<UINT8> im1, im2;
-// //       watershed(im1, im2);
-//       
-//       return ts.run();
-//       
-// }
+int main(int argc, char *argv[])
+{
+      TestSuite ts;
+      ADD_TEST(ts, Test_HierarchicalQueue);
+      ADD_TEST(ts, Test_InitHierarchicalQueue);
+      ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
+      ADD_TEST(ts, Test_Watershed);
+      
+      Image<UINT8> im1, im2;
+//       watershed(im1, im2);
+      
+      return ts.run();
+      
+}
 
 
-
+/*
 int main(int argc, char *argv[])
 {
     
@@ -275,4 +277,4 @@ int main(int argc, char *argv[])
       
       
 }
-
+*/
