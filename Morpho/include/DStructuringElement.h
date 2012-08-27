@@ -132,13 +132,13 @@ class hSE : public StrElt
 	seT = stHexSE;
 	size = s;
 	odd = true;
-	addPoint(0,0);	// 1
-	addPoint(1,0);	// 2
-	addPoint(0,1);	// 3
-	addPoint(-1,1);	// 4
-	addPoint(-1,0);	// 5
-	addPoint(-1,-1);// 6
-	addPoint(0,-1);	// 7
+	addPoint(0,0);		// 1
+	addPoint(1,0);		// 2
+	addPoint(0,-1);		// 3
+	addPoint(-1,-1);	// 4
+	addPoint(-1,0);		// 5
+	addPoint(-1,1);		// 6
+	addPoint(0,1);		// 7
     }
 };
 
@@ -164,12 +164,12 @@ class hSE0 : public StrElt
 	seT = stHexSE;
 	size = s;
 	odd = true;
-	addPoint(1,0);	// 1
-	addPoint(0,1);	// 2
-	addPoint(-1,1);	// 3
-	addPoint(-1,0);	// 4
-	addPoint(-1,-1);// 5
-	addPoint(0,-1);	// 6
+	addPoint(1,0);		// 1
+	addPoint(0,-1);		// 2
+	addPoint(-1,-1);	// 3
+	addPoint(-1,0);		// 4
+	addPoint(-1,1);		// 5
+	addPoint(0,1);		// 6
     }
 };
 
@@ -197,13 +197,13 @@ class sSE : public StrElt
 	odd = false;
 	addPoint(0,0); 	// 1
 	addPoint(1,0);	// 2
-	addPoint(1,1);	// 3
-	addPoint(0,1);	// 4
-	addPoint(-1,1);	// 5
+	addPoint(1,-1);	// 3
+	addPoint(0,-1);	// 4
+	addPoint(-1,-1);	// 5
 	addPoint(-1,0);	// 6
-	addPoint(-1,-1);// 7
-	addPoint(0,-1);	// 8
-	addPoint(1,-1);	// 9
+	addPoint(-1,1);// 7
+	addPoint(0,1);	// 8
+	addPoint(1,1);	// 9
     }
 };
 
@@ -229,14 +229,14 @@ class sSE0 : public StrElt
 	className = "sSE0";
 // 	seT = stSquSE;
 	odd = false;
-	addPoint(1,0);	// 1
-	addPoint(1,1);	// 2
-	addPoint(0,1);	// 3
-	addPoint(-1,1);	// 4
-	addPoint(-1,0);	// 5
-	addPoint(-1,-1);// 6
-	addPoint(0,-1);	// 7
-	addPoint(1,-1);	// 8
+	addPoint(1,0);		// 1
+	addPoint(1,-1);		// 2
+	addPoint(0,-1);		// 3
+	addPoint(-1,-1);	// 4
+	addPoint(-1,0);		// 5
+	addPoint(-1,1);		// 6
+	addPoint(0,1);		// 7
+	addPoint(1,1);		// 8
     }
 };
 
@@ -279,13 +279,13 @@ class cubeSE : public StrElt
 	    int z = zList[i];
 	    addPoint(0,0,z);	// 1
 	    addPoint(1,0,z);	// 2
-	    addPoint(1,1,z);	// 3
-	    addPoint(0,1,z);	// 4
-	    addPoint(-1,1,z);	// 5
+	    addPoint(1,-1,z);	// 3
+	    addPoint(0,-1,z);	// 4
+	    addPoint(-1,-1,z);	// 5
 	    addPoint(-1,0,z);	// 6
-	    addPoint(-1,-1,z);	// 7
-	    addPoint(0,-1,z);	// 8
-	    addPoint(1,-1,z);	// 9
+	    addPoint(-1,1,z);	// 7
+	    addPoint(0,1,z);	// 8
+	    addPoint(1,1,z);	// 9
 	}
     }
 };
