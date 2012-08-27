@@ -51,7 +51,7 @@ class baseObject
 {
 public:
     baseObject(bool _register=true);
-    baseObject(const char *_className, bool _register=true);
+    baseObject(const string _className, bool _register=true);
     baseObject(const baseObject &rhs, bool _register=true);
     
     // Assignment operator

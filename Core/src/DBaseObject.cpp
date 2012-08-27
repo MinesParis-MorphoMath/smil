@@ -40,7 +40,7 @@ baseObject::baseObject(bool _register)
       Core::getInstance()->registerObject(this);
 }
 
-baseObject::baseObject(const char *_className, bool _register)
+baseObject::baseObject(const string _className, bool _register)
   : className(_className), 
     name(""),
     triggerEvents(true),
