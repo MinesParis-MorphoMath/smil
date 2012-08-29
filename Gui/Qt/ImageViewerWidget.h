@@ -93,6 +93,7 @@ protected:
     QVector<QRgb> labelColorTable;
     QVector<QRgb> overlayColorTable;
     void initColorTables();
+    void updatePixmaps(QImage *image, QList<QGraphicsPixmapItem*> *pixmaps);
     
     double scaleFactor;
     QImageGraphicsScene *imScene;

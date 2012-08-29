@@ -301,15 +301,15 @@ void ImageViewerWidget::load(const QString fileName)
     emit onDataChanged();
 }
 
-void ImageViewerWidget::dataChanged()
+void ImageViewerWidget::updatePixmaps(QImage *image, QList<QGraphicsPixmapItem*> *pixmaps)
 {
-    UINT w = qImage->width(), h = qImage->height();
+    UINT w = image->width(), h = image->height();
     
     UINT pixNbrX = w/PIXMAP_MAX_DIM + 1;
     UINT pixNbrY = h/PIXMAP_MAX_DIM + 1;
     UINT pixW = PIXMAP_MAX_DIM, pixH = PIXMAP_MAX_DIM;
     
-    QList<QGraphicsPixmapItem*>::iterator it = imagePixmaps.begin();
+    QList<QGraphicsPixmapItem*>::iterator it = pixmaps->begin();
     
     for (int j=0;j<pixNbrY;j++)
     {
@@ -322,11 +322,15 @@ void ImageViewerWidget::dataChanged()
 	      pixW = w%PIXMAP_MAX_DIM;
 	    
 	    QGraphicsPixmapItem *item = *it;
-	    item->setPixmap(QPixmap::fromImage(qImage->copy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM, pixW, pixH)));
+	    item->setPixmap(QPixmap::fromImage(image->copy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM, pixW, pixH)));
 	    it++;
 	}
     }
-  
+}
+
+void ImageViewerWidget::dataChanged()
+{
+    updatePixmaps(qImage, &imagePixmaps);
   
     magnView->setImage(qImage);
     
@@ -335,32 +339,8 @@ void ImageViewerWidget::dataChanged()
 
 void ImageViewerWidget::overlayDataChanged()
 {
-    UINT w = qImage->width(), h = qImage->height();
-    
-    UINT pixNbrX = w/PIXMAP_MAX_DIM + 1;
-    UINT pixNbrY = h/PIXMAP_MAX_DIM + 1;
-    UINT pixW = PIXMAP_MAX_DIM, pixH = PIXMAP_MAX_DIM;
-    
-    QList<QGraphicsPixmapItem*>::iterator it = overlayPixmaps.begin();
-    
-    for (int j=0;j<pixNbrY;j++)
-    {
-	if (j==pixNbrY-1)
-	  pixH = h%PIXMAP_MAX_DIM;
-	
-	for (int i=0;i<pixNbrX;i++)
-	{
-	    if (i==pixNbrX-1)
-	      pixW = w%PIXMAP_MAX_DIM;
-	    
-	    QGraphicsPixmapItem *item = *it;
-	    item->setPixmap(QPixmap::fromImage(qOverlayImage->copy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM, pixW, pixH)));
-	    it++;
-	}
-    }
+    updatePixmaps(qOverlayImage, &overlayPixmaps);
 }
-
-
 
 void ImageViewerWidget::clearOverlay()
 {

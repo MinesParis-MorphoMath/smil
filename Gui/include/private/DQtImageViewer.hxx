@@ -108,12 +108,8 @@ void qtImageViewer<T>::setLabelImage(bool val)
     
     BASE_QT_VIEWER::setLabelImage(val);
     parentClass::labelImage = val;
-    
-    if (val)
-      qImage->setColorTable(labelColorTable);
-    else qImage->setColorTable(baseColorTable);
-    
-    BASE_QT_VIEWER::dataChanged();
+        
+    update();
 }
 
 template <class T>
@@ -132,11 +128,10 @@ void qtImageViewer<T>::update()
 template <class T>
 void qtImageViewer<T>::drawImage()
 {
-    UINT s = BASE_QT_VIEWER::slider->value();
-    typename Image<T>::sliceType lines = this->image->getSlices()[s];
+    typename Image<T>::sliceType lines = this->image->getSlices()[slider->value()];
+    
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
-    UINT d = this->image->getDepth();
     
     UINT8 *destLine;
     double coeff;
@@ -148,12 +143,12 @@ void qtImageViewer<T>::drawImage()
 
     for (UINT j=0;j<h;j++,lines++)
     {
-	typename Image<T>::lineType pixels = lines[j];
+	typename Image<T>::lineType pixels = *lines;
 	
 	destLine = this->qImage->scanLine(j);
 	for (UINT i=0;i<w;i++)
-	  pixels[i] = 0;
-// 	    destLine[i] = (UINT8)(coeff * (double(pixels[i]) - double(numeric_limits<T>::min())));
+// 	  pixels[i] = 0;
+	    destLine[i] = (UINT8)(coeff * (double(pixels[i]) - double(numeric_limits<T>::min())));
     }
 }
 
@@ -175,22 +170,29 @@ void qtImageViewer<T>::drawOverlay(Image<T> &im)
     UINT w = im.getWidth();
     UINT h = im.getHeight();
     
+    typename Image<T>::sliceType lines = im.getSlices()[slider->value()];
+    typename Image<T>::lineType pixels;
+    
     if (qOverlayImage)
       delete qOverlayImage;
     
     qOverlayImage = new QImage(w, h, QImage::Format_ARGB32_Premultiplied);
-//     qOverlayImage.setColorTable(overlayColorTable);
+    qOverlayImage->setColorTable(overlayColorTable);
     qOverlayImage->fill(Qt::transparent);
 
-    typename Image<T>::lineType pixels = *im.getSlices()[0];
+    QRgb *destLine;
       
     for (UINT j=0;j<im.getHeight();j++)
-      for (UINT i=0;i<im.getWidth();i++)
-      {
-	if (*pixels!=0)
-	  qOverlayImage->setPixel(i, j, overlayColorTable[(UINT8)*pixels]);
-	pixels++;
-      }
+    {
+	destLine = (QRgb*)(this->qOverlayImage->scanLine(j));
+	pixels = *lines++;
+	for (UINT i=0;i<im.getWidth();i++)
+	{
+	  if (*pixels!=0)
+	    destLine[i] = overlayColorTable[(UINT8)*pixels];
+	  pixels++;
+	}
+    }
 	
     BASE_QT_VIEWER::overlayDataChanged();
     BASE_QT_VIEWER::update();
