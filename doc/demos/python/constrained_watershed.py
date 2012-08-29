@@ -1,7 +1,8 @@
 from smilPython import *
 
 # Load an image
-imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/DNA_small.png")
+imIn = Image("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png")
+#imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/DNA_small.png")
 imIn.show()
 
 # Create a gradient image
@@ -19,7 +20,7 @@ imMark.setPixel(88, 76, 3)
 
 # Dilate the markers to avoid to be blocked in a minimum
 dilate(imMark, imMark, 2)
-imMark.showLabel()
+#imMark.showLabel()
 
 # Create the watershed
 imWS = Image(imIn)

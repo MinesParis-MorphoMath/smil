@@ -64,13 +64,13 @@ int main(int argc, char *argv[])
 //     Image_UINT8 im1;
     
     
-    Image_UINT16 im1;
-    Image_UINT16 im2;
+    Image_UINT8 im1;
+    Image_UINT8 im2;
 
 //     im2 << ( (im1>UINT8(100)) & im1 );
 //     return 1;
-//     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
-//       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
+    if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
+      read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
     
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1);
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 //       }
 //     Image_UINT8 im3(im1);
     
-    readVTK("/home/faessel/src/divers/2012-MSME/tessel.vtk", im1);
+//     readVTK("/home/faessel/src/divers/2012-MSME/tessel.vtk", im1);
 //     im1 << UINT8(0);
 //     im1.setPixel(100,100,5,  255);
 //     im2.setSize(im1);
@@ -97,17 +97,22 @@ int main(int argc, char *argv[])
 //     setDefaultSE(cubeSE());
     
     im2.setSize(im1);
-    hMinima(im1, UINT16(200), im2);
-    watershed(im1, im2);
+//     hMinima(im1, UINT8(200), im2);
+//     watershed(im1, im2);
 //     sup(im1, im2, im2);
 //     dilate(im1, im2);
-    im1.show("im1");
-    im2.show("im2");
+//     im1.show("im1");
+    thresh(im1, UINT8(90), im2);
+    Image_UINT8 im3(im1);
+    close(im2, im2, hSE(10));
+//     StrElt se; // = hSE(1);
+    Image_UINT16 imLbl(im1);
+    label(im2, imLbl, sSE());
+    imLbl.showLabel("imLbl");
     
 //     copy(im2, 256, 0, 0, im1);
     
 
-    
     Gui::execLoop();
     
 }

@@ -98,6 +98,7 @@
 
 
 
+#ifdef SWIGPYTHON
 %define PTR_ARG_OUT_APPLY(name)
   %apply unsigned char *OUTPUT{ unsigned char *name };
   %apply unsigned short *OUTPUT{ unsigned short *name };
@@ -107,7 +108,10 @@
   %apply int *OUTPUT{ int *name };
   %apply char *OUTPUT{const char *name};
 %enddef
-
+#else // SWIGPYTHON
+%define PTR_ARG_OUT_APPLY(name)
+%enddef
+#endif // SWIGPYTHON
 
 // CMake generated wrap macros
 

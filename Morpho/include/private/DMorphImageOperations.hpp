@@ -148,7 +148,7 @@ public:
 //     virtual RES_T processImage(imageInType &imIn, imageOutType &imOut, hSE &se)
 //     {
 //     }
-    virtual inline void processSlice(sliceInType &linesIn, sliceOutType &linesOut, UINT &lineNbr, const StrElt &se)
+    virtual inline void processSlice(sliceInType linesIn, sliceOutType linesOut, UINT &lineNbr, const StrElt &se)
     {
 	while(curLine<lineNbr)
 	{

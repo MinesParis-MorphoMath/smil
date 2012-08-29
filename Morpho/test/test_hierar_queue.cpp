@@ -136,14 +136,14 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       
       initWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq);
       processWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq, se);
-      
+
       UINT8 vecLblTruth[] = { 
-	1, 1, 1, 1, 1, 1,
-	1, 1, 1, 1, 1, 1,
-	2, 3, 3, 3, 3, 3,
-	2, 3, 3, 3, 3, 3,
-	2, 2, 3, 3, 3, 3,
-	2, 2, 2, 3, 3, 3,
+	1, 1, 1, 1, 1, 1, 
+	2, 3, 3, 3, 3, 3, 
+	2, 3, 3, 3, 3, 3, 
+	2, 3, 3, 3, 3, 3, 
+	2, 2, 2, 3, 3, 3, 
+	2, 2, 2, 3, 3, 3, 
 	2, 2, 2, 2, 3, 3
       };
       
@@ -183,7 +183,7 @@ class Test_Watershed : public TestCase
 	2, 2, 2, 2, 4, 2
       };
       
-      UINT8 vecLbl[] = { 
+      UINT8 vecMark[] = { 
 	1, 1, 1, 1, 1, 1,
 	0, 0, 0, 0, 0, 0,
 	2, 0, 0, 0, 3, 3,
@@ -194,21 +194,22 @@ class Test_Watershed : public TestCase
       };
       
       Image_UINT8 imIn(6,7);
-      Image_UINT8 imLbl(imIn);
+      Image_UINT8 imMark(imIn);
       Image_UINT8 imWs(imIn);
+      Image_UINT8 imLbl(imIn);
 
       imIn << vecIn;
-      imLbl << vecLbl;
+      imMark << vecMark;
       
-      watershed(imIn, imLbl, imWs, sSE());
+      watershed(imIn, imMark, imWs, imLbl, sSE());
       
       UINT8 vecLblTruth[] = { 
-	1, 1, 1, 1, 1, 1,
-	1, 1, 1, 1, 1, 1,
-	2, 2, 2, 3, 3, 3,
-	2, 2, 2, 3, 3, 3,
-	2, 2, 2, 3, 3, 3,
-	2, 2, 2, 3, 3, 3,
+	1, 1, 1, 1, 1, 1, 
+	2, 2, 2, 3, 3, 3, 
+	2, 2, 2, 3, 3, 3, 
+	2, 2, 2, 3, 3, 3, 
+	2, 2, 2, 3, 3, 3, 
+	2, 2, 2, 2, 3, 3, 
 	2, 2, 2, 2, 3, 3
       };
       

@@ -54,8 +54,8 @@ void Core::initialize()
   if (_instance == NULL)
   {
       _instance =  new Core;
+      Gui::initialize();
   }
-  Gui::initialize();
 }
 
 // void Core::execLoop() 

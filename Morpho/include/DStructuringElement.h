@@ -49,8 +49,11 @@ class StrElt : public baseObject
 {
   public:
     StrElt(UINT s=1)
-      : baseObject("StrElt"), 
+      : baseObject("StrElt"),
 	seT(stGeneric), size(s) 
+    {
+    }
+    ~StrElt()
     {
     }
     StrElt(const StrElt &rhs)

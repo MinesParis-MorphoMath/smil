@@ -79,8 +79,8 @@ public:
   typedef void(T::*voidMemberFunc)();
   MemberFunctionSlot()
   {
-    _instance = NULL;
-    _function = NULL;
+      _instance = NULL;
+      _function = NULL;
   }
   MemberFunctionSlot(T *inst, memberFunc func)
   {
@@ -92,13 +92,13 @@ public:
   }
   void init(T *inst, memberFunc func)
   {
-    _instance = inst;
-    _function = func;
+      _instance = inst;
+      _function = func;
   }
   void init(T *inst, voidMemberFunc func)
   {
-    _instance = inst;
-    _void_function = func;
+      _instance = inst;
+      _void_function = func;
   }
 protected:
   T *_instance;

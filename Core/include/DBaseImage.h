@@ -38,7 +38,7 @@ class /*_SMIL*/ baseImage : public baseObject
 {
     typedef baseObject parentClass;
 public:
-    baseImage(const char *_className="baseImage")
+    baseImage(const string _className="baseImage")
       :	baseObject(_className),
 	width(0), height(0), depth(0),
 	pixelCount(0), lineCount(0), sliceCount(0),

@@ -64,12 +64,13 @@ int main(int argc, char *argv[])
 //     Image_UINT8 im1;
     
     
-	Image_UINT8 im1(40000, 1023);
+	Image_UINT8 im1(1000, 1023);
     Image_UINT8 im2(im1);
     imageViewer<UINT8> *viewer;
 
 
     drawRectangle(im2, 10, 10, 512, 128);
+    fill(im1, UINT8(127));
     viewer = im1.getViewer();
     viewer->drawOverlay(im2);
 
