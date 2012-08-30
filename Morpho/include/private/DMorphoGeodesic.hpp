@@ -36,8 +36,9 @@
 #include "DMorphoHierarQ.hpp"
 
 /**
- * \addtogroup Morpho
- * \{
+ * \ingroup Morpho
+ * \defgroup Geodesic
+ * @{
  */
 
 // Geodesy

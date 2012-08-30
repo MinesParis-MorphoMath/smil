@@ -33,6 +33,7 @@ SMIL_MODULE(smilMorpho)
 %{
 /* Includes the header in the wrapper code */
 #include "DMorphoBase.hpp"
+#include "DMorphoResidues.hpp"
 #include "DMorphoGeodesic.hpp"
 #include "DMorphoExtrema.hpp"
 #include "DMorphoArrow.hpp"
@@ -52,6 +53,7 @@ SMIL_MODULE(smilMorpho)
 
 %include "DStructuringElement.h"
 %include "DMorphoBase.hpp"
+%include "DMorphoResidues.hpp"
 %include "DMorphoGeodesic.hpp"
 %include "DMorphoExtrema.hpp"
 %include "DMorphoArrow.hpp"
@@ -63,7 +65,11 @@ TEMPLATE_WRAP_FUNC(dilate);
 TEMPLATE_WRAP_FUNC(erode);
 TEMPLATE_WRAP_FUNC(close);
 TEMPLATE_WRAP_FUNC(open);
+
+// Residues
 TEMPLATE_WRAP_FUNC(gradient);
+TEMPLATE_WRAP_FUNC(topHat);
+TEMPLATE_WRAP_FUNC(dualTopHat);
 
 TEMPLATE_WRAP_FUNC(geoDil);
 TEMPLATE_WRAP_FUNC(geoEro);

@@ -123,30 +123,6 @@ RES_T open(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
     return open(imIn, imOut, DEFAULT_SE(seSize));
 }
 
-/**
- * Morphological gradient
- * 
- */
-template <class T>
-RES_T gradient(const Image<T> &imIn, Image<T> &imOut, const StrElt &dilSe, const StrElt &eroSe)
-{
-    Image<T> dilIm(imIn);
-    Image<T> eroIm(imIn);
-    
-    RES_T res = dilate(imIn, dilIm, dilSe);
-    if (res==RES_OK)
-      res = erode(imIn, eroIm, eroSe);
-    if (res==RES_OK)
-      res = sub(dilIm, eroIm, imOut);
-    return res;
-}
-
-template <class T>
-RES_T gradient(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
-{
-    return gradient(imIn, imOut, se, se);
-}
-
 
 /** \} */
 

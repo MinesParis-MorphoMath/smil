@@ -30,6 +30,12 @@
 #ifndef _D_MORPHO_ARROW_HPP
 #define _D_MORPHO_ARROW_HPP
 
+/**
+ * \ingroup Morpho
+ * \defgroup Arrow
+ * @{
+ */
+
 #include "DMorphImageOperations.hpp"
 
 
@@ -181,6 +187,7 @@ RES_T arrow(Image<T> &imIn, const char *operation, Image<T> &imOut, StrElt se=DE
     else return RES_ERR;
 }
 
+/** \} */
 
 #endif // _D_MORPHO_ARROW_HPP
 
