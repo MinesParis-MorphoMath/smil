@@ -126,6 +126,16 @@ RES_T stretchHist(Image<T> &imIn, Image<T> &imOut, T outMinVal=numeric_limits<T>
     return iFunc(imIn, imOut);
 }
 
+template <class T1, class T2>
+RES_T stretchHist(Image<T1> &imIn, Image<T2> &imOut)
+{
+    Image<T1> tmpIm(imIn);
+    RES_T res = stretchHist<T1>(imIn, tmpIm, numeric_limits<T2>::min(), numeric_limits<T2>::max());
+    if (res!=RES_OK)
+      return res;
+    return copy(tmpIm, imOut);
+}
+
 
 /**
  * Enhance contrast
