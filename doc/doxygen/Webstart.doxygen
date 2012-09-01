@@ -27,7 +27,7 @@
  */
 
 /**
- * \page webstart_page Smil Online (Web Start) version
+ * \page webstart_page Smil Online Java (Web Start) version
  * \section require_sec Requirements
  * This application is a Java WebStart version of Smil. \n
  * To be able to run it, your must have a JRE plugin for your browser installed. \n
