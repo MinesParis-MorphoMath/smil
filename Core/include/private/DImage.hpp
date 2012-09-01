@@ -36,7 +36,7 @@
 template <class T> class imageViewer;
 
 /**
- * \defgroup Core
+ * \ingroup Core
  * @{
  */
 
@@ -145,15 +145,15 @@ public:
     bool isVisible() { return (viewer && viewer->isVisible()); }
     
     virtual void init();
-    inline void clone(const Image<T> &rhs);
+    void clone(const Image<T> &rhs);
     template <class T2>
-    inline void clone(const Image<T2> &rhs);
+    void clone(const Image<T2> &rhs);
     Image<T> clone(bool cloneData=true)
     {
 	Image<T> im(*this, cloneData);
 	return im;
     }
-    inline void setSize(UINT w, UINT h, UINT d = 1, bool doAllocate = true);
+    void setSize(UINT w, UINT h, UINT d = 1, bool doAllocate = true);
     inline void setSize(const baseImage &rhs, bool doAllocate = true) 
     { 
 	setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); 

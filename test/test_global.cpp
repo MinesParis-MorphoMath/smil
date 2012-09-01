@@ -28,6 +28,7 @@
 
 
 #include "DCore.h"
+#include "DBase.h"
 #include "DMorpho.h"
 #include "DGui.h"
 

@@ -27,21 +27,52 @@
  */
 
 
-#ifndef _D_IMAGE_IO_H
-#define _D_IMAGE_IO_H
-
-/** \defgroup IO */
-
-#include "private/DImageIO.hpp"
-
-#ifdef USE_CURL
-#include "DNetworkIO.h"
-#endif // USE_CURL
+#ifndef _D_LINE_HISTOGRAM_HPP
+#define _D_LINE_HISTOGRAM_HPP
 
 
+#include "DBaseLineOperations.hpp"
 
-using namespace std;
+//! \ingroup Base
+//! \defgroup Histogram
+//! @{
 
-const char *getFileExtension(const char *fileName);
+template <class T>
+struct threshLine : public unaryLineFunctionBase<T>
+{
+    T minVal, maxVal, trueVal, falseVal;
+    
+    inline void _exec(T* lIn, int size, T* lOut)
+    {
+	for(int i=0;i<size;i++)
+	    lOut[i] = lIn[i] >= minVal && lIn[i] <= maxVal  ? trueVal : falseVal;
+    }
+};
 
-#endif // _D_IMAGE_IO_H
+template <class T>
+struct stretchHistLine : public unaryLineFunctionBase<T>
+{
+    T inOrig, outOrig;
+    double coeff;
+    
+    inline void _exec(T* lIn, int size, T* lOut)
+    {
+	double newVal;
+	
+	for(int i=0;i<size;i++)
+	{
+	    newVal = outOrig + (lIn[i]-inOrig)*coeff;
+	    if (newVal > numeric_limits<T>::max())
+		newVal = numeric_limits<T>::max();
+	    else if (newVal < numeric_limits<T>::min())
+		newVal = numeric_limits<T>::min();
+	    lOut[i] = T(newVal);
+	    
+	}
+    }
+};
+
+
+//! @}
+
+#endif // _D_LINE_HISTOGRAM_HPP

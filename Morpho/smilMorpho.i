@@ -52,25 +52,19 @@ SMIL_MODULE(smilMorpho)
 
 
 %include "DStructuringElement.h"
+
 %include "DMorphoBase.hpp"
-%include "DMorphoResidues.hpp"
-%include "DMorphoGeodesic.hpp"
-%include "DMorphoExtrema.hpp"
-%include "DMorphoArrow.hpp"
-%include "DMorphoWatershed.hpp"
-
-
-
 TEMPLATE_WRAP_FUNC(dilate);
 TEMPLATE_WRAP_FUNC(erode);
 TEMPLATE_WRAP_FUNC(close);
 TEMPLATE_WRAP_FUNC(open);
 
-// Residues
+%include "DMorphoResidues.hpp"
 TEMPLATE_WRAP_FUNC(gradient);
 TEMPLATE_WRAP_FUNC(topHat);
 TEMPLATE_WRAP_FUNC(dualTopHat);
 
+%include "DMorphoGeodesic.hpp"
 TEMPLATE_WRAP_FUNC(geoDil);
 TEMPLATE_WRAP_FUNC(geoEro);
 TEMPLATE_WRAP_FUNC(geoBuild);
@@ -81,20 +75,22 @@ TEMPLATE_WRAP_FUNC(fillHoles);
 TEMPLATE_WRAP_FUNC(levelPics);
 TEMPLATE_WRAP_FUNC(dist);
 
+%include "DMorphoExtrema.hpp"
 TEMPLATE_WRAP_FUNC(hMinima);
 TEMPLATE_WRAP_FUNC(hMaxima);
 TEMPLATE_WRAP_FUNC(minima);
 TEMPLATE_WRAP_FUNC(maxima);
 
+%include "DMorphoArrow.hpp"
 TEMPLATE_WRAP_FUNC(arrow);
 TEMPLATE_WRAP_FUNC(arrowGrt);
 TEMPLATE_WRAP_FUNC(arrowGrtOrEqu);
 TEMPLATE_WRAP_FUNC(arrowEqu);
 
+%include "DMorphoWatershed.hpp"
 TEMPLATE_WRAP_FUNC(watershed);
 TEMPLATE_WRAP_FUNC_CROSS2(watershed);
 
 
 %include "DMorphoLabel.hpp"
-
 TEMPLATE_WRAP_FUNC_CROSS2(label);

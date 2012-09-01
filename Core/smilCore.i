@@ -171,77 +171,10 @@ namespace std
 
 %include "DBaseImage.h"
 %include "DImage.hpp"
-%include "DImage.hxx"
 
 TEMPLATE_WRAP_CLASS(Image);
 TEMPLATE_WRAP_FUNC(createImage);
 
-
-//////////////////////////////////////////////////////////
-// Functions
-//////////////////////////////////////////////////////////
-
-%{
-/* Includes the header in the wrapper code */
-#include "DImageArith.hpp"
-#include "DImageDraw.hpp"
-#include "DLineHistogram.hpp"
-#include "DImageHistogram.hpp"
-#include "DImageTransform.hpp"
-%}
-
-
-%include "DImageArith.hpp"
-%include "DImageDraw.hpp"
-%include "DLineHistogram.hpp"
-%include "DImageHistogram.hpp"
-%include "DImageTransform.hpp"
-
-
-TEMPLATE_WRAP_FUNC_CROSS2(copy);
-TEMPLATE_WRAP_FUNC(crop);
-
-TEMPLATE_WRAP_FUNC(inv);
-TEMPLATE_WRAP_FUNC(fill);
-TEMPLATE_WRAP_FUNC(add);
-TEMPLATE_WRAP_FUNC(addNoSat);
-TEMPLATE_WRAP_FUNC(sub);
-TEMPLATE_WRAP_FUNC(subNoSat);
-TEMPLATE_WRAP_FUNC(mul);
-TEMPLATE_WRAP_FUNC(mulNoSat);
-TEMPLATE_WRAP_FUNC(div);
-
-TEMPLATE_WRAP_FUNC(equ);
-TEMPLATE_WRAP_FUNC(diff);
-TEMPLATE_WRAP_FUNC(sup);
-TEMPLATE_WRAP_FUNC(inf);
-TEMPLATE_WRAP_FUNC(low);
-TEMPLATE_WRAP_FUNC(lowOrEqu);
-TEMPLATE_WRAP_FUNC(grt);
-TEMPLATE_WRAP_FUNC(grtOrEqu);
-TEMPLATE_WRAP_FUNC(logicAnd);
-TEMPLATE_WRAP_FUNC(logicOr);
-TEMPLATE_WRAP_FUNC(logicXOr);
-TEMPLATE_WRAP_FUNC(test);
-
-TEMPLATE_WRAP_FUNC(vol);
-TEMPLATE_WRAP_FUNC(minVal);
-TEMPLATE_WRAP_FUNC(maxVal);
-TEMPLATE_WRAP_FUNC(rangeVal);
-
-
-TEMPLATE_WRAP_FUNC(histo);
-
-TEMPLATE_WRAP_FUNC(thresh);
-TEMPLATE_WRAP_FUNC_CROSS2(stretchHist);
-TEMPLATE_WRAP_FUNC(enhanceContrast);
-
-TEMPLATE_WRAP_FUNC(drawRectangle);
-
-
-TEMPLATE_WRAP_FUNC(vFlip);
-TEMPLATE_WRAP_FUNC(trans);
-TEMPLATE_WRAP_FUNC(resize);
 
 
 

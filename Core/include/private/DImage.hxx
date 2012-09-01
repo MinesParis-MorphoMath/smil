@@ -30,7 +30,8 @@
 #ifndef _IMAGE_HXX
 #define _IMAGE_HXX
 
-#include "DIO.h"
+#include "IO/include/DIO.h"
+#include "Base/include/DBase.h"
 #include "DImageViewer.h"
 
 // template <>

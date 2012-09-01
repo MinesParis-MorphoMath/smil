@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,21 +27,22 @@
  */
 
 
-#ifndef _D_IMAGE_IO_H
-#define _D_IMAGE_IO_H
+#ifndef _D_LINE_ARITH_H
+#define _D_LINE_ARITH_H
 
-/** \defgroup IO */
+#include "private/DLineArith.hpp"
 
-#include "private/DImageIO.hpp"
+#if defined  __SSE__ && defined SMIL_USE_SSE_INT
+#include "DLineArith_SSE.h"
+#endif // defined  __SSE__ && defined SMIL_USE_SSE_INT
 
-#ifdef USE_CURL
-#include "DNetworkIO.h"
-#endif // USE_CURL
+#ifdef SMIL_WRAP_BIN
+#include "DLineArith_BIN.h"
+#endif // SMIL_WRAP_BIN
+
+#ifdef SMIL_WRAP_Bit
+#include "DLineArith_Bit.h"
+#endif // SMIL_WRAP_BIN
 
 
-
-using namespace std;
-
-const char *getFileExtension(const char *fileName);
-
-#endif // _D_IMAGE_IO_H
+#endif // _D_LINE_ARITH_HPP

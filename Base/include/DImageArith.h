@@ -1,3 +1,4 @@
+ 
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
@@ -27,21 +28,11 @@
  */
 
 
-#ifndef _D_IMAGE_IO_H
-#define _D_IMAGE_IO_H
-
-/** \defgroup IO */
-
-#include "private/DImageIO.hpp"
-
-#ifdef USE_CURL
-#include "DNetworkIO.h"
-#endif // USE_CURL
+#ifndef _D_IMAGE_ARITH_H
+#define _D_IMAGE_ARITH_H
 
 
+#include "private/DImageArith.hpp"
 
-using namespace std;
 
-const char *getFileExtension(const char *fileName);
-
-#endif // _D_IMAGE_IO_H
+#endif // _D_IMAGE_ARITH_H

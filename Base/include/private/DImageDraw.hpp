@@ -27,21 +27,60 @@
  */
 
 
-#ifndef _D_IMAGE_IO_H
-#define _D_IMAGE_IO_H
+#ifndef _D_IMAGE_DRAW_HPP
+#define _D_IMAGE_DRAW_HPP
 
-/** \defgroup IO */
+#include "DLineArith.hpp"
 
-#include "private/DImageIO.hpp"
+/**
+ * \ingroup Base
+ * \defgroup Draw
+ * @{
+ */
 
-#ifdef USE_CURL
-#include "DNetworkIO.h"
-#endif // USE_CURL
+
+/**
+ * Draw a rectangle
+ * 
+ * 
+ * \param imOut Output image.
+ */
+template <class T>
+inline RES_T drawRectangle(Image<T> &imOut, UINT x0, UINT y0, UINT width, UINT height, T value=numeric_limits<T>::max(), bool fill=false)
+{
+    if (!imOut.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+
+    UINT x1 = x0 + width - 1;
+    UINT y1 = y0 + height -1;
+    
+    typename Image<T>::sliceType lines = imOut.getLines();
+    fillLine<T> fillFunc;
+    
+    if (fill)
+    {
+	for (UINT j=y0;j<=y1;j++)
+	  fillFunc(lines[j]+x1, width-1, value);
+    }
+    else
+    {
+	fillFunc(lines[y0]+x0, width, value);
+	fillFunc(lines[y1]+x0, width, value);
+	for (UINT j=y0+1;j<=y1;j++)
+	{
+	    lines[j][x0] = value;
+	    lines[j][x1] = value;
+	}
+    }
+    
+    imOut.modified();
+    
+    return RES_OK;
+}
 
 
 
-using namespace std;
+/** @}*/
 
-const char *getFileExtension(const char *fileName);
+#endif // _D_IMAGE_DRAW_HPP
 
-#endif // _D_IMAGE_IO_H
