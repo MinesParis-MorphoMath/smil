@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,23 +27,22 @@
  */
 
 
-#ifndef _D_LINE_ARITH_H
-#define _D_LINE_ARITH_H
+#ifndef _DBASE_H
+#define _DBASE_H
 
-#include "DLineArith.hpp"
+/**
+ * \defgroup Base
+ * @{
+ */
 
-#if defined  __SSE__ && defined SMIL_USE_SSE_INT
-#include "DLineArith_SSE.h"
-#endif // defined  __SSE__ && defined SMIL_USE_SSE_INT
+#include "DLineArith.h"
+#include "DImageArith.h"
+#include "DCoreEvents.h"
 
-#ifdef SMIL_WRAP_BIN
-#include "DLineArith_BIN.h"
-#endif // SMIL_WRAP_BIN
+#include "private/DImageHistogram.hpp"
+#include "private/DImageTransform.hpp"
 
-#ifdef SMIL_WRAP_Bit
-#include "DLineArith_Bit.h"
-#endif // SMIL_WRAP_BIN
+/** @} */
 
-/** @}*/
+#endif // _DBASE_H
 
-#endif // _D_LINE_ARITH_HPP
