@@ -39,12 +39,12 @@
  * \section intro_sec Introduction
  * 
  * Smil is an image library written in C++. \n
- * It aims to be lightweight, \ref benchs.py "fast", and easy to use and to develop. \n
+ * It aims to be lightweight, \ref benchs.py "fast", easy to use and to develop. \n
  * Developed using templates, Smil can be used with any standard types (char, short, int, double, ...).\n
- * It uses <a href="http://www.swig.org/" target="_blank">Swig</a> and can be wrapped in many languages 
+ * It uses <a href="http://www.swig.org/" target="_blank">Swig</a> and can be wrapped in several languages 
  * (for now, in python, java and octave).
  * 
- * Smil is free software, available under a BSD-style open source license. 
+ * Smil is free software, available under a BSD-style open source license.\n
  * See the \ref licence_page "licence" page for more information.
  * 
  * \section demo_sec Demo

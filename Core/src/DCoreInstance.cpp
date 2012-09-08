@@ -36,16 +36,17 @@ Core::Core ()
 // : baseObject("Core", false), 
   : keepAlive(false)
 { 
-//     cout << "Core created" << endl;
-//     guiInst = createGuiInstance();
-  
+#if DEBUG_LEVEL > 1
+     cout << "Core created" << endl;
+#endif // DEBUG_LEVEL > 1  
 }
 
 Core::~Core () 
 {
     deleteRegisteredObjects();
-//     delete guiInst;
-//       cout << "Core deleted" << endl;
+#if DEBUG_LEVEL > 1
+      cout << "Core deleted" << endl;
+#endif // DEBUG_LEVEL > 1
 }
 
 
@@ -57,11 +58,6 @@ void Core::initialize()
       Gui::initialize();
   }
 }
-
-// void Core::execLoop() 
-// { 
-// //     getInstance()->guiInst->execLoop();
-// }
 
 void Core::registerObject(baseObject *obj)
 {

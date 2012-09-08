@@ -133,6 +133,14 @@ namespace std
 }
 
 
+//////////////////////////////////////////////////////////
+// Core Instance
+//////////////////////////////////////////////////////////
+
+%include "DInstance.hpp"
+%template(_Core) uniqueInstance<Core>;
+%include "DCoreInstance.h"
+
 
 //////////////////////////////////////////////////////////
 // Signals/Slots
@@ -142,6 +150,7 @@ namespace std
 // generate directors for Signal and Slot (for virtual methods overriding)
 %feature("director") Signal;
 %feature("director") Slot;
+%feature("director") classA;
 %feature("director") baseImageSlot;
 #endif // SWIGJAVA
 
@@ -151,8 +160,9 @@ namespace std
 
 
 %template(baseImageSlot) Slot<baseImageEvent>;
-%template(baseSlot) Slot<Event>;
+%template(eventSlot) Slot<Event>;
 %template(viewerFunctionSlot) MemberFunctionSlot<baseImageViewer, Event>;
+%template(functionSlot) FunctionSlot<Event>;
 
 
 //////////////////////////////////////////////////////////

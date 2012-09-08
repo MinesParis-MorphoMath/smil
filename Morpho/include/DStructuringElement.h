@@ -45,6 +45,9 @@ struct Point
 
 enum seType { stGeneric, stHexSE, stSquSE };
 
+/**
+ * Base structuring element
+ */
 class StrElt : public baseObject
 {
   public:
@@ -74,8 +77,10 @@ class StrElt : public baseObject
 	this->odd = rhs.odd;
 	this->points = rhs.points;
     }
-    
+   
+    //! List of neighbor points
     vector<Point> points;
+    
     inline void addPoint(int x, int y, int z=0)
     {
 	Point p;

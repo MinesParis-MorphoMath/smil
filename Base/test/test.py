@@ -35,6 +35,14 @@ if ('im1' in locals())==0:
   #app = QtApp()
   #app._exec()
   #im1.show()
+  
+  im1 = Image(10, 10)
+  if read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)==RES_ERR:
+    read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)
+  #if read("/home/mat/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp", im1)==RES_ERR:
+    #read("/home/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp", im1)
+  im2 = Image(im1)
+
 
   #se = sSE()
   se = hSE()
@@ -223,37 +231,56 @@ class myViewer(qtImageViewer_UINT8):
 #testInv()
 #testMax()
 
-im1 = Image(10, 10)
-if read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)==RES_ERR:
-  read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)
-#if read("/home/mat/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp", im1)==RES_ERR:
-  #read("/home/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0805_C22_3_20100326-105216/1.bmp", im1)
-im2 = Image(im1)
-im1.show()
-enhanceContrast(im1, im1)
+#im1.show()
+#enhanceContrast(im1, im1)
 
 
-imGrad = Image(im1)
-gradient(im1, imGrad)
+#imGrad = Image(im1)
+#gradient(im1, imGrad)
 
-imMin = Image(im1)
-hMinima(imGrad, 15, imMin)
+#imMin = Image(im1)
+#hMinima(imGrad, 15, imMin)
 
-imLbl = Image(im1, "UINT16")
-imLbl.setSize(im1)
-label(imMin, imLbl)
-imLbl.showLabel()
+#imLbl = Image(im1, "UINT16")
+#imLbl.setSize(im1)
+#label(imMin, imLbl)
+#imLbl.showLabel()
 
-imWs = Image(im1)
-imMark = Image(im1, "UINT16")
-imMark << 0
-imMark.setPixel(75, 40, 100)
-imMark.setPixel(120, 80, 200)
-imMark.showLabel()
+#imWs = Image(im1)
+#imMark = Image(im1, "UINT16")
+#imMark << 0
+#imMark.setPixel(75, 40, 100)
+#imMark.setPixel(120, 80, 200)
+#imMark.showLabel()
 
-watershed(imGrad, imMark, imWs)
-imWs.show()
+#watershed(imGrad, imMark, imWs)
+#imWs.show()
 
+#class clA(classA):
+  #def one(self):
+    #print "python"
+
+class slt(eventSlot):
+  def __init__(self):
+    #self.this = baseSlot()
+    eventSlot.__init__(self)
+  def run(self, ev):
+    add(im1, 100, im2)
+  #def two(self):
+    #classA.two(self.pr)
+  #def run(self, event=None):
+     #print "one from python"
+     
+  #def _run(self, event=None):
+     #self.this._run(event)
+
+links.add(im1, open, im1, im2)
+
+s = slt()
+#im1.onModified.connect(s)
+im1.modified()
+
+     
 #Core.getInstance().execLoop()
 
 def ptrcast(t,ptr):

@@ -39,6 +39,42 @@
  * @{
  */
 
+/**
+ * Crop image
+ * 
+ * Crop an image into an output image
+ * \param imIn input image
+ * \param "startX startY [startZ]" start position of the zone in the input image
+ * \param "sizeX sizeY [sizeZ]" size of the zone in the input image
+ * \param imOut output image
+ * 
+ * \demo{copy_crop.py}
+ */
+template <class T>
+RES_T crop(const Image<T> &imIn, UINT startX, UINT startY, UINT startZ, UINT sizeX, UINT sizeY, UINT sizeZ, Image<T> &imOut)
+{
+    if (!areAllocated(&imIn, &imOut, NULL))
+        return RES_ERR_BAD_ALLOCATION;
+
+    UINT inW = imIn.getWidth();
+    UINT inH = imIn.getHeight();
+    UINT inD = imIn.getDepth();
+    
+    UINT realSx = min(sizeX, inW-startX);
+    UINT realSy = min(sizeY, inH-startY);
+    UINT realSz = min(sizeZ, inD-startZ);
+    
+    imOut.setSize(realSx, realSy, realSz);
+    return copy(imIn, startX, startY, startZ, imOut, 0, 0, 0);
+}
+
+// 2D overload
+template <class T>
+RES_T crop(const Image<T> &imIn, UINT startX, UINT startY, UINT sizeX, UINT sizeY, Image<T> &imOut)
+{
+    return crop(imIn, startX, startY, 0, sizeX, sizeY, 1, imOut);
+}
+
 
 /**
  * Vertical flip (horizontal mirror).

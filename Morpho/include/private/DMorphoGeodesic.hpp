@@ -398,6 +398,8 @@ RES_T dist(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     // Set image to 1 when pixels are !=0
     inf(imIn, T(1), tmpIm);
     
+    SLEEP(imOut);
+    
     copy(tmpIm, imOut);
     
     do
@@ -407,6 +409,7 @@ RES_T dist(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 	
     } while (vol(tmpIm)!=0);
 
+    WAKE_UP(imOut);
     imOut.modified();
     return RES_OK;
 }

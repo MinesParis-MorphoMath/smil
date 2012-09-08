@@ -96,6 +96,17 @@
 %ignore *::operator();
 #endif // SWIGJAVA
 
+#ifdef SWIGOCTAVE
+%ignore *::operator+=;
+%ignore *::operator-=;
+%ignore *::operator*=;
+%ignore *::operator/=;
+%ignore *::operator>=;
+%ignore *::operator<=;
+%ignore *::operator|=;
+%ignore *::operator&=;
+#endif // SWIGOCTAVE
+
 
 
 #ifdef SWIGPYTHON

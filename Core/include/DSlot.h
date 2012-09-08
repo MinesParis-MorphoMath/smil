@@ -47,7 +47,7 @@ public:
     unregisterAll();
   }
 protected:
-  virtual void _run(Event *e) = 0;
+  virtual void _run(Event *e=NULL) = 0;
   virtual void registerSignal(Signal *signal);
   virtual void unregisterSignal(Signal *signal, bool _disconnect=true);
   virtual void unregisterAll();
@@ -58,6 +58,8 @@ template <class eventT>
 class Slot : public BaseSlot
 {
 public:
+  Slot() {}
+  virtual ~Slot() {}
   virtual void run(eventT *e=NULL)
   {
   }
@@ -65,9 +67,11 @@ public:
   {
   }
 protected:
-  virtual void _run(Event *e)
+  virtual void _run(Event *e=NULL)
   {
-    run(static_cast<eventT*>(e));
+    if (e)
+      run(static_cast<eventT*>(e));
+    else run();
   }
 };
 

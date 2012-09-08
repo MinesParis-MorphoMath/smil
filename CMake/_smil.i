@@ -148,13 +148,13 @@ def find_object_names(obj):
 
 def show_with_name(img, name=None, labelImage = False):
     if not name:
-	name = find_object_names(img)[1]
+	name = find_object_names(img)[-1]
 	img.setName(name)
     img.c_show(name, labelImage)
 
 def showLabel_with_name(img, name=None):
     if not name:
-	name = find_object_names(img)[1]
+	name = find_object_names(img)[-1]
 	img.setName(name)
     img.c_showLabel(name)
 
@@ -225,6 +225,110 @@ def bench(func, *args, **keywords):
     print buf
     return retval
 
+
+    
+class _linkManager():
+    def __init__(self):
+      self.links = []
+      
+    class _linkArgs(list):
+      def __init__(self, link):
+	list.__init__(self)
+	self._link = link
+      def __setitem__(self, num, val):
+	prevVal = list.__getitem__(self, num)
+	list.__setitem__(self, num, val)
+	if not self._link.run(None):
+	  list.__setitem__(self, num, prevVal)
+	  
+    class link(eventSlot):
+      def __init__(self, imWatch, func, *args):
+	eventSlot.__init__(self)
+	self.imWatch = imWatch
+	self.func = func
+	self.args = _linkManager._linkArgs(self)
+	for a in args:
+	  self.args.append(a)
+	self.verified = False
+	if self.run(None):
+	  self.verified = True
+	  self.imWatch.onModified.connect(self)
+      def __del__(self):
+	self.imWatch.onModified.disconnect(self)
+	
+      def run(self, event):
+	try:
+	  for obj in self.args:
+	    if hasattr(obj, "getClassName"):
+	      if obj.getClassName()=="Image":
+		obj.setSize(self.imWatch)
+	  self.func(*self.args)
+	  return True
+	except Exception, e:
+	  print "Link function error:\n"
+	  print e
+	  return False
+	
+      def __str__(self):
+	res = find_object_names(self.imWatch)[-1] + " -> "
+	res += self.func.__name__ + " "
+	for obj in self.args:
+	  if hasattr(obj, "getClassName"):
+	    res += find_object_names(obj)[-1] + " "
+	  else:
+	    res += str(obj) + " "
+	return res
+	
+    def __getitem__(self, num):
+      return self.links[num]
+      
+    def __setitem__(self, num, l):
+      self.links[num] = l
+      
+    def find(self, imWatch, func=None, *args):
+      res = []
+      for l in self.links:
+	if l.imWatch==imWatch:
+	  if func==None or l.func==func:
+	    if args==() or l.args==args:
+	      res.append(l)
+      return res
+      
+    def add(self, imWatch, func, *args):
+      if self.find(imWatch, func, *args):
+	print "link already exists."
+	return
+      l = self.link(imWatch, func, *args)
+      if l.verified:
+	self.links.append(l)
+      
+    def remove(self, imWatch, func=None, *args):
+      if type(imWatch)==int: # remove Nth link
+	self.links.remove(self.links[imWatch])
+	return
+      _links = self.find(imWatch, func, *args)
+      if _links:
+	for l in _links:
+	  self.links.remove(l) 
+	return
+      self.links.append(self.link(imWatch, func, *args))
+      
+    def list(self):
+      i = 0
+      for l in self.links:
+	print "#" + str(i), l
+	i += 1
+	
+    def clear(self):
+      for l in self.links:
+	del l.args
+	del l
+      self.links = []
+    
+    def __del__(self):
+      self.clear()
+      
+links = _linkManager()
 
 
 %}

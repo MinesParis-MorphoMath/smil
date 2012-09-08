@@ -147,6 +147,9 @@ void Image<T>::init()
 template <class T>
 void Image<T>::modified()
 { 
+    if (!this->updatesEnabled)
+      return;
+    
     if (viewer)
       viewer->update();
     
