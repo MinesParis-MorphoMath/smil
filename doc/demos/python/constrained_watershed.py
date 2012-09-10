@@ -1,8 +1,7 @@
 from smilPython import *
 
 # Load an image
-imIn = Image("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png")
-#imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/DNA_small.png")
+imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/DNA_small.png")
 imIn.show()
 
 # Create a gradient image

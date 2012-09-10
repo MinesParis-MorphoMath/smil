@@ -168,6 +168,14 @@ RES_T arrowEqu(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_S
     return iFunc(imIn, imOut, se);
 }
 
+/**
+ * Arrow operator
+ * 
+ * \param imIn
+ * \param operation "==", ">", ">=", "<" or "<="
+ * \param imOut
+ * \param se
+ */
 template <class T>
 RES_T arrow(const Image<T> &imIn, const char *operation, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderValue=numeric_limits<T>::min())
 {
