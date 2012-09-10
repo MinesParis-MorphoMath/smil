@@ -61,7 +61,11 @@
 %include "DImageIO.hpp"
 
 %include "DImageIO_RAW.hpp"
+
+%ignore bmpFileHeader;
+%ignore bmpInfoHeader;
 %include "DImageIO_BMP.hpp"
+
 %include "DImageIO_VTK.hpp"
 
 #ifdef USE_PNG

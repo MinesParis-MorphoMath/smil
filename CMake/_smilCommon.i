@@ -96,7 +96,7 @@
 %ignore *::operator();
 #endif // SWIGJAVA
 
-#if defined SWIGOCTAVE || defined SWIGRUBY
+#if SWIGOCTAVE 
 %ignore *::operator+=;
 %ignore *::operator-=;
 %ignore *::operator*=;
@@ -105,7 +105,23 @@
 %ignore *::operator<=;
 %ignore *::operator|=;
 %ignore *::operator&=;
-#endif //  defined SWIGOCTAVE || defined SWIGRUBY
+#endif // SWIGOCTAVE
+
+#if SWIGRUBY
+%ignore *::operator+=;
+%ignore *::operator-=;
+%ignore *::operator*=;
+%ignore *::operator/=;
+%ignore *::operator>=;
+%ignore *::operator<=;
+%ignore *::operator|=;
+%ignore *::operator&=;
+
+%ignore *::operator bool;
+
+// Why ?? (ruby error...)
+%rename(_allocate) allocate;
+#endif // SWIGRUBY
 
 
 

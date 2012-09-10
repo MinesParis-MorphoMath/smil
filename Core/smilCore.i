@@ -161,7 +161,7 @@ namespace std
 %template(BaseImageSlot) Slot<BaseImageEvent>;
 %template(EventSlot) Slot<Event>;
 %template(ViewerFunctionSlot) MemberFunctionSlot<BaseImageViewer, Event>;
-%template(_FunctionSlot) FunctionSlot<Event>;
+%template(FunctionSlot_) FunctionSlot<Event>;
 
 
 //////////////////////////////////////////////////////////
@@ -174,11 +174,6 @@ namespace std
 #include "DImage.hpp"
 #include "DImage.hxx"
 %}
-
-#ifdef SWIGRUBY
-// Why ?? (ruby error...)
-%ignore Image::allocate;
-#endif // SWIGRUBY
 
 // Import smilGui for viewers stuff
 %import smilGui.i
