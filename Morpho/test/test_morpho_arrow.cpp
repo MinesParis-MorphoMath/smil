@@ -47,19 +47,31 @@ class TestArrow : public TestCase
       };
       
       im1 << vec1;
+
       arrowGrt(im1, im2, sSE0(), UINT8(255));
-      
-      UINT8 vecTruth[] = { 
-	0,  16, 241,  0, 80, 	// 16 = 0b00010000
-	70, 44, 10, 245, 8, 
-	0, 144, 221, 226, 100, 
-	71, 173, 65, 128, 64, 
-	0, 31, 0, 31, 0, 
+      UINT8 vecGrt[] = { 
+	0,  16, 31,  0, 20, 	// 16 = 0b00010000
+	196, 104, 160, 95, 32, 
+	0, 18, 119, 142, 76, 
+	197, 107, 5, 2, 4, 
+	0, 241, 0, 241, 0
       };
-      
-//       im2.printSelf(1);
-      imTruth << vecTruth;
+      imTruth << vecGrt;
       TEST_ASSERT(im2==imTruth);
+
+      arrowLow(im1, im2, sSE0(), UINT8(255));
+      UINT8 vecLow[] = { 
+	255, 239, 224, 255, 227, 
+	56, 130, 69, 32, 223, 
+	255, 13, 128, 80, 163, 
+	58, 20, 250, 244, 235, 
+	255, 14, 127, 14, 255
+      };
+      imTruth << vecLow;
+      TEST_ASSERT(im2==imTruth);
+
+//       im2.printSelf(1);
+    
   }
 };
 
@@ -70,29 +82,8 @@ class TestArrow : public TestCase
 
 int main(int argc, char *argv[])
 {
-//     B b;
-//      expose2(b);
-      Core::initialize();
-	
-      Image_UINT8 im1(5,5);
-      if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1)!=RES_OK)
-	  read("/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1);
-      Image_UINT8 im2(im1);
-      thresh(im1, (UINT8)127, im1);
-      
-//       testLabel(im1, im2, sSE());
-      
-      int BENCH_NRUNS = 1E2;
-      BENCH_IMG(label, im1, im2, hSE());
-      im2 += ((im2>(UINT8)0) & (UINT8)100);
-//       BENCH_IMG(dilate, im1, im2, sSE);
-      
-      im2.show();
-      Gui::execLoop();
-      
       TestSuite ts;
-//       ADD_TEST(ts, TestArrow);
-      
+      ADD_TEST(ts, TestArrow);
       
       return ts.run();
       
