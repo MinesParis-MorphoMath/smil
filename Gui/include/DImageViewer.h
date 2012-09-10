@@ -45,9 +45,9 @@
 
 #ifdef USE_QT
 template <class T>
-imageViewer<T> *getDefaultViewer(Image<T> *im)
+ImageViewer<T> *getDefaultViewer(Image<T> *im)
 {
-    return new qtImageViewer<T>(im);
+    return new QtImageViewer<T>(im);
 }
 
 //#else // USE_QT
@@ -56,7 +56,7 @@ imageViewer<T> *getDefaultViewer(Image<T> *im)
 
 
 template <class T>
-imageViewer<T> *getDefaultViewer(Image<T> *im)
+ImageViewer<T> *getDefaultViewer(Image<T> *im)
 {
     return new aaImageViewer<T>(im);
 }
@@ -66,9 +66,9 @@ imageViewer<T> *getDefaultViewer(Image<T> *im)
 #include "DImageViewer.hpp"
 
 template <class T>
-imageViewer<T> *getDefaultViewer(Image<T> *im)
+ImageViewer<T> *getDefaultViewer(Image<T> *im)
 {
-    return new imageViewer<T>(im);
+    return new ImageViewer<T>(im);
 }
 
 #endif 

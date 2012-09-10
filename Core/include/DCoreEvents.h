@@ -37,32 +37,32 @@
 template <class T>
 class Image;
 
-class baseImageEvent : public Event
+class BaseImageEvent : public Event
 {
 public:
-  baseImageEvent(baseImage *im)
+  BaseImageEvent(BaseImage *im)
     : image(im)
     {
     }
-    const baseImage* image;
+    const BaseImage* image;
 };
 
-typedef Slot<baseImageEvent> baseImageSlot;
+typedef Slot<BaseImageEvent> BaseImageSlot;
 
 
 template <class T>
-class imageEvent : public Event
+class ImageEvent : public Event
 {
 public:
-  imageEvent(Image<T> *im)
+  ImageEvent(Image<T> *im)
     : image(im)
     {
     }
     const Image<T>* image;
 };
 
-typedef Slot< imageEvent<UINT8> > imageSlot_UINT8;
-typedef Slot< imageEvent<UINT16> > imageSlot_UINT16;
+typedef Slot< ImageEvent<UINT8> > ImageSlot_UINT8;
+typedef Slot< ImageEvent<UINT16> > ImageSlot_UINT16;
 
 #endif // _D_CORE_EVENTS_H
 

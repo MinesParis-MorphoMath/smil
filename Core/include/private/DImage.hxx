@@ -43,7 +43,7 @@
 
 template <class T>
 Image<T>::Image()
-  : baseImage("Image"),
+  : BaseImage("Image"),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
@@ -52,7 +52,7 @@ Image<T>::Image()
 
 template <class T>
 Image<T>::Image(UINT w, UINT h, UINT d)
-  : baseImage("Image"),
+  : BaseImage("Image"),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
@@ -62,7 +62,7 @@ Image<T>::Image(UINT w, UINT h, UINT d)
 
 template <class T>
 Image<T>::Image(const Image<T> &rhs, bool cloneData)
-  : baseImage(rhs),
+  : BaseImage(rhs),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
@@ -75,7 +75,7 @@ Image<T>::Image(const Image<T> &rhs, bool cloneData)
 template <class T>
 template <class T2>
 Image<T>::Image(const Image<T2> &rhs, bool cloneData)
-  : baseImage(rhs),
+  : BaseImage(rhs),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
@@ -108,7 +108,7 @@ void Image<T>::clone(const Image<T2> &rhs)
 
 template <class T>
 Image<T>::Image(const char *fileName)
-  : baseImage("Image"),
+  : BaseImage("Image"),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
 { 
@@ -178,7 +178,7 @@ void Image<T>::createViewer()
 }
 
 template <class T>
-imageViewer<T> *Image<T>::getViewer()
+ImageViewer<T> *Image<T>::getViewer()
 {
     createViewer();
     return viewer;
@@ -235,7 +235,7 @@ void Image<T>::setSize(UINT w, UINT h, UINT d, bool doAllocate)
 }
 
 template <class T>
-RES_T Image<T>::allocate(void)
+RES_T Image<T>::allocate()
 {
     if (this->allocated)
 	return RES_ERR_BAD_ALLOCATION;
@@ -295,7 +295,7 @@ inline int Image<T>::getLineAlignment(UINT l)
 }
 
 template <class T>
-RES_T Image<T>::deallocate(void)
+RES_T Image<T>::deallocate()
 {
     if (!this->allocated)
 	return RES_OK;

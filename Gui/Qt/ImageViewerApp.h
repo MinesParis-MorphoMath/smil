@@ -27,57 +27,54 @@
  */
 
 
-#ifndef _D_QT_IMAGE_VIEWER_HPP
-#define _D_QT_IMAGE_VIEWER_HPP
+#ifndef IMAGEVIEWER_H
+#define IMAGEVIEWER_H
 
-#include <QApplication>
-#include <QGraphicsSceneEvent>
+#include <QMainWindow>
+#include <QScrollArea>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsTextItem>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 
-#include "DImageViewer.hpp"
-#include "DTypes.h"
+#include "ImageViewerWidget.h"
 
-#include "Qt/ImageViewerWidget.h"
-#include "Qt/ImageViewerApp.h"
+namespace Ui {
+    class ImageViewerApp;
+}
 
-#define BASE_QT_VIEWER ImageViewerWidget
 
-template <class T> class Image;
 
-template <class T>
-class QtImageViewer : public ImageViewer<T>, protected BASE_QT_VIEWER
+class ImageViewerApp : public QMainWindow
 {
+    Q_OBJECT
+
 public:
-    typedef ImageViewer<T> parentClass;
-    QtImageViewer();
-    QtImageViewer(Image<T> *im);
-    ~QtImageViewer();
+    explicit ImageViewerApp(QWidget *parent = 0);
+    ~ImageViewerApp();
+
+    void setName(const char *name);
+public slots:
+    void load(const QString fileName);
     
-    virtual void setImage(Image<T> *im);
-    virtual void hide();
-    virtual void show();
-    virtual void showLabel();
-    virtual bool isVisible();
-    virtual void setName(const char *_name);
-    virtual void update();
-    virtual void drawOverlay(Image<T> &im);
-    virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
-    virtual void setCurSlice(int n)
-    {
-	this->update();
-    }
-    
-    virtual void setLabelImage(bool val);
-    
-    QApplication *_qapp;
-    
+private:
+    Ui::ImageViewerApp *ui;
+    QLabel *pixelPosLabel;
+    QLabel *pixelValLabel;
+    QLabel *scaleLabel;
+    QScrollArea *scrollArea;
+
+    ImageViewerWidget *graphicsView;
+
+    void connectActions();
+
+    QString name;
 protected:
-    virtual void displayPixelValue(UINT x, UINT y, UINT z);
-    virtual void displayMagnifyView(UINT x, UINT y, UINT z);
-    virtual void drawImage();
-//     ImageViewerWidget *qtViewer;
-//     ImageViewer *qtViewer;
+
+private slots:
+    void viewMouseMoveEvent ( QMouseEvent * event );
+    void displayPixelData(int x, int y, int pixVal, bool insideImage);
+    void displayScaleFactor(double sf);
 };
 
-
-
-#endif // _D_QT_IMAGE_VIEWER_HPP
+#endif // IMAGEVIEWER_H

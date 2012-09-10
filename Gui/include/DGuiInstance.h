@@ -40,9 +40,9 @@
 
 class baseImageViewer;
 
-class Gui : public uniqueInstance<Gui>
+class Gui : public UniqueInstance<Gui>
 {
-    friend class uniqueInstance<Gui>;
+    friend class UniqueInstance<Gui>;
 
 protected:
     Gui ();

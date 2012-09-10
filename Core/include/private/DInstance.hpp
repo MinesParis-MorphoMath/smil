@@ -33,13 +33,13 @@
 #include <iostream>
 
 template <typename T>
-class uniqueInstance
+class UniqueInstance
 {
 protected:
-    uniqueInstance () 
+    UniqueInstance () 
     {
     }
-    ~uniqueInstance () { }
+    ~UniqueInstance () { }
 
 public:
     static T *getInstance ()
@@ -72,7 +72,7 @@ protected:
 };
 
 template <typename T>
-T *uniqueInstance<T>::_instance = NULL;
+T *UniqueInstance<T>::_instance = NULL;
 
 
 #endif // _D_INSTANCE_HPP

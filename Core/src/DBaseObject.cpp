@@ -30,8 +30,8 @@
 #include "DBaseObject.h"
 #include "DCoreInstance.h"
 
-baseObject::baseObject(bool _register)
-  : className("baseObject"),
+BaseObject::BaseObject(bool _register)
+  : className("BaseObject"),
     name(""),
     triggerEvents(true),
     registered(false)
@@ -40,7 +40,7 @@ baseObject::baseObject(bool _register)
       Core::getInstance()->registerObject(this);
 }
 
-baseObject::baseObject(const string _className, bool _register)
+BaseObject::BaseObject(const string _className, bool _register)
   : className(_className), 
     name(""),
     triggerEvents(true),
@@ -50,7 +50,7 @@ baseObject::baseObject(const string _className, bool _register)
       Core::getInstance()->registerObject(this);
 }
 
-baseObject::baseObject(const baseObject &rhs, bool _register)
+BaseObject::BaseObject(const BaseObject &rhs, bool _register)
   : registered(false),
     name("")
 {
@@ -59,23 +59,23 @@ baseObject::baseObject(const baseObject &rhs, bool _register)
       Core::getInstance()->registerObject(this);
 }
 
-void baseObject::_clone(const baseObject &rhs)
+void BaseObject::_clone(const BaseObject &rhs)
 {
     this->className = rhs.getClassName();
     this->triggerEvents = rhs.triggerEvents;
 }
 
-baseObject::~baseObject() 
+BaseObject::~BaseObject() 
 {
     Core::getInstance()->unregisterObject(this);
 }
 
-Core *baseObject::getCoreInstance() 
+Core *BaseObject::getCoreInstance() 
 { 
     return Core::getInstance(); 
 }
 
-const char *baseObject::getClassName() const
+const char *BaseObject::getClassName() const
 {
     return className.c_str();
 }

@@ -48,11 +48,11 @@ enum seType { stGeneric, stHexSE, stSquSE };
 /**
  * Base structuring element
  */
-class StrElt : public baseObject
+class StrElt : public BaseObject
 {
   public:
     StrElt(UINT s=1)
-      : baseObject("StrElt"),
+      : BaseObject("StrElt"),
 	seT(stGeneric), size(s) 
     {
     }
@@ -60,7 +60,7 @@ class StrElt : public baseObject
     {
     }
     StrElt(const StrElt &rhs)
-      : baseObject(rhs)
+      : BaseObject(rhs)
     {
 	this->clone(rhs);
     }

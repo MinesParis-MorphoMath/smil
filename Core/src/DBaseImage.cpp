@@ -32,11 +32,11 @@
 #include "DCoreEvents.h"
 
 
-void baseImage::init()
+void BaseImage::init()
 {
   if (triggerEvents)
   {
-    baseImageEvent event(this);
+    BaseImageEvent event(this);
     Core::getInstance()->onBaseImageCreated.trigger(&event);
   }
 

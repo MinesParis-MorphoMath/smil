@@ -46,26 +46,26 @@ class Core;
 /**
  * Base Smil Object
  */
-class baseObject
+class BaseObject
 {
 public:
-    baseObject(bool _register=true);
-    baseObject(const string _className, bool _register=true);
-    baseObject(const baseObject &rhs, bool _register=true);
+    BaseObject(bool _register=true);
+    BaseObject(const string _className, bool _register=true);
+    BaseObject(const BaseObject &rhs, bool _register=true);
     
     // Assignment operator
-    baseObject& operator=(const baseObject &rhs)
+    BaseObject& operator=(const BaseObject &rhs)
     {
 	this->_clone(rhs);
 	return *this;
     }
     
 private:    
-    void _clone(const baseObject &rhs);
+    void _clone(const BaseObject &rhs);
     
 public:
 
-    virtual ~baseObject() ;
+    virtual ~BaseObject() ;
     
     Core *getCoreInstance();
     typedef void parentClass;
@@ -81,7 +81,7 @@ public:
     {
 	return name.c_str();
     }
-    typedef void(baseObject::*voidMemberFunc)();
+    typedef void(BaseObject::*voidMemberFunc)();
 
     bool triggerEvents;
 protected:

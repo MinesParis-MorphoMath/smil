@@ -96,7 +96,7 @@
 %ignore *::operator();
 #endif // SWIGJAVA
 
-#ifdef SWIGOCTAVE
+#if defined SWIGOCTAVE || defined SWIGRUBY
 %ignore *::operator+=;
 %ignore *::operator-=;
 %ignore *::operator*=;
@@ -105,7 +105,7 @@
 %ignore *::operator<=;
 %ignore *::operator|=;
 %ignore *::operator&=;
-#endif // SWIGOCTAVE
+#endif //  defined SWIGOCTAVE || defined SWIGRUBY
 
 
 

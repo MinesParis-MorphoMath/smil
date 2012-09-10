@@ -37,20 +37,20 @@
 
 
 template <class T>
-qtImageViewer<T>::qtImageViewer()
+QtImageViewer<T>::QtImageViewer()
   : BASE_QT_VIEWER(NULL)
 {
 }
 
 template <class T>
-qtImageViewer<T>::qtImageViewer(Image<T> *im)
-  : imageViewer<T>(im), BASE_QT_VIEWER(NULL)
+QtImageViewer<T>::QtImageViewer(Image<T> *im)
+  : ImageViewer<T>(im), BASE_QT_VIEWER(NULL)
 {
     setImage(im);
 }
 
 template <class T>
-qtImageViewer<T>::~qtImageViewer()
+QtImageViewer<T>::~QtImageViewer()
 {
     hide();
 //     delete qtViewer;
@@ -58,22 +58,22 @@ qtImageViewer<T>::~qtImageViewer()
 
 
 template <class T>
-void qtImageViewer<T>::setImage(Image<T> *im)
+void QtImageViewer<T>::setImage(Image<T> *im)
 {
-    imageViewer<T>::setImage(im);
+    ImageViewer<T>::setImage(im);
     BASE_QT_VIEWER::setImageSize(im->getWidth(), im->getHeight(), im->getDepth());
     if (im->getName()!=string(""))
       setName(this->image->getName());
 }
 
 template <class T>
-void qtImageViewer<T>::show()
+void QtImageViewer<T>::show()
 {
     BASE_QT_VIEWER::show();
 }
 
 template <class T>
-void qtImageViewer<T>::showLabel()
+void QtImageViewer<T>::showLabel()
 {
     this->setLabelImage(true);
     BASE_QT_VIEWER::show();
@@ -81,19 +81,19 @@ void qtImageViewer<T>::showLabel()
 }
 
 template <class T>
-void qtImageViewer<T>::hide()
+void QtImageViewer<T>::hide()
 {
      BASE_QT_VIEWER::hide();
 }
 
 template <class T>
-bool qtImageViewer<T>::isVisible()
+bool QtImageViewer<T>::isVisible()
 {
      return BASE_QT_VIEWER::isVisible();
 }
 
 template <class T>
-void qtImageViewer<T>::setName(const char *_name)
+void QtImageViewer<T>::setName(const char *_name)
 {
     parentClass::setName(_name);
     QString buf = _name + QString(" (") + QString(parentClass::image->getTypeAsString()) + QString(")");
@@ -101,7 +101,7 @@ void qtImageViewer<T>::setName(const char *_name)
 }
 
 template <class T>
-void qtImageViewer<T>::setLabelImage(bool val)
+void QtImageViewer<T>::setLabelImage(bool val)
 {
     if (parentClass::labelImage==val)
       return;
@@ -113,7 +113,7 @@ void qtImageViewer<T>::setLabelImage(bool val)
 }
 
 template <class T>
-void qtImageViewer<T>::update()
+void QtImageViewer<T>::update()
 {
     if (!this->image)
       return;
@@ -126,7 +126,7 @@ void qtImageViewer<T>::update()
 }
 
 template <class T>
-void qtImageViewer<T>::drawImage()
+void QtImageViewer<T>::drawImage()
 {
     typename Image<T>::sliceType lines = this->image->getSlices()[slider->value()];
     
@@ -155,17 +155,17 @@ void qtImageViewer<T>::drawImage()
 
 // Specialization for UINT8 type (faster)
 template <>
-void qtImageViewer<UINT8>::drawImage();
+void QtImageViewer<UINT8>::drawImage();
 
 
 #ifdef SMIL_WRAP_Bit
 template <>
-void qtImageViewer<Bit>::drawImage();
+void QtImageViewer<Bit>::drawImage();
 #endif // SMIL_WRAP_Bit
 
 
 template <class T>
-void qtImageViewer<T>::drawOverlay(Image<T> &im)
+void QtImageViewer<T>::drawOverlay(Image<T> &im)
 {
     UINT w = im.getWidth();
     UINT h = im.getHeight();
@@ -199,7 +199,7 @@ void qtImageViewer<T>::drawOverlay(Image<T> &im)
 }
 
 template <class T>
-void qtImageViewer<T>::displayPixelValue(UINT x, UINT y, UINT z)
+void QtImageViewer<T>::displayPixelValue(UINT x, UINT y, UINT z)
 {
     T pixVal;
 
@@ -214,7 +214,7 @@ void qtImageViewer<T>::displayPixelValue(UINT x, UINT y, UINT z)
 
 
 template <class T>
-void qtImageViewer<T>::displayMagnifyView(UINT x, UINT y, UINT z)
+void QtImageViewer<T>::displayMagnifyView(UINT x, UINT y, UINT z)
 {
     magnView->displayAt(x, y);
 //   return;

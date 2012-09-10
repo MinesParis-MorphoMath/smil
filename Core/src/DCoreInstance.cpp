@@ -33,7 +33,7 @@
 #include "DGui.h"
 
 Core::Core ()
-// : baseObject("Core", false), 
+// : BaseObject("Core", false), 
   : keepAlive(false)
 { 
 #if DEBUG_LEVEL > 1
@@ -59,7 +59,7 @@ void Core::initialize()
   }
 }
 
-void Core::registerObject(baseObject *obj)
+void Core::registerObject(BaseObject *obj)
 {
     if (obj->registered)
       return;
@@ -71,12 +71,12 @@ void Core::registerObject(baseObject *obj)
 #endif // DEBUG_LEVEL > 1
 }
 
-void Core::unregisterObject(baseObject *obj)
+void Core::unregisterObject(BaseObject *obj)
 {
     if (!obj->registered)
       return;
     
-    std::vector<baseObject*>::iterator newEnd = std::remove(registeredObjects.begin(), registeredObjects.end(), obj);
+    std::vector<BaseObject*>::iterator newEnd = std::remove(registeredObjects.begin(), registeredObjects.end(), obj);
 
     registeredObjects.erase(newEnd, registeredObjects.end());
     obj->registered = false;
@@ -90,8 +90,8 @@ void Core::unregisterObject(baseObject *obj)
 
 void Core::deleteRegisteredObjects()
 {
-    baseObject *obj;
-    vector<baseObject*>::iterator it = registeredObjects.begin();
+    BaseObject *obj;
+    vector<BaseObject*>::iterator it = registeredObjects.begin();
     
     while (it!=registeredObjects.end())
     {

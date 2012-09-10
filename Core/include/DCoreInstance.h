@@ -37,16 +37,16 @@
 #include "DTimer.h"
 #include "DSignal.h"
 
-class baseObject;
+class BaseObject;
 
 struct stat;
 
 #include "DInstance.hpp"
 
 
-class Core : public uniqueInstance<Core>
+class Core : public UniqueInstance<Core>
 {
-    friend class uniqueInstance<Core>;
+    friend class UniqueInstance<Core>;
 
 protected:
   Core ();
@@ -56,16 +56,16 @@ public:
   // Public interface
   bool keepAlive;
   
-  void registerObject(baseObject *obj);
+  void registerObject(BaseObject *obj);
 
-  void unregisterObject(baseObject *obj);
+  void unregisterObject(BaseObject *obj);
   
-  vector<baseObject*> getRegisteredObjects() { return registeredObjects; }
+  vector<BaseObject*> getRegisteredObjects() { return registeredObjects; }
   
   Signal onBaseImageCreated;
   
 protected:
-    vector<baseObject*> registeredObjects;
+    vector<BaseObject*> registeredObjects;
     void deleteRegisteredObjects();
 
   

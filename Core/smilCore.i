@@ -56,9 +56,9 @@ SMIL_MODULE(smilCore)
 %}
 
 %include "carrays.i"
-%array_class(double, dArray);
-//%array_class(void, voidArray);
-%array_class(UINT8, uint8Array);
+%array_class(double, DArray);
+//%array_class(void, VoidArray);
+%array_class(UINT8, Uint8Array);
 
 // BitArray
 #ifdef SMIL_WRAP_Bit
@@ -97,14 +97,14 @@ PTR_ARG_OUT_APPLY(d)
 
 
 //////////////////////////////////////////////////////////
-// baseObject
+// BaseObject
 //////////////////////////////////////////////////////////
 
 %{
 #include "DBaseObject.h"
 %}
 
-%extend baseObject 
+%extend BaseObject 
 {
 	std::string  __str__() 
 	{
@@ -126,10 +126,10 @@ PTR_ARG_OUT_APPLY(d)
 // Expose std::vector<> as a Python list
 namespace std 
 {
-    %template(objVector) vector<baseObject*>;
-    %template(uintVector) vector<UINT>;
-    %template(ucharVector) vector<UINT8>;
-    %template(ushortVector) vector<UINT16>;
+    %template(ObjVector) vector<BaseObject*>;
+    %template(UintVector) vector<UINT>;
+    %template(UcharVector) vector<UINT8>;
+    %template(UshortVector) vector<UINT16>;
 }
 
 
@@ -138,7 +138,7 @@ namespace std
 //////////////////////////////////////////////////////////
 
 %include "DInstance.hpp"
-%template(_Core) uniqueInstance<Core>;
+%template(CoreInstance) UniqueInstance<Core>;
 %include "DCoreInstance.h"
 
 
@@ -150,8 +150,7 @@ namespace std
 // generate directors for Signal and Slot (for virtual methods overriding)
 %feature("director") Signal;
 %feature("director") Slot;
-%feature("director") classA;
-%feature("director") baseImageSlot;
+%feature("director") BaseImageSlot;
 #endif // SWIGJAVA
 
 %include "DSignal.h"
@@ -159,10 +158,10 @@ namespace std
 %include "DCoreEvents.h"
 
 
-%template(baseImageSlot) Slot<baseImageEvent>;
-%template(eventSlot) Slot<Event>;
-%template(viewerFunctionSlot) MemberFunctionSlot<baseImageViewer, Event>;
-%template(functionSlot) FunctionSlot<Event>;
+%template(BaseImageSlot) Slot<BaseImageEvent>;
+%template(EventSlot) Slot<Event>;
+%template(ViewerFunctionSlot) MemberFunctionSlot<BaseImageViewer, Event>;
+%template(_FunctionSlot) FunctionSlot<Event>;
 
 
 //////////////////////////////////////////////////////////
@@ -175,6 +174,11 @@ namespace std
 #include "DImage.hpp"
 #include "DImage.hxx"
 %}
+
+#ifdef SWIGRUBY
+// Why ?? (ruby error...)
+%ignore Image::allocate;
+#endif // SWIGRUBY
 
 // Import smilGui for viewers stuff
 %import smilGui.i

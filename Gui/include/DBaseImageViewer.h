@@ -32,15 +32,15 @@
 
 #include "DBaseObject.h"
 
-class baseImageViewer : public baseObject
+class BaseImageViewer : public BaseObject
 {
 public:
-    typedef baseObject parentClass;
+    typedef BaseObject parentClass;
     
-    baseImageViewer()
+    BaseImageViewer()
       : labelImage(false)
     {
-	updateSlot.init(this, &baseImageViewer::update);
+	updateSlot.init(this, &BaseImageViewer::update);
     }
     
     virtual void show() {}
@@ -51,7 +51,7 @@ public:
     virtual void update() {}
     
     // Slots
-    MemberFunctionSlot<baseImageViewer> updateSlot;
+    MemberFunctionSlot<BaseImageViewer> updateSlot;
     
 protected:
     virtual void drawImage() {}

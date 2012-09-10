@@ -35,7 +35,7 @@
 
 
 template <>
-void qtImageViewer<UINT8>::drawImage()
+void QtImageViewer<UINT8>::drawImage()
 {
     Image<UINT8>::sliceType lines = this->image->getSlices()[slider->value()];
     
@@ -53,7 +53,7 @@ void qtImageViewer<UINT8>::drawImage()
 // #include "DBitArray.h"
 
 template <>
-void qtImageViewer<BIN>::drawImage()
+void QtImageViewer<BIN>::drawImage()
 {
     Image<BIN>::lineType pixels = this->image->getPixels();
     UINT w = this->image->getWidth();
@@ -93,7 +93,7 @@ void qtImageViewer<BIN>::drawImage()
 // #include "DBitArray.h"
 
 template <>
-void qtImageViewer<Bit>::drawImage()
+void QtImageViewer<Bit>::drawImage()
 {
     Image<Bit>::lineType pixels = this->image->getPixels();
     UINT w = this->image->getWidth();

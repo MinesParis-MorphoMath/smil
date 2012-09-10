@@ -34,12 +34,12 @@
 #include "DSignal.h"
 #include "DSlot.h"
 
-class /*_SMIL*/ baseImage : public baseObject
+class /*_SMIL*/ BaseImage : public BaseObject
 {
-    typedef baseObject parentClass;
+    typedef BaseObject parentClass;
 public:
-    baseImage(const string _className="baseImage")
-      :	baseObject(_className),
+    BaseImage(const string _className="BaseImage")
+      :	BaseObject(_className),
 	width(0), height(0), depth(0),
 	pixelCount(0), lineCount(0), sliceCount(0),
 	allocated(false),
@@ -47,8 +47,8 @@ public:
     {
     }
     
-    baseImage(const baseImage &rhs)
-      :	baseObject(rhs),
+    BaseImage(const BaseImage &rhs)
+      :	BaseObject(rhs),
 	width(0), height(0), depth(0),
 	pixelCount(0), lineCount(0), sliceCount(0),
 	allocated(false),
@@ -59,7 +59,7 @@ public:
     
 private:
     // Forbid implicit assignment operator
-    baseImage& operator=(const baseImage &rhs);
+    BaseImage& operator=(const BaseImage &rhs);
 
 public:
   
@@ -160,7 +160,7 @@ protected:
  * Check if all images in a list have the same size.
  * The list of images must be finished by NULL.
  */
-inline bool haveSameSize(const baseImage *im, ...)
+inline bool haveSameSize(const BaseImage *im, ...)
 {
     va_list vargs;
 
@@ -169,8 +169,8 @@ inline bool haveSameSize(const baseImage *im, ...)
     UINT h = im->getHeight();
     UINT d = im->getDepth();
 
-    const baseImage *obj;
-    while ((obj = va_arg(vargs, const baseImage*)))
+    const BaseImage *obj;
+    while ((obj = va_arg(vargs, const BaseImage*)))
     {
         if (obj->getWidth()!=w) return false;
         if (obj->getHeight()!=h) return false;
@@ -185,7 +185,7 @@ inline bool haveSameSize(const baseImage *im, ...)
  * The list of images must be finished by NULL.
  */
 
-inline bool areAllocated(const baseImage *im, ...)
+inline bool areAllocated(const BaseImage *im, ...)
 {
     va_list vargs;
 
@@ -193,8 +193,8 @@ inline bool areAllocated(const baseImage *im, ...)
     if (!im->isAllocated())
         return false;
 
-    const baseImage *obj;
-    while ((obj = va_arg(vargs, const baseImage*)))
+    const BaseImage *obj;
+    while ((obj = va_arg(vargs, const BaseImage*)))
         if (!obj->isAllocated()) return false;
     va_end(vargs);
     return true;

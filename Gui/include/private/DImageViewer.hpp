@@ -39,18 +39,18 @@ template <class T> class Image;
  * 
  */
 template <class T>
-class imageViewer : public baseImageViewer
+class ImageViewer : public BaseImageViewer
 {
 public:
-    typedef baseImageViewer parentClass;
+    typedef BaseImageViewer parentClass;
     friend class Image<T>;
     
-    imageViewer()
+    ImageViewer()
       : image(NULL), labelImage(false)
     {
     }
     
-    imageViewer(Image<T> *im)
+    ImageViewer(Image<T> *im)
       : labelImage(false)
     {
 	setImage(im);

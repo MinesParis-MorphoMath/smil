@@ -33,7 +33,7 @@
 #include "DBaseImage.h"
 #include "DSignal.h"
 
-template <class T> class imageViewer;
+template <class T> class ImageViewer;
 
 /**
  * \ingroup Core
@@ -47,9 +47,9 @@ template <class T> class imageViewer;
  * \tparam T Image data type (UINT8, UINT16, ...)
  */  
 template <class T>
-class Image : public baseImage
+class Image : public BaseImage
 {
-    typedef baseImage parentClass;
+    typedef BaseImage parentClass;
 public:
 
     //! Default constructor
@@ -136,7 +136,7 @@ public:
     }
 
     //! Get the image viewer (create one if needed)
-    imageViewer<T> *getViewer();
+    ImageViewer<T> *getViewer();
     
     bool updatesEnabled;
     
@@ -154,12 +154,12 @@ public:
 	return im;
     }
     void setSize(UINT w, UINT h, UINT d = 1, bool doAllocate = true);
-    inline void setSize(const baseImage &rhs, bool doAllocate = true) 
+    inline void setSize(const BaseImage &rhs, bool doAllocate = true) 
     { 
 	setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); 
     }
-    RES_T allocate(void);
-    RES_T deallocate(void);
+    RES_T allocate();
+    RES_T deallocate();
 
     void printSelf(ostream &os, bool displayPixVals) const;
     virtual void printSelf(ostream &os=std::cout) const
@@ -281,7 +281,7 @@ protected:
 
     RES_T restruct(void);
 
-    imageViewer<T> *viewer;
+    ImageViewer<T> *viewer;
     void createViewer();
     // Specify if the viewer has been created internally
 //     ImageViewerWidget *viewer;
