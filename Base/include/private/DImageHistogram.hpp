@@ -102,10 +102,10 @@ RES_T thresh(Image<T> &imIn, T minVal, Image<T> &imOut)
 /**
  * Stretch histogram
  */
-template <class T>
-RES_T stretchHist(Image<T> &imIn, T inMinVal, T inMaxVal, Image<T> &imOut, T outMinVal=numeric_limits<T>::min(), T outMaxVal=numeric_limits<T>::max())
+template <class T1, class T2>
+RES_T stretchHist(Image<T1> &imIn, T1 inMinVal, T1 inMaxVal, Image<T2> &imOut, T2 outMinVal=numeric_limits<T2>::min(), T2 outMaxVal=numeric_limits<T2>::max())
 {
-    unaryImageFunction<T, stretchHistLine<T> > iFunc;
+    unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
     iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (inMaxVal-inMinVal);
     iFunc.lineFunction.inOrig = inMinVal;
     iFunc.lineFunction.outOrig = outMinVal;
@@ -113,11 +113,11 @@ RES_T stretchHist(Image<T> &imIn, T inMinVal, T inMaxVal, Image<T> &imOut, T out
     return iFunc(imIn, imOut);
 }
 
-template <class T>
-RES_T stretchHist(Image<T> &imIn, Image<T> &imOut, T outMinVal=numeric_limits<T>::min(), T outMaxVal=numeric_limits<T>::max())
+template <class T1, class T2>
+RES_T stretchHist(Image<T1> &imIn, Image<T2> &imOut, T2 outMinVal, T2 outMaxVal)
 {
-    unaryImageFunction<T, stretchHistLine<T> > iFunc;
-    T rmin, rmax;
+    unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
+    T1 rmin, rmax;
     rangeVal(imIn, &rmin, &rmax);
     iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (rmax-rmin);
     iFunc.lineFunction.inOrig = rmin;
@@ -130,7 +130,7 @@ template <class T1, class T2>
 RES_T stretchHist(Image<T1> &imIn, Image<T2> &imOut)
 {
     Image<T1> tmpIm(imIn);
-    RES_T res = stretchHist<T1>(imIn, tmpIm, numeric_limits<T2>::min(), numeric_limits<T2>::max());
+    RES_T res = stretchHist<T1>(imIn, tmpIm, (T1)numeric_limits<T2>::min(), (T1)numeric_limits<T2>::max());
     if (res!=RES_OK)
       return res;
     return copy(tmpIm, imOut);

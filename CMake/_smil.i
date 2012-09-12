@@ -241,9 +241,9 @@ class _linkManager():
 	if not self._link.run(None):
 	  list.__setitem__(self, num, prevVal)
 	  
-    class link(eventSlot):
+    class link(EventSlot):
       def __init__(self, imWatch, func, *args):
-	eventSlot.__init__(self)
+	EventSlot.__init__(self)
 	self.imWatch = imWatch
 	self.func = func
 	self.args = _linkManager._linkArgs(self)

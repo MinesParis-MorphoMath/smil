@@ -51,15 +51,28 @@ inline RES_T drawRectangle(Image<T> &imOut, UINT x0, UINT y0, UINT width, UINT h
     if (!imOut.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
 
+    UINT imW = imOut.getWidth();
+    UINT imH = imOut.getHeight();
+    
+    if (x0>=imW || y0 >=imH)
+      return RES_ERR;
+    if (x0+width>=imW || y0+height>=imH)
+      return RES_ERR;
+    
     UINT x1 = x0 + width - 1;
     UINT y1 = y0 + height -1;
+    x1 = x1<imW ? x1 : imW-1;
+    y1 = y1<imH ? y1 : imH-1;
+    
+    x0 = x0>0 ? x0 : 0;
+    y0 = y0>0 ? y0 : 0;
     
     typename Image<T>::sliceType lines = imOut.getLines();
     fillLine<T> fillFunc;
     
     if (fill)
     {
-	for (UINT j=y0;j<=y1;j++)
+	for (UINT j=y0;j<=y1,j<imOut.getHeight();j++)
 	  fillFunc(lines[j]+x1, width-1, value);
     }
     else

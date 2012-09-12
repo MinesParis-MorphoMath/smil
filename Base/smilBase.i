@@ -51,7 +51,6 @@ SMIL_MODULE(smilBase)
 
 %include "DImageArith.hpp"
 %include "DImageDraw.hpp"
-%include "DImageHistogram.hpp"
 %include "DImageTransform.hpp"
 
 
@@ -87,11 +86,12 @@ TEMPLATE_WRAP_FUNC(maxVal);
 TEMPLATE_WRAP_FUNC(rangeVal);
 
 
+%include "DImageHistogram.hpp"
 TEMPLATE_WRAP_FUNC(histo);
-
 TEMPLATE_WRAP_FUNC(thresh);
 TEMPLATE_WRAP_FUNC_CROSS2(stretchHist);
 TEMPLATE_WRAP_FUNC(enhanceContrast);
+
 
 TEMPLATE_WRAP_FUNC(drawRectangle);
 
