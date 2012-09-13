@@ -58,7 +58,7 @@ ImageViewer<T> *getDefaultViewer(Image<T> *im)
 template <class T>
 ImageViewer<T> *getDefaultViewer(Image<T> *im)
 {
-    return new aaImageViewer<T>(im);
+    return new AaImageViewer<T>(im);
 }
 
 #else

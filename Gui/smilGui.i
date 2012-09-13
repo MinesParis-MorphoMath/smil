@@ -90,6 +90,6 @@ if ('qApp' in locals())==0:
 %}
 
 %include "AALib/DAAImageViewer.hpp"
-TEMPLATE_WRAP_CLASS(aaImageViewer);
+TEMPLATE_WRAP_CLASS(AaImageViewer);
 
 #endif // USE_AALIB

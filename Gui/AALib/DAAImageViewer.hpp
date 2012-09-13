@@ -31,20 +31,19 @@
 #define _D_AA_IMAGE_VIEWER_HPP
 
 #include "DImageViewer.hpp"
-#include "DImageTransform.hpp"
 #include "DTypes.h"
 
 #include <aalib.h>
 template <class T> class Image;
 
 template <class T>
-class aaImageViewer : public imageViewer<T>
+class AaImageViewer : public ImageViewer<T>
 {
 public:
-    typedef imageViewer<T> parentClass;
-    aaImageViewer();
-    aaImageViewer(Image<T> *im);
-    ~aaImageViewer();
+    typedef ImageViewer<T> parentClass;
+    AaImageViewer();
+    AaImageViewer(Image<T> *im);
+    ~AaImageViewer();
     virtual void hide();
     virtual void show();
     virtual bool isVisible();
@@ -59,20 +58,20 @@ protected:
 
 
 template <class T>
-aaImageViewer<T>::aaImageViewer()
+AaImageViewer<T>::AaImageViewer()
 {
     context = NULL;
 }
 
 template <class T>
-aaImageViewer<T>::aaImageViewer(Image<T> *im)
-  : imageViewer<T>(im)
+AaImageViewer<T>::AaImageViewer(Image<T> *im)
+  : ImageViewer<T>(im)
 {
     context = NULL;
 }
 
 template <class T>
-int aaImageViewer<T>::createContext()
+int AaImageViewer<T>::createContext()
 {
     context = aa_autoinit(&aa_defparams);
     if(context == NULL) 
@@ -84,20 +83,20 @@ int aaImageViewer<T>::createContext()
 }
 
 template <class T>
-aaImageViewer<T>::~aaImageViewer()
+AaImageViewer<T>::~AaImageViewer()
 {
     hide();
 }
 
 
 template <class T>
-void aaImageViewer<T>::show()
+void AaImageViewer<T>::show()
 {
     drawImage();
 }
 
 template <class T>
-void aaImageViewer<T>::hide()
+void AaImageViewer<T>::hide()
 {
     if (context)      
       aa_close(context);
@@ -105,7 +104,7 @@ void aaImageViewer<T>::hide()
 }
 
 template <class T>
-void aaImageViewer<T>::drawImage()
+void AaImageViewer<T>::drawImage()
 {
     if (!context)
       createContext();
@@ -154,13 +153,13 @@ void aaImageViewer<T>::drawImage()
 }
 
 template <class T>
-bool aaImageViewer<T>::isVisible()
+bool AaImageViewer<T>::isVisible()
 {
     return context!=NULL;
 }
 
 template <class T>
-void aaImageViewer<T>::setName(const char* _name)
+void AaImageViewer<T>::setName(const char* _name)
 {
 }
 
