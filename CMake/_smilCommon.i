@@ -105,6 +105,7 @@
 %ignore *::operator<=;
 %ignore *::operator|=;
 %ignore *::operator&=;
+%rename(or) *::operator|;
 #endif // SWIGOCTAVE
 
 #if SWIGRUBY
