@@ -123,9 +123,14 @@ PTR_ARG_OUT_APPLY(d)
 
 %include std_vector.i
 
+%{
+#include "DBaseImage.h"
+%}
+
 // Expose std::vector<> as a Python list
 namespace std 
 {
+    %template(ImgVector) vector<BaseImage*>;
     %template(ObjVector) vector<BaseObject*>;
     %template(UintVector) vector<UINT>;
     %template(UcharVector) vector<UINT8>;
@@ -170,10 +175,10 @@ namespace std
 
 %{
 /* Includes the header in the wrapper code */
-#include "DBaseImage.h"
 #include "DImage.hpp"
 #include "DImage.hxx"
 %}
+
 
 // Import smilGui for viewers stuff
 %import smilGui.i

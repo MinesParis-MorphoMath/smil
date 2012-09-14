@@ -40,7 +40,7 @@
  * 
  * Smil is a 2D/3D image library written in C++. \n
  * 
- * It aims to be lightweight, \ref benchs.py "fast", easy to use and to develop. \n
+ * It aims to be lightweight, \ref benchs.py "fast", easy to use and to extend. \n
  * 
  * Developed using templates, Smil can be used with any standard types (char, short, int, double, ...).\n
  * 

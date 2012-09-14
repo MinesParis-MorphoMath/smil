@@ -34,6 +34,9 @@
 #include "DSignal.h"
 #include "DSlot.h"
 
+/**
+ * Base Image class
+ */
 class /*_SMIL*/ BaseImage : public BaseObject
 {
     typedef BaseObject parentClass;
@@ -134,7 +137,11 @@ public:
 	x = off % this->width;
     }
 
-    virtual void show(const char* name=NULL) {}
+    virtual const char *getInfoString(const char *indent = "") const { return NULL; }
+    virtual const char* getTypeAsString() = 0;
+    
+    virtual void show(const char* name=NULL, bool labelImage=false) {}
+    virtual void showLabel(const char *_name=NULL) {}
     virtual void hide() = 0;
     
     Signal onModified;

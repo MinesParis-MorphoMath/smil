@@ -38,6 +38,7 @@
 #include "DSignal.h"
 
 class BaseObject;
+class BaseImage;
 
 struct stat;
 
@@ -61,11 +62,18 @@ public:
   void unregisterObject(BaseObject *obj);
   
   vector<BaseObject*> getRegisteredObjects() { return registeredObjects; }
+  vector<BaseImage*> getImages()  { return registeredImages; }
+  
+  long getAllocatedMemory();
+  void showAllImages();
+  void hideAllImages();
   
   Signal onBaseImageCreated;
   
+  
 protected:
     vector<BaseObject*> registeredObjects;
+    vector<BaseImage*> registeredImages;
     void deleteRegisteredObjects();
 
   

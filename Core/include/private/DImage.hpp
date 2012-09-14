@@ -74,7 +74,7 @@ public:
   
     //! Get the image type.
     //! \return The type of the image data as a string ("UINT8", "UINT16", ...)
-    const char* getTypeAsString()
+    virtual const char* getTypeAsString()
     {
 	T val;
 	return getDataTypeAsString(val);
@@ -170,8 +170,15 @@ public:
     {
 	printSelf(std::cout, displayPixVals);
     }
+    virtual const char *getInfoString(const char *indent = "") const 
+    {
+	stringstream s;
+	this->printSelf(s);
+	return s.str().c_str();
+    }
 
-    void* getVoidPointer(void) {
+    virtual void* getVoidPointer(void) 
+    {
         return pixels;
     }
 

@@ -69,7 +69,7 @@ public:
     
     Core *getCoreInstance();
     typedef void parentClass;
-    virtual const char *getInfoString(string indent = "") const { return NULL; }
+    virtual const char *getInfoString(const char *indent = "") const { return NULL; }
     virtual void printSelf(ostream &os=std::cout) const {}
     virtual const char *getClassName() const;
 

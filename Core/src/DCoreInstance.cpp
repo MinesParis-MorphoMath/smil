@@ -65,21 +65,30 @@ void Core::registerObject(BaseObject *obj)
       return;
     
     registeredObjects.push_back(obj);
+    
     obj->registered = true;
+    
+    if (string(obj->getClassName())=="Image")
+	registeredImages.push_back(static_cast<BaseImage*>(obj));
+    
 #if DEBUG_LEVEL > 1
     cout << "Core::registerObject: " << obj->getClassName() << " " << obj << " created." << endl;
 #endif // DEBUG_LEVEL > 1
 }
+
 
 void Core::unregisterObject(BaseObject *obj)
 {
     if (!obj->registered)
       return;
     
-    std::vector<BaseObject*>::iterator newEnd = std::remove(registeredObjects.begin(), registeredObjects.end(), obj);
-
-    registeredObjects.erase(newEnd, registeredObjects.end());
+    registeredObjects.erase(std::remove(registeredObjects.begin(), registeredObjects.end(), obj));
+    
     obj->registered = false;
+    
+    if (string(obj->getClassName())=="Image")
+	registeredImages.erase(std::remove(registeredImages.begin(), registeredImages.end(), static_cast<BaseImage*>(obj)));
+    
 #if DEBUG_LEVEL > 1
     cout << "Core::unregisterObject: " << obj->getClassName() << " " << obj << " deleted." << endl;
 #endif // DEBUG_LEVEL > 1
@@ -87,6 +96,7 @@ void Core::unregisterObject(BaseObject *obj)
     if (!keepAlive && registeredObjects.size()==0)
 	kill();
 }
+
 
 void Core::deleteRegisteredObjects()
 {
@@ -99,4 +109,32 @@ void Core::deleteRegisteredObjects()
 	delete obj;
     }
 }
+
+
+long Core::getAllocatedMemory()
+{
+    vector<BaseImage*>::iterator it = registeredImages.begin();
+    long totAlloc = 0;
+    
+    while (it!=registeredImages.end())
+	totAlloc += (*it++)->getAllocatedSize();
+    return totAlloc;
+}
+
+void Core::showAllImages()
+{
+    vector<BaseImage*>::iterator it = registeredImages.begin();
+    
+    while (it!=registeredImages.end())
+	(*it++)->show();
+}
+
+void Core::hideAllImages()
+{
+    vector<BaseImage*>::iterator it = registeredImages.begin();
+    
+    while (it!=registeredImages.end())
+	(*it++)->hide();
+}
+
 
