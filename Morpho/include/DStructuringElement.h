@@ -43,7 +43,7 @@ struct Point
   int z;
 };
 
-enum seType { stGeneric, stHexSE, stSquSE };
+enum seType { SE_Generic, SE_Hex, SE_Squ };
 
 /**
  * Base structuring element
@@ -53,7 +53,7 @@ class StrElt : public BaseObject
   public:
     StrElt(UINT s=1)
       : BaseObject("StrElt"),
-	seT(stGeneric), size(s) 
+	seT(SE_Generic), size(s) 
     {
     }
     ~StrElt()
@@ -131,13 +131,13 @@ inline void operator << (ostream &os, StrElt &se)
  * 
  */
 
-class hSE : public StrElt
+class HexSE : public StrElt
 {
   public:
-    hSE(UINT s=1)
+    HexSE(UINT s=1)
     {
-	className = "hSE";
-	seT = stHexSE;
+	className = "HexSE";
+	seT = SE_Hex;
 	size = s;
 	odd = true;
 	addPoint(0,0);		// 1
@@ -163,13 +163,13 @@ class hSE : public StrElt
  * 
  */
 
-class hSE0 : public StrElt
+class HexSE0 : public StrElt
 {
   public:
-    hSE0(UINT s=1) 
+    HexSE0(UINT s=1) 
     {
-	className = "hSE0";
-	seT = stHexSE;
+	className = "HexSE0";
+// 	seT = SE_Hex;
 	size = s;
 	odd = true;
 	addPoint(1,0);		// 1
@@ -195,13 +195,13 @@ class hSE0 : public StrElt
  * 
  */
 
-class sSE : public StrElt
+class SquSE : public StrElt
 {
   public:
-    sSE(UINT s=1) : StrElt(s)
+    SquSE(UINT s=1) : StrElt(s)
     {
-	className = "sSE";
-// 	seT = stSquSE;
+	className = "SquSE";
+	seT = SE_Squ;
 	odd = false;
 	addPoint(0,0); 	// 1
 	addPoint(1,0);	// 2
@@ -228,13 +228,13 @@ class sSE : public StrElt
  * 
  */
 
-class sSE0 : public StrElt
+class SquSE0 : public StrElt
 {
   public:
     typedef StrElt parentClass;
-    sSE0(UINT s=1) : StrElt(s)
+    SquSE0(UINT s=1) : StrElt(s)
     {
-	className = "sSE0";
+	className = "SquSE0";
 // 	seT = stSquSE;
 	odd = false;
 	addPoint(1,0);		// 1
@@ -274,12 +274,12 @@ class sSE0 : public StrElt
  * </table>
  * 
  */
-class cubeSE : public StrElt
+class CubeSE : public StrElt
 {
   public:
-    cubeSE(UINT s=1) : StrElt(s)
+    CubeSE(UINT s=1) : StrElt(s)
     {
-	className = "cubeSE";
+	className = "CubeSE";
 	odd = false;
 	int zList[] = { 0, -1, 1 };
 	for (int i=0;i<3;i++)
@@ -298,7 +298,14 @@ class cubeSE : public StrElt
     }
 };
 
-StrElt DEFAULT_SE = sSE();
+// Shortcuts
+HexSE hSE(UINT s=1) { return HexSE(s); }
+HexSE0 hSE0(UINT s=1) { return HexSE0(s); }
+SquSE sSE(UINT s=1) { return SquSE(s); }
+SquSE0 sSE0(UINT s=1) { return SquSE0(s); }
+CubeSE cSE(UINT s=1) { return CubeSE(s); }
+
+StrElt DEFAULT_SE = SquSE();
 
 StrElt& getDefaultSE()
 {

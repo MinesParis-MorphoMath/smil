@@ -44,9 +44,9 @@
  * 
  * Developed using templates, Smil can be used with any standard types (char, short, int, double, ...).\n
  * 
- * It uses <a href="http://www.swig.org/" target="_blank">Swig</a> and can be wrapped in several languages: 
- * for now, only \b python, \b java and \b octave are available, but Swig allows potentially to generate wrapper code for nineteen 
- * different target languages (Allegro, CL, C#, CFFI, CLISP, ... see <a href="http://www.swig.org/compare.html" target="_blank">Swig features page</a>).
+ * It uses <a href="http://www.swig.org/" target="_blank">swig</a> and can be wrapped in several languages: 
+ * for now, \b python, \b java, \b ruby and \b octave are available, but Swig allows potentially to generate wrapper code for nineteen 
+ * different target languages (Allegro, CL, C#, CFFI, CLISP, ... see <a href="http://www.swig.org/compare.html" target="_blank">swig features page</a>).
  * 
  * Smil is free software, available under a BSD-style open source license.\n
  * See the \ref licence_page "licence" page for more information.

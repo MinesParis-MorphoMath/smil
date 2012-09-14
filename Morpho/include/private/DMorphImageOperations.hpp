@@ -116,17 +116,14 @@ public:
 	
 	switch(st)
 	{
-	  case stGeneric:
-	    retVal = processImage(imIn, imOut, se);
+	  case SE_Hex:
+	    retVal = processImage(imIn, imOut, *static_cast<const HexSE*>(&se));
 	    break;
-	  case stHexSE:
-	    retVal = processImage(imIn, imOut, *static_cast<const hSE*>(&se));
-	    break;
-	  case stSquSE:
-	    retVal = processImage(imIn, imOut, *static_cast<const sSE*>(&se));
+	  case SE_Squ:
+	    retVal = processImage(imIn, imOut, *static_cast<const SquSE*>(&se));
 	    break;
 	  default:
-	    retVal = RES_NOT_IMPLEMENTED;
+	    retVal = processImage(imIn, imOut, se);
 	}
 	
 	finalize(imIn, imOut, se);
@@ -334,10 +331,10 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(const imageType &
     
     switch(st)
     {
-      case stGeneric:
-	return _exec_single_generic(imIn, imOut, se);
-      case stHexSE:
+      case SE_Hex:
 	return _exec_single_hexSE(imIn, imOut);
+      default:
+	return _exec_single_generic(imIn, imOut, se);
     }
     
     return RES_NOT_IMPLEMENTED;

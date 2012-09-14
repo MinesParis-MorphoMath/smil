@@ -29,13 +29,17 @@
 /**
  * \page webstart_page Smil Online Java (Web Start) version
  * \section require_sec Requirements
- * This application is a Java WebStart version of Smil. \n
+ * This application is a Java WebStart version of Smil which embeds a python interpreter. \n
  * To be able to run it, your must have a JRE plugin for your browser installed. \n
  * To download the latest version of the JRE corresponding to your browser, click <a href="http://java.com/getjava">here</a>. \n
+ * 
+ * For now, only Windows and Linux platforms are supported (OSX version is under developpement).
  * 
  * \section run_sec Launch the application
  * Click \ws_main_link{here} to launch the application
  * (or \ws_open_image_link{lena.png,here} to open it with the Lena image).
+ * 
+ * \images{smilApp}
  * 
  * The first time you will execute the application, the JRE will need to download native libraries corresponding to your platform. The download may take several seconds.
  * \section demo_sec Run an example script
