@@ -181,7 +181,7 @@ for t in imageTypes:
 #    t.__del__ = deleteImage
 
 
-seTypes = "hSE, sSE"
+seTypes = "HexSE, SquSE"
 
 def bench(func, *args, **keywords):
     #default values
