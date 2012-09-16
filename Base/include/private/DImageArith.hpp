@@ -255,6 +255,14 @@ RES_T sub(const Image<T> &imIn1, const T &value, Image<T> &imOut)
     return binaryImageFunction<T, subLine<T> >(imIn1, value, imOut);
 }
 
+/**
+ * Subtraction (without type minimum check)
+ * 
+ * Subtraction between two images (or between an image and a constant value)
+ * \param imIn1 input image 1
+ * \param "imIn2 (or val)" input image 2 (or a constant value)
+ * \param imOut output image containing \c imIn1-imIn2 (or \c imIn1-val)
+ */
 template <class T>
 RES_T subNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
@@ -267,6 +275,9 @@ RES_T subNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
     return binaryImageFunction<T, subNoSatLine<T> >(imIn1, value, imOut);
 }
 
+/**
+ * Sup of two images
+ */
 template <class T>
 RES_T sup(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
@@ -287,6 +298,9 @@ RES_T sup(const Image<T> &imIn1, const T &value, Image<T> &imOut)
     return binaryImageFunction<T, supLine<T> >(imIn1, value, imOut);
 }
 
+/**
+ * Inf of two images
+ */
 template <class T>
 RES_T inf(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
@@ -308,8 +322,8 @@ RES_T inf(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 }
 
 /**
- * Test equality between two images
- * \return[imOut] image with max(T) when true and 0 otherwise
+ * Equality operator
+ * \return[imOut] image with imOut(x)=max(T) when imIn1(x)=imIn2(x) and 0 otherwise
  */
 template <class T>
 RES_T equ(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -317,6 +331,10 @@ RES_T equ(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
     return binaryImageFunction<T, equLine<T> >(imIn1, imIn2, imOut);
 }
 
+/**
+ * Test equality between two images
+ * \return True if imIn1=imIn2, False otherwise
+ */
 template <class T>
 bool equ(const Image<T> &imIn1, const Image<T> &imIn2)
 {
@@ -342,7 +360,9 @@ RES_T diff(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
     return binaryImageFunction<T, diffLine<T> >(imIn1, imIn2, imOut);
 }
 
-
+/**
+ * Greater operator
+ */
 template <class T>
 RES_T grt(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
@@ -355,6 +375,9 @@ RES_T grt(const Image<T> &imIn1, const T &value, Image<T> &imOut)
     return binaryImageFunction<T, grtLine<T> >(imIn1, value, imOut);
 }
 
+/**
+ * Greater or equal operator
+ */
 template <class T>
 RES_T grtOrEqu(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
@@ -367,6 +390,9 @@ RES_T grtOrEqu(const Image<T> &imIn1, const T &value, Image<T> &imOut)
     return binaryImageFunction<T, grtOrEquLine<T> >(imIn1, value, imOut);
 }
 
+/**
+ * Lower operator
+ */
 template <class T>
 RES_T low(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
@@ -379,6 +405,9 @@ RES_T low(const Image<T> &imIn1, const T &value, Image<T> &imOut)
     return binaryImageFunction<T, lowLine<T> >(imIn1, value, imOut);
 }
 
+/**
+ * Lower or equal operator
+ */
 template <class T>
 RES_T lowOrEqu(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
@@ -391,6 +420,9 @@ RES_T lowOrEqu(const Image<T> &imIn1, const T &value, Image<T> &imOut)
     return binaryImageFunction<T, lowLine<T> >(imIn1, value, imOut);
 }
 
+/**
+ * Division
+ */
 template <class T>
 RES_T div(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
@@ -403,6 +435,9 @@ RES_T div(const Image<T> &imIn, const T &value, Image<T> &imOut)
     return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
 }
 
+/**
+ * Multiply
+ */
 template <class T>
 RES_T mul(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
@@ -415,6 +450,9 @@ RES_T mul(const Image<T> &imIn1, const T &value, Image<T> &imOut)
     return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
 }
 
+/**
+ * Multiply (without type max check)
+ */
 template <class T>
 RES_T mulNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
@@ -427,24 +465,39 @@ RES_T mulNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
     return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
 }
 
+/**
+ * Logic AND operator
+ */
 template <class T>
 RES_T logicAnd(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, logicAndLine<T> >(imIn1, imIn2, imOut);
 }
 
+/**
+ * Logic OR operator
+ */
 template <class T>
 RES_T logicOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, logicOrLine<T> >(imIn1, imIn2, imOut);
 }
 
+/**
+ * Logic XOR operator
+ */
 template <class T>
 RES_T logicXOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
     return binaryImageFunction<T, logicXOrLine<T> >(imIn1, imIn2, imOut);
 }
 
+/**
+ * Test
+ * 
+ * If imIn1(x)!=0, imOut(x)=imIn2(x)
+ * imOut(x)=imIn3(x) otherwise
+ */
 template <class T>
 RES_T test(const Image<T> &imIn1, const Image<T> &imIn2, const Image<T> &imIn3, Image<T> &imOut)
 {
