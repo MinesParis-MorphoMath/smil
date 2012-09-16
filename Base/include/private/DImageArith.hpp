@@ -495,8 +495,15 @@ RES_T logicXOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 /**
  * Test
  * 
- * If imIn1(x)!=0, imOut(x)=imIn2(x)
- * imOut(x)=imIn3(x) otherwise
+ * If imIn1(x)!=0, imOut(x)=imIn2(x)\n
+ * imOut(x)=imIn3(x) otherwise.
+ * 
+ * Can also be used with constant values and result of operator.
+ * 
+ * \par Examples
+ * \code
+ * test(im1>100, 255, 0, im2)
+ * \endcode
  */
 template <class T>
 RES_T test(const Image<T> &imIn1, const Image<T> &imIn2, const Image<T> &imIn3, Image<T> &imOut)
