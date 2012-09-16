@@ -98,6 +98,10 @@ def Image(*args):
     
     if argNbr==0: # No argument -> return default image type
 	img = imageTypes[0]()
+
+    elif type(args[0])==int: # First arg is a number (should be a size)
+	img = imageTypes[0](*args)
+	fill(img, 0)
 	
     elif type(args[0]) in imageTypes: # First arg is an image
 	srcIm = args[0]
