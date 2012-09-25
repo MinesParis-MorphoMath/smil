@@ -70,8 +70,10 @@ int main(int argc, char *argv[])
 
 //     im2 << ( (im1>UINT8(100)) & im1 );
 //     return 1;
-    if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
-      read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
+//     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
+//       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
+
+    read("http://cmm.ensmp.fr/~faessel/smil/images/lena.png", im1);
     
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png", im1);
