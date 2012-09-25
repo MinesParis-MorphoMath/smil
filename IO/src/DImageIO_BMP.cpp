@@ -32,7 +32,7 @@
 
 
 template <>
-_SMIL RES_T readBMP(const char *filename, Image<UINT8> &image)
+RES_T readBMP(const char *filename, Image<UINT8> &image)
 {
     FILE* fp = fopen( filename, "rb" );
 
@@ -83,7 +83,7 @@ _SMIL RES_T readBMP(const char *filename, Image<UINT8> &image)
 
 /* write a png file */
 template <>
-_SMIL RES_T writeBMP(Image<UINT8> &image, const char *filename)
+RES_T writeBMP(Image<UINT8> &image, const char *filename)
 {
     FILE* fp = fopen( filename, "wb" );
 

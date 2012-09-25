@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -49,7 +49,7 @@
  * \{
  */
 
-extern const char *getFileExtension(const char *fileName);
+extern string getFileExtension(const char *fileName);
 
 #ifdef USE_CURL
 extern RES_T getHttpFile(const char *url, const char *outfilename);
@@ -64,9 +64,9 @@ RES_T read(const char* filename, Image<T> &image)
     string fileExt = getFileExtension(filename);
     string filePrefix = (string(filename).substr(0, 7));
     string tmpFileName;
-    
+
     RES_T res;
-    
+
     if (filePrefix=="http://")
     {
 #ifdef USE_CURL
@@ -78,7 +78,7 @@ RES_T read(const char* filename, Image<T> &image)
 	}
 	res = read(tmpFileName.c_str(), image);
 	remove(tmpFileName.c_str());
-	
+
 #else // USE_CURL
 	cout << "Error: to use this functionality you must compile smil with the Curl option" << endl;
 	res = RES_ERR;
@@ -96,13 +96,13 @@ RES_T read(const char* filename, Image<T> &image)
 
     else if (fileExt=="VTK")
         res = readVTK(filename, image);
-    
+
     else
     {
         cout << "File type not supported" << endl;
 	res = RES_ERR;
     }
-    
+
 //     if (res==RES_OK)
 //     {
 // // 	if (!image.getName())
@@ -114,7 +114,7 @@ RES_T read(const char* filename, Image<T> &image)
 // // 	}
 // 	image.modified();
 //     }
-    
+
     return res;
 }
 
@@ -137,16 +137,16 @@ RES_T write(Image<T> &image, const char *filename)
 
     else if (fileExt=="RAW")
         res = writeRAW(image, filename);
-    
+
     else if (fileExt=="VTK")
         res = writeVTK(image, filename);
-    
+
     else
     {
         cout << "File type not supported" << endl;
 	res = RES_ERR;
     }
-    
+
     return res;
 }
 

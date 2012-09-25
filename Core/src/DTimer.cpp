@@ -18,7 +18,7 @@ void * fun (void * _timer) {
       timer *t = (timer*)_timer;
       while(t->running)
       {
-	  usleep(10000);
+//	  usleep(10000);
 // 	sleep(1);
 // 	  cout << "ok" << endl;
 // 	cout << QApplication::allWidgets().count() << endl;

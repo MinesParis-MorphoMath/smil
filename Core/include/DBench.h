@@ -30,47 +30,47 @@
 #ifndef _DBENCH_H
 #define _DBENCH_H
 
-#define FIRST_VA_ARG(arg0, arg1...) arg0
+#define FIRST_VA_ARG(arg0, ...) arg0
 
-#define BENCH(func, args...) \
+#define BENCH(func, ...) \
 { \
       int t1 = clock(); \
       for (int i=0;i<BENCH_NRUNS;i++) \
-	func(args); \
+	func(__VA_ARGS__); \
       int t2 = clock(); \
       cout << #func << "\t" << displayTime(double(t2-t1)/BENCH_NRUNS) << endl; \
 }
 
-#define BENCH_STR(func, str, args...) \
+#define BENCH_STR(func, str, ...) \
 { \
       int t1 = clock(); \
       for (int i=0;i<BENCH_NRUNS;i++) \
-	func(args); \
+	func(__VA_ARGS__); \
       int t2 = clock(); \
       cout << #func << " " << str << "\t" << displayTime(double(t2-t1)/BENCH_NRUNS) << endl; \
 }
 
-#define BENCH_IMG(func, args...) \
+#define BENCH_IMG(func, ...) \
 { \
       int t1 = clock(); \
       for (int i=0;i<BENCH_NRUNS;i++) \
-	func(args); \
+	func(__VA_ARGS__); \
       int t2 = clock(); \
-      cout << #func << "\t" << FIRST_VA_ARG(args).getTypeAsString() << "\t"; \
-      cout << FIRST_VA_ARG(args).getWidth() << "x" << FIRST_VA_ARG(args).getHeight(); \
-      if (FIRST_VA_ARG(args).getDepth()>1) cout << "x" << FIRST_VA_ARG(args).getDepth(); \
+      cout << #func << "\t" << FIRST_VA_ARG(__VA_ARGS__).getTypeAsString() << "\t"; \
+      cout << FIRST_VA_ARG(__VA_ARGS__).getWidth() << "x" << FIRST_VA_ARG(__VA_ARGS__).getHeight(); \
+      if (FIRST_VA_ARG(__VA_ARGS__).getDepth()>1) cout << "x" << FIRST_VA_ARG(__VA_ARGS__).getDepth(); \
       cout << "\t" << displayTime(double(t2-t1)/BENCH_NRUNS) << endl; \
 }
 
-#define BENCH_IMG_STR(func, str, args...) \
+#define BENCH_IMG_STR(func, str, ...) \
 { \
       int t1 = clock(); \
       for (int i=0;i<BENCH_NRUNS;i++) \
-	func(args); \
+	func(__VA_ARGS__); \
       int t2 = clock(); \
-      cout << #func << " " << str << "\t" << FIRST_VA_ARG(args).getTypeAsString() << "\t"; \
-      cout << FIRST_VA_ARG(args).getWidth() << "x" << FIRST_VA_ARG(args).getHeight(); \
-      if (FIRST_VA_ARG(args).getDepth()>1) cout << "x" << FIRST_VA_ARG(args).getDepth(); \
+      cout << #func << " " << str << "\t" << FIRST_VA_ARG(__VA_ARGS__).getTypeAsString() << "\t"; \
+      cout << FIRST_VA_ARG(__VA_ARGS__).getWidth() << "x" << FIRST_VA_ARG(__VA_ARGS__).getHeight(); \
+      if (FIRST_VA_ARG(__VA_ARGS__).getDepth()>1) cout << "x" << FIRST_VA_ARG(__VA_ARGS__).getDepth(); \
       cout << "\t" << displayTime(double(t2-t1)/BENCH_NRUNS) << endl; \
 }
 

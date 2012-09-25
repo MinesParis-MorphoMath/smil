@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -46,7 +46,7 @@ Image<T>::Image()
   : BaseImage("Image"),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
-{ 
+{
     init();
 }
 
@@ -55,8 +55,8 @@ Image<T>::Image(UINT w, UINT h, UINT d)
   : BaseImage("Image"),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
-{ 
-    init(); 
+{
+    init();
     setSize(w, h, d);
 }
 
@@ -65,7 +65,7 @@ Image<T>::Image(const Image<T> &rhs, bool cloneData)
   : BaseImage(rhs),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
-{ 
+{
     init();
     if (cloneData)
       this->clone(rhs);
@@ -78,16 +78,16 @@ Image<T>::Image(const Image<T2> &rhs, bool cloneData)
   : BaseImage(rhs),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
-{ 
+{
     init();
-    if (cloneData) 
+    if (cloneData)
       this->clone(rhs);
     else setSize(rhs);
 }
 
 template <class T>
 void Image<T>::clone(const Image<T> &rhs)
-{ 
+{
     bool isAlloc = rhs.isAllocated();
     this->setSize(rhs, isAlloc);
     if (isAlloc)
@@ -98,7 +98,7 @@ void Image<T>::clone(const Image<T> &rhs)
 template <class T>
 template <class T2>
 void Image<T>::clone(const Image<T2> &rhs)
-{ 
+{
     bool isAlloc = rhs.isAllocated();
     this->setSize(rhs, isAlloc);
     if (isAlloc)
@@ -111,7 +111,7 @@ Image<T>::Image(const char *fileName)
   : BaseImage("Image"),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
-{ 
+{
     triggerEvents = true;
     init();
     read(fileName, *this);
@@ -119,40 +119,40 @@ Image<T>::Image(const char *fileName)
 
 template <class T>
 Image<T>::~Image()
-{ 
+{
     hide();
-    if (viewer)      
+    if (viewer)
 	delete viewer;
-    
+
     this->deallocate();
 }
 
 
 
 template <class T>
-void Image<T>::init() 
-{ 
+void Image<T>::init()
+{
     this->slices = NULL;
     this->lines = NULL;
     this->pixels = NULL;
 
-    this->dataTypeSize = sizeof(pixelType); 
-    
+    this->dataTypeSize = sizeof(pixelType);
+
     this->viewer = NULL;
     this->updatesEnabled = true;
-     
+
     parentClass::init();
 }
 
 template <class T>
 void Image<T>::modified()
-{ 
+{
     if (!this->updatesEnabled)
       return;
-    
+
     if (viewer)
       viewer->update();
-    
+
     onModified.trigger();
 }
 
@@ -160,9 +160,9 @@ void Image<T>::modified()
 
 template <class T>
 void Image<T>::setName(const char *_name)
-{ 	
+{
     parentClass::setName(_name);
-    
+
     if (viewer)
 	viewer->setName(_name);
 }
@@ -172,7 +172,7 @@ void Image<T>::createViewer()
 {
     if (viewer)
       return;
-    
+
     viewer = getDefaultViewer<T>(this);
 
 }
@@ -189,20 +189,20 @@ template <class T>
 void Image<T>::show(const char *_name, bool labelImage)
 {
     createViewer();
-  
+
     if (_name)
         setName(_name);
-    
+
     if (!viewer)
       return;
-    
+
     if (!labelImage)
       viewer->show();
     else
       viewer->showLabel();
-    
+
     modified();
-    
+
 }
 
 
@@ -213,24 +213,24 @@ void Image<T>::setSize(UINT w, UINT h, UINT d, bool doAllocate)
 {
     if (w==this->width && h==this->height && d==this->depth)
 	return;
-    
-    if (this->allocated) 
+
+    if (this->allocated)
       this->deallocate();
-    
+
     this->width = w;
     this->height = h;
     this->depth = d;
-    
+
     this->sliceCount = d;
     this->lineCount = d * h;
     this->pixelCount = this->lineCount * w;
-    
-    if (doAllocate) 
+
+    if (doAllocate)
       this->allocate();
-    
+
     if (viewer)
       viewer->setImage(this);
-    
+
     this->modified();
 }
 
@@ -239,16 +239,16 @@ RES_T Image<T>::allocate()
 {
     if (this->allocated)
 	return RES_ERR_BAD_ALLOCATION;
-    
+
     this->pixels = createAlignedBuffer<T>(pixelCount);
 //     pixels = new pixelType[pixelCount];
-    
-    
+
+
     this->allocated = true;
     this->allocatedSize = this->pixelCount*sizeof(T);
-    
+
     this->restruct();
-    
+
     return RES_OK;
 }
 
@@ -259,23 +259,23 @@ RES_T Image<T>::restruct(void)
 	delete[] this->slices;
     if (this->lines)
 	delete[] this->lines;
-    
+
     this->lines =  new lineType[lineCount];
     this->slices = new sliceType[sliceCount];
-    
+
     sliceType cur_line = this->lines;
     volType cur_slice = this->slices;
-    
+
     int pixelsPerSlice = this->width * this->height;
-    
+
     for (int k=0; k<(int)depth; k++, cur_slice++)
     {
       *cur_slice = cur_line;
-      
+
       for (int j=0; j<(int)height; j++, cur_line++)
 	*cur_line = pixels + k*pixelsPerSlice + j*width;
     }
-	
+
     // Calc. line (mis)alignment
     int n = SIMD_VEC_SIZE / sizeof(T);
     int w = width%SIMD_VEC_SIZE;
@@ -284,7 +284,7 @@ RES_T Image<T>::restruct(void)
       this->lineAlignment[i] = (SIMD_VEC_SIZE - (i*w)%SIMD_VEC_SIZE)%SIMD_VEC_SIZE;
 //       cout << i << " " << lineAlignment[i] << endl;
     }
-    
+
     return RES_OK;
 }
 
@@ -299,21 +299,21 @@ RES_T Image<T>::deallocate()
 {
     if (!this->allocated)
 	return RES_OK;
-    
+
     if (this->slices)
 	delete[] this->slices;
     if (this->lines)
 	delete[] this->lines;
     if (this->pixels)
-		delete[] pixels;
-// 		deleteAlignedBuffer<T>(pixels);
+//		delete[] pixels;
+ 		deleteAlignedBuffer<T>(pixels);
     this->slices = NULL;
     this->lines = NULL;
     this->pixels = NULL;
 
     this->allocated = false;
     this->allocatedSize = 0;
-    
+
     return RES_OK;
 }
 
@@ -327,7 +327,7 @@ void Image<T>::printSelf(ostream &os, bool displayPixVals) const
 #endif // DEBUG_LEVEL > 1
     if (name!="")
       os << "Image name: " << name << endl;
-    
+
     if (depth>1)
       os << "3D image" << endl;
     else
@@ -335,21 +335,21 @@ void Image<T>::printSelf(ostream &os, bool displayPixVals) const
 
     T val;
     os << "Data type: " << getDataTypeAsString(val) << endl;
-    
+
     if (depth>1)
       os << "Size: " << width << "x" << height << "x" << depth << endl;
     else
       os << "Size: " << width << "x" << height << endl;
-    
+
     if (allocated) os << "Allocated (" << allocatedSize << " bytes)" << endl;
     else os << "Not allocated" << endl;
-    
-   
+
+
     if (displayPixVals)
     {
 	os << "Pixel values:" << endl;
 	UINT i, j, k;
-	
+
 	for (k=0;k<depth;k++)
 	{
 	  for (j=0;j<height;j++)
@@ -362,8 +362,8 @@ void Image<T>::printSelf(ostream &os, bool displayPixVals) const
 	}
 	os << endl;
     }
-    
-    os << endl;   
+
+    os << endl;
 }
 
 
@@ -377,16 +377,16 @@ void operator << (ostream &os, const Image<T> &im)
 }
 
 template <class T>
-Image<T>& Image<T>::operator << (const char *s) 
-{ 
-    read(s, *this); 
-    return *this; 
+Image<T>& Image<T>::operator << (const char *s)
+{
+    read(s, *this);
+    return *this;
 }
 
 template <class T>
-Image<T>& Image<T>::operator >> (const char *s) 
-{ 
-    write(*this, s); 
+Image<T>& Image<T>::operator >> (const char *s)
+{
+    write(*this, s);
     return *this;
 }
 
@@ -678,7 +678,7 @@ Image<T>& Image<T>::operator << (vector<T> &vect)
 {
     typename vector<T>::iterator it = vect.begin();
     typename vector<T>::iterator it_end = vect.end();
-    
+
     for (UINT i=0;i<pixelCount;i++, it++)
     {
       if (it==it_end)
@@ -708,7 +708,7 @@ PyObject * Image<T>::getNumArray(bool c_contigous)
 {
     npy_intp d[] = { this->getHeight(), this->getWidth(), this->getDepth() }; // axis are inverted...
     PyObject *array = PyArray_SimpleNewFromData(this->getDimension(), d, getNumpyType(*this), this->getPixels());
-    
+
     if (c_contigous)
     {
 	return array;
@@ -719,7 +719,7 @@ PyObject * Image<T>::getNumArray(bool c_contigous)
 	PyArray_Dims trans_dims;
 	trans_dims.ptr = t;
 	trans_dims.len = this->getDimension();
-	
+
 	PyObject *res = PyArray_Transpose((PyArrayObject*) array, &trans_dims);
 	Py_DECREF(array);
 	return res;

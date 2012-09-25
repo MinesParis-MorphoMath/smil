@@ -119,7 +119,7 @@ struct BIN
 	UINT iMax = strlen(s) < SIZE ? strlen(s) : SIZE;
 	
 	val = 0;
-	for (int i=0;i<iMax;i++)
+	for (UINT i=0;i<iMax;i++)
 	  val += (s[i]-48) * (1<<i);
 	return *this;
     }

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -36,7 +36,7 @@ template <typename T>
 class UniqueInstance
 {
 protected:
-    UniqueInstance () 
+    UniqueInstance ()
     {
     }
     ~UniqueInstance () { }
@@ -44,28 +44,28 @@ protected:
 public:
     static T *getInstance ()
     {
-	T::initialize();
-	return (static_cast<T*> (_instance));
+        T::initialize();
+        return (static_cast<T*> (_instance));
     }
 
     // Can be overloaded because of the T::initialize call
     static void initialize ()
     {
-	if (_instance == NULL)
-	    _instance = new T;
+        if (_instance == NULL)
+            _instance = new T;
     }
 
     static void kill ()
     {
       if (_instance)
       {
-	  delete _instance;
-	  _instance = NULL;
+        delete _instance;
+        _instance = NULL;
       }
     }
 
-    
-    
+
+
 protected:
     // Unique instance
     static T *_instance;

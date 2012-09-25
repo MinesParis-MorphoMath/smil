@@ -36,7 +36,6 @@
 // #include <pthread.h>
 #include <QApplication>
 
-#include <unistd.h>
 
 
 class timer

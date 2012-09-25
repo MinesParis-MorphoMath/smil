@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -29,12 +29,12 @@
 
 #include "DIO.h"
 
-const char *getFileExtension(const char *fileName)
+string getFileExtension(const char *fileName)
 {
     string fName(fileName);
     string::size_type idx = fName.rfind('.');
     string fExt = fName.substr(idx+1).c_str();
     transform(fExt.begin(), fExt.end(), fExt.begin(), ::toupper);
-    return fExt.c_str();
+    return fExt;
 }
 

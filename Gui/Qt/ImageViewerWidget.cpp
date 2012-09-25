@@ -311,12 +311,12 @@ void ImageViewerWidget::updatePixmaps(QImage *image, QList<QGraphicsPixmapItem*>
     
     QList<QGraphicsPixmapItem*>::iterator it = pixmaps->begin();
     
-    for (int j=0;j<pixNbrY;j++)
+    for (UINT j=0;j<pixNbrY;j++)
     {
 	if (j==pixNbrY-1)
 	  pixH = h%PIXMAP_MAX_DIM;
 	
-	for (int i=0;i<pixNbrX;i++)
+	for (UINT i=0;i<pixNbrX;i++)
 	{
 	    if (i==pixNbrX-1)
 	      pixW = w%PIXMAP_MAX_DIM;

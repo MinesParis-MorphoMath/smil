@@ -91,9 +91,9 @@ void MagnifyView::setGridSize(int s)
     int c = gridSize/2;
     pathItem = scene->addPath(path);
     
-    path = QPainterPath();
-    path.addRect(c*cellSize+1, c*cellSize+1, cellSize-2, cellSize-2);
-    centerRectPathItem = scene->addPath(path);
+    QPainterPath path2;
+    path2.addRect(c*cellSize+1, c*cellSize+1, cellSize-2, cellSize-2);
+    centerRectPathItem = scene->addPath(path2);
     centerRectPathItem->setPen(QColor(255,0,0));
     
     adjustSize();

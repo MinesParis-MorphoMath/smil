@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -42,6 +42,6 @@
 
 using namespace std;
 
-const char *getFileExtension(const char *fileName);
+string getFileExtension(const char *fileName);
 
 #endif // _D_IMAGE_IO_H

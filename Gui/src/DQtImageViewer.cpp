@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -37,11 +37,12 @@
 template <>
 void QtImageViewer<UINT8>::drawImage()
 {
-    Image<UINT8>::sliceType lines = this->image->getSlices()[slider->value()];
-    
+    int sliceNbr = slider->value();
+    Image<UINT8>::sliceType lines = this->image->getSlices()[sliceNbr];
+
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
-    
+
     for (int j=0;j<h;j++, lines++)
         memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
 }
@@ -58,23 +59,23 @@ void QtImageViewer<BIN>::drawImage()
     Image<BIN>::lineType pixels = this->image->getPixels();
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
-    
+
     this->setImageSize(w, h);
-    
+
     const BIN *lIn;
     UINT8 *lOut, *lEnd;
-    UINT bCount = (w-1)/BIN::SIZE + 1; 
+    UINT bCount = (w-1)/BIN::SIZE + 1;
 
     for (int j=0;j<h;j++)
     {
 	lIn = pixels + j*bCount;
 	lOut = this->qImage->scanLine(j);
 	lEnd = lOut + w;
-	
+
 	for (int b=0;b<bCount;b++,lIn++)
 	{
 	  BIN_TYPE bVal = (*lIn).val;
-	  
+
 	  for (int i=0;i<BIN::SIZE;i++,lOut++)
 	  {
 	    if (lOut==lEnd)
@@ -98,24 +99,24 @@ void QtImageViewer<Bit>::drawImage()
     Image<Bit>::lineType pixels = this->image->getPixels();
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
-    
+
     this->setImageSize(w, h);
-    
+
     BIN* data = (BIN*)pixels.intArray;
     const BIN *lIn;
     UINT8 *lOut, *lEnd;
-    UINT bCount = (w-1)/BIN::SIZE + 1; 
+    UINT bCount = (w-1)/BIN::SIZE + 1;
 
     for (int j=0;j<h;j++)
     {
 	lIn = data + j*bCount;
 	lOut = this->qImage->scanLine(j);
 	lEnd = lOut + w;
-	
+
 	for (int b=0;b<bCount;b++,lIn++)
 	{
 	  BIN_TYPE bVal = (*lIn).val;
-	  
+
 	  for (int i=0;i<BIN::SIZE;i++,lOut++)
 	  {
 	    if (lOut==lEnd)

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,7 +27,7 @@
  */
 
 
- 
+
 #ifndef _D_GUI_INSTANCE_H
 #define _D_GUI_INSTANCE_H
 
@@ -52,16 +52,16 @@ public:
     // Public interface
     static void initialize();
     static void kill();
-  
-    static void execLoop() 
+
+    static void execLoop()
     {
-	getInstance()->_execLoop();
+        Gui::getInstance()->_execLoop();
     }
-    static void processEvents() 
+    static void processEvents()
     {
-	getInstance()->_processEvents();
+        Gui::getInstance()->_processEvents();
     }
-protected:    
+protected:
     virtual void _execLoop() {}
     virtual void _processEvents() {}
     baseImageViewer *_defaultViewer;
