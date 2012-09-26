@@ -1,4 +1,3 @@
- 
 from smilPython import *
 import time
 
