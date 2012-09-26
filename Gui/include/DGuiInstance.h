@@ -53,14 +53,8 @@ public:
     static void initialize();
     static void kill();
 
-    static void execLoop()
-    {
-        Gui::getInstance()->_execLoop();
-    }
-    static void processEvents()
-    {
-        Gui::getInstance()->_processEvents();
-    }
+    static void execLoop();
+    static void processEvents();
 protected:
     virtual void _execLoop() {}
     virtual void _processEvents() {}

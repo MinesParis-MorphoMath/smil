@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
 //     Image_UINT8 im1;
 
 
-    Image_UINT8 im1(512,512);
+    Image_UINT8 im1(256,256);
     Image_UINT8 im2;
 
 //     im2 << ( (im1>UINT8(100)) & im1 );
@@ -106,9 +106,10 @@ int main(int argc, char *argv[])
 //     sup(im1, im2, im2);
 //     dilate(im1, im2);
      im1.show("im1");
+     im2.show();
     thresh(im1, UINT8(90), im2);
     Image_UINT8 im3(im1);
-//     close(im2, im2, hSE(10));
+     close(im2, im2, hSE(10));
 //     StrElt se; // = hSE(1);
     Image_UINT16 imLbl(im1);
 //     label(im2, imLbl, sSE());

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -33,15 +33,15 @@
 #include "DGui.h"
 
 Core::Core ()
-// : BaseObject("Core", false), 
+// : BaseObject("Core", false),
   : keepAlive(false)
-{ 
+{
 #if DEBUG_LEVEL > 1
      cout << "Core created" << endl;
-#endif // DEBUG_LEVEL > 1  
+#endif // DEBUG_LEVEL > 1
 }
 
-Core::~Core () 
+Core::~Core ()
 {
     deleteRegisteredObjects();
 #if DEBUG_LEVEL > 1
@@ -63,14 +63,14 @@ void Core::registerObject(BaseObject *obj)
 {
     if (obj->registered)
       return;
-    
+
     registeredObjects.push_back(obj);
-    
+
     obj->registered = true;
-    
+
     if (string(obj->getClassName())=="Image")
 	registeredImages.push_back(static_cast<BaseImage*>(obj));
-    
+
 #if DEBUG_LEVEL > 1
     cout << "Core::registerObject: " << obj->getClassName() << " " << obj << " created." << endl;
 #endif // DEBUG_LEVEL > 1
@@ -81,18 +81,18 @@ void Core::unregisterObject(BaseObject *obj)
 {
     if (!obj->registered)
       return;
-    
+
     registeredObjects.erase(std::remove(registeredObjects.begin(), registeredObjects.end(), obj));
-    
+
     obj->registered = false;
-    
+
     if (string(obj->getClassName())=="Image")
 	registeredImages.erase(std::remove(registeredImages.begin(), registeredImages.end(), static_cast<BaseImage*>(obj)));
-    
+
 #if DEBUG_LEVEL > 1
     cout << "Core::unregisterObject: " << obj->getClassName() << " " << obj << " deleted." << endl;
 #endif // DEBUG_LEVEL > 1
-    
+
     if (!keepAlive && registeredObjects.size()==0)
 	kill();
 }
@@ -102,7 +102,7 @@ void Core::deleteRegisteredObjects()
 {
     BaseObject *obj;
     vector<BaseObject*>::iterator it = registeredObjects.begin();
-    
+
     while (it!=registeredObjects.end())
     {
 	obj = *it++;
@@ -115,7 +115,7 @@ long Core::getAllocatedMemory()
 {
     vector<BaseImage*>::iterator it = registeredImages.begin();
     long totAlloc = 0;
-    
+
     while (it!=registeredImages.end())
 	totAlloc += (*it++)->getAllocatedSize();
     return totAlloc;
@@ -124,7 +124,7 @@ long Core::getAllocatedMemory()
 void Core::showAllImages()
 {
     vector<BaseImage*>::iterator it = registeredImages.begin();
-    
+
     while (it!=registeredImages.end())
 	(*it++)->show();
 }
@@ -132,7 +132,7 @@ void Core::showAllImages()
 void Core::hideAllImages()
 {
     vector<BaseImage*>::iterator it = registeredImages.begin();
-    
+
     while (it!=registeredImages.end())
 	(*it++)->hide();
 }

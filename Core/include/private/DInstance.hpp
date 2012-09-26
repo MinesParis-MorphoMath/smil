@@ -45,7 +45,7 @@ public:
     static T *getInstance ()
     {
         T::initialize();
-        return (static_cast<T*> (_instance));
+        return (static_cast<T*> (T::_instance));
     }
 
     // Can be overloaded because of the T::initialize call

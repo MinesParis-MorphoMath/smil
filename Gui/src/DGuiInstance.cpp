@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -44,14 +44,25 @@ Gui::~Gui()
 
 void Gui::initialize()
 {
-    if (_instance == NULL)
+    if (Gui::_instance == NULL)
     {
 #ifdef USE_QT
-	_instance =  new qtGui;
+        Gui::_instance =  new qtGui;
 #else // USE_QT
-	_instance =  new Gui;
+        Gui::_instance =  new Gui;
 #endif // USE_QT
     }
 //     return _instance;
+}
+
+void Gui::execLoop()
+{
+    Gui *inst = Gui::getInstance();
+    inst->_execLoop();
+}
+
+void Gui::processEvents()
+{
+    Gui::getInstance()->_processEvents();
 }
 
