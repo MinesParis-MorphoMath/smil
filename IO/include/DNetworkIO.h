@@ -34,7 +34,7 @@
 
 #ifdef USE_CURL
 
-RES_T getHttpFile(const char *url, const char *outfilename) ;
+int getHttpFile(const char *url, const char *outfilename) ;
 
 #endif // USE_CURL
 

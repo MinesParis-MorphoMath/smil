@@ -73,7 +73,7 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
  
  
 
-RES_T getHttpFile(const char *url, const char *outfilename) 
+int getHttpFile(const char *url, const char *outfilename) 
 {
     CURL *curl_handle;
     FILE *fp;
@@ -91,8 +91,8 @@ RES_T getHttpFile(const char *url, const char *outfilename)
     }
     else res = CURLE_FAILED_INIT;
     if (res==CURLE_OK)
-      return RES_OK;
-    else return RES_ERR;
+      return 0;
+    else return -1;
 }
 
 /**

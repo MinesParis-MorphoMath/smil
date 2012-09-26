@@ -52,7 +52,7 @@
 extern string getFileExtension(const char *fileName);
 
 #ifdef USE_CURL
-extern RES_T getHttpFile(const char *url, const char *outfilename);
+extern int getHttpFile(const char *url, const char *outfilename);
 #endif // USE_CURL
 
 /**

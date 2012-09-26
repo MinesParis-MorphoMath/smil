@@ -22,4 +22,3 @@ for i in range(1, 10):
   links[0].args[1] = i*10
   print "Threshold level:", i*10
   time.sleep(1)
-
