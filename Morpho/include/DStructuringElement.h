@@ -305,7 +305,7 @@ SquSE sSE(UINT s=1) { return SquSE(s); }
 SquSE0 sSE0(UINT s=1) { return SquSE0(s); }
 CubeSE cSE(UINT s=1) { return CubeSE(s); }
 
-StrElt DEFAULT_SE = HexSE();
+StrElt DEFAULT_SE = SquSE();
 
 StrElt& getDefaultSE()
 {
