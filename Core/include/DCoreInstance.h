@@ -45,7 +45,7 @@ struct stat;
 #include "DInstance.hpp"
 
 
-class Core : public UniqueInstance<Core>
+class _DCORE Core : public UniqueInstance<Core>
 {
     friend class UniqueInstance<Core>;
 

@@ -95,8 +95,6 @@ int main(int argc, char *argv[])
     fill(im1, UINT8(100));
     fill(im2, UINT8(5));
 
-    int t1;
-    int nRuns = (int)5E3;
     UINT8 val = 10;
     
     UINT BENCH_NRUNS = 1E3;

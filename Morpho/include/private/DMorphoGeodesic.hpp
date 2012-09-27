@@ -51,7 +51,7 @@ RES_T geoDil(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, cons
     
     RES_T res = inf(imIn, imMask, imOut);
     
-    for (int i=0;i<se.size;i++)
+    for (UINT i=0;i<se.size;i++)
     {
 	res = dilate<T>(imOut, imOut, tmpSe);
 	if (res==RES_OK)
@@ -70,7 +70,7 @@ RES_T geoEro(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, cons
     
     RES_T res = sup(imIn, imMask, imOut);
     
-    for (int i=0;i<se.size;i++)
+    for (UINT i=0;i<se.size;i++)
     {
 	res = erode(imOut, imOut, tmpSe);
 	if (res==RES_OK)
@@ -151,7 +151,6 @@ RES_T initBuildHierarchicalQueue(const Image<T> &imIn, HierarchicalQueue<T, HQco
     
     typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
     
-    UINT x, y, z;
     UINT s[3];
     
     imIn.getSize(s);
@@ -230,7 +229,7 @@ RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Imag
 	    if (oddLine)
 	      x += (y+1)%2;
 	  
-	    if (x>=0 && x<s[0] && y>=0 && y<s[1] && z>=0 && z<s[2])
+	    if (x>=0 && x<(int)s[0] && y>=0 && y<(int)s[1] && z>=0 && z<(int)s[2])
 	    {
 		nbOffset = curOffset + *it_off;
 		

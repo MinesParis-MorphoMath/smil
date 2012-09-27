@@ -38,9 +38,9 @@
 
 #include "MagnifyView.h"
 #include "DBinary.h"
+#include "DCommon.h"
 
-
-class QImageGraphicsScene : public QGraphicsScene
+class _DGUI QImageGraphicsScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
@@ -53,7 +53,7 @@ signals:
 };
 
 
-class ImageViewerWidget : public QGraphicsView
+class _DGUI ImageViewerWidget : public QGraphicsView
 {
     Q_OBJECT
 

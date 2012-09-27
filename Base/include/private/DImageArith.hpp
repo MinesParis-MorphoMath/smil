@@ -39,7 +39,6 @@
 #include "DBaseImageOperations.hpp"
 #include "DLineArith.hpp"
 
-
 template <class T>
 RES_T fill(Image<T> &imOut, const T &value)
 {

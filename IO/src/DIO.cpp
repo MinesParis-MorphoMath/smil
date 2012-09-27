@@ -29,7 +29,7 @@
 
 #include "DIO.h"
 
-string getFileExtension(const char *fileName)
+_DIO string getFileExtension(const char *fileName)
 {
     string fName(fileName);
     string::size_type idx = fName.rfind('.');

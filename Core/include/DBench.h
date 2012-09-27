@@ -30,22 +30,44 @@
 #ifndef _DBENCH_H
 #define _DBENCH_H
 
+#ifdef _MSC_VER
+
+// Work-around to MSVC __VA_ARGS__ expanded as a single argument, instead of being broken down to multiple ones
+#define EXPAND( x ) x
+#define _FIRST_VA_ARG(arg0, ...) arg0
+#define FIRST_VA_ARG(x) EXPAND(_FIRST_VA_ARG(x))
+
+#define _xPP_NARGS_IMPL(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,N,...) N
+#define PP_NARGS(...) \
+    EXPAND(_xPP_NARGS_IMPL(__VA_ARGS__,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0))
+
+#else // _MSC_VER
+
 #define FIRST_VA_ARG(arg0, ...) arg0
 
+#define _xPP_NARGS_IMPL(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,N,...) N
+#define PP_NARGS(...) \
+    _xPP_NARGS_IMPL(__VA_ARGS__,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0)
+
+#endif // _MSC_VER
+    
+    
+    
+    
 #define BENCH(func, ...) \
 { \
       int t1 = clock(); \
-      for (int i=0;i<BENCH_NRUNS;i++) \
-	func(__VA_ARGS__); \
-      int t2 = clock(); \
+      for (UINT i=0;i<BENCH_NRUNS;i++) \
+	  func(__VA_ARGS__); \
+		int t2 = clock(); \
       cout << #func << "\t" << displayTime(double(t2-t1)/BENCH_NRUNS) << endl; \
 }
 
 #define BENCH_STR(func, str, ...) \
 { \
       int t1 = clock(); \
-      for (int i=0;i<BENCH_NRUNS;i++) \
-	func(__VA_ARGS__); \
+      for (UINT i=0;i<BENCH_NRUNS;i++) \
+		func(__VA_ARGS__); \
       int t2 = clock(); \
       cout << #func << " " << str << "\t" << displayTime(double(t2-t1)/BENCH_NRUNS) << endl; \
 }
@@ -53,20 +75,20 @@
 #define BENCH_IMG(func, ...) \
 { \
       int t1 = clock(); \
-      for (int i=0;i<BENCH_NRUNS;i++) \
-	func(__VA_ARGS__); \
+      for (UINT i=0;i<BENCH_NRUNS;i++) \
+		func(__VA_ARGS__); \
       int t2 = clock(); \
       cout << #func << "\t" << FIRST_VA_ARG(__VA_ARGS__).getTypeAsString() << "\t"; \
       cout << FIRST_VA_ARG(__VA_ARGS__).getWidth() << "x" << FIRST_VA_ARG(__VA_ARGS__).getHeight(); \
-      if (FIRST_VA_ARG(__VA_ARGS__).getDepth()>1) cout << "x" << FIRST_VA_ARG(__VA_ARGS__).getDepth(); \
+      if (FIRST_VA_ARG(__VA_ARGS__).getDepth()>UINT(1)) cout << "x" << FIRST_VA_ARG(__VA_ARGS__).getDepth(); \
       cout << "\t" << displayTime(double(t2-t1)/BENCH_NRUNS) << endl; \
 }
 
 #define BENCH_IMG_STR(func, str, ...) \
 { \
       int t1 = clock(); \
-      for (int i=0;i<BENCH_NRUNS;i++) \
-	func(__VA_ARGS__); \
+      for (UINT i=0;i<BENCH_NRUNS;i++) \
+		func(__VA_ARGS__); \
       int t2 = clock(); \
       cout << #func << " " << str << "\t" << FIRST_VA_ARG(__VA_ARGS__).getTypeAsString() << "\t"; \
       cout << FIRST_VA_ARG(__VA_ARGS__).getWidth() << "x" << FIRST_VA_ARG(__VA_ARGS__).getHeight(); \

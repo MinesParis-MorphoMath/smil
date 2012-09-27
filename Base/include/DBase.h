@@ -38,6 +38,7 @@
 #include "DLineArith.h"
 #include "DImageArith.h"
 #include "DCoreEvents.h"
+#include "Core/include/DCommon.h"
 
 #include "private/DImageHistogram.hpp"
 #include "private/DImageTransform.hpp"

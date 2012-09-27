@@ -36,25 +36,26 @@
 #include <sstream>
 
 #include "DTypes.hpp"
+#include "DCommon.h"
 
 using namespace std;
 
-inline const char *displayTime(int t)
+inline string displayTime(double t)
 {
     stringstream s;
-    double tSec = double(t) / CLOCKS_PER_SEC;
+    double tSec = t / CLOCKS_PER_SEC;
     
-    if (int(tSec)!=0 || tSec==0)
-      s << tSec << " secs";
-    else if (int(tSec*1E3)!=0)
+    if (int(tSec*1E6)<1E3)
+      s << tSec << " usecs";
+    else if (int(tSec*1E3)<1E3)
       s << tSec*1E3 << " msecs";
     else 
-      s << tSec*1E6 << " usecs";
+      s << tSec << " secs";
     
-    return s.str().c_str();
+    return s.str();
 }
 
-class TestCase
+class _DCORE TestCase
 {
 public:
   TestCase() 
@@ -115,7 +116,7 @@ public:
     } \
 }
 
-class TestSuite
+class _DCORE TestSuite
 {
 public:
   void add(TestCase *f);

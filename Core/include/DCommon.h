@@ -58,15 +58,47 @@ using namespace std;
 #define INLINE inline
 
 #ifdef _MSC_VER
+
 #ifdef smilCore_EXPORTS
-// the dll exports
-#define _SMIL __declspec(dllexport)
-#else // smilCore_EXPORTS
-// the exe imports
-#define _SMIL __declspec(dllimport)
-#endif // smilCore_EXPORTS
+	#define _DCORE __declspec(dllexport)
+//	#pragma message(" - Exporting smilCore")
+#else
+	#define _DCORE __declspec(dllimport)
+//	#pragma message(" - Importing smilCore")
+#endif
+
+#ifdef smilBase_EXPORTS
+#define _DBASE __declspec(dllexport)
+#else
+#define _DBASE __declspec(dllimport)
+#endif
+
+#ifdef smilIO_EXPORTS
+#define _DIO __declspec(dllexport)
+#else
+#define _DIO __declspec(dllimport)
+#endif
+
+#ifdef smilGui_EXPORTS
+#define _DGUI __declspec(dllexport)
+#else
+#define _DGUI __declspec(dllimport)
+#endif
+
+#ifdef smilMorpho_EXPORTS
+#define _DMORPHO __declspec(dllexport)
+#else
+#define _DMORPHO __declspec(dllimport)
+#endif
+
 #else // _MSC_VER
-#define _SMIL
+
+#define _DCORE
+#define _DBASE
+#define _DIO
+#define _DGUI
+#define _DMORPHO
+
 #endif // _MSC_VER
 
 

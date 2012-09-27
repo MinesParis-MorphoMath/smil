@@ -31,6 +31,7 @@
 #define _D_BASE_IMAGE_VIEWER_H
 
 #include "DBaseObject.h"
+#include "DCommon.h"
 
 class BaseImageViewer : public BaseObject
 {

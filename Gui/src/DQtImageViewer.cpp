@@ -35,7 +35,7 @@
 
 
 template <>
-void QtImageViewer<UINT8>::drawImage()
+void _DGUI QtImageViewer<UINT8>::drawImage()
 {
     int sliceNbr = slider->value();
     Image<UINT8>::sliceType lines = this->image->getSlices()[sliceNbr];
@@ -43,7 +43,7 @@ void QtImageViewer<UINT8>::drawImage()
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
 
-    for (int j=0;j<h;j++, lines++)
+    for (UINT j=0;j<h;j++, lines++)
         memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
 }
 
@@ -54,7 +54,7 @@ void QtImageViewer<UINT8>::drawImage()
 // #include "DBitArray.h"
 
 template <>
-void QtImageViewer<BIN>::drawImage()
+void _DGUI QtImageViewer<BIN>::drawImage()
 {
     Image<BIN>::lineType pixels = this->image->getPixels();
     UINT w = this->image->getWidth();
@@ -94,7 +94,7 @@ void QtImageViewer<BIN>::drawImage()
 // #include "DBitArray.h"
 
 template <>
-void QtImageViewer<Bit>::drawImage()
+void _DGUI QtImageViewer<Bit>::drawImage()
 {
     Image<Bit>::lineType pixels = this->image->getPixels();
     UINT w = this->image->getWidth();

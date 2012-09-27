@@ -35,7 +35,7 @@
 #include <png.h>
 
 template <>
-_SMIL RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
+_DIO RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
 {
 
     png_byte magic[8];
@@ -161,7 +161,7 @@ _SMIL RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
 
 /* write a png file */
 template <>
-_SMIL RES_T writePNG(Image<UINT8> &image, const char *filename)
+_DIO RES_T writePNG(Image<UINT8> &image, const char *filename)
 {
     png_byte color_type = PNG_COLOR_TYPE_GRAY;
     png_byte bit_depth = 8;

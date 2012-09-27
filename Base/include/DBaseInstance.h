@@ -28,43 +28,33 @@
 
 
 
-#ifndef _D_GUI_INSTANCE_H
-#define _D_GUI_INSTANCE_H
+#ifndef _D_BASE_INSTANCE_H
+#define _D_BASE_INSTANCE_H
 
 #include "DInstance.hpp"
 #include "DCommon.h"
 
 /**
- * \defgroup Gui Gui
+ * \ingroup Base
  */
 /*@{*/
 
-class baseImageViewer;
 
-class _DGUI Gui : public UniqueInstance<Gui>
+class _DBASE Base : public UniqueInstance<Base>
 {
-    friend class UniqueInstance<Gui>;
+    friend class UniqueInstance<Base>;
 
 protected:
-    Gui ();
-    ~Gui ();
+    Base ();
+    ~Base ();
 
 public:
     // Public interface
-    static void initialize();
-//     static void kill();
-
-    static void execLoop();
-    static void processEvents();
 protected:
-    virtual void _execLoop() {}
-    virtual void _processEvents() {}
-    baseImageViewer *_defaultViewer;
-private:
 };
 
 
 
 /*@}*/
 
-#endif // _D_GUI_INSTANCE_H
+#endif // _D_BASE_INSTANCE_H

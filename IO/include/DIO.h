@@ -33,6 +33,7 @@
 /** \defgroup IO */
 
 #include "private/DImageIO.hpp"
+#include "DCommon.h"
 
 #ifdef USE_CURL
 #include "DNetworkIO.h"
@@ -42,6 +43,6 @@
 
 using namespace std;
 
-string getFileExtension(const char *fileName);
+_DIO string getFileExtension(const char *fileName);
 
 #endif // _D_IMAGE_IO_H

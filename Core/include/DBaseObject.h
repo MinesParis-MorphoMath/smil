@@ -46,7 +46,7 @@ class Core;
 /**
  * Base Smil Object
  */
-class BaseObject
+class _DCORE BaseObject
 {
 public:
     BaseObject(bool _register=true);

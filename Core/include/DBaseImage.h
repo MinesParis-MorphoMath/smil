@@ -33,11 +33,12 @@
 #include "DBaseObject.h"
 #include "DSignal.h"
 #include "DSlot.h"
+#include "DCommon.h"
 
 /**
  * Base Image class
  */
-class /*_SMIL*/ BaseImage : public BaseObject
+class _DCORE BaseImage : public BaseObject
 {
     typedef BaseObject parentClass;
 public:

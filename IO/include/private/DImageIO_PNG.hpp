@@ -49,7 +49,7 @@ template <class T> class Image;
  * PNG file read
  */
 template <class T>
-/*_SMIL*/ RES_T readPNG(const char* filename, Image<T> &image)
+RES_T readPNG(const char* filename, Image<T> &image)
 {
     cout << "readPNG error: data type not implemented." << endl;
     return RES_ERR;
@@ -59,7 +59,7 @@ template <class T>
  * PNG file write
  */
 template <class T>
-/*_SMIL*/ RES_T writePNG(Image<T> &image, const char *filename)
+RES_T writePNG(Image<T> &image, const char *filename)
 {
     cout << "writePNG error: data type not implemented." << endl;
     return RES_ERR;
@@ -69,10 +69,10 @@ template <class T>
 // Specializations
 
 template <>
-/*_SMIL*/ RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image);
+_DIO RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image);
 
 template <>
-/*_SMIL*/ RES_T writePNG<UINT8>(Image<UINT8> &image, const char *filename);
+_DIO RES_T writePNG<UINT8>(Image<UINT8> &image, const char *filename);
 
 
 /** \} */

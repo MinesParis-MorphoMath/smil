@@ -31,8 +31,9 @@
 
 #include <iostream>
 #include <vector>
-
 using namespace std;
+
+#include "DCommon.h"
 
 class BaseSlot;
 
@@ -40,7 +41,7 @@ class Event
 {
 };
 
-class Signal
+class _DCORE Signal
 {
   friend class BaseSlot;
 public:

@@ -194,12 +194,12 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
     UINT pixNbrY = h/PIXMAP_MAX_DIM + 1;
     UINT pixW = PIXMAP_MAX_DIM, pixH = PIXMAP_MAX_DIM;
     
-    for (int j=0;j<pixNbrY;j++)
+    for (UINT j=0;j<pixNbrY;j++)
     {
 	if (j==pixNbrY-1)
 	  pixH = h%PIXMAP_MAX_DIM;
 	
-	for (int i=0;i<pixNbrX;i++)
+	for (UINT i=0;i<pixNbrX;i++)
 	{
 	    if (i==pixNbrX-1)
 	      pixW = w%PIXMAP_MAX_DIM;
@@ -440,9 +440,9 @@ void ImageViewerWidget::mouseReleaseEvent ( QMouseEvent * event )
 
 void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 {
-    int x = int(event->scenePos().rx());
-    int y = int(event->scenePos().ry());
-    int z = slider->value();
+    UINT x = int(event->scenePos().rx());
+    UINT y = int(event->scenePos().ry());
+    UINT z = slider->value();
 
     UINT w = qImage->width();
     UINT h = qImage->height();

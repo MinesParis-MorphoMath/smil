@@ -26,7 +26,10 @@
 
 
 SET(MODULE_NAME Core)
-SET(MODULE_DEPS ${SMIL_LIB_PREFIX}IO ${SMIL_LIB_PREFIX}Gui)
+SET(MODULE_DEPS 
+      ${SMIL_LIB_PREFIX}IO 
+      ${SMIL_LIB_PREFIX}Gui
+      )
 
 INCLUDE_DIRECTORIES(../IO/include ../IO/include/private ../Gui ../Gui/include ../Gui/include/private)
 

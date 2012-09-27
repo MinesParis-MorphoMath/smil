@@ -29,6 +29,9 @@
 
 SMIL_MODULE(smilGui)
 
+
+
+
 %{
 /* Includes the header in the wrapper code */
 #include "DGui.h"
@@ -37,6 +40,16 @@ SMIL_MODULE(smilGui)
 %}
 
 %import smilCore.i
+
+
+//////////////////////////////////////////////////////////
+// Gui Instance
+//////////////////////////////////////////////////////////
+
+%include "DInstance.hpp"
+%template(GuiInstance) UniqueInstance<Gui>;
+%include "DGuiInstance.h"
+
 
 
 %include "DGui.h"
@@ -93,3 +106,5 @@ if ('qApp' in locals())==0:
 TEMPLATE_WRAP_CLASS(AaImageViewer);
 
 #endif // USE_AALIB
+
+

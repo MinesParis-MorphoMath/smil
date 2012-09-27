@@ -39,7 +39,7 @@ template <class T> class Image;
 
 // Base abstract struct of line unary function
 template <class T>
-struct _SMIL unaryLineFunctionBase
+struct unaryLineFunctionBase
 {
     typedef typename Image<T>::lineType lineType;
     typedef typename Image<T>::sliceType sliceType;
@@ -90,7 +90,7 @@ struct _SMIL unaryLineFunctionBase
 
 // Base abstract struct of line binary function
 template <class T>
-struct _SMIL binaryLineFunctionBase
+struct binaryLineFunctionBase
 {
     typedef typename Image<T>::lineType lineType;
     typedef typename Image<T>::sliceType sliceType;
@@ -151,7 +151,7 @@ struct _SMIL binaryLineFunctionBase
 
 // Base abstract struct of line binary function
 template <class T>
-struct _SMIL tertiaryLineFunctionBase
+struct tertiaryLineFunctionBase
 {
     typedef typename Image<T>::lineType lineType;
     typedef typename Image<T>::sliceType sliceType;

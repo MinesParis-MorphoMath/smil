@@ -31,10 +31,11 @@
 #define _D_NETWORK_IO_H
 
 #include "DTypes.h"
+#include "DCommon.h"
 
 #ifdef USE_CURL
 
-int getHttpFile(const char *url, const char *outfilename) ;
+_DIO int getHttpFile(const char *url, const char *outfilename) ;
 
 #endif // USE_CURL
 

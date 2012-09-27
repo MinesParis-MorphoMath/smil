@@ -34,10 +34,12 @@
 
 using namespace std;
 
+#include "DCommon.h"
+
 class Event;
 class Signal;
 
-class BaseSlot
+class _DCORE BaseSlot
 {
   friend class Signal;
 public:

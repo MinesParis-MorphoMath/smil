@@ -49,10 +49,10 @@
  * \{
  */
 
-extern string getFileExtension(const char *fileName);
+extern _DIO string getFileExtension(const char *fileName);
 
 #ifdef USE_CURL
-extern int getHttpFile(const char *url, const char *outfilename);
+extern _DIO int getHttpFile(const char *url, const char *outfilename);
 #endif // USE_CURL
 
 /**

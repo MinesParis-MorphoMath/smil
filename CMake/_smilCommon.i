@@ -58,7 +58,11 @@
 #endif // SWIGRUBY
 
 
-
+#define _DCORE
+#define _DBASE
+#define _DIO
+#define _DGUI
+#define _DMORPHO
 
 
 %include cpointer.i

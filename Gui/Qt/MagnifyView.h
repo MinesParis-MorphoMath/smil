@@ -38,7 +38,9 @@
 #include <QGraphicsScene>
 #include <QGraphicsPathItem>
 
-class MagnifyView : public QGraphicsView
+#include "DCommon.h"
+
+class _DGUI MagnifyView : public QGraphicsView
 {
     Q_OBJECT
 public:

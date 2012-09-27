@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,31 +27,13 @@
  */
 
 
+#include "DBaseInstance.h"
 
-#include "DCore.h"
-#include "DBase.h"
-
-int main(int argc, char *argv[])
+Base::Base()
 {
-  
-    Image_UINT8 im1(1024, 1024);
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
-    
-    UINT BENCH_NRUNS = 1E3;
-    
-    BENCH_IMG(fill, im1, UINT8(127));
-    BENCH_IMG(copy, im1, im2);
-    BENCH_IMG(inv, im1, im2);
-    BENCH_IMG(add, im1, im2, im3);
-//     BENCH_IMG(addNoSat, im1, im2, im3);
-    BENCH_IMG(sub, im1, im2, im3);
-//     BENCH_IMG(subNoSat, im1, im2, im3);
-//     BENCH_IMG(mul, im1, im2, im3);
-//     BENCH_IMG(div, im1, im2, im3);
-    BENCH_IMG(inf, im1, im2, im3);
-    BENCH_IMG(sup, im1, im2, im3);
-    BENCH_IMG(sup, im1, im2, im3);
-    
+}
+
+Base::~Base()
+{
 }
 

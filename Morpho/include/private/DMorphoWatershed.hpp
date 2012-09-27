@@ -51,7 +51,6 @@ RES_T initWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl,
     typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
     typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
     
-    UINT x, y, z;
     UINT s[3];
     
     imIn.getSize(s);
@@ -136,7 +135,7 @@ RES_T processWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imL
 	    if (oddLine)
 	      x += (y+1)%2;
 	  
-	    if (x>=0 && x<s[0] && y>=0 && y<s[1] && z>=0 && z<s[2])
+	    if (x>=0 && x<(int)s[0] && y>=0 && y<(int)s[1] && z>=0 && z<(int)s[2])
 	    {
 		nbOffset = curOffset + *it_off;
 		
@@ -181,7 +180,7 @@ RES_T processWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imL
     
     // Potential remaining candidate points (points surrounded by WS_LINE points)
     // Put their state to WS_LINE
-    for (int i=0;i<imLbl.getPixelCount();i++)
+    for (UINT i=0;i<imLbl.getPixelCount();i++)
       if (statPixels[i]==HQ_CANDIDATE)
 	statPixels[i] = HQ_WS_LINE;
     return RES_OK;
@@ -223,7 +222,7 @@ RES_T watershed(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &
     // Create the image containing the ws lines
     fill(imOut, T(0));
     T wsVal = ImDtTypes<T>::max();
-    for (int i=0;i<imIn.getPixelCount();i++,pixStat++,pixOut++)
+    for (UINT i=0;i<imIn.getPixelCount();i++,pixStat++,pixOut++)
       if (*pixStat==HQ_WS_LINE) 
 	*pixOut = wsVal;
       

@@ -180,14 +180,14 @@ public:
 	UINT ptNbr = ptList.size();
 	
 	// Left border
-	while(curPixel < -se_xmin)
+	while((int)curPixel < -se_xmin)
 	{
 	    offsetList.clear();
 	    for (UINT i=0;i<ptNbr;i++)
 	    {
 		x = curPixel + ptList[i].x;
 		
-		if (x>=0 && x<imSize[0])
+		if (x>=0 && x<(int)imSize[0])
 		  offsetList.push_back(relOffsetList[i]);
 	    }
 	    processPixel(offset, offsetList.begin(), offsetList.end());

@@ -78,7 +78,7 @@ struct bmpInfoHeader
  * BMP file read
  */
 template <class T>
-/*_SMIL*/ RES_T readBMP(const char* filename, Image<T> &image)
+RES_T readBMP(const char* filename, Image<T> &image)
 {
     cout << "readBMP error: data type not implemented." << endl;
     return RES_ERR;
@@ -88,7 +88,7 @@ template <class T>
  * BMP file write
  */
 template <class T>
-/*_SMIL*/ RES_T writeBMP(Image<T> &image, const char *filename)
+RES_T writeBMP(Image<T> &image, const char *filename)
 {
     cout << "writeBMP error: data type not implemented." << endl;
     return RES_ERR;
@@ -97,10 +97,10 @@ template <class T>
 // Specializations
 
 template <>
-/*_SMIL*/ RES_T readBMP<UINT8>(const char *filename, Image<UINT8> &image);
+_DIO RES_T readBMP<UINT8>(const char *filename, Image<UINT8> &image);
 
 template <>
-/*_SMIL*/ RES_T writeBMP<UINT8>(Image<UINT8> &image, const char *filename);
+_DIO RES_T writeBMP<UINT8>(Image<UINT8> &image, const char *filename);
 
 /** \} */
 
