@@ -43,7 +43,7 @@ struct Point
   int z;
 };
 
-enum seType { SE_Generic, SE_Hex, SE_Squ };
+enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert };
 
 /**
  * Base structuring element
@@ -124,9 +124,9 @@ inline void operator << (ostream &os, StrElt &se)
  * Points :
  * 
  * <table>
- *   <tr>  <th>4</th> <th>3</th> <th>x</th>  </tr>
+ *   <tr>  <th>4</th> <th>3</th> <th></th>  </tr>
  *   <tr>  <th>5</th> <th>1</th> <th>2</th>  </tr>
- *   <tr>  <th>6</th> <th>7</th> <th>x</th>  </tr>
+ *   <tr>  <th>6</th> <th>7</th> <th></th>  </tr>
  * </table>
  * 
  */
@@ -156,9 +156,9 @@ class HexSE : public StrElt
  * Points :
  * 
  * <table>
- *   <tr>  <th>3</th> <th>2</th> <th>x</th>  </tr>
- *   <tr>  <th>4</th> <th>x</th> <th>1</th>  </tr>
- *   <tr>  <th>5</th> <th>6</th> <th>x</th>  </tr>
+ *   <tr>  <th>3</th> <th>2</th> <th></th>  </tr>
+ *   <tr>  <th>4</th> <th></th> <th>1</th>  </tr>
+ *   <tr>  <th>5</th> <th>6</th> <th></th>  </tr>
  * </table>
  * 
  */
@@ -222,7 +222,7 @@ class SquSE : public StrElt
  * 
  * <table>
  *   <tr>  <th>4</th> <th>3</th> <th>2</th>  </tr>
- *   <tr>  <th>5</th> <th>x</th> <th>1</th>  </tr>
+ *   <tr>  <th>5</th> <th></th> <th>1</th>  </tr>
  *   <tr>  <th>6</th> <th>7</th> <th>8</th>  </tr>
  * </table>
  * 
@@ -245,6 +245,91 @@ class SquSE0 : public StrElt
 	addPoint(-1,1);		// 6
 	addPoint(0,1);		// 7
 	addPoint(1,1);		// 8
+    }
+};
+
+
+/**
+ * Cross structuring element.
+ * 
+ * Points :
+ * 
+ * <table>
+ *   <tr>  <th></th> <th>3</th> <th></th>  </tr>
+ *   <tr>  <th>4</th> <th>1</th> <th>2</th>  </tr>
+ *   <tr>  <th></th> <th>5</th> <th></th>  </tr>
+ * </table>
+ * 
+ */
+
+class CrossSE : public StrElt
+{
+  public:
+    CrossSE(UINT s=1)
+    {
+	className = "CrossSE";
+	seT = SE_Cross;
+	size = s;
+	odd = true;
+	addPoint(0,0);		// 1
+	addPoint(1,0);		// 2
+	addPoint(-1,-1);	// 3
+	addPoint(-1,0);		// 4
+	addPoint(0,1);		// 5
+    }
+};
+
+/**
+ * Horizontal structuring element.
+ * 
+ * Points :
+ * 
+ * <table>
+ *   <tr>  <th>3</th> <th>1</th> <th>2</th>  </tr>
+ * </table>
+ * 
+ */
+
+class HorizSE : public StrElt
+{
+  public:
+    HorizSE(UINT s=1)
+    {
+	className = "HorizSE";
+	seT = SE_Horiz;
+	size = s;
+	odd = true;
+	addPoint(0,0);		// 1
+	addPoint(1,0);		// 2
+	addPoint(-1,0);		// 3
+    }
+};
+
+/**
+ * Verical structuring element.
+ * 
+ * Points :
+ * 
+ * <table>
+ *   <tr>  <th>2</th>  </tr>
+ *   <tr>  <th>1</th>  </tr>
+ *   <tr>  <th>3</th>  </tr>
+ * </table>
+ * 
+ */
+
+class VertSE : public StrElt
+{
+  public:
+    VertSE(UINT s=1)
+    {
+	className = "VertSE";
+	seT = SE_Vert;
+	size = s;
+	odd = true;
+	addPoint(0,0);		// 1
+	addPoint(0,-1);		// 2
+	addPoint(0,1);		// 3
     }
 };
 
@@ -303,7 +388,8 @@ HexSE hSE(UINT s=1) { return HexSE(s); }
 HexSE0 hSE0(UINT s=1) { return HexSE0(s); }
 SquSE sSE(UINT s=1) { return SquSE(s); }
 SquSE0 sSE0(UINT s=1) { return SquSE0(s); }
-CubeSE cSE(UINT s=1) { return CubeSE(s); }
+CrossSE cSE(UINT s=1) { return CrossSE(s); }
+CubeSE cbSE(UINT s=1) { return CubeSE(s); }
 
 StrElt DEFAULT_SE = SquSE();
 

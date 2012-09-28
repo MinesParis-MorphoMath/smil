@@ -82,11 +82,12 @@ def Image(*args):
     """
     * Image(): create an empty ${DEFAULT_IMAGE_TYPE} image.
     * Image(width, height [, depth]): create a ${DEFAULT_IMAGE_TYPE} image with size 'width'x'height'[x'depth'].
-    * Image(im): create an image with same type and same size than 'im'.
+    * Image(im): create an image with same type and same size as 'im'.
+    * Image(im, width, height [, depth]): create an image with same type 'im' and with size 'width'x'height'[x'depth'].
     * Image("TYPE"): create an empty image with the desired type.
       The available image types are: ${DATA_TYPES_STR}
     * Image("TYPE", width, height [, depth]): will create an image with the desired type and dimensions.
-    * Image(im, "TYPE"): create an image with type 'TYPE' and with same size than 'im'.
+    * Image(im, "TYPE"): create an image with type 'TYPE' and with same size as 'im'.
     * Image("fileName"): create an image and load the file "fileName".
     * Image("fileName", "TYPE"): create an image with type 'TYPE' and load the file "fileName".
     """
