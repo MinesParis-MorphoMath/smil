@@ -40,10 +40,9 @@
 
 using namespace std;
 
-inline string displayTime(double t)
+inline string displayTime(double tSec)
 {
     stringstream s;
-    double tSec = t / CLOCKS_PER_SEC;
     
     if (int(tSec*1E6)<1E3)
       s << tSec*1E6 << " usecs";

@@ -30,6 +30,8 @@
 #ifndef _DBENCH_H
 #define _DBENCH_H
 
+#include "sys/time.h"
+
 #ifdef _MSC_VER
 
 // Work-around to MSVC __VA_ARGS__ expanded as a single argument, instead of being broken down to multiple ones
@@ -50,50 +52,56 @@
     _xPP_NARGS_IMPL(__VA_ARGS__,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0)
 
 #endif // _MSC_VER
-    
-    
+
+
+#define _CLOCK omp_get_wtime()
+#define D_TIMEVAL(t1, t2) double(t2.tv_sec+t2.tv_usec/1e6-(t1.tv_sec+t1.tv_usec/1e6))
     
     
 #define BENCH(func, ...) \
 { \
-      int t1 = clock(); \
+      struct timeval t1,t2; \
+      gettimeofday(&t1,0); \
       for (UINT i=0;i<BENCH_NRUNS;i++) \
 	  func(__VA_ARGS__); \
-		int t2 = clock(); \
-      cout << #func << "\t" << displayTime(double(t2-t1)/BENCH_NRUNS) << endl; \
+      gettimeofday(&t2,0); \
+      cout << #func << "\t" << displayTime(D_TIMEVAL(t1, t2)/BENCH_NRUNS) << endl; \
 }
 
 #define BENCH_STR(func, str, ...) \
 { \
-      int t1 = clock(); \
+      struct timeval t1,t2; \
+      gettimeofday(&t1,0); \
       for (UINT i=0;i<BENCH_NRUNS;i++) \
 		func(__VA_ARGS__); \
-      int t2 = clock(); \
-      cout << #func << " " << str << "\t" << displayTime(double(t2-t1)/BENCH_NRUNS) << endl; \
+      gettimeofday(&t2,0); \
+      cout << #func << " " << str << "\t" << displayTime(D_TIMEVAL(t1, t2)/BENCH_NRUNS) << endl; \
 }
 
 #define BENCH_IMG(func, ...) \
 { \
-      int t1 = clock(); \
+      struct timeval t1,t2; \
+      gettimeofday(&t1,0); \
       for (UINT i=0;i<BENCH_NRUNS;i++) \
 		func(__VA_ARGS__); \
-      int t2 = clock(); \
+      gettimeofday(&t2,0); \
       cout << #func << "\t" << FIRST_VA_ARG(__VA_ARGS__).getTypeAsString() << "\t"; \
       cout << FIRST_VA_ARG(__VA_ARGS__).getWidth() << "x" << FIRST_VA_ARG(__VA_ARGS__).getHeight(); \
       if (FIRST_VA_ARG(__VA_ARGS__).getDepth()>UINT(1)) cout << "x" << FIRST_VA_ARG(__VA_ARGS__).getDepth(); \
-      cout << "\t" << displayTime(double(t2-t1)/BENCH_NRUNS) << endl; \
+      cout << "\t" << displayTime(D_TIMEVAL(t1, t2)/BENCH_NRUNS) << endl; \
 }
 
 #define BENCH_IMG_STR(func, str, ...) \
 { \
-      int t1 = clock(); \
+      struct timeval t1,t2; \
+      gettimeofday(&t1,0); \
       for (UINT i=0;i<BENCH_NRUNS;i++) \
 		func(__VA_ARGS__); \
-      int t2 = clock(); \
+      gettimeofday(&t2,0); \
       cout << #func << " " << str << "\t" << FIRST_VA_ARG(__VA_ARGS__).getTypeAsString() << "\t"; \
       cout << FIRST_VA_ARG(__VA_ARGS__).getWidth() << "x" << FIRST_VA_ARG(__VA_ARGS__).getHeight(); \
       if (FIRST_VA_ARG(__VA_ARGS__).getDepth()>1) cout << "x" << FIRST_VA_ARG(__VA_ARGS__).getDepth(); \
-      cout << "\t" << displayTime(double(t2-t1)/BENCH_NRUNS) << endl; \
+      cout << "\t" << displayTime(D_TIMEVAL(t1, t2)/BENCH_NRUNS) << endl; \
 }
 
 
