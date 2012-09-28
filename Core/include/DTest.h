@@ -46,7 +46,7 @@ inline string displayTime(double t)
     double tSec = t / CLOCKS_PER_SEC;
     
     if (int(tSec*1E6)<1E3)
-      s << tSec << " usecs";
+      s << tSec*1E6 << " usecs";
     else if (int(tSec*1E3)<1E3)
       s << tSec*1E3 << " msecs";
     else 
