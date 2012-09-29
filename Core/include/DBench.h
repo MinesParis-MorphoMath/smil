@@ -53,7 +53,19 @@
 
 #endif // _MSC_VER
 
-
+#ifdef WIN32
+#include <time.h>
+#include <sys/timeb.h>
+int gettimeofday (struct timeval *tp, void *tz)
+{
+    struct _timeb timebuffer;
+    _ftime (&timebuffer);
+    tp->tv_sec = timebuffer.time;
+    tp->tv_usec = timebuffer.millitm * 1000;
+    return 0;
+}
+#endif
+    
 #define _CLOCK omp_get_wtime()
 #define D_TIMEVAL(t1, t2) double(t2.tv_sec+t2.tv_usec/1e6-(t1.tv_sec+t1.tv_usec/1e6))
     

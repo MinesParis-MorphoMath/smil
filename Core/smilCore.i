@@ -56,9 +56,9 @@ SMIL_MODULE(smilCore)
 %}
 
 %include "carrays.i"
-%array_class(double, DArray);
+//%array_class(double, DArray);
 //%array_class(void, VoidArray);
-%array_class(UINT8, Uint8Array);
+//%array_class(UINT8, Uint8Array);
 
 // BitArray
 #ifdef SMIL_WRAP_Bit
@@ -135,6 +135,7 @@ namespace std
     %template(UintVector) vector<UINT>;
     %template(UcharVector) vector<UINT8>;
     %template(UshortVector) vector<UINT16>;
+    %template(DoubleVector) vector<double>;
 }
 
 

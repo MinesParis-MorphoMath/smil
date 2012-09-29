@@ -43,11 +43,17 @@ SMIL_MODULE(smilBase)
 #include "DImageDraw.hpp"
 #include "DImageHistogram.hpp"
 #include "DImageTransform.hpp"
+#include "DMeasures.hpp"
 %}
 
 // Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
 %import "smilCore.i"
 
+PTR_ARG_OUT_APPLY(ret_min)
+PTR_ARG_OUT_APPLY(ret_max)
+PTR_ARG_OUT_APPLY(w)
+PTR_ARG_OUT_APPLY(h)
+PTR_ARG_OUT_APPLY(d)
 
 %include "DImageArith.hpp"
 %include "DImageDraw.hpp"
@@ -93,6 +99,7 @@ TEMPLATE_WRAP_FUNC_CROSS2(stretchHist);
 TEMPLATE_WRAP_FUNC(enhanceContrast);
 
 
+TEMPLATE_WRAP_FUNC(drawLine);
 TEMPLATE_WRAP_FUNC(drawRectangle);
 
 
@@ -101,5 +108,8 @@ TEMPLATE_WRAP_FUNC(trans);
 TEMPLATE_WRAP_FUNC(resize);
 
 
+%include "DMeasures.hpp"
+TEMPLATE_WRAP_FUNC(measBarycenter);
+TEMPLATE_WRAP_FUNC(measBoundBox);
 
 
