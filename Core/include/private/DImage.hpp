@@ -158,6 +158,13 @@ public:
     { 
 	setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); 
     }
+    inline void setSize(const vector<UINT> s, bool doAllocate = true) 
+    { 
+	if (s.size()==3)
+	  setSize(s[0], s[1], s[2], doAllocate); 
+	else if (s.size()==2)
+	  setSize(s[0], s[1], 1, doAllocate); 
+    }
     RES_T allocate();
     RES_T deallocate();
 

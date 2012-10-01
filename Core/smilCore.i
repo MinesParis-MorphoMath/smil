@@ -152,6 +152,7 @@ namespace std
     TEMPLATE_WRAP_MAP(map, DoublePoint, DoublePointMap)
 }
 
+%template(Map_UINT16) map<UINT16, UINT16>;
 
 //////////////////////////////////////////////////////////
 // Core Instance

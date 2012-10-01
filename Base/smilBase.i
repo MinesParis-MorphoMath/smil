@@ -116,5 +116,5 @@ TEMPLATE_WRAP_FUNC(measBoundBox);
 %include "DLabelMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);
 TEMPLATE_WRAP_FUNC(measBarycenters);
-
+TEMPLATE_WRAP_FUNC(applyLookup);
 
