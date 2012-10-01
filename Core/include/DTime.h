@@ -27,99 +27,45 @@
  */
 
 
-#ifndef _DTEST_H
-#define _DTEST_H
+#ifndef _DTIME_H
+#define _DTIME_H
 
 #include <time.h>
-#include <iostream>
-#include <list>
-#include <sstream>
-
-#include "DTypes.hpp"
-#include "DCommon.h"
-#include "DTime.h"
-
-using namespace std;
 
 
-class _DCORE TestCase
+#ifdef WIN32
+#include <time.h>
+#include <sys/timeb.h>
+int gettimeofday (struct timeval *tp, void *tz)
 {
-public:
-  TestCase() 
-    : stopIfError(false), 
-      outStream(NULL) 
-  {
-  }
-  virtual void init() {}
-  virtual void run() = 0;
-  virtual void end() {}
-  const char *name;
-  bool stopIfError;
-  stringstream *outStream;
-  RES_T retVal;
-  int tElapsed;
-};
-
-
-#define TEST_ASSERT(expr) \
-{ \
-    if (!(expr)) \
-    { \
-	    if (outStream) \
-		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " assert " << #expr << endl;	\
-	    retVal = RES_ERR; \
-	    if (stopIfError) \
-	      return; \
-    } \
+    struct _timeb timebuffer;
+    _ftime (&timebuffer);
+    tp->tv_sec = timebuffer.time;
+    tp->tv_usec = timebuffer.millitm * 1000;
+    return 0;
 }
+#endif
 
-#define TEST_NO_THROW(expr) \
-{ \
-    bool _throw = false; \
-    try { expr; } \
-    catch(...) { _throw = true; } \
-    if (_throw) \
-    { \
-	    if (outStream) \
-		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " no throw " << #expr << endl;	\
-	    retVal = RES_ERR; \
-	    if (stopIfError) \
-	      return; \
-    } \
-}
+#include <sys/time.h>
 
-#define TEST_THROW(expr) \
-{ \
-    bool _throw = false; \
-    try { expr; } \
-    catch(...) { _throw = true; } \
-    if (!_throw) \
-    { \
-	    if (outStream) \
-		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " throw " << #expr << endl;	\
-	    retVal = RES_ERR; \
-	    if (stopIfError) \
-	      return; \
-    } \
-}
+#define T_ELAPSED(t1, t2) double(t2.tv_sec+t2.tv_usec/1E6-(t1.tv_sec+t1.tv_usec/1E6))
+    
 
-class _DCORE TestSuite
+inline string displayTime(double tSec)
 {
-public:
-  void add(TestCase *f);
-  RES_T run();
-private:
-  list<TestCase*> funcList;
-  int tElapsed;
-};
-
-
-#define ADD_TEST(TS, TC) \
-TC TC##_inst; \
-TC##_inst.name = #TC; \
-TS.add(& TC##_inst); 
+    stringstream s;
+    
+    if (tSec>=1.)
+      s << int(tSec*1E3)/1E3 << " secs";
+    else if (tSec*1E3>=1.)
+      s << int(tSec*1E6)/1E3 << " msecs";
+    else 
+      s << int(tSec*1E6) << " usecs";
+    
+    return s.str();
+}
 
 
 
-#endif // _DTEST_H
+#endif // _DTIME_H
 

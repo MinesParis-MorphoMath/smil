@@ -36,13 +36,6 @@
  * @{
  */
 
-struct Point
-{
-  int x;
-  int y;
-  int z;
-};
-
 enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert };
 
 /**
@@ -79,11 +72,11 @@ class StrElt : public BaseObject
     }
    
     //! List of neighbor points
-    vector<Point> points;
+    vector<IntPoint> points;
     
     inline void addPoint(int x, int y, int z=0)
     {
-	Point p;
+	IntPoint p;
 	p.x = x;
 	p.y = y;
 	p.z = z;

@@ -45,6 +45,8 @@ RES_T TestSuite::run()
     int nFailed = 0;
     int tElapsedTot = 0;
     
+    struct timeval t1,t2;
+    
     for (f=funcList.begin();f!=funcList.end();f++)
       totTestsNbr++;
     
@@ -58,7 +60,8 @@ RES_T TestSuite::run()
 	
 	cout << "Test #" << (curTestNbr++) << "/" << totTestsNbr << ": " << (*f)->name << "\t";
 	
-	int tStart = clock();
+	gettimeofday(&t1,0);
+	
 	try
 	{
 	  tc->run();
@@ -67,7 +70,8 @@ RES_T TestSuite::run()
 	{
 	    tc->retVal = RES_ERR;
 	}
-	int tElapsed =  clock() - tStart;
+	gettimeofday(&t2,0);
+	double tElapsed =  T_ELAPSED(t1, t2);
 	
 	if (tc->retVal==RES_OK)
 	{

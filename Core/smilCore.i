@@ -138,6 +138,20 @@ namespace std
     %template(DoubleVector) vector<double>;
 }
 
+//////////////////////////////////////////////////////////
+// Maps
+//////////////////////////////////////////////////////////
+
+%include std_map.i
+
+// Expose std::map<> as a Python dict
+namespace std 
+{
+    TEMPLATE_WRAP_MAP(map, double, DoubleMap)
+    TEMPLATE_WRAP_MAP(map, IntPoint, IntPointMap)
+    TEMPLATE_WRAP_MAP(map, DoublePoint, DoublePointMap)
+}
+
 
 //////////////////////////////////////////////////////////
 // Core Instance

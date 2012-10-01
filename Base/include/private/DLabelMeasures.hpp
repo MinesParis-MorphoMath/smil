@@ -27,31 +27,81 @@
  */
 
 
-#ifndef _D_MEASURES_HPP
-#define _D_MEASURES_HPP
+#ifndef _D_LABEL_MEASURES_HPP
+#define _D_LABEL_MEASURES_HPP
 
 /**
- * \ingroup Base
- * \defgroup Measures Base measures
+ * \ingroup Measures
  * @{
  */
 
 #include "DImage.hpp"
 #include <map>
 
+using namespace std;
 
+
+/**
+ * Measure label areas.
+ * Return a map(labelValue, double) with the area of each label value.
+ */
 template <class T>
-RES_T measBarycenter(Image<T> &im, double *xc, double *yc, double *zc=NULL)
+map<T, double> measAreas(Image<T> &im)
 {
+    map<T, double> area;
+    
     if (!im.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
+        return area;
     
     typename Image<T>::volType slices = im.getSlices();
     typename Image<T>::sliceType lines;
     typename Image<T>::lineType pixels;
     T pixVal;
     
-    double xSum = 0, ySum = 0, zSum = 0, tSum = 0;
+    UINT imSize[3];
+    im.getSize(imSize);
+    
+    for (UINT z=0;z<imSize[2];z++)
+    {
+	lines = *slices++;
+// #pragma omp parallel for
+	for (UINT y=0;y<imSize[1];y++)
+	{
+	    pixels = *lines++;
+	    for (UINT x=0;x<imSize[0];x++)
+	    {
+		pixVal = pixels[x];
+		if (pixVal!=0)
+		    area[pixVal] += 1;
+	    }
+	}
+    }
+    
+    return area;
+}
+
+
+
+/**
+ * Measure barycenter of labeled image.
+ * Return a map(labelValue, Point) with the barycenter point coordinates for each label value.
+ */
+template <class T>
+map<T, DoublePoint> measBarycenters(Image<T> &im)
+{
+    map<T, DoublePoint> res;
+    
+    if (!im.isAllocated())
+        return res;
+    
+    typename Image<T>::volType slices = im.getSlices();
+    typename Image<T>::sliceType lines;
+    typename Image<T>::lineType pixels;
+    T pixVal;
+    
+    map<T, double> xc, yc, zc;
+    map<T, UINT> ptNbrs;
+    
     UINT imSize[3];
     im.getSize(imSize);
     
@@ -67,110 +117,26 @@ RES_T measBarycenter(Image<T> &im, double *xc, double *yc, double *zc=NULL)
 		pixVal = pixels[x];
 		if (pixVal!=0)
 		{
-		    xSum += pixVal * x;
-		    ySum += pixVal * y;
-		    zSum += pixVal * z;
-		    tSum += pixVal;		  
+		    xc[pixVal] += x;
+		    yc[pixVal] += y;
+		    zc[pixVal] += z;
+		    ptNbrs[pixVal]++;
 		}
 	    }
 	}
     }
     
-    *xc = xSum / tSum;
-    *yc = ySum / tSum;
-    if (zc)
-      *zc = zSum / tSum;
+    typename map<T, UINT>::iterator it;
     
-    return RES_OK;
-}
-
-template <class T>
-vector<double> measBarycenter(Image<T> &im)
-{
-    vector<double> res;
-    double xc, yc, zc;
-    if (measBarycenter<T>(im, &xc, &yc, &zc)==RES_OK)
+    for ( it=ptNbrs.begin() ; it != ptNbrs.end(); it++ )
     {
-	res.push_back(xc);
-	res.push_back(yc);
-	if (im.getDimension()==3)
-	  res.push_back(zc);
+	T lblVal = (*it).first;
+	DoublePoint p;
+	p.x = xc[lblVal]/ptNbrs[lblVal];
+	p.y = yc[lblVal]/ptNbrs[lblVal];
+	p.z = zc[lblVal]/ptNbrs[lblVal];
+	res[lblVal] = p;
     }
-    return res;
-}
-
-/**
- * Bounding Box measure
- */
-template <class T>
-RES_T measBoundBox(Image<T> &im, UINT *xMin, UINT *yMin, UINT *zMin, UINT *xMax, UINT *yMax, UINT *zMax)
-{
-    if (!im.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-    
-    typename Image<T>::volType slices = im.getSlices();
-    typename Image<T>::sliceType lines;
-    typename Image<T>::lineType pixels;
-//     T pixVal;
-    
-    UINT imSize[3];
-    im.getSize(imSize);
-    
-    *xMin = imSize[0];
-    *xMax = 0;
-    *yMin = imSize[1];
-    *yMax = 0;
-    *zMin = imSize[2];
-    *zMax = 0;
-    
-    for (UINT z=0;z<imSize[2];z++)
-    {
-	lines = *slices++;
-	for (UINT y=0;y<imSize[1];y++)
-	{
-	    pixels = *lines++;
-	    for (UINT x=0;x<imSize[0];x++)
-	    {
-		T pixVal = pixels[x];
-		if (pixVal!=0)
-		{
-		    if (x<*xMin) *xMin = x;
-		    else if (x>*xMax) *xMax = x;
-		    if (y<*yMin) *yMin = y;
-		    else if (y>*yMax) *yMax = y;
-		    if (z<*zMin) *zMin = z;
-		    else if (z>*zMax) *zMax = z;
-		}
-	    }
-	}
-    }
-    
-    return RES_OK;
-}
-
-template <class T>
-RES_T measBoundBox(Image<T> &im, UINT *xMin, UINT *yMin, UINT *xMax, UINT *yMax)
-{
-    UINT zMin, zMax;
-    return measBoundBox(im, xMin, yMin, &zMin, xMax, yMax, &zMax);
-}
-
-
-template <class T>
-vector<UINT> measBoundBox(Image<T> &im)
-{
-    vector<UINT> res;
-    
-    UINT b[6];
-    UINT dim = im.getDimension()==3 ? 3 : 2;
-    
-    if (dim==3 && measBoundBox<T>(im, b, b+1, b+2, b+3, b+4, b+5)!=RES_OK)
-      return res;
-    else if (measBoundBox<T>(im, b, b+1, b+2, b+3)!=RES_OK)
-      return res;
-
-    for (int i=0;i<dim*2;i++)
-      res.push_back(b[i]);
     
     return res;
 }
@@ -178,5 +144,5 @@ vector<UINT> measBoundBox(Image<T> &im)
 
 /** @}*/
 
-#endif // _D_MEASURES_HPP
+#endif // _D_LABEL_MEASURES_HPP
 

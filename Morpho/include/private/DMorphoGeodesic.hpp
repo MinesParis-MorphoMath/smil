@@ -179,9 +179,9 @@ RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Imag
     vector<int> dOffsets;
     operatorT oper;
     
-    vector<Point>::const_iterator it_start = se.points.begin();
-    vector<Point>::const_iterator it_end = se.points.end();
-    vector<Point>::const_iterator it;
+    vector<IntPoint>::const_iterator it_start = se.points.begin();
+    vector<IntPoint>::const_iterator it_end = se.points.end();
+    vector<IntPoint>::const_iterator it;
     
     vector<UINT> tmpOffsets;
     

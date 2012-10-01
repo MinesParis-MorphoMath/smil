@@ -87,9 +87,9 @@ RES_T processWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imL
     
     vector<int> dOffsets;
     
-    vector<Point>::const_iterator it_start = se.points.begin();
-    vector<Point>::const_iterator it_end = se.points.end();
-    vector<Point>::const_iterator it;
+    vector<IntPoint>::const_iterator it_start = se.points.begin();
+    vector<IntPoint>::const_iterator it_end = se.points.end();
+    vector<IntPoint>::const_iterator it;
     
     vector<UINT> tmpOffsets;
     

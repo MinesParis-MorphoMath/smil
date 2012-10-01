@@ -44,6 +44,7 @@ SMIL_MODULE(smilBase)
 #include "DImageHistogram.hpp"
 #include "DImageTransform.hpp"
 #include "DMeasures.hpp"
+#include "DLabelMeasures.hpp"
 %}
 
 // Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
@@ -111,5 +112,9 @@ TEMPLATE_WRAP_FUNC(resize);
 %include "DMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
+
+%include "DLabelMeasures.hpp"
+TEMPLATE_WRAP_FUNC(measAreas);
+TEMPLATE_WRAP_FUNC(measBarycenters);
 
 

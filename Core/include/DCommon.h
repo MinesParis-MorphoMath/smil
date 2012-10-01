@@ -35,6 +35,7 @@
 #include <memory>
 #include <limits>
 #include <vector>
+#include <map>
 #include <stdarg.h>
 
 
@@ -115,6 +116,17 @@ using namespace std;
 
 #define MIN(a, b) a < b ? a : b;
 #define MAX(a, b) a > b ? a : b;
+
+template <class T>
+struct Point
+{
+  T x;
+  T y;
+  T z;
+};
+
+typedef Point<int> IntPoint;
+typedef Point<double> DoublePoint;
 
 
 #endif // _DCOMMON_H

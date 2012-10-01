@@ -337,6 +337,13 @@ FOREACH(_IMG_TYPE ${IMAGE_TYPES})
 ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 
+# SWIG WRAP MAP
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_MAP(_class, _type, _wname)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+	SET(_STWD "${_STWD}  %template(_wname \#\# _${_IMG_TYPE}) _class<${_IMG_TYPE}, _type>;\n")
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
 
 SET(SWIG_TEMPLATE_WRAP_DEFINITIONS ${_STWD})
 

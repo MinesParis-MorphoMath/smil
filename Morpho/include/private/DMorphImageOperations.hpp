@@ -71,7 +71,7 @@ public:
 	pixelsOut = imOut.getPixels();
 	
 	sePoints = se.points;
-	Point p0 = sePoints[0];
+	IntPoint p0 = sePoints[0];
 	if (p0.x==0 && p0.y==0 && p0.z==0)
 	{
 	    copy(imIn, imOut);
@@ -81,7 +81,7 @@ public:
 	
 	sePointNbr = sePoints.size();
 	relativeOffsets.clear();
-	vector<Point>::iterator pt = sePoints.begin();
+	vector<IntPoint>::iterator pt = sePoints.begin();
 	se_xmin = numeric_limits<int>::max();
 	se_xmax = numeric_limits<int>::min();
 	se_ymin = numeric_limits<int>::max();
@@ -159,9 +159,9 @@ public:
     virtual inline void processLine(lineInType pixIn, lineOutType pixOut, UINT &pixNbr, const StrElt &se)
     {
 	int x, y, z;
-	Point p;
+	IntPoint p;
 	UINT offset = pixIn - pixelsIn;
-	vector<Point> ptList;
+	vector<IntPoint> ptList;
 	vector<UINT> relOffsetList;
 	vector<UINT> offsetList;
 	
@@ -242,7 +242,7 @@ protected:
       UINT curLine;
       UINT curPixel;
       
-      vector<Point> sePoints;
+      vector<IntPoint> sePoints;
       UINT sePointNbr;
       vector<int> relativeOffsets;
       
