@@ -27,59 +27,26 @@
  */
 
 
-#ifndef _D_TYPES_HPP
-#define _D_TYPES_HPP
+#ifndef _DERRORS_H
+#define _DERRORS_H
 
-#include <stdint.h>
-#include <limits>
-#include "DMemory.hpp"
+/**
+ * \ingroup Core
+ * @{
+ */
 
-using namespace std;
-
-typedef int INT;
-typedef unsigned int UINT;
-typedef unsigned char UINT8;
-typedef unsigned short UINT16;
-typedef unsigned int UINT32;
-typedef uint64_t UINT64;
-
-// typedef unsigned char __attribute__ ((vector_size (16))) alUINT8;
-
-#ifndef _MSC_VER
-typedef signed char INT8;
-#endif // _MSC_VER
-typedef short INT16;
-typedef int INT32;
-
-
-#ifndef CHAR_BIT
-#define CHAR_BIT 8
-#endif
-
-template <class T>
-struct ImDtTypes
+enum RES_T
 {
-    typedef T pixelType;
-    typedef pixelType *lineType;
-    typedef lineType *sliceType;
-    typedef sliceType *volType;
-    
-    static inline pixelType min() { return numeric_limits<T>::min(); }
-    static inline pixelType max() { return numeric_limits<T>::max(); }
-    static inline lineType createLine(UINT lineLen) { return createAlignedBuffer<T>(lineLen); }
-    static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
-    static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)p) & (n-1); }
+    RES_OK = 0,
+    RES_ERR = -1,
+    RES_ERR_BAD_ALLOCATION,
+    RES_ERR_BAD_SIZE,
+    RES_NOT_IMPLEMENTED
 };
 
 
 
-template <class T>
-inline const char *getDataTypeAsString(T &val)
-{
-    return "Unknown";
-}
+/** @} */
 
+#endif // _DERRORS_H
 
-
-
-#endif // _D_TYPES_HPP

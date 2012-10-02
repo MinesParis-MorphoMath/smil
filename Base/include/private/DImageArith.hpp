@@ -529,105 +529,31 @@ RES_T test(const Image<T> &imIn, const T &value1, const T &value2, Image<T> &imO
 }
 
 
-
 /**
- * Volume of an image
- *
- * Returns the sum of the pixel values.
- * \param imIn Input image.
+ * Apply a lookup map
  */
 template <class T>
-double vol(const Image<T> &imIn)
+RES_T applyLookup(Image<T> &imIn, map<T,T> &lut, Image<T> &imOut)
 {
     if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
-
-    int npix = imIn.getPixelCount();
-    typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
-    double vol = 0;
-
-    for (int i=0;i<npix;i++)
-        vol += pixels[i];
-
-    return vol;
-}
-
-/**
- * Min value of an image
- *
- * Returns the min of the pixel values.
- * \param imIn Input image.
- */
-template <class T>
-T minVal(const Image<T> &imIn)
-{
-    if (!imIn.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-
-    int npix = imIn.getPixelCount();
-    typename ImDtTypes<T>::lineType p = imIn.getPixels();
-    T minVal = numeric_limits<T>::max();
-
-    for (int i=0;i<npix;i++,p++)
-        if (*p<minVal)
-            minVal = *p;
-
-    return minVal;
-}
-
-/**
- * Max value of an image
- *
- * Returns the min of the pixel values.
- * \param imIn Input image.
- */
-template <class T>
-T maxVal(const Image<T> &imIn)
-{
-    if (!imIn.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-
-    int npix = imIn.getPixelCount();
-    typename ImDtTypes<T>::lineType p = imIn.getPixels();
-    T maxVal = numeric_limits<T>::min();
-
-    for (int i=0;i<npix;i++,p++)
-        if (*p>maxVal)
-            maxVal = *p;
-
-    return maxVal;
-}
-
-/**
- * Min and Max values of an image
- *
- * Returns the min and the max of the pixel values.
- * \param imIn Input image.
- */
-template <class T>
-void rangeVal(const Image<T> &imIn, T *ret_min, T *ret_max)
-{
-    if (!imIn.isAllocated())
+    
+    typename Image<T>::lineType pixIn = imIn.getPixels();
+    typename Image<T>::lineType pixOut = imOut.getPixels();
+    
+    for (UINT i=0;i<imIn.getPixelCount();i++)
     {
-	*ret_min = 0;
-	*ret_max = 0;
-        return;
+      if (lut.find(*pixIn)!=lut.end())
+	*pixOut = lut[*pixIn];
+      pixIn++;
+      pixOut++;
     }
-
-    int npix = imIn.getPixelCount();
-    typename ImDtTypes<T>::lineType p = imIn.getPixels();
-    *ret_min = numeric_limits<T>::max();
-    *ret_max = numeric_limits<T>::min();
-
-    for (int i=0;i<npix;i++,p++)
-    {
-        if (*p<*ret_min)
-            *ret_min = *p;
-        if (*p>*ret_max)
-            *ret_max = *p;
-    }
-
+    imOut.modified();
+	
+    return RES_OK;
 }
+
+
 
 /** @}*/
 

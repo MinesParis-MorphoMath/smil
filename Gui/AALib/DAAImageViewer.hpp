@@ -32,6 +32,7 @@
 
 #include "DImageViewer.hpp"
 #include "DTypes.h"
+#include "Base/include/private/DImageTransform.hpp"
 
 #include <aalib.h>
 template <class T> class Image;

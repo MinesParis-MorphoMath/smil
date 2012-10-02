@@ -33,10 +33,15 @@
 #include <time.h>
 
 
-#ifdef WIN32
-#include <time.h>
+#ifdef _MSC_VER
 #include <sys/timeb.h>
-int gettimeofday (struct timeval *tp, void *tz)
+
+typedef struct timeval {
+    UINT64 tv_sec;
+    UINT64 tv_usec;
+} timeval;
+
+inline int gettimeofday (struct timeval *tp, void *tz)
 {
     struct _timeb timebuffer;
     _ftime (&timebuffer);
@@ -44,9 +49,12 @@ int gettimeofday (struct timeval *tp, void *tz)
     tp->tv_usec = timebuffer.millitm * 1000;
     return 0;
 }
-#endif
+#else
 
 #include <sys/time.h>
+
+#endif //
+
 
 #define T_ELAPSED(t1, t2) double(t2.tv_sec+t2.tv_usec/1E6-(t1.tv_sec+t1.tv_usec/1E6))
     

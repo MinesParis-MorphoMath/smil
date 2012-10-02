@@ -50,9 +50,9 @@ RES_T drawLine(Image<T> &im, int p1x, int p1y, int p2x, int p2y, T value=numeric
     if (!im.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
 
-    if (p1x<0 || p1x>=im.getWidth() || p1y<0 || p1y>=im.getHeight())
+    if (p1x<0 || p1x>=int(im.getWidth()) || p1y<0 || p1y>=int(im.getHeight()))
       return RES_ERR;
-    if (p2x<0 || p2x>=im.getWidth() || p2y<0 || p2y>=im.getHeight())
+    if (p2x<0 || p2x>=int(im.getWidth()) || p2y<0 || p2y>=int(im.getHeight()))
       return RES_ERR;
     
     typename Image<T>::sliceType lines = im.getLines();

@@ -31,6 +31,7 @@
 #include "DBase.h"
 #include "DMorpho.h"
 #include "DGui.h"
+#include "DIO.h"
 
 // #include "DGraph.hpp"
 

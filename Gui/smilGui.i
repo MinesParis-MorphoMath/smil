@@ -65,7 +65,7 @@ SMIL_MODULE(smilGui)
 %include "DImageViewer.hpp"
 
 
-TEMPLATE_WRAP_CLASS(ImageViewer);
+TEMPLATE_WRAP_CLASS(ImageViewer, ImageViewer);
 
 
 #ifdef USE_QT
@@ -77,7 +77,7 @@ TEMPLATE_WRAP_CLASS(ImageViewer);
 %}
 
 %include "DQtImageViewer.hpp"
-TEMPLATE_WRAP_CLASS(QtImageViewer);
+TEMPLATE_WRAP_CLASS(QtImageViewer, QtImageViewer);
 
 #ifdef SWIGPYTHON
 %pythoncode %{
@@ -103,7 +103,7 @@ if ('qApp' in locals())==0:
 %}
 
 %include "AALib/DAAImageViewer.hpp"
-TEMPLATE_WRAP_CLASS(AaImageViewer);
+TEMPLATE_WRAP_CLASS(AaImageViewer, AaImageViewer);
 
 #endif // USE_AALIB
 

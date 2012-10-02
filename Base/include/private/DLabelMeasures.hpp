@@ -141,27 +141,6 @@ map<T, DoublePoint> measBarycenters(Image<T> &im)
     return res;
 }
 
-/**
- * Apply a lookup map
- */
-template <class T>
-RES_T applyLookup(Image<T> &imIn, map<T,T> &lut, Image<T> &imOut)
-{
-    typename Image<T>::lineType pixIn = imIn.getPixels();
-    typename Image<T>::lineType pixOut = imOut.getPixels();
-    
-    for (UINT i=0;i<imIn.getPixelCount();i++)
-    {
-      if (lut.find(*pixIn)!=lut.end())
-	*pixOut = lut[*pixIn];
-      pixIn++;
-      pixOut++;
-    }
-    imOut.modified();
-	
-    return RES_OK;
-}
-
 
 /** @}*/
 

@@ -32,6 +32,7 @@
 
 #include "DBaseImage.h"
 #include "DSignal.h"
+#include "DErrors.h"
 
 template <class T> class ImageViewer;
 
@@ -274,7 +275,7 @@ public:
     Image<T>& operator &= (const Image<T> &rhs);
     Image<T>& operator &= (const T &value);
     
-    operator bool() { return vol(*this)==numeric_limits<T>::max()*pixelCount; }
+    operator bool();
     
     //! Import image data from an array
     Image<T>& operator << (const lineType &tab);

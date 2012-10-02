@@ -315,9 +315,30 @@ STRING(REGEX REPLACE ",$" "" DATA_TYPES_QUOTE_STR ${DATA_TYPES_QUOTE_STR})
 
 
 # SWIG WRAP CLASS
-SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS(_class)\n")
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS(class, name)\n")
 FOREACH(_IMG_TYPE ${IMAGE_TYPES})
-	SET(_STWD "${_STWD}  %template(_class \#\# _${_IMG_TYPE}) _class<${_IMG_TYPE}>;\n")
+	SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE}) class<${_IMG_TYPE}>;\n")
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
+# Two template types, both variables
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_BOTH(class, name)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+	SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE}) class<${_IMG_TYPE},${_IMG_TYPE}>;\n")
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
+# Two template types, first variable, second fixed
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_FIRST(class, fixed_type, name)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+	SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE}) class<${_IMG_TYPE},fixed_type>;\n")
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
+# Two template types, first fixed, second variable
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_SECOND(class, fixed_type, name)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+	SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE}) class<fixed_type,${_IMG_TYPE}>;\n")
 ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 
@@ -334,13 +355,6 @@ FOREACH(_IMG_TYPE ${IMAGE_TYPES})
 	FOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
 		SET(_STWD "${_STWD}  %template(func) func<${_IMG_TYPE},${_IMG_TYPE2}>;\n")
 	ENDFOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
-ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
-SET(_STWD "${_STWD}%enddef\n\n")
-
-# SWIG WRAP MAP
-SET(_STWD "${_STWD}%define TEMPLATE_WRAP_MAP(_class, _type, _wname)\n")
-FOREACH(_IMG_TYPE ${IMAGE_TYPES})
-	SET(_STWD "${_STWD}  %template(_wname \#\# _${_IMG_TYPE}) _class<${_IMG_TYPE}, _type>;\n")
 ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 

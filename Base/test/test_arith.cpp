@@ -23,6 +23,7 @@
 
 #include "DImage.h"
 #include "DImageArith.hpp"
+#include "DTest.h"
 
 class Test_Equal : public TestCase
 {

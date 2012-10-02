@@ -86,11 +86,7 @@ TEMPLATE_WRAP_FUNC(logicAnd);
 TEMPLATE_WRAP_FUNC(logicOr);
 TEMPLATE_WRAP_FUNC(logicXOr);
 TEMPLATE_WRAP_FUNC(test);
-
-TEMPLATE_WRAP_FUNC(vol);
-TEMPLATE_WRAP_FUNC(minVal);
-TEMPLATE_WRAP_FUNC(maxVal);
-TEMPLATE_WRAP_FUNC(rangeVal);
+TEMPLATE_WRAP_FUNC(applyLookup);
 
 
 %include "DImageHistogram.hpp"
@@ -110,11 +106,13 @@ TEMPLATE_WRAP_FUNC(resize);
 
 
 %include "DMeasures.hpp"
+TEMPLATE_WRAP_FUNC(vol);
+TEMPLATE_WRAP_FUNC(minVal);
+TEMPLATE_WRAP_FUNC(maxVal);
+TEMPLATE_WRAP_FUNC(rangeVal);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
 
 %include "DLabelMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);
 TEMPLATE_WRAP_FUNC(measBarycenters);
-TEMPLATE_WRAP_FUNC(applyLookup);
-

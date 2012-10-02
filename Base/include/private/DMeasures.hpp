@@ -40,6 +40,106 @@
 #include <map>
 
 
+/**
+ * Volume of an image
+ *
+ * Returns the sum of the pixel values.
+ * \param imIn Input image.
+ */
+template <class T>
+double vol(const Image<T> &imIn)
+{
+    if (!imIn.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+
+    int npix = imIn.getPixelCount();
+    typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
+    double vol = 0;
+
+    for (int i=0;i<npix;i++)
+        vol += pixels[i];
+
+    return vol;
+}
+
+/**
+ * Min value of an image
+ *
+ * Returns the min of the pixel values.
+ * \param imIn Input image.
+ */
+template <class T>
+T minVal(const Image<T> &imIn)
+{
+    if (!imIn.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+
+    int npix = imIn.getPixelCount();
+    typename ImDtTypes<T>::lineType p = imIn.getPixels();
+    T minVal = numeric_limits<T>::max();
+
+    for (int i=0;i<npix;i++,p++)
+        if (*p<minVal)
+            minVal = *p;
+
+    return minVal;
+}
+
+/**
+ * Max value of an image
+ *
+ * Returns the min of the pixel values.
+ * \param imIn Input image.
+ */
+template <class T>
+T maxVal(const Image<T> &imIn)
+{
+    if (!imIn.isAllocated())
+        return RES_ERR_BAD_ALLOCATION;
+
+    int npix = imIn.getPixelCount();
+    typename ImDtTypes<T>::lineType p = imIn.getPixels();
+    T maxVal = numeric_limits<T>::min();
+
+    for (int i=0;i<npix;i++,p++)
+        if (*p>maxVal)
+            maxVal = *p;
+
+    return maxVal;
+}
+
+/**
+ * Min and Max values of an image
+ *
+ * Returns the min and the max of the pixel values.
+ * \param imIn Input image.
+ */
+template <class T>
+void rangeVal(const Image<T> &imIn, T *ret_min, T *ret_max)
+{
+    if (!imIn.isAllocated())
+    {
+	*ret_min = 0;
+	*ret_max = 0;
+        return;
+    }
+
+    int npix = imIn.getPixelCount();
+    typename ImDtTypes<T>::lineType p = imIn.getPixels();
+    *ret_min = numeric_limits<T>::max();
+    *ret_max = numeric_limits<T>::min();
+
+    for (int i=0;i<npix;i++,p++)
+    {
+        if (*p<*ret_min)
+            *ret_min = *p;
+        if (*p>*ret_max)
+            *ret_max = *p;
+    }
+
+}
+
+
 template <class T>
 RES_T measBarycenter(Image<T> &im, double *xc, double *yc, double *zc=NULL)
 {
@@ -169,7 +269,7 @@ vector<UINT> measBoundBox(Image<T> &im)
     else if (measBoundBox<T>(im, b, b+1, b+2, b+3)!=RES_OK)
       return res;
 
-    for (int i=0;i<dim*2;i++)
+    for (UINT i=0;i<dim*2;i++)
       res.push_back(b[i]);
     
     return res;

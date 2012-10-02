@@ -30,8 +30,10 @@
 #ifndef _IMAGE_HXX
 #define _IMAGE_HXX
 
-#include "IO/include/DIO.h"
-#include "Base/include/DBase.h"
+#include "IO/include/private/DImageIO.hpp"
+// #include "Base/include/DBase.h"
+#include "Base/include/private/DMeasures.hpp"
+#include "Base/include/private/DImageArith.hpp"
 #include "DImageViewer.h"
 
 // template <>
@@ -664,6 +666,12 @@ Image<T>& Image<T>::operator &= (const T &value)
     return *this;
 }
 
+template <class T>
+Image<T>::operator bool()
+{ 
+    return vol(*this)==numeric_limits<T>::max()*pixelCount; 
+}
+ 
 template <class T>
 Image<T>& Image<T>::operator << (const lineType &tab)
 {

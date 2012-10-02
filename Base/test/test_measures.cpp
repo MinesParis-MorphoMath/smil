@@ -22,9 +22,11 @@
 
 
 #include "DImage.h"
-#include "DMeasures.hpp"
+#include "DBase.h"
 #include "DLabelMeasures.hpp"
 #include "DBench.h"
+#include "DTest.h"
+#include "DMeasures.hpp"
 
 class Test_MeasureBarycenter : public TestCase
 {
@@ -69,7 +71,6 @@ class Test_LabelMeasures : public TestCase
 
       // Barycenters
 	  
-      double xc, yc;
       double xc1Truth = 44.5, yc1Truth = 34.5;
       double xc2Truth = 114.5, yc2Truth = 134.5;
       
@@ -97,7 +98,6 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_LabelMeasures);
       
       Image_UINT8 im(512,512);
-      double xc, yc;
       UINT BENCH_NRUNS = 1E3;
 //       BENCH(measBarycenter, im, &xc, &yc);
 //       BENCH(measBarycenters, im);

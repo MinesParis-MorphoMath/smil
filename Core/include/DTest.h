@@ -38,6 +38,7 @@
 #include "DTypes.hpp"
 #include "DCommon.h"
 #include "DTime.h"
+#include "DErrors.h"
 
 using namespace std;
 

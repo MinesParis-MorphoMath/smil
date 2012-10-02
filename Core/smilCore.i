@@ -101,6 +101,7 @@ PTR_ARG_OUT_APPLY(d)
 //////////////////////////////////////////////////////////
 
 %{
+#include "DErrors.h"
 #include "DBaseObject.h"
 %}
 
@@ -114,6 +115,7 @@ PTR_ARG_OUT_APPLY(d)
 	}
 }
 
+%include "DErrors.h"
 %include "DBaseObject.h"
 
 
@@ -147,16 +149,22 @@ namespace std
 // Expose std::map<> as a Python dict
 namespace std 
 {
-    TEMPLATE_WRAP_MAP(map, double, DoubleMap)
-    TEMPLATE_WRAP_MAP(map, IntPoint, IntPointMap)
-    TEMPLATE_WRAP_MAP(map, DoublePoint, DoublePointMap)
+    TEMPLATE_WRAP_CLASS_2T_BOTH(map, Map)
+    
+    TEMPLATE_WRAP_CLASS_2T_FIRST(map, double, DoubleMap)
+    TEMPLATE_WRAP_CLASS_2T_FIRST(map, IntPoint, IntPointMap)
+    TEMPLATE_WRAP_CLASS_2T_FIRST(map, DoublePoint, DoublePointMap)
 }
 
-%template(Map_UINT16) map<UINT16, UINT16>;
 
 //////////////////////////////////////////////////////////
 // Core Instance
 //////////////////////////////////////////////////////////
+
+%{
+#include "DInstance.hpp"
+#include "DCoreInstance.h"
+%}
 
 %include "DInstance.hpp"
 %template(CoreInstance) UniqueInstance<Core>;
@@ -166,6 +174,12 @@ namespace std
 //////////////////////////////////////////////////////////
 // Signals/Slots
 //////////////////////////////////////////////////////////
+
+%{
+#include "DSlot.h"
+#include "DSignal.h"
+#include "DCoreEvents.h"
+%}
 
 #ifndef SWIGJAVA
 // generate directors for Signal and Slot (for virtual methods overriding)
@@ -202,7 +216,7 @@ namespace std
 %include "DBaseImage.h"
 %include "DImage.hpp"
 
-TEMPLATE_WRAP_CLASS(Image);
+TEMPLATE_WRAP_CLASS(Image, Image);
 TEMPLATE_WRAP_FUNC(createImage);
 
 

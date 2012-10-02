@@ -36,6 +36,7 @@
 
 #include "DTypes.hpp"
 #include "DCommon.h"
+#include "DErrors.h"
 
 /** \addtogroup IO
  * \{
