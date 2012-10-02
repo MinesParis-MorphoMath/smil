@@ -31,7 +31,7 @@
 #define _IMAGE_HXX
 
 #include "IO/include/private/DImageIO.hpp"
-// #include "Base/include/DBase.h"
+#include "Base/include/DBase.h"
 #include "Base/include/private/DMeasures.hpp"
 #include "Base/include/private/DImageArith.hpp"
 #include "DImageViewer.h"
