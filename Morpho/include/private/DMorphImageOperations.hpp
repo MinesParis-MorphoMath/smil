@@ -337,7 +337,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(const imageType &
 	return _exec_single_generic(imIn, imOut, se);
     }
     
-    return RES_NOT_IMPLEMENTED;
+    return RES_ERR_NOT_IMPLEMENTED;
 }
 
 template <class T, class lineFunction_T>

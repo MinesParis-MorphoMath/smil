@@ -73,7 +73,7 @@ RES_T read(const char* filename, Image<T> &image)
 	tmpFileName = "_smilTmpIO." + fileExt;
 	if (getHttpFile(filename, tmpFileName.c_str())!=RES_OK)
 	{
-	    cout << "Error reading file " << filename << endl;
+	    ERR_MSG(string("Error reading file ") + filename);
 	    return RES_ERR;
 	}
 	res = read(tmpFileName.c_str(), image);

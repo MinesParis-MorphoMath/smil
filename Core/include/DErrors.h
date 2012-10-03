@@ -46,7 +46,8 @@ enum RES_T
     RES_ERR = -100,
     RES_ERR_BAD_ALLOCATION,
     RES_ERR_BAD_SIZE,
-    RES_NOT_IMPLEMENTED
+    RES_ERR_NOT_IMPLEMENTED,
+    RES_ERR_UNKNOWN
 };
 
 inline const char *getErrorMessage(const RES_T &res)
@@ -75,6 +76,12 @@ public:
 	    line(_line),
 	    expression(expr)
     {} 
+    Error(string const& descr, string const& func, string const& _file, int const& _line) throw()
+	  : description(cleanDescr(descr)),
+	    function(func),
+	    file(_file),
+	    line(_line)
+    {} 
     Error(string const& func, string const& _file, int const& _line, string const& expr) throw()
 	  : function(func),
 	    file(_file),
@@ -95,8 +102,11 @@ public:
     virtual const char* what() const throw()
     {
 	stringstream buf;
+	if (!function.empty())
+	  buf << "\n  in function: " << function;
 	if (!description.empty())
 	  buf << "\n  error: " << description;
+#ifndef NDEBUG	
 	if (!expression.empty())
 	{
 	    if (description.empty())
@@ -104,11 +114,14 @@ public:
 	    else
 	      buf << " ( assert " << expression << " )";
 	}
-	if (!function.empty())
-	  buf << "\n  function: " << function;
 	if (!file.empty())
 	  buf << "\n  file: " << file << ":" << line;
+#endif // NDEBUG	
 	return buf.str().c_str();
+    }
+    void show()
+    {
+	cout << "Error:" << this->what() << endl;
     }
  
 private:
@@ -128,27 +141,19 @@ private:
     string description;
 };
 
-#ifdef NDEBUG
-    // Release
-    #define ASSERT_1_ARG(func, file, line, expr) \
-	if(!expr) throw Error(func, #expr)
-    #define ASSERT_2_ARG(func, file, line, expr, descr) \
-	if(!expr) throw Error(#descr, func, #expr)
-    #define ASSERT_3_ARGS(arg1, arg2, arg3) 	macro(arg1, arg2, arg3)
-    #define ASSERT_4_ARGS(arg1, arg2, arg3) 	macro(arg1, arg2, arg3)
-#else // NDEBUG
-    // Debug
-    #define ASSERT_1_ARG(func, file, line, expr) \
-	if(!expr) throw Error(func, file, line, #expr)
-    #define ASSERT_2_ARG(func, file, line, expr, descr) \
-	if(!expr) throw Error(#descr, func, file, line, #expr)
-    #define ASSERT_3_ARGS(arg1, arg2, arg3) 	macro(arg1, arg2, arg3)
-    #define ASSERT_4_ARGS(arg1, arg2, arg3) 	macro(arg1, arg2, arg3)
-#endif // NDEBUG
+#define ASSERT_1_ARG(func, file, line, expr) \
+    if(!expr) Error(func, file, line, #expr).show();
+#define ASSERT_2_ARGS(func, file, line, expr, errCode) \
+    if(!expr) { Error(#errCode, func, file, line, #expr).show(); return errCode; }
+#define ASSERT_3_ARGS(func, file, line, expr, errCode, retVal) \
+    if(!expr) { Error(#errCode, func, file, line, #expr).show(); return retVal; }
+#define ASSERT_4_ARGS(arg1, arg2, arg3) 	macro(arg1, arg2, arg3)
+
+#define ERR_MSG(msg) Error(msg, __func__, __FILE__, __LINE__).show()
 
 #define ASSERT_NARGS_CHOOSER(...) \
     GET_4TH_ARG(__VA_ARGS__, ASSERT_3_ARGS, \
-                ASSERT_2_ARG, ASSERT_1_ARG, )
+                ASSERT_2_ARGS, ASSERT_1_ARG, )
 
 #define ASSERT(...) ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__func__, __FILE__, __LINE__, __VA_ARGS__)
 

@@ -49,9 +49,9 @@ using namespace std;
 template <class T>
 map<T, double> measAreas(Image<T> &imIn)
 {
-    ASSERT_ALLOCATED(&imIn);
-
     map<T, double> area;
+
+    ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, area);
     
     typename Image<T>::volType slices = imIn.getSlices();
     typename Image<T>::sliceType lines;
@@ -89,9 +89,9 @@ map<T, double> measAreas(Image<T> &imIn)
 template <class T>
 map<T, DoublePoint> measBarycenters(Image<T> &imIn)
 {
-    ASSERT_ALLOCATED(&imIn);
-    
     map<T, DoublePoint> res;
+    
+    ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, res);
     
     typename Image<T>::volType slices = imIn.getSlices();
     typename Image<T>::sliceType lines;
