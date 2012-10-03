@@ -41,25 +41,25 @@
 using namespace std;
 
 
+
 /**
  * Measure label areas.
  * Return a map(labelValue, double) with the area of each label value.
  */
 template <class T>
-map<T, double> measAreas(Image<T> &im)
+map<T, double> measAreas(Image<T> &imIn)
 {
+    ASSERT_ALLOCATED(&imIn);
+
     map<T, double> area;
     
-    if (!im.isAllocated())
-        return area;
-    
-    typename Image<T>::volType slices = im.getSlices();
+    typename Image<T>::volType slices = imIn.getSlices();
     typename Image<T>::sliceType lines;
     typename Image<T>::lineType pixels;
     T pixVal;
     
     UINT imSize[3];
-    im.getSize(imSize);
+    imIn.getSize(imSize);
     
     for (UINT z=0;z<imSize[2];z++)
     {
@@ -87,14 +87,13 @@ map<T, double> measAreas(Image<T> &im)
  * Return a map(labelValue, Point) with the barycenter point coordinates for each label value.
  */
 template <class T>
-map<T, DoublePoint> measBarycenters(Image<T> &im)
+map<T, DoublePoint> measBarycenters(Image<T> &imIn)
 {
+    ASSERT_ALLOCATED(&imIn);
+    
     map<T, DoublePoint> res;
     
-    if (!im.isAllocated())
-        return res;
-    
-    typename Image<T>::volType slices = im.getSlices();
+    typename Image<T>::volType slices = imIn.getSlices();
     typename Image<T>::sliceType lines;
     typename Image<T>::lineType pixels;
     T pixVal;
@@ -103,7 +102,7 @@ map<T, DoublePoint> measBarycenters(Image<T> &im)
     map<T, UINT> ptNbrs;
     
     UINT imSize[3];
-    im.getSize(imSize);
+    imIn.getSize(imSize);
     
     for (UINT z=0;z<imSize[2];z++)
     {

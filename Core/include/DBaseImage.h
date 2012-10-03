@@ -208,6 +208,11 @@ inline bool areAllocated(const BaseImage *im, ...)
     return true;
 }
 
+#define CHECK_ALLOCATED(...) areAllocated(__VA_ARGS__, NULL)
+#define ASSERT_ALLOCATED(...) ASSERT(CHECK_ALLOCATED(__VA_ARGS__), RES_ERR_BAD_ALLOCATION)
+
+#define CHECK_SAME_SIZE(...) haveSameSize(__VA_ARGS__, NULL)
+#define ASSERT_SAME_SIZE(...) ASSERT(CHECK_SAME_SIZE(__VA_ARGS__), RES_ERR_BAD_SIZE)
 
 #endif // _DBASE_IMAGE_H
 

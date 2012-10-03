@@ -30,6 +30,11 @@
 #ifndef _DERRORS_H
 #define _DERRORS_H
 
+#include <exception>
+#include <sstream>
+
+using namespace std;
+ 
 /**
  * \ingroup Core
  * @{
@@ -37,13 +42,115 @@
 
 enum RES_T
 {
-    RES_OK = 0,
-    RES_ERR = -1,
+    RES_OK = 1,
+    RES_ERR = -100,
     RES_ERR_BAD_ALLOCATION,
     RES_ERR_BAD_SIZE,
     RES_NOT_IMPLEMENTED
 };
 
+inline const char *getErrorMessage(const RES_T &res)
+{
+    switch(res)
+    {
+      case RES_OK:
+	return "ok";
+      case RES_ERR_BAD_ALLOCATION:
+	return "Bad allocation";
+      default:
+	return "Unknown error";
+    }
+}
+
+class Error: public exception
+{
+public:
+    Error(string const& descr="") throw()
+	  : description(cleanDescr(descr))
+    {} 
+    Error(string const& descr, string const& func, string const& _file, int const& _line, string const& expr) throw()
+	  : description(cleanDescr(descr)),
+	    function(func),
+	    file(_file),
+	    line(_line),
+	    expression(expr)
+    {} 
+    Error(string const& func, string const& _file, int const& _line, string const& expr) throw()
+	  : function(func),
+	    file(_file),
+	    line(_line),
+	    expression(expr)
+    {} 
+    Error(string const& descr, string const& func, string const& expr) throw()
+	  : description(cleanDescr(descr)),
+	    function(func),
+	    expression(expr)
+    {} 
+    Error(string const& func, string const& expr) throw()
+	  : function(func),
+	    expression(expr)
+    {} 
+    virtual ~Error() throw()
+    {}
+    virtual const char* what() const throw()
+    {
+	stringstream buf;
+	if (!description.empty())
+	  buf << "\n  error: " << description;
+	if (!expression.empty())
+	{
+	    if (description.empty())
+	      buf << "\n  error: assert " << expression;
+	    else
+	      buf << " ( assert " << expression << " )";
+	}
+	if (!function.empty())
+	  buf << "\n  function: " << function;
+	if (!file.empty())
+	  buf << "\n  file: " << file << ":" << line;
+	return buf.str().c_str();
+    }
+ 
+private:
+    inline string cleanDescr(const string descr)
+    {
+	if (descr[0]!='"')
+	  return descr;
+	else 
+	  return descr.substr(1, descr.length()-2);
+	
+    }
+      
+    string function;
+    string file;
+    int line;
+    string expression;
+    string description;
+};
+
+#ifdef NDEBUG
+    // Release
+    #define ASSERT_1_ARG(func, file, line, expr) \
+	if(!expr) throw Error(func, #expr)
+    #define ASSERT_2_ARG(func, file, line, expr, descr) \
+	if(!expr) throw Error(#descr, func, #expr)
+    #define ASSERT_3_ARGS(arg1, arg2, arg3) 	macro(arg1, arg2, arg3)
+    #define ASSERT_4_ARGS(arg1, arg2, arg3) 	macro(arg1, arg2, arg3)
+#else // NDEBUG
+    // Debug
+    #define ASSERT_1_ARG(func, file, line, expr) \
+	if(!expr) throw Error(func, file, line, #expr)
+    #define ASSERT_2_ARG(func, file, line, expr, descr) \
+	if(!expr) throw Error(#descr, func, file, line, #expr)
+    #define ASSERT_3_ARGS(arg1, arg2, arg3) 	macro(arg1, arg2, arg3)
+    #define ASSERT_4_ARGS(arg1, arg2, arg3) 	macro(arg1, arg2, arg3)
+#endif // NDEBUG
+
+#define ASSERT_NARGS_CHOOSER(...) \
+    GET_4TH_ARG(__VA_ARGS__, ASSERT_3_ARGS, \
+                ASSERT_2_ARG, ASSERT_1_ARG, )
+
+#define ASSERT(...) ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__func__, __FILE__, __LINE__, __VA_ARGS__)
 
 
 /** @} */

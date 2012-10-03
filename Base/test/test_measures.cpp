@@ -98,6 +98,7 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_LabelMeasures);
       
       Image_UINT8 im(512,512);
+      measAreas(im);
       UINT BENCH_NRUNS = 1E3;
 //       BENCH(measBarycenter, im, &xc, &yc);
 //       BENCH(measBarycenters, im);

@@ -42,8 +42,7 @@
 template <class T>
 RES_T fill(Image<T> &imOut, const T &value)
 {
-    if (!areAllocated(&imOut, NULL))
-        return RES_ERR_BAD_ALLOCATION;
+    ASSERT_ALLOCATED(&imOut);
 
     typedef typename Image<T>::sliceType sliceType;
     sliceType lineOut = imOut.getLines();
@@ -75,8 +74,7 @@ RES_T fill(Image<T> &imOut, const T &value)
 template <class T1, class T2>
 RES_T copy(const Image<T1> &imIn, UINT startX, UINT startY, UINT startZ, UINT sizeX, UINT sizeY, UINT sizeZ, Image<T2> &imOut, UINT outStartX=0, UINT outStartY=0, UINT outStartZ=0)
 {
-    if (!areAllocated(&imIn, &imOut, NULL))
-        return RES_ERR_BAD_ALLOCATION;
+    ASSERT_ALLOCATED(&imIn, &imOut);
 
     UINT inW = imIn.getWidth();
     UINT inH = imIn.getHeight();
@@ -141,10 +139,9 @@ RES_T copy(const Image<T1> &imIn, Image<T2> &imOut, UINT outStartX, UINT outStar
 template <class T1, class T2>
 RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
 {
-    if (!areAllocated(&imIn, &imOut, NULL))
-        return RES_ERR_BAD_ALLOCATION;
-
-    if (!haveSameSize(&imIn, &imOut, NULL))
+    ASSERT_ALLOCATED(&imIn, &imOut);
+  
+    if (!CHECK_SAME_SIZE(&imIn, &imOut))
 	return copy<T1,T2>(imIn, 0, 0, 0, imOut, 0, 0, 0);
 
     typename Image<T1>::sliceType l1 = imIn.getLines();
