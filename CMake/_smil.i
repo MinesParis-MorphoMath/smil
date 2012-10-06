@@ -96,13 +96,14 @@ def Image(*args):
     argTypeStr = [ str(type(a)) for a in args ]
     
     img = None
+    fillImg = False
     
     if argNbr==0: # No argument -> return default image type
 	img = imageTypes[0]()
 
     elif type(args[0])==int: # First arg is a number (should be a size)
 	img = imageTypes[0](*args)
-	fill(img, 0)
+	fillImg = True
 	
     elif type(args[0]) in imageTypes: # First arg is an image
 	srcIm = args[0]
@@ -120,12 +121,12 @@ def Image(*args):
 	      img = srcImgType(*args[1:])
 	else:
 	    img = srcImgType(srcIm, False) # (don't clone data)
-	fill(img, 0)
+	fillImg = True
 	    
     elif args[0] in dataTypes: # First arg is an image type string ("UINT8", ...)
 	imgType = imageTypes[dataTypes.index(args[0])]
 	img = imgType(*args[1:])
-	fill(img, 0)
+	fillImg = True
 
     # Create/load from an existing image fileName
     elif argNbr>0 and (os.path.exists(args[0]) or args[0][:7]=="http://"):
@@ -138,8 +139,10 @@ def Image(*args):
     
     else:
 	img = imageTypes[0](*args)
+	fillImg = True
+
+    if fillImg and img.isAllocated():
 	fill(img, 0)
-	
     return img
 
 
