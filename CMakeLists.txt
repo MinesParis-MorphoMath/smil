@@ -128,12 +128,15 @@ IF(USE_SSE_INT)
 	ADD_DEFINITIONS("-DSMIL_USE_SSE_INT")
 ENDIF(USE_SSE_INT)
 
+INCLUDE(CompilerFlags)
+
 OPTION(USE_OPTIMIZATION "Use optimizations" ON)
 IF(USE_OPTIMIZATION)
 	INCLUDE(OptimizeForArchitecture)
 #    ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=1")
 #     ADD_DEFINITIONS("-ftree-vectorize -g -ffast-math  -march=core2 -mtune=core2  -msse2 -fdump-tree-optimized")
-	OptimizeForArchitecture()
+      AddCompilerFlag("-march=native -mtune=generic")
+# 	OptimizeForArchitecture()
 	
 	OPTION(VERBOSE_OPTIMIZATION "Show verbose optimizations" OFF)
 	
