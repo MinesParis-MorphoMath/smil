@@ -80,6 +80,16 @@ inline const char *getDataTypeAsString(T &val)
 }
 
 
+#define DECL_DATA_TYPE_STR(_type) \
+template <> \
+inline const char *getDataTypeAsString(_type &val) { return #_type; } 
+
+DECL_DATA_TYPE_STR(UINT8)
+DECL_DATA_TYPE_STR(UINT16)
+DECL_DATA_TYPE_STR(int)
+DECL_DATA_TYPE_STR(float)
+DECL_DATA_TYPE_STR(double)
+
 
 
 #endif // _D_TYPES_HPP
