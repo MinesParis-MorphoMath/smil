@@ -36,6 +36,8 @@
  * @{
  */
 
+#include <typeinfo>
+
 #include "DBaseImageOperations.hpp"
 #include "DLineArith.hpp"
 
@@ -139,6 +141,10 @@ RES_T copy(const Image<T1> &imIn, Image<T2> &imOut, UINT outStartX, UINT outStar
 template <class T1, class T2>
 RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
 {
+    // Swig is (surprisingly;)) lost with overloads of template functions, so we try to reorient him
+    if (typeid(imIn)==typeid(imOut))
+      return copy(imIn, imOut);
+    
     ASSERT_ALLOCATED(&imIn, &imOut);
   
     if (!CHECK_SAME_SIZE(&imIn, &imOut))
@@ -167,7 +173,7 @@ RES_T copy(const Image<T> &imIn, Image<T> &imOut)
 
     typename Image<T>::lineType pixIn = imIn.getPixels();
     typename Image<T>::lineType pixOut = imOut.getPixels();
-    
+
     copyLine<T>(pixIn, imIn.getPixelCount(), pixOut);
 //     memcpy(pixOut, pixIn, imIn.getPixelCount());
     imOut.modified();

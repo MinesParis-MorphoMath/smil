@@ -128,11 +128,12 @@ IF(USE_SSE_INT)
 	ADD_DEFINITIONS("-DSMIL_USE_SSE_INT")
 ENDIF(USE_SSE_INT)
 
-INCLUDE(CompilerFlags)
+# INCLUDE(CompilerFlags)
 
+INCLUDE(OptimizeForArchitecture)
 OPTION(USE_OPTIMIZATION "Use optimizations" ON)
 IF(USE_OPTIMIZATION)
-	INCLUDE(OptimizeForArchitecture)
+	SET(TARGET_ARCHITECTURE "auto" CACHE STRING "CPU architecture to optimize for. Using an incorrect setting here can result in crashes of the resulting binary because of invalid instructions used.\nSetting the value to \"auto\" will try to optimize for the architecture where cmake is called.\nOther supported values are: \"none\", \"generic\", \"core\", \"merom\" (65nm Core2), \"penryn\" (45nm Core2), \"nehalem\", \"westmere\", \"sandy-bridge\", \"atom\", \"k8\", \"k8-sse3\", \"barcelona\", \"istanbul\", \"magny-cours\", \"bulldozer\", \"interlagos\".")
 #    ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=1")
 #     ADD_DEFINITIONS("-ftree-vectorize -g -ffast-math  -march=core2 -mtune=core2  -msse2 -fdump-tree-optimized")
 	
@@ -142,6 +143,7 @@ IF(USE_OPTIMIZATION)
 	    AddCompilerFlag("-ftree-vectorize -ftree-slp-vectorize")
 	    IF(TARGET_ARCHITECTURE STREQUAL "auto")
 		AddCompilerFlag("-march=native -mtune=generic")
+# 		OptimizeForArchitecture()
 	    ELSE(TARGET_ARCHITECTURE STREQUAL "auto")
 		AddCompilerFlag("-march=${TARGET_ARCHITECTURE} -mtune=generic")
 	    ENDIF(TARGET_ARCHITECTURE STREQUAL "auto")
@@ -153,6 +155,8 @@ IF(USE_OPTIMIZATION)
 	ENDIF(CMAKE_COMPILER_IS_GNUCC AND NOT CMAKE_COMPILER_IS_CLANGXX)
 	
 	MESSAGE(STATUS "Compiler flags: "${CMAKE_CXX_FLAGS})
+ELSE(USE_OPTIMIZATION)
+	AddCompilerFlag("-fno-tree-vectorize")
 ENDIF(USE_OPTIMIZATION)
 
 

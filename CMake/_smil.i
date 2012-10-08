@@ -188,6 +188,13 @@ for t in imageTypes:
 seTypes = "HexSE, SquSE"
 
 def bench(func, *args, **keywords):
+    """
+    bench(function, [func_args], [options]):
+    Execute bench. Return the mean execution time (in msecs) for one function execution.
+    Available options:
+    * nbr_runs: number of times the function will be executed (default is 1E3)
+    * print_res: print results (default is True)
+    """
     #default values
     nbr_runs = 1E3
     print_res = True
@@ -221,21 +228,23 @@ def bench(func, *args, **keywords):
 
     retval = (t2-t1)*1E3/nbr_runs
     
-    buf = func.func_name + "\t"
-    if im_size or add_str or se_type:
-      buf += "("
-    if im_size:
-      buf += im_type + " " + str(im_size[0])
-      if im_size[1]>1: buf += "x" + str(im_size[1])
-      if im_size[2]>1: buf += "x" + str(im_size[2])
-    if add_str:
-      buf += " " + add_str
-    if se_type:
-      buf += " " + se_type
-    if im_size or add_str or se_type:
-      buf += ")"
-    buf += ":\t" + "%.2f" % retval + " msecs"
-    print buf
+    if print_res:
+	buf = func.func_name + "\t"
+	if im_size or add_str or se_type:
+	  buf += "("
+	if im_size:
+	  buf += im_type + " " + str(im_size[0])
+	  if im_size[1]>1: buf += "x" + str(im_size[1])
+	  if im_size[2]>1: buf += "x" + str(im_size[2])
+	if add_str:
+	  buf += " " + add_str
+	if se_type:
+	  buf += " " + se_type
+	if im_size or add_str or se_type:
+	  buf += ")"
+	buf += ":\t" + "%.2f" % retval + " msecs"
+	print buf
+	
     return retval
 
 
