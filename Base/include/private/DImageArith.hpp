@@ -41,6 +41,14 @@
 #include "DBaseImageOperations.hpp"
 #include "DLineArith.hpp"
 
+/**
+ * Fill an image with a given value.
+ *
+ * \param imOut Output image.
+ * \param value The value to fill.
+ *
+ * \see Image::operator<<
+ */
 template <class T>
 RES_T fill(Image<T> &imOut, const T &value)
 {
@@ -53,7 +61,7 @@ RES_T fill(Image<T> &imOut, const T &value)
 
     fillLine<T>(lineOut[0], lineLen, value);
     
-    for (int i=1;i<lineCount;i++)
+    for (UINT i=1;i<lineCount;i++)
       copyLine<T>(lineOut[0], lineLen, lineOut[i]);
 
     imOut.modified();

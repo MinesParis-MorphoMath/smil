@@ -45,7 +45,7 @@
 template <class T1, class T2>
 inline void copyLine(const typename Image<T1>::lineType lIn, const int &size, typename Image<T2>::lineType lOut)
 {
-    for (int i=0;i<size;i++)
+    for (UINT i=0;i<size;i++)
       lOut[i] = static_cast<T2>(lIn[i]);
 }
 
@@ -70,7 +70,7 @@ struct fillLine : public unaryLineFunctionBase<T>
     }
     inline void _exec(lineType lInOut, int size, T value)
     {
-        for (int i=0;i<size;i++)
+        for (UINT i=0;i<size;i++)
             lInOut[i] = value;
     }
 };

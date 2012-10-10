@@ -33,10 +33,6 @@
 
 #include "DTypes.hpp"
 
-#ifdef SMIL_WRAP_BIN
-#include "DBinary.hpp"
-#endif // SMIL_WRAP_BIN
-
 
 // #ifdef SMIL_WRAP_Bit
 #include "DBitArray.h"

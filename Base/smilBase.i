@@ -44,6 +44,7 @@ SMIL_MODULE(smilBase)
 #include "DImageHistogram.hpp"
 #include "DImageTransform.hpp"
 #include "DMeasures.hpp"
+#include "DImageMatrix.hpp"
 #include "DLabelMeasures.hpp"
 %}
 
@@ -116,3 +117,6 @@ TEMPLATE_WRAP_FUNC(measBoundBox);
 %include "DLabelMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);
 TEMPLATE_WRAP_FUNC(measBarycenters);
+
+%include "DImageMatrix.hpp"
+TEMPLATE_WRAP_FUNC(matMul);

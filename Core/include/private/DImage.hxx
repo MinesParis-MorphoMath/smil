@@ -268,13 +268,13 @@ RES_T Image<T>::restruct(void)
     sliceType cur_line = this->lines;
     volType cur_slice = this->slices;
 
-    int pixelsPerSlice = this->width * this->height;
+    UINT pixelsPerSlice = this->width * this->height;
 
-    for (int k=0; k<(int)depth; k++, cur_slice++)
+    for (UINT k=0; k<depth; k++, cur_slice++)
     {
       *cur_slice = cur_line;
 
-      for (int j=0; j<(int)height; j++, cur_line++)
+      for (UINT j=0; j<height; j++, cur_line++)
 	*cur_line = pixels + k*pixelsPerSlice + j*width;
     }
 

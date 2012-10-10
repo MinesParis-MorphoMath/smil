@@ -27,65 +27,23 @@
  */
 
 
-#include "DTest.h"
+#ifndef _D_IMAGE_MATRIX_HPP
+#define _D_IMAGE_MATRIX_HPP
 
-void TestSuite::add(TestCase *f)
+/**
+ * \ingroup Base
+ * \defgroup Matrix Matrix operations
+ * @{
+ */
+
+template <class T>
+RES_T matMul(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
-    funcList.push_back(f);
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
 }
 
-RES_T TestSuite::run()
-{
-    RES_T retVal = RES_OK;
-    
-    list<TestCase*>::iterator f;
-    int totTestsNbr = 0;
-    int curTestNbr = 1;
-    int nPassed = 0;
-    int nFailed = 0;
-    int tElapsedTot = 0;
-    
-    double t1, t2;
-    
-    for (f=funcList.begin();f!=funcList.end();f++)
-      totTestsNbr++;
-    
-    for (f=funcList.begin();f!=funcList.end();f++)
-    {
-	TestCase *tc = *f;
-	std::stringstream ss;
-	tc->init();
-	tc->retVal = RES_OK;
-	tc->outStream = &ss;
-	
-	cout << "Test #" << (curTestNbr++) << "/" << totTestsNbr << ": " << (*f)->name << "\t";
-	
-	t1 = getCpuTime();
-	
-	try
-	{
-	  tc->run();
-	}
-	catch(...)
-	{
-	    tc->retVal = RES_ERR;
-	}
-	
-	t2 = getCpuTime();
-	
-	if (tc->retVal==RES_OK)
-	{
-	    cout << "Passed\t" << displayTime(t2-t1) << endl;
-	    nPassed += 1;
-	}
-	else
-	{
-	    retVal = RES_ERR;
-	    cout << "Failed:" << endl;
-	    cout << ss.str();
-	    nFailed += 1;
-	}
-	(*f)->end();
-    }
-    return retVal;
-}
+
+/** @}*/
+
+#endif // _D_IMAGE_MATRIX_HPP
+

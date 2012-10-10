@@ -54,7 +54,7 @@ RES_T Image<Bit>::deallocate(void);
 
 
 template <>
-Image<Bit>& Image<Bit>::clone(const Image<Bit> &rhs);
+void Image<Bit>::clone(const Image<Bit> &rhs);
 
 
 

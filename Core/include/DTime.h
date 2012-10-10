@@ -55,9 +55,17 @@ inline int gettimeofday (struct timeval *tp, void *tz)
 
 #endif //
 
-
-#define T_ELAPSED(t1, t2) double(t2.tv_sec+t2.tv_usec/1E6-(t1.tv_sec+t1.tv_usec/1E6))
     
+static inline double getCpuTime()
+{
+    struct timeval tv;
+    if (gettimeofday(&tv, 0)) 
+    {
+        cout << "gettimeofday returned error" << endl;
+        abort();
+    }
+    return tv.tv_sec + tv.tv_usec/1e6;
+}
 
 inline string displayTime(double tSec)
 {

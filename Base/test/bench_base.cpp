@@ -35,7 +35,7 @@
 
 #include <emmintrin.h>
 
-void testSup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
+void SSE_INT_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
 {
     __m128i r0,r1;
     int size = im1.getWidth();
@@ -102,12 +102,13 @@ int main(int argc, char *argv[])
 //     BENCH_IMG(sup, b1, b2, b3);
     BENCH_IMG(fill, im1, val);
     BENCH_IMG(copy, im1, im3);
-    BENCH_IMG(copy, im1, im4);
+    BENCH_CROSS_IMG(copy, im1, im4);
     BENCH_IMG(inv, im1, im2);
     BENCH_IMG(inf, im1, im2, im3);
     BENCH_IMG(inf, im1, val, im3);
     BENCH_IMG(sup, im1, im2, im3);
-    BENCH_IMG(sup, im1, val, im3);
+    BENCH_IMG_STR(sup, "val", im1, val, im3);
+    BENCH_IMG(SSE_INT_Sup, im1, im2, im3);
     BENCH_IMG(add, im1, im2, im3);
     BENCH_IMG(addNoSat, im1, im2, im3);
     BENCH_IMG(add, im1, val, im3);
@@ -120,8 +121,6 @@ int main(int argc, char *argv[])
     BENCH_IMG(mul, im1, val, im3);
     BENCH_IMG(mulNoSat, im1, im2, im3);
     BENCH_IMG(mulNoSat, im1, val, im3);
-
-//     BENCH_IMG(testSup, (im1, im2, im3));
 
 
 //      supLine<UINT8> f;

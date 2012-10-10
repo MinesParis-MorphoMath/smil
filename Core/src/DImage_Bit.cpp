@@ -48,8 +48,6 @@ void Image<Bit>::init()
      viewer = NULL;
      name = "";
      
-     operIm = NULL;
-     
      updatesEnabled = true;
      
      parentClass::init();
@@ -135,13 +133,12 @@ RES_T Image<Bit>::deallocate(void)
 
 
 template <>
-Image<Bit>& Image<Bit>::clone(const Image<Bit> &rhs)
+void Image<Bit>::clone(const Image<Bit> &rhs)
 { 
     bool isAlloc = rhs.isAllocated();
     setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
     copy(rhs, *this);
     modified();
-    return *this;
 }
 
 

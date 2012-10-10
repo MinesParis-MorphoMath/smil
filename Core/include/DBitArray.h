@@ -113,10 +113,15 @@ public:
     bool getValue(UINT ind);
     void setValue(UINT ind, bool val);
     operator bool() { return intArray!=NULL; }
-    Bit operator [] (UINT i);
+    Bit operator [] (UINT i); // lValue
+    Bit operator [] (UINT i) const; // rValue
     Bit operator * ();
     inline BitArray operator + (int dp);
     inline BitArray operator + (long unsigned int dp)
+    {
+	return operator+((int)dp);
+    }
+    inline BitArray operator + (UINT dp)
     {
 	return operator+((int)dp);
     }
