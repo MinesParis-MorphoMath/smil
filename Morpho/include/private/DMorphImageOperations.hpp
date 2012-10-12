@@ -33,7 +33,9 @@
 #include "DCore.h"
 #include "DStructuringElement.h"
 
-
+#ifdef USE_OPEN_MP
+#include <omp.h>
+#endif // USE_OPEN_MP
 
 template <class T_in, class T_out=T_in>
 class unaryMorphImageFunctionGeneric : public imageFunctionBase<T_in>
@@ -165,7 +167,7 @@ public:
 	vector<UINT> relOffsetList;
 	vector<UINT> offsetList;
 	
-	// Remove points wich are outside image
+	// Remove points wich are outside the image
 	for (UINT i=0;i<sePointNbr;i++)
 	{
 	    p = sePoints[i];
@@ -280,6 +282,7 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     virtual RES_T _exec_single(const imageType &imIn, imageType &imOut, const StrElt &se);
     virtual RES_T _exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se);
     virtual RES_T _exec_single_hexSE(const imageType &imIn, imageType &imOut);
+    virtual RES_T _exec_single_squSE(const imageType &imIn, imageType &imOut);
     
     inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt se) { return this->_exec(imIn, imOut, se); }
 
@@ -299,6 +302,9 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
 template <class T, class lineFunction_T>
 RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imOut, const StrElt &se)
 {
+    if (!areAllocated(&imIn, &imOut, NULL))
+      return RES_ERR_BAD_ALLOCATION;
+    
     lineLen = imIn.getWidth();
     borderBuf = ImDtTypes<T>::createLine(lineLen);
 //     ImDtTypes<T>::deleteLine(borderBuf);
@@ -366,13 +372,9 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(const lineTyp
 }
 
 
-
 template <class T, class lineFunction_T>
 RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se)
 {
-    if (!areAllocated(&imIn, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
-
     int bufSize = lineLen * sizeof(T);
     int lineCount = imIn.getLineCount();
     
@@ -383,7 +385,10 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
     int nSlices = imIn.getSliceCount();
     int nLines = imIn.getHeight();
 
-    lineType outBuf = ImDtTypes<T>::createLine(lineLen);
+    int nthreads = Core::getInstance()->getNumberOfThreads();
+    lineType *_bufs = this->createAlignedBuffers(2*nthreads, lineLen);
+    lineType tmpBuf = _bufs[0];
+    lineType tmpBuf2 = _bufs[nthreads];
 
     const Image<T> *tmpIm;
     
@@ -395,44 +400,56 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
     volType destSlices = imOut.getSlices();
     
     //lineType *srcLines;
-    lineType *destLines;
+    lineType *destLines, lineOut;
     
     bool oddSe = se.odd, oddLine = 0;
     
-    int x, y, z;
-    
+
+
     for (int s=0;s<nSlices;s++)
     {
 	destLines = destSlices[s];
 	if (oddSe)
 	  oddLine = s%2!=0;
 	
-	for (int l=0;l<nLines;l++)
-	{
-	    x = se.points[0].x + (oddLine && oddSe);
-	    y = l - se.points[0].y;
-	    z = s + se.points[0].z;
+      int l, p;
+      int tid;
+      int dx, dy, dz;
+      
+// #pragma omp parallel for private(l, tid) shared(tmpIm) schedule(dynamic, nthreads)
+      for (l=0;l<nLines;l++)
+      {
+#ifdef _OPENMP
+	  tid = omp_get_thread_num();
+	  tmpBuf = _bufs[tid];
+	  tmpBuf2 = _bufs[tid+nthreads];
+#endif // _OPENMP
+	  int x, y, z;
+	  x = se.points[0].x + (oddLine && oddSe);
+	  y = l - se.points[0].y;
+	  z = s + se.points[0].z;
 
-	    _extract_translated_line(tmpIm, x, y, z, outBuf);
-	    
-	    lineType lineOut = destLines[l];
-	    
-	    for (int p=1;p<sePtsNumber;p++)
-	    {
-		x = -se.points[p].x + (oddLine && oddSe);
-		y = l - se.points[p].y;
-		z = s + se.points[p].z;
-		
-		_exec_line(outBuf, tmpIm, x, y, z, outBuf);   
-	    }
-	    copyLine<T>(outBuf, lineLen, lineOut);
-	    if (oddSe)
-	      oddLine = !oddLine;
-	}
+	  _extract_translated_line(tmpIm, x, y, z, tmpBuf);
+	  
+	  lineOut = destLines[l];
+	  
+	  for (p=1;p<sePtsNumber;p++)
+	  {
+	      dx = -se.points[p].x + (oddLine && oddSe);
+	      dy = l - se.points[p].y;
+	      dz = s + se.points[p].z;
+	      
+	      _extract_translated_line(tmpIm, dx, dy, dz, tmpBuf2);
+	      lineFunction(tmpBuf, tmpBuf2, lineLen, tmpBuf);
+// 	      _exec_line(tmpBuf, tmpIm, dx, dy, dz, tmpBuf);
+	  }
+	  
+	  copyLine<T>(tmpBuf, lineLen, lineOut);
+	  if (oddSe)
+	    oddLine = !oddLine;
+      }
     }
 
-    ImDtTypes<T>::deleteLine(outBuf);
-    
     if (&imIn==&imOut)
       delete tmpIm;
     
@@ -445,21 +462,19 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 template <class T, class lineFunction_T>
 RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(const imageType &imIn, imageType &imOut)
 {
-    if (!areAllocated(&imIn, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
-
-    int bufSize = lineLen * sizeof(T);
     int lineCount = imIn.getLineCount();
     
     int nSlices = imIn.getSliceCount();
     int nLines = imIn.getHeight();
 
-    lineType inBuf = ImDtTypes<T>::createLine(lineLen);
-    lineType outBuf = ImDtTypes<T>::createLine(lineLen);
-    lineType tmpBuf1 = ImDtTypes<T>::createLine(lineLen);
-    lineType tmpBuf2 = ImDtTypes<T>::createLine(lineLen);
-    lineType tmpBuf3 = ImDtTypes<T>::createLine(lineLen);
-    lineType tmpBuf4 = ImDtTypes<T>::createLine(lineLen);
+//     int nthreads = Core::getInstance()->getNumberOfThreads();
+    lineType *_bufs = this->createAlignedBuffers(5, lineLen);
+    lineType buf0 = _bufs[0];
+    lineType buf1 = _bufs[1];
+    lineType buf2 = _bufs[2];
+    lineType buf3 = _bufs[3];
+    lineType buf4 = _bufs[4];
+    
     lineType tmpBuf;
         
     const Image<T> *tmpIm;
@@ -474,75 +489,158 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(const image
     sliceType srcLines;
     sliceType destLines;
     
-//    bool oddLine;
+    lineType curSrcLine;
+    lineType curDestLine;
     
     for (int s=0;s<nSlices;s++)
     {
 	srcLines = srcSlices[s];
 	destLines = destSlices[s];
-//	oddLine = !s%2;
 	
 	// Process first line
-// 	copyLine<T,T>(srcLines[0], lineLen, inBuf);
-	_exec_shifted_line(srcLines[0], srcLines[0], -1, lineLen, tmpBuf1);
-	_exec_shifted_line(tmpBuf1, tmpBuf1, 1, lineLen, tmpBuf4);
+	_exec_shifted_line(srcLines[0], srcLines[0], -1, lineLen, buf0);
+	_exec_shifted_line(buf0, buf0, 1, lineLen, buf3);
 	
-// 	copyLine<T,T>(srcLines[1], lineLen, inBuf);
-	_exec_shifted_line(srcLines[1], srcLines[1], 1, lineLen, tmpBuf2);
-	lineFunction(tmpBuf4, tmpBuf2, lineLen, outBuf);
-	lineFunction(borderBuf, outBuf, lineLen, destLines[0]);
-// 	copyLine(outBuf, lineLen, destLines[0]);
+	_exec_shifted_line(srcLines[1], srcLines[1], 1, lineLen, buf1);
+	lineFunction(buf3, buf1, lineLen, buf4);
+	lineFunction(borderBuf, buf4, lineLen, destLines[0]);
 	
-// imOut.modified();
-// return RES_OK;
-	for (int l=2;l<nLines;l++)
+// 	int tid;
+// #pragma omp parallel
 	{
-// 	    copyLine<T,T>(srcLines[l], lineLen, inBuf);
-	    if((l%2)==0)
-	    {
-// 		_exec_shifted_line(inBuf, inBuf, -1, lineLen, tmpBuf3);
-		_exec_shifted_line(srcLines[l], srcLines[l], -1, lineLen, tmpBuf3);
-		_exec_shifted_line(tmpBuf2, tmpBuf2, -1, lineLen, tmpBuf4);
-	    }
-	    else
-	    {
-// 		_exec_shifted_line(inBuf, inBuf, 1, lineLen, tmpBuf3);
-		_exec_shifted_line(srcLines[l], srcLines[l], 1, lineLen, tmpBuf3);
-		_exec_shifted_line(tmpBuf2, tmpBuf2, 1, lineLen, tmpBuf4);
-	    }
-	    lineFunction(tmpBuf1, tmpBuf3, lineLen, outBuf);
-	    lineFunction(tmpBuf4, outBuf, lineLen, destLines[l-1]);
-// 	    copyLine(outBuf, lineLen, destLines[l-1]);
+	  int l;
 	    
-	    tmpBuf = tmpBuf1;
-	    tmpBuf1 = tmpBuf2;
-	    tmpBuf2 = tmpBuf3;
-	    tmpBuf3 = tmpBuf;
+// #pragma omp parallel for private(l) shared(tmpIm) ordered
+	    for (l=2;l<nLines;l++)
+	    {
+	    
+		curSrcLine = srcLines[l];
+		curDestLine = destLines[l-1];
+		
+		if(!(l%2==0 ^ s%2==0))
+		{
+		    _exec_shifted_line(curSrcLine, curSrcLine, -1, lineLen, buf2);
+		    _exec_shifted_line(buf1, buf1, -1, lineLen, buf3);
+		}
+		else
+		{
+		    _exec_shifted_line(curSrcLine, curSrcLine, 1, lineLen, buf2);
+		    _exec_shifted_line(buf1, buf1, 1, lineLen, buf3);
+		}
+
+		lineFunction(buf0, buf2, lineLen, buf4);
+		lineFunction(buf3, buf4, lineLen, curDestLine);
+		tmpBuf = buf0;
+		buf0 = buf1;
+		buf1 = buf2;
+		buf2 = tmpBuf;
+	    }
 	}
 	
-	if (nLines%2 != 0)
-	  _exec_shifted_line(tmpBuf2, tmpBuf2, 1, lineLen, tmpBuf4);
+	if (!(nLines%2==0 ^ s%2==0))
+	  _exec_shifted_line(buf1, buf1, -1, lineLen, buf3);
 	else
-	  _exec_shifted_line(tmpBuf2, tmpBuf2, -1, lineLen, tmpBuf4);
-	lineFunction(tmpBuf4, tmpBuf1, lineLen, outBuf);
-	lineFunction._exec(borderBuf, outBuf, lineLen, destLines[nLines-1]);
-// 	copyLine(outBuf, lineLen, destLines[nLines-1]);
+	  _exec_shifted_line(buf1, buf1, 1, lineLen, buf3);
+	lineFunction(buf3, buf0, lineLen, buf4);
+	lineFunction._exec(borderBuf, buf4, lineLen, destLines[nLines-1]);
 	
     }
 
-    ImDtTypes<T>::deleteLine(inBuf);
-    ImDtTypes<T>::deleteLine(outBuf);
-    ImDtTypes<T>::deleteLine(tmpBuf1);
-    ImDtTypes<T>::deleteLine(tmpBuf2);
-    ImDtTypes<T>::deleteLine(tmpBuf3);
-    ImDtTypes<T>::deleteLine(tmpBuf4);
-//     ImDtTypes<T>::deleteLine(lineIn);
+//     this->deleteAlignedBuffers();
     
     if (&imIn==&imOut)
       delete tmpIm;
     
     imOut.modified();
 
+	return RES_OK;
+}
+
+template <class T, class lineFunction_T>
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_squSE(const imageType &imIn, imageType &imOut)
+{
+//     int bufSize = lineLen * sizeof(T);
+//     int lineCount = imIn.getLineCount();
+//     
+//     int nSlices = imIn.getSliceCount();
+//     int nLines = imIn.getHeight();
+// 
+// //     int nthreads = Core::getInstance()->getNumberOfThreads();
+//     lineType *_bufs = this->createAlignedBuffers(5, lineLen);
+//     lineType buf0 = _bufs[0];
+//     lineType buf1 = _bufs[1];
+//     lineType buf2 = _bufs[2];
+//     lineType buf3 = _bufs[3];
+//     lineType buf4 = _bufs[4];
+//     
+//     lineType tmpBuf;
+//         
+//     const Image<T> *tmpIm;
+//     
+//     if (&imIn==&imOut)
+//       tmpIm = new Image<T>(imIn, true); // clone
+//     else tmpIm = &imIn;
+//     
+//     volType srcSlices = tmpIm->getSlices();
+//     volType destSlices = imOut.getSlices();
+//     
+//     sliceType srcLines;
+//     sliceType destLines;
+//     
+//     lineType curSrcLine;
+//     lineType curDestLine;
+//     
+//     for (int s=0;s<nSlices;s++)
+//     {
+// 	srcLines = srcSlices[s];
+// 	destLines = destSlices[s];
+// 	
+// 	// Process first line
+// 	_exec_shifted_line(srcLines[0], srcLines[0], -1, lineLen, buf0);
+// 	_exec_shifted_line(buf0, buf0, 1, lineLen, buf1);
+// 	
+// 	_exec_shifted_line(srcLines[1], srcLines[1], -1, lineLen, buf0);
+// 	_exec_shifted_line(buf0, buf0, 1, lineLen, buf2);
+// 	
+// 	lineFunction(buf1, buf2, lineLen, buf3);
+// 	lineFunction(borderBuf, buf3, lineLen, destLines[0]);
+// 	
+// 	for (l=2;l<nLines;l++)
+// 	{
+// 	
+// 	    curSrcLine = srcLines[l];
+// 	    curDestLine = destLines[l-1];
+// 		
+// 	    _exec_shifted_line(curSrcLine, curSrcLine, -1, lineLen, buf0);
+// 	    _exec_shifted_line(buf0, buf0, 1, lineLen, buf1);
+// 	    
+// //       for(i = 2 ; i<wySize ; i++) {
+// // 	t_LineCopyFromImage2D(psrc, xSize, wxSize, i, lineIn);
+// // 	t_LineErode1D(lineIn, wxSize, lineTmpL, lineTmp3);
+// // 
+// // 	t_LineArithInf1D(lineTmp1, lineTmp2, wxSize, lineOut);
+// // 	t_LineArithInf1D(lineOut, lineTmp3, wxSize, lineOut);
+// // 
+// // 	t_LineCopyToImage2D(lineOut, xSize, wxSize, i-1, pdest);	
+// // 
+// // 	lineTmp = lineTmp1;
+// // 	lineTmp1 = lineTmp2;
+// // 	lineTmp2 = lineTmp3;
+// // 	lineTmp3 = lineTmp;	
+// //       }
+// //     
+// //       t_LineArithInf1D(lineTmp1, lineTmp2, wxSize, lineOut);
+// //       t_LineCopyToImage2D(lineOut, xSize, wxSize, wySize-1, pdest);	 
+// 	}
+//     }
+// 
+// //     this->deleteAlignedBuffers();
+//     
+//     if (&imIn==&imOut)
+//       delete tmpIm;
+//     
+//     imOut.modified();
+// 
 	return RES_OK;
 }
 

@@ -32,9 +32,15 @@
 #include "DCoreInstance.h"
 #include "DGui.h"
 
+#ifdef USE_OPEN_MP
+#include <omp.h>
+#endif // USE_OPEN_MP
+
+
 Core::Core ()
 // : BaseObject("Core", false),
-  : keepAlive(false)
+  : keepAlive(false),
+    threadNumber(0)
 {
 #if DEBUG_LEVEL > 1
      cout << "Core created" << endl;
@@ -110,6 +116,23 @@ void Core::deleteRegisteredObjects()
     }
 }
 
+UINT Core::getNumberOfThreads()
+{
+    if (threadNumber!=0)
+      return threadNumber;
+    
+#ifdef _OPENMP
+    int nthreads;
+    #pragma omp parallel shared(nthreads)
+    { 
+	nthreads = omp_get_num_threads();
+    }
+    threadNumber = nthreads;
+#else // _OPENMP
+    threadNumber =1;
+#endif // _OPENMP
+    
+}
 
 long Core::getAllocatedMemory()
 {

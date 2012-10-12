@@ -64,6 +64,7 @@ public:
   vector<BaseObject*> getRegisteredObjects() { return registeredObjects; }
   vector<BaseImage*> getImages()  { return registeredImages; }
   
+  UINT getNumberOfThreads();
   long getAllocatedMemory();
   void showAllImages();
   void hideAllImages();
@@ -75,7 +76,7 @@ protected:
     vector<BaseObject*> registeredObjects;
     vector<BaseImage*> registeredImages;
     void deleteRegisteredObjects();
-
+    UINT threadNumber;
   
 public:
   static void initialize();

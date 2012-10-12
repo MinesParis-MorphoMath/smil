@@ -27,17 +27,61 @@
  */
 
 
-#ifndef _D_NETWORK_IO_H
-#define _D_NETWORK_IO_H
+#include "DCore.h"
+#include "DMorpho.h"
+#include "DGui.h"
+#include "DIO.h"
 
-#include "DTypes.h"
-#include "DCommon.h"
-#include <DErrors.h>
 
-#ifdef USE_CURL
+class Test_Label : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT16 dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+      
+      dataType vec1[] = {
+	0, 0, 0, 0, 0, 0, 1,
+	0, 0, 0, 0, 1, 1, 1,
+	0, 1, 0, 0, 1, 1, 1,
+	1, 1, 0, 0, 0, 1, 0,
+	1, 0, 0, 0, 0, 0, 0,
+	1, 0, 1, 0, 0, 1, 0,
+	0, 0, 1, 0, 1, 1, 0
+      };
+      
+      im1 << vec1;
+      
+      label(im1, im2, sSE());
+//       im2.printSelf(1);
+      
+//       im2.show();
+//       Gui::execLoop();
+      dataType vec3[] = {
+	0, 0, 0, 0, 0, 0, 1, 
+	0, 0, 0, 0, 1, 1, 1, 
+	0, 2, 0, 0, 1, 1, 1, 
+	2, 2, 0, 0, 0, 1, 0, 
+	2, 0, 0, 0, 0, 0, 0, 
+	2, 0, 3, 0, 0, 4, 0, 
+	0, 0, 3, 0, 4, 4, 0
+      };
+      im3 << vec3;
+      
+      TEST_ASSERT(im2==im3);
+  }
+};
 
-_DIO RES_T getHttpFile(const char *url, const char *outfilename) ;
+int main(int argc, char *argv[])
+{
+      TestSuite ts;
+      ADD_TEST(ts, Test_Label);
+      
+      return ts.run();
+  
+}
 
-#endif // USE_CURL
-
-#endif // _D_NETWORK_IO_H

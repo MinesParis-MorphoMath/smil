@@ -52,7 +52,7 @@
 extern _DIO string getFileExtension(const char *fileName);
 
 #ifdef USE_CURL
-extern _DIO int getHttpFile(const char *url, const char *outfilename);
+extern _DIO RES_T getHttpFile(const char *url, const char *outfilename);
 #endif // USE_CURL
 
 /**
@@ -80,7 +80,7 @@ RES_T read(const char* filename, Image<T> &image)
 	remove(tmpFileName.c_str());
 
 #else // USE_CURL
-	cout << "Error: to use this functionality you must compile smil with the Curl option" << endl;
+	ERR_MSG("Error: to use this functionality you must compile smil with the Curl option");
 	res = RES_ERR;
 #endif // USE_CURL
 	return res;

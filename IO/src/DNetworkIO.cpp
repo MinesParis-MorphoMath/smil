@@ -29,6 +29,7 @@
 #ifdef USE_CURL
 
 #include "DNetworkIO.h"
+#include <DErrors.h>
 
 #include <stdio.h>
 
@@ -73,7 +74,7 @@ WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
  
  
 
-int getHttpFile(const char *url, const char *outfilename) 
+RES_T getHttpFile(const char *url, const char *outfilename) 
 {
     CURL *curl_handle;
     FILE *fp;
@@ -91,8 +92,8 @@ int getHttpFile(const char *url, const char *outfilename)
     }
     else res = CURLE_FAILED_INIT;
     if (res==CURLE_OK)
-      return 0;
-    else return -1;
+      return RES_OK;
+    else return RES_ERR;
 }
 
 /**

@@ -32,54 +32,87 @@
 #include "DGui.h"
 #include "DIO.h"
 
-class Test_Label : public TestCase
+class Test_Dilate_Hex : public TestCase
 {
   virtual void run()
   {
-      typedef UINT16 dataType;
+      typedef UINT8 dataType;
       typedef Image<dataType> imType;
       
-      imType im1(7,7);
+      imType im1(5,5);
       imType im2(im1);
       imType im3(im1);
       
       dataType vec1[] = {
-	0, 0, 0, 0, 0, 0, 1,
-	0, 0, 0, 0, 1, 1, 1,
-	0, 1, 0, 0, 1, 1, 1,
-	1, 1, 0, 0, 0, 1, 0,
-	1, 0, 0, 0, 0, 0, 0,
-	1, 0, 1, 0, 0, 1, 0,
-	0, 0, 1, 0, 1, 1, 0
+	114, 133, 74, 160, 57, 
+	23, 73, 9, 196, 118, 
+	154, 248, 165, 159, 210, 
+	213, 74, 8, 163, 3, 
+	158, 67, 52, 103, 163
       };
       
       im1 << vec1;
       
-      label(im1, im2, sSE());
-      im2.printSelf(1);
-      
-//       im2.show();
-//       Gui::execLoop();
-      dataType vec3[] = {
-	0, 0, 0, 0, 0, 0, 1, 
-	0, 0, 0, 0, 1, 1, 1, 
-	0, 2, 0, 0, 1, 1, 1, 
-	2, 2, 0, 0, 0, 1, 0, 
-	2, 0, 0, 0, 0, 0, 0, 
-	2, 0, 3, 0, 0, 4, 0, 
-	0, 0, 3, 0, 4, 4, 0
+      dataType dilateHexVec[] = {
+	133, 133, 160, 196, 196, 
+	248, 248, 196, 210, 210, 
+	248, 248, 248, 210, 210, 
+	248, 248, 165, 210, 210, 
+	213, 213, 103, 163, 163
       };
-      im3 << vec3;
-      
-      TEST_ASSERT(im2==im3);
+      im3 << dilateHexVec;
+      dilate(im1, im2, hSE());
+//       im2.printSelf(1);
+//       im3.printSelf(1);
+      TEST_ASSERT(im2==im3);      
   }
 };
+
+class Test_Dilate_Squ : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(5,5);
+      imType im2(im1);
+      imType im3(im1);
+      
+      dataType vec1[] = {
+	114, 133, 74, 160, 57, 
+	23, 73, 9, 196, 118, 
+	154, 248, 165, 159, 210, 
+	213, 74, 8, 163, 3, 
+	158, 67, 52, 103, 163
+      };
+      
+      im1 << vec1;
+      
+      dataType dilateSquVec[] = {
+	133, 133, 196, 196, 196, 
+	248, 248, 248, 210, 210, 
+	248, 248, 248, 210, 210, 
+	248, 248, 248, 210, 210, 
+	213, 213, 163, 163, 163
+      };
+      im3 << dilateSquVec;
+      dilate(im1, im2, sSE());
+      TEST_ASSERT(im2==im3);      
+  }
+};
+
 
 int main(int argc, char *argv[])
 {
       TestSuite ts;
-      ADD_TEST(ts, Test_Label);
+      ADD_TEST(ts, Test_Dilate_Hex);
+      ADD_TEST(ts, Test_Dilate_Squ);
       
+      UINT BENCH_NRUNS = 1E3;
+      Image_UINT8 im1(1024, 1024), im2(im1);
+      BENCH_IMG(dilate, im1, im2, sSE());
+      BENCH_IMG(dilate, im1, im2, hSE());
       return ts.run();
   
 }

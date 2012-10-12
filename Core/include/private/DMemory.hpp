@@ -58,7 +58,7 @@
 #endif
 
 
-#define SIMD_VEC_SIZE 4096
+#define SIMD_VEC_SIZE 16
 
 template<typename T> 
 inline T *createAlignedBuffer(int size) {

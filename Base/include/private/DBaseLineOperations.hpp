@@ -79,6 +79,11 @@ struct unaryLineFunctionBase
     }
     inline void operator()(lineType lineIn, int size, T value)
     { 
+	if (size<SIMD_VEC_SIZE)
+	{
+	    _exec(lineIn, size, value);
+	    return;
+	}
 	unsigned long ptrOffset = ImDtTypes<T>::ptrOffset(lineIn);
 	unsigned long misAlignSize = ptrOffset==0 ? 0 : SIMD_VEC_SIZE - ptrOffset;
 	if (misAlignSize)
@@ -99,6 +104,11 @@ struct binaryLineFunctionBase
     virtual void _exec_aligned(lineType lineIn1, lineType lineIn2, int size, lineType lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
     inline void operator()(lineType lineIn1, lineType lineIn2, int size, lineType lineOut)
     { 
+	if (size<SIMD_VEC_SIZE)
+	{
+	    _exec(lineIn1, lineIn2, size, lineOut); 
+	    return;
+	}
 	unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn1);
 	unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineIn2);
 	unsigned long ptrOffset3 = ImDtTypes<T>::ptrOffset(lineOut);
@@ -124,6 +134,11 @@ struct binaryLineFunctionBase
     }
     inline void operator()(lineType lineIn1, T value, int size, lineType lineOut)
     { 
+	if (size<SIMD_VEC_SIZE)
+	{
+	    _exec(lineIn1, value, size, lineOut); 
+	    return;
+	}
 	unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn1);
 	unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineOut);
 	
@@ -160,6 +175,11 @@ struct tertiaryLineFunctionBase
     virtual void _exec_aligned(lineType lineIn1, lineType lineIn2, lineType lineIn3, int size, lineType lineOut) { _exec(lineIn1, lineIn2, lineIn3, size, lineOut); }
     virtual void operator()(lineType lineIn1, lineType lineIn2, lineType lineIn3, int size, lineType lineOut)
     { 
+	if (size<SIMD_VEC_SIZE)
+	{
+	    _exec(lineIn1, lineIn2, lineIn3, size, lineOut);
+	    return;
+	}
 	unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn1);
 	unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineIn2);
 	unsigned long ptrOffset3 = ImDtTypes<T>::ptrOffset(lineIn3);

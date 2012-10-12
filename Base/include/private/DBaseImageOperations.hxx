@@ -33,10 +33,6 @@
 #include "DImage.hpp"
 #include "DMemory.hpp"
 
-#ifdef USE_OPEN_MP
-#include <omp.h>
-#endif // USE_OPEN_MP
-
 template <class T>
 struct fillLine;
 
@@ -47,8 +43,8 @@ inline typename Image<T>::lineType *imageFunctionBase<T>::createAlignedBuffers(U
     {
         if (nbr==bufferNumber && len==bufferLength)
             return alignedBuffers;
-
-        deleteAlignedBuffers();
+	else
+	    deleteAlignedBuffers();
     }
 
 
@@ -71,6 +67,8 @@ inline void imageFunctionBase<T>::deleteAlignedBuffers()
 
     for (UINT i=0;i<bufferNumber;i++)
       ImDtTypes<T>::deleteLine(alignedBuffers[i]);
+    delete alignedBuffers;
+    alignedBuffers = NULL;
 }
 
 template <class T>
