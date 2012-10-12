@@ -121,17 +121,18 @@ UINT Core::getNumberOfThreads()
     if (threadNumber!=0)
       return threadNumber;
     
-#ifdef _OPENMP
+#ifdef USE_OPEN_MP
     int nthreads;
     #pragma omp parallel shared(nthreads)
     { 
 	nthreads = omp_get_num_threads();
     }
     threadNumber = nthreads;
-#else // _OPENMP
+#else // USE_OPEN_MP
     threadNumber =1;
-#endif // _OPENMP
-    
+#endif // USE_OPEN_MP
+ 
+    return threadNumber;
 }
 
 long Core::getAllocatedMemory()

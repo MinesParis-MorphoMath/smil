@@ -60,6 +60,9 @@
 
 #define SIMD_VEC_SIZE 16
 
+#define ASSUME_ALIGNED(buf) __builtin_assume_aligned(buf, SIMD_VEC_SIZE)
+
+
 template<typename T> 
 inline T *createAlignedBuffer(int size) {
   void* ptr;

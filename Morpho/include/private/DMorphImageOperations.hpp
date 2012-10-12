@@ -386,9 +386,11 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
     int nLines = imIn.getHeight();
 
     int nthreads = Core::getInstance()->getNumberOfThreads();
-    lineType *_bufs = this->createAlignedBuffers(2*nthreads, lineLen);
+    lineType *_bufs = this->createAlignedBuffers(3*nthreads, lineLen);
     lineType tmpBuf = _bufs[0];
     lineType tmpBuf2 = _bufs[nthreads];
+    lineType tmpBuf3 = _bufs[2*nthreads];
+    lineType mvBuf;
 
     const Image<T> *tmpIm;
     
@@ -416,13 +418,14 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
       int tid;
       int dx, dy, dz;
       
-#pragma omp parallel for private(l, tid) shared(tmpIm) schedule(dynamic, nthreads)
+#pragma omp parallel for private(l, tid) shared(tmpIm,se) schedule(dynamic, nthreads)
       for (l=0;l<nLines;l++)
       {
 #ifdef _OPENMP
 	  tid = omp_get_thread_num();
 	  tmpBuf = _bufs[tid];
 	  tmpBuf2 = _bufs[tid+nthreads];
+	  tmpBuf3 = _bufs[tid+2*nthreads];
 #endif // _OPENMP
 	  int x, y, z;
 	  x = se.points[0].x + (oddLine && oddSe);
@@ -441,7 +444,10 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 	      
 	      _extract_translated_line(tmpIm, dx, dy, dz, tmpBuf2);
 	      lineFunction(tmpBuf, tmpBuf2, lineLen, tmpBuf);
-// 	      _exec_line(tmpBuf, tmpIm, dx, dy, dz, tmpBuf);
+// 	      copyLine<T>(tmpBuf3, lineLen, tmpBuf);
+// 	      mvBuf = tmpBuf3;
+// 	      tmpBuf3 = tmpBuf;
+// 	      tmpBuf = mvBuf;
 	  }
 	  
 	  copyLine<T>(tmpBuf, lineLen, lineOut);
@@ -449,7 +455,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 	    oddLine = !oddLine;
       }
     }
-
+    
     if (&imIn==&imOut)
       delete tmpIm;
     

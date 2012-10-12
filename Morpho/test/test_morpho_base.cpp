@@ -111,8 +111,10 @@ int main(int argc, char *argv[])
       
       UINT BENCH_NRUNS = 1E3;
       Image_UINT8 im1(1024, 1024), im2(im1);
-      BENCH_IMG(dilate, im1, im2, sSE());
-      BENCH_IMG(dilate, im1, im2, hSE());
+      dilate(im1, im2, sSE());
+      dilate(im1, im2, hSE());
+      BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
+      BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
       return ts.run();
   
 }
