@@ -416,7 +416,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
       int tid;
       int dx, dy, dz;
       
-// #pragma omp parallel for private(l, tid) shared(tmpIm) schedule(dynamic, nthreads)
+#pragma omp parallel for private(l, tid) shared(tmpIm) schedule(dynamic, nthreads)
       for (l=0;l<nLines;l++)
       {
 #ifdef _OPENMP
