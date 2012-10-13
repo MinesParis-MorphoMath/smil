@@ -331,6 +331,8 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, i
     }
     ImDtTypes<T>::deleteLine(borderBuf);
     ImDtTypes<T>::deleteLine(cpBuf);
+    
+    imOut.modified();
     return RES_OK;
 }
 
@@ -460,8 +462,6 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 	if (&imIn==&imOut)
 	  delete tmpIm;
 	
-	imOut.modified();
-
 	return RES_OK;
 }
 
@@ -558,8 +558,6 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(const image
     if (&imIn==&imOut)
       delete tmpIm;
     
-    imOut.modified();
-
 	return RES_OK;
 }
 

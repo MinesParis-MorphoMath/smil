@@ -24,5 +24,5 @@ im3D = Image(im2.getWidth(), im2.getHeight(), 3)
 im3D << 0
 copy(im1, 0, 256, im3D)
 copy(im3, im3D, 0, 0, 2)
-close(im3D, im3D, cSE())
+close(im3D, im3D, cbSE())
 im3D.show()
