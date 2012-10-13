@@ -97,7 +97,6 @@ class Test_Dilate_Squ : public TestCase
 	213, 213, 163, 163, 163
       };
       im3 << dilateSquVec;
-      testClass<UINT8, supLine<UINT8> > tc;
       dilate(im1, im2, sSE());
       TEST_ASSERT(im2==im3);      
 //       im1.printSelf(1);
