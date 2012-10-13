@@ -375,91 +375,86 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(const lineTyp
 template <class T, class lineFunction_T>
 RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se)
 {
-    int bufSize = lineLen * sizeof(T);
-    int lineCount = imIn.getLineCount();
-    
-    int sePtsNumber = se.points.size();
-    if (sePtsNumber==0)
-	return RES_OK;
-    
-    int nSlices = imIn.getSliceCount();
-    int nLines = imIn.getHeight();
-
-    int nthreads = Core::getInstance()->getNumberOfThreads();
-    lineType *_bufs = this->createAlignedBuffers(3*nthreads, lineLen);
-    lineType tmpBuf = _bufs[0];
-    lineType tmpBuf2 = _bufs[nthreads];
-    lineType tmpBuf3 = _bufs[2*nthreads];
-    lineType mvBuf;
-
-    const Image<T> *tmpIm;
-    
-    if (&imIn==&imOut)
-      tmpIm = new Image<T>(imIn, true); // clone
-    else tmpIm = &imIn;
-    
-    volType srcSlices = tmpIm->getSlices();
-    volType destSlices = imOut.getSlices();
-    
-    //lineType *srcLines;
-    lineType *destLines, lineOut;
-    
-    bool oddSe = se.odd, oddLine = 0;
-    
-
-
-    for (int s=0;s<nSlices;s++)
-    {
-	destLines = destSlices[s];
-	if (oddSe)
-	  oddLine = s%2!=0;
+	int lineCount = imIn.getLineCount();
 	
-      int l, p;
-      int tid;
-      int dx, dy, dz;
-      
-#pragma omp parallel for private(l, tid) shared(tmpIm,se) schedule(dynamic, nthreads)
-      for (l=0;l<nLines;l++)
-      {
-#ifdef _OPENMP
-	  tid = omp_get_thread_num();
-	  tmpBuf = _bufs[tid];
-	  tmpBuf2 = _bufs[tid+nthreads];
-	  tmpBuf3 = _bufs[tid+2*nthreads];
-#endif // _OPENMP
-	  int x, y, z;
-	  x = se.points[0].x + (oddLine && oddSe);
-	  y = l - se.points[0].y;
-	  z = s + se.points[0].z;
+	int sePtsNumber = se.points.size();
+	if (sePtsNumber==0)
+	    return RES_OK;
+	
+	int nSlices = imIn.getSliceCount();
+	int nLines = imIn.getHeight();
 
-	  _extract_translated_line(tmpIm, x, y, z, tmpBuf);
+	int nthreads = Core::getInstance()->getNumberOfThreads();
+	lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
+	lineType tmpBuf = _bufs[0];
+	lineType tmpBuf2 = _bufs[nthreads];
+
+	const Image<T> *tmpIm;
+	
+	if (&imIn==&imOut)
+	  tmpIm = new Image<T>(imIn, true); // clone
+	else tmpIm = &imIn;
+	
+	volType srcSlices = tmpIm->getSlices();
+	volType destSlices = imOut.getSlices();
+	
+	//lineType *srcLines;
+	lineType *destLines, lineOut;
+	
+	bool oddSe = se.odd, oddLine = 0;
+
+		int l, p;
+		int tid;
+		int x, y, z;
+	vector<IntPoint> pts = se.points;
+
+
+	for (int s=0;s<nSlices;s++)
+	{
+	    destLines = destSlices[s];
+	    if (oddSe)
+	      oddLine = s%2!=0;
+
+	    #pragma omp parallel private(l,tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p) firstprivate(pts)
+	    {
+		#ifdef _OPENMP
+		    tid = omp_get_thread_num();
+		    tmpBuf = _bufs[tid];
+		    tmpBuf2 = _bufs[tid+nthreads];
+		#endif // _OPENMP
 	  
-	  lineOut = destLines[l];
 	  
-	  for (p=1;p<sePtsNumber;p++)
-	  {
-	      dx = -se.points[p].x + (oddLine && oddSe);
-	      dy = l - se.points[p].y;
-	      dz = s + se.points[p].z;
-	      
-	      _extract_translated_line(tmpIm, dx, dy, dz, tmpBuf2);
-	      lineFunction(tmpBuf, tmpBuf2, lineLen, tmpBuf);
-// 	      copyLine<T>(tmpBuf3, lineLen, tmpBuf);
-// 	      mvBuf = tmpBuf3;
-// 	      tmpBuf3 = tmpBuf;
-// 	      tmpBuf = mvBuf;
-	  }
-	  
-	  copyLine<T>(tmpBuf, lineLen, lineOut);
-	  if (oddSe)
-	    oddLine = !oddLine;
-      }
-    }
+		#pragma omp for //schedule(dynamic, nthreads)
+		for (l=0;l<nLines;l++)
+		{
+		    x = pts[0].x + (oddLine && oddSe);
+		    y = l - pts[0].y;
+		    z = s + pts[0].z;
+
+		    _extract_translated_line(tmpIm, x, y, z, tmpBuf);
+		    
+		    lineOut = destLines[l];
+			    for (p=1;p<sePtsNumber;p++)
+		    {
+			x = -pts[p].x + (oddLine && oddSe);
+			y = l - pts[p].y;
+			z = s + pts[p].z;
+			
+			_extract_translated_line(tmpIm, x, y, z, tmpBuf2);
+			lineFunction._exec(tmpBuf, tmpBuf2, this->lineLen, tmpBuf);
+		    }
+		    
+		    copyLine<T>(_bufs[tid], this->lineLen, lineOut);
+		    if (oddSe)
+		      oddLine = !oddLine;
+		}
+	    }
+	}
     
-    if (&imIn==&imOut)
-      delete tmpIm;
-    
-    imOut.modified();
+	if (&imIn==&imOut)
+	  delete tmpIm;
+	
+	imOut.modified();
 
 	return RES_OK;
 }

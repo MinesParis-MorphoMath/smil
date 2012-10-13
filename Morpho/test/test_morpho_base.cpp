@@ -113,8 +113,8 @@ int main(int argc, char *argv[])
       Image_UINT8 im1(1024, 1024), im2(im1);
       dilate(im1, im2, sSE());
       dilate(im1, im2, hSE());
-      BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
-      BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
+//       BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
+//       BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
       return ts.run();
   
 }
