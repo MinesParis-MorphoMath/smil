@@ -283,6 +283,10 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     virtual RES_T _exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se);
     virtual RES_T _exec_single_hexSE(const imageType &imIn, imageType &imOut);
     virtual RES_T _exec_single_squSE(const imageType &imIn, imageType &imOut);
+    virtual RES_T _exec_single_2_H_points(const imageType &imIn, int dx, imageType &imOut, bool oddLines=false);
+    virtual RES_T _exec_single_2_V_points(const imageType &imIn, int dx, imageType &imOut);
+    virtual RES_T _exec_single_H_segment(const imageType &imIn, int xsize, imageType &imOut);
+    virtual RES_T _exec_single_V1_segment(const imageType &imIn, imageType &imOut);
     
     inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt se) { return this->_exec(imIn, imOut, se); }
 
@@ -339,6 +343,8 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(const imageType &
     {
       case SE_Hex:
 	return _exec_single_hexSE(imIn, imOut);
+      case SE_Squ:
+	return _exec_single_squSE(imIn, imOut);
       default:
 	return _exec_single_generic(imIn, imOut, se);
     }
@@ -403,9 +409,9 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 	
 	bool oddSe = se.odd, oddLine = 0;
 
-		int l, p;
-		int tid;
-		int x, y, z;
+	int l, p;
+	int tid;
+	int x, y, z;
 	vector<IntPoint> pts = se.points;
 
 
@@ -434,7 +440,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 		    _extract_translated_line(tmpIm, x, y, z, tmpBuf);
 		    
 		    lineOut = destLines[l];
-			    for (p=1;p<sePtsNumber;p++)
+		    for (p=1;p<sePtsNumber;p++)
 		    {
 			x = -pts[p].x + (oddLine && oddSe);
 			y = l - pts[p].y;
@@ -444,7 +450,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 			lineFunction._exec(tmpBuf, tmpBuf2, this->lineLen, tmpBuf);
 		    }
 		    
-		    copyLine<T>(_bufs[tid], this->lineLen, lineOut);
+		    copyLine<T>(tmpBuf, this->lineLen, lineOut);
 		    if (oddSe)
 		      oddLine = !oddLine;
 		}
@@ -560,90 +566,155 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(const image
 template <class T, class lineFunction_T>
 RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_squSE(const imageType &imIn, imageType &imOut)
 {
-//     int bufSize = lineLen * sizeof(T);
-//     int lineCount = imIn.getLineCount();
-//     
-//     int nSlices = imIn.getSliceCount();
-//     int nLines = imIn.getHeight();
-// 
-// //     int nthreads = Core::getInstance()->getNumberOfThreads();
-//     lineType *_bufs = this->createAlignedBuffers(5, lineLen);
-//     lineType buf0 = _bufs[0];
-//     lineType buf1 = _bufs[1];
-//     lineType buf2 = _bufs[2];
-//     lineType buf3 = _bufs[3];
-//     lineType buf4 = _bufs[4];
-//     
-//     lineType tmpBuf;
-//         
-//     const Image<T> *tmpIm;
-//     
-//     if (&imIn==&imOut)
-//       tmpIm = new Image<T>(imIn, true); // clone
-//     else tmpIm = &imIn;
-//     
-//     volType srcSlices = tmpIm->getSlices();
-//     volType destSlices = imOut.getSlices();
-//     
-//     sliceType srcLines;
-//     sliceType destLines;
-//     
-//     lineType curSrcLine;
-//     lineType curDestLine;
-//     
-//     for (int s=0;s<nSlices;s++)
-//     {
-// 	srcLines = srcSlices[s];
-// 	destLines = destSlices[s];
-// 	
-// 	// Process first line
-// 	_exec_shifted_line(srcLines[0], srcLines[0], -1, lineLen, buf0);
-// 	_exec_shifted_line(buf0, buf0, 1, lineLen, buf1);
-// 	
-// 	_exec_shifted_line(srcLines[1], srcLines[1], -1, lineLen, buf0);
-// 	_exec_shifted_line(buf0, buf0, 1, lineLen, buf2);
-// 	
-// 	lineFunction(buf1, buf2, lineLen, buf3);
-// 	lineFunction(borderBuf, buf3, lineLen, destLines[0]);
-// 	
-// 	for (l=2;l<nLines;l++)
-// 	{
-// 	
-// 	    curSrcLine = srcLines[l];
-// 	    curDestLine = destLines[l-1];
-// 		
-// 	    _exec_shifted_line(curSrcLine, curSrcLine, -1, lineLen, buf0);
-// 	    _exec_shifted_line(buf0, buf0, 1, lineLen, buf1);
-// 	    
-// //       for(i = 2 ; i<wySize ; i++) {
-// // 	t_LineCopyFromImage2D(psrc, xSize, wxSize, i, lineIn);
-// // 	t_LineErode1D(lineIn, wxSize, lineTmpL, lineTmp3);
-// // 
-// // 	t_LineArithInf1D(lineTmp1, lineTmp2, wxSize, lineOut);
-// // 	t_LineArithInf1D(lineOut, lineTmp3, wxSize, lineOut);
-// // 
-// // 	t_LineCopyToImage2D(lineOut, xSize, wxSize, i-1, pdest);	
-// // 
-// // 	lineTmp = lineTmp1;
-// // 	lineTmp1 = lineTmp2;
-// // 	lineTmp2 = lineTmp3;
-// // 	lineTmp3 = lineTmp;	
-// //       }
-// //     
-// //       t_LineArithInf1D(lineTmp1, lineTmp2, wxSize, lineOut);
-// //       t_LineCopyToImage2D(lineOut, xSize, wxSize, wySize-1, pdest);	 
-// 	}
-//     }
-// 
-// //     this->deleteAlignedBuffers();
-//     
-//     if (&imIn==&imOut)
-//       delete tmpIm;
-//     
-//     imOut.modified();
-// 
-	return RES_OK;
+    _exec_single_H_segment(imIn, 1, imOut);
+    _exec_single_V1_segment(imOut, imOut);
+    
+    return RES_OK;
+}
+
+template <class T, class lineFunction_T>
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_2_H_points(const imageType &imIn, int dx, imageType &imOut, bool oddLines)
+{
+      int lineCount = imIn.getLineCount();
+      
+      int nthreads = Core::getInstance()->getNumberOfThreads();
+      lineType *_bufs = this->createAlignedBuffers(nthreads, this->lineLen);
+      lineType buf = _bufs[0];
+      
+      sliceType srcLines = imIn.getLines();
+      sliceType destLines = imOut.getLines();
+      
+      int l, tid;
+
+      #pragma omp parallel private(l, tid, buf)
+      {
+	  #ifdef _OPENMP
+	      tid = omp_get_thread_num();
+	      buf = _bufs[tid];
+	  #endif
+	  #pragma omp for
+	  for (l=0;l<lineCount;l++)
+	  {
+	    // Todo: if oddLines...
+	      shiftLine<T>(srcLines[l], dx, this->lineLen, buf, this->borderValue);
+	      this->lineFunction(buf, srcLines[l], this->lineLen, destLines[l]);
+	  }
+      }
+      return RES_OK;
+}
+
+template <class T, class lineFunction_T>
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_2_V_points(const imageType &imIn, int dy, imageType &imOut)
+{
+    int imHeight = imIn.getHeight();
+    volType srcSlices = imIn.getSlices();
+    volType destSlices = imOut.getSlices();
+    sliceType srcLines;
+    sliceType destLines;
+
+    int l;
+
+    for (int s=0;s<imIn.getDepth();s++)
+    {
+	srcLines = srcSlices[s];
+	destLines = destSlices[s];
+
+	if (dy>0)
+	{
+	    for (l=0;l<imHeight-dy;l++)
+	      this->lineFunction(srcLines[l], srcLines[l+dy], this->lineLen, destLines[l]);
+	    for (l=imHeight-dy;l<imHeight;l++)
+	      this->lineFunction(srcLines[l], this->borderBuf, this->lineLen, destLines[l]);
+	}
+	else
+	{
+	    for (l=imHeight-1;l>=-dy;l--)
+	      this->lineFunction(srcLines[l], srcLines[l+dy], this->lineLen, destLines[l]);
+	    for (l=-dy-1;l>=0;l--)
+	      this->lineFunction(srcLines[l], this->borderBuf, this->lineLen, destLines[l]);
+	}
+    }
+    return RES_OK;
+}
+
+template <class T, class lineFunction_T>
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_H_segment(const imageType &imIn, int xsize, imageType &imOut)
+{
+      int lineCount = imIn.getLineCount();
+      
+      int nthreads = Core::getInstance()->getNumberOfThreads();
+      lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
+      lineType buf1 = _bufs[0];
+      lineType buf2 = _bufs[nthreads];
+      
+      sliceType srcLines = imIn.getLines();
+      sliceType destLines = imOut.getLines();
+      
+      lineType lineIn;
+      
+      int l, tid, dx = xsize;
+
+      #pragma omp parallel private(l,tid,buf1,buf2,lineIn) firstprivate(dx)
+      {
+	  #ifdef _OPENMP
+	      tid = omp_get_thread_num();
+	      buf1 = _bufs[tid];
+	      buf2 = _bufs[tid+nthreads];
+	  #endif
+	  #pragma omp for
+	  for (l=0;l<lineCount;l++)
+	  {
+	    // Todo: if oddLines...
+	      lineIn = srcLines[l];
+	      shiftLine<T>(lineIn, dx, this->lineLen, buf1, this->borderValue);
+	      this->lineFunction._exec(buf1, lineIn, this->lineLen, buf2);
+	      shiftLine<T>(lineIn, -dx, this->lineLen, buf1, this->borderValue);
+	      this->lineFunction._exec(buf1, buf2, this->lineLen, destLines[l]);
+	  }
+      }
+      
+      return RES_OK;
+}
+
+template <class T, class lineFunction_T>
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_V1_segment(const imageType &imIn, imageType &imOut)
+{
+    int imHeight = imIn.getHeight();
+    volType srcSlices = imIn.getSlices();
+    volType destSlices = imOut.getSlices();
+    sliceType srcLines;
+    sliceType destLines;
+
+    int nthreads = Core::getInstance()->getNumberOfThreads();
+    lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
+    lineType buf1 = _bufs[0];
+    lineType buf2 = _bufs[nthreads];
+    
+    int l;
+
+    for (int s=0;s<imIn.getDepth();s++)
+    {
+	srcLines = srcSlices[s];
+	destLines = destSlices[s];
+
+	// First line
+	this->lineFunction(srcLines[0], this->borderBuf, this->lineLen, destLines[0]);
+	this->lineFunction(srcLines[0], srcLines[1], this->lineLen, buf1);
+	copyLine<T>(buf1, this->lineLen, destLines[0]);
+	
+	for (l=1;l<imHeight-1;l++)
+	{
+	    this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
+	    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+	    swap(buf1, buf2);
+  	}
+	
+	// Last line
+	this->lineFunction(srcLines[imHeight-1], this->borderBuf, this->lineLen, buf2);
+	this->lineFunction(buf1, buf2, this->lineLen, destLines[imHeight-1]);
+    }
+    return RES_OK;
 }
 
 
-#endif // _MORPH_IMAGE_OPERATIONS_HXX
+# endif // _MORPH_IMAGE_OPERATIONS_HXX

@@ -97,10 +97,15 @@ class Test_Dilate_Squ : public TestCase
 	213, 213, 163, 163, 163
       };
       im3 << dilateSquVec;
+      testClass<UINT8, supLine<UINT8> > tc;
       dilate(im1, im2, sSE());
       TEST_ASSERT(im2==im3);      
+//       im1.printSelf(1);
+//       im2.printSelf(1);
+//       im3.printSelf(1);
   }
 };
+
 
 
 int main(int argc, char *argv[])
@@ -111,10 +116,9 @@ int main(int argc, char *argv[])
       
       UINT BENCH_NRUNS = 1E3;
       Image_UINT8 im1(1024, 1024), im2(im1);
-      dilate(im1, im2, sSE());
-      dilate(im1, im2, hSE());
-//       BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
-//       BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
+      BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
+      BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
+
       return ts.run();
   
 }
