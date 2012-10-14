@@ -423,16 +423,16 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 	    if (oddSe)
 	      oddLine = s%2!=0;
 
-	    #pragma omp parallel private(l,tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p) firstprivate(pts)
+	    #pragma omp parallel private(tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p) firstprivate(pts)
 	    {
-		#ifdef _OPENMP
+		#ifdef USE_OPEN_MP
 		    tid = omp_get_thread_num();
 		    tmpBuf = _bufs[tid];
 		    tmpBuf2 = _bufs[tid+nthreads];
 		#endif // _OPENMP
 	  
 	  
-		#pragma omp for //schedule(dynamic, nthreads)
+		#pragma omp for schedule(dynamic, nthreads) nowait
 		for (l=0;l<nLines;l++)
 		{
 		    x = pts[0].x + (oddLine && oddSe);
@@ -584,13 +584,13 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_2_H_points(const 
       
       int l, tid;
 
-      #pragma omp parallel private(l, tid, buf)
+      #pragma omp parallel private(tid, buf)
       {
-	  #ifdef _OPENMP
+	  #ifdef USE_OPEN_MP
 	      tid = omp_get_thread_num();
 	      buf = _bufs[tid];
 	  #endif
-	  #pragma omp for
+	  #pragma omp for schedule(dynamic, nthreads) nowait
 	  for (l=0;l<lineCount;l++)
 	  {
 	    // Todo: if oddLines...
@@ -652,14 +652,14 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_H_segment(const i
       
       int l, tid, dx = xsize;
 
-      #pragma omp parallel private(l,tid,buf1,buf2,lineIn) firstprivate(dx)
+      #pragma omp parallel private(tid,buf1,buf2,lineIn) firstprivate(dx)
       {
-	  #ifdef _OPENMP
+	  #ifdef USE_OPEN_MP
 	      tid = omp_get_thread_num();
 	      buf1 = _bufs[tid];
 	      buf2 = _bufs[tid+nthreads];
 	  #endif
-	  #pragma omp for
+	  #pragma omp for schedule(dynamic, nthreads) nowait
 	  for (l=0;l<lineCount;l++)
 	  {
 	    // Todo: if oddLines...

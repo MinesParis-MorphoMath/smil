@@ -108,7 +108,9 @@ int main(int argc, char *argv[])
     BENCH_IMG(inf, im1, val, im3);
     BENCH_IMG(sup, im1, im2, im3);
     BENCH_IMG_STR(sup, "val", im1, val, im3);
+#ifdef __SSE__
     BENCH_IMG(SSE_INT_Sup, im1, im2, im3);
+#endif // __SSE__
     BENCH_IMG(add, im1, im2, im3);
     BENCH_IMG(addNoSat, im1, im2, im3);
     BENCH_IMG(add, im1, val, im3);

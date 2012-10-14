@@ -5,3 +5,5 @@ echo "" | gcc -march=native -v -E - 2>&1 | grep cc1
 Determining what -march=<foo> actually does 
 echo "int main() { return 0; }" | gcc -march=core2 -v -Q -x c - 2>&1
 
+OpenMP
+http://www.idris.fr/data/cours/parallel/openmp/OpenMP_cours.html
