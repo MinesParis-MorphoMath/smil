@@ -432,7 +432,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 		#endif // _OPENMP
 	  
 	  
-		#pragma omp for schedule(dynamic, nthreads) nowait
+		#pragma omp for schedule(dynamic,nthreads) nowait
 		for (l=0;l<nLines;l++)
 		{
 		    x = pts[0].x + (oddLine && oddSe);
@@ -590,7 +590,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_2_H_points(const 
 	      tid = omp_get_thread_num();
 	      buf = _bufs[tid];
 	  #endif
-	  #pragma omp for schedule(dynamic, nthreads) nowait
+	  #pragma omp for schedule(dynamic,nthreads) nowait
 	  for (l=0;l<lineCount;l++)
 	  {
 	    // Todo: if oddLines...
@@ -659,7 +659,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_H_segment(const i
 	      buf1 = _bufs[tid];
 	      buf2 = _bufs[tid+nthreads];
 	  #endif
-	  #pragma omp for schedule(dynamic, nthreads) nowait
+	  #pragma omp for schedule(dynamic,nthreads) nowait
 	  for (l=0;l<lineCount;l++)
 	  {
 	    // Todo: if oddLines...
