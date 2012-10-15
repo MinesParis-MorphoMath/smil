@@ -79,8 +79,8 @@ public:
     typedef typename imageType::volType volType;
     virtual RES_T _exec_single_squSE(const imageType &imIn, imageType &imOut)
     {
-	_exec_single_H_segment(imIn, 1, imOut);
-	_exec_single_V1_segment(imOut, imOut);
+	_exec_single_V1_segment(imIn, imOut);
+	_exec_single_H_segment(imOut, 1, imOut);
 	
 	return RES_OK;
     }  
@@ -136,9 +136,11 @@ public:
 	lineType buf1 = _bufs[0];
 	lineType buf2 = _bufs[nthreads];
 	
-	int l, tid;
+	int l, tid, i, b;
 	int nblocks = imHeight / nthreads;
 
+// 	printf("nblocks: %d\n", nblocks);
+	
 	for (int s=0;s<imIn.getDepth();s++)
 	{
 	    srcLines = srcSlices[s];
@@ -151,7 +153,7 @@ public:
 	    
 	    l = 1;
 	    
-	    #pragma omp parallel private(tid,buf1,buf2)
+	    #pragma omp parallel private(tid,buf1,buf2,i,l,b) num_threads(nthreads)
 	    {
 		#ifdef USE_OPEN_MP
 		    tid = omp_get_thread_num();
@@ -159,19 +161,36 @@ public:
 		    buf2 = _bufs[tid+nthreads];
 		#endif
 		    
- 		#pragma omp for schedule(static,1) 
+ 		#pragma omp for schedule(static, 1)
 		for (b=0;b<nblocks;b++)
-		for (l=1;l<imHeight-1;l++)
 		{
-		    this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
+		    l = b*nthreads;
+		    if (l==0)
+		      this->lineFunction(this->borderBuf, srcLines[l], this->lineLen, buf1);
+		    else
+		      this->lineFunction(srcLines[l-1], srcLines[l], this->lineLen, buf1);
+// 		    printf("pre Proc: %d ; block: %d line: %d\n", tid, b, l);
+    
+		    for (i=0;i<nthreads-1;i++)
+		    {
+			this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
+			this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+			swap(buf1, buf2);
+			l++;
+// 			printf("Proc: %d ; block: %d line: %d\n", tid, b, l);
+		    }
+		    if (l==imHeight-1)
+			this->lineFunction(srcLines[l], this->borderBuf, this->lineLen, buf2);
+		    else
+			this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
 		    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
-		    swap(buf1, buf2);
-		    printf("Proc : %d ; line : %d\n", tid, l);
+// 		    printf("post Proc: %d ; block: %d line: %d\n", tid, b, l);
 		}
+		
 	    }	    
 	    // Last line
-	    this->lineFunction(srcLines[imHeight-1], this->borderBuf, this->lineLen, buf2);
-	    this->lineFunction(buf1, buf2, this->lineLen, destLines[imHeight-1]);
+// 	    this->lineFunction(srcLines[imHeight-1], this->borderBuf, this->lineLen, buf2);
+// 	    this->lineFunction(buf1, buf2, this->lineLen, destLines[imHeight-1]);
 	}
 	return RES_OK;
     }
@@ -212,8 +231,8 @@ class Test_Dilate_Squ : public TestCase
       im3 << dilateSquVec;
       tc(im1, im2, sSE());
       TEST_ASSERT(im2==im3);      
-      im1.printSelf(1);
-      im2.printSelf(1);
+//       im1.printSelf(1);
+//       im2.printSelf(1);
 //       im3.printSelf(1);
   }
 };
@@ -227,12 +246,12 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_Dilate_Squ);
       
       UINT BENCH_NRUNS = 5E3;
-      Image_UINT8 im1(1024, 20), im2(im1);
-//       BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
-//       BENCH_IMG_STR(tc, "sSE", im1, im2, sSE());
-cout << endl;
-      tc(im1, im2, sSE());
-//       return ts.run();
+      Image_UINT8 im1(1024, 1024), im2(im1);
+      BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
+      BENCH_IMG_STR(tc, "sSE", im1, im2, sSE());
+// cout << endl;
+//       tc(im1, im2, sSE());
+      return ts.run();
   
 }
 
