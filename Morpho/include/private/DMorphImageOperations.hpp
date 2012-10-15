@@ -688,7 +688,8 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_V1_segment(const 
     lineType buf1 = _bufs[0];
     lineType buf2 = _bufs[nthreads];
     
-    int l;
+    int l, tid, i, b;
+    int nblocks = imHeight / nthreads;
 
     for (int s=0;s<imIn.getDepth();s++)
     {
@@ -700,16 +701,56 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_V1_segment(const 
 	this->lineFunction(srcLines[0], srcLines[1], this->lineLen, buf1);
 	copyLine<T>(buf1, this->lineLen, destLines[0]);
 	
-	for (l=1;l<imHeight-1;l++)
-	{
-	    this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
-	    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
-	    swap(buf1, buf2);
-  	}
+	l = 1;
 	
-	// Last line
-	this->lineFunction(srcLines[imHeight-1], this->borderBuf, this->lineLen, buf2);
-	this->lineFunction(buf1, buf2, this->lineLen, destLines[imHeight-1]);
+	#pragma omp parallel private(tid,buf1,buf2,i,l,b) num_threads(nthreads)
+	{
+	    #ifdef USE_OPEN_MP
+		tid = omp_get_thread_num();
+		buf1 = _bufs[tid];
+		buf2 = _bufs[tid+nthreads];
+	    #endif
+		
+	    #pragma omp for schedule(static, 1)
+	    for (b=0;b<nblocks;b++)
+	    {
+		l = b*nthreads;
+		if (l==0)
+		  this->lineFunction(this->borderBuf, srcLines[l], this->lineLen, buf1);
+		else
+		  this->lineFunction(srcLines[l-1], srcLines[l], this->lineLen, buf1);
+
+		for (i=0;i<nthreads-1;i++)
+		{
+		    this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
+		    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+		    swap(buf1, buf2);
+		    l++;
+		}
+		if (l==imHeight-1)
+		    this->lineFunction(srcLines[l], this->borderBuf, this->lineLen, buf2);
+		else
+		    this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
+		this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+	    }
+	    
+	}	  
+	// Remaining lines
+	l = nblocks*nthreads;
+	if (l<imHeight)
+	{
+	    this->lineFunction(srcLines[l-1], srcLines[l], this->lineLen, buf1);
+	    while (l<imHeight-1)
+	    {
+		this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
+		this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+		swap(buf1, buf2);
+		l++;
+	    }
+	    // Last line
+	    this->lineFunction(srcLines[l], this->borderBuf, this->lineLen, buf2);
+	    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+	}
     }
     return RES_OK;
 }

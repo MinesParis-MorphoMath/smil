@@ -139,8 +139,6 @@ public:
 	int l, tid, i, b;
 	int nblocks = imHeight / nthreads;
 
-// 	printf("nblocks: %d\n", nblocks);
-	
 	for (int s=0;s<imIn.getDepth();s++)
 	{
 	    srcLines = srcSlices[s];
@@ -169,7 +167,6 @@ public:
 		      this->lineFunction(this->borderBuf, srcLines[l], this->lineLen, buf1);
 		    else
 		      this->lineFunction(srcLines[l-1], srcLines[l], this->lineLen, buf1);
-// 		    printf("pre Proc: %d ; block: %d line: %d\n", tid, b, l);
     
 		    for (i=0;i<nthreads-1;i++)
 		    {
@@ -177,20 +174,31 @@ public:
 			this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
 			swap(buf1, buf2);
 			l++;
-// 			printf("Proc: %d ; block: %d line: %d\n", tid, b, l);
 		    }
 		    if (l==imHeight-1)
 			this->lineFunction(srcLines[l], this->borderBuf, this->lineLen, buf2);
 		    else
 			this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
 		    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
-// 		    printf("post Proc: %d ; block: %d line: %d\n", tid, b, l);
 		}
 		
-	    }	    
-	    // Last line
-// 	    this->lineFunction(srcLines[imHeight-1], this->borderBuf, this->lineLen, buf2);
-// 	    this->lineFunction(buf1, buf2, this->lineLen, destLines[imHeight-1]);
+	    }	  
+	    // Remaining lines
+	    l = nblocks*nthreads;
+	    if (l<imHeight)
+	    {
+		this->lineFunction(srcLines[l-1], srcLines[l], this->lineLen, buf1);
+		while (l<imHeight-1)
+		{
+		    this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
+		    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+		    swap(buf1, buf2);
+		    l++;
+		}
+		// Last line
+		this->lineFunction(srcLines[l], this->borderBuf, this->lineLen, buf2);
+		this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+	    }
 	}
 	return RES_OK;
     }
@@ -248,7 +256,7 @@ int main(int argc, char *argv[])
       UINT BENCH_NRUNS = 5E3;
       Image_UINT8 im1(1024, 1024), im2(im1);
       BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
-      BENCH_IMG_STR(tc, "sSE", im1, im2, sSE());
+      BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
 // cout << endl;
 //       tc(im1, im2, sSE());
       return ts.run();
