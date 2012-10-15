@@ -68,6 +68,119 @@ class Test_Dilate_Hex : public TestCase
   }
 };
 
+template <class T, class lineFunction_T>
+class testClass : public unaryMorphImageFunction<T, lineFunction_T > 
+{
+public:
+    typedef imageFunctionBase<T> parentClass;
+    typedef Image<T> imageType;
+    typedef typename imageType::lineType lineType;
+    typedef typename imageType::sliceType sliceType;
+    typedef typename imageType::volType volType;
+    virtual RES_T _exec_single_squSE(const imageType &imIn, imageType &imOut)
+    {
+	_exec_single_H_segment(imIn, 1, imOut);
+	_exec_single_V1_segment(imOut, imOut);
+	
+	return RES_OK;
+    }  
+    
+    virtual RES_T _exec_single_H_segment(const imageType &imIn, int xsize, imageType &imOut)
+    {
+	  int lineCount = imIn.getLineCount();
+	  
+	  int nthreads = Core::getInstance()->getNumberOfThreads();
+	  lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
+	  lineType buf1 = _bufs[0];
+	  lineType buf2 = _bufs[nthreads];
+	  
+	  sliceType srcLines = imIn.getLines();
+	  sliceType destLines = imOut.getLines();
+	  
+	  lineType lineIn;
+	  
+	  int l, tid, dx = xsize;
+
+	  #pragma omp parallel private(tid,buf1,buf2,lineIn)
+	  {
+	      #ifdef USE_OPEN_MP
+		  tid = omp_get_thread_num();
+		  buf1 = _bufs[tid];
+		  buf2 = _bufs[tid+nthreads];
+	      #endif
+	      #pragma omp for schedule(dynamic,nthreads) nowait
+	      for (l=0;l<lineCount;l++)
+	      {
+		// Todo: if oddLines...
+		  lineIn = srcLines[l];
+		  shiftLine<T>(lineIn, dx, this->lineLen, buf1, this->borderValue);
+		  this->lineFunction._exec(buf1, lineIn, this->lineLen, buf2);
+		  shiftLine<T>(lineIn, -dx, this->lineLen, buf1, this->borderValue);
+		  this->lineFunction._exec(buf1, buf2, this->lineLen, destLines[l]);
+	      }
+	  }
+	  
+	  return RES_OK;
+    }
+
+    virtual RES_T _exec_single_V1_segment(const imageType &imIn, imageType &imOut)
+    {
+	int imHeight = imIn.getHeight();
+	volType srcSlices = imIn.getSlices();
+	volType destSlices = imOut.getSlices();
+	sliceType srcLines;
+	sliceType destLines;
+
+	int nthreads = Core::getInstance()->getNumberOfThreads();
+	lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
+	lineType buf1 = _bufs[0];
+	lineType buf2 = _bufs[nthreads];
+	
+	int l, tid;
+	int nblocks = imHeight / nthreads;
+
+	for (int s=0;s<imIn.getDepth();s++)
+	{
+	    srcLines = srcSlices[s];
+	    destLines = destSlices[s];
+
+	    // First line
+	    this->lineFunction(srcLines[0], this->borderBuf, this->lineLen, destLines[0]);
+	    this->lineFunction(srcLines[0], srcLines[1], this->lineLen, buf1);
+	    copyLine<T>(buf1, this->lineLen, destLines[0]);
+	    
+	    l = 1;
+	    
+	    #pragma omp parallel private(tid,buf1,buf2)
+	    {
+		#ifdef USE_OPEN_MP
+		    tid = omp_get_thread_num();
+		    buf1 = _bufs[tid];
+		    buf2 = _bufs[tid+nthreads];
+		#endif
+		    
+ 		#pragma omp for schedule(static,1) 
+		for (b=0;b<nblocks;b++)
+		for (l=1;l<imHeight-1;l++)
+		{
+		    this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
+		    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+		    swap(buf1, buf2);
+		    printf("Proc : %d ; line : %d\n", tid, l);
+		}
+	    }	    
+	    // Last line
+	    this->lineFunction(srcLines[imHeight-1], this->borderBuf, this->lineLen, buf2);
+	    this->lineFunction(buf1, buf2, this->lineLen, destLines[imHeight-1]);
+	}
+	return RES_OK;
+    }
+
+  
+};
+
+testClass<UINT8, supLine<UINT8> > tc;
+
 class Test_Dilate_Squ : public TestCase
 {
   virtual void run()
@@ -97,10 +210,10 @@ class Test_Dilate_Squ : public TestCase
 	213, 213, 163, 163, 163
       };
       im3 << dilateSquVec;
-      dilate(im1, im2, sSE());
+      tc(im1, im2, sSE());
       TEST_ASSERT(im2==im3);      
-//       im1.printSelf(1);
-//       im2.printSelf(1);
+      im1.printSelf(1);
+      im2.printSelf(1);
 //       im3.printSelf(1);
   }
 };
@@ -113,12 +226,13 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_Dilate_Hex);
       ADD_TEST(ts, Test_Dilate_Squ);
       
-      UINT BENCH_NRUNS = 1E3;
-      Image_UINT8 im1(1024, 1024), im2(im1);
-      BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
-      BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
-
-      return ts.run();
+      UINT BENCH_NRUNS = 5E3;
+      Image_UINT8 im1(1024, 20), im2(im1);
+//       BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
+//       BENCH_IMG_STR(tc, "sSE", im1, im2, sSE());
+cout << endl;
+      tc(im1, im2, sSE());
+//       return ts.run();
   
 }
 
