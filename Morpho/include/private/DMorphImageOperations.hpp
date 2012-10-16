@@ -347,6 +347,10 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(const imageType &
 	return _exec_single_hexSE(imIn, imOut);
       case SE_Squ:
 	return _exec_single_squSE(imIn, imOut);
+      case SE_Horiz:
+	return _exec_single_H_segment(imIn, 1, imOut);
+      case SE_Vert:
+	return _exec_single_V1_segment(imIn, imOut);
       default:
 	return _exec_single_generic(imIn, imOut, se);
     }
@@ -409,7 +413,8 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 	//lineType *srcLines;
 	lineType *destLines, lineOut;
 	
-	bool oddSe = se.odd, oddLine = 0;
+	bool oddSe = se.odd; 
+	int oddLine = 0;
 
 	int l, p;
 	int tid;
@@ -420,8 +425,6 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 	for (int s=0;s<nSlices;s++)
 	{
 	    destLines = destSlices[s];
-	    if (oddSe)
-	      oddLine = s%2!=0;
 
 	    #pragma omp parallel private(tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p) firstprivate(pts)
 	    {
@@ -435,18 +438,20 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 		#pragma omp for schedule(dynamic,nthreads) nowait
 		for (l=0;l<nLines;l++)
 		{
-		    x = pts[0].x + (oddLine && oddSe);
-		    y = l - pts[0].y;
+		    if (oddSe)
+		      oddLine = ((l+1)%2 && (s+1)%2);
 		    z = s + pts[0].z;
+		    y = l + pts[0].y;
+		    x = pts[0].x + (oddLine && y%2);
 
 		    _extract_translated_line(tmpIm, x, y, z, tmpBuf);
 		    
 		    lineOut = destLines[l];
 		    for (p=1;p<sePtsNumber;p++)
 		    {
-			x = -pts[p].x + (oddLine && oddSe);
-			y = l - pts[p].y;
 			z = s + pts[p].z;
+			y = l + pts[p].y;
+			x = pts[p].x + (oddLine && y%2);
 			
 			_extract_translated_line(tmpIm, x, y, z, tmpBuf2);
 			lineFunction._exec(tmpBuf, tmpBuf2, this->lineLen, tmpBuf);
@@ -564,8 +569,8 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(const image
 template <class T, class lineFunction_T>
 RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_squSE(const imageType &imIn, imageType &imOut)
 {
-    _exec_single_H_segment(imIn, 1, imOut);
-    _exec_single_V1_segment(imOut, imOut);
+    _exec_single_V1_segment(imIn, imOut);
+    _exec_single_H_segment(imOut, 1, imOut);
     
     return RES_OK;
 }
@@ -683,7 +688,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_V1_segment(const 
     sliceType srcLines;
     sliceType destLines;
 
-    int nthreads = Core::getInstance()->getNumberOfThreads();
+    int nthreads = MIN(Core::getInstance()->getNumberOfThreads(), imHeight-1);
     lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
     lineType buf1 = _bufs[0];
     lineType buf2 = _bufs[nthreads];

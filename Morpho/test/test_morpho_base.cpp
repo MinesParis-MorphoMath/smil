@@ -39,32 +39,47 @@ class Test_Dilate_Hex : public TestCase
       typedef UINT8 dataType;
       typedef Image<dataType> imType;
       
-      imType im1(5,5);
+      imType im1(7,7);
       imType im2(im1);
       imType im3(im1);
       
       dataType vec1[] = {
-	114, 133, 74, 160, 57, 
-	23, 73, 9, 196, 118, 
-	154, 248, 165, 159, 210, 
-	213, 74, 8, 163, 3, 
-	158, 67, 52, 103, 163
+	114, 133,  74, 160,  57,  25,  37,
+	 23,  73,   9, 196, 118,  23, 110,
+	154, 248, 165, 159, 210,  47,  58,
+	213,  74,   8, 163,   3, 240, 213,
+	158,  67,  52, 103, 163, 158,   9,
+	 85,  36, 124,  12,   7,  56, 253,
+	214, 148,  20, 200,  53,  10,  58
       };
       
       im1 << vec1;
       
       dataType dilateHexVec[] = {
-	133, 133, 160, 196, 196, 
-	248, 248, 196, 210, 210, 
-	248, 248, 248, 210, 210, 
-	248, 248, 165, 210, 210, 
-	213, 213, 103, 163, 163
+	133, 133, 160, 196, 196, 118, 110, 
+	248, 248, 196, 210, 210, 118, 110, 
+	248, 248, 248, 210, 210, 240, 240, 
+	248, 248, 165, 210, 240, 240, 240, 
+	213, 213, 124, 163, 163, 240, 253, 
+	214, 148, 200, 200, 163, 253, 253, 
+	214, 214, 200, 200, 200, 58, 253
       };
       im3 << dilateHexVec;
+      
+      // The specialized way
       dilate(im1, im2, hSE());
+      TEST_ASSERT(im2==im3);      
+      
+      // The generic way
+      StrElt se;
+      se.points = hSE().points;
+      se.odd = true;
+      dilate(im1, im2, se);
+      TEST_ASSERT(im2==im3);      
+      
+//       im1.printSelf(1);
 //       im2.printSelf(1);
 //       im3.printSelf(1);
-      TEST_ASSERT(im2==im3);      
   }
 };
 
@@ -131,7 +146,7 @@ public:
 	sliceType srcLines;
 	sliceType destLines;
 
-	int nthreads = Core::getInstance()->getNumberOfThreads();
+	int nthreads = MIN(Core::getInstance()->getNumberOfThreads(), imHeight-1);
 	lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
 	lineType buf1 = _bufs[0];
 	lineType buf2 = _bufs[nthreads];
@@ -215,29 +230,41 @@ class Test_Dilate_Squ : public TestCase
       typedef UINT8 dataType;
       typedef Image<dataType> imType;
       
-      imType im1(5,5);
+      imType im1(7,7);
       imType im2(im1);
       imType im3(im1);
       
       dataType vec1[] = {
-	114, 133, 74, 160, 57, 
-	23, 73, 9, 196, 118, 
-	154, 248, 165, 159, 210, 
-	213, 74, 8, 163, 3, 
-	158, 67, 52, 103, 163
+	114, 133,  74, 160,  57,  25,  37,
+	 23,  73,   9, 196, 118,  23, 110,
+	154, 248, 165, 159, 210,  47,  58,
+	213,  74,   8, 163,   3, 240, 213,
+	158,  67,  52, 103, 163, 158,   9,
+	 85,  36, 124,  12,   7,  56, 253,
+	214, 148,  20, 200,  53,  10,  58
       };
       
       im1 << vec1;
       
       dataType dilateSquVec[] = {
-	133, 133, 196, 196, 196, 
-	248, 248, 248, 210, 210, 
-	248, 248, 248, 210, 210, 
-	248, 248, 248, 210, 210, 
-	213, 213, 163, 163, 163
+	133, 133, 196, 196, 196, 118, 110, 
+	248, 248, 248, 210, 210, 210, 110, 
+	248, 248, 248, 210, 240, 240, 240, 
+	248, 248, 248, 210, 240, 240, 240, 
+	213, 213, 163, 163, 240, 253, 253, 
+	214, 214, 200, 200, 200, 253, 253, 
+	214, 214, 200, 200, 200, 253, 253
       };
       im3 << dilateSquVec;
-      tc(im1, im2, sSE());
+
+      // The specialized way
+      dilate(im1, im2, sSE());
+      TEST_ASSERT(im2==im3);      
+      
+      // The generic way
+      StrElt se;
+      se.points = sSE().points;
+      dilate(im1, im2, se);
       TEST_ASSERT(im2==im3);      
 //       im1.printSelf(1);
 //       im2.printSelf(1);
@@ -255,8 +282,8 @@ int main(int argc, char *argv[])
       
       UINT BENCH_NRUNS = 5E3;
       Image_UINT8 im1(1024, 1024), im2(im1);
-      BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
-      BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
+//       BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
+//       BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
 // cout << endl;
 //       tc(im1, im2, sSE());
       return ts.run();

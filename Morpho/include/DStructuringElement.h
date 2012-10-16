@@ -46,7 +46,9 @@ class StrElt : public BaseObject
   public:
     StrElt(UINT s=1)
       : BaseObject("StrElt"),
-	seT(SE_Generic), size(s) 
+	seT(SE_Generic), 
+	size(s), 
+	odd(false)
     {
     }
     ~StrElt()
@@ -273,7 +275,7 @@ class CrossSE : public StrElt
 };
 
 /**
- * Horizontal structuring element.
+ * Horizontal segment structuring element.
  * 
  * Points :
  * 
@@ -299,7 +301,7 @@ class HorizSE : public StrElt
 };
 
 /**
- * Verical structuring element.
+ * Vertical segment structuring element.
  * 
  * Points :
  * 
