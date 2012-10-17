@@ -160,8 +160,8 @@ public:
     UINT index;
     bool value;
     operator bool();
-    Bit& operator = (bool v);
-    Bit& operator = (Bit &src);
+    Bit& operator = (const bool v);
+    Bit& operator = (const Bit &src);
 };
 
 
@@ -194,6 +194,14 @@ inline Bit BitArray::operator [] (UINT i)
 {
     Bit b;
     b.bitArray = this;
+    b.index = i;
+    return b;
+}
+
+inline Bit BitArray::operator [] (UINT i) const
+{
+    Bit b;
+    b.bitArray = (BitArray*)this;
     b.index = i;
     return b;
 }
@@ -261,7 +269,7 @@ inline Bit::operator bool()
     else return value;
 }
 
-inline Bit& Bit::operator = (bool v)
+inline Bit& Bit::operator = (const bool v)
 {
     if (bitArray)
         bitArray->setValue(index, v);
@@ -269,7 +277,7 @@ inline Bit& Bit::operator = (bool v)
     return *this;
 }
 
-inline Bit& Bit::operator = (Bit &src)
+inline Bit& Bit::operator = (const Bit &src)
 {
     if (bitArray)
     {

@@ -67,7 +67,7 @@ inline void imageFunctionBase<T>::deleteAlignedBuffers()
 
     for (UINT i=0;i<bufferNumber;i++)
       ImDtTypes<T>::deleteLine(alignedBuffers[i]);
-    delete alignedBuffers;
+    delete[] alignedBuffers;
     alignedBuffers = NULL;
 }
 

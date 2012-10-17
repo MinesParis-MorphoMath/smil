@@ -141,6 +141,12 @@ void Image<Bit>::clone(const Image<Bit> &rhs)
     modified();
 }
 
+template <>
+RES_T Image<Bit>::setPixel(UINT offset, const Bit &value)
+{
+    this->lines[offset/width][offset%width] = value;
+}
+
 
 
 #endif // SMIL_WRAP_Bit

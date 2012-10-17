@@ -56,6 +56,9 @@ RES_T Image<Bit>::deallocate(void);
 template <>
 void Image<Bit>::clone(const Image<Bit> &rhs);
 
+template <>
+RES_T Image<Bit>::setPixel(UINT offset, const Bit &value);
+
 
 
 #endif // _IMAGE_BIN_HXX

@@ -41,10 +41,11 @@ class imageFunctionBase
 {
 public:
     typedef Image<T> imageType;
+    typedef typename imageType::sliceType sliceType;
     typedef typename imageType::lineType lineType;
     typedef typename imageType::pixelType pixelType;
 
-    lineType *alignedBuffers;
+    sliceType alignedBuffers;
     UINT32 bufferNumber;
     UINT32 bufferLength;
     UINT32 bufferSize;

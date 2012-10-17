@@ -58,8 +58,8 @@ inline void copyLine<Bit>(const typename Image<Bit>::lineType &lIn, const int &s
     }
     else
     {
-	for (int i=0;i<size;i++)
-	  lOut[i] = lIn[i];
+// 	for (int i=0;i<size;i++)
+// 	  lOut[i] = lIn[i];
     }
 }
 
@@ -221,7 +221,7 @@ struct invLine<Bit> : public unaryLineFunctionBase<Bit>
     inline void _exec(BitArray lIn, int size, BitArray lOut)
     {
         for (int i=0;i<BitArray::INT_SIZE(size);i++)
-            lOut.intArray[i] = ~lIn.intArray[i];
+            lOut.intArray[i] = ~(lIn.intArray[i]);
     }
 };
 

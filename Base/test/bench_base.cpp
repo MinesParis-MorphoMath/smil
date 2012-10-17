@@ -30,6 +30,7 @@
 #include "DCore.h"
 #include "DBase.h"
 
+#include "DImage_Bit.h"
 
 #ifdef __SSE__
 
@@ -74,30 +75,31 @@ void SSE_INT_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
 
 int main(int argc, char *argv[])
 {
-    Image_UINT8 im1(1024,1024);
-    Image_UINT8 im2;
-    Image_UINT8 im3;
-
-    Image_UINT16 im4;
-
     int sx = 1024; //24;
     int sy = 1024;
+    
+    Image_UINT8 im1(sx, sy);
+    Image_UINT8 im2(im1);
+    Image_UINT8 im3(im1);
+
+    Image_UINT16 im4(im1);
+
 //     sx = 40;
 //     sy = 20;
 
-    Image<bool> b1(sx, sy), b2(sx, sy), b3(sx, sy);
+    Image<Bit> b1(sx, sy), b2(b1), b3(b1);
     
-    im1.setSize(sx, sy);
-    im2.setSize(sx, sy);
-    im3.setSize(sx, sy);
-    im4.setSize(sx, sy);
-
-    fill(im1, UINT8(100));
-    fill(im2, UINT8(5));
-
     UINT8 val = 10;
+    UINT BENCH_NRUNS = 1E4;
     
-    UINT BENCH_NRUNS = 1E3;
+    inf(b1, b2, b3);
+//     BENCH_IMG(inv, im1, im2);
+    BENCH_IMG(inv, b1, b2);
+    BENCH_IMG(fill, b1, Bit(0));
+    BENCH_IMG(inf, b1, b2, b3);
+//     BENCH_IMG(inf, b1, Bit(1), im3);
+    BENCH_IMG(sup, b1, b2, b3);
+    return 1;
     
 //     BENCH_IMG(sup, b1, b2, b3);
     BENCH_IMG(fill, im1, val);

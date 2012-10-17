@@ -288,7 +288,7 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
     virtual RES_T _exec_single_H_segment(const imageType &imIn, int xsize, imageType &imOut);
     virtual RES_T _exec_single_V1_segment(const imageType &imIn, imageType &imOut);
     
-    inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt se) { return this->_exec(imIn, imOut, se); }
+    inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt &se) { return this->_exec(imIn, imOut, se); }
 
     lineFunction_T lineFunction;
     
