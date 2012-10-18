@@ -178,7 +178,7 @@ RES_T readVTK(const char *filename, Image<T> &image)
  * VTK file write
  */
 template <class T>
-RES_T writeVTK(Image<T> &image, const char *filename, bool binary=true)
+RES_T writeVTK(const Image<T> &image, const char *filename, bool binary=true)
 {
     std::ofstream fp;
     

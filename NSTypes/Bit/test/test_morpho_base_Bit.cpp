@@ -31,7 +31,7 @@
 #include "DMorpho.h"
 #include "DGui.h"
 #include "DIO.h"
-#include "DBitArray.h"
+#include "DBit.h"
 
 class Test_Dilate_Hex : public TestCase
 {

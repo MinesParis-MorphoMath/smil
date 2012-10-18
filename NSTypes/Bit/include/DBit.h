@@ -31,6 +31,34 @@
 #define _DBIT_H
 
 #include "DBitArray.h"
+#include "DImage_Bit.h"
+#include "DLineArith_Bit.h"
+
+#include "Morpho/include/private/DMorphoArrow.hpp"
+#include "Morpho/include/private/DMorphImageOperations.hpp"
+
+
+template <>
+RES_T readVTK<Bit>(const char *filename, Image<Bit> &image)
+{
+}
+
+template <>
+RES_T writeVTK<Bit>(const Image<Bit> &image, const char *filename, bool binary)
+{
+}
+
+template <class lineFunction_T>
+class unaryMorphArrowImageFunction<Bit, lineFunction_T>
+{
+public:
+    typedef Image<Bit> imageType;
+    unaryMorphArrowImageFunction(Bit b=0) {}
+    inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt &se) {  }
+    RES_T _exec_single(const Image<Bit> &imIn, Image<Bit> &imOut, const StrElt &se) {}
+    
+};
+
 
 #endif // _DBIT_H
 

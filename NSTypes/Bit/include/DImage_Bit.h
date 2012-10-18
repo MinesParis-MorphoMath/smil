@@ -36,6 +36,7 @@
 #include "DTypes.h"
 #include "DBitArray.h"
 
+void LAFUNC();
 
 template <>
 void Image<Bit>::init();

@@ -159,9 +159,10 @@ public:
     BitArray *bitArray;
     UINT index;
     bool value;
-    operator bool();
+    operator bool() const;
     Bit& operator = (const bool v);
     Bit& operator = (const Bit &src);
+    inline bool operator< (const Bit &src) const { return value<src.value; }
 };
 
 
@@ -262,7 +263,7 @@ inline ostream& BitArray::printSelf(ostream &os)
 
 
 
-inline Bit::operator bool()
+inline Bit::operator bool() const
 {
     if (bitArray)
 	return bitArray->getValue(index);

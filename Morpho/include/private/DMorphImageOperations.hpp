@@ -31,7 +31,7 @@
 #define _MORPH_IMAGE_OPERATIONS_HXX
 
 #include "DCore.h"
-#include "DStructuringElement.h"
+#include "Morpho/include/DStructuringElement.h"
 
 #ifdef USE_OPEN_MP
 #include <omp.h>
