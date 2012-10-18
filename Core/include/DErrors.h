@@ -31,6 +31,7 @@
 #define _DERRORS_H
 
 #include <exception>
+#include <iostream>
 #include <sstream>
 
 using namespace std;

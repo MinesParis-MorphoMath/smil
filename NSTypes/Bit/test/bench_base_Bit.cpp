@@ -30,44 +30,7 @@
 #include "DCore.h"
 #include "DBase.h"
 
-#ifdef __SSE__
-
-#include <emmintrin.h>
-
-void SSE_INT_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
-{
-    __m128i r0,r1;
-    int size = im1.getWidth();
-    int nlines = im1.getLineCount();
-    
-    UINT8 *p1 = im1.getPixels();
-    UINT8 *p2 = im2.getPixels();
-    UINT8 *p3 = im3.getPixels();
-
-//     addLine<UINT8> al;
-
-    for (int l=0;l<nlines;l++)
-    {
-	__m128i r0,r1;
-	__m128i *l1 = (__m128i*)p1;
-	__m128i *l2 = (__m128i*)p2;
-	__m128i *l3 = (__m128i*)p3;
-	
-	for(int i=0 ; i<size ; i+=16, l1++, l2++, l3++)
-	{
-	    r0 = _mm_load_si128(l1);
-	    r1 = _mm_load_si128(l2);
-	    r1 = _mm_max_epu8(r0, r1);
-	    _mm_store_si128(l3, r1);
-	}
-	
-	p1 += size;
-	p2 += size;
-	p3 += size;
-    }
-};
-
-#endif // __SSE__
+#include "DBit.h"
 
 
 
@@ -85,9 +48,21 @@ int main(int argc, char *argv[])
 //     sx = 40;
 //     sy = 20;
 
+    Image<Bit> b1(sx, sy), b2(b1), b3(b1);
+    
     UINT8 val = 10;
     UINT BENCH_NRUNS = 1E4;
     
+    inf(b1, b2, b3);
+//     BENCH_IMG(inv, im1, im2);
+    BENCH_IMG(inv, b1, b2);
+    BENCH_IMG(fill, b1, Bit(0));
+    BENCH_IMG(inf, b1, b2, b3);
+//     BENCH_IMG(inf, b1, Bit(1), im3);
+    BENCH_IMG(sup, b1, b2, b3);
+    return 1;
+    
+//     BENCH_IMG(sup, b1, b2, b3);
     BENCH_IMG(fill, im1, val);
     BENCH_IMG(copy, im1, im3);
     BENCH_CROSS_IMG(copy, im1, im4);

@@ -27,24 +27,38 @@
  */
 
 
+#ifndef _IMAGE_BIT_H
+#define _IMAGE_BIT_H
 
-#include "DCore.h"
-#include "DMorpho.h"
 
-int main(int argc, char *argv[])
-{
-    Image_UINT8 im1(1024, 1024);
-    Image_UINT8 im2(im1);
-    
-    UINT BENCH_NRUNS = 1E3;
-    BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(erode, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(erode, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(open, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(open, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(close, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(close, "sSE", im1, im2, sSE());
-        
-}
+#include "DImage.hpp"
+#include "DImage.hxx"
+#include "DTypes.h"
+#include "DBitArray.h"
 
+
+template <>
+void Image<Bit>::init();
+
+template <>
+void* Image<Bit>::getVoidPointer(void);
+
+template <>
+RES_T Image<Bit>::restruct(void);
+
+template <>
+RES_T Image<Bit>::allocate(void);
+
+template <>
+RES_T Image<Bit>::deallocate(void);
+
+
+template <>
+void Image<Bit>::clone(const Image<Bit> &rhs);
+
+template <>
+RES_T Image<Bit>::setPixel(UINT offset, const Bit &value);
+
+
+
+#endif // _IMAGE_BIN_HXX

@@ -45,6 +45,22 @@ int main(int argc, char *argv[])
     BENCH_IMG_STR(open, "sSE", im1, im2, sSE());
     BENCH_IMG_STR(close, "hSE", im1, im2, hSE());
     BENCH_IMG_STR(close, "sSE", im1, im2, sSE());
-        
+    
+#ifdef SMIL_WRAP_Bit
+    cout << endl;
+    
+    Image<Bit> bit_im1(im1);
+    Image<Bit> bit_im2(bit_im1);
+    
+    BENCH_IMG_STR(dilate, "hSE", bit_im1, bit_im2, hSE());
+    BENCH_IMG_STR(dilate, "sSE", bit_im1, bit_im2, sSE());
+    BENCH_IMG_STR(erode, "hSE", bit_im1, bit_im2, hSE());
+    BENCH_IMG_STR(erode, "sSE", bit_im1, bit_im2, sSE());
+    BENCH_IMG_STR(open, "hSE", bit_im1, bit_im2, hSE());
+    BENCH_IMG_STR(open, "sSE", bit_im1, bit_im2, sSE());
+    BENCH_IMG_STR(close, "hSE", bit_im1, bit_im2, hSE());
+    BENCH_IMG_STR(close, "sSE", bit_im1, bit_im2, sSE());
+#endif // SMIL_WRAP_Bit
+    
 }
 

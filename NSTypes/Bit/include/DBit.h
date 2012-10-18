@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,24 +27,10 @@
  */
 
 
+#ifndef _DBIT_H
+#define _DBIT_H
 
-#include "DCore.h"
-#include "DMorpho.h"
+#include "DBitArray.h"
 
-int main(int argc, char *argv[])
-{
-    Image_UINT8 im1(1024, 1024);
-    Image_UINT8 im2(im1);
-    
-    UINT BENCH_NRUNS = 1E3;
-    BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(erode, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(erode, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(open, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(open, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(close, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(close, "sSE", im1, im2, sSE());
-        
-}
+#endif // _DBIT_H
 

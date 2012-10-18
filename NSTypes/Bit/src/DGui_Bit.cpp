@@ -29,46 +29,29 @@
 #ifdef USE_QT
 
 
-#include "DQtImageViewer.hpp"
+#include "Gui/include/private/DQtImageViewer.hpp"
 #include "Qt/ImageViewerWidget.h"
 #include "DImage.hpp"
 
+#include "DBitArray.h"
 
 template <>
-void _DGUI QtImageViewer<UINT8>::drawImage()
+void _DGUI QtImageViewer<Bit>::drawImage()
 {
-    int sliceNbr = slider->value();
-    Image<UINT8>::sliceType lines = this->image->getSlices()[sliceNbr];
-
-    UINT w = this->image->getWidth();
-    UINT h = this->image->getHeight();
-
-    for (UINT j=0;j<h;j++, lines++)
-        memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
-}
-
-
-
-#ifdef SMIL_WRAP_BIN
-
-// #include "DBitArray.h"
-
-template <>
-void _DGUI QtImageViewer<BIN>::drawImage()
-{
-    Image<BIN>::lineType pixels = this->image->getPixels();
+    Image<Bit>::lineType pixels = this->image->getPixels();
     UINT w = this->image->getWidth();
     UINT h = this->image->getHeight();
 
     this->setImageSize(w, h);
 
+    BIN* data = (BIN*)pixels.intArray;
     const BIN *lIn;
     UINT8 *lOut, *lEnd;
     UINT bCount = (w-1)/BIN::SIZE + 1;
 
     for (int j=0;j<h;j++)
     {
-	lIn = pixels + j*bCount;
+	lIn = data + j*bCount;
 	lOut = this->qImage->scanLine(j);
 	lEnd = lOut + w;
 
@@ -85,8 +68,6 @@ void _DGUI QtImageViewer<BIN>::drawImage()
 	}
     }
 }
-
-#endif // SMIL_WRAP_BIN
 
 
 

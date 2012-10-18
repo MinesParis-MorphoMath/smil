@@ -159,8 +159,8 @@ void QtImageViewer<UINT8>::drawImage();
 
 
 #ifdef SMIL_WRAP_Bit
-template <>
-void QtImageViewer<Bit>::drawImage();
+// template <>
+// void QtImageViewer<Bit>::drawImage();
 #endif // SMIL_WRAP_Bit
 
 

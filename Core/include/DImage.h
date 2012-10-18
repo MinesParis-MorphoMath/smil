@@ -38,7 +38,7 @@
 #endif // SMIL_WRAP_BIN
 
 #ifdef SMIL_WRAP_Bit
-#include "DImage_Bit.h"
+// #include "DImage_Bit.h"
 #endif // SMIL_WRAP_BIN
 
 

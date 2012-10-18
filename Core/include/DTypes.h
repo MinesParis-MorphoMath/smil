@@ -34,9 +34,5 @@
 #include "DTypes.hpp"
 
 
-// #ifdef SMIL_WRAP_Bit
-#include "DBitArray.h"
-// #endif // SMIL_WRAP_Bit
-
 
 #endif // _D_TYPES_H

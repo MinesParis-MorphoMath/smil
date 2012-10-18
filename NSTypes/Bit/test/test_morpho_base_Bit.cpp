@@ -31,6 +31,7 @@
 #include "DMorpho.h"
 #include "DGui.h"
 #include "DIO.h"
+#include "DBitArray.h"
 
 class Test_Dilate_Hex : public TestCase
 {
@@ -273,6 +274,90 @@ class Test_Dilate_Squ : public TestCase
   }
 };
 
+template <>
+RES_T copy<Bit>(const Image<Bit> &imIn, Image<Bit> &imOut)
+{
+    ASSERT_ALLOCATED(&imIn, &imOut);
+  
+    if (!CHECK_SAME_SIZE(&imIn, &imOut))
+	return copy<Bit,Bit>(imIn, 0, 0, 0, imOut, 0, 0, 0);
+
+    typename Image<Bit>::sliceType l1 = imIn.getLines();
+    typename Image<Bit>::sliceType l2 = imOut.getLines();
+
+    UINT width = imIn.getWidth();
+    
+    for (UINT i=0;i<imIn.getLineCount();i++)
+      copyLine<Bit>(l1[i], width, l2[i]);
+
+    imOut.modified();
+    return RES_OK;
+}
+
+class Test_Bit : public TestCase
+{
+  virtual void run()
+  {
+      typedef Bit dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+      
+      bool vec1[] = {
+	0, 0, 0, 0, 0, 1, 1,
+	1, 1, 0, 0, 0, 1, 0,
+	0, 0, 0, 0, 0, 1, 0,
+	0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 1, 0, 0,
+	0, 0, 0, 0, 0, 0, 1,
+	0, 1, 0, 0, 0, 1, 1,
+      };
+      
+      for (int i=0; i<49; i++)
+	im1.setPixel(i, vec1[i]);
+      im1.printSelf(1);
+      
+      
+//       fill(im2, Bit(1));
+//       im2.printSelf(1);
+      copy(im1, im2);
+//       fill
+      im2.printSelf(1);
+      
+//       im1 << vec1;
+//       im1.printSelf(1);
+      
+      dataType dilateSquVec[] = {
+	1, 1, 1, 0, 1, 1, 1,
+	1, 1, 1, 0, 1, 1, 1,
+	1, 1, 1, 0, 1, 1, 1,
+	0, 0, 0, 1, 1, 1, 1,
+	0, 0, 0, 1, 1, 1, 1,
+	1, 1, 1, 1, 1, 1, 1,
+	1, 1, 1, 0, 1, 1, 1
+      };
+      im3 << dilateSquVec;
+      for (int i=0; i<49; i++)
+	im3.setPixel(i, dilateSquVec[i]);
+
+      // The specialized way
+      dilate(im1, im2, sSE());
+      TEST_ASSERT(im2==im3);      
+//       im2.printSelf(1);
+      
+      // The generic way
+      StrElt se;
+      se.points = sSE().points;
+      dilate(im1, im2, se);
+      TEST_ASSERT(im2==im3);      
+//       im1.printSelf(1);
+//       im2.printSelf(1);
+//       im3.printSelf(1);
+  }
+};
+
 
 
 int main(int argc, char *argv[])
@@ -280,6 +365,7 @@ int main(int argc, char *argv[])
       TestSuite ts;
       ADD_TEST(ts, Test_Dilate_Hex);
       ADD_TEST(ts, Test_Dilate_Squ);
+      ADD_TEST(ts, Test_Bit);
       
       UINT BENCH_NRUNS = 5E3;
       Image_UINT8 im1(1024, 1024), im2(im1);

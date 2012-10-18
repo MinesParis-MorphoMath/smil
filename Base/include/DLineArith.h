@@ -41,7 +41,7 @@
 #endif // SMIL_WRAP_BIN
 
 #ifdef SMIL_WRAP_Bit
-#include "DLineArith_Bit.h"
+// #include "DLineArith_Bit.h"
 #endif // SMIL_WRAP_BIN
 
 
