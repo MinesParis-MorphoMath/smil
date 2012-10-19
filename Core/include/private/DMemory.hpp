@@ -33,27 +33,30 @@
 
 #if defined(__MINGW32__)
 
-#if __GNUC__ < 4
-#include <malloc.h>
-#define MALLOC(ptr,size, align)  ptr = __mingw_aligned_malloc(size,align)
-#define FREE(p)                  __mingw_aligned_free(p)
-#else
-#include <mm_malloc.h>
-#define MALLOC(ptr,size,align)   ptr = _mm_malloc(size,align)
-#define FREE(p)                  _mm_free(p)
-#endif
+    #if __GNUC__ < 4
+	#include <malloc.h>
+	#define MALLOC(ptr,size, align)  ptr = __mingw_aligned_malloc(size,align)
+	#define FREE(p)                  __mingw_aligned_free(p)
+    #else // __GNUC__ < 4
+	#include <mm_malloc.h>
+	#define MALLOC(ptr,size,align)   ptr = _mm_malloc(size,align)
+	#define FREE(p)                  _mm_free(p)
+    #endif // __GNUC__ < 4
 
 #elif defined(_MSC_VER)
 
-#include <malloc.h>
-#define MALLOC(ptr,size,align)   ptr = _aligned_malloc(size,align)
-#define FREE(p)                  _aligned_free(p)
+    #include <malloc.h>
+    #define MALLOC(ptr,size,align)   ptr = _aligned_malloc(size,align)
+    #define FREE(p)                  _aligned_free(p)
 
 #else
 
-#include <mm_malloc.h>
-#define MALLOC(ptr,size,align)   ptr = _mm_malloc(size,align)
-#define FREE(p)                  _mm_free(p)
+//     #include <mm_malloc.h>
+//     #define MALLOC(ptr,size,align)   ptr = _mm_malloc(size,align)
+//     #define FREE(p)                  _mm_free(p)
+    #include <malloc.h>
+    #define MALLOC(ptr,size,align)   ptr = malloc(size)
+    #define FREE(p)                  free(p)
 
 #endif
 

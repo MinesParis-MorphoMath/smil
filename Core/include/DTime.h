@@ -62,7 +62,6 @@ static inline double getCpuTime()
     if (gettimeofday(&tv, 0)) 
     {
         cout << "gettimeofday returned error" << endl;
-        abort();
     }
     return tv.tv_sec + tv.tv_usec/1e6;
 }
