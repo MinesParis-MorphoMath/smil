@@ -32,7 +32,7 @@
 
 
 #include "DBitArray.h"
-#include "private/DLineArith.hpp"
+#include "Base/include/private/DLineArith.hpp"
 
 /**
  * \ingroup Arith

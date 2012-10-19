@@ -26,11 +26,10 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef SMIL_WRAP_Bit
 
 
 #include "DImage_Bit.h"
-
+#include "DLineArith_Bit.h"
 
 template <>
 void Image<Bit>::init() 
@@ -149,4 +148,3 @@ RES_T Image<Bit>::setPixel(UINT offset, const Bit &value)
 
 
 
-#endif // SMIL_WRAP_Bit
