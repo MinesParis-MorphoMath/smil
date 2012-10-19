@@ -129,17 +129,17 @@ public:
     Bit operator [] (UINT i); // lValue
     Bit operator [] (UINT i) const; // rValue
     
-//     inline Bit operator * ()
-//     {
-//       Bit b;
-//       b.bitArray = this;
-//       b.index = index;
-//       return b;
-//     }
+    inline Bit operator * ()
+    {
+      Bit b;
+      b.bitArray = this;
+      b.index = index;
+      return b;
+    }
     
     operator void* () { return (void*)this->intArray; }
     operator char* () { return (char*)this->intArray; }
-//     void operator=(void *ptr) { this->intArray = (INT_TYPE*)ptr; }
+    void operator=(void *ptr) { this->intArray = (INT_TYPE*)ptr; }
     inline BitArray operator + (int dp)
     {
 	BitArray ba(this->intArray, this->bitWidth, this->height);
