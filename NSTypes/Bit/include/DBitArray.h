@@ -32,11 +32,24 @@
 
 #include <iostream>
 
-// #include "DBinary.hpp"
 #include "DTypes.hpp"
-// #include <qshareddata.h>
 
-class Bit;
+class BitArray;
+
+class Bit
+{
+public:
+    Bit() : bitArray(NULL), value(false), index(0) {}
+    Bit(bool v) : bitArray(NULL), value(v), index(0) {}
+    BitArray *bitArray;
+    UINT index;
+    bool value;
+    operator bool() const;
+    Bit& operator = (const bool v);
+    Bit& operator = (const Bit &src);
+    inline bool operator< (const Bit &src) const { return value<src.value; }
+};
+
 
 class BitArray
 {
@@ -115,8 +128,24 @@ public:
     operator bool() { return intArray!=NULL; }
     Bit operator [] (UINT i); // lValue
     Bit operator [] (UINT i) const; // rValue
-    Bit operator * ();
-    inline BitArray operator + (int dp);
+    
+//     inline Bit operator * ()
+//     {
+//       Bit b;
+//       b.bitArray = this;
+//       b.index = index;
+//       return b;
+//     }
+    
+    operator void* () { return (void*)this->intArray; }
+    operator char* () { return (char*)this->intArray; }
+//     void operator=(void *ptr) { this->intArray = (INT_TYPE*)ptr; }
+    inline BitArray operator + (int dp)
+    {
+	BitArray ba(this->intArray, this->bitWidth, this->height);
+	ba.index = this->index + dp;
+	return ba;
+    }
     inline BitArray operator + (long unsigned int dp)
     {
 	return operator+((int)dp);
@@ -151,151 +180,6 @@ inline ostream& operator << (ostream &os, BitArray &b)
     return b.printSelf(os);
 }
 
-class Bit
-{
-public:
-    Bit() : bitArray(NULL), value(false), index(0) {}
-    Bit(bool v) : bitArray(NULL), value(v), index(0) {}
-    BitArray *bitArray;
-    UINT index;
-    bool value;
-    operator bool() const;
-    Bit& operator = (const bool v);
-    Bit& operator = (const Bit &src);
-    inline bool operator< (const Bit &src) const { return value<src.value; }
-};
-
-
-inline void BitArray::setSize(UINT _bitWidth, UINT _bitHeight)
-{
-    bitWidth = _bitWidth;
-    intWidth = INT_SIZE(bitWidth);
-    height = _bitHeight;
-}
-
-inline bool BitArray::getValue(UINT ind)
-{
-    int Y = ind / bitWidth;
-    int X = (ind + Y*this->getBitPadX()) / INT_TYPE_SIZE;
-    int x = (ind-Y*bitWidth) % INT_TYPE_SIZE;
-    return (intArray[X] & (1UL << x))!=0;
-}
-
-inline void BitArray::setValue(UINT ind, bool val)
-{
-    int Y = ind / bitWidth;
-    int X = (ind + Y*this->getBitPadX()) / INT_TYPE_SIZE;
-    int x = (ind-Y*bitWidth) % INT_TYPE_SIZE;
-    if (val)
-        intArray[X] |= (1UL << x);
-    else intArray[X] &= ~(1UL << x);
-}
-
-inline Bit BitArray::operator [] (UINT i)
-{
-    Bit b;
-    b.bitArray = this;
-    b.index = i;
-    return b;
-}
-
-inline Bit BitArray::operator [] (UINT i) const
-{
-    Bit b;
-    b.bitArray = (BitArray*)this;
-    b.index = i;
-    return b;
-}
-
-inline Bit BitArray::operator * ()
-{
-    Bit b;
-    b.bitArray = this;
-    b.index = index;
-    return b;
-}
-
-inline BitArray BitArray::operator+(int dp)
-{
-    BitArray ba(this->intArray, this->bitWidth, this->height);
-    ba.index = this->index + dp;
-    return ba;
-}
-
-inline BitArray BitArray::operator-(int dp)
-{
-    BitArray ba(this->intArray, this->bitWidth, this->height);
-    ba.index = this->index - dp;
-    return ba;
-}
-
-inline BitArray& BitArray::operator++(int)
-{
-    index++;
-    return *this;
-}
-
-inline BitArray& BitArray::operator++()
-{
-    index++;
-    return *this;
-}
-
-
-inline ostream& BitArray::printSelf(ostream &os)
-{
-    if (!this->intArray)
-      return os;
-    
-    for (UINT i=0;i<bitWidth;i++)
-    {
-      os << this->operator[](i);
-      if (i<bitWidth-1)
-      {
-	  if ((i+1)%INT_TYPE_SIZE==0) 
-	    os << "-";
-	  else
-	    os << " ";
-      }
-    }
-    return os;
-}
-
-
-
-inline Bit::operator bool() const
-{
-    if (bitArray)
-	return bitArray->getValue(index);
-    else return value;
-}
-
-inline Bit& Bit::operator = (const bool v)
-{
-    if (bitArray)
-        bitArray->setValue(index, v);
-    else value = v;
-    return *this;
-}
-
-inline Bit& Bit::operator = (const Bit &src)
-{
-    if (bitArray)
-    {
-        if (src.bitArray)
-            bitArray->setValue(index, src.bitArray->getValue(index));
-        else
-            bitArray->setValue(index, src.value);
-    }
-    else
-    {
-        if (src.bitArray)
-            value = src.bitArray->getValue(index);
-        else
-            value = src.value;
-    }
-    return *this;
-}
 
 template <>
 inline const char *getDataTypeAsString(Bit &val)
