@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
     
 
     
-    Gui::execLoop();
+//     Gui::execLoop();
     
 }
 

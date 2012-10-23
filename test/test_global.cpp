@@ -119,7 +119,7 @@ int main(int argc, char *argv[])
 //     copy(im2, 256, 0, 0, im1);
 
 
-    Gui::execLoop();
+//     Gui::execLoop();
 
 }
 

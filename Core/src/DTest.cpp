@@ -34,7 +34,7 @@ void TestSuite::add(TestCase *f)
     funcList.push_back(f);
 }
 
-RES_T TestSuite::run()
+int TestSuite::run()
 {
     RES_T retVal = RES_OK;
     
@@ -87,5 +87,7 @@ RES_T TestSuite::run()
 	}
 	(*f)->end();
     }
-    return retVal;
+    if (retVal==RES_OK)
+      return 0;
+    else return -1;
 }

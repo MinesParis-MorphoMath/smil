@@ -108,7 +108,7 @@ class _DCORE TestSuite
 {
 public:
   void add(TestCase *f);
-  RES_T run();
+  int run();
 private:
   list<TestCase*> funcList;
   int tElapsed;

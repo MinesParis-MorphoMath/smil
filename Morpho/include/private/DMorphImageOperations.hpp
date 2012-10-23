@@ -317,20 +317,28 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, i
     fillLine<T> f;
     f(borderBuf, lineLen, borderValue);
 //     cout << "bord val " << (int)borderValue << endl;
+    
+    Image<T> *tmpIm;
+    if (&imIn==&imOut)
+      tmpIm = new Image<T>(imIn, true); // clone
+    else tmpIm = (Image<T> *)&imIn;
+    
     int seSize = se.size;
-    if (seSize==1) _exec_single(imIn, imOut, se);
+    if (seSize==1) _exec_single(*tmpIm, imOut, se);
     else
     {
-	Image<T> tmpIm(imIn, true); // clone
 	for (int i=0;i<seSize;i++)
 	{
-	   _exec_single(tmpIm, imOut, se);
+	   _exec_single(*tmpIm, imOut, se);
 	   if (i<seSize-1)
-	     copy(imOut, tmpIm);
+	     copy(imOut, *tmpIm);
 	}
     }
     ImDtTypes<T>::deleteLine(borderBuf);
     ImDtTypes<T>::deleteLine(cpBuf);
+    
+    if (&imIn==&imOut)
+      delete tmpIm;
     
     imOut.modified();
     return RES_OK;

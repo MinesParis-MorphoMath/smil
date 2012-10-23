@@ -118,21 +118,20 @@ void Core::deleteRegisteredObjects()
 
 UINT Core::getNumberOfThreads()
 {
+#ifdef USE_OPEN_MP
     if (threadNumber!=0)
       return threadNumber;
     
-#ifdef USE_OPEN_MP
     int nthreads;
     #pragma omp parallel shared(nthreads)
     { 
 	nthreads = omp_get_num_threads();
     }
     threadNumber = nthreads;
-#else // USE_OPEN_MP
-    threadNumber =1;
-#endif // USE_OPEN_MP
- 
     return threadNumber;
+#else // USE_OPEN_MP
+    return 1;
+#endif // USE_OPEN_MP
 }
 
 long Core::getAllocatedMemory()
