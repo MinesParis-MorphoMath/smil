@@ -34,6 +34,11 @@
 #include "DSignal.h"
 #include "DErrors.h"
 
+#ifdef USE_MORPHEE
+#include <morphee/image/include/private/image_T.hpp>
+#include <morphee/image/include/imageInterface.hpp>
+#endif // USE_MORPHEE    
+
 template <class T> class ImageViewer;
 
 /**
@@ -201,6 +206,11 @@ public:
      */
     PyObject * getNumArray(bool c_contigous=false);
 #endif // defined SWIGPYTHON && defined USE_NUMPY
+
+#ifdef USE_MORPHEE
+    Image(morphee::Image<T,3>&);
+    Image<T>& operator = (const morphee::Image<T> &);
+#endif // USE_MORPHEE    
     
     inline int getLineAlignment(UINT l);
 

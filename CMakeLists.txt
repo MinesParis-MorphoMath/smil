@@ -296,6 +296,23 @@ IF(WRAP_PYTHON)
 	ENDIF(USE_NUMPY)
 ENDIF(WRAP_PYTHON)
 
+OPTION(USE_MORPHEE "Use Morphee." OFF)
+IF(USE_MORPHEE)
+	FIND_PATH(MORPHEE_INCLUDE_DIR morphee/image/include/private/image_T.hpp
+		  DOC "Morphee sources directory"
+	)
+	FIND_PATH(MORPHEE_LIBRARY_DIR NAMES libMorpheecommon.so Morpheecommon.dll
+		  DOC "Morphee libraries directory"
+	)
+
+	ADD_DEFINITIONS("-DUSE_MORPHEE")
+	INCLUDE_DIRECTORIES(${MORPHEE_INCLUDE_DIR})
+	LINK_DIRECTORIES(${MORPHEE_LIBRARY_DIR})
+	LIST(APPEND SMIL_EXT_DEPS Morpheecommon Morpheeimage)
+ENDIF(USE_MORPHEE)
+
+INCLUDE_DIRECTORIES("/home/faessel/src/morphee/trunk/")
+
 ###### DOC ######
 
 OPTION(BUILD_DOC "Generate documentation" OFF)
