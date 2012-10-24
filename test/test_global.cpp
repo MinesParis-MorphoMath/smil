@@ -33,29 +33,15 @@
 #include "DGui.h"
 #include "DIO.h"
 
+#include "DExtImage.hpp"
+
+
 // #include "DGraph.hpp"
 
 #include <vector>
 
-class A
+void mafunc(const Image<UINT8>& im)
 {
-public:
-  void func(const A &a)
-  {
-    cout << a.val << endl;
-  }
-  int val;
-};
-
-Image_UINT8 create(void)
-{
-    Image_UINT8 a;
-    return a;
-}
-
-void outFunc(const Image_UINT8 &a)
-{
-    cout << a.getPixelCount() << endl;
 }
 
 int main(int argc, char *argv[])
@@ -77,12 +63,15 @@ int main(int argc, char *argv[])
 //    read("http://cmm.ensmp.fr/~faessel/smil/images/lena.png", im1);
     read("lena.png", im1);
 
-    morphee::Image<UINT8> morphIm(512,512);
+    morphee::Image<UINT8> mIm(512,512);
+    mIm.allocateImage();
+    
 //     dilate((Image<UINT8>)morphIm, im1);
     
-    Image<UINT8> im2(morphIm);
+    ExtImage<UINT8> *im2 = new morphmImage<UINT8>(mIm);
+    fill(*im2, UINT8(0));
     
-    im2.printSelf();
+    im2->printSelf();
 
 }
 

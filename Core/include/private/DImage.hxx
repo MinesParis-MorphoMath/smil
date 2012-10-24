@@ -735,24 +735,5 @@ PyObject * Image<T>::getNumArray(bool c_contigous)
 }
 #endif // defined SWIGPYTHON && defined USE_NUMPY
 
-#ifdef USE_MORPHEE
-template <class T>
-Image<T>::Image(morphee::Image<T,3> &morphIm)
-  : BaseImage("Image"),
-    dataTypeMin(numeric_limits<T>::min()),
-    dataTypeMax(numeric_limits<T>::max())
-{
-    init();
-    setSize(morphIm.getXSize(), morphIm.getYSize(), morphIm.getZSize());
-}
-
-template <class T>
-Image<T>& Image<T>::operator = (const morphee::Image<T> &morphIm)
-{
-    this->setSize(morphIm.getXSize(), morphIm.getYSize(), morphIm.getZSize());
-    return *this;
-}
-#endif // USE_MORPHEE    
-    
 
 #endif // _IMAGE_HXX

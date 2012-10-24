@@ -34,10 +34,6 @@
 #include "DSignal.h"
 #include "DErrors.h"
 
-#ifdef USE_MORPHEE
-#include <morphee/image/include/private/image_T.hpp>
-#include <morphee/image/include/imageInterface.hpp>
-#endif // USE_MORPHEE    
 
 template <class T> class ImageViewer;
 
@@ -63,7 +59,7 @@ public:
     Image(UINT w, UINT h, UINT d = 1);
     Image(const char *fileName);
   
-    ~Image();
+    virtual ~Image();
     
     // Provide explicit copy constructor and assignment operator
     // Copy constructor
@@ -159,20 +155,20 @@ public:
 	Image<T> im(*this, cloneData);
 	return im;
     }
-    void setSize(UINT w, UINT h, UINT d = 1, bool doAllocate = true);
-    inline void setSize(const BaseImage &rhs, bool doAllocate = true) 
+    virtual void setSize(UINT w, UINT h, UINT d = 1, bool doAllocate = true);
+    virtual void setSize(const BaseImage &rhs, bool doAllocate = true) 
     { 
 	setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); 
     }
-    inline void setSize(const vector<UINT> s, bool doAllocate = true) 
+    virtual void setSize(const vector<UINT> s, bool doAllocate = true) 
     { 
 	if (s.size()==3)
 	  setSize(s[0], s[1], s[2], doAllocate); 
 	else if (s.size()==2)
 	  setSize(s[0], s[1], 1, doAllocate); 
     }
-    RES_T allocate();
-    RES_T deallocate();
+    virtual RES_T allocate();
+    virtual RES_T deallocate();
 
     void printSelf(ostream &os, bool displayPixVals) const;
     virtual void printSelf(ostream &os=std::cout) const
@@ -206,11 +202,6 @@ public:
      */
     PyObject * getNumArray(bool c_contigous=false);
 #endif // defined SWIGPYTHON && defined USE_NUMPY
-
-#ifdef USE_MORPHEE
-    Image(morphee::Image<T,3>&);
-    Image<T>& operator = (const morphee::Image<T> &);
-#endif // USE_MORPHEE    
     
     inline int getLineAlignment(UINT l);
 
