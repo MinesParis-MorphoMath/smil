@@ -63,15 +63,20 @@ int main(int argc, char *argv[])
 //    read("http://cmm.ensmp.fr/~faessel/smil/images/lena.png", im1);
     read("lena.png", im1);
 
-    morphee::Image<UINT8> mIm(512,512);
-    mIm.allocateImage();
+    morphee::Image<UINT8> *mIm = new morphee::Image<UINT8>(512,512);
+    mIm->allocateImage();
+    morphee::ImageInterface *imInt = (morphee::ImageInterface*)(mIm);
     
 //     dilate((Image<UINT8>)morphIm, im1);
     
-    ExtImage<UINT8> *im2 = new morphmImage<UINT8>(mIm);
-    fill(*im2, UINT8(0));
+    ExtImage<UINT8> im2 = morphmImage<UINT8>(*mIm);
+    ExtImage<UINT8> *im3 = new morphmImage<UINT8>(*imInt);
+    fill(*im3, UINT8(127));
     
-    im2->printSelf();
+    im3->printSelf();
+    im3->show();
+    
+    Gui::execLoop();
 
 }
 

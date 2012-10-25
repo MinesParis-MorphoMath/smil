@@ -31,6 +31,7 @@
 #define _D_SHADOW_IMAGE_HPP
 
 #include "DImage.hpp"
+#include "DImage.hxx"
 #include "DSignal.h"
 #include "DErrors.h"
 
@@ -57,7 +58,7 @@ class ExtImage : public Image<T>
 public:
 
     //! Default constructor
-    ExtImage(Image<T> &img)
+    ExtImage(const Image<T> &img)
     {
 	BaseObject::className = "ExtImage";
 	parentClass::init();
@@ -70,15 +71,29 @@ public:
 	}
     }
   
+    ExtImage(const ExtImage<T> &img)
+    {
+	BaseObject::className = "ExtImage";
+	parentClass::init();
+	this->clone(img);
+    }
+  
     virtual ~ExtImage()
     {
 	this->deallocate();
+    }
+    
+    virtual void clone(const ExtImage<T> &rhs)
+    {
+	this->pixels = rhs.getPixels();
+	this->setSize(rhs);
     }
     
 protected:
     ExtImage() {}
     virtual RES_T allocate()
     {
+	cout << "alloc" << endl;
 	if (this->allocated)
 	    return RES_ERR_BAD_ALLOCATION;
 
@@ -124,6 +139,7 @@ class morphmImage : public ExtImage<T>
 {
 public:
     typedef ExtImage<T> parentClass;
+    
     morphmImage(morphee::Image<T> &img)
     {
 	BaseObject::className = "morphmImage";
@@ -132,8 +148,29 @@ public:
 	    ERR_MSG("Source image isn't allocated");
 	else
 	{
+	    typename morphee::Image<T>::i_coordinate_system s = img.getSize();
 	    this->pixels = img.rawPointer();
-	    this->setSize(img.getXSize(), img.getYSize(), img.getZSize());
+	    this->setSize(s[0], s[1], s[2]);
+	}
+    }
+    morphmImage(morphee::ImageInterface &imgInt)
+    {
+	BaseObject::className = "morphmImage";
+	parentClass::init();
+	if (!imgInt.isAllocated())
+	    ERR_MSG("Source image isn't allocated");
+	else
+	{
+	    typename morphee::Image<T>::i_coordinate_system s = imgInt.getSize();
+	    cout << s[0] << "," << s[1] << "," << s[2] << endl;
+	    morphee::Image<T> *mIm = dynamic_cast< morphee::Image<T>* >(&imgInt);
+	    if (!mIm)
+	      ERR_MSG("Error in morphM dynamic_cast");
+	    else
+	    {
+		this->pixels = mIm->rawPointer();
+		this->setSize(mIm->getXSize(), mIm->getYSize(), mIm->getZSize());
+	    }
 	}
     }
 protected:

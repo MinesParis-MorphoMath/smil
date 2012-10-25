@@ -120,3 +120,36 @@ TEMPLATE_WRAP_FUNC(measBarycenters);
 
 %include "DImageMatrix.hpp"
 TEMPLATE_WRAP_FUNC(matMul);
+
+%{
+/* Includes the header in the wrapper code */
+#include "DExtImage.hpp"
+#include <morphee/image/include/private/image_T.hpp>
+#include <morphee/image/include/imageInterface.hpp>
+
+%}
+
+typedef morphee::ImageInterface IMorpheeImage;
+
+%{
+#include <boost/python.hpp>
+%}
+
+%extend morphmImage<UINT8>
+{
+    morphmImage<UINT8>(PyObject *obj)
+    {
+	morphee::ImageInterface* imInt = boost::python::extract<morphee::ImageInterface*>(obj);
+	if (imInt)
+	{
+	    cout << "pyobj " << imInt->getXSize() << "," << imInt->getYSize() << "," << imInt->getZSize() << endl;
+	    morphee::Image<UINT8> *mIm = dynamic_cast<morphee::Image<UINT8>* >(imInt);
+	    return new morphmImage<UINT8>(*mIm);
+	}
+    }
+}
+
+%include "DExtImage.hpp"
+TEMPLATE_WRAP_CLASS(ExtImage, ExtImage);
+TEMPLATE_WRAP_CLASS(morphmImage, morphmImage);
+

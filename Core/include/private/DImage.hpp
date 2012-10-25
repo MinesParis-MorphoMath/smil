@@ -147,10 +147,10 @@ public:
     bool isVisible() { return (viewer && viewer->isVisible()); }
     
     virtual void init();
-    void clone(const Image<T> &rhs);
+    virtual void clone(const Image<T> &rhs);
     template <class T2>
     void clone(const Image<T2> &rhs);
-    Image<T> clone(bool cloneData=true)
+    virtual Image<T> clone(bool cloneData=true)
     {
 	Image<T> im(*this, cloneData);
 	return im;
