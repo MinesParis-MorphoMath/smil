@@ -50,9 +50,6 @@ SMIL_MODULE(smilCore)
 // Errors
 //////////////////////////////////////////////////////////
 
-%{
-#include "DErrors.h"
-%}
 %ignore Error;
 class exception{};
 %include "DErrors.h"
@@ -61,11 +58,6 @@ class exception{};
 //////////////////////////////////////////////////////////
 // Types
 //////////////////////////////////////////////////////////
-
-%{
-/* Includes the header in the wrapper code */
-#include "DTypes.hpp"
-%}
 
 %include "carrays.i"
 //%array_class(double, DArray);
@@ -112,10 +104,6 @@ PTR_ARG_OUT_APPLY(d)
 // BaseObject
 //////////////////////////////////////////////////////////
 
-%{
-#include "DBaseObject.h"
-%}
-
 %extend BaseObject 
 {
 	std::string  __str__() 
@@ -134,10 +122,6 @@ PTR_ARG_OUT_APPLY(d)
 //////////////////////////////////////////////////////////
 
 %include std_vector.i
-
-%{
-#include "DBaseImage.h"
-%}
 
 // Expose std::vector<> as a Python list
 namespace std 
@@ -171,11 +155,6 @@ namespace std
 // Core Instance
 //////////////////////////////////////////////////////////
 
-%{
-#include "DInstance.hpp"
-#include "DCoreInstance.h"
-%}
-
 %include "DInstance.hpp"
 %template(CoreInstance) UniqueInstance<Core>;
 %include "DCoreInstance.h"
@@ -184,12 +163,6 @@ namespace std
 //////////////////////////////////////////////////////////
 // Signals/Slots
 //////////////////////////////////////////////////////////
-
-%{
-#include "DSlot.h"
-#include "DSignal.h"
-#include "DCoreEvents.h"
-%}
 
 #ifndef SWIGJAVA
 // generate directors for Signal and Slot (for virtual methods overriding)
@@ -213,23 +186,14 @@ namespace std
 // Image
 //////////////////////////////////////////////////////////
 
-%{
-/* Includes the header in the wrapper code */
-#include "DImage.hpp"
-#include "DImage.hxx"
-%}
-
-
 // Import smilGui for viewers stuff
 %import smilGui.i
 
 %include "DBaseImage.h"
 %include "DImage.hpp"
+%include "DExtImage.hpp"
 
 TEMPLATE_WRAP_CLASS(Image, Image);
 TEMPLATE_WRAP_FUNC(createImage);
-
-
-
-
+TEMPLATE_WRAP_CLASS(ExtImage, ExtImage);
 

@@ -29,6 +29,26 @@
 
 
 //////////////////////////////////////////////////////////
+// Common includes
+//////////////////////////////////////////////////////////
+
+%{
+#include "DErrors.h"
+#include "DTypes.hpp"
+#include "DBaseObject.h"
+#include "DBaseImage.h"
+#include "DImage.hpp"
+#include "DImage.hxx"
+#include "DExtImage.hpp"
+#include "DInstance.hpp"
+#include "DCoreInstance.h"
+#include "DSlot.h"
+#include "DSignal.h"
+#include "DCoreEvents.h"
+%}
+
+
+//////////////////////////////////////////////////////////
 // Module definitions
 //////////////////////////////////////////////////////////
 
@@ -144,6 +164,7 @@
 %define PTR_ARG_OUT_APPLY(name)
 %enddef
 #endif // SWIGPYTHON
+
 
 // CMake generated wrap macros
 
