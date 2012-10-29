@@ -27,77 +27,101 @@
  */
 
 
-#ifndef _D_MORPHM_IMAGE_HPP
-#define _D_MORPHM_IMAGE_HPP
+#ifndef _D_SHARED_IMAGE_HPP
+#define _D_SHARED_IMAGE_HPP
 
-#include "DImage.h"
-#include "DSharedImage.hpp"
+#include "DImage.hpp"
+#include "DErrors.h"
 
-#include <morphee/image/include/private/image_T.hpp>
-#include <morphee/image/include/imageInterface.hpp>
 
+/**
+ * \ingroup Core
+ * @{
+ */
+
+
+/**
+ * Image that uses an existing (1D) data pointer.
+ * 
+ */  
 template <class T>
-class MorphmSharedImage : public SharedImage<T>
+class SharedImage : public Image<T>
 {
+    typedef Image<T> parentClass;
 public:
-    typedef SharedImage<T> parentClass;
-    
-    MorphmSharedImage(morphee::Image<T> &img)
+
+    //! Default constructor
+    SharedImage(const Image<T> &img)
     {
-	BaseObject::className = "MorphmSharedImage";
+	BaseObject::className = "SharedImage";
 	parentClass::init();
 	if (!img.isAllocated())
 	    ERR_MSG("Source image isn't allocated");
 	else
 	{
-	    typename morphee::Image<T>::i_coordinate_system s = img.getSize();
-	    this->pixels = img.rawPointer();
-	    this->setSize(s[0], s[1], s[2]);
+	    this->pixels = img.getPixels();
+	    this->setSize(img);
 	}
     }
-    MorphmSharedImage(morphee::ImageInterface &imgInt)
+  
+    SharedImage(const SharedImage<T> &img)
     {
-	BaseObject::className = "MorphmSharedImage";
+	BaseObject::className = "SharedImage";
 	parentClass::init();
-	if (!imgInt.isAllocated())
-	    ERR_MSG("Source image isn't allocated");
-	else
-	{
-	    morphee::Image<T> *mIm = dynamic_cast< morphee::Image<T>* >(&imgInt);
-	    if (!mIm)
-	      ERR_MSG("Error in morphM dynamic_cast");
-	    else
-	    {
-		typename morphee::Image<T>::i_coordinate_system s = mIm->getSize();
-		this->pixels = mIm->rawPointer();
-		this->setSize(s[0], s[1], s[2]);
-	    }
-	}
+	this->clone(img);
+    }
+  
+    virtual ~SharedImage()
+    {
+	this->deallocate();
+    }
+    
+    virtual void clone(const SharedImage<T> &rhs)
+    {
+	this->pixels = rhs.getPixels();
+	this->setSize(rhs);
+    }
+    
+protected:
+    SharedImage() {}
+    virtual RES_T allocate()
+    {
+	if (this->allocated)
+	    return RES_ERR_BAD_ALLOCATION;
+
+	if (!this->pixels)
+	    return RES_ERR_BAD_ALLOCATION;
+	
+	this->allocated = true;
+	this->allocatedSize = this->pixelCount*sizeof(T);
+
+	this->restruct();
+
+	return RES_OK;
+    }
+    
+    virtual RES_T deallocate()
+    {
+	if (!this->allocated)
+	    return RES_OK;
+
+	if (this->slices)
+	    delete[] this->slices;
+	if (this->lines)
+	    delete[] this->lines;
+	
+	this->slices = NULL;
+	this->lines = NULL;
+	this->pixels = NULL;
+
+	this->allocated = false;
+	this->allocatedSize = 0;
+
+	return RES_OK;
     }
 };
+  
 
-#if defined(WRAP_PYTHON) || defined(SWIGPYTHON)
-#include <boost/python.hpp>
-template <class T>
-SharedImage<T> morphmInt(PyObject *obj)
-{
-    morphee::ImageInterface *imInt = boost::python::extract<morphee::ImageInterface *>(obj);
-    if (imInt)
-    {
-	morphee::Image<T> * mIm = dynamic_cast<morphee::Image<T>* >(imInt);
-	if (mIm)
-	{
-// 	    MorphmSharedImage<T> *extIm = new MorphmSharedImage<T>(*mIm);
-	    MorphmSharedImage<T> extIm(*mIm);
-	    return extIm;
-	}
-	else 
-	{
-	    ERR_MSG("Error in dynamic_cast");
-	}
-    }
-    return SharedImage<T>(NULL);
-}
-#endif // defined(WRAP_PYTHON) || defined(SWIGPYTHON)protected:
+/** @}*/
 
-#endif // _D_MORPHM_IMAGE_HPP
+#endif // _D_SHARED_IMAGE_HPP

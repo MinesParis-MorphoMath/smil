@@ -191,9 +191,9 @@ namespace std
 
 %include "DBaseImage.h"
 %include "DImage.hpp"
-%include "DExtImage.hpp"
+%include "DSharedImage.hpp"
 
 TEMPLATE_WRAP_CLASS(Image, Image);
 TEMPLATE_WRAP_FUNC(createImage);
-TEMPLATE_WRAP_CLASS(ExtImage, ExtImage);
+TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
 

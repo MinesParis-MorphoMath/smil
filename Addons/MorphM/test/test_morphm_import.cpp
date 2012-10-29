@@ -22,7 +22,7 @@ class Test_Python_Import : public TestCase
 
       PyObject *pyobj = PyDict_GetItem(globals, PyString_FromString( "mIm" ));
 
-      morphmImage<UINT8> mIm(pyobj);
+      SharedImage<UINT8> mIm = morphmInt<UINT8>(pyobj);
       TEST_ASSERT(mIm.isAllocated());
       
       Py_Finalize();
