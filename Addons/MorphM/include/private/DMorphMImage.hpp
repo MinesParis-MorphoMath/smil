@@ -98,23 +98,16 @@ public:
 // #ifdef SWIGPYTHON
     morphmImage(PyObject *obj)
     {
-	boost::python::object cppobject( (boost::python::handle<>(obj)) );
-	morphee::ImageInterface *imInt = boost::python::extract<morphee::ImageInterface *>(cppobject);
+	morphee::ImageInterface *imInt = boost::python::extract<morphee::ImageInterface *>(obj);
 	if (imInt)
 	{
-	    morphee::ImageInterface::coordinate_system s0 = imInt->getSize();
-	    cout << "pyobj -> " << s0[0] << "," << s0[1] << "," << s0[2] << endl;
-// 	    cout << "pyobj -> " << imInt->getXSize() << "," << imInt->getYSize() << "," << imInt->getZSize() << endl;
-	    morphee::Image<T,3> * mIm = dynamic_cast<morphee::Image<T,3>* >(imInt);
+	    morphee::Image<T> * mIm = dynamic_cast<morphee::Image<T>* >(imInt);
 	    if (mIm)
 	    {
+		if (!mIm->isAllocated())
+		    ERR_MSG("Image isn't allocated");
 		typename morphee::Image<T>::i_coordinate_system s = mIm->Size();
-		cout << "-> " << s[0] << "," << s[1] << "," << s[2] << endl;
-		cout << "-> " << mIm->getXSize() << "," << mIm->getYSize() << "," << mIm->getZSize() << endl;
-		if (mIm->isAllocated())
-		  cout << "allocated" << endl;
 		this->pixels = mIm->rawPointer();
-		cout << long(this->pixels) << endl;
 		this->setSize(mIm->getXSize(), mIm->getYSize(), mIm->getZSize());
 	    }
 	    else 

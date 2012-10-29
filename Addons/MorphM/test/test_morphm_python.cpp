@@ -24,9 +24,9 @@
 #include "DMorphMImage.hpp"
 #include <morphee/pythonExt/include/pymImageLib_T.hpp>
 
-class _imInterface : public morphee::ImageInterface
-{
-};
+
+using namespace boost::python;
+
 
 int main()
 {
@@ -51,26 +51,31 @@ int main()
 
     PyObject *pyobj = PyDict_GetItem(main_namespace.ptr(), PyString_FromString( "mIm" ));
     
-//     iclass *ic = boost::python::extract<iclass*>(pyobj);
-//     ImageInterface *imInt = boost::python::extract<ImageInterface *>(pyobj);
-      PyObject *arglist = Py_BuildValue((char*)"()");
-      PyObject *result = PyEval_CallObject(pyobj, arglist);
-      Py_DECREF(arglist);
-      Py_DECREF(pyobj);
+//     PyObject *pFunc = PyObject_GetAttrString(main_namespace.ptr(), "id");
+//     PyObject *res = PyObject_CallFunction(pFunc, (char*)"(mIm)");
+//     long addr = PyInt_AsLong(res);
     
-//     IMorpheeImage *imi;
-     ImageInterface *imInt = (ImageInterface *)(result);
+    boost::python::object bobj = extract<object>(main_namespace["mIm"]);
+    ImageInterface *imInt = boost::python::extract<ImageInterface *>(pyobj);
     
-//     morphee::ImageInterface *ii =  (morphee::ImageInterface *)ic->ptr();
-//     morphee::ImageInterface::coordinate_system s = ii->getSize();
+    const void *vbuf;
+    long int vlen;
+    PyObject_AsReadBuffer(bobj.ptr(), &vbuf, &vlen);
+
     
-    morphee::Image<UINT8> *tIm = dynamic_cast< morphee::Image<UINT8>*>(imInt);
-    morphee::ImageInterface::coordinate_system s = tIm->getSize();
+//     ImageInterface const *imInt = boost::python::extract<ImageInterface const *>(bobj);
     
-    tIm->setSize(10,10);
-    cout << long(tIm->rawPointer()) << endl;
-    cout << tIm->getXSize() << "," << tIm->getYSize() << "," << tIm->getZSize() << endl;
-    cout << s[0] << "," << s[1] << "," << s[2] << endl;
+    imInt->allocateImage();
+    imInt->setSize(10,10);
+
+    
+//     morphee::Image<UINT8> *tIm = dynamic_cast< morphee::Image<UINT8>*>(&imInt);
+    iclass *tIm = (iclass*)(vbuf);
+    
+//     morphee::ImageInterface::coordinate_system s = tIm->getSize();
+//     cout << long(tIm->rawPointer()) << endl;
+//     cout << tIm->getXSize() << "," << tIm->getYSize() << "," << tIm->getZSize() << endl;
+//     cout << s[0] << "," << s[1] << "," << s[2] << endl;
     
 
     Py_Finalize();
