@@ -86,7 +86,6 @@ protected:
     ExtImage() {}
     virtual RES_T allocate()
     {
-	cout << "alloc" << endl;
 	if (this->allocated)
 	    return RES_ERR_BAD_ALLOCATION;
 

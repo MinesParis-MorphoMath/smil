@@ -42,4 +42,5 @@ SMIL_MODULE(smilMorphM)
 
 %include "DMorphMImage.hpp"
 
-TEMPLATE_WRAP_CLASS(morphmImage, morphmImage);
+%template(fromMorphm_UINT8) fromMorphm<UINT8>;
+%template(fromMorphm_UINT16) fromMorphm<UINT16>;

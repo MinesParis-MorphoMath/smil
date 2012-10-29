@@ -30,32 +30,15 @@
 #ifndef _D_MORPHM_IMAGE_HPP
 #define _D_MORPHM_IMAGE_HPP
 
+#include "DImage.h"
 #include "DExtImage.hpp"
-#include "DImage.hpp"
-#include "DImage.hxx"
-
 
 #include <morphee/image/include/private/image_T.hpp>
-#include <morphee/image/include/private/image_T_impl.hpp>
 #include <morphee/image/include/imageInterface.hpp>
 
-#ifdef SWIGPYTHON
+#ifdef WRAP_PYTHON
 #include <boost/python.hpp>
-#include <boost/python/class.hpp>
-#include <boost/python/enum.hpp>
-#include <boost/python/tuple.hpp>
-#include <boost/python/extract.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/call_method.hpp>
-
-// Base de pythonExt
-#include <boost/python/return_value_policy.hpp>
-#include <boost/python/manage_new_object.hpp>
-#include <boost/python/module.hpp>
-#include <boost/python/def.hpp>
-#include <boost/python/exception_translator.hpp>
-#endif // SWIGPYTHON
+#endif // WRAP_PYTHON
 
 template <class T>
 class morphmImage : public ExtImage<T>
@@ -95,7 +78,7 @@ public:
 	    }
 	}
     }
-// #ifdef SWIGPYTHON
+#if defined(WRAP_PYTHON) || defined(SWIGPYTHON)
     morphmImage(PyObject *obj)
     {
 	morphee::ImageInterface *imInt = boost::python::extract<morphee::ImageInterface *>(obj);
@@ -116,9 +99,27 @@ public:
 	    }
 	}
     }
-// #endif // SWIGPYTHON
-protected:
+#endif // defined(WRAP_PYTHON) || defined(SWIGPYTHON)protected:
 };
 
+template <class T>
+Image<T> fromMorphm(PyObject *obj)
+{
+    morphee::ImageInterface *imInt = boost::python::extract<morphee::ImageInterface *>(obj);
+    if (imInt)
+    {
+	morphee::Image<T> * mIm = dynamic_cast<morphee::Image<T>* >(imInt);
+	if (mIm)
+	{
+	    morphmImage<T> extIm(*mIm);
+	    return extIm;
+	}
+	else 
+	{
+	    ERR_MSG("Error in dynamic_cast");
+	}
+    }
+    return NULL;
+}
 
 #endif // _D_MORPHM_IMAGE_HPP
