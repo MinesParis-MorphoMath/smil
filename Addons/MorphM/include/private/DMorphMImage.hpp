@@ -36,15 +36,23 @@
 #include <morphee/image/include/private/image_T.hpp>
 #include <morphee/image/include/imageInterface.hpp>
 
+#if defined(WRAP_PYTHON) || defined(SWIGPYTHON)
+#include <boost/python.hpp>
+#endif // defined(WRAP_PYTHON) || defined(SWIGPYTHON)
+
+/**
+ * MorphM Image Interface
+ */
+
 template <class T>
-class MorphmSharedImage : public SharedImage<T>
+class MorphmInt : public SharedImage<T>
 {
 public:
     typedef SharedImage<T> parentClass;
     
-    MorphmSharedImage(morphee::Image<T> &img)
+    MorphmInt(morphee::Image<T> &img)
     {
-	BaseObject::className = "MorphmSharedImage";
+	BaseObject::className = "MorphmInt";
 	parentClass::init();
 	if (!img.isAllocated())
 	    ERR_MSG("Source image isn't allocated");
@@ -55,9 +63,9 @@ public:
 	    this->setSize(s[0], s[1], s[2]);
 	}
     }
-    MorphmSharedImage(morphee::ImageInterface &imgInt)
+    MorphmInt(morphee::ImageInterface &imgInt)
     {
-	BaseObject::className = "MorphmSharedImage";
+	BaseObject::className = "MorphmInt";
 	parentClass::init();
 	if (!imgInt.isAllocated())
 	    ERR_MSG("Source image isn't allocated");
@@ -74,30 +82,31 @@ public:
 	    }
 	}
     }
-};
-
 #if defined(WRAP_PYTHON) || defined(SWIGPYTHON)
-#include <boost/python.hpp>
-template <class T>
-SharedImage<T> morphmInt(PyObject *obj)
-{
-    morphee::ImageInterface *imInt = boost::python::extract<morphee::ImageInterface *>(obj);
-    if (imInt)
+    MorphmInt(PyObject *obj)
     {
-	morphee::Image<T> * mIm = dynamic_cast<morphee::Image<T>* >(imInt);
-	if (mIm)
+	BaseObject::className = "MorphmInt";
+	parentClass::init();
+	morphee::ImageInterface *imgInt = boost::python::extract<morphee::ImageInterface *>(obj);
+	if (imgInt)
 	{
-// 	    MorphmSharedImage<T> *extIm = new MorphmSharedImage<T>(*mIm);
-	    MorphmSharedImage<T> extIm(*mIm);
-	    return extIm;
+	    if (!imgInt->isAllocated())
+		ERR_MSG("Source image isn't allocated");
+	    else
+	    {
+		morphee::Image<T> *mIm = dynamic_cast< morphee::Image<T>* >(imgInt);
+		if (!mIm)
+		  ERR_MSG("Error in morphM dynamic_cast");
+		else
+		{
+		    typename morphee::Image<T>::i_coordinate_system s = mIm->getSize();
+		    this->pixels = mIm->rawPointer();
+		    this->setSize(s[0], s[1], s[2]);
+		}
+	    }
 	}
-	else 
-	{
-	    ERR_MSG("Error in dynamic_cast");
-	}
-    }
-    return SharedImage<T>(NULL);
-}
 #endif // defined(WRAP_PYTHON) || defined(SWIGPYTHON)protected:
+    }
+};
 
 #endif // _D_MORPHM_IMAGE_HPP

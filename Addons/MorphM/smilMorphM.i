@@ -42,4 +42,36 @@ SMIL_MODULE(smilMorphM)
 
 %include "DMorphMImage.hpp"
 
-TEMPLATE_WRAP_CLASS(morphmInt,morphmInt)
+TEMPLATE_WRAP_CLASS(MorphmInt,MorphmInt)
+
+
+#ifdef SWIGPYTHON
+
+%pythoncode %{
+
+
+def MorphmInt(*args):
+    """
+    * Create a SharedImage interface with a MorphM image
+    """
+
+    argNbr = len(args)
+    argTypeStr = [ str(type(a)) for a in args ]
+    
+    if argNbr==0 or argTypeStr[0]!="<class 'MorpheePython.IMorpheeImage'>":
+      print "You must specify a MorphM image"
+      return
+    
+    im = args[0]
+    dt = str(im.getDataType())
+    print dt
+    
+    if dt=="sdtUINT8":
+      return MorphmInt_UINT8(im)
+%}
+
+	
+#endif // SWIGPYTHON
+
+
+
