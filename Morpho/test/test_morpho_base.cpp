@@ -287,7 +287,8 @@ int main(int argc, char *argv[])
 //       BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
 // cout << endl;
 //       tc(im1, im2, sSE());
-      return ts.run();
+//       return ts.run();
+      dilate(im1, im2, sSE(2));
   
 }
 

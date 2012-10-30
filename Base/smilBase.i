@@ -95,6 +95,8 @@ TEMPLATE_WRAP_FUNC(histo);
 TEMPLATE_WRAP_FUNC(thresh);
 TEMPLATE_WRAP_FUNC_CROSS2(stretchHist);
 TEMPLATE_WRAP_FUNC(enhanceContrast);
+TEMPLATE_WRAP_FUNC(otsuThresholdValues);
+TEMPLATE_WRAP_FUNC(otsuThreshold);
 
 
 TEMPLATE_WRAP_FUNC(drawLine);

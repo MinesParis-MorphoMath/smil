@@ -105,8 +105,8 @@ public:
 		}
 	    }
 	}
-#endif // defined(WRAP_PYTHON) || defined(SWIGPYTHON)protected:
     }
+#endif // defined(WRAP_PYTHON) || defined(SWIGPYTHON)protected:
 };
 
 #endif // _D_MORPHM_IMAGE_HPP

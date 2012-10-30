@@ -329,9 +329,10 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, i
     {
 	for (int i=0;i<seSize;i++)
 	{
-	   _exec_single(*tmpIm, imOut, se);
+	   Image<T> bufIm(imIn, true);
+	   _exec_single(bufIm, imOut, se);
 	   if (i<seSize-1)
-	     copy(imOut, *tmpIm);
+	     copy(imOut, bufIm);
 	}
     }
     ImDtTypes<T>::deleteLine(borderBuf);
