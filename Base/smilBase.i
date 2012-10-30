@@ -89,10 +89,9 @@ TEMPLATE_WRAP_FUNC(logicXOr);
 TEMPLATE_WRAP_FUNC(test);
 TEMPLATE_WRAP_FUNC(applyLookup);
 
-
 %include "DImageHistogram.hpp"
-TEMPLATE_WRAP_FUNC(histo);
-TEMPLATE_WRAP_FUNC(thresh);
+TEMPLATE_WRAP_FUNC(histogram);
+TEMPLATE_WRAP_FUNC(threshold);
 TEMPLATE_WRAP_FUNC_CROSS2(stretchHist);
 TEMPLATE_WRAP_FUNC(enhanceContrast);
 TEMPLATE_WRAP_FUNC(otsuThresholdValues);

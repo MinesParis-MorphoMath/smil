@@ -32,79 +32,106 @@
 
 #include "DGui.h"
 
-#define bench(func, args) \
-      t1 = clock(); \
-      for (int i=0;i<nRuns;i++) \
-	func args; \
-        cout << #func << ": " << 1E3 * double(clock() - t1) / CLOCKS_PER_SEC / nRuns << " ms" << endl;
 
-
-int testStretchHist()
+class Test_Histogram : public TestCase
 {
-    Image_UINT8 im1(4,4);
-    Image_UINT8 im2(4,4);
-    Image_UINT8 im3(4,4);
+  virtual void run()
+  {
+      Image_UINT8 im1(4,4);
+      
+      UINT8 vec1[16] = { 50, 51, 45, 50,
+			50, 35, 255, 45,
+			255, 255, 255, 50,
+			35, 45, 255, 48
+		      };
+      im1 << vec1;
+      
+      map<UINT8, UINT> hist = histogram(im1);
+      map<UINT8, UINT> truth;
+      
+      for (int i=0;i<256;i++)
+	truth.insert(pair<UINT8, UINT>(i, 0));
+      
+      truth[(UINT8)35] = 2;
+      truth[(UINT8)45] = 3;
+      truth[(UINT8)48] = 1;
+      truth[(UINT8)50] = 4;
+      truth[(UINT8)51] = 1;
+      truth[(UINT8)255] = 5;
+     
+      map<UINT8, UINT>::iterator it1 = hist.begin();
+      map<UINT8, UINT>::iterator it2 = truth.begin();
+      for (;it1!=hist.end();it1++,it2++)
+      {
+// 	cout << int((*it1).first) << ": " << int((*it1).second) << " " << int((*it2).second) << endl;
+	TEST_ASSERT((*it1).second==(*it2).second);
+      }
+  }
+};
 
-    UINT8 vec1[16] = { 50, 51, 52, 50,
-                       50, 55, 60, 45,
-                       98, 54, 65, 50,
-                       35, 59, 20, 48
-                     };
 
-    UINT8 vec2[16] = { 98,   101,  104,  98,
-                       98,   114,  130,  81,
-                       255,  111,  147,  98,
-                       49,   127,  0,    91
-                     };
+class Test_Stretch_Histogram : public TestCase
+{
+  virtual void run()
+  {
+      Image_UINT8 im1(4,4);
+      Image_UINT8 im2(4,4);
+      Image_UINT8 im3(4,4);
 
-    im1 << vec1;
-    im2 << vec2;
+      UINT8 vec1[16] = { 50, 51, 52, 50,
+			50, 55, 60, 45,
+			98, 54, 65, 50,
+			35, 59, 20, 48
+		      };
 
-    stretchHist(im1, im3);
+      UINT8 vec2[16] = { 98,   101,  104,  98,
+			98,   114,  130,  81,
+			255,  111,  147,  98,
+			49,   127,  0,    91
+		      };
 
-    return im2==im3;
-}
+      im1 << vec1;
+      im2 << vec2;
+
+      stretchHist(im1, im3);
+
+      TEST_ASSERT(im2==im3);
+  }
+};
+
+class Test_Otsu : public TestCase
+{
+  virtual void run()
+  {
+      Image_UINT8 im1(4,4);
+
+      UINT8 vec1[16] = 
+      { 
+	161, 220, 87, 124, 
+	208, 148, 13, 239, 
+	151, 67, 12, 0, 
+	134, 244, 101, 168, 
+      };
+
+      im1 << vec1;
+      
+      vector<UINT8> tvals = otsuThresholdValues(im1);
+      for (vector<UINT8>::iterator it=tvals.begin();it!=tvals.end();it++)
+	  cout << int(*it) << endl;
+      
+      TEST_ASSERT(tvals[0]==118);
+      
+  }
+};
 
 int main(int argc, char *argv[])
 {
-//     Image_UINT8 im1(4,4);
-//     Image_UINT8 im2(4,4);
-//     Image_UINT8 im3(4,4);
-//     Image_UINT8 im4(4,4);
-// 
-//     UINT8 vec1[16] = { 50, 51, 52, 50, \
-//                        50, 55, 60, 45, \
-//                        98, 54, 65, 50, \
-//                        35, 59, 20, 48
-//                      };
-// 
-//     UINT8 vec2[16] = { 10, 51, 20, 10, \
-//                        40, 15, 10, 15, \
-//                        58, 24, 25, 50, \
-//                        15, 29, 10, 48
-//                      };
-// 
-//     UINT8 vec3[16] = { 50, 51, 52, 50, \
-//                        50, 55, 58, 45, \
-//                        58, 54, 58, 50, \
-//                        35, 58, 20, 48
-//                      };
-// 
-//     im1 << vec1;
-// //       im2 << vec2;
-// //       inf(im1, im2, im3);
-//     thresh(im1, UINT8(100), im4);
-// //       inf(im1, im2, im3);
-// 
-//     testStretchHist();
-// 
-//     im4.printSelf(1);
+    TestSuite ts;
 
-    Image_UINT8 im1("/media/DELLO/ESRF/S1P1V1_1.png");
-    
-    vector<UINT> tvals = otsuThresholdValues(im1, 2);
-    for (vector<UINT>::iterator it=tvals.begin();it!=tvals.end();it++)
-      cout << *it << endl;
-    
+    ADD_TEST(ts, Test_Histogram);
+    ADD_TEST(ts, Test_Stretch_Histogram);
+    ADD_TEST(ts, Test_Otsu);
+
+    return ts.run()==RES_OK;
 }
 

@@ -357,14 +357,14 @@ SET(_STWD "${_STWD}%enddef\n\n")
 # Two template types, first variable, second fixed
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_FIRST(class, fixed_type, name)\n")
 FOREACH(_IMG_TYPE ${IMAGE_TYPES})
-	SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE}) class<${_IMG_TYPE},fixed_type>;\n")
+	SET(_STWD "${_STWD}  %template(name \#\# _ \#\# fixed_type \#\# _${_IMG_TYPE}) class<${_IMG_TYPE},fixed_type>;\n")
 ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 
 # Two template types, first fixed, second variable
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_SECOND(class, fixed_type, name)\n")
 FOREACH(_IMG_TYPE ${IMAGE_TYPES})
-	SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE}) class<fixed_type,${_IMG_TYPE}>;\n")
+	SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE} \#\# _ \#\# fixed_type) class<fixed_type,${_IMG_TYPE}>;\n")
 ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 
