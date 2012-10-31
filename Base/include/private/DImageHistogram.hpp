@@ -46,12 +46,16 @@ template <class T>
 std::map<T, UINT> histogram(const Image<T> &imIn)
 {
     map<T, UINT> h;
-    for (T i=ImDtTypes<T>::min();i<ImDtTypes<T>::max() && i>ImDtTypes<T>::min();i++)
+    for (T i=ImDtTypes<T>::min();;i++)
+    {
 	h.insert(pair<T,UINT>(i, 0));
+	if (i==ImDtTypes<T>::max())
+	  break;
+    }
 
     typename Image<T>::lineType pixels = imIn.getPixels();
     for (UINT i=0;i<imIn.getPixelCount();i++)
-	h[pixels[i]] += 1;
+	h[pixels[i]]++;
     
     return h;
 }
@@ -66,8 +70,12 @@ map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask)
 {
     map<T, UINT> h;
     
-    for (T i=ImDtTypes<T>::min();i<ImDtTypes<T>::max() && i>ImDtTypes<T>::min();i++)
-      h.insert(pair<T,UINT>(i, 0));
+    for (T i=ImDtTypes<T>::min();;i++)
+    {
+	h.insert(pair<T,UINT>(i, 0));
+	if (i==ImDtTypes<T>::max())
+	  break;
+    }
     
     typename Image<T>::lineType inPix = imIn.getPixels();
     typename Image<T>::lineType maskPix = imMask.getPixels();

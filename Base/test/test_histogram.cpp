@@ -52,20 +52,19 @@ class Test_Histogram : public TestCase
       for (int i=0;i<256;i++)
 	truth.insert(pair<UINT8, UINT>(i, 0));
       
-      truth[(UINT8)35] = 2;
-      truth[(UINT8)45] = 3;
-      truth[(UINT8)48] = 1;
-      truth[(UINT8)50] = 4;
-      truth[(UINT8)51] = 1;
-      truth[(UINT8)255] = 5;
+      truth[35] = 2;
+      truth[45] = 3;
+      truth[48] = 1;
+      truth[50] = 4;
+      truth[51] = 1;
+      truth[255] = 5;
      
-      map<UINT8, UINT>::iterator it1 = hist.begin();
-      map<UINT8, UINT>::iterator it2 = truth.begin();
-      for (;it1!=hist.end();it1++,it2++)
-      {
+//       map<UINT8, UINT>::iterator it1 = hist.begin();
+//       map<UINT8, UINT>::iterator it2 = truth.begin();
+//       for (;it1!=hist.end();it1++,it2++)
 // 	cout << int((*it1).first) << ": " << int((*it1).second) << " " << int((*it2).second) << endl;
-	TEST_ASSERT((*it1).second==(*it2).second);
-      }
+
+      TEST_ASSERT(hist==truth);
   }
 };
 
@@ -103,23 +102,30 @@ class Test_Otsu : public TestCase
 {
   virtual void run()
   {
-      Image_UINT8 im1(4,4);
+      Image_UINT8 im1(10,10);
 
-      UINT8 vec1[16] = 
+      UINT8 vec1[100] = 
       { 
-	161, 220, 87, 124, 
-	208, 148, 13, 239, 
-	151, 67, 12, 0, 
-	134, 244, 101, 168, 
+	  113, 77, 84, 185, 20, 55, 150, 198, 99, 49, 
+	  130, 7, 186, 99, 233, 150, 209, 160, 203, 70, 
+	  95, 25, 79, 64, 241, 237, 145, 50, 16, 100, 
+	  97, 219, 238, 214, 69, 29, 188, 102, 183, 206, 
+	  221, 234, 124, 27, 6, 1, 53, 249, 107, 162, 
+	  254, 93, 203, 36, 176, 223, 181, 88, 11, 69, 
+	  80, 250, 36, 37, 99, 101, 91, 67, 224, 26, 
+	  10, 98, 89, 139, 118, 56, 252, 63, 123, 169, 
+	  241, 82, 223, 215, 118, 191, 241, 212, 47, 232, 
+	  118, 227, 128, 123, 78, 211, 95, 21, 121, 148
       };
 
       im1 << vec1;
       
-      vector<UINT8> tvals = otsuThresholdValues(im1);
-      for (vector<UINT8>::iterator it=tvals.begin();it!=tvals.end();it++)
-	  cout << int(*it) << endl;
+      vector<UINT8> tvals = otsuThresholdValues(im1, 2);
+//       for (vector<UINT8>::iterator it=tvals.begin();it!=tvals.end();it++)
+// 	  cout << int(*it) << endl;
       
-      TEST_ASSERT(tvals[0]==118);
+      TEST_ASSERT(tvals[0]==70);
+      TEST_ASSERT(tvals[1]==162);
       
   }
 };
