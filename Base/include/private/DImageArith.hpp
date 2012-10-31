@@ -544,7 +544,7 @@ RES_T test(const Image<T> &imIn, const T &value1, const T &value2, Image<T> &imO
  * Apply a lookup map
  */
 template <class T>
-RES_T applyLookup(Image<T> &imIn, map<T,T> &lut, Image<T> &imOut)
+RES_T applyLookup(const Image<T> &imIn, map<T,T> &lut, Image<T> &imOut)
 {
     if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;

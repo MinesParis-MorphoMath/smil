@@ -145,11 +145,11 @@ namespace std
 {
     TEMPLATE_WRAP_CLASS_2T_BOTH(map, Map)
     
-    TEMPLATE_WRAP_CLASS_2T_SECOND(map, UINT, UINTMap)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
     
-    TEMPLATE_WRAP_CLASS_2T_FIRST(map, double, Map)
-    TEMPLATE_WRAP_CLASS_2T_FIRST(map, IntPoint, Map)
-    TEMPLATE_WRAP_CLASS_2T_FIRST(map, DoublePoint, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, IntPoint, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, DoublePoint, Map)
 }
 
 

@@ -43,12 +43,12 @@
  * Image histogram
  */
 template <class T>
-map<T, UINT> histogram(const Image<T> &imIn)
+std::map<T, UINT> histogram(const Image<T> &imIn)
 {
     map<T, UINT> h;
-    for (T i=ImDtTypes<T>::min();i<ImDtTypes<T>::max();i+=1)
-      h.insert(pair<T,UINT>(i, 0));
-    
+    for (T i=ImDtTypes<T>::min();i<ImDtTypes<T>::max() && i>ImDtTypes<T>::min();i++)
+	h.insert(pair<T,UINT>(i, 0));
+
     typename Image<T>::lineType pixels = imIn.getPixels();
     for (UINT i=0;i<imIn.getPixelCount();i++)
 	h[pixels[i]] += 1;
@@ -57,14 +57,16 @@ map<T, UINT> histogram(const Image<T> &imIn)
 }
 
 /**
- * Image histogram with a mask image
+ * Image histogram with a mask image.
+ * 
+ * Calculates the histogram of the image imIn only for pixels x where imMask(x)!=0
  */
 template <class T>
 map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask)
 {
     map<T, UINT> h;
     
-    for (T i=ImDtTypes<T>::min();i<ImDtTypes<T>::max();i+=1)
+    for (T i=ImDtTypes<T>::min();i<ImDtTypes<T>::max() && i>ImDtTypes<T>::min();i++)
       h.insert(pair<T,UINT>(i, 0));
     
     typename Image<T>::lineType inPix = imIn.getPixels();
@@ -117,6 +119,12 @@ RES_T threshold(const Image<T> &imIn, T minVal, Image<T> &imOut)
     iFunc.lineFunction.falseVal = numeric_limits<T>::min();
     
     return iFunc(imIn, imOut);
+}
+
+template <class T>
+RES_T threshold(const Image<T> &imIn, Image<T> &imOut)
+{
+    return otsuThreshold(imIn, imOut);
 }
 
 /**
@@ -190,92 +198,92 @@ RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double sat=0.5)
 /** \} */
 
 
-/**
- * Otsu
- */
 
 template <class T>
 bool IncrementThresholds(vector<double> &thresholdIndexes, map<T, UINT> &hist, UINT threshLevels, double totalFrequency, double &globalMean, vector<double> &classMean, vector<double> &classFrequency)
 {
+  unsigned long numberOfHistogramBins = hist.size();
+  unsigned long numberOfClasses = classMean.size();
+
+  typedef double MeanType;
+  typedef double FrequencyType;
   
-    typedef double MeanType;
-  
-    unsigned long numberOfHistogramBins = hist.size();
-    unsigned long numberOfClasses = classMean.size();
+  MeanType meanOld;
+  FrequencyType freqOld;
 
-    MeanType meanOld;
-    MeanType freqOld;
+  unsigned int k;
+  int j;
 
-    unsigned int k;
-    int j;
-
-    // from the upper threshold down
-    for(j=threshLevels-1; j>=0; j--)
+  // from the upper threshold down
+  for(j=static_cast<int>(threshLevels-1); j>=0; j--)
     {
-      // if this threshold can be incremented (i.e. we're not at the end of the histogram)
-      if (thresholdIndexes[j] < numberOfHistogramBins - 2 - (threshLevels-1 - j) )
+    // if this threshold can be incremented (i.e. we're not at the end of the histogram)
+    if (thresholdIndexes[j] < numberOfHistogramBins - 2 - (threshLevels-1 - j) )
       {
-	// increment it and update mean and frequency of the class bounded by the threshold
-	thresholdIndexes[j] += 1;
+      // increment it and update mean and frequency of the class bounded by the threshold
+      thresholdIndexes[j] += 1;
 
-	meanOld = classMean[j];
-	freqOld = classFrequency[j];
+      meanOld = classMean[j];
+      freqOld = classFrequency[j];
       
-	classFrequency[j] += hist[thresholdIndexes[j]];
+      classFrequency[j] += hist[thresholdIndexes[j]];
       
-	if (classFrequency[j]>0)
+      if (classFrequency[j]>0)
         {
-	    classMean[j] = double(meanOld * freqOld + thresholdIndexes[j] * hist[thresholdIndexes[j]] ) / double(classFrequency[j]);
+        classMean[j] = (meanOld * static_cast<MeanType>(freqOld)
+                        + static_cast<MeanType>(thresholdIndexes[j])
+                        * static_cast<MeanType>(hist[thresholdIndexes[j]]))
+          / static_cast<MeanType>(classFrequency[j]);
         }
-	else
+      else
         {
-	    classMean[j] = 0;
+        classMean[j] = 0;
         }
       
       // set higher thresholds adjacent to their previous ones, and update mean and frequency of the respective classes
       for (k=j+1; k<threshLevels; k++)
-      {
-	  thresholdIndexes[k] = thresholdIndexes[k-1] + 1;
-	  classFrequency[k] = hist[thresholdIndexes[k]];
-	  if (classFrequency[k]>0)
+        {
+        thresholdIndexes[k] = thresholdIndexes[k-1] + 1;
+        classFrequency[k] = hist[thresholdIndexes[k]];
+        if (classFrequency[k]>0)
           {
-	      classMean[k] = k;
+          classMean[k] = static_cast<MeanType>(thresholdIndexes[k]);
           }
         else
           {
-	      classMean[k] = 0;
+          classMean[k] = 0;
           }
         }
       
-	// update mean and frequency of the highest class
-	classFrequency[numberOfClasses-1] = totalFrequency;
-	classMean[numberOfClasses-1] = globalMean * totalFrequency;
+      // update mean and frequency of the highest class
+      classFrequency[numberOfClasses-1] = totalFrequency;
+      classMean[numberOfClasses-1] = globalMean * totalFrequency;
 
-	for(k=0; k<numberOfClasses-1; k++)
+      for(k=0; k<numberOfClasses-1; k++)
         {
         classFrequency[numberOfClasses-1] -= classFrequency[k];
-        classMean[numberOfClasses-1] -= classMean[k] * classFrequency[k];
+        classMean[numberOfClasses-1] -= classMean[k] * static_cast<MeanType>(classFrequency[k]);
         }
 
-	if (classFrequency[numberOfClasses-1]>0)
+      if (classFrequency[numberOfClasses-1]>0)
         {
-	    classMean[numberOfClasses-1] = double(classMean[numberOfClasses-1])/double(classFrequency[numberOfClasses-1]);
+        classMean[numberOfClasses-1] /= static_cast<MeanType>(classFrequency[numberOfClasses-1]);
         }
-	else
+      else
         {
-	    classMean[numberOfClasses-1] = 0;
+        classMean[numberOfClasses-1] = 0;
         }
 
-	// exit the for loop if a threshold has been incremented
-	break;
+      // exit the for loop if a threshold has been incremented
+      break;
       }
-      else  // if this threshold can't be incremented
+    else  // if this threshold can't be incremented
       {
       // if it's the lowest threshold
       if (j==0)
         {
         // we couldn't increment because we're done
-	    return false;
+        return false;
         }
       }
     }
@@ -284,7 +292,7 @@ bool IncrementThresholds(vector<double> &thresholdIndexes, map<T, UINT> &hist, U
 }
 
 template <class T>
-vector<T> otsuThresholdValues(map<T, UINT> &hist, UINT threshLevels=2)
+vector<T> otsuThresholdValues(map<T, UINT> &hist, UINT threshLevels=1)
 {
     
     typedef double MeanType;
@@ -381,28 +389,55 @@ vector<T> otsuThresholdValues(map<T, UINT> &hist, UINT threshLevels=2)
 }
 
 template <class T>
-vector<T> otsuThresholdValues(const Image<T> &im, UINT threshLevels=2)
+vector<T> otsuThresholdValues(const Image<T> &im, UINT threshLevels=1)
 {
     map<T, UINT> hist = histogram(im);
     return otsuThresholdValues(hist, threshLevels);
 }
 
 template <class T>
-vector<T> otsuThresholdValues(const Image<T> &im, const Image<T> &imMask, UINT threshLevels=2)
+vector<T> otsuThresholdValues(const Image<T> &im, const Image<T> &imMask, UINT threshLevels=1)
 {
     map<T, UINT> hist = histogram(im, imMask);
     return otsuThresholdValues(hist, threshLevels);
 }
 
 
-
 template <class T>
-RES_T otsuThreshold(const Image<T> &imIn, Image<T> &imOut, UINT nbrThresholds=1)
+RES_T otsuThreshold(const Image<T> &imIn, Image<T> &imOut)
+{
+    ASSERT_ALLOCATED(&imIn, &imOut);   
+    
+    vector<T> tVals = otsuThresholdValues<T>(imIn, 1);
+    return threshold<T>(imIn, tVals[0], imOut);
+}
+
+/**
+ * Otsu Threshold
+ */
+template <class T>
+RES_T otsuThreshold(const Image<T> &imIn, Image<T> &imOut, UINT nbrThresholds)
 {
     ASSERT_ALLOCATED(&imIn, &imOut);
     
     vector<T> tVals = otsuThresholdValues<T>(imIn, nbrThresholds);
-    threshold<T>(imIn, tVals[0], imOut);
+    map<T, T> lut;
+    T i = ImDtTypes<T>::min();
+    T lbl = 0;
+    for (typename vector<T>::iterator it=tVals.begin();it!=tVals.end();it++,lbl++)
+    {
+	while(i<(*it))
+	{
+	    lut[i] = lbl;
+	    i++;
+	}
+    }
+    while(i<ImDtTypes<T>::max() && i>ImDtTypes<T>::min())
+    {
+	lut[i] = lbl;
+	i++;
+    }
+    applyLookup<T>(imIn, lut, imOut);
     
     return RES_OK;
     

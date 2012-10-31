@@ -165,6 +165,11 @@
 %enddef
 #endif // SWIGPYTHON
 
+%define TEMPLATE_WRAP_MACLASS(class, VAR, name)
+  %template(name ## _UINT8 ## _ ## VAR) class<UINT8,VAR>;
+  %template(name ## _UINT16 ## _ ## VAR) class<UINT16,VAR>;
+%enddef
+
 
 // CMake generated wrap macros
 
