@@ -155,7 +155,11 @@ private:
     GET_4TH_ARG(__VA_ARGS__, ASSERT_3_ARGS, \
                 ASSERT_2_ARGS, ASSERT_1_ARG, )
 
-#define ASSERT(...) EXPAND( ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__) )
+#ifdef _MSC_VER
+	#define ASSERT(...) EXPAND( ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__) )
+#else // _MSC_VER
+	#define ASSERT(...) ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__)
+#endif // _MSC_VER
 
 
 /** @} */
