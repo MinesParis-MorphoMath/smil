@@ -56,12 +56,12 @@ RES_T fill(Image<T> &imOut, const T &value)
 
     typedef typename Image<T>::sliceType sliceType;
     sliceType lineOut = imOut.getLines();
-    int lineLen = imOut.getWidth();
-    int lineCount = imOut.getLineCount();
+    size_t lineLen = imOut.getWidth();
+    size_t lineCount = imOut.getLineCount();
 
     fillLine<T>(lineOut[0], lineLen, value);
     
-    for (UINT i=1;i<lineCount;i++)
+    for (size_t i=1;i<lineCount;i++)
       copyLine<T>(lineOut[0], lineLen, lineOut[i]);
 
     imOut.modified();

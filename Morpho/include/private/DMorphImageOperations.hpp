@@ -426,7 +426,9 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 	int oddLine = 0;
 
 	int l, p;
+#ifdef USE_OPEN_MP
 	int tid;
+#endif // USE_OPEN_MP
 	int x, y, z;
 	vector<IntPoint> pts = se.points;
 
@@ -538,7 +540,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(const image
 		curSrcLine = srcLines[l];
 		curDestLine = destLines[l-1];
 		
-		if(!(l%2==0 ^ s%2==0))
+		if(!((l%2==0) ^ (s%2==0)))
 		{
 		    _exec_shifted_line(curSrcLine, curSrcLine, -1, lineLen, buf2);
 		    _exec_shifted_line(buf1, buf1, -1, lineLen, buf3);
@@ -558,7 +560,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(const image
 	    }
 	}
 	
-	if (!(nLines%2==0 ^ s%2==0))
+	if (!((nLines%2==0) ^ (s%2==0)))
 	  _exec_shifted_line(buf1, buf1, -1, lineLen, buf3);
 	else
 	  _exec_shifted_line(buf1, buf1, 1, lineLen, buf3);
@@ -596,7 +598,10 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_2_H_points(const 
       sliceType srcLines = imIn.getLines();
       sliceType destLines = imOut.getLines();
       
-      int l, tid;
+#ifdef USE_OPEN_MP
+      int tid;
+#endif // USE_OPEN_MP
+	  int l;
 
       #pragma omp parallel private(tid, buf)
       {
@@ -626,7 +631,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_2_V_points(const 
 
     int l;
 
-    for (int s=0;s<imIn.getDepth();s++)
+    for (size_t s=0;s<imIn.getDepth();s++)
     {
 	srcLines = srcSlices[s];
 	destLines = destSlices[s];
@@ -664,7 +669,10 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_H_segment(const i
       
       lineType lineIn;
       
-      int l, tid, dx = xsize;
+#ifdef USE_OPEN_MP
+	  size_t tid;
+#endif // USE_OPEN_MP
+      int l, dx = xsize;
 
       #pragma omp parallel private(tid,buf1,buf2,lineIn) firstprivate(dx)
       {
@@ -691,21 +699,24 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_H_segment(const i
 template <class T, class lineFunction_T>
 RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_V1_segment(const imageType &imIn, imageType &imOut)
 {
-    int imHeight = imIn.getHeight();
+    size_t imHeight = imIn.getHeight();
     volType srcSlices = imIn.getSlices();
     volType destSlices = imOut.getSlices();
     sliceType srcLines;
     sliceType destLines;
 
-    int nthreads = MIN(Core::getInstance()->getNumberOfThreads(), imHeight-1);
+    size_t nthreads = MIN(Core::getInstance()->getNumberOfThreads(), imHeight-1);
     lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
     lineType buf1 = _bufs[0];
     lineType buf2 = _bufs[nthreads];
     
-    int l, tid, i, b;
-    int nblocks = imHeight / nthreads;
+#ifdef USE_OPEN_MP
+	size_t tid;
+#endif // USE_OPEN_MP
+    size_t l, i, b;
+    size_t nblocks = imHeight / nthreads;
 
-    for (int s=0;s<imIn.getDepth();s++)
+    for (size_t s=0;s<imIn.getDepth();s++)
     {
 	srcLines = srcSlices[s];
 	destLines = destSlices[s];

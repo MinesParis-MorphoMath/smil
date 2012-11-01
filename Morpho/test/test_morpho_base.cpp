@@ -115,7 +115,10 @@ public:
 	  
 	  lineType lineIn;
 	  
-	  int l, tid, dx = xsize;
+#ifdef USE_OPEN_MP
+	  size_t tid;
+#endif // USE_OPEN_MP
+	  int l, dx = xsize;
 
 	  #pragma omp parallel private(tid,buf1,buf2,lineIn)
 	  {
@@ -141,21 +144,25 @@ public:
 
     virtual RES_T _exec_single_V1_segment(const imageType &imIn, imageType &imOut)
     {
-	int imHeight = imIn.getHeight();
+	size_t imHeight = imIn.getHeight();
 	volType srcSlices = imIn.getSlices();
 	volType destSlices = imOut.getSlices();
 	sliceType srcLines;
 	sliceType destLines;
 
-	int nthreads = MIN(Core::getInstance()->getNumberOfThreads(), imHeight-1);
+	size_t nthreads = MIN(Core::getInstance()->getNumberOfThreads(), imHeight-1);
 	lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
 	lineType buf1 = _bufs[0];
 	lineType buf2 = _bufs[nthreads];
 	
-	int l, tid, i, b;
-	int nblocks = imHeight / nthreads;
+#ifdef USE_OPEN_MP
+	size_t tid;
+#endif // USE_OPEN_MP
 
-	for (int s=0;s<imIn.getDepth();s++)
+	size_t l, i, b;
+	size_t nblocks = imHeight / nthreads;
+
+	for (size_t s=0;s<imIn.getDepth();s++)
 	{
 	    srcLines = srcSlices[s];
 	    destLines = destSlices[s];

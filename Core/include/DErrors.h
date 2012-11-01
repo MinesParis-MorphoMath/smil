@@ -148,15 +148,14 @@ private:
     if(!expr) { Error(#errCode, func, file, line, #expr).show(); return errCode; }
 #define ASSERT_3_ARGS(func, file, line, expr, errCode, retVal) \
     if(!expr) { Error(#errCode, func, file, line, #expr).show(); return retVal; }
-#define ASSERT_4_ARGS(arg1, arg2, arg3) 	macro(arg1, arg2, arg3)
 
-#define ERR_MSG(msg) Error(msg, __func__, __FILE__, __LINE__).show()
+#define ERR_MSG(msg) Error(msg, __FUNC__, __FILE__, __LINE__).show()
 
 #define ASSERT_NARGS_CHOOSER(...) \
     GET_4TH_ARG(__VA_ARGS__, ASSERT_3_ARGS, \
                 ASSERT_2_ARGS, ASSERT_1_ARG, )
 
-#define ASSERT(...) ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__func__, __FILE__, __LINE__, __VA_ARGS__)
+#define ASSERT(...) EXPAND( ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__) )
 
 
 /** @} */

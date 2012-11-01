@@ -134,8 +134,11 @@ typedef Point<double> DoublePoint;
 
 #ifdef _MSC_VER
 
+#define __FUNC__ __FUNCTION__
+
 // Work-around to MSVC __VA_ARGS__ expanded as a single argument, instead of being broken down to multiple ones
-#define EXPAND( x ) x
+#define EXPAND( ... ) __VA_ARGS__
+
 #define _GET_1ST_ARG(arg1, ...) arg1
 #define _GET_2ND_ARG(arg1, arg2, ...) arg2
 #define _GET_3RD_ARG(arg1, arg2, arg3, ...) arg3
@@ -144,20 +147,22 @@ typedef Point<double> DoublePoint;
 #define _GET_6TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, ...) arg6
 #define _GET_7TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, arg7, ...) arg7
 #define _GET_8TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ...) arg8
-#define GET_1ST_ARG(x) EXPAND(_GET_1ST_ARG(x))
-#define GET_2ND_ARG(x) EXPAND(_GET_2ND_ARG(x))
-#define GET_3RD_ARG(x) EXPAND(_GET_3RD_ARG(x))
-#define GET_4TH_ARG(x) EXPAND(_GET_4TH_ARG(x))
-#define GET_5TH_ARG(x) EXPAND(_GET_5TH_ARG(x))
-#define GET_6TH_ARG(x) EXPAND(_GET_6TH_ARG(x))
-#define GET_7TH_ARG(x) EXPAND(_GET_7TH_ARG(x))
-#define GET_8TH_ARG(x) EXPAND(_GET_8TH_ARG(x))
+#define GET_1ST_ARG(...) EXPAND(_GET_1ST_ARG(__VA_ARGS__))
+#define GET_2ND_ARG(...) EXPAND(_GET_2ND_ARG(__VA_ARGS__))
+#define GET_3RD_ARG(...) EXPAND(_GET_3RD_ARG(__VA_ARGS__))
+#define GET_4TH_ARG(...) EXPAND(_GET_4TH_ARG(__VA_ARGS__))
+#define GET_5TH_ARG(...) EXPAND(_GET_5TH_ARG(__VA_ARGS__))
+#define GET_6TH_ARG(...) EXPAND(_GET_6TH_ARG(__VA_ARGS__))
+#define GET_7TH_ARG(...) EXPAND(_GET_7TH_ARG(__VA_ARGS__))
+#define GET_8TH_ARG(...) EXPAND(_GET_8TH_ARG(__VA_ARGS__))
 
 #define _xPP_NARGS_IMPL(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,N,...) N
 #define PP_NARGS(...) \
     EXPAND(_xPP_NARGS_IMPL(__VA_ARGS__,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0))
 
 #else // _MSC_VER
+
+#define __FUNC__ __func__
 
 #define GET_1ST_ARG(arg1, ...) arg1
 #define GET_2ND_ARG(arg1, arg2, ...) arg2

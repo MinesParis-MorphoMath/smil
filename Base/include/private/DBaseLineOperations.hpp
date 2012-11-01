@@ -45,16 +45,16 @@ struct unaryLineFunctionBase
     typedef typename Image<T>::sliceType sliceType;
     
     unaryLineFunctionBase() {}
-    unaryLineFunctionBase(lineType lineIn, int size, lineType lineOut)
+    unaryLineFunctionBase(lineType lineIn, size_t size, lineType lineOut)
     {
 	this->_exec(lineIn, size, lineOut);
     }
     
-    virtual void _exec(lineType lineIn, int size, lineType lineOut) {}
-    virtual void _exec_aligned(lineType lineIn, int size, lineType lineOut) { _exec(lineIn, size, lineOut); }
-    virtual void _exec(lineType lInOut, int size, T value) {}
-    virtual void _exec_aligned(lineType lineIn, int size, T value) { _exec(lineIn, size, value); }
-    inline void operator()(lineType lineIn, int size, lineType lineOut)
+    virtual void _exec(lineType lineIn, size_t size, lineType lineOut) {}
+    virtual void _exec_aligned(lineType lineIn, size_t size, lineType lineOut) { _exec(lineIn, size, lineOut); }
+    virtual void _exec(lineType lInOut, size_t size, T value) {}
+    virtual void _exec_aligned(lineType lineIn, size_t size, T value) { _exec(lineIn, size, value); }
+    inline void operator()(lineType lineIn, size_t size, lineType lineOut)
     { 
 	unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn);
 	unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineOut);
@@ -77,7 +77,7 @@ struct unaryLineFunctionBase
 	    _exec(lineIn, size, lineOut); 
 	}
     }
-    inline void operator()(lineType lineIn, int size, T value)
+    inline void operator()(lineType lineIn, size_t size, T value)
     { 
 	if (size<SIMD_VEC_SIZE)
 	{
@@ -100,9 +100,9 @@ struct binaryLineFunctionBase
     typedef typename Image<T>::lineType lineType;
     typedef typename Image<T>::sliceType sliceType;
     
-    virtual void _exec(lineType lineIn1, lineType lineIn2, int size, lineType lineOut) {}
-    virtual void _exec_aligned(lineType lineIn1, lineType lineIn2, int size, lineType lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
-    inline void operator()(lineType lineIn1, lineType lineIn2, int size, lineType lineOut)
+    virtual void _exec(lineType lineIn1, lineType lineIn2, size_t size, lineType lineOut) {}
+    virtual void _exec_aligned(lineType lineIn1, lineType lineIn2, size_t size, lineType lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
+    inline void operator()(lineType lineIn1, lineType lineIn2, size_t size, lineType lineOut)
     { 
 	if (size<SIMD_VEC_SIZE)
 	{
@@ -132,7 +132,7 @@ struct binaryLineFunctionBase
 	}
 	
     }
-    inline void operator()(lineType lineIn1, T value, int size, lineType lineOut)
+    inline void operator()(lineType lineIn1, T value, size_t size, lineType lineOut)
     { 
 	if (size<SIMD_VEC_SIZE)
 	{
@@ -171,9 +171,9 @@ struct tertiaryLineFunctionBase
     typedef typename Image<T>::lineType lineType;
     typedef typename Image<T>::sliceType sliceType;
     
-    virtual void _exec(lineType lineIn1, lineType lineIn2, lineType lineIn3, int size, lineType lineOut) {}
-    virtual void _exec_aligned(lineType lineIn1, lineType lineIn2, lineType lineIn3, int size, lineType lineOut) { _exec(lineIn1, lineIn2, lineIn3, size, lineOut); }
-    virtual void operator()(lineType lineIn1, lineType lineIn2, lineType lineIn3, int size, lineType lineOut)
+    virtual void _exec(lineType lineIn1, lineType lineIn2, lineType lineIn3, size_t size, lineType lineOut) {}
+    virtual void _exec_aligned(lineType lineIn1, lineType lineIn2, lineType lineIn3, size_t size, lineType lineOut) { _exec(lineIn1, lineIn2, lineIn3, size, lineOut); }
+    virtual void operator()(lineType lineIn1, lineType lineIn2, lineType lineIn3, size_t size, lineType lineOut)
     { 
 	if (size<SIMD_VEC_SIZE)
 	{
