@@ -136,9 +136,9 @@ void t_LineShiftLeft1D(const T *linein, const int lineWidth, const int nbshift, 
 
 }
 
-inline unsigned long PTR_OFFSET(void *p, unsigned long n=SIMD_VEC_SIZE)
+inline size_t PTR_OFFSET(void *p, size_t n=SIMD_VEC_SIZE)
 {
-    return ((unsigned long)p) & (n-1);
+    return ((size_t)p) & (n-1);
 }
 
 
