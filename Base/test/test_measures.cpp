@@ -103,6 +103,6 @@ int main(int argc, char *argv[])
 //       BENCH(measBarycenter, im, &xc, &yc);
 //       BENCH(measBarycenters, im);
       
-      return ts.run()==RES_OK;
+      return ts.run();
 }
 

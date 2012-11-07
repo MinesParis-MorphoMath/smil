@@ -69,6 +69,39 @@ class Test_Histogram : public TestCase
 };
 
 
+class Test_Threshold : public TestCase
+{
+  virtual void run()
+  {
+      Image_UINT8 im1(4,4);
+      Image_UINT8 im2(4,4);
+      Image_UINT8 im3(4,4);
+
+      UINT8 vec1[16] = 
+      { 
+	150, 21, 52, 50,
+	50, 55, 60, 45,
+	98, 54, 65, 50,
+	35, 59, 20, 48
+      };
+
+      UINT8 vec2[16] = 
+      { 
+	255, 0, 0, 0,
+	0, 0, 255, 0,
+	255, 0, 255, 0,
+	0, 0, 0, 0,
+      };
+
+      im1 << vec1;
+      im2 << vec2;
+
+      threshold(im1, UINT8(60), im3);
+
+      TEST_ASSERT(im2==im3);
+  }
+};
+
 class Test_Stretch_Histogram : public TestCase
 {
   virtual void run()
@@ -135,9 +168,10 @@ int main(int argc, char *argv[])
     TestSuite ts;
 
     ADD_TEST(ts, Test_Histogram);
+    ADD_TEST(ts, Test_Threshold);
     ADD_TEST(ts, Test_Stretch_Histogram);
     ADD_TEST(ts, Test_Otsu);
 
-    return ts.run()==RES_OK;
+    return ts.run();
 }
 

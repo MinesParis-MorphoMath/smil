@@ -92,15 +92,15 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn,
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    int lineLen = imIn.getWidth();
-    int lineCount = imIn.getLineCount();
+    size_t lineLen = imIn.getWidth();
+    size_t lineCount = imIn.getLineCount();
 
     lineType *srcLines = imIn.getLines();
     lineType *destLines = imOut.getLines();
 
 #pragma omp parallel for
-    for (int i=0;i<lineCount;i++)
-        lineFunction(srcLines[i], lineLen, destLines[i]);
+    for (size_t i=0;i<lineCount;i++)
+        lineFunction._exec(srcLines[i], lineLen, destLines[i]);
 
     imOut.modified();
 

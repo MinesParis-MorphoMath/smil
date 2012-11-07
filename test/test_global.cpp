@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 //     im3->printSelf();
 //     im3->show();
 //     
-    Gui::execLoop();
+//     Gui::execLoop();
 
 }
 

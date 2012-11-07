@@ -327,9 +327,9 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, i
     if (seSize==1) _exec_single(*tmpIm, imOut, se);
     else
     {
+	Image<T> bufIm(imIn, true);
 	for (int i=0;i<seSize;i++)
 	{
-	   Image<T> bufIm(imIn, true);
 	   _exec_single(bufIm, imOut, se);
 	   if (i<seSize-1)
 	     copy(imOut, bufIm);
