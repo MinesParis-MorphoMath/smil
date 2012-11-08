@@ -207,8 +207,6 @@ RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double sat=0.5)
     return RES_OK;
 }
 
-/** \} */
-
 
 
 template <class T>
@@ -415,19 +413,10 @@ vector<T> otsuThresholdValues(const Image<T> &im, const Image<T> &imMask, UINT t
 }
 
 
-template <class T>
-T otsuThreshold(const Image<T> &imIn, Image<T> &imOut)
-{
-    if (!areAllocated(&imIn, &imOut, NULL))
-      return ImDtTypes<T>::min();
-    
-    vector<T> tVals = otsuThresholdValues<T>(imIn, 1);
-    threshold<T>(imIn, tVals[0], imOut);
-    return tVals[0];
-}
-
 /**
  * Otsu Threshold
+ * 
+ * \demo{thresholds.py}
  */
 template <class T>
 vector<T> otsuThreshold(const Image<T> &imIn, Image<T> &imOut, UINT nbrThresholds)
@@ -459,6 +448,18 @@ vector<T> otsuThreshold(const Image<T> &imIn, Image<T> &imOut, UINT nbrThreshold
 }
 
 template <class T>
+T otsuThreshold(const Image<T> &imIn, Image<T> &imOut)
+{
+    if (!areAllocated(&imIn, &imOut, NULL))
+      return ImDtTypes<T>::min();
+    
+    vector<T> tVals = otsuThresholdValues<T>(imIn, 1);
+    threshold<T>(imIn, tVals[0], imOut);
+    return tVals[0];
+}
+
+
+template <class T>
 vector<T> otsuThreshold(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, UINT nbrThresholds=1)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
@@ -470,6 +471,8 @@ vector<T> otsuThreshold(const Image<T> &imIn, const Image<T> &imMask, Image<T> &
     return tVals;
     
 }
+
+/** \} */
 
 #endif // _D_IMAGE_HISTOGRAM_HPP
 
