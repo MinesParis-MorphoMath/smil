@@ -121,6 +121,8 @@ PTR_ARG_OUT_APPLY(d)
 // Vectors
 //////////////////////////////////////////////////////////
 
+#ifndef SWIGXML
+
 %include std_vector.i
 
 // Expose std::vector<> as a Python list
@@ -134,9 +136,13 @@ namespace std
     %template(DoubleVector) vector<double>;
 }
 
+#endif // SWIGXML
+
 //////////////////////////////////////////////////////////
 // Maps
 //////////////////////////////////////////////////////////
+
+#ifndef SWIGXML
 
 %include std_map.i
 
@@ -152,6 +158,7 @@ namespace std
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, DoublePoint, Map)
 }
 
+#endif // SWIGXML
 
 //////////////////////////////////////////////////////////
 // Core Instance

@@ -52,6 +52,12 @@
 // Module definitions
 //////////////////////////////////////////////////////////
 
+#ifdef SWIGXML
+%define SMIL_MODULE(libname)
+    %module(directors="1") libname
+%enddef
+#endif // SWIGXML
+
 #ifdef SWIGPYTHON
 %define SMIL_MODULE(libname)
     %module(directors="1") libname ## Python
@@ -84,10 +90,11 @@
 #define _DGUI
 #define _DMORPHO
 
-
-%include cpointer.i
-%include std_string.i
-%include typemaps.i
+#ifndef SWIGXML
+  %include cpointer.i
+  %include std_string.i
+  %include typemaps.i
+#endif // SWIGXML
 
 
 

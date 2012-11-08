@@ -89,7 +89,6 @@ TEMPLATE_WRAP_FUNC(logicXOr);
 TEMPLATE_WRAP_FUNC(test);
 TEMPLATE_WRAP_FUNC(applyLookup);
 
-%include "std_map.i"
 
 
 %include "DImageHistogram.hpp"

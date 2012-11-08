@@ -132,7 +132,11 @@ RES_T threshold(const Image<T> &imIn, T minVal, Image<T> &imOut)
 template <class T>
 RES_T threshold(const Image<T> &imIn, Image<T> &imOut)
 {
-    return otsuThreshold(imIn, imOut);
+    T tVal = otsuThreshold(imIn, imOut);
+    if (tVal==ImDtTypes<T>::min())
+      return RES_ERR;
+    else
+      return RES_OK;
 }
 
 /**
@@ -412,21 +416,24 @@ vector<T> otsuThresholdValues(const Image<T> &im, const Image<T> &imMask, UINT t
 
 
 template <class T>
-RES_T otsuThreshold(const Image<T> &imIn, Image<T> &imOut)
+T otsuThreshold(const Image<T> &imIn, Image<T> &imOut)
 {
-    ASSERT_ALLOCATED(&imIn, &imOut);   
+    if (!areAllocated(&imIn, &imOut, NULL))
+      return ImDtTypes<T>::min();
     
     vector<T> tVals = otsuThresholdValues<T>(imIn, 1);
-    return threshold<T>(imIn, tVals[0], imOut);
+    threshold<T>(imIn, tVals[0], imOut);
+    return tVals[0];
 }
 
 /**
  * Otsu Threshold
  */
 template <class T>
-RES_T otsuThreshold(const Image<T> &imIn, Image<T> &imOut, UINT nbrThresholds)
+vector<T> otsuThreshold(const Image<T> &imIn, Image<T> &imOut, UINT nbrThresholds)
 {
-    ASSERT_ALLOCATED(&imIn, &imOut);
+    if (!areAllocated(&imIn, &imOut, NULL))
+      return vector<T>();
     
     vector<T> tVals = otsuThresholdValues<T>(imIn, nbrThresholds);
     map<T, T> lut;
@@ -440,26 +447,27 @@ RES_T otsuThreshold(const Image<T> &imIn, Image<T> &imOut, UINT nbrThresholds)
 	    i++;
 	}
     }
-    while(i<ImDtTypes<T>::max() && i>ImDtTypes<T>::min())
+    while(i<=ImDtTypes<T>::max() && i>ImDtTypes<T>::min())
     {
 	lut[i] = lbl;
 	i++;
     }
     applyLookup<T>(imIn, lut, imOut);
     
-    return RES_OK;
+    return tVals;
     
 }
 
 template <class T>
-RES_T otsuThreshold(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, UINT nbrThresholds=1)
+vector<T> otsuThreshold(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, UINT nbrThresholds=1)
 {
-    ASSERT_ALLOCATED(&imIn, &imOut);
+    if (!areAllocated(&imIn, &imOut, NULL))
+      return vector<T>();
     
     vector<T> tVals = otsuThresholdValues<T>(imIn, imMask, nbrThresholds);
     threshold<T>(imIn, tVals[0], imOut);
     
-    return RES_OK;
+    return tVals;
     
 }
 
