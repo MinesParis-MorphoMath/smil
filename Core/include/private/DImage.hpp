@@ -312,9 +312,9 @@ public:
   
 
 template <class T>
-Image<T> *createImage(Image<T> &src)
+Image<T> *createImage(const T var)
 {
-    return new Image<T>(src);
+    return new Image<T>();
 }
 
 

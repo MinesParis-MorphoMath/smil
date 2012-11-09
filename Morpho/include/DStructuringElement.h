@@ -30,6 +30,8 @@
 #ifndef _STR_ELT_HPP
 #define _STR_ELT_HPP
 
+#include "DBaseObject.h"
+
 /**
  * \defgroup StrElt Structuring Elements
  * \ingroup Morpho
