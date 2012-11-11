@@ -29,32 +29,55 @@
 
 #include "DTest.h"
 #include "DThinning.hpp"
+#include "DGui.h"
 
 
-class Test_Hit_Or_Miss : public TestCase
+class Test_Thin : public TestCase
 {
   virtual void run()
   {
       typedef UINT8 dataType;
       typedef Image<dataType> imType;
       
-      imType im1(7,7);
+      imType im1(10,10);
       imType im2(im1);
       imType im3(im1);
       
       dataType vec1[] = 
       {
+	255, 0, 255, 0, 0, 255, 255, 0, 255, 255,
+	0, 0, 255, 0, 255, 0, 255, 0, 255, 0,
+	0, 0, 0, 0, 0, 0, 255, 255, 0, 255,
+	0, 255, 255, 255, 0, 0, 255, 255, 0, 0,
+	0, 0, 255, 0, 0, 0, 0, 0, 0, 0,
+	0, 255, 255, 0, 255, 0, 0, 255, 255, 255,
+	0, 0, 255, 0, 0, 255, 0, 0, 0, 255,
+	255, 255, 0, 255, 255, 255, 255, 0, 255, 255,
+	255, 255, 0, 255, 0, 0, 255, 0, 255, 255,
+	0, 255, 255, 255, 0, 0, 0, 0, 0, 255
       };
       
       im1 << vec1;
       
-      dataType dilateSquVec[] = 
+      dataType thinHexLVec[] = 
       {
+	255, 0, 255, 0, 0, 255, 255, 0, 0, 0, 
+	0, 0, 255, 0, 255, 0, 255, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 255, 255, 0, 0, 
+	0, 255, 255, 255, 0, 0, 255, 255, 0, 0, 
+	0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 
+	0, 255, 255, 0, 255, 0, 0, 255, 0, 0, 
+	0, 0, 255, 0, 0, 255, 0, 0, 0, 0, 
+	255, 255, 0, 255, 255, 255, 255, 0, 0, 0, 
+	255, 255, 0, 255, 0, 0, 255, 0, 0, 0, 
+	0, 255, 255, 255, 0, 0, 0, 0, 0, 0
       };
-      im3 << dilateSquVec;
+      im3 << thinHexLVec;
+      
 
-//       dilate(im1, im2, se);
+      thin(im1, HMT_hL_SE(), im2);
       TEST_ASSERT(im2==im3);      
+      im2.printSelf(1);
   }
 };
 
@@ -63,8 +86,13 @@ class Test_Hit_Or_Miss : public TestCase
 int main(int argc, char *argv[])
 {
       TestSuite ts;
-      ADD_TEST(ts, Test_Hit_Or_Miss);
+      ADD_TEST(ts, Test_Thin);
       
-      return ts.run();
+//       return ts.run();
+      Image_UINT8 im1("/home/mat/tmp/2001_1.bmp");
+      Image_UINT8 im2(im1);
+      zhangSkeleton(im1, im2);
+      im2.show();
+      Gui::execLoop();
 }
 

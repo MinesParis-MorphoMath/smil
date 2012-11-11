@@ -98,3 +98,7 @@ TEMPLATE_WRAP_FUNC_CROSS2(label);
 
 %include "DThinning.hpp"
 TEMPLATE_WRAP_FUNC(hitOrMiss);
+TEMPLATE_WRAP_FUNC(thin);
+TEMPLATE_WRAP_FUNC(rotThin);
+TEMPLATE_WRAP_FUNC(fullThin);
+TEMPLATE_WRAP_FUNC(zhangSkeleton);

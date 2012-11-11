@@ -32,7 +32,6 @@
 
 #include "DGui.h"
 
-
 class Test_Histogram : public TestCase
 {
   virtual void run()
