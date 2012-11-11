@@ -40,6 +40,7 @@ SMIL_MODULE(smilMorpho)
 #include "DMorphoWatershed.hpp"
 #include "DMorphoLabel.hpp"
 #include "DThinning.hpp"
+#include "DSkeleton.hpp"
 %}
  
 
@@ -101,4 +102,6 @@ TEMPLATE_WRAP_FUNC(hitOrMiss);
 TEMPLATE_WRAP_FUNC(thin);
 TEMPLATE_WRAP_FUNC(rotThin);
 TEMPLATE_WRAP_FUNC(fullThin);
+
+%include "DSkeleton.hpp"
 TEMPLATE_WRAP_FUNC(zhangSkeleton);

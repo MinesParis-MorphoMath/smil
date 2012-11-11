@@ -29,7 +29,6 @@
 
 #include "DTest.h"
 #include "DThinning.hpp"
-#include "DGui.h"
 
 
 class Test_Thin : public TestCase
@@ -88,11 +87,6 @@ int main(int argc, char *argv[])
       TestSuite ts;
       ADD_TEST(ts, Test_Thin);
       
-//       return ts.run();
-      Image_UINT8 im1("/home/mat/tmp/2001_1.bmp");
-      Image_UINT8 im2(im1);
-      zhangSkeleton(im1, im2);
-      im2.show();
-      Gui::execLoop();
+      return ts.run();
 }
 
