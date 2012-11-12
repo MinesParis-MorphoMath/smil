@@ -161,6 +161,16 @@ public:
     }
 };
 
+//! Square diagonal edge SE ([1,2,3], [5,6,7])
+class HMT_sDiagEdge_SE : public HMTStrElt
+{
+public:
+    HMT_sDiagEdge_SE()
+    {
+	add(StrElt(false, 1, 3, 1,2,3), StrElt(false, 1, 3, 5,6,7), 3);
+    }
+};
+
 //! Square corner SE ([1,0,7], [3,4,5])
 class HMT_sCorner_SE : public HMTStrElt
 {
@@ -178,6 +188,18 @@ public:
     HMT_sDiagonal_SE()
     {
 	add(StrElt(false, 1, 3, 1,2,7), StrElt(false, 1, 4, 3,4,5,6), 3);
+	add(StrElt(false, 1, 3, 1,6,7), StrElt(false, 1, 4, 2,3,4,5), 3);
+    }
+};
+
+//! Square convex hull SE ([3,4,5,6], [0,8]) and ([2,3,4,5], [0,8])
+class HMT_sConvHull_SE : public HMTStrElt
+{
+public:
+    HMT_sConvHull_SE()
+    {
+	add(StrElt(false, 1, 4, 3,4,5,6), StrElt(false, 1, 2, 0,8), 3);
+	add(StrElt(false, 1, 4, 2,3,4,5), StrElt(false, 1, 2, 0,8), 3);
     }
 };
 
@@ -397,6 +419,17 @@ template <class T>
 RES_T fullThin(const Image<T> &imIn, const HMTStrElt &mhtSE, Image<T> &imOut)
 {
     SLEEP(imOut);
+    double v1, v2;
+    thin<T>(imIn, mhtSE, imOut);
+    v1 = vol(imOut);
+    while(true)
+    {
+	thin<T>(imOut, mhtSE, imOut);
+	v2 = vol(imOut);
+	if (v2==v1)
+	  break;
+	v1 = v2;
+    }
     WAKE_UP(imOut);
     imOut.modified();
     
