@@ -170,19 +170,19 @@ public:
     virtual RES_T allocate();
     virtual RES_T deallocate();
 
-    void printSelf(ostream &os, bool displayPixVals) const;
-    virtual void printSelf(ostream &os=std::cout) const
+    void printSelf(ostream &os, bool displayPixVals, string indent="") const;
+    virtual void printSelf(ostream &os=std::cout, string indent="") const
     {
-	printSelf(os, false);
+	printSelf(os, false, indent);
     }
     void printSelf(bool displayPixVals)
     {
 	printSelf(std::cout, displayPixVals);
     }
-    virtual const char *getInfoString(const char *indent = "") const 
+    virtual const char *getInfoString(string indent = "") const 
     {
 	stringstream s;
-	this->printSelf(s);
+	this->printSelf(s, indent);
 	return s.str().c_str();
     }
 

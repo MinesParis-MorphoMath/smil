@@ -53,6 +53,42 @@ class StrElt : public BaseObject
 	odd(false)
     {
     }
+    StrElt(bool oddSE, UINT _size, UINT nbrPts, ...)
+      : BaseObject("StrElt"),
+	seT(SE_Generic), 
+	size(_size), 
+	odd(oddSE)
+    {
+	UINT indice;
+	va_list vl;
+	va_start(vl, nbrPts);
+	
+	for (UINT i=0;i<nbrPts;i++)
+	{
+	    indice = va_arg(vl, UINT);
+	    switch(indice)
+	    {
+	      case(0):
+		addPoint(0,0); break;
+	      case(1):
+		addPoint(1,0); break;
+	      case(2):
+		addPoint(1,-1); break;
+	      case(3):
+		addPoint(0,-1); break;
+	      case(4):
+		addPoint(-1,-1); break;
+	      case(5):
+		addPoint(-1,0); break;
+	      case(6):
+		addPoint(-1,1); break;
+	      case(7):
+		addPoint(0,1); break;
+	      case(8):
+		addPoint(1,1); break;
+	    }
+	}
+    }
     ~StrElt()
     {
     }
@@ -97,15 +133,15 @@ class StrElt : public BaseObject
     UINT size;
     virtual seType getType() const { return seT; }
     
-    virtual void printSelf(ostream &os=std::cout)
+    virtual void printSelf(ostream &os=std::cout, string indent="")
     {
-	os << "Structuring Element" << endl;
-	os << "Size: " << size << endl;
+	os << indent << "Structuring Element" << endl;
+	os << indent << "Size: " << size << endl;
 	int ptNbr = points.size();
-	os << "Point Nbr: " << ptNbr << endl;
+	os << indent << "Point Nbr: " << ptNbr << endl;
 	if (ptNbr)
 	  for (int i=0;i<ptNbr;i++)
-	    os << "#" << i+1 << ": (" << points[i].x << "," << points[i].y << "," << points[i].z << ")" << endl;
+	    os << indent << "#" << i+1 << ": (" << points[i].x << "," << points[i].y << "," << points[i].z << ")" << endl;
 	  
     }
 };
@@ -114,70 +150,6 @@ inline void operator << (ostream &os, StrElt &se)
 {
     se.printSelf(os);
 }
-
-/**
- * Hexagonal structuring element.
- * 
- * Points :
- * 
- * <table>
- *   <tr>  <th>4</th> <th>3</th> <th></th>  </tr>
- *   <tr>  <th>5</th> <th>1</th> <th>2</th>  </tr>
- *   <tr>  <th>6</th> <th>7</th> <th></th>  </tr>
- * </table>
- * 
- */
-
-class HexSE : public StrElt
-{
-  public:
-    HexSE(UINT s=1)
-    {
-	className = "HexSE";
-	seT = SE_Hex;
-	size = s;
-	odd = true;
-	addPoint(0,0);		// 1
-	addPoint(1,0);		// 2
-	addPoint(0,-1);		// 3
-	addPoint(-1,-1);	// 4
-	addPoint(-1,0);		// 5
-	addPoint(-1,1);		// 6
-	addPoint(0,1);		// 7
-    }
-};
-
-/**
- * Hexagonal structuring element without center point.
- * 
- * Points :
- * 
- * <table>
- *   <tr>  <th>3</th> <th>2</th> <th></th>  </tr>
- *   <tr>  <th>4</th> <th></th> <th>1</th>  </tr>
- *   <tr>  <th>5</th> <th>6</th> <th></th>  </tr>
- * </table>
- * 
- */
-
-class HexSE0 : public StrElt
-{
-  public:
-    HexSE0(UINT s=1) 
-    {
-	className = "HexSE0";
-// 	seT = SE_Hex;
-	size = s;
-	odd = true;
-	addPoint(1,0);		// 1
-	addPoint(0,-1);		// 2
-	addPoint(-1,-1);	// 3
-	addPoint(-1,0);		// 4
-	addPoint(-1,1);		// 5
-	addPoint(0,1);		// 6
-    }
-};
-
 
 /**
  * Square structuring element.
@@ -195,20 +167,11 @@ class HexSE0 : public StrElt
 class SquSE : public StrElt
 {
   public:
-    SquSE(UINT s=1) : StrElt(s)
+    SquSE(UINT s=1) 
+      : StrElt(false, s, 9, 	0, 1, 2, 3, 4, 5, 6, 7, 8)
     {
 	className = "SquSE";
 	seT = SE_Squ;
-	odd = false;
-	addPoint(0,0); 	// 1
-	addPoint(1,0);	// 2
-	addPoint(1,-1);	// 3
-	addPoint(0,-1);	// 4
-	addPoint(-1,-1);	// 5
-	addPoint(-1,0);	// 6
-	addPoint(-1,1);// 7
-	addPoint(0,1);	// 8
-	addPoint(1,1);	// 9
     }
 };
 
@@ -229,21 +192,61 @@ class SquSE0 : public StrElt
 {
   public:
     typedef StrElt parentClass;
-    SquSE0(UINT s=1) : StrElt(s)
+    SquSE0(UINT s=1)
+      : StrElt(false, s, 8, 	1, 2, 3, 4, 5, 6, 7, 8)
     {
 	className = "SquSE0";
-// 	seT = stSquSE;
 	odd = false;
-	addPoint(1,0);		// 1
-	addPoint(1,-1);		// 2
-	addPoint(0,-1);		// 3
-	addPoint(-1,-1);	// 4
-	addPoint(-1,0);		// 5
-	addPoint(-1,1);		// 6
-	addPoint(0,1);		// 7
-	addPoint(1,1);		// 8
     }
 };
+
+/**
+ * Hexagonal structuring element.
+ * 
+ * Points :
+ * 
+ * <table>
+ *   <tr>  <th>4</th> <th>3</th> <th></th>  </tr>
+ *   <tr>  <th>5</th> <th>1</th> <th>2</th>  </tr>
+ *   <tr>  <th>6</th> <th>7</th> <th></th>  </tr>
+ * </table>
+ * 
+ */
+class HexSE : public StrElt
+{
+  public:
+    HexSE(UINT s=1)
+      : StrElt(true, s, 7, 	0, 1, 3, 4, 5, 6, 7)
+    {
+	className = "HexSE";
+	seT = SE_Hex;
+    }
+};
+
+/**
+ * Hexagonal structuring element without center point.
+ * 
+ * Points :
+ * 
+ * <table>
+ *   <tr>  <th>3</th> <th>2</th> <th></th>  </tr>
+ *   <tr>  <th>4</th> <th></th> <th>1</th>  </tr>
+ *   <tr>  <th>5</th> <th>6</th> <th></th>  </tr>
+ * </table>
+ * 
+ */
+
+class HexSE0 : public StrElt
+{
+  public:
+    HexSE0(UINT s=1) 
+      : StrElt(true, s, 6, 	1, 3, 4, 5, 6, 7)
+    {
+	className = "HexSE0";
+	size = s;
+    }
+};
+
 
 
 /**
@@ -263,16 +266,10 @@ class CrossSE : public StrElt
 {
   public:
     CrossSE(UINT s=1)
+      : StrElt(false, s, 5, 	0, 1, 5, 3, 7)
     {
 	className = "CrossSE";
 	seT = SE_Cross;
-	size = s;
-	odd = true;
-	addPoint(0,0);		// 1
-	addPoint(1,0);		// 2
-	addPoint(-1,-1);	// 3
-	addPoint(-1,0);		// 4
-	addPoint(0,1);		// 5
     }
 };
 
@@ -291,14 +288,10 @@ class HorizSE : public StrElt
 {
   public:
     HorizSE(UINT s=1)
+      : StrElt(false, s, 3, 	0, 1, 5)
     {
 	className = "HorizSE";
 	seT = SE_Horiz;
-	size = s;
-	odd = true;
-	addPoint(0,0);		// 1
-	addPoint(1,0);		// 2
-	addPoint(-1,0);		// 3
     }
 };
 
@@ -319,14 +312,10 @@ class VertSE : public StrElt
 {
   public:
     VertSE(UINT s=1)
+      : StrElt(false, 3,	0, 3, 7)
     {
 	className = "VertSE";
 	seT = SE_Vert;
-	size = s;
-	odd = true;
-	addPoint(0,0);		// 1
-	addPoint(0,-1);		// 2
-	addPoint(0,1);		// 3
     }
 };
 

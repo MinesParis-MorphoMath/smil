@@ -322,7 +322,7 @@ RES_T Image<T>::deallocate()
 
 
 template <class T>
-void Image<T>::printSelf(ostream &os, bool displayPixVals) const
+void Image<T>::printSelf(ostream &os, bool displayPixVals, string indent) const
 {
 #if DEBUG_LEVEL > 1
     cout << "Image::printSelf: " << this << endl;

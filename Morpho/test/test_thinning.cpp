@@ -28,7 +28,7 @@
 
 
 #include "DTest.h"
-#include "DThinning.hpp"
+#include "DHitOrMiss.hpp"
 
 
 class Test_Thin : public TestCase
@@ -74,7 +74,7 @@ class Test_Thin : public TestCase
       im3 << thinHexLVec;
       
 
-      thin(im1, HMT_hL_SE(), im2);
+      hitOrMiss(im1, HMT_sCorner_SE(), im2);
       TEST_ASSERT(im2==im3);      
       im2.printSelf(1);
   }
