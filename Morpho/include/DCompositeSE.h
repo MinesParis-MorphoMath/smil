@@ -227,7 +227,7 @@ public:
 };
 
 // Isolated points detection
-//! Square I: ([0], [1,2,3,4,5,6,7,8])
+//! Square I ([0], [1,2,3,4,5,6,7,8])
 class HMT_sI_SE : public CompStrEltList
 {
 public:
@@ -237,7 +237,7 @@ public:
     }
 };
 
-//! Hexagonal I: ([0], [1,2,3,4,5,6])
+//! Hexagonal I ([0], [1,2,3,4,5,6])
 class HMT_hI_SE : public CompStrEltList
 {
 public:
@@ -247,13 +247,24 @@ public:
     }
 };
 
-//! Hexagonal I: ([3,4,5,6,7], [0,1])
-class HMT_hLineEnd_SE : public CompStrEltList
+//! Square line end ([0,1], [3,4,5,6,7])
+class HMT_sLineEnd_SE : public CompStrEltList
 {
 public:
-    HMT_hLineEnd_SE(UINT nrot=1)
+    HMT_sLineEnd_SE(UINT nrot=1)
     {
-	add(StrElt(false, 1, 5, 3,4,5,6,7), StrElt(false, 1, 2, 0,1), nrot);
+	add(StrElt(false, 1, 2, 0,1), StrElt(false, 1, 5, 3,4,5,6,7), nrot);
+    }
+};
+
+//! Square line junction ([0,1,4,6],[] and [0,2,4,6],[])
+class HMT_sLineJunc_SE : public CompStrEltList
+{
+public:
+    HMT_sLineJunc_SE(UINT nrot=1)
+    {
+	add(StrElt(false, 1, 4, 0,1,4,6), StrElt(), nrot);
+	add(StrElt(false, 1, 4, 0,2,4,6), StrElt(), nrot);
     }
 };
 
