@@ -39,6 +39,7 @@ SMIL_MODULE(smilMorpho)
 #include "DMorphoArrow.hpp"
 #include "DMorphoWatershed.hpp"
 #include "DMorphoLabel.hpp"
+#include "DCompositeSE.h"
 #include "DHitOrMiss.hpp"
 #include "DSkeleton.hpp"
 %}
@@ -97,6 +98,7 @@ TEMPLATE_WRAP_FUNC_CROSS2(watershed);
 %include "DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_CROSS2(label);
 
+%include "DCompositeSE.h"
 %include "DHitOrMiss.hpp"
 TEMPLATE_WRAP_FUNC(hitOrMiss);
 TEMPLATE_WRAP_FUNC(thin);

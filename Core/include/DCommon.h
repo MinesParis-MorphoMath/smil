@@ -36,6 +36,7 @@
 #include <limits>
 #include <vector>
 #include <map>
+#include <math.h>
 #include <stdarg.h>
 
 
@@ -113,6 +114,9 @@ using namespace std;
 
 #define D_DEFAULT_OUT_PIXEL_VAL 0
 
+#ifndef PI
+#define PI 3.141592653589793
+#endif // PI
 
 #define MIN(a, b) a < b ? a : b;
 #define MAX(a, b) a > b ? a : b;
@@ -128,7 +132,10 @@ struct Point
 typedef Point<int> IntPoint;
 typedef Point<double> DoublePoint;
 
-
+inline double round(double r) 
+{
+    return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
+}
 
 // Misc Macros
 

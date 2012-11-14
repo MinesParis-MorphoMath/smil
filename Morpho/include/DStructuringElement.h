@@ -40,6 +40,9 @@
 
 enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert };
 
+IntPoint SquIndices[] = { (0,0), (1,0), (1,-1), (0,-1), (-1,-1), (-1,0), (-1,1), (0,1), (1,1) };
+IntPoint HexIndices[] = { (0,0), (1,0), (0,-1), (-1,-1), (-1,0), (-1,1), (0,1) };
+
 /**
  * Base structuring element
  */
@@ -53,6 +56,7 @@ class StrElt : public BaseObject
 	odd(false)
     {
     }
+    //! Construct with points defined by indices (Hex if oddSE, Squ otherwise)
     StrElt(bool oddSE, UINT _size, UINT nbrPts, ...)
       : BaseObject("StrElt"),
 	seT(SE_Generic), 
@@ -66,27 +70,10 @@ class StrElt : public BaseObject
 	for (UINT i=0;i<nbrPts;i++)
 	{
 	    indice = va_arg(vl, UINT);
-	    switch(indice)
-	    {
-	      case(0):
-		addPoint(0,0); break;
-	      case(1):
-		addPoint(1,0); break;
-	      case(2):
-		addPoint(1,-1); break;
-	      case(3):
-		addPoint(0,-1); break;
-	      case(4):
-		addPoint(-1,-1); break;
-	      case(5):
-		addPoint(-1,0); break;
-	      case(6):
-		addPoint(-1,1); break;
-	      case(7):
-		addPoint(0,1); break;
-	      case(8):
-		addPoint(1,1); break;
-	    }
+	    if (odd)
+	      addPoint(HexIndices[indice]);
+	    else
+	      addPoint(SquIndices[indice]);
 	}
     }
     ~StrElt()
@@ -121,6 +108,10 @@ class StrElt : public BaseObject
 	p.y = y;
 	p.z = z;
 	points.push_back(p);
+    }
+    inline void addPoint(const IntPoint &pt)
+    {
+	points.push_back(pt);
     }
     inline const StrElt operator()(int s=1)
     {
