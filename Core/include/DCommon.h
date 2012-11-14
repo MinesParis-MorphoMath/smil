@@ -127,6 +127,8 @@ struct Point
   T x;
   T y;
   T z;
+  Point() : x(0), y(0), z(0) {}
+  Point(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
 };
 
 typedef Point<int> IntPoint;

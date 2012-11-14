@@ -40,8 +40,6 @@
 
 enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert };
 
-IntPoint SquIndices[] = { (0,0), (1,0), (1,-1), (0,-1), (-1,-1), (-1,0), (-1,1), (0,1), (1,1) };
-IntPoint HexIndices[] = { (0,0), (1,0), (0,-1), (-1,-1), (-1,0), (-1,1), (0,1) };
 
 /**
  * Base structuring element
@@ -49,92 +47,29 @@ IntPoint HexIndices[] = { (0,0), (1,0), (0,-1), (-1,-1), (-1,0), (-1,1), (0,1) }
 class StrElt : public BaseObject
 {
   public:
-    StrElt(UINT s=1)
-      : BaseObject("StrElt"),
-	seT(SE_Generic), 
-	size(s), 
-	odd(false)
-    {
-    }
-    //! Construct with points defined by indices (Hex if oddSE, Squ otherwise)
-    StrElt(bool oddSE, UINT _size, UINT nbrPts, ...)
-      : BaseObject("StrElt"),
-	seT(SE_Generic), 
-	size(_size), 
-	odd(oddSE)
-    {
-	UINT indice;
-	va_list vl;
-	va_start(vl, nbrPts);
-	
-	for (UINT i=0;i<nbrPts;i++)
-	{
-	    indice = va_arg(vl, UINT);
-	    if (odd)
-	      addPoint(HexIndices[indice]);
-	    else
-	      addPoint(SquIndices[indice]);
-	}
-    }
-    ~StrElt()
-    {
-    }
-    StrElt(const StrElt &rhs)
-      : BaseObject(rhs)
-    {
-	this->clone(rhs);
-    }
-    StrElt& operator=(const StrElt &rhs)
-    {
-	this->clone(rhs);
-	return *this;
-    }
+    StrElt(UINT s=1);
     
-    void clone(const StrElt &rhs)
-    {
-	this->seT = rhs.seT;
-	this->size = rhs.size;
-	this->odd = rhs.odd;
-	this->points = rhs.points;
-    }
+    StrElt(const StrElt &rhs);
+    //! Construct with points defined by indices (Hex if oddSE, Squ otherwise)
+    StrElt(bool oddSE, UINT _size, UINT nbrPts, ...);
+    
+    ~StrElt() {}
+    StrElt& operator=(const StrElt &rhs);
+    void clone(const StrElt &rhs);
    
     //! List of neighbor points
     vector<IntPoint> points;
     
-    inline void addPoint(int x, int y, int z=0)
-    {
-	IntPoint p;
-	p.x = x;
-	p.y = y;
-	p.z = z;
-	points.push_back(p);
-    }
-    inline void addPoint(const IntPoint &pt)
-    {
-	points.push_back(pt);
-    }
-    inline const StrElt operator()(int s=1)
-    {
-	StrElt se(*this);
-	se.size = s;
-	return se;
-    }
+    void addPoint(int x, int y, int z=0);
+    void addPoint(const IntPoint &pt);
+    const StrElt operator()(int s=1);
+    
     bool odd;
     seType seT;
     UINT size;
     virtual seType getType() const { return seT; }
     
-    virtual void printSelf(ostream &os=std::cout, string indent="")
-    {
-	os << indent << "Structuring Element" << endl;
-	os << indent << "Size: " << size << endl;
-	int ptNbr = points.size();
-	os << indent << "Point Nbr: " << ptNbr << endl;
-	if (ptNbr)
-	  for (int i=0;i<ptNbr;i++)
-	    os << indent << "#" << i+1 << ": (" << points[i].x << "," << points[i].y << "," << points[i].z << ")" << endl;
-	  
-    }
+    virtual void printSelf(ostream &os=std::cout, string indent="");
 };
 
 inline void operator << (ostream &os, StrElt &se)
@@ -207,7 +142,7 @@ class HexSE : public StrElt
 {
   public:
     HexSE(UINT s=1)
-      : StrElt(true, s, 7, 	0, 1, 3, 4, 5, 6, 7)
+      : StrElt(true, s, 7, 	0, 1, 2, 3, 4, 5, 6)
     {
 	className = "HexSE";
 	seT = SE_Hex;
@@ -231,7 +166,7 @@ class HexSE0 : public StrElt
 {
   public:
     HexSE0(UINT s=1) 
-      : StrElt(true, s, 6, 	1, 3, 4, 5, 6, 7)
+      : StrElt(true, s, 6, 	1, 2, 3, 4, 5, 6)
     {
 	className = "HexSE0";
 	size = s;
@@ -341,7 +276,7 @@ class CubeSE : public StrElt
   public:
     CubeSE(UINT s=1) : StrElt(s)
     {
-	className = "CubeSE";
+	this->className = "CubeSE";
 	odd = false;
 	int zList[] = { 0, -1, 1 };
 	for (int i=0;i<3;i++)
@@ -361,24 +296,16 @@ class CubeSE : public StrElt
 };
 
 // Shortcuts
-HexSE hSE(UINT s=1) { return HexSE(s); }
-HexSE0 hSE0(UINT s=1) { return HexSE0(s); }
-SquSE sSE(UINT s=1) { return SquSE(s); }
-SquSE0 sSE0(UINT s=1) { return SquSE0(s); }
-CrossSE cSE(UINT s=1) { return CrossSE(s); }
-CubeSE cbSE(UINT s=1) { return CubeSE(s); }
+inline HexSE hSE(UINT s=1) { return HexSE(s); }
+inline HexSE0 hSE0(UINT s=1) { return HexSE0(s); }
+inline SquSE sSE(UINT s=1) { return SquSE(s); }
+inline SquSE0 sSE0(UINT s=1) { return SquSE0(s); }
+inline CrossSE cSE(UINT s=1) { return CrossSE(s); }
+inline CubeSE cbSE(UINT s=1) { return CubeSE(s); }
 
-StrElt DEFAULT_SE = SquSE();
 
-StrElt& getDefaultSE()
-{
-    return DEFAULT_SE;
-}
+#define DEFAULT_SE Morpho::getDefaultSE()
 
-void setDefaultSE(const StrElt &se)
-{
-    DEFAULT_SE = se;
-}
 
 // #define DEFAULT_SE sSE
 

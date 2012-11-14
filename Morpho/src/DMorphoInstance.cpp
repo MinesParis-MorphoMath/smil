@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,70 +27,28 @@
  */
 
 
-#include "DTest.h"
-#include "DCompositeSE.h"
-#include "DHitOrMiss.hpp"
+#include "DMorphoInstance.h"
 
-
-class Test_Thin : public TestCase
+Morpho::Morpho()
 {
-  virtual void run()
-  {
-      typedef UINT8 dataType;
-      typedef Image<dataType> imType;
-      
-      imType im1(10,10);
-      imType im2(im1);
-      imType im3(im1);
-      
-      dataType vec1[] = 
-      {
-	255, 0, 255, 0, 0, 255, 255, 0, 255, 255,
-	0, 0, 255, 0, 255, 0, 255, 0, 255, 0,
-	0, 0, 0, 0, 0, 0, 255, 255, 0, 255,
-	0, 255, 255, 255, 0, 0, 255, 255, 0, 0,
-	0, 0, 255, 0, 0, 0, 0, 0, 0, 0,
-	0, 255, 255, 0, 255, 0, 0, 255, 255, 255,
-	0, 0, 255, 0, 0, 255, 0, 0, 0, 255,
-	255, 255, 0, 255, 255, 255, 255, 0, 255, 255,
-	255, 255, 0, 255, 0, 0, 255, 0, 255, 255,
-	0, 255, 255, 255, 0, 0, 0, 0, 0, 255
-      };
-      
-      im1 << vec1;
-      
-      dataType thinHexLVec[] = 
-      {
-	255, 0, 255, 0, 0, 255, 255, 0, 0, 0, 
-	0, 0, 255, 0, 255, 0, 255, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 255, 255, 0, 0, 
-	0, 255, 255, 255, 0, 0, 255, 255, 0, 0, 
-	0, 0, 255, 0, 0, 0, 0, 0, 0, 0, 
-	0, 255, 255, 0, 255, 0, 0, 255, 0, 0, 
-	0, 0, 255, 0, 0, 255, 0, 0, 0, 0, 
-	255, 255, 0, 255, 255, 255, 255, 0, 0, 0, 
-	255, 255, 0, 255, 0, 0, 255, 0, 0, 0, 
-	0, 255, 255, 255, 0, 0, 0, 0, 0, 0
-      };
-      im3 << thinHexLVec;
-      
-
-//       HMT_hL_SE *l = new HMT_hL_SE();
-//       delete l;
-//       hitOrMiss(im1, HMT_hL_SE(), im2);
-      testStrElt cse;
-      TEST_ASSERT(im2==im3);      
-      im2.printSelf(1);
-  }
-};
-
-
-
-int main(int argc, char *argv[])
-{
-      TestSuite ts;
-      ADD_TEST(ts, Test_Thin);
-      
-      return ts.run();
+    this->defaultSE = SquSE();
 }
+
+Morpho::~Morpho()
+{
+}
+
+StrElt &Morpho::getDefaultSE()
+{
+    Morpho *inst = Morpho::getInstance();
+    return inst->defaultSE;
+}
+
+void Morpho::setDefaultSE(const StrElt &se)
+{
+    Morpho *inst = Morpho::getInstance();
+    inst->defaultSE = se;
+}
+
+
 

@@ -32,6 +32,7 @@
 
 #include "DImage.h"
 #include "DImageArith.h"
+#include "DMorphoInstance.h"
 #include "DMorphImageOperations.hpp"
 
 /**

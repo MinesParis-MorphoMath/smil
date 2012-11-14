@@ -28,9 +28,48 @@
 
 #include "DCompositeSE.h"
 
-CompStrElt::CompStrElt()
-  : BaseObject("CompStrElt")
+// IntPoint SE_SquIndices[] = { IntPoint(0,0,0), IntPoint(1,0,0), IntPoint(1,-1,0), 
+//       IntPoint(0,-1,0), IntPoint(-1,-1,0), IntPoint(-1,0,0), 
+//       IntPoint(-1,1,0), IntPoint(0,1,0), IntPoint(1,1,0) };
+// IntPoint SE_HexIndices[] = { IntPoint(0,0,0), IntPoint(1,0,0), IntPoint(0,-1,0), 
+//       IntPoint(-1,-1,0), IntPoint(-1,0,0), IntPoint(-1,1,0), IntPoint(0,1,0) };
+
+extern IntPoint SE_SquIndices[];
+extern IntPoint SE_HexIndices[];
+
+testStrElt::testStrElt()
 {
+}
+
+int getSEPointIndice(IntPoint &pt, bool oddSE)
+{
+    if (oddSE)
+    {
+      for (UINT i=0;i<7;i++)
+	  if (SE_HexIndices[i].x==pt.x && SE_HexIndices[i].y==pt.y)
+	    return i;
+    }
+    else
+    {
+      for (UINT i=0;i<9;i++)
+	  if (SE_SquIndices[i].x==pt.x && SE_SquIndices[i].y==pt.y)
+	    return i;
+    }
+    return -1;
+}
+
+IntPoint rotatePoint(IntPoint &pt, int steps, bool oddSE)
+{
+    IntPoint newPt;
+    int ind = getSEPointIndice(pt, oddSE);
+    if (ind==0)
+      return newPt;
+    if (oddSE)
+	return SE_HexIndices[(ind-1+steps)%6 + 1];
+    else
+	return SE_SquIndices[(ind-1+steps)%8 + 1];
+    
+    
 }
 
 CompStrElt::CompStrElt(const CompStrElt &rhs)
@@ -57,15 +96,15 @@ CompStrElt CompStrElt::operator~()
 }
 
 //! Counterclockwise rotate SE points
-CompStrElt CompStrElt::rotate(int deg)
+CompStrElt CompStrElt::rotate(int steps)
 {
     StrElt fg, bg;
     bool odd = fgSE.odd;
     fg.odd = bg.odd = odd;
     for (vector<IntPoint>::iterator it=fgSE.points.begin();it!=fgSE.points.end();it++)
-      fg.addPoint(rotatePoint((*it), -deg, odd));
+      fg.addPoint(rotatePoint((*it), steps, odd));
     for (vector<IntPoint>::iterator it=bgSE.points.begin();it!=bgSE.points.end();it++)
-      bg.addPoint(rotatePoint((*it), -deg, odd));
+      bg.addPoint(rotatePoint((*it), steps, odd));
     return CompStrElt(fg, bg);	
 }
 
@@ -123,12 +162,10 @@ void CompStrEltList::add(const StrElt &fgse, const StrElt &bgse)
 void CompStrEltList::add(const StrElt &fgse, const StrElt &bgse, UINT nrot)
 {
     CompStrElt compSE(fgse, bgse);
-    int angle = 360 / (nrot+1);
+    int steps = fgse.odd ? 6/(nrot+1) : 8/(nrot+1);
     compSeList.push_back(compSE);
     for (UINT n=0;n<nrot;n++)
-    {
-	compSeList.push_back(compSE.rotate((n+1)*angle));
-    }
+	compSeList.push_back(compSE.rotate(steps));
 }
 
 void CompStrEltList::printSelf(ostream &os, string indent)

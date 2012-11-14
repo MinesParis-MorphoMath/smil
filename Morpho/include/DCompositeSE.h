@@ -39,28 +39,12 @@
  * @{
  */
 
-inline int getSEPointIndice(bool oddSE, IntPoint &pt)
-{
-    if (oddSE)
-    {
-      for (UINT i=0;i<7;i++)
-	  if (HexIndices[i].x==pt.x && HexIndices[i].y==pt.y)
-	    return i;
-    }
-}
 
-inline IntPoint rotatePoint(IntPoint &pt, int deg, bool odd)
+class testStrElt /*: public BaseObject*/
 {
-    IntPoint newPt;
-    double rad = double(deg)*PI/180.;
-    double dx = (odd && (pt.y%2!=0)) ? 0.5 : 0;
-    double x=pt.x+dx, y=pt.y;
-    x = (x*cos(rad) - y*sin(rad) - dx);
-    y = (y*cos(rad) + x*sin(rad));
-    newPt.z = 0;
-    return newPt;
-}
-
+public:
+  testStrElt();
+};
 
 /**
  * Composite structuring element
@@ -71,7 +55,8 @@ public:
     StrElt fgSE;
     StrElt bgSE;
     
-    CompStrElt();
+    CompStrElt() {};
+    ~CompStrElt() {}
     CompStrElt(const CompStrElt &rhs);
     CompStrElt(const StrElt &fg, const StrElt &bg);
     //! Switch foreground/background SE

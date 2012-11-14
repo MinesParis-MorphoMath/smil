@@ -528,7 +528,7 @@ IF(USE_WRAPPER)
 # 
 ENDIF(USE_WRAPPER)
 
-ADD_SMIL_TESTS(Smil smilCore smilIO smilGui ${SMIL_EXT_DEPS})
+ADD_SMIL_TESTS(Smil smilCore smilIO smilGui smilMorpho ${SMIL_EXT_DEPS})
 
 
 
