@@ -96,16 +96,14 @@ CompStrElt CompStrElt::operator~()
 }
 
 //! Counterclockwise rotate SE points
-CompStrElt CompStrElt::rotate(int steps)
+CompStrElt &CompStrElt::rotate(int steps)
 {
-    StrElt fg, bg;
     bool odd = fgSE.odd;
-    fg.odd = bg.odd = odd;
     for (vector<IntPoint>::iterator it=fgSE.points.begin();it!=fgSE.points.end();it++)
-      fg.addPoint(rotatePoint((*it), steps, odd));
+      (*it) = rotatePoint((*it), steps, odd);
     for (vector<IntPoint>::iterator it=bgSE.points.begin();it!=bgSE.points.end();it++)
-      bg.addPoint(rotatePoint((*it), steps, odd));
-    return CompStrElt(fg, bg);	
+      (*it) = rotatePoint((*it), steps, odd);
+    return *this;	
 }
 
 void CompStrElt::printSelf(ostream &os, string indent)
@@ -118,10 +116,6 @@ void CompStrElt::printSelf(ostream &os, string indent)
 }
 
 
-
-CompStrEltList::CompStrEltList() 
-{
-}
 
 CompStrEltList::CompStrEltList(const CompStrEltList &rhs) 
 {
@@ -136,7 +130,7 @@ CompStrEltList::CompStrEltList(const CompStrElt &compSe)
 CompStrEltList CompStrEltList::operator~()
 {
     CompStrEltList hmtSE;
-    for (std::list<CompStrElt>::const_iterator it=compSeList.begin();it!=compSeList.end();it++)
+    for (std::vector<CompStrElt>::const_iterator it=compSeList.begin();it!=compSeList.end();it++)
       hmtSE.add((*it).bgSE, (*it).fgSE);
     return hmtSE;
 }
@@ -144,7 +138,7 @@ CompStrEltList CompStrEltList::operator~()
 CompStrEltList CompStrEltList::operator | (const CompStrEltList &rhs) 
 {
     CompStrEltList hmtSE(*this);
-    for (std::list<CompStrElt>::const_iterator it=rhs.compSeList.begin();it!=rhs.compSeList.end();it++)
+    for (std::vector<CompStrElt>::const_iterator it=rhs.compSeList.begin();it!=rhs.compSeList.end();it++)
       hmtSE.add((*it).fgSE, (*it).bgSE);
     return hmtSE;
 }
@@ -162,24 +156,28 @@ void CompStrEltList::add(const StrElt &fgse, const StrElt &bgse)
 void CompStrEltList::add(const StrElt &fgse, const StrElt &bgse, UINT nrot)
 {
     CompStrElt compSE(fgse, bgse);
-    int steps = fgse.odd ? 6/(nrot+1) : 8/(nrot+1);
+    int steps = fgse.odd ? 6/nrot : 8/nrot;
     compSeList.push_back(compSE);
-    for (UINT n=0;n<nrot;n++)
+    for (UINT n=1;n<nrot;n++)
 	compSeList.push_back(compSE.rotate(steps));
+}
+
+CompStrEltList &CompStrEltList::rotate(int nrot)
+{
+    CompStrEltList sel;
+    for (std::vector<CompStrElt>::iterator it=compSeList.begin();it!=compSeList.end();it++)
+      (*it).rotate(nrot);
+    return *this;
 }
 
 void CompStrEltList::printSelf(ostream &os, string indent)
 {
     os << indent << "HitOrMiss SE (composite structuring element list)" << endl;
     int i=0;
-    for (std::list<CompStrElt>::iterator it=compSeList.begin();it!=compSeList.end();it++,i++)
+    for (std::vector<CompStrElt>::iterator it=compSeList.begin();it!=compSeList.end();it++,i++)
     {
 	os << indent << "CompSE #" << i << ":" << endl;
 	(*it).printSelf(os, indent + "\t");
     }
 }
 
-HMT_hL_SE::HMT_hL_SE()
-{
-    this->add(StrElt(true, 1, 2, 1,3), StrElt(true, 1, 2, 5,6), 5);
-}

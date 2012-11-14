@@ -323,7 +323,8 @@ bool im##savedUpdateState = im.updatesEnabled; \
 im.updatesEnabled = false;
 
 #define WAKE_UP(im) \
-im.updatesEnabled = im##savedUpdateState;
+im.updatesEnabled = im##savedUpdateState; \
+im.modified();
 
 
 /** @}*/

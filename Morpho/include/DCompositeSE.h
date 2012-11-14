@@ -62,15 +62,15 @@ public:
     //! Switch foreground/background SE
     CompStrElt operator~();
     //! Counterclockwise rotate SE points
-    CompStrElt rotate(int deg);
+    CompStrElt &rotate(int steps=1);
     virtual void printSelf(ostream &os=std::cout, string indent="");
 };
 
 class CompStrEltList : public BaseObject
 {
 public:
-    std::list<CompStrElt> compSeList;
-    CompStrEltList();
+    std::vector<CompStrElt> compSeList;
+    CompStrEltList() {}
     CompStrEltList(const CompStrEltList &rhs);
     CompStrEltList(const CompStrElt &compSe);
     CompStrEltList operator~();
@@ -81,229 +81,153 @@ public:
     void add(const CompStrElt &cse);
     void add(const StrElt &fgse, const StrElt &bgse);
     
-    //! Add as StrElt pair and their nrot rotations
-    //! The rotation angle is 360/(nrot+1) counterclockwise
-    //! (for ex. 90° for n=3, 45° for n=7)
+    //! Add as the nrot rotations of the StrElt pair
+    //! The rotation is 6/nrot counterclockwise for Hex
+    //! and 8/nrot for Squ
     void add(const StrElt &fgse, const StrElt &bgse, UINT nrot);
+    
+    CompStrEltList &rotate(int steps=1);
     
     virtual void printSelf(ostream &os=std::cout, string indent="");
 };
-
-
-//! Square edge SE ([8,1,2], [4,5,6])
-class HMT_sEdge_SE : public CompStrEltList
-{
-public:
-    HMT_sEdge_SE()
-    {
-	this->add(StrElt(false, 1, 3, 8,1,2), StrElt(false, 1, 3, 4,5,6), 3);
-    }
-};
-
-//! Square diagonal edge SE ([1,2,3], [5,6,7])
-class HMT_sDiagEdge_SE : public CompStrEltList
-{
-public:
-    HMT_sDiagEdge_SE()
-    {
-	add(StrElt(false, 1, 3, 1,2,3), StrElt(false, 1, 3, 5,6,7), 3);
-    }
-};
-
-//! Square corner SE ([1,0,7], [3,4,5])
-class HMT_sCorner_SE : public CompStrEltList
-{
-public:
-    HMT_sCorner_SE()
-    {
-	add(StrElt(false, 1, 3, 1,0,7), StrElt(false, 1, 3, 3,4,5), 3);
-    }
-};
-
-//! Square diagonal SE ([1,2,7], [3,4,5,6]) and ([1,6,7], [2,3,4,5])
-class HMT_sDiagonal_SE : public CompStrEltList
-{
-public:
-    HMT_sDiagonal_SE()
-    {
-	add(StrElt(false, 1, 3, 1,2,7), StrElt(false, 1, 4, 3,4,5,6), 3);
-	add(StrElt(false, 1, 3, 1,6,7), StrElt(false, 1, 4, 2,3,4,5), 3);
-    }
-};
-
-//! Square convex hull SE ([3,4,5,6], [0,8]) and ([2,3,4,5], [0,8])
-class HMT_sConvHull_SE : public CompStrEltList
-{
-public:
-    HMT_sConvHull_SE()
-    {
-	add(StrElt(false, 1, 4, 3,4,5,6), StrElt(false, 1, 2, 0,8), 3);
-	add(StrElt(false, 1, 4, 2,3,4,5), StrElt(false, 1, 2, 0,8), 3);
-    }
-};
-
-//! Square line-end SE ([0,1], [3,4,5,6,7] and [0,2], [3,4,5,6,7,8])
-class HMT_sLineEnd_SE : public CompStrEltList
-{
-public:
-    HMT_sLineEnd_SE()
-    {
-	add(StrElt(false, 1, 2, 0,1), StrElt(false, 1, 5, 3,4,5,6,7), 3);
-    }
-};
-
-//! Square diagonal line-end SE ([0,2], [3,4,5,6,7,8,1])
-class HMT_sLineEndD_SE : public CompStrEltList
-{
-public:
-    HMT_sLineEndD_SE()
-    {
-	add(StrElt(false, 1, 2, 0,2), StrElt(false, 1, 7, 3,4,5,6,7,8,1), 3);
-    }
-};
-
-
-
-
 
 
 //! Square L ([8,1,2], [4,5,6])
 class HMT_sL_SE : public CompStrEltList
 {
 public:
-    HMT_sL_SE()
+    HMT_sL_SE(UINT nrot=1)
     {
-	this->add(StrElt(false, 1, 3, 8,1,2), StrElt(false, 1, 3, 4,5,6), 3);
+	this->add(StrElt(false, 1, 3, 8,1,2), StrElt(false, 1, 3, 4,5,6), nrot);
     }
 };
 
-//! Hexagonal L ([1,3], [5,6])
+//! Hexagonal L ([1,2], [4,5])
 class HMT_hL_SE : public CompStrEltList
 {
 public:
-    HMT_hL_SE();
+    HMT_hL_SE(UINT nrot=1)
+    {
+      this->add(StrElt(true, 1, 2, 1,2), StrElt(true, 1, 2, 4,5), nrot);
+    }
 };
 
 
+//! Square M ([1,8], [3,4,5,6])
+class HMT_sM_SE : public CompStrEltList
+{
+public:
+    HMT_sM_SE(UINT nrot=1)
+    {
+	add(StrElt(false, 1, 2, 1,8), StrElt(false, 1, 4, 3,4,5,6), nrot);
+    }
+};
 
-
-
-//! hexagonalM ([1], [4,5,6])
+//! Hexagonal M ([1], [3,4,5])
 class HMT_hM_SE : public CompStrEltList
 {
 public:
-    HMT_hM_SE()
+    HMT_hM_SE(UINT nrot=1)
     {
-	add(StrElt(true, 1, 1, 1), StrElt(true, 1, 3, 4,5,6), 3);
+	add(StrElt(true, 1, 1, 1), StrElt(true, 1, 3, 4,5,6), nrot);
     }
 };
 
-//! squareD ([3,4,5,6], [1,8])
+//! Square D ([3,4,5,6], [1,8])
 class HMT_sD_SE : public CompStrEltList
 {
 public:
-    HMT_sD_SE()
+    HMT_sD_SE(UINT nrot=1)
     {
-	add(StrElt(false, 1, 4, 3,4,5,6), StrElt(false, 1, 2, 1,8), 3);
+	add(StrElt(false, 1, 4, 3,4,5,6), StrElt(false, 1, 2, 1,8), nrot);
     }
 };
 
-//! hexagonalD ([4,5,6], [1])
+//! Hexagonal D ([3,4,5], [1])
 class HMT_hD_SE : public CompStrEltList
 {
 public:
-    HMT_hD_SE()
+    HMT_hD_SE(UINT nrot=1)
     {
-	add(StrElt(true, 1, 3, 4,5,6), StrElt(true, 1, 1, 1));
+	add(StrElt(true, 1, 3, 3,4,5), StrElt(true, 1, 1, 1), nrot);
     }
 };
 
-//! squareE ([3,4,5,6,7], [0])
+//! Square E ([3,4,5,6,7], [0])
 class HMT_sE_SE : public CompStrEltList
 {
 public:
-    HMT_sE_SE()
+    HMT_sE_SE(UINT nrot=1)
     {
-	add(StrElt(false, 1, 5, 3,4,5,6,7), StrElt(false, 1, 1, 0));
+	add(StrElt(false, 1, 5, 3,4,5,6,7), StrElt(false, 1, 1, 0), nrot);
     }
 };
 
-//! hexagonalE ([4,5,6,7], [0])
+//! Hexagonal E ([3,4,5,6], [0])
 class HMT_hE_SE : public CompStrEltList
 {
 public:
-    HMT_hE_SE()
+    HMT_hE_SE(UINT nrot=1)
     {
-	add(StrElt(true, 1, 4, 4,5,6,7), StrElt(true, 1, 1, 0));
+	add(StrElt(true, 1, 4, 3,4,5,6), StrElt(true, 1, 1, 0), nrot);
     }
 };
 
 
 // # Some other specific structuring elements used for multiple points extraction
-//! squareS1 ([3,7], [0,1,5])
+//! Square S1 ([3,7], [0,1,5])
 class HMT_sS1_SE : public CompStrEltList
 {
 public:
-    HMT_sS1_SE()
+    HMT_sS1_SE(UINT nrot=1)
     {
-	add(StrElt(false, 1, 2, 3,7), StrElt(false, 1, 3, 0,1,5));
+	add(StrElt(false, 1, 2, 3,7), StrElt(false, 1, 3, 0,1,5), nrot);
     }
 };
 
-//! hexagonalS1 ([3,4,6,7], [0,1,5])
+//! Hexagonal S1 ([2,3,5,6], [0,1,4])
 class HMT_hS1_SE : public CompStrEltList
 {
 public:
-    HMT_hS1_SE()
+    HMT_hS1_SE(UINT nrot=1)
     {
-	add(StrElt(true, 1, 4, 3,4,6,7), StrElt(true, 1, 3, 0,1,5));
+	add(StrElt(true, 1, 4, 2,3,5,6), StrElt(true, 1, 3, 0,1,4), nrot);
     }
 };
 
-//! squareS2 ([2,5,6,7], [0,1,3])
+//! Square S2 ([2,5,6,7], [0,1,3])
 class HMT_sS2_SE : public CompStrEltList
 {
 public:
-    HMT_sS2_SE()
+    HMT_sS2_SE(UINT nrot=1)
     {
-	add(StrElt(false, 1, 4, 2,5,6,7), StrElt(false, 1, 3, 0,1,3));
+	add(StrElt(false, 1, 4, 2,5,6,7), StrElt(false, 1, 3, 0,1,3), nrot);
     }
 };
 
-//! hexagonalS2 ([3,5,6,7], [0,1,4])
+//! Hexagonal S2 ([2,4,5,6], [0,1,3])
 class HMT_hS2_SE : public CompStrEltList
 {
 public:
-    HMT_hS2_SE()
+    HMT_hS2_SE(UINT nrot=1)
     {
-	add(StrElt(true, 1, 4, 3,5,6,7), StrElt(false, 1, 3, 0,1,4));
+	add(StrElt(true, 1, 4, 2,4,5,6), StrElt(false, 1, 3, 0,1,3), nrot);
     }
 };
 
 // # Special pattern used to perform SKIZ
-//! squareS3 ([3,4,5,6,7], [1])
+//! Square S3 ([3,4,5,6,7], [1])
 class HMT_sS3_SE : public CompStrEltList
 {
 public:
-    HMT_sS3_SE()
+    HMT_sS3_SE(UINT nrot=1)
     {
-	add(StrElt(false, 1, 5, 3,4,5,6,7), StrElt(false, 1, 1, 1));
+	add(StrElt(false, 1, 5, 3,4,5,6,7), StrElt(false, 1, 1, 1), nrot);
     }
 };
 
-//! hexagonalS3 ([], [])
-// class HMT_hS3_SE : public CompStrEltList
-// {
-// public:
-//     HMT_sS3_SE()
-//     {
-// 	add(StrElt(false, 1, 5, 3,4,5,6,7), StrElt(false, 1, 1, 1));
-//     }
-// };
-
-
 // Isolated points detection
-//! squareI ([0], [1,2,3,4,5,6,7,8])
+//! Square I: ([0], [1,2,3,4,5,6,7,8])
 class HMT_sI_SE : public CompStrEltList
 {
 public:
@@ -313,13 +237,23 @@ public:
     }
 };
 
-//! hexagonalI ([0], [1,2,3,4,5,6])
+//! Hexagonal I: ([0], [1,2,3,4,5,6])
 class HMT_hI_SE : public CompStrEltList
 {
 public:
     HMT_hI_SE()
     {
 	add(StrElt(true, 1, 1, 0), StrElt(true, 1, 6, 1,2,3,4,5,6));
+    }
+};
+
+//! Hexagonal I: ([3,4,5,6,7], [0,1])
+class HMT_hLineEnd_SE : public CompStrEltList
+{
+public:
+    HMT_hLineEnd_SE(UINT nrot=1)
+    {
+	add(StrElt(false, 1, 5, 3,4,5,6,7), StrElt(false, 1, 2, 0,1), nrot);
     }
 };
 

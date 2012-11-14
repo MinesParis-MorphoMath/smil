@@ -46,9 +46,9 @@ RES_T hitOrMiss(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE
 {
     SLEEP(imOut);
     Image<T> tmpIm(imIn);
-    erode<T>(imIn, imOut, foreSE);
     inv<T>(imIn, tmpIm);
-    erode(tmpIm, tmpIm, backSE);
+    erode(tmpIm, imOut, backSE);
+    erode<T>(imIn, tmpIm, foreSE);
     inf(tmpIm, imOut, imOut);
     WAKE_UP(imOut);
     
@@ -69,13 +69,14 @@ RES_T hitOrMiss(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imO
     Image<T> tmpIm(imIn);
     SLEEP(imOut);
     fill(imOut, ImDtTypes<T>::min());
-    for (std::list<CompStrElt>::const_iterator it=mhtSE.compSeList.begin();it!=mhtSE.compSeList.end();it++)
+    for (std::vector<CompStrElt>::const_iterator it=mhtSE.compSeList.begin();it!=mhtSE.compSeList.end();it++)
     {
 	hitOrMiss<T>(imIn, (*it).fgSE, (*it).bgSE, tmpIm);
 	sup(imOut, tmpIm, imOut);
     }
-    WAKE_UP(imOut);
     imOut.modified();
+    WAKE_UP(imOut);
+    
     return RES_OK;
 }
 
@@ -86,8 +87,8 @@ RES_T thin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
     Image<T> tmpIm(imIn);
     hitOrMiss<T>(imIn, mhtSE, tmpIm);
     inv(tmpIm, tmpIm);
-    WAKE_UP(imOut);
     inf(imIn, tmpIm, imOut);
+    WAKE_UP(imOut);
     
     return RES_OK;
 }
@@ -106,6 +107,29 @@ RES_T thin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Ima
 
 
 template <class T>
+RES_T thick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
+{
+    SLEEP(imOut);
+    hitOrMiss<T>(imIn, mhtSE, imOut);
+    sup(imIn, imOut, imOut);
+    WAKE_UP(imOut);
+    
+    return RES_OK;
+}
+
+template <class T>
+RES_T thick(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
+{
+    return thick(imIn, CompStrElt(compSE), imOut);
+}
+
+template <class T>
+RES_T thick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
+{
+    return thick(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+}
+
+template <class T>
 RES_T fullThin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
 {
     SLEEP(imOut);
@@ -121,7 +145,26 @@ RES_T fullThin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOu
 	v1 = v2;
     }
     WAKE_UP(imOut);
-    imOut.modified();
+    
+    return RES_OK;
+}
+
+template <class T>
+RES_T fullThick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
+{
+    SLEEP(imOut);
+    double v1, v2;
+    thick<T>(imIn, mhtSE, imOut);
+    v1 = vol(imOut);
+    while(true)
+    {
+	thick<T>(imOut, mhtSE, imOut);
+	v2 = vol(imOut);
+	if (v2==v1)
+	  break;
+	v1 = v2;
+    }
+    WAKE_UP(imOut);
     
     return RES_OK;
 }
