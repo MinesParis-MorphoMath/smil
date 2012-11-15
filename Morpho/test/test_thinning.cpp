@@ -74,7 +74,7 @@ class Test_Thin : public TestCase
       };
       im3 << hmtLVec;
       
-      CompStrEltList sel = HMT_sL_SE(4);
+      CompStrEltList sel = HMT_sL(4);
       hitOrMiss(im1, sel, im2);
       TEST_ASSERT(im2==im3);
       
@@ -115,6 +115,7 @@ class Test_Thin : public TestCase
       thick(im1, sel, im2);
 //       im2.printSelf(1);
       TEST_ASSERT(im2==im3);
+      im1[2] = 0;
   }
 };
 

@@ -27,8 +27,8 @@
  */
 
 
-#ifndef _D_MORPHO_FILTER_HPP
-#define _D_MORPHO_FILTER_HPP
+#ifndef _D_MORPHO_RESIDUES_HPP
+#define _D_MORPHO_RESIDUES_HPP
 
 /**
  * \ingroup Morpho
@@ -97,5 +97,5 @@ RES_T dualTopHat(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT
 /** @}*/
 
 
-#endif // _D_MORPHO_FILTER_HPP
+#endif // _D_MORPHO_RESIDUES_HPP
 

@@ -76,7 +76,7 @@ RES_T dilate(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
 template <class T>
 RES_T erode(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
-    unaryMorphImageFunction<T, infLine<T> > iFunc(numeric_limits<T>::min());
+    unaryMorphImageFunction<T, infLine<T> > iFunc(numeric_limits<T>::max());
     return iFunc(imIn, imOut, se);
 }
 

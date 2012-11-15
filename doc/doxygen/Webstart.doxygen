@@ -46,11 +46,6 @@
  * See the <a href=examples.html>examples</a> page.
  * In a script page, click on "Execute script online" to run it.
  * 
- * \section trouble_sec Troubleshooting
- * Windows users: \n
- * 
- * 	In case of <b>java.lang.UnsatisfiedLinkError</b> error, please install the Microsoft Visual C++ 2008 (x86)
- * 	<a href="http://www.microsoft.com/fr-fr/download/details.aspx?id=29" target="_blank">redistribuable package</a>.
  * 
  */
 

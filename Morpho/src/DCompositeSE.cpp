@@ -28,18 +28,9 @@
 
 #include "DCompositeSE.h"
 
-// IntPoint SE_SquIndices[] = { IntPoint(0,0,0), IntPoint(1,0,0), IntPoint(1,-1,0), 
-//       IntPoint(0,-1,0), IntPoint(-1,-1,0), IntPoint(-1,0,0), 
-//       IntPoint(-1,1,0), IntPoint(0,1,0), IntPoint(1,1,0) };
-// IntPoint SE_HexIndices[] = { IntPoint(0,0,0), IntPoint(1,0,0), IntPoint(0,-1,0), 
-//       IntPoint(-1,-1,0), IntPoint(-1,0,0), IntPoint(-1,1,0), IntPoint(0,1,0) };
-
 extern IntPoint SE_SquIndices[];
 extern IntPoint SE_HexIndices[];
 
-testStrElt::testStrElt()
-{
-}
 
 int getSEPointIndice(IntPoint &pt, bool oddSE)
 {
@@ -106,6 +97,18 @@ CompStrElt &CompStrElt::rotate(int steps)
     return *this;	
 }
 
+CompStrEltList CompStrElt::operator | (const CompStrElt &rhs)
+{
+    CompStrEltList cseList(*this);
+    cseList.add(rhs);
+    return cseList;
+}
+
+CompStrEltList CompStrElt::operator () (UINT nrot)
+{
+    return CompStrEltList(*this, nrot);
+}
+
 void CompStrElt::printSelf(ostream &os, string indent)
 {
     os << indent << "Composite Structuring Element" << endl;
@@ -125,6 +128,11 @@ CompStrEltList::CompStrEltList(const CompStrEltList &rhs)
 CompStrEltList::CompStrEltList(const CompStrElt &compSe) 
 {
     compSeList.push_back(compSe);
+}
+
+CompStrEltList::CompStrEltList(const CompStrElt &compSe, UINT nrot)
+{
+    this->add(compSe, nrot);
 }
 
 CompStrEltList CompStrEltList::operator~()
@@ -160,6 +168,11 @@ void CompStrEltList::add(const StrElt &fgse, const StrElt &bgse, UINT nrot)
     compSeList.push_back(compSE);
     for (UINT n=1;n<nrot;n++)
 	compSeList.push_back(compSE.rotate(steps));
+}
+
+void CompStrEltList::add(const CompStrElt &cse, UINT nrot)
+{
+    this->add(cse.fgSE, cse.bgSE, nrot);
 }
 
 CompStrEltList &CompStrEltList::rotate(int nrot)

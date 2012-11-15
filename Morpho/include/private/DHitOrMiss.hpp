@@ -110,8 +110,9 @@ template <class T>
 RES_T thick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
 {
     SLEEP(imOut);
-    hitOrMiss<T>(imIn, mhtSE, imOut);
-    sup(imIn, imOut, imOut);
+    Image<T> tmpIm(imIn);
+    hitOrMiss<T>(imIn, mhtSE, tmpIm);
+    sup(imIn, tmpIm, imOut);
     WAKE_UP(imOut);
     
     return RES_OK;
@@ -150,6 +151,18 @@ RES_T fullThin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOu
 }
 
 template <class T>
+RES_T fullThin(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
+{
+    return fullThin(imIn, CompStrElt(compSE), imOut);
+}
+
+template <class T>
+RES_T fullThin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
+{
+    return fullThin(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+}
+
+template <class T>
 RES_T fullThick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
 {
     SLEEP(imOut);
@@ -170,15 +183,15 @@ RES_T fullThick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imO
 }
 
 template <class T>
-RES_T fullThin(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
+RES_T fullThick(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
 {
-    return fullThin(imIn, CompStrElt(compSE), imOut);
+    return fullThick(imIn, CompStrElt(compSE), imOut);
 }
 
 template <class T>
-RES_T fullThin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
+RES_T fullThick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
 {
-    return fullThin(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+    return fullThick(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
 }
 
 

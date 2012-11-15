@@ -198,6 +198,12 @@ namespace std
 // Import smilGui for viewers stuff
 %import smilGui.i
 
+%ignore Image::operator[];
+%extend Image
+{
+    T __getitem__(size_t i) { return self->getPixel(i); }
+    RES_T __setitem__(size_t i, T val) { return self->setPixel(i, val); }
+}
 %include "DBaseImage.h"
 %include "DImage.hpp"
 %include "DSharedImage.hpp"

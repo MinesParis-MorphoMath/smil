@@ -190,6 +190,12 @@ ImageViewer<T> *Image<T>::getViewer()
 template <class T>
 void Image<T>::show(const char *_name, bool labelImage)
 {
+    if (!this->allocated)
+    {
+      ERR_MSG("Image isn't allocated !");
+      return;
+    }
+    
     createViewer();
 
     if (_name)

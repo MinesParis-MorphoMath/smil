@@ -44,10 +44,10 @@ StrElt::StrElt(UINT s)
 {
 }
 
-StrElt::StrElt(bool oddSE, UINT _size, UINT nbrPts, ...)
+StrElt::StrElt(bool oddSE, UINT nbrPts, ...)
   : BaseObject("StrElt"),
     seT(SE_Generic), 
-    size(_size), 
+    size(1), 
     odd(oddSE)
 {
     UINT indice;

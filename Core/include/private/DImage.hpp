@@ -210,6 +210,11 @@ public:
     T dataTypeMin;
     T dataTypeMax;
 
+    inline T &operator [] (size_t i) 
+    { 
+	if (i<pixelCount) return this->pixels[i]; 
+    }
+    
     //! Copy image
     Image<T>& operator << (const Image<T> &rhs);
     //! Fill image

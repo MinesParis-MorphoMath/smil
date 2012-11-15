@@ -36,6 +36,7 @@ SMIL_MODULE(smilMorpho)
 #include "DMorphoResidues.hpp"
 #include "DMorphoGeodesic.hpp"
 #include "DMorphoExtrema.hpp"
+#include "DMorphoFilter.hpp"
 #include "DMorphoArrow.hpp"
 #include "DMorphoWatershed.hpp"
 #include "DMorphoLabel.hpp"
@@ -53,7 +54,7 @@ SMIL_MODULE(smilMorpho)
 %ignore StrElt::operator ();
 #endif // SWIGJAVA
 
-
+%varargs(10, UINT ind=0) StrElt::StrElt;
 %include "DStructuringElement.h"
 
 %include "DMorphoBase.hpp"
@@ -84,6 +85,10 @@ TEMPLATE_WRAP_FUNC(hMaxima);
 TEMPLATE_WRAP_FUNC(minima);
 TEMPLATE_WRAP_FUNC(maxima);
 
+%include "DMorphoFilter.hpp"
+TEMPLATE_WRAP_FUNC(asfClose);
+TEMPLATE_WRAP_FUNC(asfOpen);
+
 %include "DMorphoArrow.hpp"
 TEMPLATE_WRAP_FUNC(arrow);
 TEMPLATE_WRAP_FUNC(arrowGrt);
@@ -98,11 +103,22 @@ TEMPLATE_WRAP_FUNC_CROSS2(watershed);
 %include "DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_CROSS2(label);
 
+%ignore CompStrEltList::operator[];
+%extend CompStrEltList
+{
+    CompStrElt &__getitem__(UINT n)
+    {
+	return self->compSeList[n];
+    }
+}
+
 %include "DCompositeSE.h"
 %include "DHitOrMiss.hpp"
 TEMPLATE_WRAP_FUNC(hitOrMiss);
 TEMPLATE_WRAP_FUNC(thin);
 TEMPLATE_WRAP_FUNC(fullThin);
+TEMPLATE_WRAP_FUNC(thick);
+TEMPLATE_WRAP_FUNC(fullThick);
 
 %include "DSkeleton.hpp"
 TEMPLATE_WRAP_FUNC(zhangSkeleton);

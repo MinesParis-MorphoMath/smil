@@ -51,7 +51,7 @@ class StrElt : public BaseObject
     
     StrElt(const StrElt &rhs);
     //! Construct with points defined by indices (Hex if oddSE, Squ otherwise)
-    StrElt(bool oddSE, UINT _size, UINT nbrPts, ...);
+    StrElt(bool oddSE, UINT nbrPts, ...);
     
     ~StrElt() {}
     StrElt& operator=(const StrElt &rhs);
@@ -94,11 +94,12 @@ class SquSE : public StrElt
 {
   public:
     SquSE(UINT s=1) 
-      : StrElt(false, s, 9, 	0, 1, 2, 3, 4, 5, 6, 7, 8)
+      : StrElt(false, 9, 	0, 1, 2, 3, 4, 5, 6, 7, 8)
     {
 	className = "SquSE";
 	seT = SE_Squ;
-    }
+    	size = s;
+}
 };
 
 /**
@@ -119,10 +120,11 @@ class SquSE0 : public StrElt
   public:
     typedef StrElt parentClass;
     SquSE0(UINT s=1)
-      : StrElt(false, s, 8, 	1, 2, 3, 4, 5, 6, 7, 8)
+      : StrElt(false, 8, 	1, 2, 3, 4, 5, 6, 7, 8)
     {
 	className = "SquSE0";
 	odd = false;
+	size = s;
     }
 };
 
@@ -142,11 +144,12 @@ class HexSE : public StrElt
 {
   public:
     HexSE(UINT s=1)
-      : StrElt(true, s, 7, 	0, 1, 2, 3, 4, 5, 6)
+      : StrElt(true, 7, 	0, 1, 2, 3, 4, 5, 6)
     {
 	className = "HexSE";
 	seT = SE_Hex;
-    }
+    	size = s;
+}
 };
 
 /**
@@ -166,7 +169,7 @@ class HexSE0 : public StrElt
 {
   public:
     HexSE0(UINT s=1) 
-      : StrElt(true, s, 6, 	1, 2, 3, 4, 5, 6)
+      : StrElt(true, 6,  1, 2, 3, 4, 5, 6)
     {
 	className = "HexSE0";
 	size = s;
@@ -192,10 +195,11 @@ class CrossSE : public StrElt
 {
   public:
     CrossSE(UINT s=1)
-      : StrElt(false, s, 5, 	0, 1, 5, 3, 7)
+      : StrElt(false, 5, 0, 1, 5, 3, 7)
     {
 	className = "CrossSE";
 	seT = SE_Cross;
+	size = s;
     }
 };
 
@@ -214,10 +218,11 @@ class HorizSE : public StrElt
 {
   public:
     HorizSE(UINT s=1)
-      : StrElt(false, s, 3, 	0, 1, 5)
+      : StrElt(false, 3, 0, 1, 5)
     {
 	className = "HorizSE";
 	seT = SE_Horiz;
+	size = s;
     }
 };
 
@@ -242,6 +247,7 @@ class VertSE : public StrElt
     {
 	className = "VertSE";
 	seT = SE_Vert;
+	size = s;
     }
 };
 

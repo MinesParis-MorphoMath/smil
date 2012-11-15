@@ -40,6 +40,49 @@
 #include "DImageArith.h"
 #include "DMorphImageOperations.hpp"
 
+/**
+ * Alternate Sequential Filter beginning by a closing
+ * 
+ * Sequence of closings and openings with increasing size 1,2,...,max_size.
+ * The max_size is given by the size of the structuring element (for example 3 for hSE(3)).
+ * 
+ */ 
+template <class T>
+RES_T asfClose(const Image<T> &imIn, Image<T> &imOut, StrElt &se=DEFAULT_SE)
+{
+    SLEEP(imOut);
+    Image<T> tmpIm(imIn, true); // clone
+    for (int i=1;i<=se.size;i++)
+    {
+      close(tmpIm, imOut, se(i));
+      open(imOut, tmpIm, se(i));
+    }
+    copy(tmpIm, imOut);
+    WAKE_UP(imOut);
+    
+    return RES_OK;
+}
+
+/**
+ * Alternate Sequential Filter beginning by an opening
+ * 
+ * \see asfClose
+ */ 
+template <class T>
+RES_T asfOpen(const Image<T> &imIn, Image<T> &imOut, StrElt &se=DEFAULT_SE)
+{
+    SLEEP(imOut);
+    Image<T> tmpIm(imIn, true); // clone
+    for (int i=1;i<=se.size;i++)
+    {
+      open(tmpIm, imOut, se(i));
+      close(imOut, tmpIm, se(i));
+    }
+    copy(tmpIm, imOut);
+    WAKE_UP(imOut);
+    
+    return RES_OK;
+}
 
 /** @}*/
 
