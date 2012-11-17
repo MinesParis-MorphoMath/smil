@@ -42,13 +42,13 @@
 
 
 template <class T>
-RES_T hitOrMiss(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
+RES_T hitOrMiss(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut, T borderVal=ImDtTypes<T>::min())
 {
     SLEEP(imOut);
     Image<T> tmpIm(imIn);
     inv<T>(imIn, tmpIm);
-    erode(tmpIm, imOut, backSE);
-    erode<T>(imIn, tmpIm, foreSE);
+    erode(tmpIm, imOut, backSE, borderVal);
+    erode<T>(imIn, tmpIm, foreSE, borderVal);
     inf(tmpIm, imOut, imOut);
     WAKE_UP(imOut);
     
@@ -58,20 +58,20 @@ RES_T hitOrMiss(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE
 }
 
 template <class T>
-RES_T hitOrMiss(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
+RES_T hitOrMiss(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut, T borderVal=ImDtTypes<T>::min())
 {
-    return hitOrMiss(imIn, compSE.fgSE, compSE.bgSE, imOut);
+    return hitOrMiss(imIn, compSE.fgSE, compSE.bgSE, imOut, borderVal);
 }
 
 template <class T>
-RES_T hitOrMiss(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
+RES_T hitOrMiss(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut, T borderVal=ImDtTypes<T>::min())
 {
     Image<T> tmpIm(imIn);
     SLEEP(imOut);
     fill(imOut, ImDtTypes<T>::min());
     for (std::vector<CompStrElt>::const_iterator it=mhtSE.compSeList.begin();it!=mhtSE.compSeList.end();it++)
     {
-	hitOrMiss<T>(imIn, (*it).fgSE, (*it).bgSE, tmpIm);
+	hitOrMiss<T>(imIn, (*it).fgSE, (*it).bgSE, tmpIm, borderVal);
 	sup(imOut, tmpIm, imOut);
     }
     imOut.modified();

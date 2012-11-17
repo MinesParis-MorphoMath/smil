@@ -52,16 +52,16 @@
  * 
  */
 template <class T>
-RES_T dilate(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+RES_T dilate(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderVal=ImDtTypes<T>::min())
 {
-    unaryMorphImageFunction<T, supLine<T> > iFunc(numeric_limits<T>::min());
+    unaryMorphImageFunction<T, supLine<T> > iFunc(borderVal);
     return iFunc(imIn, imOut, se);
 }
 
 template <class T>
-RES_T dilate(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
+RES_T dilate(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImDtTypes<T>::min())
 {
-    return dilate(imIn, imOut, DEFAULT_SE(seSize));
+    return dilate(imIn, imOut, DEFAULT_SE(seSize), borderVal);
 }
 
 /**
@@ -74,16 +74,16 @@ RES_T dilate(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
  * \endtheory
  */
 template <class T>
-RES_T erode(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+RES_T erode(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderVal=ImDtTypes<T>::max())
 {
-    unaryMorphImageFunction<T, infLine<T> > iFunc(numeric_limits<T>::max());
+    unaryMorphImageFunction<T, infLine<T> > iFunc(borderVal);
     return iFunc(imIn, imOut, se);
 }
 
 template <class T>
-RES_T erode(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
+RES_T erode(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImDtTypes<T>::max())
 {
-    return erode(imIn, imOut, DEFAULT_SE(seSize));
+    return erode(imIn, imOut, DEFAULT_SE(seSize), borderVal);
 }
 
 /**
