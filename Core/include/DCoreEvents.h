@@ -41,10 +41,10 @@ class BaseImageEvent : public Event
 {
 public:
   BaseImageEvent(BaseImage *im)
-    : sender(im)
+    : image(im)
     {
     }
-    const BaseImage* sender;
+    const BaseImage* image;
 };
 
 typedef Slot<BaseImageEvent> BaseImageSlot;

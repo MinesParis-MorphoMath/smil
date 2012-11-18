@@ -155,8 +155,7 @@ void Image<T>::modified()
     if (viewer)
       viewer->update();
 
-    BaseImageEvent event(this);
-    onModified.trigger(&event);
+    onModified.trigger();
 }
 
 
