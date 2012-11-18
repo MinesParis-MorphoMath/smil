@@ -69,6 +69,9 @@ void Signal::disconnectAll()
 
 void Signal::trigger(Event *e)
 {
+  if (e && sender)
+    e->sender = sender;
+  
   vector<BaseSlot*>::iterator it = _slots.begin();
   
   while(it!=_slots.end())

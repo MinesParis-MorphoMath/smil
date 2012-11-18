@@ -36,16 +36,25 @@ using namespace std;
 #include "DCommon.h"
 
 class BaseSlot;
+class BaseObject;
 
 class Event
 {
+public:
+  Event(BaseObject *_sender=NULL)
+   : sender(_sender)
+   {
+   }
+  const BaseObject *sender;
 };
 
 class _DCORE Signal
 {
   friend class BaseSlot;
 public:
-  Signal() {}
+  Signal(BaseObject *_sender=NULL)
+   : sender(_sender)
+  {}
   virtual ~Signal() 
   {
     disconnectAll();
@@ -54,9 +63,9 @@ public:
   virtual void disconnect(BaseSlot *slot, bool _unregister=true);
   virtual void disconnectAll();
   virtual void trigger(Event *e=NULL);
+  const BaseObject *sender;
 protected:
   vector<BaseSlot*> _slots;
-  
 };
 
 

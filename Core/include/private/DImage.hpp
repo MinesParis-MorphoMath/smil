@@ -144,7 +144,7 @@ public:
     
     //! Check if the image is visible
     //! \return \b true if the viewer is visible, \b false otherwise
-    bool isVisible() { return (viewer && viewer->isVisible()); }
+    virtual bool isVisible() { return (viewer && viewer->isVisible()); }
     
     virtual void init();
     virtual void clone(const Image<T> &rhs);

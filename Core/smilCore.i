@@ -128,7 +128,6 @@ PTR_ARG_OUT_APPLY(d)
 // Expose std::vector<> as a Python list
 namespace std 
 {
-    %template(ImgVector) vector<BaseImage*>;
     %template(ObjVector) vector<BaseObject*>;
     %template(UintVector) vector<UINT>;
     %template(UcharVector) vector<UINT8>;
@@ -207,6 +206,11 @@ namespace std
 %include "DBaseImage.h"
 %include "DImage.hpp"
 %include "DSharedImage.hpp"
+
+namespace std 
+{
+    %template(ImgVector) vector<BaseImage*>;
+}
 
 TEMPLATE_WRAP_CLASS(Image, Image);
 TEMPLATE_WRAP_FUNC(createImage);

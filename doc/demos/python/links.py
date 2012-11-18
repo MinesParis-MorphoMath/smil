@@ -13,7 +13,7 @@ imDist.showLabel()
 def displMax():
   print "Distance max value:", rangeVal(imDist)[1]
   
-links.add(imIn, thresh, imIn, 255, imThresh)
+links.add(imIn, threshold, imIn, 255, imThresh)
 links.add(imThresh, dist, imThresh, imDist)
 links.add(imDist, displMax)
 
