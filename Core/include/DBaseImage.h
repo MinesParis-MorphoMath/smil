@@ -47,7 +47,8 @@ public:
 	width(0), height(0), depth(0),
 	pixelCount(0), lineCount(0), sliceCount(0),
 	allocated(false),
-	allocatedSize(0)
+	allocatedSize(0),
+	onModified(this)
     {
     }
     
@@ -56,7 +57,8 @@ public:
 	width(0), height(0), depth(0),
 	pixelCount(0), lineCount(0), sliceCount(0),
 	allocated(false),
-	allocatedSize(0)
+	allocatedSize(0),
+	onModified(this)
     {
     }
     
@@ -141,7 +143,7 @@ public:
     virtual const char *getInfoString(const char *indent = "") const { return NULL; }
     virtual const char* getTypeAsString() = 0;
     
-    virtual bool isVisible() = 0;
+    virtual bool isVisible() { return false; }
     virtual void show(const char* name=NULL, bool labelImage=false) {}
     virtual void showLabel(const char *_name=NULL) {}
     virtual void hide() = 0;
