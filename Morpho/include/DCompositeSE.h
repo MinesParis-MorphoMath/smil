@@ -261,14 +261,14 @@ public:
     }
 };
 
-//! Square line junction ([0,1,4,6],[] and [0,2,4,6],[])
+//! Square line junction ([0,1,4,6],[] and [0,1,3,5],[])
 class HMT_sLineJunc : public CompStrEltList
 {
 public:
     HMT_sLineJunc(UINT nrot=1)
     {
-	add(StrElt(false, 4, 0,1,4,6), StrElt(), nrot);
-	add(StrElt(false, 4, 0,2,4,6), StrElt(), nrot);
+	add(StrElt(false, 4, 0,1,4,6), StrElt(false, 1, 5), nrot);
+	add(StrElt(false, 4, 0,1,3,5), StrElt(false, 2, 2,4), nrot);
     }
 };
 

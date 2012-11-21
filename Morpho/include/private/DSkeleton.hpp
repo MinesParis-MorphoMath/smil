@@ -38,8 +38,6 @@
  * \{
  */
 
-//http://www.imagemagick.org/Usage/morphology/#linejunctions
-
 /**
  * Zhang 2D skeleton
  * 

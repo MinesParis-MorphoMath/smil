@@ -116,6 +116,7 @@ TEMPLATE_WRAP_FUNC(maxVal);
 TEMPLATE_WRAP_FUNC(rangeVal);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
+TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 
 %include "DLabelMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);

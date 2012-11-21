@@ -275,6 +275,26 @@ vector<UINT> measBoundBox(Image<T> &im)
     return res;
 }
 
+/**
+ * Non-zero point offsets.
+ * Return a vector conatining the offset of all non-zero points in image.
+ */
+template <class T>
+vector<size_t> nonZeroOffsets(Image<T> &imIn)
+{
+    vector<size_t> offsets;
+
+    ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, offsets);
+    
+    typename Image<T>::lineType pixels = imIn.getPixels();
+    
+    for (size_t i=0;i<imIn.getPixelCount();i++)
+      if (pixels[i]!=0)
+	offsets.push_back(i);
+ 
+    return offsets;
+}
+
 
 /** @}*/
 

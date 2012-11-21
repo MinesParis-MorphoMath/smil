@@ -140,7 +140,6 @@ map<T, DoublePoint> measBarycenters(Image<T> &imIn)
     return res;
 }
 
-
 /** @}*/
 
 #endif // _D_LABEL_MEASURES_HPP

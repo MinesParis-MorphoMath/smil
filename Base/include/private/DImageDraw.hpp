@@ -235,7 +235,7 @@ RES_T drawRectangle(Image<T> &imOut, UINT x0, UINT y0, UINT width, UINT height, 
     
     if (x0>=imW || y0 >=imH)
       return RES_ERR;
-    if (x0+width>=imW || y0+height>=imH)
+    if (x0+width>imW || y0+height>imH)
       return RES_ERR;
     
     UINT x1 = x0 + width - 1;

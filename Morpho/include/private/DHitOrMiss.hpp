@@ -39,6 +39,8 @@
  * \{
  */
 
+//http://www.imagemagick.org/Usage/morphology/#linejunctions
+
 
 
 template <class T>

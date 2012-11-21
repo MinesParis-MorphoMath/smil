@@ -120,11 +120,60 @@ class Test_Thin : public TestCase
 };
 
 
+class Test_LineJunc : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(10,10);
+      imType im2(im1);
+      imType im3(im1);
+      
+      dataType vec1[] = 
+      {
+	255,   0, 255,   0,   0, 255, 255,   0, 255, 255,
+	  0,   0, 255,   0, 255,   0, 255,   0, 255,   0,
+	  0,   0,   0,   0,   0,   0, 255, 255,   0, 255,
+	  0, 255, 255, 255,   0,   0, 255, 255,   0,   0,
+	  0,   0, 255,   0,   0,   0,   0, 255,   0,   0,
+	  0,   0,   0,   0,   0,   0,   0, 255, 255, 255,
+	  0,   0, 255,   0,   0, 255,   0,   0, 255,   0,
+	255, 255,   0, 255, 255,   0, 255,   0, 255, 255,
+	255, 255,   0, 255,   0,   0, 255,   0, 255, 255,
+	  0, 255, 255, 255,   0,   0,   0,   0,   0, 255
+      };
+      
+      im1 << vec1;
+      
+      dataType hmtLVec[] = 
+      {
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0, 255,   0, 
+	  0,   0,   0,   0,   0,   0,   0, 255,   0,   0, 
+	  0,   0, 255,   0,   0,   0,   0,   0,   0,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0, 255,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+	  0,   0,   0, 255,   0,   0,   0,   0,   0,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+      };
+      im3 << hmtLVec;
+      
+      CompStrEltList sel = HMT_sLineJunc(8);
+      hitOrMiss(im1, sel, im2);
+//       im2.printSelf(1);
+      TEST_ASSERT(im2==im3);
+  }
+};
 
 int main(int argc, char *argv[])
 {
       TestSuite ts;
       ADD_TEST(ts, Test_Thin);
+      ADD_TEST(ts, Test_LineJunc);
       
       return ts.run();
 }

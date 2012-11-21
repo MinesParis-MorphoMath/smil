@@ -93,9 +93,11 @@ RES_T erode(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImDt
 template <class T>
 RES_T close(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
+    SLEEP(imOut);
     RES_T res = dilate(imIn, imOut, se);
     if (res==RES_OK)
       res = erode(imOut, imOut, se);
+    WAKE_UP(imOut);
     return res;
 }
 
@@ -112,9 +114,11 @@ RES_T close(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
 template <class T>
 RES_T open(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
+    SLEEP(imOut);
     RES_T res = erode(imIn, imOut, se);
     if (res==RES_OK)
       res = dilate(imOut, imOut, se);
+    WAKE_UP(imOut);
     return res;
 }
 
