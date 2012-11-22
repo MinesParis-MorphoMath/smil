@@ -34,7 +34,7 @@
 #include "Base/include/DBase.h"
 #include "Base/include/private/DMeasures.hpp"
 #include "Base/include/private/DImageArith.hpp"
-#include "DImageViewer.h"
+#include "Gui/include/DImageViewer.h"
 
 // template <>
 // const char *getImageDataTypeAsString<UINT8>(Image<UINT8> &im)

@@ -61,11 +61,11 @@ public:
 
   void unregisterObject(BaseObject *obj);
   
-  vector<BaseObject*> getRegisteredObjects() { return registeredObjects; }
-  vector<BaseImage*> getImages()  { return registeredImages; }
+  vector<BaseObject*> getRegisteredObjects();
+  vector<BaseImage*> getImages();
   
   UINT getNumberOfThreads();
-  long getAllocatedMemory();
+  size_t getAllocatedMemory();
   void showAllImages();
   void hideAllImages();
   

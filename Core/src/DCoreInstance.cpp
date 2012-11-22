@@ -134,7 +134,7 @@ UINT Core::getNumberOfThreads()
 #endif // USE_OPEN_MP
 }
 
-long Core::getAllocatedMemory()
+size_t Core::getAllocatedMemory()
 {
     vector<BaseImage*>::iterator it = registeredImages.begin();
     long totAlloc = 0;
@@ -142,6 +142,16 @@ long Core::getAllocatedMemory()
     while (it!=registeredImages.end())
 	totAlloc += (*it++)->getAllocatedSize();
     return totAlloc;
+}
+
+vector<BaseObject*> Core::getRegisteredObjects() 
+{ 
+    return registeredObjects; 
+}
+
+vector<BaseImage*> Core::getImages()  
+{ 
+    return registeredImages; 
 }
 
 void Core::showAllImages()

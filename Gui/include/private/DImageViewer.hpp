@@ -30,7 +30,7 @@
 #ifndef _D_IMAGE_VIEWER_HPP
 #define _D_IMAGE_VIEWER_HPP
 
-#include "DBaseImageViewer.h"
+#include "Gui/include/DBaseImageViewer.h"
 
 template <class T> class Image;
 

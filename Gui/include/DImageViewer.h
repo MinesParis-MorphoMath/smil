@@ -63,7 +63,7 @@ ImageViewer<T> *getDefaultViewer(Image<T> *im)
 
 #else
 
-#include "DImageViewer.hpp"
+#include "private/DImageViewer.hpp"
 
 template <class T>
 ImageViewer<T> *getDefaultViewer(Image<T> *im)
