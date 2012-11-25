@@ -207,10 +207,14 @@ namespace std
 %include "DImage.hpp"
 %include "DSharedImage.hpp"
 
+#ifndef SWIGXML
+
 namespace std 
 {
-    %template(ImgVector) vector<BaseImage*>;
+    %template(ImgVector) std::vector<BaseImage*>;
 }
+
+#endif // SWIGXML
 
 TEMPLATE_WRAP_CLASS(Image, Image);
 TEMPLATE_WRAP_FUNC(createImage);
