@@ -214,6 +214,8 @@ Image<T> trans(Image<T> &imIn, int dx, int dy)
 /**
  * 2D bilinear resize algorithm.
  * 
+ * Take imIn and resize it with the size of imOut.
+ * 
  * Quick implementation (needs better integration and optimization).
  */
 template <class T>
@@ -266,6 +268,31 @@ RES_T resize(Image<T> &imIn, Image<T> &imOut)
     return RES_OK;
 }
 
+/**
+ * 2D bilinear resize algorithm.
+ * 
+ * Quick implementation (needs better integration and optimization).
+ * 
+ * Specify coefficients for resizing.
+ * If imIn has the size (W,H), the size of imOut will be (W*cx, H*cy).
+ */
+template <class T>
+RES_T resize(Image<T> &imIn, double cx, double cy)
+{
+    Image<T> tmpIm(imIn, true); // clone
+    imIn.setSize(imIn.getWidth()*cx, imIn.getHeight()*cy);
+    return resize<T>(tmpIm, imIn);
+}
+
+template <class T>
+RES_T resize(Image<T> &imIn, double cx, double cy, Image<T> &imOut)
+{
+    if (&imIn==&imOut)
+      return resize<T>(imIn, cx, cy);
+    
+    imOut.setSize(imIn.getWidth()*cx, imIn.getHeight()*cy);
+    return resize<T>(imIn, imOut);
+}
 
 /** @}*/
 
