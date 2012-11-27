@@ -116,10 +116,16 @@ def _showLabel_with_name(img, name=None):
 	img.setName(name)
     img.c_showLabel(name)
 
-def _imInit(img, *args):
-    img.__init0__(args)
-    name = _find_object_names(img)
-    print name
+def showAll():
+    imgs = _find_images()
+    for im in imgs.keys():
+      im.show()
+      
+def hideAll():
+    imgs = _find_images()
+    for im in imgs.keys():
+      im.hide()
+    
     
 for t in imageTypes:
     t.c_show = t.show
