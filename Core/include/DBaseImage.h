@@ -35,6 +35,8 @@
 #include "DSlot.h"
 #include "DCommon.h"
 
+class BaseImageViewer;
+
 /**
  * Base Image class
  */
@@ -147,6 +149,8 @@ public:
     virtual void show(const char* name=NULL, bool labelImage=false) {}
     virtual void showLabel(const char *_name=NULL) {}
     virtual void hide() = 0;
+    
+    virtual BaseImageViewer *getViewer() { return NULL; }
     
     Signal onModified;
 protected:

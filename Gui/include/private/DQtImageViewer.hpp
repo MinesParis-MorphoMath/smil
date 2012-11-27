@@ -36,15 +36,15 @@
 #include "DImageViewer.hpp"
 #include "DTypes.h"
 
-#include "Qt/ImageViewerWidget.h"
-#include "Qt/ImageViewerApp.h"
+#include "Gui/Qt/ImageViewerWidget.h"
+#include "Gui/Qt/ImageViewerApp.h"
 
 #define BASE_QT_VIEWER ImageViewerWidget
 
 template <class T> class Image;
 
 template <class T>
-class QtImageViewer : public ImageViewer<T>, protected BASE_QT_VIEWER
+class QtImageViewer : public ImageViewer<T>, public BASE_QT_VIEWER
 {
 public:
     typedef ImageViewer<T> parentClass;
@@ -68,7 +68,6 @@ public:
     
     virtual void setLabelImage(bool val);
     
-    QApplication *_qapp;
     
 protected:
     virtual void displayPixelValue(UINT x, UINT y, UINT z);

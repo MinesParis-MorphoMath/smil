@@ -32,6 +32,10 @@
 
 #include "DBaseObject.h"
 #include "DCommon.h"
+#include "DGuiInstance.h"
+
+template <class T>
+class Image;
 
 class BaseImageViewer : public BaseObject
 {
@@ -41,6 +45,7 @@ public:
     BaseImageViewer()
       : labelImage(false)
     {
+	Gui::initialize();
 	updateSlot.init(this, &BaseImageViewer::update);
     }
     
@@ -50,6 +55,8 @@ public:
     virtual bool isVisible() { return false; }
     virtual void setName(const char *_name) { parentClass::setName(_name); }
     virtual void update() {}
+    template <class T>
+    void drawOverlay(Image<T> &im) {};
     
     // Slots
     MemberFunctionSlot<BaseImageViewer> updateSlot;

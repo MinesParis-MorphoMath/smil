@@ -333,6 +333,7 @@ void ImageViewerWidget::dataChanged()
     updatePixmaps(qImage, &imagePixmaps);
   
     magnView->setImage(qImage);
+    setWindowIcon(QIcon(QPixmap::fromImage(*qImage)));
     
     emit onDataChanged();
 }

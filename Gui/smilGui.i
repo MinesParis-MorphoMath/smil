@@ -76,6 +76,9 @@ TEMPLATE_WRAP_CLASS(ImageViewer, ImageViewer);
 
 %}
 
+class ImageViewerWidget
+{};
+
 %include "DQtImageViewer.hpp"
 TEMPLATE_WRAP_CLASS(QtImageViewer, QtImageViewer);
 

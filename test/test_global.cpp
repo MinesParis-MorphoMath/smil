@@ -46,10 +46,6 @@ void mafunc(const Image<UINT8>& im)
 
 int main(int argc, char *argv[])
 {
-//     Core::initialize();
-//     Gui::getInstance();
-
-//     Image_UINT8 im1;
 
 
     Image_UINT8 im1(256,256);
@@ -60,8 +56,8 @@ int main(int argc, char *argv[])
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
 
-//    read("http://cmm.ensmp.fr/~faessel/smil/images/lena.png", im1);
-    read("lena.png", im1);
+   read("http://cmm.ensmp.fr/~faessel/smil/images/lena.png", im1);
+//     read("lena.png", im1);
 
 //     morphee::Image<UINT8> *mIm = new morphee::Image<UINT8>(512,512);
 //     mIm->allocateImage();
@@ -74,7 +70,7 @@ int main(int argc, char *argv[])
 //     fill(*im3, UINT8(127));
 //     
 //     im3->printSelf();
-//     im3->show();
+    im1.show();
 //     
 //     Gui::execLoop();
 

@@ -58,13 +58,9 @@ void outFunc(const Image_UINT8 &a)
 
 int main(int argc, char *argv[])
 {
-//     Core::initialize();
-//     Gui::getInstance();
-    
-//     Image_UINT8 im1;
     
     
-	Image_UINT8 im1(1000, 1023);
+    Image_UINT8 im1(1000, 1023);
     Image_UINT8 im2(im1);
     ImageViewer<UINT8> *viewer;
 

@@ -36,15 +36,16 @@
 qtGui::qtGui()
   : _qapp(NULL)
 {
-      if (!QApplication::instance())
+      if (!qApp)
       {
+	  
 // 	    cout << "Core qt created (guiInst)" << endl;
 	  int ac = 1;
 	  char **av = NULL;
 	  _qapp = new QApplication(ac, av);
 // 	  _qapp->processEvents();
       }
-//       else _qapp = qApp;
+      else _qapp = qApp;
       
 //       _timer = new timer();
 //       _timer->app = _qapp;

@@ -78,6 +78,41 @@ dataTypes = [ ${DATA_TYPES_QUOTE_STR}, ]
 imageTypes = [ ${IMAGE_TYPES_STR}, ]
 
 
+def _find_object_names(obj):
+    frame = sys._getframe()
+    for frame in iter(lambda: frame.f_back, None):
+	frame.f_locals
+    result = []
+    for referrer in gc.get_referrers(obj):
+	if isinstance(referrer, dict):
+	    for k, v in referrer.iteritems():
+		if v is obj:
+		    result.append(k)
+    return result
+
+def _show_with_name(img, name=None, labelImage = False):
+    if not name:
+	name = _find_object_names(img)[-1]
+	img.setName(name)
+    img.c_show(name, labelImage)
+
+def _showLabel_with_name(img, name=None):
+    if not name:
+	name = _find_object_names(img)[-1]
+	img.setName(name)
+    img.c_showLabel(name)
+
+def _imInit(img, *args):
+    img.__init0__(args)
+    name = _find_object_names(img)
+    print name
+    
+for t in imageTypes:
+    t.c_show = t.show
+    t.show = _show_with_name
+    t.c_showLabel = t.showLabel
+    t.showLabel = _showLabel_with_name
+
 def Image(*args):
     """
     * Image(): create an empty ${DEFAULT_IMAGE_TYPE} image.
@@ -145,44 +180,6 @@ def Image(*args):
 	fill(img, 0)
     return img
 
-
-
-def find_object_names(obj):
-    frame = sys._getframe()
-    for frame in iter(lambda: frame.f_back, None):
-	frame.f_locals
-    result = []
-    for referrer in gc.get_referrers(obj):
-	if isinstance(referrer, dict):
-	    for k, v in referrer.iteritems():
-		if v is obj:
-		    result.append(k)
-    return result
-
-def show_with_name(img, name=None, labelImage = False):
-    if not name:
-	name = find_object_names(img)[-1]
-	img.setName(name)
-    img.c_show(name, labelImage)
-
-def showLabel_with_name(img, name=None):
-    if not name:
-	name = find_object_names(img)[-1]
-	img.setName(name)
-    img.c_showLabel(name)
-
-def imInit(img, *args):
-    img.__init0__(args)
-    name = find_object_names(img)
-    print name
-    
-for t in imageTypes:
-    t.c_show = t.show
-    t.show = show_with_name
-    t.c_showLabel = t.showLabel
-    t.showLabel = showLabel_with_name
-#    t.__del0__ = t.__del__
-#    t.__del__ = deleteImage
 
 
 seTypes = "HexSE, SquSE"
