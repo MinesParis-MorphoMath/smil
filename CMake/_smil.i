@@ -71,6 +71,7 @@ ${SWIG_INCLUDE_DEFINITIONS}
 
 import sys, gc, os
 import time, new
+import __main__
 
 ${PYTHON_IMPORT_MODULES}
 
@@ -79,9 +80,6 @@ imageTypes = [ ${IMAGE_TYPES_STR}, ]
 
 
 def _find_object_names(obj):
-    frame = sys._getframe()
-    for frame in iter(lambda: frame.f_back, None):
-	frame.f_locals
     result = []
     for referrer in gc.get_referrers(obj):
 	if isinstance(referrer, dict):
@@ -90,6 +88,22 @@ def _find_object_names(obj):
 		    result.append(k)
     return result
 
+def _find_images(gbl_dict=None):
+    if not gbl_dict:
+      gbl_dict = __main__.__dict__
+    imgs = dict()
+    for it in gbl_dict.items():
+      if isinstance(it[1], BaseImage):
+	imgs[it[1]] = it[0]
+    return imgs
+  
+def guess_images_name(gbl_dict=None):
+    imgs = _find_images(gbl_dict)
+    for im in imgs.keys():
+      if im.getName()=='':
+	im.setName(imgs[im])
+
+    
 def _show_with_name(img, name=None, labelImage = False):
     if not name:
 	name = _find_object_names(img)[-1]

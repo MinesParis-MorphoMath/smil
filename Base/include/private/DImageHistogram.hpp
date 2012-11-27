@@ -187,7 +187,7 @@ RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double sat=0.5)
         return RES_ERR_BAD_ALLOCATION;
     
     map<T, UINT> h = histogram(imIn);
-    double imVol = imIn.getWidth() * imIn.getHeight() * imIn.getDepth();
+    double imVol = vol(imIn);
     double satVol = imVol * sat / 100.;
     double v = 0;
     T minV, maxV, threshVal;
