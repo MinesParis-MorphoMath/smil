@@ -20,15 +20,12 @@ SET(CMAKE_FIND_ROOT_PATH
 	/usr/i686-pc-mingw32/sys-root/mingw/
 	/usr/lib/gcc/i686-w64-mingw32/4.6/
 	~/src/w32libs/
-	~/src/w32libs/GnuWin32/
-	~/src/w32libs/GnuWin32/bin/
+	~/src/w32libs/include/
+	~/src/w32libs/bin/
 	~/src/w32libs/Qt/4.8.1/
 	~/src/w32libs/Qt/4.8.1/bin/
 	~/src/w32libs/Qt/4.8.1/include/
 	~/src/w32libs/Python/
-	~/src/w32libs/curl/
-	~/src/w32libs/curl/bin/
-	~/src/w32libs/curl/include/
 	~/src/w32libs/java_jdk1.6.0_25/
 	~/src/w32libs/java_jdk1.6.0_25/include/
 	~/src/w32libs/java_jdk1.6.0_25/lib/

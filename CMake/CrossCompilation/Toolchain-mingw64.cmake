@@ -12,16 +12,14 @@ SET(CMAKE_CXX_COMPILER x86_64-w64-mingw32-g++)
 SET(CMAKE_FIND_ROOT_PATH  
 	/usr/x86_64-w64-mingw32/
 	/usr/lib/gcc/x86_64-w64-mingw32/
-	~/src/w32libs/
-	~/src/w32libs/GnuWin32/
-	~/src/w32libs/GnuWin32/bin/
-	~/src/w32libs/Qt/4.8.1/
-	~/src/w32libs/Qt/4.8.1/bin/
-	~/src/w32libs/Qt/4.8.1/include/
-	~/src/w32libs/Python/
-	~/src/w32libs/curl/
-	~/src/w32libs/curl/bin/
-	~/src/w32libs/curl/include/
+	/usr/lib/gcc/x86_64-w64-mingw32/4.6/
+	~/src/w64libs/
+	~/src/w64libs/include/
+	~/src/w64libs/bin/
+	~/src/w64libs/Qt/4.8.1/
+	~/src/w64libs/Qt/4.8.1/bin/
+	~/src/w64libs/Qt/4.8.1/include/
+	~/src/w64libs/Python/
 	~/src/w32libs/java_jdk1.6.0_25/
 	~/src/w32libs/java_jdk1.6.0_25/include/
 	~/src/w32libs/java_jdk1.6.0_25/lib/

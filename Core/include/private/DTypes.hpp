@@ -68,7 +68,7 @@ struct ImDtTypes
     static inline pixelType max() { return numeric_limits<T>::max(); }
     static inline lineType createLine(UINT lineLen) { return createAlignedBuffer<T>(lineLen); }
     static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
-    static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)p) & (n-1); }
+    static inline size_t ptrOffset(lineType p, size_t n=SIMD_VEC_SIZE) { return ((size_t)p) & (n-1); }
 };
 
 

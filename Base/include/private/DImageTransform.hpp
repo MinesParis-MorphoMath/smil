@@ -280,7 +280,7 @@ template <class T>
 RES_T resize(Image<T> &imIn, double cx, double cy)
 {
     Image<T> tmpIm(imIn, true); // clone
-    imIn.setSize(imIn.getWidth()*cx, imIn.getHeight()*cy);
+    imIn.setSize(imIn.getWidth()*cx, imIn.getHeight()*cy, imIn.getDepth());
     return resize<T>(tmpIm, imIn);
 }
 
@@ -290,7 +290,7 @@ RES_T resize(Image<T> &imIn, double cx, double cy, Image<T> &imOut)
     if (&imIn==&imOut)
       return resize<T>(imIn, cx, cy);
     
-    imOut.setSize(imIn.getWidth()*cx, imIn.getHeight()*cy);
+    imOut.setSize(imIn.getWidth()*cx, imIn.getHeight()*cy, imIn.getDepth());
     return resize<T>(imIn, imOut);
 }
 
