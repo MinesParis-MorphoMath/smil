@@ -69,14 +69,18 @@ void QtImageViewer<T>::setImage(Image<T> *im)
 template <class T>
 void QtImageViewer<T>::show()
 {
-    BASE_QT_VIEWER::show();
+    BASE_QT_VIEWER::showNormal();
+    BASE_QT_VIEWER::raise();
+    BASE_QT_VIEWER::activateWindow();
 }
 
 template <class T>
 void QtImageViewer<T>::showLabel()
 {
     this->setLabelImage(true);
-    BASE_QT_VIEWER::show();
+    BASE_QT_VIEWER::showNormal();
+    BASE_QT_VIEWER::raise();
+    BASE_QT_VIEWER::activateWindow();
     update();
 }
 
