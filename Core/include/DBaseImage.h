@@ -150,7 +150,7 @@ public:
     virtual void showLabel(const char *_name=NULL) {}
     virtual void hide() = 0;
     
-    virtual BaseImageViewer *getViewer() { return NULL; }
+    BaseImageViewer *getViewer() { return NULL; }
     
     Signal onModified;
 protected:

@@ -43,11 +43,21 @@ SMIL_MODULE(smilMorpho)
 #include "DCompositeSE.h"
 #include "DHitOrMiss.hpp"
 #include "DSkeleton.hpp"
+#include "DMorphoInstance.h"
 %}
  
 
 // Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
 %import smilCore.i
+
+
+//////////////////////////////////////////////////////////
+// Morpho Instance
+//////////////////////////////////////////////////////////
+
+%include "DInstance.hpp"
+%template(MorphoInstance) UniqueInstance<Morpho>;
+%include "DMorphoInstance.h"
 
 
 #ifdef SWIGJAVA
