@@ -85,6 +85,7 @@ template <class T1, class T2>
 RES_T copy(const Image<T1> &imIn, UINT startX, UINT startY, UINT startZ, UINT sizeX, UINT sizeY, UINT sizeZ, Image<T2> &imOut, UINT outStartX=0, UINT outStartY=0, UINT outStartZ=0)
 {
     ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
 
     UINT inW = imIn.getWidth();
     UINT inH = imIn.getHeight();
@@ -173,10 +174,9 @@ RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
 template <class T>
 RES_T copy(const Image<T> &imIn, Image<T> &imOut)
 {
-    if (!areAllocated(&imIn, &imOut, NULL))
-        return RES_ERR_BAD_ALLOCATION;
+    ASSERT_ALLOCATED(&imIn, &imOut);
 
-    if (!haveSameSize(&imIn, &imOut, NULL))
+    if (!CHECK_SAME_SIZE(&imIn, &imOut))
 	return copy<T,T>(imIn, 0, 0, 0, imOut, 0, 0, 0);
 
     typename Image<T>::lineType pixIn = imIn.getPixels();
@@ -200,6 +200,9 @@ RES_T copy(const Image<T> &imIn, Image<T> &imOut)
 template <class T>
 RES_T inv(const Image<T> &imIn, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    
     return unaryImageFunction<T, invLine<T> >(imIn, imOut);
 }
 
@@ -215,12 +218,18 @@ RES_T inv(const Image<T> &imIn, Image<T> &imOut)
 template <class T>
 RES_T add(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+    
     return binaryImageFunction<T, addLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
 RES_T add(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    
     return binaryImageFunction<T, addLine<T> >(imIn1, value, imOut);
 }
 
@@ -235,12 +244,18 @@ RES_T add(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 template <class T>
 RES_T addNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+    
     return binaryImageFunction<T, addNoSatLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
 RES_T addNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    
     return binaryImageFunction<T, addNoSatLine<T> >(imIn1, value, imOut);
 }
 
@@ -256,6 +271,9 @@ RES_T addNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 template <class T>
 RES_T sub(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+    
     return binaryImageFunction<T, subLine<T> >(imIn1, imIn2, imOut);
 }
 
@@ -276,12 +294,18 @@ RES_T sub(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 template <class T>
 RES_T subNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+    
     return binaryImageFunction<T, subNoSatLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
 RES_T subNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    
     return binaryImageFunction<T, subNoSatLine<T> >(imIn1, value, imOut);
 }
 
@@ -291,6 +315,9 @@ RES_T subNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 template <class T>
 RES_T sup(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+    
     return binaryImageFunction<T, supLine<T> >(imIn1, imIn2, imOut);
 }
 
@@ -298,6 +325,10 @@ template <class T>
 Image<T> sup(const Image<T> &imIn1, const Image<T> &imIn2)
 {
     Image<T> newIm(imIn1);
+    
+    ASSERT(CHECK_ALLOCATED(&imIn1, &imIn2), newIm);
+    ASSERT(CHECK_SAME_SIZE(&imIn1, &imIn2), newIm);
+    
     sup(imIn1, imIn2, newIm);
     return newIm;
 }
@@ -305,6 +336,9 @@ Image<T> sup(const Image<T> &imIn1, const Image<T> &imIn2)
 template <class T>
 RES_T sup(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    
     return binaryImageFunction<T, supLine<T> >(imIn1, value, imOut);
 }
 
@@ -314,6 +348,9 @@ RES_T sup(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 template <class T>
 RES_T inf(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    
     return binaryImageFunction<T, infLine<T> >(imIn1, value, imOut);
 }
 
@@ -321,6 +358,10 @@ template <class T>
 Image<T> inf(const Image<T> &imIn1, const Image<T> &imIn2)
 {
     Image<T> newIm(imIn1);
+    
+    ASSERT(CHECK_ALLOCATED(&imIn1, &imIn2), newIm);
+    ASSERT(CHECK_SAME_SIZE(&imIn1, &imIn2), newIm);
+    
     inf(imIn1, imIn2, newIm);
     return newIm;
 }
@@ -328,6 +369,9 @@ Image<T> inf(const Image<T> &imIn1, const Image<T> &imIn2)
 template <class T>
 RES_T inf(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+    
     return binaryImageFunction<T, infLine<T> >(imIn1, imIn2, imOut);
 }
 
@@ -338,6 +382,9 @@ RES_T inf(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 template <class T>
 RES_T equ(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+    
     return binaryImageFunction<T, equLine<T> >(imIn1, imIn2, imOut);
 }
 
@@ -348,6 +395,9 @@ RES_T equ(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 template <class T>
 bool equ(const Image<T> &imIn1, const Image<T> &imIn2)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2);
+    
     typedef typename Image<T>::lineType lineType;
     lineType pix1 = imIn1.getPixels();
     lineType pix2 = imIn2.getPixels();
@@ -367,6 +417,9 @@ bool equ(const Image<T> &imIn1, const Image<T> &imIn2)
 template <class T>
 RES_T diff(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+    
     return binaryImageFunction<T, diffLine<T> >(imIn1, imIn2, imOut);
 }
 
@@ -376,12 +429,18 @@ RES_T diff(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 template <class T>
 RES_T grt(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
     return binaryImageFunction<T, grtLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
 RES_T grt(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imOut);
+
     return binaryImageFunction<T, grtLine<T> >(imIn1, value, imOut);
 }
 
@@ -391,12 +450,18 @@ RES_T grt(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 template <class T>
 RES_T grtOrEqu(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
     return binaryImageFunction<T, grtOrEquLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
 RES_T grtOrEqu(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imOut);
+
     return binaryImageFunction<T, grtOrEquLine<T> >(imIn1, value, imOut);
 }
 
@@ -406,12 +471,18 @@ RES_T grtOrEqu(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 template <class T>
 RES_T low(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
     return binaryImageFunction<T, lowLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
 RES_T low(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imOut);
+
     return binaryImageFunction<T, lowLine<T> >(imIn1, value, imOut);
 }
 
@@ -421,12 +492,18 @@ RES_T low(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 template <class T>
 RES_T lowOrEqu(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
     return binaryImageFunction<T, lowOrEquLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
 RES_T lowOrEqu(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imOut);
+
     return binaryImageFunction<T, lowLine<T> >(imIn1, value, imOut);
 }
 
@@ -436,12 +513,18 @@ RES_T lowOrEqu(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 template <class T>
 RES_T div(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
     return binaryImageFunction<T, divLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
 RES_T div(const Image<T> &imIn, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
     return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
 }
 
@@ -451,12 +534,18 @@ RES_T div(const Image<T> &imIn, const T &value, Image<T> &imOut)
 template <class T>
 RES_T mul(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
     return binaryImageFunction<T, mulLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
 RES_T mul(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imOut);
+
     return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
 }
 
@@ -466,12 +555,18 @@ RES_T mul(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 template <class T>
 RES_T mulNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
     return binaryImageFunction<T, mulLine<T> >(imIn1, imIn2, imOut);
 }
 
 template <class T>
 RES_T mulNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imOut);
+
     return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
 }
 
@@ -481,6 +576,9 @@ RES_T mulNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
 template <class T>
 RES_T logicAnd(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
     return binaryImageFunction<T, logicAndLine<T> >(imIn1, imIn2, imOut);
 }
 
@@ -490,6 +588,9 @@ RES_T logicAnd(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 template <class T>
 RES_T logicOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
     return binaryImageFunction<T, logicOrLine<T> >(imIn1, imIn2, imOut);
 }
 
@@ -499,6 +600,9 @@ RES_T logicOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 template <class T>
 RES_T logicXOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
     return binaryImageFunction<T, logicXOrLine<T> >(imIn1, imIn2, imOut);
 }
 
@@ -518,24 +622,36 @@ RES_T logicXOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
 template <class T>
 RES_T test(const Image<T> &imIn1, const Image<T> &imIn2, const Image<T> &imIn3, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imIn3, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imIn3, &imOut);
+
     return tertiaryImageFunction<T, testLine<T> >(imIn1, imIn2, imIn3, imOut);
 }
 
 template <class T>
 RES_T test(const Image<T> &imIn1, const Image<T> &imIn2, const T &value, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
     return tertiaryImageFunction<T, testLine<T> >(imIn1, imIn2, value, imOut);
 }
 
 template <class T>
 RES_T test(const Image<T> &imIn1, const T &value, const Image<T> &imIn2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
     return tertiaryImageFunction<T, testLine<T> >(imIn1, value, imIn2, imOut);
 }
 
 template <class T>
 RES_T test(const Image<T> &imIn, const T &value1, const T &value2, Image<T> &imOut)
 {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
     return tertiaryImageFunction<T, testLine<T> >(imIn, value1, value2, imOut);
 }
 
@@ -546,8 +662,9 @@ RES_T test(const Image<T> &imIn, const T &value1, const T &value2, Image<T> &imO
 template <class T>
 RES_T applyLookup(const Image<T> &imIn, map<T,T> &lut, Image<T> &imOut)
 {
-    if (!imIn.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
     
     typename Image<T>::lineType pixIn = imIn.getPixels();
     typename Image<T>::lineType pixOut = imOut.getPixels();

@@ -35,36 +35,20 @@
 
 #include <vector>
 
-class A
-{
-public:
-  void func(const A &a)
-  {
-    cout << a.val << endl;
-  }
-  int val;
-};
-
-Image_UINT8 create(void)
-{
-    Image_UINT8 a;
-    return a;
-}
-
-void outFunc(const Image_UINT8 &a)
-{
-    cout << a.getPixelCount() << endl;
-}
 
 int main(int argc, char *argv[])
 {
     
+//     Gui::initialize();
     
     Image_UINT8 im1(1000, 1023);
     Image_UINT8 im2(im1);
     ImageViewer<UINT8> *viewer;
 
 
+    im1.show("im1");
+    im2.show("im2");
+    
     drawRectangle(im2, 10, 10, 512, 128);
     fill(im1, UINT8(127));
     viewer = im1.getViewer();
@@ -95,8 +79,6 @@ int main(int argc, char *argv[])
 //     Image_UINT8 im3(im1);
     
     
-    im1.show("im1");
-    im2.show("im2");
     
 //     copy(im2, 256, 0, 0, im1);
     

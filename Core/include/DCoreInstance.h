@@ -57,17 +57,16 @@ public:
   // Public interface
   bool keepAlive;
   
-  void registerObject(BaseObject *obj);
-
-  void unregisterObject(BaseObject *obj);
+  static void registerObject(BaseObject *obj);
+  static void unregisterObject(BaseObject *obj);
   
-  vector<BaseObject*> getRegisteredObjects();
-  vector<BaseImage*> getImages();
+  static vector<BaseObject*> getRegisteredObjects();
+  static vector<BaseImage*> getImages();
   
-  UINT getNumberOfThreads();
-  size_t getAllocatedMemory();
-  void showAllImages();
-  void hideAllImages();
+  static size_t getNumberOfThreads();
+  static size_t getAllocatedMemory();
+  static void showAllImages();
+  static void hideAllImages();
   
   Signal onBaseImageCreated;
   
@@ -76,7 +75,7 @@ protected:
     vector<BaseObject*> registeredObjects;
     vector<BaseImage*> registeredImages;
     void deleteRegisteredObjects();
-    UINT threadNumber;
+    size_t threadNumber;
   
 public:
   static void initialize();

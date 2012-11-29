@@ -70,12 +70,13 @@ void Core::registerObject(BaseObject *obj)
     if (obj->registered)
       return;
 
-    registeredObjects.push_back(obj);
+    Core *inst = Core::getInstance();
+    inst->registeredObjects.push_back(obj);
 
     obj->registered = true;
 
     if (string(obj->getClassName())=="Image")
-	registeredImages.push_back(static_cast<BaseImage*>(obj));
+	inst->registeredImages.push_back(static_cast<BaseImage*>(obj));
 
 #if DEBUG_LEVEL > 1
     cout << "Core::registerObject: " << obj->getClassName() << " " << obj << " created." << endl;
@@ -88,47 +89,50 @@ void Core::unregisterObject(BaseObject *obj)
     if (!obj->registered)
       return;
 
-    registeredObjects.erase(std::remove(registeredObjects.begin(), registeredObjects.end(), obj));
+    Core *inst = Core::getInstance();
+    inst->registeredObjects.erase(std::remove(inst->registeredObjects.begin(), inst->registeredObjects.end(), obj));
 
     obj->registered = false;
 
     if (string(obj->getClassName())=="Image")
-	registeredImages.erase(std::remove(registeredImages.begin(), registeredImages.end(), static_cast<BaseImage*>(obj)));
+	inst->registeredImages.erase(std::remove(inst->registeredImages.begin(), inst->registeredImages.end(), static_cast<BaseImage*>(obj)));
 
 #if DEBUG_LEVEL > 1
     cout << "Core::unregisterObject: " << obj->getClassName() << " " << obj << " deleted." << endl;
 #endif // DEBUG_LEVEL > 1
 
-    if (!keepAlive && registeredObjects.size()==0)
-	kill();
+    if (!inst->keepAlive && inst->registeredObjects.size()==0)
+	inst->kill();
 }
 
 
 void Core::deleteRegisteredObjects()
 {
     BaseObject *obj;
-    vector<BaseObject*>::iterator it = registeredObjects.begin();
+    Core *inst = Core::getInstance();
+    vector<BaseObject*>::iterator it = inst->registeredObjects.begin();
 
-    while (it!=registeredObjects.end())
+    while (it!=inst->registeredObjects.end())
     {
 	obj = *it++;
 	delete obj;
     }
 }
 
-UINT Core::getNumberOfThreads()
+size_t Core::getNumberOfThreads()
 {
+    Core *inst = Core::getInstance();
 #ifdef USE_OPEN_MP
-    if (threadNumber!=0)
-      return threadNumber;
+    if (inst->threadNumber!=0)
+      return inst->threadNumber;
     
     int nthreads;
     #pragma omp parallel shared(nthreads)
     { 
 	nthreads = omp_get_num_threads();
     }
-    threadNumber = nthreads;
-    return threadNumber;
+    inst->threadNumber = nthreads;
+    return inst->threadNumber;
 #else // USE_OPEN_MP
     return 1;
 #endif // USE_OPEN_MP
@@ -136,37 +140,40 @@ UINT Core::getNumberOfThreads()
 
 size_t Core::getAllocatedMemory()
 {
-    vector<BaseImage*>::iterator it = registeredImages.begin();
-    long totAlloc = 0;
+    Core *inst = Core::getInstance();
+    vector<BaseImage*>::iterator it = inst->registeredImages.begin();
+    size_t totAlloc = 0;
 
-    while (it!=registeredImages.end())
+    while (it!=inst->registeredImages.end())
 	totAlloc += (*it++)->getAllocatedSize();
     return totAlloc;
 }
 
 vector<BaseObject*> Core::getRegisteredObjects() 
 { 
-    return registeredObjects; 
+    return Core::getInstance()->registeredObjects; 
 }
 
 vector<BaseImage*> Core::getImages()  
 { 
-    return registeredImages; 
+    return Core::getInstance()->registeredImages; 
 }
 
 void Core::showAllImages()
 {
-    vector<BaseImage*>::iterator it = registeredImages.begin();
+    Core *inst = Core::getInstance();
+    vector<BaseImage*>::iterator it = inst->registeredImages.begin();
 
-    while (it!=registeredImages.end())
+    while (it!=inst->registeredImages.end())
 	(*it++)->show();
 }
 
 void Core::hideAllImages()
 {
-    vector<BaseImage*>::iterator it = registeredImages.begin();
+    Core *inst = Core::getInstance();
+    vector<BaseImage*>::iterator it = inst->registeredImages.begin();
 
-    while (it!=registeredImages.end())
+    while (it!=inst->registeredImages.end())
 	(*it++)->hide();
 }
 

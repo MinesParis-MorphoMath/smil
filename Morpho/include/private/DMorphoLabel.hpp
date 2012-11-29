@@ -164,7 +164,7 @@ public:
 	  stackMap[*(*stack_it).begin()] = &(*stack_it);
 	
 	
-	UINT index = 1;
+	size_t index = 1;
 	
 	for(UINT i=index;i<=labels;i++)
 	{
@@ -191,6 +191,8 @@ public:
 	for (UINT i=0;i<imOut.getPixelCount();i++,this->pixelsOut++)
 	  if (*this->pixelsOut!=0)
 	    *this->pixelsOut = lut[*this->pixelsOut];
+	  
+	labels = index-1;
 	
 	return RES_OK;
     }

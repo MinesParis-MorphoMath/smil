@@ -43,9 +43,9 @@ qtGui::qtGui()
 	  int ac = 1;
 	  char **av = NULL;
 	  _qapp = new QApplication(ac, av);
-// 	  _qapp->processEvents();
+	  _qapp->processEvents();
       }
-      else _qapp = qApp;
+//       else _qapp = qApp;
       
 //       _timer = new timer();
 //       _timer->app = _qapp;
@@ -56,7 +56,10 @@ qtGui::qtGui()
 qtGui::~qtGui()
 {
     if (_qapp)
+    {
       _qapp->exit();
+      delete _qapp;
+    }
 //     delete _timer;
 }
 

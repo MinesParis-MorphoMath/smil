@@ -40,13 +40,11 @@
 
 #include <vector>
 
-void mafunc(const Image<UINT8>& im)
-{
-}
 
 int main(int argc, char *argv[])
 {
 
+//     Gui::initialize();
 
     Image_UINT8 im1(256,256);
 //     Image_UINT8 im2;
@@ -68,6 +66,10 @@ int main(int argc, char *argv[])
 //     ExtImage<UINT8> im2 = morphmImage<UINT8>(*mIm);
 //     ExtImage<UINT8> *im3 = new morphmImage<UINT8>(*imInt);
 //     fill(*im3, UINT8(127));
+    ImageViewer<UINT8> *viewer;
+
+
+//     viewer = im1.getViewer();
 //     
 //     im3->printSelf();
     im1.show();
