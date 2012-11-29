@@ -46,6 +46,8 @@ public:
     typedef typename parentClass::imageInType imageInType;
     typedef typename parentClass::imageOutType imageOutType;
     
+    size_t getLabelNbr() { return labels; }
+    
     virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
     {
 	parentClass::initialize(imIn, imOut, se);
@@ -193,17 +195,23 @@ public:
 	return RES_OK;
     }
 protected:
-  UINT labels;
+  size_t labels;
   map<UINT, UINT> lut;
   set<pair<UINT, UINT> > pairs;
 };
 
-
+/**
+ * Image labelization
+ * 
+ * Return the number of labels (or 0 if error).
+ */
 template<class T1, class T2>
-RES_T label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
 {
     labelFunct<T1,T2> f;
-    return f._exec(imIn, imOut, se);
+    if (f._exec(imIn, imOut, se)==RES_OK)
+      return f.getLabelNbr();
+    else return 0;
 }
 
 
