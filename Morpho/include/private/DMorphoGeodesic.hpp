@@ -33,6 +33,7 @@
 #include "DLineArith.hpp"
 #include "DMorphImageOperations.hpp"
 #include "DImageArith.hpp"
+#include "DImageDraw.hpp"
 #include "DMorphoHierarQ.hpp"
 
 /**
@@ -359,6 +360,7 @@ RES_T fillHoles(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_
     Image<T> tmpIm(imIn);
     
     fill(tmpIm, numeric_limits<T>::max());
+    drawRectangle(tmpIm, 0, 0, tmpIm.getWidth(), tmpIm.getHeight(), ImDtTypes<T>::min());
     dualBuild(tmpIm, imIn, imOut);
     
     return res;
