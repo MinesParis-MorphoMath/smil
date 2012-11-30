@@ -85,7 +85,6 @@ template <class T1, class T2>
 RES_T copy(const Image<T1> &imIn, UINT startX, UINT startY, UINT startZ, UINT sizeX, UINT sizeY, UINT sizeZ, Image<T2> &imOut, UINT outStartX=0, UINT outStartY=0, UINT outStartZ=0)
 {
     ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
 
     UINT inW = imIn.getWidth();
     UINT inH = imIn.getHeight();
