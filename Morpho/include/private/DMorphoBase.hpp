@@ -54,6 +54,9 @@
 template <class T>
 RES_T dilate(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderVal=ImDtTypes<T>::min())
 {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    
     unaryMorphImageFunction<T, supLine<T> > iFunc(borderVal);
     return iFunc(imIn, imOut, se);
 }
@@ -76,6 +79,9 @@ RES_T dilate(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImD
 template <class T>
 RES_T erode(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderVal=ImDtTypes<T>::max())
 {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    
     unaryMorphImageFunction<T, infLine<T> > iFunc(borderVal);
     return iFunc(imIn, imOut, se);
 }
@@ -93,12 +99,14 @@ RES_T erode(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImDt
 template <class T>
 RES_T close(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
-    SLEEP(imOut);
-    RES_T res = dilate(imIn, imOut, se);
-    if (res==RES_OK)
-      res = erode(imOut, imOut, se);
-    WAKE_UP(imOut);
-    return res;
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    ImageFreezer freeze(imOut);
+    
+    ASSERT((dilate(imIn, imOut, se)==RES_OK));
+    ASSERT((erode(imOut, imOut, se)==RES_OK));
+    
+    return RES_OK;
 }
 
 template <class T>
@@ -114,12 +122,14 @@ RES_T close(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
 template <class T>
 RES_T open(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
-    SLEEP(imOut);
-    RES_T res = erode(imIn, imOut, se);
-    if (res==RES_OK)
-      res = dilate(imOut, imOut, se);
-    WAKE_UP(imOut);
-    return res;
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    ImageFreezer freeze(imOut);
+    
+    ASSERT((erode(imIn, imOut, se)==RES_OK));
+    ASSERT((dilate(imOut, imOut, se)==RES_OK));
+
+    return RES_OK;
 }
 
 template <class T>

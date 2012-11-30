@@ -47,96 +47,84 @@
 template <class T>
 RES_T geoDil(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
-    StrElt tmpSe(se);
-    tmpSe.size = 1;
+    ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
+
+    ImageFreezer freeze(imOut);
     
-    RES_T res = inf(imIn, imMask, imOut);
+    ASSERT((inf(imIn, imMask, imOut)==RES_OK));
     
     for (UINT i=0;i<se.size;i++)
     {
-	res = dilate<T>(imOut, imOut, tmpSe);
-	if (res==RES_OK)
-	  res = inf(imOut, imMask, imOut);
-	if (res!=RES_OK)
-	  break;
+	ASSERT((dilate<T>(imOut, imOut, se)==RES_OK));
+	ASSERT((inf(imOut, imMask, imOut)==RES_OK));
     }
-    return res;
+    return RES_OK;
 }
 
 template <class T>
 RES_T geoEro(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
-    StrElt tmpSe(se);
-    tmpSe.size = 1;
+    ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
+
+    ImageFreezer freeze(imOut);
     
-    RES_T res = sup(imIn, imMask, imOut);
+    ASSERT((sup(imIn, imMask, imOut)==RES_OK));
     
     for (UINT i=0;i<se.size;i++)
     {
-	res = erode(imOut, imOut, tmpSe);
-	if (res==RES_OK)
-	  res = sup(imOut, imMask, imOut);
-	if (res!=RES_OK)
-	  break;
+	ASSERT((erode(imOut, imOut, se)==RES_OK));
+	ASSERT((sup(imOut, imMask, imOut)==RES_OK));
     }
-    return res;
+    return RES_OK;
 }
 
 template <class T>
 RES_T geoBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
-    StrElt tmpSe(se);
-    tmpSe.size = 1;
+    ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
+
+    ImageFreezer freeze(imOut);
     
-    RES_T res = inf(imIn, imMask, imOut);
-    bool updatesEnabled = imOut.updatesEnabled;
-    imOut.updatesEnabled = false;
+    ASSERT((inf(imIn, imMask, imOut)==RES_OK));
     
-    int vol1 = vol(imOut), vol2;
+    double vol1 = vol(imOut), vol2;
     while (true)
     {
-	res = dilate<T>(imOut, imOut, tmpSe);
-	if (res==RES_OK)
-	  res = inf(imOut, imMask, imOut);
-	if (res!=RES_OK)
-	  break;
+	ASSERT((dilate<T>(imOut, imOut, se)==RES_OK));
+	ASSERT((inf(imOut, imMask, imOut)==RES_OK));
 	vol2 = vol(imOut);
 	if (vol2==vol1)
 	  break;
 	vol1 = vol2;
     }
-    imOut.updatesEnabled = updatesEnabled;
-    imOut.modified();
-    return res;
+    return RES_OK;
 }
 
 template <class T>
 RES_T geoDualBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
-    StrElt tmpSe(se);
-    tmpSe.size = 1;
+    ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
+
+    ImageFreezer freeze(imOut);
     
-    RES_T res = sup(imIn, imMask, imOut);
-    bool updatesEnabled = imOut.updatesEnabled;
-    imOut.updatesEnabled = false;
-    
+    ASSERT((sup(imIn, imMask, imOut)==RES_OK));
+
     int vol1 = vol(imOut), vol2;
     
     while (true)
     {
-	res = erode(imOut, imOut, tmpSe);
-	if (res==RES_OK)
-	  res = sup(imOut, imMask, imOut);
-	if (res!=RES_OK)
-	  break;
+	ASSERT((erode(imOut, imOut, se)==RES_OK));
+	ASSERT((sup(imOut, imMask, imOut)==RES_OK));
 	vol2 = vol(imOut);
 	if (vol2==vol1)
 	  break;
 	vol1 = vol2;
     }
-    imOut.updatesEnabled = updatesEnabled;
-    imOut.modified();
-    return res;
+    return RES_OK;
 }
 
 
@@ -274,29 +262,23 @@ struct maxFunctor
 template <class T>
 RES_T dualBuild(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
-    if (!areAllocated(&imIn, &imMark, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
-    
-    if (!haveSameSize(&imIn, &imMark, &imOut, NULL))
-      return RES_ERR_BAD_SIZE;
-    
-    SLEEP(imOut);
+    ASSERT_ALLOCATED(&imIn, &imMark, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imMark, &imOut);
+
+    ImageFreezer freeze(imOut);
     
     Image<UINT8> imStatus(imIn);
     HierarchicalQueue<T> pq;
     
     // Make sure that imIn >= imMark
-    sup(imIn, imMark, imOut);
+    ASSERT((sup(imIn, imMark, imOut)==RES_OK));
     
     // Set all pixels in the status image to CANDIDATE
-    fill(imStatus, (UINT8)HQ_CANDIDATE);
+    ASSERT((fill(imStatus, (UINT8)HQ_CANDIDATE)==RES_OK));
     
     // Initialize the PQ
     initBuildHierarchicalQueue(imOut, pq);
     processBuildHierarchicalQueue<T, maxFunctor<T> >(imOut, imMark, imStatus, pq, se);
-    
-    WAKE_UP(imOut);
-    imOut.modified();
     
     return RES_OK;
 }
@@ -307,13 +289,10 @@ RES_T dualBuild(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, c
 template <class T>
 RES_T build(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
-    if (!areAllocated(&imIn, &imMark, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
-    
-    if (!haveSameSize(&imIn, &imMark, &imOut, NULL))
-      return RES_ERR_BAD_SIZE;
-    
-    SLEEP(imOut);
+    ASSERT_ALLOCATED(&imIn, &imMark, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imMark, &imOut);
+
+    ImageFreezer freeze(imOut);
     
     Image<UINT8> imStatus(imIn);
     
@@ -322,17 +301,14 @@ RES_T build(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const
     HierarchicalQueue<T, compareType > rpq;
     
     // Make sure that imIn <= imMark
-    inf(imIn, imMark, imOut);
+    ASSERT((inf(imIn, imMark, imOut)==RES_OK));
     
     // Set all pixels in the status image to CANDIDATE
-    fill(imStatus, (UINT8)HQ_CANDIDATE);
+    ASSERT((fill(imStatus, (UINT8)HQ_CANDIDATE)==RES_OK));
     
     // Initialize the PQ
     initBuildHierarchicalQueue(imOut, rpq);
     processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMark, imStatus, rpq, se);
-    
-    WAKE_UP(imOut);
-    imOut.modified();
     
     return RES_OK;
 }
@@ -349,11 +325,13 @@ RES_T fillHoles(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
     
+    ImageFreezer freeze(imOut);
+    
     Image<T> tmpIm(imIn);
     
-    fill(tmpIm, numeric_limits<T>::max());
-    drawRectangle(tmpIm, 0, 0, tmpIm.getWidth(), tmpIm.getHeight(), ImDtTypes<T>::min());
-    dualBuild(tmpIm, imIn, imOut, se);
+    ASSERT((fill(tmpIm, numeric_limits<T>::max())==RES_OK));
+    ASSERT((drawRectangle(tmpIm, 0, 0, tmpIm.getWidth(), tmpIm.getHeight(), ImDtTypes<T>::min())==RES_OK));
+    ASSERT((dualBuild(tmpIm, imIn, imOut, se)==RES_OK));
     
     return RES_OK;
 }
@@ -367,10 +345,12 @@ RES_T levelPics(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
     
+    ImageFreezer freeze(imOut);
+    
     Image<T> tmpIm(imIn);
-    inv(imIn, tmpIm);
-    fillHoles(tmpIm, imOut, se);
-    inv(imOut, imOut);
+    ASSERT((inv(imIn, tmpIm)==RES_OK));
+    ASSERT((fillHoles(tmpIm, imOut, se)==RES_OK));
+    ASSERT((inv(imOut, imOut)==RES_OK));
     
 //     return res;
     return RES_OK;
@@ -383,24 +363,25 @@ RES_T levelPics(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_
 template <class T>
 RES_T dist(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    
+    ImageFreezer freeze(imOut);
+    
     Image<T> tmpIm(imIn);
     
     // Set image to 1 when pixels are !=0
-    inf(imIn, T(1), tmpIm);
+    ASSERT((inf(imIn, T(1), tmpIm)==RES_OK));
     
-    SLEEP(imOut);
-    
-    copy(tmpIm, imOut);
+    ASSERT((copy(tmpIm, imOut)==RES_OK));
     
     do
     {
-	erode(tmpIm, tmpIm, se);
-	add(tmpIm, imOut, imOut);
+	ASSERT((erode(tmpIm, tmpIm, se)==RES_OK));
+	ASSERT((add(tmpIm, imOut, imOut)==RES_OK));
 	
     } while (vol(tmpIm)!=0);
 
-    WAKE_UP(imOut);
-    imOut.modified();
     return RES_OK;
 }
 

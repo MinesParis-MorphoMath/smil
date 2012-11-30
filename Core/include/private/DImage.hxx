@@ -141,7 +141,6 @@ void Image<T>::init()
     this->dataTypeSize = sizeof(pixelType);
 
     this->viewer = NULL;
-    this->updatesEnabled = true;
 
     parentClass::init();
 }

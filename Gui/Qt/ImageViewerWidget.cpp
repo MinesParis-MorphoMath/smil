@@ -92,6 +92,10 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     hintTimer->setSingleShot(true);
     connect( hintTimer, SIGNAL(timeout()), hintLabel, SLOT(hide()) );
     
+    iconTimer = new QTimer();
+    iconTimer->setSingleShot(true);
+    connect( iconTimer, SIGNAL(timeout()), this, SLOT(updateIcon()) );
+    
     imagePixmaps.clear();
     overlayPixmaps.clear();
     
@@ -138,6 +142,10 @@ ImageViewerWidget::~ImageViewerWidget()
     delete zoomInAct;
     delete zoomOutAct;
 }
+
+void ImageViewerWidget::updateIcon()
+{
+    setWindowIcon(QIcon(QPixmap::fromImage(*qImage)));}
 
 void ImageViewerWidget::initColorTables()
 {
@@ -333,7 +341,7 @@ void ImageViewerWidget::dataChanged()
     updatePixmaps(qImage, &imagePixmaps);
   
     magnView->setImage(qImage);
-    setWindowIcon(QIcon(QPixmap::fromImage(*qImage)));
+    iconTimer->start(200);
     
     emit onDataChanged();
 }

@@ -41,3 +41,4 @@ void BaseImage::init()
   }
 
 }
+

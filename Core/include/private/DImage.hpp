@@ -140,8 +140,6 @@ public:
     //! Get the image viewer (create one if needed)
     ImageViewer<T> *getViewer();
     
-    bool updatesEnabled;
-    
     //! Check if the image is visible
     //! \return \b true if the viewer is visible, \b false otherwise
     virtual bool isVisible() { return (viewer && viewer->isVisible()); }
@@ -205,7 +203,7 @@ public:
     
     inline int getLineAlignment(UINT l);
 
-    void modified();
+    virtual void modified();
 
     T dataTypeMin;
     T dataTypeMax;

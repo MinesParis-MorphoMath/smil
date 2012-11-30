@@ -229,6 +229,8 @@ RES_T drawRectangle(Image<T> &imOut, UINT x0, UINT y0, UINT width, UINT height, 
 {
     ASSERT_ALLOCATED(&imOut);
 
+    ImageFreezer freeze(imOut);
+    
     UINT imW = imOut.getWidth();
     UINT imH = imOut.getHeight();
     UINT imD = imOut.getDepth();
@@ -263,8 +265,6 @@ RES_T drawRectangle(Image<T> &imOut, UINT x0, UINT y0, UINT width, UINT height, 
 	}
     }
     
-    imOut.modified();
-    
     return RES_OK;
 }
 
@@ -288,6 +288,8 @@ template <class T>
 RES_T drawCube(Image<T> &imOut, UINT x0, UINT y0, UINT z0, UINT width, UINT height, UINT depth, T value=numeric_limits<T>::max(), bool fill=false)
 {
     ASSERT_ALLOCATED(&imOut);
+    
+    ImageFreezer freeze(imOut);
     
     ASSERT((drawRectangle(imOut, x0, y0, width, height, value, true, z0)==RES_OK));
     for (size_t z=z0+1;z<z0+depth-1;z++)

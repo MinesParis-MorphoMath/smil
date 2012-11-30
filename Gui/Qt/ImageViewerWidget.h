@@ -103,6 +103,7 @@ protected:
     QLabel *valueLabel;
     QLabel *hintLabel;
     QTimer *hintTimer;
+    QTimer *iconTimer;
     MagnifyView *magnView;
 
     int lastPixX, lastPixY, lastPixZ;
@@ -140,7 +141,7 @@ public slots:
 	displayHint(QString::number(newVal) + "/" + QString::number(slider->maximum()));
 	setCurSlice(newVal);
     }
-//     void update();
+    void updateIcon();
 
 private slots:
     void sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event );

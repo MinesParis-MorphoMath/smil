@@ -47,28 +47,22 @@
 template <class T>
 RES_T hMinima(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    
     if (&imIn==&imOut)
     {
 	Image<T> tmpIm = imIn;
 	return hMinima(tmpIm, height, imOut, se);
     }
     
-    StrElt tmpSe(se);
-    tmpSe.size = 1;
+    ImageFreezer freeze(imOut);
     
-    RES_T res;
+    ASSERT((add(imIn, T(height), imOut)==RES_OK));
+    ASSERT((dualBuild(imOut, imIn, imOut, se)==RES_OK));
+    ASSERT((low(imIn, imOut, imOut)==RES_OK));
     
-    res = add(imIn, T(height), imOut);
-    if (res!=RES_OK)
-      return res;
-    
-    res = dualBuild(imOut, imIn, imOut, tmpSe);
-    if (res!=RES_OK)
-      return res;
-    
-    low(imIn, imOut, imOut);
-    
-    return res;
+    return RES_OK;
 }
 
 /**
@@ -77,28 +71,22 @@ RES_T hMinima(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrE
 template <class T>
 RES_T hMaxima(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    
     if (&imIn==&imOut)
     {
 	Image<T> tmpIm = imIn;
 	return hMaxima(tmpIm, height, imOut, se);
     }
     
-    StrElt tmpSe(se);
-    tmpSe.size = 1;
+    ImageFreezer freeze(imOut);
     
-    RES_T res;
+    ASSERT((sub(imIn, T(height), imOut)==RES_OK));
+    ASSERT((build(imOut, imIn, imOut, se)==RES_OK));
+    ASSERT((grt(imIn, imOut, imOut)==RES_OK));
     
-    res = sub(imIn, T(height), imOut);
-    if (res!=RES_OK)
-      return res;
-    
-    res = build(imOut, imIn, imOut, tmpSe);
-    if (res!=RES_OK)
-      return res;
-    
-    grt(imIn, imOut, imOut);
-    
-    return res;
+    return RES_OK;
 }
 
 /**

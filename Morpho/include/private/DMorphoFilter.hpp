@@ -50,16 +50,19 @@
 template <class T>
 RES_T asfClose(const Image<T> &imIn, Image<T> &imOut, StrElt &se=DEFAULT_SE)
 {
-    SLEEP(imOut);
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    ImageFreezer freeze(imOut);
+    
     Image<T> tmpIm(imIn, true); // clone
     for (int i=1;i<=se.size;i++)
     {
-      close(tmpIm, imOut, se(i));
-      open(imOut, tmpIm, se(i));
+      ASSERT((close(tmpIm, imOut, se(i))==RES_OK));
+      ASSERT((open(imOut, tmpIm, se(i))==RES_OK));
     }
-    copy(tmpIm, imOut);
-    WAKE_UP(imOut);
-    
+    ASSERT((copy(tmpIm, imOut)==RES_OK));
+        
     return RES_OK;
 }
 
@@ -71,16 +74,19 @@ RES_T asfClose(const Image<T> &imIn, Image<T> &imOut, StrElt &se=DEFAULT_SE)
 template <class T>
 RES_T asfOpen(const Image<T> &imIn, Image<T> &imOut, StrElt &se=DEFAULT_SE)
 {
-    SLEEP(imOut);
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    
+    ImageFreezer freeze(imOut);
+    
     Image<T> tmpIm(imIn, true); // clone
     for (int i=1;i<=se.size;i++)
     {
-      open(tmpIm, imOut, se(i));
-      close(imOut, tmpIm, se(i));
+      ASSERT((open(tmpIm, imOut, se(i))==RES_OK));
+      ASSERT((close(imOut, tmpIm, se(i))==RES_OK));
     }
-    copy(tmpIm, imOut);
-    WAKE_UP(imOut);
-    
+    ASSERT((copy(tmpIm, imOut)==RES_OK));
+
     return RES_OK;
 }
 

@@ -50,6 +50,7 @@ public:
 	pixelCount(0), lineCount(0), sliceCount(0),
 	allocated(false),
 	allocatedSize(0),
+	updatesEnabled(true),
 	onModified(this)
     {
     }
@@ -60,6 +61,7 @@ public:
 	pixelCount(0), lineCount(0), sliceCount(0),
 	allocated(false),
 	allocatedSize(0),
+	updatesEnabled(true),
 	onModified(this)
     {
     }
@@ -152,6 +154,7 @@ public:
     
     BaseImageViewer *getViewer() { return NULL; }
     
+    bool updatesEnabled;
     Signal onModified;
 protected:
     UINT dataTypeSize;
@@ -171,6 +174,29 @@ protected:
 
 };
 
+
+class ImageFreezer
+{
+public:
+    ImageFreezer(BaseImage &im, bool updateOnDelete=true)
+      : image(&im),
+	update(updateOnDelete)
+    {
+	imState = im.updatesEnabled;
+	im.updatesEnabled = false;
+    }
+    ~ImageFreezer()
+    {
+	image->updatesEnabled = imState;
+	if (update)
+	  image->modified();
+	
+    }
+protected:
+    BaseImage *image;
+    bool imState;
+    bool update;
+};
 
 /**
  * Check if all images in a list have the same size.
