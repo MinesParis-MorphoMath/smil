@@ -126,7 +126,7 @@ void QtImageViewer<T>::update()
     BASE_QT_VIEWER::dataChanged();
 
     BASE_QT_VIEWER::update();
-    qApp->processEvents();
+//     qApp->processEvents();
 }
 
 template <class T>

@@ -225,28 +225,26 @@ RES_T drawLine(Image<T> &imOut, vector<UINT> coords, T value=numeric_limits<T>::
  * \param imOut Output image.
  */
 template <class T>
-RES_T drawRectangle(Image<T> &imOut, UINT x0, UINT y0, UINT width, UINT height, T value=numeric_limits<T>::max(), bool fill=false)
+RES_T drawRectangle(Image<T> &imOut, UINT x0, UINT y0, UINT width, UINT height, T value=numeric_limits<T>::max(), bool fill=false, UINT zSlice=0)
 {
-    if (!imOut.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
+    ASSERT_ALLOCATED(&imOut);
 
     UINT imW = imOut.getWidth();
     UINT imH = imOut.getHeight();
+    UINT imD = imOut.getDepth();
     
-    if (x0>=imW || y0 >=imH)
-      return RES_ERR;
-    if (x0+width>imW || y0+height>imH)
-      return RES_ERR;
+    ASSERT((zSlice<imD), "zSlice is out of range", RES_ERR);
     
     UINT x1 = x0 + width - 1;
     UINT y1 = y0 + height -1;
     x1 = x1<imW ? x1 : imW-1;
     y1 = y1<imH ? y1 : imH-1;
     
-    x0 = x0>0 ? x0 : 0;
-    y0 = y0>0 ? y0 : 0;
+    x0 = x0>=0 ? x0 : 0;
+    y0 = y0>=0 ? y0 : 0;
     
-    typename Image<T>::sliceType lines = imOut.getLines();
+    typename Image<T>::volType slices = imOut.getSlices();
+    typename Image<T>::sliceType lines = slices[zSlice];
     fillLine<T> fillFunc;
     
     if (fill)
@@ -277,6 +275,27 @@ RES_T drawRectangle(Image<T> &imOut, vector<UINT> coords, T value=numeric_limits
     if (coords.size()!=4)
       return RES_ERR;
     return drawRectangle<T>(imOut, coords[0], coords[1], coords[2]-coords[0]+1, coords[3]-coords[1]+1, value, fill);
+}
+
+
+/**
+ * Draw a cube
+ * 
+ * 
+ * \param imOut Output image.
+ */
+template <class T>
+RES_T drawCube(Image<T> &imOut, UINT x0, UINT y0, UINT z0, UINT width, UINT height, UINT depth, T value=numeric_limits<T>::max(), bool fill=false)
+{
+    ASSERT_ALLOCATED(&imOut);
+    
+    ASSERT((drawRectangle(imOut, x0, y0, width, height, value, true, z0)==RES_OK));
+    for (size_t z=z0+1;z<z0+depth-1;z++)
+      ASSERT((drawRectangle(imOut, x0, y0, width, height, value, fill, z)==RES_OK));
+    ASSERT((drawRectangle(imOut, x0, y0, width, height, value, true, z0+depth-1)==RES_OK));
+    
+    return RES_OK;
+      
 }
 
 /** @}*/

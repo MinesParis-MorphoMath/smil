@@ -34,6 +34,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "DCommon.h"
+
 using namespace std;
  
 /**
@@ -143,7 +145,7 @@ private:
 };
 
 #define ASSERT_1_ARG(func, file, line, expr) \
-    if(!expr) Error(func, file, line, #expr).show();
+    if(!expr) { Error(func, file, line, #expr).show(); return RES_ERR; }
 #define ASSERT_2_ARGS(func, file, line, expr, errCode) \
     if(!expr) { Error(#errCode, func, file, line, #expr).show(); return errCode; }
 #define ASSERT_3_ARGS(func, file, line, expr, errCode, retVal) \

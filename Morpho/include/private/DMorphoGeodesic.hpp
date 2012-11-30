@@ -346,24 +346,16 @@ RES_T build(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const
 template <class T>
 RES_T fillHoles(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
-    if (!areAllocated(&imIn, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
-    
-    if (!haveSameSize(&imIn, &imOut, NULL))
-      return RES_ERR_BAD_SIZE;
-    
-    StrElt tmpSe(se);
-    tmpSe.size = 1;
-    
-    RES_T res = RES_OK;
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
     
     Image<T> tmpIm(imIn);
     
     fill(tmpIm, numeric_limits<T>::max());
     drawRectangle(tmpIm, 0, 0, tmpIm.getWidth(), tmpIm.getHeight(), ImDtTypes<T>::min());
-    dualBuild(tmpIm, imIn, imOut);
+    dualBuild(tmpIm, imIn, imOut, se);
     
-    return res;
+    return RES_OK;
 }
 
 /**
@@ -372,15 +364,12 @@ RES_T fillHoles(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_
 template <class T>
 RES_T levelPics(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
 {
-    if (!areAllocated(&imIn, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
-    
-    if (!haveSameSize(&imIn, &imOut, NULL))
-      return RES_ERR_BAD_SIZE;
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
     
     Image<T> tmpIm(imIn);
     inv(imIn, tmpIm);
-    fillHoles(tmpIm, imOut);
+    fillHoles(tmpIm, imOut, se);
     inv(imOut, imOut);
     
 //     return res;

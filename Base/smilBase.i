@@ -102,6 +102,7 @@ TEMPLATE_WRAP_FUNC(otsuThreshold);
 
 TEMPLATE_WRAP_FUNC(drawLine);
 TEMPLATE_WRAP_FUNC(drawRectangle);
+TEMPLATE_WRAP_FUNC(drawCube);
 
 
 TEMPLATE_WRAP_FUNC(vFlip);
