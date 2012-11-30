@@ -54,22 +54,28 @@ protected:
   ~Core ();
   
 public:
-  // Public interface
-  bool keepAlive;
-  
-  static void registerObject(BaseObject *obj);
-  static void unregisterObject(BaseObject *obj);
-  
-  static vector<BaseObject*> getRegisteredObjects();
-  static vector<BaseImage*> getImages();
-  
-  static size_t getNumberOfThreads();
-  static size_t getAllocatedMemory();
-  static void showAllImages();
-  static void hideAllImages();
-  
-  Signal onBaseImageCreated;
-  
+    // Public interface
+    bool keepAlive;
+    
+    static void registerObject(BaseObject *obj);
+    static void unregisterObject(BaseObject *obj);
+    
+    static vector<BaseObject*> getRegisteredObjects();
+    static vector<BaseImage*> getImages();
+    static size_t getNumberOfThreads();
+    static size_t getAllocatedMemory();
+    static void showAllImages();
+    static void hideAllImages();
+    
+    Signal onBaseImageCreated;
+    
+    vector<BaseObject*> _getRegisteredObjects();
+    vector<BaseImage*> _getImages();
+    size_t _getNumberOfThreads();
+    size_t _getAllocatedMemory();
+    void _showAllImages();
+    void _hideAllImages();
+    
   
 protected:
     vector<BaseObject*> registeredObjects;

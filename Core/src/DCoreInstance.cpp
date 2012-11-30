@@ -119,62 +119,87 @@ void Core::deleteRegisteredObjects()
     }
 }
 
-size_t Core::getNumberOfThreads()
+size_t Core::_getNumberOfThreads()
 {
-    Core *inst = Core::getInstance();
 #ifdef USE_OPEN_MP
-    if (inst->threadNumber!=0)
-      return inst->threadNumber;
+    if (threadNumber!=0)
+      return threadNumber;
     
     int nthreads;
     #pragma omp parallel shared(nthreads)
     { 
 	nthreads = omp_get_num_threads();
     }
-    inst->threadNumber = nthreads;
-    return inst->threadNumber;
+    threadNumber = nthreads;
+    return threadNumber;
 #else // USE_OPEN_MP
     return 1;
 #endif // USE_OPEN_MP
 }
 
-size_t Core::getAllocatedMemory()
+size_t Core::getNumberOfThreads()
 {
-    Core *inst = Core::getInstance();
-    vector<BaseImage*>::iterator it = inst->registeredImages.begin();
+    return Core::getInstance()->_getNumberOfThreads();
+}
+
+size_t Core::_getAllocatedMemory()
+{
+    vector<BaseImage*>::iterator it = registeredImages.begin();
     size_t totAlloc = 0;
 
-    while (it!=inst->registeredImages.end())
+    while (it!=registeredImages.end())
 	totAlloc += (*it++)->getAllocatedSize();
     return totAlloc;
 }
 
+size_t Core::getAllocatedMemory()
+{
+    return Core::getInstance()->_getAllocatedMemory();
+}
+
+vector<BaseObject*> Core::_getRegisteredObjects() 
+{ 
+    return registeredObjects; 
+}
+
 vector<BaseObject*> Core::getRegisteredObjects() 
 { 
-    return Core::getInstance()->registeredObjects; 
+    return Core::getInstance()->_getRegisteredObjects(); 
+}
+
+vector<BaseImage*> Core::_getImages()  
+{ 
+    return registeredImages; 
 }
 
 vector<BaseImage*> Core::getImages()  
 { 
-    return Core::getInstance()->registeredImages; 
+    return Core::getInstance()->_getImages();
+}
+
+void Core::_showAllImages()
+{
+    vector<BaseImage*>::iterator it = registeredImages.begin();
+
+    while (it!=registeredImages.end())
+	(*it++)->show();
 }
 
 void Core::showAllImages()
 {
-    Core *inst = Core::getInstance();
-    vector<BaseImage*>::iterator it = inst->registeredImages.begin();
+    Core::getInstance()->_showAllImages();
+}
 
-    while (it!=inst->registeredImages.end())
-	(*it++)->show();
+void Core::_hideAllImages()
+{
+    vector<BaseImage*>::iterator it = registeredImages.begin();
+
+    while (it!=registeredImages.end())
+	(*it++)->hide();
 }
 
 void Core::hideAllImages()
 {
-    Core *inst = Core::getInstance();
-    vector<BaseImage*>::iterator it = inst->registeredImages.begin();
-
-    while (it!=inst->registeredImages.end())
-	(*it++)->hide();
+    Core::getInstance()->_hideAllImages();
 }
-
 
