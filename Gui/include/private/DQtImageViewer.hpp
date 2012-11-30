@@ -59,6 +59,13 @@ public:
     virtual bool isVisible();
     virtual void setName(const char *_name);
     virtual void update();
+    void updateIcon()
+    {
+	if (!this->image)
+	  return;
+	
+	BASE_QT_VIEWER::updateIcon();
+    }
     virtual void drawOverlay(Image<T> &im);
     virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
     virtual void setCurSlice(int n)

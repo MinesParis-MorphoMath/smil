@@ -129,6 +129,7 @@ void QtImageViewer<T>::update()
 //     qApp->processEvents();
 }
 
+
 template <class T>
 void QtImageViewer<T>::drawImage()
 {

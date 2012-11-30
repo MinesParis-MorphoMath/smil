@@ -145,7 +145,8 @@ ImageViewerWidget::~ImageViewerWidget()
 
 void ImageViewerWidget::updateIcon()
 {
-    setWindowIcon(QIcon(QPixmap::fromImage(*qImage)));}
+    setWindowIcon(QIcon(QPixmap::fromImage(*qImage)));
+}
 
 void ImageViewerWidget::initColorTables()
 {
