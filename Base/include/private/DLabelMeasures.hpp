@@ -58,7 +58,7 @@ map<T, double> measAreas(Image<T> &imIn)
     typename Image<T>::lineType pixels;
     T pixVal;
     
-    UINT imSize[3];
+    size_t imSize[3];
     imIn.getSize(imSize);
     
     for (UINT z=0;z<imSize[2];z++)
@@ -101,7 +101,7 @@ map<T, DoublePoint> measBarycenters(Image<T> &imIn)
     map<T, double> xc, yc, zc;
     map<T, UINT> ptNbrs;
     
-    UINT imSize[3];
+    size_t imSize[3];
     imIn.getSize(imSize);
     
     for (UINT z=0;z<imSize[2];z++)

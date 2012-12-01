@@ -152,7 +152,7 @@ RES_T measBarycenter(Image<T> &im, double *xc, double *yc, double *zc=NULL)
     T pixVal;
     
     double xSum = 0, ySum = 0, zSum = 0, tSum = 0;
-    UINT imSize[3];
+    size_t imSize[3];
     im.getSize(imSize);
     
     for (UINT z=0;z<imSize[2];z++)
@@ -213,7 +213,7 @@ RES_T measBoundBox(Image<T> &im, UINT *xMin, UINT *yMin, UINT *zMin, UINT *xMax,
     typename Image<T>::lineType pixels;
 //     T pixVal;
     
-    UINT imSize[3];
+    size_t imSize[3];
     im.getSize(imSize);
     
     *xMin = imSize[0];

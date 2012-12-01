@@ -51,10 +51,10 @@ RES_T initWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl,
     typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
     typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
     
-    UINT s[3];
+    size_t s[3];
     
     imIn.getSize(s);
-    UINT offset = 0;
+    size_t offset = 0;
     
     for (UINT k=0;k<s[2];k++)
       for (UINT j=0;j<s[1];j++)
@@ -93,7 +93,7 @@ RES_T processWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imL
     
     vector<UINT> tmpOffsets;
     
-    UINT s[3];
+    size_t s[3];
     imIn.getSize(s);
     
     // set an offset distance for each se point
@@ -111,9 +111,9 @@ RES_T processWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imL
 	
 	HQToken<T> token = hq.top();
 	hq.pop();
-	UINT x0, y0, z0;
+	size_t x0, y0, z0;
 	
-	UINT curOffset = token.offset;
+	size_t curOffset = token.offset;
 	
 	
 	imIn.getCoordsFromOffset(curOffset, x0, y0, z0);

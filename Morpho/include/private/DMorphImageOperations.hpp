@@ -147,7 +147,7 @@ public:
 //     virtual RES_T processImage(imageInType &imIn, imageOutType &imOut, hSE &se)
 //     {
 //     }
-    virtual inline void processSlice(sliceInType linesIn, sliceOutType linesOut, UINT &lineNbr, const StrElt &se)
+    virtual inline void processSlice(sliceInType linesIn, sliceOutType linesOut, size_t &lineNbr, const StrElt &se)
     {
 	while(curLine<lineNbr)
 	{
@@ -158,7 +158,7 @@ public:
 	    linesOut++;
 	}
     }
-    virtual inline void processLine(lineInType pixIn, lineOutType pixOut, UINT &pixNbr, const StrElt &se)
+    virtual inline void processLine(lineInType pixIn, lineOutType pixOut, size_t &pixNbr, const StrElt &se)
     {
 	int x, y, z;
 	IntPoint p;
@@ -234,7 +234,7 @@ public:
 	}
     }
 protected:
-      UINT imSize[3];
+      size_t imSize[3];
       volInType slicesIn;
       volOutType slicesOut;
       lineInType pixelsIn;

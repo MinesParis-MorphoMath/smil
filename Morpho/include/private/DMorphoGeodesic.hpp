@@ -140,7 +140,7 @@ RES_T initBuildHierarchicalQueue(const Image<T> &imIn, HierarchicalQueue<T, HQco
     
     typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
     
-    UINT s[3];
+    size_t s[3];
     
     imIn.getSize(s);
     UINT offset = 0;
@@ -174,7 +174,7 @@ RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Imag
     
     vector<UINT> tmpOffsets;
     
-    UINT s[3];
+    size_t s[3];
     imIn.getSize(s);
     
     // set an offset distance for each se point
@@ -192,9 +192,9 @@ RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Imag
 	
 	HQToken<T> token = hq.top();
 	hq.pop();
-	UINT x0, y0, z0;
+	size_t x0, y0, z0;
 	
-	UINT curOffset = token.offset;
+	size_t curOffset = token.offset;
 	
 	// Give the point the label "FINAL" in the status image
 	statPixels[curOffset] = HQ_FINAL;
