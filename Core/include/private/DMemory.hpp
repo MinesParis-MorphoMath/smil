@@ -32,6 +32,7 @@
 
 #include <math.h>
 #include <string>
+#include <stdio.h>
 
 #if defined(__MINGW32__)
 
