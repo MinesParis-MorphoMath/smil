@@ -30,6 +30,8 @@
 #ifndef _DMEMORY_HPP
 #define _DMEMORY_HPP
 
+#include <math.h>
+#include <string>
 
 #if defined(__MINGW32__)
 
@@ -141,6 +143,16 @@ void t_LineShiftLeft1D(const T *linein, const int lineWidth, const int nbshift, 
 inline size_t PTR_OFFSET(void *p, size_t n=SIMD_VEC_SIZE)
 {
     return ((size_t)p) & (n-1);
+}
+
+inline std::string displayBytes(size_t bytes)
+{
+        char tmp[128] = "";
+        const char *units[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+        const double base = 1024;
+	int c = std::min((int)(log((double)bytes)/log(base)), (int)sizeof(units) - 1);
+	sprintf(tmp, "%1.2f %s", bytes / pow(base, c), units[c]);
+        return std::string(tmp);
 }
 
 

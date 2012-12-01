@@ -352,7 +352,7 @@ void Image<T>::printSelf(ostream &os, bool displayPixVals, string indent) const
     else
       os << "Size: " << width << "x" << height << endl;
 
-    if (allocated) os << "Allocated (" << allocatedSize << " bytes)" << endl;
+    if (allocated) os << "Allocated (" << displayBytes(allocatedSize) << ")" << endl;
     else os << "Not allocated" << endl;
 
 
