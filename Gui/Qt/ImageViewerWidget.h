@@ -69,8 +69,8 @@ public:
     virtual void leaveEvent (QEvent *event);
     
     virtual void setLabelImage(bool val);
-    virtual void displayPixelValue(UINT x, UINT y, UINT z) {}
-    virtual void displayMagnifyView(UINT x, UINT y, UINT z) {}
+    virtual void displayPixelValue(size_t x, size_t y, size_t z) {}
+    virtual void displayMagnifyView(size_t x, size_t y, size_t z) {}
     virtual void displayMagnifyView() { displayMagnifyView(lastPixX, lastPixY, lastPixZ); }
     virtual void setCurSlice(int n) {}
 

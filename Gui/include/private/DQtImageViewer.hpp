@@ -77,8 +77,8 @@ public:
     
     
 protected:
-    virtual void displayPixelValue(UINT x, UINT y, UINT z);
-    virtual void displayMagnifyView(UINT x, UINT y, UINT z);
+    virtual void displayPixelValue(size_t x, size_t y, size_t z);
+    virtual void displayMagnifyView(size_t x, size_t y, size_t z);
     virtual void drawImage();
 //     ImageViewerWidget *qtViewer;
 //     ImageViewer *qtViewer;

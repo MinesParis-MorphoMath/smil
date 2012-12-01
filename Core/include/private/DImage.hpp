@@ -56,7 +56,7 @@ public:
 
     //! Default constructor
     Image();
-    Image(UINT w, UINT h, UINT d = 1);
+    Image(size_t w, size_t h, size_t d = 1);
     Image(const char *fileName);
   
     virtual ~Image();
@@ -97,14 +97,14 @@ public:
     }
     
     //! Return the value of the pixel at pos x,y(,z)
-    inline T getPixel(UINT x, UINT y, UINT z=0) const
+    inline T getPixel(size_t x, size_t y, size_t z=0) const
     {
 	if (x>=width || y>=height || z>=depth)
 	    return T(NULL);
 	return pixels[z*width*height+y*width+x];
     }
     //! Return the value of the pixel at a given offset
-    inline T getPixel(UINT offset) const
+    inline T getPixel(size_t offset) const
     {
 	if (offset >= pixelCount)
 	    return RES_ERR;
@@ -112,7 +112,7 @@ public:
     }
 
     //! Set the value of the pixel at pos x,y,z (for 3D image)
-    inline RES_T setPixel(UINT x, UINT y, UINT z, const T &value)
+    inline RES_T setPixel(size_t x, size_t y, size_t z, const T &value)
     {
 	if (x>=width || y>=height || z>=depth)
 	    return RES_ERR;
@@ -122,13 +122,13 @@ public:
     }
     
     //! Set the value of the pixel at pos x,y
-    inline RES_T setPixel(UINT x, UINT y, const T &value)
+    inline RES_T setPixel(size_t x, size_t y, const T &value)
     {
 	return setPixel(x, y, 0, value);
     }
     
     //! Set the value of the pixel at a given offset
-    inline RES_T setPixel(UINT offset, const T &value)
+    inline RES_T setPixel(size_t offset, const T &value)
     {
 	if (offset >= pixelCount)
 	    return RES_ERR;
@@ -153,17 +153,17 @@ public:
 	Image<T> im(*this, cloneData);
 	return im;
     }
-    virtual void setSize(UINT w, UINT h, UINT d = 1, bool doAllocate = true);
-    virtual void setSize(const BaseImage &rhs, bool doAllocate = true) 
+    virtual RES_T setSize(size_t w, size_t h, size_t d = 1, bool doAllocate = true);
+    virtual RES_T setSize(const BaseImage &rhs, bool doAllocate = true) 
     { 
-	setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); 
+	return setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); 
     }
-    virtual void setSize(const vector<UINT> s, bool doAllocate = true) 
+    virtual RES_T setSize(const vector<size_t> s, bool doAllocate = true) 
     { 
 	if (s.size()==3)
-	  setSize(s[0], s[1], s[2], doAllocate); 
+	  return setSize(s[0], s[1], s[2], doAllocate); 
 	else if (s.size()==2)
-	  setSize(s[0], s[1], 1, doAllocate); 
+	  return setSize(s[0], s[1], 1, doAllocate); 
     }
     virtual RES_T allocate();
     virtual RES_T deallocate();
@@ -201,7 +201,7 @@ public:
     PyObject * getNumArray(bool c_contigous=false);
 #endif // defined SWIGPYTHON && defined USE_NUMPY
     
-    inline int getLineAlignment(UINT l);
+    inline int getLineAlignment(size_t l);
 
     virtual void modified();
 
@@ -296,7 +296,7 @@ protected:
     sliceType  lines;
     volType slices;
 
-    UINT lineAlignment[SIMD_VEC_SIZE];
+    size_t lineAlignment[SIMD_VEC_SIZE];
 
     RES_T restruct(void);
 

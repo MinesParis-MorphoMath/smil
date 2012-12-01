@@ -135,8 +135,8 @@ void QtImageViewer<T>::drawImage()
 {
     typename Image<T>::sliceType lines = this->image->getSlices()[slider->value()];
     
-    UINT w = this->image->getWidth();
-    UINT h = this->image->getHeight();
+    size_t w = this->image->getWidth();
+    size_t h = this->image->getHeight();
     
     UINT8 *destLine;
     double coeff;
@@ -146,12 +146,12 @@ void QtImageViewer<T>::drawImage()
     else
       coeff = double(numeric_limits<UINT8>::max()) / ( double(numeric_limits<T>::max()) - double(numeric_limits<T>::min()) );
 
-    for (UINT j=0;j<h;j++,lines++)
+    for (size_t j=0;j<h;j++,lines++)
     {
 	typename Image<T>::lineType pixels = *lines;
 	
 	destLine = this->qImage->scanLine(j);
-	for (UINT i=0;i<w;i++)
+	for (size_t i=0;i<w;i++)
 // 	  pixels[i] = 0;
 	    destLine[i] = (UINT8)(coeff * (double(pixels[i]) - double(numeric_limits<T>::min())));
     }
@@ -172,8 +172,8 @@ void QtImageViewer<UINT8>::drawImage();
 template <class T>
 void QtImageViewer<T>::drawOverlay(Image<T> &im)
 {
-    UINT w = im.getWidth();
-    UINT h = im.getHeight();
+    size_t w = im.getWidth();
+    size_t h = im.getHeight();
     
     typename Image<T>::sliceType lines = im.getSlices()[slider->value()];
     typename Image<T>::lineType pixels;
@@ -187,11 +187,11 @@ void QtImageViewer<T>::drawOverlay(Image<T> &im)
 
     QRgb *destLine;
       
-    for (UINT j=0;j<im.getHeight();j++)
+    for (size_t j=0;j<im.getHeight();j++)
     {
 	destLine = (QRgb*)(this->qOverlayImage->scanLine(j));
 	pixels = *lines++;
-	for (UINT i=0;i<im.getWidth();i++)
+	for (size_t i=0;i<im.getWidth();i++)
 	{
 	  if (*pixels!=0)
 	    destLine[i] = overlayColorTable[(UINT8)*pixels];
@@ -204,7 +204,7 @@ void QtImageViewer<T>::drawOverlay(Image<T> &im)
 }
 
 template <class T>
-void QtImageViewer<T>::displayPixelValue(UINT x, UINT y, UINT z)
+void QtImageViewer<T>::displayPixelValue(size_t x, size_t y, size_t z)
 {
     T pixVal;
 
@@ -219,7 +219,7 @@ void QtImageViewer<T>::displayPixelValue(UINT x, UINT y, UINT z)
 
 
 template <class T>
-void QtImageViewer<T>::displayMagnifyView(UINT x, UINT y, UINT z)
+void QtImageViewer<T>::displayMagnifyView(size_t x, size_t y, size_t z)
 {
     magnView->displayAt(x, y);
 //   return;

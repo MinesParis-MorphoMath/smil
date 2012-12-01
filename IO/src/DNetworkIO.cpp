@@ -91,9 +91,10 @@ RES_T getHttpFile(const char *url, const char *outfilename)
         fclose(fp);
     }
     else res = CURLE_FAILED_INIT;
-    if (res==CURLE_OK)
-      return RES_OK;
-    else return RES_ERR;
+    
+    ASSERT((res==CURLE_OK), RES_ERR_IO);
+
+    return RES_OK;
 }
 
 /**

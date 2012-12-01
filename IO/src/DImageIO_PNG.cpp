@@ -48,10 +48,11 @@ _DIO RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
 
     /* open image file */
     fp = fopen (filename, "rb");
+    
     if (!fp)
     {
         fprintf (stderr, "error: couldn't open \"%s\"!\n", filename);
-        return RES_ERR;
+        return RES_ERR_IO;
     }
 
     /* read magic number */
@@ -62,7 +63,7 @@ _DIO RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
         fprintf (stderr, "error: \"%s\" is not a valid PNG image!\n",
                  filename);
         fclose (fp);
-        return RES_ERR;
+        return RES_ERR_IO;
     }
 
     /* create a png read struct */
@@ -71,7 +72,7 @@ _DIO RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
     if (!png_ptr)
     {
         fclose (fp);
-        return RES_ERR;
+        return RES_ERR_IO;
     }
 
     /* create a png info struct */
@@ -80,7 +81,7 @@ _DIO RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
     {
         fclose (fp);
         png_destroy_read_struct (&png_ptr, NULL, NULL);
-        return RES_ERR;
+        return RES_ERR_IO;
     }
 
 
@@ -91,7 +92,7 @@ _DIO RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
         fclose (fp);
         png_destroy_read_struct (&png_ptr, &info_ptr, NULL);
 
-        return RES_ERR;
+        return RES_ERR_IO;
     }
 
     /* setup libpng for using standard C fread() function
@@ -174,7 +175,7 @@ _DIO RES_T writePNG(Image<UINT8> &image, const char *filename)
     FILE *fp = fopen(filename, "wb");
     if (!fp)
     {
-        return RES_ERR;
+        return RES_ERR_IO;
     }
 
     /* initialize stuff */
@@ -183,20 +184,20 @@ _DIO RES_T writePNG(Image<UINT8> &image, const char *filename)
     if (!png_ptr)
     {
         cout << "[write_png_file] png_create_write_struct failed" << endl;
-        return RES_ERR;
+        return RES_ERR_IO;
     }
 
     info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr)
     {
         cout << "[write_png_file] png_create_info_struct failed" << endl;
-        return RES_ERR;
+        return RES_ERR_IO;
     }
 
     if (setjmp(png_jmpbuf(png_ptr)))
     {
         cout << "[write_png_file] Error during init_io" << endl;
-        return RES_ERR;
+        return RES_ERR_IO;
     }
 
     png_init_io(png_ptr, fp);
@@ -206,7 +207,7 @@ _DIO RES_T writePNG(Image<UINT8> &image, const char *filename)
     if (setjmp(png_jmpbuf(png_ptr)))
     {
         cout << "[write_png_file] Error during writing header" << endl;
-        return RES_ERR;
+        return RES_ERR_IO;
     }
 
     png_set_IHDR(png_ptr, info_ptr, image.getWidth(), image.getHeight(),
@@ -220,7 +221,7 @@ _DIO RES_T writePNG(Image<UINT8> &image, const char *filename)
     if (setjmp(png_jmpbuf(png_ptr)))
     {
         cout << "[write_png_file] Error during writing bytes" << endl;
-        return RES_ERR;
+        return RES_ERR_IO;
     }
 
     png_write_image(png_ptr, row_pointers);
@@ -230,7 +231,7 @@ _DIO RES_T writePNG(Image<UINT8> &image, const char *filename)
     if (setjmp(png_jmpbuf(png_ptr)))
     {
         cout << "[write_png_file] Error during end of write" << endl;
-        return RES_ERR;
+        return RES_ERR_IO;
     }
 
     png_write_end(png_ptr, NULL);

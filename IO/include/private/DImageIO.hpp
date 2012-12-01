@@ -73,7 +73,7 @@ RES_T read(const char* filename, Image<T> &image)
 	tmpFileName = "_smilTmpIO." + fileExt;
 	if (getHttpFile(filename, tmpFileName.c_str())!=RES_OK)
 	{
-	    ERR_MSG(string("Error reading file ") + filename);
+	    ERR_MSG(string("Error downloading file ") + filename);
 	    return RES_ERR;
 	}
 	res = read(tmpFileName.c_str(), image);

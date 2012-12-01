@@ -199,16 +199,16 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
     
     imagePixmaps.clear();
     
-    UINT pixNbrX = w/PIXMAP_MAX_DIM + 1;
-    UINT pixNbrY = h/PIXMAP_MAX_DIM + 1;
-    UINT pixW = PIXMAP_MAX_DIM, pixH = PIXMAP_MAX_DIM;
+    size_t pixNbrX = w/PIXMAP_MAX_DIM + 1;
+    size_t pixNbrY = h/PIXMAP_MAX_DIM + 1;
+    size_t pixW = PIXMAP_MAX_DIM, pixH = PIXMAP_MAX_DIM;
     
-    for (UINT j=0;j<pixNbrY;j++)
+    for (size_t j=0;j<pixNbrY;j++)
     {
 	if (j==pixNbrY-1)
 	  pixH = h%PIXMAP_MAX_DIM;
 	
-	for (UINT i=0;i<pixNbrX;i++)
+	for (size_t i=0;i<pixNbrX;i++)
 	{
 	    if (i==pixNbrX-1)
 	      pixW = w%PIXMAP_MAX_DIM;
@@ -312,20 +312,20 @@ void ImageViewerWidget::load(const QString fileName)
 
 void ImageViewerWidget::updatePixmaps(QImage *image, QList<QGraphicsPixmapItem*> *pixmaps)
 {
-    UINT w = image->width(), h = image->height();
+    size_t w = image->width(), h = image->height();
     
-    UINT pixNbrX = w/PIXMAP_MAX_DIM + 1;
-    UINT pixNbrY = h/PIXMAP_MAX_DIM + 1;
-    UINT pixW = PIXMAP_MAX_DIM, pixH = PIXMAP_MAX_DIM;
+    size_t pixNbrX = w/PIXMAP_MAX_DIM + 1;
+    size_t pixNbrY = h/PIXMAP_MAX_DIM + 1;
+    size_t pixW = PIXMAP_MAX_DIM, pixH = PIXMAP_MAX_DIM;
     
     QList<QGraphicsPixmapItem*>::iterator it = pixmaps->begin();
     
-    for (UINT j=0;j<pixNbrY;j++)
+    for (size_t j=0;j<pixNbrY;j++)
     {
 	if (j==pixNbrY-1)
 	  pixH = h%PIXMAP_MAX_DIM;
 	
-	for (UINT i=0;i<pixNbrX;i++)
+	for (size_t i=0;i<pixNbrX;i++)
 	{
 	    if (i==pixNbrX-1)
 	      pixW = w%PIXMAP_MAX_DIM;
@@ -450,12 +450,12 @@ void ImageViewerWidget::mouseReleaseEvent ( QMouseEvent * event )
 
 void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 {
-    UINT x = int(event->scenePos().rx());
-    UINT y = int(event->scenePos().ry());
-    UINT z = slider->value();
+    size_t x = int(event->scenePos().rx());
+    size_t y = int(event->scenePos().ry());
+    size_t z = slider->value();
 
-    UINT w = qImage->width();
-    UINT h = qImage->height();
+    size_t w = qImage->width();
+    size_t h = qImage->height();
     
     if (x>=0 && x<w && y>=0 && y<h)
     {

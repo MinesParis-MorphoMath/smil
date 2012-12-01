@@ -75,17 +75,17 @@ public:
   
     virtual void init();
     
-    inline UINT getWidth() const {
+    inline size_t getWidth() const {
         return width;
     }
-    inline UINT getHeight() const {
+    inline size_t getHeight() const {
         return height;
     }
-    inline UINT getDepth() const {
+    inline size_t getDepth() const {
         return depth;
     }
 
-    inline UINT getAllocatedSize() const {
+    inline size_t getAllocatedSize() const {
         return allocatedSize;
     }
     
@@ -98,27 +98,27 @@ public:
 	else return 1;
     }
     
-    inline void getSize(UINT *w, UINT *h, UINT *d) const
+    inline void getSize(size_t *w, size_t *h, size_t *d) const
     {
 	*w = this->width;
 	*h = this->height;
 	*d = this->depth;
     }
     
-    inline void getSize(UINT s[3]) const
+    inline void getSize(size_t s[3]) const
     {
 	s[0] = this->width;
 	s[1] = this->height;
 	s[2] = this->depth;
     }
     
-    inline UINT getPixelCount() const {
+    inline size_t getPixelCount() const {
         return this->pixelCount;
     }
-    inline UINT getLineCount() const {
+    inline size_t getLineCount() const {
         return this->lineCount;
     }
-    inline UINT getSliceCount() const {
+    inline size_t getSliceCount() const {
         return this->sliceCount;
     }
 
@@ -129,7 +129,7 @@ public:
     virtual void* getVoidPointer() = 0;
     virtual void modified() = 0;
 
-    inline UINT getOffsetFromCoords(UINT x, UINT y, UINT z) const
+    inline size_t getOffsetFromCoords(size_t x, size_t y, size_t z) const
     {
 	if (x>=this->width) return -1;
 	if (y>=this->height) return -1;
@@ -137,7 +137,7 @@ public:
 	return z*this->width*this->height + y*this->width + x;
     }
 
-    inline void getCoordsFromOffset(UINT off, UINT &x, UINT &y, UINT &z) const
+    inline void getCoordsFromOffset(size_t off, size_t &x, size_t &y, size_t &z) const
     {
 	z = off / (this->width*this->height);
 	y = (off % (this->width*this->height))/this->width;
@@ -157,19 +157,19 @@ public:
     bool updatesEnabled;
     Signal onModified;
 protected:
-    UINT dataTypeSize;
+    size_t dataTypeSize;
 
-    UINT width;
-    UINT height;
-    UINT depth;
+    size_t width;
+    size_t height;
+    size_t depth;
 
-    UINT sliceCount;
-    UINT lineCount;
-    UINT pixelCount;
+    size_t sliceCount;
+    size_t lineCount;
+    size_t pixelCount;
 
     bool allocated;
     
-    UINT allocatedSize;
+    size_t allocatedSize;
     
 
 };
@@ -207,9 +207,9 @@ inline bool haveSameSize(const BaseImage *im, ...)
     va_list vargs;
 
     va_start(vargs, im);
-    UINT w = im->getWidth();
-    UINT h = im->getHeight();
-    UINT d = im->getDepth();
+    size_t w = im->getWidth();
+    size_t h = im->getHeight();
+    size_t d = im->getDepth();
 
     const BaseImage *obj;
     while ((obj = va_arg(vargs, const BaseImage*)))

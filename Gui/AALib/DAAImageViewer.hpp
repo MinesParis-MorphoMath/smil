@@ -120,7 +120,7 @@ void AaImageViewer<T>::drawImage()
     double scrH = aa_imgheight(context);
     double scrR = scrW / scrH;
     
-    UINT w, h;
+    size_t w, h;
     // find dimensions to fit screen
     if (scrR > imR)
     {

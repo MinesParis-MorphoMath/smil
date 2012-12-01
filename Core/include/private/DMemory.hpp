@@ -67,7 +67,7 @@
 
 
 template<typename T> 
-inline T *createAlignedBuffer(int size) {
+inline T *createAlignedBuffer(size_t size) {
   void* ptr;
 
   MALLOC(ptr,(size+32)*sizeof(T),SIMD_VEC_SIZE);
@@ -83,7 +83,7 @@ void deleteAlignedBuffer(T *ptr) {
 }
 
 template<typename T> 
-inline void Dmemcpy(T *out, const T *in, unsigned int size)
+inline void Dmemcpy(T *out, const T *in, size_t size)
 {
     while (size--)
     {
@@ -93,7 +93,7 @@ inline void Dmemcpy(T *out, const T *in, unsigned int size)
 
 
 template<typename T> 
-void t_LineCopyFromImage2D(T *rawImagePointerIn, const int lineSize, int y, T *lineout) {
+void t_LineCopyFromImage2D(T *rawImagePointerIn, const size_t lineSize, size_t y, T *lineout) {
 
   T *ptrin = rawImagePointerIn + y*lineSize;
 
@@ -103,7 +103,7 @@ void t_LineCopyFromImage2D(T *rawImagePointerIn, const int lineSize, int y, T *l
 
 
 template<typename T> 
-void t_LineCopyToImage2D(T *linein, const int lineSize, int y, T *rawImagePointerOut) {
+void t_LineCopyToImage2D(T *linein, const size_t lineSize, size_t y, T *rawImagePointerOut) {
 
   T *ptrout = rawImagePointerOut + y*lineSize;
 
@@ -112,7 +112,8 @@ void t_LineCopyToImage2D(T *linein, const int lineSize, int y, T *rawImagePointe
 }
 
 template<typename T> 
-void t_LineShiftRight1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) {
+void t_LineShiftRight1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
+{
   int i;
 
   for(i=0 ; i<nbshift ; i++)  {
@@ -125,7 +126,8 @@ void t_LineShiftRight1D(const T *linein, const int lineWidth, const int nbshift,
 
 
 template<typename T> 
-void t_LineShiftLeft1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) {
+void t_LineShiftLeft1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
+{
   int i;
 
   for(i=lineWidth-nbshift ; i<lineWidth ; i++)  {

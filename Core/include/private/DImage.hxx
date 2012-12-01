@@ -53,7 +53,7 @@ Image<T>::Image()
 }
 
 template <class T>
-Image<T>::Image(UINT w, UINT h, UINT d)
+Image<T>::Image(size_t w, size_t h, size_t d)
   : BaseImage("Image"),
     dataTypeMin(numeric_limits<T>::min()),
     dataTypeMax(numeric_limits<T>::max())
@@ -217,10 +217,10 @@ void Image<T>::show(const char *_name, bool labelImage)
 
 
 template <class T>
-void Image<T>::setSize(UINT w, UINT h, UINT d, bool doAllocate)
+RES_T Image<T>::setSize(size_t w, size_t h, size_t d, bool doAllocate)
 {
     if (w==this->width && h==this->height && d==this->depth)
-	return;
+	return RES_OK;
 
     if (this->allocated)
       this->deallocate();
@@ -234,12 +234,14 @@ void Image<T>::setSize(UINT w, UINT h, UINT d, bool doAllocate)
     this->pixelCount = this->lineCount * w;
 
     if (doAllocate)
-      this->allocate();
+      ASSERT((this->allocate()==RES_OK));
 
     if (viewer)
       viewer->setImage(this);
 
     this->modified();
+    
+    return RES_OK;
 }
 
 template <class T>
@@ -251,6 +253,7 @@ RES_T Image<T>::allocate()
     this->pixels = createAlignedBuffer<T>(pixelCount);
 //     pixels = new pixelType[pixelCount];
 
+    ASSERT((this->pixels!=NULL), "Can't allocate image", RES_ERR_BAD_ALLOCATION);
 
     this->allocated = true;
     this->allocatedSize = this->pixelCount*sizeof(T);
@@ -274,13 +277,13 @@ RES_T Image<T>::restruct(void)
     sliceType cur_line = this->lines;
     volType cur_slice = this->slices;
 
-    UINT pixelsPerSlice = this->width * this->height;
+    size_t pixelsPerSlice = this->width * this->height;
 
-    for (UINT k=0; k<depth; k++, cur_slice++)
+    for (size_t k=0; k<depth; k++, cur_slice++)
     {
       *cur_slice = cur_line;
 
-      for (UINT j=0; j<height; j++, cur_line++)
+      for (size_t j=0; j<height; j++, cur_line++)
 	*cur_line = pixels + k*pixelsPerSlice + j*width;
     }
 
@@ -297,7 +300,7 @@ RES_T Image<T>::restruct(void)
 }
 
 template <class T>
-inline int Image<T>::getLineAlignment(UINT l)
+inline int Image<T>::getLineAlignment(size_t l)
 {
     return lineAlignment[l%(SIMD_VEC_SIZE/sizeof(T))];
 }
@@ -313,8 +316,8 @@ RES_T Image<T>::deallocate()
     if (this->lines)
 	delete[] this->lines;
     if (this->pixels)
-//		delete[] pixels;
- 		deleteAlignedBuffer<T>(pixels);
+	deleteAlignedBuffer<T>(pixels);
+    
     this->slices = NULL;
     this->lines = NULL;
     this->pixels = NULL;
@@ -356,7 +359,7 @@ void Image<T>::printSelf(ostream &os, bool displayPixVals, string indent) const
     if (displayPixVals)
     {
 	os << "Pixel values:" << endl;
-	UINT i, j, k;
+	size_t i, j, k;
 
 	for (k=0;k<depth;k++)
 	{
@@ -681,7 +684,7 @@ Image<T>::operator bool()
 template <class T>
 Image<T>& Image<T>::operator << (const lineType &tab)
 {
-    for (UINT i=0;i<pixelCount;i++)
+    for (size_t i=0;i<pixelCount;i++)
       pixels[i] = tab[i];
     modified();
     return *this;
@@ -693,7 +696,7 @@ Image<T>& Image<T>::operator << (vector<T> &vect)
     typename vector<T>::iterator it = vect.begin();
     typename vector<T>::iterator it_end = vect.end();
 
-    for (UINT i=0;i<pixelCount;i++, it++)
+    for (size_t i=0;i<pixelCount;i++, it++)
     {
       if (it==it_end)
 	break;
@@ -707,7 +710,7 @@ template <class T>
 Image<T>& Image<T>::operator >> (vector<T> &vect)
 {
     vect.clear();
-    for (UINT i=0;i<pixelCount;i++)
+    for (size_t i=0;i<pixelCount;i++)
     {
 	vect.push_back(pixels[i]);
     }
