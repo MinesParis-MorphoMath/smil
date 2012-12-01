@@ -37,11 +37,11 @@
 using namespace std;
 
 typedef int INT;
+typedef unsigned int UINT;
 typedef unsigned char UINT8;
 typedef unsigned short UINT16;
 typedef unsigned int UINT32;
 typedef uint64_t UINT64;
-typedef uint64_t UINT;
 
 // typedef unsigned char __attribute__ ((vector_size (16))) alUINT8;
 
