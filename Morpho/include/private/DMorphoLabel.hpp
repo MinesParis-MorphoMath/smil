@@ -59,7 +59,7 @@ public:
     }
     
     // The generic way
-    virtual inline void processPixel(UINT &pointOffset, vector<UINT>::iterator dOffset, vector<UINT>::iterator dOffsetEnd)
+    virtual inline void processPixel(size_t &pointOffset, vector<size_t>::iterator dOffset, vector<size_t>::iterator dOffsetEnd)
     {
 	T1 pVal = this->pixelsIn[pointOffset];
 	
@@ -76,7 +76,7 @@ public:
 	
 	while(dOffset!=dOffsetEnd)
 	{
-	    UINT curDOffset = pointOffset + *dOffset;
+	    size_t curDOffset = pointOffset + *dOffset;
 	    
 	    if (this->pixelsIn[curDOffset] == pVal)
 	    {
@@ -93,13 +93,13 @@ public:
     {
 	this->pixelsOut = imOut.getPixels();
 	
-	set<pair<UINT, UINT> >::iterator pair_it = pairs.begin();
+	set<pair<size_t, size_t> >::iterator pair_it = pairs.begin();
 	
-	vector< set<UINT> > stacks;
+	vector< set<size_t> > stacks;
 	
 	lut.clear();
 	
-	vector< set<UINT> >::iterator stack_it = stacks.begin(), sf1, sf2;
+	vector< set<size_t> >::iterator stack_it = stacks.begin(), sf1, sf2;
 	
 // 	for (pair_it = pairs.begin();pair_it!=pairs.end();pair_it++)
 // 	    cout << (*pair_it).first << " -> " << (*pair_it).second << endl;
@@ -108,8 +108,8 @@ public:
 	pair_it = pairs.begin();
 	while(pair_it!=pairs.end())
 	{
-	    UINT val1 = (*pair_it).first;
-	    UINT val2 = (*pair_it).second;
+	    size_t val1 = (*pair_it).first;
+	    size_t val2 = (*pair_it).second;
 	    // find in the stack a set containing one of the pair values
 	    stack_it = stacks.begin();
 	    sf1 = stacks.end();
@@ -125,7 +125,7 @@ public:
 	    }
 	    if (sf1==stacks.end() && sf2==stacks.end()) // not found
 	    {
-	      set<UINT> newSet;
+	      set<size_t> newSet;
 	      newSet.insert(val1);
 	      newSet.insert(val2);
 	      lut[val1] = 1;
@@ -149,16 +149,16 @@ public:
 //       
 // 	for (stack_it = stacks.begin();stack_it!=stacks.end();stack_it++)
 // 	{
-// 	  for (set<UINT>::iterator it=(*stack_it).begin();it!=(*stack_it).end();it++)
+// 	  for (set<size_t>::iterator it=(*stack_it).begin();it!=(*stack_it).end();it++)
 // 	    cout << int(*it) << " ";
 // 	  cout << endl;
 // 	}
 	    
 	  
-	map<UINT, set<UINT> *> stackMap;
+	map<size_t, set<size_t> *> stackMap;
 	
-	typedef vector< set<UINT> >::iterator stackIterT;
-	typedef set<UINT>::iterator setIterT;
+	typedef vector< set<size_t> >::iterator stackIterT;
+	typedef set<size_t>::iterator setIterT;
 	
 	for(stack_it=stacks.begin() ; stack_it!=stacks.end() ; stack_it++)
 	  stackMap[*(*stack_it).begin()] = &(*stack_it);
@@ -166,13 +166,13 @@ public:
 	
 	size_t index = 1;
 	
-	for(UINT i=index;i<=labels;i++)
+	for(size_t i=index;i<=labels;i++)
 	{
 	    if (lut[i]==0)
 	      lut[i] = index++;
 	    else
 	    {
-	      set<UINT> *curStack = stackMap[i];
+	      set<size_t> *curStack = stackMap[i];
 	      if (curStack)
 	      {
 		for(setIterT set_it=(*curStack).begin() ; set_it!=(*curStack).end() ; set_it++)
@@ -185,10 +185,10 @@ public:
 	    
 // 	cout << "----------" << endl;
 //       
-// 	for (map<UINT, UINT>::iterator it = lut.begin();it!=lut.end();it++)
+// 	for (map<size_t, size_t>::iterator it = lut.begin();it!=lut.end();it++)
 // 	    cout << int((*it).first) << " " << int((*it).second) << endl;
 	  
-	for (UINT i=0;i<imOut.getPixelCount();i++,this->pixelsOut++)
+	for (size_t i=0;i<imOut.getPixelCount();i++,this->pixelsOut++)
 	  if (*this->pixelsOut!=0)
 	    *this->pixelsOut = lut[*this->pixelsOut];
 	  
@@ -198,8 +198,8 @@ public:
     }
 protected:
   size_t labels;
-  map<UINT, UINT> lut;
-  set<pair<UINT, UINT> > pairs;
+  map<size_t, size_t> lut;
+  set<pair<size_t, size_t> > pairs;
 };
 
 /**

@@ -61,14 +61,14 @@ map<T, double> measAreas(Image<T> &imIn)
     size_t imSize[3];
     imIn.getSize(imSize);
     
-    for (UINT z=0;z<imSize[2];z++)
+    for (size_t z=0;z<imSize[2];z++)
     {
 	lines = *slices++;
 // #pragma omp parallel for
-	for (UINT y=0;y<imSize[1];y++)
+	for (size_t y=0;y<imSize[1];y++)
 	{
 	    pixels = *lines++;
-	    for (UINT x=0;x<imSize[0];x++)
+	    for (size_t x=0;x<imSize[0];x++)
 	    {
 		pixVal = pixels[x];
 		if (pixVal!=0)
@@ -104,14 +104,14 @@ map<T, DoublePoint> measBarycenters(Image<T> &imIn)
     size_t imSize[3];
     imIn.getSize(imSize);
     
-    for (UINT z=0;z<imSize[2];z++)
+    for (size_t z=0;z<imSize[2];z++)
     {
 	lines = *slices++;
 // #pragma omp parallel for
-	for (UINT y=0;y<imSize[1];y++)
+	for (size_t y=0;y<imSize[1];y++)
 	{
 	    pixels = *lines++;
-	    for (UINT x=0;x<imSize[0];x++)
+	    for (size_t x=0;x<imSize[0];x++)
 	    {
 		pixVal = pixels[x];
 		if (pixVal!=0)

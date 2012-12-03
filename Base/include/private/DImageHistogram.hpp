@@ -54,7 +54,7 @@ std::map<T, UINT> histogram(const Image<T> &imIn)
     }
 
     typename Image<T>::lineType pixels = imIn.getPixels();
-    for (UINT i=0;i<imIn.getPixelCount();i++)
+    for (size_t i=0;i<imIn.getPixelCount();i++)
 	h[pixels[i]]++;
     
     return h;
@@ -80,7 +80,7 @@ map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask)
     typename Image<T>::lineType inPix = imIn.getPixels();
     typename Image<T>::lineType maskPix = imMask.getPixels();
     
-    for (UINT i=0;i<imIn.getPixelCount();i++)
+    for (size_t i=0;i<imIn.getPixelCount();i++)
 	if (maskPix[i]!=0)
 	    h[inPix[i]] += 1;
     

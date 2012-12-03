@@ -82,31 +82,31 @@ RES_T fill(Image<T> &imOut, const T &value)
  * \demo{copy_crop.py}
  */
 template <class T1, class T2>
-RES_T copy(const Image<T1> &imIn, UINT startX, UINT startY, UINT startZ, UINT sizeX, UINT sizeY, UINT sizeZ, Image<T2> &imOut, UINT outStartX=0, UINT outStartY=0, UINT outStartZ=0)
+RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ, Image<T2> &imOut, size_t outStartX=0, size_t outStartY=0, size_t outStartZ=0)
 {
     ASSERT_ALLOCATED(&imIn, &imOut);
 
-    UINT inW = imIn.getWidth();
-    UINT inH = imIn.getHeight();
-    UINT inD = imIn.getDepth();
+    size_t inW = imIn.getWidth();
+    size_t inH = imIn.getHeight();
+    size_t inD = imIn.getDepth();
     
-    UINT outW = imOut.getWidth();
-    UINT outH = imOut.getHeight();
-    UINT outD = imOut.getDepth();
+    size_t outW = imOut.getWidth();
+    size_t outH = imOut.getHeight();
+    size_t outD = imOut.getDepth();
     
-    UINT realSx = min( min(sizeX, inW-startX), outW-outStartX );
-    UINT realSy = min( min(sizeY, inH-startY), outH-outStartY );
-    UINT realSz = min( min(sizeZ, inD-startZ), outD-outStartZ );
+    size_t realSx = min( min(sizeX, inW-startX), outW-outStartX );
+    size_t realSy = min( min(sizeY, inH-startY), outH-outStartY );
+    size_t realSz = min( min(sizeZ, inD-startZ), outD-outStartZ );
 
     typename Image<T1>::volType slIn = imIn.getSlices() + startZ;
     typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
     
-    for (UINT z=0;z<realSz;z++)
+    for (size_t z=0;z<realSz;z++)
     {
 	typename Image<T1>::sliceType lnIn = *slIn + startY;
 	typename Image<T2>::sliceType lnOut = *slOut + outStartY;
 	
-	for (UINT y=0;y<realSy;y++)
+	for (size_t y=0;y<realSy;y++)
 	  copyLine<T1,T2>(lnIn[y]+startX, realSx, lnOut[y]+outStartX);
 	
 	slIn++;
@@ -119,27 +119,27 @@ RES_T copy(const Image<T1> &imIn, UINT startX, UINT startY, UINT startZ, UINT si
 
 // 2D overload
 template <class T1, class T2>
-RES_T copy(const Image<T1> &imIn, UINT startX, UINT startY, UINT sizeX, UINT sizeY, Image<T2> &imOut, UINT outStartX=0, UINT outStartY=0, UINT outStartZ=0)
+RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t sizeX, size_t sizeY, Image<T2> &imOut, size_t outStartX=0, size_t outStartY=0, size_t outStartZ=0)
 {
     return copy(imIn, startX, startY, 0, sizeX, sizeY, 1, imOut, outStartX, outStartY, outStartZ);
 }
 
 template <class T1, class T2>
-RES_T copy(const Image<T1> &imIn, UINT startX, UINT startY, UINT startZ, Image<T2> &imOut, UINT outStartX=0, UINT outStartY=0, UINT outStartZ=0)
+RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t startZ, Image<T2> &imOut, size_t outStartX=0, size_t outStartY=0, size_t outStartZ=0)
 {
     return copy(imIn, startX, startY, startZ, imIn.getWidth(), imIn.getHeight(), imIn.getDepth(), imOut, outStartX, outStartY, outStartZ);
 }
 
 // 2D overload
 template <class T1, class T2>
-RES_T copy(const Image<T1> &imIn, UINT startX, UINT startY, Image<T2> &imOut, UINT outStartX=0, UINT outStartY=0, UINT outStartZ=0)
+RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, Image<T2> &imOut, size_t outStartX=0, size_t outStartY=0, size_t outStartZ=0)
 {
     return copy(imIn, startX, startY, 0, imIn.getWidth(), imIn.getHeight(), 1, imOut, outStartX, outStartY, outStartZ);
 }
 
 
 template <class T1, class T2>
-RES_T copy(const Image<T1> &imIn, Image<T2> &imOut, UINT outStartX, UINT outStartY, UINT outStartZ=0)
+RES_T copy(const Image<T1> &imIn, Image<T2> &imOut, size_t outStartX, size_t outStartY, size_t outStartZ=0)
 {
     return copy(imIn, 0, 0, 0, imIn.getWidth(), imIn.getHeight(), imIn.getDepth(), imOut, outStartX, outStartY, outStartZ);
 }
@@ -161,9 +161,9 @@ RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
     typename Image<T1>::sliceType l1 = imIn.getLines();
     typename Image<T2>::sliceType l2 = imOut.getLines();
 
-    UINT width = imIn.getWidth();
+    size_t width = imIn.getWidth();
     
-    for (UINT i=0;i<imIn.getLineCount();i++)
+    for (size_t i=0;i<imIn.getLineCount();i++)
       copyLine<T1,T2>(l1[i], width, l2[i]);
 
     imOut.modified();
@@ -401,7 +401,7 @@ bool equ(const Image<T> &imIn1, const Image<T> &imIn2)
     lineType pix1 = imIn1.getPixels();
     lineType pix2 = imIn2.getPixels();
     
-    for (UINT i=0;i<imIn1.getPixelCount();i++)
+    for (size_t i=0;i<imIn1.getPixelCount();i++)
       if (pix1[i]!=pix2[i])
 	return false;
       
@@ -668,7 +668,7 @@ RES_T applyLookup(const Image<T> &imIn, map<T,T> &lut, Image<T> &imOut)
     typename Image<T>::lineType pixIn = imIn.getPixels();
     typename Image<T>::lineType pixOut = imOut.getPixels();
     
-    for (UINT i=0;i<imIn.getPixelCount();i++)
+    for (size_t i=0;i<imIn.getPixelCount();i++)
     {
       if (lut.find(*pixIn)!=lut.end())
 	*pixOut = lut[*pixIn];

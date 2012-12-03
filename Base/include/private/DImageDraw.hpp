@@ -225,20 +225,20 @@ RES_T drawLine(Image<T> &imOut, vector<UINT> coords, T value=numeric_limits<T>::
  * \param imOut Output image.
  */
 template <class T>
-RES_T drawRectangle(Image<T> &imOut, UINT x0, UINT y0, UINT width, UINT height, T value=numeric_limits<T>::max(), bool fill=false, UINT zSlice=0)
+RES_T drawRectangle(Image<T> &imOut, size_t x0, size_t y0, size_t width, size_t height, T value=numeric_limits<T>::max(), bool fill=false, size_t zSlice=0)
 {
     ASSERT_ALLOCATED(&imOut);
 
     ImageFreezer freeze(imOut);
     
-    UINT imW = imOut.getWidth();
-    UINT imH = imOut.getHeight();
-    UINT imD = imOut.getDepth();
+    size_t imW = imOut.getWidth();
+    size_t imH = imOut.getHeight();
+    size_t imD = imOut.getDepth();
     
     ASSERT((zSlice<imD), "zSlice is out of range", RES_ERR);
     
-    UINT x1 = x0 + width - 1;
-    UINT y1 = y0 + height -1;
+    size_t x1 = x0 + width - 1;
+    size_t y1 = y0 + height -1;
     x1 = x1<imW ? x1 : imW-1;
     y1 = y1<imH ? y1 : imH-1;
     
@@ -251,14 +251,14 @@ RES_T drawRectangle(Image<T> &imOut, UINT x0, UINT y0, UINT width, UINT height, 
     
     if (fill)
     {
-	for (UINT j=y0;j<=y1;j++)
+	for (size_t j=y0;j<=y1;j++)
 	  fillFunc(lines[j]+x0, width, value);
     }
     else
     {
 	fillFunc(lines[y0]+x0, width, value);
 	fillFunc(lines[y1]+x0, width, value);
-	for (UINT j=y0+1;j<=y1;j++)
+	for (size_t j=y0+1;j<=y1;j++)
 	{
 	    lines[j][x0] = value;
 	    lines[j][x1] = value;
@@ -285,7 +285,7 @@ RES_T drawRectangle(Image<T> &imOut, vector<UINT> coords, T value=numeric_limits
  * \param imOut Output image.
  */
 template <class T>
-RES_T drawCube(Image<T> &imOut, UINT x0, UINT y0, UINT z0, UINT width, UINT height, UINT depth, T value=numeric_limits<T>::max(), bool fill=false)
+RES_T drawCube(Image<T> &imOut, size_t x0, size_t y0, size_t z0, size_t width, size_t height, size_t depth, T value=numeric_limits<T>::max(), bool fill=false)
 {
     ASSERT_ALLOCATED(&imOut);
     

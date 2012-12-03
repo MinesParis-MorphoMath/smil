@@ -155,14 +155,14 @@ RES_T measBarycenter(Image<T> &im, double *xc, double *yc, double *zc=NULL)
     size_t imSize[3];
     im.getSize(imSize);
     
-    for (UINT z=0;z<imSize[2];z++)
+    for (size_t z=0;z<imSize[2];z++)
     {
 	lines = *slices++;
 // #pragma omp parallel for
-	for (UINT y=0;y<imSize[1];y++)
+	for (size_t y=0;y<imSize[1];y++)
 	{
 	    pixels = *lines++;
-	    for (UINT x=0;x<imSize[0];x++)
+	    for (size_t x=0;x<imSize[0];x++)
 	    {
 		pixVal = pixels[x];
 		if (pixVal!=0)
@@ -203,7 +203,7 @@ vector<double> measBarycenter(Image<T> &im)
  * Bounding Box measure
  */
 template <class T>
-RES_T measBoundBox(Image<T> &im, UINT *xMin, UINT *yMin, UINT *zMin, UINT *xMax, UINT *yMax, UINT *zMax)
+RES_T measBoundBox(Image<T> &im, size_t *xMin, size_t *yMin, size_t *zMin, size_t *xMax, size_t *yMax, size_t *zMax)
 {
     if (!im.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
@@ -223,13 +223,13 @@ RES_T measBoundBox(Image<T> &im, UINT *xMin, UINT *yMin, UINT *zMin, UINT *xMax,
     *zMin = imSize[2];
     *zMax = 0;
     
-    for (UINT z=0;z<imSize[2];z++)
+    for (size_t z=0;z<imSize[2];z++)
     {
 	lines = *slices++;
-	for (UINT y=0;y<imSize[1];y++)
+	for (size_t y=0;y<imSize[1];y++)
 	{
 	    pixels = *lines++;
-	    for (UINT x=0;x<imSize[0];x++)
+	    for (size_t x=0;x<imSize[0];x++)
 	    {
 		T pixVal = pixels[x];
 		if (pixVal!=0)
@@ -249,9 +249,9 @@ RES_T measBoundBox(Image<T> &im, UINT *xMin, UINT *yMin, UINT *zMin, UINT *xMax,
 }
 
 template <class T>
-RES_T measBoundBox(Image<T> &im, UINT *xMin, UINT *yMin, UINT *xMax, UINT *yMax)
+RES_T measBoundBox(Image<T> &im, size_t *xMin, size_t *yMin, size_t *xMax, size_t *yMax)
 {
-    UINT zMin, zMax;
+    size_t zMin, zMax;
     return measBoundBox(im, xMin, yMin, &zMin, xMax, yMax, &zMax);
 }
 
@@ -261,7 +261,7 @@ vector<UINT> measBoundBox(Image<T> &im)
 {
     vector<UINT> res;
     
-    UINT b[6];
+    size_t b[6];
     UINT dim = im.getDimension()==3 ? 3 : 2;
     
     if (dim==3 && measBoundBox<T>(im, b, b+1, b+2, b+3, b+4, b+5)!=RES_OK)

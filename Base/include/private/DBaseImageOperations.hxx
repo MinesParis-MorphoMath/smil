@@ -141,8 +141,8 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn
     if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    UINT lineLen = imIn1.getWidth();
-    UINT lineCount = imIn1.getLineCount();
+    size_t lineLen = imIn1.getWidth();
+    size_t lineCount = imIn1.getLineCount();
 
     lineType *srcLines1 = imIn1.getLines();
     lineType *srcLines2 = imIn2.getLines();

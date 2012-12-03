@@ -113,7 +113,7 @@ RES_T geoDualBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut
     
     ASSERT((sup(imIn, imMask, imOut)==RES_OK));
 
-    int vol1 = vol(imOut), vol2;
+    double vol1 = vol(imOut), vol2;
     
     while (true)
     {
@@ -143,9 +143,9 @@ RES_T initBuildHierarchicalQueue(const Image<T> &imIn, HierarchicalQueue<T, HQco
     size_t s[3];
     
     imIn.getSize(s);
-    UINT offset = 0;
+    size_t offset = 0;
     
-    for (UINT i=0;i<imIn.getPixelCount();i++)
+    for (size_t i=0;i<imIn.getPixelCount();i++)
     {
 	hq.push(*inPixels, offset);
 	inPixels++;
@@ -201,8 +201,8 @@ RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Imag
 	
 	imIn.getCoordsFromOffset(curOffset, x0, y0, z0);
 	
-	int x, y, z;
-	UINT nbOffset;
+	size_t x, y, z;
+	size_t nbOffset;
 	UINT8 nbStat;
 	
 	int oddLine = se.odd * y0%2;
@@ -247,13 +247,13 @@ RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Imag
 template <class T>
 struct minFunctor 
 {
-  inline int operator()(T a, T b) { return min(a, b); }
+  inline T operator()(T a, T b) { return min(a, b); }
 };
 
 template <class T>
 struct maxFunctor 
 {
-  inline int operator()(T a, T b) { return max(a, b); }
+  inline T operator()(T a, T b) { return max(a, b); }
 };
 
 /**

@@ -76,12 +76,12 @@ RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single_generic(cons
     if (!areAllocated(&imIn, &imOut, NULL))
       return RES_ERR_BAD_ALLOCATION;
 
-    int sePtsNumber = se.points.size();
+    UINT sePtsNumber = se.points.size();
     if (sePtsNumber==0)
 	return RES_OK;
     
-    int nSlices = imIn.getSliceCount();
-    int nLines = imIn.getHeight();
+    size_t nSlices = imIn.getSliceCount();
+    size_t nLines = imIn.getHeight();
 
     lineType outBuf = ImDtTypes<T>::createLine(parentClass::lineLen);
 
@@ -94,16 +94,16 @@ RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single_generic(cons
     
     bool oddSe = se.odd, oddLine = 0;
     
-    int x, y, z;
+    size_t x, y, z;
     
-    for (int s=0;s<nSlices;s++)
+    for (size_t s=0;s<nSlices;s++)
     {
 	srcLines = srcSlices[s];
 	destLines = destSlices[s];
 	if (oddSe)
 	  oddLine = s%2!=0;
 	
-	for (int l=0;l<nLines;l++)
+	for (size_t l=0;l<nLines;l++)
 	{
 	    lineType lineIn  = srcLines[l];
 	    lineType lineOut = destLines[l];

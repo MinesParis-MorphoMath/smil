@@ -79,8 +79,8 @@ RES_T readVTK(const char *filename, Image<T> &image)
     streampos startPos;
 
     bool isAscii;
-    UINT ptsNbr;
-    UINT width = 0, height = 0, depth = 0;
+    size_t ptsNbr;
+    size_t width = 0, height = 0, depth = 0;
     double scalarCoeff = 1.0;
     
     while(getline(fp, buf))
@@ -161,10 +161,11 @@ RES_T readVTK(const char *filename, Image<T> &image)
     else
     {
 	// In binary version, values are written as unsigned chars
-	while(fp && --ptsNbr>0)
-	    fp.read((char*)pixels++, sizeof(char));
-	if (fp)
-	    fp.read((char*)pixels, sizeof(char));
+// 	while(fp && --ptsNbr>0)
+// 	    fp.read((char*)pixels++, sizeof(char));
+// 	if (fp)
+// 	    fp.read((char*)pixels, sizeof(char));
+	fp.read((char*)pixels, sizeof(T)*ptsNbr);
     }
 
     fp.close();

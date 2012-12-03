@@ -565,6 +565,4 @@ IF(BUILD_PACKAGE)
       INCLUDE(SmilCPack)
 ENDIF(BUILD_PACKAGE)
 
-get_target_property(tp smilGui PREFIX)
-message("${tp}")
 

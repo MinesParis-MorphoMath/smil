@@ -39,9 +39,9 @@
  */
 
 template <>
-inline void copyLine<bool>(Image<bool>::lineType &lIn, int size, Image<bool>::lineType &lOut)
+inline void copyLine<bool>(Image<bool>::lineType &lIn, size_t size, Image<bool>::lineType &lOut)
 {
-    UINT realSize = BIN::binLen(size);
+    size_t realSize = BIN::binLen(size);
     memcpy(lOut, lIn, realSize*sizeof(BIN_TYPE));
 }
 
@@ -111,14 +111,14 @@ template <>
 struct fillLine<bool> : public unaryLineFunctionBase<bool>
 {
     fillLine() {}
-    fillLine(bool *lInOut, int size, bool value) { this->_exec(lInOut, size, value); }
+    fillLine(bool *lInOut, size_t size, bool value) { this->_exec(lInOut, size, value); }
     
-    inline void _exec(bool *lIn, int size, bool *lOut)
+    inline void _exec(bool *lIn, size_t size, bool *lOut)
     {
     }
-    inline void _exec(bool *lInOut, int size, bool value)
+    inline void _exec(bool *lInOut, size_t size, bool value)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bInOut = (BIN::Type*)lInOut;
 	BIN v = value;
 	
@@ -127,10 +127,10 @@ struct fillLine<bool> : public unaryLineFunctionBase<bool>
     }
 };
 
-inline void bitShiftLeft(bool *lIn, int dx, int lineLen, bool *lOut, BIN borderValue)
+inline void bitShiftLeft(bool *lIn, int dx, size_t lineLen, bool *lOut, BIN borderValue)
 {
-    UINT realLen = BIN::binLen(lineLen);
-    UINT dxBytes = dx/BIN::SIZE;
+    size_t realLen = BIN::binLen(lineLen);
+    size_t dxBytes = dx/BIN::SIZE;
     
     BIN_TYPE *bIn = (BIN_TYPE*)lIn;
     BIN_TYPE *bOut = (BIN_TYPE*)lOut;
@@ -155,10 +155,10 @@ inline void bitShiftLeft(bool *lIn, int dx, int lineLen, bool *lOut, BIN borderV
 	*bOut = (*bIn << lMov) | (*(bIn-1) >> rMov);
 }
 
-inline void bitShiftRight(bool *lIn, int dx, int lineLen, bool *lOut, BIN borderValue)
+inline void bitShiftRight(bool *lIn, int dx, size_t lineLen, bool *lOut, BIN borderValue)
 {
-    UINT realLen = BIN::binLen(lineLen);
-    UINT binLineLen = realLen * BIN::SIZE;
+    size_t realLen = BIN::binLen(lineLen);
+    size_t binLineLen = realLen * BIN::SIZE;
     BIN_TYPE lenDiff = binLineLen - lineLen;
     
     UINT dxBytes = dx/BIN::SIZE;
@@ -191,7 +191,7 @@ inline void bitShiftRight(bool *lIn, int dx, int lineLen, bool *lOut, BIN border
 }
 
 template <>
-inline void shiftLine<bool>(Image<bool>::lineType &lIn, int dx, int lineLen, Image<bool>::lineType &lOut, bool borderValue)
+inline void shiftLine<bool>(Image<bool>::lineType &lIn, int dx, size_t lineLen, Image<bool>::lineType &lOut, bool borderValue)
 {
     if (dx==0)
         copyLine<bool>(lIn, lineLen, lOut);
@@ -205,9 +205,9 @@ inline void shiftLine<bool>(Image<bool>::lineType &lIn, int dx, int lineLen, Ima
 template <>
 struct invLine<bool> : public unaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lineIn, int size, bool *lOut)
+    inline void _exec(bool *lineIn, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn = (BIN::Type*)lineIn;
 	BIN::Type *bOut = (BIN::Type*)lOut;
 	
@@ -219,9 +219,9 @@ struct invLine<bool> : public unaryLineFunctionBase<bool>
 template <>
 struct addLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(BIN* lIn1, BIN* lIn2, int size, BIN* lOut)
+    inline void _exec(BIN* lIn1, BIN* lIn2, size_t size, BIN* lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -234,9 +234,9 @@ struct addLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct addNoSatLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -249,9 +249,9 @@ struct addNoSatLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct subLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -264,9 +264,9 @@ struct subLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct subNoSatLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -279,12 +279,12 @@ struct subNoSatLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct supLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(Image<bool>::lineType lIn1, Image<bool>::lineType lIn2, int size, Image<bool>::lineType lOut)
+    inline void _exec(Image<bool>::lineType lIn1, Image<bool>::lineType lIn2, size_t size, Image<bool>::lineType lOut)
     {
 // 	logicOrLine<BIN_TYPE> f;
 // 	f._exec((BIN_TYPE*)lIn1, (BIN_TYPE*)lIn2, size, (BIN_TYPE*)lOut);
 	
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN_TYPE *bIn1 = (BIN_TYPE*)lIn1;
 	BIN_TYPE *bIn2 = (BIN_TYPE*)lIn2;
 	BIN_TYPE *bOut = (BIN_TYPE*)lOut;
@@ -297,9 +297,9 @@ struct supLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct infLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -312,9 +312,9 @@ struct infLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct grtLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -327,9 +327,9 @@ struct grtLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct grtOrEquLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -342,9 +342,9 @@ struct grtOrEquLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct lowLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -357,9 +357,9 @@ struct lowLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct lowOrEquLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -372,9 +372,9 @@ struct lowOrEquLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct equLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -387,9 +387,9 @@ struct equLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct diffLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -402,9 +402,9 @@ struct diffLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct mulLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -417,9 +417,9 @@ struct mulLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct mulNoSatLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -432,9 +432,9 @@ struct mulNoSatLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct divLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -447,9 +447,9 @@ struct divLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct logicAndLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -462,9 +462,9 @@ struct logicAndLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct logicOrLine<bool> : public binaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bOut = (BIN::Type*)lOut;
@@ -477,9 +477,9 @@ struct logicOrLine<bool> : public binaryLineFunctionBase<bool>
 template <>
 struct testLine<bool> : public tertiaryLineFunctionBase<bool>
 {
-    inline void _exec(bool *lIn1, bool *lIn2, bool *lIn3, int size, bool *lOut)
+    inline void _exec(bool *lIn1, bool *lIn2, bool *lIn3, size_t size, bool *lOut)
     {
-	UINT realSize = BIN::binLen(size);
+	size_t realSize = BIN::binLen(size);
 	BIN::Type *bIn1 = (BIN::Type*)lIn1;
 	BIN::Type *bIn2 = (BIN::Type*)lIn2;
 	BIN::Type *bIn3 = (BIN::Type*)lIn3;

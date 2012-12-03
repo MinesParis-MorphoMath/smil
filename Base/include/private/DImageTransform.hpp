@@ -51,18 +51,18 @@
  * \demo{copy_crop.py}
  */
 template <class T>
-RES_T crop(const Image<T> &imIn, UINT startX, UINT startY, UINT startZ, UINT sizeX, UINT sizeY, UINT sizeZ, Image<T> &imOut)
+RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ, Image<T> &imOut)
 {
     if (!areAllocated(&imIn, &imOut, NULL))
         return RES_ERR_BAD_ALLOCATION;
 
-    UINT inW = imIn.getWidth();
-    UINT inH = imIn.getHeight();
-    UINT inD = imIn.getDepth();
+    size_t inW = imIn.getWidth();
+    size_t inH = imIn.getHeight();
+    size_t inD = imIn.getDepth();
     
-    UINT realSx = min(sizeX, inW-startX);
-    UINT realSy = min(sizeY, inH-startY);
-    UINT realSz = min(sizeZ, inD-startZ);
+    size_t realSx = min(sizeX, inW-startX);
+    size_t realSy = min(sizeY, inH-startY);
+    size_t realSz = min(sizeZ, inD-startZ);
     
     imOut.setSize(realSx, realSy, realSz);
     return copy(imIn, startX, startY, startZ, imOut, 0, 0, 0);
@@ -70,7 +70,7 @@ RES_T crop(const Image<T> &imIn, UINT startX, UINT startY, UINT startZ, UINT siz
 
 // 2D overload
 template <class T>
-RES_T crop(const Image<T> &imIn, UINT startX, UINT startY, UINT sizeX, UINT sizeY, Image<T> &imOut)
+RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t sizeX, size_t sizeY, Image<T> &imOut)
 {
     return crop(imIn, startX, startY, 0, sizeX, sizeY, 1, imOut);
 }
@@ -98,16 +98,16 @@ RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
     typename Image<T>::sliceType linesIn;
     typename Image<T>::sliceType linesOut;
     
-    UINT width = imIn.getWidth();
-    UINT height = imIn.getHeight();
-    UINT depth = imIn.getDepth();
+    size_t width = imIn.getWidth();
+    size_t height = imIn.getHeight();
+    size_t depth = imIn.getDepth();
 
-    for (UINT k=0;k<depth;k++)
+    for (size_t k=0;k<depth;k++)
     {
 	linesIn = slicesIn[k];
 	linesOut = slicesOut[k];
 	
-	for (UINT j=0;j<height;j++)
+	for (size_t j=0;j<height;j++)
 	  copyLine<T>(linesIn[j], width, linesOut[height-1-j]);
     }
     
@@ -125,17 +125,17 @@ RES_T vFlip(Image<T> &imInOut)
     typename Image<T>::sliceType *slicesIn = imInOut.getSlices();
     typename Image<T>::sliceType linesIn;
     
-    UINT width = imInOut.getWidth();
-    UINT height = imInOut.getHeight();
-    UINT depth = imInOut.getDepth();
+    size_t width = imInOut.getWidth();
+    size_t height = imInOut.getHeight();
+    size_t depth = imInOut.getDepth();
 
     typename Image<T>::lineType tmpLine = ImDtTypes<T>::createLine(width);
       
-    for (UINT k=0;k<depth;k++)
+    for (size_t k=0;k<depth;k++)
     {
 	linesIn = slicesIn[k];
 	
-	for (UINT j=0;j<height/2;j++)
+	for (size_t j=0;j<height/2;j++)
 	{
 	    copyLine<T>(linesIn[j], width, tmpLine);
 	    copyLine<T>(linesIn[height-1-j], width, linesIn[j]);
@@ -158,19 +158,19 @@ RES_T trans(Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut, T borderVal
     if (!imIn.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
     
-    UINT lineLen = imIn.getWidth();
+    size_t lineLen = imIn.getWidth();
     typename ImDtTypes<T>::lineType borderBuf = ImDtTypes<T>::createLine(lineLen);
     fillLine<T>(borderBuf, lineLen, borderValue);
     
-    UINT height = imIn.getHeight();
-    UINT depth  = imIn.getDepth();
+    size_t height = imIn.getHeight();
+    size_t depth  = imIn.getDepth();
     
-    for (UINT k=0;k<depth;k++)
+    for (size_t k=0;k<depth;k++)
     {
 	typename Image<T>::sliceType lOut = imOut.getSlices()[k];
 	
 	int z = k+dz;
-	for (UINT j=0;j<height;j++, lOut++)
+	for (size_t j=0;j<height;j++, lOut++)
 	{
 	    int y = j+dy;
 	    
@@ -224,11 +224,11 @@ RES_T resize(Image<T> &imIn, Image<T> &imOut)
     if (!imIn.isAllocated() || !imOut.isAllocated())
         return RES_ERR_BAD_ALLOCATION;
   
-    UINT w = imIn.getWidth();
-    UINT h = imIn.getHeight();
+    size_t w = imIn.getWidth();
+    size_t h = imIn.getHeight();
     
-    UINT w2 = imOut.getWidth();
-    UINT h2 = imOut.getHeight();
+    size_t w2 = imOut.getWidth();
+    size_t h2 = imOut.getHeight();
     
     typedef typename Image<T>::pixelType pixelType;
     typedef typename Image<T>::lineType lineType;
@@ -244,9 +244,9 @@ RES_T resize(Image<T> &imIn, Image<T> &imOut)
     float x_diff, y_diff;
     int offset = 0 ;
     
-    for (UINT i=0;i<h2;i++) 
+    for (size_t i=0;i<h2;i++) 
     {
-        for (UINT j=0;j<w2;j++) 
+        for (size_t j=0;j<w2;j++) 
 	{
             x = (int)(x_ratio * j) ;
             y = (int)(y_ratio * i) ;

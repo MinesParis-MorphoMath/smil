@@ -45,7 +45,7 @@
 template <class T1, class T2>
 inline void copyLine(const typename Image<T1>::lineType lIn, const size_t &size, typename Image<T2>::lineType lOut)
 {
-    for (UINT i=0;i<size;i++)
+    for (size_t i=0;i<size;i++)
       lOut[i] = static_cast<T2>(lIn[i]);
 }
 

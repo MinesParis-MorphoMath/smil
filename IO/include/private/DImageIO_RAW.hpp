@@ -48,7 +48,7 @@ using namespace std;
  * RAW file read 
  */
 template <class T>
-RES_T readRAW(const char *filename, UINT width, UINT height, UINT depth, Image<T> &image)
+RES_T readRAW(const char *filename, size_t width, size_t height, size_t depth, Image<T> &image)
 {
     FILE *fp = NULL;
 

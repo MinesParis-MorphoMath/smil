@@ -162,10 +162,10 @@ public:
     {
 	int x, y, z;
 	IntPoint p;
-	UINT offset = pixIn - pixelsIn;
+	size_t offset = pixIn - pixelsIn;
 	vector<IntPoint> ptList;
-	vector<UINT> relOffsetList;
-	vector<UINT> offsetList;
+	vector<size_t> relOffsetList;
+	vector<size_t> offsetList;
 	
 	// Remove points wich are outside the image
 	for (UINT i=0;i<sePointNbr;i++)
@@ -224,7 +224,7 @@ public:
 	    offset++;
 	}
     }
-    virtual inline void processPixel(UINT &pointOffset, vector<UINT>::iterator dOffset, vector<UINT>::iterator dOffsetEnd)
+    virtual inline void processPixel(size_t &pointOffset, vector<size_t>::iterator dOffset, vector<size_t>::iterator dOffsetEnd)
     {
 	// Example: dilation function
 	while(dOffset!=dOffsetEnd)
@@ -240,9 +240,9 @@ protected:
       lineInType pixelsIn;
       lineOutType pixelsOut;
       
-      UINT curSlice;
-      UINT curLine;
-      UINT curPixel;
+      size_t curSlice;
+      size_t curLine;
+      size_t curPixel;
       
       vector<IntPoint> sePoints;
       UINT sePointNbr;
@@ -295,7 +295,7 @@ class unaryMorphImageFunction : public imageFunctionBase<T>
   protected:
     T borderValue;
     lineType borderBuf, cpBuf;
-    UINT lineLen;
+    size_t lineLen;
     
     inline void _extract_translated_line(const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf);
     inline void _exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf);

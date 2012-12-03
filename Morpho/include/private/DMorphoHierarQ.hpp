@@ -57,12 +57,12 @@ template <class T>
 class HQToken
 {
 public:
-    HQToken(T _value, UINT _offset, UINT _index)
+    HQToken(T _value, size_t _offset, size_t _index)
       : value(_value), offset(_offset), index(_index)
     {
     }
     T value;
-    UINT offset;
+    size_t offset;
     bool operator > (const HQToken<T> &s ) const 
     {
 	T sVal = s.value;
@@ -78,7 +78,7 @@ public:
 	else return index > s.index;
     }
 protected:
-    UINT index;
+    size_t index;
 };
 
 
@@ -108,7 +108,7 @@ public:
       return priorityQueue.empty();
     }
     
-    inline void push(T value, UINT offset)
+    inline void push(T value, size_t offset)
     {
       priorityQueue.push(HQToken<T>(value, offset, index++));
     }
@@ -123,7 +123,7 @@ public:
       priorityQueue.pop();
     }
     
-    inline UINT size()
+    inline size_t size()
     {
       return priorityQueue.size();
     }
@@ -138,7 +138,7 @@ public:
     }
 protected:
     priority_queue<elementType, containerType, compareType > priorityQueue;
-    UINT index;
+    size_t index;
 };
 
 
