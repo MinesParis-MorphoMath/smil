@@ -65,7 +65,7 @@ RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t startZ, si
     size_t realSz = min(sizeZ, inD-startZ);
     
     imOut.setSize(realSx, realSy, realSz);
-    return copy(imIn, startX, startY, startZ, imOut, 0, 0, 0);
+    return copy(imIn, startX, startY, startZ, realSx, realSy, realSz, imOut, 0, 0, 0);
 }
 
 // 2D overload

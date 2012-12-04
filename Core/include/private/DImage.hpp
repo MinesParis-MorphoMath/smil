@@ -154,6 +154,10 @@ public:
 	return im;
     }
     virtual RES_T setSize(size_t w, size_t h, size_t d = 1, bool doAllocate = true);
+    virtual RES_T setSize(size_t s[3], bool doAllocate = true)
+    {
+	return setSize(s[0], s[1], s[2], doAllocate);
+    }
     virtual RES_T setSize(const BaseImage &rhs, bool doAllocate = true) 
     { 
 	return setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); 

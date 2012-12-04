@@ -314,7 +314,41 @@ RES_T build(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const
 }
 
 
+/**
+ * Opening by reconstruction
+ */
+template <class T>
+RES_T buildOpen(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+{
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    
+    ImageFreezer freeze(imOut);
+    
+    Image<T> tmpIm(imIn);
+    ASSERT((erode(imIn, tmpIm, se)==RES_OK));
+    ASSERT((build(tmpIm, imIn, imOut, se)==RES_OK));
+    
+    return RES_OK;
+}
 
+/**
+ * Closing by reconstruction
+ */
+template <class T>
+RES_T buildClose(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+{
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    
+    ImageFreezer freeze(imOut);
+    
+    Image<T> tmpIm(imIn);
+    ASSERT((dilate(imIn, tmpIm, se)==RES_OK));
+    ASSERT((dualBuild(tmpIm, imIn, imOut, se)==RES_OK));
+    
+    return RES_OK;
+}
 
 /**
  * Hole filling

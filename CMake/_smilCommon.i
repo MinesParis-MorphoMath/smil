@@ -165,6 +165,7 @@
   %apply unsigned char *OUTPUT{ unsigned char *name };
   %apply unsigned short *OUTPUT{ unsigned short *name };
   %apply unsigned int *OUTPUT{ unsigned int *name };
+  %apply size_t *OUTPUT{size_t *name};
   %apply char *OUTPUT{ char *name };
   %apply short *OUTPUT{ short *name };
   %apply int *OUTPUT{ int *name };
