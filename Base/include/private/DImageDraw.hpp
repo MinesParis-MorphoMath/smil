@@ -300,6 +300,90 @@ RES_T drawCube(Image<T> &imOut, size_t x0, size_t y0, size_t z0, size_t width, s
       
 }
 
+
+#ifdef USE_FREETYPE
+
+#include <ft2build.h>
+#include FT_FREETYPE_H
+
+/**
+ * Draw text on image
+ * 
+ * Requires the FreeType library
+ */
+template <class T>
+RES_T drawText(Image<T> &imOut, size_t x, size_t y, size_t z, string txt, string font, UINT size=20, T value=ImDtTypes<T>::max())
+{
+    ASSERT_ALLOCATED(&imOut);
+    
+    size_t imW = imOut.getWidth();
+    size_t imH = imOut.getHeight();
+
+    ASSERT((x>=0 && x<imW && y>=0 && y<imH && z>=0 && z<imOut.getDepth()), "Text position out of image range.", RES_ERR);
+    
+    FT_Library    library;
+    FT_Face       face;
+    FT_GlyphSlot  slot;
+    const char *text = txt.c_str();
+    
+    ASSERT((!FT_Init_FreeType( &library )), "Problem initializing freetype library.", RES_ERR);
+    ASSERT((!FT_New_Face( library, font.c_str(), 0, &face )), "The font file could not be opened.", RES_ERR);
+    ASSERT((!FT_Set_Pixel_Sizes( face, 0, size )), "Error defining font size.", RES_ERR);
+    
+    slot = face->glyph;
+    
+    for (UINT c=0;c<txt.length();c++)
+    {
+	FT_Load_Char( face, text[c], FT_LOAD_NO_BITMAP | FT_LOAD_RENDER | FT_LOAD_TARGET_MONO);
+    
+	FT_Bitmap *bitmap = &slot->bitmap;
+    
+	FT_Int  i, j, p, q;
+	FT_Int  x_min = x + slot->bitmap_left;
+	FT_Int  y_min = y - slot->bitmap_top;
+	FT_Int  x_max = x_min + bitmap->width;
+	FT_Int  y_max = y_min + bitmap->rows;
+
+	typename ImDtTypes<T>::sliceType slc = imOut.getSlices()[z];
+	
+
+	for ( j = y_min, q = 0; j < y_max; j++, q++ )
+	{
+	  unsigned char *in = bitmap->buffer + q * bitmap->pitch;
+	  typename ImDtTypes<T>::lineType out = slc[j];
+	  unsigned char bit = 0x80;
+	  for ( i = x_min, p = 0; i < x_max; i++, p++ )
+	  {
+	    if (i>=0 && j>=0 && i<imW && j<imH)
+	      if (*in & bit)
+		out[i] = value;
+	    bit >>= 1;
+	    if (bit == 0)
+	    {
+		bit = 0x80;
+		in++;
+	    }
+	  }
+	}
+	x += slot->advance.x >> 6;
+	y += slot->advance.y >> 6;
+    }
+    
+    FT_Done_Face    ( face );
+    FT_Done_FreeType( library );
+    
+    return RES_OK;
+}
+
+template <class T>
+RES_T drawText(Image<T> &imOut, size_t x, size_t y, string txt, string font, UINT size=20, T value=ImDtTypes<T>::max())
+{
+    return drawText(imOut, x, y, 0, txt, font, size);
+}
+
+#endif // USE_FREETYPE
+
+
 /** @}*/
 
 #endif // _D_IMAGE_DRAW_HPP
