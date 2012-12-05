@@ -53,8 +53,7 @@
 template <class T>
 RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ, Image<T> &imOut)
 {
-    if (!areAllocated(&imIn, &imOut, NULL))
-        return RES_ERR_BAD_ALLOCATION;
+    ASSERT_ALLOCATED(&imIn);
 
     size_t inW = imIn.getWidth();
     size_t inH = imIn.getHeight();

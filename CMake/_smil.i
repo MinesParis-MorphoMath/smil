@@ -106,14 +106,16 @@ def guess_images_name(gbl_dict=None):
     
 def _show_with_name(img, name=None, labelImage = False):
     if not name:
-	name = _find_object_names(img)[-1]
-	img.setName(name)
+	if img.getName()=="":
+	  name = _find_object_names(img)[-1]
+	  img.setName(name)
     img.c_show(name, labelImage)
 
 def _showLabel_with_name(img, name=None):
     if not name:
-	name = _find_object_names(img)[-1]
-	img.setName(name)
+	if img.getName()=="":
+	  name = _find_object_names(img)[-1]
+	  img.setName(name)
     img.c_showLabel(name)
 
 def showAll():
