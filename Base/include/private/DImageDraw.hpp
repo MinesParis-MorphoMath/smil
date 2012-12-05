@@ -372,6 +372,8 @@ RES_T drawText(Image<T> &imOut, size_t x, size_t y, size_t z, string txt, string
     FT_Done_Face    ( face );
     FT_Done_FreeType( library );
     
+    imOut.modified();
+    
     return RES_OK;
 }
 
