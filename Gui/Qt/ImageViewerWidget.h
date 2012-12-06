@@ -135,7 +135,7 @@ public slots:
     void load(const QString fileName);
     void zoomIn();
     void zoomOut();
-    void scale(double factor);
+    void scale(double factor, bool absolute=false);
     void sliderChanged(int newVal)
     {
 	displayHint(QString::number(newVal) + "/" + QString::number(slider->maximum()));

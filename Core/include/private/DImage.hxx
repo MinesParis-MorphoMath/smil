@@ -30,11 +30,11 @@
 #ifndef _IMAGE_HXX
 #define _IMAGE_HXX
 
-#include "IO/include/private/DImageIO.hpp"
-#include "Base/include/DBase.h"
+#include "Core/include/DCoreEvents.h"
 #include "Base/include/private/DMeasures.hpp"
 #include "Base/include/private/DImageArith.hpp"
 #include "Gui/include/DImageViewer.h"
+#include "IO/include/private/DImageIO.hpp"
 
 // template <>
 // const char *getImageDataTypeAsString<UINT8>(Image<UINT8> &im)

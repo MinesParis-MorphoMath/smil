@@ -165,7 +165,7 @@ RES_T readVTK(const char *filename, Image<T> &image)
 // 	    fp.read((char*)pixels++, sizeof(char));
 // 	if (fp)
 // 	    fp.read((char*)pixels, sizeof(char));
-	fp.read((char*)pixels, sizeof(char)*ptsNbr);
+	fp.read((char*)pixels, sizeof(T)*ptsNbr);
     }
 
     fp.close();
@@ -217,7 +217,7 @@ RES_T writeVTK(const Image<T> &image, const char *filename, bool binary=true)
     if (binary)
     {
       // todo : make this generic
-	fp.write((char*)pixels, sizeof(char)*pixNbr);
+	fp.write((char*)pixels, sizeof(T)*pixNbr);
     }
 
     fp.close();

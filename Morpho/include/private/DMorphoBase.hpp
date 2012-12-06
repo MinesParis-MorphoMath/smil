@@ -30,8 +30,8 @@
 #ifndef _D_MORPHO_BASE_HPP
 #define _D_MORPHO_BASE_HPP
 
-#include "DImage.h"
-#include "DImageArith.h"
+#include "Core/include/DImage.h"
+#include "Base/include/private/DImageArith.hpp"
 #include "DMorphoInstance.h"
 #include "DMorphImageOperations.hpp"
 

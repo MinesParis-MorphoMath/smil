@@ -35,14 +35,17 @@
  * @{
  */
 
-#include "DImage.h"
-#include "DMorphoBase.hpp"
-#include "DMorphoGeodesic.hpp"
-#include "DMorphoExtrema.hpp"
-#include "DMorphoHierarQ.hpp"
-#include "DMorphoWatershed.hpp"
-#include "DMorphoLabel.hpp"
-#include "DMorphoArrow.hpp"
+#include "Core/include/DImage.h"
+#include "private/DMorphoBase.hpp"
+#include "private/DMorphoGeodesic.hpp"
+#include "private/DMorphoExtrema.hpp"
+#include "private/DMorphoHierarQ.hpp"
+#include "private/DMorphoFilter.hpp"
+#include "private/DMorphoResidues.hpp"
+#include "private/DMorphoWatershed.hpp"
+#include "private/DMorphoLabel.hpp"
+#include "private/DMorphoArrow.hpp"
+#include "private/DSkeleton.hpp"
  
 /** @}*/
 

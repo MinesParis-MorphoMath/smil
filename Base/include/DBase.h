@@ -35,13 +35,12 @@
  * @{
  */
 
-#include "DLineArith.h"
-#include "DImageArith.h"
-#include "DCoreEvents.h"
-#include "Core/include/DCommon.h"
-
+#include "private/DImageArith.hpp"
 #include "private/DImageHistogram.hpp"
 #include "private/DImageTransform.hpp"
+#include "private/DImageDraw.hpp"
+#include "private/DMeasures.hpp"
+#include "private/DLabelMeasures.hpp"
 
 /** @} */
 

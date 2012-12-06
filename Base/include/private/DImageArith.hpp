@@ -187,6 +187,20 @@ RES_T copy(const Image<T> &imIn, Image<T> &imOut)
     return RES_OK;
 }
 
+/**
+ * Clone an image 
+ * 
+ * Set same size and copy contents
+ */
+template <class T>
+RES_T clone(const Image<T> &imIn, Image<T> &imOut)
+{
+    ASSERT_ALLOCATED(&imIn);
+
+    ASSERT((imOut.setSize(imIn)==RES_OK));
+    return copy<T>(imIn, imOut);
+}
+
 
 /**
  * Invert an image.

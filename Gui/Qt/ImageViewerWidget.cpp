@@ -199,6 +199,7 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
     connect(imScene, SIGNAL(onMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(sceneMouseMoveEvent(QGraphicsSceneMouseEvent*)));
     
     imagePixmaps.clear();
+    overlayPixmaps.clear();
     
     size_t pixNbrX = w/PIXMAP_MAX_DIM + 1;
     size_t pixNbrY = h/PIXMAP_MAX_DIM + 1;
@@ -234,10 +235,10 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
 //     overlayPixmap->setPixmap(QPixmap());
     
     double minSize = 256;
-    if (imScene->height()<minSize)
+    if (scaleFactor==1 && imScene->height()<minSize)
     {
 	int scaleFact = log(minSize/imScene->height())/log(1.25);
-	scale(pow(1.25, scaleFact));
+	scale(pow(1.25, scaleFact), true);
     }
     adjustSize();
 }
@@ -380,10 +381,18 @@ void ImageViewerWidget::zoomOut()
     scale(0.8);
 }
 
-void ImageViewerWidget::scale(double factor)
+void ImageViewerWidget::scale(double factor, bool absolute)
 {
-    scaleFactor *= factor;
-    QGraphicsView::scale(factor, factor);
+    if (absolute)
+    {
+	QGraphicsView::scale(factor/scaleFactor, factor/scaleFactor);
+	scaleFactor = factor;
+    }
+    else
+    {
+	scaleFactor *= factor;
+	QGraphicsView::scale(factor, factor);
+    }
 
     displayHint(QString::number(int(scaleFactor*100)) + "%");
     emit(onRescaled(scaleFactor));

@@ -31,7 +31,6 @@
 #define _D_MORPHO_LABEL_HPP
 
 #include "DImage.h"
-#include "DImageArith.h"
 #include "DMorphImageOperations.hpp"
 
 

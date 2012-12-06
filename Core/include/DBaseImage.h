@@ -34,6 +34,7 @@
 #include "DSignal.h"
 #include "DSlot.h"
 #include "DCommon.h"
+#include "DErrors.h"
 
 class BaseImageViewer;
 
@@ -97,6 +98,8 @@ public:
 	  return 2;
 	else return 1;
     }
+    
+    virtual RES_T setSize(size_t w, size_t h, size_t d = 1, bool doAllocate = true) = 0;
     
     inline void getSize(size_t *w, size_t *h, size_t *d) const
     {
