@@ -292,7 +292,9 @@ public:
     Image<T>& operator >> (vector<T> &vect);
     
     Image<T>& operator << (const char *s);
+    inline Image<T>& operator << (const string s) { return this->operator<<(s.c_str()); }
     Image<T>& operator >> (const char *s);
+    inline Image<T>& operator >> (const string s) { return this->operator>>(s.c_str()); }
 protected:
   
     lineType pixels;
