@@ -73,7 +73,7 @@ public:
 	image->onModified.connect(&this->updateSlot);
 	update();
     }
-    virtual void disconnect(Image<T> *im)
+    virtual void disconnect(Image<T> *)
     {
 	image->onModified.disconnect(&this->updateSlot);
 	image = NULL;
@@ -89,7 +89,7 @@ public:
 	if (image)
 	  drawImage();
     }
-    virtual void drawOverlay(Image<T> &im) {}
+    virtual void drawOverlay(Image<T> &) {}
     virtual void clearOverlay() {}
     
 protected:

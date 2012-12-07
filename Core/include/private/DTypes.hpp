@@ -82,7 +82,7 @@ inline const char *getDataTypeAsString(T &val)
 
 #define DECL_DATA_TYPE_STR(_type) \
 template <> \
-inline const char *getDataTypeAsString(_type &val) { return #_type; } 
+inline const char *getDataTypeAsString(_type &) { return #_type; }
 
 DECL_DATA_TYPE_STR(UINT8)
 DECL_DATA_TYPE_STR(UINT16)

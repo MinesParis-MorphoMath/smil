@@ -337,7 +337,7 @@ void Image<T>::printSelf(ostream &os, bool displayPixVals, string indent) const
     cout << "Image::printSelf: " << this << endl;
 #endif // DEBUG_LEVEL > 1
     if (name!="")
-      os << "Image name: " << name << endl;
+      os << indent << "Image name: " << name << endl;
 
     if (depth>1)
       os << "3D image" << endl;

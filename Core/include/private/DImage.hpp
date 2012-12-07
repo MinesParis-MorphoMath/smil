@@ -166,8 +166,7 @@ public:
     { 
 	if (s.size()==3)
 	  return setSize(s[0], s[1], s[2], doAllocate); 
-	else if (s.size()==2)
-	  return setSize(s[0], s[1], 1, doAllocate); 
+    else return setSize(s[0], s[1], 1, doAllocate);
     }
     virtual RES_T allocate();
     virtual RES_T deallocate();

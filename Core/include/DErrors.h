@@ -138,11 +138,11 @@ private:
 	
     }
       
+    string description;
     string function;
     string file;
     int line;
     string expression;
-    string description;
 };
 
 #define ASSERT_1_ARG(func, file, line, expr) \

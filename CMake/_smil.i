@@ -315,7 +315,11 @@ class _linkManager():
 	res += self.func.__name__ + " "
 	for obj in self.args:
 	  if hasattr(obj, "getClassName"):
-	    res += _find_object_names(obj)[-1] + " "
+	    oName = _find_object_names(obj)
+	    if len(oName)!=0:
+	      res += [-1] + " "
+	    else:
+	      res += str(obj) + " "
 	  else:
 	    res += str(obj) + " "
 	return res

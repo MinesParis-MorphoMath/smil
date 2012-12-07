@@ -62,7 +62,7 @@ class Slot : public BaseSlot
 public:
   Slot() {}
   virtual ~Slot() {}
-  virtual void run(eventT *e=NULL)
+  virtual void run(eventT * = NULL)
   {
   }
   void operator() (eventT *e=NULL)

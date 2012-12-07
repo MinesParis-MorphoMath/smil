@@ -102,6 +102,7 @@ RES_T addBorder(const Image<T> &imIn, size_t bSize, Image<T> &imOut)
     }
 //     (imInOut, true); // clone
 //     return crop(tmpIm, startX, startY, startZ, sizeX, sizeY, sizeZ, imInOut);
+    return RES_OK;
 }
 
 

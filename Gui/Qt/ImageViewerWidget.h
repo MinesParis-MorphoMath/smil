@@ -69,10 +69,10 @@ public:
     virtual void leaveEvent (QEvent *event);
     
     virtual void setLabelImage(bool val);
-    virtual void displayPixelValue(size_t x, size_t y, size_t z) {}
-    virtual void displayMagnifyView(size_t x, size_t y, size_t z) {}
+    virtual void displayPixelValue(size_t, size_t, size_t) {}
+    virtual void displayMagnifyView(size_t, size_t, size_t) {}
     virtual void displayMagnifyView() { displayMagnifyView(lastPixX, lastPixY, lastPixZ); }
-    virtual void setCurSlice(int n) {}
+    virtual void setCurSlice(int) {}
 
     void setName(QString name);
     void setImageSize(int w, int h, int d=1);

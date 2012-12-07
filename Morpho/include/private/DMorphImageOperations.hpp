@@ -438,17 +438,21 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 	{
 	    destLines = destSlices[s];
 
-	    #pragma omp parallel private(tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p) firstprivate(pts)
-	    {
-		#ifdef USE_OPEN_MP
-		    tid = omp_get_thread_num();
+#ifdef USE_OPEN_MP
+        #pragma omp parallel private(tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p) firstprivate(pts)
+#endif // USE_OPEN_MP
+        {
+        #ifdef USE_OPEN_MP
+            tid = omp_get_thread_num();
 		    tmpBuf = _bufs[tid];
 		    tmpBuf2 = _bufs[tid+nthreads];
 		#endif // _OPENMP
 	  
 	  
-		#pragma omp for schedule(dynamic,nthreads) nowait
-		for (l=0;l<nLines;l++)
+#ifdef USE_OPEN_MP
+        #pragma omp for schedule(dynamic,nthreads) nowait
+#endif // USE_OPEN_MP
+        for (l=0;l<nLines;l++)
 		{
 		    if (oddSe)
 		      oddLine = ((l+1)%2 && (s+1)%2);
@@ -604,14 +608,16 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_2_H_points(const 
 #endif // USE_OPEN_MP
 	  int l;
 
+#ifdef USE_OPEN_MP
       #pragma omp parallel private(tid, buf)
+#endif // USE_OPEN_MP
       {
 	  #ifdef USE_OPEN_MP
 	      tid = omp_get_thread_num();
 	      buf = _bufs[tid];
-	  #endif
 	  #pragma omp for schedule(dynamic,nthreads) nowait
-	  for (l=0;l<lineCount;l++)
+      #endif
+      for (l=0;l<lineCount;l++)
 	  {
 	    // Todo: if oddLines...
 	      shiftLine<T>(srcLines[l], dx, this->lineLen, buf, this->borderValue);
@@ -675,15 +681,17 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_H_segment(const i
 #endif // USE_OPEN_MP
       int l, dx = xsize;
 
+#ifdef USE_OPEN_MP
       #pragma omp parallel private(tid,buf1,buf2,lineIn) firstprivate(dx)
+#endif // USE_OPEN_MP
       {
 	  #ifdef USE_OPEN_MP
 	      tid = omp_get_thread_num();
 	      buf1 = _bufs[tid];
 	      buf2 = _bufs[tid+nthreads];
-	  #endif
 	  #pragma omp for schedule(dynamic,nthreads) nowait
-	  for (l=0;l<lineCount;l++)
+      #endif
+      for (l=0;l<lineCount;l++)
 	  {
 	    // Todo: if oddLines...
 	      lineIn = srcLines[l];
@@ -729,16 +737,20 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_V1_segment(const 
 	
 	l = 1;
 	
-	#pragma omp parallel private(tid,buf1,buf2,i,l,b) num_threads(nthreads)
-	{
+#ifdef USE_OPEN_MP
+    #pragma omp parallel private(tid,buf1,buf2,i,l,b) num_threads(nthreads)
+#endif // USE_OPEN_MP
+    {
 	    #ifdef USE_OPEN_MP
 		tid = omp_get_thread_num();
 		buf1 = _bufs[tid];
 		buf2 = _bufs[tid+nthreads];
 	    #endif
 		
-	    #pragma omp for schedule(static, 1)
-	    for (b=0;b<nblocks;b++)
+#ifdef USE_OPEN_MP
+        #pragma omp for schedule(static, 1)
+#endif // USE_OPEN_MP
+        for (b=0;b<nblocks;b++)
 	    {
 		l = b*nthreads;
 		if (l==0)

@@ -98,7 +98,9 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn,
     sliceType srcLines = imIn.getLines();
     sliceType destLines = imOut.getLines();
 
+#ifdef USE_OPEN_MP
 #pragma omp parallel for
+#endif // USE_OPEN_MP
     for (size_t i=0;i<lineCount;i++)
         lineFunction._exec(srcLines[i], lineLen, destLines[i]);
 
@@ -125,7 +127,9 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, cons
 
     // Use it for operations on lines
 
+#ifdef USE_OPEN_MP
 #pragma omp parallel for
+#endif // USE_OPEN_MP
     for (int i=0;i<lineCount;i++)
         lineFunction._exec_aligned(constBuf, lineLen, destLines[i]);
 
@@ -149,10 +153,14 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn
     lineType *destLines = imOut.getLines();
 
     int i, chunk = 100;
+#ifdef USE_OPEN_MP
     #pragma omp parallel shared(srcLines1,srcLines2,destLines,chunk) private(i)
+#endif // USE_OPEN_MP
     {
-	#pragma omp for schedule(dynamic,chunk) nowait
-	for (i=0;i<(int)lineCount;i++)
+#ifdef USE_OPEN_MP
+    #pragma omp for schedule(dynamic,chunk) nowait
+#endif // USE_OPEN_MP
+    for (i=0;i<(int)lineCount;i++)
 	    lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
     }
     imOut.modified();
@@ -175,7 +183,9 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn
 
     lineType tmpBuf = ImDtTypes<T>::createLine(lineLen);
 
+#ifdef USE_OPEN_MP
 #pragma omp parallel for
+#endif // USE_OPEN_MP
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines1[i], srcLines2[i], lineLen, tmpBuf);
 
@@ -205,7 +215,9 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn
     fillLine<T> f;
     f(constBuf, lineLen, value);
 
+#ifdef USE_OPEN_MP
 #pragma omp parallel for
+#endif // USE_OPEN_MP
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines[i], constBuf, lineLen, destLines[i]);
 
@@ -232,7 +244,9 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &im
     sliceType srcLines3 = imIn3.getLines();
     sliceType destLines = imOut.getLines();
 
+#ifdef USE_OPEN_MP
 #pragma omp parallel for
+#endif // USE_OPEN_MP
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines1[i], srcLines2[i], srcLines3[i], lineLen, destLines[i]);
 
@@ -261,7 +275,9 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &im
     fillLine<T> f;
     f(constBuf, lineLen, value);
 
+#ifdef USE_OPEN_MP
 #pragma omp parallel for
+#endif // USE_OPEN_MP
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines1[i], srcLines2[i], constBuf, lineLen, destLines[i]);
 
@@ -298,7 +314,9 @@ inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &im
     f(constBuf1, lineLen, value1);
     f(constBuf2, lineLen, value2);
 
+#ifdef USE_OPEN_MP
 #pragma omp parallel for
+#endif // USE_OPEN_MP
     for (int i=0;i<lineCount;i++)
         lineFunction(srcLines[i], constBuf1, constBuf2, lineLen, destLines[i]);
 

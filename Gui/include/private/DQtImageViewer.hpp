@@ -68,9 +68,9 @@ public:
     }
     virtual void drawOverlay(Image<T> &im);
     virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
-    virtual void setCurSlice(int n)
+    virtual void setCurSlice(int)
     {
-	this->update();
+        this->update();
     }
     
     virtual void setLabelImage(bool val);

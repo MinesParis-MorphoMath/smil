@@ -78,8 +78,8 @@ RES_T readVTK(const char *filename, Image<T> &image)
     std::vector<std::string> bufElems;
     streampos startPos;
 
-    bool isAscii;
-    size_t ptsNbr;
+    bool isAscii = false;
+    size_t ptsNbr = 0;
     size_t width = 0, height = 0, depth = 0;
     double scalarCoeff = 1.0;
     
@@ -94,9 +94,9 @@ RES_T readVTK(const char *filename, Image<T> &image)
 	wrd = bufElems[0];
 	// And the first char
 	char fc = wrd[0];
-	bool id = isalnum(fc);
-	bool im = fc=='-';
-	bool ia = isascii(fc);
+//	bool id = isalnum(fc);
+//	bool im = fc=='-';
+//	bool ia = isascii(fc);
 	
 	// Check if we reached the end of the header
 	if (isdigit(fc) || fc=='-') // number
