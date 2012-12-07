@@ -42,7 +42,9 @@
 //http://www.imagemagick.org/Usage/morphology/#linejunctions
 
 
-
+/**
+ * Hit Or Miss transform
+ */
 template <class T>
 RES_T hitOrMiss(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut, T borderVal=ImDtTypes<T>::min())
 {
@@ -59,12 +61,18 @@ RES_T hitOrMiss(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE
     return RES_OK;
 }
 
+/**
+ * Hit Or Miss transform
+ */
 template <class T>
 RES_T hitOrMiss(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut, T borderVal=ImDtTypes<T>::min())
 {
     return hitOrMiss(imIn, compSE.fgSE, compSE.bgSE, imOut, borderVal);
 }
 
+/**
+ * Hit Or Miss transform
+ */
 template <class T>
 RES_T hitOrMiss(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut, T borderVal=ImDtTypes<T>::min())
 {
@@ -82,6 +90,9 @@ RES_T hitOrMiss(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imO
     return RES_OK;
 }
 
+/**
+ * Thinning transform
+ */
 template <class T>
 RES_T thin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
 {
@@ -108,6 +119,9 @@ RES_T thin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Ima
 }
 
 
+/**
+ * Thicking transform
+ */
 template <class T>
 RES_T thick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
 {
@@ -132,6 +146,9 @@ RES_T thick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Im
     return thick(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
 }
 
+/**
+ * Thinning transform (full)
+ */
 template <class T>
 RES_T fullThin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
 {
@@ -164,6 +181,9 @@ RES_T fullThin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE,
     return fullThin(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
 }
 
+/**
+ * Thicking transform (full)
+ */
 template <class T>
 RES_T fullThick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
 {
