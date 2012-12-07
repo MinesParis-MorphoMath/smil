@@ -30,8 +30,7 @@
 #ifndef _BASE_IMAGE_OPERATIONS_HXX
 #define _BASE_IMAGE_OPERATIONS_HXX
 
-#include "DImage.hpp"
-#include "DMemory.hpp"
+#include "Core/include/private/DImage.hpp"
 
 template <class T>
 struct fillLine;

@@ -30,8 +30,8 @@
 #ifndef _BASE_IMAGE_OPERATIONS_HPP
 #define _BASE_IMAGE_OPERATIONS_HPP
 
-#include "DImage.hpp"
-#include "DMemory.hpp"
+#include "Core/include/private/DImage.hpp"
+#include "Core/include/private/DMemory.hpp"
 
 #include "DBaseLineOperations.hpp"
 

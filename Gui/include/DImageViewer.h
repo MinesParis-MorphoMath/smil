@@ -33,12 +33,12 @@
 
 
 #ifdef USE_QT
-#include "DQtImageViewer.hpp"
-#include "DQtImageViewer.hxx"
+#include "Gui/Qt/DQtImageViewer.hpp"
+#include "Gui/Qt/DQtImageViewer.hxx"
 #endif // USE_QT
 
 #ifdef USE_AALIB
-#include "AALib/DAAImageViewer.hpp"
+#include "Gui/AALib/DAAImageViewer.hpp"
 #endif // USE_AALIB
 
 

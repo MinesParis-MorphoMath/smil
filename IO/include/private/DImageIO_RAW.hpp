@@ -35,8 +35,8 @@
 #include <stdlib.h>
 #include <string>
 
-#include "DTypes.hpp"
-#include "DImage.h"
+#include "Core/include/private/DTypes.hpp"
+#include "Core/include/private/DImage.hpp"
 
 using namespace std;
 

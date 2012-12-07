@@ -42,7 +42,7 @@ class BaseImage;
 
 struct stat;
 
-#include "DInstance.hpp"
+#include "private/DInstance.hpp"
 
 
 class _DCORE Core : public UniqueInstance<Core>

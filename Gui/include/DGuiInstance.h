@@ -31,7 +31,7 @@
 #ifndef _D_GUI_INSTANCE_H
 #define _D_GUI_INSTANCE_H
 
-#include "DInstance.hpp"
+#include "Core/include/private/DInstance.hpp"
 #include "DCommon.h"
 
 /**

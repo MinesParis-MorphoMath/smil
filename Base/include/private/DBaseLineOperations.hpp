@@ -31,7 +31,7 @@
 #define _BASE_LINE_OPERATIONS_HPP
 
 
-#include "DImage.hpp"
+#include "Core/include/private/DImage.hpp"
 
 template <class T> class Image;
 

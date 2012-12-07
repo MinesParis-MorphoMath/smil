@@ -30,8 +30,8 @@
 #ifndef _DIMAGE_H
 #define _DIMAGE_H
 
-#include "DImage.hpp"
-#include "DImage.hxx"
+#include "private/DImage.hpp"
+#include "private/DImage.hxx"
 
 #ifdef SMIL_WRAP_BIN
 #include "DImage_BIN.h"

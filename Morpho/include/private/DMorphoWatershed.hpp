@@ -39,7 +39,6 @@
 #include "DMorphoHierarQ.hpp"
 #include "DMorphoExtrema.hpp"
 #include "DMorphoLabel.hpp"
-#include "DImage.hpp"
 
 template <class T, class labelT>
 RES_T initWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq)

@@ -35,8 +35,8 @@
 
 #include <limits>
 
-#include "DTypes.hpp"
-#include "DMemory.hpp"
+#include "Core/include/private/DTypes.hpp"
+#include "Core/include/private/DMemory.hpp"
 
 using namespace std;
 

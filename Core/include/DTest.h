@@ -35,7 +35,7 @@
 #include <list>
 #include <sstream>
 
-#include "DTypes.hpp"
+#include "private/DTypes.hpp"
 #include "DCommon.h"
 #include "DTime.h"
 #include "DErrors.h"

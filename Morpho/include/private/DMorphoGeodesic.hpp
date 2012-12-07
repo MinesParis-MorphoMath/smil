@@ -30,11 +30,9 @@
 #ifndef _D_MORPHO_GEODESIC_HPP
 #define _D_MORPHO_GEODESIC_HPP
 
-#include "DLineArith.hpp"
 #include "DMorphImageOperations.hpp"
-#include "DImageArith.hpp"
-#include "DImageDraw.hpp"
 #include "DMorphoHierarQ.hpp"
+#include "Base/include/private/DImageDraw.hpp"
 
 /**
  * \ingroup Morpho

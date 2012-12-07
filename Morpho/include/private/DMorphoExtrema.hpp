@@ -31,7 +31,6 @@
 #define _D_MORPHO_EXTREMA_HPP
 
 #include "DMorphoGeodesic.hpp"
-#include "DImageArith.hpp"
 
 /**
  * \addtogroup Morpho

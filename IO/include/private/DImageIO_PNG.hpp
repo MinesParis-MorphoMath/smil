@@ -34,9 +34,9 @@
 
 #include <iostream>
 
-#include "DTypes.hpp"
-#include "DCommon.h"
-#include "DErrors.h"
+#include "Core/include/private/DTypes.hpp"
+#include "Core/include/DCommon.h"
+#include "Core/include/DErrors.h"
 
 /** \addtogroup IO
  * \{

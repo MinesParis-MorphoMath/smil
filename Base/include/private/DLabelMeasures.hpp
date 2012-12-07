@@ -35,7 +35,7 @@
  * @{
  */
 
-#include "DImage.hpp"
+#include "Core/include/private/DImage.hpp"
 #include <map>
 
 using namespace std;

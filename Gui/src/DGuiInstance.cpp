@@ -31,7 +31,7 @@
 
 #ifdef USE_QT
 #include "DQtGuiInstance.h"
-#include "DQtImageViewer.hpp"
+#include "Qt/DQtImageViewer.hpp"
 #endif // USE_QT
 
 Gui::Gui()

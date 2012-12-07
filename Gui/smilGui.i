@@ -71,15 +71,15 @@ TEMPLATE_WRAP_CLASS(ImageViewer, ImageViewer);
 #ifdef USE_QT
 
 %{
-#include "DQtImageViewer.hpp"
-#include "DQtImageViewer.hxx"
+#include "Qt/DQtImageViewer.hpp"
+#include "Qt/DQtImageViewer.hxx"
 
 %}
 
 class ImageViewerWidget
 {};
 
-%include "DQtImageViewer.hpp"
+%include "Qt/DQtImageViewer.hpp"
 TEMPLATE_WRAP_CLASS(QtImageViewer, QtImageViewer);
 
 #ifdef SWIGPYTHON

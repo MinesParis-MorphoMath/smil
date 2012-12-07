@@ -39,7 +39,7 @@
 #include <queue>
 #include <deque>
 
-#include "DTypes.hpp"
+#include "Core/include/private/DTypes.hpp"
 #include <DStructuringElement.h>
 
 

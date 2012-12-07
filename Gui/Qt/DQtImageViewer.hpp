@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -26,68 +26,64 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef USE_QT
 
+#ifndef _D_QT_IMAGE_VIEWER_HPP
+#define _D_QT_IMAGE_VIEWER_HPP
 
-#include "Qt/DQtImageViewer.hpp"
-#include "Qt/ImageViewerWidget.h"
-#include "DImage.hpp"
+#include <QApplication>
+#include <QGraphicsSceneEvent>
 
+#include "Gui/include/private/DImageViewer.hpp"
+#include "DTypes.h"
 
-template <>
-void _DGUI QtImageViewer<UINT8>::drawImage()
+#include "Gui/Qt/ImageViewerWidget.h"
+#include "Gui/Qt/ImageViewerApp.h"
+
+#define BASE_QT_VIEWER ImageViewerWidget
+
+template <class T> class Image;
+
+template <class T>
+class QtImageViewer : public ImageViewer<T>, public BASE_QT_VIEWER
 {
-    int sliceNbr = slider->value();
-    Image<UINT8>::sliceType lines = this->image->getSlices()[sliceNbr];
-
-    size_t w = this->image->getWidth();
-    size_t h = this->image->getHeight();
-
-    for (size_t j=0;j<h;j++, lines++)
-        memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
-}
-
-
-
-#ifdef SMIL_WRAP_BIN
-
-// #include "DBitArray.h"
-
-template <>
-void _DGUI QtImageViewer<BIN>::drawImage()
-{
-    Image<BIN>::lineType pixels = this->image->getPixels();
-    size_t w = this->image->getWidth();
-    size_t h = this->image->getHeight();
-
-    this->setImageSize(w, h);
-
-    const BIN *lIn;
-    UINT8 *lOut, *lEnd;
-    size_t bCount = (w-1)/BIN::SIZE + 1;
-
-    for (int j=0;j<h;j++)
+public:
+    typedef ImageViewer<T> parentClass;
+    QtImageViewer();
+    QtImageViewer(Image<T> *im);
+    ~QtImageViewer();
+    
+    virtual void setImage(Image<T> *im);
+    virtual void hide();
+    virtual void show();
+    virtual void showLabel();
+    virtual bool isVisible();
+    virtual void setName(const char *_name);
+    virtual void update();
+    void updateIcon()
     {
-	lIn = pixels + j*bCount;
-	lOut = this->qImage->scanLine(j);
-	lEnd = lOut + w;
-
-	for (int b=0;b<bCount;b++,lIn++)
-	{
-	  BIN_TYPE bVal = (*lIn).val;
-
-	  for (int i=0;i<BIN::SIZE;i++,lOut++)
-	  {
-	    if (lOut==lEnd)
-	      break;
-	    *lOut = bVal & (1 << i) ? 255 : 0;
-	  }
-	}
+	if (!this->image)
+	  return;
+	
+	BASE_QT_VIEWER::updateIcon();
     }
-}
+    virtual void drawOverlay(Image<T> &im);
+    virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
+    virtual void setCurSlice(int)
+    {
+        this->update();
+    }
+    
+    virtual void setLabelImage(bool val);
+    
+    
+protected:
+    virtual void displayPixelValue(size_t x, size_t y, size_t z);
+    virtual void displayMagnifyView(size_t x, size_t y, size_t z);
+    virtual void drawImage();
+//     ImageViewerWidget *qtViewer;
+//     ImageViewer *qtViewer;
+};
 
-#endif // SMIL_WRAP_BIN
 
 
-
-#endif // USE_QT
+#endif // _D_QT_IMAGE_VIEWER_HPP
