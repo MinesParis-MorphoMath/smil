@@ -62,7 +62,7 @@ class StrElt : public BaseObject
     
     void addPoint(int x, int y, int z=0);
     void addPoint(const IntPoint &pt);
-    const StrElt operator()(int s=1);
+    const StrElt operator()(int s=1) const;
     
     bool odd;
     seType seT;

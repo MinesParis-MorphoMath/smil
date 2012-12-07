@@ -193,9 +193,8 @@ void QtImageViewer<T>::drawOverlay(Image<T> &im)
 	pixels = *lines++;
 	for (size_t i=0;i<im.getWidth();i++)
 	{
-	  if (*pixels!=0)
-	    destLine[i] = overlayColorTable[(UINT8)*pixels];
-	  pixels++;
+	  if (pixels[i]!=0)
+	    destLine[i] = overlayColorTable[(UINT8)pixels[i]];
 	}
     }
 	

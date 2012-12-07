@@ -95,8 +95,8 @@ inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn,
     size_t lineLen = imIn.getWidth();
     size_t lineCount = imIn.getLineCount();
 
-    lineType *srcLines = imIn.getLines();
-    lineType *destLines = imOut.getLines();
+    sliceType srcLines = imIn.getLines();
+    sliceType destLines = imOut.getLines();
 
 #pragma omp parallel for
     for (size_t i=0;i<lineCount;i++)

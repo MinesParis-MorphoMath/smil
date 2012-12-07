@@ -137,8 +137,8 @@ public:
       return b;
     }
     
-    operator void* () { return (void*)this->intArray; }
-    operator char* () { return (char*)this->intArray; }
+//     operator void* () { return (void*)this->intArray; }
+//     operator char* () { return (char*)this->intArray; }
     void operator=(void *ptr) { this->intArray = (INT_TYPE*)ptr; }
     inline BitArray operator + (int dp)
     {

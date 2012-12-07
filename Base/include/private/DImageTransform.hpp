@@ -67,12 +67,43 @@ RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t startZ, si
     return copy(imIn, startX, startY, startZ, realSx, realSy, realSz, imOut, 0, 0, 0);
 }
 
+template <class T>
+RES_T crop(Image<T> &imInOut, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ)
+{
+    Image<T> tmpIm(imInOut, true); // clone
+    return crop(tmpIm, startX, startY, startZ, sizeX, sizeY, sizeZ, imInOut);
+}
+
 // 2D overload
 template <class T>
 RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t sizeX, size_t sizeY, Image<T> &imOut)
 {
     return crop(imIn, startX, startY, 0, sizeX, sizeY, 1, imOut);
 }
+
+template <class T>
+RES_T crop(Image<T> &imInOut, size_t startX, size_t startY, size_t sizeX, size_t sizeY)
+{
+    return crop(imInOut, startX, startY, 0, sizeX, sizeY, 1);
+}
+
+
+/**
+ * Add a border of size bSize around the original image
+ * 
+ */
+template <class T>
+RES_T addBorder(const Image<T> &imIn, size_t bSize, Image<T> &imOut)
+{
+    Image<T> tmpIm;
+    if (imIn->getDimension()==3)
+    {
+// 	tmpIm.setSize(imIn.getWidth()
+    }
+//     (imInOut, true); // clone
+//     return crop(tmpIm, startX, startY, startZ, sizeX, sizeY, sizeZ, imInOut);
+}
+
 
 
 /**

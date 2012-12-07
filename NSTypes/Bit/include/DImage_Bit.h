@@ -56,7 +56,7 @@ template <>
 void Image<Bit>::clone(const Image<Bit> &rhs);
 
 template <>
-RES_T Image<Bit>::setPixel(UINT offset, const Bit &value);
+RES_T Image<Bit>::setPixel(size_t offset, const Bit &value);
 
 
 

@@ -53,10 +53,11 @@ RES_T geoDil(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, cons
     ImageFreezer freeze(imOut);
     
     ASSERT((inf(imIn, imMask, imOut)==RES_OK));
+    StrElt tmpSE(se(1));
     
     for (UINT i=0;i<se.size;i++)
     {
-	ASSERT((dilate<T>(imOut, imOut, se)==RES_OK));
+	ASSERT((dilate<T>(imOut, imOut, tmpSE)==RES_OK));
 	ASSERT((inf(imOut, imMask, imOut)==RES_OK));
     }
     return RES_OK;
@@ -71,10 +72,11 @@ RES_T geoEro(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, cons
     ImageFreezer freeze(imOut);
     
     ASSERT((sup(imIn, imMask, imOut)==RES_OK));
+    StrElt tmpSE(se(1));
     
     for (UINT i=0;i<se.size;i++)
     {
-	ASSERT((erode(imOut, imOut, se)==RES_OK));
+	ASSERT((erode(imOut, imOut, tmpSE)==RES_OK));
 	ASSERT((sup(imOut, imMask, imOut)==RES_OK));
     }
     return RES_OK;

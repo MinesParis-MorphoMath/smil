@@ -98,7 +98,7 @@ void StrElt::addPoint(const IntPoint &pt)
     points.push_back(pt);
 }
 
-const StrElt StrElt::operator()(int s)
+const StrElt StrElt::operator()(int s) const
 {
     StrElt se(*this);
     se.size = s;

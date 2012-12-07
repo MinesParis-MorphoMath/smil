@@ -32,6 +32,7 @@
 
 #include "DCore.h"
 #include "Morpho/include/DStructuringElement.h"
+#include "Morpho/include/DMorphoInstance.h"
 
 #ifdef USE_OPEN_MP
 #include <omp.h>

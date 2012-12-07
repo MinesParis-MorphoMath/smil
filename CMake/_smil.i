@@ -311,11 +311,11 @@ class _linkManager():
 	  return False
 	
       def __str__(self):
-	res = find_object_names(self.imWatch)[-1] + " -> "
+	res = _find_object_names(self.imWatch)[-1] + " -> "
 	res += self.func.__name__ + " "
 	for obj in self.args:
 	  if hasattr(obj, "getClassName"):
-	    res += find_object_names(obj)[-1] + " "
+	    res += _find_object_names(obj)[-1] + " "
 	  else:
 	    res += str(obj) + " "
 	return res

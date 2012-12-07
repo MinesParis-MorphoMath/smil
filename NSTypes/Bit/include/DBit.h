@@ -33,6 +33,7 @@
 #include "DBitArray.h"
 #include "DImage_Bit.h"
 #include "DLineArith_Bit.h"
+#include "DImageHistogram_Bit.h"
 
 #include "Morpho/include/private/DMorphoArrow.hpp"
 #include "Morpho/include/private/DMorphImageOperations.hpp"

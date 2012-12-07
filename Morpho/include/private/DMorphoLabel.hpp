@@ -187,9 +187,9 @@ public:
 // 	for (map<size_t, size_t>::iterator it = lut.begin();it!=lut.end();it++)
 // 	    cout << int((*it).first) << " " << int((*it).second) << endl;
 	  
-	for (size_t i=0;i<imOut.getPixelCount();i++,this->pixelsOut++)
-	  if (*this->pixelsOut!=0)
-	    *this->pixelsOut = lut[*this->pixelsOut];
+	for (size_t i=0;i<imOut.getPixelCount();i++)
+	  if (this->pixelsOut[i]!=0)
+	    this->pixelsOut[i] = lut[this->pixelsOut[i]];
 	  
 	labels = index-1;
 	
