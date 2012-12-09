@@ -155,7 +155,7 @@ RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
     
     ASSERT_ALLOCATED(&imIn, &imOut);
   
-    if (!CHECK_SAME_SIZE(&imIn, &imOut))
+    if (!haveSameSize(&imIn, &imOut, NULL))
 	return copy<T1,T2>(imIn, 0, 0, 0, imOut, 0, 0, 0);
 
     typename Image<T1>::sliceType l1 = imIn.getLines();
@@ -175,7 +175,7 @@ RES_T copy(const Image<T> &imIn, Image<T> &imOut)
 {
     ASSERT_ALLOCATED(&imIn, &imOut);
 
-    if (!CHECK_SAME_SIZE(&imIn, &imOut))
+    if (!haveSameSize(&imIn, &imOut, NULL))
 	return copy<T,T>(imIn, 0, 0, 0, imOut, 0, 0, 0);
 
     typename Image<T>::lineType pixIn = imIn.getPixels();

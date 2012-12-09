@@ -313,7 +313,8 @@ protected:
 public:
     virtual void setName(const char *_name);
     virtual void show(const char *_name=NULL, bool labelImage=false);
-    virtual void showLabel(const char *_name=NULL) { show(_name, true); }
+    virtual void showLabel(const char *_name=NULL);
+    virtual void showNormal(const char *_name=NULL);
     virtual void hide() {  if (viewer) viewer->hide(); }
 
 };

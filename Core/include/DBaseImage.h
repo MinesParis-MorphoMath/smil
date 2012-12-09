@@ -35,6 +35,7 @@
 #include "DSlot.h"
 #include "DCommon.h"
 #include "DErrors.h"
+#include "DCoreInstance.h"
 
 class BaseImageViewer;
 
@@ -214,14 +215,37 @@ inline bool haveSameSize(const BaseImage *im, ...)
     size_t h = im->getHeight();
     size_t d = im->getDepth();
 
-    const BaseImage *obj;
-    while ((obj = va_arg(vargs, const BaseImage*)))
+    BaseImage *obj;
+    while ((obj = va_arg(vargs, BaseImage*)))
     {
-        if (obj->getWidth()!=w) return false;
-        if (obj->getHeight()!=h) return false;
-        if (obj->getDepth()!=d) return false;
+	if (obj->getWidth()!=w) return false;
+	if (obj->getHeight()!=h) return false;
+	if (obj->getDepth()!=d) return false;
     }
     va_end(vargs);
+    return true;
+}
+
+inline bool setSameSize(const BaseImage *im, ...)
+{
+    if (!im->isAllocated())
+      return false;
+    
+    va_list vargs;
+
+    va_start(vargs, im);
+    size_t w = im->getWidth();
+    size_t h = im->getHeight();
+    size_t d = im->getDepth();
+
+    BaseImage *obj;
+    
+    while ((obj = va_arg(vargs, BaseImage*)))
+    {
+	if (obj->getWidth()!=w || obj->getHeight()!=h || obj->getDepth()!=d)
+	  if (obj->setSize(w, h, d)!=RES_OK)
+	    return false;
+    }
     return true;
 }
 
@@ -245,10 +269,10 @@ inline bool areAllocated(const BaseImage *im, ...)
     return true;
 }
 
-#define CHECK_ALLOCATED(...) areAllocated(__VA_ARGS__, NULL)
+#define CHECK_ALLOCATED(...) (Core::getInstance()->autoResizeImages ? setSameSize(__VA_ARGS__, NULL) : areAllocated(__VA_ARGS__, NULL))
 #define ASSERT_ALLOCATED(...) ASSERT(CHECK_ALLOCATED(__VA_ARGS__), RES_ERR_BAD_ALLOCATION)
 
-#define CHECK_SAME_SIZE(...) haveSameSize(__VA_ARGS__, NULL)
+#define CHECK_SAME_SIZE(...) (Core::getInstance()->autoResizeImages ? setSameSize(__VA_ARGS__, NULL) : haveSameSize(__VA_ARGS__, NULL))
 #define ASSERT_SAME_SIZE(...) ASSERT(CHECK_SAME_SIZE(__VA_ARGS__), RES_ERR_BAD_SIZE)
 
 #endif // _DBASE_IMAGE_H

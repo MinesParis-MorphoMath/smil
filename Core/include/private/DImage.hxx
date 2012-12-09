@@ -190,6 +190,9 @@ ImageViewer<T> *Image<T>::getViewer()
 template <class T>
 void Image<T>::show(const char *_name, bool labelImage)
 {
+    if (isVisible())
+      return;
+    
     if (!this->allocated)
     {
       ERR_MSG("Image isn't allocated !");
@@ -213,8 +216,25 @@ void Image<T>::show(const char *_name, bool labelImage)
 
 }
 
+template <class T>
+void Image<T>::showLabel(const char *_name)
+{
+    if (_name)
+        setName(_name);
+    if (isVisible())
+      viewer->showLabel();
+    else show(_name, true);
+}
 
-
+template <class T>
+void Image<T>::showNormal(const char *_name)
+{
+    if (_name)
+        setName(_name);
+    if (isVisible())
+      viewer->show();
+    else show(_name, false);
+}
 
 template <class T>
 RES_T Image<T>::setSize(size_t w, size_t h, size_t d, bool doAllocate)

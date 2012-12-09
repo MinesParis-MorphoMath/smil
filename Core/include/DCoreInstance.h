@@ -56,6 +56,7 @@ protected:
 public:
     // Public interface
     bool keepAlive;
+    bool autoResizeImages;
     
     static void registerObject(BaseObject *obj);
     static void unregisterObject(BaseObject *obj);
