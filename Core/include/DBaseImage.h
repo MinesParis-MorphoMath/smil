@@ -269,7 +269,8 @@ inline bool areAllocated(const BaseImage *im, ...)
     return true;
 }
 
-#define CHECK_ALLOCATED(...) (Core::getInstance()->autoResizeImages ? setSameSize(__VA_ARGS__, NULL) : areAllocated(__VA_ARGS__, NULL))
+#define CHECK_ALLOCATED(...) (areAllocated(__VA_ARGS__, NULL))
+// #define CHECK_ALLOCATED(...) (Core::getInstance()->autoResizeImages ? setSameSize(__VA_ARGS__, NULL) : areAllocated(__VA_ARGS__, NULL))
 #define ASSERT_ALLOCATED(...) ASSERT(CHECK_ALLOCATED(__VA_ARGS__), RES_ERR_BAD_ALLOCATION)
 
 #define CHECK_SAME_SIZE(...) (Core::getInstance()->autoResizeImages ? setSameSize(__VA_ARGS__, NULL) : haveSameSize(__VA_ARGS__, NULL))
