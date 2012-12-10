@@ -40,6 +40,7 @@
 Core::Core ()
 // : BaseObject("Core", false),
   : keepAlive(false),
+    autoResizeImages(true),
     threadNumber(0)
 {
 #if DEBUG_LEVEL > 1
