@@ -35,7 +35,40 @@
 #include "DBit.h"
 
 
-class Test_Bit : public TestCase
+class Test_Copy : public TestCase
+{
+  virtual void run()
+  {
+      typedef Bit dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(7,7);
+      imType im2(im1);
+      
+       bool vec1[] = {
+	0, 0, 0, 0, 0, 1, 1,
+	1, 1, 0, 0, 0, 1, 0,
+	0, 0, 0, 0, 0, 1, 0,
+	0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 1, 0, 0,
+	0, 0, 0, 0, 0, 0, 1,
+	0, 1, 0, 0, 0, 1, 1,
+      };
+      
+      im1 << BitArray(vec1, 49);
+      
+      copy(im1, im2);
+      
+      TEST_ASSERT(im1==im2);
+      if (retVal==RES_ERR)
+      {
+	  im1.printSelf(1);
+	  im2.printSelf(1);
+      }
+  }
+};
+
+class Test_Trans : public TestCase
 {
   virtual void run()
   {
@@ -55,18 +88,87 @@ class Test_Bit : public TestCase
 	0, 0, 0, 0, 0, 0, 1,
 	0, 1, 0, 0, 0, 1, 1,
       };
+      im1 << BitArray(vec1, 49);
       
-      for (int i=0; i<49; i++)
-	im1.setPixel(i, vec1[i]);
+      BitArray bit(vec1, 49);
+      BitArray bit2(vec1, 49);
       
-      copy(im1, im2);
+      trans(im1, 2, -2, im2);
       
-      TEST_ASSERT(im1==im2);
+      bool vec3[] = {
+	0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 1, 1, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 0, 
+	0, 0, 0, 0, 0, 0, 1, 
+      };
+      im3 << BitArray(vec3, 49);
+      
+      TEST_ASSERT(im2==im3);
       if (retVal==RES_ERR)
       {
-	  im1.printSelf(1);
+	  im3.printSelf(1);
 	  im2.printSelf(1);
       }
+  }
+};
+
+class Test_Sup : public TestCase
+{
+  virtual void run()
+  {
+      typedef Bit dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+      
+      bool vec1[] = {
+	0, 0, 0, 0, 0, 1, 1,
+	1, 1, 0, 0, 0, 1, 0,
+	0, 0, 0, 0, 0, 1, 0,
+	0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 1, 0, 0,
+	0, 0, 0, 0, 0, 0, 1,
+	0, 1, 0, 0, 0, 1, 1,
+      };
+      im1 << BitArray(vec1, 49);
+      
+      bool vec2[] = {
+	0, 1, 1, 0, 0, 1, 0,
+	1, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0,
+	0, 1, 0, 1, 0, 0, 1,
+	0, 0, 0, 0, 0, 0, 0,
+	1, 1, 1, 0, 0, 0, 1,
+	0, 1, 0, 0, 1, 0, 0,
+      };
+      im2 << BitArray(vec2, 49);
+      
+      bool vec3[] = {
+	0, 1, 1, 0, 0, 1, 1, 
+	1, 1, 0, 0, 0, 1, 0, 
+	0, 0, 0, 0, 0, 1, 0, 
+	0, 1, 0, 1, 0, 0, 1, 
+	0, 0, 0, 0, 1, 0, 0, 
+	1, 1, 1, 0, 0, 0, 1, 
+	0, 1, 0, 0, 1, 1, 1
+      };
+      
+      sup(im1, im2, im3);
+      
+      im2 << BitArray(vec3, 49);
+      
+      TEST_ASSERT(im2==im3);
+      if (retVal==RES_ERR)
+      {
+	  im2.printSelf(1);
+	  im3.printSelf(1);
+      }
+      
   }
 };
 
@@ -75,14 +177,10 @@ class Test_Bit : public TestCase
 int main(int argc, char *argv[])
 {
       TestSuite ts;
-      ADD_TEST(ts, Test_Bit);
+      ADD_TEST(ts, Test_Copy);
+      ADD_TEST(ts, Test_Trans);
+      ADD_TEST(ts, Test_Sup);
       
-      UINT BENCH_NRUNS = 5E3;
-      Image_UINT8 im1(1024, 1024), im2(im1);
-//       BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
-//       BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
-// cout << endl;
-//       tc(im1, im2, sSE());
       return ts.run();
   
 }

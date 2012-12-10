@@ -91,6 +91,14 @@ public:
     {
         setSize(_bitWidth, _bitHeight);
     }
+    BitArray(bool *arr, UINT _bitWidth, UINT _bitHeight=1)
+            : index(0), intArray(NULL)
+    {
+        setSize(_bitWidth, _bitHeight);
+	createIntArray();
+	for (size_t i=0;i<_bitWidth;i++)
+	  setValue(i, arr[i]);
+    }
     ~BitArray()
     {
 	intArray = NULL;

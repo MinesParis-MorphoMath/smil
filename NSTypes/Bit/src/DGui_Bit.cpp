@@ -35,31 +35,32 @@
 
 #include "DBitArray.h"
 
+
+
 template <>
 void _DGUI QtImageViewer<Bit>::drawImage()
 {
-    Image<Bit>::lineType pixels = this->image->getPixels();
-    UINT w = this->image->getWidth();
-    UINT h = this->image->getHeight();
+    int sliceNbr = slider->value();
+    Image<Bit>::sliceType lines = this->image->getSlices()[sliceNbr];
 
-    this->setImageSize(w, h);
+    size_t w = this->image->getWidth();
+    size_t h = this->image->getHeight();
 
-    BIN* data = (BIN*)pixels.intArray;
-    const BIN *lIn;
+    const BitArray::INT_TYPE *lIn;
     UINT8 *lOut, *lEnd;
-    UINT bCount = (w-1)/BIN::SIZE + 1;
+    UINT bCount = BitArray::INT_SIZE(w);
 
     for (int j=0;j<h;j++)
     {
-	lIn = data + j*bCount;
+	lIn = lines[j].intArray;
 	lOut = this->qImage->scanLine(j);
 	lEnd = lOut + w;
 
 	for (int b=0;b<bCount;b++,lIn++)
 	{
-	  BIN_TYPE bVal = (*lIn).val;
+	  BitArray::INT_TYPE bVal = (*lIn);
 
-	  for (int i=0;i<BIN::SIZE;i++,lOut++)
+	  for (int i=0;i<BitArray::INT_TYPE_SIZE;i++,lOut++)
 	  {
 	    if (lOut==lEnd)
 	      break;

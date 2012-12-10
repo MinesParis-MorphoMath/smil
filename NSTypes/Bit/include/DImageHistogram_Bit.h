@@ -27,29 +27,35 @@
  */
 
 
+#ifndef _D_IMAGE_HISTOGRAM_BIT_H
+#define _D_IMAGE_HISTOGRAM_BIT_H
 
-#include "DCore.h"
-#include "DMorpho.h"
-#include "DGui.h"
-#include "DIO.h"
-#include "DBit.h"
+#include "Base/include/private/DImageHistogram.hpp"
 
-int main(int argc, char *argv[])
+template <>
+std::map<Bit, UINT> histogram(const Image<Bit> &imIn)
 {
-    typedef Bit dataType;
-    typedef Image<dataType> imType;
-    
-    imType im1(1024, 1024);
-    imType im2(im1);
-    
-    UINT BENCH_NRUNS = 1E3;
-    BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(erode, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(erode, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(open, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(open, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(close, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(close, "sSE", im1, im2, sSE());    
+    ERR_MSG("Not implemented for type Bit");
 }
+
+template <>
+map<Bit, UINT> histogram(const Image<Bit> &imIn, const Image<Bit> &imMask)
+{
+    ERR_MSG("Not implemented for type Bit");
+}
+
+template <>
+RES_T enhanceContrast(const Image<Bit> &imIn, Image<Bit> &imOut, double sat)
+{
+    return RES_ERR_NOT_IMPLEMENTED;
+}
+
+template <>
+vector<Bit> otsuThreshold(const Image<Bit> &imIn, Image<Bit> &imOut, UINT nbrThresholds)
+{
+    ERR_MSG("Not implemented for type Bit");
+}
+
+
+#endif // _D_IMAGE_HISTOGRAM_BIT_H
 

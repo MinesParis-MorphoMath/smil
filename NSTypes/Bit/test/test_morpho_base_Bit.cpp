@@ -54,22 +54,9 @@ class Test_Bit : public TestCase
 	0, 0, 0, 0, 0, 0, 1,
 	0, 1, 0, 0, 0, 1, 1,
       };
+      im1 << BitArray(vec1, 49);
       
-      for (int i=0; i<49; i++)
-	im1.setPixel(i, vec1[i]);
-      im1.printSelf(1);
-      
-      
-//       fill(im2, Bit(1));
-//       im2.printSelf(1);
-      copy(im1, im2);
-//       fill
-//       im2.printSelf(1);
-      
-//       im1 << vec1;
-//       im1.printSelf(1);
-      
-      dataType dilateSquVec[] = {
+      bool dilateSquVec[] = {
 	1, 1, 1, 0, 1, 1, 1,
 	1, 1, 1, 0, 1, 1, 1,
 	1, 1, 1, 0, 1, 1, 1,
@@ -78,23 +65,27 @@ class Test_Bit : public TestCase
 	1, 1, 1, 1, 1, 1, 1,
 	1, 1, 1, 0, 1, 1, 1
       };
-      im3 << dilateSquVec;
-      for (int i=0; i<49; i++)
-	im3.setPixel(i, dilateSquVec[i]);
-
+      im3 << BitArray(dilateSquVec, 49);
+      
       // The specialized way
       dilate(im1, im2, sSE());
       TEST_ASSERT(im2==im3);      
-      im2.printSelf(1);
+      if (retVal==RES_ERR)
+      {
+	  im3.printSelf(1);
+	  im2.printSelf(1);
+      }
       
       // The generic way
       StrElt se;
       se.points = sSE().points;
       dilate(im1, im2, se);
       TEST_ASSERT(im2==im3);      
-//       im1.printSelf(1);
-//       im2.printSelf(1);
-//       im3.printSelf(1);
+      if (retVal==RES_ERR)
+      {
+	  im3.printSelf(1);
+	  im2.printSelf(1);
+      }
   }
 };
 

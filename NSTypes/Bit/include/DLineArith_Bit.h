@@ -31,8 +31,8 @@
 #define _D_LINE_ARITH_BIT_H
 
 
-#include "DBitArray.h"
 #include "Base/include/private/DLineArith.hpp"
+#include "DBitArray.h"
 
 /**
  * \ingroup Arith
@@ -40,7 +40,7 @@
  */
 
 template <>
-inline void copyLine<Bit>(const typename Image<Bit>::lineType &lIn, const size_t &size, typename Image<Bit>::lineType &lOut)
+void copyLine<Bit>(const typename Image<Bit>::lineType &lIn, const size_t &size, typename Image<Bit>::lineType &lOut)
 {
 //     copyLine<BitArray::INT_TYPE>(lIn.intArray, BitArray::INT_SIZE(size), lOut.intArray);
 //     UINT realSize = BitArray::INT_SIZE(size)*sizeof(BitArray::INT_TYPE);
@@ -59,13 +59,13 @@ inline void copyLine<Bit>(const typename Image<Bit>::lineType &lIn, const size_t
     }
     else
     {
-	for (int i=0;i<size;i++)
+	for (size_t i=0;i<size;i++)
 	  lOut[i] = lIn[i];
     }
 }
 
 // template <class T1>
-// inline void copyLine(T1 *lIn, int size, BitArray lOut)
+// inline void copyLine(T1 *lIn, size_t size, BitArray lOut)
 // {
 //     UINT nBin = Bit::binLen(size);
 //     T1 *pIn = lIn;
@@ -130,18 +130,18 @@ template <>
 struct fillLine<Bit> : public unaryLineFunctionBase<Bit>
 {
     fillLine() {}
-    fillLine(BitArray lInOut, int size, Bit value) { this->_exec(lInOut, size, value); }
+    fillLine(BitArray lInOut, size_t size, Bit value) { this->_exec(lInOut, size, value); }
     
-    inline void _exec(BitArray lIn, int size, BitArray lOut) {}
-    inline void _exec(BitArray lInOut, int size, Bit value)
+    inline void _exec(BitArray lIn, size_t size, BitArray lOut) {}
+    inline void _exec(BitArray lInOut, size_t size, Bit value)
     {
 	BitArray::INT_TYPE intVal = (bool)value ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
-	for (int i=0;i<BitArray::INT_SIZE(size);i++)
+	for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
 	  lInOut.intArray[i] = intVal;
     }
 };
 
-inline void bitShiftLeft(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit borderValue)
+void bitShiftLeft(BitArray lIn, int dx, size_t lineLen, BitArray lOut, Bit borderValue)
 {
     UINT realLen = BitArray::INT_SIZE(lineLen);
     UINT dxBytes = dx/BitArray::INT_TYPE_SIZE;
@@ -169,7 +169,7 @@ inline void bitShiftLeft(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit b
 	*bOut = (*bIn << lMov) | (*(bIn-1) >> rMov);
 }
 
-inline void bitShiftRight(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit borderValue)
+void bitShiftRight(BitArray lIn, int dx, size_t lineLen, BitArray lOut, Bit borderValue)
 {
     UINT realLen = BitArray::INT_SIZE(lineLen);
     UINT lenDiff = lIn.getBitPadX();
@@ -181,7 +181,7 @@ inline void bitShiftRight(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit 
     BitArray::INT_TYPE *bOut = lOut.intArray + realLen-1;
     BitArray::INT_TYPE bBorder = (bool)borderValue ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
     
-    if (dxReal>=lineLen)
+    if (dx>=lineLen)
     {
 	fillLine<Bit>(lOut, lineLen, borderValue);
 	return;
@@ -205,7 +205,7 @@ inline void bitShiftRight(BitArray lIn, int dx, int lineLen, BitArray lOut, Bit 
 }
 
 template <>
-inline void shiftLine<Bit>(const Image<Bit>::lineType &lIn, int dx, size_t lineLen, Image<Bit>::lineType &lOut, Bit borderValue)
+void shiftLine<Bit>(const Image<Bit>::lineType &lIn, int dx, size_t lineLen, Image<Bit>::lineType &lOut, Bit borderValue)
 {
     if (dx==0)
         copyLine<Bit>(lIn, lineLen, lOut);
@@ -219,9 +219,9 @@ inline void shiftLine<Bit>(const Image<Bit>::lineType &lIn, int dx, size_t lineL
 template <>
 struct invLine<Bit> : public unaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn, int size, BitArray lOut)
+    inline void _exec(BitArray lIn, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = ~(lIn.intArray[i]);
     }
 };
@@ -229,9 +229,9 @@ struct invLine<Bit> : public unaryLineFunctionBase<Bit>
 template <>
 struct addLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] | lIn2.intArray[i];
     }
 };
@@ -239,9 +239,9 @@ struct addLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct addNoSatLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] ^ lIn2.intArray[i];
     }
 };
@@ -249,9 +249,9 @@ struct addNoSatLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct subLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] & ~lIn2.intArray[i];
     }
 };
@@ -259,9 +259,9 @@ struct subLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct subNoSatLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] ^ lIn2.intArray[i];
     }
 };
@@ -269,19 +269,20 @@ struct subNoSatLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct supLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    typedef typename Image<Bit>::lineType lineType;
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
-            lOut.intArray[i] = lIn1.intArray[i] | lIn2.intArray[i];
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
+            lOut.intArray[i] = (lIn1.intArray[i] | lIn2.intArray[i]);
     }
 };
 
 template <>
 struct infLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] & lIn2.intArray[i];
     }
 };
@@ -289,9 +290,9 @@ struct infLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct grtLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] & ~lIn2.intArray[i];
     }
 };
@@ -299,9 +300,9 @@ struct grtLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct grtOrEquLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] | ~lIn2.intArray[i];
     }
 };
@@ -309,9 +310,9 @@ struct grtOrEquLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct lowLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = ~lIn1.intArray[i] & lIn2.intArray[i];
     }
 };
@@ -319,9 +320,9 @@ struct lowLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct lowOrEquLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = ~lIn1.intArray[i] | lIn2.intArray[i];
     }
 };
@@ -332,7 +333,7 @@ struct equLine<Bit> : public binaryLineFunctionBase<Bit>
     typedef typename Image<Bit>::lineType lineType;
     inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = ~(lIn1.intArray[i] ^ lIn2.intArray[i]);
     }
 };
@@ -340,9 +341,9 @@ struct equLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct diffLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] ^ lIn2.intArray[i];
     }
 };
@@ -350,9 +351,9 @@ struct diffLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct mulLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] & lIn2.intArray[i];
     }
 };
@@ -360,9 +361,9 @@ struct mulLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct mulNoSatLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] & lIn2.intArray[i];
     }
 };
@@ -370,9 +371,9 @@ struct mulNoSatLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct divLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] | ~lIn2.intArray[i];
     }
 };
@@ -380,9 +381,9 @@ struct divLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct logicAndLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] & lIn2.intArray[i];
     }
 };
@@ -390,9 +391,9 @@ struct logicAndLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct logicOrLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = lIn1.intArray[i] | lIn2.intArray[i];
     }
 };
@@ -400,9 +401,9 @@ struct logicOrLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct testLine<Bit> : public tertiaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, BitArray lIn3, int size, BitArray lOut)
+    inline void _exec(BitArray lIn1, BitArray lIn2, BitArray lIn3, size_t size, BitArray lOut)
     {
-        for (int i=0;i<BitArray::INT_SIZE(size);i++)
+        for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = (lIn1.intArray[i] & lIn2.intArray[i]) | (~lIn1.intArray[i] & lIn3.intArray[i]);
     }
 };

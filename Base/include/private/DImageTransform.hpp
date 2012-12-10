@@ -220,7 +220,7 @@ RES_T trans(Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut, T borderVal
 }
 
 template <class T>
-RES_T trans(Image<T> &imIn, int dx, int dy, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
+RES_T trans(Image<T> &imIn, int dx, int dy, Image<T> &imOut, T borderValue = ImDtTypes<T>::min())
 {
     return trans<T>(imIn, dx, dy, 0, imOut, borderValue);
 }
