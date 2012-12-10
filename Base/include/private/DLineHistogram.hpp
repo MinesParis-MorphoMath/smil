@@ -41,8 +41,9 @@ template <class T>
 struct threshLine : public unaryLineFunctionBase<T>
 {
     T minVal, maxVal, trueVal, falseVal;
+    typedef typename ImDtTypes<T>::lineType lineType;
     
-    inline void _exec(T* lIn, int size, T* lOut)
+    inline void _exec(const lineType &lIn, int size, lineType &lOut)
     {
 	for(int i=0;i<size;i++)
 	    lOut[i] = lIn[i] >= minVal && lIn[i] <= maxVal  ? trueVal : falseVal;
@@ -54,8 +55,9 @@ struct stretchHistLine : public unaryLineFunctionBase<T>
 {
     T inOrig, outOrig;
     double coeff;
+    typedef typename ImDtTypes<T>::lineType lineType;
     
-    inline void _exec(T* lIn, int size, T* lOut)
+    inline void _exec(const lineType &lIn, int size, lineType &lOut)
     {
 	double newVal;
 	

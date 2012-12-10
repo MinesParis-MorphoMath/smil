@@ -199,7 +199,10 @@ def Image(*args):
 	fillImg = True
 
     if fillImg and img.isAllocated():
+      try:
 	fill(img, 0)
+      except:
+	pass
     return img
 
 

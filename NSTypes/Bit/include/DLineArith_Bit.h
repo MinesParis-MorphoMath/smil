@@ -329,7 +329,8 @@ struct lowOrEquLine<Bit> : public binaryLineFunctionBase<Bit>
 template <>
 struct equLine<Bit> : public binaryLineFunctionBase<Bit>
 {
-    inline void _exec(BitArray lIn1, BitArray lIn2, int size, BitArray lOut)
+    typedef typename Image<Bit>::lineType lineType;
+    inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
     {
         for (int i=0;i<BitArray::INT_SIZE(size);i++)
             lOut.intArray[i] = ~(lIn1.intArray[i] ^ lIn2.intArray[i]);

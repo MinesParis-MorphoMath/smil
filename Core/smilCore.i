@@ -65,7 +65,8 @@ class exception{};
 //%array_class(UINT8, Uint8Array);
 
 // BitArray
-#ifdef SMIL_WRAP_Bit
+#ifdef SMIL_WRAP_BIT
+%ignore BitArray::operator[];
 %extend BitArray
 {
 //	std::string  __str__() {
@@ -81,7 +82,7 @@ class exception{};
 }
 %ignore BitArray::operator++;
 %include "DBitArray.h"
-#endif // SMIL_WRAP_Bit
+#endif // SMIL_WRAP_BIT
 
 %include "DTypes.hpp"
 

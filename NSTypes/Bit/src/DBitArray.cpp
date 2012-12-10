@@ -29,6 +29,7 @@
 
 #include "DBitArray.h"
 
+// const BitArray::INT_TYPE BitArray::INT_TYPE_SIZE = sizeof(INT_TYPE)*CHAR_BIT;
 
 
 void BitArray::setSize(UINT _bitWidth, UINT _bitHeight)

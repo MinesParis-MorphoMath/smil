@@ -397,8 +397,6 @@ inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(const lineTyp
 template <class T, class lineFunction_T>
 RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se)
 {
-	int lineCount = imIn.getLineCount();
-	
 	int sePtsNumber = se.points.size();
 	if (sePtsNumber==0)
 	    return RES_OK;
@@ -490,8 +488,6 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const ima
 template <class T, class lineFunction_T>
 RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(const imageType &imIn, imageType &imOut)
 {
-    int lineCount = imIn.getLineCount();
-    
     int nSlices = imIn.getSliceCount();
     int nLines = imIn.getHeight();
 
@@ -592,7 +588,7 @@ RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_squSE(const image
 }
 
 template <class T, class lineFunction_T>
-RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_2_H_points(const imageType &imIn, int dx, imageType &imOut, bool oddLines)
+RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_2_H_points(const imageType &imIn, int dx, imageType &imOut, bool)
 {
       int lineCount = imIn.getLineCount();
       

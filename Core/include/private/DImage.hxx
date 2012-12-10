@@ -698,7 +698,7 @@ Image<T>& Image<T>::operator &= (const T &value)
 template <class T>
 Image<T>::operator bool()
 { 
-    return vol(*this)==numeric_limits<T>::max()*pixelCount; 
+    return vol(*this)==ImDtTypes<T>::max()*pixelCount; 
 }
  
 template <class T>

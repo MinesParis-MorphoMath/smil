@@ -151,8 +151,9 @@ inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn
     lineType *srcLines2 = imIn2.getLines();
     lineType *destLines = imOut.getLines();
 
-    int i, chunk = 100;
+    int i;
 #ifdef USE_OPEN_MP
+    int chunk = 100;
     #pragma omp parallel shared(srcLines1,srcLines2,destLines,chunk) private(i)
 #endif // USE_OPEN_MP
     {

@@ -50,9 +50,9 @@ struct unaryLineFunctionBase
 	this->_exec(lineIn, size, lineOut);
     }
     
-    virtual void _exec(lineType lineIn, size_t size, lineType lineOut) {}
+    virtual void _exec(lineType, size_t, lineType) {}
     virtual void _exec_aligned(lineType lineIn, size_t size, lineType lineOut) { _exec(lineIn, size, lineOut); }
-    virtual void _exec(lineType lInOut, size_t size, T value) {}
+    virtual void _exec(lineType, size_t, T) {}
     virtual void _exec_aligned(lineType lineIn, size_t size, T value) { _exec(lineIn, size, value); }
     inline void operator()(lineType lineIn, size_t size, lineType lineOut)
     { 
@@ -100,7 +100,7 @@ struct binaryLineFunctionBase
     typedef typename Image<T>::lineType lineType;
     typedef typename Image<T>::sliceType sliceType;
     
-    virtual void _exec(lineType lineIn1, lineType lineIn2, size_t size, lineType lineOut) {}
+    virtual void _exec(lineType, lineType, size_t, lineType) {}
     virtual void _exec_aligned(lineType lineIn1, lineType lineIn2, size_t size, lineType lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
     inline void operator()(lineType lineIn1, lineType lineIn2, size_t size, lineType lineOut)
     { 
