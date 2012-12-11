@@ -41,38 +41,37 @@ RES_T readBMP(const char *filename, Image<UINT8> &image)
         cout << "Error: Cannot open file " << filename << " for input." << endl;
         return RES_ERR;
     }
+    
+    FileCloser fileCloser(fp);
+    
     bmpFileHeader fHeader;
     bmpInfoHeader iHeader;
 
     //read the bitmap file header
-    if (!fread(&fHeader, sizeof(bmpFileHeader), 1 ,fp))
-        return RES_ERR;
+    ASSERT(fread(&fHeader, sizeof(bmpFileHeader), 1 ,fp));
 
     //verify that this is a bmp file by check bitmap id
-    if (fHeader.bfType !=0x4D42)
-    {
-        fclose(fp);
-        return RES_ERR;
-    }
+    ASSERT((fHeader.bfType == 0x4D42));
+    
     //read the bitmap info header
-    if (!fread(&iHeader, sizeof(bmpInfoHeader), 1, fp))
-        return RES_ERR;
+    ASSERT(fread(&iHeader, sizeof(bmpInfoHeader), 1, fp));
 
+    ASSERT((iHeader.biBitCount==8), "Not an 8bit image", RES_ERR);
+    
     //move file point to the begging of bitmap data (skip palette information)
     fseek(fp, fHeader.bfOffBits, SEEK_SET);
 
     int width = iHeader.biWidth;
     int height = iHeader.biHeight;
 
-    image.setSize(width, height);
-    Image<UINT8>::lineType *lines = image.getLines();
+    ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
+    
+    Image<UINT8>::sliceType lines = image.getLines();
 
     for (int i=height-1;i>=0;i--)
         if (!fread(lines[i], width*sizeof(UINT8), 1, fp))
             break;
 
-    fclose(fp);
-    
     image.modified();
 
     return RES_OK;

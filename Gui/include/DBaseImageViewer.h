@@ -36,6 +36,11 @@
 template <class T>
 class Image;
 
+/**
+ * \ingroup Gui
+ */
+/*@{*/
+
 class BaseImageViewer : public BaseObject
 {
 public:
@@ -63,5 +68,7 @@ protected:
     virtual void drawImage() {}
     bool labelImage;
 };
+
+/*@}*/
 
 #endif // _D_BASE_IMAGE_VIEWER_H

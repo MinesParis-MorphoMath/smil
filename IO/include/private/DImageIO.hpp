@@ -55,6 +55,22 @@ extern _DIO string getFileExtension(const char *fileName);
 extern _DIO RES_T getHttpFile(const char *url, const char *outfilename);
 #endif // USE_CURL
 
+class FileCloser
+{
+public:
+    FileCloser(FILE *_fp)
+    {
+	fp = _fp;
+    }
+    ~FileCloser()
+    {
+	if (fp)
+	  fclose(fp);
+    }
+protected:
+    FILE *fp;
+};
+
 /**
  * Read image file
  */
@@ -102,18 +118,6 @@ RES_T read(const char* filename, Image<T> &image)
         cout << "File type not supported" << endl;
 	res = RES_ERR;
     }
-
-//     if (res==RES_OK)
-//     {
-// // 	if (!image.getName())
-// // 	{
-// // 	    string fName = filename;
-// // 	    int pos = fName.find_last_of("/\\");
-// // 	    fName = fName.substr(pos+1);
-// // 	    image.setName(fName.c_str());
-// // 	}
-// 	image.modified();
-//     }
 
     return res;
 }

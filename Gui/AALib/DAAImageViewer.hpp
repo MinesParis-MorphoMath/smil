@@ -37,6 +37,11 @@
 #include <aalib.h>
 template <class T> class Image;
 
+/**
+ * AA (Ascii Art) image viewer
+ * 
+ * Requires the <a href="http://aa-project.sourceforge.net/aalib/" target="_blank">AA lib</a>. To use it, you must set the option USE_AALIB to ON.
+ */
 template <class T>
 class AaImageViewer : public ImageViewer<T>
 {

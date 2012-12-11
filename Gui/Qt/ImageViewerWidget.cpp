@@ -32,6 +32,13 @@
 #include <QTimer>
 #include <QApplication>
 
+#ifdef USE_QWT
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+#include <qwt_series_data.h>
+#endif // USE_QWT
+
+
 #include <math.h>
 
 #include "ImageViewerWidget.h"
@@ -549,6 +556,9 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
     case Qt::Key_L:
 	setLabelImage(!drawLabelized); // Switch label mode
 	break;
+    case Qt::Key_H:
+	displayHistogram();
+	break;
     }
 
     emit onKeyPressEvent(event);
@@ -564,5 +574,34 @@ void ImageViewerWidget::dragEnterEvent(QDragEnterEvent *event)
     if (event->mimeData()->hasUrls())
       event->acceptProposedAction();
 }
+
+
+#ifdef USE_QWT    
+
+void ImageViewerWidget::plotData(QwtPointSeriesData *data)
+{
+  cout << "ok" << endl;
+    QwtPlot *histoPlot = new QwtPlot();
+    histoPlot->setFixedSize(480,280);
+    histoPlot->setCanvasBackground(Qt::white);
+  
+    QwtPlotCurve *curve1 = new QwtPlotCurve("Image Histogram");
+  
+    QwtPointSeriesData *myData = new QwtPointSeriesData();
+  
+    QVector<QPointF> samples;
+    samples.push_back(QPointF(1.0,1.0));
+    samples.push_back(QPointF(2.0,2.0));
+    samples.push_back(QPointF(3.0,3.0));
+    samples.push_back(QPointF(4.0,5.0));
+    myData->setSamples(samples);
+    curve1->setData(myData);
+  
+    curve1->attach(histoPlot);
+    histoPlot->replot();
+    histoPlot->show();
+}
+
+#endif // USE_QWT    
 
 

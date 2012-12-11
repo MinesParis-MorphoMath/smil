@@ -271,7 +271,7 @@ def bench(func, *args, **keywords):
 
 
     
-class _linkManager():
+class linkManager():
     def __init__(self):
       self.links = []
       
@@ -376,7 +376,6 @@ class _linkManager():
     def __del__(self):
       self.clear()
       
-links = _linkManager()
 
 
 %}

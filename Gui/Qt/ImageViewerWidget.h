@@ -36,9 +36,12 @@
 #include <QSlider>
 #include <QGridLayout>
 
+
 #include "MagnifyView.h"
 #include "DBinary.h"
 #include "DCommon.h"
+
+class QwtPointSeriesData;
 
 class _DGUI QImageGraphicsScene : public QGraphicsScene
 {
@@ -85,6 +88,11 @@ public:
     QImage *qOverlayImage;
     
     bool drawLabelized;
+    
+    void plotData(QwtPointSeriesData *data);
+    
+    virtual void displayHistogram() {}
+    
 protected:
     QGridLayout *layout;
     
@@ -131,7 +139,7 @@ protected:
     
     QSlider *slider;
 
-    virtual void dropEvent(QDropEvent *de) {};
+    virtual void dropEvent(QDropEvent *de) {}
     void dragMoveEvent(QDragMoveEvent *de);
     void dragEnterEvent(QDragEnterEvent *event);
     

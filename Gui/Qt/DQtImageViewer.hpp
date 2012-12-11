@@ -75,6 +75,7 @@ public:
     
     virtual void setLabelImage(bool val);
     
+    virtual void displayHistogram();
     
 protected:
     virtual void displayPixelValue(size_t x, size_t y, size_t z);

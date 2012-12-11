@@ -35,6 +35,13 @@
 #include <QList>
 #include <QUrl>
 
+#ifdef USE_QWT
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+#include <qwt_series_data.h>
+#endif // USE_QWT
+
+
 #include "Core/include/private/DImage.hpp"
 
 
@@ -283,6 +290,25 @@ void QtImageViewer<T>::dropEvent(QDropEvent *de)
 	  files.push_back((*it).path().toStdString());
 	read(files, *this->image);
     }
+}
+
+template <class T>
+void QtImageViewer<T>::displayHistogram()
+{
+    cout << "ok" << endl;
+#ifdef USE_QWT
+    QwtPointSeriesData *myData = new QwtPointSeriesData();
+  
+    QVector<QPointF> samples;
+    samples.push_back(QPointF(1.0,1.0));
+    samples.push_back(QPointF(2.0,2.0));
+    samples.push_back(QPointF(3.0,3.0));
+    samples.push_back(QPointF(4.0,5.0));
+    myData->setSamples(samples);
+
+    BASE_QT_VIEWER::plotData(myData);
+// #else // USE_QWT
+#endif // USE_QWT
 }
 
 #endif // _D_QT_IMAGE_VIEWER_HXX
