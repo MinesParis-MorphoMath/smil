@@ -119,6 +119,43 @@ RES_T read(const char* filename, Image<T> &image)
 }
 
 /**
+ * Read a stack of 2D images
+ * 
+ * The output 3D image will have the width and height of the first (2D) image and the number of images for depth.
+ */
+template <class T>
+RES_T read(const vector<string> fileList, Image<T> &image)
+{
+    UINT nFiles = fileList.size();
+    if (nFiles==0)
+      return RES_ERR;
+    
+    vector<string>::const_iterator it = fileList.begin();
+    
+    Image<T> tmpIm;
+    ASSERT((read((*it++).c_str(), tmpIm)==RES_OK));
+    
+    size_t w = tmpIm.getWidth(), h = tmpIm.getHeight();
+    ImageFreezer freezer(image);
+    
+    ASSERT((image.setSize(w, h, nFiles)==RES_OK));
+    ASSERT((fill(image, T(0))==RES_OK));
+    ASSERT((copy(tmpIm, 0, 0, 0, image, 0, 0, 0)==RES_OK));
+    
+    size_t z = 1;
+    
+    while(it!=fileList.end())
+    {
+	ASSERT((read((*it).c_str(), tmpIm)==RES_OK));
+	ASSERT((copy(tmpIm, 0, 0, 0, image, 0, 0, z)==RES_OK));
+	it++;
+	z++;
+    }
+    
+    return RES_OK;
+}
+
+/**
  * Write image file
  */
 template <class T>

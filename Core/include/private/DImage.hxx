@@ -33,7 +33,7 @@
 #include "Core/include/DCoreEvents.h"
 #include "Base/include/private/DMeasures.hpp"
 #include "Base/include/private/DImageArith.hpp"
-#include "Gui/include/DImageViewer.h"
+#include "Gui/include/DGuiInstance.h"
 #include "IO/include/private/DImageIO.hpp"
 
 // template <>
@@ -175,7 +175,7 @@ void Image<T>::createViewer()
     if (viewer)
       return;
 
-    viewer = getDefaultViewer<T>(this);
+    viewer = Gui::createDefaultViewer<T>(this);
 
 }
 

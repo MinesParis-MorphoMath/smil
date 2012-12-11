@@ -96,13 +96,23 @@ public:
 };
 
 
-//! Square L ([8,1,2], [4,5,6])
-class HMT_sL : public CompStrEltList
+//! Square L1 ([8,1,2], [4,5,6])
+class HMT_sL1 : public CompStrEltList
 {
 public:
-    HMT_sL(UINT nrot=1)
+    HMT_sL1(UINT nrot=1)
     {
 	this->add(StrElt(false, 3, 8,1,2), StrElt(false, 3, 4,5,6), nrot);
+    }
+};
+
+//! Square L2 ([1,3], [5,6,7])
+class HMT_sL2 : public CompStrEltList
+{
+public:
+    HMT_sL2(UINT nrot=1)
+    {
+	this->add(StrElt(false, 2, 1,3), StrElt(false, 3, 5,6,7), nrot);
     }
 };
 

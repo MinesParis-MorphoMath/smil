@@ -32,6 +32,8 @@
 
 #include <QApplication>
 #include <QGraphicsSceneEvent>
+#include <QList>
+#include <QUrl>
 
 #include "Core/include/private/DImage.hpp"
 
@@ -266,5 +268,21 @@ void QtImageViewer<T>::displayMagnifyView(size_t x, size_t y, size_t z)
     }
 }
 
+template <class T>
+void QtImageViewer<T>::dropEvent(QDropEvent *de)
+{
+    QList<QUrl> urls = de->mimeData()->urls();
+    int objNbr = urls.size();
+
+    if (objNbr==1)
+      read(urls[0].path().toStdString().c_str(), *this->image);
+    else
+    {
+	vector<string> files;
+	for (QList<QUrl>::iterator it=urls.begin();it!=urls.end();it++)
+	  files.push_back((*it).path().toStdString());
+	read(files, *this->image);
+    }
+}
 
 #endif // _D_QT_IMAGE_VIEWER_HXX

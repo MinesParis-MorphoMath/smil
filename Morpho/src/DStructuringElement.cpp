@@ -105,13 +105,15 @@ const StrElt StrElt::operator()(int s) const
     return se;
 }
 
-void StrElt::printSelf(ostream &os, string indent)
+void StrElt::printSelf(ostream &os, string indent) const
 {
     os << indent << "Structuring Element" << endl;
     os << indent << "Size: " << size << endl;
     int ptNbr = points.size();
     os << indent << "Point Nbr: " << ptNbr << endl;
-    if (ptNbr)
+    if (!ptNbr)
+      return;
+    
       for (int i=0;i<ptNbr;i++)
 	os << indent << "#" << i+1 << ": (" << points[i].x << "," << points[i].y << "," << points[i].z << ")" << endl;
       

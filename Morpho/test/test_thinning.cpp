@@ -74,7 +74,7 @@ class Test_Thin : public TestCase
       };
       im3 << hmtLVec;
       
-      CompStrEltList sel = HMT_sL(4);
+      CompStrEltList sel = HMT_sL1(4);
       hitOrMiss(im1, sel, im2);
       TEST_ASSERT(im2==im3);
       

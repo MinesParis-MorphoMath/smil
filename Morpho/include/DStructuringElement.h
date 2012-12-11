@@ -69,7 +69,7 @@ class StrElt : public BaseObject
     UINT size;
     virtual seType getType() const { return seT; }
     
-    virtual void printSelf(ostream &os=std::cout, string indent="");
+    virtual void printSelf(ostream &os = std::cout, string indent="") const;
 };
 
 inline void operator << (ostream &os, StrElt &se)

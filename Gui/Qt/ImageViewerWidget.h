@@ -131,6 +131,10 @@ protected:
     
     QSlider *slider;
 
+    virtual void dropEvent(QDropEvent *de) {};
+    void dragMoveEvent(QDragMoveEvent *de);
+    void dragEnterEvent(QDragEnterEvent *event);
+    
 public slots:
     void load(const QString fileName);
     void zoomIn();

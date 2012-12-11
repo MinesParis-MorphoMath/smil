@@ -82,6 +82,7 @@ protected:
     virtual void drawImage();
 //     ImageViewerWidget *qtViewer;
 //     ImageViewer *qtViewer;
+    virtual void dropEvent(QDropEvent *de);
 };
 
 

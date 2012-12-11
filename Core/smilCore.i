@@ -135,6 +135,7 @@ namespace std
     %template(UcharVector) vector<UINT8>;
     %template(UshortVector) vector<UINT16>;
     %template(DoubleVector) vector<double>;
+    %template(StringVector) vector<string>;
 }
 
 #endif // SWIGXML

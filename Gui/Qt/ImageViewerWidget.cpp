@@ -31,6 +31,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QTimer>
 #include <QApplication>
+
 #include <math.h>
 
 #include "ImageViewerWidget.h"
@@ -65,6 +66,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     setFrameShape(NoFrame);
     // Allows to zoom under the mouse pixel
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    setAcceptDrops(true);
 
     initColorTables();
     scaleFactor = 1.0;
@@ -550,6 +552,17 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
     }
 
     emit onKeyPressEvent(event);
+}
+
+void ImageViewerWidget::dragMoveEvent(QDragMoveEvent *de)
+{
+    de->accept();
+}
+
+void ImageViewerWidget::dragEnterEvent(QDragEnterEvent *event)
+{
+    if (event->mimeData()->hasUrls())
+      event->acceptProposedAction();
 }
 
 

@@ -32,14 +32,27 @@
 #define _D_GUI_INSTANCE_H
 
 #include "Core/include/private/DInstance.hpp"
-#include "DCommon.h"
+#include "Core/include/private/DImage.hpp"
+#include "DImageViewer.hpp"
+
+#ifdef USE_QT
+#include "Gui/Qt/DQtImageViewer.hpp"
+#include "Gui/Qt/DQtImageViewer.hxx"
+#endif // USE_QT
+
+#ifdef USE_AALIB
+#include "Gui/AALib/DAAImageViewer.hpp"
+#endif // USE_AALIB
+
 
 /**
  * \defgroup Gui Gui
  */
 /*@{*/
 
-class baseImageViewer;
+template <class T>
+class ImageViewer;
+
 
 class _DGUI Gui : public UniqueInstance<Gui>
 {
@@ -56,10 +69,20 @@ public:
 
     static void execLoop();
     static void processEvents();
+    template <class T>
+    static ImageViewer<T> *createDefaultViewer(Image<T> *im=NULL)
+    {
+      #ifdef USE_QT
+	return new QtImageViewer<T>(im);
+      #elif USE_AALIB
+	return new AaImageViewer<T>(im);
+      #else
+	return new ImageViewer<T>(im);
+      #endif
+    }
 protected:
     virtual void _execLoop() {}
     virtual void _processEvents() {}
-    baseImageViewer *_defaultViewer;
 private:
 };
 
