@@ -32,7 +32,6 @@
 
 #include "DBaseObject.h"
 #include "DCommon.h"
-// #include "DGuiInstance.h"
 
 template <class T>
 class Image;
@@ -45,8 +44,7 @@ public:
     BaseImageViewer()
       : labelImage(false)
     {
-// 	Gui::initialize();
-// 	updateSlot.init(this, &BaseImageViewer::update);
+	updateSlot.init(this, &BaseImageViewer::update);
     }
     
     virtual void show() {}

@@ -39,7 +39,7 @@
 int main(int argc, char *argv[])
 {
     
-//     Gui::initialize();
+    Gui::initialize();
     
     Image_UINT8 im1(1000, 1023);
     Image_UINT8 im2(im1);
