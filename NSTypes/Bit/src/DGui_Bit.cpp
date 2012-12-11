@@ -64,7 +64,7 @@ void _DGUI QtImageViewer<Bit>::drawImage()
 	  {
 	    if (lOut==lEnd)
 	      break;
-	    *lOut = bVal & (1 << i) ? 255 : 0;
+	    *lOut = (bVal & (1L << i)) ? 255 : 0;
 	  }
 	}
     }
