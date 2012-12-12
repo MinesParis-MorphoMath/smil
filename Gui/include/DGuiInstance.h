@@ -72,7 +72,7 @@ public:
     template <class T>
     static ImageViewer<T> *createDefaultViewer(Image<T> *im=NULL)
     {
-// 	Gui::initialize();
+	Gui::initialize();
 	
       #ifdef USE_QT
 	return new QtImageViewer<T>(im);
