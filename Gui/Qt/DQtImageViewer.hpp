@@ -41,6 +41,9 @@
 
 #define BASE_QT_VIEWER ImageViewerWidget
 
+
+class QwtPlot;
+
 template <class T> class Image;
 
 template <class T>
@@ -75,7 +78,7 @@ public:
     
     virtual void setLabelImage(bool val);
     
-    virtual void displayHistogram();
+    virtual void displayHistogram(bool update=false);
     
 protected:
     virtual void displayPixelValue(size_t x, size_t y, size_t z);
@@ -84,6 +87,8 @@ protected:
 //     ImageViewerWidget *qtViewer;
 //     ImageViewer *qtViewer;
     virtual void dropEvent(QDropEvent *de);
+    
+    QwtPlot *histoPlot;
 };
 
 

@@ -89,7 +89,7 @@ public:
     
     bool drawLabelized;
     
-    virtual void displayHistogram() {}
+    virtual void displayHistogram(bool = false) {}
     
 protected:
     QGridLayout *layout;

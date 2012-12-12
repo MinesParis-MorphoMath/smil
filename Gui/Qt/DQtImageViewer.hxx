@@ -48,13 +48,15 @@
 
 template <class T>
 QtImageViewer<T>::QtImageViewer()
-  : BASE_QT_VIEWER(NULL)
+  : BASE_QT_VIEWER(NULL),
+    histoPlot(NULL)
 {
 }
 
 template <class T>
 QtImageViewer<T>::QtImageViewer(Image<T> *im)
-  : ImageViewer<T>(im), BASE_QT_VIEWER(NULL)
+  : ImageViewer<T>(im), BASE_QT_VIEWER(NULL),
+    histoPlot(NULL)
 {
     setImage(im);
 }
@@ -63,7 +65,11 @@ template <class T>
 QtImageViewer<T>::~QtImageViewer()
 {
     hide();
-//     delete qtViewer;
+
+#ifdef USE_QWT
+    if (histoPlot)
+      delete histoPlot;
+#endif // USE_QWT
 }
 
 
@@ -136,6 +142,11 @@ void QtImageViewer<T>::update()
     BASE_QT_VIEWER::dataChanged();
 
     BASE_QT_VIEWER::update();
+
+#ifdef USE_QWT    
+    if (histoPlot && histoPlot->isVisible())
+      displayHistogram(true);
+#endif // USEçQWT    
 //     qApp->processEvents();
 }
 
@@ -294,14 +305,26 @@ void QtImageViewer<T>::dropEvent(QDropEvent *de)
 }
 
 template <class T>
-void QtImageViewer<T>::displayHistogram()
+void QtImageViewer<T>::displayHistogram(bool update)
 {
 #ifdef USE_QWT
-    QwtPlot *histoPlot = new QwtPlot();
-    histoPlot->setWindowTitle(QString(this->image->getName()) + " histogram");
-    histoPlot->setFixedSize(480,280);
-    histoPlot->setCanvasBackground(Qt::white);
-  
+    if (!update && histoPlot && histoPlot->isVisible())
+    {
+      histoPlot->raise();
+      histoPlot->activateWindow();
+      return;
+    }
+    
+    if (!histoPlot)
+    {
+	histoPlot = new QwtPlot();
+	histoPlot->setWindowTitle(QString(this->image->getName()) + " histogram");
+	histoPlot->setFixedSize(480,280);
+	histoPlot->setCanvasBackground(Qt::white);
+        histoPlot->setAxisScale(QwtPlot::xBottom, ImDtTypes<T>::min(), ImDtTypes<T>::max());
+    }
+    histoPlot->detachItems();
+    
     QwtPlotCurve *curve1 = new QwtPlotCurve("Image Histogram");
   
     QwtPointSeriesData *myData = new QwtPointSeriesData();
@@ -315,8 +338,8 @@ void QtImageViewer<T>::displayHistogram()
     curve1->setData(myData);
   
     curve1->attach(histoPlot);
-    histoPlot->setAxisScale(QwtPlot::xBottom, ImDtTypes<T>::min(), ImDtTypes<T>::max());
     
+    histoPlot->replot();
     histoPlot->show();
 // #else // USE_QWT
 #endif // USE_QWT
