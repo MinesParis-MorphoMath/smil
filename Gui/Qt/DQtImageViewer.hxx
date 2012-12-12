@@ -64,7 +64,7 @@ QtImageViewer<T>::QtImageViewer(Image<T> *im)
 template <class T>
 QtImageViewer<T>::~QtImageViewer()
 {
-    hide();
+    close();
 
 #ifdef USE_QWT
     if (histoPlot)
@@ -325,7 +325,9 @@ void QtImageViewer<T>::displayHistogram(bool update)
     }
     histoPlot->detachItems();
     
-    QwtPlotCurve *curve1 = new QwtPlotCurve("Image Histogram");
+    QwtPlotCurve *curve = new QwtPlotCurve("Image Histogram");
+    curve->setStyle( QwtPlotCurve::Steps );
+    curve->setBrush( Qt::blue );
   
     QwtPointSeriesData *myData = new QwtPointSeriesData();
     map<T, UINT> hist = histogram(*(this->image));
@@ -335,9 +337,9 @@ void QtImageViewer<T>::displayHistogram(bool update)
       samples.push_back(QPointF((*it).first, (*it).second));
 
     myData->setSamples(samples);
-    curve1->setData(myData);
+    curve->setData(myData);
   
-    curve1->attach(histoPlot);
+    curve->attach(histoPlot);
     
     histoPlot->replot();
     histoPlot->show();
