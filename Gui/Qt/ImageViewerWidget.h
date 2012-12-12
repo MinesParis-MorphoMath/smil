@@ -89,8 +89,6 @@ public:
     
     bool drawLabelized;
     
-    void plotData(QwtPointSeriesData *data);
-    
     virtual void displayHistogram() {}
     
 protected:

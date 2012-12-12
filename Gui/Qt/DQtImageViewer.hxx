@@ -43,6 +43,7 @@
 
 
 #include "Core/include/private/DImage.hpp"
+#include "Base/include/private/DImageHistogram.hpp"
 
 
 template <class T>
@@ -295,18 +296,28 @@ void QtImageViewer<T>::dropEvent(QDropEvent *de)
 template <class T>
 void QtImageViewer<T>::displayHistogram()
 {
-    cout << "ok" << endl;
 #ifdef USE_QWT
+    QwtPlot *histoPlot = new QwtPlot();
+    histoPlot->setWindowTitle(QString(this->image->getName()) + " histogram");
+    histoPlot->setFixedSize(480,280);
+    histoPlot->setCanvasBackground(Qt::white);
+  
+    QwtPlotCurve *curve1 = new QwtPlotCurve("Image Histogram");
+  
     QwtPointSeriesData *myData = new QwtPointSeriesData();
+    map<T, UINT> hist = histogram(*(this->image));
   
     QVector<QPointF> samples;
-    samples.push_back(QPointF(1.0,1.0));
-    samples.push_back(QPointF(2.0,2.0));
-    samples.push_back(QPointF(3.0,3.0));
-    samples.push_back(QPointF(4.0,5.0));
-    myData->setSamples(samples);
+    for(typename map<T,UINT>::iterator it=hist.begin();it!=hist.end();it++)
+      samples.push_back(QPointF((*it).first, (*it).second));
 
-    BASE_QT_VIEWER::plotData(myData);
+    myData->setSamples(samples);
+    curve1->setData(myData);
+  
+    curve1->attach(histoPlot);
+    histoPlot->setAxisScale(QwtPlot::xBottom, ImDtTypes<T>::min(), ImDtTypes<T>::max());
+    
+    histoPlot->show();
 // #else // USE_QWT
 #endif // USE_QWT
 }

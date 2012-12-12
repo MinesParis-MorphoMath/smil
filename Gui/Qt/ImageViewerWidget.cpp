@@ -576,32 +576,5 @@ void ImageViewerWidget::dragEnterEvent(QDragEnterEvent *event)
 }
 
 
-#ifdef USE_QWT    
-
-void ImageViewerWidget::plotData(QwtPointSeriesData *data)
-{
-  cout << "ok" << endl;
-    QwtPlot *histoPlot = new QwtPlot();
-    histoPlot->setFixedSize(480,280);
-    histoPlot->setCanvasBackground(Qt::white);
-  
-    QwtPlotCurve *curve1 = new QwtPlotCurve("Image Histogram");
-  
-    QwtPointSeriesData *myData = new QwtPointSeriesData();
-  
-    QVector<QPointF> samples;
-    samples.push_back(QPointF(1.0,1.0));
-    samples.push_back(QPointF(2.0,2.0));
-    samples.push_back(QPointF(3.0,3.0));
-    samples.push_back(QPointF(4.0,5.0));
-    myData->setSamples(samples);
-    curve1->setData(myData);
-  
-    curve1->attach(histoPlot);
-    histoPlot->replot();
-    histoPlot->show();
-}
-
-#endif // USE_QWT    
 
 
