@@ -72,7 +72,7 @@ RES_T readBMP(const char *filename, Image<UINT8> &image)
 
     
     for (int j=height-1;j>=0;j--)
-	fread(lines[j], width, 1, fp);
+      ASSERT((fread(lines[j], width, 1, fp)!=0), RES_ERR_IO);
 
     image.modified();
 
