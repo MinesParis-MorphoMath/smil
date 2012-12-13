@@ -64,7 +64,6 @@ def MorphmInt(*args):
     
     im = args[0]
     dt = str(im.getDataType())
-    print dt
     
     if dt=="sdtUINT8":
       return MorphmInt_UINT8(im)

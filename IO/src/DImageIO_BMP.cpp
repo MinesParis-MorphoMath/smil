@@ -58,6 +58,8 @@ RES_T readBMP(const char *filename, Image<UINT8> &image)
 
     ASSERT((iHeader.biBitCount==8), "Not an 8bit image", RES_ERR);
     
+    ASSERT((iHeader.biCompression==BI_RGB), "Compressed BMP files are not (yet) supported", RES_ERR_IO);
+    
     //move file point to the begging of bitmap data (skip palette information)
     fseek(fp, fHeader.bfOffBits, SEEK_SET);
 
@@ -68,9 +70,9 @@ RES_T readBMP(const char *filename, Image<UINT8> &image)
     
     Image<UINT8>::sliceType lines = image.getLines();
 
-    for (int i=height-1;i>=0;i--)
-        if (!fread(lines[i], width*sizeof(UINT8), 1, fp))
-            break;
+    
+    for (int j=height-1;j>=0;j--)
+	fread(lines[j], width, 1, fp);
 
     image.modified();
 

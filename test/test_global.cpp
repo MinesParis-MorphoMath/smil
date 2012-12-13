@@ -56,6 +56,8 @@ int main(int argc, char *argv[])
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
 
    read("http://cmm.ensmp.fr/~faessel/smil/images/lena.png", im1);
+//    read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/antibiog.bmp", im1);
+//    read("/home/faessel/src/Smil/build/lib/tmp.bmp", im1);
 //     read("lena.png", im1);
 
 //     morphee::Image<UINT8> *mIm = new morphee::Image<UINT8>(512,512);
