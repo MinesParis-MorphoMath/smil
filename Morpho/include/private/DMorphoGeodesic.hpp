@@ -313,6 +313,28 @@ RES_T build(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const
     return RES_OK;
 }
 
+/**
+ * h-Reconstuction
+ */
+template <class T>
+RES_T hBuild(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+{
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    
+    if (&imIn==&imOut)
+    {
+	Image<T> tmpIm = imIn;
+	return hBuild(tmpIm, height, imOut, se);
+    }
+    
+    ImageFreezer freeze(imOut);
+    
+    ASSERT((sub(imIn, T(height), imOut)==RES_OK));
+    ASSERT((build(imOut, imIn, imOut, se)==RES_OK));
+    
+    return RES_OK;
+}
 
 /**
  * Opening by reconstruction
