@@ -33,7 +33,7 @@
 
 #include "Core/include/private/DInstance.hpp"
 #include "Core/include/private/DImage.hpp"
-#include "DImageViewer.hpp"
+#include "private/DImageViewer.hpp"
 
 #ifdef USE_QT
 #include "Gui/Qt/DQtImageViewer.hpp"

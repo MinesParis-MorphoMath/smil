@@ -44,7 +44,17 @@
 class qtGui : public Gui
 {
 public:
-    qtGui();
+    qtGui()
+      : _qapp(NULL)
+    {
+      if (!qApp)
+      {
+	  int ac = 1;
+	  char **av = NULL;
+	  _qapp = new QApplication(ac, av);
+	  _qapp->processEvents();
+      }
+    }
     ~qtGui();
     
 protected:
