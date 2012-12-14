@@ -137,7 +137,7 @@ protected:
     
     QSlider *slider;
 
-    virtual void dropEvent(QDropEvent *de) {}
+    virtual void dropEvent(QDropEvent *) {}
     void dragMoveEvent(QDragMoveEvent *de);
     void dragEnterEvent(QDragEnterEvent *event);
     

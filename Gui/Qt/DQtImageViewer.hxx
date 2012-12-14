@@ -305,11 +305,11 @@ namespace smil
 	}
     }
 
+#ifdef USE_QWT
     template <class T>
     void QtImageViewer<T>::displayHistogram(bool update)
     {
-    #ifdef USE_QWT
-	if (!update && histoPlot && histoPlot->isVisible())
+    if (!update && histoPlot && histoPlot->isVisible())
 	{
 	  histoPlot->raise();
 	  histoPlot->activateWindow();
@@ -344,9 +344,8 @@ namespace smil
 	
 	histoPlot->replot();
 	histoPlot->show();
-    // #else // USE_QWT
-    #endif // USE_QWT
     }
+#endif // USE_QWT
 
 } // namespace smil
 

@@ -83,8 +83,10 @@ namespace smil
 	
 	virtual void setLabelImage(bool val);
 	
-	virtual void displayHistogram(bool update=false);
-	
+#ifdef USE_QWT
+    virtual void displayHistogram(bool update=false);
+#endif // USE_QWT
+
     protected:
 	virtual void displayPixelValue(size_t x, size_t y, size_t z);
 	virtual void displayMagnifyView(size_t x, size_t y, size_t z);
