@@ -33,14 +33,15 @@
 #include "Core/include/private/DImage.hpp"
 #include <map>
 
+namespace smil
+{
+  
 /**
  * \ingroup Base
  * \defgroup Measures Base measures
  * @{
  */
 
-namespace smil
-{
     /**
     * Volume of an image
     *
@@ -296,9 +297,10 @@ namespace smil
 	return offsets;
     }
 
+/** @}*/
+
 } // namespace smil
 
-/** @}*/
 
 #endif // _D_MEASURES_HPP
 

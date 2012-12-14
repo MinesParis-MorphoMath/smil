@@ -31,11 +31,6 @@
 #ifndef _D_QT_GUI_INSTANCE_H
 #define _D_QT_GUI_INSTANCE_H
 
-/**
- * \defgroup Gui Gui
- */
-/*@{*/
-
 #include "DGuiInstance.h"
 #include "DTimer.h"
 
@@ -44,6 +39,11 @@
 namespace smil
 {
   
+    /**
+    * \defgroup Gui Gui
+    */
+    /*@{*/
+
     class qtGui : public Gui
     {
     public:
@@ -67,8 +67,9 @@ namespace smil
 	QApplication *_qapp;
     };
 
+/*@}*/
+
 } // namespace smil
 
-/*@}*/
 
 #endif // _D_QT_GUI_INSTANCE_H

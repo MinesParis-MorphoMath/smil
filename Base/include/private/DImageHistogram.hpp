@@ -33,14 +33,16 @@
 #include "DLineHistogram.hpp"
 #include "DImageArith.hpp"
 
-/**
- * \ingroup Base
- * \defgroup Histogram
- * \{
- */
-
+    
 namespace smil
 {
+  
+    /**
+    * \ingroup Base
+    * \defgroup Histogram
+    * \{
+    */
+
     /**
     * Image histogram
     */
@@ -68,7 +70,7 @@ namespace smil
     * Calculates the histogram of the image imIn only for pixels x where imMask(x)!=0
     */
     template <class T>
-    map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask)
+    std::map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask)
     {
 	map<T, UINT> h;
 	
@@ -474,9 +476,10 @@ namespace smil
 	
     }
 
+/** \} */
+
 } // namespace smil
 
-/** \} */
 
 #endif // _D_IMAGE_HISTOGRAM_HPP
 

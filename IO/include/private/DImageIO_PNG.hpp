@@ -39,15 +39,17 @@
 
 using namespace std;
 
-/** \addtogroup IO
- * \{
- */
 
 #ifdef USE_PNG
 
 namespace smil
 {
   
+    /** 
+    * \addtogroup IO
+    */
+    /*@{*/
+    
     template <class T> class Image;
 
     /**
@@ -79,12 +81,13 @@ namespace smil
     template <>
     _DIO RES_T writePNG<UINT8>(Image<UINT8> &image, const char *filename);
 
+/*@}*/
+
 } // namespace smil
 
 
 #endif // USE_PNG
 
 
-/** \} */
 
 #endif // _D_IMAGE_IO_PNG_H

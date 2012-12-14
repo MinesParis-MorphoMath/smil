@@ -34,14 +34,15 @@
 #include "DMorphoHierarQ.hpp"
 #include "Base/include/private/DImageDraw.hpp"
 
-/**
- * \ingroup Morpho
- * \defgroup Geodesic
- * @{
- */
 
 namespace smil
 {
+    /**
+    * \ingroup Morpho
+    * \defgroup Geodesic
+    * @{
+    */
+
     // Geodesy
 
     template <class T>
@@ -443,9 +444,10 @@ namespace smil
 	return RES_OK;
     }
 
+/** \} */
+
 } // namespace smil
 
-/** \} */
 
 
 #endif // _D_MORPHO_GEODESIC_HPP

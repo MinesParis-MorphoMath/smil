@@ -32,13 +32,14 @@
 
 #include "DMorphoGeodesic.hpp"
 
-/**
- * \addtogroup Morpho
- * \{
- */
 
 namespace smil
 {
+    /**
+    * \addtogroup Morpho
+    * \{
+    */
+
     // Extrema
 
     /**
@@ -107,9 +108,10 @@ namespace smil
 	return hMaxima(imIn, T(1), imOut, se);
     }
 
+/** \} */
+
 } // namespace smil
 
-/** \} */
 
 #endif // _D_MORPHO_EXTREMA_HPP
 

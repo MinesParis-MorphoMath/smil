@@ -45,13 +45,14 @@
 #endif // USE_AALIB
 
 
-/**
- * \defgroup Gui Gui
- */
-/*@{*/
 
 namespace smil
 {
+    /**
+    * \defgroup Gui Gui
+    */
+    /*@{*/
+
     template <class T>
     class ImageViewer;
     
@@ -90,9 +91,10 @@ namespace smil
     private:
     };
 
+/*@}*/
+
 } // namespace smil
 
 
-/*@}*/
 
 #endif // _D_GUI_INSTANCE_H

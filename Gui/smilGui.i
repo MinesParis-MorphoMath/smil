@@ -47,7 +47,7 @@ SMIL_MODULE(smilGui)
 //////////////////////////////////////////////////////////
 
 %include "DInstance.hpp"
-%template(GuiInstance) UniqueInstance<smil::Gui>;
+%template(GuiInstance) smil::UniqueInstance<smil::Gui>;
 %include "DGuiInstance.h"
 
 

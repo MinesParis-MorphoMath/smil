@@ -32,14 +32,15 @@
 
 #include "DMorphoBase.hpp"
 
-/**
- * \ingroup Morpho
- * \defgroup Residues
- * @{
- */
 
 namespace smil
 {
+    /**
+    * \ingroup Morpho
+    * \defgroup Residues
+    * @{
+    */
+
     /**
     * Morphological gradient
     * 
@@ -95,9 +96,10 @@ namespace smil
 	return res;
     }
 
+/** @}*/
+
 } //namespace smil
 
-/** @}*/
 
 
 #endif // _D_MORPHO_RESIDUES_HPP

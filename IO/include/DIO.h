@@ -30,7 +30,9 @@
 #ifndef _D_IMAGE_IO_H
 #define _D_IMAGE_IO_H
 
-/** \defgroup IO */
+/**
+ * \defgroup IO
+ */
 
 #include "private/DImageIO.hpp"
 #include "DCommon.h"

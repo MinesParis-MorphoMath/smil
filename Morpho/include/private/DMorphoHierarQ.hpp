@@ -30,11 +30,6 @@
 #ifndef _D_MORPHO_HIERARQ_HPP
 #define _D_MORPHO_HIERARQ_HPP
 
-/**
- * \ingroup Morpho
- * \defgroup HierarQ
- * @{
- */
 
 #include <queue>
 #include <deque>
@@ -45,7 +40,13 @@
 
 namespace smil
 {
-  
+    /**
+    * \ingroup Morpho
+    * \defgroup HierarQ
+    * @{
+    */
+
+
     enum HQ_STATUS
     {
       HQ_CANDIDATE,
@@ -143,10 +144,11 @@ namespace smil
 	size_t index;
     };
 
+/** @}*/
+
 } // namespace smil
 
 
-/** @}*/
 
 #endif // _D_MORPHO_HIERARQ_HPP
 

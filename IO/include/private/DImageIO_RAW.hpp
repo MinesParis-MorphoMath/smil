@@ -40,12 +40,12 @@
 
 using namespace std;
 
-/** \addtogroup IO
- * \{
- */
-
 namespace smil
 {
+    /** 
+    * \addtogroup IO
+    */
+    /*@{*/
   
     /**
     * RAW file read 
@@ -99,8 +99,9 @@ namespace smil
 	return RES_OK;
     }
 
+/*@}*/
+
 } // namespace smil
 
-/** \} */
 
 #endif // _D_IMAGE_IO_RAW_H

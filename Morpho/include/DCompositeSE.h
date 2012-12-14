@@ -33,15 +33,14 @@
 #include "DStructuringElement.h"
 #include <list>
 
-/**
- * \defgroup CompSE Composite Structuring Elements
- * \ingroup StrElt
- * @{
-
-   */
 
 namespace smil
 {
+    /**
+    * \defgroup CompSE Composite Structuring Elements
+    * \ingroup StrElt
+    * @{
+    */
   
     class CompStrEltList;
 
@@ -286,9 +285,10 @@ namespace smil
 	}
     };
 
+/** @} */
+
 } // namespace smil
 
-/** @} */
 
 #endif // _COMPOSITE_SE_HPP
 

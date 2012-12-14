@@ -35,12 +35,13 @@
 
 #include "DCore.h"
 
-/** \addtogroup IO
- * \{
- */
-
 namespace smil
 {
+    /** 
+    * \addtogroup IO
+    */
+    /*@{*/
+    
     #ifndef DWORD
     #define DWORD unsigned long
     #define WORD unsigned short
@@ -111,8 +112,9 @@ namespace smil
     template <>
     _DIO RES_T writeBMP<UINT8>(Image<UINT8> &image, const char *filename);
 
+/*@}*/
+
 } // namespace smil
 
-/** \} */
 
 #endif // _D_IMAGE_IO_BMP_H

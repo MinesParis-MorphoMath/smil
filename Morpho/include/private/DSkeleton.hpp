@@ -32,14 +32,15 @@
 
 #include "DMorphoBase.hpp"
 
-/**
- * \ingroup Morpho
- * \defgroup Skeleton
- * \{
- */
 
 namespace smil
 {
+    /**
+    * \ingroup Morpho
+    * \defgroup Skeleton
+    * \{
+    */
+
   
     /**
     * Zhang 2D skeleton
@@ -141,9 +142,10 @@ namespace smil
 	    return RES_OK;
     }
 
+/** \} */
+
 } // namespace smil
 
-/** \} */
 
 #endif // _D_SKELETON_HPP
 

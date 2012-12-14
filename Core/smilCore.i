@@ -168,7 +168,7 @@ namespace std
 //////////////////////////////////////////////////////////
 
 %include "DInstance.hpp"
-%template(CoreInstance) UniqueInstance<Core>;
+%template(CoreInstance) smil::UniqueInstance<Core>;
 %include "DCoreInstance.h"
 
 

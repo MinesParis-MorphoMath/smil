@@ -35,13 +35,14 @@
 
 using namespace std;
 
-/**
- * \ingroup Measures
- * @{
- */
-
 namespace smil
 {
+  
+    /**
+    * \ingroup Measures
+    * @{
+    */
+
 
     /**
     * Measure label areas.
@@ -141,9 +142,10 @@ namespace smil
 	return res;
     }
     
+/** @}*/
+
 } // namespace smil
 
-/** @}*/
 
 #endif // _D_LABEL_MEASURES_HPP
 

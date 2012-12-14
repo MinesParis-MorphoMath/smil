@@ -35,15 +35,15 @@
 #include "DBaseImageOperations.hpp"
 #include "DLineArith.hpp"
 
+namespace smil
+{
+  
 /**
  * \ingroup Base
  * \defgroup Arith Arithmetic operations
  * @{
  */
 
-namespace smil
-{
-  
     /**
     * Fill an image with a given value.
     *
@@ -697,10 +697,11 @@ namespace smil
 	return RES_OK;
     }
 
+/** @}*/
+
 } // namespace smil
 
 
-/** @}*/
 
 #endif // _D_IMAGE_ARITH_HPP
 

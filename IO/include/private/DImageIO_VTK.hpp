@@ -40,12 +40,14 @@
 
 using namespace std;
 
-/** \addtogroup IO
- * \{
- */
 
 namespace smil
 {
+    /** 
+    * \addtogroup IO
+    */
+    /*@{*/
+  
     inline int split(const std::string &s, char delim, std::vector<std::string> &elems) 
     {
 	std::stringstream ss(s);
@@ -227,8 +229,9 @@ namespace smil
 	return RES_OK;
     }
 
+/*@}*/
+
 } // namespace smil
 
-/** \} */
 
 #endif // _D_IMAGE_IO_VTK_HPP

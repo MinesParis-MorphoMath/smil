@@ -34,13 +34,14 @@
 #include "DSignal.h"
 #include "DErrors.h"
 
-/**
-* \ingroup Core
-* @{
-*/
-
 namespace smil
 {
+  
+    /**
+    * \ingroup Core
+    * @{
+    */
+
     template <class T> 
     class ImageViewer;
 
@@ -337,8 +338,9 @@ namespace smil
     im.updatesEnabled = im##savedUpdateState; \
     im.modified();
 
+/** @}*/
+
 } // namespace smil
 
-/** @}*/
 
 #endif // _DIMAGE_HPP

@@ -37,15 +37,16 @@
     #include FT_FREETYPE_H
 #endif // USE_FREETYPE
 
-/**
- * \ingroup Base
- * \defgroup Draw
- * @{
- */
 
 namespace smil
 {
   
+    /**
+    * \ingroup Base
+    * \defgroup Draw
+    * @{
+    */
+    
     /**
     * Draws a line between two points p1(p1x,p1y) and p2(p2x,p2y).
     * This function is based on the Bresenham's line algorithm.
@@ -389,9 +390,10 @@ namespace smil
 
     #endif // USE_FREETYPE
 
+/** @}*/
+
 } // namespace smil
 
-/** @}*/
 
 #endif // _D_IMAGE_DRAW_HPP
 

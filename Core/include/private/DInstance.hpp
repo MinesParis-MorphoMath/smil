@@ -32,47 +32,51 @@
 
 #include <iostream>
 
-template <typename T>
-class UniqueInstance
+namespace smil
 {
-protected:
-    UniqueInstance ()
+    template <typename T>
+    class UniqueInstance
     {
-    }
-    ~UniqueInstance () { }
+    protected:
+	UniqueInstance ()
+	{
+	}
+	~UniqueInstance () { }
 
-public:
-    static T *getInstance ()
-    {
-        T::initialize();
-        return (static_cast<T*> (T::_instance));
-    }
+    public:
+	static T *getInstance ()
+	{
+	    T::initialize();
+	    return (static_cast<T*> (T::_instance));
+	}
 
-    // Can be overloaded because of the T::initialize call
-    static void initialize ()
-    {
-        if (_instance == NULL)
-            _instance = new T;
-    }
+	// Can be overloaded because of the T::initialize call
+	static void initialize ()
+	{
+	    if (_instance == NULL)
+		_instance = new T;
+	}
 
-    static void kill ()
-    {
-      if (_instance)
-      {
-        delete _instance;
-        _instance = NULL;
-      }
-    }
+	static void kill ()
+	{
+	  if (_instance)
+	  {
+	    delete _instance;
+	    _instance = NULL;
+	  }
+	}
 
 
 
-protected:
-    // Unique instance
-    static T *_instance;
-};
+    protected:
+	// Unique instance
+	static T *_instance;
+    };
 
-template <typename T>
-T *UniqueInstance<T>::_instance = NULL;
+    template <typename T>
+    T *UniqueInstance<T>::_instance = NULL;
+    
+} // namespace smil
 
 
 #endif // _D_INSTANCE_HPP

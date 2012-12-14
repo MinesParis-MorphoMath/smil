@@ -38,13 +38,14 @@
 
 using namespace std;
  
-/**
- * \ingroup Core
- * @{
- */
-
 namespace smil
 {
+    /**
+    * \ingroup Core
+    * @{
+    */
+
+
     enum RES_T
     {
 	RES_OK = 1,
@@ -166,9 +167,10 @@ namespace smil
 	    #define ASSERT(...) ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__)
     #endif // _MSC_VER
     
+/** @} */
+
 } // namespace smil
 
-/** @} */
 
 #endif // _DERRORS_H
 

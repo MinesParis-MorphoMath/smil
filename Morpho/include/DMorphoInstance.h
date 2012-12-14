@@ -34,13 +34,14 @@
 #include "Core/include/private/DInstance.hpp"
 #include "DStructuringElement.h"
 
-/**
- * \ingroup Morpho
- */
-/*@{*/
 
 namespace smil
 {
+    /**
+    * \ingroup Morpho
+    */
+    /*@{*/
+
     class  Morpho : public UniqueInstance<Morpho>
     {
 	friend class UniqueInstance<Morpho>;
@@ -59,9 +60,10 @@ namespace smil
     private:
     };
 
+/*@}*/
+
 } // namespace smil
 
 
-/*@}*/
 
 #endif // _D_MORPHO_INSTANCE_H

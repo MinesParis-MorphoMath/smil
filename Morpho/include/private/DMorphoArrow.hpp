@@ -32,14 +32,15 @@
 
 #include "DMorphImageOperations.hpp"
 
-/**
- * \ingroup Morpho
- * \defgroup Arrow
- * @{
- */
 
 namespace smil
 {
+   /**
+    * \ingroup Morpho
+    * \defgroup Arrow
+    * @{
+    */
+
 
     template <class T, class lineFunction_T>
     class unaryMorphArrowImageFunction : public unaryMorphImageFunction<T, lineFunction_T>
@@ -195,9 +196,10 @@ namespace smil
 	else return RES_ERR;
     }
 
+/** \} */
+
 } // namespace smil
 
-/** \} */
 
 #endif // _D_MORPHO_ARROW_HPP
 

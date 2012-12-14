@@ -34,13 +34,14 @@
 #include "DBaseLineOperations.hpp"
 
 
-/**
- * \ingroup Arith
- * @{
- */
-
 namespace smil
 {
+  
+    /**
+    * \ingroup Arith
+    * @{
+    */
+
     /**
     * copy line
     */
@@ -436,8 +437,9 @@ namespace smil
 	}
     };
 
+/** @}*/
+
 } // namespace smil
 
-/** @}*/
 
 #endif // _D_LINE_ARITH_HPP

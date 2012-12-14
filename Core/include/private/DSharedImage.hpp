@@ -34,13 +34,14 @@
 #include "DErrors.h"
 
 
-/**
- * \ingroup Core
- * @{
- */
 
 namespace smil
 {
+    /**
+    * \ingroup Core
+    * @{
+    */
+
     /**
     * Image that uses an existing (1D) data pointer.
     * 
@@ -122,8 +123,9 @@ namespace smil
 	}
     };
   
+/** @}*/
+
 } // namespace smil
 
-/** @}*/
 
 #endif // _D_SHARED_IMAGE_HPP

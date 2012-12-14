@@ -33,14 +33,14 @@
 
 #include "DImage.h"
 
-/**
- * \ingroup Arith
- * @{
- */
-
 namespace smil
 {
   
+    /**
+    * \ingroup Arith
+    * @{
+    */
+
     template <>
     inline void copyLine<bool>(Image<bool>::lineType &lIn, size_t size, Image<bool>::lineType &lOut)
     {
@@ -493,9 +493,10 @@ namespace smil
 	}
     };
 
+/** @}*/
+
 } // namespace smil
 
 
-/** @}*/
 
 #endif // _D_LINE_ARIBINH_BIN_HXX

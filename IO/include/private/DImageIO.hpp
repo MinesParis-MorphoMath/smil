@@ -44,14 +44,14 @@
 #include "DImageIO_PNG.hpp"
 #endif // USE_PNG
 
-/**
- * \addtogroup IO
- * \{
- */
-
 namespace smil
 {
   
+    /** 
+    * \addtogroup IO
+    */
+    /*@{*/
+    
     extern _DIO string getFileExtension(const char *fileName);
 
     #ifdef USE_CURL
@@ -194,9 +194,10 @@ namespace smil
 	return res;
     }
 
+/*@}*/
+
 } // namespace smil
 
-/** \} */
 
 
 #endif // _D_IMAGE_IO_HPP

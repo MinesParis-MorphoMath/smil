@@ -33,14 +33,15 @@
 #include "DBaseImageOperations.hpp"
 #include "DLineArith.hpp"
 
-/**
- * \ingroup Base
- * \defgroup Transform
- * @{
- */
-
 namespace smil
 {
+  
+    /**
+    * \ingroup Base
+    * \defgroup Transform
+    * @{
+    */
+
     /**
     * Crop image
     * 
@@ -327,9 +328,10 @@ namespace smil
 	return resize<T>(imIn, imOut);
     }
 
+/** @}*/
+
 } // namespace smil
 
-/** @}*/
 
 #endif // _D_IMAGE_TRANSFORM_HPP
 

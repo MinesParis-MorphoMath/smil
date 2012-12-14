@@ -36,13 +36,14 @@
 #include "DMorphImageOperations.hpp"
 #include "DHitOrMiss.hpp"
 
-/**
-* \addtogroup Morpho Mathematical Morphology
-* \{
-*/
 
 namespace smil
 {
+    /**
+    * \addtogroup Morpho Mathematical Morphology
+    * \{
+    */
+
 
 
     /**
@@ -142,10 +143,11 @@ namespace smil
 	return open(imIn, imOut, DEFAULT_SE(seSize));
     }
 
+/** \} */
+
 } // namespace smil
 
 
-/** \} */
 
 
 #endif // _D_MORPHO_BASE_HPP

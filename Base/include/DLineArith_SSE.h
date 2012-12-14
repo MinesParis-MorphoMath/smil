@@ -35,13 +35,14 @@
 #include <emmintrin.h>
 
 
-/**
- * \ingroup Arith
- * @{
- */
 
 namespace smil
 {
+    /**
+    * \ingroup Arith
+    * @{
+    */
+
     template <>
     struct addLine<UINT8> : public binaryLineFunctionBase<UINT8>
     {
@@ -216,8 +217,9 @@ namespace smil
 	}
     };
 
+/** @}*/
+
 } // namespace smil
 
-/** @}*/
 
 #endif // _D_LINE_ARITH_SSE_H

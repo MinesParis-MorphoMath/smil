@@ -30,24 +30,25 @@
 #ifndef _D_IMAGE_MATRIX_HPP
 #define _D_IMAGE_MATRIX_HPP
 
-/**
- * \ingroup Base
- * \defgroup Matrix Matrix operations
- * @{
- */
-
 namespace smil
 {
   
+    /**
+    * \ingroup Base
+    * \defgroup Matrix Matrix operations
+    * @{
+    */
+
     template <class T>
     RES_T matMul(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
     {
 	ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
     }
 
+/** @}*/
+
 } // namespace smil
 
-/** @}*/
 
 #endif // _D_IMAGE_MATRIX_HPP
 

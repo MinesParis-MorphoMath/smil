@@ -36,60 +36,63 @@
 
 using namespace std;
 
-typedef int INT;
-typedef unsigned int UINT;
-typedef unsigned char UINT8;
-typedef unsigned short UINT16;
-typedef unsigned int UINT32;
-typedef uint64_t UINT64;
-
-// typedef unsigned char __attribute__ ((vector_size (16))) alUINT8;
-
-#ifndef _MSC_VER
-typedef signed char INT8;
-#endif // _MSC_VER
-typedef short INT16;
-typedef int INT32;
-
-
-#ifndef CHAR_BIT
-#define CHAR_BIT 8
-#endif
-
-template <class T>
-struct ImDtTypes
+namespace smil
 {
-    typedef T pixelType;
-    typedef pixelType *lineType;
-    typedef lineType *sliceType;
-    typedef sliceType *volType;
-    
-    static inline pixelType min() { return numeric_limits<T>::min(); }
-    static inline pixelType max() { return numeric_limits<T>::max(); }
-    static inline lineType createLine(UINT lineLen) { return createAlignedBuffer<T>(lineLen); }
-    static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
-    static inline size_t ptrOffset(lineType p, size_t n=SIMD_VEC_SIZE) { return ((size_t)p) & (n-1); }
-};
+    typedef int INT;
+    typedef unsigned int UINT;
+    typedef unsigned char UINT8;
+    typedef unsigned short UINT16;
+    typedef unsigned int UINT32;
+    typedef uint64_t UINT64;
+
+    // typedef unsigned char __attribute__ ((vector_size (16))) alUINT8;
+
+    #ifndef _MSC_VER
+    typedef signed char INT8;
+    #endif // _MSC_VER
+    typedef short INT16;
+    typedef int INT32;
+
+
+    #ifndef CHAR_BIT
+    #define CHAR_BIT 8
+    #endif
+
+    template <class T>
+    struct ImDtTypes
+    {
+	typedef T pixelType;
+	typedef pixelType *lineType;
+	typedef lineType *sliceType;
+	typedef sliceType *volType;
+	
+	static inline pixelType min() { return numeric_limits<T>::min(); }
+	static inline pixelType max() { return numeric_limits<T>::max(); }
+	static inline lineType createLine(UINT lineLen) { return createAlignedBuffer<T>(lineLen); }
+	static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
+	static inline size_t ptrOffset(lineType p, size_t n=SIMD_VEC_SIZE) { return ((size_t)p) & (n-1); }
+    };
 
 
 
-template <class T>
-inline const char *getDataTypeAsString(T &val)
-{
-    return "Unknown";
-}
+    template <class T>
+    inline const char *getDataTypeAsString(T &val)
+    {
+	return "Unknown";
+    }
 
 
-#define DECL_DATA_TYPE_STR(_type) \
-template <> \
-inline const char *getDataTypeAsString(_type &) { return #_type; }
+    #define DECL_DATA_TYPE_STR(_type) \
+    template <> \
+    inline const char *getDataTypeAsString(_type &) { return #_type; }
 
-DECL_DATA_TYPE_STR(UINT8)
-DECL_DATA_TYPE_STR(UINT16)
-DECL_DATA_TYPE_STR(int)
-DECL_DATA_TYPE_STR(float)
-DECL_DATA_TYPE_STR(double)
+    DECL_DATA_TYPE_STR(UINT8)
+    DECL_DATA_TYPE_STR(UINT16)
+    DECL_DATA_TYPE_STR(int)
+    DECL_DATA_TYPE_STR(float)
+    DECL_DATA_TYPE_STR(double)
 
+} // namespace smil
 
 
 #endif // _D_TYPES_HPP

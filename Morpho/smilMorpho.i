@@ -56,7 +56,7 @@ SMIL_MODULE(smilMorpho)
 //////////////////////////////////////////////////////////
 
 %include "DInstance.hpp"
-%template(MorphoInstance) UniqueInstance<smil::Morpho>;
+%template(MorphoInstance) smil::UniqueInstance<smil::Morpho>;
 %include "DMorphoInstance.h"
 
 

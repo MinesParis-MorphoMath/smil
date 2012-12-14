@@ -33,13 +33,14 @@
 #include "DBaseObject.h"
 #include "DCommon.h"
 
-/**
- * \ingroup Gui
- */
-/*@{*/
 
 namespace smil
 {
+    /**
+    * \ingroup Gui
+    */
+    /*@{*/
+
     template <class T>
     class Image;
 
@@ -71,8 +72,9 @@ namespace smil
 	bool labelImage;
     };
 
+/*@}*/
+
 } // namespace smil
 
-/*@}*/
 
 #endif // _D_BASE_IMAGE_VIEWER_H

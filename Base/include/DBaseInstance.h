@@ -34,13 +34,13 @@
 #include "DInstance.hpp"
 #include "DCommon.h"
 
-/**
- * \ingroup Base
- */
-/*@{*/
 
 namespace smil
 {
+    /**
+    * \ingroup Base
+    */
+    /*@{*/
   
     class _DBASE Base : public UniqueInstance<Base>
     {
@@ -55,9 +55,10 @@ namespace smil
     protected:
     };
 
+/*@}*/
+
 } // namespace smil
 
 
-/*@}*/
 
 #endif // _D_BASE_INSTANCE_H

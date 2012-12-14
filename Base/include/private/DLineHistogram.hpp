@@ -33,12 +33,13 @@
 
 #include "DBaseLineOperations.hpp"
 
-//! \ingroup Base
-//! \defgroup Histogram
-//! @{
-
 namespace smil
 {
+
+    //! \ingroup Base
+    //! \defgroup Histogram
+    //! @{
+
   
     template <class T>
     struct threshLine : public unaryLineFunctionBase<T>
@@ -77,8 +78,9 @@ namespace smil
 	}
     };
 
+//! @}
+    
 } // namespace smil
 
-//! @}
 
 #endif // _D_LINE_HISTOGRAM_HPP

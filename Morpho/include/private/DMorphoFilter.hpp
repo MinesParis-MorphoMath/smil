@@ -33,14 +33,15 @@
 #include "DImage.h"
 #include "DMorphImageOperations.hpp"
 
-/**
- * \ingroup Morpho
- * \defgroup Filters
- * @{
- */
 
 namespace smil
 {
+    /**
+    * \ingroup Morpho
+    * \defgroup Filters
+    * @{
+    */
+
   
     /**
     * Alternate Sequential Filter beginning by a closing
@@ -92,9 +93,10 @@ namespace smil
 	return RES_OK;
     }
 
+/** @}*/
+
 } // namespace smil
 
-/** @}*/
 
 
 #endif // _D_MORPHO_FILTER_HPP

@@ -64,98 +64,101 @@
 #endif
 
 
-#define SIMD_VEC_SIZE 16
-
-#define ASSUME_ALIGNED(buf) __builtin_assume_aligned(buf, SIMD_VEC_SIZE)
-
-
-template<typename T> 
-inline T *createAlignedBuffer(size_t size) {
-  void* ptr;
-
-  MALLOC(ptr,(size+32)*sizeof(T),SIMD_VEC_SIZE);
-//   posix_memalign (&ptr, 16, (size+32)*sizeof(T));
-
-  return ((T*) (ptr));
-//   return new T[size];
-}
-
-template<typename T> 
-void deleteAlignedBuffer(T *ptr) {
-  FREE( (void*)(ptr) );
-}
-
-template<typename T> 
-inline void Dmemcpy(T *out, const T *in, size_t size)
+namespace smil
 {
-    while (size--)
-    {
-        *out++ = *in++;
+    #define SIMD_VEC_SIZE 16
+
+    #define ASSUME_ALIGNED(buf) __builtin_assume_aligned(buf, SIMD_VEC_SIZE)
+
+
+    template<typename T> 
+    inline T *createAlignedBuffer(size_t size) {
+      void* ptr;
+
+      MALLOC(ptr,(size+32)*sizeof(T),SIMD_VEC_SIZE);
+    //   posix_memalign (&ptr, 16, (size+32)*sizeof(T));
+
+      return ((T*) (ptr));
+    //   return new T[size];
     }
-}
+
+    template<typename T> 
+    void deleteAlignedBuffer(T *ptr) {
+      FREE( (void*)(ptr) );
+    }
+
+    template<typename T> 
+    inline void Dmemcpy(T *out, const T *in, size_t size)
+    {
+	while (size--)
+	{
+	    *out++ = *in++;
+	}
+    }
 
 
-template<typename T> 
-void t_LineCopyFromImage2D(T *rawImagePointerIn, const size_t lineSize, size_t y, T *lineout) {
+    template<typename T> 
+    void t_LineCopyFromImage2D(T *rawImagePointerIn, const size_t lineSize, size_t y, T *lineout) {
 
-  T *ptrin = rawImagePointerIn + y*lineSize;
+      T *ptrin = rawImagePointerIn + y*lineSize;
 
-  memcpy(lineout,ptrin,lineSize*sizeof(T));
+      memcpy(lineout,ptrin,lineSize*sizeof(T));
 
-}
-
-
-template<typename T> 
-void t_LineCopyToImage2D(T *linein, const size_t lineSize, size_t y, T *rawImagePointerOut) {
-
-  T *ptrout = rawImagePointerOut + y*lineSize;
-
-  memcpy(ptrout,linein,lineSize*sizeof(T));
-
-}
-
-template<typename T> 
-void t_LineShiftRight1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
-{
-  int i;
-
-  for(i=0 ; i<nbshift ; i++)  {
-    lineout[i] = shiftValue;
-  }
-
-  memcpy(lineout+nbshift,linein,(lineWidth-nbshift)*sizeof(T));
-
-}
+    }
 
 
-template<typename T> 
-void t_LineShiftLeft1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
-{
-  int i;
+    template<typename T> 
+    void t_LineCopyToImage2D(T *linein, const size_t lineSize, size_t y, T *rawImagePointerOut) {
 
-  for(i=lineWidth-nbshift ; i<lineWidth ; i++)  {
-    lineout[i] = shiftValue;
-  }
+      T *ptrout = rawImagePointerOut + y*lineSize;
 
-  memcpy(lineout,linein+nbshift,(lineWidth-nbshift)*sizeof(T));
+      memcpy(ptrout,linein,lineSize*sizeof(T));
 
-}
+    }
 
-inline size_t PTR_OFFSET(void *p, size_t n=SIMD_VEC_SIZE)
-{
-    return ((size_t)p) & (n-1);
-}
+    template<typename T> 
+    void t_LineShiftRight1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
+    {
+      int i;
 
-inline std::string displayBytes(size_t bytes)
-{
-        char tmp[128] = "";
-        const char *units[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-        const double base = 1024;
-	int c = std::min((int)(log((double)bytes)/log(base)), (int)sizeof(units) - 1);
-	sprintf(tmp, "%1.2f %s", bytes / pow(base, c), units[c]);
-        return std::string(tmp);
-}
+      for(i=0 ; i<nbshift ; i++)  {
+	lineout[i] = shiftValue;
+      }
 
+      memcpy(lineout+nbshift,linein,(lineWidth-nbshift)*sizeof(T));
+
+    }
+
+
+    template<typename T> 
+    void t_LineShiftLeft1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
+    {
+      int i;
+
+      for(i=lineWidth-nbshift ; i<lineWidth ; i++)  {
+	lineout[i] = shiftValue;
+      }
+
+      memcpy(lineout,linein+nbshift,(lineWidth-nbshift)*sizeof(T));
+
+    }
+
+    inline size_t PTR_OFFSET(void *p, size_t n=SIMD_VEC_SIZE)
+    {
+	return ((size_t)p) & (n-1);
+    }
+
+    inline std::string displayBytes(size_t bytes)
+    {
+	    char tmp[128] = "";
+	    const char *units[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+	    const double base = 1024;
+	    int c = std::min((int)(log((double)bytes)/log(base)), (int)sizeof(units) - 1);
+	    sprintf(tmp, "%1.2f %s", bytes / pow(base, c), units[c]);
+	    return std::string(tmp);
+    }
+
+} // namespace smil
 
 #endif // _DMEMORY_HPP
 

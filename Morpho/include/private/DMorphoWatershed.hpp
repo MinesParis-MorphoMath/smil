@@ -35,13 +35,14 @@
 #include "DMorphoExtrema.hpp"
 #include "DMorphoLabel.hpp"
 
-/**
- * \ingroup HierarQ
- * @{
- */
 
 namespace smil
 {
+    /**
+    * \ingroup HierarQ
+    * @{
+    */
+
   
     template <class T, class labelT>
     RES_T initWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq)
@@ -262,9 +263,10 @@ namespace smil
 	return watershed(imIn, imLbl, imOut, se);
     }
 
+/** @}*/
+
 } // namespace smil
 
-/** @}*/
 
 #endif // _D_MORPHO_WATERSHED_HPP
 

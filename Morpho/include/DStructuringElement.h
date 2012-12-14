@@ -33,14 +33,15 @@
 #include "DCommon.h"
 #include "DBaseObject.h"
 
-/**
- * \defgroup StrElt Structuring Elements
- * \ingroup Morpho
- * @{
- */
 
 namespace smil
 {
+    /**
+    * \defgroup StrElt Structuring Elements
+    * \ingroup Morpho
+    * @{
+    */
+
     enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert };
 
 
@@ -315,9 +316,10 @@ namespace smil
 
     #define DEFAULT_SE Morpho::getDefaultSE()
 
+/** @} */
+
 } // namespace smil
 
 
-/** @} */
 
 #endif

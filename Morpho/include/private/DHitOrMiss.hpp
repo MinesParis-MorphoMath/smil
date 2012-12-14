@@ -33,14 +33,14 @@
 #include "DCompositeSE.h"
 #include "DMorphoBase.hpp"
 
-/**
-* \ingroup Morpho
-* \defgroup Thinning
-* \{
-*/
 
 namespace smil
 {
+   /**
+    * \ingroup Morpho
+    * \defgroup Thinning
+    * \{
+    */
 
 
     /**
@@ -217,10 +217,10 @@ namespace smil
 	return fullThick(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
     }
 
+/** \} */
 
 } // namespace smil
 
-/** \} */
 
 #endif // _D_THINNING_HPP
 
