@@ -30,192 +30,195 @@
 #ifndef _D_THINNING_HPP
 #define _D_THINNING_HPP
 
-#include "DMorphoBase.hpp"
 #include "DCompositeSE.h"
+#include "DMorphoBase.hpp"
 
 /**
- * \ingroup Morpho
- * \defgroup Thinning
- * \{
- */
+* \ingroup Morpho
+* \defgroup Thinning
+* \{
+*/
 
-//http://www.imagemagick.org/Usage/morphology/#linejunctions
-
-
-/**
- * Hit Or Miss transform
- */
-template <class T>
-RES_T hitOrMiss(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut, T borderVal=ImDtTypes<T>::min())
+namespace smil
 {
-    SLEEP(imOut);
-    Image<T> tmpIm(imIn);
-    inv<T>(imIn, tmpIm);
-    erode(tmpIm, imOut, backSE, borderVal);
-    erode<T>(imIn, tmpIm, foreSE, borderVal);
-    inf(tmpIm, imOut, imOut);
-    WAKE_UP(imOut);
-    
-    imOut.modified();
-    
-    return RES_OK;
-}
 
-/**
- * Hit Or Miss transform
- */
-template <class T>
-RES_T hitOrMiss(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut, T borderVal=ImDtTypes<T>::min())
-{
-    return hitOrMiss(imIn, compSE.fgSE, compSE.bgSE, imOut, borderVal);
-}
 
-/**
- * Hit Or Miss transform
- */
-template <class T>
-RES_T hitOrMiss(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut, T borderVal=ImDtTypes<T>::min())
-{
-    Image<T> tmpIm(imIn);
-    SLEEP(imOut);
-    fill(imOut, ImDtTypes<T>::min());
-    for (std::vector<CompStrElt>::const_iterator it=mhtSE.compSeList.begin();it!=mhtSE.compSeList.end();it++)
+    /**
+    * Hit Or Miss transform
+    */
+    template <class T>
+    RES_T hitOrMiss(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut, T borderVal=ImDtTypes<T>::min())
     {
-	hitOrMiss<T>(imIn, (*it).fgSE, (*it).bgSE, tmpIm, borderVal);
-	sup(imOut, tmpIm, imOut);
+	SLEEP(imOut);
+	Image<T> tmpIm(imIn);
+	inv<T>(imIn, tmpIm);
+	erode(tmpIm, imOut, backSE, borderVal);
+	erode(imIn, tmpIm, foreSE, borderVal);
+	inf(tmpIm, imOut, imOut);
+	WAKE_UP(imOut);
+	
+	imOut.modified();
+	
+	return RES_OK;
     }
-    imOut.modified();
-    WAKE_UP(imOut);
-    
-    return RES_OK;
-}
 
-/**
- * Thinning transform
- */
-template <class T>
-RES_T thin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
-{
-    SLEEP(imOut);
-    Image<T> tmpIm(imIn);
-    hitOrMiss<T>(imIn, mhtSE, tmpIm);
-    inv(tmpIm, tmpIm);
-    inf(imIn, tmpIm, imOut);
-    WAKE_UP(imOut);
-    
-    return RES_OK;
-}
-
-template <class T>
-RES_T thin(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
-{
-    return thin(imIn, CompStrElt(compSE), imOut);
-}
-
-template <class T>
-RES_T thin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
-{
-    return thin(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
-}
-
-
-/**
- * Thicking transform
- */
-template <class T>
-RES_T thick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
-{
-    SLEEP(imOut);
-    Image<T> tmpIm(imIn);
-    hitOrMiss<T>(imIn, mhtSE, tmpIm);
-    sup(imIn, tmpIm, imOut);
-    WAKE_UP(imOut);
-    
-    return RES_OK;
-}
-
-template <class T>
-RES_T thick(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
-{
-    return thick(imIn, CompStrElt(compSE), imOut);
-}
-
-template <class T>
-RES_T thick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
-{
-    return thick(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
-}
-
-/**
- * Thinning transform (full)
- */
-template <class T>
-RES_T fullThin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
-{
-    SLEEP(imOut);
-    double v1, v2;
-    thin<T>(imIn, mhtSE, imOut);
-    v1 = vol(imOut);
-    while(true)
+    /**
+    * Hit Or Miss transform
+    */
+    template <class T>
+    RES_T hitOrMiss(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut, T borderVal=ImDtTypes<T>::min())
     {
-	thin<T>(imOut, mhtSE, imOut);
-	v2 = vol(imOut);
-	if (v2==v1)
-	  break;
-	v1 = v2;
+	return hitOrMiss(imIn, compSE.fgSE, compSE.bgSE, imOut, borderVal);
     }
-    WAKE_UP(imOut);
-    
-    return RES_OK;
-}
 
-template <class T>
-RES_T fullThin(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
-{
-    return fullThin(imIn, CompStrElt(compSE), imOut);
-}
-
-template <class T>
-RES_T fullThin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
-{
-    return fullThin(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
-}
-
-/**
- * Thicking transform (full)
- */
-template <class T>
-RES_T fullThick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
-{
-    SLEEP(imOut);
-    double v1, v2;
-    thick<T>(imIn, mhtSE, imOut);
-    v1 = vol(imOut);
-    while(true)
+    /**
+    * Hit Or Miss transform
+    */
+    template <class T>
+    RES_T hitOrMiss(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut, T borderVal=ImDtTypes<T>::min())
     {
-	thick<T>(imOut, mhtSE, imOut);
-	v2 = vol(imOut);
-	if (v2==v1)
-	  break;
-	v1 = v2;
+	Image<T> tmpIm(imIn);
+	SLEEP(imOut);
+	fill(imOut, ImDtTypes<T>::min());
+	for (std::vector<CompStrElt>::const_iterator it=mhtSE.compSeList.begin();it!=mhtSE.compSeList.end();it++)
+	{
+	    hitOrMiss<T>(imIn, (*it).fgSE, (*it).bgSE, tmpIm, borderVal);
+	    sup(imOut, tmpIm, imOut);
+	}
+	imOut.modified();
+	WAKE_UP(imOut);
+	
+	return RES_OK;
     }
-    WAKE_UP(imOut);
-    
-    return RES_OK;
-}
 
-template <class T>
-RES_T fullThick(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
-{
-    return fullThick(imIn, CompStrElt(compSE), imOut);
-}
+    /**
+    * Thinning transform
+    */
+    template <class T>
+    RES_T thin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
+    {
+	SLEEP(imOut);
+	Image<T> tmpIm(imIn);
+	hitOrMiss<T>(imIn, mhtSE, tmpIm);
+	inv(tmpIm, tmpIm);
+	inf(imIn, tmpIm, imOut);
+	WAKE_UP(imOut);
+	
+	return RES_OK;
+    }
 
-template <class T>
-RES_T fullThick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
-{
-    return fullThick(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
-}
+    template <class T>
+    RES_T thin(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
+    {
+	return thin(imIn, CompStrElt(compSE), imOut);
+    }
 
+    template <class T>
+    RES_T thin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
+    {
+	return thin(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+    }
+
+
+    /**
+    * Thicking transform
+    */
+    template <class T>
+    RES_T thick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
+    {
+	SLEEP(imOut);
+	Image<T> tmpIm(imIn);
+	hitOrMiss<T>(imIn, mhtSE, tmpIm);
+	sup(imIn, tmpIm, imOut);
+	WAKE_UP(imOut);
+	
+	return RES_OK;
+    }
+
+    template <class T>
+    RES_T thick(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
+    {
+	return thick(imIn, CompStrElt(compSE), imOut);
+    }
+
+    template <class T>
+    RES_T thick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
+    {
+	return thick(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+    }
+
+    /**
+    * Thinning transform (full)
+    */
+    template <class T>
+    RES_T fullThin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
+    {
+	SLEEP(imOut);
+	double v1, v2;
+	thin<T>(imIn, mhtSE, imOut);
+	v1 = vol(imOut);
+	while(true)
+	{
+	    thin<T>(imOut, mhtSE, imOut);
+	    v2 = vol(imOut);
+	    if (v2==v1)
+	      break;
+	    v1 = v2;
+	}
+	WAKE_UP(imOut);
+	
+	return RES_OK;
+    }
+
+    template <class T>
+    RES_T fullThin(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
+    {
+	return fullThin(imIn, CompStrElt(compSE), imOut);
+    }
+
+    template <class T>
+    RES_T fullThin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
+    {
+	return fullThin(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+    }
+
+    /**
+    * Thicking transform (full)
+    */
+    template <class T>
+    RES_T fullThick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
+    {
+	SLEEP(imOut);
+	double v1, v2;
+	thick<T>(imIn, mhtSE, imOut);
+	v1 = vol(imOut);
+	while(true)
+	{
+	    thick<T>(imOut, mhtSE, imOut);
+	    v2 = vol(imOut);
+	    if (v2==v1)
+	      break;
+	    v1 = v2;
+	}
+	WAKE_UP(imOut);
+	
+	return RES_OK;
+    }
+
+    template <class T>
+    RES_T fullThick(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
+    {
+	return fullThick(imIn, CompStrElt(compSE), imOut);
+    }
+
+    template <class T>
+    RES_T fullThick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
+    {
+	return fullThick(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+    }
+
+
+} // namespace smil
 
 /** \} */
 

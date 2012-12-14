@@ -37,58 +37,58 @@
 #include "DTimer.h"
 #include "DSignal.h"
 
-class BaseObject;
-class BaseImage;
-
-struct stat;
-
 #include "private/DInstance.hpp"
 
-
-class _DCORE Core : public UniqueInstance<Core>
+namespace smil
 {
-    friend class UniqueInstance<Core>;
+    class BaseObject;
+    class BaseImage;
 
-protected:
-  Core ();
-  ~Core ();
-  
-public:
-    // Public interface
-    bool keepAlive;
-    bool autoResizeImages;
-    
-    static void registerObject(BaseObject *obj);
-    static void unregisterObject(BaseObject *obj);
-    
-    static vector<BaseObject*> getRegisteredObjects();
-    static vector<BaseImage*> getImages();
-    static size_t getNumberOfThreads();
-    static size_t getAllocatedMemory();
-    static void showAllImages();
-    static void hideAllImages();
-    
-    Signal onBaseImageCreated;
-    
-    vector<BaseObject*> _getRegisteredObjects();
-    vector<BaseImage*> _getImages();
-    size_t _getNumberOfThreads();
-    size_t _getAllocatedMemory();
-    void _showAllImages();
-    void _hideAllImages();
-    
-  
-protected:
-    vector<BaseObject*> registeredObjects;
-    vector<BaseImage*> registeredImages;
-    void deleteRegisteredObjects();
-    size_t threadNumber;
-  
-public:
-  static void initialize();
-  
-};
+    class _DCORE Core : public UniqueInstance<Core>
+    {
+	friend class UniqueInstance<Core>;
 
+    protected:
+      Core ();
+      ~Core ();
+      
+    public:
+	// Public interface
+	bool keepAlive;
+	bool autoResizeImages;
+	
+	static void registerObject(BaseObject *obj);
+	static void unregisterObject(BaseObject *obj);
+	
+	static vector<BaseObject*> getRegisteredObjects();
+	static vector<BaseImage*> getImages();
+	static size_t getNumberOfThreads();
+	static size_t getAllocatedMemory();
+	static void showAllImages();
+	static void hideAllImages();
+	
+	Signal onBaseImageCreated;
+	
+	vector<BaseObject*> _getRegisteredObjects();
+	vector<BaseImage*> _getImages();
+	size_t _getNumberOfThreads();
+	size_t _getAllocatedMemory();
+	void _showAllImages();
+	void _hideAllImages();
+	
+      
+    protected:
+	vector<BaseObject*> registeredObjects;
+	vector<BaseImage*> registeredImages;
+	void deleteRegisteredObjects();
+	size_t threadNumber;
+      
+    public:
+      static void initialize();
+      
+    };
+
+} // namespace smil
 
 
 #endif // _DCORE_INSTANCE_H

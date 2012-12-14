@@ -33,41 +33,45 @@
 #include "DBaseObject.h"
 #include "DCommon.h"
 
-template <class T>
-class Image;
-
 /**
  * \ingroup Gui
  */
 /*@{*/
 
-class BaseImageViewer : public BaseObject
+namespace smil
 {
-public:
-    typedef BaseObject parentClass;
-    
-    BaseImageViewer()
-      : labelImage(false)
-    {
-	updateSlot.init(this, &BaseImageViewer::update);
-    }
-    
-    virtual void show() {}
-    virtual void showLabel() {}
-    virtual void hide() {}
-    virtual bool isVisible() { return false; }
-    virtual void setName(const char *_name) { parentClass::setName(_name); }
-    virtual void update() {}
     template <class T>
-    void drawOverlay(Image<T> &im) {};
-    
-    // Slots
-    MemberFunctionSlot<BaseImageViewer> updateSlot;
-    
-protected:
-    virtual void drawImage() {}
-    bool labelImage;
-};
+    class Image;
+
+    class BaseImageViewer : public BaseObject
+    {
+    public:
+	typedef BaseObject parentClass;
+	
+	BaseImageViewer()
+	  : labelImage(false)
+	{
+	    updateSlot.init(this, &BaseImageViewer::update);
+	}
+	
+	virtual void show() {}
+	virtual void showLabel() {}
+	virtual void hide() {}
+	virtual bool isVisible() { return false; }
+	virtual void setName(const char *_name) { parentClass::setName(_name); }
+	virtual void update() {}
+	template <class T>
+	void drawOverlay(Image<T> &im) {};
+	
+	// Slots
+	MemberFunctionSlot<BaseImageViewer> updateSlot;
+	
+    protected:
+	virtual void drawImage() {}
+	bool labelImage;
+    };
+
+} // namespace smil
 
 /*@}*/
 

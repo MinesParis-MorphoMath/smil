@@ -40,130 +40,134 @@
 
 using namespace std;
 
-#ifdef USE_64BIT_IDS
-//     typedef UINT8 INT_TYPE;
-    typedef UINT8 BIN_TYPE;
-#else    
-    typedef UINT8 BIN_TYPE;
-#endif // USE_64BIT_IDS 
-
-struct bitIndex
+namespace smil
 {
-    BIN_TYPE *byte;
-    unsigned int index;
-    
-    bitIndex& operator=(bool val)
-    {
-      if (val)
-	(*byte) |= (1UL<<index);
-      else
-	(*byte) &= ~(1UL<<index);
-      return *this;
-    }
-    operator bool()
-    {
-      return (*byte) & (1UL<<index);
-    }
-};
+  
+    #ifdef USE_64BIT_IDS
+    //     typedef UINT8 INT_TYPE;
+	typedef UINT8 BIN_TYPE;
+    #else    
+	typedef UINT8 BIN_TYPE;
+    #endif // USE_64BIT_IDS 
 
-struct BIN
-{
-    BIN_TYPE val;
-    
-    BIN(BIN_TYPE v = numeric_limits<BIN_TYPE>::min()) : val(v) {}
-    BIN(bool b) : val(b ? this->max() : this->min()) {}
-    BIN(double v) : val(v==0 ? this->min() : this->max()) {}
-    
-    static const BIN_TYPE SIZE = sizeof(BIN_TYPE)*CHAR_BIT;
-    
-    static inline BIN_TYPE min() { return numeric_limits<BIN_TYPE>::min(); }
-    static inline BIN_TYPE max() { return numeric_limits<BIN_TYPE>::max(); }
-    
-    //! Most significant bit
-    static const BIN_TYPE MS_BIT = (1UL << (SIZE - 2));
-    //! Less significant bit
-    static const BIN_TYPE LS_BIT = 0x01;
-    
-    
-    typedef BIN_TYPE Type;
-    typedef Type *lineType;
-    typedef lineType *sliceType;
-    
-    static inline BIN_TYPE binLen(BIN_TYPE bitCount) { return (bitCount-1)/BIN::SIZE + 1; }
-
-    inline bitIndex& operator[] (UINT8 pos)
+    struct bitIndex
     {
-	static bitIndex b;
-	b.byte = &val;
-	b.index = pos;
- 	return b;
-    }
-    ostream& printSelf(ostream &os=cout)
-    {
-	for (int i=0;i<SIZE;i++)
-	  os << this->operator[](i) << " ";
-	return os;
-    }
-    inline BIN& operator=(BIN_TYPE v)
-    {
-	val = v;
-	return *this;
-    }
-    inline BIN& operator=(bool b)
-    {
-	val = b ? this->max() : this->min();
-	return *this;
-    }
-    inline BIN& operator=(const char* s)
-    {
-	UINT iMax = strlen(s) < SIZE ? strlen(s) : SIZE;
+	BIN_TYPE *byte;
+	unsigned int index;
 	
-	val = 0;
-	for (UINT i=0;i<iMax;i++)
-	  val += (s[i]-48) * (1<<i);
-	return *this;
+	bitIndex& operator=(bool val)
+	{
+	  if (val)
+	    (*byte) |= (1UL<<index);
+	  else
+	    (*byte) &= ~(1UL<<index);
+	  return *this;
+	}
+	operator bool()
+	{
+	  return (*byte) & (1UL<<index);
+	}
+    };
+
+    struct BIN
+    {
+	BIN_TYPE val;
+	
+	BIN(BIN_TYPE v = numeric_limits<BIN_TYPE>::min()) : val(v) {}
+	BIN(bool b) : val(b ? this->max() : this->min()) {}
+	BIN(double v) : val(v==0 ? this->min() : this->max()) {}
+	
+	static const BIN_TYPE SIZE = sizeof(BIN_TYPE)*CHAR_BIT;
+	
+	static inline BIN_TYPE min() { return numeric_limits<BIN_TYPE>::min(); }
+	static inline BIN_TYPE max() { return numeric_limits<BIN_TYPE>::max(); }
+	
+	//! Most significant bit
+	static const BIN_TYPE MS_BIT = (1UL << (SIZE - 2));
+	//! Less significant bit
+	static const BIN_TYPE LS_BIT = 0x01;
+	
+	
+	typedef BIN_TYPE Type;
+	typedef Type *lineType;
+	typedef lineType *sliceType;
+	
+	static inline BIN_TYPE binLen(BIN_TYPE bitCount) { return (bitCount-1)/BIN::SIZE + 1; }
+
+	inline bitIndex& operator[] (UINT8 pos)
+	{
+	    static bitIndex b;
+	    b.byte = &val;
+	    b.index = pos;
+	    return b;
+	}
+	ostream& printSelf(ostream &os=cout)
+	{
+	    for (int i=0;i<SIZE;i++)
+	      os << this->operator[](i) << " ";
+	    return os;
+	}
+	inline BIN& operator=(BIN_TYPE v)
+	{
+	    val = v;
+	    return *this;
+	}
+	inline BIN& operator=(bool b)
+	{
+	    val = b ? this->max() : this->min();
+	    return *this;
+	}
+	inline BIN& operator=(const char* s)
+	{
+	    UINT iMax = strlen(s) < SIZE ? strlen(s) : SIZE;
+	    
+	    val = 0;
+	    for (UINT i=0;i<iMax;i++)
+	      val += (s[i]-48) * (1<<i);
+	    return *this;
+	}
+    //     inline operator bool()
+    //     {
+    // 	return val!=0;
+    //     }
+    };
+
+    inline ostream& operator << (ostream &os, BIN &b)
+    {
+	return b.printSelf(os);
     }
-//     inline operator bool()
-//     {
-// 	return val!=0;
-//     }
-};
 
-inline ostream& operator << (ostream &os, BIN &b)
-{
-    return b.printSelf(os);
-}
-
-// #define BIN BIN<UINT32>
+    // #define BIN BIN<UINT32>
 
 
 
-// 
-// inline RES_T setPixel(UINT x, UINT y, UINT z, pixelType value)
-// {
-//     if (x>=width || y>=height || z>=depth)
-// 	return RES_ERR;
-//     pixels[z*width*height+y*width+x] = value;
-//     modified();
-//     return RES_OK;
-// }
-// inline RES_T setPixel(UINT x, UINT y, pixelType value)
-// {
-//     if (x>=width || y>=height)
-// 	return RES_ERR;
-//     pixels[height+y*width+x] = value;
-//     modified();
-//     return RES_OK;
-// }
-// inline RES_T setPixel(UINT offset, pixelType value)
-// {
-//     if (offset >= pixelCount)
-// 	return RES_ERR;
-//     pixels[offset] = value;
-//     modified();
-//     return RES_OK;
-// }
+    // 
+    // inline RES_T setPixel(UINT x, UINT y, UINT z, pixelType value)
+    // {
+    //     if (x>=width || y>=height || z>=depth)
+    // 	return RES_ERR;
+    //     pixels[z*width*height+y*width+x] = value;
+    //     modified();
+    //     return RES_OK;
+    // }
+    // inline RES_T setPixel(UINT x, UINT y, pixelType value)
+    // {
+    //     if (x>=width || y>=height)
+    // 	return RES_ERR;
+    //     pixels[height+y*width+x] = value;
+    //     modified();
+    //     return RES_OK;
+    // }
+    // inline RES_T setPixel(UINT offset, pixelType value)
+    // {
+    //     if (offset >= pixelCount)
+    // 	return RES_ERR;
+    //     pixels[offset] = value;
+    //     modified();
+    //     return RES_OK;
+    // }
 
+} // namespace smil
 
 
 #endif // _DBINARY_BIN_H

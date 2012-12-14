@@ -47,7 +47,7 @@ SMIL_MODULE(smilGui)
 //////////////////////////////////////////////////////////
 
 %include "DInstance.hpp"
-%template(GuiInstance) UniqueInstance<Gui>;
+%template(GuiInstance) UniqueInstance<smil::Gui>;
 %include "DGuiInstance.h"
 
 
@@ -65,7 +65,7 @@ SMIL_MODULE(smilGui)
 %include "DImageViewer.hpp"
 
 
-TEMPLATE_WRAP_CLASS(ImageViewer, ImageViewer);
+TEMPLATE_WRAP_CLASS(smil::ImageViewer, ImageViewer);
 
 
 #ifdef USE_QT

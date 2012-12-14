@@ -43,127 +43,130 @@ using namespace std;
  * @{
  */
 
-enum RES_T
+namespace smil
 {
-    RES_OK = 1,
-    RES_ERR = -100,
-    RES_ERR_BAD_ALLOCATION,
-    RES_ERR_BAD_SIZE,
-    RES_ERR_IO,
-    RES_ERR_NOT_IMPLEMENTED,
-    RES_ERR_UNKNOWN
-};
-
-inline const char *getErrorMessage(const RES_T &res)
-{
-    switch(res)
+    enum RES_T
     {
-      case RES_OK:
-	return "ok";
-      case RES_ERR_BAD_ALLOCATION:
-	return "Bad allocation";
-      default:
-	return "Unknown error";
-    }
-}
+	RES_OK = 1,
+	RES_ERR = -100,
+	RES_ERR_BAD_ALLOCATION,
+	RES_ERR_BAD_SIZE,
+	RES_ERR_IO,
+	RES_ERR_NOT_IMPLEMENTED,
+	RES_ERR_UNKNOWN
+    };
 
-class Error: public exception
-{
-public:
-    Error(string const& descr="") throw()
-	  : description(cleanDescr(descr))
-    {} 
-    Error(string const& descr, string const& func, string const& _file, int const& _line, string const& expr) throw()
-	  : description(cleanDescr(descr)),
-	    function(func),
-	    file(_file),
-	    line(_line),
-	    expression(expr)
-    {} 
-    Error(string const& descr, string const& func, string const& _file, int const& _line) throw()
-	  : description(cleanDescr(descr)),
-	    function(func),
-	    file(_file),
-	    line(_line)
-    {} 
-    Error(string const& func, string const& _file, int const& _line, string const& expr) throw()
-	  : function(func),
-	    file(_file),
-	    line(_line),
-	    expression(expr)
-    {} 
-    Error(string const& descr, string const& func, string const& expr) throw()
-	  : description(cleanDescr(descr)),
-	    function(func),
-	    expression(expr)
-    {} 
-    Error(string const& func, string const& expr) throw()
-	  : function(func),
-	    expression(expr)
-    {} 
-    virtual ~Error() throw()
-    {}
-    virtual const char* what() const throw()
+    inline const char *getErrorMessage(const RES_T &res)
     {
-	stringstream buf;
-	if (!function.empty())
-	  buf << "\n  in function: " << function;
-	if (!description.empty())
-	  buf << "\n  error: " << description;
-#ifndef NDEBUG	
-	if (!expression.empty())
+	switch(res)
 	{
-	    if (description.empty())
-	      buf << "\n  error: assert " << expression;
-	    else
-	      buf << " ( assert " << expression << " )";
+	  case RES_OK:
+	    return "ok";
+	  case RES_ERR_BAD_ALLOCATION:
+	    return "Bad allocation";
+	  default:
+	    return "Unknown error";
 	}
-	if (!file.empty())
-	  buf << "\n  file: " << file << ":" << line;
-#endif // NDEBUG	
-	return buf.str().c_str();
     }
-    void show()
+
+    class Error: public exception
     {
-	cout << "Error:" << this->what() << endl;
-    }
- 
-private:
-    inline string cleanDescr(const string descr)
-    {
-	if (descr[0]!='"')
-	  return descr;
-	else 
-	  return descr.substr(1, descr.length()-2);
-	
-    }
-      
-    string description;
-    string function;
-    string file;
-    int line;
-    string expression;
-};
+    public:
+	Error(string const& descr="") throw()
+	      : description(cleanDescr(descr))
+	{} 
+	Error(string const& descr, string const& func, string const& _file, int const& _line, string const& expr) throw()
+	      : description(cleanDescr(descr)),
+		function(func),
+		file(_file),
+		line(_line),
+		expression(expr)
+	{} 
+	Error(string const& descr, string const& func, string const& _file, int const& _line) throw()
+	      : description(cleanDescr(descr)),
+		function(func),
+		file(_file),
+		line(_line)
+	{} 
+	Error(string const& func, string const& _file, int const& _line, string const& expr) throw()
+	      : function(func),
+		file(_file),
+		line(_line),
+		expression(expr)
+	{} 
+	Error(string const& descr, string const& func, string const& expr) throw()
+	      : description(cleanDescr(descr)),
+		function(func),
+		expression(expr)
+	{} 
+	Error(string const& func, string const& expr) throw()
+	      : function(func),
+		expression(expr)
+	{} 
+	virtual ~Error() throw()
+	{}
+	virtual const char* what() const throw()
+	{
+	    stringstream buf;
+	    if (!function.empty())
+	      buf << "\n  in function: " << function;
+	    if (!description.empty())
+	      buf << "\n  error: " << description;
+    #ifndef NDEBUG	
+	    if (!expression.empty())
+	    {
+		if (description.empty())
+		  buf << "\n  error: assert " << expression;
+		else
+		  buf << " ( assert " << expression << " )";
+	    }
+	    if (!file.empty())
+	      buf << "\n  file: " << file << ":" << line;
+    #endif // NDEBUG	
+	    return buf.str().c_str();
+	}
+	void show()
+	{
+	    cout << "Error:" << this->what() << endl;
+	}
+    
+    private:
+	inline string cleanDescr(const string descr)
+	{
+	    if (descr[0]!='"')
+	      return descr;
+	    else 
+	      return descr.substr(1, descr.length()-2);
+	    
+	}
+	  
+	string description;
+	string function;
+	string file;
+	int line;
+	string expression;
+    };
 
-#define ASSERT_1_ARG(func, file, line, expr) \
-    if(!expr) { Error(func, file, line, #expr).show(); return RES_ERR; }
-#define ASSERT_2_ARGS(func, file, line, expr, errCode) \
-    if(!expr) { Error(#errCode, func, file, line, #expr).show(); return errCode; }
-#define ASSERT_3_ARGS(func, file, line, expr, errCode, retVal) \
-    if(!expr) { Error(#errCode, func, file, line, #expr).show(); return retVal; }
+    #define ASSERT_1_ARG(func, file, line, expr) \
+	if(!expr) { Error(func, file, line, #expr).show(); return RES_ERR; }
+    #define ASSERT_2_ARGS(func, file, line, expr, errCode) \
+	if(!expr) { Error(#errCode, func, file, line, #expr).show(); return errCode; }
+    #define ASSERT_3_ARGS(func, file, line, expr, errCode, retVal) \
+	if(!expr) { Error(#errCode, func, file, line, #expr).show(); return retVal; }
 
-#define ERR_MSG(msg) Error(msg, __FUNC__, __FILE__, __LINE__).show()
+    #define ERR_MSG(msg) Error(msg, __FUNC__, __FILE__, __LINE__).show()
 
-#define ASSERT_NARGS_CHOOSER(...) \
-    GET_4TH_ARG(__VA_ARGS__, ASSERT_3_ARGS, \
-                ASSERT_2_ARGS, ASSERT_1_ARG, )
+    #define ASSERT_NARGS_CHOOSER(...) \
+	GET_4TH_ARG(__VA_ARGS__, ASSERT_3_ARGS, \
+		    ASSERT_2_ARGS, ASSERT_1_ARG, )
 
-#ifdef _MSC_VER
-	#define ASSERT(...) EXPAND( ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__) )
-#else // _MSC_VER
-	#define ASSERT(...) ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__)
-#endif // _MSC_VER
-
+    #ifdef _MSC_VER
+	    #define ASSERT(...) EXPAND( ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__) )
+    #else // _MSC_VER
+	    #define ASSERT(...) ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__)
+    #endif // _MSC_VER
+    
+} // namespace smil
 
 /** @} */
 

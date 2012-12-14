@@ -30,53 +30,57 @@
 #include "DBaseObject.h"
 #include "DCoreInstance.h"
 
-BaseObject::BaseObject(bool _register)
-  : className("BaseObject"),
-    name(""),
-    triggerEvents(true),
-    registered(false)
+namespace smil
 {
-    if (_register)
-      Core::getInstance()->registerObject(this);
-}
 
-BaseObject::BaseObject(const string _className, bool _register)
-  : className(_className), 
-    name(""),
-    triggerEvents(true),
-    registered(false)
-{
-    if (_register)
-      Core::getInstance()->registerObject(this);
-}
+    BaseObject::BaseObject(bool _register)
+      : className("BaseObject"),
+	name(""),
+	triggerEvents(true),
+	registered(false)
+    {
+	if (_register)
+	  Core::getInstance()->registerObject(this);
+    }
 
-BaseObject::BaseObject(const BaseObject &rhs, bool _register)
-  : registered(false),
-    name("")
-{
-    this->_clone(rhs);
-    if (_register)
-      Core::getInstance()->registerObject(this);
-}
+    BaseObject::BaseObject(const string _className, bool _register)
+      : className(_className), 
+	name(""),
+	triggerEvents(true),
+	registered(false)
+    {
+	if (_register)
+	  Core::getInstance()->registerObject(this);
+    }
 
-void BaseObject::_clone(const BaseObject &rhs)
-{
-    this->className = rhs.getClassName();
-    this->triggerEvents = rhs.triggerEvents;
-}
+    BaseObject::BaseObject(const BaseObject &rhs, bool _register)
+      : registered(false),
+	name("")
+    {
+	this->_clone(rhs);
+	if (_register)
+	  Core::getInstance()->registerObject(this);
+    }
 
-BaseObject::~BaseObject() 
-{
-    Core::getInstance()->unregisterObject(this);
-}
+    void BaseObject::_clone(const BaseObject &rhs)
+    {
+	this->className = rhs.getClassName();
+	this->triggerEvents = rhs.triggerEvents;
+    }
 
-Core *BaseObject::getCoreInstance() 
-{ 
-    return Core::getInstance(); 
-}
+    BaseObject::~BaseObject() 
+    {
+	Core::getInstance()->unregisterObject(this);
+    }
 
-const char *BaseObject::getClassName() const
-{
-    return className.c_str();
-}
+    Core *BaseObject::getCoreInstance() 
+    { 
+	return Core::getInstance(); 
+    }
 
+    const char *BaseObject::getClassName() const
+    {
+	return className.c_str();
+    }
+
+} // namespace smil

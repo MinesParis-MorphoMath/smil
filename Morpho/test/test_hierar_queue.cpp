@@ -32,6 +32,8 @@
 #include "DMorpho.h"
 #include "DMorphoWatershed.hpp"
 
+using namespace smil;
+
 class Test_HierarchicalQueue : public TestCase
 {
   virtual void run()

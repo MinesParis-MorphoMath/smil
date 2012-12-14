@@ -25,6 +25,8 @@
 #include "DImageArith.hpp"
 #include "DTest.h"
 
+using namespace smil;
+
 class Test_Equal : public TestCase
 {
   virtual void run()

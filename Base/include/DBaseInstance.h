@@ -39,20 +39,23 @@
  */
 /*@{*/
 
-
-class _DBASE Base : public UniqueInstance<Base>
+namespace smil
 {
-    friend class UniqueInstance<Base>;
+  
+    class _DBASE Base : public UniqueInstance<Base>
+    {
+	friend class UniqueInstance<Base>;
 
-protected:
-    Base ();
-    ~Base ();
+    protected:
+	Base (); 
+	~Base ();
 
-public:
-    // Public interface
-protected:
-};
+    public:
+	// Public interface
+    protected:
+    };
 
+} // namespace smil
 
 
 /*@}*/

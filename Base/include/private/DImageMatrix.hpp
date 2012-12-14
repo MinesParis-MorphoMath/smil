@@ -36,12 +36,16 @@
  * @{
  */
 
-template <class T>
-RES_T matMul(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
+namespace smil
 {
-    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
-}
+  
+    template <class T>
+    RES_T matMul(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    }
 
+} // namespace smil
 
 /** @}*/
 

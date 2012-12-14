@@ -42,85 +42,86 @@
 
 using namespace std;
 
-
-class _DCORE TestCase
+namespace smil
 {
-public:
-  TestCase() 
-    : stopIfError(false), 
-      outStream(NULL) 
-  {
-  }
-  virtual void init() {}
-  virtual void run() = 0;
-  virtual void end() {}
-  const char *name;
-  bool stopIfError;
-  stringstream *outStream;
-  RES_T retVal;
-  int tElapsed;
-};
+    class _DCORE TestCase
+    {
+    public:
+      TestCase() 
+	: stopIfError(false), 
+	  outStream(NULL) 
+      {
+      }
+      virtual void init() {}
+      virtual void run() = 0;
+      virtual void end() {}
+      const char *name;
+      bool stopIfError;
+      stringstream *outStream;
+      RES_T retVal;
+      int tElapsed;
+    };
 
 
-#define TEST_ASSERT(expr) \
-{ \
-    if (!(expr)) \
+    #define TEST_ASSERT(expr) \
     { \
-	    if (outStream) \
-		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " assert " << #expr << endl;	\
-	    retVal = RES_ERR; \
-	    if (stopIfError) \
-	      return; \
-    } \
-}
+	if (!(expr)) \
+	{ \
+		if (outStream) \
+		    *outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " assert " << #expr << endl;	\
+		retVal = RES_ERR; \
+		if (stopIfError) \
+		  return; \
+	} \
+    }
 
-#define TEST_NO_THROW(expr) \
-{ \
-    bool _throw = false; \
-    try { expr; } \
-    catch(...) { _throw = true; } \
-    if (_throw) \
+    #define TEST_NO_THROW(expr) \
     { \
-	    if (outStream) \
-		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " no throw " << #expr << endl;	\
-	    retVal = RES_ERR; \
-	    if (stopIfError) \
-	      return; \
-    } \
-}
+	bool _throw = false; \
+	try { expr; } \
+	catch(...) { _throw = true; } \
+	if (_throw) \
+	{ \
+		if (outStream) \
+		    *outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " no throw " << #expr << endl;	\
+		retVal = RES_ERR; \
+		if (stopIfError) \
+		  return; \
+	} \
+    }
 
-#define TEST_THROW(expr) \
-{ \
-    bool _throw = false; \
-    try { expr; } \
-    catch(...) { _throw = true; } \
-    if (!_throw) \
+    #define TEST_THROW(expr) \
     { \
-	    if (outStream) \
-		*outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " throw " << #expr << endl;	\
-	    retVal = RES_ERR; \
-	    if (stopIfError) \
-	      return; \
-    } \
-}
+	bool _throw = false; \
+	try { expr; } \
+	catch(...) { _throw = true; } \
+	if (!_throw) \
+	{ \
+		if (outStream) \
+		    *outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " throw " << #expr << endl;	\
+		retVal = RES_ERR; \
+		if (stopIfError) \
+		  return; \
+	} \
+    }
 
-class _DCORE TestSuite
-{
-public:
-  void add(TestCase *f);
-  int run();
-private:
-  list<TestCase*> funcList;
-  int tElapsed;
-};
+    class _DCORE TestSuite
+    {
+    public:
+      void add(TestCase *f);
+      int run();
+    private:
+      list<TestCase*> funcList;
+      int tElapsed;
+    };
 
 
-#define ADD_TEST(TS, TC) \
-TC TC##_inst; \
-TC##_inst.name = #TC; \
-TS.add(& TC##_inst); 
+    #define ADD_TEST(TS, TC) \
+    TC TC##_inst; \
+    TC##_inst.name = #TC; \
+    TS.add(& TC##_inst); 
 
-
+} // namespace smil
 
 #endif // _DTEST_H
 

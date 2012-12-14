@@ -44,149 +44,150 @@
 
 using namespace std;
 
-
-#define VERBOSE 1
-
-#if VERBOSE > 1
-#define MESSAGE(msg) cout << msg <<  endl;
-#else // VERBOSE 
-#define MESSAGE(msg)
-#endif // VERBOSE 
-
-
-
-#define INLINE inline
-
-#ifdef _MSC_VER
-
-#ifdef smilCore_EXPORTS
-	#define _DCORE __declspec(dllexport)
-//	#pragma message(" - Exporting smilCore")
-#else
-	#define _DCORE __declspec(dllimport)
-//	#pragma message(" - Importing smilCore")
-#endif
-
-#ifdef smilBase_EXPORTS
-#define _DBASE __declspec(dllexport)
-#else
-#define _DBASE __declspec(dllimport)
-#endif
-
-#ifdef smilIO_EXPORTS
-#define _DIO __declspec(dllexport)
-#else
-#define _DIO __declspec(dllimport)
-#endif
-
-#ifdef smilGui_EXPORTS
-#define _DGUI __declspec(dllexport)
-#else
-#define _DGUI __declspec(dllimport)
-#endif
-
-#ifdef smilMorpho_EXPORTS
-#define _DMORPHO __declspec(dllexport)
-#else
-#define _DMORPHO __declspec(dllimport)
-#endif
-
-#else // _MSC_VER
-
-#define _DCORE
-#define _DBASE
-#define _DIO
-#define _DGUI
-#define _DMORPHO
-
-#endif // _MSC_VER
-
-
-
-#define SMART_POINTER(T) boost::shared_ptr< T >
-#define SMART_IMAGE(T) SMART_POINTER( D_Image< T > )
-
-#define D_DEFAULT_IMAGE_WIDTH 512
-#define D_DEFAULT_IMAGE_HEIGHT 512
-#define D_DEFAULT_IMAGE_DEPTH 1
-
-#define D_DEFAULT_OUT_PIXEL_VAL 0
-
-#ifndef PI
-#define PI 3.141592653589793
-#endif // PI
-
-#define MIN(a, b) a < b ? a : b;
-#define MAX(a, b) a > b ? a : b;
-
-template <class T>
-struct Point
+namespace smil
 {
-  T x;
-  T y;
-  T z;
-  Point() : x(0), y(0), z(0) {}
-  Point(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
-};
+    #define VERBOSE 1
 
-typedef Point<int> IntPoint;
-typedef Point<double> DoublePoint;
-
-inline double round(double r) 
-{
-    return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
-}
-
-// Misc Macros
-
-#ifdef _MSC_VER
-
-#define __FUNC__ __FUNCTION__
-
-// Work-around to MSVC __VA_ARGS__ expanded as a single argument, instead of being broken down to multiple ones
-#define EXPAND( ... ) __VA_ARGS__
-
-#define _GET_1ST_ARG(arg1, ...) arg1
-#define _GET_2ND_ARG(arg1, arg2, ...) arg2
-#define _GET_3RD_ARG(arg1, arg2, arg3, ...) arg3
-#define _GET_4TH_ARG(arg1, arg2, arg3, arg4, ...) arg4
-#define _GET_5TH_ARG(arg1, arg2, arg3, arg4, arg5, ...) arg5
-#define _GET_6TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, ...) arg6
-#define _GET_7TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, arg7, ...) arg7
-#define _GET_8TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ...) arg8
-#define GET_1ST_ARG(...) EXPAND(_GET_1ST_ARG(__VA_ARGS__))
-#define GET_2ND_ARG(...) EXPAND(_GET_2ND_ARG(__VA_ARGS__))
-#define GET_3RD_ARG(...) EXPAND(_GET_3RD_ARG(__VA_ARGS__))
-#define GET_4TH_ARG(...) EXPAND(_GET_4TH_ARG(__VA_ARGS__))
-#define GET_5TH_ARG(...) EXPAND(_GET_5TH_ARG(__VA_ARGS__))
-#define GET_6TH_ARG(...) EXPAND(_GET_6TH_ARG(__VA_ARGS__))
-#define GET_7TH_ARG(...) EXPAND(_GET_7TH_ARG(__VA_ARGS__))
-#define GET_8TH_ARG(...) EXPAND(_GET_8TH_ARG(__VA_ARGS__))
-
-#define _xPP_NARGS_IMPL(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,N,...) N
-#define PP_NARGS(...) \
-    EXPAND(_xPP_NARGS_IMPL(__VA_ARGS__,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0))
-
-#else // _MSC_VER
-
-#define __FUNC__ __func__
-
-#define GET_1ST_ARG(arg1, ...) arg1
-#define GET_2ND_ARG(arg1, arg2, ...) arg2
-#define GET_3RD_ARG(arg1, arg2, arg3, ...) arg3
-#define GET_4TH_ARG(arg1, arg2, arg3, arg4, ...) arg4
-#define GET_5TH_ARG(arg1, arg2, arg3, arg4, arg5, ...) arg5
-#define GET_6TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, ...) arg6
-#define GET_7TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, arg7, ...) arg7
-#define GET_8TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ...) arg8
-
-#define _xPP_NARGS_IMPL(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,N,...) N
-#define PP_NARGS(...) \
-    _xPP_NARGS_IMPL(__VA_ARGS__,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0)
-
-#endif // _MSC_VER
+    #if VERBOSE > 1
+    #define MESSAGE(msg) cout << msg <<  endl;
+    #else // VERBOSE 
+    #define MESSAGE(msg)
+    #endif // VERBOSE 
 
 
+
+    #define INLINE inline
+
+    #ifdef _MSC_VER
+
+    #ifdef smilCore_EXPORTS
+	    #define _DCORE __declspec(dllexport)
+    //	#pragma message(" - Exporting smilCore")
+    #else
+	    #define _DCORE __declspec(dllimport)
+    //	#pragma message(" - Importing smilCore")
+    #endif
+
+    #ifdef smilBase_EXPORTS
+    #define _DBASE __declspec(dllexport)
+    #else
+    #define _DBASE __declspec(dllimport)
+    #endif
+
+    #ifdef smilIO_EXPORTS
+    #define _DIO __declspec(dllexport)
+    #else
+    #define _DIO __declspec(dllimport)
+    #endif
+
+    #ifdef smilGui_EXPORTS
+    #define _DGUI __declspec(dllexport)
+    #else
+    #define _DGUI __declspec(dllimport)
+    #endif
+
+    #ifdef smilMorpho_EXPORTS
+    #define _DMORPHO __declspec(dllexport)
+    #else
+    #define _DMORPHO __declspec(dllimport)
+    #endif
+
+    #else // _MSC_VER
+
+    #define _DCORE
+    #define _DBASE
+    #define _DIO
+    #define _DGUI
+    #define _DMORPHO
+
+    #endif // _MSC_VER
+
+
+
+    #define SMART_POINTER(T) boost::shared_ptr< T >
+    #define SMART_IMAGE(T) SMART_POINTER( D_Image< T > )
+
+    #define D_DEFAULT_IMAGE_WIDTH 512
+    #define D_DEFAULT_IMAGE_HEIGHT 512
+    #define D_DEFAULT_IMAGE_DEPTH 1
+
+    #define D_DEFAULT_OUT_PIXEL_VAL 0
+
+    #ifndef PI
+    #define PI 3.141592653589793
+    #endif // PI
+
+    #define MIN(a, b) a < b ? a : b;
+    #define MAX(a, b) a > b ? a : b;
+
+    template <class T>
+    struct Point
+    {
+      T x;
+      T y;
+      T z;
+      Point() : x(0), y(0), z(0) {}
+      Point(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
+    };
+
+    typedef Point<int> IntPoint;
+    typedef Point<double> DoublePoint;
+
+    inline double round(double r) 
+    {
+	return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
+    }
+
+    // Misc Macros
+
+    #ifdef _MSC_VER
+
+    #define __FUNC__ __FUNCTION__
+
+    // Work-around to MSVC __VA_ARGS__ expanded as a single argument, instead of being broken down to multiple ones
+    #define EXPAND( ... ) __VA_ARGS__
+
+    #define _GET_1ST_ARG(arg1, ...) arg1
+    #define _GET_2ND_ARG(arg1, arg2, ...) arg2
+    #define _GET_3RD_ARG(arg1, arg2, arg3, ...) arg3
+    #define _GET_4TH_ARG(arg1, arg2, arg3, arg4, ...) arg4
+    #define _GET_5TH_ARG(arg1, arg2, arg3, arg4, arg5, ...) arg5
+    #define _GET_6TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, ...) arg6
+    #define _GET_7TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, arg7, ...) arg7
+    #define _GET_8TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ...) arg8
+    #define GET_1ST_ARG(...) EXPAND(_GET_1ST_ARG(__VA_ARGS__))
+    #define GET_2ND_ARG(...) EXPAND(_GET_2ND_ARG(__VA_ARGS__))
+    #define GET_3RD_ARG(...) EXPAND(_GET_3RD_ARG(__VA_ARGS__))
+    #define GET_4TH_ARG(...) EXPAND(_GET_4TH_ARG(__VA_ARGS__))
+    #define GET_5TH_ARG(...) EXPAND(_GET_5TH_ARG(__VA_ARGS__))
+    #define GET_6TH_ARG(...) EXPAND(_GET_6TH_ARG(__VA_ARGS__))
+    #define GET_7TH_ARG(...) EXPAND(_GET_7TH_ARG(__VA_ARGS__))
+    #define GET_8TH_ARG(...) EXPAND(_GET_8TH_ARG(__VA_ARGS__))
+
+    #define _xPP_NARGS_IMPL(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,N,...) N
+    #define PP_NARGS(...) \
+	EXPAND(_xPP_NARGS_IMPL(__VA_ARGS__,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0))
+
+    #else // _MSC_VER
+
+    #define __FUNC__ __func__
+
+    #define GET_1ST_ARG(arg1, ...) arg1
+    #define GET_2ND_ARG(arg1, arg2, ...) arg2
+    #define GET_3RD_ARG(arg1, arg2, arg3, ...) arg3
+    #define GET_4TH_ARG(arg1, arg2, arg3, arg4, ...) arg4
+    #define GET_5TH_ARG(arg1, arg2, arg3, arg4, arg5, ...) arg5
+    #define GET_6TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, ...) arg6
+    #define GET_7TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, arg7, ...) arg7
+    #define GET_8TH_ARG(arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, ...) arg8
+
+    #define _xPP_NARGS_IMPL(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,N,...) N
+    #define PP_NARGS(...) \
+	_xPP_NARGS_IMPL(__VA_ARGS__,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0)
+
+    #endif // _MSC_VER
+
+} // namespace smil
 
 #endif // _DCOMMON_H
 

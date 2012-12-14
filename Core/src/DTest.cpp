@@ -29,65 +29,69 @@
 
 #include "DTest.h"
 
-void TestSuite::add(TestCase *f)
+namespace smil
 {
-    funcList.push_back(f);
-}
 
-int TestSuite::run()
-{
-    RES_T retVal = RES_OK;
-    
-    list<TestCase*>::iterator f;
-    int totTestsNbr = 0;
-    int curTestNbr = 1;
-    int nPassed = 0;
-    int nFailed = 0;
-    int tElapsedTot = 0;
-    
-    double t1, t2;
-    
-    for (f=funcList.begin();f!=funcList.end();f++)
-      totTestsNbr++;
-    
-    for (f=funcList.begin();f!=funcList.end();f++)
+    void TestSuite::add(TestCase *f)
     {
-	TestCase *tc = *f;
-	std::stringstream ss;
-	tc->init();
-	tc->retVal = RES_OK;
-	tc->outStream = &ss;
-	
-	cout << "Test #" << (curTestNbr++) << "/" << totTestsNbr << ": " << (*f)->name << "\t";
-	
-	t1 = getCpuTime();
-	
-	try
-	{
-	  tc->run();
-	}
-	catch(...)
-	{
-	    tc->retVal = RES_ERR;
-	}
-	
-	t2 = getCpuTime();
-	
-	if (tc->retVal==RES_OK)
-	{
-	    cout << "Passed\t" << displayTime(t2-t1) << endl;
-	    nPassed += 1;
-	}
-	else
-	{
-	    retVal = RES_ERR;
-	    cout << "Failed:" << endl;
-	    cout << ss.str();
-	    nFailed += 1;
-	}
-	(*f)->end();
+	funcList.push_back(f);
     }
-    if (retVal==RES_OK)
-      return 0;
-    else return -1;
-}
+
+    int TestSuite::run()
+    {
+	RES_T retVal = RES_OK;
+	
+	list<TestCase*>::iterator f;
+	int totTestsNbr = 0;
+	int curTestNbr = 1;
+	int nPassed = 0;
+	int nFailed = 0;
+	int tElapsedTot = 0;
+	
+	double t1, t2;
+	
+	for (f=funcList.begin();f!=funcList.end();f++)
+	  totTestsNbr++;
+	
+	for (f=funcList.begin();f!=funcList.end();f++)
+	{
+	    TestCase *tc = *f;
+	    std::stringstream ss;
+	    tc->init();
+	    tc->retVal = RES_OK;
+	    tc->outStream = &ss;
+	    
+	    cout << "Test #" << (curTestNbr++) << "/" << totTestsNbr << ": " << (*f)->name << "\t";
+	    
+	    t1 = getCpuTime();
+	    
+	    try
+	    {
+	      tc->run();
+	    }
+	    catch(...)
+	    {
+		tc->retVal = RES_ERR;
+	    }
+	    
+	    t2 = getCpuTime();
+	    
+	    if (tc->retVal==RES_OK)
+	    {
+		cout << "Passed\t" << displayTime(t2-t1) << endl;
+		nPassed += 1;
+	    }
+	    else
+	    {
+		retVal = RES_ERR;
+		cout << "Failed:" << endl;
+		cout << ss.str();
+		nFailed += 1;
+	    }
+	    (*f)->end();
+	}
+	if (retVal==RES_OK)
+	  return 0;
+	else return -1;
+    }
+} // namespace smil

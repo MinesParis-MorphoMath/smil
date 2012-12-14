@@ -45,8 +45,14 @@
 #include "DSlot.h"
 #include "DSignal.h"
 #include "DCoreEvents.h"
+using namespace smil;
 %}
 
+namespace smil
+{
+}
+
+using namespace smil;
 
 //////////////////////////////////////////////////////////
 // Module definitions

@@ -39,438 +39,442 @@
  * \{
  */
 
-/**
- * Image histogram
- */
-template <class T>
-std::map<T, UINT> histogram(const Image<T> &imIn)
+namespace smil
 {
-    map<T, UINT> h;
-    for (T i=ImDtTypes<T>::min();;i++)
+    /**
+    * Image histogram
+    */
+    template <class T>
+    std::map<T, UINT> histogram(const Image<T> &imIn)
     {
-	h.insert(pair<T,UINT>(i, 0));
-	if (i==ImDtTypes<T>::max())
+	map<T, UINT> h;
+	for (T i=ImDtTypes<T>::min();;i++)
+	{
+	    h.insert(pair<T,UINT>(i, 0));
+	    if (i==ImDtTypes<T>::max())
+	      break;
+	}
+
+	typename Image<T>::lineType pixels = imIn.getPixels();
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	    h[pixels[i]]++;
+	
+	return h;
+    }
+
+    /**
+    * Image histogram with a mask image.
+    * 
+    * Calculates the histogram of the image imIn only for pixels x where imMask(x)!=0
+    */
+    template <class T>
+    map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask)
+    {
+	map<T, UINT> h;
+	
+	for (T i=ImDtTypes<T>::min();;i++)
+	{
+	    h.insert(pair<T,UINT>(i, 0));
+	    if (i==ImDtTypes<T>::max())
+	      break;
+	}
+	
+	typename Image<T>::lineType inPix = imIn.getPixels();
+	typename Image<T>::lineType maskPix = imMask.getPixels();
+	
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	    if (maskPix[i]!=0)
+		h[inPix[i]] += 1;
+	
+	return h;
+    }
+
+    /**
+    * Image threshold
+    */
+    template <class T>
+    RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, T trueVal, T falseVal, Image<T> &imOut)
+    {
+	unaryImageFunction<T, threshLine<T> > iFunc;
+	
+	iFunc.lineFunction.minVal = minVal;
+	iFunc.lineFunction.maxVal = maxVal;
+	iFunc.lineFunction.trueVal = trueVal;
+	iFunc.lineFunction.falseVal = falseVal;
+	
+	return iFunc(imIn, imOut);
+    }
+
+    template <class T>
+    RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, Image<T> &imOut)
+    {
+	unaryImageFunction<T, threshLine<T> > iFunc;
+	
+	iFunc.lineFunction.minVal = minVal;
+	iFunc.lineFunction.maxVal = maxVal;
+	iFunc.lineFunction.trueVal = numeric_limits<T>::max();
+	iFunc.lineFunction.falseVal = numeric_limits<T>::min();
+	
+	return iFunc(imIn, imOut);
+    }
+
+    template <class T>
+    RES_T threshold(const Image<T> &imIn, T minVal, Image<T> &imOut)
+    {
+	unaryImageFunction<T, threshLine<T> > iFunc;
+	
+	iFunc.lineFunction.minVal = minVal;
+	iFunc.lineFunction.maxVal = numeric_limits<T>::max();
+	iFunc.lineFunction.trueVal = numeric_limits<T>::max();
+	iFunc.lineFunction.falseVal = numeric_limits<T>::min();
+	
+	return iFunc(imIn, imOut);
+    }
+
+    template <class T>
+    RES_T threshold(const Image<T> &imIn, Image<T> &imOut)
+    {
+	T tVal = otsuThreshold(imIn, imOut);
+	if (tVal==ImDtTypes<T>::min())
+	  return RES_ERR;
+	else
+	  return RES_OK;
+    }
+
+    /**
+    * Stretch histogram
+    */
+    template <class T1, class T2>
+    RES_T stretchHist(const Image<T1> &imIn, T1 inMinVal, T1 inMaxVal, Image<T2> &imOut, T2 outMinVal=numeric_limits<T2>::min(), T2 outMaxVal=numeric_limits<T2>::max())
+    {
+	unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
+	iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (inMaxVal-inMinVal);
+	iFunc.lineFunction.inOrig = inMinVal;
+	iFunc.lineFunction.outOrig = outMinVal;
+	
+	return iFunc(imIn, imOut);
+    }
+
+    template <class T1, class T2>
+    RES_T stretchHist(const Image<T1> &imIn, Image<T2> &imOut, T2 outMinVal, T2 outMaxVal)
+    {
+	unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
+	T1 rmin, rmax;
+	rangeVal(imIn, &rmin, &rmax);
+	iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (rmax-rmin);
+	iFunc.lineFunction.inOrig = rmin;
+	iFunc.lineFunction.outOrig = outMinVal;
+	
+	return iFunc(imIn, imOut);
+    }
+
+    template <class T1, class T2>
+    RES_T stretchHist(const Image<T1> &imIn, Image<T2> &imOut)
+    {
+	Image<T1> tmpIm(imIn);
+	RES_T res = stretchHist<T1>(imIn, tmpIm, (T1)numeric_limits<T2>::min(), (T1)numeric_limits<T2>::max());
+	if (res!=RES_OK)
+	  return res;
+	return copy(tmpIm, imOut);
+    }
+
+
+    /**
+    * Enhance contrast
+    */
+    template <class T>
+    RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double sat=0.5)
+    {
+	if (!areAllocated(&imIn, &imOut, NULL))
+	    return RES_ERR_BAD_ALLOCATION;
+	
+	map<T, UINT> h = histogram(imIn);
+	double imVol = vol(imIn);
+	double satVol = imVol * sat / 100.;
+	double v = 0;
+	T minV, maxV, threshVal;
+	rangeVal(imIn, &minV, &maxV);
+	
+	for (T i=maxV; i>=minV; i-=1)
+	{
+	    v += h[i];
+	    if (v>satVol)
+		break;
+	    threshVal = i;
+	}
+	
+	stretchHist(imIn, minV, threshVal, imOut);
+	imOut.modified();
+	
+	return RES_OK;
+    }
+
+
+
+    template <class T>
+    bool IncrementThresholds(vector<double> &thresholdIndexes, map<T, UINT> &hist, UINT threshLevels, double totalFrequency, double &globalMean, vector<double> &classMean, vector<double> &classFrequency)
+    {
+      unsigned long numberOfHistogramBins = hist.size();
+      unsigned long numberOfClasses = classMean.size();
+
+      typedef double MeanType;
+      typedef double FrequencyType;
+      
+      MeanType meanOld;
+      FrequencyType freqOld;
+
+      unsigned int k;
+      int j;
+
+      // from the upper threshold down
+      for(j=static_cast<int>(threshLevels-1); j>=0; j--)
+	{
+	// if this threshold can be incremented (i.e. we're not at the end of the histogram)
+	if (thresholdIndexes[j] < numberOfHistogramBins - 2 - (threshLevels-1 - j) )
+	  {
+	  // increment it and update mean and frequency of the class bounded by the threshold
+	  thresholdIndexes[j] += 1;
+
+	  meanOld = classMean[j];
+	  freqOld = classFrequency[j];
+	  
+	  classFrequency[j] += hist[thresholdIndexes[j]];
+	  
+	  if (classFrequency[j]>0)
+	    {
+	    classMean[j] = (meanOld * static_cast<MeanType>(freqOld)
+			    + static_cast<MeanType>(thresholdIndexes[j])
+			    * static_cast<MeanType>(hist[thresholdIndexes[j]]))
+	      / static_cast<MeanType>(classFrequency[j]);
+	    }
+	  else
+	    {
+	    classMean[j] = 0;
+	    }
+	  
+	  // set higher thresholds adjacent to their previous ones, and update mean and frequency of the respective classes
+	  for (k=j+1; k<threshLevels; k++)
+	    {
+	    thresholdIndexes[k] = thresholdIndexes[k-1] + 1;
+	    classFrequency[k] = hist[thresholdIndexes[k]];
+	    if (classFrequency[k]>0)
+	      {
+	      classMean[k] = static_cast<MeanType>(thresholdIndexes[k]);
+	      }
+	    else
+	      {
+	      classMean[k] = 0;
+	      }
+	    }
+	  
+	  // update mean and frequency of the highest class
+	  classFrequency[numberOfClasses-1] = totalFrequency;
+	  classMean[numberOfClasses-1] = globalMean * totalFrequency;
+
+	  for(k=0; k<numberOfClasses-1; k++)
+	    {
+	    classFrequency[numberOfClasses-1] -= classFrequency[k];
+	    classMean[numberOfClasses-1] -= classMean[k] * static_cast<MeanType>(classFrequency[k]);
+	    }
+
+	  if (classFrequency[numberOfClasses-1]>0)
+	    {
+	    classMean[numberOfClasses-1] /= static_cast<MeanType>(classFrequency[numberOfClasses-1]);
+	    }
+	  else
+	    {
+	    classMean[numberOfClasses-1] = 0;
+	    }
+
+	  // exit the for loop if a threshold has been incremented
 	  break;
+	  }
+	else  // if this threshold can't be incremented
+	  {
+	  // if it's the lowest threshold
+	  if (j==0)
+	    {
+	    // we couldn't increment because we're done
+	    return false;
+	    }
+	  }
+	}
+      // we incremented
+      return true;
     }
 
-    typename Image<T>::lineType pixels = imIn.getPixels();
-    for (size_t i=0;i<imIn.getPixelCount();i++)
-	h[pixels[i]]++;
-    
-    return h;
-}
-
-/**
- * Image histogram with a mask image.
- * 
- * Calculates the histogram of the image imIn only for pixels x where imMask(x)!=0
- */
-template <class T>
-map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask)
-{
-    map<T, UINT> h;
-    
-    for (T i=ImDtTypes<T>::min();;i++)
+    template <class T>
+    vector<T> otsuThresholdValues(map<T, UINT> &hist, UINT threshLevels=1)
     {
-	h.insert(pair<T,UINT>(i, 0));
-	if (i==ImDtTypes<T>::max())
-	  break;
-    }
-    
-    typename Image<T>::lineType inPix = imIn.getPixels();
-    typename Image<T>::lineType maskPix = imMask.getPixels();
-    
-    for (size_t i=0;i<imIn.getPixelCount();i++)
-	if (maskPix[i]!=0)
-	    h[inPix[i]] += 1;
-    
-    return h;
-}
+	
+	typedef double MeanType;
+	typedef vector<MeanType> MeanVectorType;
 
-/**
- * Image threshold
- */
-template <class T>
-RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, T trueVal, T falseVal, Image<T> &imOut)
-{
-    unaryImageFunction<T, threshLine<T> > iFunc;
-    
-    iFunc.lineFunction.minVal = minVal;
-    iFunc.lineFunction.maxVal = maxVal;
-    iFunc.lineFunction.trueVal = trueVal;
-    iFunc.lineFunction.falseVal = falseVal;
-    
-    return iFunc(imIn, imOut);
-}
-
-template <class T>
-RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, Image<T> &imOut)
-{
-    unaryImageFunction<T, threshLine<T> > iFunc;
-    
-    iFunc.lineFunction.minVal = minVal;
-    iFunc.lineFunction.maxVal = maxVal;
-    iFunc.lineFunction.trueVal = numeric_limits<T>::max();
-    iFunc.lineFunction.falseVal = numeric_limits<T>::min();
-    
-    return iFunc(imIn, imOut);
-}
-
-template <class T>
-RES_T threshold(const Image<T> &imIn, T minVal, Image<T> &imOut)
-{
-    unaryImageFunction<T, threshLine<T> > iFunc;
-    
-    iFunc.lineFunction.minVal = minVal;
-    iFunc.lineFunction.maxVal = numeric_limits<T>::max();
-    iFunc.lineFunction.trueVal = numeric_limits<T>::max();
-    iFunc.lineFunction.falseVal = numeric_limits<T>::min();
-    
-    return iFunc(imIn, imOut);
-}
-
-template <class T>
-RES_T threshold(const Image<T> &imIn, Image<T> &imOut)
-{
-    T tVal = otsuThreshold(imIn, imOut);
-    if (tVal==ImDtTypes<T>::min())
-      return RES_ERR;
-    else
-      return RES_OK;
-}
-
-/**
- * Stretch histogram
- */
-template <class T1, class T2>
-RES_T stretchHist(const Image<T1> &imIn, T1 inMinVal, T1 inMaxVal, Image<T2> &imOut, T2 outMinVal=numeric_limits<T2>::min(), T2 outMaxVal=numeric_limits<T2>::max())
-{
-    unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
-    iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (inMaxVal-inMinVal);
-    iFunc.lineFunction.inOrig = inMinVal;
-    iFunc.lineFunction.outOrig = outMinVal;
-    
-    return iFunc(imIn, imOut);
-}
-
-template <class T1, class T2>
-RES_T stretchHist(const Image<T1> &imIn, Image<T2> &imOut, T2 outMinVal, T2 outMaxVal)
-{
-    unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
-    T1 rmin, rmax;
-    rangeVal(imIn, &rmin, &rmax);
-    iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (rmax-rmin);
-    iFunc.lineFunction.inOrig = rmin;
-    iFunc.lineFunction.outOrig = outMinVal;
-    
-    return iFunc(imIn, imOut);
-}
-
-template <class T1, class T2>
-RES_T stretchHist(const Image<T1> &imIn, Image<T2> &imOut)
-{
-    Image<T1> tmpIm(imIn);
-    RES_T res = stretchHist<T1>(imIn, tmpIm, (T1)numeric_limits<T2>::min(), (T1)numeric_limits<T2>::max());
-    if (res!=RES_OK)
-      return res;
-    return copy(tmpIm, imOut);
-}
-
-
-/**
- * Enhance contrast
- */
-template <class T>
-RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double sat=0.5)
-{
-    if (!areAllocated(&imIn, &imOut, NULL))
-        return RES_ERR_BAD_ALLOCATION;
-    
-    map<T, UINT> h = histogram(imIn);
-    double imVol = vol(imIn);
-    double satVol = imVol * sat / 100.;
-    double v = 0;
-    T minV, maxV, threshVal;
-    rangeVal(imIn, &minV, &maxV);
-    
-    for (T i=maxV; i>=minV; i-=1)
-    {
-	v += h[i];
-	if (v>satVol)
-	    break;
-	threshVal = i;
-    }
-    
-    stretchHist(imIn, minV, threshVal, imOut);
-    imOut.modified();
-    
-    return RES_OK;
-}
-
-
-
-template <class T>
-bool IncrementThresholds(vector<double> &thresholdIndexes, map<T, UINT> &hist, UINT threshLevels, double totalFrequency, double &globalMean, vector<double> &classMean, vector<double> &classFrequency)
-{
-  unsigned long numberOfHistogramBins = hist.size();
-  unsigned long numberOfClasses = classMean.size();
-
-  typedef double MeanType;
-  typedef double FrequencyType;
-  
-  MeanType meanOld;
-  FrequencyType freqOld;
-
-  unsigned int k;
-  int j;
-
-  // from the upper threshold down
-  for(j=static_cast<int>(threshLevels-1); j>=0; j--)
-    {
-    // if this threshold can be incremented (i.e. we're not at the end of the histogram)
-    if (thresholdIndexes[j] < numberOfHistogramBins - 2 - (threshLevels-1 - j) )
-      {
-      // increment it and update mean and frequency of the class bounded by the threshold
-      thresholdIndexes[j] += 1;
-
-      meanOld = classMean[j];
-      freqOld = classFrequency[j];
       
-      classFrequency[j] += hist[thresholdIndexes[j]];
+	double totalFrequency = 0;
+	MeanType globalMean = 0;
+	
+	for (typename map<T, UINT>::iterator it=hist.begin();it!=hist.end();it++)
+	{
+	    globalMean += (*it).first * (*it).second;
+	    totalFrequency += (*it).second;
+	}
+	
+	globalMean /= totalFrequency;
+
+	
+	unsigned long numberOfClasses = threshLevels + 1;
+	MeanVectorType thresholdIndexes(threshLevels, 0);
+
+	for(unsigned long j=0; j<threshLevels; j++)
+	{
+	    thresholdIndexes[j] = j;
+	}
+
+	MeanVectorType maxVarThresholdIndexes = thresholdIndexes;
+	double freqSum = 0;
+	MeanVectorType classFrequency(numberOfClasses, 0);
+	
+	for (unsigned long j=0; j<numberOfClasses-1; j++)
+	{
+	    classFrequency[j] = hist[thresholdIndexes[j]];
+	    freqSum += classFrequency[j];
+	}
+	
+	classFrequency[numberOfClasses-1] = totalFrequency - freqSum;
       
-      if (classFrequency[j]>0)
-        {
-        classMean[j] = (meanOld * static_cast<MeanType>(freqOld)
-                        + static_cast<MeanType>(thresholdIndexes[j])
-                        * static_cast<MeanType>(hist[thresholdIndexes[j]]))
-          / static_cast<MeanType>(classFrequency[j]);
-        }
-      else
-        {
-        classMean[j] = 0;
-        }
+	double meanSum = 0;
+	MeanVectorType classMean(numberOfClasses, 0);
+	
+	for (unsigned long j=0; j < numberOfClasses-1; j++)
+	{
+	  if (classFrequency[j]>0)
+	  {
+	      classMean[j] = j;
+	  }
+	  else
+	  {
+	      classMean[j] = 0;
+	  }
+	  meanSum += classMean[j] * classFrequency[j];
+	}
+
+	if (classFrequency[numberOfClasses-1]>0)
+	{
+	    classMean[numberOfClasses-1] = double(globalMean * totalFrequency - meanSum) / double(classFrequency[numberOfClasses-1]);
+	}
+	else
+	{
+	    classMean[numberOfClasses-1] = 0;
+	}
       
-      // set higher thresholds adjacent to their previous ones, and update mean and frequency of the respective classes
-      for (k=j+1; k<threshLevels; k++)
-        {
-        thresholdIndexes[k] = thresholdIndexes[k-1] + 1;
-        classFrequency[k] = hist[thresholdIndexes[k]];
-        if (classFrequency[k]>0)
-          {
-          classMean[k] = static_cast<MeanType>(thresholdIndexes[k]);
-          }
-        else
-          {
-          classMean[k] = 0;
-          }
-        }
-      
-      // update mean and frequency of the highest class
-      classFrequency[numberOfClasses-1] = totalFrequency;
-      classMean[numberOfClasses-1] = globalMean * totalFrequency;
-
-      for(k=0; k<numberOfClasses-1; k++)
-        {
-        classFrequency[numberOfClasses-1] -= classFrequency[k];
-        classMean[numberOfClasses-1] -= classMean[k] * static_cast<MeanType>(classFrequency[k]);
-        }
-
-      if (classFrequency[numberOfClasses-1]>0)
-        {
-        classMean[numberOfClasses-1] /= static_cast<MeanType>(classFrequency[numberOfClasses-1]);
-        }
-      else
-        {
-        classMean[numberOfClasses-1] = 0;
-        }
-
-      // exit the for loop if a threshold has been incremented
-      break;
-      }
-    else  // if this threshold can't be incremented
-      {
-      // if it's the lowest threshold
-      if (j==0)
-        {
-        // we couldn't increment because we're done
-        return false;
-        }
-      }
-    }
-  // we incremented
-  return true;
-}
-
-template <class T>
-vector<T> otsuThresholdValues(map<T, UINT> &hist, UINT threshLevels=1)
-{
-    
-    typedef double MeanType;
-    typedef vector<MeanType> MeanVectorType;
-
-  
-    double totalFrequency = 0;
-    MeanType globalMean = 0;
-    
-    for (typename map<T, UINT>::iterator it=hist.begin();it!=hist.end();it++)
-    {
-	globalMean += (*it).first * (*it).second;
-	totalFrequency += (*it).second;
-    }
-    
-    globalMean /= totalFrequency;
-
-    
-    unsigned long numberOfClasses = threshLevels + 1;
-    MeanVectorType thresholdIndexes(threshLevels, 0);
-
-    for(unsigned long j=0; j<threshLevels; j++)
-    {
-	thresholdIndexes[j] = j;
-    }
-
-    MeanVectorType maxVarThresholdIndexes = thresholdIndexes;
-    double freqSum = 0;
-    MeanVectorType classFrequency(numberOfClasses, 0);
-    
-    for (unsigned long j=0; j<numberOfClasses-1; j++)
-    {
-	classFrequency[j] = hist[thresholdIndexes[j]];
-	freqSum += classFrequency[j];
-    }
-    
-    classFrequency[numberOfClasses-1] = totalFrequency - freqSum;
-  
-    double meanSum = 0;
-    MeanVectorType classMean(numberOfClasses, 0);
-    
-    for (unsigned long j=0; j < numberOfClasses-1; j++)
-    {
-      if (classFrequency[j]>0)
-      {
-	  classMean[j] = j;
-      }
-      else
-      {
-	  classMean[j] = 0;
-      }
-      meanSum += classMean[j] * classFrequency[j];
-    }
-
-    if (classFrequency[numberOfClasses-1]>0)
-    {
-	classMean[numberOfClasses-1] = double(globalMean * totalFrequency - meanSum) / double(classFrequency[numberOfClasses-1]);
-    }
-    else
-    {
-	classMean[numberOfClasses-1] = 0;
-    }
-  
-    double maxVarBetween = 0;
-    for (unsigned long j=0; j<numberOfClasses; j++)
-    {
-	maxVarBetween += classFrequency[j] * (globalMean - classMean[j]) * (globalMean - classMean[j]);
-    }
-
-    // explore all possible threshold configurations and choose the one that yields maximum between-class variance
-    while (IncrementThresholds(thresholdIndexes, hist, threshLevels, totalFrequency, globalMean, classMean, classFrequency))
-    {
-	double varBetween = 0;
+	double maxVarBetween = 0;
 	for (unsigned long j=0; j<numberOfClasses; j++)
 	{
-	    varBetween += classFrequency[j] * (globalMean - classMean[j]) * (globalMean - classMean[j]);
+	    maxVarBetween += classFrequency[j] * (globalMean - classMean[j]) * (globalMean - classMean[j]);
 	}
 
-	if (varBetween > maxVarBetween)
+	// explore all possible threshold configurations and choose the one that yields maximum between-class variance
+	while (IncrementThresholds(thresholdIndexes, hist, threshLevels, totalFrequency, globalMean, classMean, classFrequency))
 	{
-	    maxVarBetween = varBetween;
-	    maxVarThresholdIndexes = thresholdIndexes;
+	    double varBetween = 0;
+	    for (unsigned long j=0; j<numberOfClasses; j++)
+	    {
+		varBetween += classFrequency[j] * (globalMean - classMean[j]) * (globalMean - classMean[j]);
+	    }
+
+	    if (varBetween > maxVarBetween)
+	    {
+		maxVarBetween = varBetween;
+		maxVarThresholdIndexes = thresholdIndexes;
+	    }
 	}
+
+	vector<T> threshVals;
+	
+	for (unsigned long j=0; j<threshLevels; j++)
+	{
+	    threshVals.push_back(maxVarThresholdIndexes[j]); //= histogram->GetBinMax(0,maxVarThresholdIndexes[j]);
+	}
+	
+	return threshVals;
     }
 
-    vector<T> threshVals;
-    
-    for (unsigned long j=0; j<threshLevels; j++)
+    template <class T>
+    vector<T> otsuThresholdValues(const Image<T> &im, UINT threshLevels=1)
     {
-	threshVals.push_back(maxVarThresholdIndexes[j]); //= histogram->GetBinMax(0,maxVarThresholdIndexes[j]);
+	map<T, UINT> hist = histogram(im);
+	return otsuThresholdValues(hist, threshLevels);
     }
-    
-    return threshVals;
-}
 
-template <class T>
-vector<T> otsuThresholdValues(const Image<T> &im, UINT threshLevels=1)
-{
-    map<T, UINT> hist = histogram(im);
-    return otsuThresholdValues(hist, threshLevels);
-}
-
-template <class T>
-vector<T> otsuThresholdValues(const Image<T> &im, const Image<T> &imMask, UINT threshLevels=1)
-{
-    map<T, UINT> hist = histogram(im, imMask);
-    return otsuThresholdValues(hist, threshLevels);
-}
-
-
-/**
- * Otsu Threshold
- * 
- * \demo{thresholds.py}
- */
-template <class T>
-vector<T> otsuThreshold(const Image<T> &imIn, Image<T> &imOut, UINT nbrThresholds)
-{
-    if (!areAllocated(&imIn, &imOut, NULL))
-      return vector<T>();
-    
-    vector<T> tVals = otsuThresholdValues<T>(imIn, nbrThresholds);
-    map<T, T> lut;
-    T i = ImDtTypes<T>::min();
-    T lbl = 0;
-    for (typename vector<T>::iterator it=tVals.begin();it!=tVals.end();it++,lbl++)
+    template <class T>
+    vector<T> otsuThresholdValues(const Image<T> &im, const Image<T> &imMask, UINT threshLevels=1)
     {
-	while(i<(*it))
+	map<T, UINT> hist = histogram(im, imMask);
+	return otsuThresholdValues(hist, threshLevels);
+    }
+
+
+    /**
+    * Otsu Threshold
+    * 
+    * \demo{thresholds.py}
+    */
+    template <class T>
+    vector<T> otsuThreshold(const Image<T> &imIn, Image<T> &imOut, UINT nbrThresholds)
+    {
+	if (!areAllocated(&imIn, &imOut, NULL))
+	  return vector<T>();
+	
+	vector<T> tVals = otsuThresholdValues<T>(imIn, nbrThresholds);
+	map<T, T> lut;
+	T i = ImDtTypes<T>::min();
+	T lbl = 0;
+	for (typename vector<T>::iterator it=tVals.begin();it!=tVals.end();it++,lbl++)
+	{
+	    while(i<(*it))
+	    {
+		lut[i] = lbl;
+		i++;
+	    }
+	}
+	while(i<=ImDtTypes<T>::max() && i>ImDtTypes<T>::min())
 	{
 	    lut[i] = lbl;
 	    i++;
 	}
+	applyLookup<T>(imIn, lut, imOut);
+	
+	return tVals;
+	
     }
-    while(i<=ImDtTypes<T>::max() && i>ImDtTypes<T>::min())
+
+    template <class T>
+    T otsuThreshold(const Image<T> &imIn, Image<T> &imOut)
     {
-	lut[i] = lbl;
-	i++;
+	if (!areAllocated(&imIn, &imOut, NULL))
+	  return ImDtTypes<T>::min();
+	
+	vector<T> tVals = otsuThresholdValues<T>(imIn, 1);
+	threshold<T>(imIn, tVals[0], imOut);
+	return tVals[0];
     }
-    applyLookup<T>(imIn, lut, imOut);
-    
-    return tVals;
-    
-}
-
-template <class T>
-T otsuThreshold(const Image<T> &imIn, Image<T> &imOut)
-{
-    if (!areAllocated(&imIn, &imOut, NULL))
-      return ImDtTypes<T>::min();
-    
-    vector<T> tVals = otsuThresholdValues<T>(imIn, 1);
-    threshold<T>(imIn, tVals[0], imOut);
-    return tVals[0];
-}
 
 
-template <class T>
-vector<T> otsuThreshold(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, UINT nbrThresholds=1)
-{
-    if (!areAllocated(&imIn, &imOut, NULL))
-      return vector<T>();
-    
-    vector<T> tVals = otsuThresholdValues<T>(imIn, imMask, nbrThresholds);
-    threshold<T>(imIn, tVals[0], imOut);
-    
-    return tVals;
-    
-}
+    template <class T>
+    vector<T> otsuThreshold(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, UINT nbrThresholds=1)
+    {
+	if (!areAllocated(&imIn, &imOut, NULL))
+	  return vector<T>();
+	
+	vector<T> tVals = otsuThresholdValues<T>(imIn, imMask, nbrThresholds);
+	threshold<T>(imIn, tVals[0], imOut);
+	
+	return tVals;
+	
+    }
+
+} // namespace smil
 
 /** \} */
 

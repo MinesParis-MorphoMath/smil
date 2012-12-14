@@ -35,39 +35,42 @@ using namespace std;
 
 #include "DCommon.h"
 
-class BaseSlot;
-class BaseObject;
-
-class Event
+namespace smil
 {
-public:
-  Event(BaseObject *_sender=NULL)
-   : sender(_sender)
-   {
-   }
-  const BaseObject *sender;
-};
+    class BaseSlot;
+    class BaseObject;
 
-class _DCORE Signal
-{
-  friend class BaseSlot;
-public:
-  Signal(BaseObject *_sender=NULL)
-   : sender(_sender)
-  {}
-  virtual ~Signal() 
-  {
-    disconnectAll();
-  }
-  virtual void connect(BaseSlot *slot, bool _register=true);
-  virtual void disconnect(BaseSlot *slot, bool _unregister=true);
-  virtual void disconnectAll();
-  virtual void trigger(Event *e=NULL);
-  const BaseObject *sender;
-protected:
-  vector<BaseSlot*> _slots;
-};
+    class Event
+    {
+    public:
+      Event(BaseObject *_sender=NULL)
+      : sender(_sender)
+      {
+      }
+      const BaseObject *sender;
+    };
 
+    class _DCORE Signal
+    {
+      friend class BaseSlot;
+    public:
+      Signal(BaseObject *_sender=NULL)
+      : sender(_sender)
+      {}
+      virtual ~Signal() 
+      {
+	disconnectAll();
+      }
+      virtual void connect(BaseSlot *slot, bool _register=true);
+      virtual void disconnect(BaseSlot *slot, bool _unregister=true);
+      virtual void disconnectAll();
+      virtual void trigger(Event *e=NULL);
+      const BaseObject *sender;
+    protected:
+      vector<BaseSlot*> _slots;
+    };
+
+} // namespace smil
 
 
 #endif // _DSIGNAL_H

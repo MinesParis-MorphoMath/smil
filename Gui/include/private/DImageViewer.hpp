@@ -32,73 +32,77 @@
 
 #include "Gui/include/DBaseImageViewer.h"
 
-template <class T> class Image;
-
-/**
- * Base image viewer.
- * 
- */
-template <class T>
-class ImageViewer : public BaseImageViewer
+namespace smil
 {
-public:
-    typedef BaseImageViewer parentClass;
-    friend class Image<T>;
-    
-    ImageViewer()
-      : image(NULL), labelImage(false)
-    {
-    }
-    
-    ImageViewer(Image<T> *im)
-      : labelImage(false)
-    {
-	setImage(im);
-    }
-    
-    virtual void setImage(Image<T> *im)
-    {
-	image = im;
-	
-	if (!im)
-	  return;
-	
-	setName(im->getName());
-    }
-    void connect(Image<T> *im)
-    {
-	if (image)
-	  disconnect(image);
-	this->setImage(im);
-	image->onModified.connect(&this->updateSlot);
-	update();
-    }
-    virtual void disconnect(Image<T> *)
-    {
-	image->onModified.disconnect(&this->updateSlot);
-	image = NULL;
-    }
-    
-    virtual void show() {}
-    virtual void showLabel() {}
-    virtual void hide() {}
-    virtual bool isVisible() { return false; }
-    virtual void setName(const char *_name) { parentClass::setName(_name); }
-    virtual void update()
-    {
-	if (image)
-	  drawImage();
-    }
-    virtual void drawOverlay(Image<T> &) {}
-    virtual void clearOverlay() {}
-    
-protected:
-    Image<T> *getImage() { return image; }
-    virtual void drawImage() {}
-    bool labelImage;
-    Image<T> *image;
-};
+  
+    template <class T> class Image;
 
+    /**
+    * Base image viewer.
+    * 
+    */
+    template <class T>
+    class ImageViewer : public BaseImageViewer
+    {
+    public:
+	typedef BaseImageViewer parentClass;
+	friend class Image<T>;
+	
+	ImageViewer()
+	  : image(NULL), labelImage(false)
+	{
+	}
+	
+	ImageViewer(Image<T> *im)
+	  : labelImage(false)
+	{
+	    setImage(im);
+	}
+	
+	virtual void setImage(Image<T> *im)
+	{
+	    image = im;
+	    
+	    if (!im)
+	      return;
+	    
+	    setName(im->getName());
+	}
+	void connect(Image<T> *im)
+	{
+	    if (image)
+	      disconnect(image);
+	    this->setImage(im);
+	    image->onModified.connect(&this->updateSlot);
+	    update();
+	}
+	virtual void disconnect(Image<T> *)
+	{
+	    image->onModified.disconnect(&this->updateSlot);
+	    image = NULL;
+	}
+	
+	virtual void show() {}
+	virtual void showLabel() {}
+	virtual void hide() {}
+	virtual bool isVisible() { return false; }
+	virtual void setName(const char *_name) { parentClass::setName(_name); }
+	virtual void update()
+	{
+	    if (image)
+	      drawImage();
+	}
+	virtual void drawOverlay(Image<T> &) {}
+	virtual void clearOverlay() {}
+	
+    protected:
+	Image<T> *getImage() { return image; }
+	virtual void drawImage() {}
+	bool labelImage;
+	Image<T> *image;
+    };
+
+} // namespace smil
 
 
 #endif // _D_BASE_IMAGE_VIEWER_H

@@ -30,6 +30,8 @@
 
 #include "DMorpho.h"
 
+using namespace smil;
+
 class TestArrow : public TestCase
 {
   virtual void run()

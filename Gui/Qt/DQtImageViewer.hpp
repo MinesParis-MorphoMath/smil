@@ -39,58 +39,64 @@
 #include "Gui/Qt/ImageViewerWidget.h"
 #include "Gui/Qt/ImageViewerApp.h"
 
-#define BASE_QT_VIEWER ImageViewerWidget
-
 
 class QwtPlot;
-
-template <class T> class Image;
-
-template <class T>
-class QtImageViewer : public ImageViewer<T>, public BASE_QT_VIEWER
+    
+namespace smil
 {
-public:
-    typedef ImageViewer<T> parentClass;
-    QtImageViewer();
-    QtImageViewer(Image<T> *im);
-    ~QtImageViewer();
-    
-    virtual void setImage(Image<T> *im);
-    virtual void hide();
-    virtual void show();
-    virtual void showLabel();
-    virtual bool isVisible();
-    virtual void setName(const char *_name);
-    virtual void update();
-    void updateIcon()
-    {
-	if (!this->image)
-	  return;
-	
-	BASE_QT_VIEWER::updateIcon();
-    }
-    virtual void drawOverlay(Image<T> &im);
-    virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
-    virtual void setCurSlice(int)
-    {
-        this->update();
-    }
-    
-    virtual void setLabelImage(bool val);
-    
-    virtual void displayHistogram(bool update=false);
-    
-protected:
-    virtual void displayPixelValue(size_t x, size_t y, size_t z);
-    virtual void displayMagnifyView(size_t x, size_t y, size_t z);
-    virtual void drawImage();
-//     ImageViewerWidget *qtViewer;
-//     ImageViewer *qtViewer;
-    virtual void dropEvent(QDropEvent *de);
-    
-    QwtPlot *histoPlot;
-};
 
+    #define BASE_QT_VIEWER ImageViewerWidget
+
+
+
+    template <class T> class Image;
+
+    template <class T>
+    class QtImageViewer : public ImageViewer<T>, public BASE_QT_VIEWER
+    {
+    public:
+	typedef ImageViewer<T> parentClass;
+	QtImageViewer();
+	QtImageViewer(Image<T> *im);
+	~QtImageViewer();
+	
+	virtual void setImage(Image<T> *im);
+	virtual void hide();
+	virtual void show();
+	virtual void showLabel();
+	virtual bool isVisible();
+	virtual void setName(const char *_name);
+	virtual void update();
+	void updateIcon()
+	{
+	    if (!this->image)
+	      return;
+	    
+	    BASE_QT_VIEWER::updateIcon();
+	}
+	virtual void drawOverlay(Image<T> &im);
+	virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
+	virtual void setCurSlice(int)
+	{
+	    this->update();
+	}
+	
+	virtual void setLabelImage(bool val);
+	
+	virtual void displayHistogram(bool update=false);
+	
+    protected:
+	virtual void displayPixelValue(size_t x, size_t y, size_t z);
+	virtual void displayMagnifyView(size_t x, size_t y, size_t z);
+	virtual void drawImage();
+    //     ImageViewerWidget *qtViewer;
+    //     ImageViewer *qtViewer;
+	virtual void dropEvent(QDropEvent *de);
+	
+	QwtPlot *histoPlot;
+    };
+
+} // namespace smil
 
 
 #endif // _D_QT_IMAGE_VIEWER_HPP

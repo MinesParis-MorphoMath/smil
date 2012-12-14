@@ -38,20 +38,22 @@
 
 
 // IO specializations
-
-template <>
-Image<UINT8>& Image<UINT8>::operator << (const char *filename)
+namespace smil
 {
-//     cout << "here ok" << endl;
-    read(filename, *this);
-    modified();
-    return *this;
-}
+    template <>
+    Image<UINT8>& Image<UINT8>::operator << (const char *filename)
+    {
+    //     cout << "here ok" << endl;
+	read(filename, *this);
+	modified();
+	return *this;
+    }
 
-template <>
-Image<UINT8>& Image<UINT8>::operator >> (const char *filename)
-{
-    write(*this, filename);
-    return *this;
-}
+    template <>
+    Image<UINT8>& Image<UINT8>::operator >> (const char *filename)
+    {
+	write(*this, filename);
+	return *this;
+    }
 
+} // namespace smil

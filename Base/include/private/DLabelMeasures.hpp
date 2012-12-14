@@ -30,115 +30,118 @@
 #ifndef _D_LABEL_MEASURES_HPP
 #define _D_LABEL_MEASURES_HPP
 
-/**
- * \ingroup Measures
- * @{
- */
-
 #include "Core/include/private/DImage.hpp"
 #include <map>
 
 using namespace std;
 
-
-
 /**
- * Measure label areas.
- * Return a map(labelValue, double) with the area of each label value.
+ * \ingroup Measures
+ * @{
  */
-template <class T>
-map<T, double> measAreas(Image<T> &imIn)
+
+namespace smil
 {
-    map<T, double> area;
 
-    ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, area);
-    
-    typename Image<T>::volType slices = imIn.getSlices();
-    typename Image<T>::sliceType lines;
-    typename Image<T>::lineType pixels;
-    T pixVal;
-    
-    size_t imSize[3];
-    imIn.getSize(imSize);
-    
-    for (size_t z=0;z<imSize[2];z++)
+    /**
+    * Measure label areas.
+    * Return a map(labelValue, double) with the area of each label value.
+    */
+    template <class T>
+    map<T, double> measAreas(Image<T> &imIn)
     {
-	lines = *slices++;
-// #pragma omp parallel for
-	for (size_t y=0;y<imSize[1];y++)
+	map<T, double> area;
+
+	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, area);
+	
+	typename Image<T>::volType slices = imIn.getSlices();
+	typename Image<T>::sliceType lines;
+	typename Image<T>::lineType pixels;
+	T pixVal;
+	
+	size_t imSize[3];
+	imIn.getSize(imSize);
+	
+	for (size_t z=0;z<imSize[2];z++)
 	{
-	    pixels = *lines++;
-	    for (size_t x=0;x<imSize[0];x++)
+	    lines = *slices++;
+    // #pragma omp parallel for
+	    for (size_t y=0;y<imSize[1];y++)
 	    {
-		pixVal = pixels[x];
-		if (pixVal!=0)
-		    area[pixVal] += 1;
-	    }
-	}
-    }
-    
-    return area;
-}
-
-
-
-/**
- * Measure barycenter of labeled image.
- * Return a map(labelValue, Point) with the barycenter point coordinates for each label value.
- */
-template <class T>
-map<T, DoublePoint> measBarycenters(Image<T> &imIn)
-{
-    map<T, DoublePoint> res;
-    
-    ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, res);
-    
-    typename Image<T>::volType slices = imIn.getSlices();
-    typename Image<T>::sliceType lines;
-    typename Image<T>::lineType pixels;
-    T pixVal;
-    
-    map<T, double> xc, yc, zc;
-    map<T, UINT> ptNbrs;
-    
-    size_t imSize[3];
-    imIn.getSize(imSize);
-    
-    for (size_t z=0;z<imSize[2];z++)
-    {
-	lines = *slices++;
-// #pragma omp parallel for
-	for (size_t y=0;y<imSize[1];y++)
-	{
-	    pixels = *lines++;
-	    for (size_t x=0;x<imSize[0];x++)
-	    {
-		pixVal = pixels[x];
-		if (pixVal!=0)
+		pixels = *lines++;
+		for (size_t x=0;x<imSize[0];x++)
 		{
-		    xc[pixVal] += x;
-		    yc[pixVal] += y;
-		    zc[pixVal] += z;
-		    ptNbrs[pixVal]++;
+		    pixVal = pixels[x];
+		    if (pixVal!=0)
+			area[pixVal] += 1;
 		}
 	    }
 	}
+	
+	return area;
     }
-    
-    typename map<T, UINT>::iterator it;
-    
-    for ( it=ptNbrs.begin() ; it != ptNbrs.end(); it++ )
+
+
+
+    /**
+    * Measure barycenter of labeled image.
+    * Return a map(labelValue, Point) with the barycenter point coordinates for each label value.
+    */
+    template <class T>
+    map<T, DoublePoint> measBarycenters(Image<T> &imIn)
     {
-	T lblVal = (*it).first;
-	DoublePoint p;
-	p.x = xc[lblVal]/ptNbrs[lblVal];
-	p.y = yc[lblVal]/ptNbrs[lblVal];
-	p.z = zc[lblVal]/ptNbrs[lblVal];
-	res[lblVal] = p;
+	map<T, DoublePoint> res;
+	
+	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, res);
+	
+	typename Image<T>::volType slices = imIn.getSlices();
+	typename Image<T>::sliceType lines;
+	typename Image<T>::lineType pixels;
+	T pixVal;
+	
+	map<T, double> xc, yc, zc;
+	map<T, UINT> ptNbrs;
+	
+	size_t imSize[3];
+	imIn.getSize(imSize);
+	
+	for (size_t z=0;z<imSize[2];z++)
+	{
+	    lines = *slices++;
+    // #pragma omp parallel for
+	    for (size_t y=0;y<imSize[1];y++)
+	    {
+		pixels = *lines++;
+		for (size_t x=0;x<imSize[0];x++)
+		{
+		    pixVal = pixels[x];
+		    if (pixVal!=0)
+		    {
+			xc[pixVal] += x;
+			yc[pixVal] += y;
+			zc[pixVal] += z;
+			ptNbrs[pixVal]++;
+		    }
+		}
+	    }
+	}
+	
+	typename map<T, UINT>::iterator it;
+	
+	for ( it=ptNbrs.begin() ; it != ptNbrs.end(); it++ )
+	{
+	    T lblVal = (*it).first;
+	    DoublePoint p;
+	    p.x = xc[lblVal]/ptNbrs[lblVal];
+	    p.y = yc[lblVal]/ptNbrs[lblVal];
+	    p.z = zc[lblVal]/ptNbrs[lblVal];
+	    res[lblVal] = p;
+	}
+	
+	return res;
     }
     
-    return res;
-}
+} // namespace smil
 
 /** @}*/
 

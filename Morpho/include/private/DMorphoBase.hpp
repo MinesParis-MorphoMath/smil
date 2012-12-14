@@ -34,112 +34,119 @@
 #include "Base/include/private/DImageArith.hpp"
 #include "DMorphoInstance.h"
 #include "DMorphImageOperations.hpp"
+#include "DHitOrMiss.hpp"
 
 /**
- * \addtogroup Morpho Mathematical Morphology
- * \{
- */
+* \addtogroup Morpho Mathematical Morphology
+* \{
+*/
 
-
-/**
- * Morphological grayscale dilation
- * 
- * \begintheory{dilation}
- * Denoting an image by \f$ f(x) \f$  and the \ref StrElt "structuring function" by \f$ B(x) \f$, 
- * the grayscale dilation of \f$ f \f$ by \f$ B \f$ is given by \cite serra_image_1982 :
- * \f[ (f\oplus B)(x)=\sup_{y \in \Re^3 }[f(y)+B(x-y)] \f] 
- * \endtheory
- * 
- */
-template <class T>
-RES_T dilate(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderVal=ImDtTypes<T>::min())
+namespace smil
 {
-    ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
-    
-    unaryMorphImageFunction<T, supLine<T> > iFunc(borderVal);
-    return iFunc(imIn, imOut, se);
-}
 
-template <class T>
-RES_T dilate(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImDtTypes<T>::min())
-{
-    return dilate(imIn, imOut, DEFAULT_SE(seSize), borderVal);
-}
 
-/**
- * Morphological grayscale erosion
- * 
- * \begintheory{erosion}
- * Denoting an image by \f$ f(x) \f$  and the \ref StrElt "structuring function" by \f$ B(x) \f$, 
- * the grayscale dilation of \f$ f \f$ by \f$ B \f$ is given by \cite serra_image_1982 :
- * \f[ (f\ominus B)(x)=\inf_{y \in \Re^3 }[f(y)-B(x-y)] \f]
- * \endtheory
- */
-template <class T>
-RES_T erode(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderVal=ImDtTypes<T>::max())
-{
-    ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
-    
-    unaryMorphImageFunction<T, infLine<T> > iFunc(borderVal);
-    return iFunc(imIn, imOut, se);
-}
+    /**
+    * Morphological grayscale dilation
+    * 
+    * \begintheory{dilation}
+    * Denoting an image by \f$ f(x) \f$  and the \ref StrElt "structuring function" by \f$ B(x) \f$, 
+    * the grayscale dilation of \f$ f \f$ by \f$ B \f$ is given by \cite serra_image_1982 :
+    * \f[ (f\oplus B)(x)=\sup_{y \in \Re^3 }[f(y)+B(x-y)] \f] 
+    * \endtheory
+    * 
+    */
+    template <class T>
+    RES_T dilate(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderVal=ImDtTypes<T>::min())
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	unaryMorphImageFunction<T, supLine<T> > iFunc(borderVal);
+	return iFunc(imIn, imOut, se);
+    }
 
-template <class T>
-RES_T erode(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImDtTypes<T>::max())
-{
-    return erode(imIn, imOut, DEFAULT_SE(seSize), borderVal);
-}
+    template <class T>
+    RES_T dilate(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImDtTypes<T>::min())
+    {
+	return dilate(imIn, imOut, DEFAULT_SE(seSize), borderVal);
+    }
 
-/**
- * Morphological grayscale closing
- * 
- */
-template <class T>
-RES_T close(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
-{
-    ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
-    ImageFreezer freeze(imOut);
-    
-    ASSERT((dilate(imIn, imOut, se)==RES_OK));
-    ASSERT((erode(imOut, imOut, se)==RES_OK));
-    
-    return RES_OK;
-}
+    /**
+    * Morphological grayscale erosion
+    * 
+    * \begintheory{erosion}
+    * Denoting an image by \f$ f(x) \f$  and the \ref StrElt "structuring function" by \f$ B(x) \f$, 
+    * the grayscale dilation of \f$ f \f$ by \f$ B \f$ is given by \cite serra_image_1982 :
+    * \f[ (f\ominus B)(x)=\inf_{y \in \Re^3 }[f(y)-B(x-y)] \f]
+    * \endtheory
+    */
+    template <class T>
+    RES_T erode(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderVal=ImDtTypes<T>::max())
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	unaryMorphImageFunction<T, infLine<T> > iFunc(borderVal);
+	return iFunc(imIn, imOut, se);
+    }
 
-template <class T>
-RES_T close(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
-{
-    return close(imIn, imOut, DEFAULT_SE(seSize));
-}
+    template <class T>
+    RES_T erode(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImDtTypes<T>::max())
+    {
+	return erode(imIn, imOut, DEFAULT_SE(seSize), borderVal);
+    }
 
-/**
- * Morphological grayscale opening
- * 
- */
-template <class T>
-RES_T open(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
-{
-    ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
-    ImageFreezer freeze(imOut);
-    
-    ASSERT((erode(imIn, imOut, se)==RES_OK));
-    ASSERT((dilate(imOut, imOut, se)==RES_OK));
+    /**
+    * Morphological grayscale closing
+    * 
+    */
+    template <class T>
+    RES_T close(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	ImageFreezer freeze(imOut);
+	
+	ASSERT((dilate(imIn, imOut, se)==RES_OK));
+	ASSERT((erode(imOut, imOut, se)==RES_OK));
+	
+	return RES_OK;
+    }
 
-    return RES_OK;
-}
+    template <class T>
+    RES_T close(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
+    {
+	return close(imIn, imOut, DEFAULT_SE(seSize));
+    }
 
-template <class T>
-RES_T open(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
-{
-    return open(imIn, imOut, DEFAULT_SE(seSize));
-}
+    /**
+    * Morphological grayscale opening
+    * 
+    */
+    template <class T>
+    RES_T open(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	ImageFreezer freeze(imOut);
+	
+	ASSERT((erode(imIn, imOut, se)==RES_OK));
+	ASSERT((dilate(imOut, imOut, se)==RES_OK));
+
+	return RES_OK;
+    }
+
+    template <class T>
+    RES_T open(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
+    {
+	return open(imIn, imOut, DEFAULT_SE(seSize));
+    }
+
+} // namespace smil
 
 
 /** \} */
+
 
 #endif // _D_MORPHO_BASE_HPP
 

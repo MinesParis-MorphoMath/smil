@@ -34,6 +34,8 @@
 #include "Qt/DQtImageViewer.hpp"
 #endif // USE_QT
 
+using namespace smil;
+
 Gui::Gui()
 {
 }

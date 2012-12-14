@@ -30,7 +30,6 @@
 #ifndef _D_IMAGE_IO_PNG_H
 #define _D_IMAGE_IO_PNG_H
 
-#ifdef USE_PNG
 
 #include <iostream>
 
@@ -38,48 +37,54 @@
 #include "Core/include/DCommon.h"
 #include "Core/include/DErrors.h"
 
+using namespace std;
+
 /** \addtogroup IO
  * \{
  */
 
-using namespace std;
+#ifdef USE_PNG
 
-template <class T> class Image;
-
-/**
- * PNG file read
- */
-template <class T>
-RES_T readPNG(const char* filename, Image<T> &image)
+namespace smil
 {
-    cout << "readPNG error: data type not implemented." << endl;
-    return RES_ERR;
-}
+  
+    template <class T> class Image;
 
-/**
- * PNG file write
- */
-template <class T>
-RES_T writePNG(Image<T> &image, const char *filename)
-{
-    cout << "writePNG error: data type not implemented." << endl;
-    return RES_ERR;
-}
+    /**
+    * PNG file read
+    */
+    template <class T>
+    RES_T readPNG(const char* filename, Image<T> &image)
+    {
+	cout << "readPNG error: data type not implemented." << endl;
+	return RES_ERR;
+    }
+
+    /**
+    * PNG file write
+    */
+    template <class T>
+    RES_T writePNG(Image<T> &image, const char *filename)
+    {
+	cout << "writePNG error: data type not implemented." << endl;
+	return RES_ERR;
+    }
 
 
-// Specializations
+    // Specializations
 
-template <>
-_DIO RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image);
+    template <>
+    _DIO RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image);
 
-template <>
-_DIO RES_T writePNG<UINT8>(Image<UINT8> &image, const char *filename);
+    template <>
+    _DIO RES_T writePNG<UINT8>(Image<UINT8> &image, const char *filename);
 
+} // namespace smil
 
-/** \} */
 
 #endif // USE_PNG
 
 
+/** \} */
 
 #endif // _D_IMAGE_IO_PNG_H

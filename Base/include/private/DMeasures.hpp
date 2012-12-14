@@ -30,271 +30,273 @@
 #ifndef _D_MEASURES_HPP
 #define _D_MEASURES_HPP
 
+#include "Core/include/private/DImage.hpp"
+#include <map>
+
 /**
  * \ingroup Base
  * \defgroup Measures Base measures
  * @{
  */
 
-#include "Core/include/private/DImage.hpp"
-#include <map>
-
-
-/**
- * Volume of an image
- *
- * Returns the sum of the pixel values.
- * \param imIn Input image.
- */
-template <class T>
-double vol(const Image<T> &imIn)
+namespace smil
 {
-    if (!imIn.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-
-    int npix = imIn.getPixelCount();
-    typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
-    double vol = 0;
-
-    for (int i=0;i<npix;i++)
-        vol += pixels[i];
-
-    return vol;
-}
-
-/**
- * Min value of an image
- *
- * Returns the min of the pixel values.
- * \param imIn Input image.
- */
-template <class T>
-T minVal(const Image<T> &imIn)
-{
-    if (!imIn.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-
-    int npix = imIn.getPixelCount();
-    typename ImDtTypes<T>::lineType p = imIn.getPixels();
-    T minVal = numeric_limits<T>::max();
-
-    for (int i=0;i<npix;i++,p++)
-        if (*p<minVal)
-            minVal = *p;
-
-    return minVal;
-}
-
-/**
- * Max value of an image
- *
- * Returns the min of the pixel values.
- * \param imIn Input image.
- */
-template <class T>
-T maxVal(const Image<T> &imIn)
-{
-    if (!imIn.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-
-    int npix = imIn.getPixelCount();
-    typename ImDtTypes<T>::lineType p = imIn.getPixels();
-    T maxVal = numeric_limits<T>::min();
-
-    for (int i=0;i<npix;i++,p++)
-        if (*p>maxVal)
-            maxVal = *p;
-
-    return maxVal;
-}
-
-/**
- * Min and Max values of an image
- *
- * Returns the min and the max of the pixel values.
- * \param imIn Input image.
- */
-template <class T>
-void rangeVal(const Image<T> &imIn, T *ret_min, T *ret_max)
-{
-    if (!imIn.isAllocated())
+    /**
+    * Volume of an image
+    *
+    * Returns the sum of the pixel values.
+    * \param imIn Input image.
+    */
+    template <class T>
+    double vol(const Image<T> &imIn)
     {
-	*ret_min = 0;
-	*ret_max = 0;
-        return;
+	if (!imIn.isAllocated())
+	    return RES_ERR_BAD_ALLOCATION;
+
+	int npix = imIn.getPixelCount();
+	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
+	double vol = 0;
+
+	for (int i=0;i<npix;i++)
+	    vol += pixels[i];
+
+	return vol;
     }
 
-    int npix = imIn.getPixelCount();
-    typename ImDtTypes<T>::lineType p = imIn.getPixels();
-    *ret_min = numeric_limits<T>::max();
-    *ret_max = numeric_limits<T>::min();
-
-    for (int i=0;i<npix;i++,p++)
+    /**
+    * Min value of an image
+    *
+    * Returns the min of the pixel values.
+    * \param imIn Input image.
+    */
+    template <class T>
+    T minVal(const Image<T> &imIn)
     {
-        if (*p<*ret_min)
-            *ret_min = *p;
-        if (*p>*ret_max)
-            *ret_max = *p;
+	if (!imIn.isAllocated())
+	    return RES_ERR_BAD_ALLOCATION;
+
+	int npix = imIn.getPixelCount();
+	typename ImDtTypes<T>::lineType p = imIn.getPixels();
+	T minVal = numeric_limits<T>::max();
+
+	for (int i=0;i<npix;i++,p++)
+	    if (*p<minVal)
+		minVal = *p;
+
+	return minVal;
     }
 
-}
-
-
-template <class T>
-RES_T measBarycenter(Image<T> &im, double *xc, double *yc, double *zc=NULL)
-{
-    if (!im.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-    
-    typename Image<T>::volType slices = im.getSlices();
-    typename Image<T>::sliceType lines;
-    typename Image<T>::lineType pixels;
-    T pixVal;
-    
-    double xSum = 0, ySum = 0, zSum = 0, tSum = 0;
-    size_t imSize[3];
-    im.getSize(imSize);
-    
-    for (size_t z=0;z<imSize[2];z++)
+    /**
+    * Max value of an image
+    *
+    * Returns the min of the pixel values.
+    * \param imIn Input image.
+    */
+    template <class T>
+    T maxVal(const Image<T> &imIn)
     {
-	lines = *slices++;
-// #pragma omp parallel for
-	for (size_t y=0;y<imSize[1];y++)
+	if (!imIn.isAllocated())
+	    return RES_ERR_BAD_ALLOCATION;
+
+	int npix = imIn.getPixelCount();
+	typename ImDtTypes<T>::lineType p = imIn.getPixels();
+	T maxVal = numeric_limits<T>::min();
+
+	for (int i=0;i<npix;i++,p++)
+	    if (*p>maxVal)
+		maxVal = *p;
+
+	return maxVal;
+    }
+
+    /**
+    * Min and Max values of an image
+    *
+    * Returns the min and the max of the pixel values.
+    * \param imIn Input image.
+    */
+    template <class T>
+    void rangeVal(const Image<T> &imIn, T *ret_min, T *ret_max)
+    {
+	if (!imIn.isAllocated())
 	{
-	    pixels = *lines++;
-	    for (size_t x=0;x<imSize[0];x++)
+	    *ret_min = 0;
+	    *ret_max = 0;
+	    return;
+	}
+
+	int npix = imIn.getPixelCount();
+	typename ImDtTypes<T>::lineType p = imIn.getPixels();
+	*ret_min = numeric_limits<T>::max();
+	*ret_max = numeric_limits<T>::min();
+
+	for (int i=0;i<npix;i++,p++)
+	{
+	    if (*p<*ret_min)
+		*ret_min = *p;
+	    if (*p>*ret_max)
+		*ret_max = *p;
+	}
+
+    }
+
+
+    template <class T>
+    RES_T measBarycenter(Image<T> &im, double *xc, double *yc, double *zc=NULL)
+    {
+	if (!im.isAllocated())
+	    return RES_ERR_BAD_ALLOCATION;
+	
+	typename Image<T>::volType slices = im.getSlices();
+	typename Image<T>::sliceType lines;
+	typename Image<T>::lineType pixels;
+	T pixVal;
+	
+	double xSum = 0, ySum = 0, zSum = 0, tSum = 0;
+	size_t imSize[3];
+	im.getSize(imSize);
+	
+	for (size_t z=0;z<imSize[2];z++)
+	{
+	    lines = *slices++;
+    // #pragma omp parallel for
+	    for (size_t y=0;y<imSize[1];y++)
 	    {
-		pixVal = pixels[x];
-		if (pixVal!=0)
+		pixels = *lines++;
+		for (size_t x=0;x<imSize[0];x++)
 		{
-		    xSum += pixVal * x;
-		    ySum += pixVal * y;
-		    zSum += pixVal * z;
-		    tSum += pixVal;		  
+		    pixVal = pixels[x];
+		    if (pixVal!=0)
+		    {
+			xSum += pixVal * x;
+			ySum += pixVal * y;
+			zSum += pixVal * z;
+			tSum += pixVal;		  
+		    }
 		}
 	    }
 	}
+	
+	*xc = xSum / tSum;
+	*yc = ySum / tSum;
+	if (zc)
+	  *zc = zSum / tSum;
+	
+	return RES_OK;
     }
-    
-    *xc = xSum / tSum;
-    *yc = ySum / tSum;
-    if (zc)
-      *zc = zSum / tSum;
-    
-    return RES_OK;
-}
 
-template <class T>
-vector<double> measBarycenter(Image<T> &im)
-{
-    vector<double> res;
-    double xc, yc, zc;
-    if (measBarycenter<T>(im, &xc, &yc, &zc)==RES_OK)
+    template <class T>
+    vector<double> measBarycenter(Image<T> &im)
     {
-	res.push_back(xc);
-	res.push_back(yc);
-	if (im.getDimension()==3)
-	  res.push_back(zc);
-    }
-    return res;
-}
-
-/**
- * Bounding Box measure
- */
-template <class T>
-RES_T measBoundBox(Image<T> &im, size_t *xMin, size_t *yMin, size_t *zMin, size_t *xMax, size_t *yMax, size_t *zMax)
-{
-    if (!im.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-    
-    typename Image<T>::volType slices = im.getSlices();
-    typename Image<T>::sliceType lines;
-    typename Image<T>::lineType pixels;
-//     T pixVal;
-    
-    size_t imSize[3];
-    im.getSize(imSize);
-    
-    *xMin = imSize[0];
-    *xMax = 0;
-    *yMin = imSize[1];
-    *yMax = 0;
-    *zMin = imSize[2];
-    *zMax = 0;
-    
-    for (size_t z=0;z<imSize[2];z++)
-    {
-	lines = *slices++;
-	for (size_t y=0;y<imSize[1];y++)
+	vector<double> res;
+	double xc, yc, zc;
+	if (measBarycenter<T>(im, &xc, &yc, &zc)==RES_OK)
 	{
-	    pixels = *lines++;
-	    for (size_t x=0;x<imSize[0];x++)
+	    res.push_back(xc);
+	    res.push_back(yc);
+	    if (im.getDimension()==3)
+	      res.push_back(zc);
+	}
+	return res;
+    }
+
+    /**
+    * Bounding Box measure
+    */
+    template <class T>
+    RES_T measBoundBox(Image<T> &im, size_t *xMin, size_t *yMin, size_t *zMin, size_t *xMax, size_t *yMax, size_t *zMax)
+    {
+	if (!im.isAllocated())
+	    return RES_ERR_BAD_ALLOCATION;
+	
+	typename Image<T>::volType slices = im.getSlices();
+	typename Image<T>::sliceType lines;
+	typename Image<T>::lineType pixels;
+    //     T pixVal;
+	
+	size_t imSize[3];
+	im.getSize(imSize);
+	
+	*xMin = imSize[0];
+	*xMax = 0;
+	*yMin = imSize[1];
+	*yMax = 0;
+	*zMin = imSize[2];
+	*zMax = 0;
+	
+	for (size_t z=0;z<imSize[2];z++)
+	{
+	    lines = *slices++;
+	    for (size_t y=0;y<imSize[1];y++)
 	    {
-		T pixVal = pixels[x];
-		if (pixVal!=0)
+		pixels = *lines++;
+		for (size_t x=0;x<imSize[0];x++)
 		{
-		    if (x<*xMin) *xMin = x;
-		    else if (x>*xMax) *xMax = x;
-		    if (y<*yMin) *yMin = y;
-		    else if (y>*yMax) *yMax = y;
-		    if (z<*zMin) *zMin = z;
-		    else if (z>*zMax) *zMax = z;
+		    T pixVal = pixels[x];
+		    if (pixVal!=0)
+		    {
+			if (x<*xMin) *xMin = x;
+			else if (x>*xMax) *xMax = x;
+			if (y<*yMin) *yMin = y;
+			else if (y>*yMax) *yMax = y;
+			if (z<*zMin) *zMin = z;
+			else if (z>*zMax) *zMax = z;
+		    }
 		}
 	    }
 	}
+	
+	return RES_OK;
     }
+
+    template <class T>
+    RES_T measBoundBox(Image<T> &im, size_t *xMin, size_t *yMin, size_t *xMax, size_t *yMax)
+    {
+	size_t zMin, zMax;
+	return measBoundBox(im, xMin, yMin, &zMin, xMax, yMax, &zMax);
+    }
+
+
+    template <class T>
+    vector<UINT> measBoundBox(Image<T> &im)
+    {
+	vector<UINT> res;
+	
+	size_t b[6];
+	UINT dim = im.getDimension()==3 ? 3 : 2;
+	
+	if (dim==3 && measBoundBox<T>(im, b, b+1, b+2, b+3, b+4, b+5)!=RES_OK)
+	  return res;
+	else if (measBoundBox<T>(im, b, b+1, b+2, b+3)!=RES_OK)
+	  return res;
+
+	for (UINT i=0;i<dim*2;i++)
+	  res.push_back(b[i]);
+	
+	return res;
+    }
+
+    /**
+    * Non-zero point offsets.
+    * Return a vector conatining the offset of all non-zero points in image.
+    */
+    template <class T>
+    vector<size_t> nonZeroOffsets(Image<T> &imIn)
+    {
+	vector<size_t> offsets;
+
+	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, offsets);
+	
+	typename Image<T>::lineType pixels = imIn.getPixels();
+	
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	  if (pixels[i]!=0)
+	    offsets.push_back(i);
     
-    return RES_OK;
-}
+	return offsets;
+    }
 
-template <class T>
-RES_T measBoundBox(Image<T> &im, size_t *xMin, size_t *yMin, size_t *xMax, size_t *yMax)
-{
-    size_t zMin, zMax;
-    return measBoundBox(im, xMin, yMin, &zMin, xMax, yMax, &zMax);
-}
-
-
-template <class T>
-vector<UINT> measBoundBox(Image<T> &im)
-{
-    vector<UINT> res;
-    
-    size_t b[6];
-    UINT dim = im.getDimension()==3 ? 3 : 2;
-    
-    if (dim==3 && measBoundBox<T>(im, b, b+1, b+2, b+3, b+4, b+5)!=RES_OK)
-      return res;
-    else if (measBoundBox<T>(im, b, b+1, b+2, b+3)!=RES_OK)
-      return res;
-
-    for (UINT i=0;i<dim*2;i++)
-      res.push_back(b[i]);
-    
-    return res;
-}
-
-/**
- * Non-zero point offsets.
- * Return a vector conatining the offset of all non-zero points in image.
- */
-template <class T>
-vector<size_t> nonZeroOffsets(Image<T> &imIn)
-{
-    vector<size_t> offsets;
-
-    ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, offsets);
-    
-    typename Image<T>::lineType pixels = imIn.getPixels();
-    
-    for (size_t i=0;i<imIn.getPixelCount();i++)
-      if (pixels[i]!=0)
-	offsets.push_back(i);
- 
-    return offsets;
-}
-
+} // namespace smil
 
 /** @}*/
 

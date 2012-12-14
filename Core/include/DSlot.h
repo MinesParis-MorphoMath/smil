@@ -36,110 +36,113 @@ using namespace std;
 
 #include "DCommon.h"
 
-class Event;
-class Signal;
-
-class _DCORE BaseSlot
+namespace smil
 {
-  friend class Signal;
-public:
-  BaseSlot() {}
-  virtual ~BaseSlot() 
-  {
-    unregisterAll();
-  }
-protected:
-  virtual void _run(Event *e=NULL) = 0;
-  virtual void registerSignal(Signal *signal);
-  virtual void unregisterSignal(Signal *signal, bool _disconnect=true);
-  virtual void unregisterAll();
-  vector<Signal*> _signals;
-};
+    class Event;
+    class Signal;
 
-template <class eventT>
-class Slot : public BaseSlot
-{
-public:
-  Slot() {}
-  virtual ~Slot() {}
-  virtual void run(eventT * = NULL)
-  {
-  }
-  void operator() (eventT *e=NULL)
-  {
-  }
-protected:
-  virtual void _run(Event *e=NULL)
-  {
-    if (e)
-      run(static_cast<eventT*>(e));
-    else run();
-  }
-};
+    class _DCORE BaseSlot
+    {
+      friend class Signal;
+    public:
+      BaseSlot() {}
+      virtual ~BaseSlot() 
+      {
+	unregisterAll();
+      }
+    protected:
+      virtual void _run(Event *e=NULL) = 0;
+      virtual void registerSignal(Signal *signal);
+      virtual void unregisterSignal(Signal *signal, bool _disconnect=true);
+      virtual void unregisterAll();
+      vector<Signal*> _signals;
+    };
 
-template <class T, class eventT=Event>
-class MemberFunctionSlot : public Slot<eventT>
-{
-public:
-  typedef void(T::*memberFunc)(eventT*);
-  typedef void(T::*voidMemberFunc)();
-  MemberFunctionSlot()
-  {
-      _instance = NULL;
-      _function = NULL;
-  }
-  MemberFunctionSlot(T *inst, memberFunc func)
-  {
-      init(inst, func);
-  }
-  MemberFunctionSlot(T *inst, voidMemberFunc func)
-  {
-      init(inst, func);
-  }
-  void init(T *inst, memberFunc func)
-  {
-      _instance = inst;
-      _function = func;
-  }
-  void init(T *inst, voidMemberFunc func)
-  {
-      _instance = inst;
-      _void_function = func;
-  }
-protected:
-  T *_instance;
-  memberFunc _function;
-  voidMemberFunc _void_function;
-  virtual void run(eventT *e=NULL) 
-  { 
-    if (!_instance)
-      return;
-    
-    if (_function)
-      (_instance->*_function)(e);
-    if (_void_function)
-      (_instance->*_void_function)();
-  }
-};
+    template <class eventT>
+    class Slot : public BaseSlot
+    {
+    public:
+      Slot() {}
+      virtual ~Slot() {}
+      virtual void run(eventT * = NULL)
+      {
+      }
+      void operator() (eventT *e=NULL)
+      {
+      }
+    protected:
+      virtual void _run(Event *e=NULL)
+      {
+	if (e)
+	  run(static_cast<eventT*>(e));
+	else run();
+      }
+    };
 
-template <class eventT=Event>
-class FunctionSlot : public Slot<eventT>
-{
-public:
-  typedef void(*funcPtr)(eventT*);
-  typedef void(*voidFuncPtr)();
-  FunctionSlot(funcPtr func)
-  {
-    _function = func;
-  }
-protected:
-  funcPtr _function;
-  virtual void run(eventT *e) 
-  { 
-    (*_function)(e);
-  }
-};
+    template <class T, class eventT=Event>
+    class MemberFunctionSlot : public Slot<eventT>
+    {
+    public:
+      typedef void(T::*memberFunc)(eventT*);
+      typedef void(T::*voidMemberFunc)();
+      MemberFunctionSlot()
+      {
+	  _instance = NULL;
+	  _function = NULL;
+      }
+      MemberFunctionSlot(T *inst, memberFunc func)
+      {
+	  init(inst, func);
+      }
+      MemberFunctionSlot(T *inst, voidMemberFunc func)
+      {
+	  init(inst, func);
+      }
+      void init(T *inst, memberFunc func)
+      {
+	  _instance = inst;
+	  _function = func;
+      }
+      void init(T *inst, voidMemberFunc func)
+      {
+	  _instance = inst;
+	  _void_function = func;
+      }
+    protected:
+      T *_instance;
+      memberFunc _function;
+      voidMemberFunc _void_function;
+      virtual void run(eventT *e=NULL) 
+      { 
+	if (!_instance)
+	  return;
+	
+	if (_function)
+	  (_instance->*_function)(e);
+	if (_void_function)
+	  (_instance->*_void_function)();
+      }
+    };
 
+    template <class eventT=Event>
+    class FunctionSlot : public Slot<eventT>
+    {
+    public:
+      typedef void(*funcPtr)(eventT*);
+      typedef void(*voidFuncPtr)();
+      FunctionSlot(funcPtr func)
+      {
+	_function = func;
+      }
+    protected:
+      funcPtr _function;
+      virtual void run(eventT *e) 
+      { 
+	(*_function)(e);
+      }
+    };
+
+} // namespace smil
 
 
 #endif // _DSLOT_H

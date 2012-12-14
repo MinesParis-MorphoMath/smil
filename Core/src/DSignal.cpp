@@ -31,52 +31,58 @@
 
 #include <algorithm>
 
-void Signal::connect(BaseSlot *slot, bool _register)
+namespace smil
 {
-  vector<BaseSlot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
-  
-  if (it!=_slots.end())
-    return;
-  
-  _slots.push_back(slot);
-  if (_register)
-    slot->registerSignal(this);
-}
 
-void Signal::disconnect(BaseSlot *slot, bool _unregister)
-{
-  vector<BaseSlot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
-  
-  if (it==_slots.end())
-    return;
-  
-  _slots.erase(it);
-  
-  if (_unregister)
-    slot->unregisterSignal(this, false);
-}
+    void Signal::connect(BaseSlot *slot, bool _register)
+    {
+      vector<BaseSlot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
+      
+      if (it!=_slots.end())
+	return;
+      
+      _slots.push_back(slot);
+      if (_register)
+	slot->registerSignal(this);
+    }
 
-void Signal::disconnectAll()
-{
-  vector<BaseSlot*>::iterator it = _slots.begin();
-  
-  while(it!=_slots.end())
-  {
-    (*it)->unregisterSignal(this, false);
-    it++;
-  }
-}
+    void Signal::disconnect(BaseSlot *slot, bool _unregister)
+    {
+      vector<BaseSlot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
+      
+      if (it==_slots.end())
+	return;
+      
+      _slots.erase(it);
+      
+      if (_unregister)
+	slot->unregisterSignal(this, false);
+    }
 
-void Signal::trigger(Event *e)
-{
-  if (e && sender)
-    e->sender = sender;
-  
-  vector<BaseSlot*>::iterator it = _slots.begin();
-  
-  while(it!=_slots.end())
-  {
-    (*it)->_run(e);
-    it++;
-  }
-}
+    void Signal::disconnectAll()
+    {
+      vector<BaseSlot*>::iterator it = _slots.begin();
+      
+      while(it!=_slots.end())
+      {
+	(*it)->unregisterSignal(this, false);
+	it++;
+      }
+    }
+
+    void Signal::trigger(Event *e)
+    {
+      if (e && sender)
+	e->sender = sender;
+      
+      vector<BaseSlot*>::iterator it = _slots.begin();
+      
+      while(it!=_slots.end())
+      {
+	(*it)->_run(e);
+	it++;
+      }
+    }
+    
+} // namespace smil
+

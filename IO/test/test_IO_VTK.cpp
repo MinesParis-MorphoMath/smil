@@ -36,6 +36,8 @@
 #include "DCore.h"
 #include "DIO.h"
 
+using namespace smil;
+
 #include "DGui.h"
 
 class Test_VTK_RW : public TestCase

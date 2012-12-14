@@ -48,7 +48,7 @@
         cout << #func << ": " << 1E3 * double(clock() - t1) / CLOCKS_PER_SEC / nRuns << " ms" << endl;
 
 
-
+using namespace smil;
 
 int main(int argc, char *argv[])
 {

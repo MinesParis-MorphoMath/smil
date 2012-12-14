@@ -30,6 +30,8 @@
 #include "DCore.h"
 #include "DBase.h"
 
+using namespace smil;
+
 #ifdef __SSE__
 
 #include <emmintrin.h>

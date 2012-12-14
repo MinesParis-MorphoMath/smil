@@ -32,6 +32,7 @@
 #include "DGui.h"
 #include "DIO.h"
 
+using namespace smil;
 
 class Test_Label : public TestCase
 {

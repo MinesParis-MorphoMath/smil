@@ -56,7 +56,7 @@ SMIL_MODULE(smilMorpho)
 //////////////////////////////////////////////////////////
 
 %include "DInstance.hpp"
-%template(MorphoInstance) UniqueInstance<Morpho>;
+%template(MorphoInstance) UniqueInstance<smil::Morpho>;
 %include "DMorphoInstance.h"
 
 
@@ -116,8 +116,8 @@ TEMPLATE_WRAP_FUNC_CROSS2(watershed);
 %include "DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_CROSS2(label);
 
-%ignore CompStrEltList::operator[];
-%extend CompStrEltList
+%ignore smil::CompStrEltList::operator[];
+%extend smil::CompStrEltList
 {
     CompStrElt &__getitem__(UINT n)
     {

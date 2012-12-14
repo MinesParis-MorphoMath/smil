@@ -40,6 +40,7 @@
 
 #include <vector>
 
+using namespace smil;
 
 int main(int argc, char *argv[])
 {

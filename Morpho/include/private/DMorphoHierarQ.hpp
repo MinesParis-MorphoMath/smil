@@ -43,103 +43,107 @@
 #include <DStructuringElement.h>
 
 
-
-enum HQ_STATUS
+namespace smil
 {
-  HQ_CANDIDATE,
-  HQ_QUEUED,
-  HQ_LABELED,
-  HQ_WS_LINE,
-  HQ_FINAL
-};
+  
+    enum HQ_STATUS
+    {
+      HQ_CANDIDATE,
+      HQ_QUEUED,
+      HQ_LABELED,
+      HQ_WS_LINE,
+      HQ_FINAL
+    };
 
-template <class T>
-class HQToken
-{
-public:
-    HQToken(T _value, size_t _offset, size_t _index)
-      : value(_value), offset(_offset), index(_index)
+    template <class T>
+    class HQToken
     {
-    }
-    T value;
-    size_t offset;
-    bool operator > (const HQToken<T> &s ) const 
-    {
-	T sVal = s.value;
-	if (value!=sVal)
-	  return value > sVal;
-	else return index > s.index;
-    }
-    bool operator < (const HQToken<T> &s ) const 
-    {
-	T sVal = s.value;
-	if (value!=sVal)
-	  return value < sVal;
-	else return index > s.index;
-    }
-protected:
-    size_t index;
-};
-
-
-template <class T, class compareType=std::greater<HQToken<T> > >
-class HierarchicalQueue
-{
-public:
-//     typedef typename std::pair<T, UINT> elementType;
-    typedef HQToken<T> elementType;
-    typedef typename std::vector< elementType > containerType;
-//     typedef typename std::greater<typename containerType::value_type > compareType;
-    
-    HierarchicalQueue()
-    {
-      reset();
-    }
-    
-    void reset()
-    {
-      while(!priorityQueue.empty())
-	priorityQueue.pop();
-      index = 0;
-    }
-    
-    inline bool empty()
-    {
-      return priorityQueue.empty();
-    }
-    
-    inline void push(T value, size_t offset)
-    {
-      priorityQueue.push(HQToken<T>(value, offset, index++));
-    }
-    
-    inline const elementType& top()
-    {
-      return priorityQueue.top();
-    }
-    
-    inline void pop()
-    {
-      priorityQueue.pop();
-    }
-    
-    inline size_t size()
-    {
-      return priorityQueue.size();
-    }
-    
-    inline void printSelf()
-    {
-	while(!priorityQueue.empty())
+    public:
+	HQToken(T _value, size_t _offset, size_t _index)
+	  : value(_value), offset(_offset), index(_index)
 	{
-	    cout << (int)(priorityQueue.top().value) << ", " << (int)(priorityQueue.top().offset) << endl;
-	    priorityQueue.pop();
 	}
-    }
-protected:
-    priority_queue<elementType, containerType, compareType > priorityQueue;
-    size_t index;
-};
+	T value;
+	size_t offset;
+	bool operator > (const HQToken<T> &s ) const 
+	{
+	    T sVal = s.value;
+	    if (value!=sVal)
+	      return value > sVal;
+	    else return index > s.index;
+	}
+	bool operator < (const HQToken<T> &s ) const 
+	{
+	    T sVal = s.value;
+	    if (value!=sVal)
+	      return value < sVal;
+	    else return index > s.index;
+	}
+    protected:
+	size_t index;
+    };
+
+
+    template <class T, class compareType=std::greater<HQToken<T> > >
+    class HierarchicalQueue
+    {
+    public:
+    //     typedef typename std::pair<T, UINT> elementType;
+	typedef HQToken<T> elementType;
+	typedef typename std::vector< elementType > containerType;
+    //     typedef typename std::greater<typename containerType::value_type > compareType;
+	
+	HierarchicalQueue()
+	{
+	  reset();
+	}
+	
+	void reset()
+	{
+	  while(!priorityQueue.empty())
+	    priorityQueue.pop();
+	  index = 0;
+	}
+	
+	inline bool empty()
+	{
+	  return priorityQueue.empty();
+	}
+	
+	inline void push(T value, size_t offset)
+	{
+	  priorityQueue.push(HQToken<T>(value, offset, index++));
+	}
+	
+	inline const elementType& top()
+	{
+	  return priorityQueue.top();
+	}
+	
+	inline void pop()
+	{
+	  priorityQueue.pop();
+	}
+	
+	inline size_t size()
+	{
+	  return priorityQueue.size();
+	}
+	
+	inline void printSelf()
+	{
+	    while(!priorityQueue.empty())
+	    {
+		cout << (int)(priorityQueue.top().value) << ", " << (int)(priorityQueue.top().offset) << endl;
+		priorityQueue.pop();
+	    }
+	}
+    protected:
+	priority_queue<elementType, containerType, compareType > priorityQueue;
+	size_t index;
+    };
+
+} // namespace smil
 
 
 /** @}*/

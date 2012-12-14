@@ -44,58 +44,62 @@ using namespace std;
  * \{
  */
 
-/**
- * RAW file read 
- */
-template <class T>
-RES_T readRAW(const char *filename, size_t width, size_t height, size_t depth, Image<T> &image)
+namespace smil
 {
-    FILE *fp = NULL;
-
-    /* open image file */
-    fp = fopen (filename, "rb");
-    if (!fp)
+  
+    /**
+    * RAW file read 
+    */
+    template <class T>
+    RES_T readRAW(const char *filename, size_t width, size_t height, size_t depth, Image<T> &image)
     {
-        fprintf (stderr, "error: couldn't open \"%s\"!\n", filename);
-        return RES_ERR;
+	FILE *fp = NULL;
+
+	/* open image file */
+	fp = fopen (filename, "rb");
+	if (!fp)
+	{
+	    fprintf (stderr, "error: couldn't open \"%s\"!\n", filename);
+	    return RES_ERR;
+	}
+
+
+	image.setSize(width, height, depth);
+    //   image->allocate();
+
+	size_t ret = fread(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
+
+	fclose (fp);
+	
+	image.modified();
+	
+	return RES_OK;
     }
 
-
-    image.setSize(width, height, depth);
-//   image->allocate();
-
-    size_t ret = fread(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
-
-    fclose (fp);
-    
-    image.modified();
-    
-    return RES_OK;
-}
-
-/**
- * RAW file write
- */
-template <class T>
-RES_T writeRAW(Image<T> &image, const char *filename)
-{
-    FILE *fp = NULL;
-
-    /* open image file */
-    fp = fopen (filename, "wb");
-    if (!fp)
+    /**
+    * RAW file write
+    */
+    template <class T>
+    RES_T writeRAW(Image<T> &image, const char *filename)
     {
-        fprintf (stderr, "error: couldn't open \"%s\"!\n", filename);
-        return RES_ERR;
+	FILE *fp = NULL;
+
+	/* open image file */
+	fp = fopen (filename, "wb");
+	if (!fp)
+	{
+	    fprintf (stderr, "error: couldn't open \"%s\"!\n", filename);
+	    return RES_ERR;
+	}
+
+	fwrite(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
+
+	fclose (fp);
+	
+	return RES_OK;
     }
 
-    fwrite(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
-
-    fclose (fp);
-    
-    return RES_OK;
-}
-
+} // namespace smil
 
 /** \} */
 

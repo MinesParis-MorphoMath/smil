@@ -29,12 +29,16 @@
 
 #include "DIO.h"
 
-_DIO string getFileExtension(const char *fileName)
+namespace smil
 {
-    string fName(fileName);
-    string::size_type idx = fName.rfind('.');
-    string fExt = fName.substr(idx+1).c_str();
-    transform(fExt.begin(), fExt.end(), fExt.begin(), ::toupper);
-    return fExt;
-}
 
+    _DIO string getFileExtension(const char *fileName)
+    {
+	string fName(fileName);
+	string::size_type idx = fName.rfind('.');
+	string fExt = fName.substr(idx+1).c_str();
+	transform(fExt.begin(), fExt.end(), fExt.begin(), ::toupper);
+	return fExt;
+    }
+
+} // namespace smil

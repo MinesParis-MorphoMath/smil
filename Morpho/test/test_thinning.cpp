@@ -31,6 +31,7 @@
 #include "DCompositeSE.h"
 #include "DHitOrMiss.hpp"
 
+using namespace smil;
 
 class Test_Thin : public TestCase
 {

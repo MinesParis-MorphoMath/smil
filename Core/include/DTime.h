@@ -35,52 +35,57 @@
 
 #ifdef _MSC_VER
 #include <sys/timeb.h>
-
-typedef struct timeval {
-    UINT64 tv_sec;
-    UINT64 tv_usec;
-} timeval;
-
-inline int gettimeofday (struct timeval *tp, void *tz)
-{
-    struct _timeb timebuffer;
-    _ftime (&timebuffer);
-    tp->tv_sec = timebuffer.time;
-    tp->tv_usec = timebuffer.millitm * 1000;
-    return 0;
-}
 #else
-
 #include <sys/time.h>
+#endif 
 
-#endif //
-
-    
-static inline double getCpuTime()
+namespace smil
 {
-    struct timeval tv;
-    if (gettimeofday(&tv, 0)) 
+    #ifdef _MSC_VER
+
+    typedef struct timeval {
+	UINT64 tv_sec;
+	UINT64 tv_usec;
+    } timeval;
+
+    inline int gettimeofday (struct timeval *tp, void *tz)
     {
-        cout << "gettimeofday returned error" << endl;
+	struct _timeb timebuffer;
+	_ftime (&timebuffer);
+	tp->tv_sec = timebuffer.time;
+	tp->tv_usec = timebuffer.millitm * 1000;
+	return 0;
     }
-    return tv.tv_sec + tv.tv_usec/1e6;
-}
 
-inline string displayTime(double tSec)
-{
-    stringstream s;
-    
-    if (tSec>=1.)
-      s << int(tSec*1E3)/1E3 << " secs";
-    else if (tSec*1E3>=1.)
-      s << int(tSec*1E6)/1E3 << " msecs";
-    else 
-      s << int(tSec*1E6) << " usecs";
-    
-    return s.str();
-}
+    #endif //
+
+	
+    static inline double getCpuTime()
+    {
+	struct timeval tv;
+	if (gettimeofday(&tv, 0)) 
+	{
+	    cout << "gettimeofday returned error" << endl;
+	}
+	return tv.tv_sec + tv.tv_usec/1e6;
+    }
+
+    inline string displayTime(double tSec)
+    {
+	stringstream s;
+	
+	if (tSec>=1.)
+	  s << int(tSec*1E3)/1E3 << " secs";
+	else if (tSec*1E3>=1.)
+	  s << int(tSec*1E6)/1E3 << " msecs";
+	else 
+	  s << int(tSec*1E6) << " usecs";
+	
+	return s.str();
+    }
 
 
+} // namespace smil
 
 #endif // _DTIME_H
 

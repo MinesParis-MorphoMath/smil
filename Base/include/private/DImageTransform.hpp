@@ -39,291 +39,295 @@
  * @{
  */
 
-/**
- * Crop image
- * 
- * Crop an image into an output image
- * \param imIn input image
- * \param "startX startY [startZ]" start position of the zone in the input image
- * \param "sizeX sizeY [sizeZ]" size of the zone in the input image
- * \param imOut output image
- * 
- * \demo{copy_crop.py}
- */
-template <class T>
-RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ, Image<T> &imOut)
+namespace smil
 {
-    ASSERT_ALLOCATED(&imIn);
-
-    size_t inW = imIn.getWidth();
-    size_t inH = imIn.getHeight();
-    size_t inD = imIn.getDepth();
-    
-    size_t realSx = min(sizeX, inW-startX);
-    size_t realSy = min(sizeY, inH-startY);
-    size_t realSz = min(sizeZ, inD-startZ);
-    
-    imOut.setSize(realSx, realSy, realSz);
-    return copy(imIn, startX, startY, startZ, realSx, realSy, realSz, imOut, 0, 0, 0);
-}
-
-template <class T>
-RES_T crop(Image<T> &imInOut, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ)
-{
-    Image<T> tmpIm(imInOut, true); // clone
-    return crop(tmpIm, startX, startY, startZ, sizeX, sizeY, sizeZ, imInOut);
-}
-
-// 2D overload
-template <class T>
-RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t sizeX, size_t sizeY, Image<T> &imOut)
-{
-    return crop(imIn, startX, startY, 0, sizeX, sizeY, 1, imOut);
-}
-
-template <class T>
-RES_T crop(Image<T> &imInOut, size_t startX, size_t startY, size_t sizeX, size_t sizeY)
-{
-    return crop(imInOut, startX, startY, 0, sizeX, sizeY, 1);
-}
-
-
-/**
- * Add a border of size bSize around the original image
- * 
- */
-template <class T>
-RES_T addBorder(const Image<T> &imIn, size_t bSize, Image<T> &imOut)
-{
-    Image<T> tmpIm;
-    if (imIn->getDimension()==3)
+    /**
+    * Crop image
+    * 
+    * Crop an image into an output image
+    * \param imIn input image
+    * \param "startX startY [startZ]" start position of the zone in the input image
+    * \param "sizeX sizeY [sizeZ]" size of the zone in the input image
+    * \param imOut output image
+    * 
+    * \demo{copy_crop.py}
+    */
+    template <class T>
+    RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ, Image<T> &imOut)
     {
-// 	tmpIm.setSize(imIn.getWidth()
-    }
-//     (imInOut, true); // clone
-//     return crop(tmpIm, startX, startY, startZ, sizeX, sizeY, sizeZ, imInOut);
-    return RES_OK;
-}
+	ASSERT_ALLOCATED(&imIn);
 
-
-
-/**
- * Vertical flip (horizontal mirror).
- * 
- * Quick implementation (needs better integration and optimization).
- */
-template <class T>
-RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
-{
-    if (&imIn==&imOut)
-	return vFlip(imIn);
-    
-    if (!areAllocated(&imIn, &imOut, NULL))
-        return RES_ERR_BAD_ALLOCATION;
-  
-    if (!haveSameSize(&imIn, &imOut, NULL))
-        return RES_ERR;
-  
-    typename Image<T>::sliceType *slicesIn = imIn.getSlices();
-    typename Image<T>::sliceType *slicesOut = imOut.getSlices();
-    typename Image<T>::sliceType linesIn;
-    typename Image<T>::sliceType linesOut;
-    
-    size_t width = imIn.getWidth();
-    size_t height = imIn.getHeight();
-    size_t depth = imIn.getDepth();
-
-    for (size_t k=0;k<depth;k++)
-    {
-	linesIn = slicesIn[k];
-	linesOut = slicesOut[k];
+	size_t inW = imIn.getWidth();
+	size_t inH = imIn.getHeight();
+	size_t inD = imIn.getDepth();
 	
-	for (size_t j=0;j<height;j++)
-	  copyLine<T>(linesIn[j], width, linesOut[height-1-j]);
+	size_t realSx = min(sizeX, inW-startX);
+	size_t realSy = min(sizeY, inH-startY);
+	size_t realSz = min(sizeZ, inD-startZ);
+	
+	imOut.setSize(realSx, realSy, realSz);
+	return copy(imIn, startX, startY, startZ, realSx, realSy, realSz, imOut, 0, 0, 0);
     }
-    
-    imOut.modified();
-    
-    return RES_OK;
-}
 
-template <class T>
-RES_T vFlip(Image<T> &imInOut)
-{
-    if (!imInOut.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-  
-    typename Image<T>::sliceType *slicesIn = imInOut.getSlices();
-    typename Image<T>::sliceType linesIn;
-    
-    size_t width = imInOut.getWidth();
-    size_t height = imInOut.getHeight();
-    size_t depth = imInOut.getDepth();
+    template <class T>
+    RES_T crop(Image<T> &imInOut, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ)
+    {
+	Image<T> tmpIm(imInOut, true); // clone
+	return crop(tmpIm, startX, startY, startZ, sizeX, sizeY, sizeZ, imInOut);
+    }
 
-    typename Image<T>::lineType tmpLine = ImDtTypes<T>::createLine(width);
+    // 2D overload
+    template <class T>
+    RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t sizeX, size_t sizeY, Image<T> &imOut)
+    {
+	return crop(imIn, startX, startY, 0, sizeX, sizeY, 1, imOut);
+    }
+
+    template <class T>
+    RES_T crop(Image<T> &imInOut, size_t startX, size_t startY, size_t sizeX, size_t sizeY)
+    {
+	return crop(imInOut, startX, startY, 0, sizeX, sizeY, 1);
+    }
+
+
+    /**
+    * Add a border of size bSize around the original image
+    * 
+    */
+    template <class T>
+    RES_T addBorder(const Image<T> &imIn, size_t bSize, Image<T> &imOut)
+    {
+	Image<T> tmpIm;
+	if (imIn->getDimension()==3)
+	{
+    // 	tmpIm.setSize(imIn.getWidth()
+	}
+    //     (imInOut, true); // clone
+    //     return crop(tmpIm, startX, startY, startZ, sizeX, sizeY, sizeZ, imInOut);
+	return RES_OK;
+    }
+
+
+
+    /**
+    * Vertical flip (horizontal mirror).
+    * 
+    * Quick implementation (needs better integration and optimization).
+    */
+    template <class T>
+    RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
+    {
+	if (&imIn==&imOut)
+	    return vFlip(imIn);
+	
+	if (!areAllocated(&imIn, &imOut, NULL))
+	    return RES_ERR_BAD_ALLOCATION;
       
-    for (size_t k=0;k<depth;k++)
-    {
-	linesIn = slicesIn[k];
+	if (!haveSameSize(&imIn, &imOut, NULL))
+	    return RES_ERR;
+      
+	typename Image<T>::sliceType *slicesIn = imIn.getSlices();
+	typename Image<T>::sliceType *slicesOut = imOut.getSlices();
+	typename Image<T>::sliceType linesIn;
+	typename Image<T>::sliceType linesOut;
 	
-	for (size_t j=0;j<height/2;j++)
-	{
-	    copyLine<T>(linesIn[j], width, tmpLine);
-	    copyLine<T>(linesIn[height-1-j], width, linesIn[j]);
-	    copyLine<T>(tmpLine, width, linesIn[height-1-j]);
-	}
-    }
-    
-    ImDtTypes<T>::deleteLine(tmpLine);
-    imInOut.modified();
-    return RES_OK;
-}
+	size_t width = imIn.getWidth();
+	size_t height = imIn.getHeight();
+	size_t depth = imIn.getDepth();
 
-/**
- * Image translation.
- * 
- */
-template <class T>
-RES_T trans(Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
-{
-    if (!imIn.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-    
-    size_t lineLen = imIn.getWidth();
-    typename ImDtTypes<T>::lineType borderBuf = ImDtTypes<T>::createLine(lineLen);
-    fillLine<T>(borderBuf, lineLen, borderValue);
-    
-    size_t height = imIn.getHeight();
-    size_t depth  = imIn.getDepth();
-    
-    for (size_t k=0;k<depth;k++)
-    {
-	typename Image<T>::sliceType lOut = imOut.getSlices()[k];
-	
-	int z = k+dz;
-	for (size_t j=0;j<height;j++, lOut++)
+	for (size_t k=0;k<depth;k++)
 	{
-	    int y = j+dy;
+	    linesIn = slicesIn[k];
+	    linesOut = slicesOut[k];
 	    
-	    if (z<0 || z>=(int)depth || y<0 || y>=(int)height)
-		copyLine<T>(borderBuf, lineLen, *lOut);
-	    else 
-		shiftLine<T>(imIn.getSlices()[z][y], dx, lineLen, *lOut, borderValue);
+	    for (size_t j=0;j<height;j++)
+	      copyLine<T>(linesIn[j], width, linesOut[height-1-j]);
 	}
+	
+	imOut.modified();
+	
+	return RES_OK;
     }
-    
-    ImDtTypes<T>::deleteLine(borderBuf);
-    
-    imOut.modified();
-    
-    return RES_OK;
-}
 
-template <class T>
-RES_T trans(Image<T> &imIn, int dx, int dy, Image<T> &imOut, T borderValue = ImDtTypes<T>::min())
-{
-    return trans<T>(imIn, dx, dy, 0, imOut, borderValue);
-}
-
-template <class T>
-Image<T> trans(Image<T> &imIn, int dx, int dy, int dz)
-{
-    Image<T> imOut(imIn);
-    trans<T>(imIn, dx, dy, dz, imOut);
-    return imOut;
-}
-
-template <class T>
-Image<T> trans(Image<T> &imIn, int dx, int dy)
-{
-    Image<T> imOut(imIn);
-    trans<T>(imIn, dx, dy, 0, imOut);
-    return imOut;
-}
-
-
-/**
- * 2D bilinear resize algorithm.
- * 
- * Take imIn and resize it with the size of imOut.
- * 
- * Quick implementation (needs better integration and optimization).
- */
-template <class T>
-RES_T resize(Image<T> &imIn, Image<T> &imOut)
-{
-    if (!imIn.isAllocated() || !imOut.isAllocated())
-        return RES_ERR_BAD_ALLOCATION;
-  
-    size_t w = imIn.getWidth();
-    size_t h = imIn.getHeight();
-    
-    size_t w2 = imOut.getWidth();
-    size_t h2 = imOut.getHeight();
-    
-    typedef typename Image<T>::pixelType pixelType;
-    typedef typename Image<T>::lineType lineType;
-    
-    lineType pixIn = imIn.getPixels();
-    lineType pixOut = imOut.getPixels();
-    
-    pixelType A, B, C, D, maxVal = numeric_limits<T>::max() ;
-    int x, y, index;
-    
-    float x_ratio = ((float)(w-1))/w2 ;
-    float y_ratio = ((float)(h-1))/h2 ;
-    float x_diff, y_diff;
-    int offset = 0 ;
-    
-    for (size_t i=0;i<h2;i++) 
+    template <class T>
+    RES_T vFlip(Image<T> &imInOut)
     {
-        for (size_t j=0;j<w2;j++) 
+	if (!imInOut.isAllocated())
+	    return RES_ERR_BAD_ALLOCATION;
+      
+	typename Image<T>::sliceType *slicesIn = imInOut.getSlices();
+	typename Image<T>::sliceType linesIn;
+	
+	size_t width = imInOut.getWidth();
+	size_t height = imInOut.getHeight();
+	size_t depth = imInOut.getDepth();
+
+	typename Image<T>::lineType tmpLine = ImDtTypes<T>::createLine(width);
+	  
+	for (size_t k=0;k<depth;k++)
 	{
-            x = (int)(x_ratio * j) ;
-            y = (int)(y_ratio * i) ;
-            x_diff = (x_ratio * j) - x ;
-            y_diff = (y_ratio * i) - y ;
-            index = y*w+x ;
-
-            A = pixIn[index] & maxVal ;
-            B = pixIn[index+1] & maxVal ;
-            C = pixIn[index+w] & maxVal ;
-            D = pixIn[index+w+1] & maxVal ;
-            
-            // Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
-            pixOut[offset++] = A*(1-x_diff)*(1-y_diff) +  B*(x_diff)*(1-y_diff) + C*(y_diff)*(1-x_diff)   +  D*(x_diff*y_diff);
-        }
+	    linesIn = slicesIn[k];
+	    
+	    for (size_t j=0;j<height/2;j++)
+	    {
+		copyLine<T>(linesIn[j], width, tmpLine);
+		copyLine<T>(linesIn[height-1-j], width, linesIn[j]);
+		copyLine<T>(tmpLine, width, linesIn[height-1-j]);
+	    }
+	}
+	
+	ImDtTypes<T>::deleteLine(tmpLine);
+	imInOut.modified();
+	return RES_OK;
     }
-    imOut.modified();
-    
-    return RES_OK;
-}
 
-/**
- * 2D bilinear resize algorithm.
- * 
- * Quick implementation (needs better integration and optimization).
- * 
- * Specify coefficients for resizing.
- * If imIn has the size (W,H), the size of imOut will be (W*cx, H*cy).
- */
-template <class T>
-RES_T resize(Image<T> &imIn, double cx, double cy)
-{
-    Image<T> tmpIm(imIn, true); // clone
-    imIn.setSize(imIn.getWidth()*cx, imIn.getHeight()*cy, imIn.getDepth());
-    return resize<T>(tmpIm, imIn);
-}
+    /**
+    * Image translation.
+    * 
+    */
+    template <class T>
+    RES_T trans(Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
+    {
+	if (!imIn.isAllocated())
+	    return RES_ERR_BAD_ALLOCATION;
+	
+	size_t lineLen = imIn.getWidth();
+	typename ImDtTypes<T>::lineType borderBuf = ImDtTypes<T>::createLine(lineLen);
+	fillLine<T>(borderBuf, lineLen, borderValue);
+	
+	size_t height = imIn.getHeight();
+	size_t depth  = imIn.getDepth();
+	
+	for (size_t k=0;k<depth;k++)
+	{
+	    typename Image<T>::sliceType lOut = imOut.getSlices()[k];
+	    
+	    int z = k+dz;
+	    for (size_t j=0;j<height;j++, lOut++)
+	    {
+		int y = j+dy;
+		
+		if (z<0 || z>=(int)depth || y<0 || y>=(int)height)
+		    copyLine<T>(borderBuf, lineLen, *lOut);
+		else 
+		    shiftLine<T>(imIn.getSlices()[z][y], dx, lineLen, *lOut, borderValue);
+	    }
+	}
+	
+	ImDtTypes<T>::deleteLine(borderBuf);
+	
+	imOut.modified();
+	
+	return RES_OK;
+    }
 
-template <class T>
-RES_T resize(Image<T> &imIn, double cx, double cy, Image<T> &imOut)
-{
-    if (&imIn==&imOut)
-      return resize<T>(imIn, cx, cy);
-    
-    imOut.setSize(imIn.getWidth()*cx, imIn.getHeight()*cy, imIn.getDepth());
-    return resize<T>(imIn, imOut);
-}
+    template <class T>
+    RES_T trans(Image<T> &imIn, int dx, int dy, Image<T> &imOut, T borderValue = ImDtTypes<T>::min())
+    {
+	return trans<T>(imIn, dx, dy, 0, imOut, borderValue);
+    }
+
+    template <class T>
+    Image<T> trans(Image<T> &imIn, int dx, int dy, int dz)
+    {
+	Image<T> imOut(imIn);
+	trans<T>(imIn, dx, dy, dz, imOut);
+	return imOut;
+    }
+
+    template <class T>
+    Image<T> trans(Image<T> &imIn, int dx, int dy)
+    {
+	Image<T> imOut(imIn);
+	trans<T>(imIn, dx, dy, 0, imOut);
+	return imOut;
+    }
+
+
+    /**
+    * 2D bilinear resize algorithm.
+    * 
+    * Take imIn and resize it with the size of imOut.
+    * 
+    * Quick implementation (needs better integration and optimization).
+    */
+    template <class T>
+    RES_T resize(Image<T> &imIn, Image<T> &imOut)
+    {
+	if (!imIn.isAllocated() || !imOut.isAllocated())
+	    return RES_ERR_BAD_ALLOCATION;
+      
+	size_t w = imIn.getWidth();
+	size_t h = imIn.getHeight();
+	
+	size_t w2 = imOut.getWidth();
+	size_t h2 = imOut.getHeight();
+	
+	typedef typename Image<T>::pixelType pixelType;
+	typedef typename Image<T>::lineType lineType;
+	
+	lineType pixIn = imIn.getPixels();
+	lineType pixOut = imOut.getPixels();
+	
+	pixelType A, B, C, D, maxVal = numeric_limits<T>::max() ;
+	int x, y, index;
+	
+	float x_ratio = ((float)(w-1))/w2 ;
+	float y_ratio = ((float)(h-1))/h2 ;
+	float x_diff, y_diff;
+	int offset = 0 ;
+	
+	for (size_t i=0;i<h2;i++) 
+	{
+	    for (size_t j=0;j<w2;j++) 
+	    {
+		x = (int)(x_ratio * j) ;
+		y = (int)(y_ratio * i) ;
+		x_diff = (x_ratio * j) - x ;
+		y_diff = (y_ratio * i) - y ;
+		index = y*w+x ;
+
+		A = pixIn[index] & maxVal ;
+		B = pixIn[index+1] & maxVal ;
+		C = pixIn[index+w] & maxVal ;
+		D = pixIn[index+w+1] & maxVal ;
+		
+		// Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
+		pixOut[offset++] = A*(1-x_diff)*(1-y_diff) +  B*(x_diff)*(1-y_diff) + C*(y_diff)*(1-x_diff)   +  D*(x_diff*y_diff);
+	    }
+	}
+	imOut.modified();
+	
+	return RES_OK;
+    }
+
+    /**
+    * 2D bilinear resize algorithm.
+    * 
+    * Quick implementation (needs better integration and optimization).
+    * 
+    * Specify coefficients for resizing.
+    * If imIn has the size (W,H), the size of imOut will be (W*cx, H*cy).
+    */
+    template <class T>
+    RES_T resize(Image<T> &imIn, double cx, double cy)
+    {
+	Image<T> tmpIm(imIn, true); // clone
+	imIn.setSize(imIn.getWidth()*cx, imIn.getHeight()*cy, imIn.getDepth());
+	return resize<T>(tmpIm, imIn);
+    }
+
+    template <class T>
+    RES_T resize(Image<T> &imIn, double cx, double cy, Image<T> &imOut)
+    {
+	if (&imIn==&imOut)
+	  return resize<T>(imIn, cx, cy);
+	
+	imOut.setSize(imIn.getWidth()*cx, imIn.getHeight()*cy, imIn.getDepth());
+	return resize<T>(imIn, imOut);
+    }
+
+} // namespace smil
 
 /** @}*/
 

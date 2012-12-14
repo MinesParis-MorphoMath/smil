@@ -42,27 +42,30 @@
 #endif // SMIL_WRAP_BIN
 
 
-enum DType
+namespace smil
 {
-    dtUINT8, dtUINT16
-};
+    enum DType
+    {
+	dtUINT8, dtUINT16
+    };
 
 
-typedef Image<UINT8> Image_UINT8;
-typedef Image<UINT16> Image_UINT16;
-typedef Image<UINT32> Image_UINT32;
-typedef Image<bool> Image_bool;
+    typedef Image<UINT8> Image_UINT8;
+    typedef Image<UINT16> Image_UINT16;
+    typedef Image<UINT32> Image_UINT32;
+    typedef Image<bool> Image_bool;
 
 
 
-// IO specializations 
+    // IO specializations 
 
-// template <>
-// Image<UINT8>& Image<UINT8>::operator << (const char *filename);
-// 
-// template <>
-// Image<UINT8>& Image<UINT8>::operator >> (const char *filename);
-// 
+    // template <>
+    // Image<UINT8>& Image<UINT8>::operator << (const char *filename);
+    // 
+    // template <>
+    // Image<UINT8>& Image<UINT8>::operator >> (const char *filename);
+    // 
+} // namespace smil
 
 
 #endif // _DIMAGE_H

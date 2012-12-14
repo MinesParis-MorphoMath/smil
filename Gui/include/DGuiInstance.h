@@ -50,44 +50,47 @@
  */
 /*@{*/
 
-template <class T>
-class ImageViewer;
-
-
-class _DGUI Gui : public UniqueInstance<Gui>
+namespace smil
 {
-    friend class UniqueInstance<Gui>;
-
-protected:
-    Gui ();
-    ~Gui ();
-
-public:
-    // Public interface
-    static void initialize();
-//     static void kill();
-
-    static void execLoop();
-    static void processEvents();
     template <class T>
-    static ImageViewer<T> *createDefaultViewer(Image<T> *im=NULL)
-    {
-	Gui::initialize();
-	
-      #ifdef USE_QT
-	return new QtImageViewer<T>(im);
-      #elif USE_AALIB
-	return new AaImageViewer<T>(im);
-      #else
-	return new ImageViewer<T>(im);
-      #endif
-    }
-protected:
-    virtual void _execLoop() {}
-    virtual void _processEvents() {}
-private:
-};
+    class ImageViewer;
+    
 
+    class _DGUI Gui : public UniqueInstance<Gui>
+    {
+	friend class UniqueInstance<Gui>;
+
+    protected:
+	Gui ();
+	~Gui ();
+
+    public:
+	// Public interface
+	static void initialize();
+    //     static void kill();
+
+	static void execLoop();
+	static void processEvents();
+	template <class T>
+	static ImageViewer<T> *createDefaultViewer(Image<T> *im=NULL)
+	{
+	    Gui::initialize();
+	    
+	  #ifdef USE_QT
+	    return new QtImageViewer<T>(im);
+	  #elif USE_AALIB
+	    return new AaImageViewer<T>(im);
+	  #else
+	    return new ImageViewer<T>(im);
+	  #endif
+	}
+    protected:
+	virtual void _execLoop() {}
+	virtual void _processEvents() {}
+    private:
+    };
+
+} // namespace smil
 
 
 /*@}*/

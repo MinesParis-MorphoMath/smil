@@ -25,6 +25,8 @@
 #include "DImageDraw.hpp"
 #include "DTest.h"
 
+using namespace smil;
+
 
 class Test_DrawText : public TestCase
 {

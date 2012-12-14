@@ -39,88 +39,90 @@
  * @{
  */
 
-
-/**
- * Image that uses an existing (1D) data pointer.
- * 
- */  
-template <class T>
-class SharedImage : public Image<T>
+namespace smil
 {
-    typedef Image<T> parentClass;
-public:
-
-    //! Default constructor
-    SharedImage(const Image<T> &img)
+    /**
+    * Image that uses an existing (1D) data pointer.
+    * 
+    */  
+    template <class T>
+    class SharedImage : public Image<T>
     {
-	BaseObject::className = "SharedImage";
-	parentClass::init();
-	if (!img.isAllocated())
-	    ERR_MSG("Source image isn't allocated");
-	else
+	typedef Image<T> parentClass;
+    public:
+
+	//! Default constructor
+	SharedImage(const Image<T> &img)
 	{
-	    this->pixels = img.getPixels();
-	    this->setSize(img);
+	    BaseObject::className = "SharedImage";
+	    parentClass::init();
+	    if (!img.isAllocated())
+		ERR_MSG("Source image isn't allocated");
+	    else
+	    {
+		this->pixels = img.getPixels();
+		this->setSize(img);
+	    }
 	}
-    }
-  
-    SharedImage(const SharedImage<T> &img)
-    {
-	BaseObject::className = "SharedImage";
-	parentClass::init();
-	this->clone(img);
-    }
-  
-    virtual ~SharedImage()
-    {
-	this->deallocate();
-    }
-    
-    virtual void clone(const SharedImage<T> &rhs)
-    {
-	this->pixels = rhs.getPixels();
-	this->setSize(rhs);
-    }
-    
-protected:
-    SharedImage() {}
-    virtual RES_T allocate()
-    {
-	if (this->allocated)
-	    return RES_ERR_BAD_ALLOCATION;
-
-	if (!this->pixels)
-	    return RES_ERR_BAD_ALLOCATION;
+      
+	SharedImage(const SharedImage<T> &img)
+	{
+	    BaseObject::className = "SharedImage";
+	    parentClass::init();
+	    this->clone(img);
+	}
+      
+	virtual ~SharedImage()
+	{
+	    this->deallocate();
+	}
 	
-	this->allocated = true;
-	this->allocatedSize = this->pixelCount*sizeof(T);
+	virtual void clone(const SharedImage<T> &rhs)
+	{
+	    this->pixels = rhs.getPixels();
+	    this->setSize(rhs);
+	}
+	
+    protected:
+	SharedImage() {}
+	virtual RES_T allocate()
+	{
+	    if (this->allocated)
+		return RES_ERR_BAD_ALLOCATION;
 
-	this->restruct();
+	    if (!this->pixels)
+		return RES_ERR_BAD_ALLOCATION;
+	    
+	    this->allocated = true;
+	    this->allocatedSize = this->pixelCount*sizeof(T);
 
-	return RES_OK;
-    }
-    
-    virtual RES_T deallocate()
-    {
-	if (!this->allocated)
+	    this->restruct();
+
 	    return RES_OK;
-
-	if (this->slices)
-	    delete[] this->slices;
-	if (this->lines)
-	    delete[] this->lines;
+	}
 	
-	this->slices = NULL;
-	this->lines = NULL;
-	this->pixels = NULL;
+	virtual RES_T deallocate()
+	{
+	    if (!this->allocated)
+		return RES_OK;
 
-	this->allocated = false;
-	this->allocatedSize = 0;
+	    if (this->slices)
+		delete[] this->slices;
+	    if (this->lines)
+		delete[] this->lines;
+	    
+	    this->slices = NULL;
+	    this->lines = NULL;
+	    this->pixels = NULL;
 
-	return RES_OK;
-    }
-};
+	    this->allocated = false;
+	    this->allocatedSize = 0;
+
+	    return RES_OK;
+	}
+    };
   
+} // namespace smil
 
 /** @}*/
 

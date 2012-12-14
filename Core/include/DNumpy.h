@@ -33,6 +33,7 @@
 
 #include "numpy/arrayobject.h"
 
+  
 template <class T> class Image;
 
 template <class T> int getNumpyType(Image<T> &im) { return NPY_VOID; } // Default
@@ -61,7 +62,6 @@ template <> int getNumpyType(Image<double> &im) { return NPY_DOUBLE; }
 //                     NPY_STRING, NPY_UNICODE,
 //                     NPY_VOID,
 //                     /*
-
 
 
 #endif // _D_NUMPY_H

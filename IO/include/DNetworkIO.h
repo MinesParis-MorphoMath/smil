@@ -34,10 +34,15 @@
 #include "DCommon.h"
 #include <DErrors.h>
 
-#ifdef USE_CURL
+namespace smil
+{
+  
+    #ifdef USE_CURL
 
-_DIO RES_T getHttpFile(const char *url, const char *outfilename) ;
+    _DIO RES_T getHttpFile(const char *url, const char *outfilename) ;
 
-#endif // USE_CURL
+    #endif // USE_CURL
+    
+} // namespace smil
 
 #endif // _D_NETWORK_IO_H

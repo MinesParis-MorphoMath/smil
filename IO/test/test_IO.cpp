@@ -38,6 +38,7 @@
 
 #include "DGui.h"
 
+using namespace smil;
 
 int main(int argc, char *argv[])
 {

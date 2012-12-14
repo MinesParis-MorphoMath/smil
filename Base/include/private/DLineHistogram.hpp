@@ -37,43 +37,47 @@
 //! \defgroup Histogram
 //! @{
 
-template <class T>
-struct threshLine : public unaryLineFunctionBase<T>
+namespace smil
 {
-    T minVal, maxVal, trueVal, falseVal;
-    typedef typename ImDtTypes<T>::lineType lineType;
-    
-    inline void _exec(const lineType &lIn, int size, lineType &lOut)
+  
+    template <class T>
+    struct threshLine : public unaryLineFunctionBase<T>
     {
-	for(int i=0;i<size;i++)
-	    lOut[i] = lIn[i] >= minVal && lIn[i] <= maxVal  ? trueVal : falseVal;
-    }
-};
-
-template <class T>
-struct stretchHistLine : public unaryLineFunctionBase<T>
-{
-    T inOrig, outOrig;
-    double coeff;
-    typedef typename ImDtTypes<T>::lineType lineType;
-    
-    inline void _exec(const lineType &lIn, int size, lineType &lOut)
-    {
-	double newVal;
+	T minVal, maxVal, trueVal, falseVal;
+	typedef typename ImDtTypes<T>::lineType lineType;
 	
-	for(int i=0;i<size;i++)
+	inline void _exec(const lineType &lIn, int size, lineType &lOut)
 	{
-	    newVal = outOrig + (lIn[i]-inOrig)*coeff;
-	    if (newVal > numeric_limits<T>::max())
-		newVal = numeric_limits<T>::max();
-	    else if (newVal < numeric_limits<T>::min())
-		newVal = numeric_limits<T>::min();
-	    lOut[i] = T(newVal);
-	    
+	    for(int i=0;i<size;i++)
+		lOut[i] = lIn[i] >= minVal && lIn[i] <= maxVal  ? trueVal : falseVal;
 	}
-    }
-};
+    };
 
+    template <class T>
+    struct stretchHistLine : public unaryLineFunctionBase<T>
+    {
+	T inOrig, outOrig;
+	double coeff;
+	typedef typename ImDtTypes<T>::lineType lineType;
+	
+	inline void _exec(const lineType &lIn, int size, lineType &lOut)
+	{
+	    double newVal;
+	    
+	    for(int i=0;i<size;i++)
+	    {
+		newVal = outOrig + (lIn[i]-inOrig)*coeff;
+		if (newVal > numeric_limits<T>::max())
+		    newVal = numeric_limits<T>::max();
+		else if (newVal < numeric_limits<T>::min())
+		    newVal = numeric_limits<T>::min();
+		lOut[i] = T(newVal);
+		
+	    }
+	}
+    };
+
+} // namespace smil
 
 //! @}
 

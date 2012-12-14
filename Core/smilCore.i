@@ -55,6 +55,7 @@ class exception{};
 %include "DErrors.h"
 
 
+
 //////////////////////////////////////////////////////////
 // Types
 //////////////////////////////////////////////////////////
@@ -106,7 +107,7 @@ PTR_ARG_OUT_APPLY(s)
 // BaseObject
 //////////////////////////////////////////////////////////
 
-%extend BaseObject 
+%extend smil::BaseObject 
 {
 	std::string  __str__() 
 	{
@@ -187,11 +188,13 @@ namespace std
 %include "DCoreEvents.h"
 
 
-%template(BaseImageSlot) Slot<BaseImageEvent>;
-%template(EventSlot) Slot<Event>;
-%template(ViewerFunctionSlot) MemberFunctionSlot<BaseImageViewer, Event>;
-%template(FunctionSlot_) FunctionSlot<Event>;
-
+namespace smil
+{
+    %template(BaseImageSlot) Slot<BaseImageEvent>;
+    %template(EventSlot) Slot<Event>;
+    %template(ViewerFunctionSlot) MemberFunctionSlot<BaseImageViewer, Event>;
+    %template(FunctionSlot_) FunctionSlot<Event>;
+}
 
 //////////////////////////////////////////////////////////
 // Image
@@ -200,8 +203,8 @@ namespace std
 // Import smilGui for viewers stuff
 %import smilGui.i
 
-%ignore Image::operator[];
-%extend Image
+%ignore smil::Image::operator[];
+%extend smil::Image
 {
     T __getitem__(size_t i) { return self->getPixel(i); }
     RES_T __setitem__(size_t i, T val) { return self->setPixel(i, val); }
@@ -219,7 +222,10 @@ namespace std
 
 #endif // SWIGXML
 
-TEMPLATE_WRAP_CLASS(Image, Image);
-TEMPLATE_WRAP_FUNC(createImage);
-TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
+namespace smil
+{
+    TEMPLATE_WRAP_CLASS(Image, Image);
+    TEMPLATE_WRAP_FUNC(createImage);
+    TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
+}
 

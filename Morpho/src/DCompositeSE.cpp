@@ -28,6 +28,8 @@
 
 #include "DCompositeSE.h"
 
+using namespace smil;
+
 extern IntPoint SE_SquIndices[];
 extern IntPoint SE_HexIndices[];
 

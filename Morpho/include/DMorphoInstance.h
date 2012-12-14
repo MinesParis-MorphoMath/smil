@@ -39,25 +39,27 @@
  */
 /*@{*/
 
-
-class  Morpho : public UniqueInstance<Morpho>
+namespace smil
 {
-    friend class UniqueInstance<Morpho>;
+    class  Morpho : public UniqueInstance<Morpho>
+    {
+	friend class UniqueInstance<Morpho>;
 
-protected:
-    Morpho ();
-    ~Morpho ();
+    protected:
+	Morpho ();
+	~Morpho ();
 
-public:
-    // Public interface
+    public:
+	// Public interface
 
-    static StrElt &getDefaultSE();
-    static void setDefaultSE(const StrElt &se);
-protected:
-    StrElt defaultSE;
-private:
-};
+	static StrElt &getDefaultSE();
+	static void setDefaultSE(const StrElt &se);
+    protected:
+	StrElt defaultSE;
+    private:
+    };
 
+} // namespace smil
 
 
 /*@}*/

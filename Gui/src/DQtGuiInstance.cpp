@@ -31,7 +31,7 @@
 
 #include "DQtGuiInstance.h"
 
-
+using namespace smil;
 
 // qtGui::qtGui()
 //   : _qapp(NULL)

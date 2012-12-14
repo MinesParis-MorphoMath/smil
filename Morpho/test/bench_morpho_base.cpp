@@ -31,6 +31,8 @@
 #include "DCore.h"
 #include "DMorpho.h"
 
+using namespace smil;
+
 int main(int argc, char *argv[])
 {
     Image_UINT8 im1(1024, 1024);

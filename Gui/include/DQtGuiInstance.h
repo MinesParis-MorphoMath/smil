@@ -41,29 +41,33 @@
 
 #include "Qt/QtApp.h"
 
-class qtGui : public Gui
+namespace smil
 {
-public:
-    qtGui()
-      : _qapp(NULL)
+  
+    class qtGui : public Gui
     {
-      if (!qApp)
-      {
-	  int ac = 1;
-	  char **av = NULL;
-	  _qapp = new QApplication(ac, av);
-	  _qapp->processEvents();
-      }
-    }
-    ~qtGui();
-    
-protected:
-    virtual void _execLoop();
-    virtual void _processEvents();
-private:
-    QApplication *_qapp;
-};
+    public:
+	qtGui()
+	  : _qapp(NULL)
+	{
+	  if (!qApp)
+	  {
+	      int ac = 1;
+	      char **av = NULL;
+	      _qapp = new QApplication(ac, av);
+	      _qapp->processEvents();
+	  }
+	}
+	~qtGui();
+	
+    protected:
+	virtual void _execLoop();
+	virtual void _processEvents();
+    private:
+	QApplication *_qapp;
+    };
 
+} // namespace smil
 
 /*@}*/
 

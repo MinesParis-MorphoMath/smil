@@ -28,6 +28,8 @@
 #include "DTest.h"
 #include "DMeasures.hpp"
 
+using namespace smil;
+
 class Test_MeasureBarycenter : public TestCase
 {
   virtual void run()

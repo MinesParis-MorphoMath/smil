@@ -34,35 +34,39 @@
 #include "DSlot.h"
 #include "DBaseImage.h"
 
-template <class T>
-class Image;
-
-class BaseImageEvent : public Event
+namespace smil
 {
-public:
-  BaseImageEvent(BaseImage *im)
-    : sender(im)
+    template <class T>
+    class Image;
+
+    class BaseImageEvent : public Event
     {
-    }
-    const BaseImage* sender;
-};
+    public:
+      BaseImageEvent(BaseImage *im)
+	: sender(im)
+	{
+	}
+	const BaseImage* sender;
+    };
 
-typedef Slot<BaseImageEvent> BaseImageSlot;
+    typedef Slot<BaseImageEvent> BaseImageSlot;
 
 
-template <class T>
-class ImageEvent : public Event
-{
-public:
-  ImageEvent(Image<T> *im)
-    : sender(im)
+    template <class T>
+    class ImageEvent : public Event
     {
-    }
-    const Image<T>* sender;
-};
+    public:
+      ImageEvent(Image<T> *im)
+	: sender(im)
+	{
+	}
+	const Image<T>* sender;
+    };
 
-typedef Slot< ImageEvent<UINT8> > ImageSlot_UINT8;
-typedef Slot< ImageEvent<UINT16> > ImageSlot_UINT16;
+    typedef Slot< ImageEvent<UINT8> > ImageSlot_UINT8;
+    typedef Slot< ImageEvent<UINT16> > ImageSlot_UINT16;
+
+} // namespace smil
 
 #endif // _D_CORE_EVENTS_H
 

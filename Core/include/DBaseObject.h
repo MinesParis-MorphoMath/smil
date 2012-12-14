@@ -41,55 +41,60 @@
 
 using namespace std;
 
-class Core;
-
-/**
- * Base Smil Object
- */
-class _DCORE BaseObject
+namespace smil
 {
-public:
-    BaseObject(bool _register=true);
-    BaseObject(const string _className, bool _register=true);
-    BaseObject(const BaseObject &rhs, bool _register=true);
-    
-    // Assignment operator
-    BaseObject& operator=(const BaseObject &rhs)
+  
+    class Core;
+
+    /**
+    * Base Smil Object
+    */
+    class _DCORE BaseObject
     {
-	this->_clone(rhs);
-	return *this;
-    }
+    public:
+	BaseObject(bool _register=true);
+	BaseObject(const string _className, bool _register=true);
+	BaseObject(const BaseObject &rhs, bool _register=true);
+	
+	// Assignment operator
+	BaseObject& operator=(const BaseObject &rhs)
+	{
+	    this->_clone(rhs);
+	    return *this;
+	}
+	
+    private:    
+	void _clone(const BaseObject &rhs);
+	
+    public:
+
+	virtual ~BaseObject() ;
+	
+	Core *getCoreInstance();
+	typedef void parentClass;
+	virtual const char *getInfoString(const char * = "") const { return NULL; }
+	virtual void printSelf(ostream & = std::cout, string ="") const {};
+	virtual const char *getClassName() const;
+
+	virtual void setName(const char *_name)
+	{
+	    name = _name;
+	}
+	virtual const char *getName() const
+	{
+	    return name.c_str();
+	}
+	typedef void(BaseObject::*voidMemberFunc)();
+
+	bool triggerEvents;
+    protected:
+	string className;
+	string name;
+	bool registered;
+
+	friend class Core;
+    };
     
-private:    
-    void _clone(const BaseObject &rhs);
-    
-public:
-
-    virtual ~BaseObject() ;
-    
-    Core *getCoreInstance();
-    typedef void parentClass;
-    virtual const char *getInfoString(const char * = "") const { return NULL; }
-    virtual void printSelf(ostream & = std::cout, string ="") const {};
-    virtual const char *getClassName() const;
-
-    virtual void setName(const char *_name)
-    {
-	name = _name;
-    }
-    virtual const char *getName() const
-    {
-	return name.c_str();
-    }
-    typedef void(BaseObject::*voidMemberFunc)();
-
-    bool triggerEvents;
-protected:
-    string className;
-    string name;
-    bool registered;
-
-    friend class Core;
-};
+} // namespace smil
 
 #endif

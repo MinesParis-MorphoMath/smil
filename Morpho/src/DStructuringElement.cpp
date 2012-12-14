@@ -29,6 +29,8 @@
 
 #include "DStructuringElement.h"
 
+using namespace smil;
+
 IntPoint SE_SquIndices[] = { IntPoint(0,0,0), IntPoint(1,0,0), IntPoint(1,-1,0), 
       IntPoint(0,-1,0), IntPoint(-1,-1,0), IntPoint(-1,0,0), 
       IntPoint(-1,1,0), IntPoint(0,1,0), IntPoint(1,1,0) };

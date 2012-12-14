@@ -31,14 +31,17 @@
 #include "DCoreInstance.h"
 #include "DCoreEvents.h"
 
-
-void BaseImage::init()
+namespace smil
 {
-  if (triggerEvents)
-  {
-    BaseImageEvent event(this);
-    Core::getInstance()->onBaseImageCreated.trigger(&event);
-  }
 
-}
+    void BaseImage::init()
+    {
+      if (triggerEvents)
+      {
+	BaseImageEvent event(this);
+	Core::getInstance()->onBaseImageCreated.trigger(&event);
+      }
 
+    }
+
+} // namespace smil

@@ -31,63 +31,66 @@
 
 #include "Qt/DQtImageViewer.hpp"
 #include "Qt/ImageViewerWidget.h"
-#include "DImage.hpp"
+#include "Core/include/private/DImage.hpp"
 
-
-template <>
-void _DGUI QtImageViewer<UINT8>::drawImage()
+namespace smil
 {
-    int sliceNbr = slider->value();
-    Image<UINT8>::sliceType lines = this->image->getSlices()[sliceNbr];
 
-    size_t w = this->image->getWidth();
-    size_t h = this->image->getHeight();
-
-    for (size_t j=0;j<h;j++, lines++)
-        memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
-}
-
-
-
-#ifdef SMIL_WRAP_BIN
-
-// #include "DBitArray.h"
-
-template <>
-void _DGUI QtImageViewer<BIN>::drawImage()
-{
-    Image<BIN>::lineType pixels = this->image->getPixels();
-    size_t w = this->image->getWidth();
-    size_t h = this->image->getHeight();
-
-    this->setImageSize(w, h);
-
-    const BIN *lIn;
-    UINT8 *lOut, *lEnd;
-    size_t bCount = (w-1)/BIN::SIZE + 1;
-
-    for (int j=0;j<h;j++)
+    template <>
+    void _DGUI QtImageViewer<UINT8>::drawImage()
     {
-	lIn = pixels + j*bCount;
-	lOut = this->qImage->scanLine(j);
-	lEnd = lOut + w;
+	int sliceNbr = slider->value();
+	Image<UINT8>::sliceType lines = this->image->getSlices()[sliceNbr];
 
-	for (int b=0;b<bCount;b++,lIn++)
+	size_t w = this->image->getWidth();
+	size_t h = this->image->getHeight();
+
+	for (size_t j=0;j<h;j++, lines++)
+	    memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
+    }
+
+
+
+    #ifdef SMIL_WRAP_BIN
+
+    // #include "DBitArray.h"
+
+    template <>
+    void _DGUI QtImageViewer<BIN>::drawImage()
+    {
+	Image<BIN>::lineType pixels = this->image->getPixels();
+	size_t w = this->image->getWidth();
+	size_t h = this->image->getHeight();
+
+	this->setImageSize(w, h);
+
+	const BIN *lIn;
+	UINT8 *lOut, *lEnd;
+	size_t bCount = (w-1)/BIN::SIZE + 1;
+
+	for (int j=0;j<h;j++)
 	{
-	  BIN_TYPE bVal = (*lIn).val;
+	    lIn = pixels + j*bCount;
+	    lOut = this->qImage->scanLine(j);
+	    lEnd = lOut + w;
 
-	  for (int i=0;i<BIN::SIZE;i++,lOut++)
-	  {
-	    if (lOut==lEnd)
-	      break;
-	    *lOut = bVal & (1 << i) ? 255 : 0;
-	  }
+	    for (int b=0;b<bCount;b++,lIn++)
+	    {
+	      BIN_TYPE bVal = (*lIn).val;
+
+	      for (int i=0;i<BIN::SIZE;i++,lOut++)
+	      {
+		if (lOut==lEnd)
+		  break;
+		*lOut = bVal & (1 << i) ? 255 : 0;
+	      }
+	    }
 	}
     }
-}
 
-#endif // SMIL_WRAP_BIN
+    #endif // SMIL_WRAP_BIN
 
+} // namespace smil
 
 
 #endif // USE_QT

@@ -29,6 +29,8 @@
 
 #include "DMorphoInstance.h"
 
+using namespace smil;
+
 Morpho::Morpho()
 {
     this->defaultSE = SquSE();

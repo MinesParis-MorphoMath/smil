@@ -32,6 +32,8 @@
 
 #include "DGui.h"
 
+using namespace smil;
+
 class Test_Histogram : public TestCase
 {
   virtual void run()

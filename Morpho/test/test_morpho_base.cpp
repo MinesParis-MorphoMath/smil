@@ -32,6 +32,8 @@
 #include "DGui.h"
 #include "DIO.h"
 
+using namespace smil;
+
 class Test_Dilate_Hex : public TestCase
 {
   virtual void run()

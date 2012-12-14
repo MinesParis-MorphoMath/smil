@@ -43,6 +43,11 @@
 
 using namespace std;
 
-_DIO string getFileExtension(const char *fileName);
+namespace smil
+{
+  
+    _DIO string getFileExtension(const char *fileName);
+    
+} // namespace smil
 
 #endif // _D_IMAGE_IO_H
