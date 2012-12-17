@@ -44,6 +44,14 @@ namespace smil
     class BaseObject;
     class BaseImage;
 
+   /**
+    * \ingroup Core
+    * @{
+    */
+    
+    /**
+     * Core module instance
+     */
     class _DCORE Core : public UniqueInstance<Core>
     {
 	friend class UniqueInstance<Core>;
@@ -62,32 +70,40 @@ namespace smil
 	
 	static vector<BaseObject*> getRegisteredObjects();
 	static vector<BaseImage*> getImages();
-	static size_t getNumberOfThreads();
+	static UINT getNumberOfThreads();
 	static size_t getAllocatedMemory();
 	static void showAllImages();
 	static void hideAllImages();
 	
-	Signal onBaseImageCreated;
+	void getCompilationInfos(ostream &outStream = std::cout);
 	
-	vector<BaseObject*> _getRegisteredObjects();
-	vector<BaseImage*> _getImages();
-	size_t _getNumberOfThreads();
-	size_t _getAllocatedMemory();
-	void _showAllImages();
-	void _hideAllImages();
+	Signal onBaseImageCreated;
 	
       
     protected:
+	UINT threadNumber;
+	
+	const char *systemName;
+	const char *targetArchitecture;
+	const bool supportOpenMP;
+	
 	vector<BaseObject*> registeredObjects;
 	vector<BaseImage*> registeredImages;
 	void deleteRegisteredObjects();
-	size_t threadNumber;
       
+	vector<BaseObject*> _getRegisteredObjects();
+	vector<BaseImage*> _getImages();
+	
+	size_t _getAllocatedMemory();
+	void _showAllImages();
+	void _hideAllImages();
     public:
       static void initialize();
       
     };
 
+    /*@}*/
+    
 } // namespace smil
 
 

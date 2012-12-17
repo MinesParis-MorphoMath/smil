@@ -48,8 +48,8 @@
 
 namespace smil
 {
-    /**
-    * \defgroup Gui Gui
+   /**
+    * \defgroup Gui
     */
     /*@{*/
 
@@ -57,6 +57,9 @@ namespace smil
     class ImageViewer;
     
 
+    /**
+     * Gui module instance
+     */
     class _DGUI Gui : public UniqueInstance<Gui>
     {
 	friend class UniqueInstance<Gui>;
@@ -67,11 +70,21 @@ namespace smil
 
     public:
 	// Public interface
+	/**
+	 * Initialize the Gui module
+	 */
 	static void initialize();
     //     static void kill();
 
+	/**
+	 * Run the event loop
+	 */
 	static void execLoop();
 	static void processEvents();
+	
+	/**
+	 * Create a default viewer for type T
+	 */
 	template <class T>
 	static ImageViewer<T> *createDefaultViewer(Image<T> *im=NULL)
 	{

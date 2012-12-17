@@ -43,8 +43,24 @@ namespace smil
     // : BaseObject("Core", false),
       : keepAlive(false),
 	autoResizeImages(true),
-	threadNumber(0)
+	threadNumber(1),
+	systemName(SYSTEM_NAME),
+	targetArchitecture(TARGET_ARCHITECTURE),
+    #ifdef USE_OPEN_MP
+	supportOpenMP(true)
+    #else // USE_OPEN_MP
+	supportOpenMP(false)
+    #endif // USE_OPEN_MP
     {
+    #ifdef USE_OPEN_MP
+	int nthreads;
+	#pragma omp parallel shared(nthreads)
+	{ 
+	    nthreads = omp_get_num_threads();
+	}
+	threadNumber = nthreads;
+    #endif // USE_OPEN_MP
+      
     #if DEBUG_LEVEL > 1
 	cout << "Core created" << endl;
     #endif // DEBUG_LEVEL > 1
@@ -122,27 +138,9 @@ namespace smil
 	}
     }
 
-    size_t Core::_getNumberOfThreads()
+    UINT Core::getNumberOfThreads()
     {
-    #ifdef USE_OPEN_MP
-	if (threadNumber!=0)
-	  return threadNumber;
-	
-	int nthreads;
-	#pragma omp parallel shared(nthreads)
-	{ 
-	    nthreads = omp_get_num_threads();
-	}
-	threadNumber = nthreads;
-	return threadNumber;
-    #else // USE_OPEN_MP
-	return 1;
-    #endif // USE_OPEN_MP
-    }
-
-    size_t Core::getNumberOfThreads()
-    {
-	return Core::getInstance()->_getNumberOfThreads();
+	return Core::getInstance()->threadNumber;
     }
 
     size_t Core::_getAllocatedMemory()
@@ -204,6 +202,13 @@ namespace smil
     void Core::hideAllImages()
     {
 	Core::getInstance()->_hideAllImages();
+    }
+    
+    void Core::getCompilationInfos(ostream &outStream)
+    {
+	outStream << "System: " << systemName << endl;
+	outStream << "Target Architecture: " << targetArchitecture << endl;
+	outStream << "OpenMP support: " << (supportOpenMP ? "On" : "Off") << endl;
     }
 
 } // namespace smil

@@ -36,6 +36,11 @@ namespace smil
 {
   
     template <class T> class Image;
+    
+   /**
+    * \ingroup Gui
+    */
+    /*@{*/
 
     /**
     * Base image viewer.
@@ -102,6 +107,8 @@ namespace smil
 	Image<T> *image;
     };
 
+    /*@}*/
+    
 } // namespace smil
 
 

@@ -47,8 +47,8 @@ namespace smil
     class Core;
 
     /**
-    * Base Smil Object
-    */
+     * Base Smil Object
+     */
     class _DCORE BaseObject
     {
     public:

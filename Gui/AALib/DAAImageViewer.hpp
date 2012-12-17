@@ -41,6 +41,11 @@ namespace smil
 {
     template <class T> class Image;
 
+   /**
+    * \ingroup Gui
+    */
+    /*@{*/
+    
     /**
     * AA (Ascii Art) image viewer
     * 
@@ -173,6 +178,8 @@ namespace smil
     {
     }
 
+    /*@{*/
+    
 } // namespace smil
 
 

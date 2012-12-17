@@ -48,9 +48,24 @@ namespace smil
     #define BASE_QT_VIEWER ImageViewerWidget
 
 
-
     template <class T> class Image;
+    
+   /**
+    * \ingroup Gui
+    */
+    /*@{*/
 
+    /**
+     * Qt image viewer
+     * 
+     * Requires the Qt libraries. To use it, you must set the option USE_QT to ON.
+     * 
+     * Keyboard shortcuts:
+     * \li \b Z/A Zoom In/Out
+     * \li \b V Show/Hide the value of the pixel under the mouse cursor
+     * \li \b M Show/Hide the magnifying window
+     * \li \b H SHow/Hide the histogram window (requires the Qwt library)
+     */
     template <class T>
     class QtImageViewer : public ImageViewer<T>, public BASE_QT_VIEWER
     {
@@ -98,6 +113,8 @@ namespace smil
 	QwtPlot *histoPlot;
     };
 
+    /*@{*/
+    
 } // namespace smil
 
 
