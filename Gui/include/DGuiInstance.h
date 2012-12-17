@@ -65,8 +65,8 @@ namespace smil
 	friend class UniqueInstance<Gui>;
 
     protected:
-	Gui ();
-	~Gui ();
+	Gui () {}
+	~Gui () {}
 
     public:
 	// Public interface

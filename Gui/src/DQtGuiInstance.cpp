@@ -29,22 +29,57 @@
 
 #ifdef USE_QT
 
+#include <QTimer>
+#include <unistd.h>
+
 #include "DQtGuiInstance.h"
+#include "Qt/QtApp.h"
 
 using namespace smil;
 
-
-qtGui::~qtGui()
-{
-}
-
-void qtGui::_execLoop() 
+void QtGui::_execLoop() 
 { 
     if (qApp)
       qApp->exec();
 }
 
-void qtGui::_processEvents() 
+void QtGui::_processEvents() 
+{ 
+    if (qApp)
+      qApp->processEvents();
+}
+
+
+QtAppGui::QtAppGui()
+  : _argc(0), 
+    QApplication(_argc, NULL)
+{
+}
+
+QtAppGui::~QtAppGui()
+{
+}
+
+// Main event loop (when no qapp is running)
+void QtAppGui::_execLoop() 
+{ 
+    bool allWindowsClosed = false;
+    
+    while(!allWindowsClosed)
+    {
+	usleep(10000);
+	qApp->processEvents();
+	
+	allWindowsClosed = true;
+	foreach (QWidget *widget, QApplication::topLevelWidgets()) 
+	{
+	    if (widget->isVisible())
+		allWindowsClosed = false;
+	}
+    }
+}
+
+void QtAppGui::_processEvents() 
 { 
     if (qApp)
       qApp->processEvents();

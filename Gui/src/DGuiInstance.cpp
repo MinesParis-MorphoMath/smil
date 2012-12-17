@@ -36,23 +36,17 @@
 
 using namespace smil;
 
-Gui::Gui()
-{
-}
-
-Gui::~Gui()
-{
-}
 
 void Gui::initialize()
 {
     if (Gui::_instance == NULL)
     {
 #ifdef USE_QT
+	// Check if there is already a qapplication running
 	if (!qApp)
-	  Gui::_instance =  new qtGui;
+	  Gui::_instance =  new QtAppGui;
 	else
-	  Gui::_instance =  new Gui;
+	  Gui::_instance =  new QtGui;
 #else // USE_QT
         Gui::_instance =  new Gui;
 #endif // USE_QT
@@ -62,8 +56,7 @@ void Gui::initialize()
 
 void Gui::execLoop()
 {
-    Gui *inst = Gui::getInstance();
-    inst->_execLoop();
+    Gui::getInstance()->_execLoop();
 }
 
 void Gui::processEvents()

@@ -41,15 +41,23 @@ namespace smil
      */
      /*@{*/
 
-    class qtGui : public Gui, public QApplication
+    class QtGui : public Gui
     {
     public:
-	qtGui()
-	  : _argc(0),
-	  QApplication(_argc, NULL)
-	{
-	}
-	~qtGui();
+	QtGui() {}
+	~QtGui() {}
+	
+    protected:
+	virtual void _execLoop();
+	virtual void _processEvents();
+    private:
+    };
+
+    class QtAppGui : public Gui, public QApplication
+    {
+    public:
+	QtAppGui();
+	~QtAppGui();
 	
     protected:
 	virtual void _execLoop();
