@@ -143,7 +143,7 @@ namespace smil
 	return Core::getInstance()->threadNumber;
     }
 
-    size_t Core::_getAllocatedMemory()
+    size_t Core::getAllocatedMemory()
     {
 	vector<BaseImage*>::iterator it = registeredImages.begin();
 	size_t totAlloc = 0;
@@ -153,32 +153,17 @@ namespace smil
 	return totAlloc;
     }
 
-    size_t Core::getAllocatedMemory()
-    {
-	return Core::getInstance()->_getAllocatedMemory();
-    }
-
-    vector<BaseObject*> Core::_getRegisteredObjects() 
+    vector<BaseObject*> Core::getRegisteredObjects() 
     { 
 	return registeredObjects; 
     }
 
-    vector<BaseObject*> Core::getRegisteredObjects() 
-    { 
-	return Core::getInstance()->_getRegisteredObjects(); 
-    }
-
-    vector<BaseImage*> Core::_getImages()  
+    vector<BaseImage*> Core::getImages()  
     { 
 	return registeredImages; 
     }
 
-    vector<BaseImage*> Core::getImages()  
-    { 
-	return Core::getInstance()->_getImages();
-    }
-
-    void Core::_showAllImages()
+    void Core::showAllImages()
     {
 	vector<BaseImage*>::iterator it = registeredImages.begin();
 
@@ -186,12 +171,7 @@ namespace smil
 	    (*it++)->show();
     }
 
-    void Core::showAllImages()
-    {
-	Core::getInstance()->_showAllImages();
-    }
-
-    void Core::_hideAllImages()
+    void Core::hideAllImages()
     {
 	vector<BaseImage*>::iterator it = registeredImages.begin();
 
@@ -199,11 +179,6 @@ namespace smil
 	    (*it++)->hide();
     }
 
-    void Core::hideAllImages()
-    {
-	Core::getInstance()->_hideAllImages();
-    }
-    
     void Core::getCompilationInfos(ostream &outStream)
     {
 	outStream << "System: " << systemName << endl;

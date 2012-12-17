@@ -62,19 +62,18 @@ namespace smil
       
     public:
 	// Public interface
+	
 	bool keepAlive;
 	bool autoResizeImages;
 	
-	static void registerObject(BaseObject *obj);
-	static void unregisterObject(BaseObject *obj);
-	
-	static vector<BaseObject*> getRegisteredObjects();
-	static vector<BaseImage*> getImages();
-	static UINT getNumberOfThreads();
-	static size_t getAllocatedMemory();
-	static void showAllImages();
-	static void hideAllImages();
-	
+	UINT getNumberOfThreads();
+	size_t getAllocatedMemory();
+	void registerObject(BaseObject *obj);
+	void unregisterObject(BaseObject *obj);
+	void showAllImages();
+	void hideAllImages();
+	vector<BaseObject*> getRegisteredObjects();
+	vector<BaseImage*> getImages();
 	void getCompilationInfos(ostream &outStream = std::cout);
 	
 	Signal onBaseImageCreated;
@@ -91,12 +90,6 @@ namespace smil
 	vector<BaseImage*> registeredImages;
 	void deleteRegisteredObjects();
       
-	vector<BaseObject*> _getRegisteredObjects();
-	vector<BaseImage*> _getImages();
-	
-	size_t _getAllocatedMemory();
-	void _showAllImages();
-	void _hideAllImages();
     public:
       static void initialize();
       
