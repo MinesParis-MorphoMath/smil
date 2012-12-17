@@ -49,7 +49,10 @@ void Gui::initialize()
     if (Gui::_instance == NULL)
     {
 #ifdef USE_QT
-        Gui::_instance =  new qtGui;
+	if (!qApp)
+	  Gui::_instance =  new qtGui;
+	else
+	  Gui::_instance =  new Gui;
 #else // USE_QT
         Gui::_instance =  new Gui;
 #endif // USE_QT

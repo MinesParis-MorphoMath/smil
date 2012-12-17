@@ -45,7 +45,7 @@ using namespace smil;
 int main(int argc, char *argv[])
 {
 
-    Gui::initialize();
+//     Gui::initialize();
 //     QApplication app(argc, argv);
 
     Image_UINT8 im1(256,256);
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 //     im3->printSelf();
     im1.show();
 //     
-    Gui::execLoop();
+//     Gui::execLoop();
 
 }
 

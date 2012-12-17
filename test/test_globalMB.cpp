@@ -32,6 +32,7 @@
 #include "DGui.h"
 
 #include "DImageDraw.hpp"
+#include "DQtGuiInstance.h"
 
 #include <vector>
 
@@ -40,7 +41,10 @@ using namespace smil;
 int main(int argc, char *argv[])
 {
     
-    Gui::initialize();
+//     QApplication qapp(argc, argv);
+//     Gui *gui = Gui::getInstance();
+//     Gui::initialize();
+//     Gui *gui = new qtGui();
     
     Image_UINT8 im1(1000, 1023);
     Image_UINT8 im2(im1);
@@ -85,7 +89,7 @@ int main(int argc, char *argv[])
     
 
     
-    Gui::execLoop();
+//     Gui::execLoop();
     
 }
 

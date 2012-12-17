@@ -32,31 +32,22 @@
 #define _D_QT_GUI_INSTANCE_H
 
 #include "DGuiInstance.h"
-#include "DTimer.h"
-
-#include "Qt/QtApp.h"
 
 namespace smil
 {
   
     /**
-    * \defgroup Gui Gui
-    */
-    /*@{*/
+     * \defgroup Gui Gui
+     */
+     /*@{*/
 
-    class qtGui : public Gui
+    class qtGui : public Gui, public QApplication
     {
     public:
 	qtGui()
-	  : _qapp(NULL)
+	  : _argc(0),
+	  QApplication(_argc, NULL)
 	{
-	  if (!qApp)
-	  {
-	      int ac = 1;
-	      char **av = NULL;
-	      _qapp = new QApplication(ac, av);
-	      _qapp->processEvents();
-	  }
 	}
 	~qtGui();
 	
@@ -64,7 +55,7 @@ namespace smil
 	virtual void _execLoop();
 	virtual void _processEvents();
     private:
-	QApplication *_qapp;
+	int _argc;
     };
 
 /*@}*/

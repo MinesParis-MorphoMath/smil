@@ -33,49 +33,20 @@
 
 using namespace smil;
 
-// qtGui::qtGui()
-//   : _qapp(NULL)
-// {
-//       if (!qApp)
-//       {
-// 	  
-// // 	    cout << "Core qt created (guiInst)" << endl;
-// 	  int ac = 1;
-// 	  char **av = NULL;
-// 	  _qapp = new QApplication(ac, av);
-// // 	  _qapp->processEvents();
-//       }
-// //       else _qapp = qApp;
-//       
-// //       _timer = new timer();
-// //       _timer->app = _qapp;
-// //       _timer->start();
-// }
-// 
 
 qtGui::~qtGui()
 {
-    if (_qapp)
-    {
-      _qapp->exit();
-      delete _qapp;
-    }
-//     delete _timer;
 }
 
 void qtGui::_execLoop() 
 { 
-    if (_qapp)
-      _qapp->exec(); 
-    else if (qApp)
+    if (qApp)
       qApp->exec();
 }
 
 void qtGui::_processEvents() 
 { 
-    if (_qapp)
-      _qapp->processEvents(); 
-    else if (qApp)
+    if (qApp)
       qApp->processEvents();
 }
 
