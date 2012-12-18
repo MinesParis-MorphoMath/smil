@@ -34,7 +34,8 @@
 
 namespace smil
 {
-  
+
+    class RGB;
     template <class T> class Image;
     
    /**
@@ -99,6 +100,10 @@ namespace smil
 	}
 	virtual void drawOverlay(Image<T> &) {}
 	virtual void clearOverlay() {}
+	
+	//! Set the color table as a 8bits RGB map (keys between 0 and 255)
+	virtual void setLookup(const map<UINT8,RGB> &lut) {}
+	virtual void resetLookup() {}
 	
     protected:
 	Image<T> *getImage() { return image; }

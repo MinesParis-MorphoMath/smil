@@ -290,7 +290,7 @@ class linkManager():
 	EventSlot.__init__(self)
 	self.imWatch = imWatch
 	self.func = func
-	self.args = _linkManager._linkArgs(self)
+	self.args = linkManager._linkArgs(self)
 	for a in args:
 	  self.args.append(a)
 	self.verified = False

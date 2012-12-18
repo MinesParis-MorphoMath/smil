@@ -225,6 +225,35 @@ namespace smil
     }
 
     template <class T>
+    void QtImageViewer<T>::setLookup(const map<UINT8,RGB> &lut)
+    {
+	baseColorTable.clear();
+	map<UINT8,RGB>::const_iterator it;
+	for (int i=0;i<256;i++)
+	{
+	  it = lut.find(UINT8(i));
+	  if (it!=lut.end())
+	    baseColorTable.append(qRgb((*it).second.r, (*it).second.g, (*it).second.b));
+	  else
+	    baseColorTable.append(qRgb(0, 0, 0));
+	}
+	qImage->setColorTable(baseColorTable);
+	showNormal();
+	update();
+    }
+    
+    template <class T>
+    void QtImageViewer<T>::resetLookup()
+    {
+	baseColorTable.clear();
+	for (int i=0;i<256;i++)
+	  baseColorTable.append(qRgb(i, i, i));
+	qImage->setColorTable(baseColorTable);
+	showNormal();
+	update();
+    }
+	
+    template <class T>
     void QtImageViewer<T>::displayPixelValue(size_t x, size_t y, size_t z)
     {
 	T pixVal;

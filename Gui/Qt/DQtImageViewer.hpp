@@ -93,6 +93,11 @@ namespace smil
 	}
 	virtual void drawOverlay(Image<T> &im);
 	virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
+
+	//! Set the color table as a 8bits RGB map (keys between 0 and 255)
+	virtual void setLookup(const map<UINT8,RGB> &lut);
+	virtual void resetLookup();
+	
 	virtual void setCurSlice(int)
 	{
 	    this->update();

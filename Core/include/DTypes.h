@@ -33,6 +33,24 @@
 
 #include "private/DTypes.hpp"
 
+namespace smil
+{
+    struct RGB
+    {
+	UINT8 r;
+	UINT8 g;
+	UINT8 b;
+	
+	RGB()
+	: r(0), g(0), b(0)
+	{
+	}
+	RGB(UINT8 _r, UINT8 _g, UINT8 _b)
+	: r(_r), g(_g), b(_b)
+	{
+	}
+    };
 
+} // namespace smil
 
 #endif // _D_TYPES_H

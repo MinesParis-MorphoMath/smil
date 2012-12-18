@@ -131,8 +131,10 @@ namespace smil
     };
 
     typedef Point<int> IntPoint;
+    typedef Point<UINT8> UCPoint;
     typedef Point<double> DoublePoint;
 
+    
     inline double round(double r) 
     {
 	return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);

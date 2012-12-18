@@ -233,9 +233,8 @@ namespace smil
     }
 
     /**
-    * Area opening
+    * Image labelization with the size of each connected components
     * 
-    * Remove from image all connected components of size less than \a size pixels
     */
     template<class T1, class T2>
     size_t labelWithArea(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
@@ -260,6 +259,7 @@ namespace smil
 	for (typename map<T2,size_t>::iterator it = areas.begin();it!=areas.end();it++)
 	  lookup[(*it).first] = T2((*it).second);
 	
+	ASSERT((fill(imOut, T2(0))==RES_OK));
 	ASSERT((applyLookup<T2>(imLabel, lookup, imOut)==RES_OK));
 	
 	return RES_OK;

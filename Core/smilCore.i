@@ -86,6 +86,7 @@ class exception{};
 #endif // SMIL_WRAP_BIT
 
 %include "DTypes.hpp"
+%include "DTypes.h"
 
 
 //////////////////////////////////////////////////////////
@@ -157,6 +158,8 @@ namespace std
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
     
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, size_t, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, IntPoint, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, DoublePoint, Map)
 }
