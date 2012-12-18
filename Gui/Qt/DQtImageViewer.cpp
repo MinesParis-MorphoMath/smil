@@ -30,7 +30,7 @@
 
 
 #include "Qt/DQtImageViewer.hpp"
-#include "Qt/ImageViewerWidget.h"
+#include "Qt/PureQt/ImageViewerWidget.h"
 #include "Core/include/private/DImage.hpp"
 
 namespace smil

@@ -26,49 +26,57 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef MagnifyView_H
+#define MagnifyView_H
 
- 
-#ifndef _D_QT_GUI_INSTANCE_H
-#define _D_QT_GUI_INSTANCE_H
+#include <QLabel>
+#include <QMouseEvent>
+#include <QAction>
+#include <QGraphicsView>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsTextItem>
+#include <QGraphicsScene>
+#include <QGraphicsPathItem>
 
-#include "DGuiInstance.h"
+#include "DCommon.h"
 
-namespace smil
+class _DGUI MagnifyView : public QGraphicsView
 {
-  
-    /**
-     * \defgroup Gui Gui
-     */
-     /*@{*/
+    Q_OBJECT
+public:
+    explicit MagnifyView(QWidget *parent = 0);
 
-    class QtGui : public Gui
-    {
-    public:
-	QtGui() {}
-	~QtGui() {}
-	
-    protected:
-	virtual void _execLoop();
-	virtual void _processEvents();
-    private:
-    };
+    ~MagnifyView();
 
-    class QtAppGui : public Gui, public QApplication
-    {
-    public:
-	QtAppGui();
-	~QtAppGui();
-	
-    protected:
-	virtual void _execLoop();
-	virtual void _processEvents();
-    private:
-	int _argc;
-    };
+private:
+    QImage *fullImage;
 
-/*@}*/
+    int gridSize;
+    QGraphicsScene *scene;
+    QGraphicsPixmapItem *pixItem;
+    QGraphicsPathItem *pathItem;
+    QGraphicsPathItem *centerRectPathItem;
 
-} // namespace smil
+    QList<QGraphicsTextItem*> *textItemList;
 
+    double scaleFactor;
 
-#endif // _D_QT_GUI_INSTANCE_H
+    void mouseMoveEvent(QMouseEvent* pEvent);
+    
+public:
+    void setGridSize(int s);
+    inline int getGridSize() { return gridSize; }
+    inline double getScaleFactor() { return scaleFactor; }
+    inline QGraphicsPixmapItem *getPixItem() { return pixItem; }
+    inline QList<QGraphicsTextItem*> *getTextItemList() { return textItemList; }
+    inline QGraphicsPathItem *getCenterRectPathItem() { return centerRectPathItem; }
+    void displayAt(int x, int y);
+    void setImage(QImage *img);
+
+public slots:
+    void zoomIn();
+    void zoomOut();
+    void scaleImage(double factor);
+};
+
+#endif // MagnifyView_H

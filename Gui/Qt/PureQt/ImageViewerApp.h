@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -26,71 +26,55 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifdef USE_QT
+
+#ifndef IMAGEVIEWER_H
+#define IMAGEVIEWER_H
+
+#include <QMainWindow>
+#include <QScrollArea>
+#include <QGraphicsPixmapItem>
+#include <QGraphicsTextItem>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+
+#include "ImageViewerWidget.h"
+
+namespace Ui {
+    class ImageViewerApp;
+}
 
 
-#include "Qt/DQtImageViewer.hpp"
-#include "Qt/ImageViewerWidget.h"
-#include "Core/include/private/DImage.hpp"
 
-namespace smil
+class ImageViewerApp : public QMainWindow
 {
+    Q_OBJECT
 
-    template <>
-    void _DGUI QtImageViewer<UINT8>::drawImage()
-    {
-	int sliceNbr = slider->value();
-	Image<UINT8>::sliceType lines = this->image->getSlices()[sliceNbr];
+public:
+    explicit ImageViewerApp(QWidget *parent = 0);
+    ~ImageViewerApp();
 
-	size_t w = this->image->getWidth();
-	size_t h = this->image->getHeight();
+    void setName(const char *name);
+public slots:
+    void load(const QString fileName);
+    
+private:
+    Ui::ImageViewerApp *ui;
+    QLabel *pixelPosLabel;
+    QLabel *pixelValLabel;
+    QLabel *scaleLabel;
+    QScrollArea *scrollArea;
 
-	for (size_t j=0;j<h;j++, lines++)
-	    memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
-    }
+    ImageViewerWidget *graphicsView;
 
+    void connectActions();
 
+    QString name;
+protected:
 
-    #ifdef SMIL_WRAP_BIN
+private slots:
+    void viewMouseMoveEvent ( QMouseEvent * event );
+    void displayPixelData(int x, int y, int pixVal, bool insideImage);
+    void displayScaleFactor(double sf);
+};
 
-    // #include "DBitArray.h"
-
-    template <>
-    void _DGUI QtImageViewer<BIN>::drawImage()
-    {
-	Image<BIN>::lineType pixels = this->image->getPixels();
-	size_t w = this->image->getWidth();
-	size_t h = this->image->getHeight();
-
-	this->setImageSize(w, h);
-
-	const BIN *lIn;
-	UINT8 *lOut, *lEnd;
-	size_t bCount = (w-1)/BIN::SIZE + 1;
-
-	for (int j=0;j<h;j++)
-	{
-	    lIn = pixels + j*bCount;
-	    lOut = this->qImage->scanLine(j);
-	    lEnd = lOut + w;
-
-	    for (int b=0;b<bCount;b++,lIn++)
-	    {
-	      BIN_TYPE bVal = (*lIn).val;
-
-	      for (int i=0;i<BIN::SIZE;i++,lOut++)
-	      {
-		if (lOut==lEnd)
-		  break;
-		*lOut = bVal & (1 << i) ? 255 : 0;
-	      }
-	    }
-	}
-    }
-
-    #endif // SMIL_WRAP_BIN
-
-} // namespace smil
-
-
-#endif // USE_QT
+#endif // IMAGEVIEWER_H
