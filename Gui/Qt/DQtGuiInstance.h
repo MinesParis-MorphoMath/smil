@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,40 +27,48 @@
  */
 
 
+ 
+#ifndef _D_QT_GUI_INSTANCE_H
+#define _D_QT_GUI_INSTANCE_H
+
 #include "DGuiInstance.h"
 
-#ifdef USE_QT
-#include "Qt/DQtGuiInstance.h"
-#include "Qt/DQtImageViewer.hpp"
-#endif // USE_QT
-
-using namespace smil;
-
-
-void Gui::initialize()
+namespace smil
 {
-    if (Gui::_instance == NULL)
+  
+    /**
+     * \defgroup Gui Gui
+     */
+     /*@{*/
+
+    class QtGui : public Gui
     {
-#ifdef USE_QT
-	// Check if there is already a qapplication running
-	if (!qApp)
-	  Gui::_instance =  new QtAppGui;
-	else
-	  Gui::_instance =  new QtGui;
-#else // USE_QT
-        Gui::_instance =  new Gui;
-#endif // USE_QT
-    }
-//     return _instance;
-}
+    public:
+	QtGui() {}
+	~QtGui() {}
+	
+    protected:
+	virtual void _execLoop();
+	virtual void _processEvents();
+    private:
+    };
 
-void Gui::execLoop()
-{
-    Gui::getInstance()->_execLoop();
-}
+    class QtAppGui : public Gui, public QApplication
+    {
+    public:
+	QtAppGui();
+	~QtAppGui();
+	
+    protected:
+	virtual void _execLoop();
+	virtual void _processEvents();
+    private:
+	int _argc;
+    };
 
-void Gui::processEvents()
-{
-    Gui::getInstance()->_processEvents();
-}
+/*@}*/
 
+} // namespace smil
+
+
+#endif // _D_QT_GUI_INSTANCE_H

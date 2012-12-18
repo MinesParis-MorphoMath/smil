@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -26,93 +26,71 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifdef USE_QT
 
-#ifndef QT_APP_H
-#define QT_APP_H
 
-#include <QApplication>
-#include <QThread>
-#include <QTimer>
-#include <iostream>
+#include "Qt/DQtImageViewer.hpp"
+#include "Qt/ImageViewerWidget.h"
+#include "Core/include/private/DImage.hpp"
 
-using namespace std;
-
-class Thread : public QThread
+namespace smil
 {
-public:
-Thread(QApplication *a): qa(a) {}
-void run() 
-{ 
-      if (!qApp)
-      {
-	cout << "created" << endl;
-	  int ac = 1;
-	  char **av = NULL;
-	  _qapp = new QApplication(ac, av, true);
-      }
-//     while(true)
-//     {
-//       usleep(100000); 
-      qApp->processEvents();
-//     }
-}
-private:
-  QApplication *_qapp;
-    QApplication *qa;
-};
 
-class QtApp
-{
-public:
-  QtApp()
-    : _qapp(NULL)
-  {
-      if (!qApp)
-      {
-	cout << "QtApp: qt app created" << endl;
-	  int ac = 1;
-	  char **av = NULL;
-	  _qapp = new QApplication(ac, av);
-      }
-//       else _qapp = qApp;
-//       th = new Thread(_qapp);
-//       th->start();
-  }
-//   void start() { th->start(); }
-  void exec() { if (_qapp) _qapp->exec(); }
-  void processEvents() { if (_qapp) _qapp->processEvents(); }
-  QApplication *_qapp;
-//   Thread *th;
-  QTimer *timer;
-};
+    template <>
+    void _DGUI QtImageViewer<UINT8>::drawImage()
+    {
+	int sliceNbr = slider->value();
+	Image<UINT8>::sliceType lines = this->image->getSlices()[sliceNbr];
+
+	size_t w = this->image->getWidth();
+	size_t h = this->image->getHeight();
+
+	for (size_t j=0;j<h;j++, lines++)
+	    memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
+    }
 
 
-class appTimer : public QObject
-{
-  Q_OBJECT
-public:
-  appTimer()
-  {
-      timer = new QTimer(this);
-      QObject::connect( timer, SIGNAL(timeout()), this, SLOT(upd()) );
-  }
-  ~appTimer()
-  {
-      delete timer;
-  }
-  void start()
-  {
-      timer->start(1000);
-  }
-private slots:
-  void upd()
-  {
-      qApp->processEvents();
-      cout << "ok" << endl;
-  }
-protected:
-  QTimer *timer;
-  
-};
 
-#endif // QT_APP_H
+    #ifdef SMIL_WRAP_BIN
+
+    // #include "DBitArray.h"
+
+    template <>
+    void _DGUI QtImageViewer<BIN>::drawImage()
+    {
+	Image<BIN>::lineType pixels = this->image->getPixels();
+	size_t w = this->image->getWidth();
+	size_t h = this->image->getHeight();
+
+	this->setImageSize(w, h);
+
+	const BIN *lIn;
+	UINT8 *lOut, *lEnd;
+	size_t bCount = (w-1)/BIN::SIZE + 1;
+
+	for (int j=0;j<h;j++)
+	{
+	    lIn = pixels + j*bCount;
+	    lOut = this->qImage->scanLine(j);
+	    lEnd = lOut + w;
+
+	    for (int b=0;b<bCount;b++,lIn++)
+	    {
+	      BIN_TYPE bVal = (*lIn).val;
+
+	      for (int i=0;i<BIN::SIZE;i++,lOut++)
+	      {
+		if (lOut==lEnd)
+		  break;
+		*lOut = bVal & (1 << i) ? 255 : 0;
+	      }
+	    }
+	}
+    }
+
+    #endif // SMIL_WRAP_BIN
+
+} // namespace smil
+
+
+#endif // USE_QT
