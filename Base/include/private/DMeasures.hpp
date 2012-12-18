@@ -49,14 +49,14 @@ namespace smil
     * \param imIn Input image.
     */
     template <class T>
-    double vol(const Image<T> &imIn)
+    size_t vol(const Image<T> &imIn)
     {
 	if (!imIn.isAllocated())
 	    return RES_ERR_BAD_ALLOCATION;
 
 	int npix = imIn.getPixelCount();
 	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
-	double vol = 0;
+	size_t vol = 0;
 
 	for (int i=0;i<npix;i++)
 	    vol += pixels[i];

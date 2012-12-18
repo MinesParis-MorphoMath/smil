@@ -85,7 +85,7 @@ class Test_LabelMeasures : public TestCase
       // Areas
       
       double area1Thruth = 2500, area2Thruth = 4900;
-      map<UINT8, double> areas = measAreas(im);
+      map<UINT8, size_t> areas = measAreas(im);
       
       TEST_ASSERT(areas[1]==area1Thruth);
       TEST_ASSERT(areas[2]==area2Thruth);

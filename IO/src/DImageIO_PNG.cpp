@@ -52,37 +52,23 @@ namespace smil
 	/* open image file */
 	fp = fopen (filename, "rb");
 	
-	if (!fp)
-	{
-	    fprintf (stderr, "error: couldn't open \"%s\"!\n", filename);
-	    return RES_ERR_IO;
-	}
+	ASSERT((fp!=NULL), string("Cannot open file ") + filename + " for input", RES_ERR_IO);
 
+	FileCloser fileCloser(fp);
+	
 	/* read magic number */
-	if (fread (magic, 1, sizeof (magic), fp)!=sizeof(magic) ||
 	/* check for valid magic number */
-	  !png_check_sig (magic, sizeof (magic)))
-	{
-	    fprintf (stderr, "error: \"%s\" is not a valid PNG image!\n",
-		    filename);
-	    fclose (fp);
-	    return RES_ERR_IO;
-	}
+	ASSERT( (fread (magic, 1, sizeof (magic), fp)==sizeof(magic) ||	  png_check_sig (magic, sizeof (magic))), string(filename) + " is not a valid PNG image!", RES_ERR_IO );
 
 	/* create a png read struct */
 	png_ptr = png_create_read_struct
 		  (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	if (!png_ptr)
-	{
-	    fclose (fp);
-	    return RES_ERR_IO;
-	}
+	ASSERT(png_ptr, RES_ERR_IO);
 
 	/* create a png info struct */
 	info_ptr = png_create_info_struct (png_ptr);
 	if (!info_ptr)
 	{
-	    fclose (fp);
 	    png_destroy_read_struct (&png_ptr, NULL, NULL);
 	    return RES_ERR_IO;
 	}
@@ -119,7 +105,7 @@ namespace smil
 	/* convert 1-2-4 bits grayscale images to 8 bits
 	  grayscale. */
 	if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
-	    png_set_expand_gray_1_2_4_to_8 (png_ptr);
+	    png_set_gray_1_2_4_to_8 (png_ptr);
 
 	if (png_get_valid (png_ptr, info_ptr, PNG_INFO_tRNS))
 	    png_set_tRNS_to_alpha (png_ptr);
@@ -139,8 +125,7 @@ namespace smil
 		      &bit_depth, &color_type,
 		      NULL, NULL, NULL);
 
-	image.setSize(width, height);
-    //   image->allocate();
+	ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
 
 	/* setup a pointer array.  Each one points at the begening of a row. */
 	row_pointers = image.getLines();
@@ -153,7 +138,6 @@ namespace smil
 	png_destroy_read_struct (&png_ptr, &info_ptr, NULL);
 
 
-	fclose (fp);
 	
 	image.modified();
 	

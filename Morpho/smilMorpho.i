@@ -115,6 +115,8 @@ TEMPLATE_WRAP_FUNC_CROSS2(watershed);
 
 %include "DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_CROSS2(label);
+TEMPLATE_WRAP_FUNC_CROSS2(labelWithArea);
+TEMPLATE_WRAP_FUNC(areaOpen);
 
 %ignore smil::CompStrEltList::operator[];
 %extend smil::CompStrEltList

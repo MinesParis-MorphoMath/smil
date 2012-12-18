@@ -628,7 +628,7 @@ namespace smil
     * If imIn1(x)!=0, imOut(x)=imIn2(x)\n
     * imOut(x)=imIn3(x) otherwise.
     * 
-    * Can also be used with constant values and result of operator.
+    * Can also be used with constant values and result of operators.
     * 
     * \par Examples
     * \code

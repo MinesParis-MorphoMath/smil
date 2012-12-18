@@ -32,6 +32,7 @@
 
 #include "DImage.h"
 #include "DMorphImageOperations.hpp"
+#include "Base/include/private/DLabelMeasures.hpp"
 
 
 #include <set>
@@ -39,6 +40,11 @@
 
 namespace smil
 {
+   /**
+    * \ingroup Morpho
+    * \defgroup Labelling
+    * @{
+    */
   
     template <class T1, class T2>
     class labelFunct : public unaryMorphImageFunctionGeneric<T1, T2>
@@ -212,11 +218,81 @@ namespace smil
     template<class T1, class T2>
     size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
 	labelFunct<T1,T2> f;
-	if (f._exec(imIn, imOut, se)==RES_OK)
-	  return f.getLabelNbr();
-	else return 0;
+	
+	ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
+	
+	size_t lblNbr = f.getLabelNbr();
+	
+	ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+	
+	return lblNbr;
     }
+
+    /**
+    * Area opening
+    * 
+    * Remove from image all connected components of size less than \a size pixels
+    */
+    template<class T1, class T2>
+    size_t labelWithArea(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freezer(imOut);
+	
+	Image<T2> imLabel(imIn);
+	
+	ASSERT((label(imIn, imLabel, se)!=0));
+ 	map<T2, size_t> areas = measAreas(imLabel);
+	ASSERT(!areas.empty());
+	
+	// Verify that the max(areas) doesn't exceed the T2 type max
+	typename map<T2,size_t>::iterator max_it = std::max_element(areas.begin(), areas.end());
+	ASSERT(( (*max_it).second < double(ImDtTypes<T2>::max()) ), "Area max exceeds data type max!", RES_ERR);
+
+	// Convert areas map into a lookup
+	map<T2, T2> lookup;
+	for (typename map<T2,size_t>::iterator it = areas.begin();it!=areas.end();it++)
+	  lookup[(*it).first] = T2((*it).second);
+	
+	ASSERT((applyLookup<T2>(imLabel, lookup, imOut)==RES_OK));
+	
+	return RES_OK;
+    }
+    
+    /**
+    * Area opening
+    * 
+    * Remove from image all connected components of size less than \a size pixels
+    */
+    template<class T>
+    size_t areaOpen(const Image<T> &imIn, size_t size, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	if (&imIn==&imOut)
+	{
+	    Image<T> tmpIm(imIn, true); // clone
+	    return areaOpen(tmpIm, size, imOut);
+	}
+	
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	Image<size_t> imLabel(imIn);
+	
+	ASSERT((labelWithArea(imIn, imLabel, se)!=0));
+	ASSERT((threshold(imLabel, size, imLabel)==RES_OK));
+	ASSERT((copy(imLabel, imOut)==RES_OK));
+	ASSERT((inf(imIn, imOut, imOut)==RES_OK));
+	
+	return RES_OK;
+    }
+    
+/** \} */
 
 } // namespace smil
 

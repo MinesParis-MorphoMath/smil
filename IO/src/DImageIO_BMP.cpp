@@ -38,11 +38,7 @@ namespace smil
     {
 	FILE* fp = fopen( filename, "rb" );
 
-	if ( fp == NULL )
-	{
-	    cout << "Error: Cannot open file " << filename << " for input." << endl;
-	    return RES_ERR;
-	}
+	ASSERT((fp!=NULL), string("Cannot open file ") + filename + " for input", RES_ERR_IO);
 	
 	FileCloser fileCloser(fp);
 	
@@ -58,7 +54,7 @@ namespace smil
 	//read the bitmap info header
 	ASSERT(fread(&iHeader, sizeof(bmpInfoHeader), 1, fp));
 
-	ASSERT((iHeader.biBitCount==8), "Not an 8bit image", RES_ERR);
+	ASSERT((iHeader.biBitCount==8), "Not an 8bit image", RES_ERR_IO);
 	
 	ASSERT((iHeader.biCompression==BI_RGB), "Compressed BMP files are not (yet) supported", RES_ERR_IO);
 	
