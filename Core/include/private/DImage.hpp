@@ -31,8 +31,6 @@
 #define _DIMAGE_HPP
 
 #include "DBaseImage.h"
-#include "DSignal.h"
-#include "DErrors.h"
 
 namespace smil
 {
@@ -141,7 +139,7 @@ namespace smil
 	}
 
 	//! Get the image viewer (create one if needed)
-	ImageViewer<T> *getViewer();
+	virtual BaseImageViewer *getViewer();
 	
 	//! Check if the image is visible
 	//! \return \b true if the viewer is visible, \b false otherwise
@@ -324,19 +322,11 @@ namespace smil
       
 
     template <class T>
-    Image<T> *createImage(const T var)
+    Image<T> *createImage(const T)
     {
 	return new Image<T>();
     }
 
-
-    #define SLEEP(im) \
-    bool im##savedUpdateState = im.updatesEnabled; \
-    im.updatesEnabled = false;
-
-    #define WAKE_UP(im) \
-    im.updatesEnabled = im##savedUpdateState; \
-    im.modified();
 
 /** @}*/
 

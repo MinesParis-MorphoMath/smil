@@ -28,6 +28,7 @@
 
 
 #include "DImageIO_BMP.hpp"
+#include "private/DImageIO.hpp"
 #include "Core/include/private/DImage.hpp"
 
 namespace smil
