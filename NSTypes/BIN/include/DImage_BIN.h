@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,15 +27,43 @@
  */
 
 
-#ifndef _D_LINE_ARITH_H
-#define _D_LINE_ARITH_H
-
-#include "private/DLineArith.hpp"
-
-#if defined  __SSE__ && defined SMIL_USE_SSE_INT
-#include "DLineArith_SSE.h"
-#endif // defined  __SSE__ && defined SMIL_USE_SSE_INT
+#ifndef _IMAGE_BIN_H
+#define _IMAGE_BIN_H
 
 
+#include "DImage.hpp"
+#include "DImage.hxx"
+#include "DBinary.h"
 
-#endif // _D_LINE_ARITH_HPP
+namespace smil
+{
+  
+    template <>
+    struct ImDtTypes<bool>;
+
+
+    template <>
+    inline RES_T Image<bool>::restruct(void);
+
+    template <>
+    inline RES_T Image<bool>::allocate(void);
+
+    template <>
+    inline RES_T Image<bool>::deallocate(void);
+
+    template <>
+    inline bool Image<bool>::getPixel(UINT x, UINT y, UINT z);
+
+    template <>
+    inline bool Image<bool>::getPixel(UINT offset);
+
+    template <>
+    inline RES_T Image<bool>::setPixel(UINT x, UINT y, UINT z, bool value);
+
+    template <>
+    inline RES_T Image<bool>::setPixel(UINT x, UINT y, bool value);
+
+} // namespace smil
+
+
+#endif // _IMAGE_BIN_HXX
