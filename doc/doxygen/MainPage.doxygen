@@ -55,7 +55,12 @@
  * A Java \ref webstart_page "Web Start version" can be executed online.
  * \tableofcontents
  * 
- */
+ * \image html inplace_unsafe.png
+ * \image html inplace_half.png
+ * \image html inplace_full.png
+ * \image html vectorized.png
+ * \image html parallelized.png
+*/
 
 
 

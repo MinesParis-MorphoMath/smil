@@ -108,3 +108,44 @@ ALIASES += end_dynsection=" \
 
 ALIASES += begintheory{1}=\begin_dynsection{"Theoretical Details:",\1}
 ALIASES += endtheory=\end_dynsection
+
+
+########################################################
+# FUNCTIONS - SPECIAL
+########################################################
+
+ALIASES += inplace_safe=" \
+\htmlonly \
+<table border=0> \
+<tr><td><img src=\"inplace_full.png\" /> </td><td>Inplace safe</td></tr> \
+</table> \
+\endhtmlonly"
+
+ALIASES += inplace_safe{1}=" \
+\htmlonly \
+<table border=0> \
+<tr><td><img src=\"inplace_half.png\" /> </td><td>Inplace safe (with internal creation of \1 image(s))</td></tr> \
+</table> \
+\endhtmlonly"
+
+ALIASES += inplace_unsafe=" \
+\htmlonly \
+<table border=0> \
+<tr><td><img src=\"inplace_unsafe.png\" /> </td><td>Inplace unsafe</td></tr> \
+</table> \
+\endhtmlonly"
+
+ALIASES += vectorized=" \
+\htmlonly \
+<table border=0> \
+<tr><td><img src=\"vectorized.png\" /> </td><td>Vectorized</td></tr> \
+</table> \
+\endhtmlonly"
+
+ALIASES += parallelized=" \
+\htmlonly \
+<table border=0> \
+<tr><td><img src=\"parallelized.png\" /> </td><td>Parallelized</td></tr> \
+</table> \
+\endhtmlonly"
+

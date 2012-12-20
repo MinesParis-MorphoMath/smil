@@ -50,7 +50,11 @@ namespace smil
     * \param imOut Output image.
     * \param value The value to fill.
     *
+    * \vectorized
+    * \parallelized
+    * 
     * \see Image::operator<<
+    * 
     */
     template <class T>
     RES_T fill(Image<T> &imOut, const T &value)
@@ -227,7 +231,7 @@ namespace smil
     * 
     * Addition between two images (or between an image and a constant value)
     * \param imIn1 input image 1
-    * \param "imIn2 (or val)" input image 2 (or constant value)
+    * \param imIn2 (or val) input image 2 (or constant value)
     * \param imOut output image
     * \see Image::operator+
     */
