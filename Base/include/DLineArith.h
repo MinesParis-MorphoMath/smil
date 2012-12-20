@@ -36,13 +36,6 @@
 #include "DLineArith_SSE.h"
 #endif // defined  __SSE__ && defined SMIL_USE_SSE_INT
 
-#ifdef SMIL_WRAP_BIN
-#include "DLineArith_BIN.h"
-#endif // SMIL_WRAP_BIN
-
-#ifdef SMIL_WRAP_Bit
-// #include "DLineArith_Bit.h"
-#endif // SMIL_WRAP_BIN
 
 
 #endif // _D_LINE_ARITH_HPP

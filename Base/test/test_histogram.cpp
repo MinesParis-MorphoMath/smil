@@ -24,10 +24,9 @@
 #include <stdio.h>
 #include <time.h>
 
-//#include <boost/signal.hpp>
-//#include <boost/bind.hpp>
 
 #include "DImage.h"
+#include "DTest.h"
 #include "DImageHistogram.hpp"
 
 #include "DGui.h"

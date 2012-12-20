@@ -37,6 +37,7 @@
 /*@{*/
 
 #include "DGuiInstance.h"
+#include "private/DImageViewer.hpp"
 
 
 /*@}*/

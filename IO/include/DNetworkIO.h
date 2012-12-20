@@ -32,7 +32,7 @@
 
 #include "DTypes.h"
 #include "DCommon.h"
-#include <DErrors.h>
+#include "DErrors.h"
 
 namespace smil
 {

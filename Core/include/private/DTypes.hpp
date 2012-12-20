@@ -58,6 +58,12 @@ namespace smil
     #define CHAR_BIT 8
     #endif
 
+    enum DType
+    {
+	dtUINT8, dtUINT16, dtUINT32, dtUINT64, dtINT, dtUINT
+    };
+
+    
     template <class T>
     struct ImDtTypes
     {

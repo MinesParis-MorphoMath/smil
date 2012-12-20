@@ -33,21 +33,9 @@
 #include "private/DImage.hpp"
 #include "private/DImage.hxx"
 
-#ifdef SMIL_WRAP_BIN
-#include "DImage_BIN.h"
-#endif // SMIL_WRAP_BIN
-
-#ifdef SMIL_WRAP_Bit
-// #include "DImage_Bit.h"
-#endif // SMIL_WRAP_BIN
-
 
 namespace smil
 {
-    enum DType
-    {
-	dtUINT8, dtUINT16
-    };
 
 
     typedef Image<UINT8> Image_UINT8;

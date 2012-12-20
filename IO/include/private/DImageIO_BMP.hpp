@@ -33,7 +33,7 @@
 #include <fstream>
 #include <iostream> 
 
-#include "DCore.h"
+#include "Core/include/private/DImage.hpp"
 
 namespace smil
 {
