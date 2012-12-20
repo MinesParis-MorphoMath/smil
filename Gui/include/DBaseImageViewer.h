@@ -60,8 +60,6 @@ namespace smil
 	virtual bool isVisible() { return false; }
 	virtual void setName(const char *_name) { parentClass::setName(_name); }
 	virtual void update() {}
-	template <class T>
-	void drawOverlay(Image<T> &im) {};
 	
 	// Slots
 	MemberFunctionSlot<BaseImageViewer> updateSlot;

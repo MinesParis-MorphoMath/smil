@@ -139,7 +139,7 @@ namespace smil
 	}
 
 	//! Get the image viewer (create one if needed)
-	virtual BaseImageViewer *getViewer();
+	ImageViewer<T> *getViewer();
 	
 	//! Check if the image is visible
 	//! \return \b true if the viewer is visible, \b false otherwise
