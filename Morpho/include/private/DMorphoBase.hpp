@@ -40,13 +40,15 @@
 namespace smil
 {
     /**
-    * \addtogroup Morpho Mathematical Morphology
+    * \ingroup Morpho 
+    * \defgroup morpho_base Base operators
     * \{
     */
 
 
 
     /**
+    * \defgroup dilate dilate
     * Morphological grayscale dilation
     * 
     * \begintheory{dilation}
@@ -56,6 +58,14 @@ namespace smil
     * \endtheory
     * 
     */
+    
+    /**
+     * \ingroup dilate
+     * \param imIn Input image
+     * \param imOut Output image
+     * \param se (optional) The structuring element to use
+     * \param borderVal (optional) The border value
+     */
     template <class T>
     RES_T dilate(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderVal=ImDtTypes<T>::min())
     {
@@ -66,6 +76,13 @@ namespace smil
 	return iFunc(imIn, imOut, se);
     }
 
+    /**
+     * \ingroup dilate
+     * \param imIn Input image
+     * \param imOut Output image
+     * \param seSize The size of the default structuring element
+     * \param borderVal (optional) The border value
+     */
     template <class T>
     RES_T dilate(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImDtTypes<T>::min())
     {
@@ -73,14 +90,23 @@ namespace smil
     }
 
     /**
-    * Morphological grayscale erosion
-    * 
-    * \begintheory{erosion}
-    * Denoting an image by \f$ f(x) \f$  and the \ref StrElt "structuring function" by \f$ B(x) \f$, 
-    * the grayscale dilation of \f$ f \f$ by \f$ B \f$ is given by \cite serra_image_1982 :
-    * \f[ (f\ominus B)(x)=\inf_{y \in \Re^3 }[f(y)-B(x-y)] \f]
-    * \endtheory
-    */
+     * \defgroup erode erode
+     * Morphological grayscale erosion
+     * 
+     * \begintheory{erosion}
+     * Denoting an image by \f$ f(x) \f$  and the \ref StrElt "structuring function" by \f$ B(x) \f$, 
+     * the grayscale erosion of \f$ f \f$ by \f$ B \f$ is given by \cite serra_image_1982 :
+     * \f[ (f\ominus B)(x)=\inf_{y \in \Re^3 }[f(y)-B(x-y)] \f]
+     * \endtheory
+     */
+    
+    /**
+     * \ingroup erode
+     * \param imIn Input image
+     * \param imOut Output image
+     * \param seSize The size of the default structuring element
+     * \param borderVal (optional) The border value
+     */
     template <class T>
     RES_T erode(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderVal=ImDtTypes<T>::max())
     {
@@ -91,6 +117,13 @@ namespace smil
 	return iFunc(imIn, imOut, se);
     }
 
+    /**
+     * \ingroup erode
+     * \param imIn Input image
+     * \param imOut Output image
+     * \param seSize The size of the default structuring element
+     * \param borderVal (optional) The border value
+     */
     template <class T>
     RES_T erode(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImDtTypes<T>::max())
     {
