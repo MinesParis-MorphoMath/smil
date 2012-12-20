@@ -60,8 +60,8 @@ namespace smil
 	    deleteAlignedBuffers();
 	};
 
-	inline lineType *createAlignedBuffers ( UINT8 nbr, UINT32 len );
-	inline void deleteAlignedBuffers();
+	lineType *createAlignedBuffers ( UINT8 nbr, UINT32 len );
+	void deleteAlignedBuffers();
 	inline void copyLineToBuffer ( T *line, UINT32 bufIndex );
 	inline void copyBufferToLine ( UINT32 bufIndex, T *line );
 	
@@ -97,8 +97,8 @@ namespace smil
 	    return this->_exec ( ImOut, value );
 	}
 
-	inline RES_T _exec ( const imageType &imIn, imageType &imOut );
-	inline RES_T _exec ( imageType &imOut, const T &value );
+	RES_T _exec ( const imageType &imIn, imageType &imOut );
+	RES_T _exec ( imageType &imOut, const T &value );
 
     //   protected:
 	lineFunction_T lineFunction;
@@ -134,9 +134,9 @@ namespace smil
 	    return this->_exec ( imIn, value, ImOut );
 	}
 
-	inline RES_T _exec ( const imageType &imIn1, const imageType &imIn2, imageType &imOut );
-	inline RES_T _exec ( const imageType &imIn, imageType &imInOut );
-	inline RES_T _exec ( const imageType &imIn, const T &value, imageType &imOut );
+	RES_T _exec ( const imageType &imIn1, const imageType &imIn2, imageType &imOut );
+	RES_T _exec ( const imageType &imIn, imageType &imInOut );
+	RES_T _exec ( const imageType &imIn, const T &value, imageType &imOut );
 
     //   protected:
 	lineFunction_T lineFunction;
@@ -188,11 +188,11 @@ namespace smil
 	    return this->_exec ( imIn, value1, value2, ImOut );
 	}
 
-	inline RES_T _exec ( const imageType &imIn1, const imageType &imIn2, const imageType &imIn3, imageType &imOut );
+	RES_T _exec ( const imageType &imIn1, const imageType &imIn2, const imageType &imIn3, imageType &imOut );
     //     static RES_T _exec(imageType &imIn1, imageType &imInOut);
-	inline RES_T _exec ( const imageType &imIn1, const T &value, const imageType &imIn2, imageType &imOut );
-	inline RES_T _exec ( const imageType &imIn1, const imageType &imIn2, const T &value, imageType &imOut );
-	inline RES_T _exec ( const imageType &imIn, const T &value1, const T &value2, imageType &imOut );
+	RES_T _exec ( const imageType &imIn1, const T &value, const imageType &imIn2, imageType &imOut );
+	RES_T _exec ( const imageType &imIn1, const imageType &imIn2, const T &value, imageType &imOut );
+	RES_T _exec ( const imageType &imIn, const T &value1, const T &value2, imageType &imOut );
 
     //   protected:
 	lineFunction_T lineFunction;

@@ -39,7 +39,7 @@ namespace smil
     struct fillLine;
 
     template <class T>
-    inline typename Image<T>::lineType *imageFunctionBase<T>::createAlignedBuffers(UINT8 nbr, UINT32 len)
+    typename Image<T>::lineType *imageFunctionBase<T>::createAlignedBuffers(UINT8 nbr, UINT32 len)
     {
 	if (alignedBuffers)
 	{
@@ -63,7 +63,7 @@ namespace smil
 
 
     template <class T>
-    inline void imageFunctionBase<T>::deleteAlignedBuffers()
+    void imageFunctionBase<T>::deleteAlignedBuffers()
     {
 	if (!alignedBuffers) return;
 
@@ -89,7 +89,7 @@ namespace smil
 
 
     template <class T, class lineFunction_T>
-    inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imOut)
+    RES_T unaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imOut)
     {
 	if (!areAllocated(&imIn, &imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
@@ -113,7 +113,7 @@ namespace smil
 
 
     template <class T, class lineFunction_T>
-    inline RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, const T &value)
+    RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, const T &value)
     {
 	if (!areAllocated(&imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
@@ -142,7 +142,7 @@ namespace smil
 
     // Binary image function
     template <class T, class lineFunction_T>
-    inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const imageType &imIn2, imageType &imOut)
+    RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const imageType &imIn2, imageType &imOut)
     {
 	if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
@@ -173,7 +173,7 @@ namespace smil
 
     // Binary image function
     template <class T, class lineFunction_T>
-    inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imInOut)
+    RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imInOut)
     {
 	if (!areAllocated(&imIn, &imInOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
@@ -201,7 +201,7 @@ namespace smil
 
     // Binary image function
     template <class T, class lineFunction_T>
-    inline RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, const T &value, imageType &imOut)
+    RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, const T &value, imageType &imOut)
     {
 	if (!areAllocated(&imIn, &imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
@@ -234,7 +234,7 @@ namespace smil
 
     // Tertiary image function
     template <class T, class lineFunction_T>
-    inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const imageType &imIn2, const imageType &imIn3, imageType &imOut)
+    RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const imageType &imIn2, const imageType &imIn3, imageType &imOut)
     {
 	if (!areAllocated(&imIn1, &imIn2, &imIn3, &imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
@@ -260,7 +260,7 @@ namespace smil
 
     // Tertiary image function
     template <class T, class lineFunction_T>
-    inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const imageType &imIn2, const T &value, imageType &imOut)
+    RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const imageType &imIn2, const T &value, imageType &imOut)
     {
 	if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
@@ -268,7 +268,7 @@ namespace smil
 	int lineLen = imIn1.getWidth();
 	int lineCount = imIn1.getLineCount();
 
-	sliceType srcLines1 = imIn2.getLines();
+	sliceType srcLines1 = imIn1.getLines();
 	sliceType srcLines2 = imIn2.getLines();
 	sliceType destLines = imOut.getLines();
 
@@ -291,14 +291,39 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const T &value, const imageType &imIn2, imageType &imOut)
+    RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const T &value, const imageType &imIn2, imageType &imOut)
     {
-	return tertiaryImageFunction<T, lineFunction_T>::_exec(imIn1, imIn2, value, imOut);
+	if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
+	    return RES_ERR_BAD_ALLOCATION;
+
+	int lineLen = imIn1.getWidth();
+	int lineCount = imIn1.getLineCount();
+
+	sliceType srcLines1 = imIn1.getLines();
+	sliceType srcLines2 = imIn2.getLines();
+	sliceType destLines = imOut.getLines();
+
+	lineType constBuf = ImDtTypes<T>::createLine(lineLen);
+
+	// Fill the const buffer with the value
+	fillLine<T> f;
+	f(constBuf, lineLen, value);
+
+    #ifdef USE_OPEN_MP
+    #pragma omp parallel for
+    #endif // USE_OPEN_MP
+	for (int i=0;i<lineCount;i++)
+	    lineFunction(srcLines1[i], constBuf, srcLines2[i], lineLen, destLines[i]);
+
+	ImDtTypes<T>::deleteLine(constBuf);
+	imOut.modified();
+
+	return RES_OK;
     }
 
 
     template <class T, class lineFunction_T>
-    inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, const T &value1, const T &value2, imageType &imOut)
+    RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, const T &value1, const T &value2, imageType &imOut)
     {
 	if (!areAllocated(&imIn, &imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;

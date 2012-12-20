@@ -186,7 +186,7 @@ def Image(*args):
 	fillImg = True
 
     # Create/load from an existing image fileName
-    elif argNbr>0 and (os.path.exists(args[0]) or args[0][:7]=="http://"):
+    elif argNbr>0 and type(args[0])==str and (os.path.exists(args[0]) or args[0][:7]=="http://"):
 	if argNbr>1 and args[1] in dataTypes:
 	    imgType = imageTypes[dataTypes.index(args[1])]
 	    img = imgType()
