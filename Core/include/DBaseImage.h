@@ -37,9 +37,13 @@
 #include "DErrors.h"
 #include "DCoreInstance.h"
 
+#include "Gui/include/private/DImageViewer.hpp"
+
 namespace smil
 {
     class BaseImageViewer;
+    template <class T>
+    class ImageViewer;
 
     /**
     * Base Image class
@@ -158,7 +162,7 @@ namespace smil
 	virtual void showLabel(const char * = NULL) {}
 	virtual void hide() = 0;
 	
-	BaseImageViewer *getViewer() {}
+	virtual BaseImageViewer *getViewer() = 0;
 	
 	bool updatesEnabled;
 	Signal onModified;
