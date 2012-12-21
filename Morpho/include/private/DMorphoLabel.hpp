@@ -67,7 +67,7 @@ namespace smil
 	}
 	
 	// The generic way
-	virtual inline void processPixel(size_t &pointOffset, vector<size_t>::iterator dOffset, vector<size_t>::iterator dOffsetEnd)
+	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
 	{
 	    T1 pVal = this->pixelsIn[pointOffset];
 	    

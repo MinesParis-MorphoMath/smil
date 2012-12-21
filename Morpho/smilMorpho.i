@@ -101,6 +101,8 @@ TEMPLATE_WRAP_FUNC(maxima);
 %include "DMorphoFilter.hpp"
 TEMPLATE_WRAP_FUNC(asfClose);
 TEMPLATE_WRAP_FUNC(asfOpen);
+TEMPLATE_WRAP_FUNC(mean);
+TEMPLATE_WRAP_FUNC(median);
 
 %include "DMorphoArrow.hpp"
 TEMPLATE_WRAP_FUNC(arrow);

@@ -97,7 +97,7 @@ namespace smil
 	    return allocatedSize;
 	}
 	
-	inline UINT getDimension()
+	inline UINT getDimension() const
 	{
 	    if (depth > 1)
 	      return 3;

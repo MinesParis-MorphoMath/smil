@@ -72,7 +72,8 @@ namespace smil
     /**
     * Alternate Sequential Filter beginning by an opening
     * 
-    * \see asfClose
+    * Sequence of openings and closings with increasing size 1,2,...,max_size.
+    * The max_size is given by the size of the structuring element (for example 3 for hSE(3)).
     */ 
     template <class T>
     RES_T asfOpen(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
@@ -93,6 +94,87 @@ namespace smil
 	return RES_OK;
     }
 
+    
+    template <class T>
+    class meanFunct : public unaryMorphImageFunctionGeneric<T, T>
+    {
+    public:
+	typedef unaryMorphImageFunctionGeneric<T, T> parentClass;
+	
+	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+	{
+	    double meanVal = 0;
+	    double nPts = dOffsetEnd-dOffset;
+	    while(dOffset!=dOffsetEnd)
+	    {
+		meanVal += parentClass::pixelsIn[pointOffset + *dOffset];
+		dOffset++;
+	    }
+	    parentClass::pixelsOut[pointOffset] = T(meanVal / nPts);
+	}
+    };
+    
+    /**
+    * Mean filter
+    * 
+    * \not_vectorized
+    * \not_parallelized
+    */ 
+    template <class T>
+    RES_T mean(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	meanFunct<T> f;
+	
+	ASSERT((f._exec(imIn, imOut, se)==RES_OK));
+	
+	return RES_OK;
+	
+    }
+    
+    template <class T>
+    class medianFunct : public unaryMorphImageFunctionGeneric<T, T>
+    {
+    public:
+	typedef unaryMorphImageFunctionGeneric<T, T> parentClass;
+	
+	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+	{
+	    vector<T> vals;
+	    int nPts = max(int(dOffsetEnd-dOffset-1), 0);
+	    while(dOffset!=dOffsetEnd)
+	    {
+		vals.push_back(parentClass::pixelsIn[pointOffset + *dOffset]);
+		dOffset++;
+	    }
+	    sort(vals.begin(), vals.end());
+	    T outVal = vals[nPts/2];
+	    parentClass::pixelsOut[pointOffset] = vals[nPts/2];
+	}
+    };
+    
+    /**
+    * Median filter
+    * 
+    * \not_vectorized
+    * \not_parallelized
+    */ 
+    template <class T>
+    RES_T median(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	medianFunct<T> f;
+	
+	ASSERT((f._exec(imIn, imOut, se)==RES_OK));
+	
+	return RES_OK;
+	
+    }
+    
 /** @}*/
 
 } // namespace smil

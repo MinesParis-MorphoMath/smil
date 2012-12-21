@@ -75,7 +75,7 @@ namespace smil
     inline T *createAlignedBuffer(size_t size) {
       void* ptr;
 
-      MALLOC(ptr,(size+32)*sizeof(T),SIMD_VEC_SIZE);
+      MALLOC(ptr,(size+2*SIMD_VEC_SIZE)*sizeof(T),SIMD_VEC_SIZE);
     //   posix_memalign (&ptr, 16, (size+32)*sizeof(T));
 
       return ((T*) (ptr));

@@ -36,6 +36,7 @@
 #include "DCommon.h"
 #include "DTimer.h"
 #include "DSignal.h"
+#include "DErrors.h"
 
 #include "private/DInstance.hpp"
 
@@ -67,6 +68,8 @@ namespace smil
 	bool autoResizeImages;
 	
 	UINT getNumberOfThreads();
+	RES_T setNumberOfThreads(UINT nbr);
+	void resetNumberOfThreads();
 	size_t getAllocatedMemory();
 	void registerObject(BaseObject *obj);
 	void unregisterObject(BaseObject *obj);
@@ -81,6 +84,7 @@ namespace smil
       
     protected:
 	UINT threadNumber;
+	UINT maxThreadNumber;
 	
 	const char *systemName;
 	const char *targetArchitecture;
