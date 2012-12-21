@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
     
     Image_UINT8 im1(1000, 1023);
     Image_UINT8 im2(im1);
-    BaseImageViewer *viewer;
+    ImageViewer<UINT8> *viewer;
 
 
     im1.show("im1");

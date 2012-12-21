@@ -182,7 +182,7 @@ namespace smil
     }
 
     template <class T>
-    BaseImageViewer *Image<T>::getViewer()
+    ImageViewer<T> *Image<T>::getViewer()
     {
 	createViewer();
 	return viewer;

@@ -268,7 +268,7 @@ namespace smil
 	int lineLen = imIn1.getWidth();
 	int lineCount = imIn1.getLineCount();
 
-	sliceType srcLines1 = imIn2.getLines();
+	sliceType srcLines1 = imIn1.getLines();
 	sliceType srcLines2 = imIn2.getLines();
 	sliceType destLines = imOut.getLines();
 
@@ -293,7 +293,32 @@ namespace smil
     template <class T, class lineFunction_T>
     inline RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const T &value, const imageType &imIn2, imageType &imOut)
     {
-	return tertiaryImageFunction<T, lineFunction_T>::_exec(imIn1, imIn2, value, imOut);
+	if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
+	    return RES_ERR_BAD_ALLOCATION;
+
+	int lineLen = imIn1.getWidth();
+	int lineCount = imIn1.getLineCount();
+
+	sliceType srcLines1 = imIn1.getLines();
+	sliceType srcLines2 = imIn2.getLines();
+	sliceType destLines = imOut.getLines();
+
+	lineType constBuf = ImDtTypes<T>::createLine(lineLen);
+
+	// Fill the const buffer with the value
+	fillLine<T> f;
+	f(constBuf, lineLen, value);
+
+    #ifdef USE_OPEN_MP
+    #pragma omp parallel for
+    #endif // USE_OPEN_MP
+	for (int i=0;i<lineCount;i++)
+	    lineFunction(srcLines1[i], constBuf, srcLines2[i], lineLen, destLines[i]);
+
+	ImDtTypes<T>::deleteLine(constBuf);
+	imOut.modified();
+
+	return RES_OK;
     }
 
 
