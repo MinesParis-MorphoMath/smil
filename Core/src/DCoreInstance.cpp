@@ -44,6 +44,7 @@ namespace smil
       : keepAlive(false),
 	autoResizeImages(true),
 	threadNumber(1),
+	maxThreadNumber(1),
 	systemName(SYSTEM_NAME),
 	targetArchitecture(TARGET_ARCHITECTURE),
     #ifdef USE_OPEN_MP
@@ -58,6 +59,7 @@ namespace smil
 	{ 
 	    nthreads = omp_get_num_threads();
 	}
+	maxThreadNumber = nthreads;
 	threadNumber = nthreads;
     #endif // USE_OPEN_MP
       
@@ -140,8 +142,21 @@ namespace smil
 
     UINT Core::getNumberOfThreads()
     {
-	return Core::getInstance()->threadNumber;
+	return threadNumber;
     }
+
+    RES_T Core::setNumberOfThreads(UINT nbr)
+    {
+	ASSERT((nbr<=maxThreadNumber), "Nbr of thread exceeds system capacity !", RES_ERR);
+	threadNumber = nbr;
+	return RES_OK;
+    }
+
+    void Core::resetNumberOfThreads()
+    {
+	threadNumber = maxThreadNumber;
+    }
+
 
     size_t Core::getAllocatedMemory()
     {

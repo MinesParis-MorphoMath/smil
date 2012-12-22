@@ -163,6 +163,7 @@ IF(USE_OPTIMIZATION)
 #    ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=1")
 #     ADD_DEFINITIONS("-ftree-vectorize -g -ffast-math  -march=core2 -mtune=core2  -msse2 -fdump-tree-optimized")
 	
+	ADD_DEFINITIONS("-ffast-math -fassociative-math")
 	OPTION(VERBOSE_OPTIMIZATION "Show verbose optimizations" OFF)
 	
 	IF(CMAKE_COMPILER_IS_GNUCC AND NOT CMAKE_COMPILER_IS_CLANGXX)

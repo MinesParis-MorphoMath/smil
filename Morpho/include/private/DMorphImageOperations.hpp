@@ -77,13 +77,13 @@ namespace smil
 	    pixelsOut = imOut.getPixels();
 	    
 	    sePoints = se.points;
-	    IntPoint p0 = sePoints[0];
-	    if (p0.x==0 && p0.y==0 && p0.z==0)
-	    {
-		copy(imIn, imOut);
-		sePoints.erase(sePoints.begin());
-	    }
-	    else fill(imOut, initialValue);
+// 	    IntPoint p0 = sePoints[0];
+// 	    if (p0.x==0 && p0.y==0 && p0.z==0)
+// 	    {
+// 		copy(imIn, imOut);
+// 		sePoints.erase(sePoints.begin());
+// 	    }
+// 	    else fill(imOut, initialValue);
 	    
 	    sePointNbr = sePoints.size();
 	    relativeOffsets.clear();
@@ -168,8 +168,8 @@ namespace smil
 	    IntPoint p;
 	    size_t offset = pixIn - pixelsIn;
 	    vector<IntPoint> ptList;
-	    vector<size_t> relOffsetList;
-	    vector<size_t> offsetList;
+	    vector<int> relOffsetList;
+	    vector<int> offsetList;
 	    
 	    // Remove points wich are outside the image
 	    for (UINT i=0;i<sePointNbr;i++)
@@ -228,7 +228,7 @@ namespace smil
 		offset++;
 	    }
 	}
-	virtual inline void processPixel(size_t &pointOffset, vector<size_t>::iterator dOffset, vector<size_t>::iterator dOffsetEnd)
+	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
 	{
 	    // Example: dilation function
 	    while(dOffset!=dOffsetEnd)

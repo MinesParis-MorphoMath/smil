@@ -37,9 +37,13 @@
 #include "DErrors.h"
 #include "DCoreInstance.h"
 
+#include "Gui/include/private/DImageViewer.hpp"
+
 namespace smil
 {
     class BaseImageViewer;
+    template <class T>
+    class ImageViewer;
 
     /**
     * Base Image class
@@ -93,7 +97,7 @@ namespace smil
 	    return allocatedSize;
 	}
 	
-	inline UINT getDimension()
+	inline UINT getDimension() const
 	{
 	    if (depth > 1)
 	      return 3;
