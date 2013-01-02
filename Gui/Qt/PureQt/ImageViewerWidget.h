@@ -50,9 +50,11 @@ public:
     QImageGraphicsScene(QObject *parent=0);
     void mouseMoveEvent (QGraphicsSceneMouseEvent *event);
     void mousePressEvent (QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent (QGraphicsSceneMouseEvent *event);
 signals:
     void onMouseMove(QGraphicsSceneMouseEvent* event);
-    void onMousePressed(QGraphicsSceneMouseEvent* event);
+    void onMousePress(QGraphicsSceneMouseEvent* event);
+    void onMouseRelease(QGraphicsSceneMouseEvent* event);
 };
 
 
@@ -90,6 +92,7 @@ public:
     bool drawLabelized;
     
     virtual void displayHistogram(bool = false) {}
+    virtual void displayProfile(bool = false) {}
     
 protected:
     QGridLayout *layout;
@@ -141,6 +144,10 @@ protected:
     void dragMoveEvent(QDragMoveEvent *de);
     void dragEnterEvent(QDragEnterEvent *event);
     
+    enum cursorModes { cursorMove, cursorDrawLine, cursorDrawBox};
+    int cursorMode;
+    QGraphicsLineItem *line;
+    
 public slots:
     void load(const QString fileName);
     void zoomIn();
@@ -152,9 +159,12 @@ public slots:
 	setCurSlice(newVal);
     }
     void updateIcon();
-
+    void showContextMenu(const QPoint& pos);
+    
 private slots:
+    void sceneMousePressEvent ( QGraphicsSceneMouseEvent * event );
     void sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event );
+    void sceneMouseReleaseEvent ( QGraphicsSceneMouseEvent * event );
 
 signals:
     void onRescaled(double scaleFactor);

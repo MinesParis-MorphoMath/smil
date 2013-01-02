@@ -47,6 +47,7 @@ namespace smil
     * @{
     */
     
+
     /**
     * Draws a line between two points p1(p1x,p1y) and p2(p2x,p2y).
     * This function is based on the Bresenham's line algorithm.
@@ -64,158 +65,15 @@ namespace smil
 	  return RES_ERR;
 	
 	typename Image<T>::sliceType lines = im.getLines();
+	vector<IntPoint> bPoints = bresenhamPoints(p1x, p1y, p2x, p2y);
 	
-	int F, x, y;
-
-	if (p1x > p2x)  // Swap points if p1 is on the right of p2
-	{
-	    swap(p1x, p2x);
-	    swap(p1y, p2y);
-	}
-
-	// Handle trivial cases separately for algorithm speed up.
-	// Trivial case 1: m = +/-INF (Vertical line)
-	if (p1x == p2x)
-	{
-	    if (p1y > p2y)  // Swap y-coordinates if p1 is above p2
-	    {
-		swap(p1y, p2y);
-	    }
-
-	    x = p1x;
-	    y = p1y;
-	    while (y <= p2y)
-	    {
-		lines[y][x]= value;
-		y++;
-	    }
-	    im.modified();
-	    return RES_OK;
-	}
-	// Trivial case 2: m = 0 (Horizontal line)
-	else if (p1y == p2y)
-	{
-	    x = p1x;
-	    y = p1y;
-
-	    while (x <= p2x)
-	    {
-		lines[y][x]= value;
-		x++;
-	    }
-	    im.modified();
-	    return RES_OK;
-	}
-
-
-	int dy            = p2y - p1y;  // y-increment from p1 to p2
-	int dx            = p2x - p1x;  // x-increment from p1 to p2
-	int dy2           = (dy << 1);  // dy << 1 == 2*dy
-	int dx2           = (dx << 1);
-	int dy2_minus_dx2 = dy2 - dx2;  // precompute constant for speed up
-	int dy2_plus_dx2  = dy2 + dx2;
-
-
-	if (dy >= 0)    // m >= 0
-	{
-	    // Case 1: 0 <= m <= 1 (Original case)
-	    if (dy <= dx)   
-	    {
-		F = dy2 - dx;    // initial F
-
-		x = p1x;
-		y = p1y;
-		while (x <= p2x)
-		{
-		    lines[y][x]= value;
-		    if (F <= 0)
-		    {
-			F += dy2;
-		    }
-		    else
-		    {
-			y++;
-			F += dy2_minus_dx2;
-		    }
-		    x++;
-		}
-	    }
-	    // Case 2: 1 < m < INF (Mirror about y=x line
-	    // replace all dy by dx and dx by dy)
-	    else
-	    {
-		F = dx2 - dy;    // initial F
-
-		y = p1y;
-		x = p1x;
-		while (y <= p2y)
-		{
-		    lines[y][x]= value;
-		    if (F <= 0)
-		    {
-			F += dx2;
-		    }
-		    else
-		    {
-			x++;
-			F -= dy2_minus_dx2;
-		    }
-		    y++;
-		}
-	    }
-	}
-	else    // m < 0
-	{
-	    // Case 3: -1 <= m < 0 (Mirror about x-axis, replace all dy by -dy)
-	    if (dx >= -dy)
-	    {
-		F = -dy2 - dx;    // initial F
-
-		x = p1x;
-		y = p1y;
-		while (x <= p2x)
-		{
-		    lines[y][x]= value;
-		    if (F <= 0)
-		    {
-			F -= dy2;
-		    }
-		    else
-		    {
-			y--;
-			F -= dy2_plus_dx2;
-		    }
-		    x++;
-		}
-	    }
-	    // Case 4: -INF < m < -1 (Mirror about x-axis and mirror 
-	    // about y=x line, replace all dx by -dy and dy by dx)
-	    else    
-	    {
-		F = dx2 + dy;    // initial F
-
-		y = p1y;
-		x = p1x;
-		while (y >= p2y)
-		{
-		    lines[y][x]= value;
-		    if (F <= 0)
-		    {
-			F += dx2;
-		    }
-		    else
-		    {
-			x++;
-			F += dy2_plus_dx2;
-		    }
-		    y--;
-		}
-	    }
-	}
+	for(vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++)
+	  lines[(*it).x][(*it).y] = value;
+	
 	im.modified();
 	return RES_OK;
     }
-
+    
     template <class T>
     RES_T drawLine(Image<T> &imOut, vector<UINT> coords, T value=numeric_limits<T>::max())
     {

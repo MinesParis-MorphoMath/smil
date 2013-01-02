@@ -35,29 +35,27 @@
 #include <QList>
 #include <QUrl>
 
-#ifdef USE_QWT
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
-#include <qwt_series_data.h>
-#endif // USE_QWT
-
+#include "PureQt/PlotWidget.h"
 
 #include "Core/include/private/DImage.hpp"
 #include "Base/include/private/DImageHistogram.hpp"
+#include "Base/include/DImageDraw.h"
 
 namespace smil
 {
     template <class T>
     QtImageViewer<T>::QtImageViewer()
       : BASE_QT_VIEWER(NULL),
-	histoPlot(NULL)
+	histoPlot(NULL),
+	profilePlot(NULL)
     {
     }
 
     template <class T>
     QtImageViewer<T>::QtImageViewer(Image<T> *im)
       : ImageViewer<T>(im), BASE_QT_VIEWER(NULL),
-	histoPlot(NULL)
+	histoPlot(NULL),
+	profilePlot(NULL)
     {
 	setImage(im);
     }
@@ -70,6 +68,8 @@ namespace smil
     #ifdef USE_QWT
 	if (histoPlot)
 	  delete histoPlot;
+	if (profilePlot)
+	  delete profilePlot;
     #endif // USE_QWT
     }
 
@@ -147,6 +147,8 @@ namespace smil
     #ifdef USE_QWT    
 	if (histoPlot && histoPlot->isVisible())
 	  displayHistogram(true);
+	if (profilePlot && profilePlot->isVisible())
+	  displayProfile(true);
     #endif // USEçQWT    
     //     qApp->processEvents();
     }
@@ -338,26 +340,25 @@ namespace smil
     template <class T>
     void QtImageViewer<T>::displayHistogram(bool update)
     {
-    if (!update && histoPlot && histoPlot->isVisible())
+	if (!update && histoPlot && histoPlot->isVisible())
 	{
-	  histoPlot->raise();
-	  histoPlot->activateWindow();
-	  return;
+	    histoPlot->raise();
+	    histoPlot->activateWindow();
+	    return;
 	}
-	
+	    
 	if (!histoPlot)
 	{
-	    histoPlot = new QwtPlot();
+	    histoPlot = new PlotWidget();
 	    histoPlot->setWindowTitle(QString(this->image->getName()) + " histogram");
-	    histoPlot->setFixedSize(480,280);
-	    histoPlot->setCanvasBackground(Qt::white);
 	    histoPlot->setAxisScale(QwtPlot::xBottom, ImDtTypes<T>::min(), ImDtTypes<T>::max());
+	    
+	    QwtPlotCurve *defaultCurve = histoPlot->getCurrentCurve();
+	    defaultCurve->setStyle( QwtPlotCurve::Steps );
+	    defaultCurve->setBrush( Qt::blue );
 	}
-	histoPlot->detachItems();
 	
-	QwtPlotCurve *curve = new QwtPlotCurve("Image Histogram");
-	curve->setStyle( QwtPlotCurve::Steps );
-	curve->setBrush( Qt::blue );
+	QwtPlotCurve *curve = histoPlot->getCurrentCurve();
       
 	QwtPointSeriesData *myData = new QwtPointSeriesData();
 	map<T, UINT> hist = histogram(*(this->image));
@@ -369,11 +370,57 @@ namespace smil
 	myData->setSamples(samples);
 	curve->setData(myData);
       
-	curve->attach(histoPlot);
-	
 	histoPlot->replot();
 	histoPlot->show();
     }
+    
+    template <class T>
+    void QtImageViewer<T>::displayProfile(bool update)
+    {
+	if (!update && profilePlot && profilePlot->isVisible())
+	{
+	    profilePlot->raise();
+	    profilePlot->activateWindow();
+	    return;
+	}
+	    
+	if (!profilePlot)
+	{
+	    profilePlot = new PlotWidget();
+	    profilePlot->setWindowTitle(QString(this->image->getName()) + " profile");
+	}
+// 	profilePlot->detachItems();
+	
+	QwtPlotCurve *curve = profilePlot->getCurrentCurve();
+      
+	QwtPointSeriesData *myData = new QwtPointSeriesData();
+
+	QLineF lnF(this->line->line());
+	double lineLen = lnF.length();
+	
+	QVector<QPointF> samples;
+	vector<IntPoint> bPoints = bresenhamPoints(lnF.x1(), lnF.y1(), lnF.x2(), lnF.y2());
+
+	T value;
+	typename Image<T>::sliceType lines = this->image->getSlices()[slider->value()];
+	int i = 0;
+	
+	for(vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++,i++)
+	{
+	    value = lines[(*it).y][(*it).x];
+	    samples.push_back(QPointF(i, value));
+// 	    samples
+	}
+// 	  samples.push_back(QPointF((*it).first, (*it).second));
+
+	myData->setSamples(samples);
+	curve->setData(myData);
+      
+// 	curve->attach(profilePlot);
+	
+	profilePlot->replot();
+	profilePlot->show();
+    }    
 #endif // USE_QWT
 
 } // namespace smil

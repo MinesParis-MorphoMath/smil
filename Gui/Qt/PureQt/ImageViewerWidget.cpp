@@ -31,6 +31,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QTimer>
 #include <QApplication>
+#include <QMenu>
 
 #ifdef USE_QWT
 #include <qwt_plot.h>
@@ -61,8 +62,14 @@ void QImageGraphicsScene::mouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 
 void QImageGraphicsScene::mousePressEvent ( QGraphicsSceneMouseEvent * event )
 {
-    emit(onMousePressed(event));
+    emit(onMousePress(event));
     QGraphicsScene::mousePressEvent(event);
+}
+
+void QImageGraphicsScene::mouseReleaseEvent ( QGraphicsSceneMouseEvent * event )
+{
+    emit(onMouseRelease(event));
+    QGraphicsScene::mouseReleaseEvent(event);
 }
 
 
@@ -74,7 +81,8 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     // Allows to zoom under the mouse pixel
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     setAcceptDrops(true);
-
+    setContextMenuPolicy(Qt::CustomContextMenu);
+	
     initColorTables();
     scaleFactor = 1.0;
     qImage = new QImage();
@@ -131,6 +139,9 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     slider->hide();
     layout->addWidget(slider);
     
+    cursorMode = cursorMove;    
+    line = new QGraphicsLineItem();
+    line->setPen(QPen(Qt::blue, 1));
 }
 
 ImageViewerWidget::~ImageViewerWidget()
@@ -206,6 +217,8 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
     imScene = new QImageGraphicsScene();
     setScene(imScene);
     connect(imScene, SIGNAL(onMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(sceneMouseMoveEvent(QGraphicsSceneMouseEvent*)));
+    connect(imScene, SIGNAL(onMousePress(QGraphicsSceneMouseEvent*)), this, SLOT(sceneMousePressEvent(QGraphicsSceneMouseEvent*)));
+    connect(imScene, SIGNAL(onMouseRelease(QGraphicsSceneMouseEvent*)), this, SLOT(sceneMouseReleaseEvent(QGraphicsSceneMouseEvent*)));
     
     imagePixmaps.clear();
     overlayPixmaps.clear();
@@ -286,6 +299,8 @@ void ImageViewerWidget::connectActions()
 
     connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
     connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
+    
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
 
 //    connect(ui->zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
 //    connect(ui->zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
@@ -449,10 +464,15 @@ void ImageViewerWidget::mouseMoveEvent ( QMouseEvent * event )
 
 void ImageViewerWidget::mousePressEvent ( QMouseEvent * event )
 {
+    if (event->button() != Qt::LeftButton)
+         return;
+     
     Qt::MouseButton btn = event->button();
     
-    if (btn==Qt::LeftButton)
-      setDragMode(QGraphicsView::ScrollHandDrag);
+    if (cursorMode==cursorMove)
+    {
+	setDragMode(QGraphicsView::ScrollHandDrag);
+    }
     
     QGraphicsView::mousePressEvent(event);
 }
@@ -461,10 +481,13 @@ void ImageViewerWidget::mouseReleaseEvent ( QMouseEvent * event )
 {
     Qt::MouseButton btn = event->button();
     
-    if (btn==Qt::LeftButton)
+    if (line != 0 && cursorMode == cursorDrawLine) 
+    {
+    }
+    else if (btn==Qt::LeftButton)
       setDragMode(QGraphicsView::NoDrag);
     
-    QGraphicsView::mousePressEvent(event);
+    QGraphicsView::mouseReleaseEvent(event);
 }
 
 void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
@@ -478,28 +501,68 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
     
     if (x>=0 && x<w && y>=0 && y<h)
     {
-        if (valueLblActivated)
+	if (valueLblActivated)
 	{
-            valueLabel->show();
+	    valueLabel->show();
 	    displayPixelValue(x, y, z);
 	}
-        if (magnActivated)
+	if (magnActivated)
 	{
 	    displayMagnifyView(x, y, z);
-            magnView->show();
+	    magnView->show();
 	}
 	lastPixX = x;
 	lastPixY = y;
 	lastPixZ = z;
+	
+	if (cursorMode == cursorDrawLine)
+	{
+	    setCursor(Qt::CrossCursor);
+	    if (event->buttons()==Qt::LeftButton)
+	    {
+		QLineF newLine(line->line().p1(), event->scenePos());
+		line->setLine(newLine);
+	    }
+	} 
+	
     }
     else
     {
-        valueLabel->hide();
-        magnView->hide();
+	setCursor(Qt::ArrowCursor);
+	valueLabel->hide();
+	magnView->hide();
 	lastPixX = -1;
 	lastPixY = -1;
     }
     
+}
+
+void ImageViewerWidget::sceneMousePressEvent ( QGraphicsSceneMouseEvent * event )
+{
+    size_t x = int(event->scenePos().rx());
+    size_t y = int(event->scenePos().ry());
+    size_t z = slider->value();
+
+    size_t w = qImage->width();
+    size_t h = qImage->height();
+    
+    if (x>=0 && x<w && y>=0 && y<h)
+    {
+	if(cursorMode==cursorDrawLine) 
+	{
+	    if (imScene->items().contains(line))
+	      imScene->removeItem(line);
+	    QLineF newLine(event->scenePos(), event->scenePos());
+	    line->setLine(newLine);
+	    imScene->addItem(line);
+	}
+    }
+}
+
+void ImageViewerWidget::sceneMouseReleaseEvent ( QGraphicsSceneMouseEvent * event )
+{
+    if (cursorMode==cursorDrawLine && imScene->items().contains(line))
+      displayProfile(true);
 }
 
 void ImageViewerWidget::wheelEvent ( QWheelEvent * event )
@@ -575,6 +638,43 @@ void ImageViewerWidget::dragEnterEvent(QDragEnterEvent *event)
       event->acceptProposedAction();
 }
 
+
+void ImageViewerWidget::showContextMenu(const QPoint& pos)
+{
+    QPoint globalPos = this->mapToGlobal(pos);
+
+    QMenu selectMenu("Tools");
+    selectMenu.addAction("Move");
+    selectMenu.addAction("Line");
+    selectMenu.addAction("Box");
+
+    QMenu contMenu;
+    contMenu.addMenu(&selectMenu);
+    
+    QAction* selectedItem = contMenu.exec(globalPos);
+    if (selectedItem)
+    {
+	if (selectedItem->text()=="Line")
+	{
+	  setCursor(Qt::CrossCursor);
+	  cursorMode = cursorDrawLine;
+	}
+	else if (selectedItem->text()=="Box")
+	{
+	  setCursor(Qt::CrossCursor);
+	  cursorMode = cursorDrawBox;
+	}
+	else
+	{
+	  setCursor(Qt::ArrowCursor);
+	  cursorMode = cursorMove;
+	}
+    }
+    else
+    {
+        // nothing was chosen
+    }
+}
 
 
 

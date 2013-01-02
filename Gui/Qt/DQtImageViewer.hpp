@@ -40,7 +40,7 @@
 #include "PureQt/ImageViewerApp.h"
 
 
-class QwtPlot;
+class PlotWidget;
     
 namespace smil
 {
@@ -107,6 +107,7 @@ namespace smil
 	
 #ifdef USE_QWT
     virtual void displayHistogram(bool update=false);
+    virtual void displayProfile(bool update=false);
 #endif // USE_QWT
 
     protected:
@@ -117,7 +118,8 @@ namespace smil
     //     ImageViewer *qtViewer;
 	virtual void dropEvent(QDropEvent *de);
 	
-	QwtPlot *histoPlot;
+	PlotWidget *histoPlot;
+	PlotWidget *profilePlot;
     };
 
     /*@{*/

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,56 +27,37 @@
  */
 
 
-#include "DCore.h"
-#include "DBase.h"
-#include "DMorpho.h"
-#include "DGui.h"
-#include "DIO.h"
-
-// #include "Addons/MorphM/include/private/DMorphMImage.hpp"
+#ifndef PlotWidget_H
+#define PlotWidget_H
 
 
-// #include "DGraph.hpp"
+#ifdef USE_QWT
+#include <qwt_plot.h>
+#include <qwt_plot_curve.h>
+#include <qwt_series_data.h>
+#endif // USE_QWT
 
-#include <vector>
-
-using namespace smil;
-
-int main(int argc, char *argv[])
+class PlotWidget : public QwtPlot
 {
-
-    Image_UINT8 im1(256,256);
-//     Image_UINT8 im2;
-
-//     im2 << ( (im1>UINT8(100)) & im1 );
-//     return 1;
-//     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
-//       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
-
-//    read("http://cmm.ensmp.fr/~faessel/smil/images/lena.png", im1);
-//    read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/antibiog.bmp", im1);
-   read("/home/mat/src/morphee/trunk/utilities/Images/Gray/lena256x256.png", im1);
-//    read("/home/faessel/src/Smil/build/lib/tmp.bmp", im1);
-//     read("lena.png", im1);
-
-//     morphee::Image<UINT8> *mIm = new morphee::Image<UINT8>(512,512);
-//     mIm->allocateImage();
-//     morphee::ImageInterface *imInt = (morphee::ImageInterface*)(mIm);
-//     
-// //     dilate((Image<UINT8>)morphIm, im1);
-//     
-//     ExtImage<UINT8> im2 = morphmImage<UINT8>(*mIm);
-//     ExtImage<UINT8> *im3 = new morphmImage<UINT8>(*imInt);
-//     fill(*im3, UINT8(127));
-    ImageViewer<UINT8> *viewer;
+    Q_OBJECT
+public:
+    PlotWidget(QWidget *parent=0);
+    QwtPlotCurve *getCurrentCurve() { return currentCurve; }
+public slots:
+    void saveCurrentCurve();
+    void clearOtherCurves();
+    void removeCurve();
+    void showCurve();
+    void hideCurve();
+    void chooseCurveColor();
+    void chooseCurveWidth();
+    void chooseCurveTitle();
+    void setCurveStyle();
+    void chooseCurveBrushColor();
+    void showContextMenu(const QPoint& pos);
+protected:
+    QwtPlotCurve *currentCurve;
+};
 
 
-//     viewer = im1.getViewer();
-//     
-//     im3->printSelf();
-    im1.show();
-//     
-    Gui::execLoop();
-
-}
-
+#endif // PlotWidget_H
