@@ -317,7 +317,7 @@ void ImageViewerWidget::updateTitle()
     setWindowTitle(name);
 }
 
-void ImageViewerWidget::displayHint(QString msg)
+void ImageViewerWidget::displayHint(QString msg, int timerVal)
 {
     if (!hintLabel->isEnabled())
       return;
@@ -325,7 +325,7 @@ void ImageViewerWidget::displayHint(QString msg)
     hintLabel->setText(msg);
     hintLabel->adjustSize();
     hintLabel->show();
-    hintTimer->start(1000);
+    hintTimer->start(timerVal);
 }
 
 void ImageViewerWidget::load(const QString fileName)
@@ -522,6 +522,10 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 	    {
 		QLineF newLine(line->line().p1(), event->scenePos());
 		line->setLine(newLine);
+		QString hint = "dx: " + QString::number(int(newLine.x2())-int(newLine.x1()));
+		hint += " dy: " + QString::number(int(newLine.y2())-int(newLine.y1()));
+		hint += "  len: " + QString::number(int(newLine.length()));
+		displayHint(hint, 3000);
 	    }
 	} 
 	
@@ -621,6 +625,10 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
 	break;
     case Qt::Key_H:
 	displayHistogram();
+	break;
+    case Qt::Key_P:
+	if (imScene->items().contains(line))
+	  displayProfile();
 	break;
     }
 

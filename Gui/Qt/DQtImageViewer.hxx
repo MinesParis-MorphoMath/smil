@@ -35,7 +35,9 @@
 #include <QList>
 #include <QUrl>
 
+#ifdef USE_QWT
 #include "PureQt/PlotWidget.h"
+#endif // USE_QWT
 
 #include "Core/include/private/DImage.hpp"
 #include "Base/include/private/DImageHistogram.hpp"
@@ -377,6 +379,9 @@ namespace smil
     template <class T>
     void QtImageViewer<T>::displayProfile(bool update)
     {
+	if (update && (!profilePlot || !profilePlot->isVisible()))
+	  return;
+	
 	if (!update && profilePlot && profilePlot->isVisible())
 	{
 	    profilePlot->raise();

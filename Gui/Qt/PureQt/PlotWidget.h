@@ -31,11 +31,9 @@
 #define PlotWidget_H
 
 
-#ifdef USE_QWT
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
 #include <qwt_series_data.h>
-#endif // USE_QWT
 
 class PlotWidget : public QwtPlot
 {

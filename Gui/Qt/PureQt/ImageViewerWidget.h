@@ -124,7 +124,7 @@ protected:
     void connectActions();
     
     void updateTitle();
-    void displayHint(QString msg);
+    void displayHint(QString msg, int timerVal=1000);
 
     QAction *openAct;
     QAction *printAct;
