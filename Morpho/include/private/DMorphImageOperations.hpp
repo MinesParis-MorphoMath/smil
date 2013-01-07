@@ -440,7 +440,7 @@ namespace smil
 		destLines = destSlices[s];
 
     #ifdef USE_OPEN_MP
-	    #pragma omp parallel private(tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p) firstprivate(pts)
+	    #pragma omp parallel private(tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p,oddLine) firstprivate(pts)
     #endif // USE_OPEN_MP
 	    {
 	    #ifdef USE_OPEN_MP
@@ -475,8 +475,6 @@ namespace smil
 			}
 			
 			copyLine<T>(tmpBuf, this->lineLen, lineOut);
-			if (oddSe)
-			  oddLine = !oddLine;
 		    }
 		}
 	    }

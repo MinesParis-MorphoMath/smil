@@ -48,19 +48,14 @@ namespace smil
 
 
     /**
-    * \defgroup dilate dilate
-    * Morphological grayscale dilation
-    * 
-    * \begintheory{dilation}
-    * Denoting an image by \f$ f(x) \f$  and the \ref StrElt "structuring function" by \f$ B(x) \f$, 
-    * the grayscale dilation of \f$ f \f$ by \f$ B \f$ is given by \cite serra_image_1982 :
-    * \f[ (f\oplus B)(x)=\sup_{y \in \Re^3 }[f(y)+B(x-y)] \f] 
-    * \endtheory
-    * 
-    */
-    
-    /**
-     * \ingroup dilate
+     * Morphological grayscale dilation
+     * 
+     * \begintheory{dilation}
+     * Denoting an image by \f$ f(x) \f$  and the \ref StrElt "structuring function" by \f$ B(x) \f$, 
+     * the grayscale dilation of \f$ f \f$ by \f$ B \f$ is given by \cite serra_image_1982 :
+     * \f[ (f\oplus B)(x)=\sup_{y \in \Re^3 }[f(y)+B(x-y)] \f] 
+     * \endtheory
+     * 
      * \param imIn Input image
      * \param imOut Output image
      * \param se (optional) The structuring element to use
@@ -77,7 +72,6 @@ namespace smil
     }
 
     /**
-     * \ingroup dilate
      * \param imIn Input image
      * \param imOut Output image
      * \param seSize The size of the default structuring element
@@ -90,7 +84,6 @@ namespace smil
     }
 
     /**
-     * \defgroup erode erode
      * Morphological grayscale erosion
      * 
      * \begintheory{erosion}
@@ -98,10 +91,7 @@ namespace smil
      * the grayscale erosion of \f$ f \f$ by \f$ B \f$ is given by \cite serra_image_1982 :
      * \f[ (f\ominus B)(x)=\inf_{y \in \Re^3 }[f(y)-B(x-y)] \f]
      * \endtheory
-     */
-    
-    /**
-     * \ingroup erode
+     * 
      * \param imIn Input image
      * \param imOut Output image
      * \param seSize The size of the default structuring element
@@ -118,7 +108,6 @@ namespace smil
     }
 
     /**
-     * \ingroup erode
      * \param imIn Input image
      * \param imOut Output image
      * \param seSize The size of the default structuring element
