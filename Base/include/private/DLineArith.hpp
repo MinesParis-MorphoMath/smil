@@ -321,6 +321,22 @@ namespace smil
     };
 
     template <class T>
+    struct diffLine : public binaryLineFunctionBase<T>
+    {
+	diffLine() 
+	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  
+	T trueVal, falseVal;
+	  
+	typedef typename Image<T>::lineType lineType;
+	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+	{
+	    for (size_t i=0;i<size;i++)
+		lOut[i] = lIn1[i] == lIn2[i] ? falseVal : trueVal;
+	}
+    };
+
+    template <class T>
     struct equSupLine : public binaryLineFunctionBase<T>
     {
 	equSupLine() 
@@ -344,7 +360,7 @@ namespace smil
     */
 
     template <class T>
-    struct diffLine : public binaryLineFunctionBase<T>
+    struct absDiffLine : public binaryLineFunctionBase<T>
     {
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)

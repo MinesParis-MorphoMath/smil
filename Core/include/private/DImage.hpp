@@ -258,6 +258,8 @@ namespace smil
 	Image<T>& operator /= (const T &value);
 	//! Equal boolean operator (see \ref equ).
 	Image<T> operator == (const Image<T> &rhs);
+	//! Diff boolean operator (see \ref equ).
+	Image<T> operator != (const Image<T> &rhs);
 	//! Lower boolean operator (see \ref low)
 	Image<T> operator < (const Image<T> &rhs);
 	//! Lower boolean operator (see \ref low)

@@ -115,22 +115,16 @@ namespace smil
 	
 	virtual RES_T _exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
 	{
-	    initialize(imIn, imOut, se);
+	    StrElt se2;
+	    if (se.size>1)
+	      se2 = se.homothety(se.size);
+	    else se2 = se;
 	    
-	    seType st = se.getType();
+	    initialize(imIn, imOut, se2);
+	    
 	    RES_T retVal;
 	    
-	    switch(st)
-	    {
-	      case SE_Hex:
-		retVal = processImage(imIn, imOut, *static_cast<const HexSE*>(&se));
-		break;
-	      case SE_Squ:
-		retVal = processImage(imIn, imOut, *static_cast<const SquSE*>(&se));
-		break;
-	      default:
-		retVal = processImage(imIn, imOut, se);
-	    }
+	    retVal = processImage(imIn, imOut, se2);
 	    
 	    finalize(imIn, imOut, se);
 	    imOut.modified();

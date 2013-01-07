@@ -430,9 +430,8 @@ namespace smil
     }
 
     /**
-    * Difference ("vertical distance") between two images.
+    * Difference between two images.
     * 
-    * \return abs(p1-p2) for each pixels pair.
     */
     template <class T>
     RES_T diff(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -441,6 +440,20 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
 	
 	return binaryImageFunction<T, diffLine<T> >(imIn1, imIn2, imOut);
+    }
+
+    /**
+    * Absolute difference ("vertical distance") between two images.
+    * 
+    * \return abs(p1-p2) for each pixels pair.
+    */
+    template <class T>
+    RES_T absDiff(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+	ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+	
+	return binaryImageFunction<T, absDiffLine<T> >(imIn1, imIn2, imOut);
     }
 
     /**

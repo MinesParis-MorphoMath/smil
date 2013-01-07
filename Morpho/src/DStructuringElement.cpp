@@ -26,6 +26,7 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <algorithm>
 
 #include "DStructuringElement.h"
 
@@ -92,12 +93,38 @@ void StrElt::addPoint(int x, int y, int z)
     p.x = x;
     p.y = y;
     p.z = z;
-    points.push_back(p);
+    if (find(points.begin(), points.end(), p)==points.end())
+      points.push_back(p);
 }
 
 void StrElt::addPoint(const IntPoint &pt)
 {
-    points.push_back(pt);
+    if (find(points.begin(), points.end(), pt)==points.end())
+      points.push_back(pt);
+}
+
+StrElt StrElt::homothety(const UINT &s) const
+{
+    StrElt newSE;;
+    newSE.points = points;
+    newSE.odd = odd;
+    int oddLine = 0;
+    for (int i=0;i<s-1;i++)
+    {
+	vector<IntPoint>::iterator itEnd = newSE.points.end();
+	for(vector<IntPoint>::iterator it = newSE.points.begin();it!=itEnd;it++)
+	{
+	  IntPoint p(*it);
+	  for(vector<IntPoint>::const_iterator it2 = points.begin();it2!=points.end();it2++)
+	  {
+	      IntPoint p2(*it2);
+	      if (odd)
+		oddLine = (p2.z+1)%2 && p2.y%2 && p.y%2;
+	      newSE.addPoint(p2.x+p.x+oddLine, p2.y+p.y, p2.z+p.z);
+	  }
+	}
+    }
+    return newSE;
 }
 
 const StrElt StrElt::operator()(int s) const
@@ -110,6 +137,7 @@ const StrElt StrElt::operator()(int s) const
 void StrElt::printSelf(ostream &os, string indent) const
 {
     os << indent << "Structuring Element" << endl;
+    os << indent << "Type: " << seT << endl;
     os << indent << "Size: " << size << endl;
     int ptNbr = points.size();
     os << indent << "Point Nbr: " << ptNbr << endl;

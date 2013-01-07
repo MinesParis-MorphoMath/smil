@@ -79,9 +79,10 @@ class Test_Dilate_Hex : public TestCase
       dilate(im1, im2, se);
       TEST_ASSERT(im2==im3);      
       
-//       im1.printSelf(1);
-//       im2.printSelf(1);
-//       im3.printSelf(1);
+      dilate(im1, im3, hSE(3));
+      dilate(im1, im2, hSE().homothety(3));
+      TEST_ASSERT(im2==im3);
+      
   }
 };
 
@@ -296,8 +297,7 @@ int main(int argc, char *argv[])
 //       BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
 // cout << endl;
 //       tc(im1, im2, sSE());
-//       return ts.run();
-      dilate(im1, im2, sSE(2));
+      return ts.run();
   
 }
 

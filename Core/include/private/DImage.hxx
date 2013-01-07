@@ -586,6 +586,14 @@ namespace smil
     }
 
     template <class T>
+    Image<T> Image<T>::operator != (const Image<T> &rhs)
+    {
+	Image<T> im(*this);
+	diff(*this, rhs, im);
+	return im;
+    }
+
+    template <class T>
     Image<T> Image<T>::operator < (const Image<T> &rhs)
     {
 	Image<T> im(*this);
