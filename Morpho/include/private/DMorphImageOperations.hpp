@@ -419,8 +419,7 @@ namespace smil
 	    lineType *destLines, lineOut;
 	    
 	    bool oddSe = se.odd; 
-	    int oddLine;
-	      oddLine = 0;
+	    int oddLine = 0;
 
 	    int l, p;
     #ifdef USE_OPEN_MP
