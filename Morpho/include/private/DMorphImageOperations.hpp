@@ -420,6 +420,7 @@ namespace smil
 	    
 	    bool oddSe = se.odd; 
 	    int oddLine;
+	      oddLine = 0;
 
 	    int l, p;
     #ifdef USE_OPEN_MP
@@ -434,7 +435,7 @@ namespace smil
 		destLines = destSlices[s];
 
     #ifdef USE_OPEN_MP
-	    #pragma omp parallel private(tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p,oddLine) firstprivate(pts)
+	    #pragma omp parallel private(tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p) firstprivate(pts,oddLine)
     #endif // USE_OPEN_MP
 	    {
 	      #ifdef USE_OPEN_MP
@@ -443,7 +444,6 @@ namespace smil
 			tmpBuf2 = _bufs[tid+nthreads];
 	      #endif // _OPENMP
 	      
-	      oddLine = 0;
 	      
 	      #ifdef USE_OPEN_MP
 		#pragma omp for schedule(dynamic,nthreads) nowait
