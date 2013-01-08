@@ -162,7 +162,7 @@ namespace smil
 	virtual void showLabel(const char * = NULL) {}
 	virtual void hide() = 0;
 	
-	BaseImageViewer *getViewer() {};
+	virtual BaseImageViewer *getViewer() = 0;
 	
 	bool updatesEnabled;
 	Signal onModified;

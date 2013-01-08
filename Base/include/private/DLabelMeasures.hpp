@@ -49,9 +49,9 @@ namespace smil
     * Return a map(labelValue, size_t) with the area of each label value.
     */
     template <class T>
-    map<T, size_t> measAreas(Image<T> &imIn)
+    map<T, double> measAreas(Image<T> &imIn)
     {
-	map<T, size_t> area;
+	map<T, double> area;
 
 	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, area);
 	

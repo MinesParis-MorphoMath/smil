@@ -60,7 +60,7 @@ namespace smil
 
     enum DType
     {
-	dtUINT8, dtUINT16, dtUINT32, dtUINT64, dtINT, dtUINT
+	DtUINT8, DtUINT16, DtUINT32, DtUINT64, DtINT, DtUINT
     };
 
     

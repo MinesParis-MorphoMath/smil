@@ -79,6 +79,7 @@ class Test_Dilate_Hex : public TestCase
       dilate(im1, im2, se);
       TEST_ASSERT(im2==im3);      
       
+      // With an homothetic SE
       dilate(im1, im3, hSE(3));
       dilate(im1, im2, hSE().homothety(3));
       TEST_ASSERT(im2==im3);

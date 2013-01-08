@@ -296,7 +296,9 @@ namespace smil
 	Image<T>& operator >> (vector<T> &vect);
 	
 	Image<T>& operator << (const char *s);
+#ifndef SWIG
 	inline Image<T>& operator << (const string s) { return this->operator<<(s.c_str()); }
+#endif // SWIG
 	Image<T>& operator >> (const char *s);
 	inline Image<T>& operator >> (const string s) { return this->operator>>(s.c_str()); }
     protected:

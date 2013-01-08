@@ -120,6 +120,7 @@ using namespace smil;
 %ignore *::operator>>;
 %ignore *::operator~;
 %ignore *::operator==;
+%ignore *::operator!=;
 %ignore *::operator>;
 %ignore *::operator>=;
 %ignore *::operator<;
@@ -134,6 +135,7 @@ using namespace smil;
 #endif // SWIGJAVA
 
 #if SWIGOCTAVE 
+%ignore *::operator!=;
 %ignore *::operator+=;
 %ignore *::operator-=;
 %ignore *::operator*=;
@@ -149,6 +151,7 @@ using namespace smil;
 #endif // SWIGOCTAVE
 
 #if SWIGRUBY
+%ignore *::operator!=;
 %ignore *::operator+=;
 %ignore *::operator-=;
 %ignore *::operator*=;
