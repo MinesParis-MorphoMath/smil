@@ -439,8 +439,8 @@ namespace smil
 	    {
 	      #ifdef USE_OPEN_MP
 		tid = omp_get_thread_num();
-			tmpBuf = _bufs[tid];
-			tmpBuf2 = _bufs[tid+nthreads];
+		tmpBuf = _bufs[tid];
+		tmpBuf2 = _bufs[tid+nthreads];
 	      #endif // _OPENMP
 	      
 	      
