@@ -156,6 +156,8 @@ namespace smil
 		linesOut++;
 	    }
 	}
+	
+	// Todo: offset list for odd SE !!
 	virtual inline void processLine(lineInType pixIn, lineOutType pixOut, size_t &pixNbr, const StrElt &se)
 	{
 	    int x, y, z;
