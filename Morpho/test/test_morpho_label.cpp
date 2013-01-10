@@ -77,10 +77,52 @@ class Test_Label : public TestCase
   }
 };
 
+class Test_LabelNeighbors : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT16 dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+      
+      dataType vec1[] = {
+	0, 0, 0, 0, 0, 0, 1, 
+	0, 0, 0, 0, 1, 1, 1, 
+	0, 2, 0, 0, 1, 1, 1, 
+	2, 2, 0, 0, 0, 1, 0, 
+	2, 0, 0, 0, 0, 0, 0, 
+	2, 0, 3, 0, 0, 4, 0, 
+	0, 0, 3, 0, 4, 4, 0
+      };
+      
+      im1 << vec1;
+      
+      neighbors(im1, im2, sSE());
+//       im2.printSelf(1);
+      
+      dataType vec3[] = {
+	1, 1, 1, 2, 2, 2, 2, 
+	2, 2, 2, 2, 2, 2, 2, 
+	2, 2, 2, 2, 2, 2, 2, 
+	2, 2, 2, 2, 2, 2, 2, 
+	2, 3, 3, 2, 3, 3, 3, 
+	2, 3, 2, 3, 2, 2, 2, 
+	2, 3, 2, 3, 2, 2, 2, 
+      };
+      im3 << vec3;
+      
+      TEST_ASSERT(im2==im3);
+  }
+};
+
 int main(int argc, char *argv[])
 {
       TestSuite ts;
       ADD_TEST(ts, Test_Label);
+      ADD_TEST(ts, Test_LabelNeighbors);
       
       return ts.run();
   

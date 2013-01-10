@@ -119,6 +119,7 @@ TEMPLATE_WRAP_FUNC_CROSS2(watershed);
 TEMPLATE_WRAP_FUNC_CROSS2(label);
 TEMPLATE_WRAP_FUNC_CROSS2(labelWithArea);
 TEMPLATE_WRAP_FUNC(areaOpen);
+TEMPLATE_WRAP_FUNC_CROSS2(neighbors);
 
 %ignore smil::CompStrEltList::operator[];
 %extend smil::CompStrEltList

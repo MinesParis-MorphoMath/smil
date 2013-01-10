@@ -291,7 +291,54 @@ namespace smil
 	
 	return RES_OK;
     }
+
+    template <class T1, class T2>
+    class neighborsFunct : public unaryMorphImageFunctionGeneric<T1, T2>
+    {
+    public:
+	typedef unaryMorphImageFunctionGeneric<T1, T2> parentClass;
+	
+	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+	{
+	    vector<T1> vals;
+	    UINT nbrValues = 0;
+	    while(dOffset!=dOffsetEnd)
+	    {
+		T1 val = parentClass::pixelsIn[pointOffset + *dOffset];
+		if (find(vals.begin(), vals.end(), val)==vals.end())
+		{
+		  vals.push_back(val);
+		  nbrValues++;
+		}
+		dOffset++;
+	    }
+	    parentClass::pixelsOut[pointOffset] = T2(nbrValues);
+	}
+    };
     
+    /**
+    * Neighbors
+    * 
+    * Return for each pixel the number of different values in the neighborhoud.
+    * Usefull in order to find interfaces or multiple points between basins.
+    * 
+    * \not_vectorized
+    * \not_parallelized
+    */ 
+    template <class T1, class T2>
+    RES_T neighbors(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	neighborsFunct<T1, T2> f;
+	
+	ASSERT((f._exec(imIn, imOut, se)==RES_OK));
+	
+	return RES_OK;
+	
+    }
+
 /** \} */
 
 } // namespace smil
