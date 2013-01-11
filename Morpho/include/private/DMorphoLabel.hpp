@@ -30,6 +30,7 @@
 #ifndef _D_MORPHO_LABEL_HPP
 #define _D_MORPHO_LABEL_HPP
 
+#include "Base/include/private/DImageArith.hpp"
 #include "DImage.h"
 #include "DMorphImageOperations.hpp"
 #include "Base/include/private/DLabelMeasures.hpp"

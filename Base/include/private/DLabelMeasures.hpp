@@ -31,6 +31,8 @@
 #define _D_LABEL_MEASURES_HPP
 
 #include "Core/include/private/DImage.hpp"
+#include "DImageHistogram.hpp"
+
 #include <map>
 
 using namespace std;

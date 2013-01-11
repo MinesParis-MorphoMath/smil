@@ -27,18 +27,47 @@
  */
 
 
-#include "DIO.h"
+#ifndef _D_IMAGE_IO_H
+#define _D_IMAGE_IO_H
+
+#include "Core/include/DErrors.h"
 
 namespace smil
 {
+  
+    /** 
+    * \addtogroup IO
+    */
+    /*@{*/
+    
+    _DIO string getFileExtension(const char *fileName);
 
-    _DIO string getFileExtension(const char *fileName)
+    class FileCloser
     {
-	string fName(fileName);
-	string::size_type idx = fName.rfind('.');
-	string fExt = fName.substr(idx+1).c_str();
-	transform(fExt.begin(), fExt.end(), fExt.begin(), ::toupper);
-	return fExt;
-    }
+    public:
+	FileCloser(FILE *_fp)
+	{
+	    fp = _fp;
+	}
+	~FileCloser()
+	{
+	    if (fp)
+	      fclose(fp);
+	}
+    protected:
+	FILE *fp;
+    };
+
+
+    #ifdef USE_CURL
+
+    _DIO RES_T getHttpFile(const char *url, const char *outfilename) ;
+
+    #endif // USE_CURL
+/*@}*/
 
 } // namespace smil
+
+
+
+#endif // _D_IMAGE_IO_HPP

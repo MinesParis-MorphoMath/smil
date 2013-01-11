@@ -64,7 +64,7 @@ namespace smil
 	    
  	    ASSERT((imOut.setSize(h, w)==RES_OK));
 	    
-	    for (int y=0;y<w;y++)
+	    for (size_t y=0;y<w;y++)
 	      for (size_t x=0;x<h;x++,pOut++)
 		*pOut = pIn[x*w+y];
 		

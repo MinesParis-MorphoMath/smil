@@ -41,7 +41,7 @@ namespace smil
 	UniqueInstance ()
 	{
 	}
-	~UniqueInstance () { }
+	virtual ~UniqueInstance () { }
 
     public:
 	static T *getInstance ()

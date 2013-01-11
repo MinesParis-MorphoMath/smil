@@ -464,11 +464,11 @@ void ImageViewerWidget::mouseMoveEvent ( QMouseEvent * event )
 
 void ImageViewerWidget::mousePressEvent ( QMouseEvent * event )
 {
-    if (event->button() != Qt::LeftButton)
-         return;
-     
     Qt::MouseButton btn = event->button();
     
+    if (btn != Qt::LeftButton)
+         return;
+     
     if (cursorMode==cursorMove)
     {
 	setDragMode(QGraphicsView::ScrollHandDrag);
@@ -545,7 +545,6 @@ void ImageViewerWidget::sceneMousePressEvent ( QGraphicsSceneMouseEvent * event 
 {
     size_t x = int(event->scenePos().rx());
     size_t y = int(event->scenePos().ry());
-    size_t z = slider->value();
 
     size_t w = qImage->width();
     size_t h = qImage->height();

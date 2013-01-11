@@ -41,17 +41,17 @@ IntPoint SE_HexIndices[] = { IntPoint(0,0,0), IntPoint(1,0,0), IntPoint(0,-1,0),
 
 StrElt::StrElt(UINT s)
   : BaseObject("StrElt"),
+    odd(false),
     seT(SE_Generic), 
-    size(s), 
-    odd(false)
+    size(s)
 {
 }
 
 StrElt::StrElt(bool oddSE, UINT nbrPts, ...)
   : BaseObject("StrElt"),
+    odd(oddSE),
     seT(SE_Generic), 
-    size(1), 
-    odd(oddSE)
+    size(1)
 {
     UINT indice;
     va_list vl;
@@ -109,7 +109,7 @@ StrElt StrElt::homothety(const UINT &s) const
     newSE.points = points;
     newSE.odd = odd;
     int oddLine = 0;
-    for (int i=0;i<s-1;i++)
+    for (UINT i=0;i<s-1;i++)
     {
 	vector<IntPoint>::iterator itEnd = newSE.points.end();
 	for(vector<IntPoint>::iterator it = newSE.points.begin();it!=itEnd;it++)

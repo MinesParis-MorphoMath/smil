@@ -50,7 +50,6 @@ void SSE_INT_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
 
     for (int l=0;l<nlines;l++)
     {
-	__m128i r0,r1;
 	__m128i *l1 = (__m128i*)p1;
 	__m128i *l2 = (__m128i*)p2;
 	__m128i *l3 = (__m128i*)p3;

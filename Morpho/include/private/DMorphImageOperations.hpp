@@ -46,14 +46,15 @@ namespace smil
     {
     public:
 	unaryMorphImageFunctionGeneric(T_in _borderValue = numeric_limits<T_in>::min())
-	  : borderValue(_borderValue),
-	    initialValue(_borderValue)
+	  : initialValue(_borderValue),
+	    borderValue(_borderValue)
+	    
 	{
 	}
 	
 	unaryMorphImageFunctionGeneric(T_in _borderValue, T_out _initialValue = numeric_limits<T_out>::min())
-	  : borderValue(_borderValue),
-	    initialValue(_initialValue)
+	  : initialValue(_borderValue),
+	    borderValue(_borderValue)
 	{
 	}
 	

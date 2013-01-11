@@ -31,10 +31,9 @@
 #define _D_IMAGE_IO_HPP
 
 
-#include <string>
-#include <algorithm>
 
 
+#include "IO/include/DCommonIO.h"
 
 #include "DImageIO_BMP.hpp"
 #include "DImageIO_RAW.hpp"
@@ -52,27 +51,6 @@ namespace smil
     */
     /*@{*/
     
-    extern _DIO string getFileExtension(const char *fileName);
-
-    #ifdef USE_CURL
-    extern _DIO RES_T getHttpFile(const char *url, const char *outfilename);
-    #endif // USE_CURL
-
-    class FileCloser
-    {
-    public:
-	FileCloser(FILE *_fp)
-	{
-	    fp = _fp;
-	}
-	~FileCloser()
-	{
-	    if (fp)
-	      fclose(fp);
-	}
-    protected:
-	FILE *fp;
-    };
 
     /**
     * Read image file

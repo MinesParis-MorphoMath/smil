@@ -29,8 +29,8 @@
 
 #ifdef USE_PNG
 
+#include "DImageIO.hpp"
 #include "DImageIO_PNG.hpp"
-#include "DCore.h"
 
 #include <png.h>
 

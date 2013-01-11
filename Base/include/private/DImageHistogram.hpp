@@ -194,7 +194,7 @@ namespace smil
 	double imVol = vol(imIn);
 	double satVol = imVol * sat / 100.;
 	double v = 0;
-	T minV, maxV, threshVal;
+	T minV, maxV, threshVal = 0;
 	rangeVal(imIn, &minV, &maxV);
 	
 	for (T i=maxV; i>=minV; i-=1)

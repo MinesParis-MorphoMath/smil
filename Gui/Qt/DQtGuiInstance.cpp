@@ -50,8 +50,7 @@ void QtGui::_processEvents()
 
 
 QtAppGui::QtAppGui()
-  : _argc(0), 
-    QApplication(_argc, NULL)
+  : QApplication(_argc, NULL)
 {
 }
 

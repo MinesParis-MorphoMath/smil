@@ -401,7 +401,6 @@ namespace smil
 	QwtPointSeriesData *myData = new QwtPointSeriesData();
 
 	QLineF lnF(this->line->line());
-	double lineLen = lnF.length();
 	
 	QVector<QPointF> samples;
 	vector<IntPoint> bPoints = bresenhamPoints(lnF.x1(), lnF.y1(), lnF.x2(), lnF.y2());

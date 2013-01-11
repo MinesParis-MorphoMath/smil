@@ -40,7 +40,6 @@ int main(int argc, char *argv[])
     Image_UINT8 im2(im1);
     Image_UINT8 im3(im1);
 
-    UINT8 val = 10;
     UINT BENCH_NRUNS = 1E2;
     
     BENCH_IMG(matTrans, im1, im2);

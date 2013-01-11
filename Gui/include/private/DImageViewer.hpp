@@ -108,8 +108,8 @@ namespace smil
     protected:
 	Image<T> *getImage() { return image; }
 	virtual void drawImage() {}
-	bool labelImage;
 	Image<T> *image;
+	bool labelImage;
     };
 
     /*@}*/

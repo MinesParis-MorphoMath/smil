@@ -31,6 +31,7 @@
 #define _D_IMAGE_DRAW_HPP
 
 #include "DLineArith.hpp"
+#include "DImageDraw.h"
 
 #ifdef USE_FREETYPE
     #include <ft2build.h>
@@ -217,7 +218,7 @@ namespace smil
 	      unsigned char bit = 0x80;
 	      for ( i = x_min, p = 0; i < x_max; i++, p++ )
 	      {
-		if (i>=0 && j>=0 && i<imW && j<imH)
+		if (i>=0 && j>=0 && i<(int)imW && j<(int)imH)
 		  if (*in & bit)
 		    out[i] = value;
 		bit >>= 1;

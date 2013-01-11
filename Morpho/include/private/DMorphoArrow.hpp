@@ -113,7 +113,7 @@ namespace smil
 		
 		fillLine<T>(lineOut, parentClass::lineLen, 0);
 		
-		for (int p=0;p<sePtsNumber;p++)
+		for (UINT p=0;p<sePtsNumber;p++)
 		{
 		    x = - se.points[p].x + oddLine;
 		    y = l - se.points[p].y;

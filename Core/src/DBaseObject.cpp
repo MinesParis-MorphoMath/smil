@@ -34,20 +34,20 @@ namespace smil
 {
 
     BaseObject::BaseObject(bool _register)
-      : className("BaseObject"),
-	name(""),
-	triggerEvents(true),
-	registered(false)
+      : triggerEvents(true),
+	registered(false),
+	className("BaseObject"),
+	name("")
     {
 	if (_register)
 	  Core::getInstance()->registerObject(this);
     }
 
     BaseObject::BaseObject(const string _className, bool _register)
-      : className(_className), 
-	name(""),
-	triggerEvents(true),
-	registered(false)
+      : triggerEvents(true),
+	registered(false),
+	className(_className),
+	name("")
     {
 	if (_register)
 	  Core::getInstance()->registerObject(this);

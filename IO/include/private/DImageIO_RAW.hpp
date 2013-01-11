@@ -35,8 +35,7 @@
 #include <stdlib.h>
 #include <string>
 
-#include "Core/include/private/DTypes.hpp"
-#include "Core/include/private/DImage.hpp"
+#include "IO/include/DCommonIO.h"
 
 using namespace std;
 
@@ -63,14 +62,19 @@ namespace smil
 	    return RES_ERR;
 	}
 
+	FileCloser fileCloser(fp);
 
 	image.setSize(width, height, depth);
     //   image->allocate();
 
 	size_t ret = fread(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
-
-	fclose (fp);
+	if (ret==0)
+	{
+	    fprintf (stderr, "error reading \"%s\"!\n", filename);
+	    return RES_ERR;
+	}
 	
+
 	image.modified();
 	
 	return RES_OK;

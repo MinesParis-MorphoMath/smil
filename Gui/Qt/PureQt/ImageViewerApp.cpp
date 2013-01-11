@@ -43,15 +43,6 @@ ImageViewerApp::ImageViewerApp(QWidget *parent) :
 
     graphicsView = new ImageViewerWidget();
     ui->gridLayout->addWidget(graphicsView);
-    QGraphicsView *w = graphicsView;
-
-
-
-//    QGraphicsScene *scn = new QGraphicsScene( w );
-//    scn->setSceneRect( w->rect() );
-
-//    w->setFixedSize( 400, 400 );
-
 
     pixelPosLabel = new QLabel;
     pixelPosLabel->setFrameShadow(QFrame::Sunken);

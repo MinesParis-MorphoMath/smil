@@ -88,9 +88,9 @@ namespace smil
 
 	bool triggerEvents;
     protected:
+	bool registered;
 	string className;
 	string name;
-	bool registered;
 
 	friend class Core;
     };

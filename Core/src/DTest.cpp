@@ -46,7 +46,6 @@ namespace smil
 	int curTestNbr = 1;
 	int nPassed = 0;
 	int nFailed = 0;
-	int tElapsedTot = 0;
 	
 	double t1, t2;
 	

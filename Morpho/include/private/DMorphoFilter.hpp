@@ -59,7 +59,7 @@ namespace smil
 	ImageFreezer freeze(imOut);
 	
 	Image<T> tmpIm(imIn, true); // clone
-	for (int i=1;i<=se.size;i++)
+	for (UINT i=1;i<=se.size;i++)
 	{
 	    ASSERT((close(tmpIm, imOut, se(i))==RES_OK));
 	    ASSERT((open(imOut, tmpIm, se(i))==RES_OK));
@@ -84,7 +84,7 @@ namespace smil
 	ImageFreezer freeze(imOut);
 	
 	Image<T> tmpIm(imIn, true); // clone
-	for (int i=1;i<=se.size;i++)
+	for (UINT i=1;i<=se.size;i++)
 	{
 	    ASSERT((open(tmpIm, imOut, se(i))==RES_OK));
 	    ASSERT((close(imOut, tmpIm, se(i))==RES_OK));
@@ -150,7 +150,6 @@ namespace smil
 		dOffset++;
 	    }
 	    sort(vals.begin(), vals.end());
-	    T outVal = vals[nPts/2];
 	    parentClass::pixelsOut[pointOffset] = vals[nPts/2];
 	}
     };

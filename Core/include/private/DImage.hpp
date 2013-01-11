@@ -215,7 +215,10 @@ namespace smil
 
 	inline T &operator [] (size_t i) 
 	{ 
-	    if (i<pixelCount) return this->pixels[i]; 
+	    if (i<pixelCount) 
+	      return this->pixels[i];
+	    ERR_MSG("Offset out of range.");
+	    return this->dumPixel;
 	}
 	
 	//! Copy image
@@ -296,9 +299,7 @@ namespace smil
 	Image<T>& operator >> (vector<T> &vect);
 	
 	Image<T>& operator << (const char *s);
-#ifndef SWIG
 	inline Image<T>& operator << (const string s) { return this->operator<<(s.c_str()); }
-#endif // SWIG
 	Image<T>& operator >> (const char *s);
 	inline Image<T>& operator >> (const string s) { return this->operator>>(s.c_str()); }
     protected:
@@ -313,6 +314,8 @@ namespace smil
 
 	ImageViewer<T> *viewer;
 	void createViewer();
+	
+	T dumPixel;
 	// Specify if the viewer has been created internally
     //     ImageViewerWidget *viewer;
 	

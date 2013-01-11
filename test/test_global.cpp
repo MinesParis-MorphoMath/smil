@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 //     ExtImage<UINT8> im2 = morphmImage<UINT8>(*mIm);
 //     ExtImage<UINT8> *im3 = new morphmImage<UINT8>(*imInt);
 //     fill(*im3, UINT8(127));
-    ImageViewer<UINT8> *viewer;
+//     ImageViewer<UINT8> *viewer;
 
 
 //     viewer = im1.getViewer();

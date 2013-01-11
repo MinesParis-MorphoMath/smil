@@ -72,7 +72,8 @@ namespace smil
 	    bool oddIter = false;
 	    UINT nbrTrans, nbrNonZero;
 	    
-	    int ngbOffsets[9] = { -width-1, -width, -width+1, 1, width+1, width, width-1, -1, -width-1 };
+	    int iWidth = width;
+	    int ngbOffsets[9] = { -iWidth-1, -iWidth, -iWidth+1, 1, iWidth+1, iWidth, iWidth-1, -1, -iWidth-1 };
 	    
 	    do
 	    {

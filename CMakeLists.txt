@@ -283,7 +283,7 @@ IF(USE_QT)
       ADD_DEFINITIONS(${QT_DEFINITIONS} -DUSE_QT)
       LIST(APPEND SMIL_EXT_DEPS ${QT_LIBRARIES})
       
-      OPTION(USE_QWT "Use Qwt for Qt viewer" OFF)
+      OPTION(USE_QWT "Use Qwt (>6.0) for Qt viewer" OFF)
       IF(USE_QWT)
 	    FIND_PACKAGE(Qwt REQUIRED)
 	    IF(QWT_FOUND)

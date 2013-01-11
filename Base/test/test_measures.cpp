@@ -43,7 +43,7 @@ class Test_MeasureBarycenter : public TestCase
 	for (UINT i=20;i<70;i++)
 	  lines[j][i] = 255;
 
-      double xc, yc;
+      double xc = 0, yc = 0;
       double xcTruth = 44.5, ycTruth = 34.5;
       
       measBarycenter(im, &xc, &yc);
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
       
       Image_UINT8 im(512,512);
       measAreas(im);
-      UINT BENCH_NRUNS = 1E3;
+//       UINT BENCH_NRUNS = 1E3;
 //       BENCH(measBarycenter, im, &xc, &yc);
 //       BENCH(measBarycenters, im);
       

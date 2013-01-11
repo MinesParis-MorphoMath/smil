@@ -121,7 +121,7 @@ namespace smil
 	    
 	    imIn.getCoordsFromOffset(curOffset, x0, y0, z0);
 	    
-	    size_t x, y, z;
+	    int x, y, z;
 	    size_t nbOffset;
 	    UINT8 nbStat;
 	    
