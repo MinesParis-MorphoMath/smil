@@ -53,16 +53,16 @@ namespace smil
 	// Can be overloaded because of the T::initialize call
 	static void initialize ()
 	{
-	    if (_instance == NULL)
-		_instance = new T;
+	    if (T::_instance == NULL)
+		T::_instance = new T;
 	}
 
 	static void kill ()
 	{
-	  if (_instance)
+	  if (T::_instance)
 	  {
-	    delete _instance;
-	    _instance = NULL;
+	    delete T::_instance;
+	    T::_instance = NULL;
 	  }
 	}
 

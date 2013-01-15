@@ -56,7 +56,6 @@ namespace smil
     template <class T>
     class ImageViewer;
     
-
     /**
      * Gui module instance
      */
@@ -70,10 +69,6 @@ namespace smil
 
     public:
 	// Public interface
-	/**
-	 * Initialize the Gui module
-	 */
-	static void initialize();
     //     static void kill();
 
 	/**
@@ -103,6 +98,10 @@ namespace smil
 	virtual void _processEvents() {}
     private:
     };
+
+    template <>
+    void UniqueInstance<Gui>::initialize();
+    
 
 /*@}*/
 

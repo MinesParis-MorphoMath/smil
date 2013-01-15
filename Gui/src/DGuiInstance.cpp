@@ -37,7 +37,8 @@
 using namespace smil;
 
 
-void Gui::initialize()
+template <>
+void UniqueInstance<Gui>::initialize()
 {
     if (Gui::_instance == NULL)
     {

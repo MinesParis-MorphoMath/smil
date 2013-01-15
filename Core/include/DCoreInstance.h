@@ -94,9 +94,6 @@ namespace smil
 	vector<BaseImage*> registeredImages;
 	void deleteRegisteredObjects();
       
-    public:
-      static void initialize();
-      
     };
 
     /*@}*/

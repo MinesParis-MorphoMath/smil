@@ -36,169 +36,157 @@
 #include <omp.h>
 #endif // USE_OPEN_MP
 
-namespace smil
+using namespace smil;
+
+Core::Core ()
+// : BaseObject("Core", false),
+  : keepAlive(false),
+    autoResizeImages(true),
+    threadNumber(1),
+    maxThreadNumber(1),
+    systemName(SYSTEM_NAME),
+    targetArchitecture(TARGET_ARCHITECTURE),
+#ifdef USE_OPEN_MP
+    supportOpenMP(true)
+#else // USE_OPEN_MP
+    supportOpenMP(false)
+#endif // USE_OPEN_MP
 {
-
-    Core::Core ()
-    // : BaseObject("Core", false),
-      : keepAlive(false),
-	autoResizeImages(true),
-	threadNumber(1),
-	maxThreadNumber(1),
-	systemName(SYSTEM_NAME),
-	targetArchitecture(TARGET_ARCHITECTURE),
-    #ifdef USE_OPEN_MP
-	supportOpenMP(true)
-    #else // USE_OPEN_MP
-	supportOpenMP(false)
-    #endif // USE_OPEN_MP
-    {
-    #ifdef USE_OPEN_MP
-	int nthreads;
-	#pragma omp parallel shared(nthreads)
-	{ 
-	    nthreads = omp_get_num_threads();
-	}
-	maxThreadNumber = nthreads;
-	threadNumber = nthreads;
-    #endif // USE_OPEN_MP
-      
-    #if DEBUG_LEVEL > 1
-	cout << "Core created" << endl;
-    #endif // DEBUG_LEVEL > 1
-    }
-
-    Core::~Core ()
-    {
-	deleteRegisteredObjects();
-    #if DEBUG_LEVEL > 1
-	  cout << "Core deleted" << endl;
-    #endif // DEBUG_LEVEL > 1
-    }
-
-
-    void Core::initialize()
-    {
-      if (_instance == NULL)
-      {
-	  _instance =  new Core;
-    //       Gui::initialize();
-      }
-    }
-
-    void Core::registerObject(BaseObject *obj)
-    {
-	if (obj->registered)
-	  return;
-
-	Core *inst = Core::getInstance();
-	inst->registeredObjects.push_back(obj);
-
-	obj->registered = true;
-
-	if (string(obj->getClassName())=="Image")
-	    inst->registeredImages.push_back(static_cast<BaseImage*>(obj));
-
-    #if DEBUG_LEVEL > 1
-	cout << "Core::registerObject: " << obj->getClassName() << " " << obj << " created." << endl;
-    #endif // DEBUG_LEVEL > 1
-    }
-
-
-    void Core::unregisterObject(BaseObject *obj)
-    {
-	if (!obj->registered)
-	  return;
-
-	Core *inst = Core::getInstance();
-	inst->registeredObjects.erase(std::remove(inst->registeredObjects.begin(), inst->registeredObjects.end(), obj));
-
-	obj->registered = false;
-
-	if (string(obj->getClassName())=="Image")
-	    inst->registeredImages.erase(std::remove(inst->registeredImages.begin(), inst->registeredImages.end(), static_cast<BaseImage*>(obj)));
-
-    #if DEBUG_LEVEL > 1
-	cout << "Core::unregisterObject: " << obj->getClassName() << " " << obj << " deleted." << endl;
-    #endif // DEBUG_LEVEL > 1
-
-	if (!inst->keepAlive && inst->registeredObjects.size()==0)
-	    inst->kill();
-    }
-
-
-    void Core::deleteRegisteredObjects()
-    {
-	BaseObject *obj;
-	Core *inst = Core::getInstance();
-	vector<BaseObject*>::iterator it = inst->registeredObjects.begin();
-
-	while (it!=inst->registeredObjects.end())
-	{
-	    obj = *it++;
-	    delete obj;
-	}
-    }
-
-    UINT Core::getNumberOfThreads()
-    {
-	return threadNumber;
-    }
-
-    RES_T Core::setNumberOfThreads(UINT nbr)
-    {
-	ASSERT((nbr<=maxThreadNumber), "Nbr of thread exceeds system capacity !", RES_ERR);
-	threadNumber = nbr;
-	return RES_OK;
-    }
-
-    void Core::resetNumberOfThreads()
-    {
-	threadNumber = maxThreadNumber;
-    }
-
-
-    size_t Core::getAllocatedMemory()
-    {
-	vector<BaseImage*>::iterator it = registeredImages.begin();
-	size_t totAlloc = 0;
-
-	while (it!=registeredImages.end())
-	    totAlloc += (*it++)->getAllocatedSize();
-	return totAlloc;
-    }
-
-    vector<BaseObject*> Core::getRegisteredObjects() 
+#ifdef USE_OPEN_MP
+    int nthreads;
+    #pragma omp parallel shared(nthreads)
     { 
-	return registeredObjects; 
+	nthreads = omp_get_num_threads();
     }
+    this->maxThreadNumber = nthreads;
+    this->threadNumber = nthreads;
+#endif // USE_OPEN_MP
+  
+#if DEBUG_LEVEL > 1
+    cout << "Core created" << endl;
+#endif // DEBUG_LEVEL > 1
+}
 
-    vector<BaseImage*> Core::getImages()  
-    { 
-	return registeredImages; 
-    }
+Core::~Core ()
+{
+    deleteRegisteredObjects();
+#if DEBUG_LEVEL > 1
+      cout << "Core deleted" << endl;
+#endif // DEBUG_LEVEL > 1
+}
 
-    void Core::showAllImages()
+
+void Core::registerObject(BaseObject *obj)
+{
+    if (obj->registered)
+      return;
+
+    Core *inst = Core::getInstance();
+    inst->registeredObjects.push_back(obj);
+
+    obj->registered = true;
+
+    if (string(obj->getClassName())=="Image")
+	inst->registeredImages.push_back(static_cast<BaseImage*>(obj));
+
+#if DEBUG_LEVEL > 1
+    cout << "Core::registerObject: " << obj->getClassName() << " " << obj << " created." << endl;
+#endif // DEBUG_LEVEL > 1
+}
+
+
+void Core::unregisterObject(BaseObject *obj)
+{
+    if (!obj->registered)
+      return;
+
+    Core *inst = Core::getInstance();
+    inst->registeredObjects.erase(std::remove(inst->registeredObjects.begin(), inst->registeredObjects.end(), obj));
+
+    obj->registered = false;
+
+    if (string(obj->getClassName())=="Image")
+	inst->registeredImages.erase(std::remove(inst->registeredImages.begin(), inst->registeredImages.end(), static_cast<BaseImage*>(obj)));
+
+#if DEBUG_LEVEL > 1
+    cout << "Core::unregisterObject: " << obj->getClassName() << " " << obj << " deleted." << endl;
+#endif // DEBUG_LEVEL > 1
+
+    if (!inst->keepAlive && inst->registeredObjects.size()==0)
+	inst->kill();
+}
+
+
+void Core::deleteRegisteredObjects()
+{
+    BaseObject *obj;
+    Core *inst = Core::getInstance();
+    vector<BaseObject*>::iterator it = inst->registeredObjects.begin();
+
+    while (it!=inst->registeredObjects.end())
     {
-	vector<BaseImage*>::iterator it = registeredImages.begin();
-
-	while (it!=registeredImages.end())
-	    (*it++)->show();
+	obj = *it++;
+	delete obj;
     }
+}
 
-    void Core::hideAllImages()
-    {
-	vector<BaseImage*>::iterator it = registeredImages.begin();
+UINT Core::getNumberOfThreads()
+{
+    return this->threadNumber;
+}
 
-	while (it!=registeredImages.end())
-	    (*it++)->hide();
-    }
+RES_T Core::setNumberOfThreads(UINT nbr)
+{
+    ASSERT((nbr<=maxThreadNumber), "Nbr of thread exceeds system capacity !", RES_ERR);
+    this->threadNumber = nbr;
+    return RES_OK;
+}
 
-    void Core::getCompilationInfos(ostream &outStream)
-    {
-	outStream << "System: " << systemName << endl;
-	outStream << "Target Architecture: " << targetArchitecture << endl;
-	outStream << "OpenMP support: " << (supportOpenMP ? "On" : "Off") << endl;
-    }
+void Core::resetNumberOfThreads()
+{
+    this->threadNumber = this->maxThreadNumber;
+}
 
-} // namespace smil
+
+size_t Core::getAllocatedMemory()
+{
+    vector<BaseImage*>::iterator it = this->registeredImages.begin();
+    size_t totAlloc = 0;
+
+    while (it!=this->registeredImages.end())
+	totAlloc += (*it++)->getAllocatedSize();
+    return totAlloc;
+}
+
+vector<BaseObject*> Core::getRegisteredObjects() 
+{ 
+    return this->registeredObjects; 
+}
+
+vector<BaseImage*> Core::getImages()  
+{ 
+    return this->registeredImages; 
+}
+
+void Core::showAllImages()
+{
+    vector<BaseImage*>::iterator it = this->registeredImages.begin();
+
+    while (it!=this->registeredImages.end())
+	(*it++)->show();
+}
+
+void Core::hideAllImages()
+{
+    vector<BaseImage*>::iterator it = this->registeredImages.begin();
+
+    while (it!=this->registeredImages.end())
+	(*it++)->hide();
+}
+
+void Core::getCompilationInfos(ostream &outStream)
+{
+    outStream << "System: " << this->systemName << endl;
+    outStream << "Target Architecture: " << this->targetArchitecture << endl;
+    outStream << "OpenMP support: " << (this->supportOpenMP ? "On" : "Off") << endl;
+}
