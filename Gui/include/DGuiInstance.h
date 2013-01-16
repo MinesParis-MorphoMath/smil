@@ -56,6 +56,11 @@ namespace smil
     template <class T>
     class ImageViewer;
     
+    class Gui;
+    
+    template <>
+    void UniqueInstance<Gui>::initialize();
+    
     /**
      * Gui module instance
      */
@@ -99,9 +104,6 @@ namespace smil
     private:
     };
 
-    template <>
-    void UniqueInstance<Gui>::initialize();
-    
 
 /*@}*/
 

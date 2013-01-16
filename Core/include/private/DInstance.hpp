@@ -54,7 +54,7 @@ namespace smil
 	static void initialize ()
 	{
 	    if (T::_instance == NULL)
-		T::_instance = new T;
+		T::_instance = new T();
 	}
 
 	static void kill ()

@@ -676,7 +676,7 @@ namespace smil
 	  int l, dx = xsize;
 
     #ifdef USE_OPEN_MP
-	  #pragma omp parallel private(tid,buf1,buf2,lineIn) firstprivate(dx)
+	  #pragma omp parallel private(tid,buf1,buf2,lineIn) firstprivate(dx) num_threads(nthreads)
     #endif // USE_OPEN_MP
 	  {
 	      #ifdef USE_OPEN_MP

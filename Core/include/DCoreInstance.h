@@ -62,6 +62,7 @@ namespace smil
       ~Core ();
       
     public:
+      
 	// Public interface
 	
 	bool keepAlive;
