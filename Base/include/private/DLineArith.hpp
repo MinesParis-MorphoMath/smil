@@ -59,7 +59,6 @@ namespace smil
     }
 
 
-
     template <class T>
     struct fillLine : public unaryLineFunctionBase<T>
     {

@@ -61,18 +61,7 @@ namespace smil
     {
 	ASSERT_ALLOCATED(&imOut);
 
-	typedef typename Image<T>::sliceType sliceType;
-	sliceType lineOut = imOut.getLines();
-	size_t lineLen = imOut.getWidth();
-	size_t lineCount = imOut.getLineCount();
-
-	fillLine<T>(lineOut[0], lineLen, value);
-	
-	for (size_t i=1;i<lineCount;i++)
-	  copyLine<T>(lineOut[0], lineLen, lineOut[i]);
-
-	imOut.modified();
-	return RES_OK;
+	return unaryImageFunction<T, fillLine<T> >(imOut, value);
     }
 
 
@@ -108,13 +97,25 @@ namespace smil
 	typename Image<T1>::volType slIn = imIn.getSlices() + startZ;
 	typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
 	
+	int nthreads = Core::getInstance()->getNumberOfThreads();
+	size_t y;
+	
 	for (size_t z=0;z<realSz;z++)
 	{
 	    typename Image<T1>::sliceType lnIn = *slIn + startY;
 	    typename Image<T2>::sliceType lnOut = *slOut + outStartY;
 	    
-	    for (size_t y=0;y<realSy;y++)
-	      copyLine<T1,T2>(lnIn[y]+startX, realSx, lnOut[y]+outStartX);
+	
+	    #ifdef USE_OPEN_MP
+		#pragma omp parallel private(y)
+	    #endif // USE_OPEN_MP
+	    {
+		#ifdef USE_OPEN_MP
+		    #pragma omp for schedule(dynamic,nthreads) nowait
+		#endif // USE_OPEN_MP
+		for (y=0;y<realSy;y++)
+		  copyLine<T1,T2>(lnIn[y]+startX, realSx, lnOut[y]+outStartX);
+	    }
 	    
 	    slIn++;
 	    slOut++;
@@ -169,9 +170,19 @@ namespace smil
 	typename Image<T2>::sliceType l2 = imOut.getLines();
 
 	size_t width = imIn.getWidth();
+	size_t i;
+	int nthreads = Core::getInstance()->getNumberOfThreads();
 	
-	for (size_t i=0;i<imIn.getLineCount();i++)
-	  copyLine<T1,T2>(l1[i], width, l2[i]);
+	#ifdef USE_OPEN_MP
+	    #pragma omp parallel private(i)
+	#endif // USE_OPEN_MP
+	{
+	    #ifdef USE_OPEN_MP
+		#pragma omp for schedule(dynamic,nthreads) nowait
+	    #endif // USE_OPEN_MP
+	    for (i=0;i<imIn.getLineCount();i++)
+	      copyLine<T1,T2>(l1[i], width, l2[i]);
+	}
 
 	imOut.modified();
 	return RES_OK;
@@ -185,13 +196,7 @@ namespace smil
 	if (!haveSameSize(&imIn, &imOut, NULL))
 	    return copy<T,T>(imIn, 0, 0, 0, imOut, 0, 0, 0);
 
-	typename Image<T>::lineType pixIn = imIn.getPixels();
-	typename Image<T>::lineType pixOut = imOut.getPixels();
-
-	copyLine<T>(pixIn, imIn.getPixelCount(), pixOut);
-    //     memcpy(pixOut, pixIn, imIn.getPixelCount());
-	imOut.modified();
-	return RES_OK;
+	return unaryImageFunction<T, fillLine<T> >(imIn, imOut);
     }
 
     /**

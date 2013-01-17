@@ -83,9 +83,9 @@ namespace smil
 	{
 	    this->retVal = this->_exec ( imIn, ImOut );
 	}
-	unaryImageFunction( const imageType &imIn, const T &value ) 
+	unaryImageFunction( imageType &imOut, const T &value ) 
 	{
-	    this->retVal = this->_exec (imIn, value);
+	    this->retVal = this->_exec (imOut, value);
 	}
 	
 	inline RES_T operator() ( const imageType &imIn, imageType &ImOut )
