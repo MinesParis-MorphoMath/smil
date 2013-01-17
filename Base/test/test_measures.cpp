@@ -53,6 +53,29 @@ class Test_MeasureBarycenter : public TestCase
   }
 };
 
+class Test_MeasBoundingBox : public TestCase
+{
+  virtual void run()
+  {
+      UINT8 vec[125] = 
+      {
+	0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,
+	0, 0, 0, 1, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,
+	0, 1, 1, 0, 0,   0, 0, 0, 0, 0,   0, 0, 1, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 1, 0, 0, 0,
+      };
+      
+      
+      Image_UINT8 im(5,5,5);
+      size_t xMin, xMax, yMin, yMax, zMin, zMax;
+      im << vec;
+      
+      measBoundBox(im, &xMin, &yMin, &zMin, &xMax, &yMax, &zMax);
+      TEST_ASSERT(xMin==1 && yMin==0 && zMin==2 && xMax==2 && yMax==4 && zMax==4);
+  }
+};
+
 class Test_LabelMeasures : public TestCase
 {
   virtual void run()
@@ -97,6 +120,7 @@ int main(int argc, char *argv[])
       TestSuite ts;
 
       ADD_TEST(ts, Test_MeasureBarycenter);
+      ADD_TEST(ts, Test_MeasBoundingBox);
       ADD_TEST(ts, Test_LabelMeasures);
       
       Image_UINT8 im(512,512);

@@ -266,8 +266,11 @@ namespace smil
 	size_t b[6];
 	UINT dim = im.getDimension()==3 ? 3 : 2;
 	
-	if (dim==3 && measBoundBox<T>(im, b, b+1, b+2, b+3, b+4, b+5)!=RES_OK)
-	  return res;
+	if (dim==3)
+	{
+	    if (measBoundBox<T>(im, b, b+1, b+2, b+3, b+4, b+5)!=RES_OK)
+	      return res;
+	}
 	else if (measBoundBox<T>(im, b, b+1, b+2, b+3)!=RES_OK)
 	  return res;
 

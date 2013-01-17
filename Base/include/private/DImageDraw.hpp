@@ -146,13 +146,13 @@ namespace smil
 
 
     /**
-    * Draw a cube
+    * Draw a box
     * 
     * 
     * \param imOut Output image.
     */
     template <class T>
-    RES_T drawCube(Image<T> &imOut, size_t x0, size_t y0, size_t z0, size_t width, size_t height, size_t depth, T value=numeric_limits<T>::max(), bool fill=false)
+    RES_T drawBox(Image<T> &imOut, size_t x0, size_t y0, size_t z0, size_t width, size_t height, size_t depth, T value=numeric_limits<T>::max(), bool fill=false)
     {
 	ASSERT_ALLOCATED(&imOut);
 	
