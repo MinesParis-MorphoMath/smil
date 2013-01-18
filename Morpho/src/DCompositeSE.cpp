@@ -123,16 +123,19 @@ void CompStrElt::printSelf(ostream &os, string indent)
 
 
 CompStrEltList::CompStrEltList(const CompStrEltList &rhs) 
+  : BaseObject("CompStrEltList")
 {
     compSeList = rhs.compSeList;
 }
 
 CompStrEltList::CompStrEltList(const CompStrElt &compSe) 
+  : BaseObject("CompStrEltList")
 {
     compSeList.push_back(compSe);
 }
 
 CompStrEltList::CompStrEltList(const CompStrElt &compSe, UINT nrot)
+  : BaseObject("CompStrEltList")
 {
     this->add(compSe, nrot);
 }

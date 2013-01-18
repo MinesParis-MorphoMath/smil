@@ -118,13 +118,13 @@ namespace smil
     template <class T>
     RES_T thin(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
     {
-	return thin(imIn, CompStrElt(compSE), imOut);
+	return thin(imIn, CompStrEltList(compSE), imOut);
     }
 
     template <class T>
     RES_T thin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
     {
-	return thin(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+	return thin(imIn, CompStrEltList(CompStrElt(foreSE, backSE)), imOut);
     }
 
 
@@ -150,13 +150,13 @@ namespace smil
     template <class T>
     RES_T thick(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
     {
-	return thick(imIn, CompStrElt(compSE), imOut);
+	return thick(imIn, CompStrEltList(compSE), imOut);
     }
 
     template <class T>
     RES_T thick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
     {
-	return thick(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+	return thick(imIn, CompStrEltList(CompStrElt(foreSE, backSE)), imOut);
     }
 
     /**

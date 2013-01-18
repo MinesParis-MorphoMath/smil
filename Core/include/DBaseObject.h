@@ -52,7 +52,7 @@ namespace smil
     class _DCORE BaseObject
     {
     public:
-	BaseObject(bool _register=true);
+// 	BaseObject(bool _register=true);
 	BaseObject(const string _className, bool _register=true);
 	BaseObject(const BaseObject &rhs, bool _register=true);
 	

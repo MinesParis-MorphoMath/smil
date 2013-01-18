@@ -53,7 +53,7 @@ namespace smil
 	StrElt fgSE;
 	StrElt bgSE;
 	
-	CompStrElt() {};
+	CompStrElt() : BaseObject("CompStrElt") {};
 	~CompStrElt() {}
 	CompStrElt(const CompStrElt &rhs);
 	CompStrElt(const StrElt &fg, const StrElt &bg);
@@ -71,7 +71,7 @@ namespace smil
     {
     public:
 	std::vector<CompStrElt> compSeList;
-	CompStrEltList() {}
+	CompStrEltList() : BaseObject("CompStrEltList") {}
 	CompStrEltList(const CompStrEltList &rhs);
 	CompStrEltList(const CompStrElt &compSe);
 	CompStrEltList(const CompStrElt &compSe, UINT nrot);
