@@ -77,6 +77,7 @@ namespace smil
 	void showAllImages();
 	void hideAllImages();
 	vector<BaseObject*> getRegisteredObjects();
+	vector<BaseObject*> getObjectsByClassName(const char* cName);
 	vector<BaseImage*> getImages();
 	void getCompilationInfos(ostream &outStream = std::cout);
 	
@@ -92,7 +93,6 @@ namespace smil
 	const bool supportOpenMP;
 	
 	vector<BaseObject*> registeredObjects;
-	vector<BaseImage*> registeredImages;
 	void deleteRegisteredObjects();
       
     };

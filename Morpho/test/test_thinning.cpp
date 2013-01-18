@@ -95,7 +95,7 @@ class Test_Thin : public TestCase
       im3 << thinLVec;
       
       thin(im1, sel, im2);
-//       im2.printSelf(1);
+      im2.printSelf(1);
       TEST_ASSERT(im2==im3);
       
       dataType thickVec[] = 
@@ -120,6 +120,53 @@ class Test_Thin : public TestCase
   }
 };
 
+class Test_FullThin : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(10,10);
+      imType im2(im1);
+      imType im3(im1);
+      
+      dataType vec1[] = 
+      {
+	255,   0, 255,   0,   0, 255, 255,   0, 255, 255,
+	  0,   0, 255,   0, 255,   0, 255,   0, 255,   0,
+	  0,   0,   0,   0,   0,   0, 255, 255,   0, 255,
+	  0, 255, 255, 255,   0,   0, 255, 255,   0,   0,
+	  0,   0, 255,   0,   0,   0,   0,   0,   0,   0,
+	  0,   0,   0,   0,   0,   0,   0, 255, 255, 255,
+	  0,   0, 255,   0,   0, 255,   0,   0,   0, 255,
+	255, 255,   0, 255, 255,   0, 255,   0, 255, 255,
+	255, 255,   0, 255,   0,   0, 255,   0, 255, 255,
+	  0, 255, 255, 255,   0,   0,   0,   0,   0, 255
+      };
+      
+      im1 << vec1;
+      
+      dataType hmtLVec[] = 
+      {
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0, 0, 
+	  0,   0, 255,   0,   0,   0,   0,   0,   0,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0, 255,   0, 
+	  0,   0,   0,   0, 255,   0,   0,   0, 255,   0, 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0, 
+      };
+      im3 << hmtLVec;
+      
+      CompStrEltList sel = HMT_sL1(4);
+      hitOrMiss(im1, sel, im2);
+      TEST_ASSERT(im2==im3);
+  }
+};
 
 class Test_LineJunc : public TestCase
 {

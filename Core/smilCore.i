@@ -132,7 +132,6 @@ PTR_ARG_OUT_APPLY(s)
 // Expose std::vector<> as a Python list
 namespace std 
 {
-    %template(ObjVector) vector<BaseObject*>;
     %template(UintVector) vector<UINT>;
     %template(UcharVector) vector<UINT8>;
     %template(UshortVector) vector<UINT16>;
@@ -172,6 +171,10 @@ namespace std
 %template(CoreInstance) smil::UniqueInstance<Core>;
 %include "DCoreInstance.h"
 
+namespace std 
+{
+    %template(ObjVector) vector<BaseObject*>;
+}
 
 //////////////////////////////////////////////////////////
 // Signals/Slots

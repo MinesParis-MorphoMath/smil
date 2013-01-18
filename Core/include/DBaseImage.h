@@ -93,7 +93,7 @@ namespace smil
 	    return depth;
 	}
 
-	inline size_t getAllocatedSize() const {
+	virtual size_t getAllocatedSize() const {
 	    return allocatedSize;
 	}
 	

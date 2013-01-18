@@ -86,6 +86,10 @@ namespace smil
 	}
 	typedef void(BaseObject::*voidMemberFunc)();
 
+	virtual size_t getAllocatedSize() const 
+	{
+	    return sizeof(*this);
+	}
 	bool triggerEvents;
     protected:
 	bool registered;

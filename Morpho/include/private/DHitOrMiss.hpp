@@ -99,65 +99,96 @@ namespace smil
     * Thinning transform
     */
     template <class T>
-    RES_T thin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
+    RES_T thin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
 	Image<T> tmpIm(imIn);
 	ASSERT_ALLOCATED(&tmpIm);
-	
 	ImageFreezer freezer(imOut);
-	ASSERT((hitOrMiss<T>(imIn, mhtSE, tmpIm)==RES_OK));
+
+	ASSERT((hitOrMiss(imIn, foreSE, backSE, tmpIm)==RES_OK));
 	ASSERT((inv(tmpIm, tmpIm)==RES_OK));
 	ASSERT((inf(imIn, tmpIm, imOut)==RES_OK));
 	
 	return RES_OK;
     }
-
+    
     template <class T>
     RES_T thin(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
     {
-	return thin(imIn, CompStrEltList(compSE), imOut);
+	return thin(imIn, compSE.fgSE, compSE.bgSE, imOut);
     }
 
     template <class T>
-    RES_T thin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
+    RES_T thin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
     {
-	return thin(imIn, CompStrEltList(CompStrElt(foreSE, backSE)), imOut);
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	Image<T> tmpIm(imIn, true); // clone
+	ASSERT_ALLOCATED(&tmpIm);
+	
+	ImageFreezer freezer(imOut);
+	ASSERT((fill(imOut, ImDtTypes<T>::min())==RES_OK));
+	for (std::vector<CompStrElt>::const_iterator it=mhtSE.compSeList.begin();it!=mhtSE.compSeList.end();it++)
+	{
+	    ASSERT((thin<T>(tmpIm, (*it).fgSE, (*it).bgSE, tmpIm)==RES_OK));
+	}
+	copy(tmpIm, imOut);
+	
+	return RES_OK;
     }
+
 
 
     /**
     * Thicking transform
     */
     template <class T>
-    RES_T thick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
+    RES_T thick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
 	Image<T> tmpIm(imIn);
 	ASSERT_ALLOCATED(&tmpIm);
-	
 	ImageFreezer freezer(imOut);
-	ASSERT((hitOrMiss<T>(imIn, mhtSE, tmpIm)==RES_OK));
+
+	ASSERT((hitOrMiss(imIn, foreSE, backSE, tmpIm)==RES_OK));
 	ASSERT((sup(imIn, tmpIm, imOut)==RES_OK));
 	
 	return RES_OK;
     }
-
+    
     template <class T>
     RES_T thick(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
     {
-	return thick(imIn, CompStrEltList(compSE), imOut);
+	return thick(imIn, compSE.fgSE, compSE.bgSE, imOut);
     }
 
     template <class T>
-    RES_T thick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
+    RES_T thick(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
     {
-	return thick(imIn, CompStrEltList(CompStrElt(foreSE, backSE)), imOut);
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	Image<T> tmpIm(imIn, true); // clone
+	ASSERT_ALLOCATED(&tmpIm);
+	
+	ImageFreezer freezer(imOut);
+	ASSERT((fill(imOut, ImDtTypes<T>::min())==RES_OK));
+	for (std::vector<CompStrElt>::const_iterator it=mhtSE.compSeList.begin();it!=mhtSE.compSeList.end();it++)
+	{
+	    ASSERT((thick<T>(tmpIm, (*it).fgSE, (*it).bgSE, tmpIm)==RES_OK));
+	}
+	copy(tmpIm, imOut);
+	
+	return RES_OK;
     }
+
+
 
     /**
     * Thinning transform (full)
