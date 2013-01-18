@@ -92,7 +92,7 @@ namespace smil
 	{
 	    return this->_exec ( imIn, ImOut );
 	}
-	inline RES_T operator() ( imageType &ImOut, T &value )
+	inline RES_T operator() ( imageType &ImOut, const T &value )
 	{
 	    return this->_exec ( ImOut, value );
 	}

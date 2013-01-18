@@ -46,14 +46,14 @@ namespace smil
     * copy line
     */
     template <class T1, class T2>
-    inline void copyLine(const typename Image<T1>::lineType lIn, const size_t &size, typename Image<T2>::lineType lOut)
+    inline void copyLine(const typename Image<T1>::lineType lIn, const size_t size, typename Image<T2>::lineType lOut)
     {
 	for (size_t i=0;i<size;i++)
 	  lOut[i] = static_cast<T2>(lIn[i]);
     }
 
     template <class T>
-    inline void copyLine(const typename Image<T>::lineType &lIn, const size_t &size, typename Image<T>::lineType &lOut)
+    inline void copyLine(const typename Image<T>::lineType lIn, const size_t size, typename Image<T>::lineType lOut)
     {
 	memcpy(lOut, lIn, size*sizeof(T));
     }
@@ -64,9 +64,9 @@ namespace smil
     {
 	typedef typename Image<T>::lineType lineType;
 	fillLine() {}
-	fillLine(const lineType &lIn, const size_t &size, const T &value) { this->_exec(lIn, size, value); }
+	fillLine(const lineType lIn, const size_t size, const T value) { this->_exec(lIn, size, value); }
 	
-	inline void _exec(const lineType &lIn, const size_t &size, lineType &lOut)
+	inline void _exec(const lineType lIn, const size_t size, lineType lOut)
 	{
 	    memcpy(lOut, lIn, size*sizeof(T));
 	}
@@ -78,7 +78,7 @@ namespace smil
     };
 
     template <class T>
-    inline void shiftLine(const typename Image<T>::lineType &lIn, int dx, size_t lineLen, typename Image<T>::lineType &lOut, T borderValue = numeric_limits<T>::min())
+    inline void shiftLine(const typename Image<T>::lineType lIn, int dx, size_t lineLen, typename Image<T>::lineType lOut, T borderValue = numeric_limits<T>::min())
     {
 	fillLine<T> fillFunc;
 

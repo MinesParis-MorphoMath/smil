@@ -149,6 +149,8 @@ namespace smil
 	}
 	ImDtTypes<T>::deleteLine(constBuf);
 	imOut.modified();
+	
+	return RES_OK;
     }
 
 

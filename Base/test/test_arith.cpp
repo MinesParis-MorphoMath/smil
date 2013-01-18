@@ -27,6 +27,26 @@
 
 using namespace smil;
 
+class Test_Fill : public TestCase
+{
+  virtual void run()
+  {
+      UINT8 vec1[20] 	= {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
+      UINT8 vecFill[20] = { 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127 };
+      
+      
+      Image_UINT8 im1(4,5);
+      Image_UINT8 imTruth(4,5);
+      
+      im1 << vec1;
+      imTruth << vecFill;
+      
+      TEST_ASSERT(fill(im1, UINT8(127))==RES_OK);
+      
+      TEST_ASSERT(equ(im1, imTruth));
+  }
+};
+
 class Test_Equal : public TestCase
 {
   virtual void run()
@@ -55,13 +75,14 @@ class Test_Equal : public TestCase
       TEST_ASSERT(im3==imTruth);
       
       TEST_ASSERT(!(im1==im2));
-}
+  }
 };
 
 int main(int argc, char *argv[])
 {
       TestSuite ts;
 
+      ADD_TEST(ts, Test_Fill);
       ADD_TEST(ts, Test_Equal);
       
       return ts.run();

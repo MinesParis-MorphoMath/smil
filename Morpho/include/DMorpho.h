@@ -45,6 +45,7 @@
 #include "private/DMorphoWatershed.hpp"
 #include "private/DMorphoLabel.hpp"
 #include "private/DMorphoArrow.hpp"
+#include "private/DHitOrMiss.hpp"
 #include "private/DSkeleton.hpp"
  
 /** @}*/

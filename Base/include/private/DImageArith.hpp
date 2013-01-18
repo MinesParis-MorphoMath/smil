@@ -61,7 +61,7 @@ namespace smil
     {
 	ASSERT_ALLOCATED(&imOut);
 
-	return unaryImageFunction<T, fillLine<T> >(imOut, value);
+	return unaryImageFunction<T, fillLine<T> >(imOut, value).retVal;
     }
 
 
@@ -196,7 +196,7 @@ namespace smil
 	if (!haveSameSize(&imIn, &imOut, NULL))
 	    return copy<T,T>(imIn, 0, 0, 0, imOut, 0, 0, 0);
 
-	return unaryImageFunction<T, fillLine<T> >(imIn, imOut);
+	return unaryImageFunction<T, fillLine<T> >(imIn, imOut).retVal;
     }
 
     /**
@@ -228,7 +228,7 @@ namespace smil
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
-	return unaryImageFunction<T, invLine<T> >(imIn, imOut);
+	return unaryImageFunction<T, invLine<T> >(imIn, imOut).retVal;
     }
 
     /**
