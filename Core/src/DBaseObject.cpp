@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -50,16 +50,23 @@ namespace smil
 	name("")
     {
 	if (_register)
-	  Core::getInstance()->registerObject(this);
+    {
+        Core *core = Core::getInstance();
+        if (core)
+            core->registerObject(this);
     }
-
+    }
     BaseObject::BaseObject(const BaseObject &rhs, bool _register)
       : registered(false),
 	name("")
     {
 	this->_clone(rhs);
 	if (_register)
-	  Core::getInstance()->registerObject(this);
+    {
+        Core *core = Core::getInstance();
+        if (core)
+            core->registerObject(this);
+    }
     }
 
     void BaseObject::_clone(const BaseObject &rhs)
@@ -68,14 +75,19 @@ namespace smil
 	this->triggerEvents = rhs.triggerEvents;
     }
 
-    BaseObject::~BaseObject() 
+    BaseObject::~BaseObject()
     {
-	Core::getInstance()->unregisterObject(this);
+	if (registered)
+    {
+        Core *core = Core::getInstance();
+        if (core)
+            core->unregisterObject(this);
+    }
     }
 
-    Core *BaseObject::getCoreInstance() 
-    { 
-	return Core::getInstance(); 
+    Core *BaseObject::getCoreInstance()
+    {
+	return Core::getInstance();
     }
 
     const char *BaseObject::getClassName() const
