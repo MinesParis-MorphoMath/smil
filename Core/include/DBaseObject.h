@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -38,12 +38,13 @@
 
 #include "DCommon.h"
 #include "DSlot.h"
+#include "DCoreInstance.h"
 
 using namespace std;
 
 namespace smil
 {
-  
+
     class Core;
 
     /**
@@ -53,23 +54,55 @@ namespace smil
     {
     public:
 // 	BaseObject(bool _register=true);
-	BaseObject(const string _className, bool _register=true);
-	BaseObject(const BaseObject &rhs, bool _register=true);
-	
+	BaseObject(const string _className, bool _register=true)
+      : triggerEvents(true),
+	registered(false),
+	className(_className),
+	name("")
+    {
+	if (_register)
+    {
+        Core *core = Core::getInstance();
+        if (core)
+            core->registerObject(this);
+    }
+    }
+	BaseObject(const BaseObject &rhs, bool _register=true)
+      : registered(false),
+	name("")
+    {
+	this->_clone(rhs);
+	if (_register)
+    {
+        Core *core = Core::getInstance();
+        if (core)
+            core->registerObject(this);
+    }
+    }
+
+    ~BaseObject()
+    {
+	if (registered)
+    {
+        Core *core = Core::getInstance();
+        if (core)
+            core->unregisterObject(this);
+    }
+    }
+
 	// Assignment operator
 	BaseObject& operator=(const BaseObject &rhs)
 	{
 	    this->_clone(rhs);
 	    return *this;
 	}
-	
-    private:    
+
+    private:
 	void _clone(const BaseObject &rhs);
-	
+
     public:
 
-	virtual ~BaseObject() ;
-	
+
 	Core *getCoreInstance();
 	typedef void parentClass;
 	virtual const char *getInfoString(const char * = "") const { return NULL; }
@@ -86,7 +119,7 @@ namespace smil
 	}
 	typedef void(BaseObject::*voidMemberFunc)();
 
-	virtual size_t getAllocatedSize() const 
+	virtual size_t getAllocatedSize() const
 	{
 	    return sizeof(*this);
 	}
@@ -98,7 +131,7 @@ namespace smil
 
 	friend class Core;
     };
-    
+
 } // namespace smil
 
 #endif

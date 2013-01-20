@@ -28,10 +28,8 @@
 
 
 #include "DBaseObject.h"
-#include "DCoreInstance.h"
 
-namespace smil
-{
+using namespace smil;
 
 //     BaseObject::BaseObject(bool _register)
 //       : triggerEvents(true),
@@ -43,31 +41,6 @@ namespace smil
 // 	  Core::getInstance()->registerObject(this);
 //     }
 
-    BaseObject::BaseObject(const string _className, bool _register)
-      : triggerEvents(true),
-	registered(false),
-	className(_className),
-	name("")
-    {
-	if (_register)
-    {
-        Core *core = Core::getInstance();
-        if (core)
-            core->registerObject(this);
-    }
-    }
-    BaseObject::BaseObject(const BaseObject &rhs, bool _register)
-      : registered(false),
-	name("")
-    {
-	this->_clone(rhs);
-	if (_register)
-    {
-        Core *core = Core::getInstance();
-        if (core)
-            core->registerObject(this);
-    }
-    }
 
     void BaseObject::_clone(const BaseObject &rhs)
     {
@@ -75,15 +48,6 @@ namespace smil
 	this->triggerEvents = rhs.triggerEvents;
     }
 
-    BaseObject::~BaseObject()
-    {
-	if (registered)
-    {
-        Core *core = Core::getInstance();
-        if (core)
-            core->unregisterObject(this);
-    }
-    }
 
     Core *BaseObject::getCoreInstance()
     {
@@ -95,4 +59,3 @@ namespace smil
 	return this->className.c_str();
     }
 
-} // namespace smil
