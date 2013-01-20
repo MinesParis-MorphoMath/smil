@@ -39,39 +39,6 @@ IntPoint SE_HexIndices[] = { IntPoint(0,0,0), IntPoint(1,0,0), IntPoint(0,-1,0),
       IntPoint(-1,-1,0), IntPoint(-1,0,0), IntPoint(-1,1,0), IntPoint(0,1,0) };
 
 
-StrElt::StrElt(UINT s)
-  : BaseObject("StrElt"),
-    odd(false),
-    seT(SE_Generic), 
-    size(s)
-{
-}
-
-StrElt::StrElt(bool oddSE, UINT nbrPts, ...)
-  : BaseObject("StrElt"),
-    odd(oddSE),
-    seT(SE_Generic), 
-    size(1)
-{
-    UINT indice;
-    va_list vl;
-    va_start(vl, nbrPts);
-    
-    for (UINT i=0;i<nbrPts;i++)
-    {
-	indice = va_arg(vl, UINT);
-	if (odd)
-	  addPoint(SE_HexIndices[indice]);
-	else
-	  addPoint(SE_SquIndices[indice]);
-    }
-}
-
-StrElt::StrElt(const StrElt &rhs)
-  : BaseObject(rhs)
-{
-    this->clone(rhs);
-}
 
 StrElt& StrElt::operator=(const StrElt &rhs)
 {
@@ -85,6 +52,14 @@ void StrElt::clone(const StrElt &rhs)
     this->size = rhs.size;
     this->odd = rhs.odd;
     this->points = rhs.points;
+}
+
+void StrElt::addPoint(const UINT index)
+{
+    if (odd)
+      addPoint(SE_HexIndices[index]);
+    else
+      addPoint(SE_SquIndices[index]);
 }
 
 void StrElt::addPoint(int x, int y, int z)

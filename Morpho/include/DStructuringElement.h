@@ -51,19 +51,47 @@ namespace smil
     class StrElt : public BaseObject
     {
       public:
-	StrElt(UINT s=1);
+	StrElt(UINT s=1)
+	  : BaseObject("StrElt"),
+	    odd(false),
+	    seT(SE_Generic), 
+	    size(s)
+	{
+	}
 	
-	StrElt(const StrElt &rhs);
-	//! Construct with points defined by indices (Hex if oddSE, Squ otherwise)
-	StrElt(bool oddSE, UINT nbrPts, ...);
+	StrElt(const StrElt &rhs)
+	  : BaseObject(rhs)
+	{
+	    this->clone(rhs);
+	}
+	
+	//! Construct with points defined by indexes (Hex if oddSE, Squ otherwise)
+	StrElt(bool oddSE, UINT nbrPts, ...)
+	  : BaseObject("StrElt"),
+	    odd(oddSE),
+	    seT(SE_Generic), 
+	    size(1)
+	{
+	    UINT index;
+	    va_list vl;
+	    va_start(vl, nbrPts);
+	    
+	    for (UINT i=0;i<nbrPts;i++)
+	    {
+		index = va_arg(vl, UINT);
+		addPoint(index);
+	    }
+	}
 	
 	~StrElt() {}
+	
 	StrElt& operator=(const StrElt &rhs);
 	void clone(const StrElt &rhs);
       
 	//! List of neighbor points
 	vector<IntPoint> points;
 	
+	void addPoint(const UINT index);
 	void addPoint(int x, int y, int z=0);
 	void addPoint(const IntPoint &pt);
 	const StrElt operator()(int s=1) const;

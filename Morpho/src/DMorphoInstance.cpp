@@ -31,14 +31,7 @@
 
 using namespace smil;
 
-Morpho::Morpho()
-{
-    this->defaultSE = SquSE();
-}
 
-Morpho::~Morpho()
-{
-}
 
 StrElt &Morpho::getDefaultSE()
 {

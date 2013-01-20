@@ -47,8 +47,12 @@ namespace smil
 	friend class UniqueInstance<Morpho>;
 
     protected:
-	Morpho ();
-	~Morpho ();
+	Morpho ()
+	{
+	    this->defaultSE = SquSE();
+	}
+	
+	~Morpho () {}
 
     public:
 	// Public interface
