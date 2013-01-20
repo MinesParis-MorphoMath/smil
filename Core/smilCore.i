@@ -171,10 +171,14 @@ namespace std
 %template(CoreInstance) smil::UniqueInstance<Core>;
 %include "DCoreInstance.h"
 
+#ifndef SWIGXML
+
 namespace std 
 {
     %template(ObjVector) vector<BaseObject*>;
 }
+
+#endif // SWIGXML
 
 //////////////////////////////////////////////////////////
 // Signals/Slots

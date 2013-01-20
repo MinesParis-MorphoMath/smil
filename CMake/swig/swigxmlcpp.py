@@ -228,6 +228,7 @@ class swigModule():
 	self.tmplFuncs = []
 	self.tmplSpecFuncs = []
 	self.includes = []
+	self.namespaces = []
 	
 	if hasattr(xmlObj, "cdecls"):
 	  for c in xmlObj.cdecls:
@@ -250,6 +251,14 @@ class swigModule():
 	if hasattr(xmlObj, "includes"):
 	  for i in xmlObj.includes:
 	    self.includes.append(swigModule(i))
+	if hasattr(xmlObj, "imports"):
+	  imports = xmlObj.imports[0]
+	  if hasattr(imports, "namespaces"):
+	    names = []
+	    for n in imports.namespaces:
+	      if not n.name in names:
+		names.append(n.name)
+		self.namespaces.append(n)
 
 
 def usage():
@@ -269,6 +278,8 @@ def main():
     outHeaderFile = args[3]
     swigFileName = libName + ".i"
 
+    global doc, rootNode, swigXmlRoot, swigXmlInc, mod, inc, decls, defs
+    
     doc = minidom.parse(xmlFileName)
     rootNode = doc.childNodes[0]
 
@@ -294,6 +305,9 @@ def main():
 	      defs += "#include \"" + shortFname + ".h\"\n"
 	else:
 	  defs += "#include \"" + i.name + "\"\n"
+    defs += "\n"
+    for n in mod.namespaces:
+	defs += "using namespace " + n.name + ";\n"
     defs += "\n"
 
     spec = mod.tmplSpecFuncs

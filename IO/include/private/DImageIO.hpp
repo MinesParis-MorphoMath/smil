@@ -34,6 +34,7 @@
 
 
 #include "IO/include/DCommonIO.h"
+#include "Base/include/private/DImageArith.hpp"
 
 #include "DImageIO_BMP.hpp"
 #include "DImageIO_RAW.hpp"
