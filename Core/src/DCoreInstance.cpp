@@ -40,7 +40,7 @@ using namespace smil;
 
 Core::Core ()
 // : BaseObject("Core", false),
-  : keepAlive(true),
+  : keepAlive(false),
     autoResizeImages(true),
     threadNumber(1),
     maxThreadNumber(1),

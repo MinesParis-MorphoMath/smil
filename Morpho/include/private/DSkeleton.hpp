@@ -31,7 +31,7 @@
 #define _D_SKELETON_HPP
 
 #include "DMorphoBase.hpp"
-
+#include "DHitOrMiss.hpp"
 
 namespace smil
 {
@@ -42,6 +42,26 @@ namespace smil
     */
 
   
+    /**
+    * Skiz by influence zones
+    * 
+    * Thinning of the background with a HMT_sL followed by a thinning with a HMT_hM.
+    */
+    template <class T>
+    RES_T skiz(const Image<T> &imIn, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freezer(imOut);
+	Image<T> tmpIm(imIn);
+	inv(imIn, imOut);
+	fullThin(imOut, HMT_hL(6), tmpIm);
+	fullThin(tmpIm, HMT_hM(6), imOut);
+	
+	return RES_OK;
+    }
+    
     /**
     * Zhang 2D skeleton
     * 

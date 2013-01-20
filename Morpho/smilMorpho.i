@@ -139,4 +139,5 @@ TEMPLATE_WRAP_FUNC(thick);
 TEMPLATE_WRAP_FUNC(fullThick);
 
 %include "DSkeleton.hpp"
+TEMPLATE_WRAP_FUNC(skiz);
 TEMPLATE_WRAP_FUNC(zhangSkeleton);
