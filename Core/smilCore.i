@@ -155,6 +155,7 @@ namespace std
     TEMPLATE_WRAP_CLASS_2T_BOTH(map, Map)
     
     
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, IntPoint, Map)
