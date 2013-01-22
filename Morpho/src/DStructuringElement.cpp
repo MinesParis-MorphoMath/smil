@@ -64,12 +64,9 @@ void StrElt::addPoint(const UINT index)
 
 void StrElt::addPoint(int x, int y, int z)
 {
-    IntPoint p;
-    p.x = x;
-    p.y = y;
-    p.z = z;
+    IntPoint p(x,y,z);
     if (find(points.begin(), points.end(), p)==points.end())
-      points.push_back(p);
+      this->points.push_back(p);
 }
 
 void StrElt::addPoint(const IntPoint &pt)
@@ -81,18 +78,18 @@ void StrElt::addPoint(const IntPoint &pt)
 StrElt StrElt::homothety(const UINT &s) const
 {
     StrElt newSE;;
-    newSE.points = points;
+    newSE.points = this->points;
     newSE.odd = odd;
     int oddLine = 0;
     for (UINT i=0;i<s-1;i++)
     {
-	vector<IntPoint>::iterator itEnd = newSE.points.end();
-	for(vector<IntPoint>::iterator it = newSE.points.begin();it!=itEnd;it++)
+	vector<IntPoint> pts = newSE.points;
+	for(vector<IntPoint>::iterator it = pts.begin();it!=pts.end();it++)
 	{
-	  IntPoint p(*it);
+	  const IntPoint &p = *it;
 	  for(vector<IntPoint>::const_iterator it2 = points.begin();it2!=points.end();it2++)
 	  {
-	      IntPoint p2(*it2);
+	      const IntPoint &p2 = *it2;
 	      if (odd)
 		oddLine = (p2.z+1)%2 && p2.y%2 && p.y%2;
 	      newSE.addPoint(p2.x+p.x+oddLine, p2.y+p.y, p2.z+p.z);

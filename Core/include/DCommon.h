@@ -127,10 +127,11 @@ namespace smil
       T y;
       T z;
       Point() : x(0), y(0), z(0) {}
+      Point(const Point<T> &pt) : x(pt.x), y(pt.y), z(pt.z) {}
       Point(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
       bool operator == (const Point<T> &p2)
       {
-	  return x==p2.x && y==p2.y && z==p2.z;
+	  return (x==p2.x && y==p2.y && z==p2.z);
       }
     };
 
