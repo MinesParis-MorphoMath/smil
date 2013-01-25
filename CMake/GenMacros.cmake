@@ -228,3 +228,39 @@ MACRO(PARSE_ARGUMENTS prefix arg_names option_names)
 ENDMACRO(PARSE_ARGUMENTS)
 
 
+
+#### PKG-CONFIG ####
+# Input: LIB_NAME (which is supposed to have an entry in pkg-config)
+# Outputs: 
+#	* LIB_NAME_PKG_FOUND: true if the pkg has been found
+#	* LIB_NAME_DEFS: compiler flags
+#	* LIB_NAME_LINK_DIRS: linker directories
+#	* LIB_NAME_LINK_LIBS: lib dependancies
+
+MACRO(ADD_PKG_CONFIG_DEFS _LIB_NAME)
+  FIND_PACKAGE(PkgConfig)
+  IF(PKG_CONFIG_FOUND)
+      PKG_CHECK_MODULES(${_LIB_NAME}_MOD ${_LIB_NAME})
+      
+      IF(${_LIB_NAME}_MOD_FOUND)
+	  SET(${_LIB_NAME}_PKG_FOUND TRUE)
+	  SET(${_LIB_NAME}_DEFS ${${_LIB_NAME}_MOD_CFLAGS})
+	  SET(${_LIB_NAME}_LINK_DIRS)
+	  SET(${_LIB_NAME}_LINK_LIBS)
+	  FOREACH(_FLAG ${${_LIB_NAME}_MOD_STATIC_LDFLAGS})
+	      IF(_FLAG MATCHES "^-l.*")
+		  STRING(REGEX REPLACE "^-l" "" _LIB ${_FLAG})
+		  LIST(APPEND ${_LIB_NAME}_LINK_LIBS ${_LIB})
+	      ELSEIF(_FLAG MATCHES "^-L.*")
+		  STRING(REGEX REPLACE "^-L" "" _LIB_DIR ${_FLAG})
+		  LIST(APPEND ${_LIB_NAME}_LINK_DIRS ${_LIB_DIR})
+	      ENDIF(_FLAG MATCHES "^-l.*")
+	  ENDFOREACH(_FLAG ${${_LIB_NAME}_MOD_STATIC_LDFLAGS})
+	  
+	  ADD_DEFINITIONS(${${_LIB_NAME}_DEFS})
+	  LINK_DIRECTORIES(${${_LIB_NAME}_LINK_DIRS})
+	  LIST(APPEND SMIL_EXT_DEPS ${${_LIB_NAME}_LINK_LIBS})
+	  
+      ENDIF(${_LIB_NAME}_MOD_FOUND)
+  ENDIF(PKG_CONFIG_FOUND)
+ENDMACRO(ADD_PKG_CONFIG_DEFS _MODULE)
