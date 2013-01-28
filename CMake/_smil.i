@@ -156,7 +156,8 @@ def Image(*args):
     fillImg = False
     
     if argNbr==0: # No argument -> return default image type
-	img = imageTypes[0]()
+	img = imageTypes[0](256,256)
+	fillImg = True
 
     elif type(args[0])==int: # First arg is a number (should be a size)
 	img = imageTypes[0](*args)
