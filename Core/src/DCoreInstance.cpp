@@ -86,6 +86,9 @@ void Core::registerObject(BaseObject *obj)
 
     obj->registered = true;
 
+    if (string(obj->getClassName())=="Image")
+	inst->registeredImages.push_back(static_cast<BaseImage*>(obj));
+
 #if DEBUG_LEVEL > 1
     cout << "Core::registerObject: " << obj->getClassName() << " " << obj << " created." << endl;
 #endif // DEBUG_LEVEL > 1
@@ -101,6 +104,9 @@ void Core::unregisterObject(BaseObject *obj)
     inst->registeredObjects.erase(std::remove(inst->registeredObjects.begin(), inst->registeredObjects.end(), obj));
 
     obj->registered = false;
+
+    if (string(obj->getClassName())=="Image")
+	inst->registeredImages.erase(std::remove(inst->registeredImages.begin(), inst->registeredImages.end(), static_cast<BaseImage*>(obj)));
 
 #if DEBUG_LEVEL > 1
     cout << "Core::unregisterObject: " << obj->getClassName() << " " << obj << " deleted." << endl;
@@ -144,10 +150,10 @@ void Core::resetNumberOfThreads()
 
 size_t Core::getAllocatedMemory()
 {
-    vector<BaseObject*>::iterator it = this->registeredObjects.begin();
+    vector<BaseImage*>::iterator it = this->registeredImages.begin();
     size_t totAlloc = 0;
 
-    while (it!=this->registeredObjects.end())
+    while (it!=this->registeredImages.end())
 	totAlloc += (*it++)->getAllocatedSize();
     return totAlloc;
 }
@@ -157,48 +163,24 @@ vector<BaseObject*> Core::getRegisteredObjects()
     return this->registeredObjects; 
 }
 
-vector<BaseObject*> Core::getObjectsByClassName(const char* cName)
-{
-    vector<BaseObject*> objs;
-    vector<BaseObject*>::iterator it = this->registeredObjects.begin();
-
-    while (it!=this->registeredObjects.end())
-    {
-      if (strcmp((*it++)->getClassName(), cName)==0)
-	objs.push_back(*it);
-    }
-    return objs;
-}
-
 vector<BaseImage*> Core::getImages()  
 { 
-    vector<BaseImage*> imgs;
-    vector<BaseObject*>::iterator it = this->registeredObjects.begin();
-
-    while (it!=this->registeredObjects.end())
-    {
-      const char *cname = (*it++)->getClassName();
-      if (strcmp(cname, "Image")==0)
-	imgs.push_back(static_cast<BaseImage*>(*it));
-    }
-    return imgs;
+    return this->registeredImages; 
 }
 
 void Core::showAllImages()
 {
-    vector<BaseImage*> imgs = this->getImages();
-    vector<BaseImage*>::iterator it = imgs.begin();
+    vector<BaseImage*>::iterator it = this->registeredImages.begin();
 
-    while (it!=imgs.end())
+    while (it!=this->registeredImages.end())
 	(*it++)->show();
 }
 
 void Core::hideAllImages()
 {
-    vector<BaseImage*> imgs = this->getImages();
-    vector<BaseImage*>::iterator it = imgs.begin();
+    vector<BaseImage*>::iterator it = this->registeredImages.begin();
 
-    while (it!=imgs.end())
+    while (it!=this->registeredImages.end())
 	(*it++)->hide();
 }
 
