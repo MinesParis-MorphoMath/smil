@@ -54,7 +54,7 @@ namespace smil
     {
     public:
 // 	BaseObject(bool _register=true);
-	BaseObject(const string _className, bool _register=true)
+	BaseObject(const char *_className, bool _register=true)
       : triggerEvents(true),
 	registered(false),
 	className(_className),
@@ -69,6 +69,7 @@ namespace smil
     }
 	BaseObject(const BaseObject &rhs, bool _register=true)
       : registered(false),
+	className(rhs.className),
 	name("")
     {
 	this->_clone(rhs);

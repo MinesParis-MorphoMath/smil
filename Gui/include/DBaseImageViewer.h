@@ -48,8 +48,8 @@ namespace smil
     public:
 	typedef BaseObject parentClass;
 	
-	BaseImageViewer()
-	  : BaseObject("BaseImageViewer"),
+	BaseImageViewer(const char *_className="BaseImageViewer")
+	  : BaseObject(_className),
 	    labelImage(false)
 	{
 	    updateSlot.init(this, &BaseImageViewer::update);

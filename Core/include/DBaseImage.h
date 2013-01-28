@@ -52,7 +52,7 @@ namespace smil
     {
 	typedef BaseObject parentClass;
     public:
-	BaseImage(const string _className="BaseImage")
+	BaseImage(const char *_className="BaseImage")
 	  :	BaseObject(_className),
 	updatesEnabled(true),
 	onModified(this),

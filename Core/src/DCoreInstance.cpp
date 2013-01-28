@@ -161,11 +161,10 @@ vector<BaseObject*> Core::getObjectsByClassName(const char* cName)
 {
     vector<BaseObject*> objs;
     vector<BaseObject*>::iterator it = this->registeredObjects.begin();
-    string _cName = cName;
 
     while (it!=this->registeredObjects.end())
     {
-      if ((*it++)->getClassName()==_cName)
+      if (strcmp((*it++)->getClassName(), cName)==0)
 	objs.push_back(*it);
     }
     return objs;
@@ -177,8 +176,11 @@ vector<BaseImage*> Core::getImages()
     vector<BaseObject*>::iterator it = this->registeredObjects.begin();
 
     while (it!=this->registeredObjects.end())
-      if ((*it++)->getClassName()=="Image")
+    {
+      const char *cname = (*it++)->getClassName();
+      if (strcmp(cname, "Image")==0)
 	imgs.push_back(static_cast<BaseImage*>(*it));
+    }
     return imgs;
 }
 
