@@ -57,7 +57,7 @@
 //     #include <mm_malloc.h>
 //     #define MALLOC(ptr,size,align)   ptr = _mm_malloc(size,align)
 //     #define FREE(p)                  _mm_free(p)
-    #include <malloc.h>
+    #include <stdlib.h>
     #define MALLOC(ptr,size,align)   ptr = malloc(size)
     #define FREE(p)                  free(p)
 
