@@ -27,9 +27,8 @@
  */
 
 
-#include "DImage.h"
-#include "DIO.h"
-#include "DGui.h"
+#include "DImage.hpp"
+#include "IO/include/private/DImageIO.hpp"
 
 
 // Gui specializations
