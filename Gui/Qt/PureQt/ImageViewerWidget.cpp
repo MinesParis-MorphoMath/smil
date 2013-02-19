@@ -651,7 +651,7 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
     QPoint globalPos = this->mapToGlobal(pos);
 
     QMenu selectMenu("Tools");
-    selectMenu.addAction("Move");
+    selectMenu.addAction("Hand");
     selectMenu.addAction("Line");
     selectMenu.addAction("Box");
 

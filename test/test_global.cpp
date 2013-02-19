@@ -53,9 +53,9 @@ int main(int argc, char *argv[])
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
 
-//    read("http://cmm.ensmp.fr/~faessel/smil/images/lena.png", im1);
+   read("http://cmm.ensmp.fr/~faessel/smil/images/lena.png", im1);
 //    read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/antibiog.bmp", im1);
-   read("/home/mat/src/morphee/trunk/utilities/Images/Gray/lena256x256.png", im1);
+//    read("/home/mat/src/morphee/trunk/utilities/Images/Gray/lena256x256.png", im1);
 //    read("/home/faessel/src/Smil/build/lib/tmp.bmp", im1);
 //     read("lena.png", im1);
 
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
 //     im3->printSelf();
     im1.show();
 //     
-//     Gui::execLoop();
+    Gui::execLoop();
 
 }
 
