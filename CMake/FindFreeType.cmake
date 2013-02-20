@@ -11,11 +11,13 @@
 # FREETYPE_LIBRARY, where to find the FREETYPE library.
 
 FIND_PATH(FREETYPE_INCLUDE_DIR_FT2BUILD ft2build.h
+  freetype2
   /usr/include/
   /usr/local/include/
 )
 
 FIND_PATH(FREETYPE_INCLUDE_DIR_FTHEADER freetype/config/ftheader.h
+  ${FREETYPE_INCLUDE_DIR_FT2BUILD}/freetype2
   /usr/include/freetype2
   /usr/local/include/freetype2
 )
