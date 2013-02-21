@@ -34,6 +34,7 @@
 
 %{
 #include "DErrors.h"
+#include "DTypes.h"
 #include "DTypes.hpp"
 #include "DBaseObject.h"
 #include "DBaseImage.h"

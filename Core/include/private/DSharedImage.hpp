@@ -55,7 +55,7 @@ namespace smil
 	//! Default constructor
 	SharedImage(const Image<T> &img)
 	{
-	    BaseObject::className = "SharedImage";
+	    this->className = "SharedImage";
 	    parentClass::init();
 	    if (!img.isAllocated())
 		ERR_MSG("Source image isn't allocated");
@@ -68,7 +68,7 @@ namespace smil
       
 	SharedImage(const SharedImage<T> &img)
 	{
-	    BaseObject::className = "SharedImage";
+	    this->className = "SharedImage";
 	    parentClass::init();
 	    this->clone(img);
 	}
