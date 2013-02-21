@@ -7,6 +7,7 @@ public class test
 
   static 
   {
+       System.loadLibrary("smilBaseJava");
        System.loadLibrary("smilCoreJava");
        System.loadLibrary("smilIOJava");
        System.loadLibrary("smilGuiJava");
@@ -16,13 +17,13 @@ public class test
   public static void main(String argv[]) 
   {
       Image_UINT8 im = new Image_UINT8(512, 512);
-      smilCoreJava.fill(im, (short)127);
-      smilCoreJava.drawRectangle(im, 128, 128, 256, 256);
+      smilBaseJava.fill(im, (short)127);
+      smilBaseJava.drawRectangle(im, 128, 128, 256, 256);
       smilMorphoJava.dilate(im, im);
       
       // Warning: gui (Qt) stuff seems to crash in debug mode...
       im.show();
-      Core.execLoop();
+      Gui.execLoop();
   }
 
 }
