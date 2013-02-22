@@ -75,6 +75,11 @@ import __main__
 
 ${PYTHON_IMPORT_MODULES}
 
+def AboutSmil():
+    print "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}"
+    print "Copyright (c) 2011, Matthieu FAESSEL and ARMINES"
+    print "All rights reserved."
+
 dataTypes = [ ${DATA_TYPES_QUOTE_STR}, ]
 imageTypes = [ ${IMAGE_TYPES_STR}, ]
 
