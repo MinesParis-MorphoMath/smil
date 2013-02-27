@@ -1,3 +1,6 @@
+Git branches:
+http://www.croes.org/gerald/blog/git-modele-de-branche-efficace/649/
+
 http://en.gentoo-wiki.com/wiki/Hardware_CFLAGS#Using_-march.3Dnative_instead
 Determining available processor features 
 echo "" | gcc -march=native -v -E - 2>&1 | grep cc1

@@ -124,9 +124,9 @@ namespace smil
     template <class T>
     Image<T>::~Image()
     {
-	hide();
 	if (viewer)
 	    delete viewer;
+	viewer = NULL;
 
 	this->deallocate();
     }
