@@ -55,6 +55,8 @@ namespace smil
 	    updateSlot.init(this, &BaseImageViewer::update);
 	}
 	
+	virtual ~BaseImageViewer() {}
+	
 	virtual void show() {}
 	virtual void showLabel() {}
 	virtual void hide() {}
