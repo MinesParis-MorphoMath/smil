@@ -93,12 +93,18 @@ IF(WIN32 AND NOT UNIX)
       SET(CPACK_NSIS_URL_INFO_ABOUT "http://cmm.ensmp.fr/~faessel/smil/doc/")
 
       IF(WRAP_PYTHON)
+	      IF(USE_64BIT_IDS)
+		      # allow the installer to access keys in the x64 view of the registry
+		      SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "${CPACK_NSIS_EXTRA_INSTALL_COMMANDS} 
+			      SetRegView 64
+		      ")
+	      ENDIF(USE_64BIT_IDS)
 	      SET(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "${CPACK_NSIS_EXTRA_INSTALL_COMMANDS}
-			WriteRegStr HKLM \\\"SOFTWARE\\\\Python\\\\PythonCore\\\\${PYTHON_VERSION}\\\\PythonPath\\\\SmilBase\\\" \\\"\\\" \\\"$INSTDIR\\\\${SMIL_LIBRARIES_INSTALL_PATH}\\\"
+			WriteRegStr HKLM \\\"SOFTWARE\\\\Python\\\\PythonCore\\\\${PYTHON_VERSION}\\\\PythonPath\\\\Smil\\\" \\\"\\\" \\\"$INSTDIR\\\\${SMIL_LIBRARIES_INSTALL_PATH}\\\"
 	      ")
 
 	      SET(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS "${CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS}
-			DeleteRegValue HKLM \\\"SOFTWARE\\\\Python\\\\PythonCore\\\\${PYTHON_VERSION}\\\\PythonPath\\\" \\\"SmilBase\\\"
+			DeleteRegValue HKLM \\\"SOFTWARE\\\\Python\\\\PythonCore\\\\${PYTHON_VERSION}\\\\PythonPath\\\" \\\"Smil\\\"
 	      ")
       ENDIF(WRAP_PYTHON)
 
