@@ -116,11 +116,16 @@ ELSE(WIN32 AND NOT UNIX)
       SET(CPACK_DEB_USE_DISPLAY_NAME_IN_FILENAME ON)
 #       SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
 
+      FILE(READ /etc/lsb-release LINUX_RELEASE)
+      STRING(REGEX REPLACE ".*DISTRIB_CODENAME=(.*)\nDIST.*" "\\1" LINUX-CODENAME ${LINUX_RELEASE})
+      SET(CPACK_SYSTEM_NAME "${LINUX-CODENAME}-${CPACK_SYSTEM_NAME}")
+      
+      # Values for lucid
       SET(CPACK_DEB_COMMON_DEPENDS
-	    "libc6 (>= 2.15), 
+	    "libc6 (>= 2.11), 
 	    libgcc1 (>= 1:4.1.1), 
-	    libqtcore4 (>= 4:4.7.0~beta1), 
-	    libqtgui4 (>= 4:4.8.0), 
+	    libqtcore4 (>= 4:4.6), 
+	    libqtgui4 (>= 4:4.6), 
 	    libqwt6, 
 	    libstdc++6 (>= 4.4.0)")
       
