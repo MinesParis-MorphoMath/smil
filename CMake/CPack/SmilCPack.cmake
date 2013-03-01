@@ -114,20 +114,20 @@ ELSE(WIN32 AND NOT UNIX)
       SET(CPACK_GENERATOR "DEB")
       SET(CPACK_DEB_COMPONENT_INSTALL ON)
       SET(CPACK_DEB_USE_DISPLAY_NAME_IN_FILENAME ON)
-#       SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
-
+      SET(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
+      
       FILE(READ /etc/lsb-release LINUX_RELEASE)
       STRING(REGEX REPLACE ".*DISTRIB_CODENAME=(.*)\nDIST.*" "\\1" LINUX-CODENAME ${LINUX_RELEASE})
       SET(CPACK_SYSTEM_NAME "${LINUX-CODENAME}-${CPACK_SYSTEM_NAME}")
       
       # Values for lucid
-      SET(CPACK_DEB_COMMON_DEPENDS
-	    "libc6 (>= 2.11), 
-	    libgcc1 (>= 1:4.1.1), 
-	    libqtcore4 (>= 4:4.6), 
-	    libqtgui4 (>= 4:4.6), 
-	    libqwt6, 
-	    libstdc++6 (>= 4.4.0)")
+#       SET(CPACK_DEB_COMMON_DEPENDS
+# 	    "libc6 (>= 2.11), 
+# 	    libgcc1 (>= 1:4.1.1), 
+# 	    libqtcore4 (>= 4:4.6), 
+# 	    libqtgui4 (>= 4:4.6), 
+# 	    libqwt6, 
+# 	    libstdc++6 (>= 4.4.0)")
       
       SET(CPACK_DEB_PACKAGE_COMPONENT TRUE)
       SET(CPACK_DEB_COMPONENT_INSTALL TRUE)
@@ -138,8 +138,12 @@ ELSE(WIN32 AND NOT UNIX)
       ELSE(USE_64BIT_IDS)
 	      SET(CPACK_DEBIAN_PACKAGE_ARCHITECTURE i686)
       ENDIF(USE_64BIT_IDS)
+      
       SET(CPACK_DEBIAN_COMPONENT_base_DEPENDS "${CPACK_DEB_COMMON_DEPENDS}")
       SET(CPACK_DEBIAN_COMPONENT_python_DEPENDS "${CPACK_DEB_COMMON_DEPENDS}, python-qt4")
+      SET(CPACK_DEBIAN_PACKAGE_DEPENDS "python-qt4")
+
+      
 ENDIF(WIN32 AND NOT UNIX)
 # SET(CPACK_PACKAGE_EXECUTABLES "lib/test_global" "My Executable")
 INCLUDE(CPack)
