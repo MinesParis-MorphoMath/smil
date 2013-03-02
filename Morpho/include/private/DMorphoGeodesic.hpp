@@ -160,7 +160,7 @@ namespace smil
     }
 
     template <class T, class HQcompT>
-    RES_T initBuildHierarchicalQueue(const Image<T> &imIn, HierarchicalQueue<T, HQcompT> &hq, const <T> &noPushValue)
+    RES_T initBuildHierarchicalQueue(const Image<T> &imIn, HierarchicalQueue<T, HQcompT> &hq, const T noPushValue)
     {
 	// Empty the priority queue
 	hq.reset();
@@ -364,11 +364,11 @@ namespace smil
 	// Make sure that imIn <= imMark
 	ASSERT((inf(imIn, imMark, imOut)==RES_OK));
 	
-	// Set all pixels in the status image to CANDIDATE
-	ASSERT((fill(imStatus, (UINT8)HQ_CANDIDATE)==RES_OK));
+	// make a status image with all foreground pixels as CANDIDATE, otherwise as FINAL
+	
 
 	ASSERT((threshold(imIn, noPushValue+1, maxValue, (UINT8)HQ_CANDIDATE, (UINT8)HQ_FINAL, imstatus)==RES_OK));
-    {
+    
 	// Initialize the PQ
 	initBuildHierarchicalQueue(imOut, rpq, noPushValue);
 	processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMark, imStatus, rpq, se);
