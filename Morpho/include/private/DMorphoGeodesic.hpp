@@ -33,6 +33,7 @@
 #include "DMorphImageOperations.hpp"
 #include "DMorphoHierarQ.hpp"
 #include "Base/include/private/DImageDraw.hpp"
+#include "Base/include/private/DImageHistogram.hpp"
 
 
 namespace smil
@@ -175,7 +176,7 @@ namespace smil
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
 
-	    if (*inPixel != noPushValue) {
+	    if (*inPixels != noPushValue) {
 	      hq.push(*inPixels, offset);
 	    }
 	    inPixels++;
@@ -351,8 +352,8 @@ namespace smil
     {
 	ASSERT_ALLOCATED(&imIn, &imMark, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imMark, &imOut);
-	T noPushValue = NUMERIC_LIMITS<T>::min();
-	T maxValue = = NUMERIC_LIMITS<T>::max();
+	//	T noPushValue = NUMERIC_LIMITS<T>::min();
+	//T maxValue =  NUMERIC_LIMITS<T>::max();
 	ImageFreezer freeze(imOut);
 	
 	Image<UINT8> imStatus(imIn);
@@ -366,11 +367,11 @@ namespace smil
 	
 	// make a status image with all foreground pixels as CANDIDATE, otherwise as FINAL
 	
-
-	ASSERT((threshold(imIn, noPushValue+1, maxValue, (UINT8)HQ_CANDIDATE, (UINT8)HQ_FINAL, imstatus)==RES_OK));
+	ASSERT((copy(imMark, imStatus) == RES_OK));
+	ASSERT((threshold<UINT8>(imStatus, imStatus.dataTypeMin+1, imStatus.dataTypeMax, (UINT8)HQ_CANDIDATE, (UINT8)HQ_FINAL, imStatus)==RES_OK));
     
 	// Initialize the PQ
-	initBuildHierarchicalQueue(imOut, rpq, noPushValue);
+	initBuildHierarchicalQueue(imOut, rpq, imOut.dataTypeMin);
 	processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMark, imStatus, rpq, se);
 	
 	return RES_OK;
