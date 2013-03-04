@@ -118,7 +118,7 @@ IF(BUILD_SHARED_LIBS)
 	ADD_DEFINITIONS("-DSHARED_LIBS")
 ENDIF(BUILD_SHARED_LIBS)
 
-OPTION(USE_STATIC_DEPEND_LIBS "Use the static version on dependency libraries" OFF)
+OPTION(USE_STATIC_DEPEND_LIBS "Use the static version on dependency libraries. Requires pkg-config." OFF)
 MARK_AS_ADVANCED(USE_STATIC_DEPEND_LIBS)
 IF(USE_STATIC_DEPEND_LIBS)
 	ADD_DEFINITIONS("-Wl,-Bstatic")
