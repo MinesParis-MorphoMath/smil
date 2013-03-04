@@ -33,6 +33,7 @@
 #include "DMorphImageOperations.hpp"
 #include "DMorphoHierarQ.hpp"
 #include "Base/include/private/DImageDraw.hpp"
+#include "Base/include/private/DImageHistogram.hpp"
 
 
 namespace smil
@@ -151,6 +152,33 @@ namespace smil
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
 	    hq.push(*inPixels, offset);
+	    inPixels++;
+	    offset++;
+	}
+	
+    //     hq.printSelf();
+	return RES_OK;
+    }
+
+    template <class T, class HQcompT>
+    RES_T initBuildHierarchicalQueue(const Image<T> &imIn, HierarchicalQueue<T, HQcompT> &hq, const T noPushValue)
+    {
+	// Empty the priority queue
+	hq.reset();
+	
+	typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
+	
+	size_t s[3];
+	
+	imIn.getSize(s);
+	size_t offset = 0;
+	
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	{
+
+	    if (*inPixels != noPushValue) {
+	      hq.push(*inPixels, offset);
+	    }
 	    inPixels++;
 	    offset++;
 	}
@@ -315,6 +343,40 @@ namespace smil
 	
 	return RES_OK;
     }
+
+    /**
+    * Reconstruction (using hierarchical queues).
+    */
+    template <class T>
+    RES_T binBuild(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imMark, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imMark, &imOut);
+	//	T noPushValue = NUMERIC_LIMITS<T>::min();
+	//T maxValue =  NUMERIC_LIMITS<T>::max();
+	ImageFreezer freeze(imOut);
+	
+	Image<UINT8> imStatus(imIn);
+	
+	// Reverse hierarchical queue (the highest token correspond to the highest gray value)
+	typedef typename std::less< HQToken<T> > compareType;
+	HierarchicalQueue<T, compareType > rpq;
+	
+	// Make sure that imIn <= imMark
+	ASSERT((inf(imIn, imMark, imOut)==RES_OK));
+	
+	// make a status image with all foreground pixels as CANDIDATE, otherwise as FINAL
+	
+	ASSERT((copy(imMark, imStatus) == RES_OK));
+	ASSERT((threshold<UINT8>(imStatus, imStatus.dataTypeMin+1, imStatus.dataTypeMax, (UINT8)HQ_CANDIDATE, (UINT8)HQ_FINAL, imStatus)==RES_OK));
+    
+	// Initialize the PQ
+	initBuildHierarchicalQueue(imOut, rpq, imOut.dataTypeMin);
+	processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMark, imStatus, rpq, se);
+	
+	return RES_OK;
+    }
+
 
     /**
     * h-Reconstuction
