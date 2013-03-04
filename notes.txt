@@ -18,8 +18,16 @@ Everyone else on the team runs this:
 git flow init
 git branch --set-upstream develop origin/develop
 
+Note: if these other guys have a branch lying around other than
+master, git flow will refuse to create the develop branch. Either
+delete these branches or create the develop branch manually (git
+branch develop origin/develop) before initializing git flow. The
+"origin/develop" at the end of that command sets up the tracking
+branch.
+
 
 Push
+
 I recommend this magic spell:
     git config push.default current
 Run this once to tell git push that it should (by default) push only the current branch. This way, when you make commits on develop and push them to origin, you won't be confused by error messages that occur because your master branch is behind. 
