@@ -38,8 +38,7 @@ using namespace smil;
 
 void QtGui::_execLoop() 
 { 
-    if (qApp)
-      qApp->exec();
+    qtLoop();
 }
 
 void QtGui::_processEvents() 
@@ -60,7 +59,7 @@ QtAppGui::~QtAppGui()
 
 void QtAppGui::_execLoop() 
 { 
-    QApplication::exec();
+    qtLoop();
 }
 
 void QtAppGui::_processEvents() 
