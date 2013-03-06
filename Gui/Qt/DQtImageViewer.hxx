@@ -328,12 +328,12 @@ namespace smil
 	int objNbr = urls.size();
 
 	if (objNbr==1)
-	  read(urls[0].path().toStdString().c_str(), *this->image);
+	  read(urls[0].toString().remove("file:///").toStdString().c_str(), *this->image);
 	else
 	{
 	    vector<string> files;
 	    for (QList<QUrl>::iterator it=urls.begin();it!=urls.end();it++)
-	      files.push_back((*it).path().toStdString());
+	      files.push_back((*it).toString().remove("file:///").toStdString());
 	    read(files, *this->image);
 	}
     }

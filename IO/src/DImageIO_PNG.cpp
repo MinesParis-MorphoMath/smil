@@ -52,7 +52,11 @@ namespace smil
 	/* open image file */
 	fp = fopen (filename, "rb");
 	
-	ASSERT((fp!=NULL), string("Cannot open file ") + filename + " for input", RES_ERR_IO);
+	if (!fp)
+	{
+	    cout << "Cannot open file " << filename << endl;
+	    return RES_ERR_IO;
+	}
 
 	FileCloser fileCloser(fp);
 	
