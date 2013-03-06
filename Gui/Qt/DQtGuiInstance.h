@@ -33,7 +33,12 @@
 
 #include "DGuiInstance.h"
 
+#if defined(Q_OS_WIN)
+#include <conio.h>
+#include <QTimer>
+#else
 #include <QSocketNotifier>
+#endif
 #include <QThread>
 
 namespace smil
