@@ -39,9 +39,10 @@
 namespace smil
 {
     /**
-    * \ingroup HierarQ
-    * @{
-    */
+     * \ingroup Morpho
+     * \defgroup Watershed
+     * @{
+     */
 
   
     template <class T, class labelT>
