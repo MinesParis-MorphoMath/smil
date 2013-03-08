@@ -103,11 +103,11 @@ namespace smil
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	int i;
 	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i)
+	    #pragma omp parallel private(i) num_threads(nthreads)
 	#endif // USE_OPEN_MP
 	{
 	    #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
+		#pragma omp for
 	    #endif // USE_OPEN_MP
 	    for (i=0;i<lineCount;i++)
 		lineFunction._exec(srcLines[i], lineLen, destLines[i]);
@@ -138,11 +138,11 @@ namespace smil
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	int i;
 	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i)
+	    #pragma omp parallel private(i) num_threads(nthreads)
 	#endif // USE_OPEN_MP
 	{
 	    #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
+		#pragma omp for
 	    #endif // USE_OPEN_MP
 	    for (i=0;i<lineCount;i++)
 		lineFunction._exec(constBuf, lineLen, destLines[i]);
@@ -171,11 +171,11 @@ namespace smil
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	int i;
 	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i)
+	    #pragma omp parallel private(i) num_threads(nthreads)
 	#endif // USE_OPEN_MP
 	{
 	    #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
+		#pragma omp for
 	    #endif // USE_OPEN_MP
 	    for (i=0;i<(int)lineCount;i++)
 		    lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
@@ -203,11 +203,11 @@ namespace smil
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	int i;
 	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i)
+	    #pragma omp parallel private(i) num_threads(nthreads)
 	#endif // USE_OPEN_MP
 	{
 	    #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
+		#pragma omp for
 	    #endif // USE_OPEN_MP
 	    for (i=0;i<lineCount;i++)
 		lineFunction(srcLines1[i], srcLines2[i], lineLen, tmpBuf);
@@ -242,11 +242,11 @@ namespace smil
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	int i;
 	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i)
+	    #pragma omp parallel private(i) num_threads(nthreads)
 	#endif // USE_OPEN_MP
 	{
 	    #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
+		#pragma omp for
 	    #endif // USE_OPEN_MP
 	  for (i=0;i<lineCount;i++)
 	      lineFunction(srcLines[i], constBuf, lineLen, destLines[i]);
@@ -278,11 +278,11 @@ namespace smil
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	int i;
 	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i)
+	    #pragma omp parallel private(i) num_threads(nthreads)
 	#endif // USE_OPEN_MP
 	{
 	    #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
+		#pragma omp for
 	    #endif // USE_OPEN_MP
 	    for (i=0;i<lineCount;i++)
 		lineFunction(srcLines1[i], srcLines2[i], srcLines3[i], lineLen, destLines[i]);
@@ -316,11 +316,11 @@ namespace smil
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	int i;
 	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i)
+	    #pragma omp parallel private(i) num_threads(nthreads)
 	#endif // USE_OPEN_MP
 	{
 	    #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
+		#pragma omp for
 	    #endif // USE_OPEN_MP
 	    for (i=0;i<lineCount;i++)
 		lineFunction(srcLines1[i], srcLines2[i], constBuf, lineLen, destLines[i]);
@@ -354,11 +354,11 @@ namespace smil
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	int i;
 	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i)
+	    #pragma omp parallel private(i) num_threads(nthreads)
 	#endif // USE_OPEN_MP
 	{
 	    #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
+		#pragma omp for
 	    #endif // USE_OPEN_MP
 	    for (i=0;i<lineCount;i++)
 		lineFunction(srcLines1[i], constBuf, srcLines2[i], lineLen, destLines[i]);
@@ -394,11 +394,11 @@ namespace smil
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	int i;
 	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i)
+	    #pragma omp parallel private(i) num_threads(nthreads)
 	#endif // USE_OPEN_MP
 	{
 	    #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
+		#pragma omp for
 	    #endif // USE_OPEN_MP
 	    for (i=0;i<lineCount;i++)
 		lineFunction(srcLines[i], constBuf1, constBuf2, lineLen, destLines[i]);
