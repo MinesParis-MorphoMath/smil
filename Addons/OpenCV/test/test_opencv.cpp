@@ -8,6 +8,22 @@
 
 
 using namespace smil;
+using namespace cv;
+
+class Test_Cpp : public TestCase
+{
+    virtual void run()
+    {
+	IplImage* img = cvCreateImage(cvSize(5,5),IPL_DEPTH_8U,1);
+	cvZero(img);
+	for (int i=0;i<25;i++)
+	  img->imageData[i] = i;
+	OpenCVInt<UINT8> cvInt(img);
+	for (int i=0;i<25;i++)
+	  TEST_ASSERT(cvInt[i]==i);
+	cvReleaseImage(&img);
+    }
+};
 
 
 #ifdef WRAP_PYTHON
@@ -43,6 +59,7 @@ int main(int argc, char *argv[])
 {
       TestSuite ts;
       
+      ADD_TEST(ts, Test_Cpp);
 #ifdef WRAP_PYTHON
       ADD_TEST(ts, Test_Python_Import);
 #endif // WRAP_PYTHON

@@ -30,14 +30,13 @@
 #ifndef _D_OPENCV_IMAGE_HPP
 #define _D_OPENCV_IMAGE_HPP
 
+#include <opencv/cv.h>
+
 #include "DImage.hxx"
 #include "DSharedImage.hpp"
 
-#include "opencv2/core/core_c.h"
-#include "opencv2/core/core.hpp"
-#include "opencv2/flann/miniflann.hpp"
-#include "opencv2/imgproc/imgproc_c.h"
-// using namespace cv;
+
+using namespace cv;
 
 namespace smil
 {
@@ -46,18 +45,25 @@ namespace smil
     * OpenCV Image Interface
     */
 
-//     Mat M(2,2, CV_8UC3, Scalar(0,0,255));
-    
     template <class T>
     class OpenCVInt : public SharedImage<T>
     {
     public:
 	typedef SharedImage<T> parentClass;
 	
-	OpenCVInt()
+	OpenCVInt(Mat &_cvMat)
 	{
 	    BaseObject::className = "OpenCVInt";
 	    parentClass::init();
+	    this->pixels = (T*)(_cvMat.data);
+	    this->setSize(_cvMat.size().width, _cvMat.size().height);
+	}
+	OpenCVInt(IplImage *cvIm)
+	{
+	    BaseObject::className = "OpenCVInt";
+	    parentClass::init();
+	    this->pixels = (T*)(cvIm->imageData);
+	    this->setSize(cvIm->width, cvIm->height);
 	}
     #ifdef Py_PYCONFIG_H
     #endif // Py_PYCONFIG_H
