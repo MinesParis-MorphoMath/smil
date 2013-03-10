@@ -66,6 +66,7 @@ namespace smil
 	    this->setSize(cvIm->width, cvIm->height);
 	}
     #ifdef Py_PYCONFIG_H
+    // See http://cvblob.googlecode.com/svn-history/r361/branches/0.10.4_pythonswig/interfaces/swig/general/cvblob.i
     #endif // Py_PYCONFIG_H
     };
     
