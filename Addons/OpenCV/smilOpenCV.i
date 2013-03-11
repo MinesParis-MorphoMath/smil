@@ -27,50 +27,40 @@
 
 
 
-%include smilCommon.i
-
-SMIL_MODULE(smilMorphM)
-
-
 %{
 /* Includes the header in the wrapper code */
-#include "DMorphMImage.hpp"
+#include <opencv/cv.h>
+#include "DOpenCVInterface.hpp"
 %}
+
+%include smilCommon.i
+
+SMIL_MODULE(smilOpenCV)
+
 
 %import smilCore.i
 
+%include "DOpenCVInterface.hpp"
 
-%include "DMorphMImage.hpp"
-
-TEMPLATE_WRAP_CLASS(MorphmInt,MorphmInt)
+TEMPLATE_WRAP_CLASS(OpenCVInt,OpenCVInt)
 
 
-#ifdef SWIGPYTHON
+
+#if defined SWIGPYTHON && defined USE_NUMPY
 
 %pythoncode %{
 
+def toArray(img):
+  return img.getNumArray(True)
 
-def MorphmInt(*args):
-    """
-    * Create a SharedImage interface with a MorphM image
-    """
+for t in imageTypes:
+    t.cv = toArray
 
-    argNbr = len(args)
-    argTypeStr = [ str(type(a)) for a in args ]
-    
-    if argNbr==0 or argTypeStr[0]!="<class 'MorpheePython.IMorpheeImage'>":
-      print "You must specify a MorphM image"
-      return
-    
-    im = args[0]
-    dt = str(im.getDataType())
-    
-    if dt=="sdtUINT8":
-      return MorphmInt_UINT8(im)
+
 %}
 
 	
-#endif // SWIGPYTHON
+#endif // SWIGPYTHON && USE_NUMPY
 
 
 

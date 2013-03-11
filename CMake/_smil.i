@@ -72,6 +72,13 @@ ${SWIG_INCLUDE_DEFINITIONS}
 import sys, gc, os
 import time, new
 import __main__
+import __builtin__
+
+from smilCorePython import *
+
+__builtin__.dataTypes = [ ${DATA_TYPES_QUOTE_STR}, ]
+__builtin__.imageTypes = [ ${IMAGE_TYPES_STR}, ]
+
 
 ${PYTHON_IMPORT_MODULES}
 
@@ -79,9 +86,6 @@ def AboutSmil():
     print "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}"
     print "Copyright (c) 2011, Matthieu FAESSEL and ARMINES"
     print "All rights reserved."
-
-dataTypes = [ ${DATA_TYPES_QUOTE_STR}, ]
-imageTypes = [ ${IMAGE_TYPES_STR}, ]
 
 
 def _find_object_names(obj):

@@ -36,7 +36,6 @@
 #include "DSharedImage.hpp"
 
 
-using namespace cv;
 
 namespace smil
 {
@@ -51,7 +50,7 @@ namespace smil
     public:
 	typedef SharedImage<T> parentClass;
 	
-	OpenCVInt(Mat &_cvMat)
+	OpenCVInt(cv::Mat &_cvMat)
 	{
 	    BaseObject::className = "OpenCVInt";
 	    parentClass::init();
@@ -65,10 +64,36 @@ namespace smil
 	    this->pixels = (T*)(cvIm->imageData);
 	    this->setSize(cvIm->width, cvIm->height);
 	}
-    #ifdef Py_PYCONFIG_H
+	
+    #ifdef SWIGPYTHON
+    private:
+	struct python_iplimage
+	{
+	    PyObject_HEAD
+	    IplImage *img;
+	    PyObject *data;
+	    size_t offset;
+	};
+	
+    public:
+	OpenCVInt(PyObject *obj)
+	{
+	    python_iplimage *pIm = (python_iplimage*)obj;
+	    IplImage *cvIm = pIm->img;
+	    if (!cvIm)
+	    {
+		cout << "Error: Input object must be an IplImage." << endl;
+		return;
+	    }
+	    BaseObject::className = "OpenCVInt";
+	    parentClass::init();
+	    this->pixels = (T*)(cvIm->imageData);
+	    this->setSize(cvIm->width, cvIm->height);
+	}
     // See http://cvblob.googlecode.com/svn-history/r361/branches/0.10.4_pythonswig/interfaces/swig/general/cvblob.i
-    #endif // Py_PYCONFIG_H
+    #endif // SWIGPYTHON
     };
+    
     
 } // namespace smil
 
