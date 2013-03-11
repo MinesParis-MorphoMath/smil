@@ -35,7 +35,6 @@
 #include "DSlot.h"
 #include "DCommon.h"
 #include "DErrors.h"
-#include "DCoreInstance.h"
 
 #include "Gui/include/private/DImageViewer.hpp"
 
