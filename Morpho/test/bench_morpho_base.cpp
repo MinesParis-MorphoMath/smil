@@ -35,7 +35,7 @@ using namespace smil;
 
 int main(int argc, char *argv[])
 {
-    Image_UINT8 im1(1024, 1024);
+    Image_UINT8 im1(10240, 1024);
     Image_UINT8 im2(im1);
     
     UINT BENCH_NRUNS = 1E4;

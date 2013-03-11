@@ -30,46 +30,49 @@
 
 
 #include "Gui/Qt/DQtImageViewer.hpp"
-#include "Qt/ImageViewerWidget.h"
+#include "Gui/Qt/PureQt/ImageViewerWidget.h"
 #include "DImage.hpp"
 
 #include "DBitArray.h"
 
 
-
-template <>
-void _DGUI QtImageViewer<Bit>::drawImage()
+namespace smil
 {
-    int sliceNbr = slider->value();
-    Image<Bit>::sliceType lines = this->image->getSlices()[sliceNbr];
 
-    size_t w = this->image->getWidth();
-    size_t h = this->image->getHeight();
-
-    const BitArray::INT_TYPE *lIn;
-    UINT8 *lOut, *lEnd;
-    UINT bCount = BitArray::INT_SIZE(w);
-
-    for (int j=0;j<h;j++)
+    template <>
+    void _DGUI QtImageViewer<Bit>::drawImage()
     {
-	lIn = lines[j].intArray;
-	lOut = this->qImage->scanLine(j);
-	lEnd = lOut + w;
+	int sliceNbr = slider->value();
+	Image<Bit>::sliceType lines = this->image->getSlices()[sliceNbr];
 
-	for (int b=0;b<bCount;b++,lIn++)
+	size_t w = this->image->getWidth();
+	size_t h = this->image->getHeight();
+
+	const BitArray::INT_TYPE *lIn;
+	UINT8 *lOut, *lEnd;
+	UINT bCount = BitArray::INT_SIZE(w);
+
+	for (int j=0;j<h;j++)
 	{
-	  BitArray::INT_TYPE bVal = (*lIn);
+	    lIn = lines[j].intArray;
+	    lOut = this->qImage->scanLine(j);
+	    lEnd = lOut + w;
 
-	  for (int i=0;i<BitArray::INT_TYPE_SIZE;i++,lOut++)
-	  {
-	    if (lOut==lEnd)
-	      break;
-	    *lOut = (bVal & (1L << i)) ? 255 : 0;
-	  }
+	    for (int b=0;b<bCount;b++,lIn++)
+	    {
+	      BitArray::INT_TYPE bVal = (*lIn);
+
+	      for (int i=0;i<BitArray::INT_TYPE_SIZE;i++,lOut++)
+	      {
+		if (lOut==lEnd)
+		  break;
+		*lOut = (bVal & (1L << i)) ? 255 : 0;
+	      }
+	    }
 	}
     }
-}
 
+} // namespace smil
 
 
 #endif // USE_QT

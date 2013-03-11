@@ -33,6 +33,7 @@
 #include "DIO.h"
 #include "DBit.h"
 
+using namespace smil;
 
 class Test_Bit : public TestCase
 {

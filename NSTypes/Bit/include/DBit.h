@@ -39,30 +39,48 @@
 #include "Morpho/include/private/DMorphoArrow.hpp"
 #include "Morpho/include/private/DMorphImageOperations.hpp"
 
-template <>
-void _DGUI QtImageViewer<Bit>::drawImage();
+#include "Base/include/private/DImageMatrix.hpp"
 
-template <>
-RES_T readVTK<Bit>(const char *filename, Image<Bit> &image)
+namespace smil
 {
-}
 
-template <>
-RES_T writeVTK<Bit>(const Image<Bit> &image, const char *filename, bool binary)
-{
-}
+    template <>
+    void _DGUI QtImageViewer<Bit>::drawImage();
 
-template <class lineFunction_T>
-class unaryMorphArrowImageFunction<Bit, lineFunction_T>
-{
-public:
-    typedef Image<Bit> imageType;
-    unaryMorphArrowImageFunction(Bit b=0) {}
-    inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt &se) {  }
-    RES_T _exec_single(const Image<Bit> &imIn, Image<Bit> &imOut, const StrElt &se) {}
+    template <>
+    RES_T readVTK<Bit>(const char *filename, Image<Bit> &image)
+    {
+    }
+
+    template <>
+    RES_T writeVTK<Bit>(const Image<Bit> &image, const char *filename, bool binary)
+    {
+    }
+
+    template <class lineFunction_T>
+    class unaryMorphArrowImageFunction<Bit, lineFunction_T>
+    {
+    public:
+	typedef Image<Bit> imageType;
+	unaryMorphArrowImageFunction(Bit b=0) {}
+	inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt &se) {  }
+	RES_T _exec_single(const Image<Bit> &imIn, Image<Bit> &imOut, const StrElt &se) {}
+	
+    };
     
-};
+    template <>
+    RES_T matMul<Bit>(const Image<Bit> &imIn1, const Image<Bit> &imIn2, Image<Bit> &imOut)
+    {
+    }
 
+#ifdef SWIGPYTHON
+    template <>
+    PyObject * Image<Bit>::getNumArray(bool c_contigous)
+    {
+    }
+#endif // SWIGPYTHON
+
+} // namespace smil
 
 #endif // _DBIT_H
 

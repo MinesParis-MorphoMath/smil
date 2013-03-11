@@ -34,12 +34,14 @@
 #include "DIO.h"
 #include "DBit.h"
 
+using namespace smil;
+
 int main(int argc, char *argv[])
 {
     typedef Bit dataType;
     typedef Image<dataType> imType;
     
-    imType im1(1024, 1024);
+    imType im1(10240, 1024);
     imType im2(im1);
     
     UINT BENCH_NRUNS = 1E3;

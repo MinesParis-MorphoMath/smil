@@ -34,27 +34,29 @@
 #include "DBitArray.h"
 #include "Base/include/private/DImageArith.hpp"
 
-template <>
-RES_T copy<Bit>(const Image<Bit> &imIn, Image<Bit> &imOut)
+namespace smil
 {
-    ASSERT_ALLOCATED(&imIn, &imOut);
-  
-    if (!CHECK_SAME_SIZE(&imIn, &imOut))
-	return copy<Bit,Bit>(imIn, 0, 0, 0, imOut, 0, 0, 0);
+    template <>
+    RES_T copy<Bit>(const Image<Bit> &imIn, Image<Bit> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+      
+	if (!CHECK_SAME_SIZE(&imIn, &imOut))
+	    return copy<Bit,Bit>(imIn, 0, 0, 0, imOut, 0, 0, 0);
 
-    typename Image<Bit>::sliceType l1 = imIn.getLines();
-    typename Image<Bit>::sliceType l2 = imOut.getLines();
+	typename Image<Bit>::sliceType l1 = imIn.getLines();
+	typename Image<Bit>::sliceType l2 = imOut.getLines();
 
-    UINT width = imIn.getWidth();
-    
-    for (UINT i=0;i<imIn.getLineCount();i++)
-      copyLine<Bit>(l1[i], width, l2[i]);
+	UINT width = imIn.getWidth();
+	
+	for (UINT i=0;i<imIn.getLineCount();i++)
+	  copyLine<Bit>(l1[i], width, l2[i]);
 
-    imOut.modified();
-    return RES_OK;
-}
+	imOut.modified();
+	return RES_OK;
+    }
 
-
+} // namespace smil
 
 
 #endif // _D_IMAGE_ARITH_BIT_H
