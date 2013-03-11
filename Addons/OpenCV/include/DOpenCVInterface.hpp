@@ -90,10 +90,14 @@ namespace smil
 	    this->pixels = (T*)(cvIm->imageData);
 	    this->setSize(cvIm->width, cvIm->height);
 	}
-    // See http://cvblob.googlecode.com/svn-history/r361/branches/0.10.4_pythonswig/interfaces/swig/general/cvblob.i
     #endif // SWIGPYTHON
+    
     };
     
+    template <class T>
+    IplImage *toIplImage(Image<T> &im)
+    {
+    }
     
 } // namespace smil
 
