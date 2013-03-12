@@ -73,12 +73,12 @@ namespace smil
     {
     }
 
-#ifdef SWIGPYTHON
+#if defined SWIGPYTHON and defined USE_NUMPY
     template <>
     PyObject * Image<Bit>::getNumArray(bool c_contigous)
     {
     }
-#endif // SWIGPYTHON
+#endif // defined SWIGPYTHON and defined USE_NUMPY
 
 } // namespace smil
 
