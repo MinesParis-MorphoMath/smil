@@ -248,21 +248,24 @@ namespace smil
     /**
     * 2D bilinear resize algorithm.
     * 
-    * Take imIn and resize it with the size of imOut.
+    * Resize imIn to sx,sy -> imOut.
     * 
     * Quick implementation (needs better integration and optimization).
     */
     template <class T>
-    RES_T resize(Image<T> &imIn, Image<T> &imOut)
+    RES_T resize(Image<T> &imIn, size_t sx, size_t sy, Image<T> &imOut)
     {
+	if (&imIn==&imOut)
+	{
+	    Image<T> tmpIm(imIn, true); // clone
+	    return resize(tmpIm, sx, sy, imIn);
+	}
+	
 	if (!imIn.isAllocated() || !imOut.isAllocated())
 	    return RES_ERR_BAD_ALLOCATION;
       
 	size_t w = imIn.getWidth();
 	size_t h = imIn.getHeight();
-	
-	size_t w2 = imOut.getWidth();
-	size_t h2 = imOut.getHeight();
 	
 	typedef typename Image<T>::pixelType pixelType;
 	typedef typename Image<T>::lineType lineType;
@@ -273,14 +276,14 @@ namespace smil
 	pixelType A, B, C, D, maxVal = numeric_limits<T>::max() ;
 	int x, y, index;
 	
-	float x_ratio = ((float)(w-1))/w2 ;
-	float y_ratio = ((float)(h-1))/h2 ;
+	float x_ratio = ((float)(w-1))/sx;
+	float y_ratio = ((float)(h-1))/sy;
 	float x_diff, y_diff;
 	int offset = 0 ;
 	
-	for (size_t i=0;i<h2;i++) 
+	for (size_t i=0;i<sy;i++) 
 	{
-	    for (size_t j=0;j<w2;j++) 
+	    for (size_t j=0;j<sx;j++) 
 	    {
 		x = (int)(x_ratio * j) ;
 		y = (int)(y_ratio * i) ;
@@ -302,31 +305,40 @@ namespace smil
 	return RES_OK;
     }
 
+    template <class T>
+    RES_T resize(Image<T> &imIn, size_t sx, size_t sy)
+    {
+	Image<T> tmpIm(imIn, true); // clone
+	return resize(tmpIm, sx, sy, imIn);
+    }
+    
     /**
-    * 2D bilinear resize algorithm.
-    * 
-    * Quick implementation (needs better integration and optimization).
-    * 
     * Specify coefficients for resizing.
     * If imIn has the size (W,H), the size of imOut will be (W*cx, H*cy).
     */
     template <class T>
-    RES_T resize(Image<T> &imIn, double cx, double cy)
+    RES_T resize(Image<T> &imIn, double cx, double cy, Image<T> &imOut)
     {
-	Image<T> tmpIm(imIn, true); // clone
-	imIn.setSize(imIn.getWidth()*cx, imIn.getHeight()*cy, imIn.getDepth());
-	return resize<T>(tmpIm, imIn);
+	return resize<T>(imIn, imIn.getWidth()*cx, imIn.getHeight()*cy, imOut);
     }
 
     template <class T>
-    RES_T resize(Image<T> &imIn, double cx, double cy, Image<T> &imOut)
+    RES_T resize(Image<T> &imIn, double cx, double cy)
     {
-	if (&imIn==&imOut)
-	  return resize<T>(imIn, cx, cy);
-	
-	imOut.setSize(imIn.getWidth()*cx, imIn.getHeight()*cy, imIn.getDepth());
-	return resize<T>(imIn, imOut);
+	Image<T> tmpIm(imIn, true); // clone
+	return resize(tmpIm, cx, cy, imIn);
     }
+    
+    /**
+    * Resize imInOut with the dimensions of imRef.
+    */
+    template <class T>
+    RES_T resize(Image<T> &imInOut, Image<T> &imRef)
+    {
+	Image<T> tmpIm(imInOut, true); // clone
+	return resize(tmpIm, imRef.getWidth(), imRef.getHeight(), imInOut);
+    }
+    
 
 /** @}*/
 
