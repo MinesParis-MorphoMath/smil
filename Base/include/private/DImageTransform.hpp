@@ -261,6 +261,8 @@ namespace smil
 	    return resize(tmpIm, sx, sy, imIn);
 	}
 	
+	imOut.setSize(sx, sy);
+	
 	if (!imIn.isAllocated() || !imOut.isAllocated())
 	    return RES_ERR_BAD_ALLOCATION;
       
@@ -274,7 +276,7 @@ namespace smil
 	lineType pixOut = imOut.getPixels();
 	
 	pixelType A, B, C, D, maxVal = numeric_limits<T>::max() ;
-	int x, y, index;
+	size_t x, y, index;
 	
 	float x_ratio = ((float)(w-1))/sx;
 	float y_ratio = ((float)(h-1))/sy;
@@ -305,6 +307,15 @@ namespace smil
 	return RES_OK;
     }
 
+    /**
+     * Disambiguation
+     */
+    template <class T>
+    RES_T resize(Image<T> &imIn, int sx, int sy, Image<T> &imOut)
+    {
+	return resize(imIn, (size_t)sx, (size_t)sy, imOut);
+    }
+    
     template <class T>
     RES_T resize(Image<T> &imIn, size_t sx, size_t sy)
     {
@@ -319,7 +330,7 @@ namespace smil
     template <class T>
     RES_T resize(Image<T> &imIn, double cx, double cy, Image<T> &imOut)
     {
-	return resize<T>(imIn, imIn.getWidth()*cx, imIn.getHeight()*cy, imOut);
+	return resize<T>(imIn, size_t(imIn.getWidth()*cx), size_t(imIn.getHeight()*cy), imOut);
     }
 
     template <class T>
