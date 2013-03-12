@@ -50,11 +50,13 @@ TEMPLATE_WRAP_CLASS(OpenCVInt,OpenCVInt)
 
 %pythoncode %{
 
-def toArray(img):
-  return img.getNumArray(True)
+import cv
+
+def toIplImage(img):
+  return cv.fromarray(img.getNumArray(True))
 
 for t in imageTypes:
-    t.cv = toArray
+    t.cv = toIplImage
 
 
 %}
