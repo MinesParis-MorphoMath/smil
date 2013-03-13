@@ -66,7 +66,7 @@ namespace smil
 	}
 	
 	//! Construct with points defined by indexes (Hex if oddSE, Squ otherwise)
-	StrElt(bool oddSE, UINT nbrPts, ...)
+	StrElt(bool oddSE, int nbrPts, ...)
 	  : BaseObject("StrElt"),
 	    odd(oddSE),
 	    seT(SE_Generic), 
@@ -81,6 +81,16 @@ namespace smil
 		index = va_arg(vl, UINT);
 		addPoint(index);
 	    }
+	}
+	
+	StrElt(bool oddSE, vector<UINT> indexList)
+	  : BaseObject("StrElt"),
+	    odd(oddSE),
+	    seT(SE_Generic), 
+	    size(1)
+	{
+	    for (vector<UINT>::iterator it=indexList.begin();it!=indexList.end();it++)
+		addPoint(*it);
 	}
 	
 	~StrElt() {}

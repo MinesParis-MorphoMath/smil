@@ -64,7 +64,6 @@ SMIL_MODULE(smilMorpho)
 %ignore StrElt::operator ();
 #endif // SWIGJAVA
 
-%varargs(10, UINT ind=0) StrElt::StrElt;
 %include "DStructuringElement.h"
 
 %include "DMorphoBase.hpp"
