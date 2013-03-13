@@ -34,6 +34,7 @@
 #include "DIO.h"
 #include "DBit.h"
 
+using namespace smil;
 
 class Test_Copy : public TestCase
 {
@@ -181,6 +182,10 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_Trans);
       ADD_TEST(ts, Test_Sup);
       
+      Image<Bit> im1(256,256);
+      fill(im1, Bit(1));
+      im1.show();
+      Gui::execLoop();
       return ts.run();
   
 }

@@ -31,6 +31,8 @@
 
 // const BitArray::INT_TYPE BitArray::INT_TYPE_SIZE = sizeof(INT_TYPE)*CHAR_BIT;
 
+using namespace smil;
+
 
 void BitArray::setSize(UINT _bitWidth, UINT _bitHeight)
 {
