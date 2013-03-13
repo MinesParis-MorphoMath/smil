@@ -32,30 +32,33 @@
 
 #include "Base/include/private/DImageHistogram.hpp"
 
-template <>
-std::map<Bit, UINT> histogram(const Image<Bit> &imIn)
+namespace smil
 {
-    ERR_MSG("Not implemented for type Bit");
-}
+    template <>
+    std::map<Bit, UINT> histogram(const Image<Bit> &imIn)
+    {
+	ERR_MSG("Not implemented for type Bit");
+    }
 
-template <>
-map<Bit, UINT> histogram(const Image<Bit> &imIn, const Image<Bit> &imMask)
-{
-    ERR_MSG("Not implemented for type Bit");
-}
+    template <>
+    map<Bit, UINT> histogram(const Image<Bit> &imIn, const Image<Bit> &imMask)
+    {
+	ERR_MSG("Not implemented for type Bit");
+    }
 
-template <>
-RES_T enhanceContrast(const Image<Bit> &imIn, Image<Bit> &imOut, double sat)
-{
-    return RES_ERR_NOT_IMPLEMENTED;
-}
+    template <>
+    RES_T enhanceContrast(const Image<Bit> &imIn, Image<Bit> &imOut, double sat)
+    {
+	return RES_ERR_NOT_IMPLEMENTED;
+    }
 
-template <>
-vector<Bit> otsuThreshold(const Image<Bit> &imIn, Image<Bit> &imOut, UINT nbrThresholds)
-{
-    ERR_MSG("Not implemented for type Bit");
-}
+    template <>
+    vector<Bit> otsuThreshold(const Image<Bit> &imIn, Image<Bit> &imOut, UINT nbrThresholds)
+    {
+	ERR_MSG("Not implemented for type Bit");
+    }
 
+} // namespace smil
 
 #endif // _D_IMAGE_HISTOGRAM_BIT_H
 

@@ -32,7 +32,7 @@
 
 #include "DBit.h"
 
-
+using namespace smil;
 
 int main(int argc, char *argv[])
 {

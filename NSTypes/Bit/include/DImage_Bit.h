@@ -36,28 +36,30 @@
 #include "DTypes.h"
 #include "DBitArray.h"
 
-template <>
-void Image<Bit>::init();
+namespace smil
+{
+    template <>
+    void Image<Bit>::init();
 
-template <>
-void* Image<Bit>::getVoidPointer(void);
+    template <>
+    void* Image<Bit>::getVoidPointer(void);
 
-template <>
-RES_T Image<Bit>::restruct(void);
+    template <>
+    RES_T Image<Bit>::restruct(void);
 
-template <>
-RES_T Image<Bit>::allocate(void);
+    template <>
+    RES_T Image<Bit>::allocate(void);
 
-template <>
-RES_T Image<Bit>::deallocate(void);
-
-
-template <>
-void Image<Bit>::clone(const Image<Bit> &rhs);
-
-template <>
-RES_T Image<Bit>::setPixel(size_t offset, const Bit &value);
+    template <>
+    RES_T Image<Bit>::deallocate(void);
 
 
+    template <>
+    void Image<Bit>::clone(const Image<Bit> &rhs);
+
+    template <>
+    RES_T Image<Bit>::setPixel(size_t offset, const Bit &value);
+
+} // namespace smil
 
 #endif // _IMAGE_BIN_HXX
