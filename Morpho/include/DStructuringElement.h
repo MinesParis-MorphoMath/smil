@@ -65,7 +65,15 @@ namespace smil
 	    this->clone(rhs);
 	}
 	
-	//! Construct with points defined by indexes (Hex if oddSE, Squ otherwise)
+	/**
+	 * Construct a structuring element with points defined by their indexes.
+	 * \param oddSE Specify if we want to use an hexagonal grid (true) or a square grid (false)
+	 * \param nbrPts The number of points (indexes) which are given
+	 * \param ... The list of point indexes
+	 * 
+	 * The index values are defined for each grid type as follow:
+	 * \images{se_indexes}
+	 */
 	StrElt(bool oddSE, int nbrPts, ...)
 	  : BaseObject("StrElt"),
 	    odd(oddSE),
@@ -126,15 +134,9 @@ namespace smil
     * Square structuring element.
     * 
     * Points :
-    * 
-    * <table>
-    *   <tr>  <th>5</th> <th>4</th> <th>3</th>  </tr>
-    *   <tr>  <th>6</th> <th>1</th> <th>2</th>  </tr>
-    *   <tr>  <th>7</th> <th>8</th> <th>9</th>  </tr>
-    * </table>
+    * \images{squ_se}
     * 
     */
-
     class SquSE : public StrElt
     {
       public:
@@ -151,12 +153,7 @@ namespace smil
     * Square structuring element without center point.
     * 
     * Points :
-    * 
-    * <table>
-    *   <tr>  <th>4</th> <th>3</th> <th>2</th>  </tr>
-    *   <tr>  <th>5</th> <th></th> <th>1</th>  </tr>
-    *   <tr>  <th>6</th> <th>7</th> <th>8</th>  </tr>
-    * </table>
+    * \images{squ_se0}
     * 
     */
 
@@ -177,12 +174,7 @@ namespace smil
     * Hexagonal structuring element.
     * 
     * Points :
-    * 
-    * <table>
-    *   <tr>  <th>4</th> <th>3</th> <th></th>  </tr>
-    *   <tr>  <th>5</th> <th>1</th> <th>2</th>  </tr>
-    *   <tr>  <th>6</th> <th>7</th> <th></th>  </tr>
-    * </table>
+    * \images{hex_se}
     * 
     */
     class HexSE : public StrElt
@@ -201,12 +193,7 @@ namespace smil
     * Hexagonal structuring element without center point.
     * 
     * Points :
-    * 
-    * <table>
-    *   <tr>  <th>3</th> <th>2</th> <th></th>  </tr>
-    *   <tr>  <th>4</th> <th></th> <th>1</th>  </tr>
-    *   <tr>  <th>5</th> <th>6</th> <th></th>  </tr>
-    * </table>
+    * \images{hex_se0}
     * 
     */
 
@@ -227,12 +214,7 @@ namespace smil
     * Cross structuring element.
     * 
     * Points :
-    * 
-    * <table>
-    *   <tr>  <th></th> <th>3</th> <th></th>  </tr>
-    *   <tr>  <th>4</th> <th>1</th> <th>2</th>  </tr>
-    *   <tr>  <th></th> <th>5</th> <th></th>  </tr>
-    * </table>
+    * \images{cross_se}
     * 
     */
 
@@ -252,10 +234,7 @@ namespace smil
     * Horizontal segment structuring element.
     * 
     * Points :
-    * 
-    * <table>
-    *   <tr>  <th>3</th> <th>1</th> <th>2</th>  </tr>
-    * </table>
+    * \images{horiz_se}
     * 
     */
 
@@ -275,12 +254,7 @@ namespace smil
     * Vertical segment structuring element.
     * 
     * Points :
-    * 
-    * <table>
-    *   <tr>  <th>2</th>  </tr>
-    *   <tr>  <th>1</th>  </tr>
-    *   <tr>  <th>3</th>  </tr>
-    * </table>
+    * \images{vert_se}
     * 
     */
 
@@ -301,25 +275,7 @@ namespace smil
     * 3D Cubic structuring element.
     * 
     * Points :
-    * 
-    * z=-1
-    * <table>
-    *   <tr>  <th>14</th> <th>13</th> <th>12</th>  </tr>
-    *   <tr>  <th>15</th> <th>10</th> <th>11</th>  </tr>
-    *   <tr>  <th>16</th> <th>17</th> <th>18</th>  </tr>
-    * </table>
-    * z=0
-    * <table>
-    *   <tr>  <th>5</th> <th>4</th> <th>3</th>  </tr>
-    *   <tr>  <th>6</th> <th>1</th> <th>2</th>  </tr>
-    *   <tr>  <th>7</th> <th>8</th> <th>9</th>  </tr>
-    * </table>
-    * z=1
-    * <table>
-    *   <tr>  <th>23</th> <th>22</th> <th>21</th>  </tr>
-    *   <tr>  <th>24</th> <th>19</th> <th>20</th>  </tr>
-    *   <tr>  <th>25</th> <th>26</th> <th>27</th>  </tr>
-    * </table>
+    * \images{cube_se}
     * 
     */
     class CubeSE : public StrElt
