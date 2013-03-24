@@ -97,6 +97,9 @@ namespace smil
     template <class T>
     RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, T trueVal, T falseVal, Image<T> &imOut)
     {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
 	unaryImageFunction<T, threshLine<T> > iFunc;
 	
 	iFunc.lineFunction.minVal = minVal;
@@ -110,27 +113,13 @@ namespace smil
     template <class T>
     RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, Image<T> &imOut)
     {
-	unaryImageFunction<T, threshLine<T> > iFunc;
-	
-	iFunc.lineFunction.minVal = minVal;
-	iFunc.lineFunction.maxVal = maxVal;
-	iFunc.lineFunction.trueVal = numeric_limits<T>::max();
-	iFunc.lineFunction.falseVal = numeric_limits<T>::min();
-	
-	return iFunc(imIn, imOut);
+	return threshold<T>(imIn, minVal, maxVal, ImDtTypes<T>::max(), ImDtTypes<T>::min(), imOut);
     }
 
     template <class T>
     RES_T threshold(const Image<T> &imIn, T minVal, Image<T> &imOut)
     {
-	unaryImageFunction<T, threshLine<T> > iFunc;
-	
-	iFunc.lineFunction.minVal = minVal;
-	iFunc.lineFunction.maxVal = numeric_limits<T>::max();
-	iFunc.lineFunction.trueVal = numeric_limits<T>::max();
-	iFunc.lineFunction.falseVal = numeric_limits<T>::min();
-	
-	return iFunc(imIn, imOut);
+	return threshold<T>(imIn, minVal, ImDtTypes<T>::max(), ImDtTypes<T>::max(), ImDtTypes<T>::min(), imOut);
     }
 
     template <class T>

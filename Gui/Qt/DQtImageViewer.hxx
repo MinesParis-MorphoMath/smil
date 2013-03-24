@@ -331,7 +331,7 @@ namespace smil
 #ifdef Q_OS_WIN32	  
 	  read(urls[0].toString().remove("file:///").toStdString().c_str(), *this->image);
 #else // Q_OS_WIN32	  
-	  read(urls[0].toString().remove("file://").toStdString().c_str(), *this->image);
+	  read(urls[0].toString().remove("file:/").toStdString().c_str(), *this->image);
 #endif // Q_OS_WIN32	  
 	else
 	{
@@ -340,7 +340,7 @@ namespace smil
 #ifdef Q_OS_WIN32	  
 	      files.push_back((*it).toString().remove("file:///").toStdString());
 #else // Q_OS_WIN32	  
-	      files.push_back((*it).toString().remove("file://").toStdString());
+	      files.push_back((*it).toString().remove("file:/").toStdString());
 #endif // Q_OS_WIN32	  
 	    read(files, *this->image);
 	}
