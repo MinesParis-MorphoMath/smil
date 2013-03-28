@@ -765,7 +765,18 @@ namespace smil
     template <class T>
     PyObject * Image<T>::getNumArray(bool c_contigous)
     {
-	npy_intp d[] = { this->getHeight(), this->getWidth(), this->getDepth() }; // axis are inverted...
+	npy_intp d[] = { 1, 1, 1};
+	if (this->getDimension()==3)
+	{
+	    d[0] = this->getDepth();
+	    d[1] = this->getHeight();
+	    d[2] = this->getWidth();
+	}
+	else
+	{
+	    d[0] = this->getHeight();
+	    d[1] = this->getWidth();
+	}
 	PyObject *array = PyArray_SimpleNewFromData(this->getDimension(), d, getNumpyType(*this), this->getPixels());
 
 	if (c_contigous)
