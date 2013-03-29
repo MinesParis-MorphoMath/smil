@@ -203,7 +203,7 @@ namespace smil
 	vector<IntPoint>::const_iterator it_end = se.points.end();
 	vector<IntPoint>::const_iterator it;
 	
-	vector<UINT> tmpOffsets;
+	vector<size_t> tmpOffsets;
 	
 	size_t s[3];
 	imIn.getSize(s);
@@ -217,23 +217,24 @@ namespace smil
 	vector<int>::iterator it_off_start = dOffsets.begin();
 	vector<int>::iterator it_off;
 	
+	size_t x0, y0, z0;
+	size_t curOffset;
+	
+	int x, y, z;
+	size_t nbOffset;
+	UINT8 nbStat;
 	
 	while(!hq.empty())
 	{
 	    
-	    size_t curOffset = hq.top();
+	    curOffset = hq.top();
 	    hq.pop();
-	    size_t x0, y0, z0;
-	    
 	    
 	    // Give the point the label "FINAL" in the status image
 	    statPixels[curOffset] = HQ_FINAL;
 	    
 	    imIn.getCoordsFromOffset(curOffset, x0, y0, z0);
 	    
-	    int x, y, z;
-	    size_t nbOffset;
-	    UINT8 nbStat;
 	    
 	    int oddLine = se.odd * y0%2;
 	    
@@ -327,7 +328,7 @@ namespace smil
 	Image<UINT8> imStatus(imIn);
 	
 	// Reverse hierarchical queue (the highest token correspond to the highest gray value)
-	typedef typename std::less< HQToken<T> > compareType;
+	typedef typename std::less<T> compareType;
 	HierarchicalQueue<T, compareType > rpq;
 	
 	// Make sure that imIn <= imMark
@@ -358,7 +359,7 @@ namespace smil
 	Image<UINT8> imStatus(imIn);
 	
 	// Reverse hierarchical queue (the highest token correspond to the highest gray value)
-	typedef typename std::less< HQToken<T> > compareType;
+	typedef typename std::less<T> compareType;
 	HierarchicalQueue<T, compareType > rpq;
 	
 	// Make sure that imIn <= imMark

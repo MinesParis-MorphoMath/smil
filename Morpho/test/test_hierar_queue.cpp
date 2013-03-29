@@ -50,6 +50,8 @@ class Test_HierarchicalQueue : public TestCase
       pq.push(0, 12);
       pq.push(0, 8);
       
+//       pq.printSelf();
+      
       TEST_ASSERT(pq.top()==9);
       pq.pop();
       TEST_ASSERT(pq.top()==12);
