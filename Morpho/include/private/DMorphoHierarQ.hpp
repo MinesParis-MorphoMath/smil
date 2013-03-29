@@ -56,55 +56,27 @@ namespace smil
       HQ_FINAL
     };
 
-    template <class T>
-    class HQToken
-    {
-    public:
-	HQToken(T _value, size_t _offset, size_t _index)
-	  : value(_value), offset(_offset), index(_index)
-	{
-	}
-	T value;
-	size_t offset;
-	bool operator > (const HQToken<T> &s ) const 
-	{
-	    T sVal = s.value;
-	    if (value!=sVal)
-	      return value > sVal;
-	    else return index > s.index;
-	}
-	bool operator < (const HQToken<T> &s ) const 
-	{
-	    T sVal = s.value;
-	    if (value!=sVal)
-	      return value < sVal;
-	    else return index > s.index;
-	}
-    protected:
-	size_t index;
-    };
 
-
-    template <class T, class compareType=std::greater<HQToken<T> > >
+    template <class T, class compareType=std::less<T> >
     class HierarchicalQueue
     {
     public:
-    //     typedef typename std::pair<T, UINT> elementType;
-	typedef HQToken<T> elementType;
-	typedef typename std::vector< elementType > containerType;
-    //     typedef typename std::greater<typename containerType::value_type > compareType;
+	
+	typedef size_t elementType;
+	typedef typename std::queue< elementType > containerType;
+	typedef map< T, containerType, compareType > pqueueType;
+	
 	
 	HierarchicalQueue()
 	{
-	  reset();
 	}
 	
 	void reset()
 	{
 	  while(!priorityQueue.empty())
-	    priorityQueue.pop();
-	  index = 0;
+	    pop();
 	}
+	
 	
 	inline bool empty()
 	{
@@ -113,35 +85,49 @@ namespace smil
 	
 	inline void push(T value, size_t offset)
 	{
-	  priorityQueue.push(HQToken<T>(value, offset, index++));
+	    priorityQueue[value].push(offset);
+	}
+	
+	inline const containerType& topStack()
+	{
+	    return priorityQueue.begin()->second;
 	}
 	
 	inline const elementType& top()
 	{
-	  return priorityQueue.top();
+	    if (!priorityQueue.empty())
+	      return topStack().front();
+	}
+	
+	inline void popStack()
+	{
+	    priorityQueue.erase(priorityQueue.begin());
 	}
 	
 	inline void pop()
 	{
-	  priorityQueue.pop();
+	    priorityQueue.begin()->second.pop();
+	    if (priorityQueue.begin()->second.empty())
+	      popStack();
 	}
 	
-	inline size_t size()
-	{
-	  return priorityQueue.size();
-	}
+// 	inline size_t size()
+// 	{
+// 	  return priorityQueue.size();
+// 	}
 	
 	inline void printSelf()
 	{
-	    while(!priorityQueue.empty())
+	    HierarchicalQueue tmpQueue(*this);
+	    
+	    while(!tmpQueue.empty())
 	    {
-		cout << (int)(priorityQueue.top().value) << ", " << (int)(priorityQueue.top().offset) << endl;
-		priorityQueue.pop();
+		cout << (int)tmpQueue.top() << endl;
+		tmpQueue.pop();
 	    }
 	}
     protected:
-	priority_queue<elementType, containerType, compareType > priorityQueue;
-	size_t index;
+	pqueueType priorityQueue;
     };
 
 /** @}*/

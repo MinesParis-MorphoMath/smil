@@ -113,11 +113,10 @@ namespace smil
 	while(!hq.empty())
 	{
 	    
-	    HQToken<T> token = hq.top();
+	    size_t curOffset = hq.top();
 	    hq.pop();
 	    size_t x0, y0, z0;
 	    
-	    size_t curOffset = token.offset;
 	    
 	    
 	    imIn.getCoordsFromOffset(curOffset, x0, y0, z0);
