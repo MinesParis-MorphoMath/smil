@@ -151,7 +151,7 @@ namespace smil
 	
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
-	    hq.push(*inPixels, offset);
+	    hq.push(offset);
 	    inPixels++;
 	    offset++;
 	}
@@ -221,11 +221,10 @@ namespace smil
 	while(!hq.empty())
 	{
 	    
-	    HQToken<T> token = hq.top();
+	    size_t curOffset = hq.top();
 	    hq.pop();
 	    size_t x0, y0, z0;
 	    
-	    size_t curOffset = token.offset;
 	    
 	    // Give the point the label "FINAL" in the status image
 	    statPixels[curOffset] = HQ_FINAL;
@@ -265,7 +264,7 @@ namespace smil
 		    {
 			inPixels[nbOffset] = oper(inPixels[curOffset], markPixels[nbOffset]);
 			statPixels[nbOffset] = HQ_QUEUED;
-			hq.push(inPixels[nbOffset], nbOffset);
+			hq.push(nbOffset);
 		    }
 		    
 		}
@@ -329,7 +328,7 @@ namespace smil
 	
 	// Reverse hierarchical queue (the highest token correspond to the highest gray value)
 	typedef typename std::less< HQToken<T> > compareType;
-	HierarchicalQueue<T, compareType > rpq;
+	HierarchicalQueue<T, compareType > rpq(imIn);
 	
 	// Make sure that imIn <= imMark
 	ASSERT((inf(imIn, imMark, imOut)==RES_OK));

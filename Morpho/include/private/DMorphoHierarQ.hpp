@@ -84,26 +84,54 @@ namespace smil
 	size_t index;
     };
 
+    template <class T>
+    struct HQCompare
+    {
+	typedef typename ImDtTypes<T>::lineType lineType;
+	
+	HQCompare()
+	{
+	}
+	
+	HQCompare(lineType pix)
+	  : pixels(pix)
+	{
+	}
+	
+	HQCompare(const HQCompare &rhs)
+	 : pixels(rhs.pixels)
+	{
+	}
+	
+	lineType pixels;
+	
+	inline bool operator() (const size_t &loffset, const size_t &roffset) const
+	{
+	    return (pixels[loffset] < pixels[roffset]);
+	}
+
+    };
 
     template <class T, class compareType=std::greater<HQToken<T> > >
     class HierarchicalQueue
     {
     public:
-    //     typedef typename std::pair<T, UINT> elementType;
-	typedef HQToken<T> elementType;
-	typedef typename std::vector< elementType > containerType;
-    //     typedef typename std::greater<typename containerType::value_type > compareType;
+	typedef typename ImDtTypes<T>::lineType lineType;
+	typedef HQCompare<T> PQComareType;
+	typedef priority_queue<size_t, deque<size_t>, PQComareType > PQType;
 	
-	HierarchicalQueue()
+	HierarchicalQueue(const Image<T> &img)
+	  : imgPixels(img.getPixels())
 	{
-	  reset();
+	    hq_comp = HQCompare<T>(imgPixels);
+	    priorityQueue = PQType(hq_comp);
+	    reset();
 	}
 	
 	void reset()
 	{
 	  while(!priorityQueue.empty())
 	    priorityQueue.pop();
-	  index = 0;
 	}
 	
 	inline bool empty()
@@ -111,12 +139,12 @@ namespace smil
 	  return priorityQueue.empty();
 	}
 	
-	inline void push(T value, size_t offset)
+	inline void push(const size_t &offset)
 	{
-	  priorityQueue.push(HQToken<T>(value, offset, index++));
+	    priorityQueue.push(offset);
 	}
 	
-	inline const elementType& top()
+	inline const size_t& top()
 	{
 	  return priorityQueue.top();
 	}
@@ -135,13 +163,14 @@ namespace smil
 	{
 	    while(!priorityQueue.empty())
 	    {
-		cout << (int)(priorityQueue.top().value) << ", " << (int)(priorityQueue.top().offset) << endl;
+		cout << (int)(imgPixels[priorityQueue.top()]) << ", " << (int)(priorityQueue.top()) << endl;
 		priorityQueue.pop();
 	    }
 	}
     protected:
-	priority_queue<elementType, containerType, compareType > priorityQueue;
-	size_t index;
+	HQCompare<T> hq_comp;
+	PQType priorityQueue;
+	lineType imgPixels;
     };
 
 /** @}*/

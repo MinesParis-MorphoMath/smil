@@ -38,25 +38,32 @@ class Test_HierarchicalQueue : public TestCase
 {
   virtual void run()
   {
-      HierarchicalQueue<UINT8> pq;
-      pq.push(2, 10);
-      pq.push(2, 11);
-      pq.push(2, 15);
-      pq.push(0, 9);
-      pq.push(0, 8);
-      pq.push(0, 12);
+      Image_UINT8 img(6,1);
+      UINT8 vals[] = { 0, 0, 0, 2, 2, 2 };
+      img << vals;
       
-      TEST_ASSERT(pq.top().value==0 && pq.top().offset==9);
+      HierarchicalQueue<UINT8> pq(img);
+      pq.push(3);
+      pq.push(4);
+      pq.push(5);
+      pq.push(0);
+      pq.push(1);
+      pq.push(2);
+      
+      pq.printSelf();
+      return;
+      
+      TEST_ASSERT(pq.top()==0);
       pq.pop();
-      TEST_ASSERT(pq.top().value==0 && pq.top().offset==8);
+      TEST_ASSERT(pq.top()==1);
       pq.pop();
-      TEST_ASSERT(pq.top().value==0 && pq.top().offset==12);
+      TEST_ASSERT(pq.top()==2);
       pq.pop();
-      TEST_ASSERT(pq.top().value==2 && pq.top().offset==10);
+      TEST_ASSERT(pq.top()==3);
       pq.pop();
-      TEST_ASSERT(pq.top().value==2 && pq.top().offset==11);
+      TEST_ASSERT(pq.top()==4);
       pq.pop();
-      TEST_ASSERT(pq.top().value==2 && pq.top().offset==15);
+      TEST_ASSERT(pq.top()==5);
       pq.pop();
   }
 };
@@ -93,7 +100,7 @@ class Test_InitHierarchicalQueue : public TestCase
       imIn << vecIn;
       imLbl << vecLbl;
       
-      HierarchicalQueue<UINT8> pq;
+      HierarchicalQueue<UINT8> pq(imIn);
       
       StrElt se = hSE();
       
@@ -133,7 +140,7 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       imIn << vecIn;
       imLbl << vecLbl;
       
-      HierarchicalQueue<UINT8> pq;
+      HierarchicalQueue<UINT8> pq(imIn);
       StrElt se = hSE();
       
       initWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq);
