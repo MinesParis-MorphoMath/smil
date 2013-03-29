@@ -151,7 +151,7 @@ namespace smil
 	
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
-	    hq.push(offset);
+	    hq.push(*inPixels, offset);
 	    inPixels++;
 	    offset++;
 	}
@@ -264,7 +264,7 @@ namespace smil
 		    {
 			inPixels[nbOffset] = oper(inPixels[curOffset], markPixels[nbOffset]);
 			statPixels[nbOffset] = HQ_QUEUED;
-			hq.push(nbOffset);
+			hq.push(inPixels[nbOffset], nbOffset);
 		    }
 		    
 		}
@@ -328,7 +328,7 @@ namespace smil
 	
 	// Reverse hierarchical queue (the highest token correspond to the highest gray value)
 	typedef typename std::less< HQToken<T> > compareType;
-	HierarchicalQueue<T, compareType > rpq(imIn);
+	HierarchicalQueue<T, compareType > rpq;
 	
 	// Make sure that imIn <= imMark
 	ASSERT((inf(imIn, imMark, imOut)==RES_OK));

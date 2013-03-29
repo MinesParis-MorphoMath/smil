@@ -38,11 +38,17 @@ int main(int argc, char *argv[])
     Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png");
     Image_UINT8 im2(im1);
     Image_UINT8 im3(im1);
+    Image_UINT8 im4(im1);
     
-    sup(im1, UINT8(30), im2);
     
     UINT BENCH_NRUNS = 1E1;
+    
+    sup(im1, UINT8(30), im2);
     BENCH_IMG(build, im2, im1, im3);
+    
+    gradient(im1, im2);
+    minima(im2, im3);
+    BENCH_IMG(watershed, im2, im3, im4);
         
 }
 

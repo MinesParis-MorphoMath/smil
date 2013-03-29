@@ -42,28 +42,25 @@ class Test_HierarchicalQueue : public TestCase
       UINT8 vals[] = { 0, 0, 0, 2, 2, 2 };
       img << vals;
       
-      HierarchicalQueue<UINT8> pq(img);
-      pq.push(3);
-      pq.push(4);
-      pq.push(5);
-      pq.push(0);
-      pq.push(1);
-      pq.push(2);
+      HierarchicalQueue<UINT8> pq;
+      pq.push(2, 15);
+      pq.push(2, 11);
+      pq.push(2, 10);
+      pq.push(0, 9);
+      pq.push(0, 12);
+      pq.push(0, 8);
       
-      pq.printSelf();
-      return;
-      
-      TEST_ASSERT(pq.top()==0);
+      TEST_ASSERT(pq.top()==9);
       pq.pop();
-      TEST_ASSERT(pq.top()==1);
+      TEST_ASSERT(pq.top()==12);
       pq.pop();
-      TEST_ASSERT(pq.top()==2);
+      TEST_ASSERT(pq.top()==8);
       pq.pop();
-      TEST_ASSERT(pq.top()==3);
+      TEST_ASSERT(pq.top()==15);
       pq.pop();
-      TEST_ASSERT(pq.top()==4);
+      TEST_ASSERT(pq.top()==11);
       pq.pop();
-      TEST_ASSERT(pq.top()==5);
+      TEST_ASSERT(pq.top()==10);
       pq.pop();
   }
 };
@@ -100,7 +97,7 @@ class Test_InitHierarchicalQueue : public TestCase
       imIn << vecIn;
       imLbl << vecLbl;
       
-      HierarchicalQueue<UINT8> pq(imIn);
+      HierarchicalQueue<UINT8> pq;
       
       StrElt se = hSE();
       
@@ -140,7 +137,7 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       imIn << vecIn;
       imLbl << vecLbl;
       
-      HierarchicalQueue<UINT8> pq(imIn);
+      HierarchicalQueue<UINT8> pq;
       StrElt se = hSE();
       
       initWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq);

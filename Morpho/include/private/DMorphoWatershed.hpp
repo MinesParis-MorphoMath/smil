@@ -66,7 +66,7 @@ namespace smil
 	    {
 	      if (*lblPixels!=0)
 	      {
-		  hq.push(offset);
+		  hq.push(*inPixels, offset);
 		  *statPixels = HQ_LABELED;
 	      }
 	      else 
@@ -95,7 +95,7 @@ namespace smil
 	vector<IntPoint>::const_iterator it_end = se.points.end();
 	vector<IntPoint>::const_iterator it;
 	
-	vector<size_t> tmpOffsets;
+	vector<UINT> tmpOffsets;
 	
 	size_t s[3];
 	imIn.getSize(s);
@@ -168,10 +168,10 @@ namespace smil
 
 	    if (statPixels[curOffset]==HQ_LABELED && !tmpOffsets.empty())
 	    {
-		typename vector<size_t>::iterator t_it = tmpOffsets.begin();
+		typename vector<UINT>::iterator t_it = tmpOffsets.begin();
 		while (t_it!=tmpOffsets.end())
 		{
-		    hq.push(*t_it);
+		    hq.push(inPixels[*t_it], *t_it);
 		    statPixels[*t_it] = HQ_QUEUED;
 		    
 		    t_it++;
@@ -214,7 +214,7 @@ namespace smil
 	Image<UINT8> imStatus(imIn);
 	copy(imMarkers, imBasinsOut);
 
-	HierarchicalQueue<T> pq(imIn);
+	HierarchicalQueue<T> pq;
 
 	initWatershedHierarchicalQueue<T,labelT>(imIn, imBasinsOut, imStatus, pq);
 	processWatershedHierarchicalQueue(imIn, imBasinsOut, imStatus, pq, se);
