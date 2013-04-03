@@ -259,6 +259,44 @@ namespace smil
     }
 
 
+    template <class T, class lineFunction_T>
+    RES_T binaryImageFunction<T, lineFunction_T>::_exec(const T &value, const imageType &imIn, imageType &imOut)
+    {
+	if (!areAllocated(&imIn, &imOut, NULL))
+	    return RES_ERR_BAD_ALLOCATION;
+
+	size_t lineLen = imIn.getWidth();
+	int lineCount = imIn.getLineCount();
+
+	sliceType srcLines = imIn.getLines();
+	sliceType destLines = imOut.getLines();
+
+	lineType constBuf = ImDtTypes<T>::createLine(lineLen);
+
+	// Fill the const buffer with the value
+	fillLine<T> f;
+	f(constBuf, lineLen, value);
+
+	int nthreads = Core::getInstance()->getNumberOfThreads();
+	int i;
+	#ifdef USE_OPEN_MP
+	    #pragma omp parallel private(i) num_threads(nthreads)
+	#endif // USE_OPEN_MP
+	{
+	    #ifdef USE_OPEN_MP
+		#pragma omp for
+	    #endif // USE_OPEN_MP
+	  for (i=0;i<lineCount;i++)
+	      lineFunction(constBuf, srcLines[i], lineLen, destLines[i]);
+	}
+	
+	ImDtTypes<T>::deleteLine(constBuf);
+	imOut.modified();
+
+	return RES_OK;
+    }
+
+
 
     // Tertiary image function
     template <class T, class lineFunction_T>

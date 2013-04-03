@@ -227,6 +227,7 @@ namespace smil
 	Image<T>& operator << (const T &value);
 	//! Negate image
 	Image<T> operator ~ () const;
+	Image<T> operator - () const;
 	//! Add image
 	Image<T> operator + (const Image<T> &rhs);
 	//! Add value

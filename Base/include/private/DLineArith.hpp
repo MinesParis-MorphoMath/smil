@@ -417,6 +417,17 @@ namespace smil
     };
 
     template <class T>
+    struct bitAndLine : public binaryLineFunctionBase<T>
+    {
+	typedef typename Image<T>::lineType lineType;
+	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+	{
+	    for (size_t i=0;i<size;i++)
+		lOut[i] = (T)(lIn1[i] & lIn2[i]);
+	}
+    };
+
+    template <class T>
     struct logicOrLine : public binaryLineFunctionBase<T>
     {
 	typedef typename Image<T>::lineType lineType;
@@ -428,7 +439,29 @@ namespace smil
     };
 
     template <class T>
+    struct bitOrLine : public binaryLineFunctionBase<T>
+    {
+	typedef typename Image<T>::lineType lineType;
+	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+	{
+	    for (size_t i=0;i<size;i++)
+		lOut[i] = (T)(lIn1[i] | lIn2[i]);
+	}
+    };
+
+    template <class T>
     struct logicXOrLine : public binaryLineFunctionBase<T>
+    {
+	typedef typename Image<T>::lineType lineType;
+	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+	{
+	    for (size_t i=0;i<size;i++)
+		lOut[i] = (T)((lIn1[i] && !lIn2[i]) || (!lIn1[i] && lIn2[i]));
+	}
+    };
+
+    template <class T>
+    struct bitXOrLine : public binaryLineFunctionBase<T>
     {
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)

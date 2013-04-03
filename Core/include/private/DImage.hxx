@@ -458,6 +458,14 @@ namespace smil
     }
 
     template <class T>
+    Image<T> Image<T>::operator -() const
+    {
+	Image<T> im(*this);
+	inv(*this, im);
+	return im;
+    }
+
+    template <class T>
     Image<T> Image<T>::operator + (const Image<T> &rhs)
     {
 	Image<T> im(*this);
