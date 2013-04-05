@@ -113,6 +113,9 @@ TEMPLATE_WRAP_FUNC(arrowEqu);
 %include "DMorphoWatershed.hpp"
 TEMPLATE_WRAP_FUNC(watershed);
 TEMPLATE_WRAP_FUNC_CROSS2(watershed);
+TEMPLATE_WRAP_FUNC(lblSkiz);
+TEMPLATE_WRAP_FUNC_CROSS2(inflBasins);
+TEMPLATE_WRAP_FUNC(inflZones);
 
 
 %include "DMorphoLabel.hpp"

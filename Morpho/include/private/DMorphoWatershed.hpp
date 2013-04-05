@@ -263,6 +263,101 @@ namespace smil
 	return watershed(imIn, imLbl, imOut, se);
     }
 
+    /**
+     * Skiz on label image
+     * 
+     * Performs the influence zones on a label image as described by S. Beucher (2011) \cite beucher_algorithmes_2002
+     * If a maskIm is provided, the skiz is geodesic.
+     * 
+     */ 
+    template <class T>
+    RES_T lblSkiz(Image<T> &labelIm1, Image<T> &labelIm2, const Image<T> &maskIm, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&labelIm1, &labelIm2, &maskIm);
+	ASSERT_SAME_SIZE(&labelIm1, &labelIm2, &maskIm);
+	
+	Image<T> tmpIm1(labelIm1);
+	Image<T> tmpIm2(labelIm1);
+	Image<T> sumIm(labelIm1);
+	
+	double vol1 = -1, vol2 = 0;
+	
+	ImageFreezer freeze1(labelIm1);
+	ImageFreezer freeze2(labelIm2);
+	
+	T threshMin = ImDtTypes<T>::min(), threshMax = ImDtTypes<T>::max()-1;
+	
+	while(vol1<vol2)
+	{
+	    dilate(labelIm1, tmpIm1, se);
+	    dilate(labelIm2, tmpIm2, se);
+	    addNoSat(labelIm1, labelIm2, sumIm);
+	    threshold(sumIm, threshMin, threshMax, sumIm);
+	    if (&maskIm)
+	      inf(maskIm, sumIm, sumIm);
+	    mask(tmpIm1, sumIm, tmpIm1);
+	    mask(tmpIm2, sumIm, tmpIm2);
+	    sup(labelIm1, tmpIm1, labelIm1);
+	    sup(labelIm2, tmpIm2, labelIm2);
+
+	    vol1 = vol2;
+	    vol2 = vol(labelIm1);
+	}
+	return RES_OK;
+    }
+
+    /**
+     * Influences basins
+     * 
+     * Performs the influence basins using the lblSkiz function.
+     * Input image is supposed to be binary.
+     * 
+     */ 
+    template <class T1, class T2>
+    RES_T inflBasins(const Image<T1> &imIn, Image<T2> &basinsOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &basinsOut);
+	ASSERT_SAME_SIZE(&imIn, &basinsOut);
+	
+	Image<T2> imLbl2(basinsOut);
+	Image<T2> *nullIm = NULL;
+	
+	// Create the label images
+	label(imIn, basinsOut);
+	inv(basinsOut, imLbl2);
+	mask(imLbl2, basinsOut, imLbl2);
+	
+	ASSERT(lblSkiz(basinsOut, imLbl2, *nullIm, se)==RES_OK);
+	
+	// Clean result image
+	open(basinsOut, basinsOut);
+	
+	return RES_OK;
+    }
+
+    /**
+     * Influences zones
+     * 
+     * Performs the influence zones using the lblSkiz function.
+     * Input image is supposed to be binary.
+     * 
+     */ 
+    template <class T>
+    RES_T inflZones(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	Image<UINT16> basinsIm(imIn);
+	
+	ASSERT(inflBasins(imIn, basinsIm, se)==RES_OK);
+	gradient(basinsIm, basinsIm, se, StrElt());
+	threshold(basinsIm, UINT16(ImDtTypes<T>::min()+1), UINT16(ImDtTypes<T>::max()), basinsIm);
+	copy(basinsIm, imOut);
+	
+	return RES_OK;
+    }
+    
 /** @}*/
 
 } // namespace smil
