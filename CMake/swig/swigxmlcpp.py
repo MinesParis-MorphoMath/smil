@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import sys
+import sys, os
 import getopt
 from xml.dom import minidom
 from xml.dom import Node
@@ -74,6 +74,9 @@ def swigType(arg):
 	ptr = "&"
       else:
 	buf += re.sub('(q.)|[()]', "", i) + " "
+    nsPos = buf.find("::")
+    if nsPos!=-1:
+      buf = buf[nsPos+2:]
     return buf + ptr
   
 class swigVar():
@@ -83,12 +86,18 @@ class swigVar():
 	if hasattr(xmlObj, "access"):
 	  self.access = xmlObj.access
 	self.type = swigType(xmlObj.type)
-    def getDecl(self):
-	return self.type + self.name + ";"
+    def getDecl(self, tab=""):
+	return tab + self.type + self.name + ";"
 
 class swigFunc():
     def __init__(self, xmlObj, ownerClass=None):
-	self.name = xmlObj.name
+	nspace_chars_pos = xmlObj.name.split("<")[0].find("::")
+	if nspace_chars_pos!=-1:
+	  self.namespace = xmlObj.name[:nspace_chars_pos]
+	  self.name = xmlObj.name[nspace_chars_pos+2:]
+	else:
+	  self.name, self.namespace = xmlObj.name, ""
+	#self.name, self.namespace = xmlObj.name, ""
 	if hasattr(xmlObj, "sym_name"):
 	  self.sym_name = xmlObj.sym_name
 	self.args = []
@@ -133,8 +142,11 @@ class swigFunc():
 	if len(self.args)!=0:
 	  self.arg_str = self.arg_str[:-1]
 	  
-    def getDecl(self):
-	buf = self.abstract + self.retType + self.name + "(" + self.arg_str + ")"
+    def getDecl(self, tab=""):
+	buf = tab + self.abstract
+	if hasattr(self, "ret_type"):
+	  buf += self.ret_type
+	buf += self.name + "(" + self.arg_str + ")"
 	if self.value:
 	  buf += " = " + self.value
 	buf += ";"
@@ -154,23 +166,32 @@ class swigFunc():
 class swigTmplFunc(swigFunc):
     def __init__(self, xmlObj):
 	swigFunc.__init__(self, xmlObj)
-    def getDecl(self):
-	return "template <class T>\n" + swigFunc.getDecl(self)
+    def getDecl(self, tab=""):
+	return tab + "template <class T>\n" + swigFunc.getDecl(self, tab)
     def getDef(self):
 	return "template <class T>\n" + swigFunc.getDef(self)
 	
 class swigTmplSpecFunc(swigFunc):
     def __init__(self, xmlObj):
 	swigFunc.__init__(self, xmlObj)
-    def getDecl(self):
-	return "template <>\n" + swigFunc.getDecl(self)
+	pos = self.name.find('<')
+	self.base_name = self.name[0:pos]
+	self.tmpl_parms = self.name[pos:]
+	self.name = re.sub('[()]', "", self.name)
+    def getDecl(self, tab=""):
+	return tab + "template <>\n" + tab + self.retType + self.base_name + "(" + self.arg_str + ");"
     def getDef(self):
 	return "template <>\n" + swigFunc.getDef(self)
 	
 
 class swigClass():
     def __init__(self, xmlObj):
-	self.name = xmlObj.name
+	nspace_chars_pos = xmlObj.name.find("::")
+	if nspace_chars_pos!=-1:
+	  self.namespace = xmlObj.name[:nspace_chars_pos]
+	  self.name = xmlObj.name[nspace_chars_pos+2:]
+	else:
+	  self.name, self.namespace = xmlObj.name, ""
 	if hasattr(xmlObj, "sym_name"):
 	  self.sym_name = xmlObj.sym_name
 	self.memberFuncs = []
@@ -192,35 +213,40 @@ class swigClass():
 	  for b in xmlObj.baselists[0].bases:
 	    self.base += "public " + b.name + ", "
 	self.base = self.base[:-2]
-    def getDecl(self):
-	buf = "class " + self.sym_name + self.base + "\n{\n"
+    def getDecl(self, tab=""):
+	buf = tab + "class " + self.name + self.base + "\n"
+	buf += tab + "{\n"
 	curAccess = ""
 	for m in self.memberVars+self.memberFuncs:
 	  if m.access!=curAccess:
 	    curAccess = m.access
-	    buf += curAccess + ":\n"
-	  buf += "\t" + m.getDecl() + "\n"
-	buf += "};"
+	    buf += tab + curAccess + ":\n"
+	  buf += tab + "\t" + m.getDecl() + "\n"
+	buf += tab + "};"
 	return buf
     
 
 class swigTmplClass(swigClass):
     def __init__(self, xmlObj):
 	swigClass.__init__(self, xmlObj)
-    def getDecl(self):
-	buf = "template <class T>\nclass " + self.name + "\n{\n"
+    def getDecl(self, tab=""):
+	buf = tab + "template <class T>\nclass " + self.name + "\n"
+	buf += tab + "{\n"
 	curAccess = ""
 	for m in self.memberVars+self.memberFuncs:
 	  if m.access!=curAccess:
 	    curAccess = m.access
 	    buf += curAccess + ":\n"
-	  buf += "\t" + m.getDecl() + "\n"
-	buf += "};"
+	  buf += tab + "\t" + m.getDecl() + "\n"
+	buf += tab + "};"
 	return buf
       
 class swigModule():
     def __init__(self, xmlObj):
-	self.name = xmlObj.name
+	self.fullPath = xmlObj.name
+	self.fileName = os.path.basename(xmlObj.name)
+	self.path = os.path.dirname(xmlObj.name)
+	self.name, self.extention = os.path.splitext(self.fileName)
 	self.vars = []
 	self.funcs = []
 	self.classes = []
@@ -228,8 +254,12 @@ class swigModule():
 	self.tmplFuncs = []
 	self.tmplSpecFuncs = []
 	self.includes = []
+	self.imports = []
 	self.namespaces = []
+	self.usings = []
+	self.importXml(xmlObj)
 	
+    def importXml(self, xmlObj):
 	if hasattr(xmlObj, "cdecls"):
 	  for c in xmlObj.cdecls:
 	    if c.kind=="function":
@@ -252,14 +282,43 @@ class swigModule():
 	  for i in xmlObj.includes:
 	    self.includes.append(swigModule(i))
 	if hasattr(xmlObj, "imports"):
-	  imports = xmlObj.imports[0]
-	  if hasattr(imports, "namespaces"):
-	    names = []
-	    for n in imports.namespaces:
-	      if not n.name in names:
-		names.append(n.name)
-		self.namespaces.append(n)
-
+	  for i in xmlObj.imports:
+	    self.imports.append(i.name)
+	if hasattr(xmlObj, "namespaces"):
+	  for n in xmlObj.namespaces:
+	    self.namespaces.append(swigModule(n))
+	if hasattr(xmlObj, "usings"):
+	  for u in xmlObj.usings:
+	    if not u.namespace in self.usings:
+	      self.usings.append(u.namespace)
+    def getDecl(self, tab=""):
+	buf = ""
+	for i in self.imports:
+	  buf += "#include \"" + os.path.basename(i)[:-2] + ".h\"\n"
+	if len(self.imports):
+	  buf += "\n"
+	for c in self.classes:
+	  buf += c.getDecl(tab) + "\n"
+	for i in self.includes:
+	  iDecl = i.getDecl(tab)
+	  if iDecl:
+	    buf += iDecl
+	if buf: buf += "\n"
+	for u in self.usings:
+	  buf += tab + "using namespace " + u + ";\n";
+	for n in self.namespaces:
+	  nsBuf = n.getDecl(tab + "\t")
+	  if nsBuf:
+	    buf += tab + "namespace " + n.name + "\n{\n"
+	    buf += nsBuf + "\n}\n"
+	for f in self.funcs:
+	  buf += f.getDecl(tab) + "\n"
+	for f in self.tmplSpecFuncs:
+	  buf += f.getDecl(tab) + "\n"
+	return buf
+      
+    
+    
 
 def usage():
     print "Usage:"
@@ -268,7 +327,7 @@ def usage():
 def main():
     args = sys.argv[1:]
     if len(args) != 4:
-      #args = ["smilBase", "smilBaseCPP_wrap.cpp", "smilBase.h"]
+      #args = ["smilIO", "smilIO_wrap.xml", "smilIOCPP_wrap.cpp", "smilIO.h"]
       usage()
       return
 
@@ -278,6 +337,7 @@ def main():
     outHeaderFile = args[3]
     swigFileName = libName + ".i"
 
+    
     global doc, rootNode, swigXmlRoot, swigXmlInc, mod, inc, decls, defs
     
     doc = minidom.parse(xmlFileName)
@@ -293,18 +353,32 @@ def main():
     mod = swigModule(swigXmlInc)
     inc = mod.includes[0]
 
-    decls = ""
+    #return
+  
+    outHeaderShortFile = os.path.split(outHeaderFile)[-1]
+    _outHeaderShortFile = outHeaderShortFile.replace(".", "_")
+    
+    decls = "// CMAKE generated file: DO NOT EDIT!\n\n"
+    decls += "#ifndef __" + _outHeaderShortFile + "\n"
+    decls += "#define __" + _outHeaderShortFile + "\n\n"
+    decls += mod.getDecl()
+    decls += "\n#endif // __" + _outHeaderShortFile + "\n"
+    
     defs = ""
+    #defs += "#include \"" + outHeaderFile + "\"\n\n"
 
     for i in mod.includes:
-	fName = i.name.split('/')[-1]
-	shortFname, fExt = fName.split('.')
-	if fExt=="i":
-	  if fName[0:4]=="smil":
-	    if shortFname!="smilCommon":
-	      defs += "#include \"" + shortFname + ".h\"\n"
+	if i.extention==".i":
+	  print i.name
+	  if i.name[0:4]=="smil":
+	    if i.name!="smilCommon":
+	      defs += "#include \"" + name + ".h\"\n"
 	else:
-	  defs += "#include \"" + i.name + "\"\n"
+	  defs += "#include \"" + i.fullPath + "\"\n"
+	for n in i.namespaces:
+	  for f in n.funcs:
+	    pos = f.name.rfind(':')
+	    base_name = f.name[pos:]
     defs += "\n"
     for n in mod.namespaces:
 	defs += "using namespace " + n.name + ";\n"
@@ -316,7 +390,6 @@ def main():
 	base_name = f.name[0:pos]
 	tmpl_parms = f.name[pos:]
 	overl_decl = f.retType + base_name + "(" + f.arg_str + ")"
-	decls += overl_decl + ";\n"
 	f.name = re.sub('[()]', "", f.name)
 	args = ""
 	for arg in f.args:
@@ -325,6 +398,7 @@ def main():
 	args = re.sub('[*&]', "", args)
 	defs += overl_decl + "\n{\n\treturn " + f.name + "(" + args + ");\n}\n"
 
+    
     hFile = open(outHeaderFile, "w")
     hFile.write(decls)
     hFile.close()
@@ -332,6 +406,7 @@ def main():
     cppFile = open(outSrcFile, "w")
     cppFile.write(defs)
     cppFile.close()
+    
 
 
 
