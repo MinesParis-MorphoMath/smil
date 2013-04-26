@@ -115,7 +115,7 @@ namespace smil
 	const StrElt operator()(int s=1) const;
 	
 	//! Construct and return an homothetic SE with size s
-	StrElt homothety(const UINT &s) const;
+	StrElt homothety(const UINT s) const;
 	
 	bool odd;
 	seType seT;

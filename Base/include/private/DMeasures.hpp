@@ -117,26 +117,26 @@ namespace smil
     * \param imIn Input image.
     */
     template <class T>
-    void rangeVal(const Image<T> &imIn, T *ret_min, T *ret_max)
+    void rangeVal(const Image<T> &imIn, T &ret_min, T &ret_max)
     {
 	if (!imIn.isAllocated())
 	{
-	    *ret_min = 0;
-	    *ret_max = 0;
+	    ret_min = 0;
+	    ret_max = 0;
 	    return;
 	}
 
 	int npix = imIn.getPixelCount();
 	typename ImDtTypes<T>::lineType p = imIn.getPixels();
-	*ret_min = numeric_limits<T>::max();
-	*ret_max = numeric_limits<T>::min();
+	ret_min = numeric_limits<T>::max();
+	ret_max = numeric_limits<T>::min();
 
 	for (int i=0;i<npix;i++,p++)
 	{
-	    if (*p<*ret_min)
-		*ret_min = *p;
-	    if (*p>*ret_max)
-		*ret_max = *p;
+	    if (*p<ret_min)
+		ret_min = *p;
+	    if (*p>ret_max)
+		ret_max = *p;
 	}
 
     }

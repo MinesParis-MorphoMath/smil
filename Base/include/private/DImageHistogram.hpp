@@ -151,7 +151,7 @@ namespace smil
     {
 	unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
 	T1 rmin, rmax;
-	rangeVal(imIn, &rmin, &rmax);
+	rangeVal(imIn, rmin, rmax);
 	iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (rmax-rmin);
 	iFunc.lineFunction.inOrig = rmin;
 	iFunc.lineFunction.outOrig = outMinVal;
@@ -184,7 +184,7 @@ namespace smil
 	double satVol = imVol * sat / 100.;
 	double v = 0;
 	T minV, maxV, threshVal = 0;
-	rangeVal(imIn, &minV, &maxV);
+	rangeVal(imIn, minV, maxV);
 	
 	for (T i=maxV; i>=minV; i-=1)
 	{

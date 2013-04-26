@@ -75,7 +75,7 @@ void StrElt::addPoint(const IntPoint &pt)
       points.push_back(pt);
 }
 
-StrElt StrElt::homothety(const UINT &s) const
+StrElt StrElt::homothety(const UINT s) const
 {
     StrElt newSE;;
     newSE.points = this->points;

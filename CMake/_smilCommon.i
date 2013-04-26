@@ -180,6 +180,20 @@ using namespace smil;
   %apply short *OUTPUT{ short *name };
   %apply int *OUTPUT{ int *name };
   %apply char *OUTPUT{const char *name};
+  
+  %apply unsigned char *OUTPUT{ unsigned char &name };
+  %apply unsigned short *OUTPUT{ unsigned short &name };
+  %apply unsigned int *OUTPUT{ unsigned int &name };
+  %apply size_t *OUTPUT{size_t &name};
+  %apply char *OUTPUT{ char &name };
+  %apply short *OUTPUT{ short &name };
+  %apply int *OUTPUT{ int &name };
+  %apply char *OUTPUT{const char &name};
+%enddef
+#elif defined SWIGJAVA
+%include "arrays_java.i";
+%define PTR_ARG_OUT_APPLY(name)
+  %typemap(jtype) (unsigned char *name) "byte[]"
 %enddef
 #else // SWIGPYTHON
 %define PTR_ARG_OUT_APPLY(name)
