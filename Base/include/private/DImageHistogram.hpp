@@ -30,6 +30,8 @@
 #ifndef _D_IMAGE_HISTOGRAM_HPP
 #define _D_IMAGE_HISTOGRAM_HPP
 
+#include <limits.h>
+
 #include "DLineHistogram.hpp"
 #include "DImageArith.hpp"
 
@@ -63,6 +65,21 @@ namespace smil
 	
 	return h;
     }
+
+#ifndef SWIG
+    template <class T>
+    RES_T histogram(const Image<T> &imIn, UINT *h)
+    {
+	for (int i=ImDtTypes<T>::min();i<=ImDtTypes<T>::max();i++)
+	    h[i] = 0;
+
+	typename Image<T>::lineType pixels = imIn.getPixels();
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	    h[pixels[i]]++;
+	
+	return RES_OK;
+    }
+#endif // SWIG
 
     /**
     * Image histogram with a mask image.

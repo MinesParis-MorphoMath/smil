@@ -44,6 +44,7 @@ SMIL_MODULE(smilMorpho)
 #include "DHitOrMiss.hpp"
 #include "DSkeleton.hpp"
 #include "DMorphoInstance.h"
+#include "DMorphoMaxTree.hpp"
 %}
  
 
@@ -144,3 +145,6 @@ TEMPLATE_WRAP_FUNC(fullThick);
 %include "DSkeleton.hpp"
 TEMPLATE_WRAP_FUNC(skiz);
 TEMPLATE_WRAP_FUNC(zhangSkeleton);
+
+%include "DMorphoMaxTree.hpp"
+TEMPLATE_WRAP_FUNC_CROSS2(ultimateOpen);

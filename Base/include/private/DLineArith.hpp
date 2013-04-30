@@ -72,8 +72,7 @@ namespace smil
 	}
 	inline void _exec(lineType lInOut, size_t size, T value)
 	{
-	    for (size_t i=0;i<size;i++)
-		lInOut[i] = value;
+	    memset(lInOut, value, size);
 	}
     };
 
