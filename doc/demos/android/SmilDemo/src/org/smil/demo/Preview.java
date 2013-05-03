@@ -62,7 +62,7 @@ class Preview extends PreviewBase {
     	}
     	else if (SmilDemo.algoType==SmilDemo.ALGO_UO)
     	{
-    		smilMorphoJava.ultimateOpen(im1, fHeight/3, im2, imLbl);
+    		smilMorphoJava.ultimateOpen(im1, im2, imLbl, fHeight/3);
     		smilBaseJava.enhanceContrast(im2, im3, 0.1);
             im3.toCharArray(data);
     	}

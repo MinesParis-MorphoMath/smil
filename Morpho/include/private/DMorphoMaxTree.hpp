@@ -161,8 +161,8 @@ public:
 #define COLUMN_NBR 16
 #define COLUMN_SIZE 131072
 
-#define COLUMN_SHIFT COLUMN_NBR+1
-#define COLUMN_MOD COLUMN_SIZE-1
+#define COLUMN_SHIFT (COLUMN_NBR+1)
+#define COLUMN_MOD (COLUMN_SIZE-1)
 
 
 #define GET_TREE_OBJ(type, node) type[node >> COLUMN_SHIFT][node & COLUMN_MOD]
@@ -199,11 +199,10 @@ private:
 	if (!initialized)
 	  return;
 	
-	  int i;
-	UINT last_page = (curLabel-1) >> COLUMN_SHIFT;
-	
-	for (OffsetT i=0;i<last_page;i++)
+	for (OffsetT i=0;i<COLUMN_NBR;i++)
 	{
+	    if (!levels[i])
+	      break;
 	    delete[] levels[i]; levels[i] = NULL;
 	    delete[] children[i]; children[i] = NULL;
 	    delete[] brothers[i]; brothers[i] = NULL;
@@ -259,7 +258,7 @@ private:
     
     int nextLowerLabel(T valeur)
     {
-	    if (curLabel & COLUMN_MOD == 0)
+	    if ((curLabel & COLUMN_MOD) == 0)
 	      allocatePage(curLabel >> COLUMN_SHIFT);
 	    
 	    getLevel(curLabel) = valeur;
@@ -276,7 +275,7 @@ private:
 
     int nextHigherLabel(T parent_valeur, T valeur)
     {
-	    if (curLabel & COLUMN_MOD == 0)
+	    if ((curLabel & COLUMN_MOD) == 0)
 	      allocatePage(curLabel >> COLUMN_SHIFT);
 
 	    getLevel(curLabel) = valeur;
@@ -320,7 +319,7 @@ private:
 	    int indice;
 	    int p;
 	    int imWidth = img.getWidth();
-	    int imHeight = img.getWidth();
+	    int imHeight = img.getHeight();
 	    int imDepth = img.getDepth();
 	    int pixelCount = img.getPixelCount();
 	    int pixPerSlice = imWidth*imHeight;
