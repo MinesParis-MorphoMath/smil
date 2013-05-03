@@ -43,474 +43,515 @@ namespace smil
 #ifndef SWIG
 
 
-#define NB_COLONE 16
-#define SIZE_COLONE 131072
-#define DECALAGE 17
-#define MODULO 131071
 
+template <class T, class TokenType=UINT>
+class PriorityQueue
+{
+private:
+    typedef TokenType* StackType;
+    
+    UINT GRAY_LEVEL_NBR;
+    T TYPE_FLOOR;
+    StackType *stacks;
+    TokenType *tokenNbr;
+    TokenType size;
+    TokenType higherLevel;
+    
+    bool initialized;
+    
+public:
+    PriorityQueue()
+    {
+	GRAY_LEVEL_NBR = ImDtTypes<T>::max()-ImDtTypes<T>::min()+1;
+	TYPE_FLOOR = -ImDtTypes<T>::min();
+	
+	stacks = new StackType[GRAY_LEVEL_NBR];
+	for (size_t i=0;i<GRAY_LEVEL_NBR;i++)
+	  stacks[i] = NULL;
+	tokenNbr = new TokenType[GRAY_LEVEL_NBR];
+	initialized = false;
+    }
+    ~PriorityQueue()
+    {
+	reset();
+	delete[] stacks;
+	delete[] tokenNbr;
+    }
+    
+    void reset()
+    {
+	if (!initialized)
+	  return;
+	
+	for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
+	{
+	    if (stacks[i])
+		delete[] stacks[i];
+	    stacks[i] = NULL;
+	}
+    }
+    
+    void initialize(const Image<T> &img)
+    {
+	if (initialized)
+	  reset();
+	
+	UINT *h = new UINT[GRAY_LEVEL_NBR];
+	histogram(img, h);
+
+	for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
+	    if (h[i]!=0)
+	      stacks[i] = new TokenType[h[i]];
+	    
+	delete[] h;
+	memset(tokenNbr, 0, GRAY_LEVEL_NBR*sizeof(TokenType));
+	size = 0;
+	higherLevel = 0;
+	
+	initialized = true;
+    }
+    
+    inline TokenType getSize()
+    {
+	return size;
+    }
+    
+    inline bool isEmpty()
+    {
+	return size==0;
+    }
+    
+    inline TokenType getHigherLevel()
+    {
+	return higherLevel;
+    }
+    
+    inline void push(T value, TokenType dOffset)
+    {
+	TokenType level = TYPE_FLOOR + value;
+	if (level>higherLevel)
+	  higherLevel = level;
+	stacks[level][tokenNbr[level]++] = dOffset;
+	size++;
+    }
+    
+    inline TokenType pop()
+    {
+	TokenType hlSize = tokenNbr[higherLevel];
+	TokenType dOffset = stacks[higherLevel][hlSize-1];
+	if (hlSize>1)
+	  tokenNbr[higherLevel]--;
+	else if (size>1) // Find new higher level (non empty stack)
+	{
+	    tokenNbr[higherLevel] = 0;
+	    for (TokenType i=higherLevel-1;i>=0;i--)
+	      if (tokenNbr[i]>0)
+	      {
+		  higherLevel = i;
+		  break;
+	      }
+	}
+	size--;
+	
+	return dOffset;
+    }
+  
+};
+
+#define COLUMN_NBR 16
+#define COLUMN_SIZE 131072
+
+#define COLUMN_SHIFT COLUMN_NBR+1
+#define COLUMN_MOD COLUMN_SIZE-1
+
+
+#define GET_TREE_OBJ(type, node) type[node >> COLUMN_SHIFT][node & COLUMN_MOD]
 #define ORDONNEE(offset,largeur) ((offset)/(largeur))
 
-//#define OU_ITERATIF
-
-typedef struct criteres {
-	unsigned short ymin, ymax;
-} critere_type, *CRITERE_TYPE;
-
-
-template <class T>
-struct UO_Struct
+template <class T, class LabelT=UINT, class OffsetT=UINT>
+class MaxTree
 {
-    int higher_level;//=0;
-    UINT NB_NIV_GRIS;
-    typedef int* int_ptr;
-    int_ptr *pile;
-    int *p_pile;
+public:
+    struct Criterion
+    {
+	OffsetT ymin, ymax;
+    };
+  
+private:
+    size_t GRAY_LEVEL_NBR;
     
-    T **niveaux;
+    PriorityQueue<T, OffsetT> pq;
     
-    unsigned int **fils;
-    unsigned int **frere;
-    critere_type **critere;
+    T **levels;
+    
+    OffsetT **children;
+    OffsetT **brothers;
+    Criterion **criteria;
+    
+    LabelT *labels;
+    LabelT curLabel;
+    
+    bool initialized;
 
-    int next_eti;//=1;
-    T* transformee_node;
-    unsigned int* indicatrice_node;
-    //JFPLIFO_PLIFO jfplifo;
-    
-    UO_Struct()
-    {
-	NB_NIV_GRIS = ImDtTypes<T>::max()-ImDtTypes<T>::min()+1;
-	pile = new int_ptr[NB_NIV_GRIS]();
-	p_pile = new int[NB_NIV_GRIS]();
-    }
-    ~UO_Struct()
-    {
-	delete[] pile;
-	delete[] p_pile;
-    }
-    
 
-    void init_pile(const Image<T> &img)
+    void reset()
     {
-	    typename ImDtTypes<T>::lineType p=img.getPixels(), end = p + img.getPixelCount() - 1;
-	    unsigned int histogramme[NB_NIV_GRIS];
-	    unsigned int *p_h;
+	if (!initialized)
+	  return;
+	
+	  int i;
+	UINT last_page = (curLabel-1) >> COLUMN_SHIFT;
+	
+	for (OffsetT i=0;i<last_page;i++)
+	{
+	    delete[] levels[i]; levels[i] = NULL;
+	    delete[] children[i]; children[i] = NULL;
+	    delete[] brothers[i]; brothers[i] = NULL;
+	    delete[] criteria[i]; criteria[i] = NULL;
+	}
+    }
+
+    void allocatePage(UINT page)
+    {
+	    levels[page] =  new T[COLUMN_SIZE]();
+	    children[page] = new OffsetT[COLUMN_SIZE]();
+	    brothers[page] =  new OffsetT[COLUMN_SIZE]();
+	    criteria[page] = new Criterion[COLUMN_SIZE]();
+    }
+
+    T initialize(const Image<T> &img, OffsetT *img_eti)
+    {
+	if (initialized)
+	  reset();
+	
+	typename ImDtTypes<T>::lineType pix = img.getPixels();
+	T minValue = ImDtTypes<T>::max();
+	T tMinV = ImDtTypes<T>::min();
+	OffsetT minOff;
+	for (size_t i=0;i<img.getPixelCount();i++)
+	  if (pix[i]<minValue)
+	  {
+	      minValue = pix[i];
+	      minOff = i;
+	      if (minValue==tMinV)
+		break;
+	  }
+	  
+	allocatePage(0);
+	
+	curLabel = 1;
+	levels[0][curLabel] = minValue;
+	
+	memset(labels,0,GRAY_LEVEL_NBR*sizeof(int));
+	
+	img_eti[minOff] = curLabel;
+	labels[minValue] = curLabel;
+
+	pq.initialize(img);
+	pq.push(minValue, minOff);
+	getCriterion(curLabel).ymin = ORDONNEE(minOff, img.getWidth());
+	getCriterion(curLabel).ymax = ORDONNEE(minOff, img.getWidth());
+	    
+	curLabel++;
+
+	return minValue;
+    }
+    
+    int nextLowerLabel(T valeur)
+    {
+	    if (curLabel & COLUMN_MOD == 0)
+	      allocatePage(curLabel >> COLUMN_SHIFT);
+	    
+	    getLevel(curLabel) = valeur;
 	    int i;
-	    histogram(img, histogramme);
-	    p_h=histogramme;
+	    for(i=valeur-1;labels[i]==0;i--);
 
-	    for(i=0;i<NB_NIV_GRIS;i++) {
-			    pile[i]=(*(p_h)>0)?(int *)malloc((*(p_h))*sizeof(int)):NULL;
-			    p_h++;
-	    }
-	    higher_level=0;
+	    getChild(curLabel) = getChild(labels[i]);
+	    getChild(labels[i]) = curLabel;
+	    getBrother(curLabel) = getBrother(getChild(curLabel));
+	    getBrother(getChild(curLabel)) = 0;
+	    getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
+	    return curLabel++;
     }
 
-
-    void push(int e, int niveau)
+    int nextHigherLabel(T parent_valeur, T valeur)
     {
-	    if (higher_level<niveau) higher_level=niveau;
-	    pile[niveau][p_pile[niveau]++]=e;
-    }
+	    if (curLabel & COLUMN_MOD == 0)
+	      allocatePage(curLabel >> COLUMN_SHIFT);
 
-    int pop()
+	    getLevel(curLabel) = valeur;
+	    getBrother(curLabel) = getChild(labels[parent_valeur]);
+	    getChild(labels[parent_valeur]) = curLabel;
+	    getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
+	    return curLabel++;
+    }
+    
+    bool subFlood(typename ImDtTypes<T>::lineType imgPix, int imWidth, UINT *img_eti, OffsetT p, OffsetT p_suiv)
     {
-	    if (p_pile[higher_level] == 0) {
-		    int i;
-		    for(i=higher_level;p_pile[i]==0 && i>0;i--);
-		    higher_level=i;
-		    if (p_pile[higher_level]==0)  {
-			    return -1;
-		    }
-	    }
-	    return pile[higher_level][--p_pile[higher_level]];
+	int indice;
+	
+	if (imgPix[p_suiv]>imgPix[p]) 
+	{
+	      int j;
+	      for(j=imgPix[p]+1;j<imgPix[p_suiv];j++) 
+		labels[j]=0;
+	      indice = img_eti[p_suiv] = labels[j] = nextHigherLabel(imgPix[p], imgPix[p_suiv]);
+	  
+	} 
+	else if (labels[imgPix[p_suiv]]==0) 
+	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]] = nextLowerLabel(imgPix[p_suiv]);
+	else 
+	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]];
+	
+	getCriterion(indice).ymax = MAX(getCriterion(indice).ymax, ORDONNEE(p_suiv,imWidth));
+	getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, ORDONNEE(p_suiv,imWidth));
+	pq.push(imgPix[p_suiv], p_suiv);
+	
+	if (imgPix[p_suiv]>imgPix[p]) 
+	{
+		pq.push(imgPix[p], p);
+		return true;
+	}
+	return false;
     }
 
-    int get_higher_level()
-    {
-	    if (p_pile[higher_level] == 0) {
-		    int i;
-		    for(i=higher_level;p_pile[i]==0 && i>0;i--);
-		    higher_level=i;
-	    }
-	    return higher_level;
-    }
-
-    int first_etiquette(unsigned char valeur)
-    {
-	    fils=(unsigned int **)malloc(NB_COLONE*sizeof(unsigned int *));
-	    frere=(unsigned int **)malloc(NB_COLONE*sizeof(unsigned int *));
-	    niveaux=(T **)malloc(NB_COLONE*sizeof(T *));
-
-	    critere=(critere_type **)malloc(NB_COLONE*sizeof(critere_type *));
-
-	    fils[0]=(unsigned int *)calloc(SIZE_COLONE, sizeof(unsigned int));
-	    frere[0]=(unsigned int *)calloc(SIZE_COLONE, sizeof(unsigned int));
-	    niveaux[0]=(T *)calloc(SIZE_COLONE, sizeof(T));
-
-	    critere[0]=(CRITERE_TYPE)calloc(SIZE_COLONE, sizeof(critere_type));
-
-	    next_eti=1;
-	    niveaux[0][next_eti]=valeur;
-
-	    return next_eti++;
-    }
-
-    int next_etiquette_lower(T valeur, int *eti)
-    {
-	    int i;
-	    int offset_next_eti = next_eti & MODULO;
-	    int page_next_eti = next_eti >> DECALAGE;
-	    int offset_eti, page_eti;
-
-	    if (offset_next_eti == 0) {
-		    //printf("ALLOCATION ________________________________________ %d \n", page_next_eti);
-		    fils[page_next_eti]=(unsigned int *)calloc(SIZE_COLONE, sizeof(unsigned int));
-		    frere[page_next_eti]=(unsigned int *)calloc(SIZE_COLONE, sizeof(unsigned int));
-		    niveaux[page_next_eti]=(T *)calloc(SIZE_COLONE, sizeof(T));
-
-		    critere[page_next_eti]=(CRITERE_TYPE)calloc(SIZE_COLONE, sizeof(critere_type));
-	    }
-	    niveaux[page_next_eti][offset_next_eti]=valeur;
-	    for(i=valeur-1;eti[i]==0;i--);
-
-	    page_eti=eti[i] >> DECALAGE;
-	    offset_eti = eti[i] & MODULO;
-
-	    fils[page_next_eti][offset_next_eti]=fils[page_eti][offset_eti];
-	    fils[page_eti][offset_eti]=next_eti;
-	    frere[page_next_eti][offset_next_eti]=frere[fils[page_next_eti][offset_next_eti]>> DECALAGE][fils[page_next_eti][offset_next_eti]& MODULO];
-	    frere[fils[page_next_eti][offset_next_eti]>> DECALAGE][fils[page_next_eti][offset_next_eti]& MODULO]=0;
-	    critere[page_next_eti][offset_next_eti].ymin=16384;
-	    return next_eti++;
-    }
-
-    int next_etiquette_higher(T parent_valeur, T valeur, int *eti)
-    {
-	    int offset_next_eti = next_eti & MODULO;
-	    int page_next_eti = next_eti >> DECALAGE;
-	    int offset_eti, page_eti;
-
-	    if (offset_next_eti == 0) {
-
-		    fils[page_next_eti]=(unsigned int *)calloc(SIZE_COLONE, sizeof(unsigned int));
-		    frere[page_next_eti]=(unsigned int *)calloc(SIZE_COLONE, sizeof(unsigned int));
-		    niveaux[page_next_eti]=(T *)calloc(SIZE_COLONE, sizeof(T));
-		    critere[page_next_eti]=(CRITERE_TYPE)calloc(SIZE_COLONE, sizeof(critere_type));
-	    }
-
-	    niveaux[page_next_eti][offset_next_eti]=valeur;
-	    page_eti=eti[parent_valeur] >> DECALAGE;
-	    offset_eti = eti[parent_valeur] & MODULO;
-	    frere[page_next_eti][offset_next_eti]=fils[page_eti][offset_eti];
-	    fils[page_eti][offset_eti]=next_eti;
-	    critere[page_next_eti][offset_next_eti].ymin=16384;
-	    return next_eti++;
-    }
-
-    int build_maxtree(const Image<T> &img, int *img_eti) {
-	    int *eti = new int[NB_NIV_GRIS];
-	    int img_size = img.getPixelCount();
-	    typename ImDtTypes<T>::lineType imgPix = img.getPixels();
-	    int i,p;
-	    int min=imgPix[0], min_index=0;
-	    int indice;
-	    if (min) 
-	    {
-		    for(i=0;i<img_size;i++)
-			    if (imgPix[i]<min) {min=imgPix[i];min_index=i;if (!min) break;}
-	    }
-	    memset(eti,0,NB_NIV_GRIS*sizeof(int));
-	    indice=img_eti[min_index]=eti[min/*imgPix[min_index]*/]=first_etiquette(min/*imgPix[min_index]*/);
-
-	    push(min_index, min);
-	    critere[indice >> DECALAGE][indice & MODULO].ymin=ORDONNEE(min_index,img.getWidth());
-	    critere[indice >> DECALAGE][indice & MODULO].ymax=ORDONNEE(min_index,img.getWidth());
-
-	    flood(img, img_eti, eti, min);
-	    int retVal = eti[min];
-	    delete[] eti;
-	    return retVal;
-    }
-    #define TRACE_IT 15404
-    #define TRACE_PSUIV 41083
-
-    void flood(const Image<T> &img, int *img_eti, int *eti, int level)
+    void flood(const Image<T> &img, UINT *img_eti, int level)
     {
 	    int indice;
-	    int i,p;
-	    int img_size = img.getPixelCount();
+	    int p;
 	    int imWidth = img.getWidth();
+	    int imHeight = img.getWidth();
+	    int imDepth = img.getDepth();
+	    int pixelCount = img.getPixelCount();
+	    int pixPerSlice = imWidth*imHeight;
 	    typename ImDtTypes<T>::lineType imgPix = img.getPixels();
-	    while( (get_higher_level()>=level) && (p=pop())!=-1)
+	    
+	    while( (pq.getHigherLevel()>=level) && !pq.isEmpty())
 	    {
-		    int p_suiv;
+		p = pq.pop();
+		int p_suiv;
 
-		    if ( (p_suiv=p+imWidth)<img_size && img_eti[p_suiv]==0) {  //y+1
-			    if (imgPix[p_suiv]>imgPix[p]) {
-				    int j;
+		if ( p%pixPerSlice<pixPerSlice-imWidth && img_eti[p_suiv=p+imWidth]==0) //y+1
+		  if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
+		    continue;
 
-				    for(j=imgPix[p]+1;j<imgPix[p_suiv];j++) eti[j]=0;
-
-				    indice=img_eti[p_suiv]=eti[j]=next_etiquette_higher(imgPix[p], imgPix[p_suiv], eti);
-
-			      
-			    } else if (eti[imgPix[p_suiv]]==0) {
-				    indice=img_eti[p_suiv]=eti[imgPix[p_suiv]]=next_etiquette_lower(imgPix[p_suiv], eti);
-			    } else indice=img_eti[p_suiv]=eti[imgPix[p_suiv]];
-				    critere[indice >> DECALAGE][indice & MODULO].ymax=MAX(critere[indice >> DECALAGE][indice & MODULO].ymax, ORDONNEE(p_suiv,imWidth));
-				    critere[indice >> DECALAGE][indice & MODULO].ymin=MIN(critere[indice >> DECALAGE][indice & MODULO].ymin, ORDONNEE(p_suiv,imWidth));
-			    push(p_suiv, imgPix[p_suiv]);
-			    if (imgPix[p_suiv]>imgPix[p]) {
-				    push(p, imgPix[p]);
-				    continue;
-			    }
-		    }
-		    if ( (p_suiv=p-imWidth)>=0 && img_eti[p_suiv]==0) {  //y-1
-			    if (imgPix[p_suiv]>imgPix[p]) {
-				    int j;
-				    for(j=imgPix[p]+1;j<imgPix[p_suiv];j++) eti[j]=0;
-				    indice=img_eti[p_suiv]=eti[j]=next_etiquette_higher(imgPix[p], imgPix[p_suiv], eti);
-			    } else if (eti[imgPix[p_suiv]]==0) {
-				    indice=img_eti[p_suiv]=eti[imgPix[p_suiv]]=next_etiquette_lower(imgPix[p_suiv], eti);
-			    } else indice=img_eti[p_suiv]=eti[imgPix[p_suiv]];
-				    critere[indice >> DECALAGE][indice & MODULO].ymax=MAX(critere[indice >> DECALAGE][indice & MODULO].ymax, ORDONNEE(p_suiv,imWidth));
-				    critere[indice >> DECALAGE][indice & MODULO].ymin=MIN(critere[indice >> DECALAGE][indice & MODULO].ymin, ORDONNEE(p_suiv,imWidth));
-			    push(p_suiv, imgPix[p_suiv]);
-			    if (imgPix[p_suiv]>imgPix[p]) {
-				    push(p, imgPix[p]);
-				    continue;
-			    }
-		    }
-		    if ( ((p_suiv=p+1) % imWidth !=0) && img_eti[p_suiv]==0) {  //x+1
-			    if (imgPix[p_suiv]>imgPix[p]) {
-				    int j;
-				    for(j=imgPix[p]+1;j<imgPix[p_suiv];j++) eti[j]=0;
-				    indice=img_eti[p_suiv]=eti[j]=next_etiquette_higher(imgPix[p], imgPix[p_suiv], eti);
-			    } else if (eti[imgPix[p_suiv]]==0) {
-				    indice=img_eti[p_suiv]=eti[imgPix[p_suiv]]=next_etiquette_lower(imgPix[p_suiv], eti);
-			    } else indice=img_eti[p_suiv]=eti[imgPix[p_suiv]];
-				    critere[indice >> DECALAGE][indice & MODULO].ymax=MAX(critere[indice >> DECALAGE][indice & MODULO].ymax, ORDONNEE(p_suiv,imWidth));
-				    critere[indice >> DECALAGE][indice & MODULO].ymin=MIN(critere[indice >> DECALAGE][indice & MODULO].ymin, ORDONNEE(p_suiv,imWidth));
-			    push(p_suiv, imgPix[p_suiv]);
-			    if (imgPix[p_suiv]>imgPix[p]) {
-				    push(p, imgPix[p]);
-				    continue;
-			    }
-		    }
-		    if ( (((p_suiv=p-1) % imWidth )!=imWidth-1) && p_suiv>=0 && img_eti[p_suiv]==0) {  //x-1
-			    if (imgPix[p_suiv]>imgPix[p]) {
-				    int j;
-				    for(j=imgPix[p]+1;j<imgPix[p_suiv];j++) eti[j]=0;
-				    indice=img_eti[p_suiv]=eti[j]=next_etiquette_higher(imgPix[p], imgPix[p_suiv], eti);
-			    } else if (eti[imgPix[p_suiv]]==0) {
-				    indice=img_eti[p_suiv]=eti[imgPix[p_suiv]]=next_etiquette_lower(imgPix[p_suiv], eti);
-			    } else indice=img_eti[p_suiv]=eti[imgPix[p_suiv]];
-				    critere[indice >> DECALAGE][indice & MODULO].ymax=MAX(critere[indice >> DECALAGE][indice & MODULO].ymax, ORDONNEE(p_suiv,imWidth));
-				    critere[indice >> DECALAGE][indice & MODULO].ymin=MIN(critere[indice >> DECALAGE][indice & MODULO].ymin, ORDONNEE(p_suiv,imWidth));
-			    push(p_suiv, imgPix[p_suiv]);
-			    if (imgPix[p_suiv]>imgPix[p]) {
-				    push(p, imgPix[p]);
-				    continue;
-			    }
-		    }
+		if ( p%pixPerSlice>imWidth-1 && img_eti[p_suiv=p-imWidth]==0) //y-1
+		  if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
+		    continue;
+		  
+		if ( ((p_suiv=p+1) % imWidth !=0) && img_eti[p_suiv]==0) //x+1
+		  if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
+		    continue;
+		  
+		if ( (((p_suiv=p-1) % imWidth )!=imWidth-1) && p_suiv>=0 && img_eti[p_suiv]==0) //x-1
+		  if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
+		    continue;
+		  
+		if (imDepth>1) // for 3D
+		{
+		    if ( p/pixPerSlice<imDepth-1 && img_eti[p_suiv=p+pixPerSlice]==0) //z+1
+		      if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
+			continue;
+		      
+		    if ( p/pixPerSlice>1 && img_eti[p_suiv=p-pixPerSlice]==0) //z-1
+		      if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
+			continue;
+		}
 	    }
     }
     
-    void compute_max(int node, int stop, T max_tr, unsigned int max_in, unsigned int hauteur_parent, T valeur_parent, T previous_value)
+public:
+    MaxTree()
     {
-	    T m;
-	    T max_node;
-	    unsigned int max_critere;
-	    int child;
-	    int hauteur = critere[node >> DECALAGE][node & MODULO].ymax-critere[node >> DECALAGE][node & MODULO].ymin+1;
-
-	    m = (hauteur==hauteur_parent)?niveaux[node >> DECALAGE][node & MODULO]-previous_value:niveaux[node >> DECALAGE][node & MODULO]-valeur_parent;
-	    if (hauteur>=stop) {
-			    max_node=max_tr;
-			    max_critere=0;//max_in;
-			    transformee_node[node]=max_node;
-			    if (transformee_node[node]!=0) printf("BANG !!! %d\n", transformee_node[node]);
-
-			    indicatrice_node[node]=0;
-			    child=fils[node >> DECALAGE][node & MODULO];
-	    } else {
-		    if (m>max_tr) 
-		    {
-			    max_node=m;
-			    max_critere=hauteur;//critere[node >> DECALAGE][node & MODULO];
-		    } else 
-		    {
-			    max_node=max_tr;
-			    max_critere=max_in;
-		    }
-		    transformee_node[node]=max_node;
-		    indicatrice_node[node]=max_critere+1;
-		    child=fils[node >> DECALAGE][node & MODULO];
-	    }
-	    if (indicatrice_node[node]==0 && transformee_node[node]!=0) printf("BANG!!! %d\n", transformee_node[node]);
-    #ifdef OU_ITERATIF
-    { unsigned char max_tr_propage;
-      unsigned int max_indi_propage;
-	    if (max_node>10 && hauteur>100) {max_tr_propage=(max_tr>0)?0:max_tr;max_indi_propage=max_critere;}
-	    else {max_tr_propage=max_node;max_indi_propage=max_critere;}
-	    if (hauteur==hauteur_parent) {
-		    while (child!=0) {
-		      if (hauteur_parent>stop) compute_max(child, stop, max_tr_propage, max_indi_propage, hauteur, niveaux[node >> DECALAGE][node & MODULO], previous_value);
-		      else compute_max(child, stop, max_tr_propage, max_indi_propage, hauteur, niveaux[node >> DECALAGE][node & MODULO]/*valeur_parent*/, previous_value);
-			    child=frere[child >> DECALAGE][child & MODULO];
-		    }
-	    } else {
-		    while (child!=0) {
-		      compute_max(child, stop, max_tr_propage, max_indi_propage, hauteur, niveaux[node >> DECALAGE][node & MODULO], valeur_parent);
-			    child=frere[child >> DECALAGE][child & MODULO];
-		    }
-	    }
+	GRAY_LEVEL_NBR = ImDtTypes<T>::max()-ImDtTypes<T>::min()+1;
+	
+	children = new OffsetT*[COLUMN_NBR]();
+	brothers =  new OffsetT*[COLUMN_NBR]();
+	levels = new T*[COLUMN_NBR]();
+	criteria = new Criterion*[COLUMN_NBR]();
+	labels = new LabelT[GRAY_LEVEL_NBR];
+	
+	initialized = false;
     }
-    #else
-	    if (hauteur==hauteur_parent) {
-		    while (child!=0) {
-		      if (hauteur_parent>stop) compute_max(child, stop, max_node, max_critere, hauteur, niveaux[node >> DECALAGE][node & MODULO], previous_value);
-		      else compute_max(child, stop, max_node, max_critere, hauteur, niveaux[node >> DECALAGE][node & MODULO]/*valeur_parent*/, previous_value);
-			    child=frere[child >> DECALAGE][child & MODULO];
-		    }
-	    } else {
-		    while (child!=0) {
-		      compute_max(child, stop, max_node, max_critere, hauteur, niveaux[node >> DECALAGE][node & MODULO], valeur_parent);
-			    child=frere[child >> DECALAGE][child & MODULO];
-		    }
-	    }
-    #endif
-    }
-
-
-    template <class T2>
-    void fill_in_image(Image<T2> &indicatrice, Image<T> &transformee, int *img_eti)
+    ~MaxTree()
     {
-	    int i;
-	    int img_size = transformee.getPixelCount();
-	    typename ImDtTypes<T2>::lineType indicatricePix = indicatrice.getPixels();
-	    typename ImDtTypes<T>::lineType transformeePix = transformee.getPixels();
-
-	    for(i=0;i<img_size;i++) 
-	    {
-		transformeePix[i]=transformee_node[img_eti[i]];
-		indicatricePix[i]=indicatrice_node[img_eti[i]];
-	    }
+	reset();
+	
+	delete[] children;
+	delete[] brothers;
+	delete[] levels;
+	delete[] criteria;
+	delete[] labels;
     }
+    
+    inline Criterion &getCriterion(const OffsetT node)
+    {
+	return GET_TREE_OBJ(criteria, node);
+    }
+  
+    inline T &getLevel(const OffsetT node)
+    {
+	return GET_TREE_OBJ(levels, node);
+    }
+  
+    inline OffsetT &getChild(const OffsetT node)
+    {
+	return GET_TREE_OBJ(children, node);
+    }
+  
+    inline OffsetT &getBrother(const OffsetT node)
+    {
+	return GET_TREE_OBJ(brothers, node);
+    }
+    
+    inline int getLabelMax()
+    {
+	return curLabel;
+    }
+  
 
-    critere_type update_critere(int node) {
-	    int child=fils[node >> DECALAGE][node & MODULO];
+    int build(const Image<T> &img, OffsetT *img_eti) 
+    {
+	    T minValue = initialize(img, img_eti);
+
+	    flood(img, img_eti, minValue);
+	    return labels[minValue];
+    }
+    
+    Criterion updateCriteria(int node) 
+    {
+	    int child = getChild(node);
 	    while (child!=0) 
 	    {
-		    critere_type c=update_critere(child);
-		    critere[node >> DECALAGE][node & MODULO].ymin=MIN(critere[node >> DECALAGE][node & MODULO].ymin, c.ymin);
-		    critere[node >> DECALAGE][node & MODULO].ymax=MAX(critere[node >> DECALAGE][node & MODULO].ymax, c.ymax);
-		    child=frere[child >> DECALAGE][child & MODULO];
+		    Criterion c = updateCriteria(child);
+		    getCriterion(node).ymin = MIN(getCriterion(node).ymin, c.ymin);
+		    getCriterion(node).ymax = MAX(getCriterion(node).ymax, c.ymax);
+		    child = getBrother(child);
 	    }
-	    return critere[node >> DECALAGE][node & MODULO];
+	    return getCriterion(node);
     }
-
-
-    void seuil_maxtree(int node, T seuil)
-    {
-	    int m=niveaux[node >> DECALAGE][node & MODULO];
-	    int child=fils[node >> DECALAGE][node & MODULO];
-	    while (child!=0) 
-	    {
-		    seuil_maxtree(child, seuil);
-		    child=frere[child >> DECALAGE][child & MODULO];
-	    }
-    }
-
-    void compute_contrast(int root, UINT stopValue)
-    {
-	    int child;
-	    int hauteur=critere[root >> DECALAGE][root & MODULO].ymax-critere[root >> DECALAGE][root & MODULO].ymin+1;
-	    transformee_node=(T*)malloc(next_eti*sizeof(T));
-	    indicatrice_node=(unsigned int*)malloc(next_eti*sizeof(int));
-	    transformee_node[root]=0;
-	    indicatrice_node[root]=0;
-	    update_critere(root);
-	    child=fils[root >> DECALAGE][root & MODULO];
-	    while (child!=0) 
-	    {
-		compute_max(child, stopValue, 0, 0, hauteur, niveaux[root >> DECALAGE][root & MODULO], niveaux[root >> DECALAGE][root & MODULO]);
-		child=frere[child >> DECALAGE][child & MODULO];
-	    }
-    }
-
-    void _delete() {
-	    int i;
-	    int last_page = (next_eti-1) >> DECALAGE;
-	    free(transformee_node);
-	    free(indicatrice_node);
-	    for(i=0;i<=last_page;i++) {
-		    free(fils[i]);
-		    free(frere[i]);
-		    free(niveaux[i]);
-		    free(critere[i]);
-	    }
-	    free(fils);
-	    free(frere);
-	    free(niveaux);
-	    free(critere);
-	    for(i=0;i<NB_NIV_GRIS;i++) {
-		    if (pile[i]!=NULL) { free(pile[i]);}
-	    }
-    }
-
-    template <class T2>
-    void ouvert_ultime(const Image<T> &img_in, int stopValue, Image<T> &transformee, Image<T2> &indicatrice)
-    {
-	    int arbre;
-	    int *img_eti=(int *)calloc(img_in.getPixelCount(),sizeof(int));
-	    init_pile(img_in);
-	    arbre=build_maxtree(img_in, img_eti);
-	    compute_contrast(arbre, stopValue);
-	    fill_in_image(indicatrice, transformee, img_eti);
-	    free(img_eti);
-	    _delete();
-    }
-
+    
 };
+
+
+template <class T, class OffsetT>
+void compute_max(MaxTree<T,UINT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, UINT stop, T max_tr, unsigned int max_in, unsigned int hauteur_parent, T valeur_parent, T previous_value)
+{
+	T m;
+	T max_node;
+	unsigned int max_criterion;
+	UINT child;
+	UINT hauteur = tree.getCriterion(node).ymax-tree.getCriterion(node).ymin+1;
+
+	m = (hauteur==hauteur_parent) ? tree.getLevel(node)-previous_value : tree.getLevel(node)-valeur_parent;
+	if (hauteur>=stop) 
+	{
+		max_node = max_tr;
+		max_criterion = 0;//max_in;
+		transformee_node[node] = max_node;
+
+		indicatrice_node[node]=0;
+		child=tree.getChild(node);
+	} 
+	else 
+	{
+		if (m>max_tr) 
+		{
+			max_node=m;
+			max_criterion=hauteur;
+		} else 
+		{
+			max_node=max_tr;
+			max_criterion=max_in;
+		}
+		transformee_node[node]=max_node;
+		indicatrice_node[node]=max_criterion+1;
+		child=tree.getChild(node);
+	}
+	if (hauteur==hauteur_parent) 
+	{
+		while (child!=0) 
+		{
+		    if (hauteur_parent>stop) 
+		      compute_max(tree, transformee_node, indicatrice_node, child, stop, max_node, max_criterion, hauteur, tree.getLevel(node), previous_value);
+		    else 
+		      compute_max(tree, transformee_node, indicatrice_node, child, stop, max_node, max_criterion, hauteur, tree.getLevel(node)/*valeur_parent*/, previous_value);
+		    child = tree.getBrother(child);
+		}
+	} 
+	else 
+	{
+		while (child!=0) 
+		{
+		    compute_max(tree, transformee_node, indicatrice_node, child, stop, max_node, max_criterion, hauteur, tree.getLevel(node), valeur_parent);
+		    child = tree.getBrother(child);
+		}
+	}
+}
+
+template <class T, class OffsetT>
+void compute_contrast(MaxTree<T,UINT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize)
+{
+	int child;
+	UINT hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
+	transformee_node[root]=0;
+	indicatrice_node[root]=0;
+	tree.updateCriteria(root);
+	child = tree.getChild(root);
+	while (child!=0) 
+	{
+	    compute_max(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
+	    child = tree.getBrother(child);
+	}
+}
+
 
 #endif
     /**
-     * 2D Ultimate Opening using the max-trees
+     * Ultimate Opening using the max-trees
      * 
      * Max-tree based algorithm as described by Fabrizio and Marcotegui (2009) \cite hutchison_fast_2009
-     * \warning 4-connex only
+     * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[in] stopSize (optional)
      * \param[out] imOut The transformation image
      * \param[out] imIndic The indicator image
+     * \param[in] stopSize (optional)
      */
     template <class T1, class T2>
-    RES_T ultimateOpen(const Image<T1> &imIn, int stopSize, Image<T1> &imOut, Image<T2> &imIndic)
+    RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, UINT stopSize=-1)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut, &imIndic);
-	ASSERT_SAME_SIZE(&imIn, &imOut, &imIndic);
+	ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
+	ASSERT_SAME_SIZE(&imIn, &imTrans, &imIndic);
 	
-	UO_Struct<T1> uo;
-	uo.ouvert_ultime(imIn, stopSize, imOut, imIndic);
-	imOut.modified();
+	int imSize = imIn.getPixelCount();
+	UINT *img_eti = new UINT[imSize]();
+	
+	MaxTree<T1> tree;
+	int root = tree.build(imIn, img_eti);
+	
+	T1 *transformee_node = new T1[tree.getLabelMax()]();
+	UINT *indicatrice_node = new UINT[tree.getLabelMax()]();
+	compute_contrast(tree, transformee_node, indicatrice_node, root, stopSize);
+	
+	typename ImDtTypes<T1>::lineType transformeePix = imTrans.getPixels();
+	typename ImDtTypes<T2>::lineType indicatricePix = imIndic.getPixels();
+
+	for(int i=0;i<imSize;i++) 
+	{
+	    transformeePix[i]=transformee_node[img_eti[i]];
+	    indicatricePix[i]=indicatrice_node[img_eti[i]];
+	}
+	
+	delete[] img_eti;
+	delete[] transformee_node;
+	delete[] indicatrice_node;
+	    
+	imTrans.modified();
 	imIndic.modified();
 	
 	return RES_OK;
     }  
 
-    template <class T1, class T2>
-    RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imOut, Image<T2> &imIndic)
-    {
-	ASSERT_ALLOCATED(&imIn, &imOut, &imIndic);
-	ASSERT_SAME_SIZE(&imIn, &imOut, &imIndic);
-	
-	UO_Struct<T1> uo;
-	uo.ouvert_ultime(imIn, numeric_limits<int>::max(), imOut, imIndic);
-	
-	return RES_OK;
-    }  
 
     
     /** \} */

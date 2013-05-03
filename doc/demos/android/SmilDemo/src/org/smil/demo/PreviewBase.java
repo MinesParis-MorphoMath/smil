@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.TextView;
 
 public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.Callback, Runnable {
     private static final String TAG = "Sample::SurfaceView";
@@ -23,6 +24,7 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
     private int                 mFrameHeight;
     private byte[]              mFrame;
     private boolean             mThreadRun;
+    public TextView			textView = null;
 
     public PreviewBase(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -45,6 +47,7 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
             mFrameWidth = width;
             mFrameHeight = height;
 
+            
             // selecting optimal camera preview size
             {
                 double minDiff = Double.MAX_VALUE;
@@ -56,8 +59,13 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
                     }
                 }
             }
+//            mFrameWidth = 720;
+//            mFrameHeight = 480;
 
-            params.setPreviewSize(getFrameWidth(), getFrameHeight());
+    		if (textView!=null)
+    			textView.setText("Im Size: " + mFrameWidth + "x" + mFrameHeight);
+    		
+            params.setPreviewSize(mFrameWidth, mFrameHeight);
             mCamera.setDisplayOrientation(90);
             mCamera.setParameters(params);
             try {
@@ -109,7 +117,7 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
                 try {
                     this.wait();
                     bmp = processFrame(mFrame);
-                } catch (InterruptedException e) {
+               } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }

@@ -5,7 +5,12 @@ import java.io.ByteArrayInputStream;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.widget.TextView;
 
 import smilJava.*;
 
@@ -18,6 +23,7 @@ class Preview extends PreviewBase {
     private Image_UINT8 im1 = new Image_UINT8();
     private Image_UINT8 im2 = new Image_UINT8();
     private Image_UINT8 im3 = new Image_UINT8();
+    private Image_UINT16 imLbl = new Image_UINT16();
     private int fWidth = 0;
     private int fHeight = 0;
 
@@ -42,6 +48,7 @@ class Preview extends PreviewBase {
         	im1.setSize(fWidth, fHeight);
         	im2.setSize(fWidth, fHeight);
         	im3.setSize(fWidth, fHeight);
+        	imLbl.setSize(fWidth, fHeight);
     	}
         int frameSize = fWidth * fHeight;
 
@@ -53,9 +60,15 @@ class Preview extends PreviewBase {
     		smilBaseJava.enhanceContrast(im2, im3, 0.1);
             im3.toCharArray(data);
     	}
-    	else
+    	else if (SmilDemo.algoType==SmilDemo.ALGO_UO)
     	{
-    		smilMorphoJava.dualTopHat(im1, im2, smilMorphoJava.hSE(10));
+    		smilMorphoJava.ultimateOpen(im1, fHeight/3, im2, imLbl);
+    		smilBaseJava.enhanceContrast(im2, im3, 0.1);
+            im3.toCharArray(data);
+    	}
+    	else if (SmilDemo.algoType==SmilDemo.ALGO_TOPHAT)
+    	{
+    		smilMorphoJava.topHat(im1, im2, smilMorphoJava.hSE(10));
     		smilBaseJava.threshold(im2, im3);
             im3.toCharArray(data);
     	}

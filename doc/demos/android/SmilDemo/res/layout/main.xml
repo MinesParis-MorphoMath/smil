@@ -11,8 +11,15 @@
    <!-- the actual opencv drawing class -->
 
    <org.smil.demo.Preview
-       android:id="@+id/cvsurface"
+       android:id="@+id/prevSurface"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content" />
+
+   <TextView
+       android:id="@+id/textView1"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="-"
+       android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </FrameLayout>
