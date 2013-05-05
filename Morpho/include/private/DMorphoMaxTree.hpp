@@ -252,6 +252,8 @@ private:
 	getCriterion(curLabel).ymax = ORDONNEE(minOff, img.getWidth());
 	    
 	curLabel++;
+	
+	initialized = true;
 
 	return minValue;
     }
