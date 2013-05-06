@@ -68,7 +68,7 @@ namespace smil
 
 #ifndef SWIG
     template <class T>
-    RES_T histogram(const Image<T> &imIn, UINT *h)
+    RES_T histogram(const Image<T> &imIn, size_t *h)
     {
 	for (int i=ImDtTypes<T>::min();i<=ImDtTypes<T>::max();i++)
 	    h[i] = 0;

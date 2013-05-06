@@ -50,12 +50,12 @@ class PriorityQueue
 private:
     typedef TokenType* StackType;
     
-    UINT GRAY_LEVEL_NBR;
-    T TYPE_FLOOR;
+    size_t GRAY_LEVEL_NBR;
+    size_t TYPE_FLOOR;
     StackType *stacks;
-    TokenType *tokenNbr;
-    TokenType size;
-    TokenType higherLevel;
+    size_t *tokenNbr;
+    size_t size;
+    size_t higherLevel;
     
     bool initialized;
     
@@ -68,7 +68,7 @@ public:
 	stacks = new StackType[GRAY_LEVEL_NBR];
 	for (size_t i=0;i<GRAY_LEVEL_NBR;i++)
 	  stacks[i] = NULL;
-	tokenNbr = new TokenType[GRAY_LEVEL_NBR];
+	tokenNbr = new size_t[GRAY_LEVEL_NBR];
 	initialized = false;
     }
     ~PriorityQueue()
@@ -96,7 +96,7 @@ public:
 	if (initialized)
 	  reset();
 	
-	UINT *h = new UINT[GRAY_LEVEL_NBR];
+	size_t *h = new size_t[GRAY_LEVEL_NBR];
 	histogram(img, h);
 
 	for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
@@ -104,14 +104,14 @@ public:
 	      stacks[i] = new TokenType[h[i]];
 	    
 	delete[] h;
-	memset(tokenNbr, 0, GRAY_LEVEL_NBR*sizeof(TokenType));
+	memset(tokenNbr, 0, GRAY_LEVEL_NBR*sizeof(size_t));
 	size = 0;
 	higherLevel = 0;
 	
 	initialized = true;
     }
     
-    inline TokenType getSize()
+    inline size_t getSize()
     {
 	return size;
     }
@@ -121,14 +121,14 @@ public:
 	return size==0;
     }
     
-    inline TokenType getHigherLevel()
+    inline size_t getHigherLevel()
     {
 	return higherLevel;
     }
     
     inline void push(T value, TokenType dOffset)
     {
-	TokenType level = TYPE_FLOOR + value;
+	size_t level = TYPE_FLOOR + value;
 	if (level>higherLevel)
 	  higherLevel = level;
 	stacks[level][tokenNbr[level]++] = dOffset;
@@ -137,14 +137,14 @@ public:
     
     inline TokenType pop()
     {
-	TokenType hlSize = tokenNbr[higherLevel];
+	size_t hlSize = tokenNbr[higherLevel];
 	TokenType dOffset = stacks[higherLevel][hlSize-1];
 	if (hlSize>1)
 	  tokenNbr[higherLevel]--;
 	else if (size>1) // Find new higher level (non empty stack)
 	{
 	    tokenNbr[higherLevel] = 0;
-	    for (TokenType i=higherLevel-1;i>=0;i--)
+	    for (size_t i=higherLevel-1;i>=0;i--)
 	      if (tokenNbr[i]>0)
 	      {
 		  higherLevel = i;
@@ -241,7 +241,7 @@ private:
 	curLabel = 1;
 	levels[0][curLabel] = minValue;
 	
-	memset(labels,0,GRAY_LEVEL_NBR*sizeof(int));
+	memset(labels,0,GRAY_LEVEL_NBR*sizeof(LabelT));
 	
 	img_eti[minOff] = curLabel;
 	labels[minValue] = curLabel;
@@ -308,7 +308,7 @@ private:
 	getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, ORDONNEE(p_suiv,imWidth));
 	pq.push(imgPix[p_suiv], p_suiv);
 	
-	if (imgPix[p_suiv]>imgPix[p]) 
+	if (imgPix[p_suiv]>imgPix[p] && img_eti[p]==0) 
 	{
 		pq.push(imgPix[p], p);
 		return true;

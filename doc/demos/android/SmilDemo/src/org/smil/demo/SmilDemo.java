@@ -23,7 +23,7 @@ public class SmilDemo extends Activity {
     private Preview 		trueview;
     public TextView			textView;
 
-    public static int           algoType       = ALGO_GRADIENT;
+    public static int           algoType       = ALGO_UO;
 
     static 
     {
