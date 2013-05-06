@@ -89,6 +89,8 @@ public:
 		delete[] stacks[i];
 	    stacks[i] = NULL;
 	}
+	
+	initialized = false;
     }
     
     void initialize(const Image<T> &img)
@@ -168,7 +170,7 @@ public:
 #define GET_TREE_OBJ(type, node) type[node >> COLUMN_SHIFT][node & COLUMN_MOD]
 #define ORDONNEE(offset,largeur) ((offset)/(largeur))
 
-template <class T, class LabelT=UINT, class OffsetT=UINT>
+template <class T, class OffsetT=UINT>
 class MaxTree
 {
 public:
@@ -188,8 +190,8 @@ private:
     OffsetT **brothers;
     Criterion **criteria;
     
-    LabelT *labels;
-    LabelT curLabel;
+    size_t *labels;
+    size_t curLabel;
     
     bool initialized;
 
@@ -212,10 +214,10 @@ private:
 
     void allocatePage(UINT page)
     {
-	    levels[page] =  new T[COLUMN_SIZE]();
-	    children[page] = new OffsetT[COLUMN_SIZE]();
-	    brothers[page] =  new OffsetT[COLUMN_SIZE]();
-	    criteria[page] = new Criterion[COLUMN_SIZE]();
+	levels[page] =  new T[COLUMN_SIZE]();
+	children[page] = new OffsetT[COLUMN_SIZE]();
+	brothers[page] =  new OffsetT[COLUMN_SIZE]();
+	criteria[page] = new Criterion[COLUMN_SIZE]();
     }
 
     T initialize(const Image<T> &img, OffsetT *img_eti)
@@ -224,6 +226,7 @@ private:
 	  reset();
 	
 	typename ImDtTypes<T>::lineType pix = img.getPixels();
+	
 	T minValue = ImDtTypes<T>::max();
 	T tMinV = ImDtTypes<T>::min();
 	OffsetT minOff;
@@ -241,7 +244,7 @@ private:
 	curLabel = 1;
 	levels[0][curLabel] = minValue;
 	
-	memset(labels,0,GRAY_LEVEL_NBR*sizeof(LabelT));
+	memset(labels, 0, GRAY_LEVEL_NBR*sizeof(size_t));
 	
 	img_eti[minOff] = curLabel;
 	labels[minValue] = curLabel;
@@ -370,7 +373,7 @@ public:
 	brothers =  new OffsetT*[COLUMN_NBR]();
 	levels = new T*[COLUMN_NBR]();
 	criteria = new Criterion*[COLUMN_NBR]();
-	labels = new LabelT[GRAY_LEVEL_NBR];
+	labels = new size_t[GRAY_LEVEL_NBR];
 	
 	initialized = false;
     }
@@ -436,7 +439,7 @@ public:
 
 
 template <class T, class OffsetT>
-void compute_max(MaxTree<T,UINT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, UINT stop, T max_tr, unsigned int max_in, unsigned int hauteur_parent, T valeur_parent, T previous_value)
+void compute_max(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, UINT stop, T max_tr, unsigned int max_in, unsigned int hauteur_parent, T valeur_parent, T previous_value)
 {
 	T m;
 	T max_node;
@@ -491,7 +494,7 @@ void compute_max(MaxTree<T,UINT,OffsetT> &tree, T* transformee_node, UINT* indic
 }
 
 template <class T, class OffsetT>
-void compute_contrast(MaxTree<T,UINT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize)
+void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize)
 {
 	int child;
 	UINT hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
