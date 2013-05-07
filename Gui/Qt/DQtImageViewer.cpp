@@ -56,7 +56,7 @@ namespace smil
 	    
 	    for (size_t j=0;j<h;j++,lines++)
 	    {
-		typename Image<UINT8>::lineType pixels = *lines;
+		Image<UINT8>::lineType pixels = *lines;
 		destLine = this->qImage->scanLine(j);
 		for (size_t i=0;i<w;i++)
 	// 	  pixels[i] = 0;
