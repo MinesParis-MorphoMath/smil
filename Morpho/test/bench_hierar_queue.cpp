@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     UINT BENCH_NRUNS = 1E1;
     
     sup(im1, UINT8(30), im2);
-    BENCH_IMG(build, im2, im1, im3);
+//     BENCH_IMG(build, im2, im1, im3);
     
     gradient(im1, im2);
     minima(im2, im3);

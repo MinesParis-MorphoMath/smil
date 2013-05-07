@@ -49,7 +49,7 @@ namespace smil
     RES_T initWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq)
     {
 	// Empty the priority queue
-	hq.reset();
+	hq.initialize(imIn);
 	
 	typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
 	typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
@@ -110,11 +110,10 @@ namespace smil
 	vector<int>::iterator it_off;
 	
 	
-	while(!hq.empty())
+	while(!hq.isEmpty())
 	{
 	    
-	    size_t curOffset = hq.top();
-	    hq.pop();
+	    size_t curOffset = hq.pop();
 	    size_t x0, y0, z0;
 	    
 	    

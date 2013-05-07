@@ -34,6 +34,7 @@
 
 using namespace smil;
 
+
 class Test_HierarchicalQueue : public TestCase
 {
   virtual void run()
@@ -43,6 +44,7 @@ class Test_HierarchicalQueue : public TestCase
       img << vals;
       
       HierarchicalQueue<UINT8> pq;
+      pq.initialize(img);
       pq.push(2, 15);
       pq.push(2, 11);
       pq.push(2, 10);
@@ -50,20 +52,12 @@ class Test_HierarchicalQueue : public TestCase
       pq.push(0, 12);
       pq.push(0, 8);
       
-//       pq.printSelf();
-      
-      TEST_ASSERT(pq.top()==9);
-      pq.pop();
-      TEST_ASSERT(pq.top()==12);
-      pq.pop();
-      TEST_ASSERT(pq.top()==8);
-      pq.pop();
-      TEST_ASSERT(pq.top()==15);
-      pq.pop();
-      TEST_ASSERT(pq.top()==11);
-      pq.pop();
-      TEST_ASSERT(pq.top()==10);
-      pq.pop();
+      TEST_ASSERT(pq.pop()==9);
+      TEST_ASSERT(pq.pop()==12);
+      TEST_ASSERT(pq.pop()==8);
+      TEST_ASSERT(pq.pop()==15);
+      TEST_ASSERT(pq.pop()==11);
+      TEST_ASSERT(pq.pop()==10);
   }
 };
 
