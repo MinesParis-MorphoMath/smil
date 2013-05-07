@@ -166,11 +166,23 @@ namespace smil
 	
 	UINT8 *destLine;
 	double coeff;
+	double floor = ImDtTypes<T>::min();
+	
 	
 	if (parentClass::labelImage)
 	  coeff = 1.0;
 	else
-	  coeff = double(numeric_limits<UINT8>::max()) / ( double(numeric_limits<T>::max()) - double(numeric_limits<T>::min()) );
+	{
+	    if (autoRange)
+	    {
+		T minV, maxV;
+		rangeVal(*this->image, minV, maxV);
+		floor = minV;
+		coeff = 255. / double(maxV-minV);
+	    }
+	    else
+	      coeff = 255. / ( double(ImDtTypes<T>::max()) - double(ImDtTypes<T>::min()) );
+	}
 
 	for (size_t j=0;j<h;j++,lines++)
 	{
@@ -179,7 +191,7 @@ namespace smil
 	    destLine = this->qImage->scanLine(j);
 	    for (size_t i=0;i<w;i++)
     // 	  pixels[i] = 0;
-		destLine[i] = (UINT8)(coeff * (double(pixels[i]) - double(numeric_limits<T>::min())));
+		destLine[i] = (UINT8)(coeff * (double(pixels[i]) - floor));
 	}
     }
 

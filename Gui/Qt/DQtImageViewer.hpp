@@ -66,7 +66,8 @@ namespace smil
      * \li \b Z/A Zoom In/Out
      * \li \b V Show/Hide the value of the pixel under the mouse cursor
      * \li \b M Show/Hide the magnifying window
-     * \li \b H SHow/Hide the histogram window (requires the Qwt library)
+     * \li \b H SHow the histogram window (requires the Qwt library)
+     * \li \b P SHow the plot window (requires the Qwt library)
      */
     template <class T>
     class QtImageViewer : public ImageViewer<T>, public BASE_QT_VIEWER
@@ -84,6 +85,10 @@ namespace smil
 	virtual bool isVisible();
 	virtual void setName(const char *_name);
 	virtual void update();
+	virtual void redrawImage() // ImageViewerWidget
+	{
+	    update();
+	}
 	void updateIcon()
 	{
 	    if (!this->image)

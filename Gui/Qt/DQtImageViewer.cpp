@@ -32,6 +32,7 @@
 #include "Qt/DQtImageViewer.hpp"
 #include "Qt/PureQt/ImageViewerWidget.h"
 #include "Core/include/private/DImage.hpp"
+#include "Base/include/private/DMeasures.hpp"
 
 namespace smil
 {
@@ -45,8 +46,26 @@ namespace smil
 	size_t w = this->image->getWidth();
 	size_t h = this->image->getHeight();
 
-	for (size_t j=0;j<h;j++, lines++)
-	    memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
+	if (!parentClass::labelImage && autoRange)
+	{
+	    UINT8 minV, maxV;
+	    rangeVal<UINT8>(*this->image, minV, maxV);
+	    double floor = minV;
+	    double coeff = 255. / double(maxV-minV);
+	    UINT8 *destLine;
+	    
+	    for (size_t j=0;j<h;j++,lines++)
+	    {
+		typename Image<UINT8>::lineType pixels = *lines;
+		destLine = this->qImage->scanLine(j);
+		for (size_t i=0;i<w;i++)
+	// 	  pixels[i] = 0;
+		    destLine[i] = (UINT8)(coeff * (double(pixels[i]) - floor));
+	    }
+	}
+	else
+	  for (size_t j=0;j<h;j++, lines++)
+	      memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
     }
 
 

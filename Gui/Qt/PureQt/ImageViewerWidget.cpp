@@ -118,6 +118,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     
     imScene = NULL;
     drawLabelized = false;
+    autoRange = false;
 
     setMouseTracking(true);
 //     this->grabKeyboard();
@@ -621,6 +622,14 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
         break;
     case Qt::Key_L:
 	setLabelImage(!drawLabelized); // Switch label mode
+	break;
+    case Qt::Key_R:
+	autoRange = !autoRange; // Switch auto range mode
+	if (autoRange)
+	  displayHint(QString("Autorange on"));
+	else
+	  displayHint(QString("Autorange off"));
+	redrawImage();
 	break;
     case Qt::Key_H:
 	displayHistogram();
