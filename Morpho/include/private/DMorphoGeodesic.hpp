@@ -243,7 +243,7 @@ namespace smil
 	    {
 		
 		x = x0 + it->x;
-		y = y0 - it->y;
+		y = y0 + it->y;
 		z = z0 + it->z;
 		
 		if (oddLine)
@@ -255,9 +255,6 @@ namespace smil
 		    
 		    if (oddLine)
 		      nbOffset += (y+1)%2;
-		    
-		    if (nbOffset < 0 || nbOffset >= imIn.getPixelCount())
-		      nbOffset = 0;
 		    
 		    nbStat = statPixels[nbOffset];
 		    
