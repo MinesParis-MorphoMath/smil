@@ -295,7 +295,7 @@ namespace smil
 	ImageFreezer freeze(imOut);
 	
 	Image<UINT8> imStatus(imIn);
-	HierarchicalQueue<T> pq(true);
+	HierarchicalQueue<T,UINT> pq;
 	
 	// Make sure that imIn >= imMark
 	ASSERT((sup(imIn, imMark, imOut)==RES_OK));
@@ -323,7 +323,7 @@ namespace smil
 	
 	Image<UINT8> imStatus(imIn);
 	
-	// Reverse hierarchical queue (the highest token correspond to the highest gray value)
+	// Reverse hierarchical queue (the highest token corresponds to the highest gray value)
 	HierarchicalQueue<T> rpq(true);
 	
 	// Make sure that imIn <= imMark
@@ -353,7 +353,7 @@ namespace smil
 	
 	Image<UINT8> imStatus(imIn);
 	
-	// Reverse hierarchical queue (the highest token correspond to the highest gray value)
+	// Reverse hierarchical queue (the highest token corresponds to the highest gray value)
 	HierarchicalQueue<T> rpq(true);
 	
 	// Make sure that imIn <= imMark

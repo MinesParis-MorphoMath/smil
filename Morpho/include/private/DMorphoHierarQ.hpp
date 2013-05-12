@@ -114,17 +114,19 @@ namespace smil
     class HierarchicalQueue
     {
     private:
-	typedef FIFO_Queue<TokenType>* StackType;
+// 	typedef FIFO_Queue<TokenType> StackType;
+	typedef queue<TokenType> StackType;
 	
 	size_t GRAY_LEVEL_NBR;
 	size_t TYPE_FLOOR;
-	StackType *stacks;
+	StackType **stacks;
 	size_t *tokenNbr;
 	size_t size;
 	size_t referenceLevel;
 	
 	bool initialized;
 	const bool reverseOrder;
+	size_t h[256];
 	
     public:
 	HierarchicalQueue(bool rOrder=false)
@@ -133,7 +135,7 @@ namespace smil
 	    GRAY_LEVEL_NBR = ImDtTypes<T>::max()-ImDtTypes<T>::min()+1;
 	    TYPE_FLOOR = -ImDtTypes<T>::min();
 	    
-	    stacks = new StackType[GRAY_LEVEL_NBR]();
+	    stacks = new StackType*[GRAY_LEVEL_NBR]();
 	    tokenNbr = new size_t[GRAY_LEVEL_NBR];
 	    initialized = false;
 	}
@@ -152,7 +154,7 @@ namespace smil
 	    for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
 	    {
 		if (stacks[i])
-		    delete[] stacks[i];
+		    delete stacks[i];
 		stacks[i] = NULL;
 	    }
 	    
@@ -164,14 +166,15 @@ namespace smil
 	    if (initialized)
 	      reset();
 	    
-	    size_t *h = new size_t[GRAY_LEVEL_NBR];
+// 	    size_t *h = new size_t[GRAY_LEVEL_NBR];
 	    histogram(img, h);
 
 	    for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
-		if (h[i]!=0)
-		  stacks[i] = new FIFO_Queue<TokenType>(h[i]);
+// 		if (h[i]!=0)
+// 		  stacks[i] = new StackType(h[i]);
+		  stacks[i] = new StackType();
 		
-	    delete[] h;
+// 	    delete[] h;
 	    memset(tokenNbr, 0, GRAY_LEVEL_NBR*sizeof(size_t));
 	    size = 0;
 	    
@@ -240,7 +243,8 @@ namespace smil
 	inline TokenType pop()
 	{
 	    size_t hlSize = tokenNbr[referenceLevel];
-	    TokenType dOffset = stacks[referenceLevel]->pop();
+	    TokenType dOffset = stacks[referenceLevel]->front();
+	    stacks[referenceLevel]->pop();
 	    if (hlSize>1)
 	      tokenNbr[referenceLevel]--;
 	    else if (size>1) // Find new ref level (non empty stack)
