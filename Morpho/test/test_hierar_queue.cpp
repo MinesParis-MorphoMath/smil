@@ -34,6 +34,7 @@
 
 using namespace smil;
 
+
 class Test_HierarchicalQueue : public TestCase
 {
   virtual void run()
@@ -43,6 +44,7 @@ class Test_HierarchicalQueue : public TestCase
       img << vals;
       
       HierarchicalQueue<UINT8> pq;
+      pq.initialize(img);
       pq.push(2, 15);
       pq.push(2, 11);
       pq.push(2, 10);
@@ -50,20 +52,12 @@ class Test_HierarchicalQueue : public TestCase
       pq.push(0, 12);
       pq.push(0, 8);
       
-//       pq.printSelf();
-      
-      TEST_ASSERT(pq.top()==9);
-      pq.pop();
-      TEST_ASSERT(pq.top()==12);
-      pq.pop();
-      TEST_ASSERT(pq.top()==8);
-      pq.pop();
-      TEST_ASSERT(pq.top()==15);
-      pq.pop();
-      TEST_ASSERT(pq.top()==11);
-      pq.pop();
-      TEST_ASSERT(pq.top()==10);
-      pq.pop();
+      TEST_ASSERT(pq.pop()==9);
+      TEST_ASSERT(pq.pop()==12);
+      TEST_ASSERT(pq.pop()==8);
+      TEST_ASSERT(pq.pop()==15);
+      TEST_ASSERT(pq.pop()==11);
+      TEST_ASSERT(pq.pop()==10);
   }
 };
 
@@ -244,6 +238,45 @@ class Test_Watershed : public TestCase
   }
 };
 
+class Test_Build : public TestCase
+{
+  virtual void run()
+  {
+      UINT8 vecIn[] = { 
+	1, 2, 0, 5, 5, 5, 3, 3, 3, 1, 1
+      };
+      
+      UINT8 vecMark[] = { 
+	0, 0, 0, 0, 4, 1, 1, 2, 0, 0, 0
+      };
+      
+      Image_UINT8 imIn(11,1);
+      Image_UINT8 imMark(imIn);
+      Image_UINT8 imBuild(imIn);
+
+      imIn << vecIn;
+      imMark << vecMark;
+      
+      dualBuild(imIn, imMark, imBuild, sSE());
+      
+      UINT8 vecTruth[] = { 
+	0, 0, 0, 0, 4, 2, 2, 2, 1, 1, 1
+      };
+      
+      Image_UINT8 imTruth(imIn);
+      
+      imTruth << vecTruth;
+      
+      TEST_ASSERT(imBuild==imTruth);
+      
+      if (retVal!=RES_OK)
+      {
+	imBuild.printSelf(1);
+	imTruth.printSelf(1);
+      }
+  }
+};
+
 
 int main(int argc, char *argv[])
 {
@@ -252,38 +285,10 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_InitHierarchicalQueue);
       ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
       ADD_TEST(ts, Test_Watershed);
-      
-      Image<UINT8> im1, im2;
-//       watershed(im1, im2);
+      ADD_TEST(ts, Test_Build);
       
       return ts.run();
       
 }
 
 
-/*
-int main(int argc, char *argv[])
-{
-    
-      UINT8 vecIn[]   = { 1, 2, 0, 5, 5, 5, 3, 3, 3, 1, 1 };
-      UINT8 vecMark[] = { 0, 0, 0, 0, 4, 1, 1, 2, 0, 0, 0 };
-      
-      Image_UINT8 imIn(11, 1);
-      imIn << vecIn;
-      
-      Image_UINT8 imMark(imIn);
-      imMark << vecMark;
-      
-      Image_UINT8 imOut(imIn);
-      
-      inv(imIn, imIn);
-      inv(imMark, imMark);
-      
-      build(imIn, imMark, imOut);
-//       dualBuild(imIn, imMark, imOut);
-      
-      
-      
-      
-}
-*/

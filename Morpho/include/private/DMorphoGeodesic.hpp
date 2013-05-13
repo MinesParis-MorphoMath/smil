@@ -136,11 +136,11 @@ namespace smil
 
 
 
-    template <class T, class HQcompT>
-    RES_T initBuildHierarchicalQueue(const Image<T> &imIn, HierarchicalQueue<T, HQcompT> &hq)
+    template <class T>
+    RES_T initBuildHierarchicalQueue(const Image<T> &imIn, HierarchicalQueue<T> &hq)
     {
-	// Empty the priority queue
-	hq.reset();
+	// Initialize the priority queue
+	hq.initialize(imIn);
 	
 	typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
 	
@@ -160,11 +160,11 @@ namespace smil
 	return RES_OK;
     }
 
-    template <class T, class HQcompT>
-    RES_T initBuildHierarchicalQueue(const Image<T> &imIn, HierarchicalQueue<T, HQcompT> &hq, const T noPushValue)
+    template <class T>
+    RES_T initBuildHierarchicalQueue(const Image<T> &imIn, HierarchicalQueue<T> &hq, const T noPushValue)
     {
-	// Empty the priority queue
-	hq.reset();
+	// Initialize the priority queue
+	hq.initialize(imIn);
 	
 	typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
 	
@@ -189,8 +189,8 @@ namespace smil
 
 
 
-    template <class T, class operatorT, class HQcompT>
-    RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Image<UINT8> &imStatus, HierarchicalQueue<T, HQcompT> &hq, const StrElt &se)
+    template <class T, class operatorT>
+    RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq, const StrElt &se)
     {
 	typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
 	typename ImDtTypes<T>::lineType markPixels = imMark.getPixels();
@@ -224,11 +224,10 @@ namespace smil
 	size_t nbOffset;
 	UINT8 nbStat;
 	
-	while(!hq.empty())
+	while(!hq.isEmpty())
 	{
 	    
-	    curOffset = hq.top();
-	    hq.pop();
+	    curOffset = hq.pop();
 	    
 	    // Give the point the label "FINAL" in the status image
 	    statPixels[curOffset] = HQ_FINAL;
@@ -296,7 +295,7 @@ namespace smil
 	ImageFreezer freeze(imOut);
 	
 	Image<UINT8> imStatus(imIn);
-	HierarchicalQueue<T> pq;
+	HierarchicalQueue<T,UINT> pq;
 	
 	// Make sure that imIn >= imMark
 	ASSERT((sup(imIn, imMark, imOut)==RES_OK));
@@ -324,9 +323,8 @@ namespace smil
 	
 	Image<UINT8> imStatus(imIn);
 	
-	// Reverse hierarchical queue (the highest token correspond to the highest gray value)
-	typedef typename std::less<T> compareType;
-	HierarchicalQueue<T, compareType > rpq;
+	// Reverse hierarchical queue (the highest token corresponds to the highest gray value)
+	HierarchicalQueue<T> rpq(true);
 	
 	// Make sure that imIn <= imMark
 	ASSERT((inf(imIn, imMark, imOut)==RES_OK));
@@ -355,9 +353,8 @@ namespace smil
 	
 	Image<UINT8> imStatus(imIn);
 	
-	// Reverse hierarchical queue (the highest token correspond to the highest gray value)
-	typedef typename std::less<T> compareType;
-	HierarchicalQueue<T, compareType > rpq;
+	// Reverse hierarchical queue (the highest token corresponds to the highest gray value)
+	HierarchicalQueue<T> rpq(true);
 	
 	// Make sure that imIn <= imMark
 	ASSERT((inf(imIn, imMark, imOut)==RES_OK));
