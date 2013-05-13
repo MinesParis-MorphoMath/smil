@@ -103,7 +103,7 @@ public:
 
 	for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
 	    if (h[i]!=0)
-	      stacks[i] = new TokenType[h[i]];
+	      stacks[i] = new TokenType[h[i]+1];
 	    
 	delete[] h;
 	memset(tokenNbr, 0, GRAY_LEVEL_NBR*sizeof(size_t));
@@ -311,7 +311,7 @@ private:
 	getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, ORDONNEE(p_suiv,imWidth));
 	pq.push(imgPix[p_suiv], p_suiv);
 	
-	if (imgPix[p_suiv]>imgPix[p] && img_eti[p]==0) 
+	if (imgPix[p_suiv]>imgPix[p])
 	{
 		pq.push(imgPix[p], p);
 		return true;
