@@ -122,11 +122,11 @@ namespace smil
 	StackType **stacks;
 	size_t *tokenNbr;
 	size_t size;
-	size_t referenceLevel;
+	size_t higherLevel;
 	
 	bool initialized;
 	const bool reverseOrder;
-	size_t h[256];
+// 	size_t h[256];
 	
     public:
 	HierarchicalQueue(bool rOrder=false)
@@ -167,7 +167,7 @@ namespace smil
 	      reset();
 	    
 // 	    size_t *h = new size_t[GRAY_LEVEL_NBR];
-	    histogram(img, h);
+// 	    histogram(img, h);
 
 	    for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
 // 		if (h[i]!=0)
@@ -179,9 +179,9 @@ namespace smil
 	    size = 0;
 	    
 	    if (reverseOrder)
-	      referenceLevel = 0;
+	      higherLevel = 0;
 	    else
-	      referenceLevel = ImDtTypes<T>::max();
+	      higherLevel = ImDtTypes<T>::max();
 	    
 	    initialized = true;
 	}
@@ -198,7 +198,7 @@ namespace smil
 	
 	inline size_t getHigherLevel()
 	{
-	    return referenceLevel;
+	    return higherLevel;
 	}
 	
 	inline void push(T value, TokenType dOffset)
@@ -206,13 +206,13 @@ namespace smil
 	    size_t level = TYPE_FLOOR + value;
 	    if (reverseOrder)
 	    {
-		if (level>referenceLevel)
-		  referenceLevel = level;
+		if (level>higherLevel)
+		  higherLevel = level;
 	    }
 	    else
 	    {
-		if (level<referenceLevel)
-		  referenceLevel = level;
+		if (level<higherLevel)
+		  higherLevel = level;
 	    }
 	    stacks[level]->push(dOffset);
 	    tokenNbr[level]++;
@@ -222,19 +222,19 @@ namespace smil
 	{
 	    if (reverseOrder)
 	    {
-		for (size_t i=referenceLevel-1;i>=0;i--)
+		for (size_t i=higherLevel-1;i>=0;i--)
 		  if (tokenNbr[i]>0)
 		  {
-		      referenceLevel = i;
+		      higherLevel = i;
 		      break;
 		  }
 	    }
 	    else
 	    {
-		for (size_t i=referenceLevel+1;i<GRAY_LEVEL_NBR;i++)
+		for (size_t i=higherLevel+1;i<GRAY_LEVEL_NBR;i++)
 		  if (tokenNbr[i]>0)
 		  {
-		      referenceLevel = i;
+		      higherLevel = i;
 		      break;
 		  }
 	    }
@@ -242,14 +242,14 @@ namespace smil
 	
 	inline TokenType pop()
 	{
-	    size_t hlSize = tokenNbr[referenceLevel];
-	    TokenType dOffset = stacks[referenceLevel]->front();
-	    stacks[referenceLevel]->pop();
+	    size_t hlSize = tokenNbr[higherLevel];
+	    TokenType dOffset = stacks[higherLevel]->front();
+	    stacks[higherLevel]->pop();
 	    if (hlSize>1)
-	      tokenNbr[referenceLevel]--;
+	      tokenNbr[higherLevel]--;
 	    else if (size>1) // Find new ref level (non empty stack)
 	    {
-		tokenNbr[referenceLevel] = 0;
+		tokenNbr[higherLevel] = 0;
 		findNewReferenceLevel();
 	    }
 	    size--;

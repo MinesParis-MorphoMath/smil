@@ -281,10 +281,10 @@ class Test_Build : public TestCase
 int main(int argc, char *argv[])
 {
       TestSuite ts;
-//       ADD_TEST(ts, Test_HierarchicalQueue);
-//       ADD_TEST(ts, Test_InitHierarchicalQueue);
-//       ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
-//       ADD_TEST(ts, Test_Watershed);
+      ADD_TEST(ts, Test_HierarchicalQueue);
+      ADD_TEST(ts, Test_InitHierarchicalQueue);
+      ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
+      ADD_TEST(ts, Test_Watershed);
       ADD_TEST(ts, Test_Build);
       
       return ts.run();
