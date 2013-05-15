@@ -11,7 +11,7 @@
    <!-- the actual opencv drawing class -->
 
    <org.smil.demo.Preview
-       android:id="@+id/prevSurface"
+       android:id="@+id/trueView"
        android:layout_width="wrap_content"
        android:layout_height="wrap_content" />
 
