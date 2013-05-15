@@ -1,7 +1,6 @@
 package org.smil.demo;
 
 import android.app.Activity;
-import android.content.pm.ActivityInfo;
 import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,9 +8,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.SurfaceView;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.TextView;
 
 public class SmilDemo extends Activity {
     private static final String TAG            = "Sample::Activity";
@@ -24,9 +21,8 @@ public class SmilDemo extends Activity {
     private SubMenu            submImSize;
     private SurfaceView 		fakeview;
     private Preview 		trueview;
-    public TextView			textView;
 
-    public static int           algoType       = ALGO_UO;
+    public static int           algoType       = ALGO_GRADIENT;
 
     static 
     {
@@ -50,10 +46,8 @@ public class SmilDemo extends Activity {
         setContentView(R.layout.main);
         fakeview = (SurfaceView)this.findViewById(R.id.fakeCameraView);
         fakeview.setZOrderMediaOverlay(false);
-        textView = (TextView)this.findViewById(R.id.textView1);
         trueview = (Preview)this.findViewById(R.id.trueView);
         trueview.setZOrderMediaOverlay(true);
-        trueview.textView = textView;
     }
 
     @Override
@@ -91,7 +85,7 @@ public class SmilDemo extends Activity {
     	{
     		Size size = trueview.getCameraSizes().get(itemId);
     		trueview.setFrameSize(size.width, size.height);
-//    		trueview.destroyDrawingCache();
+    		recreate();
     	}
     	else if (groupId==1)
     		algoType = itemId;

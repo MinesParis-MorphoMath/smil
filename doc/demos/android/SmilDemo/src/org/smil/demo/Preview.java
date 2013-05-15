@@ -39,13 +39,13 @@ class Preview extends PreviewBase {
     	}
     	else if (SmilDemo.algoType==SmilDemo.ALGO_UO)
     	{
-    		smilMorphoJava.ultimateOpen(imIn, im1, im2, fHeight/3);
-    		smilBaseJava.enhanceContrast(im1, imOut, 0.1);
+    		ultimateOpen(imIn, im1, im2, fHeight/3);
+    		stretchHist(im1, imOut);
     	}
     	else if (SmilDemo.algoType==SmilDemo.ALGO_TOPHAT)
     	{
-    		smilMorphoJava.topHat(imIn, im1, smilMorphoJava.hSE(10));
-    		smilBaseJava.threshold(im1, imOut);
+    		topHat(imIn, im1, smilMorphoJava.hSE(10));
+    		threshold(im1, imOut);
     	}
         
     }

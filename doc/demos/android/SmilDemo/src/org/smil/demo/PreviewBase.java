@@ -8,6 +8,8 @@ import smilJava.Image_UINT8;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
 import android.util.AttributeSet;
@@ -15,7 +17,6 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.TextView;
 
 public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.Callback, Runnable {
     private static final String TAG = "Sample::SurfaceView";
@@ -27,11 +28,13 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
     private static int                 mFrameHeight = 0;
     private byte[]              mFrame;
     private boolean             mThreadRun;
-    public TextView			textView = null;
     
     private Image_UINT8 imIn = new Image_UINT8();
     private Image_UINT8 imOut = new Image_UINT8();
     private int rgba[] = null;
+    
+    private static long lastTime = 0;
+    private double fps = 0; 
     
     public PreviewBase(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -56,62 +59,48 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
     public void setFrameSize(int w, int h) 
     {
     	mThreadRun = false;
-    	
-        if (mCamera != null) 
-        {
-            mHolder.removeCallback(this);
-	        
-	    	mFrameWidth = w;
-	    	mFrameHeight = h;
-	    	
-	       	rgba = new int[mFrameWidth*mFrameHeight];
-	    	imIn.setSize(mFrameWidth, mFrameHeight);
-	    	imOut.setSize(mFrameWidth, mFrameHeight);
-	    	
-			if (textView!=null)
-				textView.setText("Im Size: " + mFrameWidth + "x" + mFrameHeight);
-			
-	    	Camera.Parameters params = mCamera.getParameters();
-	        params.setPreviewSize(mFrameWidth, mFrameHeight);
-	        mCamera.setParameters(params);
-	        try 
-	        {
-	        	SurfaceView fakeview = (SurfaceView) ((View)getParent()).findViewById(R.id.fakeCameraView); 
-				mCamera.setPreviewDisplay(fakeview.getHolder());
-			} catch (IOException e) 
-			{
-	//			Log.e(TAG, "mCamera.setPreviewDisplay fails: " + e);
-			}
-	        
-	        mHolder.addCallback(this);
-	        mCamera.startPreview();
-        }
-        mThreadRun = true;
+    	mCamera.stopPreview();
+    	mFrameWidth = w;
+    	mFrameHeight = h;
     }
 
     public void surfaceChanged(SurfaceHolder _holder, int format, int width, int height) {
         Log.i(TAG, "surfaceChanged");
         if (mCamera != null) {
             
-        	int newWidth = 0;
-        	int newHeight = 0;
-        	
-            // selecting optimal camera preview size
-            if (mFrameWidth==0)
-            {
-                double minDiff = Double.MAX_VALUE;
-                for (Camera.Size size : cameraSizes) {
-                    if (Math.abs(size.height - height) < minDiff) {
-                        newWidth = size.width;
-                        newHeight = size.height;
-                        minDiff = Math.abs(size.height - height);
-                    }
-                }
-            }
+			// selecting optimal camera preview size
+			if (mFrameWidth==0)
+			{
+			    double minDiff = Double.MAX_VALUE;
+			    for (Camera.Size size : cameraSizes) {
+			        if (Math.abs(size.height - height) < minDiff) {
+			        	mFrameWidth = size.width;
+			        	mFrameHeight = size.height;
+			            minDiff = Math.abs(size.height - height);
+			        }
+			    }
+			}
             
-          mCamera.setDisplayOrientation(90);
+			mCamera.setDisplayOrientation(90);
+	    	
+			rgba = new int[mFrameWidth*mFrameHeight];
+			imIn.setSize(mFrameWidth, mFrameHeight);
+			imOut.setSize(mFrameWidth, mFrameHeight);
+						
+			Camera.Parameters params = mCamera.getParameters();
+			params.setPreviewSize(mFrameWidth, mFrameHeight);
+			mCamera.setParameters(params);
+			try 
+			{
+				SurfaceView fakeview = (SurfaceView) ((View)getParent()).findViewById(R.id.fakeCameraView); 
+				mCamera.setPreviewDisplay(fakeview.getHolder());
+			} catch (IOException e) 
+			{
+			//			Log.e(TAG, "mCamera.setPreviewDisplay fails: " + e);
+			}
+			
+			mCamera.startPreview();
             
-          setFrameSize(newWidth, newHeight);
         }
     }
 
@@ -172,6 +161,11 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
 
         bmp.setPixels(rgba, 0/* offset */, mFrameWidth /* stride */, 0, 0, mFrameWidth, mFrameHeight);
         
+		long tickFrameTime = System.currentTimeMillis();
+		long curFrameTime = tickFrameTime - lastTime;
+		fps = (long)(1000.0 / curFrameTime * 100) / 100.0;
+		lastTime = tickFrameTime;
+		
         return bmp;
     }
     
@@ -193,7 +187,18 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
             if (bmp != null) {
                 Canvas canvas = mHolder.lockCanvas();
                 if (canvas != null) {
-                	canvas.drawBitmap(bmp, (canvas.getWidth() - getFrameWidth()) / 2, (canvas.getHeight() - getFrameHeight()) / 2, null);
+                	Paint paint = new Paint();
+                	
+        			canvas.drawColor(Color.BLACK);
+        			canvas.drawBitmap(bmp, (canvas.getWidth() - getFrameWidth()) / 2, (canvas.getHeight() - getFrameHeight()) / 2, null);
+        			
+                	paint.setStyle(Paint.Style.FILL);
+        			paint.setStrokeWidth(3);
+        			paint.setColor(Color.RED);
+        			paint.setTextSize(30);
+        			canvas.drawText("Im Size: " + mFrameWidth + "x" + mFrameHeight , 20, 40, paint);
+        			canvas.drawText("Fps: " + fps , 20, 80, paint);
+        			
                     mHolder.unlockCanvasAndPost(canvas);
                 }
                 bmp.recycle();
