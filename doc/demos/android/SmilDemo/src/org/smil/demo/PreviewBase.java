@@ -21,17 +21,19 @@ import android.view.View;
 public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.Callback, Runnable {
     private static final String TAG = "Sample::SurfaceView";
 
-    private Camera              mCamera;
-    private List<Camera.Size> 			cameraSizes;
-    private SurfaceHolder       mHolder;
+    private static Camera              mCamera;
+    private static List<Camera.Size> 			cameraSizes;
+    private static SurfaceHolder       mHolder;
     private static int                 mFrameWidth = 0;
     private static int                 mFrameHeight = 0;
     private byte[]              mFrame;
     private boolean             mThreadRun;
     
-    private Image_UINT8 imIn = new Image_UINT8();
-    private Image_UINT8 imOut = new Image_UINT8();
-    private int rgba[] = null;
+    protected static String infoMsg;
+    
+    private static Image_UINT8 imIn = new Image_UINT8();
+    private static Image_UINT8 imOut = new Image_UINT8();
+    private static int rgba[] = null;
     
     private static long lastTime = 0;
     private double fps = 0; 
@@ -58,8 +60,8 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
 
     public void setFrameSize(int w, int h) 
     {
-    	mThreadRun = false;
     	mCamera.stopPreview();
+    	mThreadRun = false;
     	mFrameWidth = w;
     	mFrameHeight = h;
     }
@@ -80,6 +82,8 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
 			        }
 			    }
 			}
+			
+			infoMsg = null;
             
 			mCamera.setDisplayOrientation(90);
 	    	
@@ -198,6 +202,8 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
         			paint.setTextSize(30);
         			canvas.drawText("Im Size: " + mFrameWidth + "x" + mFrameHeight , 20, 40, paint);
         			canvas.drawText("Fps: " + fps , 20, 80, paint);
+        			if (infoMsg!=null)
+            			canvas.drawText(infoMsg, 20, 120, paint);
         			
                     mHolder.unlockCanvasAndPost(canvas);
                 }

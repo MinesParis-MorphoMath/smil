@@ -197,17 +197,18 @@ namespace smil
 	    return RES_ERR_BAD_ALLOCATION;
 	
 	map<T, UINT> h = histogram(imIn);
-	double imVol = vol(imIn);
+	double imVol = imIn.getPixelCount();
 	double satVol = imVol * sat / 100.;
 	double v = 0;
-	T minV, maxV, threshVal = 0;
+	T minV, maxV;
 	rangeVal(imIn, minV, maxV);
+	T threshVal = maxV;
 	
 	for (T i=maxV; i>=minV; i-=1)
 	{
 	    v += h[i];
 	    if (v>satVol)
-		break;
+	      break;
 	    threshVal = i;
 	}
 	

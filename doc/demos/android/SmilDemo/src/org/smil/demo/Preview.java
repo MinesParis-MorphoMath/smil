@@ -35,12 +35,12 @@ class Preview extends PreviewBase {
     	if (SmilDemo.algoType==SmilDemo.ALGO_GRADIENT)
     	{
     		gradient(imIn, im1);
-    		enhanceContrast(im1, imOut, 0.1);
+    		enhanceContrast(im1, imOut);
     	}
     	else if (SmilDemo.algoType==SmilDemo.ALGO_UO)
     	{
-    		ultimateOpen(imIn, im1, im2, fHeight/3);
-    		stretchHist(im1, imOut);
+    		ultimateOpen(imIn, imOut, im2, fHeight/3);
+   			enhanceContrast(imOut, imOut);
     	}
     	else if (SmilDemo.algoType==SmilDemo.ALGO_TOPHAT)
     	{

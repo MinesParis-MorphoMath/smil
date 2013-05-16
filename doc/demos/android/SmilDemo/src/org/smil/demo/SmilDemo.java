@@ -22,7 +22,7 @@ public class SmilDemo extends Activity {
     private SurfaceView 		fakeview;
     private Preview 		trueview;
 
-    public static int           algoType       = ALGO_GRADIENT;
+    public static int           algoType       = ALGO_UO;
 
     static 
     {
@@ -54,19 +54,19 @@ public class SmilDemo extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
 //        Log.i(TAG, "onCreateOptionsMenu");
     	
-    	submImSize = menu.addSubMenu(0, -1, 0, "Img Size");
+    	submAlgo = menu.addSubMenu(0, -1, 0, "Algorithm");
+        submAlgo.add(0, 0, 0, "Gradient");
+        submAlgo.add(0, 1, 0, "UO");
+        submAlgo.add(0, 2, 0, "TopHat");
+        
+    	submImSize = menu.addSubMenu(1, -1, 0, "Img Size");
     	int i = 0;
     	for (Size size : trueview.getCameraSizes())
     	{
-    		submImSize.add(0, i, 0, size.width + "x" + size.height);
+    		submImSize.add(1, i, 0, size.width + "x" + size.height);
     		i += 1;
     	}
     	
-    	submAlgo = menu.addSubMenu(1, -1, 0, "Algorithm");
-        submAlgo.add(1, 0, 0, "Gradient");
-        submAlgo.add(1, 1, 0, "UO");
-        submAlgo.add(1, 2, 0, "TopHat");
-        
         
         return true;
     }
@@ -82,13 +82,13 @@ public class SmilDemo extends Activity {
     		return true;
     	
     	if (groupId==0)
+    		algoType = itemId;
+    	else if (groupId==1)
     	{
     		Size size = trueview.getCameraSizes().get(itemId);
     		trueview.setFrameSize(size.width, size.height);
     		recreate();
     	}
-    	else if (groupId==1)
-    		algoType = itemId;
     	
         return true;
     }
