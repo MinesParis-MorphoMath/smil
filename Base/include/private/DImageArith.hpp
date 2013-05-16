@@ -308,6 +308,12 @@ namespace smil
 	return binaryImageFunction<T, subLine<T> >(imIn1, value, imOut);
     }
 
+    template <class T>
+    RES_T sub(const T &value, const Image<T> &imIn, Image<T> &imOut)
+    {
+	return binaryImageFunction<T, subLine<T> >(value, imIn, imOut);
+    }
+
     /**
     * Subtraction (without type minimum check)
     * 
@@ -332,6 +338,15 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn1, &imOut);
 	
 	return binaryImageFunction<T, subNoSatLine<T> >(imIn1, value, imOut);
+    }
+
+    template <class T>
+    RES_T subNoSat(const T &value, const Image<T> &imIn, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	return binaryImageFunction<T, subNoSatLine<T> >(value, imIn, imOut);
     }
 
     /**
@@ -411,6 +426,15 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
 	
 	return binaryImageFunction<T, equLine<T> >(imIn1, imIn2, imOut);
+    }
+
+    template <class T>
+    RES_T equ(const Image<T> &imIn, const T &value, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	return binaryImageFunction<T, equLine<T> >(imIn, value, imOut);
     }
 
     /**
@@ -620,6 +644,15 @@ namespace smil
 	return binaryImageFunction<T, logicAndLine<T> >(imIn1, imIn2, imOut);
     }
 
+    template <class T>
+    RES_T bitAnd(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+	ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
+	return binaryImageFunction<T, bitAndLine<T> >(imIn1, imIn2, imOut);
+    }
+
     /**
     * Logic OR operator
     */
@@ -632,6 +665,15 @@ namespace smil
 	return binaryImageFunction<T, logicOrLine<T> >(imIn1, imIn2, imOut);
     }
 
+    template <class T>
+    RES_T bitOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+	ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
+	return binaryImageFunction<T, bitOrLine<T> >(imIn1, imIn2, imOut);
+    }
+
     /**
     * Logic XOR operator
     */
@@ -642,6 +684,15 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
 
 	return binaryImageFunction<T, logicXOrLine<T> >(imIn1, imIn2, imOut);
+    }
+
+    template <class T>
+    RES_T bitXOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+	ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+
+	return binaryImageFunction<T, bitXOrLine<T> >(imIn1, imIn2, imOut);
     }
 
     /**
@@ -691,6 +742,19 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 
 	return tertiaryImageFunction<T, testLine<T> >(imIn, value1, value2, imOut);
+    }
+
+    /**
+     * Image mask
+     * 
+     * Returns an image imOut where 
+     * - imOut(x)=imIn(x) if imMask(x)!=0
+     * - imOut(x)=0 otherwise
+     */
+    template <class T>
+    RES_T mask(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut)
+    {
+	return test<T>(imMask, imIn, 0, imOut);
     }
 
 

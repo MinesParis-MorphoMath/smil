@@ -30,6 +30,8 @@
 #ifndef _D_IMAGE_HISTOGRAM_HPP
 #define _D_IMAGE_HISTOGRAM_HPP
 
+#include <limits.h>
+
 #include "DLineHistogram.hpp"
 #include "DImageArith.hpp"
 
@@ -64,6 +66,21 @@ namespace smil
 	return h;
     }
 
+#ifndef SWIG
+    template <class T>
+    RES_T histogram(const Image<T> &imIn, size_t *h)
+    {
+	for (int i=ImDtTypes<T>::min();i<=ImDtTypes<T>::max();i++)
+	    h[i] = 0;
+
+	typename Image<T>::lineType pixels = imIn.getPixels();
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	    h[pixels[i]]++;
+	
+	return RES_OK;
+    }
+#endif // SWIG
+
     /**
     * Image histogram with a mask image.
     * 
@@ -97,6 +114,9 @@ namespace smil
     template <class T>
     RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, T trueVal, T falseVal, Image<T> &imOut)
     {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
 	unaryImageFunction<T, threshLine<T> > iFunc;
 	
 	iFunc.lineFunction.minVal = minVal;
@@ -110,27 +130,13 @@ namespace smil
     template <class T>
     RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, Image<T> &imOut)
     {
-	unaryImageFunction<T, threshLine<T> > iFunc;
-	
-	iFunc.lineFunction.minVal = minVal;
-	iFunc.lineFunction.maxVal = maxVal;
-	iFunc.lineFunction.trueVal = numeric_limits<T>::max();
-	iFunc.lineFunction.falseVal = numeric_limits<T>::min();
-	
-	return iFunc(imIn, imOut);
+	return threshold<T>(imIn, minVal, maxVal, ImDtTypes<T>::max(), ImDtTypes<T>::min(), imOut);
     }
 
     template <class T>
     RES_T threshold(const Image<T> &imIn, T minVal, Image<T> &imOut)
     {
-	unaryImageFunction<T, threshLine<T> > iFunc;
-	
-	iFunc.lineFunction.minVal = minVal;
-	iFunc.lineFunction.maxVal = numeric_limits<T>::max();
-	iFunc.lineFunction.trueVal = numeric_limits<T>::max();
-	iFunc.lineFunction.falseVal = numeric_limits<T>::min();
-	
-	return iFunc(imIn, imOut);
+	return threshold<T>(imIn, minVal, ImDtTypes<T>::max(), ImDtTypes<T>::max(), ImDtTypes<T>::min(), imOut);
     }
 
     template <class T>
@@ -162,7 +168,7 @@ namespace smil
     {
 	unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
 	T1 rmin, rmax;
-	rangeVal(imIn, &rmin, &rmax);
+	rangeVal(imIn, rmin, rmax);
 	iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (rmax-rmin);
 	iFunc.lineFunction.inOrig = rmin;
 	iFunc.lineFunction.outOrig = outMinVal;
@@ -191,17 +197,18 @@ namespace smil
 	    return RES_ERR_BAD_ALLOCATION;
 	
 	map<T, UINT> h = histogram(imIn);
-	double imVol = vol(imIn);
+	double imVol = imIn.getPixelCount();
 	double satVol = imVol * sat / 100.;
 	double v = 0;
-	T minV, maxV, threshVal = 0;
-	rangeVal(imIn, &minV, &maxV);
+	T minV, maxV;
+	rangeVal(imIn, minV, maxV);
+	T threshVal = maxV;
 	
 	for (T i=maxV; i>=minV; i-=1)
 	{
 	    v += h[i];
 	    if (v>satVol)
-		break;
+	      break;
 	    threshVal = i;
 	}
 	

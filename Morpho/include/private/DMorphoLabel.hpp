@@ -119,7 +119,7 @@ namespace smil
 	    {
 		size_t val1 = (*pair_it).first;
 		size_t val2 = (*pair_it).second;
-		// find in the stack a set containing one of the pair values
+		// find in the stack a set conaining one of the pair values
 		stack_it = stacks.begin();
 		sf1 = stacks.end();
 		sf2 = stacks.end();

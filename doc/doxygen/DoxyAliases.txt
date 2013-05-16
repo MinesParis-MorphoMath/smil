@@ -32,6 +32,7 @@
 
 ALIASES += web_root=http://cmm.ensmp.fr/~faessel
 ALIASES += home_web_root=\web_root/smil
+ALIASES += download_web_root=\home_web_root/releases
 
 # Images
 ALIASES += images_root=\home_web_root/images
@@ -84,6 +85,12 @@ ALIASES += ws_demo{1}="\xrefitem ws_demos \"Run demo\" \"Demos\" \ws_exec_demo_l
 #ALIASES += demo{1}="<a href=\ws_exec_demo{\1}><b>Execute script online</b></a>"
 ALIASES += demo{1}="\xrefitem examples \"Examples\" \"Examples\"  \ref \1 \"\1\" \t \ws_exec_demo_link{\1,execute online}"
 
+
+########################################################
+# DOWNLOADS
+########################################################
+
+ALIASES += download_link{1}="<a href=\download_web_root/\1>\1</a>"
 
 ########################################################
 # DYNAMIC SECTIONS

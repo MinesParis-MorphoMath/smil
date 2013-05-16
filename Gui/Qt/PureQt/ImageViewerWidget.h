@@ -78,6 +78,7 @@ public:
     virtual void displayMagnifyView(size_t, size_t, size_t) {}
     virtual void displayMagnifyView() { displayMagnifyView(lastPixX, lastPixY, lastPixZ); }
     virtual void setCurSlice(int) {}
+    virtual void redrawImage() {}
 
     void setName(QString name);
     void setImageSize(int w, int h, int d=1);
@@ -90,6 +91,8 @@ public:
     QImage *qOverlayImage;
     
     bool drawLabelized;
+    // Auto adjust range
+    bool autoRange;
     
     virtual void displayHistogram(bool = false) {}
     virtual void displayProfile(bool = false) {}

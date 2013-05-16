@@ -1,6 +1,11 @@
 
+// Compile test: 
+// java -classpath smilJava/ test.java
+// Execute:
+// java -classpath .:smilJava -Djava.library.path=lib test
 // Linux users:
-// Don't forget to add the smil-libs path to LD_LIBRARY_PATH
+// Don't forget to add the smil-libs path to LD_LIBRARY_PATH:
+// LD_LIBRARY_PATH=./lib/ java -classpath .:smilJava -Djava.library.path=lib test
 
 public class test 
 {

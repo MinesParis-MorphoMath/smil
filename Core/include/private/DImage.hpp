@@ -138,6 +138,15 @@ namespace smil
 	    modified();
 	    return RES_OK;
 	}
+	
+	void toArray(T outArray[]);
+	void fromArray(T inArray[]);
+
+	void toCharArray(signed char outArray[]);
+	void fromCharArray(signed char inArray[]);
+
+	void toIntArray(int outArray[]);
+	void fromIntArray(int inArray[]);
 
 	//! Get the image viewer (create one if needed)
 	virtual ImageViewer<T> *getViewer();
@@ -227,6 +236,7 @@ namespace smil
 	Image<T>& operator << (const T &value);
 	//! Negate image
 	Image<T> operator ~ () const;
+	Image<T> operator - () const;
 	//! Add image
 	Image<T> operator + (const Image<T> &rhs);
 	//! Add value

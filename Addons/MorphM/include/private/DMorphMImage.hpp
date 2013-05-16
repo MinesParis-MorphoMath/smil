@@ -85,7 +85,7 @@ namespace smil
 		}
 	    }
 	}
-    #ifdef Py_PYCONFIG_H
+    #if defined Py_PYCONFIG_H  || defined SWIGPYTHON
 	MorphmInt(PyObject *obj)
 	{
 	    BaseObject::className = "MorphmInt";

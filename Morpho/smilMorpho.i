@@ -44,6 +44,7 @@ SMIL_MODULE(smilMorpho)
 #include "DHitOrMiss.hpp"
 #include "DSkeleton.hpp"
 #include "DMorphoInstance.h"
+#include "DMorphoMaxTree.hpp"
 %}
  
 
@@ -64,7 +65,6 @@ SMIL_MODULE(smilMorpho)
 %ignore StrElt::operator ();
 #endif // SWIGJAVA
 
-%varargs(10, UINT ind=0) StrElt::StrElt;
 %include "DStructuringElement.h"
 
 %include "DMorphoBase.hpp"
@@ -84,6 +84,7 @@ TEMPLATE_WRAP_FUNC(geoEro);
 TEMPLATE_WRAP_FUNC(geoBuild);
 TEMPLATE_WRAP_FUNC(geoDualBuild);
 TEMPLATE_WRAP_FUNC(build);
+TEMPLATE_WRAP_FUNC(binBuild);
 TEMPLATE_WRAP_FUNC(dualBuild);
 TEMPLATE_WRAP_FUNC(hBuild);
 TEMPLATE_WRAP_FUNC(buildOpen);
@@ -113,6 +114,9 @@ TEMPLATE_WRAP_FUNC(arrowEqu);
 %include "DMorphoWatershed.hpp"
 TEMPLATE_WRAP_FUNC(watershed);
 TEMPLATE_WRAP_FUNC_CROSS2(watershed);
+TEMPLATE_WRAP_FUNC(lblSkiz);
+TEMPLATE_WRAP_FUNC_CROSS2(inflBasins);
+TEMPLATE_WRAP_FUNC(inflZones);
 
 
 %include "DMorphoLabel.hpp"
@@ -141,3 +145,6 @@ TEMPLATE_WRAP_FUNC(fullThick);
 %include "DSkeleton.hpp"
 TEMPLATE_WRAP_FUNC(skiz);
 TEMPLATE_WRAP_FUNC(zhangSkeleton);
+
+%include "DMorphoMaxTree.hpp"
+TEMPLATE_WRAP_FUNC_CROSS2(ultimateOpen);

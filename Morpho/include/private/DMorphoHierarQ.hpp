@@ -57,92 +57,208 @@ namespace smil
     };
 
     template <class T>
-    class HQToken
+    class FIFO_Queue
     {
-    public:
-	HQToken(T _value, size_t _offset, size_t _index)
-	  : value(_value), offset(_offset), index(_index)
+      public:
+	FIFO_Queue(size_t newSize=0)
 	{
+	    data = NULL;
+	    if (newSize)
+	      initialize(newSize);
 	}
-	T value;
-	size_t offset;
-	bool operator > (const HQToken<T> &s ) const 
+	void reset()
 	{
-	    T sVal = s.value;
-	    if (value!=sVal)
-	      return value > sVal;
-	    else return index > s.index;
+	    if (data)
+	      delete[] data;
 	}
-	bool operator < (const HQToken<T> &s ) const 
+	void initialize(size_t newSize)
 	{
-	    T sVal = s.value;
-	    if (value!=sVal)
-	      return value < sVal;
-	    else return index > s.index;
+	    reset();
+	    realSize = newSize+1;
+	    data = new T[realSize];
+	    _size = 0;
+	    first = 0;
+	    last = 0;
 	}
-    protected:
-	size_t index;
+	inline size_t size()
+	{
+	    return _size;
+	}
+	void swap()
+	{
+	    memcpy(data, data+first, (last-first)*sizeof(T));
+	    first = 0;
+	    last = _size;
+	}
+	void push(T val)
+	{
+	    if (last>=realSize-1)
+	      swap();
+	    data[last++] = val;
+	    _size++;
+	}
+	inline T pop()
+	{
+	    _size--;
+	    return data[first++];
+	}
+      protected:
+	size_t _size;
+	size_t realSize;
+	size_t first;
+	size_t last;
+	T* data;
     };
 
-
-    template <class T, class compareType=std::greater<HQToken<T> > >
+    template <class T, class TokenType=UINT>
     class HierarchicalQueue
     {
-    public:
-    //     typedef typename std::pair<T, UINT> elementType;
-	typedef HQToken<T> elementType;
-	typedef typename std::vector< elementType > containerType;
-    //     typedef typename std::greater<typename containerType::value_type > compareType;
+    private:
+// 	typedef FIFO_Queue<TokenType> StackType;
+	typedef queue<TokenType> StackType;
 	
-	HierarchicalQueue()
+	size_t GRAY_LEVEL_NBR;
+	size_t TYPE_FLOOR;
+	StackType **stacks;
+	size_t *tokenNbr;
+	size_t size;
+	size_t higherLevel;
+	
+	bool initialized;
+	const bool reverseOrder;
+// 	size_t h[256];
+	
+    public:
+	HierarchicalQueue(bool rOrder=false)
+	  : reverseOrder(rOrder)
 	{
-	  reset();
+	    GRAY_LEVEL_NBR = ImDtTypes<T>::max()-ImDtTypes<T>::min()+1;
+	    TYPE_FLOOR = -ImDtTypes<T>::min();
+	    
+	    stacks = new StackType*[GRAY_LEVEL_NBR]();
+	    tokenNbr = new size_t[GRAY_LEVEL_NBR];
+	    initialized = false;
+	}
+	~HierarchicalQueue()
+	{
+	    reset();
+	    delete[] stacks;
+	    delete[] tokenNbr;
 	}
 	
 	void reset()
 	{
-	  while(!priorityQueue.empty())
-	    priorityQueue.pop();
-	  index = 0;
-	}
-	
-	inline bool empty()
-	{
-	  return priorityQueue.empty();
-	}
-	
-	inline void push(T value, size_t offset)
-	{
-	  priorityQueue.push(HQToken<T>(value, offset, index++));
-	}
-	
-	inline const elementType& top()
-	{
-	  return priorityQueue.top();
-	}
-	
-	inline void pop()
-	{
-	  priorityQueue.pop();
-	}
-	
-	inline size_t size()
-	{
-	  return priorityQueue.size();
-	}
-	
-	inline void printSelf()
-	{
-	    while(!priorityQueue.empty())
+	    if (!initialized)
+	      return;
+	    
+	    for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
 	    {
-		cout << (int)(priorityQueue.top().value) << ", " << (int)(priorityQueue.top().offset) << endl;
-		priorityQueue.pop();
+		if (stacks[i])
+		    delete stacks[i];
+		stacks[i] = NULL;
+	    }
+	    
+	    initialized = false;
+	}
+	
+	void initialize(const Image<T> &img)
+	{
+	    if (initialized)
+	      reset();
+	    
+// 	    size_t *h = new size_t[GRAY_LEVEL_NBR];
+// 	    histogram(img, h);
+
+	    for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
+// 		if (h[i]!=0)
+// 		  stacks[i] = new StackType(h[i]);
+		  stacks[i] = new StackType();
+		
+// 	    delete[] h;
+	    memset(tokenNbr, 0, GRAY_LEVEL_NBR*sizeof(size_t));
+	    size = 0;
+	    
+	    if (reverseOrder)
+	      higherLevel = 0;
+	    else
+	      higherLevel = ImDtTypes<T>::max();
+	    
+	    initialized = true;
+	}
+	
+	inline size_t getSize()
+	{
+	    return size;
+	}
+	
+	inline bool isEmpty()
+	{
+	    return size==0;
+	}
+	
+	inline size_t getHigherLevel()
+	{
+	    return higherLevel;
+	}
+	
+	inline void push(T value, TokenType dOffset)
+	{
+	    size_t level = TYPE_FLOOR + value;
+	    if (reverseOrder)
+	    {
+		if (level>higherLevel)
+		  higherLevel = level;
+	    }
+	    else
+	    {
+		if (level<higherLevel)
+		  higherLevel = level;
+	    }
+	    stacks[level]->push(dOffset);
+	    tokenNbr[level]++;
+	    size++;
+	}
+	inline void findNewReferenceLevel()
+	{
+	    if (reverseOrder)
+	    {
+		for (size_t i=higherLevel-1;i>=0;i--)
+		  if (tokenNbr[i]>0)
+		  {
+		      higherLevel = i;
+		      break;
+		  }
+	    }
+	    else
+	    {
+		for (size_t i=higherLevel+1;i<GRAY_LEVEL_NBR;i++)
+		  if (tokenNbr[i]>0)
+		  {
+		      higherLevel = i;
+		      break;
+		  }
 	    }
 	}
-    protected:
-	priority_queue<elementType, containerType, compareType > priorityQueue;
-	size_t index;
+	
+	inline TokenType pop()
+	{
+	    size_t hlSize = tokenNbr[higherLevel];
+	    TokenType dOffset = stacks[higherLevel]->front();
+	    stacks[higherLevel]->pop();
+	    if (hlSize>1)
+	      tokenNbr[higherLevel]--;
+	    else if (size>1) // Find new ref level (non empty stack)
+	    {
+		tokenNbr[higherLevel] = 0;
+		findNewReferenceLevel();
+	    }
+	    size--;
+	    
+	    return dOffset;
+	}
+      
     };
+
 
 /** @}*/
 

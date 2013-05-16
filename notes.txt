@@ -1,5 +1,39 @@
+############## GIT ##############
+
 Git branches:
 http://www.croes.org/gerald/blog/git-modele-de-branche-efficace/649/
+
+
+
+Git flow:
+
+- Initialization (appends once):
+To set up git-flow, one person runs this:
+git flow init
+git push -u origin develop
+git branch --set-upstream develop origin/develop
+
+- Use:
+Everyone else on the team runs this:
+git flow init
+git branch --set-upstream develop origin/develop
+
+Note: if these other guys have a branch lying around other than
+master, git flow will refuse to create the develop branch. Either
+delete these branches or create the develop branch manually (git
+branch develop origin/develop) before initializing git flow. The
+"origin/develop" at the end of that command sets up the tracking
+branch.
+
+
+Push
+
+I recommend this magic spell:
+    git config push.default current
+Run this once to tell git push that it should (by default) push only the current branch. This way, when you make commits on develop and push them to origin, you won't be confused by error messages that occur because your master branch is behind. 
+
+
+############## 
 
 http://en.gentoo-wiki.com/wiki/Hardware_CFLAGS#Using_-march.3Dnative_instead
 Determining available processor features 
@@ -7,6 +41,9 @@ echo "" | gcc -march=native -v -E - 2>&1 | grep cc1
 
 Determining what -march=<foo> actually does 
 echo "int main() { return 0; }" | gcc -march=core2 -v -Q -x c - 2>&1
+
+
+############## 
 
 OpenMP
 http://www.idris.fr/data/cours/parallel/openmp/OpenMP_cours.html

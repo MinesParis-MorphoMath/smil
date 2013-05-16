@@ -124,6 +124,10 @@ namespace smil
 	{
 	    this->retVal = this->_exec ( imIn, value, ImOut );
 	}
+	binaryImageFunction ( const T &value, const imageType &imIn, imageType &ImOut )
+	{
+	    this->retVal = this->_exec ( value, imIn, ImOut );
+	}
 	
 	inline RES_T operator() ( const imageType &imIn1, const imageType &imIn2, imageType &ImOut )
 	{
@@ -134,9 +138,15 @@ namespace smil
 	    return this->_exec ( imIn, value, ImOut );
 	}
 
+	inline RES_T operator() (const T &value, const imageType &imIn, imageType &ImOut )
+	{
+	    return this->_exec ( value, imIn, ImOut );
+	}
+
 	RES_T _exec ( const imageType &imIn1, const imageType &imIn2, imageType &imOut );
 	RES_T _exec ( const imageType &imIn, imageType &imInOut );
 	RES_T _exec ( const imageType &imIn, const T &value, imageType &imOut );
+	RES_T _exec ( const T &value, const imageType &imIn, imageType &imOut );
 
     //   protected:
 	lineFunction_T lineFunction;

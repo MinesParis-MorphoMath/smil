@@ -34,6 +34,8 @@
 #include "DIO.h"
 #include "DBit.h"
 
+using namespace smil;
+
 int main(int argc, char *argv[])
 {
     typedef Bit dataType;

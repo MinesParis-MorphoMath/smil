@@ -79,7 +79,8 @@ namespace smil
     //   posix_memalign (&ptr, 16, (size+32)*sizeof(T));
 
       return ((T*) (ptr));
-    //   return new T[size];
+      // Use () with new to initialize values to 0 (like calloc)
+    //   return new T[size]();
     }
 
     template<typename T> 

@@ -362,6 +362,47 @@ namespace smil
 	return RES_OK;
     }
 
+    template <class T>
+    void Image<T>::toArray(T outArray[])
+    {
+	for (size_t i=0;i<pixelCount;i++)
+	  outArray[i] = pixels[i];
+    }
+    
+    template <class T>
+    void Image<T>::fromArray(T inArray[])
+    {
+	for (size_t i=0;i<pixelCount;i++)
+	  pixels[i] = inArray[i];
+    }
+
+    template <class T>
+    void Image<T>::toCharArray(signed char outArray[])
+    {
+	for (size_t i=0;i<pixelCount;i++)
+	  outArray[i] = pixels[i];
+    }
+    
+    template <class T>
+    void Image<T>::fromCharArray(signed char inArray[])
+    {
+	for (size_t i=0;i<pixelCount;i++)
+	  pixels[i] = inArray[i];
+    }
+
+    template <class T>
+    void Image<T>::toIntArray(int outArray[])
+    {
+	for (size_t i=0;i<pixelCount;i++)
+	  outArray[i] = pixels[i];
+    }
+    
+    template <class T>
+    void Image<T>::fromIntArray(int inArray[])
+    {
+	for (size_t i=0;i<pixelCount;i++)
+	  pixels[i] = inArray[i];
+    }
 
 
     template <class T>
@@ -451,6 +492,14 @@ namespace smil
 
     template <class T>
     Image<T> Image<T>::operator ~() const
+    {
+	Image<T> im(*this);
+	inv(*this, im);
+	return im;
+    }
+
+    template <class T>
+    Image<T> Image<T>::operator -() const
     {
 	Image<T> im(*this);
 	inv(*this, im);

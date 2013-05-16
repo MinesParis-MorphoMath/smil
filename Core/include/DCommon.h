@@ -117,8 +117,12 @@ namespace smil
     #define PI 3.141592653589793
     #endif // PI
 
+    #ifndef MIN
     #define MIN(a, b) a < b ? a : b;
+    #endif // MIN
+    #ifndef MAX
     #define MAX(a, b) a > b ? a : b;
+    #endif // MAX
 
     template <class T>
     struct Point

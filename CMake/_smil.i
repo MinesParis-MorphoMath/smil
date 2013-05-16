@@ -72,6 +72,13 @@ ${SWIG_INCLUDE_DEFINITIONS}
 import sys, gc, os
 import time, new
 import __main__
+import __builtin__
+
+from smilCorePython import *
+
+__builtin__.dataTypes = [ ${DATA_TYPES_QUOTE_STR}, ]
+__builtin__.imageTypes = [ ${IMAGE_TYPES_STR}, ]
+
 
 ${PYTHON_IMPORT_MODULES}
 
@@ -79,9 +86,6 @@ def AboutSmil():
     print "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}"
     print "Copyright (c) 2011, Matthieu FAESSEL and ARMINES"
     print "All rights reserved."
-
-dataTypes = [ ${DATA_TYPES_QUOTE_STR}, ]
-imageTypes = [ ${IMAGE_TYPES_STR}, ]
 
 
 def _find_object_names(obj):
@@ -112,15 +116,19 @@ def guess_images_name(gbl_dict=None):
 def _show_with_name(img, name=None, labelImage = False):
     if not name:
 	if img.getName()=="":
-	  name = _find_object_names(img)[-1]
-	  img.setName(name)
+	  names = _find_object_names(img)
+	  if len(names)!=0:
+	    name = names[-1]
+	    img.setName(name)
     img.c_show(name, labelImage)
 
 def _showLabel_with_name(img, name=None):
     if not name:
 	if img.getName()=="":
-	  name = _find_object_names(img)[-1]
-	  img.setName(name)
+	  names = _find_object_names(img)
+	  if len(names)!=0:
+	    name = names[-1]
+	    img.setName(name)
     img.c_showLabel(name)
 
 def showAll():

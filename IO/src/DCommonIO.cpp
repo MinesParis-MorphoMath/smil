@@ -101,6 +101,7 @@ namespace smil
 	    curl_easy_setopt(curl_handle, CURLOPT_URL, url);
 	    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
 	    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, fp);
+	    curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
 	    res = curl_easy_perform(curl_handle);
 	    curl_easy_cleanup(curl_handle);
 	    fclose(fp);

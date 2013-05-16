@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 // //     im1 >> "/home/faessel/tmp/tmp.bmp";
 //     cout << endl;
     string str = im2.getName();
-    im2 << "http://cmm.ensmp.fr/~faessel/smil/images/barbara.png";
+    im2 << "http://cmm.ensmp.fr/~faessel/smil/images/barbarfa.png";
     
     
 }

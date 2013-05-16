@@ -166,11 +166,23 @@ namespace smil
 	
 	UINT8 *destLine;
 	double coeff;
+	double floor = ImDtTypes<T>::min();
+	
 	
 	if (parentClass::labelImage)
 	  coeff = 1.0;
 	else
-	  coeff = double(numeric_limits<UINT8>::max()) / ( double(numeric_limits<T>::max()) - double(numeric_limits<T>::min()) );
+	{
+	    if (autoRange)
+	    {
+		T minV, maxV;
+		rangeVal(*this->image, minV, maxV);
+		floor = minV;
+		coeff = 255. / double(maxV-minV);
+	    }
+	    else
+	      coeff = 255. / ( double(ImDtTypes<T>::max()) - double(ImDtTypes<T>::min()) );
+	}
 
 	for (size_t j=0;j<h;j++,lines++)
 	{
@@ -179,7 +191,7 @@ namespace smil
 	    destLine = this->qImage->scanLine(j);
 	    for (size_t i=0;i<w;i++)
     // 	  pixels[i] = 0;
-		destLine[i] = (UINT8)(coeff * (double(pixels[i]) - double(numeric_limits<T>::min())));
+		destLine[i] = (UINT8)(coeff * (double(pixels[i]) - floor));
 	}
     }
 
@@ -328,12 +340,20 @@ namespace smil
 	int objNbr = urls.size();
 
 	if (objNbr==1)
-	  read(urls[0].path().toStdString().c_str(), *this->image);
+#ifdef Q_OS_WIN32	  
+	  read(urls[0].toString().remove("file:///").toStdString().c_str(), *this->image);
+#else // Q_OS_WIN32	  
+	  read(urls[0].toString().remove("file:/").toStdString().c_str(), *this->image);
+#endif // Q_OS_WIN32	  
 	else
 	{
 	    vector<string> files;
 	    for (QList<QUrl>::iterator it=urls.begin();it!=urls.end();it++)
-	      files.push_back((*it).path().toStdString());
+#ifdef Q_OS_WIN32	  
+	      files.push_back((*it).toString().remove("file:///").toStdString());
+#else // Q_OS_WIN32	  
+	      files.push_back((*it).toString().remove("file:/").toStdString());
+#endif // Q_OS_WIN32	  
 	    read(files, *this->image);
 	}
     }

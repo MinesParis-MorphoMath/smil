@@ -73,7 +73,7 @@ TEMPLATE_WRAP_CLASS(smil::ImageViewer, ImageViewer);
 %{
 #include "Qt/DQtImageViewer.hpp"
 #include "Qt/DQtImageViewer.hxx"
-
+#include "Qt/DQtGuiInstance.h"
 %}
 
 class ImageViewerWidget
@@ -83,16 +83,10 @@ class ImageViewerWidget
 TEMPLATE_WRAP_CLASS(QtImageViewer, QtImageViewer);
 
 #ifdef SWIGPYTHON
-%pythoncode %{
-
-if ('qApp' in locals())==0:
-  import sys
-  try:
-    from PyQt4 import QtGui
-    qApp = QtGui.QApplication(sys.argv)
-  except:
-    qApp = None
-
+%init
+%{
+  // Process Qt events from the Python input hook.
+  PyOS_InputHook = qtLoop;
 %}
 #endif // SWIGPYTHON
 

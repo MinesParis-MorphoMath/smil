@@ -31,7 +31,11 @@
  * \section require_sec Requirements
  * This application is a Java WebStart version of Smil which embeds a python interpreter. \n
  * To be able to run it, your must have a JRE plugin for your browser installed. \n
- * To download the latest version of the JRE corresponding to your browser, click <a href="http://java.com/getjava">here</a>. \n
+ * <b> The minimum required version is Java 6. </b>
+ *
+ * To download the latest version of the JRE corresponding to your browser, click <a href="http://java.com/getjava" target="_blank"><b>here</b></a>. \n
+ *
+ * Ubuntu users should install the \b icedtea-plugin package.
  * 
  * For now, only Windows and Linux platforms are supported (OSX version is under developpement).
  * 
@@ -46,6 +50,10 @@
  * See the <a href=examples.html>examples</a> page.
  * In a script page, click on "Execute script online" to run it.
  * 
+ * \section troubleshooting Troubleshooting
+ *
+ * In case of <b> Unsupported major.minor version 51.0 </b> error, please <a href="http://java.com/getjava" target="_blank">update</a> Java (the minimum required version is Java 6). \n
+ * It is highly recommend to uninstall all older versions of Java from your system (see <a href="http://www.java.com/en/download/faq/remove_olderversions.xml" target="_blank">Java website</a>).
  * 
  */
 
