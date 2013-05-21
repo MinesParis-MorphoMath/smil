@@ -261,6 +261,8 @@ namespace smil
 	    return resize(tmpIm, sx, sy, imIn);
 	}
 	
+	ImageFreezer freeze(imOut);
+	
 	imOut.setSize(sx, sy);
 	
 	if (!imIn.isAllocated() || !imOut.isAllocated())
@@ -302,7 +304,6 @@ namespace smil
 		pixOut[offset++] = A*(1-x_diff)*(1-y_diff) +  B*(x_diff)*(1-y_diff) + C*(y_diff)*(1-x_diff)   +  D*(x_diff*y_diff);
 	    }
 	}
-	imOut.modified();
 	
 	return RES_OK;
     }

@@ -31,6 +31,7 @@
 #define _D_MAX_TREE
 
 #include "DImage.h"
+#include "DImageHistogram.hpp"
 
 namespace smil
 {

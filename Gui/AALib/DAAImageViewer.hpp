@@ -149,7 +149,7 @@ namespace smil
 	w *= aa_imgheight(context) / aa_scrheight(context);
 	
 	Image<T> tmpIm(w, h);
-	resize(*this->image, tmpIm);
+	resize(*this->image, w, h, tmpIm);
 	
 	unsigned char *data = aa_image(context);
 	typename Image<T>::lineType pixels = tmpIm.getPixels();

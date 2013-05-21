@@ -95,7 +95,7 @@ namespace smil
 	virtual void setName(const char *_name) { parentClass::setName(_name); }
 	virtual void update()
 	{
-	    if (image)
+	    if (image && isVisible())
 	      drawImage();
 	}
 	virtual void drawOverlay(Image<T> &) {}
