@@ -66,6 +66,7 @@ namespace smil
      * \li \b Z/A Zoom In/Out
      * \li \b V Show/Hide the value of the pixel under the mouse cursor
      * \li \b M Show/Hide the magnifying window
+     * \li \b R Enable/diable the auto-adjust range feature (allows to automatically adjust range for low contrasted images).
      * \li \b H SHow the histogram window (requires the Qwt library)
      * \li \b P SHow the plot window (requires the Qwt library)
      */
