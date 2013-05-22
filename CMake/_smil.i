@@ -88,14 +88,17 @@ def AboutSmil():
     print "All rights reserved."
 
 
-def _find_object_names(obj):
-    result = []
+def _find_object_name(obj):
+    names = []
     for referrer in gc.get_referrers(obj):
 	if isinstance(referrer, dict):
 	    for k, v in referrer.iteritems():
 		if v is obj:
-		    result.append(k)
-    return result
+		    names.append(k)
+    if len(names)!=0:
+      return names[-1]
+    else:
+      return ""
 
 def _find_images(gbl_dict=None):
     if not gbl_dict:
@@ -116,18 +119,16 @@ def guess_images_name(gbl_dict=None):
 def _show_with_name(img, name=None, labelImage = False):
     if not name:
 	if img.getName()=="":
-	  names = _find_object_names(img)
-	  if len(names)!=0:
-	    name = names[-1]
+	  name = _find_object_name(img)
+	  if name!="":
 	    img.setName(name)
     img.c_show(name, labelImage)
 
 def _showLabel_with_name(img, name=None):
     if not name:
 	if img.getName()=="":
-	  names = _find_object_names(img)
-	  if len(names)!=0:
-	    name = names[-1]
+	  name = _find_object_name(img)
+	  if name!="":
 	    img.setName(name)
     img.c_showLabel(name)
 
@@ -328,13 +329,13 @@ class linkManager():
 	  return False
 	
       def __str__(self):
-	res = _find_object_names(self.imWatch)[-1] + " -> "
+	res = _find_object_name(self.imWatch) + " -> "
 	res += self.func.__name__ + " "
 	for obj in self.args:
 	  if hasattr(obj, "getClassName"):
-	    oName = _find_object_names(obj)
-	    if len(oName)!=0:
-	      res += [-1] + " "
+	    oName = _find_object_name(obj)
+	    if oName!="":
+	      res += oName + " "
 	    else:
 	      res += str(obj) + " "
 	  else:

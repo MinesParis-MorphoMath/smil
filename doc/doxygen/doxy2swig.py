@@ -76,8 +76,8 @@ class Doxy2SWIG:
         f.close()
 
         self.pieces = []
-        self.pieces.append('\n// File: %s\n'%\
-                           os.path.basename(f.name))
+        #self.pieces.append('\n// File: %s\n'%\
+                           #os.path.basename(f.name))
 
         self.space_re = re.compile(r'\s+')
         self.lead_spc = re.compile(r'^(%feature\S+\s+\S+\s*?)"\s+(\S)')
@@ -383,9 +383,9 @@ class Doxy2SWIG:
     def write(self, fname):
         o = my_open_write(fname, self.append)
         if self.multi:
-            o.write("".join(self.pieces))
+            o.write(self.clean_pieces(self.pieces))
         else:
-            o.write("".join(self.clean_pieces(self.pieces)))
+            o.write(self.clean_pieces(self.pieces))
         o.close()
 
     def clean_pieces(self, pieces):
@@ -421,7 +421,9 @@ class Doxy2SWIG:
                 _tmp = textwrap.fill(i.strip(), 1000, break_long_words=False)
                 _tmp = self.lead_spc.sub(r'\1"\2', _tmp)
                 ret.extend([_tmp, '\n\n'])
-        return ret
+        buf = "".join(ret)
+        buf = re.sub(r"\n%feature.*\" ?\";\n", "", buf)
+        return buf
 
 
 def convert(input, output, include_function_definition=True, quiet=False, append=False):

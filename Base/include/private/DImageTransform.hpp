@@ -261,6 +261,8 @@ namespace smil
 	    return resize(tmpIm, sx, sy, imIn);
 	}
 	
+	ImageFreezer freeze(imOut);
+	
 	imOut.setSize(sx, sy);
 	
 	if (!imIn.isAllocated() || !imOut.isAllocated())
@@ -302,44 +304,10 @@ namespace smil
 		pixOut[offset++] = A*(1-x_diff)*(1-y_diff) +  B*(x_diff)*(1-y_diff) + C*(y_diff)*(1-x_diff)   +  D*(x_diff*y_diff);
 	    }
 	}
-	imOut.modified();
 	
 	return RES_OK;
     }
 
-    /**
-     * Disambiguation
-     */
-    template <class T>
-    RES_T resize(Image<T> &imIn, int sx, int sy, Image<T> &imOut)
-    {
-	return resize(imIn, (size_t)sx, (size_t)sy, imOut);
-    }
-    
-    template <class T>
-    RES_T resize(Image<T> &imIn, size_t sx, size_t sy)
-    {
-	Image<T> tmpIm(imIn, true); // clone
-	return resize(tmpIm, sx, sy, imIn);
-    }
-    
-    /**
-    * Specify coefficients for resizing.
-    * If imIn has the size (W,H), the size of imOut will be (W*cx, H*cy).
-    */
-    template <class T>
-    RES_T resize(Image<T> &imIn, double cx, double cy, Image<T> &imOut)
-    {
-	return resize<T>(imIn, size_t(imIn.getWidth()*cx), size_t(imIn.getHeight()*cy), imOut);
-    }
-
-    template <class T>
-    RES_T resize(Image<T> &imIn, double cx, double cy)
-    {
-	Image<T> tmpIm(imIn, true); // clone
-	return resize(tmpIm, cx, cy, imIn);
-    }
-    
     /**
     * Resize imInOut with the dimensions of imRef.
     */
@@ -348,6 +316,24 @@ namespace smil
     {
 	Image<T> tmpIm(imInOut, true); // clone
 	return resize(tmpIm, imRef.getWidth(), imRef.getHeight(), imInOut);
+    }
+    
+    
+    /**
+    * Scale image
+    * If imIn has the size (W,H), the size of imOut will be (W*cx, H*cy).
+    */
+    template <class T>
+    RES_T scale(Image<T> &imIn, double cx, double cy, Image<T> &imOut)
+    {
+	return resize<T>(imIn, size_t(imIn.getWidth()*cx), size_t(imIn.getHeight()*cy), imOut);
+    }
+
+    template <class T>
+    RES_T scale(Image<T> &imIn, double cx, double cy)
+    {
+	Image<T> tmpIm(imIn, true); // clone
+	return resize(tmpIm, cx, cy, imIn);
     }
     
 
