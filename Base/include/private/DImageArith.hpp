@@ -471,6 +471,15 @@ namespace smil
 	return binaryImageFunction<T, diffLine<T> >(imIn1, imIn2, imOut);
     }
 
+    template <class T>
+    RES_T diff(const Image<T> &imIn, const T &value, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	return binaryImageFunction<T, diffLine<T> >(imIn, value, imOut);
+    }
+
     /**
     * Absolute difference ("vertical distance") between two images.
     * 
@@ -743,6 +752,113 @@ namespace smil
 
 	return tertiaryImageFunction<T, testLine<T> >(imIn, value1, value2, imOut);
     }
+
+    template <class T, class imOrValT, class trueT, class falseT>
+    RES_T _compare_base(const Image<T> &imIn, const char* compareType, const imOrValT &imOrVal, const trueT &trueImOrVal, const falseT &falseImOrVal, Image<T> &imOut)
+    {
+	ImageFreezer freeze(imOut);
+	
+	Image<T> *tmpIm;
+	
+	if (&imOut==&imIn || (void*)&imOut==(void*)&imOrVal)
+	{
+	    tmpIm = new Image<T>(imIn);
+	}
+	else tmpIm = &imOut;
+	  
+	
+	if (strcmp(compareType, "==")==0)
+	{
+	    ASSERT(equ(imIn, imOrVal, *tmpIm)==RES_OK);
+	}
+	else if (strcmp(compareType, "!=")==0)
+	{
+	    ASSERT(diff(imIn, imOrVal, *tmpIm)==RES_OK);
+	}
+	else if (strcmp(compareType, ">")==0)
+	{
+	    ASSERT(grt(imIn, imOrVal, *tmpIm)==RES_OK);
+	}
+	else if (strcmp(compareType, "<")==0)
+	{
+	    ASSERT(low(imIn, imOrVal, *tmpIm)==RES_OK);
+	}
+	else if (strcmp(compareType, ">=")==0)
+	{
+	    ASSERT(grtOrEqu(imIn, imOrVal, *tmpIm)==RES_OK);
+	}
+	else if (strcmp(compareType, "<=")==0)
+	{
+	    ASSERT(lowOrEqu(imIn, imOrVal, *tmpIm)==RES_OK);
+	}
+	else 
+	{
+	    ERR_MSG("Unknown operation");
+	    if (tmpIm!=&imOut)
+	      delete tmpIm;
+	    return RES_ERR;
+	}
+
+	if (tmpIm!=&imOut)
+	  delete tmpIm;
+	
+	return test(imOut, trueImOrVal, falseImOrVal, imOut);
+	
+    }
+    
+    /**
+     * Compare two images (or an image and a value)
+     * 
+     */
+    template <class T>
+    RES_T compare(const Image<T> &imIn1, const char* compareType, const Image<T> &imIn2, const Image<T> &trueIm, const Image<T> &falseIm, Image<T> &imOut)
+    {
+	return _compare_base<T, Image<T>, Image<T>, Image<T> >(imIn1, compareType, imIn2, trueIm, falseIm, imOut);
+    }
+    
+    template <class T>
+    RES_T compare(const Image<T> &imIn1, const char* compareType, const Image<T> &imIn2, const T &trueVal, const Image<T> &falseIm, Image<T> &imOut)
+    {
+	return _compare_base<T, Image<T>, T, Image<T> >(imIn1, compareType, imIn2, trueVal, falseIm, imOut);
+    }
+    
+    template <class T>
+    RES_T compare(const Image<T> &imIn1, const char* compareType, const Image<T> &imIn2, const Image<T> &trueIm, const T &falseVal, Image<T> &imOut)
+    {
+	return _compare_base<T, Image<T>, Image<T>, T >(imIn1, compareType, imIn2, trueIm, falseVal, imOut);
+    }
+    
+    template <class T>
+    RES_T compare(const Image<T> &imIn1, const char* compareType, const Image<T> &imIn2, const T &trueVal, const T &falseVal, Image<T> &imOut)
+    {
+	return _compare_base<T, Image<T>, T, T >(imIn1, compareType, imIn2, trueVal, falseVal, imOut);
+    }
+    
+
+    template <class T>
+    RES_T compare(const Image<T> &imIn, const char* compareType, const T &value, const Image<T> &trueIm, const Image<T> &falseIm, Image<T> &imOut)
+    {
+	return _compare_base<T, T, Image<T>, Image<T> >(imIn, compareType, value, trueIm, falseIm, imOut);
+    }
+    
+    template <class T>
+    RES_T compare(const Image<T> &imIn, const char* compareType, const T &value, const T &trueVal, const Image<T> &falseIm, Image<T> &imOut)
+    {
+	return _compare_base<T, T, T, Image<T> >(imIn, compareType, value, trueVal, falseIm, imOut);
+    }
+    
+    template <class T>
+    RES_T compare(const Image<T> &imIn, const char* compareType, const T &value, const Image<T> &trueIm, const T &falseVal, Image<T> &imOut)
+    {
+	return _compare_base<T, T, Image<T>, T >(imIn, compareType, value, trueIm, falseVal, imOut);
+    }
+    
+    template <class T>
+    RES_T compare(const Image<T> &imIn, const char* compareType, const T &value, const T &trueVal, const T &falseVal, Image<T> &imOut)
+    {
+	return _compare_base<T, T, T, T >(imIn, compareType, value, trueVal, falseVal, imOut);
+    }
+    
 
     /**
      * Image mask

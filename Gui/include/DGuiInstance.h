@@ -92,7 +92,7 @@ namespace smil
 	    
 	  #ifdef USE_QT
 	    return new QtImageViewer<T>(im);
-	  #elif USE_AALIB
+	  #elif defined USE_AALIB
 	    return new AaImageViewer<T>(im);
 	  #else
 	    return new ImageViewer<T>(im);
