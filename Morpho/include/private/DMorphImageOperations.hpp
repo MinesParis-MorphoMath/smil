@@ -42,19 +42,23 @@ namespace smil
 {
   
     template <class T_in, class T_out=T_in>
-    class unaryMorphImageFunctionGeneric : public imageFunctionBase<T_in>
+    class unaryMorphImageFunctionBase : public imageFunctionBase<T_in>
     {
     public:
-	unaryMorphImageFunctionGeneric(T_in _borderValue = numeric_limits<T_in>::min())
+	unaryMorphImageFunctionBase(T_in _borderValue = numeric_limits<T_in>::min())
 	  : initialValue(_borderValue),
 	    borderValue(_borderValue)
 	    
 	{
 	}
 	
-	unaryMorphImageFunctionGeneric(T_in _borderValue, T_out _initialValue = numeric_limits<T_out>::min())
+	unaryMorphImageFunctionBase(T_in _borderValue, T_out _initialValue = numeric_limits<T_out>::min())
 	  : initialValue(_borderValue),
 	    borderValue(_borderValue)
+	{
+	}
+	
+	~unaryMorphImageFunctionBase()
 	{
 	}
 	

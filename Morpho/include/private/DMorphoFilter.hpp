@@ -96,10 +96,10 @@ namespace smil
 
     
     template <class T>
-    class meanFunct : public unaryMorphImageFunctionGeneric<T, T>
+    class meanFunct : public unaryMorphImageFunctionBase<T, T>
     {
     public:
-	typedef unaryMorphImageFunctionGeneric<T, T> parentClass;
+	typedef unaryMorphImageFunctionBase<T, T> parentClass;
 	
 	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
 	{
@@ -135,10 +135,10 @@ namespace smil
     }
     
     template <class T>
-    class medianFunct : public unaryMorphImageFunctionGeneric<T, T>
+    class medianFunct : public unaryMorphImageFunctionBase<T, T>
     {
     public:
-	typedef unaryMorphImageFunctionGeneric<T, T> parentClass;
+	typedef unaryMorphImageFunctionBase<T, T> parentClass;
 	
 	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
 	{
