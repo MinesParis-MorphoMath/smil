@@ -48,10 +48,10 @@ namespace smil
     */
   
     template <class T1, class T2>
-    class labelFunct : public unaryMorphImageFunctionGeneric<T1, T2>
+    class labelFunct : public unaryMorphImageFunctionBase<T1, T2>
     {
     public:
-	typedef unaryMorphImageFunctionGeneric<T1, T2> parentClass;
+	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
 	typedef typename parentClass::imageInType imageInType;
 	typedef typename parentClass::imageOutType imageOutType;
 	
@@ -277,8 +277,10 @@ namespace smil
 	if (&imIn==&imOut)
 	{
 	    Image<T> tmpIm(imIn, true); // clone
-	    return areaOpen(tmpIm, size, imOut);
+	    return areaOpen(tmpIm, size, imOut, se);
 	}
+	
+	ImageFreezer freezer(imOut);
 	
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -294,10 +296,10 @@ namespace smil
     }
 
     template <class T1, class T2>
-    class neighborsFunct : public unaryMorphImageFunctionGeneric<T1, T2>
+    class neighborsFunct : public unaryMorphImageFunctionBase<T1, T2>
     {
     public:
-	typedef unaryMorphImageFunctionGeneric<T1, T2> parentClass;
+	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
 	
 	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
 	{

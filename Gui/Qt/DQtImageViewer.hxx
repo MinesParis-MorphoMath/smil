@@ -54,8 +54,9 @@ namespace smil
     }
 
     template <class T>
-    QtImageViewer<T>::QtImageViewer(Image<T> *im)
-      : ImageViewer<T>(im), BASE_QT_VIEWER(NULL),
+    QtImageViewer<T>::QtImageViewer(Image<T> &im)
+      : ImageViewer<T>(im), 
+	BASE_QT_VIEWER(NULL),
 	histoPlot(NULL),
 	profilePlot(NULL)
     {
@@ -77,11 +78,11 @@ namespace smil
 
 
     template <class T>
-    void QtImageViewer<T>::setImage(Image<T> *im)
+    void QtImageViewer<T>::setImage(Image<T> &im)
     {
 	ImageViewer<T>::setImage(im);
-	BASE_QT_VIEWER::setImageSize(im->getWidth(), im->getHeight(), im->getDepth());
-	if (im->getName()!=string(""))
+	BASE_QT_VIEWER::setImageSize(im.getWidth(), im.getHeight(), im.getDepth());
+	if (im.getName()!=string(""))
 	  setName(this->image->getName());
     }
 

@@ -67,7 +67,7 @@ class Test_Resize : public TestCase
 //       im2.printSelf(1);
       TEST_ASSERT(im2==imRef);
       
-      resize(im1, 2., 2., im2);
+      scale(im1, 2, 2, im2);
       imRef << vecref;
 //       im2.printSelf(1);
       TEST_ASSERT(im2==imRef);

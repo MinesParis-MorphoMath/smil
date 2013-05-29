@@ -37,7 +37,6 @@
 #include "DTypes.h"
 
 #include "PureQt/ImageViewerWidget.h"
-#include "PureQt/ImageViewerApp.h"
 
 
 class PlotWidget;
@@ -71,15 +70,15 @@ namespace smil
      * \li \b P SHow the plot window (requires the Qwt library)
      */
     template <class T>
-    class QtImageViewer : public ImageViewer<T>, public BASE_QT_VIEWER
+    class QtImageViewer : public ImageViewer<T>, protected BASE_QT_VIEWER
     {
     public:
 	typedef ImageViewer<T> parentClass;
 	QtImageViewer();
-	QtImageViewer(Image<T> *im);
+	QtImageViewer(Image<T> &im);
 	~QtImageViewer();
 	
-	virtual void setImage(Image<T> *im);
+	virtual void setImage(Image<T> &im);
 	virtual void hide();
 	virtual void show();
 	virtual void showLabel();
@@ -124,8 +123,10 @@ namespace smil
     //     ImageViewer *qtViewer;
 	virtual void dropEvent(QDropEvent *de);
 	
+#ifdef USE_QWT
 	PlotWidget *histoPlot;
 	PlotWidget *profilePlot;
+#endif // USE_QWT
     };
 
     /*@{*/

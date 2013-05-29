@@ -86,7 +86,7 @@ namespace smil
 	 * Create a default viewer for type T
 	 */
 	template <class T>
-	static ImageViewer<T> *createDefaultViewer(Image<T> *im=NULL)
+	static ImageViewer<T> *createDefaultViewer(Image<T> &im=NULL)
 	{
 	    Gui::initialize();
 	    

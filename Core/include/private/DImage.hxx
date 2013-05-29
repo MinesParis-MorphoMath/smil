@@ -153,9 +153,6 @@ namespace smil
 	if (!this->updatesEnabled)
 	  return;
 
-	if (viewer)
-	  viewer->update();
-
 	BaseImageEvent event(this);
 	onModified.trigger(&event);
     }
@@ -177,7 +174,7 @@ namespace smil
 	if (viewer)
 	  return;
 
-	viewer = Gui::createDefaultViewer<T>(this);
+	viewer = Gui::createDefaultViewer<T>(*this);
 
     }
 
@@ -271,7 +268,7 @@ namespace smil
 	  ASSERT((this->allocate()==RES_OK));
 
 	if (viewer)
-	  viewer->setImage(this);
+	  viewer->setImage(*this);
 
 	this->modified();
 	
