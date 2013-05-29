@@ -105,7 +105,7 @@ namespace smil
 	    this->image->getSize(newSize);
 	    if (imSize[0]!=newSize[0] || imSize[1]!=newSize[1] || imSize[2]!=newSize[2])
 	    {
-		this->setImage(*this->image);
+		this->onSizeChanged(newSize[0], newSize[1], newSize[2]);
 	    }
 	    this->setName(image->getName());
 	    
@@ -122,6 +122,7 @@ namespace smil
     protected:
 	Image<T> *getImage() { return image; }
 	virtual void drawImage() {}
+	virtual void onSizeChanged(size_t width, size_t height, size_t depth) {}
 	Image<T> *image;
 	bool labelImage;
 	

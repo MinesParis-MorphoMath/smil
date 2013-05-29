@@ -32,8 +32,6 @@ class Test_Show : public TestCase
 {
   virtual void run()
   {
-      Gui::initialize();
-      
       Image_UINT8 im1(500, 50, 50);
       QVtkImageViewer<UINT8> viewer(im1);
       viewer.show();

@@ -1,5 +1,4 @@
-
-class vtkVolumeProperty;/*
+/*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
@@ -71,26 +70,29 @@ namespace smil
      * Keyboard shortcuts:
      */
     template <class T>
-    class QVtkImageViewer : public ImageViewer<T>, protected QVtkViewer
+    class QVtkImageViewer : public ImageViewer<T>
     {
     public:
 	typedef ImageViewer<T> parentClass;
 	QVtkImageViewer()
-	  : QVtkViewer(),
-	    ImageViewer<T>()
+	  : ImageViewer<T>()
 	{
+	    Gui::initialize();
+	    qvtkViewer = new QVtkViewer();
 	    initialize();
 	}
 	QVtkImageViewer(Image<T> &im)
-	  : QVtkViewer(),
-	    ImageViewer<T>(im)
+	  : ImageViewer<T>(im)
 	{
+	    Gui::initialize();
+	    qvtkViewer = new QVtkViewer();
 	    initialize();
 	    setImage(im);
 	}
 	~QVtkImageViewer()
 	{
 	    finalize();
+	    delete qvtkViewer;
 	}
 	
 	virtual void setImage(Image<T> &im)
@@ -98,47 +100,53 @@ namespace smil
 	    ImageViewer<T>::setImage(im);
 	    
 	    size_t imSize[3];
-	    im.getSize(imSize);
-	    imageImport->SetImportVoidPointer(im.getVoidPointer());
-	    imageImport->SetWholeExtent(0, imSize[0]-1, 0, imSize[1]-1, 0, imSize[2]-1);
-	    imageImport->SetDataExtent(0, imSize[0]-1, 0, imSize[1]-1, 0, imSize[2]-1);
+	    this->image->getSize(imSize);
+	    imageImport->SetImportVoidPointer(this->image->getVoidPointer());
+	    onSizeChanged(imSize[0], imSize[1], imSize[2]);
 	    
-	    cube->SetBounds(0, imSize[0]-1, 0, imSize[1]-1, 0, imSize[2]-1);
+	    vtkCamera *camera = qvtkViewer->getRenderer()->GetActiveCamera();
+	    camera->SetViewUp(0, -1, 0);
+	}
+	
+	virtual void onSizeChanged(size_t width, size_t height, size_t depth)
+	{
+	    imageImport->SetWholeExtent(0, width-1, 0, height-1, 0, depth-1);
+	    imageImport->SetDataExtent(0, width-1, 0, height-1, 0, depth-1);
 	    
-	    vtkCamera *camera = getRenderer()->GetActiveCamera();
-	    camera->SetFocalPoint(imSize[0]/2, imSize[1]/2, imSize[2]/2);
-	    int d = 3 * (imSize[0] > imSize[1] ? imSize[0] : imSize[1]);
-	    camera->SetPosition(imSize[0], imSize[1]/2, imSize[2]/2 + d);
-	    camera->SetViewUp(-1, 0, 0);
+	    cube->SetBounds(0, width-1, 0, height-1, 0, depth-1);
+	    
+	    vtkCamera *camera = qvtkViewer->getRenderer()->GetActiveCamera();
+	    camera->SetFocalPoint(width/2, height/2, depth/2);
+	    int d = 3 * (width > height ? width : height);
+	    camera->SetPosition(width, height/2, -d);
+	}
+	
+	virtual void drawImage()
+	{
+	    volume->Update();
+	    qvtkViewer->getRenderWindow()->GetInteractor( )->Render(); 
 	}
 	
 	virtual void hide()
 	{
-	    QVtkViewer::hide();
+	    qvtkViewer->hide();
 	}
 	virtual void show()
 	{
+	    qvtkViewer->show();
 	    this->drawImage();
-	    QVtkViewer::show();
 	}
 	virtual void showLabel()
 	{
 	}
 	virtual bool isVisible()
 	{
-	    return QVtkViewer::isVisible();
+	    return qvtkViewer->isVisible();
 	}
 	virtual void setName(const char *_name)
 	{
 	    QString buf = _name + QString(" (") + QString(parentClass::image->getTypeAsString()) + QString(")");
-	    QVtkViewer::setWindowTitle(buf);
-	}
-	virtual void drawImage()
-	{
-	    setName(this->image->getName());
-	    
-	    volume->Update();
-	    getRenderWindow()->GetInteractor( )->Render(); 
+	    qvtkViewer->setWindowTitle(buf);
 	}
 	virtual void drawOverlay(Image<T> &im)
 	{
@@ -172,6 +180,21 @@ namespace smil
 
     protected:
 	
+	QVtkViewer *qvtkViewer;
+	
+	vtkImageImport *imageImport;
+	UINT volumeRayCastType;
+	vtkVolumeRayCastFunction *volumeRayCastFunction;
+	vtkVolumeRayCastMapper *volumeRayCastMapper;
+	vtkVolume *volume;
+	vtkVolumeProperty *volumeProperty;
+	vtkPiecewiseFunction *opacityTransfertFunction;
+	
+	vtkCubeSource *cube;
+	vtkOutlineFilter *outline;
+	vtkPolyDataMapper *outlineMapper;
+	vtkActor *outlineActor;
+
 	void initialize()
 	{
 	    imageImport = vtkImageImport::New();
@@ -192,7 +215,7 @@ namespace smil
 	    volume->SetMapper(volumeRayCastMapper);
 	    volume->SetProperty(volumeProperty);
 	    SetRayCastType(RAYCAST_COMPOSITE);
-	    getRenderer()->AddViewProp(volume);
+	    qvtkViewer->getRenderer()->AddViewProp(volume);
 	    
 	    opacityTransfertFunction->RemoveAllPoints();
 	    opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
@@ -204,7 +227,7 @@ namespace smil
 	    outlineMapper->SetInput(outline->GetOutput());
 	    outlineActor = vtkActor::New();
 	    outlineActor->SetMapper(outlineMapper);
-	    getRenderer()->AddViewProp(outlineActor);
+	    qvtkViewer->getRenderer()->AddViewProp(outlineActor);
 	}
 	
 	void finalize()
@@ -221,19 +244,6 @@ namespace smil
 	    cube->Delete();
 	}
 	
-	vtkImageImport *imageImport;
-	UINT volumeRayCastType;
-	vtkVolumeRayCastFunction *volumeRayCastFunction;
-	vtkVolumeRayCastMapper *volumeRayCastMapper;
-	vtkVolume *volume;
-	vtkVolumeProperty *volumeProperty;
-	vtkPiecewiseFunction *opacityTransfertFunction;
-	
-	vtkCubeSource *cube;
-	vtkOutlineFilter *outline;
-	vtkPolyDataMapper *outlineMapper;
-	vtkActor *outlineActor;
-
     };
 
     /*@{*/
