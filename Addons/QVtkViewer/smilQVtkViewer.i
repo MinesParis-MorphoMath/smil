@@ -39,7 +39,33 @@ SMIL_MODULE(smilQVtkViewer)
 
 %import smilCore.i
 
-
 %include "DQVtkImageViewer.hpp"
 
 TEMPLATE_WRAP_CLASS(QVtkImageViewer,QVtkImageViewer)
+
+
+#ifdef SWIGPYTHON
+
+%pythoncode %{
+
+import sys
+import __builtin__
+
+
+def QVtkImageViewer(im):
+    t = str(type(im))
+    t_spl = t.split(".Image")
+    if im.getName()=="":
+      name = __builtin__._find_object_name(im)
+      if name!="":
+	im.setName(name)
+    if len(t_spl)<2:
+      print "Input must be an Image"
+      return
+    imT = t_spl[-1][:-2]
+    current_module = sys.modules[__name__]
+    viewerFunc = getattr(current_module, "QVtkImageViewer" + imT)
+    return viewerFunc(im)
+%}
+
+#endif // SWIGPYTHON

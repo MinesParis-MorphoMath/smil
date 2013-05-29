@@ -141,7 +141,12 @@ namespace smil
 
     }
 
-
+    template <class T>
+    void rangeVal(const Image<T> &imIn, T *rVals)
+    {
+	return rangeVal(imIn, rVals[0], rVals[1]);
+    }
+    
     template <class T>
     RES_T measBarycenter(Image<T> &im, double *xc, double *yc, double *zc=NULL)
     {

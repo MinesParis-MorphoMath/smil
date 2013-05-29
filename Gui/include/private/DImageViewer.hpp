@@ -71,9 +71,6 @@ namespace smil
 	
 	virtual void setImage(Image<T> &im)
 	{
-	    if (image==&im)
-	      return;
-	    
 	    if (image)
 	      disconnect();
 	    
@@ -83,6 +80,10 @@ namespace smil
 	    
 	    if (&im)
 	      image->onModified.connect(&this->updateSlot);
+	}
+	virtual Image<T> *getImage()
+	{
+	    return this->image;
 	}
 	virtual void disconnect()
 	{
@@ -105,12 +106,14 @@ namespace smil
 	    this->image->getSize(newSize);
 	    if (imSize[0]!=newSize[0] || imSize[1]!=newSize[1] || imSize[2]!=newSize[2])
 	    {
-		this->onSizeChanged(newSize[0], newSize[1], newSize[2]);
+		this->setImage(*this->image);
 	    }
 	    this->setName(image->getName());
 	    
 	    if (this->isVisible())
 	      this->drawImage();
+	    
+	    this->setName(image->getName());
 	}
 	virtual void drawOverlay(Image<T> &) {}
 	virtual void clearOverlay() {}
@@ -120,7 +123,6 @@ namespace smil
 	virtual void resetLookup() {}
 	
     protected:
-	Image<T> *getImage() { return image; }
 	virtual void drawImage() {}
 	virtual void onSizeChanged(size_t width, size_t height, size_t depth) {}
 	Image<T> *image;

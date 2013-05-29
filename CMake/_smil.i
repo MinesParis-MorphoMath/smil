@@ -100,6 +100,8 @@ def _find_object_name(obj):
     else:
       return ""
 
+__builtin__._find_object_name = _find_object_name
+
 def _find_images(gbl_dict=None):
     if not gbl_dict:
       gbl_dict = __main__.__dict__

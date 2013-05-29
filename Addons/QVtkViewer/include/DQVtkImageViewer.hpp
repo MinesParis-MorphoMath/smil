@@ -102,27 +102,30 @@ namespace smil
 	    size_t imSize[3];
 	    this->image->getSize(imSize);
 	    imageImport->SetImportVoidPointer(this->image->getVoidPointer());
-	    onSizeChanged(imSize[0], imSize[1], imSize[2]);
+	    
+	    imageImport->SetWholeExtent(0, imSize[0]-1, 0, imSize[1]-1, 0, imSize[2]-1);
+	    imageImport->SetDataExtent(0, imSize[0]-1, 0, imSize[1]-1, 0, imSize[2]-1);
+	    
+	    cube->SetBounds(0, imSize[0]-1, 0, imSize[1]-1, 0, imSize[2]-1);
 	    
 	    vtkCamera *camera = qvtkViewer->getRenderer()->GetActiveCamera();
+	    camera->SetFocalPoint(imSize[0]/2, imSize[1]/2, imSize[2]/2);
+	    int d = 3 * (imSize[0] > imSize[1] ? imSize[0] : imSize[1]);
+	    camera->SetPosition(imSize[0], imSize[1]/2, -d);
 	    camera->SetViewUp(0, -1, 0);
 	}
 	
 	virtual void onSizeChanged(size_t width, size_t height, size_t depth)
 	{
-	    imageImport->SetWholeExtent(0, width-1, 0, height-1, 0, depth-1);
-	    imageImport->SetDataExtent(0, width-1, 0, height-1, 0, depth-1);
-	    
-	    cube->SetBounds(0, width-1, 0, height-1, 0, depth-1);
-	    
-	    vtkCamera *camera = qvtkViewer->getRenderer()->GetActiveCamera();
-	    camera->SetFocalPoint(width/2, height/2, depth/2);
-	    int d = 3 * (width > height ? width : height);
-	    camera->SetPosition(width, height/2, -d);
 	}
 	
 	virtual void drawImage()
 	{
+// 	    T rVals[2];
+// 	    rangeVal(*this->image, rVals);
+// 	    opacityTransfertFunction->RemoveAllPoints();
+// 	    opacityTransfertFunction->AddSegment(rVals[0], 0., rVals[1], 1.0);
+	    
 	    volume->Update();
 	    qvtkViewer->getRenderWindow()->GetInteractor( )->Render(); 
 	}
@@ -135,6 +138,11 @@ namespace smil
 	{
 	    qvtkViewer->show();
 	    this->drawImage();
+	}
+	virtual void show(Image<T> &im) 
+	{
+	    this->setImage(im);
+	    this->show();
 	}
 	virtual void showLabel()
 	{
@@ -206,6 +214,9 @@ namespace smil
 // 	    volumeRayCastMapper->SetSampleDistance(0.1);
 	    
 	    opacityTransfertFunction = vtkPiecewiseFunction::New();
+	    opacityTransfertFunction->RemoveAllPoints();
+	    opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
+	    
 	    volumeProperty = vtkVolumeProperty::New();
 	    volumeProperty->SetColor(opacityTransfertFunction);
 	    volumeProperty->SetScalarOpacity(opacityTransfertFunction);
@@ -216,9 +227,6 @@ namespace smil
 	    volume->SetProperty(volumeProperty);
 	    SetRayCastType(RAYCAST_COMPOSITE);
 	    qvtkViewer->getRenderer()->AddViewProp(volume);
-	    
-	    opacityTransfertFunction->RemoveAllPoints();
-	    opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
 	    
 	    cube = vtkCubeSource::New();
 	    outline = vtkOutlineFilter::New();
