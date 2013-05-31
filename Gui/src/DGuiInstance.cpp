@@ -38,7 +38,7 @@ using namespace smil;
 
 
 template <>
-void UniqueInstance<Gui>::initialize()
+RES_T UniqueInstance<Gui>::initialize()
 {
     if (Gui::_instance == NULL)
     {

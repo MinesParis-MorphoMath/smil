@@ -34,14 +34,14 @@ SMIL_MODULE(smilQVtkViewer)
 
 %{
 /* Includes the header in the wrapper code */
-#include "DQVtkImageViewer.hpp"
+#include "DQVtkViewer.hpp"
 %}
 
 %import smilCore.i
 
-%include "DQVtkImageViewer.hpp"
+%include "DQVtkViewer.hpp"
 
-TEMPLATE_WRAP_CLASS(QVtkImageViewer,QVtkImageViewer)
+TEMPLATE_WRAP_CLASS(QVtkViewer,QVtkViewer)
 
 
 #ifdef SWIGPYTHON
@@ -52,7 +52,7 @@ import sys
 import __builtin__
 
 
-def QVtkImageViewer(im):
+def QVtkViewer(im):
     t = str(type(im))
     t_spl = t.split(".Image")
     if im.getName()=="":
@@ -64,7 +64,7 @@ def QVtkImageViewer(im):
       return
     imT = t_spl[-1][:-2]
     current_module = sys.modules[__name__]
-    viewerFunc = getattr(current_module, "QVtkImageViewer" + imT)
+    viewerFunc = getattr(current_module, "QVtkViewer" + imT)
     return viewerFunc(im)
 %}
 

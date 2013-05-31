@@ -55,14 +55,16 @@ namespace smil
 	friend class Image<T>;
 	
 	ImageViewer()
-	  : image(NULL), 
+	  : BaseImageViewer("ImageViewer"),
+	    image(NULL), 
 	    labelImage(false)
 	{
 	    imSize[0] = imSize[1] = imSize[2] = 0;
 	}
 	
 	ImageViewer(Image<T> &im)
-	  : image(NULL),
+	  : BaseImageViewer("ImageViewer"),
+	    image(NULL),
 	    labelImage(false)
 	{
 	    imSize[0] = imSize[1] = imSize[2] = 0;
@@ -112,8 +114,6 @@ namespace smil
 	    
 	    if (this->isVisible())
 	      this->drawImage();
-	    
-	    this->setName(image->getName());
 	}
 	virtual void drawOverlay(Image<T> &) {}
 	virtual void clearOverlay() {}

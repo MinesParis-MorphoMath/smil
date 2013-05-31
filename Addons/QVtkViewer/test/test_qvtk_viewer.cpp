@@ -22,7 +22,7 @@
 
 
 #include "DImage.h"
-#include "DQVtkImageViewer.hpp"
+#include "DQVtkViewer.hpp"
 #include "DTest.h"
 
 using namespace smil;
@@ -33,7 +33,7 @@ class Test_Show : public TestCase
   virtual void run()
   {
       Image_UINT8 im1(500, 50, 50);
-      QVtkImageViewer<UINT8> viewer(im1);
+      QVtkViewer<UINT8> viewer(im1);
       viewer.show();
       im1 << UINT8(127);
       

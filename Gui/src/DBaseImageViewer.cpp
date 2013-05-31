@@ -27,49 +27,16 @@
  */
 
 
-#ifndef _D_BASE_IMAGE_VIEWER_H
-#define _D_BASE_IMAGE_VIEWER_H
+#include "DBaseImageViewer.h"
+#include "DGuiInstance.h"
 
-#include "DBaseObject.h"
+using namespace smil;
 
-
-namespace smil
+BaseImageViewer::BaseImageViewer(const char *_className)
+  : BaseObject(_className),
+    labelImage(false)
 {
-    /**
-    * \ingroup Gui
-    */
-    /*@{*/
-
-    template <class T>
-    class Image;
-
-    class BaseImageViewer : public BaseObject
-    {
-    public:
-	typedef BaseObject parentClass;
+    Gui::initialize();
+    updateSlot.init(this, &BaseImageViewer::update);
+}
 	
-	BaseImageViewer(const char *_className="BaseImageViewer");
-	
-	virtual ~BaseImageViewer() {}
-	
-	virtual void show() {}
-	virtual void showLabel() {}
-	virtual void hide() {}
-	virtual bool isVisible() { return false; }
-	virtual void setName(const char *_name) { parentClass::setName(_name); }
-	virtual void update() = 0;
-	
-	// Slots
-	MemberFunctionSlot<BaseImageViewer> updateSlot;
-	
-    protected:
-	virtual void drawImage() {}
-	bool labelImage;
-    };
-
-/*@}*/
-
-} // namespace smil
-
-
-#endif // _D_BASE_IMAGE_VIEWER_H
