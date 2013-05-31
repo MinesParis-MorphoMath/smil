@@ -173,7 +173,7 @@ namespace smil
 	{ 
 	    return setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); 
 	}
-	virtual RES_T setSize(const vector<size_t> s, bool doAllocate = true) 
+	virtual RES_T setSize(const vector<UINT> s, bool doAllocate = true) 
 	{ 
 	    if (s.size()==3)
 	      return setSize(s[0], s[1], s[2], doAllocate); 

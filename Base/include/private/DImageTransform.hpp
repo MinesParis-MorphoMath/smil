@@ -309,13 +309,12 @@ namespace smil
     }
 
     /**
-    * Resize imInOut with the dimensions of imRef.
+    * Resize imIn with the dimensions of imOut and put the result in imOut.
     */
     template <class T>
-    RES_T resize(Image<T> &imInOut, Image<T> &imRef)
+    RES_T resize(Image<T> &imIn, Image<T> &imOut)
     {
-	Image<T> tmpIm(imInOut, true); // clone
-	return resize(tmpIm, imRef.getWidth(), imRef.getHeight(), imInOut);
+	return resize(imIn, imOut.getWidth(), imOut.getHeight(), imOut);
     }
     
     

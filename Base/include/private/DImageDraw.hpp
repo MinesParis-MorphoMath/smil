@@ -69,7 +69,7 @@ namespace smil
 	vector<IntPoint> bPoints = bresenhamPoints(p1x, p1y, p2x, p2y);
 	
 	for(vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++)
-	  lines[(*it).x][(*it).y] = value;
+	  lines[(*it).y][(*it).x] = value;
 	
 	im.modified();
 	return RES_OK;
