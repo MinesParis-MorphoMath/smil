@@ -103,7 +103,7 @@ namespace smil
 	// set an offset distance for each se point
 	for(it=it_start;it!=it_end;it++)
 	{
-	    dOffsets.push_back(it->x - it->y*s[0] + it->z*s[0]*s[1]);
+	    dOffsets.push_back(it->x + it->y*s[0] + it->z*s[0]*s[1]);
 	}
 	
 	vector<int>::iterator it_off_start = dOffsets.begin();
@@ -120,29 +120,32 @@ namespace smil
 	    
 	    imIn.getCoordsFromOffset(curOffset, x0, y0, z0);
 	    
+	    bool oddLine = se.odd && ((y0)%2);
+	    
 	    int x, y, z;
 	    size_t nbOffset;
+	    
+	    statPixels[curOffset] = HQ_LABELED;
 	    UINT8 nbStat;
 	    
-	    int oddLine = se.odd * y0%2;
 	    
 	    for(it=it_start,it_off=it_off_start;it!=it_end;it++,it_off++)
 		if (it->x!=0 || it->y!=0 || it->z!=0) // useless if x=0 & y=0 & z=0
 	    {
 		
 		x = x0 + it->x;
-		y = y0 - it->y;
+		y = y0 + it->y;
 		z = z0 + it->z;
 		
 		if (oddLine)
-		  x += (y+1)%2;
+		  x += (((y+1)%2)!=0);
 	      
 		if (x>=0 && x<(int)s[0] && y>=0 && y<(int)s[1] && z>=0 && z<(int)s[2])
 		{
 		    nbOffset = curOffset + *it_off;
 		    
 		    if (oddLine)
-		      nbOffset += (y+1)%2;
+		      nbOffset += (((y+1)%2)!=0);
 		    
 		    nbStat = statPixels[nbOffset];
 		    
@@ -150,22 +153,16 @@ namespace smil
 			tmpOffsets.push_back(nbOffset);
 		    else if (nbStat==HQ_LABELED)
 		    {
-			if (statPixels[curOffset]==HQ_LABELED)
-			{
-			    if (lblPixels[curOffset]!=lblPixels[nbOffset])
-				statPixels[curOffset] = HQ_WS_LINE;
-			}
-			else if (statPixels[curOffset]!=HQ_WS_LINE)
-			{
-			  statPixels[curOffset] = HQ_LABELED;
-			  lblPixels[curOffset] = lblPixels[nbOffset];
-			}
+			if (lblPixels[curOffset]==0)
+			    lblPixels[curOffset] = lblPixels[nbOffset];
+			else if (lblPixels[curOffset]!=lblPixels[nbOffset])
+			  statPixels[curOffset] = HQ_WS_LINE;
 		    }
 		    
 		}
 	    }
-
-	    if (statPixels[curOffset]==HQ_LABELED && !tmpOffsets.empty())
+	    
+	    if (statPixels[curOffset]!=HQ_WS_LINE && !tmpOffsets.empty())
 	    {
 		typename vector<UINT>::iterator t_it = tmpOffsets.begin();
 		while (t_it!=tmpOffsets.end())
@@ -175,9 +172,9 @@ namespace smil
 		    
 		    t_it++;
 		}
-		
-		tmpOffsets.clear();
 	    }
+	    
+	    tmpOffsets.clear();
 	}
 	
 	// Potential remaining candidate points (points surrounded by WS_LINE points)
@@ -204,11 +201,8 @@ namespace smil
     template <class T, class labelT>
     RES_T watershed(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
     {
-	if (!areAllocated(&imIn, &imMarkers, &imOut, &imBasinsOut, NULL))
-	  return RES_ERR_BAD_ALLOCATION;
-	
-	if (!haveSameSize(&imIn, &imMarkers, &imOut, &imBasinsOut, NULL))
-	  return RES_ERR_BAD_SIZE;
+	ASSERT_ALLOCATED(&imIn, &imMarkers, &imOut, &imBasinsOut, NULL);
+	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut, &imBasinsOut, NULL);
 	
 	Image<UINT8> imStatus(imIn);
 	copy(imMarkers, imBasinsOut);
@@ -236,11 +230,8 @@ namespace smil
     template <class T, class labelT>
     RES_T watershed(const Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	if (!areAllocated(&imIn, &imMarkers, &imOut, NULL))
-	  return RES_ERR_BAD_ALLOCATION;
-	
-	if (!haveSameSize(&imIn, &imMarkers, &imOut, NULL))
-	  return RES_ERR_BAD_SIZE;
+	ASSERT_ALLOCATED(&imIn, &imMarkers, &imOut, NULL);
+	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut, NULL);
 	
 	Image<labelT> imBasinsOut(imMarkers);
 	return watershed(imIn, imMarkers, imOut, imBasinsOut);
@@ -249,11 +240,8 @@ namespace smil
     template <class T>
     RES_T watershed(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	if (!areAllocated(&imIn, &imOut, NULL))
-	  return RES_ERR_BAD_ALLOCATION;
-	
-	if (!haveSameSize(&imIn, &imOut, NULL))
-	  return RES_ERR_BAD_SIZE;
+	ASSERT_ALLOCATED(&imIn, &imOut, NULL);
+	ASSERT_SAME_SIZE(&imIn, &imOut, NULL);
 	
 	Image<T> imMin(imIn);
 	minima(imIn, imMin, se);
@@ -353,6 +341,51 @@ namespace smil
 	gradient(basinsIm, basinsIm, se, StrElt());
 	threshold(basinsIm, UINT16(ImDtTypes<T>::min()+1), UINT16(ImDtTypes<T>::max()), basinsIm);
 	copy(basinsIm, imOut);
+	
+	return RES_OK;
+    }
+    
+    /**
+     * Waterfall
+     * 
+     */ 
+    template <class T>
+    RES_T waterfall(const Image<T> &gradIn, const Image<T> &wsIn, Image<T> &imGradOut, Image<T> &imWsOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&gradIn, &wsIn, &imGradOut, &imWsOut);
+	ASSERT_SAME_SIZE(&gradIn, &wsIn, &imGradOut, &imWsOut);
+	
+	ImageFreezer freeze(imWsOut);
+	
+	test(wsIn, gradIn, ImDtTypes<T>::max(), imWsOut);
+	dualBuild(imWsOut, gradIn, imGradOut, se);
+	watershed(imGradOut, imWsOut, se);
+	
+	return RES_OK;
+    }
+    
+    /**
+     * Waterfall
+     * 
+     */ 
+    template <class T>
+    RES_T waterfall(const Image<T> &gradIn, UINT nLevel, Image<T> &imWsOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&gradIn, &imWsOut);
+	ASSERT_SAME_SIZE(&gradIn, &imWsOut);
+	
+	ImageFreezer freeze(imWsOut);
+	
+	Image<T> tmpGradIm(gradIn, 1); //clone
+	Image<T> tmpGradIm2(gradIn); //clone
+	
+	watershed(gradIn, imWsOut, se);
+	
+	for (UINT i=0;i<nLevel;i++)
+	{
+	    waterfall(tmpGradIm, imWsOut, tmpGradIm2, imWsOut, se);
+	    copy(tmpGradIm2, tmpGradIm);
+	}
 	
 	return RES_OK;
     }

@@ -140,13 +140,13 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       processWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq, se);
 
       UINT8 vecLblTruth[] = { 
-	1, 1, 1, 1, 1, 1, 
-	2, 3, 3, 3, 3, 3, 
-	2, 3, 3, 3, 3, 3, 
-	2, 3, 3, 3, 3, 3, 
-	2, 2, 2, 3, 3, 3, 
-	2, 2, 2, 3, 3, 3, 
-	2, 2, 2, 2, 3, 3
+	1,    1,    1,    1,    1,    1,
+	  1,    1,    1,    1,    1,    1,
+	2,    3,    3,    3,    3,    3,
+	  2,    3,    3,    3,    3,    3,
+	2,    2,    3,    3,    3,    3,
+	  2,    2,    2,    3,    3,    3,
+	2,    2,    2,    2,    3,    3,
       };
       
       UINT8 vecStatusTruth[] = { 
@@ -168,6 +168,11 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       TEST_ASSERT(imLbl==imLblTruth);
       TEST_ASSERT(imStatus==imStatusTruth);
       
+      if (retVal!=RES_OK)
+      {
+	imLbl.printSelf(1, true);
+	imStatus.printSelf(1, true);
+      }
   }
 };
 
@@ -177,21 +182,21 @@ class Test_Watershed : public TestCase
   {
       UINT8 vecIn[] = { 
 	2, 2, 2, 2, 2, 2,
-	7, 7, 7, 7, 7, 7,
+	 7, 7, 7, 7, 7, 7,
 	2, 7, 5, 6, 2, 2,
-	2, 6, 5, 6, 2, 2,
+	 2, 6, 5, 6, 2, 2,
 	2, 2, 6, 4, 3, 2,
-	2, 2, 3, 4, 2, 2,
+	 2, 2, 3, 4, 2, 2,
 	2, 2, 2, 2, 4, 2
       };
       
       UINT8 vecMark[] = { 
 	1, 1, 1, 1, 1, 1,
-	0, 0, 0, 0, 0, 0,
+	 0, 0, 0, 0, 0, 0,
 	2, 0, 0, 0, 3, 3,
-	2, 0, 0, 0, 3, 3,
+	 2, 0, 0, 0, 3, 3,
 	2, 2, 0, 0, 0, 3,
-	2, 2, 0, 0, 3, 3,
+	 2, 2, 0, 0, 3, 3,
 	2, 2, 2, 2, 0, 3
       };
       
@@ -203,26 +208,28 @@ class Test_Watershed : public TestCase
       imIn << vecIn;
       imMark << vecMark;
       
-      watershed(imIn, imMark, imWs, imLbl, sSE());
+      StrElt se = hSE();
+      
+      watershed(imIn, imMark, imWs, imLbl, se);
       
       UINT8 vecLblTruth[] = { 
-	1, 1, 1, 1, 1, 1, 
-	2, 2, 2, 3, 3, 3, 
-	2, 2, 2, 3, 3, 3, 
-	2, 2, 2, 3, 3, 3, 
-	2, 2, 2, 3, 3, 3, 
-	2, 2, 2, 2, 3, 3, 
-	2, 2, 2, 2, 3, 3
+	1,    1,    1,    1,    1,    1,
+	  1,    1,    1,    1,    1,    1,
+	2,    3,    3,    3,    3,    3,
+	  2,    3,    3,    3,    3,    3,
+	2,    2,    3,    3,    3,    3,
+	  2,    2,    2,    3,    3,    3,
+	2,    2,    2,    2,    3,    3,
       };
       
       UINT8 vecWsTruth[] = { 
-	0, 0, 0, 0, 0, 0,
-	255, 255, 255, 255, 255, 255,
-	0, 0, 0, 255, 0, 0,
-	0, 0, 0, 255, 0, 0,
-	0, 0, 0, 255, 0, 0,
-	0, 0, 0, 255, 255, 0,
-	0, 0, 0, 0, 255, 0
+	0,    0,    0,    0,    0,    0,
+	255,  255,  255,  255,  255,  255,
+	0,  255,    0,    0,    0,    0,
+	  0,  255,    0,    0,    0,    0,
+	0,    0,  255,  255,    0,    0,
+	  0,    0,    0,  255,    0,    0,
+	0,    0,    0,    0,  255,    0,
       };
       
       Image_UINT8 imLblTruth(imIn);
@@ -231,12 +238,75 @@ class Test_Watershed : public TestCase
       imLblTruth << vecLblTruth;
       imWsTruth << vecWsTruth;
       
-//       imLbl.printSelf(1);
-      
       TEST_ASSERT(imLbl==imLblTruth);
       TEST_ASSERT(imWs==imWsTruth);
+      
+      if (retVal!=RES_OK)
+      {
+	imLbl.printSelf(1, true);
+	imWs.printSelf(1, true);
+      }
+      
+      // Test idempotence
+      
+      Image_UINT8 imWs2(imIn);
+      
+      watershed(imWs, imMark, imWs2, imLbl, se);
+      TEST_ASSERT(imWs2==imWs);
   }
 };
+
+class Test_Watershed_Indempotence : public TestCase
+{
+  virtual void run()
+  {
+      UINT8 vecIn[] = { 
+	  98,   81,   45,  233,  166,  112,  100,   20,  176,   79,
+	      4,   11,   57,  246,  137,   90,   69,  212,   16,  219,
+	  131,  165,   20,    4,  201,  100,  166,   57,  144,  104,
+	    143,  242,  185,  188,  221,   97,   46,   66,  117,  222,
+	  146,  121,  234,  204,  113,  116,   40,  183,   74,   56,
+	    147,  205,  221,  168,  210,  168,   14,  122,  226,  158,
+	  226,  114,  146,  157,   48,  112,  254,   94,  179,  117,
+	      61,   71,  238,   40,   20,   97,  157,   60,   25,  231,
+	  116,  173,  181,   83,   86,  137,  252,  100,    4,  223,
+	      4,  231,   83,  150,  133,  131,    8,  133,  226,  187,
+      };
+      
+      UINT8 vecMark[] = { 
+	  1,    1,    0,    0,    0,    2,    0,    0,    0,    0,
+	    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+	  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+	    0,    0,    0,    0,    0,    0,    0,    3,    0,    0,
+	  4,    0,    0,    0,    5,    0,    0,    0,    0,    0,
+	    0,    0,    6,    0,    0,    0,    0,    0,    0,    0,
+	  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+	    0,    0,    0,    0,    7,    0,    0,    8,    0,    0,
+	  0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+	    0,    0,    0,    0,    9,    0,    0,    0,    0,   10,
+      };
+      
+      Image_UINT8 imIn(10,10);
+      Image_UINT8 imMark(imIn);
+      Image_UINT8 imWs(imIn);
+      Image_UINT8 imWs2(imIn);
+
+      imIn << vecIn;
+      imMark << vecMark;
+
+      watershed(imIn, imMark, imWs, hSE());
+      watershed(imWs, imMark, imWs2, hSE());
+      
+      TEST_ASSERT(imWs==imWs2);
+      
+      if (retVal!=RES_OK)
+      {
+	  imWs.printSelf(1, true);
+	  imWs2.printSelf(1, true);
+      }
+  }
+};
+
 
 class Test_Build : public TestCase
 {
@@ -270,10 +340,7 @@ class Test_Build : public TestCase
       TEST_ASSERT(imBuild==imTruth);
       
       if (retVal!=RES_OK)
-      {
 	imBuild.printSelf(1);
-	imTruth.printSelf(1);
-      }
   }
 };
 
@@ -285,6 +352,7 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_InitHierarchicalQueue);
       ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
       ADD_TEST(ts, Test_Watershed);
+      ADD_TEST(ts, Test_Watershed_Indempotence);
       ADD_TEST(ts, Test_Build);
       
       return ts.run();

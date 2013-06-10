@@ -235,7 +235,7 @@ namespace smil
 	    imIn.getCoordsFromOffset(curOffset, x0, y0, z0);
 	    
 	    
-	    int oddLine = se.odd * y0%2;
+	    bool oddLine = se.odd && (y0)%2;
 	    
 	    for(it=it_start,it_off=it_off_start;it!=it_end;it++,it_off++)
 		if (it->x!=0 || it->y!=0 || it->z!=0) // useless if x=0 & y=0 & z=0
@@ -246,14 +246,14 @@ namespace smil
 		z = z0 + it->z;
 		
 		if (oddLine)
-		  x += (y+1)%2;
+		  x += ((y+1)%2!=0);
 	      
 		if (x>=0 && x<(int)s[0] && y>=0 && y<(int)s[1] && z>=0 && z<(int)s[2])
 		{
 		    nbOffset = curOffset + *it_off;
 		    
 		    if (oddLine)
-		      nbOffset += (y+1)%2;
+		      nbOffset += ((y+1)%2!=0);
 		    
 		    nbStat = statPixels[nbOffset];
 		    

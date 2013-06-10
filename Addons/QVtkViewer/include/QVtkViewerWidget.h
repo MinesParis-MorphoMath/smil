@@ -96,6 +96,8 @@ protected:
     void hideAxes();
     void setInterpolationTypeToLinear();
     void setInterpolationTypeToNearest();
+    void setAutorangeOn();
+    void setAutorangeOff();
     
 public slots:
     void showContextMenu(vtkObject*, unsigned long, void*, void*, vtkCommand *command);
