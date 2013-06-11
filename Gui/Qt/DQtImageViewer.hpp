@@ -68,7 +68,7 @@ namespace smil
      * \li \b P SHow the plot window (requires the Qwt library)
      */
     template <class T>
-    class QtImageViewer : public ImageViewer<T>, protected BASE_QT_VIEWER
+    class QtImageViewer : public ImageViewer<T>, public BASE_QT_VIEWER
     {
     public:
 	typedef ImageViewer<T> parentClass;
