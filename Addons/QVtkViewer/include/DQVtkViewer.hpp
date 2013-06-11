@@ -43,9 +43,11 @@ namespace smil
     template <class T> class Image;
     
    /**
-    * \ingroup Gui
+    * \ingroup Addons
+    * \defgroup QVtkViewer
+    * @{
     */
-    /*@{*/
+   
 
     /**
      * QVtk image viewer
@@ -182,7 +184,7 @@ namespace smil
 	
     };
 
-    /*@{*/
+    /*@}*/
     
 } // namespace smil
 

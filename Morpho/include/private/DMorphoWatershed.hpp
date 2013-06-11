@@ -45,8 +45,8 @@ namespace smil
      */
 
   
-    template <class T, class labelT>
-    RES_T initWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq)
+    template <class T, class labelT, class HQ_Type >
+    RES_T initWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HQ_Type &hq)
     {
 	// Empty the priority queue
 	hq.initialize(imIn);
@@ -82,8 +82,141 @@ namespace smil
 	return RES_OK;
     }
 
+    template <class T, class labelT, class HQ_Type>
+    RES_T processBasinsHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HQ_Type &hq, const StrElt &se)
+    {
+	typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
+	typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
+	typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
+	
+	vector<int> dOffsets;
+	
+	vector<IntPoint>::const_iterator it_start = se.points.begin();
+	vector<IntPoint>::const_iterator it_end = se.points.end();
+	vector<IntPoint>::const_iterator it;
+	
+	size_t s[3];
+	imIn.getSize(s);
+	
+	// Create a copy of se without (potential) center point
+	StrElt cpSe;
+	cpSe.odd = se.odd;
+	
+	// set an offset distance for each se point (!=0,0,0)
+	for(it=it_start;it!=it_end;it++)
+	  if (it->x!=0 || it->y!=0 || it->z!=0)
+	{
+	    cpSe.addPoint(*it);
+	    dOffsets.push_back(it->x + it->y*s[0] + it->z*s[0]*s[1]);
+	}
+	
+	it_start = cpSe.points.begin();
+	it_end = cpSe.points.end();
+	
+	vector<int>::iterator it_off_start = dOffsets.begin();
+	vector<int>::iterator it_off;
+	
+	
+	while(!hq.isEmpty())
+	{
+	    
+	    size_t curOffset = hq.pop();
+	    size_t x0, y0, z0;
+	    
+	    
+	    
+	    imIn.getCoordsFromOffset(curOffset, x0, y0, z0);
+	    
+	    bool oddLine = se.odd && ((y0)%2);
+	    
+	    int x, y, z;
+	    size_t nbOffset;
+	    
+	    
+	    for(it=it_start,it_off=it_off_start;it!=it_end;it++,it_off++)
+	    {
+		
+		x = x0 + it->x;
+		y = y0 + it->y;
+		z = z0 + it->z;
+		
+		if (oddLine)
+		  x += (((y+1)%2)!=0);
+	      
+		if (x>=0 && x<(int)s[0] && y>=0 && y<(int)s[1] && z>=0 && z<(int)s[2])
+		{
+		    nbOffset = curOffset + *it_off;
+		    
+		    if (oddLine)
+		      nbOffset += (((y+1)%2)!=0);
+		    
+		    if (statPixels[nbOffset]==HQ_CANDIDATE)
+		    {
+			lblPixels[nbOffset] = lblPixels[curOffset];
+			statPixels[nbOffset] = HQ_QUEUED;
+			hq.push(inPixels[nbOffset], nbOffset);
+		    }
+		    
+		}
+	    }
+	}
+	    
+	return RES_OK;
+    }
+
+    /**
+    * Constrained basins.
+    * 
+    * Hierachical queue based algorithm as described by S. Beucher (2011) \cite beucher_hierarchical_2011
+    * \param[in] imIn Input image.
+    * \param[in] imMarkers Label image containing the markers. 
+    * \param[out] imBasinsOut (optional) Output image containing the basins.
+    * After processing, this image will contain the basins with the same label values as the initial markers.
+    * 
+    * \demo{constrained_watershed.py}
+    */
     template <class T, class labelT>
-    RES_T processWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq, const StrElt &se)
+    RES_T basins(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut, NULL);
+	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imBasinsOut, NULL);
+	
+	ImageFreezer freeze(imBasinsOut);
+	
+	Image<UINT8> imStatus(imIn);
+	copy(imMarkers, imBasinsOut);
+
+ 	HierarchicalQueue<T,UINT,FIFO_Queue<UINT> > pq; // preallocated HQ
+//  	HierarchicalQueue<T> pq;
+
+	initWatershedHierarchicalQueue(imIn, imBasinsOut, imStatus, pq);
+	processBasinsHierarchicalQueue(imIn, imBasinsOut, imStatus, pq, se);
+
+	return RES_OK;
+    }
+
+    template <class T, class labelT>
+    RES_T basins(const Image<T> &imIn, Image<labelT> &imBasinsInOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imBasinsInOut);
+	ASSERT_SAME_SIZE(&imIn, &imBasinsInOut);
+	
+	ImageFreezer freeze(imBasinsInOut);
+	
+	Image<UINT8> imStatus(imIn);
+
+ 	HierarchicalQueue<T,UINT,FIFO_Queue<UINT> > pq; // preallocated HQ
+//  	HierarchicalQueue<T> pq;
+
+	initWatershedHierarchicalQueue(imIn, imBasinsInOut, imStatus, pq);
+	processBasinsHierarchicalQueue(imIn, imBasinsInOut, imStatus, pq, se);
+
+	return RES_OK;
+    }
+
+    
+    template <class T, class labelT, class HQ_Type>
+    RES_T processWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HQ_Type &hq, const StrElt &se)
     {
 	typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
 	typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
@@ -201,15 +334,18 @@ namespace smil
     template <class T, class labelT>
     RES_T watershed(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imMarkers, &imOut, &imBasinsOut, NULL);
-	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut, &imBasinsOut, NULL);
+	ASSERT_ALLOCATED(&imIn, &imMarkers, &imOut, &imBasinsOut);
+	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut, &imBasinsOut);
+	
+	ImageFreezer freezer(imOut);
+	ImageFreezer freezer2(imBasinsOut);
 	
 	Image<UINT8> imStatus(imIn);
 	copy(imMarkers, imBasinsOut);
 
 	HierarchicalQueue<T> pq;
 
-	initWatershedHierarchicalQueue<T,labelT>(imIn, imBasinsOut, imStatus, pq);
+	initWatershedHierarchicalQueue(imIn, imBasinsOut, imStatus, pq);
 	processWatershedHierarchicalQueue(imIn, imBasinsOut, imStatus, pq, se);
 
 	ImDtTypes<UINT8>::lineType pixStat = imStatus.getPixels();
@@ -222,16 +358,14 @@ namespace smil
 	  if (*pixStat==HQ_WS_LINE) 
 	    *pixOut = wsVal;
 	  
-	imBasinsOut.modified();
-	imOut.modified();
 	return RES_OK;
     }
 
     template <class T, class labelT>
     RES_T watershed(const Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imMarkers, &imOut, NULL);
-	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut, NULL);
+	ASSERT_ALLOCATED(&imIn, &imMarkers, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut);
 	
 	Image<labelT> imBasinsOut(imMarkers);
 	return watershed(imIn, imMarkers, imOut, imBasinsOut);
@@ -240,8 +374,8 @@ namespace smil
     template <class T>
     RES_T watershed(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut, NULL);
-	ASSERT_SAME_SIZE(&imIn, &imOut, NULL);
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
 	Image<T> imMin(imIn);
 	minima(imIn, imMin, se);

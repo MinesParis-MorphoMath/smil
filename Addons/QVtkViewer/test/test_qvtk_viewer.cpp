@@ -37,7 +37,7 @@ class Test_Show : public TestCase
       viewer.show();
       im1 << UINT8(127);
       
-      Gui::execLoop();
+//       Gui::execLoop();
   }
 };
 

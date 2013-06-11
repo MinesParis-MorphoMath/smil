@@ -42,8 +42,14 @@
 
 namespace smil
 {
-
     /**
+     * \ingroup Addons
+     * \defgroup MorphM MorphM Image Interface
+     * @{
+     */
+    
+    /**
+     * 
     * MorphM Image Interface
     */
 
@@ -111,6 +117,8 @@ namespace smil
 	}
     #endif // Py_PYCONFIG_H
     };
+
+    /*@}*/
     
 } // namespace smil
 

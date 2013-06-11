@@ -40,10 +40,15 @@
 namespace smil
 {
 
-    /**
+   /**
+    * \ingroup Addons
+    * \defgroup OpenCVInterface OpenCV Interface
+    * @{
+    */
+   
+   /**
     * OpenCV Image Interface
     */
-
     template <class T>
     class OpenCVInt : public SharedImage<T>
     {
@@ -98,6 +103,8 @@ namespace smil
     IplImage *toIplImage(Image<T> &im)
     {
     }
+
+   /*@}*/
     
 } // namespace smil
 
