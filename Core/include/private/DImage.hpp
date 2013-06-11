@@ -30,6 +30,8 @@
 #ifndef _DIMAGE_HPP
 #define _DIMAGE_HPP
 
+#include <string>
+
 #include "DBaseImage.h"
 #include "Gui/include/DBaseImageViewer.h"
 
@@ -173,7 +175,7 @@ namespace smil
 	{ 
 	    return setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); 
 	}
-	virtual RES_T setSize(const vector<size_t> s, bool doAllocate = true) 
+	virtual RES_T setSize(const vector<UINT> s, bool doAllocate = true) 
 	{ 
 	    if (s.size()==3)
 	      return setSize(s[0], s[1], s[2], doAllocate); 
@@ -182,14 +184,14 @@ namespace smil
 	virtual RES_T allocate();
 	virtual RES_T deallocate();
 
-	void printSelf(ostream &os, bool displayPixVals, string indent="") const;
+	void printSelf(ostream &os, bool displayPixVals, bool hexaGrid=false, string indent="") const;
 	virtual void printSelf(ostream &os=std::cout, string indent="") const
 	{
-	    printSelf(os, false, indent);
+	    printSelf(os, false, false, indent);
 	}
-	void printSelf(bool displayPixVals)
+	void printSelf(bool displayPixVals, bool hexaGrid=false)
 	{
-	    printSelf(std::cout, displayPixVals);
+	    printSelf(std::cout, displayPixVals, hexaGrid);
 	}
 	virtual const char *getInfoString(string indent = "") const 
 	{

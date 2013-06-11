@@ -117,6 +117,7 @@ TEMPLATE_WRAP_FUNC_CROSS2(watershed);
 TEMPLATE_WRAP_FUNC(lblSkiz);
 TEMPLATE_WRAP_FUNC_CROSS2(inflBasins);
 TEMPLATE_WRAP_FUNC(inflZones);
+TEMPLATE_WRAP_FUNC(waterfall);
 
 
 %include "DMorphoLabel.hpp"

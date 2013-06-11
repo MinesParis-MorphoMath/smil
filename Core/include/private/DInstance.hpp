@@ -31,6 +31,7 @@
 #define _D_INSTANCE_HPP
 
 #include <iostream>
+#include "DErrors.h"
 
 namespace smil
 {
@@ -51,7 +52,7 @@ namespace smil
 	}
 
 	// Can be overloaded because of the T::initialize call
-	static void initialize ()
+	static RES_T initialize ()
 	{
 	    if (T::_instance == NULL)
 		T::_instance = new T();

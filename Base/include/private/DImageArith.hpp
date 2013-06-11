@@ -34,6 +34,7 @@
 
 #include "DBaseImageOperations.hpp"
 #include "DLineArith.hpp"
+#include "DTime.h"
 
 namespace smil
 {
@@ -62,6 +63,37 @@ namespace smil
 	ASSERT_ALLOCATED(&imOut);
 
 	return unaryImageFunction<T, fillLine<T> >(imOut, value).retVal;
+    }
+
+    /**
+    * Fill an image with random values.
+    *
+    * \param imOut Output image.
+    *
+    * \see Image::operator<<
+    * 
+    */
+    template <class T>
+    RES_T randFill(Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imOut);
+
+	typename ImDtTypes<T>::lineType pixels = imOut.getPixels();
+	
+	// Initialize random number generator
+	struct timeval tv;
+	gettimeofday(&tv, 0);
+	srand(tv.tv_usec);
+	
+	double rangeT = ImDtTypes<T>::max() - ImDtTypes<T>::min();
+	T minT = ImDtTypes<T>::min();
+	
+	for (size_t i=0;i<imOut.getPixelCount();i++)
+	  pixels[i] = T( rand()/double(RAND_MAX) * rangeT + minT );
+	
+	imOut.modified();
+	
+	return RES_OK;	  
     }
 
 

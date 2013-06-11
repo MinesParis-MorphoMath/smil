@@ -102,142 +102,6 @@ class Test_InitHierarchicalQueue : public TestCase
   }
 };
 
-class Test_ProcessWatershedHierarchicalQueue : public TestCase
-{
-  virtual void run()
-  {
-      UINT8 vecIn[] = { 
-	2, 2, 2, 2, 2, 2,
-	7, 7, 7, 7, 7, 7,
-	2, 7, 5, 6, 2, 2,
-	2, 6, 5, 6, 2, 2,
-	2, 2, 6, 4, 3, 2,
-	2, 2, 3, 4, 2, 2,
-	2, 2, 2, 2, 4, 2
-      };
-      
-      UINT8 vecLbl[] = { 
-	1, 1, 1, 1, 1, 1,
-	0, 0, 0, 0, 0, 0,
-	2, 0, 0, 0, 3, 3,
-	2, 0, 0, 0, 3, 3,
-	2, 2, 0, 0, 0, 3,
-	2, 2, 0, 0, 3, 3,
-	2, 2, 2, 2, 0, 3
-      };
-      
-      Image_UINT8 imIn(6,7);
-      Image_UINT8 imLbl(imIn);
-      Image_UINT8 imStatus(imIn);
-
-      imIn << vecIn;
-      imLbl << vecLbl;
-      
-      HierarchicalQueue<UINT8> pq;
-      StrElt se = hSE();
-      
-      initWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq);
-      processWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq, se);
-
-      UINT8 vecLblTruth[] = { 
-	1, 1, 1, 1, 1, 1, 
-	2, 3, 3, 3, 3, 3, 
-	2, 3, 3, 3, 3, 3, 
-	2, 3, 3, 3, 3, 3, 
-	2, 2, 2, 3, 3, 3, 
-	2, 2, 2, 3, 3, 3, 
-	2, 2, 2, 2, 3, 3
-      };
-      
-      UINT8 vecStatusTruth[] = { 
-	2, 2, 2, 2, 2, 2,
-	3, 3, 3, 3, 3, 3,
-	2, 3, 2, 2, 2, 2,
-	2, 3, 2, 2, 2, 2,
-	2, 2, 3, 3, 2, 2,
-	2, 2, 2, 3, 2, 2,
-	2, 2, 2, 2, 3, 2
-      };
-      
-      Image_UINT8 imLblTruth(imIn);
-      Image_UINT8 imStatusTruth(imIn);
-      
-      imLblTruth << vecLblTruth;
-      imStatusTruth << vecStatusTruth;
-      
-      TEST_ASSERT(imLbl==imLblTruth);
-      TEST_ASSERT(imStatus==imStatusTruth);
-      
-  }
-};
-
-class Test_Watershed : public TestCase
-{
-  virtual void run()
-  {
-      UINT8 vecIn[] = { 
-	2, 2, 2, 2, 2, 2,
-	7, 7, 7, 7, 7, 7,
-	2, 7, 5, 6, 2, 2,
-	2, 6, 5, 6, 2, 2,
-	2, 2, 6, 4, 3, 2,
-	2, 2, 3, 4, 2, 2,
-	2, 2, 2, 2, 4, 2
-      };
-      
-      UINT8 vecMark[] = { 
-	1, 1, 1, 1, 1, 1,
-	0, 0, 0, 0, 0, 0,
-	2, 0, 0, 0, 3, 3,
-	2, 0, 0, 0, 3, 3,
-	2, 2, 0, 0, 0, 3,
-	2, 2, 0, 0, 3, 3,
-	2, 2, 2, 2, 0, 3
-      };
-      
-      Image_UINT8 imIn(6,7);
-      Image_UINT8 imMark(imIn);
-      Image_UINT8 imWs(imIn);
-      Image_UINT8 imLbl(imIn);
-
-      imIn << vecIn;
-      imMark << vecMark;
-      
-      watershed(imIn, imMark, imWs, imLbl, sSE());
-      
-      UINT8 vecLblTruth[] = { 
-	1, 1, 1, 1, 1, 1, 
-	2, 2, 2, 3, 3, 3, 
-	2, 2, 2, 3, 3, 3, 
-	2, 2, 2, 3, 3, 3, 
-	2, 2, 2, 3, 3, 3, 
-	2, 2, 2, 2, 3, 3, 
-	2, 2, 2, 2, 3, 3
-      };
-      
-      UINT8 vecWsTruth[] = { 
-	0, 0, 0, 0, 0, 0,
-	255, 255, 255, 255, 255, 255,
-	0, 0, 0, 255, 0, 0,
-	0, 0, 0, 255, 0, 0,
-	0, 0, 0, 255, 0, 0,
-	0, 0, 0, 255, 255, 0,
-	0, 0, 0, 0, 255, 0
-      };
-      
-      Image_UINT8 imLblTruth(imIn);
-      Image_UINT8 imWsTruth(imIn);
-      
-      imLblTruth << vecLblTruth;
-      imWsTruth << vecWsTruth;
-      
-//       imLbl.printSelf(1);
-      
-      TEST_ASSERT(imLbl==imLblTruth);
-      TEST_ASSERT(imWs==imWsTruth);
-  }
-};
-
 class Test_Build : public TestCase
 {
   virtual void run()
@@ -270,10 +134,7 @@ class Test_Build : public TestCase
       TEST_ASSERT(imBuild==imTruth);
       
       if (retVal!=RES_OK)
-      {
 	imBuild.printSelf(1);
-	imTruth.printSelf(1);
-      }
   }
 };
 
@@ -283,8 +144,6 @@ int main(int argc, char *argv[])
       TestSuite ts;
       ADD_TEST(ts, Test_HierarchicalQueue);
       ADD_TEST(ts, Test_InitHierarchicalQueue);
-      ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
-      ADD_TEST(ts, Test_Watershed);
       ADD_TEST(ts, Test_Build);
       
       return ts.run();

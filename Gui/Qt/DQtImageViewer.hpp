@@ -37,7 +37,6 @@
 #include "DTypes.h"
 
 #include "PureQt/ImageViewerWidget.h"
-#include "PureQt/ImageViewerApp.h"
 
 
 class PlotWidget;
@@ -59,8 +58,6 @@ namespace smil
      * Qt image viewer
      * 
      * Requires the Qt libraries. To use it, you must set the option USE_QT to ON.
-     * \note Under python, it is recommended to install <a href="http://www.riverbankcomputing.co.uk/software/pyqt/download" target="_blank">PyQt4</a>
-     * for a better integration.
      * 
      * Keyboard shortcuts:
      * \li \b Z/A Zoom In/Out
@@ -76,10 +73,10 @@ namespace smil
     public:
 	typedef ImageViewer<T> parentClass;
 	QtImageViewer();
-	QtImageViewer(Image<T> *im);
+	QtImageViewer(Image<T> &im);
 	~QtImageViewer();
 	
-	virtual void setImage(Image<T> *im);
+	virtual void setImage(Image<T> &im);
 	virtual void hide();
 	virtual void show();
 	virtual void showLabel();
@@ -124,8 +121,10 @@ namespace smil
     //     ImageViewer *qtViewer;
 	virtual void dropEvent(QDropEvent *de);
 	
+#ifdef USE_QWT
 	PlotWidget *histoPlot;
 	PlotWidget *profilePlot;
+#endif // USE_QWT
     };
 
     /*@{*/

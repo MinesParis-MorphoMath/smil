@@ -30,6 +30,10 @@
 #ifndef _IMAGE_HXX
 #define _IMAGE_HXX
 
+#include <iostream>
+#include <string>
+#include <iomanip>
+
 #include "Core/include/DCoreEvents.h"
 #include "Base/include/private/DMeasures.hpp"
 #include "Base/include/private/DImageArith.hpp"
@@ -153,9 +157,6 @@ namespace smil
 	if (!this->updatesEnabled)
 	  return;
 
-	if (viewer)
-	  viewer->update();
-
 	BaseImageEvent event(this);
 	onModified.trigger(&event);
     }
@@ -177,7 +178,7 @@ namespace smil
 	if (viewer)
 	  return;
 
-	viewer = Gui::createDefaultViewer<T>(this);
+	viewer = Gui::createDefaultViewer<T>(*this);
 
     }
 
@@ -271,7 +272,7 @@ namespace smil
 	  ASSERT((this->allocate()==RES_OK));
 
 	if (viewer)
-	  viewer->setImage(this);
+	  viewer->setImage(*this);
 
 	this->modified();
 	
@@ -406,7 +407,7 @@ namespace smil
 
 
     template <class T>
-    void Image<T>::printSelf(ostream &os, bool displayPixVals, string indent) const
+    void Image<T>::printSelf(ostream &os, bool displayPixVals, bool hexaGrid, string indent) const
     {
     #if DEBUG_LEVEL > 1
 	cout << "Image::printSelf: " << this << endl;
@@ -433,6 +434,13 @@ namespace smil
 
 	if (displayPixVals)
 	{
+	    std::stringstream tStr;
+	    tStr << (long)ImDtTypes<T>::max();
+	    UINT tSsize = tStr.str().size();
+	    if (hexaGrid)
+	      tSsize *= 1.5;
+	    
+	      
 	    os << "Pixel values:" << endl;
 	    size_t i, j, k;
 
@@ -440,8 +448,10 @@ namespace smil
 	    {
 	      for (j=0;j<height;j++)
 	      {
+		if (hexaGrid && j%2)
+		  os << setw(tSsize/2+1) << " ";
 		for (i=0;i<width;i++)
-		  os << (int)getPixel(i,j,k) << ", ";
+		  os <<  setw(tSsize+1) << (int)getPixel(i,j,k) << ",";
 		os << endl;
 	      }
 	      os << endl;

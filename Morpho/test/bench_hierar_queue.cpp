@@ -39,6 +39,8 @@ int main(int argc, char *argv[])
     Image_UINT8 im2(im1);
     Image_UINT8 im3(im1);
     Image_UINT8 im4(im1);
+    Image_UINT16 imLbl(im1);
+    Image_UINT16 imLbl2(im1);
     
     
     UINT BENCH_NRUNS = 1E1;
@@ -48,7 +50,11 @@ int main(int argc, char *argv[])
     
     gradient(im1, im2);
     minima(im2, im3);
-    BENCH_IMG(watershed, im2, im3, im4);
+    label(im3, imLbl);
+    
+    BENCH_IMG(basins, im2, imLbl, imLbl2);
+    
+    BENCH_IMG(watershed, im2, imLbl, im4);
         
 }
 

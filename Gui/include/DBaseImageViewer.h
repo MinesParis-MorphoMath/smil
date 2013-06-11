@@ -48,12 +48,7 @@ namespace smil
     public:
 	typedef BaseObject parentClass;
 	
-	BaseImageViewer(const char *_className="BaseImageViewer")
-	  : BaseObject(_className),
-	    labelImage(false)
-	{
-	    updateSlot.init(this, &BaseImageViewer::update);
-	}
+	BaseImageViewer(const char *_className="BaseImageViewer");
 	
 	virtual ~BaseImageViewer() {}
 	
@@ -62,7 +57,7 @@ namespace smil
 	virtual void hide() {}
 	virtual bool isVisible() { return false; }
 	virtual void setName(const char *_name) { parentClass::setName(_name); }
-	virtual void update() {}
+	virtual void update() = 0;
 	
 	// Slots
 	MemberFunctionSlot<BaseImageViewer> updateSlot;

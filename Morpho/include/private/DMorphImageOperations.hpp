@@ -42,19 +42,23 @@ namespace smil
 {
   
     template <class T_in, class T_out=T_in>
-    class unaryMorphImageFunctionGeneric : public imageFunctionBase<T_in>
+    class unaryMorphImageFunctionBase : public imageFunctionBase<T_in>
     {
     public:
-	unaryMorphImageFunctionGeneric(T_in _borderValue = numeric_limits<T_in>::min())
+	unaryMorphImageFunctionBase(T_in _borderValue = numeric_limits<T_in>::min())
 	  : initialValue(_borderValue),
 	    borderValue(_borderValue)
 	    
 	{
 	}
 	
-	unaryMorphImageFunctionGeneric(T_in _borderValue, T_out _initialValue = numeric_limits<T_out>::min())
+	unaryMorphImageFunctionBase(T_in _borderValue, T_out _initialValue = numeric_limits<T_out>::min())
 	  : initialValue(_borderValue),
 	    borderValue(_borderValue)
+	{
+	}
+	
+	~unaryMorphImageFunctionBase()
 	{
 	}
 	
@@ -158,7 +162,7 @@ namespace smil
 	    }
 	}
 	
-	// Todo: offset list for odd SE !!
+	// Todo: offset list for 3D odd SE !!
 	virtual inline void processLine(lineInType pixIn, lineOutType pixOut, size_t &pixNbr, const StrElt &se)
 	{
 	    int x, y, z;
@@ -168,6 +172,9 @@ namespace smil
 	    vector<int> relOffsetList;
 	    vector<int> offsetList;
 	    
+	    bool oddLine = se.odd && (curLine)%2;
+	    int dx;
+	    
 	    // Remove points wich are outside the image
 	    for (UINT i=0;i<sePointNbr;i++)
 	    {
@@ -176,8 +183,13 @@ namespace smil
 		z = curSlice + p.z;
 		if (y>=0 && y<int(imSize[1]) && z>=0 && z<int(imSize[2]))
 		{
+		  if (oddLine && ((y+1)%2)!=0)
+		    p.x += 1;
 		  ptList.push_back(p);
-		  relOffsetList.push_back(relativeOffsets[i]);
+		  if (oddLine && ((y+1)%2)!=0)
+		    relOffsetList.push_back(relativeOffsets[i]+1);
+		  else
+		    relOffsetList.push_back(relativeOffsets[i]);
 		}
 	    }
 	    UINT ptNbr = ptList.size();

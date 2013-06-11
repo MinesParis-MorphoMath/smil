@@ -27,54 +27,16 @@
  */
 
 
-#ifndef IMAGEVIEWER_H
-#define IMAGEVIEWER_H
+#include "DBaseImageViewer.h"
+#include "DGuiInstance.h"
 
-#include <QMainWindow>
-#include <QScrollArea>
-#include <QGraphicsPixmapItem>
-#include <QGraphicsTextItem>
-#include <QGraphicsScene>
-#include <QGraphicsView>
+using namespace smil;
 
-#include "ImageViewerWidget.h"
-
-namespace Ui {
-    class ImageViewerApp;
-}
-
-
-
-class ImageViewerApp : public QMainWindow
+BaseImageViewer::BaseImageViewer(const char *_className)
+  : BaseObject(_className),
+    labelImage(false)
 {
-    Q_OBJECT
-
-public:
-    explicit ImageViewerApp(QWidget *parent = 0);
-    ~ImageViewerApp();
-
-    void setName(const char *name);
-public slots:
-    void load(const QString fileName);
-    
-private:
-    Ui::ImageViewerApp *ui;
-    QLabel *pixelPosLabel;
-    QLabel *pixelValLabel;
-    QLabel *scaleLabel;
-    QScrollArea *scrollArea;
-
-    ImageViewerWidget *graphicsView;
-
-    void connectActions();
-
-    QString name;
-protected:
-
-private slots:
-    void viewMouseMoveEvent ( QMouseEvent * event );
-    void displayPixelData(int x, int y, int pixVal, bool insideImage);
-    void displayScaleFactor(double sf);
-};
-
-#endif // IMAGEVIEWER_H
+    Gui::initialize();
+    updateSlot.init(this, &BaseImageViewer::update);
+}
+	

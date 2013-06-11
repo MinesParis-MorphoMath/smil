@@ -222,7 +222,7 @@ namespace smil
     {
       public:
 	CrossSE(UINT s=1)
-	  : StrElt(false, 5, 0, 1, 5, 3, 7)
+	  : StrElt(false, 5,  0, 1, 5, 3, 7)
 	{
 	    className = "CrossSE";
 	    seT = SE_Cross;
@@ -289,18 +289,44 @@ namespace smil
 	    for (int i=0;i<3;i++)
 	    {
 		int z = zList[i];
-		addPoint(0,0,z);	// 1
-		addPoint(1,0,z);	// 2
-		addPoint(1,-1,z);	// 3
-		addPoint(0,-1,z);	// 4
-		addPoint(-1,-1,z);	// 5
-		addPoint(-1,0,z);	// 6
-		addPoint(-1,1,z);	// 7
-		addPoint(0,1,z);	// 8
-		addPoint(1,1,z);	// 9
+		addPoint(0,0,z);
+		addPoint(1,0,z);
+		addPoint(1,-1,z);
+		addPoint(0,-1,z);
+		addPoint(-1,-1,z);
+		addPoint(-1,0,z);
+		addPoint(-1,1,z);
+		addPoint(0,1,z);
+		addPoint(1,1,z);
 	    }
 	}
     };
+    
+    /**
+    * 3D Cross structuring element.
+    * 
+    * Points :
+    * \images{cross3d_se}
+    * 
+    */
+    class Cross3DSE : public StrElt
+    {
+      public:
+	Cross3DSE(UINT s=1)
+	  : StrElt(s)
+	{
+	    className = "Cross3DSE";
+	    odd = false;
+	    addPoint(0,0,-1);	// 1
+	    addPoint(0,0,0);	// 2
+	    addPoint(1,0,0);	// 3
+	    addPoint(0,-1,0);	// 4
+	    addPoint(-1,0,0);	// 5
+	    addPoint(0,1,0);	// 5
+	    addPoint(0,0,1);	// 1
+	}
+    };
+
 
     // Shortcuts
     inline HexSE hSE(UINT s=1) { return HexSE(s); }

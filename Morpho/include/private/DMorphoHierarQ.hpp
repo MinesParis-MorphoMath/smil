@@ -56,6 +56,9 @@ namespace smil
       HQ_FINAL
     };
 
+    /**
+     * Preallocated FIFO Queue
+     */
     template <class T>
     class FIFO_Queue
     {
@@ -97,11 +100,18 @@ namespace smil
 	    data[last++] = val;
 	    _size++;
 	}
-	inline T pop()
+	inline T front()
+	{
+	    return data[first];
+	}
+	inline void pop()
 	{
 	    _size--;
-	    return data[first++];
+	    first++;
 	}
+	
+      static const bool preallocate = true;
+      
       protected:
 	size_t _size;
 	size_t realSize;
@@ -110,13 +120,23 @@ namespace smil
 	T* data;
     };
 
-    template <class T, class TokenType=UINT>
+    template <class TokenType=UINT>
+    class STD_Queue : public queue<TokenType>
+    {
+    public:
+      // Dummy constructor for compatibilty with FIFO_Queue one
+      STD_Queue(size_t newSize=0)
+	: queue<TokenType>()
+	{
+	}
+      static const bool preallocate = false;
+    };
+    
+    template <class T, class TokenType=UINT, class StackType=STD_Queue<TokenType> >
     class HierarchicalQueue
     {
     private:
-// 	typedef FIFO_Queue<TokenType> StackType;
-	typedef queue<TokenType> StackType;
-	
+      
 	size_t GRAY_LEVEL_NBR;
 	size_t TYPE_FLOOR;
 	StackType **stacks;
@@ -126,7 +146,6 @@ namespace smil
 	
 	bool initialized;
 	const bool reverseOrder;
-// 	size_t h[256];
 	
     public:
 	HierarchicalQueue(bool rOrder=false)
@@ -166,15 +185,23 @@ namespace smil
 	    if (initialized)
 	      reset();
 	    
-// 	    size_t *h = new size_t[GRAY_LEVEL_NBR];
-// 	    histogram(img, h);
+	    if (StackType::preallocate)
+	    {
+		size_t *h = new size_t[GRAY_LEVEL_NBR];
+		histogram(img, h);
 
-	    for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
-// 		if (h[i]!=0)
-// 		  stacks[i] = new StackType(h[i]);
+		for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
+		  if (h[i]!=0)
+		    stacks[i] = new StackType(h[i]);
+		    
+		delete[] h;
+	    }
+	    else
+	    {
+		for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
 		  stacks[i] = new StackType();
-		
-// 	    delete[] h;
+	    }
+	    
 	    memset(tokenNbr, 0, GRAY_LEVEL_NBR*sizeof(size_t));
 	    size = 0;
 	    

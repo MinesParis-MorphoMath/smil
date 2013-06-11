@@ -55,36 +55,42 @@ namespace smil
 	friend class Image<T>;
 	
 	ImageViewer()
-	  : image(NULL), labelImage(false)
+	  : BaseImageViewer("ImageViewer"),
+	    image(NULL), 
+	    labelImage(false)
 	{
+	    imSize[0] = imSize[1] = imSize[2] = 0;
 	}
 	
-	ImageViewer(Image<T> *im)
-	  : labelImage(false)
+	ImageViewer(Image<T> &im)
+	  : BaseImageViewer("ImageViewer"),
+	    image(NULL),
+	    labelImage(false)
 	{
+	    imSize[0] = imSize[1] = imSize[2] = 0;
 	    setImage(im);
 	}
 	
-	virtual void setImage(Image<T> *im)
-	{
-	    image = im;
-	    
-	    if (!im)
-	      return;
-	    
-	    setName(im->getName());
-	}
-	void connect(Image<T> *im)
+	virtual void setImage(Image<T> &im)
 	{
 	    if (image)
-	      disconnect(image);
-	    this->setImage(im);
-	    image->onModified.connect(&this->updateSlot);
-	    update();
+	      disconnect();
+	    
+	    image = &im;
+	    image->getSize(imSize);
+	    this->setName(image->getName());
+	    
+	    if (&im)
+	      image->onModified.connect(&this->updateSlot);
 	}
-	virtual void disconnect(Image<T> *)
+	virtual Image<T> *getImage()
 	{
-	    image->onModified.disconnect(&this->updateSlot);
+	    return this->image;
+	}
+	virtual void disconnect()
+	{
+	    if (image)
+	      image->onModified.disconnect(&this->updateSlot);
 	    image = NULL;
 	}
 	
@@ -95,8 +101,19 @@ namespace smil
 	virtual void setName(const char *_name) { parentClass::setName(_name); }
 	virtual void update()
 	{
-	    if (image && isVisible())
-	      drawImage();
+	    if (!this->image)
+	      return;
+	    
+	    size_t newSize[3];
+	    this->image->getSize(newSize);
+	    if (imSize[0]!=newSize[0] || imSize[1]!=newSize[1] || imSize[2]!=newSize[2])
+	    {
+		this->setImage(*this->image);
+	    }
+	    this->setName(image->getName());
+	    
+	    if (this->isVisible())
+	      this->drawImage();
 	}
 	virtual void drawOverlay(Image<T> &) {}
 	virtual void clearOverlay() {}
@@ -106,10 +123,13 @@ namespace smil
 	virtual void resetLookup() {}
 	
     protected:
-	Image<T> *getImage() { return image; }
 	virtual void drawImage() {}
+	virtual void onSizeChanged(size_t width, size_t height, size_t depth) {}
 	Image<T> *image;
 	bool labelImage;
+	
+    private:
+	size_t imSize[3];
     };
 
     /*@}*/

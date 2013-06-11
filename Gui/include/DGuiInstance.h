@@ -59,7 +59,7 @@ namespace smil
     class Gui;
     
     template <>
-    void UniqueInstance<Gui>::initialize();
+    RES_T UniqueInstance<Gui>::initialize();
     
     /**
      * Gui module instance
@@ -86,10 +86,8 @@ namespace smil
 	 * Create a default viewer for type T
 	 */
 	template <class T>
-	static ImageViewer<T> *createDefaultViewer(Image<T> *im=NULL)
+	static ImageViewer<T> *createDefaultViewer(Image<T> &im=NULL)
 	{
-	    Gui::initialize();
-	    
 	  #ifdef USE_QT
 	    return new QtImageViewer<T>(im);
 	  #elif defined USE_AALIB
