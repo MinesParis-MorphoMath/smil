@@ -35,6 +35,7 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
     private static Image_UINT8 imOut = new Image_UINT8();
     private static int rgba[] = null;
     
+    private static long processTime = 0;
     private static long lastTime = 0;
     private double fps = 0; 
     
@@ -154,7 +155,9 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
     	Bitmap bmp = Bitmap.createBitmap(mFrameWidth, mFrameHeight, Bitmap.Config.ARGB_8888);
     	
     	imIn.fromCharArray(data);
+		long t0 = System.currentTimeMillis();
     	processImage(imIn, imOut);
+		processTime = System.currentTimeMillis() - t0;
     	imOut.toCharArray(data);
     	
         for (int i = 0; i < mFrameWidth*mFrameHeight; i++) 
@@ -202,6 +205,7 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
         			paint.setTextSize(30);
         			canvas.drawText("Im Size: " + mFrameWidth + "x" + mFrameHeight , 20, 40, paint);
         			canvas.drawText("Fps: " + fps , 20, 80, paint);
+        			canvas.drawText("Process time: " + processTime + " msec", 20, 120, paint);
         			if (infoMsg!=null)
             			canvas.drawText(infoMsg, 20, 120, paint);
         			
