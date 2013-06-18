@@ -31,6 +31,7 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
     
     protected static String infoMsg;
     
+    public Bitmap processBmp = null;
     private static Image_UINT8 imIn = new Image_UINT8();
     private static Image_UINT8 imOut = new Image_UINT8();
     private static int rgba[] = null;
@@ -65,6 +66,7 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
     	mThreadRun = false;
     	mFrameWidth = w;
     	mFrameHeight = h;
+    	surfaceChanged(mHolder, 0, mFrameWidth, mFrameHeight);
     }
 
     public void surfaceChanged(SurfaceHolder _holder, int format, int width, int height) {
@@ -88,6 +90,8 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
             
 			mCamera.setDisplayOrientation(90);
 	    	
+			processBmp = Bitmap.createBitmap(mFrameWidth, mFrameHeight, Bitmap.Config.ARGB_8888);
+			
 			rgba = new int[mFrameWidth*mFrameHeight];
 			imIn.setSize(mFrameWidth, mFrameHeight);
 			imOut.setSize(mFrameWidth, mFrameHeight);
@@ -150,10 +154,8 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
     
     protected abstract void processImage(Image_UINT8 imIn, Image_UINT8 imOut);
 
-    protected Bitmap processFrame(byte[] data)
+    protected void processFrame(byte[] data)
     {
-    	Bitmap bmp = Bitmap.createBitmap(mFrameWidth, mFrameHeight, Bitmap.Config.ARGB_8888);
-    	
     	imIn.fromCharArray(data);
 		long t0 = System.currentTimeMillis();
     	processImage(imIn, imOut);
@@ -166,38 +168,37 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
             rgba[i] = 0xff000000 + (y << 16) + (y << 8) + y;
         }
 
-        bmp.setPixels(rgba, 0/* offset */, mFrameWidth /* stride */, 0, 0, mFrameWidth, mFrameHeight);
+        processBmp.setPixels(rgba, 0/* offset */, mFrameWidth /* stride */, 0, 0, mFrameWidth, mFrameHeight);
         
 		long tickFrameTime = System.currentTimeMillis();
 		long curFrameTime = tickFrameTime - lastTime;
 		fps = (long)(1000.0 / curFrameTime * 100) / 100.0;
 		lastTime = tickFrameTime;
-		
-        return bmp;
     }
     
     public void run() {
         mThreadRun = true;
 //        Log.i(TAG, "Starting processing thread");
         while (mThreadRun) {
-            Bitmap bmp = null;
 
             synchronized (this) {
                 try {
                     this.wait();
-                    bmp = processFrame(mFrame);
+                    processFrame(mFrame);
                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
 
-            if (bmp != null) {
+            if (processBmp != null) {
                 Canvas canvas = mHolder.lockCanvas();
                 if (canvas != null) {
                 	Paint paint = new Paint();
                 	
         			canvas.drawColor(Color.BLACK);
-        			canvas.drawBitmap(bmp, (canvas.getWidth() - getFrameWidth()) / 2, (canvas.getHeight() - getFrameHeight()) / 2, null);
+        			Bitmap scaledBmp = Bitmap.createScaledBitmap(processBmp, canvas.getWidth(), canvas.getHeight(), false);
+        			canvas.drawBitmap(scaledBmp, 0, 0, null);
+        			scaledBmp.recycle();
         			
                 	paint.setStyle(Paint.Style.FILL);
         			paint.setStrokeWidth(3);
@@ -211,7 +212,6 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
         			
                     mHolder.unlockCanvasAndPost(canvas);
                 }
-                bmp.recycle();
             }
         }
     }
