@@ -196,7 +196,8 @@ namespace smil
 	if (!areAllocated(&imIn, &imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
 	
-	map<T, UINT> h = histogram(imIn);
+	size_t *h = new size_t[ImDtTypes<T>::cardinal()];
+	
 	double imVol = imIn.getPixelCount();
 	double satVol = imVol * sat / 100.;
 	double v = 0;
@@ -214,6 +215,8 @@ namespace smil
 	
 	stretchHist(imIn, minV, threshVal, imOut);
 	imOut.modified();
+	
+	delete[] h;
 	
 	return RES_OK;
     }
