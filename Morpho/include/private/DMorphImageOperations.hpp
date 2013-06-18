@@ -480,7 +480,7 @@ namespace smil
 			    x = pts[p].x + (oddLine && y%2);
 			    
 			    _extract_translated_line(tmpIm, x, y, z, tmpBuf2);
-			    lineFunction._exec(tmpBuf, tmpBuf2, this->lineLen, tmpBuf);
+			    lineFunction(tmpBuf, tmpBuf2, this->lineLen, tmpBuf);
 			}
 			
 			copyLine<T>(tmpBuf, this->lineLen, lineOut);
@@ -576,7 +576,7 @@ namespace smil
 	    else
 	      _exec_shifted_line(buf1, buf1, 1, lineLen, buf3);
 	    lineFunction(buf3, buf0, lineLen, buf4);
-	    lineFunction._exec(borderBuf, buf4, lineLen, destLines[nLines-1]);
+	    lineFunction(borderBuf, buf4, lineLen, destLines[nLines-1]);
 	    
 	}
 
@@ -702,9 +702,9 @@ namespace smil
 		// Todo: if oddLines...
 		  lineIn = srcLines[l];
 		  shiftLine<T>(lineIn, dx, this->lineLen, buf1, this->borderValue);
-		  this->lineFunction._exec(buf1, lineIn, this->lineLen, buf2);
+		  this->lineFunction(buf1, lineIn, this->lineLen, buf2);
 		  shiftLine<T>(lineIn, -dx, this->lineLen, buf1, this->borderValue);
-		  this->lineFunction._exec(buf1, buf2, this->lineLen, destLines[l]);
+		  this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
 	      }
 	  }
 	  
