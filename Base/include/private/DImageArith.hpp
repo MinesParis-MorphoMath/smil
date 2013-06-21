@@ -631,6 +631,21 @@ namespace smil
 	return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
     }
 
+    template <class T>
+    RES_T div(const Image<T> &imIn, const double &dValue, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+
+	typename ImDtTypes<T>::lineType pixIn = imIn.getPixels();
+	typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();
+	
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	  pixOut[i] = pixIn[i] / dValue;
+	
+	return RES_OK;
+    }
+
     /**
     * Multiply
     */
@@ -651,6 +666,25 @@ namespace smil
 
 	return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
     }
+    template <class T>
+    RES_T mul(const Image<T> &imIn, const double &dValue, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+
+	typename ImDtTypes<T>::lineType pixIn = imIn.getPixels();
+	typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();
+	double newVal;
+	
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	{
+	  newVal = pixIn[i] * dValue;
+	  pixOut[i] = newVal>ImDtTypes<T>::max() ? ImDtTypes<T>::max() : newVal;
+	}
+	
+	return RES_OK;
+    }
+
 
     /**
     * Multiply (without type max check)

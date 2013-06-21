@@ -191,29 +191,45 @@ namespace smil
     * Enhance contrast
     */
     template <class T>
-    RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double sat=0.5)
+    RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double leftSat, double rightSat)
     {
-	if (!areAllocated(&imIn, &imOut, NULL))
-	    return RES_ERR_BAD_ALLOCATION;
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
 	size_t *h = new size_t[ImDtTypes<T>::cardinal()];
+	histogram(imIn, h);
 	
 	double imVol = imIn.getPixelCount();
-	double satVol = imVol * sat / 100.;
-	double v = 0;
+	double satVol;
+	double curVol;
 	T minV, maxV;
 	rangeVal(imIn, minV, maxV);
-	T threshVal = maxV;
+	T threshValLeft = minV;
+	T threshValRight = maxV;
 	
-	for (T i=maxV; i>=minV; i-=1)
+	// left
+	satVol = imVol * leftSat / 100.;
+	curVol=0;
+	for (T i=minV; i<maxV; i++)
 	{
-	    v += h[i];
-	    if (v>satVol)
+	    curVol += h[i];
+	    if (curVol>satVol)
 	      break;
-	    threshVal = i;
+	    threshValLeft = i;
 	}
 	
-	stretchHist(imIn, minV, threshVal, imOut);
+	// Right
+	satVol = imVol * rightSat / 100.;
+	curVol=0;
+	for (T i=maxV; i>minV; i--)
+	{
+	    curVol += h[i];
+	    if (curVol>satVol)
+	      break;
+	    threshValRight = i;
+	}
+	
+	stretchHist(imIn, threshValLeft, threshValRight, imOut);
 	imOut.modified();
 	
 	delete[] h;
@@ -221,7 +237,11 @@ namespace smil
 	return RES_OK;
     }
 
-
+    template <class T>
+    RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double sat=0.5)
+    {
+	return enhanceContrast(imIn, imOut, sat/2., sat/2.);
+    }
 
     template <class T>
     bool IncrementThresholds(vector<double> &thresholdIndexes, map<T, UINT> &hist, UINT threshLevels, double totalFrequency, double &globalMean, vector<double> &classMean, vector<double> &classFrequency)
