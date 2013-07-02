@@ -74,6 +74,7 @@ namespace smil
 	
 	static inline pixelType min() { return numeric_limits<T>::min(); }
 	static inline pixelType max() { return numeric_limits<T>::max(); }
+	static inline size_t cardinal() { return max()-min()+1; }
 	static inline lineType createLine(UINT lineLen) { return createAlignedBuffer<T>(lineLen); }
 	static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
 	static inline size_t ptrOffset(lineType p, size_t n=SIMD_VEC_SIZE) { return ((size_t)p) & (n-1); }

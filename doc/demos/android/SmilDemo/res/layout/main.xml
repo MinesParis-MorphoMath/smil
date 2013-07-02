@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+	android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
    <!-- the fake surface view has to start on top in order for thepreview to start correctly -->
    <SurfaceView android:id="@+id/fakeCameraView"
                                android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" />
 
-   <!-- the actual opencv drawing class -->
+   <!-- the actual SMIL drawing class -->
 
    <org.smil.demo.Preview
        android:id="@+id/trueView"

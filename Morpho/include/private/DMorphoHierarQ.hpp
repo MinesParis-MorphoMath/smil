@@ -151,7 +151,7 @@ namespace smil
 	HierarchicalQueue(bool rOrder=false)
 	  : reverseOrder(rOrder)
 	{
-	    GRAY_LEVEL_NBR = ImDtTypes<T>::max()-ImDtTypes<T>::min()+1;
+	    GRAY_LEVEL_NBR = ImDtTypes<T>::cardinal();
 	    TYPE_FLOOR = -ImDtTypes<T>::min();
 	    
 	    stacks = new StackType*[GRAY_LEVEL_NBR]();
