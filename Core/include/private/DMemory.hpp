@@ -34,39 +34,40 @@
 #include <string>
 #include <stdio.h>
 
-#if defined(__MINGW32__)
-
-    #if __GNUC__ < 4
-	#include <malloc.h>
-	#define MALLOC(ptr,size, align)  ptr = __mingw_aligned_malloc(size,align)
-	#define FREE(p)                  __mingw_aligned_free(p)
-    #else // __GNUC__ < 4
-	#include <mm_malloc.h>
-	#define MALLOC(ptr,size,align)   ptr = _mm_malloc(size,align)
-	#define FREE(p)                  _mm_free(p)
-    #endif // __GNUC__ < 4
-
-#elif defined(_MSC_VER)
-
-    #include <malloc.h>
-    #define MALLOC(ptr,size,align)   ptr = _aligned_malloc(size,align)
-    #define FREE(p)                  _aligned_free(p)
-
+#if (defined(__ICL) || defined(_MSC_VER) || defined(__ICC))
+  #include <fvec.h>
+  inline void *aligned_malloc (size_t size, size_t align=16) { return _mm_malloc(size,align); }
+  inline void  aligned_free   (void *p)                      { return _mm_free(p); }
+#elif defined (__CYGWIN__)
+  #include <xmmintrin.h>
+  inline void *aligned_malloc (size_t size, size_t align=16) { return _mm_malloc(size,align);  }
+  inline void  aligned_free   (void *p)                      { return _mm_free(p); }
+#elif defined(__MINGW64__)
+  #include <malloc.h>
+  inline void *aligned_malloc (size_t size, size_t align=16) { return malloc(size+align);  }
+  inline void  aligned_free   (void *p)                      { return free(p); }
+#elif defined(__MINGW32__)
+  #include <malloc.h>
+  inline void *aligned_malloc (size_t size, size_t align=16) { return __mingw_aligned_malloc(size,align);  }
+  inline void  aligned_free   (void *p)                      { return __mingw_aligned_free(p); }
+#elif defined(__FreeBSD__)
+  #include <stdlib.h>
+  inline void* aligned_malloc (size_t size, size_t align=16) { return malloc(size); }
+  inline void  aligned_free   (void *p)                      { return free(p); }
+#elif (defined(__MACOSX__) || defined(__APPLE__))
+  #include <stdlib.h>
+  inline void* aligned_malloc (size_t size, size_t align=16) { return malloc(size); }
+  inline void  aligned_free   (void *p)                      { return free(p); }
 #else
-
-//     #include <mm_malloc.h>
-//     #define MALLOC(ptr,size,align)   ptr = _mm_malloc(size,align)
-//     #define FREE(p)                  _mm_free(p)
-    #include <stdlib.h>
-    #define MALLOC(ptr,size,align)   ptr = malloc(size)
-    #define FREE(p)                  free(p)
-
+  #include <malloc.h>
+  inline void* aligned_malloc (size_t size, size_t align=16) { return memalign(align,size); }
+  inline void  aligned_free   (void *p)                      { return free(p); }
 #endif
-
 
 namespace smil
 {
     #define SIMD_VEC_SIZE 16
+    #define ALIGN_DEPTH 16
 
     #define ASSUME_ALIGNED(buf) __builtin_assume_aligned(buf, SIMD_VEC_SIZE)
 
@@ -75,7 +76,7 @@ namespace smil
     inline T *createAlignedBuffer(size_t size) {
       void* ptr;
 
-      MALLOC(ptr,(size+2*SIMD_VEC_SIZE)*sizeof(T),SIMD_VEC_SIZE);
+      ptr = aligned_malloc((size+2*SIMD_VEC_SIZE)*sizeof(T),ALIGN_DEPTH);
     //   posix_memalign (&ptr, 16, (size+32)*sizeof(T));
 
       return ((T*) (ptr));
@@ -85,7 +86,7 @@ namespace smil
 
     template<typename T> 
     void deleteAlignedBuffer(T *ptr) {
-      FREE( (void*)(ptr) );
+      aligned_free( (void*)(ptr) );
     }
 
     template<typename T> 
