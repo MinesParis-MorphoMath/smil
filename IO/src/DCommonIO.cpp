@@ -32,6 +32,7 @@
 
 #include <string>
 #include <algorithm>
+#include <ctype.h>
 
 #ifdef USE_CURL
 #include <curl/curl.h>

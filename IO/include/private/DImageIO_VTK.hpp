@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <ctype.h>
 
 #include "Core/include/private/DTypes.hpp"
 #include "Core/include/private/DImage.hpp"
