@@ -702,9 +702,9 @@ namespace smil
 		// Todo: if oddLines...
 		  lineIn = srcLines[l];
 		  shiftLine<T>(lineIn, dx, this->lineLen, buf1, this->borderValue);
-		  this->lineFunction(buf1, lineIn, this->lineLen, buf2);
+		  this->lineFunction._exec(buf1, lineIn, this->lineLen, buf2);
 		  shiftLine<T>(lineIn, -dx, this->lineLen, buf1, this->borderValue);
-		  this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+		  this->lineFunction._exec(buf1, buf2, this->lineLen, destLines[l]);
 	      }
 	  }
 	  

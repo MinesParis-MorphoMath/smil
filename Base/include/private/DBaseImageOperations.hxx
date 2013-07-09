@@ -39,7 +39,7 @@ namespace smil
     struct fillLine;
 
     template <class T>
-    typename Image<T>::lineType *imageFunctionBase<T>::createAlignedBuffers(UINT8 nbr, UINT32 len)
+    typename Image<T>::lineType *imageFunctionBase<T>::createAlignedBuffers(size_t nbr, size_t len)
     {
 	if (alignedBuffers)
 	{
@@ -74,13 +74,13 @@ namespace smil
     }
 
     template <class T>
-    inline void imageFunctionBase<T>::copyLineToBuffer(T *line, UINT32 bufIndex)
+    inline void imageFunctionBase<T>::copyLineToBuffer(T *line, size_t bufIndex)
     {
 	memcpy(alignedBuffers[bufIndex], line, bufferSize);
     }
 
     template <class T>
-    inline void imageFunctionBase<T>::copyBufferToLine(UINT32 bufIndex, T *line)
+    inline void imageFunctionBase<T>::copyBufferToLine(size_t bufIndex, T *line)
     {
 	memcpy(line, alignedBuffers[bufIndex], bufferSize);
     }

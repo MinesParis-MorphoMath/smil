@@ -48,9 +48,9 @@ namespace smil
 	typedef typename imageType::pixelType pixelType;
 
 	sliceType alignedBuffers;
-	UINT32 bufferNumber;
-	UINT32 bufferLength;
-	UINT32 bufferSize;
+	size_t bufferNumber;
+	size_t bufferLength;
+	size_t bufferSize;
 	
 	RES_T retVal;
 
@@ -60,10 +60,10 @@ namespace smil
 	    deleteAlignedBuffers();
 	};
 
-	lineType *createAlignedBuffers ( UINT8 nbr, UINT32 len );
+	lineType *createAlignedBuffers ( size_t nbr, size_t len );
 	void deleteAlignedBuffers();
-	inline void copyLineToBuffer ( T *line, UINT32 bufIndex );
-	inline void copyBufferToLine ( UINT32 bufIndex, T *line );
+	inline void copyLineToBuffer ( T *line, size_t bufIndex );
+	inline void copyBufferToLine ( size_t bufIndex, T *line );
 	
 	operator RES_T() { return retVal; }
     };

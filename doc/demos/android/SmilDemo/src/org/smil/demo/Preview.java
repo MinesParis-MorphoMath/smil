@@ -44,7 +44,7 @@ class Preview extends PreviewBase {
     	}
     	else if (SmilDemo.algoType==SmilDemo.ALGO_TOPHAT)
     	{
-    		topHat(imIn, im1, smilMorphoJava.hSE(10));
+    		dualTopHat(imIn, im1, smilMorphoJava.hSE(10));
     		threshold(im1, imOut);
     	}
         
