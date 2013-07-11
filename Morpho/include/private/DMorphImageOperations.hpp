@@ -460,7 +460,7 @@ namespace smil
 	      
 	      
 	      #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
+		#pragma omp for
 	      #endif // USE_OPEN_MP
 	    for (l=0;l<nLines;l++)
 		    {
@@ -621,7 +621,7 @@ namespace smil
 	      #ifdef USE_OPEN_MP
 		  tid = omp_get_thread_num();
 		  buf = _bufs[tid];
-	      #pragma omp for schedule(dynamic,nthreads) nowait
+	      #pragma omp for
 	  #endif
 	  for (l=0;l<lineCount;l++)
 	      {
@@ -670,7 +670,7 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_H_segment(const imageType &imIn, int xsize, imageType &imOut)
     {
-	  int lineCount = imIn.getLineCount();
+	  size_t lineCount = imIn.getLineCount();
 	  
 	  int nthreads = Core::getInstance()->getNumberOfThreads();
 	  lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
@@ -683,9 +683,9 @@ namespace smil
 	  lineType lineIn;
 	  
     #ifdef USE_OPEN_MP
-	      size_t tid;
+	      int tid;
     #endif // USE_OPEN_MP
-	  int l, dx = xsize;
+	  size_t l, dx = xsize;
 
     #ifdef USE_OPEN_MP
 	  #pragma omp parallel private(tid,buf1,buf2,lineIn) firstprivate(dx) num_threads(nthreads)
@@ -695,16 +695,16 @@ namespace smil
 		  tid = omp_get_thread_num();
 		  buf1 = _bufs[tid];
 		  buf2 = _bufs[tid+nthreads];
-	      #pragma omp for schedule(dynamic,nthreads) nowait
+	      #pragma omp for
 	  #endif
 	  for (l=0;l<lineCount;l++)
 	      {
 		// Todo: if oddLines...
 		  lineIn = srcLines[l];
 		  shiftLine<T>(lineIn, dx, this->lineLen, buf1, this->borderValue);
-		  this->lineFunction._exec(buf1, lineIn, this->lineLen, buf2);
+		  this->lineFunction(buf1, lineIn, this->lineLen, buf2);
 		  shiftLine<T>(lineIn, -dx, this->lineLen, buf1, this->borderValue);
-		  this->lineFunction._exec(buf1, buf2, this->lineLen, destLines[l]);
+		  this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
 	      }
 	  }
 	  
@@ -754,7 +754,7 @@ namespace smil
 		#endif
 		    
     #ifdef USE_OPEN_MP
-	    #pragma omp for schedule(static, 1)
+	    #pragma omp for
     #endif // USE_OPEN_MP
 	    for (b=0;b<nblocks;b++)
 		{

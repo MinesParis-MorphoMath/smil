@@ -44,8 +44,8 @@
   inline void  aligned_free   (void *p)                      { return _mm_free(p); }
 #elif defined(__MINGW64__)
   #include <malloc.h>
-  inline void *aligned_malloc (size_t size, size_t align=16) { return malloc(size+align);  }
-  inline void  aligned_free   (void *p)                      { return free(p); }
+  inline void *aligned_malloc (size_t size, size_t align=16) { return __mingw_aligned_malloc(size,align);  }
+  inline void  aligned_free   (void *p)                      { return __mingw_aligned_free(p); }
 #elif defined(__MINGW32__)
   #include <malloc.h>
   inline void *aligned_malloc (size_t size, size_t align=16) { return __mingw_aligned_malloc(size,align);  }
@@ -66,9 +66,13 @@
 
 namespace smil
 {
+#ifdef __AVX__  
+    #define SIMD_VEC_SIZE 32
+#else // __AVX__  
     #define SIMD_VEC_SIZE 16
-    #define ALIGN_DEPTH 16
-
+#endif // __AVX__
+  
+  
     #define ASSUME_ALIGNED(buf) __builtin_assume_aligned(buf, SIMD_VEC_SIZE)
 
 
@@ -76,8 +80,7 @@ namespace smil
     inline T *createAlignedBuffer(size_t size) {
       void* ptr;
 
-      ptr = aligned_malloc((size+2*SIMD_VEC_SIZE)*sizeof(T),ALIGN_DEPTH);
-    //   posix_memalign (&ptr, 16, (size+32)*sizeof(T));
+      ptr = aligned_malloc((SIMD_VEC_SIZE*(size/SIMD_VEC_SIZE+1))*sizeof(T), SIMD_VEC_SIZE);
 
       return ((T*) (ptr));
       // Use () with new to initialize values to 0 (like calloc)
