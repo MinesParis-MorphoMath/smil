@@ -97,6 +97,8 @@ public:
     virtual void displayHistogram(bool = false) {}
     virtual void displayProfile(bool = false) {}
     
+    void linkViewer(ImageViewerWidget *viewer);
+    void unlinkViewer(ImageViewerWidget *viewer);
 protected:
     QGridLayout *layout;
     
@@ -151,11 +153,14 @@ protected:
     int cursorMode;
     QGraphicsLineItem *line;
     
+    QList<ImageViewerWidget*> linkedWidgets;
+    
+    void scrollContentsBy(int dx, int dy);
 public slots:
     void load(const QString fileName);
     void zoomIn();
     void zoomOut();
-    void scale(double factor, bool absolute=false);
+    void scale(double factor, bool absolute=true);
     void sliderChanged(int newVal)
     {
 	displayHint(QString::number(newVal) + "/" + QString::number(slider->maximum()));
@@ -164,6 +169,8 @@ public slots:
     void updateIcon();
     void showContextMenu(const QPoint& pos);
     
+protected slots:
+    void setScrollBarPosition(int x, int y);
 private slots:
     void sceneMousePressEvent ( QGraphicsSceneMouseEvent * event );
     void sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event );
@@ -173,6 +180,7 @@ signals:
     void onRescaled(double scaleFactor);
     void onDataChanged();
     void onKeyPressEvent(QKeyEvent *);
+    void onScrollBarPositionChanged(int dx, int dy);
 };
 
 

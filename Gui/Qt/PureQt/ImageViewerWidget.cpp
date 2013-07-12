@@ -32,6 +32,7 @@
 #include <QTimer>
 #include <QApplication>
 #include <QMenu>
+#include <QScrollBar>
 
 #ifdef USE_QWT
 #include <qwt_plot.h>
@@ -398,18 +399,21 @@ void ImageViewerWidget::clearOverlay()
 
 void ImageViewerWidget::zoomIn()
 {
-    scale(1.25);
+    scale(1.25, false);
 }
 
 void ImageViewerWidget::zoomOut()
 {
-    scale(0.8);
+    scale(0.8, false);
 }
 
 void ImageViewerWidget::scale(double factor, bool absolute)
 {
     if (absolute)
     {
+	if (factor==scaleFactor)
+	  return;
+	
 	QGraphicsView::scale(factor/scaleFactor, factor/scaleFactor);
 	scaleFactor = factor;
     }
@@ -421,6 +425,7 @@ void ImageViewerWidget::scale(double factor, bool absolute)
 
     displayHint(QString::number(int(scaleFactor*100)) + "%");
     emit(onRescaled(scaleFactor));
+    emit(onScrollBarPositionChanged(horizontalScrollBar()->value(), verticalScrollBar()->value()));
 }
 
 void ImageViewerWidget::leaveEvent (QEvent *event)
@@ -569,11 +574,27 @@ void ImageViewerWidget::sceneMouseReleaseEvent ( QGraphicsSceneMouseEvent * even
       displayProfile(true);
 }
 
+void ImageViewerWidget::scrollContentsBy(int dx, int dy)
+{
+    QGraphicsView::scrollContentsBy(dx, dy);
+    emit(onScrollBarPositionChanged(horizontalScrollBar()->value(), verticalScrollBar()->value()));
+}
+
+void ImageViewerWidget::setScrollBarPosition(int x, int y)
+{
+    if (horizontalScrollBar()->value()==x && verticalScrollBar()->value()==y)
+      return;
+    
+    horizontalScrollBar()->setValue(x);
+    verticalScrollBar()->setValue(y);
+}
+
 void ImageViewerWidget::wheelEvent ( QWheelEvent * event )
 {
     if (event->modifiers() & Qt::ControlModifier)
     {
 	if (event->delta()>0)
+// 	  zoomInAct->trigger();
 	    zoomIn();
 	else zoomOut();
 	
@@ -654,36 +675,82 @@ void ImageViewerWidget::dragEnterEvent(QDragEnterEvent *event)
       event->acceptProposedAction();
 }
 
+void ImageViewerWidget::linkViewer(ImageViewerWidget* viewer)
+{
+    connect(this, SIGNAL(onRescaled(double)), viewer, SLOT(scale(double)));
+    connect(this, SIGNAL(onScrollBarPositionChanged(int,int)), viewer, SLOT(setScrollBarPosition(int,int)));
+    linkedWidgets.append(viewer);
+    emit onRescaled(scaleFactor);
+    emit(onScrollBarPositionChanged(horizontalScrollBar()->value(), verticalScrollBar()->value()));
+}
+
+void ImageViewerWidget::unlinkViewer(ImageViewerWidget* viewer)
+{
+    disconnect(this, SIGNAL(onRescaled(double)), viewer, SLOT(scale(double)));
+    disconnect(this, SIGNAL(onScrollBarPositionChanged(int,int)), viewer, SLOT(setScrollBarPosition(int,int)));
+    linkedWidgets.removeAll(viewer);
+}
 
 void ImageViewerWidget::showContextMenu(const QPoint& pos)
 {
     QPoint globalPos = this->mapToGlobal(pos);
 
+    QMenu contMenu;
+    
     QMenu selectMenu("Tools");
     selectMenu.addAction("Hand");
     selectMenu.addAction("Line");
     selectMenu.addAction("Box");
-
-    QMenu contMenu;
     contMenu.addMenu(&selectMenu);
+    
+    QMenu linkMenu("Link");
+    int wIndex = 0;
+    foreach(QWidget *widget, QApplication::topLevelWidgets()) 
+    {
+	if(widget!=this && widget->isWindow() && widget->metaObject()->className()==QString("ImageViewerWidget"))
+	{
+	    QAction *act = linkMenu.addAction(widget->windowTitle());
+	    act->setData(wIndex);
+	    if (linkedWidgets.contains(static_cast<ImageViewerWidget*>(widget)))
+	    {
+		QFont aFont = act->font();
+		aFont.setBold(true);
+		act->setFont(aFont);
+	    }
+	}
+	wIndex++;
+    }
+    contMenu.addMenu(&linkMenu);
     
     QAction* selectedItem = contMenu.exec(globalPos);
     if (selectedItem)
     {
-	if (selectedItem->text()=="Line")
+	if (selectedItem->parentWidget()==&selectMenu)
 	{
-	  setCursor(Qt::CrossCursor);
-	  cursorMode = cursorDrawLine;
+	    if (selectedItem->text()=="Line")
+	    {
+	      setCursor(Qt::CrossCursor);
+	      cursorMode = cursorDrawLine;
+	    }
+	    else if (selectedItem->text()=="Box")
+	    {
+	      setCursor(Qt::CrossCursor);
+	      cursorMode = cursorDrawBox;
+	    }
+	    else
+	    {
+	      setCursor(Qt::ArrowCursor);
+	      cursorMode = cursorMove;
+	    }
 	}
-	else if (selectedItem->text()=="Box")
+	else if (selectedItem->parentWidget()==&linkMenu)
 	{
-	  setCursor(Qt::CrossCursor);
-	  cursorMode = cursorDrawBox;
-	}
-	else
-	{
-	  setCursor(Qt::ArrowCursor);
-	  cursorMode = cursorMove;
+	    QWidget *widget = QApplication::topLevelWidgets()[selectedItem->data().toInt()];
+	    ImageViewerWidget *w = static_cast<ImageViewerWidget*>(widget);
+	    if(linkedWidgets.contains(w))
+	      unlinkViewer(w);
+	    else
+	      linkViewer(w);
 	}
     }
     else
