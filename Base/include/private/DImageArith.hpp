@@ -130,7 +130,7 @@ namespace smil
 	typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
 	
 	int nthreads = Core::getInstance()->getNumberOfThreads();
-	size_t y;
+	int y;
 	
 	for (size_t z=0;z<realSz;z++)
 	{
@@ -202,7 +202,7 @@ namespace smil
 	typename Image<T2>::sliceType l2 = imOut.getLines();
 
 	size_t width = imIn.getWidth();
-	size_t i;
+	int i;
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	
 	#ifdef USE_OPEN_MP

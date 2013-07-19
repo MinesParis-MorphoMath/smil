@@ -66,7 +66,7 @@ namespace smil
 	fillLine() {}
 	fillLine(const lineType lIn, const size_t size, const T value) { this->_exec(lIn, size, value); }
 	
-	inline void _exec(const lineType lIn, size_t size, lineType lOut)
+	inline void _exec(lineType lIn, size_t size, lineType lOut)
 	{
 	    memcpy(lOut, lIn, size*sizeof(T));
 	}
@@ -104,8 +104,7 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(lineType lineIn, size_t size, lineType lOut)
 	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = ~lineIn[i];
+	    for (size_t i=0;i<size;i++) lOut[i] = ~lineIn[i];
 	}
     };
 

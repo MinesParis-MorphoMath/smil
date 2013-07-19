@@ -685,7 +685,7 @@ namespace smil
     #ifdef USE_OPEN_MP
 	      int tid;
     #endif // USE_OPEN_MP
-	  size_t l, dx = xsize;
+	  int l, dx = xsize;
 
     #ifdef USE_OPEN_MP
 	  #pragma omp parallel private(tid,buf1,buf2,lineIn) firstprivate(dx) num_threads(nthreads)
@@ -728,7 +728,7 @@ namespace smil
     #ifdef USE_OPEN_MP
 	    size_t tid;
     #endif // USE_OPEN_MP
-	size_t l, i, b;
+	int l, i, b;
 	size_t nblocks = imHeight / nthreads;
 
 	for (size_t s=0;s<imIn.getDepth();s++)
