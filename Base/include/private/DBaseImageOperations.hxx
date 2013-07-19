@@ -162,7 +162,7 @@ namespace smil
 	    return RES_ERR_BAD_ALLOCATION;
 
 	size_t lineLen = imIn1.getWidth();
-	int lineCount = imIn1.getLineCount();
+	size_t lineCount = imIn1.getLineCount();
 
 	lineType *srcLines1 = imIn1.getLines();
 	lineType *srcLines2 = imIn2.getLines();

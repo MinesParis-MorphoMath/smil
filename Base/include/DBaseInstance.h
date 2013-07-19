@@ -42,7 +42,7 @@ namespace smil
     */
     /*@{*/
   
-    class _DBASE Base : public UniqueInstance<Base>
+    class Base : public UniqueInstance<Base>
     {
 	friend class UniqueInstance<Base>;
 

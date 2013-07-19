@@ -54,7 +54,7 @@ namespace smil
 	if (!imIn.isAllocated())
 	    return RES_ERR_BAD_ALLOCATION;
 
-	int npix = imIn.getPixelCount();
+	size_t npix = imIn.getPixelCount();
 	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
 	size_t vol = 0;
 

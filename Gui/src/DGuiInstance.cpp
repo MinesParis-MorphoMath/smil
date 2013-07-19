@@ -52,7 +52,7 @@ RES_T UniqueInstance<Gui>::initialize()
         Gui::_instance =  new Gui;
 #endif // USE_QT
     }
-//     return _instance;
+	return RES_OK;
 }
 
 void Gui::execLoop()

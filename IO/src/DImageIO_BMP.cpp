@@ -95,8 +95,8 @@ namespace smil
 	bmpFileHeader fHeader;
 	bmpInfoHeader iHeader;
 
-	int width = image.getWidth();
-	int height = image.getHeight();
+	size_t width = image.getWidth();
+	size_t height = image.getHeight();
 
 	int nColors = 256;
 
@@ -136,7 +136,7 @@ namespace smil
 
 	Image<UINT8>::lineType *lines = image.getLines();
 
-	for (int i=height-1;i>=0;i--)
+	for (size_t i=height-1;i>=0;i--)
 	    fwrite(lines[i], width*sizeof(UINT8), 1, fp);
 
 	fclose(fp);

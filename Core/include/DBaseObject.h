@@ -50,7 +50,7 @@ namespace smil
     /**
      * Base Smil Object
      */
-    class _DCORE BaseObject
+    class BaseObject
     {
     public:
 // 	BaseObject(bool _register=true);

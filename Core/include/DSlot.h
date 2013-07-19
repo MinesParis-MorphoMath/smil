@@ -41,7 +41,7 @@ namespace smil
     class Event;
     class Signal;
 
-    class _DCORE BaseSlot
+    class BaseSlot
     {
       friend class Signal;
     public:

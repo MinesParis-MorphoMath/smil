@@ -74,7 +74,7 @@ namespace smil
 	 * The index values are defined for each grid type as follow:
 	 * \images{se_indexes}
 	 */
-	StrElt(bool oddSE, int nbrPts, ...)
+	StrElt(bool oddSE, UINT nbrPts, ...)
 	  : BaseObject("StrElt"),
 	    odd(oddSE),
 	    seT(SE_Generic), 

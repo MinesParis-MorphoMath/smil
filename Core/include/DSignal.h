@@ -50,7 +50,7 @@ namespace smil
       const BaseObject *sender;
     };
 
-    class _DCORE Signal
+    class Signal
     {
       friend class BaseSlot;
     public:

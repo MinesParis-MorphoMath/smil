@@ -44,7 +44,7 @@ using namespace std;
 
 namespace smil
 {
-    class _DCORE TestCase
+    class TestCase
     {
     public:
       TestCase() 
@@ -105,7 +105,7 @@ namespace smil
 	} \
     }
 
-    class _DCORE TestSuite
+    class TestSuite
     {
     public:
       void add(TestCase *f);

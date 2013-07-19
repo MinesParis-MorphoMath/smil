@@ -426,9 +426,9 @@ namespace smil
 	{
 	    std::stringstream tStr;
 	    tStr << (long)ImDtTypes<T>::max();
-	    UINT tSsize = tStr.str().size();
+	    size_t tSsize = tStr.str().size();
 	    if (hexaGrid)
-	      tSsize *= 1.5;
+	      tSsize = size_t(tSsize * 1.5);
 	    
 	      
 	    os << "Pixel values:" << endl;

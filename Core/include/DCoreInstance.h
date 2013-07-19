@@ -53,7 +53,7 @@ namespace smil
     /**
      * Core module instance
      */
-    class _DCORE Core : public UniqueInstance<Core>
+    class Core : public UniqueInstance<Core>
     {
 	friend class UniqueInstance<Core>;
 

@@ -42,7 +42,7 @@ namespace smil
 {
 
 
-    _DIO string getFileExtension(const char *fileName)
+    string getFileExtension(const char *fileName)
     {
 	string fName(fileName);
 	string::size_type idx = fName.rfind('.');

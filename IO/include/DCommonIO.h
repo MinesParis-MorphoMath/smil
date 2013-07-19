@@ -40,7 +40,7 @@ namespace smil
     */
     /*@{*/
     
-    _DIO string getFileExtension(const char *fileName);
+    string getFileExtension(const char *fileName);
 
     class FileCloser
     {

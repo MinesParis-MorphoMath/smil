@@ -66,7 +66,7 @@ namespace smil
 	fillLine() {}
 	fillLine(const lineType lIn, const size_t size, const T value) { this->_exec(lIn, size, value); }
 	
-	inline void _exec(const lineType lIn, const size_t size, lineType lOut)
+	inline void _exec(const lineType lIn, size_t size, lineType lOut)
 	{
 	    memcpy(lOut, lIn, size*sizeof(T));
 	}
