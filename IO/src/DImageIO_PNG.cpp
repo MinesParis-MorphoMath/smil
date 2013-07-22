@@ -38,7 +38,7 @@ namespace smil
 {
 
     template <>
-    _DIO RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
+    RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
     {
 
 	png_byte magic[8];
@@ -153,7 +153,7 @@ namespace smil
 
     /* write a png file */
     template <>
-    _DIO RES_T writePNG(Image<UINT8> &image, const char *filename)
+    RES_T writePNG(Image<UINT8> &image, const char *filename)
     {
 	png_byte color_type = PNG_COLOR_TYPE_GRAY;
 	png_byte bit_depth = 8;

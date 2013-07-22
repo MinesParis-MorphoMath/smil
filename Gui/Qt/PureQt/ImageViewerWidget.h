@@ -43,7 +43,7 @@
 
 class QwtPointSeriesData;
 
-class _DGUI QImageGraphicsScene : public QGraphicsScene
+class QImageGraphicsScene : public QGraphicsScene
 {
     Q_OBJECT
 public:
@@ -58,7 +58,7 @@ signals:
 };
 
 
-class _DGUI ImageViewerWidget : public QGraphicsView
+class ImageViewerWidget : public QGraphicsView
 {
     Q_OBJECT
 

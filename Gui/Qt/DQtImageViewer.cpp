@@ -38,7 +38,7 @@ namespace smil
 {
 
     template <>
-    void _DGUI QtImageViewer<UINT8>::drawImage()
+    void QtImageViewer<UINT8>::drawImage()
     {
 	int sliceNbr = slider->value();
 	Image<UINT8>::sliceType lines = this->image->getSlices()[sliceNbr];
@@ -75,7 +75,7 @@ namespace smil
     // #include "DBitArray.h"
 
     template <>
-    void _DGUI QtImageViewer<BIN>::drawImage()
+    void QtImageViewer<BIN>::drawImage()
     {
 	Image<BIN>::lineType pixels = this->image->getPixels();
 	size_t w = this->image->getWidth();
