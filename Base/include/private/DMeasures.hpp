@@ -285,6 +285,56 @@ namespace smil
 	return res;
     }
 
+    
+    /**
+    * 2D inertia coefficients
+    */
+    template <class T>
+    RES_T measInertiaCoefficients(Image<T> &im, double *m00, double *m10, double *m01, double *m11, double *m20, double *m02)
+    {
+	if (!im.isAllocated())
+	    return RES_ERR_BAD_ALLOCATION;
+	
+	typename Image<T>::volType slices = im.getSlices();
+	typename Image<T>::sliceType lines = slices[0];
+	typename Image<T>::lineType pixels;
+	
+	size_t imSize[3];
+	im.getSize(imSize);
+	
+	*m00 = *m10 = *m01 = *m11 = *m20 = *m02 = 0.;
+
+	for (size_t y=0;y<imSize[1];y++)
+	{
+	    pixels = *lines++;
+	    for (size_t x=0;x<imSize[0];x++)
+	    {
+		T pxVal = pixels[x];
+		if (pxVal!=0)
+		{
+		    *m00 += pxVal;
+		    *m10 += pxVal * x;
+		    *m01 += pxVal * y;
+		    *m11 += pxVal * x * y;
+		    *m20 += pxVal * x * x;
+		    *m02 += pxVal * y * y;
+		}
+	    }
+	}
+	return RES_OK;
+    }
+	
+    template <class T>
+    vector<double> measInertiaCoefficients(Image<T> &im)
+    {
+	double m[6];
+	measInertiaCoefficients(im, &m[0], &m[1], &m[2], &m[3], &m[4], &m[5]);
+	vector<double> res;
+	for (int i=0;i<6;i++)
+	  res.push_back(m[i]);
+	return res;
+    }
+    
     /**
     * Non-zero point offsets.
     * Return a vector conatining the offset of all non-zero points in image.
