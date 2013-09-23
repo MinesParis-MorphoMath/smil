@@ -168,6 +168,7 @@ public slots:
     }
     void updateIcon();
     void showContextMenu(const QPoint& pos);
+    void mouseMoveEvent ( QGraphicsSceneMouseEvent * event );
     
 protected slots:
     void setScrollBarPosition(int x, int y);

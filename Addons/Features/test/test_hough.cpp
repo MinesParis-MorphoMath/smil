@@ -51,7 +51,7 @@ class Test_Hough_Circles : public TestCase
 	
 	im1 << vec1;
 	
-	houghCircles(im1, 10, im2);
+	houghCircles(im1, 1, 1, im2);
 	
 	TEST_ASSERT(im2.getPixel(10,10,10)==4);
 	TEST_ASSERT(im2.getPixel(45,25,15)==8);

@@ -49,19 +49,42 @@ namespace smil
     * \param imIn Input image.
     */
     template <class T>
-    size_t vol(const Image<T> &imIn)
+    double vol(const Image<T> &imIn)
     {
 	if (!imIn.isAllocated())
 	    return RES_ERR_BAD_ALLOCATION;
 
 	size_t npix = imIn.getPixelCount();
 	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
-	size_t vol = 0;
+	double vol = 0;
 
 	for (int i=0;i<npix;i++)
 	    vol += pixels[i];
 
 	return vol;
+    }
+
+    /**
+    * Area of an image
+    *
+    * Returns the number of non-zero pixels
+    * \param imIn Input image.
+    */
+    template <class T>
+    size_t area(const Image<T> &imIn)
+    {
+	if (!imIn.isAllocated())
+	    return RES_ERR_BAD_ALLOCATION;
+
+	size_t npix = imIn.getPixelCount();
+	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
+	size_t area = 0;
+
+	for (int i=0;i<npix;i++)
+	  if (pixels[i]!=0)
+	    area += 1;
+
+	return area;
     }
 
     /**
@@ -340,9 +363,9 @@ namespace smil
     * Return a vector conatining the offset of all non-zero points in image.
     */
     template <class T>
-    vector<size_t> nonZeroOffsets(Image<T> &imIn)
+    vector<UINT> nonZeroOffsets(Image<T> &imIn)
     {
-	vector<size_t> offsets;
+	vector<UINT> offsets;
 
 	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, offsets);
 	

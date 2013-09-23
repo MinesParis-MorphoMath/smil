@@ -449,7 +449,7 @@ namespace smil
 		destLines = destSlices[s];
 
     #ifdef USE_OPEN_MP
-	    #pragma omp parallel private(tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p) firstprivate(pts,oddLine)
+	    #pragma omp parallel private(tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p) firstprivate(pts,oddLine) num_threads(nthreads)
     #endif // USE_OPEN_MP
 	    {
 	      #ifdef USE_OPEN_MP
@@ -615,7 +615,7 @@ namespace smil
 	      int l;
 
     #ifdef USE_OPEN_MP
-	  #pragma omp parallel private(tid, buf)
+	  #pragma omp parallel private(tid, buf) num_threads(nthreads)
     #endif // USE_OPEN_MP
 	  {
 	      #ifdef USE_OPEN_MP

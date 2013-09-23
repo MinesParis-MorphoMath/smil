@@ -118,6 +118,7 @@ PTR_ARG_OUT_APPLY(s)
 	}
 }
 
+%include "DCommon.h"
 %include "DBaseObject.h"
 
 
@@ -160,6 +161,7 @@ namespace std
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, IntPoint, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, DoublePoint, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Box, Map)
 }
 
 #endif // SWIGXML

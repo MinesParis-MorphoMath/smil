@@ -99,6 +99,34 @@ namespace smil
     typedef Point<int> IntPoint;
     typedef Point<UINT8> UCPoint;
     typedef Point<double> DoublePoint;
+    
+    struct Rectangle
+    {
+	UINT x0, y0;
+	UINT xSzie, ySize;
+    };
+
+    struct Box
+    {
+	UINT x0, y0, z0;
+	UINT x1, y1, z1;
+	Box()
+	{
+	    x0 = x1 = y0 = y1 = z0 = z1 = 0;
+	}
+	Box(const Box &rhs)
+	{
+	    x0 = rhs.x0;
+	    x1 = rhs.x1;
+	    y0 = rhs.y0;
+	    y1 = rhs.y1;
+	    z0 = rhs.z0;
+	    z1 = rhs.z1;
+	}
+	UINT getXSize() const { return x1-x0; }
+	UINT getYSize() const { return y1-y0; }
+	UINT getZSize() const { return z1-z0; }
+    };
 
     
     inline double round(double r) 

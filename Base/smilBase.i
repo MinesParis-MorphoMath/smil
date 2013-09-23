@@ -123,6 +123,7 @@ TEMPLATE_WRAP_FUNC(scale);
 
 %include "DMeasures.hpp"
 TEMPLATE_WRAP_FUNC(vol);
+TEMPLATE_WRAP_FUNC(area);
 TEMPLATE_WRAP_FUNC(minVal);
 TEMPLATE_WRAP_FUNC(maxVal);
 TEMPLATE_WRAP_FUNC(rangeVal);
@@ -134,6 +135,7 @@ TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 %include "DLabelMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);
 TEMPLATE_WRAP_FUNC(measBarycenters);
+TEMPLATE_WRAP_FUNC(measBoundBoxes);
 
 %include "DImageMatrix.hpp"
 TEMPLATE_WRAP_FUNC(matMul);

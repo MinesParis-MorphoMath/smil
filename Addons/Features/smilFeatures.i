@@ -44,3 +44,4 @@ SMIL_MODULE(smilFeatures)
 
 %include "DHoughTransform.hpp"
 TEMPLATE_WRAP_FUNC_CROSS2(houghLines);
+TEMPLATE_WRAP_FUNC_CROSS2(houghCircles);

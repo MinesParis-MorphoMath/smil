@@ -143,6 +143,67 @@ namespace smil
 	
 	return res;
     }
+
+    /**
+    * Measure bounding boxes of labeled image.
+    * Return a map(labelValue, Box) with the bounding box for each label value.
+    */
+    template <class T>
+    map<T, Box> measBoundBoxes(Image<T> &imIn)
+    {
+	map<T, Box> boxMap;
+	
+	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, boxMap);
+	
+	typename Image<T>::volType slices = imIn.getSlices();
+	typename Image<T>::sliceType lines;
+	typename Image<T>::lineType pixels;
+	T pixVal;
+	
+	typename map<T, Box>::iterator boxIt;
+	Box box;
+	
+	size_t imSize[3];
+	imIn.getSize(imSize);
+	
+	for (size_t z=0;z<imSize[2];z++)
+	{
+	    lines = *slices++;
+    // #pragma omp parallel for
+	    for (size_t y=0;y<imSize[1];y++)
+	    {
+		pixels = *lines++;
+		for (size_t x=0;x<imSize[0];x++)
+		{
+		    pixVal = pixels[x];
+		    if (pixVal!=0)
+		    {
+			boxIt = boxMap.find(pixVal);
+			if (boxIt==boxMap.end()) // key doesn't exist, initialize it.
+			{
+			    box.x0 = box.x1 = x;
+			    box.y0 = box.y1 = y;
+			    box.z0 = box.z1 = z;
+			    boxMap[pixVal] = box;
+			}
+			else
+			{
+			    box = boxIt->second;
+			    if (x<box.x0) boxIt->second.x0 = x;
+			    if (x>box.x1) boxIt->second.x1 = x;
+			    if (y<box.y0) boxIt->second.y0 = y;
+			    if (y>box.y1) boxIt->second.y1 = y;
+			    if (z<box.z0) boxIt->second.z0 = z;
+			    if (z>box.z1) boxIt->second.z1 = z;
+			}
+		    }
+		}
+	    }
+	}
+	
+	
+	return boxMap;
+    }
     
 /** @}*/
 

@@ -138,12 +138,30 @@ class Test_Dilate_Squ : public TestCase
 };
 
 
+class Test_Dilate_3D : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dataType;
+      typedef Image<dataType> imType;
+      
+      Core::getInstance()->setNumberOfThreads(4);
+      
+      imType im1(20,20,20);
+      imType im2(im1);
+      
+      dilate(im1, im2, CubeSE());
+  }
+};
+
+
 
 int main(int argc, char *argv[])
 {
       TestSuite ts;
       ADD_TEST(ts, Test_Dilate_Hex);
       ADD_TEST(ts, Test_Dilate_Squ);
+      ADD_TEST(ts, Test_Dilate_3D);
       
 //       UINT BENCH_NRUNS = 5E3;
       Image_UINT8 im1(1024, 1024), im2(im1);

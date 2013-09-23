@@ -496,6 +496,11 @@ void ImageViewerWidget::mouseReleaseEvent ( QMouseEvent * event )
     QGraphicsView::mouseReleaseEvent(event);
 }
 
+void ImageViewerWidget::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+{
+
+}
+
 void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 {
     size_t x = int(event->scenePos().rx());
@@ -679,6 +684,7 @@ void ImageViewerWidget::linkViewer(ImageViewerWidget* viewer)
 {
     connect(this, SIGNAL(onRescaled(double)), viewer, SLOT(scale(double)));
     connect(this, SIGNAL(onScrollBarPositionChanged(int,int)), viewer, SLOT(setScrollBarPosition(int,int)));
+    connect(imScene, SIGNAL(onMouseMove(QGraphicsSceneMouseEvent*)), viewer, SLOT(sceneMouseMoveEvent(QGraphicsSceneMouseEvent*)));
     linkedWidgets.append(viewer);
     emit onRescaled(scaleFactor);
     emit(onScrollBarPositionChanged(horizontalScrollBar()->value(), verticalScrollBar()->value()));
