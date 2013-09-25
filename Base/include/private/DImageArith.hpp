@@ -224,9 +224,8 @@ namespace smil
     RES_T copy(const Image<T> &imIn, Image<T> &imOut)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
-
-	if (!haveSameSize(&imIn, &imOut, NULL))
-	    return copy<T,T>(imIn, 0, 0, 0, imOut, 0, 0, 0);
+	
+	imOut.setSize(imIn);
 
 	return unaryImageFunction<T, fillLine<T> >(imIn, imOut).retVal;
     }
