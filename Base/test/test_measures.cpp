@@ -115,6 +115,20 @@ class Test_LabelMeasures : public TestCase
   }
 };
 
+class Test_MeanVal : public TestCase
+{
+  virtual void run()
+  {
+      Image_UINT16 im(10,1);
+      
+      fill(im, UINT16(10));
+      im.setPixel(0, UINT16(65000));
+      double mv, stdd;
+      meanVal(im, mv, stdd);
+      cout << mv << " " << stdd << endl;
+  }
+};
+
 int main(int argc, char *argv[])
 {
       TestSuite ts;
@@ -122,6 +136,7 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_MeasureBarycenter);
       ADD_TEST(ts, Test_MeasBoundingBox);
       ADD_TEST(ts, Test_LabelMeasures);
+      ADD_TEST(ts, Test_MeanVal);
       
       Image_UINT8 im(512,512);
       measAreas(im);

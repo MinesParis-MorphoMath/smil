@@ -32,6 +32,7 @@
 
 #include "Core/include/private/DImage.hpp"
 #include <map>
+#include <../../mnt/DATA/src/libs/boost_1_54_0/boost/concept_check.hpp>
 
 namespace smil
 {
@@ -64,6 +65,50 @@ namespace smil
 	return vol;
     }
 
+    /**
+    * Mean value and standard deviation
+    *
+    * Returns mean and standard deviation of the pixel values.
+    * If onlyNonZero is true, only non-zero pixels are considered.
+    * \param imIn Input image.
+    */
+    template <class T>
+    void meanVal(const Image<T> &imIn, double &mean_val, double &std_dev_val, bool onlyNonZero=false)
+    {
+	mean_val = -1;
+	std_dev_val = -1;
+	
+	if (!imIn.isAllocated())
+	    return;
+
+	size_t npix = imIn.getPixelCount();
+	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
+	double sum1 = 0;
+	double sum2 = 0;
+	double pixNbr = 0;
+	double curV;
+	
+	for (int i=0;i<npix;i++)
+	  if (!onlyNonZero || pixels[i]!=0)
+	  {
+	    pixNbr += 1;
+	    curV = pixels[i];
+	    sum1 += curV;
+	    sum2 += curV*curV;
+	  }
+
+	mean_val = pixNbr==0 ? 0 : sum1/pixNbr;
+	std_dev_val = pixNbr==0 ? 0 : sqrt(sum2/pixNbr - mean_val*mean_val);
+	
+	return;
+    }
+
+    template <class T>
+    void meanVal(const Image<T> &imIn, double *mean_and_std_val, bool onlyNonZero=false)
+    {
+	return meanVal(imIn, mean_and_std_val[0], mean_and_std_val[1], onlyNonZero);
+    }
+    
     /**
     * Area of an image
     *
