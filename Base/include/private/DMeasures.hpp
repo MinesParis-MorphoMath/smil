@@ -32,7 +32,6 @@
 
 #include "Core/include/private/DImage.hpp"
 #include <map>
-#include <../../mnt/DATA/src/libs/boost_1_54_0/boost/concept_check.hpp>
 
 namespace smil
 {
