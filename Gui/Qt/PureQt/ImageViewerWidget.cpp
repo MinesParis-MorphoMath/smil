@@ -234,6 +234,8 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
 	if (j==pixNbrY-1)
 	  pixH = h%PIXMAP_MAX_DIM;
 	
+	pixW = PIXMAP_MAX_DIM;
+	
 	for (size_t i=0;i<pixNbrX;i++)
 	{
 	    if (i==pixNbrX-1)
@@ -242,15 +244,9 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
 	  QGraphicsPixmapItem *item = imScene->addPixmap(QPixmap(pixW, pixH));
 	  item->moveBy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM);
 	  imagePixmaps.append(item);
-	  
-	  item = imScene->addPixmap(QPixmap());
-	  item->moveBy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM);
-	  overlayPixmaps.append(item);
 	}
     }
     
-//     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
-//     QImage im = qImage->copy(50,0,200,200);
 
     //     magnView->setImage(qImage);
     qImage->setColorTable(baseColorTable);
@@ -265,6 +261,11 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
 	scale(pow(1.25, scaleFact), true);
     }
     adjustSize();
+    if (scaleFactor==1 && QWidget::height()<qImage->height())
+    {
+	int scaleFact = log(double(QWidget::height())/qImage->height())/log(0.8);
+	scale(pow(0.8, scaleFact), true);
+    }
 }
 
 void ImageViewerWidget::setLabelImage(bool val)
@@ -352,6 +353,8 @@ void ImageViewerWidget::updatePixmaps(QImage *image, QList<QGraphicsPixmapItem*>
     {
 	if (j==pixNbrY-1)
 	  pixH = h%PIXMAP_MAX_DIM;
+	
+	pixW = PIXMAP_MAX_DIM;
 	
 	for (size_t i=0;i<pixNbrX;i++)
 	{
