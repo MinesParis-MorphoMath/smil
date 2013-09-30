@@ -48,7 +48,7 @@
 #define RAND_UINT8 int(double(qrand())/RAND_MAX*255)
 
 
-#define PIXMAP_MAX_DIM 32767
+#define PIXMAP_MAX_DIM 2047
 
 QImageGraphicsScene::QImageGraphicsScene(QObject *parent)
         : QGraphicsScene(parent)
