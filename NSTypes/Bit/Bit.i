@@ -27,9 +27,13 @@
 
 %include smilCommon.i
 
-SMIL_MODULE(smilBit)
+//SMIL_MODULE(smilBit)
 
 %ignore BitArray::operator[];
+
+%ignore BitArray::operator++;
+%include "DBitArray.h"
+
 %extend BitArray
 {
 	std::string  __str__() {
@@ -43,5 +47,15 @@ SMIL_MODULE(smilBit)
 	}
 
 }
-%ignore BitArray::operator++;
-%include "DBitArray.h"
+
+
+#ifdef _DIMAGE_HPP
+#warning "66666666666666666666666666666666666666666666666666666"
+%template(Image_Bit) Image<Bit>;
+#endif
+
+#ifdef _D_IMAGE_ARITH_HPP
+#warning "55555555555555555555555555555555555555555555555555555"
+%template(fill) fill<Bit>;
+#endif
+

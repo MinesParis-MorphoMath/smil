@@ -105,3 +105,6 @@ TEMPLATE_WRAP_CLASS(AaImageViewer, AaImageViewer);
 #endif // USE_AALIB
 
 
+#ifndef SWIGIMPORTED
+%include "NSTypes.i"
+#endif

@@ -453,48 +453,49 @@ STRING(REGEX REPLACE ",$" "" IMAGE_TYPES_STR ${IMAGE_TYPES_STR})
 STRING(REGEX REPLACE ",$" "" DATA_TYPES_STR ${DATA_TYPES_STR})
 STRING(REGEX REPLACE ",$" "" DATA_TYPES_QUOTE_STR ${DATA_TYPES_QUOTE_STR})
 
+SET(IT "UINT8;UINT16")
 # SWIG WRAP CLASS
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS(class, name)\n")
-FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+FOREACH(_IMG_TYPE ${IT})
 	SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE}) class<${_IMG_TYPE}>;\n")
-ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+ENDFOREACH(_IMG_TYPE ${IT})
 SET(_STWD "${_STWD}%enddef\n\n")
 
 # Two template types, both variables
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_BOTH(class, name)\n")
-FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+FOREACH(_IMG_TYPE ${IT})
 	SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE}) class<${_IMG_TYPE},${_IMG_TYPE}>;\n")
-ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+ENDFOREACH(_IMG_TYPE ${IT})
 SET(_STWD "${_STWD}%enddef\n\n")
 
 # Two template types, first variable, second fixed
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(class, fixedType, name)\n")
-FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+FOREACH(_IMG_TYPE ${IT})
 	SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE} \#\# _ \#\# fixedType) class<${_IMG_TYPE},fixedType >;\n")
-ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+ENDFOREACH(_IMG_TYPE ${IT})
 SET(_STWD "${_STWD}%enddef\n\n")
 
 # Two template types, first fixed, second variable
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(class, fixedType, name)\n")
-FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+FOREACH(_IMG_TYPE ${IT})
 	SET(_STWD "${_STWD}  %template(name \#\# _ \#\# fixedType \#\# _${_IMG_TYPE}) class<fixedType,${_IMG_TYPE}>;\n")
-ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+ENDFOREACH(_IMG_TYPE ${IT})
 SET(_STWD "${_STWD}%enddef\n\n")
 
 # SWIG WRAP FUNC
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_FUNC(func)\n")
-FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+FOREACH(_IMG_TYPE ${IT})
 	SET(_STWD "${_STWD}  %template(func) func<${_IMG_TYPE}>;\n")
-ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+ENDFOREACH(_IMG_TYPE ${IT})
 SET(_STWD "${_STWD}%enddef\n\n")
 
 # SWIG WRAP CROSS FUNC 2 IMGS
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_FUNC_CROSS2(func)\n")
-FOREACH(_IMG_TYPE ${IMAGE_TYPES})
-	FOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+FOREACH(_IMG_TYPE ${IT})
+	FOREACH(_IMG_TYPE2 ${IT})
 		SET(_STWD "${_STWD}  %template(func) func<${_IMG_TYPE},${_IMG_TYPE2}>;\n")
-	ENDFOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
-ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+	ENDFOREACH(_IMG_TYPE2 ${IT})
+ENDFOREACH(_IMG_TYPE ${IT})
 SET(_STWD "${_STWD}%enddef\n\n")
 
 
