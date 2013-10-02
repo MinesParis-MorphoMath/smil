@@ -352,12 +352,22 @@ namespace smil
 	return res;
     }
 
+    struct InertiaMatrix
+    {
+	double m00;
+	double m10;
+	double m01;
+	double m11;
+	double m20;
+	double m02;
+	InertiaMatrix() : m00(0), m10(0), m01(0), m11(0), m20(0), m02(0) {}
+    };
     
     /**
     * 2D inertia coefficients
     */
     template <class T>
-    RES_T measInertiaCoefficients(Image<T> &im, double *m00, double *m10, double *m01, double *m11, double *m20, double *m02)
+    RES_T measInertiaMatrix(Image<T> &im, double *m00, double *m10, double *m01, double *m11, double *m20, double *m02)
     {
 	if (!im.isAllocated())
 	    return RES_ERR_BAD_ALLOCATION;
@@ -392,13 +402,17 @@ namespace smil
     }
 	
     template <class T>
-    vector<double> measInertiaCoefficients(Image<T> &im)
+    InertiaMatrix measInertiaMatrix(Image<T> &im)
     {
 	double m[6];
-	measInertiaCoefficients(im, &m[0], &m[1], &m[2], &m[3], &m[4], &m[5]);
-	vector<double> res;
-	for (int i=0;i<6;i++)
-	  res.push_back(m[i]);
+	measInertiaMatrix(im, &m[0], &m[1], &m[2], &m[3], &m[4], &m[5]);
+	InertiaMatrix res;
+	res.m00 = m[0];
+	res.m10 = m[1];
+	res.m01 = m[2];
+	res.m11 = m[3];
+	res.m20 = m[4];
+	res.m02 = m[5];
 	return res;
     }
     

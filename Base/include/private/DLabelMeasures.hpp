@@ -32,6 +32,7 @@
 
 #include "Core/include/private/DImage.hpp"
 #include "DImageHistogram.hpp"
+#include "DMeasures.hpp"
 
 #include <map>
 
@@ -204,6 +205,7 @@ namespace smil
 	
 	return boxMap;
     }
+
     
 /** @}*/
 

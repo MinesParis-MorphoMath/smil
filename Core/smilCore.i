@@ -118,8 +118,10 @@ PTR_ARG_OUT_APPLY(s)
 	}
 }
 
+
 %include "DCommon.h"
 %include "DBaseObject.h"
+
 
 
 //////////////////////////////////////////////////////////
@@ -148,7 +150,9 @@ namespace std
 
 #ifndef SWIGXML
 
+
 %include std_map.i
+
 
 // Expose std::map<> as a Python dict
 namespace std 
