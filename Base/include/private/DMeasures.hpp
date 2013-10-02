@@ -41,7 +41,73 @@ namespace smil
  * \defgroup Measures Base measures
  * @{
  */
+    /**
+     * List of offset and size of (memory) contiguous pixels with same value
+     */
+    struct Blob
+    {
+      struct PixSequ
+      {
+	size_t offset;
+	size_t size;
+	PixSequ() : offset(0), size(0) {}
+	PixSequ(size_t off, size_t siz) : offset(off), size(siz) {}
+      };
+      vector<PixSequ> sequences;
+      typedef typename vector<PixSequ>::iterator sequences_iterator;
+    };
+    
+    template <class T>
+    map<T, Blob> computeBlobs(const Image<T> &imIn, bool onlyNonZero=true)
+    {
+	map<T, Blob> blobs;
+	if (!imIn.isAllocated())
+	    return blobs;
 
+	size_t npix = imIn.getPixelCount();
+	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
+	size_t curSize = 0;
+	size_t curStart = 0;
+	
+	T curVal = pixels[0];
+	if (curVal!=0 || !onlyNonZero)
+	  curSize++;
+	
+	for (size_t i=1;i<npix;i++)
+	{
+	    if (pixels[i]==curVal)
+	      curSize++;
+	    else
+	    {
+	      if (curVal!=0 || !onlyNonZero)
+		blobs[curVal].sequences.push_back(Blob::PixSequ(curStart, curSize));
+	      curStart = i;
+	      curSize = 1;
+	      curVal = pixels[i];
+	    }
+	}
+	if (curVal!=0 || !onlyNonZero)
+	  blobs[curVal].sequences.push_back(Blob::PixSequ(curStart, curSize));
+	
+	return blobs;
+    }
+
+    template <class T>
+    struct SingleBlobMeasureFunctionBase
+    {
+	typedef typename Image<T>::lineType lineType;
+	
+	virtual void processLine(lineType lineIn, size_t size) = 0;
+	virtual void operator()(const Image<T> &imIn, const Blob &blob)
+	{
+	    lineType pixels = imIn.getPixels();
+	    Blob::sequences_iterator it = blob.sequences.begin();
+	    Blob::sequences_iterator it_end = blob.sequences.end();
+	    for (;it!=it_end;it++)
+	      processLine(pixels + (*it).offset, (*it).size);
+	}
+    };
+    
     /**
     * Volume of an image
     *
@@ -58,7 +124,7 @@ namespace smil
 	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
 	double vol = 0;
 
-	for (int i=0;i<npix;i++)
+	for (size_t i=0;i<npix;i++)
 	    vol += pixels[i];
 
 	return vol;
@@ -87,7 +153,7 @@ namespace smil
 	double pixNbr = 0;
 	double curV;
 	
-	for (int i=0;i<npix;i++)
+	for (size_t i=0;i<npix;i++)
 	  if (!onlyNonZero || pixels[i]!=0)
 	  {
 	    pixNbr += 1;
@@ -124,7 +190,7 @@ namespace smil
 	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
 	size_t area = 0;
 
-	for (int i=0;i<npix;i++)
+	for (size_t i=0;i<npix;i++)
 	  if (pixels[i]!=0)
 	    area += 1;
 
@@ -147,7 +213,7 @@ namespace smil
 	typename ImDtTypes<T>::lineType p = imIn.getPixels();
 	T minVal = numeric_limits<T>::max();
 
-	for (int i=0;i<npix;i++,p++)
+	for (size_t i=0;i<npix;i++,p++)
 	    if (*p<minVal)
 		minVal = *p;
 
@@ -170,7 +236,7 @@ namespace smil
 	typename ImDtTypes<T>::lineType p = imIn.getPixels();
 	T maxVal = numeric_limits<T>::min();
 
-	for (int i=0;i<npix;i++,p++)
+	for (size_t i=0;i<npix;i++,p++)
 	    if (*p>maxVal)
 		maxVal = *p;
 
@@ -198,7 +264,7 @@ namespace smil
 	ret_min = numeric_limits<T>::max();
 	ret_max = numeric_limits<T>::min();
 
-	for (int i=0;i<npix;i++,p++)
+	for (size_t i=0;i<npix;i++,p++)
 	{
 	    if (*p<ret_min)
 		ret_min = *p;
