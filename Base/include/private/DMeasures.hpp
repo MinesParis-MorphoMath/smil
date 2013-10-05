@@ -31,6 +31,7 @@
 #define _D_MEASURES_HPP
 
 #include "Core/include/private/DImage.hpp"
+#include "DBaseMeasureOperations.hpp"
 #include <map>
 
 namespace smil
@@ -41,139 +42,18 @@ namespace smil
  * \defgroup Measures Base measures
  * @{
  */
-    /**
-     * List of offset and size of (memory) contiguous pixels with same value
-     */
-    struct Blob
-    {
-      struct PixSequ
-      {
-	size_t offset;
-	size_t size;
-	PixSequ() : offset(0), size(0) {}
-	PixSequ(size_t off, size_t siz) : offset(off), size(siz) {}
-      };
-      vector<PixSequ> sequences;
-      typedef typename vector<PixSequ>::iterator sequences_iterator;
-    };
-    
-    template <class T>
-    map<T, Blob> computeBlobs(const Image<T> &imIn, bool onlyNonZero=true)
-    {
-	map<T, Blob> blobs;
-	if (!imIn.isAllocated())
-	    return blobs;
-
-	size_t npix = imIn.getPixelCount();
-	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
-	size_t curSize = 0;
-	size_t curStart = 0;
-	
-	T curVal = pixels[0];
-	if (curVal!=0 || !onlyNonZero)
-	  curSize++;
-	
-	for (size_t i=1;i<npix;i++)
-	{
-	    if (pixels[i]==curVal)
-	      curSize++;
-	    else
-	    {
-	      if (curVal!=0 || !onlyNonZero)
-		blobs[curVal].sequences.push_back(Blob::PixSequ(curStart, curSize));
-	      curStart = i;
-	      curSize = 1;
-	      curVal = pixels[i];
-	    }
-	}
-	if (curVal!=0 || !onlyNonZero)
-	  blobs[curVal].sequences.push_back(Blob::PixSequ(curStart, curSize));
-	
-	return blobs;
-    }
 
     template <class T>
-    struct SingleBlobMeasureFunctionBase
+    struct measAreaFunc : public MeasureFunctionBase<T, double>
     {
 	typedef typename Image<T>::lineType lineType;
-	
-	virtual void processLine(lineType lineIn, size_t size) = 0;
-	virtual void operator()(const Image<T> &imIn, const Blob &blob)
+
+	virtual void processSequence(lineType lineIn, size_t size)
 	{
-	    lineType pixels = imIn.getPixels();
-	    Blob::sequences_iterator it = blob.sequences.begin();
-	    Blob::sequences_iterator it_end = blob.sequences.end();
-	    for (;it!=it_end;it++)
-	      processLine(pixels + (*it).offset, (*it).size);
+	    this->retVal += size;
 	}
     };
-    
-    /**
-    * Volume of an image
-    *
-    * Returns the sum of the pixel values.
-    * \param imIn Input image.
-    */
-    template <class T>
-    double vol(const Image<T> &imIn)
-    {
-	if (!imIn.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
 
-	size_t npix = imIn.getPixelCount();
-	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
-	double vol = 0;
-
-	for (size_t i=0;i<npix;i++)
-	    vol += pixels[i];
-
-	return vol;
-    }
-
-    /**
-    * Mean value and standard deviation
-    *
-    * Returns mean and standard deviation of the pixel values.
-    * If onlyNonZero is true, only non-zero pixels are considered.
-    * \param imIn Input image.
-    */
-    template <class T>
-    void meanVal(const Image<T> &imIn, double &mean_val, double &std_dev_val, bool onlyNonZero=false)
-    {
-	mean_val = -1;
-	std_dev_val = -1;
-	
-	if (!imIn.isAllocated())
-	    return;
-
-	size_t npix = imIn.getPixelCount();
-	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
-	double sum1 = 0;
-	double sum2 = 0;
-	double pixNbr = 0;
-	double curV;
-	
-	for (size_t i=0;i<npix;i++)
-	  if (!onlyNonZero || pixels[i]!=0)
-	  {
-	    pixNbr += 1;
-	    curV = pixels[i];
-	    sum1 += curV;
-	    sum2 += curV*curV;
-	  }
-
-	mean_val = pixNbr==0 ? 0 : sum1/pixNbr;
-	std_dev_val = pixNbr==0 ? 0 : sqrt(sum2/pixNbr - mean_val*mean_val);
-	
-	return;
-    }
-
-    template <class T>
-    void meanVal(const Image<T> &imIn, double *mean_and_std_val, bool onlyNonZero=false)
-    {
-	return meanVal(imIn, mean_and_std_val[0], mean_and_std_val[1], onlyNonZero);
-    }
-    
     /**
     * Area of an image
     *
@@ -183,19 +63,100 @@ namespace smil
     template <class T>
     size_t area(const Image<T> &imIn)
     {
-	if (!imIn.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
-
-	size_t npix = imIn.getPixelCount();
-	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
-	size_t area = 0;
-
-	for (size_t i=0;i<npix;i++)
-	  if (pixels[i]!=0)
-	    area += 1;
-
-	return area;
+	measAreaFunc<T> func;
+	return func(imIn, true);
     }
+
+    
+    template <class T>
+    struct measVolFunc : public MeasureFunctionBase<T, double>
+    {
+	typedef typename Image<T>::lineType lineType;
+
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+	    for (size_t i=0;i<size;i++)
+	      this->retVal += lineIn[i];
+	}
+    };
+
+    /**
+    * Volume of an image
+    *
+    * Returns the sum of the pixel values.
+    * \param imIn Input image.
+    */
+    template <class T>
+    double vol(const Image<T> &imIn)
+    {
+	measVolFunc<T> func;
+	return func(imIn, false);
+    }
+    
+    template <class T>
+    struct measMeanValFunc : public MeasureFunctionBase<T, DoubleVector>
+    {
+	typedef typename Image<T>::lineType lineType;
+	double sum1, sum2;
+	double pixNbr;
+
+	virtual void initialize()
+	{
+	    this->retVal.clear();
+	    sum1 = sum2 = pixNbr = 0.;
+	}
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+	    double curV;
+	    for (size_t i=0;i<size;i++)
+	    {
+		pixNbr += 1;
+		curV = lineIn[i];
+		sum1 += curV;
+		sum2 += curV*curV;
+	    }
+	}
+	virtual void finalize()
+	{
+	    double mean_val = pixNbr==0 ? 0 : sum1/pixNbr;
+	    double std_dev_val = pixNbr==0 ? 0 : sqrt(sum2/pixNbr - mean_val*mean_val);
+	    
+	    this->retVal.push_back(mean_val);
+	    this->retVal.push_back(std_dev_val);
+	}
+    };
+
+
+    /**
+    * Mean value and standard deviation
+    *
+    * Returns mean and standard deviation of the pixel values.
+    * If onlyNonZero is true, only non-zero pixels are considered.
+    * \param imIn Input image.
+    */
+    template <class T>
+    DoubleVector meanVal(const Image<T> &imIn, bool onlyNonZero=false)
+    {
+	measMeanValFunc<T> func;
+	return func(imIn, onlyNonZero);
+    }
+
+    
+    template <class T>
+    struct measMinValFunc : public MeasureFunctionBase<T, double>
+    {
+	typedef typename Image<T>::lineType lineType;
+	virtual void initialize()
+	{
+	    this->retVal = numeric_limits<T>::max();
+	}
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+	    for (size_t i=0;i<size;i++)
+	      if (lineIn[i] < this->retVal)
+		this->retVal = lineIn[i];
+	}
+    };
 
     /**
     * Min value of an image
@@ -204,21 +165,27 @@ namespace smil
     * \param imIn Input image.
     */
     template <class T>
-    T minVal(const Image<T> &imIn)
+    T minVal(const Image<T> &imIn, bool onlyNonZero=false)
     {
-	if (!imIn.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
-
-	int npix = imIn.getPixelCount();
-	typename ImDtTypes<T>::lineType p = imIn.getPixels();
-	T minVal = numeric_limits<T>::max();
-
-	for (size_t i=0;i<npix;i++,p++)
-	    if (*p<minVal)
-		minVal = *p;
-
-	return minVal;
+	measMinValFunc<T> func;
+	return func(imIn, onlyNonZero);
     }
+
+    template <class T>
+    struct measMaxValFunc : public MeasureFunctionBase<T, double>
+    {
+	typedef typename Image<T>::lineType lineType;
+	virtual void initialize()
+	{
+	    this->retVal = numeric_limits<T>::min();
+	}
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+	    for (size_t i=0;i<size;i++)
+	      if (lineIn[i] > this->retVal)
+		this->retVal = lineIn[i];
+	}
+    };
 
     /**
     * Max value of an image
@@ -227,20 +194,10 @@ namespace smil
     * \param imIn Input image.
     */
     template <class T>
-    T maxVal(const Image<T> &imIn)
+    T maxVal(const Image<T> &imIn, bool onlyNonZero=false)
     {
-	if (!imIn.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
-
-	int npix = imIn.getPixelCount();
-	typename ImDtTypes<T>::lineType p = imIn.getPixels();
-	T maxVal = numeric_limits<T>::min();
-
-	for (size_t i=0;i<npix;i++,p++)
-	    if (*p>maxVal)
-		maxVal = *p;
-
-	return maxVal;
+	measMaxValFunc<T> func;
+	return func(imIn, onlyNonZero);
     }
 
     /**

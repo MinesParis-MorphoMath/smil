@@ -30,6 +30,27 @@
 
 using namespace smil;
 
+class Test_MeasureVolAndArea : public TestCase
+{
+  virtual void run()
+  {
+      Image_UINT8 im(256,256);
+      
+      UINT8 **lines = im.getLines();
+      
+      fill(im, UINT8(0));
+      for (UINT j=10;j<60;j++)
+	for (UINT i=20;i<70;i+=2)
+	  lines[j][i] = 255;
+
+      double surf = area(im);
+      double volume = vol(im);
+      
+      TEST_ASSERT(surf==1250);
+      TEST_ASSERT(volume==318750);
+  }
+};
+
 class Test_MeasureBarycenter : public TestCase
 {
   virtual void run()
@@ -124,8 +145,10 @@ class Test_MeanVal : public TestCase
       fill(im, UINT16(10));
       im.setPixel(0, UINT16(65000));
       double mv, stdd;
-      meanVal(im, mv, stdd);
-      cout << mv << " " << stdd << endl;
+      DoubleVector res = meanVal(im);
+
+      TEST_ASSERT(res[0]==6509);
+      TEST_ASSERT(res[1]==19497);
   }
 };
 
@@ -133,6 +156,7 @@ int main(int argc, char *argv[])
 {
       TestSuite ts;
 
+      ADD_TEST(ts, Test_MeasureVolAndArea);
       ADD_TEST(ts, Test_MeasureBarycenter);
       ADD_TEST(ts, Test_MeasBoundingBox);
       ADD_TEST(ts, Test_LabelMeasures);

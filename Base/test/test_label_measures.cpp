@@ -64,12 +64,31 @@ class Test_ComputeBlobs : public TestCase
   }
 };
 
+class Test_Areas : public TestCase
+{
+  virtual void run()
+  {
+      Image_UINT8 im(1024,1024);
+      Image_UINT8::lineType pixels = im.getPixels();
+      
+      fill(im, UINT8(0));
+      drawRectangle(im, 200,200,512,512,UINT8(127), 1);
+      
+      map<UINT8, double> areas = measAreas2(im);
+      map<UINT8, double> areas2 = measAreas2(im);
+      cout << areas[127] << endl;
+      cout << areas2[127] << endl;
+      
+  }
+};
+
 
 int main(int argc, char *argv[])
 {
       TestSuite ts;
 
       ADD_TEST(ts, Test_ComputeBlobs);
+      ADD_TEST(ts, Test_Areas);
       
       return ts.run();
 }

@@ -46,7 +46,6 @@ namespace smil
     * @{
     */
 
-
     /**
     * Measure label areas.
     * Return a map(labelValue, size_t) with the area of each label value.
@@ -54,39 +53,17 @@ namespace smil
     template <class T>
     map<T, double> measAreas(Image<T> &imIn)
     {
-	map<T, double> area;
-
-	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, area);
-	
-	typename Image<T>::volType slices = imIn.getSlices();
-	typename Image<T>::sliceType lines;
-	typename Image<T>::lineType pixels;
-	T pixVal;
-	
-	size_t imSize[3];
-	imIn.getSize(imSize);
-	
-	for (size_t z=0;z<imSize[2];z++)
-	{
-	    lines = *slices++;
-    // #pragma omp parallel for
-	    for (size_t y=0;y<imSize[1];y++)
-	    {
-		pixels = *lines++;
-		for (size_t x=0;x<imSize[0];x++)
-		{
-		    pixVal = pixels[x];
-		    if (pixVal!=0)
-			area[pixVal] += 1;
-		}
-	    }
-	}
-	
-	return area;
+	return processBlobMeasure<T, measAreaFunc<T> >(imIn);
     }
 
-
-
+    template <class T1, class T2>
+    double measMaskVolumes(const Image<T1> &imLbl, Image<T2> &imValue)
+    {
+	map<T1, Blob> blobs = computeBlobs(imLbl);
+	return processBlobMeasure<T2, measVolFunc<T2> >(imValue, blobs);
+    }
+    
+    
     /**
     * Measure barycenter of labeled image.
     * Return a map(labelValue, Point) with the barycenter point coordinates for each label value.
