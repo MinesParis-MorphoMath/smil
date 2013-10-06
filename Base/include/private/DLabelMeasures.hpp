@@ -51,49 +51,49 @@ namespace smil
     * Return a map(labelValue, size_t) with the area of each label value.
     */
     template <class T>
-    map<T, double> measAreas(const Image<T> &imIn, const bool onlyNonZero=true)
+    map<UINT, double> measAreas(const Image<T> &imIn, const bool onlyNonZero=true)
     {
 	return processBlobMeasure<T, measAreaFunc<T> >(imIn, onlyNonZero);
     }
 
     template <class T>
-    map<T, double> measAreas(const Image<T> &imIn, const map<T, Blob> &blobs)
+    map<UINT, double> measAreas(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measAreaFunc<T> >(imIn, blobs);
     }
 
     template <class T>
-    map<T, T> measMinVals(const Image<T> &imIn, const map<T, Blob> &blobs)
+    map<UINT, T> measMinVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measMinValFunc<T> >(imIn, blobs);
     }
 
     template <class T>
-    map<T, T> measMaxVals(const Image<T> &imIn, const map<T, Blob> &blobs)
+    map<UINT, T> measMaxVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measMaxValFunc<T> >(imIn, blobs);
     }
 
     template <class T>
-    map<T, vector<T> > measRangeVals(const Image<T> &imIn, const map<T, Blob> &blobs)
+    map<UINT, vector<T> > measRangeVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measMinMaxValFunc<T> >(imIn, blobs);
     }
 
     template <class T>
-    map<T, DoubleVector> measMeanVals(const Image<T> &imIn, const map<T, Blob> &blobs)
+    map<UINT, DoubleVector> measMeanVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measMeanValFunc<T> >(imIn, blobs);
     }
 
     template <class T>
-    map<T, double> measVolumes(const Image<T> &imLbl, const bool onlyNonZero=true)
+    map<UINT, double> measVolumes(const Image<T> &imLbl, const bool onlyNonZero=true)
     {
 	return processBlobMeasure<T, measVolFunc<T> >(imLbl, onlyNonZero);
     }
     
     template <class T>
-    map<T, double> measVolumes(const Image<T> &imLbl, const map<T, Blob> &blobs)
+    map<UINT, double> measVolumes(const Image<T> &imLbl, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measVolFunc<T> >(imLbl, blobs);
     }
@@ -103,13 +103,13 @@ namespace smil
     * Return a map(labelValue, Point) with the barycenter point coordinates for each label value.
     */
     template <class T>
-    map<T, DoubleVector> measBarycenters(const Image<T> &imLbl, const bool onlyNonZero=true)
+    map<UINT, DoubleVector> measBarycenters(const Image<T> &imLbl, const bool onlyNonZero=true)
     {
 	return processBlobMeasure<T, measBarycenterFunc<T> >(imLbl, onlyNonZero);
     }
     
     template <class T>
-    map<T, DoubleVector> measBarycenters(const Image<T> &imLbl, const map<T, Blob> &blobs)
+    map<UINT, DoubleVector> measBarycenters(const Image<T> &imLbl, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measBarycenterFunc<T> >(imLbl, blobs);
     }
@@ -121,25 +121,25 @@ namespace smil
     * Return a map(labelValue, Box) with the bounding box for each label value.
     */
     template <class T>
-    map<T, UintVector > measBoundBoxes(const Image<T> &imIn, const bool onlyNonZero=true)
+    map<UINT, UintVector > measBoundBoxes(const Image<T> &imIn, const bool onlyNonZero=true)
     {
 	return processBlobMeasure<T, measBoundBoxFunc<T> >(imIn, onlyNonZero);
     }
 
     template <class T>
-    map<T, UintVector > measBoundBoxes(const Image<T> &imIn, const map<T, Blob> &blobs)
+    map<UINT, UintVector > measBoundBoxes(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measBoundBoxFunc<T> >(imIn, blobs);
     }
 
     template <class T>
-    map<T, DoubleVector> measInertiaMatrices(const Image<T> &imIn, const bool onlyNonZero=true)
+    map<UINT, DoubleVector> measInertiaMatrices(const Image<T> &imIn, const bool onlyNonZero=true)
     {
 	return processBlobMeasure<T, measInertiaMatrixFunc<T> >(imIn, onlyNonZero);
     }
     
     template <class T>
-    map<T, DoubleVector> measInertiaMatrices(const Image<T> &imIn, const map<T, Blob> &blobs)
+    map<UINT, DoubleVector> measInertiaMatrices(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measInertiaMatrixFunc<T> >(imIn, blobs);
     }

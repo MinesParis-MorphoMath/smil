@@ -121,10 +121,11 @@ TEMPLATE_WRAP_FUNC(resize);
 TEMPLATE_WRAP_FUNC(scale);
 
 %include "DBaseMeasureOperations.hpp"
+
 %include std_map.i
 namespace std 
 {
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Blob, Map)
+    %template(BlobMap) map<UINT,Blob>;
 }
 
 TEMPLATE_WRAP_FUNC(computeBlobs);

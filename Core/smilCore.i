@@ -159,6 +159,10 @@ namespace std
 // Expose std::map<> as a Python dict
 namespace std 
 {
+    %template(UintDoubleMap) map<UINT,double>;
+    %template(UintDoubleVectorMap) map<UINT,DoubleVector>;
+    %template(UintUintVectorMap) map<UINT,UintVector>;
+    
     TEMPLATE_WRAP_CLASS_2T_BOTH(map, Map)
     
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)

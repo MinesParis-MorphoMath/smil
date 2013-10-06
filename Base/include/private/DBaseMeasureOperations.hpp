@@ -61,9 +61,9 @@ namespace smil
     };
     
     template <class T>
-    map<T, Blob> computeBlobs(const Image<T> &imIn, bool onlyNonZero=true)
+    map<UINT, Blob> computeBlobs(const Image<T> &imIn, bool onlyNonZero=true)
     {
-	map<T, Blob> blobs;
+	map<UINT, Blob> blobs;
 	
 	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, blobs);
 
@@ -266,13 +266,13 @@ namespace smil
     
     
     template <class T, class funcT>
-    map<T, typename funcT::retType> processBlobMeasure(const Image<T> &imIn, const map<T, Blob> &blobs)
+    map<UINT, typename funcT::retType> processBlobMeasure(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
-	map<T, typename funcT::retType> res;
+	map<UINT, typename funcT::retType> res;
 	
 	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, res);
 	
-	typename map<T, Blob>::const_iterator it;
+	typename map<UINT, Blob>::const_iterator it;
 	for (it=blobs.begin();it!=blobs.end();it++)
 	{
 	    funcT func;
@@ -282,9 +282,9 @@ namespace smil
     }
     
     template <class T, class funcT>
-    map<T, typename funcT::retType> processBlobMeasure(const Image<T> &imIn, bool onlyNonZero=true)
+    map<UINT, typename funcT::retType> processBlobMeasure(const Image<T> &imIn, bool onlyNonZero=true)
     {
-	map<T, Blob> blobs = computeBlobs(imIn, onlyNonZero);
+	map<UINT, Blob> blobs = computeBlobs(imIn, onlyNonZero);
 	return processBlobMeasure<T,funcT>(imIn, blobs);
     }
 
