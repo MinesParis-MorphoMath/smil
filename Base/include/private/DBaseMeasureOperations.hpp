@@ -51,7 +51,7 @@ namespace smil
     };
     
     /**
-     * List of offset and size of (memory) contiguous pixels
+     * List of offset and size of line contiguous pixels
      */
     struct Blob
     {
@@ -67,30 +67,40 @@ namespace smil
 	
 	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, blobs);
 
-	size_t npix = imIn.getPixelCount();
-	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
-	size_t curSize = 0;
-	size_t curStart = 0;
+	typename ImDtTypes<T>::sliceType lines = imIn.getLines();
+	typename ImDtTypes<T>::lineType pixels;
+	size_t npix = imIn.getWidth();
+	size_t nlines = imIn.getLineCount();
 	
-	T curVal = pixels[0];
-	if (curVal!=0 || !onlyNonZero)
-	  curSize++;
+	T curVal;
 	
-	for (size_t i=1;i<npix;i++)
+	for (size_t l=0;l<nlines;l++)
 	{
-	    if (pixels[i]==curVal)
+	    size_t curSize = 0;
+	    size_t curStart = l*npix;
+	    
+	    pixels = lines[l];
+	    curVal = pixels[0];
+	    if (curVal!=0 || !onlyNonZero)
 	      curSize++;
-	    else
+	    
+	    for (size_t i=1;i<npix;i++)
 	    {
-	      if (curVal!=0 || !onlyNonZero)
-		blobs[curVal].sequences.push_back(PixelSequence(curStart, curSize));
-	      curStart = i;
-	      curSize = 1;
-	      curVal = pixels[i];
+		if (pixels[i]==curVal)
+		  curSize++;
+		else
+		{
+		  if (curVal!=0 || !onlyNonZero)
+		    blobs[curVal].sequences.push_back(PixelSequence(curStart, curSize));
+		  curStart = i + l*npix;
+		  curSize = 1;
+		  curVal = pixels[i];
+		}
 	    }
+	    if (curVal!=0 || !onlyNonZero)
+	      blobs[curVal].sequences.push_back(PixelSequence(curStart, curSize));
+	    
 	}
-	if (curVal!=0 || !onlyNonZero)
-	  blobs[curVal].sequences.push_back(PixelSequence(curStart, curSize));
 	
 	return blobs;
     }
@@ -114,20 +124,21 @@ namespace smil
 	typedef _retType retType;
 	retType retVal;
 	
-	virtual void initialize()
+	virtual void initialize(const Image<T> &imIn)
 	{
 	    initialize_ret_type(retVal);
 	}
 	virtual void processSequence(lineType lineIn, size_t size) {}
-	virtual void finalize() {}
+	virtual void finalize(const Image<T> &imIn) {}
 	
 	virtual RES_T processImage(const Image<T> &imIn, bool onlyNonZero=false)
 	{
-	    initialize();
+	    initialize(imIn);
 	    ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION);
 	    
 	    lineType pixels = imIn.getPixels();
 	    size_t pixCount = imIn.getPixelCount();
+	    size_t widthLimit = imIn.getWidth()-1;
 	    
 	    if (!onlyNonZero)
 		processSequence(pixels, pixCount);
@@ -150,7 +161,7 @@ namespace smil
 		if (curSize>0)
 		  processSequence(pixels + curStart, curSize);
 	    }
-	    finalize();
+	    finalize(imIn);
 	    return RES_OK;
 	}
 	virtual retType operator()(const Image<T> &imIn, bool onlyNonZero=false)
@@ -161,7 +172,7 @@ namespace smil
 	
 	virtual retType processImage(const Image<T> &imIn, const Blob &blob)
 	{
-	    initialize();
+	    initialize(imIn);
 	    
 	    ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, retVal);
 	    
@@ -170,7 +181,7 @@ namespace smil
 	    Blob::sequences_const_iterator it_end = blob.sequences.end();
 	    for (;it!=it_end;it++)
 	      processSequence(pixels + (*it).offset, (*it).size);
-	    finalize();
+	    finalize(imIn);
 	    return retVal;
 	}
 	virtual retType operator()(const Image<T> &imIn, const Blob &blob)
@@ -181,6 +192,88 @@ namespace smil
 	
     };
     
+    template <class T, class _retType>
+    struct MeasureFunctionWithPos : public MeasureFunctionBase<T, _retType>
+    {
+	typedef typename Image<T>::lineType lineType;
+	typedef _retType retType;
+	virtual void processSequence(lineType lineIn, size_t size, size_t x, size_t y, size_t z) {}
+	virtual RES_T processImage(const Image<T> &imIn, bool onlyNonZero=false)
+	{
+	    this->initialize(imIn);
+	    ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION);
+	    
+	    typename Image<T>::volType slices = imIn.getSlices();
+	    typename Image<T>::sliceType lines;
+	    typename Image<T>::lineType pixels;
+	    size_t dims[3];
+	    imIn.getSize(dims);
+	    T curVal;
+	    
+	    if (!onlyNonZero)
+	    {
+		for (size_t z=0;z<dims[2];z++)
+		{
+		    lines = slices[z];
+		    for (size_t y=0;y<dims[1];y++)
+		      processSequence(lines[y], dims[0], 0, y, z);
+		}
+	    }
+	    else
+	    {
+		for (size_t z=0;z<dims[2];z++)
+		{
+		    lines = slices[z];
+		    for (size_t y=0;y<dims[1];y++)
+		    {
+			pixels = lines[y];
+			size_t curSize = 0;
+			size_t curStart = 0;
+			
+			for (size_t x=0;x<dims[0];x++)
+			{
+			    curVal = pixels[x];
+			    if (pixels[x]!=0)
+			    {
+			      if (curSize++==0)
+				curStart = x;
+			    }
+			    else if (curSize>0)
+			    {
+			      processSequence(pixels+curStart, curSize, curStart, y, z);
+			      curSize = 0;
+			    }
+			}
+			if (curSize>0)
+			  processSequence(pixels+curStart, curSize, curStart, y, z);
+		    }
+		}
+		
+	    }
+	    this->finalize(imIn);
+	    return RES_OK;
+	}
+	virtual retType processImage(const Image<T> &imIn, const Blob &blob)
+	{
+	    this->initialize(imIn);
+	    
+	    ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, this->retVal);
+	    
+	    lineType pixels = imIn.getPixels();
+	    Blob::sequences_const_iterator it = blob.sequences.begin();
+	    Blob::sequences_const_iterator it_end = blob.sequences.end();
+	    size_t x, y, z;
+	    for (;it!=it_end;it++)
+	    {
+	      imIn.getCoordsFromOffset((*it).offset, x, y, z);
+	      this->processSequence(pixels + (*it).offset, (*it).size, x, y, z);
+	    }
+	    this->finalize(imIn);
+	    return this->retVal;
+	}
+    private:
+	virtual void processSequence(lineType lineIn, size_t size) {}
+    };
     
     
     

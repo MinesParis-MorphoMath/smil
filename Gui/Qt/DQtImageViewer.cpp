@@ -48,10 +48,9 @@ namespace smil
 
 	if (!parentClass::labelImage && autoRange)
 	{
-	    UINT8 minV, maxV;
-	    rangeVal<UINT8>(*this->image, minV, maxV);
-	    double floor = minV;
-	    double coeff = 255. / double(maxV-minV);
+	    vector<UINT8> rangeV = rangeVal<UINT8>(*this->image);
+	    double floor = rangeV[0];
+	    double coeff = 255. / double(rangeV[1]-rangeV[0]);
 	    UINT8 *destLine;
 	    
 	    for (size_t j=0;j<h;j++,lines++)

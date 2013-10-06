@@ -45,7 +45,18 @@ class Test_ComputeBlobs : public TestCase
       for (int i=80;i<100;i++)
 	pixels[i] = 255;
       
-      map<UINT8, Blob> blobs = computeBlobs(im);
+      map<UINT8, Blob> blobs = computeBlobs(im, true);
+      
+      
+      TEST_ASSERT(blobs[127].sequences[0].offset==12);
+      TEST_ASSERT(blobs[127].sequences[0].size==8);
+      TEST_ASSERT(blobs[127].sequences[1].offset==20);
+      TEST_ASSERT(blobs[127].sequences[1].size==7);
+      TEST_ASSERT(blobs[255].sequences[0].offset==54);
+      TEST_ASSERT(blobs[255].sequences[0].size==6);
+      TEST_ASSERT(blobs[255].sequences[1].offset==60);
+      TEST_ASSERT(blobs[255].sequences[1].size==10);
+      // ...
       
 //       map<UINT8, Blob>::iterator bit = blobs.begin();
 //       for (bit=blobs.begin();bit!=blobs.end();bit++)
@@ -57,10 +68,7 @@ class Test_ComputeBlobs : public TestCase
 // 	}
 //       }
       
-      TEST_ASSERT(blobs[127].sequences[0].offset==12);
-      TEST_ASSERT(blobs[127].sequences[0].size==15);
-      TEST_ASSERT(blobs[255].sequences[1].offset==80);
-      TEST_ASSERT(blobs[255].sequences[1].size==20);
+    
   }
 };
 
@@ -74,10 +82,28 @@ class Test_Areas : public TestCase
       fill(im, UINT8(0));
       drawRectangle(im, 200,200,512,512,UINT8(127), 1);
       
-      map<UINT8, double> areas = measAreas2(im);
-      map<UINT8, double> areas2 = measAreas2(im);
-      cout << areas[127] << endl;
-      cout << areas2[127] << endl;
+      map<UINT8, double> areas = measAreas(im);
+      TEST_ASSERT(areas[127]==262144);
+      
+  }
+};
+
+class Test_Barycenters : public TestCase
+{
+  virtual void run()
+  {
+      Image_UINT8 im(1024,1024);
+      Image_UINT8::lineType pixels = im.getPixels();
+      
+      fill(im, UINT8(0));
+      drawRectangle(im, 200,200,50,50, UINT8(127), 1);
+      drawRectangle(im, 600,200,70,70, UINT8(255), 1);
+      
+      map<UINT8, DoubleVector> barycenters = measBarycenters(im);
+      TEST_ASSERT(barycenters[127][0]==224.5);
+      TEST_ASSERT(barycenters[127][1]==224.5);
+      TEST_ASSERT(barycenters[255][0]==634.5);
+      TEST_ASSERT(barycenters[255][1]==234.5);
       
   }
 };
@@ -89,6 +115,7 @@ int main(int argc, char *argv[])
 
       ADD_TEST(ts, Test_ComputeBlobs);
       ADD_TEST(ts, Test_Areas);
+      ADD_TEST(ts, Test_Barycenters);
       
       return ts.run();
 }

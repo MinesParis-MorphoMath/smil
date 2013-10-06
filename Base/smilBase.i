@@ -95,7 +95,7 @@ TEMPLATE_WRAP_FUNC(bitXOr);
 TEMPLATE_WRAP_FUNC(test);
 TEMPLATE_WRAP_FUNC(compare);
 TEMPLATE_WRAP_FUNC(mask);
-TEMPLATE_WRAP_FUNC(applyLookup);
+TEMPLATE_WRAP_FUNC_CROSS2(applyLookup);
 
 
 
@@ -120,6 +120,15 @@ TEMPLATE_WRAP_FUNC(trans);
 TEMPLATE_WRAP_FUNC(resize);
 TEMPLATE_WRAP_FUNC(scale);
 
+%include "DBaseMeasureOperations.hpp"
+%include std_map.i
+namespace std 
+{
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Blob, Map)
+}
+
+TEMPLATE_WRAP_FUNC(computeBlobs);
+
 %include "DMeasures.hpp"
 TEMPLATE_WRAP_FUNC(vol);
 %apply double *OUTPUT{double &mean_val};
@@ -136,8 +145,14 @@ TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 
 %include "DLabelMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);
+TEMPLATE_WRAP_FUNC(measMinVals);
+TEMPLATE_WRAP_FUNC(measMaxVals);
+TEMPLATE_WRAP_FUNC(measRangeVals);
+TEMPLATE_WRAP_FUNC(measMeanVals);
+TEMPLATE_WRAP_FUNC(measVolumes);
 TEMPLATE_WRAP_FUNC(measBarycenters);
 TEMPLATE_WRAP_FUNC(measBoundBoxes);
+TEMPLATE_WRAP_FUNC(measInertiaMatrices);
 
 %include "DImageMatrix.hpp"
 TEMPLATE_WRAP_FUNC(matMul);

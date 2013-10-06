@@ -136,9 +136,9 @@ namespace smil
 	    z0 = rhs.z0;
 	    z1 = rhs.z1;
 	}
-	UINT getXSize() const { return x1-x0; }
-	UINT getYSize() const { return y1-y0; }
-	UINT getZSize() const { return z1-z0; }
+	UINT getWidth() const { return x1-x0+1; }
+	UINT getHeight() const { return y1-y0+1; }
+	UINT getDepth() const { return z1-z0+1; }
     };
 
     
