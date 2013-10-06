@@ -165,6 +165,7 @@ class Test_MeanVal : public TestCase
 int main(int argc, char *argv[])
 {
       TestSuite ts;
+      
 
       ADD_TEST(ts, Test_MeasureVolAndArea);
       ADD_TEST(ts, Test_MeanVal);

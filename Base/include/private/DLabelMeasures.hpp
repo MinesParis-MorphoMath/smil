@@ -63,19 +63,19 @@ namespace smil
     }
 
     template <class T>
-    map<T, double> measMinVals(const Image<T> &imIn, const map<T, Blob> &blobs)
+    map<T, T> measMinVals(const Image<T> &imIn, const map<T, Blob> &blobs)
     {
 	return processBlobMeasure<T, measMinValFunc<T> >(imIn, blobs);
     }
 
     template <class T>
-    map<T, double> measMaxVals(const Image<T> &imIn, const map<T, Blob> &blobs)
+    map<T, T> measMaxVals(const Image<T> &imIn, const map<T, Blob> &blobs)
     {
 	return processBlobMeasure<T, measMaxValFunc<T> >(imIn, blobs);
     }
 
     template <class T>
-    map<T, DoubleVector> measRangeVals(const Image<T> &imIn, const map<T, Blob> &blobs)
+    map<T, vector<T> > measRangeVals(const Image<T> &imIn, const map<T, Blob> &blobs)
     {
 	return processBlobMeasure<T, measMinMaxValFunc<T> >(imIn, blobs);
     }
@@ -121,13 +121,13 @@ namespace smil
     * Return a map(labelValue, Box) with the bounding box for each label value.
     */
     template <class T>
-    map<T, DoubleVector> measBoundBoxes(const Image<T> &imIn, const bool onlyNonZero=true)
+    map<T, UintVector > measBoundBoxes(const Image<T> &imIn, const bool onlyNonZero=true)
     {
 	return processBlobMeasure<T, measBoundBoxFunc<T> >(imIn, onlyNonZero);
     }
 
     template <class T>
-    map<T, DoubleVector> measBoundBoxes(const Image<T> &imIn, const map<T, Blob> &blobs)
+    map<T, UintVector > measBoundBoxes(const Image<T> &imIn, const map<T, Blob> &blobs)
     {
 	return processBlobMeasure<T, measBoundBoxFunc<T> >(imIn, blobs);
     }

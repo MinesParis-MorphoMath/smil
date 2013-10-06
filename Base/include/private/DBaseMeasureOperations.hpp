@@ -105,18 +105,6 @@ namespace smil
 	return blobs;
     }
 
-    template <class retType>
-    inline void initialize_ret_type(retType &retVal)
-    {
-	retVal = 0;
-    }
-    template <>
-    inline void initialize_ret_type<DoubleVector>(DoubleVector &retVal)
-    {
-	retVal.clear();
-    }
-    
-    
     template <class T, class _retType>
     struct MeasureFunctionBase
     {
@@ -126,7 +114,7 @@ namespace smil
 	
 	virtual void initialize(const Image<T> &imIn)
 	{
-	    initialize_ret_type(retVal);
+	    retVal = retType();
 	}
 	virtual void processSequence(lineType lineIn, size_t size) {}
 	virtual void finalize(const Image<T> &imIn) {}

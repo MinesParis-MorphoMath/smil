@@ -144,7 +144,7 @@ namespace smil
 
     
     template <class T>
-    struct measMinValFunc : public MeasureFunctionBase<T, double>
+    struct measMinValFunc : public MeasureFunctionBase<T, T>
     {
 	typedef typename Image<T>::lineType lineType;
 	virtual void initialize(const Image<T> &imIn)
@@ -173,7 +173,7 @@ namespace smil
     }
 
     template <class T>
-    struct measMaxValFunc : public MeasureFunctionBase<T, double>
+    struct measMaxValFunc : public MeasureFunctionBase<T, T>
     {
 	typedef typename Image<T>::lineType lineType;
 	virtual void initialize(const Image<T> &imIn)
@@ -203,7 +203,7 @@ namespace smil
 
     
     template <class T>
-    struct measMinMaxValFunc : public MeasureFunctionBase<T, DoubleVector>
+    struct measMinMaxValFunc : public MeasureFunctionBase<T, vector<T> >
     {
 	typedef typename Image<T>::lineType lineType;
 	double minVal, maxVal;
@@ -240,8 +240,7 @@ namespace smil
     vector<T> rangeVal(const Image<T> &imIn, bool onlyNonZero=false)
     {
 	measMinMaxValFunc<T> func;
-	DoubleVector dVec = func(imIn, onlyNonZero);
-	return vector<T>(dVec.begin(), dVec.end());
+	return func(imIn, onlyNonZero);
     }
 
     
@@ -284,7 +283,7 @@ namespace smil
 
 
     template <class T>
-    struct measBoundBoxFunc : public MeasureFunctionWithPos<T, DoubleVector>
+    struct measBoundBoxFunc : public MeasureFunctionWithPos<T, UintVector >
     {
 	typedef typename Image<T>::lineType lineType;
 	double xMin, xMax, yMin, yMax, zMin, zMax;
@@ -327,11 +326,10 @@ namespace smil
     * Bounding Box measure
     */
     template <class T>
-    vector<UINT> measBoundBox(Image<T> &im)
+    UintVector measBoundBox(Image<T> &im)
     {
 	measBoundBoxFunc<T> func;
-	DoubleVector dVec = func(im, true);
-	return vector<UINT>(dVec.begin(), dVec.end());
+	return func(im, true);
     }
 
 
@@ -383,9 +381,9 @@ namespace smil
     * Return a vector conatining the offset of all non-zero points in image.
     */
     template <class T>
-    vector<UINT> nonZeroOffsets(Image<T> &imIn)
+    UintVector nonZeroOffsets(Image<T> &imIn)
     {
-	vector<UINT> offsets;
+	UintVector offsets;
 
 	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, offsets);
 	
