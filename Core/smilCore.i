@@ -130,6 +130,7 @@ PTR_ARG_OUT_APPLY(s)
 
 #ifndef SWIGXML
 
+
 %include std_vector.i
 
 // Expose std::vector<> as a Python list
