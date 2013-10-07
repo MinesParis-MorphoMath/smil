@@ -21,7 +21,7 @@ imIn.getViewer().drawOverlay(imRec)
 # Blobs measures
 blobs = computeBlobs(imLbl)
 # areas
-areas = measAreas(imLbl, blobs) # equivalent to measAreas(imLbl)
+areas = measAreas(imLbl, blobs) # equivalent but faster than measAreas(imLbl)
 # barycenters
 barys = measBarycenters(imLbl, blobs)
 # volume of blobs in imIn

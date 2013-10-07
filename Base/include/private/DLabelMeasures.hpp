@@ -49,6 +49,7 @@ namespace smil
     /**
     * Measure label areas.
     * Return a map(labelValue, size_t) with the area of each label value.
+    * \demo{blob_measures.py}
     */
     template <class T>
     map<UINT, double> measAreas(const Image<T> &imIn, const bool onlyNonZero=true)
@@ -101,6 +102,8 @@ namespace smil
     /**
     * Measure barycenter of labeled image.
     * Return a map(labelValue, Point) with the barycenter point coordinates for each label value.
+    * 
+    * \demo{blob_measures.py}
     */
     template <class T>
     map<UINT, DoubleVector> measBarycenters(const Image<T> &imLbl, const bool onlyNonZero=true)

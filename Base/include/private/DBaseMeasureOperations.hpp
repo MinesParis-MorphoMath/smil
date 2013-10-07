@@ -56,8 +56,8 @@ namespace smil
     struct Blob
     {
       vector<PixelSequence> sequences;
-      typedef typename vector<PixelSequence>::iterator sequences_iterator;
-      typedef typename vector<PixelSequence>::const_iterator sequences_const_iterator;
+      typedef vector<PixelSequence>::iterator sequences_iterator;
+      typedef vector<PixelSequence>::const_iterator sequences_const_iterator;
     };
     
     template <class T>
