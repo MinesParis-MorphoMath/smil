@@ -345,9 +345,9 @@ namespace smil
 	}
 	virtual void processSequence(lineType lineIn, size_t size, size_t x, size_t y, size_t z)
 	{
-	    for (size_t x=0;x<size;x++)
+	    for (size_t i=0;i<size;i++,x++)
 	    {
-		T pxVal = lineIn[x];
+		T pxVal = lineIn[i];
 		m00 += pxVal;
 		m10 += pxVal * x;
 		m01 += pxVal * y;
