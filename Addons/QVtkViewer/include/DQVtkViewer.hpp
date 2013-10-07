@@ -81,7 +81,7 @@ namespace smil
 	{
 	}
 	
-	enum RepresentationType  { COMPOSITE = 1, MIP };
+	enum RepresentationType { NONE, COMPOSITE, MIP };
 	
 	virtual void setImage(Image<T> &im)
 	{

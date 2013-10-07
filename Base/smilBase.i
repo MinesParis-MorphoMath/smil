@@ -46,6 +46,9 @@ SMIL_MODULE(smilBase)
 #include "DMeasures.hpp"
 #include "DImageMatrix.hpp"
 #include "DLabelMeasures.hpp"
+
+#include <stdexcept>
+
 %}
 
 // Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
