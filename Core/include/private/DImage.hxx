@@ -325,20 +325,10 @@ namespace smil
 	// Calc. line (mis)alignment
 	int n = SIMD_VEC_SIZE / sizeof(T);
 	int w = width%SIMD_VEC_SIZE;
-	for (int i=0;i<n;i++)
-	{
-	  this->lineAlignment[i] = (SIMD_VEC_SIZE - (i*w)%SIMD_VEC_SIZE)%SIMD_VEC_SIZE;
-    //       cout << i << " " << lineAlignment[i] << endl;
-	}
 
 	return RES_OK;
     }
 
-    template <class T>
-    inline int Image<T>::getLineAlignment(size_t l)
-    {
-	return lineAlignment[l%(SIMD_VEC_SIZE/sizeof(T))];
-    }
 
     template <class T>
     RES_T Image<T>::deallocate()
@@ -436,9 +426,9 @@ namespace smil
 	{
 	    std::stringstream tStr;
 	    tStr << (long)ImDtTypes<T>::max();
-	    UINT tSsize = tStr.str().size();
+	    size_t tSsize = tStr.str().size();
 	    if (hexaGrid)
-	      tSsize *= 1.5;
+	      tSsize = size_t(tSsize * 1.5);
 	    
 	      
 	    os << "Pixel values:" << endl;

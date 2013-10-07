@@ -56,6 +56,7 @@ namespace smil
 	{
 	    if (T::_instance == NULL)
 		T::_instance = new T();
+		return RES_OK;
 	}
 
 	static void kill ()

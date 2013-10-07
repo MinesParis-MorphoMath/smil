@@ -87,8 +87,8 @@ namespace smil
 		_exec(lineIn, size, value);
 		return;
 	    }
-	    unsigned long ptrOffset = ImDtTypes<T>::ptrOffset(lineIn);
-	    unsigned long misAlignSize = ptrOffset==0 ? 0 : SIMD_VEC_SIZE - ptrOffset;
+	    size_t ptrOffset = ImDtTypes<T>::ptrOffset(lineIn);
+	    size_t misAlignSize = ptrOffset==0 ? 0 : SIMD_VEC_SIZE - ptrOffset;
 	    if (misAlignSize)
 	      _exec(lineIn, misAlignSize, value); 
 	    _exec_aligned(lineIn+misAlignSize, size-misAlignSize, value); 
@@ -112,9 +112,9 @@ namespace smil
 		_exec(lineIn1, lineIn2, size, lineOut); 
 		return;
 	    }
-	    unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn1);
-	    unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineIn2);
-	    unsigned long ptrOffset3 = ImDtTypes<T>::ptrOffset(lineOut);
+	    size_t ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn1);
+	    size_t ptrOffset2 = ImDtTypes<T>::ptrOffset(lineIn2);
+	    size_t ptrOffset3 = ImDtTypes<T>::ptrOffset(lineOut);
 	    
 	    // all aligned
 	    if (!ptrOffset1 && !ptrOffset2 && !ptrOffset3)
@@ -124,7 +124,7 @@ namespace smil
 	    // all misaligned but with same misalignment
 	    else if (ptrOffset1==ptrOffset2 && ptrOffset2==ptrOffset3)
 	    {
-		unsigned long misAlignSize = SIMD_VEC_SIZE - ptrOffset1;
+		size_t misAlignSize = SIMD_VEC_SIZE - ptrOffset1;
 		_exec(lineIn1, lineIn2, misAlignSize, lineOut); 
 		_exec_aligned(lineIn1+misAlignSize, lineIn2+misAlignSize, size-misAlignSize, lineOut+misAlignSize); 
 	    }

@@ -32,6 +32,7 @@
 
 #include <string>
 #include <algorithm>
+#include <ctype.h>
 
 #ifdef USE_CURL
 #include <curl/curl.h>
@@ -41,7 +42,7 @@ namespace smil
 {
 
 
-    _DIO string getFileExtension(const char *fileName)
+    string getFileExtension(const char *fileName)
     {
 	string fName(fileName);
 	string::size_type idx = fName.rfind('.');

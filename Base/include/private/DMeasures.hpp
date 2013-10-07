@@ -31,6 +31,7 @@
 #define _D_MEASURES_HPP
 
 #include "Core/include/private/DImage.hpp"
+#include "DBaseMeasureOperations.hpp"
 #include <map>
 
 namespace smil
@@ -42,6 +43,43 @@ namespace smil
  * @{
  */
 
+    template <class T>
+    struct measAreaFunc : public MeasureFunctionBase<T, double>
+    {
+	typedef typename Image<T>::lineType lineType;
+
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+	    this->retVal += size;
+	}
+    };
+
+    /**
+    * Area of an image
+    *
+    * Returns the number of non-zero pixels
+    * \param imIn Input image.
+    */
+    template <class T>
+    size_t area(const Image<T> &imIn)
+    {
+	measAreaFunc<T> func;
+	return func(imIn, true);
+    }
+
+    
+    template <class T>
+    struct measVolFunc : public MeasureFunctionBase<T, double>
+    {
+	typedef typename Image<T>::lineType lineType;
+
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+	    for (size_t i=0;i<size;i++)
+	      this->retVal += lineIn[i];
+	}
+    };
+
     /**
     * Volume of an image
     *
@@ -49,20 +87,77 @@ namespace smil
     * \param imIn Input image.
     */
     template <class T>
-    size_t vol(const Image<T> &imIn)
+    double vol(const Image<T> &imIn)
     {
-	if (!imIn.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
-
-	int npix = imIn.getPixelCount();
-	typename ImDtTypes<T>::lineType pixels = imIn.getPixels();
-	size_t vol = 0;
-
-	for (int i=0;i<npix;i++)
-	    vol += pixels[i];
-
-	return vol;
+	measVolFunc<T> func;
+	return func(imIn, false);
     }
+    
+    template <class T>
+    struct measMeanValFunc : public MeasureFunctionBase<T, DoubleVector>
+    {
+	typedef typename Image<T>::lineType lineType;
+	double sum1, sum2;
+	double pixNbr;
+
+	virtual void initialize(const Image<T> &imIn)
+	{
+	    this->retVal.clear();
+	    sum1 = sum2 = pixNbr = 0.;
+	}
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+	    double curV;
+	    for (size_t i=0;i<size;i++)
+	    {
+		pixNbr += 1;
+		curV = lineIn[i];
+		sum1 += curV;
+		sum2 += curV*curV;
+	    }
+	}
+	virtual void finalize(const Image<T> &imIn)
+	{
+	    double mean_val = pixNbr==0 ? 0 : sum1/pixNbr;
+	    double std_dev_val = pixNbr==0 ? 0 : sqrt(sum2/pixNbr - mean_val*mean_val);
+	    
+	    this->retVal.push_back(mean_val);
+	    this->retVal.push_back(std_dev_val);
+	}
+    };
+
+
+    
+    /**
+    * Mean value and standard deviation
+    *
+    * Returns mean and standard deviation of the pixel values.
+    * If onlyNonZero is true, only non-zero pixels are considered.
+    * \param imIn Input image.
+    */
+    template <class T>
+    DoubleVector meanVal(const Image<T> &imIn, bool onlyNonZero=false)
+    {
+	measMeanValFunc<T> func;
+	return func(imIn, onlyNonZero);
+    }
+
+    
+    template <class T>
+    struct measMinValFunc : public MeasureFunctionBase<T, T>
+    {
+	typedef typename Image<T>::lineType lineType;
+	virtual void initialize(const Image<T> &imIn)
+	{
+	    this->retVal = numeric_limits<T>::max();
+	}
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+	    for (size_t i=0;i<size;i++)
+	      if (lineIn[i] < this->retVal)
+		this->retVal = lineIn[i];
+	}
+    };
 
     /**
     * Min value of an image
@@ -71,21 +166,27 @@ namespace smil
     * \param imIn Input image.
     */
     template <class T>
-    T minVal(const Image<T> &imIn)
+    T minVal(const Image<T> &imIn, bool onlyNonZero=false)
     {
-	if (!imIn.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
-
-	int npix = imIn.getPixelCount();
-	typename ImDtTypes<T>::lineType p = imIn.getPixels();
-	T minVal = numeric_limits<T>::max();
-
-	for (int i=0;i<npix;i++,p++)
-	    if (*p<minVal)
-		minVal = *p;
-
-	return minVal;
+	measMinValFunc<T> func;
+	return func(imIn, onlyNonZero);
     }
+
+    template <class T>
+    struct measMaxValFunc : public MeasureFunctionBase<T, T>
+    {
+	typedef typename Image<T>::lineType lineType;
+	virtual void initialize(const Image<T> &imIn)
+	{
+	    this->retVal = numeric_limits<T>::min();
+	}
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+	    for (size_t i=0;i<size;i++)
+	      if (lineIn[i] > this->retVal)
+		this->retVal = lineIn[i];
+	}
+    };
 
     /**
     * Max value of an image
@@ -94,22 +195,41 @@ namespace smil
     * \param imIn Input image.
     */
     template <class T>
-    T maxVal(const Image<T> &imIn)
+    T maxVal(const Image<T> &imIn, bool onlyNonZero=false)
     {
-	if (!imIn.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
-
-	int npix = imIn.getPixelCount();
-	typename ImDtTypes<T>::lineType p = imIn.getPixels();
-	T maxVal = numeric_limits<T>::min();
-
-	for (int i=0;i<npix;i++,p++)
-	    if (*p>maxVal)
-		maxVal = *p;
-
-	return maxVal;
+	measMaxValFunc<T> func;
+	return func(imIn, onlyNonZero);
     }
 
+    
+    template <class T>
+    struct measMinMaxValFunc : public MeasureFunctionBase<T, vector<T> >
+    {
+	typedef typename Image<T>::lineType lineType;
+	double minVal, maxVal;
+	virtual void initialize(const Image<T> &imIn)
+	{
+	    this->retVal.clear();
+	    maxVal = numeric_limits<T>::min();
+	    minVal = numeric_limits<T>::max();
+	}
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+	    for (size_t i=0;i<size;i++)
+	    {
+	      T val = lineIn[i];
+	      if (val > maxVal)
+		maxVal = val;
+	      if (val < minVal)
+		minVal = val;
+	    }
+	}
+	virtual void finalize(const Image<T> &imIn)
+	{
+	    this->retVal.push_back(minVal);
+	    this->retVal.push_back(maxVal);
+	}
+    };
     /**
     * Min and Max values of an image
     *
@@ -117,182 +237,153 @@ namespace smil
     * \param imIn Input image.
     */
     template <class T>
-    void rangeVal(const Image<T> &imIn, T &ret_min, T &ret_max)
+    vector<T> rangeVal(const Image<T> &imIn, bool onlyNonZero=false)
     {
-	if (!imIn.isAllocated())
-	{
-	    ret_min = 0;
-	    ret_max = 0;
-	    return;
-	}
-
-	int npix = imIn.getPixelCount();
-	typename ImDtTypes<T>::lineType p = imIn.getPixels();
-	ret_min = numeric_limits<T>::max();
-	ret_max = numeric_limits<T>::min();
-
-	for (int i=0;i<npix;i++,p++)
-	{
-	    if (*p<ret_min)
-		ret_min = *p;
-	    if (*p>ret_max)
-		ret_max = *p;
-	}
-
+	measMinMaxValFunc<T> func;
+	return func(imIn, onlyNonZero);
     }
 
-    template <class T>
-    void rangeVal(const Image<T> &imIn, T *rVals)
-    {
-	return rangeVal(imIn, rVals[0], rVals[1]);
-    }
     
     template <class T>
-    RES_T measBarycenter(Image<T> &im, double *xc, double *yc, double *zc=NULL)
+    struct measBarycenterFunc : public MeasureFunctionWithPos<T, DoubleVector>
     {
-	if (!im.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
-	
-	typename Image<T>::volType slices = im.getSlices();
-	typename Image<T>::sliceType lines;
-	typename Image<T>::lineType pixels;
-	T pixVal;
-	
-	double xSum = 0, ySum = 0, zSum = 0, tSum = 0;
-	size_t imSize[3];
-	im.getSize(imSize);
-	
-	for (size_t z=0;z<imSize[2];z++)
+	typedef typename Image<T>::lineType lineType;
+	double xSum, ySum, zSum, tSum;
+	virtual void initialize(const Image<T> &imIn)
 	{
-	    lines = *slices++;
-    // #pragma omp parallel for
-	    for (size_t y=0;y<imSize[1];y++)
+	    this->retVal.clear();
+	    xSum = ySum = zSum = tSum = 0.;
+	}
+	virtual void processSequence(lineType lineIn, size_t size, size_t x, size_t y, size_t z)
+	{
+	    for (size_t i=0;i<size;i++,x++)
 	    {
-		pixels = *lines++;
-		for (size_t x=0;x<imSize[0];x++)
-		{
-		    pixVal = pixels[x];
-		    if (pixVal!=0)
-		    {
-			xSum += pixVal * x;
-			ySum += pixVal * y;
-			zSum += pixVal * z;
-			tSum += pixVal;		  
-		    }
-		}
+	      T pixVal = lineIn[i];
+	      xSum += pixVal * x;
+	      ySum += pixVal * y;
+	      zSum += pixVal * z;
+	      tSum += pixVal;		  
 	    }
 	}
-	
-	*xc = xSum / tSum;
-	*yc = ySum / tSum;
-	if (zc)
-	  *zc = zSum / tSum;
-	
-	return RES_OK;
+	virtual void finalize(const Image<T> &imIn)
+	{
+	    this->retVal.push_back(xSum/tSum);
+	    this->retVal.push_back(ySum/tSum);
+	    if (imIn.getDimension()==3)
+	      this->retVal.push_back(zSum/tSum);
+	}
+    };
+    
+    template <class T>
+    DoubleVector measBarycenter(Image<T> &im)
+    {
+	measBarycenterFunc<T> func;
+	return func(im, false);
     }
+
 
     template <class T>
-    vector<double> measBarycenter(Image<T> &im)
+    struct measBoundBoxFunc : public MeasureFunctionWithPos<T, UintVector >
     {
-	vector<double> res;
-	double xc, yc, zc;
-	if (measBarycenter<T>(im, &xc, &yc, &zc)==RES_OK)
+	typedef typename Image<T>::lineType lineType;
+	double xMin, xMax, yMin, yMax, zMin, zMax;
+	virtual void initialize(const Image<T> &imIn)
 	{
-	    res.push_back(xc);
-	    res.push_back(yc);
-	    if (im.getDimension()==3)
-	      res.push_back(zc);
+	    this->retVal.clear();
+	    size_t imSize[3];
+	    imIn.getSize(imSize);
+	    
+	    xMin = imSize[0];
+	    xMax = 0;
+	    yMin = imSize[1];
+	    yMax = 0;
+	    zMin = imSize[2];
+	    zMax = 0;
 	}
-	return res;
-    }
-
+	virtual void processSequence(lineType lineIn, size_t size, size_t x, size_t y, size_t z)
+	{
+	    if (x<xMin) xMin = x;
+	    if (x+size-1>xMax) xMax = x+size-1;
+	    if (y<yMin) yMin = y;
+	    if (y>yMax) yMax = y;
+	    if (z<zMin) zMin = z;
+	    if (z>zMax) zMax = z;
+	}
+	virtual void finalize(const Image<T> &imIn)
+	{
+	    this->retVal.push_back(xMin);
+	    this->retVal.push_back(xMax);
+	    this->retVal.push_back(yMin);
+	    this->retVal.push_back(yMax);
+	    if (imIn.getDimension()==3)
+	    {
+	      this->retVal.push_back(zMin);
+	      this->retVal.push_back(zMax);
+	    }
+	}
+    };
     /**
     * Bounding Box measure
     */
     template <class T>
-    RES_T measBoundBox(Image<T> &im, size_t *xMin, size_t *yMin, size_t *zMin, size_t *xMax, size_t *yMax, size_t *zMax)
+    UintVector measBoundBox(Image<T> &im)
     {
-	if (!im.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
-	
-	typename Image<T>::volType slices = im.getSlices();
-	typename Image<T>::sliceType lines;
-	typename Image<T>::lineType pixels;
-    //     T pixVal;
-	
-	size_t imSize[3];
-	im.getSize(imSize);
-	
-	*xMin = imSize[0];
-	*xMax = 0;
-	*yMin = imSize[1];
-	*yMax = 0;
-	*zMin = imSize[2];
-	*zMax = 0;
-	
-	for (size_t z=0;z<imSize[2];z++)
+	measBoundBoxFunc<T> func;
+	return func(im, true);
+    }
+
+
+    template <class T>
+    struct measInertiaMatrixFunc : public MeasureFunctionWithPos<T, DoubleVector>
+    {
+	typedef typename Image<T>::lineType lineType;
+	double m00, m10, m01, m11, m20, m02;
+	virtual void initialize(const Image<T> &imIn)
 	{
-	    lines = *slices++;
-	    for (size_t y=0;y<imSize[1];y++)
+	    this->retVal.clear();
+	    m00 = m10 = m01 = m11 = m20 = m02 = 0.;
+	}
+	virtual void processSequence(lineType lineIn, size_t size, size_t x, size_t y, size_t z)
+	{
+	    for (size_t x=0;x<size;x++)
 	    {
-		pixels = *lines++;
-		for (size_t x=0;x<imSize[0];x++)
-		{
-		    T pixVal = pixels[x];
-		    if (pixVal!=0)
-		    {
-			if (x<*xMin) *xMin = x;
-			else if (x>*xMax) *xMax = x;
-			if (y<*yMin) *yMin = y;
-			else if (y>*yMax) *yMax = y;
-			if (z<*zMin) *zMin = z;
-			else if (z>*zMax) *zMax = z;
-		    }
-		}
+		T pxVal = lineIn[x];
+		m00 += pxVal;
+		m10 += pxVal * x;
+		m01 += pxVal * y;
+		m11 += pxVal * x * y;
+		m20 += pxVal * x * x;
+		m02 += pxVal * y * y;
 	    }
 	}
-	
-	return RES_OK;
-    }
-
-    template <class T>
-    RES_T measBoundBox(Image<T> &im, size_t *xMin, size_t *yMin, size_t *xMax, size_t *yMax)
-    {
-	size_t zMin, zMax;
-	return measBoundBox(im, xMin, yMin, &zMin, xMax, yMax, &zMax);
-    }
-
-
-    template <class T>
-    vector<UINT> measBoundBox(Image<T> &im)
-    {
-	vector<UINT> res;
-	
-	size_t b[6];
-	UINT dim = im.getDimension()==3 ? 3 : 2;
-	
-	if (dim==3)
+	virtual void finalize(const Image<T> &imIn)
 	{
-	    if (measBoundBox<T>(im, b, b+1, b+2, b+3, b+4, b+5)!=RES_OK)
-	      return res;
+	    this->retVal.push_back(m00);
+	    this->retVal.push_back(m10);
+	    this->retVal.push_back(m01);
+	    this->retVal.push_back(m11);
+	    this->retVal.push_back(m20);
+	    this->retVal.push_back(m02);
 	}
-	else if (measBoundBox<T>(im, b, b+1, b+2, b+3)!=RES_OK)
-	  return res;
-
-	for (UINT i=0;i<dim*2;i++)
-	  res.push_back(b[i]);
-	
-	return res;
+    };
+    /**
+    * 2D inertia coefficients
+    */
+    template <class T>
+    DoubleVector measInertiaMatrix(const Image<T> &im, const bool onlyNonZero=true)
+    {
+	measInertiaMatrixFunc<T> func;
+	return func(im, onlyNonZero);
     }
-
+	
     /**
     * Non-zero point offsets.
     * Return a vector conatining the offset of all non-zero points in image.
     */
     template <class T>
-    vector<size_t> nonZeroOffsets(Image<T> &imIn)
+    UintVector nonZeroOffsets(Image<T> &imIn)
     {
-	vector<size_t> offsets;
+	UintVector offsets;
 
 	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, offsets);
 	

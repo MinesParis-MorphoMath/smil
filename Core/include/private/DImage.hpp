@@ -217,8 +217,6 @@ namespace smil
 	PyObject * getNumArray(bool c_contigous=false);
     #endif // defined SWIGPYTHON && defined USE_NUMPY
 	
-	inline int getLineAlignment(size_t l);
-
 	virtual void modified();
 
 	T dataTypeMin;
@@ -319,8 +317,6 @@ namespace smil
 	lineType pixels;
 	sliceType  lines;
 	volType slices;
-
-	size_t lineAlignment[SIMD_VEC_SIZE];
 
 	RES_T restruct(void);
 

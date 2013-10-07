@@ -30,6 +30,27 @@
 
 using namespace smil;
 
+class Test_MeasureVolAndArea : public TestCase
+{
+  virtual void run()
+  {
+      Image_UINT8 im(256,256);
+      
+      UINT8 **lines = im.getLines();
+      
+      fill(im, UINT8(0));
+      for (UINT j=10;j<60;j++)
+	for (UINT i=20;i<70;i+=2)
+	  lines[j][i] = 255;
+
+      double surf = area(im);
+      double volume = vol(im);
+      
+      TEST_ASSERT(surf==1250);
+      TEST_ASSERT(volume==318750);
+  }
+};
+
 class Test_MeasureBarycenter : public TestCase
 {
   virtual void run()
@@ -46,10 +67,10 @@ class Test_MeasureBarycenter : public TestCase
       double xc = 0, yc = 0;
       double xcTruth = 44.5, ycTruth = 34.5;
       
-      measBarycenter(im, &xc, &yc);
+      DoubleVector bary = measBarycenter(im);
       
-      TEST_ASSERT(xc==xcTruth);
-      TEST_ASSERT(yc==ycTruth);
+      TEST_ASSERT(bary[0]==xcTruth);
+      TEST_ASSERT(bary[1]==ycTruth);
   }
 };
 
@@ -59,69 +80,98 @@ class Test_MeasBoundingBox : public TestCase
   {
       UINT8 vec[125] = 
       {
-	0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,
-	0, 0, 0, 1, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,
-	0, 1, 1, 0, 0,   0, 0, 0, 0, 0,   0, 0, 1, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 0, 0, 0, 0,   0, 1, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 0, 0, 1, 0,
+	0, 1, 1, 0, 0,
+	0, 0, 0, 0, 0,
+
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 0, 1, 0, 0,
+	0, 0, 0, 0, 0,
+
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0,
+	0, 1, 0, 0, 0,
+	
       };
       
       
       Image_UINT8 im(5,5,5);
-      size_t xMin, xMax, yMin, yMax, zMin, zMax;
       im << vec;
       
-      measBoundBox(im, &xMin, &yMin, &zMin, &xMax, &yMax, &zMax);
-      TEST_ASSERT(xMin==1 && yMin==0 && zMin==2 && xMax==2 && yMax==4 && zMax==4);
+      vector<UINT> bbox = measBoundBox(im);
+      
+      TEST_ASSERT(bbox[0]==1 && bbox[1]==3 && bbox[2]==2 && bbox[3]==4 && bbox[4]==0 && bbox[5]==4);
   }
 };
 
-class Test_LabelMeasures : public TestCase
+class Test_MeasInertiaMatrix : public TestCase
 {
   virtual void run()
   {
-      Image_UINT8 im(256,256);
+      UINT8 vec[25] = 
+      {
+	0, 0, 0, 0, 0,
+	0, 0, 0, 1, 0,
+	0, 0, 1, 1, 0,
+	0, 1, 1, 0, 0,
+	0, 0, 0, 0, 0,
+      };
       
-      UINT8 **lines = im.getLines();
       
-      fill(im, UINT8(0));
+      Image_UINT8 im(5,5);
+      im << vec;
       
-      for (UINT j=10;j<60;j++)
-	for (UINT i=20;i<70;i++)
-	  lines[j][i] = 1;
+      DoubleVector mat = measInertiaMatrix(im, true);
 
-      for (UINT j=100;j<170;j++)
-	for (UINT i=80;i<150;i++)
-	  lines[j][i] = 2;
+      TEST_ASSERT(mat[0]==5 && mat[1]==2 && mat[2]==11 && mat[3]==5 && mat[4]==2 && mat[5]==27);
+  }
+};
 
-      // Barycenters
-	  
-      double xc1Truth = 44.5, yc1Truth = 34.5;
-      double xc2Truth = 114.5, yc2Truth = 134.5;
-      
-      map<UINT8, DoublePoint> bMap = measBarycenters(im);
-      
-      TEST_ASSERT(bMap[1].x==xc1Truth && bMap[1].y==yc1Truth);
-      TEST_ASSERT(bMap[2].x==xc2Truth && bMap[2].y==yc2Truth);
-      
 
-      // Areas
+class Test_MeanVal : public TestCase
+{
+  virtual void run()
+  {
+      Image_UINT16 im(10,1);
       
-      double area1Thruth = 2500, area2Thruth = 4900;
-      map<UINT8, double> areas = measAreas(im);
-      
-      TEST_ASSERT(areas[1]==area1Thruth);
-      TEST_ASSERT(areas[2]==area2Thruth);
+      fill(im, UINT16(10));
+      im.setPixel(0, UINT16(65000));
+      double mv, stdd;
+      DoubleVector res = meanVal(im);
+
+      TEST_ASSERT(res[0]==6509);
+      TEST_ASSERT(res[1]==19497);
   }
 };
 
 int main(int argc, char *argv[])
 {
       TestSuite ts;
+      
 
+      ADD_TEST(ts, Test_MeasureVolAndArea);
+      ADD_TEST(ts, Test_MeanVal);
       ADD_TEST(ts, Test_MeasureBarycenter);
       ADD_TEST(ts, Test_MeasBoundingBox);
-      ADD_TEST(ts, Test_LabelMeasures);
+      ADD_TEST(ts, Test_MeasInertiaMatrix);
       
       Image_UINT8 im(512,512);
       measAreas(im);

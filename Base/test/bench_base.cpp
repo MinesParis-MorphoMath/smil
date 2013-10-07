@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 //     sy = 20;
 
     UINT8 val = 10;
-    UINT BENCH_NRUNS = 1E5;
+    double BENCH_NRUNS = 1E4;
     
     BENCH_IMG(fill, im1, val);
     BENCH_IMG(copy, im1, im3);

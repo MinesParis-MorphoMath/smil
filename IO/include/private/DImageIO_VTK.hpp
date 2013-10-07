@@ -34,6 +34,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
+#include <ctype.h>
 
 #include "Core/include/private/DTypes.hpp"
 #include "Core/include/private/DImage.hpp"
@@ -153,12 +154,12 @@ namespace smil
 	    while(fp && --ptsNbr>0)
 	    {
 		fp >> val;
-		*pixels++ = val*scalarCoeff;
+		*pixels++ = (T)(val*scalarCoeff);
 	    }
 	    if(fp)
 	    {
 		fp >> val;
-		*pixels = val*scalarCoeff;
+		*pixels = (T)(val*scalarCoeff);
 	    }
 	}
 
@@ -195,10 +196,10 @@ namespace smil
 	    return RES_ERR;
 	}
 
-	int w = image.getWidth();
-	int h = image.getHeight();
-	int d = image.getDepth();
-	int pixNbr = w*h*d;
+	size_t w = image.getWidth();
+	size_t h = image.getHeight();
+	size_t d = image.getDepth();
+	size_t pixNbr = w*h*d;
 	
 	fp << "# vtk DataFile Version 3.0" << endl;
 	fp << "vtk output" << endl;

@@ -40,7 +40,7 @@
 
 #include "DCommon.h"
 
-class _DGUI MagnifyView : public QGraphicsView
+class MagnifyView : public QGraphicsView
 {
     Q_OBJECT
 public:

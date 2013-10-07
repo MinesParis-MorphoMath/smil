@@ -167,10 +167,9 @@ namespace smil
     RES_T stretchHist(const Image<T1> &imIn, Image<T2> &imOut, T2 outMinVal, T2 outMaxVal)
     {
 	unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
-	T1 rmin, rmax;
-	rangeVal(imIn, rmin, rmax);
-	iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (rmax-rmin);
-	iFunc.lineFunction.inOrig = rmin;
+	vector<T1> rangeV = rangeVal(imIn);
+	iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (rangeV[1]-rangeV[0]);
+	iFunc.lineFunction.inOrig = rangeV[0];
 	iFunc.lineFunction.outOrig = outMinVal;
 	
 	return iFunc(imIn, imOut);
@@ -202,15 +201,14 @@ namespace smil
 	double imVol = imIn.getPixelCount();
 	double satVol;
 	double curVol;
-	T minV, maxV;
-	rangeVal(imIn, minV, maxV);
-	T threshValLeft = minV;
-	T threshValRight = maxV;
+	vector<T> rangeV = rangeVal(imIn);
+	T threshValLeft = rangeV[0];
+	T threshValRight = rangeV[1];
 	
 	// left
 	satVol = imVol * leftSat / 100.;
 	curVol=0;
-	for (T i=minV; i<maxV; i++)
+	for (T i=rangeV[0]; i<rangeV[1]; i++)
 	{
 	    curVol += h[i];
 	    if (curVol>satVol)
@@ -221,7 +219,7 @@ namespace smil
 	// Right
 	satVol = imVol * rightSat / 100.;
 	curVol=0;
-	for (T i=maxV; i>minV; i--)
+	for (T i=rangeV[1]; i>rangeV[0]; i--)
 	{
 	    curVol += h[i];
 	    if (curVol>satVol)

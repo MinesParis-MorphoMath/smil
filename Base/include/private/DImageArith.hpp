@@ -130,7 +130,7 @@ namespace smil
 	typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
 	
 	int nthreads = Core::getInstance()->getNumberOfThreads();
-	size_t y;
+	int y;
 	
 	for (size_t z=0;z<realSz;z++)
 	{
@@ -202,7 +202,7 @@ namespace smil
 	typename Image<T2>::sliceType l2 = imOut.getLines();
 
 	size_t width = imIn.getWidth();
-	size_t i;
+	int i;
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	
 	#ifdef USE_OPEN_MP
@@ -224,9 +224,8 @@ namespace smil
     RES_T copy(const Image<T> &imIn, Image<T> &imOut)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
-
-	if (!haveSameSize(&imIn, &imOut, NULL))
-	    return copy<T,T>(imIn, 0, 0, 0, imOut, 0, 0, 0);
+	
+	imOut.setSize(imIn);
 
 	return unaryImageFunction<T, fillLine<T> >(imIn, imOut).retVal;
     }
@@ -943,15 +942,15 @@ namespace smil
     /**
     * Apply a lookup map
     */
-    template <class T>
-    RES_T applyLookup(const Image<T> &imIn, map<T,T> &lut, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T applyLookup(const Image<T1> &imIn, map<T1,T2> &lut, Image<T2> &imOut)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 
 	
-	typename Image<T>::lineType pixIn = imIn.getPixels();
-	typename Image<T>::lineType pixOut = imOut.getPixels();
+	typename Image<T1>::lineType pixIn = imIn.getPixels();
+	typename Image<T2>::lineType pixOut = imOut.getPixels();
 	
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{

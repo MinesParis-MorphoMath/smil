@@ -107,7 +107,7 @@ namespace smil
     // Specializations
 
     template <>
-    _DIO RES_T readBMP<UINT8>(const char *filename, Image<UINT8> &image);
+    RES_T readBMP<UINT8>(const char *filename, Image<UINT8> &image);
 
     template <>
     RES_T writeBMP<UINT8>(Image<UINT8> &image, const char *filename);

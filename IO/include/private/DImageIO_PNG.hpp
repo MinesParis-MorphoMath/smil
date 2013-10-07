@@ -76,10 +76,10 @@ namespace smil
     // Specializations
 
     template <>
-    _DIO RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image);
+    RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image);
 
     template <>
-    _DIO RES_T writePNG<UINT8>(Image<UINT8> &image, const char *filename);
+    RES_T writePNG<UINT8>(Image<UINT8> &image, const char *filename);
 
 /*@}*/
 

@@ -30,7 +30,9 @@
 #ifndef _D_TYPES_HPP
 #define _D_TYPES_HPP
 
+#ifndef _MSC_VER
 #include <stdint.h>
+#endif // _MSC_VER
 #include <limits>
 #include "DMemory.hpp"
 
@@ -43,7 +45,11 @@ namespace smil
     typedef unsigned char UINT8;
     typedef unsigned short UINT16;
     typedef unsigned int UINT32;
+#ifdef _MSC_VER
+	typedef unsigned __int64 UINT64;
+#else
     typedef uint64_t UINT64;
+#endif
 
     // typedef unsigned char __attribute__ ((vector_size (16))) alUINT8;
 
@@ -75,7 +81,7 @@ namespace smil
 	static inline pixelType min() { return numeric_limits<T>::min(); }
 	static inline pixelType max() { return numeric_limits<T>::max(); }
 	static inline size_t cardinal() { return max()-min()+1; }
-	static inline lineType createLine(UINT lineLen) { return createAlignedBuffer<T>(lineLen); }
+	static inline lineType createLine(size_t lineLen) { return createAlignedBuffer<T>(lineLen); }
 	static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
 	static inline size_t ptrOffset(lineType p, size_t n=SIMD_VEC_SIZE) { return ((size_t)p) & (n-1); }
     };

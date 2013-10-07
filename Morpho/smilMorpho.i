@@ -52,6 +52,13 @@ SMIL_MODULE(smilMorpho)
 %import smilCore.i
 
 
+#ifdef SWIGPYTHON
+%pythoncode %{
+
+builtinOpen = open
+%}
+#endif // SWIGPYTHON
+
 //////////////////////////////////////////////////////////
 // Morpho Instance
 //////////////////////////////////////////////////////////
@@ -66,6 +73,7 @@ SMIL_MODULE(smilMorpho)
 #endif // SWIGJAVA
 
 %include "DStructuringElement.h"
+
 
 %include "DMorphoBase.hpp"
 TEMPLATE_WRAP_FUNC(dilate);
@@ -149,3 +157,18 @@ TEMPLATE_WRAP_FUNC(zhangSkeleton);
 
 %include "DMorphoMaxTree.hpp"
 TEMPLATE_WRAP_FUNC_CROSS2(ultimateOpen);
+
+
+#ifdef SWIGPYTHON
+%pythoncode %{
+
+def open(*args):
+    if type(args[0])==str:
+      return builtinOpen(*args)
+    else:
+      return _smilMorphoPython.open(*args)
+      
+open.__doc__ = "Builtin function:\n" + builtinOpen.__doc__ + "\n\nSmil function:\n" + _smilMorphoPython.open.__doc__
+
+%}
+#endif // SWIGPYTHON

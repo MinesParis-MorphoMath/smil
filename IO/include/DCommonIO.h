@@ -40,7 +40,7 @@ namespace smil
     */
     /*@{*/
     
-    _DIO string getFileExtension(const char *fileName);
+    string getFileExtension(const char *fileName);
 
     class FileCloser
     {
@@ -61,7 +61,7 @@ namespace smil
 
     #ifdef USE_CURL
 
-    _DIO RES_T getHttpFile(const char *url, const char *outfilename) ;
+    RES_T getHttpFile(const char *url, const char *outfilename) ;
 
     #endif // USE_CURL
 /*@}*/

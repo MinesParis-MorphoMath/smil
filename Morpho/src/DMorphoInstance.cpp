@@ -36,8 +36,7 @@ using namespace smil;
 StrElt &Morpho::getDefaultSE()
 {
     Morpho *inst = Morpho::getInstance();
-    if (inst)
-      return inst->defaultSE;
+    return inst->defaultSE;
 }
 
 void Morpho::setDefaultSE(const StrElt &se)

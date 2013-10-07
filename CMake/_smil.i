@@ -258,12 +258,18 @@ def bench(func, *args, **keywords):
 	  if arg_ts in seTypes:
 	    se_type = arg_ts
 	    
-    t1 = time.time()
+    # Choose the right timer depending on the platform (see http://docs.python.org/2/library/time.html#time.clock)
+    if sys.platform == "win32":
+	timer = time.clock
+    else:
+	timer = time.time
+	
+    t1 = timer()
     
     for i in range(int(nbr_runs)):
       func(*args)
 
-    t2 = time.time()
+    t2 = timer()
 
     retval = (t2-t1)*1E3/nbr_runs
     

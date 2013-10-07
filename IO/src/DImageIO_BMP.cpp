@@ -95,20 +95,20 @@ namespace smil
 	bmpFileHeader fHeader;
 	bmpInfoHeader iHeader;
 
-	int width = image.getWidth();
-	int height = image.getHeight();
+	size_t width = image.getWidth();
+	size_t height = image.getHeight();
 
 	int nColors = 256;
 
 	fHeader.bfType = 0x4D42;
-	fHeader.bfSize = width*height*sizeof(UINT8) + sizeof(bmpFileHeader) + sizeof(bmpInfoHeader);
+	fHeader.bfSize = (UINT32)(width*height*sizeof(UINT8)) + sizeof(bmpFileHeader) + sizeof(bmpInfoHeader);
 	fHeader.bfReserved1 = 0;
 	fHeader.bfReserved2 = 0;
 	fHeader.bfOffBits = sizeof(bmpFileHeader) + sizeof(bmpInfoHeader) + nColors*4;
 
 	iHeader.biSize = sizeof(bmpInfoHeader);  // number of bytes required by the struct
-	iHeader.biWidth = width;  // width in pixels
-	iHeader.biHeight = height;  // height in pixels
+	iHeader.biWidth = (UINT32)width;  // width in pixels
+	iHeader.biHeight = (UINT32)height;  // height in pixels
 	iHeader.biPlanes = 1; // number of color planes, must be 1
 	iHeader.biBitCount = 8; // number of bit per pixel
 	iHeader.biCompression = 0;// type of compression
@@ -136,7 +136,7 @@ namespace smil
 
 	Image<UINT8>::lineType *lines = image.getLines();
 
-	for (int i=height-1;i>=0;i--)
+	for (size_t i=height-1;i>=0;i--)
 	    fwrite(lines[i], width*sizeof(UINT8), 1, fp);
 
 	fclose(fp);

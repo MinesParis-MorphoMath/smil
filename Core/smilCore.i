@@ -118,7 +118,10 @@ PTR_ARG_OUT_APPLY(s)
 	}
 }
 
+
+%include "DCommon.h"
 %include "DBaseObject.h"
+
 
 
 //////////////////////////////////////////////////////////
@@ -137,6 +140,8 @@ namespace std
     %template(UshortVector) vector<UINT16>;
     %template(DoubleVector) vector<double>;
     %template(StringVector) vector<string>;
+    
+    %template(DoubleMatrix) vector<DoubleVector>;
 }
 
 #endif // SWIGXML
@@ -147,19 +152,27 @@ namespace std
 
 #ifndef SWIGXML
 
+
 %include std_map.i
+
 
 // Expose std::map<> as a Python dict
 namespace std 
 {
-    TEMPLATE_WRAP_CLASS_2T_BOTH(map, Map)
+    %template(UintDoubleMap) map<UINT,double>;
+    %template(UintDoubleVectorMap) map<UINT,DoubleVector>;
+    %template(UintUintVectorMap) map<UINT,UintVector>;
     
+    TEMPLATE_WRAP_CLASS_2T_BOTH(map, Map)
     
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, IntPoint, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, DoublePoint, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, DoubleVector, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UintVector, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Box, Map)
 }
 
 #endif // SWIGXML

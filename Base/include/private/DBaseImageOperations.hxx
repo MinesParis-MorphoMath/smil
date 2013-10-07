@@ -39,7 +39,7 @@ namespace smil
     struct fillLine;
 
     template <class T>
-    typename Image<T>::lineType *imageFunctionBase<T>::createAlignedBuffers(UINT8 nbr, UINT32 len)
+    typename Image<T>::lineType *imageFunctionBase<T>::createAlignedBuffers(size_t nbr, size_t len)
     {
 	if (alignedBuffers)
 	{
@@ -74,13 +74,13 @@ namespace smil
     }
 
     template <class T>
-    inline void imageFunctionBase<T>::copyLineToBuffer(T *line, UINT32 bufIndex)
+    inline void imageFunctionBase<T>::copyLineToBuffer(T *line, size_t bufIndex)
     {
 	memcpy(alignedBuffers[bufIndex], line, bufferSize);
     }
 
     template <class T>
-    inline void imageFunctionBase<T>::copyBufferToLine(UINT32 bufIndex, T *line)
+    inline void imageFunctionBase<T>::copyBufferToLine(size_t bufIndex, T *line)
     {
 	memcpy(line, alignedBuffers[bufIndex], bufferSize);
     }
@@ -95,7 +95,7 @@ namespace smil
 	    return RES_ERR_BAD_ALLOCATION;
 
 	size_t lineLen = imIn.getWidth();
-	int lineCount = imIn.getLineCount();
+	size_t lineCount = imIn.getLineCount();
 
 	sliceType srcLines = imIn.getLines();
 	sliceType destLines = imOut.getLines();
@@ -125,7 +125,7 @@ namespace smil
 	    return RES_ERR_BAD_ALLOCATION;
 
 	size_t lineLen = imOut.getWidth();
-	int lineCount = imOut.getLineCount();
+	size_t lineCount = imOut.getLineCount();
 
 	sliceType destLines = imOut.getLines();
 	lineType constBuf = ImDtTypes<T>::createLine(lineLen);
@@ -162,7 +162,7 @@ namespace smil
 	    return RES_ERR_BAD_ALLOCATION;
 
 	size_t lineLen = imIn1.getWidth();
-	int lineCount = imIn1.getLineCount();
+	size_t lineCount = imIn1.getLineCount();
 
 	lineType *srcLines1 = imIn1.getLines();
 	lineType *srcLines2 = imIn2.getLines();
@@ -178,7 +178,7 @@ namespace smil
 		#pragma omp for
 	    #endif // USE_OPEN_MP
 	    for (i=0;i<(int)lineCount;i++)
-		    lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
+		    lineFunction._exec_aligned(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
 	}
 	imOut.modified();
 
@@ -228,7 +228,7 @@ namespace smil
 	    return RES_ERR_BAD_ALLOCATION;
 
 	size_t lineLen = imIn.getWidth();
-	int lineCount = imIn.getLineCount();
+	size_t lineCount = imIn.getLineCount();
 
 	sliceType srcLines = imIn.getLines();
 	sliceType destLines = imOut.getLines();

@@ -111,7 +111,7 @@ void StrElt::printSelf(ostream &os, string indent) const
     os << indent << "Structuring Element" << endl;
     os << indent << "Type: " << seT << endl;
     os << indent << "Size: " << size << endl;
-    int ptNbr = points.size();
+    size_t ptNbr = points.size();
     os << indent << "Point Nbr: " << ptNbr << endl;
     if (!ptNbr)
       return;

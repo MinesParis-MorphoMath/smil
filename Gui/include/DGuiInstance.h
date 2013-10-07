@@ -64,7 +64,7 @@ namespace smil
     /**
      * Gui module instance
      */
-    class _DGUI Gui : public UniqueInstance<Gui>
+    class Gui : public UniqueInstance<Gui>
     {
 	friend class UniqueInstance<Gui>;
 

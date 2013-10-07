@@ -449,7 +449,7 @@ namespace smil
 		destLines = destSlices[s];
 
     #ifdef USE_OPEN_MP
-	    #pragma omp parallel private(tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p) firstprivate(pts,oddLine)
+	    #pragma omp parallel private(tid,tmpBuf,tmpBuf2,x,y,z,lineOut,p) firstprivate(pts,oddLine) num_threads(nthreads)
     #endif // USE_OPEN_MP
 	    {
 	      #ifdef USE_OPEN_MP
@@ -460,7 +460,7 @@ namespace smil
 	      
 	      
 	      #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
+		#pragma omp for
 	      #endif // USE_OPEN_MP
 	    for (l=0;l<nLines;l++)
 		    {
@@ -615,13 +615,13 @@ namespace smil
 	      int l;
 
     #ifdef USE_OPEN_MP
-	  #pragma omp parallel private(tid, buf)
+	  #pragma omp parallel private(tid, buf) num_threads(nthreads)
     #endif // USE_OPEN_MP
 	  {
 	      #ifdef USE_OPEN_MP
 		  tid = omp_get_thread_num();
 		  buf = _bufs[tid];
-	      #pragma omp for schedule(dynamic,nthreads) nowait
+	      #pragma omp for
 	  #endif
 	  for (l=0;l<lineCount;l++)
 	      {
@@ -670,7 +670,7 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_H_segment(const imageType &imIn, int xsize, imageType &imOut)
     {
-	  int lineCount = imIn.getLineCount();
+	  size_t lineCount = imIn.getLineCount();
 	  
 	  int nthreads = Core::getInstance()->getNumberOfThreads();
 	  lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
@@ -683,7 +683,7 @@ namespace smil
 	  lineType lineIn;
 	  
     #ifdef USE_OPEN_MP
-	      size_t tid;
+	      int tid;
     #endif // USE_OPEN_MP
 	  int l, dx = xsize;
 
@@ -695,7 +695,7 @@ namespace smil
 		  tid = omp_get_thread_num();
 		  buf1 = _bufs[tid];
 		  buf2 = _bufs[tid+nthreads];
-	      #pragma omp for schedule(dynamic,nthreads) nowait
+	      #pragma omp for
 	  #endif
 	  for (l=0;l<lineCount;l++)
 	      {
@@ -728,7 +728,7 @@ namespace smil
     #ifdef USE_OPEN_MP
 	    size_t tid;
     #endif // USE_OPEN_MP
-	size_t l, i, b;
+	int l, i, b;
 	size_t nblocks = imHeight / nthreads;
 
 	for (size_t s=0;s<imIn.getDepth();s++)
@@ -754,7 +754,7 @@ namespace smil
 		#endif
 		    
     #ifdef USE_OPEN_MP
-	    #pragma omp for schedule(static, 1)
+	    #pragma omp for
     #endif // USE_OPEN_MP
 	    for (b=0;b<nblocks;b++)
 		{

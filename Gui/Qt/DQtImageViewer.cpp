@@ -38,7 +38,7 @@ namespace smil
 {
 
     template <>
-    void _DGUI QtImageViewer<UINT8>::drawImage()
+    void QtImageViewer<UINT8>::drawImage()
     {
 	int sliceNbr = slider->value();
 	Image<UINT8>::sliceType lines = this->image->getSlices()[sliceNbr];
@@ -48,10 +48,9 @@ namespace smil
 
 	if (!parentClass::labelImage && autoRange)
 	{
-	    UINT8 minV, maxV;
-	    rangeVal<UINT8>(*this->image, minV, maxV);
-	    double floor = minV;
-	    double coeff = 255. / double(maxV-minV);
+	    vector<UINT8> rangeV = rangeVal<UINT8>(*this->image);
+	    double floor = rangeV[0];
+	    double coeff = 255. / double(rangeV[1]-rangeV[0]);
 	    UINT8 *destLine;
 	    
 	    for (size_t j=0;j<h;j++,lines++)
@@ -75,7 +74,7 @@ namespace smil
     // #include "DBitArray.h"
 
     template <>
-    void _DGUI QtImageViewer<BIN>::drawImage()
+    void QtImageViewer<BIN>::drawImage()
     {
 	Image<BIN>::lineType pixels = this->image->getPixels();
 	size_t w = this->image->getWidth();

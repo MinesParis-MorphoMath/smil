@@ -180,10 +180,9 @@ namespace smil
 	{
 	    if (autoRange)
 	    {
-		T minV, maxV;
-		rangeVal(*this->image, minV, maxV);
-		floor = minV;
-		coeff = 255. / double(maxV-minV);
+		vector<T> rangeV = rangeVal(*this->image);
+		floor = rangeV[0];
+		coeff = 255. / double(rangeV[1]-rangeV[0]);
 	    }
 	    else
 	      coeff = 255. / ( double(ImDtTypes<T>::max()) - double(ImDtTypes<T>::min()) );

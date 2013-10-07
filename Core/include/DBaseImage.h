@@ -47,30 +47,30 @@ namespace smil
     /**
     * Base Image class
     */
-    class _DCORE BaseImage : public BaseObject
+    class BaseImage : public BaseObject
     {
 	typedef BaseObject parentClass;
     public:
 	BaseImage(const char *_className="BaseImage")
 	  :	BaseObject(_className),
 	updatesEnabled(true),
-	onModified(this),
 	width(0), height(0), depth(0),
 	pixelCount(0), lineCount(0), sliceCount(0),
 	allocated(false),
 	allocatedSize(0)
 	{
+		onModified = Signal(this);
 	}
 	
 	BaseImage(const BaseImage &rhs)
 	  :	BaseObject(rhs),
 	updatesEnabled(true),
-	onModified(this),
 	width(0), height(0), depth(0),
 	pixelCount(0), lineCount(0), sliceCount(0),
 	allocated(false),
 	allocatedSize(0)
 	{
+		onModified = Signal(this);
 	}
 	
 	

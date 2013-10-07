@@ -58,49 +58,6 @@ namespace smil
 
     #define INLINE inline
 
-    #ifdef _MSC_VER
-
-    #ifdef smilCore_EXPORTS
-	    #define _DCORE __declspec(dllexport)
-    //	#pragma message(" - Exporting smilCore")
-    #else
-	    #define _DCORE __declspec(dllimport)
-    //	#pragma message(" - Importing smilCore")
-    #endif
-
-    #ifdef smilBase_EXPORTS
-    #define _DBASE __declspec(dllexport)
-    #else
-    #define _DBASE __declspec(dllimport)
-    #endif
-
-    #ifdef smilIO_EXPORTS
-    #define _DIO __declspec(dllexport)
-    #else
-    #define _DIO __declspec(dllimport)
-    #endif
-
-    #ifdef smilGui_EXPORTS
-    #define _DGUI __declspec(dllexport)
-    #else
-    #define _DGUI __declspec(dllimport)
-    #endif
-
-    #ifdef smilMorpho_EXPORTS
-    #define _DMORPHO __declspec(dllexport)
-    #else
-    #define _DMORPHO __declspec(dllimport)
-    #endif
-
-    #else // _MSC_VER
-
-    #define _DCORE
-    #define _DBASE
-    #define _DIO
-    #define _DGUI
-    #define _DMORPHO
-
-    #endif // _MSC_VER
 
 
 
@@ -124,24 +81,66 @@ namespace smil
     #define MAX(a, b) a > b ? a : b;
     #endif // MAX
 
-    template <class T>
-    struct Point
+    // Should be templates, but swig doesn't like the map< T, Point<double> > ...
+    struct DoublePoint
     {
-      T x;
-      T y;
-      T z;
-      Point() : x(0), y(0), z(0) {}
-      Point(const Point<T> &pt) : x(pt.x), y(pt.y), z(pt.z) {}
-      Point(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
-      bool operator == (const Point<T> &p2)
+      double x;
+      double y;
+      double z;
+      DoublePoint() : x(0), y(0), z(0) {}
+      DoublePoint(const DoublePoint &pt) : x(pt.x), y(pt.y), z(pt.z) {}
+      DoublePoint(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {}
+      bool operator == (const DoublePoint &p2)
       {
 	  return (x==p2.x && y==p2.y && z==p2.z);
       }
     };
 
-    typedef Point<int> IntPoint;
-    typedef Point<UINT8> UCPoint;
-    typedef Point<double> DoublePoint;
+    struct IntPoint
+    {
+      int x;
+      int y;
+      int z;
+      IntPoint() : x(0), y(0), z(0) {}
+      IntPoint(const IntPoint &pt) : x(pt.x), y(pt.y), z(pt.z) {}
+      IntPoint(int _x, int _y, int _z) : x(_x), y(_y), z(_z) {}
+      bool operator == (const IntPoint &p2)
+      {
+	  return (x==p2.x && y==p2.y && z==p2.z);
+      }
+    };
+    
+    typedef vector<double> DoubleVector;
+    typedef vector<DoubleVector> DoubleMatrix;
+    typedef vector<UINT> UintVector;
+    
+    struct Rectangle
+    {
+	UINT x0, y0;
+	UINT xSzie, ySize;
+    };
+
+    struct Box
+    {
+	UINT x0, y0, z0;
+	UINT x1, y1, z1;
+	Box()
+	{
+	    x0 = x1 = y0 = y1 = z0 = z1 = 0;
+	}
+	Box(const Box &rhs)
+	{
+	    x0 = rhs.x0;
+	    x1 = rhs.x1;
+	    y0 = rhs.y0;
+	    y1 = rhs.y1;
+	    z0 = rhs.z0;
+	    z1 = rhs.z1;
+	}
+	UINT getWidth() const { return x1-x0+1; }
+	UINT getHeight() const { return y1-y0+1; }
+	UINT getDepth() const { return z1-z0+1; }
+    };
 
     
     inline double round(double r) 

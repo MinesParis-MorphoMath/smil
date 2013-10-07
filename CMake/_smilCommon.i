@@ -180,6 +180,7 @@ using namespace smil;
   %apply short *OUTPUT{ short *name };
   %apply int *OUTPUT{ int *name };
   %apply char *OUTPUT{const char *name};
+  %apply double *OUTPUT{double *name};
   
   %apply unsigned char *OUTPUT{ unsigned char &name };
   %apply unsigned short *OUTPUT{ unsigned short &name };
@@ -189,6 +190,7 @@ using namespace smil;
   %apply short *OUTPUT{ short &name };
   %apply int *OUTPUT{ int &name };
   %apply char *OUTPUT{const char &name};
+  %apply double *OUTPUT{double &name};
 %enddef
 #elif defined SWIGJAVA
 %include "arrays_java.i";
