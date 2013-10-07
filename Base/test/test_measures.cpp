@@ -141,7 +141,7 @@ class Test_MeasInertiaMatrix : public TestCase
       
       DoubleVector mat = measInertiaMatrix(im, true);
 
-      TEST_ASSERT(mat[0]==5 && mat[1]==2 && mat[2]==11 && mat[3]==5 && mat[4]==2 && mat[5]==27);
+      TEST_ASSERT(mat[0]==5 && mat[1]==11 && mat[2]==11 && mat[3]==22 && mat[4]==27 && mat[5]==27);
   }
 };
 
