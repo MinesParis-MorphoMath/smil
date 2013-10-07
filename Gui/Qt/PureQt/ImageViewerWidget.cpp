@@ -244,6 +244,10 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
 	  QGraphicsPixmapItem *item = imScene->addPixmap(QPixmap(pixW, pixH));
 	  item->moveBy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM);
 	  imagePixmaps.append(item);
+	  
+	  item = imScene->addPixmap(QPixmap());
+	  item->moveBy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM);
+	  overlayPixmaps.append(item);
 	}
     }
     
