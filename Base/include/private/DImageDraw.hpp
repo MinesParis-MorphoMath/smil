@@ -144,6 +144,22 @@ namespace smil
 	return drawRectangle<T>(imOut, coords[0], coords[1], coords[2]-coords[0]+1, coords[3]-coords[1]+1, value, fill);
     }
 
+    template <class T>
+    RES_T drawRectangle(Image<T> &imOut, const map<UINT, UintVector> &coordsVect, T value=0, bool fill=false)
+    {
+	map<UINT, UintVector>::const_iterator it = coordsVect.begin();
+	if (it->second.size()!=4)
+	  return RES_ERR;
+	for (;it!=coordsVect.end();it++)
+	{
+	    vector<UINT> coords = it->second;
+	    T val = value==0 ? it->first : value;
+	    if (drawRectangle<T>(imOut, coords[0], coords[1], coords[2]-coords[0]+1, coords[3]-coords[1]+1, val, fill)!=RES_OK)
+	      return RES_ERR;
+	}
+	return RES_OK;
+    }
+
 
     /**
     * Draw a box

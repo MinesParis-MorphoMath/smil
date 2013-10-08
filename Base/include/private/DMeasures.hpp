@@ -287,11 +287,13 @@ namespace smil
     {
 	typedef typename Image<T>::lineType lineType;
 	double xMin, xMax, yMin, yMax, zMin, zMax;
+	bool im3d;
 	virtual void initialize(const Image<T> &imIn)
 	{
 	    this->retVal.clear();
 	    size_t imSize[3];
 	    imIn.getSize(imSize);
+	    im3d = (imSize[2]>1);
 	    
 	    xMin = imSize[0];
 	    xMax = 0;
@@ -306,24 +308,28 @@ namespace smil
 	    if (x+size-1>xMax) xMax = x+size-1;
 	    if (y<yMin) yMin = y;
 	    if (y>yMax) yMax = y;
-	    if (z<zMin) zMin = z;
-	    if (z>zMax) zMax = z;
+	    if (im3d)
+	    {
+	      if (z<zMin) zMin = z;
+	      if (z>zMax) zMax = z;
+	    }
 	}
 	virtual void finalize(const Image<T> &imIn)
 	{
 	    this->retVal.push_back(xMin);
-	    this->retVal.push_back(xMax);
 	    this->retVal.push_back(yMin);
-	    this->retVal.push_back(yMax);
-	    if (imIn.getDimension()==3)
-	    {
+	    if (im3d)
 	      this->retVal.push_back(zMin);
+	    this->retVal.push_back(xMax);
+	    this->retVal.push_back(yMax);
+	    if (im3d)
 	      this->retVal.push_back(zMax);
-	    }
 	}
     };
     /**
     * Bounding Box measure
+    * 
+    * \return xMin, yMin (,zMin), xMax, yMax (,zMax)
     */
     template <class T>
     UintVector measBoundBox(Image<T> &im)
@@ -337,37 +343,58 @@ namespace smil
     struct measInertiaMatrixFunc : public MeasureFunctionWithPos<T, DoubleVector>
     {
 	typedef typename Image<T>::lineType lineType;
-	double m00, m10, m01, m11, m20, m02;
+	double m000, m100, m010, m110, m200, m020, m001, m101, m011, m002;
+	bool im3d;
 	virtual void initialize(const Image<T> &imIn)
 	{
+	    im3d = (imIn.getDimension()==3);
 	    this->retVal.clear();
-	    m00 = m10 = m01 = m11 = m20 = m02 = 0.;
+	    m000 = m100 = m010 = m110 = m200 = m020 = m001 = m101 = m011 = m002 = 0.;
 	}
 	virtual void processSequence(lineType lineIn, size_t size, size_t x, size_t y, size_t z)
 	{
 	    for (size_t i=0;i<size;i++,x++)
 	    {
 		T pxVal = lineIn[i];
-		m00 += pxVal;
-		m10 += pxVal * x;
-		m01 += pxVal * y;
-		m11 += pxVal * x * y;
-		m20 += pxVal * x * x;
-		m02 += pxVal * y * y;
+		m000 += pxVal;
+		m100 += pxVal * x;
+		m010 += pxVal * y;
+		m110 += pxVal * x * y;
+		m200 += pxVal * x * x;
+		m020 += pxVal * y * y;
+		if (im3d)
+		{
+		    m001 = pxVal * z;
+		    m101 = pxVal * x * z;
+		    m011 = pxVal * y * z;
+		    m002 = pxVal * z * z;
+		}
 	    }
 	}
 	virtual void finalize(const Image<T> &imIn)
 	{
-	    this->retVal.push_back(m00);
-	    this->retVal.push_back(m10);
-	    this->retVal.push_back(m01);
-	    this->retVal.push_back(m11);
-	    this->retVal.push_back(m20);
-	    this->retVal.push_back(m02);
+	    this->retVal.push_back(m000);
+	    this->retVal.push_back(m100);
+	    this->retVal.push_back(m010);
+	    if (im3d)
+	      this->retVal.push_back(m001);
+	    this->retVal.push_back(m110);
+	    if (im3d)
+	    {
+	      this->retVal.push_back(m101);
+	      this->retVal.push_back(m011);
+	    }
+	    this->retVal.push_back(m200);
+	    this->retVal.push_back(m020);
+	    if (im3d)
+	      this->retVal.push_back(m002);
 	}
     };
     /**
-    * 2D inertia coefficients
+    * Measure inertia moments
+    * 
+    * \return * For 2D images: m00, m10, m01, m11, m20, m02
+    * \return * For 3D images: m000, m100, m010, m110, m200, m020, m001, m101, m011, m002
     */
     template <class T>
     DoubleVector measInertiaMatrix(const Image<T> &im, const bool onlyNonZero=true)
