@@ -11,12 +11,12 @@ Git flow:
 To set up git-flow, one person runs this:
 git flow init
 git push -u origin develop
-git branch --set-upstream develop origin/develop
+git branch --set-upstream-to origin/develop
 
 - Use:
 Everyone else on the team runs this:
 git flow init
-git branch --set-upstream develop origin/develop
+git branch --set-upstream-to origin/develop
 
 Note: if these other guys have a branch lying around other than
 master, git flow will refuse to create the develop branch. Either
