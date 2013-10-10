@@ -43,6 +43,7 @@ SMIL_MODULE(smilBase)
 #include "DImageDraw.hpp"
 #include "DImageHistogram.hpp"
 #include "DImageTransform.hpp"
+#include "DBaseMeasureOperations.hpp"
 #include "DMeasures.hpp"
 #include "DImageMatrix.hpp"
 #include "DLabelMeasures.hpp"
@@ -125,9 +126,17 @@ TEMPLATE_WRAP_FUNC(scale);
 
 %include "DBaseMeasureOperations.hpp"
 
-%include std_map.i
+
+// Weird swig error...
+%{
+#ifndef SWIGPY_SLICE_ARG
+#define SWIGPY_SLICE_ARG(obj) ((PySliceObject*) (obj))
+#endif // SWIGPY_SLICE_ARG
+%}
+
 namespace std 
 {
+    %template(PixelSequenceVector) vector<PixelSequence>;
     %template(BlobMap) map<UINT,Blob>;
 }
 

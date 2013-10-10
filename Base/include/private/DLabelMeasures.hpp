@@ -42,7 +42,8 @@ namespace smil
 {
   
     /**
-    * \ingroup Measures
+    * \ingroup Base
+    * \defgroup LabelMesures Mesures on blobs
     * @{
     */
 
@@ -135,6 +136,11 @@ namespace smil
 	return processBlobMeasure<T, measBoundBoxFunc<T> >(imIn, blobs);
     }
 
+    /**
+    * Measure blobs inertia moments.
+    * 
+    * \demo{inertia_moments.py}
+    */
     template <class T>
     map<UINT, DoubleVector> measInertiaMatrices(const Image<T> &imIn, const bool onlyNonZero=true)
     {
