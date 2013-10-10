@@ -81,24 +81,38 @@ namespace smil
     #define MAX(a, b) a > b ? a : b;
     #endif // MAX
 
-    template <class T>
-    struct Point
+    // Should be templates, but swig doesn't like the map< T, Point<double> > ...
+    struct DoublePoint
     {
-      T x;
-      T y;
-      T z;
-      Point() : x(0), y(0), z(0) {}
-      Point(const Point<T> &pt) : x(pt.x), y(pt.y), z(pt.z) {}
-      Point(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
-      bool operator == (const Point<T> &p2)
+      double x;
+      double y;
+      double z;
+      DoublePoint() : x(0), y(0), z(0) {}
+      DoublePoint(const DoublePoint &pt) : x(pt.x), y(pt.y), z(pt.z) {}
+      DoublePoint(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {}
+      bool operator == (const DoublePoint &p2)
       {
 	  return (x==p2.x && y==p2.y && z==p2.z);
       }
     };
 
-    typedef Point<int> IntPoint;
-    typedef Point<UINT8> UCPoint;
-    typedef Point<double> DoublePoint;
+    struct IntPoint
+    {
+      int x;
+      int y;
+      int z;
+      IntPoint() : x(0), y(0), z(0) {}
+      IntPoint(const IntPoint &pt) : x(pt.x), y(pt.y), z(pt.z) {}
+      IntPoint(int _x, int _y, int _z) : x(_x), y(_y), z(_z) {}
+      bool operator == (const IntPoint &p2)
+      {
+	  return (x==p2.x && y==p2.y && z==p2.z);
+      }
+    };
+    
+    typedef vector<double> DoubleVector;
+    typedef vector<DoubleVector> DoubleMatrix;
+    typedef vector<UINT> UintVector;
     
     struct Rectangle
     {
@@ -123,9 +137,9 @@ namespace smil
 	    z0 = rhs.z0;
 	    z1 = rhs.z1;
 	}
-	UINT getXSize() const { return x1-x0; }
-	UINT getYSize() const { return y1-y0; }
-	UINT getZSize() const { return z1-z0; }
+	UINT getWidth() const { return x1-x0+1; }
+	UINT getHeight() const { return y1-y0+1; }
+	UINT getDepth() const { return z1-z0+1; }
     };
 
     

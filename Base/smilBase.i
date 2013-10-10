@@ -43,9 +43,13 @@ SMIL_MODULE(smilBase)
 #include "DImageDraw.hpp"
 #include "DImageHistogram.hpp"
 #include "DImageTransform.hpp"
+#include "DBaseMeasureOperations.hpp"
 #include "DMeasures.hpp"
 #include "DImageMatrix.hpp"
 #include "DLabelMeasures.hpp"
+
+#include <stdexcept>
+
 %}
 
 // Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
@@ -95,7 +99,7 @@ TEMPLATE_WRAP_FUNC(bitXOr);
 TEMPLATE_WRAP_FUNC(test);
 TEMPLATE_WRAP_FUNC(compare);
 TEMPLATE_WRAP_FUNC(mask);
-TEMPLATE_WRAP_FUNC(applyLookup);
+TEMPLATE_WRAP_FUNC_CROSS2(applyLookup);
 
 
 
@@ -120,6 +124,24 @@ TEMPLATE_WRAP_FUNC(trans);
 TEMPLATE_WRAP_FUNC(resize);
 TEMPLATE_WRAP_FUNC(scale);
 
+%include "DBaseMeasureOperations.hpp"
+
+
+// Weird swig error...
+%{
+#ifndef SWIGPY_SLICE_ARG
+#define SWIGPY_SLICE_ARG(obj) ((PySliceObject*) (obj))
+#endif // SWIGPY_SLICE_ARG
+%}
+
+namespace std 
+{
+    %template(PixelSequenceVector) vector<PixelSequence>;
+    %template(BlobMap) map<UINT,Blob>;
+}
+
+TEMPLATE_WRAP_FUNC(computeBlobs);
+
 %include "DMeasures.hpp"
 TEMPLATE_WRAP_FUNC(vol);
 %apply double *OUTPUT{double &mean_val};
@@ -131,13 +153,19 @@ TEMPLATE_WRAP_FUNC(maxVal);
 TEMPLATE_WRAP_FUNC(rangeVal);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
-TEMPLATE_WRAP_FUNC(measInertiaCoefficients);
+TEMPLATE_WRAP_FUNC(measInertiaMatrix);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 
 %include "DLabelMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);
+TEMPLATE_WRAP_FUNC(measMinVals);
+TEMPLATE_WRAP_FUNC(measMaxVals);
+TEMPLATE_WRAP_FUNC(measRangeVals);
+TEMPLATE_WRAP_FUNC(measMeanVals);
+TEMPLATE_WRAP_FUNC(measVolumes);
 TEMPLATE_WRAP_FUNC(measBarycenters);
 TEMPLATE_WRAP_FUNC(measBoundBoxes);
+TEMPLATE_WRAP_FUNC(measInertiaMatrices);
 
 %include "DImageMatrix.hpp"
 TEMPLATE_WRAP_FUNC(matMul);

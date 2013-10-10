@@ -38,6 +38,10 @@
 %module smilOctave
 #endif // SWIGOCTAVE
 
+#ifdef SWIGRUBY
+%module smilRuby
+#endif // SWIGRUBY
+
 
 %feature("autodoc", "1");
 

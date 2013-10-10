@@ -942,15 +942,15 @@ namespace smil
     /**
     * Apply a lookup map
     */
-    template <class T>
-    RES_T applyLookup(const Image<T> &imIn, map<T,T> &lut, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T applyLookup(const Image<T1> &imIn, map<T1,T2> &lut, Image<T2> &imOut)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 
 	
-	typename Image<T>::lineType pixIn = imIn.getPixels();
-	typename Image<T>::lineType pixOut = imOut.getPixels();
+	typename Image<T1>::lineType pixIn = imIn.getPixels();
+	typename Image<T2>::lineType pixOut = imOut.getPixels();
 	
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{

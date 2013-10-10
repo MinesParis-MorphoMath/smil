@@ -32,6 +32,7 @@
 
 #include "Core/include/private/DImage.hpp"
 #include "DImageHistogram.hpp"
+#include "DMeasures.hpp"
 
 #include <map>
 
@@ -41,168 +42,115 @@ namespace smil
 {
   
     /**
-    * \ingroup Measures
+    * \ingroup Base
+    * \defgroup LabelMesures Mesures on blobs
     * @{
     */
-
 
     /**
     * Measure label areas.
     * Return a map(labelValue, size_t) with the area of each label value.
+    * \demo{blob_measures.py}
     */
     template <class T>
-    map<T, double> measAreas(Image<T> &imIn)
+    map<UINT, double> measAreas(const Image<T> &imIn, const bool onlyNonZero=true)
     {
-	map<T, double> area;
-
-	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, area);
-	
-	typename Image<T>::volType slices = imIn.getSlices();
-	typename Image<T>::sliceType lines;
-	typename Image<T>::lineType pixels;
-	T pixVal;
-	
-	size_t imSize[3];
-	imIn.getSize(imSize);
-	
-	for (size_t z=0;z<imSize[2];z++)
-	{
-	    lines = *slices++;
-    // #pragma omp parallel for
-	    for (size_t y=0;y<imSize[1];y++)
-	    {
-		pixels = *lines++;
-		for (size_t x=0;x<imSize[0];x++)
-		{
-		    pixVal = pixels[x];
-		    if (pixVal!=0)
-			area[pixVal] += 1;
-		}
-	    }
-	}
-	
-	return area;
+	return processBlobMeasure<T, measAreaFunc<T> >(imIn, onlyNonZero);
     }
 
+    template <class T>
+    map<UINT, double> measAreas(const Image<T> &imIn, const map<UINT, Blob> &blobs)
+    {
+	return processBlobMeasure<T, measAreaFunc<T> >(imIn, blobs);
+    }
 
+    template <class T>
+    map<UINT, T> measMinVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
+    {
+	return processBlobMeasure<T, measMinValFunc<T> >(imIn, blobs);
+    }
 
+    template <class T>
+    map<UINT, T> measMaxVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
+    {
+	return processBlobMeasure<T, measMaxValFunc<T> >(imIn, blobs);
+    }
+
+    template <class T>
+    map<UINT, vector<T> > measRangeVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
+    {
+	return processBlobMeasure<T, measMinMaxValFunc<T> >(imIn, blobs);
+    }
+
+    template <class T>
+    map<UINT, DoubleVector> measMeanVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
+    {
+	return processBlobMeasure<T, measMeanValFunc<T> >(imIn, blobs);
+    }
+
+    template <class T>
+    map<UINT, double> measVolumes(const Image<T> &imLbl, const bool onlyNonZero=true)
+    {
+	return processBlobMeasure<T, measVolFunc<T> >(imLbl, onlyNonZero);
+    }
+    
+    template <class T>
+    map<UINT, double> measVolumes(const Image<T> &imLbl, const map<UINT, Blob> &blobs)
+    {
+	return processBlobMeasure<T, measVolFunc<T> >(imLbl, blobs);
+    }
+    
     /**
     * Measure barycenter of labeled image.
     * Return a map(labelValue, Point) with the barycenter point coordinates for each label value.
+    * 
+    * \demo{blob_measures.py}
     */
     template <class T>
-    map<T, DoublePoint> measBarycenters(Image<T> &imIn)
+    map<UINT, DoubleVector> measBarycenters(const Image<T> &imLbl, const bool onlyNonZero=true)
     {
-	map<T, DoublePoint> res;
-	
-	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, res);
-	
-	typename Image<T>::volType slices = imIn.getSlices();
-	typename Image<T>::sliceType lines;
-	typename Image<T>::lineType pixels;
-	T pixVal;
-	
-	map<T, double> xc, yc, zc;
-	map<T, UINT> ptNbrs;
-	
-	size_t imSize[3];
-	imIn.getSize(imSize);
-	
-	for (size_t z=0;z<imSize[2];z++)
-	{
-	    lines = *slices++;
-    // #pragma omp parallel for
-	    for (size_t y=0;y<imSize[1];y++)
-	    {
-		pixels = *lines++;
-		for (size_t x=0;x<imSize[0];x++)
-		{
-		    pixVal = pixels[x];
-		    if (pixVal!=0)
-		    {
-			xc[pixVal] += x;
-			yc[pixVal] += y;
-			zc[pixVal] += z;
-			ptNbrs[pixVal]++;
-		    }
-		}
-	    }
-	}
-	
-	typename map<T, UINT>::iterator it;
-	
-	for ( it=ptNbrs.begin() ; it != ptNbrs.end(); it++ )
-	{
-	    T lblVal = (*it).first;
-	    DoublePoint p;
-	    p.x = xc[lblVal]/ptNbrs[lblVal];
-	    p.y = yc[lblVal]/ptNbrs[lblVal];
-	    p.z = zc[lblVal]/ptNbrs[lblVal];
-	    res[lblVal] = p;
-	}
-	
-	return res;
+	return processBlobMeasure<T, measBarycenterFunc<T> >(imLbl, onlyNonZero);
     }
+    
+    template <class T>
+    map<UINT, DoubleVector> measBarycenters(const Image<T> &imLbl, const map<UINT, Blob> &blobs)
+    {
+	return processBlobMeasure<T, measBarycenterFunc<T> >(imLbl, blobs);
+    }
+    
+    
 
     /**
     * Measure bounding boxes of labeled image.
     * Return a map(labelValue, Box) with the bounding box for each label value.
     */
     template <class T>
-    map<T, Box> measBoundBoxes(Image<T> &imIn)
+    map<UINT, UintVector > measBoundBoxes(const Image<T> &imIn, const bool onlyNonZero=true)
     {
-	map<T, Box> boxMap;
-	
-	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, boxMap);
-	
-	typename Image<T>::volType slices = imIn.getSlices();
-	typename Image<T>::sliceType lines;
-	typename Image<T>::lineType pixels;
-	T pixVal;
-	
-	typename map<T, Box>::iterator boxIt;
-	Box box;
-	
-	size_t imSize[3];
-	imIn.getSize(imSize);
-	
-	for (size_t z=0;z<imSize[2];z++)
-	{
-	    lines = *slices++;
-    // #pragma omp parallel for
-	    for (size_t y=0;y<imSize[1];y++)
-	    {
-		pixels = *lines++;
-		for (size_t x=0;x<imSize[0];x++)
-		{
-		    pixVal = pixels[x];
-		    if (pixVal!=0)
-		    {
-			boxIt = boxMap.find(pixVal);
-			if (boxIt==boxMap.end()) // key doesn't exist, initialize it.
-			{
-			    box.x0 = box.x1 = x;
-			    box.y0 = box.y1 = y;
-			    box.z0 = box.z1 = z;
-			    boxMap[pixVal] = box;
-			}
-			else
-			{
-			    box = boxIt->second;
-			    if (x<box.x0) boxIt->second.x0 = x;
-			    if (x>box.x1) boxIt->second.x1 = x;
-			    if (y<box.y0) boxIt->second.y0 = y;
-			    if (y>box.y1) boxIt->second.y1 = y;
-			    if (z<box.z0) boxIt->second.z0 = z;
-			    if (z>box.z1) boxIt->second.z1 = z;
-			}
-		    }
-		}
-	    }
-	}
-	
-	
-	return boxMap;
+	return processBlobMeasure<T, measBoundBoxFunc<T> >(imIn, onlyNonZero);
+    }
+
+    template <class T>
+    map<UINT, UintVector > measBoundBoxes(const Image<T> &imIn, const map<UINT, Blob> &blobs)
+    {
+	return processBlobMeasure<T, measBoundBoxFunc<T> >(imIn, blobs);
+    }
+
+    /**
+    * Measure blobs inertia moments.
+    * 
+    * \demo{inertia_moments.py}
+    */
+    template <class T>
+    map<UINT, DoubleVector> measInertiaMatrices(const Image<T> &imIn, const bool onlyNonZero=true)
+    {
+	return processBlobMeasure<T, measInertiaMatrixFunc<T> >(imIn, onlyNonZero);
+    }
+    
+    template <class T>
+    map<UINT, DoubleVector> measInertiaMatrices(const Image<T> &imIn, const map<UINT, Blob> &blobs)
+    {
+	return processBlobMeasure<T, measInertiaMatrixFunc<T> >(imIn, blobs);
     }
     
 /** @}*/
