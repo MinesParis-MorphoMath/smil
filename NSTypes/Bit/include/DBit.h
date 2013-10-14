@@ -45,7 +45,7 @@ namespace smil
 {
 
     template <>
-    void _DGUI QtImageViewer<Bit>::drawImage();
+    void QtImageViewer<Bit>::drawImage();
 
     template <>
     RES_T readVTK<Bit>(const char *filename, Image<Bit> &image)

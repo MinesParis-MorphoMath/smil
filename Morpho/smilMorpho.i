@@ -172,3 +172,7 @@ open.__doc__ = "Builtin function:\n" + builtinOpen.__doc__ + "\n\nSmil function:
 
 %}
 #endif // SWIGPYTHON
+
+#ifndef SWIGIMPORTED
+%include "NSTypes.i"
+#endif

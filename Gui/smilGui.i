@@ -30,14 +30,17 @@
 SMIL_MODULE(smilGui)
 
 
-
-
 %{
 /* Includes the header in the wrapper code */
 #include "DGui.h"
 #include "DImage.h"
 #include "DImageViewer.hpp"
 %}
+
+#ifndef SWIGIMPORTED
+%include "NSTypes.i"
+#endif
+
 
 %import smilCore.i
 

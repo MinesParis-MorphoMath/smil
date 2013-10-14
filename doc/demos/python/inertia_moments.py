@@ -50,7 +50,7 @@ blobs = computeBlobs(imLbl)
 
 # Compute Inertia Matrices
 
-mats  = measInertiaMatrices(imIn, blobs)
+mats  = measInertiaMatrices(imLbl, blobs)
 bboxes = measBoundBoxes(imLbl)
 
 imDraw = Image(imIn)

@@ -170,3 +170,7 @@ TEMPLATE_WRAP_FUNC(measInertiaMatrices);
 %include "DImageMatrix.hpp"
 TEMPLATE_WRAP_FUNC(matMul);
 
+
+#ifndef SWIGIMPORTED
+%include "NSTypes.i"
+#endif

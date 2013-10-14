@@ -203,7 +203,10 @@ def Image(*args):
 	    
     elif args[0] in dataTypes: # First arg is an image type string ("UINT8", ...)
 	imgType = imageTypes[dataTypes.index(args[0])]
-	img = imgType(*args[1:])
+	if argNbr==1:
+	  img = imgType(256,256)
+	else:
+	  img = imgType(*args[1:])
 	fillImg = True
 
     # Create/load from an existing image fileName

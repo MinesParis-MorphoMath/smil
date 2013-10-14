@@ -65,25 +65,6 @@ class exception{};
 //%array_class(void, VoidArray);
 //%array_class(UINT8, Uint8Array);
 
-// BitArray
-#ifdef SMIL_WRAP_BIT
-%ignore BitArray::operator[];
-%extend BitArray
-{
-//	std::string  __str__() {
-//	    std::stringstream os;
-//	    os << *self;
-//	    return os.str();
-//	}
-
-//	bool operator[] (UINT i)
-//	{
-//	}
-
-}
-%ignore BitArray::operator++;
-%include "DBitArray.h"
-#endif // SMIL_WRAP_BIT
 
 %include "DTypes.hpp"
 %include "DTypes.h"
@@ -252,4 +233,8 @@ namespace smil
     TEMPLATE_WRAP_FUNC(createImage);
     TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
 }
+
+#ifndef SWIGIMPORTED
+%include "NSTypes.i"
+#endif
 
