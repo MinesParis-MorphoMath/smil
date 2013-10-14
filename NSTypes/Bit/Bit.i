@@ -27,35 +27,87 @@
 
 %include smilCommon.i
 
-//SMIL_MODULE(smilBit)
 
-%ignore BitArray::operator[];
+%{
+#include "DTypes.hpp"
+#include "NSTypes/Bit/include/DBit.h"
+#include "NSTypes/Bit/include/DBitArray.h"
+%}
 
-%ignore BitArray::operator++;
-%include "DBitArray.h"
 
-%extend BitArray
+namespace smil
 {
-	std::string  __str__() {
-	    std::stringstream os;
-	    os << *self;
-	    return os.str();
-	}
 
-	bool operator[] (UINT i)
-	{
-	}
+    %ignore BitArray::operator[];
+    %ignore BitArray::operator++;
 
+
+    %extend BitArray
+    {
+	    std::string  __str__() {
+		std::stringstream os;
+		os << *self;
+		return os.str();
+	    }
+
+	    bool operator[] (UINT i)
+	    {
+	    }
+
+    }
 }
 
+%include "DBitArray.h"
 
 #ifdef _DIMAGE_HPP
-#warning "66666666666666666666666666666666666666666666666666666"
 %template(Image_Bit) Image<Bit>;
-#endif
+#endif // _DIMAGE_HPP
 
 #ifdef _D_IMAGE_ARITH_HPP
-#warning "55555555555555555555555555555555555555555555555555555"
-%template(fill) fill<Bit>;
-#endif
+TEMPLATE_WRAP_FUNC_SINGLE(inv, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(fill, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(randFill, Bit);
 
+TEMPLATE_WRAP_FUNC_2T_FIX_FIRST(copy, Bit);
+TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(copy, Bit);
+
+TEMPLATE_WRAP_FUNC_SINGLE(equ, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(diff, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(sup, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(inf, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(low, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(lowOrEqu, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(grt, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(grtOrEqu, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(logicAnd, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(logicOr, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(logicXOr, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(bitAnd, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(bitOr, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(bitXOr, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(test, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(compare, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(mask, Bit);
+#endif // _D_IMAGE_ARITH_HPP
+
+
+#ifdef _D_IMAGE_DRAW_HPP
+TEMPLATE_WRAP_FUNC_SINGLE(drawLine, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(drawRectangle, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(drawBox, Bit);
+#ifdef USE_FREETYPE
+TEMPLATE_WRAP_FUNC_SINGLE(drawText, Bit);
+#endif // USE_FREETYPE
+
+TEMPLATE_WRAP_FUNC_SINGLE(vFlip, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(trans, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(resize, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(scale, Bit);
+#endif // _D_IMAGE_DRAW_HPP
+
+#ifdef _D_MORPHO_BASE_HPP
+TEMPLATE_WRAP_FUNC_SINGLE(dilate, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(erode, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(close, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(open, Bit);
+#endif // _D_MORPHO_BASE_HPP

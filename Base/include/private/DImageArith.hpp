@@ -85,11 +85,11 @@ namespace smil
 	gettimeofday(&tv, 0);
 	srand(tv.tv_usec);
 	
-	double rangeT = ImDtTypes<T>::max() - ImDtTypes<T>::min();
+	size_t rangeT = ImDtTypes<T>::max() - ImDtTypes<T>::min() + 1;
 	T minT = ImDtTypes<T>::min();
 	
 	for (size_t i=0;i<imOut.getPixelCount();i++)
-	  pixels[i] = T( rand()/double(RAND_MAX) * rangeT + minT );
+	  pixels[i] = T( rand() % rangeT + minT );
 	
 	imOut.modified();
 	
@@ -935,7 +935,7 @@ namespace smil
     template <class T>
     RES_T mask(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut)
     {
-	return test<T>(imMask, imIn, 0, imOut);
+	return test<T>(imMask, imIn, T(0), imOut);
     }
 
 

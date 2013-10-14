@@ -204,10 +204,6 @@ namespace smil
 // Image
 //////////////////////////////////////////////////////////
 
-#ifndef SWIGIMPORTED
-%include "NSTypes.i"
-#endif
-
 // Import smilGui for viewers stuff
 %import smilGui.i
 
@@ -237,4 +233,8 @@ namespace smil
     TEMPLATE_WRAP_FUNC(createImage);
     TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
 }
+
+#ifndef SWIGIMPORTED
+%include "NSTypes.i"
+#endif
 

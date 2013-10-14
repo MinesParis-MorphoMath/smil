@@ -30,14 +30,17 @@
 SMIL_MODULE(smilGui)
 
 
-
-
 %{
 /* Includes the header in the wrapper code */
 #include "DGui.h"
 #include "DImage.h"
 #include "DImageViewer.hpp"
 %}
+
+#ifndef SWIGIMPORTED
+%include "NSTypes.i"
+#endif
+
 
 %import smilCore.i
 
@@ -105,6 +108,3 @@ TEMPLATE_WRAP_CLASS(AaImageViewer, AaImageViewer);
 #endif // USE_AALIB
 
 
-#ifndef SWIGIMPORTED
-%include "NSTypes.i"
-#endif
