@@ -36,6 +36,26 @@
 
 using namespace smil;
 
+class Test_BitArray : public TestCase
+{
+    virtual void run()
+    {
+	TEST_ASSERT(bool(Bit(1))==true);
+	TEST_ASSERT(bool(Bit(0))==false);
+	
+        bool vec1[] = { 0, 0, 0, 0, 0, 1, 1, 0, 1, 0 };
+	const BitArray ba1(vec1, 10);
+	TEST_ASSERT(bool(ba1[5])==true);
+
+	Image<Bit> im1(256,256);
+	fill(im1, Bit(0));
+	im1.setPixel(10,10, Bit(1));
+	TEST_ASSERT(bool(im1.getPixel(9, 10))==false);
+	TEST_ASSERT(bool(im1.getPixel(10, 10))==true);
+        
+    }
+};
+
 class Test_Copy : public TestCase
 {
     virtual void run()
@@ -66,6 +86,50 @@ class Test_Copy : public TestCase
             im1.printSelf(1);
             im2.printSelf(1);
         }
+        
+    }
+};
+
+class Test_CopyFromUC : public TestCase
+{
+    virtual void run()
+    {
+        Image<UINT8> im1(7,7);
+        Image<Bit> im2(im1);
+        Image<Bit> imTruth(im1);
+
+        UINT8 vec1[] = {
+            0, 0, 0, 0, 0, 255, 255,
+            255, 255, 0, 0, 0, 255, 0,
+            0, 0, 0, 0, 0, 255, 0,
+            0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 255, 0, 0,
+            0, 0, 0, 0, 0, 0, 255,
+            0, 255, 0, 0, 0, 255, 255,
+        };
+
+        im1 << vec1;
+
+        copy(im1, im2);
+
+        bool vecTruth[] = {
+            0, 0, 0, 0, 0, 1, 1,
+            1, 1, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 0, 0,
+            1, 0, 0, 0, 1, 0, 0,
+            0, 0, 0, 0, 0, 0, 1,
+            0, 1, 0, 0, 0, 1, 1,
+        };
+        imTruth << BitArray(vecTruth, 49);
+
+        TEST_ASSERT(im2==imTruth);
+//         if (retVal==RES_ERR)
+        {
+            im2.printSelf(1);
+            imTruth.printSelf(1);
+        }
+        
     }
 };
 
@@ -178,17 +242,12 @@ class Test_Sup : public TestCase
 int main(int argc, char *argv[])
 {
     TestSuite ts;
-    ADD_TEST(ts, Test_Copy);
-    ADD_TEST(ts, Test_Trans);
-    ADD_TEST(ts, Test_Sup);
-
-    Image<Bit> im1(256,256);
-    randFill(im1);
-    Bit b(1);
-    im1.setPixel(10,10, b);
-    b = im1.getPixel(10, 10);
-    im1.show();
-//     Gui::execLoop();
+    ADD_TEST(ts, Test_BitArray);
+//     ADD_TEST(ts, Test_Copy);
+//     ADD_TEST(ts, Test_CopyFromUC);
+//     ADD_TEST(ts, Test_Trans);
+//     ADD_TEST(ts, Test_Sup);
+// 
     return ts.run();
 
 }
