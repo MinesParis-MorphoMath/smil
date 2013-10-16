@@ -41,7 +41,7 @@ void BitArray::setSize(UINT _bitWidth, UINT _bitHeight)
     height = _bitHeight;
 }
 
-bool BitArray::getValue(UINT ind)
+bool BitArray::getValue(UINT ind) const
 {
     int Y = ind / bitWidth;
     int X = (ind + Y*this->getBitPadX()) / INT_TYPE_SIZE;
@@ -69,10 +69,7 @@ Bit BitArray::operator [] (UINT i)
 
 Bit BitArray::operator [] (UINT i) const
 {
-    Bit b;
-    b.bitArray = (BitArray*)this;
-    b.index = i;
-    return b;
+    return Bit(this->getValue(i));
 }
 
 
@@ -152,3 +149,19 @@ Bit& Bit::operator = (const Bit &src)
     return *this;
 }
 
+bool Bit::operator< (const Bit &src) const 
+{ 
+  if (bitArray)
+  {
+      if (src.bitArray)
+	return bitArray->getValue()<src.bitArray->getValue();
+      else return bitArray->getValue()<src.value;
+  }
+  else
+  {
+      if (src.bitArray)
+	return value<src.bitArray->getValue();
+      else return value<src.value;
+  }
+  
+}

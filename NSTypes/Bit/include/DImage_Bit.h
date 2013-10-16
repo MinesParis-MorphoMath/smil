@@ -60,6 +60,7 @@ namespace smil
     template <>
     RES_T Image<Bit>::setPixel(size_t offset, const Bit &value);
 
+
 } // namespace smil
 
 #endif // _IMAGE_BIN_HXX

@@ -38,6 +38,7 @@
 
 #include <set>
 #include <map>
+#include <functional>   // std::equal_to
 
 namespace smil
 {
@@ -47,13 +48,16 @@ namespace smil
     * @{
     */
   
-    template <class T1, class T2>
+    template <class T1, class T2, class compFuncType >
     class labelFunct : public unaryMorphImageFunctionBase<T1, T2>
     {
     public:
 	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
 	typedef typename parentClass::imageInType imageInType;
 	typedef typename parentClass::imageOutType imageOutType;
+	
+	compFuncType compFunc;
+	bool onlyNonZero;
 	
 	size_t getLabelNbr() { return labels; }
 	
@@ -72,7 +76,7 @@ namespace smil
 	{
 	    T1 pVal = this->pixelsIn[pointOffset];
 	    
-	    if (pVal==0)
+	    if (onlyNonZero && pVal==0)
 	      return;
 
 	    T2 curLabel = this->pixelsOut[pointOffset];
@@ -87,7 +91,7 @@ namespace smil
 	    {
 		size_t curDOffset = pointOffset + *dOffset;
 		
-		if (this->pixelsIn[curDOffset] == pVal)
+		if (compFunc(this->pixelsIn[curDOffset], pVal))
 		{
 		  T2 outPixVal = this->pixelsOut[curDOffset];
 		  if (outPixVal==0)
@@ -222,7 +226,8 @@ namespace smil
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
-	labelFunct<T1,T2> f;
+	labelFunct<T1,T2, std::equal_to<T1> > f;
+	f.onlyNonZero = true;
 	
 	ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
 	
@@ -233,6 +238,43 @@ namespace smil
 	return lblNbr;
     }
 
+    template <class T> struct lambda_sup : binary_function <T,T,bool> 
+    {
+	double _lambda;
+	bool onlyNonZero;
+	bool operator() (const T& x, const T& y) const 
+	{ 
+	  if (onlyNonZero)
+	    if (x==0 || y==0)
+	      return false;
+	  return  fabs(double(x)-double(y)) <= _lambda;
+	}
+    };
+    /**
+    * Lambda flat zones labelization
+    * 
+    * Return the number of labels (or 0 if error).
+    */
+    template<class T1, class T2>
+    size_t lambdaFlatZones(const Image<T1> &imIn, const T1 &_lambda, Image<T2> &imOut, const StrElt &se=DEFAULT_SE, bool onlyNonZero=true)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	labelFunct<T1,T2, lambda_sup<T1> > f;
+	f.compFunc._lambda = _lambda;
+	f.compFunc.onlyNonZero = onlyNonZero;
+	f.onlyNonZero = onlyNonZero;
+	
+	ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
+	
+	size_t lblNbr = f.getLabelNbr();
+	
+	ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+	
+	return lblNbr;
+    }
+    
     /**
     * Image labelization with the size of each connected components
     * 
@@ -296,7 +338,7 @@ namespace smil
     }
 
     template <class T1, class T2>
-    class neighborsFunct : public unaryMorphImageFunctionBase<T1, T2>
+    class neighborValNbrFunct : public unaryMorphImageFunctionBase<T1, T2>
     {
     public:
 	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
@@ -329,12 +371,12 @@ namespace smil
     * \not_parallelized
     */ 
     template <class T1, class T2>
-    RES_T neighbors(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T neighborValNbr(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
-	neighborsFunct<T1, T2> f;
+	neighborValNbrFunct<T1, T2> f;
 	
 	ASSERT((f._exec(imIn, imOut, se)==RES_OK));
 	

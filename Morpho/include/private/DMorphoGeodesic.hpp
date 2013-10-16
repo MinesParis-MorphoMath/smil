@@ -151,8 +151,7 @@ namespace smil
 	
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
-	    hq.push(*inPixels, offset);
-	    inPixels++;
+	    hq.push(inPixels[i], offset);
 	    offset++;
 	}
 	
@@ -176,10 +175,9 @@ namespace smil
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
 
-	    if (*inPixels != noPushValue) {
-	      hq.push(*inPixels, offset);
+	    if (inPixels[i] != noPushValue) {
+	      hq.push(inPixels[i], offset);
 	    }
-	    inPixels++;
 	    offset++;
 	}
 	
@@ -274,13 +272,13 @@ namespace smil
     template <class T>
     struct minFunctor 
     {
-      inline T operator()(T a, T b) { return min(a, b); }
+      inline const T &operator()(const T &a, const T &b) { return min(a, b); }
     };
 
     template <class T>
     struct maxFunctor 
     {
-      inline T operator()(T a, T b) { return max(a, b); }
+      inline const T &operator()(const T &a, const T &b) { return max(a, b); }
     };
 
     /**

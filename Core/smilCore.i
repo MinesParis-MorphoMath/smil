@@ -235,6 +235,6 @@ namespace smil
 }
 
 #ifndef SWIGIMPORTED
-%include "NSTypes.i"
+%include "smilCommonEnd.i"
 #endif
 

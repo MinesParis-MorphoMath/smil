@@ -32,6 +32,7 @@
 #include "DTypes.hpp"
 #include "NSTypes/Bit/include/DBit.h"
 #include "NSTypes/Bit/include/DBitArray.h"
+#include "DImage_Bit.h"
 %}
 
 
@@ -90,6 +91,16 @@ TEMPLATE_WRAP_FUNC_SINGLE(compare, Bit);
 TEMPLATE_WRAP_FUNC_SINGLE(mask, Bit);
 #endif // _D_IMAGE_ARITH_HPP
 
+#ifdef _D_MEASURES_HPP
+TEMPLATE_WRAP_FUNC_SINGLE(vol, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(meanVal, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(area, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(measBarycenter, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(measBoundBox, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(measInertiaMatrix, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(nonZeroOffsets, Bit);
+#endif // _D_MEASURES_HPP
+
 
 #ifdef _D_IMAGE_DRAW_HPP
 TEMPLATE_WRAP_FUNC_SINGLE(drawLine, Bit);
@@ -111,3 +122,17 @@ TEMPLATE_WRAP_FUNC_SINGLE(erode, Bit);
 TEMPLATE_WRAP_FUNC_SINGLE(close, Bit);
 TEMPLATE_WRAP_FUNC_SINGLE(open, Bit);
 #endif // _D_MORPHO_BASE_HPP
+
+#ifdef _D_MORPHO_GEODESIC_HPP
+TEMPLATE_WRAP_FUNC_SINGLE(geoDil, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(geoEro, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(geoBuild, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(geoDualBuild, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(build, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(binBuild, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(dualBuild, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(buildOpen, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(buildClose, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(fillHoles, Bit);
+TEMPLATE_WRAP_FUNC_SINGLE(levelPics, Bit);
+#endif // _D_MORPHO_GEODESIC_HPP

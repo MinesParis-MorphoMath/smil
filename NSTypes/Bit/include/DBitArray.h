@@ -30,10 +30,11 @@
 #ifndef _DBITARRAY_H
 #define _DBITARRAY_H
 
-#include <iostream>
 
 #include "DTypes.hpp"
 
+#include <iostream>
+#include <algorithm>
 
 namespace smil
 {
@@ -50,10 +51,10 @@ namespace smil
 	operator bool() const;
 	Bit& operator = (const bool v);
 	Bit& operator = (const Bit &src);
-	inline bool operator< (const Bit &src) const { return value<src.value; }
+	bool operator< (const Bit &src) const;
     };
 
-
+    
     class BitArray
     {
     public:
@@ -112,7 +113,7 @@ namespace smil
 	inline UINT getIntWidth() { return intWidth; }
 	inline UINT getIntNbr() { return intWidth*height; }
 	inline UINT getHeight() { return height; }
-	inline UINT getBitPadX() { return intWidth*INT_TYPE_SIZE - bitWidth; }
+	inline UINT getBitPadX() const { return intWidth*INT_TYPE_SIZE - bitWidth; }
 
 	UINT index;
 	
@@ -129,7 +130,11 @@ namespace smil
 	    intArray = NULL;
 	}
 	
-	bool getValue(UINT ind);
+	bool getValue() const
+	{
+	    return getValue(index);
+	}
+	bool getValue(UINT ind) const;
 	void setValue(UINT ind, bool val);
 	operator bool() { return intArray!=NULL; }
 	Bit operator [] (UINT i); // lValue
@@ -204,6 +209,7 @@ namespace smil
 
 	static inline pixelType min() { return Bit(0); }
 	static inline pixelType max() { return Bit(1); }
+	static inline size_t cardinal() { return 2; }
 	static inline lineType createLine(UINT lineLen) 
 	{ 
 	    BitArray ba(lineLen);

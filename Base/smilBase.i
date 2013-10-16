@@ -144,8 +144,6 @@ TEMPLATE_WRAP_FUNC(computeBlobs);
 
 %include "DMeasures.hpp"
 TEMPLATE_WRAP_FUNC(vol);
-%apply double *OUTPUT{double &mean_val};
-%apply double *OUTPUT{double &std_dev_val};
 TEMPLATE_WRAP_FUNC(meanVal);
 TEMPLATE_WRAP_FUNC(area);
 TEMPLATE_WRAP_FUNC(minVal);
@@ -172,5 +170,5 @@ TEMPLATE_WRAP_FUNC(matMul);
 
 
 #ifndef SWIGIMPORTED
-%include "NSTypes.i"
+%include "smilCommonEnd.i"
 #endif
