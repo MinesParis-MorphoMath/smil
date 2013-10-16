@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,51 +27,21 @@
  */
 
 
-#ifndef _DBIT_H
-#define _DBIT_H
+#ifndef _D_MORPHO_BIT_H
+#define _D_MORPHO_BIT_H
 
-#include "DBitArray.h"
-#include "DImage_Bit.h"
-#include "DLineArith_Bit.h"
-#include "DImageArith_Bit.h"
-#include "DImageHistogram_Bit.h"
-#include "DMorpho_Bit.h"
-
-#include "Morpho/include/private/DMorphoArrow.hpp"
-#include "Morpho/include/private/DMorphImageOperations.hpp"
-
-#include "Base/include/private/DImageMatrix.hpp"
+#include "Morpho/include/private/DMorphoGeodesic.hpp"
 
 namespace smil
 {
-
     template <>
-    void QtImageViewer<Bit>::drawImage();
-
-    template <>
-    RES_T readVTK<Bit>(const char *filename, Image<Bit> &image)
+    RES_T build<Bit>(const Image<Bit> &imIn, const Image<Bit> &imMark, Image<Bit> &imOut, const StrElt &se)
     {
+	return binBuild<Bit>(imIn, imMark, imOut, se);
     }
 
-    template <>
-    RES_T writeVTK<Bit>(const Image<Bit> &image, const char *filename, bool binary)
-    {
-    }
-
-    
-    template <>
-    RES_T matMul<Bit>(const Image<Bit> &imIn1, const Image<Bit> &imIn2, Image<Bit> &imOut)
-    {
-    }
-
-#if defined SWIGPYTHON and defined USE_NUMPY
-    template <>
-    PyObject * Image<Bit>::getNumArray(bool c_contigous)
-    {
-    }
-#endif // defined SWIGPYTHON and defined USE_NUMPY
 
 } // namespace smil
 
-#endif // _DBIT_H
+#endif // _D_MORPHO_BIT_H
 

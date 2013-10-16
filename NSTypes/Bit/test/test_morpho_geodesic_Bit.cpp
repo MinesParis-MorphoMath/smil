@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,51 +27,79 @@
  */
 
 
-#ifndef _DBIT_H
-#define _DBIT_H
+#include "DCore.h"
+#include "DMorpho.h"
+#include "DGui.h"
+#include "DIO.h"
+#include "DBit.h"
 
-#include "DBitArray.h"
-#include "DImage_Bit.h"
-#include "DLineArith_Bit.h"
-#include "DImageArith_Bit.h"
-#include "DImageHistogram_Bit.h"
-#include "DMorpho_Bit.h"
+using namespace smil;
 
-#include "Morpho/include/private/DMorphoArrow.hpp"
-#include "Morpho/include/private/DMorphImageOperations.hpp"
-
-#include "Base/include/private/DImageMatrix.hpp"
-
-namespace smil
+class Test_Build : public TestCase
 {
+  virtual void run()
+  {
+      typedef Bit dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+      imType imTruth(im1);
+      
+      bool vec1[] = {
+	0, 0, 0, 0, 0, 1, 1,
+	1, 1, 0, 0, 0, 1, 0,
+	0, 0, 0, 0, 0, 1, 0,
+	0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 1, 0, 0,
+	0, 0, 0, 0, 0, 0, 1,
+	0, 1, 0, 0, 0, 1, 1,
+      };
+      im1 << BitArray(vec1, 49);
+      
+      bool vec2[] = {
+	0, 0, 0, 0, 0, 1, 0,
+	0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 1, 0,
+      };
+      im2 << BitArray(vec2, 49);
+      
+      build(im2, im1, im3);
+      
+      bool vecBuild[] = {
+	0, 0, 0, 0, 0, 1, 1,
+	0, 0, 0, 0, 0, 1, 0,
+	0, 0, 0, 0, 0, 1, 0,
+	0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 0,
+	0, 0, 0, 0, 0, 0, 1,
+	0, 0, 0, 0, 0, 1, 1,
+      };
+      imTruth << BitArray(vecBuild, 49);
+      
+      TEST_ASSERT(im3==imTruth);
+      if (retVal==RES_ERR)
+      {
+	  im3.printSelf(1);
+	  imTruth.printSelf(1);
+      }
+      
+  }
+};
 
-    template <>
-    void QtImageViewer<Bit>::drawImage();
 
-    template <>
-    RES_T readVTK<Bit>(const char *filename, Image<Bit> &image)
-    {
-    }
 
-    template <>
-    RES_T writeVTK<Bit>(const Image<Bit> &image, const char *filename, bool binary)
-    {
-    }
-
-    
-    template <>
-    RES_T matMul<Bit>(const Image<Bit> &imIn1, const Image<Bit> &imIn2, Image<Bit> &imOut)
-    {
-    }
-
-#if defined SWIGPYTHON and defined USE_NUMPY
-    template <>
-    PyObject * Image<Bit>::getNumArray(bool c_contigous)
-    {
-    }
-#endif // defined SWIGPYTHON and defined USE_NUMPY
-
-} // namespace smil
-
-#endif // _DBIT_H
+int main(int argc, char *argv[])
+{
+      TestSuite ts;
+      ADD_TEST(ts, Test_Build);
+      
+      return ts.run();
+  
+}
 

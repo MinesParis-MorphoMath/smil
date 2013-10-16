@@ -114,54 +114,41 @@ ostream& BitArray::printSelf(ostream &os)
 }
 
 
+bool Bit::getValue() const
+{
+  if (bitArray) 
+    return bitArray->getValue();
+  else 
+    return value;
+}
+void Bit::setValue(bool v)
+{
+  if (bitArray) 
+    bitArray->setValue(v);
+  else 
+    value = v;
+}
+
 
 Bit::operator bool() const
 {
-    if (bitArray)
-	return bitArray->getValue(index);
-    else return value;
+    return getValue();
 }
 
 Bit& Bit::operator = (const bool v)
 {
-    if (bitArray)
-        bitArray->setValue(index, v);
-    else value = v;
+    setValue(v);
     return *this;
 }
 
 Bit& Bit::operator = (const Bit &src)
 {
-    if (bitArray)
-    {
-        if (src.bitArray)
-            bitArray->setValue(index, src.bitArray->getValue(index));
-        else
-            bitArray->setValue(index, src.value);
-    }
-    else
-    {
-        if (src.bitArray)
-            value = src.bitArray->getValue(index);
-        else
-            value = src.value;
-    }
+    bitArray = src.bitArray;
+    setValue(src.getValue());
     return *this;
 }
 
 bool Bit::operator< (const Bit &src) const 
 { 
-  if (bitArray)
-  {
-      if (src.bitArray)
-	return bitArray->getValue()<src.bitArray->getValue();
-      else return bitArray->getValue()<src.value;
-  }
-  else
-  {
-      if (src.bitArray)
-	return value<src.bitArray->getValue();
-      else return value<src.value;
-  }
-  
+    return getValue() < src.getValue();
 }

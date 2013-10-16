@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
     im1.setPixel(10,10, b);
     b = im1.getPixel(10, 10);
     im1.show();
-    Gui::execLoop();
+//     Gui::execLoop();
     return ts.run();
 
 }

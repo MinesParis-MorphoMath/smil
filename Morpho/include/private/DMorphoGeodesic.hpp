@@ -190,8 +190,8 @@ namespace smil
     template <class T, class operatorT>
     RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq, const StrElt &se)
     {
-	typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
-	typename ImDtTypes<T>::lineType markPixels = imMark.getPixels();
+	const typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
+	const typename ImDtTypes<T>::lineType markPixels = imMark.getPixels();
 	typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
 	
 	vector<int> dOffsets;
