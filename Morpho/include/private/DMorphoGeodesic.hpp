@@ -32,6 +32,7 @@
 
 #include "DMorphImageOperations.hpp"
 #include "DMorphoHierarQ.hpp"
+#include "DMorphoBase.hpp"
 #include "Base/include/private/DImageDraw.hpp"
 #include "Base/include/private/DImageHistogram.hpp"
 

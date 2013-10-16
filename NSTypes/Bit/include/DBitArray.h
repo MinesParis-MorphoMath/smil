@@ -47,8 +47,8 @@ namespace smil
 	Bit(bool v) : bitArray(NULL), value(v), index(0) {}
 	BitArray *bitArray;
 	UINT index;
-	inline bool getValue() const;
-	inline void setValue(bool v);
+	bool getValue() const;
+	void setValue(bool v);
 	operator bool() const;
 	Bit& operator = (const bool v);
 	Bit& operator = (const Bit &src);

@@ -30,7 +30,7 @@
 #ifndef _D_THINNING_HPP
 #define _D_THINNING_HPP
 
-#include "DCompositeSE.h"
+#include "Morpho/include/DCompositeSE.h"
 #include "DMorphoBase.hpp"
 
 
