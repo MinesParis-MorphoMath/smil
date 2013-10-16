@@ -77,7 +77,50 @@ class Test_Label : public TestCase
   }
 };
 
-class Test_LabelNeighbors : public TestCase
+class Test_LambdaFlatZonesLabel : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+      
+      dataType vec1[] = {
+	0,  0,  0,  0,  0,  0, 10,
+	0,  0,  0,  0,  9, 11, 15,
+	0, 10,  0,  0,  2,  1,  3,
+	1,  1,  0,  0,  0,  6,  0,
+	1,  0,  0,  0,  0,  0,  0,
+	1,  0,  1,  0,  0,  1,  0,
+	0,  0,  1,  0,  1,  8,  0
+      };
+      
+      im1 << vec1;
+      
+      lambdaFlatZones(im1, (dataType)5, im2, sSE());
+//       im2.printSelf(1);
+      
+//       im2.printSelf(1);
+//       Gui::execLoop();
+      dataType vec3[] = {
+	  0,   0,   0,   0,   0,   0,   1,
+	  0,   0,   0,   0,   1,   1,   1,
+	  0,   2,   0,   0,   3,   3,   3,
+	  4,   4,   0,   0,   0,   3,   0,
+	  4,   0,   0,   0,   0,   0,   0,
+	  4,   0,   5,   0,   0,   6,   0,
+	  0,   0,   5,   0,   6,   7,   0,
+      };
+      im3 << vec3;
+      
+      TEST_ASSERT(im2==im3);
+  }
+};
+
+class Test_NeighborValNbr : public TestCase
 {
   virtual void run()
   {
@@ -92,7 +135,7 @@ class Test_LabelNeighbors : public TestCase
 	0, 0, 0, 0, 0, 0, 1, 
 	0, 0, 0, 0, 1, 1, 1, 
 	0, 2, 0, 0, 1, 1, 1, 
-	2, 2, 0, 0, 0, 1, 0, 
+	2, 2, 0, 2, 0, 1, 0, 
 	2, 0, 0, 0, 0, 0, 0, 
 	2, 0, 3, 0, 0, 4, 0, 
 	0, 0, 3, 0, 4, 4, 0
@@ -100,17 +143,17 @@ class Test_LabelNeighbors : public TestCase
       
       im1 << vec1;
       
-      neighbors(im1, im2, sSE());
+      neighborValNbr(im1, im2, sSE());
 //       im2.printSelf(1);
       
       dataType vec3[] = {
-	1, 1, 1, 2, 2, 2, 2, 
-	2, 2, 2, 2, 2, 2, 2, 
-	2, 2, 2, 2, 2, 2, 2, 
-	2, 2, 2, 2, 2, 2, 2, 
-	2, 3, 3, 2, 3, 3, 3, 
-	2, 3, 2, 3, 2, 2, 2, 
-	2, 3, 2, 3, 2, 2, 2, 
+	1, 1, 1, 2, 2, 2, 2,
+	2, 2, 2, 2, 2, 2, 2,
+	2, 2, 2, 3, 3, 2, 2,
+	2, 2, 2, 3, 3, 2, 2,
+	2, 3, 3, 3, 4, 3, 3,
+	2, 3, 2, 3, 2, 2, 2,
+	2, 3, 2, 3, 2, 2, 2,
       };
       im3 << vec3;
       
@@ -122,7 +165,8 @@ int main(int argc, char *argv[])
 {
       TestSuite ts;
       ADD_TEST(ts, Test_Label);
-      ADD_TEST(ts, Test_LabelNeighbors);
+      ADD_TEST(ts, Test_LambdaFlatZonesLabel);
+      ADD_TEST(ts, Test_NeighborValNbr);
       
       return ts.run();
   

@@ -25,86 +25,10 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-%include smilCommon.i
 
-SMIL_MODULE(smilGui)
+// CMake generated NSType interfaces
 
+${SWIG_NSTYPES_WRAP_DEFINITIONS}
 
-%{
-/* Includes the header in the wrapper code */
-#include "DGui.h"
-#include "DImage.h"
-#include "DImageViewer.hpp"
-%}
-
-#ifndef SWIGIMPORTED
-%include "smilCommonEnd.i"
-#endif
-
-
-%import smilCore.i
-
-
-//////////////////////////////////////////////////////////
-// Gui Instance
-//////////////////////////////////////////////////////////
-
-%include "DInstance.hpp"
-%template(GuiInstance) smil::UniqueInstance<smil::Gui>;
-%include "DGuiInstance.h"
-
-
-
-%include "DGui.h"
-
-
-// generate directors for virtual methods (except those returning const char ptr)
-%feature("director") baseImageViewer;
-%feature("nodirector") baseImageViewer::getInfoString;
-%feature("nodirector") baseImageViewer::getClassName;
-%feature("nodirector") baseImageViewer::getName;
-
-%include "DBaseImageViewer.h"
-%include "DImageViewer.hpp"
-
-
-TEMPLATE_WRAP_CLASS(smil::ImageViewer, ImageViewer);
-
-
-#ifdef USE_QT
-
-%{
-#include "Qt/DQtImageViewer.hpp"
-#include "Qt/DQtImageViewer.hxx"
-#include "Qt/DQtGuiInstance.h"
-%}
-
-class ImageViewerWidget
-{};
-
-%include "Qt/DQtImageViewer.hpp"
-TEMPLATE_WRAP_CLASS(QtImageViewer, QtImageViewer);
-
-#ifdef SWIGPYTHON
-%init
-%{
-  // Process Qt events from the Python input hook.
-  PyOS_InputHook = qtLoop;
-%}
-#endif // SWIGPYTHON
-
-#endif // USE_QT
-
-
-
-#ifdef USE_AALIB
-%{
-#include "AALib/DAAImageViewer.hpp"
-%}
-
-%include "AALib/DAAImageViewer.hpp"
-TEMPLATE_WRAP_CLASS(AaImageViewer, AaImageViewer);
-
-#endif // USE_AALIB
 
 

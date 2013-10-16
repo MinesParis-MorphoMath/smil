@@ -153,7 +153,7 @@ namespace smil
 	for (;it!=coordsVect.end();it++)
 	{
 	    vector<UINT> coords = it->second;
-	    T val = value==0 ? it->first : value;
+	    T val = value==0 ? T(it->first) : value;
 	    if (drawRectangle<T>(imOut, coords[0], coords[1], coords[2]-coords[0]+1, coords[3]-coords[1]+1, val, fill)!=RES_OK)
 	      return RES_ERR;
 	}

@@ -130,9 +130,10 @@ TEMPLATE_WRAP_FUNC(waterfall);
 
 %include "DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_CROSS2(label);
+TEMPLATE_WRAP_FUNC_CROSS2(lambdaFlatZones);
 TEMPLATE_WRAP_FUNC_CROSS2(labelWithArea);
 TEMPLATE_WRAP_FUNC(areaOpen);
-TEMPLATE_WRAP_FUNC_CROSS2(neighbors);
+TEMPLATE_WRAP_FUNC_CROSS2(neighborValNbr);
 
 %ignore smil::CompStrEltList::operator[];
 %extend smil::CompStrEltList
@@ -172,3 +173,7 @@ open.__doc__ = "Builtin function:\n" + builtinOpen.__doc__ + "\n\nSmil function:
 
 %}
 #endif // SWIGPYTHON
+
+#ifndef SWIGIMPORTED
+%include "smilCommonEnd.i"
+#endif

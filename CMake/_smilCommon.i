@@ -203,6 +203,10 @@ using namespace smil;
 #endif // SWIGPYTHON
 
 
+%define TEMPLATE_WRAP_FUNC_SINGLE(func, type)
+  %template(func) func<type>;
+%enddef
+
 // CMake generated wrap macros
 
 ${SWIG_TEMPLATE_WRAP_DEFINITIONS}

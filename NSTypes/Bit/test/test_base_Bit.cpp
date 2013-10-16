@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -38,155 +38,159 @@ using namespace smil;
 
 class Test_Copy : public TestCase
 {
-  virtual void run()
-  {
-      typedef Bit dataType;
-      typedef Image<dataType> imType;
-      
-      imType im1(7,7);
-      imType im2(im1);
-      
-       bool vec1[] = {
-	0, 0, 0, 0, 0, 1, 1,
-	1, 1, 0, 0, 0, 1, 0,
-	0, 0, 0, 0, 0, 1, 0,
-	0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 1, 0, 0,
-	0, 0, 0, 0, 0, 0, 1,
-	0, 1, 0, 0, 0, 1, 1,
-      };
-      
-      im1 << BitArray(vec1, 49);
-      
-      copy(im1, im2);
-      
-      TEST_ASSERT(im1==im2);
-      if (retVal==RES_ERR)
-      {
-	  im1.printSelf(1);
-	  im2.printSelf(1);
-      }
-  }
+    virtual void run()
+    {
+        typedef Bit dataType;
+        typedef Image<dataType> imType;
+
+        imType im1(7,7);
+        imType im2(im1);
+
+        bool vec1[] = {
+            0, 0, 0, 0, 0, 1, 1,
+            1, 1, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 0, 0,
+            0, 0, 0, 0, 0, 0, 1,
+            0, 1, 0, 0, 0, 1, 1,
+        };
+
+        im1 << BitArray(vec1, 49);
+
+        copy(im1, im2);
+
+        TEST_ASSERT(im1==im2);
+        if (retVal==RES_ERR)
+        {
+            im1.printSelf(1);
+            im2.printSelf(1);
+        }
+    }
 };
 
 class Test_Trans : public TestCase
 {
-  virtual void run()
-  {
-      typedef Bit dataType;
-      typedef Image<dataType> imType;
-      
-      imType im1(7,7);
-      imType im2(im1);
-      imType im3(im1);
-      
-      bool vec1[] = {
-	0, 0, 0, 0, 0, 1, 1,
-	1, 1, 0, 0, 0, 1, 0,
-	0, 0, 0, 0, 0, 1, 0,
-	0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 1, 0, 0,
-	0, 0, 0, 0, 0, 0, 1,
-	0, 1, 0, 0, 0, 1, 1,
-      };
-      im1 << BitArray(vec1, 49);
-      
-      BitArray bit(vec1, 49);
-      BitArray bit2(vec1, 49);
-      
-      trans(im1, 2, -2, im2);
-      
-      bool vec3[] = {
-	0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 1, 1, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 0, 
-	0, 0, 0, 0, 0, 0, 1, 
-      };
-      im3 << BitArray(vec3, 49);
-      
-      TEST_ASSERT(im2==im3);
-      if (retVal==RES_ERR)
-      {
-	  im3.printSelf(1);
-	  im2.printSelf(1);
-      }
-  }
+    virtual void run()
+    {
+        typedef Bit dataType;
+        typedef Image<dataType> imType;
+
+        imType im1(7,7);
+        imType im2(im1);
+        imType im3(im1);
+
+        bool vec1[] = {
+            0, 0, 0, 0, 0, 1, 1,
+            1, 1, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 0, 0,
+            0, 0, 0, 0, 0, 0, 1,
+            0, 1, 0, 0, 0, 1, 1,
+        };
+        im1 << BitArray(vec1, 49);
+
+        BitArray bit(vec1, 49);
+        BitArray bit2(vec1, 49);
+
+        trans(im1, 2, -2, im2);
+
+        bool vec3[] = {
+            0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0,
+            0, 0, 1, 1, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 1,
+        };
+        im3 << BitArray(vec3, 49);
+
+        TEST_ASSERT(im2==im3);
+        if (retVal==RES_ERR)
+        {
+            im3.printSelf(1);
+            im2.printSelf(1);
+        }
+    }
 };
 
 class Test_Sup : public TestCase
 {
-  virtual void run()
-  {
-      typedef Bit dataType;
-      typedef Image<dataType> imType;
-      
-      imType im1(7,7);
-      imType im2(im1);
-      imType im3(im1);
-      
-      bool vec1[] = {
-	0, 0, 0, 0, 0, 1, 1,
-	1, 1, 0, 0, 0, 1, 0,
-	0, 0, 0, 0, 0, 1, 0,
-	0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 1, 0, 0,
-	0, 0, 0, 0, 0, 0, 1,
-	0, 1, 0, 0, 0, 1, 1,
-      };
-      im1 << BitArray(vec1, 49);
-      
-      bool vec2[] = {
-	0, 1, 1, 0, 0, 1, 0,
-	1, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0,
-	0, 1, 0, 1, 0, 0, 1,
-	0, 0, 0, 0, 0, 0, 0,
-	1, 1, 1, 0, 0, 0, 1,
-	0, 1, 0, 0, 1, 0, 0,
-      };
-      im2 << BitArray(vec2, 49);
-      
-      bool vec3[] = {
-	0, 1, 1, 0, 0, 1, 1, 
-	1, 1, 0, 0, 0, 1, 0, 
-	0, 0, 0, 0, 0, 1, 0, 
-	0, 1, 0, 1, 0, 0, 1, 
-	0, 0, 0, 0, 1, 0, 0, 
-	1, 1, 1, 0, 0, 0, 1, 
-	0, 1, 0, 0, 1, 1, 1
-      };
-      
-      sup(im1, im2, im3);
-      
-      im2 << BitArray(vec3, 49);
-      
-      TEST_ASSERT(im2==im3);
-      if (retVal==RES_ERR)
-      {
-	  im2.printSelf(1);
-	  im3.printSelf(1);
-      }
-      
-  }
+    virtual void run()
+    {
+        typedef Bit dataType;
+        typedef Image<dataType> imType;
+
+        imType im1(7,7);
+        imType im2(im1);
+        imType im3(im1);
+
+        bool vec1[] = {
+            0, 0, 0, 0, 0, 1, 1,
+            1, 1, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 1, 0, 0,
+            0, 0, 0, 0, 0, 0, 1,
+            0, 1, 0, 0, 0, 1, 1,
+        };
+        im1 << BitArray(vec1, 49);
+
+        bool vec2[] = {
+            0, 1, 1, 0, 0, 1, 0,
+            1, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0,
+            0, 1, 0, 1, 0, 0, 1,
+            0, 0, 0, 0, 0, 0, 0,
+            1, 1, 1, 0, 0, 0, 1,
+            0, 1, 0, 0, 1, 0, 0,
+        };
+        im2 << BitArray(vec2, 49);
+
+        bool vec3[] = {
+            0, 1, 1, 0, 0, 1, 1,
+            1, 1, 0, 0, 0, 1, 0,
+            0, 0, 0, 0, 0, 1, 0,
+            0, 1, 0, 1, 0, 0, 1,
+            0, 0, 0, 0, 1, 0, 0,
+            1, 1, 1, 0, 0, 0, 1,
+            0, 1, 0, 0, 1, 1, 1
+        };
+
+        sup(im1, im2, im3);
+
+        im2 << BitArray(vec3, 49);
+
+        TEST_ASSERT(im2==im3);
+        if (retVal==RES_ERR)
+        {
+            im2.printSelf(1);
+            im3.printSelf(1);
+        }
+
+    }
 };
 
 
 
 int main(int argc, char *argv[])
 {
-      TestSuite ts;
-      ADD_TEST(ts, Test_Copy);
-      ADD_TEST(ts, Test_Trans);
-      ADD_TEST(ts, Test_Sup);
-      
-      Image<Bit> im1(256,256);
-      fill(im1, Bit(1));
-      im1.show();
-      Gui::execLoop();
-      return ts.run();
-  
+    TestSuite ts;
+    ADD_TEST(ts, Test_Copy);
+    ADD_TEST(ts, Test_Trans);
+    ADD_TEST(ts, Test_Sup);
+
+    Image<Bit> im1(256,256);
+    randFill(im1);
+    Bit b(1);
+    im1.setPixel(10,10, b);
+    b = im1.getPixel(10, 10);
+    im1.show();
+    Gui::execLoop();
+    return ts.run();
+
 }
+
 

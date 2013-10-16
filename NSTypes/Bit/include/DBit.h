@@ -45,7 +45,7 @@ namespace smil
 {
 
     template <>
-    void _DGUI QtImageViewer<Bit>::drawImage();
+    void QtImageViewer<Bit>::drawImage();
 
     template <>
     RES_T readVTK<Bit>(const char *filename, Image<Bit> &image)
@@ -57,16 +57,6 @@ namespace smil
     {
     }
 
-    template <class lineFunction_T>
-    class unaryMorphArrowImageFunction<Bit, lineFunction_T>
-    {
-    public:
-	typedef Image<Bit> imageType;
-	unaryMorphArrowImageFunction(Bit b=0) {}
-	inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt &se) {  }
-	RES_T _exec_single(const Image<Bit> &imIn, Image<Bit> &imOut, const StrElt &se) {}
-	
-    };
     
     template <>
     RES_T matMul<Bit>(const Image<Bit> &imIn1, const Image<Bit> &imIn2, Image<Bit> &imOut)

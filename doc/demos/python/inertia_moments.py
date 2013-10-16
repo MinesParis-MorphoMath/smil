@@ -14,10 +14,6 @@ label(imThr, imLbl)
 imLbl.showLabel()
 
 def fitRectangle(mat):
-    """
-    Returns xc, yc, width, height, angle
-    """
-
     m00, m10, m01, m11, m20, m02 = mat
 
     if m00==0:
@@ -47,41 +43,6 @@ def fitRectangle(mat):
 
     return xc, yc, a, b, theta
 
-def fitEllipse(mat):
-    """
-    Returns xc, yc, width, height, angle
-    """
-
-    m00, m10, m01, m11, m20, m02 = mat
-
-    if m00==0:
-      return 0, 0, 0, 0, 0
-
-    # COM
-    xc = int (m10/m00)
-    yc = int (m01/m00)
-
-    # centered matrix (central moments)
-    u00 = m00
-    u20 = m20 - m10**2/m00
-    u02 = m02 - m01**2/m00
-    u11 = m11 - m10*m01/m00
-
-    # eigen values
-    delta = 4*u11**2 + (u20-u02)**2
-    I1 = (u20+u02+sqrt(delta))/2
-    I2 = (u20+u02-sqrt(delta))/2
-
-    theta = 0.5 * atan2(-2*u11, (u20-u02))
-
-    # Equivalent ellipse
-    I1 = a**2*S/4
-    I2 = b**2*S/4
-    a = sqrt(4*I1/m00)
-    b = sqrt(4*I2/m00)
-
-    return a, b, theta
-
 
 # Compute Blobs
 blobs = computeBlobs(imLbl)
@@ -89,7 +50,7 @@ blobs = computeBlobs(imLbl)
 
 # Compute Inertia Matrices
 
-mats  = measInertiaMatrices(imIn, blobs)
+mats  = measInertiaMatrices(imLbl, blobs)
 bboxes = measBoundBoxes(imLbl)
 
 imDraw = Image(imIn)
