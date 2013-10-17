@@ -65,28 +65,14 @@ class exception{};
 //%array_class(void, VoidArray);
 //%array_class(UINT8, Uint8Array);
 
-// BitArray
-#ifdef SMIL_WRAP_BIT
-%ignore BitArray::operator[];
-%extend BitArray
-{
-//	std::string  __str__() {
-//	    std::stringstream os;
-//	    os << *self;
-//	    return os.str();
-//	}
-
-//	bool operator[] (UINT i)
-//	{
-//	}
-
-}
-%ignore BitArray::operator++;
-%include "DBitArray.h"
-#endif // SMIL_WRAP_BIT
-
 %include "DTypes.hpp"
 %include "DTypes.h"
+
+
+// BitArray
+#ifdef SMIL_WRAP_BIT
+%include "Bit.i"
+#endif // SMIL_WRAP_BIT
 
 
 //////////////////////////////////////////////////////////

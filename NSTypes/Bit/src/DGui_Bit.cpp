@@ -40,7 +40,7 @@ namespace smil
 {
 
     template <>
-    void _DGUI QtImageViewer<Bit>::drawImage()
+    void QtImageViewer<Bit>::drawImage()
     {
 	int sliceNbr = slider->value();
 	Image<Bit>::sliceType lines = this->image->getSlices()[sliceNbr];

@@ -30,30 +30,18 @@
 #ifndef _DBITARRAY_H
 #define _DBITARRAY_H
 
-#include <iostream>
 
-#include "DTypes.hpp"
+#include "Core/include/private/DTypes.hpp"
+
+#include <iostream>
+#include <algorithm>
+
 
 
 namespace smil
 {
-    class BitArray;
-
-    class Bit
-    {
-    public:
-	Bit() : bitArray(NULL), value(false), index(0) {}
-	Bit(bool v) : bitArray(NULL), value(v), index(0) {}
-	BitArray *bitArray;
-	UINT index;
-	bool value;
-	operator bool() const;
-	Bit& operator = (const bool v);
-	Bit& operator = (const Bit &src);
-	inline bool operator< (const Bit &src) const { return value<src.value; }
-    };
-
-
+    typedef bool Bit;
+    
     class BitArray
     {
     public:
@@ -75,44 +63,19 @@ namespace smil
 	static const INT_TYPE INT_LS_BIT = 0x01;
 	
 	
-	BitArray()
-		: index(0), intArray(NULL), bitWidth(0), intWidth(0), height(0)
-	{}
-	BitArray(const BitArray &rhs)
-	{
-	    this->setSize(rhs.bitWidth, rhs.height);
-	    this->intArray = rhs.intArray;
-	    this->index = rhs.index;
-	}
-	BitArray(UINT _bitWidth, UINT _bitHeight=1)
-		: index(0), intArray(NULL)
-	{
-	    setSize(_bitWidth, _bitHeight);
-	}
-	BitArray(INT_TYPE *arr, UINT _bitWidth, UINT _bitHeight=1)
-		: index(0), intArray(arr)
-	{
-	    setSize(_bitWidth, _bitHeight);
-	}
-	BitArray(bool *arr, UINT _bitWidth, UINT _bitHeight=1)
-		: index(0), intArray(NULL)
-	{
-	    setSize(_bitWidth, _bitHeight);
-	    createIntArray();
-	    for (size_t i=0;i<_bitWidth;i++)
-	      setValue(i, arr[i]);
-	}
-	~BitArray()
-	{
-	    intArray = NULL;
-	}
+	BitArray();
+	BitArray(const BitArray &rhs);
+	BitArray(UINT _bitWidth, UINT _bitHeight);
+	BitArray(INT_TYPE *arr, UINT _bitWidth, UINT _bitHeight=1);
+	BitArray(bool *arr, UINT _bitWidth, UINT _bitHeight=1);
+	~BitArray();
 	
 	
 	inline UINT getBitWidth() { return bitWidth; }
 	inline UINT getIntWidth() { return intWidth; }
 	inline UINT getIntNbr() { return intWidth*height; }
 	inline UINT getHeight() { return height; }
-	inline UINT getBitPadX() { return intWidth*INT_TYPE_SIZE - bitWidth; }
+	inline UINT getBitPadX() const { return intWidth*INT_TYPE_SIZE - bitWidth; }
 
 	UINT index;
 	
@@ -129,29 +92,49 @@ namespace smil
 	    intArray = NULL;
 	}
 	
-	bool getValue(UINT ind);
-	void setValue(UINT ind, bool val);
-	operator bool() { return intArray!=NULL; }
-	Bit operator [] (UINT i); // lValue
-	Bit operator [] (UINT i) const; // rValue
-	
-	inline Bit operator * ()
+	inline bool getValue() const
 	{
-	  Bit b;
-	  b.bitArray = this;
-	  b.index = index;
-	  return b;
+	    return getValue(index);
+	}
+	inline bool getValue(UINT ind) const
+	{
+	    int Y = ind / bitWidth;
+	    int X = (ind + Y*this->getBitPadX()) / INT_TYPE_SIZE;
+	    int x = (ind-Y*bitWidth) % INT_TYPE_SIZE;
+	    return (intArray[X] & (1UL << x))!=0;
+	}
+	inline void setValue(bool v) 
+	{
+	    setValue(index, v);
+	}
+	inline void setValue(UINT ind, bool val)
+	{
+	    int Y = ind / bitWidth;
+	    int X = (ind + Y*this->getBitPadX()) / INT_TYPE_SIZE;
+	    int x = (ind-Y*bitWidth) % INT_TYPE_SIZE;
+	    if (val)
+		intArray[X] |= (1UL << x);
+	    else intArray[X] &= ~(1UL << x);
+	}
+	
+	operator bool() { return getValue(index); }
+	BitArray operator [] (UINT i); // lValue
+	const bool &operator [] (UINT i) const; // rValue
+	
+	inline BitArray &operator * ()
+	{
+	    return *this;
 	}
 	
     //     operator void* () { return (void*)this->intArray; }
     //     operator char* () { return (char*)this->intArray; }
-	void operator=(void *ptr) { this->intArray = (INT_TYPE*)ptr; }
-	inline BitArray operator + (int dp)
-	{
-	    BitArray ba(this->intArray, this->bitWidth, this->height);
-	    ba.index = this->index + dp;
-	    return ba;
+// 	void operator=(void *ptr) { this->intArray = (INT_TYPE*)ptr; }
+	const bool &operator=(const bool &b) 
+	{ 
+	    setValue(b);
+	    return b; 
 	}
+	inline BitArray operator + (int dp);
 	inline BitArray operator + (long unsigned int dp)
 	{
 	    return operator+((int)dp);
@@ -164,7 +147,9 @@ namespace smil
 	BitArray& operator ++ (int);
 	BitArray& operator ++ ();
 	
-	BitArray& operator = (const BitArray &rhs)
+	BitArray& operator += (long unsigned int dp) {}
+	
+	inline BitArray& operator = (const BitArray &rhs)
 	{
 	    this->setSize(rhs.bitWidth, rhs.height);
 	    this->intArray = rhs.intArray;
@@ -179,7 +164,19 @@ namespace smil
 	UINT bitWidth;
 	UINT height;
     };
+    
 
+    BitArray BitArray::operator + (int dp)
+    {
+	BitArray ba(this->intArray, this->bitWidth, this->height);
+	ba.index = this->index + dp;
+	return ba;
+    }
+
+    
+    
+    
+    
 
     inline ostream& operator << (ostream &os, BitArray &b)
     {
@@ -204,9 +201,10 @@ namespace smil
 
 	static inline pixelType min() { return Bit(0); }
 	static inline pixelType max() { return Bit(1); }
+	static inline size_t cardinal() { return 2; }
 	static inline lineType createLine(UINT lineLen) 
 	{ 
-	    BitArray ba(lineLen);
+	    BitArray ba(lineLen, 1);
 	    ba.createIntArray();
 	    return ba; 
 	}
