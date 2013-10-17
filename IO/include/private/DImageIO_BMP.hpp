@@ -82,6 +82,7 @@ namespace smil
 	UINT32 biClrUsed;  // number of colors used by the bitmap
 	UINT32 biClrImportant;  // number of colors that are important
     };
+
     #pragma pack(pop)
 
     /**

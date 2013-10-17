@@ -58,8 +58,22 @@ namespace smil
 	ASSERT((iHeader.biBitCount==8), "Not an 8bit image", RES_ERR_IO);
 	
 	ASSERT((iHeader.biCompression==BI_RGB), "Compressed BMP files are not (yet) supported", RES_ERR_IO);
-	
-	//move file point to the begging of bitmap data (skip palette information)
+
+    UINT8 r,g,b,a, lut[iHeader.biClrUsed];
+
+    // read the color table
+       
+    for (int j=0; j<iHeader.biClrUsed; j++) {
+        ASSERT(fread(&b, 1, 1, fp));
+        ASSERT(fread(&g, 1, 1, fp));
+        ASSERT(fread(&r, 1, 1, fp));
+        ASSERT(fread(&a, 1, 1, fp));
+        lut[j] = (UINT8)(((UINT32)r+(UINT32)g+(UINT32)b)/3) ;
+
+    }
+    
+	// at this point it is safer to  
+	//move file pointer to the beginning of bitmap data (skip palette information)
 	fseek(fp, fHeader.bfOffBits, SEEK_SET);
 
 	int width = iHeader.biWidth;
@@ -70,9 +84,11 @@ namespace smil
 	Image<UINT8>::sliceType lines = image.getLines();
 
 	
-	for (int j=height-1;j>=0;j--)
+	for (int j=height-1;j>=0;j--){
 	  ASSERT((fread(lines[j], width, 1, fp)!=0), RES_ERR_IO);
-
+      for(int i=0; i< width; i++) 
+          lines[j][i] = lut[lines[j][i]];
+    }
 	image.modified();
 
 	return RES_OK;
