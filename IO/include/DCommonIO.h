@@ -58,6 +58,7 @@ namespace smil
 	FILE *fp;
     };
 
+    std::string getImageType(const char* filename);
 
     #ifdef USE_CURL
 

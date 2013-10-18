@@ -85,6 +85,8 @@ namespace smil
 
     #pragma pack(pop)
 
+    std::string getBMPImageType(const char* filename);
+
     /**
     * BMP file read
     */

@@ -27,7 +27,6 @@
 
 %include smilCommon.i
 
-//SMIL_MODULE(smilBit)
 
 %{
 #include "NSTypes/Bit/include/DBitArray.h"

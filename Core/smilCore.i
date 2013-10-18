@@ -234,6 +234,7 @@ namespace smil
 {
     TEMPLATE_WRAP_CLASS(Image, Image);
     TEMPLATE_WRAP_FUNC(createImage);
+    TEMPLATE_WRAP_FUNC(castBaseImage);
     TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
 }
 

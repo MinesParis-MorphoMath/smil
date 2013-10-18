@@ -33,6 +33,30 @@
 
 namespace smil
 {
+    std::string getBMPImageType(const char* filename)
+    {
+	FILE* fp = fopen( filename, "rb" );
+
+	ASSERT((fp!=NULL), string("Cannot open file ") + filename + " for input", "");
+	
+	FileCloser fileCloser(fp);
+	
+	bmpFileHeader fHeader;
+	bmpInfoHeader iHeader;
+
+	//read the bitmap file header
+	ASSERT(fread(&fHeader, sizeof(bmpFileHeader), 1 ,fp), "");
+
+	//verify that this is a bmp file by check bitmap id
+	ASSERT((fHeader.bfType == 0x4D42), "");
+	
+	//read the bitmap info header
+	ASSERT(fread(&iHeader, sizeof(bmpInfoHeader), 1, fp), "");
+
+	switch (iHeader.biBitCount)
+	{
+	}
+    }
 
     template <>
     RES_T readBMP(const char *filename, Image<UINT8> &image)

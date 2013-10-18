@@ -343,6 +343,12 @@ namespace smil
 	return new Image<T>();
     }
 
+    template <class T>
+    Image<T> &castBaseImage(BaseImage &img, const Image<T>&)
+    {
+	return static_cast< Image<T>& >(img);
+    }
+
 
 /** @}*/
 
