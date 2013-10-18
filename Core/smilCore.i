@@ -150,13 +150,11 @@ namespace std
     %template(UintDoubleVectorMap) map<UINT,DoubleVector>;
     %template(UintUintVectorMap) map<UINT,UintVector>;
     
-    TEMPLATE_WRAP_CLASS_2T_BOTH(map, Map)
+    TEMPLATE_WRAP_CLASS_2T_CROSS(map, Map)
     
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, IntPoint, Map)
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, DoublePoint, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, DoubleVector, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UintVector, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Box, Map)
