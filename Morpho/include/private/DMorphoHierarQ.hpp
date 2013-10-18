@@ -35,7 +35,7 @@
 #include <deque>
 
 #include "Core/include/private/DTypes.hpp"
-#include <DStructuringElement.h>
+#include "Morpho/include/DStructuringElement.h"
 
 
 namespace smil

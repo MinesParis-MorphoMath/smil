@@ -31,7 +31,7 @@
 #define _D_IMAGE_DRAW_HPP
 
 #include "DLineArith.hpp"
-#include "DImageDraw.h"
+#include "Base/include/DImageDraw.h"
 
 #ifdef USE_FREETYPE
     #include <ft2build.h>

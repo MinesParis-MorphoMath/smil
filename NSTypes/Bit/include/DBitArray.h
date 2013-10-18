@@ -119,7 +119,7 @@ namespace smil
 	
 	operator bool() { return getValue(index); }
 	BitArray operator [] (UINT i); // lValue
-	const bool &operator [] (UINT i) const; // rValue
+	const bool operator [] (UINT i) const; // rValue
 	
 	inline BitArray &operator * ()
 	{

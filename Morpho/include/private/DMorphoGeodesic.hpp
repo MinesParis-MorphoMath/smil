@@ -34,6 +34,7 @@
 #include "DMorphoHierarQ.hpp"
 #include "Base/include/private/DImageDraw.hpp"
 #include "Base/include/private/DImageHistogram.hpp"
+#include "Morpho/include/private/DMorphoBase.hpp"
 
 
 namespace smil

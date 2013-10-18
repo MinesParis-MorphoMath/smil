@@ -51,5 +51,6 @@ namespace smil
 
       }
       %ignore BitArray::operator++;
+      %ignore threshold<Bit>;
 }
 %include "DBitArray.h"

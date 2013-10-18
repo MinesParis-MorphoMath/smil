@@ -87,7 +87,7 @@ BitArray BitArray::operator [] (UINT i)
     return ba;
 }
 
-const bool &BitArray::operator [] (UINT i) const
+const bool BitArray::operator [] (UINT i) const
 {
     return Bit(this->getValue(i));
 }

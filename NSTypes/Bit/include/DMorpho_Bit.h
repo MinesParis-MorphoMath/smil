@@ -27,43 +27,21 @@
  */
 
 
-#ifndef _IMAGE_BIN_H
-#define _IMAGE_BIN_H
+#ifndef _D_MORPHO_BIT_H
+#define _D_MORPHO_BIT_H
 
-
-#include "DImage.hpp"
-#include "DImage.hxx"
-#include "DBinary.h"
+#include "Morpho/include/private/DMorphoGeodesic.hpp"
 
 namespace smil
 {
-  
     template <>
-    struct ImDtTypes<bool>;
+    RES_T build(const Image<Bit> &imIn, const Image<Bit> &imMark, Image<Bit> &imOut, const StrElt &se)
+    {
+	return binBuild(imIn, imMark, imOut, se);
+    }
 
-
-    template <>
-    inline RES_T Image<bool>::restruct(void);
-
-    template <>
-    inline RES_T Image<bool>::allocate(void);
-
-    template <>
-    inline RES_T Image<bool>::deallocate(void);
-
-    template <>
-    inline bool Image<bool>::getPixel(UINT x, UINT y, UINT z);
-
-    template <>
-    inline bool Image<bool>::getPixel(UINT offset);
-
-    template <>
-    inline RES_T Image<bool>::setPixel(UINT x, UINT y, UINT z, bool value);
-
-    template <>
-    inline RES_T Image<bool>::setPixel(UINT x, UINT y, bool value);
 
 } // namespace smil
 
+#endif // _D_IMAGE_HISTOGRAM_BIT_H
 
-#endif // _IMAGE_BIN_HXX
