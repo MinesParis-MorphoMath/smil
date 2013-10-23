@@ -154,7 +154,9 @@ namespace std
     
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
+#ifndef SMIL_WRAP_RGB
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
+#endif // SMIL_WRAP_RGB
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, DoubleVector, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UintVector, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Box, Map)

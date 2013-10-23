@@ -248,7 +248,7 @@ private:
 	memset(labels, 0, GRAY_LEVEL_NBR*sizeof(size_t));
 	
 	img_eti[minOff] = curLabel;
-	labels[minValue] = curLabel;
+	labels[UINT(minValue)] = curLabel;
 
 	pq.initialize(img);
 	pq.push(minValue, minOff);
@@ -298,15 +298,15 @@ private:
 	if (imgPix[p_suiv]>imgPix[p]) 
 	{
 	      int j;
-	      for(j=imgPix[p]+1;j<imgPix[p_suiv];j++) 
+	      for(j=imgPix[p]+1;j<int(imgPix[p_suiv]);j++) 
 		labels[j]=0;
 	      indice = img_eti[p_suiv] = labels[j] = nextHigherLabel(imgPix[p], imgPix[p_suiv]);
 	  
 	} 
-	else if (labels[imgPix[p_suiv]]==0) 
-	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]] = nextLowerLabel(imgPix[p_suiv]);
+	else if (labels[UINT(imgPix[p_suiv])]==0) 
+	    indice = img_eti[p_suiv] = labels[UINT(imgPix[p_suiv])] = nextLowerLabel(imgPix[p_suiv]);
 	else 
-	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]];
+	    indice = img_eti[p_suiv] = labels[UINT(imgPix[p_suiv])];
 	
 	getCriterion(indice).ymax = MAX(getCriterion(indice).ymax, ORDONNEE(p_suiv,imWidth));
 	getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, ORDONNEE(p_suiv,imWidth));
@@ -420,7 +420,7 @@ public:
 	    T minValue = initialize(img, img_eti);
 
 	    flood(img, img_eti, minValue);
-	    return labels[minValue];
+	    return labels[UINT(minValue)];
     }
     
     Criterion updateCriteria(int node) 

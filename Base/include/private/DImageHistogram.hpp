@@ -70,12 +70,12 @@ namespace smil
     template <class T>
     RES_T histogram(const Image<T> &imIn, size_t *h)
     {
-	for (int i=ImDtTypes<T>::min();i<=ImDtTypes<T>::max();i++)
+	for (int i=int(ImDtTypes<T>::min());i<=int(ImDtTypes<T>::max());i++)
 	    h[i] = 0;
 
 	typename Image<T>::lineType pixels = imIn.getPixels();
 	for (size_t i=0;i<imIn.getPixelCount();i++)
-	    h[pixels[i]]++;
+	    h[UINT(pixels[i])]++;
 	
 	return RES_OK;
     }

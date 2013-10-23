@@ -113,7 +113,7 @@ namespace smil
 	y0 = y0>=0 ? y0 : 0;
 	
 	typename Image<T>::volType slices = imOut.getSlices();
-	typename Image<T>::sliceType lines = slices[zSlice];
+	const typename Image<T>::sliceType lines = slices[zSlice];
 	fillLine<T> fillFunc;
 	
 	if (fill)

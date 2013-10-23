@@ -36,6 +36,8 @@
 #include <limits>
 #include "DMemory.hpp"
 
+#include <sstream>
+
 using namespace std;
 
 namespace smil
@@ -84,6 +86,12 @@ namespace smil
 	static inline lineType createLine(size_t lineLen) { return createAlignedBuffer<T>(lineLen); }
 	static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
 	static inline size_t ptrOffset(lineType p, size_t n=SIMD_VEC_SIZE) { return ((size_t)p) & (n-1); }
+	static inline std::string toString(const T &val)
+	{
+	    stringstream str;
+	    str << double(val);
+	    return str.str();
+	}
     };
 
 

@@ -935,7 +935,7 @@ namespace smil
     template <class T>
     RES_T mask(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut)
     {
-	return test<T>(imMask, imIn, 0, imOut);
+	return test<T>(imMask, imIn, T(0), imOut);
     }
 
 

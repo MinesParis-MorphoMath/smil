@@ -99,7 +99,7 @@ namespace smil
 	bool isAlloc = rhs.isAllocated();
 	this->setSize(rhs, isAlloc);
 	if (isAlloc)
-	  memcpy(this->pixels, rhs.getPixels(), this->allocatedSize);
+	  copyLine<T>(rhs.getPixels(), getPixelCount(), this->pixels);
 	modified();
     }
 

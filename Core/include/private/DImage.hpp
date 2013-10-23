@@ -103,22 +103,20 @@ namespace smil
 	//! Return the value of the pixel at pos x,y(,z)
 	inline T getPixel(size_t x, size_t y, size_t z=0) const
 	{
-	    if (x>=width || y>=height || z>=depth)
-		return T(NULL);
+	    ASSERT((x<width && y<height && z<depth), "Coords out of image range", T(0));
 	    return pixels[z*width*height+y*width+x];
 	}
 	//! Return the value of the pixel at a given offset
 	inline T getPixel(size_t offset) const
 	{
-	    if (offset >= pixelCount)
-		return RES_ERR;
+	    ASSERT((offset < pixelCount), "Offset out of image range", T(0));
 	    return pixels[offset];
 	}
 
 	//! Set the value of the pixel at pos x,y,z (for 3D image)
 	inline RES_T setPixel(size_t x, size_t y, size_t z, const T &value)
 	{
-	    if (x>=width || y>=height || z>=depth)
+	    ASSERT((x<width && y<height && z<depth), "Coords out of image range", RES_ERR);
 		return RES_ERR;
 	    pixels[z*width*height+y*width+x] = value;
 	    modified();
@@ -134,8 +132,7 @@ namespace smil
 	//! Set the value of the pixel at a given offset
 	inline RES_T setPixel(size_t offset, const T &value)
 	{
-	    if (offset >= pixelCount)
-		return RES_ERR;
+	    ASSERT((offset < pixelCount), "Offset out of image range", RES_ERR);
 	    pixels[offset] = value;
 	    modified();
 	    return RES_OK;

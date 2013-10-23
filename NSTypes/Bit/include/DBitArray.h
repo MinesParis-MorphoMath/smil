@@ -147,7 +147,7 @@ namespace smil
 	BitArray& operator ++ (int);
 	BitArray& operator ++ ();
 	
-	BitArray& operator += (long unsigned int dp) {}
+	BitArray& operator += (int dp) {}
 	
 	inline BitArray& operator = (const BitArray &rhs)
 	{
