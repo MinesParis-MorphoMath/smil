@@ -28,3 +28,16 @@
 %include smilCommon.i
 
 
+%{
+#include "NSTypes/RGB/include/DImage_RGB.h"
+#include "Core/include/DMultichannelTypes.h"
+#include "Core/include/DColor.h"
+%}
+
+namespace smil
+{
+      %ignore *::operator[];
+
+}
+%include "DColor.h"
+%include "DMultichannelTypes.h"

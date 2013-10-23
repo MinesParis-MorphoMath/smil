@@ -66,6 +66,17 @@ namespace smil
     void QtImageViewer<RGB>::displayProfile(bool update);
 #endif // USE_QWT
     
+    template <class T, UINT N>
+    RES_T mul(const Image< MultichannelType<T,N> > &imIn, const double &dValue, Image< MultichannelType<T,N> > &imOut)
+    {
+    }
+
+    template <class T,UINT N>
+    struct stretchHistLine< MultichannelType<T,N> >
+    {
+    };
+    
+    
 } // namespace smil
 
 #endif // _IMAGE_RGB_H

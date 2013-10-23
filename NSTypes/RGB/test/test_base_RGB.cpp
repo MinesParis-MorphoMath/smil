@@ -257,44 +257,25 @@ class Test_Sup : public TestCase
 
 
 
-    template <class MC_Type>
-    struct MC_Array
-    {
-	typedef typename MC_Type::dataType dataType;
-	typedef typename ImDtTypes<dataType>::lineType arrayType;
-	const UINT arrayNbr;
-	
-	MC_Array()
-	  : arrayNbr(sizeof(MC_Type::c)/sizeof(dataType))
-	{
-	    cout << arrayNbr << endl;
-	}
-    };
-
-
     
 int main(int argc, char *argv[])
 {
-      
       TestSuite ts;
       ADD_TEST(ts, Test_Array);
-//       ADD_TEST(ts, Test_Copy);
-//       ADD_TEST(ts, Test_Trans);
-//       ADD_TEST(ts, Test_Sup);
-//       
-//       Image<RGB> im1(256,256);
-//       fill(im1, RGB(255, 255, 0));
-//       
-//       Image<RGB>::lineType pixels = im1.getPixels();
-//       pixels++;
-//       
-//       im1.show();
-//       int i[5];
-//       UINT8 j[5];
-//       MC_Array<RGB> mc;
-//       
-//       cout << mc.arrayNbr << endl;
-//       Gui::execLoop();
+      ADD_TEST(ts, Test_Copy);
+      ADD_TEST(ts, Test_Trans);
+      ADD_TEST(ts, Test_Sup);
+      
+      Image<RGB> im1(256,256);
+      fill(im1, RGB(255, 255, 0));
+      
+      Image<RGB>::lineType pixels = im1.getPixels();
+      pixels++;
+      
+      im1.show();
+      int i[5];
+      UINT8 j[5];
+      Gui::execLoop();
       return ts.run();
   
 }

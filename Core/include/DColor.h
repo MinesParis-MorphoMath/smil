@@ -73,6 +73,7 @@ namespace smil
     
     
     typedef COLOR_UINT8_3 RGB;
+    typedef COLOR_UINT8_3_Array RGBArray;
 //     struct RGB : public COLOR_UINT8_3
 //     {
 // 	const UINT8 &r;
@@ -118,7 +119,6 @@ namespace smil
 //     };
     
     
-    typedef MultichannelArray<UINT8, 3> RGBArray;
     
     
 //     template <>

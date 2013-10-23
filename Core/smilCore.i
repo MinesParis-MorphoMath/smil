@@ -74,6 +74,11 @@ class exception{};
 %include "Bit.i"
 #endif // SMIL_WRAP_BIT
 
+// RGB
+#ifdef SMIL_WRAP_RGB
+%include "RGB.i"
+#endif // SMIL_WRAP_RGB
+
 
 //////////////////////////////////////////////////////////
 // Typemaps

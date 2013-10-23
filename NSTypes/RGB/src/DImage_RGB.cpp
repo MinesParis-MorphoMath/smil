@@ -98,13 +98,14 @@ namespace smil
 	if (this->allocated)
 	    return RES_ERR_BAD_ALLOCATION;
 
-	this->pixels = ImDtTypes<RGB>::createLine(pixelCount);
+// 	this->pixels = ImDtTypes<RGB>::createLine(pixelCount);
     //     pixels = new pixelType[pixelCount];
+	this->pixels.createArrays(this->pixelCount);
 
 	ASSERT((this->pixels.isAllocated()), "Can't allocate image", RES_ERR_BAD_ALLOCATION);
 
 	this->allocated = true;
-	this->allocatedSize = this->pixelCount*sizeof(COLOR_32);
+	this->allocatedSize = 3*this->pixelCount*sizeof(UINT8);
 
 	this->restruct();
 
@@ -122,7 +123,8 @@ namespace smil
 	if (this->lines)
 	    delete[] this->lines;
 	if (this->pixels.isAllocated())
-	  ImDtTypes<RGB>::deleteLine(pixels);
+	  this->pixels.deleteArrays();
+// 	  ImDtTypes<RGB>::deleteLine(pixels);
 	
 	this->slices = NULL;
 	this->lines = NULL;

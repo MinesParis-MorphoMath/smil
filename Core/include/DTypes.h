@@ -32,7 +32,6 @@
 
 
 #include "private/DTypes.hpp"
-#include "DColor.h"
 
 namespace smil
 {
