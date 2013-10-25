@@ -131,7 +131,7 @@ public:
     
     inline void push(T value, TokenType dOffset)
     {
-	size_t level = TYPE_FLOOR + value;
+	size_t level = TYPE_FLOOR + size_t(value);
 	if (level>higherLevel)
 	  higherLevel = level;
 	stacks[level][tokenNbr[level]++] = dOffset;
@@ -262,14 +262,14 @@ private:
 	return minValue;
     }
     
-    int nextLowerLabel(T valeur)
+    int nextLowerLabel(const T &value)
     {
 	    if ((curLabel & COLUMN_MOD) == 0)
 	      allocatePage(curLabel >> COLUMN_SHIFT);
 	    
-	    getLevel(curLabel) = valeur;
+	    getLevel(curLabel) = value;
 	    int i;
-	    for(i=valeur-1;labels[i]==0;i--);
+	    for(i=int(value)-1;labels[i]==0;i--);
 
 	    getChild(curLabel) = getChild(labels[i]);
 	    getChild(labels[i]) = curLabel;
@@ -285,8 +285,8 @@ private:
 	      allocatePage(curLabel >> COLUMN_SHIFT);
 
 	    getLevel(curLabel) = valeur;
-	    getBrother(curLabel) = getChild(labels[parent_valeur]);
-	    getChild(labels[parent_valeur]) = curLabel;
+	    getBrother(curLabel) = getChild(labels[UINT(parent_valeur)]);
+	    getChild(labels[UINT(parent_valeur)]) = curLabel;
 	    getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
 	    return curLabel++;
     }

@@ -80,6 +80,8 @@ namespace smil
 	typedef lineType *sliceType;
 	typedef sliceType *volType;
 	
+	typedef double floatType;
+	
 	static inline pixelType min() { return numeric_limits<T>::min(); }
 	static inline pixelType max() { return numeric_limits<T>::max(); }
 	static inline size_t cardinal() { return max()-min()+1; }

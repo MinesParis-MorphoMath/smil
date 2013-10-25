@@ -107,7 +107,7 @@ namespace smil
 	    double nPts = dOffsetEnd-dOffset;
 	    while(dOffset!=dOffsetEnd)
 	    {
-		meanVal += parentClass::pixelsIn[pointOffset + *dOffset];
+		meanVal += double(parentClass::pixelsIn[pointOffset + *dOffset]);
 		dOffset++;
 	    }
 	    parentClass::pixelsOut[pointOffset] = T(meanVal / nPts);

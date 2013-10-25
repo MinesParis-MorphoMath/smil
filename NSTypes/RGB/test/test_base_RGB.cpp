@@ -27,6 +27,7 @@
  */
 
 
+#include "DColor.h"
 #include "DCore.h"
 #include "DBase.h"
 #include "DMorpho.h"
@@ -36,6 +37,9 @@
 
 using namespace smil;
 
+#include <map>
+
+
 class Test_Array : public TestCase
 {
   virtual void run()
@@ -43,7 +47,6 @@ class Test_Array : public TestCase
       MultichannelArray<UINT8, 3> arr;
       arr.createArrays(10);
       
-      typedef MultichannelType<UINT8,3> RGB;
       *arr++ = RGB(255,255,0);
       arr[5] = UINT8(1);
       arr[6] = double(20);

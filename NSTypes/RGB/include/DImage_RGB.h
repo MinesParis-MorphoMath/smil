@@ -34,7 +34,8 @@
 #include "DImage.hpp"
 #include "DImage.hxx"
 #include "DTypes.h"
-#include "DMultichannelTypes.h"
+#include "DColor.h"
+#include "Base/include/private/DImageTransform.hpp"
 
 namespace smil
 {
@@ -71,10 +72,15 @@ namespace smil
     {
     }
 
-    template <class T,UINT N>
-    struct stretchHistLine< MultichannelType<T,N> >
+    template <class T, UINT N, class T2>
+    RES_T stretchHist(const Image< MultichannelType<T,N> > &imIn, Image<T2> &imOut, T2 outMinVal, T2 outMaxVal)
     {
-    };
+    }
+    
+    template <class T, UINT N, class T1>
+    RES_T stretchHist(const Image<T1> &imIn, Image< MultichannelType<T,N> > &imOut, MultichannelType<T,N> outMinVal, MultichannelType<T,N> outMaxVal)
+    {
+    }
     
     
 } // namespace smil

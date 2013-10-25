@@ -30,14 +30,13 @@
 
 %{
 #include "NSTypes/RGB/include/DImage_RGB.h"
-#include "Core/include/DMultichannelTypes.h"
+#include "Core/include/private/DMultichannelTypes.hpp"
 #include "Core/include/DColor.h"
+
 %}
 
 namespace smil
 {
-      %ignore *::operator[];
-
+  %ignore COLOR_UINT8_3;
 }
 %include "DColor.h"
-%include "DMultichannelTypes.h"

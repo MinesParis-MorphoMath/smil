@@ -89,7 +89,7 @@ namespace smil
 	T minT = ImDtTypes<T>::min();
 	
 	for (size_t i=0;i<imOut.getPixelCount();i++)
-	  pixels[i] = T( rand()/double(RAND_MAX) * rangeT + minT );
+	  pixels[i] = T( rand()/double(RAND_MAX) * rangeT + double(minT) );
 	
 	imOut.modified();
 	
@@ -678,7 +678,7 @@ namespace smil
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
 	  newVal = pixIn[i] * dValue;
-	  pixOut[i] = newVal>ImDtTypes<T>::max() ? ImDtTypes<T>::max() : newVal;
+	  pixOut[i] = newVal>double(ImDtTypes<T>::max()) ? ImDtTypes<T>::max() : T(newVal);
 	}
 	
 	return RES_OK;

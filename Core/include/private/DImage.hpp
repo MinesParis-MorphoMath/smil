@@ -118,6 +118,7 @@ namespace smil
 	{
 	    ASSERT((x<width && y<height && z<depth), "Coords out of image range", RES_ERR);
 		return RES_ERR;
+	    cout << "here" << endl;
 	    pixels[z*width*height+y*width+x] = value;
 	    modified();
 	    return RES_OK;

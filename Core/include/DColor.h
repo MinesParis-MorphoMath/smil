@@ -31,7 +31,7 @@
 #define _D_COLOR_H
 
 
-#include "DMultichannelTypes.h"
+#include "DMultichannelTypes.hpp"
 
 namespace smil
 {
@@ -46,6 +46,8 @@ namespace smil
 	typedef COLOR_UINT8_3_Array lineType;
 	typedef lineType* sliceType;
 	typedef sliceType* volType;
+	
+	typedef MultichannelType<double,3> floatType;
 
 	static inline pixelType min() { return COLOR_UINT8_3(0); }
 	static inline pixelType max() { return COLOR_UINT8_3(255); }
@@ -71,65 +73,56 @@ namespace smil
 	}
     };
     
+//         typedef COLOR_UINT8_3 Rgb;
+
     
-    typedef COLOR_UINT8_3 RGB;
+//     typedef COLOR_UINT8_3 RGB;
     typedef COLOR_UINT8_3_Array RGBArray;
-//     struct RGB : public COLOR_UINT8_3
-//     {
-// 	const UINT8 &r;
-// 	const UINT8 &g;
-// 	const UINT8 &b;
-// 	RGB()
-// 	  : r(c[0]), g(c[1]), b(c[2]),
-// 	    MultichannelType<UINT8, 3>(0)
-// 	{
-// 	}
-// 	RGB(const UINT &val)
-// 	  : r(c[0]), g(c[1]), b(c[2]),
-// 	    MultichannelType<UINT8, 3>(val)
-// 	{
-// 	}
-// 	RGB(int _r, int _g, int _b)
-// 	  : r(c[0]), g(c[1]), b(c[2]),
-// 	    MultichannelType<UINT8, 3>(_r,_g,_b)
-// 	{
-// 	}
-// 	RGB(const COLOR_UINT8_3 &rhs)
-// 	  : r(c[0]), g(c[1]), b(c[2]),
-// 	    MultichannelType<UINT8, 3>(rhs)
-// 	{
-// 	}
-// 	RGB(const MultichannelArray<UINT8,3> &larr)
-// 	  : r(c[0]), g(c[1]), b(c[2])
-// 	{
-// 	      *this = larr.getValue();
-// 	}
-// 	RGB& operator = (const RGB &rhs)
-// 	{
-// 	    for (UINT n=0;n<3;n++)
-// 	      c[n] = rhs.c[n];
-// 	    return *this;
-// 	}
-// 	RGB& operator = (const COLOR_UINT8_3_Array &rhs)
-// 	{
-// 	    for (UINT i=0;i<3;i++)
-// 	      c[i] += rhs.channelArrays[i][rhs.index];
-// 	    return *this;
-// 	}
-//     };
+    
+    struct RGB : public COLOR_UINT8_3
+    {
+	UINT8 &r;
+	UINT8 &g;
+	UINT8 &b;
+	RGB()
+	  : r(c[0]), g(c[1]), b(c[2]),
+	    MultichannelType<UINT8, 3>(0)
+	{
+	}
+	RGB(const UINT &val)
+	  : r(c[0]), g(c[1]), b(c[2]),
+	    MultichannelType<UINT8, 3>(val)
+	{
+	}
+	RGB(int _r, int _g, int _b)
+	  : r(c[0]), g(c[1]), b(c[2]),
+	    MultichannelType<UINT8, 3>(_r,_g,_b)
+	{
+	}
+	RGB(const COLOR_UINT8_3 &rhs)
+	  : r(c[0]), g(c[1]), b(c[2]),
+	    MultichannelType<UINT8, 3>(rhs)
+	{
+	}
+	RGB& operator =(const RGB &rhs)
+	{
+	    for (UINT i=0;i<3;i++)
+	      c[i] = rhs.value(i);
+	}
+    };
     
     
     
     
-//     template <>
-//     struct ImDtTypes< RGB > : public ImDtTypes< COLOR_UINT8_3>
-//     {
-// 	typedef RGB pixelType;
-// 	typedef RGBArray lineType;
-// 	static inline pixelType min() { return RGB(0); }
-// 	static inline pixelType max() { return RGB(255); }
-// 	static inline size_t cardinal() { return 256*256*256; }
-//     };
+    template <>
+    struct ImDtTypes< RGB > : public ImDtTypes< COLOR_UINT8_3>
+    {
+	typedef RGB pixelType;
+	typedef RGBArray lineType;
+	static inline pixelType min() { return RGB(0); }
+	static inline pixelType max() { return RGB(255); }
+	static inline size_t cardinal() { return 256*256*256; }
+    };
 
     template <> 
     inline const char *getDataTypeAsString(RGB &) { return "RGB"; }

@@ -27,8 +27,8 @@
  */
 
 
-#ifndef _D_MULTI_CHANNEL_H
-#define _D_MULTI_CHANNEL_H
+#ifndef _D_MULTI_CHANNEL_TYPES_H
+#define _D_MULTI_CHANNEL_TYPES_H
 
 
 #include "DTypes.h"
@@ -156,6 +156,20 @@ namespace smil
 	      newmc.value(i) = this->value(i) - mc.value(i);
 	    return newmc;
 	}
+	MultichannelType operator -(const int &val)
+	{
+	    MultichannelType newmc;
+	    for (UINT i=0;i<N;i++)
+	      newmc.value(i) = this->value(i) - val;
+	    return newmc;
+	}
+	MultichannelType operator -(const size_t &val)
+	{
+	    MultichannelType newmc;
+	    for (UINT i=0;i<N;i++)
+	      newmc.value(i) = this->value(i) - val;
+	    return newmc;
+	}
 	MultichannelType operator -()
 	{
 	    MultichannelType newmc;
@@ -203,6 +217,13 @@ namespace smil
 	      newmc.value(i) = this->value(i) * val;
 	    return newmc;
 	}
+	MultichannelType operator *(const size_t &val)
+	{
+	    MultichannelType newmc;
+	    for (UINT i=0;i<N;i++)
+	      newmc.value(i) = this->value(i) * val;
+	    return newmc;
+	}
 	MultichannelType operator /(const MultichannelType &mc)
 	{
 	    MultichannelType newmc;
@@ -210,6 +231,14 @@ namespace smil
 	      newmc.value(i) = this->value(i) / mc.value(i);
 	    return newmc;
 	}
+	MultichannelType operator /(const double &val)
+	{
+	    MultichannelType newmc;
+	    for (UINT i=0;i<N;i++)
+	      newmc.value(i) = this->value(i) / val;
+	    return newmc;
+	}
+	MultichannelType operator /(const size_t &val) { return this->operator/(double(val)); }
 	MultichannelType operator &(const MultichannelType &mc)
 	{
 	    MultichannelType newmc;
@@ -230,6 +259,12 @@ namespace smil
 	    for (UINT i=0;i<N;i++)
 	      newmc.value(i) = this->value(i) | mc.value(i);
 	    return newmc;
+	}
+	MultichannelType operator |=(const MultichannelType &mc)
+	{
+	    for (UINT i=0;i<N;i++)
+	      this->value(i) |= mc.value(i);
+	    return *this;
 	}
 #ifndef SWIG
 	MultichannelType& operator ++(int) // postfix
@@ -276,6 +311,7 @@ namespace smil
 	operator UINT16() const { return double(*this); }
 	operator bool() const { return double(*this); }
 	operator signed char() const { return double(*this); }
+	operator long int() const { return double(*this); }
 
 	virtual const T& value(const UINT &i) const
 	{
@@ -286,12 +322,13 @@ namespace smil
 	    return c[i];
 	}
     };
+    
     template <class T, UINT N>
     std::ostream& operator<<(std::ostream& stream, const MultichannelType<T,N> &mc)
     {
 	for (UINT i=0;i<N-1;i++)
-	  stream << double(mc.c[i]) << ", ";
-	stream << double(mc.c[N-1]);
+	  stream << double(mc.value(i)) << ", ";
+	stream << double(mc.value(N-1));
 	return stream;
     }
 
@@ -304,10 +341,10 @@ namespace smil
 	typedef T* Tptr;
 	Tptr _c[N];
 	
-	MultichannelArrayItem(const MultichannelArray<T,N> &mcArray, const UINT &newindex)
+	MultichannelArrayItem(const MultichannelArray<T,N> &mcArray, const UINT &index)
 	{
 	    for (UINT i=0;i<N;i++)
-	      _c[i] = &mcArray.arrays[i][newindex];
+	      _c[i] = &mcArray.arrays[i][index];
 	}
 	MultichannelArrayItem& operator =(const MCType &mc)
 	{
@@ -399,11 +436,11 @@ namespace smil
 #ifndef SWIG
 	MultichannelArrayItem<T,N> operator [] (UINT i) // lValue
 	{
-	    return MultichannelArrayItem<T,N>(*this, i);
+	    return MultichannelArrayItem<T,N>(*this, index+i);
 	}
 	const MCType operator [] (UINT i) const // rValue
 	{
-	    return MultichannelArrayItem<T,N>(*this, i);
+	    return MultichannelArrayItem<T,N>(*this, index+i);
 	}
 #endif // SWIG
 	
@@ -481,5 +518,5 @@ namespace smil
     
 } // namespace smil
 
-#endif // _D_MULTI_CHANNEL_H
+#endif // _D_MULTI_CHANNEL_TYPES_H
 

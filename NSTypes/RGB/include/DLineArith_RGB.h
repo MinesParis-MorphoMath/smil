@@ -32,24 +32,13 @@
 
 
 #include "Base/include/private/DLineArith.hpp"
-#include "DMultichannelTypes.h"
+#include "DColor.h"
 
 /**
  * \ingroup Arith
  * @{
  */
 
-namespace std
-{
-    template <>
-    class map<smil::RGB, smil::UINT>
-    {
-    public:
-	map<smil::UINT8, smil::UINT> r;
-	map<smil::UINT8, smil::UINT> g;
-	map<smil::UINT8, smil::UINT> b;
-    };
-}
 
 namespace smil
 {
