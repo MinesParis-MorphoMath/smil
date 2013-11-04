@@ -149,11 +149,11 @@ namespace smil
     };
 
     #define ASSERT_1_ARG(func, file, line, expr) \
-	if(!expr) { Error(func, file, line, #expr).show(); return RES_ERR; }
+	if(!(expr)) { Error(func, file, line, #expr).show(); return RES_ERR; }
     #define ASSERT_2_ARGS(func, file, line, expr, errCode) \
-	if(!expr) { Error(#errCode, func, file, line, #expr).show(); return errCode; }
+	if(!(expr)) { Error(#errCode, func, file, line, #expr).show(); return errCode; }
     #define ASSERT_3_ARGS(func, file, line, expr, errCode, retVal) \
-	if(!expr) { Error(#errCode, func, file, line, #expr).show(); return retVal; }
+	if(!(expr)) { Error(#errCode, func, file, line, #expr).show(); return retVal; }
 
     #define ERR_MSG(msg) Error(msg, __FUNC__, __FILE__, __LINE__).show()
 

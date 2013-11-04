@@ -60,13 +60,16 @@ namespace smil
 	if (!im.isAllocated())
 	    return RES_ERR_BAD_ALLOCATION;
 
-	if (p1x<0 || p1x>=int(im.getWidth()) || p1y<0 || p1y>=int(im.getHeight()))
-	  return RES_ERR;
-	if (p2x<0 || p2x>=int(im.getWidth()) || p2y<0 || p2y>=int(im.getHeight()))
-	  return RES_ERR;
+	size_t imW = im.getWidth();
+	size_t imH = im.getHeight();
+	
+	vector<IntPoint> bPoints;
+	if ( p1x<0 || p1x>=int(imW) || p1y<0 || p1y>=int(imH) || p2x<0 || p2x>=int(imW) || p2y<0 || p2y>=int(imH) )
+	  bPoints = bresenhamPoints(p1x, p1y, p2x, p2y, imW, imH);
+	else
+	  bPoints = bresenhamPoints(p1x, p1y, p2x, p2y); // no image range check (faster)
 	
 	typename Image<T>::sliceType lines = im.getLines();
-	vector<IntPoint> bPoints = bresenhamPoints(p1x, p1y, p2x, p2y);
 	
 	for(vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++)
 	  lines[(*it).y][(*it).x] = value;
@@ -145,7 +148,7 @@ namespace smil
     }
 
     template <class T>
-    RES_T drawRectangle(Image<T> &imOut, const map<UINT, UintVector> &coordsVect, T value=0, bool fill=false)
+    RES_T drawRectangles(Image<T> &imOut, const map<UINT, UintVector> &coordsVect, T value=0, bool fill=false)
     {
 	map<UINT, UintVector>::const_iterator it = coordsVect.begin();
 	if (it->second.size()!=4)
