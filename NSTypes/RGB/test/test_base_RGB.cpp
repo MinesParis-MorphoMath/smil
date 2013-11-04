@@ -63,7 +63,7 @@ class Test_Array : public TestCase
       
       fill(im, RGB(0));
       fillLine<RGB>(im.getLines()[10]+10, 50, RGB(255,0,0));
-      dilate(im, im);
+//       dilate(im, im);
 //       im.show();
 //       Gui::execLoop();
   }
@@ -115,6 +115,9 @@ class Test_Copy : public TestCase
 	  im1.printSelf(1);
 	  im2.printSelf(1);
       }
+      
+      Image<UINT8> im3(im1);
+      copyChannel(im2, 0, im3);
   }
 };
 

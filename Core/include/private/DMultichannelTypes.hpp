@@ -53,29 +53,25 @@ namespace smil
 	T c[N];
     public:
 	typedef T DataType;
-	const UINT channelNumber;
+	static UINT channelNumber() { return sizeof(c); }
 	
 	MultichannelType()
-	  : channelNumber(N)
 	{
 	    for (UINT i=0;i<N;i++)
 	      c[i] = 0;
 	}
 	MultichannelType(const T &val)
-	  : channelNumber(N)
 	{
 	    for (UINT i=0;i<N;i++)
 	      c[i] = val;
 	}
 	MultichannelType(const T &_r, const T &_g, const T &_b)
-	  : channelNumber(N)
 	{
 	    c[0] = _r;
 	    c[1] = _g;
 	    c[2] = _b;
 	}
 	MultichannelType(const MultichannelType<T,N> &mc)
-	  : channelNumber(N)
 	{
 	    for (UINT i=0;i<N;i++)
 	      c[i] = mc.value(i);

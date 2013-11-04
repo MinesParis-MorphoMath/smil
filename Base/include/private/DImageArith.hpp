@@ -248,7 +248,7 @@ namespace smil
     template <class MCT1, class T2>
     RES_T copyChannel(const Image<MCT1> &imIn, const UINT &chanNum, Image<T2> &imOut)
     {
-	ASSERT(chanNum<MCT1().channelNumber);
+	ASSERT(chanNum < MCT1::channelNumber());
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
@@ -256,7 +256,9 @@ namespace smil
 	typename Image<T1>::lineType lineIn = imIn.getPixels().arrays[chanNum];
 	typename Image<T2>::lineType lineOut = imOut.getPixels();
 	
-	return copyLine<typename MCT1::DataType,T2>(lineIn, imIn.getPixelCount(), lineOut);
+	copyLine<T1,T2>(lineIn, imIn.getPixelCount(), lineOut);
+	imOut.modified();
+	return RES_OK;
     }
    
     /**
