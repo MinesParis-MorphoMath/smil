@@ -51,13 +51,21 @@ class Test_Array : public TestCase
       arr[5] = UINT8(1);
       arr[6] = double(20);
       
-      TEST_ASSERT(arr[1]==RGB(255,255,0));
+      TEST_ASSERT(arr[0]==RGB(255,255,0));
       
       MultichannelArray<UINT8, 3> arr2;
       arr2.createArrays(10);
       RGB rgb = arr[0] * arr2[0];
       arr[1] * rgb;
       
+      Image<RGB> im(256, 256);
+      Image<RGB> im2(256, 256);
+      
+      fill(im, RGB(0));
+      fillLine<RGB>(im.getLines()[10]+10, 50, RGB(255,0,0));
+      dilate(im, im);
+//       im.show();
+//       Gui::execLoop();
   }
 };
 
@@ -275,10 +283,10 @@ int main(int argc, char *argv[])
       Image<RGB>::lineType pixels = im1.getPixels();
       pixels++;
       
-      im1.show();
+//       im1.show();
       int i[5];
       UINT8 j[5];
-      Gui::execLoop();
+//       Gui::execLoop();
       return ts.run();
   
 }

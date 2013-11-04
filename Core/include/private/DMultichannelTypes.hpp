@@ -52,27 +52,35 @@ namespace smil
     protected:
 	T c[N];
     public:
+	typedef T DataType;
+	const UINT channelNumber;
+	
 	MultichannelType()
+	  : channelNumber(N)
 	{
 	    for (UINT i=0;i<N;i++)
 	      c[i] = 0;
 	}
 	MultichannelType(const T &val)
+	  : channelNumber(N)
 	{
 	    for (UINT i=0;i<N;i++)
 	      c[i] = val;
 	}
 	MultichannelType(const T &_r, const T &_g, const T &_b)
+	  : channelNumber(N)
 	{
 	    c[0] = _r;
 	    c[1] = _g;
 	    c[2] = _b;
 	}
 	MultichannelType(const MultichannelType<T,N> &mc)
+	  : channelNumber(N)
 	{
 	    for (UINT i=0;i<N;i++)
 	      c[i] = mc.value(i);
 	}
+
 	MultichannelType& operator =(const MultichannelType &mc)
 	{
 	    for (UINT i=0;i<N;i++)
@@ -380,16 +388,16 @@ namespace smil
 	    resetArrays();
 	}
 	MultichannelArray(const MultichannelArray &rhs)
-	  : index(rhs.index), size(rhs.size), allocatedData(false)
+	  : index(0), size(rhs.size-rhs.index), allocatedData(false)
 	{
 	    for (UINT i=0;i<N;i++)
-	      arrays[i] = rhs.arrays[i];
+	      arrays[i] = rhs.arrays[i] + rhs.index;
 	}
 	MultichannelArray(const MultichannelArray &rhs, const UINT &newindex)
-	  : index(newindex), size(rhs.size), allocatedData(false)
+	  : index(0), size(rhs.size-rhs.index-newindex), allocatedData(false)
 	{
 	    for (UINT i=0;i<N;i++)
-	      arrays[i] = rhs.arrays[i];
+	      arrays[i] = rhs.arrays[i] + rhs.index + newindex;
 	}
 	MultichannelArray(T *arrayValsPtr, size_t size)
 	  : index(0), size(size), allocatedData(false)
@@ -499,9 +507,9 @@ namespace smil
 	inline MultichannelArray& operator = (const MultichannelArray &rhs)
 	{
 	    for (UINT i=0;i<N;i++)
-	      arrays[i] = rhs.arrays[i];
-	    index = rhs.index;
-	    size = rhs.size;
+	      arrays[i] = rhs.arrays[i] + rhs.index;
+	    index = 0;
+	    size = rhs.size - rhs.index;
 	    return *this;
 	}
 	
@@ -514,7 +522,6 @@ namespace smil
     };
     
 
-   
     
 } // namespace smil
 

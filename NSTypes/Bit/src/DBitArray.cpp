@@ -83,7 +83,7 @@ BitArray BitArray::operator [] (UINT i)
     BitArray ba;
     ba.setSize(bitWidth, height);
     ba.intArray = intArray;
-    ba.index = i;
+    ba.index = this->index + i;
     return ba;
 }
 

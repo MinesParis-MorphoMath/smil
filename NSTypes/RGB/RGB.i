@@ -32,11 +32,14 @@
 #include "NSTypes/RGB/include/DImage_RGB.h"
 #include "Core/include/private/DMultichannelTypes.hpp"
 #include "Core/include/DColor.h"
+#include "Base/include/private/DImageArith.hpp"
 
 %}
 
+%include "Base/include/private/DImageArith.hpp"
 namespace smil
 {
-  %ignore COLOR_UINT8_3;
+    %ignore COLOR_UINT8_3;
+    %template(copyChannel) copyChannel<RGB,UINT8>;
 }
 %include "DColor.h"
