@@ -62,6 +62,8 @@ namespace smil
 	return RES_ERR;
     }
 
+    BaseImage *readPNG(const char* filename);
+
     /**
     * PNG file write
     */
@@ -77,6 +79,9 @@ namespace smil
 
     template <>
     RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image);
+
+    template <>
+    RES_T readPNG<RGB>(const char *filename, Image<UINT8> &image);
 
     template <>
     RES_T writePNG<UINT8>(Image<UINT8> &image, const char *filename);

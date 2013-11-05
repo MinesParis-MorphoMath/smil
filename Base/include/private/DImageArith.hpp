@@ -840,10 +840,12 @@ namespace smil
 	ImageFreezer freeze(imOut);
 	
 	Image<T> *tmpIm;
+	bool imCreated = false;
 	
-	if (&imOut==&imIn || (void*)&imOut==(void*)&imOrVal)
+	if (&imOut==&imIn || (void*)&imOut==(void*)&imOrVal || (void*)&imOut==(void*)&trueImOrVal || (void*)&imOut==(void*)&falseImOrVal)
 	{
 	    tmpIm = new Image<T>(imIn);
+	    imCreated = true;
 	}
 	else tmpIm = &imOut;
 	  
@@ -875,15 +877,17 @@ namespace smil
 	else 
 	{
 	    ERR_MSG("Unknown operation");
-	    if (tmpIm!=&imOut)
+	    if (imCreated)
 	      delete tmpIm;
 	    return RES_ERR;
 	}
 
-	if (tmpIm!=&imOut)
+	ASSERT(test(*tmpIm, trueImOrVal, falseImOrVal, imOut)==RES_OK);
+	
+	if (imCreated)
 	  delete tmpIm;
 	
-	return test(imOut, trueImOrVal, falseImOrVal, imOut);
+	return RES_OK;
 	
     }
     

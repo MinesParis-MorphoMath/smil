@@ -37,16 +37,35 @@
 namespace smil
 {
 
-    template <>
-    RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
+    struct PNGFileInfo : public ImageFileInfo
     {
-
-	png_byte magic[8];
+	PNGFileInfo()
+	{
+	    /* create a png read struct */
+	    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	    
+	    /* create a png info struct */
+	    info_ptr = png_create_info_struct (png_ptr);
+	}
+	~PNGFileInfo()
+	{
+	    /* finish decompression and release memory */
+	    png_read_end (png_ptr, NULL);
+	    png_destroy_read_struct (&png_ptr, &info_ptr, NULL);
+	}
+	
 	png_structp png_ptr;
 	png_infop info_ptr;
+    };
+    
+  
+    RES_T readPNGHeader(const char *filename, PNGFileInfo &fInfo)
+    {
+	png_byte magic[8];
+	png_structp &png_ptr = fInfo.png_ptr;
+	png_infop &info_ptr = fInfo.info_ptr;
 	int bit_depth, color_type;
-	FILE *fp = NULL;
-	png_bytep *row_pointers = NULL;
+	FILE *&fp = fInfo.fileHandle;
 	png_uint_32 width, height;
 
 	/* open image file */
@@ -57,25 +76,10 @@ namespace smil
 	    cout << "Cannot open file " << filename << endl;
 	    return RES_ERR_IO;
 	}
-
-	FileCloser fileCloser(fp);
 	
 	/* read magic number */
 	/* check for valid magic number */
 	ASSERT( (fread (magic, 1, sizeof (magic), fp)==sizeof(magic) ||	  png_check_sig (magic, sizeof (magic))), string(filename) + " is not a valid PNG image!", RES_ERR_IO );
-
-	/* create a png read struct */
-	png_ptr = png_create_read_struct
-		  (PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-	ASSERT(png_ptr, RES_ERR_IO);
-
-	/* create a png info struct */
-	info_ptr = png_create_info_struct (png_ptr);
-	if (!info_ptr)
-	{
-	    png_destroy_read_struct (&png_ptr, NULL, NULL);
-	    return RES_ERR_IO;
-	}
 
 
 	/* initialize the setjmp for returning properly after a libpng
@@ -129,25 +133,44 @@ namespace smil
 		      &bit_depth, &color_type,
 		      NULL, NULL, NULL);
 
-	ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
-
-	/* setup a pointer array.  Each one points at the begening of a row. */
-	row_pointers = image.getLines();
-
-	/* read pixel data using row pointers */
-	png_read_image (png_ptr, row_pointers);
-
-	/* finish decompression and release memory */
-	png_read_end (png_ptr, NULL);
-	png_destroy_read_struct (&png_ptr, &info_ptr, NULL);
-
-
+	fInfo.width = width;
+	fInfo.height = height;
+	fInfo.bit_depth = bit_depth;
 	
-	image.modified();
+	switch(color_type)
+	{
+	  case PNG_COLOR_TYPE_GRAY:
+	    fInfo.color_type = ImageFileInfo::COLOR_TYPE_GRAY; break;
+	  case PNG_COLOR_TYPE_RGB:
+	    fInfo.color_type = ImageFileInfo::COLOR_TYPE_RGB; break;
+	  case PNG_COLOR_TYPE_RGB_ALPHA:
+	    fInfo.color_type = ImageFileInfo::COLOR_TYPE_RGBA; break;
+	  case PNG_COLOR_TYPE_GRAY_ALPHA:
+	    fInfo.color_type = ImageFileInfo::COLOR_TYPE_GA; break;
+	  default:
+	    fInfo.color_type = ImageFileInfo::COLOR_TYPE_UNKNOWN; 
+	}
 	
 	return RES_OK;
     }
 
+    template <>
+    RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
+    {
+	PNGFileInfo fInfo;
+	
+	readPNGHeader(filename, fInfo);
+	
+	ASSERT((image.setSize(fInfo.width, fInfo.height)==RES_OK), RES_ERR_BAD_ALLOCATION);
+
+	/* setup a pointer array.  Each one points at the begening of a row. */
+	png_bytep *row_pointers = image.getLines();
+
+	/* read pixel data using row pointers */
+	png_read_image (fInfo.png_ptr, row_pointers);
+
+	image.modified();
+    }
 
 
 

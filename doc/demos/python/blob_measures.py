@@ -14,7 +14,7 @@ imLbl.showLabel()
 # Bounding boxes
 bboxes = measBoundBoxes(imLbl)
 imRec = Image(imIn)
-drawRectangle(imRec, bboxes)
+drawRectangles(imRec, bboxes)
 imIn.getViewer().drawOverlay(imRec)
 
 # Blobs measures

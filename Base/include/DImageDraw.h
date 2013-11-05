@@ -43,7 +43,7 @@ namespace smil
     * @{
     */
     
-    static std::vector<IntPoint> bresenhamPoints(int p1x, int p1y, int p2x, int p2y)
+    static std::vector<IntPoint> bresenhamPoints(int p1x, int p1y, int p2x, int p2y, int xMax=0, int yMax=0)
     {
 	vector<IntPoint> points;
 	int F, x, y;
@@ -65,11 +65,12 @@ namespace smil
 
 	    x = p1x;
 	    y = p1y;
-	    while (y <= p2y)
-	    {
-		points.push_back(IntPoint(x,y,0));
-		y++;
-	    }
+	    if (!xMax || (x>=0 && x<xMax))
+	      while (y <= p2y)
+	      {
+		  points.push_back(IntPoint(x,y,0));
+		  y++;
+	      }
 	    return points;
 	}
 	// Trivial case 2: m = 0 (Horizontal line)
@@ -78,11 +79,12 @@ namespace smil
 	    x = p1x;
 	    y = p1y;
 
-	    while (x <= p2x)
-	    {
-		points.push_back(IntPoint(x,y,0));
-		x++;
-	    }
+	    if (!yMax || (y>=0 && y<yMax))
+	      while (x <= p2x)
+	      {
+		  points.push_back(IntPoint(x,y,0));
+		  x++;
+	      }
 	    return points;
 	}
 
@@ -106,7 +108,8 @@ namespace smil
 		y = p1y;
 		while (x <= p2x)
 		{
-		    points.push_back(IntPoint(x,y,0));
+		    if (!xMax || (x>=0 && x<xMax && y>=0 && y<yMax))
+		      points.push_back(IntPoint(x,y,0));
 		    if (F <= 0)
 		    {
 			F += dy2;
@@ -129,7 +132,8 @@ namespace smil
 		x = p1x;
 		while (y <= p2y)
 		{
-		    points.push_back(IntPoint(x,y,0));
+		    if (!xMax || (x>=0 && x<xMax && y>=0 && y<yMax))
+		      points.push_back(IntPoint(x,y,0));
 		    if (F <= 0)
 		    {
 			F += dx2;
@@ -154,7 +158,8 @@ namespace smil
 		y = p1y;
 		while (x <= p2x)
 		{
-		    points.push_back(IntPoint(x,y,0));
+		    if (!xMax || (x>=0 && x<xMax && y>=0 && y<yMax))
+		      points.push_back(IntPoint(x,y,0));
 		    if (F <= 0)
 		    {
 			F -= dy2;
@@ -177,7 +182,8 @@ namespace smil
 		x = p1x;
 		while (y >= p2y)
 		{
-		    points.push_back(IntPoint(x,y,0));
+		    if (!xMax || (x>=0 && x<xMax && y>=0 && y<yMax))
+		      points.push_back(IntPoint(x,y,0));
 		    if (F <= 0)
 		    {
 			F += dx2;
