@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
     Image_UINT8 im2;
     Image_UINT8 im3;
 
+//     readPNG("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png");
 
 //       im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
 //     if(read("/home/faessel/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0603_C1_1_20100326-105102/1.bmp", im1)!=RES_OK)
@@ -53,7 +54,9 @@ int main(int argc, char *argv[])
 // //     im1 >> "/home/faessel/tmp/tmp.bmp";
 //     cout << endl;
     string str = im2.getName();
-    im2 << "http://cmm.ensmp.fr/~faessel/smil/images/barbarfa.png";
+//     im2 << "http://cmm.ensmp.fr/~faessel/smil/images/barbara.png";
+//     im2 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
+    im2 << "/home/faessel/src/morphee/trunk/utilities/Images/Color/arearea.png";
     
     
 }
