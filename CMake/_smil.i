@@ -155,6 +155,16 @@ for t in imageTypes:
     t.c_showLabel = t.showLabel
     t.showLabel = _showLabel_with_name
 
+    
+def autoCastBaseImage(baseImg):
+    typeStr = baseImg.getTypeAsString()
+    if typeStr in dataTypes:
+      imType = imageTypes[dataTypes.index(typeStr)]
+      return castBaseImage(baseImg, imType.getDataTypeMax())
+    else:
+      return None
+
+      
 def Image(*args):
     """
     * Image(): create an empty ${DEFAULT_IMAGE_TYPE} image.

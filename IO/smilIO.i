@@ -69,6 +69,7 @@
 %include "DImageIO_VTK.hpp"
 
 #ifdef USE_PNG
+//%rename readPNG(const char* filename) _readPNG;
 %include "DImageIO_PNG.hpp"
 #endif // USE_PNG
 

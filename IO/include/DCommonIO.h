@@ -71,6 +71,7 @@ namespace smil
 	}
 	enum ColorType { COLOR_TYPE_GRAY, COLOR_TYPE_RGB, COLOR_TYPE_GA, COLOR_TYPE_RGBA, COLOR_TYPE_UNKNOWN };
 	UINT bit_depth;
+	UINT channels;
 	ColorType color_type;
 	size_t width, height, depth;
 	FILE *fileHandle;

@@ -82,8 +82,7 @@ namespace smil
 	//! \return The type of the image data as a string ("UINT8", "UINT16", ...)
 	virtual const char* getTypeAsString()
 	{
-	    T val;
-	    return getDataTypeAsString(val);
+	    return getDataTypeAsString<T>();
 	}
 	typedef typename ImDtTypes<T>::pixelType pixelType;
 	typedef typename ImDtTypes<T>::lineType lineType;
@@ -216,8 +215,8 @@ namespace smil
 	
 	virtual void modified();
 
-	T dataTypeMin;
-	T dataTypeMax;
+	static T getDataTypeMin() { return ImDtTypes<T>::min(); }
+	static T getDataTypeMax() { return ImDtTypes<T>::max(); }
 
 	inline T &operator [] (size_t i) 
 	{ 
@@ -341,9 +340,10 @@ namespace smil
     }
 
     template <class T>
-    Image<T> &castBaseImage(BaseImage &img, const Image<T>&)
+    Image<T> *castBaseImage(BaseImage &img, const T &)
     {
-	return static_cast< Image<T>& >(img);
+	ASSERT(strcmp(getDataTypeAsString<T>(), img.getTypeAsString())==0, "Bad type for cast", NULL);
+	return static_cast< Image<T>* >(&img);
     }
 
 

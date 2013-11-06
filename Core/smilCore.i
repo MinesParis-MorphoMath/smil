@@ -68,6 +68,9 @@ class exception{};
 %include "DTypes.hpp"
 %include "DTypes.h"
 
+%include "DColor.h"
+%ignore COLOR_UINT8_3;
+
 
 // BitArray
 #ifdef SMIL_WRAP_BIT
@@ -240,8 +243,14 @@ namespace std
 namespace smil
 {
     TEMPLATE_WRAP_CLASS(Image, Image);
+    #ifndef SMIL_WRAP_RGB
+    %template(Image_RGB) Image<RGB>;
+    #endif // SMIL_WRAP_RGB
     TEMPLATE_WRAP_FUNC(createImage);
     TEMPLATE_WRAP_FUNC(castBaseImage);
+    #ifndef SMIL_WRAP_RGB
+    %template(castBaseImage) castBaseImage<RGB>;
+    #endif // SMIL_WRAP_RGB
     TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
 }
 

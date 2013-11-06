@@ -121,18 +121,18 @@ TEMPLATE_WRAP_FUNC(arrowEqu);
 
 %include "DMorphoWatershed.hpp"
 TEMPLATE_WRAP_FUNC(watershed);
-TEMPLATE_WRAP_FUNC_CROSS2(watershed);
+TEMPLATE_WRAP_FUNC_2T_CROSS(watershed);
 TEMPLATE_WRAP_FUNC(lblSkiz);
-TEMPLATE_WRAP_FUNC_CROSS2(inflBasins);
+TEMPLATE_WRAP_FUNC_2T_CROSS(inflBasins);
 TEMPLATE_WRAP_FUNC(inflZones);
 TEMPLATE_WRAP_FUNC(waterfall);
 
 
 %include "DMorphoLabel.hpp"
-TEMPLATE_WRAP_FUNC_CROSS2(label);
-TEMPLATE_WRAP_FUNC_CROSS2(labelWithArea);
+TEMPLATE_WRAP_FUNC_2T_CROSS(label);
+TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithArea);
 TEMPLATE_WRAP_FUNC(areaOpen);
-TEMPLATE_WRAP_FUNC_CROSS2(neighbors);
+TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 
 %ignore smil::CompStrEltList::operator[];
 %extend smil::CompStrEltList
@@ -156,7 +156,7 @@ TEMPLATE_WRAP_FUNC(skiz);
 TEMPLATE_WRAP_FUNC(zhangSkeleton);
 
 %include "DMorphoMaxTree.hpp"
-TEMPLATE_WRAP_FUNC_CROSS2(ultimateOpen);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);
 
 
 #ifdef SWIGPYTHON

@@ -39,23 +39,36 @@ namespace smil
 
     struct PNGFileInfo : public ImageFileInfo
     {
-	PNGFileInfo()
+	PNGFileInfo(const string rw)
 	{
-	    /* create a png read struct */
-	    png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	    if (rw=="r")
+	    {
+	      readMode = true;
+	      /* create a png read struct */
+	      png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	    }
+	    else
+	    {
+	      readMode = false;
+	      /* create a png write struct */
+	      png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+	    }
 	    
 	    /* create a png info struct */
 	    info_ptr = png_create_info_struct (png_ptr);
 	}
 	~PNGFileInfo()
 	{
-	    /* finish decompression and release memory */
-	    png_read_end (png_ptr, NULL);
-	    png_destroy_read_struct (&png_ptr, &info_ptr, NULL);
+	    if (readMode)
+	      png_destroy_read_struct (&png_ptr, &info_ptr, NULL);
+	    else
+	      png_destroy_write_struct (&png_ptr, &info_ptr);
 	}
 	
 	png_structp png_ptr;
 	png_infop info_ptr;
+	
+	bool readMode;
     };
     
   
@@ -85,15 +98,9 @@ namespace smil
 	/* initialize the setjmp for returning properly after a libpng
 	  error occured */
 	if (setjmp (png_jmpbuf (png_ptr)))
-	{
-	    fclose (fp);
-	    png_destroy_read_struct (&png_ptr, &info_ptr, NULL);
-
 	    return RES_ERR_IO;
-	}
 
-	/* setup libpng for using standard C fread() function
-	  with our FILE pointer */
+	/* setup libpng for using standard C fread() function with our FILE pointer */
 	png_init_io (png_ptr, fp);
 
 	/* tell libpng that we have already read the magic number */
@@ -136,6 +143,7 @@ namespace smil
 	fInfo.width = width;
 	fInfo.height = height;
 	fInfo.bit_depth = bit_depth;
+	fInfo.channels = info_ptr->channels;
 	
 	switch(color_type)
 	{
@@ -154,12 +162,51 @@ namespace smil
 	return RES_OK;
     }
 
+    RES_T writePNGHeader(const char *filename, PNGFileInfo &fInfo)
+    {
+	png_byte color_type;
+	
+	switch(fInfo.color_type)
+	{
+	  case ImageFileInfo::COLOR_TYPE_GRAY:
+	    color_type = PNG_COLOR_TYPE_GRAY; break;
+	  case ImageFileInfo::COLOR_TYPE_RGB:
+	    color_type = PNG_COLOR_TYPE_RGB; break;
+	  case ImageFileInfo::COLOR_TYPE_RGBA:
+	    color_type = PNG_COLOR_TYPE_RGB_ALPHA; break;
+	  case ImageFileInfo::COLOR_TYPE_GA:
+	    color_type = PNG_COLOR_TYPE_GRAY_ALPHA; break;
+	}
+	
+	png_structp &png_ptr = fInfo.png_ptr;
+	png_infop &info_ptr = fInfo.info_ptr;
+
+	/* create file */
+	FILE *&fp = fInfo.fileHandle;
+	fp = fopen(filename, "wb");
+	if (!fp)
+	    return RES_ERR_IO;
+
+	png_init_io(png_ptr, fp);
+
+	/* write header */
+	png_set_IHDR(png_ptr, info_ptr, fInfo.width, fInfo.height,
+		    fInfo.bit_depth, color_type, PNG_INTERLACE_NONE,
+		    PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
+
+	png_write_info(png_ptr, info_ptr);
+
+	return RES_OK;
+    }
+
     template <>
     RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image)
     {
-	PNGFileInfo fInfo;
+	PNGFileInfo fInfo("r");
 	
-	readPNGHeader(filename, fInfo);
+	ASSERT(readPNGHeader(filename, fInfo)==RES_OK);
+	
+	ASSERT(fInfo.bit_depth==8 && fInfo.channels==1, "Not a 8bit gray image", RES_ERR);
 	
 	ASSERT((image.setSize(fInfo.width, fInfo.height)==RES_OK), RES_ERR_BAD_ALLOCATION);
 
@@ -168,93 +215,140 @@ namespace smil
 
 	/* read pixel data using row pointers */
 	png_read_image (fInfo.png_ptr, row_pointers);
+	
+	/* finish decompression and release memory */
+	png_read_end (fInfo.png_ptr, NULL);
 
 	image.modified();
     }
 
+    template <>
+    RES_T readPNG<RGB>(const char *filename, Image<RGB> &image)
+    {
+	PNGFileInfo fInfo("r");
+	
+	readPNGHeader(filename, fInfo);
+	size_t width = fInfo.width, height = fInfo.height;
+	
+	ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
+	
+	ASSERT(fInfo.bit_depth==8 && fInfo.channels==3, "Not a 24bit RGB image", RES_ERR);
+	
+	typedef UINT8* datap;
+	datap *data = new datap[height];
+	for (size_t j=0;j<height;j++)
+	  data[j] = new UINT8[width*3];
+
+	/* setup a pointer array.  Each one points at the begening of a row. */
+	png_bytep *row_pointers = data;
+
+	/* read pixel data using row pointers */
+	png_read_image (fInfo.png_ptr, row_pointers);
+	/* finish decompression and release memory */
+	png_read_end (fInfo.png_ptr, NULL);
+
+	Image<RGB>::sliceType lines = image.getLines();
+	MultichannelArray<UINT8,3>::lineType *arrays;
+	datap curline;
+	
+	for (size_t j=0;j<height;j++)
+	{
+	    arrays = lines[j].arrays;
+	    curline = data[j];
+	    for (size_t i=0;i<width;i++)
+	      for (UINT n=0;n<3;n++)
+		arrays[n][i] = curline[3*i+n];
+	    delete[] data[j];
+	}
+	delete[] data;
+	
+	image.modified();
+    }
 
 
-    /* write a png file */
     template <>
     RES_T writePNG(Image<UINT8> &image, const char *filename)
     {
-	png_byte color_type = PNG_COLOR_TYPE_GRAY;
-	png_byte bit_depth = 8;
-
-	png_structp png_ptr;
-	png_infop info_ptr;
+	PNGFileInfo fInfo("w");
+	fInfo.width = image.getWidth();
+	fInfo.height = image.getHeight();
+	fInfo.bit_depth = 8;
+	fInfo.color_type = ImageFileInfo::COLOR_TYPE_GRAY;
+	fInfo.channels = 1;
+	
+	ASSERT(writePNGHeader(filename, fInfo)==RES_OK);
+	
 	png_bytep * row_pointers = image.getLines();
+	png_write_image(fInfo.png_ptr, row_pointers);
+	png_write_end(fInfo.png_ptr, NULL);
 
-	/* create file */
-	FILE *fp = fopen(filename, "wb");
-	if (!fp)
-	{
-	    return RES_ERR_IO;
-	}
-
-	/* initialize stuff */
-	png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
-
-	if (!png_ptr)
-	{
-	    cout << "[write_png_file] png_create_write_struct failed" << endl;
-	    return RES_ERR_IO;
-	}
-
-	info_ptr = png_create_info_struct(png_ptr);
-	if (!info_ptr)
-	{
-	    cout << "[write_png_file] png_create_info_struct failed" << endl;
-	    return RES_ERR_IO;
-	}
-
-	if (setjmp(png_jmpbuf(png_ptr)))
-	{
-	    cout << "[write_png_file] Error during init_io" << endl;
-	    return RES_ERR_IO;
-	}
-
-	png_init_io(png_ptr, fp);
-
-
-	/* write header */
-	if (setjmp(png_jmpbuf(png_ptr)))
-	{
-	    cout << "[write_png_file] Error during writing header" << endl;
-	    return RES_ERR_IO;
-	}
-
-	png_set_IHDR(png_ptr, info_ptr, image.getWidth(), image.getHeight(),
-		    bit_depth, color_type, PNG_INTERLACE_NONE,
-		    PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
-
-	png_write_info(png_ptr, info_ptr);
-
-
-	/* write bytes */
-	if (setjmp(png_jmpbuf(png_ptr)))
-	{
-	    cout << "[write_png_file] Error during writing bytes" << endl;
-	    return RES_ERR_IO;
-	}
-
-	png_write_image(png_ptr, row_pointers);
-
-
-	/* end write */
-	if (setjmp(png_jmpbuf(png_ptr)))
-	{
-	    cout << "[write_png_file] Error during end of write" << endl;
-	    return RES_ERR_IO;
-	}
-
-	png_write_end(png_ptr, NULL);
-
-
-	fclose(fp);
 	return RES_OK;
     }
+    
+    template <>
+    RES_T writePNG(Image<RGB> &image, const char *filename)
+    {
+	PNGFileInfo fInfo("w");
+	fInfo.width = image.getWidth();
+	fInfo.height = image.getHeight();
+	fInfo.bit_depth = 8;
+	fInfo.color_type = ImageFileInfo::COLOR_TYPE_RGB;
+	fInfo.channels = 1;
+	
+	ASSERT(writePNGHeader(filename, fInfo)==RES_OK);
+	
+	size_t width = fInfo.width, height = fInfo.height;
+	
+	typedef UINT8* datap;
+	datap *data = new datap[height];
+	for (size_t j=0;j<height;j++)
+	  data[j] = new UINT8[width*3];
 
+
+	Image<RGB>::sliceType lines = image.getLines();
+	MultichannelArray<UINT8,3>::lineType *arrays;
+	datap curline;
+	
+	for (size_t j=0;j<height;j++)
+	{
+	    arrays = lines[j].arrays;
+	    curline = data[j];
+	    for (size_t i=0;i<width;i++)
+	      for (UINT n=0;n<3;n++)
+		curline[3*i+n] = arrays[n][i];
+	}
+	
+	png_bytep *row_pointers = data;
+	png_write_image(fInfo.png_ptr, row_pointers);
+	png_write_end(fInfo.png_ptr, NULL);
+
+	for (size_t j=0;j<height;j++)
+	    delete[] data[j];
+	delete[] data;
+
+	return RES_OK;
+    }
+    
+    BaseImage *createFromPNG(const char* filename)
+    {
+	PNGFileInfo fInfo("r");
+	
+	ASSERT(readPNGHeader(filename, fInfo)==RES_OK, NULL);
+	
+	if (fInfo.color_type==ImageFileInfo::COLOR_TYPE_GRAY)
+	{
+	    Image<UINT8> *img = new Image<UINT8>();
+	    readPNG(filename, *img);
+	    return img;
+	}
+	else if (fInfo.color_type==ImageFileInfo::COLOR_TYPE_RGB)
+	{
+	    Image<RGB> *img = new Image<RGB>();
+	    readPNG(filename, *img);
+	    return img;
+	}
+	
+    }
 } // namespace smil
 
 #endif // USE_PNG

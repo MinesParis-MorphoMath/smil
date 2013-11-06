@@ -125,7 +125,7 @@ namespace smil
     };
 
     template <> 
-    inline const char *getDataTypeAsString(RGB &) { return "RGB"; }
+    inline const char *getDataTypeAsString(RGB *) { return "RGB"; }
 
     
     

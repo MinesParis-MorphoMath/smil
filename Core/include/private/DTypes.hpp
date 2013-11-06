@@ -99,7 +99,7 @@ namespace smil
 
 
     template <class T>
-    inline const char *getDataTypeAsString(T &val)
+    inline const char *getDataTypeAsString(T *val=NULL)
     {
 	return "Unknown";
     }
@@ -107,7 +107,7 @@ namespace smil
 
     #define DECL_DATA_TYPE_STR(_type) \
     template <> \
-    inline const char *getDataTypeAsString(_type &) { return #_type; }
+    inline const char *getDataTypeAsString(_type *) { return #_type; }
 
     DECL_DATA_TYPE_STR(UINT8)
     DECL_DATA_TYPE_STR(UINT16)

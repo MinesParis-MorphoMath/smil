@@ -38,7 +38,18 @@
 
 #include "DGui.h"
 
+#include "Core/include/private/DMultichannelTypes.hpp"
+#include "Core/include/DColor.h"
+
 using namespace smil;
+
+namespace smil 
+{
+    template <>
+    void Image< MultichannelType<UINT8,3> >::init()
+    {
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -55,9 +66,15 @@ int main(int argc, char *argv[])
 //     cout << endl;
     string str = im2.getName();
 //     im2 << "http://cmm.ensmp.fr/~faessel/smil/images/barbara.png";
-//     im2 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
-    im2 << "/home/faessel/src/morphee/trunk/utilities/Images/Color/arearea.png";
+    im2 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
+    im2 >> "/home/faessel/tmp/akiyo_y.png";
     
+    Image<RGB> rgbIm;
+    rgbIm << "/home/faessel/src/morphee/trunk/utilities/Images/Color/arearea.png";
+    rgbIm >> "/home/faessel/tmp/arearea.png";
+    
+//     rgbIm.show();
+//     Gui::execLoop();
     
 }
 

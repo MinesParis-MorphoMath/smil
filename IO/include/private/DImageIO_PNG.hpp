@@ -37,6 +37,8 @@
 #include "Core/include/DCommon.h"
 #include "Core/include/DErrors.h"
 
+#include "NSTypes/RGB/include/DRGB.h"
+
 using namespace std;
 
 
@@ -62,7 +64,9 @@ namespace smil
 	return RES_ERR;
     }
 
-    BaseImage *readPNG(const char* filename);
+// #ifndef SWIG    
+    BaseImage *createFromPNG(const char* filename);
+// #endif // SWIG    
 
     /**
     * PNG file write
@@ -81,10 +85,14 @@ namespace smil
     RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image);
 
     template <>
-    RES_T readPNG<RGB>(const char *filename, Image<UINT8> &image);
+    RES_T readPNG<RGB>(const char *filename, Image<RGB> &image);
 
+    
     template <>
     RES_T writePNG<UINT8>(Image<UINT8> &image, const char *filename);
+
+    template <>
+    RES_T writePNG<RGB>(Image<RGB> &image, const char *filename);
 
 /*@}*/
 
