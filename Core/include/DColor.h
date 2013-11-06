@@ -73,13 +73,12 @@ namespace smil
 	}
     };
     
-//         typedef COLOR_UINT8_3 Rgb;
-
-    
-//     typedef COLOR_UINT8_3 RGB;
     typedef COLOR_UINT8_3_Array RGBArray;
     
-    struct RGB : public COLOR_UINT8_3
+    struct RGB
+#ifndef SWIG
+    : public COLOR_UINT8_3
+#endif // SWIG
     {
 	UINT8 &r;
 	UINT8 &g;

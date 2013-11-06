@@ -33,86 +33,89 @@
 
 namespace smil
 {
-    std::string getBMPImageType(const char* filename)
+    struct BMPFileInfo : public ImageFileInfo
     {
-	FILE* fp = fopen( filename, "rb" );
-
-	ASSERT((fp!=NULL), string("Cannot open file ") + filename + " for input", "");
-	
-	FileCloser fileCloser(fp);
+	BMPFileInfo()
+	{
+	}
+	~BMPFileInfo()
+	{
+	}
 	
 	bmpFileHeader fHeader;
 	bmpInfoHeader iHeader;
-
-	//read the bitmap file header
-	ASSERT(fread(&fHeader, sizeof(bmpFileHeader), 1 ,fp), "");
-
-	//verify that this is a bmp file by check bitmap id
-	ASSERT((fHeader.bfType == 0x4D42), "");
-	
-	//read the bitmap info header
-	ASSERT(fread(&iHeader, sizeof(bmpInfoHeader), 1, fp), "");
-
-	switch (iHeader.biBitCount)
-	{
-	}
-    }
-
-    template <>
-    RES_T readBMP(const char *filename, Image<UINT8> &image)
+    };
+    
+    RES_T readBMPHeader(const char *filename, BMPFileInfo &fInfo)
     {
-	FILE* fp = fopen( filename, "rb" );
+	bmpFileHeader &fHeader = fInfo.fHeader;
+	bmpInfoHeader &iHeader = fInfo.iHeader;
+	
+	FILE *&fp = fInfo.fileHandle;
+	fp = fopen( filename, "rb" );
 
 	ASSERT((fp!=NULL), string("Cannot open file ") + filename + " for input", RES_ERR_IO);
 	
-	FileCloser fileCloser(fp);
-	
-	bmpFileHeader fHeader;
-	bmpInfoHeader iHeader;
-
 	//read the bitmap file header
-	ASSERT(fread(&fHeader, sizeof(bmpFileHeader), 1 ,fp));
+	ASSERT(fread(&fInfo.fHeader, sizeof(bmpFileHeader), 1 ,fp));
 
 	//verify that this is a bmp file by check bitmap id
 	ASSERT((fHeader.bfType == 0x4D42));
 	
 	//read the bitmap info header
-	ASSERT(fread(&iHeader, sizeof(bmpInfoHeader), 1, fp));
-
-	ASSERT((iHeader.biBitCount==8), "Not an 8bit image", RES_ERR_IO);
+	ASSERT(fread(&fInfo.iHeader, sizeof(bmpInfoHeader), 1, fp));
 	
 	ASSERT((iHeader.biCompression==BI_RGB), "Compressed BMP files are not (yet) supported", RES_ERR_IO);
-
-    UINT8 r,g,b,a, lut[iHeader.biClrUsed];
-
-    // read the color table
-       
-    for (int j=0; j<iHeader.biClrUsed; j++) {
-        ASSERT(fread(&b, 1, 1, fp));
-        ASSERT(fread(&g, 1, 1, fp));
-        ASSERT(fread(&r, 1, 1, fp));
-        ASSERT(fread(&a, 1, 1, fp));
-        lut[j] = (UINT8)(((UINT32)r+(UINT32)g+(UINT32)b)/3) ;
-
+	
+	fInfo.bit_depth = iHeader.biBitCount;
+	fInfo.width = iHeader.biWidth;
+	fInfo.height = iHeader.biHeight;
+	fInfo.channels = iHeader.biSize / iHeader.biBitCount;
+	
+	return RES_OK;
     }
+
+    template <>
+    RES_T readBMP(const char *filename, Image<UINT8> &image)
+    {
+	BMPFileInfo fInfo;
+	
+	ASSERT(readBMPHeader(filename, fInfo)==RES_OK);
+	
+	FILE *&fp = fInfo.fileHandle;
+	
+	ASSERT(fInfo.bit_depth==8, "Not an 8bit gray image", RES_ERR_IO);
+	
+	UINT nColors = fInfo.iHeader.biClrUsed;
+	UINT8 r,g,b,a, lut[nColors];
+
+	// read the color table
+	  
+	for (int j=0; j<nColors; j++) {
+	    ASSERT(fread(&b, 1, 1, fp));
+	    ASSERT(fread(&g, 1, 1, fp));
+	    ASSERT(fread(&r, 1, 1, fp));
+	    ASSERT(fread(&a, 1, 1, fp));
+	    lut[j] = (UINT8)(((UINT32)r+(UINT32)g+(UINT32)b)/3) ;
+
+	}
     
 	// at this point it is safer to  
-	//move file pointer to the beginning of bitmap data (skip palette information)
-	fseek(fp, fHeader.bfOffBits, SEEK_SET);
+	// move file pointer to the beginning of bitmap data (skip palette information)
+	fseek(fp, fInfo.fHeader.bfOffBits, SEEK_SET);
 
-	int width = iHeader.biWidth;
-	int height = iHeader.biHeight;
+	int width = fInfo.width;
+	int height = fInfo.height;
 
 	ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
 	
 	Image<UINT8>::sliceType lines = image.getLines();
 
-	
 	for (int j=height-1;j>=0;j--){
 	  ASSERT((fread(lines[j], width, 1, fp)!=0), RES_ERR_IO);
-      for(int i=0; i< width; i++) 
-          lines[j][i] = lut[lines[j][i]];
-    }
+	  for(int i=0; i< width; i++) 
+	      lines[j][i] = lut[lines[j][i]];
+	}
 	image.modified();
 
 	return RES_OK;

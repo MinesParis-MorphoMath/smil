@@ -347,6 +347,11 @@ namespace smil
 	    readPNG(filename, *img);
 	    return img;
 	}
+	else
+	{
+	    ERR_MSG("File type not supported");
+	    return NULL;
+	}
 	
     }
 } // namespace smil

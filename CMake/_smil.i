@@ -161,6 +161,8 @@ def autoCastBaseImage(baseImg):
     if typeStr in dataTypes:
       imType = imageTypes[dataTypes.index(typeStr)]
       return castBaseImage(baseImg, imType.getDataTypeMax())
+    elif typeStr=="RGB":
+      return castBaseImage(baseImg, Image_RGB.getDataTypeMax())
     else:
       return None
 

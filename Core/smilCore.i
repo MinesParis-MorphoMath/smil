@@ -61,15 +61,11 @@ class exception{};
 //////////////////////////////////////////////////////////
 
 %include "carrays.i"
-//%array_class(double, DArray);
-//%array_class(void, VoidArray);
-//%array_class(UINT8, Uint8Array);
+
 
 %include "DTypes.hpp"
 %include "DTypes.h"
 
-%include "DColor.h"
-%ignore COLOR_UINT8_3;
 
 
 // BitArray
@@ -80,6 +76,8 @@ class exception{};
 // RGB
 #ifdef SMIL_WRAP_RGB
 %include "RGB.i"
+#else
+%include "DColor.h"
 #endif // SMIL_WRAP_RGB
 
 

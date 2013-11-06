@@ -66,15 +66,18 @@ int main(int argc, char *argv[])
 //     cout << endl;
     string str = im2.getName();
 //     im2 << "http://cmm.ensmp.fr/~faessel/smil/images/barbara.png";
-    im2 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
-    im2 >> "/home/faessel/tmp/akiyo_y.png";
+//     im2 << "/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
+    im2 << "/home/mat/tmp/akiyo_y.bmp";
+    im2 << "/home/mat/tmp/1.bmp";
+    im2 << "/home/mat/tmp/arearea.bmp";
+//     im2.show();
     
-    Image<RGB> rgbIm;
-    rgbIm << "/home/faessel/src/morphee/trunk/utilities/Images/Color/arearea.png";
-    rgbIm >> "/home/faessel/tmp/arearea.png";
+//     Image<RGB> rgbIm;
+//     rgbIm << "/home/mat/src/morphee/trunk/utilities/Images/Color/arearea.png";
+//     rgbIm >> "/home/mat/tmp/arearea.png";
     
 //     rgbIm.show();
-//     Gui::execLoop();
+    Gui::execLoop();
     
 }
 
