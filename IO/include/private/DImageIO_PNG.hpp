@@ -64,9 +64,7 @@ namespace smil
 	return RES_ERR;
     }
 
-// #ifndef SWIG    
     BaseImage *createFromPNG(const char* filename);
-// #endif // SWIG    
 
     /**
     * PNG file write

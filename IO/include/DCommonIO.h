@@ -61,13 +61,9 @@ namespace smil
     struct ImageFileInfo
     {
 	ImageFileInfo()
-	  : fileHandle(NULL)
+	  : fileHandle(NULL),
+	    width(0), height(0), depth(0)
 	{
-	}
-	~ImageFileInfo()
-	{
-	    if (fileHandle)
-	      fclose(fileHandle);
 	}
 	enum ColorType { COLOR_TYPE_GRAY, COLOR_TYPE_RGB, COLOR_TYPE_GA, COLOR_TYPE_RGBA, COLOR_TYPE_UNKNOWN };
 	UINT bit_depth;
@@ -77,7 +73,7 @@ namespace smil
 	FILE *fileHandle;
     };
     
-    std::string getImageType(const char* filename);
+    ImageFileInfo getFileInfo(const char* filename);
 
     #ifdef USE_CURL
 

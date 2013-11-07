@@ -352,8 +352,8 @@ namespace smil
 	    ERR_MSG("File type not supported");
 	    return NULL;
 	}
-	
     }
+
 } // namespace smil
 
 #endif // USE_PNG

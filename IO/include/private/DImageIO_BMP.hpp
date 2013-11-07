@@ -85,8 +85,6 @@ namespace smil
 
     #pragma pack(pop)
 
-    std::string getBMPImageType(const char* filename);
-
     /**
     * BMP file read
     */
@@ -97,6 +95,8 @@ namespace smil
 	return RES_ERR;
     }
 
+    BaseImage *createFromBMP(const char* filename);
+    
     /**
     * BMP file write
     */

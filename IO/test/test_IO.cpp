@@ -43,14 +43,6 @@
 
 using namespace smil;
 
-namespace smil 
-{
-    template <>
-    void Image< MultichannelType<UINT8,3> >::init()
-    {
-    }
-}
-
 int main(int argc, char *argv[])
 {
     Image_UINT8 im1;
@@ -67,17 +59,21 @@ int main(int argc, char *argv[])
     string str = im2.getName();
 //     im2 << "http://cmm.ensmp.fr/~faessel/smil/images/barbara.png";
 //     im2 << "/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
-    im2 << "/home/mat/tmp/akiyo_y.bmp";
-    im2 << "/home/mat/tmp/1.bmp";
-    im2 << "/home/mat/tmp/arearea.bmp";
+//     im2 << "/home/faessel/tmp/akiyo_y.bmp";
+    im2 << "/home/faessel/tmp/0.bmp";
+    im2 << "/home/faessel/tmp/2.bmp";
+    im2 >> "/home/faessel/tmp/3.bmp";
+//     im2 << "/home/faessel/tmp/arearea.bmp";
 //     im2.show();
     
-//     Image<RGB> rgbIm;
+    Image<RGB> rgbIm;
+    rgbIm << "/home/faessel/tmp/1.bmp";
+    rgbIm >> "/home/faessel/tmp/1out.bmp";
 //     rgbIm << "/home/mat/src/morphee/trunk/utilities/Images/Color/arearea.png";
 //     rgbIm >> "/home/mat/tmp/arearea.png";
     
 //     rgbIm.show();
-    Gui::execLoop();
+//     Gui::execLoop();
     
 }
 

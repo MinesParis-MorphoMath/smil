@@ -65,12 +65,22 @@ namespace smil
 	//read the bitmap info header
 	ASSERT(fread(&fInfo.iHeader, sizeof(bmpInfoHeader), 1, fp));
 	
-	ASSERT((iHeader.biCompression==BI_RGB), "Compressed BMP files are not (yet) supported", RES_ERR_IO);
+	ASSERT(iHeader.biCompression==BI_RGB, "Compressed BMP files are not (yet) supported", RES_ERR_IO);
 	
 	fInfo.bit_depth = iHeader.biBitCount;
 	fInfo.width = iHeader.biWidth;
 	fInfo.height = iHeader.biHeight;
-	fInfo.channels = iHeader.biSize / iHeader.biBitCount;
+	fInfo.channels = iHeader.biBitCount / 8;
+	
+	switch(iHeader.biBitCount)
+	{
+	  case 8:
+	    fInfo.color_type = ImageFileInfo::COLOR_TYPE_GRAY; break;
+	  case 24:
+	    fInfo.color_type = ImageFileInfo::COLOR_TYPE_RGB; break;
+	  default:
+	    fInfo.color_type = ImageFileInfo::COLOR_TYPE_UNKNOWN; 
+	}
 	
 	return RES_OK;
     }
@@ -121,10 +131,45 @@ namespace smil
 	return RES_OK;
     }
 
+    template <>
+    RES_T readBMP(const char *filename, Image<RGB> &image)
+    {
+	BMPFileInfo fInfo;
+	
+	ASSERT(readBMPHeader(filename, fInfo)==RES_OK);
+	
+	FILE *&fp = fInfo.fileHandle;
+	
+	ASSERT(fInfo.bit_depth==24, "Not an 32bit RGB image", RES_ERR_IO);
+	
+	fseek(fp, fInfo.fHeader.bfOffBits, SEEK_SET);
+
+	int width = fInfo.width;
+	int height = fInfo.height;
+
+	ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
+	
+	Image<RGB>::sliceType lines = image.getLines();
+	MultichannelArray<UINT8,3>::lineType *arrays;
+	UINT8 *data = new UINT8[width*3];
+
+	for (int j=height-1;j>=0;j--)
+	{
+	    arrays = lines[j].arrays;
+	    ASSERT((fread(data, width*3, 1, fp)!=0), RES_ERR_IO);
+	    for (size_t i=0;i<width;i++)
+	      for (UINT n=0;n<3;n++)
+		arrays[n][i] = data[3*i+n];
+	}
+	
+	delete[] data;
+	
+	image.modified();
+
+	return RES_OK;
+    }
 
 
-
-    /* write a png file */
     template <>
     RES_T writeBMP(Image<UINT8> &image, const char *filename)
     {
@@ -156,8 +201,6 @@ namespace smil
 	iHeader.biBitCount = 8; // number of bit per pixel
 	iHeader.biCompression = 0;// type of compression
 	iHeader.biSizeImage = 0;  //size of image in bytes
-	iHeader.biXPelsPerMeter = 2835;  // number of pixels per meter in x axis
-	iHeader.biYPelsPerMeter = 2835;  // number of pixels per meter in y axis
 	iHeader.biClrUsed = nColors;  // number of colors used by the bitmap
 	iHeader.biClrImportant = nColors;  // number of colors that are important
 
@@ -179,7 +222,7 @@ namespace smil
 
 	Image<UINT8>::lineType *lines = image.getLines();
 
-	for (size_t i=height-1;i>=0;i--)
+	for (int i=height-1;i>=0;i--)
 	    fwrite(lines[i], width*sizeof(UINT8), 1, fp);
 
 	fclose(fp);
@@ -187,4 +230,89 @@ namespace smil
 	return RES_OK;
     }
 
+    template <>
+    RES_T writeBMP(Image<RGB> &image, const char *filename)
+    {
+	FILE* fp = fopen( filename, "wb" );
+
+	if ( fp == NULL )
+	{
+	    cout << "Error: Cannot open file " << filename << " for output." << endl;
+	    return RES_ERR;
+	}
+	bmpFileHeader fHeader;
+	bmpInfoHeader iHeader;
+
+	size_t width = image.getWidth();
+	size_t height = image.getHeight();
+
+	fHeader.bfType = 0x4D42;
+	fHeader.bfSize = (UINT32)(width*height*3*sizeof(UINT8)) + sizeof(bmpFileHeader) + sizeof(bmpInfoHeader);
+	fHeader.bfReserved1 = 0;
+	fHeader.bfReserved2 = 0;
+	fHeader.bfOffBits = sizeof(bmpFileHeader) + sizeof(bmpInfoHeader);
+
+	iHeader.biSize = sizeof(bmpInfoHeader);  // number of bytes required by the struct
+	iHeader.biWidth = (UINT32)width;  // width in pixels
+	iHeader.biHeight = (UINT32)height;  // height in pixels
+	iHeader.biPlanes = 1; // number of color planes, must be 1
+	iHeader.biBitCount = 24; // number of bit per pixel
+	iHeader.biCompression = 0;// type of compression
+
+
+	//write the bitmap file header
+	fwrite(&fHeader, sizeof(bmpFileHeader), 1 ,fp);
+
+	//write the bitmap image header
+	fwrite(&iHeader, sizeof(bmpInfoHeader), 1 ,fp);
+
+	Image<RGB>::sliceType lines = image.getLines();
+	MultichannelArray<UINT8,3>::lineType *arrays;
+	UINT8 *data = new UINT8[width*3];
+
+	for (int j=height-1;j>=0;j--)
+	{
+	    arrays = lines[j].arrays;
+	    for (size_t i=0;i<width;i++)
+	      for (UINT n=0;n<3;n++)
+		data[3*i+n] = arrays[n][i];
+	    ASSERT((fwrite(data, width*3, 1, fp)!=0), RES_ERR_IO);
+	}
+	
+	delete[] data;
+	
+// 	Image<UINT8>::lineType *lines = image.getLines();
+// 
+// 	for (size_t i=height-1;i>=0;i--)
+// 	    fwrite(lines[i], width*sizeof(UINT8), 1, fp);
+
+	fclose(fp);
+
+	return RES_OK;
+    }
+
+    BaseImage *createFromBMP(const char* filename)
+    {
+	BMPFileInfo fInfo;
+	
+	ASSERT(readBMPHeader(filename, fInfo)==RES_OK, NULL);
+	
+	if (fInfo.color_type==ImageFileInfo::COLOR_TYPE_GRAY)
+	{
+	    Image<UINT8> *img = new Image<UINT8>();
+	    readBMP(filename, *img);
+	    return img;
+	}
+	else if (fInfo.color_type==ImageFileInfo::COLOR_TYPE_RGB)
+	{
+	    Image<RGB> *img = new Image<RGB>();
+	    readBMP(filename, *img);
+	    return img;
+	}
+	else
+	{
+	    ERR_MSG("File type not supported");
+	    return NULL;
+	}
+    }
 } // namespace smil
