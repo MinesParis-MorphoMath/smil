@@ -242,12 +242,12 @@ namespace smil
 {
     TEMPLATE_WRAP_CLASS(Image, Image);
     #ifndef SMIL_WRAP_RGB
-    %template(Image_RGB) Image<RGB>;
+      %template(Image_RGB) Image<RGB>;
     #endif // SMIL_WRAP_RGB
     TEMPLATE_WRAP_FUNC(createImage);
     TEMPLATE_WRAP_FUNC(castBaseImage);
     #ifndef SMIL_WRAP_RGB
-    %template(castBaseImage) castBaseImage<RGB>;
+      %template(castBaseImage) castBaseImage<RGB>;
     #endif // SMIL_WRAP_RGB
     TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
 }

@@ -157,12 +157,12 @@ for t in imageTypes:
 
     
 def autoCastBaseImage(baseImg):
+    if not baseImg:
+      return None
     typeStr = baseImg.getTypeAsString()
     if typeStr in dataTypes:
       imType = imageTypes[dataTypes.index(typeStr)]
       return castBaseImage(baseImg, imType.getDataTypeMax())
-    elif typeStr=="RGB":
-      return castBaseImage(baseImg, Image_RGB.getDataTypeMax())
     else:
       return None
 
@@ -225,7 +225,7 @@ def Image(*args):
 	    img = imgType()
 	    read(args[0], img)
 	else:
-	    img = imageTypes[0](args[0])
+	    img = autoCastBaseImage(createFromFile(args[0]))
     
     else:
 	img = imageTypes[0](*args)
@@ -233,7 +233,8 @@ def Image(*args):
 
     if fillImg and img.isAllocated():
       try:
-	fill(img, 0)
+	fillValue = type(img).getDataTypeMin()
+	fill(img, fillValue)
       except:
 	pass
     return img

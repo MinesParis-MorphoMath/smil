@@ -69,7 +69,11 @@ int main(int argc, char *argv[])
     Image<RGB> rgbIm;
     rgbIm << "/home/faessel/tmp/1.bmp";
     rgbIm >> "/home/faessel/tmp/1out.bmp";
-//     rgbIm << "/home/mat/src/morphee/trunk/utilities/Images/Color/arearea.png";
+    
+    BaseImage *im0 = createFromFile("/home/faessel/src/morphee/trunk/utilities/Images/Color/arearea.png");
+    BaseImage *im = createFromFile("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png");
+    im = createFromFile("/home/faessel/tmp/1out.bmp");
+//     rgbIm << ;
 //     rgbIm >> "/home/mat/tmp/arearea.png";
     
 //     rgbIm.show();

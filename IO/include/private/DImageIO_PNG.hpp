@@ -44,6 +44,7 @@ using namespace std;
 
 #ifdef USE_PNG
 
+
 namespace smil
 {
   
@@ -52,45 +53,36 @@ namespace smil
     */
     /*@{*/
     
+    class PNGHeader;
+    
+    RES_T getPNGFileInfo(const char* filename, ImageFileInfo &fInfo);
+
     template <class T> class Image;
 
-    /**
-    * PNG file read
-    */
-    template <class T>
-    RES_T readPNG(const char* filename, Image<T> &image)
+    template <class T=void>
+    class PNGImageFileHandler : public ImageFileHandler<T>
     {
-	cout << "readPNG error: data type not implemented." << endl;
-	return RES_ERR;
-    }
+      public:
+	PNGImageFileHandler()
+	  : ImageFileHandler<T>("PNG")
+	{
+	}
+	
+	virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
+	{
+	    return getPNGFileInfo(filename, fInfo);
+	}
+	
+	virtual RES_T read(const char* filename, Image<T> &image)
+	{
+	    return ImageFileHandler<T>::read(filename, image);
+	}
+	virtual RES_T write(const Image<T> &image, const char* filename)
+	{
+	    return ImageFileHandler<T>::write(image, filename);
+	}
+    };
 
-    BaseImage *createFromPNG(const char* filename);
-
-    /**
-    * PNG file write
-    */
-    template <class T>
-    RES_T writePNG(Image<T> &image, const char *filename)
-    {
-	cout << "writePNG error: data type not implemented." << endl;
-	return RES_ERR;
-    }
-
-
-    // Specializations
-
-    template <>
-    RES_T readPNG<UINT8>(const char *filename, Image<UINT8> &image);
-
-    template <>
-    RES_T readPNG<RGB>(const char *filename, Image<RGB> &image);
-
-    
-    template <>
-    RES_T writePNG<UINT8>(Image<UINT8> &image, const char *filename);
-
-    template <>
-    RES_T writePNG<RGB>(Image<RGB> &image, const char *filename);
 
 /*@}*/
 

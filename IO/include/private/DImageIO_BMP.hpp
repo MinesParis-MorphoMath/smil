@@ -33,6 +33,7 @@
 #include <fstream>
 #include <iostream> 
 
+#include "IO/include/DCommonIO.h"
 #include "Core/include/private/DImage.hpp"
 
 namespace smil
@@ -42,78 +43,35 @@ namespace smil
     */
     /*@{*/
     
-    #ifndef DWORD
-    #define DWORD unsigned long
-    #define WORD unsigned short
-    #define LONG long
-    #endif
-
-    #define BITMAP_ID 0x4D42        // the universal bitmap ID
-
-    enum {
-      BI_RGB,	// An uncompressed format.
-      BI_RLE8,	// A run-length encoded (RLE) format for bitmaps with 8 bpp. The compression format is a 2-byte format consisting of a count byte followed by a byte containing a color index.
-      BI_RLE4,	// An RLE format for bitmaps with 4 bpp. The compression format is a 2-byte format consisting of a count byte followed by two word-length color indexes.
-      BI_BITFIELDS,	// Specifies that the bitmap is not compressed and that the color table consists of three DWORD color masks that specify the red, green, and blue components, respectively, of each pixel. This is valid when used with 16- and 32-bpp bitmaps.
-      BI_JPEG,	// Windows 98/Me, Windows 2000/XP: Indicates that the image is a JPEG image.
-      BI_PNG, };
-      
-    #pragma pack(push, 1) // force the compiler to pack the structs
-    struct bmpFileHeader
-    {
-	UINT16 bfType;  // file type
-	UINT32 bfSize;  // size in bytes of the bitmap file
-	UINT16 bfReserved1;  // reserved; must be 0
-	UINT16 bfReserved2;  // reserved; must be 0
-	UINT32 bfOffBits;  // offset in bytes from the bitmapfileheader to the bitmap bits
-    };
-
-    struct bmpInfoHeader
-    {
-	UINT32 biSize;  // number of bytes required by the struct
-	UINT32 biWidth;  // width in pixels
-	UINT32 biHeight;  // height in pixels
-	UINT16 biPlanes; // number of color planes, must be 1
-	UINT16 biBitCount; // number of bit per pixel
-	UINT32 biCompression;// type of compression
-	UINT32 biSizeImage;  //size of image in bytes
-	UINT32 biXPelsPerMeter;  // number of pixels per meter in x axis
-	UINT32 biYPelsPerMeter;  // number of pixels per meter in y axis
-	UINT32 biClrUsed;  // number of colors used by the bitmap
-	UINT32 biClrImportant;  // number of colors that are important
-    };
-
-    #pragma pack(pop)
-
-    /**
-    * BMP file read
-    */
-    template <class T>
-    RES_T readBMP(const char* filename, Image<T> &image)
-    {
-	cout << "readBMP error: data type not implemented." << endl;
-	return RES_ERR;
-    }
-
-    BaseImage *createFromBMP(const char* filename);
+    class BMPHeader;
     
-    /**
-    * BMP file write
-    */
-    template <class T>
-    RES_T writeBMP(Image<T> &image, const char *filename)
+    RES_T getBMPFileInfo(const char* filename, ImageFileInfo &fInfo);
+    
+    template <class T> class Image;
+
+    template <class T=void>
+    class BMPImageFileHandler : public ImageFileHandler<T>
     {
-	cout << "writeBMP error: data type not implemented." << endl;
-	return RES_ERR;
-    }
-
-    // Specializations
-
-    template <>
-    RES_T readBMP<UINT8>(const char *filename, Image<UINT8> &image);
-
-    template <>
-    RES_T writeBMP<UINT8>(Image<UINT8> &image, const char *filename);
+      public:
+	BMPImageFileHandler()
+	  : ImageFileHandler<T>("BMP")
+	{
+	}
+	
+	virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
+	{
+	    return getBMPFileInfo(filename, fInfo);
+	}
+	
+	virtual RES_T read(const char* filename, Image<T> &image)
+	{
+	    return ImageFileHandler<T>::read(filename, image);
+	}
+	virtual RES_T write(const Image<T> &image, const char* filename)
+	{
+	    return ImageFileHandler<T>::write(image, filename);
+	}
+    };
 
 /*@}*/
 

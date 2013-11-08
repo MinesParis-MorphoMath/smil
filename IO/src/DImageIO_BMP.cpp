@@ -33,12 +33,55 @@
 
 namespace smil
 {
-    struct BMPFileInfo : public ImageFileInfo
+    #ifndef DWORD
+    #define DWORD unsigned long
+    #define WORD unsigned short
+    #define LONG long
+    #endif
+
+    #define BITMAP_ID 0x4D42        // the universal bitmap ID
+
+    enum {
+      BI_RGB,	// An uncompressed format.
+      BI_RLE8,	// A run-length encoded (RLE) format for bitmaps with 8 bpp. The compression format is a 2-byte format consisting of a count byte followed by a byte containing a color index.
+      BI_RLE4,	// An RLE format for bitmaps with 4 bpp. The compression format is a 2-byte format consisting of a count byte followed by two word-length color indexes.
+      BI_BITFIELDS,	// Specifies that the bitmap is not compressed and that the color table consists of three DWORD color masks that specify the red, green, and blue components, respectively, of each pixel. This is valid when used with 16- and 32-bpp bitmaps.
+      BI_JPEG,	// Windows 98/Me, Windows 2000/XP: Indicates that the image is a JPEG image.
+      BI_PNG, };
+      
+    #pragma pack(push, 1) // force the compiler to pack the structs
+    struct bmpFileHeader
     {
-	BMPFileInfo()
+	UINT16 bfType;  // file type
+	UINT32 bfSize;  // size in bytes of the bitmap file
+	UINT16 bfReserved1;  // reserved; must be 0
+	UINT16 bfReserved2;  // reserved; must be 0
+	UINT32 bfOffBits;  // offset in bytes from the bitmapfileheader to the bitmap bits
+    };
+
+    struct bmpInfoHeader
+    {
+	UINT32 biSize;  // number of bytes required by the struct
+	UINT32 biWidth;  // width in pixels
+	UINT32 biHeight;  // height in pixels
+	UINT16 biPlanes; // number of color planes, must be 1
+	UINT16 biBitCount; // number of bit per pixel
+	UINT32 biCompression;// type of compression
+	UINT32 biSizeImage;  //size of image in bytes
+	UINT32 biXPelsPerMeter;  // number of pixels per meter in x axis
+	UINT32 biYPelsPerMeter;  // number of pixels per meter in y axis
+	UINT32 biClrUsed;  // number of colors used by the bitmap
+	UINT32 biClrImportant;  // number of colors that are important
+    };
+
+    #pragma pack(pop)
+
+    struct BMPHeader
+    {
+	BMPHeader()
 	{
 	}
-	~BMPFileInfo()
+	~BMPHeader()
 	{
 	}
 	
@@ -46,57 +89,81 @@ namespace smil
 	bmpInfoHeader iHeader;
     };
     
-    RES_T readBMPHeader(const char *filename, BMPFileInfo &fInfo)
+    
+    RES_T readBMPHeader(FILE *fp, BMPHeader &hStruct)
     {
-	bmpFileHeader &fHeader = fInfo.fHeader;
-	bmpInfoHeader &iHeader = fInfo.iHeader;
-	
-	FILE *&fp = fInfo.fileHandle;
-	fp = fopen( filename, "rb" );
-
-	ASSERT((fp!=NULL), string("Cannot open file ") + filename + " for input", RES_ERR_IO);
+	bmpFileHeader &fHeader = hStruct.fHeader;
+	bmpInfoHeader &iHeader = hStruct.iHeader;
 	
 	//read the bitmap file header
-	ASSERT(fread(&fInfo.fHeader, sizeof(bmpFileHeader), 1 ,fp));
+	ASSERT(fread(&fHeader, sizeof(bmpFileHeader), 1 ,fp));
 
 	//verify that this is a bmp file by check bitmap id
 	ASSERT((fHeader.bfType == 0x4D42));
 	
 	//read the bitmap info header
-	ASSERT(fread(&fInfo.iHeader, sizeof(bmpInfoHeader), 1, fp));
+	ASSERT(fread(&iHeader, sizeof(bmpInfoHeader), 1, fp));
 	
 	ASSERT(iHeader.biCompression==BI_RGB, "Compressed BMP files are not (yet) supported", RES_ERR_IO);
 	
-	fInfo.bit_depth = iHeader.biBitCount;
+	return RES_OK;
+    }
+
+    RES_T getBMPFileInfo(const char* filename, ImageFileInfo &fInfo)
+    {
+	/* open image file */
+	FILE *fp = fopen (filename, "rb");
+	
+	if (!fp)
+	{
+	    cout << "Cannot open file " << filename << endl;
+	    return RES_ERR_IO;
+	}
+	
+	BMPHeader hStruct;
+	ASSERT(readBMPHeader(fp, hStruct)==RES_OK);
+	
+	fclose(fp);
+	
+	bmpInfoHeader &iHeader = hStruct.iHeader;
+	
 	fInfo.width = iHeader.biWidth;
 	fInfo.height = iHeader.biHeight;
+	fInfo.bitDepth = iHeader.biBitCount;
 	fInfo.channels = iHeader.biBitCount / 8;
 	
 	switch(iHeader.biBitCount)
 	{
 	  case 8:
-	    fInfo.color_type = ImageFileInfo::COLOR_TYPE_GRAY; break;
+	    fInfo.colorType = ImageFileInfo::COLOR_TYPE_GRAY; break;
 	  case 24:
-	    fInfo.color_type = ImageFileInfo::COLOR_TYPE_RGB; break;
+	    fInfo.colorType = ImageFileInfo::COLOR_TYPE_RGB; break;
 	  default:
-	    fInfo.color_type = ImageFileInfo::COLOR_TYPE_UNKNOWN; 
+	    fInfo.colorType = ImageFileInfo::COLOR_TYPE_UNKNOWN; 
 	}
 	
 	return RES_OK;
     }
-
+    
     template <>
-    RES_T readBMP(const char *filename, Image<UINT8> &image)
+    RES_T BMPImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image)
     {
-	BMPFileInfo fInfo;
+	FILE *fp = fopen( filename, "rb" );
+
+	ASSERT(fp!=NULL, string("Cannot open file ") + filename + " for input", RES_ERR_IO);
 	
-	ASSERT(readBMPHeader(filename, fInfo)==RES_OK);
+	FileCloser fc(fp);
 	
-	FILE *&fp = fInfo.fileHandle;
+	BMPHeader hStruct;
 	
-	ASSERT(fInfo.bit_depth==8, "Not an 8bit gray image", RES_ERR_IO);
+	ASSERT(readBMPHeader(fp, hStruct)==RES_OK);
 	
-	UINT nColors = fInfo.iHeader.biClrUsed;
+	bmpFileHeader &fHeader = hStruct.fHeader;
+	bmpInfoHeader &iHeader = hStruct.iHeader;
+	
+	ASSERT(iHeader.biBitCount==8, "Not an 8bit gray image", RES_ERR_IO);
+	
+	UINT nColors = iHeader.biClrUsed;
 	UINT8 r,g,b,a, lut[nColors];
 
 	// read the color table
@@ -112,10 +179,10 @@ namespace smil
     
 	// at this point it is safer to  
 	// move file pointer to the beginning of bitmap data (skip palette information)
-	fseek(fp, fInfo.fHeader.bfOffBits, SEEK_SET);
+	fseek(fp, fHeader.bfOffBits, SEEK_SET);
 
-	int width = fInfo.width;
-	int height = fInfo.height;
+	int width = iHeader.biWidth;
+	int height = iHeader.biHeight;
 
 	ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
 	
@@ -132,20 +199,27 @@ namespace smil
     }
 
     template <>
-    RES_T readBMP(const char *filename, Image<RGB> &image)
+    RES_T BMPImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
     {
-	BMPFileInfo fInfo;
-	
-	ASSERT(readBMPHeader(filename, fInfo)==RES_OK);
-	
-	FILE *&fp = fInfo.fileHandle;
-	
-	ASSERT(fInfo.bit_depth==24, "Not an 32bit RGB image", RES_ERR_IO);
-	
-	fseek(fp, fInfo.fHeader.bfOffBits, SEEK_SET);
+	FILE *fp = fopen( filename, "rb" );
 
-	int width = fInfo.width;
-	int height = fInfo.height;
+	ASSERT(fp!=NULL, string("Cannot open file ") + filename + " for input", RES_ERR_IO);
+	
+	FileCloser fc(fp);
+	
+	BMPHeader hStruct;
+	
+	ASSERT(readBMPHeader(fp, hStruct)==RES_OK);
+	
+	bmpFileHeader &fHeader = hStruct.fHeader;
+	bmpInfoHeader &iHeader = hStruct.iHeader;
+	
+	ASSERT(iHeader.biBitCount==24, "Not an 32bit RGB image", RES_ERR_IO);
+	
+	fseek(fp, fHeader.bfOffBits, SEEK_SET);
+
+	int width = iHeader.biWidth;
+	int height = iHeader.biHeight;
 
 	ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
 	
@@ -171,7 +245,7 @@ namespace smil
 
 
     template <>
-    RES_T writeBMP(Image<UINT8> &image, const char *filename)
+    RES_T BMPImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename)
     {
 	FILE* fp = fopen( filename, "wb" );
 
@@ -231,7 +305,7 @@ namespace smil
     }
 
     template <>
-    RES_T writeBMP(Image<RGB> &image, const char *filename)
+    RES_T BMPImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
     {
 	FILE* fp = fopen( filename, "wb" );
 
@@ -291,28 +365,4 @@ namespace smil
 	return RES_OK;
     }
 
-    BaseImage *createFromBMP(const char* filename)
-    {
-	BMPFileInfo fInfo;
-	
-	ASSERT(readBMPHeader(filename, fInfo)==RES_OK, NULL);
-	
-	if (fInfo.color_type==ImageFileInfo::COLOR_TYPE_GRAY)
-	{
-	    Image<UINT8> *img = new Image<UINT8>();
-	    readBMP(filename, *img);
-	    return img;
-	}
-	else if (fInfo.color_type==ImageFileInfo::COLOR_TYPE_RGB)
-	{
-	    Image<RGB> *img = new Image<RGB>();
-	    readBMP(filename, *img);
-	    return img;
-	}
-	else
-	{
-	    ERR_MSG("File type not supported");
-	    return NULL;
-	}
-    }
 } // namespace smil
