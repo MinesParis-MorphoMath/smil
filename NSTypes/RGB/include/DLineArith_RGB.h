@@ -89,8 +89,8 @@ namespace smil
     template <>
     double vol(const Image<RGB> &imIn);
     
-    template <>
-    std::map<RGB, UINT> histogram(const Image<RGB> &imIn);
+//     template <>
+//     std::map<RGB, UINT> histogram(const Image<RGB> &imIn);
 
     
     template <>
