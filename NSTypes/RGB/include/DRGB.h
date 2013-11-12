@@ -50,9 +50,9 @@ namespace smil
     template <>
     inline void QtImageViewer<RGB>::drawImage()
     {
-	typename Image<RGB>::sliceType lines = this->image->getSlices()[slider->value()];
-	typename Image<RGB>::lineType pixels;
-	typedef typename Image<UINT8>::lineType arrayType;
+	Image<RGB>::sliceType lines = this->image->getSlices()[slider->value()];
+	Image<RGB>::lineType pixels;
+	typedef Image<UINT8>::lineType arrayType;
 	
 	size_t w = this->image->getWidth();
 	size_t h = this->image->getHeight();

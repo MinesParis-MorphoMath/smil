@@ -43,7 +43,7 @@
 namespace smil
 {
     template <>
-    inline void copyLine<RGB>(const typename Image<RGB>::lineType lIn, const size_t size, typename Image<RGB>::lineType lOut)
+    inline void copyLine<RGB>(const Image<RGB>::lineType lIn, const size_t size, Image<RGB>::lineType lOut)
     {
 	for (UINT n=0;n<3;n++)
 	  memcpy(lOut.arrays[n], lIn.arrays[n], size*sizeof(UINT8));
@@ -55,7 +55,7 @@ namespace smil
     }
     
     template <>
-    inline void shiftLine(const typename Image<RGB>::lineType lIn, int dx, size_t lineLen, typename Image<RGB>::lineType lOut, RGB borderValue)
+    inline void shiftLine(const Image<RGB>::lineType lIn, int dx, size_t lineLen, Image<RGB>::lineType lOut, RGB borderValue)
     {
 	for (UINT n=0;n<3;n++)
 	    shiftLine<UINT8>(lIn.arrays[n], dx, lineLen, lOut.arrays[n], borderValue[n]);
@@ -64,7 +64,7 @@ namespace smil
     template <>
     struct fillLine<RGB> : public unaryLineFunctionBase<RGB>
     {
-	typedef typename Image<RGB>::lineType lineType;
+	typedef Image<RGB>::lineType lineType;
 	fillLine() {}
 	fillLine(const lineType lIn, const size_t size, const RGB value) { this->_exec(lIn, size, value); }
 	
@@ -96,7 +96,7 @@ namespace smil
     template <>
     struct supLine<RGB> : public binaryLineFunctionBase<RGB>
     {
-	typedef typename Image<RGB>::lineType lineType;
+	typedef Image<RGB>::lineType lineType;
 	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
 	{
 	    for (UINT n=0;n<3;n++)
@@ -114,7 +114,7 @@ namespace smil
     template <>
     struct infLine<RGB> : public binaryLineFunctionBase<RGB>
     {
-	typedef typename Image<RGB>::lineType lineType;
+	typedef Image<RGB>::lineType lineType;
 	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
 	{
 	    for (UINT n=0;n<3;n++)
@@ -137,7 +137,7 @@ namespace smil
 	  
 	UINT8 trueVal, falseVal;
 	  
-	typedef typename Image<RGB>::lineType lineType;
+	typedef Image<RGB>::lineType lineType;
 	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
 	{
 	    for (UINT n=0;n<3;n++)

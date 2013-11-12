@@ -152,7 +152,7 @@ namespace smil
 	    return RES_ERR_BAD_ALLOCATION;
 
 	int npix = imIn.getPixelCount();
-	typename ImDtTypes<UINT8>::lineType pixels;
+	ImDtTypes<UINT8>::lineType pixels;
 	double vol = 0;
 
 	for (UINT n=0;n<3;n++)

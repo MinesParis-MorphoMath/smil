@@ -371,7 +371,7 @@ namespace smil
     class MultichannelArray
     {
     public:
-	friend MultichannelArrayItem<T,N>;
+// 	friend MultichannelArrayItem<T,N>;
 	
 	typedef MultichannelType<T,N> MCType;
 	
