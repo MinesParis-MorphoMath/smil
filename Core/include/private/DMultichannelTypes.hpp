@@ -403,8 +403,8 @@ namespace smil
 	}
 	~MultichannelArray()
 	{
-	    if (allocatedData)
-	      deleteArrays();
+// 	    if (allocatedData)
+// 	      deleteArrays();
 	}
 	
 	
@@ -506,6 +506,7 @@ namespace smil
 	      arrays[i] = rhs.arrays[i] + rhs.index;
 	    index = 0;
 	    size = rhs.size - rhs.index;
+	    allocatedData = rhs.allocatedData;
 	    return *this;
 	}
 	

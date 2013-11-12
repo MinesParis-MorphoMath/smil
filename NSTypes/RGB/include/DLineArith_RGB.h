@@ -112,6 +112,24 @@ namespace smil
     };
 
     template <>
+    struct infLine<RGB> : public binaryLineFunctionBase<RGB>
+    {
+	typedef typename Image<RGB>::lineType lineType;
+	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+	{
+	    for (UINT n=0;n<3;n++)
+	    {
+		UINT8 *cArrIn1 = lIn1.arrays[n];
+		UINT8 *cArrIn2 = lIn2.arrays[n];
+		UINT8 *cArrOut = lOut.arrays[n];
+		
+		for (size_t i=0;i<size;i++)
+		    cArrOut[i] = cArrIn1[i] < cArrIn2[i] ? cArrIn1[i] : cArrIn2[i];
+	    }
+	}
+    };
+
+    template <>
     struct equLine<RGB> : public binaryLineFunctionBase<RGB>
     {
 	equLine() 
