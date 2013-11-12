@@ -171,9 +171,9 @@ namespace smil
 	return vol(*this)==255 * pixelCount * 3; 
     }
     
-    template <>
-    inline std::map<RGB, UINT> histogram(const Image<RGB> &imIn)
-    {
+//     template <>
+//     inline std::map<RGB, UINT> histogram(const Image<RGB> &imIn)
+//     {
 // 	map<T, UINT> h;
 // 	for (T i=ImDtTypes<T>::min();;i++)
 // 	{
@@ -187,7 +187,7 @@ namespace smil
 // 	    h[pixels[i]]++;
 // 	
 // 	return h;
-    }
+//     }
 
     template <>
     inline void Image<RGB>::printSelf(ostream &os, bool displayPixVals, bool hexaGrid, string indent) const
