@@ -82,8 +82,7 @@ namespace smil
 	//! \return The type of the image data as a string ("UINT8", "UINT16", ...)
 	virtual const char* getTypeAsString()
 	{
-	    T val;
-	    return getDataTypeAsString(val);
+	    return getDataTypeAsString<T>();
 	}
 	typedef typename ImDtTypes<T>::pixelType pixelType;
 	typedef typename ImDtTypes<T>::lineType lineType;
@@ -103,23 +102,21 @@ namespace smil
 	//! Return the value of the pixel at pos x,y(,z)
 	inline T getPixel(size_t x, size_t y, size_t z=0) const
 	{
-	    if (x>=width || y>=height || z>=depth)
-		return T(NULL);
+	    ASSERT((x<width && y<height && z<depth), "Coords out of image range", T(0));
 	    return pixels[z*width*height+y*width+x];
 	}
 	//! Return the value of the pixel at a given offset
 	inline T getPixel(size_t offset) const
 	{
-	    if (offset >= pixelCount)
-		return RES_ERR;
+	    ASSERT((offset < pixelCount), "Offset out of image range", T(0));
 	    return pixels[offset];
 	}
 
 	//! Set the value of the pixel at pos x,y,z (for 3D image)
 	inline RES_T setPixel(size_t x, size_t y, size_t z, const T &value)
 	{
-	    if (x>=width || y>=height || z>=depth)
-		return RES_ERR;
+	    ASSERT((x<width && y<height && z<depth), "Coords out of image range", RES_ERR);
+	    cout << "here" << endl;
 	    pixels[z*width*height+y*width+x] = value;
 	    modified();
 	    return RES_OK;
@@ -134,8 +131,7 @@ namespace smil
 	//! Set the value of the pixel at a given offset
 	inline RES_T setPixel(size_t offset, const T &value)
 	{
-	    if (offset >= pixelCount)
-		return RES_ERR;
+	    ASSERT((offset < pixelCount), "Offset out of image range", RES_ERR);
 	    pixels[offset] = value;
 	    modified();
 	    return RES_OK;
@@ -219,8 +215,8 @@ namespace smil
 	
 	virtual void modified();
 
-	T dataTypeMin;
-	T dataTypeMax;
+	static T getDataTypeMin() { return ImDtTypes<T>::min(); }
+	static T getDataTypeMax() { return ImDtTypes<T>::max(); }
 
 	inline T &operator [] (size_t i) 
 	{ 
@@ -344,9 +340,10 @@ namespace smil
     }
 
     template <class T>
-    Image<T> &castBaseImage(BaseImage &img, const Image<T>&)
+    Image<T> *castBaseImage(BaseImage &img, const T &)
     {
-	return static_cast< Image<T>& >(img);
+	ASSERT(strcmp(getDataTypeAsString<T>(), img.getTypeAsString())==0, "Bad type for cast", NULL);
+	return static_cast< Image<T>* >(&img);
     }
 
 

@@ -67,10 +67,10 @@ namespace smil
 	    
 	    for(int i=0;i<size;i++)
 	    {
-		newVal = outOrig + (lIn[i]-inOrig)*coeff;
-		if (newVal > numeric_limits<T>::max())
+		newVal = double(outOrig) + (double(lIn[i])-double(inOrig))*coeff;
+		if (newVal > double(numeric_limits<T>::max()))
 		    newVal = numeric_limits<T>::max();
-		else if (newVal < numeric_limits<T>::min())
+		else if (newVal < double(numeric_limits<T>::min()))
 		    newVal = numeric_limits<T>::min();
 		lOut[i] = T(newVal);
 		

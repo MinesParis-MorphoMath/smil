@@ -230,7 +230,7 @@ namespace smil
 	
 	inline void push(T value, TokenType dOffset)
 	{
-	    size_t level = TYPE_FLOOR + value;
+	    size_t level = TYPE_FLOOR + size_t(value);
 	    if (reverseOrder)
 	    {
 		if (level>higherLevel)

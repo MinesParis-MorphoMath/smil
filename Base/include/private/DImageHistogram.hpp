@@ -34,6 +34,7 @@
 
 #include "DLineHistogram.hpp"
 #include "DImageArith.hpp"
+#include "DColor.h"
 
     
 namespace smil
@@ -70,12 +71,12 @@ namespace smil
     template <class T>
     RES_T histogram(const Image<T> &imIn, size_t *h)
     {
-	for (int i=ImDtTypes<T>::min();i<=ImDtTypes<T>::max();i++)
+	for (int i=int(ImDtTypes<T>::min());i<=int(ImDtTypes<T>::max());i++)
 	    h[i] = 0;
 
 	typename Image<T>::lineType pixels = imIn.getPixels();
 	for (size_t i=0;i<imIn.getPixelCount();i++)
-	    h[pixels[i]]++;
+	    h[UINT(pixels[i])]++;
 	
 	return RES_OK;
     }
@@ -103,7 +104,7 @@ namespace smil
 	
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	    if (maskPix[i]!=0)
-		h[inPix[i]] += 1;
+		h[T(inPix[i])] += 1;
 	
 	return h;
     }
@@ -210,7 +211,7 @@ namespace smil
 	curVol=0;
 	for (T i=rangeV[0]; i<rangeV[1]; i++)
 	{
-	    curVol += h[i];
+	    curVol += double(h[i]);
 	    if (curVol>satVol)
 	      break;
 	    threshValLeft = i;
@@ -219,7 +220,7 @@ namespace smil
 	// Right
 	satVol = imVol * rightSat / 100.;
 	curVol=0;
-	for (size_t i=rangeV[1]; i>rangeV[0]; i--)
+	for (size_t i=rangeV[1]; i>size_t(rangeV[0]); i--)
 	{
 	    curVol += h[i];
 	    if (curVol>satVol)
@@ -346,7 +347,7 @@ namespace smil
 	
 	for (typename map<T, UINT>::iterator it=hist.begin();it!=hist.end();it++)
 	{
-	    globalMean += (*it).first * (*it).second;
+	    globalMean += double((*it).first) * double((*it).second);
 	    totalFrequency += (*it).second;
 	}
 	
@@ -367,7 +368,7 @@ namespace smil
 	
 	for (unsigned long j=0; j<numberOfClasses-1; j++)
 	{
-	    classFrequency[j] = hist[thresholdIndexes[j]];
+	    classFrequency[j] = hist[T(thresholdIndexes[j])];
 	    freqSum += classFrequency[j];
 	}
 	

@@ -36,6 +36,8 @@
 #include <limits>
 #include "DMemory.hpp"
 
+#include <sstream>
+
 using namespace std;
 
 namespace smil
@@ -78,18 +80,26 @@ namespace smil
 	typedef lineType *sliceType;
 	typedef sliceType *volType;
 	
+	typedef double floatType;
+	
 	static inline pixelType min() { return numeric_limits<T>::min(); }
 	static inline pixelType max() { return numeric_limits<T>::max(); }
 	static inline size_t cardinal() { return max()-min()+1; }
 	static inline lineType createLine(size_t lineLen) { return createAlignedBuffer<T>(lineLen); }
 	static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
 	static inline size_t ptrOffset(lineType p, size_t n=SIMD_VEC_SIZE) { return ((size_t)p) & (n-1); }
+	static inline std::string toString(const T &val)
+	{
+	    stringstream str;
+	    str << double(val);
+	    return str.str();
+	}
     };
 
 
 
     template <class T>
-    inline const char *getDataTypeAsString(T &val)
+    inline const char *getDataTypeAsString(T *val=NULL)
     {
 	return "Unknown";
     }
@@ -97,7 +107,7 @@ namespace smil
 
     #define DECL_DATA_TYPE_STR(_type) \
     template <> \
-    inline const char *getDataTypeAsString(_type &) { return #_type; }
+    inline const char *getDataTypeAsString(_type *) { return #_type; }
 
     DECL_DATA_TYPE_STR(UINT8)
     DECL_DATA_TYPE_STR(UINT16)

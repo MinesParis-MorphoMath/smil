@@ -147,9 +147,6 @@ namespace smil
 #endif // USE_CURL
     
     
-    std::string getImageType(const char* filename)
-    {
-    }
-    
+     
 } // namespace smil
 

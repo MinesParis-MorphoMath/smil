@@ -89,6 +89,7 @@ public:
     QStatusBar *statusBar;
     QImage *qImage;
     QImage *qOverlayImage;
+    QImage::Format imageFormat;
     
     bool drawLabelized;
     // Auto adjust range

@@ -253,7 +253,7 @@ namespace smil
 	{
 	  it = lut.find(UINT8(i));
 	  if (it!=lut.end())
-	    baseColorTable.append(qRgb((*it).second.r, (*it).second.g, (*it).second.b));
+	    baseColorTable.append(qRgb((*it).second[0], (*it).second[1], (*it).second[2]));
 	  else
 	    baseColorTable.append(qRgb(0, 0, 0));
 	}
@@ -311,7 +311,7 @@ namespace smil
 	
 	QColor lightCol = QColor::fromRgb(255,255,255);
 	QColor darkCol = QColor::fromRgb(0,0,0);
-	T lightThresh = double(ImDtTypes<T>::max()-ImDtTypes<T>::min()) * 0.55;
+	T lightThresh = T(double(ImDtTypes<T>::max()-ImDtTypes<T>::min()) * 0.55);
 
 	for (int j=0;j<gridSize;j++,yi++)
 	{
@@ -322,14 +322,14 @@ namespace smil
 	    for (int i=0,xi=x-gridSize/2; i<gridSize; i++,xi++)
 	    {
 		textItem = *txtIt++;
-		if (pLine && xi>=0 && xi<imW)
+		if (pLine!=NULL && xi>=0 && xi<imW)
 		{
 		    pVal = pLine[xi];
 		    if (pVal<lightThresh)
 			textItem->setDefaultTextColor(lightCol);
 		    else
 			textItem->setDefaultTextColor(darkCol);
-		    textItem->setPlainText(QString::number(pVal));
+		    textItem->setPlainText(ImDtTypes<T>::toString(pVal).c_str());
 		}
 		else textItem->setPlainText("");
 

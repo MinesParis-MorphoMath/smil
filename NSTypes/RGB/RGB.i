@@ -25,23 +25,21 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-
-
 %include smilCommon.i
-
-SMIL_MODULE(smilFeatures)
 
 
 %{
-/* Includes the header in the wrapper code */
-#include "DHoughTransform.hpp"
+#include "NSTypes/RGB/include/DImage_RGB.h"
+#include "Core/include/private/DMultichannelTypes.hpp"
+#include "Core/include/DColor.h"
+#include "Base/include/private/DImageArith.hpp"
+
 %}
- 
 
-
-%import smilCore.i
-
-
-%include "DHoughTransform.hpp"
-TEMPLATE_WRAP_FUNC_2T_CROSS(houghLines);
-TEMPLATE_WRAP_FUNC_2T_CROSS(houghCircles);
+%include "Base/include/private/DImageArith.hpp"
+namespace smil
+{
+    %ignore COLOR_UINT8_3;
+    %template(copyChannel) copyChannel<RGB,UINT8>;
+}
+%include "DColor.h"

@@ -89,7 +89,7 @@ namespace smil
 	T minT = ImDtTypes<T>::min();
 	
 	for (size_t i=0;i<imOut.getPixelCount();i++)
-	  pixels[i] = T( rand()/double(RAND_MAX) * rangeT + minT );
+	  pixels[i] = T( rand()/double(RAND_MAX) * rangeT + double(minT) );
 	
 	imOut.modified();
 	
@@ -245,6 +245,22 @@ namespace smil
     }
 
 
+    template <class MCT1, class T2>
+    RES_T copyChannel(const Image<MCT1> &imIn, const UINT &chanNum, Image<T2> &imOut)
+    {
+	ASSERT(chanNum < MCT1::channelNumber());
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	typedef typename MCT1::DataType T1;
+	typename Image<T1>::lineType lineIn = imIn.getPixels().arrays[chanNum];
+	typename Image<T2>::lineType lineOut = imOut.getPixels();
+	
+	copyLine<T1,T2>(lineIn, imIn.getPixelCount(), lineOut);
+	imOut.modified();
+	return RES_OK;
+    }
+   
     /**
     * Invert an image.
     *
@@ -678,7 +694,7 @@ namespace smil
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
 	  newVal = pixIn[i] * dValue;
-	  pixOut[i] = newVal>ImDtTypes<T>::max() ? ImDtTypes<T>::max() : newVal;
+	  pixOut[i] = newVal>double(ImDtTypes<T>::max()) ? ImDtTypes<T>::max() : T(newVal);
 	}
 	
 	return RES_OK;
@@ -939,7 +955,7 @@ namespace smil
     template <class T>
     RES_T mask(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut)
     {
-	return test<T>(imMask, imIn, 0, imOut);
+	return test<T>(imMask, imIn, T(0), imOut);
     }
 
 

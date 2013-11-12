@@ -27,15 +27,12 @@
  */
 
 
-#ifndef _D_TYPES_H
-#define _D_TYPES_H
 
-
-#include "private/DTypes.hpp"
+#include "DColor.h"
+#include "DRGB.h"
 
 namespace smil
 {
-
 } // namespace smil
 
-#endif // _D_TYPES_H
+

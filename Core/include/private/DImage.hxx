@@ -51,18 +51,14 @@ namespace smil
   
     template <class T>
     Image<T>::Image()
-      : BaseImage("Image"),
-	dataTypeMin(numeric_limits<T>::min()),
-	dataTypeMax(numeric_limits<T>::max())
+      : BaseImage("Image")
     {
 	init();
     }
 
     template <class T>
     Image<T>::Image(size_t w, size_t h, size_t d)
-      : BaseImage("Image"),
-	dataTypeMin(numeric_limits<T>::min()),
-	dataTypeMax(numeric_limits<T>::max())
+      : BaseImage("Image")
     {
 	init();
 	setSize(w, h, d);
@@ -70,9 +66,7 @@ namespace smil
 
     template <class T>
     Image<T>::Image(const Image<T> &rhs, bool cloneData)
-      : BaseImage(rhs),
-	dataTypeMin(numeric_limits<T>::min()),
-	dataTypeMax(numeric_limits<T>::max())
+      : BaseImage(rhs)
     {
 	init();
 	if (cloneData)
@@ -83,9 +77,7 @@ namespace smil
     template <class T>
     template <class T2>
     Image<T>::Image(const Image<T2> &rhs, bool cloneData)
-      : BaseImage(rhs),
-	dataTypeMin(numeric_limits<T>::min()),
-	dataTypeMax(numeric_limits<T>::max())
+      : BaseImage(rhs)
     {
 	init();
 	if (cloneData)
@@ -99,7 +91,7 @@ namespace smil
 	bool isAlloc = rhs.isAllocated();
 	this->setSize(rhs, isAlloc);
 	if (isAlloc)
-	  memcpy(this->pixels, rhs.getPixels(), this->allocatedSize);
+	  copyLine<T>(rhs.getPixels(), getPixelCount(), this->pixels);
 	modified();
     }
 
@@ -116,9 +108,7 @@ namespace smil
 
     template <class T>
     Image<T>::Image(const char *fileName)
-      : BaseImage("Image"),
-	dataTypeMin(numeric_limits<T>::min()),
-	dataTypeMax(numeric_limits<T>::max())
+      : BaseImage("Image")
     {
 	triggerEvents = true;
 	init();
@@ -410,8 +400,7 @@ namespace smil
 	else
 	  os << "2D image" << endl;
 
-	T val;
-	os << "Data type: " << getDataTypeAsString(val) << endl;
+	os << "Data type: " << getDataTypeAsString<T>() << endl;
 
 	if (depth>1)
 	  os << "Size: " << width << "x" << height << "x" << depth << endl;

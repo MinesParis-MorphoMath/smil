@@ -45,14 +45,14 @@ namespace smil
     class unaryMorphImageFunctionBase : public imageFunctionBase<T_in>
     {
     public:
-	unaryMorphImageFunctionBase(T_in _borderValue = numeric_limits<T_in>::min())
+	unaryMorphImageFunctionBase(T_in _borderValue = ImDtTypes<T_in>::min())
 	  : initialValue(_borderValue),
 	    borderValue(_borderValue)
 	    
 	{
 	}
 	
-	unaryMorphImageFunctionBase(T_in _borderValue, T_out _initialValue = numeric_limits<T_out>::min())
+	unaryMorphImageFunctionBase(T_in _borderValue, T_out _initialValue = ImDtTypes<T_out>::min())
 	  : initialValue(_borderValue),
 	    borderValue(_borderValue)
 	{
@@ -93,12 +93,12 @@ namespace smil
 	    sePointNbr = sePoints.size();
 	    relativeOffsets.clear();
 	    vector<IntPoint>::iterator pt = sePoints.begin();
-	    se_xmin = numeric_limits<int>::max();
-	    se_xmax = numeric_limits<int>::min();
-	    se_ymin = numeric_limits<int>::max();
-	    se_ymax = numeric_limits<int>::min();
-	    se_zmin = numeric_limits<int>::max();
-	    se_zmax = numeric_limits<int>::min();
+	    se_xmin = ImDtTypes<int>::max();
+	    se_xmax = ImDtTypes<int>::min();
+	    se_ymin = ImDtTypes<int>::max();
+	    se_ymax = ImDtTypes<int>::min();
+	    se_zmin = ImDtTypes<int>::max();
+	    se_zmax = ImDtTypes<int>::min();
 	    while(pt!=sePoints.end())
 	    {
 		if(pt->x < se_xmin) se_xmin = pt->x;
@@ -285,7 +285,7 @@ namespace smil
 	typedef typename imageType::sliceType sliceType;
 	typedef typename imageType::volType volType;
 	
-	unaryMorphImageFunction(T border=numeric_limits<T>::min()) 
+	unaryMorphImageFunction(T border=ImDtTypes<T>::min()) 
 	  : borderValue(border) 
 	{
 	}

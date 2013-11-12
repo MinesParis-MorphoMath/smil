@@ -61,18 +61,24 @@ class exception{};
 //////////////////////////////////////////////////////////
 
 %include "carrays.i"
-//%array_class(double, DArray);
-//%array_class(void, VoidArray);
-//%array_class(UINT8, Uint8Array);
+
 
 %include "DTypes.hpp"
 %include "DTypes.h"
+
 
 
 // BitArray
 #ifdef SMIL_WRAP_BIT
 %include "Bit.i"
 #endif // SMIL_WRAP_BIT
+
+// RGB
+#ifdef SMIL_WRAP_RGB
+%include "RGB.i"
+#else
+%include "DColor.h"
+#endif // SMIL_WRAP_RGB
 
 
 //////////////////////////////////////////////////////////
@@ -154,7 +160,9 @@ namespace std
     
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
+#ifndef SMIL_WRAP_RGB
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
+#endif // SMIL_WRAP_RGB
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, DoubleVector, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UintVector, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Box, Map)
@@ -233,8 +241,14 @@ namespace std
 namespace smil
 {
     TEMPLATE_WRAP_CLASS(Image, Image);
+    #ifndef SMIL_WRAP_RGB
+      %template(Image_RGB) Image<RGB>;
+    #endif // SMIL_WRAP_RGB
     TEMPLATE_WRAP_FUNC(createImage);
     TEMPLATE_WRAP_FUNC(castBaseImage);
+    #ifndef SMIL_WRAP_RGB
+      %template(castBaseImage) castBaseImage<RGB>;
+    #endif // SMIL_WRAP_RGB
     TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
 }
 

@@ -84,6 +84,8 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     setAcceptDrops(true);
     setContextMenuPolicy(Qt::CustomContextMenu);
 	
+    imageFormat = QImage::Format_Indexed8;
+    
     initColorTables();
     scaleFactor = 1.0;
     qImage = new QImage();
@@ -209,7 +211,7 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
 
     delete qImage;
     
-    qImage = new QImage(w, h, QImage::Format_Indexed8);
+    qImage = new QImage(w, h, imageFormat);
     
     
     // Create tiled pixmaps

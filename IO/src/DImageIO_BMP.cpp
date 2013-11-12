@@ -33,43 +33,68 @@
 
 namespace smil
 {
-    std::string getBMPImageType(const char* filename)
+    #ifndef DWORD
+    #define DWORD unsigned long
+    #define WORD unsigned short
+    #define LONG long
+    #endif
+
+    #define BITMAP_ID 0x4D42        // the universal bitmap ID
+
+    enum {
+      BI_RGB,	// An uncompressed format.
+      BI_RLE8,	// A run-length encoded (RLE) format for bitmaps with 8 bpp. The compression format is a 2-byte format consisting of a count byte followed by a byte containing a color index.
+      BI_RLE4,	// An RLE format for bitmaps with 4 bpp. The compression format is a 2-byte format consisting of a count byte followed by two word-length color indexes.
+      BI_BITFIELDS,	// Specifies that the bitmap is not compressed and that the color table consists of three DWORD color masks that specify the red, green, and blue components, respectively, of each pixel. This is valid when used with 16- and 32-bpp bitmaps.
+      BI_JPEG,	// Windows 98/Me, Windows 2000/XP: Indicates that the image is a JPEG image.
+      BI_PNG, };
+      
+    #pragma pack(push, 1) // force the compiler to pack the structs
+    struct bmpFileHeader
     {
-	FILE* fp = fopen( filename, "rb" );
+	UINT16 bfType;  // file type
+	UINT32 bfSize;  // size in bytes of the bitmap file
+	UINT16 bfReserved1;  // reserved; must be 0
+	UINT16 bfReserved2;  // reserved; must be 0
+	UINT32 bfOffBits;  // offset in bytes from the bitmapfileheader to the bitmap bits
+    };
 
-	ASSERT((fp!=NULL), string("Cannot open file ") + filename + " for input", "");
-	
-	FileCloser fileCloser(fp);
-	
-	bmpFileHeader fHeader;
-	bmpInfoHeader iHeader;
+    struct bmpInfoHeader
+    {
+	UINT32 biSize;  // number of bytes required by the struct
+	UINT32 biWidth;  // width in pixels
+	UINT32 biHeight;  // height in pixels
+	UINT16 biPlanes; // number of color planes, must be 1
+	UINT16 biBitCount; // number of bit per pixel
+	UINT32 biCompression;// type of compression
+	UINT32 biSizeImage;  //size of image in bytes
+	UINT32 biXPelsPerMeter;  // number of pixels per meter in x axis
+	UINT32 biYPelsPerMeter;  // number of pixels per meter in y axis
+	UINT32 biClrUsed;  // number of colors used by the bitmap
+	UINT32 biClrImportant;  // number of colors that are important
+    };
 
-	//read the bitmap file header
-	ASSERT(fread(&fHeader, sizeof(bmpFileHeader), 1 ,fp), "");
+    #pragma pack(pop)
 
-	//verify that this is a bmp file by check bitmap id
-	ASSERT((fHeader.bfType == 0x4D42), "");
-	
-	//read the bitmap info header
-	ASSERT(fread(&iHeader, sizeof(bmpInfoHeader), 1, fp), "");
-
-	switch (iHeader.biBitCount)
+    struct BMPHeader
+    {
+	BMPHeader()
 	{
 	}
-    }
-
-    template <>
-    RES_T readBMP(const char *filename, Image<UINT8> &image)
-    {
-	FILE* fp = fopen( filename, "rb" );
-
-	ASSERT((fp!=NULL), string("Cannot open file ") + filename + " for input", RES_ERR_IO);
-	
-	FileCloser fileCloser(fp);
+	~BMPHeader()
+	{
+	}
 	
 	bmpFileHeader fHeader;
 	bmpInfoHeader iHeader;
-
+    };
+    
+    
+    RES_T readBMPHeader(FILE *fp, BMPHeader &hStruct)
+    {
+	bmpFileHeader &fHeader = hStruct.fHeader;
+	bmpInfoHeader &iHeader = hStruct.iHeader;
+	
 	//read the bitmap file header
 	ASSERT(fread(&fHeader, sizeof(bmpFileHeader), 1 ,fp));
 
@@ -78,26 +103,82 @@ namespace smil
 	
 	//read the bitmap info header
 	ASSERT(fread(&iHeader, sizeof(bmpInfoHeader), 1, fp));
-
-	ASSERT((iHeader.biBitCount==8), "Not an 8bit image", RES_ERR_IO);
 	
-	ASSERT((iHeader.biCompression==BI_RGB), "Compressed BMP files are not (yet) supported", RES_ERR_IO);
+	ASSERT(iHeader.biCompression==BI_RGB, "Compressed BMP files are not (yet) supported", RES_ERR_IO);
+	
+	return RES_OK;
+    }
 
-    UINT8 r,g,b,a, lut[iHeader.biClrUsed];
-
-    // read the color table
-       
-    for (int j=0; j<iHeader.biClrUsed; j++) {
-        ASSERT(fread(&b, 1, 1, fp));
-        ASSERT(fread(&g, 1, 1, fp));
-        ASSERT(fread(&r, 1, 1, fp));
-        ASSERT(fread(&a, 1, 1, fp));
-        lut[j] = (UINT8)(((UINT32)r+(UINT32)g+(UINT32)b)/3) ;
-
+    RES_T getBMPFileInfo(const char* filename, ImageFileInfo &fInfo)
+    {
+	/* open image file */
+	FILE *fp = fopen (filename, "rb");
+	
+	if (!fp)
+	{
+	    cout << "Cannot open file " << filename << endl;
+	    return RES_ERR_IO;
+	}
+	
+	BMPHeader hStruct;
+	ASSERT(readBMPHeader(fp, hStruct)==RES_OK);
+	
+	fclose(fp);
+	
+	bmpInfoHeader &iHeader = hStruct.iHeader;
+	
+	fInfo.width = iHeader.biWidth;
+	fInfo.height = iHeader.biHeight;
+	fInfo.bitDepth = iHeader.biBitCount;
+	fInfo.channels = iHeader.biBitCount / 8;
+	
+	switch(iHeader.biBitCount)
+	{
+	  case 8:
+	    fInfo.colorType = ImageFileInfo::COLOR_TYPE_GRAY; break;
+	  case 24:
+	    fInfo.colorType = ImageFileInfo::COLOR_TYPE_RGB; break;
+	  default:
+	    fInfo.colorType = ImageFileInfo::COLOR_TYPE_UNKNOWN; 
+	}
+	
+	return RES_OK;
     }
     
+    template <>
+    RES_T BMPImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image)
+    {
+	FILE *fp = fopen( filename, "rb" );
+
+	ASSERT(fp!=NULL, string("Cannot open file ") + filename + " for input", RES_ERR_IO);
+	
+	FileCloser fc(fp);
+	
+	BMPHeader hStruct;
+	
+	ASSERT(readBMPHeader(fp, hStruct)==RES_OK);
+	
+	bmpFileHeader &fHeader = hStruct.fHeader;
+	bmpInfoHeader &iHeader = hStruct.iHeader;
+	
+	ASSERT(iHeader.biBitCount==8, "Not an 8bit gray image", RES_ERR_IO);
+	
+	UINT nColors = iHeader.biClrUsed;
+	UINT8 r,g,b,a, lut[nColors];
+
+	// read the color table
+	  
+	for (int j=0; j<nColors; j++) {
+	    ASSERT(fread(&b, 1, 1, fp));
+	    ASSERT(fread(&g, 1, 1, fp));
+	    ASSERT(fread(&r, 1, 1, fp));
+	    ASSERT(fread(&a, 1, 1, fp));
+	    lut[j] = (UINT8)(((UINT32)r+(UINT32)g+(UINT32)b)/3) ;
+
+	}
+    
 	// at this point it is safer to  
-	//move file pointer to the beginning of bitmap data (skip palette information)
+	// move file pointer to the beginning of bitmap data (skip palette information)
 	fseek(fp, fHeader.bfOffBits, SEEK_SET);
 
 	int width = iHeader.biWidth;
@@ -107,23 +188,64 @@ namespace smil
 	
 	Image<UINT8>::sliceType lines = image.getLines();
 
-	
 	for (int j=height-1;j>=0;j--){
 	  ASSERT((fread(lines[j], width, 1, fp)!=0), RES_ERR_IO);
-      for(int i=0; i< width; i++) 
-          lines[j][i] = lut[lines[j][i]];
+	  for(int i=0; i< width; i++) 
+	      lines[j][i] = lut[lines[j][i]];
+	}
+	image.modified();
+
+	return RES_OK;
     }
+
+    template <>
+    RES_T BMPImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
+    {
+	FILE *fp = fopen( filename, "rb" );
+
+	ASSERT(fp!=NULL, string("Cannot open file ") + filename + " for input", RES_ERR_IO);
+	
+	FileCloser fc(fp);
+	
+	BMPHeader hStruct;
+	
+	ASSERT(readBMPHeader(fp, hStruct)==RES_OK);
+	
+	bmpFileHeader &fHeader = hStruct.fHeader;
+	bmpInfoHeader &iHeader = hStruct.iHeader;
+	
+	ASSERT(iHeader.biBitCount==24, "Not an 32bit RGB image", RES_ERR_IO);
+	
+	fseek(fp, fHeader.bfOffBits, SEEK_SET);
+
+	int width = iHeader.biWidth;
+	int height = iHeader.biHeight;
+
+	ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
+	
+	Image<RGB>::sliceType lines = image.getLines();
+	MultichannelArray<UINT8,3>::lineType *arrays;
+	UINT8 *data = new UINT8[width*3];
+
+	for (int j=height-1;j>=0;j--)
+	{
+	    arrays = lines[j].arrays;
+	    ASSERT((fread(data, width*3, 1, fp)!=0), RES_ERR_IO);
+	    for (size_t i=0;i<width;i++)
+	      for (UINT n=0;n<3;n++)
+		arrays[n][i] = data[3*i+n];
+	}
+	
+	delete[] data;
+	
 	image.modified();
 
 	return RES_OK;
     }
 
 
-
-
-    /* write a png file */
     template <>
-    RES_T writeBMP(Image<UINT8> &image, const char *filename)
+    RES_T BMPImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename)
     {
 	FILE* fp = fopen( filename, "wb" );
 
@@ -153,8 +275,6 @@ namespace smil
 	iHeader.biBitCount = 8; // number of bit per pixel
 	iHeader.biCompression = 0;// type of compression
 	iHeader.biSizeImage = 0;  //size of image in bytes
-	iHeader.biXPelsPerMeter = 2835;  // number of pixels per meter in x axis
-	iHeader.biYPelsPerMeter = 2835;  // number of pixels per meter in y axis
 	iHeader.biClrUsed = nColors;  // number of colors used by the bitmap
 	iHeader.biClrImportant = nColors;  // number of colors that are important
 
@@ -176,8 +296,69 @@ namespace smil
 
 	Image<UINT8>::lineType *lines = image.getLines();
 
-	for (size_t i=height-1;i>=0;i--)
+	for (int i=height-1;i>=0;i--)
 	    fwrite(lines[i], width*sizeof(UINT8), 1, fp);
+
+	fclose(fp);
+
+	return RES_OK;
+    }
+
+    template <>
+    RES_T BMPImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
+    {
+	FILE* fp = fopen( filename, "wb" );
+
+	if ( fp == NULL )
+	{
+	    cout << "Error: Cannot open file " << filename << " for output." << endl;
+	    return RES_ERR;
+	}
+	bmpFileHeader fHeader;
+	bmpInfoHeader iHeader;
+
+	size_t width = image.getWidth();
+	size_t height = image.getHeight();
+
+	fHeader.bfType = 0x4D42;
+	fHeader.bfSize = (UINT32)(width*height*3*sizeof(UINT8)) + sizeof(bmpFileHeader) + sizeof(bmpInfoHeader);
+	fHeader.bfReserved1 = 0;
+	fHeader.bfReserved2 = 0;
+	fHeader.bfOffBits = sizeof(bmpFileHeader) + sizeof(bmpInfoHeader);
+
+	iHeader.biSize = sizeof(bmpInfoHeader);  // number of bytes required by the struct
+	iHeader.biWidth = (UINT32)width;  // width in pixels
+	iHeader.biHeight = (UINT32)height;  // height in pixels
+	iHeader.biPlanes = 1; // number of color planes, must be 1
+	iHeader.biBitCount = 24; // number of bit per pixel
+	iHeader.biCompression = 0;// type of compression
+
+
+	//write the bitmap file header
+	fwrite(&fHeader, sizeof(bmpFileHeader), 1 ,fp);
+
+	//write the bitmap image header
+	fwrite(&iHeader, sizeof(bmpInfoHeader), 1 ,fp);
+
+	Image<RGB>::sliceType lines = image.getLines();
+	MultichannelArray<UINT8,3>::lineType *arrays;
+	UINT8 *data = new UINT8[width*3];
+
+	for (int j=height-1;j>=0;j--)
+	{
+	    arrays = lines[j].arrays;
+	    for (size_t i=0;i<width;i++)
+	      for (UINT n=0;n<3;n++)
+		data[3*i+n] = arrays[n][i];
+	    ASSERT((fwrite(data, width*3, 1, fp)!=0), RES_ERR_IO);
+	}
+	
+	delete[] data;
+	
+// 	Image<UINT8>::lineType *lines = image.getLines();
+// 
+// 	for (size_t i=height-1;i>=0;i--)
+// 	    fwrite(lines[i], width*sizeof(UINT8), 1, fp);
 
 	fclose(fp);
 

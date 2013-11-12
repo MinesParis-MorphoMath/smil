@@ -76,7 +76,7 @@ namespace smil
 	virtual void processSequence(lineType lineIn, size_t size)
 	{
 	    for (size_t i=0;i<size;i++)
-	      this->retVal += lineIn[i];
+	      this->retVal += double(lineIn[i]);
 	}
     };
 
@@ -206,7 +206,7 @@ namespace smil
     struct measMinMaxValFunc : public MeasureFunctionBase<T, vector<T> >
     {
 	typedef typename Image<T>::lineType lineType;
-	double minVal, maxVal;
+	T minVal, maxVal;
 	virtual void initialize(const Image<T> &imIn)
 	{
 	    this->retVal.clear();
@@ -259,10 +259,10 @@ namespace smil
 	    for (size_t i=0;i<size;i++,x++)
 	    {
 	      T pixVal = lineIn[i];
-	      xSum += pixVal * x;
-	      ySum += pixVal * y;
-	      zSum += pixVal * z;
-	      tSum += pixVal;		  
+	      xSum += double(pixVal) * x;
+	      ySum += double(pixVal) * y;
+	      zSum += double(pixVal) * z;
+	      tSum += double(pixVal);		  
 	    }
 	}
 	virtual void finalize(const Image<T> &imIn)
@@ -356,18 +356,18 @@ namespace smil
 	    for (size_t i=0;i<size;i++,x++)
 	    {
 		T pxVal = lineIn[i];
-		m000 += pxVal;
-		m100 += pxVal * x;
-		m010 += pxVal * y;
-		m110 += pxVal * x * y;
-		m200 += pxVal * x * x;
-		m020 += pxVal * y * y;
+		m000 += double(pxVal);
+		m100 += double(pxVal) * x;
+		m010 += double(pxVal) * y;
+		m110 += double(pxVal) * x * y;
+		m200 += double(pxVal) * x * x;
+		m020 += double(pxVal) * y * y;
 		if (im3d)
 		{
-		    m001 = pxVal * z;
-		    m101 = pxVal * x * z;
-		    m011 = pxVal * y * z;
-		    m002 = pxVal * z * z;
+		    m001 = double(pxVal) * z;
+		    m101 = double(pxVal) * x * z;
+		    m011 = double(pxVal) * y * z;
+		    m002 = double(pxVal) * z * z;
 		}
 	    }
 	}

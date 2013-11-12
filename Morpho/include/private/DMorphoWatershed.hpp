@@ -34,6 +34,7 @@
 #include "DMorphoHierarQ.hpp"
 #include "DMorphoExtrema.hpp"
 #include "DMorphoLabel.hpp"
+#include "DTypes.h"
 
 
 namespace smil
@@ -66,7 +67,7 @@ namespace smil
 	    {
 	      if (*lblPixels!=0)
 	      {
-		  hq.push(*inPixels, offset);
+		  hq.push(T(*inPixels), offset);
 		  *statPixels = HQ_LABELED;
 	      }
 	      else 
@@ -406,7 +407,7 @@ namespace smil
 	ImageFreezer freeze1(labelIm1);
 	ImageFreezer freeze2(labelIm2);
 	
-	T threshMin = ImDtTypes<T>::min(), threshMax = ImDtTypes<T>::max()-1;
+	T threshMin = ImDtTypes<T>::min(), threshMax = ImDtTypes<T>::max()-T(1);
 	
 	while(vol1<vol2)
 	{
@@ -473,7 +474,7 @@ namespace smil
 	
 	ASSERT(inflBasins(imIn, basinsIm, se)==RES_OK);
 	gradient(basinsIm, basinsIm, se, StrElt());
-	threshold(basinsIm, UINT16(ImDtTypes<T>::min()+1), UINT16(ImDtTypes<T>::max()), basinsIm);
+	threshold(basinsIm, UINT16(ImDtTypes<T>::min()+T(1)), UINT16(ImDtTypes<T>::max()), basinsIm);
 	copy(basinsIm, imOut);
 	
 	return RES_OK;
