@@ -44,6 +44,10 @@
 #include "DImageIO_PNG.hpp"
 #endif // USE_PNG
 
+#ifdef USE_JPEG
+#include "DImageIO_JPG.hpp"
+#endif // USE_JPEG
+
 namespace smil
 {
   
@@ -67,6 +71,11 @@ namespace smil
 	else if (fileExt=="PNG")
 	    return new PNGImageFileHandler<T>();
     #endif // USE_PNG
+
+    #ifdef USE_JPEG
+	else if (fileExt=="JPG")
+	    return new JPGImageFileHandler<T>();
+    #endif // USE_JPEG
 
 // 	else if (fileExt=="VTK")
 // 	    res = readVTK(filename, image);

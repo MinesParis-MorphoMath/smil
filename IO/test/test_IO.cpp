@@ -72,12 +72,15 @@ int main(int argc, char *argv[])
     
     BaseImage *im0 = createFromFile("/home/faessel/src/morphee/trunk/utilities/Images/Color/arearea.png");
     BaseImage *im = createFromFile("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png");
-    im = createFromFile("/home/faessel/tmp/1out.bmp");
+    im = createFromFile("/home/faessel/tmp/jpeg-6b/testimg.jpg");
 //     rgbIm << ;
 //     rgbIm >> "/home/mat/tmp/arearea.png";
     
 //     rgbIm.show();
-//     Gui::execLoop();
+    im->show();
+    
+    write(*((Image<RGB>*)im), "/home/faessel/tmp/tmp.jpg");
+    Gui::execLoop();
     
 }
 

@@ -64,9 +64,9 @@ class Test_Array : public TestCase
       fill(im, RGB(0));
       fillLine<RGB>(im.getLines()[10]+10, 50, RGB(255,0,0));
       
-      dilate(im, im2, 2);
-      im2.show();
-      Gui::execLoop();
+//       dilate(im, im2, 2);
+//       im2.show();
+//       Gui::execLoop();
   }
 };
 
