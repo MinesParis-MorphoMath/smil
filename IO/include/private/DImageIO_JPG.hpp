@@ -42,7 +42,7 @@
 using namespace std;
 
 
-#ifdef USE_PNG
+#ifdef USE_JPEG
 
 
 namespace smil
@@ -81,13 +81,18 @@ namespace smil
 	}
     };
 
+    // Specializations
+    template <>
+    RES_T JPGImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image);
+    template <>
+    RES_T JPGImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
 
 /*@}*/
 
 } // namespace smil
 
 
-#endif // USE_PNG
+#endif // USE_JPEG
 
 
 

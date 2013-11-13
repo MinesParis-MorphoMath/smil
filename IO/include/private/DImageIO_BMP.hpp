@@ -73,6 +73,16 @@ namespace smil
 	}
     };
 
+    // Specializations
+    template <>
+    RES_T BMPImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image);
+    template <>
+    RES_T BMPImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image);
+    
+    template <>
+    RES_T BMPImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename);
+    template <>
+    RES_T BMPImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
 /*@}*/
 
 } // namespace smil

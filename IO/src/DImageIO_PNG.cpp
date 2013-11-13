@@ -67,6 +67,11 @@ namespace smil
 	png_structp png_ptr;
 	png_infop info_ptr;
 	
+	int bit_depth;
+	int color_type;
+	png_uint_32 width, height;
+	png_byte channels;
+	
 	bool readMode;
     };
     
@@ -75,8 +80,11 @@ namespace smil
 	png_structp &png_ptr = hStruct.png_ptr;
 	png_infop &info_ptr = hStruct.info_ptr;
 	png_byte magic[8];
-	int bit_depth, color_type;
-	png_uint_32 width, height;
+	int &bit_depth = hStruct.bit_depth;
+	int &color_type = hStruct.color_type;
+	png_uint_32 &width = hStruct.width;
+	png_uint_32 &height = hStruct.height;
+	png_byte &channels = hStruct.channels;
 
 	/* read magic number */
 	/* check for valid magic number */
@@ -128,6 +136,7 @@ namespace smil
 		      &bit_depth, &color_type,
 		      NULL, NULL, NULL);
 
+	channels = png_get_channels(png_ptr, info_ptr);
 	
 	return RES_OK;
     }
@@ -141,10 +150,10 @@ namespace smil
 	png_init_io(png_ptr, fp);
 
 	/* write header */
-	png_set_IHDR(png_ptr, info_ptr, info_ptr->width, info_ptr->height,
-		    info_ptr->bit_depth, info_ptr->color_type, PNG_INTERLACE_NONE,
+	png_set_IHDR(png_ptr, info_ptr, hStruct.width, hStruct.height,
+		    hStruct.bit_depth, hStruct.color_type, PNG_INTERLACE_NONE,
 		    PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
-
+	
 	png_write_info(png_ptr, info_ptr);
 
 	return RES_OK;
@@ -169,12 +178,12 @@ namespace smil
 	
 	png_infop &info_ptr = hStruct.info_ptr;
 	
-	fInfo.width = info_ptr->width;
-	fInfo.height = info_ptr->height;
-	fInfo.bitDepth = info_ptr->bit_depth;
-	fInfo.channels = info_ptr->channels;
+	fInfo.width = hStruct.width;
+	fInfo.height = hStruct.height;
+	fInfo.bitDepth = hStruct.bit_depth;
+	fInfo.channels = hStruct.channels;
 	
-	switch(info_ptr->color_type)
+	switch(hStruct.color_type)
 	{
 	  case PNG_COLOR_TYPE_GRAY:
 	    fInfo.colorType = ImageFileInfo::COLOR_TYPE_GRAY; break;
@@ -209,11 +218,10 @@ namespace smil
 	ASSERT(readPNGHeader(fp, hStruct)==RES_OK);
 	
 	png_structp &png_ptr = hStruct.png_ptr;
-	png_infop &info_ptr = hStruct.info_ptr;
 	
-	ASSERT(info_ptr->bit_depth==8 && info_ptr->channels==1, "Not a 8bit gray image", RES_ERR);
+	ASSERT(hStruct.bit_depth==8 && hStruct.channels==1, "Not a 8bit gray image", RES_ERR);
 	
-	ASSERT((image.setSize(info_ptr->width, info_ptr->height)==RES_OK), RES_ERR_BAD_ALLOCATION);
+	ASSERT((image.setSize(hStruct.width, hStruct.height)==RES_OK), RES_ERR_BAD_ALLOCATION);
 
 	/* setup a pointer array.  Each one points at the begening of a row. */
 	png_bytep *row_pointers = image.getLines();
@@ -247,13 +255,12 @@ namespace smil
 	ASSERT(readPNGHeader(fp, hStruct)==RES_OK);
 	
 	png_structp &png_ptr = hStruct.png_ptr;
-	png_infop &info_ptr = hStruct.info_ptr;
 	
-	size_t width = info_ptr->width, height = info_ptr->height;
+	size_t width = hStruct.width, height = hStruct.height;
 	
 	ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
 	
-	ASSERT(info_ptr->bit_depth==8 && info_ptr->channels==3, "Not a 24bit RGB image", RES_ERR);
+	ASSERT(hStruct.bit_depth==8 && hStruct.channels==3, "Not a 24bit RGB image", RES_ERR);
 	
 	typedef UINT8* datap;
 	datap *data = new datap[height];
@@ -306,13 +313,12 @@ namespace smil
 	PNGHeader hStruct("w");
 	
 	png_structp &png_ptr = hStruct.png_ptr;
-	png_infop &info_ptr = hStruct.info_ptr;
 	
-	info_ptr->width = image.getWidth();
-	info_ptr->height = image.getHeight();
-	info_ptr->bit_depth = 8;
-	info_ptr->color_type = PNG_COLOR_TYPE_GRAY;
-	info_ptr->channels = 1;
+	hStruct.width = image.getWidth();
+	hStruct.height = image.getHeight();
+	hStruct.bit_depth = 8;
+	hStruct.color_type = PNG_COLOR_TYPE_GRAY;
+	hStruct.channels = 1;
 	
 	ASSERT(writePNGHeader(fp, hStruct)==RES_OK);
 	
@@ -340,17 +346,16 @@ namespace smil
 	PNGHeader hStruct("w");
 	
 	png_structp &png_ptr = hStruct.png_ptr;
-	png_infop &info_ptr = hStruct.info_ptr;
 	
-	info_ptr->width = image.getWidth();
-	info_ptr->height = image.getHeight();
-	info_ptr->bit_depth = 8;
-	info_ptr->color_type = PNG_COLOR_TYPE_RGB;
-	info_ptr->channels = 3;
+	size_t width = image.getWidth(), height = image.getHeight();
+	
+	hStruct.width = width;
+	hStruct.height = height;
+	hStruct.bit_depth = 8;
+	hStruct.color_type = PNG_COLOR_TYPE_RGB;
+	hStruct.channels = 3;
 	
 	ASSERT(writePNGHeader(fp, hStruct)==RES_OK);
-	
-	size_t width = info_ptr->width, height = info_ptr->height;
 	
 	typedef UINT8* datap;
 	datap *data = new datap[height];

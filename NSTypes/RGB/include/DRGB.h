@@ -34,9 +34,12 @@
 #include "DImage_RGB.h"
 #include "DLineArith_RGB.h"
 
+#ifdef USE_QT
+
+#include "Gui/Qt/DQtImageViewer.hpp"
+
 namespace smil
 {
-
     template <>
     inline void QtImageViewer<RGB>::setImage(Image<RGB> &im)
     {
@@ -92,6 +95,14 @@ namespace smil
     inline void QtImageViewer<RGB>::drawOverlay(Image<RGB> &im)
     {
     }
+}
+
+#endif // USE_QT
+
+
+namespace smil
+{
+
     
     template <>
     RES_T readVTK<RGB>(const char *filename, Image<RGB> &image);

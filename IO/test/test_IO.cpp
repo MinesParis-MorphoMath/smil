@@ -39,7 +39,7 @@
 #include "DGui.h"
 
 #include "Core/include/private/DMultichannelTypes.hpp"
-#include "Core/include/DColor.h"
+#include "NSTypes/RGB/include/DRGB.h"
 
 using namespace smil;
 
