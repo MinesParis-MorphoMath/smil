@@ -33,13 +33,6 @@
 
 #include "DGuiInstance.h"
 
-#if defined(Q_OS_WIN)
-#include <conio.h>
-#include <QTimer>
-#else
-#include <QSocketNotifier>
-#endif
-#include <QThread>
 
 namespace smil
 {
@@ -74,35 +67,7 @@ namespace smil
 	int _argc;
     };
 
-    static int qtLoop()
-    {
-	QCoreApplication *app = QCoreApplication::instance();
-
-	if (app && app->thread() == QThread::currentThread())
-	{
-    #if defined(Q_OS_WIN)
-	    QTimer timer;
-	    QObject::connect(&timer, SIGNAL(timeout()), app, SLOT(quit()));
-
-	    do
-	    {
-		timer.start(100);
-		QCoreApplication::exec();
-		timer.stop();
-	    }
-	    while (!_kbhit());
-
-	    QObject::disconnect(&timer, SIGNAL(timeout()), app, SLOT(quit()));
-    #else
-	    QSocketNotifier notifier(0, QSocketNotifier::Read, 0);
-	    QObject::connect(&notifier, SIGNAL(activated(int)), app, SLOT(quit()));
-	    QCoreApplication::exec();
-	    QObject::disconnect(&notifier, SIGNAL(activated(int)), app, SLOT(quit()));
-    #endif
-	}
-
-	return 0;
-    }
+    int qtLoop();
 
 /*@}*/
 
