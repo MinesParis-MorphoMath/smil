@@ -147,7 +147,7 @@ public:
 	else if (size>1) // Find new higher level (non empty stack)
 	{
 	    tokenNbr[higherLevel] = 0;
-	    for (size_t i=higherLevel-1;i>=0;i--)
+	    for (size_t i=higherLevel-1;i!=numeric_limits<size_t>::max();i--)
 	      if (tokenNbr[i]>0)
 	      {
 		  higherLevel = i;

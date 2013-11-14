@@ -144,9 +144,13 @@ ENDIF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 # ADD_DEFINITIONS("-fPIC")
 # ADD_DEFINITIONS("-fPIC -finline-functions")
 
+IF(ADDITIONAL_INCLUDE_PATHS)
+	INCLUDE_DIRECTORIES(${ADDITIONAL_INCLUDE_PATHS})
+ENDIF(ADDITIONAL_INCLUDE_PATHS)
+
 # Clang
 IF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-	SET(CMAKE_COMPILER_IS_CLANGXX 1)
+	SET(CMAKE_COMPILER_IS_CLANGXX 1)	
 ENDIF("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
 
 # Windows 32 and 64 Bits
@@ -181,16 +185,10 @@ INCLUDE(OptimizeForArchitecture)
 OPTION(USE_OPTIMIZATION "Use optimizations" ON)
 IF(USE_OPTIMIZATION)
 	SET(TARGET_ARCHITECTURE "auto" CACHE STRING "CPU architecture to optimize for. Using an incorrect setting here can result in crashes of the resulting binary because of invalid instructions used.\nSetting the value to \"auto\" will try to optimize for the architecture where cmake is called.\nOther supported values are: \"none\", \"generic\", \"core\", \"merom\" (65nm Core2), \"penryn\" (45nm Core2), \"nehalem\", \"westmere\", \"sandy-bridge\", \"atom\", \"k8\", \"k8-sse3\", \"barcelona\", \"istanbul\", \"magny-cours\", \"bulldozer\", \"interlagos\".")
-#    ADD_DEFINITIONS("-ftree-vectorize -ftree-vectorizer-verbose=1")
-#     ADD_DEFINITIONS("-ftree-vectorize -g -ffast-math  -march=core2 -mtune=core2  -msse2 -fdump-tree-optimized")
 	
-	IF(CMAKE_COMPILER_IS_GNUCC)
-# 	    ADD_DEFINITIONS("-ffast-math -fassociative-math")
-	ENDIF(CMAKE_COMPILER_IS_GNUCC)
-	    
 	OPTION(VERBOSE_OPTIMIZATION "Show verbose optimizations" OFF)
 	
-	IF(CMAKE_COMPILER_IS_GNUCC AND NOT CMAKE_COMPILER_IS_CLANGXX)
+	IF(CMAKE_COMPILER_IS_GNUCC)
 	    AddCompilerFlag("-ftree-vectorize -ftree-slp-vectorize")
 	    IF(TARGET_ARCHITECTURE STREQUAL "auto")
 		AddCompilerFlag("-march=native -mtune=generic")
@@ -201,9 +199,11 @@ IF(USE_OPTIMIZATION)
 	    IF(VERBOSE_OPTIMIZATION)
 		    ADD_DEFINITIONS("-ftree-vectorizer-verbose=1")
 	    ENDIF(VERBOSE_OPTIMIZATION)
-	ELSE(CMAKE_COMPILER_IS_GNUCC AND NOT CMAKE_COMPILER_IS_CLANGXX)
-		OptimizeForArchitecture()
-	ENDIF(CMAKE_COMPILER_IS_GNUCC AND NOT CMAKE_COMPILER_IS_CLANGXX)
+	ELSEIF(CMAKE_COMPILER_IS_CLANGXX)
+# 		ADD_DEFINITIONS("-fslp-vectorize-aggressive")
+	ELSE(CMAKE_COMPILER_IS_GNUCC)
+ 		OptimizeForArchitecture()
+	ENDIF(CMAKE_COMPILER_IS_GNUCC)
 	
 	MESSAGE(STATUS "Compiler flags: "${CMAKE_CXX_FLAGS})
 ELSE(USE_OPTIMIZATION)
@@ -257,6 +257,9 @@ OPTION(WRAP_OCTAVE "Wrap Octave" FALSE)
 IF(WRAP_OCTAVE)
       FIND_PATH(OCTAVE_INCLUDE_DIR "octave/oct.h" Path to octave/oct.h)
       INCLUDE_DIRECTORIES(${OCTAVE_INCLUDE_DIR})
+      # Octave now requires mpi headers
+      FIND_PACKAGE(MPI REQUIRED)
+      INCLUDE_DIRECTORIES(${MPI_CXX_INCLUDE_PATH})
 ENDIF(WRAP_OCTAVE)
 
 OPTION(WRAP_RUBY "Wrap Ruby" FALSE)
@@ -464,12 +467,6 @@ FOREACH(_IMG_TYPE ${IMAGE_TYPES})
 	SET(IMAGE_TYPES_STR ${IMAGE_TYPES_STR}Image_${_IMG_TYPE},)
 ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 
-IF(NOT WRAP_RGB)
-	SET(DATA_TYPES_STR ${DATA_TYPES_STR}RGB,)
-	SET(DATA_TYPES_QUOTE_STR ${DATA_TYPES_QUOTE_STR}"RGB",)
-	SET(IMAGE_TYPES_STR ${IMAGE_TYPES_STR}Image_RGB,)
-ENDIF(NOT WRAP_RGB)
-
 STRING(REGEX REPLACE ",$" "" IMAGE_TYPES_STR ${IMAGE_TYPES_STR})
 STRING(REGEX REPLACE ",$" "" DATA_TYPES_STR ${DATA_TYPES_STR})
 STRING(REGEX REPLACE ",$" "" DATA_TYPES_QUOTE_STR ${DATA_TYPES_QUOTE_STR})
@@ -545,6 +542,14 @@ SET(_STWD "${_STWD}%enddef\n\n")
 SET(SWIG_TEMPLATE_WRAP_DEFINITIONS ${_STWD})
 
 MESSAGE(STATUS "Image types generated: ${DATA_TYPES_STR}")
+
+
+IF(NOT WRAP_RGB)
+	SET(DATA_TYPES_STR ${DATA_TYPES_STR}RGB,)
+	SET(DATA_TYPES_QUOTE_STR ${DATA_TYPES_QUOTE_STR}"RGB",)
+	SET(IMAGE_TYPES_STR ${IMAGE_TYPES_STR}Image_RGB,)
+ENDIF(NOT WRAP_RGB)
+
 
 
 

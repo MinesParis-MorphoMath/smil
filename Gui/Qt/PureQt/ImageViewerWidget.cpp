@@ -512,9 +512,9 @@ void ImageViewerWidget::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
 void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 {
-    size_t x = int(event->scenePos().rx());
-    size_t y = int(event->scenePos().ry());
-    size_t z = slider->value();
+    int x = int(event->scenePos().rx());
+    int y = int(event->scenePos().ry());
+    int z = slider->value();
 
     size_t w = qImage->width();
     size_t h = qImage->height();
@@ -563,8 +563,8 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 
 void ImageViewerWidget::sceneMousePressEvent ( QGraphicsSceneMouseEvent * event )
 {
-    size_t x = int(event->scenePos().rx());
-    size_t y = int(event->scenePos().ry());
+    int x = int(event->scenePos().rx());
+    int y = int(event->scenePos().ry());
 
     size_t w = qImage->width();
     size_t h = qImage->height();

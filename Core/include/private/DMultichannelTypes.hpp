@@ -53,7 +53,7 @@ namespace smil
 	T c[N];
     public:
 	typedef T DataType;
-	static UINT channelNumber() { return sizeof(c); }
+	static UINT channelNumber() { return N; }
 	
 	MultichannelType()
 	{

@@ -52,6 +52,7 @@ namespace smil
     template <class T1>
     RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ, Image<RGB> &imOut, size_t outStartX=0, size_t outStartY=0, size_t outStartZ=0)
     {
+	return RES_ERR;
     }
     
     template <>

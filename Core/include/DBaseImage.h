@@ -73,6 +73,9 @@ namespace smil
 		onModified = Signal(this);
 	}
 	
+	virtual ~BaseImage()
+	{
+	}
 	
     private:
 	// Forbid implicit assignment operator

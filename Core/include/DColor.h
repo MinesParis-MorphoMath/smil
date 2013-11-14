@@ -107,6 +107,7 @@ namespace smil
 	{
 	    for (UINT i=0;i<3;i++)
 	      c[i] = rhs.value(i);
+	    return *this;
 	}
     };
     

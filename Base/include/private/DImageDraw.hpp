@@ -95,7 +95,7 @@ namespace smil
     * \param imOut Output image.
     */
     template <class T>
-    RES_T drawRectangle(Image<T> &imOut, size_t x0, size_t y0, size_t width, size_t height, T value=numeric_limits<T>::max(), bool fill=false, size_t zSlice=0)
+    RES_T drawRectangle(Image<T> &imOut, int x0, int y0, size_t width, size_t height, T value=numeric_limits<T>::max(), bool fill=false, size_t zSlice=0)
     {
 	ASSERT_ALLOCATED(&imOut);
 

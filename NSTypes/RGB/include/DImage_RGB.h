@@ -197,11 +197,13 @@ namespace smil
     template <>
     inline RES_T readVTK<RGB>(const char *filename, Image<RGB> &image)
     {
+	return RES_ERR;
     }
 
     template <>
     inline RES_T writeVTK<RGB>(const Image<RGB> &image, const char *filename, bool binary)
     {
+	return RES_ERR;
     }
     
 #ifdef USE_QWT

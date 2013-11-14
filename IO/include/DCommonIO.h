@@ -86,10 +86,14 @@ namespace smil
       }
       const char *fileExtention;
       
-      virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo) { return RES_ERR; }
+      virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo) 
+      { 
+	  return RES_ERR; 
+      }
       
       virtual RES_T read(const char* filename)
       {
+	  return RES_ERR;
       }
       
       virtual RES_T read(const char* filename, Image<T> &image)
