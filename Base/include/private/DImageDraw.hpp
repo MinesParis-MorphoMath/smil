@@ -50,12 +50,14 @@ namespace smil
     
 
     /**
-    * Draws a line between two points p1(p1x,p1y) and p2(p2x,p2y).
+    * Draws a line between two points P0(x0,y0) and P1(x1,y1).
     * This function is based on the Bresenham's line algorithm.
     * (works only on 2D images)
+    * \param x0,y0 Coordinates of the first point
+    * \param x1,y1 Coordinates of the second point
     */
     template <class T>
-    RES_T drawLine(Image<T> &im, int p1x, int p1y, int p2x, int p2y, T value=numeric_limits<T>::max())
+    RES_T drawLine(Image<T> &im, int x0, int y0, int x1, int y1, T value=ImDtTypes<T>::max())
     {
 	if (!im.isAllocated())
 	    return RES_ERR_BAD_ALLOCATION;
@@ -64,10 +66,10 @@ namespace smil
 	size_t imH = im.getHeight();
 	
 	vector<IntPoint> bPoints;
-	if ( p1x<0 || p1x>=int(imW) || p1y<0 || p1y>=int(imH) || p2x<0 || p2x>=int(imW) || p2y<0 || p2y>=int(imH) )
-	  bPoints = bresenhamPoints(p1x, p1y, p2x, p2y, imW, imH);
+	if ( x0<0 || x0>=int(imW) || y0<0 || y0>=int(imH) || x1<0 || x1>=int(imW) || y1<0 || y1>=int(imH) )
+	  bPoints = bresenhamPoints(x0, y0, x1, y1, imW, imH);
 	else
-	  bPoints = bresenhamPoints(p1x, p1y, p2x, p2y); // no image range check (faster)
+	  bPoints = bresenhamPoints(x0, y0, x1, y1); // no image range check (faster)
 	
 	typename Image<T>::sliceType lines = im.getLines();
 	
@@ -78,8 +80,13 @@ namespace smil
 	return RES_OK;
     }
     
+    /**
+     * \overload 
+     * \brief Draw line from vector
+     * \param coords Vector containing the coordiantes of the two end points (x0, y0, x1, y1)
+     */
     template <class T>
-    RES_T drawLine(Image<T> &imOut, vector<UINT> coords, T value=numeric_limits<T>::max())
+    RES_T drawLine(Image<T> &imOut, vector<UINT> coords, T value=ImDtTypes<T>::max())
     {
 	if (coords.size()!=4)
 	  return RES_ERR;
@@ -95,7 +102,7 @@ namespace smil
     * \param imOut Output image.
     */
     template <class T>
-    RES_T drawRectangle(Image<T> &imOut, int x0, int y0, size_t width, size_t height, T value=numeric_limits<T>::max(), bool fill=false, size_t zSlice=0)
+    RES_T drawRectangle(Image<T> &imOut, int x0, int y0, size_t width, size_t height, T value=ImDtTypes<T>::max(), bool fill=false, size_t zSlice=0)
     {
 	ASSERT_ALLOCATED(&imOut);
 
@@ -140,7 +147,7 @@ namespace smil
 
 
     template <class T>
-    RES_T drawRectangle(Image<T> &imOut, vector<UINT> coords, T value=numeric_limits<T>::max(), bool fill=false)
+    RES_T drawRectangle(Image<T> &imOut, vector<UINT> coords, T value=ImDtTypes<T>::max(), bool fill=false)
     {
 	if (coords.size()!=4)
 	  return RES_ERR;
@@ -171,7 +178,7 @@ namespace smil
     * \param imOut Output image.
     */
     template <class T>
-    RES_T drawBox(Image<T> &imOut, size_t x0, size_t y0, size_t z0, size_t width, size_t height, size_t depth, T value=numeric_limits<T>::max(), bool fill=false)
+    RES_T drawBox(Image<T> &imOut, size_t x0, size_t y0, size_t z0, size_t width, size_t height, size_t depth, T value=ImDtTypes<T>::max(), bool fill=false)
     {
 	ASSERT_ALLOCATED(&imOut);
 	
