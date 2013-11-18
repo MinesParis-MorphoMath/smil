@@ -58,7 +58,7 @@ namespace smil
 	  : BaseImageViewer("ImageViewer"),
 	    image(NULL), 
 	    labelImage(false),
-	    onOverlayDataChanged(Signal(this))
+	    onOverlayModified(Signal(this))
 	{
 	    imSize[0] = imSize[1] = imSize[2] = 0;
 	}
@@ -67,7 +67,7 @@ namespace smil
 	  : BaseImageViewer("ImageViewer"),
 	    image(NULL),
 	    labelImage(false),
-	    onOverlayDataChanged(Signal(this))
+	    onOverlayModified(Signal(this))
 	{
 	    imSize[0] = imSize[1] = imSize[2] = 0;
 	    setImage(im);
@@ -121,7 +121,7 @@ namespace smil
 	virtual void clearOverlay() {}
 	virtual Image<T> getOverlay() {}
 	
-	Signal onOverlayDataChanged;
+	Signal onOverlayModified;
 	
 	//! Set the color table as a 8bits RGB map (keys between 0 and 255)
 	virtual void setLookup(const map<UINT8,smil::RGB> &lut) {}

@@ -278,7 +278,7 @@ namespace smil
     {
 	BASE_QT_VIEWER::overlayDataChanged();
 	Event event(this);
-	ImageViewer<T>::onOverlayDataChanged.trigger(&event);
+	ImageViewer<T>::onOverlayModified.trigger(&event);
     }
 
     template <class T>

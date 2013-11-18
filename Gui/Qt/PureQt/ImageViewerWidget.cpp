@@ -415,7 +415,7 @@ void ImageViewerWidget::clearOverlay()
     
     qOverlayImage->fill(Qt::transparent);
 
-    update();
+    overlayDataChanged();
 }
 
 
@@ -609,6 +609,14 @@ void ImageViewerWidget::sceneMousePressEvent ( QGraphicsSceneMouseEvent * event 
 	    QLineF newLine(event->scenePos(), event->scenePos());
 	    line->setLine(newLine);
 	    imScene->addItem(line);
+	}
+	else if (event->buttons()==Qt::LeftButton && cursorMode==cursorDraw)
+	{
+	    QPainter painter(qOverlayImage);
+	    painter.setPen(drawPen);
+	    painter.drawPoint(event->scenePos());
+	    overlayDataChanged();
+	    drawing = true;
 	}
     }
     drawing = false;
