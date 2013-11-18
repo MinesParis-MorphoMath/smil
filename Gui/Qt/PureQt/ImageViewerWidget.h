@@ -38,6 +38,7 @@
 
 
 #include "MagnifyView.h"
+#include "ColorPicker.h"
 #include "DBinary.h"
 #include "DCommon.h"
 
@@ -83,7 +84,6 @@ public:
     void setName(QString name);
     void setImageSize(int w, int h, int d=1);
     void dataChanged();
-    void overlayDataChanged();
     virtual void clearOverlay();
     
     QStatusBar *statusBar;
@@ -150,11 +150,15 @@ protected:
     void dragMoveEvent(QDragMoveEvent *de);
     void dragEnterEvent(QDragEnterEvent *event);
     
-    enum cursorModes { cursorMove, cursorDrawLine, cursorDrawBox};
+    enum cursorMode { cursorMove, cursorDraw, cursorDrawLine, cursorDrawBox};
     int cursorMode;
     QGraphicsLineItem *line;
     
     QList<ImageViewerWidget*> linkedWidgets;
+    
+    ColorPicker *colorPicker;
+    QPen drawPen;
+    bool drawing;
     
     void scrollContentsBy(int dx, int dy);
 public slots:
@@ -167,9 +171,12 @@ public slots:
 	displayHint(QString::number(newVal) + "/" + QString::number(slider->maximum()));
 	setCurSlice(newVal);
     }
+    void overlayDataChanged();
     void updateIcon();
     void showContextMenu(const QPoint& pos);
     void mouseMoveEvent ( QGraphicsSceneMouseEvent * event );
+    void setCursorMode(const int &mode);
+    void setDrawPenColor(const QColor &color);
     
 protected slots:
     void setScrollBarPosition(int x, int y);

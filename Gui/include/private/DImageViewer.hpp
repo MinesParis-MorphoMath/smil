@@ -117,6 +117,7 @@ namespace smil
 	}
 	virtual void drawOverlay(Image<T> &) {}
 	virtual void clearOverlay() {}
+	virtual Image<T> getOverlay() {}
 	
 	//! Set the color table as a 8bits RGB map (keys between 0 and 255)
 	virtual void setLookup(const map<UINT8,smil::RGB> &lut) {}

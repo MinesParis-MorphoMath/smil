@@ -88,6 +88,11 @@ namespace smil
 	BASE_QT_VIEWER::setImageSize(im.getWidth(), im.getHeight(), im.getDepth());
 	if (im.getName()!=string(""))
 	  setName(this->image->getName());
+	if (qOverlayImage)
+	  delete qOverlayImage;
+	qOverlayImage = new QImage(im.getWidth(), im.getHeight(), QImage::Format_ARGB32_Premultiplied);
+	qOverlayImage->setColorTable(overlayColorTable);
+	qOverlayImage->fill(Qt::transparent);
     }
 
     template <class T>
@@ -220,13 +225,8 @@ namespace smil
 	typename Image<T>::sliceType lines = im.getSlices()[slider->value()];
 	typename Image<T>::lineType pixels;
 	
-	if (qOverlayImage)
-	  delete qOverlayImage;
+	qOverlayImage->fill(0);
 	
-	qOverlayImage = new QImage(w, h, QImage::Format_ARGB32_Premultiplied);
-	qOverlayImage->setColorTable(overlayColorTable);
-	qOverlayImage->fill(Qt::transparent);
-
 	QRgb *destLine;
 	  
 	for (size_t j=0;j<im.getHeight();j++)
@@ -244,6 +244,35 @@ namespace smil
 	BASE_QT_VIEWER::update();
     }
 
+    template <class T>
+    Image<T> QtImageViewer<T>::getOverlay()
+    {
+	if (!qOverlayImage)
+	{
+	    ERR_MSG("No overlay available.");
+	    return Image<T>();
+	}
+	
+	Image<T> img(qOverlayImage->width(), qOverlayImage->height());
+	
+	QRgb *srcLine;
+	int value;
+	typename Image<T>::sliceType lines = img.getLines();
+	typename Image<T>::lineType pixels;
+	  
+	for (size_t j=0;j<qOverlayImage->height();j++)
+	{
+	    srcLine = (QRgb*)(this->qOverlayImage->scanLine(j));
+	    pixels = *lines++;
+	    for (size_t i=0;i<qOverlayImage->width();i++)
+	    {
+		value = overlayColorTable.indexOf(srcLine[i]);
+		pixels[i] = value>=0 ? T(value) : T(0);
+	    }
+	}
+	return img;
+    }
+    
     template <class T>
     void QtImageViewer<T>::setLookup(const map<UINT8,RGB> &lut)
     {

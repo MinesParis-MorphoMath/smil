@@ -77,6 +77,7 @@ int main(int argc, char *argv[])
 //     
 //     im3->printSelf();
     im1.show();
+    im1.getViewer()->getOverlay();
 //     
     Gui::execLoop();
 //     qapp.exec();

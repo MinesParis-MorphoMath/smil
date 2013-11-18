@@ -60,8 +60,6 @@ class exception{};
 // Types
 //////////////////////////////////////////////////////////
 
-%include "carrays.i"
-
 
 %include "DTypes.hpp"
 %include "DTypes.h"
