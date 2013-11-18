@@ -274,6 +274,14 @@ namespace smil
     }
     
     template <class T>
+    void QtImageViewer<T>::overlayDataChanged()
+    {
+	BASE_QT_VIEWER::overlayDataChanged();
+	Event event(this);
+	ImageViewer<T>::onOverlayDataChanged.trigger(&event);
+    }
+
+    template <class T>
     void QtImageViewer<T>::setLookup(const map<UINT8,RGB> &lut)
     {
 	baseColorTable.clear();

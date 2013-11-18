@@ -121,6 +121,7 @@ namespace smil
 	virtual void displayPixelValue(size_t x, size_t y, size_t z);
 	virtual void displayMagnifyView(size_t x, size_t y, size_t z);
 	virtual void drawImage();
+	virtual void overlayDataChanged();
     //     ImageViewerWidget *qtViewer;
     //     ImageViewer *qtViewer;
 	virtual void dropEvent(QDropEvent *de);

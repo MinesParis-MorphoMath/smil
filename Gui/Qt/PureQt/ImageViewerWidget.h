@@ -171,7 +171,7 @@ public slots:
 	displayHint(QString::number(newVal) + "/" + QString::number(slider->maximum()));
 	setCurSlice(newVal);
     }
-    void overlayDataChanged();
+    virtual void overlayDataChanged();
     void updateIcon();
     void showContextMenu(const QPoint& pos);
     void mouseMoveEvent ( QGraphicsSceneMouseEvent * event );
