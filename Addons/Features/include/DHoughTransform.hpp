@@ -112,7 +112,7 @@ namespace smil
 	    lIn = linesIn[j];
 	    for (UINT i=0;i<imIn.getWidth();i++)
 	    {
-		if (lIn[i]!=0)
+		if (lIn[i]!=T1(0))
 		{
 		  for (UINT j2=0;j2<hOut;j2++)
 		    for (UINT i2=0;i2<wOut;i2++)
@@ -161,7 +161,7 @@ namespace smil
 	    lIn = linesIn[j];
 	    for (UINT i=0;i<imIn.getWidth();i++)
 	    {
-		if (lIn[i]!=0)
+		if (lIn[i]!=T1(0))
 		{
 		  nonZeroPts++;
 		  for (UINT j2=0;j2<hOut;j2++)
@@ -172,8 +172,8 @@ namespace smil
 			if (rho > 100 && rho<500)
 			{
 			    linesOut1[j2][i2] += 1;
-			    if (linesOut1[j2][i2]>nonZeroPts && rho > linesOut2[j2][i2])
-			      linesOut2[j2][i2] = rho;
+			    if (linesOut1[j2][i2]>nonZeroPts && linesOut2[j2][i2]<T2(rho))
+			      linesOut2[j2][i2] = T2(rho);
 			}
 		    }
 		    

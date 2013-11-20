@@ -31,6 +31,8 @@
 #define _D_IMAGE_IO_H
 
 #include "Core/include/DErrors.h"
+#include "Core/include/DColor.h"
+#include "Core/include/private/DImage.hpp"
 
 namespace smil
 {
@@ -58,7 +60,54 @@ namespace smil
 	FILE *fp;
     };
 
-
+    struct ImageFileInfo
+    {
+	ImageFileInfo()
+	  : width(0), height(0), depth(0)
+	{
+	}
+	enum ColorType { COLOR_TYPE_GRAY, COLOR_TYPE_RGB, COLOR_TYPE_GA, COLOR_TYPE_RGBA, COLOR_TYPE_UNKNOWN };
+	UINT bitDepth;
+	UINT channels;
+	ColorType colorType;
+	size_t width, height, depth;
+    };
+    
+    class BaseImage;
+    template<class T> class Image;
+    
+    template <class T=void>
+    class ImageFileHandler
+    {
+    public:
+      ImageFileHandler(const char *ext)
+	: fileExtention(ext)
+      {
+      }
+      const char *fileExtention;
+      
+      virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo) 
+      { 
+	  return RES_ERR; 
+      }
+      
+      virtual RES_T read(const char* filename)
+      {
+	  return RES_ERR;
+      }
+      
+      virtual RES_T read(const char* filename, Image<T> &image)
+      {
+	  cout << "Data type not implemented for " << fileExtention << " files." << endl;
+	  return RES_ERR;
+      }
+      virtual RES_T write(const Image<T> &image, const char* filename)
+      {
+	  cout << "Data type not implemented for " << fileExtention << " files." << endl;
+	  return RES_ERR;
+      }
+    };
+    
     #ifdef USE_CURL
 
     RES_T getHttpFile(const char *url, const char *outfilename) ;

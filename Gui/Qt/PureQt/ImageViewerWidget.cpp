@@ -33,6 +33,8 @@
 #include <QApplication>
 #include <QMenu>
 #include <QScrollBar>
+#include <QColorDialog>
+#include <QInputDialog>
 
 #ifdef USE_QWT
 #include <qwt_plot.h>
@@ -44,6 +46,7 @@
 #include <math.h>
 
 #include "ImageViewerWidget.h"
+#include "ColorPicker.h"
 
 #define RAND_UINT8 int(double(qrand())/RAND_MAX*255)
 
@@ -84,6 +87,8 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     setAcceptDrops(true);
     setContextMenuPolicy(Qt::CustomContextMenu);
 	
+    imageFormat = QImage::Format_Indexed8;
+    
     initColorTables();
     scaleFactor = 1.0;
     qImage = new QImage();
@@ -141,9 +146,19 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     slider->hide();
     layout->addWidget(slider);
     
-    cursorMode = cursorMove;    
+    colorPicker = new ColorPicker(this);
+    colorPicker->setColors(overlayColorTable);
+    connect(colorPicker, SIGNAL(colorChanged(const QColor &)), this, SLOT(setDrawPenColor(const QColor &)));
+    
+    cursorMode = cursorDraw;    
     line = new QGraphicsLineItem();
     line->setPen(QPen(Qt::blue, 1));
+    drawing = false;
+    
+    drawPen.setColor(overlayColorTable[1]);
+    drawPen.setWidth(2);
+    
+    setCursorMode(cursorMove);
 }
 
 ImageViewerWidget::~ImageViewerWidget()
@@ -163,6 +178,17 @@ ImageViewerWidget::~ImageViewerWidget()
 
     delete zoomInAct;
     delete zoomOutAct;
+    
+    delete colorPicker;
+}
+
+void ImageViewerWidget::createOverlayImage()
+{
+    if (qOverlayImage)
+      delete qOverlayImage;
+    qOverlayImage = new QImage(qImage->width(), qImage->height(), QImage::Format_ARGB32_Premultiplied);
+    qOverlayImage->setColorTable(overlayColorTable);
+    qOverlayImage->fill(Qt::transparent);
 }
 
 void ImageViewerWidget::updateIcon()
@@ -209,7 +235,7 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
 
     delete qImage;
     
-    qImage = new QImage(w, h, QImage::Format_Indexed8);
+    qImage = new QImage(w, h, imageFormat);
     
     
     // Create tiled pixmaps
@@ -269,6 +295,11 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
     {
 	int scaleFact = log(double(QWidget::height())/qImage->height())/log(0.8);
 	scale(pow(0.8, scaleFact), true);
+    }
+    if (qOverlayImage)
+    {
+	delete qOverlayImage;
+	qOverlayImage = NULL;
     }
 }
 
@@ -382,7 +413,7 @@ void ImageViewerWidget::dataChanged()
     emit onDataChanged();
 }
 
-void ImageViewerWidget::overlayDataChanged()
+void ImageViewerWidget::overlayDataChanged(bool triggerEvents)
 {
     updatePixmaps(qOverlayImage, &overlayPixmaps);
 }
@@ -397,10 +428,9 @@ void ImageViewerWidget::clearOverlay()
 	it++;
     }
     
-    delete qOverlayImage;
-    qOverlayImage = NULL;
+    qOverlayImage->fill(Qt::transparent);
 
-    update();
+    overlayDataChanged();
 }
 
 
@@ -472,6 +502,7 @@ void ImageViewerWidget::mouseMoveEvent ( QMouseEvent * event )
       newMvY -= magnView->height();
     
     magnView->move(QPoint(newMvX, newMvY));
+    
     QGraphicsView::mouseMoveEvent(event);
 }
 
@@ -510,15 +541,19 @@ void ImageViewerWidget::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
 void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 {
-    size_t x = int(event->scenePos().rx());
-    size_t y = int(event->scenePos().ry());
-    size_t z = slider->value();
+    int x = int(event->scenePos().rx());
+    int y = int(event->scenePos().ry());
+    int z = slider->value();
 
     size_t w = qImage->width();
     size_t h = qImage->height();
     
     if (x>=0 && x<w && y>=0 && y<h)
     {
+	if (cursorMode==cursorDraw || cursorMode==cursorDrawLine || cursorMode==cursorDrawBox)
+	  setCursor(Qt::CrossCursor);
+	else setCursor(Qt::ArrowCursor);
+	
 	if (valueLblActivated)
 	{
 	    valueLabel->show();
@@ -529,9 +564,6 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 	    displayMagnifyView(x, y, z);
 	    magnView->show();
 	}
-	lastPixX = x;
-	lastPixY = y;
-	lastPixZ = z;
 	
 	if (cursorMode == cursorDrawLine)
 	{
@@ -546,6 +578,19 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 		displayHint(hint, 3000);
 	    }
 	} 
+	else if (cursorMode==cursorDraw && drawing)
+	{
+	    QPainter painter(qOverlayImage);
+	    if (drawPen.color()==Qt::black)
+		painter.setCompositionMode(QPainter::CompositionMode_Clear);
+	    painter.setPen(drawPen);
+	    painter.drawLine(event->scenePos(), QPoint(lastPixX, lastPixY));
+	    overlayDataChanged(false);
+	}
+	lastPixX = x;
+	lastPixY = y;
+	lastPixZ = z;
+	
 	
     }
     else
@@ -561,8 +606,8 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 
 void ImageViewerWidget::sceneMousePressEvent ( QGraphicsSceneMouseEvent * event )
 {
-    size_t x = int(event->scenePos().rx());
-    size_t y = int(event->scenePos().ry());
+    int x = int(event->scenePos().rx());
+    int y = int(event->scenePos().ry());
 
     size_t w = qImage->width();
     size_t h = qImage->height();
@@ -577,13 +622,29 @@ void ImageViewerWidget::sceneMousePressEvent ( QGraphicsSceneMouseEvent * event 
 	    line->setLine(newLine);
 	    imScene->addItem(line);
 	}
+	else if (event->buttons()==Qt::LeftButton && cursorMode==cursorDraw)
+	{
+	    drawing = true;
+	}
     }
+    lastPixX = x;
+    lastPixY = y;
 }
 
 void ImageViewerWidget::sceneMouseReleaseEvent ( QGraphicsSceneMouseEvent * event )
 {
     if (cursorMode==cursorDrawLine && imScene->items().contains(line))
       displayProfile(true);
+    else if (cursorMode==cursorDraw && drawing)
+    {
+	QPainter painter(qOverlayImage);
+	if (drawPen.color()==Qt::black)
+	    painter.setCompositionMode(QPainter::CompositionMode_Clear);
+	painter.setPen(drawPen);
+	painter.drawLine(event->scenePos(), QPoint(lastPixX, lastPixY));
+	overlayDataChanged();
+	drawing = false;
+    }
 }
 
 void ImageViewerWidget::scrollContentsBy(int dx, int dy)
@@ -691,17 +752,45 @@ void ImageViewerWidget::linkViewer(ImageViewerWidget* viewer)
 {
     connect(this, SIGNAL(onRescaled(double)), viewer, SLOT(scale(double)));
     connect(this, SIGNAL(onScrollBarPositionChanged(int,int)), viewer, SLOT(setScrollBarPosition(int,int)));
+    connect(slider, SIGNAL(valueChanged(int)), viewer->slider, SLOT(setValue(int)) );
     connect(imScene, SIGNAL(onMouseMove(QGraphicsSceneMouseEvent*)), viewer, SLOT(sceneMouseMoveEvent(QGraphicsSceneMouseEvent*)));
     linkedWidgets.append(viewer);
     emit onRescaled(scaleFactor);
     emit(onScrollBarPositionChanged(horizontalScrollBar()->value(), verticalScrollBar()->value()));
+    viewer->slider->setValue(slider->value());
+
 }
 
 void ImageViewerWidget::unlinkViewer(ImageViewerWidget* viewer)
 {
     disconnect(this, SIGNAL(onRescaled(double)), viewer, SLOT(scale(double)));
     disconnect(this, SIGNAL(onScrollBarPositionChanged(int,int)), viewer, SLOT(setScrollBarPosition(int,int)));
+    disconnect(slider, SIGNAL(valueChanged(int)), viewer->slider, SLOT(setValue(int)) );
+    disconnect(imScene, SIGNAL(onMouseMove(QGraphicsSceneMouseEvent*)), viewer, SLOT(sceneMouseMoveEvent(QGraphicsSceneMouseEvent*)));
     linkedWidgets.removeAll(viewer);
+}
+
+void ImageViewerWidget::setCursorMode(const int &mode)
+{
+    cursorMode = mode;
+    
+    if (mode==cursorDraw || mode==cursorDrawLine || mode==cursorDrawBox)
+	setCursor(Qt::CrossCursor);
+    else setCursor(Qt::ArrowCursor);
+    
+    if (mode==cursorDraw)
+    {
+      colorPicker->show();
+      if (!qOverlayImage)
+	createOverlayImage();
+    }
+    else
+      colorPicker->hide();
+}
+
+void ImageViewerWidget::setDrawPenColor(const QColor &color)
+{
+    drawPen.setColor(color);
 }
 
 void ImageViewerWidget::showContextMenu(const QPoint& pos)
@@ -709,12 +798,21 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
     QPoint globalPos = this->mapToGlobal(pos);
 
     QMenu contMenu;
+    QAction *act;
     
     QMenu selectMenu("Tools");
-    selectMenu.addAction("Hand");
-    selectMenu.addAction("Line");
-    selectMenu.addAction("Box");
+    act = selectMenu.addAction("Hand"); act->setCheckable(true); act->setChecked(cursorMode==cursorMove);
+    act = selectMenu.addAction("Draw"); act->setCheckable(true); act->setChecked(cursorMode==cursorDraw);
+    act = selectMenu.addAction("Line"); act->setCheckable(true); act->setChecked(cursorMode==cursorDrawLine);
+    act = selectMenu.addAction("Box"); act->setCheckable(true); act->setChecked(cursorMode==cursorDrawBox);
     contMenu.addMenu(&selectMenu);
+    
+    if (cursorMode==cursorDraw)
+    {
+	contMenu.addAction("Color...");
+	contMenu.addAction("Width...");
+	contMenu.addAction("Clear Overlay");
+    }
     
     QMenu linkMenu("Link");
     int wIndex = 0;
@@ -722,7 +820,7 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
     {
 	if(widget!=this && widget->isWindow() && widget->metaObject()->className()==QString("ImageViewerWidget"))
 	{
-	    QAction *act = linkMenu.addAction(widget->windowTitle());
+	    act = linkMenu.addAction(widget->windowTitle());
 	    act->setData(wIndex);
 	    if (linkedWidgets.contains(static_cast<ImageViewerWidget*>(widget)))
 	    {
@@ -740,21 +838,14 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
     {
 	if (selectedItem->parentWidget()==&selectMenu)
 	{
-	    if (selectedItem->text()=="Line")
-	    {
-	      setCursor(Qt::CrossCursor);
-	      cursorMode = cursorDrawLine;
-	    }
+	    if (selectedItem->text()=="Draw")
+	      setCursorMode(cursorDraw);
+	    else if (selectedItem->text()=="Line")
+	      setCursorMode(cursorDrawLine);
 	    else if (selectedItem->text()=="Box")
-	    {
-	      setCursor(Qt::CrossCursor);
-	      cursorMode = cursorDrawBox;
-	    }
+	      setCursorMode(cursorDrawBox);
 	    else
-	    {
-	      setCursor(Qt::ArrowCursor);
-	      cursorMode = cursorMove;
-	    }
+	      setCursorMode(cursorMove);
 	}
 	else if (selectedItem->parentWidget()==&linkMenu)
 	{
@@ -764,6 +855,29 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
 	      unlinkViewer(w);
 	    else
 	      linkViewer(w);
+	}
+	else if (selectedItem->text()=="Color...")
+	{
+// 	    for (int i=0;i<overlayColorTable.count();i++)
+// 	      colorPicker->insertColor(overlayColorTable[i], QString::number(i));
+	    colorPicker->popup();
+	    
+// 	    QColorDialog diag(this);
+// 	    diag.setOption(QColorDialog::ShowAlphaChannel, false); 
+// 	    QColor color = diag.getColor(drawPen.color(), this);
+// 	    if (color.isValid())
+// 		drawPen.setColor(color);
+	}
+	else if (selectedItem->text()=="Width...")
+	{
+	    bool ok;
+	    int lWidth = QInputDialog::getInt(this, tr(""), tr("Line width:"), drawPen.width(), 1, 10, 1, &ok);
+	    if (ok)
+		drawPen.setWidth(lWidth);
+	}	
+	else if (selectedItem->text()=="Clear Overlay")
+	{
+	    clearOverlay();
 	}
     }
     else

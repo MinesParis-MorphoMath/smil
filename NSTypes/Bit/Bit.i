@@ -27,21 +27,29 @@
 
 %include smilCommon.i
 
-SMIL_MODULE(smilBit)
 
-%ignore BitArray::operator[];
-%extend BitArray
+%{
+#include "NSTypes/Bit/include/DBitArray.h"
+%}
+
+namespace smil
 {
-	std::string  __str__() {
-	    std::stringstream os;
-	    os << *self;
-	    return os.str();
-	}
 
-	bool operator[] (UINT i)
-	{
-	}
+      %ignore BitArray::operator[];
+      %extend BitArray
+      {
+	      std::string  __str__() {
+		  std::stringstream os;
+		  os << *self;
+		  return os.str();
+	      }
 
+	      bool operator[] (UINT i)
+	      {
+	      }
+
+      }
+      %ignore BitArray::operator++;
+      %ignore threshold<Bit>;
 }
-%ignore BitArray::operator++;
 %include "DBitArray.h"

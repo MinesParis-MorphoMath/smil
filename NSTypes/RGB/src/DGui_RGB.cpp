@@ -27,43 +27,12 @@
  */
 
 
-#ifndef _IMAGE_BIN_H
-#define _IMAGE_BIN_H
 
-
-#include "DImage.hpp"
-#include "DImage.hxx"
-#include "DBinary.h"
+#include "DColor.h"
+#include "DRGB.h"
 
 namespace smil
 {
-  
-    template <>
-    struct ImDtTypes<bool>;
-
-
-    template <>
-    inline RES_T Image<bool>::restruct(void);
-
-    template <>
-    inline RES_T Image<bool>::allocate(void);
-
-    template <>
-    inline RES_T Image<bool>::deallocate(void);
-
-    template <>
-    inline bool Image<bool>::getPixel(UINT x, UINT y, UINT z);
-
-    template <>
-    inline bool Image<bool>::getPixel(UINT offset);
-
-    template <>
-    inline RES_T Image<bool>::setPixel(UINT x, UINT y, UINT z, bool value);
-
-    template <>
-    inline RES_T Image<bool>::setPixel(UINT x, UINT y, bool value);
-
 } // namespace smil
 
 
-#endif // _IMAGE_BIN_HXX

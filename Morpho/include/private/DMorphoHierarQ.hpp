@@ -35,7 +35,7 @@
 #include <deque>
 
 #include "Core/include/private/DTypes.hpp"
-#include <DStructuringElement.h>
+#include "Morpho/include/DStructuringElement.h"
 
 
 namespace smil
@@ -230,7 +230,7 @@ namespace smil
 	
 	inline void push(T value, TokenType dOffset)
 	{
-	    size_t level = TYPE_FLOOR + value;
+	    size_t level = TYPE_FLOOR + size_t(value);
 	    if (reverseOrder)
 	    {
 		if (level>higherLevel)
@@ -249,7 +249,7 @@ namespace smil
 	{
 	    if (reverseOrder)
 	    {
-		for (size_t i=higherLevel-1;i>=0;i--)
+		for (size_t i=higherLevel-1;i!=numeric_limits<size_t>::max();i--)
 		  if (tokenNbr[i]>0)
 		  {
 		      higherLevel = i;

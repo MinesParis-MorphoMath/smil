@@ -31,7 +31,7 @@
 #define _D_IMAGE_DRAW_HPP
 
 #include "DLineArith.hpp"
-#include "DImageDraw.h"
+#include "Base/include/DImageDraw.h"
 
 #ifdef USE_FREETYPE
     #include <ft2build.h>
@@ -50,23 +50,28 @@ namespace smil
     
 
     /**
-    * Draws a line between two points p1(p1x,p1y) and p2(p2x,p2y).
+    * Draws a line between two points P0(x0,y0) and P1(x1,y1).
     * This function is based on the Bresenham's line algorithm.
     * (works only on 2D images)
+    * \param x0,y0 Coordinates of the first point
+    * \param x1,y1 Coordinates of the second point
     */
     template <class T>
-    RES_T drawLine(Image<T> &im, int p1x, int p1y, int p2x, int p2y, T value=numeric_limits<T>::max())
+    RES_T drawLine(Image<T> &im, int x0, int y0, int x1, int y1, T value=ImDtTypes<T>::max())
     {
 	if (!im.isAllocated())
 	    return RES_ERR_BAD_ALLOCATION;
 
-	if (p1x<0 || p1x>=int(im.getWidth()) || p1y<0 || p1y>=int(im.getHeight()))
-	  return RES_ERR;
-	if (p2x<0 || p2x>=int(im.getWidth()) || p2y<0 || p2y>=int(im.getHeight()))
-	  return RES_ERR;
+	size_t imW = im.getWidth();
+	size_t imH = im.getHeight();
+	
+	vector<IntPoint> bPoints;
+	if ( x0<0 || x0>=int(imW) || y0<0 || y0>=int(imH) || x1<0 || x1>=int(imW) || y1<0 || y1>=int(imH) )
+	  bPoints = bresenhamPoints(x0, y0, x1, y1, imW, imH);
+	else
+	  bPoints = bresenhamPoints(x0, y0, x1, y1); // no image range check (faster)
 	
 	typename Image<T>::sliceType lines = im.getLines();
-	vector<IntPoint> bPoints = bresenhamPoints(p1x, p1y, p2x, p2y);
 	
 	for(vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++)
 	  lines[(*it).y][(*it).x] = value;
@@ -75,8 +80,13 @@ namespace smil
 	return RES_OK;
     }
     
+    /**
+     * \overload 
+     * \brief Draw line from vector
+     * \param coords Vector containing the coordiantes of the two end points (x0, y0, x1, y1)
+     */
     template <class T>
-    RES_T drawLine(Image<T> &imOut, vector<UINT> coords, T value=numeric_limits<T>::max())
+    RES_T drawLine(Image<T> &imOut, vector<UINT> coords, T value=ImDtTypes<T>::max())
     {
 	if (coords.size()!=4)
 	  return RES_ERR;
@@ -92,7 +102,7 @@ namespace smil
     * \param imOut Output image.
     */
     template <class T>
-    RES_T drawRectangle(Image<T> &imOut, size_t x0, size_t y0, size_t width, size_t height, T value=numeric_limits<T>::max(), bool fill=false, size_t zSlice=0)
+    RES_T drawRectangle(Image<T> &imOut, int x0, int y0, size_t width, size_t height, T value=ImDtTypes<T>::max(), bool fill=false, size_t zSlice=0)
     {
 	ASSERT_ALLOCATED(&imOut);
 
@@ -113,7 +123,7 @@ namespace smil
 	y0 = y0>=0 ? y0 : 0;
 	
 	typename Image<T>::volType slices = imOut.getSlices();
-	typename Image<T>::sliceType lines = slices[zSlice];
+	const typename Image<T>::sliceType lines = slices[zSlice];
 	fillLine<T> fillFunc;
 	
 	if (fill)
@@ -137,7 +147,7 @@ namespace smil
 
 
     template <class T>
-    RES_T drawRectangle(Image<T> &imOut, vector<UINT> coords, T value=numeric_limits<T>::max(), bool fill=false)
+    RES_T drawRectangle(Image<T> &imOut, vector<UINT> coords, T value=ImDtTypes<T>::max(), bool fill=false)
     {
 	if (coords.size()!=4)
 	  return RES_ERR;
@@ -145,7 +155,7 @@ namespace smil
     }
 
     template <class T>
-    RES_T drawRectangle(Image<T> &imOut, const map<UINT, UintVector> &coordsVect, T value=0, bool fill=false)
+    RES_T drawRectangles(Image<T> &imOut, const map<UINT, UintVector> &coordsVect, T value=0, bool fill=false)
     {
 	map<UINT, UintVector>::const_iterator it = coordsVect.begin();
 	if (it->second.size()!=4)
@@ -153,7 +163,7 @@ namespace smil
 	for (;it!=coordsVect.end();it++)
 	{
 	    vector<UINT> coords = it->second;
-	    T val = value==0 ? it->first : value;
+	    T val = value==0 ? T(it->first) : value;
 	    if (drawRectangle<T>(imOut, coords[0], coords[1], coords[2]-coords[0]+1, coords[3]-coords[1]+1, val, fill)!=RES_OK)
 	      return RES_ERR;
 	}
@@ -168,7 +178,7 @@ namespace smil
     * \param imOut Output image.
     */
     template <class T>
-    RES_T drawBox(Image<T> &imOut, size_t x0, size_t y0, size_t z0, size_t width, size_t height, size_t depth, T value=numeric_limits<T>::max(), bool fill=false)
+    RES_T drawBox(Image<T> &imOut, size_t x0, size_t y0, size_t z0, size_t width, size_t height, size_t depth, T value=ImDtTypes<T>::max(), bool fill=false)
     {
 	ASSERT_ALLOCATED(&imOut);
 	

@@ -34,6 +34,7 @@
 #include "DMorphoHierarQ.hpp"
 #include "Base/include/private/DImageDraw.hpp"
 #include "Base/include/private/DImageHistogram.hpp"
+#include "Morpho/include/private/DMorphoBase.hpp"
 
 
 namespace smil
@@ -362,10 +363,10 @@ namespace smil
 	// make a status image with all foreground pixels as CANDIDATE, otherwise as FINAL
 	
 	ASSERT((copy(imMark, imStatus) == RES_OK));
-	ASSERT((threshold<UINT8>(imStatus, imStatus.dataTypeMin+1, imStatus.dataTypeMax, (UINT8)HQ_CANDIDATE, (UINT8)HQ_FINAL, imStatus)==RES_OK));
+	ASSERT((threshold<UINT8>(imStatus, imStatus.getDataTypeMin()+1, imStatus.getDataTypeMax(), (UINT8)HQ_CANDIDATE, (UINT8)HQ_FINAL, imStatus)==RES_OK));
     
 	// Initialize the PQ
-	initBuildHierarchicalQueue(imOut, rpq, imOut.dataTypeMin);
+	initBuildHierarchicalQueue(imOut, rpq, imOut.getDataTypeMin());
 	processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMark, imStatus, rpq, se);
 	
 	return RES_OK;

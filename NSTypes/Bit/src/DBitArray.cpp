@@ -34,6 +34,42 @@
 using namespace smil;
 
 
+BitArray::BitArray()
+  : index(0), intArray(NULL), bitWidth(0), intWidth(0), height(0)
+{
+}
+
+BitArray::BitArray(const BitArray &rhs)
+{
+    this->setSize(rhs.bitWidth, rhs.height);
+    this->intArray = rhs.intArray;
+    this->index = rhs.index;
+}
+
+BitArray::BitArray(UINT _bitWidth, UINT _bitHeight)
+  : index(0), intArray(NULL)
+{
+    setSize(_bitWidth, _bitHeight);
+}
+BitArray::BitArray(INT_TYPE *arr, UINT _bitWidth, UINT _bitHeight)
+  : index(0), intArray(arr)
+{
+    setSize(_bitWidth, _bitHeight);
+}
+BitArray::BitArray(bool *arr, UINT _bitWidth, UINT _bitHeight)
+  : index(0), intArray(NULL)
+{
+    setSize(_bitWidth, _bitHeight);
+    createIntArray();
+    for (size_t i=0;i<_bitWidth;i++)
+      setValue(i, arr[i]);
+}
+
+BitArray::~BitArray()
+{
+    intArray = NULL;
+}
+
 void BitArray::setSize(UINT _bitWidth, UINT _bitHeight)
 {
     bitWidth = _bitWidth;
@@ -41,38 +77,19 @@ void BitArray::setSize(UINT _bitWidth, UINT _bitHeight)
     height = _bitHeight;
 }
 
-bool BitArray::getValue(UINT ind)
+
+BitArray BitArray::operator [] (UINT i)
 {
-    int Y = ind / bitWidth;
-    int X = (ind + Y*this->getBitPadX()) / INT_TYPE_SIZE;
-    int x = (ind-Y*bitWidth) % INT_TYPE_SIZE;
-    return (intArray[X] & (1UL << x))!=0;
+    BitArray ba;
+    ba.setSize(bitWidth, height);
+    ba.intArray = intArray;
+    ba.index = this->index + i;
+    return ba;
 }
 
-void BitArray::setValue(UINT ind, bool val)
+const bool BitArray::operator [] (UINT i) const
 {
-    int Y = ind / bitWidth;
-    int X = (ind + Y*this->getBitPadX()) / INT_TYPE_SIZE;
-    int x = (ind-Y*bitWidth) % INT_TYPE_SIZE;
-    if (val)
-        intArray[X] |= (1UL << x);
-    else intArray[X] &= ~(1UL << x);
-}
-
-Bit BitArray::operator [] (UINT i)
-{
-    Bit b;
-    b.bitArray = this;
-    b.index = i;
-    return b;
-}
-
-Bit BitArray::operator [] (UINT i) const
-{
-    Bit b;
-    b.bitArray = (BitArray*)this;
-    b.index = i;
-    return b;
+    return Bit(this->getValue(i));
 }
 
 
@@ -116,39 +133,4 @@ ostream& BitArray::printSelf(ostream &os)
     return os;
 }
 
-
-
-Bit::operator bool() const
-{
-    if (bitArray)
-	return bitArray->getValue(index);
-    else return value;
-}
-
-Bit& Bit::operator = (const bool v)
-{
-    if (bitArray)
-        bitArray->setValue(index, v);
-    else value = v;
-    return *this;
-}
-
-Bit& Bit::operator = (const Bit &src)
-{
-    if (bitArray)
-    {
-        if (src.bitArray)
-            bitArray->setValue(index, src.bitArray->getValue(index));
-        else
-            bitArray->setValue(index, src.value);
-    }
-    else
-    {
-        if (src.bitArray)
-            value = src.bitArray->getValue(index);
-        else
-            value = src.value;
-    }
-    return *this;
-}
 

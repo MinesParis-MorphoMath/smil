@@ -76,9 +76,6 @@ TEMPLATE_WRAP_CLASS(smil::ImageViewer, ImageViewer);
 #include "Qt/DQtGuiInstance.h"
 %}
 
-class ImageViewerWidget
-{};
-
 %include "Qt/DQtImageViewer.hpp"
 TEMPLATE_WRAP_CLASS(QtImageViewer, QtImageViewer);
 

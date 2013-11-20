@@ -43,6 +43,7 @@ SMIL_MODULE(smilBase)
 #include "DImageDraw.hpp"
 #include "DImageHistogram.hpp"
 #include "DImageTransform.hpp"
+#include "DBaseMeasureOperations.hpp"
 #include "DMeasures.hpp"
 #include "DImageMatrix.hpp"
 #include "DLabelMeasures.hpp"
@@ -65,9 +66,11 @@ PTR_ARG_OUT_APPLY(d)
 %include "DImageTransform.hpp"
 
 
-TEMPLATE_WRAP_FUNC_CROSS2(copy);
+TEMPLATE_WRAP_FUNC_2T_CROSS(copy);
 TEMPLATE_WRAP_FUNC(crop);
 TEMPLATE_WRAP_FUNC(clone);
+
+TEMPLATE_WRAP_FUNC_2T_FIX_FIRST(copyChannel,RGB);
 
 TEMPLATE_WRAP_FUNC(inv);
 TEMPLATE_WRAP_FUNC(fill);
@@ -98,14 +101,14 @@ TEMPLATE_WRAP_FUNC(bitXOr);
 TEMPLATE_WRAP_FUNC(test);
 TEMPLATE_WRAP_FUNC(compare);
 TEMPLATE_WRAP_FUNC(mask);
-TEMPLATE_WRAP_FUNC_CROSS2(applyLookup);
+TEMPLATE_WRAP_FUNC_2T_CROSS(applyLookup);
 
 
 
 %include "DImageHistogram.hpp"
 TEMPLATE_WRAP_FUNC(histogram);
 TEMPLATE_WRAP_FUNC(threshold);
-TEMPLATE_WRAP_FUNC_CROSS2(stretchHist);
+TEMPLATE_WRAP_FUNC_2T_CROSS(stretchHist);
 TEMPLATE_WRAP_FUNC(enhanceContrast);
 TEMPLATE_WRAP_FUNC(otsuThresholdValues);
 TEMPLATE_WRAP_FUNC(otsuThreshold);
@@ -125,9 +128,17 @@ TEMPLATE_WRAP_FUNC(scale);
 
 %include "DBaseMeasureOperations.hpp"
 
-%include std_map.i
+
+// Weird swig error...
+%{
+#ifndef SWIGPY_SLICE_ARG
+#define SWIGPY_SLICE_ARG(obj) ((PySliceObject*) (obj))
+#endif // SWIGPY_SLICE_ARG
+%}
+
 namespace std 
 {
+    %template(PixelSequenceVector) vector<PixelSequence>;
     %template(BlobMap) map<UINT,Blob>;
 }
 

@@ -44,6 +44,10 @@
 #include "DImageIO_PNG.hpp"
 #endif // USE_PNG
 
+#ifdef USE_JPEG
+#include "DImageIO_JPG.hpp"
+#endif // USE_JPEG
+
 namespace smil
 {
   
@@ -53,6 +57,36 @@ namespace smil
     /*@{*/
     
 
+//     inline BaseImage *createFromFile(
+     
+    template <class T>
+    ImageFileHandler<T> *getHandlerForFile(const char* filename)
+    {
+	string fileExt = getFileExtension(filename);
+	
+	if (fileExt=="BMP")
+	    return new BMPImageFileHandler<T>();
+
+    #ifdef USE_PNG
+	else if (fileExt=="PNG")
+	    return new PNGImageFileHandler<T>();
+    #endif // USE_PNG
+
+    #ifdef USE_JPEG
+	else if (fileExt=="JPG")
+	    return new JPGImageFileHandler<T>();
+    #endif // USE_JPEG
+
+// 	else if (fileExt=="VTK")
+// 	    res = readVTK(filename, image);
+	
+	else
+	{
+	    cout << "No reader/writer available for " << fileExt << " files." << endl;
+	    return NULL;
+	}
+    }
+    
     /**
     * Read image file
     */
@@ -61,14 +95,13 @@ namespace smil
     {
 	string fileExt = getFileExtension(filename);
 	string filePrefix = (string(filename).substr(0, 7));
-	string tmpFileName;
 
 	RES_T res;
 
 	if (filePrefix=="http://")
 	{
     #ifdef USE_CURL
-	    tmpFileName = "_smilTmpIO." + fileExt;
+	    string tmpFileName = "_smilTmpIO." + fileExt;
 	    if (getHttpFile(filename, tmpFileName.c_str())!=RES_OK)
 	    {
 		ERR_MSG(string("Error downloading file ") + filename);
@@ -78,30 +111,17 @@ namespace smil
 	    remove(tmpFileName.c_str());
 
     #else // USE_CURL
-	    ERR_MSG("Error: to use this functionality you must compile smil with the Curl option");
+	    ERR_MSG("Error: to use this functionality you must compile SMIL with the Curl option");
 	    res = RES_ERR;
     #endif // USE_CURL
 	    return res;
 	}
 
-	if (fileExt=="BMP")
-	    res = readBMP(filename, image);
-
-    #ifdef USE_PNG
-	else if (fileExt=="PNG")
-	    res = readPNG(filename, image);
-    #endif // USE_PNG
-
-	else if (fileExt=="VTK")
-	    res = readVTK(filename, image);
-
-	else
-	{
-	    cout << "File type not supported" << endl;
-	    res = RES_ERR;
-	}
-
-	return res;
+	auto_ptr< ImageFileHandler<T> > fHandler(getHandlerForFile<T>(filename));
+	
+	if (fHandler.get())
+	  return fHandler->read(filename, image);
+	else return RES_ERR;
     }
 
     /**
@@ -148,29 +168,75 @@ namespace smil
     RES_T write(Image<T> &image, const char *filename)
     {
 	string fileExt = getFileExtension(filename);
-	RES_T res;
+	
+	auto_ptr< ImageFileHandler<T> > fHandler(getHandlerForFile<T>(filename));
+	
+	if (fHandler.get())
+	  return fHandler->write(image, filename);
+	else return RES_ERR;
+	
+    }
+    
+    inline RES_T getFileInfo(const char *filename, ImageFileInfo &fInfo)
+    {
+	  auto_ptr< ImageFileHandler<void> > fHandler(getHandlerForFile<void>(filename));
+	  
+	  if (fHandler.get())
+	    return fHandler->getFileInfo(filename, fInfo);
+	  else return RES_ERR;
+    }
+    
+    inline BaseImage *createFromFile(const char *filename)
+    {
+	  string fileExt = getFileExtension(filename);
+	  string filePrefix = (string(filename).substr(0, 7));
+	  
+	  if (filePrefix=="http://")
+	  {
+	      BaseImage *img = NULL;
+      #ifdef USE_CURL
+	      string tmpFileName = "_smilTmpIO." + fileExt;
+	      if (getHttpFile(filename, tmpFileName.c_str())!=RES_OK)
+	      {
+		  ERR_MSG(string("Error downloading file ") + filename);
+		  return img;
+	      }
+	      img = createFromFile(tmpFileName.c_str());
+	      remove(tmpFileName.c_str());
 
-	if (fileExt=="BMP")
-	    res = writeBMP(image, filename);
-
-    #ifdef USE_PNG
-	else if (fileExt=="PNG")
-	    res = writePNG(image, filename);
-    #endif // USE_PNG
-
-	else if (fileExt=="RAW")
-	    res = writeRAW(image, filename);
-
-	else if (fileExt=="VTK")
-	    res = writeVTK(image, filename);
-
-	else
-	{
-	    cout << "File type not supported" << endl;
-	    res = RES_ERR;
-	}
-
-	return res;
+      #else // USE_CURL
+	      ERR_MSG("Error: to use this functionality you must compile SMIL with the Curl option");
+      #endif // USE_CURL
+	      return img;
+	  }
+	  
+	  ImageFileInfo fInfo;
+	  ASSERT(getFileInfo(filename, fInfo)==RES_OK, NULL);
+	  
+	  ImageFileHandler<void> *fHandler  = getHandlerForFile<void>(filename);
+	  fHandler->read(filename);
+	  
+	  if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_GRAY)
+	  {
+	      Image<UINT8> *img = new Image<UINT8>();
+	      auto_ptr< ImageFileHandler<UINT8> > fHandler(getHandlerForFile<UINT8>(filename));
+	      if (fHandler->read(filename, *img)==RES_OK)
+		return img;
+	  }
+	  else if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_RGB)
+	  {
+	      Image<RGB> *img = new Image<RGB>();
+	      auto_ptr< ImageFileHandler<RGB> > fHandler(getHandlerForFile<RGB>(filename));
+	      if (fHandler->read(filename, *img)==RES_OK)
+		return img;
+	  }
+	  else
+	  {
+	      ERR_MSG("File type not supported");
+	  }
+	  
+	return NULL;
+	  
     }
 
 /*@}*/

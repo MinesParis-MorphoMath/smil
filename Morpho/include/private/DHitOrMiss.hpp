@@ -30,8 +30,8 @@
 #ifndef _D_THINNING_HPP
 #define _D_THINNING_HPP
 
-#include "DCompositeSE.h"
-#include "DMorphoBase.hpp"
+#include "Morpho/include/DCompositeSE.h"
+#include "Morpho/include/private/DMorphoBase.hpp"
 
 
 namespace smil

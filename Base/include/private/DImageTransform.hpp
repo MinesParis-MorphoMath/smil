@@ -280,9 +280,9 @@ namespace smil
 	pixelType A, B, C, D, maxVal = numeric_limits<T>::max() ;
 	size_t x, y, index;
 	
-	float x_ratio = ((float)(w-1))/sx;
-	float y_ratio = ((float)(h-1))/sy;
-	float x_diff, y_diff;
+	double x_ratio = ((double)(w-1))/sx;
+	double y_ratio = ((double)(h-1))/sy;
+	double x_diff, y_diff;
 	int offset = 0 ;
 	
 	for (size_t i=0;i<sy;i++) 
@@ -301,7 +301,7 @@ namespace smil
 		D = pixIn[index+w+1] & maxVal ;
 		
 		// Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
-		pixOut[offset++] = A*(1-x_diff)*(1-y_diff) +  B*(x_diff)*(1-y_diff) + C*(y_diff)*(1-x_diff)   +  D*(x_diff*y_diff);
+		pixOut[offset++] = A*(1.-x_diff)*(1.-y_diff) +  B*(x_diff)*(1.-y_diff) + C*(y_diff)*(1.-x_diff)   +  D*(x_diff*y_diff);
 	    }
 	}
 	

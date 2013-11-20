@@ -88,6 +88,11 @@ namespace smil
 	BASE_QT_VIEWER::setImageSize(im.getWidth(), im.getHeight(), im.getDepth());
 	if (im.getName()!=string(""))
 	  setName(this->image->getName());
+	if (qOverlayImage)
+	{
+	  delete qOverlayImage;
+	  qOverlayImage = NULL;
+	}
     }
 
     template <class T>
@@ -214,19 +219,17 @@ namespace smil
     template <class T>
     void QtImageViewer<T>::drawOverlay(Image<T> &im)
     {
+	if (!qOverlayImage)
+	  createOverlayImage();
+	
 	size_t w = im.getWidth();
 	size_t h = im.getHeight();
 	
 	typename Image<T>::sliceType lines = im.getSlices()[slider->value()];
 	typename Image<T>::lineType pixels;
 	
-	if (qOverlayImage)
-	  delete qOverlayImage;
+	qOverlayImage->fill(0);
 	
-	qOverlayImage = new QImage(w, h, QImage::Format_ARGB32_Premultiplied);
-	qOverlayImage->setColorTable(overlayColorTable);
-	qOverlayImage->fill(Qt::transparent);
-
 	QRgb *destLine;
 	  
 	for (size_t j=0;j<im.getHeight();j++)
@@ -245,6 +248,42 @@ namespace smil
     }
 
     template <class T>
+    RES_T QtImageViewer<T>::getOverlay(Image<T> &img)
+    {
+	if (!qOverlayImage)
+	  createOverlayImage();
+	
+	img.setSize(qOverlayImage->width(), qOverlayImage->height());
+	
+	QRgb *srcLine;
+	int value;
+	typename Image<T>::sliceType lines = img.getLines();
+	typename Image<T>::lineType pixels;
+	  
+	for (size_t j=0;j<qOverlayImage->height();j++)
+	{
+	    srcLine = (QRgb*)(this->qOverlayImage->scanLine(j));
+	    pixels = *lines++;
+	    for (size_t i=0;i<qOverlayImage->width();i++)
+	    {
+		value = overlayColorTable.indexOf(srcLine[i]);
+		pixels[i] = value>=0 ? T(value) : T(0);
+	    }
+	}
+	return RES_OK;
+    }
+    
+    template <class T>
+    void QtImageViewer<T>::overlayDataChanged(bool triggerEvents)
+    {
+	BASE_QT_VIEWER::overlayDataChanged();
+	if (!triggerEvents)
+	  return;
+	Event event(this);
+	ImageViewer<T>::onOverlayModified.trigger(&event);
+    }
+
+    template <class T>
     void QtImageViewer<T>::setLookup(const map<UINT8,RGB> &lut)
     {
 	baseColorTable.clear();
@@ -253,7 +292,7 @@ namespace smil
 	{
 	  it = lut.find(UINT8(i));
 	  if (it!=lut.end())
-	    baseColorTable.append(qRgb((*it).second.r, (*it).second.g, (*it).second.b));
+	    baseColorTable.append(qRgb((*it).second[0], (*it).second[1], (*it).second[2]));
 	  else
 	    baseColorTable.append(qRgb(0, 0, 0));
 	}
@@ -283,6 +322,12 @@ namespace smil
 	if (this->image->getDepth()>1)
 	  txt = txt + ", " + QString::number(z);
 	txt = txt + ") " + QString::number(pixVal);
+	if (qOverlayImage)
+	{
+	    int index = overlayColorTable.indexOf(qOverlayImage->pixel(x,y));
+	    if (index>=0)
+	      txt = txt + "\n+ " + QString::number(index);
+	}
 	valueLabel->setText(txt);
 	valueLabel->adjustSize();
     }
@@ -311,7 +356,7 @@ namespace smil
 	
 	QColor lightCol = QColor::fromRgb(255,255,255);
 	QColor darkCol = QColor::fromRgb(0,0,0);
-	T lightThresh = double(ImDtTypes<T>::max()-ImDtTypes<T>::min()) * 0.55;
+	T lightThresh = T(double(ImDtTypes<T>::max()-ImDtTypes<T>::min()) * 0.55);
 
 	for (int j=0;j<gridSize;j++,yi++)
 	{
@@ -322,14 +367,14 @@ namespace smil
 	    for (int i=0,xi=x-gridSize/2; i<gridSize; i++,xi++)
 	    {
 		textItem = *txtIt++;
-		if (pLine && xi>=0 && xi<imW)
+		if (pLine!=NULL && xi>=0 && xi<imW)
 		{
 		    pVal = pLine[xi];
 		    if (pVal<lightThresh)
 			textItem->setDefaultTextColor(lightCol);
 		    else
 			textItem->setDefaultTextColor(darkCol);
-		    textItem->setPlainText(QString::number(pVal));
+		    textItem->setPlainText(ImDtTypes<T>::toString(pVal).c_str());
 		}
 		else textItem->setPlainText("");
 

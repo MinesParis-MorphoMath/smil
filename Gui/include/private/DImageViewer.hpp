@@ -30,7 +30,7 @@
 #ifndef _D_IMAGE_VIEWER_HPP
 #define _D_IMAGE_VIEWER_HPP
 
-#include "Core/include/DTypes.h"
+#include "Core/include/DColor.h"
 #include "Gui/include/DBaseImageViewer.h"
 
 namespace smil
@@ -57,7 +57,8 @@ namespace smil
 	ImageViewer()
 	  : BaseImageViewer("ImageViewer"),
 	    image(NULL), 
-	    labelImage(false)
+	    labelImage(false),
+	    onOverlayModified(Signal(this))
 	{
 	    imSize[0] = imSize[1] = imSize[2] = 0;
 	}
@@ -65,7 +66,8 @@ namespace smil
 	ImageViewer(Image<T> &im)
 	  : BaseImageViewer("ImageViewer"),
 	    image(NULL),
-	    labelImage(false)
+	    labelImage(false),
+	    onOverlayModified(Signal(this))
 	{
 	    imSize[0] = imSize[1] = imSize[2] = 0;
 	    setImage(im);
@@ -117,6 +119,9 @@ namespace smil
 	}
 	virtual void drawOverlay(Image<T> &) {}
 	virtual void clearOverlay() {}
+	virtual RES_T getOverlay(Image<T> &img) {}
+	
+	Signal onOverlayModified;
 	
 	//! Set the color table as a 8bits RGB map (keys between 0 and 255)
 	virtual void setLookup(const map<UINT8,smil::RGB> &lut) {}

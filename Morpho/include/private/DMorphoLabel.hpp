@@ -258,7 +258,7 @@ namespace smil
 	// Convert areas map into a lookup
 	map<T2, T2> lookup;
 	for (typename map<UINT,double>::iterator it = areas.begin();it!=areas.end();it++)
-	  lookup[(*it).first] = T2((*it).second);
+	  lookup[T2((*it).first)] = T2((*it).second);
 	
 	ASSERT((fill(imOut, T2(0))==RES_OK));
 	ASSERT((applyLookup<T2>(imLabel, lookup, imOut)==RES_OK));

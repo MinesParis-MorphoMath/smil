@@ -131,7 +131,7 @@ public:
     
     inline void push(T value, TokenType dOffset)
     {
-	size_t level = TYPE_FLOOR + value;
+	size_t level = TYPE_FLOOR + size_t(value);
 	if (level>higherLevel)
 	  higherLevel = level;
 	stacks[level][tokenNbr[level]++] = dOffset;
@@ -147,7 +147,7 @@ public:
 	else if (size>1) // Find new higher level (non empty stack)
 	{
 	    tokenNbr[higherLevel] = 0;
-	    for (size_t i=higherLevel-1;i>=0;i--)
+	    for (size_t i=higherLevel-1;i!=numeric_limits<size_t>::max();i--)
 	      if (tokenNbr[i]>0)
 	      {
 		  higherLevel = i;
@@ -248,7 +248,7 @@ private:
 	memset(labels, 0, GRAY_LEVEL_NBR*sizeof(size_t));
 	
 	img_eti[minOff] = curLabel;
-	labels[minValue] = curLabel;
+	labels[UINT(minValue)] = curLabel;
 
 	pq.initialize(img);
 	pq.push(minValue, minOff);
@@ -262,14 +262,14 @@ private:
 	return minValue;
     }
     
-    int nextLowerLabel(T valeur)
+    int nextLowerLabel(const T &value)
     {
 	    if ((curLabel & COLUMN_MOD) == 0)
 	      allocatePage(curLabel >> COLUMN_SHIFT);
 	    
-	    getLevel(curLabel) = valeur;
+	    getLevel(curLabel) = value;
 	    int i;
-	    for(i=valeur-1;labels[i]==0;i--);
+	    for(i=int(value)-1;labels[i]==0;i--);
 
 	    getChild(curLabel) = getChild(labels[i]);
 	    getChild(labels[i]) = curLabel;
@@ -285,8 +285,8 @@ private:
 	      allocatePage(curLabel >> COLUMN_SHIFT);
 
 	    getLevel(curLabel) = valeur;
-	    getBrother(curLabel) = getChild(labels[parent_valeur]);
-	    getChild(labels[parent_valeur]) = curLabel;
+	    getBrother(curLabel) = getChild(labels[UINT(parent_valeur)]);
+	    getChild(labels[UINT(parent_valeur)]) = curLabel;
 	    getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
 	    return curLabel++;
     }
@@ -298,15 +298,15 @@ private:
 	if (imgPix[p_suiv]>imgPix[p]) 
 	{
 	      int j;
-	      for(j=imgPix[p]+1;j<imgPix[p_suiv];j++) 
+	      for(j=imgPix[p]+1;j<int(imgPix[p_suiv]);j++) 
 		labels[j]=0;
 	      indice = img_eti[p_suiv] = labels[j] = nextHigherLabel(imgPix[p], imgPix[p_suiv]);
 	  
 	} 
-	else if (labels[imgPix[p_suiv]]==0) 
-	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]] = nextLowerLabel(imgPix[p_suiv]);
+	else if (labels[UINT(imgPix[p_suiv])]==0) 
+	    indice = img_eti[p_suiv] = labels[UINT(imgPix[p_suiv])] = nextLowerLabel(imgPix[p_suiv]);
 	else 
-	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]];
+	    indice = img_eti[p_suiv] = labels[UINT(imgPix[p_suiv])];
 	
 	getCriterion(indice).ymax = MAX(getCriterion(indice).ymax, ORDONNEE(p_suiv,imWidth));
 	getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, ORDONNEE(p_suiv,imWidth));
@@ -420,7 +420,7 @@ public:
 	    T minValue = initialize(img, img_eti);
 
 	    flood(img, img_eti, minValue);
-	    return labels[minValue];
+	    return labels[UINT(minValue)];
     }
     
     Criterion updateCriteria(int node) 

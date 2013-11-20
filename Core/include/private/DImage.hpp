@@ -60,7 +60,9 @@ namespace smil
 
 	//! Default constructor
 	Image();
+	//! Contruction with a given size (automatic allocation)
 	Image(size_t w, size_t h, size_t d = 1);
+	//! Contruction from a file
 	Image(const char *fileName);
       
 	virtual ~Image();
@@ -82,20 +84,22 @@ namespace smil
 	//! \return The type of the image data as a string ("UINT8", "UINT16", ...)
 	virtual const char* getTypeAsString()
 	{
-	    T val;
-	    return getDataTypeAsString(val);
+	    return getDataTypeAsString<T>();
 	}
 	typedef typename ImDtTypes<T>::pixelType pixelType;
 	typedef typename ImDtTypes<T>::lineType lineType;
 	typedef typename ImDtTypes<T>::sliceType sliceType;
 	typedef typename ImDtTypes<T>::volType volType;
 	
+	//! Get the pixels as a 1D array
 	lineType getPixels() const {
 	    return pixels;
 	}
+	//! Get an array containing the start offset of each line
 	sliceType getLines() const {
 	    return lines;
 	}
+	//! Get an array containing the start offset of each slice
 	volType getSlices() const {
 	    return slices;
 	}
@@ -103,23 +107,20 @@ namespace smil
 	//! Return the value of the pixel at pos x,y(,z)
 	inline T getPixel(size_t x, size_t y, size_t z=0) const
 	{
-	    if (x>=width || y>=height || z>=depth)
-		return T(NULL);
+	    ASSERT((x<width && y<height && z<depth), "Coords out of image range", T(0));
 	    return pixels[z*width*height+y*width+x];
 	}
 	//! Return the value of the pixel at a given offset
 	inline T getPixel(size_t offset) const
 	{
-	    if (offset >= pixelCount)
-		return RES_ERR;
+	    ASSERT((offset < pixelCount), "Offset out of image range", T(0));
 	    return pixels[offset];
 	}
 
 	//! Set the value of the pixel at pos x,y,z (for 3D image)
 	inline RES_T setPixel(size_t x, size_t y, size_t z, const T &value)
 	{
-	    if (x>=width || y>=height || z>=depth)
-		return RES_ERR;
+	    ASSERT((x<width && y<height && z<depth), "Coords out of image range", RES_ERR);
 	    pixels[z*width*height+y*width+x] = value;
 	    modified();
 	    return RES_OK;
@@ -134,20 +135,25 @@ namespace smil
 	//! Set the value of the pixel at a given offset
 	inline RES_T setPixel(size_t offset, const T &value)
 	{
-	    if (offset >= pixelCount)
-		return RES_ERR;
+	    ASSERT((offset < pixelCount), "Offset out of image range", RES_ERR);
 	    pixels[offset] = value;
 	    modified();
 	    return RES_OK;
 	}
 	
+	//! Copy pixel values to a given array
 	void toArray(T outArray[]);
+	//! Copy pixel values from a given array
 	void fromArray(T inArray[]);
 
+	//! Copy pixel values to a given char array
 	void toCharArray(signed char outArray[]);
+	//! Copy pixel values from a given char array
 	void fromCharArray(signed char inArray[]);
 
+	//! Copy pixel values to a given int array
 	void toIntArray(int outArray[]);
+	//! Copy pixel values from a given int array
 	void fromIntArray(int inArray[]);
 
 	//! Get the image viewer (create one if needed)
@@ -158,32 +164,46 @@ namespace smil
 	virtual bool isVisible();
 	
 	virtual void init();
+	//! Clone from a given image (set same size and copy content)
 	virtual void clone(const Image<T> &rhs);
 	template <class T2>
 	void clone(const Image<T2> &rhs);
+	//! Create a clone of the image (with same size and content )
 	virtual Image<T> clone(bool cloneData=true)
 	{
 	    Image<T> im(*this, cloneData);
 	    return im;
 	}
+	//! Set the size of image
 	virtual RES_T setSize(size_t w, size_t h, size_t d = 1, bool doAllocate = true);
+	//! Set the size of image
 	virtual RES_T setSize(size_t s[3], bool doAllocate = true)
 	{
 	    return setSize(s[0], s[1], s[2], doAllocate);
 	}
+	//! Set the size of image
 	virtual RES_T setSize(const BaseImage &rhs, bool doAllocate = true) 
 	{ 
 	    return setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), doAllocate); 
 	}
+	//! Set the size of image
 	virtual RES_T setSize(const vector<UINT> s, bool doAllocate = true) 
 	{ 
 	    if (s.size()==3)
 	      return setSize(s[0], s[1], s[2], doAllocate); 
-	else return setSize(s[0], s[1], 1, doAllocate);
+	    else return setSize(s[0], s[1], 1, doAllocate);
 	}
+	//! Allocate image
 	virtual RES_T allocate();
+	//! Deallocate image
 	virtual RES_T deallocate();
 
+	/**
+	 * Print a description of the image
+	 * \param displayPixVals If true, display pixel values
+	 * \param hexaGrid If true (and displayPixVals is true), display pixel values as an hexahedral grid
+	 * \param indent Optional prefix
+	 */	
 	void printSelf(ostream &os, bool displayPixVals, bool hexaGrid=false, string indent="") const;
 	virtual void printSelf(ostream &os=std::cout, string indent="") const
 	{
@@ -193,6 +213,7 @@ namespace smil
 	{
 	    printSelf(std::cout, displayPixVals, hexaGrid);
 	}
+	//! Get the description of the image as a string
 	virtual const char *getInfoString(string indent = "") const 
 	{
 	    stringstream s;
@@ -200,6 +221,7 @@ namespace smil
 	    return s.str().c_str();
 	}
 
+	//! Get pixels as a void pointer
 	virtual void* getVoidPointer(void) 
 	{
 	    return pixels;
@@ -217,10 +239,11 @@ namespace smil
 	PyObject * getNumArray(bool c_contigous=false);
     #endif // defined SWIGPYTHON && defined USE_NUMPY
 	
+	//! Trigger modified event (allows to force display update)
 	virtual void modified();
 
-	T dataTypeMin;
-	T dataTypeMax;
+	static T getDataTypeMin() { return ImDtTypes<T>::min(); }
+	static T getDataTypeMax() { return ImDtTypes<T>::max(); }
 
 	inline T &operator [] (size_t i) 
 	{ 
@@ -299,6 +322,9 @@ namespace smil
 	Image<T>& operator &= (const Image<T> &rhs);
 	Image<T>& operator &= (const T &value);
 	
+	//! Boolean operator
+	//! \return \b true, if if every pixel has the max type value ( vol(im)==ImDtTypes<T>::max()*pixelCount )
+	//! \return \b false, otherwise
 	operator bool();
 	
 	//! Import image data from an array
@@ -328,10 +354,14 @@ namespace smil
     //     ImageViewerWidget *viewer;
 	
     public:
+	//! Set the name of the image
 	virtual void setName(const char *_name);
+	//! Show the default viewer associated with the image
 	virtual void show(const char *_name=NULL, bool labelImage=false);
+	//! Show the default viewer associated with the image using a color lookup table
 	virtual void showLabel(const char *_name=NULL);
 	virtual void showNormal(const char *_name=NULL);
+	//! Hide image
 	virtual void hide();
 
     };
@@ -341,6 +371,13 @@ namespace smil
     Image<T> *createImage(const T)
     {
 	return new Image<T>();
+    }
+
+    template <class T>
+    Image<T> *castBaseImage(BaseImage &img, const T &)
+    {
+	ASSERT(strcmp(getDataTypeAsString<T>(), img.getTypeAsString())==0, "Bad type for cast", NULL);
+	return static_cast< Image<T>* >(&img);
     }
 
 
