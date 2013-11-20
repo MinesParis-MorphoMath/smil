@@ -55,7 +55,7 @@ namespace smil
       friend class BaseSlot;
     public:
       Signal(BaseObject *_sender=NULL)
-      : sender(_sender)
+      : sender(_sender), enabled(true)
       {}
       virtual ~Signal() 
       {
@@ -66,6 +66,7 @@ namespace smil
       virtual void disconnectAll();
       virtual void trigger(Event *e=NULL);
       const BaseObject *sender;
+      bool enabled;
     protected:
       vector<BaseSlot*> _slots;
     };

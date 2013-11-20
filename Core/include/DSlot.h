@@ -50,12 +50,17 @@ namespace smil
       {
 	unregisterAll();
       }
+      virtual void run(Event *e=NULL)
+      {
+      }
     protected:
-      virtual void _run(Event *e=NULL) = 0;
+#ifndef SWIG      
+      virtual void _run(Event *e=NULL) { run(e); }
       virtual void registerSignal(Signal *signal);
       virtual void unregisterSignal(Signal *signal, bool _disconnect=true);
       virtual void unregisterAll();
       vector<Signal*> _signals;
+#endif // SWIG      
     };
 
     template <class eventT>
@@ -64,19 +69,19 @@ namespace smil
     public:
       Slot() {}
       virtual ~Slot() {}
-      virtual void run(eventT * = NULL)
+      virtual void run(eventT *e)
       {
       }
-      void operator() (eventT *e=NULL)
+      void operator() (eventT *e)
       {
       }
+#ifndef SWIG      
     protected:
-      virtual void _run(Event *e=NULL)
+      virtual void _run(Event *e)
       {
-	if (e)
-	  run(static_cast<eventT*>(e));
-	else run();
+	run(static_cast<eventT*>(e));
       }
+#endif // SWIG      
     };
 
     template <class T, class eventT=Event>

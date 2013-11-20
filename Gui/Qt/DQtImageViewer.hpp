@@ -99,6 +99,7 @@ namespace smil
 	}
 	virtual void drawOverlay(Image<T> &im);
 	virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
+	virtual RES_T getOverlay(Image<T> &img);
 
 	//! Set the color table as a 8bits RGB map (keys between 0 and 255)
 	virtual void setLookup(const map<UINT8,RGB> &lut);
@@ -120,6 +121,7 @@ namespace smil
 	virtual void displayPixelValue(size_t x, size_t y, size_t z);
 	virtual void displayMagnifyView(size_t x, size_t y, size_t z);
 	virtual void drawImage();
+	virtual void overlayDataChanged(bool triggerEvents=true);
     //     ImageViewerWidget *qtViewer;
     //     ImageViewer *qtViewer;
 	virtual void dropEvent(QDropEvent *de);

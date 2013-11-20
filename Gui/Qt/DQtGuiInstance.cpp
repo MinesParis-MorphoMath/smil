@@ -62,7 +62,6 @@ namespace smil
     QtAppGui::QtAppGui()
       : QApplication(_argc, NULL)
     {
-// 	qtApp = new QApplication(_argc, NULL);
     }
 
     QtAppGui::~QtAppGui()
@@ -71,8 +70,6 @@ namespace smil
 
     void QtAppGui::_execLoop() 
     { 
-// 	if (qApp)
-// 	  qApp->exec();
 	qtLoop();
     }
 

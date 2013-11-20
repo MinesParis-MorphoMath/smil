@@ -72,6 +72,9 @@ namespace smil
 
     void Signal::trigger(Event *e)
     {
+      if (!enabled)
+	return;
+      
       if (e && sender)
 	e->sender = sender;
       
