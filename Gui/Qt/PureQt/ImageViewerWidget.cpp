@@ -153,6 +153,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     cursorMode = cursorDraw;    
     line = new QGraphicsLineItem();
     line->setPen(QPen(Qt::blue, 1));
+    drawing = false;
     
     drawPen.setColor(overlayColorTable[1]);
     drawPen.setWidth(2);
@@ -179,6 +180,15 @@ ImageViewerWidget::~ImageViewerWidget()
     delete zoomOutAct;
     
     delete colorPicker;
+}
+
+void ImageViewerWidget::createOverlayImage()
+{
+    if (qOverlayImage)
+      delete qOverlayImage;
+    qOverlayImage = new QImage(qImage->width(), qImage->height(), QImage::Format_ARGB32_Premultiplied);
+    qOverlayImage->setColorTable(overlayColorTable);
+    qOverlayImage->fill(Qt::transparent);
 }
 
 void ImageViewerWidget::updateIcon()
@@ -285,6 +295,11 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
     {
 	int scaleFact = log(double(QWidget::height())/qImage->height())/log(0.8);
 	scale(pow(0.8, scaleFact), true);
+    }
+    if (qOverlayImage)
+    {
+	delete qOverlayImage;
+	qOverlayImage = NULL;
     }
 }
 
@@ -398,7 +413,7 @@ void ImageViewerWidget::dataChanged()
     emit onDataChanged();
 }
 
-void ImageViewerWidget::overlayDataChanged()
+void ImageViewerWidget::overlayDataChanged(bool triggerEvents)
 {
     updatePixmaps(qOverlayImage, &overlayPixmaps);
 }
@@ -563,16 +578,14 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 		displayHint(hint, 3000);
 	    }
 	} 
-	else if (event->buttons()==Qt::LeftButton && cursorMode==cursorDraw)
+	else if (cursorMode==cursorDraw && drawing)
 	{
 	    QPainter painter(qOverlayImage);
+	    if (drawPen.color()==Qt::black)
+		painter.setCompositionMode(QPainter::CompositionMode_Clear);
 	    painter.setPen(drawPen);
-	    if (drawing)
-	      painter.drawLine(event->scenePos(), QPoint(lastPixX, lastPixY));
-	    else
- 	      painter.drawPoint(event->scenePos());
-	    overlayDataChanged();
-	    drawing = true;
+	    painter.drawLine(event->scenePos(), QPoint(lastPixX, lastPixY));
+	    overlayDataChanged(false);
 	}
 	lastPixX = x;
 	lastPixY = y;
@@ -587,7 +600,6 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
 	magnView->hide();
 	lastPixX = -1;
 	lastPixY = -1;
-	drawing = false;
     }
     
 }
@@ -612,21 +624,27 @@ void ImageViewerWidget::sceneMousePressEvent ( QGraphicsSceneMouseEvent * event 
 	}
 	else if (event->buttons()==Qt::LeftButton && cursorMode==cursorDraw)
 	{
-	    QPainter painter(qOverlayImage);
-	    painter.setPen(drawPen);
-	    painter.drawPoint(event->scenePos());
-	    overlayDataChanged();
 	    drawing = true;
 	}
     }
-    drawing = false;
+    lastPixX = x;
+    lastPixY = y;
 }
 
 void ImageViewerWidget::sceneMouseReleaseEvent ( QGraphicsSceneMouseEvent * event )
 {
     if (cursorMode==cursorDrawLine && imScene->items().contains(line))
       displayProfile(true);
-    drawing = false;
+    else if (cursorMode==cursorDraw && drawing)
+    {
+	QPainter painter(qOverlayImage);
+	if (drawPen.color()==Qt::black)
+	    painter.setCompositionMode(QPainter::CompositionMode_Clear);
+	painter.setPen(drawPen);
+	painter.drawLine(event->scenePos(), QPoint(lastPixX, lastPixY));
+	overlayDataChanged();
+	drawing = false;
+    }
 }
 
 void ImageViewerWidget::scrollContentsBy(int dx, int dy)
@@ -761,7 +779,11 @@ void ImageViewerWidget::setCursorMode(const int &mode)
     else setCursor(Qt::ArrowCursor);
     
     if (mode==cursorDraw)
+    {
       colorPicker->show();
+      if (!qOverlayImage)
+	createOverlayImage();
+    }
     else
       colorPicker->hide();
 }

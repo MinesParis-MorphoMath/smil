@@ -89,10 +89,10 @@ namespace smil
 	if (im.getName()!=string(""))
 	  setName(this->image->getName());
 	if (qOverlayImage)
+	{
 	  delete qOverlayImage;
-	qOverlayImage = new QImage(im.getWidth(), im.getHeight(), QImage::Format_ARGB32_Premultiplied);
-	qOverlayImage->setColorTable(overlayColorTable);
-	qOverlayImage->fill(Qt::transparent);
+	  qOverlayImage = NULL;
+	}
     }
 
     template <class T>
@@ -219,6 +219,9 @@ namespace smil
     template <class T>
     void QtImageViewer<T>::drawOverlay(Image<T> &im)
     {
+	if (!qOverlayImage)
+	  createOverlayImage();
+	
 	size_t w = im.getWidth();
 	size_t h = im.getHeight();
 	
@@ -245,15 +248,12 @@ namespace smil
     }
 
     template <class T>
-    Image<T> QtImageViewer<T>::getOverlay()
+    RES_T QtImageViewer<T>::getOverlay(Image<T> &img)
     {
 	if (!qOverlayImage)
-	{
-	    ERR_MSG("No overlay available.");
-	    return Image<T>();
-	}
+	  createOverlayImage();
 	
-	Image<T> img(qOverlayImage->width(), qOverlayImage->height());
+	img.setSize(qOverlayImage->width(), qOverlayImage->height());
 	
 	QRgb *srcLine;
 	int value;
@@ -270,13 +270,15 @@ namespace smil
 		pixels[i] = value>=0 ? T(value) : T(0);
 	    }
 	}
-	return img;
+	return RES_OK;
     }
     
     template <class T>
-    void QtImageViewer<T>::overlayDataChanged()
+    void QtImageViewer<T>::overlayDataChanged(bool triggerEvents)
     {
 	BASE_QT_VIEWER::overlayDataChanged();
+	if (!triggerEvents)
+	  return;
 	Event event(this);
 	ImageViewer<T>::onOverlayModified.trigger(&event);
     }
@@ -320,6 +322,12 @@ namespace smil
 	if (this->image->getDepth()>1)
 	  txt = txt + ", " + QString::number(z);
 	txt = txt + ") " + QString::number(pixVal);
+	if (qOverlayImage)
+	{
+	    int index = overlayColorTable.indexOf(qOverlayImage->pixel(x,y));
+	    if (index>=0)
+	      txt = txt + "\n+ " + QString::number(index);
+	}
 	valueLabel->setText(txt);
 	valueLabel->adjustSize();
     }

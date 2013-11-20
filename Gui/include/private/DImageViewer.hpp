@@ -119,7 +119,7 @@ namespace smil
 	}
 	virtual void drawOverlay(Image<T> &) {}
 	virtual void clearOverlay() {}
-	virtual Image<T> getOverlay() {}
+	virtual RES_T getOverlay(Image<T> &img) {}
 	
 	Signal onOverlayModified;
 	

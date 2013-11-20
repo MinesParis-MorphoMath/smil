@@ -80,6 +80,7 @@ public:
     virtual void displayMagnifyView() { displayMagnifyView(lastPixX, lastPixY, lastPixZ); }
     virtual void setCurSlice(int) {}
     virtual void redrawImage() {}
+    virtual void createOverlayImage();
 
     void setName(QString name);
     void setImageSize(int w, int h, int d=1);
@@ -171,7 +172,7 @@ public slots:
 	displayHint(QString::number(newVal) + "/" + QString::number(slider->maximum()));
 	setCurSlice(newVal);
     }
-    virtual void overlayDataChanged();
+    virtual void overlayDataChanged(bool triggerEvents=true);
     void updateIcon();
     void showContextMenu(const QPoint& pos);
     void mouseMoveEvent ( QGraphicsSceneMouseEvent * event );
