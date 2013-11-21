@@ -261,6 +261,77 @@ namespace smil
 	return RES_OK;
     }
    
+    template <class T1, class MCT2>
+    RES_T copyToChannel(const Image<T1> &imIn, const UINT &chanNum, Image<MCT2> &imOut)
+    {
+	ASSERT(chanNum < MCT2::channelNumber());
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	typedef typename MCT2::DataType T2;
+	typename Image<T1>::lineType lineIn = imIn.getPixels();
+	typename Image<T2>::lineType lineOut = imOut.getPixels().arrays[chanNum];
+	
+	copyLine<T1,T2>(lineIn, imIn.getPixelCount(), lineOut);
+	imOut.modified();
+	return RES_OK;
+    }
+   
+    /**
+     * Split channels of multichannel image to a 3D image with each channel on a Z slice
+     */
+    template <class MCT1, class T2>
+    RES_T splitChannels(const Image<MCT1> &imIn, Image<T2> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn);
+	
+	UINT width = imIn.getWidth(), height = imIn.getHeight();
+	UINT chanNum = MCT1::channelNumber();
+	UINT pixCount = width*height;
+	imOut.setSize(width, height, chanNum);
+
+	typedef typename MCT1::DataType T1;
+	typename Image<T1>::sliceType arrayIn = imIn.getPixels().arrays;
+	typename Image<T2>::lineType lineOut = imOut.getPixels();
+	
+	for (UINT i=0;i<chanNum;i++)
+	{
+	    copyLine<T1,T2>(arrayIn[i], pixCount, lineOut);
+	    lineOut += pixCount;
+	}
+	imOut.modified();
+	
+	return RES_OK;
+    }
+   
+    /**
+     * Merge slices of a 3D image into a multichannel image
+     */
+    template <class T1, class MCT2>
+    RES_T mergeChannels(const Image<T1> &imIn, Image<MCT2> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn);
+	UINT chanNum = MCT2::channelNumber();
+	ASSERT(imIn.getDepth()==chanNum);
+	
+	UINT width = imIn.getWidth(), height = imIn.getHeight();
+	UINT pixCount = width*height;
+	imOut.setSize(width, height);
+
+	typedef typename MCT2::DataType T2;
+	typename Image<T1>::lineType lineIn = imIn.getPixels();
+	typename Image<T2>::sliceType arrayOut = imOut.getPixels().arrays;
+	
+	for (UINT i=0;i<chanNum;i++)
+	{
+	    copyLine<T1,T2>(lineIn, pixCount, arrayOut[i]);
+	    lineIn += pixCount;
+	}
+	imOut.modified();
+	
+	return RES_OK;
+    }
+   
     /**
     * Invert an image.
     *
