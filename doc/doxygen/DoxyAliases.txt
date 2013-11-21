@@ -31,7 +31,7 @@
 #######  Paths  #######
 
 ALIASES += web_root=http://smil.cmm.mines-paristech.fr
-ALIASES += home_web_root=\web_root/smil
+ALIASES += home_web_root=\web_root
 ALIASES += download_web_root=\home_web_root/releases
 
 # Images
