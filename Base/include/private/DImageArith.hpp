@@ -297,15 +297,15 @@ namespace smil
 	UINT width = imIn.getWidth(), height = imIn.getHeight();
 	UINT chanNum = MCT1::channelNumber();
 	UINT pixCount = width*height;
-	imOut.setSize(width, height, chanNum);
+	ASSERT(imOut.setSize(width, height, chanNum)==RES_OK);
 
 	typedef typename MCT1::DataType T1;
-	typename Image<T1>::sliceType arrayIn = imIn.getPixels().arrays;
+	typename Image<MCT1>::lineType lineIn = imIn.getPixels();
 	typename Image<T2>::lineType lineOut = imOut.getPixels();
 	
 	for (UINT i=0;i<chanNum;i++)
 	{
-	    copyLine<T1,T2>(arrayIn[i], pixCount, lineOut);
+	    copyLine<T1,T2>(lineIn.arrays[i], pixCount, lineOut);
 	    lineOut += pixCount;
 	}
 	imOut.modified();
@@ -330,11 +330,11 @@ namespace smil
 
 	typedef typename MCT2::DataType T2;
 	typename Image<T1>::lineType lineIn = imIn.getPixels();
-	typename Image<T2>::sliceType arrayOut = imOut.getPixels().arrays;
+	typename Image<MCT2>::lineType lineOut = imOut.getPixels();
 	
 	for (UINT i=0;i<chanNum;i++)
 	{
-	    copyLine<T1,T2>(lineIn, pixCount, arrayOut[i]);
+	    copyLine<T1,T2>(lineIn, pixCount, lineOut.arrays[i]);
 	    lineIn += pixCount;
 	}
 	imOut.modified();

@@ -33,6 +33,8 @@
 #include "DGui.h"
 #include "DIO.h"
 
+#include "NSTypes/RGB/include/DRGB.h"
+
 // #include "Addons/MorphM/include/private/DMorphMImage.hpp"
 
 
@@ -41,6 +43,30 @@
 #include <vector>
 
 using namespace smil;
+
+    template <class MCT1, class T2>
+    RES_T splitChannel(const Image<MCT1> &imIn, Image<T2> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn);
+	
+	UINT width = imIn.getWidth(), height = imIn.getHeight();
+	UINT chanNum = MCT1::channelNumber();
+	UINT pixCount = width*height;
+	ASSERT(imOut.setSize(width, height, chanNum)==RES_OK);
+
+	typedef typename MCT1::DataType T1;
+	typename Image<MCT1>::lineType lineIn = imIn.getPixels();
+	typename Image<T2>::lineType lineOut = imOut.getPixels();
+	
+	for (UINT i=0;i<chanNum;i++)
+	{
+	    copyLine<T1,T2>(lineIn.arrays[i], pixCount, lineOut);
+	    lineOut += pixCount;
+	}
+// 	imOut.modified();
+	
+	return RES_OK;
+    }
 
 int main(int argc, char *argv[])
 {
@@ -76,8 +102,16 @@ int main(int argc, char *argv[])
 //     viewer = im1.getViewer();
 //     
 //     im3->printSelf();
-    im1.show();
-    im1.getViewer()->getOverlay();
+//     im1.show();
+//     im1.getViewer()->getOverlay();
+   Image<RGB> imrgb(256,256);
+   read("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png", imrgb);
+//    im1.setSize(imrgb);
+//    copyChannel(imrgb, 0, im1);
+   splitChannel(imrgb, im1);
+   mergeChannels(im1, imrgb);
+   imrgb.show();
+   im1.show();
 //     
     Gui::execLoop();
 //     qapp.exec();
