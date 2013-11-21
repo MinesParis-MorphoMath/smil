@@ -270,6 +270,7 @@ namespace smil
 		pixels[i] = value>=0 ? T(value) : T(0);
 	    }
 	}
+	img.modified();
 	return RES_OK;
     }
     

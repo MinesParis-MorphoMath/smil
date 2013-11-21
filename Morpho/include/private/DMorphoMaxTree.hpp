@@ -131,7 +131,7 @@ public:
     
     inline void push(T value, TokenType dOffset)
     {
-	size_t level = TYPE_FLOOR + size_t(value);
+	size_t level = TYPE_FLOOR + value;
 	if (level>higherLevel)
 	  higherLevel = level;
 	stacks[level][tokenNbr[level]++] = dOffset;
@@ -147,7 +147,7 @@ public:
 	else if (size>1) // Find new higher level (non empty stack)
 	{
 	    tokenNbr[higherLevel] = 0;
-	    for (size_t i=higherLevel-1;i!=numeric_limits<size_t>::max();i--)
+	    for (size_t i=higherLevel-1;i>=0;i--)
 	      if (tokenNbr[i]>0)
 	      {
 		  higherLevel = i;
@@ -248,7 +248,7 @@ private:
 	memset(labels, 0, GRAY_LEVEL_NBR*sizeof(size_t));
 	
 	img_eti[minOff] = curLabel;
-	labels[UINT(minValue)] = curLabel;
+	labels[minValue] = curLabel;
 
 	pq.initialize(img);
 	pq.push(minValue, minOff);
@@ -262,14 +262,14 @@ private:
 	return minValue;
     }
     
-    int nextLowerLabel(const T &value)
+    int nextLowerLabel(T valeur)
     {
 	    if ((curLabel & COLUMN_MOD) == 0)
 	      allocatePage(curLabel >> COLUMN_SHIFT);
 	    
-	    getLevel(curLabel) = value;
+	    getLevel(curLabel) = valeur;
 	    int i;
-	    for(i=int(value)-1;labels[i]==0;i--);
+	    for(i=valeur-1;labels[i]==0;i--);
 
 	    getChild(curLabel) = getChild(labels[i]);
 	    getChild(labels[i]) = curLabel;
@@ -285,8 +285,8 @@ private:
 	      allocatePage(curLabel >> COLUMN_SHIFT);
 
 	    getLevel(curLabel) = valeur;
-	    getBrother(curLabel) = getChild(labels[UINT(parent_valeur)]);
-	    getChild(labels[UINT(parent_valeur)]) = curLabel;
+	    getBrother(curLabel) = getChild(labels[parent_valeur]);
+	    getChild(labels[parent_valeur]) = curLabel;
 	    getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
 	    return curLabel++;
     }
@@ -298,15 +298,15 @@ private:
 	if (imgPix[p_suiv]>imgPix[p]) 
 	{
 	      int j;
-	      for(j=imgPix[p]+1;j<int(imgPix[p_suiv]);j++) 
+	      for(j=imgPix[p]+1;j<imgPix[p_suiv];j++) 
 		labels[j]=0;
 	      indice = img_eti[p_suiv] = labels[j] = nextHigherLabel(imgPix[p], imgPix[p_suiv]);
 	  
 	} 
-	else if (labels[UINT(imgPix[p_suiv])]==0) 
-	    indice = img_eti[p_suiv] = labels[UINT(imgPix[p_suiv])] = nextLowerLabel(imgPix[p_suiv]);
+	else if (labels[imgPix[p_suiv]]==0) 
+	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]] = nextLowerLabel(imgPix[p_suiv]);
 	else 
-	    indice = img_eti[p_suiv] = labels[UINT(imgPix[p_suiv])];
+	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]];
 	
 	getCriterion(indice).ymax = MAX(getCriterion(indice).ymax, ORDONNEE(p_suiv,imWidth));
 	getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, ORDONNEE(p_suiv,imWidth));
@@ -420,7 +420,7 @@ public:
 	    T minValue = initialize(img, img_eti);
 
 	    flood(img, img_eti, minValue);
-	    return labels[UINT(minValue)];
+	    return labels[minValue];
     }
     
     Criterion updateCriteria(int node) 
@@ -439,6 +439,63 @@ public:
 };
 
 
+// NEW BMI    # ##################################################
+//(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
+template <class T, class OffsetT>
+void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent, T prev_residue, UINT stop, UINT delta, int isPrevMaxT){
+
+		    //self,node = 1, nParent =0, stop=0, delta = 0, isPrevMaxT = 0):
+  int child; // index node
+      T current_residue;
+      UINT cNode, cParent; // attributes
+      T lNode, lParent; // node levels, the same type than input image
+
+      cNode =  tree.getCriterion(node).ymax-tree.getCriterion(node).ymin+1;// #current criterion
+      lNode =  tree.getLevel(node);// #current level
+
+      cParent =  tree.getCriterion(nParent).ymax-tree.getCriterion(nParent).ymin+1;// #current criterion
+      lParent =  tree.getLevel(nParent);// #current level
+
+      int flag;
+      if ((cParent - cNode) <= delta){
+	flag = 1;
+      }
+      else{
+	flag = 0;
+      }
+      if (flag){
+	current_residue  = prev_residue + lNode - lParent ;
+      }
+      else{
+	current_residue  = lNode - lParent;
+      }
+
+      transformee_node[node] = transformee_node[nParent];
+      indicatrice_node[node] = indicatrice_node[nParent];
+
+      int isMaxT = 0;
+      if(cNode < stop){
+	if (current_residue > transformee_node[node]){
+	  isMaxT = 1;
+	  transformee_node[node] = current_residue;
+	  if(! (isPrevMaxT and flag))
+	    indicatrice_node[node]  = cNode + 1;
+	}
+      }
+      else
+	indicatrice_node[node]  = 0;
+      
+      child=tree.getChild(node);
+      while (child!=0){
+	ComputeDeltaUO(tree, transformee_node, indicatrice_node, child, node, current_residue, stop, delta,isMaxT);
+	child = tree.getBrother(child);
+      }
+      // BEGIN FIRST CALL:
+      //void  ComputeDeltaUO(tree,transformee_node, indicatrice_node,root,root,0,stop,delta, 0)
+      
+      // definition : void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent, T prev_residue, UINT stop, UINT delta, int isPrevMaxT){
+
+}
 template <class T, class OffsetT>
 void compute_max(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, UINT stop, T max_tr, unsigned int max_in, unsigned int hauteur_parent, T valeur_parent, T previous_value)
 {
@@ -495,7 +552,34 @@ void compute_max(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatric
 }
 
 template <class T, class OffsetT>
-void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize)
+void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize,UINT delta = 0)
+{
+
+  int child;
+  UINT hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
+
+  transformee_node[root]=0;
+  indicatrice_node[root]=0;
+  tree.updateCriteria(root);
+  child = tree.getChild(root);
+  if(delta == 0){
+    while (child!=0) 
+      {
+	compute_max(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
+	child = tree.getBrother(child);
+      }
+  }// END delta == 0
+  else{
+    while (child!=0) 
+      {
+	ComputeDeltaUO(tree, transformee_node, indicatrice_node, child, 0/*parent*/, (T)0/* prev_residue*/, hauteur /*stop*/, delta, 0 /*isPrevMaxT*/);
+
+	child = tree.getBrother(child);
+      }
+  }//END dela != 0
+}
+template <class T, class OffsetT>
+void compute_contrast_matthieuNoDelta(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize)
 {
 	int child;
 	UINT hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
@@ -515,7 +599,7 @@ void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indic
     /**
      * Ultimate Opening using the max-trees
      * 
-     * Max-tree based algorithm as described by Fabrizio and Marcotegui (2009) \cite hutchison_fast_2009
+     * Max-tree based algorithm as described by Fabrizio and Marcotegui (2009) \cite fabrizio_fast_2009
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
      * \param[out] imOut The transformation image
@@ -523,7 +607,7 @@ void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indic
      * \param[in] stopSize (optional)
      */
     template <class T1, class T2>
-    RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, UINT stopSize=-1)
+    RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, UINT stopSize=-1, UINT delta = 0)
     {
 	ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
 	ASSERT_SAME_SIZE(&imIn, &imTrans, &imIndic);
@@ -536,7 +620,9 @@ void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indic
 	
 	T1 *transformee_node = new T1[tree.getLabelMax()]();
 	UINT *indicatrice_node = new UINT[tree.getLabelMax()]();
-	compute_contrast(tree, transformee_node, indicatrice_node, root, stopSize);
+
+	compute_contrast(tree, transformee_node, indicatrice_node, root, stopSize,delta);
+
 	
 	typename ImDtTypes<T1>::lineType transformeePix = imTrans.getPixels();
 	typename ImDtTypes<T2>::lineType indicatricePix = imIndic.getPixels();
