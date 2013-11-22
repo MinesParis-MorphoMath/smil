@@ -161,6 +161,9 @@ namespace smil
     template <class T>
     RES_T drawRectangles(Image<T> &imOut, const map<UINT, UintVector> &coordsVect, T value=0, bool fill=false)
     {
+	ASSERT_ALLOCATED(&imOut);
+	ImageFreezer freeze(imOut);
+	
 	map<UINT, UintVector>::const_iterator it = coordsVect.begin();
 	if (it->second.size()!=4)
 	  return RES_ERR;
@@ -176,7 +179,7 @@ namespace smil
 
 
     /**
-    * Draw a box
+    * Draw a box (3D)
     * 
     * 
     * \param imOut Output image.

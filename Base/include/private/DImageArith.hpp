@@ -122,6 +122,9 @@ namespace smil
 	size_t outH = imOut.getHeight();
 	size_t outD = imOut.getDepth();
 	
+	ASSERT(startX<inW && startY<inH && startZ<inD);
+	ASSERT(outStartX<outW && outStartY<outH && outStartZ<outD);
+	
 	size_t realSx = min( min(sizeX, inW-startX), outW-outStartX );
 	size_t realSy = min( min(sizeY, inH-startY), outH-outStartY );
 	size_t realSz = min( min(sizeZ, inD-startZ), outD-outStartZ );
