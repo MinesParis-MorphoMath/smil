@@ -154,6 +154,10 @@ namespace smil
 	return drawRectangle<T>(imOut, coords[0], coords[1], coords[2]-coords[0]+1, coords[3]-coords[1]+1, value, fill);
     }
 
+    /**
+    * Draw a list of rectangles
+    * 
+    */
     template <class T>
     RES_T drawRectangles(Image<T> &imOut, const map<UINT, UintVector> &coordsVect, T value=0, bool fill=false)
     {

@@ -119,6 +119,7 @@ TEMPLATE_WRAP_FUNC(otsuThreshold);
 
 TEMPLATE_WRAP_FUNC(drawLine);
 TEMPLATE_WRAP_FUNC(drawRectangle);
+TEMPLATE_WRAP_FUNC(drawRectangles);
 TEMPLATE_WRAP_FUNC(drawBox);
 #ifdef USE_FREETYPE
 TEMPLATE_WRAP_FUNC(drawText);
