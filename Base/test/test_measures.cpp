@@ -118,7 +118,7 @@ class Test_MeasBoundingBox : public TestCase
       
       vector<UINT> bbox = measBoundBox(im);
       
-      TEST_ASSERT(bbox[0]==1 && bbox[1]==3 && bbox[2]==2 && bbox[3]==4 && bbox[4]==0 && bbox[5]==4);
+      TEST_ASSERT(bbox[0]==1 && bbox[1]==2 && bbox[2]==0 && bbox[3]==3 && bbox[4]==4 && bbox[5]==4);
   }
 };
 

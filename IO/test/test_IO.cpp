@@ -49,38 +49,13 @@ int main(int argc, char *argv[])
     Image_UINT8 im2;
     Image_UINT8 im3;
 
-//     readPNG("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png");
+    read("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png", im1);
 
-//       im1 << "/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
-//     if(read("/home/faessel/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0603_C1_1_20100326-105102/1.bmp", im1)!=RES_OK)
-// 	read("/home/mat/src/ivp/faessel/DATA/BANQUE_IMAGES/IVP024-1/Bon/C0603_C1_1_20100326-105102/1.bmp", im1);
-// //     im1 >> "/home/faessel/tmp/tmp.bmp";
-//     cout << endl;
-    string str = im2.getName();
-//     im2 << "http://cmm.ensmp.fr/~faessel/smil/images/barbara.png";
-//     im2 << "/home/mat/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png";
-//     im2 << "/home/faessel/tmp/akiyo_y.bmp";
-    im2 << "/home/faessel/tmp/0.bmp";
-    im2 << "/home/faessel/tmp/2.bmp";
-    im2 >> "/home/faessel/tmp/3.bmp";
-//     im2 << "/home/faessel/tmp/arearea.bmp";
-//     im2.show();
     
     Image<RGB> rgbIm;
-    rgbIm << "/home/faessel/tmp/1.bmp";
-    rgbIm >> "/home/faessel/tmp/1out.bmp";
-    
-    BaseImage *im0 = createFromFile("/home/faessel/src/morphee/trunk/utilities/Images/Color/arearea.png");
-    BaseImage *im = createFromFile("/home/faessel/src/morphee/trunk/utilities/Images/Gray/akiyo_y.png");
-    im = createFromFile("/home/faessel/tmp/jpeg-6b/testimg.jpg");
-//     rgbIm << ;
-//     rgbIm >> "/home/mat/tmp/arearea.png";
-    
-//     rgbIm.show();
-    im->show();
-    
-    write(*((Image<RGB>*)im), "/home/faessel/tmp/tmp.jpg");
-    Gui::execLoop();
+
+    BaseImage *im0 = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images//arearea.png");
+    delete im0;
     
 }
 

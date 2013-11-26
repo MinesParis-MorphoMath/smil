@@ -113,7 +113,7 @@ int main(int argc, char *argv[])
    imrgb.show();
    im1.show();
 //     
-    Gui::execLoop();
+//     Gui::execLoop();
 //     qapp.exec();
 
 }
