@@ -55,11 +55,11 @@ class Test_VTK_RW : public TestCase
 		 5, 15, 16,
 		 6, 18, 19 };
     im1 << tab;
-    TEST_ASSERT( writeVTK(im1, fName)==RES_OK );
+    TEST_ASSERT( write(im1, fName)==RES_OK );
     
     Image<T> im2;
     
-    TEST_ASSERT( readVTK(fName, im2)==RES_OK );
+    TEST_ASSERT( read(fName, im2)==RES_OK );
     
     TEST_ASSERT(im1==im2);
   }
@@ -70,6 +70,8 @@ int main(int argc, char *argv[])
       TestSuite ts;
 
       ADD_TEST(ts, Test_VTK_RW);
+      
+      createFromFile("/home/faessel/src/divers/2012-MSME/tmp.vtk");
       
       return ts.run();
       

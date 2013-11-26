@@ -105,10 +105,16 @@ namespace smil
 
     
     template <>
-    RES_T readVTK<RGB>(const char *filename, Image<RGB> &image);
+    inline RES_T VTKImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
+    {
+	return RES_ERR;
+    }
 
     template <>
-    RES_T writeVTK<RGB>(const Image<RGB> &image, const char *filename, bool binary);
+    inline RES_T VTKImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
+    {
+	return RES_ERR;
+    }
 
     
     

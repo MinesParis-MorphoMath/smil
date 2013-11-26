@@ -225,13 +225,15 @@ def Image(*args):
 	    img = imgType()
 	    read(args[0], img)
 	else:
-	    img = autoCastBaseImage(createFromFile(args[0]))
+	    baseImg = createFromFile(args[0])
+	    if baseImg!=None:
+	      img = autoCastBaseImage(baseImg)
     
     else:
 	img = imageTypes[0](*args)
 	fillImg = True
 
-    if fillImg and img.isAllocated():
+    if fillImg and img and img.isAllocated():
       try:
 	fillValue = type(img).getDataTypeMin()
 	fill(img, fillValue)
