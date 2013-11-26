@@ -233,7 +233,7 @@ def Image(*args):
 	img = imageTypes[0](*args)
 	fillImg = True
 
-    if fillImg and img and img.isAllocated():
+    if fillImg and img.isAllocated():
       try:
 	fillValue = type(img).getDataTypeMin()
 	fill(img, fillValue)
