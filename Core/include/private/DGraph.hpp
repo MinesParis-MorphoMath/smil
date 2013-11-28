@@ -35,28 +35,14 @@
 #include <utility>
 #include <iostream>
 #include <stdexcept>
-#include <assert.h>
+#include <set>
+#include <queue>
 
 namespace smil
 {
-    template <class T=UINT>
-    class Node
-    {
-    public:
-	Node(UINT ind, T val=0)
-	  : index(ind), value(val)
-	{
-	}
-	UINT index;
-	T value;
-	
-	inline bool operator ==(const Node<T> &rhs)
-	{
-	    return rhs.index==index;
-	}
-    };
-    
-  
+    /**
+     * Non-oriented edge
+     */
     class Edge
     {
     public:
@@ -84,12 +70,14 @@ namespace smil
 	
 	inline bool operator <(const Edge &rhs) const
 	{
-	    return weight<rhs.weight;
+	    return weight>=rhs.weight;
 	}
     };
 
     
-    template <class T=UINT>
+    /**
+     * Non-oriented graph
+     */
     class Graph
     {
     public:
@@ -99,45 +87,164 @@ namespace smil
 	{
 	}
 	
-	typedef Node<T> NodeType;
-	
-	std::vector<Edge> edges;
-	std::vector<NodeType> nodes;
-	std::map< UINT, std::vector<UINT> > nodeEdges;
-	
-	void addNode(const NodeType &n)
+	void addNode(const UINT &ind, const UINT &val=0)
 	{
-	    if (find(nodes.begin(), nodes.end(), n)==nodes.end())
-	      nodes.push_back(n);
+	    nodeValues[ind] = val;
 	}
-	void addNode(const UINT &ind, const T &val=0)
+	/**
+	 * Add an edge to the graph. 
+	 * If checkIfExists is \b true:
+	 * 	If the edge doen't exist, create a new one.
+	 * 	If the edge already exists, the edge weight will be the minimum between the existing a the new weight.
+	 */
+	
+	void addEdge(const Edge &e, bool checkIfExists=true)
 	{
-	    addNode(NodeType(ind, val));
-	}
-	void addEdge(const Edge &e, bool createNodes=true)
-	{
-	    if (find(edges.begin(), edges.end(), e)!=edges.end())
-	      return;
-	    if (createNodes)
+	    if (checkIfExists)
 	    {
-		addNode(e.source);
-		addNode(e.target);
+		vector<Edge>::iterator foundEdge = find(edges.begin(), edges.end(), e);
+		if (foundEdge!=edges.end())
+		{
+		    (*foundEdge).weight = min((*foundEdge).weight, e.weight);
+		    return;
+		}
 	    }
 	    edges.push_back(e);
+	    nodes.insert(e.source);
+	    nodes.insert(e.target);
 	    nodeEdges[e.source].push_back(edgeNbr);
 	    nodeEdges[e.target].push_back(edgeNbr);
 	    
 	    edgeNbr++;
 	}
-	void addEdge(const UINT src, const UINT targ, UINT weight=1, bool createNodes=true)
+	void addEdge(const UINT src, const UINT targ, UINT weight=1, bool checkIfExists=true)
 	{
-	    addEdge(Edge(src, targ, weight), createNodes);
+	    addEdge(Edge(src, targ, weight), checkIfExists);
 	}
+	void removeNode(const UINT ind)
+	{
+	    set<UINT>::iterator fNode = nodes.find(ind);
+	    if (fNode!=nodes.end())
+	      nodes.erase(fNode);
+	    map< UINT, vector<UINT> >::iterator fNodeEdges = nodeEdges.find(ind);
+	    if (fNodeEdges!=nodeEdges.end())
+	      nodeEdges.erase(fNodeEdges);
+	}
+	void removeNodeEdge(const UINT nodeIndex, const UINT edgeIndex)
+	{
+	    map< UINT, std::vector<UINT> >::iterator nEdges = nodeEdges.find(nodeIndex);
+	    if (nEdges==nodeEdges.end())
+	      return;
+	    
+	    std::vector<UINT> &eList = nEdges->second;
+	    
+	    vector<UINT>::iterator ei = find(eList.begin(), eList.end(), edgeIndex);
+	    if (ei!=eList.end())
+	      eList.erase(ei);
+	}
+	void removeEdge(const UINT src, const UINT targ)
+	{
+	    vector<Edge>::iterator foundEdge = find(edges.begin(), edges.end(), Edge(src,targ));
+	    if (foundEdge==edges.end())
+	      return;
+	    
+	    UINT edge_index = foundEdge-edges.begin();
+	    	    
+ 	    removeNodeEdge((*foundEdge).source, edge_index);
+	    removeNodeEdge((*foundEdge).target, edge_index);
+	    
+	    (*foundEdge) = Edge(0,0,0);
+	}
+	
+	const vector<Edge> &getEdges() const { return edges; }
+	const map< UINT, std::vector<UINT> > &getNodeEdges() const { return nodeEdges; }
+	
+	
+	map<UINT,UINT> labelizeNodes() const
+	{
+	    map<UINT,UINT> lookup;
+	    set<UINT> nodeList(nodes);
+	    
+	    UINT curLabel = 1;
+	    
+	    while(!nodeList.empty())
+	    {
+		propagateLabel(*(nodeList.begin()), curLabel++, lookup, nodeList);
+	    }
+	    return lookup;
+	}
+	
+	
+	std::map<UINT, UINT> nodeValues;
     protected:
 	UINT edgeNbr;
+	set<UINT> nodes;
+	std::vector<Edge> edges;
+	std::map< UINT, std::vector<UINT> > nodeEdges;
+	
+	
+	void propagateLabel(const UINT &ind, const UINT &lbl, map<UINT,UINT> &lookup, set<UINT> &nList) const
+	{
+	    set<UINT>::iterator foundNode = nList.find(ind);
+	    if (foundNode==nList.end())
+	      return;
+	    
+	    lookup[ind] = lbl;
+	    nList.erase(foundNode);
+	    
+	    const vector<UINT> &nEdges = nodeEdges.at(ind);
+	    
+	    for (vector<UINT>::const_iterator it=nEdges.begin();it!=nEdges.end();it++)
+	    {
+		const Edge &e = edges[*it];
+		if (e.source!=ind)
+		  propagateLabel(e.source, lbl, lookup, nList);
+		else if (e.target!=ind)
+		  propagateLabel(e.target, lbl, lookup, nList);
+	    }
+	}
 	
     };
+    
+    Graph MST(const Graph &graph)
+    {
+	std::set<size_t> visitedInd;
+	std::priority_queue<Edge> pq;
+	Graph mst;
+	
+	const map< UINT, std::vector<UINT> > &nodeEdges = graph.getNodeEdges();
+	const vector<Edge> &edges = graph.getEdges();
+	
+	int u = (*nodeEdges.begin()).first;
+	visitedInd.insert(u);
+	const vector<UINT> &neigh = nodeEdges.at(u);
+	for (vector<UINT>::const_iterator it=neigh.begin();it!=neigh.end();it++)
+	    pq.push(edges[*it]);
+	
+	while(!pq.empty())
+	{
+	    Edge edge = pq.top();
+	    pq.pop();
+	    
+	    if(visitedInd.find(edge.source) == visitedInd.end())
+	      u = edge.source;
+	    else if (visitedInd.find(edge.target) == visitedInd.end())
+	      u = edge.target;
+	    else u = -1;
+	    
+	    if (u>=0)
+	    {
+		mst.addEdge(edge, false);
+		visitedInd.insert(u);
+		vector<UINT> const& neigh = nodeEdges.at(u);
+		for (vector<UINT>::const_iterator it=neigh.begin();it!=neigh.end();it++)
+		    pq.push(edges[*it]);
+	    }
+	}
+	return mst;
+    }
 
 } // namespace smil
 
 #endif // _D_GRAPH_HPP
+

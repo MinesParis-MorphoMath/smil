@@ -1047,8 +1047,9 @@ namespace smil
     * Apply a lookup map
     */
     template <class T1, class T2>
-    RES_T applyLookup(const Image<T1> &imIn, map<T1,T2> &lut, Image<T2> &imOut)
+    RES_T applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut)
     {
+	ASSERT(!lut.empty(), "Input lookup is empty", RES_ERR);
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 
@@ -1059,7 +1060,7 @@ namespace smil
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
 	  if (lut.find(*pixIn)!=lut.end())
-	    *pixOut = lut[*pixIn];
+	    *pixOut = lut.at(*pixIn);
 	  pixIn++;
 	  pixOut++;
 	}
@@ -1068,6 +1069,14 @@ namespace smil
 	return RES_OK;
     }
 
+    template <class T1, class T2>
+    RES_T applyLookup(const Image<T1> &imIn, const map<UINT,UINT> &lut, Image<T2> &imOut)
+    {
+	ASSERT(!lut.empty(), "Input lookup is empty", RES_ERR);
+	
+	return applyLookup(imIn, map<T1,T2>(lut.begin(), lut.end()), imOut);
+    }
+    
 /** @}*/
 
 } // namespace smil
