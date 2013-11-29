@@ -86,7 +86,7 @@ namespace smil
     {
 	ASSERT_ALLOCATED(&imOut);
 	
-	applyLookup<T>(imMosRef, graph.labelizeNodes(), imOut);
+	return applyLookup<T>(imMosRef, graph.labelizeNodes(), imOut);
     }
 
 /** \} */

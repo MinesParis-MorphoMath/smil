@@ -174,6 +174,11 @@ namespace smil
 	    return lookup;
 	}
 	
+	void printSelf(ostream &os = std::cout, string ="")
+	{
+	    for (vector<Edge>::const_iterator it=edges.begin();it!=edges.end();it++)
+	      os << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
+	}
 	
 	std::map<UINT, UINT> nodeValues;
     protected:

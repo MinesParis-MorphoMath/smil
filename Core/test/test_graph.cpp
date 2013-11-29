@@ -47,7 +47,7 @@ class Test_MST : public TestCase
 {
     virtual void run()
     {
-	Graph<UINT> graph;
+	Graph graph;
 	graph.addEdge(Edge(0,2, 1));
 	graph.addEdge(Edge(1,3, 1));
 	graph.addEdge(Edge(1,4, 2));
@@ -57,7 +57,7 @@ class Test_MST : public TestCase
 	graph.addEdge(Edge(4,0, 1));
 	graph.addEdge(Edge(4,1, 3));
 	
-	Graph<UINT> mst = MST(graph);
+	Graph mst = MST(graph);
 	vector<Edge> mstTruth;
 	mstTruth.push_back(Edge(4,0,1));
 	mstTruth.push_back(Edge(3,4,1));

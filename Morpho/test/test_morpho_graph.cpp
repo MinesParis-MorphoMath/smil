@@ -39,7 +39,7 @@ class Test_MosaicToGraph : public TestCase
 {
   virtual void run()
   {
-      typedef UINT16 dataType;
+      typedef UINT8 dataType;
       typedef Image<dataType> imType;
       
       imType im1(7,7);
