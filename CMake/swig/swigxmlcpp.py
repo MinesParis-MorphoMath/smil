@@ -15,7 +15,7 @@ def createSwigObj(xmlNode, parent=None):
       constr = globals()[cName]
       return constr(xmlNode, parent)
     else:
-      print "Warning: unknown swig type:", xmlNode.nodeName
+      #print "Warning: unknown swig type:", xmlNode.nodeName
       return swigXmlObj(xmlNode, parent)
   
 def cleanTemplateParams(name):
@@ -182,6 +182,7 @@ class swig_cdecl(swigXmlObj):
       self.decl = ""
       self.kind = ""
       self.parmlist = swig_parmlist()
+      self.code = ""
       swigXmlObj.__init__(self, xmlNode, parent)
       suffix = re.sub('f\(.*', '', self.decl)
       self.suffix = (" " + decodeType(suffix))[:-1]
@@ -203,13 +204,15 @@ class swig_cdecl(swigXmlObj):
       buf += "(" + self.args + ")" + self.suffix + ";\n"
       return buf
   def getDefinition(self, tab=""):
-    if not hasattr(self, "template") or hasattr(self.parent, "template"):
+    if self.kind=="typedef":
       return ""
-    buf = "template <>\n"
-    buf += self.ret_type + self.sym_name
-    buf += "(" + self.args + ")" + self.suffix + "\n"
-    buf += self.code + "\n"
-    return buf
+    elif self.kind=="variable":
+      return ""
+    else:
+      buf = self.ret_type + self.sym_name
+      buf += "(" + self.args + ")" + self.suffix + "\n"
+      buf += self.code + "\n"
+      return buf
 
 #### PARAMETER LIST ####  
 class swig_parmlist(swigXmlObj):
@@ -231,13 +234,24 @@ class swig_parm(swigXmlObj):
       self.sym_type = decodeType(_type)
 
 
+#### TEMPLATE FUNCTION ####
+class swig_template_function(swig_cdecl):
+  def __init__(self, xmlNode=None, parent=None):
+      swig_cdecl.__init__(self, xmlNode, parent)
+      self.swigType = "template_function"
+      self.specialization = hasattr(self, "specialization")
+  def getDeclaration(self, tab=""):
+    return ""
+  def getDefinition(self, tab=""):
+    return ""
+      
+
 #### CLASS ####
 class swig_class(swigXmlObj):
   def __init__(self, xmlNode=None, parent=None):
       self.baselist = swigXmlObj()
       swigXmlObj.__init__(self, xmlNode, parent)
       self.template = hasattr(self, "template")
-      self.specialization = hasattr(self, "specialization")
   def getDeclaration(self, tab=""):
     name = re.sub('^[A-Za-z0-9]*::', '', self.name)
     buf = tab + self.kind + " " + name + self.baselist.getDeclaration(tab) + "\n"
@@ -246,12 +260,7 @@ class swig_class(swigXmlObj):
     buf += tab + "};\n"
     return buf
   def getDefinition(self, tab=""):
-    #if not hasattr(self, "specialization"):
-      #return ""
-    buf = "//// " + self.name + "\n"
-    buf += self.childrenDefinition(tab + "\t")
-    buf = "//// " + self.name + "\n"
-    return buf
+    return ""
   
 #### ACCESS (CLASS) ####
 class swig_access(swigXmlObj):
@@ -288,6 +297,7 @@ class swig_template_class(swig_class):
   def __init__(self, xmlNode=None, parent=None):
       swig_class.__init__(self, xmlNode, parent)
       self.swigType = "template_class"
+      self.specialization = hasattr(self, "specialization")
   def getDeclaration(self, tab=""):
     if self.specialization:
       buf = tab + "template<>\n"
@@ -296,20 +306,24 @@ class swig_template_class(swig_class):
     buf += swig_class.getDeclaration(self, tab)
     return buf
   def getDefinition(self, tab=""):
-    if not self.specialization:
-      return ""
-    buf = ""
-    buf += swig_class.getDefinition(self, tab)
+    #if not hasattr(self, "specialization"):
+      #return ""
+    buf = "//// " + self.name + "\n"
+    buf += self.childrenDefinition(tab + "\t")
+    buf = "//// " + self.name + "\n"
     return buf
     
 
 #### TEMPLATE (CLASS OR FUNCTION) ####
 def swig_template(xmlNode, parent=None):
   obj = swigXmlObj(xmlNode, parent, recursive=False)
+  print obj.name, obj.templatetype, hasattr(obj, "specialization")
   if obj.templatetype=="class":
     return swig_template_class(xmlNode, parent)
+  elif obj.templatetype=="cdecl":
+    return swig_template_function(xmlNode, parent)
   else:
-    return obj
+    return swigXmlObj(xmlNode, parent)
   
 
 #### USING ####
@@ -341,6 +355,8 @@ def decodeType(arg):
     if arg.find(",")!=-1:
       args = arg.split(",")
       return ",".join([decodeType(a) for a in args])
+    if arg=="v(...)": # va_arg
+      return "..."
     splt = arg.split('.')
     ptr = ""
     buf = ""
