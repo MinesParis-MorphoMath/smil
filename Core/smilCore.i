@@ -51,7 +51,6 @@ SMIL_MODULE(smilCore)
 //////////////////////////////////////////////////////////
 
 %ignore Error;
-class exception{};
 %include "DErrors.h"
 
 
