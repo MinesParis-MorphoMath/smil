@@ -238,6 +238,7 @@ OPTION(WRAP_CPP "Wrap non-template C++ headers and libraries" FALSE)
 IF(WRAP_CPP)
       INCLUDE(WrapCpp)
       FIND_PACKAGE(PythonInterp REQUIRED)
+      INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/include)
 ENDIF(WRAP_CPP)
 
 OPTION(WRAP_PYTHON "Wrap Python" FALSE)
