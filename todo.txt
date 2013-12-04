@@ -1,11 +1,1 @@
-
-Général :
-------- 
-- Harmoniser le type de la 1° lettre des noms des classes/fonctions (minuscule/maj).
-
-
-Gui :
----
-
-- Trouver une méthode pour gérer l'event loop de Qt en interne.
-- Problème avec show viewer en release avec petites images.
+- Modify SWIG behavior to create nested python modules (folder with __init__.py file).
