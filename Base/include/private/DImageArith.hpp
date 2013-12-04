@@ -1069,13 +1069,6 @@ namespace smil
 	return RES_OK;
     }
 
-    template <class T1, class T2>
-    RES_T applyLookup(const Image<T1> &imIn, const map<UINT,UINT> &lut, Image<T2> &imOut)
-    {
-	ASSERT(!lut.empty(), "Input lookup is empty", RES_ERR);
-	
-	return applyLookup(imIn, map<T1,T2>(lut.begin(), lut.end()), imOut);
-    }
     
 /** @}*/
 

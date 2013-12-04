@@ -86,7 +86,10 @@ namespace smil
     {
 	ASSERT_ALLOCATED(&imOut);
 	
-	return applyLookup<T>(imMosRef, graph.labelizeNodes(), imOut);
+	map<UINT,UINT> nodeMap = graph.labelizeNodes();
+	map<T,T> lut(nodeMap.begin(), nodeMap.end()); 
+	
+	return applyLookup<T>(imMosRef, lut, imOut);
     }
 
 /** \} */

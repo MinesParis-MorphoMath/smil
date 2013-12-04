@@ -31,8 +31,6 @@
 
 #include "DGraph.hpp"
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/kruskal_min_spanning_tree.hpp>
 #include <iostream>
 #include <fstream>
 
