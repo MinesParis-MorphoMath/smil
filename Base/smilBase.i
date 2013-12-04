@@ -160,6 +160,7 @@ TEMPLATE_WRAP_FUNC(rangeVal);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
 TEMPLATE_WRAP_FUNC(measInertiaMatrix);
+TEMPLATE_WRAP_FUNC(measCovariance);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 
 %include "DLabelMeasures.hpp"
