@@ -168,6 +168,18 @@ TEMPLATE_WRAP_FUNC(measInertiaMatrix);
 TEMPLATE_WRAP_FUNC(measCovariance);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 
+# Suppl. Types
+TEMPLATE_WRAP_SUPPL_FUNC(vol);
+%apply double *OUTPUT{double &mean_val};
+%apply double *OUTPUT{double &std_dev_val};
+TEMPLATE_WRAP_SUPPL_FUNC(meanVal);
+TEMPLATE_WRAP_SUPPL_FUNC(area);
+TEMPLATE_WRAP_SUPPL_FUNC(minVal);
+TEMPLATE_WRAP_SUPPL_FUNC(maxVal);
+TEMPLATE_WRAP_SUPPL_FUNC(rangeVal);
+
+
+
 %include "DLabelMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);
 TEMPLATE_WRAP_FUNC(measMinVals);

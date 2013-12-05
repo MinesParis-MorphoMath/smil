@@ -155,6 +155,7 @@ namespace std
     
     TEMPLATE_WRAP_CLASS_2T_CROSS(map, Map)
     
+    TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
 #ifndef SMIL_WRAP_RGB
