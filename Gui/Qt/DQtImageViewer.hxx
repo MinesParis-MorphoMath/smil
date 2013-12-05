@@ -161,8 +161,8 @@ namespace smil
 	  displayHistogram(true);
 	if (profilePlot && profilePlot->isVisible())
 	  displayProfile(true);
-    #endif // USEçQWT    
-    //     qApp->processEvents();
+    #endif // USE_QWT    
+        qApp->processEvents();
     }
 
 
