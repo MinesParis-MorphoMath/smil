@@ -27,54 +27,76 @@
  */
 
 
-#include <stdio.h>
-#include <time.h>
+#ifndef _D_MORPHO_GRAPH_HPP
+#define _D_MORPHO_GRAPH_HPP
 
-//#include <boost/signal.hpp>
-//#include <boost/bind.hpp>
+#include "DMorphImageOperations.hpp"
+#include "DGraph.hpp"
 
-#include "DCore.h"
-#include "DIO.h"
 
-using namespace smil;
-
-#include "DGui.h"
-
-class Test_VTK_RW : public TestCase
+namespace smil
 {
-  virtual void run()
-  {
-    typedef UINT8 T;
-    const char *fName = "_smil_io_tmp.vtk";
-    
-    Image<T> im1(3, 3, 2);
-    T tab[] = { 28, 2, 3,
-		 2, 5, 6,
-		 3, 8, 9,
-		 4, 11, 12,
-		 5, 15, 16,
-		 6, 18, 19 };
-    im1 << tab;
-    TEST_ASSERT( write(im1, fName)==RES_OK );
-    
-    Image<T> im2;
-    
-    TEST_ASSERT( read(fName, im2)==RES_OK );
-    
-    TEST_ASSERT(im1==im2);
-  }
-};
+    /**
+    * \ingroup Morpho
+    * \defgroup Graph
+    * @{
+    */
 
-int main(int argc, char *argv[])
-{
-      TestSuite ts;
+    template <class T1, class T2>
+    class mosaicToGraphFunct : public unaryMorphImageFunctionBase<T1, T2>
+    {
+    public:
+	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
+	
+	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+	{
+	    T1 curVal = parentClass::pixelsIn[pointOffset];
+	    bool mixed = false;
+	    while(dOffset!=dOffsetEnd)
+	    {
+		T1 val = parentClass::pixelsIn[pointOffset + *dOffset];
+		if (val!=curVal)
+		{
+		  mixed = true;
+		  graph.addEdge(val, curVal, parentClass::pixelsOut[pointOffset]);
+		}
+		dOffset++;
+	    }
+	}
+	Graph graph;
+    };
+    
+    /**
+    */ 
+    template <class T1, class T2>
+    Graph mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imValues, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT(imMosaic.isAllocated() && imValues.isAllocated(), Graph());
+	
+	mosaicToGraphFunct<T1, T2> f;
+	
+	ASSERT(f._exec(imMosaic, (Image<T2>&)imValues, se)==RES_OK, Graph());
+	
+	return f.graph;
+	
+    }
 
-      ADD_TEST(ts, Test_VTK_RW);
-      
-      createFromFile("/home/faessel/src/divers/2012-MSME/tmp.vtk");
-      
-      return ts.run();
-      
-}
+    template <class T>
+    RES_T graphToMosaic(const Image<T> &imMosRef, const Graph &graph, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imOut);
+	
+	map<UINT,UINT> nodeMap = graph.labelizeNodes();
+	map<T,T> lut(nodeMap.begin(), nodeMap.end()); 
+	
+	return applyLookup<T>(imMosRef, lut, imOut);
+    }
 
+/** \} */
+
+} // namespace smil
+
+
+
+#endif // _D_MORPHO_GRAPH_HPP
 

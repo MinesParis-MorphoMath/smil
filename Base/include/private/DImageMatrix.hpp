@@ -59,10 +59,10 @@ namespace smil
 	
 	if (d==1) // 2D
 	{
+ 	    ASSERT((imOut.setSize(h, w)==RES_OK));
+	    
 	    lineType pIn = imIn.getPixels();
 	    lineType pOut = imOut.getPixels();
-	    
- 	    ASSERT((imOut.setSize(h, w)==RES_OK));
 	    
 	    for (size_t y=0;y<w;y++)
 	      for (size_t x=0;x<h;x++,pOut++)

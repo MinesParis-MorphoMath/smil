@@ -476,11 +476,7 @@ namespace smil
 	    MultichannelArray ba(*this, this->index + dp);
 	    return ba;
 	}
-	inline MultichannelArray operator + (long unsigned int dp)
-	{
-	    return operator+((int)dp);
-	}
-	inline MultichannelArray operator + (UINT dp)
+	inline MultichannelArray operator + (size_t dp)
 	{
 	    return operator+((int)dp);
 	}

@@ -32,6 +32,7 @@
 
 #include "Core/include/private/DImage.hpp"
 #include "DBaseMeasureOperations.hpp"
+#include "DLineArith.hpp"
 #include <map>
 
 namespace smil
@@ -401,6 +402,72 @@ namespace smil
     {
 	measInertiaMatrixFunc<T> func;
 	return func(im, onlyNonZero);
+    }
+	
+    /**
+     * Covariance between two images
+     * 
+     * The direction is given by \b dx, \b dy and \b dz.
+     * The lenght corresponds to the max number of steps \b maxSteps
+     */
+    template <class T>
+    vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2, size_t dx, size_t dy, size_t dz, UINT maxSteps=0)
+    {
+	vector<double> vec;
+	ASSERT(areAllocated(&imIn1, &imIn2, NULL), vec);
+	ASSERT(haveSameSize(&imIn1, &imIn2, NULL), "Input images must have the same size", vec);
+	
+	size_t s[3];
+	imIn1.getSize(s);
+	if (maxSteps==0)
+	  maxSteps = max(max(s[0], s[1]), s[2]);
+	vec.clear();
+	
+	typename ImDtTypes<T>::volType slicesIn1 = imIn1.getSlices();
+	typename ImDtTypes<T>::volType slicesIn2 = imIn2.getSlices();
+	typename ImDtTypes<T>::sliceType curSliceIn1;
+	typename ImDtTypes<T>::sliceType curSliceIn2;
+	typename ImDtTypes<T>::lineType lineIn1;
+	typename ImDtTypes<T>::lineType lineIn2;
+	typename ImDtTypes<T>::lineType bufLine = ImDtTypes<T>::createLine(s[0]);
+	
+	
+ 	for (UINT len=0;len<=maxSteps;len++)
+	{
+	    double prod = 0;
+	    size_t pixLen = s[0] - dx*len;
+	    
+	    for (size_t z=0;z<s[2]-dz*len;z++)
+	    {
+		curSliceIn1 = slicesIn1[z];
+		curSliceIn2 = slicesIn2[z+len*dz];
+		for (int y=0;y<s[1]-dy*len;y++)
+		{
+		    lineIn1 = curSliceIn1[y];
+		    lineIn2 = curSliceIn2[y+len*dy];
+		    copyLine<T>(lineIn2 + len*dx, pixLen, bufLine);
+		    for (size_t x=0;x<pixLen;x++) // Vectorized loop
+		      prod += lineIn1[x] * bufLine[x];
+		}
+	    }
+	    vec.push_back(prod);
+	}
+	
+	ImDtTypes<T>::deleteLine(bufLine);
+	
+	return vec;
+    }
+
+    /**
+     * Auto-covariance
+     * 
+     * The direction is given by \b dx, \b dy and \b dz.
+     * The lenght corresponds to the max number of steps \b maxSteps
+     */
+    template <class T>
+    vector<double> measCovariance(const Image<T> &imIn, size_t dx, size_t dy, size_t dz, UINT maxSteps=0)
+    {
+	return measCovariance(imIn, imIn, dx, dy, dz, maxSteps);
     }
 	
     /**

@@ -307,6 +307,8 @@ namespace smil
 	
 	return RES_OK;
     }
+    
+    
 
     /**
     * Resize imIn with the dimensions of imOut and put the result in imOut.
@@ -335,6 +337,15 @@ namespace smil
 	return resize(tmpIm, cx, cy, imIn);
     }
     
+
+    template <class T>
+    RES_T resize(Image<T> &imIn, UINT sx, UINT sy)
+    {
+	Image<T> tmpIm(imIn, true); // clone
+	imIn.setSize(sx, sy);
+	return resize<T>(tmpIm, imIn);
+    }
+
 
 /** @}*/
 

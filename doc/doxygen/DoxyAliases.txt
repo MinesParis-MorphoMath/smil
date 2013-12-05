@@ -30,8 +30,8 @@
 
 #######  Paths  #######
 
-ALIASES += web_root=http://cmm.ensmp.fr/~faessel
-ALIASES += home_web_root=\web_root/smil
+ALIASES += web_root=http://smil.cmm.mines-paristech.fr
+ALIASES += home_web_root=\web_root
 ALIASES += download_web_root=\home_web_root/releases
 
 # Images
@@ -54,7 +54,7 @@ ALIASES += images{2}="\image html \1.png \2 \n \image latex \1.eps \2"
 # JAVA WEB START
 ########################################################
 
-ALIASES += ws_web_root=\web_root/smil/ws
+ALIASES += ws_web_root=\web_root/ws
 
 # Main php 
 ALIASES += ws_main=\ws_web_root/launch.php

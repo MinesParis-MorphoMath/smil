@@ -122,6 +122,9 @@ namespace smil
 	size_t outH = imOut.getHeight();
 	size_t outD = imOut.getDepth();
 	
+	ASSERT(startX<inW && startY<inH && startZ<inD);
+	ASSERT(outStartX<outW && outStartY<outH && outStartZ<outD);
+	
 	size_t realSx = min( min(sizeX, inW-startX), outW-outStartX );
 	size_t realSy = min( min(sizeY, inH-startY), outH-outStartY );
 	size_t realSz = min( min(sizeZ, inD-startZ), outD-outStartZ );
@@ -245,6 +248,10 @@ namespace smil
     }
 
 
+    /**
+     * Copy a channel of multichannel image into a single channel image
+     * \demo{multichannel_operations.py}
+     */
     template <class MCT1, class T2>
     RES_T copyChannel(const Image<MCT1> &imIn, const UINT &chanNum, Image<T2> &imOut)
     {
@@ -258,6 +265,83 @@ namespace smil
 	
 	copyLine<T1,T2>(lineIn, imIn.getPixelCount(), lineOut);
 	imOut.modified();
+	return RES_OK;
+    }
+   
+    /**
+     * Copy a single channel image into a channel of multichannel image
+     * \demo{multichannel_operations.py}
+     */
+    template <class T1, class MCT2>
+    RES_T copyToChannel(const Image<T1> &imIn, const UINT &chanNum, Image<MCT2> &imOut)
+    {
+	ASSERT(chanNum < MCT2::channelNumber());
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	typedef typename MCT2::DataType T2;
+	typename Image<T1>::lineType lineIn = imIn.getPixels();
+	typename Image<T2>::lineType lineOut = imOut.getPixels().arrays[chanNum];
+	
+	copyLine<T1,T2>(lineIn, imIn.getPixelCount(), lineOut);
+	imOut.modified();
+	return RES_OK;
+    }
+   
+    /**
+     * Split channels of multichannel image to a 3D image with each channel on a Z slice
+     * \demo{multichannel_operations.py}
+     */
+    template <class MCT1, class T2>
+    RES_T splitChannels(const Image<MCT1> &imIn, Image<T2> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn);
+	
+	UINT width = imIn.getWidth(), height = imIn.getHeight();
+	UINT chanNum = MCT1::channelNumber();
+	UINT pixCount = width*height;
+	ASSERT(imOut.setSize(width, height, chanNum)==RES_OK);
+
+	typedef typename MCT1::DataType T1;
+	typename Image<MCT1>::lineType lineIn = imIn.getPixels();
+	typename Image<T2>::lineType lineOut = imOut.getPixels();
+	
+	for (UINT i=0;i<chanNum;i++)
+	{
+	    copyLine<T1,T2>(lineIn.arrays[i], pixCount, lineOut);
+	    lineOut += pixCount;
+	}
+	imOut.modified();
+	
+	return RES_OK;
+    }
+   
+    /**
+     * Merge slices of a 3D image into a multichannel image
+     * \demo{multichannel_operations.py}
+     */
+    template <class T1, class MCT2>
+    RES_T mergeChannels(const Image<T1> &imIn, Image<MCT2> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn);
+	UINT chanNum = MCT2::channelNumber();
+	ASSERT(imIn.getDepth()==chanNum);
+	
+	UINT width = imIn.getWidth(), height = imIn.getHeight();
+	UINT pixCount = width*height;
+	imOut.setSize(width, height);
+
+	typedef typename MCT2::DataType T2;
+	typename Image<T1>::lineType lineIn = imIn.getPixels();
+	typename Image<MCT2>::lineType lineOut = imOut.getPixels();
+	
+	for (UINT i=0;i<chanNum;i++)
+	{
+	    copyLine<T1,T2>(lineIn, pixCount, lineOut.arrays[i]);
+	    lineIn += pixCount;
+	}
+	imOut.modified();
+	
 	return RES_OK;
     }
    
@@ -637,14 +721,14 @@ namespace smil
 	return binaryImageFunction<T, divLine<T> >(imIn1, imIn2, imOut);
     }
 
-    template <class T>
-    RES_T div(const Image<T> &imIn, const T &value, Image<T> &imOut)
-    {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-
-	return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
-    }
+//     template <class T>
+//     RES_T div(const Image<T> &imIn, const T &value, Image<T> &imOut)
+//     {
+// 	ASSERT_ALLOCATED(&imIn, &imOut);
+// 	ASSERT_SAME_SIZE(&imIn, &imOut);
+// 
+// 	return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
+//     }
 
     template <class T>
     RES_T div(const Image<T> &imIn, const double &dValue, Image<T> &imOut)
@@ -673,14 +757,14 @@ namespace smil
 	return binaryImageFunction<T, mulLine<T> >(imIn1, imIn2, imOut);
     }
 
-    template <class T>
-    RES_T mul(const Image<T> &imIn1, const T &value, Image<T> &imOut)
-    {
-	ASSERT_ALLOCATED(&imIn1, &imOut);
-	ASSERT_SAME_SIZE(&imIn1, &imOut);
-
-	return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
-    }
+//     template <class T>
+//     RES_T mul(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+//     {
+// 	ASSERT_ALLOCATED(&imIn1, &imOut);
+// 	ASSERT_SAME_SIZE(&imIn1, &imOut);
+// 
+// 	return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
+//     }
     template <class T>
     RES_T mul(const Image<T> &imIn, const double &dValue, Image<T> &imOut)
     {
@@ -963,8 +1047,9 @@ namespace smil
     * Apply a lookup map
     */
     template <class T1, class T2>
-    RES_T applyLookup(const Image<T1> &imIn, map<T1,T2> &lut, Image<T2> &imOut)
+    RES_T applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut)
     {
+	ASSERT(!lut.empty(), "Input lookup is empty", RES_ERR);
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 
@@ -975,7 +1060,7 @@ namespace smil
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
 	  if (lut.find(*pixIn)!=lut.end())
-	    *pixOut = lut[*pixIn];
+	    *pixOut = lut.at(*pixIn);
 	  pixIn++;
 	  pixOut++;
 	}
@@ -984,6 +1069,7 @@ namespace smil
 	return RES_OK;
     }
 
+    
 /** @}*/
 
 } // namespace smil

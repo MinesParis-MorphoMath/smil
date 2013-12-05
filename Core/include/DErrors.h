@@ -70,7 +70,10 @@ namespace smil
 	}
     }
 
-    class Error: public exception
+    class Error
+#ifndef SWIG
+    : public exception
+#endif // SWIG
     {
     public:
 	Error(string const& descr="") throw()

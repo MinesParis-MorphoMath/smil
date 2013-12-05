@@ -67,10 +67,15 @@ PTR_ARG_OUT_APPLY(d)
 
 
 TEMPLATE_WRAP_FUNC_2T_CROSS(copy);
+TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(copy);
+
 TEMPLATE_WRAP_FUNC(crop);
 TEMPLATE_WRAP_FUNC(clone);
 
 TEMPLATE_WRAP_FUNC_2T_FIX_FIRST(copyChannel,RGB);
+TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(copyToChannel,RGB);
+TEMPLATE_WRAP_FUNC_2T_FIX_FIRST(splitChannels,RGB);
+TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(mergeChannels,RGB);
 
 TEMPLATE_WRAP_FUNC(inv);
 TEMPLATE_WRAP_FUNC(fill);
@@ -108,7 +113,10 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(applyLookup);
 %include "DImageHistogram.hpp"
 TEMPLATE_WRAP_FUNC(histogram);
 TEMPLATE_WRAP_FUNC(threshold);
+
 TEMPLATE_WRAP_FUNC_2T_CROSS(stretchHist);
+TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(stretchHist);
+
 TEMPLATE_WRAP_FUNC(enhanceContrast);
 TEMPLATE_WRAP_FUNC(otsuThresholdValues);
 TEMPLATE_WRAP_FUNC(otsuThreshold);
@@ -116,6 +124,7 @@ TEMPLATE_WRAP_FUNC(otsuThreshold);
 
 TEMPLATE_WRAP_FUNC(drawLine);
 TEMPLATE_WRAP_FUNC(drawRectangle);
+TEMPLATE_WRAP_FUNC(drawRectangles);
 TEMPLATE_WRAP_FUNC(drawBox);
 #ifdef USE_FREETYPE
 TEMPLATE_WRAP_FUNC(drawText);
@@ -156,7 +165,20 @@ TEMPLATE_WRAP_FUNC(rangeVal);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
 TEMPLATE_WRAP_FUNC(measInertiaMatrix);
+TEMPLATE_WRAP_FUNC(measCovariance);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
+
+# Suppl. Types
+TEMPLATE_WRAP_SUPPL_FUNC(vol);
+%apply double *OUTPUT{double &mean_val};
+%apply double *OUTPUT{double &std_dev_val};
+TEMPLATE_WRAP_SUPPL_FUNC(meanVal);
+TEMPLATE_WRAP_SUPPL_FUNC(area);
+TEMPLATE_WRAP_SUPPL_FUNC(minVal);
+TEMPLATE_WRAP_SUPPL_FUNC(maxVal);
+TEMPLATE_WRAP_SUPPL_FUNC(rangeVal);
+
+
 
 %include "DLabelMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);

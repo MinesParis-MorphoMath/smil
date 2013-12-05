@@ -118,7 +118,7 @@ class Test_MeasBoundingBox : public TestCase
       
       vector<UINT> bbox = measBoundBox(im);
       
-      TEST_ASSERT(bbox[0]==1 && bbox[1]==3 && bbox[2]==2 && bbox[3]==4 && bbox[4]==0 && bbox[5]==4);
+      TEST_ASSERT(bbox[0]==1 && bbox[1]==2 && bbox[2]==0 && bbox[3]==3 && bbox[4]==4 && bbox[5]==4);
   }
 };
 
@@ -146,6 +146,43 @@ class Test_MeasInertiaMatrix : public TestCase
 };
 
 
+
+class Test_MeasCovariance: public TestCase
+{
+  virtual void run()
+  {
+      UINT8 vec1[25] = 
+      {
+	  10, 207,  10, 182, 118,
+	222,  96,  36,  14, 147,
+	150, 104, 159,  47,  81,
+	  15, 130,  98, 103, 182,
+	158, 147,  37,  88, 129,
+      };
+      
+      UINT8 vec2[25] = 
+      {
+	127,  80, 222, 166, 211,
+	224,  12, 116, 187, 133,
+	230,  13, 143,   1,  84,
+	  46, 118,   6, 136,  96,
+	240, 170, 200,  91,  31,
+      };
+      
+      
+      Image_UINT8 im1(5,5);
+      Image_UINT8 im2(im1);
+      im1 << vec1;
+      im2 << vec2;
+      
+      DoubleVector cov = measCovariance(im1, im2, 1, 0, 0, 5);
+
+      TEST_ASSERT(cov[0]==348240 && cov[1]==218260 && cov[2]==195396 && cov[3]==141960 && cov[4]==50574 && cov[5]==0);
+      
+  }
+};
+
+
 class Test_MeanVal : public TestCase
 {
   virtual void run()
@@ -167,11 +204,12 @@ int main(int argc, char *argv[])
       TestSuite ts;
       
 
-      ADD_TEST(ts, Test_MeasureVolAndArea);
-      ADD_TEST(ts, Test_MeanVal);
-      ADD_TEST(ts, Test_MeasureBarycenter);
-      ADD_TEST(ts, Test_MeasBoundingBox);
-      ADD_TEST(ts, Test_MeasInertiaMatrix);
+//       ADD_TEST(ts, Test_MeasureVolAndArea);
+//       ADD_TEST(ts, Test_MeanVal);
+//       ADD_TEST(ts, Test_MeasureBarycenter);
+//       ADD_TEST(ts, Test_MeasBoundingBox);
+      ADD_TEST(ts, Test_MeasCovariance);
+//       ADD_TEST(ts, Test_MeasInertiaMatrix);
       
       Image_UINT8 im(512,512);
       measAreas(im);

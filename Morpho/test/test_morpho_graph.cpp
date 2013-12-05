@@ -31,142 +31,87 @@
 #include "DMorpho.h"
 #include "DGui.h"
 #include "DIO.h"
+#include "DMorphoGraph.hpp"
 
 using namespace smil;
 
-class Test_Label : public TestCase
+class Test_MosaicToGraph : public TestCase
 {
   virtual void run()
   {
-      typedef UINT16 dataType;
+      typedef UINT8 dataType;
       typedef Image<dataType> imType;
       
       imType im1(7,7);
       imType im2(im1);
       imType im3(im1);
+      imType im4(im1);
       
-      dataType vec1[] = {
-	0, 0, 0, 0, 0, 0, 1,
-	0, 0, 0, 0, 1, 1, 1,
-	0, 1, 0, 0, 1, 1, 1,
-	1, 1, 0, 0, 0, 1, 0,
-	1, 0, 0, 0, 0, 0, 0,
-	1, 0, 1, 0, 0, 1, 0,
-	0, 0, 1, 0, 1, 1, 0
-      };
-      
-      im1 << vec1;
-      
-      label(im1, im2, sSE());
-//       im2.printSelf(1);
-      
-//       im2.show();
-//       Gui::execLoop();
-      dataType vec3[] = {
-	0, 0, 0, 0, 0, 0, 1, 
-	0, 0, 0, 0, 1, 1, 1, 
-	0, 2, 0, 0, 1, 1, 1, 
-	2, 2, 0, 0, 0, 1, 0, 
-	2, 0, 0, 0, 0, 0, 0, 
-	2, 0, 3, 0, 0, 4, 0, 
-	0, 0, 3, 0, 4, 4, 0
-      };
-      im3 << vec3;
-      
-      TEST_ASSERT(im2==im3);
-  }
-};
-
-class Test_LabelWithArea : public TestCase
-{
-  virtual void run()
-  {
-      typedef UINT16 dataType;
-      typedef Image<dataType> imType;
-      
-      imType im1(7,7);
-      imType im2(im1);
-      imType im3(im1);
-      
-      dataType vec1[] = {
-	0, 0, 0, 0, 0, 0, 1,
-	0, 0, 0, 0, 1, 1, 1,
-	0, 1, 0, 0, 1, 1, 1,
-	1, 1, 0, 0, 0, 1, 0,
-	1, 0, 0, 0, 0, 0, 0,
-	1, 0, 1, 0, 0, 1, 0,
-	0, 0, 1, 0, 1, 1, 0
-      };
-      
-      im1 << vec1;
-      
-      labelWithArea(im1, im2, sSE());
-//       im2.printSelf(1);
-      
-//       im2.show();
-//       Gui::execLoop();
-      dataType vec3[] = {
-	0,     0,     0,     0,     0,     0,     8,
-	0,     0,     0,     0,     8,     8,     8,
-	0,     5,     0,     0,     8,     8,     8,
-	5,     5,     0,     0,     0,     8,     0,
-	5,     0,     0,     0,     0,     0,     0,
-	5,     0,     2,     0,     0,     3,     0,
-	0,     0,     2,     0,     3,     3,     0,
-      };
-      im3 << vec3;
-      
-      TEST_ASSERT(im2==im3);
-  }
-};
-
-class Test_LabelNeighbors : public TestCase
-{
-  virtual void run()
-  {
-      typedef UINT16 dataType;
-      typedef Image<dataType> imType;
-      
-      imType im1(7,7);
-      imType im2(im1);
-      imType im3(im1);
-      
+      // Mosaic
       dataType vec1[] = {
 	0, 0, 0, 0, 0, 0, 1, 
 	0, 0, 0, 0, 1, 1, 1, 
 	0, 2, 0, 0, 1, 1, 1, 
 	2, 2, 0, 0, 0, 1, 0, 
-	2, 0, 0, 0, 0, 0, 0, 
+	2, 0, 3, 0, 0, 4, 0, 
 	2, 0, 3, 0, 0, 4, 0, 
 	0, 0, 3, 0, 4, 4, 0
       };
-      
       im1 << vec1;
       
-      neighbors(im1, im2, sSE());
-//       im2.printSelf(1);
-      
-      dataType vec3[] = {
-	1, 1, 1, 2, 2, 2, 2, 
-	2, 2, 2, 2, 2, 2, 2, 
-	2, 2, 2, 2, 2, 2, 2, 
-	2, 2, 2, 2, 2, 2, 2, 
-	2, 3, 3, 2, 3, 3, 3, 
-	2, 3, 2, 3, 2, 2, 2, 
-	2, 3, 2, 3, 2, 2, 2, 
+      // Values (gradient)
+      dataType vec2[] = {
+	0, 0, 0, 10, 20, 20, 60, 
+	0, 0, 0, 10, 10, 10, 10, 
+	0, 2, 0, 7, 20, 10, 10, 
+	2, 2, 0, 10, 10, 10, 10, 
+	2, 0, 3, 0, 10, 4, 10, 
+	2, 0, 3, 0, 0, 4, 0, 
+	0, 0, 3, 0, 4, 4, 0
       };
-      im3 << vec3;
+      im2 << vec2;
       
-      TEST_ASSERT(im2==im3);
+      Graph graph = mosaicToGraph(im1, im2);
+      
+      vector<Edge> trueEdges;
+      trueEdges.push_back(Edge(1,0,7));
+      trueEdges.push_back(Edge(2,0,0));
+      trueEdges.push_back(Edge(3,2,2));
+      trueEdges.push_back(Edge(3,0,0));
+      trueEdges.push_back(Edge(4,0,0));
+      trueEdges.push_back(Edge(4,1,4));
+      
+      TEST_ASSERT(trueEdges==graph.getEdges());
+      
+//       for (vector<Edge>::const_iterator it=graph.getEdges().begin();it!=graph.getEdges().end();it++)
+// 	cout << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
+
+      
+      graph.removeEdge(3,2);
+      graph.removeEdge(3,0);
+      
+      graphToMosaic(im1, graph, im3);
+      
+      dataType vec4[] = {
+	1,     1,     1,     1,     1,     1,     1,
+	1,     1,     1,     1,     1,     1,     1,
+	1,     1,     1,     1,     1,     1,     1,
+	1,     1,     1,     1,     1,     1,     1,
+	1,     1,     2,     1,     1,     1,     1,
+	1,     1,     2,     1,     1,     1,     1,
+	1,     1,     2,     1,     1,     1,     1,
+      };
+      im4 << vec4;
+      
+      TEST_ASSERT(im3==im4);
   }
 };
+
 
 int main(int argc, char *argv[])
 {
       TestSuite ts;
-      ADD_TEST(ts, Test_Label);
-      ADD_TEST(ts, Test_LabelWithArea);
-      ADD_TEST(ts, Test_LabelNeighbors);
+      ADD_TEST(ts, Test_MosaicToGraph);
       
       return ts.run();
   

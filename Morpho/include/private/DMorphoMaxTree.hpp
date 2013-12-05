@@ -635,7 +635,7 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,OffsetT> &tree, T* transformee_n
     /**
      * Ultimate Opening using the max-trees
      * 
-     * Max-tree based algorithm as described by Fabrizio and Marcotegui (2009) \cite hutchison_fast_2009
+     * Max-tree based algorithm as described by Fabrizio and Marcotegui (2009) \cite fabrizio_fast_2009
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
      * \param[out] imOut The transformation image

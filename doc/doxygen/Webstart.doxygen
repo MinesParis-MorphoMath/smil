@@ -39,6 +39,12 @@
  * 
  * For now, only Windows and Linux platforms are supported (OSX version is under developpement).
  * 
+ * \warning Running applications by unknown publishers will be blocked in a future java release.\n
+ * <b> To allow the execution of this application, please download and install  
+ * <a href="https://smil.cmm.mines-paristech.fr/CA/faessel_ca.cer"><b>this SSL certificate</b></a>. </b>
+ * 
+ * \note This Web Start application has been signed and secured to prevent someone from re-deploying this application on another website for malicious purposes.
+ * 
  * \section run_sec Launch the application
  * Click \ws_main_link{here} to launch the application
  * (or \ws_open_image_link{lena.png,here} to open it with the Lena image).

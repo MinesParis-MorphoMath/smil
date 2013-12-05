@@ -256,9 +256,7 @@ namespace smil
 	ASSERT(( (*max_it).second < double(ImDtTypes<T2>::max()) ), "Area max exceeds data type max!", RES_ERR);
 
 	// Convert areas map into a lookup
-	map<T2, T2> lookup;
-	for (typename map<UINT,double>::iterator it = areas.begin();it!=areas.end();it++)
-	  lookup[T2((*it).first)] = T2((*it).second);
+	map<T2, T2> lookup(areas.begin(), areas.end());
 	
 	ASSERT((fill(imOut, T2(0))==RES_OK));
 	ASSERT((applyLookup<T2>(imLabel, lookup, imOut)==RES_OK));

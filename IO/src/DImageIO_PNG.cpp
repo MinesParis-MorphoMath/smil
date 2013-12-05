@@ -180,8 +180,15 @@ namespace smil
 	
 	fInfo.width = hStruct.width;
 	fInfo.height = hStruct.height;
-	fInfo.bitDepth = hStruct.bit_depth;
 	fInfo.channels = hStruct.channels;
+	
+	switch(hStruct.bit_depth)
+	{
+	  case 8:
+	    fInfo.scalarType = ImageFileInfo::SCALAR_TYPE_UINT8; break;
+	  case 16:
+	    fInfo.scalarType = ImageFileInfo::SCALAR_TYPE_UINT16; break;
+	}
 	
 	switch(hStruct.color_type)
 	{

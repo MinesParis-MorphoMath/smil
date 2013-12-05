@@ -32,40 +32,90 @@
 #include <QTimer>
 #include <unistd.h>
 
+#if defined(Q_OS_WIN)
+#include <conio.h>
+#include <QTimer>
+#else
+#include <QSocketNotifier>
+#endif
+#include <QThread>
+
 #include "DQtGuiInstance.h"
 
 using namespace smil;
 
-void QtGui::_execLoop() 
-{ 
-    qtLoop();
-}
 
-void QtGui::_processEvents() 
-{ 
-    if (qApp)
-      qApp->processEvents();
-}
-
-
-QtAppGui::QtAppGui()
-  : QApplication(_argc, NULL)
+namespace smil 
 {
-}
+    void QtGui::_execLoop() 
+    { 
+	qtLoop();
+    }
 
-QtAppGui::~QtAppGui()
-{
-}
+    void QtGui::_processEvents() 
+    { 
+	if (qApp)
+	  qApp->processEvents();
+    }
 
-void QtAppGui::_execLoop() 
-{ 
-    qtLoop();
-}
 
-void QtAppGui::_processEvents() 
-{ 
-    QApplication::processEvents();
-}
+    QtAppGui::QtAppGui()
+      : QApplication(_argc, NULL)
+    {
+    }
+
+    QtAppGui::~QtAppGui()
+    {
+    }
+
+    void QtAppGui::_execLoop() 
+    { 
+	qtLoop();
+    }
+
+    void QtAppGui::_processEvents() 
+    { 
+	QApplication::processEvents();
+    }
+
+    int qtLoop()
+    {
+	QCoreApplication *app = QCoreApplication::instance();
+
+	if (app && app->thread()==QThread::currentThread())
+	{
+    #if defined(Q_OS_WIN)
+	    QTimer timer;
+	    bool lastWindowClosed;
+
+	    do
+	    {
+		timer.start(100);
+		QCoreApplication::processEvents();
+		timer.stop();
+		
+		lastWindowClosed = true;
+		foreach (QWidget *widget, QApplication::topLevelWidgets()) 
+		{
+		    if (widget->isVisible())
+			lastWindowClosed = false;
+		}
+	    }
+	    while (!_kbhit() && !lastWindowClosed);
+
+	    QObject::disconnect(&timer, SIGNAL(timeout()), app, SLOT(quit()));
+    #else
+	    QSocketNotifier notifier(0, QSocketNotifier::Read, 0);
+	    QObject::connect(&notifier, SIGNAL(activated(int)), app, SLOT(quit()));
+	    QCoreApplication::exec();
+	    QObject::disconnect(&notifier, SIGNAL(activated(int)), app, SLOT(quit()));
+    #endif
+	}
+
+	return 0;
+    }
+    
+} // namespace smil
 
 
 #endif // USE_QT

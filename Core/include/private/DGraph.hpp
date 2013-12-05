@@ -35,182 +35,221 @@
 #include <utility>
 #include <iostream>
 #include <stdexcept>
-#include <assert.h>
+#include <set>
+#include <queue>
 
 namespace smil
 {
-    template <class T>
-    class graph
+    /**
+     * Non-oriented edge
+     */
+    class Edge
     {
-    public :
-      explicit graph(const std::vector<std::pair<T, T> > &vertices);
-      ~graph()
-      {}
-      void insert_vertex_pair_by_keys(T key1, T key2);
-
-    // Private contained classes
-    private:
-    // Forward Definition of vertex
-    class vertex;
-
-      struct edge
-      {
-	edge(vertex *edge, T weight) :
-	  m_Edge(edge),
-	  m_Weight(weight)
-	{}
-	vertex *m_Edge;
-	T m_Weight;
-      }; // END EDGE
-
-      class vertex
-      {
-      public:
-	vertex(T key) :
-	  m_Key(key)
-	{}
-	void connect_edge(vertex *adjacent);
-	const T key() const {return m_Key;}
-	const std::list<edge> &edges() const {return m_Edges;}
-      private:
-	std::list<edge> m_Edges;
-	T m_Key;
-	bool contains_edge_to_vertex_with_key(const T key);
-      }; // END VERTEX
-
-    // Private methods and member variables
-    private:
-      std::list<vertex> m_Vertices;
-      vertex *contains_vertex(const T key);
+    public:
+	Edge(UINT a, UINT b, UINT w=1.)
+	  : source(a), target(b), weight(w)
+	{
+	}
+	Edge(const Edge &rhs)
+	  : source(rhs.source), target(rhs.target), weight(rhs.weight)
+	{
+	}
+	
+	UINT source;
+	UINT target;
+	UINT weight;
+	
+	inline bool operator ==(const Edge &rhs) const
+	{
+	    if (rhs.source==source && rhs.target==target)
+	      return true;
+	    else if (rhs.source==target && rhs.target==source)
+	      return true;
+	    return false;
+	}
+	
+	inline bool operator <(const Edge &rhs) const
+	{
+	    return weight>=rhs.weight;
+	}
     };
 
-    /*!
-    * Constructor of graph: Take a pair of vertices as connection, attempt 
-    * to insert if not already in graph. Then connect them in edge list
-    */
-    template <class T>
-    Graph::graph<T>::graph(const std::vector<std::pair<T, T> > &vertices_relation)
+    
+    /**
+     * Non-oriented graph
+     */
+    class Graph
     {
-    #ifndef NDEBUG
-      std::cout << "Inserting pairs: " << std::endl;
-    #endif
-      typename std::vector<std::pair<T, T> >::const_iterator insert_it = vertices_relation.begin();
-      for(; insert_it != vertices_relation.end(); ++insert_it) {
-    #ifndef NDEBUG
-	std::cout << insert_it->first << " -- > " << insert_it->second << 
-    std::endl;
-    #endif
-	insert_vertex_pair_by_keys(insert_it->first, insert_it->second);
-      }
-    #ifndef NDEBUG
-      std::cout << "Printing results: " << std::endl;
-      typename std::list<vertex>::iterator print_it = m_Vertices.begin();
-      for(; print_it != m_Vertices.end(); ++print_it) {
-	std::cout << print_it->key();
-	typename std::list<edge>::const_iterator edge_it = print_it->edges().begin();
-	for(; edge_it != print_it->edges().end(); ++edge_it) {
-	  std::cout << "-->" << edge_it->m_Edge->key();
+    public:
+	
+	Graph()
+	  : edgeNbr(0)
+	{
 	}
-	std::cout << std::endl;
-      }
-    #endif
-    }
-
-    /*!
-    * Takes in a value of type T as a key and 
-    * inserts it into graph data structure if 
-    * key not already present
-    */
-    template <typename T>
-    void Graph::graph<T>::insert_vertex_pair_by_keys(T key1, T key2)
-    {
-      /*!
-      * Check if vertices already in graph
-      */
-      Graph::graph<T>::vertex *insert1 = contains_vertex(key1);
-      Graph::graph<T>::vertex *insert2 = contains_vertex(key2);
-      /*!
-      * If not in graph then insert it and get a pointer to it
-      * to pass into edge. See () for information on how
-      * to build graph
-      */ 
-      if (insert1 == NULL) {
-	m_Vertices.push_back(vertex(key1));
-	insert1 = contains_vertex(key1);
-      }
-      if (insert2 == NULL) {
-	m_Vertices.push_back(vertex(key2));
-	insert2 = contains_vertex(key2);
-      }
-
-    #ifndef NDEBUG
-	assert(insert1 != NULL && "Failed to insert first vertex");
-	assert(insert2 != NULL && "Failed to insert second vertex");
-    #endif
-
-      /*!
-      * At this point we should have a vertex to insert an edge on
-      * if not throw an error.
-      */ 
-      if (insert1 != NULL && insert2 != NULL) {
-	insert1->connect_edge(insert2);
-	insert2->connect_edge(insert1);
-      } else {
-	throw std::runtime_error("Unknown");
-      }
-    }
-
-    /*!
-    * Search the std::list of vertices for key
-    * if present return the vertex to indicate
-    * already in graph else return NULL to indicate
-    * new node
-    */
-    template <typename T>
-    typename Graph::graph<T>::vertex *Graph::graph<T>::contains_vertex(T key)
-    {
-      typename std::list<vertex >::iterator find_it = m_Vertices.begin();
-      for(; find_it != m_Vertices.end(); ++find_it) {
-	if (find_it->key() == key) {
-	  return &(*find_it);
+	
+	void addNode(const UINT &ind, const UINT &val=0)
+	{
+	    nodeValues[ind] = val;
 	}
-      }
-      return NULL;
-    }
-
-    /*!
-    * Take the oposing vertex from input and insert it
-    * into adjacent list, you can have multiple edges
-    * between vertices
-    */
-    template <class T>
-    void Graph::graph<T>::vertex::connect_edge(Graph::graph<T>::vertex *adjacent)
+	/**
+	 * Add an edge to the graph. 
+	 * If checkIfExists is \b true:
+	 * 	If the edge doen't exist, create a new one.
+	 * 	If the edge already exists, the edge weight will be the minimum between the existing a the new weight.
+	 */
+	
+	void addEdge(const Edge &e, bool checkIfExists=true)
+	{
+	    if (checkIfExists)
+	    {
+		vector<Edge>::iterator foundEdge = find(edges.begin(), edges.end(), e);
+		if (foundEdge!=edges.end())
+		{
+		    (*foundEdge).weight = min((*foundEdge).weight, e.weight);
+		    return;
+		}
+	    }
+	    edges.push_back(e);
+	    nodes.insert(e.source);
+	    nodes.insert(e.target);
+	    nodeEdges[e.source].push_back(edgeNbr);
+	    nodeEdges[e.target].push_back(edgeNbr);
+	    
+	    edgeNbr++;
+	}
+	void addEdge(const UINT src, const UINT targ, UINT weight=1, bool checkIfExists=true)
+	{
+	    addEdge(Edge(src, targ, weight), checkIfExists);
+	}
+	void removeNode(const UINT ind)
+	{
+	    set<UINT>::iterator fNode = nodes.find(ind);
+	    if (fNode!=nodes.end())
+	      nodes.erase(fNode);
+	    map< UINT, vector<UINT> >::iterator fNodeEdges = nodeEdges.find(ind);
+	    if (fNodeEdges!=nodeEdges.end())
+	      nodeEdges.erase(fNodeEdges);
+	}
+	void removeNodeEdge(const UINT nodeIndex, const UINT edgeIndex)
+	{
+	    map< UINT, std::vector<UINT> >::iterator nEdges = nodeEdges.find(nodeIndex);
+	    if (nEdges==nodeEdges.end())
+	      return;
+	    
+	    std::vector<UINT> &eList = nEdges->second;
+	    
+	    vector<UINT>::iterator ei = find(eList.begin(), eList.end(), edgeIndex);
+	    if (ei!=eList.end())
+	      eList.erase(ei);
+	}
+	void removeEdge(const UINT src, const UINT targ)
+	{
+	    vector<Edge>::iterator foundEdge = find(edges.begin(), edges.end(), Edge(src,targ));
+	    if (foundEdge==edges.end())
+	      return;
+	    
+	    UINT edge_index = foundEdge-edges.begin();
+	    	    
+ 	    removeNodeEdge((*foundEdge).source, edge_index);
+	    removeNodeEdge((*foundEdge).target, edge_index);
+	    
+	    (*foundEdge) = Edge(0,0,0);
+	}
+	
+	const vector<Edge> &getEdges() const { return edges; }
+	const map< UINT, std::vector<UINT> > &getNodeEdges() const { return nodeEdges; }
+	
+	
+	map<UINT,UINT> labelizeNodes() const
+	{
+	    map<UINT,UINT> lookup;
+	    set<UINT> nodeList(nodes);
+	    
+	    UINT curLabel = 1;
+	    
+	    while(!nodeList.empty())
+	    {
+		propagateLabel(*(nodeList.begin()), curLabel++, lookup, nodeList);
+	    }
+	    return lookup;
+	}
+	
+	void printSelf(ostream &os = std::cout, string ="")
+	{
+	    for (vector<Edge>::const_iterator it=edges.begin();it!=edges.end();it++)
+	      os << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
+	}
+	
+	std::map<UINT, UINT> nodeValues;
+    protected:
+	UINT edgeNbr;
+	set<UINT> nodes;
+	std::vector<Edge> edges;
+	std::map< UINT, std::vector<UINT> > nodeEdges;
+	
+	
+	void propagateLabel(const UINT &ind, const UINT &lbl, map<UINT,UINT> &lookup, set<UINT> &nList) const
+	{
+	    set<UINT>::iterator foundNode = nList.find(ind);
+	    if (foundNode==nList.end())
+	      return;
+	    
+	    lookup[ind] = lbl;
+	    nList.erase(foundNode);
+	    
+	    const vector<UINT> &nEdges = nodeEdges.at(ind);
+	    
+	    for (vector<UINT>::const_iterator it=nEdges.begin();it!=nEdges.end();it++)
+	    {
+		const Edge &e = edges[*it];
+		if (e.source!=ind)
+		  propagateLabel(e.source, lbl, lookup, nList);
+		else if (e.target!=ind)
+		  propagateLabel(e.target, lbl, lookup, nList);
+	    }
+	}
+	
+    };
+    
+    Graph MST(const Graph &graph)
     {
-      if (adjacent == NULL)
-	return;
-
-      if (!contains_edge_to_vertex_with_key(adjacent->key())) {
-	Graph::graph<T>::edge e(adjacent, 1);
-	m_Edges.push_back(e);
-      }
-    }
-
-    /*!
-    * Private member function that check if there is already
-    * an edge between the two vertices
-    */
-    template <class T>
-    bool Graph::graph<T>::vertex::contains_edge_to_vertex_with_key(const T key)
-    {
-      typename std::list<edge>::iterator find_it = m_Edges.begin();
-      for(; find_it != m_Edges.end(); ++find_it) {
-	if (find_it->m_Edge->key() == key) {
-	  return true;
-	}   
-      }
-      return false;
+	std::set<size_t> visitedInd;
+	std::priority_queue<Edge> pq;
+	Graph mst;
+	
+	const map< UINT, std::vector<UINT> > &nodeEdges = graph.getNodeEdges();
+	const vector<Edge> &edges = graph.getEdges();
+	
+	int u = (*nodeEdges.begin()).first;
+	visitedInd.insert(u);
+	const vector<UINT> &neigh = nodeEdges.at(u);
+	for (vector<UINT>::const_iterator it=neigh.begin();it!=neigh.end();it++)
+	    pq.push(edges[*it]);
+	
+	while(!pq.empty())
+	{
+	    Edge edge = pq.top();
+	    pq.pop();
+	    
+	    if(visitedInd.find(edge.source) == visitedInd.end())
+	      u = edge.source;
+	    else if (visitedInd.find(edge.target) == visitedInd.end())
+	      u = edge.target;
+	    else u = -1;
+	    
+	    if (u>=0)
+	    {
+		mst.addEdge(edge, false);
+		visitedInd.insert(u);
+		vector<UINT> const& neigh = nodeEdges.at(u);
+		for (vector<UINT>::const_iterator it=neigh.begin();it!=neigh.end();it++)
+		    pq.push(edges[*it]);
+	    }
+	}
+	return mst;
     }
 
 } // namespace smil
 
 #endif // _D_GRAPH_HPP
+

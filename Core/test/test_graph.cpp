@@ -27,54 +27,59 @@
  */
 
 
-#include <stdio.h>
-#include <time.h>
+#include "DTest.h"
 
-//#include <boost/signal.hpp>
-//#include <boost/bind.hpp>
+#include "DGraph.hpp"
 
-#include "DCore.h"
-#include "DIO.h"
+#include <iostream>
+#include <fstream>
+
+
 
 using namespace smil;
 
-#include "DGui.h"
 
-class Test_VTK_RW : public TestCase
+
+
+class Test_MST : public TestCase
 {
-  virtual void run()
-  {
-    typedef UINT8 T;
-    const char *fName = "_smil_io_tmp.vtk";
-    
-    Image<T> im1(3, 3, 2);
-    T tab[] = { 28, 2, 3,
-		 2, 5, 6,
-		 3, 8, 9,
-		 4, 11, 12,
-		 5, 15, 16,
-		 6, 18, 19 };
-    im1 << tab;
-    TEST_ASSERT( write(im1, fName)==RES_OK );
-    
-    Image<T> im2;
-    
-    TEST_ASSERT( read(fName, im2)==RES_OK );
-    
-    TEST_ASSERT(im1==im2);
-  }
+    virtual void run()
+    {
+	Graph graph;
+	graph.addEdge(Edge(0,2, 1));
+	graph.addEdge(Edge(1,3, 1));
+	graph.addEdge(Edge(1,4, 2));
+	graph.addEdge(Edge(2,1, 7));
+	graph.addEdge(Edge(2,3, 3));
+	graph.addEdge(Edge(3,4, 1));
+	graph.addEdge(Edge(4,0, 1));
+	graph.addEdge(Edge(4,1, 3));
+	
+	Graph mst = MST(graph);
+	vector<Edge> mstTruth;
+	mstTruth.push_back(Edge(4,0,1));
+	mstTruth.push_back(Edge(3,4,1));
+	mstTruth.push_back(Edge(1,3,1));
+	mstTruth.push_back(Edge(0,2,1));
+	
+	TEST_ASSERT(mst.getEdges()==mstTruth);
+	
+	if (retVal!=RES_OK)
+	{
+	    for (vector<Edge>::const_iterator it=mst.getEdges().begin();it!=mst.getEdges().end();it++)
+	      cout << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
+	}
+    }
 };
 
-int main(int argc, char *argv[])
+
+
+int main()
 {
       TestSuite ts;
 
-      ADD_TEST(ts, Test_VTK_RW);
-      
-      createFromFile("/home/faessel/src/divers/2012-MSME/tmp.vtk");
+      ADD_TEST(ts, Test_MST);
       
       return ts.run();
-      
 }
-
 
