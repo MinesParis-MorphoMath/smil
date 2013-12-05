@@ -721,14 +721,14 @@ namespace smil
 	return binaryImageFunction<T, divLine<T> >(imIn1, imIn2, imOut);
     }
 
-    template <class T>
-    RES_T div(const Image<T> &imIn, const T &value, Image<T> &imOut)
-    {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-
-	return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
-    }
+//     template <class T>
+//     RES_T div(const Image<T> &imIn, const T &value, Image<T> &imOut)
+//     {
+// 	ASSERT_ALLOCATED(&imIn, &imOut);
+// 	ASSERT_SAME_SIZE(&imIn, &imOut);
+// 
+// 	return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
+//     }
 
     template <class T>
     RES_T div(const Image<T> &imIn, const double &dValue, Image<T> &imOut)
@@ -757,14 +757,14 @@ namespace smil
 	return binaryImageFunction<T, mulLine<T> >(imIn1, imIn2, imOut);
     }
 
-    template <class T>
-    RES_T mul(const Image<T> &imIn1, const T &value, Image<T> &imOut)
-    {
-	ASSERT_ALLOCATED(&imIn1, &imOut);
-	ASSERT_SAME_SIZE(&imIn1, &imOut);
-
-	return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
-    }
+//     template <class T>
+//     RES_T mul(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+//     {
+// 	ASSERT_ALLOCATED(&imIn1, &imOut);
+// 	ASSERT_SAME_SIZE(&imIn1, &imOut);
+// 
+// 	return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
+//     }
     template <class T>
     RES_T mul(const Image<T> &imIn, const double &dValue, Image<T> &imOut)
     {
