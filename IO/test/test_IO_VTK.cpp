@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 
       ADD_TEST(ts, Test_VTK_RW);
       
-      createFromFile("/home/faessel/src/divers/2012-MSME/tmp.vtk");
+//       createFromFile("/home/faessel/src/divers/2012-MSME/tmp.vtk");
       
       return ts.run();
       

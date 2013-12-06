@@ -121,6 +121,9 @@ namespace smil
 	if (png_get_valid (png_ptr, info_ptr, PNG_INFO_tRNS))
 	    png_set_tRNS_to_alpha (png_ptr);
 
+	if (bit_depth == 16)
+	    png_set_swap(png_ptr);	    
+	  
 	if (bit_depth < 8)
 	    png_set_packing (png_ptr);
 
@@ -154,6 +157,9 @@ namespace smil
 	
 	png_write_info(png_ptr, info_ptr);
 
+	if (hStruct.bit_depth > 8) // Swith to little-endian for 16-bit images
+	    png_set_swap(png_ptr);
+	
 	return RES_OK;
     }
     
