@@ -153,6 +153,9 @@ namespace std
     %template(UintDoubleVectorMap) map<UINT,DoubleVector>;
     %template(UintUintVectorMap) map<UINT,UintVector>;
     
+    %template(UcharVectorMap) map< UINT, vector<UINT8> >;
+    %template(UshortVectorMap) map< UINT, vector<UINT16> >;
+    
     TEMPLATE_WRAP_CLASS_2T_CROSS(map, Map)
     
     TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, UINT, Map)

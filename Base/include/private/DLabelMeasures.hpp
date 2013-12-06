@@ -100,6 +100,18 @@ namespace smil
 	return processBlobMeasure<T, measVolFunc<T> >(imLbl, blobs);
     }
     
+    template <class T>
+    map<UINT, vector<T> > valueLists(const Image<T> &imIn, const bool onlyNonZero=true)
+    {
+	return processBlobMeasure<T, valueListFunc<T> >(imIn, onlyNonZero);
+    }
+    
+    template <class T>
+    map<UINT, vector<T> > valueLists(const Image<T> &imIn, const map<UINT, Blob> &blobs)
+    {
+	return processBlobMeasure<T, valueListFunc<T> >(imIn, blobs);
+    }
+    
     /**
     * Measure barycenter of labeled image.
     * Return a map(labelValue, Point) with the barycenter point coordinates for each label value.

@@ -33,7 +33,9 @@
 #include "Core/include/private/DImage.hpp"
 #include "DBaseMeasureOperations.hpp"
 #include "DLineArith.hpp"
+
 #include <map>
+#include <set>
 
 namespace smil
 {
@@ -231,6 +233,7 @@ namespace smil
 	    this->retVal.push_back(maxVal);
 	}
     };
+    
     /**
     * Min and Max values of an image
     *
@@ -244,6 +247,42 @@ namespace smil
 	return func(imIn, onlyNonZero);
     }
 
+    template <class T>
+    struct valueListFunc : public MeasureFunctionBase<T, vector<T> >
+    {
+	typedef typename Image<T>::lineType lineType;
+	set<T> valList;
+	
+	virtual void initialize(const Image<T> &imIn)
+	{
+	    this->retVal.clear();
+	    valList.clear();
+	}
+
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+	    for (size_t i=0;i<size;i++)
+	    {
+		if (valList.find(lineIn[i])==valList.end())
+		  valList.insert(lineIn[i]);
+	    }
+	}
+	virtual void finalize(const Image<T> &imIn)
+	{
+	    // Copy the content of the set into the ret vector
+	    std::copy(valList.begin(), valList.end(), std::back_inserter(this->retVal));
+	}
+    };
+
+    /**
+     * Get the list of the pixel values present in the image
+     */
+    template <class T>
+    vector<T> valueList(const Image<T> &imIn, bool onlyNonZero=true)
+    {
+	valueListFunc<T> func;
+	return func(imIn, onlyNonZero);
+    }
     
     template <class T>
     struct measBarycenterFunc : public MeasureFunctionWithPos<T, DoubleVector>
