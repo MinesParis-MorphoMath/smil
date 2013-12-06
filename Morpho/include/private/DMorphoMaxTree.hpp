@@ -483,9 +483,12 @@ void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indica
 
       transformee_node[node] = transformee_node[nParent];
       indicatrice_node[node] = indicatrice_node[nParent];
-
+      //      std::cout <<"ind="<<indicatrice_node[node];
       //      std::cout <<"isPrevMaxT"<<isPrevMaxT<<"; flag="<<flag<<"\n";
       int isMaxT = 0;
+      // if((cNode >8)and (cNode < stop)){
+      // 	std::cout << "SEE WHAT HAPPENS\n";
+      // }
       if(cNode < stop){
 	if (current_residue > transformee_node[node]){
 	  //	  std::cout<<"UPDATE RES\n";
@@ -496,6 +499,7 @@ void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indica
 	  //	  std::cout << "totoflag="<<totoflag<<"\n";
 	  if(! (isPrevMaxT and flag)){
 	    indicatrice_node[node]  = cNode + 1;
+	    //	    std::cout <<"UPDATE="<<indicatrice_node[node]<<"   STOP ="<<stop;
 	    //	    std::cout <<"UPDATE IND:"<< cNode+1<<"\n";
 	  }
 	  
@@ -505,6 +509,7 @@ void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indica
 	//	std::cout<<"larger than stop\n";
 	indicatrice_node[node]  = 0;
       }
+      //      std::cout <<"-------\n";
       //      std::cout << "T("<<node<<")="<<int(transformee_node[node])<<"I="<<indicatrice_node[node]<<"stop="<<stop<<"\n";
       //      std::cout <<"-------\n";
       child=tree.getChild(node);
@@ -582,7 +587,7 @@ void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indic
 {
 
   int child;
-  UINT hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
+  UINT hauteur;
 
   transformee_node[root]=0;
   indicatrice_node[root]=0;
@@ -596,7 +601,7 @@ void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indic
       // for (toto=0;toto <=5;toto++){
       // 	std::cout<<toto <<": max="<< tree.getCriterion(toto).ymax<<"; min="<<tree.getCriterion(toto).ymin<<"\n";
       // }
-
+  hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
   child = tree.getChild(root);
   if(delta == 0){
     while (child!=0) 
@@ -608,7 +613,7 @@ void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indic
   else{
     while (child!=0) 
       {
-	ComputeDeltaUO(tree, transformee_node, indicatrice_node, child, root/*parent*/, (T)0/* prev_residue*/, hauteur /*stop*/, delta, 0 /*isPrevMaxT*/);
+	ComputeDeltaUO(tree, transformee_node, indicatrice_node, child, root/*parent*/, (T)0/* prev_residue*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
 
 	child = tree.getBrother(child);
       }
