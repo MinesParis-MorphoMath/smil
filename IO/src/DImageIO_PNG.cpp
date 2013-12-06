@@ -121,9 +121,7 @@ namespace smil
 	if (png_get_valid (png_ptr, info_ptr, PNG_INFO_tRNS))
 	    png_set_tRNS_to_alpha (png_ptr);
 
-	if (bit_depth == 16)
-	    png_set_strip_16 (png_ptr);
-	else if (bit_depth < 8)
+	if (bit_depth < 8)
 	    png_set_packing (png_ptr);
 
 	/* update info structure to apply transformations */
@@ -207,8 +205,8 @@ namespace smil
 	return RES_OK;
     }
 	
-    template <>
-    RES_T PNGImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image)
+    template <class T>
+    RES_T StandardPNGRead(const char *filename, Image<T> &image)
     {
 	/* open image file */
 	FILE *fp = fopen (filename, "rb");
@@ -226,12 +224,10 @@ namespace smil
 	
 	png_structp &png_ptr = hStruct.png_ptr;
 	
-	ASSERT(hStruct.bit_depth==8 && hStruct.channels==1, "Not a 8bit gray image", RES_ERR);
-	
 	ASSERT((image.setSize(hStruct.width, hStruct.height)==RES_OK), RES_ERR_BAD_ALLOCATION);
 
 	/* setup a pointer array.  Each one points at the begening of a row. */
-	png_bytep *row_pointers = image.getLines();
+	png_bytep *row_pointers = (png_bytep *)image.getLines();
 
 	/* read pixel data using row pointers */
 	png_read_image (png_ptr, row_pointers);
@@ -242,6 +238,18 @@ namespace smil
 	image.modified();
 	
 	return RES_OK;
+    }
+    
+    template <>
+    RES_T PNGImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image)
+    {
+	return StandardPNGRead(filename, image);
+    }
+
+    template <>
+    RES_T PNGImageFileHandler<UINT16>::read(const char *filename, Image<UINT16> &image)
+    {
+	return StandardPNGRead(filename, image);
     }
 
     template <>
@@ -303,8 +311,8 @@ namespace smil
     }
 
 
-    template <>
-    RES_T PNGImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename)
+    template <class T>
+    RES_T StandardPNGWrite(const Image<T> &image, const char *filename)
     {
 	/* open image file */
 	FILE *fp = fopen (filename, "wb");
@@ -323,17 +331,29 @@ namespace smil
 	
 	hStruct.width = image.getWidth();
 	hStruct.height = image.getHeight();
-	hStruct.bit_depth = 8;
+	hStruct.bit_depth = sizeof(T)*8;
 	hStruct.color_type = PNG_COLOR_TYPE_GRAY;
 	hStruct.channels = 1;
 	
 	ASSERT(writePNGHeader(fp, hStruct)==RES_OK);
 	
-	png_bytep * row_pointers = image.getLines();
+	png_bytep * row_pointers = (png_bytep *)image.getLines();
 	png_write_image(png_ptr, row_pointers);
 	png_write_end(png_ptr, NULL);
 
 	return RES_OK;
+    }
+    
+    template <>
+    RES_T PNGImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename)
+    {
+	return StandardPNGWrite(image, filename);
+    }
+    
+    template <>
+    RES_T PNGImageFileHandler<UINT16>::write(const Image<UINT16> &image, const char *filename)
+    {
+	return StandardPNGWrite(image, filename);
     }
     
     template <>
