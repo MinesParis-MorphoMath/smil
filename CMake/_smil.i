@@ -79,12 +79,13 @@ import __main__
 import __builtin__
 
 from smilCorePython import *
+from smilBasePython import *
+from smilIOPython import *
 
 __builtin__.dataTypes = [ ${DATA_TYPES_QUOTE_STR}, ]
 __builtin__.imageTypes = [ ${IMAGE_TYPES_STR}, ]
 
 
-${PYTHON_IMPORT_MODULES}
 
 def AboutSmil():
     print "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}"
