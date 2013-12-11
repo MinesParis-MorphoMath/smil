@@ -25,22 +25,9 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+%include smilCommon.i
 
-#ifdef SWIGPYTHON
-%module smilPython
-#endif // SWIGPYTHON
-
-#ifdef SWIGJAVA
-%module smilJava
-#endif // SWIGJAVA
-
-#ifdef SWIGOCTAVE
-%module smilOctave
-#endif // SWIGOCTAVE
-
-#ifdef SWIGRUBY
-%module smilRuby
-#endif // SWIGRUBY
+SMIL_MODULE(smil)
 
 
 %feature("autodoc", "1");
