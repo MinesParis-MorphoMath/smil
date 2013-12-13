@@ -159,12 +159,12 @@ namespace smil
     * 
     */
     template <class T>
-    RES_T drawRectangles(Image<T> &imOut, const map<UINT, UintVector> &coordsVect, T value=0, bool fill=false)
+    RES_T drawRectangles(Image<T> &imOut, const map<UINT, Vector_UINT> &coordsVect, T value=0, bool fill=false)
     {
 	ASSERT_ALLOCATED(&imOut);
 	ImageFreezer freeze(imOut);
 	
-	map<UINT, UintVector>::const_iterator it = coordsVect.begin();
+	map<UINT, Vector_UINT>::const_iterator it = coordsVect.begin();
 	if (it->second.size()!=4)
 	  return RES_ERR;
 	for (;it!=coordsVect.end();it++)

@@ -71,15 +71,16 @@ class Test_MosaicToGraph : public TestCase
       };
       im2 << vec2;
       
-      Graph graph = mosaicToGraph(im1, im2);
+      Graph<> graph;
+      mosaicToGraph(im1, im2, graph);
       
-      vector<Edge> trueEdges;
-      trueEdges.push_back(Edge(1,0,7));
-      trueEdges.push_back(Edge(2,0,0));
-      trueEdges.push_back(Edge(3,2,2));
-      trueEdges.push_back(Edge(3,0,0));
-      trueEdges.push_back(Edge(4,0,0));
-      trueEdges.push_back(Edge(4,1,4));
+      vector<Edge<> > trueEdges;
+      trueEdges.push_back(Edge<>(1,0,7));
+      trueEdges.push_back(Edge<>(2,0,0));
+      trueEdges.push_back(Edge<>(3,2,2));
+      trueEdges.push_back(Edge<>(3,0,0));
+      trueEdges.push_back(Edge<>(4,0,0));
+      trueEdges.push_back(Edge<>(4,1,4));
       
       TEST_ASSERT(trueEdges==graph.getEdges());
       
@@ -108,10 +109,49 @@ class Test_MosaicToGraph : public TestCase
 };
 
 
+class Test_DrawGraph : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+      imType im4(im1);
+      
+      // Mosaic
+      dataType vec1[] = {
+	1, 1, 1, 1, 1, 1, 1, 
+	1, 1, 1, 1, 1, 1, 1, 
+	2, 2, 2, 2, 1, 1, 1, 
+	2, 2, 2, 2, 4, 1, 4, 
+	2, 3, 3, 3, 4, 4, 4, 
+	2, 3, 3, 3, 4, 4, 4, 
+	3, 3, 3, 3, 4, 4, 4
+      };
+      im1 << vec1;
+      
+      fill(im2, UINT8(0));
+      
+      Graph<> graph;
+      mosaicToGraph(im1, im2, graph);
+      
+      drawGraph(im1, graph, im2);
+      
+      im2.printSelf(1);
+      
+//       TEST_ASSERT(im3==im4);
+  }
+};
+
+
 int main(int argc, char *argv[])
 {
       TestSuite ts;
       ADD_TEST(ts, Test_MosaicToGraph);
+      ADD_TEST(ts, Test_DrawGraph);
       
       return ts.run();
   

@@ -67,7 +67,7 @@ class Test_MeasureBarycenter : public TestCase
       double xc = 0, yc = 0;
       double xcTruth = 44.5, ycTruth = 34.5;
       
-      DoubleVector bary = measBarycenter(im);
+      Vector_double bary = measBarycenter(im);
       
       TEST_ASSERT(bary[0]==xcTruth);
       TEST_ASSERT(bary[1]==ycTruth);
@@ -139,7 +139,7 @@ class Test_MeasInertiaMatrix : public TestCase
       Image_UINT8 im(5,5);
       im << vec;
       
-      DoubleVector mat = measInertiaMatrix(im, true);
+      Vector_double mat = measInertiaMatrix(im, true);
 
       TEST_ASSERT(mat[0]==5 && mat[1]==11 && mat[2]==11 && mat[3]==22 && mat[4]==27 && mat[5]==27);
   }
@@ -175,7 +175,7 @@ class Test_MeasCovariance: public TestCase
       im1 << vec1;
       im2 << vec2;
       
-      DoubleVector cov = measCovariance(im1, im2, 1, 0, 0, 5);
+      Vector_double cov = measCovariance(im1, im2, 1, 0, 0, 5);
 
       TEST_ASSERT(cov[0]==348240 && cov[1]==218260 && cov[2]==195396 && cov[3]==141960 && cov[4]==50574 && cov[5]==0);
       
@@ -192,7 +192,7 @@ class Test_MeanVal : public TestCase
       fill(im, UINT16(10));
       im.setPixel(0, UINT16(65000));
       double mv, stdd;
-      DoubleVector res = meanVal(im);
+      Vector_double res = meanVal(im);
 
       TEST_ASSERT(res[0]==6509);
       TEST_ASSERT(res[1]==19497);

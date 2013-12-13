@@ -29,6 +29,8 @@
 #ifndef _D_GRAPH_HPP
 #define _D_GRAPH_HPP
 
+#include "DBaseObject.h"
+
 #include <list>
 #include <algorithm>
 #include <vector>
@@ -43,10 +45,16 @@ namespace smil
     /**
      * Non-oriented edge
      */
+    template <class T=size_t>
     class Edge
     {
     public:
-	Edge(UINT a, UINT b, UINT w=1.)
+	typedef T WeightType;
+	Edge()
+	  : source(0), target(0), weight(1)
+	{
+	}
+	Edge(size_t a, size_t b, T w=1.)
 	  : source(a), target(b), weight(w)
 	{
 	}
@@ -55,9 +63,9 @@ namespace smil
 	{
 	}
 	
-	UINT source;
-	UINT target;
-	UINT weight;
+	size_t source;
+	size_t target;
+	T weight;
 	
 	inline bool operator ==(const Edge &rhs) const
 	{
@@ -78,16 +86,45 @@ namespace smil
     /**
      * Non-oriented graph
      */
-    class Graph
+    template <class nodeT=size_t, class edgeWT=size_t>
+    class Graph : public BaseObject
     {
+    protected:
+	size_t edgeNbr;
+	set<size_t> nodes;
+	std::vector< EdgeType > edges;
+	std::map< size_t, std::vector<size_t> > nodeEdges;
+	
     public:
 	
+	typedef nodeT NodeType;
+	typedef Edge<edgeWT> EdgeType;
+	typedef edgeWT EdgeWeightType;
+	
 	Graph()
-	  : edgeNbr(0)
+	  : BaseObject("Graph"),
+	    edgeNbr(0)
+	{
+	}
+	Graph(const Graph &rhs)
+	  : BaseObject("Graph"),
+	    nodes(rhs.nodes),
+	    edges(rhs.edges),
+	    nodeEdges(rhs.nodeEdges),
+	    edgeNbr(rhs.edgeNbr)
 	{
 	}
 	
-	void addNode(const UINT &ind, const UINT &val=0)
+	Graph &operator =(const Graph &rhs)
+	{
+	    nodes = rhs.nodes;
+	    edges = rhs.edges;
+	    nodeEdges = rhs.nodeEdges;
+	    edgeNbr = rhs.edgeNbr;
+	    return *this;
+	}
+	
+	void addNode(const size_t &ind, const nodeT &val=0)
 	{
 	    nodeValues[ind] = val;
 	}
@@ -98,11 +135,11 @@ namespace smil
 	 * 	If the edge already exists, the edge weight will be the minimum between the existing a the new weight.
 	 */
 	
-	void addEdge(const Edge &e, bool checkIfExists=true)
+	void addEdge(const EdgeType &e, bool checkIfExists=true)
 	{
 	    if (checkIfExists)
 	    {
-		vector<Edge>::iterator foundEdge = find(edges.begin(), edges.end(), e);
+		typename vector< EdgeType >::iterator foundEdge = find(edges.begin(), edges.end(), e);
 		if (foundEdge!=edges.end())
 		{
 		    (*foundEdge).weight = min((*foundEdge).weight, e.weight);
@@ -117,55 +154,88 @@ namespace smil
 	    
 	    edgeNbr++;
 	}
-	void addEdge(const UINT src, const UINT targ, UINT weight=1, bool checkIfExists=true)
+	void addEdge(const size_t src, const size_t targ, edgeWT weight=1, bool checkIfExists=true)
 	{
-	    addEdge(Edge(src, targ, weight), checkIfExists);
+	    addEdge(EdgeType(src, targ, weight), checkIfExists);
 	}
-	void removeNode(const UINT ind)
+	
+    protected:
+	void removeNode(const size_t ind)
 	{
-	    set<UINT>::iterator fNode = nodes.find(ind);
+	    set<size_t>::iterator fNode = nodes.find(ind);
 	    if (fNode!=nodes.end())
 	      nodes.erase(fNode);
-	    map< UINT, vector<UINT> >::iterator fNodeEdges = nodeEdges.find(ind);
-	    if (fNodeEdges!=nodeEdges.end())
-	      nodeEdges.erase(fNodeEdges);
+	    removeNodeEdges(ind);
 	}
-	void removeNodeEdge(const UINT nodeIndex, const UINT edgeIndex)
+	void removeNodeEdge(const size_t nodeIndex, const size_t edgeIndex)
 	{
-	    map< UINT, std::vector<UINT> >::iterator nEdges = nodeEdges.find(nodeIndex);
+	    map< size_t, std::vector<size_t> >::iterator nEdges = nodeEdges.find(nodeIndex);
 	    if (nEdges==nodeEdges.end())
 	      return;
 	    
-	    std::vector<UINT> &eList = nEdges->second;
+	    std::vector<size_t> &eList = nEdges->second;
 	    
-	    vector<UINT>::iterator ei = find(eList.begin(), eList.end(), edgeIndex);
+	    vector<size_t>::iterator ei = find(eList.begin(), eList.end(), edgeIndex);
 	    if (ei!=eList.end())
 	      eList.erase(ei);
 	}
-	void removeEdge(const UINT src, const UINT targ)
+    public:
+	void removeNodeEdges(const size_t nodeIndex)
 	{
-	    vector<Edge>::iterator foundEdge = find(edges.begin(), edges.end(), Edge(src,targ));
+	    map< size_t, vector<size_t> >::iterator fNodeEdges = nodeEdges.find(nodeIndex);
+	    if (fNodeEdges==nodeEdges.end())
+	      return;
+	    
+	    for (vector<size_t>::iterator it=fNodeEdges->second.begin();it!=fNodeEdges->second.end();it++)
+	      removeEdge(*it);
+	}
+	void removeEdge(const size_t index)
+	{
+	    if (index>=edges.size())
+	      return;
+	    
+	    EdgeType &edge = edges[index];
+	    
+ 	    removeNodeEdge(edge.source, index);
+	    removeNodeEdge(edge.target, index);
+	    edge = EdgeType(0,0,0);
+	}
+	void removeEdge(const size_t src, const size_t targ)
+	{
+	    typename vector< EdgeType >::iterator foundEdge = find(edges.begin(), edges.end(), EdgeType(src,targ));
 	    if (foundEdge==edges.end())
 	      return;
 	    
-	    UINT edge_index = foundEdge-edges.begin();
-	    	    
- 	    removeNodeEdge((*foundEdge).source, edge_index);
-	    removeNodeEdge((*foundEdge).target, edge_index);
+	    return removeEdge(foundEdge-edges.begin());
+	}
+	void removeEdge(const EdgeType &edge)
+	{
+	    typename vector< EdgeType >::iterator foundEdge = find(edges.begin(), edges.end(), edge);
+	    if (foundEdge==edges.end())
+	      return;
 	    
-	    (*foundEdge) = Edge(0,0,0);
+	    return removeEdge(foundEdge-edges.begin());
 	}
 	
-	const vector<Edge> &getEdges() const { return edges; }
-	const map< UINT, std::vector<UINT> > &getNodeEdges() const { return nodeEdges; }
+	const vector< EdgeType > &getEdges() const { return edges; }  // lvalue
+	vector< EdgeType > &getEdges() { return edges; }  // rvalue
+	const map< size_t, std::vector<size_t> > &getNodeEdges() const { return nodeEdges; } // lvalue
+	map< size_t, std::vector<size_t> > &getNodeEdges() { return nodeEdges; } // rvalue
 	
-	
-	map<UINT,UINT> labelizeNodes() const
+	void clear()
 	{
-	    map<UINT,UINT> lookup;
-	    set<UINT> nodeList(nodes);
+	    nodes.clear();
+	    edges.clear();
+	    nodeEdges.clear();
+	    edgeNbr = 0;
+	}
+	
+	map<size_t,size_t> labelizeNodes() const
+	{
+	    map<size_t,size_t> lookup;
+	    set<size_t> nodeList(nodes);
 	    
-	    UINT curLabel = 1;
+	    size_t curLabel = 1;
 	    
 	    while(!nodeList.empty())
 	    {
@@ -174,34 +244,33 @@ namespace smil
 	    return lookup;
 	}
 	
-	void printSelf(ostream &os = std::cout, string ="")
+	Graph<nodeT,edgeWT> computeMST()
 	{
-	    for (vector<Edge>::const_iterator it=edges.begin();it!=edges.end();it++)
+	    return graphMST(*this);
+	}
+	
+	virtual void printSelf(ostream &os = std::cout, string ="")
+	{
+	    for (typename vector< EdgeType >::const_iterator it=edges.begin();it!=edges.end();it++)
 	      os << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
 	}
 	
-	std::map<UINT, UINT> nodeValues;
-    protected:
-	UINT edgeNbr;
-	set<UINT> nodes;
-	std::vector<Edge> edges;
-	std::map< UINT, std::vector<UINT> > nodeEdges;
+	std::map<size_t, size_t> nodeValues;
 	
-	
-	void propagateLabel(const UINT &ind, const UINT &lbl, map<UINT,UINT> &lookup, set<UINT> &nList) const
+	void propagateLabel(const size_t &ind, const size_t &lbl, map<size_t,size_t> &lookup, set<size_t> &nList) const
 	{
-	    set<UINT>::iterator foundNode = nList.find(ind);
+	    set<size_t>::iterator foundNode = nList.find(ind);
 	    if (foundNode==nList.end())
 	      return;
 	    
 	    lookup[ind] = lbl;
 	    nList.erase(foundNode);
 	    
-	    const vector<UINT> &nEdges = nodeEdges.at(ind);
+	    const vector<size_t> &nEdges = nodeEdges.at(ind);
 	    
-	    for (vector<UINT>::const_iterator it=nEdges.begin();it!=nEdges.end();it++)
+	    for (vector<size_t>::const_iterator it=nEdges.begin();it!=nEdges.end();it++)
 	    {
-		const Edge &e = edges[*it];
+		const EdgeType &e = edges[*it];
 		if (e.source!=ind)
 		  propagateLabel(e.source, lbl, lookup, nList);
 		else if (e.target!=ind)
@@ -211,24 +280,26 @@ namespace smil
 	
     };
     
-    Graph MST(const Graph &graph)
+    template <class graphT>
+    graphT graphMST(const graphT &graph)
     {
+	typedef typename graphT::EdgeType EdgeType;
 	std::set<size_t> visitedInd;
-	std::priority_queue<Edge> pq;
-	Graph mst;
+	std::priority_queue< EdgeType > pq;
+	graphT mst;
 	
-	const map< UINT, std::vector<UINT> > &nodeEdges = graph.getNodeEdges();
-	const vector<Edge> &edges = graph.getEdges();
+	const map< size_t, std::vector<size_t> > &nodeEdges = graph.getNodeEdges();
+	const vector< EdgeType > &edges = graph.getEdges();
 	
 	int u = (*nodeEdges.begin()).first;
 	visitedInd.insert(u);
-	const vector<UINT> &neigh = nodeEdges.at(u);
-	for (vector<UINT>::const_iterator it=neigh.begin();it!=neigh.end();it++)
+	const vector<size_t> &neigh = nodeEdges.at(u);
+	for (vector<size_t>::const_iterator it=neigh.begin();it!=neigh.end();it++)
 	    pq.push(edges[*it]);
 	
 	while(!pq.empty())
 	{
-	    Edge edge = pq.top();
+	    EdgeType edge = pq.top();
 	    pq.pop();
 	    
 	    if(visitedInd.find(edge.source) == visitedInd.end())
@@ -241,14 +312,14 @@ namespace smil
 	    {
 		mst.addEdge(edge, false);
 		visitedInd.insert(u);
-		vector<UINT> const& neigh = nodeEdges.at(u);
-		for (vector<UINT>::const_iterator it=neigh.begin();it!=neigh.end();it++)
+		vector<size_t> const& neigh = nodeEdges.at(u);
+		for (vector<size_t>::const_iterator it=neigh.begin();it!=neigh.end();it++)
 		    pq.push(edges[*it]);
 	    }
 	}
 	return mst;
     }
-
+    
 } // namespace smil
 
 #endif // _D_GRAPH_HPP

@@ -110,9 +110,9 @@ namespace smil
       }
     };
     
-    typedef vector<double> DoubleVector;
-    typedef vector<DoubleVector> DoubleMatrix;
-    typedef vector<UINT> UintVector;
+    typedef vector<double> Vector_double;
+    typedef vector<Vector_double> Matrix_double;
+    typedef vector<UINT> Vector_UINT;
     
     struct Rectangle
     {

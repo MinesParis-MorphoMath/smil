@@ -46,6 +46,7 @@
 #include "DSlot.h"
 #include "DSignal.h"
 #include "DCoreEvents.h"
+#include "DGraph.hpp"
 using namespace smil;
 %}
 

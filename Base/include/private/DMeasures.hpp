@@ -97,7 +97,7 @@ namespace smil
     }
     
     template <class T>
-    struct measMeanValFunc : public MeasureFunctionBase<T, DoubleVector>
+    struct measMeanValFunc : public MeasureFunctionBase<T, Vector_double>
     {
 	typedef typename Image<T>::lineType lineType;
 	double sum1, sum2;
@@ -139,7 +139,7 @@ namespace smil
     * \param imIn Input image.
     */
     template <class T>
-    DoubleVector meanVal(const Image<T> &imIn, bool onlyNonZero=false)
+    Vector_double meanVal(const Image<T> &imIn, bool onlyNonZero=false)
     {
 	measMeanValFunc<T> func;
 	return func(imIn, onlyNonZero);
@@ -285,7 +285,7 @@ namespace smil
     }
     
     template <class T>
-    struct measBarycenterFunc : public MeasureFunctionWithPos<T, DoubleVector>
+    struct measBarycenterFunc : public MeasureFunctionWithPos<T, Vector_double>
     {
 	typedef typename Image<T>::lineType lineType;
 	double xSum, ySum, zSum, tSum;
@@ -315,7 +315,7 @@ namespace smil
     };
     
     template <class T>
-    DoubleVector measBarycenter(Image<T> &im)
+    Vector_double measBarycenter(Image<T> &im)
     {
 	measBarycenterFunc<T> func;
 	return func(im, false);
@@ -323,7 +323,7 @@ namespace smil
 
 
     template <class T>
-    struct measBoundBoxFunc : public MeasureFunctionWithPos<T, UintVector >
+    struct measBoundBoxFunc : public MeasureFunctionWithPos<T, Vector_UINT >
     {
 	typedef typename Image<T>::lineType lineType;
 	double xMin, xMax, yMin, yMax, zMin, zMax;
@@ -372,7 +372,7 @@ namespace smil
     * \return xMin, yMin (,zMin), xMax, yMax (,zMax)
     */
     template <class T>
-    UintVector measBoundBox(Image<T> &im)
+    Vector_UINT measBoundBox(Image<T> &im)
     {
 	measBoundBoxFunc<T> func;
 	return func(im, true);
@@ -380,7 +380,7 @@ namespace smil
 
 
     template <class T>
-    struct measInertiaMatrixFunc : public MeasureFunctionWithPos<T, DoubleVector>
+    struct measInertiaMatrixFunc : public MeasureFunctionWithPos<T, Vector_double>
     {
 	typedef typename Image<T>::lineType lineType;
 	double m000, m100, m010, m110, m200, m020, m001, m101, m011, m002;
@@ -437,7 +437,7 @@ namespace smil
     * \return * For 3D images: m000, m100, m010, m110, m200, m020, m001, m101, m011, m002
     */
     template <class T>
-    DoubleVector measInertiaMatrix(const Image<T> &im, const bool onlyNonZero=true)
+    Vector_double measInertiaMatrix(const Image<T> &im, const bool onlyNonZero=true)
     {
 	measInertiaMatrixFunc<T> func;
 	return func(im, onlyNonZero);
@@ -514,9 +514,9 @@ namespace smil
     * Return a vector conatining the offset of all non-zero points in image.
     */
     template <class T>
-    UintVector nonZeroOffsets(Image<T> &imIn)
+    Vector_UINT nonZeroOffsets(Image<T> &imIn)
     {
-	UintVector offsets;
+	Vector_UINT offsets;
 
 	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, offsets);
 	
