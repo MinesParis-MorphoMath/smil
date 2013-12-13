@@ -68,10 +68,10 @@ namespace smil
 	virtual ~Image();
 	
 	// Provide explicit copy constructor and assignment operator
-	// Copy constructor
-	Image(const Image<T> & rhs, bool cloneData=true);
+	//! Copy constructor
+	Image(const Image<T> & rhs, bool cloneData=false);
 	template <class T2>
-	Image(const Image<T2> &rhs, bool cloneData=true);
+	Image(const Image<T2> &rhs, bool cloneData=false);
 	// Assignment operator
 	Image<T>& operator = (const Image<T> &rhs)
 	{
@@ -79,6 +79,47 @@ namespace smil
 	    return *this;
 	}
 	
+	Image(BaseImage *_im, bool stealIdentity=false)
+	{
+	    init();
+	    
+	    Image *im = castBaseImage(_im, T());
+	    if (im==NULL)
+	      return;
+	    
+	    if (!stealIdentity)
+	    {
+	      setSize(*im);
+	      return;
+	    }
+	    
+	    if (!im->isAllocated())
+	      return;
+	    
+	    // Steal BaseImage identity
+	    // Transfert data from the BaseImage to this
+	    
+	    width = im->width;
+	    height = im->height;
+	    depth = im->depth;
+	    
+	    sliceCount = im->sliceCount;
+	    lineCount = im->lineCount;
+	    pixelCount = im->pixelCount;
+	    
+	    pixels = im->pixels;
+	    slices = im->slices;
+	    lines = im->lines;
+	    
+	    allocated = true;
+	    allocatedSize = im->allocatedSize;
+	    
+	    im->allocated = false;
+	    im->pixels = NULL;
+	    im->slices = NULL;
+	    im->lines = NULL;
+	    
+	}
       
 	//! Get the image type.
 	//! \return The type of the image data as a string ("UINT8", "UINT16", ...)
@@ -148,6 +189,7 @@ namespace smil
 
 	//! Copy pixel values to a given char array
 	void toCharArray(signed char outArray[]);
+	char *toCharArray() { return (char *)pixels; }
 	//! Copy pixel values from a given char array
 	void fromCharArray(signed char inArray[]);
 
@@ -374,10 +416,10 @@ namespace smil
     }
 
     template <class T>
-    Image<T> *castBaseImage(BaseImage &img, const T &)
+    Image<T> *castBaseImage(BaseImage *img, const T &)
     {
-	ASSERT(strcmp(getDataTypeAsString<T>(), img.getTypeAsString())==0, "Bad type for cast", NULL);
-	return static_cast< Image<T>* >(&img);
+	ASSERT(strcmp(getDataTypeAsString<T>(), img->getTypeAsString())==0, "Bad type for cast", NULL);
+	return static_cast< Image<T>* >(img);
     }
 
 

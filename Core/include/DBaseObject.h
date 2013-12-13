@@ -81,7 +81,7 @@ namespace smil
     }
     }
 
-    ~BaseObject()
+    virtual ~BaseObject()
     {
 	if (registered)
     {

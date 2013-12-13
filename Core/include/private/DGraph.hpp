@@ -67,6 +67,12 @@ namespace smil
 	size_t target;
 	T weight;
 	
+	inline bool isActive() const { return (source!=0 && target!=0);  }
+	inline void desactivate()
+	{
+	    source = 0;
+	    target = 0;
+	}
 	inline bool operator ==(const Edge &rhs) const
 	{
 	    if (rhs.source==source && rhs.target==target)
@@ -89,18 +95,20 @@ namespace smil
     template <class nodeT=size_t, class edgeWT=size_t>
     class Graph : public BaseObject
     {
-    protected:
-	size_t edgeNbr;
-	set<size_t> nodes;
-	std::vector< EdgeType > edges;
-	std::map< size_t, std::vector<size_t> > nodeEdges;
-	
     public:
 	
 	typedef nodeT NodeType;
 	typedef Edge<edgeWT> EdgeType;
 	typedef edgeWT EdgeWeightType;
 	
+    protected:
+	size_t edgeNbr;
+	set<size_t> nodes;
+	std::map<size_t, size_t> nodeValues;
+	std::vector< EdgeType > edges;
+	std::map< size_t, std::vector<size_t> > nodeEdges;
+	
+    public:
 	Graph()
 	  : BaseObject("Graph"),
 	    edgeNbr(0)
@@ -109,6 +117,7 @@ namespace smil
 	Graph(const Graph &rhs)
 	  : BaseObject("Graph"),
 	    nodes(rhs.nodes),
+	    nodeValues(rhs.nodeValues),
 	    edges(rhs.edges),
 	    nodeEdges(rhs.nodeEdges),
 	    edgeNbr(rhs.edgeNbr)
@@ -118,10 +127,20 @@ namespace smil
 	Graph &operator =(const Graph &rhs)
 	{
 	    nodes = rhs.nodes;
+	    nodeValues = rhs.nodeValues;
 	    edges = rhs.edges;
 	    nodeEdges = rhs.nodeEdges;
 	    edgeNbr = rhs.edgeNbr;
 	    return *this;
+	}
+	
+	void clear()
+	{
+	    nodes.clear();
+	    nodeValues.clear();
+	    edges.clear();
+	    nodeEdges.clear();
+	    edgeNbr = 0;
 	}
 	
 	void addNode(const size_t &ind, const nodeT &val=0)
@@ -186,8 +205,17 @@ namespace smil
 	    if (fNodeEdges==nodeEdges.end())
 	      return;
 	    
-	    for (vector<size_t>::iterator it=fNodeEdges->second.begin();it!=fNodeEdges->second.end();it++)
-	      removeEdge(*it);
+	    vector<size_t> &nedges = fNodeEdges->second;
+	    for (vector<size_t>::iterator it=nedges.begin();it!=nedges.end();it++)
+	    {
+		EdgeType &e = edges[*it];
+		if (e.source==nodeIndex)
+		  removeNodeEdge(e.target, *it);
+		else
+		  removeNodeEdge(e.source, *it);
+		e.desactivate();
+	    }
+	    nedges.clear();
 	}
 	void removeEdge(const size_t index)
 	{
@@ -198,7 +226,7 @@ namespace smil
 	    
  	    removeNodeEdge(edge.source, index);
 	    removeNodeEdge(edge.target, index);
-	    edge = EdgeType(0,0,0);
+	    edge.desactivate();
 	}
 	void removeEdge(const size_t src, const size_t targ)
 	{
@@ -222,13 +250,18 @@ namespace smil
 	const map< size_t, std::vector<size_t> > &getNodeEdges() const { return nodeEdges; } // lvalue
 	map< size_t, std::vector<size_t> > &getNodeEdges() { return nodeEdges; } // rvalue
 	
-	void clear()
+	Graph<nodeT,edgeWT> computeMST()
 	{
-	    nodes.clear();
-	    edges.clear();
-	    nodeEdges.clear();
-	    edgeNbr = 0;
+	    return graphMST(*this);
 	}
+	
+	virtual void printSelf(ostream &os = std::cout, string ="")
+	{
+	    for (typename vector< EdgeType >::const_iterator it=edges.begin();it!=edges.end();it++)
+	      if ((*it).isActive())
+		os << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
+	}
+	
 	
 	map<size_t,size_t> labelizeNodes() const
 	{
@@ -244,19 +277,7 @@ namespace smil
 	    return lookup;
 	}
 	
-	Graph<nodeT,edgeWT> computeMST()
-	{
-	    return graphMST(*this);
-	}
-	
-	virtual void printSelf(ostream &os = std::cout, string ="")
-	{
-	    for (typename vector< EdgeType >::const_iterator it=edges.begin();it!=edges.end();it++)
-	      os << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
-	}
-	
-	std::map<size_t, size_t> nodeValues;
-	
+    protected:	
 	void propagateLabel(const size_t &ind, const size_t &lbl, map<size_t,size_t> &lookup, set<size_t> &nList) const
 	{
 	    set<size_t>::iterator foundNode = nList.find(ind);

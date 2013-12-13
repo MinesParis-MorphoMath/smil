@@ -221,6 +221,7 @@ namespace smil
 // Import smilGui for viewers stuff
 %import smilGui.i
 
+
 %ignore smil::Image::operator[];
 %extend smil::Image
 {

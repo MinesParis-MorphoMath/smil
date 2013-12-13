@@ -59,7 +59,7 @@ namespace smil
 	allocated(false),
 	allocatedSize(0)
 	{
-		onModified = Signal(this);
+	    onModified = Signal(this);
 	}
 	
 	BaseImage(const BaseImage &rhs)
@@ -75,9 +75,9 @@ namespace smil
 	
 	virtual ~BaseImage()
 	{
+	    cout << "del" << endl;
 	}
 	
-    private:
 	// Forbid implicit assignment operator
 	BaseImage& operator=(const BaseImage &rhs);
 

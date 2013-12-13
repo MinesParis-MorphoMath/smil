@@ -118,6 +118,7 @@ namespace smil
     template <class T>
     Image<T>::~Image()
     {
+	cout << "del img" << endl;
 	if (viewer)
 	    delete viewer;
 	viewer = NULL;

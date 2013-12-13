@@ -194,6 +194,13 @@ namespace smil
     {
     }
     
+    template <>
+    inline char *Image<RGB>::toCharArray()
+    {
+	cout << "Not implemented for RGB images" << endl;
+	return NULL;
+    }
+    
     
 #ifdef USE_QWT
     template <>

@@ -150,7 +150,7 @@ def autoCastBaseImage(baseImg):
     typeStr = baseImg.getTypeAsString()
     if typeStr in dataTypes:
       imType = imageTypes[dataTypes.index(typeStr)]
-      return castBaseImage(baseImg, imType.getDataTypeMax())
+      return imType(baseImg, True) # Steal baseImg identity (kind of trick for python cast)
     else:
       return None
 
