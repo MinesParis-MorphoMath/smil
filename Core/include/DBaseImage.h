@@ -75,7 +75,6 @@ namespace smil
 	
 	virtual ~BaseImage()
 	{
-	    cout << "del" << endl;
 	}
 	
 	// Forbid implicit assignment operator

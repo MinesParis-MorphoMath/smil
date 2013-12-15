@@ -61,13 +61,6 @@ namespace smil
 	parentClass::init();
     }
 
-    
-    template <>
-    inline void* Image<RGB>::getVoidPointer(void) {
-	return &pixels;
-    }
-
-
     template <>
     inline RES_T Image< RGB >::restruct(void)
     {
@@ -98,6 +91,14 @@ namespace smil
 
 	return RES_OK;
     }
+    
+        
+    template <>
+    inline void* Image<RGB>::getVoidPointer(void) {
+	return &pixels;
+    }
+
+
 
 
     template <>

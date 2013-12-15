@@ -34,6 +34,7 @@
 #include "DIO.h"
 
 #include "NSTypes/RGB/include/DRGB.h"
+#include "NSTypes/RGB/include/DImage_RGB.h"
 
 // #include "Addons/MorphM/include/private/DMorphMImage.hpp"
 
@@ -44,36 +45,13 @@
 
 using namespace smil;
 
-    template <class MCT1, class T2>
-    RES_T splitChannel(const Image<MCT1> &imIn, Image<T2> &imOut)
-    {
-	ASSERT_ALLOCATED(&imIn);
-	
-	UINT width = imIn.getWidth(), height = imIn.getHeight();
-	UINT chanNum = MCT1::channelNumber();
-	UINT pixCount = width*height;
-	ASSERT(imOut.setSize(width, height, chanNum)==RES_OK);
-
-	typedef typename MCT1::DataType T1;
-	typename Image<MCT1>::lineType lineIn = imIn.getPixels();
-	typename Image<T2>::lineType lineOut = imOut.getPixels();
-	
-	for (UINT i=0;i<chanNum;i++)
-	{
-	    copyLine<T1,T2>(lineIn.arrays[i], pixCount, lineOut);
-	    lineOut += pixCount;
-	}
-// 	imOut.modified();
-	
-	return RES_OK;
-    }
 
 int main(int argc, char *argv[])
 {
 
 //   Gui::initialize();
 //     QApplication qapp(argc,argv);
-    Image_UINT8 im1(256,256);
+//     Image_UINT8 im1(256,256);
 //     Image_UINT8 im2;
 
 //     im2 << ( (im1>UINT8(100)) & im1 );
@@ -81,7 +59,7 @@ int main(int argc, char *argv[])
 //     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
 //       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
 
-   read("http://cmm.ensmp.fr/~faessel/smil/images/lena.png", im1);
+//    read("http://cmm.ensmp.fr/~faessel/smil/images/lena.png", im1);
 //    read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/antibiog.bmp", im1);
 //    read("/home/mat/src/morphee/trunk/utilities/Images/Gray/lena256x256.png", im1);
 //    read("/home/faessel/src/Smil/build/lib/tmp.bmp", im1);
@@ -104,14 +82,16 @@ int main(int argc, char *argv[])
 //     im3->printSelf();
 //     im1.show();
 //     im1.getViewer()->getOverlay();
-   Image<RGB> imrgb(256,256);
-   read("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png", imrgb);
+   BaseImage *imrgb = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
+//    BaseImage *im = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/tools.png");
 //    im1.setSize(imrgb);
 //    copyChannel(imrgb, 0, im1);
-   splitChannel(imrgb, im1);
-   mergeChannels(im1, imrgb);
-   imrgb.show();
-   im1.show();
+   
+//    Image<RGB> *im = static_cast< Image<RGB>* >(imrgb);
+   Image<RGB> imrgb2(imrgb, true);
+//       Image<UINT8> im2(im, true);
+   delete imrgb;
+//       delete imrgb;
 //     
 //     Gui::execLoop();
 //     qapp.exec();

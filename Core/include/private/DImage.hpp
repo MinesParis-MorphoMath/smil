@@ -79,47 +79,8 @@ namespace smil
 	    return *this;
 	}
 	
-	Image(BaseImage *_im, bool stealIdentity=false)
-	{
-	    init();
-	    
-	    Image *im = castBaseImage(_im, T());
-	    if (im==NULL)
-	      return;
-	    
-	    if (!stealIdentity)
-	    {
-	      setSize(*im);
-	      return;
-	    }
-	    
-	    if (!im->isAllocated())
-	      return;
-	    
-	    // Steal BaseImage identity
-	    // Transfert data from the BaseImage to this
-	    
-	    width = im->width;
-	    height = im->height;
-	    depth = im->depth;
-	    
-	    sliceCount = im->sliceCount;
-	    lineCount = im->lineCount;
-	    pixelCount = im->pixelCount;
-	    
-	    pixels = im->pixels;
-	    slices = im->slices;
-	    lines = im->lines;
-	    
-	    allocated = true;
-	    allocatedSize = im->allocatedSize;
-	    
-	    im->allocated = false;
-	    im->pixels = NULL;
-	    im->slices = NULL;
-	    im->lines = NULL;
-	    
-	}
+	Image(BaseImage *_im, bool stealIdentity=false);
+	void swapWith(Image &other);
       
 	//! Get the image type.
 	//! \return The type of the image data as a string ("UINT8", "UINT16", ...)
@@ -419,7 +380,7 @@ namespace smil
     Image<T> *castBaseImage(BaseImage *img, const T &)
     {
 	ASSERT(strcmp(getDataTypeAsString<T>(), img->getTypeAsString())==0, "Bad type for cast", NULL);
-	return static_cast< Image<T>* >(img);
+	return reinterpret_cast< Image<T>* >(img);
     }
 
 
