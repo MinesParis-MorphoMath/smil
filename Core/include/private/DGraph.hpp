@@ -245,7 +245,9 @@ namespace smil
 	    return removeEdge(foundEdge-edges.begin());
 	}
 	
+#ifndef SWIG
 	const vector< EdgeType > &getEdges() const { return edges; }  // lvalue
+#endif // SWIG
 	vector< EdgeType > &getEdges() { return edges; }  // rvalue
 	const map< size_t, std::vector<size_t> > &getNodeEdges() const { return nodeEdges; } // lvalue
 	map< size_t, std::vector<size_t> > &getNodeEdges() { return nodeEdges; } // rvalue

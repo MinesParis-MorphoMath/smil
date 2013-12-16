@@ -337,7 +337,9 @@ namespace smil
 	//! Export image data to a vector
 	Image<T>& operator >> (vector<T> &vect);
 	
+#ifndef SWIG
 	Image<T>& operator << (const char *s);
+#endif // SWIG
 	inline Image<T>& operator << (const string s) { return this->operator<<(s.c_str()); }
 	Image<T>& operator >> (const char *s);
 	inline Image<T>& operator >> (const string s) { return this->operator>>(s.c_str()); }
