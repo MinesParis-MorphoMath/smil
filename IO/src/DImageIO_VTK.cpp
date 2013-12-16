@@ -113,6 +113,7 @@ namespace smil
     
     RES_T getVTKFileInfo(const char* filename, ImageFileInfo &fInfo)
     {
+	return RES_OK;
     }
     
 } // namespace smil

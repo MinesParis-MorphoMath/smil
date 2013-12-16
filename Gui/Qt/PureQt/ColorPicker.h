@@ -105,7 +105,6 @@ public:
 
     ~ColorPicker();
 
-    QColor getColor(const QPoint &pos);
     void setColors(const QVector<QRgb> &cols);
     
     void popup();
