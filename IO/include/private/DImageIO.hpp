@@ -48,6 +48,10 @@
 #include "DImageIO_JPG.hpp"
 #endif // USE_JPEG
 
+#ifdef USE_TIFF
+#include "DImageIO_TIFF.hpp"
+#endif // USE_TIFF
+
 namespace smil
 {
   
@@ -76,6 +80,11 @@ namespace smil
 	else if (fileExt=="JPG")
 	    return new JPGImageFileHandler<T>();
     #endif // USE_JPEG
+
+    #ifdef USE_TIFF
+	else if (fileExt=="TIF")
+	    return new TIFFImageFileHandler<T>();
+    #endif // USE_TIFF
 
 	else if (fileExt=="VTK")
 	    return new VTKImageFileHandler<T>();

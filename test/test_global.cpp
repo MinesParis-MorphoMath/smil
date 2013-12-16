@@ -77,20 +77,13 @@ int main(int argc, char *argv[])
 //     ImageViewer<UINT8> *viewer;
 
 
-//     viewer = im1.getViewer();
-//     
-//     im3->printSelf();
-//     im1.show();
-//     im1.getViewer()->getOverlay();
-   BaseImage *imrgb = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
-//    BaseImage *im = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/tools.png");
-//    im1.setSize(imrgb);
-//    copyChannel(imrgb, 0, im1);
+   Image<UINT16> im1("/home/faessel/tmp/test_image16.tif");
+   im1 >> "/home/faessel/tmp/out16.tif";
    
-//    Image<RGB> *im = static_cast< Image<RGB>* >(imrgb);
-   Image<RGB> imrgb2(imrgb, true);
+   Image<UINT8> im2("/home/faessel/tmp/chambre.tif");
+   im1 >> "/home/faessel/tmp/out8.tif";
+   
 //       Image<UINT8> im2(im, true);
-   delete imrgb;
 //       delete imrgb;
 //     
 //     Gui::execLoop();
