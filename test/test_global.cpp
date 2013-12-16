@@ -78,10 +78,8 @@ int main(int argc, char *argv[])
 
 
    Image<UINT16> im1("/home/faessel/tmp/test_image16.tif");
-   im1 >> "/home/faessel/tmp/out16.tif";
    
    Image<UINT8> im2("/home/faessel/tmp/chambre.tif");
-   im1 >> "/home/faessel/tmp/out8.tif";
    
 //       Image<UINT8> im2(im, true);
 //       delete imrgb;
