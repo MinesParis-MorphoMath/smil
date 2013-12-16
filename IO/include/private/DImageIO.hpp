@@ -61,7 +61,6 @@ namespace smil
     /*@{*/
     
 
-//     inline BaseImage *createFromFile(
      
     template <class T>
     ImageFileHandler<T> *getHandlerForFile(const char* filename)

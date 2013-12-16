@@ -49,21 +49,9 @@ using namespace smil;
 int main(int argc, char *argv[])
 {
 
-//   Gui::initialize();
-//     QApplication qapp(argc,argv);
-//     Image_UINT8 im1(256,256);
-//     Image_UINT8 im2;
+   Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/lena.png");
+   im1.show();
 
-//     im2 << ( (im1>UINT8(100)) & im1 );
-//     return 1;
-//     if (read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1)!=RES_OK)
-//       read("/home/mat/src/morphee/trunk/utilities/Images/Gray/DNA_small.png", im1);
-
-//    read("http://cmm.ensmp.fr/~faessel/smil/images/lena.png", im1);
-//    read("/home/faessel/src/morphee/trunk/utilities/Images/Gray/antibiog.bmp", im1);
-//    read("/home/mat/src/morphee/trunk/utilities/Images/Gray/lena256x256.png", im1);
-//    read("/home/faessel/src/Smil/build/lib/tmp.bmp", im1);
-//     read("lena.png", im1);
 
 //     morphee::Image<UINT8> *mIm = new morphee::Image<UINT8>(512,512);
 //     mIm->allocateImage();
@@ -77,14 +65,14 @@ int main(int argc, char *argv[])
 //     ImageViewer<UINT8> *viewer;
 
 
-   Image<UINT16> im1("/home/faessel/tmp/test_image16.tif");
+//    Image<UINT16> im1("/home/faessel/tmp/test_image16.tif");
    
-   Image<UINT8> im2("/home/faessel/tmp/chambre.tif");
+//    Image<UINT8> im2("/home/faessel/tmp/chambre.tif");
    
 //       Image<UINT8> im2(im, true);
 //       delete imrgb;
 //     
-//     Gui::execLoop();
+    Gui::execLoop();
 //     qapp.exec();
 
 }

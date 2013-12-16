@@ -150,7 +150,9 @@ namespace std
 namespace std 
 {
     %template(Map_UINT) map<UINT,UINT>;
+#ifdef USE_64BIT_IDS
     %template(Map_SIZE_T) map<size_t,size_t>;
+#endif // USE_64BIT_IDS
     %template(Map_UINT_double) map<UINT,double>;
     %template(Map_UINT_Vector_double) map<UINT,Vector_double>;
     %template(Map_UINT_Vector_UINT) map<UINT,Vector_UINT>;
