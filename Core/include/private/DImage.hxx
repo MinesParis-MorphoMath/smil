@@ -86,6 +86,55 @@ namespace smil
     }
 
     template <class T>
+    Image<T>::Image(BaseImage *_im, bool stealIdentity)
+      : BaseImage("Image")
+    {
+	init();
+	
+	if (_im==NULL)
+	  return;
+	
+	Image *im = castBaseImage(_im, T());
+	if (im==NULL)
+	  return;
+	
+	if (!stealIdentity)
+	{
+	    setSize(*im);
+	    return;
+	}
+	
+	if (!im->isAllocated())
+	  return;
+	
+	// Steal BaseImage identity
+	// Transfert data from the BaseImage to this
+	swapWith(*im);
+    }
+    
+    template <class T>
+    void Image<T>::swapWith(Image &other)
+    {
+	swap(width, other.width);
+	swap(height, other.height);
+	swap(depth, other.depth);
+	
+	swap(sliceCount, other.sliceCount);
+	swap(lineCount, other.lineCount);
+	swap(pixelCount, other.pixelCount);
+	
+	swap(pixels, other.pixels);
+	swap(slices, other.slices);
+	swap(lines, other.lines);
+	
+	swap(allocated, other.allocated);
+	swap(allocatedSize, other.allocatedSize);
+	
+	swap(viewer, other.viewer);
+	swap(name, other.name);
+    }
+    
+    template <class T>
     void Image<T>::clone(const Image<T> &rhs)
     {
 	bool isAlloc = rhs.isAllocated();
@@ -839,3 +888,4 @@ namespace smil
 
 
 #endif // _IMAGE_HXX
+

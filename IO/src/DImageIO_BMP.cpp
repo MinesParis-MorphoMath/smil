@@ -129,7 +129,7 @@ namespace smil
 	
 	fInfo.width = iHeader.biWidth;
 	fInfo.height = iHeader.biHeight;
-	fInfo.bitDepth = iHeader.biBitCount;
+	fInfo.scalarType = ImageFileInfo::SCALAR_TYPE_UINT8;
 	fInfo.channels = iHeader.biBitCount / 8;
 	
 	switch(iHeader.biBitCount)

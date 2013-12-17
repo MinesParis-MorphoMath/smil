@@ -32,7 +32,10 @@
 
 #include "Core/include/private/DImage.hpp"
 #include "DBaseMeasureOperations.hpp"
+#include "DLineArith.hpp"
+
 #include <map>
+#include <set>
 
 namespace smil
 {
@@ -94,7 +97,7 @@ namespace smil
     }
     
     template <class T>
-    struct measMeanValFunc : public MeasureFunctionBase<T, DoubleVector>
+    struct measMeanValFunc : public MeasureFunctionBase<T, Vector_double>
     {
 	typedef typename Image<T>::lineType lineType;
 	double sum1, sum2;
@@ -136,7 +139,7 @@ namespace smil
     * \param imIn Input image.
     */
     template <class T>
-    DoubleVector meanVal(const Image<T> &imIn, bool onlyNonZero=false)
+    Vector_double meanVal(const Image<T> &imIn, bool onlyNonZero=false)
     {
 	measMeanValFunc<T> func;
 	return func(imIn, onlyNonZero);
@@ -230,6 +233,7 @@ namespace smil
 	    this->retVal.push_back(maxVal);
 	}
     };
+    
     /**
     * Min and Max values of an image
     *
@@ -243,9 +247,45 @@ namespace smil
 	return func(imIn, onlyNonZero);
     }
 
+    template <class T>
+    struct valueListFunc : public MeasureFunctionBase<T, vector<T> >
+    {
+	typedef typename Image<T>::lineType lineType;
+	set<T> valList;
+	
+	virtual void initialize(const Image<T> &imIn)
+	{
+	    this->retVal.clear();
+	    valList.clear();
+	}
+
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+	    for (size_t i=0;i<size;i++)
+	    {
+		if (valList.find(lineIn[i])==valList.end())
+		  valList.insert(lineIn[i]);
+	    }
+	}
+	virtual void finalize(const Image<T> &imIn)
+	{
+	    // Copy the content of the set into the ret vector
+	    std::copy(valList.begin(), valList.end(), std::back_inserter(this->retVal));
+	}
+    };
+
+    /**
+     * Get the list of the pixel values present in the image
+     */
+    template <class T>
+    vector<T> valueList(const Image<T> &imIn, bool onlyNonZero=true)
+    {
+	valueListFunc<T> func;
+	return func(imIn, onlyNonZero);
+    }
     
     template <class T>
-    struct measBarycenterFunc : public MeasureFunctionWithPos<T, DoubleVector>
+    struct measBarycenterFunc : public MeasureFunctionWithPos<T, Vector_double>
     {
 	typedef typename Image<T>::lineType lineType;
 	double xSum, ySum, zSum, tSum;
@@ -275,7 +315,7 @@ namespace smil
     };
     
     template <class T>
-    DoubleVector measBarycenter(Image<T> &im)
+    Vector_double measBarycenter(Image<T> &im)
     {
 	measBarycenterFunc<T> func;
 	return func(im, false);
@@ -283,7 +323,7 @@ namespace smil
 
 
     template <class T>
-    struct measBoundBoxFunc : public MeasureFunctionWithPos<T, UintVector >
+    struct measBoundBoxFunc : public MeasureFunctionWithPos<T, Vector_UINT >
     {
 	typedef typename Image<T>::lineType lineType;
 	double xMin, xMax, yMin, yMax, zMin, zMax;
@@ -332,7 +372,7 @@ namespace smil
     * \return xMin, yMin (,zMin), xMax, yMax (,zMax)
     */
     template <class T>
-    UintVector measBoundBox(Image<T> &im)
+    Vector_UINT measBoundBox(Image<T> &im)
     {
 	measBoundBoxFunc<T> func;
 	return func(im, true);
@@ -340,7 +380,7 @@ namespace smil
 
 
     template <class T>
-    struct measInertiaMatrixFunc : public MeasureFunctionWithPos<T, DoubleVector>
+    struct measInertiaMatrixFunc : public MeasureFunctionWithPos<T, Vector_double>
     {
 	typedef typename Image<T>::lineType lineType;
 	double m000, m100, m010, m110, m200, m020, m001, m101, m011, m002;
@@ -397,10 +437,76 @@ namespace smil
     * \return * For 3D images: m000, m100, m010, m110, m200, m020, m001, m101, m011, m002
     */
     template <class T>
-    DoubleVector measInertiaMatrix(const Image<T> &im, const bool onlyNonZero=true)
+    Vector_double measInertiaMatrix(const Image<T> &im, const bool onlyNonZero=true)
     {
 	measInertiaMatrixFunc<T> func;
 	return func(im, onlyNonZero);
+    }
+	
+    /**
+     * Covariance between two images
+     * 
+     * The direction is given by \b dx, \b dy and \b dz.
+     * The lenght corresponds to the max number of steps \b maxSteps
+     */
+    template <class T>
+    vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2, size_t dx, size_t dy, size_t dz, UINT maxSteps=0)
+    {
+	vector<double> vec;
+	ASSERT(areAllocated(&imIn1, &imIn2, NULL), vec);
+	ASSERT(haveSameSize(&imIn1, &imIn2, NULL), "Input images must have the same size", vec);
+	
+	size_t s[3];
+	imIn1.getSize(s);
+	if (maxSteps==0)
+	  maxSteps = max(max(s[0], s[1]), s[2]);
+	vec.clear();
+	
+	typename ImDtTypes<T>::volType slicesIn1 = imIn1.getSlices();
+	typename ImDtTypes<T>::volType slicesIn2 = imIn2.getSlices();
+	typename ImDtTypes<T>::sliceType curSliceIn1;
+	typename ImDtTypes<T>::sliceType curSliceIn2;
+	typename ImDtTypes<T>::lineType lineIn1;
+	typename ImDtTypes<T>::lineType lineIn2;
+	typename ImDtTypes<T>::lineType bufLine = ImDtTypes<T>::createLine(s[0]);
+	
+	
+ 	for (UINT len=0;len<=maxSteps;len++)
+	{
+	    double prod = 0;
+	    size_t pixLen = s[0] - dx*len;
+	    
+	    for (size_t z=0;z<s[2]-dz*len;z++)
+	    {
+		curSliceIn1 = slicesIn1[z];
+		curSliceIn2 = slicesIn2[z+len*dz];
+		for (int y=0;y<s[1]-dy*len;y++)
+		{
+		    lineIn1 = curSliceIn1[y];
+		    lineIn2 = curSliceIn2[y+len*dy];
+		    copyLine<T>(lineIn2 + len*dx, pixLen, bufLine);
+		    for (size_t x=0;x<pixLen;x++) // Vectorized loop
+		      prod += lineIn1[x] * bufLine[x];
+		}
+	    }
+	    vec.push_back(prod);
+	}
+	
+	ImDtTypes<T>::deleteLine(bufLine);
+	
+	return vec;
+    }
+
+    /**
+     * Auto-covariance
+     * 
+     * The direction is given by \b dx, \b dy and \b dz.
+     * The lenght corresponds to the max number of steps \b maxSteps
+     */
+    template <class T>
+    vector<double> measCovariance(const Image<T> &imIn, size_t dx, size_t dy, size_t dz, UINT maxSteps=0)
+    {
+	return measCovariance(imIn, imIn, dx, dy, dz, maxSteps);
     }
 	
     /**
@@ -408,9 +514,9 @@ namespace smil
     * Return a vector conatining the offset of all non-zero points in image.
     */
     template <class T>
-    UintVector nonZeroOffsets(Image<T> &imIn)
+    Vector_UINT nonZeroOffsets(Image<T> &imIn)
     {
-	UintVector offsets;
+	Vector_UINT offsets;
 
 	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, offsets);
 	

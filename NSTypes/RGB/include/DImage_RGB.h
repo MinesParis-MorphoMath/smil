@@ -61,13 +61,6 @@ namespace smil
 	parentClass::init();
     }
 
-    
-    template <>
-    inline void* Image<RGB>::getVoidPointer(void) {
-	return &pixels;
-    }
-
-
     template <>
     inline RES_T Image< RGB >::restruct(void)
     {
@@ -98,6 +91,14 @@ namespace smil
 
 	return RES_OK;
     }
+    
+        
+    template <>
+    inline void* Image<RGB>::getVoidPointer(void) {
+	return &pixels;
+    }
+
+
 
 
     template <>
@@ -195,16 +196,12 @@ namespace smil
     }
     
     template <>
-    inline RES_T readVTK<RGB>(const char *filename, Image<RGB> &image)
+    inline char *Image<RGB>::toCharArray()
     {
-	return RES_ERR;
+	cout << "Not implemented for RGB images" << endl;
+	return NULL;
     }
-
-    template <>
-    inline RES_T writeVTK<RGB>(const Image<RGB> &image, const char *filename, bool binary)
-    {
-	return RES_ERR;
-    }
+    
     
 #ifdef USE_QWT
     template <>

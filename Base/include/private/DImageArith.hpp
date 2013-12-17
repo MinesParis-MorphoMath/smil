@@ -122,6 +122,9 @@ namespace smil
 	size_t outH = imOut.getHeight();
 	size_t outD = imOut.getDepth();
 	
+	ASSERT(startX<inW && startY<inH && startZ<inD);
+	ASSERT(outStartX<outW && outStartY<outH && outStartZ<outD);
+	
 	size_t realSx = min( min(sizeX, inW-startX), outW-outStartX );
 	size_t realSy = min( min(sizeY, inH-startY), outH-outStartY );
 	size_t realSz = min( min(sizeZ, inD-startZ), outD-outStartZ );
@@ -718,14 +721,14 @@ namespace smil
 	return binaryImageFunction<T, divLine<T> >(imIn1, imIn2, imOut);
     }
 
-    template <class T>
-    RES_T div(const Image<T> &imIn, const T &value, Image<T> &imOut)
-    {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-
-	return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
-    }
+//     template <class T>
+//     RES_T div(const Image<T> &imIn, const T &value, Image<T> &imOut)
+//     {
+// 	ASSERT_ALLOCATED(&imIn, &imOut);
+// 	ASSERT_SAME_SIZE(&imIn, &imOut);
+// 
+// 	return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
+//     }
 
     template <class T>
     RES_T div(const Image<T> &imIn, const double &dValue, Image<T> &imOut)
@@ -754,14 +757,14 @@ namespace smil
 	return binaryImageFunction<T, mulLine<T> >(imIn1, imIn2, imOut);
     }
 
-    template <class T>
-    RES_T mul(const Image<T> &imIn1, const T &value, Image<T> &imOut)
-    {
-	ASSERT_ALLOCATED(&imIn1, &imOut);
-	ASSERT_SAME_SIZE(&imIn1, &imOut);
-
-	return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
-    }
+//     template <class T>
+//     RES_T mul(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+//     {
+// 	ASSERT_ALLOCATED(&imIn1, &imOut);
+// 	ASSERT_SAME_SIZE(&imIn1, &imOut);
+// 
+// 	return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
+//     }
     template <class T>
     RES_T mul(const Image<T> &imIn, const double &dValue, Image<T> &imOut)
     {
@@ -1044,8 +1047,9 @@ namespace smil
     * Apply a lookup map
     */
     template <class T1, class T2>
-    RES_T applyLookup(const Image<T1> &imIn, map<T1,T2> &lut, Image<T2> &imOut)
+    RES_T applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut)
     {
+	ASSERT(!lut.empty(), "Input lookup is empty", RES_ERR);
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 
@@ -1056,7 +1060,7 @@ namespace smil
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
 	  if (lut.find(*pixIn)!=lut.end())
-	    *pixOut = lut[*pixIn];
+	    *pixOut = lut.at(*pixIn);
 	  pixIn++;
 	  pixOut++;
 	}
@@ -1065,6 +1069,7 @@ namespace smil
 	return RES_OK;
     }
 
+    
 /** @}*/
 
 } // namespace smil

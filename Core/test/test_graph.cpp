@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,53 +27,59 @@
  */
 
 
-#include "DCore.h"
-#include "DBase.h"
-#include "DMorpho.h"
-#include "DGui.h"
-#include "DIO.h"
+#include "DTest.h"
 
-#include "NSTypes/RGB/include/DRGB.h"
-#include "NSTypes/RGB/include/DImage_RGB.h"
+#include "DGraph.hpp"
 
-// #include "Addons/MorphM/include/private/DMorphMImage.hpp"
+#include <iostream>
+#include <fstream>
 
 
-// #include "DGraph.hpp"
-
-#include <vector>
 
 using namespace smil;
 
 
-int main(int argc, char *argv[])
+
+
+class Test_MST : public TestCase
 {
+    virtual void run()
+    {
+	Graph<> graph;
+	graph.addEdge(Edge<>(0,2, 1));
+	graph.addEdge(Edge<>(1,3, 1));
+	graph.addEdge(Edge<>(1,4, 2));
+	graph.addEdge(Edge<>(2,1, 7));
+	graph.addEdge(Edge<>(2,3, 3));
+	graph.addEdge(Edge<>(3,4, 1));
+	graph.addEdge(Edge<>(4,0, 1));
+	graph.addEdge(Edge<>(4,1, 3));
+	
+	Graph<> mst = graphMST(graph);
+	vector<Edge<> > mstTruth;
+	mstTruth.push_back(Edge<>(4,0,1));
+	mstTruth.push_back(Edge<>(3,4,1));
+	mstTruth.push_back(Edge<>(1,3,1));
+	mstTruth.push_back(Edge<>(0,2,1));
+	
+	TEST_ASSERT(mst.getEdges()==mstTruth);
+	
+	if (retVal!=RES_OK)
+	{
+	    for (vector<Edge<> >::const_iterator it=mst.getEdges().begin();it!=mst.getEdges().end();it++)
+	      cout << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
+	}
+    }
+};
 
-   Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/lena.png");
-   im1.show();
 
 
-//     morphee::Image<UINT8> *mIm = new morphee::Image<UINT8>(512,512);
-//     mIm->allocateImage();
-//     morphee::ImageInterface *imInt = (morphee::ImageInterface*)(mIm);
-//     
-// //     dilate((Image<UINT8>)morphIm, im1);
-//     
-//     ExtImage<UINT8> im2 = morphmImage<UINT8>(*mIm);
-//     ExtImage<UINT8> *im3 = new morphmImage<UINT8>(*imInt);
-//     fill(*im3, UINT8(127));
-//     ImageViewer<UINT8> *viewer;
+int main()
+{
+      TestSuite ts;
 
-
-//    Image<UINT16> im1("/home/faessel/tmp/test_image16.tif");
-   
-//    Image<UINT8> im2("/home/faessel/tmp/chambre.tif");
-   
-//       Image<UINT8> im2(im, true);
-//       delete imrgb;
-//     
-    Gui::execLoop();
-//     qapp.exec();
-
+      ADD_TEST(ts, Test_MST);
+      
+      return ts.run();
 }
 

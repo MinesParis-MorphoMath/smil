@@ -84,8 +84,15 @@ namespace smil
 	
 	fInfo.width = cinfo.image_width;
 	fInfo.height = cinfo.image_height;
-	fInfo.bitDepth = cinfo.data_precision;
 	fInfo.channels = cinfo.num_components;
+	
+	switch(cinfo.data_precision)
+	{
+	  case 8:
+	    fInfo.scalarType = ImageFileInfo::SCALAR_TYPE_UINT8; break;
+	  case 16:
+	    fInfo.scalarType = ImageFileInfo::SCALAR_TYPE_UINT16; break;
+	}
 	
 	switch(cinfo.out_color_space)
 	{

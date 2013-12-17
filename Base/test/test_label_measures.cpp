@@ -99,7 +99,7 @@ class Test_Barycenters : public TestCase
       drawRectangle(im, 200,200,50,50, UINT8(127), 1);
       drawRectangle(im, 600,200,70,70, UINT8(255), 1);
       
-      map<UINT, DoubleVector> barycenters = measBarycenters(im);
+      map<UINT, Vector_double> barycenters = measBarycenters(im);
       TEST_ASSERT(barycenters[127][0]==224.5);
       TEST_ASSERT(barycenters[127][1]==224.5);
       TEST_ASSERT(barycenters[255][0]==634.5);

@@ -59,7 +59,7 @@ namespace smil
 	allocated(false),
 	allocatedSize(0)
 	{
-		onModified = Signal(this);
+	    onModified = Signal(this);
 	}
 	
 	BaseImage(const BaseImage &rhs)
@@ -77,7 +77,6 @@ namespace smil
 	{
 	}
 	
-    private:
 	// Forbid implicit assignment operator
 	BaseImage& operator=(const BaseImage &rhs);
 

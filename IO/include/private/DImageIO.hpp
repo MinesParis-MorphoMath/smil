@@ -48,6 +48,10 @@
 #include "DImageIO_JPG.hpp"
 #endif // USE_JPEG
 
+#ifdef USE_TIFF
+#include "DImageIO_TIFF.hpp"
+#endif // USE_TIFF
+
 namespace smil
 {
   
@@ -57,7 +61,6 @@ namespace smil
     /*@{*/
     
 
-//     inline BaseImage *createFromFile(
      
     template <class T>
     ImageFileHandler<T> *getHandlerForFile(const char* filename)
@@ -77,8 +80,13 @@ namespace smil
 	    return new JPGImageFileHandler<T>();
     #endif // USE_JPEG
 
-// 	else if (fileExt=="VTK")
-// 	    res = readVTK(filename, image);
+    #ifdef USE_TIFF
+	else if (fileExt=="TIF")
+	    return new TIFFImageFileHandler<T>();
+    #endif // USE_TIFF
+
+	else if (fileExt=="VTK")
+	    return new VTKImageFileHandler<T>();
 	
 	else
 	{
@@ -211,17 +219,34 @@ namespace smil
 	  }
 	  
 	  ImageFileInfo fInfo;
-	  ASSERT(getFileInfo(filename, fInfo)==RES_OK, NULL);
+	  if (getFileInfo(filename, fInfo)!=RES_OK)
+	  {
+	      ERR_MSG("Can't open file");
+	      return NULL;
+	  }
 	  
 	  ImageFileHandler<void> *fHandler  = getHandlerForFile<void>(filename);
 	  fHandler->read(filename);
 	  
 	  if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_GRAY)
 	  {
-	      Image<UINT8> *img = new Image<UINT8>();
-	      auto_ptr< ImageFileHandler<UINT8> > fHandler(getHandlerForFile<UINT8>(filename));
-	      if (fHandler->read(filename, *img)==RES_OK)
-		return img;
+	      if (fInfo.scalarType==ImageFileInfo::SCALAR_TYPE_UINT8)
+	      {
+		  Image<UINT8> *img = new Image<UINT8>();
+		  auto_ptr< ImageFileHandler<UINT8> > fHandler(getHandlerForFile<UINT8>(filename));
+		  if (fHandler->read(filename, *img)==RES_OK)
+		    return img;
+		  else ERR_MSG("Error reading 8 bit image");
+	      }
+	      else if (fInfo.scalarType==ImageFileInfo::SCALAR_TYPE_UINT16)
+	      {
+		  Image<UINT16> *img = new Image<UINT16>();
+		  auto_ptr< ImageFileHandler<UINT16> > fHandler(getHandlerForFile<UINT16>(filename));
+		  if (fHandler->read(filename, *img)==RES_OK)
+		    return img;
+		  else ERR_MSG("Error reading 16 bit image");
+	      }
+	      else ERR_MSG("Unsupported GRAY data type");
 	  }
 	  else if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_RGB)
 	  {
@@ -229,6 +254,7 @@ namespace smil
 	      auto_ptr< ImageFileHandler<RGB> > fHandler(getHandlerForFile<RGB>(filename));
 	      if (fHandler->read(filename, *img)==RES_OK)
 		return img;
+	      else ERR_MSG("Error reading RGB image");
 	  }
 	  else
 	  {

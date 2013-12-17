@@ -67,6 +67,8 @@ PTR_ARG_OUT_APPLY(d)
 
 
 TEMPLATE_WRAP_FUNC_2T_CROSS(copy);
+TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(copy);
+
 TEMPLATE_WRAP_FUNC(crop);
 TEMPLATE_WRAP_FUNC(clone);
 
@@ -111,7 +113,10 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(applyLookup);
 %include "DImageHistogram.hpp"
 TEMPLATE_WRAP_FUNC(histogram);
 TEMPLATE_WRAP_FUNC(threshold);
+
 TEMPLATE_WRAP_FUNC_2T_CROSS(stretchHist);
+TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(stretchHist);
+
 TEMPLATE_WRAP_FUNC(enhanceContrast);
 TEMPLATE_WRAP_FUNC(otsuThresholdValues);
 TEMPLATE_WRAP_FUNC(otsuThreshold);
@@ -157,10 +162,24 @@ TEMPLATE_WRAP_FUNC(area);
 TEMPLATE_WRAP_FUNC(minVal);
 TEMPLATE_WRAP_FUNC(maxVal);
 TEMPLATE_WRAP_FUNC(rangeVal);
+TEMPLATE_WRAP_FUNC(valueList);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
 TEMPLATE_WRAP_FUNC(measInertiaMatrix);
+TEMPLATE_WRAP_FUNC(measCovariance);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
+
+# Suppl. Types
+TEMPLATE_WRAP_SUPPL_FUNC(vol);
+%apply double *OUTPUT{double &mean_val};
+%apply double *OUTPUT{double &std_dev_val};
+TEMPLATE_WRAP_SUPPL_FUNC(meanVal);
+TEMPLATE_WRAP_SUPPL_FUNC(area);
+TEMPLATE_WRAP_SUPPL_FUNC(minVal);
+TEMPLATE_WRAP_SUPPL_FUNC(maxVal);
+TEMPLATE_WRAP_SUPPL_FUNC(rangeVal);
+
+
 
 %include "DLabelMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);
@@ -169,6 +188,7 @@ TEMPLATE_WRAP_FUNC(measMaxVals);
 TEMPLATE_WRAP_FUNC(measRangeVals);
 TEMPLATE_WRAP_FUNC(measMeanVals);
 TEMPLATE_WRAP_FUNC(measVolumes);
+TEMPLATE_WRAP_FUNC(valueLists);
 TEMPLATE_WRAP_FUNC(measBarycenters);
 TEMPLATE_WRAP_FUNC(measBoundBoxes);
 TEMPLATE_WRAP_FUNC(measInertiaMatrices);

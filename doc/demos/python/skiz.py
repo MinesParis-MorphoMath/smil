@@ -46,7 +46,7 @@ def trueWatershed(imIn, imMark, imOut, se=hSE()):
 
     label(imMark, label1)
     mask(~label1, label1, label2)
-    
+
     for i in range(rangeVal(imIn)[1]+1):
 	threshold(imIn, 0, i, maskIm)
 	sup(maskIm, imMark, maskIm)
@@ -63,7 +63,7 @@ def skizIsotrop(imIn, imOut, se=hSE()):
 
     label(imIn, label1)
     mask(~label1, label1, label2)
-    
+
     label1.showLabel()
     label2.showLabel()
     lpe.show()

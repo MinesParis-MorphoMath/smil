@@ -38,6 +38,7 @@
 
 #include "Core/include/private/DTypes.hpp"
 #include "Core/include/private/DImage.hpp"
+#include "IO/include/DCommonIO.h"
 
 using namespace std;
 
@@ -49,185 +50,205 @@ namespace smil
     */
     /*@{*/
   
-    inline int split(const std::string &s, char delim, std::vector<std::string> &elems) 
+    struct VTKHeader
     {
-	std::stringstream ss(s);
-	std::string item;
-	int nbr = 0;
-	elems.clear();
-	while(std::getline(ss, item, delim)) 
+	VTKHeader()
+	  : width(0), height(0), depth(0),
+	    pointNbr(0), scalarType(ImageFileInfo::SCALAR_TYPE_UNKNOWN),
+	    scalarCoeff(0), binaryFile(false), startPos(0)
 	{
-	    elems.push_back(item);
 	}
-	return nbr;
-    }
-
-    /**
-    * VTK file read
-    */
-    template <class T>
-    RES_T readVTK(const char *filename, Image<T> &image)
-    {
-	std::ifstream fp;
-
-	/* open image file */
-	fp.open(filename, ios_base::binary);
-    //     fp.open(filename);
-	if (!fp)
-	{
-	    cerr << "error: couldn't open " << filename << "!" << endl;
-	    return RES_ERR;
-	}
-
-	std::string buf, wrd;
-	std::vector<std::string> bufElems;
-	streampos startPos;
-
-	bool isAscii = false;
-	size_t ptsNbr = 0;
-	size_t width = 0, height = 0, depth = 0;
-	double scalarCoeff = 1.0;
 	
-	while(getline(fp, buf))
+	UINT width, height, depth;
+	UINT pointNbr;
+	ImageFileInfo::ScalarType scalarType;
+	string scalarTypeStr;
+	double scalarCoeff;
+	bool binaryFile;
+	streampos startPos;
+    };
+    
+    
+    RES_T readVTKHeader(ifstream &fp, VTKHeader &hStruct);
+    RES_T getVTKFileInfo(const char* filename, ImageFileInfo &fInfo);
+    
+    template <class T=void>
+    class VTKImageFileHandler : public ImageFileHandler<T>
+    {
+      public:
+	VTKImageFileHandler()
+	  : ImageFileHandler<T>("BMP"),
+	    writeBinary(true)
 	{
-	    // To uppercase
-	    transform(buf.begin(), buf.end(), buf.begin(), ::toupper);
-	    // Split
-	    split(buf, ' ', bufElems);
+	}
+	
+	virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
+	{
+	    std::ifstream fp;
+	    ImageFileInfo::ScalarType scalarType = ImageFileInfo::SCALAR_TYPE_UINT8; // default, if not specified in the file header
+
+	    /* open image file */
+	    fp.open(filename, ios_base::binary);
 	    
-	    // Get the first word
-	    wrd = bufElems[0];
-	    // And the first char
-	    char fc = wrd[0];
-    //	bool id = isalnum(fc);
-    //	bool im = fc=='-';
-    //	bool ia = isascii(fc);
-	    
-	    // Check if we reached the end of the header
-	    if (isdigit(fc) || fc=='-') // number
-	      break;
-	    else if (!isalnum(fc) && fc!='#') // binary data
-	      break;
-	    else 
-	      startPos = fp.tellg();
-	    
-	    if (wrd=="DATASET")
+	//     fp.open(filename);
+	    if (!fp)
 	    {
-		if (bufElems[1]!="STRUCTURED_POINTS")
+		cerr << "error: couldn't open " << filename << "!" << endl;
+		return RES_ERR;
+	    }
+	    
+	    VTKHeader hStruct;
+	    if (readVTKHeader(fp, hStruct)!=RES_OK)
+	    {
+		fp.close();
+		ERR_MSG("Error reading VTK file header");
+		return RES_ERR;
+	    }
+	    
+	    fInfo.width = hStruct.width;
+	    fInfo.height = hStruct.height;
+	    fInfo.depth = hStruct.depth;
+	    fInfo.colorType = ImageFileInfo::COLOR_TYPE_GRAY;
+	    fInfo.scalarType = hStruct.scalarType;
+	    
+	    fp.close();
+	    
+	    return RES_OK;
+	}
+	
+	bool writeBinary;
+	
+	virtual RES_T read(const char* filename, Image<T> &image)
+	{
+	    std::ifstream fp;
+
+	    /* open image file */
+	    fp.open(filename, ios_base::binary);
+	    
+	//     fp.open(filename);
+	    if (!fp)
+	    {
+		cerr << "error: couldn't open " << filename << "!" << endl;
+		return RES_ERR;
+	    }
+
+	    VTKHeader hStruct;
+	    if (readVTKHeader(fp, hStruct)!=RES_OK)
+	    {
+		fp.close();
+		ERR_MSG("Error reading VTK file header");
+		return RES_ERR;
+	    }
+	    
+	    ImageFileInfo::ScalarType scalarType = hStruct.scalarType==ImageFileInfo::SCALAR_TYPE_UNKNOWN ? ImageFileInfo::SCALAR_TYPE_UINT8 : hStruct.scalarType; // default, if not specified in the file header
+	    
+	    if ( (typeid(T)==typeid(unsigned char) && scalarType!=ImageFileInfo::SCALAR_TYPE_UINT8) ||
+		 (typeid(T)==typeid(unsigned short) && scalarType!=ImageFileInfo::SCALAR_TYPE_UINT16))
+	    {
+		cout << "Error: input file type is " << hStruct.scalarTypeStr << endl;
+		fp.close();
+		return RES_ERR_IO;
+	    }
+	    	    
+	    image.setSize(hStruct.width, hStruct.height, hStruct.depth);
+	    typename Image<T>::lineType pixels = image.getPixels();
+	    
+	    // Return to the begining of the data
+	    fp.seekg(hStruct.startPos);
+	    
+	    UINT ptsNbr = hStruct.pointNbr;
+	    double scalarCoeff = double(ImDtTypes<T>::max()) / hStruct.scalarCoeff;
+	    
+	    if (!hStruct.binaryFile)
+	    {
+		double val;
+		while(fp && --ptsNbr>0)
 		{
-		    cout << "Error: vtk file type " << bufElems[1] << " not supported (must be STRUCTURED_POINTS)" << endl;
-		    fp.close();
-		    return RES_ERR;
+		    fp >> val;
+		    *pixels++ = (T)(val*scalarCoeff);
+		}
+		if(fp)
+		{
+		    fp >> val;
+		    *pixels = (T)(val*scalarCoeff);
 		}
 	    }
-	    else if (wrd=="ASCII")
-	      isAscii = true;
-	    else if (wrd=="BINARY")
-	      isAscii = false;
-	    else if (wrd=="DIMENSIONS")
+
+	    else
 	    {
-		width = atoi(bufElems[1].c_str());
-		height = atoi(bufElems[2].c_str());
-		depth = atoi(bufElems[3].c_str());
+		// In binary version, values are written as unsigned chars
+		fp.read((char*)pixels, sizeof(T)*ptsNbr);
 	    }
-	    else if (wrd=="POINT_DATA")
-		ptsNbr = atoi(bufElems[1].c_str());
-	    else if (wrd=="SCALARS")
-	    {
-		
-	    }
-	    else if (wrd=="COLOR_SCALARS")
-	    {
-		scalarCoeff = double(ImDtTypes<T>::max()) / atoi(bufElems[2].c_str());
-	    }
+
+	    fp.close();
+
+	    image.modified();
+	    
+	    return RES_OK;
 	}
-	
-	image.setSize(width, height, depth);
-	typename Image<T>::lineType pixels = image.getPixels();
-	
-	// Return to the begining of the data
-	fp.seekg(startPos);
-	
-	if (isAscii)
+	virtual RES_T write(const Image<T> &image, const char* filename)
 	{
-	    double val;
-	    while(fp && --ptsNbr>0)
+	    std::ofstream fp;
+	    
+	    /* open image file */
+	    fp.open(filename, ios_base::binary);
+	    if (!fp)
 	    {
-		fp >> val;
-		*pixels++ = (T)(val*scalarCoeff);
+		cerr << "error: couldn't open " << filename << "!" << endl;
+		return RES_ERR;
 	    }
-	    if(fp)
+
+	    size_t w = image.getWidth();
+	    size_t h = image.getHeight();
+	    size_t d = image.getDepth();
+	    size_t pixNbr = w*h*d;
+	    
+	    fp << "# vtk DataFile Version 3.0" << endl;
+	    fp << "vtk output" << endl;
+	    fp << "BINARY" << endl;
+	    fp << "DATASET STRUCTURED_POINTS" << endl;
+	    fp << "DIMENSIONS " << w << " " << h << " " << d << endl;
+	    fp << "SPACING 1.0 1.0 1.0" << endl;
+	    fp << "ORIGIN 0 0 0" << endl;
+	    fp << "POINT_DATA " << pixNbr << endl;
+	    fp << "SCALARS scalars ";
+	    if (typeid(T)==typeid(unsigned char))
+	      fp << "unsigned_char";
+	    else if (typeid(T)==typeid(unsigned short))
+	      fp << "unsigned_short";
+	    fp << endl;
+	    
+	    if (writeBinary)
+	      fp << "COLOR_SCALARS ImageScalars 1" << endl;
+	    else
 	    {
-		fp >> val;
-		*pixels = (T)(val*scalarCoeff);
+		cerr << "not implemented (todo..)" << endl;
 	    }
+	    
+	    typename Image<T>::lineType pixels = image.getPixels();
+	    
+	    if (writeBinary)
+	    {
+	      // todo : make this generic
+		fp.write((char*)pixels, sizeof(T)*pixNbr);
+	    }
+
+	    fp.close();
+	    
+	    return RES_OK;
 	}
-
-	else
-	{
-	    // In binary version, values are written as unsigned chars
-    // 	while(fp && --ptsNbr>0)
-    // 	    fp.read((char*)pixels++, sizeof(char));
-    // 	if (fp)
-    // 	    fp.read((char*)pixels, sizeof(char));
-	    fp.read((char*)pixels, sizeof(T)*ptsNbr);
-	}
-
-	fp.close();
-
-	image.modified();
-	
-	return RES_OK;
+    };
+    
+    template <>
+    inline RES_T VTKImageFileHandler<void>::read(const char *filename, Image<void> &image)
+    {
+	return RES_ERR;
     }
 
-    /**
-    * VTK file write
-    */
-    template <class T>
-    RES_T writeVTK(const Image<T> &image, const char *filename, bool binary=true)
+    template <>
+    inline RES_T VTKImageFileHandler<void>::write(const Image<void> &image, const char *filename)
     {
-	std::ofstream fp;
-	
-	/* open image file */
-	fp.open(filename, ios_base::binary);
-	if (!fp)
-	{
-	    cerr << "error: couldn't open " << filename << "!" << endl;
-	    return RES_ERR;
-	}
-
-	size_t w = image.getWidth();
-	size_t h = image.getHeight();
-	size_t d = image.getDepth();
-	size_t pixNbr = w*h*d;
-	
-	fp << "# vtk DataFile Version 3.0" << endl;
-	fp << "vtk output" << endl;
-	fp << "BINARY" << endl;
-	fp << "DATASET STRUCTURED_POINTS" << endl;
-	fp << "DIMENSIONS " << w << " " << h << " " << d << endl;
-	fp << "SPACING 1.0 1.0 1.0" << endl;
-	fp << "ORIGIN 0 0 0" << endl;
-	fp << "POINT_DATA " << pixNbr << endl;
-	
-	if (binary)
-	  fp << "COLOR_SCALARS ImageScalars 1" << endl;
-	else
-	{
-	    cerr << "not implemented (todo..)" << endl;
-	}
-	
-	typename Image<T>::lineType pixels = image.getPixels();
-	
-	if (binary)
-	{
-	  // todo : make this generic
-	    fp.write((char*)pixels, sizeof(T)*pixNbr);
-	}
-
-	fp.close();
-	
-	return RES_OK;
+	return RES_ERR;
     }
 
 /*@}*/

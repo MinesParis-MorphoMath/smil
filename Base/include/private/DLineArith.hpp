@@ -107,6 +107,12 @@ namespace smil
 	    for (size_t i=0;i<size;i++) lOut[i] = ~lineIn[i];
 	}
     };
+    
+    template <>
+    inline void invLine<double>::_exec(lineType lineIn, size_t size, lineType lOut)
+    {
+	for (size_t i=0;i<size;i++) lOut[i] = -lineIn[i];
+    }
 
     template <class T>
     struct addLine : public binaryLineFunctionBase<T>

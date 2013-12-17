@@ -45,6 +45,7 @@ SMIL_MODULE(smilMorpho)
 #include "DSkeleton.hpp"
 #include "DMorphoInstance.h"
 #include "DMorphoMaxTree.hpp"
+#include "DMorphoGraph.hpp"
 %}
  
 
@@ -122,6 +123,7 @@ TEMPLATE_WRAP_FUNC(arrowEqu);
 %include "DMorphoWatershed.hpp"
 TEMPLATE_WRAP_FUNC(watershed);
 TEMPLATE_WRAP_FUNC_2T_CROSS(watershed);
+TEMPLATE_WRAP_FUNC_2T_CROSS(basins);
 TEMPLATE_WRAP_FUNC(lblSkiz);
 TEMPLATE_WRAP_FUNC_2T_CROSS(inflBasins);
 TEMPLATE_WRAP_FUNC(inflZones);
@@ -157,6 +159,11 @@ TEMPLATE_WRAP_FUNC(zhangSkeleton);
 
 %include "DMorphoMaxTree.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);
+
+%include "DMorphoGraph.hpp"
+TEMPLATE_WRAP_FUNC_3T_FIX_THIRD(mosaicToGraph, Graph<>);
+TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(graphToMosaic, Graph<>);
+TEMPLATE_WRAP_FUNC_3T_FIX_SECOND(drawGraph, Graph<>);
 
 
 #ifdef SWIGPYTHON

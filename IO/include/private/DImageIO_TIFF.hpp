@@ -27,8 +27,8 @@
  */
 
 
-#ifndef _D_IMAGE_IO_PNG_H
-#define _D_IMAGE_IO_PNG_H
+#ifndef _D_IMAGE_IO_TIFF_H
+#define _D_IMAGE_IO_TIFF_H
 
 
 #include <iostream>
@@ -42,7 +42,7 @@
 using namespace std;
 
 
-#ifdef USE_PNG
+#ifdef USE_TIFF
 
 
 namespace smil
@@ -53,24 +53,22 @@ namespace smil
     */
     /*@{*/
     
-    class PNGHeader;
-    
-    RES_T getPNGFileInfo(const char* filename, ImageFileInfo &fInfo);
+    RES_T getTIFFFileInfo(const char* filename, ImageFileInfo &fInfo);
 
     template <class T> class Image;
 
     template <class T=void>
-    class PNGImageFileHandler : public ImageFileHandler<T>
+    class TIFFImageFileHandler : public ImageFileHandler<T>
     {
       public:
-	PNGImageFileHandler()
-	  : ImageFileHandler<T>("PNG")
+	TIFFImageFileHandler()
+	  : ImageFileHandler<T>("TIFF")
 	{
 	}
 	
 	virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
 	{
-	    return getPNGFileInfo(filename, fInfo);
+	    return getTIFFFileInfo(filename, fInfo);
 	}
 	
 	virtual RES_T read(const char* filename, Image<T> &image)
@@ -85,26 +83,27 @@ namespace smil
 
     // Specializations
     template <>
-    RES_T PNGImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image);
+    RES_T TIFFImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image);
     template <>
-    RES_T PNGImageFileHandler<UINT16>::read(const char *filename, Image<UINT16> &image);
+    RES_T TIFFImageFileHandler<UINT16>::read(const char *filename, Image<UINT16> &image);
     template <>
-    RES_T PNGImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image);
+    RES_T TIFFImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image);
+    
+    template <>
+    RES_T TIFFImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename);
+    template <>
+    RES_T TIFFImageFileHandler<UINT16>::write(const Image<UINT16> &image, const char *filename);
+    template <>
+    RES_T TIFFImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
 
-    template <>
-    RES_T PNGImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename);
-    template <>
-    RES_T PNGImageFileHandler<UINT16>::write(const Image<UINT16> &image, const char *filename);
-    template <>
-    RES_T PNGImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
     
 /*@}*/
 
 } // namespace smil
 
 
-#endif // USE_PNG
+#endif // USE_TIFF
 
 
 
-#endif // _D_IMAGE_IO_PNG_H
+#endif // _D_IMAGE_IO_TIFF_H

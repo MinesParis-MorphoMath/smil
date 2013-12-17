@@ -51,7 +51,6 @@ SMIL_MODULE(smilCore)
 //////////////////////////////////////////////////////////
 
 %ignore Error;
-class exception{};
 %include "DErrors.h"
 
 
@@ -126,13 +125,13 @@ PTR_ARG_OUT_APPLY(s)
 // Expose std::vector<> as a Python list
 namespace std 
 {
-    %template(UintVector) vector<UINT>;
-    %template(UcharVector) vector<UINT8>;
-    %template(UshortVector) vector<UINT16>;
-    %template(DoubleVector) vector<double>;
-    %template(StringVector) vector<string>;
+    %template(Vector_UINT) vector<UINT>;
+    %template(Vector_UINT8) vector<UINT8>;
+    %template(Vector_UINT16) vector<UINT16>;
+    %template(Vector_double) vector<double>;
+    %template(Vector_string) vector<string>;
     
-    %template(DoubleMatrix) vector<DoubleVector>;
+    %template(Matrix_double) vector<Vector_double>;
 }
 
 #endif // SWIGXML
@@ -150,19 +149,27 @@ namespace std
 // Expose std::map<> as a Python dict
 namespace std 
 {
-    %template(UintDoubleMap) map<UINT,double>;
-    %template(UintDoubleVectorMap) map<UINT,DoubleVector>;
-    %template(UintUintVectorMap) map<UINT,UintVector>;
+    %template(Map_UINT) map<UINT,UINT>;
+#ifdef USE_64BIT_IDS
+    %template(Map_SIZE_T) map<size_t,size_t>;
+#endif // USE_64BIT_IDS
+    %template(Map_UINT_double) map<UINT,double>;
+    %template(Map_UINT_Vector_double) map<UINT,Vector_double>;
+    %template(Map_UINT_Vector_UINT) map<UINT,Vector_UINT>;
+    
+    %template(Map_UINT_Vector_UINT8) map< UINT, vector<UINT8> >;
+    %template(Map_UINT_Vector_UINT16) map< UINT, vector<UINT16> >;
     
     TEMPLATE_WRAP_CLASS_2T_CROSS(map, Map)
     
+    TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
 #ifndef SMIL_WRAP_RGB
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
 #endif // SMIL_WRAP_RGB
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, DoubleVector, Map)
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UintVector, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_double, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Box, Map)
 }
 
@@ -216,6 +223,7 @@ namespace smil
 // Import smilGui for viewers stuff
 %import smilGui.i
 
+
 %ignore smil::Image::operator[];
 %extend smil::Image
 {
@@ -239,14 +247,42 @@ namespace std
 namespace smil
 {
     TEMPLATE_WRAP_CLASS(Image, Image);
-    #ifndef SMIL_WRAP_RGB
-      %template(Image_RGB) Image<RGB>;
-    #endif // SMIL_WRAP_RGB
     TEMPLATE_WRAP_FUNC(createImage);
     TEMPLATE_WRAP_FUNC(castBaseImage);
-    #ifndef SMIL_WRAP_RGB
-      %template(castBaseImage) castBaseImage<RGB>;
-    #endif // SMIL_WRAP_RGB
     TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
+    
+    TEMPLATE_WRAP_SUPPL_CLASS(Image, Image);
+    TEMPLATE_WRAP_SUPPL_FUNC(createImage);
+    TEMPLATE_WRAP_SUPPL_FUNC(castBaseImage);
+    TEMPLATE_WRAP_SUPPL_CLASS(SharedImage, SharedImage);
+}
+
+
+//////////////////////////////////////////////////////////
+// Misc
+//////////////////////////////////////////////////////////
+
+%{
+#include "DGraph.hpp"
+%}
+
+%include "DGraph.hpp"
+
+#ifndef SWIGXML
+namespace std 
+{
+    %template(EdgeVector_UINT) std::vector< smil::Edge<size_t> >;
+}
+#endif // SWIGXML
+
+namespace smil
+{
+    // Base (size_t) Edge
+    %template(Edge_UINT) Edge<size_t>;
+
+    // Base (UINT) Graph
+    %template(Graph_UINT) Graph<size_t,size_t>;
+    // Base (UINT) MST
+    %template(graphMST) graphMST<Graph<size_t,size_t> >;
 }
 

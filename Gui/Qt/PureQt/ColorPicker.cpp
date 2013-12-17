@@ -217,8 +217,5 @@ void ColorPicker::colorSelected(const QColor &col, const int& index)
     emit(colorChanged(col));
 }
 
-QColor ColorPicker::getColor(const QPoint &pos)
-{
-}
 
 

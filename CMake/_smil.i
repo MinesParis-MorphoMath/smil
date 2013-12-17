@@ -25,22 +25,9 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+%include smilCommon.i
 
-#ifdef SWIGPYTHON
-%module smilPython
-#endif // SWIGPYTHON
-
-#ifdef SWIGJAVA
-%module smilJava
-#endif // SWIGJAVA
-
-#ifdef SWIGOCTAVE
-%module smilOctave
-#endif // SWIGOCTAVE
-
-#ifdef SWIGRUBY
-%module smilRuby
-#endif // SWIGRUBY
+SMIL_MODULE(smil)
 
 
 %feature("autodoc", "1");
@@ -79,12 +66,13 @@ import __main__
 import __builtin__
 
 from smilCorePython import *
+from smilBasePython import *
+from smilIOPython import *
 
 __builtin__.dataTypes = [ ${DATA_TYPES_QUOTE_STR}, ]
 __builtin__.imageTypes = [ ${IMAGE_TYPES_STR}, ]
 
 
-${PYTHON_IMPORT_MODULES}
 
 def AboutSmil():
     print "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}"
@@ -162,7 +150,7 @@ def autoCastBaseImage(baseImg):
     typeStr = baseImg.getTypeAsString()
     if typeStr in dataTypes:
       imType = imageTypes[dataTypes.index(typeStr)]
-      return castBaseImage(baseImg, imType.getDataTypeMax())
+      return imType(baseImg, True) # Steal baseImg identity (kind of trick for python cast)
     else:
       return None
 
@@ -225,7 +213,9 @@ def Image(*args):
 	    img = imgType()
 	    read(args[0], img)
 	else:
-	    img = autoCastBaseImage(createFromFile(args[0]))
+	    baseImg = createFromFile(args[0])
+	    if baseImg!=None:
+	      img = autoCastBaseImage(baseImg)
     
     else:
 	img = imageTypes[0](*args)

@@ -68,10 +68,10 @@ namespace smil
 	virtual ~Image();
 	
 	// Provide explicit copy constructor and assignment operator
-	// Copy constructor
-	Image(const Image<T> & rhs, bool cloneData=true);
+	//! Copy constructor
+	Image(const Image<T> & rhs, bool cloneData=false);
 	template <class T2>
-	Image(const Image<T2> &rhs, bool cloneData=true);
+	Image(const Image<T2> &rhs, bool cloneData=false);
 	// Assignment operator
 	Image<T>& operator = (const Image<T> &rhs)
 	{
@@ -79,6 +79,8 @@ namespace smil
 	    return *this;
 	}
 	
+	Image(BaseImage *_im, bool stealIdentity=false);
+	void swapWith(Image &other);
       
 	//! Get the image type.
 	//! \return The type of the image data as a string ("UINT8", "UINT16", ...)
@@ -148,6 +150,7 @@ namespace smil
 
 	//! Copy pixel values to a given char array
 	void toCharArray(signed char outArray[]);
+	char *toCharArray() { return (char *)pixels; }
 	//! Copy pixel values from a given char array
 	void fromCharArray(signed char inArray[]);
 
@@ -334,7 +337,9 @@ namespace smil
 	//! Export image data to a vector
 	Image<T>& operator >> (vector<T> &vect);
 	
+#ifndef SWIG
 	Image<T>& operator << (const char *s);
+#endif // SWIG
 	inline Image<T>& operator << (const string s) { return this->operator<<(s.c_str()); }
 	Image<T>& operator >> (const char *s);
 	inline Image<T>& operator >> (const string s) { return this->operator>>(s.c_str()); }
@@ -374,10 +379,10 @@ namespace smil
     }
 
     template <class T>
-    Image<T> *castBaseImage(BaseImage &img, const T &)
+    Image<T> *castBaseImage(BaseImage *img, const T &)
     {
-	ASSERT(strcmp(getDataTypeAsString<T>(), img.getTypeAsString())==0, "Bad type for cast", NULL);
-	return static_cast< Image<T>* >(&img);
+	ASSERT(strcmp(getDataTypeAsString<T>(), img->getTypeAsString())==0, "Bad type for cast", NULL);
+	return reinterpret_cast< Image<T>* >(img);
     }
 
 
