@@ -36,6 +36,11 @@
 #include "IO/include/DCommonIO.h"
 #include "Base/include/private/DImageArith.hpp"
 
+#ifdef SMIL_USE_RGB
+#include "NSTypes/include/DRGB.h"
+#endif // SMIL_USE_RGB
+
+
 #include "DImageIO_BMP.hpp"
 #include "DImageIO_RAW.hpp"
 #include "DImageIO_VTK.hpp"
@@ -248,6 +253,7 @@ namespace smil
 	      }
 	      else ERR_MSG("Unsupported GRAY data type");
 	  }
+#ifdef SMIL_USE_RGB
 	  else if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_RGB)
 	  {
 	      Image<RGB> *img = new Image<RGB>();
@@ -256,6 +262,7 @@ namespace smil
 		return img;
 	      else ERR_MSG("Error reading RGB image");
 	  }
+#endif // SMIL_USE_RGB
 	  else
 	  {
 	      ERR_MSG("File type not supported");
