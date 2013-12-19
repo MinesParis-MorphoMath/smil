@@ -205,7 +205,7 @@ IF(USE_OPTIMIZATION)
  		OptimizeForArchitecture()
 	ENDIF(CMAKE_COMPILER_IS_GNUCC)
 	
-	MESSAGE(STATUS "Compiler flags: "${CMAKE_CXX_FLAGS})
+	MESSAGE(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}")
 ELSE(USE_OPTIMIZATION)
 	AddCompilerFlag("-fno-tree-vectorize")
 ENDIF(USE_OPTIMIZATION)

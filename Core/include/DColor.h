@@ -33,6 +33,10 @@
 
 #include "DMultichannelTypes.hpp"
 
+#ifdef RGB
+#undef RGB
+#endif 
+
 namespace smil
 {
   
