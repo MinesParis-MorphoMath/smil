@@ -163,7 +163,9 @@ namespace smil
 	virtual void showLabel(const char * = NULL) {}
 	virtual void hide() = 0;
 	
+#ifndef SWIG
 	virtual BaseImageViewer *getViewer() = 0;
+#endif // SWIG
 	
 	bool updatesEnabled;
 	Signal onModified;
