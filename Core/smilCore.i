@@ -61,7 +61,6 @@ SMIL_MODULE(smilCore)
 
 
 %include "DTypes.hpp"
-%include "DTypes.h"
 
 
 
