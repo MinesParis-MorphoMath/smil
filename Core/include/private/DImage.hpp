@@ -143,13 +143,14 @@ namespace smil
 	    return RES_OK;
 	}
 	
+#ifndef SWIGPYTHON	
 	//! Copy pixel values to a given array
 	void toArray(T outArray[]);
 	//! Copy pixel values from a given array
 	void fromArray(T inArray[]);
 
 	//! Copy pixel values to a given char array
-	void toCharArray(signed char outArray[]);
+	void toCharArray(char *outArray);
 	char *toCharArray() { return (char *)pixels; }
 	//! Copy pixel values from a given char array
 	void fromCharArray(signed char inArray[]);
@@ -158,6 +159,12 @@ namespace smil
 	void toIntArray(int outArray[]);
 	//! Copy pixel values from a given int array
 	void fromIntArray(int inArray[]);
+#endif // SWIGPYTHON	
+
+	//! Copy pixel values to a given int vector
+	vector<int> toIntVector();
+	//! Copy pixel values from a given int vector
+	void fromIntVector(vector<int> inVector);
 
 	//! Get the image viewer (create one if needed)
 	virtual ImageViewer<T> *getViewer();

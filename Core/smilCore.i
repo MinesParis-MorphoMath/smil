@@ -127,6 +127,7 @@ namespace std
     %template(Vector_UINT) vector<UINT>;
     %template(Vector_UINT8) vector<UINT8>;
     %template(Vector_UINT16) vector<UINT16>;
+    %template(Vector_int) vector<int>;
     %template(Vector_double) vector<double>;
     %template(Vector_string) vector<string>;
     

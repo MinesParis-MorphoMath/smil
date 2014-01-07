@@ -392,6 +392,7 @@ namespace smil
 	return RES_OK;
     }
 
+#ifndef SWIGPYTHON	
     template <class T>
     void Image<T>::toArray(T outArray[])
     {
@@ -404,10 +405,11 @@ namespace smil
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  pixels[i] = inArray[i];
+	modified();
     }
 
     template <class T>
-    void Image<T>::toCharArray(signed char outArray[])
+    void Image<T>::toCharArray(char *outArray)
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  outArray[i] = pixels[i];
@@ -418,6 +420,7 @@ namespace smil
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  pixels[i] = inArray[i];
+	modified();
     }
 
     template <class T>
@@ -432,8 +435,26 @@ namespace smil
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  pixels[i] = inArray[i];
+	modified();
     }
+#endif // SWIGPYTHON	
 
+    template <class T>
+    vector<int> Image<T>::toIntVector()
+    {
+	vector<int> vec;
+	for (size_t i=0;i<pixelCount;i++)
+	  vec.push_back(pixels[i]);
+	return vec;
+    }
+    
+    template <class T>
+    void Image<T>::fromIntVector(vector<int> inVector)
+    {
+	for (size_t i=0;i<min(pixelCount, inVector.size());i++)
+	  pixels[i] = inVector[i];
+	modified();
+    }
 
     template <class T>
     void Image<T>::printSelf(ostream &os, bool displayPixVals, bool hexaGrid, string indent) const
@@ -845,6 +866,7 @@ namespace smil
 	}
 	return *this;
     }
+
 
     #if defined SWIGPYTHON && defined USE_NUMPY
     #include "DNumpy.h"

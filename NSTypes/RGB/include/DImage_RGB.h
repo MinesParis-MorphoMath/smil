@@ -195,12 +195,14 @@ namespace smil
     {
     }
     
+#ifndef SWIGPYTHON	
     template <>
     inline char *Image<RGB>::toCharArray()
     {
 	cout << "Not implemented for RGB images" << endl;
 	return NULL;
     }
+#endif // SWIGPYTHON	
     
     
 #ifdef USE_QWT
