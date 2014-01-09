@@ -80,7 +80,6 @@ namespace smil
 	}
 	
 	Image(BaseImage *_im, bool stealIdentity=false);
-	void swapWith(Image &other);
       
 	//! Get the image type.
 	//! \return The type of the image data as a string ("UINT8", "UINT16", ...)

@@ -104,35 +104,31 @@ namespace smil
 	    return;
 	}
 	
-	if (!im->isAllocated())
-	  return;
+	// SWIG-Python doesn't handle abstract classes
+	// Usefull when creating an image from createFromFile (kind of cast)
 	
-	// Steal BaseImage identity
-	// Transfert data from the BaseImage to this
-	swapWith(*im);
+	this->width = im->width;
+	this->height = im->height;
+	this->depth = im->depth;
+	
+	this->sliceCount = im->sliceCount;
+	this->lineCount = im->lineCount;
+	this->pixelCount = im->pixelCount;
+	
+	this->pixels = im->pixels;
+	this->slices = im->slices;
+	this->lines = im->lines;
+	
+	this->allocated = im->allocated;
+	this->allocatedSize = im->allocatedSize;
+	
+	this->name = im->name;
+	this->viewer = im->viewer;
+	
+	im->allocated = false;
+	delete im;
     }
     
-    template <class T>
-    void Image<T>::swapWith(Image &other)
-    {
-	swap(width, other.width);
-	swap(height, other.height);
-	swap(depth, other.depth);
-	
-	swap(sliceCount, other.sliceCount);
-	swap(lineCount, other.lineCount);
-	swap(pixelCount, other.pixelCount);
-	
-	swap(pixels, other.pixels);
-	swap(slices, other.slices);
-	swap(lines, other.lines);
-	
-	swap(allocated, other.allocated);
-	swap(allocatedSize, other.allocatedSize);
-	
-	swap(viewer, other.viewer);
-	swap(name, other.name);
-    }
     
     template <class T>
     void Image<T>::clone(const Image<T> &rhs)

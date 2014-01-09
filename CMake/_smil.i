@@ -32,11 +32,6 @@ SMIL_MODULE(smil)
 
 %feature("autodoc", "1");
 
-%{
-#include "stddef.h"
-#include <iostream>
-%}
-
 
 #ifndef SWIGJAVA
 %init
