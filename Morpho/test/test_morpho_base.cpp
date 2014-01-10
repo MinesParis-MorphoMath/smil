@@ -34,6 +34,54 @@
 
 using namespace smil;
 
+class Test_Dilate_2Points : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+      
+      dataType vec1[] = {
+	114, 133,  74, 160,  57,  25,  37,
+	 23,  73,   9, 196, 118,  23, 110,
+	154, 248, 165, 159, 210,  47,  58,
+	213,  74,   8, 163,   3, 240, 213,
+	158,  67,  52, 103, 163, 158,   9,
+	 85,  36, 124,  12,   7,  56, 253,
+	214, 148,  20, 200,  53,  10,  58
+      };
+      
+      im1 << vec1;
+      
+      StrElt dse;
+      dse.addPoint(0,0);
+      dse.addPoint(1,1);
+      
+      dilate(im1, im2, dse());
+
+      dataType dilateVec[] = {
+	114, 133,  74, 160,  57,  25,  37,
+	  23, 114, 133, 196, 160,  57, 110,
+	154, 248, 165, 159, 210, 118,  58,
+	213, 154, 248, 165, 159, 240, 213,
+	158, 213,  74, 103, 163, 158, 240,
+	  85, 158, 124,  52, 103, 163, 253,
+	214, 148,  36, 200,  53,  10,  58,
+      };
+      im3 << dilateVec;
+      
+      
+      TEST_ASSERT(im2==im3);      
+      
+      if (retVal!=RES_OK)
+	im2.printSelf(1);
+  }
+};
+
 class Test_Dilate_Hex : public TestCase
 {
   virtual void run()
@@ -145,8 +193,6 @@ class Test_Dilate_3D : public TestCase
       typedef UINT8 dataType;
       typedef Image<dataType> imType;
       
-      Core::getInstance()->setNumberOfThreads(4);
-      
       imType im1(20,20,20);
       imType im2(im1);
       
@@ -159,6 +205,7 @@ class Test_Dilate_3D : public TestCase
 int main(int argc, char *argv[])
 {
       TestSuite ts;
+      ADD_TEST(ts, Test_Dilate_2Points);
       ADD_TEST(ts, Test_Dilate_Hex);
       ADD_TEST(ts, Test_Dilate_Squ);
       ADD_TEST(ts, Test_Dilate_3D);
