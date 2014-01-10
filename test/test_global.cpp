@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
 //       Image<UINT8> im2(im, true);
 //       delete imrgb;
 //     
-    Gui::execLoop();
+//     Gui::execLoop();
 //     qapp.exec();
 
 }

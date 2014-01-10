@@ -466,8 +466,8 @@ namespace smil
 		    {
 			if (oddSe)
 			  oddLine = ((l+1)%2 && (s+1)%2);
-			z = s + pts[0].z;
-			y = l + pts[0].y;
+			z = s - pts[0].z;
+			y = l - pts[0].y;
 			x = pts[0].x + (oddLine && y%2);
 
 			_extract_translated_line(tmpIm, x, y, z, tmpBuf);
@@ -475,8 +475,8 @@ namespace smil
 			lineOut = destLines[l];
 			for (p=1;p<sePtsNumber;p++)
 			{
-			    z = s + pts[p].z;
-			    y = l + pts[p].y;
+			    z = s - pts[p].z;
+			    y = l - pts[p].y;
 			    x = pts[p].x + (oddLine && y%2);
 			    
 			    _extract_translated_line(tmpIm, x, y, z, tmpBuf2);
