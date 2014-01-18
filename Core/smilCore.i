@@ -225,11 +225,24 @@ namespace smil
 
 
 %ignore smil::Image::operator[];
+
+#ifdef SWIGPYTHON
+%ignore smil::Image::getPixels;
+%ignore smil::Image::getLines;
+%ignore smil::Image::getSlices;
+%ignore smil::Image::toArray;
+%ignore smil::Image::fromArray;
+%ignore smil::Image::toCharArray;
+%ignore smil::Image::fromCharArray;
+%ignore smil::Image::toIntArray;
+%ignore smil::Image::fromIntArray;
+
 %extend smil::Image
 {
-    T __getitem__(size_t i) { return self->getPixel(i); }
-    RES_T __setitem__(size_t i, T val) { return self->setPixel(i, val); }
+    T __getitem__(size_t i) { return self->getPixel(i, true); }
+    RES_T __setitem__(size_t i, T val) { return self->setPixel(i, val, true); }
 }
+#endif // SWIGPYTHON
 
 %include "DBaseImage.h"
 %include "DImage.hpp"

@@ -9,12 +9,12 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="701.62671"
-   height="106.36772"
+   width="101.75763"
+   height="107.59315"
    id="svg2"
    version="1.1"
    inkscape:version="0.48.4 r9939"
-   sodipodi:docname="smil.svg"
+   sodipodi:docname="smil_logo.svg"
    inkscape:export-filename="/home/faessel/Documents/Logiciels/Smil/smil_logo.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90">
@@ -35,9 +35,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4"
-     inkscape:cx="440.97263"
-     inkscape:cy="124.16599"
+     inkscape:zoom="3.959798"
+     inkscape:cx="1.1741594"
+     inkscape:cy="34.749345"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
@@ -58,8 +58,8 @@
        visible="true"
        enabled="true"
        snapvisiblegridlinesonly="true"
-       originx="445.01686px"
-       originy="-739.12817px" />
+       originx="445.59634px"
+       originy="-738.51546px" />
   </sodipodi:namedview>
   <metadata
      id="metadata7">
@@ -77,10 +77,10 @@
      inkscape:label="Calque 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(445.01686,-206.86627)">
+     transform="translate(445.59634,-206.25355)">
     <path
        sodipodi:type="arc"
-       style="fill:#edb029;fill-opacity:1;stroke:#000000;stroke-width:1.57333052;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
+       style="fill:#edb029;fill-opacity:1;stroke:#000000;stroke-width:1.57333058;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
        id="path2991"
        sodipodi:cx="-153.03812"
        sodipodi:cy="409.90515"
@@ -122,52 +122,5 @@
        id="path3873"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cscc" />
-    <text
-       style="font-size:15px"
-       y="277.1619"
-       x="-329.25003"
-       id="text24">
-      <tspan
-         style="font-size:32px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVuSans"
-         x="-329.25003 -308.93002 -300.03403 -268.866 -248.54599 -239.64999"
-         y="277.1619"
-         sodipodi:role="line"
-         id="tspan26">Simple</tspan>
-    </text>
-    <text
-       style="font-size:15px"
-       y="264.36215"
-       x="-220"
-       id="text28">
-      <tspan
-         style="font-size:20.8002491px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVuSans"
-         x="-220"
-         y="264.36215"
-         id="tspan30">*</tspan>
-    </text>
-    <text
-       style="font-size:15px"
-       y="277.1619"
-       x="-199.42361"
-       id="text32">
-      <tspan
-         style="font-size:32px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVuSans"
-         x="-199.42361 -171.77536 -152.2236 -139.03937 -118.71939 -98.39917 -78.815155 -69.951385 -50.367371 -30.047394 -21.183624 -3.5513916 16.096863 24.960632 35.168854 44.608856 75.776855 95.425049 115.74509 135.42505 145.60107 163.42505 172.28885 192.60889 205.79309 225.44128 238.62549"
-         y="277.1619"
-         sodipodi:role="line"
-         id="tspan34">Morphological Image Library</tspan>
-    </text>
-    <text
-       style="font-size:15px"
-       id="text36"
-       x="134.65906"
-       y="301.21417">
-      <tspan
-         style="font-size:16px;font-variant:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;font-family:DejaVu Sans;-inkscape-font-specification:DejaVuSans"
-         x="134.65906"
-         sodipodi:role="line"
-         id="tspan38"
-         y="301.21417">(*but efficient)</tspan>
-    </text>
   </g>
 </svg>

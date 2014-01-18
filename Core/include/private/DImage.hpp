@@ -112,9 +112,10 @@ namespace smil
 	    return pixels[z*width*height+y*width+x];
 	}
 	//! Return the value of the pixel at a given offset
-	inline T getPixel(size_t offset) const
+	inline T getPixel(size_t offset, bool noCheck=false) const
 	{
-	    ASSERT((offset < pixelCount), "Offset out of image range", T(0));
+	    if (!noCheck)
+	      ASSERT((offset < pixelCount), "Offset out of image range", T(0));
 	    return pixels[offset];
 	}
 
@@ -134,15 +135,16 @@ namespace smil
 	}
 	
 	//! Set the value of the pixel at a given offset
-	inline RES_T setPixel(size_t offset, const T &value)
+	inline RES_T setPixel(size_t offset, const T &value, bool noCheck=false)
 	{
-	    ASSERT((offset < pixelCount), "Offset out of image range", RES_ERR);
+	    if (!noCheck)
+	      ASSERT((offset < pixelCount), "Offset out of image range", RES_ERR);
 	    pixels[offset] = value;
-	    modified();
+	    if (!noCheck)
+	      modified();
 	    return RES_OK;
 	}
 	
-#ifndef SWIGPYTHON	
 	//! Copy pixel values to a given array
 	void toArray(T outArray[]);
 	//! Copy pixel values from a given array
@@ -158,7 +160,6 @@ namespace smil
 	void toIntArray(int outArray[]);
 	//! Copy pixel values from a given int array
 	void fromIntArray(int inArray[]);
-#endif // SWIGPYTHON	
 
 	//! Copy pixel values to a given int vector
 	vector<int> toIntVector();
