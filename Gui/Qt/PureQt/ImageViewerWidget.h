@@ -128,20 +128,21 @@ protected:
     bool valueLblActivated;
     
     void createActions();
-    void connectActions();
     
     void updateTitle();
     void displayHint(QString msg, int timerVal=1000);
 
-    QAction *openAct;
-    QAction *printAct;
-    QAction *exitAct;
-    QAction *zoomInAct;
-    QAction *zoomOutAct;
-    QAction *normalSizeAct;
-    QAction *fitToWindowAct;
-    QAction *aboutAct;
-    QAction *aboutQtAct;
+//     QAction *openAct;
+//     QAction *printAct;
+//     QAction *exitAct;
+//     QAction *zoomInAct;
+//     QAction *zoomOutAct;
+//     QAction *normalSizeAct;
+//     QAction *fitToWindowAct;
+//     QAction *aboutAct;
+//     QAction *aboutQtAct;
+//     QAction *helpAct;
+    QMap<QString, QAction*> actionMap;
     
     QString name;
     
@@ -178,6 +179,8 @@ public slots:
     void mouseMoveEvent ( QGraphicsSceneMouseEvent * event );
     void setCursorMode(const int &mode);
     void setDrawPenColor(const QColor &color);
+    void showHelp();
+    void saveAs();
     
 protected slots:
     void setScrollBarPosition(int x, int y);

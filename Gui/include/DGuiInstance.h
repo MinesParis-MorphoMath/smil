@@ -70,7 +70,7 @@ namespace smil
 
     protected:
 	Gui () {}
-	~Gui () {}
+	virtual ~Gui () {}
 
     public:
 	// Public interface
@@ -81,6 +81,7 @@ namespace smil
 	 */
 	static void execLoop();
 	static void processEvents();
+	static void showHelp();
 	
 	/**
 	 * Create a default viewer for type T
@@ -99,6 +100,7 @@ namespace smil
     protected:
 	virtual void _execLoop() {}
 	virtual void _processEvents() {}
+	virtual void _showHelp() {}
     private:
     };
 
