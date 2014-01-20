@@ -69,9 +69,9 @@ namespace smil
 	
 	// Provide explicit copy constructor and assignment operator
 	//! Copy constructor
-	Image(const Image<T> & rhs, bool cloneData=false);
+	Image(const Image<T> & rhs, bool cloneData=true);
 	template <class T2>
-	Image(const Image<T2> &rhs, bool cloneData=false);
+	Image(const Image<T2> &rhs, bool cloneData=true);
 	// Assignment operator
 	Image<T>& operator = (const Image<T> &rhs)
 	{

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,55 +27,75 @@
  */
 
 
-#include "DCore.h"
-#include "DBase.h"
-#include "DMorpho.h"
-#include "DGui.h"
-#include "DIO.h"
+#include "DImage.h"
+#include "DTest.h"
 
-#include "NSTypes/RGB/include/DRGB.h"
-#include "NSTypes/RGB/include/DImage_RGB.h"
-
-// #include "Addons/MorphM/include/private/DMorphMImage.hpp"
+#include <iostream>
+#include <fstream>
 
 
-// #include "DGraph.hpp"
-
-#include <vector>
 
 using namespace smil;
 
 
-int main(int argc, char *argv[])
+
+
+class Test_Assign : public TestCase
 {
+    virtual void run()
+    {
+      UINT8 vecFill[20] = { 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127 };
+      
+      
+      Image_UINT8 im1(4,5);
+      Image_UINT8 imTruth(4,5);
+      
+      im1 << UINT8(127);
+      imTruth << vecFill;
+      
+      TEST_ASSERT(equ(im1, imTruth));
+      
+      
+      UINT8 vec1[20] 	= {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
+      imTruth << vec1;
+      im1 << imTruth;
+      
+      TEST_ASSERT(equ(im1, imTruth));
+    }
+};
 
-   Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/lena.png");
-   im1.show();
+class Test_Add : public TestCase
+{
+    virtual void run()
+    {
+      UINT8 vec1[20] 	= {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
+      UINT8 vecTruth[20] = { 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127 };
+      
+      
+      Image_UINT8 im1(4,5);
+      Image_UINT8 im2(im1);
+      Image_UINT8 imTruth(4,5);
+      
+      im1 << vec1;
+      im2 = (im1 + UINT8(10));
+      
+      imTruth << vecTruth;
+      
+      TEST_ASSERT(equ(im2, imTruth));
+      if (retVal!=RES_OK)
+	im2.printSelf(1);
+    }
+};
 
 
-//     morphee::Image<UINT8> *mIm = new morphee::Image<UINT8>(512,512);
-//     mIm->allocateImage();
-//     morphee::ImageInterface *imInt = (morphee::ImageInterface*)(mIm);
-//     
-// //     dilate((Image<UINT8>)morphIm, im1);
-//     
-//     ExtImage<UINT8> im2 = morphmImage<UINT8>(*mIm);
-//     ExtImage<UINT8> *im3 = new morphmImage<UINT8>(*imInt);
-//     fill(*im3, UINT8(127));
-//     ImageViewer<UINT8> *viewer;
 
+int main()
+{
+      TestSuite ts;
 
-   BaseImage *im = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
-   im->show();
-   
-//    Image<UINT16> im1("/home/faessel/tmp/test_image16.tif");
-   
-//    Image<UINT8> im2("/home/faessel/tmp/chambre.tif");
-   
-//       Image<UINT8> im2(im, true);
-//       delete imrgb;
-//     
-//     Gui::execLoop();
-
+      ADD_TEST(ts, Test_Assign);
+      ADD_TEST(ts, Test_Add);
+      
+      return ts.run();
 }
 
