@@ -112,10 +112,9 @@ namespace smil
 	    return pixels[z*width*height+y*width+x];
 	}
 	//! Return the value of the pixel at a given offset
-	inline T getPixel(size_t offset, bool noCheck=false) const
+	inline T getPixel(size_t offset) const
 	{
-	    if (!noCheck)
-	      ASSERT((offset < pixelCount), "Offset out of image range", T(0));
+	    ASSERT((offset < pixelCount), "Offset out of image range", T(0));
 	    return pixels[offset];
 	}
 
@@ -135,13 +134,11 @@ namespace smil
 	}
 	
 	//! Set the value of the pixel at a given offset
-	inline RES_T setPixel(size_t offset, const T &value, bool noCheck=false)
+	inline RES_T setPixel(size_t offset, const T &value)
 	{
-	    if (!noCheck)
-	      ASSERT((offset < pixelCount), "Offset out of image range", RES_ERR);
+	    ASSERT((offset < pixelCount), "Offset out of image range", RES_ERR);
 	    pixels[offset] = value;
-	    if (!noCheck)
-	      modified();
+	    modified();
 	    return RES_OK;
 	}
 	
