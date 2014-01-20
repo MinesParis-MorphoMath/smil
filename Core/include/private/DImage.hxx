@@ -535,7 +535,6 @@ namespace smil
     Image<T>& Image<T>::operator << (const Image<T> &rhs)
     {
 	copy(rhs, *this);
-	cout << "ok" << endl;
 	return *this;
     }
 
