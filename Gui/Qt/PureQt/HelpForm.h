@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -26,56 +26,30 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef _D_HELP_FORM_H
+#define _D_HELP_FORM_H
 
-#include "DCore.h"
-#include "DBase.h"
-#include "DMorpho.h"
-#include "DGui.h"
-#include "DIO.h"
+#include "ui_HelpForm.h"
 
-#include "NSTypes/RGB/include/DRGB.h"
-#include "NSTypes/RGB/include/DImage_RGB.h"
-
-// #include "Addons/MorphM/include/private/DMorphMImage.hpp"
-
-
-// #include "DGraph.hpp"
-
-#include <vector>
-
-using namespace smil;
-
-
-int main(int argc, char *argv[])
-{
-
-   Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/lena.png");
-   im1.show();
-
-
-//     morphee::Image<UINT8> *mIm = new morphee::Image<UINT8>(512,512);
-//     mIm->allocateImage();
-//     morphee::ImageInterface *imInt = (morphee::ImageInterface*)(mIm);
-//     
-// //     dilate((Image<UINT8>)morphIm, im1);
-//     
-//     ExtImage<UINT8> im2 = morphmImage<UINT8>(*mIm);
-//     ExtImage<UINT8> *im3 = new morphmImage<UINT8>(*imInt);
-//     fill(*im3, UINT8(127));
-//     ImageViewer<UINT8> *viewer;
-
-
-   BaseImage *im = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
-   im->show();
-   
-//    Image<UINT16> im1("/home/faessel/tmp/test_image16.tif");
-   
-//    Image<UINT8> im2("/home/faessel/tmp/chambre.tif");
-   
-//       Image<UINT8> im2(im, true);
-//       delete imrgb;
-//     
-    Gui::execLoop();
-
+namespace Ui {
+    class HelpForm;
 }
 
+
+class HelpForm : public QWidget
+{
+    Q_OBJECT
+    
+public:
+    explicit HelpForm(QWidget* parent = 0, Qt::WindowFlags f = 0) :
+      QWidget(parent),
+      ui(new Ui::HelpForm)
+    {
+	ui->setupUi(this);
+    }
+private:
+    Ui::HelpForm *ui;
+};
+
+
+#endif // _D_HELP_FORM_H

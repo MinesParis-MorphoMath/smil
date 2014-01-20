@@ -430,20 +430,42 @@ namespace smil
 	    defaultCurve->setBrush( Qt::blue );
 	}
 	
-	QwtPlotCurve *curve = histoPlot->getCurrentCurve();
       
-	QwtPointSeriesData *myData = new QwtPointSeriesData();
 	map<T, UINT> hist = histogram(*(this->image));
       
+	QwtPlotCurve *curve = histoPlot->getCurrentCurve();
+	
+#if QWT_VERSION < 0x060000
+	int ptsNbr = hist.size();
+	double *xVals = new double[ptsNbr];
+	double *yVals = new double[ptsNbr];
+	
+	int i=0;
+	for(typename map<T,UINT>::iterator it=hist.begin();it!=hist.end();it++,i++)
+	{
+	    xVals[i] = (*it).first;
+	    yVals[i] = (*it).second;
+	}
+	curve->setData(xVals, yVals, ptsNbr);
+	
+	histoPlot->replot();
+	histoPlot->show();
+	
+	delete[] xVals;
+	delete[] yVals;
+#else // QWT_VERSION < 0x060000
 	QVector<QPointF> samples;
 	for(typename map<T,UINT>::iterator it=hist.begin();it!=hist.end();it++)
 	  samples.push_back(QPointF((*it).first, (*it).second));
 
+	QwtPointSeriesData *myData = new QwtPointSeriesData();
 	myData->setSamples(samples);
 	curve->setData(myData);
-      
+	
 	histoPlot->replot();
 	histoPlot->show();
+#endif // QWT_VERSION < 0x060000
+      
     }
     
     template <class T>
@@ -468,32 +490,51 @@ namespace smil
 	
 	QwtPlotCurve *curve = profilePlot->getCurrentCurve();
       
-	QwtPointSeriesData *myData = new QwtPointSeriesData();
-
 	QLineF lnF(this->line->line());
 	
-	QVector<QPointF> samples;
 	vector<IntPoint> bPoints = bresenhamPoints(lnF.x1(), lnF.y1(), lnF.x2(), lnF.y2());
 
 	T value;
 	typename Image<T>::sliceType lines = this->image->getSlices()[slider->value()];
 	int i = 0;
 	
+	
+#if QWT_VERSION < 0x060000
+	int ptsNbr = bPoints.size();
+	double *xVals = new double[ptsNbr];
+	double *yVals = new double[ptsNbr];
+	
+	for(vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++,i++)
+	{
+	    value = lines[(*it).y][(*it).x];
+	    xVals[i] = i;
+	    yVals[i] = value;
+	}
+	curve->setData(xVals, yVals, ptsNbr);
+	
+	profilePlot->replot();
+	profilePlot->show();
+	
+	delete[] xVals;
+	delete[] yVals;
+	
+#else // QWT_VERSION < 0x060000
+	QVector<QPointF> samples;
 	for(vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++,i++)
 	{
 	    value = lines[(*it).y][(*it).x];
 	    samples.push_back(QPointF(i, value));
-// 	    samples
 	}
-// 	  samples.push_back(QPointF((*it).first, (*it).second));
 
+	QwtPointSeriesData *myData = new QwtPointSeriesData();
 	myData->setSamples(samples);
 	curve->setData(myData);
-      
-// 	curve->attach(profilePlot);
 	
 	profilePlot->replot();
 	profilePlot->show();
+#endif // QWT_VERSION < 0x060000
+      
+	
     }    
 #endif // USE_QWT
 

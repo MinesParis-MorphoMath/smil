@@ -65,3 +65,8 @@ void Gui::processEvents()
     Gui::getInstance()->_processEvents();
 }
 
+void Gui::showHelp()
+{
+    Gui::getInstance()->_showHelp();
+}
+

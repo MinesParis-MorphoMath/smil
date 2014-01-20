@@ -35,11 +35,11 @@
 #include <QScrollBar>
 #include <QColorDialog>
 #include <QInputDialog>
+#include <QFileDialog>
 
 #ifdef USE_QWT
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
-#include <qwt_series_data.h>
 #endif // USE_QWT
 
 
@@ -47,6 +47,7 @@
 
 #include "ImageViewerWidget.h"
 #include "ColorPicker.h"
+#include "Gui/include/DGuiInstance.h"
 
 #define RAND_UINT8 int(double(qrand())/RAND_MAX*255)
 
@@ -133,7 +134,8 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     scale(1.0);
 
     createActions();
-    connectActions();
+    
+    connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
     
     hintLabel->setEnabled(true);
     
@@ -176,8 +178,9 @@ ImageViewerWidget::~ImageViewerWidget()
     delete hintLabel;
     delete hintTimer;
 
-    delete zoomInAct;
-    delete zoomOutAct;
+    // Delete actions
+    for (QMap<QString, QAction*>::iterator it=actionMap.begin();it!=actionMap.end();it++)
+      delete it.value();
     
     delete colorPicker;
 }
@@ -321,27 +324,34 @@ void ImageViewerWidget::setLabelImage(bool val)
 
 void ImageViewerWidget::createActions()
 {
-    zoomInAct = new QAction(tr("&Zoom in"), this);
-    zoomInAct->setShortcut(tr("z"));
-    zoomInAct->setEnabled(true);
-
-    zoomOutAct = new QAction(tr("Zoom out"), this);
-    zoomOutAct->setShortcut(tr("a"));
+    QAction *act;
+    
+    actionMap["zoomIn"] = act = new QAction("&Zoom in", this);
+    act->setShortcut(tr("z"));
+    connect(act, SIGNAL(triggered()), this, SLOT(zoomIn()));
+    
+    actionMap["zoomOut"] = act = new QAction("Zoom out", this);
+    act->setShortcut(tr("a"));
+    connect(act, SIGNAL(triggered()), this, SLOT(zoomOut()));
+    
+    actionMap["help"] = act = new QAction("Help", this);
+    act->setShortcut(Qt::Key_F1);
+    connect(act, SIGNAL(triggered()), this, SLOT(showHelp()));
+    addAction(act);
+    
+    actionMap["saveAs"] = act = new QAction("Save snapshot", this);
+    act->setShortcut(Qt::Key_S | Qt::CTRL);
+    connect(act, SIGNAL(triggered()), this, SLOT(saveAs()));
+    addAction(act);
 }
 
-void ImageViewerWidget::connectActions()
+void ImageViewerWidget::saveAs()
 {
-//     connect(this, SIGNAL(onDataChanged()), this, SLOT(update()));
-
-//     connect(imScene, SIGNAL(onMouseMove(QGraphicsSceneMouseEvent*)), this, SLOT(sceneMouseMoveEvent(QGraphicsSceneMouseEvent*)));
-
-    connect(zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
-    connect(zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
-    
-    connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
-
-//    connect(ui->zoomInAct, SIGNAL(triggered()), this, SLOT(zoomIn()));
-//    connect(ui->zoomOutAct, SIGNAL(triggered()), this, SLOT(zoomOut()));
+    QString fileName = QFileDialog::getSaveFileName(this, "Save Image", "", tr("Image Files (*.png *.jpg *.bmp *.tif)"));
+    if (fileName.isEmpty())
+      return;
+    QPixmap pixMap = QPixmap::grabWidget(this);  
+    pixMap.save(fileName);  
 }
 
 void ImageViewerWidget::setName(QString new_name)
@@ -832,6 +842,8 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
 	wIndex++;
     }
     contMenu.addMenu(&linkMenu);
+    contMenu.addAction(actionMap["help"]);
+    contMenu.addAction(actionMap["saveAs"]);
     
     QAction* selectedItem = contMenu.exec(globalPos);
     if (selectedItem)
@@ -858,15 +870,7 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
 	}
 	else if (selectedItem->text()=="Color...")
 	{
-// 	    for (int i=0;i<overlayColorTable.count();i++)
-// 	      colorPicker->insertColor(overlayColorTable[i], QString::number(i));
 	    colorPicker->popup();
-	    
-// 	    QColorDialog diag(this);
-// 	    diag.setOption(QColorDialog::ShowAlphaChannel, false); 
-// 	    QColor color = diag.getColor(drawPen.color(), this);
-// 	    if (color.isValid())
-// 		drawPen.setColor(color);
 	}
 	else if (selectedItem->text()=="Width...")
 	{
@@ -886,5 +890,9 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
     }
 }
 
+void ImageViewerWidget::showHelp()
+{
+    smil::Gui::showHelp();
+}
 
 

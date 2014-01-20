@@ -187,7 +187,7 @@ namespace smil
     * 
     */
     template <class T>
-    RES_T trans(Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut, T borderValue = numeric_limits<T>::min())
+    RES_T trans(Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut, T borderValue = ImDtTypes<T>::min())
     {
 	if (!imIn.isAllocated())
 	    return RES_ERR_BAD_ALLOCATION;
@@ -203,10 +203,10 @@ namespace smil
 	{
 	    typename Image<T>::sliceType lOut = imOut.getSlices()[k];
 	    
-	    int z = k+dz;
+	    int z = k-dz;
 	    for (size_t j=0;j<height;j++, lOut++)
 	    {
-		int y = j+dy;
+		int y = j-dy;
 		
 		if (z<0 || z>=(int)depth || y<0 || y>=(int)height)
 		    copyLine<T>(borderBuf, lineLen, *lOut);

@@ -33,7 +33,11 @@
 
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
+
+#if QWT_VERSION < 0x060000
+#else // QWT_VERSION < 0x060000
 #include <qwt_series_data.h>
+#endif // QWT_VERSION < 0x060000
 
 class PlotWidget : public QwtPlot
 {
