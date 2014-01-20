@@ -190,10 +190,10 @@ namespace smil
 // 	return h;
 //     }
 
-    template <>
-    inline void Image<RGB>::printSelf(ostream &os, bool displayPixVals, bool hexaGrid, string indent) const
-    {
-    }
+//     template <>
+//     inline void Image<RGB>::printSelf(ostream &os, bool displayPixVals, bool hexaGrid, string indent) const
+//     {
+//     }
     
 #ifndef SWIGPYTHON	
     template <>

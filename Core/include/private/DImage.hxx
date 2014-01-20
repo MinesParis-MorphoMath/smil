@@ -496,7 +496,7 @@ namespace smil
 		if (hexaGrid && j%2)
 		  os << setw(tSsize/2+1) << " ";
 		for (i=0;i<width;i++)
-		  os <<  setw(tSsize+1) << (int)getPixel(i,j,k) << ",";
+		  os <<  setw(tSsize+1) << ImDtTypes<T>::toString(getPixel(i,j,k)) << ",";
 		os << endl;
 	      }
 	      os << endl;
@@ -535,6 +535,7 @@ namespace smil
     Image<T>& Image<T>::operator << (const Image<T> &rhs)
     {
 	copy(rhs, *this);
+	cout << "ok" << endl;
 	return *this;
     }
 
