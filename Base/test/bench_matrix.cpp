@@ -1,6 +1,6 @@
 /*
  * Smil
- * Copyright (c) 2010 Matthieu Faessel
+ * Copyright (c) 2011 Matthieu Faessel
  *
  * This file is part of Smil.
  *
