@@ -67,6 +67,8 @@ def MorphmInt(*args):
     
     if dt=="sdtUINT8":
       return MorphmInt_UINT8(im)
+    else if dt=="sdtUINT16":
+      return MorphmInt_UINT16(im)
 %}
 
 	
