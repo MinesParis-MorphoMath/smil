@@ -405,7 +405,7 @@ namespace smil
     }
 
     template <class T>
-    void Image<T>::toCharArray(char *outArray)
+    void Image<T>::toCharArray(signed char outArray[])
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  outArray[i] = pixels[i];

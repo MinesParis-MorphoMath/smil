@@ -110,6 +110,8 @@ PTR_ARG_OUT_APPLY(s)
 %include "DCommon.h"
 %include "DBaseObject.h"
 
+%template(DoublePoint) Point<double>;
+%template(IntPoint) Point<int>;
 
 
 //////////////////////////////////////////////////////////

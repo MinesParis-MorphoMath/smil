@@ -148,7 +148,7 @@ namespace smil
 	void fromArray(T inArray[]);
 
 	//! Copy pixel values to a given char array
-	void toCharArray(char *outArray);
+	void toCharArray(signed char outArray[]);
 	char *toCharArray() { return (char *)pixels; }
 	//! Copy pixel values from a given char array
 	void fromCharArray(signed char inArray[]);

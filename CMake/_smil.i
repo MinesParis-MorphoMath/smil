@@ -178,9 +178,12 @@ def Image(*args):
 	img = imageTypes[0](*args)
 	fillImg = True
 	
-    elif type(args[0]) in imageTypes: # First arg is an image
+    elif type(args[0]) in imageTypes or hasattr(args[0], "getTypeAsString"): # First arg is an image
 	srcIm = args[0]
-	srcImgType = type(args[0])
+	if type(srcIm) in imageTypes:
+	    srcImgType = type(srcIm)
+	else:
+	    srcImgType = imageTypes[dataTypes.index(srcIm.getTypeAsString())]
 	if argNbr>1:
 	  if type(args[1])==type(""):
 	      if args[1] in dataTypes: # Second arg is an image type string ("UINT8", ...)
