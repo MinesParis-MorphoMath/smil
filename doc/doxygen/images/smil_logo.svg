@@ -23,6 +23,22 @@
   <defs
      id="defs4">
     <linearGradient
+       osb:paint="gradient"
+       id="linearGradient3781">
+      <stop
+         style="stop-color:#dd6f1c;stop-opacity:0.24215247"
+         offset="0"
+         id="stop3783" />
+      <stop
+         id="stop3785"
+         offset="0.50000036"
+         style="stop-color:#e38d33;stop-opacity:1" />
+      <stop
+         id="stop3787"
+         offset="1"
+         style="stop-color:#dd6f1c;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient
        id="linearGradient4002"
        osb:paint="solid">
       <stop
@@ -149,7 +165,7 @@
        y2="312.36215" />
     <radialGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3758-25"
+       xlink:href="#linearGradient3781"
        id="radialGradient3051"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(0.79523559,7.2512231e-8,-6.7086769e-8,0.65809127,-24.333036,137.28953)"
@@ -167,13 +183,13 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="2.1595431"
-     inkscape:cx="65.802684"
+     inkscape:cx="-18.705933"
      inkscape:cy="27.35058"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1366"
-     inkscape:window-height="713"
+     inkscape:window-width="1920"
+     inkscape:window-height="1025"
      inkscape:window-x="-2"
      inkscape:window-y="-3"
      inkscape:window-maximized="1"
