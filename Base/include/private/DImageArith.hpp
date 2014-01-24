@@ -882,40 +882,40 @@ namespace smil
     * test(im1>100, 255, 0, im2)
     * \endcode
     */
-    template <class T>
-    RES_T test(const Image<T> &imIn1, const Image<T> &imIn2, const Image<T> &imIn3, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T test(const Image<T1> &imIn1, const Image<T2> &imIn2, const Image<T2> &imIn3, Image<T2> &imOut)
     {
 	ASSERT_ALLOCATED(&imIn1, &imIn2, &imIn3, &imOut);
 	ASSERT_SAME_SIZE(&imIn1, &imIn2, &imIn3, &imOut);
 
-	return tertiaryImageFunction<T, testLine<T> >(imIn1, imIn2, imIn3, imOut);
+	return tertiaryImageFunction<T1, testLine<T1, T2> >(imIn1, imIn2, imIn3, imOut);
     }
 
-    template <class T>
-    RES_T test(const Image<T> &imIn1, const Image<T> &imIn2, const T &value, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T test(const Image<T1> &imIn1, const Image<T2> &imIn2, const T2 &value, Image<T2> &imOut)
     {
 	ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
 	ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
 
-	return tertiaryImageFunction<T, testLine<T> >(imIn1, imIn2, value, imOut);
+	return tertiaryImageFunction<T1, testLine<T1, T2> >(imIn1, imIn2, value, imOut);
     }
 
-    template <class T>
-    RES_T test(const Image<T> &imIn1, const T &value, const Image<T> &imIn2, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T test(const Image<T1> &imIn1, const T2 &value, const Image<T2> &imIn2, Image<T2> &imOut)
     {
 	ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
 	ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
 
-	return tertiaryImageFunction<T, testLine<T> >(imIn1, value, imIn2, imOut);
+	return tertiaryImageFunction<T1, testLine<T1, T2> >(imIn1, value, imIn2, imOut);
     }
 
-    template <class T>
-    RES_T test(const Image<T> &imIn, const T &value1, const T &value2, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T test(const Image<T1> &imIn, const T2 &value1, const T2 &value2, Image<T2> &imOut)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 
-	return tertiaryImageFunction<T, testLine<T> >(imIn, value1, value2, imOut);
+	return tertiaryImageFunction<T1, testLine<T1, T2> >(imIn, value1, value2, imOut);
     }
 
     template <class T, class imOrValT, class trueT, class falseT>

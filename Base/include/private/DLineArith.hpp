@@ -477,11 +477,18 @@ namespace smil
     };
 
 
-    template <class T>
-    struct testLine : public tertiaryLineFunctionBase<T>
+    template <class T1, class T2>
+    struct testLine : public tertiaryLineFunctionBase<T1>
     {
-	typedef typename Image<T>::lineType lineType;
-	inline void _exec(lineType lIn1, lineType lIn2, lineType lIn3, size_t size, lineType lOut)
+	typedef typename Image<T1>::lineType lineType1;
+	typedef typename Image<T2>::lineType lineType2;
+	
+	inline void operator()(lineType1 lIn1, lineType2 lIn2, lineType2 lIn3, size_t size, lineType2 lOut)
+	{
+	    return _exec(lIn1, lIn2, lIn3, size, lOut);
+	}
+	
+	inline void _exec(lineType1 lIn1, lineType2 lIn2, lineType2 lIn3, size_t size, lineType2 lOut)
 	{
 	    for (size_t i=0;i<size;i++)
 	    {

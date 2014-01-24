@@ -33,7 +33,7 @@
 #include "Base/include/private/DImageArith.hpp"
 #include "DImage.h"
 #include "DMorphImageOperations.hpp"
-#include "Base/include/private/DLabelMeasures.hpp"
+#include "Base/include/private/DBlobMeasures.hpp"
 
 
 #include <set>

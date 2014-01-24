@@ -155,6 +155,8 @@ TEMPLATE_WRAP_FUNC(fullThick);
 
 %include "DSkeleton.hpp"
 TEMPLATE_WRAP_FUNC(skiz);
+TEMPLATE_WRAP_FUNC(skeleton);
+TEMPLATE_WRAP_FUNC_2T_CROSS(extinctionValues);
 TEMPLATE_WRAP_FUNC(zhangSkeleton);
 
 %include "DMorphoMaxTree.hpp"

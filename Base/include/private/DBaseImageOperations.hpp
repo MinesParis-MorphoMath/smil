@@ -163,47 +163,58 @@ namespace smil
 	typedef typename imageType::sliceType sliceType;
 
 	tertiaryImageFunction() {}
-	tertiaryImageFunction( const imageType &imIn1, const imageType &imIn2, const imageType &imIn3, imageType &ImOut )
-	{
-	    this->retVal = this->_exec ( imIn1, imIn2, imIn3, ImOut );
-	}
-	tertiaryImageFunction( const imageType &imIn1, const T &value, const imageType &imIn2, imageType &ImOut )
-	{
-	    this->retVal = this->_exec ( imIn1, value, imIn2, ImOut );
-	}
-	tertiaryImageFunction( const imageType &imIn1, const imageType &imIn2, const T &value, imageType &ImOut )
-	{
-	    this->retVal = this->_exec ( imIn1, imIn2, value, ImOut );
-	}
-	tertiaryImageFunction( const imageType &imIn, const T &value1, const T &value2, imageType &ImOut )
+	
+	template <class T2>
+	tertiaryImageFunction( const imageType &imIn, const T2 &value1, const T2 &value2, Image<T2> &ImOut )
 	{
 	    this->retVal = this->_exec ( imIn, value1, value2, ImOut );
 	}
+	template <class T2>
+	tertiaryImageFunction( const imageType &imIn, const T2 &value1, const Image<T2> &imIn2, Image<T2> &ImOut )
+	{
+	    this->retVal = this->_exec ( imIn, value1, imIn2, ImOut );
+	}
+	template <class T2>
+	tertiaryImageFunction( const imageType &imIn, const Image<T2> &imIn1, const T2 &value2, Image<T2> &ImOut )
+	{
+	    this->retVal = this->_exec ( imIn, imIn1, value2, ImOut );
+	}
+	template <class T2>
+	tertiaryImageFunction( const imageType &imIn, const Image<T2> &imIn1, const Image<T2> &imIn2, Image<T2> &ImOut )
+	{
+	    this->retVal = this->_exec ( imIn, imIn1, imIn2, ImOut );
+	}
 	
 	
-	inline RES_T operator() ( const imageType &imIn1, const imageType &imIn2, const imageType &imIn3, imageType &ImOut )
+	template <class T2>
+	inline RES_T operator() ( const imageType &imIn1, const Image<T2> &imIn2, const Image<T2> &imIn3, Image<T2> &ImOut )
 	{
 	    return this->_exec ( imIn1, imIn2, imIn3, ImOut );
 	}
-	inline RES_T operator() ( const imageType &imIn1, const T &value, const imageType &imIn2, imageType &ImOut )
+	template <class T2>
+	inline RES_T operator() ( const imageType &imIn1, const T2 &value, const Image<T2> &imIn2, Image<T2> &ImOut )
 	{
 	    return this->_exec ( imIn1, value, imIn2, ImOut );
 	}
-	inline RES_T operator() ( const imageType &imIn1, const imageType &imIn2, const T &value, imageType &ImOut )
+	template <class T2>
+	inline RES_T operator() ( const imageType &imIn1, const Image<T2> &imIn2, const T2 &value, Image<T2> &ImOut )
 	{
 	    return this->_exec ( imIn1, imIn2, value, ImOut );
 	}
-	inline RES_T operator() ( const imageType &imIn, const T &value1, const T &value2, imageType &ImOut )
+	template <class T2>
+	inline RES_T operator() ( const imageType &imIn, const T2 &value1, const T2 &value2, Image<T2> &ImOut )
 	{
 	    return this->_exec ( imIn, value1, value2, ImOut );
 	}
 
-	RES_T _exec ( const imageType &imIn1, const imageType &imIn2, const imageType &imIn3, imageType &imOut );
-    //     static RES_T _exec(imageType &imIn1, imageType &imInOut);
-	RES_T _exec ( const imageType &imIn1, const T &value, const imageType &imIn2, imageType &imOut );
-	RES_T _exec ( const imageType &imIn1, const imageType &imIn2, const T &value, imageType &imOut );
-	RES_T _exec ( const imageType &imIn, const T &value1, const T &value2, imageType &imOut );
-
+	template <class T2> 
+	RES_T _exec ( const imageType &imIn1, const Image<T2> &imIn2, const Image<T2> &imIn3, Image<T2> &imOut );
+	template <class T2> 
+	RES_T _exec ( const imageType &imIn1, const T2 &value, const Image<T2> &imIn2, Image<T2> &imOut );
+	template <class T2> 
+	RES_T _exec ( const imageType &imIn1, const Image<T2> &imIn2, const T2 &value, Image<T2> &imOut );
+	template <class T2> 
+	RES_T _exec ( const imageType &imIn, const T2 &value1, const T2 &value2, Image<T2> &imOut );
     //   protected:
 	lineFunction_T lineFunction;
     };
