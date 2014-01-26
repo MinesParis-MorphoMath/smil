@@ -46,7 +46,8 @@ namespace smil
     template <class T> 
     class ImageViewer;
 
-
+    template <class T>
+    class ResImage;
     /**
     * Main Image class.
     * 
@@ -72,6 +73,8 @@ namespace smil
 	Image(const Image<T> & rhs, bool cloneData=true);
 	template <class T2>
 	Image(const Image<T2> &rhs, bool cloneData=true);
+	Image(const ResImage<T> & rhs, bool cloneData=true);
+	
 	// Assignment operator
 	Image<T>& operator = (const Image<T> &rhs)
 	{
@@ -375,6 +378,18 @@ namespace smil
 
     };
       
+    template <class T>
+    class ResImage : public Image<T>
+    {
+    public:
+      ResImage(const Image<T> &rhs)
+	: Image<T>(rhs, false)
+      {
+      }
+      ~ResImage()
+      {
+      }
+    };
 
     template <class T>
     Image<T> *createImage(const T)

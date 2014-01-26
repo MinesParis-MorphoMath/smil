@@ -187,7 +187,7 @@ namespace smil
     * 
     */
     template <class T>
-    RES_T trans(Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut, T borderValue = ImDtTypes<T>::min())
+    RES_T trans(const Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut, T borderValue = ImDtTypes<T>::min())
     {
 	if (!imIn.isAllocated())
 	    return RES_ERR_BAD_ALLOCATION;
@@ -223,23 +223,23 @@ namespace smil
     }
 
     template <class T>
-    RES_T trans(Image<T> &imIn, int dx, int dy, Image<T> &imOut, T borderValue = ImDtTypes<T>::min())
+    RES_T trans(const Image<T> &imIn, int dx, int dy, Image<T> &imOut, T borderValue = ImDtTypes<T>::min())
     {
 	return trans<T>(imIn, dx, dy, 0, imOut, borderValue);
     }
 
     template <class T>
-    Image<T> trans(Image<T> &imIn, int dx, int dy, int dz)
+    ResImage<T> trans(const Image<T> &imIn, int dx, int dy, int dz)
     {
-	Image<T> imOut(imIn);
+	ResImage<T> imOut(imIn);
 	trans<T>(imIn, dx, dy, dz, imOut);
 	return imOut;
     }
 
     template <class T>
-    Image<T> trans(Image<T> &imIn, int dx, int dy)
+    ResImage<T> trans(const Image<T> &imIn, int dx, int dy)
     {
-	Image<T> imOut(imIn);
+	ResImage<T> imOut(imIn);
 	trans<T>(imIn, dx, dy, 0, imOut);
 	return imOut;
     }

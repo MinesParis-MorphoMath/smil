@@ -75,6 +75,16 @@ namespace smil
     }
 
     template <class T>
+    Image<T>::Image(const ResImage<T> &rhs, bool cloneData)
+      : BaseImage(rhs)
+    {
+	init();
+	if (cloneData)
+	  this->clone(rhs);
+	else this->setSize(rhs);
+    }
+
+    template <class T>
     template <class T2>
     Image<T>::Image(const Image<T2> &rhs, bool cloneData)
       : BaseImage(rhs)
