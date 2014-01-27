@@ -493,9 +493,9 @@ namespace smil
     }
 
     template <class T>
-    Image<T> sup(const Image<T> &imIn1, const Image<T> &imIn2)
+    ResImage<T> sup(const Image<T> &imIn1, const Image<T> &imIn2)
     {
-	Image<T> newIm(imIn1);
+	ResImage<T> newIm(imIn1);
 	
 	ASSERT(CHECK_ALLOCATED(&imIn1, &imIn2), newIm);
 	ASSERT(CHECK_SAME_SIZE(&imIn1, &imIn2), newIm);
@@ -526,9 +526,9 @@ namespace smil
     }
 
     template <class T>
-    Image<T> inf(const Image<T> &imIn1, const Image<T> &imIn2)
+    ResImage<T> inf(const Image<T> &imIn1, const Image<T> &imIn2)
     {
-	Image<T> newIm(imIn1);
+	ResImage<T> newIm(imIn1);
 	
 	ASSERT(CHECK_ALLOCATED(&imIn1, &imIn2), newIm);
 	ASSERT(CHECK_SAME_SIZE(&imIn1, &imIn2), newIm);
