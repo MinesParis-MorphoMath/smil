@@ -118,10 +118,8 @@ namespace smil
     }
     
     
-    // SWIG-Python doesn't handle abstract classes
-    // Usefull when creating an image from createFromFile (kind of cast)
     template <class T>
-    void Image<T>::drain(Image<T> *im, bool del)
+    void Image<T>::drain(Image<T> *im, bool deleteSrc)
     {
 	if (allocated)
 	  deallocate();
@@ -146,7 +144,7 @@ namespace smil
 	
 	im->allocated = false;
 	
-	if (del)
+	if (deleteSrc)
 	  delete im;
     }
     

@@ -84,8 +84,10 @@ namespace smil
 	
 	Image(BaseImage *_im, bool stealIdentity=false);
 	
+	// SWIG-Python doesn't handle abstract classes.
+	// Usefull when creating an image from createFromFile (kind of cast).
 	//! Replace container. Drain memory from image im to this.
-	void drain(Image<T> *im, bool del=false);
+	void drain(Image<T> *im, bool deleteSrc=false);
       
 	//! Get the image type.
 	//! \return The type of the image data as a string ("UINT8", "UINT16", ...)
