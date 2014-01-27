@@ -27,7 +27,7 @@
 #include "DCore.h"
 #include "DBase.h"
 #include "DMeasures.hpp"
-#include "DLabelMeasures.hpp"
+#include "DBlobMeasures.hpp"
 
 using namespace smil;
 
