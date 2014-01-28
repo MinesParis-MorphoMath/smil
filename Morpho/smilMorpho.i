@@ -46,6 +46,7 @@ SMIL_MODULE(smilMorpho)
 #include "DMorphoInstance.h"
 #include "DMorphoMaxTree.hpp"
 #include "DMorphoGraph.hpp"
+#include "DMorphoMeasures.hpp"
 %}
  
 
@@ -166,6 +167,9 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);
 TEMPLATE_WRAP_FUNC_3T_FIX_THIRD(mosaicToGraph, Graph<>);
 TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(graphToMosaic, Graph<>);
 TEMPLATE_WRAP_FUNC_3T_FIX_SECOND(drawGraph, Graph<>);
+
+%include "DMorphoMeasures.hpp"
+TEMPLATE_WRAP_FUNC(measGranulometry);
 
 
 #ifdef SWIGPYTHON

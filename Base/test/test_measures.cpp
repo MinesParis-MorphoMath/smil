@@ -175,8 +175,7 @@ class Test_MeasCovariance: public TestCase
       im1 << vec1;
       im2 << vec2;
       
-//       Vector_double cov = measCovariance(im1, im2, 1, 0, 0, 5);
-      Vector_double cov = measCenteredCovariance(im1, 1, 0, 0, 5);
+       Vector_double cov = measCovariance(im1, im2, 1, 0, 0, 5);
 
       TEST_ASSERT(cov[0]==13929.6);
       TEST_ASSERT(cov[1]==10913);

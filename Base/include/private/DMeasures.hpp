@@ -520,6 +520,12 @@ namespace smil
 	return measCovariance(imIn, imIn, dx, dy, dz, maxSteps, normalize);
     }
 	
+    /**
+     * Centered auto-covariance
+     * 
+     * The direction is given by \b dx, \b dy and \b dz.
+     * The lenght corresponds to the max number of steps \b maxSteps
+     */
     template <class T>
     vector<double> measCenteredCovariance(const Image<T> &imIn, size_t dx, size_t dy, size_t dz, UINT maxSteps=0, bool normalize=false)
     {
