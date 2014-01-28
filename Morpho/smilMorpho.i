@@ -117,9 +117,6 @@ TEMPLATE_WRAP_FUNC(median);
 
 %include "DMorphoArrow.hpp"
 TEMPLATE_WRAP_FUNC(arrow);
-TEMPLATE_WRAP_FUNC(arrowGrt);
-TEMPLATE_WRAP_FUNC(arrowGrtOrEqu);
-TEMPLATE_WRAP_FUNC(arrowEqu);
 
 %include "DMorphoWatershed.hpp"
 TEMPLATE_WRAP_FUNC(watershed);
