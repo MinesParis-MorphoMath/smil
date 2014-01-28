@@ -32,7 +32,7 @@
 
 #include "Core/include/private/DImage.hpp"
 #include "DBaseMeasureOperations.hpp"
-#include "DLineArith.hpp"
+#include "DImageArith.hpp"
 
 #include <map>
 #include <set>
@@ -518,6 +518,15 @@ namespace smil
     vector<double> measCovariance(const Image<T> &imIn, size_t dx, size_t dy, size_t dz, UINT maxSteps=0, bool normalize=false)
     {
 	return measCovariance(imIn, imIn, dx, dy, dz, maxSteps, normalize);
+    }
+	
+    template <class T>
+    vector<double> measCenteredCovariance(const Image<T> &imIn, size_t dx, size_t dy, size_t dz, UINT maxSteps=0, bool normalize=false)
+    {
+	Image<float> imMean(imIn, true);
+	float meanV = meanVal(imMean)[0];
+	sub(imMean, meanV, imMean);
+	return measCovariance(imMean, dx, dy, dz, maxSteps, normalize);
     }
 	
     /**

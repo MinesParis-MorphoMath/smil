@@ -78,7 +78,7 @@ namespace smil
     };
 
     template <class T>
-    inline void shiftLine(const typename Image<T>::lineType lIn, int dx, size_t lineLen, typename Image<T>::lineType lOut, T borderValue = numeric_limits<T>::min())
+    inline void shiftLine(const typename Image<T>::lineType lIn, int dx, size_t lineLen, typename Image<T>::lineType lOut, T borderValue = ImDtTypes<T>::min())
     {
 	fillLine<T> fillFunc;
 
@@ -121,7 +121,7 @@ namespace smil
 	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
 	{
 	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] > (T)(numeric_limits<T>::max()- lIn2[i]) ? numeric_limits<T>::max() : lIn1[i] + lIn2[i];
+		lOut[i] = lIn1[i] > (T)(ImDtTypes<T>::max()- lIn2[i]) ? ImDtTypes<T>::max() : lIn1[i] + lIn2[i];
 	}
     };
 
@@ -143,7 +143,7 @@ namespace smil
 	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
 	{
 	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] < (T)(numeric_limits<T>::min() + lIn2[i]) ? numeric_limits<T>::min() : lIn1[i] - lIn2[i];
+		lOut[i] = lIn1[i] < (T)(ImDtTypes<T>::min() + lIn2[i]) ? ImDtTypes<T>::min() : lIn1[i] - lIn2[i];
 	}
     };
 
@@ -184,7 +184,7 @@ namespace smil
     struct grtLine : public binaryLineFunctionBase<T>
     {
 	grtLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -200,7 +200,7 @@ namespace smil
     struct grtSupLine : public binaryLineFunctionBase<T>
     {
 	grtSupLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -216,7 +216,7 @@ namespace smil
     struct grtOrEquLine : public binaryLineFunctionBase<T>
     {
 	grtOrEquLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -232,7 +232,7 @@ namespace smil
     struct grtOrEquSupLine : public binaryLineFunctionBase<T>
     {
 	grtOrEquSupLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -248,7 +248,7 @@ namespace smil
     struct lowLine : public binaryLineFunctionBase<T>
     {
 	lowLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -264,7 +264,7 @@ namespace smil
     struct lowSupLine : public binaryLineFunctionBase<T>
     {
 	lowSupLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -280,7 +280,7 @@ namespace smil
     struct lowOrEquLine : public binaryLineFunctionBase<T>
     {
 	lowOrEquLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -296,7 +296,7 @@ namespace smil
     struct lowOrEquSupLine : public binaryLineFunctionBase<T>
     {
 	lowOrEquSupLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -312,7 +312,7 @@ namespace smil
     struct equLine : public binaryLineFunctionBase<T>
     {
 	equLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -328,7 +328,7 @@ namespace smil
     struct diffLine : public binaryLineFunctionBase<T>
     {
 	diffLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -344,7 +344,7 @@ namespace smil
     struct equSupLine : public binaryLineFunctionBase<T>
     {
 	equSupLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -382,7 +382,7 @@ namespace smil
 	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
 	{
 	    for (size_t i=0;i<size;i++)
-		lOut[i] = double(lIn1[i]) * double(lIn2[i]) > double(numeric_limits<T>::max()) ? numeric_limits<T>::max() : lIn1[i] * lIn2[i];
+		lOut[i] = double(lIn1[i]) * double(lIn2[i]) > double(ImDtTypes<T>::max()) ? ImDtTypes<T>::max() : lIn1[i] * lIn2[i];
 	}
     };
 
@@ -405,7 +405,7 @@ namespace smil
 	{
 	    for (size_t i=0;i<size;i++)
 	    {
-		lOut[i] = lIn2[i]==0 ? numeric_limits<T>::max() : lIn1[i] / lIn2[i];
+		lOut[i] = lIn2[i]==0 ? ImDtTypes<T>::max() : lIn1[i] / lIn2[i];
 	    }
 	}
     };
