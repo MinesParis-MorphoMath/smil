@@ -41,12 +41,8 @@ int main(int argc, char *argv[])
     UINT BENCH_NRUNS = 1E4;
     BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
     BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(erode, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(erode, "sSE", im1, im2, sSE());
     BENCH_IMG_STR(open, "hSE", im1, im2, hSE());
     BENCH_IMG_STR(open, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(close, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(close, "sSE", im1, im2, sSE());
         
 }
 

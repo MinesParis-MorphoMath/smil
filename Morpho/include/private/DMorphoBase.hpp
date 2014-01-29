@@ -130,8 +130,10 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	ImageFreezer freeze(imOut);
 	
-	ASSERT((dilate(imIn, imOut, se)==RES_OK));
-	ASSERT((erode(imOut, imOut, se)==RES_OK));
+	Image<T> imTmp(imIn);
+	
+	ASSERT((dilate(imIn, imTmp, se)==RES_OK));
+	ASSERT((erode(imTmp, imOut, se)==RES_OK));
 	
 	return RES_OK;
     }
@@ -153,8 +155,10 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	ImageFreezer freeze(imOut);
 	
-	ASSERT((erode(imIn, imOut, se)==RES_OK));
-	ASSERT((dilate(imOut, imOut, se)==RES_OK));
+	Image<T> imTmp(imIn);
+	
+	ASSERT((erode(imIn, imTmp, se)==RES_OK));
+	ASSERT((dilate(imTmp, imOut, se)==RES_OK));
 
 	return RES_OK;
     }
