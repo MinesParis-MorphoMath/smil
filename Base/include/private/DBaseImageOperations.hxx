@@ -178,7 +178,7 @@ namespace smil
 		#pragma omp for
 	    #endif // USE_OPEN_MP
 	    for (i=0;i<(int)lineCount;i++)
-		    lineFunction._exec_aligned(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
+		    lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
 	}
 	imOut.modified();
 

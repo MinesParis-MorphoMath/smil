@@ -70,6 +70,29 @@ void SSE_INT_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
 
 #endif // __SSE__
 
+void SSE_AV_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
+{
+    int size = im1.getWidth();
+    int nlines = im1.getLineCount();
+    
+    UINT8 *p1 = im1.getPixels();
+    UINT8 *p2 = im2.getPixels();
+    UINT8 *p3 = im3.getPixels();
+
+    for (int l=0;l<nlines;l++)
+    {
+	UINT8 *l1 = p1;
+	UINT8 *l2 = p2;
+	UINT8 *l3 = p3;
+	
+	for(int i=0 ; i<size ; i++)
+	    l3[i] = (l1[i] > l2[i]) ? l1[i] : l2[i];
+	
+	p1 += size;
+	p2 += size;
+	p3 += size;
+    }
+};
 
 
 int main(int argc, char *argv[])
@@ -88,6 +111,14 @@ int main(int argc, char *argv[])
 
     UINT8 val = 10;
     double BENCH_NRUNS = 1E4;
+
+#ifdef __SSE__
+    BENCH_IMG(SSE_INT_Sup, im1, im2, im3);
+#endif // __SSE__
+    BENCH_IMG(SSE_AV_Sup, im1, im2, im3);
+    BENCH_IMG(sup, im1, im2, im3);
+    
+    cout << endl;
     
     BENCH_IMG(fill, im1, val);
     BENCH_IMG(copy, im1, im3);
