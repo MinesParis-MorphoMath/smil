@@ -151,21 +151,27 @@ namespace std
 // Expose std::map<> as a Python dict
 namespace std 
 {
+#if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
     %template(Map_UINT) map<UINT,UINT>;
-#ifdef USE_64BIT_IDS
-    %template(Map_SIZE_T) map<size_t,size_t>;
-#endif // USE_64BIT_IDS
     %template(Map_UINT_double) map<UINT,double>;
     %template(Map_UINT_Vector_double) map<UINT,Vector_double>;
     %template(Map_UINT_Vector_UINT) map<UINT,Vector_UINT>;
+#endif
+
+#ifdef USE_64BIT_IDS
+    %template(Map_SIZE_T) map<size_t,size_t>;
+#endif // USE_64BIT_IDS
     
     %template(Map_UINT_Vector_UINT8) map< UINT, vector<UINT8> >;
     %template(Map_UINT_Vector_UINT16) map< UINT, vector<UINT16> >;
     
     TEMPLATE_WRAP_CLASS_2T_CROSS(map, Map)
     
+#if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
     TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
+#endif
+
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
 #ifndef SMIL_WRAP_RGB
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
