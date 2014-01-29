@@ -33,6 +33,7 @@
 #include "Core/include/private/DImage.hpp"
 #include "DBaseMeasureOperations.hpp"
 #include "DImageArith.hpp"
+#include "Base/include/DImageDraw.h"
 
 #include <map>
 #include <set>
@@ -284,6 +285,33 @@ namespace smil
 	return func(imIn, onlyNonZero);
     }
     
+    /**
+     * Get image values along a profile.
+     */
+    template <class T>
+    vector<T> profile(const Image<T> &im, size_t x0, size_t y0, size_t x1, size_t y1, size_t z=0)
+    {
+	vector<T> vec;
+	ASSERT(im.isAllocated(), vec);
+	
+	size_t imW = im.getWidth();
+	size_t imH = im.getHeight();
+	
+	vector<IntPoint> bPoints;
+	if ( x0<0 || x0>=int(imW) || y0<0 || y0>=int(imH) || x1<0 || x1>=int(imW) || y1<0 || y1>=int(imH) )
+	  bPoints = bresenhamPoints(x0, y0, x1, y1, imW, imH);
+	else
+	  bPoints = bresenhamPoints(x0, y0, x1, y1); // no image range check (faster)
+	
+	typename Image<T>::sliceType lines = im.getSlices()[z];
+	
+	for(vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++)
+	  vec.push_back(lines[(*it).y][(*it).x]);
+	
+	return vec;
+	
+    }
+
     template <class T>
     struct measBarycenterFunc : public MeasureFunctionWithPos<T, Vector_double>
     {

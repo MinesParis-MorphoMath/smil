@@ -49,8 +49,6 @@ TEMPLATE_WRAP_CLASS(VtkInt,VtkInt)
 
 %pythoncode %{
 
-import vtk
-
 def VtkInt(*args):
     """
     * Create a SharedImage interface with a vtkImageData
