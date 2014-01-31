@@ -228,7 +228,7 @@ private:
 	
 	typename ImDtTypes<T>::lineType pix = img.getPixels();
 	
-	T minValue = ImDtTypes<T>::max();
+	size_t minValue = ImDtTypes<T>::max();
 	T tMinV = ImDtTypes<T>::min();
 	OffsetT minOff;
 	for (size_t i=0;i<img.getPixelCount();i++)
@@ -279,7 +279,7 @@ private:
 	    return curLabel++;
     }
 
-    int nextHigherLabel(T parent_valeur, T valeur)
+    int nextHigherLabel(size_t parent_valeur, T valeur)
     {
 	    if ((curLabel & COLUMN_MOD) == 0)
 	      allocatePage(curLabel >> COLUMN_SHIFT);
@@ -303,10 +303,10 @@ private:
 	      indice = img_eti[p_suiv] = labels[j] = nextHigherLabel(imgPix[p], imgPix[p_suiv]);
 	  
 	} 
-	else if (labels[imgPix[p_suiv]]==0) 
-	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]] = nextLowerLabel(imgPix[p_suiv]);
+	else if (labels[size_t(imgPix[p_suiv])]==0) 
+	    indice = img_eti[p_suiv] = labels[size_t(imgPix[p_suiv])] = nextLowerLabel(imgPix[p_suiv]);
 	else 
-	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]];
+	    indice = img_eti[p_suiv] = labels[size_t(imgPix[p_suiv])];
 	
 	getCriterion(indice).ymax = MAX(getCriterion(indice).ymax, ORDONNEE(p_suiv,imWidth));
 	getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, ORDONNEE(p_suiv,imWidth));
@@ -417,7 +417,7 @@ public:
 
     int build(const Image<T> &img, OffsetT *img_eti) 
     {
-	    T minValue = initialize(img, img_eti);
+	    size_t minValue = initialize(img, img_eti);
 
 	    flood(img, img_eti, minValue);
 	    return labels[minValue];

@@ -209,7 +209,7 @@ namespace smil
 	// left
 	satVol = imVol * leftSat / 100.;
 	curVol=0;
-	for (T i=rangeV[0]; i<rangeV[1]; i++)
+	for (size_t i=rangeV[0]; i<rangeV[1]; i++)
 	{
 	    curVol += double(h[i]);
 	    if (curVol>satVol)

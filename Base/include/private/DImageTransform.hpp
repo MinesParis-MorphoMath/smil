@@ -277,7 +277,7 @@ namespace smil
 	lineType pixIn = imIn.getPixels();
 	lineType pixOut = imOut.getPixels();
 	
-	pixelType A, B, C, D, maxVal = numeric_limits<T>::max() ;
+	size_t A, B, C, D, maxVal = numeric_limits<T>::max() ;
 	size_t x, y, index;
 	
 	double x_ratio = ((double)(w-1))/sx;
@@ -295,10 +295,10 @@ namespace smil
 		y_diff = (y_ratio * i) - y ;
 		index = y*w+x ;
 
-		A = pixIn[index] & maxVal ;
-		B = pixIn[index+1] & maxVal ;
-		C = pixIn[index+w] & maxVal ;
-		D = pixIn[index+w+1] & maxVal ;
+		A = size_t(pixIn[index]) & maxVal ;
+		B = size_t(pixIn[index+1]) & maxVal ;
+		C = size_t(pixIn[index+w]) & maxVal ;
+		D = size_t(pixIn[index+w+1]) & maxVal ;
 		
 		// Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
 		pixOut[offset++] = A*(1.-x_diff)*(1.-y_diff) +  B*(x_diff)*(1.-y_diff) + C*(y_diff)*(1.-x_diff)   +  D*(x_diff*y_diff);

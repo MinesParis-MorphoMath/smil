@@ -218,6 +218,11 @@ namespace smil
 		lOut[i] |= lIn1[i] > lIn2[i] ? trueVal : falseVal;
 	}
     };
+    template <>
+    inline void grtSupLine<double>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented fot float");
+    }
 
     template <class T>
     struct grtOrEquLine : public binaryLineFunctionBase<T>
@@ -250,6 +255,11 @@ namespace smil
 		lOut[i] |= lIn1[i] >= lIn2[i] ? trueVal : falseVal;
 	}
     };
+    template <>
+    inline void grtOrEquSupLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
 
     template <class T>
     struct lowLine : public binaryLineFunctionBase<T>
@@ -282,6 +292,11 @@ namespace smil
 		lOut[i] |= lIn1[i] < lIn2[i] ? trueVal : falseVal;
 	}
     };
+    template <>
+    inline void lowSupLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
 
     template <class T>
     struct lowOrEquLine : public binaryLineFunctionBase<T>
@@ -314,7 +329,13 @@ namespace smil
 		lOut[i] |= lIn1[i] <= lIn2[i] ? trueVal : falseVal;
 	}
     };
+    template <>
+    inline void lowOrEquSupLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
 
+    
     template <class T>
     struct equLine : public binaryLineFunctionBase<T>
     {
@@ -482,6 +503,11 @@ namespace smil
 		lOut[i] = (T)(lIn1[i] ^ lIn2[i]);
 	}
     };
+    template <>
+    inline void bitXOrLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
 
 
     template <class T1, class T2>
