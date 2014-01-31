@@ -35,10 +35,11 @@ using namespace smil;
 
 int main(int argc, char *argv[])
 {
-    Image_UINT8 im1(1024, 1024);
+    Image_UINT8 im1(5562, 7949);
+//     Image_UINT8 im1(1024, 1024);
     Image_UINT8 im2(im1);
     
-    UINT BENCH_NRUNS = 1E4;
+    UINT BENCH_NRUNS = 100;
     BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
     BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
     BENCH_IMG_STR(open, "hSE", im1, im2, hSE());

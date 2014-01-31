@@ -69,6 +69,7 @@ namespace smil
 	bool autoResizeImages;
 	
 	UINT getNumberOfThreads();
+	UINT getMaxNumberOfThreads();
 	RES_T setNumberOfThreads(UINT nbr);
 	void resetNumberOfThreads();
 	size_t getAllocatedMemory();

@@ -247,19 +247,11 @@ namespace smil
 	
 	Image<T2> imLabel(imIn);
 	
-	ASSERT((label(imIn, imLabel, se)!=0));
+	ASSERT(label(imIn, imLabel, se)!=0);
  	map<UINT, double> areas = measAreas(imLabel);
 	ASSERT(!areas.empty());
 	
-	// Verify that the max(areas) doesn't exceed the T2 type max
-	typename map<UINT,double>::iterator max_it = std::max_element(areas.begin(), areas.end());
-	ASSERT(( (*max_it).second < double(ImDtTypes<T2>::max()) ), "Area max exceeds data type max!", RES_ERR);
-
-	// Convert areas map into a lookup
-	map<T2, T2> lookup(areas.begin(), areas.end());
-	
-	ASSERT((fill(imOut, T2(0))==RES_OK));
-	ASSERT((applyLookup<T2>(imLabel, lookup, imOut)==RES_OK));
+	ASSERT(applyLookup<T2>(imLabel, areas, imOut)==RES_OK);
 	
 	return RES_OK;
     }

@@ -34,10 +34,14 @@
 #include <string>
 #include <stdio.h>
 
-#if (defined(__ICL) || defined(_MSC_VER) || defined(__ICC))
+#if (defined(__ICL) || defined(__ICC))
   #include <fvec.h>
   inline void *aligned_malloc (size_t size, size_t align=16) { return _mm_malloc(size,align); }
   inline void  aligned_free   (void *p)                      { return _mm_free(p); }
+#elif defined (_MSC_VER)
+  #include <malloc.h>
+  inline void *aligned_malloc (size_t size, size_t align=16) { return _aligned_malloc((size,align);  }
+  inline void  aligned_free   (void *p)                      { return _aligned_free(p); }
 #elif defined (__CYGWIN__)
   #include <xmmintrin.h>
   inline void *aligned_malloc (size_t size, size_t align=16) { return _mm_malloc(size,align);  }
@@ -77,14 +81,13 @@ namespace smil
 
 
     template<typename T> 
-    inline T *createAlignedBuffer(size_t size) {
+    inline T *createAlignedBuffer(size_t size) 
+    {
       void* ptr;
 
       ptr = aligned_malloc((SIMD_VEC_SIZE*(size/SIMD_VEC_SIZE+1))*sizeof(T), SIMD_VEC_SIZE);
 
       return ((T*) (ptr));
-      // Use () with new to initialize values to 0 (like calloc)
-    //   return new T[size]();
     }
 
     template<typename T> 

@@ -918,58 +918,44 @@ namespace smil
 	return tertiaryImageFunction<T1, testLine<T1, T2> >(imIn, value1, value2, imOut);
     }
 
-    template <class T, class imOrValT, class trueT, class falseT>
-    RES_T _compare_base(const Image<T> &imIn, const char* compareType, const imOrValT &imOrVal, const trueT &trueImOrVal, const falseT &falseImOrVal, Image<T> &imOut)
+    template <class T1, class imOrValT, class trueT, class falseT, class T2>
+    RES_T _compare_base(const Image<T1> &imIn, const char* compareType, const imOrValT &imOrVal, const trueT &trueImOrVal, const falseT &falseImOrVal, Image<T2> &imOut)
     {
 	ImageFreezer freeze(imOut);
 	
-	Image<T> *tmpIm;
-	bool imCreated = false;
-	
-	if (&imOut==&imIn || (void*)&imOut==(void*)&imOrVal || (void*)&imOut==(void*)&trueImOrVal || (void*)&imOut==(void*)&falseImOrVal)
-	{
-	    tmpIm = new Image<T>(imIn);
-	    imCreated = true;
-	}
-	else tmpIm = &imOut;
-	  
+	Image<T1> tmpIm(imIn);
 	
 	if (strcmp(compareType, "==")==0)
 	{
-	    ASSERT(equ(imIn, imOrVal, *tmpIm)==RES_OK);
+	    ASSERT(equ(imIn, imOrVal, tmpIm)==RES_OK);
 	}
 	else if (strcmp(compareType, "!=")==0)
 	{
-	    ASSERT(diff(imIn, imOrVal, *tmpIm)==RES_OK);
+	    ASSERT(diff(imIn, imOrVal, tmpIm)==RES_OK);
 	}
 	else if (strcmp(compareType, ">")==0)
 	{
-	    ASSERT(grt(imIn, imOrVal, *tmpIm)==RES_OK);
+	    ASSERT(grt(imIn, imOrVal, tmpIm)==RES_OK);
 	}
 	else if (strcmp(compareType, "<")==0)
 	{
-	    ASSERT(low(imIn, imOrVal, *tmpIm)==RES_OK);
+	    ASSERT(low(imIn, imOrVal, tmpIm)==RES_OK);
 	}
 	else if (strcmp(compareType, ">=")==0)
 	{
-	    ASSERT(grtOrEqu(imIn, imOrVal, *tmpIm)==RES_OK);
+	    ASSERT(grtOrEqu(imIn, imOrVal, tmpIm)==RES_OK);
 	}
 	else if (strcmp(compareType, "<=")==0)
 	{
-	    ASSERT(lowOrEqu(imIn, imOrVal, *tmpIm)==RES_OK);
+	    ASSERT(lowOrEqu(imIn, imOrVal, tmpIm)==RES_OK);
 	}
 	else 
 	{
 	    ERR_MSG("Unknown operation");
-	    if (imCreated)
-	      delete tmpIm;
 	    return RES_ERR;
 	}
 
-	ASSERT(test(*tmpIm, trueImOrVal, falseImOrVal, imOut)==RES_OK);
-	
-	if (imCreated)
-	  delete tmpIm;
+	ASSERT(test(tmpIm, trueImOrVal, falseImOrVal, imOut)==RES_OK);
 	
 	return RES_OK;
 	
@@ -979,53 +965,53 @@ namespace smil
      * Compare two images (or an image and a value)
      * 
      */
-    template <class T>
-    RES_T compare(const Image<T> &imIn1, const char* compareType, const Image<T> &imIn2, const Image<T> &trueIm, const Image<T> &falseIm, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T compare(const Image<T1> &imIn1, const char* compareType, const Image<T1> &imIn2, const Image<T2> &trueIm, const Image<T2> &falseIm, Image<T2> &imOut)
     {
-	return _compare_base<T, Image<T>, Image<T>, Image<T> >(imIn1, compareType, imIn2, trueIm, falseIm, imOut);
+	return _compare_base<T1, Image<T1>, Image<T2>, Image<T2>, T2 >(imIn1, compareType, imIn2, trueIm, falseIm, imOut);
     }
     
-    template <class T>
-    RES_T compare(const Image<T> &imIn1, const char* compareType, const Image<T> &imIn2, const T &trueVal, const Image<T> &falseIm, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T compare(const Image<T1> &imIn1, const char* compareType, const Image<T1> &imIn2, const T2 &trueVal, const Image<T2> &falseIm, Image<T2> &imOut)
     {
-	return _compare_base<T, Image<T>, T, Image<T> >(imIn1, compareType, imIn2, trueVal, falseIm, imOut);
+	return _compare_base<T1, Image<T1>, T2, Image<T2>, T2 >(imIn1, compareType, imIn2, trueVal, falseIm, imOut);
     }
     
-    template <class T>
-    RES_T compare(const Image<T> &imIn1, const char* compareType, const Image<T> &imIn2, const Image<T> &trueIm, const T &falseVal, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T compare(const Image<T1> &imIn1, const char* compareType, const Image<T1> &imIn2, const Image<T2> &trueIm, const T2 &falseVal, Image<T2> &imOut)
     {
-	return _compare_base<T, Image<T>, Image<T>, T >(imIn1, compareType, imIn2, trueIm, falseVal, imOut);
+	return _compare_base<T1, Image<T1>, Image<T2>, T2, T2>(imIn1, compareType, imIn2, trueIm, falseVal, imOut);
     }
     
-    template <class T>
-    RES_T compare(const Image<T> &imIn1, const char* compareType, const Image<T> &imIn2, const T &trueVal, const T &falseVal, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T compare(const Image<T1> &imIn1, const char* compareType, const Image<T1> &imIn2, const T2 &trueVal, const T2 &falseVal, Image<T2> &imOut)
     {
-	return _compare_base<T, Image<T>, T, T >(imIn1, compareType, imIn2, trueVal, falseVal, imOut);
+	return _compare_base<T1, Image<T1>, T2, T2, T2 >(imIn1, compareType, imIn2, trueVal, falseVal, imOut);
     }
     
 
-    template <class T>
-    RES_T compare(const Image<T> &imIn, const char* compareType, const T &value, const Image<T> &trueIm, const Image<T> &falseIm, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T compare(const Image<T1> &imIn, const char* compareType, const T1 &value, const Image<T2> &trueIm, const Image<T2> &falseIm, Image<T2> &imOut)
     {
-	return _compare_base<T, T, Image<T>, Image<T> >(imIn, compareType, value, trueIm, falseIm, imOut);
+	return _compare_base<T1, T1, Image<T2>, Image<T2>, T2 >(imIn, compareType, value, trueIm, falseIm, imOut);
     }
     
-    template <class T>
-    RES_T compare(const Image<T> &imIn, const char* compareType, const T &value, const T &trueVal, const Image<T> &falseIm, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T compare(const Image<T1> &imIn, const char* compareType, const T1 &value, const T2 &trueVal, const Image<T2> &falseIm, Image<T2> &imOut)
     {
-	return _compare_base<T, T, T, Image<T> >(imIn, compareType, value, trueVal, falseIm, imOut);
+	return _compare_base<T1, T1, T2, Image<T2>, T2 >(imIn, compareType, value, trueVal, falseIm, imOut);
     }
     
-    template <class T>
-    RES_T compare(const Image<T> &imIn, const char* compareType, const T &value, const Image<T> &trueIm, const T &falseVal, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T compare(const Image<T1> &imIn, const char* compareType, const T1 &value, const Image<T2> &trueIm, const T2 &falseVal, Image<T2> &imOut)
     {
-	return _compare_base<T, T, Image<T>, T >(imIn, compareType, value, trueIm, falseVal, imOut);
+	return _compare_base<T1, T1, Image<T2>, T2, T2 >(imIn, compareType, value, trueIm, falseVal, imOut);
     }
     
-    template <class T>
-    RES_T compare(const Image<T> &imIn, const char* compareType, const T &value, const T &trueVal, const T &falseVal, Image<T> &imOut)
+    template <class T1, class T2>
+    RES_T compare(const Image<T1> &imIn, const char* compareType, const T1 &value, const T2 &trueVal, const T2 &falseVal, Image<T2> &imOut)
     {
-	return _compare_base<T, T, T, T >(imIn, compareType, value, trueVal, falseVal, imOut);
+	return _compare_base<T1, T1, T2, T2, T2 >(imIn, compareType, value, trueVal, falseVal, imOut);
     }
     
 
@@ -1047,7 +1033,7 @@ namespace smil
     * Apply a lookup map
     */
     template <class T1, class T2>
-    RES_T applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut)
+    RES_T applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut, T2 defaultValue=T2(0))
     {
 	ASSERT(!lut.empty(), "Input lookup is empty", RES_ERR);
 	ASSERT_ALLOCATED(&imIn, &imOut);
@@ -1057,10 +1043,15 @@ namespace smil
 	typename Image<T1>::lineType pixIn = imIn.getPixels();
 	typename Image<T2>::lineType pixOut = imOut.getPixels();
 	
+	typename map<T1,T2>::const_iterator it;
+	
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
-	  if (lut.find(*pixIn)!=lut.end())
-	    *pixOut = lut.at(*pixIn);
+	  it = lut.find(*pixIn);
+	  if (it!=lut.end())
+	    *pixOut = it->second;
+	  else
+	    *pixOut = defaultValue;
 	  pixIn++;
 	  pixOut++;
 	}
@@ -1069,6 +1060,21 @@ namespace smil
 	return RES_OK;
     }
 
+#ifndef SWIG    
+    template <class T1, class T2>
+    RES_T applyLookup(const Image<T1> &imIn, const map<UINT,double> &measure_map, Image<T2> &imOut, T2 defaultValue=T2(0))
+    {
+	// Verify that the max(areas) doesn't exceed the T2 type max
+	typename map<UINT,double>::const_iterator max_it = std::max_element(measure_map.begin(), measure_map.end());
+	ASSERT(( (*max_it).second < double(ImDtTypes<T2>::max()) ), "Input map max exceeds data type max!", RES_ERR);
+
+	// Convert the map into a lookup
+	map<T2, T2> lookup(measure_map.begin(), measure_map.end());
+	
+	return applyLookup<T1,T2>(imIn, lookup, imOut, defaultValue);
+    }
+#endif // SWIG    
+    
     
 /** @}*/
 

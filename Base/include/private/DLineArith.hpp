@@ -109,6 +109,13 @@ namespace smil
     };
     
     template <>
+    inline void invLine<float>::_exec(lineType lineIn, size_t size, lineType lOut)
+    {
+	float maxVal = ImDtTypes<float>::max();
+	for (size_t i=0;i<size;i++) lOut[i] = maxVal - lineIn[i];
+    }	
+	
+    template <>
     inline void invLine<double>::_exec(lineType lineIn, size_t size, lineType lOut)
     {
 	for (size_t i=0;i<size;i++) lOut[i] = -lineIn[i];

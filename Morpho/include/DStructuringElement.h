@@ -74,6 +74,7 @@ namespace smil
 	 * The index values are defined for each grid type as follow:
 	 * \images{se_indexes}
 	 */
+#ifndef SWIG
 	StrElt(bool oddSE, UINT nbrPts, ...)
 	  : BaseObject("StrElt"),
 	    odd(oddSE),
@@ -90,6 +91,7 @@ namespace smil
 		addPoint(index);
 	    }
 	}
+#endif // SWIG
 	
 	StrElt(bool oddSE, vector<UINT> indexList)
 	  : BaseObject("StrElt"),
