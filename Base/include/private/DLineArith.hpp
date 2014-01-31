@@ -109,16 +109,17 @@ namespace smil
     };
     
     template <>
-    inline void invLine<float>::_exec(lineType lineIn, size_t size, lineType lOut)
+    inline void invLine<double>::_exec(lineType lineIn, size_t size, lineType lOut)
     {
 	float maxVal = ImDtTypes<float>::max();
 	for (size_t i=0;i<size;i++) lOut[i] = maxVal - lineIn[i];
     }	
 	
     template <>
-    inline void invLine<double>::_exec(lineType lineIn, size_t size, lineType lOut)
+    inline void invLine<float>::_exec(lineType lineIn, size_t size, lineType lOut)
     {
-	for (size_t i=0;i<size;i++) lOut[i] = -lineIn[i];
+	float maxVal = ImDtTypes<float>::max();
+	for (size_t i=0;i<size;i++) lOut[i] = maxVal -lineIn[i];
     }
 
     template <class T>
@@ -219,7 +220,7 @@ namespace smil
 	}
     };
     template <>
-    inline void grtSupLine<double>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    inline void grtSupLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
     {
 	ERR_MSG("Not implemented fot float");
     }
@@ -383,6 +384,11 @@ namespace smil
 		lOut[i] |= lIn1[i] == lIn2[i] ? trueVal : falseVal;
 	}
     };
+    template <>
+    inline void equSupLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
 
 
     /*
@@ -459,6 +465,11 @@ namespace smil
 		lOut[i] = (T)(lIn1[i] & lIn2[i]);
 	}
     };
+    template <>
+    inline void bitAndLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
 
     template <class T>
     struct logicOrLine : public binaryLineFunctionBase<T>
@@ -481,7 +492,12 @@ namespace smil
 		lOut[i] = (T)(lIn1[i] | lIn2[i]);
 	}
     };
-
+    template <>
+    inline void bitOrLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
+    
     template <class T>
     struct logicXOrLine : public binaryLineFunctionBase<T>
     {
