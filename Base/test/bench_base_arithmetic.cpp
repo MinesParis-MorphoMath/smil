@@ -44,6 +44,9 @@ int main(int argc, char *argv[])
 
     Image_UINT16 im4(im1);
 
+    double BENCH_NRUNS = 1E4;
+    
+    UINT8 val = 127;
     
     BENCH_IMG(fill, im1, val);
     BENCH_IMG(copy, im1, im3);

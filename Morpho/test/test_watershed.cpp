@@ -38,7 +38,7 @@ class Test_Basins : public TestCase
 {
   virtual void run()
   {
-      typedef UINT32 dtType;
+      typedef UINT8 dtType;
       
       dtType vecIn[] = { 
 	2, 2, 2, 2, 2, 2,
