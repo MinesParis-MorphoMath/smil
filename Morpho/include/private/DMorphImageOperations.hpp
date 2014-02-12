@@ -294,12 +294,14 @@ namespace smil
 	
 	virtual RES_T _exec_single(const imageType &imIn, imageType &imOut, const StrElt &se);
 	virtual RES_T _exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se);
-	virtual RES_T _exec_single_hexSE(const imageType &imIn, imageType &imOut);
-	virtual RES_T _exec_single_squSE(const imageType &imIn, imageType &imOut);
-	virtual RES_T _exec_single_2_H_points(const imageType &imIn, int dx, imageType &imOut, bool oddLines=false);
-	virtual RES_T _exec_single_2_V_points(const imageType &imIn, int dx, imageType &imOut);
-	virtual RES_T _exec_single_H_segment(const imageType &imIn, int xsize, imageType &imOut);
-	virtual RES_T _exec_single_V1_segment(const imageType &imIn, imageType &imOut);
+	virtual RES_T _exec_single_hexagonal_SE(const imageType &imIn, imageType &imOut);
+	virtual RES_T _exec_single_square_SE(const imageType &imIn, imageType &imOut);
+	virtual RES_T _exec_single_cube_SE(const imageType &imIn, imageType &imOut);
+	virtual RES_T _exec_single_horizontal_2points(const imageType &imIn, int dx, imageType &imOut, bool oddLines=false);
+	virtual RES_T _exec_single_vertical_2points(const imageType &imIn, int dx, imageType &imOut);
+	virtual RES_T _exec_single_horizontal_segment(const imageType &imIn, int xsize, imageType &imOut);
+	virtual RES_T _exec_single_vertical_segment(const imageType &imIn, imageType &imOut);
+	virtual RES_T _exec_single_depth_segment(const imageType &imIn, int zsize, imageType &imOut);
 	
 	inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt &se) { return this->_exec(imIn, imOut, se); }
 
@@ -366,13 +368,15 @@ namespace smil
 	switch(st)
 	{
 	  case SE_Hex:
-	    return _exec_single_hexSE(imIn, imOut);
+	    return _exec_single_hexagonal_SE(imIn, imOut);
 	  case SE_Squ:
-	    return _exec_single_squSE(imIn, imOut);
+	    return _exec_single_square_SE(imIn, imOut);
 	  case SE_Horiz:
-	    return _exec_single_H_segment(imIn, 1, imOut);
+	    return _exec_single_horizontal_segment(imIn, 1, imOut);
 	  case SE_Vert:
-	    return _exec_single_V1_segment(imIn, imOut);
+	    return _exec_single_vertical_segment(imIn, imOut);
+	  case SE_Cube:
+	    return _exec_single_cube_SE(imIn, imOut);
 	  default:
 	    return _exec_single_generic(imIn, imOut, se);
 	}
@@ -496,7 +500,7 @@ namespace smil
 
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexSE(const imageType &imIn, imageType &imOut)
+    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexagonal_SE(const imageType &imIn, imageType &imOut)
     {
 	int nSlices = imIn.getSliceCount();
 	int nLines = imIn.getHeight();
@@ -589,16 +593,26 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_squSE(const imageType &imIn, imageType &imOut)
+    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_square_SE(const imageType &imIn, imageType &imOut)
     {
-	_exec_single_V1_segment(imIn, imOut);
-	_exec_single_H_segment(imOut, 1, imOut);
+	_exec_single_vertical_segment(imIn, imOut);
+	_exec_single_horizontal_segment(imOut, 1, imOut);
 	
 	return RES_OK;
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_2_H_points(const imageType &imIn, int dx, imageType &imOut, bool)
+    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_cube_SE(const imageType &imIn, imageType &imOut)
+    {
+	_exec_single_vertical_segment(imIn, imOut);
+	_exec_single_horizontal_segment(imOut, 1, imOut);
+	_exec_single_depth_segment(imOut, 1, imOut);
+	
+	return RES_OK;
+    }
+
+    template <class T, class lineFunction_T>
+    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_horizontal_2points(const imageType &imIn, int dx, imageType &imOut, bool)
     {
 	  int lineCount = imIn.getLineCount();
 	  
@@ -634,7 +648,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_2_V_points(const imageType &imIn, int dy, imageType &imOut)
+    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_vertical_2points(const imageType &imIn, int dy, imageType &imOut)
     {
 	int imHeight = imIn.getHeight();
 	volType srcSlices = imIn.getSlices();
@@ -668,7 +682,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_H_segment(const imageType &imIn, int xsize, imageType &imOut)
+    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_horizontal_segment(const imageType &imIn, int xsize, imageType &imOut)
     {
 	  size_t lineCount = imIn.getLineCount();
 	  
@@ -711,8 +725,60 @@ namespace smil
 	  return RES_OK;
     }
 
+    // Z-Horizontal segment
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_V1_segment(const imageType &imIn, imageType &imOut)
+    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_depth_segment(const imageType &imIn, int zsize, imageType &imOut)
+    {
+	  size_t w, h, d;
+	  imIn.getSize(&w, &h, &d);
+	  
+	  int nthreads = Core::getInstance()->getNumberOfThreads();
+	  lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
+	  lineType buf1 = _bufs[0];
+	  lineType buf2 = _bufs[nthreads];
+	  
+	  volType srcSlices = imIn.getSlices();
+	  volType destSlices = imOut.getSlices();
+	  sliceType srcLines;
+	  sliceType destLines;
+	  
+    #ifdef USE_OPEN_MP
+	      int tid;
+    #endif // USE_OPEN_MP
+	  int y, dz = zsize;
+	  
+    #ifdef USE_OPEN_MP
+	  #pragma omp parallel private(tid,buf1,buf2) firstprivate(dz) num_threads(nthreads)
+    #endif // USE_OPEN_MP
+	  {
+	  #ifdef USE_OPEN_MP
+	      tid = omp_get_thread_num();
+	      buf1 = _bufs[tid];
+	      buf2 = _bufs[tid+nthreads];
+	      #pragma omp for
+	  #endif
+	      for (y=0;y<h;y++)
+	      {
+		  this->lineFunction(borderBuf, srcSlices[0][y], this->lineLen, buf1);
+		      
+		  for (int z=1;z<d;z++)
+		  {
+		    // Todo: if oddLines...
+		    this->lineFunction(srcSlices[z][y], srcSlices[z-1][y], this->lineLen, buf2);
+		    this->lineFunction(buf1, buf2, this->lineLen, destSlices[z-1][y]);
+		    
+		    swap(buf1, buf2);
+		  }
+		  
+		  this->lineFunction(borderBuf, buf1, this->lineLen, destSlices[d-1][y]);
+	      }
+	  }
+	  
+	  return RES_OK;
+    }
+
+    template <class T, class lineFunction_T>
+    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_vertical_segment(const imageType &imIn, imageType &imOut)
     {
 	size_t imHeight = imIn.getHeight();
 	volType srcSlices = imIn.getSlices();
