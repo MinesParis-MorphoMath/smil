@@ -74,6 +74,8 @@ class Test_Label : public TestCase
       im3 << vec3;
       
       TEST_ASSERT(im2==im3);
+      if (retVal!=RES_OK)
+	im2.printSelf(1);
   }
 };
 

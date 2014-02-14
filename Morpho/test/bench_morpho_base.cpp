@@ -45,9 +45,10 @@ int main(int argc, char *argv[])
     BENCH_IMG_STR(open, "hSE", im1, im2, hSE());
     BENCH_IMG_STR(open, "sSE", im1, im2, sSE());
     
+    cout << endl;
     // 3D
     
-    im1.setSize(100, 100, 100);
+    im1.setSize(500, 500, 100);
     im2.setSize(im1);
         
     BENCH_IMG_STR(dilate, "CubeSE", im1, im2, CubeSE());

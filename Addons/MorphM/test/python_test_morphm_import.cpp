@@ -1,8 +1,9 @@
 
-#include "DMorphMImage.hpp"
-#include "DTest.h"
 
 #include <boost/python.hpp>
+
+#include "DMorphMImage.hpp"
+#include "DTest.h"
 
 using namespace smil;
 

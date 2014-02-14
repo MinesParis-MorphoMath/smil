@@ -375,6 +375,8 @@ namespace smil
 
     /**
     * h-Reconstuction
+    * 
+    * Performs a subtraction of size \b height followed by a reconstruction
     */
     template <class T>
     RES_T hBuild(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
@@ -392,6 +394,31 @@ namespace smil
 	
 	ASSERT((sub(imIn, T(height), imOut)==RES_OK));
 	ASSERT((build(imOut, imIn, imOut, se)==RES_OK));
+	
+	return RES_OK;
+    }
+
+    /**
+    * Dual h-Reconstuction
+    * 
+    * Performs an addition of size \b height followed by a dual reconstruction
+    */
+    template <class T>
+    RES_T hDualBuild(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	if (&imIn==&imOut)
+	{
+	    Image<T> tmpIm = imIn;
+	    return hDualBuild(tmpIm, height, imOut, se);
+	}
+	
+	ImageFreezer freeze(imOut);
+	
+	ASSERT((add(imIn, T(height), imOut)==RES_OK));
+	ASSERT((dualBuild(imOut, imIn, imOut, se)==RES_OK));
 	
 	return RES_OK;
     }
