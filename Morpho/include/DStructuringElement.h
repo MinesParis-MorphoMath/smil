@@ -42,11 +42,7 @@ namespace smil
     * @{
     */
 
-<<<<<<< HEAD
-    enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert, SE_Rhombicuboctahedron };
-=======
-    enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert, SE_Cube };
->>>>>>> 516699b52dadda04a64310a44bfb7daf6c582c6a
+    enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert, SE_Cube, SE_Rhombicuboctahedron };
 
 
     /**
