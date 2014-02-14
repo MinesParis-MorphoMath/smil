@@ -42,7 +42,7 @@ namespace smil
     * @{
     */
 
-    enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert, SE_Cube, SE_Rhombicuboctahedron };
+    enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert, SE_Cube, SE_Cross3D, SE_Rhombicuboctahedron };
 
 
     /**
@@ -319,6 +319,7 @@ namespace smil
 	  : StrElt(s)
 	{
 	    className = "Cross3DSE";
+	    seT = SE_Cross3D;
 	    odd = false;
 	    addPoint(0,0,-1);	// 1
 	    addPoint(0,0,0);	// 2
@@ -343,6 +344,8 @@ namespace smil
 	    className = "RhombicuboctahedronSE";
             seT = SE_Rhombicuboctahedron;
 	    odd = false;
+	    
+	    addPoint(0,0,0);
 	}
     };
 

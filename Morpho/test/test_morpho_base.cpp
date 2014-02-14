@@ -399,7 +399,7 @@ class Test_Dilate_Rhombicuboctahedron : public TestCase
 	226, 242, 163, 225, 230, 175, 209
       };
       
-      im3 << dilateRcoVec
+      im3 << dilateRcoVec;
 
       // The specialized way
       dilate(im1, im2, rcoSE());
@@ -414,6 +414,7 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_Dilate_Hex);
       ADD_TEST(ts, Test_Dilate_Squ);
       ADD_TEST(ts, Test_Dilate_3D);
+      ADD_TEST(ts, Test_Dilate_Rhombicuboctahedron);
       
 //       UINT BENCH_NRUNS = 5E3;
       Image_UINT8 im1(1024, 1024), im2(im1);
