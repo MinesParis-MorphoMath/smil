@@ -42,7 +42,11 @@ namespace smil
     * @{
     */
 
+<<<<<<< HEAD
     enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert, SE_Rhombicuboctahedron };
+=======
+    enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert, SE_Cube };
+>>>>>>> 516699b52dadda04a64310a44bfb7daf6c582c6a
 
 
     /**
@@ -274,7 +278,7 @@ namespace smil
 
 
     /**
-    * 3D Cubic structuring element.
+    * 3D Cubic structuring element (26 neighbors).
     * 
     * Points :
     * \images{cube_se}
@@ -286,6 +290,7 @@ namespace smil
 	CubeSE(UINT s=1) : StrElt(s)
 	{
 	    this->className = "CubeSE";
+	    this->seT = SE_Cube;
 	    odd = false;
 	    int zList[] = { 0, -1, 1 };
 	    for (int i=0;i<3;i++)
@@ -305,7 +310,7 @@ namespace smil
     };
     
     /**
-    * 3D Cross structuring element.
+    * 3D Cross structuring element (6 neighbors).
     * 
     * Points :
     * \images{cross3d_se}
