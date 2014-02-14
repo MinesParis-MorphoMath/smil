@@ -300,6 +300,8 @@ namespace smil
 	virtual RES_T _exec_single_2_V_points(const imageType &imIn, int dx, imageType &imOut);
 	virtual RES_T _exec_single_H_segment(const imageType &imIn, int xsize, imageType &imOut);
 	virtual RES_T _exec_single_V1_segment(const imageType &imIn, imageType &imOut);
+        virtual RES_T _exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size);
+
 	
 	inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt &se) { return this->_exec(imIn, imOut, se); }
 
@@ -335,8 +337,13 @@ namespace smil
 	if (&imIn==&imOut)
 	  tmpIm = new Image<T>(imIn, true); // clone
 	else tmpIm = (Image<T> *)&imIn;
-	
-	int seSize = se.size;
+
+
+        int seSize = se.size;
+        int seType = se.getType () ;
+
+        if (seType == SE_Rhombicuboctahedron) _exec_rhombicuboctahedron (imIn, imOut, se.size);
+
 	if (seSize==1) _exec_single(*tmpIm, imOut, se);
 	else
 	{
@@ -797,6 +804,26 @@ namespace smil
 	    }
 	}
 	return RES_OK;
+    }
+
+    template <class T, class lineFunction_T>
+    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size)
+    {
+        double nbSquareDbl = (((double) size)/(1+sqrt(2)));
+        double nbSquareFloor = floor(nbSquareDbl);
+        int nbSquare = (int)nbSquareFloor;
+
+        ASSERT(_exec (imIn, imOut, Cross3DSE ())==RES_OK);
+
+        for (int i=1; i<size-nbSquare; ++i) {
+            ASSERT(_exec (imIn, imOut, Cross3DSE ())==RES_OK);
+        }
+        
+        for (int i=0; i<nbSquare; ++i) {
+            ASSERT(_exec (imIn, imOut, CubeSE ())==RES_OK);
+        }
+
+        return RES_OK;
     }
 
 } // namespace smil

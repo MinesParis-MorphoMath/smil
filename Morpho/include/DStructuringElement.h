@@ -42,7 +42,7 @@ namespace smil
     * @{
     */
 
-    enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert };
+    enum seType { SE_Generic, SE_Hex, SE_Squ, SE_Cross, SE_Horiz, SE_Vert, SE_Rhombicuboctahedron };
 
 
     /**
@@ -329,6 +329,21 @@ namespace smil
 	}
     };
 
+    /**
+    * Rhombicuboctahedron struturing element.
+    *
+    */
+    class RhombicuboctahedronSE : public StrElt
+    {
+      public:
+	RhombicuboctahedronSE(UINT s=1)
+	  : StrElt(s)
+	{
+	    className = "RhombicuboctahedronSE";
+            seT = SE_Rhombicuboctahedron;
+	    odd = false;
+	}
+    };
 
     // Shortcuts
     inline HexSE hSE(UINT s=1) { return HexSE(s); }
@@ -337,6 +352,7 @@ namespace smil
     inline SquSE0 sSE0(UINT s=1) { return SquSE0(s); }
     inline CrossSE cSE(UINT s=1) { return CrossSE(s); }
     inline CubeSE cbSE(UINT s=1) { return CubeSE(s); }
+    inline RhombicuboctahedronSE rcoSE(UINT s=1) { return RhombicuboctahedronSE(s); }
 
 
     #define DEFAULT_SE Morpho::getDefaultSE()
