@@ -279,7 +279,7 @@ class Test_Dilate_Rhombicuboctahedron : public TestCase
       
       imType im1(7,7,7);
       imType im2(im1);
-      imType im3(im3);
+      imType im3(im1);
    
       dataType vec1[] = {
 	  90,  49, 153, 203,   9,  77,  25,

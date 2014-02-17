@@ -323,7 +323,15 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imOut, const StrElt &se)
     {
-	if (!areAllocated(&imIn, &imOut, NULL))
+        int seSize = se.size;
+        int seType = se.getType () ;
+        if (seType == SE_Rhombicuboctahedron) {
+            _exec_rhombicuboctahedron (imIn, imOut, se.size);
+            return RES_OK;
+        }
+
+
+        if (!areAllocated(&imIn, &imOut, NULL))
 	  return RES_ERR_BAD_ALLOCATION;
 	
 	lineLen = imIn.getWidth();
@@ -340,11 +348,6 @@ namespace smil
 	  tmpIm = new Image<T>(imIn, true); // clone
 	else tmpIm = (Image<T> *)&imIn;
 
-
-        int seSize = se.size;
-        int seType = se.getType () ;
-
-        if (seType == SE_Rhombicuboctahedron) _exec_rhombicuboctahedron (imIn, imOut, se.size);
 
 	if (seSize==1) _exec_single(*tmpIm, imOut, se);
 	else
