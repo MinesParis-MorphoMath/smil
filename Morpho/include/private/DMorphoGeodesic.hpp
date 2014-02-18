@@ -509,12 +509,12 @@ namespace smil
 	
 	ImageFreezer freeze(imOut);
 
-        struct _Partition *V;
+        struct _Partition<T> *V;
         size_t B, p; 
 
         
 
-        ASSERT (_createPartitions (imIn, V, B, p) == RES_OK) ;
+        ASSERT (_createPartitions (imIn, B, V, p) == RES_OK) ;
         int i=0;
 /*        #pragma omp for
         for (i=0; i<V.length(); ++i) {

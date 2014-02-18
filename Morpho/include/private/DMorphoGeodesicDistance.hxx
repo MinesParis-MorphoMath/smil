@@ -27,8 +27,8 @@
  */
 
 
-#ifndef _BASE_IMAGE_OPERATIONS_HXX
-#define _BASE_IMAGE_OPERATIONS_HXX
+#ifndef _BASE_MORPHO_GEODESIC_DISTANCE_HXX
+#define _BASE_MORPHO_GEODESIC_DISTANCE_HXX
 
 #include "Core/include/private/DImage.hpp"
 
@@ -37,7 +37,7 @@ namespace smil
     enum _STATE {_UNREACHED, _SCANNED};
 
     template <class T>
-    struct {
+    struct _node {
         size_t x,y,z;
         // labels.
         T key; 
@@ -49,13 +49,13 @@ namespace smil
         bool operator()(const _node &n1, const _node &n2) {
             return n1.key < n2.key;
         }
-    } _node;
+    } ;
     
     template <class T>
-    struct {
+    struct _Partition {
         size_t length;
-        struct _node *n;
-    } _Partition;
+        struct _node<T> *n;
+    } ;
 
     /**
      *  Partition the set of pixels of imIn into p Partitions such as |V_i| <= B for each V_i.
@@ -66,7 +66,7 @@ namespace smil
      *  \param p number of partition so that |V_i| <= B
      */
     template <class T>
-    RES_T _createPartitions (const Image<T> &imIn, size_t B, struct _Partition *V, int &p) {
+    RES_T _createPartitions (const Image<T> &imIn, size_t B, struct _Partition<T> *V, int &p) {
         return RES_OK; 
     }
 
