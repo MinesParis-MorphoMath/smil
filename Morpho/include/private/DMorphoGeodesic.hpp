@@ -36,6 +36,7 @@
 #include "Base/include/private/DImageHistogram.hpp"
 #include "Morpho/include/private/DMorphoBase.hpp"
 
+#include "Morpho/include/private/DMorphoGeodesicDistance.hxx"
 
 namespace smil
 {
@@ -499,6 +500,27 @@ namespace smil
 	return RES_OK;
     }
 
+    // Multi-source label-correcting algorithm for ALSP problem.
+    template <class T>
+    RES_T dist_v2 (const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE) 
+    {
+    	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freeze(imOut);
+
+        struct _Partition *V;
+        size_t B, p; 
+
+        
+
+        ASSERT (_createPartitions (imIn, V, B, p) == RES_OK) ;
+        int i=0;
+/*        #pragma omp for
+        for (i=0; i<V.length(); ++i) {
+            ASSERT (_MSLC (V[i], se) == RES_OK) ;
+        }
+*/    }
 
     /**
     * Ugly temporary distance function
