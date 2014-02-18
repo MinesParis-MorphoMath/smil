@@ -33,26 +33,32 @@
 
 using namespace smil;
 
-int main(int argc, char *argv[])
+class Test_Distance : public TestCase
 {
-    Image_UINT8 im1(40, 40);
-    Image_UINT16 im2(im1);
-    Image_UINT16 im3(im1);
-    
-    fill(im1, UINT8(255));
-    im1.setPixel (10,10,UINT(0));
-    drawLine(im1, 30,10,3,3, UINT8(0));
-    drawRectangle (im1, 10,30,3,3,UINT(0), true);
-    im1.setPixel (30,30,UINT(0));
-    im3.clone (im1);
-    dist (im3, im3, CrossSE());
+    virtual void run () {
+        Image_UINT8 im1(40, 40);
+        Image_UINT8 im2(im1);
+        Image_UINT8 im3(im1);
+        
+        fill(im1, UINT8(255));
+        im1.setPixel (10,10,UINT(0));
+        drawLine(im1, 30,10,3,3, UINT8(0));
+        drawRectangle (im1, 10,30,3,3,UINT8(0), true);
+        im1.setPixel (30,30,UINT(0));
+        dist (im1, im3, CrossSE());
 
-    UINT BENCH_NRUNS = 1E2;
-    dist_v2 (im1, im2);
-//    BENCH_IMG(dist_v2, im1, im2, CrossSE());
-    TEST_ASSERT (im2==im3);
+        UINT BENCH_NRUNS = 1E2;
+        dist_v2 (im1, im2, CrossSE ());
+    //    BENCH_IMG(dist_v2, im1, im2, CrossSE());
+        TEST_ASSERT (im2==im3);
 
-    if (retVal != RES_OK)
-       im2.printSelf (1); 
+        if (retVal != RES_OK)
+           im2.printSelf (1); 
+    }
+};
+
+int main(int argc, char *argv[]){
+    TestSuite ts;
+    ADD_TEST (ts, Test_Distance) ;
+    return ts.run ();
 }
-
