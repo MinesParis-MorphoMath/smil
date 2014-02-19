@@ -812,83 +812,74 @@ namespace smil
 	sliceType srcLines;
 	sliceType destLines;
 
-	size_t nthreads = MIN(Core::getInstance()->getNumberOfThreads(), imHeight-1);
-	lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
-	lineType buf1 = _bufs[0];
-	lineType buf2 = _bufs[nthreads];
+	size_t nthreads = 2; //MIN(Core::getInstance()->getNumberOfThreads(), imHeight/2);
+	lineType *_bufs = this->createAlignedBuffers(3*nthreads, this->lineLen);
+	lineType buf1;
+	lineType buf2;
+	lineType buf3;
 	
-    #ifdef USE_OPEN_MP
-	    size_t tid;
-    #endif // USE_OPEN_MP
-	int b;
-	size_t nblocks = imHeight / nthreads;
-
+	int tid = 0;
+	size_t blockSize;
+	size_t firstLine, l;
+	
 	for (size_t s=0;s<imIn.getDepth();s++)
 	{
 	    srcLines = srcSlices[s];
 	    destLines = destSlices[s];
 
 	    
-    #ifdef USE_OPEN_MP
-	#pragma omp parallel private(tid,buf1,buf2,b) num_threads(nthreads)
-    #endif // USE_OPEN_MP
+	#pragma omp parallel private(tid,blockSize,firstLine,l,buf1,buf2,buf3) num_threads(nthreads)
 	{
-		#ifdef USE_OPEN_MP
-		    tid = omp_get_thread_num();
-		    buf1 = _bufs[tid];
-		    buf2 = _bufs[tid+nthreads];
-		#endif
-		    
-    #ifdef USE_OPEN_MP
-	    #pragma omp for
-    #endif // USE_OPEN_MP
-	    for (b=0;b<nblocks;b++)
-		{
-		    int l = b*nthreads;
-		    if (l==0)
-		      this->lineFunction(this->borderBuf, srcLines[l], this->lineLen, buf1);
-		    else
-		      this->lineFunction(srcLines[l-1], srcLines[l], this->lineLen, buf1);
+	  #ifdef USE_OPEN_MP
+	    tid = omp_get_thread_num();
+	  #endif // USE_OPEN_MP
+	    
+	    buf1 = _bufs[tid];
+	    buf2 = _bufs[nthreads+tid];
+	    buf3 = _bufs[2*nthreads+tid];
+	    
+	    blockSize = imHeight / nthreads;
+	    firstLine = tid * blockSize;
+	    
+	    if (nthreads>1 && tid==nthreads-1)
+	      blockSize = imHeight - blockSize*(nthreads-1);
 
-		    for (int i=0;i<nthreads-1;i++)
-		    {
-			_exec_shifted_line(buf1, srcLines[l], 1, this->lineLen, buf1);
-			_exec_shifted_line(buf1, srcLines[l], -1, this->lineLen, buf1);
-			this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
-			this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
-			swap(buf1, buf2);
-			l++;
-		    }
-		    if (l==imHeight-1)
-			this->lineFunction(srcLines[l], this->borderBuf, this->lineLen, buf2);
-		    else
-			this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
-		    _exec_shifted_line(buf1, srcLines[l], 1, this->lineLen, buf1);
-		    _exec_shifted_line(buf1, srcLines[l], -1, this->lineLen, buf1);
-		    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
-		}
-		
-	    }	  
-	    // Remaining lines
-	    int l = nblocks*nthreads;
-	    if (l<imHeight)
+// 	    cout << "";
+// 	    #pragma omp barrier  
+
+	    // Process first line
+	    l = firstLine;
+	    if (l==0)
+	      this->lineFunction(this->borderBuf, srcLines[l], this->lineLen, buf1);
+	    else
+	      this->lineFunction(srcLines[l-1], srcLines[l], this->lineLen, buf1);
+	    
+	    
+	    for (l=firstLine;l<firstLine+blockSize-1;l++)
 	    {
-		this->lineFunction(srcLines[l-1], srcLines[l], this->lineLen, buf1);
-		while (l<imHeight-1)
-		{
-			_exec_shifted_line(buf1, srcLines[l], 1, this->lineLen, buf1);
-			_exec_shifted_line(buf1, srcLines[l], -1, this->lineLen, buf1);
-		    this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
-		    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
-		    swap(buf1, buf2);
-		    l++;
-		}
-		// Last line
 		_exec_shifted_line(buf1, srcLines[l], 1, this->lineLen, buf1);
 		_exec_shifted_line(buf1, srcLines[l], -1, this->lineLen, buf1);
-		this->lineFunction(srcLines[l], this->borderBuf, this->lineLen, buf2);
-		this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+		this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
+		if (l==firstLine)
+		  this->lineFunction(buf1, buf2, this->lineLen, buf3);
+		else
+		  this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+		swap(buf1, buf2);
 	    }
+	    
+	    // Process last line
+	    _exec_shifted_line(buf1, srcLines[l], 1, this->lineLen, buf1);
+	    _exec_shifted_line(buf1, srcLines[l], -1, this->lineLen, buf1);
+	    if (l==imHeight-1)
+		this->lineFunction(srcLines[l], this->borderBuf, this->lineLen, buf2);
+	    else
+		this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
+	    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
+
+	    #pragma omp barrier
+	    copyLine<T>(buf3, this->lineLen, destLines[firstLine]);
+	  }
+		
 	}
 	return RES_OK;
     }
