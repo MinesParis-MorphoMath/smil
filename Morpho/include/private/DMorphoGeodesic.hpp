@@ -36,8 +36,6 @@
 #include "Base/include/private/DImageHistogram.hpp"
 #include "Morpho/include/private/DMorphoBase.hpp"
 
-#include "Morpho/include/private/DMorphoGeodesicDistance.hxx"
-
 namespace smil
 {
     /**
@@ -500,6 +498,17 @@ namespace smil
 	return RES_OK;
     }
 
+#ifndef SWIG
+    struct _coor {
+        public:
+        size_t x,y,z;
+        _coor (size_t _x, size_t _y, size_t _z) : x(_x), y(_y), z(_z) {
+        }
+        
+    } ;
+
+#endif
+
     // Multi-source label-correcting algorithm for ALSP problem.
     template <class T>
     RES_T dist_v2 (const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE) 
@@ -509,18 +518,74 @@ namespace smil
 	
 	ImageFreezer freeze(imOut);
 
-        struct _Partition<T> *V;
-        size_t B, p; 
+        Image<T> tmpIm(imIn);
+        Image<T> tmp2Im(imIn);
 
-        
+        // Set image to 1 when pixels are !=0
+        ASSERT((inf(imIn, T(1), tmpIm)==RES_OK));
 
-        ASSERT (_createPartitions (imIn, B, V, p) == RES_OK) ;
-        int i=0;
-/*        #pragma omp for
-        for (i=0; i<V.length(); ++i) {
-            ASSERT (_MSLC (V[i], se) == RES_OK) ;
+        ASSERT(copy(tmpIm, imOut)==RES_OK);
+
+        // Demi-Gradient to remove sources inside cluster of sources.
+        ASSERT(dilate (tmpIm, tmp2Im, se)==RES_OK); 
+        ASSERT(inv(tmp2Im, tmp2Im)==RES_OK);
+        ASSERT(add(tmpIm, tmp2Im, tmpIm)==RES_OK);
+
+        tmpIm.printSelf (true);
+
+        queue<_coor*> *level = new queue<_coor*>();
+        queue<_coor*> *next_level = new queue<_coor*>();
+        queue<_coor*> *swap ;
+        size_t cur_level=0;
+
+        size_t size[3];
+        imIn.getSize (size) ;
+
+        cout << "size : " << size[0] << ", " << size[1] << ", " << size[2] << ";  " << area (tmpIm) << endl;
+
+        size_t i=0,j=0,k=0;
+        for (k=0; k<size[2]; ++k){
+            for (j=0; j<size[1]; ++j){
+                for (i=0; i<size[0]; ++i) {
+                    if (tmpIm.getPixel(i,j,k)==T(0)) {
+                        level->push (new _coor(i,j,k));
+                    }   
+                }
+            }
         }
-*/    }
+
+        _coor* cur = NULL;
+
+        vector<IntPoint> sePoints = se.points;
+        vector<IntPoint>::iterator pt ;
+
+#define IN_BOUND(x,y,z) x>0 && x<size[0] && y>0 && y<size[1] && z>0 && z<size[2]
+
+
+        do {
+
+            cout << "Number of pixel at level " << cur_level << " : " << level->size() << endl;
+            while (!level->empty()) {
+                cur = level->front();
+                pt = sePoints.begin();
+                while (pt!=sePoints.end()) {
+                    if (    IN_BOUND (cur->x+pt->x, cur->y+pt->y, cur->z+pt->z) && 
+                            imOut.getPixel (cur->x+pt->x, cur->y+pt->y, cur->z+pt->z) > T(cur_level))
+                    {
+                        imOut.setPixel (cur->x+pt->x, cur->y+pt->y, cur->z+pt->z, T(cur_level)); 
+                        next_level->push (new _coor(cur->x+pt->x, cur->y+pt->y, cur->z+pt->z));
+                    }
+                    ++pt;
+                }
+                level->pop();
+            }
+            ++cur_level;
+
+            swap = level;
+            level = next_level;
+            next_level = swap;
+        } while (!next_level->empty());
+    }
 
     /**
     * Ugly temporary distance function
