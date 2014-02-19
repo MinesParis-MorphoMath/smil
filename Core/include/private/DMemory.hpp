@@ -32,7 +32,7 @@
 
 #include <math.h>
 #include <string>
-#include <stdio.h>
+#include <limits>
 
 #if (defined(__ICL) || defined(__ICC))
   #include <fvec.h>
@@ -125,11 +125,12 @@ namespace smil
     }
 
     template<typename T> 
-    void t_LineShiftRight1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
+    void t_LineShiftRight(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
     {
       int i;
 
-      for(i=0 ; i<nbshift ; i++)  {
+      for(i=0 ; i<nbshift ; i++)  
+      {
 	lineout[i] = shiftValue;
       }
 
@@ -139,11 +140,12 @@ namespace smil
 
 
     template<typename T> 
-    void t_LineShiftLeft1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
+    void t_LineShiftLeft(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
     {
       int i;
 
-      for(i=lineWidth-nbshift ; i<lineWidth ; i++)  {
+      for(i=lineWidth-nbshift ; i<lineWidth ; i++)  
+      {
 	lineout[i] = shiftValue;
       }
 
@@ -165,6 +167,7 @@ namespace smil
 	    sprintf(tmp, "%1.2f %s", bytes / pow(base, c), units[c]);
 	    return std::string(tmp);
     }
+    
 
 } // namespace smil
 

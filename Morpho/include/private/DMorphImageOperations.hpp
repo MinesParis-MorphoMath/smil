@@ -72,9 +72,12 @@ namespace smil
 	typedef typename imageOutType::sliceType sliceOutType;
 	typedef typename imageOutType::volType volOutType;
 	
+	inline RES_T operator()(const imageInType &imIn, imageOutType &imOut, const StrElt &se) { return this->_exec(imIn, imOut, se); }
+	
 	virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
 	virtual RES_T finalize(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
 	virtual RES_T _exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
+	
 	virtual RES_T processImage(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
 	virtual inline void processSlice(sliceInType linesIn, sliceOutType linesOut, size_t &lineNbr, const StrElt &se);
 	virtual inline void processLine(lineInType pixIn, lineOutType pixOut, size_t &pixNbr, const StrElt &se);
@@ -109,7 +112,7 @@ namespace smil
 
 
     template <class T, class lineFunction_T>
-    class unaryMorphImageFunction : public imageFunctionBase<T>
+    class unaryMorphImageFunction : public unaryMorphImageFunctionBase<T>
     {
       public:
 	typedef imageFunctionBase<T> parentClass;
@@ -119,10 +122,12 @@ namespace smil
 	typedef typename imageType::volType volType;
 	
 	unaryMorphImageFunction(T border=ImDtTypes<T>::min()) 
-	  : borderValue(border) 
+	  : unaryMorphImageFunctionBase<T>(border, border) 
 	{
 	}
 	
+	
+      protected:
 	virtual RES_T _exec(const imageType &imIn, imageType &imOut, const StrElt &se);
 	
 	virtual RES_T _exec_single(const imageType &imIn, imageType &imOut, const StrElt &se);
@@ -139,12 +144,9 @@ namespace smil
         virtual RES_T _exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size);			// Inplace unsafe !!
 
 	
-	inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt &se) { return this->_exec(imIn, imOut, se); }
 
 	lineFunction_T lineFunction;
 	
-      protected:
-	T borderValue;
 	lineType borderBuf, cpBuf;
 	size_t lineLen;
 	
