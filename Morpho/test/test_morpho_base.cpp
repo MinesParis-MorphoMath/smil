@@ -166,7 +166,11 @@ class Test_Dilate_Cross : public TestCase
       TEST_ASSERT(im2==im3);      
       
       if (retVal!=RES_OK)
+      {
 	im2.printSelf(1);
+	diff(im2, im3, im3);
+	im3.printSelf(1);
+      }
   }
 };
 
@@ -525,7 +529,7 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_Dilate_Rhombicuboctahedron);
       
 //       UINT BENCH_NRUNS = 5E3;
-      Image_UINT8 im1(1024, 1024), im2(im1);
+//       Image_UINT8 im1(1024, 1024), im2(im1);
 //       BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
 //       BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
 // cout << endl;
