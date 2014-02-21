@@ -339,10 +339,23 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf)
+    inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line(lineType inBuf1, lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
     {
-	shiftLine<T>(inBuf2, dx, lineLen, cpBuf, this->borderValue);
-	lineFunction(inBuf1, cpBuf, lineLen, outBuf);
+	if (tmpBuf==NULL)
+	  tmpBuf = cpBuf;
+	shiftLine<T>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
+	lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);
+    }
+
+    template <class T, class lineFunction_T>
+    inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line_2ways(lineType inBuf1, lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
+    {
+	if (tmpBuf==NULL)
+	  tmpBuf = cpBuf;
+	shiftLine<T>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
+	lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);
+	shiftLine<T>(inBuf2, -dx, lineLen, tmpBuf, this->borderValue);
+	lineFunction._exec(outBuf, tmpBuf, lineLen, outBuf);
     }
 
 
@@ -350,7 +363,7 @@ namespace smil
     inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(const lineType inBuf, const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf)
     {
 	_extract_translated_line(imIn, x, y, z, cpBuf);
-	lineFunction(inBuf, cpBuf, lineLen, outBuf);
+	lineFunction._exec(inBuf, cpBuf, lineLen, outBuf);
     }
 
 
@@ -428,7 +441,7 @@ namespace smil
 			    x = pts[p].x + (oddLine && y%2);
 			    
 			    _extract_translated_line(tmpIm, x, y, z, tmpBuf2);
-			    lineFunction(tmpBuf, tmpBuf2, this->lineLen, tmpBuf);
+			    lineFunction._exec(tmpBuf, tmpBuf2, this->lineLen, tmpBuf);
 			}
 			
 			copyLine<T>(tmpBuf, this->lineLen, lineOut);
@@ -459,13 +472,7 @@ namespace smil
 	
 	lineType tmpBuf;
 	    
-	const Image<T> *tmpIm;
-	
-	if (&imIn==&imOut)
-	  tmpIm = new Image<T>(imIn, true); // clone
-	else tmpIm = &imIn;
-	
-	volType srcSlices = tmpIm->getSlices();
+	volType srcSlices = imIn.getSlices();
 	volType destSlices = imOut.getSlices();
 	
 	sliceType srcLines;
@@ -530,10 +537,7 @@ namespace smil
 
     //     this->deleteAlignedBuffers();
 	
-	if (&imIn==&imOut)
-	  delete tmpIm;
-	
-	    return RES_OK;
+	return RES_OK;
     }
 
     template <class T, class lineFunction_T>
@@ -802,7 +806,7 @@ namespace smil
 	}
 	return RES_OK;
     }
-
+    
     template <class T, class lineFunction_T>
     RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_cross(const imageType &imIn, imageType &imOut)
     {
@@ -812,7 +816,7 @@ namespace smil
 	sliceType srcLines;
 	sliceType destLines;
 
-	size_t nthreads = 2; //MIN(Core::getInstance()->getNumberOfThreads(), imHeight/2);
+	size_t nthreads = MIN(Core::getInstance()->getNumberOfThreads(), imHeight/2);
 	lineType *_bufs = this->createAlignedBuffers(3*nthreads, this->lineLen);
 	lineType buf1;
 	lineType buf2;
@@ -883,6 +887,7 @@ namespace smil
 	}
 	return RES_OK;
     }
+
 
     template <class T, class lineFunction_T>
     RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size)

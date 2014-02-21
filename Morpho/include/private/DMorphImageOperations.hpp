@@ -151,7 +151,16 @@ namespace smil
 	size_t lineLen;
 	
 	inline void _extract_translated_line(const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf);
-	inline void _exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf);
+	inline void _exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf=NULL);
+	inline void _exec_shifted_line(const lineType inBuf, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf=NULL)
+	{
+	    return _exec_shifted_line(inBuf, inBuf, dx, lineLen, outBuf, tmpBuf);
+	}
+	inline void _exec_shifted_line_2ways(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf=NULL);
+	inline void _exec_shifted_line_2ways(const lineType inBuf, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf=NULL)
+	{
+	    return _exec_shifted_line_2ways(inBuf, inBuf, dx, lineLen, outBuf, tmpBuf);
+	}
 	inline void _exec_line(const lineType inBuf, const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf);
     };
 
