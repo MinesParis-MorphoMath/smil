@@ -107,6 +107,7 @@ namespace smil
 	virtual void _exec_aligned(lineType lineIn1, lineType lineIn2, size_t size, lineType lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
 	inline void operator()(lineType lineIn1, lineType lineIn2, size_t size, lineType lineOut)
 	{ 
+	    return _exec(lineIn1, lineIn2, size, lineOut); 
 	    if (size<SIMD_VEC_SIZE)
 	    {
 		_exec(lineIn1, lineIn2, size, lineOut); 

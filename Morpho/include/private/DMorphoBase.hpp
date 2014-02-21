@@ -33,7 +33,7 @@
 #include "Core/include/DImage.h"
 #include "Base/include/private/DImageArith.hpp"
 #include "Morpho/include/DMorphoInstance.h"
-#include "DMorphImageOperations.hpp"
+#include "DMorphImageOperations.hxx"
 #include "DHitOrMiss.hpp"
 
 

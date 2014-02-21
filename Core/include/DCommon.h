@@ -75,10 +75,10 @@ namespace smil
     #endif // PI
 
     #ifndef MIN
-    #define MIN(a, b) a < b ? a : b;
+    #define MIN(a, b) (a < b ? a : b);
     #endif // MIN
     #ifndef MAX
-    #define MAX(a, b) a > b ? a : b;
+    #define MAX(a, b) (a > b ? a : b);
     #endif // MAX
 
     template <class T>

@@ -31,7 +31,7 @@
 #define _D_MORPHO_FILTER_HPP
 
 #include "DImage.h"
-#include "DMorphImageOperations.hpp"
+#include "DMorphImageOperations.hxx"
 
 
 namespace smil
