@@ -82,6 +82,8 @@ namespace smil
 	virtual inline void processSlice(sliceInType linesIn, sliceOutType linesOut, size_t &lineNbr, const StrElt &se);
 	virtual inline void processLine(lineInType pixIn, lineOutType pixOut, size_t &pixNbr, const StrElt &se);
 	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd);
+	
+	static bool isInplaceSafe(const StrElt &se) { return false; }
     protected:
 	  size_t imSize[3];
 	  volInType slicesIn;
@@ -126,6 +128,8 @@ namespace smil
 	{
 	}
 	
+	
+	static bool isInplaceSafe(const StrElt &se);
 	
       protected:
 	virtual RES_T _exec(const imageType &imIn, imageType &imOut, const StrElt &se);

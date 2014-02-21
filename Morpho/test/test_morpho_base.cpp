@@ -133,7 +133,7 @@ class Test_Dilate_Cross : public TestCase
       typedef UINT8 dataType;
       typedef Image<dataType> imType;
       
-      imType im1(7,7);
+      imType im1(7,9);
       imType im2(im1);
       imType im3(im1);
       
@@ -144,12 +144,14 @@ class Test_Dilate_Cross : public TestCase
 	213,  74,   8, 163,   3, 240, 213,
 	158,  67,  52, 103, 163, 158,   9,
 	 85,  36, 124,  12,   7,  56, 253,
-	214, 148,  20, 200,  53,  10,  58
+	214, 148,  20, 200,  53,  10,  58,
+	214, 148,  20, 200,  53,  10,  58,
+	213,  74,   8, 163,   3, 240, 213,
       };
       
       im1 << vec1;
       
-      dilate(im1, im2, CrossSE());
+      dilate(im1, im1, CrossSE());
 
       dataType dilateVec[] = {
 	133, 133, 160, 196, 160,  57, 110,
@@ -159,11 +161,13 @@ class Test_Dilate_Cross : public TestCase
 	213, 158, 124, 163, 163, 240, 253,
 	214, 148, 124, 200, 163, 253, 253,
 	214, 214, 200, 200, 200,  58, 253,
+	214, 214, 200, 200, 200, 240, 213,
+	214, 213, 163, 200, 240, 240, 240,
       };
       im3 << dilateVec;
       
       
-      TEST_ASSERT(im2==im3);      
+      TEST_ASSERT(im1==im3);      
       
       if (retVal!=RES_OK)
       {
