@@ -234,6 +234,14 @@ namespace smil
 	{
 	  case SE_Horiz:
 	    return true;
+	  case SE_Vert:
+	    return true;
+	  case SE_Hex:
+	    return true;
+	  case SE_Squ:
+	    return true;
+	  case SE_Cube:
+	    return true;
 	  case SE_Cross:
 	    return true;
 	  default:
@@ -737,81 +745,74 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_vertical_segment(const imageType &imIn, imageType &imOut)
     {
-	size_t imHeight = imIn.getHeight();
+	UINT imHeight = imIn.getHeight();
+	size_t imWidth = imIn.getWidth();
 	volType srcSlices = imIn.getSlices();
 	volType destSlices = imOut.getSlices();
 	sliceType srcLines;
 	sliceType destLines;
 
-	size_t nthreads = MIN(Core::getInstance()->getNumberOfThreads(), imHeight-1);
-	lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
-	lineType buf1 = _bufs[0];
-	lineType buf2 = _bufs[nthreads];
+	int tid = 0, nthreads = MIN(Core::getInstance()->getNumberOfThreads(), imHeight/4);
+	nthreads = MAX(nthreads, 1);
+	int nbufs = 4;
+	lineType *_bufs = this->createAlignedBuffers(nbufs*nthreads, this->lineLen);
+	lineType buf1, buf2, buf3, firstLineBuf;
 	
-    #ifdef USE_OPEN_MP
-	    size_t tid;
-    #endif // USE_OPEN_MP
-	int b;
-	size_t nblocks = imHeight / nthreads;
-
+	size_t firstLine, blockSize;
+	
 	for (size_t s=0;s<imIn.getDepth();s++)
 	{
 	    srcLines = srcSlices[s];
 	    destLines = destSlices[s];
 
-	    
-    #ifdef USE_OPEN_MP
-	#pragma omp parallel private(tid,buf1,buf2,b) num_threads(nthreads)
-    #endif // USE_OPEN_MP
-	{
-		#ifdef USE_OPEN_MP
-		    tid = omp_get_thread_num();
-		    buf1 = _bufs[tid];
-		    buf2 = _bufs[tid+nthreads];
-		#endif
-		    
-    #ifdef USE_OPEN_MP
-	    #pragma omp for
-    #endif // USE_OPEN_MP
-	    for (b=0;b<nblocks;b++)
-		{
-		    int l = b*nthreads;
-		    if (l==0)
-		      this->lineFunction(this->borderBuf, srcLines[l], this->lineLen, buf1);
-		    else
-		      this->lineFunction(srcLines[l-1], srcLines[l], this->lineLen, buf1);
-
-		    for (int i=0;i<nthreads-1;i++)
-		    {
-			this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
-			this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
-			swap(buf1, buf2);
-			l++;
-		    }
-		    if (l==imHeight-1)
-			this->lineFunction(srcLines[l], this->borderBuf, this->lineLen, buf2);
-		    else
-			this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
-		    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
-		}
-		
-	    }	  
-	    // Remaining lines
-	    int l = nblocks*nthreads;
-	    if (l<imHeight)
+	#ifdef USE_OPEN_MP
+	    #pragma omp parallel private(tid,blockSize,firstLine,buf1,buf2,buf3,firstLineBuf) num_threads(nthreads)
+	#endif
 	    {
-		this->lineFunction(srcLines[l-1], srcLines[l], this->lineLen, buf1);
-		while (l<imHeight-1)
+	    #ifdef USE_OPEN_MP
+		tid = omp_get_thread_num();
+	    #endif
+		buf1 = _bufs[tid*nbufs];
+		buf2 = _bufs[tid*nbufs+1];
+		firstLineBuf = _bufs[tid*nbufs+2];
+		
+		blockSize = imHeight/nthreads;
+		firstLine = tid*blockSize;
+		if (tid==nthreads-1)
+		  blockSize = imHeight-blockSize*tid;
+		
+		
+		// Process first line
+		copyLine<T>(srcLines[firstLine], imWidth, buf1);
+		if (firstLine==0)
+		  lineFunction(buf1, borderBuf, imWidth, buf2);
+		else
+		  lineFunction(buf1, srcLines[firstLine-1], imWidth, buf2);
+		lineFunction(srcLines[firstLine], srcLines[firstLine+1], imWidth, buf1);
+		lineFunction(buf1, buf2, imWidth, firstLineBuf);
+		
+		#pragma omp barrier
+		
+		for (size_t i = firstLine+1 ; i<firstLine+blockSize-1 ; i++) 
 		{
-		    this->lineFunction(srcLines[l], srcLines[l+1], this->lineLen, buf2);
-		    this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
-		    swap(buf1, buf2);
-		    l++;
+		  lineFunction(srcLines[i], srcLines[i+1], imWidth, buf2);
+		  lineFunction(buf1, buf2, imWidth, destLines[i]);
+
+		  swap(buf1, buf2);
 		}
-		// Last line
-		this->lineFunction(srcLines[l], this->borderBuf, this->lineLen, buf2);
-		this->lineFunction(buf1, buf2, this->lineLen, destLines[l]);
-	    }
+	      
+		if (firstLine+blockSize==imHeight)
+		  lineFunction(srcLines[firstLine+blockSize-1], borderBuf, imWidth, buf2);
+		else
+		  lineFunction(srcLines[firstLine+blockSize-1], srcLines[firstLine+blockSize], imWidth, buf2);
+		lineFunction(buf1, buf2, imWidth, destLines[firstLine+blockSize-1]);
+		
+		#pragma omp barrier
+		
+		// finaly write the first line
+		copyLine<T>(firstLineBuf, imWidth, destLines[firstLine]);
+		
+	    } // #pragma omp parallel
 	}
 	return RES_OK;
     }
@@ -890,7 +891,10 @@ namespace smil
 	      
 		_exec_shifted_line_2ways(buf2, 1, imWidth, buf4, tmpBuf);
 		lineFunction(buf1, buf4, imWidth, buf4);
-		lineFunction(borderBuf, buf4, imWidth, destLines[firstLine+blockSize-1]);
+		if (firstLine+blockSize==imHeight)
+		  lineFunction(buf4, borderBuf, imWidth, destLines[firstLine+blockSize-1]);
+		else
+		  lineFunction(buf4, srcLines[firstLine+blockSize], imWidth, destLines[firstLine+blockSize-1]);
 		
 		#pragma omp barrier
 		

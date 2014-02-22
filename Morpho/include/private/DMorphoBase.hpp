@@ -130,10 +130,17 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	ImageFreezer freeze(imOut);
 	
-	Image<T> imTmp(imIn);
+	bool inplaceSafe = unaryMorphImageFunction<T, supLine<T> >::isInplaceSafe(se);
+	Image<T> *imTmp;
+	if (inplaceSafe)
+	  imTmp = &imOut;
+	else imTmp = new Image<T>(imIn);
 	
-	ASSERT((dilate(imIn, imTmp, se)==RES_OK));
-	ASSERT((erode(imTmp, imOut, se)==RES_OK));
+	ASSERT((dilate(imIn, *imTmp, se)==RES_OK));
+	ASSERT((erode(*imTmp, imOut, se)==RES_OK));
+	
+	if (!inplaceSafe)
+	  delete imTmp;
 	
 	return RES_OK;
     }
@@ -155,10 +162,17 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	ImageFreezer freeze(imOut);
 	
-	Image<T> imTmp(imIn);
+	bool inplaceSafe = unaryMorphImageFunction<T, supLine<T> >::isInplaceSafe(se);
+	Image<T> *imTmp;
+	if (inplaceSafe)
+	  imTmp = &imOut;
+	else imTmp = new Image<T>(imIn);
 	
-	ASSERT((erode(imIn, imTmp, se)==RES_OK));
-	ASSERT((dilate(imTmp, imOut, se)==RES_OK));
+	ASSERT((erode(imIn, *imTmp, se)==RES_OK));
+	ASSERT((dilate(*imTmp, imOut, se)==RES_OK));
+	
+	if (!inplaceSafe)
+	  delete imTmp;
 
 	return RES_OK;
     }

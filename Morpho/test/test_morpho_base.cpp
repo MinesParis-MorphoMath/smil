@@ -122,7 +122,11 @@ class Test_Dilate_Vert : public TestCase
       TEST_ASSERT(im2==im3);      
       
       if (retVal!=RES_OK)
+      {
 	im2.printSelf(1);
+	diff(im2, im3, im3);
+	im3.printSelf(1);
+      }
   }
 };
 
