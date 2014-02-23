@@ -229,8 +229,6 @@ def Image(*args):
 
 
 
-seTypes = "HexSE, SquSE"
-
 def bench(func, *args, **keywords):
     """
     bench(function, [func_args], [options]):
@@ -258,10 +256,8 @@ def bench(func, *args, **keywords):
 	  im_size = arg.getSize()
 	  im_type = arg.getTypeAsString()
       if not se_type:
-	if hasattr(arg, "__module__") and arg.__module__ == "smilMorphoPython":
-	  arg_ts = str(type(arg)).split(".")[1][:-2]
-	  if arg_ts in seTypes:
-	    se_type = arg_ts
+	if hasattr(arg, "getClassName") and hasattr(arg, "homothety"):
+	  se_type = arg.getClassName()
 	    
     # Choose the right timer depending on the platform (see http://docs.python.org/2/library/time.html#time.clock)
     if sys.platform == "win32":
