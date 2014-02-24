@@ -23,7 +23,7 @@
 
 #include "DImage.h"
 #include "DBase.h"
-#include "DLabelMeasures.hpp"
+#include "DBlobMeasures.hpp"
 #include "DBench.h"
 #include "DTest.h"
 #include "DMeasures.hpp"
@@ -175,9 +175,18 @@ class Test_MeasCovariance: public TestCase
       im1 << vec1;
       im2 << vec2;
       
-      Vector_double cov = measCovariance(im1, im2, 1, 0, 0, 5);
+       Vector_double cov = measCovariance(im1, im2, 1, 0, 0, 5);
 
-      TEST_ASSERT(cov[0]==348240 && cov[1]==218260 && cov[2]==195396 && cov[3]==141960 && cov[4]==50574 && cov[5]==0);
+      TEST_ASSERT(cov[0]==13929.6);
+      TEST_ASSERT(cov[1]==10913);
+      TEST_ASSERT(cov[2]==13026.4);
+      TEST_ASSERT(cov[3]==14196);
+      TEST_ASSERT(cov[4]==10114.8);
+      TEST_ASSERT(cov[5]==0);
+      
+      if (retVal!=RES_OK)
+	for (vector<double>::iterator it=cov.begin();it!=cov.end();it++)
+	  cout << *it << endl;
       
   }
 };

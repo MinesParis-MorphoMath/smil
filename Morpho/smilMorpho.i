@@ -46,6 +46,7 @@ SMIL_MODULE(smilMorpho)
 #include "DMorphoInstance.h"
 #include "DMorphoMaxTree.hpp"
 #include "DMorphoGraph.hpp"
+#include "DMorphoMeasures.hpp"
 %}
  
 
@@ -96,6 +97,7 @@ TEMPLATE_WRAP_FUNC(build);
 TEMPLATE_WRAP_FUNC(binBuild);
 TEMPLATE_WRAP_FUNC(dualBuild);
 TEMPLATE_WRAP_FUNC(hBuild);
+TEMPLATE_WRAP_FUNC(hDualBuild);
 TEMPLATE_WRAP_FUNC(buildOpen);
 TEMPLATE_WRAP_FUNC(buildClose);
 TEMPLATE_WRAP_FUNC(fillHoles);
@@ -116,9 +118,6 @@ TEMPLATE_WRAP_FUNC(median);
 
 %include "DMorphoArrow.hpp"
 TEMPLATE_WRAP_FUNC(arrow);
-TEMPLATE_WRAP_FUNC(arrowGrt);
-TEMPLATE_WRAP_FUNC(arrowGrtOrEqu);
-TEMPLATE_WRAP_FUNC(arrowEqu);
 
 %include "DMorphoWatershed.hpp"
 TEMPLATE_WRAP_FUNC(watershed);
@@ -155,6 +154,8 @@ TEMPLATE_WRAP_FUNC(fullThick);
 
 %include "DSkeleton.hpp"
 TEMPLATE_WRAP_FUNC(skiz);
+TEMPLATE_WRAP_FUNC(skeleton);
+TEMPLATE_WRAP_FUNC_2T_CROSS(extinctionValues);
 TEMPLATE_WRAP_FUNC(zhangSkeleton);
 
 %include "DMorphoMaxTree.hpp"
@@ -164,6 +165,9 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);
 TEMPLATE_WRAP_FUNC_3T_FIX_THIRD(mosaicToGraph, Graph<>);
 TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(graphToMosaic, Graph<>);
 TEMPLATE_WRAP_FUNC_3T_FIX_SECOND(drawGraph, Graph<>);
+
+%include "DMorphoMeasures.hpp"
+TEMPLATE_WRAP_FUNC(measGranulometry);
 
 
 #ifdef SWIGPYTHON

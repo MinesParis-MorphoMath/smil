@@ -98,9 +98,6 @@ namespace smil
 	return &pixels;
     }
 
-
-
-
     template <>
     inline RES_T Image<RGB>::allocate()
     {

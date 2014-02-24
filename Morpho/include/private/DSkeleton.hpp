@@ -63,6 +63,74 @@ namespace smil
     }
     
     /**
+    * Morphological skeleton
+    */
+    template <class T>
+    RES_T skeleton(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freezer(imOut);
+	
+	Image<T> imEro(imIn);
+	Image<T> imTemp(imIn);
+	
+	copy(imIn, imEro);
+	fill(imOut, ImDtTypes<T>::min());
+	
+	bool idempt = false;
+	
+	do
+	{
+	    erode(imEro, imEro, se);
+	    open(imEro, imTemp, se);
+	    sub(imEro, imTemp, imTemp);
+	    sup(imOut, imTemp, imTemp);
+	    idempt = equ(imTemp, imOut);
+	    copy(imTemp, imOut);
+	    
+	} while (!idempt);
+	return RES_OK;
+    }
+    
+    /**
+    * Extinction values
+    */
+    template <class T1, class T2>
+    RES_T extinctionValues(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freezer(imOut);
+	
+	Image<T1> imEro(imIn);
+	Image<T1> imTemp1(imIn);
+	Image<T2> imTemp2(imOut);
+	
+	copy(imIn, imEro);
+	fill(imOut, ImDtTypes<T2>::min());
+	
+	T2 r = 1;
+	
+	bool idempt = false;
+	
+	do
+	{
+	    erode(imEro, imEro, se);
+	    open(imEro, imTemp1, se);
+	    sub(imEro, imTemp1, imTemp1);
+	    test(imTemp1, r++, imOut, imTemp2);
+	    idempt = equ(imTemp2, imOut);
+	    copy(imTemp2, imOut);
+	    
+	} while (!idempt);
+	return RES_OK;
+    }
+    
+    
+    /**
     * Zhang 2D skeleton
     * 
     * Implementation corresponding to the algorithm described in \cite khanyile_comparative_2011.

@@ -42,6 +42,55 @@ namespace smil
 
     // Extrema
 
+
+    /**
+    * Minima
+    */
+    template <class T>
+    RES_T minima(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	if (&imIn==&imOut)
+	{
+	    Image<T> tmpIm(imIn);
+	    return minima(tmpIm, imOut, se);
+	}
+	
+	ImageFreezer freeze(imOut);
+	
+	ASSERT((add(imIn, T(1), imOut)==RES_OK));
+	ASSERT((dualBuild(imOut, imIn, imOut, se)==RES_OK));
+	ASSERT((low(imIn, imOut, imOut)==RES_OK));
+	
+	return RES_OK;
+    }
+
+    /**
+    * Maxima
+    */
+    template <class T>
+    RES_T maxima(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	if (&imIn==&imOut)
+	{
+	    Image<T> tmpIm(imIn);
+	    return maxima(tmpIm, imOut, se);
+	}
+	
+	ImageFreezer freeze(imOut);
+	
+	ASSERT((sub(imIn, T(1), imOut)==RES_OK));
+	ASSERT((build(imOut, imIn, imOut, se)==RES_OK));
+	ASSERT((grt(imIn, imOut, imOut)==RES_OK));
+	
+	return RES_OK;
+    }
+
     /**
     * h-Minima
     */
@@ -51,17 +100,12 @@ namespace smil
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
-	if (&imIn==&imOut)
-	{
-	    Image<T> tmpIm = imIn;
-	    return hMinima(tmpIm, height, imOut, se);
-	}
-	
 	ImageFreezer freeze(imOut);
 	
-	ASSERT((add(imIn, T(height), imOut)==RES_OK));
-	ASSERT((dualBuild(imOut, imIn, imOut, se)==RES_OK));
-	ASSERT((low(imIn, imOut, imOut)==RES_OK));
+	Image<T> tmpIm(imIn);
+	
+	ASSERT(hDualBuild(imIn, height, tmpIm, se)==RES_OK);
+	ASSERT(minima(tmpIm, imOut, se)==RES_OK);
 	
 	return RES_OK;
     }
@@ -75,39 +119,16 @@ namespace smil
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
-	if (&imIn==&imOut)
-	{
-	    Image<T> tmpIm = imIn;
-	    return hMaxima(tmpIm, height, imOut, se);
-	}
+	Image<T> tmpIm(imIn);
 	
 	ImageFreezer freeze(imOut);
 	
-	ASSERT((sub(imIn, T(height), imOut)==RES_OK));
-	ASSERT((build(imOut, imIn, imOut, se)==RES_OK));
-	ASSERT((grt(imIn, imOut, imOut)==RES_OK));
+	ASSERT(hBuild(imIn, height, tmpIm, se)==RES_OK);
+	ASSERT(maxima(tmpIm, imOut, se)==RES_OK);
 	
 	return RES_OK;
     }
-
-    /**
-    * Minima
-    */
-    template <class T>
-    RES_T minima(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
-    {
-	return hMinima(imIn, T(1), imOut, se);
-    }
-
-    /**
-    * Maxima
-    */
-    template <class T>
-    RES_T maxima(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
-    {
-	return hMaxima(imIn, T(1), imOut, se);
-    }
-
+    
 /** \} */
 
 } // namespace smil

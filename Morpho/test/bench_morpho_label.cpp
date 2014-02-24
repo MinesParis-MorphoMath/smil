@@ -35,8 +35,14 @@ using namespace smil;
 
 int main(int argc, char *argv[])
 {
-    Image_UINT8 im1(10240, 1024);
-    Image_UINT8 im2(im1);
+    Image_UINT8 im1(1024, 1024);
+    Image_UINT16 im2(im1);
+    
+    fill(im1, UINT8(0));
+    drawRectangle(im1, 10,10,400,400, UINT8(255), true);
+    drawRectangle(im1, 500,60,40,400);
+    drawLine(im1, 450, 100, 900, 10);
+   
     
     UINT BENCH_NRUNS = 1E2;
     BENCH_IMG(label, im1, im2, CrossSE());

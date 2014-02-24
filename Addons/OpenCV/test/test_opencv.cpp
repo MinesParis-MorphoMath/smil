@@ -1,8 +1,4 @@
 
-#ifdef WRAP_PYTHON
-    #include <boost/python.hpp>
-#endif // WRAP_PYTHON
-
 #include "DOpenCVInterface.hpp"
 #include "DTest.h"
 

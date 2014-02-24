@@ -70,6 +70,9 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se)
     {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
 	if (&imIn==&imOut)
 	{
 	    Image<T> tmpIm = imIn;
@@ -116,7 +119,7 @@ namespace smil
 		for (UINT p=0;p<sePtsNumber;p++)
 		{
 		    x = - se.points[p].x + oddLine;
-		    y = l - se.points[p].y;
+		    y = l + se.points[p].y;
 		    z = s + se.points[p].z;
 		    
 		    parentClass::lineFunction.trueVal = (1UL << p);

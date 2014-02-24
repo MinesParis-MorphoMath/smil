@@ -46,7 +46,8 @@ namespace smil
     template <class T> 
     class ImageViewer;
 
-
+    template <class T>
+    class ResImage;
     /**
     * Main Image class.
     * 
@@ -69,9 +70,11 @@ namespace smil
 	
 	// Provide explicit copy constructor and assignment operator
 	//! Copy constructor
-	Image(const Image<T> & rhs, bool cloneData=true);
+	Image(const Image<T> & rhs, bool cloneData=false);
 	template <class T2>
-	Image(const Image<T2> &rhs, bool cloneData=true);
+	Image(const Image<T2> &rhs, bool cloneData=false);
+	Image(const ResImage<T> & rhs, bool cloneData=true);
+	
 	// Assignment operator
 	Image<T>& operator = (const Image<T> &rhs)
 	{
@@ -80,6 +83,11 @@ namespace smil
 	}
 	
 	Image(BaseImage *_im, bool stealIdentity=false);
+	
+	// SWIG-Python doesn't handle abstract classes.
+	// Usefull when creating an image from createFromFile (kind of cast).
+	//! Replace container. Drain memory from image im to this.
+	void drain(Image<T> *im, bool deleteSrc=false);
       
 	//! Get the image type.
 	//! \return The type of the image data as a string ("UINT8", "UINT16", ...)
@@ -265,67 +273,67 @@ namespace smil
 	//! Fill image
 	Image<T>& operator << (const T &value);
 	//! Negate image
-	Image<T> operator ~ () const;
-	Image<T> operator - () const;
+	ResImage<T>operator ~ () const;
+	ResImage<T>operator - () const;
 	//! Add image
-	Image<T> operator + (const Image<T> &rhs);
+	ResImage<T> operator + (const Image<T> &rhs);
 	//! Add value
-	Image<T> operator + (const T &value);
+	ResImage<T> operator + (const T &value);
 	//! Image addition assignment
 	Image<T>& operator += (const Image<T> &rhs);
 	//! Value addition assignment
 	Image<T>& operator += (const T &value);
 	//! Sub image
-	Image<T> operator - (const Image<T> &rhs);
+	ResImage<T>operator - (const Image<T> &rhs);
 	//! Sub value
-	Image<T> operator - (const T &value);
+	ResImage<T>operator - (const T &value);
 	//! Image subtraction assignment
 	Image<T>& operator -= (const Image<T> &rhs);
 	//! Value subtraction assignment
 	Image<T>& operator -= (const T &value);
 	//! Multiply by image
-	Image<T> operator * (const Image<T> &rhs);
+	ResImage<T>operator * (const Image<T> &rhs);
 	//! Multiply by value
-	Image<T> operator * (const T &value);
+	ResImage<T>operator * (const T &value);
 	//! Image multiplication assignment
 	Image<T>& operator *= (const Image<T> &rhs);
 	//! Value multiplication assignment
 	Image<T>& operator *= (const T &value);
 	//! Divide by image
-	Image<T> operator / (const Image<T> &rhs);
+	ResImage<T>operator / (const Image<T> &rhs);
 	//! Divide by value
-	Image<T> operator / (const T &value);
+	ResImage<T>operator / (const T &value);
 	//! Image division assignment
 	Image<T>& operator /= (const Image<T> &rhs);
 	//! Value division assignment
 	Image<T>& operator /= (const T &value);
 	//! Equal boolean operator (see \ref equ).
-	Image<T> operator == (const Image<T> &rhs);
+	ResImage<T>operator == (const Image<T> &rhs);
 	//! Diff boolean operator (see \ref equ).
-	Image<T> operator != (const Image<T> &rhs);
+	ResImage<T>operator != (const Image<T> &rhs);
 	//! Lower boolean operator (see \ref low)
-	Image<T> operator < (const Image<T> &rhs);
+	ResImage<T>operator < (const Image<T> &rhs);
 	//! Lower boolean operator (see \ref low)
-	Image<T> operator < (const T &value);
+	ResImage<T>operator < (const T &value);
 	//! Lower or equal boolean operator (see \ref lowOrEqu)
-	Image<T> operator <= (const Image<T> &rhs);
+	ResImage<T>operator <= (const Image<T> &rhs);
 	//! Lower or equal boolean operator (see \ref lowOrEqu)
-	Image<T> operator <= (const T &value);
+	ResImage<T>operator <= (const T &value);
 	//! Greater boolean operator (see \ref grt)
-	Image<T> operator > (const Image<T> &rhs);
+	ResImage<T>operator > (const Image<T> &rhs);
 	//! Greater boolean operator (see \ref grt)
-	Image<T> operator > (const T &value);
+	ResImage<T>operator > (const T &value);
 	//! Greater or equal boolean operator (see \ref grt)
-	Image<T> operator >= (const Image<T> &rhs);
+	ResImage<T>operator >= (const Image<T> &rhs);
 	//! Greater or equal boolean operator (see \ref grt)
-	Image<T> operator >= (const T &value);
+	ResImage<T>operator >= (const T &value);
 
-	Image<T> operator | (const Image<T> &rhs);
-	Image<T> operator | (const T &value);
+	ResImage<T>operator | (const Image<T> &rhs);
+	ResImage<T>operator | (const T &value);
 	Image<T>& operator |= (const Image<T> &rhs);
 	Image<T>& operator |= (const T &value);
-	Image<T> operator & (const Image<T> &rhs);
-	Image<T> operator & (const T &value);
+	ResImage<T>operator & (const Image<T> &rhs);
+	ResImage<T>operator & (const T &value);
 	Image<T>& operator &= (const Image<T> &rhs);
 	Image<T>& operator &= (const T &value);
 	
@@ -375,6 +383,25 @@ namespace smil
 
     };
       
+    template <class T>
+    class ResImage : public Image<T>
+    {
+    public:
+      ResImage(const Image<T> &rhs)
+	: Image<T>(rhs, false)
+      {
+      }
+      // Warning ! This will empty the image rhs !
+      // Allows to avoid multiple copy with SwigValueWrapper operations...
+      ResImage(const ResImage<T> &rhs)
+	: Image<T>()
+      {
+	  Image<T>::drain(const_cast<ResImage<T>*>(&rhs));
+      }
+      ~ResImage()
+      {
+      }
+    };
 
     template <class T>
     Image<T> *createImage(const T)

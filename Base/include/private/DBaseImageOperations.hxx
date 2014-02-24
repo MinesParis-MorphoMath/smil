@@ -178,7 +178,7 @@ namespace smil
 		#pragma omp for
 	    #endif // USE_OPEN_MP
 	    for (i=0;i<(int)lineCount;i++)
-		    lineFunction._exec_aligned(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
+		    lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
 	}
 	imOut.modified();
 
@@ -300,7 +300,8 @@ namespace smil
 
     // Tertiary image function
     template <class T, class lineFunction_T>
-    RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const imageType &imIn2, const imageType &imIn3, imageType &imOut)
+    template <class T2> 
+    RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const Image<T2> &imIn2, const Image<T2> &imIn3, Image<T2> &imOut)
     {
 	if (!areAllocated(&imIn1, &imIn2, &imIn3, &imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
@@ -308,10 +309,12 @@ namespace smil
 	size_t lineLen = imIn1.getWidth();
 	int lineCount = imIn1.getLineCount();
 
+	typedef typename Image<T2>::sliceType sliceType2;
+
 	sliceType srcLines1 = imIn1.getLines();
-	sliceType srcLines2 = imIn2.getLines();
-	sliceType srcLines3 = imIn3.getLines();
-	sliceType destLines = imOut.getLines();
+	sliceType2 srcLines2 = imIn2.getLines();
+	sliceType2 srcLines3 = imIn3.getLines();
+	sliceType2 destLines = imOut.getLines();
 
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	int i;
@@ -333,7 +336,8 @@ namespace smil
 
     // Tertiary image function
     template <class T, class lineFunction_T>
-    RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const imageType &imIn2, const T &value, imageType &imOut)
+    template <class T2> 
+    RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const Image<T2> &imIn2, const T2 &value, Image<T2> &imOut)
     {
 	if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
@@ -341,14 +345,17 @@ namespace smil
 	size_t lineLen = imIn1.getWidth();
 	int lineCount = imIn1.getLineCount();
 
+	typedef typename Image<T2>::lineType lineType2;
+	typedef typename Image<T2>::sliceType sliceType2;
+	
 	sliceType srcLines1 = imIn1.getLines();
-	sliceType srcLines2 = imIn2.getLines();
-	sliceType destLines = imOut.getLines();
+	sliceType2 srcLines2 = imIn2.getLines();
+	sliceType2 destLines = imOut.getLines();
 
-	lineType constBuf = ImDtTypes<T>::createLine(lineLen);
+	lineType2 constBuf = ImDtTypes<T2>::createLine(lineLen);
 
 	// Fill the const buffer with the value
-	fillLine<T> f;
+	fillLine<T2> f;
 	f(constBuf, lineLen, value);
 
 	int nthreads = Core::getInstance()->getNumberOfThreads();
@@ -364,14 +371,15 @@ namespace smil
 		lineFunction(srcLines1[i], srcLines2[i], constBuf, lineLen, destLines[i]);
 	}
 	    
-	ImDtTypes<T>::deleteLine(constBuf);
+	ImDtTypes<T2>::deleteLine(constBuf);
 	imOut.modified();
 
 	return RES_OK;
     }
 
     template <class T, class lineFunction_T>
-    RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const T &value, const imageType &imIn2, imageType &imOut)
+    template <class T2> 
+    RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const T2 &value, const Image<T2> &imIn2, Image<T2> &imOut)
     {
 	if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
@@ -379,14 +387,17 @@ namespace smil
 	size_t lineLen = imIn1.getWidth();
 	int lineCount = imIn1.getLineCount();
 
+	typedef typename Image<T2>::lineType lineType2;
+	typedef typename Image<T2>::sliceType sliceType2;
+	
 	sliceType srcLines1 = imIn1.getLines();
-	sliceType srcLines2 = imIn2.getLines();
-	sliceType destLines = imOut.getLines();
+	sliceType2 srcLines2 = imIn2.getLines();
+	sliceType2 destLines = imOut.getLines();
 
-	lineType constBuf = ImDtTypes<T>::createLine(lineLen);
+	lineType2 constBuf = ImDtTypes<T2>::createLine(lineLen);
 
 	// Fill the const buffer with the value
-	fillLine<T> f;
+	fillLine<T2> f;
 	f(constBuf, lineLen, value);
 
 	int nthreads = Core::getInstance()->getNumberOfThreads();
@@ -402,7 +413,7 @@ namespace smil
 		lineFunction(srcLines1[i], constBuf, srcLines2[i], lineLen, destLines[i]);
 	}
 
-	ImDtTypes<T>::deleteLine(constBuf);
+	ImDtTypes<T2>::deleteLine(constBuf);
 	imOut.modified();
 
 	return RES_OK;
@@ -410,7 +421,8 @@ namespace smil
 
 
     template <class T, class lineFunction_T>
-    RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, const T &value1, const T &value2, imageType &imOut)
+    template <class T2> 
+    RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, const T2 &value1, const T2 &value2, Image<T2> &imOut)
     {
 	if (!areAllocated(&imIn, &imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
@@ -418,14 +430,17 @@ namespace smil
 	size_t lineLen = imIn.getWidth();
 	int lineCount = imIn.getLineCount();
 
+	typedef typename Image<T2>::lineType lineType2;
+	typedef typename Image<T2>::sliceType sliceType2;
+	
 	sliceType srcLines = imIn.getLines();
-	sliceType destLines = imOut.getLines();
+	sliceType2 destLines = imOut.getLines();
 
-	lineType constBuf1 = ImDtTypes<T>::createLine(lineLen);
-	lineType constBuf2 = ImDtTypes<T>::createLine(lineLen);
+	lineType2 constBuf1 = ImDtTypes<T2>::createLine(lineLen);
+	lineType2 constBuf2 = ImDtTypes<T2>::createLine(lineLen);
 
 	// Fill the const buffers with the values
-	fillLine<T> f;
+	fillLine<T2> f;
 	f(constBuf1, lineLen, value1);
 	f(constBuf2, lineLen, value2);
 
@@ -442,8 +457,8 @@ namespace smil
 		lineFunction(srcLines[i], constBuf1, constBuf2, lineLen, destLines[i]);
 	}
 
-	ImDtTypes<T>::deleteLine(constBuf1);
-	ImDtTypes<T>::deleteLine(constBuf2);
+	ImDtTypes<T2>::deleteLine(constBuf1);
+	ImDtTypes<T2>::deleteLine(constBuf2);
 	imOut.modified();
 
 	return RES_OK;

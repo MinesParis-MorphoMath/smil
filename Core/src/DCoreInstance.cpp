@@ -135,6 +135,11 @@ UINT Core::getNumberOfThreads()
     return this->threadNumber;
 }
 
+UINT Core::getMaxNumberOfThreads()
+{
+    return this->maxThreadNumber;
+}
+
 RES_T Core::setNumberOfThreads(UINT nbr)
 {
     ASSERT((nbr<=maxThreadNumber), "Nbr of thread exceeds system capacity !", RES_ERR);

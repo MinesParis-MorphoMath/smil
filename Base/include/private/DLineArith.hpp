@@ -78,7 +78,7 @@ namespace smil
     };
 
     template <class T>
-    inline void shiftLine(const typename Image<T>::lineType lIn, int dx, size_t lineLen, typename Image<T>::lineType lOut, T borderValue = numeric_limits<T>::min())
+    inline void shiftLine(const typename Image<T>::lineType lIn, int dx, size_t lineLen, typename Image<T>::lineType lOut, T borderValue = ImDtTypes<T>::min())
     {
 	fillLine<T> fillFunc;
 
@@ -111,7 +111,15 @@ namespace smil
     template <>
     inline void invLine<double>::_exec(lineType lineIn, size_t size, lineType lOut)
     {
-	for (size_t i=0;i<size;i++) lOut[i] = -lineIn[i];
+	float maxVal = ImDtTypes<float>::max();
+	for (size_t i=0;i<size;i++) lOut[i] = maxVal - lineIn[i];
+    }	
+	
+    template <>
+    inline void invLine<float>::_exec(lineType lineIn, size_t size, lineType lOut)
+    {
+	float maxVal = ImDtTypes<float>::max();
+	for (size_t i=0;i<size;i++) lOut[i] = maxVal -lineIn[i];
     }
 
     template <class T>
@@ -121,7 +129,7 @@ namespace smil
 	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
 	{
 	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] > (T)(numeric_limits<T>::max()- lIn2[i]) ? numeric_limits<T>::max() : lIn1[i] + lIn2[i];
+		lOut[i] = lIn1[i] > (T)(ImDtTypes<T>::max()- lIn2[i]) ? ImDtTypes<T>::max() : lIn1[i] + lIn2[i];
 	}
     };
 
@@ -143,7 +151,7 @@ namespace smil
 	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
 	{
 	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] < (T)(numeric_limits<T>::min() + lIn2[i]) ? numeric_limits<T>::min() : lIn1[i] - lIn2[i];
+		lOut[i] = lIn1[i] < (T)(ImDtTypes<T>::min() + lIn2[i]) ? ImDtTypes<T>::min() : lIn1[i] - lIn2[i];
 	}
     };
 
@@ -184,7 +192,7 @@ namespace smil
     struct grtLine : public binaryLineFunctionBase<T>
     {
 	grtLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -200,7 +208,7 @@ namespace smil
     struct grtSupLine : public binaryLineFunctionBase<T>
     {
 	grtSupLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -211,12 +219,17 @@ namespace smil
 		lOut[i] |= lIn1[i] > lIn2[i] ? trueVal : falseVal;
 	}
     };
+    template <>
+    inline void grtSupLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented fot float");
+    }
 
     template <class T>
     struct grtOrEquLine : public binaryLineFunctionBase<T>
     {
 	grtOrEquLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -232,7 +245,7 @@ namespace smil
     struct grtOrEquSupLine : public binaryLineFunctionBase<T>
     {
 	grtOrEquSupLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -243,12 +256,17 @@ namespace smil
 		lOut[i] |= lIn1[i] >= lIn2[i] ? trueVal : falseVal;
 	}
     };
+    template <>
+    inline void grtOrEquSupLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
 
     template <class T>
     struct lowLine : public binaryLineFunctionBase<T>
     {
 	lowLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -264,7 +282,7 @@ namespace smil
     struct lowSupLine : public binaryLineFunctionBase<T>
     {
 	lowSupLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -275,12 +293,17 @@ namespace smil
 		lOut[i] |= lIn1[i] < lIn2[i] ? trueVal : falseVal;
 	}
     };
+    template <>
+    inline void lowSupLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
 
     template <class T>
     struct lowOrEquLine : public binaryLineFunctionBase<T>
     {
 	lowOrEquLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -296,7 +319,7 @@ namespace smil
     struct lowOrEquSupLine : public binaryLineFunctionBase<T>
     {
 	lowOrEquSupLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -307,12 +330,18 @@ namespace smil
 		lOut[i] |= lIn1[i] <= lIn2[i] ? trueVal : falseVal;
 	}
     };
+    template <>
+    inline void lowOrEquSupLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
 
+    
     template <class T>
     struct equLine : public binaryLineFunctionBase<T>
     {
 	equLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -328,7 +357,7 @@ namespace smil
     struct diffLine : public binaryLineFunctionBase<T>
     {
 	diffLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -344,7 +373,7 @@ namespace smil
     struct equSupLine : public binaryLineFunctionBase<T>
     {
 	equSupLine() 
-	  : trueVal(numeric_limits<T>::max()), falseVal(0) {}
+	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
 	  
 	T trueVal, falseVal;
 	  
@@ -355,6 +384,11 @@ namespace smil
 		lOut[i] |= lIn1[i] == lIn2[i] ? trueVal : falseVal;
 	}
     };
+    template <>
+    inline void equSupLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
 
 
     /*
@@ -382,7 +416,7 @@ namespace smil
 	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
 	{
 	    for (size_t i=0;i<size;i++)
-		lOut[i] = double(lIn1[i]) * double(lIn2[i]) > double(numeric_limits<T>::max()) ? numeric_limits<T>::max() : lIn1[i] * lIn2[i];
+		lOut[i] = double(lIn1[i]) * double(lIn2[i]) > double(ImDtTypes<T>::max()) ? ImDtTypes<T>::max() : lIn1[i] * lIn2[i];
 	}
     };
 
@@ -405,7 +439,7 @@ namespace smil
 	{
 	    for (size_t i=0;i<size;i++)
 	    {
-		lOut[i] = lIn2[i]==0 ? numeric_limits<T>::max() : lIn1[i] / lIn2[i];
+		lOut[i] = lIn2[i]==0 ? ImDtTypes<T>::max() : lIn1[i] / lIn2[i];
 	    }
 	}
     };
@@ -431,6 +465,11 @@ namespace smil
 		lOut[i] = (T)(lIn1[i] & lIn2[i]);
 	}
     };
+    template <>
+    inline void bitAndLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
 
     template <class T>
     struct logicOrLine : public binaryLineFunctionBase<T>
@@ -453,7 +492,12 @@ namespace smil
 		lOut[i] = (T)(lIn1[i] | lIn2[i]);
 	}
     };
-
+    template <>
+    inline void bitOrLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+    {
+	ERR_MSG("Not implemented for float");
+    }
+    
     template <class T>
     struct logicXOrLine : public binaryLineFunctionBase<T>
     {
@@ -475,13 +519,25 @@ namespace smil
 		lOut[i] = (T)(lIn1[i] ^ lIn2[i]);
 	}
     };
-
-
-    template <class T>
-    struct testLine : public tertiaryLineFunctionBase<T>
+    template <>
+    inline void bitXOrLine<float>::_exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
     {
-	typedef typename Image<T>::lineType lineType;
-	inline void _exec(lineType lIn1, lineType lIn2, lineType lIn3, size_t size, lineType lOut)
+	ERR_MSG("Not implemented for float");
+    }
+
+
+    template <class T1, class T2>
+    struct testLine : public tertiaryLineFunctionBase<T1>
+    {
+	typedef typename Image<T1>::lineType lineType1;
+	typedef typename Image<T2>::lineType lineType2;
+	
+	inline void operator()(lineType1 lIn1, lineType2 lIn2, lineType2 lIn3, size_t size, lineType2 lOut)
+	{
+	    return _exec(lIn1, lIn2, lIn3, size, lOut);
+	}
+	
+	inline void _exec(lineType1 lIn1, lineType2 lIn2, lineType2 lIn3, size_t size, lineType2 lOut)
 	{
 	    for (size_t i=0;i<size;i++)
 	    {

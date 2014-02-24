@@ -36,7 +36,6 @@
 #include "Base/include/private/DImageHistogram.hpp"
 #include "Morpho/include/private/DMorphoBase.hpp"
 
-
 namespace smil
 {
     /**
@@ -375,6 +374,8 @@ namespace smil
 
     /**
     * h-Reconstuction
+    * 
+    * Performs a subtraction of size \b height followed by a reconstruction
     */
     template <class T>
     RES_T hBuild(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
@@ -384,14 +385,39 @@ namespace smil
 	
 	if (&imIn==&imOut)
 	{
-	    Image<T> tmpIm = imIn;
-	    return hBuild(tmpIm, height, imOut, se);
+	    Image<T> tmp = imIn;
+	    return hBuild(tmp, height, imOut, se);
 	}
 	
 	ImageFreezer freeze(imOut);
 	
 	ASSERT((sub(imIn, T(height), imOut)==RES_OK));
 	ASSERT((build(imOut, imIn, imOut, se)==RES_OK));
+	
+	return RES_OK;
+    }
+
+    /**
+    * Dual h-Reconstuction
+    * 
+    * Performs an addition of size \b height followed by a dual reconstruction
+    */
+    template <class T>
+    RES_T hDualBuild(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	if (&imIn==&imOut)
+	{
+	    Image<T> tmp = imIn;
+	    return hDualBuild(tmp, height, imOut, se);
+	}
+	
+	ImageFreezer freeze(imOut);
+	
+	ASSERT((add(imIn, T(height), imOut)==RES_OK));
+	ASSERT((dualBuild(imOut, imIn, imOut, se)==RES_OK));
 	
 	return RES_OK;
     }
@@ -407,9 +433,9 @@ namespace smil
 	
 	ImageFreezer freeze(imOut);
 	
-	Image<T> tmpIm(imIn);
-	ASSERT((erode(imIn, tmpIm, se)==RES_OK));
-	ASSERT((build(tmpIm, imIn, imOut, se)==RES_OK));
+	Image<T> tmp(imIn);
+	ASSERT((erode(imIn, tmp, se)==RES_OK));
+	ASSERT((build(tmp, imIn, imOut, se)==RES_OK));
 	
 	return RES_OK;
     }
@@ -425,9 +451,9 @@ namespace smil
 	
 	ImageFreezer freeze(imOut);
 	
-	Image<T> tmpIm(imIn);
-	ASSERT((dilate(imIn, tmpIm, se)==RES_OK));
-	ASSERT((dualBuild(tmpIm, imIn, imOut, se)==RES_OK));
+	Image<T> tmp(imIn);
+	ASSERT((dilate(imIn, tmp, se)==RES_OK));
+	ASSERT((dualBuild(tmp, imIn, imOut, se)==RES_OK));
 	
 	return RES_OK;
     }
@@ -443,11 +469,11 @@ namespace smil
 	
 	ImageFreezer freeze(imOut);
 	
-	Image<T> tmpIm(imIn);
+	Image<T> tmp(imIn);
 	
-	ASSERT((fill(tmpIm, numeric_limits<T>::max())==RES_OK));
-	ASSERT((drawRectangle(tmpIm, 0, 0, tmpIm.getWidth(), tmpIm.getHeight(), ImDtTypes<T>::min())==RES_OK));
-	ASSERT((dualBuild(tmpIm, imIn, imOut, se)==RES_OK));
+	ASSERT((fill(tmp, numeric_limits<T>::max())==RES_OK));
+	ASSERT((drawRectangle(tmp, 0, 0, tmp.getWidth(), tmp.getHeight(), ImDtTypes<T>::min())==RES_OK));
+	ASSERT((dualBuild(tmp, imIn, imOut, se)==RES_OK));
 	
 	return RES_OK;
     }
@@ -463,40 +489,123 @@ namespace smil
 	
 	ImageFreezer freeze(imOut);
 	
-	Image<T> tmpIm(imIn);
-	ASSERT((inv(imIn, tmpIm)==RES_OK));
-	ASSERT((fillHoles(tmpIm, imOut, se)==RES_OK));
+	Image<T> tmp(imIn);
+	ASSERT((inv(imIn, tmp)==RES_OK));
+	ASSERT((fillHoles(tmp, imOut, se)==RES_OK));
 	ASSERT((inv(imOut, imOut)==RES_OK));
 	
     //     return res;
 	return RES_OK;
     }
 
+#ifndef SWIG
+    struct _coor {
+        public:
+        size_t x,y,z;
+        _coor (size_t _x, size_t _y, size_t _z) : x(_x), y(_y), z(_z) {
+        }
+        
+    } ;
+
+#endif
+
+    // Multi-source label-correcting algorithm for ALSP problem.
+    template <class T>
+    RES_T dist(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE) 
+    {
+    	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freeze(imOut);
+
+        Image<T> tmp(imIn);
+        Image<T> tmp2(imIn);
+
+        // Set image to 1 when pixels are !=0
+        ASSERT((inf(imIn, T(255), tmp)==RES_OK));
+
+        ASSERT(copy(tmp, imOut)==RES_OK);
+
+        // Demi-Gradient to remove sources inside cluster of sources.
+        ASSERT(dilate (tmp, tmp2, se)==RES_OK); 
+        ASSERT(inv(tmp2, tmp2)==RES_OK);
+        ASSERT(add(tmp, tmp2, tmp)==RES_OK);
+
+        queue<_coor*> *level = new queue<_coor*>();
+        queue<_coor*> *next_level = new queue<_coor*>();
+        queue<_coor*> *swap ;
+        size_t cur_level=0;
+
+        size_t size[3];
+        imIn.getSize (size) ;
+
+        size_t i=0,j=0,k=0;
+        for (k=0; k<size[2]; ++k){
+            for (j=0; j<size[1]; ++j){
+                for (i=0; i<size[0]; ++i) {
+                    if (tmp.getPixel(i,j,k)==T(0)) {
+                        level->push (new _coor(i,j,k));
+                    }   
+                }
+            }
+        }
+
+        _coor* cur = NULL;
+
+        vector<IntPoint> sePoints = se.points;
+        vector<IntPoint>::iterator pt ;
+
+#define IN_BOUND(x,y,z) x>=0 && x<size[0] && y>=0 && y<size[1] && z>=0 && z<size[2]
+
+
+        while (!level->empty ()) {
+
+            ++cur_level;
+            do {
+                cur = level->front();
+                pt = sePoints.begin();
+                while (pt!=sePoints.end()) {
+                    if (    IN_BOUND (cur->x+pt->x, cur->y+pt->y, cur->z+pt->z) && 
+                            imOut.getPixel (cur->x+pt->x, cur->y+pt->y, cur->z+pt->z) > T(cur_level))
+                    {
+                        imOut.setPixel (cur->x+pt->x, cur->y+pt->y, cur->z+pt->z, T(cur_level)); 
+                        next_level->push (new _coor(cur->x+pt->x, cur->y+pt->y, cur->z+pt->z));
+                    }
+                    ++pt;
+                }
+                level->pop();
+            } while (!level->empty()) ;
+
+            swap = level;
+            level = next_level;
+            next_level = swap;
+        } 
+    }
 
     /**
     * Ugly temporary distance function
     */
     template <class T>
-    RES_T dist(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T dist_v0(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
 	ImageFreezer freeze(imOut);
 	
-	Image<T> tmpIm(imIn);
+	Image<T> tmp(imIn);
 	
 	// Set image to 1 when pixels are !=0
-	ASSERT((inf(imIn, T(1), tmpIm)==RES_OK));
+	ASSERT((inf(imIn, T(1), tmp)==RES_OK));
 	
-	ASSERT((copy(tmpIm, imOut)==RES_OK));
+	ASSERT((copy(tmp, imOut)==RES_OK));
 	
 	do
 	{
-	    ASSERT((erode(tmpIm, tmpIm, se)==RES_OK));
-	    ASSERT((add(tmpIm, imOut, imOut)==RES_OK));
+	    ASSERT((erode(tmp, tmp, se)==RES_OK));
+	    ASSERT((add(tmp, imOut, imOut)==RES_OK));
 	    
-	} while (vol(tmpIm)!=0);
+	} while (vol(tmp)!=0);
 
 	return RES_OK;
     }

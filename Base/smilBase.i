@@ -46,7 +46,7 @@ SMIL_MODULE(smilBase)
 #include "DBaseMeasureOperations.hpp"
 #include "DMeasures.hpp"
 #include "DImageMatrix.hpp"
-#include "DLabelMeasures.hpp"
+#include "DBlobMeasures.hpp"
 
 #include <stdexcept>
 
@@ -105,8 +105,8 @@ TEMPLATE_WRAP_FUNC(logicXOr);
 TEMPLATE_WRAP_FUNC(bitAnd);
 TEMPLATE_WRAP_FUNC(bitOr);
 TEMPLATE_WRAP_FUNC(bitXOr);
-TEMPLATE_WRAP_FUNC(test);
-TEMPLATE_WRAP_FUNC(compare);
+TEMPLATE_WRAP_FUNC_2T_CROSS(test);
+TEMPLATE_WRAP_FUNC_2T_CROSS(compare);
 TEMPLATE_WRAP_FUNC(mask);
 TEMPLATE_WRAP_FUNC_2T_CROSS(applyLookup);
 
@@ -165,10 +165,12 @@ TEMPLATE_WRAP_FUNC(minVal);
 TEMPLATE_WRAP_FUNC(maxVal);
 TEMPLATE_WRAP_FUNC(rangeVal);
 TEMPLATE_WRAP_FUNC(valueList);
+TEMPLATE_WRAP_FUNC(profile);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
 TEMPLATE_WRAP_FUNC(measInertiaMatrix);
 TEMPLATE_WRAP_FUNC(measCovariance);
+TEMPLATE_WRAP_FUNC(measCenteredCovariance);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 
 # Suppl. Types
@@ -183,7 +185,7 @@ TEMPLATE_WRAP_SUPPL_FUNC(rangeVal);
 
 
 
-%include "DLabelMeasures.hpp"
+%include "DBlobMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);
 TEMPLATE_WRAP_FUNC(measMinVals);
 TEMPLATE_WRAP_FUNC(measMaxVals);

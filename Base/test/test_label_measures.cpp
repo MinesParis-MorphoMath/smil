@@ -23,7 +23,7 @@
 
 #include "DImage.h"
 #include "DBase.h"
-#include "DLabelMeasures.hpp"
+#include "DBlobMeasures.hpp"
 #include "DBench.h"
 #include "DTest.h"
 #include "DMeasures.hpp"

@@ -96,8 +96,8 @@ ALIASES += ws_exec_demo_link{2}="<a href=\ws_exec_demo{\1}>\2</a>"
 ALIASES += ws_demo{1}="\xrefitem ws_demos \"Run demo\" \"Demos\" \ws_exec_demo_link{\1}"
 
 #ALIASES += demo{1}="<a href=\ws_exec_demo{\1}><b>Execute script online</b></a>"
-#ALIASES += demo{1}="\xrefitem examples \"Examples\" \"Examples\"  \ref \1 \"\1\" \t \ws_exec_demo_link{\1,execute online}"
-ALIASES += demo{1}="\xrefitem examples \"Examples\" \"Examples\" \ref \1 \"\1\" \t \ws_exec_demo_button{\1}"
+#ALIASES += demo{1}="\xrefitem examples \"Examples\" \"Examples\"  \ref \1 \"\1\" \ws_exec_demo_link{\1,execute online}"
+ALIASES += demo{1}="\xrefitem examples \"Examples\" \"Examples\" \ref \1 \"\1\" \ws_exec_demo_button{\1}"
 
 
 ########################################################
