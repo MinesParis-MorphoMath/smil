@@ -71,7 +71,7 @@ namespace smil
 	histogram<T>(imIn, buf);
 	
 	map<T, UINT> h;
-	for (size_t i=ImDtTypes<T>::min();i<ImDtTypes<T>::max();i++)
+	for (size_t i=ImDtTypes<T>::min();i<=ImDtTypes<T>::max();i++)
 	    h.insert(pair<T,UINT>(i, buf[i]));
 	
 	delete[] buf;
