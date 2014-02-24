@@ -46,27 +46,6 @@ namespace smil
     * \{
     */
 
-    /**
-    * Image histogram
-    */
-    template <class T>
-    std::map<T, UINT> histogram(const Image<T> &imIn)
-    {
-	map<T, UINT> h;
-	for (T i=ImDtTypes<T>::min();;i++)
-	{
-	    h.insert(pair<T,UINT>(i, 0));
-	    if (i==ImDtTypes<T>::max())
-	      break;
-	}
-
-	typename Image<T>::lineType pixels = imIn.getPixels();
-	for (size_t i=0;i<imIn.getPixelCount();i++)
-	    h[pixels[i]]++;
-	
-	return h;
-    }
-
 #ifndef SWIG
     template <class T>
     RES_T histogram(const Image<T> &imIn, size_t *h)
@@ -81,6 +60,25 @@ namespace smil
 	return RES_OK;
     }
 #endif // SWIG
+
+    /**
+    * Image histogram
+    */
+    template <class T>
+    std::map<T, UINT> histogram(const Image<T> &imIn)
+    {
+	size_t *buf = new size_t[ImDtTypes<T>::cardinal()];
+	histogram<T>(imIn, buf);
+	
+	map<T, UINT> h;
+	for (size_t i=ImDtTypes<T>::min();i<ImDtTypes<T>::max();i++)
+	    h.insert(pair<T,UINT>(i, buf[i]));
+	
+	delete[] buf;
+	
+	return h;
+    }
+
 
     /**
     * Image histogram with a mask image.

@@ -35,7 +35,8 @@ using namespace smil;
 
 class Test_Distance : public TestCase
 {
-    virtual void run () {
+    virtual void run () 
+    {
         Image_UINT8 im1(40, 40);
         Image_UINT8 im2(im1);
         Image_UINT8 im3(im1);
@@ -48,8 +49,7 @@ class Test_Distance : public TestCase
         dist (im1, im3, CrossSE());
 
         UINT BENCH_NRUNS = 1E2;
-        dist_v2 (im1, im2, CrossSE ());
-    //    BENCH_IMG(dist_v2, im1, im2, CrossSE());
+        BENCH_IMG(dist, im1, im2, CrossSE());
         TEST_ASSERT (im2==im3);
 
         if (retVal != RES_OK)

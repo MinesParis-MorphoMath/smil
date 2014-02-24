@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
     Image_UINT8::lineType pixels = im.getPixels();
     
     randFill(im);
+    BENCH_IMG(histogram, im);
     BENCH_IMG(area, im);
     
     
