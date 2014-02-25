@@ -51,7 +51,7 @@ ELSE(WIN32)
       ELSE(CMAKE_CROSSCOMPILING)
 	    IF(EXISTS "/etc/lsb-release")
 		    SET(DEFAULT_GENERATOR DEB)
-	    ELSEIF(EXISTS "/etc/lsb-release")
+	    ELSEIF(EXISTS "/etc/redhat-release")
 		    SET(DEFAULT_GENERATOR RPM)
 	    ENDIF(EXISTS "/etc/lsb-release")
 	    
@@ -136,7 +136,6 @@ ENDIF(CPACK_GENERATOR MATCHES "NSIS")
 
 
 
-      
 #### DEB ####
 IF(CPACK_GENERATOR MATCHES "DEB")
 
@@ -180,6 +179,21 @@ ENDIF(CPACK_GENERATOR MATCHES "DEB")
 
 
 #### RPM ####
+
+IF(CPACK_GENERATOR MATCHES "RPM")
+
+      SET(LIB_DEPS)
+      IF(USE_QT)
+	    SET(LIB_DEPS "${LIB_DEPS}, qt >= ${QT_VERSION_MAJOR}.${QT_VERSION_MINOR}")
+	    IF(USE_QWT)
+		  SET(LIB_DEPS "${LIB_DEPS}, qwt")
+	    ENDIF(USE_QWT)
+      ENDIF(USE_QT)
+
+      SET(CPACK_RPM_PACKAGE_REQUIRES ${LIB_DEPS})
+      
+ENDIF(CPACK_GENERATOR MATCHES "RPM")      
+
 
 
 #### TGZ ####
