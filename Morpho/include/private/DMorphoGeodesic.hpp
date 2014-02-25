@@ -511,7 +511,7 @@ namespace smil
 
     // Multi-source label-correcting algorithm for ALSP problem.
     template <class T>
-    RES_T dist_v2 (const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE) 
+    RES_T dist(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE) 
     {
     	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -591,7 +591,7 @@ namespace smil
     * Ugly temporary distance function
     */
     template <class T>
-    RES_T dist(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T dist_v0(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
