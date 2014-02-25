@@ -98,7 +98,6 @@ namespace smil
     /**
     * Draw a rectangle
     * 
-    * 
     * \param imOut Output image.
     */
     template <class T>
@@ -177,6 +176,53 @@ namespace smil
 	return RES_OK;
     }
 
+
+    /**
+    * Draw a sphere
+    * 
+    * \param imOut Output image.
+    */
+    template <class T>
+    RES_T drawSphere(Image<T> &imOut, int x0, int y0, int z0, int radius, T value=ImDtTypes<T>::max())
+    {
+	ASSERT_ALLOCATED(&imOut);
+
+	ImageFreezer freeze(imOut);
+	
+	int imW = imOut.getWidth();
+	int imH = imOut.getHeight();
+	int imD = imOut.getDepth();
+	
+	int x1 = MAX(x0-radius, 0);
+	int y1 = MAX(y0-radius, 0);
+	int z1 = MAX(z0-radius, 0);
+	
+	int x2 = MIN(x0+radius, imW-1);
+	int y2 = MIN(y0+radius, imH-1);
+	int z2 = MIN(z0+radius, imD-1);
+	
+	int r2 = radius*radius;
+	
+	
+	typename Image<T>::volType slices = imOut.getSlices();
+	typename Image<T>::sliceType lines;
+	typename Image<T>::lineType curLine;
+	
+	for (int z=z1;z<=z2;z++)
+	{
+	    lines = slices[z];
+	    for (int y=y1;y<=y2;y++)
+	    {
+		curLine = lines[y];
+		for (int x=x1;x<=x2;x++)
+		  if ((x-x0)*(x-x0)+(y-y0)*(y-y0)+(z-z0)*(z-z0)<=r2)
+		    curLine[x] = value;
+	    }
+	    
+	}
+	
+	return RES_OK;
+    }
 
     /**
     * Draw a box (3D)
