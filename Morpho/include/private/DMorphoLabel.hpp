@@ -211,7 +211,117 @@ namespace smil
       set<pair<size_t, size_t> > pairs;
     };
 
+    template <class T1, class T2>
+    class labelFunct_v2 : public unaryMorphImageFunctionBase<T1, T2>
+    {
+    public:
+	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
+	typedef typename parentClass::imageInType imageInType;
+	typedef typename parentClass::imageOutType imageOutType;
+	
+	size_t getLabelNbr() { return sets.size () ; }
+	
+	virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+	{
+	    parentClass::initialize(imIn, imOut, se);
+	    fill(imOut, T2(0));
+            labels = 0;
+            size_t size[3];
+            imIn.getSize (size);
+
+            attribution = new list<size_t>*[size[2]*size[1]*size[0]];
+            for (size_t k=0; k<size[2];++k) 
+                for (size_t j=0; j<size[1]; ++j) 
+                    for (size_t i=0; i<size[0]; ++i)
+                        attribution[i+j*size[0]+k*size[0]*size[1]] = NULL; 
+	    return RES_OK;
+
+        }
+	
+	// The generic way
+	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+	{
+	    T1 pVal = this->pixelsIn[pointOffset];
+	    
+	    if (pVal==0)
+	      return;
+
+            queue <list<size_t>*> candidates;
+            list <size_t> *l;
+
+            // Populating canditates;
+            while (dOffset != dOffsetEnd) {
+                 size_t curDOffset = pointOffset + *dOffset; 
+                 if (this->pixelsIn[curDOffset] == pVal && attribution[curDOffset] != NULL) {
+                        candidates.push (attribution[curDOffset]);
+                 }
+                 dOffset++;
+            }
+
+            if (candidates.size()==0) {
+                l = new list<size_t> ();
+                l->push_back (pointOffset) ;
+                sets.push (l);
+                attribution[pointOffset] = l;
+            }
+            else {
+                while (candidates.size()!=1) {
+                    candidates.back()->splice (candidates.back()->begin(),*(candidates.front()));
+                    candidates.pop(); 
+                }
+                attribution[pointOffset] = candidates.back();
+                candidates.back()->push_back (pointOffset) ;
+                candidates.pop () ;
+            }
+	}
+
+	virtual RES_T finalize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+	{
+            list <size_t>::iterator it;
+
+            while (!sets.empty()) {
+                if (sets.front() != NULL && sets.front()->size() > 0) {
+                    for (it =  sets.front()->begin(); it != sets.front()->end (); ++it) {
+                        imOut.setPixel (*it, labels+1);
+                    }
+                    delete sets.front();
+                    ++labels;
+                }
+                sets.pop();
+            }
+        }
+
+    protected:
+        size_t labels;
+        queue< list <size_t>* > sets;
+        list<size_t>** attribution;
+    };
+
+
+
     /**
+    * Image labelization
+    * 
+    * Return the number of labels (or 0 if error).
+    */
+    template<class T1, class T2>
+    size_t label_v2(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	labelFunct_v2<T1,T2> f;
+	
+	ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
+	
+	size_t lblNbr = f.getLabelNbr();
+	
+	ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+	
+	return lblNbr;
+    }
+
+   /**
     * Image labelization
     * 
     * Return the number of labels (or 0 if error).
@@ -232,6 +342,7 @@ namespace smil
 	
 	return lblNbr;
     }
+
 
     /**
     * Image labelization with the size of each connected components
@@ -256,6 +367,29 @@ namespace smil
 	return RES_OK;
     }
     
+    /**
+    * Image labelization with the size of each connected components
+    * 
+    */
+    template<class T1, class T2>
+    size_t labelWithArea_v2(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freezer(imOut);
+	
+	Image<T2> imLabel(imIn);
+	
+	ASSERT(label_v2(imIn, imLabel, se)!=0);
+ 	map<UINT, double> areas = measAreas(imLabel);
+	ASSERT(!areas.empty());
+	
+	ASSERT(applyLookup<T2>(imLabel, areas, imOut)==RES_OK);
+	
+	return RES_OK;
+    }
+
     /**
     * Area opening
     * 

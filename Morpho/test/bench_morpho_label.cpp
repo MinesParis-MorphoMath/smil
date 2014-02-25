@@ -46,6 +46,6 @@ int main(int argc, char *argv[])
     
     UINT BENCH_NRUNS = 1E2;
     BENCH_IMG(label, im1, im2, CrossSE());
-        
+    BENCH_IMG(label_v2, im1, im2, CrossSE());
 }
 
