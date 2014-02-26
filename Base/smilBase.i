@@ -43,6 +43,7 @@ SMIL_MODULE(smilBase)
 #include "DImageDraw.hpp"
 #include "DImageHistogram.hpp"
 #include "DImageTransform.hpp"
+#include "DImageConvolution.hpp"
 #include "DBaseMeasureOperations.hpp"
 #include "DMeasures.hpp"
 #include "DImageMatrix.hpp"
@@ -123,6 +124,9 @@ TEMPLATE_WRAP_FUNC(enhanceContrast);
 TEMPLATE_WRAP_FUNC(otsuThresholdValues);
 TEMPLATE_WRAP_FUNC(otsuThreshold);
 
+
+%include "DImageConvolution.hpp"
+TEMPLATE_WRAP_FUNC(gaussianFilter);
 
 TEMPLATE_WRAP_FUNC(drawLine);
 TEMPLATE_WRAP_FUNC(drawRectangle);
