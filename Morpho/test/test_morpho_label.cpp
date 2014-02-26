@@ -145,11 +145,8 @@ class Test_LabelWithArea_v2 : public TestCase
       
       im1 << vec1;
 
-       labelWithArea_v2(im1, im2, sSE());
+      labelWithArea_v2(im1, im2, sSE());
       
-//       im2.printSelf(1);
-//       im2.show();
-//       Gui::execLoop();
       dataType vec3[] = {
 	0,     0,     0,     0,     0,     0,     8,
 	0,     0,     0,     0,     8,     8,     8,
