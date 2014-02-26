@@ -219,25 +219,20 @@ namespace smil
 	typedef typename parentClass::imageInType imageInType;
 	typedef typename parentClass::imageOutType imageOutType;
 	
-	size_t getLabelNbr() { return sets.size () ; }
-	
+	size_t getLabelNbr() { return labels ; }
+
 	virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
 	{
 	    parentClass::initialize(imIn, imOut, se);
 	    fill(imOut, T2(0));
             labels = 0;
-            size_t size[3];
-            imIn.getSize (size);
+            groups = 1;
 
-            attribution = new list<size_t>*[size[2]*size[1]*size[0]];
-            for (size_t k=0; k<size[2];++k) 
-                for (size_t j=0; j<size[1]; ++j) 
-                    for (size_t i=0; i<size[0]; ++i)
-                        attribution[i+j*size[0]+k*size[0]*size[1]] = NULL; 
 	    return RES_OK;
 
         }
-	
+
+ 	
 	// The generic way
 	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
 	{
@@ -246,55 +241,76 @@ namespace smil
 	    if (pVal==0)
 	      return;
 
-            queue <list<size_t>*> candidates;
-            list <size_t> *l;
+            vector <UINT> candidates;
 
             // Populating canditates;
             while (dOffset != dOffsetEnd) {
                  size_t curDOffset = pointOffset + *dOffset; 
-                 if (this->pixelsIn[curDOffset] == pVal && attribution[curDOffset] != NULL) {
-                        candidates.push (attribution[curDOffset]);
+                 if (this->pixelsIn[curDOffset] == pVal && this->pixelsOut[curDOffset] != 0) {
+                        candidates.push_back (this->pixelsOut[curDOffset]);
                  }
-                 dOffset++;
+                 ++dOffset;
             }
 
-            if (candidates.size()==0) {
-                l = new list<size_t> ();
-                l->push_back (pointOffset) ;
-                sets.push (l);
-                attribution[pointOffset] = l;
+            UINT labelTmp ;
+
+            // No label assigned around the current pixel.
+            if (candidates.size() == 0) {
+                this->pixelsOut[pointOffset] = T2(groups);
+                label_equivalence[groups] = groups;
+                ++groups;
             }
             else {
-                while (candidates.size()!=1) {
-                    candidates.back()->splice (candidates.back()->begin(),*(candidates.front()));
-                    candidates.pop(); 
+                labelTmp = candidates[0];
+                if (candidates.size() > 1) {
+                    // Keeping the smallest label.
+                    for (vector<UINT>::iterator it=candidates.begin(); it!=candidates.end(); ++it) {
+                        if (candidates[*it] < labelTmp)
+                            labelTmp = *it;
+                    }    
+                    for (vector<UINT>::iterator it=candidates.begin(); it!=candidates.end(); ++it) {
+                        label_equivalence[*it] = labelTmp;
+                    }
                 }
-                attribution[pointOffset] = candidates.back();
-                candidates.back()->push_back (pointOffset) ;
-                candidates.pop () ;
+
+                // Associating the current pixel to the label.
+                this->pixelsOut[pointOffset] = labelTmp;
             }
 	}
 
 	virtual RES_T finalize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
 	{
-            list <size_t>::iterator it;
-
-            while (!sets.empty()) {
-                if (sets.front() != NULL && sets.front()->size() > 0) {
-                    for (it =  sets.front()->begin(); it != sets.front()->end (); ++it) {
-                        imOut.setPixel (*it, labels+1);
-                    }
-                    delete sets.front();
+            // Normalize label_equivalence.
+            map<UINT, UINT> normalized_labels;
+            UINT current_label = label_equivalence.end()->second;
+            for (map<UINT,UINT>::iterator it=label_equivalence.begin(); it!=label_equivalence.end();++it){
+                if (it->second != current_label) {
                     ++labels;
+                    current_label = it->second;
                 }
-                sets.pop();
+                normalized_labels[it->first] = labels;
+
+            }
+            ++labels;
+            // Processing the output.
+            UINT i=0;
+            size_t size[3];
+            imOut.getSize (size) ;
+            for (size_t z=0; z<size[2]; ++z) {
+                for (size_t y=0; y<size[1]; ++y) {
+                    for (size_t x=0; x<size[0]; ++x) {
+                        if (this->pixelsIn[x+y*size[0]+z*size[0]*size[1]] != 0) {
+                            this->pixelsOut[x+y*size[0]+z*size[0]*size[1]] = T2(normalized_labels[this->pixelsOut[x+y*size[0]+z*size[0]*size[1]]]);
+                        }
+                    }
+                }
             }
         }
 
     protected:
-        size_t labels;
-        queue< list <size_t>* > sets;
-        list<size_t>** attribution;
+        UINT labels;
+        UINT groups;
+        map<UINT, UINT> label_equivalence ;
     };
 
 
