@@ -31,6 +31,7 @@
 #define _D_IMAGE_CONVOLUTION_HPP
 
 #include "DLineArith.hpp"
+#include <DBufferPool.hpp>
 
 
 namespace smil
@@ -47,7 +48,7 @@ namespace smil
     // Horizontal convolution
     // Inplace safe
     template <class T>
-    RES_T horizConvolve(const Image<T> &imIn, const float *kernel, int kernelRadius, Image<T> &imOut)
+    RES_T horizConvolve(const Image<T> &imIn, const vector<float> &kernel, Image<T> &imOut)
     {
 	CHECK_ALLOCATED(&imIn, &imOut);
 	CHECK_SAME_SIZE(&imIn, &imOut);
@@ -59,15 +60,28 @@ namespace smil
 	typename ImDtTypes<T>::lineType lOut;
 	
 	int imW = imIn.getWidth();
+	int kernelRadius = (kernel.size()-1)/2;
 	int kLen = 2*kernelRadius+1;
 	
+	float partialKernWeights[kernelRadius];
+	float pkwSum = 0;
+	for (int i=0;i<kernelRadius;i++)
+	  pkwSum += kernel[i];
+	for (int i=0;i<kernelRadius;i++)
+	{
+	    pkwSum += kernel[i+kernelRadius];
+	    partialKernWeights[i] = pkwSum;
+	}
+	
+	typedef float bufType; // If float, loops are vectorized
+	BufferPool<bufType> bufferPool(imW);
+	  
 	#ifdef USE_OPEN_MP
 	      int nthreads = Core::getInstance()->getNumberOfThreads();
 	      #pragma omp parallel private(lOut) num_threads(nthreads)
 	#endif // USE_OPEN_MP
 	{	
-	    typedef float bufType; // If float, loops are vectorized
-	    typename ImDtTypes<bufType>::lineType lIn = ImDtTypes<bufType>::createLine(imW);
+	    typename ImDtTypes<bufType>::lineType lIn = bufferPool.getBuffer();
 	    float sum;
 	    
 	    #ifdef USE_OPEN_MP
@@ -79,17 +93,17 @@ namespace smil
 		lOut = linesOut[y];
 		
 		// left pixels
-		for (int x=0;x<kernelRadius+1;x++)
+		for (int x=0;x<kernelRadius;x++)
 		{
 		  sum = 0;
 		  for (int i=-x;i<=kernelRadius;i++)
 		      sum += kernel[i+kernelRadius]*lIn[x+i];
-		  lOut[x] = sum;
+		  lOut[x] = sum / partialKernWeights[x];
 		    
 		}
 		
 		// center pixels
-		for (int x=kernelRadius+1;x<imW-kernelRadius;x++)
+		for (int x=kernelRadius;x<imW-kernelRadius;x++)
 		{
 		  sum = 0;
 		  for (int i=-kernelRadius;i<=kernelRadius;i++)
@@ -103,18 +117,17 @@ namespace smil
 		  sum = 0;
 		  for (int i=-kernelRadius;i<imW-x;i++)
 		      sum += kernel[i+kernelRadius]*lIn[x+i];
-		  lOut[x] = sum;
+		  lOut[x] = sum / partialKernWeights[imW-1-x];
 		}
 	    }
 	    
-	    ImDtTypes<bufType>::deleteLine(lIn);
 	}
 	return RES_OK;
     }
     
     // Vertical convolution
     template <class T>
-    RES_T vertConvolve(const Image<T> &imIn, const float *kernel, int kernelRadius, Image<T> &imOut)
+    RES_T vertConvolve(const Image<T> &imIn, const vector<float> &kernel, Image<T> &imOut)
     {
 	CHECK_ALLOCATED(&imIn, &imOut);
 	CHECK_SAME_SIZE(&imIn, &imOut);
@@ -129,8 +142,22 @@ namespace smil
 	int imW = imIn.getWidth();
 	int imH = imIn.getHeight();
 	int imD = imIn.getDepth();
+	int kernelRadius = (kernel.size()-1)/2;
 	int kLen = 2*kernelRadius+1;
 	int nthreads = Core::getInstance()->getNumberOfThreads();
+	
+	float partialKernWeights[kernelRadius];
+	float pkwSum = 0;
+	for (int i=0;i<kernelRadius;i++)
+	  pkwSum += kernel[i];
+	for (int i=0;i<kernelRadius;i++)
+	{
+	    pkwSum += kernel[i+kernelRadius];
+	    partialKernWeights[i] = pkwSum;
+	}
+	  
+	typedef float bufType; // If float, loops are vectorized
+	BufferPool<bufType> bufferPool(imW);
 	
 	for (int z=0;z<imD;z++)
 	{
@@ -148,16 +175,16 @@ namespace smil
 		for (int x=0;x<imW;x++)
 		{
 		    // Top pixels
-		    for (int y=0;y<kernelRadius+1;y++)
+		    for (int y=0;y<kernelRadius;y++)
 		    {
 		      sum = 0;
 		      for (int i=-y;i<kernelRadius+1;i++)
 			sum += kernel[i+kernelRadius]*sIn[y+i][x];
-		      sOut[y][x] = sum;
+		      sOut[y][x] = sum / partialKernWeights[y];
 		    }
 		    
 		    // Center pixels
-		    for (int y=kernelRadius+1;y<imH-kernelRadius;y++)
+		    for (int y=kernelRadius;y<imH-kernelRadius;y++)
 		    {
 		      sum = 0;
 		      for (int i=-kernelRadius;i<=kernelRadius;i++)
@@ -171,7 +198,7 @@ namespace smil
 		      sum = 0;
 		      for (int i=-kernelRadius;i<imH-y;i++)
 			sum += kernel[i+kernelRadius]*sIn[y+i][x];
-		      sOut[y][x] = sum;
+		      sOut[y][x] = sum / partialKernWeights[imH-1-y];
 		    }
 		}
 	    }
@@ -181,20 +208,20 @@ namespace smil
     
     // Convolution in both directions using the same 1D kernel
     template <class T>
-    RES_T convolve(const Image<T> &imIn, const float *kernel, int kernelRadius, Image<T> &imOut)
+    RES_T convolve(const Image<T> &imIn, const vector<float> &kernel, Image<T> &imOut)
     {
 	if (&imIn==&imOut)
 	{
 	    Image<T> tmpIm(imIn, true); // clone
-	    return convolve(tmpIm, kernel, kernelRadius, imOut);
+	    return convolve(tmpIm, kernel, imOut);
 	}
 	
 	CHECK_ALLOCATED(&imIn, &imOut);
 	
 	ImageFreezer freeze(imOut);
 	
-	vertConvolve(imIn, kernel, kernelRadius, imOut);
-	horizConvolve(imOut, kernel, kernelRadius, imOut); // inplace safe
+	vertConvolve(imIn, kernel, imOut);
+	horizConvolve(imOut, kernel, imOut); // inplace safe
 	
 	return RES_OK;
     }
@@ -213,12 +240,12 @@ namespace smil
 	ImageFreezer freeze(imOut);
 	
 	int kernelSize = radius*2+1;
-	float *kernel = ImDtTypes<float>::createLine(kernelSize);
+	vector<float> kernel(kernelSize);
 	
 	float sigma = float(radius)/2.;
 	float sum = 0.;
 	
-	//  Determine kernelel coefficients
+	//  Determine kernel coefficients
 	for (int i=0;i<kernelSize;i++)
 	{
 	  kernel[i] = exp( -pow((float(i)-radius)/sigma, 2)/2. );
@@ -229,7 +256,7 @@ namespace smil
 	  kernel[i] /= sum;
 
 
-	return convolve(imIn, kernel, radius, imOut);
+	return convolve(imIn, kernel, imOut);
 	
     }
     

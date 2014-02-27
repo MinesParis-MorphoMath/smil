@@ -85,7 +85,7 @@ namespace smil
 	gettimeofday(&tv, 0);
 	srand(tv.tv_usec);
 	
-	double rangeT = ImDtTypes<T>::max() - ImDtTypes<T>::min();
+	double rangeT = ImDtTypes<T>::cardinal();
 	T minT = ImDtTypes<T>::min();
 	
 	for (size_t i=0;i<imOut.getPixelCount();i++)
