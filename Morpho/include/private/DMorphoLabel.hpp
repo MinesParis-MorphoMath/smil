@@ -274,16 +274,17 @@ namespace smil
 
                     // Backward scan.
                     for (int i=0; i<nbr_candidates; ++i) {
-                        if (this->pixelsOut[candidates[i]] != labelTmp)
+                        if (this->pixelsOut[candidates[i]] != labelTmp) {
                             this->pixelsOut[candidates[i]] = labelTmp;
                             propagation.push (candidates[i]);
+                        }
                     }
 
                     // Depth First Search: keep the queue the smallest possible.
                     while (!propagation.empty ()) {
-                        int z = propagation.back() / (this->imSize[1]*this->imSize[0]);
-                        int y = (propagation.back() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
-                        int x = propagation.back() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
+                        z = propagation.back() / (this->imSize[1]*this->imSize[0]);
+                        y = (propagation.back() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
+                        x = propagation.back() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
 
                         for (UINT i=0; i<this->sePointNbr; ++i) {
                              p = this->sePoints[i];
@@ -294,7 +295,7 @@ namespace smil
                                  this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] != labelTmp)
                              {
                                  this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] = labelTmp;
-                                 propagation.push (x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]);  
+                                 propagation.push (x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]);
                              }
                         }
                         propagation.pop();
