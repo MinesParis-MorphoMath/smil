@@ -372,7 +372,7 @@ namespace smil
     * Return the number of labels (or 0 if error).
     */
     template<class T1, class T2>
-    size_t label_v2(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -394,7 +394,7 @@ namespace smil
     * Return the number of labels (or 0 if error).
     */
     template<class T1, class T2>
-    size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t label_v0(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -416,7 +416,7 @@ namespace smil
     * 
     */
     template<class T1, class T2>
-    size_t labelWithArea(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t labelWithArea_v0(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -425,7 +425,7 @@ namespace smil
 	
 	Image<T2> imLabel(imIn);
 	
-	ASSERT(label(imIn, imLabel, se)!=0);
+	ASSERT(label_v0(imIn, imLabel, se)!=0);
  	map<UINT, double> areas = measAreas(imLabel);
 	ASSERT(!areas.empty());
 	
@@ -439,7 +439,7 @@ namespace smil
     * 
     */
     template<class T1, class T2>
-    size_t labelWithArea_v2(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t labelWithArea(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -448,7 +448,7 @@ namespace smil
 	
 	Image<T2> imLabel(imIn);
 	
-	ASSERT(label_v2(imIn, imLabel, se)!=0);
+	ASSERT(label(imIn, imLabel, se)!=0);
  	map<UINT, double> areas = measAreas(imLabel);
 	ASSERT(!areas.empty());
 	
