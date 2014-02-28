@@ -498,82 +498,78 @@ namespace smil
 	return RES_OK;
     }
 
-#ifndef SWIG
-    struct _coor {
-        public:
-        size_t x,y,z;
-        _coor (size_t _x, size_t _y, size_t _z) : x(_x), y(_y), z(_z) {
-        }
-        
-    } ;
-
-#endif
-
     // Multi-source label-correcting algorithm for ALSP problem.
-    template <class T>
-    RES_T dist(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE) 
+    template <class T1, class T2>
+    RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
     {
     	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
+
 	ImageFreezer freeze(imOut);
 
-        Image<T> tmpIm(imIn);
-        Image<T> tmp2Im(imIn);
+        typedef Image<T1> imageInType;
+        typedef typename imageInType::lineType lineInType;
+        typedef Image<T2> imageOutType;
+        typedef typename imageOutType::lineType lineOutType;
+
+        lineInType pixelsIn ;
+        lineOutType pixelsOut = imOut.getPixels () ; 
+
+        Image<T1> tmp(imIn);
+        Image<T1> tmp2(imIn);
 
         // Set image to 1 when pixels are !=0
-        ASSERT((inf(imIn, T(1), tmpIm)==RES_OK));
+        ASSERT((inf(imIn, T1(255), tmp)==RES_OK));
 
-        ASSERT(copy(tmpIm, imOut)==RES_OK);
+
+        ASSERT(copy(tmp, imOut)==RES_OK);
 
         // Demi-Gradient to remove sources inside cluster of sources.
-        ASSERT(dilate (tmpIm, tmp2Im, se)==RES_OK); 
-        ASSERT(inv(tmp2Im, tmp2Im)==RES_OK);
-        ASSERT(add(tmpIm, tmp2Im, tmpIm)==RES_OK);
+        ASSERT(dilate (tmp, tmp2, se)==RES_OK); 
+        ASSERT(inv(tmp2, tmp2)==RES_OK);
+        ASSERT(add(tmp, tmp2, tmp)==RES_OK);
 
-//         tmpIm.printSelf (true);
-
-        queue<_coor*> *level = new queue<_coor*>();
-        queue<_coor*> *next_level = new queue<_coor*>();
-        queue<_coor*> *swap ;
-        size_t cur_level=0;
+        queue<size_t> *level = new queue<size_t>();
+        queue<size_t> *next_level = new queue<size_t>();
+        queue<size_t> *swap ;
+        T2 cur_level=T2(0);
 
         size_t size[3];
         imIn.getSize (size) ;
 
-//         cout << "size : " << size[0] << ", " << size[1] << ", " << size[2] << ";  " << area (tmpIm) << endl;
+        pixelsIn = tmp.getPixels ();
 
-        size_t i=0,j=0,k=0;
-        for (k=0; k<size[2]; ++k){
-            for (j=0; j<size[1]; ++j){
-                for (i=0; i<size[0]; ++i) {
-                    if (tmpIm.getPixel(i,j,k)==T(0)) {
-                        level->push (new _coor(i,j,k));
-                    }   
-                }
-            }
+        size_t i=0;
+        
+        for (i=0; i<size[2]*size[1]*size[0]; ++i)
+        {
+            if (pixelsIn[i] == T2(0))
+                level->push (i);
         }
 
-        _coor* cur = NULL;
+        size_t cur;
+        int x,y,z;
 
         vector<IntPoint> sePoints = se.points;
         vector<IntPoint>::iterator pt ;
 
-#define IN_BOUND(x,y,z) x>0 && x<size[0] && y>0 && y<size[1] && z>0 && z<size[2]
-
-
         do {
-
-//             cout << "Number of pixel at level " << cur_level << " : " << level->size() << endl;
             while (!level->empty()) {
                 cur = level->front();
                 pt = sePoints.begin();
+
+                z = cur / (size[1] * size[0]);
+                y = (cur - z * size[1] * size[0]) / size[0];
+                x = cur - y *size[0] - z * size[1] * size[0];
+
                 while (pt!=sePoints.end()) {
-                    if (    IN_BOUND (cur->x+pt->x, cur->y+pt->y, cur->z+pt->z) && 
-                            imOut.getPixel (cur->x+pt->x, cur->y+pt->y, cur->z+pt->z) > T(cur_level))
+                    if (    x+pt->x >= 0 && x+pt->x < size[0] &&
+                            y+pt->y >= 0 && y+pt->y < size[1] &&
+                            z+pt->z >= 0 && z+pt->z < size[2] && 
+                            pixelsOut [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] > T2(cur_level))
                     {
-                        imOut.setPixel (cur->x+pt->x, cur->y+pt->y, cur->z+pt->z, T(cur_level)); 
-                        next_level->push (new _coor(cur->x+pt->x, cur->y+pt->y, cur->z+pt->z));
+                        pixelsOut [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] = T2(cur_level); 
+                        next_level->push (x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]);
                     }
                     ++pt;
                 }
