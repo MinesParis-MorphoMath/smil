@@ -105,36 +105,22 @@ namespace smil
       {
 	vector<bufferType> buffVect;
 	
-	#ifdef USE_OPEN_MP
-	  #pragma omp critical
-	#endif // USE_OPEN_MP
-	{
-	    for (int i=0;i<nbr;i++)
-	      buffVect.push_back(this->getBuffer());
-	}
+	for (int i=0;i<nbr;i++)
+	  buffVect.push_back(this->getBuffer());
+
 	return buffVect;
       }
       
       void releaseBuffer(bufferType &buf)
       {
-	  #ifdef USE_OPEN_MP
-	    #pragma omp critical
-	  #endif // USE_OPEN_MP
-	  {
-	      availableBuffers.push(buf);
-	      buf = NULL;
-	  }
+	  availableBuffers.push(buf);
+	  buf = NULL;
       }
       void releaseBuffers(vector<bufferType> &bufs)
       {
-	  #ifdef USE_OPEN_MP
-	    #pragma omp critical
-	  #endif // USE_OPEN_MP
-	  {
-	      for (int i=0;i<bufs.size();i++)
-		availableBuffers.push(bufs[i]);
-	      bufs.clear();
-	  }
+	  for (int i=0;i<bufs.size();i++)
+	    availableBuffers.push(bufs[i]);
+	  bufs.clear();
       }
       void releaseAllBuffers()
       {

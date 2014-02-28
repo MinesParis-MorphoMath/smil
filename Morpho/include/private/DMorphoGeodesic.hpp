@@ -531,7 +531,7 @@ namespace smil
         ASSERT(inv(tmp2Im, tmp2Im)==RES_OK);
         ASSERT(add(tmpIm, tmp2Im, tmpIm)==RES_OK);
 
-        tmpIm.printSelf (true);
+//         tmpIm.printSelf (true);
 
         queue<_coor*> *level = new queue<_coor*>();
         queue<_coor*> *next_level = new queue<_coor*>();
@@ -541,7 +541,7 @@ namespace smil
         size_t size[3];
         imIn.getSize (size) ;
 
-        cout << "size : " << size[0] << ", " << size[1] << ", " << size[2] << ";  " << area (tmpIm) << endl;
+//         cout << "size : " << size[0] << ", " << size[1] << ", " << size[2] << ";  " << area (tmpIm) << endl;
 
         size_t i=0,j=0,k=0;
         for (k=0; k<size[2]; ++k){
@@ -564,7 +564,7 @@ namespace smil
 
         do {
 
-            cout << "Number of pixel at level " << cur_level << " : " << level->size() << endl;
+//             cout << "Number of pixel at level " << cur_level << " : " << level->size() << endl;
             while (!level->empty()) {
                 cur = level->front();
                 pt = sePoints.begin();
