@@ -225,13 +225,50 @@ namespace smil
 	{
 	    parentClass::initialize(imIn, imOut, se);
 	    fill(imOut, T2(0));
-	    labels = 1;
+	    labels = T2(0);
 	    return RES_OK;
 	}
 
         virtual void processPixel (size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd) 
         {
+
             T1 pVal = this->pixelsIn[pointOffset];
+
+            if (pVal == T1(0) || this->pixelsOut[pointOffset] != T2(0))
+                return;
+
+            queue <size_t> propagation;
+            int x, y, z;
+            IntPoint p;
+
+            ++labels;
+            this->pixelsOut[pointOffset] = labels;
+            propagation.push (pointOffset); 
+          
+
+            while (!propagation.empty ()) {
+                z = propagation.front() / (this->imSize[1]*this->imSize[0]);
+                y = (propagation.front() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
+                x = propagation.front() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
+
+                for (UINT i=0; i<this->sePointNbr; ++i) {
+                     p = this->sePoints[i];
+                     if (x+p.x >= 0 && x+p.x < this->imSize[0] &&
+                         y+p.y >= 0 && y+p.y < this->imSize[1] &&
+                         z+p.z >= 0 && z+p.z < this->imSize[2] &&
+                         this->pixelsIn[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] == pVal &&
+                         this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] != labels)
+                     {
+                         this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] = labels;
+                         propagation.push (x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]);
+                     }
+                }
+
+                propagation.pop();
+            } 
+
+
+            /*            T1 pVal = this->pixelsIn[pointOffset];
             vector<int>::iterator dOffsetStart = dOffset;
             
             if (pVal==0)
@@ -282,9 +319,9 @@ namespace smil
 
                     // Depth First Search: keep the queue the smallest possible.
                     while (!propagation.empty ()) {
-                        z = propagation.back() / (this->imSize[1]*this->imSize[0]);
-                        y = (propagation.back() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
-                        x = propagation.back() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
+                        z = propagation.front() / (this->imSize[1]*this->imSize[0]);
+                        y = (propagation.front() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
+                        x = propagation.front() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
 
                         for (UINT i=0; i<this->sePointNbr; ++i) {
                              p = this->sePoints[i];
@@ -302,7 +339,7 @@ namespace smil
                     }
                 }
             }
-        }
+*/        }
 
         virtual RES_T finalize (const imageInType &imIn, imageOutType &imOut, const StrElt &se)
         {
