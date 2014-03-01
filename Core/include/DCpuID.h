@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -26,89 +26,55 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef _DCPUID_H
+#define _DCPUID_H
 
-#ifndef _DCORE_INSTANCE_H
-#define _DCORE_INSTANCE_H
+#include "DTypes.h"
 
-#include <iostream>
-#include <algorithm>
-
-#include "DCommon.h"
-#include "DTimer.h"
-#include "DSignal.h"
-#include "DErrors.h"
-#include "DCpuID.h"
-
-#include "private/DInstance.hpp"
+#include <string>
 
 namespace smil
 {
-    class BaseObject;
-    class BaseImage;
-
-   /**
-    * \ingroup Core
-    * @{
-    */
-    
-    /**
-     * Core module instance
-     */
-    class Core : public UniqueInstance<Core>
+    struct SIMD_Instructions
     {
-	friend class UniqueInstance<Core>;
-
-    protected:
-      Core ();
-      ~Core ();
-      
-    public:
-      
-	// Public interface
-	
-	bool keepAlive;
-	bool autoResizeImages;
-	
-	UINT getNumberOfThreads();
-	UINT getNumberOfCores();
-	UINT getMaxNumberOfThreads();
-	RES_T setNumberOfThreads(UINT nbr);
-	void resetNumberOfThreads();
-	size_t getAllocatedMemory();
-	void registerObject(BaseObject *obj);
-	void unregisterObject(BaseObject *obj);
-	void showAllImages();
-	void hideAllImages();
-	vector<BaseObject*> getRegisteredObjects();
-	vector<BaseImage*> getImages();
-	void getCompilationInfos(ostream &outStream = std::cout);
-	const CpuID &getCpuID() { return cpuID; }
-	
-	Signal onBaseImageCreated;
-	
-      
-    protected:
-	UINT coreNumber;
-	UINT threadNumber;
-	UINT maxThreadNumber;
-	
-	const char *systemName;
-	const char *targetArchitecture;
-	const bool supportOpenMP;
-	
-	vector<BaseObject*> registeredObjects;
-	vector<BaseImage*> registeredImages;
-	void deleteRegisteredObjects();
-	
-	const CpuID cpuID;
-
-      
+	bool MMX;
+	bool SSE;
+	bool SSE2;
+	bool SSE3;
+	bool SSSE3;
+	bool SSE41;
+	bool SSE42;
+	bool AES;
+	bool AVX;
     };
-
-    /*@}*/
     
+    class CpuID
+    {
+
+      public:
+	
+	CpuID();
+	
+	string getVendor() const { return vendor; }
+	unsigned getCores() const { return cores; }
+	unsigned getLogical() const { return logical; }
+	bool isHyperThreated() const { return hyperThreaded; }
+	const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
+	
+      protected:
+	uint32_t regs[4];
+	uint32_t &eax, &ebx, &ecx, &edx;
+	unsigned edxFeatures, ecxFeatures, ebxFeatures;
+
+	unsigned cores;
+	unsigned logical;
+	string vendor;
+	bool hyperThreaded;
+	SIMD_Instructions simdInstructions;
+	
+	void load(unsigned i);
+
+    };
 } // namespace smil
 
-
-#endif // _DCORE_INSTANCE_H
-
+#endif // _DCPUID_H
