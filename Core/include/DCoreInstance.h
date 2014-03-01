@@ -69,6 +69,7 @@ namespace smil
 	bool autoResizeImages;
 	
 	UINT getNumberOfThreads();
+	UINT getNumberOfCores();
 	UINT getMaxNumberOfThreads();
 	RES_T setNumberOfThreads(UINT nbr);
 	void resetNumberOfThreads();
@@ -85,6 +86,7 @@ namespace smil
 	
       
     protected:
+	UINT coreNumber;
 	UINT threadNumber;
 	UINT maxThreadNumber;
 	
@@ -95,6 +97,8 @@ namespace smil
 	vector<BaseObject*> registeredObjects;
 	vector<BaseImage*> registeredImages;
 	void deleteRegisteredObjects();
+	
+	void detectNumProcs();
       
     };
 

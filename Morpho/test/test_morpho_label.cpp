@@ -164,6 +164,7 @@ class Test_LabelNeighbors : public TestCase
   }
 };
 
+
 int main(int argc, char *argv[])
 {
       TestSuite ts;
