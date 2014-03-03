@@ -27,8 +27,8 @@
  */
 
 
-#ifndef _DBUFFER_POO_HPP
-#define _DBUFFER_POO_HPP
+#ifndef _DBUFFER_POOL_HPP
+#define _DBUFFER_POOL_HPP
 
 #include <limits>
 #include <stack>
@@ -45,16 +45,13 @@ namespace smil
     {
     public:
       BufferPool(size_t bufSize=0)
-	: mutexLock(false),
-	  bufferSize(bufSize),
+	: bufferSize(bufSize),
 	  numberOfBuffers(0),
 	  maxNumberOfBuffers(std::numeric_limits<size_t>::max())
       {}
       ~BufferPool()
       {}
 
-      bool mutexLock;
-      
       typedef typename ImDtTypes<T>::lineType bufferType;
       
       RES_T initialize(size_t bufSize, size_t nbr=0)
@@ -65,16 +62,16 @@ namespace smil
       }
       void clear()
       {
-	  while(mutexLock); 
-	  mutexLock = true;
-	  
-	  for (typename vector<bufferType>::iterator it=buffers.begin();it!=buffers.end();it++)
-	    ImDtTypes<T>::deleteLine(*it);
-	  buffers.clear();
-	  while (!availableBuffers.empty())
-	    availableBuffers.pop();
-	  
-	  mutexLock = false;
+	  #ifdef USE_OPEN_MP
+	    #pragma omp critical
+	  #endif // USE_OPEN_MP
+	  {
+	      while (!availableBuffers.empty())
+	      {
+		  ImDtTypes<T>::deleteLine(availableBuffers.front());
+		  availableBuffers.pop();
+	      }
+	  }
       }
       void setMaxNumberOfBuffers(size_t nbr)
       {
@@ -84,44 +81,53 @@ namespace smil
       {
 	  return maxNumberOfBuffers;
       }
-      inline bufferType getBuffer()
+      bufferType getBuffer()
       {
-	  while(mutexLock); 
-	  mutexLock = true;
+	bufferType buf;
+	
+	#ifdef USE_OPEN_MP
+	  #pragma omp critical
+	#endif // USE_OPEN_MP
+	{
+	    if (availableBuffers.empty())
+	    {
+		if (!createBuffer())
+		  while (availableBuffers.empty()); // wait
+	    }
+	    
+	    buf = availableBuffers.top();
+	    availableBuffers.pop();
 	  
-	  if (availableBuffers.empty())
-	    createBuffer();
-	  
-	  while (availableBuffers.empty()); // wait
-	  
-	  bufferType buf = availableBuffers.top();
-	  availableBuffers.pop();
-	  
-	  mutexLock = false;
-
-	  return buf;
+	}
+	return buf;
       }
-      inline void releaseBuffer(bufferType &buf)
+      vector<bufferType> getBuffers(size_t nbr)
       {
-	  while(mutexLock); 
-	  mutexLock = true;
-	  
+	vector<bufferType> buffVect;
+	
+	for (int i=0;i<nbr;i++)
+	  buffVect.push_back(this->getBuffer());
+
+	return buffVect;
+      }
+      
+      void releaseBuffer(bufferType &buf)
+      {
 	  availableBuffers.push(buf);
 	  buf = NULL;
-	  
-	  mutexLock = false;
+      }
+      void releaseBuffers(vector<bufferType> &bufs)
+      {
+	  for (int i=0;i<bufs.size();i++)
+	    availableBuffers.push(bufs[i]);
+	  bufs.clear();
       }
       void releaseAllBuffers()
       {
-	  while(mutexLock); 
-	  mutexLock = true;
-	  
 	  while (!availableBuffers.empty())
 	    availableBuffers.pop();
 	  for (typename vector<bufferType>::iterator it=buffers.begin();it!=buffers.end();it++)
 	    availableBuffers.push(*it);
-	  
-	  mutexLock = false;
       }
     protected:
       bool createBuffer()
@@ -143,5 +149,5 @@ namespace smil
 
 } // namespace smil
 
-#endif // _DBUFFER_POO_HPP
+#endif // _DBUFFER_POOL_HPP
 
