@@ -55,6 +55,7 @@ namespace smil
     public:
 	typedef SharedImage<T> parentClass;
 	
+	//! Constructor
 	OpenCVInt(cv::Mat &_cvMat)
 	{
 	    BaseObject::className = "OpenCVInt";
@@ -62,6 +63,7 @@ namespace smil
 	    this->pixels = (T*)(_cvMat.data);
 	    this->setSize(_cvMat.size().width, _cvMat.size().height);
 	}
+	//! Constructor
 	OpenCVInt(IplImage *cvIm)
 	{
 	    BaseObject::className = "OpenCVInt";
