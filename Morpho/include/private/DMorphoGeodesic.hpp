@@ -519,10 +519,10 @@ namespace smil
         Image<T1> tmp2(imIn);
 
         // Set image to 1 when pixels are !=0
-        ASSERT((inf(imIn, T1(255), tmp)==RES_OK));
-
+        ASSERT(inf (imIn, T1(1), tmp)==RES_OK);
 
         ASSERT(copy(tmp, imOut)==RES_OK);
+        ASSERT(mul (tmp, T1(255), tmp)==RES_OK);
 
         // Demi-Gradient to remove sources inside cluster of sources.
         ASSERT(dilate (tmp, tmp2, se)==RES_OK); 
@@ -543,7 +543,7 @@ namespace smil
         
         for (i=0; i<size[2]*size[1]*size[0]; ++i)
         {
-            if (pixelsIn[i] == T2(0))
+            if (pixelsIn[i] == T1(0))
                 level->push (i);
         }
 
@@ -580,7 +580,9 @@ namespace smil
             swap = level;
             level = next_level;
             next_level = swap;
-        } while (!next_level->empty());
+        } while (!level->empty());
+
+        return RES_OK;
     }
 
     /**
