@@ -369,7 +369,7 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut);
 	
 	Image<labelT> imBasinsOut(imMarkers);
-	return watershed(imIn, imMarkers, imOut, imBasinsOut);
+	return watershed(imIn, imMarkers, imOut, imBasinsOut, se);
     }
 
     template <class T>
@@ -445,7 +445,7 @@ namespace smil
 	Image<T2> *nullIm = NULL;
 	
 	// Create the label images
-	label(imIn, basinsOut);
+	label(imIn, basinsOut, se);
 	inv(basinsOut, imLbl2);
 	mask(imLbl2, basinsOut, imLbl2);
 	

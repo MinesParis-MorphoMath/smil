@@ -1,6 +1,6 @@
 /*
  * Smil
- * Copyright (c) 2010 Matthieu Faessel
+ * Copyright (c) 2011 Matthieu Faessel
  *
  * This file is part of Smil.
  *
@@ -27,7 +27,7 @@
 #include "DCore.h"
 #include "DBase.h"
 #include "DMeasures.hpp"
-#include "DLabelMeasures.hpp"
+#include "DBlobMeasures.hpp"
 
 using namespace smil;
 
@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
     Image_UINT8::lineType pixels = im.getPixels();
     
     randFill(im);
+    BENCH_IMG(histogram, im);
     BENCH_IMG(area, im);
     
     

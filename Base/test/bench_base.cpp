@@ -1,6 +1,6 @@
 /*
  * Smil
- * Copyright (c) 2010 Matthieu Faessel
+ * Copyright (c) 2011 Matthieu Faessel
  *
  * This file is part of Smil.
  *
@@ -70,63 +70,107 @@ void SSE_INT_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
 
 #endif // __SSE__
 
-
-
-int main(int argc, char *argv[])
+void SSE_AV_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
 {
-    int sx = 1024; //24;
+    int size = im1.getWidth();
+    int nlines = im1.getLineCount();
+    
+    UINT8 *p1 = im1.getPixels();
+    UINT8 *p2 = im2.getPixels();
+    UINT8 *p3 = im3.getPixels();
+
+    for (int l=0;l<nlines;l++)
+    {
+	UINT8 *l1 = p1;
+	UINT8 *l2 = p2;
+	UINT8 *l3 = p3;
+	
+	for(int i=0 ; i<size ; i++)
+	    l3[i] = (l1[i] > l2[i]) ? l1[i] : l2[i];
+	
+	p1 += size;
+	p2 += size;
+	p3 += size;
+    }
+};
+
+
+void bench_INT_vs_AV()
+{
+    cout << "---- Intrinsic SIMD vs AV ----" << endl;
+    
+    int sx = 1024;
     int sy = 1024;
     
     Image_UINT8 im1(sx, sy);
     Image_UINT8 im2(im1);
     Image_UINT8 im3(im1);
 
-    Image_UINT16 im4(im1);
-
-//     sx = 40;
-//     sy = 20;
-
-    UINT8 val = 10;
     double BENCH_NRUNS = 1E4;
-    
-    BENCH_IMG(fill, im1, val);
-    BENCH_IMG(copy, im1, im3);
-    BENCH_CROSS_IMG(copy, im1, im4);
-    BENCH_IMG(inv, im1, im2);
-    BENCH_IMG(inf, im1, im2, im3);
-    BENCH_IMG(inf, im1, val, im3);
+
+#ifdef __SSE__
+    BENCH_IMG(SSE_INT_Sup, im1, im2, im3);
+#endif // __SSE__
+    BENCH_IMG(SSE_AV_Sup, im1, im2, im3);
     BENCH_IMG(sup, im1, im2, im3);
-    BENCH_IMG_STR(sup, "val", im1, val, im3);
-    BENCH_IMG(add, im1, im2, im3);
-    BENCH_IMG(addNoSat, im1, im2, im3);
-    BENCH_IMG(add, im1, val, im3);
-    BENCH_IMG(sub, im1, im2, im3);
-    BENCH_IMG(subNoSat, im1, im2, im3);
-    BENCH_IMG(sub, im1, val, im3);
-    BENCH_IMG(grt, im1, im2, im3);
-    BENCH_IMG(div, im1, im2, im3);
-    BENCH_IMG(mul, im1, im2, im3);
-    BENCH_IMG(mul, im1, val, im3);
-    BENCH_IMG(mulNoSat, im1, im2, im3);
-    BENCH_IMG(mulNoSat, im1, val, im3);
+    
+    cout << endl;
+}
 
+void bench_NCores()
+{
+    cout << endl << "---- Nbr Threads ----" << endl;
+    
+    int sx = 1024;
+    int sy = 1024;
+    
+    Image_UINT8 im1(sx, sy);
+    Image_UINT8 im2(im1);
+    Image_UINT8 im3(im1);
 
-//      supLine<UINT8> f;
-//       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
-//       BENCH_IMG(volIm, (im1));
-//       im6.show();
+    double BENCH_NRUNS = 1E4;
 
-//       add(im1, im2, im5);
-//       im5.printSelf(sx < 50);
-//       cout << im5;
+    Core *core = Core::getInstance();
 
-//       im5.show();
+    for (int i=1; i<=core->getMaxNumberOfThreads(); i++)
+    {
+	core->setNumberOfThreads(i);
+	cout << i << ": ";
+	BENCH_IMG(sup, im1, im2, im3);
+    }    
+    
+    cout << endl;
+}
 
-//       qapp.Exec();
+void bench_Size()
+{
+    cout << endl << "---- Size ----" << endl;
+    
+    int sy = 1024;
+    
+//     Core::getInstance()->setNumberOfThreads(1);
+    cout << Core::getInstance()->getNumberOfThreads() << " thread(s)" << endl;
+    
+    for (size_t sx=100;sx<1E6;sx*=2)
+    {
+	Image_UINT8 im1(sx, sy);
+	Image_UINT8 im2(im1);
+	Image_UINT8 im3(im1);
 
-//       fill(im1, UINT8(100));
-//       fill(im3, UINT8(0));
+	double BENCH_NRUNS = 1E7 / sx;
 
+	BENCH_IMG(sup, im1, im2, im3);
+    }
+    
+    cout << endl;
+}
 
+int main(int argc, char *argv[])
+{
+    bench_INT_vs_AV();
+    bench_NCores();
+    bench_Size();
+    
+    return 0;
 }
 

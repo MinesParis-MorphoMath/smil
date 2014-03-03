@@ -61,7 +61,6 @@ SMIL_MODULE(smilCore)
 
 
 %include "DTypes.hpp"
-%include "DTypes.h"
 
 
 
@@ -111,6 +110,8 @@ PTR_ARG_OUT_APPLY(s)
 %include "DCommon.h"
 %include "DBaseObject.h"
 
+%template(DoublePoint) Point<double>;
+%template(IntPoint) Point<int>;
 
 
 //////////////////////////////////////////////////////////
@@ -128,6 +129,7 @@ namespace std
     %template(Vector_UINT) vector<UINT>;
     %template(Vector_UINT8) vector<UINT8>;
     %template(Vector_UINT16) vector<UINT16>;
+    %template(Vector_int) vector<int>;
     %template(Vector_double) vector<double>;
     %template(Vector_string) vector<string>;
     
@@ -149,22 +151,31 @@ namespace std
 // Expose std::map<> as a Python dict
 namespace std 
 {
+#if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
     %template(Map_UINT) map<UINT,UINT>;
-#ifdef USE_64BIT_IDS
-    %template(Map_SIZE_T) map<size_t,size_t>;
-#endif // USE_64BIT_IDS
     %template(Map_UINT_double) map<UINT,double>;
     %template(Map_UINT_Vector_double) map<UINT,Vector_double>;
     %template(Map_UINT_Vector_UINT) map<UINT,Vector_UINT>;
+#endif
+
+#ifdef USE_64BIT_IDS
+    %template(Map_SIZE_T) map<size_t,size_t>;
+#endif // USE_64BIT_IDS
     
     %template(Map_UINT_Vector_UINT8) map< UINT, vector<UINT8> >;
     %template(Map_UINT_Vector_UINT16) map< UINT, vector<UINT16> >;
     
     TEMPLATE_WRAP_CLASS_2T_CROSS(map, Map)
     
+#if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
     TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
+#endif
+
+#ifndef SMIL_WRAP_double
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
+#endif
+    
 #ifndef SMIL_WRAP_RGB
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
 #endif // SMIL_WRAP_RGB
@@ -225,11 +236,24 @@ namespace smil
 
 
 %ignore smil::Image::operator[];
+
+#ifdef SWIGPYTHON
+%ignore smil::Image::getPixels;
+%ignore smil::Image::getLines;
+%ignore smil::Image::getSlices;
+%ignore smil::Image::toArray;
+%ignore smil::Image::fromArray;
+%ignore smil::Image::toCharArray;
+%ignore smil::Image::fromCharArray;
+%ignore smil::Image::toIntArray;
+%ignore smil::Image::fromIntArray;
+
 %extend smil::Image
 {
     T __getitem__(size_t i) { return self->getPixel(i); }
     RES_T __setitem__(size_t i, T val) { return self->setPixel(i, val); }
 }
+#endif // SWIGPYTHON
 
 %include "DBaseImage.h"
 %include "DImage.hpp"
@@ -247,6 +271,7 @@ namespace std
 namespace smil
 {
     TEMPLATE_WRAP_CLASS(Image, Image);
+    TEMPLATE_WRAP_CLASS(ResImage, ResImage);
     TEMPLATE_WRAP_FUNC(createImage);
     TEMPLATE_WRAP_FUNC(castBaseImage);
     TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);

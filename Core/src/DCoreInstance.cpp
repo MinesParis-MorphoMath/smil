@@ -31,10 +31,13 @@
 #include "DBaseImage.h"
 #include "DCoreInstance.h"
 #include "DGui.h"
+#include "DCpuID.h"
 
 #ifdef USE_OPEN_MP
 #include <omp.h>
 #endif // USE_OPEN_MP
+
+
 
 using namespace smil;
 
@@ -53,18 +56,15 @@ Core::Core ()
 #endif // USE_OPEN_MP
 {
 #ifdef USE_OPEN_MP
-    int nthreads;
-    #pragma omp parallel shared(nthreads)
-    { 
-	nthreads = omp_get_num_threads();
-    }
-    this->maxThreadNumber = nthreads;
-    this->threadNumber = nthreads;
+    maxThreadNumber = cpuID.getLogical();
+    coreNumber = cpuID.getCores();
+    // Initialize threadNumber with the number of cores
+    threadNumber = coreNumber;
+#else // USE_OPEN_MP
+    maxThreadNumber = 1;
+    coreNumber = cpuID.getCores();
+    threadNumber = 1;
 #endif // USE_OPEN_MP
-  
-#if DEBUG_LEVEL > 1
-    cout << "Core created" << endl;
-#endif // DEBUG_LEVEL > 1
 }
 
 Core::~Core ()
@@ -135,6 +135,16 @@ UINT Core::getNumberOfThreads()
     return this->threadNumber;
 }
 
+UINT Core::getNumberOfCores()
+{
+    return this->threadNumber;
+}
+
+UINT Core::getMaxNumberOfThreads()
+{
+    return this->maxThreadNumber;
+}
+
 RES_T Core::setNumberOfThreads(UINT nbr)
 {
     ASSERT((nbr<=maxThreadNumber), "Nbr of thread exceeds system capacity !", RES_ERR);
@@ -190,3 +200,5 @@ void Core::getCompilationInfos(ostream &outStream)
     outStream << "Target Architecture: " << this->targetArchitecture << endl;
     outStream << "OpenMP support: " << (this->supportOpenMP ? "On" : "Off") << endl;
 }
+
+

@@ -35,18 +35,27 @@ using namespace smil;
 
 int main(int argc, char *argv[])
 {
-    Image_UINT8 im1(1024, 1024);
+    Image_UINT8 im1(5562, 7949);
+//    Image_UINT8 im1(1024, 1024);
     Image_UINT8 im2(im1);
     
-    UINT BENCH_NRUNS = 1E4;
+    UINT BENCH_NRUNS = 100;
     BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
     BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(erode, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(erode, "sSE", im1, im2, sSE());
+    BENCH_IMG_STR(dilate, "CrossSE", im1, im2, CrossSE());
     BENCH_IMG_STR(open, "hSE", im1, im2, hSE());
     BENCH_IMG_STR(open, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(close, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(close, "sSE", im1, im2, sSE());
+    BENCH_IMG_STR(open, "CrossSE", im1, im2, CrossSE());
+    
+    cout << endl;
+    // 3D
+    
+    im1.setSize(500, 500, 100);
+    im2.setSize(im1);
         
+    BENCH_IMG_STR(dilate, "CubeSE", im1, im2, CubeSE());
+    BENCH_IMG_STR(dilate, "Cross3DSE", im1, im2, Cross3DSE());
+    BENCH_IMG_STR(open, "CubeSE", im1, im2, CubeSE());
+    BENCH_IMG_STR(open, "Cross3DSE", im1, im2, Cross3DSE());
 }
 

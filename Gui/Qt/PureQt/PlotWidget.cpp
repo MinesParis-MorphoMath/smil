@@ -50,11 +50,19 @@ PlotWidget::PlotWidget(QWidget *parent)
 
 void PlotWidget::saveCurrentCurve()
 {
-    QwtPointSeriesData *data = new QwtPointSeriesData(((QwtPointSeriesData*)(currentCurve->data()))->samples());
     currentCurve = new QwtPlotCurve();
+    
+#if QWT_VERSION < 0x060000
+    QwtData *data = currentCurve->data().copy();
+    currentCurve->setData(*data);
+#else // QWT_VERSION < 0x060000
+    QwtPointSeriesData *data = new QwtPointSeriesData(((QwtPointSeriesData*)(currentCurve->data()))->samples());
     currentCurve->setData(data);
+#endif // QWT_VERSION < 0x060000
+
     currentCurve->attach(this);
     replot();
+  
 }
 
 void PlotWidget::clearOtherCurves()

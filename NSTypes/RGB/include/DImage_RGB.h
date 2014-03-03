@@ -98,9 +98,6 @@ namespace smil
 	return &pixels;
     }
 
-
-
-
     template <>
     inline RES_T Image<RGB>::allocate()
     {
@@ -190,17 +187,19 @@ namespace smil
 // 	return h;
 //     }
 
-    template <>
-    inline void Image<RGB>::printSelf(ostream &os, bool displayPixVals, bool hexaGrid, string indent) const
-    {
-    }
+//     template <>
+//     inline void Image<RGB>::printSelf(ostream &os, bool displayPixVals, bool hexaGrid, string indent) const
+//     {
+//     }
     
+#ifndef SWIGPYTHON	
     template <>
     inline char *Image<RGB>::toCharArray()
     {
 	cout << "Not implemented for RGB images" << endl;
 	return NULL;
     }
+#endif // SWIGPYTHON	
     
     
 #ifdef USE_QWT

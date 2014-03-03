@@ -33,7 +33,7 @@
 #include "Core/include/DImage.h"
 #include "Base/include/private/DImageArith.hpp"
 #include "Morpho/include/DMorphoInstance.h"
-#include "DMorphImageOperations.hpp"
+#include "DMorphImageOperations.hxx"
 #include "DHitOrMiss.hpp"
 
 
@@ -130,8 +130,17 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	ImageFreezer freeze(imOut);
 	
-	ASSERT((dilate(imIn, imOut, se)==RES_OK));
-	ASSERT((erode(imOut, imOut, se)==RES_OK));
+	bool inplaceSafe = unaryMorphImageFunction<T, supLine<T> >::isInplaceSafe(se);
+	Image<T> *imTmp;
+	if (inplaceSafe)
+	  imTmp = &imOut;
+	else imTmp = new Image<T>(imIn);
+	
+	ASSERT((dilate(imIn, *imTmp, se)==RES_OK));
+	ASSERT((erode(*imTmp, imOut, se)==RES_OK));
+	
+	if (!inplaceSafe)
+	  delete imTmp;
 	
 	return RES_OK;
     }
@@ -153,8 +162,17 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	ImageFreezer freeze(imOut);
 	
-	ASSERT((erode(imIn, imOut, se)==RES_OK));
-	ASSERT((dilate(imOut, imOut, se)==RES_OK));
+	bool inplaceSafe = unaryMorphImageFunction<T, supLine<T> >::isInplaceSafe(se);
+	Image<T> *imTmp;
+	if (inplaceSafe)
+	  imTmp = &imOut;
+	else imTmp = new Image<T>(imIn);
+	
+	ASSERT((erode(imIn, *imTmp, se)==RES_OK));
+	ASSERT((dilate(*imTmp, imOut, se)==RES_OK));
+	
+	if (!inplaceSafe)
+	  delete imTmp;
 
 	return RES_OK;
     }

@@ -33,6 +33,10 @@
 
 #include "DMultichannelTypes.hpp"
 
+#ifdef RGB
+#undef RGB
+#endif 
+
 namespace smil
 {
   
@@ -66,9 +70,10 @@ namespace smil
 	static inline std::string toString(const COLOR_UINT8_3 &val)
 	{
 	    stringstream str;
+	    str << "(";
 	    for (UINT i=0;i<2;i++)
-	      str << double(val[i]) << ", ";
-	    str << double(val[2]);
+	      str << double(val[i]) << ",";
+	    str << double(val[2]) << ")";
 	    return str.str();
 	}
     };

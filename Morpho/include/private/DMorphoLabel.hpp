@@ -33,7 +33,7 @@
 #include "Base/include/private/DImageArith.hpp"
 #include "DImage.h"
 #include "DMorphImageOperations.hpp"
-#include "Base/include/private/DLabelMeasures.hpp"
+#include "Base/include/private/DBlobMeasures.hpp"
 
 
 #include <set>
@@ -211,6 +211,161 @@ namespace smil
       set<pair<size_t, size_t> > pairs;
     };
 
+   template <class T1, class T2>
+    class labelFunct_v2 : public unaryMorphImageFunctionBase<T1, T2>
+    {
+    public:
+	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
+	typedef typename parentClass::imageInType imageInType;
+	typedef typename parentClass::imageOutType imageOutType;
+	
+	size_t getLabelNbr() { return labels; }
+
+	virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+	{
+	    parentClass::initialize(imIn, imOut, se);
+	    fill(imOut, T2(0));
+	    labels = T2(0);
+	    return RES_OK;
+	}
+
+        virtual void processPixel (size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd) 
+        {
+
+            T1 pVal = this->pixelsIn[pointOffset];
+
+            if (pVal == T1(0) || this->pixelsOut[pointOffset] != T2(0))
+                return;
+
+            queue <size_t> propagation;
+            int x, y, z;
+            IntPoint p;
+
+            ++labels;
+            this->pixelsOut[pointOffset] = labels;
+            propagation.push (pointOffset); 
+          
+
+            while (!propagation.empty ()) {
+                z = propagation.front() / (this->imSize[1]*this->imSize[0]);
+                y = (propagation.front() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
+                x = propagation.front() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
+
+                for (UINT i=0; i<this->sePointNbr; ++i) {
+                     p = this->sePoints[i];
+                     if (x+p.x >= 0 && x+p.x < this->imSize[0] &&
+                         y+p.y >= 0 && y+p.y < this->imSize[1] &&
+                         z+p.z >= 0 && z+p.z < this->imSize[2] &&
+                         this->pixelsIn[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] == pVal &&
+                         this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] != labels)
+                     {
+                         this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] = labels;
+                         propagation.push (x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]);
+                     }
+                }
+
+                propagation.pop();
+            } 
+
+
+            /*            T1 pVal = this->pixelsIn[pointOffset];
+            vector<int>::iterator dOffsetStart = dOffset;
+            
+            if (pVal==0)
+                return;
+
+            size_t candidates[this->sePointNbr];
+            int nbr_candidates = 0;
+            size_t curDOffset;
+
+            // Populating canditates, forward scan.
+            while (dOffset != dOffsetEnd) {
+                 curDOffset = pointOffset + *dOffset; 
+                 if (this->pixelsIn[curDOffset] == pVal && this->pixelsOut[curDOffset] != T2(0)) {
+                        candidates[nbr_candidates++] = curDOffset;
+                 }
+                 ++dOffset;
+            }
+
+            // No label assigned around the current pixel.
+            if (nbr_candidates == 0) {
+                this->pixelsOut[pointOffset] = T2(labels);
+                ++labels;
+            }
+            else {
+                T2 labelTmp = this->pixelsOut[candidates[0]];
+                if (nbr_candidates > 1) {
+                    // Keeping the smallest label.
+                    for (int i=0; i<nbr_candidates; ++i) {
+                        if (this->pixelsOut[candidates[i]] < labelTmp)
+                            labelTmp = this->pixelsOut[candidates[i]];
+                    }
+                }
+                // Associating the current pixel to the label.
+                this->pixelsOut[pointOffset] = labelTmp;
+
+                if (nbr_candidates > 1) {
+                    queue <size_t> propagation;
+                    int x, y, z;
+                    IntPoint p;
+
+                    // Backward scan.
+                    for (int i=0; i<nbr_candidates; ++i) {
+                        if (this->pixelsOut[candidates[i]] != labelTmp) {
+                            this->pixelsOut[candidates[i]] = labelTmp;
+                            propagation.push (candidates[i]);
+                        }
+                    }
+
+                    // Depth First Search: keep the queue the smallest possible.
+                    while (!propagation.empty ()) {
+                        z = propagation.front() / (this->imSize[1]*this->imSize[0]);
+                        y = (propagation.front() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
+                        x = propagation.front() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
+
+                        for (UINT i=0; i<this->sePointNbr; ++i) {
+                             p = this->sePoints[i];
+                             if (x+p.x >= 0 && x+p.x < this->imSize[0] &&
+                                 y+p.y >= 0 && y+p.y < this->imSize[1] &&
+                                 z+p.z >= 0 && z+p.z < this->imSize[2] &&
+                                 this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] > T2(0) &&
+                                 this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] != labelTmp)
+                             {
+                                 this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] = labelTmp;
+                                 propagation.push (x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]);
+                             }
+                        }
+                        propagation.pop();
+                    }
+                }
+            }
+*/        }
+
+        virtual RES_T finalize (const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+        {
+ /*           labels=0;
+            map <T2, T2> equivalence;
+            for (size_t i=0; i<this->imSize[0]*this->imSize[1]*this->imSize[2]; ++i) {
+                if (this->pixelsOut[i] != T2(0))
+                {
+                    if (equivalence.count (this->pixelsOut[i])) {
+                        this->pixelsOut[i] = equivalence [this->pixelsOut[i]];
+                    } else {
+                            ++labels;
+                            equivalence[this->pixelsOut[i]] = labels;
+                            this->pixelsOut[i] = labels;
+                    }
+                }
+            }
+            ++labels;
+*/
+            return RES_OK;
+        }
+
+    protected:
+        T2 labels;
+    };   
+    
     /**
     * Image labelization
     * 
@@ -218,6 +373,28 @@ namespace smil
     */
     template<class T1, class T2>
     size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	labelFunct_v2<T1,T2> f;
+	
+	ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
+	
+	size_t lblNbr = f.getLabelNbr();
+	
+	ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+	
+	return lblNbr;
+    }
+
+   /**
+    * Image labelization
+    * 
+    * Return the number of labels (or 0 if error).
+    */
+    template<class T1, class T2>
+    size_t label_v0(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -233,6 +410,30 @@ namespace smil
 	return lblNbr;
     }
 
+
+    /**
+    * Image labelization with the size of each connected components
+    * 
+    */
+    template<class T1, class T2>
+    size_t labelWithArea_v0(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freezer(imOut);
+	
+	Image<T2> imLabel(imIn);
+	
+	ASSERT(label_v0(imIn, imLabel, se)!=0);
+ 	map<UINT, double> areas = measAreas(imLabel);
+	ASSERT(!areas.empty());
+	
+	ASSERT(applyLookup<T2>(imLabel, areas, imOut)==RES_OK);
+	
+	return RES_OK;
+    }
+    
     /**
     * Image labelization with the size of each connected components
     * 
@@ -247,23 +448,15 @@ namespace smil
 	
 	Image<T2> imLabel(imIn);
 	
-	ASSERT((label(imIn, imLabel, se)!=0));
+	ASSERT(label(imIn, imLabel, se)!=0);
  	map<UINT, double> areas = measAreas(imLabel);
 	ASSERT(!areas.empty());
 	
-	// Verify that the max(areas) doesn't exceed the T2 type max
-	typename map<UINT,double>::iterator max_it = std::max_element(areas.begin(), areas.end());
-	ASSERT(( (*max_it).second < double(ImDtTypes<T2>::max()) ), "Area max exceeds data type max!", RES_ERR);
-
-	// Convert areas map into a lookup
-	map<T2, T2> lookup(areas.begin(), areas.end());
-	
-	ASSERT((fill(imOut, T2(0))==RES_OK));
-	ASSERT((applyLookup<T2>(imLabel, lookup, imOut)==RES_OK));
+	ASSERT(applyLookup<T2>(imLabel, areas, imOut)==RES_OK);
 	
 	return RES_OK;
     }
-    
+
     /**
     * Area opening
     * 

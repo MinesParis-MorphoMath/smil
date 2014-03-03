@@ -43,10 +43,11 @@ SMIL_MODULE(smilBase)
 #include "DImageDraw.hpp"
 #include "DImageHistogram.hpp"
 #include "DImageTransform.hpp"
+#include "DImageConvolution.hpp"
 #include "DBaseMeasureOperations.hpp"
 #include "DMeasures.hpp"
 #include "DImageMatrix.hpp"
-#include "DLabelMeasures.hpp"
+#include "DBlobMeasures.hpp"
 
 #include <stdexcept>
 
@@ -72,10 +73,12 @@ TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(copy);
 TEMPLATE_WRAP_FUNC(crop);
 TEMPLATE_WRAP_FUNC(clone);
 
+#ifdef SMIL_WRAP_RGB
 TEMPLATE_WRAP_FUNC_2T_FIX_FIRST(copyChannel,RGB);
 TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(copyToChannel,RGB);
 TEMPLATE_WRAP_FUNC_2T_FIX_FIRST(splitChannels,RGB);
 TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(mergeChannels,RGB);
+#endif // SMIL_WRAP_RGB
 
 TEMPLATE_WRAP_FUNC(inv);
 TEMPLATE_WRAP_FUNC(fill);
@@ -103,8 +106,8 @@ TEMPLATE_WRAP_FUNC(logicXOr);
 TEMPLATE_WRAP_FUNC(bitAnd);
 TEMPLATE_WRAP_FUNC(bitOr);
 TEMPLATE_WRAP_FUNC(bitXOr);
-TEMPLATE_WRAP_FUNC(test);
-TEMPLATE_WRAP_FUNC(compare);
+TEMPLATE_WRAP_FUNC_2T_CROSS(test);
+TEMPLATE_WRAP_FUNC_2T_CROSS(compare);
 TEMPLATE_WRAP_FUNC(mask);
 TEMPLATE_WRAP_FUNC_2T_CROSS(applyLookup);
 
@@ -122,10 +125,16 @@ TEMPLATE_WRAP_FUNC(otsuThresholdValues);
 TEMPLATE_WRAP_FUNC(otsuThreshold);
 
 
+%include "DImageConvolution.hpp"
+TEMPLATE_WRAP_FUNC(gaussianFilter);
+
 TEMPLATE_WRAP_FUNC(drawLine);
 TEMPLATE_WRAP_FUNC(drawRectangle);
 TEMPLATE_WRAP_FUNC(drawRectangles);
 TEMPLATE_WRAP_FUNC(drawBox);
+TEMPLATE_WRAP_FUNC(drawCircle);
+TEMPLATE_WRAP_FUNC(drawSphere);
+TEMPLATE_WRAP_FUNC(drawDisc);
 #ifdef USE_FREETYPE
 TEMPLATE_WRAP_FUNC(drawText);
 #endif // USE_FREETYPE
@@ -163,10 +172,12 @@ TEMPLATE_WRAP_FUNC(minVal);
 TEMPLATE_WRAP_FUNC(maxVal);
 TEMPLATE_WRAP_FUNC(rangeVal);
 TEMPLATE_WRAP_FUNC(valueList);
+TEMPLATE_WRAP_FUNC(profile);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
 TEMPLATE_WRAP_FUNC(measInertiaMatrix);
 TEMPLATE_WRAP_FUNC(measCovariance);
+TEMPLATE_WRAP_FUNC(measCenteredCovariance);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 
 # Suppl. Types
@@ -181,7 +192,7 @@ TEMPLATE_WRAP_SUPPL_FUNC(rangeVal);
 
 
 
-%include "DLabelMeasures.hpp"
+%include "DBlobMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);
 TEMPLATE_WRAP_FUNC(measMinVals);
 TEMPLATE_WRAP_FUNC(measMaxVals);

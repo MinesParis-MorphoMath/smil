@@ -32,11 +32,6 @@ SMIL_MODULE(smil)
 
 %feature("autodoc", "1");
 
-%{
-#include "stddef.h"
-#include <iostream>
-%}
-
 
 #ifndef SWIGJAVA
 %init
@@ -183,9 +178,12 @@ def Image(*args):
 	img = imageTypes[0](*args)
 	fillImg = True
 	
-    elif type(args[0]) in imageTypes: # First arg is an image
+    elif type(args[0]) in imageTypes or hasattr(args[0], "getTypeAsString"): # First arg is an image
 	srcIm = args[0]
-	srcImgType = type(args[0])
+	if type(srcIm) in imageTypes:
+	    srcImgType = type(srcIm)
+	else:
+	    srcImgType = imageTypes[dataTypes.index(srcIm.getTypeAsString())]
 	if argNbr>1:
 	  if type(args[1])==type(""):
 	      if args[1] in dataTypes: # Second arg is an image type string ("UINT8", ...)
@@ -231,8 +229,6 @@ def Image(*args):
 
 
 
-seTypes = "HexSE, SquSE"
-
 def bench(func, *args, **keywords):
     """
     bench(function, [func_args], [options]):
@@ -260,10 +256,8 @@ def bench(func, *args, **keywords):
 	  im_size = arg.getSize()
 	  im_type = arg.getTypeAsString()
       if not se_type:
-	if hasattr(arg, "__module__") and arg.__module__ == "smilMorphoPython":
-	  arg_ts = str(type(arg)).split(".")[1][:-2]
-	  if arg_ts in seTypes:
-	    se_type = arg_ts
+	if hasattr(arg, "getClassName") and hasattr(arg, "homothety"):
+	  se_type = arg.getClassName()
 	    
     # Choose the right timer depending on the platform (see http://docs.python.org/2/library/time.html#time.clock)
     if sys.platform == "win32":

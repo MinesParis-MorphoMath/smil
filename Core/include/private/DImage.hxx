@@ -75,6 +75,16 @@ namespace smil
     }
 
     template <class T>
+    Image<T>::Image(const ResImage<T> &rhs, bool cloneData)
+      : BaseImage(rhs)
+    {
+	init();
+	if (cloneData)
+	  this->clone(rhs);
+	else this->setSize(rhs);
+    }
+
+    template <class T>
     template <class T2>
     Image<T>::Image(const Image<T2> &rhs, bool cloneData)
       : BaseImage(rhs)
@@ -103,36 +113,41 @@ namespace smil
 	    setSize(*im);
 	    return;
 	}
-	
-	if (!im->isAllocated())
-	  return;
-	
-	// Steal BaseImage identity
-	// Transfert data from the BaseImage to this
-	swapWith(*im);
+	else
+	  drain(im, true);	
     }
     
+    
     template <class T>
-    void Image<T>::swapWith(Image &other)
+    void Image<T>::drain(Image<T> *im, bool deleteSrc)
     {
-	swap(width, other.width);
-	swap(height, other.height);
-	swap(depth, other.depth);
+	if (allocated)
+	  deallocate();
 	
-	swap(sliceCount, other.sliceCount);
-	swap(lineCount, other.lineCount);
-	swap(pixelCount, other.pixelCount);
+	this->width = im->width;
+	this->height = im->height;
+	this->depth = im->depth;
 	
-	swap(pixels, other.pixels);
-	swap(slices, other.slices);
-	swap(lines, other.lines);
+	this->sliceCount = im->sliceCount;
+	this->lineCount = im->lineCount;
+	this->pixelCount = im->pixelCount;
 	
-	swap(allocated, other.allocated);
-	swap(allocatedSize, other.allocatedSize);
+	this->pixels = im->pixels;
+	this->slices = im->slices;
+	this->lines = im->lines;
 	
-	swap(viewer, other.viewer);
-	swap(name, other.name);
+	this->allocated = im->allocated;
+	this->allocatedSize = im->allocatedSize;
+	
+	this->name = im->name;
+	this->viewer = im->viewer;
+	
+	im->allocated = false;
+	
+	if (deleteSrc)
+	  delete im;
     }
+    
     
     template <class T>
     void Image<T>::clone(const Image<T> &rhs)
@@ -392,6 +407,7 @@ namespace smil
 	return RES_OK;
     }
 
+#ifndef SWIGPYTHON	
     template <class T>
     void Image<T>::toArray(T outArray[])
     {
@@ -404,6 +420,7 @@ namespace smil
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  pixels[i] = inArray[i];
+	modified();
     }
 
     template <class T>
@@ -418,6 +435,7 @@ namespace smil
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  pixels[i] = inArray[i];
+	modified();
     }
 
     template <class T>
@@ -432,8 +450,26 @@ namespace smil
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  pixels[i] = inArray[i];
+	modified();
     }
+#endif // SWIGPYTHON	
 
+    template <class T>
+    vector<int> Image<T>::toIntVector()
+    {
+	vector<int> vec;
+	for (size_t i=0;i<pixelCount;i++)
+	  vec.push_back(pixels[i]);
+	return vec;
+    }
+    
+    template <class T>
+    void Image<T>::fromIntVector(vector<int> inVector)
+    {
+	for (size_t i=0;i<min(pixelCount, inVector.size());i++)
+	  pixels[i] = inVector[i];
+	modified();
+    }
 
     template <class T>
     void Image<T>::printSelf(ostream &os, bool displayPixVals, bool hexaGrid, string indent) const
@@ -479,7 +515,7 @@ namespace smil
 		if (hexaGrid && j%2)
 		  os << setw(tSsize/2+1) << " ";
 		for (i=0;i<width;i++)
-		  os <<  setw(tSsize+1) << (int)getPixel(i,j,k) << ",";
+		  os <<  setw(tSsize+1) << ImDtTypes<T>::toString(getPixel(i,j,k)) << ",";
 		os << endl;
 	      }
 	      os << endl;
@@ -529,33 +565,33 @@ namespace smil
     }
 
     template <class T>
-    Image<T> Image<T>::operator ~() const
+    ResImage<T>Image<T>::operator ~() const
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	inv(*this, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator -() const
+    ResImage<T>Image<T>::operator -() const
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	inv(*this, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator + (const Image<T> &rhs)
+    ResImage<T> Image<T>::operator + (const Image<T> &rhs)
     {
-	Image<T> im(*this);
+	ResImage<T> im(*this);
 	add(*this, rhs, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator + (const T &value)
+    ResImage<T> Image<T>::operator + (const T &value)
     {
-	Image<T> im(*this);
+	ResImage<T> im(*this);
 	add(*this, value, im);
 	return im;
     }
@@ -575,17 +611,17 @@ namespace smil
     }
 
     template <class T>
-    Image<T> Image<T>::operator - (const Image<T> &rhs)
+    ResImage<T>Image<T>::operator - (const Image<T> &rhs)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	sub(*this, rhs, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator - (const T &value)
+    ResImage<T>Image<T>::operator - (const T &value)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	sub(*this, value, im);
 	return im;
     }
@@ -605,17 +641,17 @@ namespace smil
     }
 
     template <class T>
-    Image<T> Image<T>::operator * (const Image<T> &rhs)
+    ResImage<T>Image<T>::operator * (const Image<T> &rhs)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	mul(*this, rhs, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator * (const T &value)
+    ResImage<T>Image<T>::operator * (const T &value)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	mul(*this, value, im);
 	return im;
     }
@@ -635,17 +671,17 @@ namespace smil
     }
 
     template <class T>
-    Image<T> Image<T>::operator / (const Image<T> &rhs)
+    ResImage<T>Image<T>::operator / (const Image<T> &rhs)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	div(*this, rhs, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator / (const T &value)
+    ResImage<T>Image<T>::operator / (const T &value)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	div(*this, value, im);
 	return im;
     }
@@ -665,97 +701,97 @@ namespace smil
     }
 
     template <class T>
-    Image<T> Image<T>::operator == (const Image<T> &rhs)
+    ResImage<T>Image<T>::operator == (const Image<T> &rhs)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	equ(*this, rhs, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator != (const Image<T> &rhs)
+    ResImage<T>Image<T>::operator != (const Image<T> &rhs)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	diff(*this, rhs, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator < (const Image<T> &rhs)
+    ResImage<T>Image<T>::operator < (const Image<T> &rhs)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	low(*this, rhs, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator < (const T &value)
+    ResImage<T>Image<T>::operator < (const T &value)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	low(*this, value, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator <= (const Image<T> &rhs)
+    ResImage<T>Image<T>::operator <= (const Image<T> &rhs)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	lowOrEqu(*this, rhs, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator <= (const T &value)
+    ResImage<T>Image<T>::operator <= (const T &value)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	lowOrEqu(*this, value, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator > (const Image<T> &rhs)
+    ResImage<T>Image<T>::operator > (const Image<T> &rhs)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	grt(*this, rhs, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator > (const T &value)
+    ResImage<T>Image<T>::operator > (const T &value)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	grt(*this, value, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator >= (const Image<T> &rhs)
+    ResImage<T>Image<T>::operator >= (const Image<T> &rhs)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	grtOrEqu(*this, rhs, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator >= (const T &value)
+    ResImage<T>Image<T>::operator >= (const T &value)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	grtOrEqu(*this, value, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator | (const Image<T> &rhs)
+    ResImage<T>Image<T>::operator | (const Image<T> &rhs)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	sup(*this, rhs, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator | (const T &value)
+    ResImage<T>Image<T>::operator | (const T &value)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	sup(*this, value, im);
 	return im;
     }
@@ -775,17 +811,17 @@ namespace smil
     }
 
     template <class T>
-    Image<T> Image<T>::operator & (const Image<T> &rhs)
+    ResImage<T>Image<T>::operator & (const Image<T> &rhs)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	inf(*this, rhs, im);
 	return im;
     }
 
     template <class T>
-    Image<T> Image<T>::operator & (const T &value)
+    ResImage<T>Image<T>::operator & (const T &value)
     {
-	Image<T> im(*this);
+	ResImage<T>im(*this);
 	inf(*this, value, im);
 	return im;
     }
@@ -845,6 +881,7 @@ namespace smil
 	}
 	return *this;
     }
+
 
     #if defined SWIGPYTHON && defined USE_NUMPY
     #include "DNumpy.h"

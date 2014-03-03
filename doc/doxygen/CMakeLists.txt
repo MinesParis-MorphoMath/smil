@@ -201,7 +201,7 @@ IF(DOXYGEN_FOUND AND DOXYGEN_CONFIG_FILE)
 	  SET(DOXY_DEMOS "${DOXY_DEMOS}
 	  /**
 	    * \\example ${_F_NAME} 
-	    * <a href=\\ws_main?exec&amp\;\\demos_root/${_F_NAME}><b>Execute script online</b></a> 
+	    * \\ws_exec_demo_button{${_F_NAME}} <br>
 	    */")
      ENDFOREACH(_FCH ${PYTHON_DEMOS})
      FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/demos.doxygen ${DOXY_DEMOS})

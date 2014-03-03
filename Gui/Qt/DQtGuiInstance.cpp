@@ -41,12 +41,18 @@
 #include <QThread>
 
 #include "DQtGuiInstance.h"
+#include "PureQt/HelpForm.h"
 
 using namespace smil;
 
-
 namespace smil 
 {
+    QtGui::~QtGui()
+    {
+      if (helpForm)
+	delete helpForm;
+    }
+    
     void QtGui::_execLoop() 
     { 
 	qtLoop();
@@ -56,6 +62,13 @@ namespace smil
     { 
 	if (qApp)
 	  qApp->processEvents();
+    }
+
+    void QtGui::_showHelp() 
+    { 
+	if (!helpForm)
+	  helpForm = new HelpForm();
+	helpForm->show();
     }
 
 

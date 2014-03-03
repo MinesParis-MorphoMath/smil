@@ -65,6 +65,9 @@ int main(int argc, char *argv[])
 //     ImageViewer<UINT8> *viewer;
 
 
+   BaseImage *im = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
+   im->show();
+   
 //    Image<UINT16> im1("/home/faessel/tmp/test_image16.tif");
    
 //    Image<UINT8> im2("/home/faessel/tmp/chambre.tif");
@@ -72,8 +75,7 @@ int main(int argc, char *argv[])
 //       Image<UINT8> im2(im, true);
 //       delete imrgb;
 //     
-    Gui::execLoop();
-//     qapp.exec();
+//     Gui::execLoop();
 
 }
 

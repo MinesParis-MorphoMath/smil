@@ -315,6 +315,7 @@ namespace smil
 	operator UINT16() const { return double(*this); }
 	operator bool() const { return double(*this); }
 	operator signed char() const { return double(*this); }
+	operator char() const { return double(*this); }
 	operator long int() const { return double(*this); }
 
 	virtual const T& value(const UINT &i) const

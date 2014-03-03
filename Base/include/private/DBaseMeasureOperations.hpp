@@ -38,10 +38,13 @@ namespace smil
   
 /**
  * \ingroup Base
- * \defgroup Measures Base measures
+ * \defgroup BlobMesures Mesures on blobs
  * @{
  */
 
+    /**
+     * Start offset and length of pixels in an image
+     */
     struct PixelSequence
     {
 	size_t offset;
@@ -51,7 +54,9 @@ namespace smil
     };
     
     /**
-     * List of offset and size of line contiguous pixels
+     * List of offset and size of line contiguous pixels.
+     * 
+     * A Blob contains a vector of PixelSequence.
      */
     struct Blob
     {
@@ -60,6 +65,9 @@ namespace smil
       typedef vector<PixelSequence>::const_iterator sequences_const_iterator;
     };
     
+    /**
+     * Create a map of Blob from a labelized image
+     */
     template <class T>
     map<UINT, Blob> computeBlobs(const Image<T> &imIn, bool onlyNonZero=true)
     {
@@ -104,6 +112,15 @@ namespace smil
 	
 	return blobs;
     }
+    
+// @}
+
+
+/**
+ * \ingroup Base
+ * \defgroup Measures Base measures
+ * @{
+ */
 
     template <class T, class _retType>
     struct MeasureFunctionBase

@@ -52,27 +52,30 @@ class TestArrow : public TestCase
 
       arrowGrt(im1, im2, sSE0(), UINT8(255));
       UINT8 vecGrt[] = { 
-	0,  16, 31,  0, 20, 	// 16 = 0b00010000
-	196, 104, 160, 95, 32, 
-	0, 18, 119, 142, 76, 
-	197, 107, 5, 2, 4, 
-	0, 241, 0, 241, 0
+	0,  16, 241,   0,  80,
+	70,  44,  10, 245,   8,
+	0, 144, 221, 226, 100,
+	71, 173,  65, 128,  64,
+	0,  31,   0,  31,   0,
       };
       imTruth << vecGrt;
       TEST_ASSERT(im2==imTruth);
+      if (retVal!=RES_OK)
+	im2.printSelf(1);
 
       arrowLow(im1, im2, sSE0(), UINT8(255));
       UINT8 vecLow[] = { 
-	255, 239, 224, 255, 227, 
-	56, 130, 69, 32, 223, 
-	255, 13, 128, 80, 163, 
-	58, 20, 250, 244, 235, 
-	255, 14, 127, 14, 255
+	255, 239,  14, 255, 143,
+	  56, 130,  69,   8, 247,
+	255,  97,   2,  20, 139,
+	184,  80, 190,  94, 175,
+	255, 224, 253, 224, 255,
       };
       imTruth << vecLow;
       TEST_ASSERT(im2==imTruth);
+      if (retVal!=RES_OK)
+	im2.printSelf(1);
 
-//       im2.printSelf(1);
     
   }
 };

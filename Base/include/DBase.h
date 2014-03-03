@@ -40,7 +40,7 @@
 #include "private/DImageTransform.hpp"
 #include "private/DImageDraw.hpp"
 #include "private/DMeasures.hpp"
-#include "private/DLabelMeasures.hpp"
+#include "private/DBlobMeasures.hpp"
 
 /** @} */
 

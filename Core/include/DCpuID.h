@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -26,26 +26,55 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef _DCPUID_H
+#define _DCPUID_H
 
+#include "DTypes.h"
 
-#include <stdio.h>
-#include <time.h>
+#include <string>
 
-//#include <boost/signal.hpp>
-//#include <boost/bind.hpp>
-
-#include "DCore.h"
-#include "DMorpho.h"
-#include "DIO.h"
-
-#include "DGui.h"
-
-
-
-using namespace smil;
-
-int main(int argc, char *argv[])
+namespace smil
 {
+    struct SIMD_Instructions
+    {
+	bool MMX;
+	bool SSE;
+	bool SSE2;
+	bool SSE3;
+	bool SSSE3;
+	bool SSE41;
+	bool SSE42;
+	bool AES;
+	bool AVX;
+    };
     
-}
+    class CpuID
+    {
 
+      public:
+	
+	CpuID();
+	
+	string getVendor() const { return vendor; }
+	unsigned getCores() const { return cores; }
+	unsigned getLogical() const { return logical; }
+	bool isHyperThreated() const { return hyperThreaded; }
+	const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
+	
+      protected:
+	uint32_t regs[4];
+	uint32_t &eax, &ebx, &ecx, &edx;
+	unsigned edxFeatures, ecxFeatures, ebxFeatures;
+
+	unsigned cores;
+	unsigned logical;
+	string vendor;
+	bool hyperThreaded;
+	SIMD_Instructions simdInstructions;
+	
+	void load(unsigned i);
+
+    };
+} // namespace smil
+
+#endif // _DCPUID_H

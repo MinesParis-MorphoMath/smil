@@ -31,7 +31,6 @@
 #define _D_IMAGE_IO_H
 
 #include "Core/include/DErrors.h"
-#include "Core/include/DColor.h"
 #include "Core/include/private/DImage.hpp"
 
 namespace smil

@@ -91,6 +91,12 @@ using namespace smil;
 %enddef
 #endif // SWIGRUBY
 
+#ifdef SWIGPHP
+%define SMIL_MODULE(libname)
+    %module(directors="1") libname ## Php
+%enddef
+#endif // SWIGPHP
+
 
 #define _DCORE
 #define _DBASE
@@ -110,7 +116,7 @@ using namespace smil;
 %ignore *::operator=;
 
 
-#ifdef SWIGJAVA
+#if defined SWIGJAVA || defined SWIGPHP
 %ignore *::operator+;
 %ignore *::operator+=;
 %ignore *::operator-;
@@ -134,7 +140,12 @@ using namespace smil;
 %ignore *::operator bool;
 %ignore *::operator~;
 %ignore *::operator();
-#endif // SWIGJAVA
+#endif // defined SWIGJAVA || defined SWIGPHP
+
+#ifdef SWIGPHP
+%rename(clone) _clone;
+%rename(*::clone) _clone;
+#endif // SWIGPHP
 
 #if SWIGOCTAVE 
 %ignore *::operator!=;

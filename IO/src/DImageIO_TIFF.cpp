@@ -27,7 +27,7 @@
  */
 
 
-#ifdef USE_JPEG
+#ifdef USE_TIFF
 
 #include "DImageIO.hpp"
 #include "DImageIO_TIFF.hpp"
@@ -289,4 +289,4 @@ namespace smil
 
 } // namespace smil
 
-#endif // USE_JPEG
+#endif // USE_TIFF

@@ -36,7 +36,6 @@
 #include "Base/include/private/DImageHistogram.hpp"
 #include "Morpho/include/private/DMorphoBase.hpp"
 
-
 namespace smil
 {
     /**
@@ -375,6 +374,8 @@ namespace smil
 
     /**
     * h-Reconstuction
+    * 
+    * Performs a subtraction of size \b height followed by a reconstruction
     */
     template <class T>
     RES_T hBuild(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
@@ -392,6 +393,31 @@ namespace smil
 	
 	ASSERT((sub(imIn, T(height), imOut)==RES_OK));
 	ASSERT((build(imOut, imIn, imOut, se)==RES_OK));
+	
+	return RES_OK;
+    }
+
+    /**
+    * Dual h-Reconstuction
+    * 
+    * Performs an addition of size \b height followed by a dual reconstruction
+    */
+    template <class T>
+    RES_T hDualBuild(const Image<T> &imIn, const T &height, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	if (&imIn==&imOut)
+	{
+	    Image<T> tmpIm = imIn;
+	    return hDualBuild(tmpIm, height, imOut, se);
+	}
+	
+	ImageFreezer freeze(imOut);
+	
+	ASSERT((add(imIn, T(height), imOut)==RES_OK));
+	ASSERT((dualBuild(imOut, imIn, imOut, se)==RES_OK));
 	
 	return RES_OK;
     }
@@ -472,12 +498,101 @@ namespace smil
 	return RES_OK;
     }
 
+    // Multi-source label-correcting algorithm for ALSP problem.
+    template <class T1, class T2>
+    RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
+    {
+    	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+
+	ImageFreezer freeze(imOut);
+
+        typedef Image<T1> imageInType;
+        typedef typename imageInType::lineType lineInType;
+        typedef Image<T2> imageOutType;
+        typedef typename imageOutType::lineType lineOutType;
+
+        lineInType pixelsIn ;
+        lineOutType pixelsOut = imOut.getPixels () ; 
+
+        Image<T1> tmp(imIn);
+        Image<T1> tmp2(imIn);
+
+        // Set image to 1 when pixels are !=0
+        ASSERT(inf(imIn, T1(1), tmp)==RES_OK);
+        ASSERT(mul(tmp, T1(255), tmp)==RES_OK);
+
+
+        // Demi-Gradient to remove sources inside cluster of sources.
+        ASSERT(erode (tmp, tmp2, se)==RES_OK); 
+        ASSERT(sub(tmp, tmp2, tmp)==RES_OK);
+
+        ASSERT(copy(tmp, imOut)==RES_OK);
+
+        queue<size_t> *level = new queue<size_t>();
+        queue<size_t> *next_level = new queue<size_t>();
+        queue<size_t> *swap ;
+        T2 cur_level=T2(2);
+
+        size_t size[3];
+        imIn.getSize (size) ;
+
+        pixelsIn = imIn.getPixels ();
+
+        size_t i=0;
+        
+        for (i=0; i<size[2]*size[1]*size[0]; ++i)
+        {
+            if (pixelsOut[i] > T2(0)) {
+                level->push (i);
+                pixelsOut[i] = T2(1);
+            }
+        }
+
+        size_t cur;
+        int x,y,z;
+
+        vector<IntPoint> sePoints = se.points;
+        vector<IntPoint>::iterator pt ;
+
+        do {
+            while (!level->empty()) {
+                cur = level->front();
+                pt = sePoints.begin();
+
+                z = cur / (size[1] * size[0]);
+                y = (cur - z * size[1] * size[0]) / size[0];
+                x = cur - y *size[0] - z * size[1] * size[0];
+
+                while (pt!=sePoints.end()) {
+                    if (    x+pt->x >= 0 && x+pt->x < size[0] &&
+                            y+pt->y >= 0 && y+pt->y < size[1] &&
+                            z+pt->z >= 0 && z+pt->z < size[2] && 
+                            pixelsOut [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] == T2(0) &&
+                            pixelsIn [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] > T1(0))
+                    {
+                        pixelsOut [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] = T2(cur_level); 
+                        next_level->push (x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]);
+                    }
+                    ++pt;
+                }
+                level->pop();
+            }
+            ++cur_level;
+
+            swap = level;
+            level = next_level;
+            next_level = swap;
+        } while (!level->empty());
+
+        return RES_OK;
+    }
 
     /**
     * Ugly temporary distance function
     */
     template <class T>
-    RES_T dist(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T dist_v0(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);

@@ -27,6 +27,7 @@
  */
 
 
+#include "DErrors.h"
 #include "DImageIO_BMP.hpp"
 #include "private/DImageIO.hpp"
 #include "Core/include/private/DImage.hpp"
@@ -41,6 +42,7 @@ namespace smil
 
     #define BITMAP_ID 0x4D42        // the universal bitmap ID
 
+#ifndef BI_RGB
     enum {
       BI_RGB,	// An uncompressed format.
       BI_RLE8,	// A run-length encoded (RLE) format for bitmaps with 8 bpp. The compression format is a 2-byte format consisting of a count byte followed by a byte containing a color index.
@@ -48,6 +50,7 @@ namespace smil
       BI_BITFIELDS,	// Specifies that the bitmap is not compressed and that the color table consists of three DWORD color masks that specify the red, green, and blue components, respectively, of each pixel. This is valid when used with 16- and 32-bpp bitmaps.
       BI_JPEG,	// Windows 98/Me, Windows 2000/XP: Indicates that the image is a JPEG image.
       BI_PNG, };
+#endif 
       
     #pragma pack(push, 1) // force the compiler to pack the structs
     struct bmpFileHeader

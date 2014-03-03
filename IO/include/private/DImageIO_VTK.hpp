@@ -149,9 +149,12 @@ namespace smil
 		fp.close();
 		return RES_ERR_IO;
 	    }
-	    	    
-	    image.setSize(hStruct.width, hStruct.height, hStruct.depth);
-	    typename Image<T>::lineType pixels = image.getPixels();
+	    
+	    int width = hStruct.width, height = hStruct.height, depth = hStruct.depth;	    
+	    image.setSize(width, height, depth);
+	    typename Image<T>::volType slices = image.getSlices();
+	    typename Image<T>::sliceType curSlice;
+	    typename Image<T>::lineType curLine;
 	    
 	    // Return to the begining of the data
 	    fp.seekg(hStruct.startPos);
@@ -162,22 +165,35 @@ namespace smil
 	    if (!hStruct.binaryFile)
 	    {
 		double val;
-		while(fp && --ptsNbr>0)
+		for (int z=0;z<depth;z++)
 		{
-		    fp >> val;
-		    *pixels++ = (T)(val*scalarCoeff);
-		}
-		if(fp)
-		{
-		    fp >> val;
-		    *pixels = (T)(val*scalarCoeff);
+		    curSlice = slices[z];
+		    for (int y=height-1;y>=0;y--)
+		    {
+			curLine = curSlice[y];
+			for (int x=0;x<width;x++)
+			{
+			    fp >> val;
+			    curLine[x] = (T)(val*scalarCoeff);
+			}
+		    }
 		}
 	    }
 
 	    else
 	    {
 		// In binary version, values are written as unsigned chars
-		fp.read((char*)pixels, sizeof(T)*ptsNbr);
+// 		fp.read((char*)pixels, sizeof(T)*ptsNbr);
+		
+		for (int z=0;z<depth;z++)
+		{
+		    curSlice = slices[z];
+		    for (int y=height-1;y>=0;y--)
+		    {
+			curLine = curSlice[y];
+			fp.read((char*)curLine, sizeof(T)*width);
+		    }
+		}
 	    }
 
 	    fp.close();
@@ -198,16 +214,16 @@ namespace smil
 		return RES_ERR;
 	    }
 
-	    size_t w = image.getWidth();
-	    size_t h = image.getHeight();
-	    size_t d = image.getDepth();
-	    size_t pixNbr = w*h*d;
+	    size_t width = image.getWidth();
+	    size_t height = image.getHeight();
+	    size_t depth = image.getDepth();
+	    size_t pixNbr = width*height*depth;
 	    
 	    fp << "# vtk DataFile Version 3.0" << endl;
 	    fp << "vtk output" << endl;
 	    fp << "BINARY" << endl;
 	    fp << "DATASET STRUCTURED_POINTS" << endl;
-	    fp << "DIMENSIONS " << w << " " << h << " " << d << endl;
+	    fp << "DIMENSIONS " << width << " " << height << " " << depth << endl;
 	    fp << "SPACING 1.0 1.0 1.0" << endl;
 	    fp << "ORIGIN 0 0 0" << endl;
 	    fp << "POINT_DATA " << pixNbr << endl;
@@ -219,18 +235,30 @@ namespace smil
 	    fp << endl;
 	    
 	    if (writeBinary)
-	      fp << "COLOR_SCALARS ImageScalars 1" << endl;
+	      fp << "LOOKUP_TABLE default" << endl;
 	    else
 	    {
 		cerr << "not implemented (todo..)" << endl;
 	    }
 	    
-	    typename Image<T>::lineType pixels = image.getPixels();
+	    typename Image<T>::volType slices = image.getSlices();
+	    typename Image<T>::sliceType curSlice;
+	    typename Image<T>::lineType curLine;
 	    
 	    if (writeBinary)
 	    {
 	      // todo : make this generic
-		fp.write((char*)pixels, sizeof(T)*pixNbr);
+// 		fp.write((char*)pixels, sizeof(T)*pixNbr);
+	      
+		for (int z=0;z<depth;z++)
+		{
+		    curSlice = slices[z];
+		    for (int y=height-1;y>=0;y--)
+		    {
+			curLine = curSlice[y];
+			fp.write((char*)curLine, sizeof(T)*width);
+		    }
+		}
 	    }
 
 	    fp.close();

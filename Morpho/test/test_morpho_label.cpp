@@ -74,6 +74,8 @@ class Test_Label : public TestCase
       im3 << vec3;
       
       TEST_ASSERT(im2==im3);
+      if (retVal!=RES_OK)
+	im2.printSelf(1);
   }
 };
 
@@ -120,6 +122,7 @@ class Test_LabelWithArea : public TestCase
   }
 };
 
+
 class Test_LabelNeighbors : public TestCase
 {
   virtual void run()
@@ -160,6 +163,7 @@ class Test_LabelNeighbors : public TestCase
       TEST_ASSERT(im2==im3);
   }
 };
+
 
 int main(int argc, char *argv[])
 {

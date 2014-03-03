@@ -253,7 +253,7 @@ namespace smil
 	      }
 	      else ERR_MSG("Unsupported GRAY data type");
 	  }
-#ifdef SMIL_USE_RGB
+#ifdef SMIL_WRAP_RGB
 	  else if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_RGB)
 	  {
 	      Image<RGB> *img = new Image<RGB>();
@@ -262,7 +262,7 @@ namespace smil
 		return img;
 	      else ERR_MSG("Error reading RGB image");
 	  }
-#endif // SMIL_USE_RGB
+#endif // SMIL_WRAP_RGB
 	  else
 	  {
 	      ERR_MSG("File type not supported");

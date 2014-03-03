@@ -32,7 +32,8 @@
 
 #include "Core/include/private/DImage.hpp"
 #include "DBaseMeasureOperations.hpp"
-#include "DLineArith.hpp"
+#include "DImageArith.hpp"
+#include "Base/include/DImageDraw.h"
 
 #include <map>
 #include <set>
@@ -284,6 +285,33 @@ namespace smil
 	return func(imIn, onlyNonZero);
     }
     
+    /**
+     * Get image values along a profile.
+     */
+    template <class T>
+    vector<T> profile(const Image<T> &im, size_t x0, size_t y0, size_t x1, size_t y1, size_t z=0)
+    {
+	vector<T> vec;
+	ASSERT(im.isAllocated(), vec);
+	
+	size_t imW = im.getWidth();
+	size_t imH = im.getHeight();
+	
+	vector<IntPoint> bPoints;
+	if ( x0<0 || x0>=int(imW) || y0<0 || y0>=int(imH) || x1<0 || x1>=int(imW) || y1<0 || y1>=int(imH) )
+	  bPoints = bresenhamPoints(x0, y0, x1, y1, imW, imH);
+	else
+	  bPoints = bresenhamPoints(x0, y0, x1, y1); // no image range check (faster)
+	
+	typename Image<T>::sliceType lines = im.getSlices()[z];
+	
+	for(vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++)
+	  vec.push_back(lines[(*it).y][(*it).x]);
+	
+	return vec;
+	
+    }
+
     template <class T>
     struct measBarycenterFunc : public MeasureFunctionWithPos<T, Vector_double>
     {
@@ -450,7 +478,7 @@ namespace smil
      * The lenght corresponds to the max number of steps \b maxSteps
      */
     template <class T>
-    vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2, size_t dx, size_t dy, size_t dz, UINT maxSteps=0)
+    vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2, size_t dx, size_t dy, size_t dz, UINT maxSteps=0, bool normalize=false)
     {
 	vector<double> vec;
 	ASSERT(areAllocated(&imIn1, &imIn2, NULL), vec);
@@ -459,7 +487,7 @@ namespace smil
 	size_t s[3];
 	imIn1.getSize(s);
 	if (maxSteps==0)
-	  maxSteps = max(max(s[0], s[1]), s[2]);
+	  maxSteps = max(max(s[0], s[1]), s[2]) - 1;
 	vec.clear();
 	
 	typename ImDtTypes<T>::volType slicesIn1 = imIn1.getSlices();
@@ -474,22 +502,33 @@ namespace smil
  	for (UINT len=0;len<=maxSteps;len++)
 	{
 	    double prod = 0;
-	    size_t pixLen = s[0] - dx*len;
+	    size_t xLen = s[0] - dx*len;
+	    size_t yLen = s[1] - dy*len;
+	    size_t zLen = s[2] - dz*len;
 	    
-	    for (size_t z=0;z<s[2]-dz*len;z++)
+	    for (size_t z=0;z<zLen;z++)
 	    {
 		curSliceIn1 = slicesIn1[z];
 		curSliceIn2 = slicesIn2[z+len*dz];
-		for (int y=0;y<s[1]-dy*len;y++)
+		for (int y=0;y<yLen;y++)
 		{
 		    lineIn1 = curSliceIn1[y];
 		    lineIn2 = curSliceIn2[y+len*dy];
-		    copyLine<T>(lineIn2 + len*dx, pixLen, bufLine);
-		    for (size_t x=0;x<pixLen;x++) // Vectorized loop
+		    copyLine<T>(lineIn2 + len*dx, xLen, bufLine);
+		    for (size_t x=0;x<xLen;x++) // Vectorized loop
 		      prod += lineIn1[x] * bufLine[x];
 		}
 	    }
+	    if (xLen*yLen*zLen != 0)
+	      prod /= (xLen*yLen*zLen);
 	    vec.push_back(prod);
+	}
+	
+	if (normalize)
+	{
+	  double orig = vec[0];
+	  for (vector<double>::iterator it=vec.begin();it!=vec.end();it++)
+	    *it /= orig;
 	}
 	
 	ImDtTypes<T>::deleteLine(bufLine);
@@ -504,9 +543,24 @@ namespace smil
      * The lenght corresponds to the max number of steps \b maxSteps
      */
     template <class T>
-    vector<double> measCovariance(const Image<T> &imIn, size_t dx, size_t dy, size_t dz, UINT maxSteps=0)
+    vector<double> measCovariance(const Image<T> &imIn, size_t dx, size_t dy, size_t dz, UINT maxSteps=0, bool normalize=false)
     {
-	return measCovariance(imIn, imIn, dx, dy, dz, maxSteps);
+	return measCovariance(imIn, imIn, dx, dy, dz, maxSteps, normalize);
+    }
+	
+    /**
+     * Centered auto-covariance
+     * 
+     * The direction is given by \b dx, \b dy and \b dz.
+     * The lenght corresponds to the max number of steps \b maxSteps
+     */
+    template <class T>
+    vector<double> measCenteredCovariance(const Image<T> &imIn, size_t dx, size_t dy, size_t dz, UINT maxSteps=0, bool normalize=false)
+    {
+	Image<float> imMean(imIn, true);
+	float meanV = meanVal(imMean)[0];
+	sub(imMean, meanV, imMean);
+	return measCovariance(imMean, dx, dy, dz, maxSteps, normalize);
     }
 	
     /**

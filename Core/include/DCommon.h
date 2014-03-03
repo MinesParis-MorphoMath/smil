@@ -75,40 +75,29 @@ namespace smil
     #endif // PI
 
     #ifndef MIN
-    #define MIN(a, b) a < b ? a : b;
+    #define MIN(a, b) (a < b ? a : b);
     #endif // MIN
     #ifndef MAX
-    #define MAX(a, b) a > b ? a : b;
+    #define MAX(a, b) (a > b ? a : b);
     #endif // MAX
 
-    // Should be templates, but swig doesn't like the map< T, Point<double> > ...
-    struct DoublePoint
+    template <class T>
+    struct Point
     {
-      double x;
-      double y;
-      double z;
-      DoublePoint() : x(0), y(0), z(0) {}
-      DoublePoint(const DoublePoint &pt) : x(pt.x), y(pt.y), z(pt.z) {}
-      DoublePoint(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {}
-      bool operator == (const DoublePoint &p2)
+      T x;
+      T y;
+      T z;
+      Point() : x(0), y(0), z(0) {}
+      Point(const Point &pt) : x(pt.x), y(pt.y), z(pt.z) {}
+      Point(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
+      bool operator == (const Point &p2)
       {
 	  return (x==p2.x && y==p2.y && z==p2.z);
       }
     };
 
-    struct IntPoint
-    {
-      int x;
-      int y;
-      int z;
-      IntPoint() : x(0), y(0), z(0) {}
-      IntPoint(const IntPoint &pt) : x(pt.x), y(pt.y), z(pt.z) {}
-      IntPoint(int _x, int _y, int _z) : x(_x), y(_y), z(_z) {}
-      bool operator == (const IntPoint &p2)
-      {
-	  return (x==p2.x && y==p2.y && z==p2.z);
-      }
-    };
+    typedef Point<double> DoublePoint;
+    typedef Point<int> IntPoint;
     
     typedef vector<double> Vector_double;
     typedef vector<Vector_double> Matrix_double;

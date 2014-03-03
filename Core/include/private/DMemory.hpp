@@ -32,12 +32,16 @@
 
 #include <math.h>
 #include <string>
-#include <stdio.h>
+#include <limits>
 
-#if (defined(__ICL) || defined(_MSC_VER) || defined(__ICC))
+#if (defined(__ICL) || defined(__ICC))
   #include <fvec.h>
   inline void *aligned_malloc (size_t size, size_t align=16) { return _mm_malloc(size,align); }
   inline void  aligned_free   (void *p)                      { return _mm_free(p); }
+#elif defined (_MSC_VER)
+  #include <malloc.h>
+  inline void *aligned_malloc (size_t size, size_t align=16) { return _aligned_malloc((size,align);  }
+  inline void  aligned_free   (void *p)                      { return _aligned_free(p); }
 #elif defined (__CYGWIN__)
   #include <xmmintrin.h>
   inline void *aligned_malloc (size_t size, size_t align=16) { return _mm_malloc(size,align);  }
@@ -77,14 +81,13 @@ namespace smil
 
 
     template<typename T> 
-    inline T *createAlignedBuffer(size_t size) {
+    inline T *createAlignedBuffer(size_t size) 
+    {
       void* ptr;
 
       ptr = aligned_malloc((SIMD_VEC_SIZE*(size/SIMD_VEC_SIZE+1))*sizeof(T), SIMD_VEC_SIZE);
 
       return ((T*) (ptr));
-      // Use () with new to initialize values to 0 (like calloc)
-    //   return new T[size]();
     }
 
     template<typename T> 
@@ -122,11 +125,12 @@ namespace smil
     }
 
     template<typename T> 
-    void t_LineShiftRight1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
+    void t_LineShiftRight(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
     {
       int i;
 
-      for(i=0 ; i<nbshift ; i++)  {
+      for(i=0 ; i<nbshift ; i++)  
+      {
 	lineout[i] = shiftValue;
       }
 
@@ -136,11 +140,12 @@ namespace smil
 
 
     template<typename T> 
-    void t_LineShiftLeft1D(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
+    void t_LineShiftLeft(const T *linein, const int lineWidth, const int nbshift, const T shiftValue, T *lineout) 
     {
       int i;
 
-      for(i=lineWidth-nbshift ; i<lineWidth ; i++)  {
+      for(i=lineWidth-nbshift ; i<lineWidth ; i++)  
+      {
 	lineout[i] = shiftValue;
       }
 
@@ -162,6 +167,7 @@ namespace smil
 	    sprintf(tmp, "%1.2f %s", bytes / pow(base, c), units[c]);
 	    return std::string(tmp);
     }
+    
 
 } // namespace smil
 

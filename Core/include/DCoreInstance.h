@@ -37,6 +37,7 @@
 #include "DTimer.h"
 #include "DSignal.h"
 #include "DErrors.h"
+#include "DCpuID.h"
 
 #include "private/DInstance.hpp"
 
@@ -69,6 +70,8 @@ namespace smil
 	bool autoResizeImages;
 	
 	UINT getNumberOfThreads();
+	UINT getNumberOfCores();
+	UINT getMaxNumberOfThreads();
 	RES_T setNumberOfThreads(UINT nbr);
 	void resetNumberOfThreads();
 	size_t getAllocatedMemory();
@@ -79,11 +82,13 @@ namespace smil
 	vector<BaseObject*> getRegisteredObjects();
 	vector<BaseImage*> getImages();
 	void getCompilationInfos(ostream &outStream = std::cout);
+	const CpuID &getCpuID() { return cpuID; }
 	
 	Signal onBaseImageCreated;
 	
       
     protected:
+	UINT coreNumber;
 	UINT threadNumber;
 	UINT maxThreadNumber;
 	
@@ -94,6 +99,9 @@ namespace smil
 	vector<BaseObject*> registeredObjects;
 	vector<BaseImage*> registeredImages;
 	void deleteRegisteredObjects();
+	
+	const CpuID cpuID;
+
       
     };
 

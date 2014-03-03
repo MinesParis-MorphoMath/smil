@@ -33,10 +33,12 @@
 
 #include "DGuiInstance.h"
 
+class HelpForm;
 
 namespace smil
 {
   
+    
     /**
      * \defgroup Gui Gui
      */
@@ -45,16 +47,21 @@ namespace smil
     class QtGui : public Gui
     {
     public:
-	QtGui() {}
-	~QtGui() {}
+	QtGui() 
+	  : helpForm(NULL)
+	{
+	}
+	virtual ~QtGui();
 	
     protected:
 	virtual void _execLoop();
 	virtual void _processEvents();
+	virtual void _showHelp();
     private:
+	HelpForm *helpForm;
     };
 
-    class QtAppGui : public Gui, public QApplication
+    class QtAppGui : public QtGui, public QApplication
     {
     public:
 	QtAppGui();

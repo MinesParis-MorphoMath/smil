@@ -27,8 +27,8 @@
  */
 
 
-#ifndef _D_LABEL_MEASURES_HPP
-#define _D_LABEL_MEASURES_HPP
+#ifndef _D_BLOB_MEASURES_HPP
+#define _D_BLOB_MEASURES_HPP
 
 #include "Core/include/private/DImage.hpp"
 #include "DImageHistogram.hpp"
@@ -43,7 +43,7 @@ namespace smil
   
     /**
     * \ingroup Base
-    * \defgroup LabelMesures Mesures on blobs
+    * \defgroup BlobMesures Mesures on blobs
     * @{
     */
 
@@ -57,7 +57,12 @@ namespace smil
     {
 	return processBlobMeasure<T, measAreaFunc<T> >(imIn, onlyNonZero);
     }
-
+    
+    /**
+     * \overload 
+     * 
+    * Measure label areas from a pre-generated Blob map (faster).
+    */
     template <class T>
     map<UINT, double> measAreas(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
@@ -170,5 +175,5 @@ namespace smil
 } // namespace smil
 
 
-#endif // _D_LABEL_MEASURES_HPP
+#endif // _D_BLOB_MEASURES_HPP
 

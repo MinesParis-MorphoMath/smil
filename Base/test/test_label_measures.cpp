@@ -1,6 +1,6 @@
 /*
  * Smil
- * Copyright (c) 2010 Matthieu Faessel
+ * Copyright (c) 2011 Matthieu Faessel
  *
  * This file is part of Smil.
  *
@@ -23,7 +23,7 @@
 
 #include "DImage.h"
 #include "DBase.h"
-#include "DLabelMeasures.hpp"
+#include "DBlobMeasures.hpp"
 #include "DBench.h"
 #include "DTest.h"
 #include "DMeasures.hpp"
