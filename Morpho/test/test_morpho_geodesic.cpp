@@ -28,24 +28,62 @@
 
 
 
-#include "DCore.h"
-#include "DMorpho.h"
+#include "DMorphoGeodesic.hpp"
 
 using namespace smil;
 
+class TestDistance : public TestCase
+{
+  virtual void run()
+  {
+      Image_UINT8 im1(10,10);
+      Image_UINT8 im2(im1);
+      Image_UINT8 imTruth(im1);
+      
+      UINT8 vec1[] = 
+      { 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+	  0, 255, 255, 255, 255, 255,   0,   0,   0,   0,
+	  0, 255, 255, 255, 255, 255,   0,   0,   0,   0,
+	  0, 255, 255, 255, 255, 255,   0, 255, 255, 255,
+	  0, 255, 255, 255, 255, 255,   0,   0, 255,   0,
+	  0,   0,   0,   0,   0,   0,   0,   0, 255,   0,
+	  0, 255,   0,   0,   0,   0,   0,   0, 255,   0,
+	  0, 255, 255,   0,   0, 255,   0,   0, 255,   0,
+	  0, 255, 255,   0,   0,   0,   0,   0,   0,   0,
+	  0,   0, 255,   0,   0,   0,   0,   0,   0,   0,
+      };
+      im1 << vec1;
+      
+      UINT8 vecTruth[] = 
+      { 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+	  0,   1,   1,   1,   1,   1,   0,   0,   0,   0,
+	  0,   1,   2,   2,   2,   1,   0,   0,   0,   0,
+	  0,   1,   2,   2,   2,   1,   0,   1,   1,   1,
+	  0,   1,   1,   1,   1,   1,   0,   0,   1,   0,
+	  0,   0,   0,   0,   0,   0,   0,   0,   1,   0,
+	  0,   1,   0,   0,   0,   0,   0,   0,   1,   0,
+	  0,   1,   1,   0,   0,   1,   0,   0,   1,   0,
+	  0,   1,   1,   0,   0,   0,   0,   0,   0,   0,
+	  0,   0,   1,   0,   0,   0,   0,   0,   0,   0,
+      };
+      imTruth << vecTruth;
+      
+      dist(im1, im2, sSE());
+      TEST_ASSERT(im2==imTruth);
+      if (retVal!=RES_OK)
+	im2.printSelf(1);
+  }
+};
+
+
 int main(int argc, char *argv[])
 {
-    Image_UINT8 im1(1024, 1024);
-    Image_UINT16 im2(im1);
-    
-    fill(im1, UINT8(0));
-    drawRectangle(im1, 10,10,400,400, UINT8(255), true);
-    drawRectangle(im1, 500,60,40,400);
-    drawLine(im1, 450, 100, 900, 10);
-   
-    
-    UINT BENCH_NRUNS = 1E2;
-    BENCH_IMG(label_v0, im1, im2, CrossSE());
-    BENCH_IMG(label, im1, im2, CrossSE());
+      TestSuite ts;
+      ADD_TEST(ts, TestDistance);
+      
+      return ts.run();
+      
 }
 

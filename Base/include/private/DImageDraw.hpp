@@ -98,7 +98,6 @@ namespace smil
     /**
     * Draw a rectangle
     * 
-    * 
     * \param imOut Output image.
     */
     template <class T>
@@ -177,6 +176,145 @@ namespace smil
 	return RES_OK;
     }
 
+
+    /**
+    * Draw a circle
+    * 
+    * Bressenham's Midpoint Circle algoritm
+    * \see drawDisc
+    * 
+    * \param imOut Output image.
+    */
+    template <class T>
+    RES_T drawCircle(Image<T> &imOut, int x0, int y0, int radius, T value=ImDtTypes<T>::max(), size_t zSlice=0)
+    {
+	ASSERT_ALLOCATED(&imOut);
+	ASSERT((zSlice<imOut.getDepth()), "zSlice is out of range", RES_ERR);
+	
+	ImageFreezer freeze(imOut);
+	
+	int imW = imOut.getWidth();
+	int imH = imOut.getHeight();
+	
+	typename ImDtTypes<T>::sliceType lines = imOut.getSlices()[zSlice];
+	
+	int d = (5 - radius * 4) / 4;
+	int x = 0;
+	int y = radius;
+	int ptX, ptY;
+
+	do
+	{
+	    if (x0+x >= 0 && x0+x <= imW-1 && y0+y >= 0 && y0+y <= imH-1) lines[y0+y][x0+x] = value;
+	    if (x0+x >= 0 && x0+x <= imW-1 && y0-y >= 0 && y0-y <= imH-1) lines[y0-y][x0+x] = value;
+	    if (x0-x >= 0 && x0-x <= imW-1 && y0+y >= 0 && y0+y <= imH-1) lines[y0+y][x0-x] = value;
+	    if (x0-x >= 0 && x0-x <= imW-1 && y0-y >= 0 && y0-y <= imH-1) lines[y0-y][x0-x] = value;
+	    if (x0+y >= 0 && x0+y <= imW-1 && y0+x >= 0 && y0+x <= imH-1) lines[y0+x][x0+y] = value;
+	    if (x0+y >= 0 && x0+y <= imW-1 && y0-x >= 0 && y0-x <= imH-1) lines[y0-x][x0+y] = value;
+	    if (x0-y >= 0 && x0-y <= imW-1 && y0+x >= 0 && y0+x <= imH-1) lines[y0+x][x0-y] = value;
+	    if (x0-y >= 0 && x0-y <= imW-1 && y0-x >= 0 && y0-x <= imH-1) lines[y0-x][x0-y] = value;
+	    if (d < 0) 
+	    {
+		  d = d + (4 * x) + 6;
+	    } 
+	    else 
+	    {
+		  d = d + 4 * (x - y) + 10;
+		  y--;
+	    }
+	    x++;
+	} while (x <= y);
+	
+	return RES_OK;
+    }
+    
+    /**
+    * Draw a sphere
+    * 
+    * \param imOut Output image.
+    */
+    template <class T>
+    RES_T drawSphere(Image<T> &imOut, int x0, int y0, int z0, int radius, T value=ImDtTypes<T>::max())
+    {
+	ASSERT_ALLOCATED(&imOut);
+
+	ImageFreezer freeze(imOut);
+	
+	int imW = imOut.getWidth();
+	int imH = imOut.getHeight();
+	int imD = imOut.getDepth();
+	
+	int x1 = MAX(x0-radius, 0);
+	int y1 = MAX(y0-radius, 0);
+	int z1 = MAX(z0-radius, 0);
+	
+	int x2 = MIN(x0+radius, imW-1);
+	int y2 = MIN(y0+radius, imH-1);
+	int z2 = MIN(z0+radius, imD-1);
+	
+	int r2 = radius*radius;
+	
+	
+	typename Image<T>::volType slices = imOut.getSlices();
+	typename Image<T>::sliceType lines;
+	typename Image<T>::lineType curLine;
+	
+	for (int z=z1;z<=z2;z++)
+	{
+	    lines = slices[z];
+	    for (int y=y1;y<=y2;y++)
+	    {
+		curLine = lines[y];
+		for (int x=x1;x<=x2;x++)
+		  if ((x-x0)*(x-x0)+(y-y0)*(y-y0)+(z-z0)*(z-z0)<=r2)
+		    curLine[x] = value;
+	    }
+	    
+	}
+	
+	return RES_OK;
+    }
+
+    /**
+    * Draw a disc
+    * 
+    * \see drawCircle
+    * 
+    * \param imOut Output image.
+    */
+    template <class T>
+    RES_T drawDisc(Image<T> &imOut, int x0, int y0, int radius, T value=ImDtTypes<T>::max(), int zSlice=0)
+    {
+	ASSERT_ALLOCATED(&imOut);
+	ASSERT((zSlice<imOut.getDepth()), "zSlice is out of range", RES_ERR);
+
+	ImageFreezer freeze(imOut);
+	
+	int imW = imOut.getWidth();
+	int imH = imOut.getHeight();
+	
+	int x1 = MAX(x0-radius, 0);
+	int y1 = MAX(y0-radius, 0);
+	
+	int x2 = MIN(x0+radius, imW-1);
+	int y2 = MIN(y0+radius, imH-1);
+	
+	int r2 = radius*radius;
+	
+	
+	typename Image<T>::sliceType lines = imOut.getSlices()[zSlice];
+	typename Image<T>::lineType curLine;
+	
+	for (int y=y1;y<=y2;y++)
+	{
+	    curLine = lines[y];
+	    for (int x=x1;x<=x2;x++)
+	      if ((x-x0)*(x-x0)+(y-y0)*(y-y0)<=r2)
+		curLine[x] = value;
+	}
+	    
+	return RES_OK;
+    }
 
     /**
     * Draw a box (3D)

@@ -211,7 +211,7 @@ namespace smil
       set<pair<size_t, size_t> > pairs;
     };
 
-    template <class T1, class T2>
+   template <class T1, class T2>
     class labelFunct_v2 : public unaryMorphImageFunctionBase<T1, T2>
     {
     public:
@@ -219,93 +219,160 @@ namespace smil
 	typedef typename parentClass::imageInType imageInType;
 	typedef typename parentClass::imageOutType imageOutType;
 	
-	size_t getLabelNbr() { return sets.size () ; }
-	
+	size_t getLabelNbr() { return labels; }
+
 	virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
 	{
 	    parentClass::initialize(imIn, imOut, se);
 	    fill(imOut, T2(0));
-            labels = 0;
-            size_t size[3];
-            imIn.getSize (size);
-
-            attribution = new list<size_t>*[size[2]*size[1]*size[0]];
-            for (size_t k=0; k<size[2];++k) 
-                for (size_t j=0; j<size[1]; ++j) 
-                    for (size_t i=0; i<size[0]; ++i)
-                        attribution[i+j*size[0]+k*size[0]*size[1]] = NULL; 
+	    labels = T2(0);
 	    return RES_OK;
-
-        }
-	
-	// The generic way
-	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
-	{
-	    T1 pVal = this->pixelsIn[pointOffset];
-	    
-	    if (pVal==0)
-	      return;
-
-            queue <list<size_t>*> candidates;
-            list <size_t> *l;
-
-            // Populating canditates;
-            while (dOffset != dOffsetEnd) {
-                 size_t curDOffset = pointOffset + *dOffset; 
-                 if (this->pixelsIn[curDOffset] == pVal && attribution[curDOffset] != NULL) {
-                        candidates.push (attribution[curDOffset]);
-                 }
-                 dOffset++;
-            }
-
-            if (candidates.size()==0) {
-                l = new list<size_t> ();
-                l->push_back (pointOffset) ;
-                sets.push (l);
-                attribution[pointOffset] = l;
-            }
-            else {
-                while (candidates.size()!=1) {
-                    candidates.back()->splice (candidates.back()->begin(),*(candidates.front()));
-                    candidates.pop(); 
-                }
-                attribution[pointOffset] = candidates.back();
-                candidates.back()->push_back (pointOffset) ;
-                candidates.pop () ;
-            }
 	}
 
-	virtual RES_T finalize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
-	{
-            list <size_t>::iterator it;
+        virtual void processPixel (size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd) 
+        {
 
-            while (!sets.empty()) {
-                if (sets.front() != NULL && sets.front()->size() > 0) {
-                    for (it =  sets.front()->begin(); it != sets.front()->end (); ++it) {
-                        imOut.setPixel (*it, labels+1);
-                    }
-                    delete sets.front();
-                    ++labels;
+            T1 pVal = this->pixelsIn[pointOffset];
+
+            if (pVal == T1(0) || this->pixelsOut[pointOffset] != T2(0))
+                return;
+
+            queue <size_t> propagation;
+            int x, y, z;
+            IntPoint p;
+
+            ++labels;
+            this->pixelsOut[pointOffset] = labels;
+            propagation.push (pointOffset); 
+          
+
+            while (!propagation.empty ()) {
+                z = propagation.front() / (this->imSize[1]*this->imSize[0]);
+                y = (propagation.front() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
+                x = propagation.front() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
+
+                for (UINT i=0; i<this->sePointNbr; ++i) {
+                     p = this->sePoints[i];
+                     if (x+p.x >= 0 && x+p.x < this->imSize[0] &&
+                         y+p.y >= 0 && y+p.y < this->imSize[1] &&
+                         z+p.z >= 0 && z+p.z < this->imSize[2] &&
+                         this->pixelsIn[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] == pVal &&
+                         this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] != labels)
+                     {
+                         this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] = labels;
+                         propagation.push (x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]);
+                     }
                 }
-                sets.pop();
+
+                propagation.pop();
+            } 
+
+
+            /*            T1 pVal = this->pixelsIn[pointOffset];
+            vector<int>::iterator dOffsetStart = dOffset;
+            
+            if (pVal==0)
+                return;
+
+            size_t candidates[this->sePointNbr];
+            int nbr_candidates = 0;
+            size_t curDOffset;
+
+            // Populating canditates, forward scan.
+            while (dOffset != dOffsetEnd) {
+                 curDOffset = pointOffset + *dOffset; 
+                 if (this->pixelsIn[curDOffset] == pVal && this->pixelsOut[curDOffset] != T2(0)) {
+                        candidates[nbr_candidates++] = curDOffset;
+                 }
+                 ++dOffset;
             }
+
+            // No label assigned around the current pixel.
+            if (nbr_candidates == 0) {
+                this->pixelsOut[pointOffset] = T2(labels);
+                ++labels;
+            }
+            else {
+                T2 labelTmp = this->pixelsOut[candidates[0]];
+                if (nbr_candidates > 1) {
+                    // Keeping the smallest label.
+                    for (int i=0; i<nbr_candidates; ++i) {
+                        if (this->pixelsOut[candidates[i]] < labelTmp)
+                            labelTmp = this->pixelsOut[candidates[i]];
+                    }
+                }
+                // Associating the current pixel to the label.
+                this->pixelsOut[pointOffset] = labelTmp;
+
+                if (nbr_candidates > 1) {
+                    queue <size_t> propagation;
+                    int x, y, z;
+                    IntPoint p;
+
+                    // Backward scan.
+                    for (int i=0; i<nbr_candidates; ++i) {
+                        if (this->pixelsOut[candidates[i]] != labelTmp) {
+                            this->pixelsOut[candidates[i]] = labelTmp;
+                            propagation.push (candidates[i]);
+                        }
+                    }
+
+                    // Depth First Search: keep the queue the smallest possible.
+                    while (!propagation.empty ()) {
+                        z = propagation.front() / (this->imSize[1]*this->imSize[0]);
+                        y = (propagation.front() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
+                        x = propagation.front() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
+
+                        for (UINT i=0; i<this->sePointNbr; ++i) {
+                             p = this->sePoints[i];
+                             if (x+p.x >= 0 && x+p.x < this->imSize[0] &&
+                                 y+p.y >= 0 && y+p.y < this->imSize[1] &&
+                                 z+p.z >= 0 && z+p.z < this->imSize[2] &&
+                                 this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] > T2(0) &&
+                                 this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] != labelTmp)
+                             {
+                                 this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] = labelTmp;
+                                 propagation.push (x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]);
+                             }
+                        }
+                        propagation.pop();
+                    }
+                }
+            }
+*/        }
+
+        virtual RES_T finalize (const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+        {
+ /*           labels=0;
+            map <T2, T2> equivalence;
+            for (size_t i=0; i<this->imSize[0]*this->imSize[1]*this->imSize[2]; ++i) {
+                if (this->pixelsOut[i] != T2(0))
+                {
+                    if (equivalence.count (this->pixelsOut[i])) {
+                        this->pixelsOut[i] = equivalence [this->pixelsOut[i]];
+                    } else {
+                            ++labels;
+                            equivalence[this->pixelsOut[i]] = labels;
+                            this->pixelsOut[i] = labels;
+                    }
+                }
+            }
+            ++labels;
+*/
+            return RES_OK;
         }
 
     protected:
-        size_t labels;
-        queue< list <size_t>* > sets;
-        list<size_t>** attribution;
-    };
-
-
-
+        T2 labels;
+    };   
+    
     /**
     * Image labelization
     * 
     * Return the number of labels (or 0 if error).
     */
     template<class T1, class T2>
-    size_t label_v2(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -327,7 +394,7 @@ namespace smil
     * Return the number of labels (or 0 if error).
     */
     template<class T1, class T2>
-    size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t label_v0(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -349,7 +416,7 @@ namespace smil
     * 
     */
     template<class T1, class T2>
-    size_t labelWithArea(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t labelWithArea_v0(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -358,7 +425,7 @@ namespace smil
 	
 	Image<T2> imLabel(imIn);
 	
-	ASSERT(label(imIn, imLabel, se)!=0);
+	ASSERT(label_v0(imIn, imLabel, se)!=0);
  	map<UINT, double> areas = measAreas(imLabel);
 	ASSERT(!areas.empty());
 	
@@ -372,7 +439,7 @@ namespace smil
     * 
     */
     template<class T1, class T2>
-    size_t labelWithArea_v2(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t labelWithArea(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -381,7 +448,7 @@ namespace smil
 	
 	Image<T2> imLabel(imIn);
 	
-	ASSERT(label_v2(imIn, imLabel, se)!=0);
+	ASSERT(label(imIn, imLabel, se)!=0);
  	map<UINT, double> areas = measAreas(imLabel);
 	ASSERT(!areas.empty());
 	

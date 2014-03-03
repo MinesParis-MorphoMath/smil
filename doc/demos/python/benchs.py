@@ -37,11 +37,9 @@ bench(low, im1, im2, im3)
 print "\n*** Morphology ***"
 bench(dilate, im1, im2, hSE(1))
 bench(dilate, im1, im2, sSE(1))
-bench(erode, im1, im2, hSE(1))
-bench(erode, im1, im2, sSE(1))
+bench(dilate, im1, im2, CrossSE(1))
 bench(open, im1, im2, hSE(1))
 bench(open, im1, im2, sSE(1))
-bench(close	, im1, im2, hSE(1))
-bench(close	, im1, im2, sSE(1))
+bench(open, im1, im2, CrossSE(1))
 
 print 

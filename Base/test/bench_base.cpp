@@ -119,9 +119,9 @@ void bench_INT_vs_AV()
 
 void bench_NCores()
 {
-    cout << endl << "---- Nbr Cores ----" << endl;
+    cout << endl << "---- Nbr Threads ----" << endl;
     
-    int sx = 5000;
+    int sx = 1024;
     int sy = 1024;
     
     Image_UINT8 im1(sx, sy);
@@ -171,6 +171,6 @@ int main(int argc, char *argv[])
     bench_NCores();
     bench_Size();
     
-    return 1;
+    return 0;
 }
 
