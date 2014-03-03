@@ -519,32 +519,34 @@ namespace smil
         Image<T1> tmp2(imIn);
 
         // Set image to 1 when pixels are !=0
-        ASSERT(inf (imIn, T1(1), tmp)==RES_OK);
+        ASSERT(inf(imIn, T1(1), tmp)==RES_OK);
+        ASSERT(mul(tmp, T1(255), tmp)==RES_OK);
 
-        ASSERT(copy(tmp, imOut)==RES_OK);
-        ASSERT(mul (tmp, T1(255), tmp)==RES_OK);
 
         // Demi-Gradient to remove sources inside cluster of sources.
-        ASSERT(dilate (tmp, tmp2, se)==RES_OK); 
-        ASSERT(inv(tmp2, tmp2)==RES_OK);
-        ASSERT(add(tmp, tmp2, tmp)==RES_OK);
+        ASSERT(erode (tmp, tmp2, se)==RES_OK); 
+        ASSERT(sub(tmp, tmp2, tmp)==RES_OK);
+
+        ASSERT(copy(tmp, imOut)==RES_OK);
 
         queue<size_t> *level = new queue<size_t>();
         queue<size_t> *next_level = new queue<size_t>();
         queue<size_t> *swap ;
-        T2 cur_level=T2(0);
+        T2 cur_level=T2(2);
 
         size_t size[3];
         imIn.getSize (size) ;
 
-        pixelsIn = tmp.getPixels ();
+        pixelsIn = imIn.getPixels ();
 
         size_t i=0;
         
         for (i=0; i<size[2]*size[1]*size[0]; ++i)
         {
-            if (pixelsIn[i] == T1(0))
+            if (pixelsOut[i] > T2(0)) {
                 level->push (i);
+                pixelsOut[i] = T2(1);
+            }
         }
 
         size_t cur;
@@ -566,7 +568,8 @@ namespace smil
                     if (    x+pt->x >= 0 && x+pt->x < size[0] &&
                             y+pt->y >= 0 && y+pt->y < size[1] &&
                             z+pt->z >= 0 && z+pt->z < size[2] && 
-                            pixelsOut [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] > T2(cur_level))
+                            pixelsOut [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] == T2(0) &&
+                            pixelsIn [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] > T1(0))
                     {
                         pixelsOut [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] = T2(cur_level); 
                         next_level->push (x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]);
