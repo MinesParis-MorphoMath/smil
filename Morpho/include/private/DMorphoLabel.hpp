@@ -407,7 +407,7 @@ namespace smil
     protected :
             T2 labels;
     };
-    
+     
     /**
     * Image labelization
     * 
