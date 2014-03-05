@@ -300,6 +300,7 @@ namespace smil
             Image<T1> tmp2(imIn);
             ASSERT(clone(imIn, tmp)==RES_OK);
             ASSERT(erode (tmp, tmp2, se)==RES_OK); 
+            ASSERT(erode (tmp2, tmp2, se)==RES_OK); 
             ASSERT(sub(tmp, tmp2, tmp)==RES_OK);
         
             lineInType pixelsTmp = tmp.getPixels () ;
@@ -323,6 +324,9 @@ namespace smil
 
             // First PASS to label the boundaries. //
             for (int i=0; i<this->imSize[2]*this->imSize[1]*this->imSize[0]; ++i) {
+                if (i%this->imSize[2]*this->imSize[1] == 0) {
+                    is_not_a_gap=false;
+                }
                 if (pixelsTmp[i] != T1(0)) {
                     if (this->pixelsOut[i] == T2(0)) {
                         if (!is_not_a_gap) {
@@ -364,7 +368,6 @@ namespace smil
                         propagation.pop();
                     } 
                     process_labeling = false;
-                    is_not_a_gap = false;
                 }
             }
 
@@ -374,8 +377,8 @@ namespace smil
             size_t nLines = imIn.getHeight () ;
             size_t nPixels = imIn.getWidth () ;
             int l, v;
-            T1 previous_value = this->pixelsIn[0];
-            T2 previous_label = this->pixelsOut[0];
+            T1 previous_value;
+            T2 previous_label;
 
             sliceInType srcLines = imIn.getLines () ;
             sliceOutType desLines = imOut.getLines () ;
@@ -387,8 +390,8 @@ namespace smil
                 {
                     #pragma omp for
                     for (l=0; l<nLines; ++l) {
-                        lineIn = srcLines[l];
-                        lineOut = desLines[l];
+                        lineIn = srcLines[l+s*nSlices];
+                        lineOut = desLines[l+s*nSlices];
                         previous_value = lineIn[0];
                         previous_label = lineOut[0];
                         for (v=1; v<nPixels; ++v) {
@@ -402,6 +405,7 @@ namespace smil
                     }
                 }
             }
+
         return RES_OK;  
         }
     protected :
