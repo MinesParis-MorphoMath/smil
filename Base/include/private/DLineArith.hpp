@@ -114,7 +114,7 @@ namespace smil
     struct addLine : public binaryLineFunctionBase<T>
     {
 	typedef typename Image<T>::lineType lineType;
-	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+	inline void _exec(lineType lIn1, lineType lIn2, const size_t size, lineType lOut)
 	{
 	    for (size_t i=0;i<size;i++)
 		lOut[i] = lIn1[i] > (T)(ImDtTypes<T>::max()- lIn2[i]) ? ImDtTypes<T>::max() : lIn1[i] + lIn2[i];
@@ -136,7 +136,7 @@ namespace smil
     struct subLine : public binaryLineFunctionBase<T>
     {
 	typedef typename Image<T>::lineType lineType;
-	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+	inline void _exec(lineType lIn1, lineType lIn2, const size_t size, lineType lOut)
 	{
 	    for (size_t i=0;i<size;i++)
 		lOut[i] = lIn1[i] < (T)(ImDtTypes<T>::min() + lIn2[i]) ? ImDtTypes<T>::min() : lIn1[i] - lIn2[i];
@@ -187,7 +187,7 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
-	    const T _trueVal(trueVal), _falseVal(falseVal);
+	    T _trueVal(trueVal), _falseVal(falseVal);
 	    for (size_t i=0;i<size;i++)
 		lOut[i] = lIn1[i] > lIn2[i] ? _trueVal : _falseVal;
 	}
@@ -204,7 +204,7 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
-	    const T _trueVal(trueVal), _falseVal(falseVal);
+	    T _trueVal(trueVal), _falseVal(falseVal);
 	    for (size_t i=0;i<size;i++)
 		lOut[i] |= lIn1[i] > lIn2[i] ? _trueVal : _falseVal;
 	}
@@ -226,7 +226,7 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
-	    const T _trueVal(trueVal), _falseVal(falseVal);
+	    T _trueVal(trueVal), _falseVal(falseVal);
 	    for (size_t i=0;i<size;i++)
 		lOut[i] = lIn1[i] >= lIn2[i] ? _trueVal : _falseVal;
 	}
@@ -243,7 +243,7 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
-	    const T _trueVal(trueVal), _falseVal(falseVal);
+	    T _trueVal(trueVal), _falseVal(falseVal);
 	    for (size_t i=0;i<size;i++)
 		lOut[i] |= lIn1[i] >= lIn2[i] ? _trueVal : _falseVal;
 	}
@@ -265,7 +265,7 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
-	    const T _trueVal(trueVal), _falseVal(falseVal);
+	    T _trueVal(trueVal), _falseVal(falseVal);
 	    for (size_t i=0;i<size;i++)
 		lOut[i] = lIn1[i] < lIn2[i] ? _trueVal : _falseVal;
 	}
@@ -282,7 +282,7 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
-	    const T _trueVal(trueVal), _falseVal(falseVal);
+	    T _trueVal(trueVal), _falseVal(falseVal);
 	    for (size_t i=0;i<size;i++)
 		lOut[i] |= lIn1[i] < lIn2[i] ? _trueVal : _falseVal;
 	}
@@ -304,7 +304,7 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
-	    const T _trueVal(trueVal), _falseVal(falseVal);
+	    T _trueVal(trueVal), _falseVal(falseVal);
 	    for (size_t i=0;i<size;i++)
 		lOut[i] = lIn1[i] <= lIn2[i] ? _trueVal : _falseVal;
 	}
@@ -321,7 +321,7 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
-	    const T _trueVal(trueVal), _falseVal(falseVal);
+	    T _trueVal(trueVal), _falseVal(falseVal);
 	    for (size_t i=0;i<size;i++)
 		lOut[i] |= lIn1[i] <= lIn2[i] ? _trueVal : _falseVal;
 	}
@@ -344,7 +344,7 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
-	    const T _trueVal(trueVal), _falseVal(falseVal);
+	    T _trueVal(trueVal), _falseVal(falseVal);
 	    for (size_t i=0;i<size;i++)
 		lOut[i] = lIn1[i] == lIn2[i] ? _trueVal : _falseVal;
 	}
@@ -359,11 +359,11 @@ namespace smil
 	T trueVal, falseVal;
 	  
 	typedef typename Image<T>::lineType lineType;
-	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+	inline void _exec(lineType lIn1, lineType lIn2, const size_t size, lineType lOut)
 	{
-	    const T _trueVal(trueVal), _falseVal(falseVal);
+	    T _trueVal(trueVal), _falseVal(falseVal);
 	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] == lIn2[i] ? _falseVal : _trueVal;
+		lOut[i] = (lIn1[i] == lIn2[i]) ? _falseVal : _trueVal;
 	}
     };
 
@@ -378,7 +378,7 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
-	    const T _trueVal(trueVal), _falseVal(falseVal);
+	    T _trueVal(trueVal), _falseVal(falseVal);
 	    for (size_t i=0;i<size;i++)
 		lOut[i] |= lIn1[i] == lIn2[i] ? _trueVal : _falseVal;
 	}
@@ -412,7 +412,7 @@ namespace smil
     struct mulLine : public binaryLineFunctionBase<T>
     {
 	typedef typename Image<T>::lineType lineType;
-	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+	inline void _exec(lineType lIn1, lineType lIn2, const size_t size, lineType lOut)
 	{
 	    for (size_t i=0;i<size;i++)
 		lOut[i] = double(lIn1[i]) * double(lIn2[i]) > double(ImDtTypes<T>::max()) ? ImDtTypes<T>::max() : lIn1[i] * lIn2[i];
@@ -434,7 +434,7 @@ namespace smil
     struct divLine : public binaryLineFunctionBase<T>
     {
 	typedef typename Image<T>::lineType lineType;
-	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+	inline void _exec(lineType lIn1, lineType lIn2, const size_t size, lineType lOut)
 	{
 	    for (size_t i=0;i<size;i++)
 	    {
