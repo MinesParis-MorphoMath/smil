@@ -299,8 +299,11 @@ namespace smil
             Image<T1> tmp(imIn);
             Image<T1> tmp2(imIn);
             ASSERT(clone(imIn, tmp)==RES_OK);
-            ASSERT(erode (tmp, tmp2, se)==RES_OK); 
-            ASSERT(erode (tmp2, tmp2, se)==RES_OK); 
+            if (this->imSize[2] == 1) {
+                 ASSERT(erode (tmp, tmp2, SquSE())==RES_OK); 
+            } else {
+                 ASSERT(erode (tmp, tmp2, CubeSE())==RES_OK);           
+            }
             ASSERT(sub(tmp, tmp2, tmp)==RES_OK);
         
             lineInType pixelsTmp = tmp.getPixels () ;
