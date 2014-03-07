@@ -338,6 +338,8 @@ namespace smil
 	    return _exec_single_vertical_segment(imIn, imOut);
 	  case SE_Cube:
 	    return _exec_single_cube_SE(imIn, imOut);
+          case SE_Cross3D:
+            return _exec_single_cross_3d(imIn, imOut);
 	  default:
 	    return _exec_single_generic(imIn, imOut, se);
 	}
@@ -903,6 +905,118 @@ namespace smil
 		
 	    } // #pragma omp parallel
 	}
+	return RES_OK;
+    }
+
+    template <class T, class lineFunction_T>
+    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_cross_3d(const imageType &imIn, imageType &imOut)
+    {
+        size_t w,h,d ;
+        imIn.getSize (&w, &h, &d) ;
+
+        volType srcSlices = imIn.getSlices();
+        volType destSlices = imOut.getSlices();
+        sliceType srcLines;
+        sliceType destLines;
+
+        int tid=0, nthreads = MIN(Core::getInstance()->getNumberOfThreads (), h/4);
+        nthreads = MAX (nthreads, 1) ;
+        int nbufs = 6;
+        lineType *_bufs = this->createAlignedBuffers ( nbufs * nthreads, this->lineLen ) ;
+        lineType buf1, buf2, buf3, buf4, tmp1, firstLineBuf;
+	lineType swap_buf;
+
+        size_t firstLine, blockSize;
+        
+        for (size_t s=0; s<d; ++s) {
+            srcLines = srcSlices[s];
+            destLines = destSlices[s];
+            #pragma omp parallel private(tid,blockSize,firstLine,buf1,buf2,buf3,buf4,tmp1,firstLineBuf,swap_buf) num_threads(nthreads)
+            {
+                #ifdef USE_OPEN_MP
+                tid = omp_get_thread_num();
+                #endif
+                buf1 = _bufs[tid*nbufs];
+                buf2 = _bufs[tid*nbufs+1];
+                buf3 = _bufs[tid*nbufs+2];
+                buf4 = _bufs[tid*nbufs+3];
+                tmp1 = _bufs[tid*nbufs+4];
+                firstLineBuf = _bufs[tid*nbufs+5];
+
+                blockSize = h/nthreads;
+                firstLine = tid*blockSize;
+                if (tid==nthreads-1)
+                   blockSize = h-blockSize*tid;
+
+                // Process first line.
+                copyLine<T>(srcLines[firstLine], w, buf1);
+                _exec_shifted_line_2ways(buf1, 1, w, tmp1, buf4);
+                if (s==0) {
+                    lineFunction(borderBuf, srcSlices[0][firstLine], w, buf4);
+                    lineFunction(buf4, srcSlices[1][firstLine], w, buf4);
+                } else if (s==d-1) {
+                    lineFunction(srcSlices[d-2][firstLine], srcSlices[d-1][firstLine], w, buf4);
+                    lineFunction(buf4, borderBuf, w, buf4);
+                } else {
+                    lineFunction(srcSlices[s-1][firstLine], srcSlices[s][firstLine], w, buf4);
+                    lineFunction(buf4, srcSlices[s+1][firstLine], w, buf4);
+                }
+                lineFunction(buf4, tmp1, w, buf4);
+                copyLine<T>(srcLines[firstLine+1], w, buf2);
+                lineFunction(buf4, buf2, w, tmp1);
+                if (firstLine==0)
+                  lineFunction(borderBuf, tmp1, w, firstLineBuf);
+                else
+                  lineFunction(srcLines[firstLine-1], tmp1, w, firstLineBuf); 
+                #pragma omp barrier
+                for (size_t i=firstLine+2; i<firstLine+blockSize; ++i) {
+                    copyLine<T>(srcLines[i], w, buf3);
+                    _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1) ;
+                    lineFunction (buf1, buf3, w, tmp1);
+                    lineFunction (buf4, tmp1, w, tmp1); 
+                    if (s==0) {
+                        lineFunction(borderBuf, srcSlices[0][i-1], w, buf4);
+                        lineFunction(buf4, srcSlices[1][i-1], w, buf4);
+                    } else if (s==d-1) {
+                        lineFunction(srcSlices[d-2][i-1], srcSlices[d-1][i-1], w, buf4);
+                        lineFunction(buf4, borderBuf, w, buf4);
+                    } else {
+                        lineFunction(srcSlices[s-1][i-1], srcSlices[s][i-1], w, buf4);
+                        lineFunction(buf4, srcSlices[s+1][i-1], w, buf4);
+                    }
+                    lineFunction (buf4, tmp1, w, destLines[i-1]);
+
+ 		  swap_buf = buf1;
+		  buf1 = buf2;
+		  buf2 = buf3;
+		  buf3 = swap_buf;
+                }
+
+                _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1);
+                lineFunction (buf1, buf4, w, tmp1);
+                if (s==0) {
+                    lineFunction(borderBuf, srcSlices[0][firstLine+blockSize-1], w, buf4);
+                    lineFunction(buf4, srcSlices[1][firstLine+blockSize-1], w, buf4);
+                } else if (s==d-1) {
+                    lineFunction(srcSlices[d-2][firstLine+blockSize-1], srcSlices[d-1][firstLine+blockSize-1], w, buf4);
+                    lineFunction(buf4, borderBuf, w, buf4);
+                } else {
+                    lineFunction(srcSlices[s-1][firstLine+blockSize-1], srcSlices[s][firstLine+blockSize-1], w, buf4);
+                    lineFunction(buf4, srcSlices[s+1][firstLine+blockSize-1], w, buf4);
+                }
+                lineFunction(tmp1, buf4, w, buf4);
+                if (firstLine+blockSize == h) 
+                    lineFunction (buf4, borderBuf, w, destLines[firstLine+blockSize-1]); 
+                else
+                    lineFunction (buf4, srcLines[firstLine+blockSize], w, destLines[firstLine+blockSize-1]);
+
+                #pragma omp barrier
+                // finally write the first line
+                copyLine<T>(firstLineBuf, w, destLines[firstLine]);
+
+            } // #pragma omp parallel
+        }
+
 	return RES_OK;
     }
 
