@@ -144,6 +144,7 @@ namespace smil
 	virtual RES_T _exec_single_horizontal_segment(const imageType &imIn, int xsize, imageType &imOut);			// Inplace safe
 	virtual RES_T _exec_single_vertical_segment(const imageType &imIn, imageType &imOut);					// Inplace unsafe !!
 	virtual RES_T _exec_single_cross(const imageType &imIn, imageType &imOut);						// Inplace unsafe !!
+	virtual RES_T _exec_single_cross_3d(const imageType &imIn, imageType &imOut);
 	virtual RES_T _exec_single_depth_segment(const imageType &imIn, int zsize, imageType &imOut); 				// Inplace safe
         virtual RES_T _exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size);			// Inplace unsafe !!
 

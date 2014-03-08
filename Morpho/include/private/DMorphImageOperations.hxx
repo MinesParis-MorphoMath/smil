@@ -338,8 +338,8 @@ namespace smil
 	    return _exec_single_vertical_segment(imIn, imOut);
 	  case SE_Cube:
 	    return _exec_single_cube_SE(imIn, imOut);
-          case SE_Cross3D:
-            return _exec_single_cross_3d(imIn, imOut);
+//           case SE_Cross3D:
+//             return _exec_single_cross_3d(imIn, imOut);
 	  default:
 	    return _exec_single_generic(imIn, imOut, se);
 	}
