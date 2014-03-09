@@ -7,8 +7,10 @@ import smilJava.*;
 import static smilJava.smilBaseJava.*;
 import static smilJava.smilMorphoJava.*;
 
-class Preview extends PreviewBase {
-    public Preview(Context context, AttributeSet attrs) {
+class Preview extends PreviewBase 
+{
+    public Preview(Context context, AttributeSet attrs) 
+    {
         super(context, attrs);
     }
     

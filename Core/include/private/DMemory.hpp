@@ -34,6 +34,8 @@
 #include <string>
 #include <limits>
 
+#include <stdio.h>
+
 #if (defined(__ICL) || defined(__ICC))
   #include <fvec.h>
   inline void *aligned_malloc (size_t size, size_t align=16) { return _mm_malloc(size,align); }

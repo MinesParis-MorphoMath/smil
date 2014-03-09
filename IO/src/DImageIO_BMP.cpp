@@ -190,11 +190,18 @@ namespace smil
 	ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
 	
 	Image<UINT8>::sliceType lines = image.getLines();
+	Image<UINT8>::lineType curLine;
 
-	for (int j=height-1;j>=0;j--){
-	  ASSERT((fread(lines[j], width, 1, fp)!=0), RES_ERR_IO);
-	  for(int i=0; i< width; i++) 
-	      lines[j][i] = lut[lines[j][i]];
+	// The scan line must be word-aligned. This means in multiples of 4.
+	int scanlineSize = (width%4==0) ? width : (width-width%4)+4;
+	UINT8 scanBuf[scanlineSize];
+	
+	for (int j=height-1;j>=0;j--)
+	{
+	    curLine = lines[j];
+	    ASSERT((fread(scanBuf, scanlineSize, 1, fp)!=0), RES_ERR_IO);
+	    for(int i=0; i< width; i++) 
+		curLine[i] = lut[scanBuf[i]];
 	}
 	image.modified();
 
@@ -264,12 +271,14 @@ namespace smil
 	size_t height = image.getHeight();
 
 	int nColors = 256;
-
+	
+	int scanlineSize = (width%4==0) ? width : (width-width%4)+4;
+	
 	fHeader.bfType = 0x4D42;
-	fHeader.bfSize = (UINT32)(width*height*sizeof(UINT8)) + sizeof(bmpFileHeader) + sizeof(bmpInfoHeader);
 	fHeader.bfReserved1 = 0;
 	fHeader.bfReserved2 = 0;
 	fHeader.bfOffBits = sizeof(bmpFileHeader) + sizeof(bmpInfoHeader) + nColors*4;
+	fHeader.bfSize = fHeader.bfOffBits + UINT32(scanlineSize*height);
 
 	iHeader.biSize = sizeof(bmpInfoHeader);  // number of bytes required by the struct
 	iHeader.biWidth = (UINT32)width;  // width in pixels
@@ -299,8 +308,16 @@ namespace smil
 
 	Image<UINT8>::lineType *lines = image.getLines();
 
+	// The scan line must be word-aligned. This means in multiples of 4.
+	int scanlinePadSize = (width%4==0) ? 0 : 4-width%4;
+	UINT scanlinePad[scanlinePadSize];
+
 	for (int i=height-1;i>=0;i--)
-	    fwrite(lines[i], width*sizeof(UINT8), 1, fp);
+	{
+	    fwrite(lines[i], width, 1, fp);
+	    if (scanlinePadSize)
+	      fwrite(scanlinePad, scanlinePadSize, 1, fp);
+	}
 
 	fclose(fp);
 

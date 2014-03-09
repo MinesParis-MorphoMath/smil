@@ -53,21 +53,21 @@ int main(int argc, char *argv[])
     BENCH_CROSS_IMG(copy, im1, im4);
     BENCH_IMG(inv, im1, im2);
     BENCH_IMG(inf, im1, im2, im3);
-    BENCH_IMG(inf, im1, val, im3);
+    BENCH_IMG_STR(inf, "val", im1, val, im3);
     BENCH_IMG(sup, im1, im2, im3);
     BENCH_IMG_STR(sup, "val", im1, val, im3);
     BENCH_IMG(add, im1, im2, im3);
     BENCH_IMG(addNoSat, im1, im2, im3);
-    BENCH_IMG(add, im1, val, im3);
+    BENCH_IMG_STR(add, "val", im1, val, im3);
     BENCH_IMG(sub, im1, im2, im3);
     BENCH_IMG(subNoSat, im1, im2, im3);
-    BENCH_IMG(sub, im1, val, im3);
+    BENCH_IMG_STR(sub, "val", im1, val, im3);
     BENCH_IMG(grt, im1, im2, im3);
     BENCH_IMG(div, im1, im2, im3);
     BENCH_IMG(mul, im1, im2, im3);
-    BENCH_IMG(mul, im1, val, im3);
+    BENCH_IMG_STR(mul, "val", im1, val, im3);
     BENCH_IMG(mulNoSat, im1, im2, im3);
-    BENCH_IMG(mulNoSat, im1, val, im3);
+    BENCH_IMG_STR(mulNoSat, "val", im1, val, im3);
 
 
 

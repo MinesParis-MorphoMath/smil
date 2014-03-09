@@ -875,7 +875,8 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
 	else if (selectedItem->text()=="Width...")
 	{
 	    bool ok;
-	    int lWidth = QInputDialog::getInt(this, tr(""), tr("Line width:"), drawPen.width(), 1, 10, 1, &ok);
+	    int lWidth = QInputDialog::getInteger(this, tr(""), tr("Line width:"), drawPen.width(), 1, 
+10, 1, &ok);
 	    if (ok)
 		drawPen.setWidth(lWidth);
 	}	

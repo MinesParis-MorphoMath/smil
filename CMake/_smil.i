@@ -295,7 +295,7 @@ def bench(func, *args, **keywords):
 
 
     
-class linkManager():
+class linkManager:
     def __init__(self):
       self.links = []
       

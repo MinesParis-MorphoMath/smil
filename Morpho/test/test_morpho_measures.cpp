@@ -27,71 +27,50 @@
  */
 
 
-#ifndef _D_MORPHO_MEASURES_HPP
-#define _D_MORPHO_MEASURES_HPP
 
-#include "DImage.h"
-#include "DMorphoBase.hpp"
+#include "DMorphoMeasures.hpp"
 
+using namespace smil;
 
-namespace smil
+class TestGranulometry : public TestCase
 {
-    /**
-    * \ingroup Morpho
-    * \defgroup MorphoMeasures Measures
-    * @{
-    */
-
-  
-    /**
-    * Granulometry by openings.
-    * 
-    * Performs openings of increasing size and measure the corresponding volume difference.
-    * 
-    * If \b CDF is true, return a Cumulative Distribution Function
-    */ 
-    template <class T>
-    vector<double> measGranulometry(const Image<T> &imIn, const StrElt &se=DEFAULT_SE, bool CDF=true)
-    {
-	vector<double> res;
-	
-	ASSERT(imIn.isAllocated(), res);
-
-	Image<T> imEro(imIn, true); // clone
-	Image<T> imOpen(imIn);
-	
-	size_t seSize = 1;
-	double a0 = area(imIn), a1;
-	
-	do
-	{
-	    erode(imEro, imEro, se);
-	    dilate(imEro, imOpen, se(seSize++));
-	    a1 = area(imOpen);
-	    res.push_back(a0-a1);
-	    a0 = a1;
-	    
-	} while(a0>0);
-	
-	if (CDF)
-	{
-	    double aSum = 0;
-	    for (int i=0;i<res.size();i++)
-	      aSum += res[i];
-	    res[0] /= aSum;
-	    for (int i=1;i<res.size();i++)
-	      res[i] = res[i]/aSum + res[i-1];
-	}
-	    
-	return res;
-    }
-
-    
-/** @}*/
-
-} // namespace smil
+  virtual void run()
+  {
+      Image_UINT8 im1(10,10);
+      Image_UINT8 im2(im1);
+      Image_UINT8 imTruth(im1);
+      
+      UINT8 vec1[] = 
+      { 
+	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+	  0, 255, 255, 255, 255, 255,   0,   0,   0,   0,
+	  0, 255, 255, 255, 255, 255,   0,   0,   0,   0,
+	  0, 255, 255, 255, 255, 255,   0, 255, 255, 255,
+	  0, 255, 255, 255, 255, 255,   0,   0, 255,   0,
+	  0, 255, 255, 255, 255, 255,   0,   0, 255,   0,
+	  0, 255, 255, 255, 255, 255,   0,   0, 255,   0,
+	  0, 255, 255,   0,   0, 255,   0,   0, 255,   0,
+	  0, 255, 255,   0,   0,   0,   0,   0,   0,   0,
+	  0,   0, 255,   0,   0,   0,   0,   0,   0,   0,
+      };
+      im1 << vec1;
+      
+      vector<double> granulo = measGranulometry(im1, hSE(), false);
+      
+      TEST_ASSERT(granulo[0]==12 && granulo[1]==7 && granulo[2]==24);
+      if (retVal!=RES_OK)
+	for (int i=0;i<granulo.size();i++)
+	  cout << i << " " << granulo[i] << endl;
+  }
+};
 
 
-
-#endif // _D_MORPHO_MEASURES_HPP
+int main(int argc, char *argv[])
+{
+      TestSuite ts;
+      ADD_TEST(ts, TestGranulometry);
+      
+      return ts.run();
+      
+}
 
