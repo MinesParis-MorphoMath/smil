@@ -98,7 +98,6 @@ public class SmilDemo extends Activity {
     	{
     		Size size = trueview.getCameraSizes().get(itemId);
     		trueview.setFrameSize(size.width, size.height);
-    		recreate();
     	}
     	else if (groupId==99)
     	{

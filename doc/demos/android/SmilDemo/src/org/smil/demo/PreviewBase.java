@@ -23,11 +23,11 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
 
     private static Camera              mCamera;
     private static List<Camera.Size> 			cameraSizes;
+    private boolean cameraInitialized = false;
     private static SurfaceHolder       mHolder;
     private static int                 mFrameWidth = 0;
     private static int                 mFrameHeight = 0;
     private byte[]              mFrame;
-    private boolean             mThreadRun;
     
     protected static String infoMsg;
     
@@ -36,13 +36,15 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
     private static Image_UINT8 imOut = new Image_UINT8();
     private static int rgba[] = null;
     
+    protected boolean mThreadRun = false;
+    protected boolean processing = false;
     private static long processTime = 0;
     private static long lastTime = 0;
     private double fps = 0; 
     
-    public PreviewBase(Context context, AttributeSet attrs) {
+    public PreviewBase(Context context, AttributeSet attrs) 
+    {
         super(context, attrs);
-//        Log.i(TAG, "Preview Created");
         mHolder = getHolder();
         mHolder.addCallback(this);
     }
@@ -62,89 +64,148 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
 
     public void setFrameSize(int w, int h) 
     {
-    	mCamera.stopPreview();
-    	mThreadRun = false;
-    	mFrameWidth = w;
-    	mFrameHeight = h;
-    	surfaceChanged(mHolder, 0, mFrameWidth, mFrameHeight);
+    	configure(0, w, h);
     }
 
-    public void surfaceChanged(SurfaceHolder _holder, int format, int width, int height) {
-        Log.i(TAG, "surfaceChanged");
-        if (mCamera != null) {
-            
-			// selecting optimal camera preview size
-			if (mFrameWidth==0)
-			{
-			    double minDiff = Double.MAX_VALUE;
-			    for (Camera.Size size : cameraSizes) {
-			        if (Math.abs(size.height - height) < minDiff) {
-			        	mFrameWidth = size.width;
-			        	mFrameHeight = size.height;
-			            minDiff = Math.abs(size.height - height);
-			        }
-			    }
-			}
-			
-			infoMsg = null;
-            
-			mCamera.setDisplayOrientation(90);
-	    	
-			processBmp = Bitmap.createBitmap(mFrameWidth, mFrameHeight, Bitmap.Config.ARGB_8888);
-			
-			rgba = new int[mFrameWidth*mFrameHeight];
-			imIn.setSize(mFrameWidth, mFrameHeight);
-			imOut.setSize(mFrameWidth, mFrameHeight);
-						
-			Camera.Parameters params = mCamera.getParameters();
-			params.setPreviewSize(mFrameWidth, mFrameHeight);
-			mCamera.setParameters(params);
-			try 
-			{
-				SurfaceView fakeview = (SurfaceView) ((View)getParent()).findViewById(R.id.fakeCameraView); 
-				mCamera.setPreviewDisplay(fakeview.getHolder());
-			} catch (IOException e) 
-			{
-			//			Log.e(TAG, "mCamera.setPreviewDisplay fails: " + e);
-			}
-			
-			mCamera.startPreview();
-            
+    public void surfaceChanged(SurfaceHolder _holder, int format, int width, int height) 
+    {
+        configure(format, width, height);
+        
+		infoMsg = null;
+    	
+    }
+
+    protected void setPictureFormat(int format) 
+    {
+        Camera.Parameters params = mCamera.getParameters();
+        List<Integer> supported = params.getSupportedPictureFormats();
+        if (supported != null) 
+        {
+                for (int f : supported) 
+                {
+                        if (f == format) 
+                        {
+                                params.setPreviewFormat(format);
+                                mCamera.setParameters(params);
+                                break;
+                        }
+                }
         }
-    }
+}
 
-    public void surfaceCreated(SurfaceHolder holder) {
+	protected void setPreviewSize(int width, int height) 
+	{
+        Log.i(TAG, "setPreviewSize: " + width + "x" + height);
+        Camera.Parameters params = mCamera.getParameters();
+        List<Camera.Size> supported = params.getSupportedPreviewSizes();
+        if (!cameraInitialized)
+        {
+        	width = 800;
+        	height = 600;
+        	cameraInitialized = true;
+        }
+        if (supported != null) 
+        {
+            for (Camera.Size size : supported) 
+            {
+                if (size.width <= width && size.height <= height) 
+                {
+                    mFrameWidth = size.width;
+                    mFrameHeight = size.height;
+                    params.setPreviewSize(mFrameWidth, mFrameHeight);
+                    mCamera.setParameters(params);
+                    break;
+                }
+            }
+        }
+	}
+	
+	protected void setImagesSize(int width, int height) 
+	{
+		processBmp = Bitmap.createBitmap(mFrameWidth, mFrameHeight, Bitmap.Config.ARGB_8888);
+		
+		rgba = new int[mFrameWidth*mFrameHeight];
+		imIn.setSize(mFrameWidth, mFrameHeight);
+		imOut.setSize(mFrameWidth, mFrameHeight);
+	}
+	
+    public void configure(int format, int width, int height) 
+    {
+        if (mCamera == null)
+        	return;
+
+        mThreadRun = false;
+        mCamera.stopPreview();
+        while (processing)
+        {
+        	synchronized (this)
+        	{
+		        try {
+					this.wait();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
+        }
+	    	
+        if (format!=0)
+        	setPictureFormat(format);
+        setPreviewSize(width, height);
+        setImagesSize(width, height);
+        mCamera.startPreview();
+        mThreadRun = true;
+    }
+    
+    public void surfaceCreated(SurfaceHolder holder) 
+    {
         Log.i(TAG, "surfaceCreated");
         mCamera = Camera.open();
         cameraSizes = mCamera.getParameters().getSupportedPreviewSizes();
-        mCamera.setPreviewCallback(new PreviewCallback() {
-            public void onPreviewFrame(byte[] data, Camera camera) {
-                synchronized (PreviewBase.this) {
+//        mCamera.setPreviewCallbackWithBuffer(new PreviewCallback() 
+        mCamera.setPreviewCallback(new PreviewCallback() 
+        {
+            public void onPreviewFrame(byte[] data, Camera camera) 
+            {
+                synchronized (PreviewBase.this) 
+                {
                     mFrame = data;
                     PreviewBase.this.notify();
                 }
             }
         });
-        (new Thread(this)).start();
+        SurfaceView fakeview = (SurfaceView) ((View)getParent()).findViewById(R.id.fakeCameraView); 
+		try 
+		{
+			mCamera.setPreviewDisplay(fakeview.getHolder());
+		} 
+		catch (IOException e) 
+		{
+		//			Log.e(TAG, "mCamera.setPreviewDisplay fails: " + e);
+		}
+		mThreadRun = true;
+		(new Thread(this)).start();
     }
 
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public void surfaceDestroyed(SurfaceHolder holder) 
+    {
+        if (mCamera == null)
+        	return;
+
+        mCamera.stopPreview();
+        mCamera.setPreviewCallback(null);
+        mCamera.release();
+        mCamera = null;
+
         Log.i(TAG, "surfaceDestroyed");
-        mThreadRun = false;
-        if (mCamera != null) {
-            synchronized (this) {
-                mCamera.stopPreview();
-                mCamera.setPreviewCallback(null);
-                mCamera.release();
-                mCamera = null;
-            }
-        }
     }
 
     //YUV Space to Grayscale
-    static public void YUVtoGrayScale(int[] rgb, byte[] yuv420sp, int width, int height){
+    static public void YUVtoGrayScale(int[] rgb, byte[] yuv420sp, int width, int height)
+    {
         final int frameSize = width * height;
-        for (int pix = 0; pix < frameSize; pix++){
+        for (int pix = 0; pix < frameSize; pix++)
+        {
             int pixVal = (0xff & ((int) yuv420sp[pix])) - 16;
             if (pixVal < 0) pixVal = 0;
             if (pixVal > 255) pixVal = 255;
@@ -176,43 +237,65 @@ public abstract class PreviewBase extends SurfaceView implements SurfaceHolder.C
 		lastTime = tickFrameTime;
     }
     
-    public void run() {
-        mThreadRun = true;
+    public void run() 
+    {
 //        Log.i(TAG, "Starting processing thread");
-        while (mThreadRun) {
-
-            synchronized (this) {
-                try {
-                    this.wait();
-                    processFrame(mFrame);
-               } catch (InterruptedException e) {
+        while (true)
+        {
+        	
+        	if (!mThreadRun)
+        	{
+                try 
+                {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) 
+                {
                     e.printStackTrace();
                 }
-            }
-
-            if (processBmp != null) {
-                Canvas canvas = mHolder.lockCanvas();
-                if (canvas != null) {
-                	Paint paint = new Paint();
-                	
-        			canvas.drawColor(Color.BLACK);
-        			Bitmap scaledBmp = Bitmap.createScaledBitmap(processBmp, canvas.getWidth(), canvas.getHeight(), false);
-        			canvas.drawBitmap(scaledBmp, 0, 0, null);
-        			scaledBmp.recycle();
-        			
-                	paint.setStyle(Paint.Style.FILL);
-        			paint.setStrokeWidth(3);
-        			paint.setColor(Color.RED);
-        			paint.setTextSize(30);
-        			canvas.drawText("Im Size: " + mFrameWidth + "x" + mFrameHeight , 20, 40, paint);
-        			canvas.drawText("Fps: " + fps , 20, 80, paint);
-        			canvas.drawText("Process time: " + processTime + " msec", 20, 120, paint);
-        			if (infoMsg!=null)
-            			canvas.drawText(infoMsg, 20, 120, paint);
-        			
-                    mHolder.unlockCanvasAndPost(canvas);
-                }
-            }
+        	}
+        	else
+        	{
+	        	processing = true;
+	            synchronized (this) 
+	            {
+	                try 
+	                {
+	                    this.wait();
+	                    processFrame(mFrame);
+	                } catch (InterruptedException e) 
+	                {
+	                    e.printStackTrace();
+	                }
+	            }
+	
+	            if (processBmp != null) 
+	            {
+	                Canvas canvas = mHolder.lockCanvas();
+	                if (canvas != null) 
+	                {
+	                	Paint paint = new Paint();
+	                	
+	        			canvas.drawColor(Color.BLACK);
+	        			Bitmap scaledBmp = Bitmap.createScaledBitmap(processBmp, canvas.getWidth(), canvas.getHeight(), false);
+	        			canvas.drawBitmap(scaledBmp, 0, 0, null);
+	        			scaledBmp.recycle();
+//	        			canvas.drawBitmap(processBmp, 0, 0, null);
+	        			
+	                	paint.setStyle(Paint.Style.FILL);
+	        			paint.setStrokeWidth(3);
+	        			paint.setColor(Color.RED);
+	        			paint.setTextSize(30);
+	        			canvas.drawText("Im Size: " + mFrameWidth + "x" + mFrameHeight , 20, 40, paint);
+	        			canvas.drawText("Fps: " + fps , 20, 80, paint);
+	        			canvas.drawText("Process time: " + processTime + " msec", 20, 120, paint);
+	        			if (infoMsg!=null)
+	            			canvas.drawText(infoMsg, 20, 120, paint);
+	        			
+	                    mHolder.unlockCanvasAndPost(canvas);
+	                }
+	            }
+	        	processing = false;
+        	}
         }
     }
 }
