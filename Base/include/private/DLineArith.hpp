@@ -102,14 +102,14 @@ namespace smil
     struct invLine : public unaryLineFunctionBase<T>
     {
 	typedef typename Image<T>::lineType lineType;
-	inline void _exec(const lineType lineIn, const size_t size, lineType lOut)
-	{
-	    T maxVal = ImDtTypes<T>::max();
-	    for (size_t i=0;i<size;i++) 
-	      lOut[i] = maxVal - lineIn[i];
+        inline void _exec(const lineType lineIn, const size_t size, lineType lOut)
+        {
+
+	    for (size_t i=0;i<size;i++)
+	      lOut[i] = ImDtTypes<T>::max() - lineIn[i] - ImDtTypes<T>::min();
 	}
     };
-    
+
     template <class T>
     struct addLine : public binaryLineFunctionBase<T>
     {

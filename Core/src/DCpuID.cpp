@@ -47,6 +47,8 @@ CpuID::CpuID()
     ecx(regs[2]),
     edx(regs[3])
 {
+    eax = ebx = ecx = edx = 0;
+    
     // Get vendor
     load(0);
     vendor += string((const char *)&ebx, 4);
@@ -95,6 +97,7 @@ void CpuID::load(unsigned i)
 {
 #ifdef _WIN32
     __cpuid((int *)regs, (int)i);
+#elif defined __ANDROID_API__
 #else
     asm volatile
       ("cpuid" : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx)
