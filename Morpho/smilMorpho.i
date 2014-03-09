@@ -131,9 +131,7 @@ TEMPLATE_WRAP_FUNC(waterfall);
 
 %include "DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(label);
-TEMPLATE_WRAP_FUNC_2T_CROSS(labelGeneric);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithArea);
-TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithAreaGeneric);
 TEMPLATE_WRAP_FUNC(areaOpen);
 TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 
