@@ -108,7 +108,7 @@ namespace smil
     };
 
     template <class T1, class T2>
-    class labelFunct : public unaryMorphImageFunctionBase <T1, T2>
+    class labelFunctFast : public unaryMorphImageFunctionBase <T1, T2>
     {
     public:
 	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
@@ -259,7 +259,7 @@ namespace smil
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
-	labelFunct<T1,T2> f;
+	labelFunctGeneric<T1,T2> f;
 	
 	ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
 	
@@ -276,12 +276,12 @@ namespace smil
     * Return the number of labels (or 0 if error).
     */
     template<class T1, class T2>
-    size_t labelGeneric(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t labelFast(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
-	labelFunctGeneric<T1,T2> f;
+	labelFunctFast<T1,T2> f;
 	
 	ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
 	
@@ -297,7 +297,7 @@ namespace smil
     * 
     */
     template<class T1, class T2>
-    size_t labelWithArea(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t labelWithAreaFast(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -306,7 +306,7 @@ namespace smil
 	
 	Image<T2> imLabel(imIn);
 	
-	ASSERT(label(imIn, imLabel, se)!=0);
+	ASSERT(labelFast(imIn, imLabel, se)!=0);
  	map<UINT, double> areas = measAreas(imLabel);
 	ASSERT(!areas.empty());
 	
@@ -320,7 +320,7 @@ namespace smil
     * 
     */
     template<class T1, class T2>
-    size_t labelWithAreaGeneric(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t labelWithArea(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -329,7 +329,7 @@ namespace smil
 	
 	Image<T2> imLabel(imIn);
 	
-	ASSERT(labelGeneric(imIn, imLabel, se)!=0);
+	ASSERT(label(imIn, imLabel, se)!=0);
  	map<UINT, double> areas = measAreas(imLabel);
 	ASSERT(!areas.empty());
 	
