@@ -160,7 +160,7 @@ namespace smil
 
             // First PASS to label the boundaries. //
             for (int i=0; i<this->imSize[2]*this->imSize[1]*this->imSize[0]; ++i) {
-                if (i%(this->imSize[2]*this->imSize[1]) == 0) {
+                if (i%(this->imSize[0]) == 0) {
                     is_not_a_gap=false;
                 }
                 if (pixelsTmp[i] != T1(0)) {
@@ -254,7 +254,7 @@ namespace smil
     * Return the number of labels (or 0 if error).
     */
     template<class T1, class T2>
-    size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t labelGeneric(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -276,7 +276,7 @@ namespace smil
     * Return the number of labels (or 0 if error).
     */
     template<class T1, class T2>
-    size_t labelFast(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -292,28 +292,6 @@ namespace smil
 	return lblNbr;
     }
 
-    /**
-    * Image labelization with the size of each connected components
-    * 
-    */
-    template<class T1, class T2>
-    size_t labelWithAreaFast(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
-    {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	ImageFreezer freezer(imOut);
-	
-	Image<T2> imLabel(imIn);
-	
-	ASSERT(labelFast(imIn, imLabel, se)!=0);
- 	map<UINT, double> areas = measAreas(imLabel);
-	ASSERT(!areas.empty());
-	
-	ASSERT(applyLookup<T2>(imLabel, areas, imOut)==RES_OK);
-	
-	return RES_OK;
-    }
     
     /**
     * Image labelization with the size of each connected components

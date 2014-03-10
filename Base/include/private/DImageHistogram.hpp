@@ -55,7 +55,7 @@ namespace smil
 
 	typename Image<T>::lineType pixels = imIn.getPixels();
 	for (size_t i=0;i<imIn.getPixelCount();i++)
-	    h[UINT(pixels[i])]++;
+	    h[UINT(pixels[i]-ImDtTypes<T>::min())]++;
 	
 	return RES_OK;
     }
