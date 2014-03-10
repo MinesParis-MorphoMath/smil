@@ -160,7 +160,7 @@ namespace smil
 
             // First PASS to label the boundaries. //
             for (int i=0; i<this->imSize[2]*this->imSize[1]*this->imSize[0]; ++i) {
-                if (i%this->imSize[2]*this->imSize[1] == 0) {
+                if (i%(this->imSize[2]*this->imSize[1]) == 0) {
                     is_not_a_gap=false;
                 }
                 if (pixelsTmp[i] != T1(0)) {
