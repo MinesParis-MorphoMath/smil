@@ -146,7 +146,7 @@ namespace smil
     {
 	png_structp &png_ptr = hStruct.png_ptr;
 	png_infop &info_ptr = hStruct.info_ptr;
-	png_byte color_type;
+// 	png_byte color_type;
 	
 	png_init_io(png_ptr, fp);
 
@@ -180,7 +180,7 @@ namespace smil
 	
 	fclose(fp);
 	
-	png_infop &info_ptr = hStruct.info_ptr;
+// 	png_infop &info_ptr = hStruct.info_ptr;
 	
 	fInfo.width = hStruct.width;
 	fInfo.height = hStruct.height;

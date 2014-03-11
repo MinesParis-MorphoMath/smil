@@ -52,17 +52,17 @@ namespace smil
 	UINT8 *lOut, *lEnd;
 	UINT bCount = BitArray::INT_SIZE(w);
 
-	for (int j=0;j<h;j++)
+	for (size_t j=0;j<h;j++)
 	{
 	    lIn = lines[j].intArray;
 	    lOut = this->qImage->scanLine(j);
 	    lEnd = lOut + w;
 
-	    for (int b=0;b<bCount;b++,lIn++)
+	    for (size_t b=0;b<bCount;b++,lIn++)
 	    {
 	      BitArray::INT_TYPE bVal = (*lIn);
 
-	      for (int i=0;i<BitArray::INT_TYPE_SIZE;i++,lOut++)
+	      for (size_t i=0;i<BitArray::INT_TYPE_SIZE;i++,lOut++)
 	      {
 		if (lOut==lEnd)
 		  break;

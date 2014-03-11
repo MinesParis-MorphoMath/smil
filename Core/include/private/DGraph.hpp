@@ -116,11 +116,11 @@ namespace smil
 	}
 	Graph(const Graph &rhs)
 	  : BaseObject("Graph"),
+	    edgeNbr(rhs.edgeNbr),
 	    nodes(rhs.nodes),
 	    nodeValues(rhs.nodeValues),
 	    edges(rhs.edges),
-	    nodeEdges(rhs.nodeEdges),
-	    edgeNbr(rhs.edgeNbr)
+	    nodeEdges(rhs.nodeEdges)
 	{
 	}
 	

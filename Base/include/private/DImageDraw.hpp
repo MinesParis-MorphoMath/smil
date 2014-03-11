@@ -201,7 +201,7 @@ namespace smil
 	int d = (5 - radius * 4) / 4;
 	int x = 0;
 	int y = radius;
-	int ptX, ptY;
+// 	int ptX, ptY;
 
 	do
 	{

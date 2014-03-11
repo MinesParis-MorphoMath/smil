@@ -42,7 +42,7 @@
   inline void  aligned_free   (void *p)                      { return _mm_free(p); }
 #elif defined (_MSC_VER)
   #include <malloc.h>
-  inline void *aligned_malloc (size_t size, size_t align=16) { return _aligned_malloc((size,align);  }
+  inline void *aligned_malloc (size_t size, size_t align=16) { return _aligned_malloc(size,align);  }
   inline void  aligned_free   (void *p)                      { return _aligned_free(p); }
 #elif defined (__CYGWIN__)
   #include <xmmintrin.h>

@@ -62,8 +62,8 @@ namespace smil
     struct ImageFileInfo
     {
 	ImageFileInfo()
-	  : width(0), height(0), depth(0),
-	    colorType(COLOR_TYPE_UNKNOWN), scalarType(SCALAR_TYPE_UNKNOWN)
+	  : colorType(COLOR_TYPE_UNKNOWN), scalarType(SCALAR_TYPE_UNKNOWN),
+	  width(0), height(0), depth(0)	    
 	{
 	}
 	enum ColorType { COLOR_TYPE_GRAY, COLOR_TYPE_RGB, COLOR_TYPE_GA, COLOR_TYPE_RGBA, COLOR_TYPE_UNKNOWN };

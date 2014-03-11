@@ -61,7 +61,7 @@ namespace smil
 	
 	int imW = imIn.getWidth();
 	int kernelRadius = (kernel.size()-1)/2;
-	int kLen = 2*kernelRadius+1;
+// 	int kLen = 2*kernelRadius+1;
 	
 	float partialKernWeights[kernelRadius];
 	float pkwSum = 0;
@@ -143,7 +143,6 @@ namespace smil
 	int imH = imIn.getHeight();
 	int imD = imIn.getDepth();
 	int kernelRadius = (kernel.size()-1)/2;
-	int kLen = 2*kernelRadius+1;
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	
 	float partialKernWeights[kernelRadius];

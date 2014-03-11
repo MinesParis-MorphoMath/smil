@@ -32,7 +32,6 @@
 
 
 #include "DImage.hpp"
-#include "DImage.hxx"
 #include "DTypes.h"
 #include "DBitArray.h"
 

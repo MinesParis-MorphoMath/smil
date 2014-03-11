@@ -49,6 +49,7 @@ namespace smil
 
 	typedef size_t INT_TYPE;
 
+	UINT index;
 	INT_TYPE *intArray;
 	
 	
@@ -77,7 +78,6 @@ namespace smil
 	inline UINT getHeight() { return height; }
 	inline UINT getBitPadX() const { return intWidth*INT_TYPE_SIZE - bitWidth; }
 
-	UINT index;
 	
 	void setSize(UINT _bitWidth, UINT _bitHeight=1);
 	void createIntArray()
@@ -147,7 +147,7 @@ namespace smil
 	BitArray& operator ++ (int);
 	BitArray& operator ++ ();
 	
-	BitArray& operator += (int dp) {}
+	BitArray& operator += (int dp) { index+=dp; return *this; }
 	
 	inline BitArray& operator = (const BitArray &rhs)
 	{
@@ -185,7 +185,7 @@ namespace smil
 
 
     template <>
-    inline const char *getDataTypeAsString(Bit &val)
+    inline const char *getDataTypeAsString(Bit *val)
     {
 	return "Bit";
     }
@@ -213,6 +213,12 @@ namespace smil
 	    line.deleteIntArray();
 	}
 	static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)(p.intArray)) & (n-1); }
+	static inline std::string toString(const Bit &val)
+	{
+	    stringstream str;
+	    str << int(val);
+	    return str.str();
+	}
     };
 } // namespace smil
 

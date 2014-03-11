@@ -59,6 +59,7 @@ namespace smil
 	  if (buffers.size()!=0)
 	    clear();
 	  this->bufferSize = bufSize;
+	  return RES_OK;
       }
       void clear()
       {
@@ -138,13 +139,14 @@ namespace smil
 	  bufferType buf = ImDtTypes<T>::createLine(this->bufferSize);
 	  buffers.push_back(buf);
 	  availableBuffers.push(buf);
-	  
+	
+	  return true;
       }
       stack<bufferType> availableBuffers;
       vector<bufferType> buffers;
       size_t bufferSize;
-      size_t maxNumberOfBuffers;
       size_t numberOfBuffers;
+      size_t maxNumberOfBuffers;
     };
 
 } // namespace smil

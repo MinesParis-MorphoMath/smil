@@ -62,8 +62,8 @@ namespace smil
 	const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
 	
       protected:
-	uint32_t regs[4];
-	uint32_t &eax, &ebx, &ecx, &edx;
+	UINT32 regs[4];
+	UINT32 &eax, &ebx, &ecx, &edx;
 	unsigned edxFeatures, ecxFeatures, ebxFeatures;
 
 	unsigned cores;
