@@ -27,10 +27,10 @@
 //#include <boost/signal.hpp>
 //#include <boost/bind.hpp>
 
+#include "DBit.h"
 #include "DCore.h"
 #include "DBase.h"
 
-#include "DBit.h"
 
 using namespace smil;
 
@@ -51,56 +51,26 @@ int main(int argc, char *argv[])
     Image<Bit> b1(sx, sy), b2(b1), b3(b1);
     
     UINT8 val = 10;
-    UINT BENCH_NRUNS = 1E4;
+    UINT BENCH_NRUNS = 1E3;
     
-    inf(b1, b2, b3);
-//     BENCH_IMG(inv, im1, im2);
-    BENCH_IMG(inv, b1, b2);
+    BENCH_IMG(fill, im1, UINT8(0));
     BENCH_IMG(fill, b1, Bit(0));
-    BENCH_IMG(inf, b1, b2, b3);
-//     BENCH_IMG(inf, b1, Bit(1), im3);
-    BENCH_IMG(sup, b1, b2, b3);
-    return 1;
     
-//     BENCH_IMG(sup, b1, b2, b3);
-    BENCH_IMG(fill, im1, val);
-    BENCH_IMG(copy, im1, im3);
-    BENCH_CROSS_IMG(copy, im1, im4);
+    BENCH_IMG(copy, im1, im2);
+    BENCH_IMG(copy, b1, b2);
+    
     BENCH_IMG(inv, im1, im2);
+    BENCH_IMG(inv, b1, b2);
+    
     BENCH_IMG(inf, im1, im2, im3);
-    BENCH_IMG(inf, im1, val, im3);
-    BENCH_IMG(sup, im1, im2, im3);
-    BENCH_IMG_STR(sup, "val", im1, val, im3);
+    BENCH_IMG(inf, b1, b2, b3);
+    
     BENCH_IMG(add, im1, im2, im3);
-    BENCH_IMG(addNoSat, im1, im2, im3);
-    BENCH_IMG(add, im1, val, im3);
-    BENCH_IMG(sub, im1, im2, im3);
-    BENCH_IMG(subNoSat, im1, im2, im3);
-    BENCH_IMG(sub, im1, val, im3);
+    BENCH_IMG(add, b1, b2, b3);
+
     BENCH_IMG(grt, im1, im2, im3);
-    BENCH_IMG(div, im1, im2, im3);
-    BENCH_IMG(mul, im1, im2, im3);
-    BENCH_IMG(mul, im1, val, im3);
-    BENCH_IMG(mulNoSat, im1, im2, im3);
-    BENCH_IMG(mulNoSat, im1, val, im3);
-
-
-//      supLine<UINT8> f;
-//       unaryMorphImageFunction<UINT8, supLine<UINT8> > mf;
-//       BENCH_IMG(volIm, (im1));
-//       im6.show();
-
-//       add(im1, im2, im5);
-//       im5.printSelf(sx < 50);
-//       cout << im5;
-
-//       im5.show();
-
-//       qapp.Exec();
-
-//       fill(im1, UINT8(100));
-//       fill(im3, UINT8(0));
-
-
+    BENCH_IMG(grt, b1, b2, b3);
+    
+    return 0;
 }
 
