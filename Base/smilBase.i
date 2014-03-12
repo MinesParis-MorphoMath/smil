@@ -179,6 +179,7 @@ TEMPLATE_WRAP_FUNC(measInertiaMatrix);
 TEMPLATE_WRAP_FUNC(measCovariance);
 TEMPLATE_WRAP_FUNC(measCenteredCovariance);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
+TEMPLATE_WRAP_FUNC(isBinary);
 
 # Suppl. Types
 TEMPLATE_WRAP_SUPPL_FUNC(vol);
