@@ -365,7 +365,7 @@ namespace smil
 	    for (int i=0,xi=x-gridSize/2; i<gridSize; i++,xi++)
 	    {
 		textItem = *txtIt++;
-		if (pLine!=NULL && xi>=0 && xi<imW)
+		if (pLine && xi>=0 && xi<imW)
 		{
 		    pVal = pLine[xi];
 		    if (pVal<lightThresh)

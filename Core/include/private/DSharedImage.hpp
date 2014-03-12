@@ -91,7 +91,7 @@ namespace smil
 	    if (this->allocated)
 		return RES_ERR_BAD_ALLOCATION;
 
-	    if (this->pixels==NULL)
+	    if (!this->pixels)
 		return RES_ERR_BAD_ALLOCATION;
 	    
 	    this->allocated = true;

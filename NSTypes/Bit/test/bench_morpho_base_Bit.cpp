@@ -28,30 +28,37 @@
 
 
 
+#include "DBit.h"
 #include "DCore.h"
 #include "DMorpho.h"
 #include "DGui.h"
 #include "DIO.h"
-#include "DBit.h"
 
 using namespace smil;
 
 int main(int argc, char *argv[])
 {
-    typedef Bit dataType;
-    typedef Image<dataType> imType;
+    typedef Image<UINT8> imType1;
+    typedef Image<Bit> imType2;
     
-    imType im1(1024, 1024);
-    imType im2(im1);
+    imType1 im1(1024, 1024);
+    imType1 im2(im1);
+    imType2 b1(im1);
+    imType2 b2(im1);
     
     UINT BENCH_NRUNS = 1E3;
     BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
+    BENCH_IMG_STR(dilate, "hSE", b1, b2, hSE());
+    
     BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(erode, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(erode, "sSE", im1, im2, sSE());
+    BENCH_IMG_STR(dilate, "sSE", b1, b2, sSE());
+
     BENCH_IMG_STR(open, "hSE", im1, im2, hSE());
+    BENCH_IMG_STR(open, "hSE", b1, b2, hSE());
+    
     BENCH_IMG_STR(open, "sSE", im1, im2, sSE());
-    BENCH_IMG_STR(close, "hSE", im1, im2, hSE());
-    BENCH_IMG_STR(close, "sSE", im1, im2, sSE());    
+    BENCH_IMG_STR(open, "sSE", b1, b2, sSE());
+    
+    return 0;
 }
 
