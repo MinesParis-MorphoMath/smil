@@ -1,0 +1,40 @@
+IDEAS:
+    CACHE-EFFICIENT:
+        -thread locking can prevent efficient cache loading by preventing continuous block of memory to be loaded.
+        -use cachegrind to profile against a virtual cache.
+        -chunk of memories implementations.
+        -load continuous chunk of memories.
+        -Be careful with single values for each threads but store in the same cache line -> false sharing (only one thread access his own value at a time).
+        -if multiple tabs have to be accessed at the same time. Concatenate chunk of memories together : alternatively put one line of each array one after the other.
+        -Those explains why 4 cpus are better than 8 cpus (the current repartition of the data between thread is not optimised).
+            +http://www.ddj.com/go-parallel/article/showArticle.jhtml?articleID=217500206
+            +http://ddj.com/architect/208200273
+
+    PROCESSING OPERATORS:
+        -Operations on a image executed as a sequence of pixel-based operations (or line-base operations ?).
+        -Allows us to determine the chunk size and content needed for handling all the operations. (multiple Image against single Image operations).
+        -Allows us to determine which task is fitted for which processing unit?.
+        ->Stack all operations.
+        ->Automatic barriers and sequence generation when calling exec ().
+        ->Must wrap access to chunk to a normal access of a array of multiple dimension.
+
+    IMAGE ARRAYS:
+        -Chunk based arrays generated at execution time. Size not determined by line width but by cache size and adjacent useful data.
+        -Separate clearly the chunks for each thread to avoid false sharing.
+        -A specialized version containing only the non blank points of a image. with automatic dimensionning when write/read to an output/input.
+
+    STRUCTURING ELEMENT:
+        -Static Arrays instead of list of points.
+        -Simultaneous calculus of all points of a line of a SE with SIMD.
+
+
+    SOME SHORT OPTIMIZATION (should be automatically done if gcc > 4.3, but not sure):
+        -replace 
+            for (int i=0; i<array.size(); ++i)
+         with
+            int len = array.size()
+            for (int i=0; i<len; ++i)
+        -Create pointers into the arrays in your outer loop and use preincrements on the first pointer access in the loop.
+            int *pA = array[i]-1;
+            int *pOtherA = otherArray[j]-1;
+            int x = *(++pA) + *(pOtherA);
