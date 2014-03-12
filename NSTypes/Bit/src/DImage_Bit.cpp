@@ -30,6 +30,7 @@
 
 #include "DImage_Bit.h"
 #include "DLineArith_Bit.h"
+#include "DImageArith_Bit.h"
 
 namespace smil
 {
@@ -146,6 +147,7 @@ namespace smil
     RES_T Image<Bit>::setPixel(size_t offset, const Bit &value)
     {
 	this->lines[offset/width][offset%width] = value;
+	return RES_OK;
     }
 
 } // namespace smil

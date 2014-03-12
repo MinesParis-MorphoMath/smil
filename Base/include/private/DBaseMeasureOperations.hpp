@@ -143,7 +143,6 @@ namespace smil
 	    
 	    lineType pixels = imIn.getPixels();
 	    size_t pixCount = imIn.getPixelCount();
-	    size_t widthLimit = imIn.getWidth()-1;
 	    
 	    if (!onlyNonZero)
 		processSequence(pixels, pixCount);
@@ -213,7 +212,6 @@ namespace smil
 	    typename Image<T>::lineType pixels;
 	    size_t dims[3];
 	    imIn.getSize(dims);
-	    T curVal;
 	    
 	    if (!onlyNonZero)
 	    {
@@ -237,7 +235,6 @@ namespace smil
 			
 			for (size_t x=0;x<dims[0];x++)
 			{
-			    curVal = pixels[x];
 			    if (pixels[x]!=0)
 			    {
 			      if (curSize++==0)

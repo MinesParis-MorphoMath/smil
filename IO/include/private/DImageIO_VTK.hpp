@@ -85,7 +85,6 @@ namespace smil
 	virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
 	{
 	    std::ifstream fp;
-	    ImageFileInfo::ScalarType scalarType = ImageFileInfo::SCALAR_TYPE_UINT8; // default, if not specified in the file header
 
 	    /* open image file */
 	    fp.open(filename, ios_base::binary);
@@ -159,7 +158,6 @@ namespace smil
 	    // Return to the begining of the data
 	    fp.seekg(hStruct.startPos);
 	    
-	    UINT ptsNbr = hStruct.pointNbr;
 	    double scalarCoeff = double(ImDtTypes<T>::max()) / hStruct.scalarCoeff;
 	    
 	    if (!hStruct.binaryFile)
@@ -279,18 +277,6 @@ namespace smil
 	return RES_ERR;
     }
     
-#ifdef SMIL_WRAP_RGB    
-    template <>
-    inline RES_T VTKImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
-    {
-	return RES_ERR;
-    }
-    template <>
-    inline RES_T VTKImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
-    {
-	return RES_ERR;
-    }
-#endif // SMIL_WRAP_RGB    
 
 /*@}*/
 

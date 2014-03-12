@@ -171,7 +171,7 @@ namespace smil
 
 	// read the color table
 	  
-	for (int j=0; j<nColors; j++) {
+	for (UINT j=0; j<nColors; j++) {
 	    ASSERT(fread(&b, 1, 1, fp));
 	    ASSERT(fread(&g, 1, 1, fp));
 	    ASSERT(fread(&r, 1, 1, fp));
@@ -241,7 +241,7 @@ namespace smil
 	{
 	    arrays = lines[j].arrays;
 	    ASSERT((fread(data, width*3, 1, fp)!=0), RES_ERR_IO);
-	    for (size_t i=0;i<width;i++)
+	    for (int i=0;i<width;i++)
 	      for (UINT n=0;n<3;n++)
 		arrays[n][i] = data[3*i+n];
 	}

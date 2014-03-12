@@ -32,20 +32,22 @@
 #include <omp.h>
 #endif
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #include <intrin.h>
-#endif // WIN32
+#else
+#include <cpuid.h>
+#endif // _MSC_VER
 
 using namespace smil;
 
 
 CpuID::CpuID()
-  : cores(0), 
-    logical(0),
-    eax(regs[0]),
+  : eax(regs[0]),
     ebx(regs[1]),
     ecx(regs[2]),
-    edx(regs[3])
+    edx(regs[3]),
+    cores(0), 
+    logical(0)
 {
     eax = ebx = ecx = edx = 0;
     
@@ -63,18 +65,18 @@ CpuID::CpuID()
     ebxFeatures = ebx;
 
     // HTT
-    hyperThreaded =  edxFeatures & (1 << 28);
+    hyperThreaded =  (edxFeatures & (1 << 28))!=0;
     
     // SIMD
-    simdInstructions.MMX = edxFeatures & (1 << 23);
-    simdInstructions.SSE = edxFeatures & (1 << 25);
-    simdInstructions.SSE2 = edxFeatures & (1 << 26);
-    simdInstructions.SSE3 = ecxFeatures & (1 << 0);
-    simdInstructions.SSSE3 = ecxFeatures & (1 << 9);
-    simdInstructions.SSE41 = ecxFeatures & (1 << 19);
-    simdInstructions.SSE42 = ecxFeatures & (1 << 20);
-    simdInstructions.AES = ecxFeatures & (1 << 25);
-    simdInstructions.AVX = ecxFeatures & (1 << 28);
+    simdInstructions.MMX = (edxFeatures & (1 << 23))!=0;
+    simdInstructions.SSE = (edxFeatures & (1 << 25))!=0;
+    simdInstructions.SSE2 = (edxFeatures & (1 << 26))!=0;
+    simdInstructions.SSE3 = (ecxFeatures & (1 << 0))!=0;
+    simdInstructions.SSSE3 = (ecxFeatures & (1 << 9))!=0;
+    simdInstructions.SSE41 = (ecxFeatures & (1 << 19))!=0;
+    simdInstructions.SSE42 = (ecxFeatures & (1 << 20))!=0;
+    simdInstructions.AES = (ecxFeatures & (1 << 25))!=0;
+    simdInstructions.AVX = (ecxFeatures & (1 << 28))!=0;
     
     
 #ifdef USE_OPEN_MP
@@ -95,15 +97,11 @@ CpuID::CpuID()
 
 void CpuID::load(unsigned i) 
 {
-#ifdef _WIN32
-    __cpuid((int *)regs, (int)i);
-#elif defined __ANDROID_API__
+#ifdef _MSC_VER
+    __cpuid((int *)regs, i);
 #else
-    asm volatile
-      ("cpuid" : "=a" (eax), "=b" (ebx), "=c" (ecx), "=d" (edx)
-      : "a" (i), "c" (0));
-    // ECX is set to zero for CPUID function 4
-#endif
+    __cpuid(i, eax, ebx, ecx, edx);
+#endif // _MSC_VER
 }
 
 

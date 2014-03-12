@@ -64,7 +64,7 @@ class Test_MeasureBarycenter : public TestCase
 	for (UINT i=20;i<70;i++)
 	  lines[j][i] = 255;
 
-      double xc = 0, yc = 0;
+//       double xc = 0, yc = 0;
       double xcTruth = 44.5, ycTruth = 34.5;
       
       Vector_double bary = measBarycenter(im);
@@ -200,7 +200,6 @@ class Test_MeanVal : public TestCase
       
       fill(im, UINT16(10));
       im.setPixel(0, UINT16(65000));
-      double mv, stdd;
       Vector_double res = meanVal(im);
 
       TEST_ASSERT(res[0]==6509);

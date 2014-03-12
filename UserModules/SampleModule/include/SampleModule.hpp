@@ -27,36 +27,26 @@
  */
 
 
-#include <stdio.h>
-#include <time.h>
-
-#ifndef SMIL_WRAP_RGB
-#define SMIL_WRAP_RGB
-#endif // SMIL_WRAP_RGB
+#ifndef _SAMPLE_MODULE_HPP
+#define _SAMPLE_MODULE_HPP
 
 #include "DCore.h"
-#include "DIO.h"
 
-#include "DGui.h"
-
-
-#include "NSTypes/RGB/include/DRGB.h"
-
-using namespace smil;
-
-int main(int argc, char *argv[])
+namespace smil
 {
-    Image_UINT8 im1;
-    Image_UINT8 im2;
-    Image_UINT8 im3;
 
-    read("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png", im1);
 
-    
-    Image<RGB> rgbIm;
-
-    BaseImage *im0 = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
-    delete im0;
-    
+    template <class T>
+    RES_T sampleFunction(const Image<T> &imIn, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freeze(imOut);
+	
+	
+	
+    }
 }
 
+#endif // _SAMPLE_MODULE_HPP

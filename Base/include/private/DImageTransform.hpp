@@ -271,7 +271,6 @@ namespace smil
 	size_t w = imIn.getWidth();
 	size_t h = imIn.getHeight();
 	
-	typedef typename Image<T>::pixelType pixelType;
 	typedef typename Image<T>::lineType lineType;
 	
 	lineType pixIn = imIn.getPixels();

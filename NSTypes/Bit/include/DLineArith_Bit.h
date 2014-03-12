@@ -31,8 +31,8 @@
 #define _D_LINE_ARITH_BIT_H
 
 
-#include "Base/include/private/DLineArith.hpp"
 #include "DBitArray.h"
+#include "Base/include/private/DLineArith.hpp"
 
 /**
  * \ingroup Arith
@@ -41,6 +41,7 @@
 
 namespace smil
 {
+    
     template <>
     inline void copyLine<Bit>(const typename Image<Bit>::lineType lIn, const size_t size, typename Image<Bit>::lineType lOut)
     {
@@ -66,6 +67,20 @@ namespace smil
 	}
     }
 
+    template <>
+    struct fillLine<Bit> : public unaryLineFunctionBase<Bit>
+    {
+	fillLine() {}
+	fillLine(BitArray lInOut, size_t size, Bit value) { this->_exec(lInOut, size, value); }
+	
+	inline void _exec(BitArray lIn, size_t size, BitArray lOut) { copyLine<Bit>(lIn, size, lOut); }
+	inline void _exec(BitArray lInOut, size_t size, Bit value)
+	{
+	    BitArray::INT_TYPE intVal = (bool)value ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
+	    for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
+	      lInOut.intArray[i] = intVal;
+	}
+    };
     // template <class T1>
     // inline void copyLine(T1 *lIn, size_t size, BitArray lOut)
     // {
@@ -128,20 +143,6 @@ namespace smil
     // }
 
 
-    template <>
-    struct fillLine<Bit> : public unaryLineFunctionBase<Bit>
-    {
-	fillLine() {}
-	fillLine(BitArray lInOut, size_t size, Bit value) { this->_exec(lInOut, size, value); }
-	
-	inline void _exec(BitArray lIn, size_t size, BitArray lOut) { copyLine<Bit>(lIn, size, lOut); }
-	inline void _exec(BitArray lInOut, size_t size, Bit value)
-	{
-	    BitArray::INT_TYPE intVal = (bool)value ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
-	    for (size_t i=0;i<BitArray::INT_SIZE(size);i++)
-	      lInOut.intArray[i] = intVal;
-	}
-    };
 
     inline void bitShiftLeft(BitArray lIn, int dx, size_t lineLen, BitArray lOut, Bit borderValue)
     {
@@ -152,13 +153,13 @@ namespace smil
 	BitArray::INT_TYPE *bOut = lOut.intArray;
 	BitArray::INT_TYPE bBorder = (bool)borderValue ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
 	
-	if (dx>=lineLen)
+	if (dx>=(int)lineLen)
 	{
 	    fillLine<Bit>(lOut, lineLen, borderValue);
 	    return;
 	}
 	
-	for (int i=0;i<dxBytes;i++,bOut++)
+	for (int i=0;i<(int)dxBytes;i++,bOut++)
 	    *bOut = bBorder;
 	
 	UINT lMov = dx%BitArray::INT_TYPE_SIZE;
@@ -167,7 +168,7 @@ namespace smil
 	// First run with border to keep the loop clean for vectorization
 	*bOut++ = (*bIn++ << lMov) | (bBorder >> rMov);
 	
-	for (int i=dxBytes+1;i<realLen;i++,bIn++,bOut++)
+	for (int i=dxBytes+1;i<(int)realLen;i++,bIn++,bOut++)
 	    *bOut = (*bIn << lMov) | (*(bIn-1) >> rMov);
     }
 
@@ -183,13 +184,13 @@ namespace smil
 	BitArray::INT_TYPE *bOut = lOut.intArray + realLen-1;
 	BitArray::INT_TYPE bBorder = (bool)borderValue ? BitArray::INT_TYPE_MAX() : BitArray::INT_TYPE_MIN();
 	
-	if (dx>=lineLen)
+	if (dx>=(int)lineLen)
 	{
 	    fillLine<Bit>(lOut, lineLen, borderValue);
 	    return;
 	}
 	
-	for (int i=0;i<dxBytes;i++,bOut--)
+	for (int i=0;i<(int)dxBytes;i++,bOut--)
 	    *bOut = bBorder;
 	
 	BitArray::INT_TYPE rMov = dx%BitArray::INT_TYPE_SIZE;
@@ -202,7 +203,7 @@ namespace smil
 	if (dxBytes+1<realLen)
 	    *bOut-- = (*bIn-- >> rMov) | (rightMask << lMov);
 	
-	for (int i=dxBytes+2;i<realLen;i++,bIn--,bOut--)
+	for (int i=dxBytes+2;i<(int)realLen;i++,bIn--,bOut--)
 	    *bOut = (*bIn >> rMov) | (*(bIn+1) << lMov);
     }
 
@@ -401,7 +402,7 @@ namespace smil
     };
 
     template <>
-    struct testLine<Bit> : public tertiaryLineFunctionBase<Bit>
+    struct testLine<Bit, Bit> : public tertiaryLineFunctionBase<Bit>
     {
 	inline void _exec(BitArray lIn1, BitArray lIn2, BitArray lIn3, size_t size, BitArray lOut)
 	{

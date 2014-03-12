@@ -56,18 +56,18 @@ namespace smil
 	
 	ImageViewer()
 	  : BaseImageViewer("ImageViewer"),
+	    onOverlayModified(Signal(this)),
 	    image(NULL), 
-	    labelImage(false),
-	    onOverlayModified(Signal(this))
+	    labelImage(false)
 	{
 	    imSize[0] = imSize[1] = imSize[2] = 0;
 	}
 	
 	ImageViewer(Image<T> &im)
 	  : BaseImageViewer("ImageViewer"),
+	    onOverlayModified(Signal(this)),
 	    image(NULL),
-	    labelImage(false),
-	    onOverlayModified(Signal(this))
+	    labelImage(false)
 	{
 	    imSize[0] = imSize[1] = imSize[2] = 0;
 	    setImage(im);

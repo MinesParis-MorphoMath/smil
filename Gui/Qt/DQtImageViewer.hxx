@@ -222,9 +222,6 @@ namespace smil
 	if (!qOverlayImage)
 	  createOverlayImage();
 	
-	size_t w = im.getWidth();
-	size_t h = im.getHeight();
-	
 	typename Image<T>::sliceType lines = im.getSlices()[slider->value()];
 	typename Image<T>::lineType pixels;
 	

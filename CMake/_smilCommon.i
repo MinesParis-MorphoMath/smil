@@ -39,7 +39,6 @@
 #include "DBaseObject.h"
 #include "DBaseImage.h"
 #include "DImage.hpp"
-#include "DImage.hxx"
 #include "DSharedImage.hpp"
 #include "DInstance.hpp"
 #include "DCoreInstance.h"

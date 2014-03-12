@@ -230,7 +230,7 @@ private:
 	
 	size_t minValue = ImDtTypes<T>::max();
 	T tMinV = ImDtTypes<T>::min();
-	OffsetT minOff;
+	OffsetT minOff = 0;
 	for (size_t i=0;i<img.getPixelCount();i++)
 	  if (pix[i]<minValue)
 	  {
@@ -322,12 +322,12 @@ private:
 
     void flood(const Image<T> &img, UINT *img_eti, int level)
     {
-	    int indice;
+// 	    int indice;
 	    int p;
 	    int imWidth = img.getWidth();
 	    int imHeight = img.getHeight();
 	    int imDepth = img.getDepth();
-	    int pixelCount = img.getPixelCount();
+// 	    int pixelCount = img.getPixelCount();
 	    int pixPerSlice = imWidth*imHeight;
 	    typename ImDtTypes<T>::lineType imgPix = img.getPixels();
 	    
@@ -449,7 +449,7 @@ void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indica
       T current_residue;
       UINT cNode, cParent; // attributes
       T lNode, lParent; // node levels, the same type than input image
-      int toto;
+//       int toto;
 
 
       // for (toto=0;toto <=5;toto++){
@@ -494,8 +494,8 @@ void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indica
 	  //	  std::cout<<"UPDATE RES\n";
 	  isMaxT = 1;
 	  transformee_node[node] = current_residue;
-	  int totoflag;
-	  totoflag = ! (isPrevMaxT and flag);
+// 	  int totoflag;
+// 	  totoflag = ! (isPrevMaxT and flag);
 	  //	  std::cout << "totoflag="<<totoflag<<"\n";
 	  if(! (isPrevMaxT and flag)){
 	    indicatrice_node[node]  = cNode + 1;
@@ -531,7 +531,7 @@ void compute_max(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatric
 	unsigned int max_criterion;
 	UINT child;
 	UINT hauteur = tree.getCriterion(node).ymax-tree.getCriterion(node).ymin+1;
-      int toto;
+//       int toto;
       // for (toto=0;toto <=5;toto++){
       // 	std::cout<<toto <<": max="<< tree.getCriterion(toto).ymax<<"; min="<<tree.getCriterion(toto).ymin<<"\n";
       // }
@@ -591,7 +591,7 @@ void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indic
 
   transformee_node[root]=0;
   indicatrice_node[root]=0;
-      int toto;
+//       int toto;
       // for (toto=0;toto <=5;toto++){
       // 	std::cout<<toto <<": max="<< tree.getCriterion(toto).ymax<<"; min="<<tree.getCriterion(toto).ymin<<"\n";
       // }

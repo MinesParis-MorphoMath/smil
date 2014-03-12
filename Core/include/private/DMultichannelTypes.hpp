@@ -39,7 +39,7 @@
 namespace smil
 {
     template <class T=UINT8, UINT N=3>
-    struct MultichannelArray;
+    class MultichannelArray;
     
     template <class T, UINT N>
     class MultichannelArrayItem;
@@ -310,7 +310,9 @@ namespace smil
 	}
 	operator int() const { return double(*this); }
 	operator UINT() const { return double(*this); }
+#ifdef USE_64BIT_IDS
 	operator size_t() const { return double(*this); }
+#endif // USE_64BIT_IDS
 	operator UINT8() const { return double(*this); }
 	operator UINT16() const { return double(*this); }
 	operator bool() const { return double(*this); }
@@ -380,24 +382,24 @@ namespace smil
 	lineType arrays[N];
 	
 	MultichannelArray()
-	  : index(0), size(0), allocatedData(false)
+	  : size(0), index(0), allocatedData(false)
 	{
 	    resetArrays();
 	}
 	MultichannelArray(const MultichannelArray &rhs)
-	  : index(0), size(rhs.size-rhs.index), allocatedData(false)
+	  : size(rhs.size-rhs.index), index(0), allocatedData(false)
 	{
 	    for (UINT i=0;i<N;i++)
 	      arrays[i] = rhs.arrays[i] + rhs.index;
 	}
 	MultichannelArray(const MultichannelArray &rhs, const UINT &newindex)
-	  : index(0), size(rhs.size-rhs.index-newindex), allocatedData(false)
+	  : size(rhs.size-rhs.index-newindex), index(0), allocatedData(false)
 	{
 	    for (UINT i=0;i<N;i++)
 	      arrays[i] = rhs.arrays[i] + rhs.index + newindex;
 	}
 	MultichannelArray(T *arrayValsPtr, size_t size)
-	  : index(0), size(size), allocatedData(false)
+	  : size(size), index(0), allocatedData(false)
 	{
 	    for (UINT i=0;i<N;i++)
 	      arrays[i] = arrayValsPtr + size*i;

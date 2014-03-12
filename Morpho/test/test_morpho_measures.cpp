@@ -59,7 +59,7 @@ class TestGranulometry : public TestCase
       
       TEST_ASSERT(granulo[0]==12 && granulo[1]==7 && granulo[2]==24);
       if (retVal!=RES_OK)
-	for (int i=0;i<granulo.size();i++)
+	for (UINT i=0;i<granulo.size();i++)
 	  cout << i << " " << granulo[i] << endl;
   }
 };

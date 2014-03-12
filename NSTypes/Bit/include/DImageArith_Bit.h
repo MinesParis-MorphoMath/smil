@@ -32,12 +32,14 @@
 
 
 #include "DBitArray.h"
+#include "DLineArith_Bit.h"
 #include "Base/include/private/DImageArith.hpp"
 
 namespace smil
 {
+  
     template <>
-    RES_T copy<Bit>(const Image<Bit> &imIn, Image<Bit> &imOut)
+    inline RES_T copy<Bit>(const Image<Bit> &imIn, Image<Bit> &imOut)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
       

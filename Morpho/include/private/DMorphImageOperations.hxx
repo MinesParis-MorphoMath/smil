@@ -143,7 +143,7 @@ namespace smil
 	vector<int> offsetList;
 	
 	bool oddLine = se.odd && (curLine)%2;
-	int dx;
+// 	int dx;
 	
 	// Remove points wich are outside the image
 	for (UINT i=0;i<sePointNbr;i++)
@@ -482,7 +482,7 @@ namespace smil
 	int nLines = imIn.getHeight();
 
     //     int nthreads = Core::getInstance()->getNumberOfThreads();
-	lineType *_bufs = this->createAlignedBuffers(5, lineLen);
+	sliceType _bufs = this->createAlignedBuffers(5, lineLen);
 	lineType buf0 = _bufs[0];
 	lineType buf1 = _bufs[1];
 	lineType buf2 = _bufs[2];
@@ -712,10 +712,10 @@ namespace smil
     #ifdef USE_OPEN_MP
 	      int tid;
     #endif // USE_OPEN_MP
-	  int y, dz = zsize;
+	  int y;
 	  
     #ifdef USE_OPEN_MP
-	  #pragma omp parallel private(tid,buf1,buf2) firstprivate(dz) num_threads(nthreads)
+	  #pragma omp parallel private(tid,buf1,buf2) num_threads(nthreads)
     #endif // USE_OPEN_MP
 	  {
 	  #ifdef USE_OPEN_MP
