@@ -187,6 +187,12 @@ class Test_BinBuild : public TestCase
       build(imIn, imMark, imBuild, sSE());
       TEST_ASSERT(imBuild==imTruth);
       
+      inv(imIn, imIn);
+      inv(imMark, imMark);
+      dualBuild(imIn, imMark, imBuild, sSE());
+      inv(imBuild, imBuild);
+      TEST_ASSERT(imBuild==imTruth);
+      
       if (retVal!=RES_OK)
 	imBuild.printSelf(1);
   }

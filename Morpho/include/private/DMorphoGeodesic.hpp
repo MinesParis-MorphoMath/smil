@@ -289,8 +289,8 @@ namespace smil
     template <class T>
     RES_T dualBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	if (isBinary(imIn) && isBinary(imMask))
-	  return dualBinBuild(imIn, imMask, imOut, se);
+// 	if (isBinary(imIn) && isBinary(imMask))
+// 	  return dualBinBuild(imIn, imMask, imOut, se);
 	
 	ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
@@ -375,34 +375,34 @@ namespace smil
 	return RES_OK;
     }
 
-    /**
-    * Reconstruction (using hierarchical queues).
-    */
-    template <class T>
-    RES_T dualBinBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
-    {
-	ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
-	//	T noPushValue = NUMERIC_LIMITS<T>::min();
-	//T maxValue =  NUMERIC_LIMITS<T>::max();
-	ImageFreezer freeze(imOut);
-	
-	Image<UINT8> imStatus(imIn);
-	
-	HierarchicalQueue<T> rpq;
-	
-	// Make sure that imIn >= imMask
-	ASSERT((sup(imIn, imMask, imOut)==RES_OK));
-	
-	// make a status image with all background pixels as CANDIDATE, otherwise as FINAL
-	ASSERT(test(imMask, (UINT8)HQ_FINAL, (UINT8)HQ_CANDIDATE, imStatus)==RES_OK);
-    
-	// Initialize the PQ
-	initBuildHierarchicalQueue(imOut, rpq, imOut.getDataTypeMin());
-	processBuildHierarchicalQueue<T, maxFunctor<T> >(imOut, imMask, imStatus, rpq, se);
-	
-	return RES_OK;
-    }
+//     /**
+//     * Reconstruction (using hierarchical queues).
+//     */
+//     template <class T>
+//     RES_T dualBinBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+//     {
+// 	ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+// 	ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
+// 	//	T noPushValue = NUMERIC_LIMITS<T>::min();
+// 	//T maxValue =  NUMERIC_LIMITS<T>::max();
+// 	ImageFreezer freeze(imOut);
+// 	
+// 	Image<UINT8> imStatus(imIn);
+// 	
+// 	HierarchicalQueue<T> rpq;
+// 	
+// 	// Make sure that imIn >= imMask
+// 	ASSERT((sup(imIn, imMask, imOut)==RES_OK));
+// 	
+// 	// make a status image with all background pixels as CANDIDATE, otherwise as FINAL
+// 	ASSERT(test(imMask, (UINT8)HQ_FINAL, (UINT8)HQ_CANDIDATE, imStatus)==RES_OK);
+//     
+// 	// Initialize the PQ
+// 	initBuildHierarchicalQueue(imOut, rpq, imOut.getDataTypeMin());
+// 	processBuildHierarchicalQueue<T, maxFunctor<T> >(imOut, imMask, imStatus, rpq, se);
+// 	
+// 	return RES_OK;
+//     }
 
 
     /**
