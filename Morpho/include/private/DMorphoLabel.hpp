@@ -172,8 +172,9 @@ namespace smil
                         process_labeling = true;
                     } else {
                         current_label = this->pixelsOut[i];
-                        is_not_a_gap = true;
                     }
+
+                    is_not_a_gap = true;
                 } 
                 if (this->pixelsIn[i] == T1(0)) {
                     is_not_a_gap = false;
@@ -206,7 +207,6 @@ namespace smil
                     process_labeling = false;
                 }
             }
-
             // Propagate labels inside the borders //
 
             size_t nSlices = imIn.getDepth () ;
@@ -241,7 +241,6 @@ namespace smil
                     }
                 }
             }
-
         return RES_OK;  
         }
     protected :
