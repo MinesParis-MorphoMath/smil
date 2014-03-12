@@ -32,7 +32,7 @@
 
 #include "DBitArray.h"
 #include "DImage_Bit.h"
-// #include "DLineArith_Bit.h"
+#include "DLineArith_Bit.h"
 #include "DImageArith_Bit.h"
 #include "DImageHistogram_Bit.h"
 #include "DMorpho_Bit.h"

@@ -482,7 +482,7 @@ namespace smil
 	int nLines = imIn.getHeight();
 
     //     int nthreads = Core::getInstance()->getNumberOfThreads();
-	lineType *_bufs = this->createAlignedBuffers(5, lineLen);
+	sliceType _bufs = this->createAlignedBuffers(5, lineLen);
 	lineType buf0 = _bufs[0];
 	lineType buf1 = _bufs[1];
 	lineType buf2 = _bufs[2];

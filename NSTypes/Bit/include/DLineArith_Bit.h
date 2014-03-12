@@ -31,8 +31,8 @@
 #define _D_LINE_ARITH_BIT_H
 
 
-#include "Base/include/private/DLineArith.hpp"
 #include "DBitArray.h"
+#include "Base/include/private/DLineArith.hpp"
 
 /**
  * \ingroup Arith

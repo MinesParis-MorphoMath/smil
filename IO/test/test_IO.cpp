@@ -30,15 +30,16 @@
 #include <stdio.h>
 #include <time.h>
 
-//#include <boost/signal.hpp>
-//#include <boost/bind.hpp>
+#ifndef SMIL_WRAP_RGB
+#define SMIL_WRAP_RGB
+#endif // SMIL_WRAP_RGB
 
 #include "DCore.h"
 #include "DIO.h"
 
 #include "DGui.h"
 
-#include "Core/include/private/DMultichannelTypes.hpp"
+
 #include "NSTypes/RGB/include/DRGB.h"
 
 using namespace smil;
@@ -54,7 +55,7 @@ int main(int argc, char *argv[])
     
     Image<RGB> rgbIm;
 
-    BaseImage *im0 = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images//arearea.png");
+    BaseImage *im0 = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
     delete im0;
     
 }
