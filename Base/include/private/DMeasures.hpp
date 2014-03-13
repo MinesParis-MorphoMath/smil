@@ -583,6 +583,24 @@ namespace smil
 	return offsets;
     }
 
+    /**
+    * Test if an image is binary.
+    * Return \b true if the only pixel values are ImDtTypes<T>::min() and ImDtTypes<T>::max() 
+    */
+    template <class T>
+    bool isBinary(const Image<T> &imIn)
+    {
+	CHECK_ALLOCATED(&imIn);
+	
+	typename Image<T>::lineType pixels = imIn.getPixels();
+	
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	  if (pixels[i]!=ImDtTypes<T>::min() && pixels[i]!=ImDtTypes<T>::max())
+	    return false;
+    
+	return true;
+    }
+    
 /** @}*/
 
 } // namespace smil
