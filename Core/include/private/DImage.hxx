@@ -477,7 +477,8 @@ namespace smil
 	else
 	  os << "2D image" << endl;
 
-	os << "Data type: " << getDataTypeAsString<T>() << endl;
+	T *dum = NULL;
+	os << "Data type: " << getDataTypeAsString<T>(dum) << endl;
 
 	if (depth>1)
 	  os << "Size: " << width << "x" << height << "x" << depth << endl;

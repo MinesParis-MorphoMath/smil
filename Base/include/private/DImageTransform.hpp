@@ -300,7 +300,7 @@ namespace smil
 		D = size_t(pixIn[index+w+1]) & maxVal ;
 		
 		// Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
-		pixOut[offset++] = A*(1.-x_diff)*(1.-y_diff) +  B*(x_diff)*(1.-y_diff) + C*(y_diff)*(1.-x_diff)   +  D*(x_diff*y_diff);
+		pixOut[offset++] = T(A*(1.-x_diff)*(1.-y_diff) +  B*(x_diff)*(1.-y_diff) + C*(y_diff)*(1.-x_diff)   +  D*(x_diff*y_diff));
 	    }
 	}
 	

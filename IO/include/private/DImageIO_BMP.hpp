@@ -43,7 +43,7 @@ namespace smil
     */
     /*@{*/
     
-    class BMPHeader;
+    struct BMPHeader;
     
     RES_T getBMPFileInfo(const char* filename, ImageFileInfo &fInfo);
     

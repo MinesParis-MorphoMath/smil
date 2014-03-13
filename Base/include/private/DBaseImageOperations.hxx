@@ -94,8 +94,8 @@ namespace smil
 	if (!areAllocated(&imIn, &imOut, NULL))
 	    return RES_ERR_BAD_ALLOCATION;
 
-	size_t lineLen = imIn.getWidth();
-	size_t lineCount = imIn.getLineCount();
+	int lineLen = imIn.getWidth();
+	int lineCount = imIn.getLineCount();
 
 	sliceType srcLines = imIn.getLines();
 	sliceType destLines = imOut.getLines();
@@ -125,7 +125,7 @@ namespace smil
 	    return RES_ERR_BAD_ALLOCATION;
 
 	size_t lineLen = imOut.getWidth();
-	size_t lineCount = imOut.getLineCount();
+	int lineCount = imOut.getLineCount();
 
 	sliceType destLines = imOut.getLines();
 	lineType constBuf = ImDtTypes<T>::createLine(lineLen);
@@ -228,7 +228,7 @@ namespace smil
 	    return RES_ERR_BAD_ALLOCATION;
 
 	size_t lineLen = imIn.getWidth();
-	size_t lineCount = imIn.getLineCount();
+	int lineCount = imIn.getLineCount();
 
 	sliceType srcLines = imIn.getLines();
 	sliceType destLines = imOut.getLines();

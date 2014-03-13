@@ -331,7 +331,7 @@ private:
 	    int pixPerSlice = imWidth*imHeight;
 	    typename ImDtTypes<T>::lineType imgPix = img.getPixels();
 	    
-	    while( (pq.getHigherLevel()>=level) && !pq.isEmpty())
+	    while( (pq.getHigherLevel()>=(size_t)level) && !pq.isEmpty())
 	    {
 		p = pq.pop();
 		int p_suiv;
@@ -497,7 +497,7 @@ void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indica
 // 	  int totoflag;
 // 	  totoflag = ! (isPrevMaxT and flag);
 	  //	  std::cout << "totoflag="<<totoflag<<"\n";
-	  if(! (isPrevMaxT and flag)){
+	  if(! (isPrevMaxT && flag)){
 	    indicatrice_node[node]  = cNode + 1;
 	    //	    std::cout <<"UPDATE="<<indicatrice_node[node]<<"   STOP ="<<stop;
 	    //	    std::cout <<"UPDATE IND:"<< cNode+1<<"\n";

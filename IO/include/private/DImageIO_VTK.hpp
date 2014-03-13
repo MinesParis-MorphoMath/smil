@@ -172,7 +172,7 @@ namespace smil
 			for (int x=0;x<width;x++)
 			{
 			    fp >> val;
-			    curLine[x] = (T)(val*scalarCoeff);
+			    curLine[x] = static_cast<T>(val*scalarCoeff);
 			}
 		    }
 		}
@@ -248,7 +248,7 @@ namespace smil
 	      // todo : make this generic
 // 		fp.write((char*)pixels, sizeof(T)*pixNbr);
 	      
-		for (int z=0;z<depth;z++)
+		for (size_t z=0;z<depth;z++)
 		{
 		    curSlice = slices[z];
 		    for (int y=height-1;y>=0;y--)
@@ -277,6 +277,16 @@ namespace smil
 	return RES_ERR;
     }
     
+    template <>
+    inline RES_T VTKImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
+    {
+	return RES_ERR_NOT_IMPLEMENTED;
+    }
+    template <>
+    inline RES_T VTKImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
+    {
+	return RES_ERR_NOT_IMPLEMENTED;
+    }
 
 /*@}*/
 

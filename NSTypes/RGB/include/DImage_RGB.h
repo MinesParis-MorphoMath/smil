@@ -94,7 +94,8 @@ namespace smil
     
         
     template <>
-    inline void* Image<RGB>::getVoidPointer(void) {
+    inline void* Image<RGB>::getVoidPointer() 
+	{
 	return &pixels;
     }
 

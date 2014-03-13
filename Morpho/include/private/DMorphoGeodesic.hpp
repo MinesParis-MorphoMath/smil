@@ -565,9 +565,9 @@ namespace smil
                 x = cur - y *size[0] - z * size[1] * size[0];
 
                 while (pt!=sePoints.end()) {
-                    if (    x+pt->x >= 0 && x+pt->x < size[0] &&
-                            y+pt->y >= 0 && y+pt->y < size[1] &&
-                            z+pt->z >= 0 && z+pt->z < size[2] && 
+                    if (    x+pt->x >= 0 && x+pt->x < (int)size[0] &&
+                            y+pt->y >= 0 && y+pt->y < (int)size[1] &&
+                            z+pt->z >= 0 && z+pt->z < (int)size[2] && 
                             pixelsOut [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] == T2(0) &&
                             pixelsIn [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] > T1(0))
                     {

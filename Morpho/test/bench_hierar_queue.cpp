@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
     Image_UINT16 imLbl2(im1);
     
     
-    UINT BENCH_NRUNS = 1E1;
+    UINT BENCH_NRUNS = 10;
     
     sup(im1, UINT8(30), im2);
     BENCH_IMG(build, im2, im1, im3);

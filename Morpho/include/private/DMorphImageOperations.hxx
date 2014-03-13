@@ -651,7 +651,7 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_horizontal_segment(const imageType &imIn, int xsize, imageType &imOut)
     {
-	  size_t lineCount = imIn.getLineCount();
+	  int lineCount = imIn.getLineCount();
 	  
 	  int nthreads = Core::getInstance()->getNumberOfThreads();
 	  lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
@@ -696,7 +696,7 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_depth_segment(const imageType &imIn, int zsize, imageType &imOut)
     {
-	  size_t w, h, d;
+	  int w, h, d;
 	  imIn.getSize(&w, &h, &d);
 	  
 	  int nthreads = Core::getInstance()->getNumberOfThreads();
@@ -706,8 +706,6 @@ namespace smil
 	  
 	  volType srcSlices = imIn.getSlices();
 	  volType destSlices = imOut.getSlices();
-	  sliceType srcLines;
-	  sliceType destLines;
 	  
     #ifdef USE_OPEN_MP
 	      int tid;
@@ -758,7 +756,7 @@ namespace smil
 	nthreads = MAX(nthreads, 1);
 	int nbufs = 4;
 	lineType *_bufs = this->createAlignedBuffers(nbufs*nthreads, this->lineLen);
-	lineType buf1, buf2, buf3, firstLineBuf;
+	lineType buf1, buf2, firstLineBuf;
 	
 	size_t firstLine, blockSize;
 	
@@ -768,7 +766,7 @@ namespace smil
 	    destLines = destSlices[s];
 
 	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(tid,blockSize,firstLine,buf1,buf2,buf3,firstLineBuf) num_threads(nthreads)
+	    #pragma omp parallel private(tid,blockSize,firstLine,buf1,buf2,firstLineBuf) num_threads(nthreads)
 	#endif
 	    {
 	    #ifdef USE_OPEN_MP
@@ -1100,13 +1098,13 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size)
     {
-        double nbSquareDbl = (((double) size)/(1+sqrt(2)));
+        double nbSquareDbl = (((double) size)/(1+sqrt(2.)));
         double nbSquareFloor = floor(nbSquareDbl);
         int nbSquare = (int) (((nbSquareDbl - nbSquareFloor) < 0.5f) ? (nbSquareFloor) : (nbSquareFloor+1));
 
         ASSERT(_exec (imIn, imOut, Cross3DSE ())==RES_OK);
 
-        for (int i=1; i<size-nbSquare; ++i) 
+        for (size_t i=1; i<size-nbSquare; ++i) 
             ASSERT(_exec(imOut, imOut, Cross3DSE ())==RES_OK);
         
         for (int i=0; i<nbSquare; ++i)
