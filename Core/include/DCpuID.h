@@ -47,7 +47,19 @@ namespace smil
 	bool AES;
 	bool AVX;
     };
-    
+
+    // Associativity.
+    enum { WDISABLED, W1, W2, W4=4, W8=6, W16=8, W32=10, W48, W64, W96, W128, WFULL };
+
+    // Data cache information.
+    struct Cache_Descriptors
+    {
+        int size;
+        int associativity;
+        int lines_per_tag;
+        int line_size;
+    };
+
     class CpuID
     {
 
@@ -60,10 +72,16 @@ namespace smil
 	unsigned getLogical() const { return logical; }
 	bool isHyperThreated() const { return hyperThreaded; }
 	const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
-	
+        const Cache_Descriptors* getCacheAtLevel(unsigned int i) const { 
+            if (i>= nbr_cache_level)
+                return NULL;
+            return L+i; 
+        }	
+        const unsigned int &getNbrCacheLevel() const { return nbr_cache_level; }	
+
       protected:
-	uint32_t regs[4];
-	uint32_t &eax, &ebx, &ecx, &edx;
+	UINT32 regs[4];
+	UINT32 &eax, &ebx, &ecx, &edx;
 	unsigned edxFeatures, ecxFeatures, ebxFeatures;
 
 	unsigned cores;
@@ -71,7 +89,9 @@ namespace smil
 	string vendor;
 	bool hyperThreaded;
 	SIMD_Instructions simdInstructions;
-	
+        Cache_Descriptors L[3]; // Data cache information only
+        unsigned int nbr_cache_level;
+
 	void load(unsigned i);
 
     };
