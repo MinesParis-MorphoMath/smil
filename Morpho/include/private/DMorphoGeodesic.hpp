@@ -190,10 +190,10 @@ namespace smil
 
 
     template <class T, class operatorT>
-    RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq, const StrElt &se)
+    RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMask, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq, const StrElt &se)
     {
 	typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
-	typename ImDtTypes<T>::lineType markPixels = imMark.getPixels();
+	typename ImDtTypes<T>::lineType markPixels = imMask.getPixels();
 	typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
 	
 	vector<int> dOffsets;
@@ -287,25 +287,28 @@ namespace smil
     * Dual reconstruction (using hierarchical queues).
     */
     template <class T>
-    RES_T dualBuild(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T dualBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imMark, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imMark, &imOut);
+// 	if (isBinary(imIn) && isBinary(imMask))
+// 	  return dualBinBuild(imIn, imMask, imOut, se);
+	
+	ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
 
 	ImageFreezer freeze(imOut);
 	
 	Image<UINT8> imStatus(imIn);
 	HierarchicalQueue<T,UINT> pq;
 	
-	// Make sure that imIn >= imMark
-	ASSERT((sup(imIn, imMark, imOut)==RES_OK));
+	// Make sure that imIn >= imMask
+	ASSERT((sup(imIn, imMask, imOut)==RES_OK));
 	
 	// Set all pixels in the status image to CANDIDATE
 	ASSERT((fill(imStatus, (UINT8)HQ_CANDIDATE)==RES_OK));
 	
 	// Initialize the PQ
 	initBuildHierarchicalQueue(imOut, pq);
-	processBuildHierarchicalQueue<T, maxFunctor<T> >(imOut, imMark, imStatus, pq, se);
+	processBuildHierarchicalQueue<T, maxFunctor<T> >(imOut, imMask, imStatus, pq, se);
 	
 	return RES_OK;
     }
@@ -314,10 +317,13 @@ namespace smil
     * Reconstruction (using hierarchical queues).
     */
     template <class T>
-    RES_T build(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T build(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imMark, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imMark, &imOut);
+	if (isBinary(imIn) && isBinary(imMask))
+	  return binBuild(imIn, imMask, imOut, se);
+	
+	ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
 
 	ImageFreezer freeze(imOut);
 	
@@ -326,15 +332,15 @@ namespace smil
 	// Reverse hierarchical queue (the highest token corresponds to the highest gray value)
 	HierarchicalQueue<T> rpq(true);
 	
-	// Make sure that imIn <= imMark
-	ASSERT((inf(imIn, imMark, imOut)==RES_OK));
+	// Make sure that imIn <= imMask
+	ASSERT((inf(imIn, imMask, imOut)==RES_OK));
 	
 	// Set all pixels in the status image to CANDIDATE
 	ASSERT((fill(imStatus, (UINT8)HQ_CANDIDATE)==RES_OK));
 	
 	// Initialize the PQ
 	initBuildHierarchicalQueue(imOut, rpq);
-	processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMark, imStatus, rpq, se);
+	processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMask, imStatus, rpq, se);
 	
 	return RES_OK;
     }
@@ -343,10 +349,10 @@ namespace smil
     * Reconstruction (using hierarchical queues).
     */
     template <class T>
-    RES_T binBuild(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T binBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imMark, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imMark, &imOut);
+	ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
 	//	T noPushValue = NUMERIC_LIMITS<T>::min();
 	//T maxValue =  NUMERIC_LIMITS<T>::max();
 	ImageFreezer freeze(imOut);
@@ -356,20 +362,47 @@ namespace smil
 	// Reverse hierarchical queue (the highest token corresponds to the highest gray value)
 	HierarchicalQueue<T> rpq(true);
 	
-	// Make sure that imIn <= imMark
-	ASSERT((inf(imIn, imMark, imOut)==RES_OK));
+	// Make sure that imIn <= imMask
+	ASSERT((inf(imIn, imMask, imOut)==RES_OK));
 	
 	// make a status image with all foreground pixels as CANDIDATE, otherwise as FINAL
-	
-	ASSERT((copy(imMark, imStatus) == RES_OK));
-	ASSERT((threshold<UINT8>(imStatus, imStatus.getDataTypeMin()+1, imStatus.getDataTypeMax(), (UINT8)HQ_CANDIDATE, (UINT8)HQ_FINAL, imStatus)==RES_OK));
+	ASSERT(test(imMask, (UINT8)HQ_CANDIDATE, (UINT8)HQ_FINAL, imStatus)==RES_OK);
     
 	// Initialize the PQ
 	initBuildHierarchicalQueue(imOut, rpq, imOut.getDataTypeMin());
-	processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMark, imStatus, rpq, se);
+	processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMask, imStatus, rpq, se);
 	
 	return RES_OK;
     }
+
+//     /**
+//     * Reconstruction (using hierarchical queues).
+//     */
+//     template <class T>
+//     RES_T dualBinBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+//     {
+// 	ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+// 	ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
+// 	//	T noPushValue = NUMERIC_LIMITS<T>::min();
+// 	//T maxValue =  NUMERIC_LIMITS<T>::max();
+// 	ImageFreezer freeze(imOut);
+// 	
+// 	Image<UINT8> imStatus(imIn);
+// 	
+// 	HierarchicalQueue<T> rpq;
+// 	
+// 	// Make sure that imIn >= imMask
+// 	ASSERT((sup(imIn, imMask, imOut)==RES_OK));
+// 	
+// 	// make a status image with all background pixels as CANDIDATE, otherwise as FINAL
+// 	ASSERT(test(imMask, (UINT8)HQ_FINAL, (UINT8)HQ_CANDIDATE, imStatus)==RES_OK);
+//     
+// 	// Initialize the PQ
+// 	initBuildHierarchicalQueue(imOut, rpq, imOut.getDataTypeMin());
+// 	processBuildHierarchicalQueue<T, maxFunctor<T> >(imOut, imMask, imStatus, rpq, se);
+// 	
+// 	return RES_OK;
+//     }
 
 
     /**
@@ -498,7 +531,11 @@ namespace smil
 	return RES_OK;
     }
 
-    // Multi-source label-correcting algorithm for ALSP problem.
+    /**
+     * Distance function.
+     * 
+     * Multi-source label-correcting algorithm for ALSP problem.
+     */
     template <class T1, class T2>
     RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
     {
@@ -565,9 +602,9 @@ namespace smil
                 x = cur - y *size[0] - z * size[1] * size[0];
 
                 while (pt!=sePoints.end()) {
-                    if (    x+pt->x >= 0 && x+pt->x < size[0] &&
-                            y+pt->y >= 0 && y+pt->y < size[1] &&
-                            z+pt->z >= 0 && z+pt->z < size[2] && 
+                    if (    x+pt->x >= 0 && x+pt->x < (int)size[0] &&
+                            y+pt->y >= 0 && y+pt->y < (int)size[1] &&
+                            z+pt->z >= 0 && z+pt->z < (int)size[2] && 
                             pixelsOut [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] == T2(0) &&
                             pixelsIn [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] > T1(0))
                     {
@@ -589,7 +626,7 @@ namespace smil
     }
 
     /**
-    * Ugly temporary distance function
+    * Base distance function performed with successive erosions.
     */
     template <class T>
     RES_T dist_v0(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)

@@ -69,11 +69,11 @@ namespace smil
 	fillLine() {}
 	fillLine(const lineType lIn, const size_t size, const RGB value) { this->_exec(lIn, size, value); }
 	
-	inline void _exec(const lineType lIn, const size_t size, lineType lOut)
+	virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
 	{
 	    copyLine<RGB>(lIn, size, lOut);
 	}
-	inline void _exec(lineType lInOut, size_t size, RGB value)
+	virtual void _exec(lineType lInOut, const size_t size, const RGB value)
 	{
 	    for (UINT n=0;n<3;n++)
 	    {
@@ -98,7 +98,7 @@ namespace smil
     struct supLine<RGB> : public binaryLineFunctionBase<RGB>
     {
 	typedef Image<RGB>::lineType lineType;
-	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
 	    for (UINT n=0;n<3;n++)
 	    {
@@ -116,7 +116,7 @@ namespace smil
     struct infLine<RGB> : public binaryLineFunctionBase<RGB>
     {
 	typedef Image<RGB>::lineType lineType;
-	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
 	    for (UINT n=0;n<3;n++)
 	    {
@@ -139,7 +139,7 @@ namespace smil
 	UINT8 trueVal, falseVal;
 	  
 	typedef Image<RGB>::lineType lineType;
-	inline void _exec(lineType lIn1, lineType lIn2, size_t size, lineType lOut)
+	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
 	{
 	    for (UINT n=0;n<3;n++)
 	    {

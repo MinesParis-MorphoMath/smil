@@ -84,28 +84,28 @@ namespace smil
 	    return *this;
 	}
 	
-	bool operator ==(const MultichannelType &mc)
+	bool operator ==(const MultichannelType &mc) const
 	{
 	    for (UINT i=0;i<N;i++)
 	      if (this->value(i) != mc.value(i))
 		return false;
 	    return true;
 	}
-	bool operator ==(const int &val)
+	bool operator ==(const int &val) const
 	{
 	    for (UINT i=0;i<N;i++)
 	      if (this->value(i) != val)
 		return false;
 	    return true;
 	}
-	bool operator !=(const MultichannelType &mc)
+	bool operator !=(const MultichannelType &mc) const
 	{
 	    for (UINT i=0;i<N;i++)
 	      if (this->value(i) == mc.value(i))
 		return false;
 	    return true;
 	}
-	bool operator !=(const int &val)
+	bool operator !=(const int &val) const
 	{
 	    return this->operator!=(MultichannelType(val));
 	}
@@ -153,21 +153,21 @@ namespace smil
 	    return newmc;
 	}
 #endif // SWIG
-	MultichannelType operator -(const MultichannelType &mc)
+	MultichannelType operator -(const MultichannelType &mc) const
 	{
 	    MultichannelType newmc;
 	    for (UINT i=0;i<N;i++)
 	      newmc.value(i) = this->value(i) - mc.value(i);
 	    return newmc;
 	}
-	MultichannelType operator -(const int &val)
+	MultichannelType operator -(const int &val) const
 	{
 	    MultichannelType newmc;
 	    for (UINT i=0;i<N;i++)
 	      newmc.value(i) = this->value(i) - val;
 	    return newmc;
 	}
-	MultichannelType operator -(const size_t &val)
+	MultichannelType operator -(const size_t &val) const
 	{
 	    MultichannelType newmc;
 	    for (UINT i=0;i<N;i++)
@@ -181,14 +181,14 @@ namespace smil
 	      newmc.value(i) = -this->value(i);
 	    return newmc;
 	}
-	MultichannelType operator +(const MultichannelType &mc)
+	MultichannelType operator +(const MultichannelType &mc) const
 	{
 	    MultichannelType newmc;
 	    for (UINT i=0;i<N;i++)
 	      newmc.value(i) = this->value(i) + mc.value(i);
 	    return newmc;
 	}
-	MultichannelType operator +(const int &val)
+	MultichannelType operator +(const int &val) const
 	{
 	    MultichannelType newmc;
 	    for (UINT i=0;i<N;i++)
@@ -207,42 +207,42 @@ namespace smil
 	      this->value(i) -= mc.value(i);
 	    return *this;
 	}
-	MultichannelType operator *(const MultichannelType &mc)
+	MultichannelType operator *(const MultichannelType &mc) const
 	{
 	    MultichannelType newmc;
 	    for (UINT i=0;i<N;i++)
 	      newmc.value(i) = this->value(i) * mc.value(i);
 	    return newmc;
 	}
-	MultichannelType operator *(const double &val)
+	MultichannelType operator *(const double &val) const
 	{
 	    MultichannelType newmc;
 	    for (UINT i=0;i<N;i++)
 	      newmc.value(i) = this->value(i) * val;
 	    return newmc;
 	}
-	MultichannelType operator *(const size_t &val)
+	MultichannelType operator *(const size_t &val) const
 	{
 	    MultichannelType newmc;
 	    for (UINT i=0;i<N;i++)
 	      newmc.value(i) = this->value(i) * val;
 	    return newmc;
 	}
-	MultichannelType operator /(const MultichannelType &mc)
+	MultichannelType operator /(const MultichannelType &mc) const
 	{
 	    MultichannelType newmc;
 	    for (UINT i=0;i<N;i++)
 	      newmc.value(i) = this->value(i) / mc.value(i);
 	    return newmc;
 	}
-	MultichannelType operator /(const double &val)
+	MultichannelType operator /(const double &val) const
 	{
 	    MultichannelType newmc;
 	    for (UINT i=0;i<N;i++)
 	      newmc.value(i) = this->value(i) / val;
 	    return newmc;
 	}
-	MultichannelType operator /(const size_t &val) { return this->operator/(double(val)); }
+	MultichannelType operator /(const size_t &val)  const { return this->operator/(double(val)); }
 	MultichannelType operator &(const MultichannelType &mc)
 	{
 	    MultichannelType newmc;
@@ -318,7 +318,7 @@ namespace smil
 	operator bool() const { return double(*this); }
 	operator signed char() const { return double(*this); }
 	operator char() const { return double(*this); }
-	operator long int() const { return double(*this); }
+	operator long int() const { return static_cast<long int>(double(*this)); }
 
 	virtual const T& value(const UINT &i) const
 	{
@@ -474,12 +474,12 @@ namespace smil
 	    return *this;
 	}
 	
-	inline MultichannelArray operator + (int dp)
+	inline MultichannelArray operator + (int dp) const
 	{
 	    MultichannelArray ba(*this, this->index + dp);
 	    return ba;
 	}
-	inline MultichannelArray operator + (size_t dp)
+	inline MultichannelArray operator + (size_t dp) const
 	{
 	    return operator+((int)dp);
 	}
@@ -507,6 +507,14 @@ namespace smil
 	    size = rhs.size - rhs.index;
 	    allocatedData = rhs.allocatedData;
 	    return *this;
+	}
+	operator void *()
+	{
+		return arrays;
+	}
+	operator char *()
+	{
+		return arrays;
 	}
 	
 	ostream& printSelf(ostream &os=cout);

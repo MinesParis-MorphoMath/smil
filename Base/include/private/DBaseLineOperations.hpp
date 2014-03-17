@@ -48,16 +48,16 @@ namespace smil
 	typedef typename Image<T>::sliceType sliceType;
 	
 	unaryLineFunctionBase() {}
-	unaryLineFunctionBase(lineType lineIn, size_t size, lineType lineOut)
+	unaryLineFunctionBase(const lineType lineIn, const size_t size, lineType lineOut)
 	{
 	    this->_exec(lineIn, size, lineOut);
 	}
 	
-	virtual void _exec(lineType, size_t, lineType) {}
-	virtual void _exec_aligned(lineType lineIn, size_t size, lineType lineOut) { _exec(lineIn, size, lineOut); }
-	virtual void _exec(lineType, size_t, T) {}
-	virtual void _exec_aligned(lineType lineIn, size_t size, T value) { _exec(lineIn, size, value); }
-	inline void operator()(lineType lineIn, size_t size, lineType lineOut)
+	virtual void _exec(const lineType, const size_t, lineType) {}
+	virtual void _exec_aligned(const lineType lineIn, const size_t size, lineType lineOut) { _exec(lineIn, size, lineOut); }
+	virtual void _exec(lineType, const size_t, const T) {}
+	virtual void _exec_aligned(lineType lineIn, const size_t size, T value) { _exec(lineIn, size, value); }
+	inline void operator()(const lineType lineIn, const size_t size, lineType lineOut)
 	{ 
 	    unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn);
 	    unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineOut);
@@ -80,7 +80,7 @@ namespace smil
 		_exec(lineIn, size, lineOut); 
 	    }
 	}
-	inline void operator()(lineType lineIn, size_t size, T value)
+	inline void operator()(const lineType lineIn, const size_t size, T value)
 	{ 
 	    if (size<SIMD_VEC_SIZE)
 	    {
@@ -103,9 +103,9 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	typedef typename Image<T>::sliceType sliceType;
 	
-	virtual void _exec(lineType, lineType, size_t, lineType) {}
-	virtual void _exec_aligned(lineType lineIn1, lineType lineIn2, size_t size, lineType lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
-	inline void operator()(lineType lineIn1, lineType lineIn2, size_t size, lineType lineOut)
+	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut) {}
+	virtual void _exec_aligned(const lineType lineIn1, const lineType lineIn2, const size_t size, lineType lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
+	inline void operator()(const lineType lineIn1, const lineType lineIn2, const size_t size, lineType lineOut)
 	{ 
 	    return _exec(lineIn1, lineIn2, size, lineOut); 
 	    if (size<SIMD_VEC_SIZE)
@@ -136,7 +136,7 @@ namespace smil
 	    }
 	    
 	}
-	inline void operator()(lineType lineIn1, T value, size_t size, lineType lineOut)
+	inline void operator()(const lineType lineIn1, const T value, const size_t size, lineType lineOut)
 	{ 
 	    if (size<SIMD_VEC_SIZE)
 	    {
@@ -175,9 +175,9 @@ namespace smil
 	typedef typename Image<T>::lineType lineType;
 	typedef typename Image<T>::sliceType sliceType;
 	
-	virtual void _exec(lineType lineIn1, lineType lineIn2, lineType lineIn3, size_t size, lineType lineOut) {}
-	virtual void _exec_aligned(lineType lineIn1, lineType lineIn2, lineType lineIn3, size_t size, lineType lineOut) { _exec(lineIn1, lineIn2, lineIn3, size, lineOut); }
-	virtual void operator()(lineType lineIn1, lineType lineIn2, lineType lineIn3, size_t size, lineType lineOut)
+	virtual void _exec(const lineType lineIn1, const lineType lineIn2, const lineType lineIn3, const size_t size, lineType lineOut) {}
+	virtual void _exec_aligned(const lineType lineIn1, const lineType lineIn2, const lineType lineIn3, const size_t size, lineType lineOut) { _exec(lineIn1, lineIn2, lineIn3, size, lineOut); }
+	virtual void operator()(const lineType lineIn1, const lineType lineIn2, const lineType lineIn3, const size_t size, lineType lineOut)
 	{ 
 	    if (size<SIMD_VEC_SIZE)
 	    {

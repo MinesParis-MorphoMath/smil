@@ -40,7 +40,7 @@ int main(int argc, char *argv[])
     Image_UINT8 im3(im1);
     
     
-    UINT BENCH_NRUNS = 1E2;
+    UINT BENCH_NRUNS = 100;
     
     BENCH_IMG(ultimateOpen, im1, im2, im3);
         

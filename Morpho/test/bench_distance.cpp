@@ -48,7 +48,7 @@ class Test_Distance : public TestCase
         im1.setPixel (30,30,UINT(0));
         dist_v0 (im1, im3, CrossSE());
 
-        UINT BENCH_NRUNS = 1E2;
+        UINT BENCH_NRUNS = 100;
         BENCH_IMG(dist, im1, im2, CrossSE());
         TEST_ASSERT (im2==im3);
 

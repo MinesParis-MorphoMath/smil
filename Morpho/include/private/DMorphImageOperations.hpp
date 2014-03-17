@@ -63,14 +63,14 @@ namespace smil
 	}
 	
 	typedef Image<T_in> imageInType;
-	typedef typename imageInType::lineType lineInType;
-	typedef typename imageInType::sliceType sliceInType;
-	typedef typename imageInType::volType volInType;
+	typedef typename ImDtTypes<T_in>::lineType lineInType;
+	typedef typename ImDtTypes<T_in>::sliceType sliceInType;
+	typedef typename ImDtTypes<T_in>::volType volInType;
 	
 	typedef Image<T_out> imageOutType;
-	typedef typename imageOutType::lineType lineOutType;
-	typedef typename imageOutType::sliceType sliceOutType;
-	typedef typename imageOutType::volType volOutType;
+	typedef typename ImDtTypes<T_out>::lineType lineOutType;
+	typedef typename ImDtTypes<T_out>::sliceType sliceOutType;
+	typedef typename ImDtTypes<T_out>::volType volOutType;
 	
 	inline RES_T operator()(const imageInType &imIn, imageOutType &imOut, const StrElt &se) { return this->_exec(imIn, imOut, se); }
 	
@@ -119,9 +119,9 @@ namespace smil
       public:
 	typedef imageFunctionBase<T> parentClass;
 	typedef Image<T> imageType;
-	typedef typename imageType::lineType lineType;
-	typedef typename imageType::sliceType sliceType;
-	typedef typename imageType::volType volType;
+	typedef typename ImDtTypes<T>::lineType lineType;
+	typedef typename ImDtTypes<T>::sliceType sliceType;
+	typedef typename ImDtTypes<T>::volType volType;
 	
 	unaryMorphImageFunction(T border=ImDtTypes<T>::min()) 
 	  : unaryMorphImageFunctionBase<T>(border, border) 
@@ -156,11 +156,22 @@ namespace smil
 	size_t lineLen;
 	
 	inline void _extract_translated_line(const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf);
-	inline void _exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf=NULL);
-	inline void _exec_shifted_line(const lineType inBuf, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf=NULL)
+	
+	inline void _exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf);
+	inline void _exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf)
+	{
+	    return _exec_shifted_line(inBuf1, inBuf2, dx, lineLen, outBuf, cpBuf);
+	}
+	
+	inline void _exec_shifted_line(const lineType inBuf, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
 	{
 	    return _exec_shifted_line(inBuf, inBuf, dx, lineLen, outBuf, tmpBuf);
 	}
+	inline void _exec_shifted_line(const lineType inBuf, const int &dx, const int &lineLen, lineType outBuf)
+	{
+	    return _exec_shifted_line(inBuf, inBuf, dx, lineLen, outBuf, cpBuf);
+	}
+	
 	inline void _exec_shifted_line_2ways(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf=NULL);
 	inline void _exec_shifted_line_2ways(const lineType inBuf, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf=NULL)
 	{

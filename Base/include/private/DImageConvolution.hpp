@@ -63,7 +63,7 @@ namespace smil
 	int kernelRadius = (kernel.size()-1)/2;
 // 	int kLen = 2*kernelRadius+1;
 	
-	float partialKernWeights[kernelRadius];
+	float *partialKernWeights = new float[kernelRadius];
 	float pkwSum = 0;
 	for (int i=0;i<kernelRadius;i++)
 	  pkwSum += kernel[i];
@@ -87,7 +87,7 @@ namespace smil
 	    #ifdef USE_OPEN_MP
 		#pragma omp for
 	    #endif // USE_OPEN_MP
-	    for (int y=0;y<imIn.getLineCount();y++)
+	    for (int y=0;y<(int)imIn.getLineCount();y++)
 	    {
 		copyLine<T,bufType>(linesIn[y], imW, lIn);
 		lOut = linesOut[y];
@@ -98,7 +98,7 @@ namespace smil
 		  sum = 0;
 		  for (int i=-x;i<=kernelRadius;i++)
 		      sum += kernel[i+kernelRadius]*lIn[x+i];
-		  lOut[x] = sum / partialKernWeights[x];
+		  lOut[x] = T(sum / partialKernWeights[x]);
 		    
 		}
 		
@@ -108,7 +108,7 @@ namespace smil
 		  sum = 0;
 		  for (int i=-kernelRadius;i<=kernelRadius;i++)
 		      sum += kernel[i+kernelRadius]*lIn[x+i];
-		  lOut[x] = sum;
+		  lOut[x] = T(sum);
 		}
 		
 		// right pixels
@@ -117,11 +117,12 @@ namespace smil
 		  sum = 0;
 		  for (int i=-kernelRadius;i<imW-x;i++)
 		      sum += kernel[i+kernelRadius]*lIn[x+i];
-		  lOut[x] = sum / partialKernWeights[imW-1-x];
+		  lOut[x] = T(sum / partialKernWeights[imW-1-x]);
 		}
 	    }
 	    
 	}
+	delete[] partialKernWeights;
 	return RES_OK;
     }
     
@@ -137,7 +138,6 @@ namespace smil
 	typename ImDtTypes<T>::volType slicesIn = imIn.getSlices();
 	typename ImDtTypes<T>::volType slicesOut = imOut.getSlices();
 	typename ImDtTypes<T>::sliceType sIn, sOut;
-	typename ImDtTypes<T>::lineType lIn, lOut;
 	
 	int imW = imIn.getWidth();
 	int imH = imIn.getHeight();
@@ -145,7 +145,7 @@ namespace smil
 	int kernelRadius = (kernel.size()-1)/2;
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	
-	float partialKernWeights[kernelRadius];
+	float *partialKernWeights = new float[kernelRadius];
 	float pkwSum = 0;
 	for (int i=0;i<kernelRadius;i++)
 	  pkwSum += kernel[i];
@@ -179,7 +179,7 @@ namespace smil
 		      sum = 0;
 		      for (int i=-y;i<kernelRadius+1;i++)
 			sum += kernel[i+kernelRadius]*sIn[y+i][x];
-		      sOut[y][x] = sum / partialKernWeights[y];
+		      sOut[y][x] = T(sum / partialKernWeights[y]);
 		    }
 		    
 		    // Center pixels
@@ -188,7 +188,7 @@ namespace smil
 		      sum = 0;
 		      for (int i=-kernelRadius;i<=kernelRadius;i++)
 			sum += kernel[i+kernelRadius]*sIn[y+i][x];
-		      sOut[y][x] = sum;
+		      sOut[y][x] = T(sum);
 		    }
 		    
 		    // Bottom pixels
@@ -197,11 +197,12 @@ namespace smil
 		      sum = 0;
 		      for (int i=-kernelRadius;i<imH-y;i++)
 			sum += kernel[i+kernelRadius]*sIn[y+i][x];
-		      sOut[y][x] = sum / partialKernWeights[imH-1-y];
+		      sOut[y][x] = T(sum / partialKernWeights[imH-1-y]);
 		    }
 		}
 	    }
 	}
+	delete[] partialKernWeights;
 	return RES_OK;
     }
     
@@ -241,13 +242,13 @@ namespace smil
 	int kernelSize = radius*2+1;
 	vector<float> kernel(kernelSize);
 	
-	float sigma = float(radius)/2.;
+	double sigma = float(radius)/2.;
 	float sum = 0.;
 	
 	//  Determine kernel coefficients
 	for (int i=0;i<kernelSize;i++)
 	{
-	  kernel[i] = exp( -pow((float(i)-radius)/sigma, 2)/2. );
+	  kernel[i] = float(exp( -pow((double(i)-radius)/sigma, 2)/2. ));
 	  sum += kernel[i];
 	}
 	// Normalize

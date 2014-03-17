@@ -68,7 +68,7 @@ namespace smil
     size_t area(const Image<T> &imIn)
     {
 	measAreaFunc<T> func;
-	return func(imIn, true);
+	return static_cast<size_t>(func(imIn, true));
     }
 
     
@@ -384,14 +384,14 @@ namespace smil
 	}
 	virtual void finalize(const Image<T> &imIn)
 	{
-	    this->retVal.push_back(xMin);
-	    this->retVal.push_back(yMin);
+	    this->retVal.push_back(UINT(xMin));
+	    this->retVal.push_back(UINT(yMin));
 	    if (im3d)
-	      this->retVal.push_back(zMin);
-	    this->retVal.push_back(xMax);
-	    this->retVal.push_back(yMax);
+	      this->retVal.push_back(UINT(zMin));
+	    this->retVal.push_back(UINT(xMax));
+	    this->retVal.push_back(UINT(yMax));
 	    if (im3d)
-	      this->retVal.push_back(zMax);
+	      this->retVal.push_back(UINT(zMax));
 	}
     };
     /**
@@ -510,7 +510,7 @@ namespace smil
 	    {
 		curSliceIn1 = slicesIn1[z];
 		curSliceIn2 = slicesIn2[z+len*dz];
-		for (int y=0;y<yLen;y++)
+		for (UINT y=0;y<yLen;y++)
 		{
 		    lineIn1 = curSliceIn1[y];
 		    lineIn2 = curSliceIn2[y+len*dy];
@@ -583,6 +583,24 @@ namespace smil
 	return offsets;
     }
 
+    /**
+    * Test if an image is binary.
+    * Return \b true if the only pixel values are ImDtTypes<T>::min() and ImDtTypes<T>::max() 
+    */
+    template <class T>
+    bool isBinary(const Image<T> &imIn)
+    {
+	CHECK_ALLOCATED(&imIn);
+	
+	typename Image<T>::lineType pixels = imIn.getPixels();
+	
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	  if (pixels[i]!=ImDtTypes<T>::min() && pixels[i]!=ImDtTypes<T>::max())
+	    return false;
+    
+	return true;
+    }
+    
 /** @}*/
 
 } // namespace smil

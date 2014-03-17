@@ -89,9 +89,9 @@ namespace smil
 
                 for (UINT i=0; i<this->sePointNbr; ++i) {
                      p = this->sePoints[i];
-                     if (x+p.x >= 0 && x+p.x < this->imSize[0] &&
-                         y+p.y >= 0 && y+p.y < this->imSize[1] &&
-                         z+p.z >= 0 && z+p.z < this->imSize[2] &&
+                     if (x+p.x >= 0 && x+p.x < (int)this->imSize[0] &&
+                         y+p.y >= 0 && y+p.y < (int)this->imSize[1] &&
+                         z+p.z >= 0 && z+p.z < (int)this->imSize[2] &&
                          this->pixelsIn[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] == pVal &&
                          this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] != labels)
                      {
@@ -145,7 +145,7 @@ namespace smil
             #pragma omp parallel
             {
                 #pragma omp for
-                for (int i=0; i<this->imSize[2]*this->imSize[1]; ++i) {
+                for (size_t i=0; i<this->imSize[2]*this->imSize[1]; ++i) {
                     pixelsTmp[i*this->imSize[0]] = this->pixelsIn[i*this->imSize[0]];
                 }
             }           
@@ -159,7 +159,7 @@ namespace smil
             bool process_labeling = false;
 
             // First PASS to label the boundaries. //
-            for (int i=0; i<this->imSize[2]*this->imSize[1]*this->imSize[0]; ++i) {
+            for (size_t i=0; i<this->imSize[2]*this->imSize[1]*this->imSize[0]; ++i) {
                 if (i%(this->imSize[0]) == 0) {
                     is_not_a_gap=false;
                 }
@@ -190,9 +190,9 @@ namespace smil
 
                        for (UINT i=0; i<this->sePointNbr; ++i) {
                             p = this->sePoints[i]; 
-                            if (x+p.x >= 0 && x+p.x < this->imSize[0] &&
-                                 y+p.y >= 0 && y+p.y < this->imSize[1] &&
-                                 z+p.z >= 0 && z+p.z < this->imSize[2] &&
+                            if (x+p.x >= 0 && x+p.x < (int)this->imSize[0] &&
+                                 y+p.y >= 0 && y+p.y < (int)this->imSize[1] &&
+                                 z+p.z >= 0 && z+p.z < (int)this->imSize[2] &&
                                  pixelsTmp[x+p.x + (y+p.y)*this->imSize[0] + (z+p.z)*this->imSize[1]*this->imSize[0]] == pixelsTmp[propagation.front ()] &&
                                  this->pixelsOut[x+p.x + (y+p.y)*this->imSize[0] + (z+p.z)*this->imSize[1]*this->imSize[0]] != current_label)
                              {
@@ -212,7 +212,7 @@ namespace smil
             size_t nSlices = imIn.getDepth () ;
             size_t nLines = imIn.getHeight () ;
             size_t nPixels = imIn.getWidth () ;
-            int l, v;
+            size_t l, v;
             T1 previous_value;
             T2 previous_label;
 
@@ -221,7 +221,7 @@ namespace smil
             lineInType lineIn;
             lineOutType lineOut;
 
-            for (int s=0; s<nSlices; ++s) {
+            for (size_t s=0; s<nSlices; ++s) {
                 #pragma omp parallel private(lineIn,lineOut,l,v,previous_value,previous_label)
                 {
                     #pragma omp for
@@ -310,7 +310,7 @@ namespace smil
  	map<UINT, double> areas = measAreas(imLabel);
 	ASSERT(!areas.empty());
 	
-	ASSERT(applyLookup<T2>(imLabel, areas, imOut)==RES_OK);
+	ASSERT(applyLookup(imLabel, areas, imOut)==RES_OK);
 	
 	return RES_OK;
     }

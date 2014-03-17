@@ -32,6 +32,10 @@
 // Common includes
 //////////////////////////////////////////////////////////
 
+// CMake generated includes
+
+${SWIG_COMMON_INCLUDES}
+
 %{
 #include "DErrors.h"
 #include "DTypes.h"
@@ -219,6 +223,3 @@ using namespace smil;
 ${SWIG_TEMPLATE_WRAP_DEFINITIONS}
 
 
-// CMake generated includes
-
-${SWIG_COMMON_INCLUDES}

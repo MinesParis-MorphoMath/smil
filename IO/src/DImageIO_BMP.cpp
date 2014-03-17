@@ -167,7 +167,7 @@ namespace smil
 	ASSERT(iHeader.biBitCount==8, "Not an 8bit gray image", RES_ERR_IO);
 	
 	UINT nColors = iHeader.biClrUsed;
-	UINT8 r,g,b,a, lut[nColors];
+	UINT8 r,g,b,a, *lut = new UINT8[nColors];
 
 	// read the color table
 	  
@@ -194,7 +194,7 @@ namespace smil
 
 	// The scan line must be word-aligned. This means in multiples of 4.
 	int scanlineSize = (width%4==0) ? width : (width-width%4)+4;
-	UINT8 scanBuf[scanlineSize];
+	UINT8 *scanBuf = new UINT8[scanlineSize];
 	
 	for (int j=height-1;j>=0;j--)
 	{
@@ -203,6 +203,8 @@ namespace smil
 	    for(int i=0; i< width; i++) 
 		curLine[i] = lut[scanBuf[i]];
 	}
+	delete[] lut;
+	delete[] scanBuf;
 	image.modified();
 
 	return RES_OK;
@@ -310,7 +312,7 @@ namespace smil
 
 	// The scan line must be word-aligned. This means in multiples of 4.
 	int scanlinePadSize = (width%4==0) ? 0 : 4-width%4;
-	UINT scanlinePad[scanlinePadSize];
+	UINT *scanlinePad = new UINT[scanlinePadSize];
 
 	for (int i=height-1;i>=0;i--)
 	{
@@ -320,6 +322,7 @@ namespace smil
 	}
 
 	fclose(fp);
+	delete[] scanlinePad;
 
 	return RES_OK;
     }

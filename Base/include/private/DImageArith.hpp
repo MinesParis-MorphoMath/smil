@@ -125,9 +125,9 @@ namespace smil
 	ASSERT(startX<inW && startY<inH && startZ<inD);
 	ASSERT(outStartX<outW && outStartY<outH && outStartZ<outD);
 	
-	size_t realSx = min( min(sizeX, inW-startX), outW-outStartX );
-	size_t realSy = min( min(sizeY, inH-startY), outH-outStartY );
-	size_t realSz = min( min(sizeZ, inD-startZ), outD-outStartZ );
+	int realSx = min( min(sizeX, inW-startX), outW-outStartX );
+	int realSy = min( min(sizeY, inH-startY), outH-outStartY );
+	int realSz = min( min(sizeZ, inD-startZ), outD-outStartZ );
 
 	typename Image<T1>::volType slIn = imIn.getSlices() + startZ;
 	typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
@@ -135,7 +135,7 @@ namespace smil
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	int y;
 	
-	for (size_t z=0;z<realSz;z++)
+	for (int z=0;z<realSz;z++)
 	{
 	    typename Image<T1>::sliceType lnIn = *slIn + startY;
 	    typename Image<T2>::sliceType lnOut = *slOut + outStartY;
@@ -215,7 +215,7 @@ namespace smil
 	    #ifdef USE_OPEN_MP
 		#pragma omp for schedule(dynamic,nthreads) nowait
 	    #endif // USE_OPEN_MP
-	    for (i=0;i<imIn.getLineCount();i++)
+	    for (i=0;i<(int)imIn.getLineCount();i++)
 	      copyLine<T1,T2>(l1[i], width, l2[i]);
 	}
 
@@ -575,8 +575,8 @@ namespace smil
     template <class T>
     bool equ(const Image<T> &imIn1, const Image<T> &imIn2)
     {
-	ASSERT_ALLOCATED(&imIn1, &imIn2);
-	ASSERT_SAME_SIZE(&imIn1, &imIn2);
+	ASSERT(CHECK_ALLOCATED(&imIn1, &imIn2), false);
+	ASSERT(CHECK_SAME_SIZE(&imIn1, &imIn2), false);
 	
 	typedef typename Image<T>::lineType lineType;
 	lineType pix1 = imIn1.getPixels();

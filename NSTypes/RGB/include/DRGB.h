@@ -96,16 +96,6 @@ namespace smil
     {
     }
     
-    template <>
-    inline RES_T VTKImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
-    {
-	return RES_ERR;
-    }
-    template <>
-    inline RES_T VTKImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
-    {
-	return RES_ERR;
-    }
 }
 
 #endif // USE_QT
@@ -117,7 +107,7 @@ namespace smil
     
     
 
-#if defined SWIGPYTHON and defined USE_NUMPY
+#if defined SWIGPYTHON && defined USE_NUMPY
     template <>
     PyObject * Image<RGB>::getNumArray(bool c_contigous)
     {

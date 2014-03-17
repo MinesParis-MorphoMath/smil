@@ -93,7 +93,8 @@ namespace smil
 	//! \return The type of the image data as a string ("UINT8", "UINT16", ...)
 	virtual const char* getTypeAsString()
 	{
-	    return getDataTypeAsString<T>();
+		T *dum = NULL;
+	    return getDataTypeAsString<T>(dum);
 	}
 	typedef typename ImDtTypes<T>::pixelType pixelType;
 	typedef typename ImDtTypes<T>::lineType lineType;

@@ -138,6 +138,66 @@ class Test_Build : public TestCase
   }
 };
 
+class Test_BinBuild : public TestCase
+{
+  virtual void run()
+  {
+      UINT8 vecIn[] = { 
+	  0,   0,   0,   0,   0, 255,   0,
+	  0,   0,   0,   0,   0,   0,   0,
+	  0,   0,   0,   0,   0,   0,   0,
+	255,   0,   0,   0,   0,   0,   0,
+	  0,   0,   0,   0,   0,   0,   0,
+	  0,   0,   0,   0,   0, 255,   0,
+	  0,   0,   0,   0,   0,   0,   0,
+      };
+      
+      UINT8 vecMark[] = { 
+	255, 255,   0, 255,   0, 255,   0,
+	  0,   0, 255,   0,   0,   0,   0,
+	  0,   0,   0,   0,   0,   0,   0,
+	255, 255, 255,   0,   0,   0,   0,
+	  0,   0,   0,   0,   0,   0,   0,
+	  0,   0,   0,   0,   0, 255,   0,
+	  0,   0,   0,   0,   0,   0, 255,
+      };
+      
+      Image_UINT8 imIn(7,7);
+      Image_UINT8 imMark(imIn);
+      Image_UINT8 imBuild(imIn);
+
+      imIn << vecIn;
+      imMark << vecMark;
+      
+      UINT8 vecTruth[] = { 
+	0,   0,   0,   0,   0, 255,   0,
+	0,   0,   0,   0,   0,   0,   0,
+	0,   0,   0,   0,   0,   0,   0,
+      255, 255, 255,   0,   0,   0,   0,
+	0,   0,   0,   0,   0,   0,   0,
+	0,   0,   0,   0,   0, 255,   0,
+	0,   0,   0,   0,   0,   0, 255,
+      };
+      Image_UINT8 imTruth(imIn);
+      imTruth << vecTruth;
+      
+      binBuild(imIn, imMark, imBuild, sSE());
+      TEST_ASSERT(imBuild==imTruth);
+      
+      build(imIn, imMark, imBuild, sSE());
+      TEST_ASSERT(imBuild==imTruth);
+      
+      inv(imIn, imIn);
+      inv(imMark, imMark);
+      dualBuild(imIn, imMark, imBuild, sSE());
+      inv(imBuild, imBuild);
+      TEST_ASSERT(imBuild==imTruth);
+      
+      if (retVal!=RES_OK)
+	imBuild.printSelf(1);
+  }
+};
+
 
 int main(int argc, char *argv[])
 {
@@ -145,6 +205,7 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_HierarchicalQueue);
       ADD_TEST(ts, Test_InitHierarchicalQueue);
       ADD_TEST(ts, Test_Build);
+      ADD_TEST(ts, Test_BinBuild);
       
       return ts.run();
       
