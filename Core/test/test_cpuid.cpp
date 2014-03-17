@@ -23,20 +23,17 @@ int main () {
     cout << "AES: " << si.AES << endl;
     cout << "AVX: " << si.AVX << endl;
 
-    Cache_Descriptors L1 = *id.getCacheAtLevel(0), L2 = *id.getCacheAtLevel(1), L3 = *id.getCacheAtLevel(2);
+    vector<Cache_Descriptors> L = id.getCaches () ;
 
-    cout << "L1.size: " << L1.size << endl;
-    cout << "L1.associativity: " << L1.associativity << endl;
-    cout << "L1.lines_per_tag: " << L1.lines_per_tag << endl;
-    cout << "L1.line_size: " << L1.line_size << endl;
-    cout << "L2.size: " << L2.size << endl;
-    cout << "L2.associativity: " << L2.associativity << endl;
-    cout << "L2.lines_per_tag: " << L2.lines_per_tag << endl;
-    cout << "L2.line_size: " << L2.line_size << endl;
-    cout << "L3.size: " << L3.size << endl;
-    cout << "L3.associativity: " << L3.associativity << endl;
-    cout << "L3.lines_per_tag: " << L3.lines_per_tag << endl;
-    cout << "L3.line_size: " << L3.line_size << endl;
+    for (int i=0; i<L.size(); ++i) {
+        cout << "cache at level: " << i << endl;
+        cout << "type: " << L[i].type << endl;
+        cout << "size: " << L[i].size << endl;
+        cout << "set: " << L[i].sets << endl;
+        cout << "associativity: " << L[i].associativity << endl;
+        cout << "lines_per_tag: " << L[i].lines_per_tag << endl;
+        cout << "line_size: " << L[i].line_size << endl;
+    }
 
     return 0;
 }

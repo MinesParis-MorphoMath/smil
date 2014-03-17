@@ -79,77 +79,68 @@ CpuID::CpuID()
     simdInstructions.AES = (ecxFeatures & (1 << 25))!=0;
     simdInstructions.AVX = (ecxFeatures & (1 << 28))!=0;
    
-    L[0].size = 0;
-    L[0].associativity = 0;
-    L[0].lines_per_tag = 0;
-    L[0].line_size = 0;
-    L[1].size = 0;
-    L[1].associativity = 0;
-    L[1].lines_per_tag = 0;
-    L[1].line_size = 0;
-    L[2].size = 0;
-    L[2].associativity = 0;
-    L[2].lines_per_tag = 0;
-    L[2].line_size = 0;
-
     // CPUID leaves with cache information:
     // 2 : Cache descriptors (AMD has zero cache descriptors)
     // 4 : Newer intel CPUS
     // 0x80000005 : AMD only
     // 0X80000006 : AMD only (L2 infos given for intel CPUS)
     // 0x8000001D : AMD only (used on Bulldozer CPUS, and can contradict leaf 0x80000006)
+    Cache_Descriptors tmp;
     if (vendor == "GenuineIntel") {
-        load(2);
-        nbr_cache_level = 3;
-        int ways;
-        int partitions;
-        int line_size;
-        int sets;
-
-        for (int i=0; i<nbr_cache_level; ++i) { 
+        int i=0; 
+        do {
+            cerr << i << endl; 
             __asm__ (
                 "mov $0x04, %%eax\n\t"
-                "mov %1, %%ecx\n\t"
+                "mov %3, %%ecx\n\t"
                 "cpuid\n\t"
-                "mov %%ebx, %0\n\t"
-                "mov %%ecx, %1"
-                :"=b"(ebxFeatures),"=c"(ecxFeatures)
+                "mov %%eax, %0\n\t"
+                "mov %%ebx, %1\n\t"
+                "mov %%ecx, %2"
+                :"=a"(eaxFeatures), "=b"(ebxFeatures),"=c"(ecxFeatures)
                 :"r"(i)
-                :"%eax","%edx"
+                :"%edx"
             );
-
-            ways = (ebxFeatures & 0xFFC0000000) >> 22;
-            partitions = (ebxFeatures & 0x003FF000) >> 12;
-            line_size = (ebxFeatures & 0x00000FFF) ;
-            sets = ecxFeatures;
-            L[i].size = (ways+1)*(partitions+1)*(line_size+1)*(sets+1);
-            L[i].line_size = line_size+1;
-            L[i].associativity = ways+1;
-            L[i].lines_per_tag = partitions+1;
-        } 
+            tmp.type = (eaxFeatures & (0x0000000F));
+            tmp.associativity = ((ebxFeatures & 0xFFC00000) >> 22) +1;
+            tmp.lines_per_tag = ((ebxFeatures & 0x003FF000) >> 12) +1;
+            tmp.line_size = (ebxFeatures & 0x00000FFF) +1;
+            tmp.sets = ecxFeatures+1;
+            tmp.size = (tmp.associativity)*(tmp.lines_per_tag)*(tmp.line_size)*(tmp.sets);
+            if (tmp.type != 0)
+                L.push_back (tmp);
+            ++i;
+        } while (tmp.type != 0) ;
 
     } else {
-        nbr_cache_level = 3;
         // In case of AMD 
         load(0x80000005);
         ecxFeatures = ecx;
-        L[0].size = (ecxFeatures & 0xFF000000) >> 24; // In KBs
-        L[0].associativity = (ecxFeatures & 0x00FF0000) >> 16; // FFh = full
-        L[0].lines_per_tag = (ecxFeatures & 0x0000FF00) >> 8;
-        L[0].line_size = (ecxFeatures & 0x000000FF); // In bytes
+        tmp.size = (ecxFeatures & 0xFF000000) >> 24; // In KBs
+        tmp.associativity = (ecxFeatures & 0x00FF0000) >> 16; // FFh = full
+        tmp.lines_per_tag = (ecxFeatures & 0x0000FF00) >> 8;
+        tmp.line_size = (ecxFeatures & 0x000000FF); // In bytes
+        tmp.type = 1;
+        L.push_back (tmp);
 
         // Not sure if L2 and L3 will turn out to be of any use.
         load(0x80000006);
         ecxFeatures = ecx;
-        L[1].size = (ecxFeatures & 0xFFFF0000) >> 16; // In KBs
-        L[1].associativity = (ecxFeatures & 0x0000F000) >> 12; 
-        L[1].lines_per_tag = (ecxFeatures & 0x00000F00) >> 8 ;
-        L[1].line_size = (ecxFeatures & 0x000000FF); // In bytes
+        tmp.size = (ecxFeatures & 0xFFFF0000) >> 16; // In KBs
+        tmp.associativity = (ecxFeatures & 0x0000F000) >> 12; 
+        tmp.lines_per_tag = (ecxFeatures & 0x00000F00) >> 8 ;
+        tmp.line_size = (ecxFeatures & 0x000000FF); // In bytes
+        tmp.type = 3;
+        L.push_back (tmp);
+
         edxFeatures = edx;
-        L[2].size = ((edxFeatures & 0xFFFC0000) >> 18)*512; // in KBs
-        L[2].associativity = (edxFeatures & 0x0000F000) >> 12; 
-        L[2].lines_per_tag = (edxFeatures & 0x00000F00) >> 8;
-        L[2].line_size = (edxFeatures & 0x000000FF);
+        tmp.size = ((edxFeatures & 0xFFFC0000) >> 18)*512; // in KBs
+        tmp.associativity = (edxFeatures & 0x0000F000) >> 12; 
+        tmp.lines_per_tag = (edxFeatures & 0x00000F00) >> 8;
+        tmp.line_size = (edxFeatures & 0x000000FF);
+        tmp.type = 3;
+        L.push_back (tmp); 
+
         // End of AMD
     } 
 

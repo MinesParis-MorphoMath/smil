@@ -32,6 +32,7 @@
 #include "DTypes.h"
 
 #include <string>
+#include <vector>
 
 namespace smil
 {
@@ -54,7 +55,9 @@ namespace smil
     // Data cache information.
     struct Cache_Descriptors
     {
+        int type; // 1 : data, 2 : instructions, 3 : unified
         int size;
+        int sets; // ???
         int associativity;
         int lines_per_tag;
         int line_size;
@@ -72,25 +75,22 @@ namespace smil
 	unsigned getLogical() const { return logical; }
 	bool isHyperThreated() const { return hyperThreaded; }
 	const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
-        const Cache_Descriptors* getCacheAtLevel(unsigned int i) const { 
-            if (i>= nbr_cache_level)
-                return NULL;
-            return L+i; 
+        const std::vector<Cache_Descriptors> &getCaches() const { 
+            return L; 
         }	
-        const unsigned int &getNbrCacheLevel() const { return nbr_cache_level; }	
+        unsigned int getNbrCacheLevel() const { return L.size (); }	
 
       protected:
 	UINT32 regs[4];
 	UINT32 &eax, &ebx, &ecx, &edx;
-	unsigned edxFeatures, ecxFeatures, ebxFeatures;
+	unsigned eaxFeatures, edxFeatures, ecxFeatures, ebxFeatures;
 
 	unsigned cores;
 	unsigned logical;
 	string vendor;
 	bool hyperThreaded;
 	SIMD_Instructions simdInstructions;
-        Cache_Descriptors L[3]; // Data cache information only
-        unsigned int nbr_cache_level;
+        std::vector<Cache_Descriptors> L;
 
 	void load(unsigned i);
 
