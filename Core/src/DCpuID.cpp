@@ -86,9 +86,9 @@ CpuID::CpuID()
     // 0X80000006 : AMD only (L2 infos given for intel CPUS)
     // 0x8000001D : AMD only (used on Bulldozer CPUS, and can contradict leaf 0x80000006)
     Cache_Descriptors tmp;
+    int i=0; 
     if (vendor == "GenuineIntel") {
         do {
-            cerr << i << endl; 
             __asm__ (
                 "mov $0x04, %%eax\n\t"
                 "mov %3, %%ecx\n\t"
