@@ -180,7 +180,7 @@ public slots:
     void setCursorMode(const int &mode);
     void setDrawPenColor(const QColor &color);
     void showHelp();
-    void saveAs();
+    void saveAs(const char *fileName=NULL);
     
 protected slots:
     void setScrollBarPosition(int x, int y);

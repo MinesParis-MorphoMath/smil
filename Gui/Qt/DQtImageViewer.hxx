@@ -167,6 +167,12 @@ namespace smil
 
 
     template <class T>
+    void QtImageViewer<T>::saveSnapshot(const char *fileName)
+    {
+	BASE_QT_VIEWER::saveAs(fileName);
+    }
+    
+    template <class T>
     void QtImageViewer<T>::drawImage()
     {
 	typename Image<T>::sliceType lines = this->image->getSlices()[slider->value()];

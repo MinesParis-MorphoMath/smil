@@ -49,8 +49,9 @@ namespace smil
     template <class T>
     class SharedImage : public Image<T>
     {
-	typedef Image<T> parentClass;
     public:
+	typedef Image<T> parentClass;
+	typedef typename Image<T>::lineType lineType;
 
 	//! Default constructor
 	SharedImage(const Image<T> &img)
@@ -64,6 +65,15 @@ namespace smil
 		this->pixels = img.getPixels();
 		this->setSize(img);
 	    }
+	}
+      
+	SharedImage(lineType dataPtr, size_t width, size_t height, size_t depth=0)
+	{
+	    this->className = "SharedImage";
+	    parentClass::init();
+	    
+	    this->pixels = dataPtr;
+	    this->setSize(width, height, depth);
 	}
       
 	SharedImage(const SharedImage<T> &img)

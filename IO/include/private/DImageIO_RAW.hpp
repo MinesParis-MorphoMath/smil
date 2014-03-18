@@ -56,7 +56,6 @@ namespace smil
 
 	/* open image file */
 	fp = fopen (filename, "rb");
-	FileCloser fileCloser(fp);
 	
 	ASSERT(fp, "Error: couldn't open file", RES_ERR_IO);
 
@@ -64,13 +63,14 @@ namespace smil
 	image.setSize(width, height, depth);
     //   image->allocate();
 
-	size_t ret = fread(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
+	size_t ret = fread(image.getVoidPointer(), sizeof(T), image.getPixelCount(), fp);
 	if (ret==0)
 	{
 	    fprintf (stderr, "error reading \"%s\"!\n", filename);
 	    return RES_ERR;
 	}
 	
+	fclose (fp);
 
 	image.modified();
 	
@@ -87,11 +87,10 @@ namespace smil
 
 	/* open image file */
 	fp = fopen (filename, "wb");
-	FileCloser fileCloser(fp);
 	
 	ASSERT(fp, "Error: couldn't open file", RES_ERR_IO);
 
-	fwrite(image.getVoidPointer(), image.getAllocatedSize(), 1, fp);
+	fwrite(image.getVoidPointer(), sizeof(T), image.getPixelCount(), fp);
 
 	fclose (fp);
 	

@@ -86,6 +86,7 @@ namespace smil
 	virtual bool isVisible();
 	virtual void setName(const char *_name);
 	virtual void update();
+	virtual void saveSnapshot(const char *fileName);
 	virtual void redrawImage() // ImageViewerWidget
 	{
 	    update();

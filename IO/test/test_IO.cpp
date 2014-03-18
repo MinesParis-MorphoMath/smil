@@ -44,6 +44,32 @@
 
 using namespace smil;
 
+class Test_RW_RAW : public TestCase
+{
+  virtual void run()
+  {
+    typedef UINT8 T;
+    const char *fName = "_smil_io_tmp.raw";
+    
+    Image<T> im1(3, 3, 2);
+    T tab[] = { 28, 2, 3,
+		 2, 5, 6,
+		 3, 8, 9,
+		 4, 11, 12,
+		 5, 15, 16,
+		 6, 18, 19 };
+    im1 << tab;
+    TEST_ASSERT( writeRAW(im1, fName)==RES_OK );
+    
+    Image<T> im2;
+    
+    TEST_ASSERT( readRAW(fName, 3,3,2, im2)==RES_OK );
+    
+    TEST_ASSERT(im1==im2);
+  }
+};
+
+
 int main(int argc, char *argv[])
 {
     Image_UINT8 im1;
@@ -58,5 +84,11 @@ int main(int argc, char *argv[])
     BaseImage *im0 = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
     delete im0;
     
+    
+    TestSuite ts;
+
+    ADD_TEST(ts, Test_RW_RAW);
+    
+    return ts.run();
 }
 
