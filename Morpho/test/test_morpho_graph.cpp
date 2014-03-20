@@ -139,10 +139,22 @@ class Test_DrawGraph : public TestCase
       mosaicToGraph(im1, im2, graph);
       
       drawGraph(im1, graph, im2);
+
+      dataType vec2[] = {
+	0,   0,   0, 255,   0,   0,   0,
+	0,   0, 255, 255,   0,   0,   0,
+	0, 255, 255,   0, 255,   0,   0,
+	0, 255,   0, 255, 255,   0,   0,
+	0, 255,   0,   0, 255, 255,   0,
+	0, 255, 255, 255,   0,   0,   0,
+	0,   0,   0,   0,   0,   0,   0,
+      };
+      im1 << vec2;
       
-      im2.printSelf(1);
+      TEST_ASSERT(im1==im2);
+      if (retVal!=RES_OK)
+	im2.printSelf(1);
       
-//       TEST_ASSERT(im3==im4);
   }
 };
 

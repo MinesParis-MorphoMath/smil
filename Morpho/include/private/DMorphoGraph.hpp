@@ -144,7 +144,7 @@ namespace smil
 	    if (p1.empty() || p2.empty())
 	      continue;
 	    
-	    drawLine(imOut, int(p1[0]), int(p1[1]), int(p2[0]), int(p2[1]), linesValue);
+	    ASSERT(drawLine(imOut, int(p1[0]), int(p1[1]), int(p2[0]), int(p2[1]), linesValue)==RES_OK);
 	}
 	
 	return RES_OK;
