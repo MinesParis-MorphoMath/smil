@@ -37,8 +37,8 @@
 #include "Core/include/DCoreEvents.h"
 #include "Base/include/private/DMeasures.hpp"
 #include "Base/include/private/DImageArith.hpp"
+#include "IO/include/private/DImageIO.hxx"
 #include "Gui/include/DGuiInstance.h"
-#include "IO/include/private/DImageIO.hpp"
 
 
 namespace smil
@@ -227,7 +227,7 @@ namespace smil
 	if (viewer)
 	  return;
 
-	viewer = Gui::createDefaultViewer<T>(*this);
+	viewer = Gui::getInstance()->createDefaultViewer<T>(*this);
 
     }
 

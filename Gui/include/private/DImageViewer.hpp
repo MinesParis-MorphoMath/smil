@@ -30,8 +30,8 @@
 #ifndef _D_IMAGE_VIEWER_HPP
 #define _D_IMAGE_VIEWER_HPP
 
-#include "Core/include/DColor.h"
 #include "Gui/include/DBaseImageViewer.h"
+#include "DColor.h"
 
 namespace smil
 {

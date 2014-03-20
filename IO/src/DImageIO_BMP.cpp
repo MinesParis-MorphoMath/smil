@@ -31,6 +31,7 @@
 #include "DImageIO_BMP.hpp"
 #include "private/DImageIO.hpp"
 #include "Core/include/private/DImage.hpp"
+#include "DColor.h"
 
 namespace smil
 {

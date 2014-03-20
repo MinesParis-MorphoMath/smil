@@ -34,12 +34,9 @@
  * \defgroup IO
  */
 
-#include "private/DImageIO.hpp"
 #include "DCommon.h"
-
-#ifdef USE_CURL
-#include "DNetworkIO.h"
-#endif // USE_CURL
+#include "private/DImageIO.hpp"
+#include "private/DImageIO.hxx"
 
 
 

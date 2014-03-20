@@ -96,6 +96,14 @@ namespace smil
     {
     }
     
+    template <>
+    inline void QtImageViewer<RGB>::displayHistogram(bool update)
+    {
+    }
+    template <>
+    inline void QtImageViewer<RGB>::displayProfile(bool update)
+    {
+    }
 }
 
 #endif // USE_QT

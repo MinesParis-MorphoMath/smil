@@ -35,7 +35,7 @@
 #include <stdlib.h>
 #include <string>
 
-#include "IO/include/DCommonIO.h"
+#include "DImage.hpp"
 
 using namespace std;
 

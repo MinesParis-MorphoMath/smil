@@ -76,42 +76,65 @@ namespace smil
 #endif // SWIG
     {
     public:
-	Error(string const& descr="") throw()
-	      : description(cleanDescr(descr))
+	Error() throw()
 	{} 
-	Error(string const& descr, string const& func, string const& _file, int const& _line, string const& expr) throw()
+	Error(const string &descr) throw()
+	      : description(cleanDescr(descr))
+	{
+	    buildMessage();
+	} 
+	Error(const string &descr, const char *func, const char *_file, const int _line, const char *expr) throw()
 	      : description(cleanDescr(descr)),
 		function(func),
 		file(_file),
 		line(_line),
 		expression(expr)
-	{} 
-	Error(string const& descr, string const& func, string const& _file, int const& _line) throw()
+	{
+	    buildMessage();
+	} 
+	Error(const string &descr, const char *func, const char *_file, const int _line) throw()
 	      : description(cleanDescr(descr)),
 		function(func),
 		file(_file),
 		line(_line)
-	{} 
-	Error(string const& func, string const& _file, int const& _line, string const& expr) throw()
+	{
+	    buildMessage();
+	} 
+	Error(const char *func, const char *_file, const int _line, const char *expr) throw()
 	      : function(func),
 		file(_file),
 		line(_line),
 		expression(expr)
-	{} 
-	Error(string const& descr, string const& func, string const& expr) throw()
+	{
+	    buildMessage();
+	} 
+	Error(const string &descr, const char *func, const char *expr) throw()
 	      : description(cleanDescr(descr)),
 		function(func),
 		expression(expr)
-	{} 
-	Error(string const& func, string const& expr) throw()
+	{
+	    buildMessage();
+	} 
+	Error(const char *func, const char *expr) throw()
 	      : function(func),
 		expression(expr)
-	{} 
+	{
+	    buildMessage();
+	} 
 	virtual ~Error() throw()
 	{}
 	virtual const char* what() const throw()
 	{
-	    stringstream buf;
+	    return this->message.c_str();
+	}
+	void show()
+	{
+	    cout << "Error:" << this->what() << endl;
+	}
+    
+	void buildMessage()
+	{
+	    ostringstream buf;
 	    if (!function.empty())
 	      buf << "\n  in function: " << function;
 	    if (!description.empty())
@@ -127,13 +150,8 @@ namespace smil
 	    if (!file.empty())
 	      buf << "\n  file: " << file << ":" << line;
     #endif // NDEBUG	
-	    return buf.str().c_str();
+	    this->message = buf.str();
 	}
-	void show()
-	{
-	    cout << "Error:" << this->what() << endl;
-	}
-    
     private:
 	inline string cleanDescr(const string descr)
 	{
@@ -149,6 +167,7 @@ namespace smil
 	string file;
 	int line;
 	string expression;
+	string message;
     };
 
     #define ASSERT_1_ARG(func, file, line, expr) \

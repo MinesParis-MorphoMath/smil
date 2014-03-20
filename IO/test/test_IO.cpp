@@ -30,17 +30,15 @@
 #include <stdio.h>
 #include <time.h>
 
-#ifndef SMIL_WRAP_RGB
-#define SMIL_WRAP_RGB
-#endif // SMIL_WRAP_RGB
 
+#include "NSTypes/RGB/include/DRGB.h"
 #include "DCore.h"
 #include "DIO.h"
+#include "IO/include/private/DImageIO_RAW.hpp"
 
 #include "DGui.h"
 
 
-#include "NSTypes/RGB/include/DRGB.h"
 
 using namespace smil;
 

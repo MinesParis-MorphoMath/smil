@@ -42,6 +42,8 @@
 #include "Core/include/private/DImage.hpp"
 #include "Base/include/private/DImageHistogram.hpp"
 #include "Base/include/DImageDraw.h"
+#include "IO/include/private/DImageIO.hpp"
+#include "DColor.h"
 
 namespace smil
 {
