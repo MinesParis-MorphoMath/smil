@@ -813,7 +813,7 @@ ENDIF(USE_WRAPPER)
 
 ADD_SMIL_TESTS(Smil smilCore smilIO smilGui smilMorpho ${SMIL_EXT_DEPS})
 
-INCLUDE(SmilInstallGen)
+#INCLUDE(SmilInstallGen)
 
 OPTION(BUILD_PACKAGE "Build CPack packages" OFF)
 MARK_AS_ADVANCED(BUILD_PACKAGE)
