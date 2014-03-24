@@ -408,7 +408,7 @@ namespace smil
     }
 
     template <class T>
-    void Image<T>::fromArray(T inArray[])
+    void Image<T>::fromArray(const T inArray[])
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  pixels[i] = inArray[i];
@@ -423,7 +423,7 @@ namespace smil
     }
 
     template <class T>
-    void Image<T>::fromCharArray(signed char inArray[])
+    void Image<T>::fromCharArray(const signed char inArray[])
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  pixels[i] = inArray[i];
@@ -438,7 +438,7 @@ namespace smil
     }
 
     template <class T>
-    void Image<T>::fromIntArray(int inArray[])
+    void Image<T>::fromIntArray(const int inArray[])
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  pixels[i] = inArray[i];

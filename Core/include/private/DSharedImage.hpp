@@ -67,7 +67,7 @@ namespace smil
 	    }
 	}
       
-	SharedImage(lineType dataPtr, size_t width, size_t height, size_t depth=0)
+	SharedImage(lineType dataPtr, size_t width, size_t height, size_t depth=1)
 	{
 	    this->className = "SharedImage";
 	    parentClass::init();

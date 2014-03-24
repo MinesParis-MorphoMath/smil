@@ -44,7 +44,6 @@
 
 
 #include <math.h>
-#include <boost/concept_check.hpp>
 
 #include "ImageViewerWidget.h"
 #include "ColorPicker.h"

@@ -36,7 +36,7 @@
 
 #ifdef USE_QT
 
-#include "Gui/Qt/DQtImageViewer.hpp"
+#include "Gui/Qt/DQtImageViewer.hxx"
 
 namespace smil
 {
@@ -49,20 +49,20 @@ namespace smil
 	if (im.getName()!=string(""))
 	  setName(this->image->getName());
     }
-  
+
     template <>
     inline void QtImageViewer<RGB>::drawImage()
     {
 	Image<RGB>::sliceType lines = this->image->getSlices()[slider->value()];
 	Image<RGB>::lineType pixels;
 	typedef Image<UINT8>::lineType arrayType;
-	
+
 	size_t w = this->image->getWidth();
 	size_t h = this->image->getHeight();
-	
+
 	QRgb *destLine;
 	arrayType rArray, gArray, bArray;
-	  
+
 	for (size_t j=0;j<h;j++)
 	{
 	    destLine = (QRgb*)(this->qImage->scanLine(j));
@@ -90,20 +90,22 @@ namespace smil
 	valueLabel->setText(txt);
 	valueLabel->adjustSize();
     }
-    
+
     template <>
     inline void QtImageViewer<RGB>::drawOverlay(Image<RGB> &im)
     {
     }
-    
-    template <>
-    inline void QtImageViewer<RGB>::displayHistogram(bool update)
-    {
-    }
-    template <>
-    inline void QtImageViewer<RGB>::displayProfile(bool update)
-    {
-    }
+
+#ifdef USE_QWT
+   template <>
+   inline void QtImageViewer<RGB>::displayHistogram(bool update)
+   {
+   }
+   template <>
+   inline void QtImageViewer<RGB>::displayProfile(bool update)
+   {
+   }
+#endif // USE_QWT
 }
 
 #endif // USE_QT
@@ -112,8 +114,8 @@ namespace smil
 namespace smil
 {
 
-    
-    
+
+
 
 #if defined SWIGPYTHON && defined USE_NUMPY
     template <>
