@@ -253,7 +253,7 @@ namespace smil
     * Return the number of labels (or 0 if error).
     */
     template<class T1, class T2>
-    size_t labelGeneric(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -275,7 +275,7 @@ namespace smil
     * Return the number of labels (or 0 if error).
     */
     template<class T1, class T2>
-    size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t labelFast(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -391,6 +391,53 @@ namespace smil
 	
     }
 
+    template <class T1, class T2>
+    class flatZonesFunct : public unaryMorphImageFunctionBase<T1, T2>
+    {
+    public:
+	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
+	
+	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+	{
+	    vector<T1> vals;
+	    UINT nbrValues = 0;
+	    while(dOffset!=dOffsetEnd)
+	    {
+		T1 val = parentClass::pixelsIn[pointOffset + *dOffset];
+		if (find(vals.begin(), vals.end(), val)==vals.end())
+		{
+		  vals.push_back(val);
+		  nbrValues++;
+		}
+		dOffset++;
+	    }
+	    parentClass::pixelsOut[pointOffset] = T2(nbrValues);
+	}
+    };
+    
+    /**
+    * Neighbors
+    * 
+    * Return for each pixel the number of different values in the neighborhoud.
+    * Usefull in order to find interfaces or multiple points between basins.
+    * 
+    * \not_vectorized
+    * \not_parallelized
+    */ 
+    template <class T1, class T2>
+    RES_T flatZones(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	flatZonesFunct<T1, T2> f;
+	
+	ASSERT((f._exec(imIn, imOut, se)==RES_OK));
+	
+	return RES_OK;
+	
+    }
+    
 /** \} */
 
 } // namespace smil

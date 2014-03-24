@@ -36,8 +36,8 @@
 #include "Core/include/private/DTypes.hpp"
 #include "Core/include/DCommon.h"
 #include "Core/include/DErrors.h"
+#include "Core/include/DColor.h"
 
-#include "NSTypes/RGB/include/DRGB.h"
 
 using namespace std;
 

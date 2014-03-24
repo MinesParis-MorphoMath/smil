@@ -37,7 +37,6 @@
 #include "Core/include/DCommon.h"
 #include "Core/include/DErrors.h"
 
-#include "NSTypes/RGB/include/DRGB.h"
 
 using namespace std;
 

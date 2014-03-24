@@ -58,6 +58,7 @@ namespace smil
 	virtual bool isVisible() { return false; }
 	virtual void setName(const char *_name) { parentClass::setName(_name); }
 	virtual void update() = 0;
+	virtual void saveSnapshot(const char *fileName) {}
 	
 	// Slots
 	MemberFunctionSlot<BaseImageViewer> updateSlot;

@@ -34,7 +34,6 @@
 
 #include "DLineHistogram.hpp"
 #include "DImageArith.hpp"
-#include "DColor.h"
 
     
 namespace smil

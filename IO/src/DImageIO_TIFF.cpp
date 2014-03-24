@@ -29,8 +29,9 @@
 
 #ifdef USE_TIFF
 
-#include "DImageIO.hpp"
+#include "IO/include/private/DImageIO.hpp"
 #include "DImageIO_TIFF.hpp"
+#include "DColor.h"
 
 #include <tiffio.h>
 

@@ -116,12 +116,14 @@ namespace smil
 	    *d = this->depth;
 	}
 	
+#ifndef SWIGPYTHON
 	inline void getSize(int *w, int *h, int *d) const
 	{
 	    *w = this->width;
 	    *h = this->height;
 	    *d = this->depth;
 	}
+#endif // SWIGPYTHON
 	
 	inline void getSize(size_t s[3]) const
 	{

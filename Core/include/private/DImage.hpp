@@ -154,23 +154,23 @@ namespace smil
 	//! Copy pixel values to a given array
 	void toArray(T outArray[]);
 	//! Copy pixel values from a given array
-	void fromArray(T inArray[]);
+	void fromArray(const T inArray[]);
 
 	//! Copy pixel values to a given char array
 	void toCharArray(signed char outArray[]);
 	char *toCharArray() { return (char *)pixels; }
 	//! Copy pixel values from a given char array
-	void fromCharArray(signed char inArray[]);
+	void fromCharArray(const signed char inArray[]);
 
 	//! Copy pixel values to a given int array
 	void toIntArray(int outArray[]);
 	//! Copy pixel values from a given int array
-	void fromIntArray(int inArray[]);
+	void fromIntArray(const int inArray[]);
 
 	//! Copy pixel values to a given int vector
 	vector<int> toIntVector();
 	//! Copy pixel values from a given int vector
-	void fromIntVector(vector<int> inVector);
+	void fromIntVector(const vector<int> inVector);
 
 	//! Get the image viewer (create one if needed)
 	virtual ImageViewer<T> *getViewer();

@@ -345,13 +345,18 @@ void ImageViewerWidget::createActions()
     addAction(act);
 }
 
-void ImageViewerWidget::saveAs()
+void ImageViewerWidget::saveAs(const char *fileName)
 {
-    QString fileName = QFileDialog::getSaveFileName(this, "Save Image", "", tr("Image Files (*.png *.jpg *.bmp *.tif)"));
-    if (fileName.isEmpty())
+    QString fName;
+    if (fileName!=NULL)
+      fName = fileName;
+    else
+      fName = QFileDialog::getSaveFileName(this, "Save Image", "", tr("Image Files (*.png *.jpg *.bmp *.tif)"));
+    
+    if (fName.isEmpty())
       return;
     QPixmap pixMap = QPixmap::grabWidget(this);  
-    pixMap.save(fileName);  
+    pixMap.save(fName);  
 }
 
 void ImageViewerWidget::setName(QString new_name)

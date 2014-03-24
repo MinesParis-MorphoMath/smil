@@ -696,7 +696,7 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_depth_segment(const imageType &imIn, int zsize, imageType &imOut)
     {
-	  int w, h, d;
+	  size_t w, h, d;
 	  imIn.getSize(&w, &h, &d);
 	  
 	  int nthreads = Core::getInstance()->getNumberOfThreads();

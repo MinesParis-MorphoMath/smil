@@ -36,26 +36,7 @@
 #include "IO/include/DCommonIO.h"
 #include "Base/include/private/DImageArith.hpp"
 
-#ifdef SMIL_USE_RGB
-#include "NSTypes/include/DRGB.h"
-#endif // SMIL_USE_RGB
 
-
-#include "DImageIO_BMP.hpp"
-#include "DImageIO_RAW.hpp"
-#include "DImageIO_VTK.hpp"
-
-#ifdef USE_PNG
-#include "DImageIO_PNG.hpp"
-#endif // USE_PNG
-
-#ifdef USE_JPEG
-#include "DImageIO_JPG.hpp"
-#endif // USE_JPEG
-
-#ifdef USE_TIFF
-#include "DImageIO_TIFF.hpp"
-#endif // USE_TIFF
 
 namespace smil
 {
@@ -66,76 +47,46 @@ namespace smil
     /*@{*/
     
 
+    template <class T=void>
+    class ImageFileHandler
+    {
+    public:
+      ImageFileHandler(const char *ext)
+	: fileExtention(ext)
+      {
+      }
+      const char *fileExtention;
+      
+      virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo) 
+      { 
+	  return RES_ERR; 
+      }
+      
+      virtual RES_T read(const char* filename)
+      {
+	  return RES_ERR;
+      }
+      
+      virtual RES_T read(const char* filename, Image<T> &image)
+      {
+	  cout << "Data type not implemented for " << fileExtention << " files." << endl;
+	  return RES_ERR;
+      }
+      virtual RES_T write(const Image<T> &image, const char* filename)
+      {
+	  cout << "Data type not implemented for " << fileExtention << " files." << endl;
+	  return RES_ERR;
+      }
+    };
      
     template <class T>
-    ImageFileHandler<T> *getHandlerForFile(const char* filename)
-    {
-	string fileExt = getFileExtension(filename);
-	
-	if (fileExt=="BMP")
-	    return new BMPImageFileHandler<T>();
-
-    #ifdef USE_PNG
-	else if (fileExt=="PNG")
-	    return new PNGImageFileHandler<T>();
-    #endif // USE_PNG
-
-    #ifdef USE_JPEG
-	else if (fileExt=="JPG")
-	    return new JPGImageFileHandler<T>();
-    #endif // USE_JPEG
-
-    #ifdef USE_TIFF
-	else if (fileExt=="TIF")
-	    return new TIFFImageFileHandler<T>();
-    #endif // USE_TIFF
-
-	else if (fileExt=="VTK")
-	    return new VTKImageFileHandler<T>();
-	
-	else
-	{
-	    cout << "No reader/writer available for " << fileExt << " files." << endl;
-	    return NULL;
-	}
-    }
+    ImageFileHandler<T> *getHandlerForFile(const char* filename);
     
     /**
     * Read image file
     */
     template <class T>
-    RES_T read(const char* filename, Image<T> &image)
-    {
-	string fileExt = getFileExtension(filename);
-	string filePrefix = (string(filename).substr(0, 7));
-
-	RES_T res;
-
-	if (filePrefix=="http://")
-	{
-    #ifdef USE_CURL
-	    string tmpFileName = "_smilTmpIO." + fileExt;
-	    if (getHttpFile(filename, tmpFileName.c_str())!=RES_OK)
-	    {
-		ERR_MSG(string("Error downloading file ") + filename);
-		return RES_ERR;
-	    }
-	    res = read(tmpFileName.c_str(), image);
-	    remove(tmpFileName.c_str());
-
-    #else // USE_CURL
-	    ERR_MSG("Error: to use this functionality you must compile SMIL with the Curl option");
-	    res = RES_ERR;
-    #endif // USE_CURL
-	    return res;
-	}
-
-	auto_ptr< ImageFileHandler<T> > fHandler(getHandlerForFile<T>(filename));
-	
-	if (fHandler.get())
-	  return fHandler->read(filename, image);
-	else return RES_ERR;
-    }
+    RES_T read(const char* filename, Image<T> &image);
 
     /**
     * Read a stack of 2D images
@@ -143,134 +94,17 @@ namespace smil
     * The output 3D image will have the width and height of the first (2D) image and the number of images for depth.
     */
     template <class T>
-    RES_T read(const vector<string> fileList, Image<T> &image)
-    {
-	UINT nFiles = fileList.size();
-	if (nFiles==0)
-	  return RES_ERR;
-	
-	vector<string>::const_iterator it = fileList.begin();
-	
-	Image<T> tmpIm;
-	ASSERT((read((*it++).c_str(), tmpIm)==RES_OK));
-	
-	size_t w = tmpIm.getWidth(), h = tmpIm.getHeight();
-	ImageFreezer freezer(image);
-	
-	ASSERT((image.setSize(w, h, nFiles)==RES_OK));
-	ASSERT((fill(image, T(0))==RES_OK));
-	ASSERT((copy(tmpIm, 0, 0, 0, image, 0, 0, 0)==RES_OK));
-	
-	size_t z = 1;
-	
-	while(it!=fileList.end())
-	{
-	    ASSERT((read((*it).c_str(), tmpIm)==RES_OK));
-	    ASSERT((copy(tmpIm, 0, 0, 0, image, 0, 0, z)==RES_OK));
-	    it++;
-	    z++;
-	}
-	
-	return RES_OK;
-    }
+    RES_T read(const vector<string> fileList, Image<T> &image);
 
     /**
     * Write image file
     */
     template <class T>
-    RES_T write(Image<T> &image, const char *filename)
-    {
-	string fileExt = getFileExtension(filename);
-	
-	auto_ptr< ImageFileHandler<T> > fHandler(getHandlerForFile<T>(filename));
-	
-	if (fHandler.get())
-	  return fHandler->write(image, filename);
-	else return RES_ERR;
-	
-    }
+    RES_T write(Image<T> &image, const char *filename);
     
-    inline RES_T getFileInfo(const char *filename, ImageFileInfo &fInfo)
-    {
-	  auto_ptr< ImageFileHandler<void> > fHandler(getHandlerForFile<void>(filename));
-	  
-	  if (fHandler.get())
-	    return fHandler->getFileInfo(filename, fInfo);
-	  else return RES_ERR;
-    }
+    RES_T getFileInfo(const char *filename, ImageFileInfo &fInfo);
     
-    inline BaseImage *createFromFile(const char *filename)
-    {
-	  string fileExt = getFileExtension(filename);
-	  string filePrefix = (string(filename).substr(0, 7));
-	  
-	  if (filePrefix=="http://")
-	  {
-	      BaseImage *img = NULL;
-      #ifdef USE_CURL
-	      string tmpFileName = "_smilTmpIO." + fileExt;
-	      if (getHttpFile(filename, tmpFileName.c_str())!=RES_OK)
-	      {
-		  ERR_MSG(string("Error downloading file ") + filename);
-		  return img;
-	      }
-	      img = createFromFile(tmpFileName.c_str());
-	      remove(tmpFileName.c_str());
-
-      #else // USE_CURL
-	      ERR_MSG("Error: to use this functionality you must compile SMIL with the Curl option");
-      #endif // USE_CURL
-	      return img;
-	  }
-	  
-	  ImageFileInfo fInfo;
-	  if (getFileInfo(filename, fInfo)!=RES_OK)
-	  {
-	      ERR_MSG("Can't open file");
-	      return NULL;
-	  }
-	  
-	  ImageFileHandler<void> *fHandler  = getHandlerForFile<void>(filename);
-	  fHandler->read(filename);
-	  
-	  if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_GRAY)
-	  {
-	      if (fInfo.scalarType==ImageFileInfo::SCALAR_TYPE_UINT8)
-	      {
-		  Image<UINT8> *img = new Image<UINT8>();
-		  auto_ptr< ImageFileHandler<UINT8> > fHandler(getHandlerForFile<UINT8>(filename));
-		  if (fHandler->read(filename, *img)==RES_OK)
-		    return img;
-		  else ERR_MSG("Error reading 8 bit image");
-	      }
-	      else if (fInfo.scalarType==ImageFileInfo::SCALAR_TYPE_UINT16)
-	      {
-		  Image<UINT16> *img = new Image<UINT16>();
-		  auto_ptr< ImageFileHandler<UINT16> > fHandler(getHandlerForFile<UINT16>(filename));
-		  if (fHandler->read(filename, *img)==RES_OK)
-		    return img;
-		  else ERR_MSG("Error reading 16 bit image");
-	      }
-	      else ERR_MSG("Unsupported GRAY data type");
-	  }
-#ifdef SMIL_WRAP_RGB
-	  else if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_RGB)
-	  {
-	      Image<RGB> *img = new Image<RGB>();
-	      auto_ptr< ImageFileHandler<RGB> > fHandler(getHandlerForFile<RGB>(filename));
-	      if (fHandler->read(filename, *img)==RES_OK)
-		return img;
-	      else ERR_MSG("Error reading RGB image");
-	  }
-#endif // SMIL_WRAP_RGB
-	  else
-	  {
-	      ERR_MSG("File type not supported");
-	  }
-	  
-	return NULL;
-	  
-    }
+    BaseImage *createFromFile(const char *filename);
 
 /*@}*/
 

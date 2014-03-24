@@ -31,14 +31,14 @@
 #define _D_IMAGE_IO_VTK_HPP
 
 
-#include <stdio.h>
+#include <fstream>
 #include <stdlib.h>
 #include <string>
 #include <ctype.h>
 
 #include "Core/include/private/DTypes.hpp"
 #include "Core/include/private/DImage.hpp"
-#include "IO/include/DCommonIO.h"
+#include "IO/include/private/DImageIO.hpp"
 
 using namespace std;
 

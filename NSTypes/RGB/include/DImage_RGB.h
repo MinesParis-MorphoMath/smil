@@ -32,10 +32,10 @@
 
 
 #include "DImage.hpp"
-#include "DImage.hxx"
+#include "Base/include/private/DImageArith.hpp"
 #include "DTypes.h"
-#include "DColor.h"
 #include "Base/include/private/DImageTransform.hpp"
+#include "Base/include/private/DMeasures.hpp"
 
 namespace smil
 {
@@ -204,14 +204,7 @@ namespace smil
     
     
 #ifdef USE_QWT
-    template <>
-    inline void QtImageViewer<RGB>::displayHistogram(bool update)
-    {
-    }
-    template <>
-    inline void QtImageViewer<RGB>::displayProfile(bool update)
-    {
-    }
+// #include "Gui/Qt/DQtImageViewer.hpp"
 #endif // USE_QWT
     
     template <class T, UINT N>

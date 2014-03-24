@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
 {
       TestSuite ts;
       ADD_TEST(ts, Test_MaxTree);
-      ADD_TEST(ts, Test_DeltaUO);
+//       ADD_TEST(ts, Test_DeltaUO);
       return ts.run();
 }
 
