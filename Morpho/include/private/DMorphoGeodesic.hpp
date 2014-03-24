@@ -531,13 +531,29 @@ namespace smil
 	return RES_OK;
     }
 
+    template <class T1, class T2>
+    RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        int st = se.getType () ;
+        int size = se.size ;
+
+        if (size > 1) 
+            return dist_generic (imIn, imOut, se);
+        switch (st) 
+        {
+            case SE_Cross:
+                return dist_manhattan (imIn, imOut);
+/*            case SE_Square:
+                return dist_chessboard (imIn, imOut); 
+*/        } 
+        return dist_generic (imIn, imOut, se); 
+    }
+
     /**
-     * Distance function.
-     * 
-     * Multi-source label-correcting algorithm for ALSP problem.
+     * Generic Distance function.
      */
     template <class T1, class T2>
-    RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
+    RES_T dist_generic(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
     {
     	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -625,6 +641,97 @@ namespace smil
         return RES_OK;
     }
 
+    template <class T1, class T2>
+    RES_T dist_manhattan (const Image<T1> &imIn, Image<T2> &imOut) {
+        ASSERT_ALLOCATED (&imIn, &imOut);
+        ASSERT_SAME_SIZE (&imIn, &imOut);
+
+        ImageFreezer freeze (imOut);
+        Image<T1> tmp(imIn);
+        ASSERT (inf(imIn, T1(1), tmp) == RES_OK);
+ 
+        typedef Image<T1> imageInType;
+        typedef typename imageInType::lineType lineInType;
+        typedef Image<T2> imageOutType;
+        typedef typename imageOutType::lineType lineOutType;
+
+        lineInType pixelsIn = tmp.getPixels () ;
+        lineOutType pixelsOut = imOut.getPixels () ;
+
+        size_t size[3];
+        imIn.getSize (size) ;
+        size_t offset ;
+        int x,y,z;
+        size_t infinite=size[1]*size[0];
+        T2 min;
+
+        for (z=0; z<size[2]; ++z) {
+            #pragma omp for private(offset,x,y)    
+            for (x=0; x<size[0];++x) {
+                offset = z*size[2]*size[1]+x;
+                if (pixelsIn[offset] == 0) {
+                    pixelsOut[offset] = 0; 
+                } else {
+                    pixelsOut[offset] = infinite;
+                }
+
+                for (y=1; y<size[1]; ++y) {
+                    if (pixelsIn[offset+y*size[1]] == 0) {
+                        pixelsOut[offset+y*size[1]] = 0;
+                    } else {
+                        pixelsOut[offset+y*size[1]] = (1 + pixelsOut[offset+(y-1)*size[1]] > infinite) ? infinite : 1+pixelsOut[offset+(y-1)*size[1]];
+                    }
+                }
+
+                for (y=size[1]-2; y>=0; --y) {
+                    min = (pixelsOut[offset+(y+1)*size[1]]+1 > infinite) ? infinite : pixelsOut[offset+(y+1)*size[1]]+1; 
+                    if (min < pixelsOut[offset+y*size[1]])
+                       pixelsOut[offset+y*size[1]] = (1+pixelsOut[offset+(y+1)*size[1]]); 
+                }
+            }
+            
+            #pragma omp for private(x,y,offset)
+            for (y=0; y<size[1]; ++y) {
+                offset = z*size[2]*size[1]+y*size[1]; 
+                for (x=1; x<size[0]; ++x) {
+                    if (pixelsOut[offset+x] != 0 && pixelsOut[offset+x] > pixelsOut[offset+x-1]) {
+                        pixelsOut[offset+x] = pixelsOut[offset+x-1]+1;
+                    }
+                }
+                for (x=size[0]-2; x>=0; --x) {
+                    if (pixelsOut[offset+x] != 0 && pixelsOut[offset+x] > pixelsOut[offset+x+1]) {
+                        pixelsOut[offset+x] = pixelsOut[offset+x+1]+1;
+                    }
+                }
+            }
+        }
+
+        
+
+    }
+/*
+    template <class T1, class T2>
+    RES_T dist_chessboard (const Image<T1> &imIn, Image<T2> &imOut, int size) {
+        ASSERT_ALLOCATED (&imIn, &imOut);
+        ASSERT_SAME_SIZE (&imIn, &imOut);
+
+        ImageFreezer freeze (imOut);
+        Image<T1> tmp;
+        ASSERT (inf(imIn, T1(1), tmp) == RES_OK);
+     
+    }
+
+    template <class T1, class T2>
+    RES_T dist_euclidian (const Image<T1> &imIn, Image<T2> &imOut, int size) {
+        ASSERT_ALLOCATED (&imIn, &imOut);
+        ASSERT_SAME_SIZE (&imIn, &imOut);
+
+        ImageFreezer freeze (imOut);
+        Image<T1> tmp;
+        ASSERT (inf(imIn, T1(1), tmp) == RES_OK);
+       
+    }
+*/
     /**
     * Base distance function performed with successive erosions.
     */

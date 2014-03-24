@@ -89,7 +89,7 @@ CpuID::CpuID()
     int i=0; 
     if (vendor == "GenuineIntel") {
         do {
-            __asm__ (
+            __asm__ __volatile__ (
                 "mov $0x04, %%eax\n\t"
                 "mov %3, %%ecx\n\t"
                 "cpuid\n\t"
