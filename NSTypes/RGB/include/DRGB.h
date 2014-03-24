@@ -36,6 +36,7 @@
 
 #ifdef USE_QT
 
+#include "Gui/Qt/DQtImageViewer.hpp"
 #include "Gui/Qt/DQtImageViewer.hxx"
 
 namespace smil
