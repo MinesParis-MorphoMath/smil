@@ -88,6 +88,17 @@ namespace smil
 	    this->deallocate();
 	}
 	
+	virtual void setPixels(lineType dataPtr, size_t width, size_t height, size_t depth=0)
+	{
+	    this->pixels = dataPtr;
+	    this->setSize(width, height, depth);
+	}
+	
+	virtual void setPixels(lineType dataPtr)
+	{
+	    this->pixels = dataPtr;
+	}
+	
 	virtual void clone(const SharedImage<T> &rhs)
 	{
 	    this->pixels = rhs.getPixels();
