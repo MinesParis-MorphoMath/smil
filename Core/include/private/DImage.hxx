@@ -49,7 +49,6 @@ namespace smil
       : BaseImage("Image")
     {
 	init();
-	setSize(256, 256);
     }
 
     template <class T>
