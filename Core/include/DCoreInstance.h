@@ -79,6 +79,7 @@ namespace smil
 	void unregisterObject(BaseObject *obj);
 	void showAllImages();
 	void hideAllImages();
+	void deleteAllImages();
 	vector<BaseObject*> getRegisteredObjects();
 	vector<BaseImage*> getImages();
 	void getCompilationInfos(ostream &outStream = std::cout);

@@ -194,6 +194,12 @@ void Core::hideAllImages()
 	(*it++)->hide();
 }
 
+void Core::deleteAllImages()
+{
+    for (int i=0;i<this->registeredImages.size();i++)
+      delete this->registeredImages[i];
+}
+
 void Core::getCompilationInfos(ostream &outStream)
 {
     outStream << "System: " << this->systemName << endl;

@@ -195,6 +195,7 @@ namespace std
 // Core Instance
 //////////////////////////////////////////////////////////
 
+%include "DCpuID.h"
 %include "DInstance.hpp"
 %template(CoreInstance) smil::UniqueInstance<Core>;
 %include "DCoreInstance.h"

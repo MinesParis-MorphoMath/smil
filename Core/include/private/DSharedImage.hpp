@@ -116,7 +116,6 @@ namespace smil
 		return RES_ERR_BAD_ALLOCATION;
 	    
 	    this->allocated = true;
-	    this->allocatedSize = this->pixelCount*sizeof(T);
 
 	    this->restruct();
 
@@ -138,7 +137,6 @@ namespace smil
 	    this->pixels = NULL;
 
 	    this->allocated = false;
-	    this->allocatedSize = 0;
 
 	    return RES_OK;
 	}
