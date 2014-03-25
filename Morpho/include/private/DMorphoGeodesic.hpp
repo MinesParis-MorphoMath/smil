@@ -542,9 +542,11 @@ namespace smil
         switch (st) 
         {
             case SE_Cross:
-                return dist_manhattan (imIn, imOut);
+                return dist_cross (imIn, imOut);
+            case SE_Cross3D:
+                return dist_cross_3d (imIn, imOut);
 /*            case SE_Square:
-                return dist_chessboard (imIn, imOut); 
+                return dist_square (imIn, imOut); 
 */        } 
         return dist_generic (imIn, imOut, se); 
     }
@@ -642,7 +644,7 @@ namespace smil
     }
 
     template <class T1, class T2>
-    RES_T dist_manhattan (const Image<T1> &imIn, Image<T2> &imOut) {
+    RES_T dist_cross_3d (const Image<T1> &imIn, Image<T2> &imOut) {
         ASSERT_ALLOCATED (&imIn, &imOut);
         ASSERT_SAME_SIZE (&imIn, &imOut);
 
@@ -662,24 +664,24 @@ namespace smil
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
-        size_t infinite=size[1]*size[0];
+        T2 infinite=size[1]*size[0];
         T2 min;
 
         for (z=0; z<size[2]; ++z) {
             #pragma omp for private(offset,x,y)    
             for (x=0; x<size[0];++x) {
                 offset = z*size[2]*size[1]+x;
-                if (pixelsIn[offset] == 0) {
-                    pixelsOut[offset] = 0; 
+                if (pixelsIn[offset] == T1(0)) {
+                    pixelsOut[offset] = T2(0); 
                 } else {
                     pixelsOut[offset] = infinite;
                 }
 
                 for (y=1; y<size[1]; ++y) {
-                    if (pixelsIn[offset+y*size[1]] == 0) {
-                        pixelsOut[offset+y*size[1]] = 0;
+                    if (pixelsIn[offset+y*size[1]] == T1(0)) {
+                        pixelsOut[offset+y*size[1]] = T2(0);
                     } else {
-                        pixelsOut[offset+y*size[1]] = (1 + pixelsOut[offset+(y-1)*size[1]] > infinite) ? infinite : 1+pixelsOut[offset+(y-1)*size[1]];
+                        pixelsOut[offset+y*size[1]] = (1 + pixelsOut[offset+(y-1)*size[1]] > infinite) ? infinite : 1 + pixelsOut[offset+(y-1)*size[1]];
                     }
                 }
 
@@ -705,9 +707,90 @@ namespace smil
                 }
             }
         }
+        for (y=0; y<size[1]; ++y) {
+            #pragma omp for private(x,z,offset)
+            for (x=0; x<size[0]; ++x) {
+                offset = y*size[1]+x;
+                for (z=1; z<size[2]; ++z) {
+                    if (pixelsOut[offset+z*size[2]*size[1]] != 0 && pixelsOut[offset+z*size[2]*size[1]] > pixelsOut[offset+(z-1)*size[2]*size[1]]) {
+                        pixelsOut[offset+z*size[2]*size[1]] = pixelsOut[offset+(z-1)*size[2]*size[1]]+1;
+                    }
+                }
+                for (z=size[2]-2; z>=0; --z) {
+                    if (pixelsOut[offset+z*size[2]*size[1]] != 0 && pixelsOut[offset+z*size[2]*size[1]] > pixelsOut[offset+(z+1)*size[2]*size[1]]) {
+                        pixelsOut[offset+z*size[2]*size[1]] = pixelsOut[offset+(z+1)*size[2]*size[1]]+1;
+                    }
+                }
+            }
+        }
+        return RES_OK;
+    }
 
-        
+    template <class T1, class T2>
+    RES_T dist_cross (const Image<T1> &imIn, Image<T2> &imOut) {
+        ASSERT_ALLOCATED (&imIn, &imOut);
+        ASSERT_SAME_SIZE (&imIn, &imOut);
 
+        ImageFreezer freeze (imOut);
+        Image<T1> tmp(imIn);
+        ASSERT (inf(imIn, T1(1), tmp) == RES_OK);
+ 
+        typedef Image<T1> imageInType;
+        typedef typename imageInType::lineType lineInType;
+        typedef Image<T2> imageOutType;
+        typedef typename imageOutType::lineType lineOutType;
+
+        lineInType pixelsIn = tmp.getPixels () ;
+        lineOutType pixelsOut = imOut.getPixels () ;
+
+        size_t size[3];
+        imIn.getSize (size) ;
+        size_t offset ;
+        int x,y,z;
+        T2 infinite=size[1]*size[0];
+        T2 min;
+
+        for (z=0; z<size[2]; ++z) {
+            #pragma omp for private(offset,x,y)    
+            for (x=0; x<size[0];++x) {
+                offset = z*size[2]*size[1]+x;
+                if (pixelsIn[offset] == T1(0)) {
+                    pixelsOut[offset] = T2(0); 
+                } else {
+                    pixelsOut[offset] = infinite;
+                }
+
+                for (y=1; y<size[1]; ++y) {
+                    if (pixelsIn[offset+y*size[1]] == T1(0)) {
+                        pixelsOut[offset+y*size[1]] = T2(0);
+                    } else {
+                        pixelsOut[offset+y*size[1]] = (1 + pixelsOut[offset+(y-1)*size[1]] > infinite) ? infinite : 1 + pixelsOut[offset+(y-1)*size[1]];
+                    }
+                }
+
+                for (y=size[1]-2; y>=0; --y) {
+                    min = (pixelsOut[offset+(y+1)*size[1]]+1 > infinite) ? infinite : pixelsOut[offset+(y+1)*size[1]]+1; 
+                    if (min < pixelsOut[offset+y*size[1]])
+                       pixelsOut[offset+y*size[1]] = (1+pixelsOut[offset+(y+1)*size[1]]); 
+                }
+            }
+            
+            #pragma omp for private(x,y,offset)
+            for (y=0; y<size[1]; ++y) {
+                offset = z*size[2]*size[1]+y*size[1]; 
+                for (x=1; x<size[0]; ++x) {
+                    if (pixelsOut[offset+x] != 0 && pixelsOut[offset+x] > pixelsOut[offset+x-1]) {
+                        pixelsOut[offset+x] = pixelsOut[offset+x-1]+1;
+                    }
+                }
+                for (x=size[0]-2; x>=0; --x) {
+                    if (pixelsOut[offset+x] != 0 && pixelsOut[offset+x] > pixelsOut[offset+x+1]) {
+                        pixelsOut[offset+x] = pixelsOut[offset+x+1]+1;
+                    }
+                }
+            }
+        }
+        return RES_OK;
     }
 /*
     template <class T1, class T2>
