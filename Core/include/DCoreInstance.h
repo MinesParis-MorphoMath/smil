@@ -86,6 +86,7 @@ namespace smil
 	const CpuID &getCpuID() { return cpuID; }
 	
 	Signal onBaseImageCreated;
+	Signal onBaseImageDestroyed;
 	
       
     protected:

@@ -100,6 +100,11 @@ namespace smil
     template <class T>
     void QtImageViewer<T>::show()
     {
+	if (!BASE_QT_VIEWER::isVisible())
+	{
+	    drawImage();
+	    BASE_QT_VIEWER::dataChanged();
+	}
 	BASE_QT_VIEWER::showNormal();
 	BASE_QT_VIEWER::raise();
 	BASE_QT_VIEWER::activateWindow();
@@ -109,6 +114,11 @@ namespace smil
     void QtImageViewer<T>::showLabel()
     {
 	this->setLabelImage(true);
+	if (!BASE_QT_VIEWER::isVisible())
+	{
+	    drawImage();
+	    BASE_QT_VIEWER::dataChanged();
+	}
 	BASE_QT_VIEWER::showNormal();
 	BASE_QT_VIEWER::raise();
 	BASE_QT_VIEWER::activateWindow();

@@ -263,6 +263,8 @@ namespace smil
 	  return;
 	}
 
+	parentClass::show();
+	
 	createViewer();
 
 	if (_name)
@@ -276,18 +278,12 @@ namespace smil
 	else
 	  viewer->showLabel();
 
-	modified();
-
     }
 
     template <class T>
     void Image<T>::showLabel(const char *_name)
     {
-	if (_name)
-	    setName(_name);
-	if (isVisible())
-	  viewer->showLabel();
-	else show(_name, true);
+	show(_name, true);
     }
 
     template <class T>

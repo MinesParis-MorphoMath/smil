@@ -217,7 +217,7 @@ namespace std
 // generate directors for Signal and Slot (for virtual methods overriding)
 %feature("director") Signal;
 %feature("director") Slot;
-%feature("director") BaseImageSlot;
+%feature("director") BaseImageEventSlot;
 #endif // SWIGJAVA
 
 %include "DSignal.h"
@@ -227,7 +227,7 @@ namespace std
 
 namespace smil
 {
-    %template(BaseImageSlot) Slot<BaseImageEvent>;
+    %template(BaseImageEventSlot) Slot<BaseImageEvent>;
     %template(EventSlot) Slot<Event>;
     %template(ViewerFunctionSlot) MemberFunctionSlot<BaseImageViewer, Event>;
     %template(FunctionSlot_) FunctionSlot<Event>;

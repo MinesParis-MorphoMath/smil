@@ -60,6 +60,7 @@ namespace smil
 	allocatedSize(0)
 	{
 	    onModified = Signal(this);
+	    onShow = Signal(this);
 	}
 	
 	BaseImage(const BaseImage &rhs)
@@ -70,12 +71,11 @@ namespace smil
 	allocated(false),
 	allocatedSize(0)
 	{
-		onModified = Signal(this);
+	    onModified = Signal(this);
+	    onShow = Signal(this);
 	}
 	
-	virtual ~BaseImage()
-	{
-	}
+	virtual ~BaseImage();
 	
 	// Forbid implicit assignment operator
 	BaseImage& operator=(const BaseImage &rhs);
@@ -187,9 +187,9 @@ namespace smil
 	//! Check if the image (viewer) is visible
 	virtual bool isVisible() { return false; }
 	//! Show the image (viewer)
-	virtual void show(const char* = NULL, bool = false) {}
+	virtual void show(const char* = NULL, bool = false);
 	//! Show the image (viewer) as false colors
-	virtual void showLabel(const char * = NULL) {}
+	virtual void showLabel(const char * = NULL);
 	//! Hide the image (viewer)
 	virtual void hide() = 0;
 	
@@ -200,6 +200,7 @@ namespace smil
 	
 	bool updatesEnabled;
 	Signal onModified;
+	Signal onShow;
     protected:
 	size_t dataTypeSize;
 

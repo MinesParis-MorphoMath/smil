@@ -131,6 +131,11 @@ def hideAll():
     for im in imgs.keys():
       im.hide()
     
+def deleteAll():
+    imgs = _find_images()
+    for im in imgs.keys():
+      __main__.__dict__.pop(imgs[im], None)
+      del im
     
 for t in imageTypes:
     t.c_show = t.show
@@ -309,9 +314,9 @@ class linkManager:
 	if not self._link.run(None):
 	  list.__setitem__(self, num, prevVal)
 	  
-    class link(EventSlot):
+    class link(BaseImageEventSlot):
       def __init__(self, imWatch, func, *args):
-	EventSlot.__init__(self)
+	BaseImageEventSlot.__init__(self)
 	self.imWatch = imWatch
 	self.func = func
 	self.args = linkManager._linkArgs(self)

@@ -196,8 +196,9 @@ void Core::hideAllImages()
 
 void Core::deleteAllImages()
 {
-    for (int i=0;i<this->registeredImages.size();i++)
-      delete this->registeredImages[i];
+    vector<BaseImage*> imgs = this->registeredImages;
+    for (int i=0;i<imgs.size();i++)
+      delete imgs[i];
 }
 
 void Core::getCompilationInfos(ostream &outStream)
