@@ -648,11 +648,14 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,OffsetT> &tree, T* transformee_n
      * \param[in] stopSize (optional)
      */
     template <class T1, class T2>
-    RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, UINT stopSize=-1, UINT delta = 0)
+    RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, int stopSize=-1, UINT delta = 0)
     {
 	ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
 	ASSERT_SAME_SIZE(&imIn, &imTrans, &imIndic);
 	
+	if (stopSize==-1)
+	  stopSize = imIn.getHeight()-1;
+	  
 	int imSize = imIn.getPixelCount();
 	UINT *img_eti = new UINT[imSize]();
 	

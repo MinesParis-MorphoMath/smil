@@ -143,7 +143,7 @@ class Test_DeltaUO : public TestCase
       
       im1 << vec1;
       
-      ultimateOpen(im1, im2, imLbl);
+      ultimateOpen(im1, im2, imLbl, 7, 1);
       
       dataType1 vecTrans[] =
       {
@@ -191,7 +191,7 @@ int main(int argc, char *argv[])
 {
       TestSuite ts;
       ADD_TEST(ts, Test_MaxTree);
-//       ADD_TEST(ts, Test_DeltaUO);
+      ADD_TEST(ts, Test_DeltaUO);
       return ts.run();
 }
 
