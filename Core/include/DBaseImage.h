@@ -193,6 +193,11 @@ namespace smil
 	//! Hide the image (viewer)
 	virtual void hide() = 0;
 	
+	//! Load from file
+	virtual RES_T load(const char *fileName) {}
+	//! Save to file
+	virtual RES_T save(const char *fileName) {}
+	
 #ifndef SWIG
 	//! Get the viewer associated to the image
 	virtual BaseImageViewer *getViewer() = 0;

@@ -119,15 +119,10 @@ void Core::unregisterObject(BaseObject *obj)
 
 void Core::deleteRegisteredObjects()
 {
-    BaseObject *obj;
-    Core *inst = Core::getInstance();
-    vector<BaseObject*>::iterator it = inst->registeredObjects.begin();
+    vector<BaseObject*> objects = registeredObjects;
 
-    while (it!=inst->registeredObjects.end())
-    {
-	obj = *it++;
-	delete obj;
-    }
+    for (UINT i=0;i<objects.size();i++)
+      delete objects[i];
 }
 
 UINT Core::getNumberOfThreads()

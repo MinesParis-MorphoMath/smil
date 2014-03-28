@@ -111,6 +111,9 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(compare);
 TEMPLATE_WRAP_FUNC(mask);
 TEMPLATE_WRAP_FUNC_2T_CROSS(applyLookup);
 
+# Suppl. Types
+TEMPLATE_WRAP_SUPPL_FUNC(equ);
+TEMPLATE_WRAP_SUPPL_FUNC(diff);
 
 
 %include "DImageHistogram.hpp"

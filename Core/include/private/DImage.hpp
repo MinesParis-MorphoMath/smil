@@ -243,6 +243,9 @@ namespace smil
 	    return pixels;
 	}
 
+	virtual RES_T load(const char *fileName);
+	virtual RES_T save(const char *fileName);
+	
     #if defined SWIGPYTHON && defined USE_NUMPY
 	/**
 	* Return a NumPy array containing the \b real image pixel values (not a copy).

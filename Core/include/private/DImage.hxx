@@ -201,6 +201,18 @@ namespace smil
     }
 
     template <class T>
+    RES_T Image<T>::load(const char *fileName)
+    {
+	return read(fileName, *this);
+    }
+    
+    template <class T>
+    RES_T Image<T>::save(const char *fileName)
+    {
+	return write(*this, fileName);
+    }
+    
+    template <class T>
     void Image<T>::modified()
     {
 	if (!this->updatesEnabled)

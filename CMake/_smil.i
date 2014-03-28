@@ -97,7 +97,9 @@ def _find_images(gbl_dict=None):
       if isinstance(it[1], BaseImage):
 	imgs[it[1]] = it[0]
     return imgs
-  
+
+__builtin__.getImages = _find_images
+
 def guess_images_name(gbl_dict=None):
     imgs = _find_images(gbl_dict)
     for im in imgs.keys():
@@ -134,6 +136,7 @@ def hideAll():
 def deleteAll():
     imgs = _find_images()
     for im in imgs.keys():
+      im.hide()
       __main__.__dict__.pop(imgs[im], None)
       del im
     
