@@ -107,7 +107,8 @@ class TestDistanceCross : public TestCase
 	  4,   3,   2,   1,   1,   0,   0,   0,
 	  5,   4,   3,   2,   1,   0,   1,   0,
 	  5,   4,   3,   2,   1,   0,   0,   0,
-	  6,   5,   4,   3,   2,   1,   1,   1,      };
+	  6,   5,   4,   3,   2,   1,   1,   1,      
+      };
       imTruth << vecTruth;
       
       dist(im1, im2, cSE());

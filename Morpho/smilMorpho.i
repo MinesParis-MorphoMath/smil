@@ -104,6 +104,7 @@ TEMPLATE_WRAP_FUNC(fillHoles);
 TEMPLATE_WRAP_FUNC(levelPics);
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist);
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist_generic);
+TEMPLATE_WRAP_FUNC_2T_CROSS(dist_euclidean);
 
 %include "DMorphoExtrema.hpp"
 TEMPLATE_WRAP_FUNC(hMinima);

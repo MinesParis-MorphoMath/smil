@@ -545,7 +545,7 @@ namespace smil
                 return dist_cross (imIn, imOut);
             case SE_Cross3D:
                 return dist_cross_3d (imIn, imOut);
-/*            case SE_Square:
+/*            case SE_Squ:
                 return dist_square (imIn, imOut); 
 */        } 
         return dist_generic (imIn, imOut, se); 
@@ -664,7 +664,7 @@ namespace smil
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
-        T2 infinite=size[1]*size[0];
+        T2 infinite=size[1]+size[0]+size[2];
         T2 min;
 
         for (z=0; z<size[2]; ++z) {
@@ -747,7 +747,7 @@ namespace smil
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
-        T2 infinite=size[1]*size[0];
+        T2 infinite=size[1]+size[0];
         T2 min;
 
         for (z=0; z<size[2]; ++z) {
@@ -792,29 +792,93 @@ namespace smil
         }
         return RES_OK;
     }
-/*
+
     template <class T1, class T2>
-    RES_T dist_chessboard (const Image<T1> &imIn, Image<T2> &imOut, int size) {
+    RES_T dist_euclidean (const Image<T1> &imIn, Image<T2> &imOut) {
         ASSERT_ALLOCATED (&imIn, &imOut);
         ASSERT_SAME_SIZE (&imIn, &imOut);
 
         ImageFreezer freeze (imOut);
-        Image<T1> tmp;
-        ASSERT (inf(imIn, T1(1), tmp) == RES_OK);
-     
-    }
+        Image<T2> tmp(imIn);
 
-    template <class T1, class T2>
-    RES_T dist_euclidian (const Image<T1> &imIn, Image<T2> &imOut, int size) {
-        ASSERT_ALLOCATED (&imIn, &imOut);
-        ASSERT_SAME_SIZE (&imIn, &imOut);
+        typedef Image<T1> imageInType;
+        typedef typename imageInType::lineType lineInType;
+        typedef Image<T2> imageOutType;
+        typedef typename imageOutType::lineType lineOutType;
 
-        ImageFreezer freeze (imOut);
-        Image<T1> tmp;
-        ASSERT (inf(imIn, T1(1), tmp) == RES_OK);
+        lineInType pixelsIn = imIn.getPixels () ;
+        lineOutType pixelsOut = imOut.getPixels () ;
+        lineOutType pixelsTmp = tmp.getPixels () ;
+
+        size_t size[3];
+        imIn.getSize (size) ;
+        size_t offset ;
+        int x,y,z;
+        T2 infinite=size[1]+size[0];
+        T2 min;
+
+        // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
+        T2 s[size[1]]; // sets of the least minimizers that occurs during the scan from left to right.
+        T2 t[size[1]]; // sets of points with the same least minimizer 
+        s[0] = 0;
+        t[0] = 0;
+        int q = 0;
+        T2 w;
+        size_t xp;
+
+        for (z=0; z<size[2]; ++z) {
+            #pragma omp for private(offset,x,y)    
+            for (x=0; x<size[0];++x) {
+                offset = z*size[2]*size[1]+x;
+                if (pixelsIn[offset] == T1(0)) {
+                    pixelsTmp[offset] = T2(0); 
+                } else {
+                    pixelsTmp[offset] = infinite;
+                }
+                // SCAN 1
+                for (y=1; y<size[1]; ++y) {
+                    if (pixelsIn[offset+y*size[1]] == T1(0)) {
+                        pixelsTmp[offset+y*size[1]] = T2(0);
+                    } else {
+                        pixelsTmp[offset+y*size[1]] = (1 + pixelsTmp[offset+(y-1)*size[1]] > infinite) ? infinite : 1 + pixelsTmp[offset+(y-1)*size[1]];
+                    }
+                }
+                // SCAN 2
+                for (y=size[1]-2; y>=0; --y) {
+                    min = (pixelsTmp[offset+(y+1)*size[1]]+1 > infinite) ? infinite : pixelsTmp[offset+(y+1)*size[1]]+1; 
+                    if (min < pixelsTmp[offset+y*size[1]])
+                       pixelsTmp[offset+y*size[1]] = (1+pixelsTmp[offset+(y+1)*size[1]]); 
+                }
+            }
        
+#define f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
+
+            #pragma omp for private(offset,y,s,t,q,w)
+             for (y=0; y<size[1]; ++y) {
+                    offset = z*size[2]*size[1]+y*size[1];
+                    q=0; t[0]=0; s[0]=0;
+                    // SCAN 3
+                    for (int u=1; u<size[0];++u) {
+                        while (q>=0 && f_euclidean (t[q], s[q]) > f_euclidean (t[q], u)) {
+                            q--;
+                        }
+                        if (q<0) {q=0; s[0]=u;}
+                        else {
+                            w= 1 + ( u*u - s[q]*s[q] + pixelsTmp[u]*pixelsTmp[u] - pixelsTmp[s[q]] * pixelsTmp[s[q]] ) / (2*(u-s[q]));
+                            if (w<size[0]) {q++; s[q]=u; t[q]=w;}
+                        }
+                    }
+                    // SCAN 4
+                    for (int u=size[0]-1; u>=0; --u) {
+                        pixelsOut[offset+u] = f_euclidean (u, s[q]) ;
+                        if (u == t[q])
+                            q--;
+                    }
+             }
+        }
+        return RES_OK;
     }
-*/
+
     /**
     * Base distance function performed with successive erosions.
     */
