@@ -162,6 +162,7 @@ TEMPLATE_WRAP_FUNC(zhangSkeleton);
 
 %include "DMorphoMaxTree.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpenMSER);
 
 %include "DMorphoGraph.hpp"
 TEMPLATE_WRAP_FUNC_3T_FIX_THIRD(mosaicToGraph, Graph<>);
