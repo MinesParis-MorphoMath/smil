@@ -545,10 +545,9 @@ namespace smil
                 return dist_cross (imIn, imOut);
             case SE_Cross3D:
                 return dist_cross_3d (imIn, imOut);
-/*            case SE_Squ:
+            case SE_Squ:
                 return dist_square (imIn, imOut); 
-*/        } 
-        return dist_generic (imIn, imOut, se); 
+        } 
     }
 
     /**
@@ -668,7 +667,7 @@ namespace smil
         T2 min;
 
         for (z=0; z<size[2]; ++z) {
-            #pragma omp for private(offset,x,y)    
+            #pragma omp for private(offset,x,y,min)    
             for (x=0; x<size[0];++x) {
                 offset = z*size[2]*size[1]+x;
                 if (pixelsIn[offset] == T1(0)) {
@@ -751,7 +750,7 @@ namespace smil
         T2 min;
 
         for (z=0; z<size[2]; ++z) {
-            #pragma omp for private(offset,x,y)    
+            #pragma omp for private(offset,x,y,min)    
             for (x=0; x<size[0];++x) {
                 offset = z*size[2]*size[1]+x;
                 if (pixelsIn[offset] == T1(0)) {
@@ -794,6 +793,111 @@ namespace smil
     }
 
     template <class T1, class T2>
+    RES_T dist_square (const Image<T1> &imIn, Image<T2> &imOut) {
+        ASSERT_ALLOCATED (&imIn, &imOut);
+        ASSERT_SAME_SIZE (&imIn, &imOut);
+
+        ImageFreezer freeze (imOut);
+        Image<T2> tmp(imIn);
+
+        typedef Image<T1> imageInType;
+        typedef typename imageInType::lineType lineInType;
+        typedef Image<T2> imageOutType;
+        typedef typename imageOutType::lineType lineOutType;
+
+        lineInType pixelsIn = imIn.getPixels () ;
+        lineOutType pixelsOut = imOut.getPixels () ;
+        lineOutType pixelsTmp = tmp.getPixels () ;
+
+        size_t size[3];
+        imIn.getSize (size) ;
+        size_t offset ;
+        int x,y,z;
+        T2 infinite=size[1]+size[0];
+        T2 min;
+
+        // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
+        T2 s[size[1]]; // sets of the least minimizers that occurs during the scan from left to right.
+        T2 t[size[1]]; // sets of points with the same least minimizer 
+        s[0] = 0;
+        t[0] = 0;
+        int q = 0;
+        T2 w;
+
+        T2 tmpdist, tmpdist2;
+
+        for (z=0; z<size[2]; ++z) {
+            #pragma omp for private(offset,x,y,min)    
+            for (x=0; x<size[0];++x) {
+                offset = z*size[1]*size[0]+x;
+                if (pixelsIn[offset] == T1(0)) {
+                    pixelsTmp[offset] = T2(0); 
+                } else {
+                    pixelsTmp[offset] = infinite;
+                }
+                // SCAN 1
+                for (y=1; y<size[1]; ++y) {
+                    if (pixelsIn[offset+y*size[0]] == T1(0)) {
+                        pixelsTmp[offset+y*size[0]] = T2(0);
+                    } else {
+                        pixelsTmp[offset+y*size[0]] = (1 + pixelsTmp[offset+(y-1)*size[0]] > infinite) ? infinite : 1 + pixelsTmp[offset+(y-1)*size[0]];
+                    }
+                }
+                // SCAN 2
+                for (y=size[1]-2; y>=0; --y) {
+                    min = (pixelsTmp[offset+(y+1)*size[0]]+1 > infinite) ? infinite : pixelsTmp[offset+(y+1)*size[0]]+1; 
+                    if (min < pixelsTmp[offset+y*size[0]])
+                       pixelsTmp[offset+y*size[0]] = (1+pixelsTmp[offset+(y+1)*size[0]]); 
+                }
+            }
+            #pragma omp for private(offset,y,s,t,q,w,tmpdist,tmpdist2)
+            for (y=0; y<size[1]; ++y) {
+                    offset = z*size[1]*size[0]+y*size[0];
+                    q=0; t[0]=0; s[0]=0;
+                    // SCAN 3
+                    for (int u=1; u<size[0];++u) {
+                        tmpdist = (t[q] > s[q]) ? t[q]-s[q] : s[q]-t[q];
+                        tmpdist = (tmpdist >= pixelsTmp[offset+s[q]]) ? tmpdist : pixelsTmp[offset+s[q]];
+                        tmpdist2 = (t[q] > u) ? t[q]-u : u-t[q];
+                        tmpdist2 = (tmpdist2 >= pixelsTmp[offset+u]) ? tmpdist2 : pixelsTmp[offset+u]; 
+
+                        while (q>=0 && tmpdist > tmpdist2) {
+                        
+                             q--;
+                             if (q>=0) { 
+                                 tmpdist = (t[q] > s[q]) ? t[q]-s[q] : s[q]-t[q];
+                                 tmpdist = (tmpdist >= pixelsTmp[offset+s[q]]) ? tmpdist : pixelsTmp[offset+s[q]];
+                                 tmpdist2 = (t[q] > u) ? t[q]-u : u-t[q];
+                                 tmpdist2 = (tmpdist2 >= pixelsTmp[offset+u]) ? tmpdist2 : pixelsTmp[offset+u]; 
+                             }
+
+                        }
+                        if (q<0) {
+                            q=0; s[0]=u;}
+                        else {
+                            if (pixelsTmp[offset+s[q]] <= pixelsTmp[offset+u]) {
+                                w = (s[q]+pixelsTmp[offset+u] >= (s[q]+u)/2) ? s[q]+pixelsTmp[offset+u] : (s[q]+u)/2;
+                            } else {
+                                w = (u-pixelsTmp[offset+s[q]] >= (s[q]+u)/2) ? (s[q]+u)/2 : u-pixelsTmp[offset+s[q]];
+                            }
+                            w=1+w;
+                            if (w<size[0]) {q++; s[q]=u; t[q]=w;}
+                        }
+                    }
+                    // SCAN 4
+                    for (int u=size[0]-1; u>=0; --u) {
+                        pixelsOut[offset+u] = (u > s[q]) ? u-s[q] : s[q]-u ;
+                        pixelsOut[offset+u] = (pixelsOut[offset+u] >= pixelsTmp[offset+s[q]]) ? pixelsOut[offset+u] : pixelsTmp[offset+s[q]];
+                        if (u == t[q])
+                            q--;
+                    }
+
+             }
+        }
+        return RES_OK;
+    }
+
+    template <class T1, class T2>
     RES_T dist_euclidean (const Image<T1> &imIn, Image<T2> &imOut) {
         ASSERT_ALLOCATED (&imIn, &imOut);
         ASSERT_SAME_SIZE (&imIn, &imOut);
@@ -824,12 +928,11 @@ namespace smil
         t[0] = 0;
         int q = 0;
         T2 w;
-        size_t xp;
 
         for (z=0; z<size[2]; ++z) {
-            #pragma omp for private(offset,x,y)    
+            #pragma omp for private(offset,x,y,min)    
             for (x=0; x<size[0];++x) {
-                offset = z*size[2]*size[1]+x;
+                offset = z*size[1]*size[0]+x;
                 if (pixelsIn[offset] == T1(0)) {
                     pixelsTmp[offset] = T2(0); 
                 } else {
@@ -837,40 +940,40 @@ namespace smil
                 }
                 // SCAN 1
                 for (y=1; y<size[1]; ++y) {
-                    if (pixelsIn[offset+y*size[1]] == T1(0)) {
-                        pixelsTmp[offset+y*size[1]] = T2(0);
+                    if (pixelsIn[offset+y*size[0]] == T1(0)) {
+                        pixelsTmp[offset+y*size[0]] = T2(0);
                     } else {
-                        pixelsTmp[offset+y*size[1]] = (1 + pixelsTmp[offset+(y-1)*size[1]] > infinite) ? infinite : 1 + pixelsTmp[offset+(y-1)*size[1]];
+                        pixelsTmp[offset+y*size[0]] = (1 + pixelsTmp[offset+(y-1)*size[0]] > infinite) ? infinite : 1 + pixelsTmp[offset+(y-1)*size[0]];
                     }
                 }
                 // SCAN 2
                 for (y=size[1]-2; y>=0; --y) {
-                    min = (pixelsTmp[offset+(y+1)*size[1]]+1 > infinite) ? infinite : pixelsTmp[offset+(y+1)*size[1]]+1; 
-                    if (min < pixelsTmp[offset+y*size[1]])
-                       pixelsTmp[offset+y*size[1]] = (1+pixelsTmp[offset+(y+1)*size[1]]); 
+                    min = (pixelsTmp[offset+(y+1)*size[0]]+1 > infinite) ? infinite : pixelsTmp[offset+(y+1)*size[0]]+1; 
+                    if (min < pixelsTmp[offset+y*size[0]])
+                       pixelsTmp[offset+y*size[0]] = (1+pixelsTmp[offset+(y+1)*size[0]]); 
                 }
             }
-       
-#define f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
+   
+#define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
 
             #pragma omp for private(offset,y,s,t,q,w)
              for (y=0; y<size[1]; ++y) {
-                    offset = z*size[2]*size[1]+y*size[1];
+                    offset = z*size[1]*size[0]+y*size[0];
                     q=0; t[0]=0; s[0]=0;
                     // SCAN 3
                     for (int u=1; u<size[0];++u) {
-                        while (q>=0 && f_euclidean (t[q], s[q]) > f_euclidean (t[q], u)) {
+                        while (q>=0 && __f_euclidean (t[q], s[q]) > __f_euclidean (t[q], u)) {
                             q--;
                         }
                         if (q<0) {q=0; s[0]=u;}
                         else {
-                            w= 1 + ( u*u - s[q]*s[q] + pixelsTmp[u]*pixelsTmp[u] - pixelsTmp[s[q]] * pixelsTmp[s[q]] ) / (2*(u-s[q]));
+                            w= 1 + ( u*u - s[q]*s[q] + pixelsTmp[offset + u]*pixelsTmp[offset + u] - pixelsTmp[offset + s[q]] * pixelsTmp[offset + s[q]] ) / (2*(u-s[q]));
                             if (w<size[0]) {q++; s[q]=u; t[q]=w;}
                         }
                     }
                     // SCAN 4
                     for (int u=size[0]-1; u>=0; --u) {
-                        pixelsOut[offset+u] = f_euclidean (u, s[q]) ;
+                        pixelsOut[offset+u] = __f_euclidean (u, s[q]) ;
                         if (u == t[q])
                             q--;
                     }
