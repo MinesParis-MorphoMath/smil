@@ -817,8 +817,8 @@ namespace smil
         T2 min;
 
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
-        T2 s[size[1]]; // sets of the least minimizers that occurs during the scan from left to right.
-        T2 t[size[1]]; // sets of points with the same least minimizer 
+        T2 s[size[0]]; // sets of the least minimizers that occurs during the scan from left to right.
+        T2 t[size[0]]; // sets of points with the same least minimizer 
         s[0] = 0;
         t[0] = 0;
         int q = 0;
@@ -922,8 +922,8 @@ namespace smil
         T2 min;
 
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
-        T2 s[size[1]]; // sets of the least minimizers that occurs during the scan from left to right.
-        T2 t[size[1]]; // sets of points with the same least minimizer 
+        T2 s[size[0]]; // sets of the least minimizers that occurs during the scan from left to right.
+        T2 t[size[0]]; // sets of points with the same least minimizer 
         s[0] = 0;
         t[0] = 0;
         int q = 0;
@@ -955,7 +955,7 @@ namespace smil
             }
             copy (tmp, imOut);
    
-#define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
+            #define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
 
             #pragma omp for private(offset,y,s,t,q,w)
              for (y=0; y<size[1]; ++y) {
