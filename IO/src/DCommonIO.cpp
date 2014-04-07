@@ -61,35 +61,7 @@ namespace smil
     }
 
 
-    struct MemoryStruct 
-    {
-	char *memory;
-	size_t size;
-    };
     
-    
-    static size_t
-    WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
-    {
-	size_t realsize = size * nmemb;
-	struct MemoryStruct *mem = (struct MemoryStruct *)userp;
-
-	mem->memory = (char*)realloc(mem->memory, mem->size + realsize + 1);
-	if (mem->memory == NULL) {
-	  /* out of memory! */ 
-	  printf("not enough memory (realloc returned NULL)\n");
-	  exit(EXIT_FAILURE);
-	}
-
-	memcpy(&(mem->memory[mem->size]), contents, realsize);
-	mem->size += realsize;
-	mem->memory[mem->size] = 0;
-
-	return realsize;
-    }
-    
-    
-
     RES_T getHttpFile(const char *url, const char *outfilename) 
     {
 	CURL *curl_handle;
@@ -114,35 +86,42 @@ namespace smil
 	return RES_OK;
     }
 
+    static size_t
+    WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
+    {
+	size_t realsize = size * nmemb;
+	string *mem = (string*)userp;
+
+	int pos = mem->size();
+	mem->resize(mem->size() + realsize);
+	mem->replace(pos, realsize, (const char*)contents);
+
+	return realsize;
+    }
+    
     /**
-    * Download file data into a chunk of memory.
-    * (Don't forget to free the chunk when done)
+    * Download file data into a string buffer.
     */
-    int getHttpFile(const char *url, struct MemoryStruct &chunk) 
+    string getHttpFile(const char *url) 
     {
 	CURL *curl_handle;
-
-	if(chunk.memory)
-	  free(chunk.memory);
-	chunk.memory = (char*)malloc(1);
-	chunk.size = 0;
+	string buffer;
 
 	curl_global_init(CURL_GLOBAL_ALL);
 	CURLcode res;
 	curl_handle = curl_easy_init();
 	if (curl_handle)
 	{
-	    curl_easy_setopt(curl_handle, CURLOPT_URL, "http://www.example.com/");
+	    curl_easy_setopt(curl_handle, CURLOPT_URL, url);
 	    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-	    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
-	    curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+	    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&buffer);
 	    res = curl_easy_perform(curl_handle);
 	    curl_easy_cleanup(curl_handle);
 	    curl_global_cleanup();
 	}
 	else res = CURLE_FAILED_INIT;
 
-	return res==CURLE_OK;
+	return buffer;
     }
 #endif // USE_CURL
     

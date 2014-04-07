@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,64 +27,32 @@
  */
 
 
-#ifndef _D_COMMON_IO_H
-#define _D_COMMON_IO_H
-
-#include "Core/include/DErrors.h"
-#include "Core/include/private/DImage.hpp"
+#include "DString.h"
+#include <sstream>
 
 namespace smil
 {
-  
-    /** 
-    * \addtogroup IO
-    */
-    /*@{*/
-    
-    string getFileExtension(const char *fileName);
 
-    class FileCloser
+    vector<string> splitString(const string &s, const char *delimiters)
     {
-    public:
-	FileCloser(FILE *_fp)
+	vector<string> stringList;
+	size_t current;
+	size_t next = -1;
+	do
 	{
-	    fp = _fp;
+	    current = next + 1;
+	    next = s.find_first_of( delimiters, current );
+	    stringList.push_back(s.substr( current, next - current ));
 	}
-	~FileCloser()
-	{
-	    if (fp)
-	      fclose(fp);
-	}
-    protected:
-	FILE *fp;
-    };
-
-    struct ImageFileInfo
+	while (next != string::npos);
+	
+	return stringList;
+    }
+    
+    vector<string> splitLines(const string &buf)
     {
-	ImageFileInfo()
-	  : colorType(COLOR_TYPE_UNKNOWN), scalarType(SCALAR_TYPE_UNKNOWN),
-	  width(0), height(0), depth(0)	    
-	{
-	}
-	enum ColorType { COLOR_TYPE_GRAY, COLOR_TYPE_RGB, COLOR_TYPE_GA, COLOR_TYPE_RGBA, COLOR_TYPE_UNKNOWN };
-	enum ScalarType { SCALAR_TYPE_UINT8, SCALAR_TYPE_UINT16, SCALAR_TYPE_INT8, SCALAR_TYPE_INT16, SCALAR_TYPE_FLOAT, SCALAR_TYPE_DOUBLE, SCALAR_TYPE_UNKNOWN };
-	UINT channels;
-	ColorType colorType;
-	ScalarType scalarType;
-	size_t width, height, depth;
-    };
-    
-    
-    #ifdef USE_CURL
-
-    RES_T getHttpFile(const char *url, const char *outfilename);
-    string getHttpFile(const char *url);
-
-    #endif // USE_CURL
-/*@}*/
-
+	return splitString(buf, "\n");
+    }
+     
 } // namespace smil
 
-
-
-#endif // _D_COMMON_IO_H
