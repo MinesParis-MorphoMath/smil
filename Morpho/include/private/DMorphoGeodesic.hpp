@@ -663,7 +663,7 @@ namespace smil
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
-        T2 infinite=size[1]+size[0]+size[2];
+        T2 infinite=ImDtTypes<T2>::max();
         T2 min;
 
         for (z=0; z<size[2]; ++z) {
@@ -746,7 +746,7 @@ namespace smil
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
-        T2 infinite=size[1]+size[0];
+        T2 infinite=ImDtTypes<T2>::max();
         T2 min;
 
         for (z=0; z<size[2]; ++z) {
@@ -813,7 +813,7 @@ namespace smil
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
-        T2 infinite=size[1]+size[0];
+        T2 infinite=ImDtTypes<T2>::max();
         T2 min;
 
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
@@ -918,7 +918,7 @@ namespace smil
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
-        T2 infinite=size[1]+size[0];
+        T2 infinite= ImDtTypes<T2>::max();
         T2 min;
 
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
