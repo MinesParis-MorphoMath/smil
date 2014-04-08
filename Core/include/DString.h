@@ -27,64 +27,21 @@
  */
 
 
-#ifndef _D_COMMON_IO_H
-#define _D_COMMON_IO_H
+#ifndef _D_STRING_H
+#define _D_STRING_H
 
-#include "Core/include/DErrors.h"
-#include "Core/include/private/DImage.hpp"
+#include <iostream>
+#include <vector>
+
+using namespace std;
 
 namespace smil
 {
-  
-    /** 
-    * \addtogroup IO
-    */
-    /*@{*/
-    
-    string getFileExtension(const char *fileName);
-
-    class FileCloser
-    {
-    public:
-	FileCloser(FILE *_fp)
-	{
-	    fp = _fp;
-	}
-	~FileCloser()
-	{
-	    if (fp)
-	      fclose(fp);
-	}
-    protected:
-	FILE *fp;
-    };
-
-    struct ImageFileInfo
-    {
-	ImageFileInfo()
-	  : colorType(COLOR_TYPE_UNKNOWN), scalarType(SCALAR_TYPE_UNKNOWN),
-	  width(0), height(0), depth(0)	    
-	{
-	}
-	enum ColorType { COLOR_TYPE_GRAY, COLOR_TYPE_RGB, COLOR_TYPE_GA, COLOR_TYPE_RGBA, COLOR_TYPE_UNKNOWN };
-	enum ScalarType { SCALAR_TYPE_UINT8, SCALAR_TYPE_UINT16, SCALAR_TYPE_INT8, SCALAR_TYPE_INT16, SCALAR_TYPE_FLOAT, SCALAR_TYPE_DOUBLE, SCALAR_TYPE_UNKNOWN };
-	UINT channels;
-	ColorType colorType;
-	ScalarType scalarType;
-	size_t width, height, depth;
-    };
-    
-    
-    #ifdef USE_CURL
-
-    RES_T getHttpFile(const char *url, const char *outfilename);
-    string getHttpFile(const char *url);
-
-    #endif // USE_CURL
-/*@}*/
+    vector<string> splitString(const string &buf, const char *delimiters);
+    vector<string> splitLines(const string &buf);
 
 } // namespace smil
 
 
 
-#endif // _D_COMMON_IO_H
+#endif // _D_STRING_H
