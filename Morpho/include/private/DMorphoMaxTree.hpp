@@ -968,7 +968,12 @@ public:
 // NEW BMI    # ##################################################
 //(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
 template <class T, class OffsetT>
-void  ComputeDeltaUOMSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent, int first_ancestor_diff, UINT stop, UINT delta, int isPrevMaxT){
+void  ComputeDeltaUOMSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent,  int first_ancestor, UINT stop, UINT delta, int isPrevMaxT){
+
+  // "node": the current node; "nParent": its direct parent (allows
+  // attribute comparison for Delta versions); "first_ancestor": the
+  // first ancestor with a different attribute (used for residue
+  // computation level(first_ancestor) - level(node) and for area stability computation
 
 		    //self,node = 1, nParent =0, stop=0, delta = 0, isPrevMaxT = 0):
   int child; // index node
@@ -990,13 +995,14 @@ void  ComputeDeltaUOMSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* i
 
 
       cParent =  tree.getCriterion(nParent).ymax-tree.getCriterion(nParent).ymin+1;// #current criterion
-      aParent  = tree.getCriterion(nParent).area;
-      lParent =  tree.getLevel(first_ancestor_diff);// #current level
+      aParent  = tree.getCriterion(first_ancestor).area;
+      lParent =  tree.getLevel(first_ancestor);// #current level
       //      std::cout << "lNode="<<int(lNode)<<":lParent="<<int(lParent)<<" : prev_res="<<int(prev_residue)<<"\n";
       int flag;
 
       //      std::cout <<"computeDeltaUO: parent = "<< nParent <<"; node="<<node<<"\n";
       //      std::cout <<"cParent="<<cParent<<"; cNode= "<<cNode<<"\n";
+
 
       if ((cParent - cNode) <= delta){
 	flag = 1;
@@ -1004,6 +1010,7 @@ void  ComputeDeltaUOMSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* i
       else{
 	flag = 0;
       }
+      //      std::cout<<"FLAG="<<flag<<"\n";
       if (flag){
 	current_residue  =  lNode - lParent ;
 	stability  = 0;
@@ -1013,11 +1020,12 @@ void  ComputeDeltaUOMSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* i
 	stability = 1 - ((aParent - aNode)*1.0/aParent);
 	current_residue  = (lNode - lParent);
 	stab_residue = int(current_residue * stability);
+	//      std::cout<<"node="<<node<<";parent="<<nParent<<","<<cNode<<","<< cParent<<","<< aNode<<","<<aParent<<"res="<<current_residue<<"stab="<<stability<<"\n";
+	//            std::cout <<"flag==============="<<flag<<"stab_res="<<int(stab_residue)<<stab_residue<<"###################\n";
+
       }
 
 
-      //      std::cout<<"node="<<node<<";parent="<<nParent<<","<<cNode<<","<< cParent<<","<< aNode<<","<<aParent<<"stab="<<stability<<"\n";
-      //      std::cout <<"flag==============="<<flag<<"stab_res="<<int(stab_residue)<<stab_residue<<"###################\n";
       transformee_node[node] = transformee_node[nParent];
       indicatrice_node[node] = indicatrice_node[nParent];
       //      std::cout <<"ind="<<indicatrice_node[node];
@@ -1052,12 +1060,11 @@ void  ComputeDeltaUOMSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* i
       child=tree.getChild(node);
       while (child!=0){
 	if(flag){
-	  first_ancestor_diff = nParent;
-	  ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node, first_ancestor_diff, stop, delta,isMaxT);
+	  ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node,first_ancestor, stop, delta,isMaxT);
 	}
 	else{
-	  first_ancestor_diff = node;
-	  ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node, first_ancestor_diff, stop, delta,isMaxT);
+
+	  ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node, node,stop, delta,isMaxT);
 	}
 	child = tree.getBrother(child);
       }
@@ -1092,7 +1099,7 @@ void compute_contrast_MSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT*
 
     while (child!=0) 
       {
-	ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, root/*parent*/, (int)0/* first_ancestor_diff*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
+	ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
 
 	child = tree.getBrother(child);
       }
