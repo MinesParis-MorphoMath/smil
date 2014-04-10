@@ -119,15 +119,10 @@ void Core::unregisterObject(BaseObject *obj)
 
 void Core::deleteRegisteredObjects()
 {
-    BaseObject *obj;
-    Core *inst = Core::getInstance();
-    vector<BaseObject*>::iterator it = inst->registeredObjects.begin();
+    vector<BaseObject*> objects = registeredObjects;
 
-    while (it!=inst->registeredObjects.end())
-    {
-	obj = *it++;
-	delete obj;
-    }
+    for (UINT i=0;i<objects.size();i++)
+      delete objects[i];
 }
 
 UINT Core::getNumberOfThreads()
@@ -192,6 +187,13 @@ void Core::hideAllImages()
 
     while (it!=this->registeredImages.end())
 	(*it++)->hide();
+}
+
+void Core::deleteAllImages()
+{
+    vector<BaseImage*> imgs = this->registeredImages;
+    for (int i=0;i<imgs.size();i++)
+      delete imgs[i];
 }
 
 void Core::getCompilationInfos(ostream &outStream)

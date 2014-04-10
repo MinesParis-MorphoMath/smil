@@ -345,13 +345,18 @@ void ImageViewerWidget::createActions()
     addAction(act);
 }
 
-void ImageViewerWidget::saveAs()
+void ImageViewerWidget::saveAs(const char *fileName)
 {
-    QString fileName = QFileDialog::getSaveFileName(this, "Save Image", "", tr("Image Files (*.png *.jpg *.bmp *.tif)"));
-    if (fileName.isEmpty())
+    QString fName;
+    if (fileName!=NULL)
+      fName = fileName;
+    else
+      fName = QFileDialog::getSaveFileName(this, "Save Image", "", tr("Image Files (*.png *.jpg *.bmp *.tif)"));
+    
+    if (fName.isEmpty())
       return;
     QPixmap pixMap = QPixmap::grabWidget(this);  
-    pixMap.save(fileName);  
+    pixMap.save(fName);  
 }
 
 void ImageViewerWidget::setName(QString new_name)
@@ -555,8 +560,8 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
     int y = int(event->scenePos().ry());
     int z = slider->value();
 
-    size_t w = qImage->width();
-    size_t h = qImage->height();
+    int w = qImage->width();
+    int h = qImage->height();
     
     if (x>=0 && x<w && y>=0 && y<h)
     {
@@ -619,8 +624,8 @@ void ImageViewerWidget::sceneMousePressEvent ( QGraphicsSceneMouseEvent * event 
     int x = int(event->scenePos().rx());
     int y = int(event->scenePos().ry());
 
-    size_t w = qImage->width();
-    size_t h = qImage->height();
+    int w = qImage->width();
+    int h = qImage->height();
     
     if (x>=0 && x<w && y>=0 && y<h)
     {

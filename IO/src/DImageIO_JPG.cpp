@@ -31,6 +31,7 @@
 
 #include "DImageIO.hpp"
 #include "DImageIO_JPG.hpp"
+#include "DColor.h"
 
 #include <jpeglib.h>
 

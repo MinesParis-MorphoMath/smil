@@ -31,14 +31,14 @@
 #define _D_IMAGE_IO_VTK_HPP
 
 
-#include <stdio.h>
+#include <fstream>
 #include <stdlib.h>
 #include <string>
 #include <ctype.h>
 
 #include "Core/include/private/DTypes.hpp"
 #include "Core/include/private/DImage.hpp"
-#include "IO/include/DCommonIO.h"
+#include "IO/include/private/DImageIO.hpp"
 
 using namespace std;
 
@@ -85,7 +85,6 @@ namespace smil
 	virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
 	{
 	    std::ifstream fp;
-	    ImageFileInfo::ScalarType scalarType = ImageFileInfo::SCALAR_TYPE_UINT8; // default, if not specified in the file header
 
 	    /* open image file */
 	    fp.open(filename, ios_base::binary);
@@ -159,7 +158,6 @@ namespace smil
 	    // Return to the begining of the data
 	    fp.seekg(hStruct.startPos);
 	    
-	    UINT ptsNbr = hStruct.pointNbr;
 	    double scalarCoeff = double(ImDtTypes<T>::max()) / hStruct.scalarCoeff;
 	    
 	    if (!hStruct.binaryFile)
@@ -174,7 +172,7 @@ namespace smil
 			for (int x=0;x<width;x++)
 			{
 			    fp >> val;
-			    curLine[x] = (T)(val*scalarCoeff);
+			    curLine[x] = static_cast<T>(val*scalarCoeff);
 			}
 		    }
 		}
@@ -250,7 +248,7 @@ namespace smil
 	      // todo : make this generic
 // 		fp.write((char*)pixels, sizeof(T)*pixNbr);
 	      
-		for (int z=0;z<depth;z++)
+		for (size_t z=0;z<depth;z++)
 		{
 		    curSlice = slices[z];
 		    for (int y=height-1;y>=0;y--)
@@ -279,18 +277,16 @@ namespace smil
 	return RES_ERR;
     }
     
-#ifdef SMIL_WRAP_RGB    
     template <>
     inline RES_T VTKImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
     {
-	return RES_ERR;
+	return RES_ERR_NOT_IMPLEMENTED;
     }
     template <>
     inline RES_T VTKImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
     {
-	return RES_ERR;
+	return RES_ERR_NOT_IMPLEMENTED;
     }
-#endif // SMIL_WRAP_RGB    
 
 /*@}*/
 

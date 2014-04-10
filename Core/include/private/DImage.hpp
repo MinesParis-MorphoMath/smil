@@ -93,7 +93,8 @@ namespace smil
 	//! \return The type of the image data as a string ("UINT8", "UINT16", ...)
 	virtual const char* getTypeAsString()
 	{
-	    return getDataTypeAsString<T>();
+		T *dum = NULL;
+	    return getDataTypeAsString<T>(dum);
 	}
 	typedef typename ImDtTypes<T>::pixelType pixelType;
 	typedef typename ImDtTypes<T>::lineType lineType;
@@ -153,23 +154,23 @@ namespace smil
 	//! Copy pixel values to a given array
 	void toArray(T outArray[]);
 	//! Copy pixel values from a given array
-	void fromArray(T inArray[]);
+	void fromArray(const T inArray[]);
 
 	//! Copy pixel values to a given char array
 	void toCharArray(signed char outArray[]);
 	char *toCharArray() { return (char *)pixels; }
 	//! Copy pixel values from a given char array
-	void fromCharArray(signed char inArray[]);
+	void fromCharArray(const signed char inArray[]);
 
 	//! Copy pixel values to a given int array
 	void toIntArray(int outArray[]);
 	//! Copy pixel values from a given int array
-	void fromIntArray(int inArray[]);
+	void fromIntArray(const int inArray[]);
 
 	//! Copy pixel values to a given int vector
 	vector<int> toIntVector();
 	//! Copy pixel values from a given int vector
-	void fromIntVector(vector<int> inVector);
+	void fromIntVector(const vector<int> inVector);
 
 	//! Get the image viewer (create one if needed)
 	virtual ImageViewer<T> *getViewer();
@@ -242,6 +243,9 @@ namespace smil
 	    return pixels;
 	}
 
+	virtual RES_T load(const char *fileName);
+	virtual RES_T save(const char *fileName);
+	
     #if defined SWIGPYTHON && defined USE_NUMPY
 	/**
 	* Return a NumPy array containing the \b real image pixel values (not a copy).

@@ -1,3 +1,4 @@
+from smilPython import *
 
 def tgdskiz(im1, im2, imMask):
     tmp1 = Image(im1)

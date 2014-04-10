@@ -35,7 +35,7 @@ using namespace smil;
 
 
 BitArray::BitArray()
-  : index(0), intArray(NULL), bitWidth(0), intWidth(0), height(0)
+  : index(0), intArray(NULL), intWidth(0), bitWidth(0), height(0)
 {
 }
 

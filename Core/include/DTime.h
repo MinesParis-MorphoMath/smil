@@ -57,7 +57,7 @@ namespace smil
 	return 0;
     }
 
-    #endif //
+    #endif // _MSC_VER
 
 	
     static inline double getCpuTime()
@@ -67,7 +67,7 @@ namespace smil
 	{
 	    cout << "gettimeofday returned error" << endl;
 	}
-	return tv.tv_sec + tv.tv_usec/1e6;
+	return tv.tv_sec + tv.tv_usec/1000000;
     }
 
     inline string displayTime(double tSec)

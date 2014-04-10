@@ -37,8 +37,6 @@
 #include "DImageHistogram_Bit.h"
 #include "DMorpho_Bit.h"
 
-#include "Morpho/include/private/DMorphoArrow.hpp"
-#include "Morpho/include/private/DMorphImageOperations.hpp"
 
 #include "Base/include/private/DImageMatrix.hpp"
 
@@ -49,29 +47,22 @@ namespace smil
     void QtImageViewer<Bit>::drawImage();
 
     template <>
-    RES_T readVTK<Bit>(const char *filename, Image<Bit> &image)
+    RES_T VTKImageFileHandler<Bit>::read(const char *filename, Image<Bit> &image)
     {
+	return RES_ERR_NOT_IMPLEMENTED;
     }
 
     template <>
-    RES_T writeVTK<Bit>(const Image<Bit> &image, const char *filename, bool binary)
+    RES_T VTKImageFileHandler<Bit>::write(const Image<Bit> &image, const char *filename)
     {
+	return RES_ERR_NOT_IMPLEMENTED;
     }
 
-    template <class lineFunction_T>
-    class unaryMorphArrowImageFunction<Bit, lineFunction_T>
-    {
-    public:
-	typedef Image<Bit> imageType;
-	unaryMorphArrowImageFunction(Bit b=0) {}
-	inline RES_T operator()(const imageType &imIn, imageType &imOut, const StrElt &se) {  }
-	RES_T _exec_single(const Image<Bit> &imIn, Image<Bit> &imOut, const StrElt &se) {}
-	
-    };
     
     template <>
     RES_T matMul<Bit>(const Image<Bit> &imIn1, const Image<Bit> &imIn2, Image<Bit> &imOut)
     {
+      return RES_ERR_NOT_IMPLEMENTED; 
     }
 
 #if defined SWIGPYTHON and defined USE_NUMPY

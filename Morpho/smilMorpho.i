@@ -102,7 +102,9 @@ TEMPLATE_WRAP_FUNC(buildOpen);
 TEMPLATE_WRAP_FUNC(buildClose);
 TEMPLATE_WRAP_FUNC(fillHoles);
 TEMPLATE_WRAP_FUNC(levelPics);
+TEMPLATE_WRAP_FUNC_2T_CROSS(dist_v2);
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist);
+TEMPLATE_WRAP_FUNC_2T_CROSS(dist_euclidean);
 
 %include "DMorphoExtrema.hpp"
 TEMPLATE_WRAP_FUNC(hMinima);
@@ -160,6 +162,7 @@ TEMPLATE_WRAP_FUNC(zhangSkeleton);
 
 %include "DMorphoMaxTree.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpenMSER);
 
 %include "DMorphoGraph.hpp"
 TEMPLATE_WRAP_FUNC_3T_FIX_THIRD(mosaicToGraph, Graph<>);

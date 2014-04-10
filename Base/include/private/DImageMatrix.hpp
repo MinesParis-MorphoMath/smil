@@ -54,7 +54,7 @@ namespace smil
 	
 	ImageFreezer freezer(imOut);
 	
-	typedef typename ImDtTypes<T>::sliceType sliceType;
+// 	typedef typename ImDtTypes<T>::sliceType sliceType;
 	typedef typename ImDtTypes<T>::lineType lineType;
 	
 	if (d==1) // 2D

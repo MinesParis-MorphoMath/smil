@@ -37,18 +37,13 @@
 #include "Core/include/DCoreEvents.h"
 #include "Base/include/private/DMeasures.hpp"
 #include "Base/include/private/DImageArith.hpp"
+#include "IO/include/private/DImageIO.hxx"
 #include "Gui/include/DGuiInstance.h"
-#include "IO/include/private/DImageIO.hpp"
 
-// template <>
-// const char *getImageDataTypeAsString<UINT8>(Image<UINT8> &im)
-// {
-//     return "UINT8 (unsigned char)";
-// }
 
 namespace smil
 {
-  
+
     template <class T>
     Image<T>::Image()
       : BaseImage("Image")
@@ -100,55 +95,55 @@ namespace smil
       : BaseImage("Image")
     {
 	init();
-	
+
 	if (_im==NULL)
 	  return;
-	
+
 	Image *im = castBaseImage(_im, T());
 	if (im==NULL)
 	  return;
-	
+
 	if (!stealIdentity)
 	{
 	    setSize(*im);
 	    return;
 	}
 	else
-	  drain(im, true);	
+	  drain(im, true);
     }
-    
-    
+
+
     template <class T>
     void Image<T>::drain(Image<T> *im, bool deleteSrc)
     {
 	if (allocated)
 	  deallocate();
-	
+
 	this->width = im->width;
 	this->height = im->height;
 	this->depth = im->depth;
-	
+
 	this->sliceCount = im->sliceCount;
 	this->lineCount = im->lineCount;
 	this->pixelCount = im->pixelCount;
-	
+
 	this->pixels = im->pixels;
 	this->slices = im->slices;
 	this->lines = im->lines;
-	
+
 	this->allocated = im->allocated;
 	this->allocatedSize = im->allocatedSize;
-	
+
 	this->name = im->name;
 	this->viewer = im->viewer;
-	
+
 	im->allocated = false;
-	
+
 	if (deleteSrc)
 	  delete im;
     }
-    
-    
+
+
     template <class T>
     void Image<T>::clone(const Image<T> &rhs)
     {
@@ -206,6 +201,18 @@ namespace smil
     }
 
     template <class T>
+    RES_T Image<T>::load(const char *fileName)
+    {
+	return read(fileName, *this);
+    }
+    
+    template <class T>
+    RES_T Image<T>::save(const char *fileName)
+    {
+	return write(*this, fileName);
+    }
+    
+    template <class T>
     void Image<T>::modified()
     {
 	if (!this->updatesEnabled)
@@ -232,7 +239,7 @@ namespace smil
 	if (viewer)
 	  return;
 
-	viewer = Gui::createDefaultViewer<T>(*this);
+	viewer = Gui::getInstance()->createDefaultViewer<T>(*this);
 
     }
 
@@ -244,29 +251,31 @@ namespace smil
     }
 
     template <class T>
-    bool Image<T>::isVisible() 
-    { 
-	return (viewer && viewer->isVisible()); 
+    bool Image<T>::isVisible()
+    {
+	return (viewer && viewer->isVisible());
     }
-    
+
     template <class T>
-    void Image<T>::hide() 
-    {  
-      if (viewer) 
-	viewer->hide(); 
+    void Image<T>::hide()
+    {
+      if (viewer)
+	viewer->hide();
     }
-    
+
     template <class T>
     void Image<T>::show(const char *_name, bool labelImage)
     {
 	if (isVisible())
 	  return;
-	
+
 	if (!this->allocated)
 	{
 	  ERR_MSG("Image isn't allocated !");
 	  return;
 	}
+
+	parentClass::show();
 	
 	createViewer();
 
@@ -281,18 +290,12 @@ namespace smil
 	else
 	  viewer->showLabel();
 
-	modified();
-
     }
 
     template <class T>
     void Image<T>::showLabel(const char *_name)
     {
-	if (_name)
-	    setName(_name);
-	if (isVisible())
-	  viewer->showLabel();
-	else show(_name, true);
+	show(_name, true);
     }
 
     template <class T>
@@ -329,7 +332,7 @@ namespace smil
 	  viewer->setImage(*this);
 
 	this->modified();
-	
+
 	return RES_OK;
     }
 
@@ -376,9 +379,6 @@ namespace smil
 	    *cur_line = pixels + k*pixelsPerSlice + j*width;
 	}
 
-	// Calc. line (mis)alignment
-	int n = SIMD_VEC_SIZE / sizeof(T);
-	int w = width%SIMD_VEC_SIZE;
 
 	return RES_OK;
     }
@@ -396,7 +396,7 @@ namespace smil
 	    delete[] this->lines;
 	if (this->pixels)
 	    deleteAlignedBuffer<T>(pixels);
-	
+
 	this->slices = NULL;
 	this->lines = NULL;
 	this->pixels = NULL;
@@ -407,16 +407,16 @@ namespace smil
 	return RES_OK;
     }
 
-#ifndef SWIGPYTHON	
+#ifndef SWIGPYTHON
     template <class T>
     void Image<T>::toArray(T outArray[])
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  outArray[i] = pixels[i];
     }
-    
+
     template <class T>
-    void Image<T>::fromArray(T inArray[])
+    void Image<T>::fromArray(const T inArray[])
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  pixels[i] = inArray[i];
@@ -429,9 +429,9 @@ namespace smil
 	for (size_t i=0;i<pixelCount;i++)
 	  outArray[i] = pixels[i];
     }
-    
+
     template <class T>
-    void Image<T>::fromCharArray(signed char inArray[])
+    void Image<T>::fromCharArray(const signed char inArray[])
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  pixels[i] = inArray[i];
@@ -444,15 +444,15 @@ namespace smil
 	for (size_t i=0;i<pixelCount;i++)
 	  outArray[i] = pixels[i];
     }
-    
+
     template <class T>
-    void Image<T>::fromIntArray(int inArray[])
+    void Image<T>::fromIntArray(const int inArray[])
     {
 	for (size_t i=0;i<pixelCount;i++)
 	  pixels[i] = inArray[i];
 	modified();
     }
-#endif // SWIGPYTHON	
+#endif // SWIGPYTHON
 
     template <class T>
     vector<int> Image<T>::toIntVector()
@@ -462,7 +462,7 @@ namespace smil
 	  vec.push_back(pixels[i]);
 	return vec;
     }
-    
+
     template <class T>
     void Image<T>::fromIntVector(vector<int> inVector)
     {
@@ -485,7 +485,8 @@ namespace smil
 	else
 	  os << "2D image" << endl;
 
-	os << "Data type: " << getDataTypeAsString<T>() << endl;
+	T *dum = NULL;
+	os << "Data type: " << getDataTypeAsString<T>(dum) << endl;
 
 	if (depth>1)
 	  os << "Size: " << width << "x" << height << "x" << depth << endl;
@@ -503,8 +504,8 @@ namespace smil
 	    size_t tSsize = tStr.str().size();
 	    if (hexaGrid)
 	      tSsize = size_t(tSsize * 1.5);
-	    
-	      
+
+
 	    os << "Pixel values:" << endl;
 	    size_t i, j, k;
 
@@ -842,10 +843,10 @@ namespace smil
 
     template <class T>
     Image<T>::operator bool()
-    { 
-	return vol(*this)==ImDtTypes<T>::max()*pixelCount; 
+    {
+	return vol(*this)==ImDtTypes<T>::max()*pixelCount;
     }
-    
+
     template <class T>
     Image<T>& Image<T>::operator << (const lineType &tab)
     {
@@ -921,7 +922,9 @@ namespace smil
     }
     #endif // defined SWIGPYTHON && defined USE_NUMPY
 
+
 } // namespace smil
+
 
 
 #endif // _IMAGE_HXX

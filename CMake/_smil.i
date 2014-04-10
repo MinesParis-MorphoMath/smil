@@ -97,7 +97,9 @@ def _find_images(gbl_dict=None):
       if isinstance(it[1], BaseImage):
 	imgs[it[1]] = it[0]
     return imgs
-  
+
+__builtin__.getImages = _find_images
+
 def guess_images_name(gbl_dict=None):
     imgs = _find_images(gbl_dict)
     for im in imgs.keys():
@@ -131,6 +133,12 @@ def hideAll():
     for im in imgs.keys():
       im.hide()
     
+def deleteAll():
+    imgs = _find_images()
+    for im in imgs.keys():
+      im.hide()
+      __main__.__dict__.pop(imgs[im], None)
+      del im
     
 for t in imageTypes:
     t.c_show = t.show
@@ -309,9 +317,9 @@ class linkManager:
 	if not self._link.run(None):
 	  list.__setitem__(self, num, prevVal)
 	  
-    class link(EventSlot):
+    class link(BaseImageEventSlot):
       def __init__(self, imWatch, func, *args):
-	EventSlot.__init__(self)
+	BaseImageEventSlot.__init__(self)
 	self.imWatch = imWatch
 	self.func = func
 	self.args = linkManager._linkArgs(self)

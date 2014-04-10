@@ -31,6 +31,7 @@
 #include "DImageIO_BMP.hpp"
 #include "private/DImageIO.hpp"
 #include "Core/include/private/DImage.hpp"
+#include "DColor.h"
 
 namespace smil
 {
@@ -167,11 +168,11 @@ namespace smil
 	ASSERT(iHeader.biBitCount==8, "Not an 8bit gray image", RES_ERR_IO);
 	
 	UINT nColors = iHeader.biClrUsed;
-	UINT8 r,g,b,a, lut[nColors];
+	UINT8 r,g,b,a, *lut = new UINT8[nColors];
 
 	// read the color table
 	  
-	for (int j=0; j<nColors; j++) {
+	for (UINT j=0; j<nColors; j++) {
 	    ASSERT(fread(&b, 1, 1, fp));
 	    ASSERT(fread(&g, 1, 1, fp));
 	    ASSERT(fread(&r, 1, 1, fp));
@@ -194,7 +195,7 @@ namespace smil
 
 	// The scan line must be word-aligned. This means in multiples of 4.
 	int scanlineSize = (width%4==0) ? width : (width-width%4)+4;
-	UINT8 scanBuf[scanlineSize];
+	UINT8 *scanBuf = new UINT8[scanlineSize];
 	
 	for (int j=height-1;j>=0;j--)
 	{
@@ -203,6 +204,8 @@ namespace smil
 	    for(int i=0; i< width; i++) 
 		curLine[i] = lut[scanBuf[i]];
 	}
+	delete[] lut;
+	delete[] scanBuf;
 	image.modified();
 
 	return RES_OK;
@@ -241,7 +244,7 @@ namespace smil
 	{
 	    arrays = lines[j].arrays;
 	    ASSERT((fread(data, width*3, 1, fp)!=0), RES_ERR_IO);
-	    for (size_t i=0;i<width;i++)
+	    for (int i=0;i<width;i++)
 	      for (UINT n=0;n<3;n++)
 		arrays[n][i] = data[3*i+n];
 	}
@@ -310,7 +313,7 @@ namespace smil
 
 	// The scan line must be word-aligned. This means in multiples of 4.
 	int scanlinePadSize = (width%4==0) ? 0 : 4-width%4;
-	UINT scanlinePad[scanlinePadSize];
+	UINT *scanlinePad = new UINT[scanlinePadSize];
 
 	for (int i=height-1;i>=0;i--)
 	{
@@ -320,6 +323,7 @@ namespace smil
 	}
 
 	fclose(fp);
+	delete[] scanlinePad;
 
 	return RES_OK;
     }

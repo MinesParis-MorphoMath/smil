@@ -49,7 +49,7 @@ namespace smil
 	const BaseImage* sender;
     };
 
-    typedef Slot<BaseImageEvent> BaseImageSlot;
+    typedef Slot<BaseImageEvent> BaseImageEventSlot;
 
 
     template <class T>

@@ -321,13 +321,13 @@ namespace smil
 	    className = "Cross3DSE";
 	    seT = SE_Cross3D;
 	    odd = false;
-	    addPoint(0,0,-1);	// 1
-	    addPoint(0,0,0);	// 2
-	    addPoint(1,0,0);	// 3
-	    addPoint(0,-1,0);	// 4
-	    addPoint(-1,0,0);	// 5
-	    addPoint(0,1,0);	// 5
-	    addPoint(0,0,1);	// 1
+	    addPoint(0,0,0);
+	    addPoint(1,0,0);
+	    addPoint(0,-1,0);
+	    addPoint(-1,0,0);
+	    addPoint(0,1,0);
+	    addPoint(0,0,-1);
+	    addPoint(0,0,1);
 	}
     };
 

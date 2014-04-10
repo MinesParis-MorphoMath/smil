@@ -24,9 +24,6 @@
 #include <stdio.h>
 #include <time.h>
 
-//#include <boost/signal.hpp>
-//#include <boost/bind.hpp>
-
 #include "DCore.h"
 #include "DBase.h"
 

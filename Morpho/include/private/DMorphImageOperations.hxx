@@ -143,7 +143,7 @@ namespace smil
 	vector<int> offsetList;
 	
 	bool oddLine = se.odd && (curLine)%2;
-	int dx;
+// 	int dx;
 	
 	// Remove points wich are outside the image
 	for (UINT i=0;i<sePointNbr;i++)
@@ -360,7 +360,7 @@ namespace smil
     template <class T, class lineFunction_T>
     inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line(lineType inBuf1, lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
     {
-	if (tmpBuf==NULL)
+	if (!tmpBuf)
 	  tmpBuf = cpBuf;
 	shiftLine<T>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
 	lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);
@@ -369,7 +369,7 @@ namespace smil
     template <class T, class lineFunction_T>
     inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line_2ways(lineType inBuf1, lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
     {
-	if (tmpBuf==NULL)
+	if (!tmpBuf)
 	  tmpBuf = cpBuf;
 	shiftLine<T>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
 	lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);
@@ -482,7 +482,7 @@ namespace smil
 	int nLines = imIn.getHeight();
 
     //     int nthreads = Core::getInstance()->getNumberOfThreads();
-	lineType *_bufs = this->createAlignedBuffers(5, lineLen);
+	sliceType _bufs = this->createAlignedBuffers(5, lineLen);
 	lineType buf0 = _bufs[0];
 	lineType buf1 = _bufs[1];
 	lineType buf2 = _bufs[2];
@@ -651,7 +651,7 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_horizontal_segment(const imageType &imIn, int xsize, imageType &imOut)
     {
-	  size_t lineCount = imIn.getLineCount();
+	  int lineCount = imIn.getLineCount();
 	  
 	  int nthreads = Core::getInstance()->getNumberOfThreads();
 	  lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
@@ -706,16 +706,14 @@ namespace smil
 	  
 	  volType srcSlices = imIn.getSlices();
 	  volType destSlices = imOut.getSlices();
-	  sliceType srcLines;
-	  sliceType destLines;
 	  
     #ifdef USE_OPEN_MP
 	      int tid;
     #endif // USE_OPEN_MP
-	  int y, dz = zsize;
+	  int y;
 	  
     #ifdef USE_OPEN_MP
-	  #pragma omp parallel private(tid,buf1,buf2) firstprivate(dz) num_threads(nthreads)
+	  #pragma omp parallel private(tid,buf1,buf2) num_threads(nthreads)
     #endif // USE_OPEN_MP
 	  {
 	  #ifdef USE_OPEN_MP
@@ -758,7 +756,7 @@ namespace smil
 	nthreads = MAX(nthreads, 1);
 	int nbufs = 4;
 	lineType *_bufs = this->createAlignedBuffers(nbufs*nthreads, this->lineLen);
-	lineType buf1, buf2, buf3, firstLineBuf;
+	lineType buf1, buf2, firstLineBuf;
 	
 	size_t firstLine, blockSize;
 	
@@ -768,7 +766,7 @@ namespace smil
 	    destLines = destSlices[s];
 
 	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(tid,blockSize,firstLine,buf1,buf2,buf3,firstLineBuf) num_threads(nthreads)
+	    #pragma omp parallel private(tid,blockSize,firstLine,buf1,buf2,firstLineBuf) num_threads(nthreads)
 	#endif
 	    {
 	    #ifdef USE_OPEN_MP
@@ -928,9 +926,8 @@ namespace smil
 
         size_t firstLine, blockSize;
         
-        for (size_t s=0; s<d; ++s) {
-            srcLines = srcSlices[s];
-            destLines = destSlices[s];
+            srcLines = srcSlices[0];
+            destLines = destSlices[0];
             #pragma omp parallel private(tid,blockSize,firstLine,buf1,buf2,buf3,buf4,tmp1,firstLineBuf,swap_buf) num_threads(nthreads)
             {
                 #ifdef USE_OPEN_MP
@@ -951,16 +948,8 @@ namespace smil
                 // Process first line.
                 copyLine<T>(srcLines[firstLine], w, buf1);
                 _exec_shifted_line_2ways(buf1, 1, w, tmp1, buf4);
-                if (s==0) {
-                    lineFunction(borderBuf, srcSlices[0][firstLine], w, buf4);
-                    lineFunction(buf4, srcSlices[1][firstLine], w, buf4);
-                } else if (s==d-1) {
-                    lineFunction(srcSlices[d-2][firstLine], srcSlices[d-1][firstLine], w, buf4);
-                    lineFunction(buf4, borderBuf, w, buf4);
-                } else {
-                    lineFunction(srcSlices[s-1][firstLine], srcSlices[s][firstLine], w, buf4);
-                    lineFunction(buf4, srcSlices[s+1][firstLine], w, buf4);
-                }
+                lineFunction(borderBuf, srcSlices[0][firstLine], w, buf4);
+                lineFunction(buf4, srcSlices[1][firstLine], w, buf4);
                 lineFunction(buf4, tmp1, w, buf4);
                 copyLine<T>(srcLines[firstLine+1], w, buf2);
                 lineFunction(buf4, buf2, w, tmp1);
@@ -974,16 +963,8 @@ namespace smil
                     _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1) ;
                     lineFunction (buf1, buf3, w, tmp1);
                     lineFunction (buf4, tmp1, w, tmp1); 
-                    if (s==0) {
-                        lineFunction(borderBuf, srcSlices[0][i-1], w, buf4);
-                        lineFunction(buf4, srcSlices[1][i-1], w, buf4);
-                    } else if (s==d-1) {
-                        lineFunction(srcSlices[d-2][i-1], srcSlices[d-1][i-1], w, buf4);
-                        lineFunction(buf4, borderBuf, w, buf4);
-                    } else {
-                        lineFunction(srcSlices[s-1][i-1], srcSlices[s][i-1], w, buf4);
-                        lineFunction(buf4, srcSlices[s+1][i-1], w, buf4);
-                    }
+                    lineFunction(borderBuf, srcSlices[0][i-1], w, buf4);
+                    lineFunction(buf4, srcSlices[1][i-1], w, buf4);
                     lineFunction (buf4, tmp1, w, destLines[i-1]);
 
  		  swap_buf = buf1;
@@ -994,16 +975,111 @@ namespace smil
 
                 _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1);
                 lineFunction (buf1, buf4, w, tmp1);
-                if (s==0) {
-                    lineFunction(borderBuf, srcSlices[0][firstLine+blockSize-1], w, buf4);
-                    lineFunction(buf4, srcSlices[1][firstLine+blockSize-1], w, buf4);
-                } else if (s==d-1) {
-                    lineFunction(srcSlices[d-2][firstLine+blockSize-1], srcSlices[d-1][firstLine+blockSize-1], w, buf4);
-                    lineFunction(buf4, borderBuf, w, buf4);
-                } else {
+                lineFunction(borderBuf, srcSlices[0][firstLine+blockSize-1], w, buf4);
+                lineFunction(buf4, srcSlices[1][firstLine+blockSize-1], w, buf4);
+                lineFunction(tmp1, buf4, w, buf4);
+                if (firstLine+blockSize == h) 
+                    lineFunction (buf4, borderBuf, w, destLines[firstLine+blockSize-1]); 
+                else
+                    lineFunction (buf4, srcLines[firstLine+blockSize], w, destLines[firstLine+blockSize-1]);
+
+                #pragma omp barrier
+                // finally write the first line
+                copyLine<T>(firstLineBuf, w, destLines[firstLine]);
+
+                for (size_t s=1; s<d-1; ++s) {
+                    srcLines = srcSlices[s];
+                    destLines = destSlices[s];
+
+                    blockSize = h/nthreads;
+                    firstLine = tid*blockSize;
+                    if (tid==nthreads-1)
+                       blockSize = h-blockSize*tid;
+
+                    // Process first line.
+                    copyLine<T>(srcLines[firstLine], w, buf1);
+                    _exec_shifted_line_2ways(buf1, 1, w, tmp1, buf4);
+                    lineFunction(srcSlices[s-1][firstLine], srcSlices[s][firstLine], w, buf4);
+                    lineFunction(buf4, srcSlices[s+1][firstLine], w, buf4);
+                    lineFunction(buf4, tmp1, w, buf4);
+                    copyLine<T>(srcLines[firstLine+1], w, buf2);
+                    lineFunction(buf4, buf2, w, tmp1);
+                    if (firstLine==0)
+                      lineFunction(borderBuf, tmp1, w, firstLineBuf);
+                    else
+                      lineFunction(srcLines[firstLine-1], tmp1, w, firstLineBuf); 
+                    #pragma omp barrier
+                    for (size_t i=firstLine+2; i<firstLine+blockSize; ++i) {
+                        copyLine<T>(srcLines[i], w, buf3);
+                        _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1) ;
+                        lineFunction (buf1, buf3, w, tmp1);
+                        lineFunction (buf4, tmp1, w, tmp1); 
+                        lineFunction(srcSlices[s-1][i-1], srcSlices[s][i-1], w, buf4);
+                        lineFunction(buf4, srcSlices[s+1][i-1], w, buf4);
+                        lineFunction (buf4, tmp1, w, destLines[i-1]);
+
+                      swap_buf = buf1;
+                      buf1 = buf2;
+                      buf2 = buf3;
+                      buf3 = swap_buf;
+                    }
+
+                    _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1);
+                    lineFunction (buf1, buf4, w, tmp1);
                     lineFunction(srcSlices[s-1][firstLine+blockSize-1], srcSlices[s][firstLine+blockSize-1], w, buf4);
                     lineFunction(buf4, srcSlices[s+1][firstLine+blockSize-1], w, buf4);
+                    lineFunction(tmp1, buf4, w, buf4);
+                    if (firstLine+blockSize == h) 
+                        lineFunction (buf4, borderBuf, w, destLines[firstLine+blockSize-1]); 
+                    else
+                        lineFunction (buf4, srcLines[firstLine+blockSize], w, destLines[firstLine+blockSize-1]);
+
+                    #pragma omp barrier
+                    // finally write the first line
+                    copyLine<T>(firstLineBuf, w, destLines[firstLine]);
+
                 }
+
+                srcLines = srcSlices[d-1];
+                destLines = destSlices[d-1];
+
+                blockSize = h/nthreads;
+                firstLine = tid*blockSize;
+                if (tid==nthreads-1)
+                   blockSize = h-blockSize*tid;
+
+                // Process first line.
+                copyLine<T>(srcLines[firstLine], w, buf1);
+                _exec_shifted_line_2ways(buf1, 1, w, tmp1, buf4);
+                    lineFunction(srcSlices[d-2][firstLine], srcSlices[d-1][firstLine], w, buf4);
+                    lineFunction(buf4, borderBuf, w, buf4);
+                lineFunction(buf4, tmp1, w, buf4);
+                copyLine<T>(srcLines[firstLine+1], w, buf2);
+                lineFunction(buf4, buf2, w, tmp1);
+                if (firstLine==0)
+                  lineFunction(borderBuf, tmp1, w, firstLineBuf);
+                else
+                  lineFunction(srcLines[firstLine-1], tmp1, w, firstLineBuf); 
+                #pragma omp barrier
+                for (size_t i=firstLine+2; i<firstLine+blockSize; ++i) {
+                    copyLine<T>(srcLines[i], w, buf3);
+                    _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1) ;
+                    lineFunction (buf1, buf3, w, tmp1);
+                    lineFunction (buf4, tmp1, w, tmp1); 
+                    lineFunction(srcSlices[d-2][i-1], srcSlices[d-1][i-1], w, buf4);
+                    lineFunction(buf4, borderBuf, w, buf4);
+                    lineFunction (buf4, tmp1, w, destLines[i-1]);
+
+ 		  swap_buf = buf1;
+		  buf1 = buf2;
+		  buf2 = buf3;
+		  buf3 = swap_buf;
+                }
+
+                _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1);
+                lineFunction (buf1, buf4, w, tmp1);
+                lineFunction(srcSlices[d-2][firstLine+blockSize-1], srcSlices[d-1][firstLine+blockSize-1], w, buf4);
+                lineFunction(buf4, borderBuf, w, buf4);
                 lineFunction(tmp1, buf4, w, buf4);
                 if (firstLine+blockSize == h) 
                     lineFunction (buf4, borderBuf, w, destLines[firstLine+blockSize-1]); 
@@ -1015,7 +1091,6 @@ namespace smil
                 copyLine<T>(firstLineBuf, w, destLines[firstLine]);
 
             } // #pragma omp parallel
-        }
 
 	return RES_OK;
     }
@@ -1023,13 +1098,13 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size)
     {
-        double nbSquareDbl = (((double) size)/(1+sqrt(2)));
+        double nbSquareDbl = (((double) size)/(1+sqrt(2.)));
         double nbSquareFloor = floor(nbSquareDbl);
         int nbSquare = (int) (((nbSquareDbl - nbSquareFloor) < 0.5f) ? (nbSquareFloor) : (nbSquareFloor+1));
 
         ASSERT(_exec (imIn, imOut, Cross3DSE ())==RES_OK);
 
-        for (int i=1; i<size-nbSquare; ++i) 
+        for (size_t i=1; i<size-nbSquare; ++i) 
             ASSERT(_exec(imOut, imOut, Cross3DSE ())==RES_OK);
         
         for (int i=0; i<nbSquare; ++i)

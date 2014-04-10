@@ -27,12 +27,12 @@
  */
 
 
+#include "DBit.h"
 #include "DCore.h"
 #include "DBase.h"
 #include "DMorpho.h"
 #include "DGui.h"
 #include "DIO.h"
-#include "DBit.h"
 
 using namespace smil;
 

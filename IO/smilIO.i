@@ -50,7 +50,7 @@
 #include "DImage.hxx"
 #include "DTypes.hpp"
 #include "DIO.h"
-
+#include "DImageIO_RAW.hpp"
 %}
  
 
@@ -61,9 +61,6 @@
 %include "DImageIO.hpp"
 
 %include "DImageIO_RAW.hpp"
-
-
-%include "DImageIO_VTK.hpp"
 
 
 // Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)

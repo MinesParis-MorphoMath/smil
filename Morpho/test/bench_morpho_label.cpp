@@ -44,8 +44,9 @@ int main(int argc, char *argv[])
     drawLine(im1, 450, 100, 900, 10);
    
     
-    UINT BENCH_NRUNS = 1E2;
+    UINT BENCH_NRUNS = 100;
     BENCH_IMG(label, im1, im2, CrossSE());
     BENCH_IMG(labelFast, im1, im2, CrossSE());
+    BENCH_IMG(labelWithArea, im1, im2, CrossSE());
 }
 

@@ -24,8 +24,6 @@
 #include <stdio.h>
 #include <time.h>
 
-//#include <boost/signal.hpp>
-//#include <boost/bind.hpp>
 
 #include "DCore.h"
 #include "DBase.h"
@@ -132,7 +130,7 @@ void bench_NCores()
 
     Core *core = Core::getInstance();
 
-    for (int i=1; i<=core->getMaxNumberOfThreads(); i++)
+    for (UINT i=1; i<=core->getMaxNumberOfThreads(); i++)
     {
 	core->setNumberOfThreads(i);
 	cout << i << ": ";

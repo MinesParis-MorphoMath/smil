@@ -89,25 +89,27 @@ namespace smil
 	UINT8 &g;
 	UINT8 &b;
 	RGB()
-	  : r(c[0]), g(c[1]), b(c[2]),
-	    MultichannelType<UINT8, 3>(0)
+	  : MultichannelType<UINT8, 3>(0),
+	  r(c[0]), g(c[1]), b(c[2])
+	    
 	{
 	}
 	RGB(const UINT &val)
-	  : r(c[0]), g(c[1]), b(c[2]),
-	    MultichannelType<UINT8, 3>(val)
+	  : MultichannelType<UINT8, 3>(val),
+	  r(c[0]), g(c[1]), b(c[2])	    
 	{
 	}
 	RGB(int _r, int _g, int _b)
-	  : r(c[0]), g(c[1]), b(c[2]),
-	    MultichannelType<UINT8, 3>(_r,_g,_b)
+	  : MultichannelType<UINT8, 3>(_r,_g,_b), 
+	  r(c[0]), g(c[1]), b(c[2])	    
 	{
 	}
 	RGB(const COLOR_UINT8_3 &rhs)
-	  : r(c[0]), g(c[1]), b(c[2]),
-	    MultichannelType<UINT8, 3>(rhs)
+	  : MultichannelType<UINT8, 3>(rhs),
+	  r(c[0]), g(c[1]), b(c[2])	    
 	{
 	}
+	virtual ~RGB() {}
 	RGB& operator =(const RGB &rhs)
 	{
 	    for (UINT i=0;i<3;i++)

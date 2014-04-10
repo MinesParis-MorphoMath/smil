@@ -55,7 +55,7 @@ class Test_ConvolHoriz : public TestCase
       };
       im3 << vecTruth;
       
-      float kern[] = { 0.0545, 0.2442, 0.4026, 0.2442, 0.0545 };
+      double kern[] = { 0.0545, 0.2442, 0.4026, 0.2442, 0.0545 };
       horizConvolve(im1, vector<float>(kern, kern+5), im2);
       TEST_ASSERT(im2==im3);
       
@@ -92,7 +92,7 @@ class Test_ConvolVert : public TestCase
       };
       im3 << vecTruth;
       
-      float kern[] = { 0.0545, 0.2442, 0.4026, 0.2442, 0.0545 };
+      double kern[] = { 0.0545, 0.2442, 0.4026, 0.2442, 0.0545 };
       vertConvolve(im1, vector<float>(kern, kern+5), im2);
       TEST_ASSERT(im2==im3);
       

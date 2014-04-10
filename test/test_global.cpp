@@ -34,7 +34,6 @@
 #include "DIO.h"
 
 #include "NSTypes/RGB/include/DRGB.h"
-#include "NSTypes/RGB/include/DImage_RGB.h"
 
 // #include "Addons/MorphM/include/private/DMorphMImage.hpp"
 
@@ -66,7 +65,8 @@ int main(int argc, char *argv[])
 
 
    BaseImage *im = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
-   im->show();
+   if (im)
+    im->show();
    
 //    Image<UINT16> im1("/home/faessel/tmp/test_image16.tif");
    

@@ -79,12 +79,14 @@ namespace smil
 	void unregisterObject(BaseObject *obj);
 	void showAllImages();
 	void hideAllImages();
+	void deleteAllImages();
 	vector<BaseObject*> getRegisteredObjects();
 	vector<BaseImage*> getImages();
 	void getCompilationInfos(ostream &outStream = std::cout);
 	const CpuID &getCpuID() { return cpuID; }
 	
 	Signal onBaseImageCreated;
+	Signal onBaseImageDestroyed;
 	
       
     protected:

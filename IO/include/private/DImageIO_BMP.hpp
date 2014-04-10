@@ -33,7 +33,7 @@
 #include <fstream>
 #include <iostream> 
 
-#include "IO/include/DCommonIO.h"
+#include "IO/include/private/DImageIO.hpp"
 #include "Core/include/private/DImage.hpp"
 
 namespace smil
@@ -43,7 +43,7 @@ namespace smil
     */
     /*@{*/
     
-    class BMPHeader;
+    struct BMPHeader;
     
     RES_T getBMPFileInfo(const char* filename, ImageFileInfo &fInfo);
     

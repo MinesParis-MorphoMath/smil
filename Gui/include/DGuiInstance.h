@@ -87,16 +87,7 @@ namespace smil
 	 * Create a default viewer for type T
 	 */
 	template <class T>
-	static ImageViewer<T> *createDefaultViewer(Image<T> &im=NULL)
-	{
-	  #ifdef USE_QT
-	    return new QtImageViewer<T>(im);
-	  #elif defined USE_AALIB
-	    return new AaImageViewer<T>(im);
-	  #else
-	    return new ImageViewer<T>(im);
-	  #endif
-	}
+	ImageViewer<T> *createDefaultViewer(Image<T> &im=NULL);
     protected:
 	virtual void _execLoop() {}
 	virtual void _processEvents() {}
@@ -104,6 +95,18 @@ namespace smil
     private:
     };
 
+    
+    template <class T>
+    ImageViewer<T> *Gui::createDefaultViewer(Image<T> &im)
+    {
+      #ifdef USE_QT
+	return new QtImageViewer<T>(im);
+      #elif defined USE_AALIB
+	return new AaImageViewer<T>(im);
+      #else
+	return new ImageViewer<T>(im);
+      #endif
+    }
 
 /*@}*/
 

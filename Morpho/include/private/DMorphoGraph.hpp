@@ -60,13 +60,13 @@ namespace smil
 	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
 	{
 	    T1 curVal = parentClass::pixelsIn[pointOffset];
-	    bool mixed = false;
+// 	    bool mixed = false;
 	    while(dOffset!=dOffsetEnd)
 	    {
 		T1 val = parentClass::pixelsIn[pointOffset + *dOffset];
 		if (val!=curVal)
 		{
-		  mixed = true;
+// 		  mixed = true;
 		  // Add an edge between the two basins. 
 		  // If the edge already exists, its weight will be the minimum value between the existing and the new one (pixelsOut[pointOffset]).
 		  graph.addEdge(val, curVal, parentClass::pixelsOut[pointOffset]);
@@ -144,7 +144,7 @@ namespace smil
 	    if (p1.empty() || p2.empty())
 	      continue;
 	    
-	    drawLine(imOut, p1[0], p1[1], p2[0], p2[1], linesValue);
+	    ASSERT(drawLine(imOut, int(p1[0]), int(p1[1]), int(p2[0]), int(p2[1]), linesValue)==RES_OK);
 	}
 	
 	return RES_OK;

@@ -32,6 +32,7 @@
 #include "DTypes.h"
 
 #include <string>
+#include <vector>
 
 namespace smil
 {
@@ -47,7 +48,21 @@ namespace smil
 	bool AES;
 	bool AVX;
     };
-    
+
+    // Associativity.
+    enum { WDISABLED, W1, W2, W4=4, W8=6, W16=8, W32=10, W48, W64, W96, W128, WFULL };
+
+    // Data cache information.
+    struct Cache_Descriptors
+    {
+        int type; // 1 : data, 2 : instructions, 3 : unified
+        int size;
+        int sets; // ???
+        int associativity;
+        int lines_per_tag;
+        int line_size;
+    };
+
     class CpuID
     {
 
@@ -60,18 +75,23 @@ namespace smil
 	unsigned getLogical() const { return logical; }
 	bool isHyperThreated() const { return hyperThreaded; }
 	const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
-	
+        const std::vector<Cache_Descriptors> &getCaches() const { 
+            return L; 
+        }	
+        unsigned int getNbrCacheLevel() const { return L.size (); }	
+
       protected:
-	uint32_t regs[4];
-	uint32_t &eax, &ebx, &ecx, &edx;
-	unsigned edxFeatures, ecxFeatures, ebxFeatures;
+	UINT32 regs[4];
+	UINT32 &eax, &ebx, &ecx, &edx;
+	unsigned eaxFeatures, edxFeatures, ecxFeatures, ebxFeatures;
 
 	unsigned cores;
 	unsigned logical;
 	string vendor;
 	bool hyperThreaded;
 	SIMD_Instructions simdInstructions;
-	
+        std::vector<Cache_Descriptors> L;
+
 	void load(unsigned i);
 
     };

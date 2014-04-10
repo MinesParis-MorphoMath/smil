@@ -34,7 +34,6 @@
 
 #include "DLineHistogram.hpp"
 #include "DImageArith.hpp"
-#include "DColor.h"
 
     
 namespace smil
@@ -55,7 +54,7 @@ namespace smil
 
 	typename Image<T>::lineType pixels = imIn.getPixels();
 	for (size_t i=0;i<imIn.getPixelCount();i++)
-	    h[UINT(pixels[i])]++;
+	    h[UINT(pixels[i]-ImDtTypes<T>::min())]++;
 	
 	return RES_OK;
     }
@@ -267,13 +266,13 @@ namespace smil
 	  meanOld = classMean[j];
 	  freqOld = classFrequency[j];
 	  
-	  classFrequency[j] += hist[thresholdIndexes[j]];
+	  classFrequency[j] += hist[UINT(thresholdIndexes[j])];
 	  
 	  if (classFrequency[j]>0)
 	    {
 	    classMean[j] = (meanOld * static_cast<MeanType>(freqOld)
 			    + static_cast<MeanType>(thresholdIndexes[j])
-			    * static_cast<MeanType>(hist[thresholdIndexes[j]]))
+			    * static_cast<MeanType>(hist[UINT(thresholdIndexes[j])]))
 	      / static_cast<MeanType>(classFrequency[j]);
 	    }
 	  else
@@ -285,7 +284,7 @@ namespace smil
 	  for (k=j+1; k<threshLevels; k++)
 	    {
 	    thresholdIndexes[k] = thresholdIndexes[k-1] + 1;
-	    classFrequency[k] = hist[thresholdIndexes[k]];
+	    classFrequency[k] = hist[UINT(thresholdIndexes[k])];
 	    if (classFrequency[k]>0)
 	      {
 	      classMean[k] = static_cast<MeanType>(thresholdIndexes[k]);
@@ -423,7 +422,7 @@ namespace smil
 	
 	for (unsigned long j=0; j<threshLevels; j++)
 	{
-	    threshVals.push_back(maxVarThresholdIndexes[j]); //= histogram->GetBinMax(0,maxVarThresholdIndexes[j]);
+	    threshVals.push_back(T(maxVarThresholdIndexes[j])); //= histogram->GetBinMax(0,maxVarThresholdIndexes[j]);
 	}
 	
 	return threshVals;

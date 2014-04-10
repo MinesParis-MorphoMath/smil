@@ -30,8 +30,8 @@
 #ifndef _D_IMAGE_VIEWER_HPP
 #define _D_IMAGE_VIEWER_HPP
 
-#include "Core/include/DColor.h"
 #include "Gui/include/DBaseImageViewer.h"
+#include "DColor.h"
 
 namespace smil
 {
@@ -57,18 +57,18 @@ namespace smil
 	ImageViewer()
 	  : BaseImageViewer("ImageViewer"),
 	    image(NULL), 
-	    labelImage(false),
-	    onOverlayModified(Signal(this))
+	    labelImage(false)
 	{
+		onOverlayModified = Signal(this);
 	    imSize[0] = imSize[1] = imSize[2] = 0;
 	}
 	
 	ImageViewer(Image<T> &im)
 	  : BaseImageViewer("ImageViewer"),
 	    image(NULL),
-	    labelImage(false),
-	    onOverlayModified(Signal(this))
+	    labelImage(false)
 	{
+		onOverlayModified = Signal(this);
 	    imSize[0] = imSize[1] = imSize[2] = 0;
 	    setImage(im);
 	}

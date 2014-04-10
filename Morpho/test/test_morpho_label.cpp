@@ -79,6 +79,38 @@ class Test_Label : public TestCase
   }
 };
 
+
+class Test_Label_Mosaic : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT16 dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+      
+      dataType vec1[] = {
+	1, 1, 1, 2, 2, 2, 2,
+	1, 1, 1, 2, 2, 2, 2,
+	1, 1, 1, 2, 1, 2, 2,
+	3, 3, 1, 1, 1, 1, 1,
+	3, 3, 3, 3, 4, 4, 4,
+	3, 3, 3, 4, 4, 4, 4,
+	3, 3, 3, 4, 4, 4, 4
+      };
+      
+      im1 << vec1;
+      
+      label(im1, im2, sSE());
+      
+      TEST_ASSERT(im2==im1);
+      if (retVal!=RES_OK)
+	im2.printSelf(1);
+  }
+};
+
 class Test_LabelWithArea : public TestCase
 {
   virtual void run()
@@ -169,6 +201,7 @@ int main(int argc, char *argv[])
 {
       TestSuite ts;
       ADD_TEST(ts, Test_Label);
+      ADD_TEST(ts, Test_Label_Mosaic);
       ADD_TEST(ts, Test_LabelWithArea);
       ADD_TEST(ts, Test_LabelNeighbors);
       

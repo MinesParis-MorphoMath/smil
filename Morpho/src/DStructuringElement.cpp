@@ -116,7 +116,7 @@ void StrElt::printSelf(ostream &os, string indent) const
     if (!ptNbr)
       return;
     
-      for (int i=0;i<ptNbr;i++)
+      for (UINT i=0;i<ptNbr;i++)
 	os << indent << "#" << i+1 << ": (" << points[i].x << "," << points[i].y << "," << points[i].z << ")" << endl;
       
 }

@@ -47,7 +47,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -112,7 +112,7 @@
          id="tspan4026"
          x="-136.20027"
          y="441.09601"
-         style="font-size:24px;fill:#ffffff">1</tspan></text>
+         style="font-size:24px;fill:#ffffff">0</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
@@ -124,7 +124,7 @@
          id="tspan4026-5"
          x="-100.41273"
          y="441.10773"
-         style="font-size:24px;fill:#ffffff">2</tspan></text>
+         style="font-size:24px;fill:#ffffff">1</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
@@ -136,7 +136,7 @@
          id="tspan4026-5-9-8"
          x="-136.15926"
          y="405.09155"
-         style="font-size:24px;fill:#ffffff">3</tspan></text>
+         style="font-size:24px;fill:#ffffff">2</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
@@ -148,7 +148,7 @@
          id="tspan4026-5-9-2"
          x="-172.08755"
          y="440.93781"
-         style="font-size:24px;fill:#ffffff">4</tspan></text>
+         style="font-size:24px;fill:#ffffff">3</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Sans"
@@ -160,7 +160,7 @@
          id="tspan4026-5-9-7"
          x="-136.16512"
          y="477.11462"
-         style="font-size:24px;fill:#ffffff">5</tspan></text>
+         style="font-size:24px;fill:#ffffff">4</tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path14-9"
@@ -217,7 +217,7 @@
          id="tspan4026-3"
          x="-250.74464"
          y="480.99286"
-         style="font-size:24px;fill:#ffffff">0</tspan></text>
+         style="font-size:24px;fill:#ffffff">5</tspan></text>
     <path
        inkscape:connector-curvature="0"
        id="path14-8"

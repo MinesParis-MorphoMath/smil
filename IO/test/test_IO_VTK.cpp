@@ -30,15 +30,13 @@
 #include <stdio.h>
 #include <time.h>
 
-//#include <boost/signal.hpp>
-//#include <boost/bind.hpp>
 
 #include "DCore.h"
 #include "DIO.h"
+#include "DGui.h"
 
 using namespace smil;
 
-#include "DGui.h"
 
 class Test_VTK_RW : public TestCase
 {

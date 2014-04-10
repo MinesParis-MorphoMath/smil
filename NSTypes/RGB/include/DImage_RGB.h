@@ -32,10 +32,10 @@
 
 
 #include "DImage.hpp"
-#include "DImage.hxx"
+#include "Base/include/private/DImageArith.hpp"
 #include "DTypes.h"
-#include "DColor.h"
 #include "Base/include/private/DImageTransform.hpp"
+#include "Base/include/private/DMeasures.hpp"
 
 namespace smil
 {
@@ -94,7 +94,8 @@ namespace smil
     
         
     template <>
-    inline void* Image<RGB>::getVoidPointer(void) {
+    inline void* Image<RGB>::getVoidPointer() 
+	{
 	return &pixels;
     }
 
@@ -203,29 +204,25 @@ namespace smil
     
     
 #ifdef USE_QWT
-    template <>
-    inline void QtImageViewer<RGB>::displayHistogram(bool update)
-    {
-    }
-    template <>
-    inline void QtImageViewer<RGB>::displayProfile(bool update)
-    {
-    }
+// #include "Gui/Qt/DQtImageViewer.hpp"
 #endif // USE_QWT
     
     template <class T, UINT N>
     inline RES_T mul(const Image< MultichannelType<T,N> > &imIn, const double &dValue, Image< MultichannelType<T,N> > &imOut)
     {
+      return RES_ERR_NOT_IMPLEMENTED;
     }
 
     template <class T, UINT N, class T2>
     inline RES_T stretchHist(const Image< MultichannelType<T,N> > &imIn, Image<T2> &imOut, T2 outMinVal, T2 outMaxVal)
     {
+      return RES_ERR_NOT_IMPLEMENTED;
     }
     
     template <class T, UINT N, class T1>
     inline RES_T stretchHist(const Image<T1> &imIn, Image< MultichannelType<T,N> > &imOut, MultichannelType<T,N> outMinVal, MultichannelType<T,N> outMaxVal)
     {
+      return RES_ERR_NOT_IMPLEMENTED;
     }
     
     

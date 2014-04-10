@@ -53,9 +53,9 @@ namespace smil
     * \demo{blob_measures.py}
     */
     template <class T>
-    map<UINT, double> measAreas(const Image<T> &imIn, const bool onlyNonZero=true)
+    map<UINT, double> measAreas(const Image<T> &imLbl, const bool onlyNonZero=true)
     {
-	return processBlobMeasure<T, measAreaFunc<T> >(imIn, onlyNonZero);
+	return processBlobMeasure<T, measAreaFunc<T> >(imLbl, onlyNonZero);
     }
     
     /**
@@ -69,48 +69,61 @@ namespace smil
 	return processBlobMeasure<T, measAreaFunc<T> >(imIn, blobs);
     }
 
+    /**
+    * Measure the minimum value of each blob in imIn.
+    * Return a map(labelValue, T) with the min value for each label.
+    */
     template <class T>
     map<UINT, T> measMinVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measMinValFunc<T> >(imIn, blobs);
     }
 
+    /**
+    * Measure the maximum value of each blob in imIn.
+    * Return a map(labelValue, T) with the max value for each label.
+    */
     template <class T>
     map<UINT, T> measMaxVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measMaxValFunc<T> >(imIn, blobs);
     }
 
+    /**
+    * Measure the min and max values of each blob in imIn.
+    * Return a map(labelValue, T) with the min and max values for each label.
+    */
     template <class T>
     map<UINT, vector<T> > measRangeVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measMinMaxValFunc<T> >(imIn, blobs);
     }
 
+    /**
+    * Measure the mean value and the std dev. of each blob in imIn.
+    * Return a map(labelValue, vector<double>) with the mean and std dev. values for each label.
+    */
     template <class T>
     map<UINT, Vector_double> measMeanVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
 	return processBlobMeasure<T, measMeanValFunc<T> >(imIn, blobs);
     }
 
+    /**
+    * Measure the maximum value of each blob in imIn.
+    * Return a map(labelValue, double) with the max value for each label.
+    */
     template <class T>
-    map<UINT, double> measVolumes(const Image<T> &imLbl, const bool onlyNonZero=true)
+    map<UINT, double> measVolumes(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
-	return processBlobMeasure<T, measVolFunc<T> >(imLbl, onlyNonZero);
+	return processBlobMeasure<T, measVolFunc<T> >(imIn, blobs);
     }
     
-    template <class T>
-    map<UINT, double> measVolumes(const Image<T> &imLbl, const map<UINT, Blob> &blobs)
-    {
-	return processBlobMeasure<T, measVolFunc<T> >(imLbl, blobs);
-    }
     
-    template <class T>
-    map<UINT, vector<T> > valueLists(const Image<T> &imIn, const bool onlyNonZero=true)
-    {
-	return processBlobMeasure<T, valueListFunc<T> >(imIn, onlyNonZero);
-    }
-    
+    /**
+    * Measure the list of values of each blob in imIn.
+    * Return a map(labelValue, vector<T>) with the list of values for each blob label.
+    */
     template <class T>
     map<UINT, vector<T> > valueLists(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
@@ -118,8 +131,8 @@ namespace smil
     }
     
     /**
-    * Measure barycenter of labeled image.
-    * Return a map(labelValue, Point) with the barycenter point coordinates for each label value.
+    * Measure barycenter of a labeled image.
+    * Return a map(labelValue, Point) with the barycenter point coordinates for each label.
     * 
     * \demo{blob_measures.py}
     */
@@ -129,10 +142,14 @@ namespace smil
 	return processBlobMeasure<T, measBarycenterFunc<T> >(imLbl, onlyNonZero);
     }
     
+    /**
+    * Measure the barycenter of each blob in imIn.
+    * Return a map(labelValue, vector<double>) with the barycenter for each blob label.
+    */
     template <class T>
-    map<UINT, Vector_double> measBarycenters(const Image<T> &imLbl, const map<UINT, Blob> &blobs)
+    map<UINT, Vector_double> measBarycenters(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
-	return processBlobMeasure<T, measBarycenterFunc<T> >(imLbl, blobs);
+	return processBlobMeasure<T, measBarycenterFunc<T> >(imIn, blobs);
     }
     
     
@@ -142,11 +159,15 @@ namespace smil
     * Return a map(labelValue, Box) with the bounding box for each label value.
     */
     template <class T>
-    map<UINT, Vector_UINT > measBoundBoxes(const Image<T> &imIn, const bool onlyNonZero=true)
+    map<UINT, Vector_UINT > measBoundBoxes(const Image<T> &imLbl, const bool onlyNonZero=true)
     {
-	return processBlobMeasure<T, measBoundBoxFunc<T> >(imIn, onlyNonZero);
+	return processBlobMeasure<T, measBoundBoxFunc<T> >(imLbl, onlyNonZero);
     }
 
+    /**
+    * Measure bounding boxes of each blob (faster with blobs pre-generated).
+    * Return a map(labelValue, Box) with the bounding box for each label value.
+    */
     template <class T>
     map<UINT, Vector_UINT > measBoundBoxes(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {
@@ -154,16 +175,19 @@ namespace smil
     }
 
     /**
+    * Measure inertia moments of each label.
+    */
+    template <class T>
+    map<UINT, Vector_double> measInertiaMatrices(const Image<T> &imLbl, const bool onlyNonZero=true)
+    {
+	return processBlobMeasure<T, measInertiaMatrixFunc<T> >(imLbl, onlyNonZero);
+    }
+    
+    /**
     * Measure blobs inertia moments.
     * 
     * \demo{inertia_moments.py}
     */
-    template <class T>
-    map<UINT, Vector_double> measInertiaMatrices(const Image<T> &imIn, const bool onlyNonZero=true)
-    {
-	return processBlobMeasure<T, measInertiaMatrixFunc<T> >(imIn, onlyNonZero);
-    }
-    
     template <class T>
     map<UINT, Vector_double> measInertiaMatrices(const Image<T> &imIn, const map<UINT, Blob> &blobs)
     {

@@ -190,10 +190,10 @@ namespace smil
 
 
     template <class T, class operatorT>
-    RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMark, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq, const StrElt &se)
+    RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMask, Image<UINT8> &imStatus, HierarchicalQueue<T> &hq, const StrElt &se)
     {
 	typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
-	typename ImDtTypes<T>::lineType markPixels = imMark.getPixels();
+	typename ImDtTypes<T>::lineType markPixels = imMask.getPixels();
 	typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
 	
 	vector<int> dOffsets;
@@ -287,25 +287,28 @@ namespace smil
     * Dual reconstruction (using hierarchical queues).
     */
     template <class T>
-    RES_T dualBuild(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T dualBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imMark, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imMark, &imOut);
+// 	if (isBinary(imIn) && isBinary(imMask))
+// 	  return dualBinBuild(imIn, imMask, imOut, se);
+	
+	ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
 
 	ImageFreezer freeze(imOut);
 	
 	Image<UINT8> imStatus(imIn);
 	HierarchicalQueue<T,UINT> pq;
 	
-	// Make sure that imIn >= imMark
-	ASSERT((sup(imIn, imMark, imOut)==RES_OK));
+	// Make sure that imIn >= imMask
+	ASSERT((sup(imIn, imMask, imOut)==RES_OK));
 	
 	// Set all pixels in the status image to CANDIDATE
 	ASSERT((fill(imStatus, (UINT8)HQ_CANDIDATE)==RES_OK));
 	
 	// Initialize the PQ
 	initBuildHierarchicalQueue(imOut, pq);
-	processBuildHierarchicalQueue<T, maxFunctor<T> >(imOut, imMark, imStatus, pq, se);
+	processBuildHierarchicalQueue<T, maxFunctor<T> >(imOut, imMask, imStatus, pq, se);
 	
 	return RES_OK;
     }
@@ -314,10 +317,13 @@ namespace smil
     * Reconstruction (using hierarchical queues).
     */
     template <class T>
-    RES_T build(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T build(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imMark, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imMark, &imOut);
+	if (isBinary(imIn) && isBinary(imMask))
+	  return binBuild(imIn, imMask, imOut, se);
+	
+	ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
 
 	ImageFreezer freeze(imOut);
 	
@@ -326,15 +332,15 @@ namespace smil
 	// Reverse hierarchical queue (the highest token corresponds to the highest gray value)
 	HierarchicalQueue<T> rpq(true);
 	
-	// Make sure that imIn <= imMark
-	ASSERT((inf(imIn, imMark, imOut)==RES_OK));
+	// Make sure that imIn <= imMask
+	ASSERT((inf(imIn, imMask, imOut)==RES_OK));
 	
 	// Set all pixels in the status image to CANDIDATE
 	ASSERT((fill(imStatus, (UINT8)HQ_CANDIDATE)==RES_OK));
 	
 	// Initialize the PQ
 	initBuildHierarchicalQueue(imOut, rpq);
-	processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMark, imStatus, rpq, se);
+	processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMask, imStatus, rpq, se);
 	
 	return RES_OK;
     }
@@ -343,10 +349,10 @@ namespace smil
     * Reconstruction (using hierarchical queues).
     */
     template <class T>
-    RES_T binBuild(const Image<T> &imIn, const Image<T> &imMark, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T binBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imMark, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imMark, &imOut);
+	ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
 	//	T noPushValue = NUMERIC_LIMITS<T>::min();
 	//T maxValue =  NUMERIC_LIMITS<T>::max();
 	ImageFreezer freeze(imOut);
@@ -356,20 +362,47 @@ namespace smil
 	// Reverse hierarchical queue (the highest token corresponds to the highest gray value)
 	HierarchicalQueue<T> rpq(true);
 	
-	// Make sure that imIn <= imMark
-	ASSERT((inf(imIn, imMark, imOut)==RES_OK));
+	// Make sure that imIn <= imMask
+	ASSERT((inf(imIn, imMask, imOut)==RES_OK));
 	
 	// make a status image with all foreground pixels as CANDIDATE, otherwise as FINAL
-	
-	ASSERT((copy(imMark, imStatus) == RES_OK));
-	ASSERT((threshold<UINT8>(imStatus, imStatus.getDataTypeMin()+1, imStatus.getDataTypeMax(), (UINT8)HQ_CANDIDATE, (UINT8)HQ_FINAL, imStatus)==RES_OK));
+	ASSERT(test(imMask, (UINT8)HQ_CANDIDATE, (UINT8)HQ_FINAL, imStatus)==RES_OK);
     
 	// Initialize the PQ
 	initBuildHierarchicalQueue(imOut, rpq, imOut.getDataTypeMin());
-	processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMark, imStatus, rpq, se);
+	processBuildHierarchicalQueue<T, minFunctor<T> >(imOut, imMask, imStatus, rpq, se);
 	
 	return RES_OK;
     }
+
+//     /**
+//     * Reconstruction (using hierarchical queues).
+//     */
+//     template <class T>
+//     RES_T dualBinBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+//     {
+// 	ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
+// 	ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
+// 	//	T noPushValue = NUMERIC_LIMITS<T>::min();
+// 	//T maxValue =  NUMERIC_LIMITS<T>::max();
+// 	ImageFreezer freeze(imOut);
+// 	
+// 	Image<UINT8> imStatus(imIn);
+// 	
+// 	HierarchicalQueue<T> rpq;
+// 	
+// 	// Make sure that imIn >= imMask
+// 	ASSERT((sup(imIn, imMask, imOut)==RES_OK));
+// 	
+// 	// make a status image with all background pixels as CANDIDATE, otherwise as FINAL
+// 	ASSERT(test(imMask, (UINT8)HQ_FINAL, (UINT8)HQ_CANDIDATE, imStatus)==RES_OK);
+//     
+// 	// Initialize the PQ
+// 	initBuildHierarchicalQueue(imOut, rpq, imOut.getDataTypeMin());
+// 	processBuildHierarchicalQueue<T, maxFunctor<T> >(imOut, imMask, imStatus, rpq, se);
+// 	
+// 	return RES_OK;
+//     }
 
 
     /**
@@ -498,7 +531,28 @@ namespace smil
 	return RES_OK;
     }
 
-    // Multi-source label-correcting algorithm for ALSP problem.
+    template <class T1, class T2>
+    RES_T dist_v2(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        int st = se.getType () ;
+        int size = se.size ;
+
+        if (size > 1) 
+            return dist(imIn, imOut, se);
+        switch (st) 
+        {
+            case SE_Cross:
+                return dist_cross (imIn, imOut);
+            case SE_Cross3D:
+                return dist_cross_3d (imIn, imOut);
+            case SE_Squ:
+                return dist_square (imIn, imOut); 
+        } 
+    }
+
+    /**
+     * Generic Distance function.
+     */
     template <class T1, class T2>
     RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
     {
@@ -565,9 +619,9 @@ namespace smil
                 x = cur - y *size[0] - z * size[1] * size[0];
 
                 while (pt!=sePoints.end()) {
-                    if (    x+pt->x >= 0 && x+pt->x < size[0] &&
-                            y+pt->y >= 0 && y+pt->y < size[1] &&
-                            z+pt->z >= 0 && z+pt->z < size[2] && 
+                    if (    x+pt->x >= 0 && x+pt->x < (int)size[0] &&
+                            y+pt->y >= 0 && y+pt->y < (int)size[1] &&
+                            z+pt->z >= 0 && z+pt->z < (int)size[2] && 
                             pixelsOut [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] == T2(0) &&
                             pixelsIn [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] > T1(0))
                     {
@@ -588,8 +642,349 @@ namespace smil
         return RES_OK;
     }
 
+    template <class T1, class T2>
+    RES_T dist_cross_3d (const Image<T1> &imIn, Image<T2> &imOut) {
+        ASSERT_ALLOCATED (&imIn, &imOut);
+        ASSERT_SAME_SIZE (&imIn, &imOut);
+
+        ImageFreezer freeze (imOut);
+        Image<T1> tmp(imIn);
+        ASSERT (inf(imIn, T1(1), tmp) == RES_OK);
+ 
+        typedef Image<T1> imageInType;
+        typedef typename imageInType::lineType lineInType;
+        typedef Image<T2> imageOutType;
+        typedef typename imageOutType::lineType lineOutType;
+
+        lineInType pixelsIn = tmp.getPixels () ;
+        lineOutType pixelsOut = imOut.getPixels () ;
+
+        size_t size[3];
+        imIn.getSize (size) ;
+        size_t offset ;
+        int x,y,z;
+        T2 infinite=ImDtTypes<T2>::max();
+        T2 min;
+
+        for (z=0; z<size[2]; ++z) {
+            #pragma omp for private(offset,x,y,min)    
+            for (x=0; x<size[0];++x) {
+                offset = z*size[1]*size[0]+x;
+                if (pixelsIn[offset] == T1(0)) {
+                    pixelsOut[offset] = T2(0); 
+                } else {
+                    pixelsOut[offset] = infinite;
+                }
+
+                for (y=1; y<size[1]; ++y) {
+                    if (pixelsIn[offset+y*size[0]] == T1(0)) {
+                        pixelsOut[offset+y*size[0]] = T2(0);
+                    } else {
+                        pixelsOut[offset+y*size[0]] = (1 + pixelsOut[offset+(y-1)*size[0]] > infinite) ? infinite : 1 + pixelsOut[offset+(y-1)*size[0]];
+                    }
+                }
+
+                for (y=size[1]-2; y>=0; --y) {
+                    min = (pixelsOut[offset+(y+1)*size[0]]+1 > infinite) ? infinite : pixelsOut[offset+(y+1)*size[0]]+1; 
+                    if (min < pixelsOut[offset+y*size[0]])
+                       pixelsOut[offset+y*size[0]] = (1+pixelsOut[offset+(y+1)*size[0]]); 
+                }
+            }
+            
+            #pragma omp for private(x,y,offset)
+            for (y=0; y<size[1]; ++y) {
+                offset = z*size[1]*size[0]+y*size[0]; 
+                for (x=1; x<size[0]; ++x) {
+                    if (pixelsOut[offset+x] != 0 && pixelsOut[offset+x] > pixelsOut[offset+x-1]) {
+                        pixelsOut[offset+x] = pixelsOut[offset+x-1]+1;
+                    }
+                }
+                for (x=size[0]-2; x>=0; --x) {
+                    if (pixelsOut[offset+x] != 0 && pixelsOut[offset+x] > pixelsOut[offset+x+1]) {
+                        pixelsOut[offset+x] = pixelsOut[offset+x+1]+1;
+                    }
+                }
+            }
+        }
+        for (y=0; y<size[1]; ++y) {
+            #pragma omp for private(x,z,offset)
+            for (x=0; x<size[0]; ++x) {
+                offset = y*size[0]+x;
+                for (z=1; z<size[2]; ++z) {
+                    if (pixelsOut[offset+z*size[1]*size[0]] != 0 && pixelsOut[offset+z*size[1]*size[0]] > pixelsOut[offset+(z-1)*size[1]*size[0]]) {
+                        pixelsOut[offset+z*size[1]*size[0]] = pixelsOut[offset+(z-1)*size[1]*size[0]]+1;
+                    }
+                }
+                for (z=size[2]-2; z>=0; --z) {
+                    if (pixelsOut[offset+z*size[1]*size[0]] != 0 && pixelsOut[offset+z*size[1]*size[0]] > pixelsOut[offset+(z+1)*size[1]*size[0]]) {
+                        pixelsOut[offset+z*size[1]*size[0]] = pixelsOut[offset+(z+1)*size[1]*size[0]]+1;
+                    }
+                }
+            }
+        }
+        return RES_OK;
+    }
+
+    template <class T1, class T2>
+    RES_T dist_cross (const Image<T1> &imIn, Image<T2> &imOut) {
+        ASSERT_ALLOCATED (&imIn, &imOut);
+        ASSERT_SAME_SIZE (&imIn, &imOut);
+
+        ImageFreezer freeze (imOut);
+        Image<T1> tmp(imIn);
+        ASSERT (inf(imIn, T1(1), tmp) == RES_OK);
+ 
+        typedef Image<T1> imageInType;
+        typedef typename imageInType::lineType lineInType;
+        typedef Image<T2> imageOutType;
+        typedef typename imageOutType::lineType lineOutType;
+
+        lineInType pixelsIn = tmp.getPixels () ;
+        lineOutType pixelsOut = imOut.getPixels () ;
+
+        size_t size[3];
+        imIn.getSize (size) ;
+        size_t offset ;
+        int x,y,z;
+        T2 infinite=ImDtTypes<T2>::max();
+        T2 min;
+
+        for (z=0; z<size[2]; ++z) {
+            #pragma omp for private(offset,x,y,min)    
+            for (x=0; x<size[0];++x) {
+                offset = z*size[1]*size[0]+x;
+                if (pixelsIn[offset] == T1(0)) {
+                    pixelsOut[offset] = T2(0); 
+                } else {
+                    pixelsOut[offset] = infinite;
+                }
+
+                for (y=1; y<size[1]; ++y) {
+                    if (pixelsIn[offset+y*size[0]] == T1(0)) {
+                        pixelsOut[offset+y*size[0]] = T2(0);
+                    } else {
+                        pixelsOut[offset+y*size[0]] = (1 + pixelsOut[offset+(y-1)*size[0]] > infinite) ? infinite : 1 + pixelsOut[offset+(y-1)*size[0]];
+                    }
+                }
+
+                for (y=size[1]-2; y>=0; --y) {
+                    min = (pixelsOut[offset+(y+1)*size[0]]+1 > infinite) ? infinite : pixelsOut[offset+(y+1)*size[0]]+1; 
+                    if (min < pixelsOut[offset+y*size[0]])
+                       pixelsOut[offset+y*size[0]] = (1+pixelsOut[offset+(y+1)*size[0]]); 
+                }
+            }
+            
+            #pragma omp for private(x,y,offset)
+            for (y=0; y<size[1]; ++y) {
+                offset = z*size[1]*size[0]+y*size[0]; 
+                for (x=1; x<size[0]; ++x) {
+                    if (pixelsOut[offset+x] != 0 && pixelsOut[offset+x] > pixelsOut[offset+x-1]) {
+                        pixelsOut[offset+x] = pixelsOut[offset+x-1]+1;
+                    }
+                }
+                for (x=size[0]-2; x>=0; --x) {
+                    if (pixelsOut[offset+x] != 0 && pixelsOut[offset+x] > pixelsOut[offset+x+1]) {
+                        pixelsOut[offset+x] = pixelsOut[offset+x+1]+1;
+                    }
+                }
+            }
+        }
+        return RES_OK;
+    }
+
+    template <class T1, class T2>
+    RES_T dist_square (const Image<T1> &imIn, Image<T2> &imOut) {
+        ASSERT_ALLOCATED (&imIn, &imOut);
+        ASSERT_SAME_SIZE (&imIn, &imOut);
+
+        ImageFreezer freeze (imOut);
+        Image<T2> tmp(imIn);
+
+        typedef Image<T1> imageInType;
+        typedef typename imageInType::lineType lineInType;
+        typedef Image<T2> imageOutType;
+        typedef typename imageOutType::lineType lineOutType;
+
+        lineInType pixelsIn = imIn.getPixels () ;
+        lineOutType pixelsOut = imOut.getPixels () ;
+        lineOutType pixelsTmp = tmp.getPixels () ;
+
+        size_t size[3];
+        imIn.getSize (size) ;
+        size_t offset ;
+        int x,y,z;
+        T2 infinite=ImDtTypes<T2>::max();
+        T2 min;
+
+        // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
+        T2 s[size[0]]; // sets of the least minimizers that occurs during the scan from left to right.
+        T2 t[size[0]]; // sets of points with the same least minimizer 
+        s[0] = 0;
+        t[0] = 0;
+        int q = 0;
+        T2 w;
+
+        T2 tmpdist, tmpdist2;
+
+        for (z=0; z<size[2]; ++z) {
+            #pragma omp for private(offset,x,y,min)    
+            for (x=0; x<size[0];++x) {
+                offset = z*size[1]*size[0]+x;
+                if (pixelsIn[offset] == T1(0)) {
+                    pixelsTmp[offset] = T2(0); 
+                } else {
+                    pixelsTmp[offset] = infinite;
+                }
+                // SCAN 1
+                for (y=1; y<size[1]; ++y) {
+                    if (pixelsIn[offset+y*size[0]] == T1(0)) {
+                        pixelsTmp[offset+y*size[0]] = T2(0);
+                    } else {
+                        pixelsTmp[offset+y*size[0]] = (1 + pixelsTmp[offset+(y-1)*size[0]] > infinite) ? infinite : 1 + pixelsTmp[offset+(y-1)*size[0]];
+                    }
+                }
+                // SCAN 2
+                for (y=size[1]-2; y>=0; --y) {
+                    min = (pixelsTmp[offset+(y+1)*size[0]]+1 > infinite) ? infinite : pixelsTmp[offset+(y+1)*size[0]]+1; 
+                    if (min < pixelsTmp[offset+y*size[0]])
+                       pixelsTmp[offset+y*size[0]] = (1+pixelsTmp[offset+(y+1)*size[0]]); 
+                }
+            }
+            #pragma omp for private(offset,y,s,t,q,w,tmpdist,tmpdist2)
+            for (y=0; y<size[1]; ++y) {
+                    offset = z*size[1]*size[0]+y*size[0];
+                    q=0; t[0]=0; s[0]=0;
+                    // SCAN 3
+                    for (int u=1; u<size[0];++u) {
+                        tmpdist = (t[q] > s[q]) ? t[q]-s[q] : s[q]-t[q];
+                        tmpdist = (tmpdist >= pixelsTmp[offset+s[q]]) ? tmpdist : pixelsTmp[offset+s[q]];
+                        tmpdist2 = (t[q] > u) ? t[q]-u : u-t[q];
+                        tmpdist2 = (tmpdist2 >= pixelsTmp[offset+u]) ? tmpdist2 : pixelsTmp[offset+u]; 
+
+                        while (q>=0 && tmpdist > tmpdist2) {
+                        
+                             q--;
+                             if (q>=0) { 
+                                 tmpdist = (t[q] > s[q]) ? t[q]-s[q] : s[q]-t[q];
+                                 tmpdist = (tmpdist >= pixelsTmp[offset+s[q]]) ? tmpdist : pixelsTmp[offset+s[q]];
+                                 tmpdist2 = (t[q] > u) ? t[q]-u : u-t[q];
+                                 tmpdist2 = (tmpdist2 >= pixelsTmp[offset+u]) ? tmpdist2 : pixelsTmp[offset+u]; 
+                             }
+
+                        }
+                        if (q<0) {
+                            q=0; s[0]=u;}
+                        else {
+                            if (pixelsTmp[offset+s[q]] <= pixelsTmp[offset+u]) {
+                                w = (s[q]+pixelsTmp[offset+u] >= (s[q]+u)/2) ? s[q]+pixelsTmp[offset+u] : (s[q]+u)/2;
+                            } else {
+                                w = (u-pixelsTmp[offset+s[q]] >= (s[q]+u)/2) ? (s[q]+u)/2 : u-pixelsTmp[offset+s[q]];
+                            }
+                            w=1+w;
+                            if (w<size[0]) {q++; s[q]=u; t[q]=w;}
+                        }
+                    }
+                    // SCAN 4
+                    for (int u=size[0]-1; u>=0; --u) {
+                        pixelsOut[offset+u] = (u > s[q]) ? u-s[q] : s[q]-u ;
+                        pixelsOut[offset+u] = (pixelsOut[offset+u] >= pixelsTmp[offset+s[q]]) ? pixelsOut[offset+u] : pixelsTmp[offset+s[q]];
+                        if (u == t[q])
+                            q--;
+                    }
+
+             }
+        }
+        return RES_OK;
+    }
+
+    template <class T1, class T2>
+    RES_T dist_euclidean (const Image<T1> &imIn, Image<T2> &imOut) {
+        ASSERT_ALLOCATED (&imIn, &imOut);
+        ASSERT_SAME_SIZE (&imIn, &imOut);
+
+        ImageFreezer freeze (imOut);
+        Image<T2> tmp(imIn);
+
+        typedef Image<T1> imageInType;
+        typedef typename imageInType::lineType lineInType;
+        typedef Image<T2> imageOutType;
+        typedef typename imageOutType::lineType lineOutType;
+
+        lineInType pixelsIn = imIn.getPixels () ;
+        lineOutType pixelsOut = imOut.getPixels () ;
+        lineOutType pixelsTmp = tmp.getPixels () ;
+
+        size_t size[3];
+        imIn.getSize (size) ;
+        size_t offset ;
+        int x,y,z;
+        T2 infinite= ImDtTypes<T2>::max();
+        T2 min;
+
+        // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
+        T2 s[size[0]]; // sets of the least minimizers that occurs during the scan from left to right.
+        T2 t[size[0]]; // sets of points with the same least minimizer 
+        s[0] = 0;
+        t[0] = 0;
+        int q = 0;
+        T2 w;
+
+        for (z=0; z<size[2]; ++z) {
+            #pragma omp for private(offset,x,y,min)    
+            for (x=0; x<size[0];++x) {
+                offset = z*size[1]*size[0]+x;
+                if (pixelsIn[offset] == T1(0)) {
+                    pixelsTmp[offset] = T2(0); 
+                } else {
+                    pixelsTmp[offset] = infinite;
+                }
+                // SCAN 1
+                for (y=1; y<size[1]; ++y) {
+                    if (pixelsIn[offset+y*size[0]] == T1(0)) {
+                        pixelsTmp[offset+y*size[0]] = T2(0);
+                    } else {
+                        pixelsTmp[offset+y*size[0]] = (1 + pixelsTmp[offset+(y-1)*size[0]] > infinite) ? infinite : 1 + pixelsTmp[offset+(y-1)*size[0]];
+                    }
+                }
+                // SCAN 2
+                for (y=size[1]-2; y>=0; --y) {
+                    min = (pixelsTmp[offset+(y+1)*size[0]]+1 > infinite) ? infinite : pixelsTmp[offset+(y+1)*size[0]]+1; 
+                    if (min < pixelsTmp[offset+y*size[0]])
+                       pixelsTmp[offset+y*size[0]] = (1+pixelsTmp[offset+(y+1)*size[0]]); 
+                }
+            }
+            copy (tmp, imOut);
+   
+            #define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
+
+            #pragma omp for private(offset,y,s,t,q,w)
+             for (y=0; y<size[1]; ++y) {
+                    offset = z*size[1]*size[0]+y*size[0];
+                    q=0; t[0]=0; s[0]=0;
+                    // SCAN 3
+                    for (int u=1; u<size[0];++u) {
+                        while (q>=0 && __f_euclidean (t[q], s[q]) > __f_euclidean (t[q], u)) {
+                            q--;
+                        }
+                        if (q<0) {q=0; s[0]=u;}
+                        else {
+                            w= 1 + ( u*u - s[q]*s[q] + pixelsTmp[offset + u]*pixelsTmp[offset + u] - pixelsTmp[offset + s[q]] * pixelsTmp[offset + s[q]] ) / (2*(u-s[q]));
+                            if (w<size[0]) {q++; s[q]=u; t[q]=w;}
+                        }
+                    }
+                    // SCAN 4
+                    for (int u=size[0]-1; u>=0; --u) {
+                        pixelsOut[offset+u] = __f_euclidean (u, s[q]) ;
+                        if (u == t[q])
+                            q--;
+                    }
+             }
+        }
+        return RES_OK;
+    }
+
     /**
-    * Ugly temporary distance function
+    * Base distance function performed with successive erosions.
     */
     template <class T>
     RES_T dist_v0(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)

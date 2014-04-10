@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -42,6 +42,8 @@
 #include "Core/include/private/DImage.hpp"
 #include "Base/include/private/DImageHistogram.hpp"
 #include "Base/include/DImageDraw.h"
+#include "IO/include/private/DImageIO.hpp"
+#include "DColor.h"
 
 namespace smil
 {
@@ -57,7 +59,7 @@ namespace smil
 
     template <class T>
     QtImageViewer<T>::QtImageViewer(Image<T> &im)
-      : ImageViewer<T>(im), 
+      : ImageViewer<T>(im),
 	BASE_QT_VIEWER(NULL)
     {
     #ifdef USE_QWT
@@ -98,6 +100,11 @@ namespace smil
     template <class T>
     void QtImageViewer<T>::show()
     {
+	if (!BASE_QT_VIEWER::isVisible())
+	{
+	    drawImage();
+	    BASE_QT_VIEWER::dataChanged();
+	}
 	BASE_QT_VIEWER::showNormal();
 	BASE_QT_VIEWER::raise();
 	BASE_QT_VIEWER::activateWindow();
@@ -107,6 +114,11 @@ namespace smil
     void QtImageViewer<T>::showLabel()
     {
 	this->setLabelImage(true);
+	if (!BASE_QT_VIEWER::isVisible())
+	{
+	    drawImage();
+	    BASE_QT_VIEWER::dataChanged();
+	}
 	BASE_QT_VIEWER::showNormal();
 	BASE_QT_VIEWER::raise();
 	BASE_QT_VIEWER::activateWindow();
@@ -138,10 +150,10 @@ namespace smil
     {
 	if (parentClass::labelImage==val)
 	  return;
-	
+
 	BASE_QT_VIEWER::setLabelImage(val);
 	parentClass::labelImage = val;
-	    
+
 	update();
     }
 
@@ -150,35 +162,41 @@ namespace smil
     {
 	if (!this->image)
 	  return;
-	
+
 	drawImage();
 	BASE_QT_VIEWER::dataChanged();
 
 	BASE_QT_VIEWER::update();
 
-    #ifdef USE_QWT    
+    #ifdef USE_QWT
 	if (histoPlot && histoPlot->isVisible())
 	  displayHistogram(true);
 	if (profilePlot && profilePlot->isVisible())
 	  displayProfile(true);
-    #endif // USE_QWT    
+    #endif // USE_QWT
         qApp->processEvents();
     }
 
 
     template <class T>
+    void QtImageViewer<T>::saveSnapshot(const char *fileName)
+    {
+	BASE_QT_VIEWER::saveAs(fileName);
+    }
+
+    template <class T>
     void QtImageViewer<T>::drawImage()
     {
 	typename Image<T>::sliceType lines = this->image->getSlices()[slider->value()];
-	
+
 	size_t w = this->image->getWidth();
 	size_t h = this->image->getHeight();
-	
+
 	UINT8 *destLine;
 	double coeff;
 	double floor = ImDtTypes<T>::min();
-	
-	
+
+
 	if (parentClass::labelImage)
 	  coeff = 1.0;
 	else
@@ -196,7 +214,7 @@ namespace smil
 	for (size_t j=0;j<h;j++,lines++)
 	{
 	    typename Image<T>::lineType pixels = *lines;
-	    
+
 	    destLine = this->qImage->scanLine(j);
 	    for (size_t i=0;i<w;i++)
     // 	  pixels[i] = 0;
@@ -221,17 +239,14 @@ namespace smil
     {
 	if (!qOverlayImage)
 	  createOverlayImage();
-	
-	size_t w = im.getWidth();
-	size_t h = im.getHeight();
-	
+
 	typename Image<T>::sliceType lines = im.getSlices()[slider->value()];
 	typename Image<T>::lineType pixels;
-	
+
 	qOverlayImage->fill(0);
-	
+
 	QRgb *destLine;
-	  
+
 	for (size_t j=0;j<im.getHeight();j++)
 	{
 	    destLine = (QRgb*)(this->qOverlayImage->scanLine(j));
@@ -242,7 +257,7 @@ namespace smil
 		destLine[i] = overlayColorTable[(UINT8)pixels[i]];
 	    }
 	}
-	    
+
 	BASE_QT_VIEWER::overlayDataChanged();
 	BASE_QT_VIEWER::update();
     }
@@ -252,14 +267,14 @@ namespace smil
     {
 	if (!qOverlayImage)
 	  createOverlayImage();
-	
+
 	img.setSize(qOverlayImage->width(), qOverlayImage->height());
-	
+
 	QRgb *srcLine;
 	int value;
 	typename Image<T>::sliceType lines = img.getLines();
 	typename Image<T>::lineType pixels;
-	  
+
 	for (size_t j=0;j<qOverlayImage->height();j++)
 	{
 	    srcLine = (QRgb*)(this->qOverlayImage->scanLine(j));
@@ -273,7 +288,7 @@ namespace smil
 	img.modified();
 	return RES_OK;
     }
-    
+
     template <class T>
     void QtImageViewer<T>::overlayDataChanged(bool triggerEvents)
     {
@@ -301,7 +316,7 @@ namespace smil
 	showNormal();
 	update();
     }
-    
+
     template <class T>
     void QtImageViewer<T>::resetLookup()
     {
@@ -312,7 +327,7 @@ namespace smil
 	showNormal();
 	update();
     }
-	
+
     template <class T>
     void QtImageViewer<T>::displayPixelValue(size_t x, size_t y, size_t z)
     {
@@ -342,7 +357,7 @@ namespace smil
 
 	int gridSize = magnView->getGridSize();
 	int halfGrid = (gridSize-1)/2;
-	
+
 	int yi = y-halfGrid;
 
 	int imW = qImage->width();
@@ -351,10 +366,10 @@ namespace smil
 	typename ImDtTypes<T>::sliceType pSlice = parentClass::image->getSlices()[z];
 	typename ImDtTypes<T>::lineType pLine;
 	T pVal;
-	
+
 	QGraphicsTextItem *textItem;
 	QList<QGraphicsTextItem*>::Iterator txtIt = magnView->getTextItemList()->begin();
-	
+
 	QColor lightCol = QColor::fromRgb(255,255,255);
 	QColor darkCol = QColor::fromRgb(0,0,0);
 	T lightThresh = T(double(ImDtTypes<T>::max()-ImDtTypes<T>::min()) * 0.55);
@@ -390,20 +405,20 @@ namespace smil
 	int objNbr = urls.size();
 
 	if (objNbr==1)
-#ifdef Q_OS_WIN32	  
+#ifdef Q_OS_WIN32
 	  read(urls[0].toString().remove("file:///").toStdString().c_str(), *this->image);
-#else // Q_OS_WIN32	  
+#else // Q_OS_WIN32
 	  read(urls[0].toString().remove("file:/").toStdString().c_str(), *this->image);
-#endif // Q_OS_WIN32	  
+#endif // Q_OS_WIN32
 	else
 	{
 	    vector<string> files;
 	    for (QList<QUrl>::iterator it=urls.begin();it!=urls.end();it++)
-#ifdef Q_OS_WIN32	  
+#ifdef Q_OS_WIN32
 	      files.push_back((*it).toString().remove("file:///").toStdString());
-#else // Q_OS_WIN32	  
+#else // Q_OS_WIN32
 	      files.push_back((*it).toString().remove("file:/").toStdString());
-#endif // Q_OS_WIN32	  
+#endif // Q_OS_WIN32
 	    read(files, *this->image);
 	}
     }
@@ -418,28 +433,28 @@ namespace smil
 	    histoPlot->activateWindow();
 	    return;
 	}
-	    
+
 	if (!histoPlot)
 	{
 	    histoPlot = new PlotWidget();
 	    histoPlot->setWindowTitle(QString(this->image->getName()) + " histogram");
 	    histoPlot->setAxisScale(QwtPlot::xBottom, ImDtTypes<T>::min(), ImDtTypes<T>::max());
-	    
+
 	    QwtPlotCurve *defaultCurve = histoPlot->getCurrentCurve();
 	    defaultCurve->setStyle( QwtPlotCurve::Steps );
 	    defaultCurve->setBrush( Qt::blue );
 	}
-	
-      
+
+
 	map<T, UINT> hist = histogram(*(this->image));
-      
+
 	QwtPlotCurve *curve = histoPlot->getCurrentCurve();
-	
+
 #if QWT_VERSION < 0x060000
 	int ptsNbr = hist.size();
 	double *xVals = new double[ptsNbr];
 	double *yVals = new double[ptsNbr];
-	
+
 	int i=0;
 	for(typename map<T,UINT>::iterator it=hist.begin();it!=hist.end();it++,i++)
 	{
@@ -447,10 +462,10 @@ namespace smil
 	    yVals[i] = (*it).second;
 	}
 	curve->setData(xVals, yVals, ptsNbr);
-	
+
 	histoPlot->replot();
 	histoPlot->show();
-	
+
 	delete[] xVals;
 	delete[] yVals;
 #else // QWT_VERSION < 0x060000
@@ -461,49 +476,49 @@ namespace smil
 	QwtPointSeriesData *myData = new QwtPointSeriesData();
 	myData->setSamples(samples);
 	curve->setData(myData);
-	
+
 	histoPlot->replot();
 	histoPlot->show();
 #endif // QWT_VERSION < 0x060000
-      
+
     }
-    
+
     template <class T>
     void QtImageViewer<T>::displayProfile(bool update)
     {
 	if (update && (!profilePlot || !profilePlot->isVisible()))
 	  return;
-	
+
 	if (!update && profilePlot && profilePlot->isVisible())
 	{
 	    profilePlot->raise();
 	    profilePlot->activateWindow();
 	    return;
 	}
-	    
+
 	if (!profilePlot)
 	{
 	    profilePlot = new PlotWidget();
 	    profilePlot->setWindowTitle(QString(this->image->getName()) + " profile");
 	}
 // 	profilePlot->detachItems();
-	
+
 	QwtPlotCurve *curve = profilePlot->getCurrentCurve();
-      
+
 	QLineF lnF(this->line->line());
-	
+
 	vector<IntPoint> bPoints = bresenhamPoints(lnF.x1(), lnF.y1(), lnF.x2(), lnF.y2());
 
 	T value;
 	typename Image<T>::sliceType lines = this->image->getSlices()[slider->value()];
 	int i = 0;
-	
-	
+
+
 #if QWT_VERSION < 0x060000
 	int ptsNbr = bPoints.size();
 	double *xVals = new double[ptsNbr];
 	double *yVals = new double[ptsNbr];
-	
+
 	for(vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++,i++)
 	{
 	    value = lines[(*it).y][(*it).x];
@@ -511,13 +526,13 @@ namespace smil
 	    yVals[i] = value;
 	}
 	curve->setData(xVals, yVals, ptsNbr);
-	
+
 	profilePlot->replot();
 	profilePlot->show();
-	
+
 	delete[] xVals;
 	delete[] yVals;
-	
+
 #else // QWT_VERSION < 0x060000
 	QVector<QPointF> samples;
 	for(vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++,i++)
@@ -529,13 +544,13 @@ namespace smil
 	QwtPointSeriesData *myData = new QwtPointSeriesData();
 	myData->setSamples(samples);
 	curve->setData(myData);
-	
+
 	profilePlot->replot();
 	profilePlot->show();
 #endif // QWT_VERSION < 0x060000
-      
-	
-    }    
+
+
+    }
 #endif // USE_QWT
 
 } // namespace smil

@@ -143,7 +143,7 @@ class Test_DeltaUO : public TestCase
       
       im1 << vec1;
       
-      ultimateOpen(im1, im2, imLbl);
+      ultimateOpen(im1, im2, imLbl, 7, 1);
       
       dataType1 vecTrans[] =
       {
