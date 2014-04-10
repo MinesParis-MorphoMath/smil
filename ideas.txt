@@ -9,6 +9,8 @@ IDEAS:
         -Those explains why 4 cpus are better than 8 cpus (the current repartition of the data between thread is not optimised).
             +http://www.ddj.com/go-parallel/article/showArticle.jhtml?articleID=217500206
             +http://ddj.com/architect/208200273
+        -Prefetch instructions
+            +http://www.software.intel.com/en-us/blogs/2009/08/24/what-you-need-to-know-about-prefetching
 
     PROCESSING OPERATORS:
         -Operations on a image executed as a sequence of pixel-based operations (or line-base operations ?).
@@ -37,3 +39,10 @@ IDEAS:
             int *pA = array[i]-1;
             int *pOtherA = otherArray[j]-1;
             int x = *(++pA) + *(++pOtherA);
+
+    ASSEMBLY:
+        -Advanced Vector Extensions allowing for c=a+b
+            +http://en.wikipedia.org/wiki/Advanced_Vector_Extensions
+        -RdRand: on board random numbers generation.
+            +http://en.wikipedia.org/wiki/RdRand
+        -fma3: Fused multiply-add [a|b|c] = a+b*c
