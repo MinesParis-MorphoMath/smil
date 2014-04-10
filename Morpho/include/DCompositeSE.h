@@ -64,9 +64,13 @@ namespace smil
 	CompStrEltList operator | (const CompStrElt &rhs);
 	//! Return a CompStrEltList containing the nrot rotations of the CompStrElt
 	CompStrEltList operator () (UINT nrot);
-	virtual void printSelf(ostream &os=std::cout, string indent="");
+	virtual void printSelf(ostream &os = std::cout, string indent="") const;
     };
 
+    /**
+    * Composite structuring element list
+    * \see CompStrElt
+    */
     class CompStrEltList : public BaseObject
     {
     public:
@@ -95,7 +99,7 @@ namespace smil
 	void add(const CompStrElt &cse, UINT nrot);
 	CompStrEltList &rotate(int steps=1);
 	
-	virtual void printSelf(ostream &os=std::cout, string indent="");
+	virtual void printSelf(ostream &os = std::cout, string indent="") const;
     };
 
 

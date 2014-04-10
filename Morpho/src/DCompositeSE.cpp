@@ -111,7 +111,7 @@ CompStrEltList CompStrElt::operator () (UINT nrot)
     return CompStrEltList(*this, nrot);
 }
 
-void CompStrElt::printSelf(ostream &os, string indent)
+void CompStrElt::printSelf(ostream &os, string indent) const
 {
     os << indent << "Composite Structuring Element" << endl;
     os << indent << "Foreground SE:" << endl;
@@ -188,11 +188,11 @@ CompStrEltList &CompStrEltList::rotate(int nrot)
     return *this;
 }
 
-void CompStrEltList::printSelf(ostream &os, string indent)
+void CompStrEltList::printSelf(ostream &os, string indent) const
 {
     os << indent << "HitOrMiss SE (composite structuring element list)" << endl;
     int i=0;
-    for (std::vector<CompStrElt>::iterator it=compSeList.begin();it!=compSeList.end();it++,i++)
+    for (std::vector<CompStrElt>::const_iterator it=compSeList.begin();it!=compSeList.end();it++,i++)
     {
 	os << indent << "CompSE #" << i << ":" << endl;
 	(*it).printSelf(os, indent + "\t");

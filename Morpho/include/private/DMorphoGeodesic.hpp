@@ -532,13 +532,13 @@ namespace smil
     }
 
     template <class T1, class T2>
-    RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T dist_v2(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
         int st = se.getType () ;
         int size = se.size ;
 
         if (size > 1) 
-            return dist_generic (imIn, imOut, se);
+            return dist(imIn, imOut, se);
         switch (st) 
         {
             case SE_Cross:
@@ -554,7 +554,7 @@ namespace smil
      * Generic Distance function.
      */
     template <class T1, class T2>
-    RES_T dist_generic(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
+    RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
     {
     	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -663,13 +663,13 @@ namespace smil
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
-        T2 infinite=size[1]+size[0]+size[2];
+        T2 infinite=ImDtTypes<T2>::max();
         T2 min;
 
         for (z=0; z<size[2]; ++z) {
             #pragma omp for private(offset,x,y,min)    
             for (x=0; x<size[0];++x) {
-                offset = z*size[2]*size[1]+x;
+                offset = z*size[1]*size[0]+x;
                 if (pixelsIn[offset] == T1(0)) {
                     pixelsOut[offset] = T2(0); 
                 } else {
@@ -677,23 +677,23 @@ namespace smil
                 }
 
                 for (y=1; y<size[1]; ++y) {
-                    if (pixelsIn[offset+y*size[1]] == T1(0)) {
-                        pixelsOut[offset+y*size[1]] = T2(0);
+                    if (pixelsIn[offset+y*size[0]] == T1(0)) {
+                        pixelsOut[offset+y*size[0]] = T2(0);
                     } else {
-                        pixelsOut[offset+y*size[1]] = (1 + pixelsOut[offset+(y-1)*size[1]] > infinite) ? infinite : 1 + pixelsOut[offset+(y-1)*size[1]];
+                        pixelsOut[offset+y*size[0]] = (1 + pixelsOut[offset+(y-1)*size[0]] > infinite) ? infinite : 1 + pixelsOut[offset+(y-1)*size[0]];
                     }
                 }
 
                 for (y=size[1]-2; y>=0; --y) {
-                    min = (pixelsOut[offset+(y+1)*size[1]]+1 > infinite) ? infinite : pixelsOut[offset+(y+1)*size[1]]+1; 
-                    if (min < pixelsOut[offset+y*size[1]])
-                       pixelsOut[offset+y*size[1]] = (1+pixelsOut[offset+(y+1)*size[1]]); 
+                    min = (pixelsOut[offset+(y+1)*size[0]]+1 > infinite) ? infinite : pixelsOut[offset+(y+1)*size[0]]+1; 
+                    if (min < pixelsOut[offset+y*size[0]])
+                       pixelsOut[offset+y*size[0]] = (1+pixelsOut[offset+(y+1)*size[0]]); 
                 }
             }
             
             #pragma omp for private(x,y,offset)
             for (y=0; y<size[1]; ++y) {
-                offset = z*size[2]*size[1]+y*size[1]; 
+                offset = z*size[1]*size[0]+y*size[0]; 
                 for (x=1; x<size[0]; ++x) {
                     if (pixelsOut[offset+x] != 0 && pixelsOut[offset+x] > pixelsOut[offset+x-1]) {
                         pixelsOut[offset+x] = pixelsOut[offset+x-1]+1;
@@ -709,15 +709,15 @@ namespace smil
         for (y=0; y<size[1]; ++y) {
             #pragma omp for private(x,z,offset)
             for (x=0; x<size[0]; ++x) {
-                offset = y*size[1]+x;
+                offset = y*size[0]+x;
                 for (z=1; z<size[2]; ++z) {
-                    if (pixelsOut[offset+z*size[2]*size[1]] != 0 && pixelsOut[offset+z*size[2]*size[1]] > pixelsOut[offset+(z-1)*size[2]*size[1]]) {
-                        pixelsOut[offset+z*size[2]*size[1]] = pixelsOut[offset+(z-1)*size[2]*size[1]]+1;
+                    if (pixelsOut[offset+z*size[1]*size[0]] != 0 && pixelsOut[offset+z*size[1]*size[0]] > pixelsOut[offset+(z-1)*size[1]*size[0]]) {
+                        pixelsOut[offset+z*size[1]*size[0]] = pixelsOut[offset+(z-1)*size[1]*size[0]]+1;
                     }
                 }
                 for (z=size[2]-2; z>=0; --z) {
-                    if (pixelsOut[offset+z*size[2]*size[1]] != 0 && pixelsOut[offset+z*size[2]*size[1]] > pixelsOut[offset+(z+1)*size[2]*size[1]]) {
-                        pixelsOut[offset+z*size[2]*size[1]] = pixelsOut[offset+(z+1)*size[2]*size[1]]+1;
+                    if (pixelsOut[offset+z*size[1]*size[0]] != 0 && pixelsOut[offset+z*size[1]*size[0]] > pixelsOut[offset+(z+1)*size[1]*size[0]]) {
+                        pixelsOut[offset+z*size[1]*size[0]] = pixelsOut[offset+(z+1)*size[1]*size[0]]+1;
                     }
                 }
             }
@@ -746,13 +746,13 @@ namespace smil
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
-        T2 infinite=size[1]+size[0];
+        T2 infinite=ImDtTypes<T2>::max();
         T2 min;
 
         for (z=0; z<size[2]; ++z) {
             #pragma omp for private(offset,x,y,min)    
             for (x=0; x<size[0];++x) {
-                offset = z*size[2]*size[1]+x;
+                offset = z*size[1]*size[0]+x;
                 if (pixelsIn[offset] == T1(0)) {
                     pixelsOut[offset] = T2(0); 
                 } else {
@@ -760,23 +760,23 @@ namespace smil
                 }
 
                 for (y=1; y<size[1]; ++y) {
-                    if (pixelsIn[offset+y*size[1]] == T1(0)) {
-                        pixelsOut[offset+y*size[1]] = T2(0);
+                    if (pixelsIn[offset+y*size[0]] == T1(0)) {
+                        pixelsOut[offset+y*size[0]] = T2(0);
                     } else {
-                        pixelsOut[offset+y*size[1]] = (1 + pixelsOut[offset+(y-1)*size[1]] > infinite) ? infinite : 1 + pixelsOut[offset+(y-1)*size[1]];
+                        pixelsOut[offset+y*size[0]] = (1 + pixelsOut[offset+(y-1)*size[0]] > infinite) ? infinite : 1 + pixelsOut[offset+(y-1)*size[0]];
                     }
                 }
 
                 for (y=size[1]-2; y>=0; --y) {
-                    min = (pixelsOut[offset+(y+1)*size[1]]+1 > infinite) ? infinite : pixelsOut[offset+(y+1)*size[1]]+1; 
-                    if (min < pixelsOut[offset+y*size[1]])
-                       pixelsOut[offset+y*size[1]] = (1+pixelsOut[offset+(y+1)*size[1]]); 
+                    min = (pixelsOut[offset+(y+1)*size[0]]+1 > infinite) ? infinite : pixelsOut[offset+(y+1)*size[0]]+1; 
+                    if (min < pixelsOut[offset+y*size[0]])
+                       pixelsOut[offset+y*size[0]] = (1+pixelsOut[offset+(y+1)*size[0]]); 
                 }
             }
             
             #pragma omp for private(x,y,offset)
             for (y=0; y<size[1]; ++y) {
-                offset = z*size[2]*size[1]+y*size[1]; 
+                offset = z*size[1]*size[0]+y*size[0]; 
                 for (x=1; x<size[0]; ++x) {
                     if (pixelsOut[offset+x] != 0 && pixelsOut[offset+x] > pixelsOut[offset+x-1]) {
                         pixelsOut[offset+x] = pixelsOut[offset+x-1]+1;
@@ -813,12 +813,12 @@ namespace smil
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
-        T2 infinite=size[1]+size[0];
+        T2 infinite=ImDtTypes<T2>::max();
         T2 min;
 
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
-        T2 s[size[1]]; // sets of the least minimizers that occurs during the scan from left to right.
-        T2 t[size[1]]; // sets of points with the same least minimizer 
+        T2 s[size[0]]; // sets of the least minimizers that occurs during the scan from left to right.
+        T2 t[size[0]]; // sets of points with the same least minimizer 
         s[0] = 0;
         t[0] = 0;
         int q = 0;
@@ -918,12 +918,12 @@ namespace smil
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
-        T2 infinite=size[1]+size[0];
+        T2 infinite= ImDtTypes<T2>::max();
         T2 min;
 
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
-        T2 s[size[1]]; // sets of the least minimizers that occurs during the scan from left to right.
-        T2 t[size[1]]; // sets of points with the same least minimizer 
+        T2 s[size[0]]; // sets of the least minimizers that occurs during the scan from left to right.
+        T2 t[size[0]]; // sets of points with the same least minimizer 
         s[0] = 0;
         t[0] = 0;
         int q = 0;
@@ -953,8 +953,9 @@ namespace smil
                        pixelsTmp[offset+y*size[0]] = (1+pixelsTmp[offset+(y+1)*size[0]]); 
                 }
             }
+            copy (tmp, imOut);
    
-#define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
+            #define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
 
             #pragma omp for private(offset,y,s,t,q,w)
              for (y=0; y<size[1]; ++y) {

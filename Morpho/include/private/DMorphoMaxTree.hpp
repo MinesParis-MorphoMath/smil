@@ -41,9 +41,8 @@ namespace smil
     * \{
     */
 
+    
 #ifndef SWIG
-
-
 
 template <class T, class TokenType=UINT>
 class PriorityQueue
@@ -636,7 +635,8 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,OffsetT> &tree, T* transformee_n
 }
 
 
-#endif
+#endif // SWIG
+
     /**
      * Ultimate Opening using the max-trees
      * 
@@ -689,6 +689,7 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,OffsetT> &tree, T* transformee_n
 
 
 
+#ifndef SWIG
 
 template <class T, class OffsetT=UINT>
 class MaxTree2
@@ -1105,6 +1106,9 @@ void compute_contrast_MSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT*
       }
 
 }
+
+#endif // SWIG
+
     template <class T1, class T2>
     RES_T ultimateOpenMSER(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, int stopSize=-1, UINT delta = 0)
     {
