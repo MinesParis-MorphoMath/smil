@@ -119,6 +119,9 @@ namespace smil
 	//! Construct and return an homothetic SE with size s
 	StrElt homothety(const UINT s) const;
 	
+	//! Transposed 
+	StrElt transpose() const;
+	
 	bool odd;
 	seType seT;
 	UINT size;

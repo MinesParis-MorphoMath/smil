@@ -82,6 +82,69 @@ class Test_Dilate_2Points : public TestCase
   }
 };
 
+class Test_3Points_Hex : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+      
+      dataType vec1[] = {
+	255,    0,    0,    0,    0,    0,    0,
+	     0,    0,  255,  255,    0,    0,  255,
+	255,    0,  255,   255,  255,  255,    0,
+	     0,    0,    0,    0,  255,    0,  255,
+	255,  255,    0,   255,    0,    0,    0,
+	     0,    0,   255,   255,    0,    0,  255,
+	255,    0,    0,    0,    0,    0,    0,
+      };
+      
+      im1 << vec1;
+      
+      StrElt se(1,  3,  0,1,2);
+     
+      erode(im1, im2, se);
+
+      dataType erodeVec[] = {
+	0,    0,    0,    0,    0,    0,    0,
+	  0,    0,    0,    0,    0,    0,  255,
+	0,    0,  255,  255,    0,    0,    0,
+	  0,    0,    0,    0,    0,    0,  255,
+	0,    0,    0,    0,    0,    0,    0,
+	  0,    0,  255,    0,    0,    0,  255,
+	0,    0,    0,    0,    0,    0,    0,
+      };
+      im3 << erodeVec;
+      
+      TEST_ASSERT(im2==im3);      
+
+      if (retVal!=RES_OK)
+	im2.printSelf(1,1);
+      
+      dilate(im2, im1, se);
+      
+      dataType dilateVec[] = {
+	0,    0,    0,    0,    0,    0,    0,
+	  0,    0,  255,  255,    0,    0,  255,
+	0,    0,  255,  255,  255,    0,    0,
+	  0,    0,    0,    0,    0,    0,  255,
+	0,    0,    0,  255,    0,    0,    0,
+	  0,    0,  255,  255,    0,    0,  255,
+	0,    0,    0,    0,    0,    0,    0,
+      };
+      im3 << dilateVec;
+      
+      TEST_ASSERT(im1==im3);      
+      
+      if (retVal!=RES_OK)
+	im1.printSelf(1, true);
+  }
+};
+
 class Test_Dilate_Vert : public TestCase
 {
   virtual void run()
@@ -529,6 +592,7 @@ int main(int argc, char *argv[])
 {
       TestSuite ts;
       ADD_TEST(ts, Test_Dilate_2Points);
+      ADD_TEST(ts, Test_3Points_Hex);
       ADD_TEST(ts, Test_Dilate_Vert);
       ADD_TEST(ts, Test_Dilate_Cross);
       ADD_TEST(ts, Test_Dilate_Hex);
