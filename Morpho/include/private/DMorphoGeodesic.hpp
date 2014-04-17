@@ -532,13 +532,13 @@ namespace smil
     }
 
     template <class T1, class T2>
-    RES_T dist_v2(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
         int st = se.getType () ;
         int size = se.size ;
 
         if (size > 1) 
-            return dist(imIn, imOut, se);
+            return dist_generic(imIn, imOut, se);
         switch (st) 
         {
             case SE_Cross:
@@ -546,7 +546,9 @@ namespace smil
             case SE_Cross3D:
                 return dist_cross_3d (imIn, imOut);
             case SE_Squ:
-                return dist_square (imIn, imOut); 
+                return dist_square (imIn, imOut);
+            default:
+                return dist_generic (imIn, imOut); 
         } 
     }
 
@@ -554,7 +556,7 @@ namespace smil
      * Generic Distance function.
      */
     template <class T1, class T2>
-    RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
+    RES_T dist_generic(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
     {
     	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -664,7 +666,7 @@ namespace smil
         size_t offset ;
         int x,y,z;
         T2 infinite=ImDtTypes<T2>::max();
-        T2 min;
+        long int min;
 
         for (z=0; z<size[2]; ++z) {
             #pragma omp for private(offset,x,y,min)    
@@ -747,7 +749,7 @@ namespace smil
         size_t offset ;
         int x,y,z;
         T2 infinite=ImDtTypes<T2>::max();
-        T2 min;
+        long int  min;
 
         for (z=0; z<size[2]; ++z) {
             #pragma omp for private(offset,x,y,min)    
@@ -814,17 +816,18 @@ namespace smil
         size_t offset ;
         int x,y,z;
         T2 infinite=ImDtTypes<T2>::max();
-        T2 min;
+        long int min;
 
-        // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
-        T2 s[size[0]]; // sets of the least minimizers that occurs during the scan from left to right.
-        T2 t[size[0]]; // sets of points with the same least minimizer 
+        // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h )
+        long int size_array = MAX(size[0],size[1]); 
+        long int s[size_array]; // sets of the least minimizers that occurs during the scan from left to right.
+        long int t[size_array]; // sets of points with the same least minimizer 
         s[0] = 0;
         t[0] = 0;
-        int q = 0;
-        T2 w;
+        long int q = 0;
+        long int w;
 
-        T2 tmpdist, tmpdist2;
+        long int tmpdist, tmpdist2;
 
         for (z=0; z<size[2]; ++z) {
             #pragma omp for private(offset,x,y,min)    
@@ -862,7 +865,6 @@ namespace smil
                         tmpdist2 = (tmpdist2 >= pixelsTmp[offset+u]) ? tmpdist2 : pixelsTmp[offset+u]; 
 
                         while (q>=0 && tmpdist > tmpdist2) {
-                        
                              q--;
                              if (q>=0) { 
                                  tmpdist = (t[q] > s[q]) ? t[q]-s[q] : s[q]-t[q];
@@ -919,15 +921,15 @@ namespace smil
         size_t offset ;
         int x,y,z;
         T2 infinite= ImDtTypes<T2>::max();
-        T2 min;
+        long int min;
 
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
-        T2 s[size[0]]; // sets of the least minimizers that occurs during the scan from left to right.
-        T2 t[size[0]]; // sets of points with the same least minimizer 
+        long int s[size[0]]; // sets of the least minimizers that occurs during the scan from left to right.
+        long int t[size[0]]; // sets of points with the same least minimizer 
         s[0] = 0;
         t[0] = 0;
-        int q = 0;
-        T2 w;
+        long int q = 0;
+        long int w;
 
         for (z=0; z<size[2]; ++z) {
             #pragma omp for private(offset,x,y,min)    

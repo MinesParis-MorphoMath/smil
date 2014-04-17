@@ -65,7 +65,7 @@ namespace smil
 	{
 	    double newVal;
 	    
-	    for(int i=0;i<size;i++)
+	    for(UINT i=0;i<size;i++)
 	    {
 		newVal = double(outOrig) + (double(lIn[i])-double(inOrig))*coeff;
 		if (newVal > double(numeric_limits<T>::max()))

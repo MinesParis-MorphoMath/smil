@@ -106,6 +106,24 @@ const StrElt StrElt::operator()(int s) const
     return se;
 }
 
+// Transpose points
+StrElt StrElt::transpose() const
+{
+    StrElt se;
+    se.seT = this->seT;
+    se.size = this->size;
+    se.odd = this->odd;
+
+    for (vector<IntPoint>::const_iterator it=this->points.begin();it!=this->points.end();it++)
+    {
+	const IntPoint &p = *it;
+	se.addPoint(-p.x - (this->odd && p.y%2), -p.y, -p.z);
+    }
+    
+    return se;
+}
+
+
 void StrElt::printSelf(ostream &os, string indent) const
 {
     os << indent << "Structuring Element" << endl;
