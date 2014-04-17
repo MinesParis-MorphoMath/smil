@@ -104,7 +104,7 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
 	unaryMorphImageFunction<T, infLine<T> > iFunc(borderVal);
-	return iFunc(imIn, imOut, se);
+	return iFunc(imIn, imOut, se.transpose());
     }
 
     /**
