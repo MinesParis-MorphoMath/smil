@@ -532,13 +532,13 @@ namespace smil
     }
 
     template <class T1, class T2>
-    RES_T dist_v2(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
         int st = se.getType () ;
         int size = se.size ;
 
         if (size > 1) 
-            return dist(imIn, imOut, se);
+            return dist_generic(imIn, imOut, se);
         switch (st) 
         {
             case SE_Cross:
@@ -546,7 +546,9 @@ namespace smil
             case SE_Cross3D:
                 return dist_cross_3d (imIn, imOut);
             case SE_Squ:
-                return dist_square (imIn, imOut); 
+                return dist_square (imIn, imOut);
+            default:
+                return dist_generic (imIn, imOut); 
         } 
     }
 
@@ -554,7 +556,7 @@ namespace smil
      * Generic Distance function.
      */
     template <class T1, class T2>
-    RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
+    RES_T dist_generic(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
     {
     	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
