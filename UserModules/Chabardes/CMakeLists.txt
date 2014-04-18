@@ -26,7 +26,7 @@
 
 
 SET(MODULE_NAME Chabardes)
-SET(MODULE_DEPS smilCore smilGui)
+SET(MODULE_DEPS smilCore smilGui smilMorpho)
 
 LIST(APPEND MODULE_DEPS)
 
