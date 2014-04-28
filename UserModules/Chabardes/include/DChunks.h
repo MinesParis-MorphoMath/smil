@@ -5,6 +5,9 @@
 #include "DMorpho.h"
 #include "mpi.h"
 
+
+//TODO: supprimer intersect_width et remplacer avec le rayon de l'element structurant.
+
 namespace smil {
 
     template <class T>
@@ -12,26 +15,29 @@ namespace smil {
         public:
             Chunk (): rawData(NULL)  { }
             ~Chunk () {
+                cout << "deleting " << hex << (long) rawData << " ..." << endl;
                 if (rawData != NULL) 
                     ::operator delete(rawData);
             }
             RES_T allocate (const size_t &s) {
                 rawData = ::operator new (sizeof(int)*6+sizeof(T)*s);
+
+                cout << "allocating " << hex << (long) rawData << " ..." << endl;
                 if (rawData == NULL) { return RES_ERR_BAD_ALLOCATION; } 
                 size = (int*)rawData;
                 offset = (int*)rawData + 3;
-                data = (T*)((int*)rawData + 6);                
+                data = (T*)((int*)rawData + 6);
             }
             RES_T createFromArray (
                     const T* dataIn,
                     const int &sd_x, 
                     const int &sd_y,
-                    const int &sc_x,
-                    const int &sc_y,
-                    const int &sc_z,
                     const int &o_x,
                     const int &o_y,
-                    const int &o_z) {
+                    const int &o_z,
+                    const int &sc_x,
+                    const int &sc_y,
+                    const int &sc_z) {
                 size[0] = sc_x; size[1] = sc_y; size[2] = sc_z;
                 offset[0] = o_x; offset[1] = o_y; offset[2] = o_z; 
 
@@ -95,10 +101,10 @@ namespace smil {
                 cout << endl; 
             }
         private:
+            void* rawData;
             int* size;
             int* offset;
             T* data;
-            void* rawData;
     };
 
     struct Chunks_Header {
@@ -168,7 +174,7 @@ namespace smil {
         for (int i=0; i<ch.nbr_chunks; ++i) {
             ca[i].allocate (ch.size_chunks);
         }
-        for (int i=0;i<ch.nbr_borders;++i) {
+        for (int i=0;i<ch.nbr_borders; ++i) {
             ca[ch.nbr_chunks+i].allocate (ch.size_borders);
         }
 

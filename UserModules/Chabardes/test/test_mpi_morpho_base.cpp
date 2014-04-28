@@ -30,7 +30,7 @@ int master_proc (int argc, char* argv[], const int nbr_procs, const int rank) {
     im = Image<UINT8> (30,30,30);
     fill (im, UINT8(0));
     generateChunks (im, L1.size, LL.size, nbr_procs, se, 3, ch, ca);
-    registerChunks (ch) ;
+//    registerChunks (ch) ;
 
     // Processing.
     // Scatter
@@ -49,13 +49,13 @@ int master_proc (int argc, char* argv[], const int nbr_procs, const int rank) {
         }
     }
     */
-    im.save ( "/tmp/test.png" );
-    unregisterChunks (ch) ;
-    delete (ca);
+//    im.save ( "/tmp/test.png" );
+//    unregisterChunks (ch) ;
+    delete ca;
 }
 
 int slave_proc (int nbr_procs, int rank) {
-    int err_code;
+/*    int err_code;
 
     Chunks_Header ch; 
     registerChunks (ch) ;
@@ -64,7 +64,6 @@ int slave_proc (int nbr_procs, int rank) {
     Chunk<UINT8> c;
     int max_dimension = MAX (ch.size_borders, ch.size_intersects);
     c.allocate (max_dimension) ; 
-    /* 
     while (1) {
         recvChunk (ch, 0, rank*10, c, MPI_STATUS_IGNORE);
         sleep (1);
