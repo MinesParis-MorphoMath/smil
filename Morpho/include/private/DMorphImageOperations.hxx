@@ -50,7 +50,9 @@ namespace smil
 	pixelsOut = imOut.getPixels();
 	
 	sePoints = se.points;
-	
+
+        oddSe = se.odd;
+
 	sePointNbr = sePoints.size();
 	relativeOffsets.clear();
 	vector<IntPoint>::iterator pt = sePoints.begin();
