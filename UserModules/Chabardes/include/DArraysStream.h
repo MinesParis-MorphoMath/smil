@@ -134,7 +134,6 @@ namespace smil {
                 return RES_OK;
             }
             RES_T next (Chunk<T> &c) {
-                cout << r_head << endl;
                 if (r_head < parentClass::chunks_nbr[1]+parentClass::chunks_nbr[0]) 
                     return read_normal (r_head++, c);
                 return read_intersect ((r_head++ - parentClass::chunks_nbr[1] - parentClass::chunks_nbr[0]), c);
@@ -144,7 +143,9 @@ namespace smil {
                 // store in dataO
             }
             bool eof () {
-                return r_head == parentClass::nbr_chunks;
+
+                cout << r_head << "  blzahrea " << parentClass::nbr_chunks << endl;
+                return r_head >= parentClass::nbr_chunks;
             } 
         private:
             int intersect_width;
