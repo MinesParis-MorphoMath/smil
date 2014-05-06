@@ -606,10 +606,12 @@ namespace smil
         }
 
         size_t cur;
-        int x,y,z;
+        int x,y,z, n_x, n_y, n_z;
 
         vector<IntPoint> sePoints = se.points;
         vector<IntPoint>::iterator pt ;
+
+        bool oddLine;
 
         do {
             while (!level->empty()) {
@@ -620,15 +622,22 @@ namespace smil
                 y = (cur - z * size[1] * size[0]) / size[0];
                 x = cur - y *size[0] - z * size[1] * size[0];
 
+                oddLine = se.odd && (y+1%2);
+
                 while (pt!=sePoints.end()) {
-                    if (    x+pt->x >= 0 && x+pt->x < (int)size[0] &&
-                            y+pt->y >= 0 && y+pt->y < (int)size[1] &&
-                            z+pt->z >= 0 && z+pt->z < (int)size[2] && 
-                            pixelsOut [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] == T2(0) &&
-                            pixelsIn [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] > T1(0))
+                    n_x = x+pt->x;
+                    n_y = y+pt->y;
+                    n_x += (oddLine && ((n_y+1)%2) != 0) ? 1 : 0 ;
+                    n_z = z+pt->z; 
+
+                    if (    n_x >= 0 && n_x < (int)size[0] &&
+                            n_y >= 0 && n_y < (int)size[1] &&
+                            n_z >= 0 && n_z < (int)size[2] && 
+                            pixelsOut [n_x + (n_y)*size[0] + (n_z)*size[1]*size[0]] == T2(0) &&
+                            pixelsIn [n_x + (n_y)*size[0] + (n_z)*size[1]*size[0]] > T1(0))
                     {
-                        pixelsOut [x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]] = T2(cur_level); 
-                        next_level->push (x+pt->x + (y+pt->y)*size[0] + (z+pt->z)*size[1]*size[0]);
+                        pixelsOut [n_x + (n_y)*size[0] + (n_z)*size[1]*size[0]] = T2(cur_level); 
+                        next_level->push (n_x + (n_y)*size[0] + (n_z)*size[1]*size[0]);
                     }
                     ++pt;
                 }
