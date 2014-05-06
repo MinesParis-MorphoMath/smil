@@ -4,7 +4,7 @@
 #include "mpi.h"
 #include "DImage.h"
 #include "DMorpho.h"
-#include "DChunks.h"
 #include "DArraysStream.h"
+#include "DChunkBuffer.h"
 
 #endif

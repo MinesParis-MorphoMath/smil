@@ -6,40 +6,34 @@ using namespace smil;
 
 int master_proc (int argc, char* argv[], const int nbr_procs, const int rank) {
     Image<UINT8> imI, imO;
-    Arrays_Stream<UINT8> as;
-//    Chunks_Array ca; //TODO: Rename it as Chunk Buffer ?
+    ArraysStream<UINT8> as;
+    ChunkBuffer<UINT8> cb; //TODO: Rename it as Chunk Buffer ?
 
     imI = Image<UINT8> (30,30,30);
     imO = Image<UINT8> (imI);
     fill (imI, UINT8(0));
+
     as.initialize (nbr_procs, 1, imI, imO) ;
-//    ca.initialize (is);
-//    ca.nextRound (is); 
-    Chunk<UINT8> c;
-    void* ptr = ::operator new (30*30*30) ;
-    c.setMemorySpace (ptr, 10000) ;
-    while (!as.eof()) {
-         as.next (c) ;
-         c.print () ; 
-    }
-/*  is.mpiRegisterMaster ();
+    cb.initialize (nbr_procs, as);
+    cb.nextRound (as); 
+    as.mpiRegisterMaster ();
 
     // Processing
-    ca.scatter (is);
-    ca.nextRound (is);
-    while (!is.eof ()) {
-        is.recv();
-        ca.send (is) ;
-        ca.next(is);
+    cb.scatter (as);
+    cb.nextRound (as);
+    while (!as.eof ()) {
+        as.recv();
+        cb.send (as);
+        cb.next(as);
     }
     // End Processing
 
-    is.mpiFree ();
-*/
+    as.mpiFree ();
+
 }
 
 int slave_proc (int nbr_procs, int rank) {
-/*    IOStream is;
+/*    IOStream<UINT8> is;
     is.mpiRegisterSlave ();
    
     Chunk<UINT8> *c;

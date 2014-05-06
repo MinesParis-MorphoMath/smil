@@ -74,31 +74,38 @@ namespace smil
                 return;
 
             queue <size_t> propagation;
-            int x, y, z;
+            int x, y, z, n_x, n_y, n_z;
             IntPoint p;
 
             ++labels;
             this->pixelsOut[pointOffset] = labels;
             propagation.push (pointOffset); 
           
+            bool oddLine = 0;
 
             while (!propagation.empty ()) {
                 z = propagation.front() / (this->imSize[1]*this->imSize[0]);
                 y = (propagation.front() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
                 x = propagation.front() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
 
+                oddLine = this->oddSe && (y+1%2);
+
                 for (UINT i=0; i<this->sePointNbr; ++i) {
                      p = this->sePoints[i];
-                     if (x+p.x >= 0 && x+p.x < (int)this->imSize[0] &&
-                         y+p.y >= 0 && y+p.y < (int)this->imSize[1] &&
-                         z+p.z >= 0 && z+p.z < (int)this->imSize[2] &&
-                         this->pixelsIn[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] == pVal &&
-                         this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] != labels)
-                     {
-                         this->pixelsOut[x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]] = labels;
-                         propagation.push (x+p.x+(y+p.y)*this->imSize[0]+(z+p.z)*this->imSize[1]*this->imSize[0]);
-                     }
-                }
+                     n_x = x+p.x;
+                     n_y = y+p.y;
+                     n_x += (oddLine && ((n_y+1)%2) != 0) ? 1 : 0 ;
+                     n_z = z+p.z; 
+                     if (n_x >= 0 && n_x < (int)this->imSize[0] &&
+                         n_y >= 0 && n_y < (int)this->imSize[1] &&
+                         n_z >= 0 && n_z < (int)this->imSize[2] &&
+                         this->pixelsIn[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] == pVal &&
+                         this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] != labels)
+                 {
+                     this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] = labels;
+                     propagation.push (n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]);
+                 }
+            }
 
                 propagation.pop();
             } 
@@ -151,12 +158,13 @@ namespace smil
             }           
            
               queue <size_t> propagation;
-            int x,y,z;
+            int x,y,z, n_x, n_y, n_z;
             IntPoint p;
 
             T2 current_label = labels;
             bool is_not_a_gap = false;
             bool process_labeling = false;
+            bool oddLine = 0;
 
             // First PASS to label the boundaries. //
             for (size_t i=0; i<this->imSize[2]*this->imSize[1]*this->imSize[0]; ++i) {
@@ -188,18 +196,24 @@ namespace smil
                         y = (propagation.front() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
                         x = propagation.front() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
 
-                       for (UINT i=0; i<this->sePointNbr; ++i) {
+                        oddLine = this->oddSe && (y+1%2);
+
+                       for (UINT i=0; i<this->sePointNbr; ++i) { 
                             p = this->sePoints[i]; 
-                            if (x+p.x >= 0 && x+p.x < (int)this->imSize[0] &&
-                                 y+p.y >= 0 && y+p.y < (int)this->imSize[1] &&
-                                 z+p.z >= 0 && z+p.z < (int)this->imSize[2] &&
-                                 pixelsTmp[x+p.x + (y+p.y)*this->imSize[0] + (z+p.z)*this->imSize[1]*this->imSize[0]] == pixelsTmp[propagation.front ()] &&
-                                 this->pixelsOut[x+p.x + (y+p.y)*this->imSize[0] + (z+p.z)*this->imSize[1]*this->imSize[0]] != current_label)
+                             n_x = x+p.x;
+                             n_y = y+p.y;
+                             n_x += (oddLine && ((n_y+1)%2) != 0) ? 1 : 0 ;
+                             n_z = z+p.z; 
+                             if (n_x >= 0 && n_x < (int)this->imSize[0] &&
+                                 n_y >= 0 && n_y < (int)this->imSize[1] &&
+                                 n_z >= 0 && n_z < (int)this->imSize[2] &&
+                                 pixelsTmp[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] == pixelsTmp[propagation.front ()] &&
+                                 this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] != current_label)
                              {
-                                 this->pixelsOut[x+p.x + (y+p.y)*this->imSize[0] + (z+p.z)*this->imSize[1]*this->imSize[0]] = current_label;
-                                 propagation.push (x+p.x + (y+p.y)*this->imSize[0] + (z+p.z)*this->imSize[1]*this->imSize[0]);
+                                 this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] = current_label;
+                                 propagation.push (n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]);
                              }
-                             
+         
                         }
 
                         propagation.pop();
