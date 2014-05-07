@@ -42,7 +42,6 @@ namespace smil {
                     }
                 }
 
-                cout << parentClass::chunks_per_dims[0] <<  " " << parentClass::chunks_per_dims[1] << " " << parentClass::chunks_per_dims[2] << endl;
 
                 parentClass::chunks_nbr = new int[3];
                 parentClass::chunks_len = new int[3];     
@@ -62,15 +61,14 @@ namespace smil {
                 parentClass::chunks_len[2] = (_intersect_width*2+1) * max_dimension * max_dimension; 
 
                 parentClass::nbr_chunks = parentClass::chunks_nbr[0] + parentClass::chunks_nbr[1] + parentClass::chunks_nbr[2];
-                cout << "-----> " << parentClass::nbr_chunks << endl;
 
                 return RES_OK;
             }
             RES_T read_normal (const int pos, Chunk<T> &c) {
                 int i,j,k,s_x,s_y,s_z;
                 k = pos/(parentClass::chunks_per_dims[0]*parentClass::chunks_per_dims[1]); 
-                j = (pos-k*parentClass::chunks_per_dims[1])/(parentClass::chunks_per_dims[0]); 
-                i = pos-j*parentClass::chunks_per_dims[0]*parentClass::chunks_per_dims[1]; 
+                j = pos/parentClass::chunks_per_dims[0]-k*parentClass::chunks_per_dims[1]; 
+                i = pos-j*parentClass::chunks_per_dims[0]-k*parentClass::chunks_per_dims[0]*parentClass::chunks_per_dims[1];
                 s_x = (i == parentClass::chunks_per_dims[0]-1) ? size[0] - i*size[0]/parentClass::chunks_per_dims[0] : size[0]/parentClass::chunks_per_dims[0];
                 i *= size[0]/parentClass::chunks_per_dims[0];
                 s_y = (j == parentClass::chunks_per_dims[1]-1) ? size[1] - j*size[1]/parentClass::chunks_per_dims[1] : size[1]/parentClass::chunks_per_dims[1];
@@ -134,17 +132,15 @@ namespace smil {
                 return RES_OK;
             }
             RES_T next (Chunk<T> &c) {
+                ASSERT (r_head < parentClass::nbr_chunks) ;
                 if (r_head < parentClass::chunks_nbr[1]+parentClass::chunks_nbr[0]) 
                     return read_normal (r_head++, c);
                 return read_intersect ((r_head++ - parentClass::chunks_nbr[1] - parentClass::chunks_nbr[0]), c);
             }
-            RES_T recv () {
-                // mpi_recv
-                // store in dataO
+            RES_T store (Chunk<T> &c) {
+                c->storeToArray (size[0], size[1], dataO) ;
             }
             bool eof () {
-
-                cout << r_head << "  blzahrea " << parentClass::nbr_chunks << endl;
                 return r_head >= parentClass::nbr_chunks;
             } 
         private:

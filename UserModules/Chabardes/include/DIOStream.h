@@ -33,8 +33,7 @@ namespace smil {
             // everything else.
             MPI_Datatype *mpi_types;
         public:
-            bool eof () {
-                cerr << "Warning: eof function is not yet implemented for the slave process ...";
+            bool eof () { 
                 return false; 
             } 
 #define MAX_DIFF_CHUNKS 10
@@ -97,11 +96,6 @@ namespace smil {
                 ASSERT (i < nbr_diff_chunks);
                 return chunks_nbr[i];
             }
-            RES_T next (Chunk<T> &c) {
-                cerr << "Do not use this function in a slave process." << endl;
-                return RES_ERR_NOT_IMPLEMENTED; 
-            }
-
     };
 }
 
