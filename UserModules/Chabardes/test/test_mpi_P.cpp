@@ -9,7 +9,7 @@ void processChunk (Chunk<T> &c) {
 int main (int argc, char* argv[]) {
 
     // Communication canal ...
-    MPI_Comm intraP=MPI_COMM_WORLD, inter_StoP, inter_PtoR;
+    MPI_Comm intraP=MPI_COMM_WORLD, inter_StoP, inter_PtoR, intra_StoP, intra_PtoR;
     // Ranks ...
     int rank_inP;
     // World count ...
@@ -49,11 +49,14 @@ int main (int argc, char* argv[]) {
     MPI_Bcast (port_StoP, MPI_MAX_PORT_NAME, MPI_CHAR, 0, MPI_COMM_WORLD);
     MPI_Bcast (port_PtoR, MPI_MAX_PORT_NAME, MPI_CHAR, 0, MPI_COMM_WORLD);
 
-    cout << "Awaiting for a Sender to connect...";
-    MPI_Comm_accept (port_StoP, info, 0, MPI_COMM_SELF, &inter_StoP);
-    cout << "OK" << endl << "Awaiting for a Sender to connect...";
-    MPI_Comm_accept (port_PtoR, info, 0, MPI_COMM_SELF, &inter_PtoR);
-    cout << "OK" << endl;
+    if (rank_inP == 0)
+        cout << "Awaiting for a Sender to connect...";
+    MPI_Comm_accept (port_StoP, info, 0, MPI_COMM_WORLD, &inter_StoP);
+    if (rank_inP == 0)
+        cout << "OK" << endl << "Awaiting for a Sender to connect...";
+    MPI_Comm_accept (port_PtoR, info, 0, MPI_COMM_WORLD, &inter_PtoR);
+    if (rank_inP == 0)
+        cout << "OK" << endl;
 
     MPI_Barrier (MPI_COMM_WORLD) ;
     if (rank_inP == 0) {
@@ -71,8 +74,8 @@ int main (int argc, char* argv[]) {
 
     cout << s_iP << " " << s_iStoP << " " << s_iPtoR << endl;
 
-    MPI_Send (&nbrP, 1, MPI_INT, 1, 0, inter_StoP);
-    MPI_Send (&nbrP, 1, MPI_INT, 1, 1, inter_PtoR);
+    MPI_Send (&nbrP, 1, MPI_INT, 0, 0, inter_StoP);
+    MPI_Send (&nbrP, 1, MPI_INT, 0, 1, inter_PtoR);
 
     /*
     GlobalHeader gh;
