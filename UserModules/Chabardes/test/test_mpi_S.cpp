@@ -27,7 +27,8 @@ int main (int argc, char* argv[]) {
 
     cout << "Connecting to : " << port_StoP << "..." << endl;
 
-    if (MPI_Lookup_name (service, info, port_StoP) || MPI_Comm_connect (port_StoP, info, 0, MPI_COMM_WORLD, &inter_StoP) ) {
+    if (/*MPI_Lookup_name (service, info, port_StoP) ||*/
+         MPI_Comm_connect (port_StoP, info, 0, MPI_COMM_WORLD, &inter_StoP) ) {
         cerr << "Connection to \"" << port_StoP << "\" has failed ... aborting." << endl;
         MPI_Abort (MPI_COMM_WORLD, -1);
     }

@@ -38,11 +38,11 @@ int main (int argc, char* argv[]) {
 
         MPI_Open_port (info, port_StoP);
         cout << "Opened a sender port at : " << port_StoP << "." << endl;
-        MPI_Publish_name (service_StoP, info, port_StoP);
+//        MPI_Publish_name (service_StoP, info, port_StoP);
         
         MPI_Open_port (info, port_PtoR);
         cout << "Opened a receiver port at : " << port_PtoR << "." << endl;
-        MPI_Publish_name (service_PtoR, info, port_PtoR);
+//        MPI_Publish_name (service_PtoR, info, port_PtoR);
     }
     MPI_Barrier (MPI_COMM_WORLD);
 
@@ -59,8 +59,8 @@ int main (int argc, char* argv[]) {
     if (rank_inP == 0) {
         MPI_Close_port (port_StoP);
         MPI_Close_port (port_PtoR);
-        MPI_Unpublish_name (service_StoP, info, port_StoP);
-        MPI_Unpublish_name (service_PtoR, info, port_StoP);
+//        MPI_Unpublish_name (service_StoP, info, port_StoP);
+//        MPI_Unpublish_name (service_PtoR, info, port_StoP);
     }
 
     // Com Size.
