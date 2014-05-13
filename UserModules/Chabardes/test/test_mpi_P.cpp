@@ -66,13 +66,8 @@ int main (int argc, char* argv[]) {
 //        MPI_Unpublish_name (service_PtoR, info, port_StoP);
     }
 
-    // Com Size.
-    int s_iP, s_iStoP, s_iPtoR;
-    MPI_Comm_size (intraP, &s_iP);
-    MPI_Comm_remote_size (inter_StoP, &s_iStoP);
-    MPI_Comm_remote_size (inter_PtoR, &s_iPtoR);
-
-    cout << s_iP << " " << s_iStoP << " " << s_iPtoR << endl;
+    MPI_Intercomm_merge (inter_StoP, false, &intra_StoP);
+    MPI_Intercomm_merge (inter_PtoR, false, &intra_PtoR);
 
     MPI_Send (&nbrP, 1, MPI_INT, 0, 0, inter_StoP);
     MPI_Send (&nbrP, 1, MPI_INT, 0, 1, inter_PtoR);

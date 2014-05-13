@@ -9,7 +9,7 @@ int main (int argc, char* argv[]) {
     } 
 
     // Communication canal ...
-    MPI_Comm inter_PtoR;
+    MPI_Comm inter_PtoR, intra_PtoR;
     // World count ...
     int nbrP;
     // Service name ...
@@ -34,6 +34,8 @@ int main (int argc, char* argv[]) {
         cerr << "Connection to \'" << port_PtoR << "\' has failed ... aborting (" << err_str << ")." << endl;
         MPI_Abort (MPI_COMM_WORLD, -1);
     }
+
+    MPI_Intercomm_merge (inter_PtoR, false, &intra_PtoR);
 
     MPI_Recv (&nbrP, 1, MPI_INT, 0, 1, inter_PtoR, MPI_STATUS_IGNORE) ;    
     cout << nbrP << endl;
