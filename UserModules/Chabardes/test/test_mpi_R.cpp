@@ -27,8 +27,10 @@ int main (int argc, char* argv[]) {
 
     cout << "Connecting to : " << port_PtoR << "..." << endl;
 
-    if (MPI_Lookup_name (service, info, port_PtoR) || MPI_Comm_connect (port_PtoR, info, 0, MPI_COMM_WORLD, &inter_PtoR) ) {
-        cerr << "Connection to \"" << port_PtoR << "\" has failed ... aborting." << endl;
+    int err, err_str_len; char err_str[256] ={};
+    if ((err = MPI_Lookup_name (service, info, port_PtoR)) || (err = MPI_Comm_connect (port_PtoR, info, 0, MPI_COMM_WORLD, &inter_PtoR)) ) { 
+        MPI_Error_string (err, err_str, &err_str_len);
+        cerr << "Connection to \'" << port_PtoR << "\' has failed ... aborting (" << err_str << ")." << endl;
         MPI_Abort (MPI_COMM_WORLD, -1);
     }
 

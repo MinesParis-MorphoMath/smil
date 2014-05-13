@@ -49,8 +49,11 @@ int main (int argc, char* argv[]) {
     MPI_Bcast (port_StoP, MPI_MAX_PORT_NAME, MPI_CHAR, 0, MPI_COMM_WORLD);
     MPI_Bcast (port_PtoR, MPI_MAX_PORT_NAME, MPI_CHAR, 0, MPI_COMM_WORLD);
 
-    MPI_Comm_accept (port_StoP, info, 0, MPI_COMM_WORLD, &inter_StoP);
-    MPI_Comm_accept (port_PtoR, info, 0, MPI_COMM_WORLD, &inter_PtoR);
+    cout << "Awaiting for a Sender to connect...";
+    MPI_Comm_accept (port_StoP, info, 0, MPI_COMM_SELF, &inter_StoP);
+    cout << "OK" << endl << "Awaiting for a Sender to connect...";
+    MPI_Comm_accept (port_PtoR, info, 0, MPI_COMM_SELF, &inter_PtoR);
+    cout << "OK" << endl;
 
     MPI_Barrier (MPI_COMM_WORLD) ;
     if (rank_inP == 0) {

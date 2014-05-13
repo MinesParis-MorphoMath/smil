@@ -22,7 +22,7 @@ int main (int argc, char* argv[]) {
     MPI_Init (&argc, &argv);
 
     stringstream ss;
-    ss << "tag#1$description#" << argv[2] << "$port#" << argv[1] << "$ifname#" << argv[2] << "$" << endl;
+    ss << "tag#0$description#" << argv[2] << "$port#" << argv[1] << "$ifname#" << argv[2] << "$" << endl;
     ss >> port_StoP;
 
     cout << "Connecting to : " << port_StoP << "..." << endl;
