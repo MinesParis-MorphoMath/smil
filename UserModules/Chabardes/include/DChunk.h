@@ -88,11 +88,9 @@ namespace smil {
                 }
                 cout << endl; 
             }
-            RES_T send (int dest, const MPI_Comm &comm, int tag=MPI_ANY_TAG) {
-                MPI_send (data, 1, datatype, dest, tag, comm) ; 
-            }
-            RES_T recv (int dest, const MPI_Comm &comm, int tag=MPI_ANY_TAG) {
-                MPI_recv (data, 1, datatype, dest, tag, comm, MPI_STATUS_IGNORE); 
+            RES_T send () {
+            } 
+            RES_T recv () {
             }
         private:
             bool is_initialized;

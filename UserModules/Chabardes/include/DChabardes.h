@@ -4,5 +4,7 @@
 #include "mpi.h"
 #include "DImage.h"
 #include "DMorpho.h"
+#include "DChunk.h"
+#include "DGlobalHeader.h"
 
 #endif

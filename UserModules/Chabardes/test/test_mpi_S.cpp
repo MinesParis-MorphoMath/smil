@@ -1,8 +1,10 @@
 #include <DSender.h>
 
+using namespace smil;
+
 int main (int argc, char* argv[]) {
-    if (argc != 2) {
-        cerr << "usage : mpiexec <bin> <ip_port>" << endl;
+    if (argc < 3) {
+        cerr << "usage : mpiexec <bin> <ip_port> <ip_address>" << endl;
         return -1;
     } 
 
@@ -20,7 +22,7 @@ int main (int argc, char* argv[]) {
     MPI_Init (&argc, &argv);
 
     stringstream ss;
-    ss << "tag#1$description#192.168.220.108$port#" << argv[1] << "$ifname#" << "192.168.220.108" << "$" << endl;
+    ss << "tag#1$description#" << argv[2] << "$port#" << argv[1] << "$ifname#" << argv[2] << "$" << endl;
     ss >> port_StoP;
 
     cout << "Connecting to : " << port_StoP << "..." << endl;
@@ -30,20 +32,27 @@ int main (int argc, char* argv[]) {
         MPI_Abort (MPI_COMM_WORLD, -1);
     }
 
+    MPI_Recv (&nbrP, 1, MPI_INT, 0, 0, inter_StoP, MPI_STATUS_IGNORE) ;
+
+    cout << nbrP << endl;    
+/*
     Image<UINT8> im;
-    GlobalHeader gh(im);
-    SendStream<UINT8> ss(gh);
+    GlobalHeader gh;
+    SendChunkStream<UINT8> ss;
+
+    initializeChunkStyle (nbrP, 1, im, gh, ss) ;
+
     SendBuffer<UINT8> sb(gh); 
 
-    broadcastMPITypeRegistration (inter_StoP);
+    broadcastMPITypeRegistration (gh, inter_StoP);
 
     do {
         sb.nextRound (ss);
         sb.scatter (inter_StoP);
     } while (!ss.eof());
 
-    broadCastEndOfTransmission (inter_StoP);
-
+    broadcastEndOfTransmission (inter_StoP);
+*/
     cout << "Sender terminates..." << endl;
 
     MPI_Finalize ();

@@ -1,11 +1,15 @@
 #include <DProcessing.h>
 
 using namespace smil;
+template <class T>
+void processChunk (Chunk<T> &c) {
+
+}
 
 int main (int argc, char* argv[]) {
 
     // Communication canal ...
-    MPI_Comm intraP, inter_StoP, inter_PtoR;
+    MPI_Comm intraP=MPI_COMM_WORLD, inter_StoP, inter_PtoR;
     // Ranks ...
     int rank_inP;
     // World count ...
@@ -39,8 +43,6 @@ int main (int argc, char* argv[]) {
         MPI_Open_port (info, port_PtoR);
         cout << "Opened a receiver port at : " << port_PtoR << "." << endl;
         MPI_Publish_name (service_PtoR, info, port_PtoR);
-
-
     }
     MPI_Barrier (MPI_COMM_WORLD);
 
@@ -57,6 +59,32 @@ int main (int argc, char* argv[]) {
         MPI_Unpublish_name (service_StoP, info, port_StoP);
         MPI_Unpublish_name (service_PtoR, info, port_StoP);
     }
+
+    // Com Size.
+    int s_iP, s_iStoP, s_iPtoR;
+    MPI_Comm_size (intraP, &s_iP);
+    MPI_Comm_remote_size (inter_StoP, &s_iStoP);
+    MPI_Comm_remote_size (inter_PtoR, &s_iPtoR);
+
+    cout << s_iP << " " << s_iStoP << " " << s_iPtoR << endl;
+
+    MPI_Send (&nbrP, 1, MPI_INT, 1, 0, inter_StoP);
+    MPI_Send (&nbrP, 1, MPI_INT, 1, 1, inter_PtoR);
+
+    /*
+    GlobalHeader gh;
+    Chunk<UINT> c;
+
+    broadcastMPITypeRegistration (gh, inter_StoP, inter_PtoR);
+
+    recv (c, gh, inter_StoP);
+    while (!c.eof ()) {
+        processPacket (c);
+        send (c, gh, inter_PtoR);
+        recv (c, gh, inter_StoP);
+    }
+    broadcastEnfOfTransmission (inter_PtoR) ;
+    */
 
     cout << "process #" << rank_inP << " terminates..." << endl;
    

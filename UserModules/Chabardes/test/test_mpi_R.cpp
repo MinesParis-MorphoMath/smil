@@ -1,13 +1,15 @@
-#include <DReceiver.h>
+#include <DRecver.h>
+
+using namespace smil;
 
 int main (int argc, char* argv[]) {
-    if (argc != 2) {
-        cerr << "usage : mpiexec <bin> <ip_port>" << endl;
+    if (argc < 3) {
+        cerr << "usage : mpiexec <bin> <ip_port> <ip_address>" << endl;
         return -1;
     } 
 
     // Communication canal ...
-    MPI_Comm inter_StoP;
+    MPI_Comm inter_PtoR;
     // World count ...
     int nbrP;
     // Service name ...
@@ -20,7 +22,7 @@ int main (int argc, char* argv[]) {
     MPI_Init (&argc, &argv);
 
     stringstream ss;
-    ss << "tag#1$description#192.168.220.108$port#" << argv[1] << "$ifname#" << "192.168.220.108" << "$" << endl;
+    ss << "tag#1$description#" << argv[2] << "$port#" << argv[1] << "$ifname#" << "192.168.220.108" << "$" << endl;
     ss >> port_PtoR;
 
     cout << "Connecting to : " << port_PtoR << "..." << endl;
@@ -30,19 +32,23 @@ int main (int argc, char* argv[]) {
         MPI_Abort (MPI_COMM_WORLD, -1);
     }
 
+    MPI_Recv (&nbrP, 1, MPI_INT, 0, 1, inter_PtoR, MPI_STATUS_IGNORE) ;    
+    cout << nbrP << endl;
+/*
     Image<UINT8> im;
-    GlobalHeader gh (im);
+    GlobalHeader gh;
+
+    broadcastMPITypeRegistration (gh, inter_PtoR);
+    
     RecvStream<UINT8> rs (gh);
     RecvBuffer<UINT8> rb (gh);
-
-    broadcastMPITypeRegistration (inter_PtoR);
 
     rb.next (); 
     while (!isEndOfTransmission (rb)) {
         rb.write (rs);
         rb.next ();
     }
-
+*/
     cout << "Receiver terminates..." << endl;
 
     MPI_Finalize ();
