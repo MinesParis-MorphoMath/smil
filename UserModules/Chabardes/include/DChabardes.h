@@ -7,4 +7,6 @@
 #include "DChunk.h"
 #include "DGlobalHeader.h"
 
+enum TAGS {PTOR_MPITYPEREGISTRATION_TAG,};
+
 #endif

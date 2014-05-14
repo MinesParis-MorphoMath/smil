@@ -15,7 +15,9 @@ namespace smil {
                 is_initialized = true; 
                 size = (int*)ptr;
                 offset = (int*)ptr + 3;
-                data = (T*)((int*)ptr + 6);
+                w_size = (int*)ptr + 6;
+                w_offset = (int*)ptr + 9;
+                data = (T*)((int*)ptr + 12);
             }
             RES_T createFromArray (
                     const T* dataIn,
@@ -26,10 +28,18 @@ namespace smil {
                     const int &o_z,
                     const int &sc_x,
                     const int &sc_y,
-                    const int &sc_z) {
+                    const int &sc_z,
+                    const int &w_o_x,
+                    const int &w_o_y,
+                    const int &w_o_z,
+                    const int &w_s_x,
+                    const int &w_s_y,
+                    const int &w_s_z) {
                 ASSERT (is_initialized);
                 size[0] = sc_x; size[1] = sc_y; size[2] = sc_z;
                 offset[0] = o_x; offset[1] = o_y; offset[2] = o_z; 
+                w_size[0] = w_s_x; w_size[1] = w_s_y; w_size[2] = w_s_z;
+                w_offset[0] = w_o_x; w_offset[1] = w_o_y; w_offset[2] = w_o_z;              
 
                 for (int k=0; k<sc_z; ++k) {
                     for (int j=0; j<sc_y; ++j) { 
@@ -88,6 +98,9 @@ namespace smil {
                 }
                 cout << endl; 
             }
+            bool isInitialized () {
+                return is_initialized;
+            }
             RES_T send () {
             } 
             RES_T recv () {
@@ -97,6 +110,8 @@ namespace smil {
             int sent_size;
             int* size;
             int* offset;
+            int* w_size;
+            int* w_offset;
             T* data;
             MPI_Datatype datatype;
     };

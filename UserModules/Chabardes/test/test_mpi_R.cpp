@@ -10,6 +10,8 @@ int main (int argc, char* argv[]) {
 
     // Communication canal ...
     MPI_Comm inter_PtoR, intra_PtoR;
+    // Rank ...
+    int rank_in_PtoR;
     // World count ...
     int nbrP;
     // Service name ...
@@ -25,7 +27,7 @@ int main (int argc, char* argv[]) {
     ss << "tag#1$description#" << argv[2] << "$port#" << argv[1] << "$ifname#" << "192.168.220.108" << "$" << endl;
     ss >> port_PtoR;
 
-    cout << "Connecting to : " << port_PtoR << "..." << endl;
+    cout << "Connecting to : " << port_PtoR << "...";
 
     int err, err_str_len; char err_str[256] ={};
     if (/*(err = MPI_Lookup_name (service, info, port_PtoR)) ||*/ 
@@ -34,26 +36,30 @@ int main (int argc, char* argv[]) {
         cerr << "Connection to \'" << port_PtoR << "\' has failed ... aborting (" << err_str << ")." << endl;
         MPI_Abort (MPI_COMM_WORLD, -1);
     }
+    cout << "OK" << endl;
 
+    MPI_Comm_remote_size (inter_PtoR, &nbrP);
+    // Flag false is needed, so that the sender is always at rank = 0.
     MPI_Intercomm_merge (inter_PtoR, false, &intra_PtoR);
-
-    MPI_Recv (&nbrP, 1, MPI_INT, 0, 1, inter_PtoR, MPI_STATUS_IGNORE) ;    
-    cout << nbrP << endl;
-/*
+    MPI_Comm_rank (intra_PtoR, &rank_in_PtoR);
+    
     Image<UINT8> im;
     GlobalHeader gh;
 
-    broadcastMPITypeRegistration (gh, inter_PtoR);
+    broadcastMPITypeRegistration (gh, intra_PtoR, 1);
+
     
-    RecvStream<UINT8> rs (gh);
+    RecvStream<UINT8> rs (im);
+    // Could create here multiple RecvBuffer and attach them to different process P.
     RecvBuffer<UINT8> rb (gh);
 
-    rb.next (); 
-    while (!isEndOfTransmission (rb)) {
-        rb.write (rs);
-        rb.next ();
-    }
-*/
+    // Main loop, where reception and writing to the array is done with the use of OpenMP.
+    rb.loop (intra_PtoR, rank_in_PtoR, rs);
+
+    freeMPIType (gh) ;
+
+    write (im, "/tmp/mpi_result.png") ;
+
     cout << "Receiver terminates..." << endl;
 
     MPI_Finalize ();

@@ -10,6 +10,8 @@ int main (int argc, char* argv[]) {
 
     // Communication canal ...
     MPI_Comm inter_StoP, intra_StoP;
+    // Rank ...
+    int rank_in_StoP;
     // World count ...
     int nbrP;
     // Service name ...
@@ -21,41 +23,41 @@ int main (int argc, char* argv[]) {
 
     MPI_Init (&argc, &argv);
 
-    stringstream ss;
-    ss << "tag#0$description#" << argv[2] << "$port#" << argv[1] << "$ifname#" << argv[2] << "$" << endl;
-    ss >> port_StoP;
+    stringstream strs;
+    strs << "tag#0$description#" << argv[2] << "$port#" << argv[1] << "$ifname#" << argv[2] << "$" << endl;
+    strs >> port_StoP;
 
-    cout << "Connecting to : " << port_StoP << "..." << endl;
+    cout << "Connecting to : " << port_StoP << "...";
 
     if (/*MPI_Lookup_name (service, info, port_StoP) ||*/
          MPI_Comm_connect (port_StoP, info, 0, MPI_COMM_WORLD, &inter_StoP) ) {
         cerr << "Connection to \"" << port_StoP << "\" has failed ... aborting." << endl;
         MPI_Abort (MPI_COMM_WORLD, -1);
     }
+    cout << "OK" << endl;
 
+    MPI_Comm_remote_size (inter_StoP, &nbrP);
+    // Flag false is needed, so that the sender is always at rank = 0.
     MPI_Intercomm_merge (inter_StoP, false, &intra_StoP);
+    MPI_Comm_rank (intra_StoP, &rank_in_StoP);
 
-    MPI_Recv (&nbrP, 1, MPI_INT, 0, 0, inter_StoP, MPI_STATUS_IGNORE) ;
-
-    cout << nbrP << endl;    
-/*
-    Image<UINT8> im;
+    Image<UINT8> im = Image<UINT8> (300,300,300) ;
     GlobalHeader gh;
-    SendChunkStream<UINT8> ss;
+    // Choosing a chunk-style partionning.
+    SendArrayStream_chunk<UINT8> ss;
 
-    initializeChunkStyle (nbrP, 1, im, gh, ss) ;
+    initialize (nbrP, 1, im, gh, ss) ;
 
-    SendBuffer<UINT8> sb(gh); 
+    // Could create here multiple SendBuffer and attach them to different process P.
+    SendBuffer<UINT8> sb(nbrP, gh); 
 
-    broadcastMPITypeRegistration (gh, inter_StoP);
+    broadcastMPITypeRegistration (gh, intra_StoP, rank_in_StoP);
 
-    do {
-        sb.nextRound (ss);
-        sb.scatter (inter_StoP);
-    } while (!ss.eof());
+    // Main loop, where reading and sending from the array is done with the use of OpenMP.
+    sb.loop (intra_StoP, rank_in_StoP, ss);
 
-    broadcastEndOfTransmission (inter_StoP);
-*/
+    freeMPIType (gh) ;
+
     cout << "Sender terminates..." << endl;
 
     MPI_Finalize ();

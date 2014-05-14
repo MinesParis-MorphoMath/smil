@@ -11,7 +11,7 @@ int main (int argc, char* argv[]) {
     // Communication canal ...
     MPI_Comm intraP=MPI_COMM_WORLD, inter_StoP, inter_PtoR, intra_StoP, intra_PtoR;
     // Ranks ...
-    int rank_inP;
+    int rank_inP, rank_in_StoP, rank_in_PtoR;
     // World count ...
     int nbrP = 16;
     // Service name ...
@@ -50,10 +50,10 @@ int main (int argc, char* argv[]) {
     MPI_Bcast (port_PtoR, MPI_MAX_PORT_NAME, MPI_CHAR, 0, MPI_COMM_WORLD);
 
     if (rank_inP == 0)
-        cout << "Awaiting for a Sender to connect...";
+        cout << "Waiting for a Sender to connect...";
     MPI_Comm_accept (port_StoP, info, 0, MPI_COMM_WORLD, &inter_StoP);
     if (rank_inP == 0)
-        cout << "OK" << endl << "Awaiting for a Sender to connect...";
+        cout << "OK" << endl << "Waiting for a Receiver to connect...";
     MPI_Comm_accept (port_PtoR, info, 0, MPI_COMM_WORLD, &inter_PtoR);
     if (rank_inP == 0)
         cout << "OK" << endl;
@@ -66,33 +66,44 @@ int main (int argc, char* argv[]) {
 //        MPI_Unpublish_name (service_PtoR, info, port_StoP);
     }
 
-    MPI_Intercomm_merge (inter_StoP, false, &intra_StoP);
-    MPI_Intercomm_merge (inter_PtoR, false, &intra_PtoR);
+    MPI_Intercomm_merge (inter_StoP, true, &intra_StoP) ;
+    MPI_Intercomm_merge (inter_PtoR, true, &intra_PtoR) ;
+    MPI_Comm_rank (intra_StoP, &rank_in_StoP) ;
+    MPI_Comm_rank (intra_PtoR, &rank_in_PtoR) ;
 
-    MPI_Send (&nbrP, 1, MPI_INT, 0, 0, inter_StoP);
-    MPI_Send (&nbrP, 1, MPI_INT, 0, 1, inter_PtoR);
-
-    /*
+    
     GlobalHeader gh;
     Chunk<UINT> c;
 
-    broadcastMPITypeRegistration (gh, inter_StoP, inter_PtoR);
+    broadcastMPITypeRegistration (gh, intra_StoP, 0, intra_PtoR, 1, rank_in_PtoR, 0);
 
+    int memory_size = 12*sizeof(int) + gh.chunk_len*sizeof(UINT8);
+    void *rawData = ::operator new (memory_size);
+    if (rawData == NULL) {
+        cerr << "Unable to allocate memory..." << endl;
+        MPI_Abort (MPI_COMM_WORLD, -1);
+    }
+    c.setMemorySpace (rawData, memory_size);
+/*
     recv (c, gh, inter_StoP);
     while (!c.eof ()) {
         processPacket (c);
         send (c, gh, inter_PtoR);
         recv (c, gh, inter_StoP);
     }
-    broadcastEnfOfTransmission (inter_PtoR) ;
-    */
+*/    
+    broadcastEndOfTransmission (intra_PtoR) ;
 
-    cout << "process #" << rank_inP << " terminates..." << endl;
-   
+    ::operator delete (rawData);
+    freeMPIType (gh) ;
+
     MPI_Barrier (MPI_COMM_WORLD); 
     MPI_Comm_disconnect (&inter_StoP);
     MPI_Comm_disconnect (&inter_PtoR);
     MPI_Finalize ();
+
+    if (rank_inP == 0)
+        cout << "Processing terminates..." << endl;
 
     return 0;
 } 

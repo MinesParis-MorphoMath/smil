@@ -2,26 +2,75 @@
 #define _DSENDER_H_
 
 #include "DChabardes.h"
-#include "DSendBuffer.h"
 #include "DSendStream.h"
+#include "DSendBuffer.h"
 
 namespace smil {
     template <class T>
-    RES_T initializeChunkStyle (const int nbr_procs, const int intersect_width, Image<T> &im, GlobalHeader gh, SendChunkStream<UINT8> ss) {
+    RES_T initialize (const int nbr_procs, const int intersect_width, Image<T> &im, GlobalHeader &gh, SendArrayStream_chunk<T> &ss) {
+        size_t s[3];
+        im.getSize (s);
+        gh.mpi_datum_type = smilToMPIType (im.getTypeAsString());
 
+        for (int i=0; i<3; ++i ) ss.size[i] = s[i];
+        ss.data = im.getPixels ();
+        ss.intersect_width = intersect_width;
+        ss.chunks_per_dim[0] = 1;
+        ss.chunks_per_dim[1] = 1;
+        ss.chunks_per_dim[2] = 1;
+
+        while (ss.chunks_per_dim[0]*ss.chunks_per_dim[1]*ss.chunks_per_dim[2] < nbr_procs) {
+            if (ss.size[0]/ss.chunks_per_dim[0] >= ss.size[1]/ss.chunks_per_dim[1] &&
+                ss.size[0]/ss.chunks_per_dim[0] >= ss.size[2]/ss.chunks_per_dim[2])
+                ss.chunks_per_dim[0]++;
+            else if (ss.size[1]/ss.chunks_per_dim[1] >= ss.size[2]/ss.chunks_per_dim[2]) 
+                ss.chunks_per_dim[1]++;
+            else 
+                ss.chunks_per_dim[2]++;
+        }
+        if (ss.size[0]%ss.chunks_per_dim[0] != 0) ss.chunks_per_dim[0]++;
+        if (ss.size[1]%ss.chunks_per_dim[1] != 0) ss.chunks_per_dim[1]++;
+        if (ss.size[2]%ss.chunks_per_dim[2] != 0) ss.chunks_per_dim[2]++;
+
+        gh.nbr_chunks = ss.chunks_per_dim[0]*ss.chunks_per_dim[1]*ss.chunks_per_dim[2];
+        gh.chunk_len = (ss.size[0]/ss.chunks_per_dim[0]+intersect_width*2)*
+                       (ss.size[1]/ss.chunks_per_dim[1]+intersect_width*2)*
+                       (ss.size[2]/ss.chunks_per_dim[2]+intersect_width*2); 
+        ;
+
+        ss.nbr_chunks = gh.nbr_chunks;
+        ss.chunk_len = gh.chunk_len; 
+        gh.is_initialized = true;
     }
 
     template <class T>
-    RES_T intializeSliceStyle (const int nbr_procs, Image<T> &im, GlobalHeader gh, SendSliceStream<UINT8> ss) {
+    RES_T initialize (const int nbr_procs, Image<T> &im, GlobalHeader &gh, SendArrayStream_slice<T> &ss) {
 
     }
 
-    void broadcastMPITypeRegistration (GlobalHeader gh, int comm) {
+    RES_T broadcastMPITypeRegistration (GlobalHeader &gh, const int &comm, const int &rank) {
+        ASSERT (gh.is_initialized) ;
+        int packet[3];
+        packet[0] = gh.nbr_chunks;
+        packet[1] = gh.chunk_len;
+        packet[2] = gh.mpi_datum_type;
+
+        MPI_Bcast ((void*)packet, 3, MPI_INTEGER, rank, comm);
+
+        MPI_Datatype old_types[2] = {MPI_INTEGER, gh.mpi_datum_type};
+        MPI_Aint steps[2] = {0, 12*sizeof(int)};
+        int block_size[2]; block_size[0] = 12; block_size[1] = gh.chunk_len;
+
+        MPI_Type_struct (2, block_size, steps, old_types, &(gh.mpi_type));
+    }
+
+    RES_T broadCastEndOfTransmission (const int &comm, const int &rank) {
 
     }
 
-    void broadCastEndOfTransmission (int comm) {
-
+    RES_T freeMPIType (GlobalHeader &gh) {
+        ASSERT (gh.is_initialized); 
+        MPI_Type_free (&(gh.mpi_type)) ;
     }
 }
 #endif
