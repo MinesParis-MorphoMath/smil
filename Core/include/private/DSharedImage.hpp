@@ -105,6 +105,7 @@ namespace smil
 	    this->setSize(rhs);
 	}
 	
+	
     protected:
 	SharedImage() {}
 	virtual RES_T allocate()
