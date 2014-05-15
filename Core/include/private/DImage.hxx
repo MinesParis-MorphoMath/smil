@@ -528,6 +528,16 @@ namespace smil
     }
 
 
+    template <class T>
+    SharedImage<T> Image<T>::getSlice(size_t sliceNum) const
+    {
+	if (sliceNum>=this->depth)
+	{
+	  ERR_MSG("sliceNum > image depth");
+	  return SharedImage<T>(this->pixels, 0, 0);
+	}
+	return SharedImage<T>(*this->getSlices()[sliceNum], this->width, this->height);
+    }
 
     // OPERATORS
 
@@ -890,8 +900,9 @@ namespace smil
     template <class T>
     PyObject * Image<T>::getNumArray(bool c_contigous)
     {
-	npy_intp d[] = { 1, 1, 1};
-	if (this->getDimension()==3)
+	npy_intp d[3];
+	int dim = this->getDimension();
+	if (dim==3)
 	{
 	    d[0] = this->getDepth();
 	    d[1] = this->getHeight();
@@ -902,7 +913,7 @@ namespace smil
 	    d[0] = this->getHeight();
 	    d[1] = this->getWidth();
 	}
-	PyObject *array = PyArray_SimpleNewFromData(this->getDimension(), d, getNumpyType(*this), this->getPixels());
+	PyObject *array = PyArray_SimpleNewFromData(dim, d, getNumpyType(*this), this->getPixels());
 
 	if (c_contigous)
 	{
@@ -910,10 +921,14 @@ namespace smil
 	}
 	else
 	{
-	    npy_intp t[] = { 1, 0, 2 };
+	    npy_intp t2[] = { 1, 0 };
+	    npy_intp t3[] = { 2, 1, 0 };
 	    PyArray_Dims trans_dims;
-	    trans_dims.ptr = t;
-	    trans_dims.len = this->getDimension();
+	    if (dim==3)
+	      trans_dims.ptr = t3;
+	    else
+	      trans_dims.ptr = t2;
+	    trans_dims.len = dim;
 
 	    PyObject *res = PyArray_Transpose((PyArrayObject*) array, &trans_dims);
 	    Py_DECREF(array);
