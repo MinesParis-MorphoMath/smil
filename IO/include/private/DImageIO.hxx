@@ -183,6 +183,30 @@ namespace smil
 	
     }
     
+    template <class T>
+    RES_T write(const Image<T> &image, const vector<string> fileList)
+    {
+	UINT nFiles = fileList.size();
+	if (nFiles!=image.getDepth())
+	{
+	  ERR_MSG("The fileList must contain the same number of filename as the image depth.");
+	  return RES_ERR;
+	}
+	
+	vector<string>::const_iterator it = fileList.begin();
+	
+	size_t w = image.getWidth(), h = image.getHeight();
+	Image<T> tmpIm(w, h);
+	
+	for (size_t z=0;z<nFiles;z++)
+	{
+	    ASSERT((copy(image, 0, 0, z, tmpIm)==RES_OK));
+	    ASSERT((write(tmpIm, fileList[z].c_str())==RES_OK));
+	}
+	
+	return RES_OK;
+    }
+    
     RES_T getFileInfo(const char *filename, ImageFileInfo &fInfo);
     
     BaseImage *createFromFile(const char *filename);
