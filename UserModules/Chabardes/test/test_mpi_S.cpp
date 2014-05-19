@@ -3,8 +3,8 @@
 using namespace smil;
 
 int main (int argc, char* argv[]) {
-    if (argc < 3) {
-        cerr << "usage : mpiexec <bin> <ip_port> <ip_address>" << endl;
+    if (argc != 5) {
+        cerr << "usage : mpiexec <bin> <path> <min_nbr_blocs> <ip_address> <ip_port>" << endl;
         return -1;
     } 
 
@@ -24,7 +24,7 @@ int main (int argc, char* argv[]) {
     MPI_Init (&argc, &argv);
 
     stringstream strs;
-    strs << "tag#0$description#" << argv[2] << "$port#" << argv[1] << "$ifname#" << argv[2] << "$" << endl;
+    strs << "tag#0$description#" << argv[3] << "$port#" << argv[4] << "$ifname#" << argv[3] << "$" << endl;
     strs >> port_StoP;
 
     cout << "Connecting to : " << port_StoP << "...";
@@ -41,20 +41,22 @@ int main (int argc, char* argv[]) {
     MPI_Intercomm_merge (inter_StoP, false, &intra_StoP);
     MPI_Comm_rank (intra_StoP, &rank_in_StoP);
 
-    Image<UINT8> im = Image<UINT8> (300,300,300) ;
+    Image<UINT8> im = Image<UINT8> (argv[1]) ;
     GlobalHeader gh;
     // Choosing a chunk-style partionning.
     SendArrayStream_chunk<UINT8> ss;
 
-    initialize (nbrP, 1, im, gh, ss) ;
+    int min_nbr_blocs = atoi (argv[2]);
+
+    initialize (min_nbr_blocs, 1, im, gh, ss) ;
 
     // Could create here multiple SendBuffer and attach them to different process P.
-    SendBuffer<UINT8> sb(nbrP, gh); 
-
     broadcastMPITypeRegistration (gh, intra_StoP, rank_in_StoP);
 
+    SendBuffer<UINT8> sb(gh);
+
     // Main loop, where reading and sending from the array is done with the use of OpenMP.
-    sb.loop (intra_StoP, rank_in_StoP, ss);
+    sb.loop (intra_StoP, rank_in_StoP, gh, ss);
 
     freeMPIType (gh) ;
 

@@ -20,8 +20,9 @@ namespace smil {
 
     class GlobalHeader {
         public:
-            int nbr_chunks;
-            int chunk_len;
+            unsigned int size[3];
+            unsigned int nbr_chunks;
+            unsigned long chunk_len;
             // mpi_specifics.
             int mpi_datum_type;
             int mpi_type; // assigned when broadcastMPITypeRegistration is called.

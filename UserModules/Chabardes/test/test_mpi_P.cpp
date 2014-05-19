@@ -1,15 +1,26 @@
 #include <DProcessing.h>
+#include <DSharedImage.hpp>
 
 using namespace smil;
-template <class T>
-void processChunk (Chunk<T> &c) {
 
+void processChunk (Chunk<UINT8> &c, const MPI_Comm &comm, const int rank, const GlobalHeader& gh) {
+    SharedImage<UINT8> fakeIm (c.getData(), c.getSize(0), c.getSize(1), c.getSize(2));
+    Image<UINT8> tmp = Image<UINT8> (fakeIm);
+
+    erode (fakeIm, tmp, Cross3DSE());
+    dilate (fakeIm, fakeIm, Cross3DSE());
+    fakeIm -= tmp;
 }
 
 int main (int argc, char* argv[]) {
 
+    if (argc != 1) {
+        cerr << "usage : mpiexec <bin>" << endl;
+        return -1;
+    }
+
     // Communication canal ...
-    MPI_Comm intraP=MPI_COMM_WORLD, inter_StoP, inter_PtoR, intra_StoP, intra_PtoR;
+    MPI_Comm intra_P=MPI_COMM_WORLD, inter_StoP, inter_PtoR, intra_StoP, intra_PtoR;
     // Ranks ...
     int rank_inP, rank_in_StoP, rank_in_PtoR;
     // World count ...
@@ -25,7 +36,6 @@ int main (int argc, char* argv[]) {
 
     MPI_Comm_size (MPI_COMM_WORLD, &nbrP);
     MPI_Comm_rank (MPI_COMM_WORLD, &rank_inP);  
-
 
     if (rank_inP == 0) {
             
@@ -59,6 +69,7 @@ int main (int argc, char* argv[]) {
         cout << "OK" << endl;
 
     MPI_Barrier (MPI_COMM_WORLD) ;
+
     if (rank_inP == 0) {
         MPI_Close_port (port_StoP);
         MPI_Close_port (port_PtoR);
@@ -71,9 +82,13 @@ int main (int argc, char* argv[]) {
     MPI_Comm_rank (intra_StoP, &rank_in_StoP) ;
     MPI_Comm_rank (intra_PtoR, &rank_in_PtoR) ;
 
-    
+    struct timeval tvalB, tvalA;
+    if (rank_inP == 0) {
+        gettimeofday (&tvalB, NULL);
+    }
+
     GlobalHeader gh;
-    Chunk<UINT> c;
+    Chunk<UINT8> c;
 
     broadcastMPITypeRegistration (gh, intra_StoP, 0, intra_PtoR, 1, rank_in_PtoR, 0);
 
@@ -83,21 +98,32 @@ int main (int argc, char* argv[]) {
         cerr << "Unable to allocate memory..." << endl;
         MPI_Abort (MPI_COMM_WORLD, -1);
     }
-    c.setMemorySpace (rawData, memory_size);
-/*
-    recv (c, gh, inter_StoP);
-    while (!c.eof ()) {
-        processPacket (c);
-        send (c, gh, inter_PtoR);
-        recv (c, gh, inter_StoP);
-    }
-*/    
-    broadcastEndOfTransmission (intra_PtoR) ;
+    c.setMemorySpace (rawData, memory_size, gh.mpi_type);
+    MPI_Status status;
 
+    do {
+        c.recv (0, MPI_ANY_TAG, intra_StoP, &status); 
+        if (status.MPI_TAG == CHUNK_TAG) {
+            processChunk (c, intra_P, rank_inP, gh);
+            c.send (0, CHUNK_TAG, intra_PtoR);
+        }
+    } while (status.MPI_TAG != EOT_TAG);
+   
+    MPI_Barrier (MPI_COMM_WORLD);
+    // Propagation of End Of Transmittion
+    if (rank_inP == 0) {
+        c.send (0, EOT_TAG, intra_PtoR); 
+    }
     ::operator delete (rawData);
     freeMPIType (gh) ;
 
-    MPI_Barrier (MPI_COMM_WORLD); 
+    MPI_Barrier (MPI_COMM_WORLD);
+
+    if (rank_inP == 0) {
+        gettimeofday (&tvalA, NULL) ;
+        cout << "time spent : " << (float)(tvalA.tv_sec - tvalB.tv_sec) << "s." << endl;
+    }
+
     MPI_Comm_disconnect (&inter_StoP);
     MPI_Comm_disconnect (&inter_PtoR);
     MPI_Finalize ();

@@ -5,46 +5,38 @@ namespace smil{
     template <class T>
     class SendBuffer {
         private:
-            int memory_step;
-            int size;
-            Chunk<T> *ca;
+            unsigned long memory_step;
+            Chunk<T> c;
             void *rawData;
         public:
-            SendBuffer (const int nbr_procs, const GlobalHeader &gh) {
-                initialize (nbr_procs, gh);
+            SendBuffer (const GlobalHeader &gh) {
+                initialize (gh);
             }
             ~SendBuffer () {
                 if (rawData != NULL)
                     ::operator delete (rawData);
-                if (ca != NULL)
-                    delete[] ca;
             }
-            RES_T initialize (const int nbr_procs, const GlobalHeader &gh) {
-                size = nbr_procs;
-                memory_step = 12 * sizeof (int) + gh.chunk_len * sizeof(T);
-                rawData = ::operator new (size*memory_step) ;
+            RES_T initialize (const GlobalHeader &gh) {
+                memory_step = 12 * sizeof (unsigned int) + gh.chunk_len * sizeof(T);
+                rawData = ::operator new (memory_step) ;
                 if (rawData == NULL)
                     return RES_ERR_BAD_ALLOCATION;
-                ca = new Chunk<T>[size];
-                if (ca == NULL)
-                    return RES_ERR_BAD_ALLOCATION;
-                for (int i=0; i<size; ++i)
-                    ca[i].setMemorySpace ((unsigned char*)rawData+i*memory_step, memory_step) ;
+                c.setMemorySpace ((unsigned char*)rawData, memory_step, gh.mpi_type) ;
                 return RES_OK;
             }
-            RES_T loop (const MPI_Comm &comm, const int rank, SendStream<T> &ss) {
-                #ifdef USE_OPENMP
-                int tid;
-                int nthreads = Core::getInstance()->getNumberOfThreads ();
-                #endif
+            RES_T loop (const MPI_Comm &comm, const int rank, const GlobalHeader &gh, SendStream<T> &ss) {
+                int nbr_dest;
+                MPI_Comm_size (comm, &nbr_dest) ;
+                nbr_dest--;
 
-                #ifdef USE_OPENMP
-                #pragma omp parallel private(tid)
-                #endif
-                {
-                    #ifdef USE_OPENMP
-                    tid = omp_get_thread_num();
-                    #endif
+                for (int i=0; i<gh.nbr_chunks; ++i) {
+                    ss.read_at (i, c);
+                    c.send ((i%nbr_dest)+1, CHUNK_TAG, comm) ;
+                }
+
+                // sending EOT to every processing units.
+                for (int i=1; i<nbr_dest+1; ++i) {
+                    c.send (i, EOT_TAG, comm); 
                 }
             }
     };

@@ -10,43 +10,30 @@ namespace smil {
                 initialize (gh) ;
             }
             ~RecvBuffer () {
-                if (rawData != NULL)
-                    ::operator delete (rawData);
-                if (ca != NULL)
-                    delete[] ca;
+                if (rawdata != NULL)
+                    ::operator delete (rawdata);
             }
             RES_T initialize (const GlobalHeader& gh) {
-                int nthreads = Core::getInstance()->getNumberOfThreads ();
-                size = nthreads;
-
-                memory_step = 12*sizeof(int) + gh.chunk_len*sizeof(T);
-                if (rawData == NULL)
+                memory_step = 12*sizeof(unsigned int) + gh.chunk_len*sizeof(T);
+                rawdata = ::operator new (memory_step) ;
+                if (rawdata == NULL)
                     return RES_ERR_BAD_ALLOCATION;
-                ca = new Chunk<T> [nthreads];
-                if (ca == NULL)
-                    return RES_ERR_BAD_ALLOCATION;
-                for (int i=0; i<size; ++i)
-                    ca[i].setMemorySpace ((unsigned char*)rawData+i*memory_step, memory_step);
+                c.setMemorySpace ((unsigned char*)rawdata, memory_step, gh.mpi_type);
                 return RES_OK;
             }
             RES_T loop(const MPI_Comm &comm, const int rank, RecvStream<T> &rs) {
-                #ifdef USE_OPENMP
-                int tid;
-                #endif
-                #ifdef USE_OPENMP
-                #pragma omp parallel private(tid)
-                #endif
-                {
-                    #ifdef USE_OPENMP
-                    tid = omp_get_thread_num();
-                    #endif 
-                }
+                MPI_Status status;
+                do {
+                   c.recv (MPI_ANY_SOURCE, MPI_ANY_TAG, comm, &status);
+                   if (status.MPI_TAG == CHUNK_TAG) {
+                       rs.write (c) ;
+                   }
+                } while (status.MPI_TAG != EOT_TAG);
             }
         private:
-            int memory_step;
-            int size;
-            Chunk<T>* ca;
-            void *rawData;
+            unsigned long memory_step;
+            Chunk<T> c;
+            void *rawdata;
     };
 
 }
