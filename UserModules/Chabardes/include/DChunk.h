@@ -69,8 +69,6 @@ namespace smil {
                 return RES_OK;
             } 
             RES_T storeToImage (Image<T> &imOut) {
-//              ASSERT (all the good stuff).
-
                 size_t s[3];
                 imOut.getSize(s);
 

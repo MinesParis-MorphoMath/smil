@@ -29,9 +29,9 @@ namespace smil {
             else 
                 ss.chunks_per_dim[2]++;
         }
-        if (ss.size[0]%ss.chunks_per_dim[0] != 0) {ss.chunks_per_dim[0]++; cout << "yo" <<endl;}
-        if (ss.size[1]%ss.chunks_per_dim[1] != 0) {ss.chunks_per_dim[1]++; cout << "yo" <<endl;}
-        if (ss.size[2]%ss.chunks_per_dim[2] != 0) {ss.chunks_per_dim[2]++; cout << "yo" <<endl;}
+        if (ss.size[0]%ss.chunks_per_dim[0] != 0) {ss.chunks_per_dim[0]++;}
+        if (ss.size[1]%ss.chunks_per_dim[1] != 0) {ss.chunks_per_dim[1]++;}
+        if (ss.size[2]%ss.chunks_per_dim[2] != 0) {ss.chunks_per_dim[2]++;}
 
         gh.nbr_chunks = ss.chunks_per_dim[0]*ss.chunks_per_dim[1]*ss.chunks_per_dim[2];
         gh.chunk_len = (ss.size[0]/ss.chunks_per_dim[0]+intersect_width*2)*
