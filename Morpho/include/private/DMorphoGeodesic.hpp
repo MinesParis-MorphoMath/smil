@@ -622,7 +622,7 @@ namespace smil
                 y = (cur - z * size[1] * size[0]) / size[0];
                 x = cur - y *size[0] - z * size[1] * size[0];
 
-                oddLine = se.odd && (y+1%2);
+                oddLine = se.odd && (y%2);
 
                 while (pt!=sePoints.end()) {
                     n_x = x+pt->x;
