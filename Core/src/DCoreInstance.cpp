@@ -198,6 +198,12 @@ void Core::deleteAllImages()
 
 void Core::getCompilationInfos(ostream &outStream)
 {
+    outStream << "Build date: " << __DATE__ << " (" << __TIME__ << ")" << endl;
+#ifdef DEBUG    
+    outStream << "Build type: debug"<< endl;
+#else
+    outStream << "Build type: release"<< endl;
+#endif
     outStream << "System: " << this->systemName << endl;
     outStream << "Target Architecture: " << this->targetArchitecture << endl;
     outStream << "OpenMP support: " << (this->supportOpenMP ? "On" : "Off") << endl;
