@@ -7,18 +7,18 @@
 
 namespace smil {
 
-    RES_T broadcastMPITypeRegistration (GlobalHeader &gh, const int comm, const int root) {
+    RES_T broadcastMPITypeRegistration (GlobalHeader &gh, const MPI_Comm comm, const int root, const char* mpi_datum_type) {
         ASSERT (!gh.is_initialized) ;
-        unsigned int packet[6];
+        unsigned int packet[5];
 
-        MPI_Recv ((void*)packet, 6, MPI_UNSIGNED, root, PTOR_MPITYPEREGISTRATION_TAG, comm, MPI_STATUS_IGNORE);
+        MPI_Recv ((void*)packet, 5, MPI_UNSIGNED, root, PTOR_MPITYPEREGISTRATION_TAG, comm, MPI_STATUS_IGNORE);
 
         gh.size[0] = packet[0];
         gh.size[1] = packet[1];
         gh.size[2] = packet[2];
         gh.nbr_chunks = packet[3];
         gh.chunk_len = packet[4];
-        gh.mpi_datum_type = packet[5];
+        gh.mpi_datum_type = smilToMPIType(mpi_datum_type);
 
         MPI_Datatype old_types[2] = {MPI_UNSIGNED, gh.mpi_datum_type};
         MPI_Aint steps[2] = {0, 12*sizeof(unsigned int)};

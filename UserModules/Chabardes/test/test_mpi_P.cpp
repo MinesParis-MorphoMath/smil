@@ -77,10 +77,10 @@ int main (int argc, char* argv[]) {
 //        MPI_Unpublish_name (service_PtoR, info, port_StoP);
     }
 
-    MPI_Intercomm_merge (inter_StoP, true, &intra_StoP) ;
-    MPI_Intercomm_merge (inter_PtoR, true, &intra_PtoR) ;
-    MPI_Comm_rank (intra_StoP, &rank_in_StoP) ;
-    MPI_Comm_rank (intra_PtoR, &rank_in_PtoR) ;
+    MPI_Intercomm_merge (inter_StoP, true, &intra_StoP);
+    MPI_Intercomm_merge (inter_PtoR, true, &intra_PtoR);
+    MPI_Comm_rank (intra_StoP, &rank_in_StoP);
+    MPI_Comm_rank (intra_PtoR, &rank_in_PtoR);
 
     struct timeval tvalB, tvalA;
     if (rank_inP == 0) {
@@ -90,7 +90,7 @@ int main (int argc, char* argv[]) {
     GlobalHeader gh;
     Chunk<UINT8> c;
 
-    broadcastMPITypeRegistration (gh, intra_StoP, 0, intra_PtoR, 1, rank_in_PtoR, 0);
+    broadcastMPITypeRegistration (gh, intra_StoP, 0, intra_PtoR, 1, rank_in_PtoR, 0, "UINT8");
 
     int memory_size = 12*sizeof(int) + gh.chunk_len*sizeof(UINT8);
     void *rawData = ::operator new (memory_size);

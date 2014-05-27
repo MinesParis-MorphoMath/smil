@@ -51,7 +51,7 @@ int main (int argc, char* argv[]) {
     initialize (min_nbr_blocs, 1, im, gh, ss) ;
 
     // Could create here multiple SendBuffer and attach them to different process P.
-    broadcastMPITypeRegistration (gh, intra_StoP, rank_in_StoP);
+    broadcastMPITypeRegistration (gh, intra_StoP, rank_in_StoP, "UINT8");
 
     SendBuffer<UINT8> sb(gh);
 

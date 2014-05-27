@@ -9,20 +9,20 @@
 
 namespace smil {
 
-    RES_T broadcastMPITypeRegistration (GlobalHeader &gh, const int intra_StoP, const int root_StoP, const int inter_PtoR, const int root_PtoR, const int rank_in_PtoR, const int dest_PtoR) {
+    RES_T broadcastMPITypeRegistration (GlobalHeader &gh, const MPI_Comm intra_StoP, const int root_StoP, const MPI_Comm inter_PtoR, const int root_PtoR, const int rank_in_PtoR, const int dest_PtoR, const char* mpi_datum_type) {
         ASSERT (!gh.is_initialized) ;
-        unsigned int packet[6];
+        unsigned int packet[5];
 
-        MPI_Bcast ((void*)packet, 6, MPI_UNSIGNED, root_StoP, intra_StoP);
+        MPI_Bcast ((void*)packet, 5, MPI_UNSIGNED, root_StoP, intra_StoP);
         if (rank_in_PtoR == root_PtoR)
-            MPI_Send ((void*)packet, 6, MPI_UNSIGNED, dest_PtoR, PTOR_MPITYPEREGISTRATION_TAG, inter_PtoR);
+            MPI_Send ((void*)packet, 5, MPI_UNSIGNED, dest_PtoR, PTOR_MPITYPEREGISTRATION_TAG, inter_PtoR);
 
         gh.size[0] = packet[0];
         gh.size[1] = packet[1];
         gh.size[2] = packet[2];
         gh.nbr_chunks = packet[3];
         gh.chunk_len = packet[4];
-        gh.mpi_datum_type = packet[5];
+        gh.mpi_datum_type = smilToMPIType(mpi_datum_type);
 
 
         MPI_Datatype old_types[2] = {MPI_UNSIGNED, gh.mpi_datum_type};

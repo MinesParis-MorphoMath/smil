@@ -45,7 +45,7 @@ int main (int argc, char* argv[]) {
     
     GlobalHeader gh;
 
-    broadcastMPITypeRegistration (gh, intra_PtoR, 1);
+    broadcastMPITypeRegistration (gh, intra_PtoR, 1, "UINT8");
     Image<UINT8> im = Image<UINT8>(gh.size[0],gh.size[1],gh.size[2]);
     RecvStream<UINT8> rs (im);
     // Could create here multiple RecvBuffer and attach them to different process P.
