@@ -102,6 +102,21 @@ namespace smil
     template <class T>
     RES_T write(Image<T> &image, const char *filename);
     
+    /**
+    * Write a 3D image as a stack of 2D images
+    * 
+    * The file list must contain the same number of filenames as the 3D image depth.
+    * 
+    * \b Example:
+    * \code{.py}
+    * im1 = Image("img3d.vtk")
+    * fileNames = [ "img%d.png"%i for i in range(im1.getDepth()) ]
+    * write(im1, fileNames)
+    * \endcode
+    */
+    template <class T>
+    RES_T write(const Image<T> &image, const vector<string> fileList);
+    
     RES_T getFileInfo(const char *filename, ImageFileInfo &fInfo);
     
     BaseImage *createFromFile(const char *filename);

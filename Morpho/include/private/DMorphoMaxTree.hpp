@@ -1040,9 +1040,7 @@ void  ComputeDeltaUOMSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* i
 	  //	  std::cout<<"UPDATE RES\n";
 	  isMaxT = 1;
 	  transformee_node[node] = stab_residue;
-	  int totoflag;
-	  totoflag = ! (isPrevMaxT and flag);
-	  //	  std::cout << "totoflag="<<totoflag<<"\n";
+
 	  if(! (isPrevMaxT and flag)){
 	    indicatrice_node[node]  = cNode + 1;
 	    //	    std::cout <<"UPDATE="<<indicatrice_node[node]<<"   STOP ="<<stop;
@@ -1060,7 +1058,7 @@ void  ComputeDeltaUOMSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* i
       //      std::cout <<"-------\n";
       child=tree.getChild(node);
       while (child!=0){
-	if(flag){
+	if(flag && (cNode < stop)){
 	  ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node,first_ancestor, stop, delta,isMaxT);
 	}
 	else{
@@ -1128,7 +1126,7 @@ void compute_contrast_MSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT*
 	
 	T1 *transformee_node = new T1[tree.getLabelMax()]();
 	UINT *indicatrice_node = new UINT[tree.getLabelMax()]();
-	std::cout<<"DELTAAA TOTO="<<delta<<"stop="<<stopSize<<"\n";
+
 	compute_contrast_MSER(tree, transformee_node, indicatrice_node, root, stopSize,delta);
 
 	

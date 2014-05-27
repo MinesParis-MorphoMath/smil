@@ -55,7 +55,7 @@ class TestGranulometry : public TestCase
       };
       im1 << vec1;
       
-      vector<double> granulo = measGranulometry(im1, hSE(), false);
+      vector<double> granulo = measGranulometry(im1, hSE(), 1, false);
       
       TEST_ASSERT(granulo[0]==12 && granulo[1]==7 && granulo[2]==24);
       if (retVal!=RES_OK)

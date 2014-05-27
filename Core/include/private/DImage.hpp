@@ -48,6 +48,10 @@ namespace smil
 
     template <class T>
     class ResImage;
+    
+    template <class T>
+    class SharedImage;
+    
     /**
     * Main Image class.
     * 
@@ -113,6 +117,10 @@ namespace smil
 	volType getSlices() const {
 	    return slices;
 	}
+	
+	//! Get a 2D slice of a 3D image.
+	//! It doesn't create an image, but returns a 2D SharedImage using the same data.
+	SharedImage<T> getSlice(size_t sliceNum) const;
 	
 	//! Return the value of the pixel at pos x,y(,z)
 	inline T getPixel(size_t x, size_t y, size_t z=0) const
