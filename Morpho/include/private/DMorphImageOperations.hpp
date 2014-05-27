@@ -105,6 +105,8 @@ namespace smil
 	  int se_ymax;
 	  int se_zmin;
 	  int se_zmax;
+
+          bool oddSe;
     public:
 	T_out initialValue;
 	T_in borderValue;
