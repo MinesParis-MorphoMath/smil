@@ -55,6 +55,8 @@ class Test_Hough_Circles : public TestCase
 	
 	TEST_ASSERT(im2.getPixel(10,10,10)==4);
 	TEST_ASSERT(im2.getPixel(45,25,15)==8);
+	
+	im2.printSelf();
     }
 };
 
