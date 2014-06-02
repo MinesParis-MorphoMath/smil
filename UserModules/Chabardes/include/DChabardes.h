@@ -5,7 +5,7 @@
 #include <omp.h>
 #endif
 
-enum TAGS {PTOR_MPITYPEREGISTRATION_TAG, CHUNK_TAG, EOT_TAG};
+enum TAGS {MPITYPEREGISTRATION_TAG, CHUNK_TAG, EOT_TAG};
 
 #include "mpi.h"
 #include "DImage.h"

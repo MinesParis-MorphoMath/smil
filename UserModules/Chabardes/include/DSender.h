@@ -7,7 +7,7 @@
 
 namespace smil {
     template <class T>
-    RES_T initialize (const unsigned int nbr_procs, const int intersect_width, Image<T> &im, GlobalHeader &gh, SendArrayStream_chunk<T> &ss) {
+    RES_T initialize (const unsigned int nbr_procs, const int intersect_width, Image<T> &im, GlobalHeader &gh, SendArrayStream<T> &ss) {
         size_t s[3];
         im.getSize (s);
         gh.mpi_datum_type = smilToMPIType (im.getTypeAsString());
@@ -44,21 +44,21 @@ namespace smil {
         gh.is_initialized = true;
     }
 
-    template <class T>
-    RES_T initialize (const unsigned int nbr_procs, Image<T> &im, GlobalHeader &gh, SendArrayStream_slice<T> &ss) {
-
-    }
-
     RES_T broadcastMPITypeRegistration (GlobalHeader &gh, const MPI_Comm &comm, const int &rank, const char* mpi_datum_type) {
         ASSERT (gh.is_initialized) ;
-        unsigned int packet[5];
-        packet[0] = gh.size[0];
-        packet[1] = gh.size[1];
-        packet[2] = gh.size[2];
-        packet[3] = gh.nbr_chunks;
-        packet[4] = gh.chunk_len;
+        declareGHType ();
+        void* packet = ::operator new (4*sizeof(unsigned int)+sizeof(unsigned long)+16*sizeof(char));
 
-        MPI_Bcast ((void*)packet, 5, MPI_UNSIGNED, rank, comm);
+        *((unsigned int)packet) = gh.size[0];
+        *((unsigned int)packet+1) = gh.size[1];
+        *((unsigned int)packet+2) = gh.size[2];
+        *((unsigned int)packet+3) = gh.nbr_chunks;
+        *((unsigned int)packet+4) = gh.datum_size;
+        *((unsigned long)((unsigned int)packet+5)) = gh.chunk_len;
+        memcpy((void*)((unsigned long)((unsigned int)packet+5)+1), gh.datum_type, 16*sizeof(char));
+        gh.mpi_datum_type = smilToMPIType(gh.datum_type);
+
+        MPI_Bcast (packet, 1, gh.mpi_datum_type, rank, comm);
 
         MPI_Datatype old_types[2] = {MPI_UNSIGNED, gh.mpi_datum_type};
         MPI_Aint steps[2] = {0, 12*sizeof(unsigned int)};
@@ -66,11 +66,6 @@ namespace smil {
 
         MPI_Type_struct (2, block_size, steps, old_types, &(gh.mpi_type));
         MPI_Type_commit (&(gh.mpi_type));
-    }
-
-    RES_T freeMPIType (GlobalHeader &gh) {
-        ASSERT (gh.is_initialized); 
-        MPI_Type_free (&(gh.mpi_type)) ;
     }
 }
 #endif

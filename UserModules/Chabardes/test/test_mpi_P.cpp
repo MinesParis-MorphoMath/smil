@@ -90,7 +90,7 @@ int main (int argc, char* argv[]) {
     GlobalHeader gh;
     Chunk<UINT8> c;
 
-    broadcastMPITypeRegistration (gh, intra_StoP, 0, intra_PtoR, 1, rank_in_PtoR, 0, "UINT8");
+    broadcastMPITypeRegistration (gh, intra_StoP, 0, intra_PtoR, 1, rank_in_PtoR, 0);
 
     int memory_size = 12*sizeof(int) + gh.chunk_len*sizeof(UINT8);
     void *rawData = ::operator new (memory_size);
