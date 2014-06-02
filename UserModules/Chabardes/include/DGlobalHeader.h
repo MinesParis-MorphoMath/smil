@@ -3,15 +3,15 @@
 
 namespace smil {
     MPI_Datatype smilToMPIType (const char* datum_type) {
-        if (strcmp(type_datum, "UINT8") == 0) {
+        if (strcmp(datum_type, "UINT8") == 0) {
                 return MPI_UNSIGNED_CHAR;
-        } else if (strcmp(type_datum == "UINT16") == 0) {
+        } else if (strcmp(datum_type, "UINT16") == 0) {
                 return MPI_UNSIGNED_SHORT;
-        } else if (strcmp(type_datum == "UINT32") == 0) {
+        } else if (strcmp(datum_type, "UINT32") == 0) {
                 return MPI_UNSIGNED;
-        } else if (strcmp(type_datum == "UINT64") == 0) {
+        } else if (strcmp(datum_type, "UINT64") == 0) {
                 return MPI_UNSIGNED_LONG;
-        } else if (strcmp(type_datum == "INT") == 0) {
+        } else if (strcmp(datum_type, "INT") == 0) {
                 return MPI_INT;
         } else {
                 return MPI_UNSIGNED;
@@ -20,17 +20,6 @@ namespace smil {
 
     class GlobalHeader {
         public:
-            unsigned int size[3];
-            unsigned int nbr_chunks;
-            unsigned int datum_size;
-            unsigned long chunk_len;
-            char datum_type[16];
-            // mpi_specifics.
-            MPI_Datatype mpi_datum_type;
-            MPI_Datatype mpi_type; // assigned when broadcastMPITypeRegistration is called.
-            MPI_Datatype this_type;
-            // Not transmitted.
-            bool is_initialized;
             GlobalHeader () : is_initialized (false) {}
             RES_T declareGHType () {
                 MPI_Datatype old_types[3] = {MPI_UNSIGNED, MPI_UNSIGNED_LONG, MPI_CHAR};
@@ -45,6 +34,19 @@ namespace smil {
                 MPI_Type_free (&mpi_type);
                 MPI_Type_free (&this_type);
             }
+
+            unsigned int size[3];
+            unsigned int nbr_chunks;
+            unsigned int datum_size;
+            unsigned long chunk_len;
+            char datum_type[16];
+            // mpi_specifics.
+            MPI_Datatype mpi_datum_type;
+            MPI_Datatype mpi_type; // assigned when broadcastMPITypeRegistration is called.
+            MPI_Datatype this_type;
+            // Not transmitted.
+            bool is_initialized;
+
     };
 
 }
