@@ -46,12 +46,12 @@ namespace smil
     /**
     * Granulometry by openings.
     * 
-    * Performs openings of increasing size and measure the corresponding volume difference.
+    * Performs openings of increasing size (using steps of \b stepSize) and measure the corresponding volume difference.
     * 
     * If \b CDF is true, return a Cumulative Distribution Function
     */ 
     template <class T>
-    vector<double> measGranulometry(const Image<T> &imIn, const StrElt &se=DEFAULT_SE, bool CDF=true)
+    vector<double> measGranulometry(const Image<T> &imIn, const StrElt &se=DEFAULT_SE, const unsigned int stepSize=1, bool CDF=true)
     {
 	vector<double> res;
 	
@@ -60,16 +60,17 @@ namespace smil
 	Image<T> imEro(imIn, true); // clone
 	Image<T> imOpen(imIn);
 	
-	size_t seSize = 1;
+	size_t seSize = stepSize;
 	double a0 = area(imIn), a1;
 	
 	do
 	{
-	    erode(imEro, imEro, se);
-	    dilate(imEro, imOpen, se(seSize++));
+	    erode(imEro, imEro, se(stepSize));
+	    dilate(imEro, imOpen, se(seSize));
 	    a1 = area(imOpen);
 	    res.push_back(a0-a1);
 	    a0 = a1;
+	    seSize += stepSize;
 	    
 	} while(a0>0);
 	
@@ -86,7 +87,7 @@ namespace smil
 	return res;
     }
 
-    
+   
 /** @}*/
 
 } // namespace smil
