@@ -108,7 +108,6 @@ namespace smil {
         return reinterpret_cast< Chunk<T>* > (c);
     }
 
-    
 }
 
 #endif

@@ -6,17 +6,9 @@
 #endif
 
 #include "DChabardes.h"
+#include "DChunkFunctor.h"
 
 namespace smil {
-    template <class T>
-    void processChunk (Chunk<T> &c, const MPI_Comm &comm, const int rank, const GlobalHeader& gh) {
-        SharedImage<T> fakeIm (c.getData(), c.getSize(0), c.getSize(1), c.getSize(2));
-        Image<T> tmp = Image<T> (fakeIm);
-
-        erode (fakeIm, tmp, Cross3DSE());
-        dilate (fakeIm, fakeIm, Cross3DSE());
-        fakeIm -= tmp;
-    }
 
     RES_T broadcastMPITypeRegistration (GlobalHeader &gh, const MPI_Comm intra_StoP, const int root_StoP, const MPI_Comm inter_PtoR, const int root_PtoR, const int rank_in_PtoR, const int dest_PtoR) {
         ASSERT (!gh.is_initialized) ;
@@ -114,7 +106,7 @@ namespace smil {
                 is_waiting_for_connection = false;
                 return RES_OK;
             }
-            RES_T run () {
+            RES_T run (list<chunkFunctor<T> > fl) {
                 ASSERT (is_ready);
                 broadcastMPITypeRegistration (gh, intra_StoP, 0, intra_PtoR, 1, rank_in_PtoR, 0);
                 Chunk<T> c;
@@ -132,7 +124,8 @@ namespace smil {
                 do {
                     c.recv (0, MPI_ANY_TAG, intra_StoP, &status); 
                     if (status.MPI_TAG == CHUNK_TAG) {
-                        processChunk (c, intra_P, rank_in_P, gh);
+                        for (list<chunkFunctor<UINT8> >::iterator it=fl.begin(); it != fl.end(); it++)
+                            it->run (c, intra_P, rank_in_P, gh);
                         c.send (0, CHUNK_TAG, intra_PtoR);
                     }
                 } while (status.MPI_TAG != EOT_TAG);
