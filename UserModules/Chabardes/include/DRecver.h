@@ -39,16 +39,14 @@ namespace smil {
             recver (bool verbose=false) : info(MPI_INFO_NULL), is_connected(false), is_verbose(false) {
                 memset (port_PtoR, 0, MPI_MAX_PORT_NAME) ;
             }
-            RES_T connect (string ip_address, string ip_port) {
+            RES_T connect (string address) {
                 int is_initialized = false;
                 MPI_Initialized (&is_initialized);
                 if (!is_initialized){
                     cout << "MPI is not initialized." << endl;
                     return RES_ERR_UNKNOWN;
                 }
-                stringstream ss;
-                ss << "tag#1$description#" << ip_address << "$port#" << ip_port << "$ifname#" << ip_address << "$" << endl;
-                ss >> port_PtoR;
+                strcpy (port_PtoR, address.c_str());
                 if (is_verbose)
                     cout << "Connecting to : " << port_PtoR << "...";
                 

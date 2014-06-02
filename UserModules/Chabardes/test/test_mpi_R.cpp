@@ -3,8 +3,8 @@
 using namespace smil;
 
 int main (int argc, char* argv[]) {
-    if (argc != 4) {
-        cerr << "usage : mpiexec <bin> <path> <ip_address> <ip_port>" << endl;
+    if (argc != 3) {
+        cerr << "usage : mpiexec <bin> <path> <address>" << endl;
         return -1;
     } 
 
@@ -12,7 +12,7 @@ int main (int argc, char* argv[]) {
 
     Image<UINT8> im;
     recver<UINT8> pr(true);
-    pr.connect (argv[2], argv[3]);
+    pr.connect (argv[2]);
     pr.run (im);
     pr.disconnect ();
     write (im, argv[1]) ;

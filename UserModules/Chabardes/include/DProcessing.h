@@ -101,12 +101,12 @@ namespace smil {
                 MPI_Comm_disconnect (&inter_StoP);
                 MPI_Comm_disconnect (&inter_PtoR);
                 if (is_verbose && rank_in_P == 0)
-                    cout << "Disconnect." << endl;
+                    cout << "Disconnected." << endl;
                 is_ready = false;
                 is_waiting_for_connection = false;
                 return RES_OK;
             }
-            RES_T run (list<chunkFunctor<T> > fl) {
+            RES_T run (list< chunk_ref <chunkFunctor<T> > > fl) {
                 ASSERT (is_ready);
                 broadcastMPITypeRegistration (gh, intra_StoP, 0, intra_PtoR, 1, rank_in_PtoR, 0);
                 Chunk<T> c;
@@ -124,8 +124,8 @@ namespace smil {
                 do {
                     c.recv (0, MPI_ANY_TAG, intra_StoP, &status); 
                     if (status.MPI_TAG == CHUNK_TAG) {
-                        for (list<chunkFunctor<UINT8> >::iterator it=fl.begin(); it != fl.end(); it++)
-                            it->run (c, intra_P, rank_in_P, gh);
+                        for (list< chunk_ref <chunkFunctor<UINT8> > >::iterator it=fl.begin(); it != fl.end(); it++)
+                            (**it) (c, intra_P, rank_in_P, gh);
                         c.send (0, CHUNK_TAG, intra_PtoR);
                     }
                 } while (status.MPI_TAG != EOT_TAG);

@@ -74,16 +74,14 @@ namespace smil {
             sender (bool verbose = false) : info (MPI_INFO_NULL), is_connected(false), is_verbose (false) {
                 memset (port_StoP, 0, MPI_MAX_PORT_NAME) ;
             } 
-            void connect (string ip_address, string ip_port) {
+            void connect (string address) {
                 int is_initialized = false;
                 MPI_Initialized (&is_initialized);
                 if (!is_initialized) {
                     cout << "MPI is not initialized." << endl;
                     return;
                 }
-                stringstream ss;
-                ss << "tag#0$description#" << ip_address << "$port#" << ip_port << "$ifname#" << ip_address << "$" << endl;
-                ss >> port_StoP;
+                strcpy (port_StoP, address.c_str());
                 if (is_verbose)
                     cout << "Connecting to : " << port_StoP << "...";
 

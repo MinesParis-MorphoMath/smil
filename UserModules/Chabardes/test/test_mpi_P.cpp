@@ -13,8 +13,8 @@ int main (int argc, char* argv[]) {
 
     MPI_Init (&argc, &argv);
 
-    list <chunkFunctor<UINT8> > fl;
-    fl.push_front (chunkGradient<UINT8>());
+    list < chunk_ref < chunkFunctor<UINT8> > > fl;
+    fl.push_back (chunkGradient<UINT8>());
     cpu<UINT8> pc(true);
     pc.open_ports ();
     pc.accept_connection ();
