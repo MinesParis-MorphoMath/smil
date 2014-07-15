@@ -213,15 +213,18 @@ def Image(*args):
 	fillImg = True
 
     # Create/load from an existing image fileName
-    elif argNbr>0 and type(args[0])==str and (os.path.exists(args[0]) or args[0][:7]=="http://"):
-	if argNbr>1 and args[1] in dataTypes:
-	    imgType = imageTypes[dataTypes.index(args[1])]
-	    img = imgType()
-	    read(args[0], img)
+    elif argNbr>0 and type(args[0])==str:
+	if (os.path.exists(args[0]) or args[0][:7]=="http://"):
+	    if argNbr>1 and args[1] in dataTypes:
+		imgType = imageTypes[dataTypes.index(args[1])]
+		img = imgType()
+		read(args[0], img)
+	    else:
+		baseImg = createFromFile(args[0])
+		if baseImg!=None:
+		  img = autoCastBaseImage(baseImg)
 	else:
-	    baseImg = createFromFile(args[0])
-	    if baseImg!=None:
-	      img = autoCastBaseImage(baseImg)
+	    print "File not found:", args[0]
     
     else:
 	img = imageTypes[0](*args)
