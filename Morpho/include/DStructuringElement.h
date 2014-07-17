@@ -65,15 +65,6 @@ namespace smil
 	    this->clone(rhs);
 	}
 	
-	/**
-	 * Construct a structuring element with points defined by their indexes.
-	 * \param oddSE Specify if we want to use an hexagonal grid (true) or a square grid (false)
-	 * \param nbrPts The number of points (indexes) which are given
-	 * \param ... The list of point indexes
-	 * 
-	 * The index values are defined for each grid type as follow:
-	 * \images{se_indexes}
-	 */
 #ifndef SWIG
 	StrElt(bool oddSE, UINT nbrPts, ...)
 	  : BaseObject("StrElt"),
@@ -93,6 +84,23 @@ namespace smil
 	}
 #endif // SWIG
 	
+	/**
+	 * Construct a structuring element with points defined by their indexes.
+	 * \param oddSE Specify if we want to use an hexagonal grid (true) or a square grid (false)
+	 * \param indexList The list of point indexes
+	 * 
+	 * The index values are defined for each grid type as follow:
+	 * \images{se_indexes}
+	 * 
+         * \b Example:
+	 * \code{.py}
+	 * # Create a diagonal SE with the two points (0,0) and (1,1),
+	 * # on the square grid:
+	 * diagSE_s = StrElt(False, (0,8))
+	 * # on the hexagonal grid:
+	 * diagSE_h = StrElt(True, (0,6))
+	 * \endcode
+	 */
 	StrElt(bool oddSE, vector<UINT> indexList)
 	  : BaseObject("StrElt"),
 	    odd(oddSE),
@@ -119,7 +127,7 @@ namespace smil
 	//! Construct and return an homothetic SE with size s
 	StrElt homothety(const UINT s) const;
 	
-	//! Transposed 
+	//! Return the opposite SE (symmetry with respect to 0) 
 	StrElt transpose() const;
 	
 	bool odd;
