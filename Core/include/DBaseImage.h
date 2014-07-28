@@ -194,9 +194,9 @@ namespace smil
 	virtual void hide() = 0;
 	
 	//! Load from file
-	virtual RES_T load(const char *fileName) {}
+	virtual RES_T load(const char *fileName) { return RES_ERR_NOT_IMPLEMENTED; }
 	//! Save to file
-	virtual RES_T save(const char *fileName) {}
+	virtual RES_T save(const char *fileName) { return RES_ERR_NOT_IMPLEMENTED; }
 	
 #ifndef SWIG
 	//! Get the viewer associated to the image
