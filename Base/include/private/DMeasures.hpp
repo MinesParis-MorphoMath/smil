@@ -298,7 +298,7 @@ namespace smil
 	size_t imH = im.getHeight();
 	
 	vector<IntPoint> bPoints;
-	if ( x0<0 || x0>=int(imW) || y0<0 || y0>=int(imH) || x1<0 || x1>=int(imW) || y1<0 || y1>=int(imH) )
+	if ( x0>=int(imW) || y0>=int(imH) || x1>=int(imW) || y1>=int(imH) )
 	  bPoints = bresenhamPoints(x0, y0, x1, y1, imW, imH);
 	else
 	  bPoints = bresenhamPoints(x0, y0, x1, y1); // no image range check (faster)
