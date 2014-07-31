@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -35,16 +35,24 @@
  * @{
  */
 
+#include "DCoreInstance.h"
+#include "DBaseObject.h"
+#include "DTypes.h"
+#include "DErrors.h"
 #include "DSignal.h"
 #include "DSlot.h"
-#include "DBaseObject.h"
-#include "DCoreInstance.h"
+#include "DString.h"
 #include "DBaseImage.h"
-#include "DImage.h"
 #include "DCoreEvents.h"
-
 #include "DTest.h"
 #include "DBench.h"
+#include "DImage.h"
+
+#include "private/DMemory.hpp"
+#include "private/DGraph.hpp"
+#include "private/DBufferPool.hpp"
+#include "private/DSharedImage.hpp"
+#include "private/DMultichannelTypes.hpp"
 
 /** @} */
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -210,7 +210,7 @@ namespace smil
 	}
     };
     template <>
-    inline void grtSupLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void grtSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
 	ERR_MSG("Not implemented fot float");
     }
@@ -249,7 +249,7 @@ namespace smil
 	}
     };
     template <>
-    inline void grtOrEquSupLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void grtOrEquSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
 	ERR_MSG("Not implemented for float");
     }
@@ -288,7 +288,7 @@ namespace smil
 	}
     };
     template <>
-    inline void lowSupLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void lowSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
 	ERR_MSG("Not implemented for float");
     }
@@ -327,7 +327,7 @@ namespace smil
 	}
     };
     template <>
-    inline void lowOrEquSupLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void lowOrEquSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
 	ERR_MSG("Not implemented for float");
     }
@@ -384,7 +384,7 @@ namespace smil
 	}
     };
     template <>
-    inline void equSupLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void equSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
 	ERR_MSG("Not implemented for float");
     }
@@ -465,7 +465,7 @@ namespace smil
 	}
     };
     template <>
-    inline void bitAndLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void bitAndLine<float>::_exec(const lineType, const lineType, const size_t, lineType)
     {
 	ERR_MSG("Not implemented for float");
     }
@@ -492,7 +492,7 @@ namespace smil
 	}
     };
     template <>
-    inline void bitOrLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void bitOrLine<float>::_exec(const lineType, const lineType, const size_t, lineType)
     {
 	ERR_MSG("Not implemented for float");
     }
@@ -519,7 +519,7 @@ namespace smil
 	}
     };
     template <>
-    inline void bitXOrLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void bitXOrLine<float>::_exec(const lineType, const lineType, const size_t, lineType)
     {
 	ERR_MSG("Not implemented for float");
     }

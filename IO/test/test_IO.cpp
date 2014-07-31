@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -32,11 +32,11 @@
 
 
 #include "NSTypes/RGB/include/DRGB.h"
-#include "DCore.h"
+#include "Core/include/DCore.h"
 #include "DIO.h"
 #include "IO/include/private/DImageIO_RAW.hpp"
 
-#include "DGui.h"
+#include "Gui/include/DGui.h"
 
 
 

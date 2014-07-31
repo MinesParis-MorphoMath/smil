@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -36,17 +36,24 @@
  */
 
 #include "Core/include/DImage.h"
+#include "DMorphoInstance.h"
+#include "DStructuringElement.h"
+
+#include "private/DHitOrMiss.hpp"
+#include "private/DMorphoArrow.hpp"
 #include "private/DMorphoBase.hpp"
-#include "private/DMorphoGeodesic.hpp"
 #include "private/DMorphoExtrema.hpp"
-#include "private/DMorphoHierarQ.hpp"
 #include "private/DMorphoFilter.hpp"
+#include "private/DMorphoGeodesic.hpp"
+#include "private/DMorphoGraph.hpp"
+#include "private/DMorphoHierarQ.hpp"
+#include "private/DMorphoLabel.hpp"
+#include "private/DMorphoMaxTree.hpp"
+#include "private/DMorphoMeasures.hpp"
 #include "private/DMorphoResidues.hpp"
 #include "private/DMorphoWatershed.hpp"
-#include "private/DMorphoLabel.hpp"
-#include "private/DMorphoArrow.hpp"
-#include "private/DHitOrMiss.hpp"
 #include "private/DSkeleton.hpp"
+
  
 /** @}*/
 

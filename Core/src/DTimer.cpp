@@ -1,7 +1,8 @@
 
 #ifdef USE_QT
 
-#include "DTimer.h"
+#include "Core/include/DTimer.h"
+
 #include <iostream>
 #include <QApplication>
 #include <QWidget>

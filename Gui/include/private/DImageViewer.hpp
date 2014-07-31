@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@
 #define _D_IMAGE_VIEWER_HPP
 
 #include "Gui/include/DBaseImageViewer.h"
-#include "DColor.h"
+#include "Core/include/DColor.h"
 
 namespace smil
 {
@@ -119,17 +119,17 @@ namespace smil
 	}
 	virtual void drawOverlay(Image<T> &) {}
 	virtual void clearOverlay() {}
-	virtual RES_T getOverlay(Image<T> &img) { return RES_ERR; }
+    virtual RES_T getOverlay(Image<T> &/*img*/) { return RES_ERR; }
 	
 	Signal onOverlayModified;
 	
 	//! Set the color table as a 8bits RGB map (keys between 0 and 255)
-	virtual void setLookup(const map<UINT8,RGB> &lut) {}
+    virtual void setLookup(const map<UINT8,RGB> &/*lut*/) {}
 	virtual void resetLookup() {}
 	
     protected:
 	virtual void drawImage() {}
-	virtual void onSizeChanged(size_t width, size_t height, size_t depth) {}
+    virtual void onSizeChanged(size_t /*width*/, size_t /*height*/, size_t /*depth*/) {}
 	Image<T> *image;
 	bool labelImage;
 	

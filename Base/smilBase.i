@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ SMIL_MODULE(smilBase)
 
 %{
 /* Includes the header in the wrapper code */
-#include "DImage.hxx"
+#include "Core/include/private/DImage.hxx"
 #include "DImageArith.hpp"
 #include "DImageDraw.hpp"
 #include "DImageHistogram.hpp"

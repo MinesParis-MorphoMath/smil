@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -29,8 +29,8 @@
 
 #ifdef USE_PNG
 
-#include "DImageIO.hpp"
-#include "DImageIO_PNG.hpp"
+#include "IO/include/private/DImageIO.hpp"
+#include "IO/include/private/DImageIO_PNG.hpp"
 
 #include <png.h>
 

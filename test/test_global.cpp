@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,7 @@
  */
 
 
-#include "DCore.h"
-#include "DBase.h"
-#include "DMorpho.h"
-#include "DGui.h"
-#include "DIO.h"
+#include "Core/include/DCore.h"
 
 #include "NSTypes/RGB/include/DRGB.h"
 

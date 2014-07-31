@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -31,9 +31,9 @@
 #define _IMAGE_RGB_H
 
 
-#include "DImage.hpp"
+#include "Core/include/private/DImage.hpp"
 #include "Base/include/private/DImageArith.hpp"
-#include "DTypes.h"
+#include "Core/include/DTypes.h"
 #include "Base/include/private/DImageTransform.hpp"
 #include "Base/include/private/DMeasures.hpp"
 

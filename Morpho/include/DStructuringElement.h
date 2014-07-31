@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,8 @@
 #ifndef _STR_ELT_HPP
 #define _STR_ELT_HPP
 
-#include "DCommon.h"
-#include "DBaseObject.h"
+#include "Core/include/DCommon.h"
+#include "Core/include/DBaseObject.h"
 
 
 namespace smil

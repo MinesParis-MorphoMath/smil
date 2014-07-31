@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ SMIL_MODULE(smil)
 %init
 %{
     std::cout << "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}" << std::endl;
-    std::cout << "Copyright (c) 2011, Matthieu FAESSEL and ARMINES" << std::endl;
+    std::cout << "Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES" << std::endl;
     std::cout << "All rights reserved." << std::endl;
     std::cout << std::endl;
 %}
@@ -71,7 +71,7 @@ __builtin__.imageTypes = [ ${IMAGE_TYPES_STR}, ]
 
 def AboutSmil():
     print "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}"
-    print "Copyright (c) 2011, Matthieu FAESSEL and ARMINES"
+    print "Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES"
     print "All rights reserved."
 
 

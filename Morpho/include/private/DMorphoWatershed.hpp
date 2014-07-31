@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@
 #include "DMorphoHierarQ.hpp"
 #include "DMorphoExtrema.hpp"
 #include "DMorphoLabel.hpp"
-#include "DTypes.h"
+#include "Core/include/DTypes.h"
 
 
 namespace smil

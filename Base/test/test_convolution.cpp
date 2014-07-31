@@ -1,6 +1,6 @@
 /*
  * Smil
- * Copyright (c) 2011 Matthieu Faessel
+ * Copyright (c) 2011-2014 Matthieu Faessel
  *
  * This file is part of Smil.
  *
@@ -20,9 +20,8 @@
  *
  */
 
-#include "DImage.h"
+#include "Core/include/DCore.h"
 #include "DImageConvolution.hpp"
-#include "DTest.h"
 
 using namespace smil;
 

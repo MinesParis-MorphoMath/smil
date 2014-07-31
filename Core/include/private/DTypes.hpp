@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,8 @@
 #include <stdint.h>
 #endif // _MSC_VER
 #include <limits>
-#include "DMemory.hpp"
+
+#include "Core/include/private/DMemory.hpp"
 
 #include <sstream>
 
@@ -107,7 +108,7 @@ namespace smil
 
     #define DECL_DATA_TYPE_STR(_type) \
     template <> \
-    inline const char *getDataTypeAsString(_type *t) { return #_type; }
+    inline const char *getDataTypeAsString(_type *) { return #_type; }
 
     DECL_DATA_TYPE_STR(UINT8)
     DECL_DATA_TYPE_STR(UINT16)

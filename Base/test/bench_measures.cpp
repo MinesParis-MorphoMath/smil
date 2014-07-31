@@ -1,6 +1,6 @@
 /*
  * Smil
- * Copyright (c) 2011 Matthieu Faessel
+ * Copyright (c) 2011-2014 Matthieu Faessel
  *
  * This file is part of Smil.
  *
@@ -24,8 +24,8 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "DCore.h"
-#include "DBase.h"
+#include "Core/include/DCore.h"
+#include "DImageDraw.hpp"
 #include "DMeasures.hpp"
 #include "DBlobMeasures.hpp"
 

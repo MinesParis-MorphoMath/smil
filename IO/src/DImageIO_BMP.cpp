@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,11 @@
  */
 
 
-#include "DErrors.h"
-#include "DImageIO_BMP.hpp"
-#include "private/DImageIO.hpp"
+#include "Core/include/DErrors.h"
+#include "IO/include/private/DImageIO_BMP.hpp"
+#include "IO/include/private/DImageIO.hpp"
 #include "Core/include/private/DImage.hpp"
-#include "DColor.h"
+#include "Core/include/DColor.h"
 
 namespace smil
 {
