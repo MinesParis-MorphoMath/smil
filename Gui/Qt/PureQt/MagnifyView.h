@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsPathItem>
 
-#include "DCommon.h"
+#include "Core/include/DCommon.h"
 
 class MagnifyView : public QGraphicsView
 {

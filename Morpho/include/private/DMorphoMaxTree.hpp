@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,8 @@
 #ifndef _D_MAX_TREE
 #define _D_MAX_TREE
 
-#include "DImage.h"
-#include "DImageHistogram.hpp"
+#include "Core/include/DImage.h"
+#include "Base/include/private/DImageHistogram.hpp"
 
 namespace smil
 {

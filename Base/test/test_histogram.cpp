@@ -1,6 +1,6 @@
 /*
  * Smil
- * Copyright (c) 2011 Matthieu Faessel
+ * Copyright (c) 2011-2014 Matthieu Faessel
  *
  * This file is part of Smil.
  *
@@ -25,11 +25,10 @@
 #include <time.h>
 
 
-#include "DImage.h"
-#include "DTest.h"
+#include "Core/include/DCore.h"
 #include "DImageHistogram.hpp"
 
-#include "DGui.h"
+#include "Gui/include/DGui.h"
 
 using namespace smil;
 

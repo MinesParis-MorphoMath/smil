@@ -1,4 +1,5 @@
- 
+import ipdb
+
 from smilPython import *
 import time
 
@@ -10,6 +11,8 @@ bench_nruns = 1E3
 # Load an image
 imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/DNA_small.png")
 #imIn.show()
+
+ipdb.set_trace()
 
 tmpIm = Image(imIn)
 im1 = Image(sx, sy)

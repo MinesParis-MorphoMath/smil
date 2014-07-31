@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@
 #include "Base/include/private/DImageHistogram.hpp"
 #include "Base/include/DImageDraw.h"
 #include "IO/include/private/DImageIO.hpp"
-#include "DColor.h"
+#include "Core/include/DColor.h"
 
 namespace smil
 {

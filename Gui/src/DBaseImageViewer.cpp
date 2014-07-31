@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
  */
 
 
-#include "DBaseImageViewer.h"
-#include "DGuiInstance.h"
+#include "Gui/include/DBaseImageViewer.h"
+#include "Gui/include/DGuiInstance.h"
 
 using namespace smil;
 

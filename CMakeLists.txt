@@ -1,4 +1,4 @@
-# Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+# Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -706,7 +706,8 @@ ENDIF(BUILD_DOC)
 INCLUDE_DIRECTORIES(${PROJECT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 FOREACH(_MOD ${MODULES})
-	INCLUDE_DIRECTORIES(${_MOD} ${_MOD}/include ${_MOD}/include/private)
+ 	INCLUDE_DIRECTORIES(${_MOD})
+# 	INCLUDE_DIRECTORIES(${_MOD} ${_MOD}/include ${_MOD}/include/private)
 	ADD_SUBDIRECTORY(${_MOD})
 
 ENDFOREACH(_MOD ${MODULES})
@@ -821,29 +822,8 @@ ADD_SMIL_TESTS(Smil smilCore smilIO smilGui smilMorpho ${SMIL_EXT_DEPS})
 
 
 
-# Generate main header (Smil.h)
-FILE(READ license.txt LICENCE_TXT)
-STRING(REGEX REPLACE "([^\n]*\n)" "// \\1" LICENCE_TXT_CPP "${LICENCE_TXT}")
-SET(MAIN_HEADER_STR "${LICENCE_TXT_CPP}\n")
-LIST(APPEND MAIN_HEADER_STR "#ifndef SMIL_GLOBAL_HEADER\n#define SMIL_GLOBAL_HEADER\n\n")
-
-GET_DIRECTORY_PROPERTY(DIR_DEFS DEFINITIONS)
-STRING(REGEX MATCHALL "-D[^ \n]*" DEFS ${DIR_DEFS})
-FOREACH(DEF ${DEFS})
-	STRING(REGEX REPLACE "-D(.*)" "\\1" DEF ${DEF})
-	LIST(APPEND MAIN_HEADER_STR "#define ${DEF}\n")
-ENDFOREACH()
-LIST(APPEND MAIN_HEADER_STR "\n")
-FOREACH(HEADER ${SMIL_GLOBAL_HEADERS})
-	LIST(APPEND MAIN_HEADER_STR "#include \"${HEADER}\"\n")
-ENDFOREACH()
-LIST(APPEND MAIN_HEADER_STR "\n#endif\n")
-FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/Smil.h ${MAIN_HEADER_STR})
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/Smil.h 
-      DESTINATION include/Smil 
-      COMPONENT dev
-      )
-
+INCLUDE(Preinstall)
+      
 
 #INCLUDE(SmilInstallGen)
 

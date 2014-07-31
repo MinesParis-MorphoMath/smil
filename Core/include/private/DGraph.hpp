@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
 #ifndef _D_GRAPH_HPP
 #define _D_GRAPH_HPP
 
-#include "DBaseObject.h"
+#include "Core/include/DBaseObject.h"
 
 #include <list>
 #include <algorithm>

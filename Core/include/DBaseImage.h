@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -194,9 +194,9 @@ namespace smil
 	virtual void hide() = 0;
 	
 	//! Load from file
-	virtual RES_T load(const char *fileName) { return RES_ERR_NOT_IMPLEMENTED; }
+    virtual RES_T load(const char * /*fileName*/) { return RES_ERR_NOT_IMPLEMENTED; }
 	//! Save to file
-	virtual RES_T save(const char *fileName) { return RES_ERR_NOT_IMPLEMENTED; }
+    virtual RES_T save(const char * /*fileName*/) { return RES_ERR_NOT_IMPLEMENTED; }
 	
 #ifndef SWIG
 	//! Get the viewer associated to the image

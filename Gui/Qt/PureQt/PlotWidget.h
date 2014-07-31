@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -31,12 +31,12 @@
 #define PlotWidget_H
 
 
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
+#include <qwt/qwt_plot.h>
+#include <qwt/qwt_plot_curve.h>
 
 #if QWT_VERSION < 0x060000
 #else // QWT_VERSION < 0x060000
-#include <qwt_series_data.h>
+#include <qwt/qwt_series_data.h>
 #endif // QWT_VERSION < 0x060000
 
 class PlotWidget : public QwtPlot

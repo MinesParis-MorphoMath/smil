@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -35,10 +35,15 @@
  * @{
  */
 
+#include "DBaseInstance.h"
+#include "DImageDraw.h"
+
 #include "private/DImageArith.hpp"
-#include "private/DImageHistogram.hpp"
-#include "private/DImageTransform.hpp"
+#include "private/DImageConvolution.hpp"
 #include "private/DImageDraw.hpp"
+#include "private/DImageHistogram.hpp"
+#include "private/DImageMatrix.hpp"
+#include "private/DImageTransform.hpp"
 #include "private/DMeasures.hpp"
 #include "private/DBlobMeasures.hpp"
 

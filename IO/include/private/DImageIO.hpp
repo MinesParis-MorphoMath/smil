@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,22 +57,22 @@ namespace smil
       }
       const char *fileExtention;
       
-      virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo) 
+      virtual RES_T getFileInfo(const char*, ImageFileInfo &) 
       { 
 	  return RES_ERR; 
       }
       
-      virtual RES_T read(const char* filename)
+      virtual RES_T read(const char*)
       {
 	  return RES_ERR;
       }
       
-      virtual RES_T read(const char* filename, Image<T> &image)
+      virtual RES_T read(const char*, Image<T> &)
       {
 	  cout << getDataTypeAsString<T>() << " data type not implemented for " << fileExtention << " files (read)." << endl;
 	  return RES_ERR;
       }
-      virtual RES_T write(const Image<T> &image, const char* filename)
+      virtual RES_T write(const Image<T> &, const char*)
       {
 	  cout << getDataTypeAsString<T>() << " data type not implemented for " << fileExtention << " files (write)." << endl;
 	  return RES_ERR;

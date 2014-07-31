@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ namespace smil
     
     
     template <class T_in, class T_out>
-    RES_T unaryMorphImageFunctionBase<T_in, T_out>::finalize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+    RES_T unaryMorphImageFunctionBase<T_in, T_out>::finalize(const imageInType & /*imIn*/, imageOutType & /*imOut*/, const StrElt & /*se*/)
     {
 	return RES_OK;
     }
@@ -105,7 +105,7 @@ namespace smil
     }
     
     template <class T_in, class T_out>
-    RES_T unaryMorphImageFunctionBase<T_in, T_out>::processImage(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+    RES_T unaryMorphImageFunctionBase<T_in, T_out>::processImage(const imageInType &/*imIn*/, imageOutType &/*imOut*/, const StrElt &se)
     {
 	for(curSlice=0;curSlice<imSize[2];curSlice++)
 	{
@@ -135,7 +135,7 @@ namespace smil
     
     // Todo: offset list for 3D odd SE !!
     template <class T_in, class T_out>
-    void unaryMorphImageFunctionBase<T_in, T_out>::processLine(lineInType pixIn, lineOutType pixOut, size_t &pixNbr, const StrElt &se)
+    void unaryMorphImageFunctionBase<T_in, T_out>::processLine(lineInType pixIn, lineOutType /*pixOut*/, size_t &pixNbr, const StrElt &se)
     {
 	int x, y, z;
 	IntPoint p;
@@ -211,7 +211,7 @@ namespace smil
     }
     
     template <class T_in, class T_out>
-    void unaryMorphImageFunctionBase<T_in, T_out>::processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+    void unaryMorphImageFunctionBase<T_in, T_out>::processPixel(size_t &/*pointOffset*/, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
     {
 	// Example: dilation function
 	while(dOffset!=dOffsetEnd)
@@ -696,7 +696,7 @@ namespace smil
 
     // Z-Horizontal segment
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_depth_segment(const imageType &imIn, int zsize, imageType &imOut)
+    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_depth_segment(const imageType &imIn, int /*zsize*/, imageType &imOut)
     {
 	  size_t w, h, d;
 	  imIn.getSize(&w, &h, &d);
