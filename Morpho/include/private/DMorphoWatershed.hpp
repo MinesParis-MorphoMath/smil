@@ -34,6 +34,7 @@
 #include "DMorphoHierarQ.hpp"
 #include "DMorphoExtrema.hpp"
 #include "DMorphoLabel.hpp"
+#include "DMorphoResidues.hpp"
 #include "Core/include/DTypes.h"
 
 
@@ -215,7 +216,6 @@ namespace smil
 	return RES_OK;
     }
 
-    
     template <class T, class labelT, class HQ_Type>
     RES_T processWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HQ_Type &hq, const StrElt &se)
     {
@@ -223,79 +223,84 @@ namespace smil
 	typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
 	typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
 	
-	vector<int> dOffsets;
-	
-	vector<IntPoint>::const_iterator it_start = se.points.begin();
-	vector<IntPoint>::const_iterator it_end = se.points.end();
-	vector<IntPoint>::const_iterator it;
-	
+	vector<int> _dOffsets;
 	vector<UINT> tmpOffsets;
 	
 	size_t s[3];
 	imIn.getSize(s);
 	
+	int nPts = se.points.size();
+	const IntPoint *sePts = se.points.data();
+	
 	// set an offset distance for each se point
-	for(it=it_start;it!=it_end;it++)
-	{
-	    dOffsets.push_back(it->x + it->y*s[0] + it->z*s[0]*s[1]);
-	}
-	
-	vector<int>::iterator it_off_start = dOffsets.begin();
-	vector<int>::iterator it_off;
+	for(int i=0;i<nPts;i++)
+	    _dOffsets.push_back(sePts[i].x + sePts[i].y*s[0] + sePts[i].z*s[0]*s[1]);
+	const int *dOffsets = _dOffsets.data();
 	
 	
+#pragma omp parallel 
+{
+	int x, y, z;
+	size_t nbOffset;
+	UINT8 nbStat;
+	
+    #pragma omp single
+    {
 	while(!hq.isEmpty())
 	{
 	    
 	    size_t curOffset = hq.pop();
 	    size_t x0, y0, z0;
 	    
-	    
-	    
 	    imIn.getCoordsFromOffset(curOffset, x0, y0, z0);
 	    
 	    bool oddLine = se.odd && ((y0)%2);
 	    
-	    int x, y, z;
-	    size_t nbOffset;
 	    
 	    statPixels[curOffset] = HQ_LABELED;
-	    UINT8 nbStat;
 	    
 	    
-	    for(it=it_start,it_off=it_off_start;it!=it_end;it++,it_off++)
-		if (it->x!=0 || it->y!=0 || it->z!=0) // useless if x=0 & y=0 & z=0
+	    for(int i=0;i<nPts;i++)
+// #pragma omp task //firstprivate(curOffset,x0,y0,z0) shared(statPixels,tmpOffsets)
 	    {
-		
-		x = x0 + it->x;
-		y = y0 + it->y;
-		z = z0 + it->z;
-		
-		if (oddLine)
-		  x += (((y+1)%2)!=0);
-	      
-		if (x>=0 && x<(int)s[0] && y>=0 && y<(int)s[1] && z>=0 && z<(int)s[2])
+		const IntPoint &p = sePts[i];
+		if (p.x!=0 || p.y!=0 || p.z!=0) // useless if x=0 & y=0 & z=0
 		{
-		    nbOffset = curOffset + *it_off;
+		    
+		    x = x0 + p.x;
+		    y = y0 + p.y;
+		    z = z0 + p.z;
 		    
 		    if (oddLine)
-		      nbOffset += (((y+1)%2)!=0);
-		    
-		    nbStat = statPixels[nbOffset];
-		    
-		    if (nbStat==HQ_CANDIDATE) // Add it to the tmp offsets queue
-			tmpOffsets.push_back(nbOffset);
-		    else if (nbStat==HQ_LABELED)
+		      x += (((y+1)%2)!=0);
+		  
+		    if (x>=0 && x<(int)s[0] && y>=0 && y<(int)s[1] && z>=0 && z<(int)s[2])
 		    {
-			if (lblPixels[curOffset]==0)
-			    lblPixels[curOffset] = lblPixels[nbOffset];
-			else if (lblPixels[curOffset]!=lblPixels[nbOffset])
-			  statPixels[curOffset] = HQ_WS_LINE;
+			nbOffset = curOffset + dOffsets[i];
+			
+			if (oddLine)
+			  nbOffset += (((y+1)%2)!=0);
+			
+			nbStat = statPixels[nbOffset];
+			
+			if (nbStat==HQ_CANDIDATE) // Add it to the tmp offsets queue
+			{
+#pragma omp critical
+			    tmpOffsets.push_back(nbOffset);
+			}
+			else if (nbStat==HQ_LABELED)
+			{
+			    if (lblPixels[curOffset]==0)
+				lblPixels[curOffset] = lblPixels[nbOffset];
+			    else if (lblPixels[curOffset]!=lblPixels[nbOffset])
+			      statPixels[curOffset] = HQ_WS_LINE;
+			}
+			
 		    }
-		    
 		}
 	    }
 	    
+#pragma omp taskwait
 	    if (statPixels[curOffset]!=HQ_WS_LINE && !tmpOffsets.empty())
 	    {
 		typename vector<UINT>::iterator t_it = tmpOffsets.begin();
@@ -310,7 +315,9 @@ namespace smil
 	    
 	    tmpOffsets.clear();
 	}
-	
+    } // omp single
+} // omp parallel
+
 	// Potential remaining candidate points (points surrounded by WS_LINE points)
 	// Put their state to WS_LINE
 	for (size_t i=0;i<imLbl.getPixelCount();i++)
