@@ -895,7 +895,7 @@ namespace smil
 
 
     #if defined SWIGPYTHON && defined USE_NUMPY
-    #include "DNumpy.h"
+    #include "Core/include/DNumpy.h"
 
     template <class T>
     PyObject * Image<T>::getNumArray(bool c_contigous)
