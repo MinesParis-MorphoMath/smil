@@ -33,6 +33,8 @@
 #include "Core/include/DErrors.h"
 #include "Core/include/private/DImage.hpp"
 
+#include <stdio.h>
+
 namespace smil
 {
   

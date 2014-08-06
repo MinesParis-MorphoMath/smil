@@ -77,6 +77,7 @@
 #include <string>
 #include <limits>
 #include <sstream>
+#include <stdio.h>
 
 namespace smil
 {
