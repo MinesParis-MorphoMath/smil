@@ -76,7 +76,7 @@
 #include <math.h>
 #include <string>
 #include <limits>
-
+#include <sstream>
 
 namespace smil
 {
@@ -164,12 +164,12 @@ namespace smil
 
     inline std::string displayBytes(size_t bytes)
     {
-	    char tmp[128] = "";
+	    std::ostringstream oss;
 	    const char *units[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 	    const double base = 1024;
 	    int c = std::min((int)(log((double)bytes)/log(base)), (int)sizeof(units) - 1);
-	    sprintf(tmp, "%1.2f %s", bytes / pow(base, c), units[c]);
-	    return std::string(tmp);
+	    oss << bytes / pow(base, c) <<  units[c];
+	    return oss.str();
     }
     
 
