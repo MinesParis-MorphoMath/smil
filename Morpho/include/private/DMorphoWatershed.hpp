@@ -34,6 +34,7 @@
 #include "DMorphoHierarQ.hpp"
 #include "DMorphoExtrema.hpp"
 #include "DMorphoLabel.hpp"
+#include "DMorphoResidues.hpp"
 #include "DTypes.h"
 
 
