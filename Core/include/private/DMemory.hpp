@@ -30,14 +30,6 @@
 #ifndef _DMEMORY_HPP
 #define _DMEMORY_HPP
 
-#include <math.h>
-#include <string>
-#include <limits>
-
-#include <stdio.h>
-
-namespace smil
-{
 #ifdef __AVX__  
     #define SIMD_VEC_SIZE 32
 #else // __AVX__  
@@ -81,6 +73,13 @@ namespace smil
   #endif
 
   
+#include <math.h>
+#include <string>
+#include <limits>
+
+
+namespace smil
+{
   
     #define ASSUME_ALIGNED(buf) __builtin_assume_aligned(buf, SIMD_VEC_SIZE)
 
