@@ -134,7 +134,6 @@ TEMPLATE_WRAP_FUNC(waterfall);
 TEMPLATE_WRAP_FUNC_2T_CROSS(label);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelFast);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithArea);
-TEMPLATE_WRAP_FUNC(areaOpen);
 TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 
 %ignore smil::CompStrEltList::operator[];
@@ -163,6 +162,7 @@ TEMPLATE_WRAP_FUNC(zhangSkeleton);
 %include "DMorphoMaxTree.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpenMSER);
+TEMPLATE_WRAP_FUNC(areaOpen);
 
 %include "DMorphoGraph.hpp"
 TEMPLATE_WRAP_FUNC_3T_FIX_THIRD(mosaicToGraph, Graph<>);
