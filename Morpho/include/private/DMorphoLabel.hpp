@@ -329,34 +329,6 @@ namespace smil
 	return RES_OK;
     }
 
-    /**
-    * Area opening
-    * 
-    * Remove from image all connected components of size less than \a size pixels
-    */
-    template<class T>
-    size_t areaOpen(const Image<T> &imIn, size_t size, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
-    {
-	if (&imIn==&imOut)
-	{
-	    Image<T> tmpIm(imIn, true); // clone
-	    return areaOpen(tmpIm, size, imOut, se);
-	}
-	
-	ImageFreezer freezer(imOut);
-	
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	Image<size_t> imLabel(imIn);
-	
-	ASSERT((labelWithArea(imIn, imLabel, se)!=0));
-	ASSERT((threshold(imLabel, size, imLabel)==RES_OK));
-	ASSERT((copy(imLabel, imOut)==RES_OK));
-	ASSERT((inf(imIn, imOut, imOut)==RES_OK));
-	
-	return RES_OK;
-    }
 
     template <class T1, class T2>
     class neighborsFunct : public unaryMorphImageFunctionBase<T1, T2>
