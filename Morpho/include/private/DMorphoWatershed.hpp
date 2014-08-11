@@ -203,17 +203,12 @@ namespace smil
 	ASSERT_ALLOCATED(&imIn, &imBasinsInOut);
 	ASSERT_SAME_SIZE(&imIn, &imBasinsInOut);
 	
-	ImageFreezer freeze(imBasinsInOut);
+	Image<T> imMin(imIn);
+	minima(imIn, imMin, se);
+	Image<labelT> imLbl(imIn);
+	label(imMin, imLbl, se);
 	
-	Image<UINT8> imStatus(imIn);
-
- 	HierarchicalQueue<T,UINT,FIFO_Queue<UINT> > pq; // preallocated HQ
-//  	HierarchicalQueue<T> pq;
-
-	initWatershedHierarchicalQueue(imIn, imBasinsInOut, imStatus, pq);
-	processBasinsHierarchicalQueue(imIn, imBasinsInOut, imStatus, pq, se);
-
-	return RES_OK;
+	return basins(imIn, imLbl, imBasinsInOut);
     }
 
     template <class T, class labelT, class HQ_Type>
