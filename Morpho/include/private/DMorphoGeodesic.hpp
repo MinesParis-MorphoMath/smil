@@ -46,6 +46,9 @@ namespace smil
 
     // Geodesy
 
+    /**
+     * Geodesic dilation
+     */
     template <class T>
     RES_T geoDil(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
@@ -65,6 +68,9 @@ namespace smil
 	return RES_OK;
     }
 
+    /**
+     * Geodesic erosion
+     */
     template <class T>
     RES_T geoEro(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
@@ -533,6 +539,9 @@ namespace smil
 	return RES_OK;
     }
 
+    /**
+     * Distance function
+     */
     template <class T1, class T2>
     RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
