@@ -457,6 +457,8 @@ namespace smil
 
     /**
     * Opening by reconstruction
+    * 
+    * Erosion followed by a reconstruction
     */
     template <class T>
     RES_T buildOpen(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
