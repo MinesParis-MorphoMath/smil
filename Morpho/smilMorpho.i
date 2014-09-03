@@ -39,6 +39,7 @@ SMIL_MODULE(smilMorpho)
 #include "DMorphoFilter.hpp"
 #include "DMorphoArrow.hpp"
 #include "DMorphoWatershed.hpp"
+#include "DMorphoWatershedExtinction.hpp"
 #include "DMorphoLabel.hpp"
 #include "DCompositeSE.h"
 #include "DHitOrMiss.hpp"
@@ -133,6 +134,9 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(inflBasins);
 TEMPLATE_WRAP_FUNC(inflZones);
 TEMPLATE_WRAP_FUNC(waterfall);
 
+%include "DMorphoWatershedExtinction.hpp"
+TEMPLATE_WRAP_FUNC_2T_CROSS(watershedExtinction);
+TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinction);
 
 %include "DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(label);
