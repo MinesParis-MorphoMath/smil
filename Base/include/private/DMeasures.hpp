@@ -37,7 +37,7 @@
 
 #include <map>
 #include <set>
-
+#include <iostream>
 namespace smil
 {
   
@@ -282,6 +282,57 @@ namespace smil
     vector<T> valueList(const Image<T> &imIn, bool onlyNonZero=true)
     {
 	valueListFunc<T> func;
+	return func(imIn, onlyNonZero);
+    }
+    template <class T>
+    struct measModeValFunc : public MeasureFunctionBase<T, T >
+    {
+	typedef typename Image<T>::lineType lineType;
+
+      map<int,int> nbList;
+      int maxNb;
+      T mode;
+	virtual void initialize(const Image<T> &imIn)
+	{
+	  //BMI	    this->retVal.clear();
+	    nbList.clear();
+	    maxNb = 0;
+	    mode = 0;
+	}
+
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+
+	    for (size_t i=0;i<size;i++)
+	    {
+	      T val = lineIn[i];
+	      if(val>0){
+
+		if (nbList.find(val)==nbList.end()){
+		  nbList.insert(std::pair<int,int>(val,1));
+		  }
+		else
+		  nbList[val]++;
+		if(nbList[val]>maxNb){
+		  mode = val;
+		  maxNb = nbList[val];
+		}
+	      }// if (val>0)
+	    }// for i= 0; i < size
+	    this->retVal = mode;
+
+	}// virtual
+    };// END measModeValFunc
+
+    /**
+     * Get the mode of the histogram present in the image, i.e. the
+     * value that appears most often.
+     */
+    template <class T>
+    T measModeVal(const Image<T> &imIn, bool onlyNonZero=true)
+    {
+
+	measModeValFunc<T> func;
 	return func(imIn, onlyNonZero);
     }
     
