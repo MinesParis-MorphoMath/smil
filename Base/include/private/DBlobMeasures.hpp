@@ -129,7 +129,16 @@ namespace smil
     {
 	return processBlobMeasure<T, valueListFunc<T> >(imIn, blobs);
     }
-    
+        /**
+    * Measure the mode value of imIn in each blob.
+    * Return a map(labelValue, T) with the m mode value for each label.
+    */
+    template <class T>
+    map<UINT, T > measModeVals(const Image<T> &imIn, const map<UINT, Blob> &blobs)
+    {
+	return processBlobMeasure<T, measModeValFunc<T> >(imIn, blobs);
+    }
+
     /**
     * Measure barycenter of a labeled image.
     * Return a map(labelValue, Point) with the barycenter point coordinates for each label.
