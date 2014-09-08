@@ -137,8 +137,8 @@ TEMPLATE_WRAP_FUNC(waterfall);
 %include "DMorphoWatershedExtinction.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(watershedExtinction);
 TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinction);
-TEMPLATE_WRAP_FUNC_3T_CROSS_FIX_SECOND(watershedExtinctionGraph, Graph<>);
-TEMPLATE_WRAP_FUNC_4T_CROSS_FIX_THIRD(watershedExtinctionGraph, Graph<>);
+TEMPLATE_WRAP_FUNC_2T_CROSS(watershedExtinctionGraph);
+TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinctionGraph);
 
 %include "DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(label);
