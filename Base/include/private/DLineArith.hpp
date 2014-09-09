@@ -49,7 +49,7 @@ namespace smil
     inline void copyLine(const typename Image<T1>::lineType lIn, const size_t size, typename Image<T2>::lineType lOut)
     {
 	for (size_t i=0;i<size;i++)
-	  lOut[i] = T2(lIn[i]);
+	  lOut[i] = lIn[i];
     }
 
     template <class T>
