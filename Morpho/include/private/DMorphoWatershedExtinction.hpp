@@ -323,7 +323,7 @@ namespace smil
 	label (imMin, imLbl, se);
 	return watershedExtinction (imIn, imLbl, imOut, se);
     }
-    template < class T, class labelT, class GraphT,
+    template < class T, class labelT, class outT,
 	class HQ_Type >
 	RES_T processWatershedHierarchicalQueueExtinction (const Image < T >
 							   &imIn,
@@ -334,7 +334,7 @@ namespace smil
 							   basin < labelT >
 							   *e,
 							   UINT nbr_label,
-							   GraphT &graph){
+							   Graph < labelT, outT> &graph){
 	typename ImDtTypes < T >::lineType inPixels = imIn.getPixels ();
 	typename ImDtTypes < labelT >::lineType lblPixels =
 	    imLbl.getPixels ();
@@ -454,21 +454,20 @@ namespace smil
 	}
 
 	// Update Last level of flooding.
-	e[lblPixels[curOffset]].vol += e[lblPixels[curOffset]].area;
-	e[lblPixels[curOffset]].vol_ex_val += e[lblPixels[curOffset]].vol;
+//	e[lblPixels[curOffset]].vol += e[lblPixels[curOffset]].area;
+	e[lblPixels[curOffset]].vol_ex_val = e[lblPixels[curOffset]].vol;
 
 	return RES_OK;
     }
  
     template < class T,
 	class labelT,
-	class GraphT,
 	class outT > RES_T watershedExtinctionGraph (const Image < T > &imIn,
 						const Image < labelT >
 						&imMarkers,
 						Image < outT > &imOut,
 						Image < labelT > &imBasinsOut,
-						GraphT &graph,
+						Graph < labelT, outT > &graph,
 						const StrElt & se =
 						DEFAULT_SE) {
 	ASSERT (imIn.isAllocated() && imMarkers.isAllocated() && imOut.isAllocated() && imBasinsOut.isAllocated());
@@ -525,11 +524,10 @@ namespace smil
     }
     template < class T,
 	class labelT,
-	class GraphT,
 	class outT > RES_T watershedExtinctionGraph (const Image < T > &imIn,
 						Image < labelT > &imMarkers,
 						Image < outT > &imOut,
-						GraphT &graph,
+						Graph < labelT, outT > &graph,
 						const StrElt & se =
 						DEFAULT_SE) {
 	ASSERT_ALLOCATED (&imIn, &imMarkers, &imOut);
@@ -538,10 +536,9 @@ namespace smil
 	return watershedExtinctionGraph (imIn, imMarkers, imOut, imBasinsOut, graph, se);
     }
     template < class T,
-	class GraphT,
 	class outT > RES_T watershedExtinctionGraph (const Image < T > &imIn,
 						Image < outT > &imOut,
-						GraphT &graph,
+						Graph < UINT, outT > &graph,
 						const StrElt & se =
 						DEFAULT_SE) {
 	ASSERT_ALLOCATED (&imIn, &imOut);
