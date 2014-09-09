@@ -454,8 +454,8 @@ namespace smil
 	}
 
 	// Update Last level of flooding.
-	e[lblPixels[curOffset]].vol += e[lblPixels[curOffset]].area;
-	e[lblPixels[curOffset]].vol_ex_val += e[lblPixels[curOffset]].vol;
+//	e[lblPixels[curOffset]].vol += e[lblPixels[curOffset]].area;
+	e[lblPixels[curOffset]].vol_ex_val = e[lblPixels[curOffset]].vol;
 
 	return RES_OK;
     }
