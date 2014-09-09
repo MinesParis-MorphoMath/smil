@@ -339,7 +339,58 @@ class Test_Watershed_Extinction : public TestCase
 		imMark << vecMark;
 		imTruth << vecTruth;
 
+		cout << vol (imIn) << endl;
+		
 		watershedExtinction (imIn, imMark, imResult, se) ;
+		TEST_ASSERT(imResult==imTruth);
+		if (retVal!=RES_OK)
+		{
+			imResult.printSelf (1,true);
+		}
+	}
+};
+
+class Test_Watershed_Extinction_Graph : public TestCase 
+{
+	virtual void run () 
+	{
+		UINT8 vecIn[] = {
+			0, 0, 0, 0, 0,
+			3, 0, 1, 9, 5,
+			3, 3, 9, 0, 0,
+			0, 0, 9, 0, 0,
+			0, 0, 9, 0, 0
+		};
+		UINT8 vecMark[] = {
+			0, 1, 0, 0, 0,
+			0, 0, 0, 0, 0,
+			0, 0, 0, 0, 0,
+			0, 2, 0, 3, 0,
+			0, 2, 0, 0, 3
+		};
+		UINT8 vecTruth[] = {
+			0, 6,  0, 0,   0,
+			0, 0,  0, 0,   0,
+			0, 0,  0, 0,   0,
+			0, 12, 0, 174, 0,
+			0, 12, 0, 0,   174
+		};
+
+		StrElt se = sSE();
+
+		Image_UINT8 imIn (5,5) ;
+		Image_UINT8 imMark (imIn) ;
+		Image_UINT8 imTruth (imIn) ;
+		Image_UINT8 imResult (imIn) ;
+
+		Graph<UINT8,UINT8> g;
+
+		imIn << vecIn;
+		imMark << vecMark;
+		imTruth << vecTruth;
+
+		watershedExtinctionGraph (imIn, imMark, imResult, g, se) ;
+//		g.printSelf();
 		TEST_ASSERT(imResult==imTruth);
 		if (retVal!=RES_OK)
 		{
@@ -394,6 +445,7 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_Watershed);
       ADD_TEST(ts, Test_Watershed_Indempotence);
       ADD_TEST(ts, Test_Watershed_Extinction);
+      ADD_TEST(ts, Test_Watershed_Extinction_Graph);
       ADD_TEST(ts, Test_Build);
       
       return ts.run();
