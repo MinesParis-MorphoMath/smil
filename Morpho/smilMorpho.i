@@ -174,6 +174,7 @@ TEMPLATE_WRAP_FUNC(zhangSkeleton);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpenMSER);
 TEMPLATE_WRAP_FUNC(areaOpen);
+TEMPLATE_WRAP_FUNC(areaClose);
 
 %include "DMorphoGraph.hpp"
 TEMPLATE_WRAP_FUNC_3T_FIX_THIRD(mosaicToGraph, Graph<>);
