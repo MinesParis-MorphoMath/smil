@@ -203,21 +203,23 @@ namespace smil
 
 	typename Image<T1>::sliceType l1 = imIn.getLines();
 	typename Image<T2>::sliceType l2 = imOut.getLines();
+	typename Image<T1>::lineType p1 = imIn.getPixels();
+	typename Image<T2>::lineType p2 = imOut.getPixels();
 
 	size_t width = imIn.getWidth();
 	int i;
 	int nthreads = Core::getInstance()->getNumberOfThreads();
-	
-	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i)
-	#endif // USE_OPEN_MP
-	{
-	    #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
-	    #endif // USE_OPEN_MP
-	    for (i=0;i<(int)imIn.getLineCount();i++)
-	      copyLine<T1,T2>(l1[i], width, l2[i]);
-	}
+
+	copyLine<T1,T2>(imIn.getPixels(), imIn.getPixelCount(), imOut.getPixels());
+// 	#ifdef USE_OPEN_MP
+// 	    #pragma omp parallel private(i)
+// 	#endif // USE_OPEN_MP
+// 	{
+// 	    #ifdef USE_OPEN_MP
+// 		#pragma omp for schedule(dynamic,nthreads) nowait
+// 	    #endif // USE_OPEN_MP
+// 	    for (i=0;i<(int)imIn.getLineCount();i++)
+// 	}
 
 	imOut.modified();
 	return RES_OK;
