@@ -35,6 +35,12 @@
 namespace smil
 {
 
+    /**
+     * \ingroup Morpho
+     * \defgroup Watershed
+     * @{
+     */
+
     template < class labelT > struct basin
     {
 	size_t vol;
@@ -239,6 +245,16 @@ namespace smil
 
 	return RES_OK;
     }
+
+    /**
+     * Watershed using volume extinction values
+     *
+     * \param[in] imIn Input image.
+     * \param[in] imMarkers Label image containing the markers.
+     * \param[out] imBasinsOut (optional) Output image containing the volumic extinction order.
+     * \param[out] imBasinsOut (optional) Output image containing the basins.
+     * After processing, this image will contains a value on each initial markers. This value is the rank of the volumic extinction of the corresponding basin among all the other values of volumic extinction
+     */
     template < class T,
 	class labelT,
 	class outT > RES_T watershedExtinction (const Image < T > &imIn,
@@ -276,20 +292,17 @@ namespace smil
 	for (int i=0; i<nbr_label; ++i) {
 		if (max_ext<e[i].vol_ex_val) max_ext = e[i].vol_ex_val ;
 	}
-	if (max_ext > wsVal) {
-		cout << "WARNING : Extinction value is too high for the output type. Ranking the Extinction values." << endl;
-		basin <labelT> *e_cpy = new basin<labelT>[nbr_label+1]; 
-		memcpy (e_cpy, e, nbr_label*sizeof(basin<labelT>));
-		for (int i=1; i<nbr_label+1; ++i)
-			e_cpy[i].equivalent = i;
-		vector<basin<labelT> > ve (e_cpy+1, e_cpy+nbr_label+1);
-		// Sorting the vol_ev_val.
-		sort (ve.begin(), ve.end());
-		for (int i=0; i<nbr_label; ++i){
-			e[ve[i].equivalent].vol_ex_val = nbr_label - i;
-		}
-		delete[]e_cpy;
+	basin <labelT> *e_cpy = new basin<labelT>[nbr_label+1]; 
+	memcpy (e_cpy, e, nbr_label*sizeof(basin<labelT>));
+	for (int i=1; i<nbr_label+1; ++i)
+		e_cpy[i].equivalent = i;
+	vector<basin<labelT> > ve (e_cpy+1, e_cpy+nbr_label+1);
+	// Sorting the vol_ev_val.
+	sort (ve.begin(), ve.end());
+	for (int i=0; i<nbr_label; ++i){
+		e[ve[i].equivalent].vol_ex_val = nbr_label - i;
 	}
+	delete[]e_cpy;
 	for (size_t i=0; i<imIn.getPixelCount (); i++, *pixMarkers++, pixOut++) {
 		if(*pixMarkers != labelT(0))
 			*pixOut = e[*pixMarkers].vol_ex_val ;
@@ -459,7 +472,10 @@ namespace smil
 
 	return RES_OK;
     }
- 
+
+    /**
+     * Calculation of the minimum spanning tree, simultaneously to the image flooding, with edges weighted according to volume extinction values.
+     */
     template < class T,
 	class labelT,
 	class outT > RES_T watershedExtinctionGraph (const Image < T > &imIn,
@@ -499,20 +515,17 @@ namespace smil
 	for (int i=0; i<nbr_label; ++i) {
 		if (max_ext<e[i].vol_ex_val) max_ext = e[i].vol_ex_val ;
 	}
-	if (max_ext > wsVal) {
-		cout << "WARNING : Extinction value is too high for the output type. Ranking the Extinction values." << endl;
-		basin <labelT> *e_cpy = new basin<labelT>[nbr_label+1]; 
-		memcpy (e_cpy, e, nbr_label*sizeof(basin<labelT>));
-		for (int i=1; i<nbr_label+1; ++i)
-			e_cpy[i].equivalent = i;
-		vector<basin<labelT> > ve (e_cpy+1, e_cpy+nbr_label+1);
-		// Sorting the vol_ev_val.
-		sort (ve.begin(), ve.end());
-		for (int i=0; i<nbr_label; ++i){
-			e[ve[i].equivalent].vol_ex_val = nbr_label - i;
-		}
-		delete[]e_cpy;
+	basin <labelT> *e_cpy = new basin<labelT>[nbr_label+1]; 
+	memcpy (e_cpy, e, nbr_label*sizeof(basin<labelT>));
+	for (int i=1; i<nbr_label+1; ++i)
+		e_cpy[i].equivalent = i;
+	vector<basin<labelT> > ve (e_cpy+1, e_cpy+nbr_label+1);
+	// Sorting the vol_ev_val.
+	sort (ve.begin(), ve.end());
+	for (int i=0; i<nbr_label; ++i){
+		e[ve[i].equivalent].vol_ex_val = nbr_label - i;
 	}
+	delete[]e_cpy;
 
 	for (size_t i=0; i<imIn.getPixelCount (); i++, *pixMarkers++, pixOut++) {
 		if(*pixMarkers != labelT(0))
