@@ -562,6 +562,21 @@ namespace smil
 	label (imMin, imLbl, se);
 	return watershedExtinctionGraph (imIn, imLbl, imOut, graph, se);
     }
+    template < class T,
+	class outT > Graph < UINT, outT > watershedExtinctionGraph (const Image < T > &imIn,
+						Image < outT > &imOut,
+						const StrElt & se =
+						DEFAULT_SE) {
+
+	Graph < UINT, outT > graph;
+	Image < T > imMin (imIn);
+	minima (imIn, imMin, se);
+	Image < UINT > imLbl (imIn);
+	label (imMin, imLbl, se);
+	watershedExtinctionGraph (imIn, imLbl, imOut, graph, se);
+	return graph;
+    }
+
 }				// namespace smil
 
 
