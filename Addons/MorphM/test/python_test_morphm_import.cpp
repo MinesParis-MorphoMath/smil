@@ -3,7 +3,7 @@
 #include <boost/python.hpp>
 
 #include "DMorphMImage.hpp"
-#include "DTest.h"
+#include "Core/include/DCore.h"
 
 using namespace smil;
 
