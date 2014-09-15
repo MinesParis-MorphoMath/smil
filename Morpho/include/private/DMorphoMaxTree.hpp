@@ -927,6 +927,31 @@ void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, 
 	return attributeOpen<T, AreaCriterion>(imIn, imOut, stopSize);
     }
     
+    /**
+    * Area closing
+     * 
+     * Max-tree based algorithm
+     * \warning 4-connex only (6-connex in 3D)
+     * \param[in] imIn Input image
+     * \param[in] size The size of the closing
+     * \param[out] imOut Output image
+    */
+    template <class T>
+    RES_T areaClose(const Image<T> &imIn, int stopSize, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freeze(imOut);
+	
+	Image<T> tmpIm(imIn);
+	inv(imIn, tmpIm);	
+	RES_T res = attributeOpen<T, AreaCriterion>(tmpIm, imOut, stopSize);
+	inv(imOut, imOut);
+	
+	return res;
+    }
+    
     /** \} */
 
 } // namespace smil
