@@ -233,13 +233,13 @@ namespace smil
 	const int *dOffsets = _dOffsets.data();
 	
 	
-#pragma omp parallel 
+//#pragma omp parallel 
 {
 	int x, y, z;
 	size_t nbOffset;
 	UINT8 nbStat;
 	
-    #pragma omp single
+//    #pragma omp single
     {
 	while(!hq.isEmpty())
 	{
@@ -280,7 +280,7 @@ namespace smil
 			
 			if (nbStat==HQ_CANDIDATE) // Add it to the tmp offsets queue
 			{
-#pragma omp critical
+//#pragma omp critical
 			    tmpOffsets.push_back(nbOffset);
 			}
 			else if (nbStat==HQ_LABELED)
@@ -295,7 +295,7 @@ namespace smil
 		}
 	    }
 	    
-#pragma omp taskwait
+//#pragma omp taskwait
 	    if (statPixels[curOffset]!=HQ_WS_LINE && !tmpOffsets.empty())
 	    {
 		typename vector<UINT>::iterator t_it = tmpOffsets.begin();

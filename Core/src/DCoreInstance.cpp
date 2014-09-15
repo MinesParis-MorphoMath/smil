@@ -58,7 +58,7 @@ Core::Core ()
 #ifdef USE_OPEN_MP
     maxThreadNumber = cpuID.getLogical();
     coreNumber = cpuID.getCores();
-    threadNumber = maxThreadNumber;
+    threadNumber = coreNumber;
 #else // USE_OPEN_MP
     maxThreadNumber = 1;
     coreNumber = cpuID.getCores();
