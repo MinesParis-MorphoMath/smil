@@ -63,7 +63,9 @@ namespace smil
       vector<PixelSequence> sequences;
       typedef vector<PixelSequence>::iterator sequences_iterator;
       typedef vector<PixelSequence>::const_iterator sequences_const_iterator;
+      typedef vector<PixelSequence>::const_reverse_iterator sequences_const_reverse_iterator;
     };
+    
     
     /**
      * Create a map of Blob from a labelized image
@@ -112,6 +114,103 @@ namespace smil
 	
 	return blobs;
     }
+    
+    template <class T>
+    RES_T drawBlobs(const map<UINT, Blob> &blobs, Image<T> &imOut, T blobsValue=ImDtTypes<T>::max(), bool fillFirst = true, T defaultValue=T(0))
+    {
+	ASSERT_ALLOCATED(&imOut);
+	
+	ImageFreezer freeze(imOut);
+	
+	if (fillFirst)
+	  ASSERT(fill(imOut, defaultValue)==RES_OK);
+	
+	typename ImDtTypes<T>::lineType pixels = imOut.getPixels();
+	size_t pixCount = imOut.getPixelCount();
+	bool allBlobsFit = true;
+	
+	typename map<UINT, Blob>::const_iterator blob_it;
+	for (blob_it=blobs.begin();blob_it!=blobs.end();blob_it++)
+	{
+	    // Verify that the blob can fit in the image
+	    Blob::sequences_const_reverse_iterator last = blob_it->second.sequences.rbegin();
+	    if ((*last).offset + (*last).size >= pixCount)
+	    {
+		allBlobsFit = false;
+	    }
+	    else
+	    {
+		Blob::sequences_const_iterator it = blob_it->second.sequences.begin();
+		Blob::sequences_const_iterator it_end =  blob_it->second.sequences.end();
+		
+		T outVal = blobsValue!=defaultValue ? blobsValue : blob_it->first;
+		for (;it!=it_end;it++)
+		{
+		  typename ImDtTypes<T>::lineType line = pixels + (*it).offset;
+		  for (int i=0;i<(*it).size;i++)
+		    line[i] = outVal;
+		}
+	    }
+	}
+	imOut.modified();
+	
+	ASSERT(allBlobsFit, "Some blobs are outside the image", RES_ERR);
+	  
+	return RES_OK;
+    }
+
+    template <class T, class mapT>
+    RES_T drawBlobs(const map<UINT, Blob> &blobs, const mapT &lut, Image<T> &imOut, bool fillFirst = true, T defaultValue=T(0))
+    {
+	ASSERT_ALLOCATED(&imOut);
+	
+	ImageFreezer freeze(imOut);
+	
+	if (fillFirst)
+	  ASSERT(fill(imOut, defaultValue)==RES_OK);
+	
+	typename ImDtTypes<T>::lineType pixels = imOut.getPixels();
+	size_t pixCount = imOut.getPixelCount();
+	bool allBlobsFit = true;
+	
+	typename map<UINT, Blob>::const_iterator blob_it;
+	for (blob_it=blobs.begin();blob_it!=blobs.end();blob_it++)
+	{
+	    // Verify that the blob can fit in the image
+	    Blob::sequences_const_reverse_iterator last = blob_it->second.sequences.rbegin();
+	    if ((*last).offset + (*last).size >= pixCount)
+	    {
+		allBlobsFit = false;
+	    }
+	    else
+	    {
+		Blob::sequences_const_iterator it = blob_it->second.sequences.begin();
+		Blob::sequences_const_iterator it_end =  blob_it->second.sequences.end();
+		
+		typename mapT::const_iterator valIt = lut.find(blob_it->first);
+		T outVal = valIt!=lut.end() ? valIt->second : defaultValue;
+		for (;it!=it_end;it++)
+		{
+		  typename ImDtTypes<T>::lineType line = pixels + (*it).offset;
+		  for (int i=0;i<(*it).size;i++)
+		    line[i] = outVal;
+		}
+	    }
+	}
+	imOut.modified();
+	
+	ASSERT(allBlobsFit, "Some blobs are outside the image", RES_ERR);
+	  
+	return RES_OK;
+    }
+
+    template <class T>
+    RES_T drawBlobs(const map<UINT, Blob> &blobs, const map<UINT,T> &lut, Image<T> &imOut) //, bool fillFirst = true, T defaultValue=T(0))
+    {
+	return drawBlobs<T,map<UINT,T> >(blobs, lut, imOut); //, fillFirst, defaultValue);
+    }
+
+
     
 // @}
 

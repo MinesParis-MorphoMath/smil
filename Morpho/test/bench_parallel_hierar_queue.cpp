@@ -30,6 +30,7 @@
 
 #include "Core/include/DCore.h"
 #include "DMorpho.h"
+#include "Morpho/include/private/DMorphoParallelHierarQ.hpp"
 
 using namespace smil;
 
