@@ -149,7 +149,6 @@ TEMPLATE_WRAP_FUNC(scale);
 
 %include "DBaseMeasureOperations.hpp"
 
-
 // Weird swig error...
 %{
 #ifndef SWIGPY_SLICE_ARG
@@ -164,6 +163,7 @@ namespace std
 }
 
 TEMPLATE_WRAP_FUNC(computeBlobs);
+TEMPLATE_WRAP_FUNC(drawBlobs)
 
 %include "DMeasures.hpp"
 TEMPLATE_WRAP_FUNC(vol);

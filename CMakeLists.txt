@@ -569,6 +569,13 @@ FOREACH(_IMG_TYPE ${IMAGE_TYPES})
 ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 
+# SWIG WRAP FUNC 2T (same types)
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_FUNC_2T(func)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+	SET(_STWD "${_STWD}  %template(func) func<${_IMG_TYPE},${_IMG_TYPE} >;\n")
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
 # Two template types, first fixed, second variable
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_FUNC_2T_FIX_FIRST(func, fixedType)\n")
 FOREACH(_IMG_TYPE ${IMAGE_TYPES})
