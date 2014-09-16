@@ -96,7 +96,7 @@ namespace smil
 	
 	virtual void printSelf(ostream &os = std::cout, string s="") const
 	{
-	    os << s << (int)source << "-" << (int)target << " (" << weight << ")" << endl;
+	  os << s << (int)source << "-" << (int)target << " (" << (int)weight << ")" << endl;
 	}
     };
 
