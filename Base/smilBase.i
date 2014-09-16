@@ -147,7 +147,7 @@ TEMPLATE_WRAP_FUNC(trans);
 TEMPLATE_WRAP_FUNC(resize);
 TEMPLATE_WRAP_FUNC(scale);
 
-%include "DBaseMeasureOperations.hpp"
+%include "DBlob.hpp"
 
 // Weird swig error...
 %{
