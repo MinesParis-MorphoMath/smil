@@ -471,7 +471,7 @@ namespace smil
 	    lut[i] = lbl;
 	    i++;
 	}
-	applyLookup<T>(imIn, lut, imOut);
+	applyLookup(imIn, lut, imOut);
 	
 	return tVals;
 	
