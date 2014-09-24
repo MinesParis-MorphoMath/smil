@@ -114,7 +114,7 @@ namespace smil
 	map<size_t,size_t> nodeMap = graph.labelizeNodes();
 	map<T,T> lut(nodeMap.begin(), nodeMap.end()); 
 	
-	return applyLookup<T>(imMosRef, lut, imOut);
+	return applyLookup(imMosRef, lut, imOut);
     }
 
     template <class mosImT, class graphT, class imOutT>
