@@ -31,91 +31,11 @@
 #define _D_BASE_MEASURE_OPERATIONS_HPP
 
 #include "Core/include/private/DImage.hpp"
-#include <map>
+#include "Base/include/private/DBlob.hpp"
 
 namespace smil
 {
   
-/**
- * \ingroup Base
- * \defgroup BlobMesures Mesures on blobs
- * @{
- */
-
-    /**
-     * Start offset and length of pixels in an image
-     */
-    struct PixelSequence
-    {
-	size_t offset;
-	size_t size;
-	PixelSequence() : offset(0), size(0) {}
-	PixelSequence(size_t off, size_t siz) : offset(off), size(siz) {}
-    };
-    
-    /**
-     * List of offset and size of line contiguous pixels.
-     * 
-     * A Blob contains a vector of PixelSequence.
-     */
-    struct Blob
-    {
-      vector<PixelSequence> sequences;
-      typedef vector<PixelSequence>::iterator sequences_iterator;
-      typedef vector<PixelSequence>::const_iterator sequences_const_iterator;
-    };
-    
-    /**
-     * Create a map of Blob from a labelized image
-     */
-    template <class T>
-    map<UINT, Blob> computeBlobs(const Image<T> &imIn, bool onlyNonZero=true)
-    {
-	map<UINT, Blob> blobs;
-	
-	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, blobs);
-
-	typename ImDtTypes<T>::sliceType lines = imIn.getLines();
-	typename ImDtTypes<T>::lineType pixels;
-	size_t npix = imIn.getWidth();
-	size_t nlines = imIn.getLineCount();
-	
-	T curVal;
-	
-	for (size_t l=0;l<nlines;l++)
-	{
-	    size_t curSize = 0;
-	    size_t curStart = l*npix;
-	    
-	    pixels = lines[l];
-	    curVal = pixels[0];
-	    if (curVal!=0 || !onlyNonZero)
-	      curSize++;
-	    
-	    for (size_t i=1;i<npix;i++)
-	    {
-		if (pixels[i]==curVal)
-		  curSize++;
-		else
-		{
-		  if (curVal!=0 || !onlyNonZero)
-		    blobs[curVal].sequences.push_back(PixelSequence(curStart, curSize));
-		  curStart = i + l*npix;
-		  curSize = 1;
-		  curVal = pixels[i];
-		}
-	    }
-	    if (curVal!=0 || !onlyNonZero)
-	      blobs[curVal].sequences.push_back(PixelSequence(curStart, curSize));
-	    
-	}
-	
-	return blobs;
-    }
-    
-// @}
-
-
 /**
  * \ingroup Base
  * \defgroup Measures Base measures
