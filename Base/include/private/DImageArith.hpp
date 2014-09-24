@@ -1013,26 +1013,27 @@ namespace smil
     }
 
 
-    /**
-    * Apply a lookup map
-    */
-    template <class T1, class T2>
-    RES_T applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut, T2 defaultValue=T2(0))
+    template <class T1, class mapT, class T2>
+    RES_T applyLookup(const Image<T1> &imIn, const mapT &_map, Image<T2> &imOut, T2 defaultValue=T2(0))
     {
-	ASSERT(!lut.empty(), "Input lookup is empty", RES_ERR);
+	ASSERT(!_map.empty(), "Input map is empty", RES_ERR);
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
+
+	// Verify that the max(measure) doesn't exceed the T2 type max
+	typename mapT::const_iterator max_it = std::max_element(_map.begin(), _map.end());
+	ASSERT(( (*max_it).second < ImDtTypes<T2>::max() ), "Input map max exceeds data type max!", RES_ERR);
 
 	
 	typename Image<T1>::lineType pixIn = imIn.getPixels();
 	typename Image<T2>::lineType pixOut = imOut.getPixels();
 	
-	typename map<T1,T2>::const_iterator it;
+	typename mapT::const_iterator it;
 	
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	{
-	  it = lut.find(*pixIn);
-	  if (it!=lut.end())
+	  it = _map.find(*pixIn);
+	  if (it!=_map.end())
 	    *pixOut = it->second;
 	  else
 	    *pixOut = defaultValue;
@@ -1040,24 +1041,19 @@ namespace smil
 	  pixOut++;
 	}
 	imOut.modified();
-	    
+	
 	return RES_OK;
     }
-
-#ifndef SWIG    
+    
+    /**
+    * Apply a lookup map
+    */
     template <class T1, class T2>
-    RES_T applyLookup(const Image<T1> &imIn, const map<UINT,double> &measure_map, Image<T2> &imOut, T2 defaultValue=T2(0))
+    RES_T applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut, T2 defaultValue=T2(0))
     {
-	// Verify that the max(areas) doesn't exceed the T2 type max
-	typename map<UINT,double>::const_iterator max_it = std::max_element(measure_map.begin(), measure_map.end());
-	ASSERT(( (*max_it).second < double(ImDtTypes<T2>::max()) ), "Input map max exceeds data type max!", RES_ERR);
-
-	// Convert the map into a lookup
-	map<T2, T2> lookup(measure_map.begin(), measure_map.end());
-	
-	return applyLookup<T1,T2>(imIn, lookup, imOut, defaultValue);
+	return applyLookup<T1, map<T1,T2>, T2>(imIn, lut, imOut, defaultValue);
     }
-#endif // SWIG    
+
     
     
 /** @}*/
