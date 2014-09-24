@@ -147,8 +147,7 @@ TEMPLATE_WRAP_FUNC(trans);
 TEMPLATE_WRAP_FUNC(resize);
 TEMPLATE_WRAP_FUNC(scale);
 
-%include "DBaseMeasureOperations.hpp"
-
+%include "DBlob.hpp"
 
 // Weird swig error...
 %{
@@ -164,6 +163,7 @@ namespace std
 }
 
 TEMPLATE_WRAP_FUNC(computeBlobs);
+TEMPLATE_WRAP_FUNC(drawBlobs)
 
 %include "DMeasures.hpp"
 TEMPLATE_WRAP_FUNC(vol);
