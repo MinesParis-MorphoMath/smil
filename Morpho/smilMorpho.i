@@ -177,6 +177,7 @@ TEMPLATE_WRAP_FUNC(areaClose);
 
 %include "DMorphoGraph.hpp"
 TEMPLATE_WRAP_FUNC_3T_FIX_THIRD(mosaicToGraph, Graph<>);
+TEMPLATE_WRAP_FUNC(graphToMosaic);
 TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(graphToMosaic, Graph<>);
 TEMPLATE_WRAP_FUNC_3T_FIX_SECOND(drawGraph, Graph<>);
 
