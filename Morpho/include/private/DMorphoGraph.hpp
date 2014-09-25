@@ -117,6 +117,17 @@ namespace smil
 	return applyLookup(imMosRef, lut, imOut);
     }
 
+    template <class T>
+    RES_T graphToMosaic(const Image<T> &imMosRef, const Graph<UINT, T> &graph, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imOut);
+	
+	map<size_t,size_t> nodeMap = graph.labelizeNodes();
+	map<T,T> lut(nodeMap.begin(), nodeMap.end()); 
+	
+	return applyLookup(imMosRef, lut, imOut);
+    }
+
     template <class mosImT, class graphT, class imOutT>
     RES_T drawGraph(const Image<mosImT> &imMosaic, const graphT &graph, Image<imOutT> &imOut, imOutT linesValue=ImDtTypes<imOutT>::max())
     {
