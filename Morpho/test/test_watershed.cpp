@@ -307,27 +307,19 @@ class Test_Watershed_Extinction : public TestCase
 	virtual void run () 
 	{
 		UINT8 vecIn[] = {
-			0, 0, 0, 0, 0,
-			3, 0, 1, 9, 5,
-			3, 3, 9, 0, 0,
-			0, 0, 9, 0, 0,
-			0, 0, 9, 0, 0
+		    2,    2,    2,    2,    2,
+		      3,    2,    5,    9,    5,
+		    3,    3,    9,    0,    0,
+		      1,    1,    9,    0,    0,
+		    1,    1,    9,    0,    0,
 		};
 		UINT8 vecMark[] = {
-			0, 1, 0, 0, 0,
-			0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0,
-			0, 2, 0, 3, 0,
-			0, 2, 0, 0, 3
+		    0,    1,    0,    0,    0,
+		      0,    0,    0,    0,    0,
+		    0,    0,    0,    0,    0,
+		      0,    2,    0,    3,    0,
+		    0,    2,    0,    0,    3,
 		};
-		UINT8 vecTruth[] = {
-			0, 6, 0, 0, 0,
-			0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0,
-			0, 12, 0, 199, 0,
-			0, 12, 0, 0, 199
-		};
-
 		StrElt se = sSE();
 
 		Image_UINT8 imIn (5,5) ;
@@ -337,16 +329,64 @@ class Test_Watershed_Extinction : public TestCase
 
 		imIn << vecIn;
 		imMark << vecMark;
-		imTruth << vecTruth;
 
-		cout << vol (imIn) << endl;
-		
-		watershedExtinction (imIn, imMark, imResult, se) ;
+		// Volume
+		UINT8 volTruth[] = {
+		    0,    3,    0,    0,    0,
+		      0,    0,    0,    0,    0,
+		    0,    0,    0,    0,    0,
+		      0,    1,    0,    2,    0,
+		    0,    1,    0,    0,    2,
+		};
+		imTruth << volTruth;
+
+		watershedExtinction (imIn, imMark, imResult, "v", se) ;
 		TEST_ASSERT(imResult==imTruth);
 		if (retVal!=RES_OK)
 		{
-			imResult.printSelf (1,true);
+		    cout << endl << "in watershedExtinction volumic" << endl;
+		    imResult.printSelf (1,true);
+		    imTruth.printSelf (1,true);
 		}
+		
+		// Area
+		UINT8 areaTruth[] = {
+		  0,    1,    0,    0,    0,
+		    0,    0,    0,    0,    0,
+		  0,    0,    0,    0,    0,
+		    0,    3,    0,    2,    0,
+		  0,    3,    0,    0,    2,
+		};
+		imTruth << areaTruth;
+
+		watershedExtinction (imIn, imMark, imResult, "a", se) ;
+		TEST_ASSERT(imResult==imTruth);
+		if (retVal!=RES_OK)
+		{
+		    cout << endl << "in watershedExtinction area" << endl;
+		    imResult.printSelf (1,true);
+		    imTruth.printSelf (1,true);
+		}
+		
+		// Dynamic
+		UINT8 dynTruth[] = {
+		    0,    3,    0,    0,    0,
+		      0,    0,    0,    0,    0,
+		    0,    0,    0,    0,    0,
+		      0,    2,    0,    1,    0,
+		    0,    2,    0,    0,    1,
+		};
+		imTruth << dynTruth;
+
+		watershedExtinction (imIn, imMark, imResult, "d", se) ;
+		TEST_ASSERT(imResult==imTruth);
+		if (retVal!=RES_OK)
+		{
+		    cout << endl << "in watershedExtinction dynamic" << endl;
+		    imResult.printSelf (1,true);
+		    imTruth.printSelf (1,true);
+		}
+		
 	}
 };
 
@@ -355,11 +395,11 @@ class Test_Watershed_Extinction_Graph : public TestCase
 	virtual void run () 
 	{
 		UINT8 vecIn[] = {
-			0, 0, 0, 0, 0,
-			3, 0, 1, 9, 5,
+			2, 2, 2, 2, 2,
+			3, 2, 3, 9, 5,
 			3, 3, 9, 0, 0,
-			0, 0, 9, 0, 0,
-			0, 0, 9, 0, 0
+			1, 1, 9, 0, 0,
+			1, 1, 9, 0, 0
 		};
 		UINT8 vecMark[] = {
 			0, 1, 0, 0, 0,
@@ -369,11 +409,11 @@ class Test_Watershed_Extinction_Graph : public TestCase
 			0, 2, 0, 0, 3
 		};
 		UINT8 vecTruth[] = {
-			0, 6,  0, 0,   0,
-			0, 0,  0, 0,   0,
-			0, 0,  0, 0,   0,
-			0, 12, 0, 174, 0,
-			0, 12, 0, 0,   174
+		  0,    2,    0,    0,    0,
+		    0,    0,    0,    0,    0,
+		  0,    0,    0,    0,    0,
+		    0,    1,    0,    3,    0,
+		  0,    1,    0,    0,    3,
 		};
 
 		StrElt se = sSE();
@@ -394,7 +434,8 @@ class Test_Watershed_Extinction_Graph : public TestCase
 		TEST_ASSERT(imResult==imTruth);
 		if (retVal!=RES_OK)
 		{
-			imResult.printSelf (1,true);
+		    imResult.printSelf (1,true);
+		    imTruth.printSelf (1,true);
 		}
 	}
 };
@@ -436,6 +477,15 @@ class Test_Build : public TestCase
   }
 };
 
+struct A
+{
+    virtual void test() { cout << "A" << endl; }
+};
+
+struct B
+{
+    virtual void test() { cout << "B" << endl; }
+};
 
 int main(int argc, char *argv[])
 {
@@ -445,7 +495,7 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_Watershed);
       ADD_TEST(ts, Test_Watershed_Indempotence);
       ADD_TEST(ts, Test_Watershed_Extinction);
-      ADD_TEST(ts, Test_Watershed_Extinction_Graph);
+//       ADD_TEST(ts, Test_Watershed_Extinction_Graph);
       ADD_TEST(ts, Test_Build);
       
       return ts.run();
