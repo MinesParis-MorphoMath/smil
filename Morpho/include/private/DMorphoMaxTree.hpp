@@ -863,7 +863,7 @@ void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, 
     int child;
     UINT hauteur;
 
-    lut_node[root]=0;
+    lut_node[root] = tree.getLevel(root);
 
     tree.updateCriteria(root);
 
