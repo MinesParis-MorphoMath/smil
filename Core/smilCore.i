@@ -78,7 +78,7 @@ SMIL_MODULE(smilCore)
 #ifdef SMIL_WRAP_RGB
 %include "RGB.i"
 #else
-%include "DColor.h"
+%include "include/DColor.h"
 #endif // SMIL_WRAP_RGB
 
 
