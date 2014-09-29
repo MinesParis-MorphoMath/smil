@@ -40,6 +40,7 @@ namespace smil
      * \defgroup Watershed
      * @{
      */
+    
 
     template < class labelT, class outT > 
     struct basin
@@ -50,7 +51,7 @@ namespace smil
 	}
 	
 	size_t extinctionValue;
-	labelT equivalent;
+	labelT label;
 	virtual bool operator< (const basin<labelT,outT> &b2) const 
 	{
 		return extinctionValue < b2.extinctionValue; 
@@ -83,13 +84,13 @@ namespace smil
 		/* cur basin absorbs nb basin */
 		other.extinctionValue = other.area;
 		this->area += other.area;
-		other.equivalent = l1;
+		other.label = l1;
 	    }
 	    else {
 		/* nb basin absorbs cur basin */
 		this->extinctionValue = this->area;
 		other.area += this->area;
-		this->equivalent = l2;
+		this->label = l2;
 		l1 = l2;
 	    }
 	}
@@ -134,14 +135,14 @@ namespace smil
 		other.extinctionValue = other.volume;
 		volume += other.volume;
 		area += other.area;
-		other.equivalent = l1;
+		other.label = l1;
 	    }
 	    else {
 		/* nb basin absorbs cur basin */
 		this->extinctionValue = volume;
 		other.volume += volume;
 		other.area += area;
-		this->equivalent = l2;
+		this->label = l2;
 		l1 = l2;
 	    }
 	    
@@ -183,13 +184,13 @@ namespace smil
 		/* cur basin absorbs nb basin */
 		other.extinctionValue = currentLevel - other.minPixVal;
 		area += other.area;
-		other.equivalent = l1;
+		other.label = l1;
 	    }
 	    else {
 		/* nb basin absorbs cur basin */
 		this->extinctionValue = currentLevel - minPixVal;
 		other.area += area;
-		this->equivalent = l2;
+		this->label = l2;
 		l1 = l2;
 	    }
 	}
@@ -209,7 +210,7 @@ namespace smil
 	    cout << "  area       : " << e[i].area << endl;
 	    cout << "  extinctionValue : " << (int) e[i].extinctionValue << endl;
 	    cout << "  minValue : " << (int) e[i].minValue << endl;
-	    cout << "  equivalent : " << (int) e[i].equivalent << endl;
+	    cout << "  label : " << (int) e[i].label << endl;
 	}
     }
 
@@ -223,7 +224,7 @@ namespace smil
 
 #pragma omp parallel for
 	for (UINT i = 0; i < nbr_label + 1; ++i)
-	  e[i].equivalent = i;
+	  e[i].label = i;
 
 	// Empty the priority queue
 	hq.initialize (imIn);
@@ -327,9 +328,9 @@ namespace smil
 			l2 = lblPixels[nbOffset];
 			if (l2 > 0 && l2 != nbr_label + 1) 
 			{
-			    while (l2 != e[l2].equivalent) 
+			    while (l2 != e[l2].label) 
 			    {
-				l2 = e[l2].equivalent;
+				l2 = e[l2].label;
 			    }
 
 			    if (l1 == 0 || l1 == nbr_label + 1) 
@@ -340,9 +341,9 @@ namespace smil
 			    }
 			    else if (l1 != l2) 
 			    {
-				while (l1 != e[l1].equivalent) 
+				while (l1 != e[l1].label) 
 				{
-				    l1 = e[l1].equivalent;
+				    l1 = e[l1].label;
 				}
 				if (l1 != l2) 
 				  e[l1].merge(e[l2], l1, l2, current_level, graph);
@@ -420,12 +421,12 @@ namespace smil
 	basinT *e_cpy = new basinT[nbr_label+1]; 
 	memcpy (e_cpy, e, (nbr_label+1)*sizeof(basinT));
 	for (int i=1; i<nbr_label+1; ++i)
-		e_cpy[i].equivalent = i;
+		e_cpy[i].label = i;
 	vector<basinT> ve (e_cpy+1, e_cpy+nbr_label+1);
 	// Sorting the vol_ev_val.
 	sort (ve.begin(), ve.end());
 	for (int i=0; i<nbr_label; ++i){
-		e[ve[i].equivalent].extinctionValue = nbr_label - i;
+		e[ve[i].label].extinctionValue = nbr_label - i;
 	}
 	delete[]e_cpy;
 	for (size_t i=0; i<imIn.getPixelCount (); i++, *pixMarkers++, pixOut++) {
@@ -562,8 +563,8 @@ namespace smil
 			    nbOffset += (((y + 1) % 2) != 0);
 			l2 = lblPixels[nbOffset];
 			if (l2 > 0 && l2 != nbr_label + 1) {
-			    while (l2 != e[l2].equivalent) {
-				l2 = e[l2].equivalent;
+			    while (l2 != e[l2].label) {
+				l2 = e[l2].label;
 			    }
 
 			    if (l1 == 0 || l1 == nbr_label + 1) {
@@ -573,8 +574,8 @@ namespace smil
 			    }
 			    else if (l1 != l2) {
 
-				while (l1 != e[l1].equivalent) {
-				    l1 = e[l1].equivalent;
+				while (l1 != e[l1].label) {
+				    l1 = e[l1].label;
 				}
 // 				if (l1 != l2) {
 // 				    if (e[l1].volume > e[l2].volume
@@ -586,7 +587,7 @@ namespace smil
 // 				    	graph.addEdge (l2, l1, e[l2].extinctionValue) ;
 // 					e[l1].volume += e[l2].volume;
 // 					e[l1].area += e[l2].area;
-// 					e[l2].equivalent = l1;
+// 					e[l2].label = l1;
 // 				    }
 // 				    else {
 // 					/* nb basin absorbs cur basin */
@@ -594,7 +595,7 @@ namespace smil
 // 				    	graph.addEdge (l1, l2, e[l1].extinctionValue) ;
 // 					e[l2].volume += e[l1].volume;
 // 					e[l2].area += e[l1].area;
-// 					e[l1].equivalent = l2;
+// 					e[l1].label = l2;
 // 					l1 = l2;
 // 				    }
 // 				}
@@ -667,12 +668,12 @@ namespace smil
 	basin <labelT,outT> *e_cpy = new basin<labelT,outT>[nbr_label+1]; 
 	memcpy (e_cpy, e, nbr_label*sizeof(basin<labelT,outT>));
 	for (int i=1; i<nbr_label+1; ++i)
-		e_cpy[i].equivalent = i;
+		e_cpy[i].label = i;
 	vector<basin<labelT,outT> > ve (e_cpy+1, e_cpy+nbr_label+1);
 	// Sorting the vol_ev_val.
 	sort (ve.begin(), ve.end());
 	for (int i=0; i<nbr_label; ++i){
-		e[ve[i].equivalent].extinctionValue = nbr_label - i;
+		e[ve[i].label].extinctionValue = nbr_label - i;
 	}
 	delete[]e_cpy;
 
