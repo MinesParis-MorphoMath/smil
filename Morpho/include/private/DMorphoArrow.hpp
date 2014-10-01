@@ -89,8 +89,6 @@ namespace smil
 	size_t nSlices = imIn.getSliceCount();
 	size_t nLines = imIn.getHeight();
 
-	lineType outBuf = ImDtTypes<T>::createLine(parentClass::lineLen);
-
 	
 	volType srcSlices = imIn.getSlices();
 	volType destSlices = imOut.getSlices();
@@ -131,8 +129,6 @@ namespace smil
 	    }
 	}
 
-	ImDtTypes<T>::deleteLine(outBuf);
-	
 	imOut.modified();
 
 	    return RES_OK;
