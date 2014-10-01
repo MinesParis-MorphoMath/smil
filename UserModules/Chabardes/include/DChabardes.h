@@ -1,16 +1,8 @@
 #ifndef _DCHABARDES_H_
 #define _DCHABARDES_H_
 
-#ifdef USE_OPEN_MP
-#include <omp.h>
-#endif
+#include "DDistributed.h"
+#include "DWatershed.h"
 
-enum TAGS {MPITYPEREGISTRATION_TAG, CHUNK_TAG, EOT_TAG};
+#endif // _DCHABARDES_H_
 
-#include "mpi.h"
-#include "DImage.h"
-#include "DMorpho.h"
-#include "DChunk.h"
-#include "DGlobalHeader.h"
-
-#endif
