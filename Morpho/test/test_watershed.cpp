@@ -482,12 +482,7 @@ class Test_Build : public TestCase
 // {
 //   public:
 //     virtual void test() { cout << "FloodingBasin" << endl; }
-//     virtual FloodingBasin *clone() = 0;
-//     virtual void initValue(const T &val) {}
-//     virtual void increment(const T &val=1) {}
-//     virtual void raise(const T &val) {}
-//     virtual void merge(FloodingBasin<T> *other) {}
-//     virtual void finalize() {}
+//     virtual FloodingBasin *clone() { return new FloodingBasin; };
 //     UINT label;
 // };
 // 
@@ -497,12 +492,6 @@ class Test_Build : public TestCase
 //   public:
 //     virtual void test() { cout << "Volume FloodingBasin" << endl; }
 //     virtual VolumeFloodingBasin *clone() { return new VolumeFloodingBasin; }
-//     virtual void initValue(const T &val) {}
-//     virtual void increment(const T &val=1) {}
-//     virtual void raise(const T &val) {}
-//     virtual void merge(FloodingBasin<T> *other) {}
-//     virtual void finalize() {}
-//     UINT label;
 // };
 
 template <class T>
@@ -516,75 +505,23 @@ class Flooding
     virtual ~Flooding()
     {
 	deleteBasins();
-	delete aType;
-    }
-    void setBasinType(FloodingBasin<T> *a)
-    {
-	aType = a->clone();
     }
     
-    virtual UINT merge(UINT &lbl1, UINT &lbl2) {}
     
-    template <class labelT>
-    RES_T flood(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt & se)
-    {
-	ASSERT_ALLOCATED (&imIn, &imLbl);
-	ASSERT_SAME_SIZE (&imIn, &imLbl);
-// 	ImageFreezer freezer (imOut);
-// 	ImageFreezer freezer2 (imBasinsOut);
-
-// 	copy (imMarkers, imBasinsOut);
-
-	UINT nbr_label = maxVal (imLbl);
-	createBasins(nbr_label + 1);
-
-/*
-	HierarchicalQueue < T > pq;
-	initWatershedHierarchicalQueueExtinction(imIn, imBasinsOut, pq, e, nbr_label);
-	processWatershedExtinctionHierarchicalQueue<T,labelT,HierarchicalQueue<T>,outT,basinT> (imIn, imBasinsOut, pq, se, e, nbr_label);
-	
-	typename ImDtTypes < outT >::lineType pixOut = imOut.getPixels ();
-	typename ImDtTypes < labelT >::lineType pixMarkers = imMarkers.getPixels ();
-
-	fill (imOut, outT(0));
-	// Create the image containing the ws lines
-	T wsVal = ImDtTypes < outT >::max ();
-	size_t max_ext=0;
-	for (int i=0; i<nbr_label; ++i) {
-		if (max_ext<e[i].extinctionValue) max_ext = e[i].extinctionValue ;
-	}
-	basinT *e_cpy = new basinT[nbr_label+1]; 
-	memcpy (e_cpy, e, (nbr_label+1)*sizeof(basinT));
-	for (int i=1; i<nbr_label+1; ++i)
-		e_cpy[i].label = i;
-	vector<basinT> ve (e_cpy+1, e_cpy+nbr_label+1);
-	// Sorting the vol_ev_val.
-	sort (ve.begin(), ve.end());
-	for (int i=0; i<nbr_label; ++i){
-		e[ve[i].label].extinctionValue = nbr_label - i;
-	}
-	delete[]e_cpy;
-	for (size_t i=0; i<imIn.getPixelCount (); i++, *pixMarkers++, pixOut++) {
-		if(*pixMarkers != labelT(0))
-			*pixOut = e[*pixMarkers].extinctionValue ;
-	}
-
-	delete[]e;
-	return RES_OK;
-	
-	*/
-	initHierarchicalQueue(imIn, imLbl);
-	processHierarchicalQueue(imIn, imLbl, se);
-    }
-    
+    UINT *equivalents;
+    UINT *extinctionValues;
   protected:
-    FloodingBasin<T> *aType;
-    vector<FloodingBasin<T>*> basins;
     UINT basinNbr;
     HierarchicalQueue < T > hq;
     T currentLevel;
     
-    void createBasins(UINT nbr)
+    virtual void initValue(const UINT &lbl, const T &curPixVal) {}
+    virtual void increment(const UINT &lbl, const T &curPixVal=1) {}
+    virtual void raise(const UINT &lbl) {}
+    virtual UINT merge(UINT &lbl1, UINT &lbl2) {}
+    virtual void finalize(const UINT &lbl) {}
+    
+    virtual void createBasins(const UINT nbr)
     {
 	if (nbr==basinNbr)
 	  return;
@@ -592,29 +529,30 @@ class Flooding
 	if (basinNbr!=0)
 	  deleteBasins();
 	
+	equivalents = new UINT[nbr];
+	extinctionValues = new UINT[nbr];
+	
 	for (UINT i=0;i<nbr;i++)
 	{
-	    FloodingBasin<T> *_basin = aType->clone();
-	    basins.push_back(aType->clone());
+	    equivalents[i] = i;
+	    extinctionValues[i] = 0;
 	}
+	
+	basinNbr = nbr;
     }
-    void deleteBasins()
+    virtual void deleteBasins()
     {
 	if (basinNbr==0)
 	  return;
 	
-	for (UINT i=0;i<basinNbr;i++)
-	  delete basins[i];
-	basins.clear();
+	delete[] equivalents;
+	delete[] extinctionValues;
 	basinNbr = 0;
     }
     
     template <class labelT>
     void initHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl)
     {
-	for (UINT i = 0; i < basinNbr + 1; ++i)
-	  basins[i]->label = i;
-
 	// Empty the priority queue
 	hq.initialize (imIn);
 	typename ImDtTypes < T >::lineType inPixels = imIn.getPixels ();
@@ -629,8 +567,7 @@ class Flooding
 		for (size_t i = 0; i < s[0]; i++) {
 		    if (*lblPixels != 0) {
 			hq.push (T (*inPixels), offset);
-			basins[*lblPixels]->initValue(*inPixels);  
-			basins[*lblPixels]->increment(*inPixels);  
+			initValue(*lblPixels, *inPixels);
 		    }
 
 		    inPixels++;
@@ -660,6 +597,7 @@ class Flooding
 	T curPixVal;
 	currentLevel = 0;
 	size_t curOffset;
+	UINT nbr_label = basinNbr - 1;
 
 	// set an offset distance for each se point
 	for (it = it_start; it != it_end; it++) 
@@ -678,8 +616,8 @@ class Flooding
 	    if (curPixVal > currentLevel) 
 	    {
 		currentLevel = curPixVal;
-		for (labelT i = 1; i < basinNbr + 1; ++i) 
-			basins[i]->raise(currentLevel);
+		for (labelT i = 1; i < nbr_label + 1 ; ++i) 
+			raise(i);
 	    }
 
 	    size_t x0, y0, z0;
@@ -705,33 +643,37 @@ class Flooding
 			if (oddLine)
 			    nbOffset += (((y + 1) % 2) != 0);
 			l2 = lblPixels[nbOffset];
-			if (l2 > 0 && l2 != basinNbr + 1) 
+			if (l2 > 0 && l2 != nbr_label + 1 ) 
 			{
-			    while (l2 != basins[l2]->label) 
+			    while (l2 != equivalents[l2]) 
 			    {
-				l2 = basins[l2]->label;
+				l2 = equivalents[l2];
 			    }
 
-			    if (l1 == 0 || l1 == basinNbr + 1) 
+			    if (l1 == 0 || l1 == nbr_label + 1 ) 
 			    {
 				l1 = l2; // current pixel takes the label of its first labelled ngb  found
 				lblPixels[curOffset] = l1;
-				basins[l1]->increment();
+				increment(l1);
 			    }
 			    else if (l1 != l2) 
 			    {
-				while (l1 != basins[l1]->label) 
+				while (l1 != equivalents[l1]) 
 				{
-				    l1 = basins[l1]->label;
+				    l1 = equivalents[l1];
 				}
-				if (l1 != l2) 
-				  merge(l1, l2);
+				if (l1 != l2)
+				{
+				    if (merge(l1, l2)==l2)
+				      l1 = l2;
+				}
+				      
 			    }
 			}
 			else if (l2 == 0) 	// Add it to the tmp offsets queue
 			{
 			    tmpOffsets.push_back (nbOffset);
-			    lblPixels[nbOffset] = basinNbr + 1;
+			    lblPixels[nbOffset] = nbr_label + 1 ;
 			}
 		    }
 		}
@@ -749,16 +691,129 @@ class Flooding
 	}
 
 	// Update Last level of flooding.
-	basins[lblPixels[curOffset]]->finalize();
+	finalize(lblPixels[curOffset]);
 
 	return RES_OK;
+    }
+    
+  public:
+    template <class labelT, class outT>
+    RES_T flood(const Image<T> &imIn, Image<labelT> &imMarkers, Image<outT> &imOut, Image<labelT> &imBasinsOut, const StrElt & se)
+    {
+	ASSERT_ALLOCATED (&imIn, &imMarkers, &imOut, &imBasinsOut);
+	ASSERT_SAME_SIZE (&imIn, &imMarkers, &imOut, &imBasinsOut);
+	ImageFreezer freezer (imOut);
+	ImageFreezer freezer2 (imBasinsOut);
+
+	copy (imMarkers, imBasinsOut);
+
+	UINT nbr_label = maxVal (imMarkers);
+	
+	createBasins(nbr_label + 1);
+
+	initHierarchicalQueue(imIn, imBasinsOut);
+	processHierarchicalQueue(imIn, imBasinsOut, se);
+	
+	typename ImDtTypes < outT >::lineType pixOut = imOut.getPixels ();
+	typename ImDtTypes < labelT >::lineType pixMarkers = imMarkers.getPixels ();
+
+	fill (imOut, outT(0));
+	
+	for (size_t i=0; i<imIn.getPixelCount (); i++, *pixMarkers++, pixOut++) {
+		if(*pixMarkers != labelT(0))
+			*pixOut = this->extinctionValues[*pixMarkers] ;
+	}
+
+	return RES_OK;
+	
     }
 };
 
 
 template <class T>
-struct Flooding_B : public Flooding<T>
+struct VolumeFlooding : public Flooding<T>
 {
+    size_t *areas, *volumes;
+    T *floodLevels;
+    
+    virtual void createBasins(const UINT nbr)
+    {
+	if (nbr==this->basinNbr)
+	  return;
+	
+	if (this->basinNbr!=0)
+	  deleteBasins();
+	
+	areas = new size_t[nbr];
+	volumes = new size_t[nbr];
+	floodLevels = new T[nbr];
+	
+	for (UINT i=0;i<nbr;i++)
+	{
+	    areas[i] = 0;
+	    volumes[i] = 0;
+	    floodLevels[i] = 0;
+	}
+	
+	Flooding<T>::createBasins(nbr);
+    }
+    
+    virtual void deleteBasins()
+    {
+	if (this->basinNbr==0)
+	  return;
+	
+	Flooding<T>::deleteBasins();
+    }
+    
+    
+    virtual void initValue(const UINT &lbl, const T &curPixVal)
+    {
+	floodLevels[lbl] = curPixVal;
+	areas[lbl]++;
+    }
+    virtual void increment(const UINT &lbl, const T &curPixVal=1)
+    {
+	areas[lbl]++;
+    }
+    virtual void raise(const UINT &lbl)
+    {
+	if (floodLevels[lbl] < this->currentLevel) 
+	{
+	    volumes[lbl] += areas[lbl] * (this->currentLevel - floodLevels[lbl]);
+	    floodLevels[lbl] = this->currentLevel;
+	}
+    }
+    virtual UINT merge(UINT &lbl1, UINT &lbl2)
+    {
+	UINT eater, eaten;
+	UINT v1 = volumes[lbl1], v2 = volumes[lbl2];
+	UINT fl1 = floodLevels[lbl1], fl2 = floodLevels[lbl2];
+	
+	if (volumes[lbl1] > volumes[lbl2] || (volumes[lbl1] == volumes[lbl2] && floodLevels[lbl1] < floodLevels[lbl2]))
+	{
+	    eater = lbl1;
+	    eaten = lbl2;
+	}
+	else 
+	{
+	    eater = lbl2;
+	    eaten = lbl1;
+	}
+	
+	this->extinctionValues[eaten] = volumes[eaten];
+	volumes[eater] += volumes[eaten];
+	areas[eater] += areas[eaten];
+	this->equivalents[eaten] = eater;
+	
+	return eater;
+    }
+    virtual void finalize(const UINT &lbl)
+    {
+	volumes[lbl] += areas[lbl];
+	this->extinctionValues[lbl] += volumes[lbl];
+    }
+    
 };
 
 
@@ -774,9 +829,7 @@ int main(int argc, char *argv[])
 //       ADD_TEST(ts, Test_Watershed_Extinction_Graph);
       ADD_TEST(ts, Test_Build);
       
-      Flooding_B<UINT8> fb;
-      VolumeFloodingBasin<UINT8> b;
-      fb.setBasinType(&b);
+      VolumeFlooding<UINT8> fb;
       
       UINT8 vecIn[] = {
 	  2,    2,    2,    2,    2,
@@ -796,9 +849,20 @@ int main(int argc, char *argv[])
 
       Image_UINT8 imIn (5,5) ;
       Image_UINT8 imMark (imIn) ;
+      Image_UINT8 imOut (imIn) ;
+      Image_UINT8 imBasins (imIn) ;
       
-      fb.flood(imIn, imMark, hSE());
-      fb[0]->test();
+      imIn << vecIn;
+      imMark << vecMark;
+      
+      fb.flood(imIn, imMark, imOut, imBasins, hSE());
+      
+//     0,    6,    0,    0,    0,
+//        0,    0,    0,    0,    0,
+//     0,    0,    0,    0,    0,
+//        0,  179,    0,   30,    0,
+//     0,  179,    0,    0,   30,
+      imOut.printSelf(1);
       
       return ts.run();
       
