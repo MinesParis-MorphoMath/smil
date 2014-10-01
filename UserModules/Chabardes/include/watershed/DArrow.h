@@ -19,14 +19,14 @@ struct equSupLine3 : public tertiaryLineFunctionBase<T1>
 	inline void _exec(const lineType1 lIn1, const lineType1 lIn2, const size_t size, lineType2 lOut) {
 		T2 _trueVal (trueVal), _falseVal (falseVal);
 		for (size_t i=0; i<size; i++) {
-			lOut[i] |= lIn1 == lIn2 ? _trueVal : _falseVal;
+			lOut[i] |= (lIn1[i] == lIn2[i]) ? _trueVal : _falseVal;
 		}
 	}
 
 };
 
 template <class T, class arrowT=UINT8>
-class arrowSteepestFunction : public unaryMorphImageFunctionBase<T, arrowT>
+class arrowMinFunction : public unaryMorphImageFunctionBase<T, arrowT>
 {
 	public:
 		typedef unaryMorphImageFunctionBase<T, arrowT> parentClass;
@@ -39,7 +39,7 @@ class arrowSteepestFunction : public unaryMorphImageFunctionBase<T, arrowT>
 		typedef typename imageArrowType::sliceType sliceArrowType;
 		typedef typename imageArrowType::volType volArrowType;
 
-	arrowSteepestFunction (T border=numeric_limits<T>::min()) : borderValue (border), unaryMorphImageFunctionBase<T, arrowT> () 
+	arrowMinFunction (T border=numeric_limits<T>::min()) : borderValue (border), unaryMorphImageFunctionBase<T, arrowT> () 
 		{ 
 		}
 
@@ -62,14 +62,23 @@ class arrowSteepestFunction : public unaryMorphImageFunctionBase<T, arrowT>
 };
 
 template <class T, class arrowT>
-RES_T arrowSteepestFunction<T, arrowT>::_exec (const imageInType &in, imageArrowType &arrow, const StrElt &se) {
+RES_T arrowMinFunction<T, arrowT>::_exec (const imageInType &in, imageArrowType &arrow, const StrElt &se) {
 	ASSERT_ALLOCATED (&in, &arrow) ;
 	ASSERT_SAME_SIZE (&in, &arrow) ;
 
 	if (!areAllocated (&in, &arrow, NULL))
 		return RES_ERR_BAD_ALLOCATION;
 
-	UINT sePtsNumber = se.points.size();
+	vector<IntPoint>::const_iterator it_start = se.points.begin();
+	vector<IntPoint>::const_iterator it_end = se.points.end();
+	vector<IntPoint>::const_iterator it;
+	StrElt cpSe;
+	cpSe.odd = se.odd;
+	for (it = it_start; it != it_end; ++it)
+		if (it->x != 0 || it->y!=0 || it->z!=0)
+			cpSe.addPoint (*it);
+
+	UINT sePtsNumber = cpSe.points.size();
 	if( sePtsNumber == 0 )
 		return RES_OK;
 
@@ -83,14 +92,17 @@ RES_T arrowSteepestFunction<T, arrowT>::_exec (const imageInType &in, imageArrow
 	lineInType *srcLines;
 	lineArrowType *destLines;
 
-	bool oddSe = se.odd, oddLine = 0;
+	bool oddSe = cpSe.odd, oddLine = 0;
 	size_t x,y,z;
 
 	borderBuf = ImDtTypes<T>::createLine (lineLen);
 	cpBuf = ImDtTypes<T>::createLine (lineLen);
 	minBuf = ImDtTypes<T>::createLine (lineLen);
+	nullBuf = ImDtTypes<T>::createLine (lineLen);
+	flagBuf = ImDtTypes<T>::createLine (lineLen);
 
 	fillLine<T>(nullBuf, lineLen, arrowT(0));
+	fillLine<T>(borderBuf, lineLen, T(borderValue));
 
 	for (size_t s=0; s<nSlices; ++s) {
 		srcLines = srcSlices[s];
@@ -105,9 +117,9 @@ RES_T arrowSteepestFunction<T, arrowT>::_exec (const imageInType &in, imageArrow
 			copyLine<T> (lineIn, lineLen, minBuf);
 
 			for (UINT p=0; p<sePtsNumber; ++p) {
-				x = - se.points[p].x + oddLine;
-				y = l + se.points[p].y;
-				z = s + se.points[p].z;
+				x = - cpSe.points[p].x + oddLine;
+				y = l + cpSe.points[p].y;
+				z = s + cpSe.points[p].z;
 				
 				equSup.trueVal = (1UL << p);
 
@@ -122,15 +134,28 @@ RES_T arrowSteepestFunction<T, arrowT>::_exec (const imageInType &in, imageArrow
 				oddLine = !oddLine;
 		}
 	}
-
-	// Now we Have the arrow to the minimum neighbors.
-	// Process equivalent path. 
 }
 
 template <class T, class arrowT>
-RES_T arrowSteepest (const Image<T> &in, Image<arrowT> &arrow, const StrElt &se, T borderValue=numeric_limits<T>::min()) {
-	arrowSteepestFunction<T, arrowT> iFunc (borderValue) ;
+RES_T arrowMin (const Image<T> &in, Image<arrowT> &arrow, const StrElt &se, T borderValue=numeric_limits<T>::max()) {
+	arrowMinFunction<T, arrowT> iFunc (borderValue) ;
 	return iFunc (in, arrow, se) ;
+}
+
+template <class T>
+int hammingWeight (T x) {
+	int count; 
+	for (count = 0; x; ++count) {
+		x &= x-1;
+	}
+	return count;
+}
+
+template <class T, class arrowT>
+RES_T arrowSteepest (const Image<T> &in, Image<arrowT> &arrow, const StrElt &se) {
+	arrowMin (in, arrow, se);
+	
+		
 }
 
 }

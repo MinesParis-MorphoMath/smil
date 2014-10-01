@@ -7,7 +7,7 @@ class Test_Waterdrop : public TestCase
   virtual void run()
   {
       UINT8 vecIn[] = { 
-	2, 2, 2, 2, 2, 2,
+	4, 4, 4, 4, 4, 4,
 	7, 7, 7, 7, 7, 7,
 	2, 7, 5, 6, 2, 2,
 	2, 6, 5, 6, 2, 2,
@@ -41,15 +41,14 @@ class Test_Waterdrop : public TestCase
       Image_UINT8 arrow(in);
       Image_UINT8 truth(in);
 
-      StrElt se = hSE();
+      StrElt se = sSE();
       
       in << vecIn;
       label << vecLbl;
-      arrowSteepest (in, arrow, se, UINT8(255)) ;
+      arrowSteepest (in, arrow, se) ;
       truth << vecTruth;
 
-      //waterdropFunc func ;
-      //func (in, arrow, 14, label, se) ;
+      waterdrop (in, arrow, 14, label, se) ;
       
       TEST_ASSERT (label == truth) ;
   }
