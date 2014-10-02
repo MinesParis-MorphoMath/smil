@@ -494,41 +494,56 @@ class Test_Build : public TestCase
 //     virtual VolumeFloodingBasin *clone() { return new VolumeFloodingBasin; }
 // };
 
-template <class T>
-class Flooding
+template <class T, class extValType> class Flooding;
+
+template <class T, class extValType>
+struct extinctionValuesComp
+{
+    extinctionValuesComp(Flooding<T,extValType> *_flooding)
+    {
+	flooding = _flooding;
+    }
+    inline bool operator() (const UINT &i, const UINT &j)
+    {
+	return (flooding->extinctionValues[i] > flooding->extinctionValues[j] );
+    }
+    Flooding<T,extValType> *flooding;
+};
+
+template <class T, class extValType=UINT>
+class Flooding : public BaseObject
 {
   public:
     Flooding()
-      : basinNbr(0)
+      : BaseObject("Flooding"),
+	basinNbr(0)
     {
     }
     virtual ~Flooding()
     {
-	deleteBasins();
+	if (basinNbr!=0)
+	  deleteBasins();
     }
     
     
     UINT *equivalents;
-    UINT *extinctionValues;
-  protected:
-    UINT basinNbr;
-    HierarchicalQueue < T > hq;
-    T currentLevel;
+    extValType *extinctionValues;
     
-    virtual void initValue(const UINT &lbl, const T &curPixVal) {}
-    virtual void increment(const UINT &lbl, const T &curPixVal=1) {}
+    UINT getCurrentLevel() { return currentLevel; }
+  protected:
+    UINT labelNbr, basinNbr;
+    HierarchicalQueue < T > hq;
+    T currentLevel, currentPixVal;
+    size_t currentOffset;
+    
+    virtual void initValue(const UINT &lbl) {}
+    virtual void increment(const UINT &lbl) {}
     virtual void raise(const UINT &lbl) {}
     virtual UINT merge(UINT &lbl1, UINT &lbl2) {}
     virtual void finalize(const UINT &lbl) {}
     
     virtual void createBasins(const UINT nbr)
     {
-	if (nbr==basinNbr)
-	  return;
-	
-	if (basinNbr!=0)
-	  deleteBasins();
-	
 	equivalents = new UINT[nbr];
 	extinctionValues = new UINT[nbr];
 	
@@ -542,9 +557,6 @@ class Flooding
     }
     virtual void deleteBasins()
     {
-	if (basinNbr==0)
-	  return;
-	
 	delete[] equivalents;
 	delete[] extinctionValues;
 	basinNbr = 0;
@@ -560,30 +572,30 @@ class Flooding
 	size_t s[3];
 
 	imIn.getSize (s);
-	size_t offset = 0;
+	currentOffset = 0;
 
 	for (size_t k = 0; k < s[2]; k++)
 	    for (size_t j = 0; j < s[1]; j++)
 		for (size_t i = 0; i < s[0]; i++) {
 		    if (*lblPixels != 0) {
-			hq.push (T (*inPixels), offset);
-			initValue(*lblPixels, *inPixels);
+			currentPixVal = *inPixels;
+			hq.push (T (*inPixels), currentOffset);
+			initValue(*lblPixels);
 		    }
 
 		    inPixels++;
 		    lblPixels++;
-		    offset++;
+		    currentOffset++;
 		}
     }
     
     template < class labelT >
-    RES_T processHierarchicalQueue (const Image < T > &imIn,
-							   Image < labelT > &imLbl,
-							   const StrElt & se)
+    RES_T processHierarchicalQueue (const Image < T > &imIn, 
+				    Image < labelT > &imLbl,
+				    const StrElt & se, Graph<labelT,extValType> *graph=NULL)
     {
 	typename ImDtTypes < T >::lineType inPixels = imIn.getPixels ();
-	typename ImDtTypes < labelT >::lineType lblPixels =
-	    imLbl.getPixels ();
+	typename ImDtTypes < labelT >::lineType lblPixels = imLbl.getPixels ();
 	vector < int >dOffsets;
 
 	vector < IntPoint >::const_iterator it_start = se.points.begin ();
@@ -594,10 +606,8 @@ class Flooding
 
 	imIn.getSize (s);
 
-	T curPixVal;
 	currentLevel = 0;
-	size_t curOffset;
-	UINT nbr_label = basinNbr - 1;
+	currentOffset = 0;
 
 	// set an offset distance for each se point
 	for (it = it_start; it != it_end; it++) 
@@ -609,24 +619,24 @@ class Flooding
 
 	while (!hq.isEmpty ()) 
 	{
-	    curOffset = hq.pop ();
-	    curPixVal = inPixels[curOffset];
+	    currentOffset = hq.pop ();
+	    currentPixVal = inPixels[currentOffset];
 
 	    // Rising the elevation of the basins
-	    if (curPixVal > currentLevel) 
+	    if (currentPixVal > currentLevel) 
 	    {
-		currentLevel = curPixVal;
-		for (labelT i = 1; i < nbr_label + 1 ; ++i) 
+		currentLevel = currentPixVal;
+		for (labelT i = 1; i < labelNbr + 1 ; ++i) 
 			raise(i);
 	    }
 
 	    size_t x0, y0, z0;
 
-	    imIn.getCoordsFromOffset (curOffset, x0, y0, z0);
+	    imIn.getCoordsFromOffset (currentOffset, x0, y0, z0);
 	    bool oddLine = se.odd && ((y0) % 2);
 	    int x, y, z;
 	    size_t nbOffset;
-	    UINT l1 = lblPixels[curOffset], l2;
+	    UINT l1 = lblPixels[currentOffset], l2;
 
 	    for (it = it_start, it_off = it_off_start; it != it_end; it++, it_off++)
 		if (it->x != 0 || it->y != 0 || it->z != 0)	// useless if x=0 & y=0 & z=0
@@ -639,21 +649,21 @@ class Flooding
 		    if (x >= 0 && x < (int) s[0] && y >= 0 && y < (int) s[1]
 			&& z >= 0 && z < (int) s[2]) 
 		    {
-			nbOffset = curOffset + *it_off;
+			nbOffset = currentOffset + *it_off;
 			if (oddLine)
 			    nbOffset += (((y + 1) % 2) != 0);
 			l2 = lblPixels[nbOffset];
-			if (l2 > 0 && l2 != nbr_label + 1 ) 
+			if (l2 > 0 && l2 != labelNbr + 1 ) 
 			{
 			    while (l2 != equivalents[l2]) 
 			    {
 				l2 = equivalents[l2];
 			    }
 
-			    if (l1 == 0 || l1 == nbr_label + 1 ) 
+			    if (l1 == 0 || l1 == labelNbr + 1 ) 
 			    {
 				l1 = l2; // current pixel takes the label of its first labelled ngb  found
-				lblPixels[curOffset] = l1;
+				lblPixels[currentOffset] = l1;
 				increment(l1);
 			    }
 			    else if (l1 != l2) 
@@ -664,7 +674,14 @@ class Flooding
 				}
 				if (l1 != l2)
 				{
-				    if (merge(l1, l2)==l2)
+				    // merge basins
+				    UINT eater = merge(l1, l2);
+				    UINT eaten = (eater==l1) ? l2 : l1;
+				    
+				    if (graph)
+				      graph->addEdge(eaten, eater, extinctionValues[eaten]);
+				    
+				    if (eater==l2)
 				      l1 = l2;
 				}
 				      
@@ -673,7 +690,7 @@ class Flooding
 			else if (l2 == 0) 	// Add it to the tmp offsets queue
 			{
 			    tmpOffsets.push_back (nbOffset);
-			    lblPixels[nbOffset] = nbr_label + 1 ;
+			    lblPixels[nbOffset] = labelNbr + 1 ;
 			}
 		    }
 		}
@@ -691,61 +708,122 @@ class Flooding
 	}
 
 	// Update Last level of flooding.
-	finalize(lblPixels[curOffset]);
+	finalize(lblPixels[currentOffset]);
 
 	return RES_OK;
     }
     
   public:
-    template <class labelT, class outT>
-    RES_T flood(const Image<T> &imIn, Image<labelT> &imMarkers, Image<outT> &imOut, Image<labelT> &imBasinsOut, const StrElt & se)
+    template <class labelT>
+    RES_T flood(const Image<T> &imIn, Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, Graph<labelT,extValType> *graph, const StrElt & se)
     {
-	ASSERT_ALLOCATED (&imIn, &imMarkers, &imOut, &imBasinsOut);
-	ASSERT_SAME_SIZE (&imIn, &imMarkers, &imOut, &imBasinsOut);
-	ImageFreezer freezer (imOut);
+	ASSERT_ALLOCATED (&imIn, &imMarkers, &imBasinsOut);
+	ASSERT_SAME_SIZE (&imIn, &imMarkers, &imBasinsOut);
 	ImageFreezer freezer2 (imBasinsOut);
 
 	copy (imMarkers, imBasinsOut);
 
-	UINT nbr_label = maxVal (imMarkers);
+	labelNbr = maxVal (imMarkers);
 	
-	createBasins(nbr_label + 1);
+	if (basinNbr!=0)
+	  deleteBasins();
+	
+	createBasins(labelNbr + 1);
 
 	initHierarchicalQueue(imIn, imBasinsOut);
-	processHierarchicalQueue(imIn, imBasinsOut, se);
+	processHierarchicalQueue(imIn, imBasinsOut, se, graph);
 	
-	typename ImDtTypes < outT >::lineType pixOut = imOut.getPixels ();
+	return RES_OK;
+    }
+    template <class labelT>
+    RES_T flood(const Image<T> &imIn, Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt & se)
+    {
+	Graph<labelT,extValType> *nullGraph = NULL;
+	return flood(imIn, imMarkers, imBasinsOut, nullGraph, se);
+    }
+    
+    template <class labelT, class outT>
+    RES_T floodWithValues(const Image<T> &imIn, Image<labelT> &imMarkers, Image<outT> &imExtValOut, Image<labelT> &imBasinsOut, const StrElt & se)
+    {
+	ASSERT_ALLOCATED (&imExtValOut);
+	ASSERT_SAME_SIZE (&imIn, &imExtValOut);
+	
+	ASSERT(flood(imIn, imMarkers, imBasinsOut, se)==RES_OK);
+
+	ImageFreezer freezer (imExtValOut);
+	
+	typename ImDtTypes < outT >::lineType pixOut = imExtValOut.getPixels ();
 	typename ImDtTypes < labelT >::lineType pixMarkers = imMarkers.getPixels ();
 
-	fill (imOut, outT(0));
+	fill(imExtValOut, outT(0));
 	
-	for (size_t i=0; i<imIn.getPixelCount (); i++, *pixMarkers++, pixOut++) {
-		if(*pixMarkers != labelT(0))
-			*pixOut = this->extinctionValues[*pixMarkers] ;
+	for (size_t i=0; i<imIn.getPixelCount (); i++, *pixMarkers++, pixOut++) 
+	{
+	    if(*pixMarkers != labelT(0))
+	      *pixOut = extinctionValues[*pixMarkers] ;
 	}
 
 	return RES_OK;
+    }
+    template <class labelT, class outT>
+    RES_T floodWithValues(const Image<T> &imIn, Image<labelT> &imMarkers, Image<outT> &imExtValOut, const StrElt & se)
+    {
+	Image<labelT> imBasinsOut(imMarkers);
+	return floodWithValues(imIn, imMarkers, imExtValOut, se);
+    }
+    
+    template <class labelT>
+    RES_T floodWithRank(const Image<T> &imIn, Image<labelT> &imMarkers, Image<labelT> &imExtRankOut, Image<labelT> &imBasinsOut, const StrElt & se)
+    {
+	ASSERT_ALLOCATED (&imExtRankOut);
+	ASSERT_SAME_SIZE (&imIn, &imExtRankOut);
 	
+	ASSERT(flood(imIn, imMarkers, imBasinsOut, se)==RES_OK);
+
+	typename ImDtTypes < labelT >::lineType pixOut = imExtRankOut.getPixels ();
+	typename ImDtTypes < labelT >::lineType pixMarkers = imMarkers.getPixels ();
+
+	ImageFreezer freezer (imExtRankOut);
+	
+	// Sort by extinctionValues
+	vector<UINT> rank(labelNbr);
+	for (UINT i=0;i<labelNbr;i++)
+	  rank[i] = i+1;
+	
+	extinctionValuesComp<T,extValType> comp(this);
+	sort(rank.begin(), rank.end(), comp);
+	for (UINT i=0;i<labelNbr;i++)
+	  extinctionValues[rank[i]] = i+1;
+	
+	fill(imExtRankOut, labelT(0));
+	
+	for (size_t i=0; i<imIn.getPixelCount (); i++, *pixMarkers++, pixOut++) 
+	{
+	    if(*pixMarkers != labelT(0))
+	      *pixOut = extinctionValues[*pixMarkers] ;
+	}
+
+	return RES_OK;
+    }
+    template <class labelT, class outT>
+    RES_T floodWithRank(const Image<T> &imIn, Image<labelT> &imMarkers, Image<outT> &imExtRankOut, const StrElt & se)
+    {
+	Image<labelT> imBasinsOut(imMarkers);
+	return floodWithValues(imIn, imMarkers, imExtRankOut, se);
     }
 };
 
 
 template <class T>
-struct VolumeFlooding : public Flooding<T>
+struct VolumeFlooding : public Flooding<T,UINT>
 {
-    size_t *areas, *volumes;
+    UINT *areas, *volumes;
     T *floodLevels;
     
     virtual void createBasins(const UINT nbr)
     {
-	if (nbr==this->basinNbr)
-	  return;
-	
-	if (this->basinNbr!=0)
-	  deleteBasins();
-	
-	areas = new size_t[nbr];
-	volumes = new size_t[nbr];
+	areas = new UINT[nbr];
+	volumes = new UINT[nbr];
 	floodLevels = new T[nbr];
 	
 	for (UINT i=0;i<nbr;i++)
@@ -760,19 +838,20 @@ struct VolumeFlooding : public Flooding<T>
     
     virtual void deleteBasins()
     {
-	if (this->basinNbr==0)
-	  return;
+	delete[] areas;
+	delete[] volumes;
+	delete[] floodLevels;
 	
 	Flooding<T>::deleteBasins();
     }
     
     
-    virtual void initValue(const UINT &lbl, const T &curPixVal)
+    virtual void initValue(const UINT &lbl)
     {
-	floodLevels[lbl] = curPixVal;
+	floodLevels[lbl] = this->currentPixVal;
 	areas[lbl]++;
     }
-    virtual void increment(const UINT &lbl, const T &curPixVal=1)
+    virtual void increment(const UINT &lbl)
     {
 	areas[lbl]++;
     }
@@ -787,8 +866,6 @@ struct VolumeFlooding : public Flooding<T>
     virtual UINT merge(UINT &lbl1, UINT &lbl2)
     {
 	UINT eater, eaten;
-	UINT v1 = volumes[lbl1], v2 = volumes[lbl2];
-	UINT fl1 = floodLevels[lbl1], fl2 = floodLevels[lbl2];
 	
 	if (volumes[lbl1] > volumes[lbl2] || (volumes[lbl1] == volumes[lbl2] && floodLevels[lbl1] < floodLevels[lbl2]))
 	{
@@ -829,7 +906,7 @@ int main(int argc, char *argv[])
 //       ADD_TEST(ts, Test_Watershed_Extinction_Graph);
       ADD_TEST(ts, Test_Build);
       
-      VolumeFlooding<UINT8> fb;
+      VolumeFlooding<UINT8> vf;
       
       UINT8 vecIn[] = {
 	  2,    2,    2,    2,    2,
@@ -855,7 +932,11 @@ int main(int argc, char *argv[])
       imIn << vecIn;
       imMark << vecMark;
       
-      fb.flood(imIn, imMark, imOut, imBasins, hSE());
+      vf.floodWithRank(imIn, imMark, imOut, imBasins, hSE());
+      Graph<UINT8,UINT> graph;
+      vf.flood(imIn, imMark, imBasins, &graph, hSE());
+      
+      graph.printSelf();
       
 //     0,    6,    0,    0,    0,
 //        0,    0,    0,    0,    0,
