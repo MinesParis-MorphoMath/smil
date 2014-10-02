@@ -395,25 +395,18 @@ class Test_Watershed_Extinction_Graph : public TestCase
 	virtual void run () 
 	{
 		UINT8 vecIn[] = {
-			2, 2, 2, 2, 2,
-			3, 2, 3, 9, 5,
-			3, 3, 9, 0, 0,
-			1, 1, 9, 0, 0,
-			1, 1, 9, 0, 0
+		    2,    2,    2,    2,    2,
+		      3,    2,    5,    9,    5,
+		    3,    3,    9,    0,    0,
+		      1,    1,    9,    0,    0,
+		    1,    1,    9,    0,    0,
 		};
 		UINT8 vecMark[] = {
-			0, 1, 0, 0, 0,
-			0, 0, 0, 0, 0,
-			0, 0, 0, 0, 0,
-			0, 2, 0, 3, 0,
-			0, 2, 0, 0, 3
-		};
-		UINT8 vecTruth[] = {
-		  0,    2,    0,    0,    0,
+		    0,    1,    0,    0,    0,
+		      0,    0,    0,    0,    0,
 		    0,    0,    0,    0,    0,
-		  0,    0,    0,    0,    0,
-		    0,    1,    0,    3,    0,
-		  0,    1,    0,    0,    3,
+		      0,    2,    0,    3,    0,
+		    0,    2,    0,    0,    3,
 		};
 
 		StrElt se = sSE();
@@ -423,20 +416,20 @@ class Test_Watershed_Extinction_Graph : public TestCase
 		Image_UINT8 imTruth (imIn) ;
 		Image_UINT8 imResult (imIn) ;
 
-		Graph<UINT8,UINT8> g;
+		Graph<UINT8,UINT8> graph;
 
 		imIn << vecIn;
 		imMark << vecMark;
-		imTruth << vecTruth;
 
-		watershedExtinctionGraph (imIn, imMark, imResult, g, se) ;
-//		g.printSelf();
-		TEST_ASSERT(imResult==imTruth);
+		vector<Edge<UINT8> > trueEdges;
+		trueEdges.push_back(Edge<UINT8>(1,2, 6));
+		trueEdges.push_back(Edge<UINT8>(3,2, 30));
+      
+		watershedExtinctionGraph (imIn, imMark, imResult, graph, "v", se) ;
+		
+		TEST_ASSERT(trueEdges==graph.getEdges());
 		if (retVal!=RES_OK)
-		{
-		    imResult.printSelf (1,true);
-		    imTruth.printSelf (1,true);
-		}
+		    graph.printSelf();
 	}
 };
 
@@ -477,15 +470,7 @@ class Test_Build : public TestCase
   }
 };
 
-struct A
-{
-    virtual void test() { cout << "A" << endl; }
-};
 
-struct B
-{
-    virtual void test() { cout << "B" << endl; }
-};
 
 int main(int argc, char *argv[])
 {
@@ -495,8 +480,9 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_Watershed);
       ADD_TEST(ts, Test_Watershed_Indempotence);
       ADD_TEST(ts, Test_Watershed_Extinction);
-//       ADD_TEST(ts, Test_Watershed_Extinction_Graph);
+      ADD_TEST(ts, Test_Watershed_Extinction_Graph);
       ADD_TEST(ts, Test_Build);
+      
       
       return ts.run();
       
