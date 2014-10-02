@@ -317,5 +317,6 @@ namespace smil
     %template(graphMST) graphMST<Graph<size_t,size_t> >;
     
     TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
 }
 
