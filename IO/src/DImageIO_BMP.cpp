@@ -211,6 +211,7 @@ namespace smil
 	return RES_OK;
     }
 
+#ifdef SMIL_WRAP_RGB      
     template <>
     RES_T BMPImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
     {
@@ -255,7 +256,7 @@ namespace smil
 
 	return RES_OK;
     }
-
+#endif // SMIL_WRAP_RGB  
 
     template <>
     RES_T BMPImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename)
@@ -328,6 +329,7 @@ namespace smil
 	return RES_OK;
     }
 
+#ifdef SMIL_WRAP_RGB  
     template <>
     RES_T BMPImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
     {
@@ -388,5 +390,6 @@ namespace smil
 
 	return RES_OK;
     }
+#endif // SMIL_WRAP_RGB  
 
 } // namespace smil
