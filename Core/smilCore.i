@@ -313,6 +313,7 @@ namespace smil
 
     // Base (UINT) Graph
     %template(Graph_UINT) Graph<UINT,UINT>;
+    %template(Graph_SIZE_T) Graph<size_t,size_t>;
     // Base (UINT) MST
     %template(graphMST) graphMST<Graph<UINT,UINT> >;
     
