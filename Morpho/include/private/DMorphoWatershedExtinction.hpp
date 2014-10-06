@@ -119,7 +119,7 @@ namespace smil
 	      deleteBasins();
 	}
 	
-	friend extinctionValuesComp<T,extValType>;
+	friend class extinctionValuesComp<T,extValType>;
 
 	 
 	vector<UINT> equivalents;
@@ -134,7 +134,7 @@ namespace smil
 	
 	virtual void insertPixel(const UINT &lbl) {}
 	virtual void raiseLevel(const UINT &lbl) {}
-	virtual UINT mergeBasins(const UINT &lbl1, const UINT &lbl2) {};
+	virtual UINT mergeBasins(const UINT &lbl1, const UINT &lbl2) { return 0; };
 	virtual void finalize(const UINT &lbl) {}
 	
 	virtual void createBasins(const UINT nbr)
@@ -159,7 +159,7 @@ namespace smil
       public:
 	
 	template <class labelT>
-	RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, Graph<labelT,extValType> *graph, const StrElt & se=DEFAULT_SE)
+	RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, Graph<labelT,extValType> *graph, const StrElt & se=DEFAULT_SE, bool rankOutput=true)
 	{
 	    ASSERT_ALLOCATED (&imIn, &imMarkers, &imBasinsOut);
 	    ASSERT_SAME_SIZE (&imIn, &imMarkers, &imBasinsOut);
@@ -202,7 +202,7 @@ namespace smil
 
 	    fill(imExtValOut, outT(0));
 	    
-	    for (size_t i=0; i<imIn.getPixelCount (); i++, *pixMarkers++, pixOut++) 
+	    for (size_t i=0; i<imIn.getPixelCount (); i++, pixMarkers++, pixOut++) 
 	    {
 		if(*pixMarkers != labelT(0))
 		  *pixOut = extinctionValues[*pixMarkers] ;
@@ -242,7 +242,7 @@ namespace smil
 	    
 	    fill(imExtRankOut, outT(0));
 	    
-	    for (size_t i=0; i<imIn.getPixelCount (); i++, *pixMarkers++, pixOut++) 
+	    for (size_t i=0; i<imIn.getPixelCount (); i++, pixMarkers++, pixOut++) 
 	    {
 		if(*pixMarkers != labelT(0))
 		  *pixOut = extinctionValues[*pixMarkers] ;
@@ -701,26 +701,55 @@ namespace smil
 	return watershedExtinctionGraph(imIn, imLbl, imBasinsOut, graph, extinctionType, se);
     }
     
+    /**
+     * Warning: returns a graph with ranking values 
+     */
     template < class T,	class labelT> 
-    Graph<labelT,UINT> watershedExtinctionGraph (const Image < T > &imIn,
+    Graph<labelT,labelT> watershedExtinctionGraph (const Image < T > &imIn,
 				    const Image < labelT > &imMarkers,
 				    Image < labelT > &imBasinsOut,
 				    const char *  	extinctionType="v", 
 				    const StrElt & se = DEFAULT_SE) 
     {
 	Graph<labelT,UINT> graph;
-	ASSERT(watershedExtinctionGraph(imIn, imMarkers, imBasinsOut, graph, extinctionType, se)==RES_OK, graph);
-	return graph;
+	Graph<labelT,labelT> rankGraph;
+	ASSERT(watershedExtinctionGraph(imIn, imMarkers, imBasinsOut, graph, extinctionType, se)==RES_OK, rankGraph);
+	
+	// Sort edges by extinctionValues
+	graph.sortEdges();
+	
+	
+	typedef typename Graph<labelT,UINT>::EdgeType EdgeType;
+	vector<EdgeType> &edges = graph.getEdges();
+	UINT edgesNbr = edges.size();
+	
+	for (UINT i=0;i<edgesNbr;i++)
+	  rankGraph.addEdge(edges[i].source, edges[i].target, i+1, false);
+
+	return rankGraph;
     }
     template < class T,	class labelT> 
-    Graph<labelT,UINT> watershedExtinctionGraph (const Image < T > &imIn,
+    Graph<labelT,labelT> watershedExtinctionGraph (const Image < T > &imIn,
 				    Image < labelT > &imBasinsOut,
 				    const char *  	extinctionType="v", 
 				    const StrElt & se = DEFAULT_SE) 
     {
 	Graph<labelT,UINT> graph;
-	ASSERT(watershedExtinctionGraph(imIn, imBasinsOut, graph, extinctionType, se)==RES_OK, graph);
-	return graph;
+	Graph<labelT,labelT> rankGraph;
+	ASSERT(watershedExtinctionGraph(imIn, imBasinsOut, graph, extinctionType, se)==RES_OK, rankGraph);
+	
+	// Sort edges by extinctionValues
+	graph.sortEdges();
+	
+	
+	typedef typename Graph<labelT,UINT>::EdgeType EdgeType;
+	vector<EdgeType> &edges = graph.getEdges();
+	UINT edgesNbr = edges.size();
+	
+	for (UINT i=0;i<edgesNbr;i++)
+	  rankGraph.addEdge(edges[i].source, edges[i].target, i+1, false);
+
+	return rankGraph;
     }
 }				// namespace smil
 

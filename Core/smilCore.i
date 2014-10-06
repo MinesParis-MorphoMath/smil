@@ -302,19 +302,19 @@ namespace smil
 #ifndef SWIGXML
 namespace std 
 {
-    %template(EdgeVector_UINT) std::vector< smil::Edge<size_t> >;
+    %template(EdgeVector_UINT) std::vector< smil::Edge<UINT> >;
 }
 #endif // SWIGXML
 
 namespace smil
 {
     // Base (size_t) Edge
-    %template(Edge_UINT) Edge<size_t>;
+    %template(Edge_UINT) Edge<UINT>;
 
     // Base (UINT) Graph
-    %template(Graph_UINT) Graph<size_t,size_t>;
+    %template(Graph_UINT) Graph<UINT,UINT>;
     // Base (UINT) MST
-    %template(graphMST) graphMST<Graph<size_t,size_t> >;
+    %template(graphMST) graphMST<Graph<UINT,UINT> >;
     
     TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
