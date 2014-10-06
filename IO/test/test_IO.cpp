@@ -31,13 +31,13 @@
 #include <time.h>
 
 
-#include "NSTypes/RGB/include/DRGB.h"
 #include "Core/include/DCore.h"
-#include "DIO.h"
+// #include "DIO.h"
 #include "IO/include/private/DImageIO_RAW.hpp"
-
 #include "Gui/include/DGui.h"
 
+#include "Core/include/DColor.h"
+#include "NSTypes/RGB/include/DRGB.h"
 
 
 using namespace smil;
