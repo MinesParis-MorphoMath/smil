@@ -483,6 +483,26 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_Watershed_Extinction_Graph);
       ADD_TEST(ts, Test_Build);
       
+      typedef UINT8 T;
+      Image<T> im("http://cmm.ensmp.fr/~faessel/smil/images/mosaic.png");
+      Image<T> imgra(im);
+      gradient(im, imgra);
+      Image<T> imout(im);
+     
+      Image<T> imMin(im);
+      Image<T> imLbl(im);
+      
+      minima(imgra, imMin);
+      label(imMin, imLbl);
+      erode(imLbl, imLbl, hSE(20));
+      
+//       VolumeFlooding<T> vf;
+//       vf.flood(imgra, imout, hSE());
+      watershedExtinctionGraph(imgra, imLbl, imout);
+      imLbl.showLabel();
+      imout.showLabel();
+      
+      Gui::execLoop();
       
       return ts.run();
       
