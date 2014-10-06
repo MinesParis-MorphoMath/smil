@@ -202,6 +202,11 @@ namespace smil
 	    addEdge(EdgeType(src, targ, weight), checkIfExists);
 	}
 	
+	void sortEdges()
+	{
+	    sort(edges.begin(), edges.end());
+	}
+	
     protected:
 	void removeNode(const size_t ind)
 	{
