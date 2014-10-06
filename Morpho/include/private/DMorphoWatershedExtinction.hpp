@@ -403,7 +403,6 @@ namespace smil
 				if (l1 == 0 || l1 == labelNbr + 1 ) 
 			    	{
 				    l1 = l2; // current pixel takes the label of its first labelled ngb  found
-				    cout << (int)currentOffset << "(" << x0 << "," << y0 << ")" << " " << l1 << endl; 
 				    lblPixels[currentOffset] = l1;
 				    insertPixel(l1);
 				}
@@ -451,9 +450,7 @@ namespace smil
 	    
 	    // Update Last level of flooding.
 	    finalize(lblPixels[currentOffset]);
-	    cout << "===> " << nbr_pts_processed << endl;
 
-	    cout << "nbr_label : " << labelNbr << endl;
 	    return RES_OK;
 	}
 	
