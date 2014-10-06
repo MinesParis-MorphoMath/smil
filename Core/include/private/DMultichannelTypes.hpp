@@ -441,11 +441,11 @@ namespace smil
 	
 	
 #ifndef SWIG
-	MultichannelArrayItem<T,N> operator [] (UINT i) // lValue
+	MultichannelArrayItem<T,N> operator [] (const int &i) // lValue
 	{
 	    return MultichannelArrayItem<T,N>(*this, index+i);
 	}
-	const MCType operator [] (UINT i) const // rValue
+	const MCType operator [] (const int &i) const // rValue
 	{
 	    return MultichannelArrayItem<T,N>(*this, index+i);
 	}
