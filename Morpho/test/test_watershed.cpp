@@ -127,8 +127,9 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       HierarchicalQueue<UINT8> pq;
       StrElt se = hSE();
       
-      initWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq);
-      processWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq, se);
+      BaseFlooding<UINT8> flooding;
+      flooding.initWatershedHierarchicalQueue(imIn, imLbl, imStatus);
+      processWatershedHierarchicalQueue(imIn, imLbl, imStatus, flooding.hq, se);
 
       UINT8 vecLblTruth[] = { 
 	1,    1,    1,    1,    1,    1,
