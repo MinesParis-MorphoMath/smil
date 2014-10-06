@@ -175,7 +175,7 @@ namespace smil
 	    
 	    createBasins(labelNbr + 1);
 
-	    initHierarchicalQueue(imIn, imBasinsOut);
+	    initHierarchicalQueue(imIn, imBasinsOut, se);
 	    processHierarchicalQueue(imIn, imBasinsOut, se, graph);
 	    
 	    return RES_OK;
@@ -260,8 +260,13 @@ namespace smil
 	
       protected:
 	
+	void flushis (istream& in) {
+	    in.ignore (std::numeric_limits<streamsize>::max(), '\n');
+	    in.get();
+	}
+
 	template <class labelT>
-	void initHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl)
+	void initHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt & se)
 	{
 	    // Empty the priority queue
 	    hq.initialize (imIn);
@@ -269,20 +274,55 @@ namespace smil
 	    typename ImDtTypes < labelT >::lineType lblPixels = imLbl.getPixels ();
 	    size_t s[3];
 
+	    vector < IntPoint >::const_iterator it_start = se.points.begin ();
+	    vector < IntPoint >::const_iterator it_end = se.points.end ();
+	    vector < IntPoint >::const_iterator it;
+
 	    imIn.getSize (s);
 	    currentOffset = 0;
+
+	    bool is_edge;
+	    size_t x,y,z, nbOffset;
+	    bool oddLine;
+
+	    vector < int > dOffsets;
+	    for (it = it_start; it != it_end; ++it)
+		dOffsets.push_back (it->x + it->y * s[0] + it->z * s[0] * s[1]);
+	    vector < int >::iterator it_off_start = dOffsets.begin();
+	    vector < int >::iterator it_off;
 
 	    for (size_t k = 0; k < s[2]; k++)
 		for (size_t j = 0; j < s[1]; j++)
 		    for (size_t i = 0; i < s[0]; i++) {
-			if (*lblPixels != 0) {
-			    currentPixVal = *inPixels;
-			    hq.push (T (*inPixels), currentOffset);
-			    insertPixel(*lblPixels);
+			if (lblPixels[currentOffset] != 0) {
+			    is_edge = false;
+			    oddLine = se.odd && ((j) % 2);
+			    it = it_start, it_off = it_off_start;
+			    do {
+				x = i + it->x;
+				y = j + it->y;
+				z = k + it->z;
+				if (oddLine)
+				    x += (((y + 1) % 2) != 0);
+				if (x >= 0 && x < (int) s[0] && y >= 0 && y < (int) s[1] && z >= 0 && z < (int) s[2])
+				{
+				    nbOffset = currentOffset + *it_off;
+				    if (oddLine)
+				    	nbOffset += (((y + 1) % 2) != 0);
+				    is_edge = (lblPixels[nbOffset] != lblPixels[currentOffset]);
+				}
+				++it; ++it_off;
+			    } while (it != it_end && !is_edge);
+			     
+
+			    if (is_edge) {
+				currentPixVal = *inPixels;
+				hq.push (T (*inPixels), currentOffset);
+				insertPixel(lblPixels[currentOffset]);
+			    }
 			}
 
 			inPixels++;
-			lblPixels++;
 			currentOffset++;
 		    }
 	}
@@ -307,6 +347,7 @@ namespace smil
 	    currentLevel = 0;
 	    currentOffset = 0;
 
+	    size_t nbr_pts_processed = 0;
 	    // set an offset distance for each se point
 	    for (it = it_start; it != it_end; it++) 
 	    {
@@ -342,6 +383,7 @@ namespace smil
 			x = x0 + it->x;
 			y = y0 + it->y;
 			z = z0 + it->z;
+
 			if (oddLine)
 			    x += (((y + 1) % 2) != 0);
 			if (x >= 0 && x < (int) s[0] && y >= 0 && y < (int) s[1]
@@ -359,8 +401,9 @@ namespace smil
 				}
 
 				if (l1 == 0 || l1 == labelNbr + 1 ) 
-				{
+			    	{
 				    l1 = l2; // current pixel takes the label of its first labelled ngb  found
+				    cout << (int)currentOffset << "(" << x0 << "," << y0 << ")" << " " << l1 << endl; 
 				    lblPixels[currentOffset] = l1;
 				    insertPixel(l1);
 				}
@@ -389,8 +432,9 @@ namespace smil
 			    {
 				tmpOffsets.push_back (nbOffset);
 				lblPixels[nbOffset] = labelNbr + 1 ;
+				++nbr_pts_processed;
 			    }
-			}
+			    			}
 		    }
 		if (!tmpOffsets.empty ()) 
 		{
@@ -404,10 +448,12 @@ namespace smil
 		}
 		tmpOffsets.clear ();
 	    }
-
+	    
 	    // Update Last level of flooding.
 	    finalize(lblPixels[currentOffset]);
+	    cout << "===> " << nbr_pts_processed << endl;
 
+	    cout << "nbr_label : " << labelNbr << endl;
 	    return RES_OK;
 	}
 	
