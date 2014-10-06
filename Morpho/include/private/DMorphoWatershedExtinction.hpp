@@ -60,13 +60,57 @@ namespace smil
     };
 #endif // SWIG
 
+    /**
+     * Generic flooding process
+     * 
+     * Can be derivated in wrapped languages thanks to Swig directors.
+     * 
+     * Python example:
+     * \code{.py}
+     * from smilPython import *
+     * 
+     * class myAreaExtinction(Flooding_UINT8):
+     *     def createBasins(self, nbr):
+     *       self.areas = [0]*nbr
+     *       Flooding_UINT8.createBasins(self, nbr)
+     *     def insertPixel(self, lbl):
+     *       self.areas[lbl] += 1
+     *     def mergeBasins(self, lbl1, lbl2):
+     *       if self.areas[lbl1] > self.areas[lbl2]:
+     * 	eater = lbl1
+     * 	eaten = lbl2
+     *       else:
+     * 	eater = lbl2
+     * 	eaten = lbl1
+     *       self.extinctionValues[eaten] =  self.areas[eaten]
+     *       self.areas[eater] += self.areas[eaten]
+     *       self.equivalents[eaten] = eater
+     *       return eater
+     *     def finalize(self, lbl):
+     *       self.extinctionValues[lbl] += self.areas[lbl]
+     * 
+     * 
+     * imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/lena.png")
+     * imGrad = Image(imIn)
+     * imMark = Image(imIn, "UINT16")
+     * imExtRank = Image(imIn, "UINT16")
+     * 
+     * gradient(imIn, imGrad)
+     * hMinimaLabeled(imGrad, 20, imMark)
+     * 
+     * aExt = myAreaExtinction()
+     * aExt.floodWithExtRank(imIn, imMark, imExtRank)
+     * 
+     * imExtRank.showLabel()
+     * \endcode
+
+     */
     template <class T, class extValType=UINT>
-    class Flooding : public BaseObject
+    class Flooding
     {
       public:
 	Flooding()
-	  : BaseObject("Flooding"),
-	    basinNbr(0)
+	  : basinNbr(0)
 	{
 	}
 	virtual ~Flooding()
@@ -75,42 +119,39 @@ namespace smil
 	      deleteBasins();
 	}
 	
-	UINT getCurrentLevel() { return currentLevel; }
-	UINT getBasinNbr() { return basinNbr; }
-	
 	friend extinctionValuesComp<T,extValType>;
-      protected:
-	
-	UINT *equivalents;
-	extValType *extinctionValues;
+
+	 
+	vector<UINT> equivalents;
+	vector<extValType> extinctionValues;
 	UINT labelNbr, basinNbr;
-	HierarchicalQueue < T > hq;
 	T currentLevel, currentPixVal;
 	size_t currentOffset;
 	
-	virtual void initValue(const UINT &lbl) {}
-	virtual void increment(const UINT &lbl) {}
+  protected:
+	HierarchicalQueue < T > hq;
+	
+	
+	virtual void insertPixel(const UINT &lbl) {}
 	virtual void raiseLevel(const UINT &lbl) {}
-	virtual UINT merge(UINT &lbl1, UINT &lbl2) = 0;
+	virtual UINT mergeBasins(const UINT &lbl1, const UINT &lbl2) {};
 	virtual void finalize(const UINT &lbl) {}
 	
 	virtual void createBasins(const UINT nbr)
 	{
-	    equivalents = new UINT[nbr];
-	    extinctionValues = new extValType[nbr];
+	    equivalents.resize(nbr);
+	    extinctionValues.resize(nbr, 0);
 	    
 	    for (UINT i=0;i<nbr;i++)
-	    {
-		equivalents[i] = i;
-		extinctionValues[i] = 0;
-	    }
+	      equivalents[i] = i;
 	    
 	    basinNbr = nbr;
 	}
 	virtual void deleteBasins()
 	{
-	    delete[] equivalents;
-	    delete[] extinctionValues;
+	    equivalents.clear();
+	    extinctionValues.clear();
+	    
 	    basinNbr = 0;
 	}
 	
@@ -118,11 +159,12 @@ namespace smil
       public:
 	
 	template <class labelT>
-	RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, Graph<labelT,extValType> *graph, const StrElt & se)
+	RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, Graph<labelT,extValType> *graph, const StrElt & se=DEFAULT_SE)
 	{
 	    ASSERT_ALLOCATED (&imIn, &imMarkers, &imBasinsOut);
 	    ASSERT_SAME_SIZE (&imIn, &imMarkers, &imBasinsOut);
-	    ImageFreezer freezer2 (imBasinsOut);
+	    
+	    ImageFreezer freezer (imBasinsOut);
 
 	    copy (imMarkers, imBasinsOut);
 
@@ -139,20 +181,20 @@ namespace smil
 	    return RES_OK;
 	}
 	template <class labelT>
-	RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt & se)
+	RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt & se=DEFAULT_SE)
 	{
 	    Graph<labelT,extValType> *nullGraph = NULL;
 	    return flood(imIn, imMarkers, imBasinsOut, nullGraph, se);
 	}
 	
 	template <class labelT, class outT>
-	RES_T floodWithValues(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<outT> &imExtValOut, Image<labelT> &imBasinsOut, const StrElt & se)
+	RES_T floodWithExtValues(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<outT> &imExtValOut, Image<labelT> &imBasinsOut, const StrElt & se=DEFAULT_SE)
 	{
 	    ASSERT_ALLOCATED (&imExtValOut);
 	    ASSERT_SAME_SIZE (&imIn, &imExtValOut);
 	    
 	    ASSERT(flood(imIn, imMarkers, imBasinsOut, se)==RES_OK);
-
+	    
 	    ImageFreezer freezer (imExtValOut);
 	    
 	    typename ImDtTypes < outT >::lineType pixOut = imExtValOut.getPixels ();
@@ -169,14 +211,14 @@ namespace smil
 	    return RES_OK;
 	}
 	template <class labelT, class outT>
-	RES_T floodWithValues(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<outT> &imExtValOut, const StrElt & se)
+	RES_T floodWithExtValues(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<outT> &imExtValOut, const StrElt & se=DEFAULT_SE)
 	{
 	    Image<labelT> imBasinsOut(imMarkers);
-	    return floodWithValues(imIn, imMarkers, imExtValOut, se);
+	    return floodWithExtValues(imIn, imMarkers, imExtValOut, imBasinsOut, se);
 	}
 	
 	template <class labelT, class outT>
-	RES_T floodWithRank(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<outT> &imExtRankOut, Image<labelT> &imBasinsOut, const StrElt & se)
+	RES_T floodWithExtRank(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<outT> &imExtRankOut, Image<labelT> &imBasinsOut, const StrElt & se=DEFAULT_SE)
 	{
 	    ASSERT_ALLOCATED (&imExtRankOut);
 	    ASSERT_SAME_SIZE (&imIn, &imExtRankOut);
@@ -209,10 +251,10 @@ namespace smil
 	    return RES_OK;
 	}
 	template <class labelT, class outT>
-	RES_T floodWithRank(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<outT> &imExtRankOut, const StrElt & se)
+	RES_T floodWithExtRank(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<outT> &imExtRankOut, const StrElt & se=DEFAULT_SE)
 	{
 	    Image<labelT> imBasinsOut(imMarkers);
-	    return floodWithValues(imIn, imMarkers, imExtRankOut, se);
+	    return floodWithExtRank(imIn, imMarkers, imExtRankOut, imBasinsOut, se);
 	}
 
 	
@@ -236,7 +278,7 @@ namespace smil
 			if (*lblPixels != 0) {
 			    currentPixVal = *inPixels;
 			    hq.push (T (*inPixels), currentOffset);
-			    initValue(*lblPixels);
+			    insertPixel(*lblPixels);
 			}
 
 			inPixels++;
@@ -320,7 +362,7 @@ namespace smil
 				{
 				    l1 = l2; // current pixel takes the label of its first labelled ngb  found
 				    lblPixels[currentOffset] = l1;
-				    increment(l1);
+				    insertPixel(l1);
 				}
 				else if (l1 != l2) 
 				{
@@ -330,8 +372,8 @@ namespace smil
 				    }
 				    if (l1 != l2)
 				    {
-					// merge basins
-					UINT eater = merge(l1, l2);
+					// mergeBasins basins
+					UINT eater = mergeBasins(l1, l2);
 					UINT eaten = (eater==l1) ? l2 : l1;
 					
 					if (graph)
@@ -375,44 +417,34 @@ namespace smil
     template <class T, class extValType=UINT>
     struct AreaFlooding : public Flooding<T,extValType>
     {
-	UINT *areas;
-	T *minValues;
+	vector<UINT> areas;
+	vector<T> minValues;
 	
 	virtual void createBasins(const UINT nbr)
 	{
-	    areas = new UINT[nbr];
-	    minValues = new T[nbr];
-	    
-	    for (UINT i=0;i<nbr;i++)
-	    {
-		areas[i] = 0;
-		minValues[i] = ImDtTypes<T>::max();
-	    }
+	    areas.resize(nbr, 0);
+	    minValues.resize(nbr, ImDtTypes<T>::max());
 	    
 	    Flooding<T,extValType>::createBasins(nbr);
 	}
 	
 	virtual void deleteBasins()
 	{
-	    delete[] areas;
-	    delete[] minValues;
+	    areas.clear();
+	    minValues.clear();
 	    
 	    Flooding<T,extValType>::deleteBasins();
 	}
 	
 	
-	virtual void initValue(const UINT &lbl)
+	virtual void insertPixel(const UINT &lbl)
 	{
 	    if (this->currentPixVal < minValues[lbl])
 	      minValues[lbl] = this->currentPixVal;
 	    
 	    areas[lbl]++;
 	}
-	virtual void increment(const UINT &lbl)
-	{
-	    areas[lbl]++;
-	}
-	virtual UINT merge(UINT &lbl1, UINT &lbl2)
+	virtual UINT mergeBasins(const UINT &lbl1, const UINT &lbl2)
 	{
 	    UINT eater, eaten;
 	    
@@ -444,42 +476,32 @@ namespace smil
     template <class T, class extValType=UINT>
     struct VolumeFlooding : public Flooding<T,extValType>
     {
-	UINT *areas, *volumes;
-	T *floodLevels;
+	vector<UINT> areas, volumes;
+	vector<T> floodLevels;
 	
 	virtual void createBasins(const UINT nbr)
 	{
-	    areas = new UINT[nbr];
-	    volumes = new UINT[nbr];
-	    floodLevels = new T[nbr];
-	    
-	    for (UINT i=0;i<nbr;i++)
-	    {
-		areas[i] = 0;
-		volumes[i] = 0;
-		floodLevels[i] = 0;
-	    }
+	    areas.resize(nbr, 0);
+	    volumes.resize(nbr, 0);
+	    floodLevels.resize(nbr, 0);
 	    
 	    Flooding<T,extValType>::createBasins(nbr);
 	}
 	
 	virtual void deleteBasins()
 	{
-	    delete[] areas;
-	    delete[] volumes;
-	    delete[] floodLevels;
+	    areas.clear();
+	    volumes.clear();
+	    floodLevels.clear();
 	    
 	    Flooding<T,extValType>::deleteBasins();
 	}
 	
 	
-	virtual void initValue(const UINT &lbl)
+	virtual void insertPixel(const UINT &lbl)
 	{
-	    floodLevels[lbl] = this->currentPixVal;
-	    areas[lbl]++;
-	}
-	virtual void increment(const UINT &lbl)
-	{
+	    if (floodLevels[lbl]!=this->currentPixVal)
+	      floodLevels[lbl] = this->currentPixVal;
 	    areas[lbl]++;
 	}
 	virtual void raiseLevel(const UINT &lbl)
@@ -490,7 +512,7 @@ namespace smil
 		floodLevels[lbl] = this->currentLevel;
 	    }
 	}
-	virtual UINT merge(UINT &lbl1, UINT &lbl2)
+	virtual UINT mergeBasins(const UINT &lbl1, const UINT &lbl2)
 	{
 	    UINT eater, eaten;
 	    
@@ -523,7 +545,7 @@ namespace smil
     template <class T, class extValType=UINT>
     struct DynamicFlooding : public AreaFlooding<T,extValType>
     {
-	virtual UINT merge(UINT &lbl1, UINT &lbl2)
+	virtual UINT mergeBasins(const UINT &lbl1, const UINT &lbl2)
 	{
 	    UINT eater, eaten;
 	    
@@ -547,12 +569,11 @@ namespace smil
     };
     
     
-    ///////////////////////////////////////////////////
-    ///////////////////////////////////////////////////
-    // GENERAL EXPORTED FUNCTIONS
-    ///////////////////////////////////////////////////
-    ///////////////////////////////////////////////////
+    //*******************************************
+    //******** GENERAL EXPORTED FUNCTIONS
+    //*******************************************
 
+    
     template < class T, class labelT, class outT > 
     RES_T watershedExtinction (const Image<T> 	&imIn,
 			       const Image<labelT> &imMarkers,
@@ -577,7 +598,7 @@ namespace smil
 	    
 	    if (flooding)
 	    {
-	      flooding->floodWithRank(imIn, imMarkers, imOut, imBasinsOut, se);
+	      flooding->floodWithExtRank(imIn, imMarkers, imOut, imBasinsOut, se);
 	      delete flooding;
 	    }
 	}
@@ -595,7 +616,7 @@ namespace smil
 	    
 	    if (flooding)
 	    {
-	      flooding->floodWithValues(imIn, imMarkers, imOut, imBasinsOut, se);
+	      flooding->floodWithExtValues(imIn, imMarkers, imOut, imBasinsOut, se);
 	      delete flooding;
 	    }
 	}
