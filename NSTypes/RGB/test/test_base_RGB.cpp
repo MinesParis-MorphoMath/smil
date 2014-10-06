@@ -43,10 +43,10 @@ class Test_Array : public TestCase
       arr.createArrays(10);
       
       *arr++ = RGB(255,255,0);
-      arr[5] = UINT8(1);
-      arr[6] = double(20);
+      arr[UINT(5)] = UINT8(1);
+      arr[UINT(6)] = double(20);
       
-      TEST_ASSERT(arr[0]==RGB(255,255,0));
+      TEST_ASSERT(arr[UINT(0)]==RGB(255,255,0));
       
       MultichannelArray<UINT8, 3> arr2;
       arr2.createArrays(10);
