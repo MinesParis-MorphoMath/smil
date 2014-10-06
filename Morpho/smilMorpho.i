@@ -135,9 +135,15 @@ TEMPLATE_WRAP_FUNC(inflZones);
 TEMPLATE_WRAP_FUNC(waterfall);
 
 %include "DMorphoWatershedExtinction.hpp"
+%feature("director") Flooding;
+TEMPLATE_WRAP_CLASS_MEMBER_FUNC(Flooding, flood);
+TEMPLATE_WRAP_CLASS_MEMBER_FUNC_2T_CROSS(Flooding, floodWithExtValues);
+TEMPLATE_WRAP_CLASS_MEMBER_FUNC_2T_CROSS(Flooding, floodWithExtRank);
+TEMPLATE_WRAP_CLASS(Flooding, Flooding);
 TEMPLATE_WRAP_FUNC_2T_CROSS(watershedExtinction);
 TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinction);
 TEMPLATE_WRAP_FUNC_2T_CROSS(watershedExtinctionGraph);
+TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinctionGraph);
 
 %include "DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(label);
