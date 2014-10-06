@@ -38,6 +38,7 @@
 #include "DCommonIO.h"
 #include "private/DImageIO.hpp"
 #include "private/DImageIO.hxx"
+#include "private/DImageIO_RAW.hpp"
 
 
 
