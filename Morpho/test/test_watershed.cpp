@@ -119,7 +119,6 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       
       Image_UINT8 imIn(6,7);
       Image_UINT8 imLbl(imIn);
-      Image_UINT8 imStatus(imIn);
 
       imIn << vecIn;
       imLbl << vecLbl;
@@ -128,8 +127,8 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       StrElt se = hSE();
       
       watershedFlooding<UINT8,UINT8> flooding;
-      flooding.initWatershedHierarchicalQueue(imIn, imLbl, imStatus);
-      flooding.processHierarchicalQueue(imIn, imLbl, imStatus, se);
+      flooding.initialize(imIn, imLbl, se);
+      flooding.processImage(imIn, imLbl, se);
 
       UINT8 vecLblTruth[] = { 
 	1,    1,    1,    1,    1,    1,
@@ -158,12 +157,12 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       imStatusTruth << vecStatusTruth;
       
       TEST_ASSERT(imLbl==imLblTruth);
-      TEST_ASSERT(imStatus==imStatusTruth);
+      TEST_ASSERT(flooding.imStatus==imStatusTruth);
       
       if (retVal!=RES_OK)
       {
 	imLbl.printSelf(1, true);
-	imStatus.printSelf(1, true);
+	flooding.imStatus.printSelf(1, true);
       }
   }
 };
