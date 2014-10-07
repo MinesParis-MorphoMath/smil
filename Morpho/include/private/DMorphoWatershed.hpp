@@ -46,7 +46,7 @@ namespace smil
      * @{
      */
 
-    template <class T, class HQ_Type=HierarchicalQueue<T> >
+    template <class T, class labelT, class HQ_Type=HierarchicalQueue<T> >
     class BaseFlooding
     {
       public:
@@ -57,11 +57,30 @@ namespace smil
 	{
 	}
 	
-//       protected:
+       protected:
 	
+	Image<labelT> *labelImage;
+	Image<UINT8> imStatus;
+	
+	typename ImDtTypes<T>::lineType inPixels;
+	typename ImDtTypes<labelT>::lineType lblPixels;
+	typename ImDtTypes<UINT8>::lineType statPixels;
+	    
+	size_t imSize[3];
+	    
 	UINT labelNbr;
+	vector<IntPoint> sePts;
+	UINT sePtsNbr;
+	bool oddSE;
+	vector<int> dOffsets;
 	
-	template <class labelT>
+	inline virtual void insertPixel(const size_t &offset, const labelT &lbl)
+	{
+// 	    cout << "base" << endl;
+	}
+	
+      public:
+      
 	RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
 	{
 	    ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);
@@ -69,7 +88,7 @@ namespace smil
 	    
 	    ImageFreezer freeze(imBasinsOut);
 	    
-	    Image<UINT8> imStatus(imIn);
+	    imStatus.setSize(imIn);
 	    copy(imMarkers, imBasinsOut);
 
 	    this->initWatershedHierarchicalQueue(imIn, imBasinsOut, imStatus);
@@ -78,79 +97,66 @@ namespace smil
 	    return RES_OK;
 	}
 	
-	template <class labelT>
 	RES_T initWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus)
 	{
 	    // Empty the priority queue
 	    hq.initialize(imIn);
 	    
-	    typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
-	    typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
-	    typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
+	    labelImage = &imLbl;
 	    
-	    size_t s[3];
+	    inPixels = imIn.getPixels();
+	    lblPixels = imLbl.getPixels();
+	    statPixels = imStatus.getPixels();
 	    
-	    imIn.getSize(s);
+	    imIn.getSize(imSize);
 	    size_t offset = 0;
 	    
-	    for (size_t k=0;k<s[2];k++)
-	      for (size_t j=0;j<s[1];j++)
-		for (size_t i=0;i<s[0];i++)
+	    for (size_t k=0;k<imSize[2];k++)
+	      for (size_t j=0;j<imSize[1];j++)
+		for (size_t i=0;i<imSize[0];i++)
 		{
-		  if (*lblPixels!=0)
+		  if (lblPixels[offset]!=0)
 		  {
 		      hq.push(inPixels[offset], offset);
-		      *statPixels = HQ_LABELED;
+		      statPixels[offset] = HQ_LABELED;
+		      this->insertPixel(offset, lblPixels[offset]);
 		  }
 		  else 
 		  {
-		      *statPixels = HQ_CANDIDATE;
+		      statPixels[offset] = HQ_CANDIDATE;
 		  }
-		  lblPixels++;
-		  statPixels++;
 		  offset++;
 		}
 	    
 	    return RES_OK;
 	}
-
-	template <class labelT>
-	RES_T processHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, const StrElt &se)
+	
+	inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
 	{
-	    typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
-	    typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
-	    typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
-	    
-	    size_t s[3];
-	    imIn.getSize(s);
-	    
-	    vector<int> dOffsets;
-	    vector<IntPoint> sePts;
-	    
-	    // set an offset distance for each se point (!=0,0,0)
-	    for(vector<IntPoint>::const_iterator it = se.points.begin() ; it!=se.points.end() ; it++)
-	      if (it->x!=0 || it->y!=0 || it->z!=0)
-	    {
-		sePts.push_back(*it);
-		dOffsets.push_back(it->x + it->y*s[0] + it->z*s[0]*s[1]);
-	    }
-	    
-	    UINT nbrPts = sePts.size();
-	    UINT8 nbStat;
-	    
-	    while(!hq.isEmpty())
-	    {
-		size_t curOffset = hq.pop();
+		UINT8 nbStat = statPixels[nbOffset];
+		
+		if (nbStat==HQ_CANDIDATE) 
+		{
+		    lblPixels[nbOffset] = lblPixels[curOffset];
+		    statPixels[nbOffset] = HQ_QUEUED;
+		    hq.push(inPixels[nbOffset], nbOffset);
+		}
+	}
+	
+	inline virtual void processPixel(const size_t &curOffset)
+	{
+		statPixels[curOffset] = HQ_LABELED;
+	      
 		size_t x0, y0, z0;
 		
-		imIn.getCoordsFromOffset(curOffset, x0, y0, z0);
+		labelImage->getCoordsFromOffset(curOffset, x0, y0, z0);
 		
-		bool oddLine = se.odd && ((y0)%2);
+		bool oddLine = oddSE && ((y0)%2);
 		
 		int x, y, z;
 		size_t nbOffset;
 		
-		for(UINT i=0;i<nbrPts;i++)
+		for(UINT i=0;i<sePtsNbr;i++)
 		{
 		    IntPoint &pt = sePts[i];
 		    x = x0 + pt.x;
@@ -160,35 +166,121 @@ namespace smil
 		    if (oddLine)
 		      x += (((y+1)%2)!=0);
 		  
-		    if (x>=0 && x<(int)s[0] && y>=0 && y<(int)s[1] && z>=0 && z<(int)s[2])
+		    if (x>=0 && x<(int)imSize[0] && y>=0 && y<(int)imSize[1] && z>=0 && z<(int)imSize[2])
 		    {
 			nbOffset = curOffset + dOffsets[i];
 			
 			if (oddLine)
 			  nbOffset += (((y+1)%2)!=0);
 			
-			nbStat = statPixels[nbOffset];
-			
-			if (nbStat==HQ_CANDIDATE) 
-			{
-			    lblPixels[nbOffset] = lblPixels[curOffset];
-			    statPixels[nbOffset] = HQ_QUEUED;
-			    hq.push(inPixels[nbOffset], nbOffset);
-			}
+			processNeighbor(curOffset, nbOffset);
 			
 		    }
 		}
+	}
+
+
+	virtual RES_T processHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, const StrElt &se)
+	{
+	    dOffsets.clear();
+	    sePts.clear();
+	    oddSE = se.odd;
+	    
+	    // set an offset distance for each se point (!=0,0,0)
+	    for(vector<IntPoint>::const_iterator it = se.points.begin() ; it!=se.points.end() ; it++)
+	      if (it->x!=0 || it->y!=0 || it->z!=0)
+	    {
+		sePts.push_back(*it);
+		dOffsets.push_back(it->x + it->y*imSize[0] + it->z*imSize[0]*imSize[1]);
+	    }
+	    
+	    sePtsNbr = sePts.size();
+	    
+	    while(!hq.isEmpty())
+	    {
+		this->processPixel(hq.pop());
 	    }
 		
 	    return RES_OK;
 	}
 	
-//       protected:
+      protected:
 	HQ_Type hq;
 	
     };
   
 
+    template <class T, class labelT, class HQ_Type=HierarchicalQueue<T> >
+    class watershedFlooding : public BaseFlooding<T, labelT, HQ_Type>
+    {
+      public:
+	virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se)
+	{
+	    BaseFlooding<T, labelT, HQ_Type>::flood(imIn, imMarkers, imBasinsOut, se);
+
+	    ImDtTypes<UINT8>::lineType pixStat = this->statPixels;
+	    typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();
+
+	    // Create the image containing the ws lines
+	    fill(imOut, T(0));
+	    T wsVal = ImDtTypes<T>::max();
+	    for (size_t i=0;i<imIn.getPixelCount();i++)
+	      if (pixStat[i]==HQ_WS_LINE) 
+		pixOut[i] = wsVal;
+	}
+	
+	virtual RES_T processHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, const StrElt &se)
+	{
+	    tmpOffsets.clear();
+	    
+	    BaseFlooding<T, labelT, HQ_Type>::processHierarchicalQueue(imIn, imLbl, imStatus, se);
+	    
+	    // Potential remaining candidate points (points surrounded by WS_LINE points)
+	    // Put their state to WS_LINE
+	    for (size_t i=0;i<imIn.getPixelCount();i++)
+	      if (this->statPixels[i]==HQ_CANDIDATE)
+		this->statPixels[i] = HQ_WS_LINE;
+	    return RES_OK;
+	}
+	inline virtual void processPixel(const size_t &curOffset)
+	{
+	    BaseFlooding<T, labelT, HQ_Type>::processPixel(curOffset);
+	    
+	    if (this->statPixels[curOffset]!=HQ_WS_LINE && !tmpOffsets.empty())
+	    {
+		typename vector<size_t>::iterator t_it = tmpOffsets.begin();
+		while (t_it!=tmpOffsets.end())
+		{
+		    this->hq.push(this->inPixels[*t_it], *t_it);
+		    this->statPixels[*t_it] = HQ_QUEUED;
+		    
+		    t_it++;
+		}
+	    }
+	    tmpOffsets.clear();
+	    
+	}
+	inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
+	{
+	    UINT8 nbStat = this->statPixels[nbOffset];
+	    
+	    if (nbStat==HQ_CANDIDATE) // Add it to the tmp offsets queue
+	    {
+		tmpOffsets.push_back(nbOffset);
+	    }
+	    else if (nbStat==HQ_LABELED)
+	    {
+		if (this->lblPixels[curOffset]==0)
+		    this->lblPixels[curOffset] = this->lblPixels[nbOffset];
+		else if (this->lblPixels[curOffset]!=this->lblPixels[nbOffset])
+		  this->statPixels[curOffset] = HQ_WS_LINE;
+	    }
+	}
+      protected:
+	vector<size_t> tmpOffsets;
+	
+    };
+    
     /**
     * Constrained basins.
     * 
@@ -205,7 +297,7 @@ namespace smil
     {
  	typedef HierarchicalQueue<T,UINT,FIFO_Queue<UINT> > HQ_Type; // preallocated HQ
 
-	BaseFlooding<T, HQ_Type> flooding;
+	BaseFlooding<T, labelT, HQ_Type> flooding;
 	return flooding.flood(imIn, imMarkers, imBasinsOut, se);
     }
 
@@ -221,109 +313,6 @@ namespace smil
 	return basins(imIn, imLbl, imBasinsInOut);
     }
 
-    template <class T, class labelT, class HQ_Type>
-    RES_T processWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, HQ_Type &hq, const StrElt &se)
-    {
-	typename ImDtTypes<T>::lineType inPixels = imIn.getPixels();
-	typename ImDtTypes<labelT>::lineType lblPixels = imLbl.getPixels();
-	typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
-	
-	size_t s[3];
-	imIn.getSize(s);
-	
-	vector<int> dOffsets;
-	vector<IntPoint> sePts;
-	vector<UINT> tmpOffsets;
-	
-	// set an offset distance for each se point (!=0,0,0)
-	for(vector<IntPoint>::const_iterator it = se.points.begin() ; it!=se.points.end() ; it++)
-	  if (it->x!=0 || it->y!=0 || it->z!=0)
-	{
-	    sePts.push_back(*it);
-	    dOffsets.push_back(it->x + it->y*s[0] + it->z*s[0]*s[1]);
-	}
-	
-	UINT nbrPts = sePts.size();
-	
-	
-	int x, y, z;
-	size_t nbOffset;
-	UINT8 nbStat;
-	
-	while(!hq.isEmpty())
-	{
-	    
-	    size_t curOffset = hq.pop();
-	    size_t x0, y0, z0;
-	    
-	    imIn.getCoordsFromOffset(curOffset, x0, y0, z0);
-	    
-	    bool oddLine = se.odd && ((y0)%2);
-	    
-	    
-	    statPixels[curOffset] = HQ_LABELED;
-	    
-	    
-	    for(int i=0;i<nbrPts;i++)
-	    {
-		const IntPoint &p = sePts[i];
-		if (p.x!=0 || p.y!=0 || p.z!=0) // useless if x=0 & y=0 & z=0
-		{
-		    
-		    x = x0 + p.x;
-		    y = y0 + p.y;
-		    z = z0 + p.z;
-		    
-		    if (oddLine)
-		      x += (((y+1)%2)!=0);
-		  
-		    if (x>=0 && x<(int)s[0] && y>=0 && y<(int)s[1] && z>=0 && z<(int)s[2])
-		    {
-			nbOffset = curOffset + dOffsets[i];
-			
-			if (oddLine)
-			  nbOffset += (((y+1)%2)!=0);
-			
-			nbStat = statPixels[nbOffset];
-			
-			if (nbStat==HQ_CANDIDATE) // Add it to the tmp offsets queue
-			{
-			    tmpOffsets.push_back(nbOffset);
-			}
-			else if (nbStat==HQ_LABELED)
-			{
-			    if (lblPixels[curOffset]==0)
-				lblPixels[curOffset] = lblPixels[nbOffset];
-			    else if (lblPixels[curOffset]!=lblPixels[nbOffset])
-			      statPixels[curOffset] = HQ_WS_LINE;
-			}
-			
-		    }
-		}
-	    }
-	    
-	    if (statPixels[curOffset]!=HQ_WS_LINE && !tmpOffsets.empty())
-	    {
-		typename vector<UINT>::iterator t_it = tmpOffsets.begin();
-		while (t_it!=tmpOffsets.end())
-		{
-		    hq.push(inPixels[*t_it], *t_it);
-		    statPixels[*t_it] = HQ_QUEUED;
-		    
-		    t_it++;
-		}
-	    }
-	    
-	    tmpOffsets.clear();
-	}
-
-	// Potential remaining candidate points (points surrounded by WS_LINE points)
-	// Put their state to WS_LINE
-	for (size_t i=0;i<imLbl.getPixelCount();i++)
-	  if (statPixels[i]==HQ_CANDIDATE)
-	    statPixels[i] = HQ_WS_LINE;
-	return RES_OK;
-    }
 
     /**
     * Constrained watershed.
@@ -343,29 +332,10 @@ namespace smil
     {
 	ASSERT_ALLOCATED(&imIn, &imMarkers, &imOut, &imBasinsOut);
 	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut, &imBasinsOut);
+ 
+	watershedFlooding<T,labelT> flooding;
 	
-	ImageFreezer freezer(imOut);
-	ImageFreezer freezer2(imBasinsOut);
-	
-	Image<UINT8> imStatus(imIn);
-	copy(imMarkers, imBasinsOut);
-
-	BaseFlooding<T> flooding;
-	
-	flooding.initWatershedHierarchicalQueue(imIn, imBasinsOut, imStatus);
-	processWatershedHierarchicalQueue(imIn, imBasinsOut, imStatus, flooding.hq, se);
-
-	ImDtTypes<UINT8>::lineType pixStat = imStatus.getPixels();
-	typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();
-
-	// Create the image containing the ws lines
-	fill(imOut, T(0));
-	T wsVal = ImDtTypes<T>::max();
-	for (size_t i=0;i<imIn.getPixelCount();i++,pixStat++,pixOut++)
-	  if (*pixStat==HQ_WS_LINE) 
-	    *pixOut = wsVal;
-	  
-	return RES_OK;
+	return flooding.flood(imIn, imMarkers, imOut, imBasinsOut, se);
     }
 
     template <class T, class labelT>
@@ -384,10 +354,8 @@ namespace smil
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
-	Image<T> imMin(imIn);
-	minima(imIn, imMin, se);
 	Image<UINT> imLbl(imIn);
-	label(imMin, imLbl, se);
+	minimaLabeled(imIn, imLbl, se);
 	return watershed(imIn, imLbl, imOut, se);
     }
 
