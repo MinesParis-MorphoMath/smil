@@ -353,11 +353,6 @@ namespace smil
 			    l2 = lblPixels[nbOffset];
 			    if (l2 > 0 && l2 != labelNbr + 1 ) 
 			    {
-				while (l2 != equivalents[l2]) 
-				{
-				    l2 = equivalents[l2];
-				}
-
 				if (l1 == 0 || l1 == labelNbr + 1 ) 
 				{
 				    l1 = l2; // current pixel takes the label of its first labelled ngb  found
@@ -366,10 +361,12 @@ namespace smil
 				}
 				else if (l1 != l2) 
 				{
+				    while (l2 != equivalents[l2]) 
+					l2 = equivalents[l2];
+				    
 				    while (l1 != equivalents[l1]) 
-				    {
 					l1 = equivalents[l1];
-				    }
+
 				    if (l1 != l2)
 				    {
 					// mergeBasins basins
@@ -405,8 +402,11 @@ namespace smil
 		tmpOffsets.clear ();
 	    }
 
-	    // Update Last level of flooding.
-	    finalize(lblPixels[currentOffset]);
+	    // Update higher level of flooding.
+	    labelT l2 = lblPixels[currentOffset];
+	    while (l2 != equivalents[l2]) 
+		l2 = equivalents[l2];
+	    finalize(l2);
 
 	    return RES_OK;
 	}
