@@ -481,6 +481,117 @@ class Test_Build : public TestCase
 };
 
 
+template <class T, class labelT, class HQ_Type=HierarchicalQueue<T> >
+class ExtinctionFlooding : public BaseFlooding<T, labelT, HQ_Type>
+{
+  protected:
+      vector<size_t> tmpOffsets;
+  public:
+//     virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se)
+//     {
+// 	BaseFlooding<T, labelT, HQ_Type>::flood(imIn, imMarkers, imBasinsOut, se);
+// 
+// 	ImDtTypes<UINT8>::lineType pixStat = this->statPixels;
+// 	typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();
+// 
+// 	// Create the image containing the ws lines
+// 	fill(imOut, T(0));
+// 	T wsVal = ImDtTypes<T>::max();
+// 	for (size_t i=0;i<imIn.getPixelCount();i++)
+// 	  if (pixStat[i]==HQ_WS_LINE) 
+// 	    pixOut[i] = wsVal;
+//     }
+    
+    virtual RES_T processImage(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
+    {
+	tmpOffsets.clear();
+	
+	BaseFlooding<T, labelT, HQ_Type>::processImage(imIn, imLbl, se);
+    }
+    inline virtual void processPixel(const size_t &curOffset)
+    {
+	BaseFlooding<T, labelT, HQ_Type>::processPixel(curOffset);
+	
+	if (this->statPixels[curOffset]!=HQ_WS_LINE && !tmpOffsets.empty())
+	{
+	    size_t *offsets = tmpOffsets.data();
+	    for (UINT i=0;i<tmpOffsets.size();i++)
+	    {
+		this->hq.push(this->inPixels[*offsets], *offsets);
+		this->statPixels[*offsets] = HQ_QUEUED;
+		
+		offsets++;
+	    }
+	    tmpOffsets.clear();
+	}
+	
+    }
+    inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
+    {
+	UINT8 nbStat = this->statPixels[nbOffset];
+	
+	if (nbStat==HQ_CANDIDATE) // Add it to the tmp offsets queue
+	{
+	    tmpOffsets.push_back(nbOffset);
+	}
+	else if (nbStat==HQ_LABELED)
+	{
+	    if (this->lblPixels[curOffset]==0)
+	    {
+		this->lblPixels[curOffset] = this->lblPixels[nbOffset];
+		this->insertPixel(curOffset, this->lblPixels[curOffset]);
+	    }
+	    else if (this->lblPixels[curOffset]!=this->lblPixels[nbOffset])
+	      this->statPixels[curOffset] = HQ_WS_LINE;
+	}
+    }
+
+// 	    labelT l1 = this->lblPixels[curOffset];
+// 	    labelT l2 = this->lblPixels[nbOffset];
+// 	    
+// 	    if (l2 > 0 && l2 != labelNbr + 1 ) 
+// 	    {
+// 
+// 		if (l1 == 0 || l1 == labelNbr + 1 ) 
+// 		{
+// 		    l1 = l2; // current pixel takes the label of its first labelled ngb  found
+// 		    lblPixels[currentOffset] = l1;
+// 		    insertPixel(l1);
+// 		}
+// 		else if (l1 != l2) 
+// 		{
+// 		while (l2 != equivalents[l2]) 
+// 		{
+// 		    l2 = equivalents[l2];
+// 		}
+// 		    while (l1 != equivalents[l1]) 
+// 		    {
+// 			l1 = equivalents[l1];
+// 		    }
+// 		    if (l1 != l2)
+// 		    {
+// 			// mergeBasins basins
+// 			UINT eater = mergeBasins(l1, l2);
+// 			UINT eaten = (eater==l1) ? l2 : l1;
+// 			
+// 			if (graph)
+// 			  graph->addEdge(eaten, eater, extinctionValues[eaten]);
+// 			
+// 			if (eater==l2)
+// 			  l1 = l2;
+// 		    }
+// 			  
+// 		}
+// 	    }
+// 	    else if (l2 == 0) 	// Add it to the tmp offsets queue
+// 	    {
+// 		tmpOffsets.push_back (nbOffset);
+// 		lblPixels[nbOffset] = labelNbr + 1 ;
+// 	    }
+    
+};
+
+
 
 int main(int argc, char *argv[])
 {
@@ -498,18 +609,19 @@ int main(int argc, char *argv[])
       Image<T> imgra(im);
       gradient(im, imgra);
       Image<T> imout(im);
-     
+      
       Image<T> imMin(im);
       Image<T> imLbl(im);
       
       minima(imgra, imMin);
       label(imMin, imLbl);
-      erode(imLbl, imLbl, hSE(20));
+      erode(imLbl, imLbl, hSE(10));
       
 //       VolumeFlooding<T> vf;
 //       vf.flood(imgra, imout, hSE());
       watershedExtinctionGraph(imgra, imLbl, imout);
       imLbl.showLabel();
+      imgra.show();
       imout.showLabel();
       
 //       Gui::execLoop();
