@@ -31,6 +31,7 @@
 #include "DMorpho.h"
 #include "DMorphoWatershed.hpp"
 #include "DMorphoWatershedExtinction.hpp"
+#include <boost/concept_check.hpp>
 
 using namespace smil;
 
@@ -481,122 +482,330 @@ class Test_Build : public TestCase
 };
 
 
-template <class T, class labelT, class HQ_Type=HierarchicalQueue<T> >
+template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T> >
 class ExtinctionFlooding : public BaseFlooding<T, labelT, HQ_Type>
 {
   protected:
-      vector<size_t> tmpOffsets;
+      UINT labelNbr, basinNbr;
+      T currentLevel;
+      vector<labelT> equivalentLabels;
+      vector<extValType> extinctionValues;
+      size_t lastOffset;
+
+      inline virtual void insertPixel(const size_t &offset, const labelT &lbl) {}
+      inline virtual void raiseLevel(const labelT &lbl) {}
+      inline virtual UINT mergeBasins(const labelT &lbl1, const labelT &lbl2) { return 0; };
+      inline virtual void finalize(const labelT &lbl) {}
+
   public:
-//     virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se)
-//     {
-// 	BaseFlooding<T, labelT, HQ_Type>::flood(imIn, imMarkers, imBasinsOut, se);
-// 
-// 	ImDtTypes<UINT8>::lineType pixStat = this->statPixels;
-// 	typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();
-// 
-// 	// Create the image containing the ws lines
-// 	fill(imOut, T(0));
-// 	T wsVal = ImDtTypes<T>::max();
-// 	for (size_t i=0;i<imIn.getPixelCount();i++)
-// 	  if (pixStat[i]==HQ_WS_LINE) 
-// 	    pixOut[i] = wsVal;
-//     }
+    template <class outT>
+    RES_T floodWithExtValues(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<outT> &imExtValOut, Image<labelT> &imBasinsOut, const StrElt & se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED (&imExtValOut);
+	ASSERT_SAME_SIZE (&imIn, &imExtValOut);
+	
+	ASSERT(this->flood(imIn, imMarkers, imBasinsOut, se)==RES_OK);
+	
+	ImageFreezer freezer (imExtValOut);
+	
+	typename ImDtTypes < outT >::lineType pixOut = imExtValOut.getPixels ();
+	typename ImDtTypes < labelT >::lineType pixMarkers = imMarkers.getPixels ();
+
+	fill(imExtValOut, outT(0));
+	
+	for (size_t i=0; i<imIn.getPixelCount (); i++, pixMarkers++, pixOut++) 
+	{
+	    if(*pixMarkers != labelT(0))
+	      *pixOut = extinctionValues[*pixMarkers] ;
+	}
+
+	return RES_OK;
+    }
+    template <class outT>
+    RES_T floodWithExtValues(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<outT> &imExtValOut, const StrElt & se=DEFAULT_SE)
+    {
+	Image<labelT> imBasinsOut(imMarkers);
+	return floodWithExtValues(imIn, imMarkers, imExtValOut, imBasinsOut, se);
+    }
     
+    RES_T floodWithExtRank(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imExtRankOut, Image<labelT> &imBasinsOut, const StrElt & se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED (&imExtRankOut);
+	ASSERT_SAME_SIZE (&imIn, &imExtRankOut);
+	
+	ASSERT(this->flood(imIn, imMarkers, imBasinsOut, se)==RES_OK);
+
+	typename ImDtTypes < labelT >::lineType pixOut = imExtRankOut.getPixels ();
+	typename ImDtTypes < labelT >::lineType pixMarkers = imMarkers.getPixels ();
+
+	ImageFreezer freezer (imExtRankOut);
+	
+	// Sort by extinctionValues
+	vector<UINT> rank(labelNbr);
+	for (UINT i=0;i<labelNbr;i++)
+	  rank[i] = i+1;
+	extinctionValues.size();
+// 	sort(rank.begin(), rank.end(), extinctionValues);
+	for (UINT i=0;i<labelNbr;i++)
+	  extinctionValues[rank[i]] = i+1;
+	
+	fill(imExtRankOut, labelT(0));
+	
+	for (size_t i=0; i<imIn.getPixelCount (); i++, pixMarkers++, pixOut++) 
+	{
+	    if(*pixMarkers != labelT(0))
+	      *pixOut = extinctionValues[*pixMarkers] ;
+	}
+
+	return RES_OK;
+    }
+    RES_T floodWithExtRank(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imExtRankOut, const StrElt & se=DEFAULT_SE)
+    {
+	Image<labelT> imBasinsOut(imMarkers);
+	return floodWithExtRank(imIn, imMarkers, imExtRankOut, imBasinsOut, se);
+    }
+    
+  protected:
+    virtual RES_T initialize(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
+    {
+	BaseFlooding<T, labelT, HQ_Type>::initialize(imIn, imLbl, se);
+	
+	labelNbr = maxVal(imLbl);
+	createBasins(labelNbr+1);
+	currentLevel = ImDtTypes<T>::min();
+    }
+    
+    virtual void createBasins(const UINT nbr)
+    {
+	equivalentLabels.resize(nbr);
+	extinctionValues.resize(nbr, 0);
+	
+	for (UINT i=0;i<nbr;i++)
+	  equivalentLabels[i] = i;
+	
+	basinNbr = nbr;
+    }
+    virtual void deleteBasins()
+    {
+	equivalentLabels.clear();
+	extinctionValues.clear();
+	
+	basinNbr = 0;
+    }
+	
     virtual RES_T processImage(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
     {
-	tmpOffsets.clear();
-	
 	BaseFlooding<T, labelT, HQ_Type>::processImage(imIn, imLbl, se);
+	
+	// Update last level of flooding.
+	labelT l2 = this->lblPixels[lastOffset];
+	while (l2 != equivalentLabels[l2]) 
+	    l2 = equivalentLabels[l2];
+	finalize(l2);
     }
     inline virtual void processPixel(const size_t &curOffset)
     {
+	if (this->inPixels[curOffset] > currentLevel) 
+	{
+	    currentLevel = this->inPixels[curOffset];
+	    for (labelT i = 1; i < labelNbr + 1 ; ++i) 
+		    raiseLevel(i);
+	}
+
 	BaseFlooding<T, labelT, HQ_Type>::processPixel(curOffset);
 	
-	if (this->statPixels[curOffset]!=HQ_WS_LINE && !tmpOffsets.empty())
-	{
-	    size_t *offsets = tmpOffsets.data();
-	    for (UINT i=0;i<tmpOffsets.size();i++)
-	    {
-		this->hq.push(this->inPixels[*offsets], *offsets);
-		this->statPixels[*offsets] = HQ_QUEUED;
-		
-		offsets++;
-	    }
-	    tmpOffsets.clear();
-	}
-	
+	lastOffset = curOffset;
     }
     inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
     {
 	UINT8 nbStat = this->statPixels[nbOffset];
+	labelT l1 = this->lblPixels[curOffset];
 	
-	if (nbStat==HQ_CANDIDATE) // Add it to the tmp offsets queue
+	if (nbStat==HQ_CANDIDATE) 
 	{
-	    tmpOffsets.push_back(nbOffset);
+	    this->lblPixels[nbOffset] = l1;
+	    this->statPixels[nbOffset] = HQ_QUEUED;
+	    this->hq.push(this->inPixels[nbOffset], nbOffset);
+	    this->insertPixel(nbOffset, l1);
 	}
 	else if (nbStat==HQ_LABELED)
 	{
-	    if (this->lblPixels[curOffset]==0)
+	    labelT l2 = this->lblPixels[nbOffset];
+	    
+	    if (l1==0)
 	    {
-		this->lblPixels[curOffset] = this->lblPixels[nbOffset];
-		this->insertPixel(curOffset, this->lblPixels[curOffset]);
+		this->lblPixels[curOffset] = l2;
+		this->insertPixel(curOffset, l2);
 	    }
-	    else if (this->lblPixels[curOffset]!=this->lblPixels[nbOffset])
-	      this->statPixels[curOffset] = HQ_WS_LINE;
+	    else if (l1!=l2)
+	    {
+		while (l1!=equivalentLabels[l1])
+		  l1 = equivalentLabels[l1];
+		while (l2!=equivalentLabels[l2])
+		  l2 = equivalentLabels[l2];
+		
+		if (l1 != l2)
+		    mergeBasins(l1, l2);
+	    }
 	}
     }
 
-// 	    labelT l1 = this->lblPixels[curOffset];
-// 	    labelT l2 = this->lblPixels[nbOffset];
-// 	    
-// 	    if (l2 > 0 && l2 != labelNbr + 1 ) 
-// 	    {
-// 
-// 		if (l1 == 0 || l1 == labelNbr + 1 ) 
-// 		{
-// 		    l1 = l2; // current pixel takes the label of its first labelled ngb  found
-// 		    lblPixels[currentOffset] = l1;
-// 		    insertPixel(l1);
-// 		}
-// 		else if (l1 != l2) 
-// 		{
-// 		while (l2 != equivalents[l2]) 
-// 		{
-// 		    l2 = equivalents[l2];
-// 		}
-// 		    while (l1 != equivalents[l1]) 
-// 		    {
-// 			l1 = equivalents[l1];
-// 		    }
-// 		    if (l1 != l2)
-// 		    {
-// 			// mergeBasins basins
-// 			UINT eater = mergeBasins(l1, l2);
-// 			UINT eaten = (eater==l1) ? l2 : l1;
-// 			
-// 			if (graph)
-// 			  graph->addEdge(eaten, eater, extinctionValues[eaten]);
-// 			
-// 			if (eater==l2)
-// 			  l1 = l2;
-// 		    }
-// 			  
-// 		}
-// 	    }
-// 	    else if (l2 == 0) 	// Add it to the tmp offsets queue
-// 	    {
-// 		tmpOffsets.push_back (nbOffset);
-// 		lblPixels[nbOffset] = labelNbr + 1 ;
-// 	    }
     
 };
 
 
+template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T> >
+class AreaExtinctionFlooding : public ExtinctionFlooding<T, labelT, extValType, HQ_Type>
+{
+  public:
+    vector<UINT> areas;
+    vector<T> minValues;
+    
+    virtual void createBasins(const UINT nbr)
+    {
+	areas.resize(nbr, 0);
+	minValues.resize(nbr, ImDtTypes<T>::max());
+	
+	ExtinctionFlooding<T, labelT, extValType, HQ_Type>::createBasins(nbr);
+    }
+    
+    virtual void deleteBasins()
+    {
+	areas.clear();
+	minValues.clear();
+	
+	ExtinctionFlooding<T, labelT, extValType, HQ_Type>::deleteBasins();
+    }
+    
+    inline virtual void insertPixel(const size_t &offset, const labelT &lbl)
+    {
+	if (this->inPixels[offset] < minValues[lbl])
+	  minValues[lbl] = this->inPixels[offset];
+	
+	areas[lbl]++;
+    }
+    virtual UINT mergeBasins(const labelT &lbl1, const labelT &lbl2)
+    {
+	UINT eater, eaten;
+	
+	if (areas[lbl1] > areas[lbl2] || (areas[lbl1] == areas[lbl2] && minValues[lbl1] < minValues[lbl2]))
+	{
+	    eater = lbl1;
+	    eaten = lbl2;
+	}
+	else 
+	{
+	    eater = lbl2;
+	    eaten = lbl1;
+	}
+	
+	this->extinctionValues[eaten] = areas[eaten];
+	areas[eater] += areas[eaten];
+	this->equivalentLabels[eaten] = eater;
+	
+	return eater;
+    }
+    virtual void finalize(const labelT &lbl)
+    {
+	this->extinctionValues[lbl] += areas[lbl];
+    }
+};
+
+
+
+class Test_Watershed_Extinction_new : public TestCase 
+{
+	virtual void run () 
+	{
+		UINT8 vecIn[] = {
+		    2,    2,    2,    2,    2,
+		      3,    2,    5,    9,    5,
+		    3,    3,    9,    0,    0,
+		      1,    1,    9,    0,    0,
+		    1,    1,    9,    0,    0,
+		};
+		UINT8 vecMark[] = {
+		    0,    1,    0,    0,    0,
+		      0,    0,    0,    0,    0,
+		    0,    0,    0,    0,    0,
+		      0,    2,    0,    3,    0,
+		    0,    2,    0,    0,    3,
+		};
+		StrElt se = sSE();
+
+		Image_UINT8 imIn (5,5) ;
+		Image_UINT8 imMark (imIn) ;
+		Image_UINT8 imBasins (imIn) ;
+		Image_UINT8 imTruth (imIn) ;
+		Image_UINT8 imResult (imIn) ;
+
+		imIn << vecIn;
+		imMark << vecMark;
+
+		UINT8 basinsTruth[] = {
+		  1,    1,    1,    1,    1,
+		    1,    1,    3,    3,    3,
+		  2,    2,    3,    3,    3,
+		    2,    2,    3,    3,    3,
+		  2,    2,    3,    3,    3,
+		};
+		imTruth << basinsTruth;
+		  
+		AreaExtinctionFlooding<UINT8,UINT8> areaFlood;
+		areaFlood.floodWithExtValues(imIn, imMark, imResult, imBasins, se);
+
+		TEST_ASSERT(imBasins==imTruth);
+		if (retVal!=RES_OK)
+		{
+		    imBasins.printSelf (1);
+		    imTruth.printSelf(1);
+		}
+		
+		// Area
+		UINT8 areaTruth[] = {
+		  0,   22,    0,    0,    0,
+		    0,    0,    0,    0,    0,
+		  0,    0,    0,    0,    0,
+		    0,    4,    0,    6,    0,
+		  0,    4,    0,    0,    6,
+
+		};
+		imTruth << areaTruth;
+		
+		TEST_ASSERT(imResult==imTruth);
+		if (retVal!=RES_OK)
+		{
+		    imResult.printSelf (1);
+		    imTruth.printSelf(1);
+		}
+		
+		areaFlood.floodWithExtRank(imIn, imMark, imResult, imBasins, se);
+		
+		// Area-rank
+		UINT8 areaRankTruth[] = {
+		  0,   22,    0,    0,    0,
+		    0,    0,    0,    0,    0,
+		  0,    0,    0,    0,    0,
+		    0,    4,    0,    6,    0,
+		  0,    4,    0,    0,    6,
+
+		};
+		imTruth << areaRankTruth;
+		
+		TEST_ASSERT(imResult==imTruth);
+		if (retVal!=RES_OK)
+		{
+		    imResult.printSelf (1);
+		    imTruth.printSelf(1);
+		}
+	}
+};
 
 int main(int argc, char *argv[])
 {
       TestSuite ts;
-//       ADD_TEST(ts, Test_Basins);
+      
+      ADD_TEST(ts, Test_Basins);
       ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
       ADD_TEST(ts, Test_Watershed);
       ADD_TEST(ts, Test_Watershed_Indempotence);
@@ -604,27 +813,7 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_Watershed_Extinction_Graph);
       ADD_TEST(ts, Test_Build);
       
-      typedef UINT8 T;
-      Image<T> im("http://cmm.ensmp.fr/~faessel/smil/images/mosaic.png");
-      Image<T> imgra(im);
-      gradient(im, imgra);
-      Image<T> imout(im);
-      
-      Image<T> imMin(im);
-      Image<T> imLbl(im);
-      
-      minima(imgra, imMin);
-      label(imMin, imLbl);
-      erode(imLbl, imLbl, hSE(10));
-      
-//       VolumeFlooding<T> vf;
-//       vf.flood(imgra, imout, hSE());
-      watershedExtinctionGraph(imgra, imLbl, imout);
-      imLbl.showLabel();
-      imgra.show();
-      imout.showLabel();
-      
-//       Gui::execLoop();
+      ADD_TEST(ts, Test_Watershed_Extinction_new);
       
       return ts.run();
       
