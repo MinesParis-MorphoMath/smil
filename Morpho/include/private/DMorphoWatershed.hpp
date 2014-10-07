@@ -57,10 +57,9 @@ namespace smil
 	{
 	}
 	
+	Image<UINT8> imStatus;
        protected:
 	
-	Image<labelT> *labelImage;
-	Image<UINT8> imStatus;
 	
 	typename ImDtTypes<T>::lineType inPixels;
 	typename ImDtTypes<labelT>::lineType lblPixels;
@@ -68,49 +67,68 @@ namespace smil
 	    
 	size_t imSize[3];
 	    
-	UINT labelNbr;
 	vector<IntPoint> sePts;
 	UINT sePtsNbr;
 	bool oddSE;
 	vector<int> dOffsets;
 	
-	inline virtual void insertPixel(const size_t &offset, const labelT &lbl)
-	{
-// 	    cout << "base" << endl;
-	}
+	// Basins functions
+	inline virtual void insertPixel(const size_t &offset, const labelT &lbl) {}
+	
+	UINT labelNbr;
+	T currentLevel;
 	
       public:
       
-	RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
+	virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
 	{
 	    ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);
 	    ASSERT_SAME_SIZE(&imIn, &imMarkers, &imBasinsOut);
 	    
 	    ImageFreezer freeze(imBasinsOut);
 	    
-	    imStatus.setSize(imIn);
 	    copy(imMarkers, imBasinsOut);
 
-	    this->initWatershedHierarchicalQueue(imIn, imBasinsOut, imStatus);
-	    this->processHierarchicalQueue(imIn, imBasinsOut, imStatus, se);
+	    initialize(imIn, imBasinsOut, se);
+	    processImage(imIn, imBasinsOut, se);
 	    
 	    return RES_OK;
 	}
 	
-	RES_T initWatershedHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus)
+	virtual RES_T initialize(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
 	{
 	    // Empty the priority queue
 	    hq.initialize(imIn);
 	    
-	    labelImage = &imLbl;
+	    imStatus.setSize(imIn);
 	    
 	    inPixels = imIn.getPixels();
 	    lblPixels = imLbl.getPixels();
 	    statPixels = imStatus.getPixels();
 	    
 	    imIn.getSize(imSize);
-	    size_t offset = 0;
 	    
+	    dOffsets.clear();
+	    sePts.clear();
+	    oddSE = se.odd;
+	    
+	    // set an offset distance for each se point (!=0,0,0)
+	    for(vector<IntPoint>::const_iterator it = se.points.begin() ; it!=se.points.end() ; it++)
+	      if (it->x!=0 || it->y!=0 || it->z!=0)
+	    {
+		sePts.push_back(*it);
+		dOffsets.push_back(it->x + it->y*imSize[0] + it->z*imSize[0]*imSize[1]);
+	    }
+	    
+	    sePtsNbr = sePts.size();
+	    
+	    return RES_OK;
+	}
+	
+	virtual RES_T processImage(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
+	{
+	    // Put the marker pixels in the HQ
+	    size_t offset = 0;
 	    for (size_t k=0;k<imSize[2];k++)
 	      for (size_t j=0;j<imSize[1];j++)
 		for (size_t i=0;i<imSize[0];i++)
@@ -127,20 +145,17 @@ namespace smil
 		  }
 		  offset++;
 		}
-	    
-	    return RES_OK;
-	}
-	
-	inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
-	{
-		UINT8 nbStat = statPixels[nbOffset];
 		
-		if (nbStat==HQ_CANDIDATE) 
-		{
-		    lblPixels[nbOffset] = lblPixels[curOffset];
-		    statPixels[nbOffset] = HQ_QUEUED;
-		    hq.push(inPixels[nbOffset], nbOffset);
-		}
+		
+	
+	    currentLevel = ImDtTypes<T>::min();
+	    
+	    while(!hq.isEmpty())
+	    {
+		this->processPixel(hq.pop());
+	    }
+		
+	    return RES_OK;
 	}
 	
 	inline virtual void processPixel(const size_t &curOffset)
@@ -149,7 +164,7 @@ namespace smil
 	      
 		size_t x0, y0, z0;
 		
-		labelImage->getCoordsFromOffset(curOffset, x0, y0, z0);
+		imStatus.getCoordsFromOffset(curOffset, x0, y0, z0);
 		
 		bool oddLine = oddSE && ((y0)%2);
 		
@@ -178,31 +193,22 @@ namespace smil
 		    }
 		}
 	}
-
-
-	virtual RES_T processHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, const StrElt &se)
+	
+	inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
 	{
-	    dOffsets.clear();
-	    sePts.clear();
-	    oddSE = se.odd;
-	    
-	    // set an offset distance for each se point (!=0,0,0)
-	    for(vector<IntPoint>::const_iterator it = se.points.begin() ; it!=se.points.end() ; it++)
-	      if (it->x!=0 || it->y!=0 || it->z!=0)
-	    {
-		sePts.push_back(*it);
-		dOffsets.push_back(it->x + it->y*imSize[0] + it->z*imSize[0]*imSize[1]);
-	    }
-	    
-	    sePtsNbr = sePts.size();
-	    
-	    while(!hq.isEmpty())
-	    {
-		this->processPixel(hq.pop());
-	    }
+		UINT8 nbStat = statPixels[nbOffset];
 		
-	    return RES_OK;
+		if (nbStat==HQ_CANDIDATE) 
+		{
+		    lblPixels[nbOffset] = lblPixels[curOffset];
+		    statPixels[nbOffset] = HQ_QUEUED;
+		    hq.push(inPixels[nbOffset], nbOffset);
+		    insertPixel(nbOffset, lblPixels[nbOffset]);
+		}
 	}
+	
+
+
 	
       protected:
 	HQ_Type hq;
@@ -229,11 +235,11 @@ namespace smil
 		pixOut[i] = wsVal;
 	}
 	
-	virtual RES_T processHierarchicalQueue(const Image<T> &imIn, Image<labelT> &imLbl, Image<UINT8> &imStatus, const StrElt &se)
+	virtual RES_T processImage(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
 	{
 	    tmpOffsets.clear();
 	    
-	    BaseFlooding<T, labelT, HQ_Type>::processHierarchicalQueue(imIn, imLbl, imStatus, se);
+	    BaseFlooding<T, labelT, HQ_Type>::processImage(imIn, imLbl, se);
 	    
 	    // Potential remaining candidate points (points surrounded by WS_LINE points)
 	    // Put their state to WS_LINE
@@ -248,16 +254,16 @@ namespace smil
 	    
 	    if (this->statPixels[curOffset]!=HQ_WS_LINE && !tmpOffsets.empty())
 	    {
-		typename vector<size_t>::iterator t_it = tmpOffsets.begin();
-		while (t_it!=tmpOffsets.end())
+		size_t *offsets = tmpOffsets.data();
+		for (UINT i=0;i<tmpOffsets.size();i++)
 		{
-		    this->hq.push(this->inPixels[*t_it], *t_it);
-		    this->statPixels[*t_it] = HQ_QUEUED;
+		    this->hq.push(this->inPixels[*offsets], *offsets);
+		    this->statPixels[*offsets] = HQ_QUEUED;
 		    
-		    t_it++;
+		    offsets++;
 		}
+		tmpOffsets.clear();
 	    }
-	    tmpOffsets.clear();
 	    
 	}
 	inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
@@ -271,7 +277,10 @@ namespace smil
 	    else if (nbStat==HQ_LABELED)
 	    {
 		if (this->lblPixels[curOffset]==0)
+		{
 		    this->lblPixels[curOffset] = this->lblPixels[nbOffset];
+		    this->insertPixel(curOffset, this->lblPixels[curOffset]);
+		}
 		else if (this->lblPixels[curOffset]!=this->lblPixels[nbOffset])
 		  this->statPixels[curOffset] = HQ_WS_LINE;
 	    }
@@ -334,7 +343,6 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut, &imBasinsOut);
  
 	watershedFlooding<T,labelT> flooding;
-	
 	return flooding.flood(imIn, imMarkers, imOut, imBasinsOut, se);
     }
 
