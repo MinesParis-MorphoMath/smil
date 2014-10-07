@@ -75,7 +75,6 @@ namespace smil
 	// Basins functions
 	inline virtual void insertPixel(const size_t &offset, const labelT &lbl) {}
 	
-	UINT labelNbr;
 	T currentLevel;
 	
       public:
