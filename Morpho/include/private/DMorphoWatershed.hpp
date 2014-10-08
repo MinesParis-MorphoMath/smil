@@ -251,15 +251,18 @@ namespace smil
 	{
 	    BaseFlooding<T, labelT, HQ_Type>::processPixel(curOffset);
 	    
-	    if (this->statPixels[curOffset]!=HQ_WS_LINE && !tmpOffsets.empty())
+	    if (!tmpOffsets.empty())
 	    {
-		size_t *offsets = tmpOffsets.data();
-		for (UINT i=0;i<tmpOffsets.size();i++)
+		if (this->statPixels[curOffset]!=HQ_WS_LINE)
 		{
-		    this->hq.push(this->inPixels[*offsets], *offsets);
-		    this->statPixels[*offsets] = HQ_QUEUED;
-		    
-		    offsets++;
+		    size_t *offsets = tmpOffsets.data();
+		    for (UINT i=0;i<tmpOffsets.size();i++)
+		    {
+			this->hq.push(this->inPixels[*offsets], *offsets);
+			this->statPixels[*offsets] = HQ_QUEUED;
+			
+			offsets++;
+		    }
 		}
 		tmpOffsets.clear();
 	    }
