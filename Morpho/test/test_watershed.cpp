@@ -31,6 +31,7 @@
 #include "DMorpho.h"
 #include "DMorphoWatershed.hpp"
 #include "DMorphoWatershedExtinction.hpp"
+#include <boost/concept_check.hpp>
 
 using namespace smil;
 
@@ -119,7 +120,7 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       
       Image_UINT8 imIn(6,7);
       Image_UINT8 imLbl(imIn);
-      Image_UINT8 imStatus(imIn);
+      Image_UINT8 imWS(imIn);
 
       imIn << vecIn;
       imLbl << vecLbl;
@@ -127,8 +128,9 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       HierarchicalQueue<UINT8> pq;
       StrElt se = hSE();
       
-      initWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq);
-      processWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq, se);
+      watershedFlooding<UINT8,UINT8> flooding;
+      flooding.initialize(imIn, imLbl, imWS, se);
+      flooding.processImage(imIn, imLbl, se);
 
       UINT8 vecLblTruth[] = { 
 	1,    1,    1,    1,    1,    1,
@@ -141,13 +143,13 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       };
       
       UINT8 vecStatusTruth[] = { 
-	2, 2, 2, 2, 2, 2,
-	3, 3, 3, 3, 3, 3,
-	2, 3, 2, 2, 2, 2,
-	2, 3, 2, 2, 2, 2,
-	2, 2, 3, 3, 2, 2,
-	2, 2, 2, 3, 2, 2,
-	2, 2, 2, 2, 3, 2
+	1,    1,    1,    1,    1,    1,
+	255,  255,  255,  255,  255,  255,
+	1,  255,    1,    1,    1,    1,
+	  1,  255,    1,    1,    1,    1,
+	1,    1,  255,  255,    1,    1,
+	  1,    1,    1,  255,    1,    1,
+	1,    1,    1,    1,  255,    1,
       };
       
       Image_UINT8 imLblTruth(imIn);
@@ -157,12 +159,19 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       imStatusTruth << vecStatusTruth;
       
       TEST_ASSERT(imLbl==imLblTruth);
-      TEST_ASSERT(imStatus==imStatusTruth);
       
       if (retVal!=RES_OK)
       {
 	imLbl.printSelf(1, true);
-	imStatus.printSelf(1, true);
+	imLblTruth.printSelf(1, true);
+      }
+      
+      TEST_ASSERT(*(flooding.imWS)==imStatusTruth);
+      
+      if (retVal!=RES_OK)
+      {
+	flooding.imWS->printSelf(1, true);
+	imStatusTruth.printSelf(1, true);
       }
   }
 };
@@ -302,148 +311,6 @@ class Test_Watershed_Indempotence : public TestCase
 };
 
 
-class Test_Watershed_Extinction : public TestCase 
-{
-	virtual void run () 
-	{
-		UINT8 vecIn[] = {
-		    2,    2,    2,    2,    2,
-		      3,    2,    5,    9,    5,
-		    3,    3,    9,    0,    0,
-		      1,    1,    9,    0,    0,
-		    1,    1,    9,    0,    0,
-		};
-		UINT8 vecMark[] = {
-		    0,    1,    0,    0,    0,
-		      0,    0,    0,    0,    0,
-		    0,    0,    0,    0,    0,
-		      0,    2,    0,    3,    0,
-		    0,    2,    0,    0,    3,
-		};
-		StrElt se = sSE();
-
-		Image_UINT8 imIn (5,5) ;
-		Image_UINT8 imMark (imIn) ;
-		Image_UINT8 imTruth (imIn) ;
-		Image_UINT8 imResult (imIn) ;
-
-		imIn << vecIn;
-		imMark << vecMark;
-
-		// Volume
-		UINT8 volTruth[] = {
-		    0,    3,    0,    0,    0,
-		      0,    0,    0,    0,    0,
-		    0,    0,    0,    0,    0,
-		      0,    1,    0,    2,    0,
-		    0,    1,    0,    0,    2,
-		};
-		imTruth << volTruth;
-
-		watershedExtinction (imIn, imMark, imResult, "v", se) ;
-		TEST_ASSERT(imResult==imTruth);
-		if (retVal!=RES_OK)
-		{
-		    cout << endl << "in watershedExtinction volumic" << endl;
-		    imResult.printSelf (1,true);
-		    imTruth.printSelf (1,true);
-		}
-		
-		// Area
-		UINT8 areaTruth[] = {
-		  0,    1,    0,    0,    0,
-		    0,    0,    0,    0,    0,
-		  0,    0,    0,    0,    0,
-		    0,    3,    0,    2,    0,
-		  0,    3,    0,    0,    2,
-		};
-		imTruth << areaTruth;
-
-		watershedExtinction (imIn, imMark, imResult, "a", se) ;
-		TEST_ASSERT(imResult==imTruth);
-		if (retVal!=RES_OK)
-		{
-		    cout << endl << "in watershedExtinction area" << endl;
-		    imResult.printSelf (1,true);
-		    imTruth.printSelf (1,true);
-		}
-		
-		// Dynamic
-		UINT8 dynTruth[] = {
-		    0,    3,    0,    0,    0,
-		      0,    0,    0,    0,    0,
-		    0,    0,    0,    0,    0,
-		      0,    2,    0,    1,    0,
-		    0,    2,    0,    0,    1,
-		};
-		imTruth << dynTruth;
-
-		watershedExtinction (imIn, imMark, imResult, "d", se) ;
-		TEST_ASSERT(imResult==imTruth);
-		if (retVal!=RES_OK)
-		{
-		    cout << endl << "in watershedExtinction dynamic" << endl;
-		    imResult.printSelf (1,true);
-		    imTruth.printSelf (1,true);
-		}
-		
-	}
-};
-
-class Test_Watershed_Extinction_Graph : public TestCase 
-{
-	virtual void run () 
-	{
-		UINT8 vecIn[] = {
-		    2,    2,    2,    2,    2,
-		      3,    2,    5,    9,    5,
-		    3,    3,    9,    0,    0,
-		      1,    1,    9,    0,    0,
-		    1,    1,    9,    0,    0,
-		};
-		UINT8 vecMark[] = {
-		    0,    1,    0,    0,    0,
-		      0,    0,    0,    0,    0,
-		    0,    0,    0,    0,    0,
-		      0,    2,    0,    3,    0,
-		    0,    2,    0,    0,    3,
-		};
-
-		StrElt se = sSE();
-
-		Image_UINT8 imIn (5,5) ;
-		Image_UINT8 imMark (imIn) ;
-		Image_UINT8 imTruth (imIn) ;
-		Image_UINT8 imResult (imIn) ;
-
-		Graph<UINT8,UINT8> graph;
-
-		imIn << vecIn;
-		imMark << vecMark;
-
-		vector<Edge<UINT8> > trueEdges;
-		trueEdges.push_back(Edge<UINT8>(1,2, 6));
-		trueEdges.push_back(Edge<UINT8>(3,2, 30));
-      
-		watershedExtinctionGraph (imIn, imMark, imResult, graph, "v", se) ;
-		
-		TEST_ASSERT(trueEdges==graph.getEdges());
-		if (retVal!=RES_OK)
-		    graph.printSelf();
-		
-		vector<Edge<UINT8> > trueEdges2;
-		trueEdges2.push_back(Edge<UINT8>(3,2, 1));
-		trueEdges2.push_back(Edge<UINT8>(1,2, 2));
-		
-		Graph<UINT8,UINT8> rankGraph = watershedExtinctionGraph (imIn, imMark, imResult, "v", se) ;
-		
-		TEST_ASSERT(trueEdges2==rankGraph.getEdges());
-		if (retVal!=RES_OK)
-		    rankGraph.printSelf();
-	}
-};
-
-
 class Test_Build : public TestCase
 {
   virtual void run()
@@ -481,38 +348,15 @@ class Test_Build : public TestCase
 };
 
 
-
 int main(int argc, char *argv[])
 {
       TestSuite ts;
+      
       ADD_TEST(ts, Test_Basins);
       ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
       ADD_TEST(ts, Test_Watershed);
       ADD_TEST(ts, Test_Watershed_Indempotence);
-      ADD_TEST(ts, Test_Watershed_Extinction);
-      ADD_TEST(ts, Test_Watershed_Extinction_Graph);
       ADD_TEST(ts, Test_Build);
-      
-      typedef UINT8 T;
-      Image<T> im("http://cmm.ensmp.fr/~faessel/smil/images/mosaic.png");
-      Image<T> imgra(im);
-      gradient(im, imgra);
-      Image<T> imout(im);
-     
-      Image<T> imMin(im);
-      Image<T> imLbl(im);
-      
-      minima(imgra, imMin);
-      label(imMin, imLbl);
-      erode(imLbl, imLbl, hSE(20));
-      
-//       VolumeFlooding<T> vf;
-//       vf.flood(imgra, imout, hSE());
-      watershedExtinctionGraph(imgra, imLbl, imout);
-      imLbl.showLabel();
-      imout.showLabel();
-      
-//       Gui::execLoop();
       
       return ts.run();
       
