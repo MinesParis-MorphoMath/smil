@@ -268,22 +268,19 @@ namespace smil
 	}
 	inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
 	{
-	    UINT8 nbStat = this->statPixels[nbOffset];
-	    UINT8 curStat = this->statPixels[curOffset];
-	    labelT l1 = this->lblPixels[curOffset];
+	    labelT l2 = this->lblPixels[nbOffset];
 	    
-	    if (nbStat==HQ_CANDIDATE) 
+	    if (l2==0) 
 	    {
 		this->hq.push(this->inPixels[nbOffset], nbOffset);
-// 		this->lblPixels[nbOffset] = l1;
-		this->statPixels[nbOffset] = HQ_QUEUED;
+ 		this->lblPixels[nbOffset] = labelNbr+1;
 // 		this->insertPixel(nbOffset, l1);
 	    }
-	    else if (nbStat==HQ_LABELED)
+	    else if (l2<labelNbr+1)
 	    {
-		labelT l2 = this->lblPixels[nbOffset];
+		labelT l1 = this->lblPixels[curOffset];
 		
-		if (l1==0)
+		if (l1==0 || l1==labelNbr+1)
 		{
 		    this->lblPixels[curOffset] = l2;
 		    this->insertPixel(curOffset, l2);
@@ -303,8 +300,6 @@ namespace smil
 			
 			if (graph)
 			  graph->addEdge(eaten, eater, this->extinctionValues[eaten]);
-			
-			this->statPixels[curOffset] = HQ_WS_LINE;
 		    }
 		}
 	    }
