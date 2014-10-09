@@ -214,7 +214,7 @@ namespace smil
     {
       protected:
 	vector<size_t> tmpOffsets;
-	typename ImDtTypes<UINT8>::lineType wsPixels;
+	typename ImDtTypes<T>::lineType wsPixels;
 	const T STAT_LABELED, STAT_QUEUED, STAT_CANDIDATE, STAT_WS_LINE;
 	
       public:
