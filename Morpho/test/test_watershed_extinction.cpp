@@ -378,19 +378,19 @@ int main(int argc, char *argv[])
     ADD_TEST(ts, Test_Dynamic_Extinction);
     ADD_TEST(ts, Test_Watershed_Extinction_Graph);
 
-    Image<UINT8> imIn("http://cmm.ensmp.fr/~faessel/smil/images/mosaic.png");
-    Image<UINT8> imGrad(imIn);
-    Image<UINT16> imMark(imIn);
-    Image<UINT16> imBasins(imIn);
-    Image<UINT16> imOut(imIn);
-    
-    gradient(imIn, imGrad);
-    minimaLabeled(imGrad, imMark);
-    
-    watershedExtinction(imGrad, imMark, imOut,imBasins);
-    imBasins.showLabel();
-    
-    Gui::execLoop();
+//     Image<UINT8> imIn("http://cmm.ensmp.fr/~faessel/smil/images/mosaic.png");
+//     Image<UINT8> imGrad(imIn);
+//     Image<UINT16> imMark(imIn);
+//     Image<UINT16> imBasins(imIn);
+//     Image<UINT16> imOut(imIn);
+//     
+//     gradient(imIn, imGrad);
+//     minimaLabeled(imGrad, imMark);
+//     
+//     watershedExtinction(imGrad, imMark, imOut,imBasins);
+//     imBasins.showLabel();
+//     
+//     Gui::execLoop();
     
     return ts.run();
 
