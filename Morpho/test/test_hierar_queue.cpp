@@ -97,7 +97,7 @@ class Test_InitHierarchicalQueue : public TestCase
       
       StrElt se = hSE();
       
-      initWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq);
+//       initWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq);
       
   }
 };
