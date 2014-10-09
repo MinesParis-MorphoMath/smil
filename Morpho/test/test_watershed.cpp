@@ -120,6 +120,7 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       
       Image_UINT8 imIn(6,7);
       Image_UINT8 imLbl(imIn);
+      Image_UINT8 imWS(imIn);
 
       imIn << vecIn;
       imLbl << vecLbl;
@@ -128,7 +129,7 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       StrElt se = hSE();
       
       watershedFlooding<UINT8,UINT8> flooding;
-      flooding.initialize(imIn, imLbl, se);
+      flooding.initialize(imIn, imLbl, imWS, se);
       flooding.processImage(imIn, imLbl, se);
 
       UINT8 vecLblTruth[] = { 
@@ -142,13 +143,13 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       };
       
       UINT8 vecStatusTruth[] = { 
-	2, 2, 2, 2, 2, 2,
-	3, 3, 3, 3, 3, 3,
-	2, 3, 2, 2, 2, 2,
-	2, 3, 2, 2, 2, 2,
-	2, 2, 3, 3, 2, 2,
-	2, 2, 2, 3, 2, 2,
-	2, 2, 2, 2, 3, 2
+	1,    1,    1,    1,    1,    1,
+	255,  255,  255,  255,  255,  255,
+	1,  255,    1,    1,    1,    1,
+	  1,  255,    1,    1,    1,    1,
+	1,    1,  255,  255,    1,    1,
+	  1,    1,    1,  255,    1,    1,
+	1,    1,    1,    1,  255,    1,
       };
       
       Image_UINT8 imLblTruth(imIn);
@@ -158,12 +159,19 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       imStatusTruth << vecStatusTruth;
       
       TEST_ASSERT(imLbl==imLblTruth);
-      TEST_ASSERT(flooding.imStatus==imStatusTruth);
       
       if (retVal!=RES_OK)
       {
 	imLbl.printSelf(1, true);
-	flooding.imStatus.printSelf(1, true);
+	imLblTruth.printSelf(1, true);
+      }
+      
+      TEST_ASSERT(*(flooding.imWS)==imStatusTruth);
+      
+      if (retVal!=RES_OK)
+      {
+	flooding.imWS->printSelf(1, true);
+	imStatusTruth.printSelf(1, true);
       }
   }
 };
@@ -348,8 +356,6 @@ int main(int argc, char *argv[])
       ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
       ADD_TEST(ts, Test_Watershed);
       ADD_TEST(ts, Test_Watershed_Indempotence);
-      ADD_TEST(ts, Test_Watershed_Extinction);
-      ADD_TEST(ts, Test_Watershed_Extinction_Graph);
       ADD_TEST(ts, Test_Build);
       
       return ts.run();
