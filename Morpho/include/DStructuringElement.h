@@ -129,6 +129,9 @@ namespace smil
 	
 	//! Return the opposite SE (symmetry with respect to 0) 
 	StrElt transpose() const;
+   
+    //! Return the SE with no center
+    StrElt noCenter () const;
 	
 	bool odd;
 	seType seT;
