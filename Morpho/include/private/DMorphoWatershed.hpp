@@ -57,15 +57,19 @@ namespace smil
 	{
 	}
 	
-	Image<UINT8> imStatus;
        protected:
 	
 	
 	typename ImDtTypes<T>::lineType inPixels;
 	typename ImDtTypes<labelT>::lineType lblPixels;
-	typename ImDtTypes<UINT8>::lineType statPixels;
 	    
-	size_t imSize[3];
+	size_t imSize[3], pixPerSlice;
+	inline void getCoordsFromOffset(size_t off, size_t &x, size_t &y, size_t &z) const
+	{
+	    z = off / pixPerSlice;
+	    y = (off % pixPerSlice) / imSize[0];
+	    x = off % imSize[0];
+	}
 	    
 	vector<IntPoint> sePts;
 	UINT sePtsNbr;
@@ -99,13 +103,11 @@ namespace smil
 	    // Empty the priority queue
 	    hq.initialize(imIn);
 	    
-	    imStatus.setSize(imIn);
-	    
 	    inPixels = imIn.getPixels();
 	    lblPixels = imLbl.getPixels();
-	    statPixels = imStatus.getPixels();
 	    
 	    imIn.getSize(imSize);
+	    pixPerSlice = imSize[0]*imSize[1];
 	    
 	    dOffsets.clear();
 	    sePts.clear();
@@ -135,12 +137,7 @@ namespace smil
 		  if (lblPixels[offset]!=0)
 		  {
 		      hq.push(inPixels[offset], offset);
-		      statPixels[offset] = HQ_LABELED;
 		      this->insertPixel(offset, lblPixels[offset]);
-		  }
-		  else 
-		  {
-		      statPixels[offset] = HQ_CANDIDATE;
 		  }
 		  offset++;
 		}
@@ -159,11 +156,9 @@ namespace smil
 	
 	inline virtual void processPixel(const size_t &curOffset)
 	{
-		statPixels[curOffset] = HQ_LABELED;
-	      
 		size_t x0, y0, z0;
 		
-		imStatus.getCoordsFromOffset(curOffset, x0, y0, z0);
+		getCoordsFromOffset(curOffset, x0, y0, z0);
 		
 		bool oddLine = oddSE && ((y0)%2);
 		
@@ -195,12 +190,11 @@ namespace smil
 	
 	inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
 	{
-		UINT8 nbStat = statPixels[nbOffset];
+		UINT8 nbLbl = lblPixels[nbOffset];
 		
-		if (nbStat==HQ_CANDIDATE) 
+		if (nbLbl==0) 
 		{
 		    lblPixels[nbOffset] = lblPixels[curOffset];
-		    statPixels[nbOffset] = HQ_QUEUED;
 		    hq.push(inPixels[nbOffset], nbOffset);
 		    insertPixel(nbOffset, lblPixels[nbOffset]);
 		}
@@ -218,48 +212,74 @@ namespace smil
     template <class T, class labelT, class HQ_Type=HierarchicalQueue<T> >
     class watershedFlooding : public BaseFlooding<T, labelT, HQ_Type>
     {
+      protected:
+	vector<size_t> tmpOffsets;
+	typename ImDtTypes<UINT8>::lineType wsPixels;
+	const T STAT_LABELED, STAT_QUEUED, STAT_CANDIDATE, STAT_WS_LINE;
+	
       public:
-	virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se)
+	watershedFlooding()
+	  : STAT_LABELED(1), 
+	    STAT_QUEUED(2), 
+	    STAT_CANDIDATE(ImDtTypes<T>::max()-1), 
+	    STAT_WS_LINE(ImDtTypes<T>::max())
 	{
-	    BaseFlooding<T, labelT, HQ_Type>::flood(imIn, imMarkers, imBasinsOut, se);
-
-	    ImDtTypes<UINT8>::lineType pixStat = this->statPixels;
-	    typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();
-
-	    // Create the image containing the ws lines
-	    fill(imOut, T(0));
-	    T wsVal = ImDtTypes<T>::max();
-	    for (size_t i=0;i<imIn.getPixelCount();i++)
-	      if (pixStat[i]==HQ_WS_LINE) 
-		pixOut[i] = wsVal;
 	}
 	
-	virtual RES_T processImage(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
+	Image<T> *imWS;
+	
+	virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se)
 	{
-	    tmpOffsets.clear();
+	    ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);
+	    ASSERT_SAME_SIZE(&imIn, &imMarkers, &imBasinsOut);
 	    
-	    BaseFlooding<T, labelT, HQ_Type>::processImage(imIn, imLbl, se);
+	    ImageFreezer freeze(imBasinsOut);
+	    ImageFreezer freeze2(imOut);
 	    
-	    // Potential remaining candidate points (points surrounded by WS_LINE points)
-	    // Put their state to WS_LINE
+	    copy(imMarkers, imBasinsOut);
+
+	    initialize(imIn, imBasinsOut, imOut, se);
+	    this->processImage(imIn, imBasinsOut, se);
+	    
+	    // Finalize the image containing the ws lines
+	    // Potential remaining candidate points (points surrounded by WS_LINE points) with status STAT_CANDIDATE are added to the WS_LINE
 	    for (size_t i=0;i<imIn.getPixelCount();i++)
-	      if (this->statPixels[i]==HQ_CANDIDATE)
-		this->statPixels[i] = HQ_WS_LINE;
+	    {
+	      if (wsPixels[i]>=STAT_CANDIDATE)
+		wsPixels[i] = STAT_WS_LINE;
+	      else
+		wsPixels[i] = 0;
+	    }
 	    return RES_OK;
 	}
+	
+	virtual RES_T initialize(const Image<T> &imIn, Image<labelT> &imLbl, Image<T> &imOut, const StrElt &se)
+	{
+	    BaseFlooding<T, labelT, HQ_Type>::initialize(imIn, imLbl, se);
+	    
+	    imWS = &imOut;
+	    imWS->setSize(this->imSize);
+	    test(imLbl, STAT_LABELED, STAT_CANDIDATE, *imWS);
+	    wsPixels = imWS->getPixels();
+	    
+	    tmpOffsets.clear();
+	}
+	
 	inline virtual void processPixel(const size_t &curOffset)
 	{
+	    wsPixels[curOffset] = STAT_LABELED;
+	    
 	    BaseFlooding<T, labelT, HQ_Type>::processPixel(curOffset);
 	    
 	    if (!tmpOffsets.empty())
 	    {
-		if (this->statPixels[curOffset]!=HQ_WS_LINE)
+		if (this->wsPixels[curOffset]!=STAT_WS_LINE)
 		{
 		    size_t *offsets = tmpOffsets.data();
 		    for (UINT i=0;i<tmpOffsets.size();i++)
 		    {
 			this->hq.push(this->inPixels[*offsets], *offsets);
-			this->statPixels[*offsets] = HQ_QUEUED;
+			this->wsPixels[*offsets] = STAT_QUEUED;
 			
 			offsets++;
 		    }
@@ -270,13 +290,13 @@ namespace smil
 	}
 	inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
 	{
-	    UINT8 nbStat = this->statPixels[nbOffset];
+	    UINT8 nbStat = this->wsPixels[nbOffset];
 	    
-	    if (nbStat==HQ_CANDIDATE) // Add it to the tmp offsets queue
+	    if (nbStat==STAT_CANDIDATE) // Add it to the tmp offsets queue
 	    {
 		tmpOffsets.push_back(nbOffset);
 	    }
-	    else if (nbStat==HQ_LABELED)
+	    else if (nbStat==STAT_LABELED)
 	    {
 		if (this->lblPixels[curOffset]==0)
 		{
@@ -284,11 +304,9 @@ namespace smil
 		    this->insertPixel(curOffset, this->lblPixels[curOffset]);
 		}
 		else if (this->lblPixels[curOffset]!=this->lblPixels[nbOffset])
-		  this->statPixels[curOffset] = HQ_WS_LINE;
+		  this->wsPixels[curOffset] = STAT_WS_LINE;
 	    }
 	}
-      protected:
-	vector<size_t> tmpOffsets;
 	
     };
     
