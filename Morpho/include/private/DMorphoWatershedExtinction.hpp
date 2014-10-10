@@ -287,6 +287,9 @@ namespace smil
 		}
 		else if (l1!=l2)
 		{
+		    labelT l1_orig = l1;
+		    labelT l2_orig = l2;
+		    
 		    while (l1!=equivalentLabels[l1])
 		      l1 = equivalentLabels[l1];
 		    while (l2!=equivalentLabels[l2])
@@ -294,9 +297,9 @@ namespace smil
 		    
 		    if (l1 != l2)
 		    {
-			// mergeBasins basins
-			labelT eater = mergeBasins(l1, l2);
-			labelT eaten = (eater==l1) ? l2 : l1;
+			// merge basins
+			labelT eater = (mergeBasins(l1, l2)==l1) ? l1_orig : l2_orig;
+			labelT eaten = (eater==l1_orig) ? l2_orig : l1_orig;
 			
 			if (graph)
 			  graph->addEdge(eaten, eater, this->extinctionValues[eaten]);
