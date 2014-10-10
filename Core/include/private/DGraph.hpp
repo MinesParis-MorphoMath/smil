@@ -285,7 +285,9 @@ namespace smil
 	vector< EdgeType > &getEdges() { return edges; }  // rvalue
 	const map< size_t, std::vector<size_t> > &getNodeEdges() const { return nodeEdges; } // lvalue
 	//! Get a map containing the edges linked to a given node
+#ifndef SWIG
 	map< size_t, std::vector<size_t> > &getNodeEdges() { return nodeEdges; } // rvalue
+#endif // SWIG
 	
 	//! Compute the Minimum Spanning Tree graph
 	Graph<nodeT,edgeWT> computeMST()
