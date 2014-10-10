@@ -34,7 +34,7 @@
 
 #include "QVtkViewerWidget.h"
 #include "Gui/include/private/DImageViewer.hpp"
-#include "DTypes.h"
+#include "Core/include/DTypes.h"
 
 namespace smil
 {
