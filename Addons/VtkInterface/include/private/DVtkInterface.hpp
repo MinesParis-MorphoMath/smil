@@ -30,8 +30,8 @@
 #ifndef _D_VTK_IMAGE_HPP
 #define _D_VTK_IMAGE_HPP
 
-#include "DImage.hxx"
-#include "DSharedImage.hpp"
+#include "Core/include/DCore.h"
+#include "Core/include/private/DSharedImage.hpp"
 
 #include <vtkImageData.h>
 
