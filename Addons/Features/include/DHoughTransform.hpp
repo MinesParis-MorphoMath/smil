@@ -30,7 +30,7 @@
 #ifndef _D_HOUGH_TRANSFORM_HPP
 #define _D_HOUGH_TRANSFORM_HPP
 
-#include "DImage.hxx"
+#include "Core/include/private/DImage.hxx"
 
 namespace smil
 {

@@ -1,6 +1,6 @@
 
 #include "DOpenCVInterface.hpp"
-#include "DTest.h"
+#include "Core/include/DTest.h"
 
 
 using namespace smil;
