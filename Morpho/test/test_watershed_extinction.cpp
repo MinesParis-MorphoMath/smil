@@ -347,7 +347,7 @@ class Test_Watershed_Extinction_Graph : public TestCase
 
 	vector<Edge<UINT8> > trueEdges;
 	trueEdges.push_back(Edge<UINT8>(1,2, 6));
-	trueEdges.push_back(Edge<UINT8>(3,2, 30));
+	trueEdges.push_back(Edge<UINT8>(3,1, 30));
 
 	watershedExtinctionGraph (imIn, imMark, imResult, graph, "v", se) ;
 	
@@ -356,7 +356,7 @@ class Test_Watershed_Extinction_Graph : public TestCase
 	    graph.printSelf();
 	
 	vector<Edge<UINT8> > trueEdges2;
-	trueEdges2.push_back(Edge<UINT8>(3,2, 1));
+	trueEdges2.push_back(Edge<UINT8>(3,1, 1));
 	trueEdges2.push_back(Edge<UINT8>(1,2, 2));
 	
 	Graph<UINT8,UINT8> rankGraph = watershedExtinctionGraph (imIn, imMark, imResult, "v", se) ;
