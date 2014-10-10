@@ -5,23 +5,23 @@
 
 namespace smil
 {
-    template <class T, class markerT>
-    RES_T fastMinima (const Image<T> &imIn, Image<markerT> &imOut, const StrElt &se) {
+    template <class T>
+    RES_T fastMinima (const Image<T> &imIn, Image<T> &imOut, const StrElt &se) {
 
-        Image <UINT8> imFlag (imIn);
-        Image <markerT> tmp (imIn);
+        Image <T> imFlag (imIn);
+        Image <T> tmp (imIn);
 
         typedef Image<T> inT;
-        typedef Image<markerT> outT;
+        typedef Image<T> outT;
         typedef typename inT::lineType inLineT;
         typedef typename outT::lineType outLineT;
-        typedef typename Image<UINT8>::lineType flagLineT;
+        typedef typename Image<T>::lineType flagLineT;
         typedef typename inT::sliceType inSliceT;
         typedef typename outT::sliceType outSliceT;
-        typedef typename Image<UINT8>::sliceType flagSliceT;
+        typedef typename Image<T>::sliceType flagSliceT;
         typedef typename inT::volType inVolT;
         typedef typename outT::volType outVolT;
-        typedef typename Image<UINT8>::volType flagVolT;
+        typedef typename Image<T>::volType flagVolT;
 
 
         StrElt cpSE = se.noCenter ();
@@ -42,12 +42,12 @@ namespace smil
         inLineT* inLines; outLineT* outLines; flagLineT* flagLines;
         inLineT lineIn; outLineT lineOut; flagLineT lineFlag;
 
-        outLineT nullBuf = ImDtTypes < markerT >:: createLine (lineLen);
-        fillLine <markerT> ( nullBuf, lineLen, markerT (0) );    
+        outLineT nullBuf = ImDtTypes < T >:: createLine (lineLen);
+        fillLine <T> ( nullBuf, lineLen, T (0) );    
 
         arrowEqu (imIn, imFlag, cpSE);
 
-        testLine<T, markerT> test;
+        testLine<T, T> test;
         for ( size_t s=0; s<nSlices; ++s) 
         {
             inLines = inSlices [s];
@@ -71,7 +71,7 @@ namespace smil
             }
         }
 
-        markerT nbr_lbl = label (imOut, tmp, cpSE);
+        T nbr_lbl = label (imOut, tmp, cpSE);
         vector<bool> plateau (nbr_lbl+1, true) ;
 
         flagLineT flagP = imFlag.getPixels ();
@@ -80,7 +80,7 @@ namespace smil
 
         size_t offset;
 
-        fill (imFlag, UINT8(0));
+        fill (imFlag, T(0));
         arrowMin (imIn, imFlag, cpSE) ;
         
         for ( size_t z=0; z<nSlices; ++z) 
@@ -98,7 +98,7 @@ namespace smil
                 {
                     offset = x+y*lineLen+z*lineLen*nLines;
                     if (!plateau[tmp[offset]])
-                        tmpP[offset] = markerT(0);
+                        tmpP[offset] = T(0);
                 }
         label (tmp, imOut, cpSE);
     }
