@@ -21,9 +21,9 @@
  */
 
 
-#include "DImage.h"
+#include "Core/include/DImage.h"
 #include "DQVtkViewer.hpp"
-#include "DTest.h"
+#include "Core/include/DTest.h"
 
 using namespace smil;
 
