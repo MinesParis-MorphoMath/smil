@@ -286,7 +286,7 @@ namespace smil
 	vector<UINT> areas;
 	vector<T> minValues;
 	
-	virtual void createBasins(const UINT nbr)
+	virtual void createBasins(const UINT &nbr)
 	{
 	    areas.resize(nbr, 0);
 	    minValues.resize(nbr, ImDtTypes<T>::max());
@@ -342,7 +342,7 @@ namespace smil
 	vector<UINT> areas, volumes;
 	vector<T> floodLevels;
 	
-	virtual void createBasins(const UINT nbr)
+	virtual void createBasins(const UINT &nbr)
 	{
 	    areas.resize(nbr, 0);
 	    volumes.resize(nbr, 0);
