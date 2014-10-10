@@ -28,18 +28,17 @@
 
 
 %include smilCommon.i
+%include smilMorpho.i
 
 SMIL_MODULE(smilChabardes)
 
-
 %{
 /* Includes the header in the wrapper code */
-#include "Chabardes.hpp"
+#include "DMinima.h"
 %}
 
 %import smilCore.i
 
-%include "Chabardes.hpp"
-
-TEMPLATE_WRAP_FUNC(sampleFunction)
+%include "DMinima.h"
+TEMPLATE_WRAP_FUNC_2T_CROSS(fastMinima)
 
