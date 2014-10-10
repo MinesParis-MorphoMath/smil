@@ -28,7 +28,6 @@
 
 
 %include smilCommon.i
-%include smilMorpho.i
 
 SMIL_MODULE(smilChabardes)
 
@@ -40,5 +39,5 @@ SMIL_MODULE(smilChabardes)
 %import smilCore.i
 
 %include "DMinima.h"
-TEMPLATE_WRAP_FUNC_2T_CROSS(fastMinima)
+TEMPLATE_WRAP_FUNC(fastMinima)
 
