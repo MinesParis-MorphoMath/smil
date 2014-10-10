@@ -2,7 +2,7 @@
 #include <Python.h>
 
 #include "DVtkInterface.hpp"
-#include "DTest.h"
+#include "Core/include/DTest.h"
 
 
 using namespace smil;

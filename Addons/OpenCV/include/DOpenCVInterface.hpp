@@ -32,8 +32,8 @@
 
 #include <opencv/cv.h>
 
-#include "DImage.hxx"
-#include "DSharedImage.hpp"
+#include "Core/include/private/DImage.hxx"
+#include "Core/include/private/DSharedImage.hpp"
 
 
 
