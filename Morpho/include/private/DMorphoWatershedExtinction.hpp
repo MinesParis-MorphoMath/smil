@@ -63,42 +63,7 @@ namespace smil
     * 
     * Can be derivated in wrapped languages thanks to Swig directors.
     * 
-    * Python example:
-    * \code{.py}
-    * from smilPython import *
-    * 
-    * class myAreaExtinction(ExtinctionFlooding_UINT8_UINT16):
-    *      def createBasins(self, nbr):
-    *        self.areas = [0]*nbr
-    *        ExtinctionFlooding_UINT8_UINT16.createBasins(self, nbr)
-    *      def insertPixel(self, offset, lbl):
-    *        self.areas[lbl] += 1
-    *      def mergeBasins(self, lbl1, lbl2):
-    *        if self.areas[lbl1] > self.areas[lbl2]:
-    *  	eater = lbl1
-    *  	eaten = lbl2
-    *        else:
-    *  	eater = lbl2
-    *  	eaten = lbl1
-    *        self.extinctionValues[eaten] =  self.areas[eaten]
-    *        self.areas[eater] += self.areas[eaten]
-    *        self.equivalents[eaten] = eater
-    *        return eater
-    *      def finalize(self, lbl):
-    *        self.extinctionValues[lbl] += self.areas[lbl]
-    * 
-    * imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/lena.png")
-    * imGrad = Image(imIn)
-    * imMark = Image(imIn, "UINT16")
-    * imExtRank = Image(imIn, "UINT16")
-    * gradient(imIn, imGrad)
-    * hMinimaLabeled(imGrad, 20, imMark)
-    * 
-    * aExt = myAreaExtinction()
-    * aExt.floodWithExtRank(imIn, imMark, imExtRank)
-    * imExtRank.showLabel()
-    * \endcode
-
+    * \demo{custom_extinction_value.py]
     */
     template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T> >
     class ExtinctionFlooding 
@@ -106,21 +71,41 @@ namespace smil
 	: public BaseFlooding<T, labelT, HQ_Type>
 #endif // SWIG    
     {
-      protected:
+      public:
+	virtual ~ExtinctionFlooding() {}
+	
 	UINT labelNbr, basinNbr;
 	T currentLevel;
 	vector<labelT> equivalentLabels;
 	vector<extValType> extinctionValues;
 	size_t lastOffset;
-
+	
 	Graph<labelT, extValType> *graph;
 
+	virtual void createBasins(const UINT &nbr)
+	{
+	    equivalentLabels.resize(nbr);
+	    extinctionValues.resize(nbr, 0);
+	    
+	    for (UINT i=0;i<nbr;i++)
+	      equivalentLabels[i] = i;
+	    
+	    basinNbr = nbr;
+	}
+	virtual void deleteBasins()
+	{
+	    equivalentLabels.clear();
+	    extinctionValues.clear();
+	    
+	    basinNbr = 0;
+	}
+	
 	inline virtual void insertPixel(const size_t &offset, const labelT &lbl) {}
 	inline virtual void raiseLevel(const labelT &lbl) {}
 	inline virtual labelT mergeBasins(const labelT &lbl1, const labelT &lbl2) { return 0; };
 	inline virtual void finalize(const labelT &lbl) {}
-
-      public:
+	
+	
 	virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
 	{
 	    return BaseFlooding<T, labelT, HQ_Type>::flood(imIn, imMarkers, imBasinsOut, se);
@@ -224,24 +209,6 @@ namespace smil
 	    
 	    graph = NULL;
 	}
-	
-	virtual void createBasins(const UINT nbr)
-	{
-	    equivalentLabels.resize(nbr);
-	    extinctionValues.resize(nbr, 0);
-	    
-	    for (UINT i=0;i<nbr;i++)
-	      equivalentLabels[i] = i;
-	    
-	    basinNbr = nbr;
-	}
-	virtual void deleteBasins()
-	{
-	    equivalentLabels.clear();
-	    extinctionValues.clear();
-	    
-	    basinNbr = 0;
-	}
 	    
 	virtual RES_T processImage(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
 	{
@@ -319,7 +286,7 @@ namespace smil
 	vector<UINT> areas;
 	vector<T> minValues;
 	
-	virtual void createBasins(const UINT nbr)
+	virtual void createBasins(const UINT &nbr)
 	{
 	    areas.resize(nbr, 0);
 	    minValues.resize(nbr, ImDtTypes<T>::max());
@@ -375,7 +342,7 @@ namespace smil
 	vector<UINT> areas, volumes;
 	vector<T> floodLevels;
 	
-	virtual void createBasins(const UINT nbr)
+	virtual void createBasins(const UINT &nbr)
 	{
 	    areas.resize(nbr, 0);
 	    volumes.resize(nbr, 0);
