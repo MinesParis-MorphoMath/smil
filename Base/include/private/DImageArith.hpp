@@ -35,6 +35,7 @@
 #include "DBaseImageOperations.hpp"
 #include "DLineArith.hpp"
 #include "Core/include/DTime.h"
+#include "Core/include/private/DTraits.hpp"
 
 namespace smil
 {
@@ -1045,6 +1046,7 @@ namespace smil
 	return RES_OK;
     }
     
+    
     /**
     * Apply a lookup map
     */
@@ -1054,6 +1056,52 @@ namespace smil
 	return applyLookup<T1, map<T1,T2>, T2>(imIn, lut, imOut, defaultValue);
     }
 
+    // Specializations
+    template <class T2>
+    RES_T applyLookup(const Image<UINT16> &imIn, const map<UINT16,T2> &lut, Image<T2> &imOut, T2 defaultValue=T2(0))
+    {
+	ASSERT(!lut.empty(), "Input map is empty", RES_ERR);
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	T2 *outVals = ImDtTypes<T2>::createLine(ImDtTypes<UINT16>::cardinal());
+	for (int i=0;i<ImDtTypes<UINT16>::max();i++)
+	  outVals[i] = defaultValue;
+	
+	typename Image<UINT16>::lineType pixIn = imIn.getPixels();
+	typename Image<T2>::lineType pixOut = imOut.getPixels();
+	
+	for (typename map<UINT16,T2>::const_iterator it = lut.begin(); it!=lut.end(); it++)
+	  outVals[it->first] = it->second;
+	
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	  pixOut[i] = outVals[ pixIn[i] ];
+
+	return RES_OK;
+    }
+    
+    template <class T2>
+    RES_T applyLookup(const Image<UINT8> &imIn, const map<UINT8,T2> &lut, Image<T2> &imOut, T2 defaultValue=T2(0))
+    {
+	ASSERT(!lut.empty(), "Input map is empty", RES_ERR);
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	T2 *outVals = ImDtTypes<T2>::createLine(ImDtTypes<UINT8>::cardinal());
+	for (int i=0;i<ImDtTypes<UINT8>::max();i++)
+	  outVals[i] = defaultValue;
+	
+	typename Image<UINT8>::lineType pixIn = imIn.getPixels();
+	typename Image<T2>::lineType pixOut = imOut.getPixels();
+	
+	for (typename map<UINT8,T2>::const_iterator it = lut.begin(); it!=lut.end(); it++)
+	  outVals[it->first] = it->second;
+	
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	  pixOut[i] = outVals[ pixIn[i] ];
+
+	return RES_OK;
+    }
     
     
 /** @}*/
