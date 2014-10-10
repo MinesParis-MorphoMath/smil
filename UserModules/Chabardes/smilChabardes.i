@@ -31,6 +31,8 @@
 
 SMIL_MODULE(smilChabardes)
 
+%import smilMorpho.i
+
 %{
 /* Includes the header in the wrapper code */
 #include "DMinima.h"
