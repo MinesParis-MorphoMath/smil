@@ -159,11 +159,11 @@ TEMPLATE_WRAP_FUNC(scale);
 namespace std 
 {
     %template(PixelSequenceVector) vector<PixelSequence>;
-    %template(BlobMap) map<UINT,Blob>;
+    TEMPLATE_WRAP_MAP_FIX_SECOND(Blob, BlobMap);
 }
 
 TEMPLATE_WRAP_FUNC(computeBlobs);
-TEMPLATE_WRAP_FUNC(drawBlobs)
+TEMPLATE_WRAP_FUNC_2T_CROSS(drawBlobs)
 
 %include "DMeasures.hpp"
 TEMPLATE_WRAP_FUNC(vol);
@@ -199,16 +199,21 @@ TEMPLATE_WRAP_SUPPL_FUNC(rangeVal);
 
 %include "DBlobMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measAreas);
-TEMPLATE_WRAP_FUNC(measMinVals);
-TEMPLATE_WRAP_FUNC(measMaxVals);
-TEMPLATE_WRAP_FUNC(measRangeVals);
-TEMPLATE_WRAP_FUNC(measMeanVals);
-TEMPLATE_WRAP_FUNC(measVolumes);
-TEMPLATE_WRAP_FUNC(valueLists);
-TEMPLATE_WRAP_FUNC(measModeVals);
 TEMPLATE_WRAP_FUNC(measBarycenters);
 TEMPLATE_WRAP_FUNC(measBoundBoxes);
 TEMPLATE_WRAP_FUNC(measInertiaMatrices);
+
+TEMPLATE_WRAP_FUNC_2T_CROSS(measAreas);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measMinVals);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measMaxVals);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measRangeVals);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measMeanVals);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measVolumes);
+TEMPLATE_WRAP_FUNC_2T_CROSS(valueLists);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measModeVals);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measBarycenters);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measBoundBoxes);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measInertiaMatrices);
 
 %include "DImageMatrix.hpp"
 TEMPLATE_WRAP_FUNC(matMul);
