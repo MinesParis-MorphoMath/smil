@@ -35,7 +35,6 @@
 #include "DBaseImageOperations.hpp"
 #include "DLineArith.hpp"
 #include "Core/include/DTime.h"
-#include "Core/include/private/DTraits.hpp"
 
 namespace smil
 {
