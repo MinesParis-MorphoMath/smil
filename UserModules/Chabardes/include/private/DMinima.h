@@ -85,8 +85,6 @@ namespace smil
                     {
                         outlets.push_back (offset);
                     }
-                    if (flagP[offset] == 0 && tmpP[offset] == 0)
-                        outP[offset] = 255;
                 }      
 
         size_t x0, y0, z0;
@@ -128,14 +126,19 @@ namespace smil
 
         }
 
+        arrowLow (imIn, imFlag, cpSE, numeric_limits<T>::max()) ;
+/*
+        imFlag.printSelf (1);
+
         for ( size_t z=0; z<nSlices; ++z) 
             for (size_t y=0; y<nLines; ++y)
                 for (size_t x=0; x<lineLen; ++x)
                 {
                     offset = x+y*lineLen+z*lineLen*nLines;
-                    if (outP[offset] != 0)
-                        tmpP[offset] = outP[offset];
+                    if (flagP[offset] == pow (2, sePtsNumber)-1)
+                        tmpP[offset] = 255;
                 }
+*/
         label (tmp, imOut, cpSE);
 
 /*        T nbr_lbl = label (imOut, tmp, cpSE);
