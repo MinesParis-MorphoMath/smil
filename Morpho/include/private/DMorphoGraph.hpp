@@ -179,7 +179,7 @@ namespace smil
 	
 	ImageFreezer freeze(imOut);
 	
-	map<UINT, vector<double> > barys = measBarycenters(imMosaic);
+	map<mosImT, vector<double> > barys = measBarycenters(imMosaic);
 	
 	typedef typename graphT::EdgeType EdgeType;
 	typedef const vector< EdgeType > EdgeListType;
