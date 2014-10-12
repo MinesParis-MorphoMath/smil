@@ -71,9 +71,9 @@ namespace smil
      * Create a map of Blob from a labelized image
      */
     template <class T>
-    map<UINT, Blob> computeBlobs(const Image<T> &imIn, bool onlyNonZero=true)
+    map<T, Blob> computeBlobs(const Image<T> &imIn, bool onlyNonZero=true)
     {
-	map<UINT, Blob> blobs;
+	map<T, Blob> blobs;
 	
 	ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, blobs);
 
@@ -120,8 +120,8 @@ namespace smil
      * 
      * If blobsValue==0, the blobs are represented with their label value.
      */
-    template <class T>
-    RES_T drawBlobs(const map<UINT, Blob> &blobs, Image<T> &imOut, T blobsValue=ImDtTypes<T>::max(), bool fillFirst = true, T defaultValue=T(0))
+    template <class labelT, class T>
+    RES_T drawBlobs(map<labelT, Blob> &blobs, Image<T> &imOut, T blobsValue=ImDtTypes<T>::max(), bool fillFirst = true, T defaultValue=T(0))
     {
 	ASSERT_ALLOCATED(&imOut);
 	
@@ -134,7 +134,7 @@ namespace smil
 	size_t pixCount = imOut.getPixelCount();
 	bool allBlobsFit = true;
 	
-	typename map<UINT, Blob>::const_iterator blob_it;
+	typename map<labelT, Blob>::const_iterator blob_it;
 	for (blob_it=blobs.begin();blob_it!=blobs.end();blob_it++)
 	{
 	    // Verify that the blob can fit in the image
@@ -168,8 +168,8 @@ namespace smil
      * Represent Blobs in an image with a lookup map.
      * 
      */
-    template <class T, class mapT>
-    RES_T drawBlobs(const map<UINT, Blob> &blobs, const mapT &lut, Image<T> &imOut, bool fillFirst = true, T defaultValue=T(0))
+    template <class labelT, class T>
+    RES_T drawBlobs(map<labelT, Blob> &blobs, map<labelT,T> &lut, Image<T> &imOut, bool fillFirst = true, T defaultValue=T(0))
     {
 	ASSERT_ALLOCATED(&imOut);
 	
@@ -182,7 +182,7 @@ namespace smil
 	size_t pixCount = imOut.getPixelCount();
 	bool allBlobsFit = true;
 	
-	typename map<UINT, Blob>::const_iterator blob_it;
+	typename map<labelT, Blob>::const_iterator blob_it;
 	for (blob_it=blobs.begin();blob_it!=blobs.end();blob_it++)
 	{
 	    // Verify that the blob can fit in the image
@@ -196,7 +196,7 @@ namespace smil
 		Blob::sequences_const_iterator it = blob_it->second.sequences.begin();
 		Blob::sequences_const_iterator it_end =  blob_it->second.sequences.end();
 		
-		typename mapT::const_iterator valIt = lut.find(blob_it->first);
+		typename map<labelT,T>::const_iterator valIt = lut.find(blob_it->first);
 		T outVal = valIt!=lut.end() ? valIt->second : defaultValue;
 		for (;it!=it_end;it++)
 		{
@@ -213,11 +213,6 @@ namespace smil
 	return RES_OK;
     }
 
-    template <class T>
-    RES_T drawBlobs(const map<UINT, Blob> &blobs, const map<UINT,T> &lut, Image<T> &imOut) //, bool fillFirst = true, T defaultValue=T(0))
-    {
-	return drawBlobs<T,map<UINT,T> >(blobs, lut, imOut); //, fillFirst, defaultValue);
-    }
 
 
     
