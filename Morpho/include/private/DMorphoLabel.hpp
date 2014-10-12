@@ -360,7 +360,7 @@ namespace smil
 	Image<T2> imLabel(imIn);
 	
 	ASSERT(label(imIn, imLabel, se)!=0);
- 	map<UINT, double> areas = measAreas(imLabel);
+ 	map<T2, double> areas = measAreas(imLabel);
 	ASSERT(!areas.empty());
 	
 	ASSERT(applyLookup(imLabel, areas, imOut)==RES_OK);
