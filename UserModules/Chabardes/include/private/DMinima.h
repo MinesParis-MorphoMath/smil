@@ -31,7 +31,7 @@ namespace smil
         size_t size[3]; imIn.getSize(size);
         UINT sePtsNumber = cpSe.points.size();
         if (sePtsNumber == 0) return RES_OK;
-        bool oddSe, oddLine;
+        bool oddLine;
         vector <size_t> outlets;
         size_t offset, nb_offset;
             // Images related.
@@ -47,7 +47,7 @@ namespace smil
         arrowLineT cstBuf = ImDtTypes<T>::createLine(size[0]);
         outLineT cstBuf2 = ImDtTypes<T>::createLine(size[0]);
 
-        // Storing Minimas in imOut.
+        // Storing steep in imOut.
         arrowGrt (imIn, arrows, cpSe, numeric_limits<T>::max());
         grtLine<T> grtOp;
         fillLine<T>(cstBuf, size[0], T(0)); 
@@ -93,6 +93,7 @@ namespace smil
         queue <size_t> breadth;
         for (vector<size_t>::iterator i=outlets.begin(); i!=outlets.end(); ++i) 
         {
+//            outP[*i] = 0;
             breadth.push (*i) ;
 
             do 
@@ -104,13 +105,16 @@ namespace smil
                     arrow = (1UL << p);
                     if ((arrowP[offset] & arrow)) 
                     {
+                        
                         z = offset / (size[1] * size[0]);
-                        y = (offset - z*size[1]*size[0]) / size[0];
-                        x = offset - y*size[0] - z*size[1]*size[0];
-                        oddLine = oddSe && y%2;
+                        y = (offset % (size[1]*size[0])) / size[0];
+                        x = offset % size[0];
+                        oddLine = se.odd && y%2;
+                        x += cpSe.points[p].x;
                         y += cpSe.points[p].y;
-                        x += cpSe.points[p].x + (oddLine && ((y+1)%2) != 0);
                         z += cpSe.points[p].z;
+                        if (oddLine)
+                            x += (((y+1)%2)!=0);
                         nb_offset = x + y*size[0] + z*size[1]*size[0];
                         if (outP[nb_offset] == ImDtTypes<T>::max())
                         {
