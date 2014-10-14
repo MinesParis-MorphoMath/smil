@@ -76,7 +76,19 @@ class TestArrow : public TestCase
       if (retVal!=RES_OK)
 	im2.printSelf(1);
 
-    
+      arrowGrt(im1, im2, hSE0(), UINT8(255));
+      UINT8 vecGrt2[] = { 
+	 0,  8, 57,  0, 40,
+	34, 22,  4, 59,  4,
+	 0,  8, 47, 48, 50,
+	35, 23, 33,  0, 32,
+	 0, 15,  0, 15,  0,
+      };
+      imTruth << vecGrt2;
+      TEST_ASSERT(im2==imTruth);
+      if (retVal!=RES_OK)
+	im2.printSelf(1);
+
   }
 };
 
