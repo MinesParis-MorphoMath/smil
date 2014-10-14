@@ -104,22 +104,22 @@ namespace smil
 	{
 	    srcLines = srcSlices[s];
 	    destLines = destSlices[s];
-	    if (oddSe)
-	      oddLine = s%2!=0;
 	    
 	    for (size_t l=0;l<nLines;l++)
 	    {
 		lineType lineIn  = srcLines[l];
 		lineType lineOut = destLines[l];
+
+//	    oddLine = oddSe && l%2;
 		
 		fillLine<T>(lineOut, parentClass::lineLen, 0);
 		
 		for (UINT p=0;p<sePtsNumber;p++)
 		{
-		    x = - se.points[p].x + oddLine;
+		    x = - se.points[p].x;
 		    y = l + se.points[p].y;
 		    z = s + se.points[p].z;
-		    
+
 		    parentClass::lineFunction.trueVal = (1UL << p);
 		    
 		    this->_exec_line(lineIn, &imIn, x, y, z, lineOut);   
