@@ -1047,6 +1047,7 @@ namespace smil
     }
     
     
+#ifndef SWIG
     /**
     * Apply a lookup map
     */
@@ -1081,7 +1082,11 @@ namespace smil
 
 	return RES_OK;
     }
-    
+#else // SWIG
+    template <class T1, class T2>
+    RES_T applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut, T2 defaultValue=T2(0));
+#endif // SWIG    
+
     
     
 /** @}*/
