@@ -31,7 +31,6 @@
 #include "DMorpho.h"
 #include "DMorphoWatershed.hpp"
 #include "DMorphoWatershedExtinction.hpp"
-#include <boost/concept_check.hpp>
 
 using namespace smil;
 
