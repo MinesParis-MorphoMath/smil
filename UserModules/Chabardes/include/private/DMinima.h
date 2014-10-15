@@ -79,42 +79,43 @@ namespace smil
                         outP[offset] = ImDtTypes<T>::max();
                     } else if (outP[offset] == 0)
                     {
-                        outP[offset] = ImDtTypes<T>::max()-1; // 1-pixel minimas.
+                        outP[offset] = ImDtTypes<T>::max()/2; // 1-pixel minimas.
                     } else {
                         outP[offset] = 0;
                     }
                 }
             }
         }
-      
+    
         // Removing plateaus with outlets.
-        size_t x, y, z;
+        size_t x, x0, y, y0, z, z0;
         UINT arrow;
         queue <size_t> breadth;
         for (vector<size_t>::iterator i=outlets.begin(); i!=outlets.end(); ++i) 
         {
-//            outP[*i] = 0;
+            outP[*i] = 0;
             breadth.push (*i) ;
 
             do 
             {
                 offset = breadth.front();
                 breadth.pop();
+                z0 = offset / (size[1] * size[0]);
+                y0 = (offset % (size[1]*size[0])) / size[0];
+                x0 = offset % size[0];
+                oddLine = se.odd && y0%2;
+
                 for (UINT p=0; p<sePtsNumber; ++p)
                 {
                     arrow = (1UL << p);
                     if ((arrowP[offset] & arrow)) 
                     {
                         
-                        z = offset / (size[1] * size[0]);
-                        y = (offset % (size[1]*size[0])) / size[0];
-                        x = offset % size[0];
-                        oddLine = se.odd && y%2;
-                        x += cpSe.points[p].x;
-                        y += cpSe.points[p].y;
-                        z += cpSe.points[p].z;
+                        x = x0 + cpSe.points[p].x;
+                        y = y0 + cpSe.points[p].y;
+                        z = z0 + cpSe.points[p].z;
                         if (oddLine)
-                            x += (((y+1)%2)!=0);
+                            x += (y+1)%2;
                         nb_offset = x + y*size[0] + z*size[1]*size[0];
                         if (outP[nb_offset] == ImDtTypes<T>::max())
                         {
