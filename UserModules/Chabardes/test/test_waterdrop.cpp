@@ -7,13 +7,16 @@ class Test_Waterdrop:public TestCase
     virtual void run ()
     {
 	UINT8 vecIn[] = {
-	    4, 4, 4, 4, 4, 4,
-	    7, 7, 7, 7, 7, 7,
-	    2, 7, 5, 6, 2, 2,
-	    2, 6, 5, 6, 2, 2,
-	    2, 2, 6, 4, 1, 2,
-	    2, 2, 3, 4, 2, 2,
-	    2, 2, 2, 2, 4, 2
+0,  1,  1,  2,  5,  10, 5,  5,  4,  4,
+0,  1,  1,  2,  5,  10, 5,  5,  4,  4,
+3,  4,  4,  8,  6,  11, 6,  5,  11, 9,
+12, 8,  9,  8,  11, 6,  7,  8,  7,  12,
+5,  12, 4,  12, 9,  10, 7,  8,  12, 12,
+3,  2,  7,  6,  12, 3,  7,  5,  5,  12,
+1,  3,  4,  9,  8,  13, 5,  3,  9,  11,
+5,  5,  5,  6,  13, 10, 9,  0,  5,  11,
+3,  5,  2,  7,  6,  9,  8,  13, 9,  12,
+5,  5,  7,  5,  6,  8,  12, 9,  13, 10
 	};
 
 	UINT8 vecLbl[] = {
@@ -36,12 +39,12 @@ class Test_Waterdrop:public TestCase
 	    2, 2, 2, 2, 0, 3
 	};
 
-	Image_UINT8 imIn (6, 7);
+	Image_UINT8 imIn (10, 10);
     Image_UINT8 imMinima (imIn);
 	Image_UINT8 label (imIn);
 	Image_UINT8 truth (imIn);
 
-	StrElt se = cSE ();
+	StrElt se = hSE ();
 
 	imIn << vecIn;
 	label << vecLbl;
