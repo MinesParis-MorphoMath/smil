@@ -110,14 +110,14 @@ namespace smil
 		lineType lineIn  = srcLines[l];
 		lineType lineOut = destLines[l];
 
-//	    oddLine = oddSe && l%2;
+	    oddLine = oddSe && l%2;
 		
 		fillLine<T>(lineOut, parentClass::lineLen, 0);
 		
 		for (UINT p=0;p<sePtsNumber;p++)
 		{
-		    x = - se.points[p].x;
 		    y = l + se.points[p].y;
+		    x = - se.points[p].x - (oddLine && (y+1)%2);
 		    z = s + se.points[p].z;
 
 		    parentClass::lineFunction.trueVal = (1UL << p);
