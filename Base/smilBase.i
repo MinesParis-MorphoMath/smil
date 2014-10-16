@@ -158,7 +158,7 @@ TEMPLATE_WRAP_FUNC(scale);
 
 namespace std 
 {
-    %template(PixelSequenceVector) vector<PixelSequence>;
+//    %template(PixelSequenceVector) vector<PixelSequence>;
     TEMPLATE_WRAP_MAP_FIX_SECOND(Blob, BlobMap);
 }
 
