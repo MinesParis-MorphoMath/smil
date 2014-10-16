@@ -32,10 +32,12 @@
 #include <omp.h>
 #endif
 
+  #include <stdlib.h> 
 #ifdef _MSC_VER
   #include <intrin.h>
 // TODO: find asm instructions for arm platforms
 #elif defined(__arm__) 
+  #include <stdlib.h> 
 #else
   #include <cpuid.h>
 #endif // _MSC_VER
@@ -162,7 +164,16 @@ CpuID::CpuID()
 	cores = max(cores, 1U);
     
 #else // __arm__
-    cores = logical = 1;
+    FILE *lsofFile_p = popen("/usr/bin/nproc", "r");
+    if (lsofFile_p)
+    {
+	char buffer[1024];
+	char *line_p = fgets(buffer, sizeof(buffer), lsofFile_p);
+	cores = logical = atoi(line_p);
+	pclose(lsofFile_p);
+    }
+    else 
+      cores = logical = 1;
 #endif // __arm__
     
 }
