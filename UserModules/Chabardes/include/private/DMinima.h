@@ -56,6 +56,7 @@ namespace smil
             arrowLines = arrowSlices[s];
             outLines = outSlices[s];
             
+            #pragma omp parallel for
             for (size_t l=0; l<size[1]; ++l)
             {
                 grtOp._exec(arrowLines[l], cstBuf, size[0], outLines[l]);
@@ -64,8 +65,12 @@ namespace smil
 
         // Detecting plateaus and 1-pixel minimas.
         arrowEqu (imIn, arrows, cpSe);
+        #pragma omp parallel private (offset)
+        {
+        vector<size_t> outlets_private;
         for (size_t s=0; s<size[2]; ++s)
         {
+            #pragma omp for
             for (size_t l=0; l<size[1]; ++l)
             {
                 for (size_t p=0; p<size[0]; ++p) {
@@ -74,7 +79,7 @@ namespace smil
                     {
                         if (arrowP[offset] > 0 && outP[offset] > 0)
                         {
-                            outlets.push_back(offset); // outlet pixels of plateaus.
+                            outlets_private.push_back(offset); // outlet pixels of plateaus.
                         }
                         outP[offset] = ImDtTypes<T>::max();
                     } else if (outP[offset] == 0)
@@ -86,15 +91,20 @@ namespace smil
                 }
             }
         }
+        #pragma omp critical
+        outlets.insert(outlets.end(), outlets_private.begin(), outlets_private.end());
+        }
     
         // Removing plateaus with outlets.
         size_t x, x0, y, y0, z, z0;
         UINT arrow;
         queue <size_t> breadth;
-        for (vector<size_t>::iterator i=outlets.begin(); i!=outlets.end(); ++i) 
+        #pragma omp parallel for private (breadth,offset,x0,y0,z0,x,y,z,oddLine,arrow,nb_offset)
+        for (int i=0; i<outlets.size(); ++i)
+//        for (vector<size_t>::iterator i=outlets.begin(); i!=outlets.end(); ++i) 
         {
-            outP[*i] = 0;
-            breadth.push (*i) ;
+            outP[outlets[i]] = 0;
+            breadth.push (outlets[i]) ;
 
             do 
             {
@@ -134,7 +144,7 @@ namespace smil
         for (size_t s=0; s<size[2]; ++s)
         {
             outLines = outSlices[s];
-
+            #pragma omp parallel for
             for (size_t l=0; l<size[1]; ++l)
             {
                 testOp._exec(outLines[l], cstBuf2, outLines[l], size[0], outLines[l]);
