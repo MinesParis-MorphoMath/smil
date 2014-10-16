@@ -128,7 +128,9 @@ StrElt StrElt::noCenter() const
 {
     StrElt se;
 
-    se = this->odd;
+    se.odd = this->odd;
+    se.seT = this->seT;
+    se.size = this->size;
 
     vector < IntPoint >::const_iterator it_start = this->points.begin () ;
     vector < IntPoint >::const_iterator it_end = this->points.end () ;
