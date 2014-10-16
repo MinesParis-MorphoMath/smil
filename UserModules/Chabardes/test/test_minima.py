@@ -1,12 +1,14 @@
 from smilPython import *
 
-im = Image ("http://cmm.ensmp.fr/~faessel/smil/images/lena.png")
+#im = Image ("http://cmm.ensmp.fr/~faessel/smil/images/lena.png")
+im = Image ("/home/chabardes/src/samg/trunk/chabardes/crop_300_OK.vtk")
+
 imG = Image (im)
 out = Image (im)
 out2 = Image (im)
 imD = Image (im)
 
-se = hSE()
+se = Cross3DSE()
 
 gradient (im, imG, se)
 fastMinima (imG, out, se)
