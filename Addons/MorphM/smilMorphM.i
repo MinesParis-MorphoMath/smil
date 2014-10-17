@@ -59,7 +59,7 @@ def MorphmInt(*args):
     argTypeStr = [ str(type(a)) for a in args ]
     
     if argNbr==0 or argTypeStr[0]!="<class 'MorpheePython.IMorpheeImage'>":
-      print "You must specify a MorphM image"
+      print("You must specify a MorphM image")
       return
     
     im = args[0]
