@@ -18,7 +18,7 @@ im3 = Image(im1)
 copy(imIn, tmpIm)
 resize(tmpIm, im1)
 
-print "*** Base ***"
+print("*** Base ***")
 bench(copy, im1, im2)
 bench(fill,im1, 0)
 bench(inv, im1, im2)
@@ -27,13 +27,13 @@ bench(sub, im1, im2, im3)
 bench(mul, im1, im2, im3)
 bench(div, im1, im2, im3)
 
-print "\n*** Arithmetic ***"
+print("\n*** Arithmetic ***")
 bench(inf, im1, im2, im3)
 bench(sup, im1, im2, im3)
 bench(equ, im1, im2, im3)
 bench(low, im1, im2, im3)
 
-print "\n*** Morphology ***"
+print("\n*** Morphology ***")
 bench(dilate, im1, im2, hSE(1))
 bench(dilate, im1, im2, sSE(1))
 bench(dilate, im1, im2, CrossSE(1))
@@ -41,4 +41,5 @@ bench(open, im1, im2, hSE(1))
 bench(open, im1, im2, sSE(1))
 bench(open, im1, im2, CrossSE(1))
 
-print 
+print()
+
