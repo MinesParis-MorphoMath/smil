@@ -139,6 +139,7 @@ namespace std
     %template(Vector_string) vector<string>;
     
     %template(Matrix_double) vector<Vector_double>;
+    %template(Vector_IntPoint) vector< smil::Point<int> >;
 }
 
 #endif // SWIGXML
