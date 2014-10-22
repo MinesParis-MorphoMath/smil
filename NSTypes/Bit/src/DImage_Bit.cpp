@@ -150,6 +150,22 @@ namespace smil
 	return RES_OK;
     }
 
+    template <>
+    RES_T SharedImage<Bit>::allocate()
+    {
+        if (this->allocated)
+            return RES_ERR_BAD_ALLOCATION;
+
+        if (this->pixels.intArray==NULL)
+            return RES_ERR_BAD_ALLOCATION;
+        
+        this->allocated = true;
+
+        this->restruct();
+
+        return RES_OK;
+    }
+
 } // namespace smil
 
 
