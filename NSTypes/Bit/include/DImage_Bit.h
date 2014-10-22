@@ -31,8 +31,9 @@
 #define _IMAGE_BIT_H
 
 
-#include "DImage.hpp"
-#include "DTypes.h"
+#include "Core/include/private/DImage.hpp"
+#include "Core/include/private/DSharedImage.hpp"
+#include "Core/include/DTypes.h"
 #include "DBitArray.h"
 
 namespace smil
@@ -59,6 +60,8 @@ namespace smil
     template <>
     RES_T Image<Bit>::setPixel(size_t offset, const Bit &value);
 
+    template <>
+    RES_T SharedImage<Bit>::allocate();
 } // namespace smil
 
 #endif // _IMAGE_BIN_HXX
