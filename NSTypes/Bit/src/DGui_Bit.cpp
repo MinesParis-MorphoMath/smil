@@ -31,7 +31,7 @@
 
 #include "Gui/Qt/DQtImageViewer.hpp"
 #include "Gui/Qt/PureQt/ImageViewerWidget.h"
-#include "DImage.hpp"
+#include "Core/include/private/DImage.hpp"
 
 #include "DBitArray.h"
 
