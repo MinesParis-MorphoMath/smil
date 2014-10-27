@@ -99,12 +99,18 @@ namespace smil
 	bool oddSe = se.odd, oddLine = 0;
 	
 	size_t x, y, z;
-	
+
+
+    #ifdef SWIG
+    #pragma omp parallel private (oddLine,x,y,z,parentClass::lineFunction)	
+    #endif
+    {
 	for (size_t s=0;s<nSlices;s++)
 	{
 	    srcLines = srcSlices[s];
 	    destLines = destSlices[s];
 	    
+        #pragma omp for
 	    for (size_t l=0;l<nLines;l++)
 	    {
 		lineType lineIn  = srcLines[l];
@@ -124,10 +130,9 @@ namespace smil
 		    
 		    this->_exec_line(lineIn, &imIn, x, y, z, lineOut);   
 		}
-		if (oddSe)
-		  oddLine = !oddLine;
 	    }
 	}
+    }
 
 	imOut.modified();
 
