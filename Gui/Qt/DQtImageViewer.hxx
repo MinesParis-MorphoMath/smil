@@ -253,7 +253,7 @@ namespace smil
 	    pixels = *lines++;
 	    for (size_t i=0;i<im.getWidth();i++)
 	    {
-	      if (pixels[i]!=0)
+	      if (pixels[i]!=T(0))
 		destLine[i] = overlayColorTable[(UINT8)pixels[i]];
 	    }
 	}
@@ -374,16 +374,21 @@ namespace smil
 	QColor darkCol = QColor::fromRgb(0,0,0);
 	T lightThresh = T(double(ImDtTypes<T>::max()-ImDtTypes<T>::min()) * 0.55);
 
+        bool inYRange;
+        
 	for (int j=0;j<gridSize;j++,yi++)
 	{
 	    if (yi>=0 && yi<imH)
+            {
+                inYRange = true;
 		pLine = pSlice[yi];
-	    else pLine = NULL;
+            }
+	    else inYRange = false;
 
 	    for (UINT i=0,xi=x-gridSize/2; i<gridSize; i++,xi++)
 	    {
 		textItem = *txtIt++;
-		if (pLine!=NULL && xi>=0 && xi<imW)
+		if (inYRange && xi>=0 && xi<imW)
 		{
 		    pVal = pLine[xi];
 		    if (pVal<lightThresh)
