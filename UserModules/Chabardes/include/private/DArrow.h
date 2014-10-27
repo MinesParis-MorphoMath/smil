@@ -131,11 +131,11 @@ namespace smil
 	  {
 	      srcLines = srcSlices[s];
 	      destLines = destSlices[s];
-	      if ( oddSe )
-		  oddLine = s % 2 != 0;
 
 	      for ( size_t l = 0; l < nLines; ++l )
 		{
+	        oddLine = oddSe && l %2;
+
 		    lineInType lineIn = srcLines[l];
 		    lineArrowType lineArrow = destLines[l];
 
@@ -144,8 +144,8 @@ namespace smil
 
 		    for ( UINT p = 0; p < sePtsNumber; ++p )
 		      {
-			  x = -cpSe.points[p].x + oddLine;
 			  y = l + cpSe.points[p].y;
+			  x = -cpSe.points[p].x - (oddLine && (y+1)%2);
 			  z = s + cpSe.points[p].z;
 
 			  equSup.trueVal = ( 1UL << p );
@@ -161,21 +161,19 @@ namespace smil
 			  test._exec ( flagBuf, lineArrow, nullBuf, lineLen,
 				       lineArrow );
 		      }
-		    if ( oddSe )
-			oddLine = !oddLine;
 		}
 	  }
     };
 
-    template < class T, class arrowT > RES_T arrowMin ( const Image < T > &in,
-							Image < arrowT >
+    template < class T > RES_T arrowMin ( const Image < T > &in,
+							Image < T >
 							&arrow,
 							const StrElt & se,
 							T borderValue =
 							numeric_limits <
 							T >::max (  ) )
     {
-	arrowMinFunction < T, arrowT > iFunc ( borderValue );
+	arrowMinFunction < T, T > iFunc ( borderValue );
 	return iFunc ( in, arrow, se );
     }
 

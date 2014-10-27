@@ -524,6 +524,27 @@ namespace smil
 	ERR_MSG("Not implemented for float");
     }
 
+    template <class T>
+    struct leftShiftLine : public binaryLineFunctionBase<T>
+    {
+	typedef typename Image<T>::lineType lineType;
+	virtual void _exec(const lineType lIn1, const UINT shift , const size_t size, lineType lOut)
+	{
+	    for (size_t i=0;i<size;i++)
+            lOut[i] = (T)(lIn1[i] << shift);
+	}
+    };
+
+    template <class T>
+    struct rightShiftLine : public binaryLineFunctionBase<T>
+    {
+	typedef typename Image<T>::lineType lineType;
+	virtual void _exec(const lineType lIn1, const UINT shift , const size_t size, lineType lOut)
+	{
+	    for (size_t i=0;i<size;i++)
+            lOut[i] = (T)(lIn1[i] >> shift);
+	}
+    };
 
     template <class T1, class T2>
     struct testLine : public tertiaryLineFunctionBase<T1>

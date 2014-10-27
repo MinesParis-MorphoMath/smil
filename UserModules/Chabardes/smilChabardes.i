@@ -36,9 +36,13 @@ SMIL_MODULE(smilChabardes)
 %{
 /* Includes the header in the wrapper code */
 #include "DMinima.h"
+#include "DArrow.h"
 %}
 
 %import smilCore.i
+
+%include "DArrow.h"
+TEMPLATE_WRAP_FUNC(arrowMin)
 
 %include "DMinima.h"
 TEMPLATE_WRAP_FUNC(fastMinima)
