@@ -75,7 +75,9 @@ builtinOpen = open
 %ignore StrElt::operator ();
 #endif // SWIGJAVA
 
+#ifdef SWIGPYTHON
 %include "DStructuringElement.h"
+#endif // SWIGPYTHON
 
 
 %include "DMorphoBase.hpp"

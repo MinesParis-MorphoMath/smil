@@ -112,7 +112,12 @@ namespace smil
 	}
 	
 	~StrElt() {}
-	
+
+    IntPoint getPoint (const UINT i) {
+        return points[i];
+    }
+    UINT getSize() const {return size;}
+
 	StrElt& operator=(const StrElt &rhs);
 	void clone(const StrElt &rhs);
       
