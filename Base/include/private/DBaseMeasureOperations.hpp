@@ -73,7 +73,7 @@ namespace smil
 		
 		for (size_t i=0;i<pixCount;i++)
 		{
-		    if (pixels[i]!=0)
+		    if (pixels[i]!=T(0))
 		      curSize++;
 		    else if (curSize>0)
 		    {
