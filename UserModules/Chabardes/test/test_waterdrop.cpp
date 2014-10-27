@@ -18,7 +18,7 @@ class Test_Waterdrop:public TestCase
 3,  5,  2,  7,  6,  9,  8,  13, 9,  12,
 5,  5,  7,  5,  6,  8,  12, 9,  13, 10
 	};
-
+/*
 	UINT8 vecLbl[] = {
 	    1, 1, 1, 1, 1, 1,
 	    0, 0, 0, 0, 0, 0,
@@ -38,17 +38,14 @@ class Test_Waterdrop:public TestCase
 	    2, 2, 0, 0, 3, 3,
 	    2, 2, 2, 2, 0, 3
 	};
-
+*/
 	Image_UINT8 imIn (10, 10);
+	Image_UINT8 imArrow (imIn);
     Image_UINT8 imMinima (imIn);
-	Image_UINT8 label (imIn);
-	Image_UINT8 truth (imIn);
 
-	StrElt se = hSE ();
+	StrElt se = cSE ();
 
 	imIn << vecIn;
-	label << vecLbl;
-	truth << vecTruth;
 
     fastMinima (imIn, imMinima, se);
 
