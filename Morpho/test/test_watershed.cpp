@@ -39,6 +39,7 @@ class Test_Basins : public TestCase
   virtual void run()
   {
       typedef UINT8 dtType;
+      typedef UINT16 dtType2;
       
       dtType vecIn[] = { 
 	2, 2, 2, 2, 2, 2,
@@ -50,7 +51,7 @@ class Test_Basins : public TestCase
 	2, 2, 2, 2, 4, 2
       };
       
-      dtType vecMark[] = { 
+      dtType2 vecMark[] = { 
 	1, 1, 1, 1, 1, 1,
 	 0, 0, 0, 0, 0, 0,
 	2, 0, 0, 0, 3, 3,
@@ -61,8 +62,8 @@ class Test_Basins : public TestCase
       };
       
       Image<dtType> imIn(6,7);
-      Image<dtType> imMark(imIn);
-      Image<dtType> imLbl(imIn);
+      Image<dtType2> imMark(imIn);
+      Image<dtType2> imLbl(imIn);
 
       imIn << vecIn;
       imMark << vecMark;
@@ -71,7 +72,7 @@ class Test_Basins : public TestCase
       
       basins(imIn, imMark, imLbl, se);
       
-      dtType vecLblTruth[] = { 
+      dtType2 vecLblTruth[] = { 
 	1,    1,    1,    1,    1,    1,
 	  1,    1,    1,    1,    1,    1,
 	2,    2,    3,    3,    3,    3,
@@ -81,7 +82,7 @@ class Test_Basins : public TestCase
 	2,    2,    2,    2,    3,    3,
       };
       
-      Image<dtType> imLblTruth(imIn);
+      Image<dtType2> imLblTruth(imIn);
       
       imLblTruth << vecLblTruth;
       
