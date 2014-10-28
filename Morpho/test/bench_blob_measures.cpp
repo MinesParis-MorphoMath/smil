@@ -25,25 +25,31 @@
 #include <time.h>
 
 #include "Core/include/DCore.h"
-#include "DImageDraw.hpp"
-#include "DMeasures.hpp"
-#include "DBlobMeasures.hpp"
+#include "Base/include/private/DBlobMeasures.hpp"
+#include "Morpho/include/private/DMorphoLabel.hpp"
+#include "Morpho/include/private/DMorphImageOperations.hxx"
 
 using namespace smil;
 
 
 int main(int argc, char *argv[])
 {
-    UINT BENCH_NRUNS = 1E2;
+    UINT BENCH_NRUNS = 1E3;
     
-    Image_UINT8 im(1024,1024);
-    Image_UINT8::lineType pixels = im.getPixels();
+    Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png");
+    Image_UINT8 im2(im1);
+    Image_UINT8 im3(im1);
+    threshold(im1, im2);
+    label(im2, im3);
     
-    randFill(im);
-    BENCH_IMG(histogram, im);
-    BENCH_IMG(area, im);
+    BENCH_IMG(measAreas, im2);
     
-    BENCH_IMG(isBinary, im);
+    BENCH_IMG(computeBlobs, im3);
+    map<UINT8, Blob> blobs = computeBlobs(im3);
+    
+    BENCH_STR(measAreas, "Blobs", blobs);
+    
+    BENCH_IMG(measVolumes, im1, blobs);
 
 }
 
