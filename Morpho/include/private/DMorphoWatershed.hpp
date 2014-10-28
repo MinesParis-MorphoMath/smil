@@ -190,7 +190,7 @@ namespace smil
 	
 	inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
 	{
-		UINT8 nbLbl = lblPixels[nbOffset];
+		labelT nbLbl = lblPixels[nbOffset];
 		
 		if (nbLbl==0) 
 		{
