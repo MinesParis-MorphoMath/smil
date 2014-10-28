@@ -63,10 +63,11 @@ namespace smil
      * 
     * Measure label areas from a pre-generated Blob map (faster).
     */
-    template <class T, class labelT>
-    map<labelT, double> measAreas(const Image<T> &imIn, map<labelT, Blob> &blobs)
+    template <class labelT>
+    map<labelT, double> measAreas(map<labelT, Blob> &blobs)
     {
-	return processBlobMeasure<T, labelT, measAreaFunc<T> >(imIn, blobs);
+        Image<labelT> fakeImg(1, 1);
+	return processBlobMeasure<labelT, labelT, measAreaFunc<labelT> >(fakeImg, blobs);
     }
 
     /**
