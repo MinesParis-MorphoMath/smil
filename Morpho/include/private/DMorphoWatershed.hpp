@@ -324,9 +324,7 @@ namespace smil
     template <class T, class labelT>
     RES_T basins(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
     {
- 	typedef HierarchicalQueue<T,UINT,FIFO_Queue<UINT> > HQ_Type; // preallocated HQ
-
-	BaseFlooding<T, labelT, HQ_Type> flooding;
+	BaseFlooding<T, labelT> flooding;
 	return flooding.flood(imIn, imMarkers, imBasinsOut, se);
     }
 
