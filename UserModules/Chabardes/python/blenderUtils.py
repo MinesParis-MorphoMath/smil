@@ -16,11 +16,12 @@ def _pixelToOffset (image, v, origin=[0.0,0.0,0.0]):
     width = image.getWidth ()
     height = image.getHeight ()
     max_dim = max (width, height)
-    for i in range(1):
-        co[i] -= origin[i]
+    y = v[1]-origin[1]
+    co[0] -= origin[0]
     co[0] += width/2
-    co[1] += height/2
-    return int (co[0] + (co[1]-1)*width)
+    co[1] = height - y - height/2
+
+    return int (co[0] + co[1]*width)
     
     
 label_mats_exist=False
@@ -65,15 +66,13 @@ def showLabel (obj, im, origin=[0.0,0.0,0.0]) :
         pixel_value = im.getPixel (offset)
 
         if pixel_value > 0:
-            f.material_index =  (pixel_value % len(colors)) + 1
-            print (str(pixel_value) + ", " + str(f.material_index))
+            f.material_index =  ((pixel_value-1) % len(colors)) +1
         else:
             f.material_index = 0
                 
                 
 #Create Topology from 2D-Pictures.
 smil_image_index=0
-label_mats_exist=False
 def topography (image, origin=[0.0,0.0,0.0], style='cube'):
     global smil_image_index
                 
@@ -218,10 +217,12 @@ def clearScene():
     bpy.ops.object.mode_set (mode='OBJECT')
     bpy.ops.object.select_by_type (type='MESH')
     bpy.ops.object.delete (use_global=False)
-    for item in bpy.data.meshes:
-        bpy.data.meshes.remove(item)
 
-clearScene()
+#clearScene()
+
+
+
+##### Morphological Operations
 
 im = Image ("/home/chabardes/lena_crop.png")
 #im = Image ("/usr/local/share/Morph-M/Images/Gray/test8.png")
@@ -235,21 +236,24 @@ se = cSE().noCenter()
 
 #gradient (im, imG, se)
 copy (im,imG)
-arrow (imG, "<", imA, se, 0)
-arrow (imG, ">", imA2, se, 255)
 fastMinima (imG, imM, se)
 labelFast (imM, imL, se)
 mask (imG, imM, imM)
 
+arrow (imG, "<=", imA2, se, 0)
 
+
+
+
+##### Display
 objMin = topography (imM, [0.0,0.0,0.0], 'face')
 objTopo = topography (imG, [0.0,0.0,0.0])
-arrPlateau = arrows (imG, imA)
+#arrPlateau = arrows (imG, imA)
 arrMin = arrows (imG, imA2)
 
 #Materials.
 #labelFast (imM, imM, se)a
 showLabel (objMin, imL)
 objTopo.data.materials.append(bpy.data.materials['Topo'])
-arrPlateau.data.materials.append(bpy.data.materials['Arrows'])
+#arrPlateau.data.materials.append(bpy.data.materials['Arrows'])
 arrMin.data.materials.append(bpy.data.materials['Arrows2'])

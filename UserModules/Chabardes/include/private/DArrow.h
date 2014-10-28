@@ -6,6 +6,61 @@
 namespace smil
 {
 
+    template <class T>
+    inline void arrowPropagate ( Image<T> &imArrow, Image<T> &imOut, const StrElt &se, const size_t &offset, const T &final_value ) {
+
+        typedef Image<T> outT;
+        typedef Image<T> arrowT;
+        typedef typename outT::lineType outLineT;
+        typedef typename arrowT::lineType arrowLineT;
+  
+        outLineT outP = imOut.getPixels () ;
+        arrowLineT arrowP = imArrow.getPixels () ;
+        bool oddLine;
+        size_t size[3]; imArrow.getSize (size);
+        UINT sePtsNumber = se.points.size();
+
+        size_t x, x0, y, y0, z, z0;
+        UINT arrow;
+        queue <size_t> breadth;    
+        size_t o, nb_o;
+
+        outP[offset] = 0;
+        breadth.push (offset) ;
+
+        do 
+        {
+            o = breadth.front();
+            breadth.pop();
+            z0 = o / (size[1] * size[0]);
+            y0 = (o % (size[1]*size[0])) / size[0];
+            x0 = o % size[0];
+            oddLine = se.odd && y0%2;
+
+            for (UINT p=0; p<sePtsNumber; ++p)
+            {
+                arrow = (1UL << p);
+                if ((arrowP[o] & arrow)) 
+                {
+                    
+                    x = x0 + se.points[p].x;
+                    y = y0 + se.points[p].y;
+                    z = z0 + se.points[p].z;
+                    if (oddLine)
+                        x += (y+1)%2;
+                    nb_o = x + y*size[0] + z*size[1]*size[0];
+                    if (outP[nb_o] != final_value)
+                    {
+                        outP[nb_o] = final_value;
+                        breadth.push (nb_o);
+                    }
+                }
+            }
+        } while (!breadth.empty());
+
+    }
+
+
     template < class T1,
 	class T2 > struct equSupLine3:public tertiaryLineFunctionBase < T1 >
     {
@@ -176,35 +231,6 @@ namespace smil
 	arrowMinFunction < T, T > iFunc ( borderValue );
 	return iFunc ( in, arrow, se );
     }
-
-
-    template < class arrowT >
-	RES_T arrowInverse ( const Image < arrowT > &arrow,
-			     Image < arrowT > &inversed )
-    {
-	return RES_OK;
-    }
-
-    template < class T > int hammingWeight ( T x )
-    {
-	int count;
-
-	for ( count = 0; x; ++count )
-	  {
-	      x &= x - 1;
-	  }
-	return count;
-    }
-
-    template < class T, class arrowT >
-	RES_T arrowSteepest ( const Image < T > &in, Image < arrowT > &arrow,
-			      const StrElt & se )
-    {
-	arrowMin ( in, arrow, se );
-
-
-    }
-
 }
 
 #endif // _ARROW_H_
