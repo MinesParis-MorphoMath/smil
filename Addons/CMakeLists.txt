@@ -1,4 +1,4 @@
-# Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+# Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -40,5 +40,6 @@ FOREACH(_FCH ${_ADD_CMLISTS})
 ENDFOREACH(_FCH ${_ADD_CMLISTS})
 
 SET(SMIL_INSTALL_COMPONENT_LIST ${SMIL_INSTALL_COMPONENT_LIST} PARENT_SCOPE)
+SET(AVAILABLE_ADDONS ${AVAILABLE_ADDONS} PARENT_SCOPE)
 
 

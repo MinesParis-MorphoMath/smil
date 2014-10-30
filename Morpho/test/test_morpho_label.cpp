@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,10 +27,8 @@
  */
 
 
-#include "DCore.h"
+#include "Core/include/DCore.h"
 #include "DMorpho.h"
-#include "DGui.h"
-#include "DIO.h"
 
 using namespace smil;
 
@@ -70,6 +68,48 @@ class Test_Label : public TestCase
 	2, 0, 0, 0, 0, 0, 0, 
 	2, 0, 3, 0, 0, 4, 0, 
 	0, 0, 3, 0, 4, 4, 0
+      };
+      im3 << vec3;
+      
+      TEST_ASSERT(im2==im3);
+      if (retVal!=RES_OK)
+	im2.printSelf(1);
+  }
+};
+
+class Test_LabelLambdaFlatZones : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT16 dataType;
+      typedef Image<dataType> imType;
+      
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+      
+      dataType vec1[] = {
+	  39, 239, 224,  29, 147, 186,  13,
+	157,  30, 117, 190, 249,  80, 250,
+	159,  86, 117,  83,  28,  63,  67,
+	  41, 145,   4, 232, 174, 167, 197,
+	116,  72,  37, 156,  55,   5, 186,
+	203, 192, 199, 104, 223,  60,  39,
+	217, 141,  33, 120, 228, 150, 203,
+      };
+      
+      im1 << vec1;
+      
+      lambdaLabel(im1, (UINT16)50, im2, sSE());
+
+      dataType vec3[] = {
+	8,     2,     2,     3,     4,     4,     1,
+	4,     8,     4,     4,     2,     1,     5,
+	4,     8,     4,     1,     1,     1,     1,
+	8,     4,     1,     6,     7,     7,     7,
+	4,     8,     8,     9,     8,     8,     7,
+	7,     7,     7,     9,    10,     8,     8,
+	7,     7,     8,     9,    10,     7,     7,
       };
       im3 << vec3;
       
@@ -201,6 +241,7 @@ int main(int argc, char *argv[])
 {
       TestSuite ts;
       ADD_TEST(ts, Test_Label);
+      ADD_TEST(ts, Test_LabelLambdaFlatZones);
       ADD_TEST(ts, Test_Label_Mosaic);
       ADD_TEST(ts, Test_LabelWithArea);
       ADD_TEST(ts, Test_LabelNeighbors);

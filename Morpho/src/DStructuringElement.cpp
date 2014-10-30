@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
 
 #include <algorithm>
 
-#include "DStructuringElement.h"
+#include "Morpho/include/DStructuringElement.h"
 
 using namespace smil;
 
@@ -123,6 +123,26 @@ StrElt StrElt::transpose() const
     return se;
 }
 
+// Remove central pixel
+StrElt StrElt::noCenter() const
+{
+    StrElt se;
+
+    se.odd = this->odd;
+    se.seT = this->seT;
+    se.size = this->size;
+
+    vector < IntPoint >::const_iterator it_start = this->points.begin () ;
+    vector < IntPoint >::const_iterator it_end = this->points.end () ;
+    vector < IntPoint >::const_iterator it;
+
+    for ( it=it_start; it!=it_end; ++it )
+        if (it->x != 0 || it->y != 0 || it->z != 0)
+        {
+            se.addPoint (*it);
+        }
+    return se;
+}
 
 void StrElt::printSelf(ostream &os, string indent) const
 {

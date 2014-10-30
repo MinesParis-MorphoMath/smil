@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,11 @@
  */
 
 
-#include "DErrors.h"
-#include "DImageIO_BMP.hpp"
-#include "private/DImageIO.hpp"
+#include "Core/include/DErrors.h"
+#include "IO/include/private/DImageIO_BMP.hpp"
+#include "IO/include/private/DImageIO.hpp"
 #include "Core/include/private/DImage.hpp"
-#include "DColor.h"
+#include "Core/include/DColor.h"
 
 namespace smil
 {
@@ -211,6 +211,7 @@ namespace smil
 	return RES_OK;
     }
 
+#ifdef SMIL_WRAP_RGB      
     template <>
     RES_T BMPImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
     {
@@ -255,7 +256,7 @@ namespace smil
 
 	return RES_OK;
     }
-
+#endif // SMIL_WRAP_RGB  
 
     template <>
     RES_T BMPImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename)
@@ -328,6 +329,7 @@ namespace smil
 	return RES_OK;
     }
 
+#ifdef SMIL_WRAP_RGB  
     template <>
     RES_T BMPImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
     {
@@ -388,5 +390,6 @@ namespace smil
 
 	return RES_OK;
     }
+#endif // SMIL_WRAP_RGB  
 
 } // namespace smil

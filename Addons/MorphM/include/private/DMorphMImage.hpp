@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,8 @@
 #ifndef _D_MORPHM_IMAGE_HPP
 #define _D_MORPHM_IMAGE_HPP
 
-#include "DImage.hxx"
-#include "DSharedImage.hpp"
+#include "Core/include/private/DImage.hxx"
+#include "Core/include/private/DSharedImage.hpp"
 
 #include <morphee/image/include/private/image_T.hpp>
 #include <morphee/image/include/imageInterface.hpp>

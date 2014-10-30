@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -42,4 +42,4 @@ namespace smil
     %ignore COLOR_UINT8_3;
     %template(copyChannel) copyChannel<RGB,UINT8>;
 }
-%include "DColor.h"
+%include "include/DColor.h"

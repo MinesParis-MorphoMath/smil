@@ -1,6 +1,6 @@
 /*
  * Smil
- * Copyright (c) 2011 Matthieu Faessel
+ * Copyright (c) 2011-2014 Matthieu Faessel
  *
  * This file is part of Smil.
  *
@@ -24,8 +24,8 @@
 #include <stdio.h>
 #include <time.h>
 
-#include "DCore.h"
-#include "DBase.h"
+#include "Core/include/DCore.h"
+#include "DImageDraw.hpp"
 #include "DMeasures.hpp"
 #include "DBlobMeasures.hpp"
 
@@ -43,14 +43,7 @@ int main(int argc, char *argv[])
     BENCH_IMG(histogram, im);
     BENCH_IMG(area, im);
     
-    fill(im, UINT8(255));
     BENCH_IMG(isBinary, im);
-    
-    fill(im, UINT8(0));
-    drawRectangle(im, 200,200,512,512,UINT8(127), 1);
-
-    
-    BENCH_IMG(measAreas, im);
 
 }
 

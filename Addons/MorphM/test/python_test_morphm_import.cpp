@@ -3,7 +3,7 @@
 #include <boost/python.hpp>
 
 #include "DMorphMImage.hpp"
-#include "DTest.h"
+#include "Core/include/DCore.h"
 
 using namespace smil;
 
@@ -25,8 +25,8 @@ class Test_Python_Import : public TestCase
       PyRun_SimpleString("mIm.setColorInfo(mp.colorInfo.ciMonoSpectral)");
       PyRun_SimpleString("mIm.allocateImage()");
 
-      PyObject *pyobj = PyDict_GetItem(globals, PyString_FromString( "mIm" ));
-
+      PyObject *pyobj = PyDict_GetItem(globals, PyUnicode_FromString( "mIm" ));
+      
       MorphmInt<UINT8> mIm(pyobj);
       TEST_ASSERT(mIm.isAllocated());
       

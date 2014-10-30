@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@
 #define _DTIME_H
 
 #include <time.h>
-
+#include <iomanip>
 
 #ifdef _MSC_VER
 #include <sys/timeb.h>
@@ -67,19 +67,20 @@ namespace smil
 	{
 	    cout << "gettimeofday returned error" << endl;
 	}
-	return tv.tv_sec + tv.tv_usec/1000000;
+	return tv.tv_sec + double(tv.tv_usec)/1E6;
     }
 
     inline string displayTime(double tSec)
     {
 	stringstream s;
-	
+	s << std::fixed;
+
 	if (tSec>=1.)
-	  s << int(tSec*1E3)/1E3 << " secs";
+	  s << std::setprecision(2) << tSec << " secs";
 	else if (tSec*1E3>=1.)
-	  s << int(tSec*1E6)/1E3 << " msecs";
+	  s << std::setprecision(2) << tSec*1E3 << " msecs";
 	else 
-	  s << int(tSec*1E6) << " usecs";
+	  s << std::setprecision(0) << tSec*1E6 << " usecs";
 	
 	return s.str();
     }

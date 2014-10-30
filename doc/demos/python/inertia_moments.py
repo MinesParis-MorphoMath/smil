@@ -55,10 +55,10 @@ bboxes = measBoundBoxes(imLbl)
 
 imDraw = Image(imIn)
 
-print "Label\tA\tB\tTheta"
+print("Label\tA\tB\tTheta")
 for b in blobs.keys():
   mat = xc, yc, A, B, theta = fitRectangle(mats[b])
-  print str(b) + "\t" + str(A) + "\t" + str(B) + "\t" + str(theta)
+  print(str(b) + "\t" + str(A) + "\t" + str(B) + "\t" + str(theta))
   dx = A/2*cos(pi-theta)
   dy = A/2*sin(pi-theta)
   drawLine(imDraw, int(xc-dx), int(yc-dy), int(xc+dx), int(yc+dy), b)

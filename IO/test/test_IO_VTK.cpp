@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -31,9 +31,9 @@
 #include <time.h>
 
 
-#include "DCore.h"
-#include "DIO.h"
-#include "DGui.h"
+#include "Core/include/DCore.h"
+#include "IO/include/DIO.h"
+#include "Gui/include/DGui.h"
 
 using namespace smil;
 

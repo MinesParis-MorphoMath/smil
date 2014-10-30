@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -31,13 +31,14 @@
 #define _D_MORPHO_LABEL_HPP
 
 #include "Base/include/private/DImageArith.hpp"
-#include "DImage.h"
+#include "Core/include/DImage.h"
 #include "DMorphImageOperations.hpp"
 #include "Base/include/private/DBlobMeasures.hpp"
 
 
 #include <set>
 #include <map>
+#include <functional>
 
 namespace smil
 {
@@ -47,7 +48,10 @@ namespace smil
     * @{
     */
   
-    template <class T1, class T2>
+
+#ifndef SWIG
+
+    template <class T1, class T2, class compOperatorT=std::equal_to<T1> >
     class labelFunctGeneric : public unaryMorphImageFunctionBase<T1, T2>
     {
     public:
@@ -99,7 +103,7 @@ namespace smil
                      if (n_x >= 0 && n_x < (int)this->imSize[0] &&
                          n_y >= 0 && n_y < (int)this->imSize[1] &&
                          n_z >= 0 && n_z < (int)this->imSize[2] &&
-                         this->pixelsIn[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] == pVal &&
+                         compareFunc(this->pixelsIn[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]], pVal) &&
                          this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] != labels)
                  {
                      this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] = labels;
@@ -110,6 +114,8 @@ namespace smil
                 propagation.pop();
             } 
         }
+        
+	compOperatorT compareFunc;
     protected:
         T2 labels;
     };
@@ -261,6 +267,16 @@ namespace smil
             T2 labels;
     };
      
+    
+    template <class T>
+    struct lambdaEqualOperator
+    {
+	inline bool operator()(T &a, T&b) { return a>b ? (a-b)<=lambda : (b-a)<=lambda; }
+	T lambda;
+    };
+    
+#endif // SWIG
+    
     /**
     * Image labelization
     * 
@@ -273,6 +289,29 @@ namespace smil
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
 	labelFunctGeneric<T1,T2> f;
+	
+	ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
+	
+	size_t lblNbr = f.getLabelNbr();
+	
+	ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+	
+	return lblNbr;
+    }
+
+    /**
+    * Lambda-flat zones labelization
+    * 
+    * Return the number of labels (or 0 if error).
+    */
+    template<class T1, class T2>
+    size_t lambdaLabel(const Image<T1> &imIn, const T1 &lambdaVal, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	labelFunctGeneric<T1,T2,lambdaEqualOperator<T1> > f;
+	f.compareFunc.lambda = lambdaVal;
 	
 	ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
 	
@@ -321,7 +360,7 @@ namespace smil
 	Image<T2> imLabel(imIn);
 	
 	ASSERT(label(imIn, imLabel, se)!=0);
- 	map<UINT, double> areas = measAreas(imLabel);
+ 	map<T2, double> areas = measAreas(imLabel);
 	ASSERT(!areas.empty());
 	
 	ASSERT(applyLookup(imLabel, areas, imOut)==RES_OK);
@@ -329,34 +368,6 @@ namespace smil
 	return RES_OK;
     }
 
-    /**
-    * Area opening
-    * 
-    * Remove from image all connected components of size less than \a size pixels
-    */
-    template<class T>
-    size_t areaOpen(const Image<T> &imIn, size_t size, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
-    {
-	if (&imIn==&imOut)
-	{
-	    Image<T> tmpIm(imIn, true); // clone
-	    return areaOpen(tmpIm, size, imOut, se);
-	}
-	
-	ImageFreezer freezer(imOut);
-	
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	Image<size_t> imLabel(imIn);
-	
-	ASSERT((labelWithArea(imIn, imLabel, se)!=0));
-	ASSERT((threshold(imLabel, size, imLabel)==RES_OK));
-	ASSERT((copy(imLabel, imOut)==RES_OK));
-	ASSERT((inf(imIn, imOut, imOut)==RES_OK));
-	
-	return RES_OK;
-    }
 
     template <class T1, class T2>
     class neighborsFunct : public unaryMorphImageFunctionBase<T1, T2>
@@ -405,52 +416,6 @@ namespace smil
 	
     }
 
-    template <class T1, class T2>
-    class flatZonesFunct : public unaryMorphImageFunctionBase<T1, T2>
-    {
-    public:
-	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
-	
-	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
-	{
-	    vector<T1> vals;
-	    UINT nbrValues = 0;
-	    while(dOffset!=dOffsetEnd)
-	    {
-		T1 val = parentClass::pixelsIn[pointOffset + *dOffset];
-		if (find(vals.begin(), vals.end(), val)==vals.end())
-		{
-		  vals.push_back(val);
-		  nbrValues++;
-		}
-		dOffset++;
-	    }
-	    parentClass::pixelsOut[pointOffset] = T2(nbrValues);
-	}
-    };
-    
-    /**
-    * Neighbors
-    * 
-    * Return for each pixel the number of different values in the neighborhoud.
-    * Usefull in order to find interfaces or multiple points between basins.
-    * 
-    * \not_vectorized
-    * \not_parallelized
-    */ 
-    template <class T1, class T2>
-    RES_T flatZones(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
-    {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	flatZonesFunct<T1, T2> f;
-	
-	ASSERT((f._exec(imIn, imOut, se)==RES_OK));
-	
-	return RES_OK;
-	
-    }
     
 /** \} */
 

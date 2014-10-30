@@ -1,6 +1,6 @@
 /*
  * Smil
- * Copyright (c) 2011 Matthieu Faessel
+ * Copyright (c) 2011-2014 Matthieu Faessel
  *
  * This file is part of Smil.
  *
@@ -21,9 +21,8 @@
  */
 
 
-#include "DImage.h"
+#include "Core/include/DCore.h"
 #include "DImageArith.hpp"
-#include "DTest.h"
 
 using namespace smil;
 
@@ -78,12 +77,53 @@ class Test_Equal : public TestCase
   }
 };
 
+class Test_ApplyLookup : public TestCase
+{
+  virtual void run()
+  {
+      UINT8 vec1[20] 	= {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
+      
+      map<UINT8,UINT8> lut;
+      lut[2] = 5;
+      lut[6] = 255;
+      lut[11] = 7;
+      
+      UINT8 vec2[20] = { 
+	  0,   5,   0,   0,
+	  0, 255,   0,   0,
+	  0,   0,   7,   0,
+	  0,   0,   0,   0,
+	  0,   0,   0,   0,
+      };
+
+      
+      
+      Image_UINT8 im1(4,5);
+      Image_UINT8 im2(im1);
+      Image_UINT8 imTruth(4,5);
+      
+      im1 << vec1;
+      imTruth << vec2;
+      
+      TEST_ASSERT(applyLookup(im1, lut, im2)==RES_OK);
+      TEST_ASSERT(equ(im2, imTruth));
+      
+      if (retVal!=RES_OK)
+      {
+	  im2.printSelf(1);
+	  imTruth.printSelf(1);
+      }
+  }
+};
+
+
 int main(int argc, char *argv[])
 {
       TestSuite ts;
 
       ADD_TEST(ts, Test_Fill);
       ADD_TEST(ts, Test_Equal);
+      ADD_TEST(ts, Test_ApplyLookup);
       
       return ts.run();
 }

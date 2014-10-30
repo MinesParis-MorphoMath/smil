@@ -27,7 +27,7 @@
  */
 
 
-#include "DTest.h"
+#include "Core/include/DCore.h"
 #include "DMorphoFilter.hpp"
 
 using namespace smil;

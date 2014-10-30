@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,10 +27,10 @@
  */
 
 
-#include "DCore.h"
-#include "DGui.h"
+#include "Core/include/DCore.h"
 #include "DMorpho.h"
 #include "DMorphoWatershed.hpp"
+#include "DMorphoWatershedExtinction.hpp"
 
 using namespace smil;
 
@@ -39,6 +39,7 @@ class Test_Basins : public TestCase
   virtual void run()
   {
       typedef UINT8 dtType;
+      typedef UINT16 dtType2;
       
       dtType vecIn[] = { 
 	2, 2, 2, 2, 2, 2,
@@ -50,7 +51,7 @@ class Test_Basins : public TestCase
 	2, 2, 2, 2, 4, 2
       };
       
-      dtType vecMark[] = { 
+      dtType2 vecMark[] = { 
 	1, 1, 1, 1, 1, 1,
 	 0, 0, 0, 0, 0, 0,
 	2, 0, 0, 0, 3, 3,
@@ -61,8 +62,8 @@ class Test_Basins : public TestCase
       };
       
       Image<dtType> imIn(6,7);
-      Image<dtType> imMark(imIn);
-      Image<dtType> imLbl(imIn);
+      Image<dtType2> imMark(imIn);
+      Image<dtType2> imLbl(imIn);
 
       imIn << vecIn;
       imMark << vecMark;
@@ -71,7 +72,7 @@ class Test_Basins : public TestCase
       
       basins(imIn, imMark, imLbl, se);
       
-      dtType vecLblTruth[] = { 
+      dtType2 vecLblTruth[] = { 
 	1,    1,    1,    1,    1,    1,
 	  1,    1,    1,    1,    1,    1,
 	2,    2,    3,    3,    3,    3,
@@ -81,7 +82,7 @@ class Test_Basins : public TestCase
 	2,    2,    2,    2,    3,    3,
       };
       
-      Image<dtType> imLblTruth(imIn);
+      Image<dtType2> imLblTruth(imIn);
       
       imLblTruth << vecLblTruth;
       
@@ -119,7 +120,7 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       
       Image_UINT8 imIn(6,7);
       Image_UINT8 imLbl(imIn);
-      Image_UINT8 imStatus(imIn);
+      Image_UINT8 imWS(imIn);
 
       imIn << vecIn;
       imLbl << vecLbl;
@@ -127,8 +128,9 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       HierarchicalQueue<UINT8> pq;
       StrElt se = hSE();
       
-      initWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq);
-      processWatershedHierarchicalQueue(imIn, imLbl, imStatus, pq, se);
+      watershedFlooding<UINT8,UINT8> flooding;
+      flooding.initialize(imIn, imLbl, imWS, se);
+      flooding.processImage(imIn, imLbl, se);
 
       UINT8 vecLblTruth[] = { 
 	1,    1,    1,    1,    1,    1,
@@ -141,13 +143,13 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       };
       
       UINT8 vecStatusTruth[] = { 
-	2, 2, 2, 2, 2, 2,
-	3, 3, 3, 3, 3, 3,
-	2, 3, 2, 2, 2, 2,
-	2, 3, 2, 2, 2, 2,
-	2, 2, 3, 3, 2, 2,
-	2, 2, 2, 3, 2, 2,
-	2, 2, 2, 2, 3, 2
+	1,    1,    1,    1,    1,    1,
+	255,  255,  255,  255,  255,  255,
+	1,  255,    1,    1,    1,    1,
+	  1,  255,    1,    1,    1,    1,
+	1,    1,  255,  255,    1,    1,
+	  1,    1,    1,  255,    1,    1,
+	1,    1,    1,    1,  255,    1,
       };
       
       Image_UINT8 imLblTruth(imIn);
@@ -157,12 +159,19 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       imStatusTruth << vecStatusTruth;
       
       TEST_ASSERT(imLbl==imLblTruth);
-      TEST_ASSERT(imStatus==imStatusTruth);
       
       if (retVal!=RES_OK)
       {
 	imLbl.printSelf(1, true);
-	imStatus.printSelf(1, true);
+	imLblTruth.printSelf(1, true);
+      }
+      
+      TEST_ASSERT(*(flooding.imWS)==imStatusTruth);
+      
+      if (retVal!=RES_OK)
+      {
+	flooding.imWS->printSelf(1, true);
+	imStatusTruth.printSelf(1, true);
       }
   }
 };
@@ -342,6 +351,7 @@ class Test_Build : public TestCase
 int main(int argc, char *argv[])
 {
       TestSuite ts;
+      
       ADD_TEST(ts, Test_Basins);
       ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
       ADD_TEST(ts, Test_Watershed);

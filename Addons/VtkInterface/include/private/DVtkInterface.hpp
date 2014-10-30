@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,8 @@
 #ifndef _D_VTK_IMAGE_HPP
 #define _D_VTK_IMAGE_HPP
 
-#include "DImage.hxx"
-#include "DSharedImage.hpp"
+#include "Core/include/DCore.h"
+#include "Core/include/private/DSharedImage.hpp"
 
 #include <vtkImageData.h>
 

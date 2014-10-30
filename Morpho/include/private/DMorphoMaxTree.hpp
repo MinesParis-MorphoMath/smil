@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,8 @@
 #ifndef _D_MAX_TREE
 #define _D_MAX_TREE
 
-#include "DImage.h"
-#include "DImageHistogram.hpp"
+#include "Core/include/DImage.h"
+#include "Base/include/private/DImageHistogram.hpp"
 
 namespace smil
 {
@@ -170,13 +170,27 @@ public:
 #define GET_TREE_OBJ(type, node) type[node >> COLUMN_SHIFT][node & COLUMN_MOD]
 #define ORDONNEE(offset,largeur) ((offset)/(largeur))
 
-template <class T, class OffsetT=UINT>
+
+struct EmptyCriterion
+{
+  inline void init() {}
+  inline void reset() {}
+  inline void merge(EmptyCriterion &other) { }
+  inline void update() {  }
+};
+
+template <class T, class BaseCriterionT=EmptyCriterion, class OffsetT=UINT>
 class MaxTree
 {
 public:
-    struct Criterion
+    struct CriterionT
     {
-	OffsetT ymin, ymax;
+      OffsetT ymin, ymax;
+      BaseCriterionT crit;
+      inline void initialize() { crit.init(); }
+      inline void reset() { crit.reset(); }
+      inline void merge(CriterionT &other) { crit.merge(other.crit); }
+      inline void update() { crit.update(); }
     };
   
 private:
@@ -188,7 +202,7 @@ private:
     
     OffsetT **children;
     OffsetT **brothers;
-    Criterion **criteria;
+    CriterionT **criteria;
     
     size_t *labels;
     size_t curLabel;
@@ -217,7 +231,7 @@ private:
 	levels[page] =  new T[COLUMN_SIZE]();
 	children[page] = new OffsetT[COLUMN_SIZE]();
 	brothers[page] =  new OffsetT[COLUMN_SIZE]();
-	criteria[page] = new Criterion[COLUMN_SIZE]();
+	criteria[page] = new CriterionT[COLUMN_SIZE]();
     }
 
     T initialize(const Image<T> &img, OffsetT *img_eti)
@@ -229,7 +243,7 @@ private:
 	
 	T minValue = ImDtTypes<T>::max();
 	T tMinV = ImDtTypes<T>::min();
-	OffsetT minOff = 0;
+	OffsetT minOff;
 	for (size_t i=0;i<img.getPixelCount();i++)
 	  if (pix[i]<minValue)
 	  {
@@ -253,7 +267,8 @@ private:
 	pq.push(minValue, minOff);
 	getCriterion(curLabel).ymin = ORDONNEE(minOff, img.getWidth());
 	getCriterion(curLabel).ymax = ORDONNEE(minOff, img.getWidth());
-	    
+
+	getCriterion(curLabel).initialize();
 	curLabel++;
 	
 	initialized = true;
@@ -275,6 +290,7 @@ private:
 	    getBrother(curLabel) = getBrother(getChild(curLabel));
 	    getBrother(getChild(curLabel)) = 0;
 	    getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
+	    getCriterion(curLabel).reset();
 	    return curLabel++;
     }
 
@@ -287,6 +303,7 @@ private:
 	    getBrother(curLabel) = getChild(labels[parent_valeur]);
 	    getChild(labels[parent_valeur]) = curLabel;
 	    getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
+	    getCriterion(curLabel).reset();
 	    return curLabel++;
     }
     
@@ -302,13 +319,14 @@ private:
 	      indice = img_eti[p_suiv] = labels[j] = nextHigherLabel(imgPix[p], imgPix[p_suiv]);
 	  
 	} 
-	else if (labels[size_t(imgPix[p_suiv])]==0) 
-	    indice = img_eti[p_suiv] = labels[size_t(imgPix[p_suiv])] = nextLowerLabel(imgPix[p_suiv]);
+	else if (labels[imgPix[p_suiv]]==0) 
+	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]] = nextLowerLabel(imgPix[p_suiv]);
 	else 
-	    indice = img_eti[p_suiv] = labels[size_t(imgPix[p_suiv])];
+	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]];
 	
 	getCriterion(indice).ymax = MAX(getCriterion(indice).ymax, ORDONNEE(p_suiv,imWidth));
 	getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, ORDONNEE(p_suiv,imWidth));
+	getCriterion(indice).update();
 	pq.push(imgPix[p_suiv], p_suiv);
 	
 	if (imgPix[p_suiv]>imgPix[p])
@@ -321,18 +339,19 @@ private:
 
     void flood(const Image<T> &img, UINT *img_eti, int level)
     {
-// 	    int indice;
+	    int indice;
 	    int p;
 	    int imWidth = img.getWidth();
 	    int imHeight = img.getHeight();
 	    int imDepth = img.getDepth();
-// 	    int pixelCount = img.getPixelCount();
+	    int pixelCount = img.getPixelCount();
 	    int pixPerSlice = imWidth*imHeight;
 	    typename ImDtTypes<T>::lineType imgPix = img.getPixels();
 	    
-	    while( (pq.getHigherLevel()>=(size_t)level) && !pq.isEmpty())
+	    while( (pq.getHigherLevel()>=level) && !pq.isEmpty())
 	    {
 		p = pq.pop();
+		
 		int p_suiv;
 
 		if ( p%pixPerSlice<pixPerSlice-imWidth && img_eti[p_suiv=p+imWidth]==0) //y+1
@@ -372,7 +391,7 @@ public:
 	children = new OffsetT*[COLUMN_NBR]();
 	brothers =  new OffsetT*[COLUMN_NBR]();
 	levels = new T*[COLUMN_NBR]();
-	criteria = new Criterion*[COLUMN_NBR]();
+	criteria = new CriterionT*[COLUMN_NBR]();
 	labels = new size_t[GRAY_LEVEL_NBR];
 	
 	initialized = false;
@@ -388,7 +407,7 @@ public:
 	delete[] labels;
     }
     
-    inline Criterion &getCriterion(const OffsetT node)
+    inline CriterionT &getCriterion(const OffsetT node)
     {
 	return GET_TREE_OBJ(criteria, node);
     }
@@ -416,20 +435,21 @@ public:
 
     int build(const Image<T> &img, OffsetT *img_eti) 
     {
-	    size_t minValue = initialize(img, img_eti);
+	    T minValue = initialize(img, img_eti);
 
 	    flood(img, img_eti, minValue);
 	    return labels[minValue];
     }
     
-    Criterion updateCriteria(int node) 
+    CriterionT updateCriteria(int node) 
     {
 	    int child = getChild(node);
 	    while (child!=0) 
 	    {
-		    Criterion c = updateCriteria(child);
+		    CriterionT c = updateCriteria(child);
 		    getCriterion(node).ymin = MIN(getCriterion(node).ymin, c.ymin);
 		    getCriterion(node).ymax = MAX(getCriterion(node).ymax, c.ymax);
+		    getCriterion(node).merge(getCriterion(child));
 		    child = getBrother(child);
 	    }
 	    return getCriterion(node);
@@ -438,22 +458,17 @@ public:
 };
 
 
+
 // NEW BMI    # ##################################################
 //(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
-template <class T, class OffsetT>
-void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent, T prev_residue, UINT stop, UINT delta, int isPrevMaxT){
+template <class T, class CiterionT, class OffsetT>
+void  ComputeDeltaUO(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent, T prev_residue, UINT stop, UINT delta, int isPrevMaxT){
 
 		    //self,node = 1, nParent =0, stop=0, delta = 0, isPrevMaxT = 0):
   int child; // index node
       T current_residue;
       UINT cNode, cParent; // attributes
       T lNode, lParent; // node levels, the same type than input image
-//       int toto;
-
-
-      // for (toto=0;toto <=5;toto++){
-      // 	std::cout<<toto <<": max="<< tree.getCriterion(toto).ymax<<"; min="<<tree.getCriterion(toto).ymin<<"\n";
-      // }
 
       cNode =  tree.getCriterion(node).ymax-tree.getCriterion(node).ymin+1;// #current criterion
       lNode =  tree.getLevel(node);// #current level
@@ -461,11 +476,8 @@ void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indica
 
       cParent =  tree.getCriterion(nParent).ymax-tree.getCriterion(nParent).ymin+1;// #current criterion
       lParent =  tree.getLevel(nParent);// #current level
-      //      std::cout << "lNode="<<int(lNode)<<":lParent="<<int(lParent)<<" : prev_res="<<int(prev_residue)<<"\n";
-      int flag;
 
-      //      std::cout <<"computeDeltaUO: parent = "<< nParent <<"; node="<<node<<"\n";
-      //      std::cout <<"cParent="<<cParent<<"; cNode= "<<cNode<<"\n";
+      int flag;
 
       if ((cParent - cNode) <= delta){
 	flag = 1;
@@ -482,59 +494,38 @@ void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indica
 
       transformee_node[node] = transformee_node[nParent];
       indicatrice_node[node] = indicatrice_node[nParent];
-      //      std::cout <<"ind="<<indicatrice_node[node];
-      //      std::cout <<"isPrevMaxT"<<isPrevMaxT<<"; flag="<<flag<<"\n";
+
       int isMaxT = 0;
-      // if((cNode >8)and (cNode < stop)){
-      // 	std::cout << "SEE WHAT HAPPENS\n";
-      // }
+
       if(cNode < stop){
 	if (current_residue > transformee_node[node]){
 	  //	  std::cout<<"UPDATE RES\n";
 	  isMaxT = 1;
 	  transformee_node[node] = current_residue;
-// 	  int totoflag;
-// 	  totoflag = ! (isPrevMaxT and flag);
-	  //	  std::cout << "totoflag="<<totoflag<<"\n";
 	  if(! (isPrevMaxT && flag)){
 	    indicatrice_node[node]  = cNode + 1;
-	    //	    std::cout <<"UPDATE="<<indicatrice_node[node]<<"   STOP ="<<stop;
-	    //	    std::cout <<"UPDATE IND:"<< cNode+1<<"\n";
 	  }
 	  
 	}
       }
       else{
-	//	std::cout<<"larger than stop\n";
 	indicatrice_node[node]  = 0;
       }
-      //      std::cout <<"-------\n";
-      //      std::cout << "T("<<node<<")="<<int(transformee_node[node])<<"I="<<indicatrice_node[node]<<"stop="<<stop<<"\n";
-      //      std::cout <<"-------\n";
       child=tree.getChild(node);
       while (child!=0){
 	ComputeDeltaUO(tree, transformee_node, indicatrice_node, child, node, current_residue, stop, delta,isMaxT);
 	child = tree.getBrother(child);
       }
-      // BEGIN FIRST CALL:
-      //void  ComputeDeltaUO(tree,transformee_node, indicatrice_node,root,root,0,stop,delta, 0)
-      
-      // definition : void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent, T prev_residue, UINT stop, UINT delta, int isPrevMaxT){
 
 }
-template <class T, class OffsetT>
-void compute_max(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, UINT stop, T max_tr, unsigned int max_in, unsigned int hauteur_parent, T valeur_parent, T previous_value)
+template <class T, class CiterionT, class OffsetT>
+void compute_max(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, UINT stop, T max_tr, unsigned int max_in, unsigned int hauteur_parent, T valeur_parent, T previous_value)
 {
 	T m;
 	T max_node;
 	unsigned int max_criterion;
 	UINT child;
 	UINT hauteur = tree.getCriterion(node).ymax-tree.getCriterion(node).ymin+1;
-//       int toto;
-      // for (toto=0;toto <=5;toto++){
-      // 	std::cout<<toto <<": max="<< tree.getCriterion(toto).ymax<<"; min="<<tree.getCriterion(toto).ymin<<"\n";
-      // }
-      //      std::cout << int(valeur_parent)<<":"<<int(previous_value)<<"level="<<int (tree.getLevel(node))<<"; hauteur="<<hauteur<<"H_parent"<<hauteur_parent<<"\n";
 	m = (hauteur==hauteur_parent) ? tree.getLevel(node)-previous_value : tree.getLevel(node)-valeur_parent;
 	if (hauteur>=stop) 
 	{
@@ -581,8 +572,8 @@ void compute_max(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatric
 	}
 }
 
-template <class T, class OffsetT>
-void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize,UINT delta = 0)
+template <class T, class CiterionT, class OffsetT>
+void compute_contrast(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize,UINT delta = 0)
 {
 
   int child;
@@ -590,16 +581,9 @@ void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indic
 
   transformee_node[root]=0;
   indicatrice_node[root]=0;
-//       int toto;
-      // for (toto=0;toto <=5;toto++){
-      // 	std::cout<<toto <<": max="<< tree.getCriterion(toto).ymax<<"; min="<<tree.getCriterion(toto).ymin<<"\n";
-      // }
 
   tree.updateCriteria(root);
-  //  std::cout<<"AFTER UPDATE\n";
-      // for (toto=0;toto <=5;toto++){
-      // 	std::cout<<toto <<": max="<< tree.getCriterion(toto).ymax<<"; min="<<tree.getCriterion(toto).ymin<<"\n";
-      // }
+
   hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
   child = tree.getChild(root);
   if(delta == 0){
@@ -618,8 +602,8 @@ void compute_contrast(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indic
       }
   }//END dela != 0
 }
-template <class T, class OffsetT>
-void compute_contrast_matthieuNoDelta(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize)
+template <class T, class CiterionT, class OffsetT>
+void compute_contrast_matthieuNoDelta(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize)
 {
 	int child;
 	UINT hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
@@ -691,285 +675,20 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,OffsetT> &tree, T* transformee_n
 
 #ifndef SWIG
 
-template <class T, class OffsetT=UINT>
-class MaxTree2
+struct AreaCriterion
 {
-public:
-    struct Criterion2
-    {
-      OffsetT ymin, ymax;
-      int area;
-    };
-  
-private:
-    size_t GRAY_LEVEL_NBR;
-    
-    PriorityQueue<T, OffsetT> pq;
-    
-    T **levels;
-    
-    OffsetT **children;
-    OffsetT **brothers;
-    Criterion2 **criteria;
-    
-    size_t *labels;
-    size_t curLabel;
-    
-    bool initialized;
-
-
-    void reset()
-    {
-	if (!initialized)
-	  return;
-	
-	for (OffsetT i=0;i<COLUMN_NBR;i++)
-	{
-	    if (!levels[i])
-	      break;
-	    delete[] levels[i]; levels[i] = NULL;
-	    delete[] children[i]; children[i] = NULL;
-	    delete[] brothers[i]; brothers[i] = NULL;
-	    delete[] criteria[i]; criteria[i] = NULL;
-	}
-    }
-
-    void allocatePage(UINT page)
-    {
-	levels[page] =  new T[COLUMN_SIZE]();
-	children[page] = new OffsetT[COLUMN_SIZE]();
-	brothers[page] =  new OffsetT[COLUMN_SIZE]();
-	criteria[page] = new Criterion2[COLUMN_SIZE]();
-    }
-
-    T initialize(const Image<T> &img, OffsetT *img_eti)
-    {
-	if (initialized)
-	  reset();
-	
-	typename ImDtTypes<T>::lineType pix = img.getPixels();
-	
-	T minValue = ImDtTypes<T>::max();
-	T tMinV = ImDtTypes<T>::min();
-	OffsetT minOff;
-	for (size_t i=0;i<img.getPixelCount();i++)
-	  if (pix[i]<minValue)
-	  {
-	      minValue = pix[i];
-	      minOff = i;
-	      if (minValue==tMinV)
-		break;
-	  }
-	  
-	allocatePage(0);
-	
-	curLabel = 1;
-	levels[0][curLabel] = minValue;
-	
-	memset(labels, 0, GRAY_LEVEL_NBR*sizeof(size_t));
-	
-	img_eti[minOff] = curLabel;
-	labels[minValue] = curLabel;
-
-	pq.initialize(img);
-	pq.push(minValue, minOff);
-	getCriterion(curLabel).ymin = ORDONNEE(minOff, img.getWidth());
-	getCriterion(curLabel).ymax = ORDONNEE(minOff, img.getWidth());
-
-	getCriterion(curLabel).area = 1;
-	curLabel++;
-	
-	initialized = true;
-
-	return minValue;
-    }
-    
-    int nextLowerLabel(T valeur)
-    {
-	    if ((curLabel & COLUMN_MOD) == 0)
-	      allocatePage(curLabel >> COLUMN_SHIFT);
-	    
-	    getLevel(curLabel) = valeur;
-	    int i;
-	    for(i=valeur-1;labels[i]==0;i--);
-
-	    getChild(curLabel) = getChild(labels[i]);
-	    getChild(labels[i]) = curLabel;
-	    getBrother(curLabel) = getBrother(getChild(curLabel));
-	    getBrother(getChild(curLabel)) = 0;
-	    getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
-	    getCriterion(curLabel).area = 0;
-	    return curLabel++;
-    }
-
-    int nextHigherLabel(T parent_valeur, T valeur)
-    {
-	    if ((curLabel & COLUMN_MOD) == 0)
-	      allocatePage(curLabel >> COLUMN_SHIFT);
-
-	    getLevel(curLabel) = valeur;
-	    getBrother(curLabel) = getChild(labels[parent_valeur]);
-	    getChild(labels[parent_valeur]) = curLabel;
-	    getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
-	    getCriterion(curLabel).area = 0;
-	    return curLabel++;
-    }
-    
-    bool subFlood(typename ImDtTypes<T>::lineType imgPix, int imWidth, UINT *img_eti, OffsetT p, OffsetT p_suiv)
-    {
-	int indice;
-	
-	if (imgPix[p_suiv]>imgPix[p]) 
-	{
-	      int j;
-	      for(j=imgPix[p]+1;j<imgPix[p_suiv];j++) 
-		labels[j]=0;
-	      indice = img_eti[p_suiv] = labels[j] = nextHigherLabel(imgPix[p], imgPix[p_suiv]);
-	  
-	} 
-	else if (labels[imgPix[p_suiv]]==0) 
-	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]] = nextLowerLabel(imgPix[p_suiv]);
-	else 
-	    indice = img_eti[p_suiv] = labels[imgPix[p_suiv]];
-	
-	getCriterion(indice).ymax = MAX(getCriterion(indice).ymax, ORDONNEE(p_suiv,imWidth));
-	getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, ORDONNEE(p_suiv,imWidth));
-	getCriterion(indice).area = getCriterion(indice).area + 1;
-	pq.push(imgPix[p_suiv], p_suiv);
-	
-	if (imgPix[p_suiv]>imgPix[p])
-	{
-		pq.push(imgPix[p], p);
-		return true;
-	}
-	return false;
-    }
-
-    void flood(const Image<T> &img, UINT *img_eti, int level)
-    {
-	    int indice;
-	    int p;
-	    int imWidth = img.getWidth();
-	    int imHeight = img.getHeight();
-	    int imDepth = img.getDepth();
-	    int pixelCount = img.getPixelCount();
-	    int pixPerSlice = imWidth*imHeight;
-	    typename ImDtTypes<T>::lineType imgPix = img.getPixels();
-	    
-	    while( (pq.getHigherLevel()>=level) && !pq.isEmpty())
-	    {
-		p = pq.pop();
-		
-		int p_suiv;
-
-		if ( p%pixPerSlice<pixPerSlice-imWidth && img_eti[p_suiv=p+imWidth]==0) //y+1
-		  if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
-		    continue;
-
-		if ( p%pixPerSlice>imWidth-1 && img_eti[p_suiv=p-imWidth]==0) //y-1
-		  if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
-		    continue;
-		  
-		if ( ((p_suiv=p+1) % imWidth !=0) && img_eti[p_suiv]==0) //x+1
-		  if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
-		    continue;
-		  
-		if ( (((p_suiv=p-1) % imWidth )!=imWidth-1) && p_suiv>=0 && img_eti[p_suiv]==0) //x-1
-		  if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
-		    continue;
-		  
-		if (imDepth>1) // for 3D
-		{
-		    if ( p/pixPerSlice<imDepth-1 && img_eti[p_suiv=p+pixPerSlice]==0) //z+1
-		      if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
-			continue;
-		      
-		    if ( p/pixPerSlice>1 && img_eti[p_suiv=p-pixPerSlice]==0) //z-1
-		      if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
-			continue;
-		}
-	    }
-    }
-    
-public:
-    MaxTree2()
-    {
-	GRAY_LEVEL_NBR = ImDtTypes<T>::max()-ImDtTypes<T>::min()+1;
-	
-	children = new OffsetT*[COLUMN_NBR]();
-	brothers =  new OffsetT*[COLUMN_NBR]();
-	levels = new T*[COLUMN_NBR]();
-	criteria = new Criterion2*[COLUMN_NBR]();
-	labels = new size_t[GRAY_LEVEL_NBR];
-	
-	initialized = false;
-    }
-    ~MaxTree2()
-    {
-	reset();
-	
-	delete[] children;
-	delete[] brothers;
-	delete[] levels;
-	delete[] criteria;
-	delete[] labels;
-    }
-    
-    inline Criterion2 &getCriterion(const OffsetT node)
-    {
-	return GET_TREE_OBJ(criteria, node);
-    }
-  
-    inline T &getLevel(const OffsetT node)
-    {
-	return GET_TREE_OBJ(levels, node);
-    }
-  
-    inline OffsetT &getChild(const OffsetT node)
-    {
-	return GET_TREE_OBJ(children, node);
-    }
-  
-    inline OffsetT &getBrother(const OffsetT node)
-    {
-	return GET_TREE_OBJ(brothers, node);
-    }
-    
-    inline int getLabelMax()
-    {
-	return curLabel;
-    }
-  
-
-    int build(const Image<T> &img, OffsetT *img_eti) 
-    {
-	    T minValue = initialize(img, img_eti);
-
-	    flood(img, img_eti, minValue);
-	    return labels[minValue];
-    }
-    
-    Criterion2 updateCriteria(int node) 
-    {
-	    int child = getChild(node);
-	    while (child!=0) 
-	    {
-		    Criterion2 c = updateCriteria(child);
-		    getCriterion(node).ymin = MIN(getCriterion(node).ymin, c.ymin);
-		    getCriterion(node).ymax = MAX(getCriterion(node).ymax, c.ymax);
-		    getCriterion(node).area = getCriterion(node).area +getCriterion(child).area;
-		    child = getBrother(child);
-	    }
-	    return getCriterion(node);
-    }
-    
+  size_t value;
+  inline void init() { value = 1; }
+  inline void reset() { value = 0; }
+  inline void merge(AreaCriterion &other) { value += other.value; }
+  inline void update() { value += 1; }
 };
 
 
 // NEW BMI    # ##################################################
 //(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
-template <class T, class OffsetT>
-void  ComputeDeltaUOMSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent,  int first_ancestor, UINT stop, UINT delta, int isPrevMaxT){
+template <class T, class CriterionT, class OffsetT>
+void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent,  int first_ancestor, UINT stop, UINT delta, int isPrevMaxT){
 
   // "node": the current node; "nParent": its direct parent (allows
   // attribute comparison for Delta versions); "first_ancestor": the
@@ -980,29 +699,21 @@ void  ComputeDeltaUOMSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* i
   int child; // index node
   T current_residue, stab_residue;
       UINT cNode, cParent; // attributes
-      int aNode, aParent;
+      CriterionT aNode, aParent;
       T lNode, lParent; // node levels, the same type than input image
       int toto;
       float stability;
 
 
-      // for (toto=0;toto <=5;toto++){
-      // 	std::cout<<toto <<": max="<< tree.getCriterion(toto).ymax<<"; min="<<tree.getCriterion(toto).ymin<<"\n";
-      // }
-
       cNode =  tree.getCriterion(node).ymax-tree.getCriterion(node).ymin+1;// #current criterion
-      aNode =  tree.getCriterion(node).area;
+      aNode =  tree.getCriterion(node).crit;
       lNode =  tree.getLevel(node);// #current level
 
 
       cParent =  tree.getCriterion(nParent).ymax-tree.getCriterion(nParent).ymin+1;// #current criterion
-      aParent  = tree.getCriterion(first_ancestor).area;
+      aParent  = tree.getCriterion(first_ancestor).crit;
       lParent =  tree.getLevel(first_ancestor);// #current level
-      //      std::cout << "lNode="<<int(lNode)<<":lParent="<<int(lParent)<<" : prev_res="<<int(prev_residue)<<"\n";
       int flag;
-
-      //      std::cout <<"computeDeltaUO: parent = "<< nParent <<"; node="<<node<<"\n";
-      //      std::cout <<"cParent="<<cParent<<"; cNode= "<<cNode<<"\n";
 
 
       if ((cParent - cNode) <= delta){
@@ -1011,51 +722,36 @@ void  ComputeDeltaUOMSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* i
       else{
 	flag = 0;
       }
-      //      std::cout<<"FLAG="<<flag<<"\n";
       if (flag){
 	current_residue  =  lNode - lParent ;
 	stability  = 0;
 	stab_residue = 0;
       }
       else{
-	stability = 1 - ((aParent - aNode)*1.0/aParent);
+	stability = 1 - ((aParent.value - aNode.value)*1.0/aParent.value);
 	current_residue  = (lNode - lParent);
 	stab_residue = int(current_residue * stability);
-	//      std::cout<<"node="<<node<<";parent="<<nParent<<","<<cNode<<","<< cParent<<","<< aNode<<","<<aParent<<"res="<<current_residue<<"stab="<<stability<<"\n";
-	//            std::cout <<"flag==============="<<flag<<"stab_res="<<int(stab_residue)<<stab_residue<<"###################\n";
 
       }
 
 
       transformee_node[node] = transformee_node[nParent];
       indicatrice_node[node] = indicatrice_node[nParent];
-      //      std::cout <<"ind="<<indicatrice_node[node];
-      //      std::cout <<"isPrevMaxT"<<isPrevMaxT<<"; flag="<<flag<<"\n";
       int isMaxT = 0;
-      // if((cNode >8)and (cNode < stop)){
-      // 	std::cout << "SEE WHAT HAPPENS\n";
-      // }
       if(cNode < stop){
 	if (stab_residue > transformee_node[node]){
-	  //	  std::cout<<"UPDATE RES\n";
 	  isMaxT = 1;
 	  transformee_node[node] = stab_residue;
 
 	  if(! (isPrevMaxT and flag)){
 	    indicatrice_node[node]  = cNode + 1;
-	    //	    std::cout <<"UPDATE="<<indicatrice_node[node]<<"   STOP ="<<stop;
-	    //	    std::cout <<"UPDATE IND:"<< cNode+1<<"\n";
 	  }
 	  
 	}
       }
       else{
-	//	std::cout<<"larger than stop\n";
 	indicatrice_node[node]  = 0;
       }
-      //      std::cout <<"-------\n";
-      //      std::cout << "T("<<node<<")="<<int(transformee_node[node])<<"I="<<indicatrice_node[node]<<"stop="<<stop<<"\n";
-      //      std::cout <<"-------\n";
       child=tree.getChild(node);
       while (child!=0){
 	if(flag && (cNode < stop)){
@@ -1067,14 +763,10 @@ void  ComputeDeltaUOMSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* i
 	}
 	child = tree.getBrother(child);
       }
-      // BEGIN FIRST CALL:
-      //void  ComputeDeltaUO(tree,transformee_node, indicatrice_node,root,root,0,stop,delta, 0)
-      
-      // definition : void  ComputeDeltaUO(MaxTree<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent, T prev_residue, UINT stop, UINT delta, int isPrevMaxT){
 
 }
-template <class T, class OffsetT>
-void compute_contrast_MSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize,UINT delta = 0)
+template <class T, class CriterionT, class OffsetT>
+void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize,UINT delta = 0)
 {
 
   int child;
@@ -1082,19 +774,11 @@ void compute_contrast_MSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT*
 
   transformee_node[root]=0;
   indicatrice_node[root]=0;
-      int toto;
-      // for (toto=0;toto <=5;toto++){
-      // 	std::cout<<toto <<": max="<< tree.getCriterion(toto).ymax<<"; min="<<tree.getCriterion(toto).ymin<<"\n";
-      // }
 
   tree.updateCriteria(root);
-  //  std::cout<<"AFTER UPDATE\n";
-      // for (toto=0;toto <=5;toto++){
-      // 	std::cout<<toto <<": max="<< tree.getCriterion(toto).ymax<<"; min="<<tree.getCriterion(toto).ymin<<"\n";
-      // }
   hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
   child = tree.getChild(root);
-  std::cout<<"DELTA INPUT="<<delta<<"stop="<<stopSize<<"\n";
+//   std::cout<<"DELTA INPUT="<<delta<<"stop="<<stopSize<<"\n";
 
     while (child!=0) 
       {
@@ -1116,7 +800,7 @@ void compute_contrast_MSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT*
 	int imSize = imIn.getPixelCount();
 	UINT *img_eti = new UINT[imSize]();
 	
-	MaxTree2<T1> tree;
+	MaxTree<T1, AreaCriterion> tree;
 	int root = tree.build(imIn, img_eti);
 
 	if(stopSize == -1){
@@ -1150,7 +834,123 @@ void compute_contrast_MSER(MaxTree2<T,OffsetT> &tree, T* transformee_node, UINT*
     }  
 
     
+    
+#ifndef SWIG
 
+template <class T, class CriterionT, class OffsetT>
+void processMaxTree(MaxTree<T,CriterionT,OffsetT> &tree, UINT node, T* lut_out, T previousLevel, UINT stop)
+{
+				//MORPHEE_ENTER_FUNCTION("s_OpeningTree::computeMaxTree");
+	UINT child;
+	T nodeLevel = tree.getLevel(node);
+	T currentLevel = (tree.getCriterion(node).crit.value < stop)? previousLevel:nodeLevel;
+
+	lut_out[node] = currentLevel;
+	
+	child = tree.getChild(node);
+	while (child!=0) 
+	  {
+	    processMaxTree(tree, child, lut_out, currentLevel, stop);
+	    child = tree.getBrother(child);
+	  }
+	
+}
+
+template <class T, class CriterionT, class OffsetT>
+void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, int root, UINT stopSize)
+{
+
+    int child;
+    UINT hauteur;
+
+    lut_node[root] = tree.getLevel(root);
+
+    tree.updateCriteria(root);
+
+    hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
+    child = tree.getChild(root);
+
+    while (child!=0) 
+      {
+	processMaxTree(tree, child, lut_node, tree.getLevel(root), stopSize);
+	child = tree.getBrother(child);
+      }
+  
+  
+}
+
+    
+    template <class T, class CriterionT>
+    RES_T attributeOpen(const Image<T> &imIn, Image<T> &imOut, int stopSize)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	int imSize = imIn.getPixelCount();
+	UINT *img_eti = new UINT[imSize]();
+	
+	MaxTree<T,CriterionT> tree;
+	int root = tree.build(imIn, img_eti);
+	
+	T *out_node = new T[tree.getLabelMax()]();
+
+	compute_AttributeOpening(tree, out_node, root, stopSize);
+
+	
+	typename ImDtTypes<T>::lineType outPix = imOut.getPixels();
+
+	for(int i=0;i<imSize;i++) 
+	    outPix[i] = out_node[img_eti[i]];
+	
+	delete[] img_eti;
+	delete[] out_node;
+	    
+	imOut.modified();
+	
+	return RES_OK;
+    }  
+
+#endif // SWIG
+
+    /**
+    * Area opening
+     * 
+     * Max-tree based algorithm
+     * \warning 4-connex only (6-connex in 3D)
+     * \param[in] imIn Input image
+     * \param[in] size The size of the opening
+     * \param[out] imOut Output image
+    */
+    template <class T>
+    RES_T areaOpen(const Image<T> &imIn, int stopSize, Image<T> &imOut)
+    {
+	return attributeOpen<T, AreaCriterion>(imIn, imOut, stopSize);
+    }
+    
+    /**
+    * Area closing
+     * 
+     * Max-tree based algorithm
+     * \warning 4-connex only (6-connex in 3D)
+     * \param[in] imIn Input image
+     * \param[in] size The size of the closing
+     * \param[out] imOut Output image
+    */
+    template <class T>
+    RES_T areaClose(const Image<T> &imIn, int stopSize, Image<T> &imOut)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freeze(imOut);
+	
+	Image<T> tmpIm(imIn);
+	inv(imIn, tmpIm);	
+	RES_T res = attributeOpen<T, AreaCriterion>(tmpIm, imOut, stopSize);
+	inv(imOut, imOut);
+	
+	return res;
+    }
     
     /** \} */
 

@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -34,9 +34,9 @@ SMIL_MODULE(smilGui)
 
 %{
 /* Includes the header in the wrapper code */
-#include "DGui.h"
-#include "DImage.h"
-#include "DImageViewer.hpp"
+#include "Gui/include/DGui.h"
+#include "Core/include/DImage.h"
+#include "Gui/include/private/DImageViewer.hpp"
 %}
 
 %import smilCore.i
@@ -46,13 +46,13 @@ SMIL_MODULE(smilGui)
 // Gui Instance
 //////////////////////////////////////////////////////////
 
-%include "DInstance.hpp"
+%include "Core/include/private/DInstance.hpp"
 %template(GuiInstance) smil::UniqueInstance<smil::Gui>;
-%include "DGuiInstance.h"
+%include "include/DGuiInstance.h"
 
 
 
-%include "DGui.h"
+%include "include/DGui.h"
 
 
 // generate directors for virtual methods (except those returning const char ptr)
@@ -61,8 +61,8 @@ SMIL_MODULE(smilGui)
 %feature("nodirector") baseImageViewer::getClassName;
 %feature("nodirector") baseImageViewer::getName;
 
-%include "DBaseImageViewer.h"
-%include "DImageViewer.hpp"
+%include "include/DBaseImageViewer.h"
+%include "include/private/DImageViewer.hpp"
 
 
 TEMPLATE_WRAP_CLASS(smil::ImageViewer, ImageViewer);
