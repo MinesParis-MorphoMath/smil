@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -148,6 +148,22 @@ namespace smil
     {
 	this->lines[offset/width][offset%width] = value;
 	return RES_OK;
+    }
+
+    template <>
+    RES_T SharedImage<Bit>::allocate()
+    {
+        if (this->allocated)
+            return RES_ERR_BAD_ALLOCATION;
+
+        if (this->pixels.intArray==NULL)
+            return RES_ERR_BAD_ALLOCATION;
+        
+        this->allocated = true;
+
+        this->restruct();
+
+        return RES_OK;
     }
 
 } // namespace smil

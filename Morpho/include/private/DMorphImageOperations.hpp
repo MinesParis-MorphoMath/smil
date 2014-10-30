@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 #ifndef _MORPH_IMAGE_OPERATIONS_HPP
 #define _MORPH_IMAGE_OPERATIONS_HPP
 
-#include "DCore.h"
+#include "Core/include/DCore.h"
 #include "Morpho/include/DStructuringElement.h"
 #include "Morpho/include/DMorphoInstance.h"
 
@@ -53,7 +53,7 @@ namespace smil
 	}
 	
 	unaryMorphImageFunctionBase(T_in _borderValue, T_out _initialValue = ImDtTypes<T_out>::min())
-	  : initialValue(_borderValue),
+	  : initialValue(_initialValue),
 	    borderValue(_borderValue)
 	{
 	}

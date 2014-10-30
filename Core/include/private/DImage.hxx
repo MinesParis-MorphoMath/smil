@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -895,7 +895,7 @@ namespace smil
 
 
     #if defined SWIGPYTHON && defined USE_NUMPY
-    #include "DNumpy.h"
+    #include "Core/include/DNumpy.h"
 
     template <class T>
     PyObject * Image<T>::getNumArray(bool c_contigous)
@@ -937,6 +937,11 @@ namespace smil
     }
     #endif // defined SWIGPYTHON && defined USE_NUMPY
 
+    typedef Image<UINT8> Image_UINT8;
+    typedef Image<UINT16> Image_UINT16;
+    typedef Image<UINT32> Image_UINT32;
+    typedef Image<bool> Image_bool;
+    
 
 } // namespace smil
 

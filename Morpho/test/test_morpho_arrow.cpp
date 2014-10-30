@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -76,13 +76,24 @@ class TestArrow : public TestCase
       if (retVal!=RES_OK)
 	im2.printSelf(1);
 
-    
+      arrowGrt(im1, im2, hSE0(), UINT8(255));
+      UINT8 vecGrt2[] = { 
+        0,   8,  57,   0,  40,
+        22,   4,   2,  61,   0,
+        0,   8,  47,  48,  50,
+        23,  37,  17,  32,  16,
+        0,  15,   0,  15,   0,
+      };
+      imTruth << vecGrt2;
+      TEST_ASSERT(im2==imTruth);
+      if (retVal!=RES_OK)
+	im2.printSelf(1);
+
   }
 };
 
 
-#include "DCore.h"
-#include "DGui.h"
+#include "Core/include/DCore.h"
 #include "DMorphoBase.hpp"
 
 int main(int argc, char *argv[])

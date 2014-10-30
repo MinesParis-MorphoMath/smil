@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -29,7 +29,7 @@
 #ifndef _D_GRAPH_HPP
 #define _D_GRAPH_HPP
 
-#include "DBaseObject.h"
+#include "Core/include/DBaseObject.h"
 
 #include <list>
 #include <algorithm>
@@ -44,27 +44,34 @@ namespace smil
 {
     /**
      * Non-oriented edge
+     * \see Graph
      */
     template <class T=size_t>
     class Edge
     {
     public:
 	typedef T WeightType;
+	//! Default constructor
 	Edge()
 	  : source(0), target(0), weight(1)
 	{
 	}
+	//! Constructor using two nodes and an optional weight (default 1).
 	Edge(size_t a, size_t b, T w=1.)
 	  : source(a), target(b), weight(w)
 	{
 	}
+	//! Copy constructor
 	Edge(const Edge &rhs)
 	  : source(rhs.source), target(rhs.target), weight(rhs.weight)
 	{
 	}
 	
+	//! Source node
 	size_t source;
+	//! Target node
 	size_t target;
+	//! Edge weight/value
 	T weight;
 	
 	inline bool isActive() const { return (source!=0 && target!=0);  }
@@ -86,11 +93,17 @@ namespace smil
 	{
 	    return weight>=rhs.weight;
 	}
+	
+	virtual void printSelf(ostream &os = std::cout, string s="") const
+	{
+	  os << s << (int)source << "-" << (int)target << " (" << (int)weight << ")" << endl;
+	}
     };
 
     
     /**
      * Non-oriented graph
+     * \see Edge
      */
     template <class nodeT=size_t, class edgeWT=size_t>
     class Graph : public BaseObject
@@ -109,11 +122,13 @@ namespace smil
 	std::map< size_t, std::vector<size_t> > nodeEdges;
 	
     public:
+	//! Default constructor
 	Graph()
 	  : BaseObject("Graph"),
 	    edgeNbr(0)
 	{
 	}
+	//! Copy constructor
 	Graph(const Graph &rhs)
 	  : BaseObject("Graph"),
 	    edgeNbr(rhs.edgeNbr),
@@ -134,6 +149,7 @@ namespace smil
 	    return *this;
 	}
 	
+	//! Clear graph content
 	void clear()
 	{
 	    nodes.clear();
@@ -143,17 +159,18 @@ namespace smil
 	    edgeNbr = 0;
 	}
 	
+	//! Add a node given its index and its optional value
 	void addNode(const size_t &ind, const nodeT &val=0)
 	{
 	    nodeValues[ind] = val;
 	}
+	
 	/**
 	 * Add an edge to the graph. 
 	 * If checkIfExists is \b true:
 	 * 	If the edge doen't exist, create a new one.
 	 * 	If the edge already exists, the edge weight will be the minimum between the existing a the new weight.
 	 */
-	
 	void addEdge(const EdgeType &e, bool checkIfExists=true)
 	{
 	    if (checkIfExists)
@@ -173,9 +190,21 @@ namespace smil
 	    
 	    edgeNbr++;
 	}
+	
+	/**
+	 * Add an edge to the graph given two nodes \b src and \b targ and an optional weight
+	 * If checkIfExists is \b true:
+	 * 	If the edge doen't exist, create a new one.
+	 * 	If the edge already exists, the edge weight will be the minimum between the existing a the new weight.
+	 */
 	void addEdge(const size_t src, const size_t targ, edgeWT weight=1, bool checkIfExists=true)
 	{
 	    addEdge(EdgeType(src, targ, weight), checkIfExists);
+	}
+	
+	void sortEdges()
+	{
+	    sort(edges.begin(), edges.end());
 	}
 	
     protected:
@@ -199,6 +228,7 @@ namespace smil
 	      eList.erase(ei);
 	}
     public:
+	//! Remove all edges linked to the node \b nodeIndex
 	void removeNodeEdges(const size_t nodeIndex)
 	{
 	    map< size_t, vector<size_t> >::iterator fNodeEdges = nodeEdges.find(nodeIndex);
@@ -217,6 +247,7 @@ namespace smil
 	    }
 	    nedges.clear();
 	}
+	//! Remove an edge
 	void removeEdge(const size_t index)
 	{
 	    if (index>=edges.size())
@@ -228,6 +259,7 @@ namespace smil
 	    removeNodeEdge(edge.target, index);
 	    edge.desactivate();
 	}
+	//! Find and remove an edge linking \b src to \b targ
 	void removeEdge(const size_t src, const size_t targ)
 	{
 	    typename vector< EdgeType >::iterator foundEdge = find(edges.begin(), edges.end(), EdgeType(src,targ));
@@ -236,6 +268,7 @@ namespace smil
 	    
 	    return removeEdge(foundEdge-edges.begin());
 	}
+	// Remove a given edge
 	void removeEdge(const EdgeType &edge)
 	{
 	    typename vector< EdgeType >::iterator foundEdge = find(edges.begin(), edges.end(), edge);
@@ -248,23 +281,35 @@ namespace smil
 #ifndef SWIG
 	const vector< EdgeType > &getEdges() const { return edges; }  // lvalue
 #endif // SWIG
+	//! Get a vector containing the graph edges
 	vector< EdgeType > &getEdges() { return edges; }  // rvalue
 	const map< size_t, std::vector<size_t> > &getNodeEdges() const { return nodeEdges; } // lvalue
+	//! Get a map containing the edges linked to a given node
+#ifndef SWIG
 	map< size_t, std::vector<size_t> > &getNodeEdges() { return nodeEdges; } // rvalue
+#endif // SWIG
 	
+	//! Compute the Minimum Spanning Tree graph
 	Graph<nodeT,edgeWT> computeMST()
 	{
 	    return graphMST(*this);
 	}
 	
-	virtual void printSelf(ostream &os = std::cout, string ="")
+	virtual void printSelf(ostream &os = std::cout, string s ="")
 	{
+	    os << s << "Number of nodes: " << nodes.size() << endl;
+	    os << s << "Number of edges: " << edges.size() << endl;
+	    os << s << "Edges: " << endl << "source-target (weight) " << endl;
+	    
+	    string s2 = s + "\t";
 	    for (typename vector< EdgeType >::const_iterator it=edges.begin();it!=edges.end();it++)
 	      if ((*it).isActive())
-		os << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
+		(*it).printSelf(os, s2);
 	}
 	
-	
+	//! Labelize the nodes.
+	//! Give a different label to each group of connected nodes.
+	//! Return a map [ node_index, label_value ]
 	map<size_t,size_t> labelizeNodes() const
 	{
 	    map<size_t,size_t> lookup;

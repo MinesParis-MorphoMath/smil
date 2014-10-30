@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,8 +29,8 @@
 #ifdef USE_QT
 
 
-#include "Qt/DQtImageViewer.hpp"
-#include "Qt/PureQt/ImageViewerWidget.h"
+#include "Gui/Qt/DQtImageViewer.hpp"
+#include "Gui/Qt/PureQt/ImageViewerWidget.h"
 #include "Core/include/private/DImage.hpp"
 #include "Base/include/private/DMeasures.hpp"
 

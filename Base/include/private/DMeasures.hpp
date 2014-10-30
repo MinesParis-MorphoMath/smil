@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@
 
 #include <map>
 #include <set>
-
+#include <iostream>
 namespace smil
 {
   
@@ -284,6 +284,57 @@ namespace smil
 	valueListFunc<T> func;
 	return func(imIn, onlyNonZero);
     }
+    template <class T>
+    struct measModeValFunc : public MeasureFunctionBase<T, T >
+    {
+	typedef typename Image<T>::lineType lineType;
+
+      map<int,int> nbList;
+      int maxNb;
+      T mode;
+	virtual void initialize(const Image<T> &imIn)
+	{
+	  //BMI	    this->retVal.clear();
+	    nbList.clear();
+	    maxNb = 0;
+	    mode = 0;
+	}
+
+	virtual void processSequence(lineType lineIn, size_t size)
+	{
+
+	    for (size_t i=0;i<size;i++)
+	    {
+	      T val = lineIn[i];
+	      if(val>0){
+
+		if (nbList.find(val)==nbList.end()){
+		  nbList.insert(std::pair<int,int>(val,1));
+		  }
+		else
+		  nbList[val]++;
+		if(nbList[val]>maxNb){
+		  mode = val;
+		  maxNb = nbList[val];
+		}
+	      }// if (val>0)
+	    }// for i= 0; i < size
+	    this->retVal = mode;
+
+	}// virtual
+    };// END measModeValFunc
+
+    /**
+     * Get the mode of the histogram present in the image, i.e. the
+     * value that appears most often.
+     */
+    template <class T>
+    T measModeVal(const Image<T> &imIn, bool onlyNonZero=true)
+    {
+
+	measModeValFunc<T> func;
+	return func(imIn, onlyNonZero);
+    }
     
     /**
      * Get image values along a profile.
@@ -298,7 +349,7 @@ namespace smil
 	size_t imH = im.getHeight();
 	
 	vector<IntPoint> bPoints;
-	if ( x0<0 || x0>=int(imW) || y0<0 || y0>=int(imH) || x1<0 || x1>=int(imW) || y1<0 || y1>=int(imH) )
+	if ( x0>=int(imW) || y0>=int(imH) || x1>=int(imW) || y1>=int(imH) )
 	  bPoints = bresenhamPoints(x0, y0, x1, y1, imW, imH);
 	else
 	  bPoints = bresenhamPoints(x0, y0, x1, y1); // no image range check (faster)

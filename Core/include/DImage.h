@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,17 +34,6 @@
 #include "private/DImage.hxx"
 
 
-namespace smil
-{
-
-
-    typedef Image<UINT8> Image_UINT8;
-    typedef Image<UINT16> Image_UINT16;
-    typedef Image<UINT32> Image_UINT32;
-    typedef Image<bool> Image_bool;
-
-
-} // namespace smil
 
 
 #endif // _DIMAGE_H

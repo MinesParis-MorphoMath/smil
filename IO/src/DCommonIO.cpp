@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
  */
 
 
-#include "DCommonIO.h"
-#include <DErrors.h>
+#include "IO/include/DCommonIO.h"
+#include "Core/include/DErrors.h"
 
 #include <string>
 #include <algorithm>

@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -37,19 +37,19 @@
 ${SWIG_COMMON_INCLUDES}
 
 %{
-#include "DErrors.h"
-#include "DTypes.h"
-#include "DTypes.hpp"
-#include "DBaseObject.h"
-#include "DBaseImage.h"
-#include "DImage.hpp"
-#include "DSharedImage.hpp"
-#include "DInstance.hpp"
-#include "DCoreInstance.h"
-#include "DSlot.h"
-#include "DSignal.h"
-#include "DCoreEvents.h"
-#include "DGraph.hpp"
+#include "Core/include/DErrors.h"
+#include "Core/include/DTypes.h"
+#include "Core/include/private/DTypes.hpp"
+#include "Core/include/DBaseObject.h"
+#include "Core/include/DBaseImage.h"
+#include "Core/include/private/DImage.hpp"
+#include "Core/include/private/DSharedImage.hpp"
+#include "Core/include/private/DInstance.hpp"
+#include "Core/include/DCoreInstance.h"
+#include "Core/include/DSlot.h"
+#include "Core/include/DSignal.h"
+#include "Core/include/DCoreEvents.h"
+#include "Core/include/private/DGraph.hpp"
 using namespace smil;
 %}
 

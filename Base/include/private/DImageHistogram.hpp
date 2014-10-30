@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -471,7 +471,7 @@ namespace smil
 	    lut[i] = lbl;
 	    i++;
 	}
-	applyLookup<T>(imIn, lut, imOut);
+	applyLookup(imIn, lut, imOut);
 	
 	return tVals;
 	

@@ -1,4 +1,4 @@
-# Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+# Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -26,10 +26,11 @@
 
 
 SET(MODULE_NAME Chabardes)
-SET(MODULE_DEPS smilCore smilGui smilMorpho)
+SET(MODULE_DEPS ${SMIL_LIB_PREFIX}Core ${SMIL_LIB_PREFIX}Gui ${SMIL_LIB_PREFIX}Morpho)
 
-FIND_PACKAGE(MPI REQUIRED)
-INCLUDE_DIRECTORIES(${MPI_CXX_INCLUDE_PATH})
+#FIND_PACKAGE(MPI REQUIRED)
+#INCLUDE_DIRECTORIES(${MPI_CXX_INCLUDE_PATH} ${PROJECT_SOURCE_DIR}/Morpho/include ${PROJECT_SOURCE_DIR}/Morpho/include/private)
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/Morpho/include ${PROJECT_SOURCE_DIR}/Morpho/include/private)
 
 LIST(APPEND MODULE_DEPS ${MPI_CXX_LIBRARIES})
 

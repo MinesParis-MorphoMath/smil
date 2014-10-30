@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -28,8 +28,9 @@
 
 
 
-#include "DCore.h"
+#include "Core/include/DCore.h"
 #include "DMorpho.h"
+#include "UserModules/Chabardes/include/private/DMinima.h"
 
 using namespace smil;
 
@@ -43,13 +44,16 @@ int main(int argc, char *argv[])
     Image_UINT16 imLbl2(im1);
     
     
-    UINT BENCH_NRUNS = 10;
+    UINT BENCH_NRUNS = 50;
     
     sup(im1, UINT8(30), im2);
     BENCH_IMG(build, im2, im1, im3);
     
     gradient(im1, im2);
-    minima(im2, im3);
+    
+    BENCH(minima, im2, im3, sSE());
+    BENCH(fastMinima, im2, im3, sSE());
+    
     label(im3, imLbl);
     
     BENCH_IMG(basins, im2, imLbl, imLbl2);

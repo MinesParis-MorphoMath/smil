@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,11 @@
  */
 
 
-#include "DGuiInstance.h"
+#include "Gui/include/DGuiInstance.h"
 
 #ifdef USE_QT
-#include "Qt/DQtGuiInstance.h"
-#include "Qt/DQtImageViewer.hxx"
+#include "Gui/Qt/DQtGuiInstance.h"
+#include "Gui/Qt/DQtImageViewer.hxx"
 #endif // USE_QT
 
 namespace smil

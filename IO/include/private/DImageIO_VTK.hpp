@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -266,24 +266,24 @@ namespace smil
     };
     
     template <>
-    inline RES_T VTKImageFileHandler<void>::read(const char *filename, Image<void> &image)
+    inline RES_T VTKImageFileHandler<void>::read(const char *, Image<void> &)
     {
 	return RES_ERR;
     }
 
     template <>
-    inline RES_T VTKImageFileHandler<void>::write(const Image<void> &image, const char *filename)
+    inline RES_T VTKImageFileHandler<void>::write(const Image<void> &, const char *)
     {
 	return RES_ERR;
     }
     
     template <>
-    inline RES_T VTKImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
+    inline RES_T VTKImageFileHandler<RGB>::read(const char *, Image<RGB> &)
     {
 	return RES_ERR_NOT_IMPLEMENTED;
     }
     template <>
-    inline RES_T VTKImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
+    inline RES_T VTKImageFileHandler<RGB>::write(const Image<RGB> &, const char *)
     {
 	return RES_ERR_NOT_IMPLEMENTED;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 #ifndef _D_HOUGH_TRANSFORM_HPP
 #define _D_HOUGH_TRANSFORM_HPP
 
-#include "DImage.hxx"
+#include "Core/include/private/DImage.hxx"
 
 namespace smil
 {
