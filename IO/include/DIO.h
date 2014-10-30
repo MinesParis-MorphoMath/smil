@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,9 +34,11 @@
  * \defgroup IO
  */
 
-#include "DCommon.h"
+#include "Core/include/DCommon.h"
+#include "DCommonIO.h"
 #include "private/DImageIO.hpp"
 #include "private/DImageIO.hxx"
+#include "private/DImageIO_RAW.hpp"
 
 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,54 +30,57 @@
 #ifndef _DMEMORY_HPP
 #define _DMEMORY_HPP
 
-#include <math.h>
-#include <string>
-#include <limits>
-
-#include <stdio.h>
-
-#if (defined(__ICL) || defined(__ICC))
-  #include <fvec.h>
-  inline void *aligned_malloc (size_t size, size_t align=16) { return _mm_malloc(size,align); }
-  inline void  aligned_free   (void *p)                      { return _mm_free(p); }
-#elif defined (_MSC_VER)
-  #include <malloc.h>
-  inline void *aligned_malloc (size_t size, size_t align=16) { return _aligned_malloc(size,align);  }
-  inline void  aligned_free   (void *p)                      { return _aligned_free(p); }
-#elif defined (__CYGWIN__)
-  #include <xmmintrin.h>
-  inline void *aligned_malloc (size_t size, size_t align=16) { return _mm_malloc(size,align);  }
-  inline void  aligned_free   (void *p)                      { return _mm_free(p); }
-#elif defined(__MINGW64__)
-  #include <malloc.h>
-  inline void *aligned_malloc (size_t size, size_t align=16) { return __mingw_aligned_malloc(size,align);  }
-  inline void  aligned_free   (void *p)                      { return __mingw_aligned_free(p); }
-#elif defined(__MINGW32__)
-  #include <malloc.h>
-  inline void *aligned_malloc (size_t size, size_t align=16) { return __mingw_aligned_malloc(size,align);  }
-  inline void  aligned_free   (void *p)                      { return __mingw_aligned_free(p); }
-#elif defined(__FreeBSD__)
-  #include <stdlib.h>
-  inline void* aligned_malloc (size_t size, size_t align=16) { return malloc(size); }
-  inline void  aligned_free   (void *p)                      { return free(p); }
-#elif (defined(__MACOSX__) || defined(__APPLE__))
-  #include <stdlib.h>
-  inline void* aligned_malloc (size_t size, size_t align=16) { return malloc(size); }
-  inline void  aligned_free   (void *p)                      { return free(p); }
-#else
-  #include <malloc.h>
-  inline void* aligned_malloc (size_t size, size_t align=16) { return memalign(align,size); }
-  inline void  aligned_free   (void *p)                      { return free(p); }
-#endif
-
-namespace smil
-{
 #ifdef __AVX__  
     #define SIMD_VEC_SIZE 32
 #else // __AVX__  
     #define SIMD_VEC_SIZE 16
 #endif // __AVX__
   
+  
+  
+  #if (defined(__ICL) || defined(__ICC))
+    #include <fvec.h>
+    inline void *aligned_malloc (size_t size, size_t align=SIMD_VEC_SIZE) { return _mm_malloc(size,align); }
+    inline void  aligned_free   (void *p)                      { return _mm_free(p); }
+  #elif defined (_MSC_VER)
+    #include <malloc.h>
+    inline void *aligned_malloc (size_t size, size_t align=SIMD_VEC_SIZE) { return _aligned_malloc(size,align);  }
+    inline void  aligned_free   (void *p)                      { return _aligned_free(p); }
+  #elif defined (__CYGWIN__)
+    #include <xmmintrin.h>
+    inline void *aligned_malloc (size_t size, size_t align=SIMD_VEC_SIZE) { return _mm_malloc(size,align);  }
+    inline void  aligned_free   (void *p)                      { return _mm_free(p); }
+  #elif defined(__MINGW64__)
+    #include <malloc.h>
+    inline void *aligned_malloc (size_t size, size_t align=SIMD_VEC_SIZE) { return __mingw_aligned_malloc(size,align);  }
+    inline void  aligned_free   (void *p)                      { return __mingw_aligned_free(p); }
+  #elif defined(__MINGW32__)
+    #include <malloc.h>
+    inline void *aligned_malloc (size_t size, size_t align=SIMD_VEC_SIZE) { return __mingw_aligned_malloc(size,align);  }
+    inline void  aligned_free   (void *p)                      { return __mingw_aligned_free(p); }
+  #elif defined(__FreeBSD__)
+    #include <stdlib.h>
+    inline void* aligned_malloc (size_t size, size_t align=SIMD_VEC_SIZE) { return malloc(size); }
+    inline void  aligned_free   (void *p)                      { return free(p); }
+  #elif (defined(__MACOSX__) || defined(__APPLE__))
+    #include <stdlib.h>
+    inline void* aligned_malloc (size_t size, size_t align=SIMD_VEC_SIZE) { return malloc(size); }
+    inline void  aligned_free   (void *p)                      { return free(p); }
+  #else
+    #include <malloc.h>
+    inline void* aligned_malloc (size_t size, size_t align=SIMD_VEC_SIZE) { return memalign(align,size); }
+    inline void  aligned_free   (void *p)                      { return free(p); }
+  #endif
+
+  
+#include <math.h>
+#include <string>
+#include <limits>
+#include <sstream>
+#include <stdio.h>
+
+namespace smil
+{
   
     #define ASSUME_ALIGNED(buf) __builtin_assume_aligned(buf, SIMD_VEC_SIZE)
 
@@ -162,12 +165,12 @@ namespace smil
 
     inline std::string displayBytes(size_t bytes)
     {
-	    char tmp[128] = "";
+	    std::ostringstream oss;
 	    const char *units[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 	    const double base = 1024;
 	    int c = std::min((int)(log((double)bytes)/log(base)), (int)sizeof(units) - 1);
-	    sprintf(tmp, "%1.2f %s", bytes / pow(base, c), units[c]);
-	    return std::string(tmp);
+	    oss << bytes / pow(base, c) <<  units[c];
+	    return oss.str();
     }
     
 

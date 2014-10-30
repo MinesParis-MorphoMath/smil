@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@ SMIL_MODULE(smilMorpho)
 #include "DMorphoFilter.hpp"
 #include "DMorphoArrow.hpp"
 #include "DMorphoWatershed.hpp"
+#include "DMorphoWatershedExtinction.hpp"
 #include "DMorphoLabel.hpp"
 #include "DCompositeSE.h"
 #include "DHitOrMiss.hpp"
@@ -65,7 +66,7 @@ builtinOpen = open
 // Morpho Instance
 //////////////////////////////////////////////////////////
 
-%include "DInstance.hpp"
+%include "Core/include/private/DInstance.hpp"
 %template(MorphoInstance) smil::UniqueInstance<smil::Morpho>;
 %include "DMorphoInstance.h"
 
@@ -74,7 +75,9 @@ builtinOpen = open
 %ignore StrElt::operator ();
 #endif // SWIGJAVA
 
+#ifdef SWIGPYTHON
 %include "DStructuringElement.h"
+#endif // SWIGPYTHON
 
 
 %include "DMorphoBase.hpp"
@@ -110,6 +113,10 @@ TEMPLATE_WRAP_FUNC(hMinima);
 TEMPLATE_WRAP_FUNC(hMaxima);
 TEMPLATE_WRAP_FUNC(minima);
 TEMPLATE_WRAP_FUNC(maxima);
+TEMPLATE_WRAP_FUNC_2T_CROSS(minimaLabeled);
+TEMPLATE_WRAP_FUNC_2T_CROSS(maximaLabeled);
+TEMPLATE_WRAP_FUNC_2T_CROSS(hMinimaLabeled);
+TEMPLATE_WRAP_FUNC_2T_CROSS(hMaximaLabeled);
 
 %include "DMorphoFilter.hpp"
 TEMPLATE_WRAP_FUNC(asfClose);
@@ -129,12 +136,21 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(inflBasins);
 TEMPLATE_WRAP_FUNC(inflZones);
 TEMPLATE_WRAP_FUNC(waterfall);
 
+%include "DMorphoWatershedExtinction.hpp"
+%feature("director") ExtinctionFlooding;
+TEMPLATE_WRAP_CLASS_MEMBER_FUNC(ExtinctionFlooding, floodWithExtValues);
+TEMPLATE_WRAP_CLASS_MEMBER_FUNC(ExtinctionFlooding, floodWithExtRank);
+TEMPLATE_WRAP_CLASS_2T_CROSS(ExtinctionFlooding, ExtinctionFlooding);
+TEMPLATE_WRAP_FUNC_2T_CROSS(watershedExtinction);
+TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinction);
+TEMPLATE_WRAP_FUNC_2T_CROSS(watershedExtinctionGraph);
+TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinctionGraph);
 
 %include "DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(label);
+TEMPLATE_WRAP_FUNC_2T_CROSS(lambdaLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelFast);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithArea);
-TEMPLATE_WRAP_FUNC(areaOpen);
 TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 
 %ignore smil::CompStrEltList::operator[];
@@ -163,11 +179,13 @@ TEMPLATE_WRAP_FUNC(zhangSkeleton);
 %include "DMorphoMaxTree.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpenMSER);
+TEMPLATE_WRAP_FUNC(areaOpen);
+TEMPLATE_WRAP_FUNC(areaClose);
 
 %include "DMorphoGraph.hpp"
-TEMPLATE_WRAP_FUNC_3T_FIX_THIRD(mosaicToGraph, Graph<>);
-TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(graphToMosaic, Graph<>);
-TEMPLATE_WRAP_FUNC_3T_FIX_SECOND(drawGraph, Graph<>);
+TEMPLATE_WRAP_FUNC_2T_CROSS(mosaicToGraph);
+TEMPLATE_WRAP_FUNC(graphToMosaic);
+TEMPLATE_WRAP_FUNC_2T_CROSS(drawGraph);
 
 %include "DMorphoMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measGranulometry);

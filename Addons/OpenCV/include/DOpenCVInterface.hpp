@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -32,8 +32,8 @@
 
 #include <opencv/cv.h>
 
-#include "DImage.hxx"
-#include "DSharedImage.hpp"
+#include "Core/include/private/DImage.hxx"
+#include "Core/include/private/DSharedImage.hpp"
 
 
 
@@ -105,6 +105,29 @@ namespace smil
     IplImage *toIplImage(Image<T> &im)
     {
     }
+    
+    template <class T>
+    int getCvType()
+    {
+      return -1;
+    }
+    template<> int getCvType<UINT8>() { return CV_8UC1; }
+    template<> int getCvType<UINT16>() { return CV_16UC1; }
+    
+    /**
+     * Create a OpneCV Mat from a Smil image (the data is copied)
+     */    
+    template <class T>
+    cv::Mat toMatImage(Image<T> &im)
+    {
+	int cvType = getCvType<T>();
+	
+	ASSERT(cvType!=-1, "Data type conversion not implemented", cv::Mat())
+	
+	return cv::Mat(im.getHeight(), im.getWidth(), cvType, im.getPixels());
+    }
+
+
 
    /*@}*/
     

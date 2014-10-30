@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,9 @@
  */
 
 
-#include "DCore.h"
-#include "DMorpho.h"
-#include "DGui.h"
-
-#include "DImageDraw.hpp"
+#include "Core/include/DCore.h"
+#include "Base/include/DBase.h"
+#include "Gui/include/DGui.h"
 
 #include <vector>
 

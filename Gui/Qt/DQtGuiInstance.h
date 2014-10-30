@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@
 #ifndef _D_QT_GUI_INSTANCE_H
 #define _D_QT_GUI_INSTANCE_H
 
-#include "DGuiInstance.h"
+#include "Gui/include/DGuiInstance.h"
 
 class HelpForm;
 

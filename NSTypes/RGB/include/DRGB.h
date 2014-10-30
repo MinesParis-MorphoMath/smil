@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 #ifndef _DRGB_H
 #define _DRGB_H
 
-#include "DColor.h"
+#include "Core/include/DColor.h"
 #include "DImage_RGB.h"
 #include "DLineArith_RGB.h"
 

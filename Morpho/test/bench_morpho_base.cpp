@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
 
 
 
-#include "DCore.h"
+#include "Core/include/DCore.h"
 #include "DMorpho.h"
 
 using namespace smil;
@@ -39,15 +39,21 @@ int main(int argc, char *argv[])
 //    Image_UINT8 im1(1024, 1024);
     Image_UINT8 im2(im1);
     
-    UINT BENCH_NRUNS = 100;
+    StrElt generic_sSE(sSE());
+    generic_sSE.seT = SE_Generic;
+    
+    UINT BENCH_NRUNS = 1E2;
+    
     BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
     BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
+    BENCH_IMG_STR(dilate, "generic sSE", im1, im2, generic_sSE());
     BENCH_IMG_STR(dilate, "CrossSE", im1, im2, CrossSE());
     BENCH_IMG_STR(open, "hSE", im1, im2, hSE());
     BENCH_IMG_STR(open, "sSE", im1, im2, sSE());
     BENCH_IMG_STR(open, "CrossSE", im1, im2, CrossSE());
     
     cout << endl;
+    
     // 3D
     
     im1.setSize(500, 500, 100);

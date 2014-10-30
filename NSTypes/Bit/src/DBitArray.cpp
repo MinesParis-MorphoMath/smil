@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -94,7 +94,7 @@ const bool BitArray::operator [] (UINT i) const
 
 
 
-BitArray BitArray::operator-(int dp)
+BitArray BitArray::operator-(int dp) const
 {
     BitArray ba(this->intArray, this->bitWidth, this->height);
     ba.index = this->index - dp;

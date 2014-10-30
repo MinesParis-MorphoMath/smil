@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ namespace smil
     inline void copyLine(const typename Image<T1>::lineType lIn, const size_t size, typename Image<T2>::lineType lOut)
     {
 	for (size_t i=0;i<size;i++)
-	  lOut[i] = T2(lIn[i]);
+	  lOut[i] = lIn[i];
     }
 
     template <class T>
@@ -210,7 +210,7 @@ namespace smil
 	}
     };
     template <>
-    inline void grtSupLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void grtSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
 	ERR_MSG("Not implemented fot float");
     }
@@ -249,7 +249,7 @@ namespace smil
 	}
     };
     template <>
-    inline void grtOrEquSupLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void grtOrEquSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
 	ERR_MSG("Not implemented for float");
     }
@@ -288,7 +288,7 @@ namespace smil
 	}
     };
     template <>
-    inline void lowSupLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void lowSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
 	ERR_MSG("Not implemented for float");
     }
@@ -327,7 +327,7 @@ namespace smil
 	}
     };
     template <>
-    inline void lowOrEquSupLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void lowOrEquSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
 	ERR_MSG("Not implemented for float");
     }
@@ -384,7 +384,7 @@ namespace smil
 	}
     };
     template <>
-    inline void equSupLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void equSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
 	ERR_MSG("Not implemented for float");
     }
@@ -465,7 +465,7 @@ namespace smil
 	}
     };
     template <>
-    inline void bitAndLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void bitAndLine<float>::_exec(const lineType, const lineType, const size_t, lineType)
     {
 	ERR_MSG("Not implemented for float");
     }
@@ -492,7 +492,7 @@ namespace smil
 	}
     };
     template <>
-    inline void bitOrLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void bitOrLine<float>::_exec(const lineType, const lineType, const size_t, lineType)
     {
 	ERR_MSG("Not implemented for float");
     }
@@ -519,11 +519,32 @@ namespace smil
 	}
     };
     template <>
-    inline void bitXOrLine<float>::_exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+    inline void bitXOrLine<float>::_exec(const lineType, const lineType, const size_t, lineType)
     {
 	ERR_MSG("Not implemented for float");
     }
 
+    template <class T>
+    struct leftShiftLine : public binaryLineFunctionBase<T>
+    {
+	typedef typename Image<T>::lineType lineType;
+	virtual void _exec(const lineType lIn1, const UINT shift , const size_t size, lineType lOut)
+	{
+	    for (size_t i=0;i<size;i++)
+            lOut[i] = (T)(lIn1[i] << shift);
+	}
+    };
+
+    template <class T>
+    struct rightShiftLine : public binaryLineFunctionBase<T>
+    {
+	typedef typename Image<T>::lineType lineType;
+	virtual void _exec(const lineType lIn1, const UINT shift , const size_t size, lineType lOut)
+	{
+	    for (size_t i=0;i<size;i++)
+            lOut[i] = (T)(lIn1[i] >> shift);
+	}
+    };
 
     template <class T1, class T2>
     struct testLine : public tertiaryLineFunctionBase<T1>

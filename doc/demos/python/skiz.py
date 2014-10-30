@@ -7,10 +7,10 @@ def tgdskiz(im1, im2, imMask):
     vol0 = -1
     vol1 = 0
     while vol0<vol1:
-	dilate(im1, tmp1, se)
-	dilate(im2, tmp2, se)
-	addNoSat(tmp1, tmp2, sumIm)
-	
+      dilate(im1, tmp1, se)
+      dilate(im2, tmp2, se)
+      addNoSat(tmp1, tmp2, sumIm)
+
 
 
 
@@ -33,7 +33,7 @@ def skizBin(label1, label2, maskIm, se=hSE()):
 
         oldVol = newVol
         newVol = vol(label1)
-        print newVol
+        print(newVol)
         #raw_input()
 
 def trueWatershed(imIn, imMark, imOut, se=hSE()):
@@ -49,10 +49,10 @@ def trueWatershed(imIn, imMark, imOut, se=hSE()):
     mask(~label1, label1, label2)
 
     for i in range(rangeVal(imIn)[1]+1):
-	threshold(imIn, 0, i, maskIm)
-	sup(maskIm, imMark, maskIm)
-	skizBin(label1, label2, maskIm, se)
-	#raw_input()
+      threshold(imIn, 0, i, maskIm)
+      sup(maskIm, imMark, maskIm)
+      skizBin(label1, label2, maskIm, se)
+
     copy(label1, imOut)
     
 

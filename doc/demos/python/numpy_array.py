@@ -9,7 +9,7 @@ im1.show()
 imArr = im1.getNumArray()
 
 # Display the dimensions of the created array
-print "Array dims:", imArr.shape
+print("Array dims:", imArr.shape)
 
 # Do something with the array...
 imArr[:] = 0

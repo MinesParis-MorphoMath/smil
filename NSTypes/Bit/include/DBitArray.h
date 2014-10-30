@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -134,16 +134,16 @@ namespace smil
 	    setValue(b);
 	    return b; 
 	}
-	inline BitArray operator + (int dp);
-	inline BitArray operator + (long unsigned int dp)
+	inline BitArray operator + (int dp) const;
+	inline BitArray operator + (long unsigned int dp) const
 	{
 	    return operator+((int)dp);
 	}
-	inline BitArray operator + (UINT dp)
+	inline BitArray operator + (UINT dp) const
 	{
 	    return operator+((int)dp);
 	}
-	BitArray operator - (int dp);
+	BitArray operator - (int dp) const;
 	BitArray& operator ++ (int);
 	BitArray& operator ++ ();
 	
@@ -166,7 +166,7 @@ namespace smil
     };
     
 
-    BitArray BitArray::operator + (int dp)
+    BitArray BitArray::operator + (int dp) const
     {
 	BitArray ba(this->intArray, this->bitWidth, this->height);
 	ba.index = this->index + dp;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,12 +27,7 @@
  */
 
 
-#include "DColor.h"
-#include "DCore.h"
-#include "DBase.h"
-#include "DMorpho.h"
-#include "DGui.h"
-#include "DIO.h"
+#include "Core/include/DCore.h"
 #include "DRGB.h"
 
 using namespace smil;
@@ -48,10 +43,10 @@ class Test_Array : public TestCase
       arr.createArrays(10);
       
       *arr++ = RGB(255,255,0);
-      arr[5] = UINT8(1);
-      arr[6] = double(20);
+      arr[UINT(5)] = UINT8(1);
+      arr[UINT(6)] = double(20);
       
-      TEST_ASSERT(arr[0]==RGB(255,255,0));
+      TEST_ASSERT(arr[UINT(0)]==RGB(255,255,0));
       
       MultichannelArray<UINT8, 3> arr2;
       arr2.createArrays(10);

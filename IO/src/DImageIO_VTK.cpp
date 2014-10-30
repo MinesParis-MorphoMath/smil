@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,8 +27,8 @@
  */
 
 
-#include "DImageIO.hpp"
-#include "DImageIO_VTK.hpp"
+#include "IO/include/private/DImageIO.hpp"
+#include "IO/include/private/DImageIO_VTK.hpp"
 
 
 namespace smil

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -27,16 +27,17 @@
  */
 
 
-#include "DImage.hxx"
+#include "Core/include/private/DImage.hxx"
 
-#include "DImageIO.hpp"
-#include "DImageIO.hxx"
+#include "IO/include/private/DImageIO.hpp"
+#include "IO/include/private/DImageIO.hxx"
 
 #ifdef SMIL_WRAP_RGB
 #include "NSTypes/RGB/include/DRGB.h"
 #endif // SMIL_WRAP_RGB
 
-#include <DErrors.h>
+#include "Core/include/DErrors.h"
+
 #include <string>
 #include <algorithm>
 #include <ctype.h>
