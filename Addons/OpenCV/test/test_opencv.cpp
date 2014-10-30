@@ -1,12 +1,12 @@
 
 #include "DOpenCVInterface.hpp"
-#include "DTest.h"
+#include "Core/include/DTest.h"
 
 
 using namespace smil;
 using namespace cv;
 
-class Test_Cpp : public TestCase
+class Test_CvToSmil : public TestCase
 {
     virtual void run()
     {
@@ -18,6 +18,19 @@ class Test_Cpp : public TestCase
 	for (int i=0;i<25;i++)
 	  TEST_ASSERT(cvInt[i]==i);
 	cvReleaseImage(&img);
+    }
+};
+
+class Test_SmilToCv : public TestCase
+{
+    virtual void run()
+    {
+	Image<UINT8> sIm(5,5);
+	for (int i=0;i<25;i++)
+	  sIm[i] = i;
+	Mat cvMat = toMatImage(sIm);
+	for (int i=0;i<25;i++)
+	  TEST_ASSERT(cvMat.data[i]==i);
     }
 };
 
@@ -55,7 +68,8 @@ int main(int argc, char *argv[])
 {
       TestSuite ts;
       
-      ADD_TEST(ts, Test_Cpp);
+      ADD_TEST(ts, Test_CvToSmil);
+      ADD_TEST(ts, Test_SmilToCv);
 #ifdef WRAP_PYTHON
       ADD_TEST(ts, Test_Python_Import);
 #endif // WRAP_PYTHON

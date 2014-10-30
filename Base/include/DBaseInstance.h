@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,8 +31,8 @@
 #ifndef _D_BASE_INSTANCE_H
 #define _D_BASE_INSTANCE_H
 
-#include "DInstance.hpp"
-#include "DCommon.h"
+#include "Core/include/private/DInstance.hpp"
+#include "Core/include/DCommon.h"
 
 
 namespace smil

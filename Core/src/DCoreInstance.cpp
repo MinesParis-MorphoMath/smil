@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,11 @@
  */
 
 
-#include "DBaseObject.h"
-#include "DBaseImage.h"
-#include "DCoreInstance.h"
+#include "Core/include/DBaseObject.h"
+#include "Core/include/DBaseImage.h"
+#include "Core/include/DCoreInstance.h"
 #include "DGui.h"
-#include "DCpuID.h"
+#include "Core/include/DCpuID.h"
 
 #ifdef USE_OPEN_MP
 #include <omp.h>
@@ -58,7 +58,6 @@ Core::Core ()
 #ifdef USE_OPEN_MP
     maxThreadNumber = cpuID.getLogical();
     coreNumber = cpuID.getCores();
-    // Initialize threadNumber with the number of cores
     threadNumber = coreNumber;
 #else // USE_OPEN_MP
     maxThreadNumber = 1;

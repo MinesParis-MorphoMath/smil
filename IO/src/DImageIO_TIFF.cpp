@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,8 @@
 #ifdef USE_TIFF
 
 #include "IO/include/private/DImageIO.hpp"
-#include "DImageIO_TIFF.hpp"
-#include "DColor.h"
+#include "IO/include/private/DImageIO_TIFF.hpp"
+#include "Core/include/DColor.h"
 
 #include <tiffio.h>
 

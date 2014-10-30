@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -92,6 +92,42 @@ namespace smil
     }
 
     /**
+     * Calculate the minima and labelize them
+     */
+    template <class T1, class T2>
+    RES_T minimaLabeled(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freeze(imOut);
+	
+	Image<T1> imMinima(imIn);
+	minima(imIn, imMinima, se);
+	label(imMinima, imOut, se);
+	
+	return RES_OK;
+    }
+    
+    /**
+     * Calculate the maxima and labelize them
+     */
+    template <class T1, class T2>
+    RES_T maximaLabeled(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freeze(imOut);
+	
+	Image<T1> imMaxima(imIn);
+	maxima(imIn, imMaxima, se);
+	label(imMaxima, imOut, se);
+	
+	return RES_OK;
+    }
+    
+    /**
     * h-Minima
     */
     template <class T>
@@ -111,6 +147,24 @@ namespace smil
     }
 
     /**
+     * Calculate the h-minima and labelize them
+     */
+    template <class T1, class T2>
+    RES_T hMinimaLabeled(const Image<T1> &imIn, const T1 &height, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freeze(imOut);
+	
+	Image<T1> imMinima(imIn);
+	hMinima(imIn, height, imMinima, se);
+	label(imMinima, imOut, se);
+	
+	return RES_OK;
+    }
+    
+    /**
     * h-Maxima
     */
     template <class T>
@@ -125,6 +179,24 @@ namespace smil
 	
 	ASSERT(hBuild(imIn, height, tmpIm, se)==RES_OK);
 	ASSERT(maxima(tmpIm, imOut, se)==RES_OK);
+	
+	return RES_OK;
+    }
+    
+    /**
+     * Calculate the h-maxima and labelize them
+     */
+    template <class T1, class T2>
+    RES_T hMaximaLabeled(const Image<T1> &imIn, const T1 &height, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	ImageFreezer freeze(imOut);
+	
+	Image<T1> imMaxima(imIn);
+	hMaxima(imIn, height, imMaxima, se);
+	label(imMaxima, imOut, se);
 	
 	return RES_OK;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ namespace smil
       {
 	unregisterAll();
       }
-      virtual void run(Event *e=NULL)
+      virtual void run(Event * /*e*/ = NULL)
       {
       }
     protected:
@@ -69,10 +69,10 @@ namespace smil
     public:
       Slot() {}
       virtual ~Slot() {}
-      virtual void run(eventT *e)
+      virtual void run(eventT */*e*/)
       {
       }
-      void operator() (eventT *e)
+      void operator() (eventT */*e*/)
       {
       }
 #ifndef SWIG      

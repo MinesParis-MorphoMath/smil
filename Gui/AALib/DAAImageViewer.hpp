@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,8 +30,8 @@
 #ifndef _D_AA_IMAGE_VIEWER_HPP
 #define _D_AA_IMAGE_VIEWER_HPP
 
-#include "DImageViewer.hpp"
-#include "DTypes.h"
+#include "Gui/include/private/DImageViewer.hpp"
+#include "Core/include/DTypes.h"
 #include "Base/include/private/DImageTransform.hpp"
 
 #include <aalib.h>

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -46,6 +46,9 @@ namespace smil
 
     // Geodesy
 
+    /**
+     * Geodesic dilation
+     */
     template <class T>
     RES_T geoDil(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
@@ -65,6 +68,9 @@ namespace smil
 	return RES_OK;
     }
 
+    /**
+     * Geodesic erosion
+     */
     template <class T>
     RES_T geoEro(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
@@ -457,6 +463,8 @@ namespace smil
 
     /**
     * Opening by reconstruction
+    * 
+    * Erosion followed by a reconstruction
     */
     template <class T>
     RES_T buildOpen(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
@@ -531,6 +539,9 @@ namespace smil
 	return RES_OK;
     }
 
+    /**
+     * Distance function
+     */
     template <class T1, class T2>
     RES_T dist(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {

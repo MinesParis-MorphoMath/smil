@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -33,9 +33,9 @@
 #include <limits>
 #include <stack>
 
-#include "DMemory.hpp"
-#include "DTypes.hpp"
-#include "DErrors.h"
+#include "Core/include/private/DMemory.hpp"
+#include "Core/include/private/DTypes.hpp"
+#include "Core/include/DErrors.h"
 
 namespace smil
 {

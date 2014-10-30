@@ -1,18 +1,24 @@
 #ifndef _DCHUNK_H_
 #define _DCHUNK_H_
 
+#include "DBaseChunk.h"
+
 namespace smil {
 
     template <class T>
-    class Chunk {
+    class Chunk : public BaseChunk {
+            typedef BaseChunk parentClass;
         public:
-            Chunk () : is_initialized (false) { }
+            Chunk () : parentClass(getTypeAsString ()) { }
             ~Chunk () {
+            }
+            const char* getTypeAsString () {
+                T *dum = NULL;
+                return getDataTypeAsString<T>(dum) ;
             }
             RES_T setMemorySpace (void* ptr, const unsigned long _sent_size, MPI_Datatype dt) {
                 sent_size = _sent_size;
                 if (ptr == NULL) { return RES_ERR_BAD_ALLOCATION; }
-                is_initialized = true; 
                 datatype = dt;
                 rawData = ptr;
                 size = (unsigned int*)ptr;
@@ -20,6 +26,7 @@ namespace smil {
                 w_size = (unsigned int*)ptr + 6;
                 w_offset = (unsigned int*)ptr + 9;
                 data = (T*)((unsigned int*)ptr + 12);
+                is_initialized = true; 
             }
             RES_T createFromArray (
                     const T* dataIn,
@@ -75,37 +82,6 @@ namespace smil {
                 if (storeToArray (s[0], s[1], imOut.getPixels()) != RES_OK) return RES_ERR;
                 return RES_OK;
             }
-            const int getSize (const unsigned char &dimension) const {
-                ASSERT (dimension < 3);
-                return size[dimension];
-            }
-            int* getSize () {
-                return size;
-            }
-            const int getOffset (const unsigned char &dimension) const {
-                ASSERT (dimension < 3);
-                return offset[dimension];
-            }
-            int* getOffset () {
-                return offset;
-            }
-            const int getWrittenSize (const unsigned char &dimension) const {
-                ASSERT (dimension < 3);
-                return w_size[dimension];
-            }
-            int* getWrittenSize () {
-                return w_size;
-            }
-            const int getWrittenOffset (const unsigned char &dimension) const {
-                ASSERT (dimension < 3);
-                return w_offset (dimension);
-            }
-            int* getWrittenOffset () {
-                return w_offset;
-            }
-            int getRelativeWrittenOffset (const unsigned char &dimension) const {
-                return w_offset[dimension] - offset[dimension];
-            }
             T* getData () {
                 return data;
             }
@@ -122,31 +98,15 @@ namespace smil {
                 }
                 cout << endl; 
             }
-            bool isInitialized () {
-                return is_initialized;
-            }
-            RES_T send (const int dest, const int tag, const MPI_Comm &comm) {
-                ASSERT (is_initialized);
-                MPI_Send (rawData, 1, datatype, dest, tag, comm);
-            } 
-            RES_T recv (const int root, const int tag, const MPI_Comm &comm, MPI_Status* status) {
-                ASSERT (is_initialized);
-                MPI_Recv (rawData, 1, datatype, root, tag, comm, status);
-            }
         private:
-            bool is_initialized;
-            unsigned long sent_size;
-            // PACKET CONTENT
-            unsigned int* size;
-            unsigned int* offset;
-            unsigned int* w_size;
-            unsigned int* w_offset;
             T* data;
-            // END OF PACKET CONTENT
-            // Raw pointer to the packet
-            void* rawData;
-            MPI_Datatype datatype;
     };
+
+    template <class T>
+    Chunk<T> *castBaseChunk(BaseChunk *c, const T &){
+        ASSERT (strcmp(getDataTypeAsString<T>(), c->getTypeAsString()) == 0, "Bad type for cast", NULL);
+        return reinterpret_cast< Chunk<T>* > (c);
+    }
 
 }
 

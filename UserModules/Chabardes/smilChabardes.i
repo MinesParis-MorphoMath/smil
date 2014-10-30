@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -31,15 +31,19 @@
 
 SMIL_MODULE(smilChabardes)
 
+%import smilMorpho.i
 
 %{
 /* Includes the header in the wrapper code */
-#include "Chabardes.hpp"
+#include "DMinima.h"
+#include "DArrow.h"
 %}
 
 %import smilCore.i
 
-%include "Chabardes.hpp"
+%include "DArrow.h"
+TEMPLATE_WRAP_FUNC(arrowMin)
 
-TEMPLATE_WRAP_FUNC(sampleFunction)
+%include "DMinima.h"
+TEMPLATE_WRAP_FUNC(fastMinima)
 

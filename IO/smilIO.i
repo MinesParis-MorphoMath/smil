@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -46,9 +46,8 @@
 
 %{
 /* Includes the header in the wrapper code */
-#include "DImage.hpp"
-#include "DImage.hxx"
-#include "DTypes.hpp"
+#include "Core/include/DImage.h"
+#include "Core/include/private/DTypes.hpp"
 #include "DIO.h"
 #include "DImageIO_RAW.hpp"
 %}
@@ -56,7 +55,7 @@
 
 %include "DCommonIO.h"
 
-%include "DTypes.hpp"
+%include "Core/include/private/DTypes.hpp"
 %include "DIO.h"
 %include "DImageIO.hpp"
 

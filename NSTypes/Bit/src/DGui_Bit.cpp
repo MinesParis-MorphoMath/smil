@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,7 @@
 
 #include "Gui/Qt/DQtImageViewer.hpp"
 #include "Gui/Qt/PureQt/ImageViewerWidget.h"
-#include "DImage.hpp"
+#include "Core/include/private/DImage.hpp"
 
 #include "DBitArray.h"
 

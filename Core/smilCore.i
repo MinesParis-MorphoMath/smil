@@ -1,4 +1,4 @@
-// Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ SMIL_MODULE(smilCore)
 //////////////////////////////////////////////////////////
 
 %ignore Error;
-%include "DErrors.h"
+%include "Core/include/DErrors.h"
 
 
 
@@ -65,7 +65,7 @@ SMIL_MODULE(smilCore)
 //////////////////////////////////////////////////////////
 
 
-%include "DTypes.hpp"
+%include "Core/include/private/DTypes.hpp"
 
 
 
@@ -78,7 +78,7 @@ SMIL_MODULE(smilCore)
 #ifdef SMIL_WRAP_RGB
 %include "RGB.i"
 #else
-%include "DColor.h"
+%include "include/DColor.h"
 #endif // SMIL_WRAP_RGB
 
 
@@ -112,8 +112,8 @@ PTR_ARG_OUT_APPLY(s)
 }
 
 
-%include "DCommon.h"
-%include "DBaseObject.h"
+%include "Core/include/DCommon.h"
+%include "Core/include/DBaseObject.h"
 
 %template(DoublePoint) Point<double>;
 %template(IntPoint) Point<int>;
@@ -139,6 +139,7 @@ namespace std
     %template(Vector_string) vector<string>;
     
     %template(Matrix_double) vector<Vector_double>;
+    %template(Vector_IntPoint) vector< smil::Point<int> >;
 }
 
 #endif // SWIGXML
@@ -195,10 +196,10 @@ namespace std
 // Core Instance
 //////////////////////////////////////////////////////////
 
-%include "DCpuID.h"
-%include "DInstance.hpp"
+%include "Core/include/DCpuID.h"
+%include "Core/include/private/DInstance.hpp"
 %template(CoreInstance) smil::UniqueInstance<Core>;
-%include "DCoreInstance.h"
+%include "Core/include/DCoreInstance.h"
 
 #ifndef SWIGXML
 
@@ -220,9 +221,9 @@ namespace std
 %feature("director") BaseImageEventSlot;
 #endif // SWIGJAVA
 
-%include "DSignal.h"
-%include "DSlot.h"
-%include "DCoreEvents.h"
+%include "Core/include/DSignal.h"
+%include "Core/include/DSlot.h"
+%include "Core/include/DCoreEvents.h"
 
 
 namespace smil
@@ -261,9 +262,9 @@ namespace smil
 }
 #endif // SWIGPYTHON
 
-%include "DBaseImage.h"
-%include "DImage.hpp"
-%include "DSharedImage.hpp"
+%include "Core/include/DBaseImage.h"
+%include "Core/include/private/DImage.hpp"
+%include "Core/include/private/DSharedImage.hpp"
 
 #ifndef SWIGXML
 
@@ -297,23 +298,33 @@ namespace smil
 #include "DGraph.hpp"
 %}
 
-%include "DGraph.hpp"
+%include "Core/include/private/DGraph.hpp"
 
 #ifndef SWIGXML
 namespace std 
 {
-    %template(EdgeVector_UINT) std::vector< smil::Edge<size_t> >;
+    %template(EdgeVector_UINT) std::vector< smil::Edge<UINT> >;
 }
 #endif // SWIGXML
 
 namespace smil
 {
     // Base (size_t) Edge
-    %template(Edge_UINT) Edge<size_t>;
+    %template(Edge_UINT) Edge<UINT>;
 
-    // Base (UINT) Graph
-    %template(Graph_UINT) Graph<size_t,size_t>;
-    // Base (UINT) MST
-    %template(graphMST) graphMST<Graph<size_t,size_t> >;
+    // Graph & MST
+    %template(Graph_SIZE_T) Graph<size_t,size_t>;
+    %template(graphMST_SIZE_T) graphMST<Graph<UINT,UINT> >;
+    
+    TEMPLATE_WRAP_CLASS_2T_CROSS(Graph, Graph);
+    
+    #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT) 
+	%template(Graph_UINT) Graph<UINT,UINT>;
+	%template(graphMST_UINT) graphMST<Graph<UINT,UINT> >;
+
+	TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
+	TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
+    #endif
+
 }
 

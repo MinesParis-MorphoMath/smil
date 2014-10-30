@@ -1,6 +1,6 @@
 /*
  * Smil
- * Copyright (c) 2011 Matthieu Faessel
+ * Copyright (c) 2011-2014 Matthieu Faessel
  *
  * This file is part of Smil.
  *
@@ -25,8 +25,8 @@
 #include <time.h>
 
 
-#include "DCore.h"
-#include "DBase.h"
+#include "Core/include/DCore.h"
+#include "Base/include/DBase.h"
 
 using namespace smil;
 

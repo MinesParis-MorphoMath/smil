@@ -1,4 +1,4 @@
-# Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+# Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -30,4 +30,10 @@ SET(MODULE_DEPS ${SMIL_LIB_PREFIX}Core)
 
 
 ADD_SMIL_LIBRARY(${MODULE_NAME} ${MODULE_DEPS})
-ADD_SMIL_TESTS(${MODULE_NAME} ${MODULE_DEPS} ${SMIL_LIB_PREFIX}IO)
+
+IF(NOT USE_OPEN_MP)
+    SET(EXCL_SRCS test_parallel_watershed.cpp
+		  bench_parallel_hierar_queue.cpp)
+ENDIF(NOT USE_OPEN_MP)
+
+ADD_SMIL_TESTS(${MODULE_NAME} ${MODULE_DEPS} ${SMIL_LIB_PREFIX}IO EXCLUDED_SOURCES ${EXCL_SRCS})

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,8 @@
 
 #include "Core/include/DErrors.h"
 #include "Core/include/private/DImage.hpp"
+
+#include <stdio.h>
 
 namespace smil
 {

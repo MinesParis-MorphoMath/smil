@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 #ifndef _D_BASE_IMAGE_VIEWER_H
 #define _D_BASE_IMAGE_VIEWER_H
 
-#include "DBaseObject.h"
+#include "Core/include/DBaseObject.h"
 
 
 namespace smil
@@ -58,7 +58,7 @@ namespace smil
 	virtual bool isVisible() { return false; }
 	virtual void setName(const char *_name) { parentClass::setName(_name); }
 	virtual void update() = 0;
-	virtual void saveSnapshot(const char *fileName) {}
+    virtual void saveSnapshot(const char * /*fileName*/) {}
 	
 	// Slots
 	MemberFunctionSlot<BaseImageViewer> updateSlot;
