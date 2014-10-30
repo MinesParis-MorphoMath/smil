@@ -30,7 +30,7 @@
 #ifndef _SAMPLE_MODULE_HPP
 #define _SAMPLE_MODULE_HPP
 
-#include "DCore.h"
+#include "Core/include/DCore.h"
 
 namespace smil
 {
