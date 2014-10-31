@@ -263,6 +263,8 @@ namespace smil
 	    wsPixels = imWS->getPixels();
 	    
 	    tmpOffsets.clear();
+            
+            return RES_OK;
 	}
 	
 	inline virtual void processPixel(const size_t &curOffset)

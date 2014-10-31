@@ -208,6 +208,8 @@ namespace smil
 	    currentLevel = ImDtTypes<T>::min();
 	    
 	    graph = NULL;
+            
+            return RES_OK;
 	}
 	    
 	virtual RES_T processImage(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
@@ -219,6 +221,8 @@ namespace smil
 	    while (l2 != equivalentLabels[l2]) 
 		l2 = equivalentLabels[l2];
 	    finalize(l2);
+            
+            return RES_OK;
 	}
 	inline virtual void processPixel(const size_t &curOffset)
 	{

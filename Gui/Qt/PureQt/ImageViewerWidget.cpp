@@ -435,6 +435,9 @@ void ImageViewerWidget::overlayDataChanged(bool triggerEvents)
 
 void ImageViewerWidget::clearOverlay()
 {
+    if (!qOverlayImage)
+      return;
+    
     QList<QGraphicsPixmapItem*>::iterator it = overlayPixmaps.begin();
 
     while(it!=overlayPixmaps.end())

@@ -385,7 +385,7 @@ namespace smil
             }
 	    else inYRange = false;
 
-	    for (UINT i=0,xi=x-gridSize/2; i<gridSize; i++,xi++)
+	    for (int i=0,xi=x-gridSize/2; i<gridSize; i++,xi++)
 	    {
 		textItem = *txtIt++;
 		if (inYRange && xi>=0 && xi<imW)

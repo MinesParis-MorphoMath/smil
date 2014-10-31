@@ -101,6 +101,7 @@ namespace smil
                 }
             }
         }
+        return RES_OK;
     }
 
 }

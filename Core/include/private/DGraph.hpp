@@ -57,15 +57,19 @@ namespace smil
 	{
 	}
 	//! Constructor using two nodes and an optional weight (default 1).
-	Edge(size_t a, size_t b, T w=1.)
+	Edge(size_t a, size_t b, T w=1)
 	  : source(a), target(b), weight(w)
 	{
 	}
 	//! Copy constructor
-	Edge(const Edge &rhs)
-	  : source(rhs.source), target(rhs.target), weight(rhs.weight)
-	{
-	}
+// 	Edge(const Edge &rhs)
+// 	  : source(rhs.source), target(rhs.target), weight(rhs.weight)
+// 	{
+// 	}
+	
+	~Edge()
+        {
+        }
 	
 	//! Source node
 	size_t source;

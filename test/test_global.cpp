@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
    BaseImage *im = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
    if (im)
     im->show();
+   im->getViewer()->clearOverlay();
    
 //    Image<UINT16> im1("/home/faessel/tmp/test_image16.tif");
    
