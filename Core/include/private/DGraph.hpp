@@ -62,10 +62,10 @@ namespace smil
 	{
 	}
 	//! Copy constructor
-// 	Edge(const Edge &rhs)
-// 	  : source(rhs.source), target(rhs.target), weight(rhs.weight)
-// 	{
-// 	}
+	Edge(const Edge &rhs)
+	  : source(rhs.source), target(rhs.target), weight(rhs.weight)
+	{
+	}
 	
 	~Edge()
         {
