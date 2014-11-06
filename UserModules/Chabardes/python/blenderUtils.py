@@ -240,19 +240,18 @@ fastMinima (imG, imM, se)
 labelFast (imM, imL, se)
 mask (imG, imM, imM)
 
+arrow (imG, "==", imA, se)
 arrow (imG, "<=", imA2, se, 0)
-
-
 
 
 ##### Display
 objMin = topography (imM, [0.0,0.0,0.0], 'face')
 objTopo = topography (imG, [0.0,0.0,0.0])
-#arrPlateau = arrows (imG, imA)
-arrMin = arrows (imG, imA2)
+arrMin = arrows (imG, imA)
+arrLow = arrows (imG, imA2)
 
 #Materials.
-#labelFast (imM, imM, se)a
+#labelFast (imM, imM, se)
 showLabel (objMin, imL)
 objTopo.data.materials.append(bpy.data.materials['Topo'])
 #arrPlateau.data.materials.append(bpy.data.materials['Arrows'])

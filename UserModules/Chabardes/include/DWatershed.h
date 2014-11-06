@@ -3,7 +3,8 @@
 
 #include "Morpho/include/DMorpho.h"
 
-#include "private/DMinima.h"
-#include "private/DArrow.h"
+#include "private/DMinima.hpp"
+#include "private/DArrow.hpp"
+#include "private/DWatershed.hpp"
 
 #endif // _DWATERSHED_H_
