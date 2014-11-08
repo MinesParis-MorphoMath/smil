@@ -111,7 +111,7 @@ namespace smil
                          n_x >= 0 && n_x < (int)this->imSize[0] &&
                          n_y >= 0 && n_y < (int)this->imSize[1] &&
                          n_z >= 0 && n_z < (int)this->imSize[2] &&
-                         this->pixelsOut[nbOffset] == 0 &&
+                         this->pixelsOut[nbOffset] == T2(0) &&
                          compareFunc(this->pixelsIn[nbOffset], pVal))
                     {
                         this->pixelsOut[nbOffset] = labels;
