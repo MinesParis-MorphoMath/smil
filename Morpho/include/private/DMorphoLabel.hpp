@@ -86,31 +86,38 @@ namespace smil
             propagation.push (pointOffset); 
 
             bool oddLine = 0;
+            size_t curOffset, nbOffset;
 
-            while (!propagation.empty ()) {
-                z = propagation.front() / (this->imSize[1]*this->imSize[0]);
-                y = (propagation.front() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
-                x = propagation.front() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
+            while (!propagation.empty ()) 
+            {
+                curOffset = propagation.front();
+                pVal = this->pixelsIn[curOffset];
+                
+                z = curOffset / (this->imSize[1]*this->imSize[0]);
+                y = (curOffset - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
+                x = curOffset - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
 
                 oddLine = this->oddSe && (y%2);
 
-                for (UINT i=0; i<this->sePointNbr; ++i) {
+                for (UINT i=0; i<this->sePointNbr; ++i) 
+                {
                      p = this->sePoints[i];
                      n_x = x+p.x;
                      n_y = y+p.y;
                      n_x += (oddLine && ((n_y+1)%2) != 0) ;
                      n_z = z+p.z; 
-                     if (n_x >= 0 && n_x < (int)this->imSize[0] &&
+                     nbOffset = n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0];
+                     if (nbOffset!=curOffset && 
+                         n_x >= 0 && n_x < (int)this->imSize[0] &&
                          n_y >= 0 && n_y < (int)this->imSize[1] &&
                          n_z >= 0 && n_z < (int)this->imSize[2] &&
-                         compareFunc(this->pixelsIn[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]], pVal) &&
-                         this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] != labels)
-                 {
-                     this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] = labels;
-                     propagation.push (n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]);
-                 }
-            }
-
+                         this->pixelsOut[nbOffset] == 0 &&
+                         compareFunc(this->pixelsIn[nbOffset], pVal))
+                    {
+                        this->pixelsOut[nbOffset] = labels;
+                        propagation.push (nbOffset);
+                    }
+                }
                 propagation.pop();
             } 
         }
@@ -203,6 +210,7 @@ namespace smil
                         x = propagation.front() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
 
                         oddLine = this->oddSe && (y%2);
+                        size_t nbOffset;
 
                        for (UINT i=0; i<this->sePointNbr; ++i) { 
                             p = this->sePoints[i]; 
@@ -210,14 +218,15 @@ namespace smil
                              n_y = y+p.y;
                              n_x += (oddLine && ((n_y+1)%2) != 0) ;
                              n_z = z+p.z; 
+                             nbOffset = n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0];
                              if (n_x >= 0 && n_x < (int)this->imSize[0] &&
                                  n_y >= 0 && n_y < (int)this->imSize[1] &&
                                  n_z >= 0 && n_z < (int)this->imSize[2] &&
-                                 pixelsTmp[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] == pixelsTmp[propagation.front ()] &&
-                                 this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] != current_label)
+                                 pixelsTmp[nbOffset] == pixelsTmp[propagation.front ()] &&
+                                 this->pixelsOut[nbOffset] != current_label)
                              {
-                                 this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] = current_label;
-                                 propagation.push (n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]);
+                                 this->pixelsOut[nbOffset] = current_label;
+                                 propagation.push (nbOffset);
                              }
          
                         }
@@ -271,7 +280,12 @@ namespace smil
     template <class T>
     struct lambdaEqualOperator
     {
-	inline bool operator()(T &a, T&b) { return a>b ? (a-b)<=lambda : (b-a)<=lambda; }
+	inline bool operator()(T &a, T&b) 
+    { 
+        bool retVal = a>b ? (a-b)<=lambda : (b-a)<=lambda;
+        return retVal;
+        
+    }
 	T lambda;
     };
     
