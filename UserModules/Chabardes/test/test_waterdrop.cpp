@@ -1,4 +1,4 @@
-#include "DWatershed.h"
+#include "DWatershed.hpp"
 
 using namespace smil;
 
@@ -7,8 +7,8 @@ class Test_Waterdrop:public TestCase
     virtual void run ()
     {
 	UINT8 vecIn[] = {
-0,  1,  1,  2,  5,  10, 5,  5,  4,  4,
-0,  1,  1,  2,  5,  10, 5,  5,  4,  4,
+1,  1,  1,  2,  5,  10, 5,  5,  4,  4,
+1,  1,  1,  2,  5,  10, 5,  5,  4,  4,
 3,  4,  4,  8,  6,  11, 6,  5,  11, 9,
 12, 8,  9,  8,  11, 6,  7,  8,  7,  12,
 5,  12, 4,  12, 9,  10, 7,  8,  12, 12,
@@ -40,16 +40,16 @@ class Test_Waterdrop:public TestCase
 	};
 */
 	Image_UINT8 imIn (10, 10);
-	Image_UINT8 imArrow (imIn);
-    Image_UINT8 imMinima (imIn);
+    Image_UINT8 imMarker (imIn);
+    Image_UINT8 imWatershed (imIn);
+    Image_UINT8 imBasins (imIn);
 
 	StrElt se = cSE ();
 
 	imIn << vecIn;
 
-    fastMinima (imIn, imMinima, se);
-
-    imMinima.printSelf (1);
+    fastWatershed (imIn, imMarker, imWatershed, imBasins, se);
+//    fastMinima (imIn, imWatershed, se);
 
 //	TEST_ASSERT (label == truth);
     }

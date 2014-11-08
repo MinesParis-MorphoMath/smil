@@ -30,7 +30,7 @@
 
 #include "Core/include/DCore.h"
 #include "DMorpho.h"
-#include "UserModules/Chabardes/include/private/DMinima.h"
+#include "UserModules/Chabardes/include/private/DMinima.hpp"
 
 using namespace smil;
 

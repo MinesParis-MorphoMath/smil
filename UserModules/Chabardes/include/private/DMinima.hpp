@@ -1,8 +1,8 @@
-#ifndef _MINIMA_H_
-#define _MINIMA_H_
+#ifndef _DMINIMA_HPP_
+#define _DMINIMA_HPP_
 
 #include "Morpho/include/DMorpho.h"
-#include "DArrow.h"
+#include "DArrow.hpp"
 
 namespace smil
 {
@@ -48,16 +48,19 @@ namespace smil
         fillLine<T>(cstBuf, size[0], T(0)); 
         outLineT cstBuf2 = ImDtTypes<T>::createLine(size[0]);
         fillLine<T>(cstBuf2, size[0], ImDtTypes<T>::max());
-
+            // Line operators.
         equLine<T> equOp;
         rightShiftLine<T> shiftOp;
         testLine<T, T> testOp;
 
-        // Storing steep in imOut.
         #pragma omp parallel
         {
             size_t offset;
-
+            arrowPropagate<T, T, T> funcPropagation; 
+            funcPropagation.propagationValue = T(1);
+            int this_thread = omp_get_thread_num () ;
+ 
+            // Storing greater in out. 
             arrowGrt (imIn, arrows, cpSe, numeric_limits<T>::max());
             for (size_t s=0; s<size[2]; ++s)
             {
@@ -71,7 +74,7 @@ namespace smil
                 }
             }
 
-            // Detecting plateaus and 1-pixel minimas.
+            // Detecting plateaus and propagating.
             arrowEqu (imIn, arrows, cpSe);
             for (size_t s=0; s<size[2]; ++s)
             {
@@ -83,13 +86,13 @@ namespace smil
                         offset = p+l*size[0]+s*size[1]*size[0];
                         if (outP[offset] == 0 && arrowP[offset] > 0)
                         {
-                            arrowPropagate (arrows, imOut, cpSe, offset, T(1));
+                            funcPropagation (arrows, imOut, cpSe, offset);
                         }
                     }
                 }
             }
 
-            // Values of minimas back to max value.
+            // Normalizing values.
             for (size_t s=0; s<size[2]; ++s)
             {
                 outLines = outSlices[s];
@@ -101,9 +104,8 @@ namespace smil
                 }
             }
         }
-        return RES_OK;
     }
 
 }
 
-#endif // _MINIMA_H_
+#endif // _DMINIMA_HPP_
