@@ -49,98 +49,148 @@ namespace smil
     template <class T>
     class SharedImage : public Image<T>
     {
-    public:
-	typedef Image<T> parentClass;
-	typedef typename Image<T>::lineType lineType;
+      public:
+        typedef Image<T> parentClass;
+        typedef typename Image<T>::lineType lineType;
 
-	//! Default constructor
-	SharedImage(const Image<T> &img)
-	{
-	    this->className = "SharedImage";
-	    parentClass::init();
-	    if (!img.isAllocated())
-		ERR_MSG("Source image isn't allocated");
-	    else
-	    {
-		this->pixels = img.getPixels();
-		this->setSize(img);
-	    }
-	}
-      
-	SharedImage(lineType dataPtr, size_t width, size_t height, size_t depth=1)
-	{
-	    this->className = "SharedImage";
-	    parentClass::init();
-	    
-	    this->pixels = dataPtr;
-	    this->setSize(width, height, depth);
-	}
-      
-	SharedImage(const SharedImage<T> &img)
-	{
-	    this->className = "SharedImage";
-	    parentClass::init();
-	    this->clone(img);
-	}
-      
-	virtual ~SharedImage()
-	{
-	    this->deallocate();
-	}
-	
-	virtual void setPixels(lineType dataPtr, size_t width, size_t height, size_t depth=0)
-	{
-	    this->pixels = dataPtr;
-	    this->setSize(width, height, depth);
-	}
-	
-	virtual void setPixels(lineType dataPtr)
-	{
-	    this->pixels = dataPtr;
-	}
-	
-	virtual void clone(const SharedImage<T> &rhs)
-	{
-	    this->pixels = rhs.getPixels();
-	    this->setSize(rhs);
-	}
-	
-	
-    protected:
-	SharedImage() {}
-	virtual RES_T allocate()
-	{
-	    if (this->allocated)
-		return RES_ERR_BAD_ALLOCATION;
+        //! Default constructor
+        SharedImage()
+        {
+            this->className = "SharedImage";
+            parentClass::init();
+            connected = false;
+        }
+        
+        SharedImage(const Image<T> &img)
+        {
+            this->className = "SharedImage";
+            parentClass::init();
+            connected = false;
+            
+            this->connect(img);
+        }
+        
+        SharedImage(lineType dataPtr, size_t width, size_t height, size_t depth=1)
+        {
+            this->className = "SharedImage";
+            parentClass::init();
+            connected = false;
+            
+            this->connect(dataPtr, width, height, depth);
+        }
+        
+        SharedImage(const SharedImage<T> &img)
+        {
+            this->className = "SharedImage";
+            parentClass::init();
+            connected = false;
+            
+            this->clone(img);
+        }
+        
+        virtual ~SharedImage()
+        {
+            this->disconnect();
+        }
+        
+        virtual RES_T connect(lineType dataPtr, size_t width, size_t height, size_t depth=0)
+        {
+            if (dataPtr==NULL)
+            {
+                ERR_MSG("Source image isn't allocated");
+                return RES_ERR;
+            }
+            else if (dataPtr==this->pixels && width==this->width 
+                                        && height==this->height
+                                        && depth==this->depth)
+            {
+                return RES_OK;
+            }
+            else
+            {
+                if (connected)
+                    disconnect();
+                
+                this->pixels = dataPtr;
+                this->setSize(width, height, depth);
 
-	    if (this->pixels==NULL)
-		return RES_ERR_BAD_ALLOCATION;
-	    
-	    this->allocated = true;
+                this->restruct();
+                
+                this->connected = true;
+                this->allocated = true;
+                
+                return RES_OK;
+            }
+        }
+        
+        virtual RES_T connect(const Image<T> &im)
+        {
+            return connect(im.getPixels(), im.getWidth(), im.getHeight(), im.getDepth());
+        }
+        
+        virtual RES_T connect(lineType dataPtr)
+        {
+            return connect(dataPtr, this->width, this->height, this->depth);
+        }
+        
+        virtual RES_T disconnect()
+        {
+            if (!connected)
+                return RES_OK;
+            
+            if (this->slices)
+                delete[] this->slices;
+            if (this->lines)
+                delete[] this->lines;
 
-	    this->restruct();
+            this->slices = NULL;
+            this->lines = NULL;
+            this->pixels = NULL;
+            
+            this->width = 0;
+            this->height = 0;
+            this->depth = 0;
+            
+            this->connected = false;
+            this->allocated = false;
+            
+            return RES_OK;
+        }
+        
+        virtual RES_T clone(const SharedImage<T> &rhs)
+        {
+            return connect(rhs.getPixels(), rhs.getHeight(), rhs.getDepth());
+        }
+        
+        
+      protected:
+        bool connected;
+        
+        virtual RES_T setSize(size_t w, size_t h, size_t d = 1, bool doAllocate = true)
+        {
+            this->width = w;
+            this->height = h;
+            this->depth = d;
 
-	    return RES_OK;
-	}
-	
-	virtual RES_T deallocate()
-	{
-	    if (!this->allocated)
-		return RES_OK;
+            this->sliceCount = d;
+            this->lineCount = d * h;
+            this->pixelCount = this->lineCount * w;
 
-	    if (this->slices)
-		delete[] this->slices;
-	    if (this->lines)
-		delete[] this->lines;
-	    
-	    this->slices = NULL;
-	    this->lines = NULL;
-	    this->pixels = NULL;
+            if (this->viewer)
+                this->viewer->setImage(*this);
 
-	    this->allocated = false;
+            this->modified();
 
-	    return RES_OK;
-	}
+            return RES_OK;
+        }
+        
+        virtual RES_T allocate()
+        {
+        }
+        
+        virtual RES_T deallocate()
+        {
+        }
     };
   
 /** @}*/
