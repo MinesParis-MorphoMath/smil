@@ -54,22 +54,33 @@ namespace smil
     template <class T1, class T2, class compOperatorT=std::equal_to<T1> >
     class labelFunctGeneric : public unaryMorphImageFunctionBase<T1, T2>
     {
-    public:
-	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
-	typedef typename parentClass::imageInType imageInType;
-	typedef typename parentClass::imageOutType imageOutType;
-	
-	T2 getLabelNbr() { return labels; }
+      public:
+        typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
+        typedef typename parentClass::imageInType imageInType;
+        typedef typename parentClass::imageOutType imageOutType;
+        
+        T2 getLabelNbr() { return labels; }
 
-	virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
-	{
-	    parentClass::initialize(imIn, imOut, se);
-	    fill(imOut, T2(0));
-	    labels = T2(0);
-	    return RES_OK;
-	}
+        virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+        {
+            parentClass::initialize(imIn, imOut, se);
+            fill(imOut, T2(0));
+            labels = T2(0);
+            return RES_OK;
+        }
 
-        virtual void processPixel (size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd) 
+        virtual RES_T processImage(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+        {
+            this->pixelsIn = imIn.getPixels();
+            for (size_t i=0; i<this->imSize[2]*this->imSize[1]*this->imSize[0]; i++) 
+            {
+                if (this->pixelsOut[i]==T2(0))
+                    processPixel(i);
+            }
+            return RES_OK;
+        }
+        
+        virtual void processPixel(size_t &pointOffset)
         {
 
             T1 pVal = this->pixelsIn[pointOffset];
@@ -111,7 +122,7 @@ namespace smil
                          n_x >= 0 && n_x < (int)this->imSize[0] &&
                          n_y >= 0 && n_y < (int)this->imSize[1] &&
                          n_z >= 0 && n_z < (int)this->imSize[2] &&
-                         this->pixelsOut[nbOffset] == T2(0) &&
+                         this->pixelsOut[nbOffset] != labels &&
                          compareFunc(this->pixelsIn[nbOffset], pVal))
                     {
                         this->pixelsOut[nbOffset] = labels;
@@ -141,11 +152,12 @@ namespace smil
 
         T2 getLabelNbr() { return labels; }
 
-        virtual RES_T initialize (const imageInType &imIn, imageOutType &imOut, const StrElt &se) {
+        virtual RES_T initialize (const imageInType &imIn, imageOutType &imOut, const StrElt &se) 
+        {
             parentClass::initialize(imIn, imOut, se);
-	    fill(imOut, T2(0));
-	    labels = T2(0);
-	    return RES_OK;
+            fill(imOut, T2(0));
+            labels = T2(0);
+            return RES_OK;
         }
 
         virtual RES_T processImage (const imageInType &imIn, imageOutType &imOut, const StrElt &se) {
