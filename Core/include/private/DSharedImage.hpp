@@ -58,42 +58,42 @@ namespace smil
         {
             this->className = "SharedImage";
             parentClass::init();
-            connected = false;
+            attached = false;
         }
         
         SharedImage(const Image<T> &img)
         {
             this->className = "SharedImage";
             parentClass::init();
-            connected = false;
+            attached = false;
             
-            this->connect(img);
+            this->attach(img);
         }
         
         SharedImage(lineType dataPtr, size_t width, size_t height, size_t depth=1)
         {
             this->className = "SharedImage";
             parentClass::init();
-            connected = false;
+            attached = false;
             
-            this->connect(dataPtr, width, height, depth);
+            this->attach(dataPtr, width, height, depth);
         }
         
         SharedImage(const SharedImage<T> &img)
         {
             this->className = "SharedImage";
             parentClass::init();
-            connected = false;
+            attached = false;
             
             this->clone(img);
         }
         
         virtual ~SharedImage()
         {
-            this->disconnect();
+            this->detach();
         }
         
-        virtual RES_T connect(lineType dataPtr, size_t width, size_t height, size_t depth=0)
+        virtual RES_T attach(lineType dataPtr, size_t width, size_t height, size_t depth=1)
         {
             if (dataPtr==NULL)
             {
@@ -108,34 +108,34 @@ namespace smil
             }
             else
             {
-                if (connected)
-                    disconnect();
+                if (attached)
+                    detach();
                 
                 this->pixels = dataPtr;
                 this->setSize(width, height, depth);
 
                 this->restruct();
                 
-                this->connected = true;
+                this->attached = true;
                 this->allocated = true;
                 
                 return RES_OK;
             }
         }
         
-        virtual RES_T connect(const Image<T> &im)
+        virtual RES_T attach(const Image<T> &im)
         {
-            return connect(im.getPixels(), im.getWidth(), im.getHeight(), im.getDepth());
+            return attach(im.getPixels(), im.getWidth(), im.getHeight(), im.getDepth());
         }
         
-        virtual RES_T connect(lineType dataPtr)
+        virtual RES_T attach(lineType dataPtr)
         {
-            return connect(dataPtr, this->width, this->height, this->depth);
+            return attach(dataPtr, this->width, this->height, this->depth);
         }
         
-        virtual RES_T disconnect()
+        virtual RES_T detach()
         {
-            if (!connected)
+            if (!attached)
                 return RES_OK;
             
             if (this->slices)
@@ -151,7 +151,7 @@ namespace smil
             this->height = 0;
             this->depth = 0;
             
-            this->connected = false;
+            this->attached = false;
             this->allocated = false;
             
             return RES_OK;
@@ -159,12 +159,12 @@ namespace smil
         
         virtual RES_T clone(const SharedImage<T> &rhs)
         {
-            return connect(rhs.getPixels(), rhs.getHeight(), rhs.getDepth());
+            return attach(rhs.getPixels(), rhs.getHeight(), rhs.getDepth());
         }
         
         
       protected:
-        bool connected;
+        bool attached;
         
         virtual RES_T setSize(size_t w, size_t h, size_t d = 1, bool doAllocate = true)
         {
