@@ -54,22 +54,33 @@ namespace smil
     template <class T1, class T2, class compOperatorT=std::equal_to<T1> >
     class labelFunctGeneric : public unaryMorphImageFunctionBase<T1, T2>
     {
-    public:
-	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
-	typedef typename parentClass::imageInType imageInType;
-	typedef typename parentClass::imageOutType imageOutType;
-	
-	T2 getLabelNbr() { return labels; }
+      public:
+        typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
+        typedef typename parentClass::imageInType imageInType;
+        typedef typename parentClass::imageOutType imageOutType;
+        
+        T2 getLabelNbr() { return labels; }
 
-	virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
-	{
-	    parentClass::initialize(imIn, imOut, se);
-	    fill(imOut, T2(0));
-	    labels = T2(0);
-	    return RES_OK;
-	}
+        virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+        {
+            parentClass::initialize(imIn, imOut, se);
+            fill(imOut, T2(0));
+            labels = T2(0);
+            return RES_OK;
+        }
 
-        virtual void processPixel (size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd) 
+        virtual RES_T processImage(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+        {
+            this->pixelsIn = imIn.getPixels();
+            for (size_t i=0; i<this->imSize[2]*this->imSize[1]*this->imSize[0]; i++) 
+            {
+                if (this->pixelsOut[i]==T2(0))
+                    processPixel(i);
+            }
+            return RES_OK;
+        }
+        
+        virtual void processPixel(size_t &pointOffset)
         {
 
             T1 pVal = this->pixelsIn[pointOffset];
@@ -86,31 +97,38 @@ namespace smil
             propagation.push (pointOffset); 
 
             bool oddLine = 0;
+            size_t curOffset, nbOffset;
 
-            while (!propagation.empty ()) {
-                z = propagation.front() / (this->imSize[1]*this->imSize[0]);
-                y = (propagation.front() - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
-                x = propagation.front() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
+            while (!propagation.empty ()) 
+            {
+                curOffset = propagation.front();
+                pVal = this->pixelsIn[curOffset];
+                
+                z = curOffset / (this->imSize[1]*this->imSize[0]);
+                y = (curOffset - z*this->imSize[1]*this->imSize[0])/this->imSize[0];
+                x = curOffset - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
 
                 oddLine = this->oddSe && (y%2);
 
-                for (UINT i=0; i<this->sePointNbr; ++i) {
+                for (UINT i=0; i<this->sePointNbr; ++i) 
+                {
                      p = this->sePoints[i];
                      n_x = x+p.x;
                      n_y = y+p.y;
                      n_x += (oddLine && ((n_y+1)%2) != 0) ;
                      n_z = z+p.z; 
-                     if (n_x >= 0 && n_x < (int)this->imSize[0] &&
+                     nbOffset = n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0];
+                     if (nbOffset!=curOffset && 
+                         n_x >= 0 && n_x < (int)this->imSize[0] &&
                          n_y >= 0 && n_y < (int)this->imSize[1] &&
                          n_z >= 0 && n_z < (int)this->imSize[2] &&
-                         compareFunc(this->pixelsIn[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]], pVal) &&
-                         this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] != labels)
-                 {
-                     this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] = labels;
-                     propagation.push (n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]);
-                 }
-            }
-
+                         this->pixelsOut[nbOffset] != labels &&
+                         compareFunc(this->pixelsIn[nbOffset], pVal))
+                    {
+                        this->pixelsOut[nbOffset] = labels;
+                        propagation.push (nbOffset);
+                    }
+                }
                 propagation.pop();
             } 
         }
@@ -134,11 +152,12 @@ namespace smil
 
         T2 getLabelNbr() { return labels; }
 
-        virtual RES_T initialize (const imageInType &imIn, imageOutType &imOut, const StrElt &se) {
+        virtual RES_T initialize (const imageInType &imIn, imageOutType &imOut, const StrElt &se) 
+        {
             parentClass::initialize(imIn, imOut, se);
-	    fill(imOut, T2(0));
-	    labels = T2(0);
-	    return RES_OK;
+            fill(imOut, T2(0));
+            labels = T2(0);
+            return RES_OK;
         }
 
         virtual RES_T processImage (const imageInType &imIn, imageOutType &imOut, const StrElt &se) {
@@ -203,6 +222,7 @@ namespace smil
                         x = propagation.front() - y*this->imSize[0] - z*this->imSize[1]*this->imSize[0];
 
                         oddLine = this->oddSe && (y%2);
+                        size_t nbOffset;
 
                        for (UINT i=0; i<this->sePointNbr; ++i) { 
                             p = this->sePoints[i]; 
@@ -210,14 +230,15 @@ namespace smil
                              n_y = y+p.y;
                              n_x += (oddLine && ((n_y+1)%2) != 0) ;
                              n_z = z+p.z; 
+                             nbOffset = n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0];
                              if (n_x >= 0 && n_x < (int)this->imSize[0] &&
                                  n_y >= 0 && n_y < (int)this->imSize[1] &&
                                  n_z >= 0 && n_z < (int)this->imSize[2] &&
-                                 pixelsTmp[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] == pixelsTmp[propagation.front ()] &&
-                                 this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] != current_label)
+                                 pixelsTmp[nbOffset] == pixelsTmp[propagation.front ()] &&
+                                 this->pixelsOut[nbOffset] != current_label)
                              {
-                                 this->pixelsOut[n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]] = current_label;
-                                 propagation.push (n_x+(n_y)*this->imSize[0]+(n_z)*this->imSize[1]*this->imSize[0]);
+                                 this->pixelsOut[nbOffset] = current_label;
+                                 propagation.push (nbOffset);
                              }
          
                         }
@@ -271,7 +292,12 @@ namespace smil
     template <class T>
     struct lambdaEqualOperator
     {
-	inline bool operator()(T &a, T&b) { return a>b ? (a-b)<=lambda : (b-a)<=lambda; }
+	inline bool operator()(T &a, T&b) 
+    { 
+        bool retVal = a>b ? (a-b)<=lambda : (b-a)<=lambda;
+        return retVal;
+        
+    }
 	T lambda;
     };
     
@@ -328,7 +354,7 @@ namespace smil
     * Return the number of labels (or 0 if error).
     */
     template<class T1, class T2>
-    size_t labelFast(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t fastLabel(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -360,7 +386,7 @@ namespace smil
 	Image<T2> imLabel(imIn);
 	
 	ASSERT(label(imIn, imLabel, se)!=0);
- 	map<UINT, double> areas = measAreas(imLabel);
+ 	map<T2, double> areas = measAreas(imLabel);
 	ASSERT(!areas.empty());
 	
 	ASSERT(applyLookup(imLabel, areas, imOut)==RES_OK);

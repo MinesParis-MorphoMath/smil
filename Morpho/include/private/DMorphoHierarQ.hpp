@@ -131,6 +131,17 @@ namespace smil
 	}
       static const bool preallocate = false;
     };
+
+    template <class TokenType=UINT>
+    class STD_Stack : public stack<TokenType>
+    {
+    public:
+        // Dummy operator for compatibility with other containers from smil
+        inline TokenType front () 
+        {
+            return this->top();
+        }
+    };
     
     template <class T, class TokenType=UINT, class StackType=STD_Queue<TokenType> >
     class HierarchicalQueue

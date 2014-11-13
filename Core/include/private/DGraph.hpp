@@ -57,7 +57,7 @@ namespace smil
 	{
 	}
 	//! Constructor using two nodes and an optional weight (default 1).
-	Edge(size_t a, size_t b, T w=1.)
+	Edge(size_t a, size_t b, T w=1)
 	  : source(a), target(b), weight(w)
 	{
 	}
@@ -66,6 +66,10 @@ namespace smil
 	  : source(rhs.source), target(rhs.target), weight(rhs.weight)
 	{
 	}
+	
+	~Edge()
+        {
+        }
 	
 	//! Source node
 	size_t source;
@@ -305,7 +309,9 @@ namespace smil
 	vector< EdgeType > &getEdges() { return edges; }  // rvalue
 	const map< size_t, std::vector<size_t> > &getNodeEdges() const { return nodeEdges; } // lvalue
 	//! Get a map containing the edges linked to a given node
+#ifndef SWIG
 	map< size_t, std::vector<size_t> > &getNodeEdges() { return nodeEdges; } // rvalue
+#endif // SWIG
 	
 	//! Compute the Minimum Spanning Tree graph
 	Graph<nodeT,edgeWT> computeMST()

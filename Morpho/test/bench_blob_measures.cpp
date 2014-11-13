@@ -21,32 +21,35 @@
  */
 
 
-#include "Core/include/DImage.h"
-#include "DQVtkViewer.hpp"
-#include "Core/include/DTest.h"
+#include <stdio.h>
+#include <time.h>
+
+#include "Core/include/DCore.h"
+#include "Base/include/private/DBlobMeasures.hpp"
+#include "Morpho/include/private/DMorphoLabel.hpp"
+#include "Morpho/include/private/DMorphImageOperations.hxx"
 
 using namespace smil;
 
 
-class Test_Show : public TestCase
-{
-  virtual void run()
-  {
-      Image_UINT8 im1(500, 50, 50);
-      QVtkViewer<UINT8> viewer(im1);
-      viewer.show();
-      im1 << UINT8(127);
-      
-//       Gui::execLoop();
-  }
-};
-
 int main(int argc, char *argv[])
 {
-      TestSuite ts;
+    UINT BENCH_NRUNS = 1E3;
+    
+    Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png");
+    Image_UINT8 im2(im1);
+    Image_UINT8 im3(im1);
+    threshold(im1, im2);
+    label(im2, im3);
+    
+    BENCH_IMG(measAreas, im2);
+    
+    BENCH_IMG(computeBlobs, im3);
+    map<UINT8, Blob> blobs = computeBlobs(im3);
+    
+    BENCH_STR(measAreas, "Blobs", blobs);
+    
+    BENCH_IMG(measVolumes, im1, blobs);
 
-      ADD_TEST(ts, Test_Show);
-      
-      return ts.run();
 }
 

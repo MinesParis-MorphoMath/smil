@@ -139,6 +139,7 @@ namespace std
     %template(Vector_string) vector<string>;
     
     %template(Matrix_double) vector<Vector_double>;
+    %template(Vector_IntPoint) vector< smil::Point<int> >;
 }
 
 #endif // SWIGXML
@@ -311,13 +312,19 @@ namespace smil
     // Base (size_t) Edge
     %template(Edge_UINT) Edge<UINT>;
 
-    // Base (UINT) Graph
-    %template(Graph_UINT) Graph<UINT,UINT>;
-    // Base (UINT) MST
-    %template(graphMST) graphMST<Graph<UINT,UINT> >;
+    // Graph & MST
+    %template(Graph_SIZE_T) Graph<size_t,size_t>;
+    %template(graphMST_SIZE_T) graphMST<Graph<UINT,UINT> >;
     
-    TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
     TEMPLATE_WRAP_CLASS_2T_CROSS(Graph, Graph);
+    
+    #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT) 
+	%template(Graph_UINT) Graph<UINT,UINT>;
+	%template(graphMST_UINT) graphMST<Graph<UINT,UINT> >;
+
+	TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
+	TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
+    #endif
+
 }
 

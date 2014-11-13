@@ -75,7 +75,9 @@ builtinOpen = open
 %ignore StrElt::operator ();
 #endif // SWIGJAVA
 
+#ifdef SWIGPYTHON
 %include "DStructuringElement.h"
+#endif // SWIGPYTHON
 
 
 %include "DMorphoBase.hpp"
@@ -135,11 +137,10 @@ TEMPLATE_WRAP_FUNC(inflZones);
 TEMPLATE_WRAP_FUNC(waterfall);
 
 %include "DMorphoWatershedExtinction.hpp"
-%feature("director") Flooding;
-TEMPLATE_WRAP_CLASS_MEMBER_FUNC(Flooding, flood);
-TEMPLATE_WRAP_CLASS_MEMBER_FUNC_2T_CROSS(Flooding, floodWithExtValues);
-TEMPLATE_WRAP_CLASS_MEMBER_FUNC_2T_CROSS(Flooding, floodWithExtRank);
-TEMPLATE_WRAP_CLASS(Flooding, Flooding);
+%feature("director") ExtinctionFlooding;
+TEMPLATE_WRAP_CLASS_MEMBER_FUNC(ExtinctionFlooding, floodWithExtValues);
+TEMPLATE_WRAP_CLASS_MEMBER_FUNC(ExtinctionFlooding, floodWithExtRank);
+TEMPLATE_WRAP_CLASS_2T_CROSS(ExtinctionFlooding, ExtinctionFlooding);
 TEMPLATE_WRAP_FUNC_2T_CROSS(watershedExtinction);
 TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinction);
 TEMPLATE_WRAP_FUNC_2T_CROSS(watershedExtinctionGraph);
@@ -148,7 +149,7 @@ TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinctionGraph);
 %include "DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(label);
 TEMPLATE_WRAP_FUNC_2T_CROSS(lambdaLabel);
-TEMPLATE_WRAP_FUNC_2T_CROSS(labelFast);
+TEMPLATE_WRAP_FUNC_2T_CROSS(fastLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithArea);
 TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 
@@ -182,10 +183,9 @@ TEMPLATE_WRAP_FUNC(areaOpen);
 TEMPLATE_WRAP_FUNC(areaClose);
 
 %include "DMorphoGraph.hpp"
-TEMPLATE_WRAP_FUNC_3T_FIX_THIRD(mosaicToGraph, Graph<>);
+TEMPLATE_WRAP_FUNC_2T_CROSS(mosaicToGraph);
 TEMPLATE_WRAP_FUNC(graphToMosaic);
-TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(graphToMosaic, Graph<>);
-TEMPLATE_WRAP_FUNC_3T_FIX_SECOND(drawGraph, Graph<>);
+TEMPLATE_WRAP_FUNC_2T_CROSS(drawGraph);
 
 %include "DMorphoMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measGranulometry);

@@ -43,7 +43,7 @@ class Test_ComputeBlobs : public TestCase
       for (int i=80;i<100;i++)
 	pixels[i] = 255;
       
-      map<UINT, Blob> blobs = computeBlobs(im, true);
+      map<UINT8, Blob> blobs = computeBlobs(im, true);
       
       
       TEST_ASSERT(blobs[127].sequences[0].offset==12);
@@ -80,7 +80,7 @@ class Test_Areas : public TestCase
       fill(im, UINT8(0));
       drawRectangle(im, 200,200,512,512,UINT8(127), 1);
       
-      map<UINT, double> areas = measAreas(im);
+      map<UINT8, double> areas = measAreas(im);
       TEST_ASSERT(areas[127]==262144);
       
   }
@@ -97,7 +97,7 @@ class Test_Barycenters : public TestCase
       drawRectangle(im, 200,200,50,50, UINT8(127), 1);
       drawRectangle(im, 600,200,70,70, UINT8(255), 1);
       
-      map<UINT, Vector_double> barycenters = measBarycenters(im);
+      map<UINT8, Vector_double> barycenters = measBarycenters(im);
       TEST_ASSERT(barycenters[127][0]==224.5);
       TEST_ASSERT(barycenters[127][1]==224.5);
       TEST_ASSERT(barycenters[255][0]==634.5);
@@ -121,12 +121,12 @@ class Test_MeasureVolumes : public TestCase
       for (int i=80;i<100;i++)
 	pixels[i] = 255;
       
-      map<UINT, Blob> blobs = computeBlobs(im, true);
+      map<UINT8, Blob> blobs = computeBlobs(im, true);
       
       Image_UINT8 im2(im);
       fill(im2, UINT8(100));
       
-      map<UINT, double> vols = measVolumes(im2, blobs);
+      map<UINT8, double> vols = measVolumes(im2, blobs);
       TEST_ASSERT(vols[127]==1500 && vols[255]==4200);
   }
 };

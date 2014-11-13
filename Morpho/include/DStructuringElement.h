@@ -112,7 +112,12 @@ namespace smil
 	}
 	
 	~StrElt() {}
-	
+
+    IntPoint getPoint (const UINT i) {
+        return points[i];
+    }
+    UINT getSize() const {return size;}
+
 	StrElt& operator=(const StrElt &rhs);
 	void clone(const StrElt &rhs);
       
@@ -129,6 +134,9 @@ namespace smil
 	
 	//! Return the opposite SE (symmetry with respect to 0) 
 	StrElt transpose() const;
+   
+    //! Return the SE with no center
+    StrElt noCenter () const;
 	
 	bool odd;
 	seType seT;

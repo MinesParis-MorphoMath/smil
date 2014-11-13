@@ -21,32 +21,35 @@
  */
 
 
-#include "Core/include/DImage.h"
-#include "DQVtkViewer.hpp"
-#include "Core/include/DTest.h"
+#include <stdio.h>
+#include <time.h>
+
+#include "Core/include/DCore.h"
+#include "Base/include/DBase.h"
 
 using namespace smil;
 
 
-class Test_Show : public TestCase
-{
-  virtual void run()
-  {
-      Image_UINT8 im1(500, 50, 50);
-      QVtkViewer<UINT8> viewer(im1);
-      viewer.show();
-      im1 << UINT8(127);
-      
-//       Gui::execLoop();
-  }
-};
-
 int main(int argc, char *argv[])
 {
-      TestSuite ts;
+    int sx = 1024; //24;
+    int sy = 1024;
+    
+    Image_UINT8 im1(sx, sy);
+    Image_UINT8 im2(im1);
+    Image_UINT8 im3(im1);
 
-      ADD_TEST(ts, Test_Show);
-      
-      return ts.run();
+    Image_UINT16 im4(im1);
+
+    double BENCH_NRUNS = 1E2;
+    
+    UINT8 val = 127;
+    std::map<UINT8, UINT8> lut;
+    for (int i=0;i<256;i++)
+      lut[i] = 255-i;
+    
+    BENCH_IMG(randFill, im1);
+    BENCH_IMG(applyLookup, im1, lut, im2);
+
 }
 

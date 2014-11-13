@@ -43,14 +43,7 @@ int main(int argc, char *argv[])
     BENCH_IMG(histogram, im);
     BENCH_IMG(area, im);
     
-    fill(im, UINT8(255));
     BENCH_IMG(isBinary, im);
-    
-    fill(im, UINT8(0));
-    drawRectangle(im, 200,200,512,512,UINT8(127), 1);
-
-    
-    BENCH_IMG(measAreas, im);
 
 }
 

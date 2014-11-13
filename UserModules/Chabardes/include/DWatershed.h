@@ -2,7 +2,9 @@
 #define _DWATERSHED_H_
 
 #include "Morpho/include/DMorpho.h"
-#include "watershed/DArrow.h"
-#include "watershed/DRainfall.h"
+
+#include "private/DMinima.hpp"
+#include "private/DArrow.hpp"
+#include "private/DWatershed.hpp"
 
 #endif // _DWATERSHED_H_

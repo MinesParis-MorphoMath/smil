@@ -35,6 +35,7 @@
 #include "DBaseImageOperations.hpp"
 #include "DLineArith.hpp"
 #include "Core/include/DTime.h"
+#include "Core/include/private/DTraits.hpp"
 
 namespace smil
 {
@@ -1045,14 +1046,46 @@ namespace smil
 	return RES_OK;
     }
     
+    
+#ifndef SWIG
     /**
     * Apply a lookup map
     */
     template <class T1, class T2>
-    RES_T applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut, T2 defaultValue=T2(0))
+    ENABLE_IF( !IS_SAME(T1,UINT8) && !IS_SAME(T1,UINT16), RES_T ) // SFINAE General case
+    applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut, T2 defaultValue=T2(0))
     {
 	return applyLookup<T1, map<T1,T2>, T2>(imIn, lut, imOut, defaultValue);
     }
+
+    // Specialization for T1==UINT8 or T1==UINT16
+    template <class T1, class T2>
+    ENABLE_IF( IS_SAME(T1,UINT8) || IS_SAME(T1,UINT16), RES_T ) // SFINAE For T1==UINT8 || T1==UINT16
+    applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut, T2 defaultValue=T2(0))
+    {
+	ASSERT(!lut.empty(), "Input map is empty", RES_ERR);
+	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_SAME_SIZE(&imIn, &imOut);
+	
+	T2 *outVals = ImDtTypes<T2>::createLine(ImDtTypes<T1>::cardinal());
+	for (int i=0;i<ImDtTypes<T1>::max();i++)
+	  outVals[i] = defaultValue;
+	
+	typename Image<T1>::lineType pixIn = imIn.getPixels();
+	typename Image<T2>::lineType pixOut = imOut.getPixels();
+	
+	for (typename map<T1,T2>::const_iterator it = lut.begin(); it!=lut.end(); it++)
+	  outVals[it->first] = it->second;
+	
+	for (size_t i=0;i<imIn.getPixelCount();i++)
+	  pixOut[i] = outVals[ pixIn[i] ];
+
+	return RES_OK;
+    }
+#else // SWIG
+    template <class T1, class T2>
+    RES_T applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut, T2 defaultValue=T2(0));
+#endif // SWIG    
 
     
     

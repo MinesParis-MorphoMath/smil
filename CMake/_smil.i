@@ -27,7 +27,7 @@
 
 %include smilCommon.i
 
-SMIL_MODULE(smil)
+SMIL_MODULE(smil_)
 
 
 %feature("autodoc", "1");
@@ -56,9 +56,13 @@ ${SWIG_INCLUDE_DEFINITIONS}
 %pythoncode %{
 
 import sys, gc, os
-import time, new
+import time
 import __main__
-import __builtin__
+
+if sys.version_info >= (3,0,0):
+  import builtins as __builtin__
+else:
+  import __builtin__
 
 from smilCorePython import *
 from smilBasePython import *
@@ -70,18 +74,18 @@ __builtin__.imageTypes = [ ${IMAGE_TYPES_STR}, ]
 
 
 def AboutSmil():
-    print "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}"
-    print "Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES"
-    print "All rights reserved."
+    print("SMIL (Simple Morphological Image Library) ${SMIL_VERSION}")
+    print("Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES")
+    print("All rights reserved.")
 
 
 def _find_object_name(obj):
     names = []
     for referrer in gc.get_referrers(obj):
-	if isinstance(referrer, dict):
-	    for k, v in referrer.iteritems():
-		if v is obj:
-		    names.append(k)
+      if isinstance(referrer, dict):
+        for k, v in referrer.items():
+          if v is obj:
+            names.append(k)
     if len(names)!=0:
       return names[-1]
     else:
@@ -95,7 +99,7 @@ def _find_images(gbl_dict=None):
     imgs = dict()
     for it in gbl_dict.items():
       if isinstance(it[1], BaseImage):
-	imgs[it[1]] = it[0]
+        imgs[it[1]] = it[0]
     return imgs
 
 __builtin__.getImages = _find_images
@@ -104,24 +108,30 @@ def guess_images_name(gbl_dict=None):
     imgs = _find_images(gbl_dict)
     for im in imgs.keys():
       if im.getName()=='':
-	im.setName(imgs[im])
+        im.setName(imgs[im])
 
     
 def _show_with_name(img, name=None, labelImage = False):
     if not name:
-	if img.getName()=="":
-	  name = _find_object_name(img)
-	  if name!="":
-	    img.setName(name)
-    img.c_show(name, labelImage)
+        if img.getName()=="":
+          name = _find_object_name(img)
+          if name!="":
+            img.setName(name)
+    if sys.version_info >= (3,0,0):
+      img.c_show(img, name)
+    else:
+      img.c_show(name)
 
 def _showLabel_with_name(img, name=None):
     if not name:
-	if img.getName()=="":
-	  name = _find_object_name(img)
-	  if name!="":
-	    img.setName(name)
-    img.c_showLabel(name)
+        if img.getName()=="":
+          name = _find_object_name(img)
+          if name!="":
+            img.setName(name)
+    if sys.version_info >= (3,0,0):
+      img.c_showLabel(img, name)
+    else:
+      img.c_showLabel(name)
 
 def showAll():
     imgs = _find_images()
@@ -179,63 +189,63 @@ def Image(*args):
     fillImg = False
     
     if argNbr==0: # No argument -> return default image type
-	img = imageTypes[0](256,256)
-	fillImg = True
+        img = imageTypes[0](256,256)
+        fillImg = True
 
     elif type(args[0])==int: # First arg is a number (should be a size)
-	img = imageTypes[0](*args)
-	fillImg = True
-	
+        img = imageTypes[0](*args)
+        fillImg = True
+        
     elif type(args[0]) in imageTypes or hasattr(args[0], "getTypeAsString"): # First arg is an image
-	srcIm = args[0]
-	if type(srcIm) in imageTypes:
-	    srcImgType = type(srcIm)
-	else:
-	    srcImgType = imageTypes[dataTypes.index(srcIm.getTypeAsString())]
-	if argNbr>1:
-	  if type(args[1])==type(""):
-	      if args[1] in dataTypes: # Second arg is an image type string ("UINT8", ...)
-		  imgType = imageTypes[dataTypes.index(args[1])]
-		  img = imgType()
-		  img.setSize(srcIm)
-	      else:
-		  print "Unknown image type: " + args[1]
-		  print "List of available image types: " +  ", ".join(dataTypes)
-	  else:
-	      img = srcImgType(*args[1:])
-	else:
-	    img = srcImgType(srcIm, False) # (don't clone data)
-	fillImg = True
-	    
+        srcIm = args[0]
+        if type(srcIm) in imageTypes:
+            srcImgType = type(srcIm)
+        else:
+            srcImgType = imageTypes[dataTypes.index(srcIm.getTypeAsString())]
+        if argNbr>1:
+          if type(args[1])==type(""):
+              if args[1] in dataTypes: # Second arg is an image type string ("UINT8", ...)
+                  imgType = imageTypes[dataTypes.index(args[1])]
+                  img = imgType()
+                  img.setSize(srcIm)
+              else:
+                  print("Unknown image type: " + args[1])
+                  print("List of available image types: " +  ", ".join(dataTypes))
+          else:
+              img = srcImgType(*args[1:])
+        else:
+            img = srcImgType(srcIm, False) # (don't clone data)
+        fillImg = True
+            
     elif args[0] in dataTypes: # First arg is an image type string ("UINT8", ...)
-	imgType = imageTypes[dataTypes.index(args[0])]
-	img = imgType(*args[1:])
-	fillImg = True
+        imgType = imageTypes[dataTypes.index(args[0])]
+        img = imgType(*args[1:])
+        fillImg = True
 
     # Create/load from an existing image fileName
     elif argNbr>0 and type(args[0])==str:
-	if (os.path.exists(args[0]) or args[0][:7]=="http://"):
-	    if argNbr>1 and args[1] in dataTypes:
-		imgType = imageTypes[dataTypes.index(args[1])]
-		img = imgType()
-		read(args[0], img)
-	    else:
-		baseImg = createFromFile(args[0])
-		if baseImg!=None:
-		  img = autoCastBaseImage(baseImg)
-	else:
-	    print "File not found:", args[0]
+        if (os.path.exists(args[0]) or args[0][:7]=="http://"):
+            if argNbr>1 and args[1] in dataTypes:
+                imgType = imageTypes[dataTypes.index(args[1])]
+                img = imgType()
+                read(args[0], img)
+            else:
+                baseImg = createFromFile(args[0])
+                if baseImg!=None:
+                  img = autoCastBaseImage(baseImg)
+        else:
+            print("File not found:", args[0])
     
     else:
-	img = imageTypes[0](*args)
-	fillImg = True
+        img = imageTypes[0](*args)
+        fillImg = True
 
     if fillImg and img.isAllocated():
       try:
-	fillValue = type(img).getDataTypeMin()
-	fill(img, fillValue)
+        fillValue = type(img).getDataTypeMin()
+        fill(img, fillValue)
       except:
-	pass
+        pass
     return img
 
 
@@ -257,25 +267,25 @@ def bench(func, *args, **keywords):
     im_type = None
     se_type = None
     
-    if keywords.has_key("nbr_runs"): nbr_runs = keywords["nbr_runs"]
-    if keywords.has_key("print_res"): print_res = keywords["print_res"]
-    if keywords.has_key("add_str"): add_str = keywords["add_str"]
+    if "nbr_runs" in keywords: nbr_runs = keywords["nbr_runs"]
+    if "print_res" in keywords: print_res = keywords["print_res"]
+    if "add_str" in keywords: add_str = keywords["add_str"]
     
     for arg in args:
       if not im_size:
-	if type(arg) in imageTypes:
-	  im_size = arg.getSize()
-	  im_type = arg.getTypeAsString()
+        if type(arg) in imageTypes:
+          im_size = arg.getSize()
+          im_type = arg.getTypeAsString()
       if not se_type:
-	if hasattr(arg, "getClassName") and hasattr(arg, "homothety"):
-	  se_type = arg.getClassName()
-	    
+        if hasattr(arg, "getClassName") and hasattr(arg, "homothety"):
+          se_type = arg.getClassName()
+            
     # Choose the right timer depending on the platform (see http://docs.python.org/2/library/time.html#time.clock)
     if sys.platform == "win32":
-	timer = time.clock
+        timer = time.clock
     else:
-	timer = time.time
-	
+        timer = time.time
+        
     t1 = timer()
     
     for i in range(int(nbr_runs)):
@@ -286,22 +296,22 @@ def bench(func, *args, **keywords):
     retval = (t2-t1)*1E3/nbr_runs
     
     if print_res:
-	buf = func.func_name + "\t"
-	if im_size or add_str or se_type:
-	  buf += "("
-	if im_size:
-	  buf += im_type + " " + str(im_size[0])
-	  if im_size[1]>1: buf += "x" + str(im_size[1])
-	  if im_size[2]>1: buf += "x" + str(im_size[2])
-	if add_str:
-	  buf += " " + add_str
-	if se_type:
-	  buf += " " + se_type
-	if im_size or add_str or se_type:
-	  buf += ")"
-	buf += ":\t" + "%.2f" % retval + " msecs"
-	print buf
-	
+        buf = func.__name__ + "\t"
+        if im_size or add_str or se_type:
+          buf += "("
+        if im_size:
+          buf += im_type + " " + str(im_size[0])
+          if im_size[1]>1: buf += "x" + str(im_size[1])
+          if im_size[2]>1: buf += "x" + str(im_size[2])
+        if add_str:
+          buf += " " + add_str
+        if se_type:
+          buf += " " + se_type
+        if im_size or add_str or se_type:
+          buf += ")"
+        buf += ":\t" + "%.2f" % retval + " msecs"
+        print(buf)
+        
     return retval
 
 
@@ -312,56 +322,56 @@ class linkManager:
       
     class _linkArgs(list):
       def __init__(self, link):
-	list.__init__(self)
-	self._link = link
+        list.__init__(self)
+        self._link = link
       def __setitem__(self, num, val):
-	prevVal = list.__getitem__(self, num)
-	list.__setitem__(self, num, val)
-	if not self._link.run(None):
-	  list.__setitem__(self, num, prevVal)
-	  
+        prevVal = list.__getitem__(self, num)
+        list.__setitem__(self, num, val)
+        if not self._link.run(None):
+          list.__setitem__(self, num, prevVal)
+          
     class link(BaseImageEventSlot):
       def __init__(self, imWatch, func, *args):
-	BaseImageEventSlot.__init__(self)
-	self.imWatch = imWatch
-	self.func = func
-	self.args = linkManager._linkArgs(self)
-	for a in args:
-	  self.args.append(a)
-	self.verified = False
-	if self.run(None):
-	  self.verified = True
-	  self.imWatch.onModified.connect(self)
+        BaseImageEventSlot.__init__(self)
+        self.imWatch = imWatch
+        self.func = func
+        self.args = linkManager._linkArgs(self)
+        for a in args:
+          self.args.append(a)
+        self.verified = False
+        if self.run(None):
+          self.verified = True
+          self.imWatch.onModified.connect(self)
       def __del__(self):
-	self.imWatch.onModified.disconnect(self)
-	
+        self.imWatch.onModified.disconnect(self)
+        
       def run(self, event):
-	try:
-	  for obj in self.args:
-	    if hasattr(obj, "getClassName"):
-	      if obj.getClassName()=="Image":
-		obj.setSize(self.imWatch)
-	  self.func(*self.args)
-	  return True
-	except Exception, e:
-	  print "Link function error:\n"
-	  print e
-	  return False
-	
+        try:
+          for obj in self.args:
+            if hasattr(obj, "getClassName"):
+              if obj.getClassName()=="Image":
+                obj.setSize(self.imWatch)
+          self.func(*self.args)
+          return True
+        except Exception as e:
+          print("Link function error:\n")
+          print(e)
+          return False
+        
       def __str__(self):
-	res = _find_object_name(self.imWatch) + " -> "
-	res += self.func.__name__ + " "
-	for obj in self.args:
-	  if hasattr(obj, "getClassName"):
-	    oName = _find_object_name(obj)
-	    if oName!="":
-	      res += oName + " "
-	    else:
-	      res += str(obj) + " "
-	  else:
-	    res += str(obj) + " "
-	return res
-	
+        res = _find_object_name(self.imWatch) + " -> "
+        res += self.func.__name__ + " "
+        for obj in self.args:
+          if hasattr(obj, "getClassName"):
+            oName = _find_object_name(obj)
+            if oName!="":
+              res += oName + " "
+            else:
+              res += str(obj) + " "
+          else:
+            res += str(obj) + " "
+        return res
+        
     def __getitem__(self, num):
       return self.links[num]
       
@@ -371,41 +381,41 @@ class linkManager:
     def find(self, imWatch, func=None, *args):
       res = []
       for l in self.links:
-	if l.imWatch==imWatch:
-	  if func==None or l.func==func:
-	    if args==() or l.args==args:
-	      res.append(l)
+        if l.imWatch==imWatch:
+          if func==None or l.func==func:
+            if args==() or l.args==args:
+              res.append(l)
       return res
       
     def add(self, imWatch, func, *args):
       if self.find(imWatch, func, *args):
-	print "link already exists."
-	return
+        print("link already exists.")
+        return
       l = self.link(imWatch, func, *args)
       if l.verified:
-	self.links.append(l)
+        self.links.append(l)
       
     def remove(self, imWatch, func=None, *args):
       if type(imWatch)==int: # remove Nth link
-	self.links.remove(self.links[imWatch])
-	return
+        self.links.remove(self.links[imWatch])
+        return
       _links = self.find(imWatch, func, *args)
       if _links:
-	for l in _links:
-	  self.links.remove(l) 
-	return
+        for l in _links:
+          self.links.remove(l) 
+        return
       self.links.append(self.link(imWatch, func, *args))
       
     def list(self):
       i = 0
       for l in self.links:
-	print "#" + str(i), l
-	i += 1
-	
+        print("#" + str(i), l)
+        i += 1
+        
     def clear(self):
       for l in self.links:
-	del l.args
-	del l
+        del l.args
+        del l
       self.links = []
     
     def __del__(self):
