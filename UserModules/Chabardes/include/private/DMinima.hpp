@@ -58,7 +58,7 @@ namespace smil
             size_t offset;
             arrowPropagate<T, T, T> funcPropagation; 
             funcPropagation.propagationValue = T(1);
-            int this_thread = omp_get_thread_num () ;
+//            int this_thread = omp_get_thread_num () ;
  
             // Storing greater in out. 
             arrowGrt (imIn, arrows, cpSe, numeric_limits<T>::max());
