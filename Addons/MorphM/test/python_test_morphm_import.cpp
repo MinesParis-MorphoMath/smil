@@ -31,6 +31,7 @@ class Test_Python_Import : public TestCase
       TEST_ASSERT(mIm.isAllocated());
       TEST_ASSERT(mIm.getWidth()==256 && mIm.getHeight()==256);
       
+      
       Py_Finalize();
 	
     }
