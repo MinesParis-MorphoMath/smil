@@ -29,6 +29,7 @@ class Test_Python_Import : public TestCase
       
       MorphmInt<UINT8> mIm(pyobj);
       TEST_ASSERT(mIm.isAllocated());
+      TEST_ASSERT(mIm.getWidth()==256 && mIm.getHeight()==256);
       
       Py_Finalize();
 	
