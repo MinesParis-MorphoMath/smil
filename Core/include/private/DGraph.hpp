@@ -211,6 +211,11 @@ namespace smil
 	    sort(edges.begin(), edges.end());
 	}
 	
+	Graph<nodeT, edgeWT> clone()
+        {
+            return Graph<nodeT, edgeWT>(*this);
+        }
+	
     protected:
 	void removeNode(const size_t ind)
 	{
