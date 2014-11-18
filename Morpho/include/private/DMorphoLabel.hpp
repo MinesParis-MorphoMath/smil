@@ -300,9 +300,85 @@ namespace smil
     }
 	T lambda;
     };
-    
+  
 #endif // SWIG
-    
+ 
+    template <class T1, class T2 >
+    size_t labelWithoutFunctor(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        // Checks
+        ASSERT_ALLOCATED (&imIn, &imOut) ;
+        ASSERT_SAME_SIZE (&imIn, &imOut) ;
+
+        // Typedefs
+        typedef Image<T1> inT;
+        typedef Image<T2> outT;
+        typedef typename inT::lineType inLineT;
+        typedef typename outT::lineType outLineT;
+
+        // Initialisation.
+        StrElt cpSe = se.noCenter () ;
+        fill (imOut, T2(0));
+
+        // Processing vars.
+        T2 lblNbr = 0;
+        size_t size[3]; imIn.getSize (size) ;
+        UINT sePtsNumber = cpSe.points.size();
+        if (sePtsNumber == 0) return 0;
+        queue<size_t> propagation;
+        size_t o, nb_o;
+        size_t x,x0,y,y0,z,z0;
+        bool oddLine;
+            // Image related.
+        inLineT inP = imIn.getPixels () ;
+        outLineT outP = imOut.getPixels () ;
+ 
+        for (size_t s=0; s<size[2]; ++s)
+        {
+            for (size_t l=0; l<size[1]; ++l)
+            {
+                for (size_t p=0; p<size[0]; ++p)
+                {
+                    o = p + l*size[0] + s*size[0]*size[1];
+                    if (inP[o] != T1(0) && outP[o] == T2(0)) 
+                    {
+                        ++lblNbr ;
+                        outP [o] = lblNbr;
+                        propagation.push (o);
+                        do 
+                        {
+                            o = propagation.front () ;
+                            propagation.pop () ;
+
+                            x0 = o % size[0];
+                            y0 = (o % (size[1]*size[0])) / size[0];
+                            z0 = o / (size[0]*size[1]);
+                            oddLine = cpSe.odd && y0 %2;
+                            for (UINT pSE=0; pSE<sePtsNumber; ++pSE)
+                            {
+                                x = x0 + cpSe.points[pSE].x;
+                                y = y0 + cpSe.points[pSE].y;
+                                z = z0 + cpSe.points[pSE].z;
+                                
+                                if (oddLine)
+                                    x += (y+1)%2;
+
+                                nb_o = x + y*size[0] + z*size[0]*size[1];
+                                if (x >= 0 && x < size[0] && y >= 0 && y < size[1] && z >= 0 && z<size[2] && outP [nb_o] != lblNbr && inP [nb_o] == inP[o])
+                                {
+                                    outP[nb_o] = lblNbr;
+                                    propagation.push (nb_o);
+                                }
+                            }
+                        } while (!propagation.empty()) ;
+                    }
+                }
+            }
+        }
+
+        return lblNbr;
+    }
+ 
     /**
     * Image labelization
     * 
