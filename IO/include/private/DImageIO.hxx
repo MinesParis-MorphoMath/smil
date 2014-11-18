@@ -171,7 +171,7 @@ namespace smil
     * Write image file
     */
     template <class T>
-    RES_T write(Image<T> &image, const char *filename)
+    RES_T write(const Image<T> &image, const char *filename)
     {
 	string fileExt = getFileExtension(filename);
 	

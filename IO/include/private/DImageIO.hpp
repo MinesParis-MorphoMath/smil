@@ -100,7 +100,7 @@ namespace smil
     * Write image file
     */
     template <class T>
-    RES_T write(Image<T> &image, const char *filename);
+    RES_T write(const Image<T> &image, const char *filename);
     
     /**
     * Write a 3D image as a stack of 2D images

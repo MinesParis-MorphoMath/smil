@@ -215,7 +215,17 @@ namespace smil
         {
             return Graph<nodeT, edgeWT>(*this);
         }
-	
+        
+        size_t getNodeNbr()
+        {
+            return nodes.size();
+        }
+        
+        size_t getEdgeNbr()
+        {
+            return edges.size();
+        }
+        
     protected:
 	void removeNode(const size_t ind)
 	{
@@ -286,7 +296,27 @@ namespace smil
 	    
 	    return removeEdge(foundEdge-edges.begin());
 	}
-	
+      void removeHighEdges( EdgeWeightType EdgeThreshold)
+      {
+	size_t nb_edges = edges.size();
+	for (int index= 0; index < nb_edges; index++){//vector<size_t>::iterator it=edges.begin();it!=edges.end();it++)
+	 	    EdgeType &e = edges[index];
+	    if (e.weight>EdgeThreshold)
+	      removeEdge(index);
+
+	}// for all edges
+      }// END removeHighEdges
+      void removeLowEdges( EdgeWeightType EdgeThreshold)
+      {
+	size_t nb_edges = edges.size();
+	for (int index= 0; index < nb_edges; index++){//vector<size_t>::iterator it=edges.begin();it!=edges.end();it++)
+	 	    EdgeType &e = edges[index];
+	    if (e.weight<EdgeThreshold)
+	      removeEdge(index);
+
+	}// for all edges
+      }// END removeHighEdges
+
 #ifndef SWIG
 	const vector< EdgeType > &getEdges() const { return edges; }  // lvalue
 #endif // SWIG
@@ -294,6 +324,14 @@ namespace smil
 	vector< EdgeType > &getEdges() { return edges; }  // rvalue
 	const map< size_t, std::vector<size_t> > &getNodeEdges() const { return nodeEdges; } // lvalue
 	//! Get a map containing the edges linked to a given node
+        std::vector<size_t> getNodeEdges(const size_t &node) 
+        { 
+            map< size_t, std::vector<size_t> >::iterator it = nodeEdges.find(node);
+            if (it!=nodeEdges.end())
+              return it->second;
+            else return vector<size_t>();
+          
+        }
 #ifndef SWIG
 	map< size_t, std::vector<size_t> > &getNodeEdges() { return nodeEdges; } // rvalue
 #endif // SWIG

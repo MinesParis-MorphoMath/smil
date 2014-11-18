@@ -132,6 +132,9 @@ PTR_ARG_OUT_APPLY(s)
 namespace std 
 {
     %template(Vector_UINT) vector<UINT>;
+#ifdef USE_64BIT_IDS
+    %template(Vector_size_t) vector<size_t>;
+#endif // USE_64BIT_IDS
     %template(Vector_UINT8) vector<UINT8>;
     %template(Vector_UINT16) vector<UINT16>;
     %template(Vector_int) vector<int>;
@@ -300,17 +303,13 @@ namespace smil
 
 %include "Core/include/private/DGraph.hpp"
 
-#ifndef SWIGXML
-namespace std 
-{
-    %template(EdgeVector_UINT) std::vector< smil::Edge<UINT> >;
-}
-#endif // SWIGXML
 
 namespace smil
 {
     // Base (size_t) Edge
     %template(Edge_UINT) Edge<UINT>;
+    TEMPLATE_WRAP_CLASS(Edge, Edge);
+
 
     // Graph & MST
     %template(Graph_SIZE_T) Graph<size_t,size_t>;
@@ -328,3 +327,11 @@ namespace smil
 
 }
 
+#ifndef SWIGXML
+namespace std 
+{
+    %template(EdgeVector_UINT) std::vector< smil::Edge<UINT> >;
+    
+    TEMPLATE_WRAP_VECTOR_SUBTYPE(Edge);
+}
+#endif // SWIGXML
