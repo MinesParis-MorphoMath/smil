@@ -534,9 +534,9 @@ namespace smil
 	if (sliceNum>=this->depth)
 	{
 	  ERR_MSG("sliceNum > image depth");
-	  return SharedImage<T>(this->pixels, 0, 0);
+	  return SharedImage<T>();
 	}
-	return SharedImage<T>(*this->getSlices()[sliceNum], this->width, this->height);
+	return SharedImage<T>(*this->getSlices()[sliceNum], this->width, this->height, 1);
     }
 
     // OPERATORS

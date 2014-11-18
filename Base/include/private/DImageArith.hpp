@@ -278,27 +278,70 @@ namespace smil
      * \demo{multichannel_operations.py}
      */
     template <class MCT1, class T2>
-    RES_T splitChannels(const Image<MCT1> &imIn, Image<T2> &imOut)
+    RES_T splitChannels(const Image<MCT1> &imIn, Image<T2> &im3DOut)
     {
-	ASSERT_ALLOCATED(&imIn);
-	
-	UINT width = imIn.getWidth(), height = imIn.getHeight();
-	UINT chanNum = MCT1::channelNumber();
-	UINT pixCount = width*height;
-	ASSERT(imOut.setSize(width, height, chanNum)==RES_OK);
+        ASSERT_ALLOCATED(&imIn);
+        
+        UINT width = imIn.getWidth(), height = imIn.getHeight();
+        UINT chanNum = MCT1::channelNumber();
+        UINT pixCount = width*height;
+        ASSERT(im3DOut.setSize(width, height, chanNum)==RES_OK);
 
-	typedef typename MCT1::DataType T1;
-	typename Image<MCT1>::lineType lineIn = imIn.getPixels();
-	typename Image<T2>::lineType lineOut = imOut.getPixels();
-	
-	for (UINT i=0;i<chanNum;i++)
-	{
-	    copyLine<T1,T2>(lineIn.arrays[i], pixCount, lineOut);
-	    lineOut += pixCount;
-	}
-	imOut.modified();
-	
-	return RES_OK;
+        typedef typename MCT1::DataType T1;
+        typename Image<MCT1>::lineType lineIn = imIn.getPixels();
+        typename Image<T2>::lineType lineOut = im3DOut.getPixels();
+        
+        for (UINT i=0;i<chanNum;i++)
+        {
+            copyLine<T1,T2>(lineIn.arrays[i], pixCount, lineOut);
+            lineOut += pixCount;
+        }
+        im3DOut.modified();
+        
+        return RES_OK;
+    }
+   
+    template <class MCT1, class T2>
+    RES_T splitChannels(const Image<MCT1> &imIn, Image<T2> *imOut1, Image<T2> *imOut2, ...)
+    {
+        ASSERT_ALLOCATED(&imIn);
+        
+        va_list args;
+        va_start(args, imOut2);
+        
+        UINT width = imIn.getWidth(), height = imIn.getHeight();
+        UINT chanNum = MCT1::channelNumber();
+        UINT pixCount = width*height;
+
+        typedef typename MCT1::DataType T1;
+        typename Image<MCT1>::lineType lineIn = imIn.getPixels();
+        typename Image<T2>::lineType lineOut;
+        
+        ASSERT(imOut1->setSize(width, height, chanNum)==RES_OK);
+        lineOut = imOut1->getPixels();
+        copyLine<T1,T2>(lineIn.arrays[0], pixCount, lineOut);
+        lineOut += pixCount;
+        imOut1->modified();
+        
+        ASSERT(imOut2->setSize(width, height, chanNum)==RES_OK);
+        lineOut = imOut2->getPixels();
+        copyLine<T1,T2>(lineIn.arrays[0], pixCount, lineOut);
+        lineOut += pixCount;
+        imOut2->modified();
+        
+        for (UINT i=2;i<chanNum;i++)
+        {
+            Image<T2> *imOut = va_arg(args, Image<T2>*);
+            ASSERT(imOut->setSize(width, height, chanNum)==RES_OK);
+            typename Image<T2>::lineType lineOut = imOut->getPixels();
+            
+            copyLine<T1,T2>(lineIn.arrays[i], pixCount, lineOut);
+            lineOut += pixCount;
+            
+            imOut->modified();
+        }
+        
+        return RES_OK;
     }
    
     /**

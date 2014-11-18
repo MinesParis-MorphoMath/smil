@@ -117,6 +117,93 @@ class Test_Copy : public TestCase
   }
 };
 
+class Test_Split_Merge : public TestCase
+{
+  virtual void run()
+  {
+      
+      typedef RGB dataType;
+      typedef Image<dataType> imType;
+      typedef Image<UINT8> imType2;
+      
+      imType im1(7,7);
+      imType2 im2;
+      imType2 im3(im1);
+      imType2 imR(im1), imG(im1), imB(im1);
+      
+      UINT8 vec1[] = {
+        0, 0, 0, 0, 0, 1, 1,
+        1, 1, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 1,
+        0, 1, 0, 0, 0, 1, 1,
+        
+        0, 0, 0, 0, 0, 1, 1,
+        1, 1, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 1,
+        0, 1, 0, 0, 0, 1, 1,
+        
+        0, 0, 0, 0, 0, 1, 1,
+        1, 1, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 1,
+        0, 1, 0, 0, 0, 1, 1,
+      };
+      
+      im1 << RGBArray(vec1, 49);
+      
+      UINT8 vecr[] = {
+        0, 0, 0, 0, 0, 1, 1,
+        1, 1, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 1,
+        0, 1, 0, 0, 0, 1, 1,
+      };        
+      imR << vecr;
+      UINT8 vecg[] = {
+        0, 0, 0, 0, 0, 1, 1,
+        1, 1, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 1,
+        0, 1, 0, 0, 0, 1, 1,
+      };        
+      imG << vecg;
+      UINT8 vecb[] = {
+        0, 0, 0, 0, 0, 1, 1,
+        1, 1, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 1,
+        0, 1, 0, 0, 0, 1, 1,
+      };
+      imB << vecb;
+      
+      splitChannels(im1, im2);
+      
+      TEST_ASSERT(im2.getSlice(0)==imR);
+      TEST_ASSERT(im2.getSlice(1)==imG);
+      TEST_ASSERT(im2.getSlice(2)==imB);
+
+      imType2 r, g, b;
+      splitChannels(im1, &r, &g, &b);
+      TEST_ASSERT(r==imR);
+      TEST_ASSERT(g==imG);
+      TEST_ASSERT(b==imB);
+  }
+};
+
 class Test_Trans : public TestCase
 {
   virtual void run()
@@ -273,6 +360,7 @@ int main(int argc, char *argv[])
       TestSuite ts;
       ADD_TEST(ts, Test_Array);
       ADD_TEST(ts, Test_Copy);
+      ADD_TEST(ts, Test_Split_Merge);
       ADD_TEST(ts, Test_Trans);
       ADD_TEST(ts, Test_Sup);
       
