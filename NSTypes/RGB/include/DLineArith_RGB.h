@@ -27,8 +27,8 @@
  */
 
 
-#ifndef _D_LINE_ARITH_BIT_H
-#define _D_LINE_ARITH_BIT_H
+#ifndef _D_LINE_ARITH_RGB_H
+#define _D_LINE_ARITH_RGB_H
 
 
 #include "Base/include/private/DLineArith.hpp"
@@ -157,4 +157,4 @@ namespace smil
 
 /** @}*/
 
-#endif // _D_LINE_ARITH_BIT_H
+#endif // _D_LINE_ARITH_RGB_H

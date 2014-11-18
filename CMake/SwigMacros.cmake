@@ -146,6 +146,14 @@ ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 
 
+# SWIG WRAP VECTOR
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_VECTOR_SUBTYPE(class)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+        SET(_STWD "${_STWD}  %template(Vector_ \#\# class \#\# _${_IMG_TYPE}) vector< class<${_IMG_TYPE}> >;\n")
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
+
 # SWIG WRAP MAP
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_MAP_FIX_SECOND(class, name)\n")
 FOREACH(_IMG_TYPE ${IMAGE_TYPES})

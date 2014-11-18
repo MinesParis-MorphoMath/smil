@@ -258,66 +258,72 @@ namespace smil
 
 
         if (!areAllocated(&imIn, &imOut, NULL))
-      return RES_ERR_BAD_ALLOCATION;
+          return RES_ERR_BAD_ALLOCATION;
     
-        if (seType==SE_Rhombicuboctahedron) 
-    {
-            _exec_rhombicuboctahedron (imIn, imOut, se.size);
-        return RES_OK;
+        if (seSize==0)
+        {
+            copy(imIn, imOut);
+            return RES_OK;
         }
         
-    lineLen = imIn.getWidth();
-    
-    borderBuf = ImDtTypes<T>::createLine(lineLen);
-    cpBuf = ImDtTypes<T>::createLine(lineLen);
-    fillLine<T> f;
-    f(borderBuf, lineLen, this->borderValue);
-    
-    ImageFreezer freezer(imOut);
-    
-    Image<T> *inImage, *outImage, *tmpImage = NULL;
-    inImage = (Image<T>*)&imIn;
-    
-    if (isInplaceSafe(se) || (&imIn!=&imOut && seSize==1))
-        outImage = (Image<T> *)&imOut;
-    else
-        outImage = tmpImage = new Image<T>(imOut);
-
-
-//     else
-    {
-        _exec_single(*inImage, *outImage, se);
-        
-        if (seSize>1)
+        if (seType==SE_Rhombicuboctahedron) 
         {
-        if (tmpImage)
-          inImage = tmpImage;
-        else inImage = &imOut;
+            _exec_rhombicuboctahedron (imIn, imOut, se.size);
+            return RES_OK;
+        }
         
-        outImage = &imOut;
+        lineLen = imIn.getWidth();
         
-        for (int i=1;i<seSize;i++)
+        borderBuf = ImDtTypes<T>::createLine(lineLen);
+        cpBuf = ImDtTypes<T>::createLine(lineLen);
+        fillLine<T> f;
+        f(borderBuf, lineLen, this->borderValue);
+        
+        ImageFreezer freezer(imOut);
+        
+        Image<T> *inImage, *outImage, *tmpImage = NULL;
+        inImage = (Image<T>*)&imIn;
+        
+        if (isInplaceSafe(se) || (&imIn!=&imOut && seSize==1))
+            outImage = (Image<T> *)&imOut;
+        else
+            outImage = tmpImage = new Image<T>(imOut);
+
+
+    //     else
         {
             _exec_single(*inImage, *outImage, se);
-            if (i<seSize-1)
-              swap(inImage, outImage);
+            
+            if (seSize>1)
+            {
+            if (tmpImage)
+              inImage = tmpImage;
+            else inImage = &imOut;
+            
+            outImage = &imOut;
+            
+            for (int i=1;i<seSize;i++)
+            {
+                _exec_single(*inImage, *outImage, se);
+                if (i<seSize-1)
+                  swap(inImage, outImage);
+            }
+            }
         }
+        
+        if (tmpImage)
+        {
+            if (outImage!=&imOut)
+              copy(*outImage, imOut);
+            delete tmpImage;
         }
-    }
-    
-    if (tmpImage)
-    {
-        if (outImage!=&imOut)
-          copy(*outImage, imOut);
-        delete tmpImage;
-    }
-    
-    ImDtTypes<T>::deleteLine(borderBuf);
-    ImDtTypes<T>::deleteLine(cpBuf);
-    
-    
-    imOut.modified();
-    return RES_OK;
+        
+        ImDtTypes<T>::deleteLine(borderBuf);
+        ImDtTypes<T>::deleteLine(cpBuf);
+        
+        
+        imOut.modified();
+        return RES_OK;
     }
 
     template <class T, class lineFunction_T>
