@@ -166,11 +166,18 @@ namespace smil
     inline std::string displayBytes(size_t bytes)
     {
 	    std::ostringstream oss;
-	    const char *units[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-	    const double base = 1024;
-	    int c = std::min((int)(log((double)bytes)/log(base)), (int)sizeof(units) - 1);
-	    oss << bytes / pow(base, c) <<  units[c];
-	    return oss.str();
+            if (bytes==0)
+            {
+                oss << "0 B";
+            }
+            else
+            {
+              const char *units[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+              const double base = 1024;
+              int c = std::min((int)(log((double)bytes)/log(base)), (int)sizeof(units) - 1);
+              oss << bytes / pow(base, c) <<  units[c];
+            }
+            return oss.str();
     }
     
 

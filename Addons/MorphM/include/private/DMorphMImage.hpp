@@ -68,8 +68,8 @@ namespace smil
 	    else
 	    {
 		typename morphee::Image<T>::i_coordinate_system s = img.getSize();
-		this->pixels = img.rawPointer();
-		this->setSize(s[0], s[1], s[2]);
+                
+                this->attach(img.rawPointer(), s[0], s[1], s[2]);
 	    }
 	}
 	MorphmInt(morphee::ImageInterface &imgInt)
@@ -86,8 +86,7 @@ namespace smil
 		else
 		{
 		    typename morphee::Image<T>::i_coordinate_system s = mIm->getSize();
-		    this->pixels = mIm->rawPointer();
-		    this->setSize(s[0], s[1], s[2]);
+                    this->attach(mIm->rawPointer(), s[0], s[1], s[2]);
 		}
 	    }
 	}
@@ -109,8 +108,7 @@ namespace smil
 		    else
 		    {
 			typename morphee::Image<T>::i_coordinate_system s = mIm->getSize();
-			this->pixels = mIm->rawPointer();
-			this->setSize(s[0], s[1], s[2]);
+                        this->attach(mIm->rawPointer(), s[0], s[1], s[2]);
 		    }
 		}
 	    }
