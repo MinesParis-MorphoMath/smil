@@ -367,7 +367,7 @@ namespace smil
     template <class T, class lineFunction_T>
     inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line(lineType inBuf1, lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
     {
-    if (!tmpBuf)
+    if (tmpBuf==NULL)
       tmpBuf = cpBuf;
     shiftLine<T>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
     lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);
@@ -376,7 +376,7 @@ namespace smil
     template <class T, class lineFunction_T>
     inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line_2ways(lineType inBuf1, lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
     {
-    if (!tmpBuf)
+    if (tmpBuf==NULL)
       tmpBuf = cpBuf;
     shiftLine<T>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
     lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);

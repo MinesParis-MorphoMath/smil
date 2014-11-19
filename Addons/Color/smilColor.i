@@ -34,7 +34,8 @@ SMIL_MODULE(smilColor)
 
 %{
 /* Includes the header in the wrapper code */
-#include "DAdvColor.h"
+#include "DColorConvert.h"
+#include "DColorMorpho.h"
 %}
  
 
@@ -42,4 +43,5 @@ SMIL_MODULE(smilColor)
 %import smilCore.i
 
 
-%include "DAdvColor.h"
+%include "DColorConvert.h"
+%include "DColorMorpho.h"
