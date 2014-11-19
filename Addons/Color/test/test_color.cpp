@@ -130,7 +130,7 @@ class Test_Gradient : public TestCase
         im1 << RGBArray(vecLAB, 5);
         
         UINT8 vecGRAD_LAB[] = { 
-            174, 145, 119, 168, 171,
+            180, 180, 124, 237, 237,
         };
         imTruth << vecGRAD_LAB;
         
@@ -154,6 +154,8 @@ class Test_Gradient : public TestCase
         
         im2.printSelf(1);
         
+        im1 << "/home/mat/src/morphee/trunk/utilities/Images/Color/cugat.png";
+        gradient_HLS(im1, im2, sSE(), true);
     }
 };
 

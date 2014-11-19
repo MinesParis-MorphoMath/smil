@@ -41,6 +41,7 @@ SMIL_MODULE(smilColor)
 
 
 %import smilCore.i
+%import smilMorpho.i
 
 
 %include "DColorConvert.h"

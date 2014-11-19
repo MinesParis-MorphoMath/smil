@@ -75,9 +75,9 @@ TEMPLATE_WRAP_FUNC(clone);
 
 #ifdef SMIL_WRAP_RGB
 %template(copyChannel) copyChannel<RGB, UINT8>;
-%template(copyChannel) copyToChannel<UINT8, RGB>;
-%template(copyChannel) splitChannels<RGB, UINT8>;
-%template(copyChannel) mergeChannels<UINT8, RGB>;
+%template(copyToChannel) copyToChannel<UINT8, RGB>;
+%template(splitChannels) splitChannels<RGB, UINT8>;
+%template(mergeChannels) mergeChannels<UINT8, RGB>;
 #endif // SMIL_WRAP_RGB
 
 TEMPLATE_WRAP_FUNC(inv);

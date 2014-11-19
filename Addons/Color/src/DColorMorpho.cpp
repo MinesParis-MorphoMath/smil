@@ -61,7 +61,7 @@ namespace smil
             {
                 dOff = pointOffset + *dOffset;
                 dist = ( r - R[dOff]) * ( r - R[dOff])
-                     + ( g - B[dOff]) * ( g - G[dOff])
+                     + ( g - G[dOff]) * ( g - G[dOff])
                      + ( b - B[dOff]) * ( b - B[dOff]);
 //                 dist = pixelsIn[dOff].r;
         //         pixelsOut[pointOffset] = max(pixelsOut[pointOffset], pixelsIn[dOff]);
@@ -110,43 +110,40 @@ namespace smil
             double distMax = 0;
             double dist;
             RGB pVal = pixelsIn[pointOffset];
-            double h = pVal.r, l = pVal.g, s = pVal.b;
+            double h = double(pVal.r)*360./255., l = double(pVal.g)/255., s = double(pVal.b)/255.;
             size_t dOff;
             
             while(dOffset!=dOffsetEnd)
             {
                 dOff = pointOffset + *dOffset;
+                double Hf = double(H[dOff])*360./255.;
+                double Lf = double(L[dOff])/255.;
+                double Sf = double(S[dOff])/255.;
+                
                 
                 // Calc. distance
+                double dummy, d_delta_H;
+                d_delta_H = std::abs(h - Hf);
+
+                d_delta_H /= 2.*M_PI;
+                d_delta_H = std::modf( d_delta_H, &dummy );
+                d_delta_H *= 2.;
+                if(d_delta_H > 1.)
                 {
+                    d_delta_H = 2.-d_delta_H;
+                }
 
-                    double dummy, d_delta_H;
-                    d_delta_H = h;
-                    d_delta_H-= H[dOff];
-                    if(d_delta_H < 0.) d_delta_H = -d_delta_H;
-
-                    d_delta_H/= 2.*static_cast<double>(M_PI);
-                    d_delta_H = std::modf( d_delta_H, &dummy );
-                    d_delta_H*= 2.;
-                    if(d_delta_H > 1.)
-                    {
-                        d_delta_H = 2.-d_delta_H;
-                    }
-
-                    double d_delta_L = std::abs(static_cast<double>(l) - static_cast<double>(L[dOff]));
-                    double d_weight = s;
-                    d_weight += S[dOff];
-                    d_weight /= 2;
-                    
-                    dist = static_cast<double>(d_weight * (d_delta_H) + (1-d_weight)*(d_delta_L));
-                }                
+                double d_delta_L = std::abs(l - Lf);
+                double d_weight = (s + Sf)/2.;
+                
+                dist = d_weight * d_delta_H   +   (1-d_weight) * d_delta_L;
                 
                 if (dist>distMax)
                     distMax = dist;
                 dOffset++;
             }
             
-            pixelsOut[pointOffset] = distMax;
+            pixelsOut[pointOffset] = distMax*255.;
         }
     };
     

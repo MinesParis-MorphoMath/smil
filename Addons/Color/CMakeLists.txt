@@ -28,6 +28,9 @@
 SET(MODULE_NAME Color)
 SET(MODULE_DEPS smilCore smilGui smilMorpho)
 
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../../Morpho/include 
+                    ${CMAKE_CURRENT_SOURCE_DIR}/../../Morpho/include/private)
+
 ADD_SMIL_LIBRARY(${MODULE_NAME} ${MODULE_DEPS})
 ADD_SMIL_TESTS(${MODULE_NAME} ${MODULE_DEPS})
 

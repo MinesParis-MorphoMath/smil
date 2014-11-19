@@ -399,14 +399,9 @@ namespace smil
             float k;
 
             /* H, L, S are extracted */
-            float H = static_cast<float> (h[i]);
-            float L = static_cast<float> (l[i]);
-            float S = static_cast<float> (s[i]);
-
-            L=((float)(L)/255.0)*(1.0);
-            H=((float)H*360.0/255.0);
-            S=((float)(S)/255.0)*(1.0);
-
+            float H = static_cast<float>(h[i]) * 360./255.;
+            float L = static_cast<float>(l[i]) / 255.;
+            float S = static_cast<float>(s[i]) / 255.;
 
             //k
             k=60.0;
