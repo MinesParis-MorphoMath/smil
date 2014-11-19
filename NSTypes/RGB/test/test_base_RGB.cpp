@@ -196,11 +196,6 @@ class Test_Split_Merge : public TestCase
       TEST_ASSERT(im2.getSlice(1)==imG);
       TEST_ASSERT(im2.getSlice(2)==imB);
 
-      imType2 r, g, b;
-      splitChannels(im1, &r, &g, &b);
-      TEST_ASSERT(r==imR);
-      TEST_ASSERT(g==imG);
-      TEST_ASSERT(b==imB);
   }
 };
 

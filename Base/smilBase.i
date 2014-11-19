@@ -74,10 +74,10 @@ TEMPLATE_WRAP_FUNC(crop);
 TEMPLATE_WRAP_FUNC(clone);
 
 #ifdef SMIL_WRAP_RGB
-TEMPLATE_WRAP_FUNC_2T_FIX_FIRST(copyChannel,RGB);
-TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(copyToChannel,RGB);
-TEMPLATE_WRAP_FUNC_2T_FIX_FIRST(splitChannels,RGB);
-TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(mergeChannels,RGB);
+%template(copyChannel) copyChannel<RGB, UINT8>;
+%template(copyChannel) copyToChannel<UINT8, RGB>;
+%template(copyChannel) splitChannels<RGB, UINT8>;
+%template(copyChannel) mergeChannels<UINT8, RGB>;
 #endif // SMIL_WRAP_RGB
 
 TEMPLATE_WRAP_FUNC(inv);

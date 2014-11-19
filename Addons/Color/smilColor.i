@@ -25,22 +25,21 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+
+
 %include smilCommon.i
+
+SMIL_MODULE(smilColor)
 
 
 %{
-#include "NSTypes/RGB/include/DImage_RGB.h"
-#include "Core/include/private/DMultichannelTypes.hpp"
-#include "Core/include/DColor.h"
-#include "Base/include/private/DImageArith.hpp"
-
+/* Includes the header in the wrapper code */
+#include "DAdvColor.h"
 %}
+ 
 
-%include "Base/include/private/DImageArith.hpp"
-namespace smil
-{
-    %ignore COLOR_UINT8_3;
-    %template(copyChannel) copyChannel<RGB,UINT8>;
-}
-%include "include/DColor.h"
 
+%import smilCore.i
+
+
+%include "DAdvColor.h"
