@@ -430,6 +430,11 @@ namespace smil
 	return reinterpret_cast< Image<T>* >(img);
     }
 
+    template <class T>
+    RES_T drawOverlay(const Image<T> &imToDraw, Image<T> &imOut)
+    {
+        imOut.getViewer()->drawOverlay(imToDraw);
+    }
 
 /** @}*/
 

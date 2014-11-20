@@ -98,7 +98,7 @@ namespace smil
 	    
 	    BASE_QT_VIEWER::updateIcon();
 	}
-	virtual void drawOverlay(Image<T> &im);
+	virtual void drawOverlay(const Image<T> &im);
 	virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
 	virtual RES_T getOverlay(Image<T> &img);
 

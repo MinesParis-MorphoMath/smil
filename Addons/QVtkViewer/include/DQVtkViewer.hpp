@@ -141,7 +141,7 @@ namespace smil
 	    QString buf = _name + QString(" (") + QString(parentClass::image->getTypeAsString()) + QString(")");
 	    QVtkViewerWidget::setWindowTitle(buf);
 	}
-	virtual void drawOverlay(Image<T> &im)
+	virtual void drawOverlay(const Image<T> &im)
 	{
 	}
 	virtual void clearOverlay() {  }

@@ -110,30 +110,30 @@ namespace smil
             double distMax = 0;
             double dist;
             RGB pVal = pixelsIn[pointOffset];
-            double h = double(pVal.r)*360./255., l = double(pVal.g)/255., s = double(pVal.b)/255.;
+            double h = double(pVal.r)*2.*M_PI/255., l = double(pVal.g)/255., s = double(pVal.b)/255.;
             size_t dOff;
             
             while(dOffset!=dOffsetEnd)
             {
                 dOff = pointOffset + *dOffset;
-                double Hf = double(H[dOff])*360./255.;
+                double Hf = double(H[dOff])/255.*2*M_PI; // Convert to radians
                 double Lf = double(L[dOff])/255.;
                 double Sf = double(S[dOff])/255.;
                 
                 
                 // Calc. distance
                 double dummy, d_delta_H;
-                d_delta_H = std::abs(h - Hf);
+                d_delta_H = std::fabs(h - Hf);
 
-                d_delta_H /= 2.*M_PI;
-                d_delta_H = std::modf( d_delta_H, &dummy );
-                d_delta_H *= 2.;
-                if(d_delta_H > 1.)
+                // Circular H gradient. Check that we are between 0 and pi
+                if(d_delta_H > M_PI)
                 {
-                    d_delta_H = 2.-d_delta_H;
+                    d_delta_H = 2.*M_PI - d_delta_H;
                 }
+                // Normalize (-> [0, 1]) for luminace gradient consistency
+                d_delta_H /= M_PI;
 
-                double d_delta_L = std::abs(l - Lf);
+                double d_delta_L = std::fabs(l - Lf);
                 double d_weight = (s + Sf)/2.;
                 
                 dist = d_weight * d_delta_H   +   (1-d_weight) * d_delta_L;

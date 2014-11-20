@@ -235,7 +235,7 @@ namespace smil
 
 
     template <class T>
-    void QtImageViewer<T>::drawOverlay(Image<T> &im)
+    void QtImageViewer<T>::drawOverlay(const Image<T> &im)
     {
 	if (!qOverlayImage)
 	  createOverlayImage();

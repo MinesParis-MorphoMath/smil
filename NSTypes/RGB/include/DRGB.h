@@ -93,7 +93,7 @@ namespace smil
     }
 
     template <>
-    inline void QtImageViewer<RGB>::drawOverlay(Image<RGB> &im)
+    inline void QtImageViewer<RGB>::drawOverlay(const Image<RGB> &im)
     {
     }
 

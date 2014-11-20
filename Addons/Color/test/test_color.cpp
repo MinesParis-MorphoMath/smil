@@ -4,6 +4,8 @@
 #include "DColorConvert.h"
 #include "DColorMorpho.h"
 
+#include "Gui/include/DGui.h"
+
 
 using namespace smil;
 
@@ -144,7 +146,7 @@ class Test_Gradient : public TestCase
         };
         
         UINT8 vecGRAD_HLS[] = { 
-          70,  70, 146, 173, 218,
+          156, 156,  88, 129, 129,
         };
         im1 << RGBArray(vecHLS, 5);
         imTruth << vecGRAD_HLS;
@@ -152,10 +154,7 @@ class Test_Gradient : public TestCase
         gradient_HLS(im1, im2, sSE(), false);
         TEST_ASSERT(im2==imTruth);
         
-        im2.printSelf(1);
-        
-        im1 << "/home/mat/src/morphee/trunk/utilities/Images/Color/cugat.png";
-        gradient_HLS(im1, im2, sSE(), true);
+//         im2.printSelf(1);
     }
 };
 
