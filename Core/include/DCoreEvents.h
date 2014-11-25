@@ -63,8 +63,8 @@ namespace smil
 	const Image<T>* sender;
     };
 
-    typedef Slot< ImageEvent<UINT8> > ImageSlot_UINT8;
-    typedef Slot< ImageEvent<UINT16> > ImageSlot_UINT16;
+    typedef Slot< ImageEvent<UINT8> > ImageEventSlot_UINT8;
+    typedef Slot< ImageEvent<UINT16> > ImageEventSlot_UINT16;
 
 } // namespace smil
 

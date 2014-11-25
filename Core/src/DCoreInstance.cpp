@@ -172,6 +172,14 @@ vector<BaseImage*> Core::getImages()
     return this->registeredImages; 
 }
 
+int Core::getImageIndex(BaseImage *img)
+{
+    vector<BaseImage*>::iterator i = find(this->registeredImages.begin(), this->registeredImages.end(), img);
+    if (i==this->registeredImages.end())
+      return -1;
+    return i - this->registeredImages.begin(); 
+}
+
 void Core::showAllImages()
 {
     vector<BaseImage*>::iterator it = this->registeredImages.begin();

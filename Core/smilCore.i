@@ -265,6 +265,7 @@ namespace smil
 }
 #endif // SWIGPYTHON
 
+%feature("new","0") castBaseImage;
 %include "Core/include/DBaseImage.h"
 %include "Core/include/private/DImage.hpp"
 %include "Core/include/private/DSharedImage.hpp"

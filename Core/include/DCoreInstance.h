@@ -82,6 +82,7 @@ namespace smil
 	void deleteAllImages();
 	vector<BaseObject*> getRegisteredObjects();
 	vector<BaseImage*> getImages();
+        int getImageIndex(BaseImage *img);
 	void getCompilationInfos(ostream &outStream = std::cout);
 	const CpuID &getCpuID() { return cpuID; }
 	

@@ -111,27 +111,6 @@ def guess_images_name(gbl_dict=None):
         im.setName(imgs[im])
 
     
-def _show_with_name(img, name=None, labelImage = False):
-    if not name:
-        if img.getName()=="":
-          name = _find_object_name(img)
-          if name!="":
-            img.setName(name)
-    if sys.version_info >= (3,0,0):
-      img.c_show(img, name)
-    else:
-      img.c_show(name)
-
-def _showLabel_with_name(img, name=None):
-    if not name:
-        if img.getName()=="":
-          name = _find_object_name(img)
-          if name!="":
-            img.setName(name)
-    if sys.version_info >= (3,0,0):
-      img.c_showLabel(img, name)
-    else:
-      img.c_showLabel(name)
 
 def showAll():
     imgs = _find_images()
@@ -150,12 +129,6 @@ def deleteAll():
       __main__.__dict__.pop(imgs[im], None)
       del im
     
-for t in imageTypes:
-    t.c_show = t.show
-    t.show = _show_with_name
-    t.c_showLabel = t.showLabel
-    t.showLabel = _showLabel_with_name
-
     
 def autoCastBaseImage(baseImg):
     if not baseImg:
@@ -167,6 +140,25 @@ def autoCastBaseImage(baseImg):
     else:
       return None
 
+class showImageSlot(BaseImageEventSlot):
+    def __init__(self):
+      BaseImageEventSlot.__init__(self)
+    def run(self, event):
+      guess_images_name()
+
+_showImageSlot = showImageSlot()
+
+class createImageSlot(BaseImageEventSlot):
+    def __init__(self):
+      BaseImageEventSlot.__init__(self)
+    def run(self, event):
+      img = event.sender
+      img.onShow.connect(_showImageSlot)
+
+core = Core.getInstance()
+_newImageSlot = createImageSlot()
+core.onBaseImageCreated.connect(_newImageSlot)
+      
       
 def Image(*args):
     """
