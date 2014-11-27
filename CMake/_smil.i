@@ -240,7 +240,8 @@ def Image(*args):
         pass
     return img
 
-
+def Images(nbr, *args, **keywords):
+    return [ Image(*args) for i in range(nbr) ]
 
 def bench(func, *args, **keywords):
     """
