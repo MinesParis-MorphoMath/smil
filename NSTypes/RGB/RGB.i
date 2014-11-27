@@ -49,7 +49,7 @@ namespace smil
             return os.str();
         }
     }
-    %template(copyChannel) copyChannel<RGB,UINT8>;
+//    %template(copyChannel) copyChannel<RGB,UINT8>;
 }
 %include "include/DColor.h"
 
