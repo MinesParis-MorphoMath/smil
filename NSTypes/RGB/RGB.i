@@ -39,7 +39,16 @@
 %include "Base/include/private/DImageArith.hpp"
 namespace smil
 {
-    %ignore COLOR_UINT8_3;
+//    %ignore COLOR_UINT8_3;
+    %extend RGB
+    {
+        std::string  __str__() 
+        {
+            std::stringstream os;
+            self->printSelf(os);
+            return os.str();
+        }
+    }
     %template(copyChannel) copyChannel<RGB,UINT8>;
 }
 %include "include/DColor.h"

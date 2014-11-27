@@ -247,7 +247,7 @@ namespace smil
 	    ASSERT((fread(data, width*3, 1, fp)!=0), RES_ERR_IO);
 	    for (int i=0;i<width;i++)
 	      for (UINT n=0;n<3;n++)
-		arrays[n][i] = data[3*i+n];
+		arrays[n][i] = data[3*i+(2-n)];
 	}
 	
 	delete[] data;
@@ -375,7 +375,7 @@ namespace smil
 	    arrays = lines[j].arrays;
 	    for (size_t i=0;i<width;i++)
 	      for (UINT n=0;n<3;n++)
-		data[3*i+n] = arrays[n][i];
+		data[3*i+(2-n)] = arrays[n][i];
 	    ASSERT((fwrite(data, width*3, 1, fp)!=0), RES_ERR_IO);
 	}
 	

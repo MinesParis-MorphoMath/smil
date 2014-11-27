@@ -85,9 +85,15 @@ namespace smil
     : public COLOR_UINT8_3
 #endif // SWIG
     {
+#ifndef SWIG
 	UINT8 &r;
 	UINT8 &g;
 	UINT8 &b;
+#else
+        UINT8 r;
+        UINT8 g;
+        UINT8 b;
+#endif // SWIG
 	RGB()
 	  : MultichannelType<UINT8, 3>(0),
 	  r(c[0]), g(c[1]), b(c[2])
@@ -104,11 +110,16 @@ namespace smil
 	  r(c[0]), g(c[1]), b(c[2])	    
 	{
 	}
-	RGB(const COLOR_UINT8_3 &rhs)
-	  : MultichannelType<UINT8, 3>(rhs),
-	  r(c[0]), g(c[1]), b(c[2])	    
-	{
-	}
+        RGB(const COLOR_UINT8_3 &rhs)
+          : MultichannelType<UINT8, 3>(rhs),
+          r(c[0]), g(c[1]), b(c[2])         
+        {
+        }
+        RGB(const RGB &rhs)
+          : MultichannelType<UINT8, 3>(rhs),
+          r(c[0]), g(c[1]), b(c[2])         
+        {
+        }
 	virtual ~RGB() {}
 	RGB& operator =(const RGB &rhs)
 	{
@@ -116,6 +127,10 @@ namespace smil
 	      c[i] = rhs.value(i);
 	    return *this;
 	}
+        void printSelf(ostream &os = std::cout, string ="") const 
+        {
+            os << "(" << double(c[0]) << "," << double(c[1]) << "," << double(c[2]) << ")";
+        }
     };
     
     
