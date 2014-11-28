@@ -43,7 +43,7 @@ using namespace smil;
 
 Core::Core ()
 // : BaseObject("Core", false),
-  : keepAlive(false),
+  : keepAlive(true),
     autoResizeImages(true),
     threadNumber(1),
     maxThreadNumber(1),
@@ -64,6 +64,9 @@ Core::Core ()
     coreNumber = cpuID.getCores();
     threadNumber = 1;
 #endif // USE_OPEN_MP
+#if DEBUG_LEVEL > 1
+      cout << "Core created" << endl;
+#endif // DEBUG_LEVEL > 1
 }
 
 Core::~Core ()
