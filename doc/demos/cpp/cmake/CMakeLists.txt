@@ -26,7 +26,7 @@
 
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 
-LIST(APPEND CMAKE_MODULE_PATH "/usr/local/lib/Smil")
+LIST(APPEND CMAKE_MODULE_PATH "/usr/local/include/Smil")
 INCLUDE(UseSmil)
 
 ADD_EXECUTABLE(SmilDemo main.cpp)
