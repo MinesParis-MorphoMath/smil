@@ -1,6 +1,6 @@
 # Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
 # All rights reserved.
-#
+# 
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #
@@ -24,10 +24,30 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+# The module defines the following variables:
+#   SMIL_FOUND - true if the command line client was found
+#   SMIL_DEFINITIONS
+#   SMIL_VERSION_STRING - the version of mercurial found
+# Example usage:
+#   find_package(Smil)
+#   if(SMIL_FOUND)
+#     message("Smil version ${SMIL_VERSION_STRING} found")
+#   endif()
 
-LIST(APPEND CMAKE_MODULE_PATH "/usr/local/lib/Smil")
-INCLUDE(UseSmil)
 
-ADD_EXECUTABLE(SmilDemo main.cpp)
-TARGET_LINK_LIBRARIES(SmilDemo ${SMIL_LIBRARIES})
+FIND_PATH(SMIL_DIR UseSmil.cmake
+	${CMAKE_MODULE_PATH}
+	/usr/local/lib/Smil
+	# Help the user find it if we cannot.
+	DOC "Directory containing the SmilConfig.cmake file."
+)
+
+IF(SMIL_DIR)
+ENDIF(SMIL_DIR)
+
+# Handle the QUIETLY and REQUIRED arguments and set HG_FOUND to TRUE if
+# all listed variables are TRUE
+INCLUDE(${CMAKE_CURRENT_LIST_DIR}/FindPackageHandleStandardArgs.cmake)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(Smil
+                                  REQUIRED_VARS SMIL_DIR SMIL_DEFINITIONS
+                                  VERSION_VAR SMIL_VERSION_STRING)

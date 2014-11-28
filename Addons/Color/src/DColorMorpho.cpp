@@ -79,7 +79,7 @@ namespace smil
     
     RES_T gradient_LAB(const Image<RGB> &imIn, Image<UINT8> &imOut, const StrElt &se, bool convertFirstToLAB)
     {
-        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_ALLOCATED(&imIn);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
         labGrad_func iFunc;
@@ -149,7 +149,7 @@ namespace smil
     
     RES_T gradient_HLS(const Image<RGB> &imIn, Image<UINT8> &imOut, const StrElt &se, bool convertFirstToHLS)
     {
-        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_ALLOCATED(&imIn);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
         hlsGrad_func iFunc;
