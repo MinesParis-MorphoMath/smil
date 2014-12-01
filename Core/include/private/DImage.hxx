@@ -472,6 +472,24 @@ namespace smil
     }
 
     template <class T>
+    string Image<T>::toString()
+    {
+        string buf;
+        for (size_t i=0;i<pixelCount;i++)
+          buf.push_back(pixels[i]);
+        return buf;
+    }
+
+    template <class T>
+    void Image<T>::fromString(string pixVals)
+    {
+        ASSERT((pixVals.size()==pixelCount), "String length doesn't match image size.", );
+        for (size_t i=0;i<pixelCount;i++)
+          pixels[i] = pixVals[i];
+        modified();
+    }
+
+    template <class T>
     void Image<T>::printSelf(ostream &os, bool displayPixVals, bool hexaGrid, string indent) const
     {
     #if DEBUG_LEVEL > 1

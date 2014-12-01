@@ -180,6 +180,11 @@ namespace smil
 	//! Copy pixel values from a given int vector
 	void fromIntVector(const vector<int> inVector);
 
+        //! Export pixel values to a string
+        string toString();
+        //! Import pixel values from string
+        void fromString(string pixVals);
+        
 	//! Get the image viewer (create one if needed)
 	virtual ImageViewer<T> *getViewer();
 	
