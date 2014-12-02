@@ -78,7 +78,7 @@ namespace smil
 	//! Edge weight/value
 	T weight;
 	
-	inline bool isActive() const { return (source!=0 && target!=0);  }
+	inline bool isActive() const { return (source!=0 || target!=0);  }
 	inline void desactivate()
 	{
 	    source = 0;
@@ -166,7 +166,9 @@ namespace smil
 	//! Add a node given its index and its optional value
 	void addNode(const size_t &ind, const nodeT &val=0)
 	{
-	    nodeValues[ind] = val;
+            nodes.insert(ind);
+            if (val!=0)
+              nodeValues[ind] = val;
 	}
 	
 	/**

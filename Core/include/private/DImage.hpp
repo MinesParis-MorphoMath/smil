@@ -312,7 +312,6 @@ namespace smil
 	ResImage<T>operator * (const Image<T> &rhs);
         //! Multiply by value
         ResImage<T>operator * (const T &value);
-        ResImage<T>operator * (const double &value);
 	//! Image multiplication assignment
 	Image<T>& operator *= (const Image<T> &rhs);
 	//! Value multiplication assignment
@@ -321,7 +320,6 @@ namespace smil
 	ResImage<T>operator / (const Image<T> &rhs);
         //! Divide by value
         ResImage<T>operator / (const T &value);
-        ResImage<T>operator / (const double &value);
 	//! Image division assignment
 	Image<T>& operator /= (const Image<T> &rhs);
 	//! Value division assignment

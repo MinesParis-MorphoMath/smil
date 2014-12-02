@@ -85,6 +85,7 @@ class Test_MosaicToGraph : public TestCase
 //       for (vector<Edge>::const_iterator it=graph.getEdges().begin();it!=graph.getEdges().end();it++)
 // 	cout << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
 
+      graph.printSelf();
       
       graph.removeEdge(3,2);
       graph.removeEdge(3,0);

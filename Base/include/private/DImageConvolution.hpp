@@ -48,7 +48,7 @@ namespace smil
     // Horizontal convolution
     // Inplace safe
     template <class T>
-    RES_T horizConvolve(const Image<T> &imIn, const vector<float> &kernel, Image<T> &imOut)
+    RES_T horizConvolve(const Image<T> &imIn, const vector<double> &kernel, Image<T> &imOut)
     {
 	CHECK_ALLOCATED(&imIn, &imOut);
 	CHECK_SAME_SIZE(&imIn, &imOut);
@@ -63,8 +63,8 @@ namespace smil
 	int kernelRadius = (kernel.size()-1)/2;
 // 	int kLen = 2*kernelRadius+1;
 	
-	float *partialKernWeights = new float[kernelRadius];
-	float pkwSum = 0;
+	double *partialKernWeights = new double[kernelRadius];
+	double pkwSum = 0;
 	for (int i=0;i<kernelRadius;i++)
 	  pkwSum += kernel[i];
 	for (int i=0;i<kernelRadius;i++)
@@ -73,7 +73,7 @@ namespace smil
 	    partialKernWeights[i] = pkwSum;
 	}
 	
-	typedef float bufType; // If float, loops are vectorized
+	typedef double bufType; // If float, loops are vectorized
 	BufferPool<bufType> bufferPool(imW);
 	  
 	#ifdef USE_OPEN_MP
@@ -82,7 +82,7 @@ namespace smil
 	#endif // USE_OPEN_MP
 	{	
 	    typename ImDtTypes<bufType>::lineType lIn = bufferPool.getBuffer();
-	    float sum;
+	    double sum;
 	    
 	    #ifdef USE_OPEN_MP
 		#pragma omp for
@@ -128,7 +128,7 @@ namespace smil
     
     // Vertical convolution
     template <class T>
-    RES_T vertConvolve(const Image<T> &imIn, const vector<float> &kernel, Image<T> &imOut)
+    RES_T vertConvolve(const Image<T> &imIn, const vector<double> &kernel, Image<T> &imOut)
     {
 	CHECK_ALLOCATED(&imIn, &imOut);
 	CHECK_SAME_SIZE(&imIn, &imOut);
@@ -145,8 +145,8 @@ namespace smil
 	int kernelRadius = (kernel.size()-1)/2;
 	int nthreads = Core::getInstance()->getNumberOfThreads();
 	
-	float *partialKernWeights = new float[kernelRadius];
-	float pkwSum = 0;
+	double *partialKernWeights = new double[kernelRadius];
+	double pkwSum = 0;
 	for (int i=0;i<kernelRadius;i++)
 	  pkwSum += kernel[i];
 	for (int i=0;i<kernelRadius;i++)
@@ -155,7 +155,7 @@ namespace smil
 	    partialKernWeights[i] = pkwSum;
 	}
 	  
-	typedef float bufType; // If float, loops are vectorized
+	typedef double bufType; // If double, loops are vectorized
 	BufferPool<bufType> bufferPool(imW);
 	
 	for (int z=0;z<imD;z++)
@@ -166,7 +166,7 @@ namespace smil
 	    {
 		sIn = slicesIn[z];
 		sOut = slicesOut[z];
-		float sum;
+		double sum;
 		
 		#ifdef USE_OPEN_MP
 		    #pragma omp for
@@ -208,7 +208,7 @@ namespace smil
     
     // Convolution in both directions using the same 1D kernel
     template <class T>
-    RES_T convolve(const Image<T> &imIn, const vector<float> &kernel, Image<T> &imOut)
+    RES_T convolve(const Image<T> &imIn, const vector<double> &kernel, Image<T> &imOut)
     {
 	if (&imIn==&imOut)
 	{
@@ -240,15 +240,15 @@ namespace smil
 	ImageFreezer freeze(imOut);
 	
 	int kernelSize = radius*2+1;
-	vector<float> kernel(kernelSize);
+	vector<double> kernel(kernelSize);
 	
-	double sigma = float(radius)/2.;
-	float sum = 0.;
+	double sigma = double(radius)/2.;
+	double sum = 0.;
 	
 	//  Determine kernel coefficients
 	for (int i=0;i<kernelSize;i++)
 	{
-	  kernel[i] = float(exp( -pow((double(i)-radius)/sigma, 2)/2. ));
+	  kernel[i] = double(exp( -pow((double(i)-radius)/sigma, 2)/2. ));
 	  sum += kernel[i];
 	}
 	// Normalize

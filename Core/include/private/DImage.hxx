@@ -686,14 +686,6 @@ namespace smil
     }
 
     template <class T>
-    ResImage<T>Image<T>::operator * (const double &value)
-    {
-        ResImage<T>im(*this);
-        mul(*this, value, im);
-        return im;
-    }
-
-    template <class T>
     Image<T>& Image<T>::operator *= (const Image<T> &rhs)
     {
 	mul(*this, rhs, *this);
@@ -717,14 +709,6 @@ namespace smil
 
     template <class T>
     ResImage<T>Image<T>::operator / (const T &value)
-    {
-        ResImage<T>im(*this);
-        div(*this, value, im);
-        return im;
-    }
-
-    template <class T>
-    ResImage<T>Image<T>::operator / (const double &value)
     {
         ResImage<T>im(*this);
         div(*this, value, im);
