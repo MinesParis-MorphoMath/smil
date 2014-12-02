@@ -93,6 +93,14 @@ namespace smil
             this->detach();
         }
         
+        SharedImage<T>& operator = (const SharedImage<T> &rhs)
+        {
+            attached = false;
+            
+            this->clone(rhs);
+            return *this;
+        }
+        
         virtual RES_T attach(lineType dataPtr, size_t width, size_t height, size_t depth=1)
         {
             if (dataPtr==NULL)
@@ -159,7 +167,7 @@ namespace smil
         
         virtual RES_T clone(const SharedImage<T> &rhs)
         {
-            return attach(rhs.getPixels(), rhs.getHeight(), rhs.getDepth());
+            return attach(rhs.getPixels(), rhs.getWidth(), rhs.getHeight(), rhs.getDepth());
         }
         
         

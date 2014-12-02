@@ -55,7 +55,8 @@ namespace smil
     template <class T>
     inline void copyLine(const typename Image<T>::lineType lIn, const size_t size, typename Image<T>::lineType lOut)
     {
-	memcpy(lOut, lIn, size*sizeof(T));
+        for (size_t i=0;i<size;i++)
+          lOut[i] = lIn[i];
     }
 
 
@@ -68,7 +69,8 @@ namespace smil
 	
 	virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
 	{
-	    memcpy(lOut, lIn, size*sizeof(T));
+            for (size_t i=0;i<size;i++)
+              lOut[i] = lIn[i];
 	}
 	virtual void _exec(lineType lInOut, const size_t size, const T value)
 	{
