@@ -343,7 +343,7 @@ namespace smil
     template <class T, class labelT>
     RES_T basins(const Image<T> &imIn, Image<labelT> &imBasinsInOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imBasinsInOut);
+	ASSERT_ALLOCATED(&imIn);
 	ASSERT_SAME_SIZE(&imIn, &imBasinsInOut);
 	
 	Image<labelT> imLbl(imIn);
@@ -369,7 +369,7 @@ namespace smil
     template <class T, class labelT>
     RES_T watershed(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imMarkers, &imOut, &imBasinsOut);
+	ASSERT_ALLOCATED(&imIn, &imMarkers);
 	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut, &imBasinsOut);
  
 	WatershedFlooding<T,labelT> flooding;
@@ -379,7 +379,7 @@ namespace smil
     template <class T, class labelT>
     RES_T watershed(const Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imMarkers, &imOut);
+	ASSERT_ALLOCATED(&imIn, &imMarkers);
 	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut);
 	
 	Image<labelT> imBasinsOut(imMarkers);
@@ -389,7 +389,7 @@ namespace smil
     template <class T>
     RES_T watershed(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
+	ASSERT_ALLOCATED(&imIn);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	
 	Image<UINT> imLbl(imIn);

@@ -151,6 +151,7 @@ TEMPLATE_WRAP_FUNC(vFlip);
 TEMPLATE_WRAP_FUNC(trans);
 TEMPLATE_WRAP_FUNC(resize);
 TEMPLATE_WRAP_FUNC(scale);
+TEMPLATE_WRAP_FUNC(addBorder);
 
 %include "DBlob.hpp"
 

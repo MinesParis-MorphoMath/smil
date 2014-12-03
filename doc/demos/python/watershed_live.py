@@ -20,11 +20,12 @@ class myWSFlooding(WatershedFlooding_UINT8_UINT16):
         self.nbrPixProcessed += 1
 
 
-imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/lena.png")
-imGrad = Image(imIn)
-imWS = Image(imIn)
-imMark = Image(imIn, "UINT16")
-imBasins = Image(imIn, "UINT16")
+if not "imIn" in globals():
+  imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/lena.png")
+  imGrad = Image(imIn)
+  imWS = Image(imIn)
+  imMark = Image(imIn, "UINT16")
+  imBasins = Image(imIn, "UINT16")
 
 gradient(imIn, imGrad)
 hMinimaLabeled(imGrad, 10, imMark)
@@ -35,6 +36,7 @@ imBasins.showLabel()
 
 wsFlood = myWSFlooding()
 wsFlood.flood(imIn, imMark, imWS, imBasins, sSE())
+
 
 
 

@@ -56,38 +56,38 @@ namespace smil
     template <class T>
     RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ, Image<T> &imOut)
     {
-	ASSERT_ALLOCATED(&imIn);
+        ASSERT_ALLOCATED(&imIn);
 
-	size_t inW = imIn.getWidth();
-	size_t inH = imIn.getHeight();
-	size_t inD = imIn.getDepth();
-	
-	size_t realSx = min(sizeX, inW-startX);
-	size_t realSy = min(sizeY, inH-startY);
-	size_t realSz = min(sizeZ, inD-startZ);
-	
-	imOut.setSize(realSx, realSy, realSz);
-	return copy(imIn, startX, startY, startZ, realSx, realSy, realSz, imOut, 0, 0, 0);
+        size_t inW = imIn.getWidth();
+        size_t inH = imIn.getHeight();
+        size_t inD = imIn.getDepth();
+        
+        size_t realSx = min(sizeX, inW-startX);
+        size_t realSy = min(sizeY, inH-startY);
+        size_t realSz = min(sizeZ, inD-startZ);
+        
+        imOut.setSize(realSx, realSy, realSz);
+        return copy(imIn, startX, startY, startZ, realSx, realSy, realSz, imOut, 0, 0, 0);
     }
 
     template <class T>
     RES_T crop(Image<T> &imInOut, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ)
     {
-	Image<T> tmpIm(imInOut, true); // clone
-	return crop(tmpIm, startX, startY, startZ, sizeX, sizeY, sizeZ, imInOut);
+        Image<T> tmpIm(imInOut, true); // clone
+        return crop(tmpIm, startX, startY, startZ, sizeX, sizeY, sizeZ, imInOut);
     }
 
     // 2D overload
     template <class T>
     RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t sizeX, size_t sizeY, Image<T> &imOut)
     {
-	return crop(imIn, startX, startY, 0, sizeX, sizeY, 1, imOut);
+        return crop(imIn, startX, startY, 0, sizeX, sizeY, 1, imOut);
     }
 
     template <class T>
     RES_T crop(Image<T> &imInOut, size_t startX, size_t startY, size_t sizeX, size_t sizeY)
     {
-	return crop(imInOut, startX, startY, 0, sizeX, sizeY, 1);
+        return crop(imInOut, startX, startY, 0, sizeX, sizeY, 1);
     }
 
 
@@ -96,16 +96,36 @@ namespace smil
     * 
     */
     template <class T>
-    RES_T addBorder(const Image<T> &imIn, size_t bSize, Image<T> &imOut)
+    RES_T addBorder(const Image<T> &imIn, const size_t &bSize, Image<T> &imOut, const T &borderValue=ImDtTypes<T>::max())
     {
-	Image<T> tmpIm;
-	if (imIn->getDimension()==3)
-	{
-    // 	tmpIm.setSize(imIn.getWidth()
-	}
-    //     (imInOut, true); // clone
-    //     return crop(tmpIm, startX, startY, startZ, sizeX, sizeY, sizeZ, imInOut);
-	return RES_OK;
+        ASSERT_ALLOCATED(&imIn)
+        
+        if (&imIn==&imOut)
+        {
+            Image<T> tmpIm(imIn, true); // clone
+            return addBorder(tmpIm, bSize, imOut, borderValue);
+        }
+        
+        ImageFreezer freeze(imOut);
+        
+        size_t s[3];
+        imIn.getSize(s);
+
+        if (imIn.getDimension()==3)
+        {
+            imOut.setSize(s[0] + 2*bSize, s[1] + 2*bSize, s[2] + 2*bSize);
+            ASSERT_ALLOCATED(&imOut)
+            fill(imOut, borderValue);
+            copy(imIn, 0, 0, 0, s[0], s[1], s[2], imOut, bSize, bSize, bSize);
+        }
+        else
+        {
+            imOut.setSize(s[0] + 2*bSize, s[1] + 2*bSize, 1);
+            ASSERT_ALLOCATED(&imOut)
+            fill(imOut, borderValue);
+            copy(imIn, 0, 0, s[0], s[1], imOut, bSize, bSize);
+        }
+        return RES_OK;
     }
 
 
@@ -118,68 +138,64 @@ namespace smil
     template <class T>
     RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
     {
-	if (&imIn==&imOut)
-	    return vFlip(imIn);
-	
-	if (!areAllocated(&imIn, &imOut, NULL))
-	    return RES_ERR_BAD_ALLOCATION;
+        if (&imIn==&imOut)
+            return vFlip(imIn);
+        
+        ASSERT_ALLOCATED(&imIn);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
       
-	if (!haveSameSize(&imIn, &imOut, NULL))
-	    return RES_ERR;
-      
-	typename Image<T>::sliceType *slicesIn = imIn.getSlices();
-	typename Image<T>::sliceType *slicesOut = imOut.getSlices();
-	typename Image<T>::sliceType linesIn;
-	typename Image<T>::sliceType linesOut;
-	
-	size_t width = imIn.getWidth();
-	size_t height = imIn.getHeight();
-	size_t depth = imIn.getDepth();
+        typename Image<T>::sliceType *slicesIn = imIn.getSlices();
+        typename Image<T>::sliceType *slicesOut = imOut.getSlices();
+        typename Image<T>::sliceType linesIn;
+        typename Image<T>::sliceType linesOut;
+        
+        size_t width = imIn.getWidth();
+        size_t height = imIn.getHeight();
+        size_t depth = imIn.getDepth();
 
-	for (size_t k=0;k<depth;k++)
-	{
-	    linesIn = slicesIn[k];
-	    linesOut = slicesOut[k];
-	    
-	    for (size_t j=0;j<height;j++)
-	      copyLine<T>(linesIn[j], width, linesOut[height-1-j]);
-	}
-	
-	imOut.modified();
-	
-	return RES_OK;
+        for (size_t k=0;k<depth;k++)
+        {
+            linesIn = slicesIn[k];
+            linesOut = slicesOut[k];
+            
+            for (size_t j=0;j<height;j++)
+              copyLine<T>(linesIn[j], width, linesOut[height-1-j]);
+        }
+        
+        imOut.modified();
+        
+        return RES_OK;
     }
 
     template <class T>
     RES_T vFlip(Image<T> &imInOut)
     {
-	if (!imInOut.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
+        ASSERT_ALLOCATED(&imInOut)
       
-	typename Image<T>::sliceType *slicesIn = imInOut.getSlices();
-	typename Image<T>::sliceType linesIn;
-	
-	size_t width = imInOut.getWidth();
-	size_t height = imInOut.getHeight();
-	size_t depth = imInOut.getDepth();
+        typename Image<T>::sliceType *slicesIn = imInOut.getSlices();
+        typename Image<T>::sliceType linesIn;
+        
+        size_t width = imInOut.getWidth();
+        size_t height = imInOut.getHeight();
+        size_t depth = imInOut.getDepth();
 
-	typename Image<T>::lineType tmpLine = ImDtTypes<T>::createLine(width);
-	  
-	for (size_t k=0;k<depth;k++)
-	{
-	    linesIn = slicesIn[k];
-	    
-	    for (size_t j=0;j<height/2;j++)
-	    {
-		copyLine<T>(linesIn[j], width, tmpLine);
-		copyLine<T>(linesIn[height-1-j], width, linesIn[j]);
-		copyLine<T>(tmpLine, width, linesIn[height-1-j]);
-	    }
-	}
-	
-	ImDtTypes<T>::deleteLine(tmpLine);
-	imInOut.modified();
-	return RES_OK;
+        typename Image<T>::lineType tmpLine = ImDtTypes<T>::createLine(width);
+          
+        for (size_t k=0;k<depth;k++)
+        {
+            linesIn = slicesIn[k];
+            
+            for (size_t j=0;j<height/2;j++)
+            {
+                copyLine<T>(linesIn[j], width, tmpLine);
+                copyLine<T>(linesIn[height-1-j], width, linesIn[j]);
+                copyLine<T>(tmpLine, width, linesIn[height-1-j]);
+            }
+        }
+        
+        ImDtTypes<T>::deleteLine(tmpLine);
+        imInOut.modified();
+        return RES_OK;
     }
 
     /**
@@ -189,59 +205,59 @@ namespace smil
     template <class T>
     RES_T trans(const Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut, T borderValue = ImDtTypes<T>::min())
     {
-	if (!imIn.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
-	
-	size_t lineLen = imIn.getWidth();
-	typename ImDtTypes<T>::lineType borderBuf = ImDtTypes<T>::createLine(lineLen);
-	fillLine<T>(borderBuf, lineLen, borderValue);
-	
-	size_t height = imIn.getHeight();
-	size_t depth  = imIn.getDepth();
-	
-	for (size_t k=0;k<depth;k++)
-	{
-	    typename Image<T>::sliceType lOut = imOut.getSlices()[k];
-	    
-	    int z = k-dz;
-	    for (size_t j=0;j<height;j++, lOut++)
-	    {
-		int y = j-dy;
-		
-		if (z<0 || z>=(int)depth || y<0 || y>=(int)height)
-		    copyLine<T>(borderBuf, lineLen, *lOut);
-		else 
-		    shiftLine<T>(imIn.getSlices()[z][y], dx, lineLen, *lOut, borderValue);
-	    }
-	}
-	
-	ImDtTypes<T>::deleteLine(borderBuf);
-	
-	imOut.modified();
-	
-	return RES_OK;
+        ASSERT_ALLOCATED(&imIn)
+        ASSERT_SAME_SIZE(&imIn, &imOut)
+        
+        size_t lineLen = imIn.getWidth();
+        typename ImDtTypes<T>::lineType borderBuf = ImDtTypes<T>::createLine(lineLen);
+        fillLine<T>(borderBuf, lineLen, borderValue);
+        
+        size_t height = imIn.getHeight();
+        size_t depth  = imIn.getDepth();
+        
+        for (size_t k=0;k<depth;k++)
+        {
+            typename Image<T>::sliceType lOut = imOut.getSlices()[k];
+            
+            int z = k-dz;
+            for (size_t j=0;j<height;j++, lOut++)
+            {
+                int y = j-dy;
+                
+                if (z<0 || z>=(int)depth || y<0 || y>=(int)height)
+                    copyLine<T>(borderBuf, lineLen, *lOut);
+                else 
+                    shiftLine<T>(imIn.getSlices()[z][y], dx, lineLen, *lOut, borderValue);
+            }
+        }
+        
+        ImDtTypes<T>::deleteLine(borderBuf);
+        
+        imOut.modified();
+        
+        return RES_OK;
     }
 
     template <class T>
     RES_T trans(const Image<T> &imIn, int dx, int dy, Image<T> &imOut, T borderValue = ImDtTypes<T>::min())
     {
-	return trans<T>(imIn, dx, dy, 0, imOut, borderValue);
+        return trans<T>(imIn, dx, dy, 0, imOut, borderValue);
     }
 
     template <class T>
     ResImage<T> trans(const Image<T> &imIn, int dx, int dy, int dz)
     {
-	ResImage<T> imOut(imIn);
-	trans<T>(imIn, dx, dy, dz, imOut);
-	return imOut;
+        ResImage<T> imOut(imIn);
+        trans<T>(imIn, dx, dy, dz, imOut);
+        return imOut;
     }
 
     template <class T>
     ResImage<T> trans(const Image<T> &imIn, int dx, int dy)
     {
-	ResImage<T> imOut(imIn);
-	trans<T>(imIn, dx, dy, 0, imOut);
-	return imOut;
+        ResImage<T> imOut(imIn);
+        trans<T>(imIn, dx, dy, 0, imOut);
+        return imOut;
     }
 
 
@@ -255,56 +271,57 @@ namespace smil
     template <class T>
     RES_T resize(Image<T> &imIn, size_t sx, size_t sy, Image<T> &imOut)
     {
-	if (&imIn==&imOut)
-	{
-	    Image<T> tmpIm(imIn, true); // clone
-	    return resize(tmpIm, sx, sy, imIn);
-	}
-	
-	ImageFreezer freeze(imOut);
-	
-	imOut.setSize(sx, sy);
-	
-	if (!imIn.isAllocated() || !imOut.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
+        ASSERT_ALLOCATED(&imIn)
+        
+        if (&imIn==&imOut)
+        {
+            Image<T> tmpIm(imIn, true); // clone
+            return resize(tmpIm, sx, sy, imIn);
+        }
+        
+        ImageFreezer freeze(imOut);
+        
+        imOut.setSize(sx, sy);
+        
+        ASSERT_ALLOCATED(&imOut)
       
-	size_t w = imIn.getWidth();
-	size_t h = imIn.getHeight();
-	
-	typedef typename Image<T>::lineType lineType;
-	
-	lineType pixIn = imIn.getPixels();
-	lineType pixOut = imOut.getPixels();
-	
-	size_t A, B, C, D, maxVal = numeric_limits<T>::max() ;
-	size_t x, y, index;
-	
-	double x_ratio = ((double)(w-1))/sx;
-	double y_ratio = ((double)(h-1))/sy;
-	double x_diff, y_diff;
-	int offset = 0 ;
-	
-	for (size_t i=0;i<sy;i++) 
-	{
-	    for (size_t j=0;j<sx;j++) 
-	    {
-		x = (int)(x_ratio * j) ;
-		y = (int)(y_ratio * i) ;
-		x_diff = (x_ratio * j) - x ;
-		y_diff = (y_ratio * i) - y ;
-		index = y*w+x ;
+        size_t w = imIn.getWidth();
+        size_t h = imIn.getHeight();
+        
+        typedef typename Image<T>::lineType lineType;
+        
+        lineType pixIn = imIn.getPixels();
+        lineType pixOut = imOut.getPixels();
+        
+        size_t A, B, C, D, maxVal = numeric_limits<T>::max() ;
+        size_t x, y, index;
+        
+        double x_ratio = ((double)(w-1))/sx;
+        double y_ratio = ((double)(h-1))/sy;
+        double x_diff, y_diff;
+        int offset = 0 ;
+        
+        for (size_t i=0;i<sy;i++) 
+        {
+            for (size_t j=0;j<sx;j++) 
+            {
+                x = (int)(x_ratio * j) ;
+                y = (int)(y_ratio * i) ;
+                x_diff = (x_ratio * j) - x ;
+                y_diff = (y_ratio * i) - y ;
+                index = y*w+x ;
 
-		A = size_t(pixIn[index]) & maxVal ;
-		B = size_t(pixIn[index+1]) & maxVal ;
-		C = size_t(pixIn[index+w]) & maxVal ;
-		D = size_t(pixIn[index+w+1]) & maxVal ;
-		
-		// Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
-		pixOut[offset++] = T(A*(1.-x_diff)*(1.-y_diff) +  B*(x_diff)*(1.-y_diff) + C*(y_diff)*(1.-x_diff)   +  D*(x_diff*y_diff));
-	    }
-	}
-	
-	return RES_OK;
+                A = size_t(pixIn[index]) & maxVal ;
+                B = size_t(pixIn[index+1]) & maxVal ;
+                C = size_t(pixIn[index+w]) & maxVal ;
+                D = size_t(pixIn[index+w+1]) & maxVal ;
+                
+                // Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
+                pixOut[offset++] = T(A*(1.-x_diff)*(1.-y_diff) +  B*(x_diff)*(1.-y_diff) + C*(y_diff)*(1.-x_diff)   +  D*(x_diff*y_diff));
+            }
+        }
+        
+        return RES_OK;
     }
     
     
@@ -315,7 +332,7 @@ namespace smil
     template <class T>
     RES_T resize(Image<T> &imIn, Image<T> &imOut)
     {
-	return resize(imIn, imOut.getWidth(), imOut.getHeight(), imOut);
+        return resize(imIn, imOut.getWidth(), imOut.getHeight(), imOut);
     }
     
     
@@ -326,23 +343,25 @@ namespace smil
     template <class T>
     RES_T scale(Image<T> &imIn, double cx, double cy, Image<T> &imOut)
     {
-	return resize<T>(imIn, size_t(imIn.getWidth()*cx), size_t(imIn.getHeight()*cy), imOut);
+        return resize<T>(imIn, size_t(imIn.getWidth()*cx), size_t(imIn.getHeight()*cy), imOut);
     }
 
     template <class T>
     RES_T scale(Image<T> &imIn, double cx, double cy)
     {
-	Image<T> tmpIm(imIn, true); // clone
-	return resize(tmpIm, cx, cy, imIn);
+        ASSERT_ALLOCATED(&imIn)
+        Image<T> tmpIm(imIn, true); // clone
+        return resize(tmpIm, cx, cy, imIn);
     }
     
 
     template <class T>
     RES_T resize(Image<T> &imIn, UINT sx, UINT sy)
     {
-	Image<T> tmpIm(imIn, true); // clone
-	imIn.setSize(sx, sy);
-	return resize<T>(tmpIm, imIn);
+        ASSERT_ALLOCATED(&imIn)
+        Image<T> tmpIm(imIn, true); // clone
+        imIn.setSize(sx, sy);
+        return resize<T>(tmpIm, imIn);
     }
 
 

@@ -257,6 +257,8 @@ namespace smil
         va_list vargs;
 
         va_start(vargs, im);
+        if (!im->isAllocated())
+            return false;
         size_t w = im->getWidth();
         size_t h = im->getHeight();
         size_t d = im->getDepth();
@@ -264,6 +266,7 @@ namespace smil
         BaseImage *obj;
         while ((obj = va_arg(vargs, BaseImage*)))
         {
+            if (!obj->isAllocated()) return false;
             if (obj->getWidth()!=w) return false;
             if (obj->getHeight()!=h) return false;
             if (obj->getDepth()!=d) return false;
