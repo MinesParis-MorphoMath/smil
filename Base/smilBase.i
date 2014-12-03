@@ -131,6 +131,9 @@ TEMPLATE_WRAP_FUNC(otsuThreshold);
 
 
 %include "DImageConvolution.hpp"
+TEMPLATE_WRAP_FUNC(horizConvolve);
+TEMPLATE_WRAP_FUNC(vertConvolve);
+TEMPLATE_WRAP_FUNC(convolve);
 TEMPLATE_WRAP_FUNC(gaussianFilter);
 
 TEMPLATE_WRAP_FUNC(drawLine);

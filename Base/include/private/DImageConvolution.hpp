@@ -45,7 +45,18 @@ namespace smil
     
 
     
-    // Horizontal convolution
+    /**
+     * Horizontal convolution
+     * 
+     * \b Example:
+     * \code{.py}
+     * im1 = Image("http://cmm.ensmp.fr/~faessel/smil/images/lena.png")
+     * im2 = Image(im1)
+     * kern = [ 0.0545, 0.2442, 0.4026, 0.2442, 0.0545 ]
+     * horizConvolve(im1, kern, im2)
+     * showAll()
+     * \endcode
+     */
     // Inplace safe
     template <class T>
     RES_T horizConvolve(const Image<T> &imIn, const vector<double> &kernel, Image<T> &imOut)
@@ -126,7 +137,11 @@ namespace smil
 	return RES_OK;
     }
     
-    // Vertical convolution
+    /**
+     * Vertical convolution
+     * 
+     * \see horizConvolve
+     */
     template <class T>
     RES_T vertConvolve(const Image<T> &imIn, const vector<double> &kernel, Image<T> &imOut)
     {
@@ -206,7 +221,11 @@ namespace smil
 	return RES_OK;
     }
     
-    // Convolution in both directions using the same 1D kernel
+    /**
+     * Convolution in both x and y directions using the same 1D kernel
+     * 
+     * \see horizConvolve
+     */
     template <class T>
     RES_T convolve(const Image<T> &imIn, const vector<double> &kernel, Image<T> &imOut)
     {
