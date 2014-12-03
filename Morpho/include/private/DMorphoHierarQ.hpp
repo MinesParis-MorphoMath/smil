@@ -280,21 +280,30 @@ namespace smil
 	
 	inline TokenType pop()
 	{
-	    size_t hlSize = tokenNbr[higherLevel];
-	    TokenType dOffset = stacks[higherLevel]->front();
-	    stacks[higherLevel]->pop();
-	    if (hlSize>1)
-	      tokenNbr[higherLevel]--;
-	    else if (size>1) // Find new ref level (non empty stack)
-	    {
-		tokenNbr[higherLevel] = 0;
-		findNewReferenceLevel();
-	    }
-	    size--;
-	    
-	    return dOffset;
-	}
-      
+            size_t hlSize = tokenNbr[higherLevel];
+            TokenType dOffset = stacks[higherLevel]->front();
+            if (dOffset>70000)
+                int i=0;
+            stacks[higherLevel]->pop();
+            size--;
+          
+            if (hlSize>1)
+              tokenNbr[higherLevel]--;
+            else if (size>0) // Find new ref level (non empty stack)
+            {
+                tokenNbr[higherLevel] = 0;
+                findNewReferenceLevel();
+            }
+            else // Empty -> re-initilize
+            {            
+                tokenNbr[higherLevel] = 0;
+                if (reverseOrder)
+                    higherLevel = 0;
+                else
+                    higherLevel = ImDtTypes<size_t>::max();
+          }
+          return dOffset;
+        }      
     };
 
 

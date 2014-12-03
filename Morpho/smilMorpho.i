@@ -135,6 +135,10 @@ TEMPLATE_WRAP_FUNC(lblSkiz);
 TEMPLATE_WRAP_FUNC_2T_CROSS(inflBasins);
 TEMPLATE_WRAP_FUNC(inflZones);
 TEMPLATE_WRAP_FUNC(waterfall);
+%feature("director") BaseFlooding;
+TEMPLATE_WRAP_CLASS_2T_CROSS(BaseFlooding, BaseFlooding);
+%feature("director") WatershedFlooding;
+TEMPLATE_WRAP_CLASS_2T_CROSS(WatershedFlooding, WatershedFlooding);
 
 %include "DMorphoWatershedExtinction.hpp"
 %feature("director") ExtinctionFlooding;

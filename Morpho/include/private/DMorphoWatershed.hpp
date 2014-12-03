@@ -210,7 +210,10 @@ namespace smil
   
 
     template <class T, class labelT, class HQ_Type=HierarchicalQueue<T> >
-    class watershedFlooding : public BaseFlooding<T, labelT, HQ_Type>
+    class WatershedFlooding 
+#ifndef SWIG    
+        : public BaseFlooding<T, labelT, HQ_Type>
+#endif // SWIG    
     {
       protected:
 	vector<size_t> tmpOffsets;
@@ -218,16 +221,21 @@ namespace smil
 	const T STAT_LABELED, STAT_QUEUED, STAT_CANDIDATE, STAT_WS_LINE;
 	
       public:
-	watershedFlooding()
+	WatershedFlooding()
 	  : STAT_LABELED(1), 
 	    STAT_QUEUED(2), 
 	    STAT_CANDIDATE(ImDtTypes<T>::max()-1), 
 	    STAT_WS_LINE(ImDtTypes<T>::max())
 	{
 	}
+        virtual ~WatershedFlooding()
+        {
+        }
 	
-	Image<T> *imWS;
-	
+        const Image<T> *imgIn;
+        Image<labelT> *imgLbl;
+        Image<T> *imgWS;
+	        
 	virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se)
 	{
 	    ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);
@@ -257,10 +265,12 @@ namespace smil
 	{
 	    BaseFlooding<T, labelT, HQ_Type>::initialize(imIn, imLbl, se);
 	    
-	    imWS = &imOut;
-	    imWS->setSize(this->imSize);
-	    test(imLbl, STAT_LABELED, STAT_CANDIDATE, *imWS);
-	    wsPixels = imWS->getPixels();
+            imgIn = &imIn;
+            imgLbl = &imLbl;
+	    imgWS = &imOut;
+	    imgWS->setSize(this->imSize);
+	    test(imLbl, STAT_LABELED, STAT_CANDIDATE, *imgWS);
+	    wsPixels = imgWS->getPixels();
 	    
 	    tmpOffsets.clear();
             
@@ -362,7 +372,7 @@ namespace smil
 	ASSERT_ALLOCATED(&imIn, &imMarkers, &imOut, &imBasinsOut);
 	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut, &imBasinsOut);
  
-	watershedFlooding<T,labelT> flooding;
+	WatershedFlooding<T,labelT> flooding;
 	return flooding.flood(imIn, imMarkers, imOut, imBasinsOut, se);
     }
 
