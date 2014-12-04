@@ -104,7 +104,7 @@ namespace smil
 
 	RES_T res;
 
-	if (filePrefix=="http://")
+        if (filePrefix=="http://")
 	{
     #ifdef USE_CURL
 	    string tmpFileName = "_smilTmpIO." + fileExt;
@@ -122,6 +122,12 @@ namespace smil
     #endif // USE_CURL
 	    return res;
 	}
+        else if (filePrefix=="file://")
+        {
+            string fName = filename;
+            string buf = fName.substr(7, fName.length()-7);
+            return read(buf.c_str(), image);
+        }
 
 	auto_ptr< ImageFileHandler<T> > fHandler(getHandlerForFile<T>(filename));
 	
