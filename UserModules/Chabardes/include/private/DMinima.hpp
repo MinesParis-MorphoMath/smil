@@ -3,13 +3,15 @@
 
 #include "Morpho/include/DMorpho.h"
 #include "DArrow.hpp"
+#include "DPropagate.hpp"
 
 namespace smil
 {
 
 
     template <class T>
-    RES_T fastMinima (const Image<T> &imIn, Image<T> &imOut, const StrElt &se) {
+    RES_T fastMinima (const Image<T> &imIn, Image<T> &imOut, const StrElt &se) 
+    {
 
         // Typedefs
         typedef Image<T> inT;
@@ -56,9 +58,6 @@ namespace smil
         #pragma omp parallel
         {
             size_t offset;
-            arrowPropagate<T, T, T> funcPropagation; 
-            funcPropagation.propagationValue = T(1);
-//            int this_thread = omp_get_thread_num () ;
  
             // Storing greater in out. 
             arrowGrt (imIn, arrows, cpSe, numeric_limits<T>::max());
@@ -86,12 +85,11 @@ namespace smil
                         offset = p+l*size[0]+s*size[1]*size[0];
                         if (outP[offset] == 0 && arrowP[offset] > 0)
                         {
-                            funcPropagation (arrows, imOut, cpSe, offset);
+                            bredthFirst (arrows, imOut, cpSe, offset, T(1));
                         }
                     }
                 }
             }
-
             // Normalizing values.
             for (size_t s=0; s<size[2]; ++s)
             {

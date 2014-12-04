@@ -138,7 +138,7 @@ namespace smil
         T2 labels;
     };
 
-    template <class T1, class T2>
+    template <class T1, class T2, class compOperatorT=std::equal_to<T1> >
     class labelFunctFast : public unaryMorphImageFunctionBase <T1, T2>
     {
     public:
@@ -234,7 +234,7 @@ namespace smil
                              if (n_x >= 0 && n_x < (int)this->imSize[0] &&
                                  n_y >= 0 && n_y < (int)this->imSize[1] &&
                                  n_z >= 0 && n_z < (int)this->imSize[2] &&
-                                 pixelsTmp[nbOffset] == pixelsTmp[propagation.front ()] &&
+                                compareFunc(this->pixelsIn[nbOffset], pixelsTmp[propagation.front ()]) &&
                                  this->pixelsOut[nbOffset] != current_label)
                              {
                                  this->pixelsOut[nbOffset] = current_label;
@@ -272,7 +272,7 @@ namespace smil
                         previous_value = lineIn[0];
                         previous_label = lineOut[0];
                         for (v=1; v<nPixels; ++v) {
-                            if (lineIn[v] == previous_value) {
+                            if (compareFunc (lineIn[v], previous_value)) {
                                 lineOut[v] = previous_label;
                             } else {
                                 previous_value = lineIn[v];
@@ -285,7 +285,8 @@ namespace smil
         return RES_OK;  
         }
     protected :
-            T2 labels;
+    	compOperatorT compareFunc;
+        T2 labels;
     };
      
     

@@ -237,11 +237,11 @@ se = cSE().noCenter()
 #gradient (im, imG, se)
 copy (im,imG)
 fastMinima (imG, imM, se)
-labelFast (imM, imL, se)
+label (imM, imL, se)
 mask (imG, imM, imM)
 
 arrow (imG, "==", imA, se)
-arrow (imG, "<=", imA2, se, 0)
+arrow (imG, "<", imA2, se, 0)
 
 
 ##### Display
@@ -253,6 +253,6 @@ arrLow = arrows (imG, imA2)
 #Materials.
 #labelFast (imM, imM, se)
 showLabel (objMin, imL)
-objTopo.data.materials.append(bpy.data.materials['Topo'])
-#arrPlateau.data.materials.append(bpy.data.materials['Arrows'])
+#objTopo.data.materials.append(bpy.data.materials['Topo'])
+arrLow.data.materials.append(bpy.data.materials['Arrows'])
 arrMin.data.materials.append(bpy.data.materials['Arrows2'])

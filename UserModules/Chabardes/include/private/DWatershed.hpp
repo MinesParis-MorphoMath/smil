@@ -3,18 +3,19 @@
 
 #include "DArrow.hpp"
 #include "DMinima.hpp"
+#include "DPropagate.hpp"
 
 namespace smil 
 {
 
-    template <class T, class labelT>
-    RES_T fastWatershed (const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
+    template <class T>
+    RES_T fastWatershed (const Image<T> &imIn, const Image<T> &imMarkers, Image<T> &imOut, Image<T> &imBasinsOut, const StrElt &se=DEFAULT_SE)
     {
         // Typedefs
         typedef Image<T> inT;
         typedef Image<T> outT;
         typedef Image<T> arrowT;
-        typedef Image<labelT> basinsT;
+        typedef Image<T> basinsT;
         typedef typename inT::lineType inLineT;
         typedef typename outT::lineType outLineT;
         typedef typename arrowT::lineType arrowLineT;
@@ -34,7 +35,6 @@ namespace smil
         fill(imOut, T(0));
  
         // Processing vars
-        labelT conflict_value = T(1);
         size_t size[3]; imIn.getSize(size);
         UINT sePtsNumber = cpSe.points.size();
         if (sePtsNumber == 0) return RES_OK;
@@ -47,19 +47,84 @@ namespace smil
         outLineT* outLines;
         arrowLineT* arrowLines;
         basinsLineT* basinsLines;
+        inLineT inP = imIn.getPixels();
         outLineT outP = imOut.getPixels();
         arrowLineT arrowP = arrows.getPixels();
         basinsLineT basinsP = imBasinsOut.getPixels();
 
-        fastMinima (imIn, arrows, se) ;
-        T nbr_label = fastLabel (arrows, imBasinsOut, se) ;
+        fastMinima (imIn, arrows, cpSe) ;
+        T nbr_label = fastLabel (arrows, imBasinsOut, cpSe) ;
+
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        HierarchicalQueue<T> hq[nthreads];
+
         #pragma omp parallel
         {
-            size_t offset;
-            arrowPropagateWithConflicts< T, T, labelT> funcBredthFirst(conflict_value);
-            arrowPropagate<T,T,labelT, STD_Stack<size_t> > funcDepthFirst;
-            // Rising basins independently.
+            size_t o;
             arrowLowOrEqu (imIn, arrows, cpSe, numeric_limits<T>::min());
+            for (size_t s=0; s<size[2]; ++s)
+            {
+                #pragma omp for 
+                for (size_t l=0; l<size[1]; ++l)
+                {
+                    for (size_t p=0; p<size[0]; ++p)
+                    {
+                        
+                        o = p+l*size[0]+s*size[1]*size[0];
+                        if (basinsP[o] != 0 && outP[o] != numeric_limits<T>::max())
+                        {
+                            bredthFirstConflict (arrows, imBasinsOut, imOut, cpSe, o, basinsP[o], numeric_limits<T>::max());
+                        }
+                    }
+                }
+            }
+        }
+        nbr_label = fastLabel (imOut, arrows, cpSe);
+        #pragma omp parallel
+        {
+            size_t x,y,z, o, nb_o;
+            bool oddLine;
+            UINT nbCount;
+
+            for (size_t s=0; s<size[2]; ++s)
+            {
+                #pragma omp for 
+                for (size_t l=0; l<size[1]; ++l)
+                {
+                    oddLine  = se.odd && l%2;
+
+                    for (size_t p=0; p<size[0]; ++p)
+                    {
+                        o = p+l*size[0]+s*size[1]*size[0];
+                        if (outP[0] != 0)
+                        {
+                            nbCount = 0;
+                            for (UINT p=0; p<sePtsNumber; ++p)
+                            {
+                                x = p + cpSe.points[p].x;
+                                y = l + cpSe.points[p].y;
+                                z = s + cpSe.points[p].z;
+                                if (oddLine)
+                                    x += (y+1)%2;
+                                nb_o = x + y*size[0] + z*size[1]*size[0];
+                                if (basinsP[nb_o] != 0 && outP[nb_o] == 0) {
+                                    ++nbCount;
+                                }
+                            }
+
+                        }                      
+                    }
+                }
+            }
+        }
+
+/*        #pragma omp parallel
+        {
+            size_t offset;
+//            arrowPropagateWithConflicts< T, T, labelT> funcBredthFirst(conflict_value);
+//            arrowPropagate<T,T,labelT, STD_Stack<size_t> > funcDepthFirst;
+            // Rising basins independently.
+            qarrowLowOrEqu (imIn, arrows, cpSe, numeric_limits<T>::min());
             for (size_t s=0; s<size[2]; ++s)
             {
                 #pragma omp for
@@ -72,14 +137,14 @@ namespace smil
                         if (basinsP[offset] != 0 && outP[offset] != conflict_value)
                         {
 
-                            funcBredthFirst.propagationValue = basinsP[offset];
-                            funcBredthFirst (arrows, imOut, imBasinsOut, cpSe, offset) ;
+                            //funcBredthFirst.propagationValue = basinsP[offset];
+                            //funcBredthFirst (arrows, imOut, imBasinsOut, cpSe, offset) ;
                         }
                     }
                 }
                 
             }
-            #pragma omp single
+/*            #pragma omp single
             {
             imOut.printSelf (1);
             imBasinsOut.printSelf (1);
@@ -132,28 +197,8 @@ namespace smil
                     }
                 }
             }
-
-            // Labelling the remaining unlabelled pixels with a depth first approach. 
-            /*
-            arrowGrtOrEqu (imIn, arrows, cpSe, numeric_limits<T>::max());    
-            for (size_t s=0; s<size[2]; ++s) 
-            {
-                #pragma omp for
-                for (size_t l=0; l<size[1]; ++l) 
-                {
-                    for (size_t p=0; p<size[0]; ++p)
-                    {
-                        offset = p+l*size[0]+s*size[1]*size[0];
-                        if (basinsP[offset] == 0)
-                        {
-                            func
-                        }
-                    }
-                }
-            }*/
-        } 
-        imOut.printSelf (1);
-        imBasinsOut.printSelf (1);
+        }
+*/
     }
 
 }
