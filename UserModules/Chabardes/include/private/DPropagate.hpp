@@ -1,8 +1,6 @@
 #ifndef __DPROPAGATE_HPP_
 #define __DPROPAGATE_HPP_
 
-#include "DUtils.hpp"
-
 namespace smil
 {
     template <class arrowT, class valT>
