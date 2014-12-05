@@ -143,6 +143,8 @@ namespace smil
 	{
 	}
 	
+        virtual ~Graph() {}
+	
 	Graph &operator =(const Graph &rhs)
 	{
 	    nodes = rhs.nodes;
