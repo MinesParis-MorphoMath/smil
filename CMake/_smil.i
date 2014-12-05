@@ -153,15 +153,20 @@ class showImageSlot(BaseImageEventSlot):
 _showImageSlot = showImageSlot()
 
 class createImageSlot(BaseImageEventSlot):
-    def __init__(self):
-      BaseImageEventSlot.__init__(self)
     def run(self, event):
       img = event.sender
       img.onShow.connect(_showImageSlot)
 
+class deleteImageSlot(BaseImageEventSlot):
+    def run(self, event):
+      img = event.sender
+      guess_images_name()
+
 core = Core.getInstance()
 _newImageSlot = createImageSlot()
+_delImageSlot = deleteImageSlot()
 core.onBaseImageCreated.connect(_newImageSlot)
+core.onBaseImageDestroyed.connect(_delImageSlot)
       
       
 def Image(*args):
