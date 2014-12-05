@@ -2,13 +2,9 @@
 #define __DPROPAGATE_HPP_
 
 
-#if _OPENMP > 200805 // ( > 3.0)
-  #define OMP_ATOMIC_READ read
-  #define OMP_ATOMIC_WRITE write
+#if _OPENMP < 201107 // (  < 3.1)
+  #error To use this module, you need OpenMP >= 3.1  (GCC >= 4.7)
 #else
-  #define OMP_ATOMIC_READ critical
-  #define OMP_ATOMIC_WRITE critical
-#endif
 
 namespace smil
 {
@@ -59,7 +55,7 @@ namespace smil
                         x += (y+1)%2;
                     nb_o = x + y*size[0] + z*size[1]*size[0];
 
-                    #pragma omp OMP_ATOMIC_READ
+                    #pragma omp atomic read
                     atomic_read = imP[nb_o];
 
                     if (atomic_read != val)
@@ -67,7 +63,7 @@ namespace smil
                         q.push (nb_o);
                     }
 
-                    #pragma omp OMP_ATOMIC_WRITE
+                    #pragma omp atomic write
                     imP[nb_o] = val;
                 }
             }
@@ -112,14 +108,14 @@ namespace smil
 
             o = pq.front (); pq.pop ();
 
-            #pragma omp OMP_ATOMIC_READ
+            #pragma omp atomic read
             atomic_p = imB[o];
 
             imB[o] = pVal;
             
             if (atomic_p != pVal && atomic_p > pT(0))
             {
-                #pragma omp OMP_ATOMIC_READ
+                #pragma omp atomic read
                 atomic_c = imWS[o];
 
                 if (atomic_c == cT(0))
@@ -129,7 +125,7 @@ namespace smil
                     {
                         o2 = cq.front(); cq.pop();
 
-                        #pragma omp OMP_ATOMIC_WRITE
+                        #pragma omp atomic write
                         imWS[o2] = cVal;
 
                         z0 = o2 / (size[1] * size[0]);
@@ -150,7 +146,7 @@ namespace smil
                                     x += (y+1)%2;
                                 nb_o = x + y*size[0] + z*size[1]*size[0];
 
-                                #pragma omp OMP_ATOMIC_READ
+                                #pragma omp atomic read
                                 atomic_c = imWS[nb_o];
                                 
                                 if (atomic_c != cVal)
@@ -178,7 +174,7 @@ namespace smil
                             x += (y+1)%2;
                         nb_o = x + y*size[0] + z*size[1]*size[0];
 
-                        #pragma omp OMP_ATOMIC_READ
+                        #pragma omp atomic read
                         atomic_p = imB[nb_o];
 
                         if (atomic_p != pVal) {
@@ -192,5 +188,7 @@ namespace smil
     }
 
 }
+
+#endif // openmp
 
 #endif // _DPROPAGATE_HPP_
