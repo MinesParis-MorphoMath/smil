@@ -94,6 +94,14 @@ namespace smil
             return iFunc._exec(imIn, imOut, se);
     }
     
+    Image<UINT8> gradient_LAB(const Image<RGB> &imIn, const StrElt &se, bool convertFirstToLAB)
+    {
+        Image<UINT8> imOut(imIn);
+        ASSERT(gradient_LAB(imIn, se, convertFirstToLAB)==RES_OK, RES_ERR, imOut)
+        return imOut;
+    }
+    
+    
     class hlsGrad_func : public unaryMorphImageFunctionBase<RGB, UINT8>
     {
         ImDtTypes<UINT8>::lineType H, L, S;
@@ -164,6 +172,12 @@ namespace smil
             return iFunc._exec(imIn, imOut, se);
     }
     
+    Image<UINT8> gradient_HLS(const Image<RGB> &imIn, const StrElt &se, bool convertFirstToHLS)
+    {
+        Image<UINT8> imOut(imIn);
+        ASSERT(gradient_HLS(imIn, se, convertFirstToHLS)==RES_OK, RES_ERR, imOut)
+        return imOut;
+    }
     
 
     

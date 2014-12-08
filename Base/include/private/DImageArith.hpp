@@ -691,7 +691,7 @@ namespace smil
 	ASSERT_ALLOCATED(&imIn1, &imOut);
 	ASSERT_SAME_SIZE(&imIn1, &imOut);
 
-	return binaryImageFunction<T, lowLine<T> >(imIn1, value, imOut);
+	return binaryImageFunction<T, lowOrEquLine<T> >(imIn1, value, imOut);
     }
 
     /**

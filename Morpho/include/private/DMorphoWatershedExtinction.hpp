@@ -273,7 +273,7 @@ namespace smil
 			labelT eaten = (eater==l1_orig) ? l2_orig : l1_orig;
 			
 			if (graph)
-			  graph->addEdge(eaten, eater, this->extinctionValues[eaten]);
+			  graph->addEdge(eaten, eater, this->extinctionValues[eater==l1_orig ? l2 : l1]);
 		    }
 		}
 	    }

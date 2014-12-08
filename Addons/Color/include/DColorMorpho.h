@@ -39,7 +39,9 @@
 namespace smil
 {
     RES_T gradient_LAB(const Image<RGB> &imIn, Image<UINT8> &imOut, const StrElt &se=DEFAULT_SE, bool convertFirstToLAB=true);
+    Image<UINT8> gradient_LAB(const Image<RGB> &imIn, const StrElt &se=DEFAULT_SE, bool convertFirstToLAB=true);
     RES_T gradient_HLS(const Image<RGB> &imIn, Image<UINT8> &imOut, const StrElt &se=DEFAULT_SE, bool convertFirstToHLS=true);
+    Image<UINT8> gradient_HLS(const Image<RGB> &imIn, const StrElt &se=DEFAULT_SE, bool convertFirstToHLS=true);
 } // namespace smil
 
 #endif // _D_COLOR_MORPHO_H

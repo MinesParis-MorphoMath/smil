@@ -196,7 +196,7 @@ namespace smil
 		{
 		    lblPixels[nbOffset] = lblPixels[curOffset];
 		    hq.push(inPixels[nbOffset], nbOffset);
-		    insertPixel(nbOffset, lblPixels[nbOffset]);
+		    insertPixel(nbOffset, lblPixels[curOffset]);
 		}
 	}
 	

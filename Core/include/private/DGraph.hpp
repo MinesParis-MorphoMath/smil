@@ -42,6 +42,8 @@
 
 namespace smil
 {
+  
+  
     /**
      * Non-oriented edge
      * \see Graph
@@ -71,6 +73,14 @@ namespace smil
         {
         }
 	
+        Edge &operator =(const Edge &rhs)
+        {
+            source = rhs.source;
+            target = rhs.target;
+            weight = rhs.weight;
+            return *this;
+        }
+        
 	//! Source node
 	size_t source;
 	//! Target node
@@ -95,7 +105,7 @@ namespace smil
 	
 	inline bool operator <(const Edge &rhs) const
 	{
-	    return weight>=rhs.weight;
+	    return weight>rhs.weight;
 	}
 	
 	virtual void printSelf(ostream &os = std::cout, string s="") const
@@ -104,7 +114,6 @@ namespace smil
 	}
     };
 
-    
     /**
      * Non-oriented graph
      * \see Edge
@@ -212,7 +221,16 @@ namespace smil
 	
 	void sortEdges()
 	{
-	    sort(edges.begin(), edges.end());
+            vector< Edge<edgeWT> > sEdges = edges;
+	    sort(sEdges.begin(), sEdges.end());
+            
+            nodes.clear();
+            edges.clear();
+            nodeEdges.clear();
+            edgeNbr = 0;
+            
+            for (typename vector< Edge<edgeWT> >::const_iterator it=sEdges.begin();it!=sEdges.end();it++)
+              addEdge(*it, false);
 	}
 	
 	Graph<nodeT, edgeWT> clone()
