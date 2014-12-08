@@ -149,7 +149,7 @@ namespace smil
     private:
       
 	size_t GRAY_LEVEL_NBR;
-	size_t TYPE_FLOOR;
+	size_t GRAY_LEVEL_MIN;
 	StackType **stacks;
 	size_t *tokenNbr;
 	size_t size;
@@ -162,12 +162,9 @@ namespace smil
 	HierarchicalQueue(bool rOrder=false)
 	  : reverseOrder(rOrder)
 	{
-	    GRAY_LEVEL_NBR = ImDtTypes<T>::cardinal();
-	    TYPE_FLOOR = -ImDtTypes<T>::min();
-	    
-	    stacks = new StackType*[GRAY_LEVEL_NBR]();
-	    tokenNbr = new size_t[GRAY_LEVEL_NBR];
-	    initialized = false;
+            stacks = NULL;
+            tokenNbr = NULL;
+            initialized = false;
 	}
 	~HierarchicalQueue()
 	{
@@ -196,6 +193,14 @@ namespace smil
 	    if (initialized)
 	      reset();
 	    
+            vector<T> rVals = rangeVal(img);
+            
+            GRAY_LEVEL_MIN = rVals[0];
+            GRAY_LEVEL_NBR = rVals[1]-rVals[0]+1;
+            
+            stacks = new StackType*[GRAY_LEVEL_NBR]();
+            tokenNbr = new size_t[GRAY_LEVEL_NBR];
+            
 	    if (StackType::preallocate)
 	    {
 		size_t *h = new size_t[GRAY_LEVEL_NBR];
@@ -236,12 +241,12 @@ namespace smil
 	
 	inline size_t getHigherLevel()
 	{
-	    return higherLevel;
+	    return GRAY_LEVEL_MIN + higherLevel;
 	}
 	
 	inline void push(T value, TokenType dOffset)
 	{
-	    size_t level = TYPE_FLOOR + size_t(value);
+	    size_t level = size_t(value) - GRAY_LEVEL_MIN;
 	    if (reverseOrder)
 	    {
 		if (level>higherLevel)

@@ -43,6 +43,7 @@ int main(int argc, char *argv[])
     UINT BENCH_NRUNS = 100;
     
     BENCH_IMG(ultimateOpen, im1, im2, im3);
+    BENCH_IMG(areaOpen, im1, 10, im2);
         
 }
 
