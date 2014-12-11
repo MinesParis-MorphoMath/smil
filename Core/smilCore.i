@@ -309,7 +309,9 @@ namespace smil
 namespace smil
 {
     // Base (size_t) Edge
+#ifndef SMIL_WRAP_UINT32
     %template(Edge_UINT) Edge<UINT>;
+#endif // SMIL_WRAP_UINT32
     TEMPLATE_WRAP_CLASS(Edge, Edge);
 
 
@@ -332,7 +334,9 @@ namespace smil
 #ifndef SWIGXML
 namespace std 
 {
+#ifndef SMIL_WRAP_UINT32
     %template(EdgeVector_UINT) std::vector< smil::Edge<UINT> >;
+#endif // SMIL_WRAP_UINT32
     
     TEMPLATE_WRAP_VECTOR_SUBTYPE(Edge);
 }
