@@ -1079,6 +1079,8 @@ namespace smil
 	
 	for (size_t i=0;i<imIn.getPixelCount();i++)
 	  pixOut[i] = outVals[ pixIn[i] ];
+        
+        imOut.modified();
 
 	return RES_OK;
     }

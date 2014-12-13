@@ -388,6 +388,12 @@ namespace smil
     template<class T1, class T2>
     size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
+        if ((void*)&imIn==(void*)&imOut)
+        {
+            Image<T1> tmpIm(imIn, true); // clone
+            return label(tmpIm, imOut);
+        }
+        
 	ASSERT_ALLOCATED(&imIn, &imOut);
 	ASSERT_SAME_SIZE(&imIn, &imOut);
 	

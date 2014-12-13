@@ -182,6 +182,19 @@ namespace smil
               nodeValues[ind] = val;
 	}
 	
+        inline EdgeType *findEdge(const EdgeType &e)
+        {
+            typename vector< EdgeType >::iterator foundEdge = find(edges.begin(), edges.end(), e);
+            if (foundEdge!=edges.end())
+                return &(*foundEdge);
+            else return NULL;
+        }
+        
+        inline EdgeType *findEdge(const size_t &src, const size_t &targ)
+        {
+            return findEdge(EdgeType(src, targ));
+        }
+        
 	/**
 	 * Add an edge to the graph. 
 	 * If checkIfExists is \b true:

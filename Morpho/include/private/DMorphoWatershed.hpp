@@ -235,7 +235,11 @@ namespace smil
         }
 	
         Image<T> *imgWS;
-	        
+#ifdef SWIG
+        const Image<T> *imgIn;
+        Image<labelT> *imgLbl;
+#endif // SWIG
+
 	virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se)
 	{
 	    ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);

@@ -251,20 +251,39 @@ namespace smil
                 if (*lIt<=this->currentLevel)
                 {
                 
-                    labelT l1 = mIt->first, l1_equ = this->equivalentLabels[l1];
-                    labelT l2 = mIt->second, l2_equ = this->equivalentLabels[l2];
+                    labelT l1_orig = mIt->first, l1 = l1_orig;
+                    labelT l2_orig = mIt->second, l2 = l2_orig;
                     
-                    if (l1_equ != l2_equ)
+                    while (l1!=equivalentLabels[l1])
+                      l1 = equivalentLabels[l1];
+                    while (l2!=equivalentLabels[l2])
+                      l2 = equivalentLabels[l2];
+
+                    if (l1 != l2)
                     {
                         // merge basins
-                        labelT eater = (mergeBasins(l1_equ, l2_equ)==l1_equ) ? l1 : l2;
-                        labelT eaten = (eater==l1) ? l2 : l1;
-                        equivalentLabels[eaten] = eater;
-                        updateEquTable(eaten, eater);
+                        labelT eater = mergeBasins(l1, l2), eaten;
+                        labelT eater_orig, eaten_orig;
+                        
+                        if (eater==l1)
+                        {
+                            eater_orig = l1_orig;
+                            eaten = l2;
+                            eaten_orig = l2_orig;
+                        }
+                        else
+                        {
+                            eater_orig = l2_orig;
+                            eaten = l1;
+                            eaten_orig = l1_orig;
+                        }
                         
                         if (graph)
-                          graph->addEdge(eaten, eater, this->extinctionValues[eaten==l1 ? l1_equ : l2_equ]);
-                        
+                            graph->addEdge(eater_orig, eaten_orig, this->extinctionValues[eaten]);
+                            
+                        equivalentLabels[eaten_orig] = eater;
+                        equivalentLabels[eaten] = eater;
+//                         updateEquTable(eaten, eater);
                     }
                     pendingMerges.erase(mIt);
                     mergeLevels.erase(lIt);
@@ -290,7 +309,12 @@ namespace smil
             }
 
             BaseFlooding<T, labelT, HQ_Type>::processPixel(curOffset);
-            insertPixel(curOffset, equivalentLabels[this->lblPixels[curOffset]]);
+            
+            labelT l1 = this->lblPixels[curOffset];
+            while (l1!=equivalentLabels[l1])
+                l1 = equivalentLabels[l1];
+            
+            insertPixel(curOffset, l1);
             
             lastOffset = curOffset;
         }
@@ -306,7 +330,7 @@ namespace smil
                 this->lblPixels[nbOffset] = l1; //labelNbr+1;
                 this->hq.push(this->inPixels[nbOffset], nbOffset);
             }
-            else //if (this->inPixels[nbOffset] <= this->currentLevel)
+            else if (equivalentLabels[l1]!=equivalentLabels[l2])
             {
                 typename std::pair<labelT,labelT> p = make_pair<labelT>(min(l1,l2), max(l1,l2));
                 typename std::vector< std::pair<labelT,labelT> >::iterator mFound = find(pendingMerges.begin(), pendingMerges.end(), p);
@@ -375,6 +399,8 @@ namespace smil
                 eaten = lbl1;
             }
             
+            if (this->extinctionValues[eaten]!=0)
+                cout << "error " << this->extinctionValues[eaten] << " " << areas[eaten] << endl;
             this->extinctionValues[eaten] = areas[eaten];
             areas[eater] += areas[eaten];
             
