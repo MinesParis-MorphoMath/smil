@@ -66,11 +66,11 @@ class Test_Extinction_Flooding : public TestCase
 	imMark << vecMark;
 
 	UINT8 basinsTruth[] = {
-	  1,    1,    1,    1,    1,
-	    1,    1,    1,    1,    1,
-	  1,    1,    3,    3,    3,
-	    2,    2,    3,    3,    3,
-	  2,    2,    3,    3,    3,
+          1,    1,    1,    1,    1,
+            1,    1,    3,    3,    3,
+          2,    2,    3,    3,    3,
+            2,    2,    3,    3,    3,
+          2,    2,    3,    3,    3,
 	};
 	imTruth << basinsTruth;
 	  
@@ -86,11 +86,11 @@ class Test_Extinction_Flooding : public TestCase
 	
 	// Area
 	UINT8 areaTruth[] = {
-	  0,   22,    0,    0,    0,
-	    0,    0,    0,    0,    0,
-	  0,    0,    0,    0,    0,
-	    0,    4,    0,    6,    0,
-	  0,    4,    0,    0,    6,
+          0,  31,   0,   0,   0,
+          0,   0,   0,   0,   0,
+          0,   0,   0,   0,   0,
+          0,   6,   0,   8,   0,
+          0,   6,   0,   0,   8,
 
 	};
 	imTruth << areaTruth;
@@ -136,11 +136,11 @@ class Test_Area_Extinction : public TestCase
 	
 	// Area
 	UINT16 areaTruth[] = {
-	  0,   22,    0,    0,    0,
-	    0,    0,    0,    0,    0,
-	  0,    0,    0,    0,    0,
-	    0,    4,    0,    6,    0,
-	  0,    4,    0,    0,    6,
+          0,  31,   0,   0,   0,
+          0,   0,   0,   0,   0,
+          0,   0,   0,   0,   0,
+          0,   6,   0,   8,   0,
+          0,   6,   0,   0,   8,
 
 	};
 	imTruth << areaTruth;
@@ -192,7 +192,7 @@ class Test_Volumic_Extinction : public TestCase
 	      0,    2,    0,    3,    0,
 	    0,    2,    0,    0,    3,
 	};
-	StrElt se = sSE();
+	StrElt se = hSE();
 
 	Image_UINT8 imIn (5,5) ;
 	Image_UINT8 imMark (imIn) ;
@@ -209,8 +209,8 @@ class Test_Volumic_Extinction : public TestCase
 	  0,   6,   0,   0,   0,
 	  0,   0,   0,   0,   0,
 	  0,   0,   0,   0,   0,
-	  0, 151,   0,  30,   0,
-	  0, 151,   0,   0,  30,
+	  0, 192,   0,  30,   0,
+	  0, 192,   0,   0,  30,
 	};
 	imTruth << volumeTruth;
 	
@@ -278,8 +278,8 @@ class Test_Dynamic_Extinction : public TestCase
 	  0,   1,   0,   0,   0,
 	  0,   0,   0,   0,   0,
 	  0,   0,   0,   0,   0,
-	  0,   4,   0,  20,   0,
-	  0,   4,   0,   0,  20,
+	  0,   4,   0,   9,   0,
+	  0,   4,   0,   0,   9,
 	};
 	imTruth << dynamicTruth;
 	
@@ -346,7 +346,7 @@ class Test_Watershed_Extinction_Graph : public TestCase
 
 	vector<Edge<UINT8> > trueEdges;
 	trueEdges.push_back(Edge<UINT8>(1,2, 6));
-	trueEdges.push_back(Edge<UINT8>(3,1, 30));
+	trueEdges.push_back(Edge<UINT8>(3,2, 30));
 
 	watershedExtinctionGraph (imIn, imMark, imResult, graph, "v", se) ;
 	
@@ -355,7 +355,7 @@ class Test_Watershed_Extinction_Graph : public TestCase
 	    graph.printSelf();
 	
 	vector<Edge<UINT8> > trueEdges2;
-	trueEdges2.push_back(Edge<UINT8>(3,1, 1));
+	trueEdges2.push_back(Edge<UINT8>(3,2, 1));
 	trueEdges2.push_back(Edge<UINT8>(1,2, 2));
 	
 	Graph<UINT8,UINT8> rankGraph = watershedExtinctionGraph (imIn, imMark, imResult, "v", se) ;
@@ -363,6 +363,46 @@ class Test_Watershed_Extinction_Graph : public TestCase
 	TEST_ASSERT(trueEdges2==rankGraph.getEdges());
 	if (retVal!=RES_OK)
 	    rankGraph.printSelf();
+    }
+};
+
+class Test_Watershed_Extinction_Compare : public TestCase 
+{
+    virtual void run () 
+    {
+        Image_UINT8 imGrad (5,5) ;
+        Image_UINT8 imMark (imGrad) ;
+        Image_UINT8 imBasins (imGrad) ;
+        Image_UINT8 imOut (imGrad) ;
+        Image_UINT8 imOut2 (imGrad) ;
+
+        UINT8 vecGrad[] = {
+            2,    2,    2,    2,    2,
+              3,    2,    5,    9,    5,
+            3,    3,    9,    0,    0,
+              1,    1,    9,    0,    0,
+            1,    1,    9,    0,    0,
+        };
+        UINT8 vecMark[] = {
+            0,    2,    0,    0,    0,
+              0,    0,    0,    0,    0,
+            0,    0,    0,    0,    0,
+              0,    1,    0,    3,    0,
+            0,    1,    0,    0,    3,
+        };
+
+        imGrad << vecGrad;
+        imMark << vecMark;
+                
+        Graph<UINT8,UINT8> g2 = watershedExtinctionGraph(imGrad, imMark, imBasins, "v");
+        g2.removeLowEdges(2);
+        graphToMosaic(imBasins, g2, imOut);
+      
+        watershedExtinction(imGrad, imMark, imOut2, imBasins, "v");
+        compare(imOut2, ">", (UINT8)2, (UINT8)0, imMark, imMark);
+        basins(imGrad, imMark, imOut2);
+        
+        TEST_ASSERT(imOut==imOut2);
     }
 };
 
@@ -376,20 +416,8 @@ int main(int argc, char *argv[])
     ADD_TEST(ts, Test_Volumic_Extinction);
     ADD_TEST(ts, Test_Dynamic_Extinction);
     ADD_TEST(ts, Test_Watershed_Extinction_Graph);
+    ADD_TEST(ts, Test_Watershed_Extinction_Compare);
 
-//     Image<UINT8> imIn("http://cmm.ensmp.fr/~faessel/smil/images/mosaic.png");
-//     Image<UINT8> imGrad(imIn);
-//     Image<UINT16> imMark(imIn);
-//     Image<UINT16> imBasins(imIn);
-//     Image<UINT16> imOut(imIn);
-//     
-//     gradient(imIn, imGrad);
-//     minimaLabeled(imGrad, imMark);
-//     
-//     watershedExtinction(imGrad, imMark, imOut,imBasins);
-//     imBasins.showLabel();
-//     
-//     Gui::execLoop();
     
     return ts.run();
 

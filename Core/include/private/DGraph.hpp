@@ -388,7 +388,7 @@ namespace smil
 	    
 	    while(!nodeList.empty())
 	    {
-		propagateLabel(*(nodeList.begin()), curLabel++, lookup, nodeList);
+		propagateLabel(*(nodeList.begin()), *(nodeList.begin()), lookup, nodeList);
 	    }
 	    return lookup;
 	}

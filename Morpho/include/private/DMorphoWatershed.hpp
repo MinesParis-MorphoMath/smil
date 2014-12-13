@@ -76,13 +76,13 @@ namespace smil
 	bool oddSE;
 	vector<int> dOffsets;
 	
-	// Basins functions
-	inline virtual void insertPixel(const size_t &offset, const labelT &lbl) {}
-	
 	T currentLevel;
 	
       public:
       
+        const Image<T> *imgIn;
+        Image<labelT> *imgLbl;
+        
 	virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
 	{
 	    ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);
@@ -100,6 +100,9 @@ namespace smil
 	
 	virtual RES_T initialize(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
 	{
+            imgIn = &imIn;
+            imgLbl = &imLbl;
+            
 	    // Empty the priority queue
 	    hq.initialize(imIn);
 	    
@@ -137,7 +140,6 @@ namespace smil
 		  if (lblPixels[offset]!=0)
 		  {
 		      hq.push(inPixels[offset], offset);
-		      this->insertPixel(offset, lblPixels[offset]);
 		  }
 		  offset++;
 		}
@@ -178,11 +180,11 @@ namespace smil
 		    if (x>=0 && x<(int)imSize[0] && y>=0 && y<(int)imSize[1] && z>=0 && z<(int)imSize[2])
 		    {
 			nbOffset = curOffset + dOffsets[i];
-			
+                        
 			if (oddLine)
 			  nbOffset += (((y+1)%2)!=0);
 			
-			processNeighbor(curOffset, nbOffset);
+                        processNeighbor(curOffset, nbOffset);
 			
 		    }
 		}
@@ -196,7 +198,7 @@ namespace smil
 		{
 		    lblPixels[nbOffset] = lblPixels[curOffset];
 		    hq.push(inPixels[nbOffset], nbOffset);
-		    insertPixel(nbOffset, lblPixels[curOffset]);
+// 		    insertPixel(nbOffset, lblPixels[curOffset]);
 		}
 	}
 	
@@ -232,8 +234,6 @@ namespace smil
         {
         }
 	
-        const Image<T> *imgIn;
-        Image<labelT> *imgLbl;
         Image<T> *imgWS;
 	        
 	virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se)
@@ -265,8 +265,6 @@ namespace smil
 	{
 	    BaseFlooding<T, labelT, HQ_Type>::initialize(imIn, imLbl, se);
 	    
-            imgIn = &imIn;
-            imgLbl = &imLbl;
 	    imgWS = &imOut;
 	    imgWS->setSize(this->imSize);
 	    test(imLbl, STAT_LABELED, STAT_CANDIDATE, *imgWS);
@@ -313,7 +311,6 @@ namespace smil
 		if (this->lblPixels[curOffset]==0)
 		{
 		    this->lblPixels[curOffset] = this->lblPixels[nbOffset];
-		    this->insertPixel(curOffset, this->lblPixels[curOffset]);
 		}
 		else if (this->lblPixels[curOffset]!=this->lblPixels[nbOffset])
 		  this->wsPixels[curOffset] = STAT_WS_LINE;
