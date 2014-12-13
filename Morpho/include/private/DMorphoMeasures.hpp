@@ -53,38 +53,38 @@ namespace smil
     template <class T>
     vector<double> measGranulometry(const Image<T> &imIn, const StrElt &se=DEFAULT_SE, const unsigned int stepSize=1, bool CDF=true)
     {
-	vector<double> res;
-	
-	ASSERT(imIn.isAllocated(), res);
+        vector<double> res;
+        
+        ASSERT(imIn.isAllocated(), res);
 
-	Image<T> imEro(imIn, true); // clone
-	Image<T> imOpen(imIn);
-	
-	size_t seSize = stepSize;
-	double a0 = area(imIn), a1;
-	
-	do
-	{
-	    erode(imEro, imEro, se(stepSize));
-	    dilate(imEro, imOpen, se(seSize));
-	    a1 = area(imOpen);
-	    res.push_back(a0-a1);
-	    a0 = a1;
-	    seSize += stepSize;
-	    
-	} while(a0>0);
-	
-	if (CDF)
-	{
-	    double aSum = 0;
-	    for (size_t i=0;i<res.size();i++)
-	      aSum += res[i];
-	    res[0] /= aSum;
-	    for (size_t i=1;i<res.size();i++)
-	      res[i] = res[i]/aSum + res[i-1];
-	}
-	    
-	return res;
+        Image<T> imEro(imIn, true); // clone
+        Image<T> imOpen(imIn);
+        
+        size_t seSize = stepSize;
+        double a0 = area(imIn), a1;
+        
+        do
+        {
+            erode(imEro, imEro, se(stepSize));
+            dilate(imEro, imOpen, se(seSize));
+            a1 = area(imOpen);
+            res.push_back(a0-a1);
+            a0 = a1;
+            seSize += stepSize;
+            
+        } while(a0>0);
+        
+        if (CDF)
+        {
+            double aSum = 0;
+            for (size_t i=0;i<res.size();i++)
+              aSum += res[i];
+            res[0] /= aSum;
+            for (size_t i=1;i<res.size();i++)
+              res[i] = res[i]/aSum + res[i-1];
+        }
+            
+        return res;
     }
 
    

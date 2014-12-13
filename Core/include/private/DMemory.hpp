@@ -103,10 +103,10 @@ namespace smil
     template<typename T> 
     inline void Dmemcpy(T *out, const T *in, size_t size)
     {
-	while (size--)
-	{
-	    *out++ = *in++;
-	}
+        while (size--)
+        {
+            *out++ = *in++;
+        }
     }
 
 
@@ -136,7 +136,7 @@ namespace smil
 
       for(i=0 ; i<nbshift ; i++)  
       {
-	lineout[i] = shiftValue;
+        lineout[i] = shiftValue;
       }
 
       memcpy(lineout+nbshift,linein,(lineWidth-nbshift)*sizeof(T));
@@ -151,7 +151,7 @@ namespace smil
 
       for(i=lineWidth-nbshift ; i<lineWidth ; i++)  
       {
-	lineout[i] = shiftValue;
+        lineout[i] = shiftValue;
       }
 
       memcpy(lineout,linein+nbshift,(lineWidth-nbshift)*sizeof(T));
@@ -160,12 +160,12 @@ namespace smil
 
     inline size_t PTR_OFFSET(void *p, size_t n=SIMD_VEC_SIZE)
     {
-	return ((size_t)p) & (n-1);
+        return ((size_t)p) & (n-1);
     }
 
     inline std::string displayBytes(size_t bytes)
     {
-	    std::ostringstream oss;
+            std::ostringstream oss;
             if (bytes==0)
             {
                 oss << "0 B";

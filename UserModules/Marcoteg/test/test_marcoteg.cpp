@@ -35,8 +35,8 @@ class Test_Marcoteg : public TestCase
   {
       Image_UINT8 im1(256, 256);
       Image_UINT8 im2(im1);
-		Graph<UINT8,UINT8> g;
-		//      Graph <UINT,UINT16> g;
+                Graph<UINT8,UINT8> g;
+                //      Graph <UINT,UINT16> g;
       magicWandSeg(im1,im2,g);
 
   }

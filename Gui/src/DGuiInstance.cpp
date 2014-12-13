@@ -38,37 +38,37 @@ namespace smil
 {
 
 
-	template <>
-	RES_T UniqueInstance<Gui>::initialize()
-	{
-		if (Gui::_instance == NULL)
-		{
-	#ifdef USE_QT
-		// Check if there is already a qapplication running
-		if (!qApp)
-		  Gui::_instance =  new QtAppGui;
-		else
-		  Gui::_instance =  new QtGui;
-	#else // USE_QT
-			Gui::_instance =  new Gui;
-	#endif // USE_QT
-		}
-		return RES_OK;
-	}
+        template <>
+        RES_T UniqueInstance<Gui>::initialize()
+        {
+                if (Gui::_instance == NULL)
+                {
+        #ifdef USE_QT
+                // Check if there is already a qapplication running
+                if (!qApp)
+                  Gui::_instance =  new QtAppGui;
+                else
+                  Gui::_instance =  new QtGui;
+        #else // USE_QT
+                        Gui::_instance =  new Gui;
+        #endif // USE_QT
+                }
+                return RES_OK;
+        }
 
-	void Gui::execLoop()
-	{
-		Gui::getInstance()->_execLoop();
-	}
+        void Gui::execLoop()
+        {
+                Gui::getInstance()->_execLoop();
+        }
 
-	void Gui::processEvents()
-	{
-		Gui::getInstance()->_processEvents();
-	}
+        void Gui::processEvents()
+        {
+                Gui::getInstance()->_processEvents();
+        }
 
-	void Gui::showHelp()
-	{
-		Gui::getInstance()->_showHelp();
-	}
+        void Gui::showHelp()
+        {
+                Gui::getInstance()->_showHelp();
+        }
 
 }

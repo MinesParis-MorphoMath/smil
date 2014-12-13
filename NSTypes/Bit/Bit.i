@@ -38,15 +38,15 @@ namespace smil
       %ignore BitArray::operator[];
       %extend BitArray
       {
-	      std::string  __str__() {
-		  std::stringstream os;
-		  os << *self;
-		  return os.str();
-	      }
+              std::string  __str__() {
+                  std::stringstream os;
+                  os << *self;
+                  return os.str();
+              }
 
-	      bool operator[] (UINT i)
-	      {
-	      }
+              bool operator[] (UINT i)
+              {
+              }
 
       }
       %ignore BitArray::operator++;

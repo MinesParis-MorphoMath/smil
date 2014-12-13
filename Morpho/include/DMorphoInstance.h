@@ -44,23 +44,23 @@ namespace smil
 
     class  Morpho : public UniqueInstance<Morpho>
     {
-	friend class UniqueInstance<Morpho>;
+        friend class UniqueInstance<Morpho>;
 
     protected:
-	Morpho ()
-	{
-	    this->defaultSE = SquSE();
-	}
-	
-	~Morpho () {}
+        Morpho ()
+        {
+            this->defaultSE = SquSE();
+        }
+        
+        ~Morpho () {}
 
     public:
-	// Public interface
+        // Public interface
 
-	static StrElt &getDefaultSE();
-	static void setDefaultSE(const StrElt &se);
+        static StrElt &getDefaultSE();
+        static void setDefaultSE(const StrElt &se);
     protected:
-	StrElt defaultSE;
+        StrElt defaultSE;
     private:
     };
 

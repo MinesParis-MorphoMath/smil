@@ -41,40 +41,40 @@ class TestArrow : public TestCase
       Image_UINT8 imTruth(5,5);
       
       UINT8 vec1[] = { 
-	1, 3, 10, 2, 9, 
-	5, 5, 5, 9, 3, 
-	3, 5, 7, 5, 5, 
-	8, 7, 4, 1, 1, 
-	4, 10, 1, 6, 0
+        1, 3, 10, 2, 9, 
+        5, 5, 5, 9, 3, 
+        3, 5, 7, 5, 5, 
+        8, 7, 4, 1, 1, 
+        4, 10, 1, 6, 0
       };
       
       im1 << vec1;
 
       arrowGrt(im1, im2, sSE0(), UINT8(255));
       UINT8 vecGrt[] = { 
-	0,  16, 241,   0,  80,
-	70,  44,  10, 245,   8,
-	0, 144, 221, 226, 100,
-	71, 173,  65, 128,  64,
-	0,  31,   0,  31,   0,
+        0,  16, 241,   0,  80,
+        70,  44,  10, 245,   8,
+        0, 144, 221, 226, 100,
+        71, 173,  65, 128,  64,
+        0,  31,   0,  31,   0,
       };
       imTruth << vecGrt;
       TEST_ASSERT(im2==imTruth);
       if (retVal!=RES_OK)
-	im2.printSelf(1);
+        im2.printSelf(1);
 
       arrowLow(im1, im2, sSE0(), UINT8(255));
       UINT8 vecLow[] = { 
-	255, 239,  14, 255, 143,
-	  56, 130,  69,   8, 247,
-	255,  97,   2,  20, 139,
-	184,  80, 190,  94, 175,
-	255, 224, 253, 224, 255,
+        255, 239,  14, 255, 143,
+          56, 130,  69,   8, 247,
+        255,  97,   2,  20, 139,
+        184,  80, 190,  94, 175,
+        255, 224, 253, 224, 255,
       };
       imTruth << vecLow;
       TEST_ASSERT(im2==imTruth);
       if (retVal!=RES_OK)
-	im2.printSelf(1);
+        im2.printSelf(1);
 
       arrowGrt(im1, im2, hSE0(), UINT8(255));
       UINT8 vecGrt2[] = { 
@@ -87,7 +87,7 @@ class TestArrow : public TestCase
       imTruth << vecGrt2;
       TEST_ASSERT(im2==imTruth);
       if (retVal!=RES_OK)
-	im2.printSelf(1);
+        im2.printSelf(1);
 
   }
 };

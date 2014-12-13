@@ -30,7 +30,7 @@ class Test_Fill : public TestCase
 {
   virtual void run()
   {
-      UINT8 vec1[20] 	= {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
+      UINT8 vec1[20]         = {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
       UINT8 vecFill[20] = { 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127 };
       
       
@@ -50,9 +50,9 @@ class Test_Equal : public TestCase
 {
   virtual void run()
   {
-      UINT8 vec1[20] 	= {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
-      UINT8 vec2[20] 	= {   1, 4, 5,   4, 9, 5,   7,   8, 2,  10, 13, 20,  13, 15,  15,  16,  17,  18,  19,  20 };
-      UINT8 vecEqu[20] 	= { 255, 0, 0, 255, 0, 0, 255, 255, 0, 255,  0,  0, 255,  0, 255, 255, 255, 255, 255, 255 };
+      UINT8 vec1[20]         = {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
+      UINT8 vec2[20]         = {   1, 4, 5,   4, 9, 5,   7,   8, 2,  10, 13, 20,  13, 15,  15,  16,  17,  18,  19,  20 };
+      UINT8 vecEqu[20]         = { 255, 0, 0, 255, 0, 0, 255, 255, 0, 255,  0,  0, 255,  0, 255, 255, 255, 255, 255, 255 };
       
       
       Image_UINT8 im1(4,5);
@@ -68,7 +68,7 @@ class Test_Equal : public TestCase
       equ(im1, im2, im3);
       pix = im3.getPixels();
       for (UINT i=0;i<im1.getPixelCount();i++)
-	TEST_ASSERT(pix[i]==vecEqu[i]);
+        TEST_ASSERT(pix[i]==vecEqu[i]);
       
       imTruth << vecEqu;
       TEST_ASSERT(im3==imTruth);
@@ -81,7 +81,7 @@ class Test_ApplyLookup : public TestCase
 {
   virtual void run()
   {
-      UINT8 vec1[20] 	= {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
+      UINT8 vec1[20]         = {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
       
       map<UINT8,UINT8> lut;
       lut[2] = 5;
@@ -89,11 +89,11 @@ class Test_ApplyLookup : public TestCase
       lut[11] = 7;
       
       UINT8 vec2[20] = { 
-	  0,   5,   0,   0,
-	  0, 255,   0,   0,
-	  0,   0,   7,   0,
-	  0,   0,   0,   0,
-	  0,   0,   0,   0,
+          0,   5,   0,   0,
+          0, 255,   0,   0,
+          0,   0,   7,   0,
+          0,   0,   0,   0,
+          0,   0,   0,   0,
       };
 
       
@@ -110,8 +110,8 @@ class Test_ApplyLookup : public TestCase
       
       if (retVal!=RES_OK)
       {
-	  im2.printSelf(1);
-	  imTruth.printSelf(1);
+          im2.printSelf(1);
+          imTruth.printSelf(1);
       }
   }
 };

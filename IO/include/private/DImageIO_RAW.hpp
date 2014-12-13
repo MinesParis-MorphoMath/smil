@@ -52,29 +52,29 @@ namespace smil
     template <class T>
     RES_T readRAW(const char *filename, size_t width, size_t height, size_t depth, Image<T> &image)
     {
-	FILE *fp = NULL;
+        FILE *fp = NULL;
 
-	/* open image file */
-	fp = fopen (filename, "rb");
-	
-	ASSERT(fp, "Error: couldn't open file", RES_ERR_IO);
+        /* open image file */
+        fp = fopen (filename, "rb");
+        
+        ASSERT(fp, "Error: couldn't open file", RES_ERR_IO);
 
 
-	image.setSize(width, height, depth);
+        image.setSize(width, height, depth);
     //   image->allocate();
 
-	size_t ret = fread(image.getVoidPointer(), sizeof(T), image.getPixelCount(), fp);
-	if (ret==0)
-	{
-	    fprintf (stderr, "error reading \"%s\"!\n", filename);
-	    return RES_ERR;
-	}
-	
-	fclose (fp);
+        size_t ret = fread(image.getVoidPointer(), sizeof(T), image.getPixelCount(), fp);
+        if (ret==0)
+        {
+            fprintf (stderr, "error reading \"%s\"!\n", filename);
+            return RES_ERR;
+        }
+        
+        fclose (fp);
 
-	image.modified();
-	
-	return RES_OK;
+        image.modified();
+        
+        return RES_OK;
     }
 
     /**
@@ -83,18 +83,18 @@ namespace smil
     template <class T>
     RES_T writeRAW(Image<T> &image, const char *filename)
     {
-	FILE *fp = NULL;
+        FILE *fp = NULL;
 
-	/* open image file */
-	fp = fopen (filename, "wb");
-	
-	ASSERT(fp, "Error: couldn't open file", RES_ERR_IO);
+        /* open image file */
+        fp = fopen (filename, "wb");
+        
+        ASSERT(fp, "Error: couldn't open file", RES_ERR_IO);
 
-	fwrite(image.getVoidPointer(), sizeof(T), image.getPixelCount(), fp);
+        fwrite(image.getVoidPointer(), sizeof(T), image.getPixelCount(), fp);
 
-	fclose (fp);
-	
-	return RES_OK;
+        fclose (fp);
+        
+        return RES_OK;
     }
 
 /*@}*/

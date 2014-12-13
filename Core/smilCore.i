@@ -103,12 +103,12 @@ PTR_ARG_OUT_APPLY(s)
 
 %extend smil::BaseObject 
 {
-	std::string  __str__() 
-	{
-	    std::stringstream os;
-	    self->printSelf(os);
-	    return os.str();
-	}
+        std::string  __str__() 
+        {
+            std::stringstream os;
+            self->printSelf(os);
+            return os.str();
+        }
 }
 
 
@@ -322,11 +322,11 @@ namespace smil
     TEMPLATE_WRAP_CLASS_2T_CROSS(Graph, Graph);
     
     #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT) 
-	%template(Graph_UINT) Graph<UINT,UINT>;
-	%template(graphMST_UINT) graphMST<Graph<UINT,UINT> >;
+        %template(Graph_UINT) Graph<UINT,UINT>;
+        %template(graphMST_UINT) graphMST<Graph<UINT,UINT> >;
 
-	TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
-	TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
+        TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
+        TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
     #endif
 
 }

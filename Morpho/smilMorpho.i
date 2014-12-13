@@ -163,7 +163,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 {
     CompStrElt &__getitem__(UINT n)
     {
-	return self->compSeList[n];
+        return self->compSeList[n];
     }
 }
 

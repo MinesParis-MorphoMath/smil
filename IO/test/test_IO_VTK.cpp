@@ -47,11 +47,11 @@ class Test_VTK_RW : public TestCase
     
     Image<T> im1(3, 3, 2);
     T tab[] = { 28, 2, 3,
-		 2, 5, 6,
-		 3, 8, 9,
-		 4, 11, 12,
-		 5, 15, 16,
-		 6, 18, 19 };
+                 2, 5, 6,
+                 3, 8, 9,
+                 4, 11, 12,
+                 5, 15, 16,
+                 6, 18, 19 };
     im1 << tab;
     TEST_ASSERT( write(im1, fName)==RES_OK );
     

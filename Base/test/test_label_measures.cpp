@@ -37,11 +37,11 @@ class Test_ComputeBlobs : public TestCase
       
       fill(im, UINT8(0));
       for (int i=12;i<27;i++)
-	pixels[i] = 127;
+        pixels[i] = 127;
       for (int i=54;i<76;i++)
-	pixels[i] = 255;
+        pixels[i] = 255;
       for (int i=80;i<100;i++)
-	pixels[i] = 255;
+        pixels[i] = 255;
       
       map<UINT8, Blob> blobs = computeBlobs(im, true);
       
@@ -59,11 +59,11 @@ class Test_ComputeBlobs : public TestCase
 //       map<UINT8, Blob>::iterator bit = blobs.begin();
 //       for (bit=blobs.begin();bit!=blobs.end();bit++)
 //       {
-// 	Blob::sequences_iterator sit = bit->second.sequences.begin();
-// 	for (sit=bit->second.sequences.begin();sit!=bit->second.sequences.end();sit++)
-// 	{
-// 	  cout << (int)bit->first << " " << (*sit).offset << " " << (*sit).size << endl;
-// 	}
+//         Blob::sequences_iterator sit = bit->second.sequences.begin();
+//         for (sit=bit->second.sequences.begin();sit!=bit->second.sequences.end();sit++)
+//         {
+//           cout << (int)bit->first << " " << (*sit).offset << " " << (*sit).size << endl;
+//         }
 //       }
       
     
@@ -115,11 +115,11 @@ class Test_MeasureVolumes : public TestCase
       
       fill(im, UINT8(0));
       for (int i=12;i<27;i++)
-	pixels[i] = 127;
+        pixels[i] = 127;
       for (int i=54;i<76;i++)
-	pixels[i] = 255;
+        pixels[i] = 255;
       for (int i=80;i<100;i++)
-	pixels[i] = 255;
+        pixels[i] = 255;
       
       map<UINT8, Blob> blobs = computeBlobs(im, true);
       

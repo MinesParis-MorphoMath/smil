@@ -48,32 +48,32 @@ namespace smil
     class FileCloser
     {
     public:
-	FileCloser(FILE *_fp)
-	{
-	    fp = _fp;
-	}
-	~FileCloser()
-	{
-	    if (fp)
-	      fclose(fp);
-	}
+        FileCloser(FILE *_fp)
+        {
+            fp = _fp;
+        }
+        ~FileCloser()
+        {
+            if (fp)
+              fclose(fp);
+        }
     protected:
-	FILE *fp;
+        FILE *fp;
     };
 
     struct ImageFileInfo
     {
-	ImageFileInfo()
-	  : colorType(COLOR_TYPE_UNKNOWN), scalarType(SCALAR_TYPE_UNKNOWN),
-	  width(0), height(0), depth(0)	    
-	{
-	}
-	enum ColorType { COLOR_TYPE_GRAY, COLOR_TYPE_RGB, COLOR_TYPE_GA, COLOR_TYPE_RGBA, COLOR_TYPE_UNKNOWN };
-	enum ScalarType { SCALAR_TYPE_UINT8, SCALAR_TYPE_UINT16, SCALAR_TYPE_INT8, SCALAR_TYPE_INT16, SCALAR_TYPE_FLOAT, SCALAR_TYPE_DOUBLE, SCALAR_TYPE_UNKNOWN };
-	UINT channels;
-	ColorType colorType;
-	ScalarType scalarType;
-	size_t width, height, depth;
+        ImageFileInfo()
+          : colorType(COLOR_TYPE_UNKNOWN), scalarType(SCALAR_TYPE_UNKNOWN),
+          width(0), height(0), depth(0)            
+        {
+        }
+        enum ColorType { COLOR_TYPE_GRAY, COLOR_TYPE_RGB, COLOR_TYPE_GA, COLOR_TYPE_RGBA, COLOR_TYPE_UNKNOWN };
+        enum ScalarType { SCALAR_TYPE_UINT8, SCALAR_TYPE_UINT16, SCALAR_TYPE_INT8, SCALAR_TYPE_INT16, SCALAR_TYPE_FLOAT, SCALAR_TYPE_DOUBLE, SCALAR_TYPE_UNKNOWN };
+        UINT channels;
+        ColorType colorType;
+        ScalarType scalarType;
+        size_t width, height, depth;
     };
     
     

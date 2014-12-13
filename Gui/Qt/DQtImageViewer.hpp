@@ -74,62 +74,62 @@ namespace smil
 #endif // SWIG    
     {
     public:
-	typedef ImageViewer<T> parentClass;
-	QtImageViewer();
-	QtImageViewer(Image<T> &im);
-	~QtImageViewer();
-	
-	virtual void setImage(Image<T> &im);
-	virtual void hide();
-	virtual void show();
-	virtual void showLabel();
-	virtual bool isVisible();
-	virtual void setName(const char *_name);
-	virtual void update();
-	virtual void saveSnapshot(const char *fileName);
-	virtual void redrawImage() // ImageViewerWidget
-	{
-	    update();
-	}
-	void updateIcon()
-	{
-	    if (!this->image)
-	      return;
-	    
-	    BASE_QT_VIEWER::updateIcon();
-	}
-	virtual void drawOverlay(const Image<T> &im);
-	virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
-	virtual RES_T getOverlay(Image<T> &img);
+        typedef ImageViewer<T> parentClass;
+        QtImageViewer();
+        QtImageViewer(Image<T> &im);
+        ~QtImageViewer();
+        
+        virtual void setImage(Image<T> &im);
+        virtual void hide();
+        virtual void show();
+        virtual void showLabel();
+        virtual bool isVisible();
+        virtual void setName(const char *_name);
+        virtual void update();
+        virtual void saveSnapshot(const char *fileName);
+        virtual void redrawImage() // ImageViewerWidget
+        {
+            update();
+        }
+        void updateIcon()
+        {
+            if (!this->image)
+              return;
+            
+            BASE_QT_VIEWER::updateIcon();
+        }
+        virtual void drawOverlay(const Image<T> &im);
+        virtual void clearOverlay() { BASE_QT_VIEWER::clearOverlay(); }
+        virtual RES_T getOverlay(Image<T> &img);
 
-	//! Set the color table as a 8bits RGB map (keys between 0 and 255)
-	virtual void setLookup(const map<UINT8,RGB> &lut);
-	virtual void resetLookup();
-	
-	virtual void setCurSlice(int)
-	{
-	    this->update();
-	}
-	
-	virtual void setLabelImage(bool val);
-	
+        //! Set the color table as a 8bits RGB map (keys between 0 and 255)
+        virtual void setLookup(const map<UINT8,RGB> &lut);
+        virtual void resetLookup();
+        
+        virtual void setCurSlice(int)
+        {
+            this->update();
+        }
+        
+        virtual void setLabelImage(bool val);
+        
 #ifdef USE_QWT
     virtual void displayHistogram(bool update=false);
     virtual void displayProfile(bool update=false);
 #endif // USE_QWT
 
     protected:
-	virtual void displayPixelValue(size_t x, size_t y, size_t z);
-	virtual void displayMagnifyView(size_t x, size_t y, size_t z);
-	virtual void drawImage();
-	virtual void overlayDataChanged(bool triggerEvents=true);
+        virtual void displayPixelValue(size_t x, size_t y, size_t z);
+        virtual void displayMagnifyView(size_t x, size_t y, size_t z);
+        virtual void drawImage();
+        virtual void overlayDataChanged(bool triggerEvents=true);
     //     ImageViewerWidget *qtViewer;
     //     ImageViewer *qtViewer;
-	virtual void dropEvent(QDropEvent *de);
-	
+        virtual void dropEvent(QDropEvent *de);
+        
 #ifdef USE_QWT
-	PlotWidget *histoPlot;
-	PlotWidget *profilePlot;
+        PlotWidget *histoPlot;
+        PlotWidget *profilePlot;
 #endif // USE_QWT
     };
 

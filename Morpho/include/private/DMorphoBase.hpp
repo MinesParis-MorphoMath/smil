@@ -64,11 +64,11 @@ namespace smil
     template <class T>
     RES_T dilate(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderVal=ImDtTypes<T>::min())
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	unaryMorphImageFunction<T, supLine<T> > iFunc(borderVal);
-	return iFunc(imIn, imOut, se);
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        unaryMorphImageFunction<T, supLine<T> > iFunc(borderVal);
+        return iFunc(imIn, imOut, se);
     }
 
     /**
@@ -80,7 +80,7 @@ namespace smil
     template <class T>
     RES_T dilate(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImDtTypes<T>::min())
     {
-	return dilate(imIn, imOut, DEFAULT_SE(seSize), borderVal);
+        return dilate(imIn, imOut, DEFAULT_SE(seSize), borderVal);
     }
 
     /**
@@ -100,11 +100,11 @@ namespace smil
     template <class T>
     RES_T erode(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderVal=ImDtTypes<T>::max())
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	unaryMorphImageFunction<T, infLine<T> > iFunc(borderVal);
-	return iFunc(imIn, imOut, se.transpose());
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        unaryMorphImageFunction<T, infLine<T> > iFunc(borderVal);
+        return iFunc(imIn, imOut, se.transpose());
     }
 
     /**
@@ -116,7 +116,7 @@ namespace smil
     template <class T>
     RES_T erode(const Image<T> &imIn, Image<T> &imOut, UINT seSize, T borderVal=ImDtTypes<T>::max())
     {
-	return erode(imIn, imOut, DEFAULT_SE(seSize), borderVal);
+        return erode(imIn, imOut, DEFAULT_SE(seSize), borderVal);
     }
 
     /**
@@ -126,29 +126,29 @@ namespace smil
     template <class T>
     RES_T close(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	ImageFreezer freeze(imOut);
-	
-	bool inplaceSafe = unaryMorphImageFunction<T, supLine<T> >::isInplaceSafe(se);
-	Image<T> *imTmp;
-	if (inplaceSafe)
-	  imTmp = &imOut;
-	else imTmp = new Image<T>(imIn);
-	
-	ASSERT((dilate(imIn, *imTmp, se)==RES_OK));
-	ASSERT((erode(*imTmp, imOut, se)==RES_OK));
-	
-	if (!inplaceSafe)
-	  delete imTmp;
-	
-	return RES_OK;
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        ImageFreezer freeze(imOut);
+        
+        bool inplaceSafe = unaryMorphImageFunction<T, supLine<T> >::isInplaceSafe(se);
+        Image<T> *imTmp;
+        if (inplaceSafe)
+          imTmp = &imOut;
+        else imTmp = new Image<T>(imIn);
+        
+        ASSERT((dilate(imIn, *imTmp, se)==RES_OK));
+        ASSERT((erode(*imTmp, imOut, se)==RES_OK));
+        
+        if (!inplaceSafe)
+          delete imTmp;
+        
+        return RES_OK;
     }
 
     template <class T>
     RES_T close(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
     {
-	return close(imIn, imOut, DEFAULT_SE(seSize));
+        return close(imIn, imOut, DEFAULT_SE(seSize));
     }
 
     /**
@@ -158,29 +158,29 @@ namespace smil
     template <class T>
     RES_T open(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	ImageFreezer freeze(imOut);
-	
-	bool inplaceSafe = unaryMorphImageFunction<T, supLine<T> >::isInplaceSafe(se);
-	Image<T> *imTmp;
-	if (inplaceSafe)
-	  imTmp = &imOut;
-	else imTmp = new Image<T>(imIn);
-	
-	ASSERT((erode(imIn, *imTmp, se)==RES_OK));
-	ASSERT((dilate(*imTmp, imOut, se)==RES_OK));
-	
-	if (!inplaceSafe)
-	  delete imTmp;
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        ImageFreezer freeze(imOut);
+        
+        bool inplaceSafe = unaryMorphImageFunction<T, supLine<T> >::isInplaceSafe(se);
+        Image<T> *imTmp;
+        if (inplaceSafe)
+          imTmp = &imOut;
+        else imTmp = new Image<T>(imIn);
+        
+        ASSERT((erode(imIn, *imTmp, se)==RES_OK));
+        ASSERT((dilate(*imTmp, imOut, se)==RES_OK));
+        
+        if (!inplaceSafe)
+          delete imTmp;
 
-	return RES_OK;
+        return RES_OK;
     }
 
     template <class T>
     RES_T open(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
     {
-	return open(imIn, imOut, DEFAULT_SE(seSize));
+        return open(imIn, imOut, DEFAULT_SE(seSize));
     }
 
 /** \} */

@@ -45,45 +45,45 @@ namespace smil
     template <>
     inline void copyLine<RGB>(const Image<RGB>::lineType lIn, const size_t size, Image<RGB>::lineType lOut)
     {
-	for (UINT n=0;n<3;n++)
-	  memcpy(lOut.arrays[n], lIn.arrays[n], size*sizeof(UINT8));
+        for (UINT n=0;n<3;n++)
+          memcpy(lOut.arrays[n], lIn.arrays[n], size*sizeof(UINT8));
     }
 
     template <class T1>
     RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ, Image<RGB> &imOut, size_t outStartX=0, size_t outStartY=0, size_t outStartZ=0)
     {
-	return RES_ERR;
+        return RES_ERR;
     }
     
     template <>
     inline void shiftLine(const Image<RGB>::lineType lIn, int dx, size_t lineLen, Image<RGB>::lineType lOut, RGB borderValue)
     {
-	for (UINT n=0;n<3;n++)
-	    shiftLine<UINT8>(lIn.arrays[n], dx, lineLen, lOut.arrays[n], borderValue[n]);
+        for (UINT n=0;n<3;n++)
+            shiftLine<UINT8>(lIn.arrays[n], dx, lineLen, lOut.arrays[n], borderValue[n]);
     }
     
     template <>
     struct fillLine<RGB> : public unaryLineFunctionBase<RGB>
     {
-	typedef Image<RGB>::lineType lineType;
-	fillLine() {}
-	fillLine(const lineType lIn, const size_t size, const RGB value) { this->_exec(lIn, size, value); }
-	
-	virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
-	{
-	    copyLine<RGB>(lIn, size, lOut);
-	}
-	virtual void _exec(lineType lInOut, const size_t size, const RGB value)
-	{
-	    for (UINT n=0;n<3;n++)
-	    {
-		UINT8 *cArr = lInOut.arrays[n];
-		UINT8 val = value[n];
-		for (size_t i=0;i<size;i++)
-		    cArr[i] = val;
-	    }
-	    
-	}
+        typedef Image<RGB>::lineType lineType;
+        fillLine() {}
+        fillLine(const lineType lIn, const size_t size, const RGB value) { this->_exec(lIn, size, value); }
+        
+        virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
+        {
+            copyLine<RGB>(lIn, size, lOut);
+        }
+        virtual void _exec(lineType lInOut, const size_t size, const RGB value)
+        {
+            for (UINT n=0;n<3;n++)
+            {
+                UINT8 *cArr = lInOut.arrays[n];
+                UINT8 val = value[n];
+                for (size_t i=0;i<size;i++)
+                    cArr[i] = val;
+            }
+            
+        }
     };
 
     
@@ -97,60 +97,60 @@ namespace smil
     template <>
     struct supLine<RGB> : public binaryLineFunctionBase<RGB>
     {
-	typedef Image<RGB>::lineType lineType;
-	inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (UINT n=0;n<3;n++)
-	    {
-		UINT8 *cArrIn1 = lIn1.arrays[n];
-		UINT8 *cArrIn2 = lIn2.arrays[n];
-		UINT8 *cArrOut = lOut.arrays[n];
-		
-		for (size_t i=0;i<size;i++)
-		    cArrOut[i] = cArrIn1[i] > cArrIn2[i] ? cArrIn1[i] : cArrIn2[i];
-	    }
-	}
+        typedef Image<RGB>::lineType lineType;
+        inline void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (UINT n=0;n<3;n++)
+            {
+                UINT8 *cArrIn1 = lIn1.arrays[n];
+                UINT8 *cArrIn2 = lIn2.arrays[n];
+                UINT8 *cArrOut = lOut.arrays[n];
+                
+                for (size_t i=0;i<size;i++)
+                    cArrOut[i] = cArrIn1[i] > cArrIn2[i] ? cArrIn1[i] : cArrIn2[i];
+            }
+        }
     };
 
     template <>
     struct infLine<RGB> : public binaryLineFunctionBase<RGB>
     {
-	typedef Image<RGB>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (UINT n=0;n<3;n++)
-	    {
-		UINT8 *cArrIn1 = lIn1.arrays[n];
-		UINT8 *cArrIn2 = lIn2.arrays[n];
-		UINT8 *cArrOut = lOut.arrays[n];
-		
-		for (size_t i=0;i<size;i++)
-		    cArrOut[i] = cArrIn1[i] < cArrIn2[i] ? cArrIn1[i] : cArrIn2[i];
-	    }
-	}
+        typedef Image<RGB>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (UINT n=0;n<3;n++)
+            {
+                UINT8 *cArrIn1 = lIn1.arrays[n];
+                UINT8 *cArrIn2 = lIn2.arrays[n];
+                UINT8 *cArrOut = lOut.arrays[n];
+                
+                for (size_t i=0;i<size;i++)
+                    cArrOut[i] = cArrIn1[i] < cArrIn2[i] ? cArrIn1[i] : cArrIn2[i];
+            }
+        }
     };
 
     template <>
     struct equLine<RGB> : public binaryLineFunctionBase<RGB>
     {
-	equLine() 
-	  : trueVal(numeric_limits<UINT8>::max()), falseVal(0) {}
-	  
-	UINT8 trueVal, falseVal;
-	  
-	typedef Image<RGB>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (UINT n=0;n<3;n++)
-	    {
-		UINT8 *cArrIn1 = lIn1.arrays[n];
-		UINT8 *cArrIn2 = lIn2.arrays[n];
-		UINT8 *cArrOut = lOut.arrays[n];
-		
-		for (size_t i=0;i<size;i++)
-		    cArrOut[i] = cArrIn1[i] == cArrIn2[i] ? trueVal : falseVal;
-	    }
-	}
+        equLine() 
+          : trueVal(numeric_limits<UINT8>::max()), falseVal(0) {}
+          
+        UINT8 trueVal, falseVal;
+          
+        typedef Image<RGB>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (UINT n=0;n<3;n++)
+            {
+                UINT8 *cArrIn1 = lIn1.arrays[n];
+                UINT8 *cArrIn2 = lIn2.arrays[n];
+                UINT8 *cArrOut = lOut.arrays[n];
+                
+                for (size_t i=0;i<size;i++)
+                    cArrOut[i] = cArrIn1[i] == cArrIn2[i] ? trueVal : falseVal;
+            }
+        }
     };
     
 } // namespace smil

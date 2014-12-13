@@ -45,9 +45,9 @@ namespace smil
     {
     public:
       BufferPool(size_t bufSize=0)
-	: bufferSize(bufSize),
-	  numberOfBuffers(0),
-	  maxNumberOfBuffers(std::numeric_limits<size_t>::max())
+        : bufferSize(bufSize),
+          numberOfBuffers(0),
+          maxNumberOfBuffers(std::numeric_limits<size_t>::max())
       {}
       ~BufferPool()
       {}
@@ -56,91 +56,91 @@ namespace smil
       
       RES_T initialize(size_t bufSize, size_t nbr=0)
       {
-	  if (buffers.size()!=0)
-	    clear();
-	  this->bufferSize = bufSize;
-	  return RES_OK;
+          if (buffers.size()!=0)
+            clear();
+          this->bufferSize = bufSize;
+          return RES_OK;
       }
       void clear()
       {
-	  #ifdef USE_OPEN_MP
-	    #pragma omp critical
-	  #endif // USE_OPEN_MP
-	  {
-	      while (!availableBuffers.empty())
-	      {
-		  ImDtTypes<T>::deleteLine(availableBuffers.front());
-		  availableBuffers.pop();
-	      }
-	  }
+          #ifdef USE_OPEN_MP
+            #pragma omp critical
+          #endif // USE_OPEN_MP
+          {
+              while (!availableBuffers.empty())
+              {
+                  ImDtTypes<T>::deleteLine(availableBuffers.front());
+                  availableBuffers.pop();
+              }
+          }
       }
       void setMaxNumberOfBuffers(size_t nbr)
       {
-	  maxNumberOfBuffers = nbr;
+          maxNumberOfBuffers = nbr;
       }
       size_t getMaxNumberOfBuffers()
       {
-	  return maxNumberOfBuffers;
+          return maxNumberOfBuffers;
       }
       bufferType getBuffer()
       {
-	bufferType buf;
-	
-	#ifdef USE_OPEN_MP
-	  #pragma omp critical
-	#endif // USE_OPEN_MP
-	{
-	    if (availableBuffers.empty())
-	    {
-		if (!createBuffer())
-		  while (availableBuffers.empty()); // wait
-	    }
-	    
-	    buf = availableBuffers.top();
-	    availableBuffers.pop();
-	  
-	}
-	return buf;
+        bufferType buf;
+        
+        #ifdef USE_OPEN_MP
+          #pragma omp critical
+        #endif // USE_OPEN_MP
+        {
+            if (availableBuffers.empty())
+            {
+                if (!createBuffer())
+                  while (availableBuffers.empty()); // wait
+            }
+            
+            buf = availableBuffers.top();
+            availableBuffers.pop();
+          
+        }
+        return buf;
       }
       vector<bufferType> getBuffers(size_t nbr)
       {
-	vector<bufferType> buffVect;
-	
-	for (int i=0;i<nbr;i++)
-	  buffVect.push_back(this->getBuffer());
+        vector<bufferType> buffVect;
+        
+        for (int i=0;i<nbr;i++)
+          buffVect.push_back(this->getBuffer());
 
-	return buffVect;
+        return buffVect;
       }
       
       void releaseBuffer(bufferType &buf)
       {
-	  availableBuffers.push(buf);
-	  buf = NULL;
+          availableBuffers.push(buf);
+          buf = NULL;
       }
       void releaseBuffers(vector<bufferType> &bufs)
       {
-	  for (int i=0;i<bufs.size();i++)
-	    availableBuffers.push(bufs[i]);
-	  bufs.clear();
+          for (int i=0;i<bufs.size();i++)
+            availableBuffers.push(bufs[i]);
+          bufs.clear();
       }
       void releaseAllBuffers()
       {
-	  while (!availableBuffers.empty())
-	    availableBuffers.pop();
-	  for (typename vector<bufferType>::iterator it=buffers.begin();it!=buffers.end();it++)
-	    availableBuffers.push(*it);
+          while (!availableBuffers.empty())
+            availableBuffers.pop();
+          for (typename vector<bufferType>::iterator it=buffers.begin();it!=buffers.end();it++)
+            availableBuffers.push(*it);
       }
     protected:
       bool createBuffer()
       {
-	  if (buffers.size()>=maxNumberOfBuffers)
-	    return false;
-	    
-	  bufferType buf = ImDtTypes<T>::createLine(this->bufferSize);
-	  buffers.push_back(buf);
-	  availableBuffers.push(buf);
-	
-	  return true;
+          if (buffers.size()>=maxNumberOfBuffers)
+            return false;
+            
+          bufferType buf = ImDtTypes<T>::createLine(this->bufferSize);
+          buffers.push_back(buf);
+          availableBuffers.push(buf);
+        
+          return true;
       }
       stack<bufferType> availableBuffers;
       vector<bufferType> buffers;

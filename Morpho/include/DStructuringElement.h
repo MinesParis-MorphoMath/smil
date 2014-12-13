@@ -51,104 +51,104 @@ namespace smil
     class StrElt : public BaseObject
     {
       public:
-	StrElt(UINT s=1)
-	  : BaseObject("StrElt"),
-	    odd(false),
-	    seT(SE_Generic), 
-	    size(s)
-	{
-	}
-	
-	StrElt(const StrElt &rhs)
-	  : BaseObject(rhs)
-	{
-	    this->clone(rhs);
-	}
-	
+        StrElt(UINT s=1)
+          : BaseObject("StrElt"),
+            odd(false),
+            seT(SE_Generic), 
+            size(s)
+        {
+        }
+        
+        StrElt(const StrElt &rhs)
+          : BaseObject(rhs)
+        {
+            this->clone(rhs);
+        }
+        
 #ifndef SWIG
-	StrElt(bool oddSE, UINT nbrPts, ...)
-	  : BaseObject("StrElt"),
-	    odd(oddSE),
-	    seT(SE_Generic), 
-	    size(1)
-	{
-	    UINT index;
-	    va_list vl;
-	    va_start(vl, nbrPts);
-	    
-	    for (UINT i=0;i<nbrPts;i++)
-	    {
-		index = va_arg(vl, UINT);
-		addPoint(index);
-	    }
-	}
+        StrElt(bool oddSE, UINT nbrPts, ...)
+          : BaseObject("StrElt"),
+            odd(oddSE),
+            seT(SE_Generic), 
+            size(1)
+        {
+            UINT index;
+            va_list vl;
+            va_start(vl, nbrPts);
+            
+            for (UINT i=0;i<nbrPts;i++)
+            {
+                index = va_arg(vl, UINT);
+                addPoint(index);
+            }
+        }
 #endif // SWIG
-	
-	/**
-	 * Construct a structuring element with points defined by their indexes.
-	 * \param oddSE Specify if we want to use an hexagonal grid (true) or a square grid (false)
-	 * \param indexList The list of point indexes
-	 * 
-	 * The index values are defined for each grid type as follow:
-	 * \images{se_indexes}
-	 * 
+        
+        /**
+         * Construct a structuring element with points defined by their indexes.
+         * \param oddSE Specify if we want to use an hexagonal grid (true) or a square grid (false)
+         * \param indexList The list of point indexes
+         * 
+         * The index values are defined for each grid type as follow:
+         * \images{se_indexes}
+         * 
          * \b Example:
-	 * \code{.py}
-	 * # Create a diagonal SE with the two points (0,0) and (1,1),
-	 * # on the square grid:
-	 * diagSE_s = StrElt(False, (0,8))
-	 * # on the hexagonal grid:
-	 * diagSE_h = StrElt(True, (0,6))
-	 * \endcode
-	 */
-	StrElt(bool oddSE, vector<UINT> indexList)
-	  : BaseObject("StrElt"),
-	    odd(oddSE),
-	    seT(SE_Generic), 
-	    size(1)
-	{
-	    for (vector<UINT>::iterator it=indexList.begin();it!=indexList.end();it++)
-		addPoint(*it);
-	}
-	
-	~StrElt() {}
+         * \code{.py}
+         * # Create a diagonal SE with the two points (0,0) and (1,1),
+         * # on the square grid:
+         * diagSE_s = StrElt(False, (0,8))
+         * # on the hexagonal grid:
+         * diagSE_h = StrElt(True, (0,6))
+         * \endcode
+         */
+        StrElt(bool oddSE, vector<UINT> indexList)
+          : BaseObject("StrElt"),
+            odd(oddSE),
+            seT(SE_Generic), 
+            size(1)
+        {
+            for (vector<UINT>::iterator it=indexList.begin();it!=indexList.end();it++)
+                addPoint(*it);
+        }
+        
+        ~StrElt() {}
 
     IntPoint getPoint (const UINT i) {
         return points[i];
     }
     UINT getSize() const {return size;}
 
-	StrElt& operator=(const StrElt &rhs);
-	void clone(const StrElt &rhs);
+        StrElt& operator=(const StrElt &rhs);
+        void clone(const StrElt &rhs);
       
-	//! List of neighbor points
-	vector<IntPoint> points;
-	
-	void addPoint(const UINT index);
-	void addPoint(int x, int y, int z=0);
-	void addPoint(const IntPoint &pt);
-	const StrElt operator()(int s=1) const;
-	
-	//! Construct and return an homothetic SE with size s
-	StrElt homothety(const UINT s) const;
-	
-	//! Return the opposite SE (symmetry with respect to 0) 
-	StrElt transpose() const;
+        //! List of neighbor points
+        vector<IntPoint> points;
+        
+        void addPoint(const UINT index);
+        void addPoint(int x, int y, int z=0);
+        void addPoint(const IntPoint &pt);
+        const StrElt operator()(int s=1) const;
+        
+        //! Construct and return an homothetic SE with size s
+        StrElt homothety(const UINT s) const;
+        
+        //! Return the opposite SE (symmetry with respect to 0) 
+        StrElt transpose() const;
    
     //! Return the SE with no center
     StrElt noCenter () const;
-	
-	bool odd;
-	seType seT;
-	UINT size;
-	virtual seType getType() const { return seT; }
-	
-	virtual void printSelf(ostream &os = std::cout, string indent="") const;
+        
+        bool odd;
+        seType seT;
+        UINT size;
+        virtual seType getType() const { return seT; }
+        
+        virtual void printSelf(ostream &os = std::cout, string indent="") const;
     };
 
     inline void operator << (ostream &os, StrElt &se)
     {
-	se.printSelf(os);
+        se.printSelf(os);
     }
 
     /**
@@ -161,12 +161,12 @@ namespace smil
     class SquSE : public StrElt
     {
       public:
-	SquSE(UINT s=1) 
-	  : StrElt(false, 9, 	0, 1, 2, 3, 4, 5, 6, 7, 8)
-	{
-	    className = "SquSE";
-	    seT = SE_Squ;
-	    size = s;
+        SquSE(UINT s=1) 
+          : StrElt(false, 9,         0, 1, 2, 3, 4, 5, 6, 7, 8)
+        {
+            className = "SquSE";
+            seT = SE_Squ;
+            size = s;
     }
     };
 
@@ -181,14 +181,14 @@ namespace smil
     class SquSE0 : public StrElt
     {
       public:
-	typedef StrElt parentClass;
-	SquSE0(UINT s=1)
-	  : StrElt(false, 8, 	1, 2, 3, 4, 5, 6, 7, 8)
-	{
-	    className = "SquSE0";
-	    odd = false;
-	    size = s;
-	}
+        typedef StrElt parentClass;
+        SquSE0(UINT s=1)
+          : StrElt(false, 8,         1, 2, 3, 4, 5, 6, 7, 8)
+        {
+            className = "SquSE0";
+            odd = false;
+            size = s;
+        }
     };
 
     /**
@@ -201,12 +201,12 @@ namespace smil
     class HexSE : public StrElt
     {
       public:
-	HexSE(UINT s=1)
-	  : StrElt(true, 7, 	0, 1, 2, 3, 4, 5, 6)
-	{
-	    className = "HexSE";
-	    seT = SE_Hex;
-	    size = s;
+        HexSE(UINT s=1)
+          : StrElt(true, 7,         0, 1, 2, 3, 4, 5, 6)
+        {
+            className = "HexSE";
+            seT = SE_Hex;
+            size = s;
     }
     };
 
@@ -221,12 +221,12 @@ namespace smil
     class HexSE0 : public StrElt
     {
       public:
-	HexSE0(UINT s=1) 
-	  : StrElt(true, 6,  1, 2, 3, 4, 5, 6)
-	{
-	    className = "HexSE0";
-	    size = s;
-	}
+        HexSE0(UINT s=1) 
+          : StrElt(true, 6,  1, 2, 3, 4, 5, 6)
+        {
+            className = "HexSE0";
+            size = s;
+        }
     };
 
 
@@ -242,13 +242,13 @@ namespace smil
     class CrossSE : public StrElt
     {
       public:
-	CrossSE(UINT s=1)
-	  : StrElt(false, 5,  0, 1, 5, 3, 7)
-	{
-	    className = "CrossSE";
-	    seT = SE_Cross;
-	    size = s;
-	}
+        CrossSE(UINT s=1)
+          : StrElt(false, 5,  0, 1, 5, 3, 7)
+        {
+            className = "CrossSE";
+            seT = SE_Cross;
+            size = s;
+        }
     };
 
     /**
@@ -262,13 +262,13 @@ namespace smil
     class HorizSE : public StrElt
     {
       public:
-	HorizSE(UINT s=1)
-	  : StrElt(false, 3, 0, 1, 5)
-	{
-	    className = "HorizSE";
-	    seT = SE_Horiz;
-	    size = s;
-	}
+        HorizSE(UINT s=1)
+          : StrElt(false, 3, 0, 1, 5)
+        {
+            className = "HorizSE";
+            seT = SE_Horiz;
+            size = s;
+        }
     };
 
     /**
@@ -282,13 +282,13 @@ namespace smil
     class VertSE : public StrElt
     {
       public:
-	VertSE(UINT s=1)
-	  : StrElt(false, 3,	0, 3, 7)
-	{
-	    className = "VertSE";
-	    seT = SE_Vert;
-	    size = s;
-	}
+        VertSE(UINT s=1)
+          : StrElt(false, 3,        0, 3, 7)
+        {
+            className = "VertSE";
+            seT = SE_Vert;
+            size = s;
+        }
     };
 
 
@@ -302,26 +302,26 @@ namespace smil
     class CubeSE : public StrElt
     {
       public:
-	CubeSE(UINT s=1) : StrElt(s)
-	{
-	    this->className = "CubeSE";
-	    this->seT = SE_Cube;
-	    odd = false;
-	    int zList[] = { 0, -1, 1 };
-	    for (int i=0;i<3;i++)
-	    {
-		int z = zList[i];
-		addPoint(0,0,z);
-		addPoint(1,0,z);
-		addPoint(1,-1,z);
-		addPoint(0,-1,z);
-		addPoint(-1,-1,z);
-		addPoint(-1,0,z);
-		addPoint(-1,1,z);
-		addPoint(0,1,z);
-		addPoint(1,1,z);
-	    }
-	}
+        CubeSE(UINT s=1) : StrElt(s)
+        {
+            this->className = "CubeSE";
+            this->seT = SE_Cube;
+            odd = false;
+            int zList[] = { 0, -1, 1 };
+            for (int i=0;i<3;i++)
+            {
+                int z = zList[i];
+                addPoint(0,0,z);
+                addPoint(1,0,z);
+                addPoint(1,-1,z);
+                addPoint(0,-1,z);
+                addPoint(-1,-1,z);
+                addPoint(-1,0,z);
+                addPoint(-1,1,z);
+                addPoint(0,1,z);
+                addPoint(1,1,z);
+            }
+        }
     };
     
     /**
@@ -334,20 +334,20 @@ namespace smil
     class Cross3DSE : public StrElt
     {
       public:
-	Cross3DSE(UINT s=1)
-	  : StrElt(s)
-	{
-	    className = "Cross3DSE";
-	    seT = SE_Cross3D;
-	    odd = false;
-	    addPoint(0,0,0);
-	    addPoint(1,0,0);
-	    addPoint(0,-1,0);
-	    addPoint(-1,0,0);
-	    addPoint(0,1,0);
-	    addPoint(0,0,-1);
-	    addPoint(0,0,1);
-	}
+        Cross3DSE(UINT s=1)
+          : StrElt(s)
+        {
+            className = "Cross3DSE";
+            seT = SE_Cross3D;
+            odd = false;
+            addPoint(0,0,0);
+            addPoint(1,0,0);
+            addPoint(0,-1,0);
+            addPoint(-1,0,0);
+            addPoint(0,1,0);
+            addPoint(0,0,-1);
+            addPoint(0,0,1);
+        }
     };
 
     /**
@@ -357,15 +357,15 @@ namespace smil
     class RhombicuboctahedronSE : public StrElt
     {
       public:
-	RhombicuboctahedronSE(UINT s=1)
-	  : StrElt(s)
-	{
-	    className = "RhombicuboctahedronSE";
+        RhombicuboctahedronSE(UINT s=1)
+          : StrElt(s)
+        {
+            className = "RhombicuboctahedronSE";
             seT = SE_Rhombicuboctahedron;
-	    odd = false;
-	    
-	    addPoint(0,0,0);
-	}
+            odd = false;
+            
+            addPoint(0,0,0);
+        }
     };
 
     // Shortcuts

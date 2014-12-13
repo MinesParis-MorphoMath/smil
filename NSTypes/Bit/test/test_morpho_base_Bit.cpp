@@ -47,24 +47,24 @@ class Test_Bit : public TestCase
       imType im3(im1);
       
       bool vec1[] = {
-	0, 0, 0, 0, 0, 1, 1,
-	1, 1, 0, 0, 0, 1, 0,
-	0, 0, 0, 0, 0, 1, 0,
-	0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 1, 0, 0,
-	0, 0, 0, 0, 0, 0, 1,
-	0, 1, 0, 0, 0, 1, 1,
+        0, 0, 0, 0, 0, 1, 1,
+        1, 1, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 1, 0,
+        0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 1, 0, 0,
+        0, 0, 0, 0, 0, 0, 1,
+        0, 1, 0, 0, 0, 1, 1,
       };
       im1 << BitArray(vec1, 49);
       
       bool dilateSquVec[] = {
-	1, 1, 1, 0, 1, 1, 1,
-	1, 1, 1, 0, 1, 1, 1,
-	1, 1, 1, 0, 1, 1, 1,
-	0, 0, 0, 1, 1, 1, 1,
-	0, 0, 0, 1, 1, 1, 1,
-	1, 1, 1, 1, 1, 1, 1,
-	1, 1, 1, 0, 1, 1, 1
+        1, 1, 1, 0, 1, 1, 1,
+        1, 1, 1, 0, 1, 1, 1,
+        1, 1, 1, 0, 1, 1, 1,
+        0, 0, 0, 1, 1, 1, 1,
+        0, 0, 0, 1, 1, 1, 1,
+        1, 1, 1, 1, 1, 1, 1,
+        1, 1, 1, 0, 1, 1, 1
       };
       im3 << BitArray(dilateSquVec, 49);
       
@@ -73,8 +73,8 @@ class Test_Bit : public TestCase
       TEST_ASSERT(im2==im3);      
       if (retVal==RES_ERR)
       {
-	  im3.printSelf(1);
-	  im2.printSelf(1);
+          im3.printSelf(1);
+          im2.printSelf(1);
       }
       
       // The generic way
@@ -84,8 +84,8 @@ class Test_Bit : public TestCase
       TEST_ASSERT(im2==im3);      
       if (retVal==RES_ERR)
       {
-	  im3.printSelf(1);
-	  im2.printSelf(1);
+          im3.printSelf(1);
+          im2.printSelf(1);
       }
   }
 };

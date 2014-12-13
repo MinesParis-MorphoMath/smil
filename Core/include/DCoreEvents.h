@@ -43,10 +43,10 @@ namespace smil
     {
     public:
       BaseImageEvent(BaseImage *im)
-	: sender(im)
-	{
-	}
-	const BaseImage* sender;
+        : sender(im)
+        {
+        }
+        const BaseImage* sender;
     };
 
     typedef Slot<BaseImageEvent> BaseImageEventSlot;
@@ -57,10 +57,10 @@ namespace smil
     {
     public:
       ImageEvent(Image<T> *im)
-	: sender(im)
-	{
-	}
-	const Image<T>* sender;
+        : sender(im)
+        {
+        }
+        const Image<T>* sender;
     };
 
     typedef Slot< ImageEvent<UINT8> > ImageEventSlot_UINT8;

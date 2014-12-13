@@ -36,23 +36,23 @@ using namespace smil;
 
 template <class T>
 RES_T fill_hq (const Image<T> &img, HierarchicalQueue<T> &hq) {
-	hq.initialize (img);
-	typename ImDtTypes<T>::lineType inPixels = img.getPixels ();
-	size_t s[3];
-	img.getSize (s);
-	size_t offset = 0;
-	for (size_t i=0; i<img.getPixelCount(); ++i){
-		hq.push (*inPixels, offset);
-		inPixels++;
-		offset++;
-	}
-	return RES_OK;
+        hq.initialize (img);
+        typename ImDtTypes<T>::lineType inPixels = img.getPixels ();
+        size_t s[3];
+        img.getSize (s);
+        size_t offset = 0;
+        for (size_t i=0; i<img.getPixelCount(); ++i){
+                hq.push (*inPixels, offset);
+                inPixels++;
+                offset++;
+        }
+        return RES_OK;
 }
 
 template <class T>
 RES_T fill_par_hq (const Image<T> &img, ParHierarQInc<T> hq) {
-	hq.initialize_and_fill (img);
-	return RES_OK;
+        hq.initialize_and_fill (img);
+        return RES_OK;
 }
 
 int main(int argc, char *argv[])

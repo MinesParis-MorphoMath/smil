@@ -59,7 +59,7 @@ namespace smil
       {}
       virtual ~Signal() 
       {
-	disconnectAll();
+        disconnectAll();
       }
       virtual void connect(BaseSlot *slot, bool _register=true);
       virtual void disconnect(BaseSlot *slot, bool _unregister=true);

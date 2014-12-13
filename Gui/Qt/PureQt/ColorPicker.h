@@ -46,7 +46,7 @@ public:
 
     QColor getColor()
     {
-	return color;
+        return color;
     }
     int colorIndex;
 public slots:
