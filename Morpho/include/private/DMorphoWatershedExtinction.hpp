@@ -39,7 +39,7 @@ namespace smil
 
     /**
      * \ingroup Morpho
-     * \defgroup Watershed
+     * \defgroup WatershedExtinction
      * @{
      */
     
@@ -231,9 +231,7 @@ namespace smil
             
             // Update last level of flooding.
             labelT l2 = this->lblPixels[lastOffset];
-            while (l2 != equivalentLabels[l2]) 
-                l2 = equivalentLabels[l2];
-            finalize(l2);
+            finalize(equivalentLabels[l2]);
             
             return RES_OK;
         }
@@ -251,13 +249,8 @@ namespace smil
                 if (*lIt<=this->currentLevel)
                 {
                 
-                    labelT l1_orig = mIt->first, l1 = l1_orig;
-                    labelT l2_orig = mIt->second, l2 = l2_orig;
-                    
-                    while (l1!=equivalentLabels[l1])
-                      l1 = equivalentLabels[l1];
-                    while (l2!=equivalentLabels[l2])
-                      l2 = equivalentLabels[l2];
+                    labelT l1_orig = mIt->first, l1 = equivalentLabels[l1_orig];
+                    labelT l2_orig = mIt->second, l2 = equivalentLabels[l2_orig];
 
                     if (l1 != l2)
                     {
@@ -281,9 +274,7 @@ namespace smil
                         if (graph)
                             graph->addEdge(eater_orig, eaten_orig, this->extinctionValues[eaten]);
                             
-                        equivalentLabels[eaten_orig] = eater;
-                        equivalentLabels[eaten] = eater;
-//                         updateEquTable(eaten, eater);
+                        updateEquTable(eaten, eater);
                     }
                     pendingMerges.erase(mIt);
                     mergeLevels.erase(lIt);
@@ -311,10 +302,8 @@ namespace smil
             BaseFlooding<T, labelT, HQ_Type>::processPixel(curOffset);
             
             labelT l1 = this->lblPixels[curOffset];
-            while (l1!=equivalentLabels[l1])
-                l1 = equivalentLabels[l1];
             
-            insertPixel(curOffset, l1);
+            insertPixel(curOffset, equivalentLabels[l1]);
             
             lastOffset = curOffset;
         }
@@ -598,6 +587,8 @@ namespace smil
     
      /**
      * Calculation of the minimum spanning tree, simultaneously to the image flooding, with edges weighted according to volume extinction values.
+     * 
+     * \demo{extinction_values.py}
      */
     template < class T,        class labelT, class outT > 
     RES_T watershedExtinctionGraph (const Image < T > &imIn,

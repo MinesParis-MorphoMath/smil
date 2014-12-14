@@ -147,7 +147,7 @@ class Test_Area_Extinction : public TestCase
         
         // Area
         UINT16 areaTruth[] = {
-          0,  31,   0,   0,   0,
+          0,  25,   0,   0,   0,
           0,   0,   0,   0,   0,
           0,   0,   0,   0,   0,
           0,   6,   0,   8,   0,
@@ -220,8 +220,8 @@ class Test_Volumic_Extinction : public TestCase
           0,   6,   0,   0,   0,
           0,   0,   0,   0,   0,
           0,   0,   0,   0,   0,
-          0, 192,   0,  30,   0,
-          0, 192,   0,   0,  30,
+          0, 179,   0,  30,   0,
+          0, 179,   0,   0,  30,
         };
         imTruth << volumeTruth;
         
@@ -458,11 +458,11 @@ int main(int argc, char *argv[])
 {
     TestSuite ts;
 
-//     ADD_TEST(ts, Test_Extinction_Flooding);
-//     ADD_TEST(ts, Test_Area_Extinction);
-//     ADD_TEST(ts, Test_Volumic_Extinction);
-//     ADD_TEST(ts, Test_Dynamic_Extinction);
-//     ADD_TEST(ts, Test_Watershed_Extinction_Graph);
+    ADD_TEST(ts, Test_Extinction_Flooding);
+    ADD_TEST(ts, Test_Area_Extinction);
+    ADD_TEST(ts, Test_Volumic_Extinction);
+    ADD_TEST(ts, Test_Dynamic_Extinction);
+    ADD_TEST(ts, Test_Watershed_Extinction_Graph);
     ADD_TEST(ts, Test_Watershed_Extinction_Compare);
 
     
