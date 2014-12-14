@@ -388,8 +388,6 @@ namespace smil
                 eaten = lbl1;
             }
             
-            if (this->extinctionValues[eaten]!=0)
-                cout << "error " << this->extinctionValues[eaten] << " " << areas[eaten] << endl;
             this->extinctionValues[eaten] = areas[eaten];
             areas[eater] += areas[eaten];
             
