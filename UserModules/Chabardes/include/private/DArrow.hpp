@@ -38,10 +38,10 @@ namespace smil
         }
     };
 
-  template < class T, class arrowT = UINT8 > class arrowMinFunction:public unaryMorphImageFunctionBase < T, arrowT >
+  template < class T, class arrowT = UINT8 > class arrowMinFunction:public MorphImageFunctionBase < T, arrowT >
     {
       public:
-        typedef unaryMorphImageFunctionBase < T, arrowT > parentClass;
+        typedef MorphImageFunctionBase < T, arrowT > parentClass;
         typedef typename parentClass::imageInType imageInType;
         typedef typename imageInType::lineType lineInType;
         typedef typename imageInType::lineType sliceInType;
@@ -51,7 +51,7 @@ namespace smil
         typedef typename imageArrowType::sliceType sliceArrowType;
         typedef typename imageArrowType::volType volArrowType;
 
-      arrowMinFunction ( T border = numeric_limits < T >::max (  ) ):borderValue ( border ), unaryMorphImageFunctionBase < T,
+      arrowMinFunction ( T border = numeric_limits < T >::max (  ) ):borderValue ( border ), MorphImageFunctionBase < T,
             arrowT >
             (  )
         {

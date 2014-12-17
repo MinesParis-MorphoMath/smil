@@ -80,6 +80,11 @@ builtinOpen = open
 #endif // SWIGPYTHON
 
 
+%include "DMorphImageOperations.hpp"
+%feature("director") MorphImageFunctionBase;
+TEMPLATE_WRAP_CLASS(MorphImageFunctionBase, MorphImageFunctionBase);
+
+
 %include "DMorphoBase.hpp"
 TEMPLATE_WRAP_FUNC(dilate);
 TEMPLATE_WRAP_FUNC(erode);

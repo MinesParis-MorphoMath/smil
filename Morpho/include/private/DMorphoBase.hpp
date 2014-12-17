@@ -67,7 +67,7 @@ namespace smil
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
-        unaryMorphImageFunction<T, supLine<T> > iFunc(borderVal);
+        MorphImageFunction<T, supLine<T> > iFunc(borderVal);
         return iFunc(imIn, imOut, se);
     }
 
@@ -103,7 +103,7 @@ namespace smil
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
-        unaryMorphImageFunction<T, infLine<T> > iFunc(borderVal);
+        MorphImageFunction<T, infLine<T> > iFunc(borderVal);
         return iFunc(imIn, imOut, se.transpose());
     }
 
@@ -130,7 +130,7 @@ namespace smil
         ASSERT_SAME_SIZE(&imIn, &imOut);
         ImageFreezer freeze(imOut);
         
-        bool inplaceSafe = unaryMorphImageFunction<T, supLine<T> >::isInplaceSafe(se);
+        bool inplaceSafe = MorphImageFunction<T, supLine<T> >::isInplaceSafe(se);
         Image<T> *imTmp;
         if (inplaceSafe)
           imTmp = &imOut;
@@ -162,7 +162,7 @@ namespace smil
         ASSERT_SAME_SIZE(&imIn, &imOut);
         ImageFreezer freeze(imOut);
         
-        bool inplaceSafe = unaryMorphImageFunction<T, supLine<T> >::isInplaceSafe(se);
+        bool inplaceSafe = MorphImageFunction<T, supLine<T> >::isInplaceSafe(se);
         Image<T> *imTmp;
         if (inplaceSafe)
           imTmp = &imOut;

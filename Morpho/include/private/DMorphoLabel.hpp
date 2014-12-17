@@ -52,10 +52,10 @@ namespace smil
 #ifndef SWIG
 
     template <class T1, class T2, class compOperatorT=std::equal_to<T1> >
-    class labelFunctGeneric : public unaryMorphImageFunctionBase<T1, T2>
+    class labelFunctGeneric : public MorphImageFunctionBase<T1, T2>
     {
       public:
-        typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
+        typedef MorphImageFunctionBase<T1, T2> parentClass;
         typedef typename parentClass::imageInType imageInType;
         typedef typename parentClass::imageOutType imageOutType;
         
@@ -80,7 +80,7 @@ namespace smil
             return RES_OK;
         }
         
-        virtual void processPixel(size_t &pointOffset)
+        virtual void processPixel(size_t pointOffset)
         {
 
             T1 pVal = this->pixelsIn[pointOffset];
@@ -139,10 +139,10 @@ namespace smil
     };
 
     template <class T1, class T2, class compOperatorT=std::equal_to<T1> >
-    class labelFunctFast : public unaryMorphImageFunctionBase <T1, T2>
+    class labelFunctFast : public MorphImageFunctionBase <T1, T2>
     {
     public:
-        typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
+        typedef MorphImageFunctionBase<T1, T2> parentClass;
         typedef typename parentClass::imageInType imageInType;
         typedef typename parentClass::imageOutType imageOutType;
         typedef typename imageInType::lineType lineInType;
@@ -479,16 +479,17 @@ namespace smil
 
 
     template <class T1, class T2>
-    class neighborsFunct : public unaryMorphImageFunctionBase<T1, T2>
+    class neighborsFunct : public MorphImageFunctionBase<T1, T2>
     {
     public:
-        typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
+        typedef MorphImageFunctionBase<T1, T2> parentClass;
         
-        virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+        virtual inline void processPixel(size_t pointOffset, vector<int> dOffsetList)
         {
             vector<T1> vals;
             UINT nbrValues = 0;
-            while(dOffset!=dOffsetEnd)
+            vector<int>::iterator dOffset = dOffsetList.begin();
+            while(dOffset!=dOffsetList.end())
             {
                 T1 val = parentClass::pixelsIn[pointOffset + *dOffset];
                 if (find(vals.begin(), vals.end(), val)==vals.end())

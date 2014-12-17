@@ -43,17 +43,17 @@ namespace smil
 
 
     template <class T, class lineFunction_T>
-    class unaryMorphArrowImageFunction : public unaryMorphImageFunction<T, lineFunction_T>
+    class unaryMorphArrowImageFunction : public MorphImageFunction<T, lineFunction_T>
     {
     public:
-        typedef unaryMorphImageFunction<T, lineFunction_T> parentClass;
+        typedef MorphImageFunction<T, lineFunction_T> parentClass;
         typedef Image<T> imageType;
         typedef typename imageType::lineType lineType;
         typedef typename imageType::sliceType sliceType;
         typedef typename imageType::volType volType;
         
         unaryMorphArrowImageFunction(T border=numeric_limits<T>::min()) 
-          : unaryMorphImageFunction<T, lineFunction_T>(border) 
+          : MorphImageFunction<T, lineFunction_T>(border) 
         {
         }
         virtual RES_T _exec_single(const imageType &imIn, imageType &imOut, const StrElt &se);

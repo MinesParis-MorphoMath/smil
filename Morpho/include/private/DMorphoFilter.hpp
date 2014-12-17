@@ -96,21 +96,21 @@ namespace smil
 
     
     template <class T>
-    class meanFunct : public unaryMorphImageFunctionBase<T, T>
+    class meanFunct : public MorphImageFunctionBase<T, T>
     {
     public:
-        typedef unaryMorphImageFunctionBase<T, T> parentClass;
+        typedef MorphImageFunctionBase<T, T> parentClass;
         
-        virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+        virtual inline void processPixel(size_t pointOffset, vector<int> dOffsetList)
         {
             double meanVal = 0;
-            double nPts = dOffsetEnd-dOffset;
-            while(dOffset!=dOffsetEnd)
+            vector<int>::iterator dOffset = dOffsetList.begin();
+            while(dOffset!=dOffsetList.end())
             {
                 meanVal += double(parentClass::pixelsIn[pointOffset + *dOffset]);
                 dOffset++;
             }
-            parentClass::pixelsOut[pointOffset] = T(meanVal / nPts);
+            parentClass::pixelsOut[pointOffset] = T(meanVal / double(dOffsetList.size()));
         }
     };
     
@@ -135,22 +135,22 @@ namespace smil
     }
     
     template <class T>
-    class medianFunct : public unaryMorphImageFunctionBase<T, T>
+    class medianFunct : public MorphImageFunctionBase<T, T>
     {
     public:
-        typedef unaryMorphImageFunctionBase<T, T> parentClass;
+        typedef MorphImageFunctionBase<T, T> parentClass;
         
-        virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+        virtual inline void processPixel(size_t pointOffset, vector<int> dOffsetList)
         {
             vector<T> vals;
-            int nPts = max(int(dOffsetEnd-dOffset-1), 0);
-            while(dOffset!=dOffsetEnd)
+            vector<int>::iterator dOffset = dOffsetList.begin();
+            while(dOffset!=dOffsetList.end())
             {
                 vals.push_back(parentClass::pixelsIn[pointOffset + *dOffset]);
                 dOffset++;
             }
             sort(vals.begin(), vals.end());
-            parentClass::pixelsOut[pointOffset] = vals[nPts/2];
+            parentClass::pixelsOut[pointOffset] = vals[dOffsetList.size()/2];
         }
     };
     

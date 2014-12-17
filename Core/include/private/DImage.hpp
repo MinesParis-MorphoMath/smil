@@ -135,6 +135,11 @@ namespace smil
             return pixels[offset];
         }
 
+        inline T getPixelNoCheck(size_t offset) const
+        {
+            return pixels[offset];
+        }
+
         //! Set the value of the pixel at pos x,y,z (for 3D image)
         inline RES_T setPixel(size_t x, size_t y, size_t z, const T &value)
         {
@@ -157,6 +162,11 @@ namespace smil
             pixels[offset] = value;
             modified();
             return RES_OK;
+        }
+        
+        inline void setPixelNoCheck(size_t offset, const T &value)
+        {
+            pixels[offset] = value;
         }
         
         //! Copy pixel values to a given array

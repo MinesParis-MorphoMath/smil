@@ -260,8 +260,8 @@ namespace smil
 
 %extend smil::Image
 {
-    T __getitem__(size_t i) { return self->getPixel(i); }
-    RES_T __setitem__(size_t i, T val) { return self->setPixel(i, val); }
+    T __getitem__(size_t i) { return self->getPixelNoCheck(i); }
+    void __setitem__(size_t i, T val) { return self->setPixelNoCheck(i, val); }
 }
 #endif // SWIGPYTHON
 

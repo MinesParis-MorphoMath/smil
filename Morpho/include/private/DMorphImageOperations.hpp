@@ -42,26 +42,12 @@ namespace smil
 {
   
     template <class T_in, class T_out=T_in>
-    class unaryMorphImageFunctionBase : public imageFunctionBase<T_in>
+    class MorphImageFunctionBase 
+#ifndef SWIG
+    : public imageFunctionBase<T_in>
+#endif // SWIG
     {
     public:
-        unaryMorphImageFunctionBase(T_in _borderValue = ImDtTypes<T_in>::min())
-          : initialValue(_borderValue),
-            borderValue(_borderValue)
-            
-        {
-        }
-        
-        unaryMorphImageFunctionBase(T_in _borderValue, T_out _initialValue = ImDtTypes<T_out>::min())
-          : initialValue(_initialValue),
-            borderValue(_borderValue)
-        {
-        }
-        
-        ~unaryMorphImageFunctionBase()
-        {
-        }
-        
         typedef Image<T_in> imageInType;
         typedef typename ImDtTypes<T_in>::lineType lineInType;
         typedef typename ImDtTypes<T_in>::sliceType sliceInType;
@@ -72,7 +58,21 @@ namespace smil
         typedef typename ImDtTypes<T_out>::sliceType sliceOutType;
         typedef typename ImDtTypes<T_out>::volType volOutType;
         
-        inline RES_T operator()(const imageInType &imIn, imageOutType &imOut, const StrElt &se) { return this->_exec(imIn, imOut, se); }
+        MorphImageFunctionBase(T_in _borderValue = ImDtTypes<T_in>::min(), T_out _initialValue = ImDtTypes<T_out>::min())
+          : initialValue(_initialValue),
+            borderValue(_borderValue)
+        {
+        }
+        
+        virtual ~MorphImageFunctionBase()
+        {
+        }
+        
+        
+        inline RES_T operator()(const imageInType &imIn, imageOutType &imOut, const StrElt &se=DEFAULT_SE) 
+        { 
+            return this->_exec(imIn, imOut, se); 
+        }
         
         virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
         virtual RES_T finalize(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
@@ -81,9 +81,13 @@ namespace smil
         virtual RES_T processImage(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
         virtual inline void processSlice(sliceInType linesIn, sliceOutType linesOut, size_t &lineNbr, const StrElt &se);
         virtual inline void processLine(lineInType pixIn, lineOutType pixOut, size_t &pixNbr, const StrElt &se);
-        virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd);
+        virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsets);
         
         static bool isInplaceSafe(const StrElt &se) { return false; }
+        
+        const Image<T_in> *imIn;
+        Image<T_out> *imOut;
+        
     protected:
           size_t imSize[3];
           volInType slicesIn;
@@ -116,7 +120,7 @@ namespace smil
 
 
     template <class T, class lineFunction_T>
-    class unaryMorphImageFunction : public unaryMorphImageFunctionBase<T>
+    class MorphImageFunction : public MorphImageFunctionBase<T>
     {
       public:
         typedef imageFunctionBase<T> parentClass;
@@ -125,8 +129,8 @@ namespace smil
         typedef typename ImDtTypes<T>::sliceType sliceType;
         typedef typename ImDtTypes<T>::volType volType;
         
-        unaryMorphImageFunction(T border=ImDtTypes<T>::min()) 
-          : unaryMorphImageFunctionBase<T>(border, border) 
+        MorphImageFunction(T border=ImDtTypes<T>::min()) 
+          : MorphImageFunctionBase<T>(border, border) 
         {
         }
         

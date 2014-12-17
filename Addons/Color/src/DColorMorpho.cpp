@@ -38,18 +38,18 @@
 namespace smil
 {
 
-    class labGrad_func : public unaryMorphImageFunctionBase<RGB, UINT8>
+    class labGrad_func : public MorphImageFunctionBase<RGB, UINT8>
     {
         ImDtTypes<UINT8>::lineType R, G, B;
         
         RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
         {
-            unaryMorphImageFunctionBase<RGB, UINT8>::initialize(imIn, imOut, se);
+            MorphImageFunctionBase<RGB, UINT8>::initialize(imIn, imOut, se);
             R = imIn.getPixels().arrays[0];
             G = imIn.getPixels().arrays[1];
             B = imIn.getPixels().arrays[2];
         }
-        void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+        void processPixel(size_t pointOffset, vector<int> dOffsetList)
         {
             double distMax = 0;
             double dist;
@@ -57,7 +57,8 @@ namespace smil
             double r = pVal.r, g = pVal.g, b = pVal.b;
             size_t dOff;
             
-            while(dOffset!=dOffsetEnd)
+            vector<int>::iterator dOffset = dOffsetList.begin();
+            while(dOffset!=dOffsetList.end())
             {
                 dOff = pointOffset + *dOffset;
                 dist = ( r - R[dOff]) * ( r - R[dOff])
@@ -102,18 +103,18 @@ namespace smil
     }
     
     
-    class hlsGrad_func : public unaryMorphImageFunctionBase<RGB, UINT8>
+    class hlsGrad_func : public MorphImageFunctionBase<RGB, UINT8>
     {
         ImDtTypes<UINT8>::lineType H, L, S;
         
         RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
         {
-            unaryMorphImageFunctionBase<RGB, UINT8>::initialize(imIn, imOut, se);
+            MorphImageFunctionBase<RGB, UINT8>::initialize(imIn, imOut, se);
             H = imIn.getPixels().arrays[0];
             L = imIn.getPixels().arrays[1];
             S = imIn.getPixels().arrays[2];
         }
-        void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+        void processPixel(size_t pointOffset, vector<int> dOffsetList)
         {
             double distMax = 0;
             double dist;
@@ -121,7 +122,8 @@ namespace smil
             double h = double(pVal.r)*2.*M_PI/255., l = double(pVal.g)/255., s = double(pVal.b)/255.;
             size_t dOff;
             
-            while(dOffset!=dOffsetEnd)
+            vector<int>::iterator dOffset = dOffsetList.begin();
+            while(dOffset!=dOffsetList.end())
             {
                 dOff = pointOffset + *dOffset;
                 double Hf = double(H[dOff])/255.*2*M_PI; // Convert to radians

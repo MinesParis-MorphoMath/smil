@@ -44,10 +44,10 @@ namespace smil
     */
 
     template <class T1, class T2, class graphT=Graph<UINT,UINT> >
-    class mosaicToGraphFunct : public unaryMorphImageFunctionBase<T1, T2>
+    class mosaicToGraphFunct : public MorphImageFunctionBase<T1, T2>
     {
     public:
-        typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
+        typedef MorphImageFunctionBase<T1, T2> parentClass;
         
         mosaicToGraphFunct(/*graphT *externGraph=NULL*/)
           : graphPtr(auto_ptr<graphT>(new graphT())), graph(*graphPtr.get())
@@ -58,11 +58,12 @@ namespace smil
         {
             externGraph.clear();
         }
-        virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+        virtual inline void processPixel(size_t pointOffset, vector<int> dOffsetList)
         {
             T1 curVal = parentClass::pixelsIn[pointOffset];
 //             bool mixed = false;
-            while(dOffset!=dOffsetEnd)
+            vector<int>::iterator dOffset = dOffsetList.begin();
+            while(dOffset!=dOffsetList.end())
             {
                 T1 val = parentClass::pixelsIn[pointOffset + *dOffset];
                 if (val!=curVal)
