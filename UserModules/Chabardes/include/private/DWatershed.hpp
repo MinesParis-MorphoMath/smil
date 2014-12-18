@@ -57,149 +57,66 @@ namespace smil
 
         int nthreads = Core::getInstance()->getNumberOfThreads();
         HierarchicalQueue<T> hq[nthreads];
-
+        bool hqs_emptied;
+/*
         #pragma omp parallel
         {
             size_t o;
+            // Beginning. 
+                // Arrowing used.
             arrowLowOrEqu (imIn, arrows, cpSe, numeric_limits<T>::min());
+                // Initializing the hq.
             for (size_t s=0; s<size[2]; ++s)
-            {
                 #pragma omp for 
                 for (size_t l=0; l<size[1]; ++l)
-                {
                     for (size_t p=0; p<size[0]; ++p)
                     {
-                        
-                        o = p+l*size[0]+s*size[1]*size[0];
-                        if (basinsP[o] != 0 && outP[o] != numeric_limits<T>::max())
-                        {
-                            bredthFirstConflict (arrows, imBasinsOut, imOut, cpSe, o, basinsP[o], numeric_limits<T>::max());
-                        }
-                    }
-                }
-            }
-        }
-        nbr_label = fastLabel (imOut, arrows, cpSe);
-        #pragma omp parallel
-        {
-            size_t x,y,z, o, nb_o;
-            bool oddLine;
-            UINT nbCount;
+                        o = p + l * size[0] + s * size[0] * size[1]; 
+                        if (basinsP[o] != 0)
+                            hq [basinsP[o]%nthreads].push (o, imP[o]);
+                    } 
 
-            for (size_t s=0; s<size[2]; ++s)
+            propagation1 ();
+
+            propagation2 ();
+
+            solveConflicts ();
+
+            labeling ();
+
+            hq ();
+
+
+
+            // Processing.
+            do
             {
-                #pragma omp for 
-                for (size_t l=0; l<size[1]; ++l)
+                PropagationWS (arrows, imBasinsOut, imOut, cpSE, numeric_limits<T>::max (), hq[omp_get_thread_num()]);
+
+                // Need a multi-threaded, in-place-safe version of labelling.
+                #pragma omp single
                 {
-                    oddLine  = se.odd && l%2;
-
-                    for (size_t p=0; p<size[0]; ++p)
-                    {
-                        o = p+l*size[0]+s*size[1]*size[0];
-                        if (outP[0] != 0)
-                        {
-                            nbCount = 0;
-                            for (UINT p=0; p<sePtsNumber; ++p)
-                            {
-                                x = p + cpSe.points[p].x;
-                                y = l + cpSe.points[p].y;
-                                z = s + cpSe.points[p].z;
-                                if (oddLine)
-                                    x += (y+1)%2;
-                                nb_o = x + y*size[0] + z*size[1]*size[0];
-                                if (basinsP[nb_o] != 0 && outP[nb_o] == 0) {
-                                    ++nbCount;
-                                }
-                            }
-
-                        }                      
-                    }
+                    T nbr_label = fastLabel (imBasinsOut, imBasinsOut, cpSE);
                 }
-            }
+
+                // Refiling the hq.
+                for (size_t s=0; s<size[2]; ++s)
+                    #pragma omp for 
+                    for (size_t l=0; l<size[1]; ++l)
+                        for (size_t p=0; p<size[0]; ++p)
+                        {
+                            o = p + l * size[0] + s * size[0] * size[1]; 
+                            if (basinsP[o] != 0)
+                                hq [basinsP[o]%nthreads].push (o, imP[o]);
+                        } 
+                hqs_emptied = true;
+                #pragma omp for reduction(&, hqs_emptied)
+                for (int i=0; i<nthreads; ++i)
+                    hqs_emptied = hqs_emptied & hq[i].empty();
+            } while (!hqs_emptied);
+            // Ending.
         }
-
-/*        #pragma omp parallel
-        {
-            size_t offset;
-//            arrowPropagateWithConflicts< T, T, labelT> funcBredthFirst(conflict_value);
-//            arrowPropagate<T,T,labelT, STD_Stack<size_t> > funcDepthFirst;
-            // Rising basins independently.
-            qarrowLowOrEqu (imIn, arrows, cpSe, numeric_limits<T>::min());
-            for (size_t s=0; s<size[2]; ++s)
-            {
-                #pragma omp for
-                for (size_t l=0; l<size[1]; ++l)
-                {
-                    for (size_t p=0; p<size[0]; ++p) 
-                    {
-                        offset = p+l*size[0]+s*size[1]*size[0];
-                        
-                        if (basinsP[offset] != 0 && outP[offset] != conflict_value)
-                        {
-
-                            //funcBredthFirst.propagationValue = basinsP[offset];
-                            //funcBredthFirst (arrows, imOut, imBasinsOut, cpSe, offset) ;
-                        }
-                    }
-                }
-                
-            }
-/*            #pragma omp single
-            {
-            imOut.printSelf (1);
-            imBasinsOut.printSelf (1);
-            }
-            // Detecting non-biased watershed lines.
-            size_t x,y,z, nb_offset;
-            UINT n;
-            bool oddLine;
-            labelT redondant;
-            bool all_neighbor_ws;
-            for (size_t s=0; s<size[2]; ++s)
-            {
-                #pragma omp for
-                for (size_t l=0; l<size[1]; ++l)
-                {
-                    oddLine  = se.odd && l%2;
-                    for (size_t p=0; p<size[0]; ++p)
-                    {
-                        offset = p+l*size[0]+s*size[1]*size[0];
-                        if (basinsP[offset] == 0)
-                        {
-                            n=0;
-                            redondant = 0;
-                            all_neighbor_ws = true;
-                            while (n<sePtsNumber && outP[offset] != numeric_limits<T>::max()) 
-                            {
-                                y = l + cpSe.points[n].y;
-                                x = p + cpSe.points[n].x + (oddLine && (y+1)%2);
-                                z = s + cpSe.points[n].z;
-                                if (x>=0 && x<size[0] &&
-                                    y>=0 && y<size[1] &&
-                                    z>=0 && z<size[2])
-                                {
-                                    nb_offset = x+y*size[0]+z*size[0]*size[1];
-
-                                    if (basinsP[nb_offset] != 0) 
-                                    {
-                                        if (redondant != basinsP[nb_offset] && redondant != 0)
-                                        {
-                                            outP[offset] = numeric_limits<T>::max();
-                                        }
-                                        else
-                                            redondant = basinsP[nb_offset];
-                                    }
-                                }
-
-                                ++n;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-*/
-    }
+*/    }
 
 }
 

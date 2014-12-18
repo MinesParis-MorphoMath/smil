@@ -69,12 +69,14 @@ namespace smil
         return RES_OK;
     }
 
-    template <class arrowT, class pT, class cT>
-    RES_T bredthFirstConflict (const Image<arrowT>& arrowing, Image<pT>& imBasins, Image<cT>& imWatershed, const StrElt& se, const size_t&offset, const pT& pVal, const cT& cVal)
+    template <class inT, class arrowT, class pT, class cT>
+    RES_T bredthFirstConflict (const Image<inT>& imIn, const Image<arrowT>& arrowing, Image<pT>& imBasins, Image<cT>& imWatershed, const StrElt& se, const cT& cVal, HierarchicalQueue<cT> &pq)
     {
+        typedef Image<inT> inIT;
         typedef Image<arrowT> arrowIT;
         typedef Image<pT> pIT;
         typedef Image<cT> cIT;
+        typedef typename inIT::lineType inLT;
         typedef typename arrowIT::lineType arrowLT;
         typedef typename pIT::lineType pLT;
         typedef typename cIT::lineType cLT;
@@ -92,18 +94,16 @@ namespace smil
         UINT sePtsNumber = se.points.size ();
             //Processing related.
         arrowT arrow;
-        STD_Queue<size_t> pq;
         STD_Queue<size_t> cq;
         pT atomic_p;
         cT atomic_c;
 
-        // Init
-        pq.push (offset);
+        pT pVal = 0;
 
         do 
         {
 
-            o = pq.front (); pq.pop ();
+            o = pq.pop ();
 
             #pragma omp atomic read
             atomic_p = imB[o];
