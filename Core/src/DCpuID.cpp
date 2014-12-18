@@ -148,6 +148,8 @@ CpuID::CpuID()
 
             // End of AMD
         } 
+        
+#endif // __arm__
 
     #ifdef USE_OPEN_MP
         #pragma omp parallel
@@ -158,23 +160,24 @@ CpuID::CpuID()
         if (hyperThreaded)
           cores /= 2;
     #else // USE_OPEN_MP
-        cores = 1;
-        logical = ebxFeatures & 0x00FF0000;
+        #ifdef __arm__
+            FILE *lsofFile_p = popen("/usr/bin/nproc", "r");
+            if (lsofFile_p)
+            {
+                char buffer[1024];
+                char *line_p = fgets(buffer, sizeof(buffer), lsofFile_p);
+                cores = logical = atoi(line_p);
+                pclose(lsofFile_p);
+            }
+            else 
+            cores = logical = 1;
+        #else // __arm__
+            cores = 1;
+            logical = ebxFeatures & 0x00FF0000;
+        #endif // __arm__
     #endif // USE_OPEN_MP
         cores = max(cores, 1U);
     
-#else // __arm__
-    FILE *lsofFile_p = popen("/usr/bin/nproc", "r");
-    if (lsofFile_p)
-    {
-        char buffer[1024];
-        char *line_p = fgets(buffer, sizeof(buffer), lsofFile_p);
-        cores = logical = atoi(line_p);
-        pclose(lsofFile_p);
-    }
-    else 
-      cores = logical = 1;
-#endif // __arm__
     
 }
 
