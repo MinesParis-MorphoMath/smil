@@ -64,8 +64,8 @@ namespace smil
             parentClass::init();
             
             int *s = data->GetExtent();
-            this->pixels = (typename Image<T>::lineType)(data->GetScalarPointer());
-            this->setSize(s[1]+1, s[3]+1, s[5]+1);
+            typename Image<T>::lineType pix = static_cast<typename Image<T>::lineType>(data->GetScalarPointer());
+            this->attach(pix, s[1]+1, s[3]+1, s[5]+1);
 
           
         }
@@ -84,10 +84,10 @@ namespace smil
             else
             {
                 int *s = data->GetExtent();
-                this->pixels = (typename Image<T>::lineType)(data->GetScalarPointer());
-                this->setSize(s[1]+1, s[3]+1, s[5]+1);
+                typename Image<T>::lineType pix = static_cast<typename Image<T>::lineType>(data->GetScalarPointer());
+                this->attach(pix, s[1]+1, s[3]+1, s[5]+1);
             }
-            }
+         }
     #endif // Py_PYCONFIG_H
     };
 
