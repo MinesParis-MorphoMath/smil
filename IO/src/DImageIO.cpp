@@ -52,84 +52,84 @@ namespace smil
 
     RES_T getFileInfo(const char *filename, ImageFileInfo &fInfo)
     {
-	  auto_ptr< ImageFileHandler<void> > fHandler(getHandlerForFile<void>(filename));
-	  
-	  if (fHandler.get())
-	    return fHandler->getFileInfo(filename, fInfo);
-	  else return RES_ERR;
+          auto_ptr< ImageFileHandler<void> > fHandler(getHandlerForFile<void>(filename));
+          
+          if (fHandler.get())
+            return fHandler->getFileInfo(filename, fInfo);
+          else return RES_ERR;
     }
     
     BaseImage *createFromFile(const char *filename)
     {
-	  string fileExt = getFileExtension(filename);
-	  string filePrefix = (string(filename).substr(0, 7));
-	  
-	  if (filePrefix=="http://")
-	  {
-	      BaseImage *img = NULL;
+          string fileExt = getFileExtension(filename);
+          string filePrefix = (string(filename).substr(0, 7));
+          
+          if (filePrefix=="http://")
+          {
+              BaseImage *img = NULL;
       #ifdef USE_CURL
-	      string tmpFileName = "_smilTmpIO." + fileExt;
-	      if (getHttpFile(filename, tmpFileName.c_str())!=RES_OK)
-	      {
-		  ERR_MSG(string("Error downloading file ") + filename);
-		  return img;
-	      }
-	      img = createFromFile(tmpFileName.c_str());
-	      remove(tmpFileName.c_str());
+              string tmpFileName = "_smilTmpIO." + fileExt;
+              if (getHttpFile(filename, tmpFileName.c_str())!=RES_OK)
+              {
+                  ERR_MSG(string("Error downloading file ") + filename);
+                  return img;
+              }
+              img = createFromFile(tmpFileName.c_str());
+              remove(tmpFileName.c_str());
 
       #else // USE_CURL
-	      ERR_MSG("Error: to use this functionality you must compile SMIL with the Curl option");
+              ERR_MSG("Error: to use this functionality you must compile SMIL with the Curl option");
       #endif // USE_CURL
-	      return img;
-	  }
-	  
-	  ImageFileInfo fInfo;
-	  if (getFileInfo(filename, fInfo)!=RES_OK)
-	  {
-	      ERR_MSG("Can't open file");
-	      return NULL;
-	  }
-	  
-	  ImageFileHandler<void> *fHandler  = getHandlerForFile<void>(filename);
-	  ASSERT(fHandler, NULL);
-	    
-	  if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_GRAY)
-	  {
-	      if (fInfo.scalarType==ImageFileInfo::SCALAR_TYPE_UINT8)
-	      {
-		  Image<UINT8> *img = new Image<UINT8>();
-		  auto_ptr< ImageFileHandler<UINT8> > fHandler(getHandlerForFile<UINT8>(filename));
-		  if (fHandler->read(filename, *img)==RES_OK)
-		    return img;
-		  else ERR_MSG("Error reading 8 bit image");
-	      }
-	      else if (fInfo.scalarType==ImageFileInfo::SCALAR_TYPE_UINT16)
-	      {
-		  Image<UINT16> *img = new Image<UINT16>();
-		  auto_ptr< ImageFileHandler<UINT16> > fHandler(getHandlerForFile<UINT16>(filename));
-		  if (fHandler->read(filename, *img)==RES_OK)
-		    return img;
-		  else ERR_MSG("Error reading 16 bit image");
-	      }
-	      else ERR_MSG("Unsupported GRAY data type");
-	  }
+              return img;
+          }
+          
+          ImageFileInfo fInfo;
+          if (getFileInfo(filename, fInfo)!=RES_OK)
+          {
+              ERR_MSG("Can't open file");
+              return NULL;
+          }
+          
+          ImageFileHandler<void> *fHandler  = getHandlerForFile<void>(filename);
+          ASSERT(fHandler, NULL);
+            
+          if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_GRAY)
+          {
+              if (fInfo.scalarType==ImageFileInfo::SCALAR_TYPE_UINT8)
+              {
+                  Image<UINT8> *img = new Image<UINT8>();
+                  auto_ptr< ImageFileHandler<UINT8> > fHandler(getHandlerForFile<UINT8>(filename));
+                  if (fHandler->read(filename, *img)==RES_OK)
+                    return img;
+                  else ERR_MSG("Error reading 8 bit image");
+              }
+              else if (fInfo.scalarType==ImageFileInfo::SCALAR_TYPE_UINT16)
+              {
+                  Image<UINT16> *img = new Image<UINT16>();
+                  auto_ptr< ImageFileHandler<UINT16> > fHandler(getHandlerForFile<UINT16>(filename));
+                  if (fHandler->read(filename, *img)==RES_OK)
+                    return img;
+                  else ERR_MSG("Error reading 16 bit image");
+              }
+              else ERR_MSG("Unsupported GRAY data type");
+          }
 #ifdef SMIL_WRAP_RGB
-	  else if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_RGB)
-	  {
-	      Image<RGB> *img = new Image<RGB>();
-	      auto_ptr< ImageFileHandler<RGB> > fHandler(getHandlerForFile<RGB>(filename));
-	      if (fHandler->read(filename, *img)==RES_OK)
-		return img;
-	      else ERR_MSG("Error reading RGB image");
-	  }
+          else if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_RGB)
+          {
+              Image<RGB> *img = new Image<RGB>();
+              auto_ptr< ImageFileHandler<RGB> > fHandler(getHandlerForFile<RGB>(filename));
+              if (fHandler->read(filename, *img)==RES_OK)
+                return img;
+              else ERR_MSG("Error reading RGB image");
+          }
 #endif // SMIL_WRAP_RGB
-	  else
-	  {
-	      ERR_MSG("Image data type not supported");
-	  }
-	  
-	return NULL;
-	  
+          else
+          {
+              ERR_MSG("Image data type not supported");
+          }
+          
+        return NULL;
+          
     }
     
     

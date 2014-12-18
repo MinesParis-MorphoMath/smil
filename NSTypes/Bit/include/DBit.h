@@ -49,13 +49,13 @@ namespace smil
     template <>
     RES_T VTKImageFileHandler<Bit>::read(const char *filename, Image<Bit> &image)
     {
-	return RES_ERR_NOT_IMPLEMENTED;
+        return RES_ERR_NOT_IMPLEMENTED;
     }
 
     template <>
     RES_T VTKImageFileHandler<Bit>::write(const Image<Bit> &image, const char *filename)
     {
-	return RES_ERR_NOT_IMPLEMENTED;
+        return RES_ERR_NOT_IMPLEMENTED;
     }
 
     

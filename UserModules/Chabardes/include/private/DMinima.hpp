@@ -27,6 +27,8 @@ namespace smil
         typedef typename outT::volType outVolT;
         typedef typename arrowT::volType arrowVolT;
 
+        ImageFreezer freeze(imOut);
+        
         // Initialisation.
         arrowT arrows(imIn);
         StrElt cpSe = se.noCenter();

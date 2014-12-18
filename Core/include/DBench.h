@@ -38,61 +38,61 @@ namespace smil
 {
     #define BENCH(func, ...) \
     { \
-	  double t1, t2;; \
-	  t1 = getCpuTime();; \
-	  for (UINT i=0;i<BENCH_NRUNS;i++) \
-	      func(__VA_ARGS__); \
-	  t2 = getCpuTime(); \
-	  cout << #func << "\t" << displayTime((t2-t1)/BENCH_NRUNS) << endl; \
+          double t1, t2;; \
+          t1 = getCpuTime();; \
+          for (UINT i=0;i<BENCH_NRUNS;i++) \
+              func(__VA_ARGS__); \
+          t2 = getCpuTime(); \
+          cout << #func << "\t" << displayTime((t2-t1)/BENCH_NRUNS) << endl; \
     }
 
     #define BENCH_STR(func, str, ...) \
     { \
-	  double t1, t2;; \
-	  t1 = getCpuTime();; \
-	  for (UINT i=0;i<BENCH_NRUNS;i++) \
-		    func(__VA_ARGS__); \
-	  t2 = getCpuTime(); \
-	  cout << #func << " " << str << "\t" << displayTime((t2-t1)/BENCH_NRUNS) << endl; \
+          double t1, t2;; \
+          t1 = getCpuTime();; \
+          for (UINT i=0;i<BENCH_NRUNS;i++) \
+                    func(__VA_ARGS__); \
+          t2 = getCpuTime(); \
+          cout << #func << " " << str << "\t" << displayTime((t2-t1)/BENCH_NRUNS) << endl; \
     }
 
     #define BENCH_IMG(func, ...) \
     { \
-	  double t1, t2;; \
-	  t1 = getCpuTime();; \
-	  for (UINT i=0;i<BENCH_NRUNS;i++) \
-		    func(__VA_ARGS__); \
-	  t2 = getCpuTime(); \
-	  cout << #func << "\t" << GET_1ST_ARG(__VA_ARGS__).getTypeAsString() << "\t"; \
-	  cout << GET_1ST_ARG(__VA_ARGS__).getWidth() << "x" << GET_1ST_ARG(__VA_ARGS__).getHeight(); \
-	  if (GET_1ST_ARG(__VA_ARGS__).getDepth()>UINT(1)) cout << "x" << GET_1ST_ARG(__VA_ARGS__).getDepth(); \
-	  cout << "\t" << displayTime((t2-t1)/BENCH_NRUNS) << endl; \
+          double t1, t2;; \
+          t1 = getCpuTime();; \
+          for (UINT i=0;i<BENCH_NRUNS;i++) \
+                    func(__VA_ARGS__); \
+          t2 = getCpuTime(); \
+          cout << #func << "\t" << GET_1ST_ARG(__VA_ARGS__).getTypeAsString() << "\t"; \
+          cout << GET_1ST_ARG(__VA_ARGS__).getWidth() << "x" << GET_1ST_ARG(__VA_ARGS__).getHeight(); \
+          if (GET_1ST_ARG(__VA_ARGS__).getDepth()>UINT(1)) cout << "x" << GET_1ST_ARG(__VA_ARGS__).getDepth(); \
+          cout << "\t" << displayTime((t2-t1)/BENCH_NRUNS) << endl; \
     }
 
     #define BENCH_CROSS_IMG(func, ...) \
     { \
-	  double t1, t2;; \
-	  t1 = getCpuTime();; \
-	  for (UINT i=0;i<BENCH_NRUNS;i++) \
-		    func(__VA_ARGS__); \
-	  t2 = getCpuTime(); \
-	  cout << #func << "\t" << GET_1ST_ARG(__VA_ARGS__).getTypeAsString() << "-" << GET_2ND_ARG(__VA_ARGS__).getTypeAsString() << "\t"; \
-	  cout << GET_1ST_ARG(__VA_ARGS__).getWidth() << "x" << GET_1ST_ARG(__VA_ARGS__).getHeight(); \
-	  if (GET_1ST_ARG(__VA_ARGS__).getDepth()>UINT(1)) cout << "x" << GET_1ST_ARG(__VA_ARGS__).getDepth(); \
-	  cout << "\t" << displayTime((t2-t1)/BENCH_NRUNS) << endl; \
+          double t1, t2;; \
+          t1 = getCpuTime();; \
+          for (UINT i=0;i<BENCH_NRUNS;i++) \
+                    func(__VA_ARGS__); \
+          t2 = getCpuTime(); \
+          cout << #func << "\t" << GET_1ST_ARG(__VA_ARGS__).getTypeAsString() << "-" << GET_2ND_ARG(__VA_ARGS__).getTypeAsString() << "\t"; \
+          cout << GET_1ST_ARG(__VA_ARGS__).getWidth() << "x" << GET_1ST_ARG(__VA_ARGS__).getHeight(); \
+          if (GET_1ST_ARG(__VA_ARGS__).getDepth()>UINT(1)) cout << "x" << GET_1ST_ARG(__VA_ARGS__).getDepth(); \
+          cout << "\t" << displayTime((t2-t1)/BENCH_NRUNS) << endl; \
     }
 
     #define BENCH_IMG_STR(func, str, ...) \
     { \
-	  double t1, t2;; \
-	  t1 = getCpuTime();; \
-	  for (UINT i=0;i<BENCH_NRUNS;i++) \
-		    func(__VA_ARGS__); \
-	  t2 = getCpuTime(); \
-	  cout << #func << " " << str << "\t" << GET_1ST_ARG(__VA_ARGS__).getTypeAsString() << "\t"; \
-	  cout << GET_1ST_ARG(__VA_ARGS__).getWidth() << "x" << GET_1ST_ARG(__VA_ARGS__).getHeight(); \
-	  if (GET_1ST_ARG(__VA_ARGS__).getDepth()>1) cout << "x" << GET_1ST_ARG(__VA_ARGS__).getDepth(); \
-	  cout << "\t" << displayTime((t2-t1)/BENCH_NRUNS) << endl; \
+          double t1, t2;; \
+          t1 = getCpuTime();; \
+          for (UINT i=0;i<BENCH_NRUNS;i++) \
+                    func(__VA_ARGS__); \
+          t2 = getCpuTime(); \
+          cout << #func << " " << str << "\t" << GET_1ST_ARG(__VA_ARGS__).getTypeAsString() << "\t"; \
+          cout << GET_1ST_ARG(__VA_ARGS__).getWidth() << "x" << GET_1ST_ARG(__VA_ARGS__).getHeight(); \
+          if (GET_1ST_ARG(__VA_ARGS__).getDepth()>1) cout << "x" << GET_1ST_ARG(__VA_ARGS__).getDepth(); \
+          cout << "\t" << displayTime((t2-t1)/BENCH_NRUNS) << endl; \
     }
 
 } // namespace smil

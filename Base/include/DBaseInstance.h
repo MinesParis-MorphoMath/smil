@@ -44,14 +44,14 @@ namespace smil
   
     class Base : public UniqueInstance<Base>
     {
-	friend class UniqueInstance<Base>;
+        friend class UniqueInstance<Base>;
 
     protected:
-	Base (); 
-	~Base ();
+        Base (); 
+        ~Base ();
 
     public:
-	// Public interface
+        // Public interface
     protected:
     };
 

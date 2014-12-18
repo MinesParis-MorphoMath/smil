@@ -115,9 +115,9 @@ void ColorPannel::clearGrid()
 {
     for (int i=0;i<grid->count();i++)
     {
-	QLayoutItem *item = grid->itemAt(0);
-	grid->removeItem(item);
-	delete item->widget();
+        QLayoutItem *item = grid->itemAt(0);
+        grid->removeItem(item);
+        delete item->widget();
     }
 }
 
@@ -141,15 +141,15 @@ void ColorPannel::setColors(const QVector< QRgb >& cols)
     for (int j=0;j<rowCount;j++)
       for (int i=0;i<colCount;i++)
       {
-	  if (index>=colorCount)
-	    break;
-	  ColorButton *button = new ColorButton(this);
-	  button->setColor(cols[index], index);
-	  button->setText("");
-	  button->setToolTip(QString::number(index));
-	  connect(button, SIGNAL(colorChosen(ColorButton*)), SLOT(colorButtonSelected(ColorButton*)));
-	  grid->addWidget(button, j, i);
-	  index++;
+          if (index>=colorCount)
+            break;
+          ColorButton *button = new ColorButton(this);
+          button->setColor(cols[index], index);
+          button->setText("");
+          button->setToolTip(QString::number(index));
+          connect(button, SIGNAL(colorChosen(ColorButton*)), SLOT(colorButtonSelected(ColorButton*)));
+          grid->addWidget(button, j, i);
+          index++;
       }
 }
 

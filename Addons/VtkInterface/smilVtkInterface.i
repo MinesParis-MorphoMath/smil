@@ -70,7 +70,7 @@ def VtkInt(*args):
       return VtkInt_UINT16(im)
 %}
 
-	
+        
 #endif // SWIGPYTHON
 
 

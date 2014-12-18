@@ -56,7 +56,7 @@ namespace smil
      */
     class Core : public UniqueInstance<Core>
     {
-	friend class UniqueInstance<Core>;
+        friend class UniqueInstance<Core>;
 
     protected:
       Core ();
@@ -64,46 +64,46 @@ namespace smil
       
     public:
       
-	// Public interface
-	
-	bool keepAlive;
-	bool autoResizeImages;
-	
-	UINT getNumberOfThreads();
-	UINT getNumberOfCores();
-	UINT getMaxNumberOfThreads();
-	RES_T setNumberOfThreads(UINT nbr);
-	void resetNumberOfThreads();
-	size_t getAllocatedMemory();
-	void registerObject(BaseObject *obj);
-	void unregisterObject(BaseObject *obj);
-	void showAllImages();
-	void hideAllImages();
-	void deleteAllImages();
-	vector<BaseObject*> getRegisteredObjects();
-	vector<BaseImage*> getImages();
+        // Public interface
+        
+        bool keepAlive;
+        bool autoResizeImages;
+        
+        UINT getNumberOfThreads();
+        UINT getNumberOfCores();
+        UINT getMaxNumberOfThreads();
+        RES_T setNumberOfThreads(UINT nbr);
+        void resetNumberOfThreads();
+        size_t getAllocatedMemory();
+        void registerObject(BaseObject *obj);
+        void unregisterObject(BaseObject *obj);
+        void showAllImages();
+        void hideAllImages();
+        void deleteAllImages();
+        vector<BaseObject*> getRegisteredObjects();
+        vector<BaseImage*> getImages();
         int getImageIndex(BaseImage *img);
-	void getCompilationInfos(ostream &outStream = std::cout);
-	const CpuID &getCpuID() { return cpuID; }
-	
-	Signal onBaseImageCreated;
-	Signal onBaseImageDestroyed;
-	
+        void getCompilationInfos(ostream &outStream = std::cout);
+        const CpuID &getCpuID() { return cpuID; }
+        
+        Signal onBaseImageCreated;
+        Signal onBaseImageDestroyed;
+        
       
     protected:
-	UINT coreNumber;
-	UINT threadNumber;
-	UINT maxThreadNumber;
-	
-	const char *systemName;
-	const char *targetArchitecture;
-	const bool supportOpenMP;
-	
-	vector<BaseObject*> registeredObjects;
-	vector<BaseImage*> registeredImages;
-	void deleteRegisteredObjects();
-	
-	const CpuID cpuID;
+        UINT coreNumber;
+        UINT threadNumber;
+        UINT maxThreadNumber;
+        
+        const char *systemName;
+        const char *targetArchitecture;
+        const bool supportOpenMP;
+        
+        vector<BaseObject*> registeredObjects;
+        vector<BaseImage*> registeredImages;
+        void deleteRegisteredObjects();
+        
+        const CpuID cpuID;
 
       
     };

@@ -47,31 +47,31 @@ namespace smil
     class QtGui : public Gui
     {
     public:
-	QtGui() 
-	  : helpForm(NULL)
-	{
-	}
-	virtual ~QtGui();
-	
+        QtGui() 
+          : helpForm(NULL)
+        {
+        }
+        virtual ~QtGui();
+        
     protected:
-	virtual void _execLoop();
-	virtual void _processEvents();
-	virtual void _showHelp();
+        virtual void _execLoop();
+        virtual void _processEvents();
+        virtual void _showHelp();
     private:
-	HelpForm *helpForm;
+        HelpForm *helpForm;
     };
 
     class QtAppGui : public QtGui, public QApplication
     {
     public:
-	QtAppGui();
-	~QtAppGui();
-	
+        QtAppGui();
+        ~QtAppGui();
+        
     protected:
-	virtual void _execLoop();
-	virtual void _processEvents();
+        virtual void _execLoop();
+        virtual void _processEvents();
     private:
-	int _argc;
+        int _argc;
     };
 
     int qtLoop();

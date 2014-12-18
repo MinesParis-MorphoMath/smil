@@ -27,6 +27,17 @@
 
 %feature("autodoc", "1");
 
+// Language independent exception handler
+%include exception.i       
+
+%exception {
+    try {
+        $action
+    } catch(...) {
+        SWIG_exception(SWIG_RuntimeError,"Unknown exception");
+    }
+}
+
 
 //////////////////////////////////////////////////////////
 // Common includes

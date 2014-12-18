@@ -80,6 +80,11 @@ builtinOpen = open
 #endif // SWIGPYTHON
 
 
+%include "DMorphImageOperations.hpp"
+%feature("director") MorphImageFunctionBase;
+TEMPLATE_WRAP_CLASS(MorphImageFunctionBase, MorphImageFunctionBase);
+
+
 %include "DMorphoBase.hpp"
 TEMPLATE_WRAP_FUNC(dilate);
 TEMPLATE_WRAP_FUNC(erode);
@@ -163,7 +168,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 {
     CompStrElt &__getitem__(UINT n)
     {
-	return self->compSeList[n];
+        return self->compSeList[n];
     }
 }
 

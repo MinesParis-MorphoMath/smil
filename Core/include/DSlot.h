@@ -48,7 +48,7 @@ namespace smil
       BaseSlot() {}
       virtual ~BaseSlot() 
       {
-	unregisterAll();
+        unregisterAll();
       }
       virtual void run(Event * /*e*/ = NULL)
       {
@@ -79,7 +79,7 @@ namespace smil
     protected:
       virtual void _run(Event *e)
       {
-	run(static_cast<eventT*>(e));
+        run(static_cast<eventT*>(e));
       }
 #endif // SWIG      
     };
@@ -92,26 +92,26 @@ namespace smil
       typedef void(T::*voidMemberFunc)();
       MemberFunctionSlot()
       {
-	  _instance = NULL;
-	  _function = NULL;
+          _instance = NULL;
+          _function = NULL;
       }
       MemberFunctionSlot(T *inst, memberFunc func)
       {
-	  init(inst, func);
+          init(inst, func);
       }
       MemberFunctionSlot(T *inst, voidMemberFunc func)
       {
-	  init(inst, func);
+          init(inst, func);
       }
       void init(T *inst, memberFunc func)
       {
-	  _instance = inst;
-	  _function = func;
+          _instance = inst;
+          _function = func;
       }
       void init(T *inst, voidMemberFunc func)
       {
-	  _instance = inst;
-	  _void_function = func;
+          _instance = inst;
+          _void_function = func;
       }
     protected:
       T *_instance;
@@ -119,13 +119,13 @@ namespace smil
       voidMemberFunc _void_function;
       virtual void run(eventT *e=NULL) 
       { 
-	if (!_instance)
-	  return;
-	
-	if (_function)
-	  (_instance->*_function)(e);
-	if (_void_function)
-	  (_instance->*_void_function)();
+        if (!_instance)
+          return;
+        
+        if (_function)
+          (_instance->*_function)(e);
+        if (_void_function)
+          (_instance->*_void_function)();
       }
     };
 
@@ -137,13 +137,13 @@ namespace smil
       typedef void(*voidFuncPtr)();
       FunctionSlot(funcPtr func)
       {
-	_function = func;
+        _function = func;
       }
     protected:
       funcPtr _function;
       virtual void run(eventT *e) 
       { 
-	(*_function)(e);
+        (*_function)(e);
       }
     };
 

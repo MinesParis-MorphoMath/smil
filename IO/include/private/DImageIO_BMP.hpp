@@ -53,24 +53,24 @@ namespace smil
     class BMPImageFileHandler : public ImageFileHandler<T>
     {
       public:
-	BMPImageFileHandler()
-	  : ImageFileHandler<T>("BMP")
-	{
-	}
-	
-	virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
-	{
-	    return getBMPFileInfo(filename, fInfo);
-	}
-	
-	virtual RES_T read(const char* filename, Image<T> &image)
-	{
-	    return ImageFileHandler<T>::read(filename, image);
-	}
-	virtual RES_T write(const Image<T> &image, const char* filename)
-	{
-	    return ImageFileHandler<T>::write(image, filename);
-	}
+        BMPImageFileHandler()
+          : ImageFileHandler<T>("BMP")
+        {
+        }
+        
+        virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
+        {
+            return getBMPFileInfo(filename, fInfo);
+        }
+        
+        virtual RES_T read(const char* filename, Image<T> &image)
+        {
+            return ImageFileHandler<T>::read(filename, image);
+        }
+        virtual RES_T write(const Image<T> &image, const char* filename)
+        {
+            return ImageFileHandler<T>::write(image, filename);
+        }
     };
 
     // Specializations

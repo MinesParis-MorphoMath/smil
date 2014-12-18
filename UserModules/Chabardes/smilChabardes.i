@@ -38,9 +38,7 @@ SMIL_MODULE(smilChabardes)
 #include "DMinima.hpp"
 #include "DArrow.hpp"
 #include "DWatershed.hpp"
-#include "SIMDBilateralFilter.hpp"
 #include "DPropagate.hpp"
-#include "DUtils.hpp"
 %}
 
 %import smilCore.i
@@ -54,5 +52,3 @@ TEMPLATE_WRAP_FUNC(fastMinima)
 %include "DWatershed.hpp"
 TEMPLATE_WRAP_FUNC(fastWatershed)
 
-%include "SIMDBilateralFilter.hpp"
-TEMPLATE_WRAP_FUNC(fastBilateralFilter)

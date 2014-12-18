@@ -39,13 +39,13 @@ namespace smil
     template <class T>
     RES_T sampleFunction(const Image<T> &imIn, Image<T> &imOut)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	ImageFreezer freeze(imOut);
-	
-	
-	
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        ImageFreezer freeze(imOut);
+        
+        
+        
     }
 }
 

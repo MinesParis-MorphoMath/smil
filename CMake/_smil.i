@@ -101,9 +101,11 @@ def _find_images(gbl_dict=None):
       if isinstance(it[1], BaseImage):
         imgs[it[1]] = it[0]
       elif  isinstance(it[1], list):
+        ind = 0
         for i in it[1]:
           if isinstance(i, BaseImage):
-            imgs[i] = i
+            imgs[i] = it[0] + "[" + str(ind) + "]"
+          ind += 1
     return imgs
 
 __builtin__.getImages = _find_images
@@ -153,15 +155,20 @@ class showImageSlot(BaseImageEventSlot):
 _showImageSlot = showImageSlot()
 
 class createImageSlot(BaseImageEventSlot):
-    def __init__(self):
-      BaseImageEventSlot.__init__(self)
     def run(self, event):
       img = event.sender
       img.onShow.connect(_showImageSlot)
 
+class deleteImageSlot(BaseImageEventSlot):
+    def run(self, event):
+      img = event.sender
+      guess_images_name()
+
 core = Core.getInstance()
 _newImageSlot = createImageSlot()
+_delImageSlot = deleteImageSlot()
 core.onBaseImageCreated.connect(_newImageSlot)
+core.onBaseImageDestroyed.connect(_delImageSlot)
       
       
 def Image(*args):

@@ -63,61 +63,61 @@ namespace smil
     class FIFO_Queue
     {
       public:
-	FIFO_Queue(size_t newSize=0)
-	{
-	    data = NULL;
-	    if (newSize)
-	      initialize(newSize);
-	}
-	void reset()
-	{
-	    if (data)
-	      delete[] data;
-	}
-	void initialize(size_t newSize)
-	{
-	    reset();
-	    realSize = newSize+1;
-	    data = new T[realSize];
-	    _size = 0;
-	    first = 0;
-	    last = 0;
-	}
-	inline size_t size()
-	{
-	    return _size;
-	}
-	void swap()
-	{
-	    memcpy(data, data+first, (last-first)*sizeof(T));
-	    first = 0;
-	    last = _size;
-	}
-	void push(T val)
-	{
-	    if (last>=realSize-1)
-	      swap();
-	    data[last++] = val;
-	    _size++;
-	}
-	inline T front()
-	{
-	    return data[first];
-	}
-	inline void pop()
-	{
-	    _size--;
-	    first++;
-	}
-	
+        FIFO_Queue(size_t newSize=0)
+        {
+            data = NULL;
+            if (newSize)
+              initialize(newSize);
+        }
+        void reset()
+        {
+            if (data)
+              delete[] data;
+        }
+        void initialize(size_t newSize)
+        {
+            reset();
+            realSize = newSize+1;
+            data = new T[realSize];
+            _size = 0;
+            first = 0;
+            last = 0;
+        }
+        inline size_t size()
+        {
+            return _size;
+        }
+        void swap()
+        {
+            memcpy(data, data+first, (last-first)*sizeof(T));
+            first = 0;
+            last = _size;
+        }
+        void push(T val)
+        {
+            if (last>=realSize-1)
+              swap();
+            data[last++] = val;
+            _size++;
+        }
+        inline T front()
+        {
+            return data[first];
+        }
+        inline void pop()
+        {
+            _size--;
+            first++;
+        }
+        
       static const bool preallocate = true;
       
       protected:
-	size_t _size;
-	size_t realSize;
-	size_t first;
-	size_t last;
-	T* data;
+        size_t _size;
+        size_t realSize;
+        size_t first;
+        size_t last;
+        T* data;
     };
 
     template <class TokenType=UINT>
@@ -126,9 +126,9 @@ namespace smil
     public:
       // Dummy constructor for compatibilty with FIFO_Queue one
       STD_Queue(size_t newSize=0)
-	: queue<TokenType>()
-	{
-	}
+        : queue<TokenType>()
+        {
+        }
       static const bool preallocate = false;
     };
 
@@ -148,138 +148,143 @@ namespace smil
     {
     private:
       
-	size_t GRAY_LEVEL_NBR;
-	size_t TYPE_FLOOR;
-	StackType **stacks;
-	size_t *tokenNbr;
-	size_t size;
-	size_t higherLevel;
-	
-	bool initialized;
-	const bool reverseOrder;
-	
+        size_t GRAY_LEVEL_NBR;
+        size_t GRAY_LEVEL_MIN;
+        StackType **stacks;
+        size_t *tokenNbr;
+        size_t size;
+        size_t higherLevel;
+        
+        bool initialized;
+        const bool reverseOrder;
+        
     public:
-	HierarchicalQueue(bool rOrder=false)
-	  : reverseOrder(rOrder)
-	{
-	    GRAY_LEVEL_NBR = ImDtTypes<T>::cardinal();
-	    TYPE_FLOOR = -ImDtTypes<T>::min();
-	    
-	    stacks = new StackType*[GRAY_LEVEL_NBR]();
-	    tokenNbr = new size_t[GRAY_LEVEL_NBR];
-	    initialized = false;
-	}
-	~HierarchicalQueue()
-	{
-	    reset();
-	    delete[] stacks;
-	    delete[] tokenNbr;
-	}
-	
-	void reset()
-	{
-	    if (!initialized)
-	      return;
-	    
-	    for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
-	    {
-		if (stacks[i])
-		    delete stacks[i];
-		stacks[i] = NULL;
-	    }
-	    
-	    initialized = false;
-	}
-	
-	void initialize(const Image<T> &img)
-	{
-	    if (initialized)
-	      reset();
-	    
-	    if (StackType::preallocate)
-	    {
-		size_t *h = new size_t[GRAY_LEVEL_NBR];
-		histogram(img, h);
+        HierarchicalQueue(bool rOrder=false)
+          : reverseOrder(rOrder)
+        {
+            stacks = NULL;
+            tokenNbr = NULL;
+            initialized = false;
+        }
+        ~HierarchicalQueue()
+        {
+            reset();
+            delete[] stacks;
+            delete[] tokenNbr;
+        }
+        
+        void reset()
+        {
+            if (!initialized)
+              return;
+            
+            for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
+            {
+                if (stacks[i])
+                    delete stacks[i];
+                stacks[i] = NULL;
+            }
+            
+            initialized = false;
+        }
+        
+        void initialize(const Image<T> &img)
+        {
+            if (initialized)
+              reset();
+            
+            vector<T> rVals = rangeVal(img);
+            
+            GRAY_LEVEL_MIN = rVals[0];
+            GRAY_LEVEL_NBR = rVals[1]-rVals[0]+1;
+            
+            stacks = new StackType*[GRAY_LEVEL_NBR]();
+            tokenNbr = new size_t[GRAY_LEVEL_NBR];
+            
+            if (StackType::preallocate)
+            {
+                size_t *h = new size_t[GRAY_LEVEL_NBR];
+                histogram(img, h);
 
-		for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
-		  if (h[i]!=0)
-		    stacks[i] = new StackType(h[i]);
-		    
-		delete[] h;
-	    }
-	    else
-	    {
-		for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
-		  stacks[i] = new StackType();
-	    }
-	    
-	    memset(tokenNbr, 0, GRAY_LEVEL_NBR*sizeof(size_t));
-	    size = 0;
-	    
-	    if (reverseOrder)
-	      higherLevel = 0;
-	    else
-	      higherLevel = ImDtTypes<T>::max();
-	    
-	    initialized = true;
-	}
-	
-	inline size_t getSize()
-	{
-	    return size;
-	}
-	
-	inline bool isEmpty()
-	{
-	    return size==0;
-	}
-	
-	inline size_t getHigherLevel()
-	{
-	    return higherLevel;
-	}
-	
-	inline void push(T value, TokenType dOffset)
-	{
-	    size_t level = TYPE_FLOOR + size_t(value);
-	    if (reverseOrder)
-	    {
-		if (level>higherLevel)
-		  higherLevel = level;
-	    }
-	    else
-	    {
-		if (level<higherLevel)
-		  higherLevel = level;
-	    }
-	    stacks[level]->push(dOffset);
-	    tokenNbr[level]++;
-	    size++;
-	}
-	inline void findNewReferenceLevel()
-	{
-	    if (reverseOrder)
-	    {
-		for (size_t i=higherLevel-1;i!=numeric_limits<size_t>::max();i--)
-		  if (tokenNbr[i]>0)
-		  {
-		      higherLevel = i;
-		      break;
-		  }
-	    }
-	    else
-	    {
-		for (size_t i=higherLevel+1;i<GRAY_LEVEL_NBR;i++)
-		  if (tokenNbr[i]>0)
-		  {
-		      higherLevel = i;
-		      break;
-		  }
-	    }
-	}
-	
-	inline TokenType pop()
-	{
+                for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
+                  if (h[i]!=0)
+                    stacks[i] = new StackType(h[i]);
+                    
+                delete[] h;
+            }
+            else
+            {
+                for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
+                  stacks[i] = new StackType();
+            }
+            
+            memset(tokenNbr, 0, GRAY_LEVEL_NBR*sizeof(size_t));
+            size = 0;
+            
+            if (reverseOrder)
+              higherLevel = 0;
+            else
+              higherLevel = ImDtTypes<T>::max();
+            
+            initialized = true;
+        }
+        
+        inline size_t getSize()
+        {
+            return size;
+        }
+        
+        inline bool isEmpty()
+        {
+            return size==0;
+        }
+        
+        inline size_t getHigherLevel()
+        {
+            return GRAY_LEVEL_MIN + higherLevel;
+        }
+        
+        inline void push(T value, TokenType dOffset)
+        {
+            size_t level = size_t(value) - GRAY_LEVEL_MIN;
+            if (reverseOrder)
+            {
+                if (level>higherLevel)
+                  higherLevel = level;
+            }
+            else
+            {
+                if (level<higherLevel)
+                  higherLevel = level;
+            }
+            stacks[level]->push(dOffset);
+            tokenNbr[level]++;
+            size++;
+        }
+        inline void findNewReferenceLevel()
+        {
+            if (reverseOrder)
+            {
+                for (size_t i=higherLevel-1;i!=numeric_limits<size_t>::max();i--)
+                  if (tokenNbr[i]>0)
+                  {
+                      higherLevel = i;
+                      break;
+                  }
+            }
+            else
+            {
+                for (size_t i=higherLevel+1;i<GRAY_LEVEL_NBR;i++)
+                  if (tokenNbr[i]>0)
+                  {
+                      higherLevel = i;
+                      break;
+                  }
+            }
+        }
+        
+        inline TokenType pop()
+        {
             size_t hlSize = tokenNbr[higherLevel];
             TokenType dOffset = stacks[higherLevel]->front();
             if (dOffset>70000)

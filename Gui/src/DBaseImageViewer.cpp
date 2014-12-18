@@ -39,4 +39,4 @@ BaseImageViewer::BaseImageViewer(const char *_className)
     Gui::initialize();
     updateSlot.init(this, &BaseImageViewer::update);
 }
-	
+        

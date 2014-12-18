@@ -45,7 +45,7 @@ public:
       QWidget(parent),
       ui(new Ui::HelpForm)
     {
-	ui->setupUi(this);
+        ui->setupUi(this);
     }
 private:
     Ui::HelpForm *ui;

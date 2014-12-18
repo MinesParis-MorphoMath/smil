@@ -170,8 +170,8 @@ public slots:
     void scale(double factor, bool absolute=true);
     void sliderChanged(int newVal)
     {
-	displayHint(QString::number(newVal) + "/" + QString::number(slider->maximum()));
-	setCurSlice(newVal);
+        displayHint(QString::number(newVal) + "/" + QString::number(slider->maximum()));
+        setCurSlice(newVal);
     }
     virtual void overlayDataChanged(bool triggerEvents=true);
     void updateIcon();

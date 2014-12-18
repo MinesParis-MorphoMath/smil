@@ -46,27 +46,27 @@ namespace smil
     template<typename, typename>
     struct is_same 
     {
-	static bool const value = false;
+        static bool const value = false;
     };
 
     template<typename A>
     struct is_same<A, A> 
     {
-	static bool const value = true;
+        static bool const value = true;
     };
 
     template<typename B, typename D>
     struct is_base_of
     {
       private:
-	  static D* m_d;
+          static D* m_d;
     
       private:
-	  static char check( B* );
-	  static long check( ... );
+          static char check( B* );
+          static long check( ... );
     
       public:
-	  static bool const value = sizeof check(m_d) == 1 &&  !is_same<B volatile const, void volatile const>::value;
+          static bool const value = sizeof check(m_d) == 1 &&  !is_same<B volatile const, void volatile const>::value;
     };
     
     #define ENABLE_IF(COND, RET_TYPE) typename smil::enable_if< ( COND ), RET_TYPE >::type

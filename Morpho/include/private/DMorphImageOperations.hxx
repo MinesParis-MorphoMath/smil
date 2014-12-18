@@ -40,14 +40,16 @@ namespace smil
 {
   
     template <class T_in, class T_out>
-    RES_T unaryMorphImageFunctionBase<T_in, T_out>::initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+    RES_T MorphImageFunctionBase<T_in, T_out>::initialize(const imageInType &_imIn, imageOutType &_imOut, const StrElt &se)
     {
-        imIn.getSize(imSize);
+        this->imIn = &_imIn;
+        this->imOut = &_imOut;
         
-        slicesIn = imIn.getSlices();
-        slicesOut = imOut.getSlices();
-        pixelsIn = imIn.getPixels();
-        pixelsOut = imOut.getPixels();
+        _imIn.getSize(imSize);
+        slicesIn = _imIn.getSlices();
+        slicesOut = _imOut.getSlices();
+        pixelsIn = _imIn.getPixels();
+        pixelsOut = _imOut.getPixels();
         
         sePoints = se.points;
 
@@ -79,14 +81,19 @@ namespace smil
     
     
     template <class T_in, class T_out>
-    RES_T unaryMorphImageFunctionBase<T_in, T_out>::finalize(const imageInType & /*imIn*/, imageOutType & /*imOut*/, const StrElt & /*se*/)
+    RES_T MorphImageFunctionBase<T_in, T_out>::finalize(const imageInType & /*imIn*/, imageOutType & /*imOut*/, const StrElt & /*se*/)
     {
         return RES_OK;
     }
 
     template <class T_in, class T_out>
-    RES_T unaryMorphImageFunctionBase<T_in, T_out>::_exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+    RES_T MorphImageFunctionBase<T_in, T_out>::_exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
     {
+        ASSERT_ALLOCATED(&imIn)
+        ASSERT_SAME_SIZE(&imIn, &imOut)
+        
+        ImageFreezer freeze(imOut);
+        
         StrElt se2;
         if (se.size>1)
         se2 = se.homothety(se.size);
@@ -99,12 +106,12 @@ namespace smil
         retVal = processImage(imIn, imOut, se2);
         
         finalize(imIn, imOut, se);
-        imOut.modified();
+        
         return retVal;
     }
     
     template <class T_in, class T_out>
-    RES_T unaryMorphImageFunctionBase<T_in, T_out>::processImage(const imageInType &/*imIn*/, imageOutType &/*imOut*/, const StrElt &se)
+    RES_T MorphImageFunctionBase<T_in, T_out>::processImage(const imageInType &/*imIn*/, imageOutType &/*imOut*/, const StrElt &se)
     {
         for(curSlice=0;curSlice<imSize[2];curSlice++)
         {
@@ -120,7 +127,7 @@ namespace smil
 //     }
 
     template <class T_in, class T_out>
-    void unaryMorphImageFunctionBase<T_in, T_out>::processSlice(sliceInType linesIn, sliceOutType linesOut, size_t &lineNbr, const StrElt &se)
+    void MorphImageFunctionBase<T_in, T_out>::processSlice(sliceInType linesIn, sliceOutType linesOut, size_t &lineNbr, const StrElt &se)
     {
         while(curLine<lineNbr)
         {
@@ -134,7 +141,7 @@ namespace smil
     
     // Todo: offset list for 3D odd SE !!
     template <class T_in, class T_out>
-    void unaryMorphImageFunctionBase<T_in, T_out>::processLine(lineInType pixIn, lineOutType /*pixOut*/, size_t &pixNbr, const StrElt &se)
+    void MorphImageFunctionBase<T_in, T_out>::processLine(lineInType pixIn, lineOutType /*pixOut*/, size_t &pixNbr, const StrElt &se)
     {
         int x, y, z;
         IntPoint p;
@@ -176,7 +183,7 @@ namespace smil
             if (x>=0 && x<(int)imSize[0])
             offsetList.push_back(relOffsetList[i]);
             }
-            processPixel(offset, offsetList.begin(), offsetList.end());
+            processPixel(offset, offsetList);
             curPixel++;
             offset++;
         }
@@ -187,7 +194,7 @@ namespace smil
         offsetList.push_back(relOffsetList[i]);
         while(curPixel < pixNbr-se_xmax)
         {
-            processPixel(offset, offsetList.begin(), offsetList.end());
+            processPixel(offset, offsetList);
             curPixel++;
             offset++;
         }
@@ -203,20 +210,21 @@ namespace smil
             if (x>=0 && x<int(imSize[0]))
             offsetList.push_back(relOffsetList[i]);
             }
-            processPixel(offset, offsetList.begin(), offsetList.end());
+            processPixel(offset, offsetList);
             curPixel++;
             offset++;
         }
     }
     
     template <class T_in, class T_out>
-    void unaryMorphImageFunctionBase<T_in, T_out>::processPixel(size_t &/*pointOffset*/, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
+    void MorphImageFunctionBase<T_in, T_out>::processPixel(size_t /*pointOffset*/, vector<int> &dOffsets)
     {
     // Example: dilation function
-    while(dOffset!=dOffsetEnd)
+      vector<int>::iterator it = dOffsets.begin();
+    while(it!=dOffsets.end())
     {
 //         pixelsOut[pointOffset] = max(pixelsOut[pointOffset], pixelsIn[pointOffset + *dOffset]);
-//         dOffset++;
+//         it++;
     }
     }
 
@@ -227,7 +235,7 @@ namespace smil
     ///******************************************************************************
 
     template <class T, class lineFunction_T>
-    bool unaryMorphImageFunction<T, lineFunction_T>::isInplaceSafe(const StrElt &se)
+    bool MorphImageFunction<T, lineFunction_T>::isInplaceSafe(const StrElt &se)
     {
     int st = se.getType();
     
@@ -251,7 +259,7 @@ namespace smil
     }
     
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imOut, const StrElt &se)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imOut, const StrElt &se)
     {
         int seSize = se.size;
         int seType = se.getType () ;
@@ -327,7 +335,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single(const imageType &imIn, imageType &imOut, const StrElt &se)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_single(const imageType &imIn, imageType &imOut, const StrElt &se)
     {
     int st = se.getType();
     
@@ -355,7 +363,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    inline void unaryMorphImageFunction<T, lineFunction_T>::_extract_translated_line(const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf)
+    inline void MorphImageFunction<T, lineFunction_T>::_extract_translated_line(const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf)
     {
     if (z<0 || z>=int(imIn->getDepth()) || y<0 || y>=int(imIn->getHeight()))
       copyLine<T>(borderBuf, lineLen, outBuf);
@@ -365,7 +373,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line(lineType inBuf1, lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
+    inline void MorphImageFunction<T, lineFunction_T>::_exec_shifted_line(lineType inBuf1, lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
     {
     if (tmpBuf==NULL)
       tmpBuf = cpBuf;
@@ -374,7 +382,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_shifted_line_2ways(lineType inBuf1, lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
+    inline void MorphImageFunction<T, lineFunction_T>::_exec_shifted_line_2ways(lineType inBuf1, lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
     {
     if (tmpBuf==NULL)
       tmpBuf = cpBuf;
@@ -386,7 +394,7 @@ namespace smil
 
 
     template <class T, class lineFunction_T>
-    inline void unaryMorphImageFunction<T, lineFunction_T>::_exec_line(const lineType inBuf, const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf)
+    inline void MorphImageFunction<T, lineFunction_T>::_exec_line(const lineType inBuf, const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf)
     {
     _extract_translated_line(imIn, x, y, z, cpBuf);
     lineFunction._exec(inBuf, cpBuf, lineLen, outBuf);
@@ -394,7 +402,7 @@ namespace smil
 
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se)
     {
         int sePtsNumber = se.points.size();
         if (sePtsNumber==0)
@@ -483,7 +491,7 @@ namespace smil
 
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_hexagonal_SE(const imageType &imIn, imageType &imOut)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_single_hexagonal_SE(const imageType &imIn, imageType &imOut)
     {
     int nSlices = imIn.getSliceCount();
     int nLines = imIn.getHeight();
@@ -567,7 +575,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_square_SE(const imageType &imIn, imageType &imOut)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_single_square_SE(const imageType &imIn, imageType &imOut)
     {
     _exec_single_vertical_segment(imIn, imOut);
     _exec_single_horizontal_segment(imOut, 1, imOut);
@@ -576,7 +584,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_cube_SE(const imageType &imIn, imageType &imOut)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_single_cube_SE(const imageType &imIn, imageType &imOut)
     {
     _exec_single_vertical_segment(imIn, imOut);
     _exec_single_horizontal_segment(imOut, 1, imOut);
@@ -586,7 +594,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_horizontal_2points(const imageType &imIn, int dx, imageType &imOut, bool)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_single_horizontal_2points(const imageType &imIn, int dx, imageType &imOut, bool)
     {
       int lineCount = imIn.getLineCount();
       
@@ -622,7 +630,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_vertical_2points(const imageType &imIn, int dy, imageType &imOut)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_single_vertical_2points(const imageType &imIn, int dy, imageType &imOut)
     {
     int imHeight = imIn.getHeight();
     volType srcSlices = imIn.getSlices();
@@ -656,7 +664,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_horizontal_segment(const imageType &imIn, int xsize, imageType &imOut)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_single_horizontal_segment(const imageType &imIn, int xsize, imageType &imOut)
     {
       int lineCount = imIn.getLineCount();
       
@@ -701,7 +709,7 @@ namespace smil
 
     // Z-Horizontal segment
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_depth_segment(const imageType &imIn, int /*zsize*/, imageType &imOut)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_single_depth_segment(const imageType &imIn, int /*zsize*/, imageType &imOut)
     {
       size_t w, h, d;
       imIn.getSize(&w, &h, &d);
@@ -750,7 +758,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_vertical_segment(const imageType &imIn, imageType &imOut)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_single_vertical_segment(const imageType &imIn, imageType &imOut)
     {
     UINT imHeight = imIn.getHeight();
     size_t imWidth = imIn.getWidth();
@@ -825,7 +833,7 @@ namespace smil
     }
     
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_cross(const imageType &imIn, imageType &imOut)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_single_cross(const imageType &imIn, imageType &imOut)
     {
     UINT imHeight = imIn.getHeight();
     size_t imWidth = imIn.getWidth();
@@ -914,7 +922,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_single_cross_3d(const imageType &imIn, imageType &imOut)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_single_cross_3d(const imageType &imIn, imageType &imOut)
     {
         size_t w,h,d ;
         imIn.getSize (&w, &h, &d) ;
@@ -1103,7 +1111,7 @@ namespace smil
     }
 
     template <class T, class lineFunction_T>
-    RES_T unaryMorphImageFunction<T, lineFunction_T>::_exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size)
+    RES_T MorphImageFunction<T, lineFunction_T>::_exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size)
     {
         double nbSquareDbl = (((double) size)/(1+sqrt(2.)));
         double nbSquareFloor = floor(nbSquareDbl);

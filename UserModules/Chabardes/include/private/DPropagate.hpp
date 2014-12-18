@@ -1,7 +1,10 @@
 #ifndef __DPROPAGATE_HPP_
 #define __DPROPAGATE_HPP_
 
-#include "DUtils.hpp"
+
+#if _OPENMP < 201107 // (  < 3.1)
+  #error To use this module, you need OpenMP >= 3.1  (GCC >= 4.7)
+#else
 
 namespace smil
 {
@@ -185,5 +188,7 @@ namespace smil
     }
 
 }
+
+#endif // openmp
 
 #endif // _DPROPAGATE_HPP_

@@ -36,23 +36,23 @@ namespace smil
 
     vector<string> splitString(const string &s, const char *delimiters)
     {
-	vector<string> stringList;
-	size_t current;
-	size_t next = -1;
-	do
-	{
-	    current = next + 1;
-	    next = s.find_first_of( delimiters, current );
-	    stringList.push_back(s.substr( current, next - current ));
-	}
-	while (next != string::npos);
-	
-	return stringList;
+        vector<string> stringList;
+        size_t current;
+        size_t next = -1;
+        do
+        {
+            current = next + 1;
+            next = s.find_first_of( delimiters, current );
+            stringList.push_back(s.substr( current, next - current ));
+        }
+        while (next != string::npos);
+        
+        return stringList;
     }
     
     vector<string> splitLines(const string &buf)
     {
-	return splitString(buf, "\n");
+        return splitString(buf, "\n");
     }
      
 } // namespace smil

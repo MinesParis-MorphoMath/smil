@@ -38,19 +38,19 @@ class Test_Mean : public TestCase
   {
       UINT8 vec1[20] = 
       {
-	 1,  2,  3,  4, 
-	 5,  6,  7,  8, 
-	 9, 10, 11, 12,
-	13, 14, 15, 16,
-	17, 18, 19, 20 
+         1,  2,  3,  4, 
+         5,  6,  7,  8, 
+         9, 10, 11, 12,
+        13, 14, 15, 16,
+        17, 18, 19, 20 
       };
-      UINT8 vecMean[20]	=
+      UINT8 vecMean[20]        =
       {
-	3, 4, 5, 5, 
-	5, 6, 7, 7, 
-	9, 10, 11, 11, 
-	13, 14, 15, 15, 
-	15, 16, 17, 17, 
+        3, 4, 5, 5, 
+        5, 6, 7, 7, 
+        9, 10, 11, 11, 
+        13, 14, 15, 15, 
+        15, 16, 17, 17, 
       };
       
       
@@ -67,8 +67,8 @@ class Test_Mean : public TestCase
       
       if (retVal!=RES_OK)
       {
-	imTruth.printSelf(1);
-	im2.printSelf(1);
+        imTruth.printSelf(1);
+        im2.printSelf(1);
       }
   }
 };
@@ -79,19 +79,19 @@ class Test_Median : public TestCase
   {
       UINT8 vec1[20] = 
       {
-	 1,  2,  3,  4, 
-	 5,  6,  7,  8, 
-	 9, 10, 11, 12,
-	13, 14, 15, 16,
-	17, 18, 19, 20 
+         1,  2,  3,  4, 
+         5,  6,  7,  8, 
+         9, 10, 11, 12,
+        13, 14, 15, 16,
+        17, 18, 19, 20 
       };
-      UINT8 vecMedian[20]	=
+      UINT8 vecMedian[20]        =
       {
-	2, 3, 4, 4, 
-	5, 6, 7, 7, 
-	9, 10, 11, 11, 
-	13, 14, 15, 15, 
-	14, 15, 16, 16, 
+        2, 3, 4, 4, 
+        5, 6, 7, 7, 
+        9, 10, 11, 11, 
+        13, 14, 15, 15, 
+        14, 15, 16, 16, 
       };
       
       
@@ -108,8 +108,8 @@ class Test_Median : public TestCase
       
       if (retVal!=RES_OK)
       {
-	imTruth.printSelf(1);
-	im2.printSelf(1);
+        imTruth.printSelf(1);
+        im2.printSelf(1);
       }
   }
 };

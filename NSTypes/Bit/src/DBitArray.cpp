@@ -124,10 +124,10 @@ ostream& BitArray::printSelf(ostream &os)
       os << this->operator[](i);
       if (i<bitWidth-1)
       {
-	  if ((i+1)%INT_TYPE_SIZE==0) 
-	    os << "-";
-	  else
-	    os << " ";
+          if ((i+1)%INT_TYPE_SIZE==0) 
+            os << "-";
+          else
+            os << " ";
       }
     }
     return os;

@@ -103,12 +103,12 @@ PTR_ARG_OUT_APPLY(s)
 
 %extend smil::BaseObject 
 {
-	std::string  __str__() 
-	{
-	    std::stringstream os;
-	    self->printSelf(os);
-	    return os.str();
-	}
+        std::string  __str__() 
+        {
+            std::stringstream os;
+            self->printSelf(os);
+            return os.str();
+        }
 }
 
 
@@ -260,8 +260,8 @@ namespace smil
 
 %extend smil::Image
 {
-    T __getitem__(size_t i) { return self->getPixel(i); }
-    RES_T __setitem__(size_t i, T val) { return self->setPixel(i, val); }
+    T __getitem__(size_t i) { return self->getPixelNoCheck(i); }
+    void __setitem__(size_t i, T val) { return self->setPixelNoCheck(i, val); }
 }
 #endif // SWIGPYTHON
 
@@ -309,7 +309,9 @@ namespace smil
 namespace smil
 {
     // Base (size_t) Edge
+#ifndef SMIL_WRAP_UINT32
     %template(Edge_UINT) Edge<UINT>;
+#endif // SMIL_WRAP_UINT32
     TEMPLATE_WRAP_CLASS(Edge, Edge);
 
 
@@ -320,11 +322,11 @@ namespace smil
     TEMPLATE_WRAP_CLASS_2T_CROSS(Graph, Graph);
     
     #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT) 
-	%template(Graph_UINT) Graph<UINT,UINT>;
-	%template(graphMST_UINT) graphMST<Graph<UINT,UINT> >;
+        %template(Graph_UINT) Graph<UINT,UINT>;
+        %template(graphMST_UINT) graphMST<Graph<UINT,UINT> >;
 
-	TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
-	TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
+        TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
+        TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
     #endif
 
 }
@@ -332,7 +334,9 @@ namespace smil
 #ifndef SWIGXML
 namespace std 
 {
+#ifndef SMIL_WRAP_UINT32
     %template(EdgeVector_UINT) std::vector< smil::Edge<UINT> >;
+#endif // SMIL_WRAP_UINT32
     
     TEMPLATE_WRAP_VECTOR_SUBTYPE(Edge);
 }

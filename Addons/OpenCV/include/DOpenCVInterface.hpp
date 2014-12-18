@@ -53,50 +53,50 @@ namespace smil
     class OpenCVInt : public SharedImage<T>
     {
     public:
-	typedef SharedImage<T> parentClass;
-	
-	//! Constructor
-	OpenCVInt(cv::Mat &_cvMat)
-	{
-	    BaseObject::className = "OpenCVInt";
-	    parentClass::init();
-	    this->pixels = (T*)(_cvMat.data);
-	    this->setSize(_cvMat.size().width, _cvMat.size().height);
-	}
-	//! Constructor
-	OpenCVInt(IplImage *cvIm)
-	{
-	    BaseObject::className = "OpenCVInt";
-	    parentClass::init();
-	    this->pixels = (T*)(cvIm->imageData);
-	    this->setSize(cvIm->width, cvIm->height);
-	}
-	
+        typedef SharedImage<T> parentClass;
+        
+        //! Constructor
+        OpenCVInt(cv::Mat &_cvMat)
+        {
+            BaseObject::className = "OpenCVInt";
+            parentClass::init();
+            this->pixels = (T*)(_cvMat.data);
+            this->setSize(_cvMat.size().width, _cvMat.size().height);
+        }
+        //! Constructor
+        OpenCVInt(IplImage *cvIm)
+        {
+            BaseObject::className = "OpenCVInt";
+            parentClass::init();
+            this->pixels = (T*)(cvIm->imageData);
+            this->setSize(cvIm->width, cvIm->height);
+        }
+        
     #ifdef SWIGPYTHON
     private:
-	struct python_iplimage
-	{
-	    PyObject_HEAD
-	    IplImage *img;
-	    PyObject *data;
-	    size_t offset;
-	};
-	
+        struct python_iplimage
+        {
+            PyObject_HEAD
+            IplImage *img;
+            PyObject *data;
+            size_t offset;
+        };
+        
     public:
-	OpenCVInt(PyObject *obj)
-	{
-	    python_iplimage *pIm = (python_iplimage*)obj;
-	    IplImage *cvIm = pIm->img;
-	    if (!cvIm)
-	    {
-		cout << "Error: Input object must be an IplImage." << endl;
-		return;
-	    }
-	    BaseObject::className = "OpenCVInt";
-	    parentClass::init();
-	    this->pixels = (T*)(cvIm->imageData);
-	    this->setSize(cvIm->width, cvIm->height);
-	}
+        OpenCVInt(PyObject *obj)
+        {
+            python_iplimage *pIm = (python_iplimage*)obj;
+            IplImage *cvIm = pIm->img;
+            if (!cvIm)
+            {
+                cout << "Error: Input object must be an IplImage." << endl;
+                return;
+            }
+            BaseObject::className = "OpenCVInt";
+            parentClass::init();
+            this->pixels = (T*)(cvIm->imageData);
+            this->setSize(cvIm->width, cvIm->height);
+        }
     #endif // SWIGPYTHON
     
     };
@@ -120,11 +120,11 @@ namespace smil
     template <class T>
     cv::Mat toMatImage(Image<T> &im)
     {
-	int cvType = getCvType<T>();
-	
-	ASSERT(cvType!=-1, "Data type conversion not implemented", cv::Mat())
-	
-	return cv::Mat(im.getHeight(), im.getWidth(), cvType, im.getPixels());
+        int cvType = getCvType<T>();
+        
+        ASSERT(cvType!=-1, "Data type conversion not implemented", cv::Mat())
+        
+        return cv::Mat(im.getHeight(), im.getWidth(), cvType, im.getPixels());
     }
 
 

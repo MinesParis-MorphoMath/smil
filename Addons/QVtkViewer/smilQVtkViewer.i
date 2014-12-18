@@ -58,7 +58,7 @@ def QVtkViewer(im):
     if im.getName()=="":
       name = __builtin__._find_object_name(im)
       if name!="":
-	im.setName(name)
+        im.setName(name)
     if len(t_spl)<2:
       print "Input must be an Image"
       return

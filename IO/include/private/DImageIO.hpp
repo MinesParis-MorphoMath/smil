@@ -52,30 +52,30 @@ namespace smil
     {
     public:
       ImageFileHandler(const char *ext)
-	: fileExtention(ext)
+        : fileExtention(ext)
       {
       }
       const char *fileExtention;
       
       virtual RES_T getFileInfo(const char*, ImageFileInfo &) 
       { 
-	  return RES_ERR; 
+          return RES_ERR; 
       }
       
       virtual RES_T read(const char*)
       {
-	  return RES_ERR;
+          return RES_ERR;
       }
       
       virtual RES_T read(const char*, Image<T> &)
       {
-	  cout << getDataTypeAsString<T>() << " data type not implemented for " << fileExtention << " files (read)." << endl;
-	  return RES_ERR;
+          cout << getDataTypeAsString<T>() << " data type not implemented for " << fileExtention << " files (read)." << endl;
+          return RES_ERR;
       }
       virtual RES_T write(const Image<T> &, const char*)
       {
-	  cout << getDataTypeAsString<T>() << " data type not implemented for " << fileExtention << " files (write)." << endl;
-	  return RES_ERR;
+          cout << getDataTypeAsString<T>() << " data type not implemented for " << fileExtention << " files (write)." << endl;
+          return RES_ERR;
       }
     };
      

@@ -39,130 +39,130 @@ namespace smil
 {
     struct JPGHeader
     {
-	JPGHeader(const string rw)
-	{
-	}
-	~JPGHeader()
-	{
-	}
-	
+        JPGHeader(const string rw)
+        {
+        }
+        ~JPGHeader()
+        {
+        }
+        
     };
     
     RES_T readJPGHeader(FILE *fp, JPGHeader &hStruct)
     {
-	return RES_OK;
+        return RES_OK;
     }
 
     RES_T writeJPGHeader(FILE *fp, JPGHeader &hStruct)
     {
-	return RES_OK;
+        return RES_OK;
     }
     
   
     RES_T getJPGFileInfo(const char* filename, ImageFileInfo &fInfo)
     {
-	/* open image file */
-	FILE *fp = fopen (filename, "rb");
-	
-	if (!fp)
-	{
-	    cout << "Cannot open file " << filename << endl;
-	    return RES_ERR_IO;
-	}
-	
-	struct jpeg_error_mgr err_mgr;
-	struct jpeg_decompress_struct cinfo;
-	
-	/* initialize the JPEG decompression object. */
-	jpeg_create_decompress(&cinfo);
-	cinfo.err = jpeg_std_error(&err_mgr);
-	/* specify data source (eg, a file) */
-	jpeg_stdio_src(&cinfo, fp);
-	/* read file parameters */
-	(void) jpeg_read_header(&cinfo, TRUE);
+        /* open image file */
+        FILE *fp = fopen (filename, "rb");
+        
+        if (!fp)
+        {
+            cout << "Cannot open file " << filename << endl;
+            return RES_ERR_IO;
+        }
+        
+        struct jpeg_error_mgr err_mgr;
+        struct jpeg_decompress_struct cinfo;
+        
+        /* initialize the JPEG decompression object. */
+        jpeg_create_decompress(&cinfo);
+        cinfo.err = jpeg_std_error(&err_mgr);
+        /* specify data source (eg, a file) */
+        jpeg_stdio_src(&cinfo, fp);
+        /* read file parameters */
+        (void) jpeg_read_header(&cinfo, TRUE);
     
-	fclose(fp);
-	
-	fInfo.width = cinfo.image_width;
-	fInfo.height = cinfo.image_height;
-	fInfo.channels = cinfo.num_components;
-	
-	switch(cinfo.data_precision)
-	{
-	  case 8:
-	    fInfo.scalarType = ImageFileInfo::SCALAR_TYPE_UINT8; break;
-	  case 16:
-	    fInfo.scalarType = ImageFileInfo::SCALAR_TYPE_UINT16; break;
-	}
-	
-	switch(cinfo.out_color_space)
-	{
-	  case JCS_RGB:
-	    fInfo.colorType = ImageFileInfo::COLOR_TYPE_RGB; break;
-	  default:
-	    fInfo.colorType = ImageFileInfo::COLOR_TYPE_UNKNOWN; 
-	}
-	
-	/* destroy cinfo */
-	jpeg_destroy_decompress(&cinfo);
+        fclose(fp);
+        
+        fInfo.width = cinfo.image_width;
+        fInfo.height = cinfo.image_height;
+        fInfo.channels = cinfo.num_components;
+        
+        switch(cinfo.data_precision)
+        {
+          case 8:
+            fInfo.scalarType = ImageFileInfo::SCALAR_TYPE_UINT8; break;
+          case 16:
+            fInfo.scalarType = ImageFileInfo::SCALAR_TYPE_UINT16; break;
+        }
+        
+        switch(cinfo.out_color_space)
+        {
+          case JCS_RGB:
+            fInfo.colorType = ImageFileInfo::COLOR_TYPE_RGB; break;
+          default:
+            fInfo.colorType = ImageFileInfo::COLOR_TYPE_UNKNOWN; 
+        }
+        
+        /* destroy cinfo */
+        jpeg_destroy_decompress(&cinfo);
     
-	return RES_OK;
+        return RES_OK;
     }
-	
+        
     template <>
     RES_T JPGImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
     {
-	/* open image file */
-	FILE *fp = fopen (filename, "rb");
-	
-	if (!fp)
-	{
-	    cout << "Cannot open file " << filename << endl;
-	    return RES_ERR_IO;
-	}
-	
-	FileCloser fc(fp);
-	
-	struct jpeg_error_mgr err_mgr;
-	struct jpeg_decompress_struct cinfo;
-	
-	/* initialize the JPEG decompression object. */
-	jpeg_create_decompress(&cinfo);
-	cinfo.err = jpeg_std_error(&err_mgr);
-	/* specify data source (eg, a file) */
-	jpeg_stdio_src(&cinfo, fp);
-	/* read file parameters */
-	(void) jpeg_read_header(&cinfo, TRUE);
+        /* open image file */
+        FILE *fp = fopen (filename, "rb");
+        
+        if (!fp)
+        {
+            cout << "Cannot open file " << filename << endl;
+            return RES_ERR_IO;
+        }
+        
+        FileCloser fc(fp);
+        
+        struct jpeg_error_mgr err_mgr;
+        struct jpeg_decompress_struct cinfo;
+        
+        /* initialize the JPEG decompression object. */
+        jpeg_create_decompress(&cinfo);
+        cinfo.err = jpeg_std_error(&err_mgr);
+        /* specify data source (eg, a file) */
+        jpeg_stdio_src(&cinfo, fp);
+        /* read file parameters */
+        (void) jpeg_read_header(&cinfo, TRUE);
     
-	
-	size_t width = cinfo.image_width, height = cinfo.image_height;
-	
-	ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
-	
-	ASSERT(cinfo.data_precision==8 && cinfo.num_components==3, "Not a 24bit RGB image", RES_ERR);
-	
-	JSAMPARRAY buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr) &cinfo, JPOOL_IMAGE, width * cinfo.num_components, 1);
+        
+        size_t width = cinfo.image_width, height = cinfo.image_height;
+        
+        ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
+        
+        ASSERT(cinfo.data_precision==8 && cinfo.num_components==3, "Not a 24bit RGB image", RES_ERR);
+        
+        JSAMPARRAY buffer = (*cinfo.mem->alloc_sarray)((j_common_ptr) &cinfo, JPOOL_IMAGE, width * cinfo.num_components, 1);
 
-	Image<RGB>::sliceType lines = image.getLines();
-	MultichannelArray<UINT8,3>::lineType *arrays;
-	
-	(void) jpeg_start_decompress(&cinfo);
-	
-	for (size_t j=0;j<height;j++)
-	{
-	    arrays = lines[j].arrays;
-	    jpeg_read_scanlines(&cinfo, buffer, 1);
-	    for (size_t i=0;i<width;i++)
-	      for (UINT n=0;n<3;n++)
-		arrays[n][i] = buffer[0][3*i+n];
-	}
-	
-	(void) jpeg_finish_decompress(&cinfo);
-	jpeg_destroy_decompress(&cinfo);
-	
-	image.modified();
-	
-	return RES_OK;
+        Image<RGB>::sliceType lines = image.getLines();
+        MultichannelArray<UINT8,3>::lineType *arrays;
+        
+        (void) jpeg_start_decompress(&cinfo);
+        
+        for (size_t j=0;j<height;j++)
+        {
+            arrays = lines[j].arrays;
+            jpeg_read_scanlines(&cinfo, buffer, 1);
+            for (size_t i=0;i<width;i++)
+              for (UINT n=0;n<3;n++)
+                arrays[n][i] = buffer[0][3*i+n];
+        }
+        
+        (void) jpeg_finish_decompress(&cinfo);
+        jpeg_destroy_decompress(&cinfo);
+        
+        image.modified();
+        
+        return RES_OK;
     }
 
 
@@ -170,55 +170,55 @@ namespace smil
     template <>
     RES_T JPGImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
     {
-	/* open image file */
-	FILE *fp = fopen (filename, "wb");
-	
-	if (!fp)
-	{
-	    cout << "Cannot open file " << filename << endl;
-	    return RES_ERR_IO;
-	}
-	
-	FileCloser fc(fp);
+        /* open image file */
+        FILE *fp = fopen (filename, "wb");
+        
+        if (!fp)
+        {
+            cout << "Cannot open file " << filename << endl;
+            return RES_ERR_IO;
+        }
+        
+        FileCloser fc(fp);
 
-	struct jpeg_error_mgr err_mgr;
-	struct jpeg_compress_struct cinfo;
-	
-	/* initialize the JPEG compression object. */
-	jpeg_create_compress(&cinfo);
-	cinfo.err = jpeg_std_error(&err_mgr);
-	/* specify data dest (eg, a file) */
-	jpeg_stdio_dest(&cinfo, fp);
-	
-	size_t width = image.getWidth(), height = image.getHeight();
-	
+        struct jpeg_error_mgr err_mgr;
+        struct jpeg_compress_struct cinfo;
+        
+        /* initialize the JPEG compression object. */
+        jpeg_create_compress(&cinfo);
+        cinfo.err = jpeg_std_error(&err_mgr);
+        /* specify data dest (eg, a file) */
+        jpeg_stdio_dest(&cinfo, fp);
+        
+        size_t width = image.getWidth(), height = image.getHeight();
+        
         cinfo.image_width = width;      /* image width and height, in pixels */
         cinfo.image_height = height;
         cinfo.input_components = 3;     /* # of color components per pixel */
         cinfo.in_color_space = JCS_RGB; /* colorspace of input image */
         jpeg_set_defaults(&cinfo);
-	
-	UINT8 *buffer = new UINT8[width*3];
+        
+        UINT8 *buffer = new UINT8[width*3];
 
-	Image<RGB>::sliceType lines = image.getLines();
-	MultichannelArray<UINT8,3>::lineType *arrays;
-	
-	(void) jpeg_start_compress(&cinfo, TRUE);
-	
-	for (size_t j=0;j<height;j++)
-	{
-	    arrays = lines[j].arrays;
-	    for (size_t i=0;i<width;i++)
-	      for (UINT n=0;n<3;n++)
-		buffer[3*i+n] = arrays[n][i];
-	    jpeg_write_scanlines(&cinfo, &buffer, 1);
-	}
-	
-	(void) jpeg_finish_compress(&cinfo);
-	jpeg_destroy_compress(&cinfo);
-	delete[] buffer;
-	
-	return RES_OK;
+        Image<RGB>::sliceType lines = image.getLines();
+        MultichannelArray<UINT8,3>::lineType *arrays;
+        
+        (void) jpeg_start_compress(&cinfo, TRUE);
+        
+        for (size_t j=0;j<height;j++)
+        {
+            arrays = lines[j].arrays;
+            for (size_t i=0;i<width;i++)
+              for (UINT n=0;n<3;n++)
+                buffer[3*i+n] = arrays[n][i];
+            jpeg_write_scanlines(&cinfo, &buffer, 1);
+        }
+        
+        (void) jpeg_finish_compress(&cinfo);
+        jpeg_destroy_compress(&cinfo);
+        delete[] buffer;
+        
+        return RES_OK;
     }
     
 

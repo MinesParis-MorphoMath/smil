@@ -48,30 +48,30 @@ namespace smil
     template <class T>
     RES_T matTrans(const Image<T> &imIn, Image<T> &imOut)
     {
-	ASSERT_ALLOCATED(&imIn);
-	size_t w, h, d;
-	imIn.getSize(&w, &h, &d);
-	
-	ImageFreezer freezer(imOut);
-	
-// 	typedef typename ImDtTypes<T>::sliceType sliceType;
-	typedef typename ImDtTypes<T>::lineType lineType;
-	
-	if (d==1) // 2D
-	{
- 	    ASSERT((imOut.setSize(h, w)==RES_OK));
-	    
-	    lineType pIn = imIn.getPixels();
-	    lineType pOut = imOut.getPixels();
-	    
-	    for (size_t y=0;y<w;y++)
-	      for (size_t x=0;x<h;x++,pOut++)
-		*pOut = pIn[x*w+y];
-		
-	    return RES_OK;
-	}
-	else
-	  return RES_ERR_NOT_IMPLEMENTED;
+        ASSERT_ALLOCATED(&imIn);
+        size_t w, h, d;
+        imIn.getSize(&w, &h, &d);
+        
+        ImageFreezer freezer(imOut);
+        
+//         typedef typename ImDtTypes<T>::sliceType sliceType;
+        typedef typename ImDtTypes<T>::lineType lineType;
+        
+        if (d==1) // 2D
+        {
+             ASSERT((imOut.setSize(h, w)==RES_OK));
+            
+            lineType pIn = imIn.getPixels();
+            lineType pOut = imOut.getPixels();
+            
+            for (size_t y=0;y<w;y++)
+              for (size_t x=0;x<h;x++,pOut++)
+                *pOut = pIn[x*w+y];
+                
+            return RES_OK;
+        }
+        else
+          return RES_ERR_NOT_IMPLEMENTED;
     }
     
     /**
@@ -83,64 +83,64 @@ namespace smil
     template <class T>
     RES_T matMul(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
     {
-	ASSERT_ALLOCATED(&imIn1, &imIn2);
-	size_t size1[3], size2[3];
-	imIn1.getSize(size1);
-	imIn2.getSize(size2);
-	
- 	if (size1[2]!=1 || size2[2]!=1)
-	  return RES_ERR_NOT_IMPLEMENTED;
-	
-	ImageFreezer freezer(imOut);
-	
-	// Verify that the number of columns m in imIn1 is equal to the number of rows m in imIn2
-	ASSERT((size1[0]==size2[1]), "Wrong matrix sizes!", RES_ERR);
-	ASSERT((imOut.setSize(size2[0], size1[1])==RES_OK));
-	
-	Image<T> transIm(size2[1], size2[0]);
-	
-	// Transpose imIn2 matrix to allow vectorization
-	ASSERT((matTrans(imIn2, transIm)==RES_OK));
-	
-	typedef typename ImDtTypes<T>::sliceType sliceType;
-	typedef typename ImDtTypes<T>::lineType lineType;
-	
-	sliceType lines = imIn1.getLines();
-	sliceType outLines = imOut.getLines();
-	sliceType cols = transIm.getLines();
-	lineType line;
-	lineType outLine;
-	lineType col;
-	
-	int nthreads = Core::getInstance()->getNumberOfThreads();
-	
-	size_t y;
-	
-	#ifdef USE_OPEN_MP
-	      #pragma omp parallel private(line, outLine, col)
-	#endif // USE_OPEN_MP
-	{
-	  
-	    #ifdef USE_OPEN_MP
-		#pragma omp for schedule(dynamic,nthreads) nowait
-	    #endif // USE_OPEN_MP
-	    for (y=0;y<size1[1];y++)
-	    {
-		line = lines[y];
-		outLine = outLines[y];
-		for (size_t x=0;x<size2[0];x++)
-		{
-		    col = cols[x];
-		    T outVal = 0;
-		    for (size_t i=0;i<size1[0];i++)
-		      outVal += line[i] * col[i];
-		    outLine[x] = outVal;
-		    
-		}
-	    }
-	}
-	
-	return RES_OK;
+        ASSERT_ALLOCATED(&imIn1, &imIn2);
+        size_t size1[3], size2[3];
+        imIn1.getSize(size1);
+        imIn2.getSize(size2);
+        
+         if (size1[2]!=1 || size2[2]!=1)
+          return RES_ERR_NOT_IMPLEMENTED;
+        
+        ImageFreezer freezer(imOut);
+        
+        // Verify that the number of columns m in imIn1 is equal to the number of rows m in imIn2
+        ASSERT((size1[0]==size2[1]), "Wrong matrix sizes!", RES_ERR);
+        ASSERT((imOut.setSize(size2[0], size1[1])==RES_OK));
+        
+        Image<T> transIm(size2[1], size2[0]);
+        
+        // Transpose imIn2 matrix to allow vectorization
+        ASSERT((matTrans(imIn2, transIm)==RES_OK));
+        
+        typedef typename ImDtTypes<T>::sliceType sliceType;
+        typedef typename ImDtTypes<T>::lineType lineType;
+        
+        sliceType lines = imIn1.getLines();
+        sliceType outLines = imOut.getLines();
+        sliceType cols = transIm.getLines();
+        lineType line;
+        lineType outLine;
+        lineType col;
+        
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        
+        size_t y;
+        
+        #ifdef USE_OPEN_MP
+              #pragma omp parallel private(line, outLine, col)
+        #endif // USE_OPEN_MP
+        {
+          
+            #ifdef USE_OPEN_MP
+                #pragma omp for schedule(dynamic,nthreads) nowait
+            #endif // USE_OPEN_MP
+            for (y=0;y<size1[1];y++)
+            {
+                line = lines[y];
+                outLine = outLines[y];
+                for (size_t x=0;x<size2[0];x++)
+                {
+                    col = cols[x];
+                    T outVal = 0;
+                    for (size_t i=0;i<size1[0];i++)
+                      outVal += line[i] * col[i];
+                    outLine[x] = outVal;
+                    
+                }
+            }
+        }
+        
+        return RES_OK;
     }
 
 /** @}*/

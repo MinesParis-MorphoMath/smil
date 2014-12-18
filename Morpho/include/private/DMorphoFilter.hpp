@@ -53,20 +53,20 @@ namespace smil
     template <class T>
     RES_T asfClose(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
 
-	ImageFreezer freeze(imOut);
-	
-	Image<T> tmpIm(imIn, true); // clone
-	for (UINT i=1;i<=se.size;i++)
-	{
-	    ASSERT((close(tmpIm, imOut, se(i))==RES_OK));
-	    ASSERT((open(imOut, tmpIm, se(i))==RES_OK));
-	}
-	ASSERT((copy(tmpIm, imOut)==RES_OK));
-	    
-	return RES_OK;
+        ImageFreezer freeze(imOut);
+        
+        Image<T> tmpIm(imIn, true); // clone
+        for (UINT i=1;i<=se.size;i++)
+        {
+            ASSERT((close(tmpIm, imOut, se(i))==RES_OK));
+            ASSERT((open(imOut, tmpIm, se(i))==RES_OK));
+        }
+        ASSERT((copy(tmpIm, imOut)==RES_OK));
+            
+        return RES_OK;
     }
 
     /**
@@ -78,40 +78,40 @@ namespace smil
     template <class T>
     RES_T asfOpen(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	ImageFreezer freeze(imOut);
-	
-	Image<T> tmpIm(imIn, true); // clone
-	for (UINT i=1;i<=se.size;i++)
-	{
-	    ASSERT((open(tmpIm, imOut, se(i))==RES_OK));
-	    ASSERT((close(imOut, tmpIm, se(i))==RES_OK));
-	}
-	ASSERT((copy(tmpIm, imOut)==RES_OK));
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        ImageFreezer freeze(imOut);
+        
+        Image<T> tmpIm(imIn, true); // clone
+        for (UINT i=1;i<=se.size;i++)
+        {
+            ASSERT((open(tmpIm, imOut, se(i))==RES_OK));
+            ASSERT((close(imOut, tmpIm, se(i))==RES_OK));
+        }
+        ASSERT((copy(tmpIm, imOut)==RES_OK));
 
-	return RES_OK;
+        return RES_OK;
     }
 
     
     template <class T>
-    class meanFunct : public unaryMorphImageFunctionBase<T, T>
+    class meanFunct : public MorphImageFunctionBase<T, T>
     {
     public:
-	typedef unaryMorphImageFunctionBase<T, T> parentClass;
-	
-	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
-	{
-	    double meanVal = 0;
-	    double nPts = dOffsetEnd-dOffset;
-	    while(dOffset!=dOffsetEnd)
-	    {
-		meanVal += double(parentClass::pixelsIn[pointOffset + *dOffset]);
-		dOffset++;
-	    }
-	    parentClass::pixelsOut[pointOffset] = T(meanVal / nPts);
-	}
+        typedef MorphImageFunctionBase<T, T> parentClass;
+        
+        virtual inline void processPixel(size_t pointOffset, vector<int> dOffsetList)
+        {
+            double meanVal = 0;
+            vector<int>::iterator dOffset = dOffsetList.begin();
+            while(dOffset!=dOffsetList.end())
+            {
+                meanVal += double(parentClass::pixelsIn[pointOffset + *dOffset]);
+                dOffset++;
+            }
+            parentClass::pixelsOut[pointOffset] = T(meanVal / double(dOffsetList.size()));
+        }
     };
     
     /**
@@ -123,35 +123,35 @@ namespace smil
     template <class T>
     RES_T mean(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	meanFunct<T> f;
-	
-	ASSERT((f._exec(imIn, imOut, se)==RES_OK));
-	
-	return RES_OK;
-	
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        meanFunct<T> f;
+        
+        ASSERT((f._exec(imIn, imOut, se)==RES_OK));
+        
+        return RES_OK;
+        
     }
     
     template <class T>
-    class medianFunct : public unaryMorphImageFunctionBase<T, T>
+    class medianFunct : public MorphImageFunctionBase<T, T>
     {
     public:
-	typedef unaryMorphImageFunctionBase<T, T> parentClass;
-	
-	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
-	{
-	    vector<T> vals;
-	    int nPts = max(int(dOffsetEnd-dOffset-1), 0);
-	    while(dOffset!=dOffsetEnd)
-	    {
-		vals.push_back(parentClass::pixelsIn[pointOffset + *dOffset]);
-		dOffset++;
-	    }
-	    sort(vals.begin(), vals.end());
-	    parentClass::pixelsOut[pointOffset] = vals[nPts/2];
-	}
+        typedef MorphImageFunctionBase<T, T> parentClass;
+        
+        virtual inline void processPixel(size_t pointOffset, vector<int> dOffsetList)
+        {
+            vector<T> vals;
+            vector<int>::iterator dOffset = dOffsetList.begin();
+            while(dOffset!=dOffsetList.end())
+            {
+                vals.push_back(parentClass::pixelsIn[pointOffset + *dOffset]);
+                dOffset++;
+            }
+            sort(vals.begin(), vals.end());
+            parentClass::pixelsOut[pointOffset] = vals[dOffsetList.size()/2];
+        }
     };
     
     /**
@@ -163,15 +163,15 @@ namespace smil
     template <class T>
     RES_T median(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	medianFunct<T> f;
-	
-	ASSERT((f._exec(imIn, imOut, se)==RES_OK));
-	
-	return RES_OK;
-	
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        medianFunct<T> f;
+        
+        ASSERT((f._exec(imIn, imOut, se)==RES_OK));
+        
+        return RES_OK;
+        
     }
     
 /** @}*/

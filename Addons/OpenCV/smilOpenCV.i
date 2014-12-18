@@ -61,7 +61,7 @@ for t in imageTypes:
 
 %}
 
-	
+        
 #endif // SWIGPYTHON && USE_NUMPY
 
 

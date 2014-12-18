@@ -52,10 +52,10 @@ namespace smil
 #ifndef SWIG
 
     template <class T1, class T2, class compOperatorT=std::equal_to<T1> >
-    class labelFunctGeneric : public unaryMorphImageFunctionBase<T1, T2>
+    class labelFunctGeneric : public MorphImageFunctionBase<T1, T2>
     {
       public:
-        typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
+        typedef MorphImageFunctionBase<T1, T2> parentClass;
         typedef typename parentClass::imageInType imageInType;
         typedef typename parentClass::imageOutType imageOutType;
         
@@ -80,7 +80,7 @@ namespace smil
             return RES_OK;
         }
         
-        virtual void processPixel(size_t &pointOffset)
+        virtual void processPixel(size_t pointOffset)
         {
 
             T1 pVal = this->pixelsIn[pointOffset];
@@ -133,22 +133,22 @@ namespace smil
             } 
         }
         
-	compOperatorT compareFunc;
+        compOperatorT compareFunc;
     protected:
         T2 labels;
     };
 
     template <class T1, class T2, class compOperatorT=std::equal_to<T1> >
-    class labelFunctFast : public unaryMorphImageFunctionBase <T1, T2>
+    class labelFunctFast : public MorphImageFunctionBase <T1, T2>
     {
     public:
-	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
-	typedef typename parentClass::imageInType imageInType;
-	typedef typename parentClass::imageOutType imageOutType;
-	typedef typename imageInType::lineType lineInType;
-	typedef typename imageInType::sliceType sliceInType;
-	typedef typename imageOutType::lineType lineOutType;
-	typedef typename imageOutType::sliceType sliceOutType;
+        typedef MorphImageFunctionBase<T1, T2> parentClass;
+        typedef typename parentClass::imageInType imageInType;
+        typedef typename parentClass::imageOutType imageOutType;
+        typedef typename imageInType::lineType lineInType;
+        typedef typename imageInType::sliceType sliceInType;
+        typedef typename imageOutType::lineType lineOutType;
+        typedef typename imageOutType::sliceType sliceOutType;
 
         T2 getLabelNbr() { return labels; }
 
@@ -285,7 +285,7 @@ namespace smil
         return RES_OK;  
         }
     protected :
-    	compOperatorT compareFunc;
+            compOperatorT compareFunc;
         T2 labels;
     };
      
@@ -293,13 +293,13 @@ namespace smil
     template <class T>
     struct lambdaEqualOperator
     {
-	inline bool operator()(T &a, T&b) 
+        inline bool operator()(T &a, T&b) 
     { 
         bool retVal = a>b ? (a-b)<=lambda : (b-a)<=lambda;
         return retVal;
         
     }
-	T lambda;
+        T lambda;
     };
   
 #endif // SWIG
@@ -388,18 +388,24 @@ namespace smil
     template<class T1, class T2>
     size_t label(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	labelFunctGeneric<T1,T2> f;
-	
-	ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
-	
-	size_t lblNbr = f.getLabelNbr();
-	
-	ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
-	
-	return lblNbr;
+        if ((void*)&imIn==(void*)&imOut)
+        {
+            Image<T1> tmpIm(imIn, true); // clone
+            return label(tmpIm, imOut);
+        }
+        
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        labelFunctGeneric<T1,T2> f;
+        
+        ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
+        
+        size_t lblNbr = f.getLabelNbr();
+        
+        ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+        
+        return lblNbr;
     }
 
     /**
@@ -410,19 +416,19 @@ namespace smil
     template<class T1, class T2>
     size_t lambdaLabel(const Image<T1> &imIn, const T1 &lambdaVal, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	labelFunctGeneric<T1,T2,lambdaEqualOperator<T1> > f;
-	f.compareFunc.lambda = lambdaVal;
-	
-	ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
-	
-	size_t lblNbr = f.getLabelNbr();
-	
-	ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
-	
-	return lblNbr;
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        labelFunctGeneric<T1,T2,lambdaEqualOperator<T1> > f;
+        f.compareFunc.lambda = lambdaVal;
+        
+        ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
+        
+        size_t lblNbr = f.getLabelNbr();
+        
+        ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+        
+        return lblNbr;
     }
 
     /**
@@ -433,18 +439,18 @@ namespace smil
     template<class T1, class T2>
     size_t fastLabel(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	labelFunctFast<T1,T2> f;
-	
-	ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
-	
-	size_t lblNbr = f.getLabelNbr();
-	
-	ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        labelFunctFast<T1,T2> f;
+        
+        ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
+        
+        size_t lblNbr = f.getLabelNbr();
+        
+        ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
 
-	return lblNbr;
+        return lblNbr;
     }
 
     
@@ -455,45 +461,46 @@ namespace smil
     template<class T1, class T2>
     size_t labelWithArea(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	ImageFreezer freezer(imOut);
-	
-	Image<T2> imLabel(imIn);
-	
-	ASSERT(label(imIn, imLabel, se)!=0);
- 	map<T2, double> areas = measAreas(imLabel);
-	ASSERT(!areas.empty());
-	
-	ASSERT(applyLookup(imLabel, areas, imOut)==RES_OK);
-	
-	return RES_OK;
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        ImageFreezer freezer(imOut);
+        
+        Image<T2> imLabel(imIn);
+        
+        ASSERT(label(imIn, imLabel, se)!=0);
+         map<T2, double> areas = measAreas(imLabel);
+        ASSERT(!areas.empty());
+        
+        ASSERT(applyLookup(imLabel, areas, imOut)==RES_OK);
+        
+        return RES_OK;
     }
 
 
     template <class T1, class T2>
-    class neighborsFunct : public unaryMorphImageFunctionBase<T1, T2>
+    class neighborsFunct : public MorphImageFunctionBase<T1, T2>
     {
     public:
-	typedef unaryMorphImageFunctionBase<T1, T2> parentClass;
-	
-	virtual inline void processPixel(size_t &pointOffset, vector<int>::iterator dOffset, vector<int>::iterator dOffsetEnd)
-	{
-	    vector<T1> vals;
-	    UINT nbrValues = 0;
-	    while(dOffset!=dOffsetEnd)
-	    {
-		T1 val = parentClass::pixelsIn[pointOffset + *dOffset];
-		if (find(vals.begin(), vals.end(), val)==vals.end())
-		{
-		  vals.push_back(val);
-		  nbrValues++;
-		}
-		dOffset++;
-	    }
-	    parentClass::pixelsOut[pointOffset] = T2(nbrValues);
-	}
+        typedef MorphImageFunctionBase<T1, T2> parentClass;
+        
+        virtual inline void processPixel(size_t pointOffset, vector<int> dOffsetList)
+        {
+            vector<T1> vals;
+            UINT nbrValues = 0;
+            vector<int>::iterator dOffset = dOffsetList.begin();
+            while(dOffset!=dOffsetList.end())
+            {
+                T1 val = parentClass::pixelsIn[pointOffset + *dOffset];
+                if (find(vals.begin(), vals.end(), val)==vals.end())
+                {
+                  vals.push_back(val);
+                  nbrValues++;
+                }
+                dOffset++;
+            }
+            parentClass::pixelsOut[pointOffset] = T2(nbrValues);
+        }
     };
     
     /**
@@ -508,15 +515,15 @@ namespace smil
     template <class T1, class T2>
     RES_T neighbors(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	neighborsFunct<T1, T2> f;
-	
-	ASSERT((f._exec(imIn, imOut, se)==RES_OK));
-	
-	return RES_OK;
-	
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        neighborsFunct<T1, T2> f;
+        
+        ASSERT((f._exec(imIn, imOut, se)==RES_OK));
+        
+        return RES_OK;
+        
     }
 
     

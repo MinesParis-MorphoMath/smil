@@ -33,29 +33,29 @@ using namespace smil;
 
 //     BaseObject::BaseObject(bool _register)
 //       : triggerEvents(true),
-// 	registered(false),
-// 	className("BaseObject"),
-// 	name("")
+//         registered(false),
+//         className("BaseObject"),
+//         name("")
 //     {
-// 	if (_register)
-// 	  Core::getInstance()->registerObject(this);
+//         if (_register)
+//           Core::getInstance()->registerObject(this);
 //     }
 
 
     void BaseObject::_clone(const BaseObject &rhs)
     {
-	this->className = rhs.getClassName();
-	this->triggerEvents = rhs.triggerEvents;
+        this->className = rhs.getClassName();
+        this->triggerEvents = rhs.triggerEvents;
     }
 
 
     Core *BaseObject::getCoreInstance()
     {
-	return Core::getInstance();
+        return Core::getInstance();
     }
 
     const char *BaseObject::getClassName() const
     {
-	return this->className.c_str();
+        return this->className.c_str();
     }
 
