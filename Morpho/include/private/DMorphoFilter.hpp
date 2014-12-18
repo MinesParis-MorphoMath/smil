@@ -101,7 +101,7 @@ namespace smil
     public:
         typedef MorphImageFunctionBase<T, T> parentClass;
         
-        virtual inline void processPixel(size_t pointOffset, vector<int> dOffsetList)
+        virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsetList)
         {
             double meanVal = 0;
             vector<int>::iterator dOffset = dOffsetList.begin();
@@ -140,7 +140,7 @@ namespace smil
     public:
         typedef MorphImageFunctionBase<T, T> parentClass;
         
-        virtual inline void processPixel(size_t pointOffset, vector<int> dOffsetList)
+        virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsetList)
         {
             vector<T> vals;
             vector<int>::iterator dOffset = dOffsetList.begin();

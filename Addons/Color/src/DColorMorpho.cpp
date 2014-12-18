@@ -49,7 +49,7 @@ namespace smil
             G = imIn.getPixels().arrays[1];
             B = imIn.getPixels().arrays[2];
         }
-        void processPixel(size_t pointOffset, vector<int> dOffsetList)
+        void processPixel(size_t pointOffset, vector<int> &dOffsetList)
         {
             double distMax = 0;
             double dist;
@@ -114,7 +114,7 @@ namespace smil
             L = imIn.getPixels().arrays[1];
             S = imIn.getPixels().arrays[2];
         }
-        void processPixel(size_t pointOffset, vector<int> dOffsetList)
+        void processPixel(size_t pointOffset, vector<int> &dOffsetList)
         {
             double distMax = 0;
             double dist;

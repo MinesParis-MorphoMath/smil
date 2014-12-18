@@ -230,7 +230,7 @@ namespace smil
     while(it!=dOffsets.end())
     {
 //         pixelsOut[pointOffset] = max(pixelsOut[pointOffset], pixelsIn[pointOffset + *dOffset]);
-//         it++;
+        it++;
     }
     }
 

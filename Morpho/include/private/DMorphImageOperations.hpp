@@ -40,7 +40,16 @@
 
 namespace smil
 {
+    /**
+    * \ingroup Morpho 
+    * \{
+    */
   
+    /**
+     * Base morpho operator class.
+     * 
+     * \demo{custom_morpho_operator.py}
+     */
     template <class T_in, class T_out=T_in>
     class MorphImageFunctionBase 
 #ifndef SWIG
@@ -182,6 +191,7 @@ namespace smil
         inline void _exec_line(const lineType inBuf, const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf);
     };
 
+/** \} */
 
 } // namespace smil
 

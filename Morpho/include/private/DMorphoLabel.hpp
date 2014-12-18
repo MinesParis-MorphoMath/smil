@@ -484,7 +484,7 @@ namespace smil
     public:
         typedef MorphImageFunctionBase<T1, T2> parentClass;
         
-        virtual inline void processPixel(size_t pointOffset, vector<int> dOffsetList)
+        virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsetList)
         {
             vector<T1> vals;
             UINT nbrValues = 0;

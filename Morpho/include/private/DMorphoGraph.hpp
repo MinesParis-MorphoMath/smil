@@ -58,7 +58,7 @@ namespace smil
         {
             externGraph.clear();
         }
-        virtual inline void processPixel(size_t pointOffset, vector<int> dOffsetList)
+        virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsetList)
         {
             T1 curVal = parentClass::pixelsIn[pointOffset];
 //             bool mixed = false;

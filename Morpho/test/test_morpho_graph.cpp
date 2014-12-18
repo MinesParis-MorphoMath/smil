@@ -85,7 +85,7 @@ class Test_MosaicToGraph : public TestCase
 //       for (vector<Edge>::const_iterator it=graph.getEdges().begin();it!=graph.getEdges().end();it++)
 //         cout << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
 
-      graph.printSelf();
+//       graph.printSelf();
       
       graph.removeEdge(3,2);
       graph.removeEdge(3,0);
@@ -93,17 +93,22 @@ class Test_MosaicToGraph : public TestCase
       graphToMosaic(im1, graph, im3);
       
       dataType vec4[] = {
-        1,     1,     1,     1,     1,     1,     1,
-        1,     1,     1,     1,     1,     1,     1,
-        1,     1,     1,     1,     1,     1,     1,
-        1,     1,     1,     1,     1,     1,     1,
-        1,     1,     2,     1,     1,     1,     1,
-        1,     1,     2,     1,     1,     1,     1,
-        1,     1,     2,     1,     1,     1,     1,
+        0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,
+        0,   0,   3,   0,   0,   0,   0,
+        0,   0,   3,   0,   0,   0,   0,
+        0,   0,   3,   0,   0,   0,   0,
       };
       im4 << vec4;
       
       TEST_ASSERT(im3==im4);
+      if (retVal!=RES_OK)
+      {
+        im3.printSelf(1);
+        im4.printSelf(1);
+      }
   }
 };
 

@@ -57,10 +57,10 @@ class Test_MST : public TestCase
         
         Graph<> mst = graphMST(graph);
         vector<Edge<> > mstTruth;
+        mstTruth.push_back(Edge<>(0,2,1));
         mstTruth.push_back(Edge<>(4,0,1));
         mstTruth.push_back(Edge<>(3,4,1));
         mstTruth.push_back(Edge<>(1,3,1));
-        mstTruth.push_back(Edge<>(0,2,1));
         
         TEST_ASSERT(mst.getEdges()==mstTruth);
         
