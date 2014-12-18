@@ -2,7 +2,6 @@ from smilPython import *
 
 class myMeanMorphoFunction(MorphImageFunctionBase_UINT8):
   def processPixel(self, i, relOffList):
-    pass
     pixSum = 0.
     for nb in relOffList:
       pixSum += self.imIn[i + nb]

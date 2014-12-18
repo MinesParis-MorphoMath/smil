@@ -95,10 +95,6 @@ namespace smil
           lineInType pixelsIn;
           lineOutType pixelsOut;
           
-          size_t curSlice;
-          size_t curLine;
-          size_t curPixel;
-          
           vector<IntPoint> sePoints;
           UINT sePointNbr;
           vector<int> relativeOffsets;

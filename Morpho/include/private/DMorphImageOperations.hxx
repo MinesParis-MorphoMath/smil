@@ -92,6 +92,12 @@ namespace smil
         ASSERT_ALLOCATED(&imIn)
         ASSERT_SAME_SIZE(&imIn, &imOut)
         
+        if ((void*)&imIn==(void*)&imOut)
+        {
+            Image<T_in> tmpIm(imIn, true); // clone
+            return _exec(imIn, imOut, se);
+        }
+        
         ImageFreezer freeze(imOut);
         
         StrElt se2;
@@ -113,9 +119,8 @@ namespace smil
     template <class T_in, class T_out>
     RES_T MorphImageFunctionBase<T_in, T_out>::processImage(const imageInType &/*imIn*/, imageOutType &/*imOut*/, const StrElt &se)
     {
-        for(curSlice=0;curSlice<imSize[2];curSlice++)
+        for(size_t curSlice=0;curSlice<imSize[2];curSlice++)
         {
-            curLine = 0;
             processSlice(*slicesIn, *slicesOut, imSize[1], se);
             slicesIn++;
             slicesOut++;
@@ -129,14 +134,8 @@ namespace smil
     template <class T_in, class T_out>
     void MorphImageFunctionBase<T_in, T_out>::processSlice(sliceInType linesIn, sliceOutType linesOut, size_t &lineNbr, const StrElt &se)
     {
-        while(curLine<lineNbr)
-        {
-            curPixel = 0;
-            processLine(*linesIn, *linesOut, imSize[0], se);
-            curLine++;
-            linesIn++;
-            linesOut++;
-        }
+        for(size_t curLine=0;curLine<lineNbr;curLine++)
+            processLine(linesIn[curLine], linesOut[curLine], imSize[0], se);
     }
     
     // Todo: offset list for 3D odd SE !!
@@ -150,6 +149,10 @@ namespace smil
         vector<int> relOffsetList;
         vector<int> offsetList;
         
+        size_t curSlice = offset / (imSize[0]*imSize[1]);
+        size_t curLine = (offset / imSize[0])%imSize[1];
+        size_t curPixel = 0;
+        
         bool oddLine = se.odd && (curLine)%2;
     //     int dx;
         
@@ -161,13 +164,13 @@ namespace smil
             z = curSlice + p.z;
             if (y>=0 && y<int(imSize[1]) && z>=0 && z<int(imSize[2]))
             {
-            if (oddLine && ((y+1)%2)!=0)
-            p.x += 1;
-            ptList.push_back(p);
-            if (oddLine && ((y+1)%2)!=0)
-            relOffsetList.push_back(relativeOffsets[i]+1);
-            else
-            relOffsetList.push_back(relativeOffsets[i]);
+                if (oddLine && ((y+1)%2)!=0)
+                  p.x += 1;
+                ptList.push_back(p);
+                if (oddLine && ((y+1)%2)!=0)
+                  relOffsetList.push_back(relativeOffsets[i]+1);
+                else
+                  relOffsetList.push_back(relativeOffsets[i]);
             }
         }
         UINT ptNbr = ptList.size();
@@ -178,10 +181,10 @@ namespace smil
             offsetList.clear();
             for (UINT i=0;i<ptNbr;i++)
             {
-            x = curPixel + ptList[i].x;
-            
-            if (x>=0 && x<(int)imSize[0])
-            offsetList.push_back(relOffsetList[i]);
+                x = curPixel + ptList[i].x;
+                
+                if (x>=0 && x<(int)imSize[0])
+                  offsetList.push_back(relOffsetList[i]);
             }
             processPixel(offset, offsetList);
             curPixel++;
@@ -205,12 +208,15 @@ namespace smil
             offsetList.clear();
             for (UINT i=0;i<ptNbr;i++)
             {
-            x = curPixel + ptList[i].x;
+                x = curPixel + ptList[i].x;
             
-            if (x>=0 && x<int(imSize[0]))
-            offsetList.push_back(relOffsetList[i]);
+                if (x>=0 && x<int(imSize[0]))
+                offsetList.push_back(relOffsetList[i]);
             }
-            processPixel(offset, offsetList);
+            #pragma omp critical
+            {
+              processPixel(offset, offsetList);
+            }
             curPixel++;
             offset++;
         }
