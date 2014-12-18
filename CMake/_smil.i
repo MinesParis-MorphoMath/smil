@@ -100,12 +100,6 @@ def _find_images(gbl_dict=None):
     for it in gbl_dict.items():
       if isinstance(it[1], BaseImage):
         imgs[it[1]] = it[0]
-      elif  isinstance(it[1], list):
-        ind = 0
-        for i in it[1]:
-          if isinstance(i, BaseImage):
-            imgs[i] = it[0] + "[" + str(ind) + "]"
-          ind += 1
     return imgs
 
 __builtin__.getImages = _find_images
