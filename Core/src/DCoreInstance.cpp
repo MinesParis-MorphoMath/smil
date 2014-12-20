@@ -216,7 +216,43 @@ void Core::getCompilationInfos(ostream &outStream)
 #endif
     outStream << "System: " << this->systemName << endl;
     outStream << "Target Architecture: " << this->targetArchitecture << endl;
-    outStream << "OpenMP support: " << (this->supportOpenMP ? "On" : "Off") << endl;
+    outStream << "OpenMP support: " << (this->supportOpenMP ? "On" : "Off");
+#ifdef USE_OPEN_MP
+    outStream << " (version " << _OPENMP << ")" << endl;
+#endif // USE_OPEN_MP
+    
+    outStream << "Available SIMD instructions:" << endl;
+#ifdef __SSE__ 
+    outStream << " SSE";
+#endif
+#ifdef __SSE_MATH__ 
+    outStream << " SSE_MATH";
+#endif
+#ifdef __SSE2__ 
+    outStream << " SSE2";
+#endif
+#ifdef __SSE2_MATH__ 
+    outStream << " SSE2_MATH";
+#endif
+#ifdef __SSE3__
+    outStream << " SSE3";
+#endif
+#ifdef __SSSE3__
+    outStream << " SSSE3";
+#endif
+#ifdef __SSE4_1__
+    outStream << " SSE4_1";
+#endif
+#ifdef __SSE4_2__
+    outStream << " SSE4_2";
+#endif
+#ifdef __AVX__
+    outStream << " AVX";
+#endif
+#ifdef __AVX2__
+    outStream << " AVX2";
+#endif
+    outStream << endl;
 }
 
 
