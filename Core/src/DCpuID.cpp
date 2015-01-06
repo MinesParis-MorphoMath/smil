@@ -42,7 +42,7 @@
   #include <cpuid.h>
 #endif // _MSC_VER
 
-#include <iostream>
+#include <fstream>
 
 using namespace smil;
 
@@ -161,15 +161,15 @@ CpuID::CpuID()
           cores /= 2;
     #else // USE_OPEN_MP
         #ifdef __arm__
-            FILE *lsofFile_p = popen("/usr/bin/nproc", "r");
-            if (lsofFile_p)
-            {
-                char buffer[1024];
-                char *line_p = fgets(buffer, sizeof(buffer), lsofFile_p);
-                cores = logical = atoi(line_p);
-                pclose(lsofFile_p);
-            }
-            else 
+          ifstream ifile("/usr/bin/nproc");
+          if (ifile)
+          {
+              char buffer[256];
+              ifile.getline(buffer, 256);
+              cores = logical = atoi(buffer);
+              ifile.close();
+          }
+          else 
             cores = logical = 1;
         #else // __arm__
             cores = 1;
