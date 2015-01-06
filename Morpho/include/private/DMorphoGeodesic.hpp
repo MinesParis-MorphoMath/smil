@@ -559,7 +559,7 @@ namespace smil
             case SE_Squ:
                 return dist_square (imIn, imOut);
             default:
-                return dist_generic (imIn, imOut); 
+                return dist_generic (imIn, imOut, se); 
         } 
     }
 
