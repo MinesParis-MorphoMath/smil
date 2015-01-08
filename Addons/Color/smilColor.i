@@ -46,3 +46,5 @@ SMIL_MODULE(smilColor)
 
 %include "DColorConvert.h"
 %include "DColorMorpho.h"
+
+TEMPLATE_WRAP_FUNC(RGBToLuminance);

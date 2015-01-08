@@ -110,9 +110,18 @@ class Test_Conversions : public TestCase
         HLSToRGB(im2, im3);
         TEST_ASSERT(im3==imRGB);
         
+        Image<UINT8> imLumin;
+        UINT8 vecLumin[] = { 
+          56,  12,  58,  30, 183,
+        };
+        RGBToLuminance(imRGB, imLumin);
+        Image<UINT8> imLuminTruth(imLumin);
+        imLuminTruth << vecLumin;
+        TEST_ASSERT(imLumin==imLuminTruth);
+        
 //         im1.printSelf(1);
-//         im2.printSelf(1);
-//         im3.printSelf(1);
+//         imRGB.printSelf(1);
+//         imLumin.printSelf(1);
     }
 };
 

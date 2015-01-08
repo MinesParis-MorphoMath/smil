@@ -47,6 +47,28 @@ namespace smil
     RES_T RGBToLAB(const Image<RGB> &imRgbIn, Image<RGB> &imLabOut);
     RES_T LABToRGB(const Image<RGB> &imLabIn, Image<RGB> &imRgbOut);
     
+    template <class T>
+    RES_T RGBToLuminance(const Image<RGB> &imRgbIn, Image<T> &imLumOut)
+    {
+        ASSERT_ALLOCATED(&imRgbIn)
+        ASSERT_SAME_SIZE(&imRgbIn, &imLumOut)
+        
+        ImageFreezer freeze(imLumOut);
+        
+        ImDtTypes<UINT8>::lineType rArr = imRgbIn.getPixels().arrays[0];
+        ImDtTypes<UINT8>::lineType gArr = imRgbIn.getPixels().arrays[1];
+        ImDtTypes<UINT8>::lineType bArr = imRgbIn.getPixels().arrays[2];
+        typename ImDtTypes<T>::lineType outPixels = imLumOut.getPixels();
+        
+        size_t pixNbr = imRgbIn.getPixelCount();
+        
+        for (size_t i=0;i<pixNbr;i++)
+        {
+            outPixels[i] =  T( 0.2126*rArr[i] + 0.7152*gArr[i] + 0.0722*bArr[i] );
+        }
+        
+        return RES_OK;
+    }
 } // namespace smil
 
 #endif // _D_COLOR_CONVERT_H
