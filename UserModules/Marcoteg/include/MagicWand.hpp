@@ -51,26 +51,27 @@ namespace smil
       // COMPUTE HIERARCHICAL LEVEL REQUIRED
       // --------------------------------------------------
       // --------------------------------------------------
-        typedef typename Graph<TMark,TSeg>::EdgeWeightType EdgeWeightType;
-        typedef typename Graph<TMark,TSeg>::EdgeType EdgeType;
+	typedef typename Graph<TMark,TSeg>::EdgeWeightType EdgeWeightType;
+	typedef typename Graph<TMark,TSeg>::EdgeType EdgeType;
 
-        const vector< EdgeType > &edges = graph.getEdges();
-        EdgeWeightType min_edge_val = edges.size();
-        EdgeWeightType  edge_val;
+	const vector< EdgeType > &edges = graph.getEdges();
+	EdgeWeightType min_edge_val = edges.size();
+	EdgeWeightType  edge_val;
 
-        //        for (vector<EdgeType>::iterator e_it=edges.begin();e_it!=edges.end();e_it++)
-        for (int i =0; i < edges.size();i++)
-          {
-            const EdgeType &e = edges[i];
-            if(nodeValues[e.source] && nodeValues[e.target] ){
-              edge_val = e.weight;
-              if(edge_val < min_edge_val){
-                min_edge_val = edge_val;
-              }
-            }// if both nodes selected
-            graph.removeHighEdges(min_edge_val);
-          }
-        return RES_OK;
+	//	for (vector<EdgeType>::iterator e_it=edges.begin();e_it!=edges.end();e_it++)
+	for (int i =0; i < edges.size();i++) {
+	  const EdgeType &e = edges[i];
+	  if(nodeValues[e.source] && nodeValues[e.target] ){
+	    edge_val = e.weight;
+	    if(edge_val < min_edge_val){
+	      min_edge_val = edge_val;
+	    }
+	  }// if both nodes selected
+	}// END Find min edge
+	std::cout<<"min_edge_val="<<min_edge_val<<"\n";
+	graph.removeHighEdges(min_edge_val);//BMI je crois plutot que c'est LowEdges!!!
+
+	return RES_OK;
     }
 
 
