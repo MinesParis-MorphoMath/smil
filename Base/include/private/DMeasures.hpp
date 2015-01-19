@@ -474,19 +474,19 @@ namespace smil
         {
             for (size_t i=0;i<size;i++,x++)
             {
-                T pxVal = lineIn[i];
-                m000 += double(pxVal);
-                m100 += double(pxVal) * x;
-                m010 += double(pxVal) * y;
-                m110 += double(pxVal) * x * y;
-                m200 += double(pxVal) * x * x;
-                m020 += double(pxVal) * y * y;
+                double pxVal = double(lineIn[i]);
+                m000 += pxVal;
+                m100 += pxVal * x;
+                m010 += pxVal * y;
+                m110 += pxVal * x * y;
+                m200 += pxVal * x * x;
+                m020 += pxVal * y * y;
                 if (im3d)
                 {
-                    m001 = double(pxVal) * z;
-                    m101 = double(pxVal) * x * z;
-                    m011 = double(pxVal) * y * z;
-                    m002 = double(pxVal) * z * z;
+                    m001 = pxVal * z;
+                    m101 = pxVal * x * z;
+                    m011 = pxVal * y * z;
+                    m002 = pxVal * z * z;
                 }
             }
         }
@@ -514,6 +514,8 @@ namespace smil
     * 
     * \return * For 2D images: m00, m10, m01, m11, m20, m02
     * \return * For 3D images: m000, m100, m010, m110, m200, m020, m001, m101, m011, m002
+    * 
+    * \link http://en.wikipedia.org/wiki/Image_moment
     */
     template <class T>
     Vector_double measInertiaMatrix(const Image<T> &im, const bool onlyNonZero=true)
