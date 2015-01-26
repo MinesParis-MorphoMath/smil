@@ -163,6 +163,28 @@ namespace smil
         }
     };
 
+    template <class T>
+    struct measMinValPosFunc : public MeasureFunctionWithPos<T, T>
+    {
+        typedef typename Image<T>::lineType lineType;
+        Point<UINT> pt;
+        virtual void initialize(const Image<T> &imIn)
+        {
+            this->retVal = numeric_limits<T>::max();
+        }
+        virtual void processSequence(lineType lineIn, size_t size, size_t x, size_t y, size_t z)
+        {
+            for (size_t i=0;i<size;i++,x++)
+              if (lineIn[i] < this->retVal)
+              {
+                  this->retVal = lineIn[i];
+                  pt.x = x;
+                  pt.y = y;
+                  pt.z = z;
+              }
+        }
+    };
+
     /**
     * Min value of an image
     *
@@ -176,6 +198,16 @@ namespace smil
         return func(imIn, onlyNonZero);
     }
 
+    template <class T>
+    T minVal(const Image<T> &imIn, Point<UINT> &pt, bool onlyNonZero=false)
+    {
+        measMinValPosFunc<T> func;
+        func(imIn, onlyNonZero);
+        pt = func.pt;
+        return func.retVal;
+    }
+
+    
     template <class T>
     struct measMaxValFunc : public MeasureFunctionBase<T, T>
     {
@@ -192,6 +224,28 @@ namespace smil
         }
     };
 
+    template <class T>
+    struct measMaxValPosFunc : public MeasureFunctionWithPos<T, T>
+    {
+        typedef typename Image<T>::lineType lineType;
+        Point<UINT> pt;
+        virtual void initialize(const Image<T> &imIn)
+        {
+            this->retVal = numeric_limits<T>::min();
+        }
+        virtual void processSequence(lineType lineIn, size_t size, size_t x, size_t y, size_t z)
+        {
+            for (size_t i=0;i<size;i++,x++)
+              if (lineIn[i] > this->retVal)
+              {
+                  this->retVal = lineIn[i];
+                  pt.x = x;
+                  pt.y = y;
+                  pt.z = z;
+              }
+        }
+    };
+
     /**
     * Max value of an image
     *
@@ -203,6 +257,15 @@ namespace smil
     {
         measMaxValFunc<T> func;
         return func(imIn, onlyNonZero);
+    }
+
+    template <class T>
+    T maxVal(const Image<T> &imIn, Point<UINT> &pt, bool onlyNonZero=false)
+    {
+        measMaxValPosFunc<T> func;
+        func(imIn, onlyNonZero);
+        pt = func.pt;
+        return func.retVal;
     }
 
     

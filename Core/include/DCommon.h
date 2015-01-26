@@ -90,6 +90,7 @@ namespace smil
       Point() : x(0), y(0), z(0) {}
       Point(const Point &pt) : x(pt.x), y(pt.y), z(pt.z) {}
       Point(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
+      Point(T _x, T _y) : x(_x), y(_y), z(0) {}
       bool operator == (const Point &p2)
       {
           return (x==p2.x && y==p2.y && z==p2.z);

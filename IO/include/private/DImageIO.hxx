@@ -39,6 +39,7 @@
 
 #include "DImageIO_BMP.hpp"
 #include "DImageIO_VTK.hpp"
+#include "DImageIO_PBM.hpp"
 
 #ifdef USE_PNG
 #include "DImageIO_PNG.hpp"
@@ -85,6 +86,12 @@ namespace smil
 
         else if (fileExt=="VTK")
             return new VTKImageFileHandler<T>();
+        
+        else if (fileExt=="PGM")
+            return new PGMImageFileHandler<T>();
+        
+        else if (fileExt=="PBM")
+            return new PBMImageFileHandler<T>();
         
         else
         {

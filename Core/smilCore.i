@@ -171,8 +171,10 @@ namespace std
     %template(Map_SIZE_T) map<size_t,size_t>;
 #endif // USE_64BIT_IDS
     
-    %template(Map_UINT_Vector_UINT8) map< UINT, vector<UINT8> >;
-    %template(Map_UINT_Vector_UINT16) map< UINT, vector<UINT16> >;
+    TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE(vector)
+    TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE_FIX_FIRST(vector, UINT)
+//    %template(Map_UINT_Vector_UINT8) map< UINT, vector<UINT8> >;
+//    %template(Map_UINT_Vector_UINT16) map< UINT, vector<UINT16> >;
     
     TEMPLATE_WRAP_CLASS_2T_CROSS(map, Map)
     

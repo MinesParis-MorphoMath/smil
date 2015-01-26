@@ -65,15 +65,20 @@ namespace smil
     {
         ImageFileInfo()
           : colorType(COLOR_TYPE_UNKNOWN), scalarType(SCALAR_TYPE_UNKNOWN),
-          width(0), height(0), depth(0)            
+          fileType(FILE_TYPE_BINARY),
+          width(0), height(0), depth(0),
+          dataStartPos(0)
         {
         }
-        enum ColorType { COLOR_TYPE_GRAY, COLOR_TYPE_RGB, COLOR_TYPE_GA, COLOR_TYPE_RGBA, COLOR_TYPE_UNKNOWN };
+        enum ColorType { COLOR_TYPE_GRAY, COLOR_TYPE_RGB, COLOR_TYPE_GA, COLOR_TYPE_RGBA, COLOR_TYPE_BINARY, COLOR_TYPE_UNKNOWN };
         enum ScalarType { SCALAR_TYPE_UINT8, SCALAR_TYPE_UINT16, SCALAR_TYPE_INT8, SCALAR_TYPE_INT16, SCALAR_TYPE_FLOAT, SCALAR_TYPE_DOUBLE, SCALAR_TYPE_UNKNOWN };
+        enum FileType { FILE_TYPE_ASCII, FILE_TYPE_BINARY };
         UINT channels;
         ColorType colorType;
         ScalarType scalarType;
+        FileType fileType;
         size_t width, height, depth;
+        streampos dataStartPos;
     };
     
     

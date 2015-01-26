@@ -180,8 +180,7 @@ namespace smil
 
             else
             {
-                // In binary version, values are written as unsigned chars
-//                 fp.read((char*)pixels, sizeof(T)*ptsNbr);
+                // In binary version, values are written as chars
                 
                 for (int z=0;z<depth;z++)
                 {

@@ -205,23 +205,49 @@ class Test_MeanVal : public TestCase
   }
 };
 
+class Test_MinMax : public TestCase
+{
+  virtual void run()
+  {
+      Image_UINT8 im(5,5);
+      
+      UINT8 vec1[25] = 
+      {
+          10, 207,  10, 182, 118,
+        222,  96,  36,  14, 147,
+        150, 104, 159,  251,  81,
+          5, 130,  98, 103, 182,
+        158, 147,  37,  88, 129,
+      };
+      
+      im << vec1;
+      
+      UINT8 v;
+      Point<UINT> pt;
+      
+      v = maxVal(im, pt);
+      TEST_ASSERT(v==251);
+      TEST_ASSERT(pt==Point<UINT>(3,2));
+      
+      v = minVal(im, pt);
+      TEST_ASSERT(v==5);
+      TEST_ASSERT(pt==Point<UINT>(0,3));
+      
+      
+  }
+};
+
 int main(int argc, char *argv[])
 {
       TestSuite ts;
-      
 
-//       ADD_TEST(ts, Test_MeasureVolAndArea);
-//       ADD_TEST(ts, Test_MeanVal);
-//       ADD_TEST(ts, Test_MeasureBarycenter);
-//       ADD_TEST(ts, Test_MeasBoundingBox);
+      ADD_TEST(ts, Test_MeasureVolAndArea);
+      ADD_TEST(ts, Test_MeanVal);
+      ADD_TEST(ts, Test_MeasureBarycenter);
+      ADD_TEST(ts, Test_MeasBoundingBox);
       ADD_TEST(ts, Test_MeasCovariance);
-//       ADD_TEST(ts, Test_MeasInertiaMatrix);
-      
-      Image_UINT8 im(512,512);
-      measAreas(im);
-//       UINT BENCH_NRUNS = 1E3;
-//       BENCH(measBarycenter, im, &xc, &yc);
-//       BENCH(measBarycenters, im);
+      ADD_TEST(ts, Test_MeasInertiaMatrix);
+      ADD_TEST(ts, Test_MinMax);
       
       return ts.run();
 }
