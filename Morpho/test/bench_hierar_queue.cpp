@@ -32,7 +32,7 @@
 #include "DMorpho.h"
 
 #if _OPENMP >= 201107 // ( >= 3.1 )
-#include "UserModules/Chabardes/include/private/DMinima.hpp"
+// #include "UserModules/Chabardes/include/private/DMinima.hpp"
 #endif 
 
 
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     BENCH_IMG(minima, im2, im3, sSE());
     
 #if _OPENMP >= 201107 // ( >= 3.1 )
-    BENCH_IMG(fastMinima, im2, im3, sSE());
+//     BENCH_IMG(fastMinima, im2, im3, sSE());
 #endif 
     
     label(im3, imLbl);
