@@ -172,10 +172,10 @@ namespace std
 #endif // USE_64BIT_IDS
     
     TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE(vector)
+#if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
     TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE_FIX_FIRST(vector, UINT)
-//    %template(Map_UINT_Vector_UINT8) map< UINT, vector<UINT8> >;
-//    %template(Map_UINT_Vector_UINT16) map< UINT, vector<UINT16> >;
-    
+#endif
+
     TEMPLATE_WRAP_CLASS_2T_CROSS(map, Map)
     
 #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
@@ -191,7 +191,9 @@ namespace std
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
 #endif // SMIL_WRAP_RGB
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_double, Map)
+#if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_UINT, Map)
+#endif
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Box, Map)
 }
 
