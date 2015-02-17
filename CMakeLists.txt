@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+# Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ SET(MODULES	Core
 )
 
 SET(SMIL_MAJOR_VERSION 0)
-SET(SMIL_MINOR_VERSION 6)
+SET(SMIL_MINOR_VERSION 7)
 SET(SMIL_PATCH_VERSION 0)
 
 SET(SMIL_VERSION ${SMIL_MAJOR_VERSION}.${SMIL_MINOR_VERSION})
