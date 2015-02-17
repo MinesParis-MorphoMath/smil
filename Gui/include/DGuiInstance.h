@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,32 +66,32 @@ namespace smil
      */
     class Gui : public UniqueInstance<Gui>
     {
-	friend class UniqueInstance<Gui>;
+        friend class UniqueInstance<Gui>;
 
     protected:
-	Gui () {}
-	virtual ~Gui () {}
+        Gui () {}
+        virtual ~Gui () {}
 
     public:
-	// Public interface
+        // Public interface
     //     static void kill();
 
-	/**
-	 * Run the event loop
-	 */
-	static void execLoop();
-	static void processEvents();
-	static void showHelp();
-	
-	/**
-	 * Create a default viewer for type T
-	 */
-	template <class T>
-	ImageViewer<T> *createDefaultViewer(Image<T> &im=NULL);
+        /**
+         * Run the event loop
+         */
+        static void execLoop();
+        static void processEvents();
+        static void showHelp();
+        
+        /**
+         * Create a default viewer for type T
+         */
+        template <class T>
+        ImageViewer<T> *createDefaultViewer(Image<T> &im=NULL);
     protected:
-	virtual void _execLoop() {}
-	virtual void _processEvents() {}
-	virtual void _showHelp() {}
+        virtual void _execLoop() {}
+        virtual void _processEvents() {}
+        virtual void _showHelp() {}
     private:
     };
 
@@ -100,11 +100,11 @@ namespace smil
     ImageViewer<T> *Gui::createDefaultViewer(Image<T> &im)
     {
       #ifdef USE_QT
-	return new QtImageViewer<T>(im);
+        return new QtImageViewer<T>(im);
       #elif defined USE_AALIB
-	return new AaImageViewer<T>(im);
+        return new AaImageViewer<T>(im);
       #else
-	return new ImageViewer<T>(im);
+        return new ImageViewer<T>(im);
       #endif
     }
 

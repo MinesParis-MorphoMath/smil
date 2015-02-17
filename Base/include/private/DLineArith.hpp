@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,345 +48,347 @@ namespace smil
     template <class T1, class T2>
     inline void copyLine(const typename Image<T1>::lineType lIn, const size_t size, typename Image<T2>::lineType lOut)
     {
-	for (size_t i=0;i<size;i++)
-	  lOut[i] = lIn[i];
+        for (size_t i=0;i<size;i++)
+          lOut[i] = lIn[i];
     }
 
     template <class T>
     inline void copyLine(const typename Image<T>::lineType lIn, const size_t size, typename Image<T>::lineType lOut)
     {
-	memcpy(lOut, lIn, size*sizeof(T));
+        for (size_t i=0;i<size;i++)
+          lOut[i] = lIn[i];
     }
 
 
     template <class T>
     struct fillLine : public unaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	fillLine() {}
-	fillLine(const lineType lIn, const size_t size, const T value) { this->_exec(lIn, size, value); }
-	
-	virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
-	{
-	    memcpy(lOut, lIn, size*sizeof(T));
-	}
-	virtual void _exec(lineType lInOut, const size_t size, const T value)
-	{
-	    for (size_t i=0;i<size;i++)
-	      lInOut[i] = value;
-	}
+        typedef typename Image<T>::lineType lineType;
+        fillLine() {}
+        fillLine(const lineType lIn, const size_t size, const T value) { this->_exec(lIn, size, value); }
+        
+        virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+              lOut[i] = lIn[i];
+        }
+        virtual void _exec(lineType lInOut, const size_t size, const T value)
+        {
+            for (size_t i=0;i<size;i++)
+              lInOut[i] = value;
+        }
     };
 
     template <class T>
     inline void shiftLine(const typename Image<T>::lineType lIn, int dx, size_t lineLen, typename Image<T>::lineType lOut, T borderValue = ImDtTypes<T>::min())
     {
-	fillLine<T> fillFunc;
+        fillLine<T> fillFunc;
 
-	if (dx==0)
-	    copyLine<T>(lIn, lineLen, lOut);
-	else if (dx>0)
-	{
-	    fillFunc(lOut, dx, borderValue);
-	    typename Image<T>::lineType tmpL = lOut+dx;
-	    copyLine<T>(lIn, lineLen-dx, tmpL);
-	}
-	else
-	{
-	    typename Image<T>::lineType tmpL = lIn-dx;
-	    copyLine<T>(tmpL, lineLen+dx, lOut);
-	    fillFunc(lOut+(lineLen+dx), -dx, borderValue);
-	}
+        if (dx==0)
+            copyLine<T>(lIn, lineLen, lOut);
+        else if (dx>0)
+        {
+            fillFunc(lOut, dx, borderValue);
+            typename Image<T>::lineType tmpL = lOut+dx;
+            copyLine<T>(lIn, lineLen-dx, tmpL);
+        }
+        else
+        {
+            typename Image<T>::lineType tmpL = lIn-dx;
+            copyLine<T>(tmpL, lineLen+dx, lOut);
+            fillFunc(lOut+(lineLen+dx), -dx, borderValue);
+        }
     }
 
     template <class T>
     struct invLine : public unaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
+        typedef typename Image<T>::lineType lineType;
         inline void _exec(const lineType lineIn, const size_t size, lineType lOut)
         {
 
-	    for (size_t i=0;i<size;i++)
-	      lOut[i] = ImDtTypes<T>::max() - lineIn[i] - ImDtTypes<T>::min();
-	}
+            for (size_t i=0;i<size;i++)
+              lOut[i] = ImDtTypes<T>::max() - lineIn[i] - ImDtTypes<T>::min();
+        }
     };
 
     template <class T>
     struct addLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] > (T)(ImDtTypes<T>::max()- lIn2[i]) ? ImDtTypes<T>::max() : lIn1[i] + lIn2[i];
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = lIn1[i] > (T)(ImDtTypes<T>::max()- lIn2[i]) ? ImDtTypes<T>::max() : lIn1[i] + lIn2[i];
+        }
     };
 
     template <class T>
     struct addNoSatLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] + lIn2[i];
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = lIn1[i] + lIn2[i];
+        }
     };
 
     template <class T>
     struct subLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] < (T)(ImDtTypes<T>::min() + lIn2[i]) ? ImDtTypes<T>::min() : lIn1[i] - lIn2[i];
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = lIn1[i] < (T)(ImDtTypes<T>::min() + lIn2[i]) ? ImDtTypes<T>::min() : lIn1[i] - lIn2[i];
+        }
     };
 
     template <class T>
     struct subNoSatLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] - lIn2[i];
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = lIn1[i] - lIn2[i];
+        }
     };
 
     template <class T>
     struct supLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] > lIn2[i] ? lIn1[i] : lIn2[i];
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = lIn1[i] > lIn2[i] ? lIn1[i] : lIn2[i];
+        }
     };
 
     template <class T>
     struct infLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] < lIn2[i] ? lIn1[i] : lIn2[i];
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = lIn1[i] < lIn2[i] ? lIn1[i] : lIn2[i];
+        }
     };
 
     template <class T>
     struct grtLine : public binaryLineFunctionBase<T>
     {
-	grtLine() 
-	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
-	  
-	T trueVal, falseVal;
-	  
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    T _trueVal(trueVal), _falseVal(falseVal);
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] > lIn2[i] ? _trueVal : _falseVal;
-	}
+        grtLine() 
+          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          
+        T trueVal, falseVal;
+          
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            T _trueVal(trueVal), _falseVal(falseVal);
+            for (size_t i=0;i<size;i++)
+                lOut[i] = lIn1[i] > lIn2[i] ? _trueVal : _falseVal;
+        }
     };
 
     template <class T>
     struct grtSupLine : public binaryLineFunctionBase<T>
     {
-	grtSupLine() 
-	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
-	  
-	T trueVal, falseVal;
-	  
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    T _trueVal(trueVal), _falseVal(falseVal);
-	    for (size_t i=0;i<size;i++)
-		lOut[i] |= lIn1[i] > lIn2[i] ? _trueVal : _falseVal;
-	}
+        grtSupLine() 
+          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          
+        T trueVal, falseVal;
+          
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            T _trueVal(trueVal), _falseVal(falseVal);
+            for (size_t i=0;i<size;i++)
+                lOut[i] |= lIn1[i] > lIn2[i] ? _trueVal : _falseVal;
+        }
     };
     template <>
     inline void grtSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
-	ERR_MSG("Not implemented fot float");
+        ERR_MSG("Not implemented fot float");
     }
 
     template <class T>
     struct grtOrEquLine : public binaryLineFunctionBase<T>
     {
-	grtOrEquLine() 
-	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
-	  
-	T trueVal, falseVal;
-	  
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    T _trueVal(trueVal), _falseVal(falseVal);
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] >= lIn2[i] ? _trueVal : _falseVal;
-	}
+        grtOrEquLine() 
+          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          
+        T trueVal, falseVal;
+          
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            T _trueVal(trueVal), _falseVal(falseVal);
+            for (size_t i=0;i<size;i++)
+                lOut[i] = lIn1[i] >= lIn2[i] ? _trueVal : _falseVal;
+        }
     };
 
     template <class T>
     struct grtOrEquSupLine : public binaryLineFunctionBase<T>
     {
-	grtOrEquSupLine() 
-	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
-	  
-	T trueVal, falseVal;
-	  
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    T _trueVal(trueVal), _falseVal(falseVal);
-	    for (size_t i=0;i<size;i++)
-		lOut[i] |= lIn1[i] >= lIn2[i] ? _trueVal : _falseVal;
-	}
+        grtOrEquSupLine() 
+          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          
+        T trueVal, falseVal;
+          
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            T _trueVal(trueVal), _falseVal(falseVal);
+            for (size_t i=0;i<size;i++)
+                lOut[i] |= lIn1[i] >= lIn2[i] ? _trueVal : _falseVal;
+        }
     };
     template <>
     inline void grtOrEquSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
-	ERR_MSG("Not implemented for float");
+        ERR_MSG("Not implemented for float");
     }
 
     template <class T>
     struct lowLine : public binaryLineFunctionBase<T>
     {
-	lowLine() 
-	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
-	  
-	T trueVal, falseVal;
-	  
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    T _trueVal(trueVal), _falseVal(falseVal);
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] < lIn2[i] ? _trueVal : _falseVal;
-	}
+        lowLine() 
+          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          
+        T trueVal, falseVal;
+          
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            T _trueVal(trueVal), _falseVal(falseVal);
+            for (size_t i=0;i<size;i++)
+                lOut[i] = lIn1[i] < lIn2[i] ? _trueVal : _falseVal;
+        }
     };
 
     template <class T>
     struct lowSupLine : public binaryLineFunctionBase<T>
     {
-	lowSupLine() 
-	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
-	  
-	T trueVal, falseVal;
-	  
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    T _trueVal(trueVal), _falseVal(falseVal);
-	    for (size_t i=0;i<size;i++)
-		lOut[i] |= lIn1[i] < lIn2[i] ? _trueVal : _falseVal;
-	}
+        lowSupLine() 
+          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          
+        T trueVal, falseVal;
+          
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            T _trueVal(trueVal), _falseVal(falseVal);
+            for (size_t i=0;i<size;i++)
+                lOut[i] |= lIn1[i] < lIn2[i] ? _trueVal : _falseVal;
+        }
     };
     template <>
     inline void lowSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
-	ERR_MSG("Not implemented for float");
+        ERR_MSG("Not implemented for float");
     }
 
     template <class T>
     struct lowOrEquLine : public binaryLineFunctionBase<T>
     {
-	lowOrEquLine() 
-	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
-	  
-	T trueVal, falseVal;
-	  
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    T _trueVal(trueVal), _falseVal(falseVal);
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] <= lIn2[i] ? _trueVal : _falseVal;
-	}
+        lowOrEquLine() 
+          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          
+        T trueVal, falseVal;
+          
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            T _trueVal(trueVal), _falseVal(falseVal);
+            for (size_t i=0;i<size;i++)
+                lOut[i] = lIn1[i] <= lIn2[i] ? _trueVal : _falseVal;
+        }
     };
 
     template <class T>
     struct lowOrEquSupLine : public binaryLineFunctionBase<T>
     {
-	lowOrEquSupLine() 
-	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
-	  
-	T trueVal, falseVal;
-	  
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    T _trueVal(trueVal), _falseVal(falseVal);
-	    for (size_t i=0;i<size;i++)
-		lOut[i] |= lIn1[i] <= lIn2[i] ? _trueVal : _falseVal;
-	}
+        lowOrEquSupLine() 
+          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          
+        T trueVal, falseVal;
+          
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            T _trueVal(trueVal), _falseVal(falseVal);
+            for (size_t i=0;i<size;i++)
+                lOut[i] |= lIn1[i] <= lIn2[i] ? _trueVal : _falseVal;
+        }
     };
     template <>
     inline void lowOrEquSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
-	ERR_MSG("Not implemented for float");
+        ERR_MSG("Not implemented for float");
     }
 
     
     template <class T>
     struct equLine : public binaryLineFunctionBase<T>
     {
-	equLine() 
-	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
-	  
-	T trueVal, falseVal;
-	  
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    T _trueVal(trueVal), _falseVal(falseVal);
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] == lIn2[i] ? _trueVal : _falseVal;
-	}
+        equLine() 
+          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          
+        T trueVal, falseVal;
+          
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            T _trueVal(trueVal), _falseVal(falseVal);
+            for (size_t i=0;i<size;i++)
+                lOut[i] = lIn1[i] == lIn2[i] ? _trueVal : _falseVal;
+        }
     };
 
     template <class T>
     struct diffLine : public binaryLineFunctionBase<T>
     {
-	diffLine() 
-	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
-	  
-	T trueVal, falseVal;
-	  
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    T _trueVal(trueVal), _falseVal(falseVal);
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = (lIn1[i] == lIn2[i]) ? _falseVal : _trueVal;
-	}
+        diffLine() 
+          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          
+        T trueVal, falseVal;
+          
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            T _trueVal(trueVal), _falseVal(falseVal);
+            for (size_t i=0;i<size;i++)
+                lOut[i] = (lIn1[i] == lIn2[i]) ? _falseVal : _trueVal;
+        }
     };
 
     template <class T>
     struct equSupLine : public binaryLineFunctionBase<T>
     {
-	equSupLine() 
-	  : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
-	  
-	T trueVal, falseVal;
-	  
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    T _trueVal(trueVal), _falseVal(falseVal);
-	    for (size_t i=0;i<size;i++)
-		lOut[i] |= lIn1[i] == lIn2[i] ? _trueVal : _falseVal;
-	}
+        equSupLine() 
+          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          
+        T trueVal, falseVal;
+          
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            T _trueVal(trueVal), _falseVal(falseVal);
+            for (size_t i=0;i<size;i++)
+                lOut[i] |= lIn1[i] == lIn2[i] ? _trueVal : _falseVal;
+        }
     };
     template <>
     inline void equSupLine<float>::_exec(const lineType /*lIn1*/, const lineType /*lIn2*/, const size_t /*size*/, lineType /*lOut*/)
     {
-	ERR_MSG("Not implemented for float");
+        ERR_MSG("Not implemented for float");
     }
 
 
@@ -399,171 +401,171 @@ namespace smil
     template <class T>
     struct absDiffLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = lIn1[i] > lIn2[i] ? lIn1[i]-lIn2[i] : lIn2[i]-lIn1[i];
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = lIn1[i] > lIn2[i] ? lIn1[i]-lIn2[i] : lIn2[i]-lIn1[i];
+        }
     };
 
 
     template <class T>
     struct mulLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = double(lIn1[i]) * double(lIn2[i]) > double(ImDtTypes<T>::max()) ? ImDtTypes<T>::max() : lIn1[i] * lIn2[i];
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = double(lIn1[i]) * double(lIn2[i]) > double(ImDtTypes<T>::max()) ? ImDtTypes<T>::max() : lIn1[i] * lIn2[i];
+        }
     };
 
     template <class T>
     struct mulNoSatLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = (T)(lIn1[i] * lIn2[i]);
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = (T)(lIn1[i] * lIn2[i]);
+        }
     };
 
     template <class T>
     struct divLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-	    {
-		lOut[i] = lIn2[i]==T(0) ? ImDtTypes<T>::max() : lIn1[i] / lIn2[i];
-	    }
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+            {
+                lOut[i] = lIn2[i]==T(0) ? ImDtTypes<T>::max() : lIn1[i] / lIn2[i];
+            }
+        }
     };
 
     template <class T>
     struct logicAndLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = (T)(lIn1[i] && lIn2[i]);
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = (T)(lIn1[i] && lIn2[i]);
+        }
     };
 
     template <class T>
     struct bitAndLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = (T)(lIn1[i] & lIn2[i]);
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = (T)(lIn1[i] & lIn2[i]);
+        }
     };
     template <>
     inline void bitAndLine<float>::_exec(const lineType, const lineType, const size_t, lineType)
     {
-	ERR_MSG("Not implemented for float");
+        ERR_MSG("Not implemented for float");
     }
 
     template <class T>
     struct logicOrLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = (T)(lIn1[i] || lIn2[i]);
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = (T)(lIn1[i] || lIn2[i]);
+        }
     };
 
     template <class T>
     struct bitOrLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = (T)(lIn1[i] | lIn2[i]);
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = (T)(lIn1[i] | lIn2[i]);
+        }
     };
     template <>
     inline void bitOrLine<float>::_exec(const lineType, const lineType, const size_t, lineType)
     {
-	ERR_MSG("Not implemented for float");
+        ERR_MSG("Not implemented for float");
     }
     
     template <class T>
     struct logicXOrLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = (T)((lIn1[i] && !lIn2[i]) || (!lIn1[i] && lIn2[i]));
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = (T)((lIn1[i] && !lIn2[i]) || (!lIn1[i] && lIn2[i]));
+        }
     };
 
     template <class T>
     struct bitXOrLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-		lOut[i] = (T)(lIn1[i] ^ lIn2[i]);
-	}
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
+                lOut[i] = (T)(lIn1[i] ^ lIn2[i]);
+        }
     };
     template <>
     inline void bitXOrLine<float>::_exec(const lineType, const lineType, const size_t, lineType)
     {
-	ERR_MSG("Not implemented for float");
+        ERR_MSG("Not implemented for float");
     }
 
     template <class T>
     struct leftShiftLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const UINT shift , const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const UINT shift , const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
             lOut[i] = (T)(lIn1[i] << shift);
-	}
+        }
     };
 
     template <class T>
     struct rightShiftLine : public binaryLineFunctionBase<T>
     {
-	typedef typename Image<T>::lineType lineType;
-	virtual void _exec(const lineType lIn1, const UINT shift , const size_t size, lineType lOut)
-	{
-	    for (size_t i=0;i<size;i++)
+        typedef typename Image<T>::lineType lineType;
+        virtual void _exec(const lineType lIn1, const UINT shift , const size_t size, lineType lOut)
+        {
+            for (size_t i=0;i<size;i++)
             lOut[i] = (T)(lIn1[i] >> shift);
-	}
+        }
     };
 
     template <class T1, class T2>
     struct testLine : public tertiaryLineFunctionBase<T1>
     {
-	typedef typename Image<T1>::lineType lineType1;
-	typedef typename Image<T2>::lineType lineType2;
-	
-	inline void operator()(const lineType1 lIn1, const lineType2 lIn2, const lineType2 lIn3, const size_t size, lineType2 lOut)
-	{
-	    return _exec(lIn1, lIn2, lIn3, size, lOut);
-	}
-	
-	inline void _exec(const lineType1 lIn1, const lineType2 lIn2, const lineType2 lIn3, const size_t size, lineType2 lOut)
-	{
-	    for (size_t i=0;i<size;i++)
-	    {
-		lOut[i] = lIn1[i] ? lIn2[i] : lIn3[i];
-	    }
-	}
+        typedef typename Image<T1>::lineType lineType1;
+        typedef typename Image<T2>::lineType lineType2;
+        
+        inline void operator()(const lineType1 lIn1, const lineType2 lIn2, const lineType2 lIn3, const size_t size, lineType2 lOut)
+        {
+            return _exec(lIn1, lIn2, lIn3, size, lOut);
+        }
+        
+        inline void _exec(const lineType1 lIn1, const lineType2 lIn2, const lineType2 lIn3, const size_t size, lineType2 lOut)
+        {
+            for (size_t i=0;i<size;i++)
+            {
+                lOut[i] = lIn1[i] ? lIn2[i] : lIn3[i];
+            }
+        }
     };
 
 /** @}*/

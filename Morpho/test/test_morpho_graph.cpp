@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -47,25 +47,25 @@ class Test_MosaicToGraph : public TestCase
       
       // Mosaic
       dataType vec1[] = {
-	0, 0, 0, 0, 0, 0, 1, 
-	0, 0, 0, 0, 1, 1, 1, 
-	0, 2, 0, 0, 1, 1, 1, 
-	2, 2, 0, 0, 0, 1, 0, 
-	2, 0, 3, 0, 0, 4, 0, 
-	2, 0, 3, 0, 0, 4, 0, 
-	0, 0, 3, 0, 4, 4, 0
+        0, 0, 0, 0, 0, 0, 1, 
+        0, 0, 0, 0, 1, 1, 1, 
+        0, 2, 0, 0, 1, 1, 1, 
+        2, 2, 0, 0, 0, 1, 0, 
+        2, 0, 3, 0, 0, 4, 0, 
+        2, 0, 3, 0, 0, 4, 0, 
+        0, 0, 3, 0, 4, 4, 0
       };
       im1 << vec1;
       
       // Values (gradient)
       dataType vec2[] = {
-	0, 0, 0, 10, 20, 20, 60, 
-	0, 0, 0, 10, 10, 10, 10, 
-	0, 2, 0, 7, 20, 10, 10, 
-	2, 2, 0, 10, 10, 10, 10, 
-	2, 0, 3, 0, 10, 4, 10, 
-	2, 0, 3, 0, 0, 4, 0, 
-	0, 0, 3, 0, 4, 4, 0
+        0, 0, 0, 10, 20, 20, 60, 
+        0, 0, 0, 10, 10, 10, 10, 
+        0, 2, 0, 7, 20, 10, 10, 
+        2, 2, 0, 10, 10, 10, 10, 
+        2, 0, 3, 0, 10, 4, 10, 
+        2, 0, 3, 0, 0, 4, 0, 
+        0, 0, 3, 0, 4, 4, 0
       };
       im2 << vec2;
       
@@ -83,8 +83,9 @@ class Test_MosaicToGraph : public TestCase
       TEST_ASSERT(trueEdges==graph.getEdges());
       
 //       for (vector<Edge>::const_iterator it=graph.getEdges().begin();it!=graph.getEdges().end();it++)
-// 	cout << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
+//         cout << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
 
+//       graph.printSelf();
       
       graph.removeEdge(3,2);
       graph.removeEdge(3,0);
@@ -92,17 +93,22 @@ class Test_MosaicToGraph : public TestCase
       graphToMosaic(im1, graph, im3);
       
       dataType vec4[] = {
-	1,     1,     1,     1,     1,     1,     1,
-	1,     1,     1,     1,     1,     1,     1,
-	1,     1,     1,     1,     1,     1,     1,
-	1,     1,     1,     1,     1,     1,     1,
-	1,     1,     2,     1,     1,     1,     1,
-	1,     1,     2,     1,     1,     1,     1,
-	1,     1,     2,     1,     1,     1,     1,
+        0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,
+        0,   0,   3,   0,   0,   0,   0,
+        0,   0,   3,   0,   0,   0,   0,
+        0,   0,   3,   0,   0,   0,   0,
       };
       im4 << vec4;
       
       TEST_ASSERT(im3==im4);
+      if (retVal!=RES_OK)
+      {
+        im3.printSelf(1);
+        im4.printSelf(1);
+      }
   }
 };
 
@@ -121,13 +127,13 @@ class Test_DrawGraph : public TestCase
       
       // Mosaic
       dataType vec1[] = {
-	1, 1, 1, 1, 1, 1, 1, 
-	1, 1, 1, 1, 1, 1, 1, 
-	2, 2, 2, 2, 1, 1, 1, 
-	2, 2, 2, 2, 4, 1, 4, 
-	2, 3, 3, 3, 4, 4, 4, 
-	2, 3, 3, 3, 4, 4, 4, 
-	3, 3, 3, 3, 4, 4, 4
+        1, 1, 1, 1, 1, 1, 1, 
+        1, 1, 1, 1, 1, 1, 1, 
+        2, 2, 2, 2, 1, 1, 1, 
+        2, 2, 2, 2, 4, 1, 4, 
+        2, 3, 3, 3, 4, 4, 4, 
+        2, 3, 3, 3, 4, 4, 4, 
+        3, 3, 3, 3, 4, 4, 4
       };
       im1 << vec1;
       
@@ -139,19 +145,19 @@ class Test_DrawGraph : public TestCase
       drawGraph(im1, graph, im2);
 
       dataType vec2[] = {
-	0,   0,   0, 255,   0,   0,   0,
-	0,   0, 255, 255,   0,   0,   0,
-	0, 255, 255,   0, 255,   0,   0,
-	0, 255,   0, 255, 255,   0,   0,
-	0, 255,   0,   0, 255, 255,   0,
-	0, 255, 255, 255,   0,   0,   0,
-	0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0, 255,   0,   0,   0,
+        0,   0, 255, 255,   0,   0,   0,
+        0, 255, 255,   0, 255,   0,   0,
+        0, 255,   0, 255, 255,   0,   0,
+        0, 255,   0,   0, 255, 255,   0,
+        0, 255, 255, 255,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,
       };
       im1 << vec2;
       
       TEST_ASSERT(im1==im2);
       if (retVal!=RES_OK)
-	im2.printSelf(1);
+        im2.printSelf(1);
       
   }
 };

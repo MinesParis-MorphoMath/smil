@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -50,264 +50,277 @@ namespace smil
     class BaseFlooding
     {
       public:
-	BaseFlooding()
-	{
-	}
-	virtual ~BaseFlooding()
-	{
-	}
-	
+        BaseFlooding()
+        {
+        }
+        virtual ~BaseFlooding()
+        {
+        }
+        
        protected:
-	
-	
-	typename ImDtTypes<T>::lineType inPixels;
-	typename ImDtTypes<labelT>::lineType lblPixels;
-	    
-	size_t imSize[3], pixPerSlice;
-	inline void getCoordsFromOffset(size_t off, size_t &x, size_t &y, size_t &z) const
-	{
-	    z = off / pixPerSlice;
-	    y = (off % pixPerSlice) / imSize[0];
-	    x = off % imSize[0];
-	}
-	    
-	vector<IntPoint> sePts;
-	UINT sePtsNbr;
-	bool oddSE;
-	vector<int> dOffsets;
-	
-	// Basins functions
-	inline virtual void insertPixel(const size_t &offset, const labelT &lbl) {}
-	
-	T currentLevel;
-	
+        
+        
+        typename ImDtTypes<T>::lineType inPixels;
+        typename ImDtTypes<labelT>::lineType lblPixels;
+            
+        size_t imSize[3], pixPerSlice;
+        inline void getCoordsFromOffset(size_t off, size_t &x, size_t &y, size_t &z) const
+        {
+            z = off / pixPerSlice;
+            y = (off % pixPerSlice) / imSize[0];
+            x = off % imSize[0];
+        }
+            
+        vector<IntPoint> sePts;
+        UINT sePtsNbr;
+        bool oddSE;
+        vector<int> dOffsets;
+        
+        T currentLevel;
+        
       public:
       
-	virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
-	{
-	    ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);
-	    ASSERT_SAME_SIZE(&imIn, &imMarkers, &imBasinsOut);
-	    
-	    ImageFreezer freeze(imBasinsOut);
-	    
-	    copy(imMarkers, imBasinsOut);
+        const Image<T> *imgIn;
+        Image<labelT> *imgLbl;
+        
+        virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
+        {
+            ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);
+            ASSERT_SAME_SIZE(&imIn, &imMarkers, &imBasinsOut);
+            
+            ImageFreezer freeze(imBasinsOut);
+            
+            copy(imMarkers, imBasinsOut);
 
-	    initialize(imIn, imBasinsOut, se);
-	    processImage(imIn, imBasinsOut, se);
-	    
-	    return RES_OK;
-	}
-	
-	virtual RES_T initialize(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
-	{
-	    // Empty the priority queue
-	    hq.initialize(imIn);
-	    
-	    inPixels = imIn.getPixels();
-	    lblPixels = imLbl.getPixels();
-	    
-	    imIn.getSize(imSize);
-	    pixPerSlice = imSize[0]*imSize[1];
-	    
-	    dOffsets.clear();
-	    sePts.clear();
-	    oddSE = se.odd;
-	    
-	    // set an offset distance for each se point (!=0,0,0)
-	    for(vector<IntPoint>::const_iterator it = se.points.begin() ; it!=se.points.end() ; it++)
-	      if (it->x!=0 || it->y!=0 || it->z!=0)
-	    {
-		sePts.push_back(*it);
-		dOffsets.push_back(it->x + it->y*imSize[0] + it->z*imSize[0]*imSize[1]);
-	    }
-	    
-	    sePtsNbr = sePts.size();
-	    
-	    return RES_OK;
-	}
-	
-	virtual RES_T processImage(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
-	{
-	    // Put the marker pixels in the HQ
-	    size_t offset = 0;
-	    for (size_t k=0;k<imSize[2];k++)
-	      for (size_t j=0;j<imSize[1];j++)
-		for (size_t i=0;i<imSize[0];i++)
-		{
-		  if (lblPixels[offset]!=0)
-		  {
-		      hq.push(inPixels[offset], offset);
-		      this->insertPixel(offset, lblPixels[offset]);
-		  }
-		  offset++;
-		}
-		
-		
-	
-	    currentLevel = ImDtTypes<T>::min();
-	    
-	    while(!hq.isEmpty())
-	    {
-		this->processPixel(hq.pop());
-	    }
-		
-	    return RES_OK;
-	}
-	
-	inline virtual void processPixel(const size_t &curOffset)
-	{
-		size_t x0, y0, z0;
-		
-		getCoordsFromOffset(curOffset, x0, y0, z0);
-		
-		bool oddLine = oddSE && ((y0)%2);
-		
-		int x, y, z;
-		size_t nbOffset;
-		
-		for(UINT i=0;i<sePtsNbr;i++)
-		{
-		    IntPoint &pt = sePts[i];
-		    x = x0 + pt.x;
-		    y = y0 + pt.y;
-		    z = z0 + pt.z;
-		    
-		    if (oddLine)
-		      x += (((y+1)%2)!=0);
-		  
-		    if (x>=0 && x<(int)imSize[0] && y>=0 && y<(int)imSize[1] && z>=0 && z<(int)imSize[2])
-		    {
-			nbOffset = curOffset + dOffsets[i];
-			
-			if (oddLine)
-			  nbOffset += (((y+1)%2)!=0);
-			
-			processNeighbor(curOffset, nbOffset);
-			
-		    }
-		}
-	}
-	
-	inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
-	{
-		labelT nbLbl = lblPixels[nbOffset];
-		
-		if (nbLbl==0) 
-		{
-		    lblPixels[nbOffset] = lblPixels[curOffset];
-		    hq.push(inPixels[nbOffset], nbOffset);
-		    insertPixel(nbOffset, lblPixels[nbOffset]);
-		}
-	}
-	
+            initialize(imIn, imBasinsOut, se);
+            processImage(imIn, imBasinsOut, se);
+            
+            return RES_OK;
+        }
+        
+        virtual RES_T initialize(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
+        {
+            imgIn = &imIn;
+            imgLbl = &imLbl;
+            
+            // Empty the priority queue
+            hq.initialize(imIn);
+            
+            inPixels = imIn.getPixels();
+            lblPixels = imLbl.getPixels();
+            
+            imIn.getSize(imSize);
+            pixPerSlice = imSize[0]*imSize[1];
+            
+            dOffsets.clear();
+            sePts.clear();
+            oddSE = se.odd;
+            
+            // set an offset distance for each se point (!=0,0,0)
+            for(vector<IntPoint>::const_iterator it = se.points.begin() ; it!=se.points.end() ; it++)
+              if (it->x!=0 || it->y!=0 || it->z!=0)
+            {
+                sePts.push_back(*it);
+                dOffsets.push_back(it->x + it->y*imSize[0] + it->z*imSize[0]*imSize[1]);
+            }
+            
+            sePtsNbr = sePts.size();
+            
+            return RES_OK;
+        }
+        
+        virtual RES_T processImage(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
+        {
+            // Put the marker pixels in the HQ
+            size_t offset = 0;
+            for (size_t k=0;k<imSize[2];k++)
+              for (size_t j=0;j<imSize[1];j++)
+                for (size_t i=0;i<imSize[0];i++)
+                {
+                  if (lblPixels[offset]!=0)
+                  {
+                      hq.push(inPixels[offset], offset);
+                  }
+                  offset++;
+                }
+                
+                
+        
+            currentLevel = ImDtTypes<T>::min();
+            
+            while(!hq.isEmpty())
+            {
+                this->processPixel(hq.pop());
+            }
+                
+            return RES_OK;
+        }
+        
+        inline virtual void processPixel(const size_t &curOffset)
+        {
+                size_t x0, y0, z0;
+                
+                getCoordsFromOffset(curOffset, x0, y0, z0);
+                
+                bool oddLine = oddSE && ((y0)%2);
+                
+                int x, y, z;
+                size_t nbOffset;
+                
+                for(UINT i=0;i<sePtsNbr;i++)
+                {
+                    IntPoint &pt = sePts[i];
+                    x = x0 + pt.x;
+                    y = y0 + pt.y;
+                    z = z0 + pt.z;
+                    
+                    if (oddLine)
+                      x += (((y+1)%2)!=0);
+                  
+                    if (x>=0 && x<(int)imSize[0] && y>=0 && y<(int)imSize[1] && z>=0 && z<(int)imSize[2])
+                    {
+                        nbOffset = curOffset + dOffsets[i];
+                        
+                        if (oddLine)
+                          nbOffset += (((y+1)%2)!=0);
+                        
+                        processNeighbor(curOffset, nbOffset);
+                        
+                    }
+                }
+        }
+        
+        inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
+        {
+                labelT nbLbl = lblPixels[nbOffset];
+                
+                if (nbLbl==0) 
+                {
+                    lblPixels[nbOffset] = lblPixels[curOffset];
+                    hq.push(inPixels[nbOffset], nbOffset);
+//                     insertPixel(nbOffset, lblPixels[curOffset]);
+                }
+        }
+        
 
 
-	
+        
       protected:
-	HQ_Type hq;
-	
+        HQ_Type hq;
+        
     };
   
 
     template <class T, class labelT, class HQ_Type=HierarchicalQueue<T> >
-    class watershedFlooding : public BaseFlooding<T, labelT, HQ_Type>
+    class WatershedFlooding 
+#ifndef SWIG    
+        : public BaseFlooding<T, labelT, HQ_Type>
+#endif // SWIG    
     {
       protected:
-	vector<size_t> tmpOffsets;
-	typename ImDtTypes<T>::lineType wsPixels;
-	const T STAT_LABELED, STAT_QUEUED, STAT_CANDIDATE, STAT_WS_LINE;
-	
+        vector<size_t> tmpOffsets;
+        typename ImDtTypes<T>::lineType wsPixels;
+        const T STAT_LABELED, STAT_QUEUED, STAT_CANDIDATE, STAT_WS_LINE;
+        
       public:
-	watershedFlooding()
-	  : STAT_LABELED(1), 
-	    STAT_QUEUED(2), 
-	    STAT_CANDIDATE(ImDtTypes<T>::max()-1), 
-	    STAT_WS_LINE(ImDtTypes<T>::max())
-	{
-	}
-	
-	Image<T> *imWS;
-	
-	virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se)
-	{
-	    ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);
-	    ASSERT_SAME_SIZE(&imIn, &imMarkers, &imBasinsOut);
-	    
-	    ImageFreezer freeze(imBasinsOut);
-	    ImageFreezer freeze2(imOut);
-	    
-	    copy(imMarkers, imBasinsOut);
+        WatershedFlooding()
+          : STAT_LABELED(1), 
+            STAT_QUEUED(2), 
+            STAT_CANDIDATE(ImDtTypes<T>::max()-1), 
+            STAT_WS_LINE(ImDtTypes<T>::max())
+        {
+        }
+        virtual ~WatershedFlooding()
+        {
+        }
+        
+        Image<T> *imgWS;
+#ifdef SWIG
+        const Image<T> *imgIn;
+        Image<labelT> *imgLbl;
+#endif // SWIG
 
-	    initialize(imIn, imBasinsOut, imOut, se);
-	    this->processImage(imIn, imBasinsOut, se);
-	    
-	    // Finalize the image containing the ws lines
-	    // Potential remaining candidate points (points surrounded by WS_LINE points) with status STAT_CANDIDATE are added to the WS_LINE
-	    for (size_t i=0;i<imIn.getPixelCount();i++)
-	    {
-	      if (wsPixels[i]>=STAT_CANDIDATE)
-		wsPixels[i] = STAT_WS_LINE;
-	      else
-		wsPixels[i] = 0;
-	    }
-	    return RES_OK;
-	}
-	
-	virtual RES_T initialize(const Image<T> &imIn, Image<labelT> &imLbl, Image<T> &imOut, const StrElt &se)
-	{
-	    BaseFlooding<T, labelT, HQ_Type>::initialize(imIn, imLbl, se);
-	    
-	    imWS = &imOut;
-	    imWS->setSize(this->imSize);
-	    test(imLbl, STAT_LABELED, STAT_CANDIDATE, *imWS);
-	    wsPixels = imWS->getPixels();
-	    
-	    tmpOffsets.clear();
-	}
-	
-	inline virtual void processPixel(const size_t &curOffset)
-	{
-	    wsPixels[curOffset] = STAT_LABELED;
-	    
-	    BaseFlooding<T, labelT, HQ_Type>::processPixel(curOffset);
-	    
-	    if (!tmpOffsets.empty())
-	    {
-		if (this->wsPixels[curOffset]!=STAT_WS_LINE)
-		{
-		    size_t *offsets = tmpOffsets.data();
-		    for (UINT i=0;i<tmpOffsets.size();i++)
-		    {
-			this->hq.push(this->inPixels[*offsets], *offsets);
-			this->wsPixels[*offsets] = STAT_QUEUED;
-			
-			offsets++;
-		    }
-		}
-		tmpOffsets.clear();
-	    }
-	    
-	}
-	inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
-	{
-	    UINT8 nbStat = this->wsPixels[nbOffset];
-	    
-	    if (nbStat==STAT_CANDIDATE) // Add it to the tmp offsets queue
-	    {
-		tmpOffsets.push_back(nbOffset);
-	    }
-	    else if (nbStat==STAT_LABELED)
-	    {
-		if (this->lblPixels[curOffset]==0)
-		{
-		    this->lblPixels[curOffset] = this->lblPixels[nbOffset];
-		    this->insertPixel(curOffset, this->lblPixels[curOffset]);
-		}
-		else if (this->lblPixels[curOffset]!=this->lblPixels[nbOffset])
-		  this->wsPixels[curOffset] = STAT_WS_LINE;
-	    }
-	}
-	
+        virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se)
+        {
+            ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);
+            ASSERT_SAME_SIZE(&imIn, &imMarkers, &imBasinsOut);
+            
+            ImageFreezer freeze(imBasinsOut);
+            ImageFreezer freeze2(imOut);
+            
+            copy(imMarkers, imBasinsOut);
+
+            initialize(imIn, imBasinsOut, imOut, se);
+            this->processImage(imIn, imBasinsOut, se);
+            
+            // Finalize the image containing the ws lines
+            // Potential remaining candidate points (points surrounded by WS_LINE points) with status STAT_CANDIDATE are added to the WS_LINE
+            for (size_t i=0;i<imIn.getPixelCount();i++)
+            {
+              if (wsPixels[i]>=STAT_CANDIDATE)
+                wsPixels[i] = STAT_WS_LINE;
+              else
+                wsPixels[i] = 0;
+            }
+            return RES_OK;
+        }
+        
+        virtual RES_T initialize(const Image<T> &imIn, Image<labelT> &imLbl, Image<T> &imOut, const StrElt &se)
+        {
+            BaseFlooding<T, labelT, HQ_Type>::initialize(imIn, imLbl, se);
+            
+            imgWS = &imOut;
+            imgWS->setSize(this->imSize);
+            test(imLbl, STAT_LABELED, STAT_CANDIDATE, *imgWS);
+            wsPixels = imgWS->getPixels();
+            
+            tmpOffsets.clear();
+            
+            return RES_OK;
+        }
+        
+        inline virtual void processPixel(const size_t &curOffset)
+        {
+            wsPixels[curOffset] = STAT_LABELED;
+            
+            BaseFlooding<T, labelT, HQ_Type>::processPixel(curOffset);
+            
+            if (!tmpOffsets.empty())
+            {
+                if (this->wsPixels[curOffset]!=STAT_WS_LINE)
+                {
+                    size_t *offsets = tmpOffsets.data();
+                    for (UINT i=0;i<tmpOffsets.size();i++)
+                    {
+                        this->hq.push(this->inPixels[*offsets], *offsets);
+                        this->wsPixels[*offsets] = STAT_QUEUED;
+                        
+                        offsets++;
+                    }
+                }
+                tmpOffsets.clear();
+            }
+            
+        }
+        inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
+        {
+            UINT8 nbStat = this->wsPixels[nbOffset];
+            
+            if (nbStat==STAT_CANDIDATE) // Add it to the tmp offsets queue
+            {
+                tmpOffsets.push_back(nbOffset);
+            }
+            else if (nbStat==STAT_LABELED)
+            {
+                if (this->lblPixels[curOffset]==0)
+                {
+                    this->lblPixels[curOffset] = this->lblPixels[nbOffset];
+                }
+                else if (this->lblPixels[curOffset]!=this->lblPixels[nbOffset])
+                  this->wsPixels[curOffset] = STAT_WS_LINE;
+            }
+        }
+        
     };
     
     /**
@@ -324,20 +337,20 @@ namespace smil
     template <class T, class labelT>
     RES_T basins(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
     {
-	BaseFlooding<T, labelT> flooding;
-	return flooding.flood(imIn, imMarkers, imBasinsOut, se);
+        BaseFlooding<T, labelT> flooding;
+        return flooding.flood(imIn, imMarkers, imBasinsOut, se);
     }
 
     template <class T, class labelT>
     RES_T basins(const Image<T> &imIn, Image<labelT> &imBasinsInOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imBasinsInOut);
-	ASSERT_SAME_SIZE(&imIn, &imBasinsInOut);
-	
-	Image<labelT> imLbl(imIn);
-	minimaLabeled(imIn, imLbl, se);
-	
-	return basins(imIn, imLbl, imBasinsInOut);
+        ASSERT_ALLOCATED(&imIn);
+        ASSERT_SAME_SIZE(&imIn, &imBasinsInOut);
+        
+        Image<labelT> imLbl(imIn);
+        minimaLabeled(imIn, imLbl, se);
+        
+        return basins(imIn, imLbl, imBasinsInOut);
     }
 
 
@@ -357,32 +370,32 @@ namespace smil
     template <class T, class labelT>
     RES_T watershed(const Image<T> &imIn, const Image<labelT> &imMarkers, Image<T> &imOut, Image<labelT> &imBasinsOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imMarkers, &imOut, &imBasinsOut);
-	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut, &imBasinsOut);
+        ASSERT_ALLOCATED(&imIn, &imMarkers);
+        ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut, &imBasinsOut);
  
-	watershedFlooding<T,labelT> flooding;
-	return flooding.flood(imIn, imMarkers, imOut, imBasinsOut, se);
+        WatershedFlooding<T,labelT> flooding;
+        return flooding.flood(imIn, imMarkers, imOut, imBasinsOut, se);
     }
 
     template <class T, class labelT>
     RES_T watershed(const Image<T> &imIn, Image<labelT> &imMarkers, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imMarkers, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut);
-	
-	Image<labelT> imBasinsOut(imMarkers);
-	return watershed(imIn, imMarkers, imOut, imBasinsOut, se);
+        ASSERT_ALLOCATED(&imIn, &imMarkers);
+        ASSERT_SAME_SIZE(&imIn, &imMarkers, &imOut);
+        
+        Image<labelT> imBasinsOut(imMarkers);
+        return watershed(imIn, imMarkers, imOut, imBasinsOut, se);
     }
 
     template <class T>
     RES_T watershed(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	Image<UINT> imLbl(imIn);
-	minimaLabeled(imIn, imLbl, se);
-	return watershed(imIn, imLbl, imOut, se);
+        ASSERT_ALLOCATED(&imIn);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        Image<UINT> imLbl(imIn);
+        minimaLabeled(imIn, imLbl, se);
+        return watershed(imIn, imLbl, imOut, se);
     }
 
     /**
@@ -395,37 +408,37 @@ namespace smil
     template <class T>
     RES_T lblSkiz(Image<T> &labelIm1, Image<T> &labelIm2, const Image<T> &maskIm, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&labelIm1, &labelIm2, &maskIm);
-	ASSERT_SAME_SIZE(&labelIm1, &labelIm2, &maskIm);
-	
-	Image<T> tmpIm1(labelIm1);
-	Image<T> tmpIm2(labelIm1);
-	Image<T> sumIm(labelIm1);
-	
-	double vol1 = -1, vol2 = 0;
-	
-	ImageFreezer freeze1(labelIm1);
-	ImageFreezer freeze2(labelIm2);
-	
-	T threshMin = ImDtTypes<T>::min(), threshMax = ImDtTypes<T>::max()-T(1);
-	
-	while(vol1<vol2)
-	{
-	    dilate(labelIm1, tmpIm1, se);
-	    dilate(labelIm2, tmpIm2, se);
-	    addNoSat(labelIm1, labelIm2, sumIm);
-	    threshold(sumIm, threshMin, threshMax, sumIm);
-	    if (&maskIm)
-	      inf(maskIm, sumIm, sumIm);
-	    mask(tmpIm1, sumIm, tmpIm1);
-	    mask(tmpIm2, sumIm, tmpIm2);
-	    sup(labelIm1, tmpIm1, labelIm1);
-	    sup(labelIm2, tmpIm2, labelIm2);
+        ASSERT_ALLOCATED(&labelIm1, &labelIm2, &maskIm);
+        ASSERT_SAME_SIZE(&labelIm1, &labelIm2, &maskIm);
+        
+        Image<T> tmpIm1(labelIm1);
+        Image<T> tmpIm2(labelIm1);
+        Image<T> sumIm(labelIm1);
+        
+        double vol1 = -1, vol2 = 0;
+        
+        ImageFreezer freeze1(labelIm1);
+        ImageFreezer freeze2(labelIm2);
+        
+        T threshMin = ImDtTypes<T>::min(), threshMax = ImDtTypes<T>::max()-T(1);
+        
+        while(vol1<vol2)
+        {
+            dilate(labelIm1, tmpIm1, se);
+            dilate(labelIm2, tmpIm2, se);
+            addNoSat(labelIm1, labelIm2, sumIm);
+            threshold(sumIm, threshMin, threshMax, sumIm);
+            if (&maskIm)
+              inf(maskIm, sumIm, sumIm);
+            mask(tmpIm1, sumIm, tmpIm1);
+            mask(tmpIm2, sumIm, tmpIm2);
+            sup(labelIm1, tmpIm1, labelIm1);
+            sup(labelIm2, tmpIm2, labelIm2);
 
-	    vol1 = vol2;
-	    vol2 = vol(labelIm1);
-	}
-	return RES_OK;
+            vol1 = vol2;
+            vol2 = vol(labelIm1);
+        }
+        return RES_OK;
     }
 
     /**
@@ -438,23 +451,23 @@ namespace smil
     template <class T1, class T2>
     RES_T inflBasins(const Image<T1> &imIn, Image<T2> &basinsOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &basinsOut);
-	ASSERT_SAME_SIZE(&imIn, &basinsOut);
-	
-	Image<T2> imLbl2(basinsOut);
-	Image<T2> *nullIm = NULL;
-	
-	// Create the label images
-	label(imIn, basinsOut, se);
-	inv(basinsOut, imLbl2);
-	mask(imLbl2, basinsOut, imLbl2);
-	
-	ASSERT(lblSkiz(basinsOut, imLbl2, *nullIm, se)==RES_OK);
-	
-	// Clean result image
-	open(basinsOut, basinsOut);
-	
-	return RES_OK;
+        ASSERT_ALLOCATED(&imIn, &basinsOut);
+        ASSERT_SAME_SIZE(&imIn, &basinsOut);
+        
+        Image<T2> imLbl2(basinsOut);
+        Image<T2> *nullIm = NULL;
+        
+        // Create the label images
+        label(imIn, basinsOut, se);
+        inv(basinsOut, imLbl2);
+        mask(imLbl2, basinsOut, imLbl2);
+        
+        ASSERT(lblSkiz(basinsOut, imLbl2, *nullIm, se)==RES_OK);
+        
+        // Clean result image
+        open(basinsOut, basinsOut);
+        
+        return RES_OK;
     }
 
     /**
@@ -467,17 +480,17 @@ namespace smil
     template <class T>
     RES_T inflZones(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	Image<UINT16> basinsIm(imIn);
-	
-	ASSERT(inflBasins(imIn, basinsIm, se)==RES_OK);
-	gradient(basinsIm, basinsIm, se, StrElt());
-	threshold(basinsIm, UINT16(ImDtTypes<T>::min()+T(1)), UINT16(ImDtTypes<T>::max()), basinsIm);
-	copy(basinsIm, imOut);
-	
-	return RES_OK;
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        Image<UINT16> basinsIm(imIn);
+        
+        ASSERT(inflBasins(imIn, basinsIm, se)==RES_OK);
+        gradient(basinsIm, basinsIm, se, StrElt());
+        threshold(basinsIm, UINT16(ImDtTypes<T>::min()+T(1)), UINT16(ImDtTypes<T>::max()), basinsIm);
+        copy(basinsIm, imOut);
+        
+        return RES_OK;
     }
     
     /**
@@ -487,16 +500,16 @@ namespace smil
     template <class T>
     RES_T waterfall(const Image<T> &gradIn, const Image<T> &wsIn, Image<T> &imGradOut, Image<T> &imWsOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&gradIn, &wsIn, &imGradOut, &imWsOut);
-	ASSERT_SAME_SIZE(&gradIn, &wsIn, &imGradOut, &imWsOut);
-	
-	ImageFreezer freeze(imWsOut);
-	
-	test(wsIn, gradIn, ImDtTypes<T>::max(), imWsOut);
-	dualBuild(imWsOut, gradIn, imGradOut, se);
-	watershed(imGradOut, imWsOut, se);
-	
-	return RES_OK;
+        ASSERT_ALLOCATED(&gradIn, &wsIn, &imGradOut, &imWsOut);
+        ASSERT_SAME_SIZE(&gradIn, &wsIn, &imGradOut, &imWsOut);
+        
+        ImageFreezer freeze(imWsOut);
+        
+        test(wsIn, gradIn, ImDtTypes<T>::max(), imWsOut);
+        dualBuild(imWsOut, gradIn, imGradOut, se);
+        watershed(imGradOut, imWsOut, se);
+        
+        return RES_OK;
     }
     
     /**
@@ -506,23 +519,23 @@ namespace smil
     template <class T>
     RES_T waterfall(const Image<T> &gradIn, UINT nLevel, Image<T> &imWsOut, const StrElt &se=DEFAULT_SE)
     {
-	ASSERT_ALLOCATED(&gradIn, &imWsOut);
-	ASSERT_SAME_SIZE(&gradIn, &imWsOut);
-	
-	ImageFreezer freeze(imWsOut);
-	
-	Image<T> tmpGradIm(gradIn, 1); //clone
-	Image<T> tmpGradIm2(gradIn); //clone
-	
-	watershed(gradIn, imWsOut, se);
-	
-	for (UINT i=0;i<nLevel;i++)
-	{
-	    waterfall(tmpGradIm, imWsOut, tmpGradIm2, imWsOut, se);
-	    copy(tmpGradIm2, tmpGradIm);
-	}
-	
-	return RES_OK;
+        ASSERT_ALLOCATED(&gradIn, &imWsOut);
+        ASSERT_SAME_SIZE(&gradIn, &imWsOut);
+        
+        ImageFreezer freeze(imWsOut);
+        
+        Image<T> tmpGradIm(gradIn, 1); //clone
+        Image<T> tmpGradIm2(gradIn); //clone
+        
+        watershed(gradIn, imWsOut, se);
+        
+        for (UINT i=0;i<nLevel;i++)
+        {
+            waterfall(tmpGradIm, imWsOut, tmpGradIm2, imWsOut, se);
+            copy(tmpGradIm2, tmpGradIm);
+        }
+        
+        return RES_OK;
     }
     
 /** @}*/

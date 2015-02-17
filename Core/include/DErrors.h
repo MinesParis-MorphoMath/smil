@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -48,26 +48,26 @@ namespace smil
 
     enum RES_T
     {
-	RES_OK = 1,
-	RES_ERR = -100,
-	RES_ERR_BAD_ALLOCATION,
-	RES_ERR_BAD_SIZE,
-	RES_ERR_IO,
-	RES_ERR_NOT_IMPLEMENTED,
-	RES_ERR_UNKNOWN
+        RES_OK = 1,
+        RES_ERR = -100,
+        RES_ERR_BAD_ALLOCATION,
+        RES_ERR_BAD_SIZE,
+        RES_ERR_IO,
+        RES_ERR_NOT_IMPLEMENTED,
+        RES_ERR_UNKNOWN
     };
 
     inline const char *getErrorMessage(const RES_T &res)
     {
-	switch(res)
-	{
-	  case RES_OK:
-	    return "ok";
-	  case RES_ERR_BAD_ALLOCATION:
-	    return "Bad allocation";
-	  default:
-	    return "Unknown error";
-	}
+        switch(res)
+        {
+          case RES_OK:
+            return "ok";
+          case RES_ERR_BAD_ALLOCATION:
+            return "Bad allocation";
+          default:
+            return "Unknown error";
+        }
     }
 
     class Error
@@ -76,117 +76,117 @@ namespace smil
 #endif // SWIG
     {
     public:
-	Error() throw()
-	{} 
-	Error(const string &descr) throw()
-	      : description(cleanDescr(descr))
-	{
-	    buildMessage();
-	} 
-	Error(const string &descr, const char *func, const char *_file, const int _line, const char *expr) throw()
-	      : description(cleanDescr(descr)),
-		function(func),
-		file(_file),
-		line(_line),
-		expression(expr)
-	{
-	    buildMessage();
-	} 
-	Error(const string &descr, const char *func, const char *_file, const int _line) throw()
-	      : description(cleanDescr(descr)),
-		function(func),
-		file(_file),
-		line(_line)
-	{
-	    buildMessage();
-	} 
-	Error(const char *func, const char *_file, const int _line, const char *expr) throw()
-	      : function(func),
-		file(_file),
-		line(_line),
-		expression(expr)
-	{
-	    buildMessage();
-	} 
-	Error(const string &descr, const char *func, const char *expr) throw()
-	      : description(cleanDescr(descr)),
-		function(func),
-		expression(expr)
-	{
-	    buildMessage();
-	} 
-	Error(const char *func, const char *expr) throw()
-	      : function(func),
-		expression(expr)
-	{
-	    buildMessage();
-	} 
-	virtual ~Error() throw()
-	{}
-	virtual const char* what() const throw()
-	{
-	    return this->message.c_str();
-	}
-	void show()
-	{
-	    cout << "Error:" << this->what() << endl;
-	}
+        Error() throw()
+        {} 
+        Error(const string &descr) throw()
+              : description(cleanDescr(descr))
+        {
+            buildMessage();
+        } 
+        Error(const string &descr, const char *func, const char *_file, const int _line, const char *expr) throw()
+              : description(cleanDescr(descr)),
+                function(func),
+                file(_file),
+                line(_line),
+                expression(expr)
+        {
+            buildMessage();
+        } 
+        Error(const string &descr, const char *func, const char *_file, const int _line) throw()
+              : description(cleanDescr(descr)),
+                function(func),
+                file(_file),
+                line(_line)
+        {
+            buildMessage();
+        } 
+        Error(const char *func, const char *_file, const int _line, const char *expr) throw()
+              : function(func),
+                file(_file),
+                line(_line),
+                expression(expr)
+        {
+            buildMessage();
+        } 
+        Error(const string &descr, const char *func, const char *expr) throw()
+              : description(cleanDescr(descr)),
+                function(func),
+                expression(expr)
+        {
+            buildMessage();
+        } 
+        Error(const char *func, const char *expr) throw()
+              : function(func),
+                expression(expr)
+        {
+            buildMessage();
+        } 
+        virtual ~Error() throw()
+        {}
+        virtual const char* what() const throw()
+        {
+            return this->message.c_str();
+        }
+        void show()
+        {
+            cout << "Error:" << this->what() << endl;
+        }
     
-	void buildMessage()
-	{
-	    ostringstream buf;
-	    if (!function.empty())
-	      buf << "\n  in function: " << function;
-	    if (!description.empty())
-	      buf << "\n  error: " << description;
-    #ifndef NDEBUG	
-	    if (!expression.empty())
-	    {
-		if (description.empty())
-		  buf << "\n  error: assert " << expression;
-		else
-		  buf << " ( assert " << expression << " )";
-	    }
-	    if (!file.empty())
-	      buf << "\n  file: " << file << ":" << line;
-    #endif // NDEBUG	
-	    this->message = buf.str();
-	}
+        void buildMessage()
+        {
+            ostringstream buf;
+            if (!function.empty())
+              buf << "\n  in function: " << function;
+            if (!description.empty())
+              buf << "\n  error: " << description;
+    #ifndef NDEBUG        
+            if (!expression.empty())
+            {
+                if (description.empty())
+                  buf << "\n  error: assert " << expression;
+                else
+                  buf << " ( assert " << expression << " )";
+            }
+            if (!file.empty())
+              buf << "\n  file: " << file << ":" << line;
+    #endif // NDEBUG        
+            this->message = buf.str();
+        }
     private:
-	inline string cleanDescr(const string descr)
-	{
-	    if (descr[0]!='"')
-	      return descr;
-	    else 
-	      return descr.substr(1, descr.length()-2);
-	    
-	}
-	  
-	string description;
-	string function;
-	string file;
-	int line;
-	string expression;
-	string message;
+        inline string cleanDescr(const string descr)
+        {
+            if (descr[0]!='"')
+              return descr;
+            else 
+              return descr.substr(1, descr.length()-2);
+            
+        }
+          
+        string description;
+        string function;
+        string file;
+        int line;
+        string expression;
+        string message;
     };
 
     #define ASSERT_1_ARG(func, file, line, expr) \
-	if(!(expr)) { Error(func, file, line, #expr).show(); return RES_ERR; }
+        if(!(expr)) { Error(func, file, line, #expr).show(); return RES_ERR; }
     #define ASSERT_2_ARGS(func, file, line, expr, errCode) \
-	if(!(expr)) { Error(#errCode, func, file, line, #expr).show(); return errCode; }
+        if(!(expr)) { Error(#errCode, func, file, line, #expr).show(); return errCode; }
     #define ASSERT_3_ARGS(func, file, line, expr, errCode, retVal) \
-	if(!(expr)) { Error(#errCode, func, file, line, #expr).show(); return retVal; }
+        if(!(expr)) { Error(#errCode, func, file, line, #expr).show(); return retVal; }
 
     #define ERR_MSG(msg) Error(msg, __FUNC__, __FILE__, __LINE__).show()
 
     #define ASSERT_NARGS_CHOOSER(...) \
-	GET_4TH_ARG(__VA_ARGS__, ASSERT_3_ARGS, \
-		    ASSERT_2_ARGS, ASSERT_1_ARG, )
+        GET_4TH_ARG(__VA_ARGS__, ASSERT_3_ARGS, \
+                    ASSERT_2_ARGS, ASSERT_1_ARG, )
 
     #ifdef _MSC_VER
-	    #define ASSERT(...) EXPAND( ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__) )
+            #define ASSERT(...) EXPAND( ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__) )
     #else // _MSC_VER
-	    #define ASSERT(...) ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__)
+            #define ASSERT(...) ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__)
     #endif // _MSC_VER
     
 /** @} */

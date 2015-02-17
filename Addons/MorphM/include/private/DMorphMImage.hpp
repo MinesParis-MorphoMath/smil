@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -57,64 +57,62 @@ namespace smil
     class MorphmInt : public SharedImage<T>
     {
     public:
-	typedef SharedImage<T> parentClass;
-	
-	MorphmInt(morphee::Image<T> &img)
-	{
-	    BaseObject::className = "MorphmInt";
-	    parentClass::init();
-	    if (!img.isAllocated())
-		ERR_MSG("Source image isn't allocated");
-	    else
-	    {
-		typename morphee::Image<T>::i_coordinate_system s = img.getSize();
-		this->pixels = img.rawPointer();
-		this->setSize(s[0], s[1], s[2]);
-	    }
-	}
-	MorphmInt(morphee::ImageInterface &imgInt)
-	{
-	    BaseObject::className = "MorphmInt";
-	    parentClass::init();
-	    if (!imgInt.isAllocated())
-		ERR_MSG("Source image isn't allocated");
-	    else
-	    {
-		morphee::Image<T> *mIm = dynamic_cast< morphee::Image<T>* >(&imgInt);
-		if (!mIm)
-		  ERR_MSG("Error in morphM dynamic_cast");
-		else
-		{
-		    typename morphee::Image<T>::i_coordinate_system s = mIm->getSize();
-		    this->pixels = mIm->rawPointer();
-		    this->setSize(s[0], s[1], s[2]);
-		}
-	    }
-	}
+        typedef SharedImage<T> parentClass;
+        
+        MorphmInt(morphee::Image<T> &img)
+        {
+            BaseObject::className = "MorphmInt";
+            parentClass::init();
+            if (!img.isAllocated())
+                ERR_MSG("Source image isn't allocated");
+            else
+            {
+                typename morphee::Image<T>::i_coordinate_system s = img.getSize();
+                
+                this->attach(img.rawPointer(), s[0], s[1], s[2]);
+            }
+        }
+        MorphmInt(morphee::ImageInterface &imgInt)
+        {
+            BaseObject::className = "MorphmInt";
+            parentClass::init();
+            if (!imgInt.isAllocated())
+                ERR_MSG("Source image isn't allocated");
+            else
+            {
+                morphee::Image<T> *mIm = dynamic_cast< morphee::Image<T>* >(&imgInt);
+                if (!mIm)
+                  ERR_MSG("Error in morphM dynamic_cast");
+                else
+                {
+                    typename morphee::Image<T>::i_coordinate_system s = mIm->getSize();
+                    this->attach(mIm->rawPointer(), s[0], s[1], s[2]);
+                }
+            }
+        }
     #if defined Py_PYCONFIG_H  || defined SWIGPYTHON
-	MorphmInt(PyObject *obj)
-	{
-	    BaseObject::className = "MorphmInt";
-	    parentClass::init();
-	    morphee::ImageInterface *imgInt = boost::python::extract<morphee::ImageInterface *>(obj);
-	    if (imgInt)
-	    {
-		if (!imgInt->isAllocated())
-		    ERR_MSG("Source image isn't allocated");
-		else
-		{
-		    morphee::Image<T> *mIm = dynamic_cast< morphee::Image<T>* >(imgInt);
-		    if (!mIm)
-		      ERR_MSG("Error in morphM dynamic_cast");
-		    else
-		    {
-			typename morphee::Image<T>::i_coordinate_system s = mIm->getSize();
-			this->pixels = mIm->rawPointer();
-			this->setSize(s[0], s[1], s[2]);
-		    }
-		}
-	    }
-	}
+        MorphmInt(PyObject *obj)
+        {
+            BaseObject::className = "MorphmInt";
+            parentClass::init();
+            morphee::ImageInterface *imgInt = boost::python::extract<morphee::ImageInterface *>(obj);
+            if (imgInt)
+            {
+                if (!imgInt->isAllocated())
+                    ERR_MSG("Source image isn't allocated");
+                else
+                {
+                    morphee::Image<T> *mIm = dynamic_cast< morphee::Image<T>* >(imgInt);
+                    if (!mIm)
+                      ERR_MSG("Error in morphM dynamic_cast");
+                    else
+                    {
+                        typename morphee::Image<T>::i_coordinate_system s = mIm->getSize();
+                        this->attach(mIm->rawPointer(), s[0], s[1], s[2]);
+                    }
+                }
+            }
+        }
     #endif // Py_PYCONFIG_H
     };
 

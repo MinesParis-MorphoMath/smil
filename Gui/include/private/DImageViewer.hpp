@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -51,90 +51,90 @@ namespace smil
     class ImageViewer : public BaseImageViewer
     {
     public:
-	typedef BaseImageViewer parentClass;
-	friend class Image<T>;
-	
-	ImageViewer()
-	  : BaseImageViewer("ImageViewer"),
-	    image(NULL), 
-	    labelImage(false)
-	{
-		onOverlayModified = Signal(this);
-	    imSize[0] = imSize[1] = imSize[2] = 0;
-	}
-	
-	ImageViewer(Image<T> &im)
-	  : BaseImageViewer("ImageViewer"),
-	    image(NULL),
-	    labelImage(false)
-	{
-		onOverlayModified = Signal(this);
-	    imSize[0] = imSize[1] = imSize[2] = 0;
-	    setImage(im);
-	}
-	
-	virtual void setImage(Image<T> &im)
-	{
-	    if (image)
-	      disconnect();
-	    
-	    image = &im;
-	    image->getSize(imSize);
-	    this->setName(image->getName());
-	    
-	    if (&im)
-	      image->onModified.connect(&this->updateSlot);
-	}
-	virtual Image<T> *getImage()
-	{
-	    return this->image;
-	}
-	virtual void disconnect()
-	{
-	    if (image)
-	      image->onModified.disconnect(&this->updateSlot);
-	    image = NULL;
-	}
-	
-	virtual void show() {}
-	virtual void showLabel() {}
-	virtual void hide() {}
-	virtual bool isVisible() { return false; }
-	virtual void setName(const char *_name) { parentClass::setName(_name); }
-	virtual void update()
-	{
-	    if (!this->image)
-	      return;
-	    
-	    size_t newSize[3];
-	    this->image->getSize(newSize);
-	    if (imSize[0]!=newSize[0] || imSize[1]!=newSize[1] || imSize[2]!=newSize[2])
-	    {
-		this->setImage(*this->image);
-	    }
-	    this->setName(image->getName());
-	    
-	    if (this->isVisible())
-	      this->drawImage();
-	}
-	virtual void drawOverlay(Image<T> &) {}
-	virtual void clearOverlay() {}
+        typedef BaseImageViewer parentClass;
+        friend class Image<T>;
+        
+        ImageViewer()
+          : BaseImageViewer("ImageViewer"),
+            image(NULL), 
+            labelImage(false)
+        {
+                onOverlayModified = Signal(this);
+            imSize[0] = imSize[1] = imSize[2] = 0;
+        }
+        
+        ImageViewer(Image<T> &im)
+          : BaseImageViewer("ImageViewer"),
+            image(NULL),
+            labelImage(false)
+        {
+                onOverlayModified = Signal(this);
+            imSize[0] = imSize[1] = imSize[2] = 0;
+            setImage(im);
+        }
+        
+        virtual void setImage(Image<T> &im)
+        {
+            if (image)
+              disconnect();
+            
+            image = &im;
+            image->getSize(imSize);
+            this->setName(image->getName());
+            
+            if (&im)
+              image->onModified.connect(&this->updateSlot);
+        }
+        virtual Image<T> *getImage()
+        {
+            return this->image;
+        }
+        virtual void disconnect()
+        {
+            if (image)
+              image->onModified.disconnect(&this->updateSlot);
+            image = NULL;
+        }
+        
+        virtual void show() {}
+        virtual void showLabel() {}
+        virtual void hide() {}
+        virtual bool isVisible() { return false; }
+        virtual void setName(const char *_name) { parentClass::setName(_name); }
+        virtual void update()
+        {
+            if (!this->image)
+              return;
+            
+            size_t newSize[3];
+            this->image->getSize(newSize);
+            if (imSize[0]!=newSize[0] || imSize[1]!=newSize[1] || imSize[2]!=newSize[2])
+            {
+                this->setImage(*this->image);
+            }
+            this->setName(image->getName());
+            
+            if (this->isVisible())
+              this->drawImage();
+        }
+        virtual void drawOverlay(const Image<T> &) {}
+        virtual void clearOverlay() {}
     virtual RES_T getOverlay(Image<T> &/*img*/) { return RES_ERR; }
-	
-	Signal onOverlayModified;
-	
-	//! Set the color table as a 8bits RGB map (keys between 0 and 255)
+        
+        Signal onOverlayModified;
+        
+        //! Set the color table as a 8bits RGB map (keys between 0 and 255)
     virtual void setLookup(const map<UINT8,RGB> &/*lut*/) {}
-	virtual void resetLookup() {}
-	
+        virtual void resetLookup() {}
+        
     protected:
-	virtual void drawImage() {}
+        virtual void drawImage() {}
     virtual void onSizeChanged(size_t /*width*/, size_t /*height*/, size_t /*depth*/) {}
-	Image<T> *image;
-	bool labelImage;
-	
+        Image<T> *image;
+        bool labelImage;
+        
     private:
-	size_t imSize[3];
+        size_t imSize[3];
     };
 
     /*@}*/

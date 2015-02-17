@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+# Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -146,10 +146,32 @@ ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 
 
+# SWIG WRAP VECTOR
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_VECTOR_SUBTYPE(class)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+        SET(_STWD "${_STWD}  %template(Vector_ \#\# class \#\# _${_IMG_TYPE}) vector< class<${_IMG_TYPE}> >;\n")
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
+
 # SWIG WRAP MAP
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_MAP_FIX_SECOND(class, name)\n")
 FOREACH(_IMG_TYPE ${IMAGE_TYPES})
-	SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE}) map<${_IMG_TYPE}, class >;\n")
+        SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE}) map<${_IMG_TYPE}, class >;\n")
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE(class)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+        FOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+                SET(_STWD "${_STWD}  %template(Map \#\# _${_IMG_TYPE}_ \#\# class \#\# _${_IMG_TYPE2}) map<${_IMG_TYPE}, class<${_IMG_TYPE2}> >;\n")
+        ENDFOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE_FIX_FIRST(class, fixedType)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+        SET(_STWD "${_STWD}  %template(Map \#\# fixedType \#\# _ \#\# class \#\# _${_IMG_TYPE}) map<fixedType, class<${_IMG_TYPE}> >;\n")
 ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ void PlotWidget::clearOtherCurves()
 {
     for (QwtPlotItemList::const_iterator it=itemList().begin();it!=itemList().end();it++)
       if (*it!=currentCurve)
-	(*it)->detach();
+        (*it)->detach();
     replot();
 }
 
@@ -106,9 +106,9 @@ void PlotWidget::chooseCurveColor()
     QColor color = diag.getColor(pen.color(), this);
     if (color.isValid())
     {
-	pen.setColor(color);
-	curve->setPen(pen);
-	replot();
+        pen.setColor(color);
+        curve->setPen(pen);
+        replot();
     }
 }
 
@@ -119,12 +119,12 @@ void PlotWidget::chooseCurveWidth()
     QPen pen(curve->pen());
     bool ok;
     int lWidth = QInputDialog::getInt(this, tr(""),
-			  tr("Line width:"), pen.width(), 1, 10, 1, &ok);
+                          tr("Line width:"), pen.width(), 1, 10, 1, &ok);
     if (ok)
     {
-	pen.setWidth(lWidth);
-	curve->setPen(pen);
-	replot();
+        pen.setWidth(lWidth);
+        curve->setPen(pen);
+        replot();
     }
 }
 
@@ -134,13 +134,13 @@ void PlotWidget::chooseCurveTitle()
     QwtPlotCurve *curve = (QwtPlotCurve *) this->itemList()[itemIndex];
     bool ok;
     QString title = QInputDialog::getText(this, tr(""),
-				  tr("Curve Legend"), QLineEdit::Normal,
-				  curve->title().text(), &ok);
+                                  tr("Curve Legend"), QLineEdit::Normal,
+                                  curve->title().text(), &ok);
     if (ok)
     {
-	curve->setTitle(title);
-	replot();
-	update();
+        curve->setTitle(title);
+        replot();
+        update();
     }
 }
 
@@ -153,9 +153,9 @@ void PlotWidget::chooseCurveBrushColor()
     QColor color = diag.getColor(brush.color(), this);
     if (color.isValid())
     {
-	brush.setColor(color);
-	curve->setBrush(color);
-	replot();
+        brush.setColor(color);
+        curve->setBrush(color);
+        replot();
     }
 }
 
@@ -188,62 +188,62 @@ void PlotWidget::showContextMenu(const QPoint& pos)
     int i=0;
     for (QwtPlotItemList::const_iterator it=itemList().begin();it!=itemList().end();it++,i++)
     {
-	QwtPlotCurve *curve = (QwtPlotCurve *)(*it);
-	QMenu *curveMenu = new QMenu("#" + QString::number(i) + " " + curve->title().text());
-	QAction *action;
-	action = curveMenu->addAction("Title...", this, SLOT(chooseCurveTitle()));
-	action->setData(i);
-	action = curveMenu->addAction("Color...", this, SLOT(chooseCurveColor()));
-	action->setData(i);
-	action = curveMenu->addAction("Width...", this, SLOT(chooseCurveWidth()));
-	action->setData(i);
-	action = curveMenu->addAction("Brush Color...", this, SLOT(chooseCurveBrushColor()));
-	action->setData(i);
+        QwtPlotCurve *curve = (QwtPlotCurve *)(*it);
+        QMenu *curveMenu = new QMenu("#" + QString::number(i) + " " + curve->title().text());
+        QAction *action;
+        action = curveMenu->addAction("Title...", this, SLOT(chooseCurveTitle()));
+        action->setData(i);
+        action = curveMenu->addAction("Color...", this, SLOT(chooseCurveColor()));
+        action->setData(i);
+        action = curveMenu->addAction("Width...", this, SLOT(chooseCurveWidth()));
+        action->setData(i);
+        action = curveMenu->addAction("Brush Color...", this, SLOT(chooseCurveBrushColor()));
+        action->setData(i);
 
-	QMenu *styleMenu = new QMenu("Style");
-	action = styleMenu->addAction("Lines", this, SLOT(setCurveStyle()));
-	action->setData(i);
-	if (curve->style()==QwtPlotCurve::Lines) { action->setCheckable(true); action->setChecked(true); }
-	action = styleMenu->addAction("Sticks", this, SLOT(setCurveStyle()));
-	action->setData(i);
-	if (curve->style()==QwtPlotCurve::Sticks) { action->setCheckable(true); action->setChecked(true); }
-	action = styleMenu->addAction("Steps", this, SLOT(setCurveStyle()));
-	action->setData(i);
-	if (curve->style()==QwtPlotCurve::Steps) { action->setCheckable(true); action->setChecked(true); }
-	action = styleMenu->addAction("Dots", this, SLOT(setCurveStyle()));
-	action->setData(i);
-	if (curve->style()==QwtPlotCurve::Dots) { action->setCheckable(true); action->setChecked(true); }
-	curveMenu->addMenu(styleMenu);
-	
-	if (curve->isVisible())
-	{
-	    action = curveMenu->addAction("Hide", this, SLOT(hideCurve()));
-	    action->setData(i);
-	}
-	else
-	{
-	    action = curveMenu->addAction("Show", this, SLOT(showCurve()));
-	    action->setData(i);
-	}
-	if (i<itemCount-1)
-	{
-	    action = curveMenu->addAction("Remove", this, SLOT(removeCurve()));
-	    action->setData(i);
-	}
-	contMenu.addMenu(curveMenu);
+        QMenu *styleMenu = new QMenu("Style");
+        action = styleMenu->addAction("Lines", this, SLOT(setCurveStyle()));
+        action->setData(i);
+        if (curve->style()==QwtPlotCurve::Lines) { action->setCheckable(true); action->setChecked(true); }
+        action = styleMenu->addAction("Sticks", this, SLOT(setCurveStyle()));
+        action->setData(i);
+        if (curve->style()==QwtPlotCurve::Sticks) { action->setCheckable(true); action->setChecked(true); }
+        action = styleMenu->addAction("Steps", this, SLOT(setCurveStyle()));
+        action->setData(i);
+        if (curve->style()==QwtPlotCurve::Steps) { action->setCheckable(true); action->setChecked(true); }
+        action = styleMenu->addAction("Dots", this, SLOT(setCurveStyle()));
+        action->setData(i);
+        if (curve->style()==QwtPlotCurve::Dots) { action->setCheckable(true); action->setChecked(true); }
+        curveMenu->addMenu(styleMenu);
+        
+        if (curve->isVisible())
+        {
+            action = curveMenu->addAction("Hide", this, SLOT(hideCurve()));
+            action->setData(i);
+        }
+        else
+        {
+            action = curveMenu->addAction("Show", this, SLOT(showCurve()));
+            action->setData(i);
+        }
+        if (i<itemCount-1)
+        {
+            action = curveMenu->addAction("Remove", this, SLOT(removeCurve()));
+            action->setData(i);
+        }
+        contMenu.addMenu(curveMenu);
     }
     
     QPoint globalPos = this->mapToGlobal(pos);
     QAction* selectedItem = contMenu.exec(globalPos);
     if (selectedItem)
     {
-	if (selectedItem->text()=="Duplicate current curve")
-	{
-	    saveCurrentCurve();
-	}
-	else if (selectedItem->text()=="Delete other curves")
-	{
-	    clearOtherCurves();
-	}
+        if (selectedItem->text()=="Duplicate current curve")
+        {
+            saveCurrentCurve();
+        }
+        else if (selectedItem->text()=="Delete other curves")
+        {
+            clearOtherCurves();
+        }
     }
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -74,10 +74,11 @@ TEMPLATE_WRAP_FUNC(crop);
 TEMPLATE_WRAP_FUNC(clone);
 
 #ifdef SMIL_WRAP_RGB
-TEMPLATE_WRAP_FUNC_2T_FIX_FIRST(copyChannel,RGB);
-TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(copyToChannel,RGB);
-TEMPLATE_WRAP_FUNC_2T_FIX_FIRST(splitChannels,RGB);
-TEMPLATE_WRAP_FUNC_2T_FIX_SECOND(mergeChannels,RGB);
+%template(copyChannel) copyChannel<RGB, UINT8>;
+%template(copyToChannel) copyToChannel<UINT8, RGB>;
+%template(splitChannels) splitChannels<RGB, UINT8>;
+%template(mergeChannels) mergeChannels<UINT8, RGB>;
+%template(crop) crop<RGB>;
 #endif // SMIL_WRAP_RGB
 
 TEMPLATE_WRAP_FUNC(inv);
@@ -130,6 +131,9 @@ TEMPLATE_WRAP_FUNC(otsuThreshold);
 
 
 %include "DImageConvolution.hpp"
+TEMPLATE_WRAP_FUNC(horizConvolve);
+TEMPLATE_WRAP_FUNC(vertConvolve);
+TEMPLATE_WRAP_FUNC(convolve);
 TEMPLATE_WRAP_FUNC(gaussianFilter);
 
 TEMPLATE_WRAP_FUNC(drawLine);
@@ -147,6 +151,7 @@ TEMPLATE_WRAP_FUNC(vFlip);
 TEMPLATE_WRAP_FUNC(trans);
 TEMPLATE_WRAP_FUNC(resize);
 TEMPLATE_WRAP_FUNC(scale);
+TEMPLATE_WRAP_FUNC(addBorder);
 
 %include "DBlob.hpp"
 
@@ -159,7 +164,7 @@ TEMPLATE_WRAP_FUNC(scale);
 
 namespace std 
 {
-//    %template(PixelSequenceVector) vector<PixelSequence>;
+    %template(PixelSequenceVector) vector<PixelSequence>;
     TEMPLATE_WRAP_MAP_FIX_SECOND(Blob, BlobMap);
 }
 

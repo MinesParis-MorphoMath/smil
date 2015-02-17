@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -170,8 +170,8 @@ public slots:
     void scale(double factor, bool absolute=true);
     void sliderChanged(int newVal)
     {
-	displayHint(QString::number(newVal) + "/" + QString::number(slider->maximum()));
-	setCurSlice(newVal);
+        displayHint(QString::number(newVal) + "/" + QString::number(slider->maximum()));
+        setCurSlice(newVal);
     }
     virtual void overlayDataChanged(bool triggerEvents=true);
     void updateIcon();

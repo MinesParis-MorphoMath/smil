@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -43,10 +43,10 @@ namespace smil
     {
     public:
       BaseImageEvent(BaseImage *im)
-	: sender(im)
-	{
-	}
-	const BaseImage* sender;
+        : sender(im)
+        {
+        }
+        const BaseImage* sender;
     };
 
     typedef Slot<BaseImageEvent> BaseImageEventSlot;
@@ -57,14 +57,14 @@ namespace smil
     {
     public:
       ImageEvent(Image<T> *im)
-	: sender(im)
-	{
-	}
-	const Image<T>* sender;
+        : sender(im)
+        {
+        }
+        const Image<T>* sender;
     };
 
-    typedef Slot< ImageEvent<UINT8> > ImageSlot_UINT8;
-    typedef Slot< ImageEvent<UINT16> > ImageSlot_UINT16;
+    typedef Slot< ImageEvent<UINT8> > ImageEventSlot_UINT8;
+    typedef Slot< ImageEvent<UINT16> > ImageEventSlot_UINT16;
 
 } // namespace smil
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,23 +44,23 @@ namespace smil
 
     class  Morpho : public UniqueInstance<Morpho>
     {
-	friend class UniqueInstance<Morpho>;
+        friend class UniqueInstance<Morpho>;
 
     protected:
-	Morpho ()
-	{
-	    this->defaultSE = SquSE();
-	}
-	
-	~Morpho () {}
+        Morpho ()
+        {
+            this->defaultSE = SquSE();
+        }
+        
+        ~Morpho () {}
 
     public:
-	// Public interface
+        // Public interface
 
-	static StrElt &getDefaultSE();
-	static void setDefaultSE(const StrElt &se);
+        static StrElt &getDefaultSE();
+        static void setDefaultSE(const StrElt &se);
     protected:
-	StrElt defaultSE;
+        StrElt defaultSE;
     private:
     };
 

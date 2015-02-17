@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -55,7 +55,7 @@ namespace smil
     template <class T>
     map<T, double> measAreas(const Image<T> &imLbl, const bool onlyNonZero=true)
     {
-	return processBlobMeasure<T, T, measAreaFunc<T> >(imLbl, onlyNonZero);
+        return processBlobMeasure<T, T, measAreaFunc<T> >(imLbl, onlyNonZero);
     }
     
     /**
@@ -67,7 +67,7 @@ namespace smil
     map<labelT, double> measAreas(map<labelT, Blob> &blobs)
     {
         Image<labelT> fakeImg(1, 1);
-	return processBlobMeasure<labelT, labelT, measAreaFunc<labelT> >(fakeImg, blobs);
+        return processBlobMeasure<labelT, labelT, measAreaFunc<labelT> >(fakeImg, blobs);
     }
 
     /**
@@ -77,7 +77,7 @@ namespace smil
     template <class T, class labelT>
     map<labelT, T> measMinVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
-	return processBlobMeasure<T, labelT, measMinValFunc<T> >(imIn, blobs);
+        return processBlobMeasure<T, labelT, measMinValFunc<T> >(imIn, blobs);
     }
 
     /**
@@ -87,7 +87,7 @@ namespace smil
     template <class T, class labelT>
     map<labelT, T> measMaxVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
-	return processBlobMeasure<T, labelT, measMaxValFunc<T> >(imIn, blobs);
+        return processBlobMeasure<T, labelT, measMaxValFunc<T> >(imIn, blobs);
     }
 
     /**
@@ -97,7 +97,7 @@ namespace smil
     template <class T, class labelT>
     map<labelT, vector<T> > measRangeVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
-	return processBlobMeasure<T, labelT, measMinMaxValFunc<T> >(imIn, blobs);
+        return processBlobMeasure<T, labelT, measMinMaxValFunc<T> >(imIn, blobs);
     }
 
     /**
@@ -107,7 +107,7 @@ namespace smil
     template <class T, class labelT>
     map<labelT, Vector_double> measMeanVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
-	return processBlobMeasure<T, labelT, measMeanValFunc<T> >(imIn, blobs);
+        return processBlobMeasure<T, labelT, measMeanValFunc<T> >(imIn, blobs);
     }
 
     /**
@@ -117,7 +117,7 @@ namespace smil
     template <class T, class labelT>
     map<labelT, double> measVolumes(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
-	return processBlobMeasure<T, labelT, measVolFunc<T> >(imIn, blobs);
+        return processBlobMeasure<T, labelT, measVolFunc<T> >(imIn, blobs);
     }
     
     
@@ -128,7 +128,7 @@ namespace smil
     template <class T, class labelT>
     map<labelT, vector<T> > valueLists(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
-	return processBlobMeasure<T, labelT, valueListFunc<T> >(imIn, blobs);
+        return processBlobMeasure<T, labelT, valueListFunc<T> >(imIn, blobs);
     }
         /**
     * Measure the mode value of imIn in each blob.
@@ -137,7 +137,7 @@ namespace smil
     template <class T, class labelT>
     map<labelT, T > measModeVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
-	return processBlobMeasure<T, labelT, measModeValFunc<T> >(imIn, blobs);
+        return processBlobMeasure<T, labelT, measModeValFunc<T> >(imIn, blobs);
     }
 
     /**
@@ -149,7 +149,7 @@ namespace smil
     template <class T>
     map<T, Vector_double> measBarycenters(const Image<T> &imLbl, const bool onlyNonZero=true)
     {
-	return processBlobMeasure<T, T, measBarycenterFunc<T> >(imLbl, onlyNonZero);
+        return processBlobMeasure<T, T, measBarycenterFunc<T> >(imLbl, onlyNonZero);
     }
     
     /**
@@ -159,7 +159,7 @@ namespace smil
     template <class T, class labelT>
     map<labelT, Vector_double> measBarycenters(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
-	return processBlobMeasure<T, labelT, measBarycenterFunc<T> >(imIn, blobs);
+        return processBlobMeasure<T, labelT, measBarycenterFunc<T> >(imIn, blobs);
     }
     
     
@@ -171,7 +171,7 @@ namespace smil
     template <class T>
     map<T, Vector_UINT > measBoundBoxes(const Image<T> &imLbl, const bool onlyNonZero=true)
     {
-	return processBlobMeasure<T, T, measBoundBoxFunc<T> >(imLbl, onlyNonZero);
+        return processBlobMeasure<T, T, measBoundBoxFunc<T> >(imLbl, onlyNonZero);
     }
 
     /**
@@ -181,7 +181,7 @@ namespace smil
     template <class T, class labelT>
     map<labelT, Vector_UINT > measBoundBoxes(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
-	return processBlobMeasure<T, labelT, measBoundBoxFunc<T> >(imIn, blobs);
+        return processBlobMeasure<T, labelT, measBoundBoxFunc<T> >(imIn, blobs);
     }
 
     /**
@@ -190,7 +190,7 @@ namespace smil
     template <class T>
     map<T, Vector_double> measInertiaMatrices(const Image<T> &imLbl, const bool onlyNonZero=true)
     {
-	return processBlobMeasure<T, T, measInertiaMatrixFunc<T> >(imLbl, onlyNonZero);
+        return processBlobMeasure<T, T, measInertiaMatrixFunc<T> >(imLbl, onlyNonZero);
     }
     
     /**
@@ -201,7 +201,7 @@ namespace smil
     template <class T, class labelT>
     map<labelT, Vector_double> measInertiaMatrices(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
-	return processBlobMeasure<T, labelT, measInertiaMatrixFunc<T> >(imIn, blobs);
+        return processBlobMeasure<T, labelT, measInertiaMatrixFunc<T> >(imIn, blobs);
     }
     
 /** @}*/

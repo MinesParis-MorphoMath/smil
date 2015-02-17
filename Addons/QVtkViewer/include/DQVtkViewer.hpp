@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -60,128 +60,128 @@ namespace smil
     class QVtkViewer : public ImageViewer<T>, protected QVtkViewerWidget
     {
     public:
-	typedef ImageViewer<T> parentClass;
-	QVtkViewer()
-	  : ImageViewer<T>(), 
-	    QVtkViewerWidget()
-	{
-	    imageImport->SetDataScalarType(VTK_UNSIGNED_CHAR);
-	    opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
-	}
-	QVtkViewer(Image<T> &im)
-	  : ImageViewer<T>(), 
-	  QVtkViewerWidget()
-	{
-	    setImage(im);
-	    
-	    imageImport->SetDataScalarType(VTK_UNSIGNED_CHAR);
-	    opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
-	}
-	~QVtkViewer()
-	{
-	}
-	
-	enum RepresentationType { NONE, COMPOSITE, MIP };
-	
-	virtual void setImage(Image<T> &im)
-	{
-	    ImageViewer<T>::setImage(im);
-	    
-	    size_t imSize[3];
-	    this->image->getSize(imSize);
-	    imageImport->SetWholeExtent(0, imSize[0]-1, 0, imSize[1]-1, 0, imSize[2]-1);
-	    imageImport->SetDataExtent(0, imSize[0]-1, 0, imSize[1]-1, 0, imSize[2]-1);
-	    imageImport->SetImportVoidPointer(this->image->getVoidPointer());
-	    
-	    cube->SetBounds(0, imSize[0]-1, 0, imSize[1]-1, 0, imSize[2]-1);
-	    cube->Update();
-	    
-	    camera->SetFocalPoint(imSize[0]/2, imSize[1]/2, imSize[2]/2);
-	    int d = 2.5 * (imSize[0] > imSize[1] ? imSize[0] : imSize[1]);
-	    camera->SetPosition(imSize[0], imSize[1]/2, -d);
-	}
-	
-	virtual void onSizeChanged(size_t width, size_t height, size_t depth)
-	{
-	}
-	
-	virtual void drawImage()
-	{
-// 	    T rVals[2];
-// 	    rangeVal(*this->image, rVals);
-// 	    opacityTransfertFunction->RemoveAllPoints();
-// 	    opacityTransfertFunction->AddSegment(rVals[0], 0., rVals[1], 1.0);
-	    
-	    QVtkViewerWidget::update();
-	}
-	
-	virtual void hide()
-	{
-	    QVtkViewerWidget::hide();
-	}
-	virtual void show()
-	{
-	    QVtkViewerWidget::show();
-	    this->drawImage();
-	}
-	virtual void show(Image<T> &im) 
-	{
-	    this->setImage(im);
-	    this->show();
-	}
-	virtual void showLabel()
-	{
-	}
-	virtual bool isVisible()
-	{
-	    return QVtkViewerWidget::isVisible();
-	}
-	virtual void setName(const char *_name)
-	{
-	    QString buf = _name + QString(" (") + QString(parentClass::image->getTypeAsString()) + QString(")");
-	    QVtkViewerWidget::setWindowTitle(buf);
-	}
-	virtual void drawOverlay(Image<T> &im)
-	{
-	}
-	virtual void clearOverlay() {  }
+        typedef ImageViewer<T> parentClass;
+        QVtkViewer()
+          : ImageViewer<T>(), 
+            QVtkViewerWidget()
+        {
+            imageImport->SetDataScalarType(VTK_UNSIGNED_CHAR);
+            opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
+        }
+        QVtkViewer(Image<T> &im)
+          : ImageViewer<T>(), 
+          QVtkViewerWidget()
+        {
+            setImage(im);
+            
+            imageImport->SetDataScalarType(VTK_UNSIGNED_CHAR);
+            opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
+        }
+        ~QVtkViewer()
+        {
+        }
+        
+        enum RepresentationType { NONE, COMPOSITE, MIP };
+        
+        virtual void setImage(Image<T> &im)
+        {
+            ImageViewer<T>::setImage(im);
+            
+            size_t imSize[3];
+            this->image->getSize(imSize);
+            imageImport->SetWholeExtent(0, imSize[0]-1, 0, imSize[1]-1, 0, imSize[2]-1);
+            imageImport->SetDataExtent(0, imSize[0]-1, 0, imSize[1]-1, 0, imSize[2]-1);
+            imageImport->SetImportVoidPointer(this->image->getVoidPointer());
+            
+            cube->SetBounds(0, imSize[0]-1, 0, imSize[1]-1, 0, imSize[2]-1);
+            cube->Update();
+            
+            camera->SetFocalPoint(imSize[0]/2, imSize[1]/2, imSize[2]/2);
+            int d = 2.5 * (imSize[0] > imSize[1] ? imSize[0] : imSize[1]);
+            camera->SetPosition(imSize[0], imSize[1]/2, -d);
+        }
+        
+        virtual void onSizeChanged(size_t width, size_t height, size_t depth)
+        {
+        }
+        
+        virtual void drawImage()
+        {
+//             T rVals[2];
+//             rangeVal(*this->image, rVals);
+//             opacityTransfertFunction->RemoveAllPoints();
+//             opacityTransfertFunction->AddSegment(rVals[0], 0., rVals[1], 1.0);
+            
+            QVtkViewerWidget::update();
+        }
+        
+        virtual void hide()
+        {
+            QVtkViewerWidget::hide();
+        }
+        virtual void show()
+        {
+            QVtkViewerWidget::show();
+            this->drawImage();
+        }
+        virtual void show(Image<T> &im) 
+        {
+            this->setImage(im);
+            this->show();
+        }
+        virtual void showLabel()
+        {
+        }
+        virtual bool isVisible()
+        {
+            return QVtkViewerWidget::isVisible();
+        }
+        virtual void setName(const char *_name)
+        {
+            QString buf = _name + QString(" (") + QString(parentClass::image->getTypeAsString()) + QString(")");
+            QVtkViewerWidget::setWindowTitle(buf);
+        }
+        virtual void drawOverlay(const Image<T> &im)
+        {
+        }
+        virtual void clearOverlay() {  }
 
-	virtual void setCurSlice(int)
-	{
-	}
-	
-	
-	void setRepresentationType(RepresentationType type)
-	{
-	    QVtkViewerWidget::setRepresentationType(QVtkViewerWidget::RepresentationType(type));
-	}
-	
-	void showAxes()
-	{
- 	    QVtkViewerWidget::showAxes();
-	}
+        virtual void setCurSlice(int)
+        {
+        }
+        
+        
+        void setRepresentationType(RepresentationType type)
+        {
+            QVtkViewerWidget::setRepresentationType(QVtkViewerWidget::RepresentationType(type));
+        }
+        
+        void showAxes()
+        {
+             QVtkViewerWidget::showAxes();
+        }
 
-	void hideAxes()
-	{
-	    QVtkViewerWidget::hideAxes();
-	}
+        void hideAxes()
+        {
+            QVtkViewerWidget::hideAxes();
+        }
 
-	void setInterpolationTypeToLinear()
-	{
-	    QVtkViewerWidget::setInterpolationTypeToLinear();
-	}
-	
-	void setInterpolationTypeToNearest()
-	{
-	    QVtkViewerWidget::setInterpolationTypeToNearest();
-	}
-	
+        void setInterpolationTypeToLinear()
+        {
+            QVtkViewerWidget::setInterpolationTypeToLinear();
+        }
+        
+        void setInterpolationTypeToNearest()
+        {
+            QVtkViewerWidget::setInterpolationTypeToNearest();
+        }
+        
     protected:
-	
+        
 
-	
-	
-	
+        
+        
+        
     };
 
     /*@}*/

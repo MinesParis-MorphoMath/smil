@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -39,7 +39,17 @@
 %include "Base/include/private/DImageArith.hpp"
 namespace smil
 {
-    %ignore COLOR_UINT8_3;
-    %template(copyChannel) copyChannel<RGB,UINT8>;
+//    %ignore COLOR_UINT8_3;
+    %extend RGB
+    {
+        std::string  __str__() 
+        {
+            std::stringstream os;
+            self->printSelf(os);
+            return os.str();
+        }
+    }
+//    %template(copyChannel) copyChannel<RGB,UINT8>;
 }
 %include "include/DColor.h"
+

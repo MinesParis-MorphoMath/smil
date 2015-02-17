@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,48 +41,48 @@ namespace smil
     template <class T>
     typename Image<T>::lineType *imageFunctionBase<T>::createAlignedBuffers(size_t nbr, size_t len)
     {
-	if (alignedBuffers)
-	{
-	    if (nbr==bufferNumber && len==bufferLength)
-		return alignedBuffers;
-	    else
-		deleteAlignedBuffers();
-	}
+        if (alignedBuffers)
+        {
+            if (nbr==bufferNumber && len==bufferLength)
+                return alignedBuffers;
+            else
+                deleteAlignedBuffers();
+        }
 
 
-	bufferNumber = nbr;
-	bufferLength = len;
-	bufferSize = bufferLength * sizeof(T);
+        bufferNumber = nbr;
+        bufferLength = len;
+        bufferSize = bufferLength * sizeof(T);
 
-	alignedBuffers = new lineType[bufferNumber];
-	for (size_t i=0;i<bufferNumber;i++)
-	    alignedBuffers[i] = ImDtTypes<T>::createLine(len);
+        alignedBuffers = new lineType[bufferNumber];
+        for (size_t i=0;i<bufferNumber;i++)
+            alignedBuffers[i] = ImDtTypes<T>::createLine(len);
 
-	return alignedBuffers;
+        return alignedBuffers;
     }
 
 
     template <class T>
     void imageFunctionBase<T>::deleteAlignedBuffers()
     {
-	if (!alignedBuffers) return;
+        if (!alignedBuffers) return;
 
-	for (UINT i=0;i<bufferNumber;i++)
-	  ImDtTypes<T>::deleteLine(alignedBuffers[i]);
-	delete[] alignedBuffers;
-	alignedBuffers = NULL;
+        for (UINT i=0;i<bufferNumber;i++)
+          ImDtTypes<T>::deleteLine(alignedBuffers[i]);
+        delete[] alignedBuffers;
+        alignedBuffers = NULL;
     }
 
     template <class T>
     inline void imageFunctionBase<T>::copyLineToBuffer(T *line, size_t bufIndex)
     {
-	memcpy(alignedBuffers[bufIndex], line, bufferSize);
+        memcpy(alignedBuffers[bufIndex], line, bufferSize);
     }
 
     template <class T>
     inline void imageFunctionBase<T>::copyBufferToLine(size_t bufIndex, T *line)
     {
-	memcpy(line, alignedBuffers[bufIndex], bufferSize);
+        memcpy(line, alignedBuffers[bufIndex], bufferSize);
     }
 
 
@@ -91,66 +91,66 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T unaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imOut)
     {
-	if (!areAllocated(&imIn, &imOut, NULL))
-	    return RES_ERR_BAD_ALLOCATION;
+        if (!areAllocated(&imIn, &imOut, NULL))
+            return RES_ERR_BAD_ALLOCATION;
 
-	int lineLen = imIn.getWidth();
-	int lineCount = imIn.getLineCount();
+        int lineLen = imIn.getWidth();
+        int lineCount = imIn.getLineCount();
 
-	sliceType srcLines = imIn.getLines();
-	sliceType destLines = imOut.getLines();
-	
-	int nthreads = Core::getInstance()->getNumberOfThreads();
-	int i;
-	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i) num_threads(nthreads)
-	#endif // USE_OPEN_MP
-	{
-	    #ifdef USE_OPEN_MP
-		#pragma omp for
-	    #endif // USE_OPEN_MP
-	    for (i=0;i<lineCount;i++)
-		lineFunction._exec(srcLines[i], lineLen, destLines[i]);
-	}
-	imOut.modified();
+        sliceType srcLines = imIn.getLines();
+        sliceType destLines = imOut.getLines();
+        
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        int i;
+        #ifdef USE_OPEN_MP
+            #pragma omp parallel private(i) num_threads(nthreads)
+        #endif // USE_OPEN_MP
+        {
+            #ifdef USE_OPEN_MP
+                #pragma omp for
+            #endif // USE_OPEN_MP
+            for (i=0;i<lineCount;i++)
+                lineFunction._exec(srcLines[i], lineLen, destLines[i]);
+        }
+        imOut.modified();
 
-	return RES_OK;
+        return RES_OK;
     }
 
 
     template <class T, class lineFunction_T>
     RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, const T &value)
     {
-	if (!areAllocated(&imOut, NULL))
-	    return RES_ERR_BAD_ALLOCATION;
+        if (!areAllocated(&imOut, NULL))
+            return RES_ERR_BAD_ALLOCATION;
 
-	size_t lineLen = imOut.getWidth();
-	int lineCount = imOut.getLineCount();
+        size_t lineLen = imOut.getWidth();
+        int lineCount = imOut.getLineCount();
 
-	sliceType destLines = imOut.getLines();
-	lineType constBuf = ImDtTypes<T>::createLine(lineLen);
+        sliceType destLines = imOut.getLines();
+        lineType constBuf = ImDtTypes<T>::createLine(lineLen);
 
-	// Fill the first aligned buffer with the constant value
-	fillLine<T>(constBuf, lineLen, value);
+        // Fill the first aligned buffer with the constant value
+        fillLine<T>(constBuf, lineLen, value);
 
-	// Use it for operations on lines
+        // Use it for operations on lines
 
-	int nthreads = Core::getInstance()->getNumberOfThreads();
-	int i;
-	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i) num_threads(nthreads)
-	#endif // USE_OPEN_MP
-	{
-	    #ifdef USE_OPEN_MP
-		#pragma omp for
-	    #endif // USE_OPEN_MP
-	    for (i=0;i<lineCount;i++)
-		lineFunction._exec(constBuf, lineLen, destLines[i]);
-	}
-	ImDtTypes<T>::deleteLine(constBuf);
-	imOut.modified();
-	
-	return RES_OK;
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        int i;
+        #ifdef USE_OPEN_MP
+            #pragma omp parallel private(i) num_threads(nthreads)
+        #endif // USE_OPEN_MP
+        {
+            #ifdef USE_OPEN_MP
+                #pragma omp for
+            #endif // USE_OPEN_MP
+            for (i=0;i<lineCount;i++)
+                lineFunction._exec(constBuf, lineLen, destLines[i]);
+        }
+        ImDtTypes<T>::deleteLine(constBuf);
+        imOut.modified();
+        
+        return RES_OK;
     }
 
 
@@ -158,65 +158,65 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const imageType &imIn2, imageType &imOut)
     {
-	if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
-	    return RES_ERR_BAD_ALLOCATION;
+        if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
+            return RES_ERR_BAD_ALLOCATION;
 
-	size_t lineLen = imIn1.getWidth();
-	size_t lineCount = imIn1.getLineCount();
+        size_t lineLen = imIn1.getWidth();
+        size_t lineCount = imIn1.getLineCount();
 
-	lineType *srcLines1 = imIn1.getLines();
-	lineType *srcLines2 = imIn2.getLines();
-	lineType *destLines = imOut.getLines();
+        lineType *srcLines1 = imIn1.getLines();
+        lineType *srcLines2 = imIn2.getLines();
+        lineType *destLines = imOut.getLines();
 
-	int nthreads = Core::getInstance()->getNumberOfThreads();
-	int i;
-	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i) num_threads(nthreads)
-	#endif // USE_OPEN_MP
-	{
-	    #ifdef USE_OPEN_MP
-		#pragma omp for
-	    #endif // USE_OPEN_MP
-	    for (i=0;i<(int)lineCount;i++)
-		    lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
-	}
-	imOut.modified();
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        int i;
+        #ifdef USE_OPEN_MP
+            #pragma omp parallel private(i) num_threads(nthreads)
+        #endif // USE_OPEN_MP
+        {
+            #ifdef USE_OPEN_MP
+                #pragma omp for
+            #endif // USE_OPEN_MP
+            for (i=0;i<(int)lineCount;i++)
+                    lineFunction(srcLines1[i], srcLines2[i], lineLen, destLines[i]);
+        }
+        imOut.modified();
 
-	return RES_OK;
+        return RES_OK;
     }
 
     // Binary image function
     template <class T, class lineFunction_T>
     RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imInOut)
     {
-	if (!areAllocated(&imIn, &imInOut, NULL))
-	    return RES_ERR_BAD_ALLOCATION;
+        if (!areAllocated(&imIn, &imInOut, NULL))
+            return RES_ERR_BAD_ALLOCATION;
 
-	size_t lineLen = imIn.getWidth();
-	int lineCount = imIn.getLineCount();
+        size_t lineLen = imIn.getWidth();
+        int lineCount = imIn.getLineCount();
 
-	sliceType srcLines1 = imIn.getLines();
-	sliceType srcLines2 = imInOut.getLines();
+        sliceType srcLines1 = imIn.getLines();
+        sliceType srcLines2 = imInOut.getLines();
 
-	lineType tmpBuf = ImDtTypes<T>::createLine(lineLen);
+        lineType tmpBuf = ImDtTypes<T>::createLine(lineLen);
 
-	int nthreads = Core::getInstance()->getNumberOfThreads();
-	int i;
-	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i) num_threads(nthreads)
-	#endif // USE_OPEN_MP
-	{
-	    #ifdef USE_OPEN_MP
-		#pragma omp for
-	    #endif // USE_OPEN_MP
-	    for (i=0;i<lineCount;i++)
-		lineFunction(srcLines1[i], srcLines2[i], lineLen, tmpBuf);
-	}
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        int i;
+        #ifdef USE_OPEN_MP
+            #pragma omp parallel private(i) num_threads(nthreads)
+        #endif // USE_OPEN_MP
+        {
+            #ifdef USE_OPEN_MP
+                #pragma omp for
+            #endif // USE_OPEN_MP
+            for (i=0;i<lineCount;i++)
+                lineFunction(srcLines1[i], srcLines2[i], lineLen, tmpBuf);
+        }
 
-	ImDtTypes<T>::deleteLine(tmpBuf);
-	imInOut.modified();
+        ImDtTypes<T>::deleteLine(tmpBuf);
+        imInOut.modified();
 
-	return RES_OK;
+        return RES_OK;
     }
 
 
@@ -224,76 +224,76 @@ namespace smil
     template <class T, class lineFunction_T>
     RES_T binaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, const T &value, imageType &imOut)
     {
-	if (!areAllocated(&imIn, &imOut, NULL))
-	    return RES_ERR_BAD_ALLOCATION;
+        if (!areAllocated(&imIn, &imOut, NULL))
+            return RES_ERR_BAD_ALLOCATION;
 
-	size_t lineLen = imIn.getWidth();
-	int lineCount = imIn.getLineCount();
+        size_t lineLen = imIn.getWidth();
+        int lineCount = imIn.getLineCount();
 
-	sliceType srcLines = imIn.getLines();
-	sliceType destLines = imOut.getLines();
+        sliceType srcLines = imIn.getLines();
+        sliceType destLines = imOut.getLines();
 
-	lineType constBuf = ImDtTypes<T>::createLine(lineLen);
+        lineType constBuf = ImDtTypes<T>::createLine(lineLen);
 
-	// Fill the const buffer with the value
-	fillLine<T> f;
-	f(constBuf, lineLen, value);
+        // Fill the const buffer with the value
+        fillLine<T> f;
+        f(constBuf, lineLen, value);
 
-	int nthreads = Core::getInstance()->getNumberOfThreads();
-	int i;
-	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i) num_threads(nthreads)
-	#endif // USE_OPEN_MP
-	{
-	    #ifdef USE_OPEN_MP
-		#pragma omp for
-	    #endif // USE_OPEN_MP
-	  for (i=0;i<lineCount;i++)
-	      lineFunction(srcLines[i], constBuf, lineLen, destLines[i]);
-	}
-	
-	ImDtTypes<T>::deleteLine(constBuf);
-	imOut.modified();
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        int i;
+        #ifdef USE_OPEN_MP
+            #pragma omp parallel private(i) num_threads(nthreads)
+        #endif // USE_OPEN_MP
+        {
+            #ifdef USE_OPEN_MP
+                #pragma omp for
+            #endif // USE_OPEN_MP
+          for (i=0;i<lineCount;i++)
+              lineFunction(srcLines[i], constBuf, lineLen, destLines[i]);
+        }
+        
+        ImDtTypes<T>::deleteLine(constBuf);
+        imOut.modified();
 
-	return RES_OK;
+        return RES_OK;
     }
 
 
     template <class T, class lineFunction_T>
     RES_T binaryImageFunction<T, lineFunction_T>::_exec(const T &value, const imageType &imIn, imageType &imOut)
     {
-	if (!areAllocated(&imIn, &imOut, NULL))
-	    return RES_ERR_BAD_ALLOCATION;
+        if (!areAllocated(&imIn, &imOut, NULL))
+            return RES_ERR_BAD_ALLOCATION;
 
-	size_t lineLen = imIn.getWidth();
-	int lineCount = imIn.getLineCount();
+        size_t lineLen = imIn.getWidth();
+        int lineCount = imIn.getLineCount();
 
-	sliceType srcLines = imIn.getLines();
-	sliceType destLines = imOut.getLines();
+        sliceType srcLines = imIn.getLines();
+        sliceType destLines = imOut.getLines();
 
-	lineType constBuf = ImDtTypes<T>::createLine(lineLen);
+        lineType constBuf = ImDtTypes<T>::createLine(lineLen);
 
-	// Fill the const buffer with the value
-	fillLine<T> f;
-	f(constBuf, lineLen, value);
+        // Fill the const buffer with the value
+        fillLine<T> f;
+        f(constBuf, lineLen, value);
 
-	int nthreads = Core::getInstance()->getNumberOfThreads();
-	int i;
-	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i) num_threads(nthreads)
-	#endif // USE_OPEN_MP
-	{
-	    #ifdef USE_OPEN_MP
-		#pragma omp for
-	    #endif // USE_OPEN_MP
-	  for (i=0;i<lineCount;i++)
-	      lineFunction(constBuf, srcLines[i], lineLen, destLines[i]);
-	}
-	
-	ImDtTypes<T>::deleteLine(constBuf);
-	imOut.modified();
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        int i;
+        #ifdef USE_OPEN_MP
+            #pragma omp parallel private(i) num_threads(nthreads)
+        #endif // USE_OPEN_MP
+        {
+            #ifdef USE_OPEN_MP
+                #pragma omp for
+            #endif // USE_OPEN_MP
+          for (i=0;i<lineCount;i++)
+              lineFunction(constBuf, srcLines[i], lineLen, destLines[i]);
+        }
+        
+        ImDtTypes<T>::deleteLine(constBuf);
+        imOut.modified();
 
-	return RES_OK;
+        return RES_OK;
     }
 
 
@@ -303,35 +303,35 @@ namespace smil
     template <class T2> 
     RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const Image<T2> &imIn2, const Image<T2> &imIn3, Image<T2> &imOut)
     {
-	if (!areAllocated(&imIn1, &imIn2, &imIn3, &imOut, NULL))
-	    return RES_ERR_BAD_ALLOCATION;
+        if (!areAllocated(&imIn1, &imIn2, &imIn3, &imOut, NULL))
+            return RES_ERR_BAD_ALLOCATION;
 
-	size_t lineLen = imIn1.getWidth();
-	int lineCount = imIn1.getLineCount();
+        size_t lineLen = imIn1.getWidth();
+        int lineCount = imIn1.getLineCount();
 
-	typedef typename Image<T2>::sliceType sliceType2;
+        typedef typename Image<T2>::sliceType sliceType2;
 
-	sliceType srcLines1 = imIn1.getLines();
-	sliceType2 srcLines2 = imIn2.getLines();
-	sliceType2 srcLines3 = imIn3.getLines();
-	sliceType2 destLines = imOut.getLines();
+        sliceType srcLines1 = imIn1.getLines();
+        sliceType2 srcLines2 = imIn2.getLines();
+        sliceType2 srcLines3 = imIn3.getLines();
+        sliceType2 destLines = imOut.getLines();
 
-	int nthreads = Core::getInstance()->getNumberOfThreads();
-	int i;
-	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i) num_threads(nthreads)
-	#endif // USE_OPEN_MP
-	{
-	    #ifdef USE_OPEN_MP
-		#pragma omp for
-	    #endif // USE_OPEN_MP
-	    for (i=0;i<lineCount;i++)
-		lineFunction(srcLines1[i], srcLines2[i], srcLines3[i], lineLen, destLines[i]);
-	}
-	    
-	imOut.modified();
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        int i;
+        #ifdef USE_OPEN_MP
+            #pragma omp parallel private(i) num_threads(nthreads)
+        #endif // USE_OPEN_MP
+        {
+            #ifdef USE_OPEN_MP
+                #pragma omp for
+            #endif // USE_OPEN_MP
+            for (i=0;i<lineCount;i++)
+                lineFunction(srcLines1[i], srcLines2[i], srcLines3[i], lineLen, destLines[i]);
+        }
+            
+        imOut.modified();
 
-	return RES_OK;
+        return RES_OK;
     }
 
     // Tertiary image function
@@ -339,84 +339,84 @@ namespace smil
     template <class T2> 
     RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const Image<T2> &imIn2, const T2 &value, Image<T2> &imOut)
     {
-	if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
-	    return RES_ERR_BAD_ALLOCATION;
+        if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
+            return RES_ERR_BAD_ALLOCATION;
 
-	size_t lineLen = imIn1.getWidth();
-	int lineCount = imIn1.getLineCount();
+        size_t lineLen = imIn1.getWidth();
+        int lineCount = imIn1.getLineCount();
 
-	typedef typename Image<T2>::lineType lineType2;
-	typedef typename Image<T2>::sliceType sliceType2;
-	
-	sliceType srcLines1 = imIn1.getLines();
-	sliceType2 srcLines2 = imIn2.getLines();
-	sliceType2 destLines = imOut.getLines();
+        typedef typename Image<T2>::lineType lineType2;
+        typedef typename Image<T2>::sliceType sliceType2;
+        
+        sliceType srcLines1 = imIn1.getLines();
+        sliceType2 srcLines2 = imIn2.getLines();
+        sliceType2 destLines = imOut.getLines();
 
-	lineType2 constBuf = ImDtTypes<T2>::createLine(lineLen);
+        lineType2 constBuf = ImDtTypes<T2>::createLine(lineLen);
 
-	// Fill the const buffer with the value
-	fillLine<T2> f;
-	f(constBuf, lineLen, value);
+        // Fill the const buffer with the value
+        fillLine<T2> f;
+        f(constBuf, lineLen, value);
 
-	int nthreads = Core::getInstance()->getNumberOfThreads();
-	int i;
-	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i) num_threads(nthreads)
-	#endif // USE_OPEN_MP
-	{
-	    #ifdef USE_OPEN_MP
-		#pragma omp for
-	    #endif // USE_OPEN_MP
-	    for (i=0;i<lineCount;i++)
-		lineFunction(srcLines1[i], srcLines2[i], constBuf, lineLen, destLines[i]);
-	}
-	    
-	ImDtTypes<T2>::deleteLine(constBuf);
-	imOut.modified();
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        int i;
+        #ifdef USE_OPEN_MP
+            #pragma omp parallel private(i) num_threads(nthreads)
+        #endif // USE_OPEN_MP
+        {
+            #ifdef USE_OPEN_MP
+                #pragma omp for
+            #endif // USE_OPEN_MP
+            for (i=0;i<lineCount;i++)
+                lineFunction(srcLines1[i], srcLines2[i], constBuf, lineLen, destLines[i]);
+        }
+            
+        ImDtTypes<T2>::deleteLine(constBuf);
+        imOut.modified();
 
-	return RES_OK;
+        return RES_OK;
     }
 
     template <class T, class lineFunction_T>
     template <class T2> 
     RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn1, const T2 &value, const Image<T2> &imIn2, Image<T2> &imOut)
     {
-	if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
-	    return RES_ERR_BAD_ALLOCATION;
+        if (!areAllocated(&imIn1, &imIn2, &imOut, NULL))
+            return RES_ERR_BAD_ALLOCATION;
 
-	size_t lineLen = imIn1.getWidth();
-	int lineCount = imIn1.getLineCount();
+        size_t lineLen = imIn1.getWidth();
+        int lineCount = imIn1.getLineCount();
 
-	typedef typename Image<T2>::lineType lineType2;
-	typedef typename Image<T2>::sliceType sliceType2;
-	
-	sliceType srcLines1 = imIn1.getLines();
-	sliceType2 srcLines2 = imIn2.getLines();
-	sliceType2 destLines = imOut.getLines();
+        typedef typename Image<T2>::lineType lineType2;
+        typedef typename Image<T2>::sliceType sliceType2;
+        
+        sliceType srcLines1 = imIn1.getLines();
+        sliceType2 srcLines2 = imIn2.getLines();
+        sliceType2 destLines = imOut.getLines();
 
-	lineType2 constBuf = ImDtTypes<T2>::createLine(lineLen);
+        lineType2 constBuf = ImDtTypes<T2>::createLine(lineLen);
 
-	// Fill the const buffer with the value
-	fillLine<T2> f;
-	f(constBuf, lineLen, value);
+        // Fill the const buffer with the value
+        fillLine<T2> f;
+        f(constBuf, lineLen, value);
 
-	int nthreads = Core::getInstance()->getNumberOfThreads();
-	int i;
-	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i) num_threads(nthreads)
-	#endif // USE_OPEN_MP
-	{
-	    #ifdef USE_OPEN_MP
-		#pragma omp for
-	    #endif // USE_OPEN_MP
-	    for (i=0;i<lineCount;i++)
-		lineFunction(srcLines1[i], constBuf, srcLines2[i], lineLen, destLines[i]);
-	}
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        int i;
+        #ifdef USE_OPEN_MP
+            #pragma omp parallel private(i) num_threads(nthreads)
+        #endif // USE_OPEN_MP
+        {
+            #ifdef USE_OPEN_MP
+                #pragma omp for
+            #endif // USE_OPEN_MP
+            for (i=0;i<lineCount;i++)
+                lineFunction(srcLines1[i], constBuf, srcLines2[i], lineLen, destLines[i]);
+        }
 
-	ImDtTypes<T2>::deleteLine(constBuf);
-	imOut.modified();
+        ImDtTypes<T2>::deleteLine(constBuf);
+        imOut.modified();
 
-	return RES_OK;
+        return RES_OK;
     }
 
 
@@ -424,44 +424,44 @@ namespace smil
     template <class T2> 
     RES_T tertiaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, const T2 &value1, const T2 &value2, Image<T2> &imOut)
     {
-	if (!areAllocated(&imIn, &imOut, NULL))
-	    return RES_ERR_BAD_ALLOCATION;
+        if (!areAllocated(&imIn, &imOut, NULL))
+            return RES_ERR_BAD_ALLOCATION;
 
-	size_t lineLen = imIn.getWidth();
-	int lineCount = imIn.getLineCount();
+        size_t lineLen = imIn.getWidth();
+        int lineCount = imIn.getLineCount();
 
-	typedef typename Image<T2>::lineType lineType2;
-	typedef typename Image<T2>::sliceType sliceType2;
-	
-	sliceType srcLines = imIn.getLines();
-	sliceType2 destLines = imOut.getLines();
+        typedef typename Image<T2>::lineType lineType2;
+        typedef typename Image<T2>::sliceType sliceType2;
+        
+        sliceType srcLines = imIn.getLines();
+        sliceType2 destLines = imOut.getLines();
 
-	lineType2 constBuf1 = ImDtTypes<T2>::createLine(lineLen);
-	lineType2 constBuf2 = ImDtTypes<T2>::createLine(lineLen);
+        lineType2 constBuf1 = ImDtTypes<T2>::createLine(lineLen);
+        lineType2 constBuf2 = ImDtTypes<T2>::createLine(lineLen);
 
-	// Fill the const buffers with the values
-	fillLine<T2> f;
-	f(constBuf1, lineLen, value1);
-	f(constBuf2, lineLen, value2);
+        // Fill the const buffers with the values
+        fillLine<T2> f;
+        f(constBuf1, lineLen, value1);
+        f(constBuf2, lineLen, value2);
 
-	int nthreads = Core::getInstance()->getNumberOfThreads();
-	int i;
-	#ifdef USE_OPEN_MP
-	    #pragma omp parallel private(i) num_threads(nthreads)
-	#endif // USE_OPEN_MP
-	{
-	    #ifdef USE_OPEN_MP
-		#pragma omp for
-	    #endif // USE_OPEN_MP
-	    for (i=0;i<lineCount;i++)
-		lineFunction(srcLines[i], constBuf1, constBuf2, lineLen, destLines[i]);
-	}
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        int i;
+        #ifdef USE_OPEN_MP
+            #pragma omp parallel private(i) num_threads(nthreads)
+        #endif // USE_OPEN_MP
+        {
+            #ifdef USE_OPEN_MP
+                #pragma omp for
+            #endif // USE_OPEN_MP
+            for (i=0;i<lineCount;i++)
+                lineFunction(srcLines[i], constBuf1, constBuf2, lineLen, destLines[i]);
+        }
 
-	ImDtTypes<T2>::deleteLine(constBuf1);
-	ImDtTypes<T2>::deleteLine(constBuf2);
-	imOut.modified();
+        ImDtTypes<T2>::deleteLine(constBuf1);
+        ImDtTypes<T2>::deleteLine(constBuf2);
+        imOut.modified();
 
-	return RES_OK;
+        return RES_OK;
     }
 
 } // namespace smil

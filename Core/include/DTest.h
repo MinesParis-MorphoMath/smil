@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -48,8 +48,8 @@ namespace smil
     {
     public:
       TestCase() 
-	: stopIfError(false), 
-	  outStream(NULL) 
+        : stopIfError(false), 
+          outStream(NULL) 
       {
       }
       virtual void init() {}
@@ -65,44 +65,44 @@ namespace smil
 
     #define TEST_ASSERT(expr) \
     { \
-	if (!(expr)) \
-	{ \
-		if (outStream) \
-		    *outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " assert " << #expr << endl;	\
-		retVal = RES_ERR; \
-		if (stopIfError) \
-		  return; \
-	} \
+        if (!(expr)) \
+        { \
+                if (outStream) \
+                    *outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " assert " << #expr << endl;        \
+                retVal = RES_ERR; \
+                if (stopIfError) \
+                  return; \
+        } \
     }
 
     #define TEST_NO_THROW(expr) \
     { \
-	bool _throw = false; \
-	try { expr; } \
-	catch(...) { _throw = true; } \
-	if (_throw) \
-	{ \
-		if (outStream) \
-		    *outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " no throw " << #expr << endl;	\
-		retVal = RES_ERR; \
-		if (stopIfError) \
-		  return; \
-	} \
+        bool _throw = false; \
+        try { expr; } \
+        catch(...) { _throw = true; } \
+        if (_throw) \
+        { \
+                if (outStream) \
+                    *outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " no throw " << #expr << endl;        \
+                retVal = RES_ERR; \
+                if (stopIfError) \
+                  return; \
+        } \
     }
 
     #define TEST_THROW(expr) \
     { \
-	bool _throw = false; \
-	try { expr; } \
-	catch(...) { _throw = true; } \
-	if (!_throw) \
-	{ \
-		if (outStream) \
-		    *outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " throw " << #expr << endl;	\
-		retVal = RES_ERR; \
-		if (stopIfError) \
-		  return; \
-	} \
+        bool _throw = false; \
+        try { expr; } \
+        catch(...) { _throw = true; } \
+        if (!_throw) \
+        { \
+                if (outStream) \
+                    *outStream << __FILE__ << ":" <<  __LINE__ << ": error: " << " throw " << #expr << endl;        \
+                retVal = RES_ERR; \
+                if (stopIfError) \
+                  return; \
+        } \
     }
 
     class TestSuite

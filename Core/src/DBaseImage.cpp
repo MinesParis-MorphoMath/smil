@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -38,8 +38,8 @@ namespace smil
     {
       if (triggerEvents)
       {
-	BaseImageEvent event(this);
-	Core::getInstance()->onBaseImageCreated.trigger(&event);
+        BaseImageEvent event(this);
+        Core::getInstance()->onBaseImageCreated.trigger(&event);
       }
 
     }
@@ -48,21 +48,21 @@ namespace smil
     {
       if (triggerEvents)
       {
-	BaseImageEvent event(this);
-	Core::getInstance()->onBaseImageDestroyed.trigger(&event);
+        BaseImageEvent event(this);
+        Core::getInstance()->onBaseImageDestroyed.trigger(&event);
       }
     }
     
     void BaseImage::show(const char*, bool) 
     {
-	BaseImageEvent event(this);
-	onShow.trigger(&event);
+        BaseImageEvent event(this);
+        onShow.trigger(&event);
     }
 
     void BaseImage::showLabel(const char*) 
     {
-	BaseImageEvent event(this);
-	onShow.trigger(&event);
+        BaseImageEvent event(this);
+        onShow.trigger(&event);
     }
 
 } // namespace smil

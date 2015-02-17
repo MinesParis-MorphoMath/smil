@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -103,12 +103,12 @@ PTR_ARG_OUT_APPLY(s)
 
 %extend smil::BaseObject 
 {
-	std::string  __str__() 
-	{
-	    std::stringstream os;
-	    self->printSelf(os);
-	    return os.str();
-	}
+        std::string  __str__() 
+        {
+            std::stringstream os;
+            self->printSelf(os);
+            return os.str();
+        }
 }
 
 
@@ -132,6 +132,9 @@ PTR_ARG_OUT_APPLY(s)
 namespace std 
 {
     %template(Vector_UINT) vector<UINT>;
+#ifdef USE_64BIT_IDS
+    %template(Vector_size_t) vector<size_t>;
+#endif // USE_64BIT_IDS
     %template(Vector_UINT8) vector<UINT8>;
     %template(Vector_UINT16) vector<UINT16>;
     %template(Vector_int) vector<int>;
@@ -168,8 +171,10 @@ namespace std
     %template(Map_SIZE_T) map<size_t,size_t>;
 #endif // USE_64BIT_IDS
     
-    %template(Map_UINT_Vector_UINT8) map< UINT, vector<UINT8> >;
-    %template(Map_UINT_Vector_UINT16) map< UINT, vector<UINT16> >;
+    TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE(vector)
+    TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE_FIX_FIRST(vector, UINT)
+//    %template(Map_UINT_Vector_UINT8) map< UINT, vector<UINT8> >;
+//    %template(Map_UINT_Vector_UINT16) map< UINT, vector<UINT16> >;
     
     TEMPLATE_WRAP_CLASS_2T_CROSS(map, Map)
     
@@ -257,11 +262,12 @@ namespace smil
 
 %extend smil::Image
 {
-    T __getitem__(size_t i) { return self->getPixel(i); }
-    RES_T __setitem__(size_t i, T val) { return self->setPixel(i, val); }
+    T __getitem__(size_t i) { return self->getPixelNoCheck(i); }
+    void __setitem__(size_t i, T val) { return self->setPixelNoCheck(i, val); }
 }
 #endif // SWIGPYTHON
 
+%feature("new","0") castBaseImage;
 %include "Core/include/DBaseImage.h"
 %include "Core/include/private/DImage.hpp"
 %include "Core/include/private/DSharedImage.hpp"
@@ -282,6 +288,7 @@ namespace smil
     TEMPLATE_WRAP_FUNC(createImage);
     TEMPLATE_WRAP_FUNC(castBaseImage);
     TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
+    TEMPLATE_WRAP_FUNC(drawOverlay);
     
     TEMPLATE_WRAP_SUPPL_CLASS(Image, Image);
     TEMPLATE_WRAP_SUPPL_FUNC(createImage);
@@ -300,17 +307,15 @@ namespace smil
 
 %include "Core/include/private/DGraph.hpp"
 
-#ifndef SWIGXML
-namespace std 
-{
-    %template(EdgeVector_UINT) std::vector< smil::Edge<UINT> >;
-}
-#endif // SWIGXML
 
 namespace smil
 {
     // Base (size_t) Edge
+#ifndef SMIL_WRAP_UINT32
     %template(Edge_UINT) Edge<UINT>;
+#endif // SMIL_WRAP_UINT32
+    TEMPLATE_WRAP_CLASS(Edge, Edge);
+
 
     // Graph & MST
     %template(Graph_SIZE_T) Graph<size_t,size_t>;
@@ -319,12 +324,22 @@ namespace smil
     TEMPLATE_WRAP_CLASS_2T_CROSS(Graph, Graph);
     
     #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT) 
-	%template(Graph_UINT) Graph<UINT,UINT>;
-	%template(graphMST_UINT) graphMST<Graph<UINT,UINT> >;
+        %template(Graph_UINT) Graph<UINT,UINT>;
+        %template(graphMST_UINT) graphMST<Graph<UINT,UINT> >;
 
-	TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
-	TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
+        TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
+        TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
     #endif
 
 }
 
+#ifndef SWIGXML
+namespace std 
+{
+#ifndef SMIL_WRAP_UINT32
+    %template(EdgeVector_UINT) std::vector< smil::Edge<UINT> >;
+#endif // SMIL_WRAP_UINT32
+    
+    TEMPLATE_WRAP_VECTOR_SUBTYPE(Edge);
+}
+#endif // SWIGXML

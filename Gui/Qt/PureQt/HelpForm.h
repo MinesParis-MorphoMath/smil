@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -45,7 +45,7 @@ public:
       QWidget(parent),
       ui(new Ui::HelpForm)
     {
-	ui->setupUi(this);
+        ui->setupUi(this);
     }
 private:
     Ui::HelpForm *ui;

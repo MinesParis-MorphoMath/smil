@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -42,16 +42,16 @@ class TestGranulometry : public TestCase
       
       UINT8 vec1[] = 
       { 
-	  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-	  0, 255, 255, 255, 255, 255,   0,   0,   0,   0,
-	  0, 255, 255, 255, 255, 255,   0,   0,   0,   0,
-	  0, 255, 255, 255, 255, 255,   0, 255, 255, 255,
-	  0, 255, 255, 255, 255, 255,   0,   0, 255,   0,
-	  0, 255, 255, 255, 255, 255,   0,   0, 255,   0,
-	  0, 255, 255, 255, 255, 255,   0,   0, 255,   0,
-	  0, 255, 255,   0,   0, 255,   0,   0, 255,   0,
-	  0, 255, 255,   0,   0,   0,   0,   0,   0,   0,
-	  0,   0, 255,   0,   0,   0,   0,   0,   0,   0,
+          0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+          0, 255, 255, 255, 255, 255,   0,   0,   0,   0,
+          0, 255, 255, 255, 255, 255,   0,   0,   0,   0,
+          0, 255, 255, 255, 255, 255,   0, 255, 255, 255,
+          0, 255, 255, 255, 255, 255,   0,   0, 255,   0,
+          0, 255, 255, 255, 255, 255,   0,   0, 255,   0,
+          0, 255, 255, 255, 255, 255,   0,   0, 255,   0,
+          0, 255, 255,   0,   0, 255,   0,   0, 255,   0,
+          0, 255, 255,   0,   0,   0,   0,   0,   0,   0,
+          0,   0, 255,   0,   0,   0,   0,   0,   0,   0,
       };
       im1 << vec1;
       
@@ -59,8 +59,8 @@ class TestGranulometry : public TestCase
       
       TEST_ASSERT(granulo[0]==12 && granulo[1]==7 && granulo[2]==24);
       if (retVal!=RES_OK)
-	for (UINT i=0;i<granulo.size();i++)
-	  cout << i << " " << granulo[i] << endl;
+        for (UINT i=0;i<granulo.size();i++)
+          cout << i << " " << granulo[i] << endl;
   }
 };
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,6 +39,7 @@
 
 #include "DImageIO_BMP.hpp"
 #include "DImageIO_VTK.hpp"
+#include "DImageIO_PBM.hpp"
 
 #ifdef USE_PNG
 #include "DImageIO_PNG.hpp"
@@ -63,34 +64,40 @@ namespace smil
     template <class T>
     ImageFileHandler<T> *getHandlerForFile(const char* filename)
     {
-	string fileExt = getFileExtension(filename);
-	
-	if (fileExt=="BMP")
-	    return new BMPImageFileHandler<T>();
+        string fileExt = getFileExtension(filename);
+        
+        if (fileExt=="BMP")
+            return new BMPImageFileHandler<T>();
 
     #ifdef USE_PNG
-	else if (fileExt=="PNG")
-	    return new PNGImageFileHandler<T>();
+        else if (fileExt=="PNG")
+            return new PNGImageFileHandler<T>();
     #endif // USE_PNG
 
     #ifdef USE_JPEG
-	else if (fileExt=="JPG")
-	    return new JPGImageFileHandler<T>();
+        else if (fileExt=="JPG")
+            return new JPGImageFileHandler<T>();
     #endif // USE_JPEG
 
     #ifdef USE_TIFF
-	else if (fileExt=="TIF")
-	    return new TIFFImageFileHandler<T>();
+        else if (fileExt=="TIF")
+            return new TIFFImageFileHandler<T>();
     #endif // USE_TIFF
 
-	else if (fileExt=="VTK")
-	    return new VTKImageFileHandler<T>();
-	
-	else
-	{
-	    cout << "No reader/writer available for " << fileExt << " files." << endl;
-	    return NULL;
-	}
+        else if (fileExt=="VTK")
+            return new VTKImageFileHandler<T>();
+        
+        else if (fileExt=="PGM")
+            return new PGMImageFileHandler<T>();
+        
+        else if (fileExt=="PBM")
+            return new PBMImageFileHandler<T>();
+        
+        else
+        {
+            cout << "No reader/writer available for " << fileExt << " files." << endl;
+            return NULL;
+        }
     }
     
     /**
@@ -99,35 +106,41 @@ namespace smil
     template <class T>
     RES_T read(const char* filename, Image<T> &image)
     {
-	string fileExt = getFileExtension(filename);
-	string filePrefix = (string(filename).substr(0, 7));
+        string fileExt = getFileExtension(filename);
+        string filePrefix = (string(filename).substr(0, 7));
 
-	RES_T res;
+        RES_T res;
 
-	if (filePrefix=="http://")
-	{
+        if (filePrefix=="http://")
+        {
     #ifdef USE_CURL
-	    string tmpFileName = "_smilTmpIO." + fileExt;
-	    if (getHttpFile(filename, tmpFileName.c_str())!=RES_OK)
-	    {
-		ERR_MSG(string("Error downloading file ") + filename);
-		return RES_ERR;
-	    }
-	    res = read(tmpFileName.c_str(), image);
-	    remove(tmpFileName.c_str());
+            string tmpFileName = "_smilTmpIO." + fileExt;
+            if (getHttpFile(filename, tmpFileName.c_str())!=RES_OK)
+            {
+                ERR_MSG(string("Error downloading file ") + filename);
+                return RES_ERR;
+            }
+            res = read(tmpFileName.c_str(), image);
+            remove(tmpFileName.c_str());
 
     #else // USE_CURL
-	    ERR_MSG("Error: to use this functionality you must compile SMIL with the Curl option");
-	    res = RES_ERR;
+            ERR_MSG("Error: to use this functionality you must compile SMIL with the Curl option");
+            res = RES_ERR;
     #endif // USE_CURL
-	    return res;
-	}
+            return res;
+        }
+        else if (filePrefix=="file://")
+        {
+            string fName = filename;
+            string buf = fName.substr(7, fName.length()-7);
+            return read(buf.c_str(), image);
+        }
 
-	auto_ptr< ImageFileHandler<T> > fHandler(getHandlerForFile<T>(filename));
-	
-	if (fHandler.get())
-	  return fHandler->read(filename, image);
-	else return RES_ERR;
+        auto_ptr< ImageFileHandler<T> > fHandler(getHandlerForFile<T>(filename));
+        
+        if (fHandler.get())
+          return fHandler->read(filename, image);
+        else return RES_ERR;
     }
 
     /**
@@ -138,73 +151,73 @@ namespace smil
     template <class T>
     RES_T read(const vector<string> fileList, Image<T> &image)
     {
-	UINT nFiles = fileList.size();
-	if (nFiles==0)
-	  return RES_ERR;
-	
-	vector<string>::const_iterator it = fileList.begin();
-	
-	Image<T> tmpIm;
-	ASSERT((read((*it++).c_str(), tmpIm)==RES_OK));
-	
-	size_t w = tmpIm.getWidth(), h = tmpIm.getHeight();
-	ImageFreezer freezer(image);
-	
-	ASSERT((image.setSize(w, h, nFiles)==RES_OK));
-	ASSERT((fill(image, T(0))==RES_OK));
-	ASSERT((copy(tmpIm, 0, 0, 0, image, 0, 0, 0)==RES_OK));
-	
-	size_t z = 1;
-	
-	while(it!=fileList.end())
-	{
-	    ASSERT((read((*it).c_str(), tmpIm)==RES_OK));
-	    ASSERT((copy(tmpIm, 0, 0, 0, image, 0, 0, z)==RES_OK));
-	    it++;
-	    z++;
-	}
-	
-	return RES_OK;
+        UINT nFiles = fileList.size();
+        if (nFiles==0)
+          return RES_ERR;
+        
+        vector<string>::const_iterator it = fileList.begin();
+        
+        Image<T> tmpIm;
+        ASSERT((read((*it++).c_str(), tmpIm)==RES_OK));
+        
+        size_t w = tmpIm.getWidth(), h = tmpIm.getHeight();
+        ImageFreezer freezer(image);
+        
+        ASSERT((image.setSize(w, h, nFiles)==RES_OK));
+        ASSERT((fill(image, T(0))==RES_OK));
+        ASSERT((copy(tmpIm, 0, 0, 0, image, 0, 0, 0)==RES_OK));
+        
+        size_t z = 1;
+        
+        while(it!=fileList.end())
+        {
+            ASSERT((read((*it).c_str(), tmpIm)==RES_OK));
+            ASSERT((copy(tmpIm, 0, 0, 0, image, 0, 0, z)==RES_OK));
+            it++;
+            z++;
+        }
+        
+        return RES_OK;
     }
 
     /**
     * Write image file
     */
     template <class T>
-    RES_T write(Image<T> &image, const char *filename)
+    RES_T write(const Image<T> &image, const char *filename)
     {
-	string fileExt = getFileExtension(filename);
-	
-	auto_ptr< ImageFileHandler<T> > fHandler(getHandlerForFile<T>(filename));
-	
-	if (fHandler.get())
-	  return fHandler->write(image, filename);
-	else return RES_ERR;
-	
+        string fileExt = getFileExtension(filename);
+        
+        auto_ptr< ImageFileHandler<T> > fHandler(getHandlerForFile<T>(filename));
+        
+        if (fHandler.get())
+          return fHandler->write(image, filename);
+        else return RES_ERR;
+        
     }
     
     template <class T>
     RES_T write(const Image<T> &image, const vector<string> fileList)
     {
-	UINT nFiles = fileList.size();
-	if (nFiles!=image.getDepth())
-	{
-	  ERR_MSG("The fileList must contain the same number of filename as the image depth.");
-	  return RES_ERR;
-	}
-	
-	vector<string>::const_iterator it = fileList.begin();
-	
-	size_t w = image.getWidth(), h = image.getHeight();
-	Image<T> tmpIm(w, h);
-	
-	for (size_t z=0;z<nFiles;z++)
-	{
-	    ASSERT((copy(image, 0, 0, z, tmpIm)==RES_OK));
-	    ASSERT((write(tmpIm, fileList[z].c_str())==RES_OK));
-	}
-	
-	return RES_OK;
+        UINT nFiles = fileList.size();
+        if (nFiles!=image.getDepth())
+        {
+          ERR_MSG("The fileList must contain the same number of filename as the image depth.");
+          return RES_ERR;
+        }
+        
+        vector<string>::const_iterator it = fileList.begin();
+        
+        size_t w = image.getWidth(), h = image.getHeight();
+        Image<T> tmpIm(w, h);
+        
+        for (size_t z=0;z<nFiles;z++)
+        {
+            ASSERT((copy(image, 0, 0, z, tmpIm)==RES_OK));
+            ASSERT((write(tmpIm, fileList[z].c_str())==RES_OK));
+        }
+        
+        return RES_OK;
     }
     
     RES_T getFileInfo(const char *filename, ImageFileInfo &fInfo);

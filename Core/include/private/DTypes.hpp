@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@ namespace smil
     typedef unsigned short UINT16;
     typedef unsigned int UINT32;
 #ifdef _MSC_VER
-	typedef unsigned __int64 UINT64;
+        typedef unsigned __int64 UINT64;
 #else
     typedef uint64_t UINT64;
 #endif
@@ -69,32 +69,32 @@ namespace smil
 
     enum DType
     {
-	DtUINT8, DtUINT16, DtUINT32, DtUINT64, DtINT, DtUINT
+        DtUINT8, DtUINT16, DtUINT32, DtUINT64, DtINT, DtUINT
     };
 
     
     template <class T>
     struct ImDtTypes
     {
-	typedef T pixelType;
-	typedef pixelType *lineType;
-	typedef lineType *sliceType;
-	typedef sliceType *volType;
-	
-	typedef double floatType;
-	
-	static inline pixelType min() { return numeric_limits<T>::is_signed ? -numeric_limits<T>::max() : numeric_limits<T>::min(); }
-	static inline pixelType max() { return numeric_limits<T>::max(); }
-	static inline size_t cardinal() { return max()-min()+1; }
-	static inline lineType createLine(size_t lineLen) { return createAlignedBuffer<T>(lineLen); }
-	static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
-	static inline size_t ptrOffset(lineType p, size_t n=SIMD_VEC_SIZE) { return ((size_t)p) & (n-1); }
-	static inline std::string toString(const T &val)
-	{
-	    stringstream str;
-	    str << double(val);
-	    return str.str();
-	}
+        typedef T pixelType;
+        typedef pixelType *lineType;
+        typedef lineType *sliceType;
+        typedef sliceType *volType;
+        
+        typedef double floatType;
+        
+        static inline pixelType min() { return numeric_limits<T>::is_signed ? -numeric_limits<T>::max() : numeric_limits<T>::min(); }
+        static inline pixelType max() { return numeric_limits<T>::max(); }
+        static inline size_t cardinal() { return max()-min()+1; }
+        static inline lineType createLine(size_t lineLen) { return createAlignedBuffer<T>(lineLen); }
+        static inline void deleteLine(lineType line) { deleteAlignedBuffer<T>(line); }
+        static inline size_t ptrOffset(lineType p, size_t n=SIMD_VEC_SIZE) { return ((size_t)p) & (n-1); }
+        static inline std::string toString(const T &val)
+        {
+            stringstream str;
+            str << double(val);
+            return str.str();
+        }
     };
 
 
@@ -102,7 +102,7 @@ namespace smil
     template <class T>
     inline const char *getDataTypeAsString(T *val=NULL)
     {
-	return "Unknown";
+        return "Unknown";
     }
 
 

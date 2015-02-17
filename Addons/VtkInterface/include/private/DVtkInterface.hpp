@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -56,38 +56,38 @@ namespace smil
     class VtkInt : public SharedImage<T>
     {
     public:
-	typedef SharedImage<T> parentClass;
-	
-	VtkInt(vtkImageData *data)
-	{
-	    BaseObject::className = "VtkInt";
-	    parentClass::init();
-	    
-	    int *s = data->GetExtent();
-	    this->pixels = (typename Image<T>::lineType)(data->GetScalarPointer());
-	    this->setSize(s[1]+1, s[3]+1, s[5]+1);
+        typedef SharedImage<T> parentClass;
+        
+        VtkInt(vtkImageData *data)
+        {
+            BaseObject::className = "VtkInt";
+            parentClass::init();
+            
+            int *s = data->GetExtent();
+            typename Image<T>::lineType pix = static_cast<typename Image<T>::lineType>(data->GetScalarPointer());
+            this->attach(pix, s[1]+1, s[3]+1, s[5]+1);
 
-	  
-	}
+          
+        }
     #if defined Py_PYCONFIG_H  || defined SWIGPYTHON
-	VtkInt(PyObject *obj)
-	{
-	    BaseObject::className = "VtkInt";
-	    parentClass::init();
-	    
-	    vtkImageData * data = (vtkImageData*)vtkPythonUtil::GetPointerFromObject(obj, "vtkImageData" );
+        VtkInt(PyObject *obj)
+        {
+            BaseObject::className = "VtkInt";
+            parentClass::init();
+            
+            vtkImageData * data = (vtkImageData*)vtkPythonUtil::GetPointerFromObject(obj, "vtkImageData" );
 
-	    if ( data == 0 ) // if the PyObject is not a vtk.vtkImageData object
-	    {
-		PyErr_SetString( PyExc_TypeError, "Not a vtkImageData" );
-	    }
-	    else
-	    {
-		int *s = data->GetExtent();
-		this->pixels = (typename Image<T>::lineType)(data->GetScalarPointer());
-		this->setSize(s[1]+1, s[3]+1, s[5]+1);
-	    }
-	    }
+            if ( data == 0 ) // if the PyObject is not a vtk.vtkImageData object
+            {
+                PyErr_SetString( PyExc_TypeError, "Not a vtkImageData" );
+            }
+            else
+            {
+                int *s = data->GetExtent();
+                typename Image<T>::lineType pix = static_cast<typename Image<T>::lineType>(data->GetScalarPointer());
+                this->attach(pix, s[1]+1, s[3]+1, s[5]+1);
+            }
+         }
     #endif // Py_PYCONFIG_H
     };
 

@@ -1,6 +1,6 @@
 /*
  * Smil
- * Copyright (c) 2011-2014 Matthieu Faessel
+ * Copyright (c) 2011-2015 Matthieu Faessel
  *
  * This file is part of Smil.
  *
@@ -54,7 +54,7 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
     volumeRayCastFunction = NULL;
     volumeRayCastMapper = vtkVolumeRayCastMapper::New();
     volumeRayCastMapper->SetInput(imageImport->GetOutput());
-    // 	    volumeRayCastMapper->SetSampleDistance(0.1);
+    //             volumeRayCastMapper->SetSampleDistance(0.1);
 
     opacityTransfertFunction = vtkPiecewiseFunction::New();
 
@@ -87,14 +87,14 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
     orientationMarker->SetViewport( 0.0, 0.0, 0.4, 0.4 );
     orientationMarker->SetEnabled( 1 );
     orientationMarker->InteractiveOn();
-	
+        
     camera->SetViewUp(0, -1, 0);
-	    
+            
     vtkQtEventConnect = vtkEventQtSlotConnect::New();
     vtkQtEventConnect->Connect(qvtkWidget->GetRenderWindow()->GetInteractor(), vtkCommand::RightButtonPressEvent, 
-			    this, SLOT(showContextMenu(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
-			    NULL, 1.0
-			   );
+                            this, SLOT(showContextMenu(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
+                            NULL, 1.0
+                           );
 }
 
 QVtkViewerWidget::~QVtkViewerWidget()
@@ -139,12 +139,12 @@ void QVtkViewerWidget::setRepresentationType(RepresentationType type)
     switch (type)
     {
       case COMPOSITE:
-	volumeRayCastFunction = vtkVolumeRayCastCompositeFunction::New();
-	break;
+        volumeRayCastFunction = vtkVolumeRayCastCompositeFunction::New();
+        break;
       case MIP:
-	volumeRayCastFunction = vtkVolumeRayCastMIPFunction::New();
-	((vtkVolumeRayCastMIPFunction*)volumeRayCastFunction)->SetMaximizeMethodToOpacity();
-	break;
+        volumeRayCastFunction = vtkVolumeRayCastMIPFunction::New();
+        ((vtkVolumeRayCastMIPFunction*)volumeRayCastFunction)->SetMaximizeMethodToOpacity();
+        break;
     }
     volumeRayCastMapper->SetVolumeRayCastFunction(volumeRayCastFunction);
     
@@ -215,20 +215,20 @@ void QVtkViewerWidget::showContextMenu(vtkObject*, unsigned long, void*, void*, 
     QAction* selectedItem = contMenu.exec(globalPos);
     if (selectedItem)
     {
-	if (selectedItem->text()=="Composite")
-	  setRepresentationType(COMPOSITE);
-	else if (selectedItem->text()=="MIP")
-	  setRepresentationType(MIP);
-	else if (selectedItem->text()=="Show axes")
-	{
-	    if (orientationMarker->GetEnabled())
-	      hideAxes();
-	    else
-	      showAxes();
-	}
-	else if (selectedItem->text()=="Linear")
-	  setInterpolationTypeToLinear();
-	else if (selectedItem->text()=="Nearest")
-	  setInterpolationTypeToNearest();
+        if (selectedItem->text()=="Composite")
+          setRepresentationType(COMPOSITE);
+        else if (selectedItem->text()=="MIP")
+          setRepresentationType(MIP);
+        else if (selectedItem->text()=="Show axes")
+        {
+            if (orientationMarker->GetEnabled())
+              hideAxes();
+            else
+              showAxes();
+        }
+        else if (selectedItem->text()=="Linear")
+          setInterpolationTypeToLinear();
+        else if (selectedItem->text()=="Nearest")
+          setInterpolationTypeToNearest();
     }
 }

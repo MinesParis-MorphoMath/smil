@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -39,11 +39,11 @@ namespace smil
       vector<BaseSlot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
       
       if (it!=_slots.end())
-	return;
+        return;
       
       _slots.push_back(slot);
       if (_register)
-	slot->registerSignal(this);
+        slot->registerSignal(this);
     }
 
     void Signal::disconnect(BaseSlot *slot, bool _unregister)
@@ -51,12 +51,12 @@ namespace smil
       vector<BaseSlot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
       
       if (it==_slots.end())
-	return;
+        return;
       
       _slots.erase(it);
       
       if (_unregister)
-	slot->unregisterSignal(this, false);
+        slot->unregisterSignal(this, false);
     }
 
     void Signal::disconnectAll()
@@ -65,25 +65,25 @@ namespace smil
       
       while(it!=_slots.end())
       {
-	(*it)->unregisterSignal(this, false);
-	it++;
+        (*it)->unregisterSignal(this, false);
+        it++;
       }
     }
 
     void Signal::trigger(Event *e)
     {
       if (!enabled)
-	return;
+        return;
       
       if (e && sender)
-	e->sender = sender;
+        e->sender = sender;
       
       vector<BaseSlot*>::iterator it = _slots.begin();
       
       while(it!=_slots.end())
       {
-	(*it)->_run(e);
-	it++;
+        (*it)->_run(e);
+        it++;
       }
     }
     

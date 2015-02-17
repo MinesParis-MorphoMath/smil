@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -83,18 +83,18 @@ StrElt StrElt::homothety(const UINT s) const
     int oddLine = 0;
     for (UINT i=0;i<s-1;i++)
     {
-	vector<IntPoint> pts = newSE.points;
-	for(vector<IntPoint>::iterator it = pts.begin();it!=pts.end();it++)
-	{
-	  const IntPoint &p = *it;
-	  for(vector<IntPoint>::const_iterator it2 = points.begin();it2!=points.end();it2++)
-	  {
-	      const IntPoint &p2 = *it2;
-	      if (odd)
-		oddLine = (p2.z+1)%2 && p2.y%2 && p.y%2;
-	      newSE.addPoint(p2.x+p.x+oddLine, p2.y+p.y, p2.z+p.z);
-	  }
-	}
+        vector<IntPoint> pts = newSE.points;
+        for(vector<IntPoint>::iterator it = pts.begin();it!=pts.end();it++)
+        {
+          const IntPoint &p = *it;
+          for(vector<IntPoint>::const_iterator it2 = points.begin();it2!=points.end();it2++)
+          {
+              const IntPoint &p2 = *it2;
+              if (odd)
+                oddLine = (p2.z+1)%2 && p2.y%2 && p.y%2;
+              newSE.addPoint(p2.x+p.x+oddLine, p2.y+p.y, p2.z+p.z);
+          }
+        }
     }
     return newSE;
 }
@@ -116,8 +116,8 @@ StrElt StrElt::transpose() const
 
     for (vector<IntPoint>::const_iterator it=this->points.begin();it!=this->points.end();it++)
     {
-	const IntPoint &p = *it;
-	se.addPoint(-p.x - (this->odd && p.y%2), -p.y, -p.z);
+        const IntPoint &p = *it;
+        se.addPoint(-p.x - (this->odd && p.y%2), -p.y, -p.z);
     }
     
     return se;
@@ -155,7 +155,7 @@ void StrElt::printSelf(ostream &os, string indent) const
       return;
     
       for (UINT i=0;i<ptNbr;i++)
-	os << indent << "#" << i+1 << ": (" << points[i].x << "," << points[i].y << "," << points[i].z << ")" << endl;
+        os << indent << "#" << i+1 << ": (" << points[i].x << "," << points[i].y << "," << points[i].z << ")" << endl;
       
 }
 

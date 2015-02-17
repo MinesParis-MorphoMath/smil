@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,29 +33,29 @@ using namespace smil;
 
 //     BaseObject::BaseObject(bool _register)
 //       : triggerEvents(true),
-// 	registered(false),
-// 	className("BaseObject"),
-// 	name("")
+//         registered(false),
+//         className("BaseObject"),
+//         name("")
 //     {
-// 	if (_register)
-// 	  Core::getInstance()->registerObject(this);
+//         if (_register)
+//           Core::getInstance()->registerObject(this);
 //     }
 
 
     void BaseObject::_clone(const BaseObject &rhs)
     {
-	this->className = rhs.getClassName();
-	this->triggerEvents = rhs.triggerEvents;
+        this->className = rhs.getClassName();
+        this->triggerEvents = rhs.triggerEvents;
     }
 
 
     Core *BaseObject::getCoreInstance()
     {
-	return Core::getInstance();
+        return Core::getInstance();
     }
 
     const char *BaseObject::getClassName() const
     {
-	return this->className.c_str();
+        return this->className.c_str();
     }
 

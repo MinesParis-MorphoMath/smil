@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -103,10 +103,10 @@ namespace smil
     template<typename T> 
     inline void Dmemcpy(T *out, const T *in, size_t size)
     {
-	while (size--)
-	{
-	    *out++ = *in++;
-	}
+        while (size--)
+        {
+            *out++ = *in++;
+        }
     }
 
 
@@ -136,7 +136,7 @@ namespace smil
 
       for(i=0 ; i<nbshift ; i++)  
       {
-	lineout[i] = shiftValue;
+        lineout[i] = shiftValue;
       }
 
       memcpy(lineout+nbshift,linein,(lineWidth-nbshift)*sizeof(T));
@@ -151,7 +151,7 @@ namespace smil
 
       for(i=lineWidth-nbshift ; i<lineWidth ; i++)  
       {
-	lineout[i] = shiftValue;
+        lineout[i] = shiftValue;
       }
 
       memcpy(lineout,linein+nbshift,(lineWidth-nbshift)*sizeof(T));
@@ -160,17 +160,24 @@ namespace smil
 
     inline size_t PTR_OFFSET(void *p, size_t n=SIMD_VEC_SIZE)
     {
-	return ((size_t)p) & (n-1);
+        return ((size_t)p) & (n-1);
     }
 
     inline std::string displayBytes(size_t bytes)
     {
-	    std::ostringstream oss;
-	    const char *units[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-	    const double base = 1024;
-	    int c = std::min((int)(log((double)bytes)/log(base)), (int)sizeof(units) - 1);
-	    oss << bytes / pow(base, c) <<  units[c];
-	    return oss.str();
+            std::ostringstream oss;
+            if (bytes==0)
+            {
+                oss << "0 B";
+            }
+            else
+            {
+              const char *units[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+              const double base = 1024;
+              int c = std::min((int)(log((double)bytes)/log(base)), (int)sizeof(units) - 1);
+              oss << bytes / pow(base, c) <<  units[c];
+            }
+            return oss.str();
     }
     
 

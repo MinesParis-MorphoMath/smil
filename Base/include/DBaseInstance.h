@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,14 +44,14 @@ namespace smil
   
     class Base : public UniqueInstance<Base>
     {
-	friend class UniqueInstance<Base>;
+        friend class UniqueInstance<Base>;
 
     protected:
-	Base (); 
-	~Base ();
+        Base (); 
+        ~Base ();
 
     public:
-	// Public interface
+        // Public interface
     protected:
     };
 

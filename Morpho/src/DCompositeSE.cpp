@@ -1,5 +1,5 @@
  /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -39,14 +39,14 @@ int getSEPointIndice(IntPoint &pt, bool oddSE)
     if (oddSE)
     {
       for (UINT i=0;i<7;i++)
-	  if (SE_HexIndices[i].x==pt.x && SE_HexIndices[i].y==pt.y)
-	    return i;
+          if (SE_HexIndices[i].x==pt.x && SE_HexIndices[i].y==pt.y)
+            return i;
     }
     else
     {
       for (UINT i=0;i<9;i++)
-	  if (SE_SquIndices[i].x==pt.x && SE_SquIndices[i].y==pt.y)
-	    return i;
+          if (SE_SquIndices[i].x==pt.x && SE_SquIndices[i].y==pt.y)
+            return i;
     }
     return -1;
 }
@@ -58,9 +58,9 @@ IntPoint rotatePoint(IntPoint &pt, int steps, bool oddSE)
     if (ind==0)
       return newPt;
     if (oddSE)
-	return SE_HexIndices[(ind-1+steps)%6 + 1];
+        return SE_HexIndices[(ind-1+steps)%6 + 1];
     else
-	return SE_SquIndices[(ind-1+steps)%8 + 1];
+        return SE_SquIndices[(ind-1+steps)%8 + 1];
     
     
 }
@@ -96,7 +96,7 @@ CompStrElt &CompStrElt::rotate(int steps)
       (*it) = rotatePoint((*it), steps, odd);
     for (vector<IntPoint>::iterator it=bgSE.points.begin();it!=bgSE.points.end();it++)
       (*it) = rotatePoint((*it), steps, odd);
-    return *this;	
+    return *this;        
 }
 
 CompStrEltList CompStrElt::operator | (const CompStrElt &rhs)
@@ -172,7 +172,7 @@ void CompStrEltList::add(const StrElt &fgse, const StrElt &bgse, UINT nrot)
     int steps = fgse.odd ? 6/nrot : 8/nrot;
     compSeList.push_back(compSE);
     for (UINT n=1;n<nrot;n++)
-	compSeList.push_back(compSE.rotate(steps));
+        compSeList.push_back(compSE.rotate(steps));
 }
 
 void CompStrEltList::add(const CompStrElt &cse, UINT nrot)
@@ -194,8 +194,8 @@ void CompStrEltList::printSelf(ostream &os, string indent) const
     int i=0;
     for (std::vector<CompStrElt>::const_iterator it=compSeList.begin();it!=compSeList.end();it++,i++)
     {
-	os << indent << "CompSE #" << i << ":" << endl;
-	(*it).printSelf(os, indent + "\t");
+        os << indent << "CompSE #" << i << ":" << endl;
+        (*it).printSelf(os, indent + "\t");
     }
 }
 

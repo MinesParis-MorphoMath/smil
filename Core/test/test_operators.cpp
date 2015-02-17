@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ class Test_Assign : public TestCase
       TEST_ASSERT(equ(im1, imTruth));
       
       
-      UINT8 vec1[20] 	= {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
+      UINT8 vec1[20]         = {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
       imTruth << vec1;
       im1 << imTruth;
       
@@ -68,13 +68,13 @@ class Test_Add : public TestCase
 {
     virtual void run()
     {
-      UINT8 vec1[20] 	= {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
+      UINT8 vec1[20]         = {   1, 2, 3,   4, 5, 6,   7,   8, 9,  10, 11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
       UINT8 vecTruth[20] = { 
-	11,  12,  13,  14,
-	15,  16,  17,  18,
-	19,  20,  21,  22,
-	23,  24,  25,  26,
-	27,  28,  29,  30,
+        11,  12,  13,  14,
+        15,  16,  17,  18,
+        19,  20,  21,  22,
+        23,  24,  25,  26,
+        27,  28,  29,  30,
       };
       
       
@@ -89,7 +89,7 @@ class Test_Add : public TestCase
       
       TEST_ASSERT(equ(im2, imTruth));
       if (retVal!=RES_OK)
-	im2.printSelf(1);
+        im2.printSelf(1);
     }
 };
 

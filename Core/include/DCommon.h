@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -90,9 +90,10 @@ namespace smil
       Point() : x(0), y(0), z(0) {}
       Point(const Point &pt) : x(pt.x), y(pt.y), z(pt.z) {}
       Point(T _x, T _y, T _z) : x(_x), y(_y), z(_z) {}
+      Point(T _x, T _y) : x(_x), y(_y), z(0) {}
       bool operator == (const Point &p2)
       {
-	  return (x==p2.x && y==p2.y && z==p2.z);
+          return (x==p2.x && y==p2.y && z==p2.z);
       }
     };
 
@@ -105,36 +106,36 @@ namespace smil
     
     struct Rectangle
     {
-	UINT x0, y0;
-	UINT xSzie, ySize;
+        UINT x0, y0;
+        UINT xSzie, ySize;
     };
 
     struct Box
     {
-	UINT x0, y0, z0;
-	UINT x1, y1, z1;
-	Box()
-	{
-	    x0 = x1 = y0 = y1 = z0 = z1 = 0;
-	}
-	Box(const Box &rhs)
-	{
-	    x0 = rhs.x0;
-	    x1 = rhs.x1;
-	    y0 = rhs.y0;
-	    y1 = rhs.y1;
-	    z0 = rhs.z0;
-	    z1 = rhs.z1;
-	}
-	UINT getWidth() const { return x1-x0+1; }
-	UINT getHeight() const { return y1-y0+1; }
-	UINT getDepth() const { return z1-z0+1; }
+        UINT x0, y0, z0;
+        UINT x1, y1, z1;
+        Box()
+        {
+            x0 = x1 = y0 = y1 = z0 = z1 = 0;
+        }
+        Box(const Box &rhs)
+        {
+            x0 = rhs.x0;
+            x1 = rhs.x1;
+            y0 = rhs.y0;
+            y1 = rhs.y1;
+            z0 = rhs.z0;
+            z1 = rhs.z1;
+        }
+        UINT getWidth() const { return x1-x0+1; }
+        UINT getHeight() const { return y1-y0+1; }
+        UINT getDepth() const { return z1-z0+1; }
     };
 
     
     inline double round(double r) 
     {
-	return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
+        return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
     }
 
     // Misc Macros
@@ -165,7 +166,7 @@ namespace smil
 
     #define _xPP_NARGS_IMPL(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,N,...) N
     #define PP_NARGS(...) \
-	EXPAND(_xPP_NARGS_IMPL(__VA_ARGS__,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0))
+        EXPAND(_xPP_NARGS_IMPL(__VA_ARGS__,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0))
 
     #else // _MSC_VER
 
@@ -182,7 +183,7 @@ namespace smil
 
     #define _xPP_NARGS_IMPL(x1,x2,x3,x4,x5,x6,x7,x8,x9,x10,x11,x12,x13,x14,x15,N,...) N
     #define PP_NARGS(...) \
-	_xPP_NARGS_IMPL(__VA_ARGS__,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0)
+        _xPP_NARGS_IMPL(__VA_ARGS__,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0)
 
     #endif // _MSC_VER
 

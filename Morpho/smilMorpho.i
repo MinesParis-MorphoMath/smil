@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -80,6 +80,11 @@ builtinOpen = open
 #endif // SWIGPYTHON
 
 
+%include "DMorphImageOperations.hpp"
+%feature("director") MorphImageFunctionBase;
+TEMPLATE_WRAP_CLASS(MorphImageFunctionBase, MorphImageFunctionBase);
+
+
 %include "DMorphoBase.hpp"
 TEMPLATE_WRAP_FUNC(dilate);
 TEMPLATE_WRAP_FUNC(erode);
@@ -135,6 +140,10 @@ TEMPLATE_WRAP_FUNC(lblSkiz);
 TEMPLATE_WRAP_FUNC_2T_CROSS(inflBasins);
 TEMPLATE_WRAP_FUNC(inflZones);
 TEMPLATE_WRAP_FUNC(waterfall);
+%feature("director") BaseFlooding;
+TEMPLATE_WRAP_CLASS_2T_CROSS(BaseFlooding, BaseFlooding);
+%feature("director") WatershedFlooding;
+TEMPLATE_WRAP_CLASS_2T_CROSS(WatershedFlooding, WatershedFlooding);
 
 %include "DMorphoWatershedExtinction.hpp"
 %feature("director") ExtinctionFlooding;
@@ -148,8 +157,9 @@ TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinctionGraph);
 
 %include "DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(label);
+TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithoutFunctor);
 TEMPLATE_WRAP_FUNC_2T_CROSS(lambdaLabel);
-TEMPLATE_WRAP_FUNC_2T_CROSS(labelFast);
+TEMPLATE_WRAP_FUNC_2T_CROSS(fastLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithArea);
 TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 
@@ -158,7 +168,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 {
     CompStrElt &__getitem__(UINT n)
     {
-	return self->compSeList[n];
+        return self->compSeList[n];
     }
 }
 

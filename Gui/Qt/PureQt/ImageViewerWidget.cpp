@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -87,7 +87,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     setAcceptDrops(true);
     setContextMenuPolicy(Qt::CustomContextMenu);
-	
+        
     imageFormat = QImage::Format_Indexed8;
     
     initColorTables();
@@ -228,8 +228,8 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
       slider->setSliderPosition(d-1);
     if (d>1)
     {
-	slider->setMaximum(d-1);
-	slider->show();
+        slider->setMaximum(d-1);
+        slider->show();
     }
     else slider->hide();
     
@@ -260,24 +260,24 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
     
     for (size_t j=0;j<pixNbrY;j++)
     {
-	if (j==pixNbrY-1)
-	  pixH = h%PIXMAP_MAX_DIM;
-	
-	pixW = PIXMAP_MAX_DIM;
-	
-	for (size_t i=0;i<pixNbrX;i++)
-	{
-	    if (i==pixNbrX-1)
-	      pixW = w%PIXMAP_MAX_DIM;
-	    
-	  QGraphicsPixmapItem *item = imScene->addPixmap(QPixmap(pixW, pixH));
-	  item->moveBy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM);
-	  imagePixmaps.append(item);
-	  
-	  item = imScene->addPixmap(QPixmap());
-	  item->moveBy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM);
-	  overlayPixmaps.append(item);
-	}
+        if (j==pixNbrY-1)
+          pixH = h%PIXMAP_MAX_DIM;
+        
+        pixW = PIXMAP_MAX_DIM;
+        
+        for (size_t i=0;i<pixNbrX;i++)
+        {
+            if (i==pixNbrX-1)
+              pixW = w%PIXMAP_MAX_DIM;
+            
+          QGraphicsPixmapItem *item = imScene->addPixmap(QPixmap(pixW, pixH));
+          item->moveBy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM);
+          imagePixmaps.append(item);
+          
+          item = imScene->addPixmap(QPixmap());
+          item->moveBy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM);
+          overlayPixmaps.append(item);
+        }
     }
     
 
@@ -290,19 +290,19 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
     double minSize = 256;
     if (scaleFactor==1 && imScene->height()<minSize)
     {
-	int scaleFact = log(minSize/imScene->height())/log(1.25);
-	scale(pow(1.25, scaleFact), true);
+        int scaleFact = log(minSize/imScene->height())/log(1.25);
+        scale(pow(1.25, scaleFact), true);
     }
     adjustSize();
     if (scaleFactor==1 && QWidget::height()<qImage->height())
     {
-	int scaleFact = log(double(QWidget::height())/qImage->height())/log(0.8);
-	scale(pow(0.8, scaleFact), true);
+        int scaleFact = log(double(QWidget::height())/qImage->height())/log(0.8);
+        scale(pow(0.8, scaleFact), true);
     }
     if (qOverlayImage)
     {
-	delete qOverlayImage;
-	qOverlayImage = NULL;
+        delete qOverlayImage;
+        qOverlayImage = NULL;
     }
 }
 
@@ -319,7 +319,7 @@ void ImageViewerWidget::setLabelImage(bool val)
 //     imagePixmap->setPixmap(QPixmap::fromImage(*qImage));
     
     if (magnActivated && lastPixX>=0)
-	displayMagnifyView();
+        displayMagnifyView();
 }
 
 void ImageViewerWidget::createActions()
@@ -401,20 +401,20 @@ void ImageViewerWidget::updatePixmaps(QImage *image, QList<QGraphicsPixmapItem*>
     
     for (size_t j=0;j<pixNbrY;j++)
     {
-	if (j==pixNbrY-1)
-	  pixH = h%PIXMAP_MAX_DIM;
-	
-	pixW = PIXMAP_MAX_DIM;
-	
-	for (size_t i=0;i<pixNbrX;i++)
-	{
-	    if (i==pixNbrX-1)
-	      pixW = w%PIXMAP_MAX_DIM;
-	    
-	    QGraphicsPixmapItem *item = *it;
-	    item->setPixmap(QPixmap::fromImage(image->copy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM, pixW, pixH)));
-	    it++;
-	}
+        if (j==pixNbrY-1)
+          pixH = h%PIXMAP_MAX_DIM;
+        
+        pixW = PIXMAP_MAX_DIM;
+        
+        for (size_t i=0;i<pixNbrX;i++)
+        {
+            if (i==pixNbrX-1)
+              pixW = w%PIXMAP_MAX_DIM;
+            
+            QGraphicsPixmapItem *item = *it;
+            item->setPixmap(QPixmap::fromImage(image->copy(i*PIXMAP_MAX_DIM, j*PIXMAP_MAX_DIM, pixW, pixH)));
+            it++;
+        }
     }
 }
 
@@ -435,12 +435,15 @@ void ImageViewerWidget::overlayDataChanged(bool triggerEvents)
 
 void ImageViewerWidget::clearOverlay()
 {
+    if (!qOverlayImage)
+      return;
+    
     QList<QGraphicsPixmapItem*>::iterator it = overlayPixmaps.begin();
 
     while(it!=overlayPixmaps.end())
     {
-	(*it)->setPixmap(QPixmap());
-	it++;
+        (*it)->setPixmap(QPixmap());
+        it++;
     }
     
     qOverlayImage->fill(Qt::transparent);
@@ -463,16 +466,16 @@ void ImageViewerWidget::scale(double factor, bool absolute)
 {
     if (absolute)
     {
-	if (factor==scaleFactor)
-	  return;
-	
-	QGraphicsView::scale(factor/scaleFactor, factor/scaleFactor);
-	scaleFactor = factor;
+        if (factor==scaleFactor)
+          return;
+        
+        QGraphicsView::scale(factor/scaleFactor, factor/scaleFactor);
+        scaleFactor = factor;
     }
     else
     {
-	scaleFactor *= factor;
-	QGraphicsView::scale(factor, factor);
+        scaleFactor *= factor;
+        QGraphicsView::scale(factor, factor);
     }
 
     displayHint(QString::number(int(scaleFactor*100)) + "%");
@@ -530,7 +533,7 @@ void ImageViewerWidget::mousePressEvent ( QMouseEvent * event )
      
     if (cursorMode==cursorMove)
     {
-	setDragMode(QGraphicsView::ScrollHandDrag);
+        setDragMode(QGraphicsView::ScrollHandDrag);
     }
     
     QGraphicsView::mousePressEvent(event);
@@ -565,56 +568,56 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
     
     if (x>=0 && x<w && y>=0 && y<h)
     {
-	if (cursorMode==cursorDraw || cursorMode==cursorDrawLine || cursorMode==cursorDrawBox)
-	  setCursor(Qt::CrossCursor);
-	else setCursor(Qt::ArrowCursor);
-	
-	if (valueLblActivated)
-	{
-	    valueLabel->show();
-	    displayPixelValue(x, y, z);
-	}
-	if (magnActivated)
-	{
-	    displayMagnifyView(x, y, z);
-	    magnView->show();
-	}
-	
-	if (cursorMode == cursorDrawLine)
-	{
-	    setCursor(Qt::CrossCursor);
-	    if (event->buttons()==Qt::LeftButton)
-	    {
-		QLineF newLine(line->line().p1(), event->scenePos());
-		line->setLine(newLine);
-		QString hint = "dx: " + QString::number(int(newLine.x2())-int(newLine.x1()));
-		hint += " dy: " + QString::number(int(newLine.y2())-int(newLine.y1()));
-		hint += "  len: " + QString::number(int(newLine.length()));
-		displayHint(hint, 3000);
-	    }
-	} 
-	else if (cursorMode==cursorDraw && drawing)
-	{
-	    QPainter painter(qOverlayImage);
-	    if (drawPen.color()==Qt::black)
-		painter.setCompositionMode(QPainter::CompositionMode_Clear);
-	    painter.setPen(drawPen);
-	    painter.drawLine(event->scenePos(), QPoint(lastPixX, lastPixY));
-	    overlayDataChanged(false);
-	}
-	lastPixX = x;
-	lastPixY = y;
-	lastPixZ = z;
-	
-	
+        if (cursorMode==cursorDraw || cursorMode==cursorDrawLine || cursorMode==cursorDrawBox)
+          setCursor(Qt::CrossCursor);
+        else setCursor(Qt::ArrowCursor);
+        
+        if (valueLblActivated)
+        {
+            valueLabel->show();
+            displayPixelValue(x, y, z);
+        }
+        if (magnActivated)
+        {
+            displayMagnifyView(x, y, z);
+            magnView->show();
+        }
+        
+        if (cursorMode == cursorDrawLine)
+        {
+            setCursor(Qt::CrossCursor);
+            if (event->buttons()==Qt::LeftButton)
+            {
+                QLineF newLine(line->line().p1(), event->scenePos());
+                line->setLine(newLine);
+                QString hint = "dx: " + QString::number(int(newLine.x2())-int(newLine.x1()));
+                hint += " dy: " + QString::number(int(newLine.y2())-int(newLine.y1()));
+                hint += "  len: " + QString::number(int(newLine.length()));
+                displayHint(hint, 3000);
+            }
+        } 
+        else if (cursorMode==cursorDraw && drawing)
+        {
+            QPainter painter(qOverlayImage);
+            if (drawPen.color()==Qt::black)
+                painter.setCompositionMode(QPainter::CompositionMode_Clear);
+            painter.setPen(drawPen);
+            painter.drawLine(event->scenePos(), QPoint(lastPixX, lastPixY));
+            overlayDataChanged(false);
+        }
+        lastPixX = x;
+        lastPixY = y;
+        lastPixZ = z;
+        
+        
     }
     else
     {
-	setCursor(Qt::ArrowCursor);
-	valueLabel->hide();
-	magnView->hide();
-	lastPixX = -1;
-	lastPixY = -1;
+        setCursor(Qt::ArrowCursor);
+        valueLabel->hide();
+        magnView->hide();
+        lastPixX = -1;
+        lastPixY = -1;
     }
     
 }
@@ -629,18 +632,18 @@ void ImageViewerWidget::sceneMousePressEvent ( QGraphicsSceneMouseEvent * event 
     
     if (x>=0 && x<w && y>=0 && y<h)
     {
-	if(cursorMode==cursorDrawLine) 
-	{
-	    if (imScene->items().contains(line))
-	      imScene->removeItem(line);
-	    QLineF newLine(event->scenePos(), event->scenePos());
-	    line->setLine(newLine);
-	    imScene->addItem(line);
-	}
-	else if (event->buttons()==Qt::LeftButton && cursorMode==cursorDraw)
-	{
-	    drawing = true;
-	}
+        if(cursorMode==cursorDrawLine) 
+        {
+            if (imScene->items().contains(line))
+              imScene->removeItem(line);
+            QLineF newLine(event->scenePos(), event->scenePos());
+            line->setLine(newLine);
+            imScene->addItem(line);
+        }
+        else if (event->buttons()==Qt::LeftButton && cursorMode==cursorDraw)
+        {
+            drawing = true;
+        }
     }
     lastPixX = x;
     lastPixY = y;
@@ -652,13 +655,13 @@ void ImageViewerWidget::sceneMouseReleaseEvent ( QGraphicsSceneMouseEvent * even
       displayProfile(true);
     else if (cursorMode==cursorDraw && drawing)
     {
-	QPainter painter(qOverlayImage);
-	if (drawPen.color()==Qt::black)
-	    painter.setCompositionMode(QPainter::CompositionMode_Clear);
-	painter.setPen(drawPen);
-	painter.drawLine(event->scenePos(), QPoint(lastPixX, lastPixY));
-	overlayDataChanged();
-	drawing = false;
+        QPainter painter(qOverlayImage);
+        if (drawPen.color()==Qt::black)
+            painter.setCompositionMode(QPainter::CompositionMode_Clear);
+        painter.setPen(drawPen);
+        painter.drawLine(event->scenePos(), QPoint(lastPixX, lastPixY));
+        overlayDataChanged();
+        drawing = false;
     }
 }
 
@@ -681,12 +684,12 @@ void ImageViewerWidget::wheelEvent ( QWheelEvent * event )
 {
     if (event->modifiers() & Qt::ControlModifier)
     {
-	if (event->delta()>0)
-// 	  zoomInAct->trigger();
-	    zoomIn();
-	else zoomOut();
-	
-	return;
+        if (event->delta()>0)
+//           zoomInAct->trigger();
+            zoomIn();
+        else zoomOut();
+        
+        return;
     }
 
     QGraphicsView::wheelEvent(event);
@@ -699,54 +702,54 @@ void ImageViewerWidget::keyPressEvent(QKeyEvent *event)
     switch (event->key())
     {
     case Qt::Key_Z:
-	if (magnView->isVisible())
-	{
-	    magnView->zoomIn();
-	    displayMagnifyView();
-	}
-	else zoomIn();
+        if (magnView->isVisible())
+        {
+            magnView->zoomIn();
+            displayMagnifyView();
+        }
+        else zoomIn();
         break;
     case Qt::Key_A:
-	if (magnView->isVisible())
-	{
-	    magnView->zoomOut();
-	    displayMagnifyView();
-	}
-	else zoomOut();
+        if (magnView->isVisible())
+        {
+            magnView->zoomOut();
+            displayMagnifyView();
+        }
+        else zoomOut();
         break;
     case Qt::Key_M:
         magnActivated = !magnActivated;
         if (magnActivated && lastPixX>=0) 
-	{
-	    displayMagnifyView();
-	    magnView->show();
-	}
+        {
+            displayMagnifyView();
+            magnView->show();
+        }
         else magnView->hide();
         break;
     case Qt::Key_V:
         valueLblActivated = !valueLblActivated;
         if (valueLblActivated && lastPixX>=0) 
-	    valueLabel->show();
+            valueLabel->show();
         else valueLabel->hide();
         break;
     case Qt::Key_L:
-	setLabelImage(!drawLabelized); // Switch label mode
-	break;
+        setLabelImage(!drawLabelized); // Switch label mode
+        break;
     case Qt::Key_R:
-	autoRange = !autoRange; // Switch auto range mode
-	if (autoRange)
-	  displayHint(QString("Autorange on"));
-	else
-	  displayHint(QString("Autorange off"));
-	redrawImage();
-	break;
+        autoRange = !autoRange; // Switch auto range mode
+        if (autoRange)
+          displayHint(QString("Autorange on"));
+        else
+          displayHint(QString("Autorange off"));
+        redrawImage();
+        break;
     case Qt::Key_H:
-	displayHistogram();
-	break;
+        displayHistogram();
+        break;
     case Qt::Key_P:
-	if (imScene->items().contains(line))
-	  displayProfile();
-	break;
+        if (imScene->items().contains(line))
+          displayProfile();
+        break;
     }
 
     emit onKeyPressEvent(event);
@@ -790,14 +793,14 @@ void ImageViewerWidget::setCursorMode(const int &mode)
     cursorMode = mode;
     
     if (mode==cursorDraw || mode==cursorDrawLine || mode==cursorDrawBox)
-	setCursor(Qt::CrossCursor);
+        setCursor(Qt::CrossCursor);
     else setCursor(Qt::ArrowCursor);
     
     if (mode==cursorDraw)
     {
       colorPicker->show();
       if (!qOverlayImage)
-	createOverlayImage();
+        createOverlayImage();
     }
     else
       colorPicker->hide();
@@ -824,27 +827,27 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
     
     if (cursorMode==cursorDraw)
     {
-	contMenu.addAction("Color...");
-	contMenu.addAction("Width...");
-	contMenu.addAction("Clear Overlay");
+        contMenu.addAction("Color...");
+        contMenu.addAction("Width...");
+        contMenu.addAction("Clear Overlay");
     }
     
     QMenu linkMenu("Link");
     int wIndex = 0;
     foreach(QWidget *widget, QApplication::topLevelWidgets()) 
     {
-	if(widget!=this && widget->isWindow() && widget->metaObject()->className()==QString("ImageViewerWidget"))
-	{
-	    act = linkMenu.addAction(widget->windowTitle());
-	    act->setData(wIndex);
-	    if (linkedWidgets.contains(static_cast<ImageViewerWidget*>(widget)))
-	    {
-		QFont aFont = act->font();
-		aFont.setBold(true);
-		act->setFont(aFont);
-	    }
-	}
-	wIndex++;
+        if(widget!=this && widget->isWindow() && widget->metaObject()->className()==QString("ImageViewerWidget"))
+        {
+            act = linkMenu.addAction(widget->windowTitle());
+            act->setData(wIndex);
+            if (linkedWidgets.contains(static_cast<ImageViewerWidget*>(widget)))
+            {
+                QFont aFont = act->font();
+                aFont.setBold(true);
+                act->setFont(aFont);
+            }
+        }
+        wIndex++;
     }
     contMenu.addMenu(&linkMenu);
     contMenu.addAction(actionMap["help"]);
@@ -853,42 +856,42 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
     QAction* selectedItem = contMenu.exec(globalPos);
     if (selectedItem)
     {
-	if (selectedItem->parentWidget()==&selectMenu)
-	{
-	    if (selectedItem->text()=="Draw")
-	      setCursorMode(cursorDraw);
-	    else if (selectedItem->text()=="Line")
-	      setCursorMode(cursorDrawLine);
-	    else if (selectedItem->text()=="Box")
-	      setCursorMode(cursorDrawBox);
-	    else
-	      setCursorMode(cursorMove);
-	}
-	else if (selectedItem->parentWidget()==&linkMenu)
-	{
-	    QWidget *widget = QApplication::topLevelWidgets()[selectedItem->data().toInt()];
-	    ImageViewerWidget *w = static_cast<ImageViewerWidget*>(widget);
-	    if(linkedWidgets.contains(w))
-	      unlinkViewer(w);
-	    else
-	      linkViewer(w);
-	}
-	else if (selectedItem->text()=="Color...")
-	{
-	    colorPicker->popup();
-	}
-	else if (selectedItem->text()=="Width...")
-	{
-	    bool ok;
-	    int lWidth = QInputDialog::getInteger(this, tr(""), tr("Line width:"), drawPen.width(), 1, 
+        if (selectedItem->parentWidget()==&selectMenu)
+        {
+            if (selectedItem->text()=="Draw")
+              setCursorMode(cursorDraw);
+            else if (selectedItem->text()=="Line")
+              setCursorMode(cursorDrawLine);
+            else if (selectedItem->text()=="Box")
+              setCursorMode(cursorDrawBox);
+            else
+              setCursorMode(cursorMove);
+        }
+        else if (selectedItem->parentWidget()==&linkMenu)
+        {
+            QWidget *widget = QApplication::topLevelWidgets()[selectedItem->data().toInt()];
+            ImageViewerWidget *w = static_cast<ImageViewerWidget*>(widget);
+            if(linkedWidgets.contains(w))
+              unlinkViewer(w);
+            else
+              linkViewer(w);
+        }
+        else if (selectedItem->text()=="Color...")
+        {
+            colorPicker->popup();
+        }
+        else if (selectedItem->text()=="Width...")
+        {
+            bool ok;
+            int lWidth = QInputDialog::getInteger(this, tr(""), tr("Line width:"), drawPen.width(), 1, 
 10, 1, &ok);
-	    if (ok)
-		drawPen.setWidth(lWidth);
-	}	
-	else if (selectedItem->text()=="Clear Overlay")
-	{
-	    clearOverlay();
-	}
+            if (ok)
+                drawPen.setWidth(lWidth);
+        }        
+        else if (selectedItem->text()=="Clear Overlay")
+        {
+            clearOverlay();
+        }
     }
     else
     {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,13 +49,13 @@ namespace smil
     template <>
     RES_T VTKImageFileHandler<Bit>::read(const char *filename, Image<Bit> &image)
     {
-	return RES_ERR_NOT_IMPLEMENTED;
+        return RES_ERR_NOT_IMPLEMENTED;
     }
 
     template <>
     RES_T VTKImageFileHandler<Bit>::write(const Image<Bit> &image, const char *filename)
     {
-	return RES_ERR_NOT_IMPLEMENTED;
+        return RES_ERR_NOT_IMPLEMENTED;
     }
 
     

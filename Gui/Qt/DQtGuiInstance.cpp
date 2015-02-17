@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -50,25 +50,25 @@ namespace smil
     QtGui::~QtGui()
     {
       if (helpForm)
-	delete helpForm;
+        delete helpForm;
     }
     
     void QtGui::_execLoop() 
     { 
-	qtLoop();
+        qtLoop();
     }
 
     void QtGui::_processEvents() 
     { 
-	if (qApp)
-	  qApp->processEvents();
+        if (qApp)
+          qApp->processEvents();
     }
 
     void QtGui::_showHelp() 
     { 
-	if (!helpForm)
-	  helpForm = new HelpForm();
-	helpForm->show();
+        if (!helpForm)
+          helpForm = new HelpForm();
+        helpForm->show();
     }
 
 
@@ -83,49 +83,49 @@ namespace smil
 
     void QtAppGui::_execLoop() 
     { 
-	qtLoop();
+        qtLoop();
     }
 
     void QtAppGui::_processEvents() 
     { 
-	QApplication::processEvents();
+        QApplication::processEvents();
     }
 
     int qtLoop()
     {
-	QCoreApplication *app = QCoreApplication::instance();
+        QCoreApplication *app = QCoreApplication::instance();
 
-	if (app && app->thread()==QThread::currentThread())
-	{
+        if (app && app->thread()==QThread::currentThread())
+        {
     #if defined(Q_OS_WIN)
-	    QTimer timer;
-	    bool lastWindowClosed;
+            QTimer timer;
+            bool lastWindowClosed;
 
-	    do
-	    {
-		timer.start(100);
-		QCoreApplication::processEvents();
-		timer.stop();
-		
-		lastWindowClosed = true;
-		foreach (QWidget *widget, QApplication::topLevelWidgets()) 
-		{
-		    if (widget->isVisible())
-			lastWindowClosed = false;
-		}
-	    }
-	    while (!_kbhit() && !lastWindowClosed);
+            do
+            {
+                timer.start(100);
+                QCoreApplication::processEvents();
+                timer.stop();
+                
+                lastWindowClosed = true;
+                foreach (QWidget *widget, QApplication::topLevelWidgets()) 
+                {
+                    if (widget->isVisible())
+                        lastWindowClosed = false;
+                }
+            }
+            while (!_kbhit() && !lastWindowClosed);
 
-	    QObject::disconnect(&timer, SIGNAL(timeout()), app, SLOT(quit()));
+            QObject::disconnect(&timer, SIGNAL(timeout()), app, SLOT(quit()));
     #else
-	    QSocketNotifier notifier(0, QSocketNotifier::Read, 0);
-	    QObject::connect(&notifier, SIGNAL(activated(int)), app, SLOT(quit()));
-	    QCoreApplication::exec();
-	    QObject::disconnect(&notifier, SIGNAL(activated(int)), app, SLOT(quit()));
+            QSocketNotifier notifier(0, QSocketNotifier::Read, 0);
+            QObject::connect(&notifier, SIGNAL(activated(int)), app, SLOT(quit()));
+            QCoreApplication::exec();
+            QObject::disconnect(&notifier, SIGNAL(activated(int)), app, SLOT(quit()));
     #endif
-	}
+        }
 
-	return 0;
+        return 0;
     }
     
 } // namespace smil

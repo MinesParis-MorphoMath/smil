@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -26,6 +26,17 @@
 
 
 %feature("autodoc", "1");
+
+// Language independent exception handler
+%include exception.i       
+
+%exception {
+    try {
+        $action
+    } catch(...) {
+        SWIG_exception(SWIG_RuntimeError,"Unknown exception");
+    }
+}
 
 
 //////////////////////////////////////////////////////////

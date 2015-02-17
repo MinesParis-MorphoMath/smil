@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -124,10 +124,10 @@ ostream& BitArray::printSelf(ostream &os)
       os << this->operator[](i);
       if (i<bitWidth-1)
       {
-	  if ((i+1)%INT_TYPE_SIZE==0) 
-	    os << "-";
-	  else
-	    os << " ";
+          if ((i+1)%INT_TYPE_SIZE==0) 
+            os << "-";
+          else
+            os << " ";
       }
     }
     return os;

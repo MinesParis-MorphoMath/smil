@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -37,117 +37,117 @@ namespace smil
     template <>
     void Image<Bit>::init() 
     { 
-	className = "Image";
-	
-	slices = NULL;
-	lines = NULL;
+        className = "Image";
+        
+        slices = NULL;
+        lines = NULL;
     //     pixels = NULL;
 
-	dataTypeSize = sizeof(pixelType); 
-	
-	allocatedSize = 0;
-	
-	viewer = NULL;
-	name = "";
-	
-	updatesEnabled = true;
-	
-	parentClass::init();
+        dataTypeSize = sizeof(pixelType); 
+        
+        allocatedSize = 0;
+        
+        viewer = NULL;
+        name = "";
+        
+        updatesEnabled = true;
+        
+        parentClass::init();
     }
 
     template <>
     void* Image<Bit>::getVoidPointer(void) {
-	return pixels.intArray;
+        return pixels.intArray;
     }
 
 
     template <>
     RES_T Image<Bit>::restruct(void)
     {
-	if (slices)
-	    delete[] slices;
-	if (lines)
-	    delete[] lines;
-	
-	lines =  new lineType[lineCount];
-	slices = new sliceType[sliceCount];
-	
-	lineType *cur_array = lines;
-	sliceType *cur_slice = slices;
-	
-	UINT intWidth = pixels.getIntWidth();
-	UINT intNbrPerSlice = intWidth * height;
-	BitArray::INT_TYPE *int0 = pixels.intArray;
-	
-	for (int k=0; k<(int)depth; k++, cur_slice++)
-	{
-	  *cur_slice = cur_array;
-	  
-	  for (int j=0; j<(int)height; j++, cur_array++)
-	  {
-	    cur_array->setSize(width);
-	    cur_array->intArray = int0 + k*intNbrPerSlice + j*intWidth;
-	  }
-	}
-	
-	return RES_OK;
+        if (slices)
+            delete[] slices;
+        if (lines)
+            delete[] lines;
+        
+        lines =  new lineType[lineCount];
+        slices = new sliceType[sliceCount];
+        
+        lineType *cur_array = lines;
+        sliceType *cur_slice = slices;
+        
+        UINT intWidth = pixels.getIntWidth();
+        UINT intNbrPerSlice = intWidth * height;
+        BitArray::INT_TYPE *int0 = pixels.intArray;
+        
+        for (int k=0; k<(int)depth; k++, cur_slice++)
+        {
+          *cur_slice = cur_array;
+          
+          for (int j=0; j<(int)height; j++, cur_array++)
+          {
+            cur_array->setSize(width);
+            cur_array->intArray = int0 + k*intNbrPerSlice + j*intWidth;
+          }
+        }
+        
+        return RES_OK;
     }
 
     template <>
     RES_T Image<Bit>::allocate(void)
     {
-	if (allocated)
-	    return RES_ERR_BAD_ALLOCATION;
-	
-	pixels.setSize(width, height*depth);
-	pixels.createIntArray();
-	
-	allocated = true;
-	allocatedSize = pixels.getIntNbr()*BitArray::INT_TYPE_SIZE;
-	
-	restruct();
-	
-	return RES_OK;
+        if (allocated)
+            return RES_ERR_BAD_ALLOCATION;
+        
+        pixels.setSize(width, height*depth);
+        pixels.createIntArray();
+        
+        allocated = true;
+        allocatedSize = pixels.getIntNbr()*BitArray::INT_TYPE_SIZE;
+        
+        restruct();
+        
+        return RES_OK;
     }
 
     template <>
     RES_T Image<Bit>::deallocate(void)
     {
-	if (!allocated)
-	    return RES_OK;
-	
-	if (slices)
-	    delete[] slices;
-	if (lines)
-	    delete[] lines;
-	if (pixels.intArray)
-	    pixels.deleteIntArray();
-	
-	slices = NULL;
-	lines = NULL;
+        if (!allocated)
+            return RES_OK;
+        
+        if (slices)
+            delete[] slices;
+        if (lines)
+            delete[] lines;
+        if (pixels.intArray)
+            pixels.deleteIntArray();
+        
+        slices = NULL;
+        lines = NULL;
     //     pixels = NULL;
 
-	allocated = false;
-	allocatedSize = 0;
-	
-	return RES_OK;
+        allocated = false;
+        allocatedSize = 0;
+        
+        return RES_OK;
     }
 
 
     template <>
     void Image<Bit>::clone(const Image<Bit> &rhs)
     { 
-	bool isAlloc = rhs.isAllocated();
-	setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
-	copy(rhs, *this);
-	modified();
+        bool isAlloc = rhs.isAllocated();
+        setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
+        copy(rhs, *this);
+        modified();
     }
 
     template <>
     RES_T Image<Bit>::setPixel(size_t offset, const Bit &value)
     {
-	this->lines[offset/width][offset%width] = value;
-	return RES_OK;
+        this->lines[offset/width][offset%width] = value;
+        return RES_OK;
     }
 
     template <>

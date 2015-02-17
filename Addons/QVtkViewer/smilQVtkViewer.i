@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ def QVtkViewer(im):
     if im.getName()=="":
       name = __builtin__._find_object_name(im)
       if name!="":
-	im.setName(name)
+        im.setName(name)
     if len(t_spl)<2:
       print "Input must be an Image"
       return

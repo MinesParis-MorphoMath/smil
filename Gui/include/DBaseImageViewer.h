@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -46,26 +46,26 @@ namespace smil
     class BaseImageViewer : public BaseObject
     {
     public:
-	typedef BaseObject parentClass;
-	
-	BaseImageViewer(const char *_className="BaseImageViewer");
-	
-	virtual ~BaseImageViewer() {}
-	
-	virtual void show() {}
-	virtual void showLabel() {}
-	virtual void hide() {}
-	virtual bool isVisible() { return false; }
-	virtual void setName(const char *_name) { parentClass::setName(_name); }
-	virtual void update() = 0;
+        typedef BaseObject parentClass;
+        
+        BaseImageViewer(const char *_className="BaseImageViewer");
+        
+        virtual ~BaseImageViewer() {}
+        
+        virtual void show() {}
+        virtual void showLabel() {}
+        virtual void hide() {}
+        virtual bool isVisible() { return false; }
+        virtual void setName(const char *_name) { parentClass::setName(_name); }
+        virtual void update() = 0;
     virtual void saveSnapshot(const char * /*fileName*/) {}
-	
-	// Slots
-	MemberFunctionSlot<BaseImageViewer> updateSlot;
-	
+        
+        // Slots
+        MemberFunctionSlot<BaseImageViewer> updateSlot;
+        
     protected:
-	virtual void drawImage() {}
-	bool labelImage;
+        virtual void drawImage() {}
+        bool labelImage;
     };
 
 /*@}*/

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,40 +39,40 @@ namespace smil
     class UniqueInstance
     {
     protected:
-	UniqueInstance ()
-	{
-	}
-	virtual ~UniqueInstance () { }
+        UniqueInstance ()
+        {
+        }
+        virtual ~UniqueInstance () { }
 
     public:
-	static T *getInstance ()
-	{
-	    T::initialize();
-	    return (static_cast<T*> (T::_instance));
-	}
+        static T *getInstance ()
+        {
+            T::initialize();
+            return (static_cast<T*> (T::_instance));
+        }
 
-	// Can be overloaded because of the T::initialize call
-	static RES_T initialize ()
-	{
-	    if (T::_instance == NULL)
-		T::_instance = new T();
-		return RES_OK;
-	}
+        // Can be overloaded because of the T::initialize call
+        static RES_T initialize ()
+        {
+            if (T::_instance == NULL)
+                T::_instance = new T();
+                return RES_OK;
+        }
 
-	static void kill ()
-	{
-	  if (T::_instance)
-	  {
-	    delete T::_instance;
-	    T::_instance = NULL;
-	  }
-	}
+        static void kill ()
+        {
+          if (T::_instance)
+          {
+            delete T::_instance;
+            T::_instance = NULL;
+          }
+        }
 
 
 
     protected:
-	// Unique instance
-	static T *_instance;
+        // Unique instance
+        static T *_instance;
     };
 
     template <typename T>

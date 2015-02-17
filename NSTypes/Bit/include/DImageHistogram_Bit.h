@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -37,28 +37,28 @@ namespace smil
     template <>
     std::map<Bit, UINT> histogram(const Image<Bit> &imIn)
     {
-	ERR_MSG("Not implemented for type Bit");
-	return map<Bit, UINT>();
+        ERR_MSG("Not implemented for type Bit");
+        return map<Bit, UINT>();
     }
 
     template <>
     map<Bit, UINT> histogram(const Image<Bit> &imIn, const Image<Bit> &imMask)
     {
-	ERR_MSG("Not implemented for type Bit");
-	return map<Bit, UINT>();
+        ERR_MSG("Not implemented for type Bit");
+        return map<Bit, UINT>();
     }
 
     template <>
     RES_T enhanceContrast(const Image<Bit> &imIn, Image<Bit> &imOut, double sat)
     {
-	return RES_ERR_NOT_IMPLEMENTED;
+        return RES_ERR_NOT_IMPLEMENTED;
     }
 
     template <>
     vector<Bit> otsuThreshold(const Image<Bit> &imIn, Image<Bit> &imOut, UINT nbrThresholds)
     {
-	ERR_MSG("Not implemented for type Bit");
-	return vector<Bit>();
+        ERR_MSG("Not implemented for type Bit");
+        return vector<Bit>();
     }
 
 } // namespace smil

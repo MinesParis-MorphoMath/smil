@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -60,24 +60,24 @@ namespace smil
     class TIFFImageFileHandler : public ImageFileHandler<T>
     {
       public:
-	TIFFImageFileHandler()
-	  : ImageFileHandler<T>("TIFF")
-	{
-	}
-	
-	virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
-	{
-	    return getTIFFFileInfo(filename, fInfo);
-	}
-	
-	virtual RES_T read(const char* filename, Image<T> &image)
-	{
-	    return ImageFileHandler<T>::read(filename, image);
-	}
-	virtual RES_T write(const Image<T> &image, const char* filename)
-	{
-	    return ImageFileHandler<T>::write(image, filename);
-	}
+        TIFFImageFileHandler()
+          : ImageFileHandler<T>("TIFF")
+        {
+        }
+        
+        virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
+        {
+            return getTIFFFileInfo(filename, fInfo);
+        }
+        
+        virtual RES_T read(const char* filename, Image<T> &image)
+        {
+            return ImageFileHandler<T>::read(filename, image);
+        }
+        virtual RES_T write(const Image<T> &image, const char* filename)
+        {
+            return ImageFileHandler<T>::write(image, filename);
+        }
     };
 
     // Specializations

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ using namespace smil;
 
 Core::Core ()
 // : BaseObject("Core", false),
-  : keepAlive(false),
+  : keepAlive(true),
     autoResizeImages(true),
     threadNumber(1),
     maxThreadNumber(1),
@@ -64,6 +64,9 @@ Core::Core ()
     coreNumber = cpuID.getCores();
     threadNumber = 1;
 #endif // USE_OPEN_MP
+#if DEBUG_LEVEL > 1
+      cout << "Core created" << endl;
+#endif // DEBUG_LEVEL > 1
 }
 
 Core::~Core ()
@@ -86,7 +89,7 @@ void Core::registerObject(BaseObject *obj)
     obj->registered = true;
 
     if (string(obj->getClassName())=="Image")
-	inst->registeredImages.push_back(static_cast<BaseImage*>(obj));
+        inst->registeredImages.push_back(static_cast<BaseImage*>(obj));
 
 #if DEBUG_LEVEL > 1
     cout << "Core::registerObject: " << obj->getClassName() << " " << obj << " created." << endl;
@@ -105,14 +108,14 @@ void Core::unregisterObject(BaseObject *obj)
     obj->registered = false;
 
     if (string(obj->getClassName())=="Image")
-	inst->registeredImages.erase(std::remove(inst->registeredImages.begin(), inst->registeredImages.end(), static_cast<BaseImage*>(obj)));
+        inst->registeredImages.erase(std::remove(inst->registeredImages.begin(), inst->registeredImages.end(), static_cast<BaseImage*>(obj)));
 
 #if DEBUG_LEVEL > 1
     cout << "Core::unregisterObject: " << obj->getClassName() << " " << obj << " deleted." << endl;
 #endif // DEBUG_LEVEL > 1
 
     if (!inst->keepAlive && inst->registeredObjects.size()==0)
-	inst->kill();
+        inst->kill();
 }
 
 
@@ -158,7 +161,7 @@ size_t Core::getAllocatedMemory()
     size_t totAlloc = 0;
 
     while (it!=this->registeredImages.end())
-	totAlloc += (*it++)->getAllocatedSize();
+        totAlloc += (*it++)->getAllocatedSize();
     return totAlloc;
 }
 
@@ -172,12 +175,20 @@ vector<BaseImage*> Core::getImages()
     return this->registeredImages; 
 }
 
+int Core::getImageIndex(BaseImage *img)
+{
+    vector<BaseImage*>::iterator i = find(this->registeredImages.begin(), this->registeredImages.end(), img);
+    if (i==this->registeredImages.end())
+      return -1;
+    return i - this->registeredImages.begin(); 
+}
+
 void Core::showAllImages()
 {
     vector<BaseImage*>::iterator it = this->registeredImages.begin();
 
     while (it!=this->registeredImages.end())
-	(*it++)->show();
+        (*it++)->show();
 }
 
 void Core::hideAllImages()
@@ -185,7 +196,7 @@ void Core::hideAllImages()
     vector<BaseImage*>::iterator it = this->registeredImages.begin();
 
     while (it!=this->registeredImages.end())
-	(*it++)->hide();
+        (*it++)->hide();
 }
 
 void Core::deleteAllImages()
@@ -205,7 +216,43 @@ void Core::getCompilationInfos(ostream &outStream)
 #endif
     outStream << "System: " << this->systemName << endl;
     outStream << "Target Architecture: " << this->targetArchitecture << endl;
-    outStream << "OpenMP support: " << (this->supportOpenMP ? "On" : "Off") << endl;
+    outStream << "OpenMP support: " << (this->supportOpenMP ? "On" : "Off");
+#ifdef USE_OPEN_MP
+    outStream << " (version " << _OPENMP << ")" << endl;
+#endif // USE_OPEN_MP
+    
+    outStream << "Available SIMD instructions:" << endl;
+#ifdef __SSE__ 
+    outStream << " SSE";
+#endif
+#ifdef __SSE_MATH__ 
+    outStream << " SSE_MATH";
+#endif
+#ifdef __SSE2__ 
+    outStream << " SSE2";
+#endif
+#ifdef __SSE2_MATH__ 
+    outStream << " SSE2_MATH";
+#endif
+#ifdef __SSE3__
+    outStream << " SSE3";
+#endif
+#ifdef __SSSE3__
+    outStream << " SSSE3";
+#endif
+#ifdef __SSE4_1__
+    outStream << " SSE4_1";
+#endif
+#ifdef __SSE4_2__
+    outStream << " SSE4_2";
+#endif
+#ifdef __AVX__
+    outStream << " AVX";
+#endif
+#ifdef __AVX2__
+    outStream << " AVX2";
+#endif
+    outStream << endl;
 }
 
 

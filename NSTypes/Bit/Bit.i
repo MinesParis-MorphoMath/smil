@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -38,15 +38,15 @@ namespace smil
       %ignore BitArray::operator[];
       %extend BitArray
       {
-	      std::string  __str__() {
-		  std::stringstream os;
-		  os << *self;
-		  return os.str();
-	      }
+              std::string  __str__() {
+                  std::stringstream os;
+                  os << *self;
+                  return os.str();
+              }
 
-	      bool operator[] (UINT i)
-	      {
-	      }
+              bool operator[] (UINT i)
+              {
+              }
 
       }
       %ignore BitArray::operator++;

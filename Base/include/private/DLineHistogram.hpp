@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -44,38 +44,38 @@ namespace smil
     template <class T>
     struct threshLine : public unaryLineFunctionBase<T>
     {
-	T minVal, maxVal, trueVal, falseVal;
-	typedef typename ImDtTypes<T>::lineType lineType;
-	
-	inline void _exec(const lineType &lIn, int size, lineType &lOut)
-	{
-	    for(int i=0;i<size;i++)
-		lOut[i] = lIn[i] >= minVal && lIn[i] <= maxVal  ? trueVal : falseVal;
-	}
+        T minVal, maxVal, trueVal, falseVal;
+        typedef typename ImDtTypes<T>::lineType lineType;
+        
+        inline void _exec(const lineType &lIn, int size, lineType &lOut)
+        {
+            for(int i=0;i<size;i++)
+                lOut[i] = lIn[i] >= minVal && lIn[i] <= maxVal  ? trueVal : falseVal;
+        }
     };
 
     template <class T>
     struct stretchHistLine : public unaryLineFunctionBase<T>
     {
-	T inOrig, outOrig;
-	double coeff;
-	typedef typename ImDtTypes<T>::lineType lineType;
-	
-	inline void _exec(const lineType &lIn, int size, lineType &lOut)
-	{
-	    double newVal;
-	    
-	    for(UINT i=0;i<size;i++)
-	    {
-		newVal = double(outOrig) + (double(lIn[i])-double(inOrig))*coeff;
-		if (newVal > double(numeric_limits<T>::max()))
-		    newVal = numeric_limits<T>::max();
-		else if (newVal < double(numeric_limits<T>::min()))
-		    newVal = numeric_limits<T>::min();
-		lOut[i] = T(newVal);
-		
-	    }
-	}
+        T inOrig, outOrig;
+        double coeff;
+        typedef typename ImDtTypes<T>::lineType lineType;
+        
+        inline void _exec(const lineType &lIn, int size, lineType &lOut)
+        {
+            double newVal;
+            
+            for(UINT i=0;i<size;i++)
+            {
+                newVal = double(outOrig) + (double(lIn[i])-double(inOrig))*coeff;
+                if (newVal > double(numeric_limits<T>::max()))
+                    newVal = numeric_limits<T>::max();
+                else if (newVal < double(numeric_limits<T>::min()))
+                    newVal = numeric_limits<T>::min();
+                lOut[i] = T(newVal);
+                
+            }
+        }
     };
 
 //! @}

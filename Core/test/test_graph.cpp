@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -45,30 +45,30 @@ class Test_MST : public TestCase
 {
     virtual void run()
     {
-	Graph<> graph;
-	graph.addEdge(Edge<>(0,2, 1));
-	graph.addEdge(Edge<>(1,3, 1));
-	graph.addEdge(Edge<>(1,4, 2));
-	graph.addEdge(Edge<>(2,1, 7));
-	graph.addEdge(Edge<>(2,3, 3));
-	graph.addEdge(Edge<>(3,4, 1));
-	graph.addEdge(Edge<>(4,0, 1));
-	graph.addEdge(Edge<>(4,1, 3));
-	
-	Graph<> mst = graphMST(graph);
-	vector<Edge<> > mstTruth;
-	mstTruth.push_back(Edge<>(4,0,1));
-	mstTruth.push_back(Edge<>(3,4,1));
-	mstTruth.push_back(Edge<>(1,3,1));
-	mstTruth.push_back(Edge<>(0,2,1));
-	
-	TEST_ASSERT(mst.getEdges()==mstTruth);
-	
-	if (retVal!=RES_OK)
-	{
-	    for (vector<Edge<> >::const_iterator it=mst.getEdges().begin();it!=mst.getEdges().end();it++)
-	      cout << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
-	}
+        Graph<> graph;
+        graph.addEdge(Edge<>(0,2, 1));
+        graph.addEdge(Edge<>(1,3, 1));
+        graph.addEdge(Edge<>(1,4, 2));
+        graph.addEdge(Edge<>(2,1, 7));
+        graph.addEdge(Edge<>(2,3, 3));
+        graph.addEdge(Edge<>(3,4, 1));
+        graph.addEdge(Edge<>(4,0, 1));
+        graph.addEdge(Edge<>(4,1, 3));
+        
+        Graph<> mst = graphMST(graph);
+        vector<Edge<> > mstTruth;
+        mstTruth.push_back(Edge<>(0,2,1));
+        mstTruth.push_back(Edge<>(4,0,1));
+        mstTruth.push_back(Edge<>(3,4,1));
+        mstTruth.push_back(Edge<>(1,3,1));
+        
+        TEST_ASSERT(mst.getEdges()==mstTruth);
+        
+        if (retVal!=RES_OK)
+        {
+            for (vector<Edge<> >::const_iterator it=mst.getEdges().begin();it!=mst.getEdges().end();it++)
+              cout << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
+        }
     }
 };
 

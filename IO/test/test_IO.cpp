@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -51,11 +51,11 @@ class Test_RW_RAW : public TestCase
     
     Image<T> im1(3, 3, 2);
     T tab[] = { 28, 2, 3,
-		 2, 5, 6,
-		 3, 8, 9,
-		 4, 11, 12,
-		 5, 15, 16,
-		 6, 18, 19 };
+                 2, 5, 6,
+                 3, 8, 9,
+                 4, 11, 12,
+                 5, 15, 16,
+                 6, 18, 19 };
     im1 << tab;
     TEST_ASSERT( writeRAW(im1, fName)==RES_OK );
     

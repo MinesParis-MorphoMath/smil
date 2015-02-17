@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,31 +40,31 @@ namespace smil
     template <>
     void QtImageViewer<UINT8>::drawImage()
     {
-	int sliceNbr = slider->value();
-	Image<UINT8>::sliceType lines = this->image->getSlices()[sliceNbr];
+        int sliceNbr = slider->value();
+        Image<UINT8>::sliceType lines = this->image->getSlices()[sliceNbr];
 
-	size_t w = this->image->getWidth();
-	size_t h = this->image->getHeight();
+        size_t w = this->image->getWidth();
+        size_t h = this->image->getHeight();
 
-	if (!parentClass::labelImage && autoRange)
-	{
-	    vector<UINT8> rangeV = rangeVal<UINT8>(*this->image);
-	    double floor = rangeV[0];
-	    double coeff = 255. / double(rangeV[1]-rangeV[0]);
-	    UINT8 *destLine;
-	    
-	    for (size_t j=0;j<h;j++,lines++)
-	    {
-		Image<UINT8>::lineType pixels = *lines;
-		destLine = this->qImage->scanLine(j);
-		for (size_t i=0;i<w;i++)
-	// 	  pixels[i] = 0;
-		    destLine[i] = (UINT8)(coeff * (double(pixels[i]) - floor));
-	    }
-	}
-	else
-	  for (size_t j=0;j<h;j++, lines++)
-	      memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
+        if (!parentClass::labelImage && autoRange)
+        {
+            vector<UINT8> rangeV = rangeVal<UINT8>(*this->image);
+            double floor = rangeV[0];
+            double coeff = 255. / double(rangeV[1]-rangeV[0]);
+            UINT8 *destLine;
+            
+            for (size_t j=0;j<h;j++,lines++)
+            {
+                Image<UINT8>::lineType pixels = *lines;
+                destLine = this->qImage->scanLine(j);
+                for (size_t i=0;i<w;i++)
+        //           pixels[i] = 0;
+                    destLine[i] = (UINT8)(coeff * (double(pixels[i]) - floor));
+            }
+        }
+        else
+          for (size_t j=0;j<h;j++, lines++)
+              memcpy(qImage->scanLine(j), *lines, sizeof(uchar) * w);
     }
 
 
@@ -76,34 +76,34 @@ namespace smil
     template <>
     void QtImageViewer<BIN>::drawImage()
     {
-	Image<BIN>::lineType pixels = this->image->getPixels();
-	size_t w = this->image->getWidth();
-	size_t h = this->image->getHeight();
+        Image<BIN>::lineType pixels = this->image->getPixels();
+        size_t w = this->image->getWidth();
+        size_t h = this->image->getHeight();
 
-	this->setImageSize(w, h);
+        this->setImageSize(w, h);
 
-	const BIN *lIn;
-	UINT8 *lOut, *lEnd;
-	size_t bCount = (w-1)/BIN::SIZE + 1;
+        const BIN *lIn;
+        UINT8 *lOut, *lEnd;
+        size_t bCount = (w-1)/BIN::SIZE + 1;
 
-	for (int j=0;j<h;j++)
-	{
-	    lIn = pixels + j*bCount;
-	    lOut = this->qImage->scanLine(j);
-	    lEnd = lOut + w;
+        for (int j=0;j<h;j++)
+        {
+            lIn = pixels + j*bCount;
+            lOut = this->qImage->scanLine(j);
+            lEnd = lOut + w;
 
-	    for (int b=0;b<bCount;b++,lIn++)
-	    {
-	      BIN_TYPE bVal = (*lIn).val;
+            for (int b=0;b<bCount;b++,lIn++)
+            {
+              BIN_TYPE bVal = (*lIn).val;
 
-	      for (int i=0;i<BIN::SIZE;i++,lOut++)
-	      {
-		if (lOut==lEnd)
-		  break;
-		*lOut = bVal & (1 << i) ? 255 : 0;
-	      }
-	    }
-	}
+              for (int i=0;i<BIN::SIZE;i++,lOut++)
+              {
+                if (lOut==lEnd)
+                  break;
+                *lOut = bVal & (1 << i) ? 255 : 0;
+              }
+            }
+        }
     }
 
     #endif // SMIL_WRAP_BIN

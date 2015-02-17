@@ -16,7 +16,6 @@ class myAreaExtinction(ExtinctionFlooding_UINT8_UINT16):
       eaten = lbl1
     self.extinctionValues[eaten] = self.areas[eaten]
     self.areas[eater] += self.areas[eaten]
-    self.equivalentLabels[eaten] = eater
     return eater
   def finalize(self, lbl):
     self.extinctionValues[lbl] += self.areas[lbl]
@@ -28,7 +27,7 @@ imMark = Image(imIn, "UINT16")
 imExtRank = Image(imIn, "UINT16")
 
 gradient(imIn, imGrad)
-hMinimaLabeled(imGrad, 20, imMark)
+hMinimaLabeled(imGrad, 25, imMark)
 
 aExt = myAreaExtinction()
 aExt.floodWithExtRank(imIn, imMark, imExtRank)

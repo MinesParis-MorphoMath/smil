@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -63,24 +63,24 @@ namespace smil
     class PNGImageFileHandler : public ImageFileHandler<T>
     {
       public:
-	PNGImageFileHandler()
-	  : ImageFileHandler<T>("PNG")
-	{
-	}
-	
-	virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
-	{
-	    return getPNGFileInfo(filename, fInfo);
-	}
-	
-	virtual RES_T read(const char* filename, Image<T> &image)
-	{
-	    return ImageFileHandler<T>::read(filename, image);
-	}
-	virtual RES_T write(const Image<T> &image, const char* filename)
-	{
-	    return ImageFileHandler<T>::write(image, filename);
-	}
+        PNGImageFileHandler()
+          : ImageFileHandler<T>("PNG")
+        {
+        }
+        
+        virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
+        {
+            return getPNGFileInfo(filename, fInfo);
+        }
+        
+        virtual RES_T read(const char* filename, Image<T> &image)
+        {
+            return ImageFileHandler<T>::read(filename, image);
+        }
+        virtual RES_T write(const Image<T> &image, const char* filename)
+        {
+            return ImageFileHandler<T>::write(image, filename);
+        }
     };
 
     // Specializations

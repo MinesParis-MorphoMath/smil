@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -44,45 +44,45 @@ namespace smil
     #ifdef _MSC_VER
 
     typedef struct timeval {
-	UINT64 tv_sec;
-	UINT64 tv_usec;
+        UINT64 tv_sec;
+        UINT64 tv_usec;
     } timeval;
 
     inline int gettimeofday (struct timeval *tp, void *tz)
     {
-	struct _timeb timebuffer;
-	_ftime (&timebuffer);
-	tp->tv_sec = timebuffer.time;
-	tp->tv_usec = timebuffer.millitm * 1000;
-	return 0;
+        struct _timeb timebuffer;
+        _ftime (&timebuffer);
+        tp->tv_sec = timebuffer.time;
+        tp->tv_usec = timebuffer.millitm * 1000;
+        return 0;
     }
 
     #endif // _MSC_VER
 
-	
+        
     static inline double getCpuTime()
     {
-	struct timeval tv;
-	if (gettimeofday(&tv, 0)) 
-	{
-	    cout << "gettimeofday returned error" << endl;
-	}
-	return tv.tv_sec + double(tv.tv_usec)/1E6;
+        struct timeval tv;
+        if (gettimeofday(&tv, 0)) 
+        {
+            cout << "gettimeofday returned error" << endl;
+        }
+        return tv.tv_sec + double(tv.tv_usec)/1E6;
     }
 
     inline string displayTime(double tSec)
     {
-	stringstream s;
-	s << std::fixed;
+        stringstream s;
+        s << std::fixed;
 
-	if (tSec>=1.)
-	  s << std::setprecision(2) << tSec << " secs";
-	else if (tSec*1E3>=1.)
-	  s << std::setprecision(2) << tSec*1E3 << " msecs";
-	else 
-	  s << std::setprecision(0) << tSec*1E6 << " usecs";
-	
-	return s.str();
+        if (tSec>=1.)
+          s << std::setprecision(2) << tSec << " secs";
+        else if (tSec*1E3>=1.)
+          s << std::setprecision(2) << tSec*1E3 << " msecs";
+        else 
+          s << std::setprecision(0) << tSec*1E6 << " usecs";
+        
+        return s.str();
     }
 
 

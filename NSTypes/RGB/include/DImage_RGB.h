@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -43,149 +43,158 @@ namespace smil
     template <>
     inline void Image<RGB>::init() 
     { 
-	className = "Image";
-	
-	slices = NULL;
-	lines = NULL;
+        className = "Image";
+        
+        slices = NULL;
+        lines = NULL;
     //     pixels = NULL;
 
-	dataTypeSize = sizeof(pixelType); 
-	
-	allocatedSize = 0;
-	
-	viewer = NULL;
-	name = "";
-	
-	updatesEnabled = true;
-	
-	parentClass::init();
+        dataTypeSize = sizeof(pixelType); 
+        
+        allocatedSize = 0;
+        
+        viewer = NULL;
+        name = "";
+        
+        updatesEnabled = true;
+        
+        parentClass::init();
     }
 
     template <>
     inline RES_T Image< RGB >::restruct(void)
     {
-	if (this->slices)
-	    delete[] this->slices;
-	if (this->lines)
-	    delete[] this->lines;
+        if (this->slices)
+            delete[] this->slices;
+        if (this->lines)
+            delete[] this->lines;
 
-	this->lines =  new lineType[lineCount];
-	this->slices = new sliceType[sliceCount];
+        this->lines =  new lineType[lineCount];
+        this->slices = new sliceType[sliceCount];
 
-	sliceType cur_line = this->lines;
-	volType cur_slice = this->slices;
+        sliceType cur_line = this->lines;
+        volType cur_slice = this->slices;
 
-	size_t pixelsPerSlice = this->width * this->height;
+        size_t pixelsPerSlice = this->width * this->height;
 
-	for (size_t k=0; k<depth; k++, cur_slice++)
-	{
-	  *cur_slice = cur_line;
+        for (size_t k=0; k<depth; k++, cur_slice++)
+        {
+          *cur_slice = cur_line;
 
-	  for (size_t j=0; j<height; j++, cur_line++)
-	  {
-	      for (UINT n=0;n<3;n++)
-		 (*cur_line).arrays[n] = pixels.arrays[n] + k*pixelsPerSlice + j*width;
-	  }
-	}
+          for (size_t j=0; j<height; j++, cur_line++)
+          {
+              for (UINT n=0;n<3;n++)
+                 (*cur_line).arrays[n] = pixels.arrays[n] + k*pixelsPerSlice + j*width;
+          }
+        }
 
 
-	return RES_OK;
+        return RES_OK;
     }
     
         
+//     template <>
+//     inline const char* Image<RGB>::getTypeAsString()
+//     {
+//         if (this->allocated)
+//             return this->pixels.subtypeName.c_str();
+//         else return "RGB";
+//     }
+    
     template <>
     inline void* Image<RGB>::getVoidPointer() 
-	{
-	return &pixels;
+        {
+        return &pixels;
     }
 
     template <>
     inline RES_T Image<RGB>::allocate()
     {
-	if (this->allocated)
-	    return RES_ERR_BAD_ALLOCATION;
+        if (this->allocated)
+            return RES_ERR_BAD_ALLOCATION;
 
-// 	this->pixels = ImDtTypes<RGB>::createLine(pixelCount);
+//         this->pixels = ImDtTypes<RGB>::createLine(pixelCount);
     //     pixels = new pixelType[pixelCount];
-	this->pixels.createArrays(this->pixelCount);
+        this->pixels.createArrays(this->pixelCount);
+//         this->pixels.subtypeName = "RGB";
 
-	ASSERT((this->pixels.isAllocated()), "Can't allocate image", RES_ERR_BAD_ALLOCATION);
+        ASSERT((this->pixels.isAllocated()), "Can't allocate image", RES_ERR_BAD_ALLOCATION);
 
-	this->allocated = true;
-	this->allocatedSize = 3*this->pixelCount*sizeof(UINT8);
+        this->allocated = true;
+        this->allocatedSize = 3*this->pixelCount*sizeof(UINT8);
 
-	this->restruct();
+        this->restruct();
 
-	return RES_OK;
+        return RES_OK;
     }
     
     template <>
     inline RES_T Image<RGB>::deallocate()
     {
-	if (!this->allocated)
-	    return RES_OK;
+        if (!this->allocated)
+            return RES_OK;
 
-	if (this->slices)
-	    delete[] this->slices;
-	if (this->lines)
-	    delete[] this->lines;
-	if (this->pixels.isAllocated())
-	  this->pixels.deleteArrays();
-// 	  ImDtTypes<RGB>::deleteLine(pixels);
-	
-	this->slices = NULL;
-	this->lines = NULL;
-	for (UINT n=0;n<3;n++)
-	  this->pixels.arrays[n] = NULL;
+        if (this->slices)
+            delete[] this->slices;
+        if (this->lines)
+            delete[] this->lines;
+        if (this->pixels.isAllocated())
+          this->pixels.deleteArrays();
+//           ImDtTypes<RGB>::deleteLine(pixels);
+        
+        this->slices = NULL;
+        this->lines = NULL;
+        for (UINT n=0;n<3;n++)
+          this->pixels.arrays[n] = NULL;
 
-	this->allocated = false;
-	this->allocatedSize = 0;
+        this->allocated = false;
+        this->allocatedSize = 0;
 
-	return RES_OK;
+        return RES_OK;
     }
 
     template <>
     inline double vol(const Image<RGB> &imIn)
     {
-	if (!imIn.isAllocated())
-	    return RES_ERR_BAD_ALLOCATION;
+        if (!imIn.isAllocated())
+            return RES_ERR_BAD_ALLOCATION;
 
-	int npix = imIn.getPixelCount();
-	ImDtTypes<UINT8>::lineType pixels;
-	double vol = 0;
+        int npix = imIn.getPixelCount();
+        ImDtTypes<UINT8>::lineType pixels;
+        double vol = 0;
 
-	for (UINT n=0;n<3;n++)
-	{
-	    pixels = imIn.getPixels().arrays[n];
-	    for (int i=0;i<npix;i++)
-		vol += double(pixels[i]);
-	}
+        for (UINT n=0;n<3;n++)
+        {
+            pixels = imIn.getPixels().arrays[n];
+            for (int i=0;i<npix;i++)
+                vol += double(pixels[i]);
+        }
 
-	return vol;
+        return vol;
     }
     
     template <>
     inline Image<RGB>::operator bool()
     { 
-	return vol(*this)==255 * pixelCount * 3; 
+        return vol(*this)==255 * pixelCount * 3; 
     }
     
 //     template <>
 //     inline std::map<RGB, UINT> histogram(const Image<RGB> &imIn)
 //     {
-// 	map<T, UINT> h;
-// 	for (T i=ImDtTypes<T>::min();;i++)
-// 	{
-// 	    h.insert(pair<T,UINT>(i, 0));
-// 	    if (i==ImDtTypes<T>::max())
-// 	      break;
-// 	}
+//         map<T, UINT> h;
+//         for (T i=ImDtTypes<T>::min();;i++)
+//         {
+//             h.insert(pair<T,UINT>(i, 0));
+//             if (i==ImDtTypes<T>::max())
+//               break;
+//         }
 // 
-// 	typename Image<T>::lineType pixels = imIn.getPixels();
-// 	for (size_t i=0;i<imIn.getPixelCount();i++)
-// 	    h[pixels[i]]++;
-// 	
-// 	return h;
+//         typename Image<T>::lineType pixels = imIn.getPixels();
+//         for (size_t i=0;i<imIn.getPixelCount();i++)
+//             h[pixels[i]]++;
+//         
+//         return h;
 //     }
 
 //     template <>
@@ -193,14 +202,14 @@ namespace smil
 //     {
 //     }
     
-#ifndef SWIGPYTHON	
+#ifndef SWIGPYTHON        
     template <>
     inline char *Image<RGB>::toCharArray()
     {
-	cout << "Not implemented for RGB images" << endl;
-	return NULL;
+        cout << "Not implemented for RGB images" << endl;
+        return NULL;
     }
-#endif // SWIGPYTHON	
+#endif // SWIGPYTHON        
     
     
 #ifdef USE_QWT

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -66,23 +66,23 @@ class Test_InitHierarchicalQueue : public TestCase
   virtual void run()
   {
       UINT8 vecIn[] = { 
-	2, 2, 2, 2, 2, 2,
-	7, 7, 7, 7, 7, 7,
-	2, 7, 5, 6, 2, 2,
-	2, 6, 5, 6, 2, 2,
-	2, 2, 6, 4, 3, 2,
-	2, 2, 3, 4, 2, 2,
-	2, 2, 2, 2, 4, 2
+        2, 2, 2, 2, 2, 2,
+        7, 7, 7, 7, 7, 7,
+        2, 7, 5, 6, 2, 2,
+        2, 6, 5, 6, 2, 2,
+        2, 2, 6, 4, 3, 2,
+        2, 2, 3, 4, 2, 2,
+        2, 2, 2, 2, 4, 2
       };
       
       UINT8 vecLbl[] = { 
-	1, 1, 1, 1, 1, 1,
-	0, 0, 0, 0, 0, 0,
-	2, 0, 0, 0, 3, 3,
-	2, 0, 0, 0, 3, 3,
-	2, 2, 0, 0, 0, 3,
-	2, 2, 0, 0, 3, 3,
-	2, 2, 2, 2, 0, 3
+        1, 1, 1, 1, 1, 1,
+        0, 0, 0, 0, 0, 0,
+        2, 0, 0, 0, 3, 3,
+        2, 0, 0, 0, 3, 3,
+        2, 2, 0, 0, 0, 3,
+        2, 2, 0, 0, 3, 3,
+        2, 2, 2, 2, 0, 3
       };
       
       
@@ -107,11 +107,11 @@ class Test_Build : public TestCase
   virtual void run()
   {
       UINT8 vecIn[] = { 
-	1, 2, 0, 5, 5, 5, 3, 3, 3, 1, 1
+        1, 2, 0, 5, 5, 5, 3, 3, 3, 1, 1
       };
       
       UINT8 vecMark[] = { 
-	0, 0, 0, 0, 4, 1, 1, 2, 0, 0, 0
+        0, 0, 0, 0, 4, 1, 1, 2, 0, 0, 0
       };
       
       Image_UINT8 imIn(11,1);
@@ -124,7 +124,7 @@ class Test_Build : public TestCase
       dualBuild(imIn, imMark, imBuild, sSE());
       
       UINT8 vecTruth[] = { 
-	0, 0, 0, 0, 4, 2, 2, 2, 1, 1, 1
+        0, 0, 0, 0, 4, 2, 2, 2, 1, 1, 1
       };
       
       Image_UINT8 imTruth(imIn);
@@ -134,7 +134,7 @@ class Test_Build : public TestCase
       TEST_ASSERT(imBuild==imTruth);
       
       if (retVal!=RES_OK)
-	imBuild.printSelf(1);
+        imBuild.printSelf(1);
   }
 };
 
@@ -143,23 +143,23 @@ class Test_BinBuild : public TestCase
   virtual void run()
   {
       UINT8 vecIn[] = { 
-	  0,   0,   0,   0,   0, 255,   0,
-	  0,   0,   0,   0,   0,   0,   0,
-	  0,   0,   0,   0,   0,   0,   0,
-	255,   0,   0,   0,   0,   0,   0,
-	  0,   0,   0,   0,   0,   0,   0,
-	  0,   0,   0,   0,   0, 255,   0,
-	  0,   0,   0,   0,   0,   0,   0,
+          0,   0,   0,   0,   0, 255,   0,
+          0,   0,   0,   0,   0,   0,   0,
+          0,   0,   0,   0,   0,   0,   0,
+        255,   0,   0,   0,   0,   0,   0,
+          0,   0,   0,   0,   0,   0,   0,
+          0,   0,   0,   0,   0, 255,   0,
+          0,   0,   0,   0,   0,   0,   0,
       };
       
       UINT8 vecMark[] = { 
-	255, 255,   0, 255,   0, 255,   0,
-	  0,   0, 255,   0,   0,   0,   0,
-	  0,   0,   0,   0,   0,   0,   0,
-	255, 255, 255,   0,   0,   0,   0,
-	  0,   0,   0,   0,   0,   0,   0,
-	  0,   0,   0,   0,   0, 255,   0,
-	  0,   0,   0,   0,   0,   0, 255,
+        255, 255,   0, 255,   0, 255,   0,
+          0,   0, 255,   0,   0,   0,   0,
+          0,   0,   0,   0,   0,   0,   0,
+        255, 255, 255,   0,   0,   0,   0,
+          0,   0,   0,   0,   0,   0,   0,
+          0,   0,   0,   0,   0, 255,   0,
+          0,   0,   0,   0,   0,   0, 255,
       };
       
       Image_UINT8 imIn(7,7);
@@ -170,13 +170,13 @@ class Test_BinBuild : public TestCase
       imMark << vecMark;
       
       UINT8 vecTruth[] = { 
-	0,   0,   0,   0,   0, 255,   0,
-	0,   0,   0,   0,   0,   0,   0,
-	0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0, 255,   0,
+        0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,   0,   0,
       255, 255, 255,   0,   0,   0,   0,
-	0,   0,   0,   0,   0,   0,   0,
-	0,   0,   0,   0,   0, 255,   0,
-	0,   0,   0,   0,   0,   0, 255,
+        0,   0,   0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0, 255,   0,
+        0,   0,   0,   0,   0,   0, 255,
       };
       Image_UINT8 imTruth(imIn);
       imTruth << vecTruth;
@@ -194,7 +194,7 @@ class Test_BinBuild : public TestCase
       TEST_ASSERT(imBuild==imTruth);
       
       if (retVal!=RES_OK)
-	imBuild.printSelf(1);
+        imBuild.printSelf(1);
   }
 };
 

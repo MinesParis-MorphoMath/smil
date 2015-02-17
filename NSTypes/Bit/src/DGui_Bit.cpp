@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -42,34 +42,34 @@ namespace smil
     template <>
     void QtImageViewer<Bit>::drawImage()
     {
-	int sliceNbr = slider->value();
-	Image<Bit>::sliceType lines = this->image->getSlices()[sliceNbr];
+        int sliceNbr = slider->value();
+        Image<Bit>::sliceType lines = this->image->getSlices()[sliceNbr];
 
-	size_t w = this->image->getWidth();
-	size_t h = this->image->getHeight();
+        size_t w = this->image->getWidth();
+        size_t h = this->image->getHeight();
 
-	const BitArray::INT_TYPE *lIn;
-	UINT8 *lOut, *lEnd;
-	UINT bCount = BitArray::INT_SIZE(w);
+        const BitArray::INT_TYPE *lIn;
+        UINT8 *lOut, *lEnd;
+        UINT bCount = BitArray::INT_SIZE(w);
 
-	for (size_t j=0;j<h;j++)
-	{
-	    lIn = lines[j].intArray;
-	    lOut = this->qImage->scanLine(j);
-	    lEnd = lOut + w;
+        for (size_t j=0;j<h;j++)
+        {
+            lIn = lines[j].intArray;
+            lOut = this->qImage->scanLine(j);
+            lEnd = lOut + w;
 
-	    for (size_t b=0;b<bCount;b++,lIn++)
-	    {
-	      BitArray::INT_TYPE bVal = (*lIn);
+            for (size_t b=0;b<bCount;b++,lIn++)
+            {
+              BitArray::INT_TYPE bVal = (*lIn);
 
-	      for (size_t i=0;i<BitArray::INT_TYPE_SIZE;i++,lOut++)
-	      {
-		if (lOut==lEnd)
-		  break;
-		*lOut = (bVal & (1L << i)) ? 255 : 0;
-	      }
-	    }
-	}
+              for (size_t i=0;i<BitArray::INT_TYPE_SIZE;i++,lOut++)
+              {
+                if (lOut==lEnd)
+                  break;
+                *lOut = (bVal & (1L << i)) ? 255 : 0;
+              }
+            }
+        }
     }
 
 } // namespace smil

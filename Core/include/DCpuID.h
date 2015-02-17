@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,15 +38,15 @@ namespace smil
 {
     struct SIMD_Instructions
     {
-	bool MMX;
-	bool SSE;
-	bool SSE2;
-	bool SSE3;
-	bool SSSE3;
-	bool SSE41;
-	bool SSE42;
-	bool AES;
-	bool AVX;
+        bool MMX;
+        bool SSE;
+        bool SSE2;
+        bool SSE3;
+        bool SSSE3;
+        bool SSE41;
+        bool SSE42;
+        bool AES;
+        bool AVX;
     };
 
     // Associativity.
@@ -67,32 +67,32 @@ namespace smil
     {
 
       public:
-	
-	CpuID();
-	
-	string getVendor() const { return vendor; }
-	unsigned getCores() const { return cores; }
-	unsigned getLogical() const { return logical; }
-	bool isHyperThreated() const { return hyperThreaded; }
-	const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
+        
+        CpuID();
+        
+        string getVendor() const { return vendor; }
+        unsigned getCores() const { return cores; }
+        unsigned getLogical() const { return logical; }
+        bool isHyperThreated() const { return hyperThreaded; }
+        const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
         const std::vector<Cache_Descriptors> &getCaches() const { 
             return L; 
-        }	
-        unsigned int getNbrCacheLevel() const { return L.size (); }	
+        }        
+        unsigned int getNbrCacheLevel() const { return L.size (); }        
 
       protected:
-	UINT32 regs[4];
-	UINT32 &eax, &ebx, &ecx, &edx;
-	unsigned eaxFeatures, edxFeatures, ecxFeatures, ebxFeatures;
+        UINT32 regs[4];
+        UINT32 &eax, &ebx, &ecx, &edx;
+        unsigned eaxFeatures, edxFeatures, ecxFeatures, ebxFeatures;
 
-	unsigned cores;
-	unsigned logical;
-	string vendor;
-	bool hyperThreaded;
-	SIMD_Instructions simdInstructions;
+        unsigned cores;
+        unsigned logical;
+        string vendor;
+        bool hyperThreaded;
+        SIMD_Instructions simdInstructions;
         std::vector<Cache_Descriptors> L;
 
-	void load(unsigned i);
+        void load(unsigned i);
 
     };
 } // namespace smil

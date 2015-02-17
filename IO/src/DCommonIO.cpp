@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -44,59 +44,59 @@ namespace smil
 
     string getFileExtension(const char *fileName)
     {
-	string fName(fileName);
-	string::size_type idx = fName.rfind('.');
-	string fExt = fName.substr(idx+1).c_str();
-	transform(fExt.begin(), fExt.end(), fExt.begin(), ::toupper);
-	return fExt;
+        string fName(fileName);
+        string::size_type idx = fName.rfind('.');
+        string fExt = fName.substr(idx+1).c_str();
+        transform(fExt.begin(), fExt.end(), fExt.begin(), ::toupper);
+        return fExt;
     }
     
     
 #ifdef USE_CURL
     size_t write_data(void *ptr, size_t size, size_t nmemb, FILE *stream) 
     {
-	size_t written;
-	written = fwrite(ptr, size, nmemb, stream);
-	return written;
+        size_t written;
+        written = fwrite(ptr, size, nmemb, stream);
+        return written;
     }
 
 
     
     RES_T getHttpFile(const char *url, const char *outfilename) 
     {
-	CURL *curl_handle;
-	FILE *fp;
-	CURLcode res;
-	curl_handle = curl_easy_init();
-	if (curl_handle) 
-	{
-	    fp = fopen(outfilename,"wb");
-	    curl_easy_setopt(curl_handle, CURLOPT_URL, url);
-	    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
-	    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, fp);
-	    curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
-	    res = curl_easy_perform(curl_handle);
-	    curl_easy_cleanup(curl_handle);
-	    fclose(fp);
-	}
-	else res = CURLE_FAILED_INIT;
-	
-	ASSERT((res==CURLE_OK), RES_ERR_IO);
+        CURL *curl_handle;
+        FILE *fp;
+        CURLcode res;
+        curl_handle = curl_easy_init();
+        if (curl_handle) 
+        {
+            fp = fopen(outfilename,"wb");
+            curl_easy_setopt(curl_handle, CURLOPT_URL, url);
+            curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
+            curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, fp);
+            curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
+            res = curl_easy_perform(curl_handle);
+            curl_easy_cleanup(curl_handle);
+            fclose(fp);
+        }
+        else res = CURLE_FAILED_INIT;
+        
+        ASSERT((res==CURLE_OK), RES_ERR_IO);
 
-	return RES_OK;
+        return RES_OK;
     }
 
     static size_t
     WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
     {
-	size_t realsize = size * nmemb;
-	string *mem = (string*)userp;
+        size_t realsize = size * nmemb;
+        string *mem = (string*)userp;
 
-	int pos = mem->size();
-	mem->resize(mem->size() + realsize);
-	mem->replace(pos, realsize, (const char*)contents);
+        int pos = mem->size();
+        mem->resize(mem->size() + realsize);
+        mem->replace(pos, realsize, (const char*)contents);
 
-	return realsize;
+        return realsize;
     }
     
     /**
@@ -104,24 +104,24 @@ namespace smil
     */
     string getHttpFile(const char *url) 
     {
-	CURL *curl_handle;
-	string buffer;
+        CURL *curl_handle;
+        string buffer;
 
-	curl_global_init(CURL_GLOBAL_ALL);
-	CURLcode res;
-	curl_handle = curl_easy_init();
-	if (curl_handle)
-	{
-	    curl_easy_setopt(curl_handle, CURLOPT_URL, url);
-	    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-	    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&buffer);
-	    res = curl_easy_perform(curl_handle);
-	    curl_easy_cleanup(curl_handle);
-	    curl_global_cleanup();
-	}
-	else res = CURLE_FAILED_INIT;
+        curl_global_init(CURL_GLOBAL_ALL);
+        CURLcode res;
+        curl_handle = curl_easy_init();
+        if (curl_handle)
+        {
+            curl_easy_setopt(curl_handle, CURLOPT_URL, url);
+            curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+            curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&buffer);
+            res = curl_easy_perform(curl_handle);
+            curl_easy_cleanup(curl_handle);
+            curl_global_cleanup();
+        }
+        else res = CURLE_FAILED_INIT;
 
-	return buffer;
+        return buffer;
     }
 #endif // USE_CURL
     

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2014, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 #ifndef _SAMPLE_MODULE_HPP
 #define _SAMPLE_MODULE_HPP
 
-#include "DCore.h"
+#include "Core/include/DCore.h"
 
 namespace smil
 {
@@ -39,13 +39,13 @@ namespace smil
     template <class T>
     RES_T sampleFunction(const Image<T> &imIn, Image<T> &imOut)
     {
-	ASSERT_ALLOCATED(&imIn, &imOut);
-	ASSERT_SAME_SIZE(&imIn, &imOut);
-	
-	ImageFreezer freeze(imOut);
-	
-	
-	
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        ImageFreezer freeze(imOut);
+        
+        
+        
     }
 }
 
