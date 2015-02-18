@@ -1068,6 +1068,7 @@ namespace smil
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
         T2 *outVals = ImDtTypes<T2>::createLine(ImDtTypes<T1>::cardinal());
+        
         for (int i=0;i<ImDtTypes<T1>::max();i++)
           outVals[i] = defaultValue;
         
@@ -1081,6 +1082,8 @@ namespace smil
           pixOut[i] = outVals[ pixIn[i] ];
         
         imOut.modified();
+        
+        ImDtTypes<T2>::deleteLine(outVals);
 
         return RES_OK;
     }
