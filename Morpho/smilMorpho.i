@@ -68,7 +68,7 @@ builtinOpen = open
 
 %include "Core/include/private/DInstance.hpp"
 %template(MorphoInstance) smil::UniqueInstance<smil::Morpho>;
-%include "DMorphoInstance.h"
+%include "Morpho/include/DMorphoInstance.h"
 
 
 #ifdef SWIGJAVA
@@ -76,27 +76,27 @@ builtinOpen = open
 #endif // SWIGJAVA
 
 #ifdef SWIGPYTHON
-%include "DStructuringElement.h"
+%include "Morpho/include/DStructuringElement.h"
 #endif // SWIGPYTHON
 
 
-%include "DMorphImageOperations.hpp"
+%include "Morpho/include/private/DMorphImageOperations.hpp"
 %feature("director") MorphImageFunctionBase;
 TEMPLATE_WRAP_CLASS(MorphImageFunctionBase, MorphImageFunctionBase);
 
 
-%include "DMorphoBase.hpp"
+%include "Morpho/include/private/DMorphoBase.hpp"
 TEMPLATE_WRAP_FUNC(dilate);
 TEMPLATE_WRAP_FUNC(erode);
 TEMPLATE_WRAP_FUNC(close);
 TEMPLATE_WRAP_FUNC(open);
 
-%include "DMorphoResidues.hpp"
+%include "Morpho/include/private/DMorphoResidues.hpp"
 TEMPLATE_WRAP_FUNC(gradient);
 TEMPLATE_WRAP_FUNC(topHat);
 TEMPLATE_WRAP_FUNC(dualTopHat);
 
-%include "DMorphoGeodesic.hpp"
+%include "Morpho/include/private/DMorphoGeodesic.hpp"
 TEMPLATE_WRAP_FUNC(geoDil);
 TEMPLATE_WRAP_FUNC(geoEro);
 TEMPLATE_WRAP_FUNC(geoBuild);
@@ -113,7 +113,7 @@ TEMPLATE_WRAP_FUNC(levelPics);
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist);
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist_euclidean);
 
-%include "DMorphoExtrema.hpp"
+%include "Morpho/include/private/DMorphoExtrema.hpp"
 TEMPLATE_WRAP_FUNC(hMinima);
 TEMPLATE_WRAP_FUNC(hMaxima);
 TEMPLATE_WRAP_FUNC(minima);
@@ -123,16 +123,16 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(maximaLabeled);
 TEMPLATE_WRAP_FUNC_2T_CROSS(hMinimaLabeled);
 TEMPLATE_WRAP_FUNC_2T_CROSS(hMaximaLabeled);
 
-%include "DMorphoFilter.hpp"
+%include "Morpho/include/private/DMorphoFilter.hpp"
 TEMPLATE_WRAP_FUNC(asfClose);
 TEMPLATE_WRAP_FUNC(asfOpen);
 TEMPLATE_WRAP_FUNC(mean);
 TEMPLATE_WRAP_FUNC(median);
 
-%include "DMorphoArrow.hpp"
+%include "Morpho/include/private/DMorphoArrow.hpp"
 TEMPLATE_WRAP_FUNC(arrow);
 
-%include "DMorphoWatershed.hpp"
+%include "Morpho/include/private/DMorphoWatershed.hpp"
 TEMPLATE_WRAP_FUNC(watershed);
 TEMPLATE_WRAP_FUNC_2T_CROSS(watershed);
 TEMPLATE_WRAP_FUNC_2T_CROSS(basins);
@@ -145,7 +145,7 @@ TEMPLATE_WRAP_CLASS_2T_CROSS(BaseFlooding, BaseFlooding);
 %feature("director") WatershedFlooding;
 TEMPLATE_WRAP_CLASS_2T_CROSS(WatershedFlooding, WatershedFlooding);
 
-%include "DMorphoWatershedExtinction.hpp"
+%include "Morpho/include/private/DMorphoWatershedExtinction.hpp"
 %feature("director") ExtinctionFlooding;
 TEMPLATE_WRAP_CLASS_MEMBER_FUNC(ExtinctionFlooding, floodWithExtValues);
 TEMPLATE_WRAP_CLASS_MEMBER_FUNC(ExtinctionFlooding, floodWithExtRank);
@@ -155,7 +155,7 @@ TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinction);
 TEMPLATE_WRAP_FUNC_2T_CROSS(watershedExtinctionGraph);
 TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinctionGraph);
 
-%include "DMorphoLabel.hpp"
+%include "Morpho/include/private/DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(label);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithoutFunctor);
 TEMPLATE_WRAP_FUNC_2T_CROSS(lambdaLabel);
@@ -172,32 +172,32 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
     }
 }
 
-%include "DCompositeSE.h"
-%include "DHitOrMiss.hpp"
+%include "Morpho/include/DCompositeSE.h"
+%include "Morpho/include/private/DHitOrMiss.hpp"
 TEMPLATE_WRAP_FUNC(hitOrMiss);
 TEMPLATE_WRAP_FUNC(thin);
 TEMPLATE_WRAP_FUNC(fullThin);
 TEMPLATE_WRAP_FUNC(thick);
 TEMPLATE_WRAP_FUNC(fullThick);
 
-%include "DSkeleton.hpp"
+%include "Morpho/include/private/DSkeleton.hpp"
 TEMPLATE_WRAP_FUNC(skiz);
 TEMPLATE_WRAP_FUNC(skeleton);
 TEMPLATE_WRAP_FUNC_2T_CROSS(extinctionValues);
 TEMPLATE_WRAP_FUNC(zhangSkeleton);
 
-%include "DMorphoMaxTree.hpp"
+%include "Morpho/include/private/DMorphoMaxTree.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpenMSER);
 TEMPLATE_WRAP_FUNC(areaOpen);
 TEMPLATE_WRAP_FUNC(areaClose);
 
-%include "DMorphoGraph.hpp"
+%include "Morpho/include/private/DMorphoGraph.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(mosaicToGraph);
 TEMPLATE_WRAP_FUNC(graphToMosaic);
 TEMPLATE_WRAP_FUNC_2T_CROSS(drawGraph);
 
-%include "DMorphoMeasures.hpp"
+%include "Morpho/include/private/DMorphoMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measGranulometry);
 
 

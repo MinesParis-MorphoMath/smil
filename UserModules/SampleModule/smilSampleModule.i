@@ -31,15 +31,16 @@
 
 SMIL_MODULE(smilSampleModule)
 
+%import smilCore.i
+%import smilMorpho.i
 
 %{
-/* Includes the header in the wrapper code */
+/* Includes needed header(s)/definitions in the wrapped code */
 #include "SampleModule.hpp"
 %}
 
-%import smilCore.i
+%include "include/SampleModule.hpp"
 
-%include "SampleModule.hpp"
-
-TEMPLATE_WRAP_FUNC(sampleFunction)
+TEMPLATE_WRAP_FUNC(samplePixelFunction)
+TEMPLATE_WRAP_FUNC(sampleMorphoFunction)
 

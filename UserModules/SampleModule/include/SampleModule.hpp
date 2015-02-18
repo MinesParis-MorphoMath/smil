@@ -31,22 +31,51 @@
 #define _SAMPLE_MODULE_HPP
 
 #include "Core/include/DCore.h"
+#include "Morpho/include/DMorpho.h"
 
 namespace smil
 {
-
-
+    // Sample inv function
     template <class T>
-    RES_T sampleFunction(const Image<T> &imIn, Image<T> &imOut)
+    RES_T samplePixelFunction(const Image<T> &imIn, Image<T> &imOut)
     {
-        ASSERT_ALLOCATED(&imIn, &imOut);
-        ASSERT_SAME_SIZE(&imIn, &imOut);
+        ASSERT_ALLOCATED(&imIn)
+        ASSERT_SAME_SIZE(&imIn, &imOut)
         
         ImageFreezer freeze(imOut);
         
+        typename Image<T>::lineType pixelsIn = imIn.getPixels();
+        typename Image<T>::lineType pixelsOut = imOut.getPixels();
         
+        for (size_t i=0;i<imIn.getPixelCount();i++)
+          pixelsOut[i] = ImDtTypes<T>::max() - pixelsIn[i];
         
+        return RES_OK;
     }
+    
+    
+    // Sample Morpho functor
+    template <class T>
+    struct SampleMorphoFunctor: public MorphImageFunctionBase<T>
+    {
+        virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsets)
+        {
+            double pixSum = 0;
+            
+            for (vector<int>::iterator it=dOffsets.begin();it!=dOffsets.end();it++)
+              pixSum += this->pixelsIn[ pointOffset + *it ];
+            
+            this->pixelsOut[ pointOffset ] = T( pixSum / dOffsets.size() );
+            
+        }
+    };
+
+    template <class T>
+    RES_T sampleMorphoFunction(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        SampleMorphoFunctor<T> func;
+        return func(imIn, imOut, se);
+    }  
 }
 
 #endif // _SAMPLE_MODULE_HPP
