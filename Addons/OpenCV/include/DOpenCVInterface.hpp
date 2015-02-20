@@ -60,19 +60,17 @@ namespace smil
         {
             BaseObject::className = "OpenCVInt";
             parentClass::init();
-            this->pixels = (T*)(_cvMat.data);
-            this->setSize(_cvMat.size().width, _cvMat.size().height);
+            this->attach((T*)(_cvMat.data), _cvMat.size().width, _cvMat.size().height);
         }
         //! Constructor
         OpenCVInt(IplImage *cvIm)
         {
             BaseObject::className = "OpenCVInt";
             parentClass::init();
-            this->pixels = (T*)(cvIm->imageData);
-            this->setSize(cvIm->width, cvIm->height);
+            this->attach((T*)(cvIm->imageData), cvIm->width, cvIm->height);
         }
         
-    #ifdef SWIGPYTHON
+    #if defined Py_PYCONFIG_H  || defined SWIGPYTHON
     private:
         struct python_iplimage
         {
@@ -94,17 +92,12 @@ namespace smil
             }
             BaseObject::className = "OpenCVInt";
             parentClass::init();
-            this->pixels = (T*)(cvIm->imageData);
-            this->setSize(cvIm->width, cvIm->height);
+            this->attach((T*)(cvIm->imageData), cvIm->width, cvIm->height, 1);
         }
     #endif // SWIGPYTHON
     
     };
     
-    template <class T>
-    IplImage *toIplImage(Image<T> &im)
-    {
-    }
     
     template <class T>
     int getCvType()

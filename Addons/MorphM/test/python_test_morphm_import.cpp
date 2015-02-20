@@ -7,6 +7,12 @@
 
 using namespace smil;
 
+#define PY_TEST_SCRIPT "\
+import MorpheePython as mp \n\
+mIm = mp.createImage(mp.dataCategory.dtScalar, mp.scalarDataType.sdtUINT8) \n\
+mIm.setSize(256,127) \n\
+mIm.setColorInfo(mp.colorInfo.ciMonoSpectral) \n\
+mIm.allocateImage()"
 
 class Test_Python_Import : public TestCase
 {
@@ -19,17 +25,14 @@ class Test_Python_Import : public TestCase
       
       PyRun_String("import sys", Py_file_input, globals, NULL);
       PyRun_SimpleString((string("sys.path.append(\"") + MORPHEE_LIBRARY_DIR + "\")").c_str());
-      PyRun_SimpleString("import MorpheePython as mp");
-      PyRun_SimpleString("mIm = mp.createImage(mp.dataCategory.dtScalar, mp.scalarDataType.sdtUINT8)");
-      PyRun_SimpleString("mIm.setSize(256,256)");
-      PyRun_SimpleString("mIm.setColorInfo(mp.colorInfo.ciMonoSpectral)");
-      PyRun_SimpleString("mIm.allocateImage()");
+      
+      PyRun_SimpleString(PY_TEST_SCRIPT);
 
       PyObject *pyobj = PyDict_GetItem(globals, PyUnicode_FromString( "mIm" ));
       
       MorphmInt<UINT8> mIm(pyobj);
       TEST_ASSERT(mIm.isAllocated());
-      TEST_ASSERT(mIm.getWidth()==256 && mIm.getHeight()==256);
+      TEST_ASSERT(mIm.getWidth()==256 && mIm.getHeight()==127);
       
       
       Py_Finalize();

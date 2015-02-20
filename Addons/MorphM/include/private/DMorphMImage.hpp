@@ -35,6 +35,7 @@
 
 #include <morphee/image/include/private/image_T.hpp>
 #include <morphee/image/include/imageInterface.hpp>
+#include <morphee/image/include/imageUtils.hpp>
 
 #ifdef SWIGPYTHON
   #include <boost/python.hpp>

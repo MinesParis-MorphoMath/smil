@@ -1,11 +1,11 @@
 
+#include "Python.h"
+
 #include "DOpenCVInterface.hpp"
 #include "Core/include/DTest.h"
 
-#include "Python.h"
 
 using namespace smil;
-using namespace cv;
 
 class Test_Python_Import : public TestCase
 {
@@ -13,21 +13,19 @@ class Test_Python_Import : public TestCase
     {
       Py_Initialize();
 
-//       PyObject *_main = PyImport_ImportModule("__main__");
-//       PyObject *globals = PyModule_GetDict(_main);
-//       
-//       PyRun_String("import sys", Py_file_input, globals, NULL);
-//       PyRun_SimpleString((string("sys.path.append(\"") + MORPHEE_LIBRARY_DIR + "\")").c_str());
-//       PyRun_SimpleString("import MorpheePython as mp");
-//       PyRun_SimpleString("mIm = mp.createImage(mp.dataCategory.dtScalar, mp.scalarDataType.sdtUINT8)");
-//       PyRun_SimpleString("mIm.setSize(256,256)");
-//       PyRun_SimpleString("mIm.setColorInfo(mp.colorInfo.ciMonoSpectral)");
-//       PyRun_SimpleString("mIm.allocateImage()");
-// 
-//       PyObject *pyobj = PyDict_GetItem(globals, PyString_FromString( "mIm" ));
+      PyObject *_main = PyImport_ImportModule("__main__");
+      PyObject *globals = PyModule_GetDict(_main);
+      
+      PyRun_SimpleString("import cv");
+      PyRun_SimpleString("cvIm = cv.CreateImage((256,127), 8, 1)");
 
-//       OpenCVInt<UINT8> mIm(pyobj);
-//       TEST_ASSERT(mIm.isAllocated());
+      PyObject *pyobj = PyDict_GetItem(globals, PyUnicode_FromString( "cvIm" ));
+      
+      OpenCVInt<UINT8> cvIm(pyobj);
+      
+      TEST_ASSERT(cvIm.isAllocated());
+      TEST_ASSERT(cvIm.getWidth()==256 && cvIm.getHeight()==127);
+      
       
       Py_Finalize();
         

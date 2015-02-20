@@ -30,18 +30,17 @@ SET(MODULE_NAME MorphM)
 FIND_PATH(MORPHEE_INCLUDE_DIR morphee/image/include/private/image_T.hpp
 	  DOC "Morphee sources directory"
 )
-FIND_PATH(MORPHEE_LIBRARY_DIR NAMES libMorpheecommon.so Morpheecommon.dll
+FIND_PATH(MORPHEE_LIBRARY_DIR NAMES libMorpheecommon.so libMorpheecommon.a Morpheecommon.dll Morpheecommon.lib
 	  DOC "Morphee libraries directory"
 )
 
 INCLUDE_DIRECTORIES(${MORPHEE_INCLUDE_DIR})
 
 ADD_DEFINITIONS(-DMORPHEE_LIBRARY_DIR="${MORPHEE_LIBRARY_DIR}")
-SET(MODULE_DEPS ${SMIL_LIB_PREFIX}Core -L"${MORPHEE_LIBRARY_DIR}" Morpheecommon Morpheeimage boost_python)
+SET(MODULE_DEPS ${SMIL_LIB_PREFIX}Core -L"${MORPHEE_LIBRARY_DIR}" Morpheecommon Morpheeimage)
 
 IF(WRAP_PYTHON)
-    LIST(APPEND MODULE_DEPS ${PYTHON_LIBRARIES})
-    ADD_DEFINITIONS(-DWRAP_PYTHON)
+    LIST(APPEND MODULE_DEPS ${PYTHON_LIBRARIES} boost_python)
 ENDIF(WRAP_PYTHON)
 
 IF(USE_64BIT_IDS)

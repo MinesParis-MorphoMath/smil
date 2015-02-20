@@ -194,10 +194,12 @@ namespace smil
         
         virtual RES_T allocate()
         {
+            return RES_ERR_BAD_ALLOCATION;
         }
         
         virtual RES_T deallocate()
         {
+            return RES_ERR_BAD_ALLOCATION;
         }
     };
   
