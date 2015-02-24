@@ -50,6 +50,7 @@ namespace smil
         size_t offset;
         size_t size;
         PixelSequence() : offset(0), size(0) {}
+        ~PixelSequence() {}
         PixelSequence(size_t off, size_t siz) : offset(off), size(siz) {}
     };
     

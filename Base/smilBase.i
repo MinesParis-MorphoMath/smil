@@ -155,10 +155,14 @@ TEMPLATE_WRAP_FUNC(addBorder);
 
 %include "DBlob.hpp"
 
-// Weird swig error...
+// workaround for undefined SWIGPY_SLICE_ARG with swig 2.0.3 and 2.0.4
 %{
 #ifndef SWIGPY_SLICE_ARG
-#define SWIGPY_SLICE_ARG(obj) ((PySliceObject*) (obj))
+  #if PY_VERSION_HEX >= 0x03020000
+    # define SWIGPY_SLICE_ARG(obj) ((PyObject*) (obj))
+  #else
+    # define SWIGPY_SLICE_ARG(obj) ((PySliceObject*) (obj))
+  #endif
 #endif // SWIGPY_SLICE_ARG
 %}
 
