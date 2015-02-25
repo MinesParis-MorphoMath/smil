@@ -39,7 +39,7 @@ SMIL_MODULE(smilSampleModule)
 #include "SampleModule.hpp"
 %}
 
-%include "include/SampleModule.hpp"
+%include "SampleModule.hpp"
 
 TEMPLATE_WRAP_FUNC(samplePixelFunction)
 TEMPLATE_WRAP_FUNC(sampleMorphoFunction)
