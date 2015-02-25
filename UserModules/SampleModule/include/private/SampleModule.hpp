@@ -33,6 +33,9 @@
 #include "Core/include/DCore.h"
 #include "Morpho/include/DMorpho.h"
 
+#include <unistd.h> // For usleep
+
+
 namespace smil
 {
     // Sample inv function
