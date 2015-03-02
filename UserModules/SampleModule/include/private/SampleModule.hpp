@@ -33,6 +33,9 @@
 #include "Core/include/DCore.h"
 #include "Morpho/include/DMorpho.h"
 
+#include <unistd.h> // For usleep
+
+
 namespace smil
 {
     // Sample inv function
@@ -76,6 +79,45 @@ namespace smil
         SampleMorphoFunctor<T> func;
         return func(imIn, imOut, se);
     }  
+    
+    
+    
+    // Sample (silly) Flooding functor
+    template <class T, class labelT>
+    struct SampleFloodingFunctor: public BaseFlooding<T, labelT>
+    {
+        virtual RES_T initialize(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
+        {
+             BaseFlooding<T, labelT>::initialize(imIn, imLbl, se);
+             this->imgLbl->updatesEnabled = true; // Enable image repaint
+        }
+        
+        virtual inline void processPixel(const size_t &curOffset)
+        {
+            this->lblPixels[ curOffset ] = UINT16(255);
+            
+            BaseFlooding<T, labelT>::processPixel(curOffset);
+            
+            this->imgLbl->modified(); // Trigger image repaint
+            Gui::processEvents();  // Refresh display
+            
+            usleep(1000);
+        }
+    };
+
+    template <class T>
+    RES_T sampleFloodingFunction(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        SampleFloodingFunctor<T, T> func;
+        fill(imOut, T(0));
+        size_t pixNbr = imOut.getPixelCount();
+        // Put two "random" markers
+        imOut.setPixel(pixNbr/3, 1);
+        imOut.setPixel(pixNbr*2/3, 2);
+        return func.flood(imIn, imOut, imOut, se);
+    }  
+    
+    
 }
 
 #endif // _SAMPLE_MODULE_HPP
