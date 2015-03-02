@@ -26,7 +26,7 @@
 
 
 SET(MODULE_NAME SampleModule)
-SET(MODULE_DEPS smilCore smilGui)
+SET(MODULE_DEPS smilCore smilBase smilGui smilMorpho)
 
 LIST(APPEND MODULE_DEPS)
 
