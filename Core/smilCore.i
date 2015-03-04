@@ -41,14 +41,9 @@ SMIL_MODULE(smilCore)
 // Init
 //////////////////////////////////////////////////////////
 
-///// Numpy /////
-#if defined SWIGPYTHON && defined USE_NUMPY
 %init
 %{
-    // Required by NumPy in Python initialization
-    import_array();
 %}
-#endif // defined SWIGPYTHON && defined USE_NUMPY
 
 
 //////////////////////////////////////////////////////////
@@ -297,6 +292,25 @@ namespace smil
     TEMPLATE_WRAP_SUPPL_FUNC(castBaseImage);
     TEMPLATE_WRAP_SUPPL_CLASS(SharedImage, SharedImage);
 }
+
+//////////////////////////////////////////////////////////
+// Numpy
+//////////////////////////////////////////////////////////
+#if defined SWIGPYTHON && defined USE_NUMPY
+%init
+%{
+    // Required by NumPy in Python initialization
+    import_array();
+%}
+%{
+#include "DNumpyInterface.hpp"
+%}
+
+%include "DNumpyInterface.hpp"
+
+TEMPLATE_WRAP_CLASS(NumpyInt,NumpyInt)
+
+#endif // defined SWIGPYTHON && defined USE_NUMPY
 
 
 //////////////////////////////////////////////////////////
