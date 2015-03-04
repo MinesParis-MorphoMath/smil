@@ -293,25 +293,6 @@ namespace smil
     TEMPLATE_WRAP_SUPPL_CLASS(SharedImage, SharedImage);
 }
 
-//////////////////////////////////////////////////////////
-// Numpy
-//////////////////////////////////////////////////////////
-#if defined SWIGPYTHON && defined USE_NUMPY
-%init
-%{
-    // Required by NumPy in Python initialization
-    import_array();
-%}
-%{
-#include "DNumpyInterface.hpp"
-%}
-
-%include "DNumpyInterface.hpp"
-
-TEMPLATE_WRAP_CLASS(NumpyInt,NumpyInt)
-
-#endif // defined SWIGPYTHON && defined USE_NUMPY
-
 
 //////////////////////////////////////////////////////////
 // Misc
@@ -359,3 +340,29 @@ namespace std
     TEMPLATE_WRAP_VECTOR_SUBTYPE(Edge);
 }
 #endif // SWIGXML
+
+
+//////////////////////////////////////////////////////////
+// Internal definitions 
+// (not visible by other modules)
+//////////////////////////////////////////////////////////
+#ifndef SWIGIMPORTED
+
+    // Numpy
+    #if defined SWIGPYTHON && defined USE_NUMPY
+    %init
+    %{
+        // Required by NumPy in Python initialization
+        import_array();
+    %}
+    %{
+    #include "Core/include/private/DNumpyInterface.hpp"
+    %}
+
+    %include "Core/include/private/DNumpyInterface.hpp"
+
+    TEMPLATE_WRAP_CLASS(NumpyInt,NumpyInt)
+
+    #endif // defined SWIGPYTHON && defined USE_NUMPY
+#endif // SWIGIMPORTED
+
