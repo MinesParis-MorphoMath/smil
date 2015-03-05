@@ -72,7 +72,7 @@ namespace smil
                     newVal = numeric_limits<T>::max();
                 else if (newVal < double(numeric_limits<T>::min()))
                     newVal = numeric_limits<T>::min();
-                lOut[i] = T(newVal);
+                lOut[i] = T(round(newVal));
                 
             }
         }
