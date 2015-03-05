@@ -120,7 +120,7 @@ class Test_Stretch_Histogram : public TestCase
 	98, 101, 105,  98,
 	98, 114, 131,  82,
 	255, 111, 147,  98,
-	49, 127,   0,  92,
+	49, 128,   0,  92,
       };
 
       im1 << vec1;
