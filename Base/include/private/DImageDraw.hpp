@@ -428,6 +428,14 @@ namespace smil
      * If nbr_along_x and int nbr_along_y are not specified, fill completely the output image with a maximum number of parterns.
      * If x0, y0, width and height are not specified, the full image imIn will be copied.
      * 
+     * Python example:
+     * \code{.py}
+     * im1 = Image(256,256)
+     * im2 = Image(im1)
+     * drawDisc(im1, 100,100, 15)
+     * copyPattern(im1, 80, 80, 40, 40, im2)
+     * im2.show()
+     * \endcode
      */
     // TODO Extend to 3D
     template <class T>
