@@ -109,17 +109,19 @@ class Test_Stretch_Histogram : public TestCase
       Image_UINT8 im2(4,4);
       Image_UINT8 im3(4,4);
 
-      UINT8 vec1[16] = { 50, 51, 52, 50,
-                        50, 55, 60, 45,
-                        98, 54, 65, 50,
-                        35, 59, 20, 48
-                      };
+      UINT8 vec1[16] = { 
+	50, 51, 52, 50,
+	50, 55, 60, 45,
+	98, 54, 65, 50,
+	35, 59, 20, 48
+      };
 
-      UINT8 vec2[16] = { 98,   101,  104,  98,
-                        98,   114,  130,  81,
-                        255,  111,  147,  98,
-                        49,   127,  0,    91
-                      };
+      UINT8 vec2[16] = { 
+	98, 101, 105,  98,
+	98, 114, 131,  82,
+	255, 111, 147,  98,
+	49, 128,   0,  92,
+      };
 
       im1 << vec1;
       im2 << vec2;
@@ -127,6 +129,12 @@ class Test_Stretch_Histogram : public TestCase
       stretchHist(im1, im3);
 
       TEST_ASSERT(im2==im3);
+
+      if (retVal!=RES_OK)
+      {
+          im2.printSelf(1);
+          im3.printSelf(1);
+      }
   }
 };
 
