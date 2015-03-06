@@ -68,7 +68,7 @@ namespace smil
             
             T* data = (T*)PyArray_DATA(arr);
             
-            PyArray_Descr *descr = PyArray_DTYPE(arr);
+            PyArray_Descr *descr = PyArray_DESCR(arr);
             if (descr->type_num!=getNumpyType(*this))
             {
                 ERR_MSG("Wrong data type");
