@@ -363,6 +363,29 @@ namespace std
 
     TEMPLATE_WRAP_CLASS(NumpyInt,NumpyInt)
 
+%pythoncode %{
+
+
+def NumpyInt(array):
+    """
+    * Create a SharedImage interface with a NumPy array
+    """
+
+    if str(type(array))!="<type 'numpy.ndarray'>":
+      print("You must specify a NumPy array")
+      return
+    
+    dt = array.dtype.name
+    
+    if dt=='uint8':
+      return NumpyInt_UINT8(array)
+    elif dt=='uint16':
+      return NumpyInt_UINT16(array)
+    elif dt=='uint32':
+      return NumpyInt_UINT32(array)
+%}
+
+        
     #endif // defined SWIGPYTHON && defined USE_NUMPY
 #endif // SWIGIMPORTED
 
