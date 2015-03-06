@@ -28,6 +28,30 @@
 
 using namespace smil;
 
+
+class Test_ValueList : public TestCase
+{
+  virtual void run()
+  {
+      Image_UINT8 im1(4,5);
+      
+      UINT8 vec1[] = { 1, 0, 0, 5, 0, 0, 4, 45, 0, 255,  0,  0, 25,  0, 255, 2, 23, 54, 255, 255 };
+      im1 << vec1;
+      
+      vector<UINT8> vals = valueList(im1);
+      
+      UINT8 vecTruth[] = { 1, 2, 4, 5, 23, 25, 45, 54, 255 };
+      vector<UINT8> valsTruth(vecTruth, vecTruth+9);
+      
+      TEST_ASSERT(vals==valsTruth);
+      
+      if (retVal!=RES_OK)
+        for (vector<UINT8>::iterator it=vals.begin();it!=vals.end();it++)
+          cout << int(*it) << endl;
+      
+  }
+};
+  
 class Test_MeasureVolAndArea : public TestCase
 {
   virtual void run()
@@ -241,6 +265,7 @@ int main(int argc, char *argv[])
 {
       TestSuite ts;
 
+      ADD_TEST(ts, Test_ValueList);
       ADD_TEST(ts, Test_MeasureVolAndArea);
       ADD_TEST(ts, Test_MeanVal);
       ADD_TEST(ts, Test_MeasureBarycenter);

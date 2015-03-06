@@ -326,10 +326,7 @@ namespace smil
         virtual void processSequence(lineType lineIn, size_t size)
         {
             for (size_t i=0;i<size;i++)
-            {
-                if (valList.find(lineIn[i])==valList.end())
-                  valList.insert(lineIn[i]);
-            }
+                valList.insert(lineIn[i]);
         }
         virtual void finalize(const Image<T> &imIn)
         {
@@ -340,6 +337,8 @@ namespace smil
 
     /**
      * Get the list of the pixel values present in the image
+     * 
+     * \see histogram
      */
     template <class T>
     vector<T> valueList(const Image<T> &imIn, bool onlyNonZero=true)

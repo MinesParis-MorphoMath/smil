@@ -74,11 +74,15 @@ namespace smil
                 for (size_t i=0;i<pixCount;i++)
                 {
                     if (pixels[i]!=T(0))
-                      curSize++;
+                    {
+                        if (curSize==0 && curStart==0)
+                          curStart = i;
+                        curSize++;
+                    }
                     else if (curSize>0)
                     {
                       processSequence(pixels + curStart, curSize);
-                      curStart = i;
+                      curStart = 0;
                       curSize = 0;
                     }
                 }
