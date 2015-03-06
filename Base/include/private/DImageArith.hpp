@@ -1014,6 +1014,31 @@ namespace smil
     }
 
 
+    /**
+    * Apply a lookup map
+    * 
+    * \b Python \b example:
+    * \code{.py}
+    * im1 = Image("http://cmm.ensmp.fr/~faessel/smil/images/balls.png")
+    * imLbl = Image(im1, "UINT16")
+    * imLbl2 = Image(imLbl)
+    * 
+    * label(im1, imLbl)
+    * 
+    * # We can use a Smil Map
+    * # lookup = Map_UINT16_UINT16() 
+    * # or directly a python dict
+    * lookup = dict()
+    * 
+    * lookup[1] = 2
+    * lookup[5] = 3
+    * lookup[2] = 1
+    * 
+    * imLbl.showLabel()
+    * imLbl2.showLabel()
+    * 
+    * \endcode
+    */
     template <class T1, class mapT, class T2>
     RES_T applyLookup(const Image<T1> &imIn, const mapT &_map, Image<T2> &imOut, T2 defaultValue=T2(0))
     {
@@ -1048,9 +1073,6 @@ namespace smil
     
     
 #ifndef SWIG
-    /**
-    * Apply a lookup map
-    */
     template <class T1, class T2>
     ENABLE_IF( !IS_SAME(T1,UINT8) && !IS_SAME(T1,UINT16), RES_T ) // SFINAE General case
     applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut, T2 defaultValue=T2(0))
