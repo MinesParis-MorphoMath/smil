@@ -31,7 +31,7 @@
 #define _D_MORPHO_ARROW_HPP
 
 #include "DMorphImageOperations.hpp"
-
+#include "DMorphoHierarQ.hpp"
 
 namespace smil
 {
