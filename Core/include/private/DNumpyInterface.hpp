@@ -27,60 +27,66 @@
  */
 
 
-#ifndef _D_LINE_HISTOGRAM_HPP
-#define _D_LINE_HISTOGRAM_HPP
+#ifndef _D_NUMPY_INTERFACE_HPP
+#define _D_NUMPY_INTERFACE_HPP
 
 
-#include "DBaseLineOperations.hpp"
+#include "Core/include/DNumpy.h"
+#include "Core/include/private/DImage.hxx"
+#include "Core/include/private/DSharedImage.hpp"
+
+
 
 namespace smil
 {
 
-    //! \ingroup Base
-    //! \defgroup Histogram
-    //! @{
-
-  
+   /**
+    * \ingroup Core
+    * \defgroup NumpyInterface Numpy Interface
+    * @{
+    */
+   
+   /**
+    * Numpy Array Interface
+    */
     template <class T>
-    struct threshLine : public unaryLineFunctionBase<T>
+    class NumpyInt : public SharedImage<T>
     {
-        T minVal, maxVal, trueVal, falseVal;
-        typedef typename ImDtTypes<T>::lineType lineType;
+    public:
+        typedef SharedImage<T> parentClass;
         
-        inline void _exec(const lineType &lIn, int size, lineType &lOut)
+        //! Constructor
+        NumpyInt(PyObject *obj)
         {
-            for(int i=0;i<size;i++)
-                lOut[i] = lIn[i] >= minVal && lIn[i] <= maxVal  ? trueVal : falseVal;
-        }
-    };
-
-    template <class T>
-    struct stretchHistLine : public unaryLineFunctionBase<T>
-    {
-        T inOrig, outOrig;
-        double coeff;
-        typedef typename ImDtTypes<T>::lineType lineType;
-        
-        inline void _exec(const lineType &lIn, int size, lineType &lOut)
-        {
-            double newVal;
+            BaseObject::className = "NumpyInt";
+            parentClass::init();
             
-            for(UINT i=0;i<size;i++)
+            PyArrayObject *arr = (PyArrayObject *)(obj);
+            
+            int dim = PyArray_NDIM(arr);
+            npy_intp *dims = PyArray_DIMS(arr);
+            
+            T* data = (T*)PyArray_DATA(arr);
+            
+            PyArray_Descr *descr = PyArray_DESCR(arr);
+            if (descr->type_num!=getNumpyType(*this))
             {
-                newVal = double(outOrig) + (double(lIn[i])-double(inOrig))*coeff;
-                if (newVal > double(numeric_limits<T>::max()))
-                    newVal = numeric_limits<T>::max();
-                else if (newVal < double(numeric_limits<T>::min()))
-                    newVal = numeric_limits<T>::min();
-                lOut[i] = T(round(newVal));
-                
+                ERR_MSG("Wrong data type");
+                return;
             }
+
+            if (dim==3)
+              this->attach(data, dims[0], dims[1], dims[2]);
+            else if (dim==2)
+              this->attach(data, dims[0], dims[1]);
+            else if (dim==1)
+              this->attach(data, dims[0], 1);
+            
         }
     };
-
-//! @}
+    
+   /*@}*/
     
 } // namespace smil
 
-
-#endif // _D_LINE_HISTOGRAM_HPP
+#endif // _D_NUMPY_INTERFACE_HPP

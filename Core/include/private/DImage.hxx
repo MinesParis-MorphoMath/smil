@@ -466,6 +466,7 @@ namespace smil
     template <class T>
     void Image<T>::fromIntVector(vector<int> inVector)
     {
+        ASSERT((inVector.size()==pixelCount), "Vector length doesn't match image size.", );
         for (size_t i=0;i<min(pixelCount, inVector.size());i++)
           pixels[i] = inVector[i];
         modified();

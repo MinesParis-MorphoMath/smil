@@ -133,11 +133,6 @@ namespace smil
     };
 
     
-    inline double round(double r) 
-    {
-        return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
-    }
-
     // Misc Macros
 
     #ifdef _MSC_VER

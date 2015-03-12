@@ -41,14 +41,9 @@ SMIL_MODULE(smilCore)
 // Init
 //////////////////////////////////////////////////////////
 
-///// Numpy /////
-#if defined SWIGPYTHON && defined USE_NUMPY
 %init
 %{
-    // Required by NumPy in Python initialization
-    import_array();
 %}
-#endif // defined SWIGPYTHON && defined USE_NUMPY
 
 
 //////////////////////////////////////////////////////////
@@ -345,3 +340,52 @@ namespace std
     TEMPLATE_WRAP_VECTOR_SUBTYPE(Edge);
 }
 #endif // SWIGXML
+
+
+//////////////////////////////////////////////////////////
+// Internal definitions 
+// (not visible by other modules)
+//////////////////////////////////////////////////////////
+#ifndef SWIGIMPORTED
+
+    // Numpy
+    #if defined SWIGPYTHON && defined USE_NUMPY
+    %init
+    %{
+        // Required by NumPy in Python initialization
+        import_array();
+    %}
+    %{
+    #include "Core/include/private/DNumpyInterface.hpp"
+    %}
+
+    %include "Core/include/private/DNumpyInterface.hpp"
+
+    TEMPLATE_WRAP_CLASS(NumpyInt,NumpyInt)
+
+%pythoncode %{
+
+
+def NumpyInt(array):
+    """
+    * Create a SharedImage interface with a NumPy array
+    """
+
+    if str(type(array))!="<type 'numpy.ndarray'>":
+      print("You must specify a NumPy array")
+      return
+    
+    dt = array.dtype.name
+    
+    if dt=='uint8':
+      return NumpyInt_UINT8(array)
+    elif dt=='uint16':
+      return NumpyInt_UINT16(array)
+    elif dt=='uint32':
+      return NumpyInt_UINT32(array)
+%}
+
+        
+    #endif // defined SWIGPYTHON && defined USE_NUMPY
+#endif // SWIGIMPORTED
+

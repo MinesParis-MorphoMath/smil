@@ -420,6 +420,118 @@ namespace smil
 
     #endif // USE_FREETYPE
 
+    /**
+     * Copy a given pattern (zone of input image) several times in an output image.
+     * 
+     * Only 2D for now.
+     * 
+     * If nbr_along_x and int nbr_along_y are not specified, fill completely the output image with a maximum number of parterns.
+     * If x0, y0, width and height are not specified, the full image imIn will be copied.
+     * 
+     * Python example:
+     * \code{.py}
+     * im1 = Image(256,256)
+     * im2 = Image(im1)
+     * drawDisc(im1, 100,100, 15)
+     * copyPattern(im1, 80, 80, 40, 40, im2)
+     * im2.show()
+     * \endcode
+     */
+    // TODO Extend to 3D
+    template <class T>
+    RES_T copyPattern(const Image<T> &imIn, int x0, int y0, int width, int height, Image<T> &imOut, int nbr_along_x, int nbr_along_y)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut)
+        
+        typename ImDtTypes<T>::sliceType linesIn = imIn.getSlices()[0];
+        typename ImDtTypes<T>::sliceType linesOut = imOut.getSlices()[0];
+        
+        size_t imSize[3];
+        imOut.getSize(imSize);
+        
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        
+        int nX = min( int(ceil(double(imSize[0])/width)), nbr_along_x );
+        int xPad = imSize[0] % width;
+        int nXfull = xPad==0 ? nX : nX-1;
+        
+        int nY = min( int(ceil(double(imSize[1])/height)), nbr_along_y );
+        int yPad = imSize[1] % height;
+        int nYfull = yPad==0 ? nY : nY-1;
+        
+        size_t cpLen = nXfull*width + xPad;
+        
+        #pragma omp parallel num_threads(nthreads)
+        {
+            // Copy along X
+            
+            #pragma omp for
+            for (int j=0;j<height;j++)
+            {
+                typename ImDtTypes<T>::lineType lineIn = linesIn[y0+j] + x0;
+                typename ImDtTypes<T>::lineType lineOut = linesOut[j];
+                
+                for (int i=0;i<nXfull;i++)
+                {
+                    copyLine<T>(lineIn, width, lineOut);
+                    lineOut += width;
+                }
+                for (int i=nXfull;i<nX;i++)
+                    copyLine<T>(lineIn, xPad, lineOut);
+            }
+            
+            #pragma omp barrier
+            
+            // Copy along Y
+            
+            for (int n=1;n<nYfull;n++)
+            {
+                #pragma omp for
+                for (int j=0;j<height;j++)
+                {
+                    typename ImDtTypes<T>::lineType lineIn = linesOut[j];
+                    typename ImDtTypes<T>::lineType lineOut = linesOut[n*width + j];
+                    
+                    copyLine<T>(lineIn, cpLen, lineOut);
+                }
+            }
+            for (int n=nYfull;n<nY;n++)
+            {
+                #pragma omp for
+                for (int j=0;j<yPad;j++)
+                {
+                    typename ImDtTypes<T>::lineType lineIn = linesOut[j];
+                    typename ImDtTypes<T>::lineType lineOut = linesOut[n*width + j];
+                    
+                    copyLine<T>(lineIn, cpLen, lineOut);
+                }
+            }
+        }
+          
+        
+        return RES_OK;
+        
+    }
+    
+    template <class T>
+    RES_T copyPattern(const Image<T> &imIn, int x0, int y0, int width, int height, Image<T> &imOut)
+    {
+        return copyPattern(imIn, x0, y0, width, height, imOut, numeric_limits<int>::max(), numeric_limits<int>::max());
+    }
+    
+    template <class T>
+    RES_T copyPattern(const Image<T> &imIn, Image<T> &imOut, int nbr_along_x, int nbr_along_y)
+    {
+        return copyPattern(imIn, 0, 0, imIn.getWidth(), imIn.getHeight(), imOut, nbr_along_x, nbr_along_y);
+    }
+
+    template <class T>
+    RES_T copyPattern(const Image<T> &imIn, Image<T> &imOut)
+    {
+        return copyPattern(imIn, 0, 0, imIn.getWidth(), imIn.getHeight(), imOut, numeric_limits<int>::max(), numeric_limits<int>::max());
+    }
+    
+    
 /** @}*/
 
 } // namespace smil
