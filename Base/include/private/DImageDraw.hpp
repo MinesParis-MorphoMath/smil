@@ -476,8 +476,7 @@ namespace smil
                     copyLine<T>(lineIn, width, lineOut);
                     lineOut += width;
                 }
-                for (int i=nXfull;i<nX;i++)
-                    copyLine<T>(lineIn, xPad, lineOut);
+                copyLine<T>(lineIn, xPad, lineOut);
             }
             
             #pragma omp barrier
@@ -490,7 +489,7 @@ namespace smil
                 for (int j=0;j<height;j++)
                 {
                     typename ImDtTypes<T>::lineType lineIn = linesOut[j];
-                    typename ImDtTypes<T>::lineType lineOut = linesOut[n*width + j];
+                    typename ImDtTypes<T>::lineType lineOut = linesOut[n*height + j];
                     
                     copyLine<T>(lineIn, cpLen, lineOut);
                 }
@@ -501,7 +500,7 @@ namespace smil
                 for (int j=0;j<yPad;j++)
                 {
                     typename ImDtTypes<T>::lineType lineIn = linesOut[j];
-                    typename ImDtTypes<T>::lineType lineOut = linesOut[n*width + j];
+                    typename ImDtTypes<T>::lineType lineOut = linesOut[n*height + j];
                     
                     copyLine<T>(lineIn, cpLen, lineOut);
                 }
