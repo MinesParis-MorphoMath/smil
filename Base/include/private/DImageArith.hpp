@@ -792,6 +792,22 @@ namespace smil
     }
 
     /**
+    * Logarithm
+    * 
+    * Possible bases: 0 or none (natural logarithm, or base e), 2, 10
+    */
+    template <class T>
+    RES_T log(const Image<T> &imIn, Image<T> &imOut, int base=0)
+    {
+        ASSERT_ALLOCATED(&imIn);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        unaryImageFunction<T, logLine<T> > func;
+        func.lineFunction.base = base;
+        return func(imIn, imOut);
+    }
+    
+    /**
     * Logic AND operator
     */
     template <class T>

@@ -446,6 +446,32 @@ namespace smil
     };
 
     template <class T>
+    struct logLine : public unaryLineFunctionBase<T>
+    {
+        typedef typename Image<T>::lineType lineType;
+        int base;
+        logLine() : base(0) {}
+        virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
+        {
+            if (base==2)
+            {
+              for (size_t i=0;i<size;i++)
+                  lOut[i] = log2(lIn[i]);
+            }
+            else if (base==10)
+            {
+              for (size_t i=0;i<size;i++)
+                  lOut[i] = log10(lIn[i]);
+            }
+            else
+            {
+              for (size_t i=0;i<size;i++)
+                  lOut[i] = log(lIn[i]);
+            }
+        }
+    };
+
+    template <class T>
     struct logicAndLine : public binaryLineFunctionBase<T>
     {
         typedef typename Image<T>::lineType lineType;
