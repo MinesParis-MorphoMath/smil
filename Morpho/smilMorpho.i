@@ -122,6 +122,8 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(minimaLabeled);
 TEMPLATE_WRAP_FUNC_2T_CROSS(maximaLabeled);
 TEMPLATE_WRAP_FUNC_2T_CROSS(hMinimaLabeled);
 TEMPLATE_WRAP_FUNC_2T_CROSS(hMaximaLabeled);
+TEMPLATE_WRAP_FUNC(fastMinima);
+TEMPLATE_WRAP_FUNC(fastMaxima);
 
 %include "Morpho/include/private/DMorphoFilter.hpp"
 TEMPLATE_WRAP_FUNC(asfClose);

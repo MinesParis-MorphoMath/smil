@@ -270,9 +270,11 @@ namespace smil
                             if (oddLine)
                                 x += (y+1)%2;
                             nb_o = x + y*size[0] + z*size[1]*size[0];
-        
-                            if (testAndAssign (statutP[nb_o], outP[nb_o]))
-                                q.push(nb_o);
+                            if (x >= 0 && x < size[0] &&
+                                y >= 0 && y < size[1] && 
+                                z >= 0 && z < size[2]) 
+                                if (testAndAssign (statutP[nb_o], outP[nb_o]))
+                                    q.push(nb_o);
                        }
                     }
                        
