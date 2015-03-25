@@ -34,6 +34,7 @@
 #include <QGraphicsSceneEvent>
 #include <QList>
 #include <QUrl>
+#include <QMimeData>
 
 #ifdef USE_QWT
 #include "PureQt/PlotWidget.h"

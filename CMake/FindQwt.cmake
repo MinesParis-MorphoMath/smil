@@ -4,17 +4,20 @@
 # QWT_FOUND If false, do not try to use Qwt
 
 FIND_PATH(QWT_INCLUDE_DIR
-	NAMES qwt_plot.h
-	PATHS
-	/usr/local/include/qwt-qt4
-	/usr/local/include/qwt
-	/usr/include/qwt-qt4
-	/usr/include/qwt
+        NAMES qwt_plot.h
+        PATHS
+        /usr/local/include/qwt-qt4
+        /usr/local/include/qwt
+        /usr/include/qwt-qt4
+        /usr/include/qwt
+        ${Qt5Widgets_INCLUDE_DIRS}/..
+        ${QT_QTCORE_INCLUDE_DIR}/..
 )
 
-FIND_LIBRARY(QWT_LIBRARY
-	NAMES qwt-qt4 qwt
-	PATHS /usr/local/lib /usr/lib
+FIND_LIBRARY(QWT_LIBRARY 
+        NAMES qwt-qt4 qwt 
+        PATHS /usr/local/lib /usr/lib
+        ${QT_LIBRARY_DIR}
 )
 
 IF (QWT_INCLUDE_DIR AND QWT_LIBRARY)
@@ -24,3 +27,4 @@ ENDIF (QWT_INCLUDE_DIR AND QWT_LIBRARY)
 INCLUDE( FindPackageHandleStandardArgs )
 FIND_PACKAGE_HANDLE_STANDARD_ARGS( Qwt DEFAULT_MSG QWT_LIBRARY QWT_INCLUDE_DIR )
 MARK_AS_ADVANCED(QWT_LIBRARIES QWT_INCLUDE_DIRS)
+
