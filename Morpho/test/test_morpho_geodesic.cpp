@@ -118,11 +118,49 @@ class TestDistanceCross : public TestCase
   }
 };
 
+class Test_Build : public TestCase
+{
+  virtual void run()
+  {
+      UINT8 vecIn[] = { 
+        1, 2, 0, 5, 5, 5, 3, 3, 3, 1, 1
+      };
+      
+      UINT8 vecMark[] = { 
+        0, 0, 0, 0, 4, 1, 1, 2, 0, 0, 0
+      };
+      
+      Image_UINT8 imIn(11,1);
+      Image_UINT8 imMark(imIn);
+      Image_UINT8 imBuild(imIn);
+
+      imIn << vecIn;
+      imMark << vecMark;
+      
+      dualBuild(imIn, imMark, imBuild, sSE());
+      
+      UINT8 vecTruth[] = { 
+        0, 0, 0, 0, 4, 2, 2, 2, 1, 1, 1
+      };
+      
+      Image_UINT8 imTruth(imIn);
+      
+      imTruth << vecTruth;
+      
+      TEST_ASSERT(imBuild==imTruth);
+      
+      if (retVal!=RES_OK)
+        imBuild.printSelf(1);
+  }
+};
+
+
 int main(int argc, char *argv[])
 {
       TestSuite ts;
       ADD_TEST(ts, TestDistanceSquare);
       ADD_TEST(ts, TestDistanceCross);      
+      ADD_TEST(ts, Test_Build);
       return ts.run();
       
 }

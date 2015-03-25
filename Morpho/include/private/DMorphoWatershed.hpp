@@ -304,7 +304,7 @@ namespace smil
         }
         inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
         {
-            UINT8 nbStat = this->wsPixels[nbOffset];
+            T nbStat = this->wsPixels[nbOffset];
             
             if (nbStat==STAT_CANDIDATE) // Add it to the tmp offsets queue
             {
