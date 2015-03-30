@@ -208,7 +208,7 @@ namespace smil
         {
             T _trueVal(trueVal), _falseVal(falseVal);
             for (size_t i=0;i<size;i++)
-                lOut[i] += lIn1[i] > lIn2[i] ? _trueVal : _falseVal;
+                lOut[i] |= lIn1[i] > lIn2[i] ? _trueVal : _falseVal;
         }
     };
     template <>
@@ -247,7 +247,7 @@ namespace smil
         {
             T _trueVal(trueVal), _falseVal(falseVal);
             for (size_t i=0;i<size;i++)
-                lOut[i] += lIn1[i] >= lIn2[i] ? _trueVal : _falseVal;
+                lOut[i] |= lIn1[i] >= lIn2[i] ? _trueVal : _falseVal;
         }
     };
     template <>
@@ -286,7 +286,7 @@ namespace smil
         {
             T _trueVal(trueVal), _falseVal(falseVal);
             for (size_t i=0;i<size;i++)
-                lOut[i] += lIn1[i] < lIn2[i] ? _trueVal : _falseVal;
+                lOut[i] |= lIn1[i] < lIn2[i] ? _trueVal : _falseVal;
         }
     };
     template <>
@@ -325,7 +325,7 @@ namespace smil
         {
             T _trueVal(trueVal), _falseVal(falseVal);
             for (size_t i=0;i<size;i++)
-                lOut[i] += lIn1[i] <= lIn2[i] ? _trueVal : _falseVal;
+                lOut[i] |= lIn1[i] <= lIn2[i] ? _trueVal : _falseVal;
         }
     };
     template <>
@@ -382,7 +382,7 @@ namespace smil
         {
             T _trueVal(trueVal), _falseVal(falseVal);
             for (size_t i=0;i<size;i++)
-                lOut[i] += lIn1[i] == lIn2[i] ? _trueVal : _falseVal;
+                lOut[i] |= lIn1[i] == lIn2[i] ? _trueVal : _falseVal;
         }
     };
     template <>

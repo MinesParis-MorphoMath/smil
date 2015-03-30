@@ -93,32 +93,43 @@ namespace smil
         volType srcSlices = imIn.getSlices();
         volType destSlices = imOut.getSlices();
         
-        lineType *srcLines;
-        lineType *destLines;
-        
-        bool oddSe = se.odd, oddLine = 0;
-        
-        size_t x, y, z;
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
 
+        size_t l;
 
-#ifdef USE_OPEN_MP
-//     #pragma omp parallel private (oddLine,x,y,z)
-#endif
-    {
         for (size_t s=0;s<nSlices;s++)
         {
-            srcLines = srcSlices[s];
-            destLines = destSlices[s];
+            lineType *srcLines = srcSlices[s];
+            lineType *destLines = destSlices[s];
             
-//         #pragma omp for
-            for (size_t l=0;l<nLines;l++)
+      #ifdef USE_OPEN_MP
+          #pragma omp parallel num_threads(nthreads)
+      #endif
+          {
+            
+            bool oddSe = se.odd, oddLine = 0;
+            
+            size_t x, y, z;
+            lineFunction_T arrowLineFunction;
+            
+            lineType tmpBuf = _bufs[0];
+            lineType tmpBuf2 = _bufs[nthreads];
+      #ifdef USE_OPEN_MP
+            int tid = omp_get_thread_num();
+            tmpBuf = _bufs[tid];
+            tmpBuf2 = _bufs[tid+nthreads];
+      #endif // _OPENMP
+            
+        #pragma omp for
+            for (l=0;l<nLines;l++)
             {
                 lineType lineIn  = srcLines[l];
                 lineType lineOut = destLines[l];
 
-            oddLine = oddSe && l%2;
+                oddLine = oddSe && l%2;
                 
-                fillLine<T>(lineOut, parentClass::lineLen, 0);
+                fillLine<T>(tmpBuf2, this->lineLen, 0);
                 
                 for (UINT p=0;p<sePtsNumber;p++)
                 {
@@ -126,13 +137,14 @@ namespace smil
                     x = - se.points[p].x - (oddLine && (y+1)%2);
                     z = s + se.points[p].z;
 
-                    parentClass::lineFunction.trueVal = (1UL << p);
-                    
-                    this->_exec_line(lineIn, &imIn, x, y, z, lineOut);   
+                    arrowLineFunction.trueVal = (1UL << p);
+                    this->_extract_translated_line(&imIn, x, y, z, tmpBuf);
+                    arrowLineFunction._exec(lineIn, tmpBuf, this->lineLen, tmpBuf2);
                 }
-            }
+                copyLine<T>(tmpBuf2, this->lineLen, lineOut);
+             }
+          }  // pragma omp parallel
         }
-    }
 
         imOut.modified();
 
