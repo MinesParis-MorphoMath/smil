@@ -101,16 +101,16 @@ namespace smil
         size_t x, y, z;
 
 
-    #ifdef SWIG
-    #pragma omp parallel private (oddLine,x,y,z,parentClass::lineFunction)        
-    #endif
+#ifdef USE_OPEN_MP
+//     #pragma omp parallel private (oddLine,x,y,z)
+#endif
     {
         for (size_t s=0;s<nSlices;s++)
         {
             srcLines = srcSlices[s];
             destLines = destSlices[s];
             
-        #pragma omp for
+//         #pragma omp for
             for (size_t l=0;l<nLines;l++)
             {
                 lineType lineIn  = srcLines[l];
