@@ -415,7 +415,7 @@ namespace smil
     template <class T>
     RES_T drawText(Image<T> &imOut, size_t x, size_t y, string txt, string font, UINT size=20, T value=ImDtTypes<T>::max())
     {
-        return drawText(imOut, x, y, 0, txt, font, size);
+        return drawText(imOut, x, y, 0, txt, font, size, value);
     }
 
     #endif // USE_FREETYPE
