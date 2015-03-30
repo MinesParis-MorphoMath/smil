@@ -101,7 +101,7 @@ namespace smil
             camera->SetPosition(imSize[0], imSize[1]/2, -d);
         }
         
-        virtual void onSizeChanged(size_t width, size_t height, size_t depth)
+        virtual void onSizeChanged(size_t /*width*/, size_t /*height*/, size_t /*depth*/)
         {
         }
         
@@ -141,7 +141,7 @@ namespace smil
             QString buf = _name + QString(" (") + QString(parentClass::image->getTypeAsString()) + QString(")");
             QVtkViewerWidget::setWindowTitle(buf);
         }
-        virtual void drawOverlay(const Image<T> &im)
+        virtual void drawOverlay(const Image<T> &/*im*/)
         {
         }
         virtual void clearOverlay() {  }
