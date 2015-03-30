@@ -105,10 +105,10 @@ namespace smil
             basinNbr = 0;
         }
         
-        inline virtual void insertPixel(const size_t &offset, const labelT &lbl) {}
-        inline virtual void raiseLevel(const labelT &lbl) {}
-        inline virtual labelT mergeBasins(const labelT &lbl1, const labelT &lbl2) { return 0; };
-        inline virtual void finalize(const labelT &lbl) {}
+        inline virtual void insertPixel(const size_t &/*offset*/, const labelT &/*lbl*/) {}
+        inline virtual void raiseLevel(const labelT &/*lbl*/) {}
+        inline virtual labelT mergeBasins(const labelT &/*lbl1*/, const labelT &/*lbl2*/) { return 0; };
+        inline virtual void finalize(const labelT &/*lbl*/) {}
         
         virtual void updateEquTable(const labelT &lbl1, const labelT &lbl2)
         {
@@ -370,8 +370,6 @@ namespace smil
               minValues[lbl] = this->inPixels[offset];
             
             areas[lbl]++;
-            size_t aa = areas[lbl];
-            int i=0;
         }
         virtual labelT mergeBasins(const labelT &lbl1, const labelT &lbl2)
         {

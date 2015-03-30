@@ -170,7 +170,7 @@ class Test_Otsu : public TestCase
   }
 };
 
-int main(int argc, char *argv[])
+int main()
 {
     TestSuite ts;
 

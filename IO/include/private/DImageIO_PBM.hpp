@@ -102,8 +102,8 @@ namespace smil
             ASSERT(readNetPBMFileInfo(fp, fInfo)==RES_OK, RES_ERR_IO);
             ASSERT(fInfo.colorType==ImageFileInfo::COLOR_TYPE_BINARY, "Not an binary image", RES_ERR_IO);
             
-            int width = fInfo.width;
-            int height = fInfo.height;
+            size_t width = fInfo.width;
+            size_t height = fInfo.height;
 
             ASSERT((image.setSize(width, height)==RES_OK), RES_ERR_BAD_ALLOCATION);
             
@@ -111,16 +111,15 @@ namespace smil
             {
                 typename ImDtTypes<T>::sliceType lines = image.getLines();
                 
-                int nBytePerLine = width%8==0 ? width/8 : width/8+1;
+//                 int nBytePerLine = width%8==0 ? width/8 : width/8+1;
                 char val;
                 int k;
-                int btot = 0;
                 
                 for (size_t j=0;j<height;j++)
                 {
                     typename ImDtTypes<T>::lineType pixels = lines[j];
                     
-                    for (int i=0;i<width;i++)
+                    for (size_t i=0;i<width;i++)
                     {
                         if (i%8 == 0)
                           fp.read(&val, 1);
@@ -165,16 +164,13 @@ namespace smil
     }
     
     // Specializations
-    template <>
-    RES_T PGMImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image);
-    template <>
-    RES_T PGMImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename);
+
+    TEMPL_SPEC_DECL RES_T PGMImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image);
+    TEMPL_SPEC_DECL RES_T PGMImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename);
 
 #ifdef SMIL_WRAP_RGB    
-    template <>
-    RES_T PGMImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image);
-    template <>
-    RES_T PGMImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
+    TEMPL_SPEC_DECL RES_T PGMImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image);
+    TEMPL_SPEC_DECL RES_T PGMImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
 #endif // SMIL_WRAP_RGB    
     
 /*@}*/

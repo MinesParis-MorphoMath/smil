@@ -108,18 +108,18 @@ namespace smil
         string buffer;
 
         curl_global_init(CURL_GLOBAL_ALL);
-        CURLcode res;
+//         CURLcode res;
         curl_handle = curl_easy_init();
         if (curl_handle)
         {
             curl_easy_setopt(curl_handle, CURLOPT_URL, url);
             curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
             curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&buffer);
-            res = curl_easy_perform(curl_handle);
+//             res = curl_easy_perform(curl_handle);
             curl_easy_cleanup(curl_handle);
             curl_global_cleanup();
         }
-        else res = CURLE_FAILED_INIT;
+//         else res = CURLE_FAILED_INIT;
 
         return buffer;
     }

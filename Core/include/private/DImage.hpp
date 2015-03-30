@@ -448,6 +448,7 @@ namespace smil
     RES_T drawOverlay(const Image<T> &imToDraw, Image<T> &imOut)
     {
         imOut.getViewer()->drawOverlay(imToDraw);
+        return RES_OK;
     }
 
 /** @}*/

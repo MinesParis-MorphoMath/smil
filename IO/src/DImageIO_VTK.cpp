@@ -111,7 +111,7 @@ namespace smil
         return RES_OK;
     }
     
-    RES_T getVTKFileInfo(const char* filename, ImageFileInfo &fInfo)
+    RES_T getVTKFileInfo(const char* /*filename*/, ImageFileInfo &/*fInfo*/)
     {
         return RES_OK;
     }

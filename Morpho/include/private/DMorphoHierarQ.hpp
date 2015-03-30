@@ -125,7 +125,7 @@ namespace smil
     {
     public:
       // Dummy constructor for compatibilty with FIFO_Queue one
-      STD_Queue(size_t newSize=0)
+      STD_Queue(size_t /*newSize*/=0)
         : queue<TokenType>()
         {
         }
@@ -287,8 +287,6 @@ namespace smil
         {
             size_t hlSize = tokenNbr[higherLevel];
             TokenType dOffset = stacks[higherLevel]->front();
-            if (dOffset>70000)
-                int i=0;
             stacks[higherLevel]->pop();
             size--;
           

@@ -151,7 +151,7 @@ namespace smil
     template <class T>
     RES_T read(const vector<string> fileList, Image<T> &image)
     {
-        UINT nFiles = fileList.size();
+        size_t nFiles = fileList.size();
         if (nFiles==0)
           return RES_ERR;
         

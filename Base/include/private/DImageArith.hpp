@@ -126,17 +126,17 @@ namespace smil
         ASSERT(startX<inW && startY<inH && startZ<inD);
         ASSERT(outStartX<outW && outStartY<outH && outStartZ<outD);
         
-        int realSx = min( min(sizeX, inW-startX), outW-outStartX );
-        int realSy = min( min(sizeY, inH-startY), outH-outStartY );
-        int realSz = min( min(sizeZ, inD-startZ), outD-outStartZ );
+        size_t realSx = min( min(sizeX, inW-startX), outW-outStartX );
+        size_t realSy = min( min(sizeY, inH-startY), outH-outStartY );
+        size_t realSz = min( min(sizeZ, inD-startZ), outD-outStartZ );
 
         typename Image<T1>::volType slIn = imIn.getSlices() + startZ;
         typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
         
         int nthreads = Core::getInstance()->getNumberOfThreads();
-        int y;
+        size_t y;
         
-        for (int z=0;z<realSz;z++)
+        for (size_t z=0;z<realSz;z++)
         {
             typename Image<T1>::sliceType lnIn = *slIn + startY;
             typename Image<T2>::sliceType lnOut = *slOut + outStartY;
@@ -1063,8 +1063,8 @@ namespace smil
         ASSERT_SAME_SIZE(&imIn, &imOut);
 
         // Verify that the max(measure) doesn't exceed the T2 type max
-        typename mapT::const_iterator max_it = std::max_element(_map.begin(), _map.end());
-        ASSERT(( (*max_it).second < ImDtTypes<T2>::max() ), "Input map max exceeds data type max!", RES_ERR);
+        typename mapT::const_iterator max_it = std::max_element(_map.begin(), _map.end(), map_comp_value_less());
+        ASSERT(( max_it->second < ImDtTypes<T2>::max() ), "Input map max exceeds data type max!", RES_ERR);
 
         
         typename Image<T1>::lineType pixIn = imIn.getPixels();
@@ -1076,7 +1076,7 @@ namespace smil
         {
           it = _map.find(*pixIn);
           if (it!=_map.end())
-            *pixOut = it->second;
+            *pixOut = T2(it->second);
           else
             *pixOut = defaultValue;
           pixIn++;

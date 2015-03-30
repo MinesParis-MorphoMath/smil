@@ -113,7 +113,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(compare);
 TEMPLATE_WRAP_FUNC(mask);
 TEMPLATE_WRAP_FUNC_2T_CROSS(applyLookup);
 
-# Suppl. Types
+// Suppl. Types
 TEMPLATE_WRAP_SUPPL_FUNC(fill);
 TEMPLATE_WRAP_SUPPL_FUNC(equ);
 TEMPLATE_WRAP_SUPPL_FUNC(diff);
@@ -197,7 +197,7 @@ TEMPLATE_WRAP_FUNC(measCenteredCovariance);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 TEMPLATE_WRAP_FUNC(isBinary);
 
-# Suppl. Types
+// Suppl. Types
 TEMPLATE_WRAP_SUPPL_FUNC(vol);
 %apply double *OUTPUT{double &mean_val};
 %apply double *OUTPUT{double &std_dev_val};

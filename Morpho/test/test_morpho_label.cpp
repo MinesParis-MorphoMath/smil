@@ -175,10 +175,7 @@ class Test_LabelWithArea : public TestCase
       im1 << vec1;
       
       labelWithArea(im1, im2, sSE());
-//       im2.printSelf(1);
-      
-//       im2.show();
-//       Gui::execLoop();
+
       dataType vec3[] = {
         0,     0,     0,     0,     0,     0,     8,
         0,     0,     0,     0,     8,     8,     8,
@@ -191,6 +188,12 @@ class Test_LabelWithArea : public TestCase
       im3 << vec3;
       
       TEST_ASSERT(im2==im3);
+      
+      if (retVal!=RES_OK)
+      {
+        im2.printSelf(1);
+        im3.printSelf(1);
+      }
   }
 };
 
@@ -237,7 +240,7 @@ class Test_LabelNeighbors : public TestCase
 };
 
 
-int main(int argc, char *argv[])
+int main()
 {
       TestSuite ts;
       ADD_TEST(ts, Test_Label);

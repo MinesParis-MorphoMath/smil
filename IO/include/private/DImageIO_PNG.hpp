@@ -53,7 +53,7 @@ namespace smil
     */
     /*@{*/
     
-    class PNGHeader;
+    struct PNGHeader;
     
     RES_T getPNGFileInfo(const char* filename, ImageFileInfo &fInfo);
 
@@ -84,19 +84,13 @@ namespace smil
     };
 
     // Specializations
-    template <>
-    RES_T PNGImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image);
-    template <>
-    RES_T PNGImageFileHandler<UINT16>::read(const char *filename, Image<UINT16> &image);
-    template <>
-    RES_T PNGImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image);
+    TEMPL_SPEC_DECL RES_T PNGImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image);
+    TEMPL_SPEC_DECL RES_T PNGImageFileHandler<UINT16>::read(const char *filename, Image<UINT16> &image);
+    TEMPL_SPEC_DECL RES_T PNGImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image);
 
-    template <>
-    RES_T PNGImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename);
-    template <>
-    RES_T PNGImageFileHandler<UINT16>::write(const Image<UINT16> &image, const char *filename);
-    template <>
-    RES_T PNGImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
+    TEMPL_SPEC_DECL RES_T PNGImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename);
+    TEMPL_SPEC_DECL RES_T PNGImageFileHandler<UINT16>::write(const Image<UINT16> &image, const char *filename);
+    TEMPL_SPEC_DECL RES_T PNGImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
     
 /*@}*/
 

@@ -69,7 +69,7 @@ namespace smil
         {
         }
         
-        ~Edge()
+        virtual ~Edge()
         {
         }
         
@@ -347,7 +347,7 @@ namespace smil
         void removeLowEdges( EdgeWeightType EdgeThreshold)
         {
             size_t nb_edges = edges.size();
-            for (int index= 0; index < nb_edges; index++)
+            for (size_t index= 0; index < nb_edges; index++)
             {
                 EdgeType &e = edges[index];
                 if (e.weight<EdgeThreshold)
@@ -400,8 +400,6 @@ namespace smil
         {
             map<size_t,size_t> lookup;
             set<size_t> nodeList(nodes);
-            
-            size_t curLabel = 1;
             
             while(!nodeList.empty())
             {

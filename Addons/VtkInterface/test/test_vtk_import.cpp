@@ -53,7 +53,7 @@ class Test_Python_Import : public TestCase
     };
 #endif // Py_PYCONFIG_H
 
-int main(int argc, char *argv[])
+int main()
 {
       TestSuite ts;
       

@@ -429,7 +429,7 @@ void ImageViewerWidget::dataChanged()
     emit onDataChanged();
 }
 
-void ImageViewerWidget::overlayDataChanged(bool triggerEvents)
+void ImageViewerWidget::overlayDataChanged(bool /*triggerEvents*/)
 {
     updatePixmaps(qOverlayImage, &overlayPixmaps);
 }
@@ -484,7 +484,7 @@ void ImageViewerWidget::scale(double factor, bool absolute)
     emit(onScrollBarPositionChanged(horizontalScrollBar()->value(), verticalScrollBar()->value()));
 }
 
-void ImageViewerWidget::leaveEvent (QEvent *event)
+void ImageViewerWidget::leaveEvent (QEvent * /*event*/)
 {
     // Hide valueLabel and magnView when mouse quits the window
     valueLabel->hide();
@@ -553,7 +553,7 @@ void ImageViewerWidget::mouseReleaseEvent ( QMouseEvent * event )
     QGraphicsView::mouseReleaseEvent(event);
 }
 
-void ImageViewerWidget::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+void ImageViewerWidget::mouseMoveEvent(QGraphicsSceneMouseEvent* /*event*/)
 {
 
 }

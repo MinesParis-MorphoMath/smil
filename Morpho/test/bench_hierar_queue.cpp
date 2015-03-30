@@ -38,7 +38,7 @@
 
 using namespace smil;
 
-int main(int argc, char *argv[])
+int main()
 {
     Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png");
     Image_UINT8 im2(im1);

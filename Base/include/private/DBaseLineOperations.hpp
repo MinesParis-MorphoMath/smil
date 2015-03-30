@@ -175,7 +175,7 @@ namespace smil
         typedef typename Image<T>::lineType lineType;
         typedef typename Image<T>::sliceType sliceType;
         
-        virtual void _exec(const lineType lineIn1, const lineType lineIn2, const lineType lineIn3, const size_t size, lineType lineOut) {}
+        virtual void _exec(const lineType /*lineIn1*/, const lineType /*lineIn2*/, const lineType /*lineIn3*/, const size_t /*size*/, lineType /*lineOut*/) {}
         virtual void _exec_aligned(const lineType lineIn1, const lineType lineIn2, const lineType lineIn3, const size_t size, lineType lineOut) { _exec(lineIn1, lineIn2, lineIn3, size, lineOut); }
         virtual void operator()(const lineType lineIn1, const lineType lineIn2, const lineType lineIn3, const size_t size, lineType lineOut)
         { 

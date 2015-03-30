@@ -39,7 +39,7 @@ namespace smil
 {
     struct JPGHeader
     {
-        JPGHeader(const string rw)
+        JPGHeader(const string /*rw*/)
         {
         }
         ~JPGHeader()
@@ -48,12 +48,12 @@ namespace smil
         
     };
     
-    RES_T readJPGHeader(FILE *fp, JPGHeader &hStruct)
+    RES_T readJPGHeader(FILE * /*fp*/, JPGHeader &/*hStruct*/)
     {
         return RES_OK;
     }
 
-    RES_T writeJPGHeader(FILE *fp, JPGHeader &hStruct)
+    RES_T writeJPGHeader(FILE * /*fp*/, JPGHeader &/*hStruct*/)
     {
         return RES_OK;
     }

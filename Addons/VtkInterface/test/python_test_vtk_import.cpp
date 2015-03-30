@@ -34,7 +34,7 @@ class Test_Python_Import : public TestCase
         }
     };
 
-int main(int argc, char *argv[])
+int main()
 {
       TestSuite ts;
       

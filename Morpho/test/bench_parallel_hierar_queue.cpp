@@ -55,7 +55,7 @@ RES_T fill_par_hq (const Image<T> &img, ParHierarQInc<T> hq) {
         return RES_OK;
 }
 
-int main(int argc, char *argv[])
+int main()
 {
     Image_UINT8 img("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png");
     HierarchicalQueue<UINT8> hq;

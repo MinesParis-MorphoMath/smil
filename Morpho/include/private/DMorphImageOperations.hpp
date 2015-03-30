@@ -92,7 +92,7 @@ namespace smil
         virtual inline void processLine(lineInType pixIn, lineOutType pixOut, size_t &pixNbr, const StrElt &se);
         virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsets);
         
-        static bool isInplaceSafe(const StrElt &se) { return false; }
+        static bool isInplaceSafe(const StrElt &/*se*/) { return false; }
         
         const Image<T_in> *imIn;
         Image<T_out> *imOut;

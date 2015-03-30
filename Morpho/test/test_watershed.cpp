@@ -314,7 +314,7 @@ class Test_Watershed_Indempotence : public TestCase
 
 
 
-int main(int argc, char *argv[])
+int main()
 {
       TestSuite ts;
       

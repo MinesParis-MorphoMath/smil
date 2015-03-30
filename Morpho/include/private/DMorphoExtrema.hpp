@@ -208,12 +208,8 @@ namespace smil
         typedef Image<T> inT;
         typedef Image<T> outT;
         typedef Image<T> arrowT;
-        typedef typename inT::lineType inLineT;
         typedef typename outT::lineType outLineT;
         typedef typename arrowT::lineType arrowLineT;
-        typedef typename inT::sliceType inSliceT;
-        typedef typename outT::sliceType outSliceT;
-        typedef typename arrowT::sliceType arrowSliceT;
         typedef typename inT::volType inVolT;
         typedef typename outT::volType outVolT;
         typedef typename arrowT::volType arrowVolT;
@@ -231,7 +227,6 @@ namespace smil
         inVolT inSlices = imIn.getSlices();
         outVolT outSlices = imOut.getSlices();
         arrowVolT arrowSlices = arrows.getSlices();
-        inLineT* inLines;
         outLineT* outLines;
         arrowLineT* arrowLines; 
         outLineT outP = imOut.getPixels();

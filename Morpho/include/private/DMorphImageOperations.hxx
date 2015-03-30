@@ -731,7 +731,7 @@ namespace smil
     #ifdef USE_OPEN_MP
           int tid;
     #endif // USE_OPEN_MP
-      int y;
+      size_t y;
       
     #ifdef USE_OPEN_MP
       #pragma omp parallel private(tid,buf1,buf2) num_threads(nthreads)
@@ -747,7 +747,7 @@ namespace smil
           {
           this->lineFunction(borderBuf, srcSlices[0][y], this->lineLen, buf1);
               
-          for (int z=1;z<d;z++)
+          for (size_t z=1;z<d;z++)
           {
             // Todo: if oddLines...
             this->lineFunction(srcSlices[z][y], srcSlices[z-1][y], this->lineLen, buf2);

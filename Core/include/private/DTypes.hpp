@@ -100,7 +100,7 @@ namespace smil
 
 
     template <class T>
-    inline const char *getDataTypeAsString(T *val=NULL)
+    inline const char *getDataTypeAsString(T * /*val*/ =(T*)NULL)
     {
         return "Unknown";
     }

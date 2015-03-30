@@ -202,7 +202,7 @@ void Core::hideAllImages()
 void Core::deleteAllImages()
 {
     vector<BaseImage*> imgs = this->registeredImages;
-    for (int i=0;i<imgs.size();i++)
+    for (size_t i=0;i<imgs.size();i++)
       delete imgs[i];
 }
 

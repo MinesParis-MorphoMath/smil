@@ -33,7 +33,7 @@
 
 using namespace smil;
 
-int main(int argc, char *argv[])
+int main()
 {
     Image_UINT8 im1(1024, 1024);
     Image_UINT16 im2(im1);

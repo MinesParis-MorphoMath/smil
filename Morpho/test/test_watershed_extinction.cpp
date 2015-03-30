@@ -454,7 +454,7 @@ class Test_Watershed_Extinction_Compare : public TestCase
 };
 
 
-int main(int argc, char *argv[])
+int main()
 {
     TestSuite ts;
 

@@ -210,7 +210,7 @@ namespace smil
         protected:
             containerType q;
 
-            virtual bool testAndAssign (statutT &pS, outT &pO) 
+            virtual bool testAndAssign (statutT &/*pS*/, outT &pO) 
             {
                 if (pO != propagationValue) 
                 {

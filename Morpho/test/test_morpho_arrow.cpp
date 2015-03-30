@@ -96,7 +96,7 @@ class TestArrow : public TestCase
 #include "Core/include/DCore.h"
 #include "DMorphoBase.hpp"
 
-int main(int argc, char *argv[])
+int main()
 {
       TestSuite ts;
       ADD_TEST(ts, TestArrow);

@@ -63,7 +63,7 @@ class Test_VTK_RW : public TestCase
   }
 };
 
-int main(int argc, char *argv[])
+int main(void)
 {
       TestSuite ts;
 

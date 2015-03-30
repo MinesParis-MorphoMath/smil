@@ -261,7 +261,7 @@ class Test_MinMax : public TestCase
   }
 };
 
-int main(int argc, char *argv[])
+int main(void)
 {
       TestSuite ts;
 

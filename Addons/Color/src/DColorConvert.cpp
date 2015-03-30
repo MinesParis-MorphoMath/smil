@@ -155,10 +155,6 @@ namespace smil
         ASSERT_ALLOCATED(&imXyzIn, &imLabOut);
         ASSERT_SAME_SIZE(&imXyzIn, &imLabOut);
         
-        static const float yc1 = 0.607f,       yc2 = 0.174f,   yc3 = 0.201f;
-        static const float uc1 = 0.299f,       uc2 = 0.587f,   uc3 = 0.114f;
-        static const float vc1 = 0.000f,       vc2 = 0.066f,   vc3 = 1.117f;
-        
         Image<UINT8>::lineType x = imXyzIn.getPixels().arrays[0];
         Image<UINT8>::lineType y = imXyzIn.getPixels().arrays[1];
         Image<UINT8>::lineType z = imXyzIn.getPixels().arrays[2];

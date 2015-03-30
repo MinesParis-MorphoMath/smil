@@ -175,7 +175,7 @@ struct EmptyCriterion
 {
   inline void init() {}
   inline void reset() {}
-  inline void merge(EmptyCriterion &other) { }
+  inline void merge(EmptyCriterion &/*other*/) { }
   inline void update() {  }
 };
 
@@ -243,7 +243,7 @@ private:
         
         T minValue = ImDtTypes<T>::max();
         T tMinV = ImDtTypes<T>::min();
-        OffsetT minOff;
+        OffsetT minOff = 0;
         for (size_t i=0;i<img.getPixelCount();i++)
           if (pix[i]<minValue)
           {
@@ -339,12 +339,10 @@ private:
 
     void flood(const Image<T> &img, UINT *img_eti, int level)
     {
-            int indice;
             int p;
             int imWidth = img.getWidth();
             int imHeight = img.getHeight();
             int imDepth = img.getDepth();
-            int pixelCount = img.getPixelCount();
             int pixPerSlice = imWidth*imHeight;
             typename ImDtTypes<T>::lineType imgPix = img.getPixels();
             
@@ -701,7 +699,6 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
       UINT cNode, cParent; // attributes
       CriterionT aNode, aParent;
       T lNode, lParent; // node levels, the same type than input image
-      int toto;
       float stability;
 
 
@@ -743,7 +740,7 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
           isMaxT = 1;
           transformee_node[node] = stab_residue;
 
-          if(! (isPrevMaxT and flag)){
+          if(! (isPrevMaxT && flag)){
             indicatrice_node[node]  = cNode + 1;
           }
           
@@ -770,15 +767,14 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
 {
 
   int child;
-  UINT hauteur;
+//   UINT hauteur;
 
   transformee_node[root]=0;
   indicatrice_node[root]=0;
 
   tree.updateCriteria(root);
-  hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
+//   hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
   child = tree.getChild(root);
-//   std::cout<<"DELTA INPUT="<<delta<<"stop="<<stopSize<<"\n";
 
     while (child!=0) 
       {
@@ -861,13 +857,11 @@ void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, 
 {
 
     int child;
-    UINT hauteur;
 
     lut_node[root] = tree.getLevel(root);
 
     tree.updateCriteria(root);
 
-    hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
     child = tree.getChild(root);
 
     while (child!=0) 

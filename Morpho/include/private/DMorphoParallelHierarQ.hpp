@@ -50,7 +50,7 @@ class ParHierarQInc
 
                 bool initialized;
         public:
-                ParHierarQInc () : initialized (false), size(0), gray_level_nbr(0)
+                ParHierarQInc () : gray_level_nbr(0), size(0), initialized (false)
                 {
                 }
                 ~ParHierarQInc ()
@@ -192,9 +192,9 @@ class ParHierarQInc
                                 }
                         }
                 }
-                virtual bool par_pop (UINT id_thread, UINT nbr_threads, TokenType& result)
+                virtual bool par_pop (UINT /*id_thread*/, UINT /*nbr_threads*/, TokenType& /*result*/)
                 {
-                        size_t offset;
+//                         size_t offset;
                         
                         return true;
                 }

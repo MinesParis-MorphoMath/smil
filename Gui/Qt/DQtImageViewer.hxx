@@ -365,7 +365,7 @@ namespace smil
         int imH = qImage->height();
 
         typename ImDtTypes<T>::sliceType pSlice = parentClass::image->getSlices()[z];
-        typename ImDtTypes<T>::lineType pLine;
+        typename ImDtTypes<T>::lineType pLine = pSlice[0]; // dummy initialization
         T pVal;
 
         QGraphicsTextItem *textItem;

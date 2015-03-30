@@ -30,7 +30,7 @@
 using namespace smil;
 
 
-int main(int argc, char *argv[])
+int main(void)
 {
     int sx = 1024; //24;
     int sy = 1024;
@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 
     double BENCH_NRUNS = 1E2;
     
-    UINT8 val = 127;
+//     UINT8 val = 127;
     std::map<UINT8, UINT8> lut;
     for (int i=0;i<256;i++)
       lut[i] = 255-i;

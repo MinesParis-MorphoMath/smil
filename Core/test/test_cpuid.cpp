@@ -25,7 +25,7 @@ int main () {
 
     vector<Cache_Descriptors> L = id.getCaches () ;
 
-    for (int i=0; i<L.size(); ++i) {
+    for (size_t i=0; i<L.size(); ++i) {
         cout << "cache at level: " << i << endl;
         cout << "type: " << L[i].type << endl;
         cout << "size: " << L[i].size << endl;

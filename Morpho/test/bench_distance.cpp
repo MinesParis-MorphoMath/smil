@@ -57,7 +57,8 @@ class Test_Distance : public TestCase
     }
 };
 
-int main(int argc, char *argv[]){
+int main()
+{
     TestSuite ts;
     ADD_TEST (ts, Test_Distance) ;
     return ts.run ();

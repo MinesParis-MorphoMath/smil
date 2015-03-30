@@ -129,7 +129,7 @@ namespace smil
             return RES_OK;
         }
         
-        virtual RES_T processImage(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
+        virtual RES_T processImage(const Image<T> &/*imIn*/, Image<labelT> &/*imLbl*/, const StrElt &/*se*/)
         {
             // Put the marker pixels in the HQ
             size_t offset = 0;

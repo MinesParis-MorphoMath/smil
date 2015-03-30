@@ -30,7 +30,7 @@
 using namespace smil;
 
 
-int main(int argc, char *argv[])
+int main(void)
 {
     int sx = 1024; //24;
     int sy = 1024;

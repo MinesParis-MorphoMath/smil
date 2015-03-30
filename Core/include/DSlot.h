@@ -69,10 +69,10 @@ namespace smil
     public:
       Slot() {}
       virtual ~Slot() {}
-      virtual void run(eventT */*e*/)
+      virtual void run(eventT * /*e*/)
       {
       }
-      void operator() (eventT */*e*/)
+      void operator() (eventT * /*e*/)
       {
       }
 #ifndef SWIG      

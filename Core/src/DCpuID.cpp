@@ -95,7 +95,10 @@ CpuID::CpuID()
         int i=0; 
         if (vendor == "GenuineIntel") {
             do {
-                __asm__ __volatile__ (
+#ifdef _MSC_VER
+				// TODO Write equivalent intel style assembly code
+#else // _MSC_VER
+				__asm__ __volatile__ (
                     "mov $0x04, %%eax\n\t"
                     "mov %3, %%ecx\n\t"
                     "cpuid\n\t"
@@ -106,6 +109,7 @@ CpuID::CpuID()
                     :"r"(i)
                     :"%edx"
                 );
+#endif // _MSC_VER
                 tmp.type = (eaxFeatures & (0x0000000F));
                 tmp.associativity = ((ebxFeatures & 0xFFC00000) >> 22) +1;
                 tmp.lines_per_tag = ((ebxFeatures & 0x003FF000) >> 12) +1;
