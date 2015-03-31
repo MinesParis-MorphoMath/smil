@@ -913,7 +913,7 @@ namespace smil
     }
 
 
-    #if defined SWIGPYTHON && defined USE_NUMPY
+    #if defined SWIGPYTHON && defined USE_NUMPY && defined(SWIG_WRAP_CORE)
     #include "Core/include/DNumpy.h"
 
     template <class T>

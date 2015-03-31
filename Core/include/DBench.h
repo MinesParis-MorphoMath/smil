@@ -38,8 +38,8 @@ namespace smil
 {
     #define BENCH(func, ...) \
     { \
-          double t1, t2;; \
-          t1 = getCpuTime();; \
+          double t1, t2; \
+          t1 = getCpuTime(); \
           for (UINT i=0;i<BENCH_NRUNS;i++) \
               func(__VA_ARGS__); \
           t2 = getCpuTime(); \
@@ -48,8 +48,8 @@ namespace smil
 
     #define BENCH_STR(func, str, ...) \
     { \
-          double t1, t2;; \
-          t1 = getCpuTime();; \
+          double t1, t2; \
+          t1 = getCpuTime(); \
           for (UINT i=0;i<BENCH_NRUNS;i++) \
                     func(__VA_ARGS__); \
           t2 = getCpuTime(); \
@@ -58,8 +58,8 @@ namespace smil
 
     #define BENCH_IMG(func, ...) \
     { \
-          double t1, t2;; \
-          t1 = getCpuTime();; \
+          double t1, t2; \
+          t1 = getCpuTime(); \
           for (UINT i=0;i<BENCH_NRUNS;i++) \
                     func(__VA_ARGS__); \
           t2 = getCpuTime(); \
@@ -71,8 +71,8 @@ namespace smil
 
     #define BENCH_CROSS_IMG(func, ...) \
     { \
-          double t1, t2;; \
-          t1 = getCpuTime();; \
+          double t1, t2; \
+          t1 = getCpuTime(); \
           for (UINT i=0;i<BENCH_NRUNS;i++) \
                     func(__VA_ARGS__); \
           t2 = getCpuTime(); \
@@ -84,8 +84,8 @@ namespace smil
 
     #define BENCH_IMG_STR(func, str, ...) \
     { \
-          double t1, t2;; \
-          t1 = getCpuTime();; \
+          double t1, t2; \
+          t1 = getCpuTime(); \
           for (UINT i=0;i<BENCH_NRUNS;i++) \
                     func(__VA_ARGS__); \
           t2 = getCpuTime(); \
