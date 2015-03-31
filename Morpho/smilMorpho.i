@@ -35,6 +35,7 @@ SMIL_MODULE(smilMorpho)
 #include "DMorphoBase.hpp"
 #include "DMorphoResidues.hpp"
 #include "DMorphoGeodesic.hpp"
+#include "DMorphoDistance.hpp"
 #include "DMorphoExtrema.hpp"
 #include "DMorphoFilter.hpp"
 #include "DMorphoArrow.hpp"
@@ -110,6 +111,8 @@ TEMPLATE_WRAP_FUNC(buildOpen);
 TEMPLATE_WRAP_FUNC(buildClose);
 TEMPLATE_WRAP_FUNC(fillHoles);
 TEMPLATE_WRAP_FUNC(levelPics);
+
+%include "Morpho/include/private/DMorphoDistance.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist);
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist_euclidean);
 

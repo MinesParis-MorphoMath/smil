@@ -32,91 +32,6 @@
 
 using namespace smil;
 
-class TestDistanceSquare : public TestCase
-{
-  virtual void run()
-  {
-      Image_UINT8 im1(10,10);
-      Image_UINT8 im2(im1);
-      Image_UINT8 imTruth(im1);
-      
-      UINT8 vec1[] = 
-      { 
-          0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-          0, 255, 255, 255, 255, 255,   0,   0,   0,   0,
-          0, 255, 255, 255, 255, 255,   0,   0,   0,   0,
-          0, 255, 255, 255, 255, 255,   0, 255, 255, 255,
-          0, 255, 255, 255, 255, 255,   0,   0, 255,   0,
-          0,   0,   0,   0,   0,   0,   0,   0, 255,   0,
-          0, 255,   0,   0,   0,   0,   0,   0, 255,   0,
-          0, 255, 255,   0,   0, 255,   0,   0, 255,   0,
-          0, 255, 255,   0,   0,   0,   0,   0,   0,   0,
-          0,   0, 255,   0,   0,   0,   0,   0,   0,   0,
-      };
-      im1 << vec1;
-      
-      UINT8 vecTruth[] = 
-      { 
-          0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
-          0,   1,   1,   1,   1,   1,   0,   0,   0,   0,
-          0,   1,   2,   2,   2,   1,   0,   0,   0,   0,
-          0,   1,   2,   2,   2,   1,   0,   1,   1,   1,
-          0,   1,   1,   1,   1,   1,   0,   0,   1,   0,
-          0,   0,   0,   0,   0,   0,   0,   0,   1,   0,
-          0,   1,   0,   0,   0,   0,   0,   0,   1,   0,
-          0,   1,   1,   0,   0,   1,   0,   0,   1,   0,
-          0,   1,   1,   0,   0,   0,   0,   0,   0,   0,
-          0,   0,   1,   0,   0,   0,   0,   0,   0,   0,
-      };
-      imTruth << vecTruth;
-      
-      dist(im1, im2, sSE());
-      TEST_ASSERT(im2==imTruth);
-      if (retVal!=RES_OK)
-        im2.printSelf(1);
-  }
-};
-
-class TestDistanceCross : public TestCase
-{
-  virtual void run()
-  {
-      Image_UINT8 im1(8,8);
-      Image_UINT8 im2(im1);
-      Image_UINT8 imTruth(im1);
-      
-      UINT8 vec1[] = 
-      { 
-          255, 255, 255, 255, 255, 255, 255, 255,
-          255,   0, 255, 255, 255, 255, 255, 255,
-          255, 255, 255,   0,   0, 255, 255, 255,
-          255, 255, 255,   0, 255, 255, 255, 255,
-          255, 255, 255, 255, 255,   0,   0,   0,
-          255, 255, 255, 255, 255,   0, 255,   0,
-          255, 255, 255, 255, 255,   0,   0,   0,
-          255, 255, 255, 255, 255, 255, 255, 255,  
-      };
-      im1 << vec1;
-      
-      UINT8 vecTruth[] = 
-      { 
-          2,   1,   2,   2,   2,   3,   4,   4,
-          1,   0,   1,   1,   1,   2,   3,   3,
-          2,   1,   1,   0,   0,   1,   2,   2,
-          3,   2,   1,   0,   1,   1,   1,   1,
-          4,   3,   2,   1,   1,   0,   0,   0,
-          5,   4,   3,   2,   1,   0,   1,   0,
-          5,   4,   3,   2,   1,   0,   0,   0,
-          6,   5,   4,   3,   2,   1,   1,   1,      
-      };
-      imTruth << vecTruth;
-      
-      dist(im1, im2, cSE());
-      TEST_ASSERT(im2==imTruth);
-      if (retVal!=RES_OK)
-        im2.printSelf(1);
-  }
-};
 
 class Test_Build : public TestCase
 {
@@ -158,8 +73,6 @@ class Test_Build : public TestCase
 int main()
 {
       TestSuite ts;
-      ADD_TEST(ts, TestDistanceSquare);
-      ADD_TEST(ts, TestDistanceCross);      
       ADD_TEST(ts, Test_Build);
       return ts.run();
       
