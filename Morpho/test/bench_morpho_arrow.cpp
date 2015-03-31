@@ -33,44 +33,19 @@
 
 using namespace smil;
 
-void mafunc()
-{
-    size_t sizex = 1024, sizey = 512;
-    
-    typedef UINT8 T;
-    Image_UINT8 im1(sizex, sizey);
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
-    
-    for (size_t j=0;j<sizey;j++)
-    {
-      ImDtTypes<T>::lineType lIn1 = im1.getLines()[j];
-      ImDtTypes<T>::lineType lIn2 = im2.getLines()[j];
-      ImDtTypes<T>::lineType lOut = im3.getLines()[j];
-      
-      T _trueVal(1UL << j), _falseVal(127);
-      
-      for (size_t j=0;j<sizey;j++)
-      for (size_t i=0;i<sizex;i++)
-      {
-         lOut[i] |= lIn1[i] > lIn2[i] ? _trueVal : _falseVal;
-      }
-    }
-}
 
 int main()
 {
     Image_UINT8 im1(5562, 7949);
-//    Image_UINT8 im1(1024, 1024);
     Image_UINT8 im2(im1);
+    Image_UINT8 im3(im1);
     
     StrElt generic_sSE(sSE());
     generic_sSE.seT = SE_Generic;
     
     UINT BENCH_NRUNS = 1E2;
     
-//     BENCH(mafunc);
-    
+    BENCH_IMG(sup, im1, im2, im3);
     BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
     BENCH_IMG_STR(arrowGrt, "hSE", im1, im2, hSE());
     
