@@ -42,40 +42,46 @@ namespace smil
     */
 
 
-    template <class T, class lineFunction_T>
-    class unaryMorphArrowImageFunction : public MorphImageFunction<T, lineFunction_T>
+    template <class T_in, class lineFunction_T, class T_out=T_in>
+    class unaryMorphArrowImageFunction : public MorphImageFunction<T_in, lineFunction_T, T_out>
     {
     public:
-        typedef MorphImageFunction<T, lineFunction_T> parentClass;
-        typedef Image<T> imageType;
-        typedef typename imageType::lineType lineType;
-        typedef typename imageType::sliceType sliceType;
-        typedef typename imageType::volType volType;
+        typedef MorphImageFunction<T_in, lineFunction_T, T_out> parentClass;
         
-        unaryMorphArrowImageFunction(T border=numeric_limits<T>::min()) 
-          : MorphImageFunction<T, lineFunction_T>(border) 
+        typedef Image<T_in> imageInType;
+        typedef typename ImDtTypes<T_in>::lineType lineInType;
+        typedef typename ImDtTypes<T_in>::sliceType sliceInType;
+        typedef typename ImDtTypes<T_in>::volType volInType;
+        
+        typedef Image<T_out> imageOutType;
+        typedef typename ImDtTypes<T_out>::lineType lineOutType;
+        typedef typename ImDtTypes<T_out>::sliceType sliceOutType;
+        typedef typename ImDtTypes<T_out>::volType volOutType;
+        
+        unaryMorphArrowImageFunction(T_in border=numeric_limits<T_in>::min(), T_out /*_initialValue*/ = ImDtTypes<T_out>::min()) 
+          : MorphImageFunction<T_in, lineFunction_T, T_out>(border) 
         {
         }
-        virtual RES_T _exec_single(const imageType &imIn, imageType &imOut, const StrElt &se);
-        virtual RES_T _exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se);
+        virtual RES_T _exec_single(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
+        virtual RES_T _exec_single_generic(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
     };
 
 
-    template <class T, class lineFunction_T>
-    RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single(const imageType &imIn, imageType &imOut, const StrElt &se)
+    template <class T_in, class lineFunction_T, class T_out>
+    RES_T unaryMorphArrowImageFunction<T_in, lineFunction_T, T_out>::_exec_single(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
     {
         return _exec_single_generic(imIn, imOut, se);
     }
 
-    template <class T, class lineFunction_T>
-    RES_T unaryMorphArrowImageFunction<T, lineFunction_T>::_exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se)
+    template <class T_in, class lineFunction_T, class T_out>
+    RES_T unaryMorphArrowImageFunction<T_in, lineFunction_T, T_out>::_exec_single_generic(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
     {
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
         if (&imIn==&imOut)
         {
-            Image<T> tmpIm = imIn;
+            Image<T_in> tmpIm = imIn;
             return _exec_single_generic(tmpIm, imOut, se);
         }
         
@@ -90,18 +96,18 @@ namespace smil
         size_t nLines = imIn.getHeight();
 
         
-        volType srcSlices = imIn.getSlices();
-        volType destSlices = imOut.getSlices();
+        volInType srcSlices = imIn.getSlices();
+        volOutType destSlices = imOut.getSlices();
         
         int nthreads = Core::getInstance()->getNumberOfThreads();
-        lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
+        lineInType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
 
         size_t l;
 
         for (size_t s=0;s<nSlices;s++)
         {
-            lineType *srcLines = srcSlices[s];
-            lineType *destLines = destSlices[s];
+            lineInType *srcLines = srcSlices[s];
+            lineOutType *destLines = destSlices[s];
             
       #ifdef USE_OPEN_MP
           #pragma omp parallel num_threads(nthreads)
@@ -113,8 +119,8 @@ namespace smil
             size_t x, y, z;
             lineFunction_T arrowLineFunction;
             
-            lineType tmpBuf = _bufs[0];
-            lineType tmpBuf2 = _bufs[nthreads];
+            lineInType tmpBuf = _bufs[0];
+            lineInType tmpBuf2 = _bufs[nthreads];
       #ifdef USE_OPEN_MP
             int tid = omp_get_thread_num();
             tmpBuf = _bufs[tid];
@@ -124,12 +130,12 @@ namespace smil
         #pragma omp for
             for (l=0;l<nLines;l++)
             {
-                lineType lineIn  = srcLines[l];
-                lineType lineOut = destLines[l];
+                lineInType lineIn  = srcLines[l];
+                lineInType lineOut = destLines[l];
 
                 oddLine = oddSe && l%2;
                 
-                fillLine<T>(tmpBuf2, this->lineLen, 0);
+                fillLine<T_in>(tmpBuf2, this->lineLen, 0);
                 
                 for (UINT p=0;p<sePtsNumber;p++)
                 {
@@ -141,7 +147,7 @@ namespace smil
                     this->_extract_translated_line(&imIn, x, y, z, tmpBuf);
                     arrowLineFunction._exec(lineIn, tmpBuf, this->lineLen, tmpBuf2);
                 }
-                copyLine<T>(tmpBuf2, this->lineLen, lineOut);
+                copyLine<T_in>(tmpBuf2, this->lineLen, lineOut);
              }
           }  // pragma omp parallel
         }
@@ -152,38 +158,38 @@ namespace smil
     }
 
 
-    template <class T>
-    RES_T arrowLow(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderValue=numeric_limits<T>::min())
+    template <class T_in, class T_out>
+    RES_T arrowLow(const Image<T_in> &imIn, Image<T_out> &imOut, const StrElt &se=DEFAULT_SE, T_in borderValue=numeric_limits<T_in>::min())
     {
-        unaryMorphArrowImageFunction<T, lowSupLine<T> > iFunc(borderValue);
+        unaryMorphArrowImageFunction<T_in, lowSupLine<T_in, T_out>, T_out > iFunc(borderValue);
         return iFunc(imIn, imOut, se);
     }
 
-    template <class T>
-    RES_T arrowLowOrEqu(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderValue=numeric_limits<T>::min())
+    template <class T_in, class T_out>
+    RES_T arrowLowOrEqu(const Image<T_in> &imIn, Image<T_out> &imOut, const StrElt &se=DEFAULT_SE, T_in borderValue=numeric_limits<T_in>::min())
     {
-        unaryMorphArrowImageFunction<T, lowOrEquSupLine<T> > iFunc(borderValue);
+        unaryMorphArrowImageFunction<T_in, lowOrEquSupLine<T_in, T_out>, T_out > iFunc(borderValue);
         return iFunc(imIn, imOut, se);
     }
 
-    template <class T>
-    RES_T arrowGrt(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderValue=numeric_limits<T>::min())
+    template <class T_in, class T_out>
+    RES_T arrowGrt(const Image<T_in> &imIn, Image<T_out> &imOut, const StrElt &se=DEFAULT_SE, T_in borderValue=numeric_limits<T_in>::min())
     {
-        unaryMorphArrowImageFunction<T, grtSupLine<T> > iFunc(borderValue);
+        unaryMorphArrowImageFunction<T_in, grtSupLine<T_in, T_out>, T_out > iFunc(borderValue);
         return iFunc(imIn, imOut, se);
     }
 
-    template <class T>
-    RES_T arrowGrtOrEqu(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderValue=numeric_limits<T>::min())
+    template <class T_in, class T_out>
+    RES_T arrowGrtOrEqu(const Image<T_in> &imIn, Image<T_out> &imOut, const StrElt &se=DEFAULT_SE, T_in borderValue=numeric_limits<T_in>::min())
     {
-        unaryMorphArrowImageFunction<T, grtOrEquSupLine<T> > iFunc(borderValue);
+        unaryMorphArrowImageFunction<T_in, grtOrEquSupLine<T_in, T_out>, T_out > iFunc(borderValue);
         return iFunc(imIn, imOut, se);
     }
 
-    template <class T>
-    RES_T arrowEqu(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderValue=numeric_limits<T>::min())
+    template <class T_in, class T_out>
+    RES_T arrowEqu(const Image<T_in> &imIn, Image<T_out> &imOut, const StrElt &se=DEFAULT_SE, T_in borderValue=numeric_limits<T_in>::min())
     {
-        unaryMorphArrowImageFunction<T, equSupLine<T> > iFunc(borderValue);
+        unaryMorphArrowImageFunction<T_in, equSupLine<T_in, T_out>, T_out > iFunc(borderValue);
         return iFunc(imIn, imOut, se);
     }
 
@@ -195,8 +201,8 @@ namespace smil
     * \param imOut
     * \param se
     */
-    template <class T>
-    RES_T arrow(const Image<T> &imIn, const char *operation, Image<T> &imOut, const StrElt &se=DEFAULT_SE, T borderValue=numeric_limits<T>::min())
+    template <class T_in, class T_out>
+    RES_T arrow(const Image<T_in> &imIn, const char *operation, Image<T_out> &imOut, const StrElt &se=DEFAULT_SE, T_in borderValue=numeric_limits<T_in>::min())
     {
         if (strcmp(operation, "==")==0)
           return arrowEqu(imIn, imOut, se, borderValue);

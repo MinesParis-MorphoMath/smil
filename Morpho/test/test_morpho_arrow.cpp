@@ -36,11 +36,14 @@ class TestArrow : public TestCase
 {
   virtual void run()
   {
-      Image_UINT8 im1(5,5);
-      Image_UINT8 im2(5,5);
-      Image_UINT8 imTruth(5,5);
+      typedef UINT8 T_in;
+      typedef UINT16 T_out;
       
-      UINT8 vec1[] = { 
+      Image<T_in> im1(5,5);
+      Image<T_out> im2(5,5);
+      Image<T_out> imTruth(5,5);
+      
+      T_in vec1[] = { 
         1, 3, 10, 2, 9, 
         5, 5, 5, 9, 3, 
         3, 5, 7, 5, 5, 
@@ -51,7 +54,7 @@ class TestArrow : public TestCase
       im1 << vec1;
 
       arrowGrt(im1, im2, sSE0(), UINT8(255));
-      UINT8 vecGrt[] = { 
+      T_out vecGrt[] = { 
         0,  16, 241,   0,  80,
         70,  44,  10, 245,   8,
         0, 144, 221, 226, 100,
@@ -64,7 +67,7 @@ class TestArrow : public TestCase
         im2.printSelf(1);
 
       arrowLow(im1, im2, sSE0(), UINT8(255));
-      UINT8 vecLow[] = { 
+      T_out vecLow[] = { 
         255, 239,  14, 255, 143,
           56, 130,  69,   8, 247,
         255,  97,   2,  20, 139,
@@ -77,7 +80,7 @@ class TestArrow : public TestCase
         im2.printSelf(1);
 
       arrowGrt(im1, im2, hSE0(), UINT8(255));
-      UINT8 vecGrt2[] = { 
+      T_out vecGrt2[] = { 
         0,   8,  57,   0,  40,
         22,   4,   2,  61,   0,
         0,   8,  47,  48,  50,

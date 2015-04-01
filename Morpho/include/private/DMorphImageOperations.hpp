@@ -129,18 +129,25 @@ namespace smil
 
 
 
-    template <class T, class lineFunction_T>
-    class MorphImageFunction : public MorphImageFunctionBase<T>
+    template <class T_in, class lineFunction_T, class T_out=T_in>
+    class MorphImageFunction : public MorphImageFunctionBase<T_in, T_out>
     {
       public:
-        typedef imageFunctionBase<T> parentClass;
-        typedef Image<T> imageType;
-        typedef typename ImDtTypes<T>::lineType lineType;
-        typedef typename ImDtTypes<T>::sliceType sliceType;
-        typedef typename ImDtTypes<T>::volType volType;
+        typedef MorphImageFunctionBase<T_in, T_out> parentClass;
         
-        MorphImageFunction(T border=ImDtTypes<T>::min()) 
-          : MorphImageFunctionBase<T>(border, border) 
+        typedef Image<T_in> imageInType;
+        typedef typename ImDtTypes<T_in>::lineType lineInType;
+        typedef typename ImDtTypes<T_in>::sliceType sliceInType;
+        typedef typename ImDtTypes<T_in>::volType volInType;
+        
+        typedef Image<T_out> imageOutType;
+        typedef typename ImDtTypes<T_out>::lineType lineOutType;
+        typedef typename ImDtTypes<T_out>::sliceType sliceOutType;
+        typedef typename ImDtTypes<T_out>::volType volOutType;
+        
+        
+        MorphImageFunction(T_in border=ImDtTypes<T_in>::min(), T_out initialValue = ImDtTypes<T_out>::min()) 
+          : MorphImageFunctionBase<T_in, T_out>(border, initialValue) 
         {
         }
         
@@ -148,52 +155,52 @@ namespace smil
         static bool isInplaceSafe(const StrElt &se);
         
       protected:
-        virtual RES_T _exec(const imageType &imIn, imageType &imOut, const StrElt &se);
+        virtual RES_T _exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
         
-        virtual RES_T _exec_single(const imageType &imIn, imageType &imOut, const StrElt &se);
-        virtual RES_T _exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se);                                 // Inplace unsafe !!
-        virtual RES_T _exec_single_hexagonal_SE(const imageType &imIn, imageType &imOut);                                         // Inplace safe
-        virtual RES_T _exec_single_square_SE(const imageType &imIn, imageType &imOut);                                                 // Inplace unsafe !!
-        virtual RES_T _exec_single_cube_SE(const imageType &imIn, imageType &imOut);                                                 // Inplace unsafe !!
-        virtual RES_T _exec_single_horizontal_2points(const imageType &imIn, int dx, imageType &imOut, bool oddLines=false);        // Inplace safe
-        virtual RES_T _exec_single_vertical_2points(const imageType &imIn, int dx, imageType &imOut);                                // Inplace unsafe !!
-        virtual RES_T _exec_single_horizontal_segment(const imageType &imIn, int xsize, imageType &imOut);                        // Inplace safe
-        virtual RES_T _exec_single_vertical_segment(const imageType &imIn, imageType &imOut);                                        // Inplace unsafe !!
-        virtual RES_T _exec_single_cross(const imageType &imIn, imageType &imOut);                                                // Inplace unsafe !!
-        virtual RES_T _exec_single_cross_3d(const imageType &imIn, imageType &imOut);
-        virtual RES_T _exec_single_depth_segment(const imageType &imIn, int zsize, imageType &imOut);                                 // Inplace safe
-        virtual RES_T _exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size);                        // Inplace unsafe !!
+        virtual RES_T _exec_single(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
+        virtual RES_T _exec_single_generic(const imageInType &imIn, imageOutType &imOut, const StrElt &se);                                 // Inplace unsafe !!
+        virtual RES_T _exec_single_hexagonal_SE(const imageInType &imIn, imageOutType &imOut);                                         // Inplace safe
+        virtual RES_T _exec_single_square_SE(const imageInType &imIn, imageOutType &imOut);                                                 // Inplace unsafe !!
+        virtual RES_T _exec_single_cube_SE(const imageInType &imIn, imageOutType &imOut);                                                 // Inplace unsafe !!
+        virtual RES_T _exec_single_horizontal_2points(const imageInType &imIn, int dx, imageOutType &imOut, bool oddLines=false);        // Inplace safe
+        virtual RES_T _exec_single_vertical_2points(const imageInType &imIn, int dx, imageOutType &imOut);                                // Inplace unsafe !!
+        virtual RES_T _exec_single_horizontal_segment(const imageInType &imIn, int xsize, imageOutType &imOut);                        // Inplace safe
+        virtual RES_T _exec_single_vertical_segment(const imageInType &imIn, imageOutType &imOut);                                        // Inplace unsafe !!
+        virtual RES_T _exec_single_cross(const imageInType &imIn, imageOutType &imOut);                                                // Inplace unsafe !!
+        virtual RES_T _exec_single_cross_3d(const imageInType &imIn, imageOutType &imOut);
+        virtual RES_T _exec_single_depth_segment(const imageInType &imIn, int zsize, imageOutType &imOut);                                 // Inplace safe
+        virtual RES_T _exec_rhombicuboctahedron(const imageInType &imIn, imageOutType &imOut, unsigned int size);                        // Inplace unsafe !!
 
         
 
         lineFunction_T lineFunction;
         
-        lineType borderBuf, cpBuf;
+        lineInType borderBuf, cpBuf;
         size_t lineLen;
         
-        inline void _extract_translated_line(const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf);
+        inline void _extract_translated_line(const imageInType *imIn, const int &x, const int &y, const int &z, lineOutType outBuf);
         
-        inline void _exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf);
-        inline void _exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf)
+        inline void _exec_shifted_line(const lineInType inBuf1, const lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf);
+        inline void _exec_shifted_line(const lineInType inBuf1, const lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf)
         {
             return _exec_shifted_line(inBuf1, inBuf2, dx, lineLen, outBuf, cpBuf);
         }
         
-        inline void _exec_shifted_line(const lineType inBuf, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
+        inline void _exec_shifted_line(const lineInType inBuf, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf)
         {
             return _exec_shifted_line(inBuf, inBuf, dx, lineLen, outBuf, tmpBuf);
         }
-        inline void _exec_shifted_line(const lineType inBuf, const int &dx, const int &lineLen, lineType outBuf)
+        inline void _exec_shifted_line(const lineInType inBuf, const int &dx, const int &lineLen, lineOutType outBuf)
         {
             return _exec_shifted_line(inBuf, inBuf, dx, lineLen, outBuf, cpBuf);
         }
         
-        inline void _exec_shifted_line_2ways(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf=NULL);
-        inline void _exec_shifted_line_2ways(const lineType inBuf, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf=NULL)
+        inline void _exec_shifted_line_2ways(const lineInType inBuf1, const lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf=NULL);
+        inline void _exec_shifted_line_2ways(const lineInType inBuf, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf=NULL)
         {
             return _exec_shifted_line_2ways(inBuf, inBuf, dx, lineLen, outBuf, tmpBuf);
         }
-        inline void _exec_line(const lineType inBuf, const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf);
+        inline void _exec_line(const lineInType inBuf, const imageInType *imIn, const int &x, const int &y, const int &z, lineOutType outBuf);
     };
 
 /** \} */

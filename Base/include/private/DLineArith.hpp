@@ -195,18 +195,20 @@ namespace smil
         }
     };
 
-    template <class T>
-    struct grtSupLine : public binaryLineFunctionBase<T>
+    template <class T_in, class T_out=T_in>
+    struct grtSupLine : public binaryLineFunctionBase<T_in>
     {
         grtSupLine() 
-          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          : trueVal(ImDtTypes<T_out>::max()), falseVal(0) {}
           
-        T trueVal, falseVal;
+        T_out trueVal, falseVal;
           
-        typedef typename Image<T>::lineType lineType;
-        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        typedef typename Image<T_in>::lineType lineInType;
+        typedef typename Image<T_out>::lineType lineOutType;
+        
+        virtual void _exec(const lineInType lIn1, const lineInType lIn2, const size_t size, lineOutType lOut)
         {
-            T _trueVal(trueVal), _falseVal(falseVal);
+            T_out _trueVal(trueVal), _falseVal(falseVal);
             for (size_t i=0;i<size;i++)
                 lOut[i] |= lIn1[i] > lIn2[i] ? _trueVal : _falseVal;
         }
@@ -234,18 +236,20 @@ namespace smil
         }
     };
 
-    template <class T>
-    struct grtOrEquSupLine : public binaryLineFunctionBase<T>
+    template <class T_in, class T_out=T_in>
+    struct grtOrEquSupLine : public binaryLineFunctionBase<T_in>
     {
         grtOrEquSupLine() 
-          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          : trueVal(ImDtTypes<T_out>::max()), falseVal(0) {}
           
-        T trueVal, falseVal;
+        T_out trueVal, falseVal;
           
-        typedef typename Image<T>::lineType lineType;
-        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        typedef typename Image<T_in>::lineType lineInType;
+        typedef typename Image<T_out>::lineType lineOutType;
+        
+        virtual void _exec(const lineInType lIn1, const lineInType lIn2, const size_t size, lineOutType lOut)
         {
-            T _trueVal(trueVal), _falseVal(falseVal);
+            T_out _trueVal(trueVal), _falseVal(falseVal);
             for (size_t i=0;i<size;i++)
                 lOut[i] |= lIn1[i] >= lIn2[i] ? _trueVal : _falseVal;
         }
@@ -273,18 +277,20 @@ namespace smil
         }
     };
 
-    template <class T>
-    struct lowSupLine : public binaryLineFunctionBase<T>
+    template <class T_in, class T_out=T_in>
+    struct lowSupLine : public binaryLineFunctionBase<T_in>
     {
         lowSupLine() 
-          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          : trueVal(ImDtTypes<T_out>::max()), falseVal(0) {}
           
-        T trueVal, falseVal;
+        T_out trueVal, falseVal;
           
-        typedef typename Image<T>::lineType lineType;
-        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        typedef typename Image<T_in>::lineType lineInType;
+        typedef typename Image<T_out>::lineType lineOutType;
+        
+        virtual void _exec(const lineInType lIn1, const lineInType lIn2, const size_t size, lineOutType lOut)
         {
-            T _trueVal(trueVal), _falseVal(falseVal);
+            T_out _trueVal(trueVal), _falseVal(falseVal);
             for (size_t i=0;i<size;i++)
                 lOut[i] |= lIn1[i] < lIn2[i] ? _trueVal : _falseVal;
         }
@@ -312,18 +318,20 @@ namespace smil
         }
     };
 
-    template <class T>
-    struct lowOrEquSupLine : public binaryLineFunctionBase<T>
+    template <class T_in, class T_out=T_in>
+    struct lowOrEquSupLine : public binaryLineFunctionBase<T_in>
     {
         lowOrEquSupLine() 
-          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          : trueVal(ImDtTypes<T_out>::max()), falseVal(0) {}
           
-        T trueVal, falseVal;
+        T_out trueVal, falseVal;
           
-        typedef typename Image<T>::lineType lineType;
-        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        typedef typename Image<T_in>::lineType lineInType;
+        typedef typename Image<T_out>::lineType lineOutType;
+        
+        virtual void _exec(const lineInType lIn1, const lineInType lIn2, const size_t size, lineOutType lOut)
         {
-            T _trueVal(trueVal), _falseVal(falseVal);
+            T_out _trueVal(trueVal), _falseVal(falseVal);
             for (size_t i=0;i<size;i++)
                 lOut[i] |= lIn1[i] <= lIn2[i] ? _trueVal : _falseVal;
         }
@@ -369,18 +377,20 @@ namespace smil
         }
     };
 
-    template <class T>
-    struct equSupLine : public binaryLineFunctionBase<T>
+    template <class T_in, class T_out=T_in>
+    struct equSupLine : public binaryLineFunctionBase<T_in>
     {
         equSupLine() 
-          : trueVal(ImDtTypes<T>::max()), falseVal(0) {}
+          : trueVal(ImDtTypes<T_out>::max()), falseVal(0) {}
           
-        T trueVal, falseVal;
+        T_out trueVal, falseVal;
           
-        typedef typename Image<T>::lineType lineType;
-        virtual void _exec(const lineType lIn1, const lineType lIn2, const size_t size, lineType lOut)
+        typedef typename Image<T_in>::lineType lineInType;
+        typedef typename Image<T_out>::lineType lineOutType;
+        
+        virtual void _exec(const lineInType lIn1, const lineInType lIn2, const size_t size, lineOutType lOut)
         {
-            T _trueVal(trueVal), _falseVal(falseVal);
+            T_out _trueVal(trueVal), _falseVal(falseVal);
             for (size_t i=0;i<size;i++)
                 lOut[i] |= lIn1[i] == lIn2[i] ? _trueVal : _falseVal;
         }
