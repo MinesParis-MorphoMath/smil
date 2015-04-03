@@ -45,6 +45,7 @@
 #include "private/DMorphoExtrema.hpp"
 #include "private/DMorphoFilter.hpp"
 #include "private/DMorphoGeodesic.hpp"
+#include "private/DMorphoDistance.hpp"
 #include "private/DMorphoGraph.hpp"
 #include "private/DMorphoHierarQ.hpp"
 #include "private/DMorphoLabel.hpp"
