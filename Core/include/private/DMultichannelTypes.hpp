@@ -319,6 +319,7 @@ namespace smil
         operator signed char() const { return double(*this); }
         operator char() const { return double(*this); }
         operator long int() const { return static_cast<long int>(double(*this)); }
+        operator short int() const { return static_cast<short int>(double(*this)); }
 
         virtual const T& value(const UINT &i) const
         {
