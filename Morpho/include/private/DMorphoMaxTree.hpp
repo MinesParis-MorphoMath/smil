@@ -337,13 +337,13 @@ private:
         return false;
     }
 
-    void flood(const Image<T> &img, UINT *img_eti, int level)
+    void flood(const Image<T> &img, UINT *img_eti, unsigned int level)
     {
-            int p;
-            int imWidth = img.getWidth();
-            int imHeight = img.getHeight();
-            int imDepth = img.getDepth();
-            int pixPerSlice = imWidth*imHeight;
+            OffsetT p;
+            size_t imWidth = img.getWidth();
+            size_t imHeight = img.getHeight();
+            size_t imDepth = img.getDepth();
+            size_t pixPerSlice = imWidth*imHeight;
             typename ImDtTypes<T>::lineType imgPix = img.getPixels();
             
             while( (pq.getHigherLevel()>=level) && !pq.isEmpty())

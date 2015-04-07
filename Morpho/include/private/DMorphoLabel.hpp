@@ -365,7 +365,7 @@ namespace smil
                                     x += (y+1)%2;
 
                                 nb_o = x + y*size[0] + z*size[0]*size[1];
-                                if (x >= 0 && x < size[0] && y >= 0 && y < size[1] && z >= 0 && z<size[2] && outP [nb_o] != lblNbr && inP [nb_o] == inP[o])
+                                if (x < size[0] && y < size[1] && z<size[2] && outP [nb_o] != lblNbr && inP [nb_o] == inP[o])
                                 {
                                     outP[nb_o] = lblNbr;
                                     propagation.push (nb_o);
