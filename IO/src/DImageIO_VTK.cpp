@@ -101,6 +101,10 @@ namespace smil
                   hStruct.scalarType = ImageFileInfo::SCALAR_TYPE_UINT8;
                 else if (hStruct.scalarTypeStr=="UNSIGNED_SHORT")
                   hStruct.scalarType = ImageFileInfo::SCALAR_TYPE_UINT16;                
+                else if (hStruct.scalarTypeStr=="SHORT")
+                  hStruct.scalarType = ImageFileInfo::SCALAR_TYPE_INT16;                
+                else
+                  hStruct.scalarType = ImageFileInfo::SCALAR_TYPE_UNKNOWN;                
             }
             else if (wrd=="COLOR_SCALARS")
             {

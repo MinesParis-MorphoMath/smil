@@ -141,8 +141,9 @@ namespace smil
             
             ImageFileInfo::ScalarType scalarType = hStruct.scalarType==ImageFileInfo::SCALAR_TYPE_UNKNOWN ? ImageFileInfo::SCALAR_TYPE_UINT8 : hStruct.scalarType; // default, if not specified in the file header
             
-            if ( (typeid(T)==typeid(unsigned char) && scalarType!=ImageFileInfo::SCALAR_TYPE_UINT8) ||
-                 (typeid(T)==typeid(unsigned short) && scalarType!=ImageFileInfo::SCALAR_TYPE_UINT16))
+            if ( (typeid(T)==typeid(unsigned char) && scalarType!=ImageFileInfo::SCALAR_TYPE_UINT8)
+                || (typeid(T)==typeid(unsigned short) && scalarType!=ImageFileInfo::SCALAR_TYPE_UINT16)
+                || (typeid(T)==typeid(short) && scalarType!=ImageFileInfo::SCALAR_TYPE_INT16))
             {
                 cout << "Error: input file type is " << hStruct.scalarTypeStr << endl;
                 fp.close();

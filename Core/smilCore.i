@@ -132,6 +132,8 @@ namespace std
 #endif // USE_64BIT_IDS
     %template(Vector_UINT8) vector<UINT8>;
     %template(Vector_UINT16) vector<UINT16>;
+    %template(Vector_INT8) vector<INT8>;
+    %template(Vector_INT16) vector<INT16>;
     %template(Vector_int) vector<int>;
     %template(Vector_double) vector<double>;
     %template(Vector_string) vector<string>;
