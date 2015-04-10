@@ -83,7 +83,7 @@ namespace smil
         
         typedef double floatType;
         
-        static inline pixelType min() { return numeric_limits<T>::is_signed ? -numeric_limits<T>::max() : numeric_limits<T>::min(); }
+        static inline pixelType min() { return numeric_limits<T>::min(); }
         static inline pixelType max() { return numeric_limits<T>::max(); }
         static inline size_t cardinal() { return max()-min()+1; }
         static inline lineType createLine(size_t lineLen) { return createAlignedBuffer<T>(lineLen); }

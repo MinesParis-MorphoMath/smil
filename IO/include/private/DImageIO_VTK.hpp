@@ -68,6 +68,13 @@ namespace smil
         streampos startPos;
     };
     
+    // Big/Little endian swap
+    template <class T>
+    void endswap(T *objp)
+    {
+        unsigned char *memp = reinterpret_cast<unsigned char*>(objp);
+        std::reverse(memp, memp + sizeof(T));
+    }
     
     RES_T readVTKHeader(ifstream &fp, VTKHeader &hStruct);
     RES_T getVTKFileInfo(const char* filename, ImageFileInfo &fInfo);
@@ -78,9 +85,12 @@ namespace smil
       public:
         VTKImageFileHandler()
           : ImageFileHandler<T>("BMP"),
+            littleEndian(false),
             writeBinary(true)
         {
         }
+        
+        bool littleEndian;
         
         virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
         {
@@ -189,7 +199,19 @@ namespace smil
                     for (int y=height-1;y>=0;y--)
                     {
                         curLine = curSlice[y];
-                        fp.read((char*)curLine, sizeof(T)*width);
+                        
+                        if (littleEndian || sizeof(T)==1)
+                            fp.read((char*)curLine, sizeof(T)*width);
+                        else
+                        {
+                            T val;
+                            for (int i=0;i<width;i++)
+                            {
+                              fp.read((char*)&val, sizeof(T));
+                              endswap(&val);
+                              curLine[i] = val;
+                            }
+                        }
                     }
                 }
             }
@@ -254,7 +276,18 @@ namespace smil
                     for (int y=height-1;y>=0;y--)
                     {
                         curLine = curSlice[y];
-                        fp.write((char*)curLine, sizeof(T)*width);
+                        if (littleEndian || sizeof(T)==1)
+                            fp.write((char*)curLine, sizeof(T)*width);
+                        else
+                        {
+                            T val;
+                            for (int i=0;i<width;i++)
+                            {
+                              val = curLine[i];
+                              endswap(&val);
+                              fp.write((char*)&val, sizeof(T));
+                            }
+                        }
                     }
                 }
             }

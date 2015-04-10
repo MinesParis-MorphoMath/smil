@@ -26,6 +26,37 @@
 
 using namespace smil;
 
+class Test_Cast : public TestCase
+{
+  virtual void run()
+  {
+      INT16 vec1[20]         = {   -32768, 2, -12532,  32767, -5, -3024L,   2042L,   -8, 9,  10, -11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
+      UINT16 vecTruth[20] = { 
+            0, 32770, 20236, 65535,
+        32763, 29744, 34810, 32760,
+        32777, 32778, 32757, 32780,
+        32781, 32782, 32783, 32784,
+        32785, 32786, 32787, 32788,
+      };
+      
+      Image<INT16> im1(4,5);
+      Image<UINT16> im2(im1);
+      Image<UINT16> imTruth(im1);
+      
+      im1 << vec1;
+      imTruth << vecTruth;
+      
+      TEST_ASSERT(cast(im1, im2)==RES_OK);
+      TEST_ASSERT(equ(im2, imTruth));
+      
+      if (retVal!=RES_OK)
+      {
+          im2.printSelf(1);
+          imTruth.printSelf(1);
+      }
+  }
+};
+
 class Test_Fill : public TestCase
 {
   virtual void run()
@@ -121,6 +152,7 @@ int main(void)
 {
       TestSuite ts;
 
+      ADD_TEST(ts, Test_Cast);
       ADD_TEST(ts, Test_Fill);
       ADD_TEST(ts, Test_Equal);
       ADD_TEST(ts, Test_ApplyLookup);

@@ -153,6 +153,9 @@ namespace smil
     template <class T1, class T2>
     RES_T stretchHist(const Image<T1> &imIn, T1 inMinVal, T1 inMaxVal, Image<T2> &imOut, T2 outMinVal=numeric_limits<T2>::min(), T2 outMaxVal=numeric_limits<T2>::max())
     {
+        ASSERT_ALLOCATED(&imIn);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+
         unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
         iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (inMaxVal-inMinVal);
         iFunc.lineFunction.inOrig = inMinVal;
@@ -164,6 +167,9 @@ namespace smil
     template <class T1, class T2>
     RES_T stretchHist(const Image<T1> &imIn, Image<T2> &imOut, T2 outMinVal, T2 outMaxVal)
     {
+        ASSERT_ALLOCATED(&imIn);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
         unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
         vector<T1> rangeV = rangeVal(imIn);
         iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (rangeV[1]-rangeV[0]);
@@ -176,11 +182,7 @@ namespace smil
     template <class T1, class T2>
     RES_T stretchHist(const Image<T1> &imIn, Image<T2> &imOut)
     {
-        Image<T1> tmpIm(imIn);
-        RES_T res = stretchHist<T1>(imIn, tmpIm, (T1)numeric_limits<T2>::min(), (T1)numeric_limits<T2>::max());
-        if (res!=RES_OK)
-          return res;
-        return copy(tmpIm, imOut);
+        return stretchHist<T1,T2>(imIn, imOut, numeric_limits<T2>::min(), numeric_limits<T2>::max());
     }
 
 
@@ -190,7 +192,7 @@ namespace smil
     template <class T>
     RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double leftSat, double rightSat)
     {
-        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_ALLOCATED(&imIn);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
         size_t *h = new size_t[ImDtTypes<T>::cardinal()];

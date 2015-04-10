@@ -232,6 +232,39 @@ namespace smil
         return copy<T>(imIn, imOut);
     }
 
+    /**
+     * Cast from an image type to another
+     * 
+     */
+    template <class T1, class T2>
+    RES_T cast(const Image<T1> &imIn, Image<T2> &imOut)
+    {
+        ASSERT_ALLOCATED(&imIn);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        T1 floor_t1 = ImDtTypes<T1>::min();
+        T2 floor_t2 = ImDtTypes<T2>::min();
+        double coeff = double(ImDtTypes<T2>::cardinal()) / double(ImDtTypes<T1>::cardinal());
+        
+        typename Image<T1>::lineType pixIn = imIn.getPixels();
+        typename Image<T2>::lineType pixOut = imOut.getPixels();
+        
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        size_t i, nPix = imIn.getPixelCount();
+        
+        #ifdef USE_OPEN_MP
+            #pragma omp parallel private(i) num_threads(nthreads)
+        #endif // USE_OPEN_MP
+        {
+            #ifdef USE_OPEN_MP
+                #pragma omp for
+            #endif // USE_OPEN_MP
+            for (i=0;i<nPix;i++)
+                pixOut[i] = floor_t2 + T2( coeff * double(pixIn[i]-floor_t1) );
+        }
+        
+        return RES_OK;
+    }
 
     /**
      * Copy a channel of multichannel image into a single channel image
