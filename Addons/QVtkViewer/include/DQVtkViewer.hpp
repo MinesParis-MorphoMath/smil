@@ -65,16 +65,28 @@ namespace smil
           : ImageViewer<T>(), 
             QVtkViewerWidget()
         {
-            imageImport->SetDataScalarType(VTK_UNSIGNED_CHAR);
+            if (is_same<T,UINT8>::value)
+              imageImport->SetDataScalarTypeToUnsignedChar();
+            else if (is_same<T,UINT16>::value)
+              imageImport->SetDataScalarTypeToUnsignedShort();
+            else if (is_same<T,INT16>::value)
+              imageImport->SetDataScalarTypeToShort();
+            
             opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
         }
         QVtkViewer(Image<T> &im)
           : ImageViewer<T>(), 
           QVtkViewerWidget()
         {
+            if (is_same<T,UINT8>::value)
+              imageImport->SetDataScalarTypeToUnsignedChar();
+            else if (is_same<T,UINT16>::value)
+              imageImport->SetDataScalarTypeToUnsignedShort();
+            else if (is_same<T,INT16>::value)
+              imageImport->SetDataScalarTypeToShort();
+            
             setImage(im);
             
-            imageImport->SetDataScalarType(VTK_UNSIGNED_CHAR);
             opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
         }
         ~QVtkViewer()
@@ -177,10 +189,6 @@ namespace smil
         }
         
     protected:
-        
-
-        
-        
         
     };
 
