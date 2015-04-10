@@ -395,7 +395,6 @@ namespace smil
     template <class T>
     T measModeVal(const Image<T> &imIn, bool onlyNonZero=true)
     {
-
         measModeValFunc<T> func;
         return func(imIn, onlyNonZero);
     }

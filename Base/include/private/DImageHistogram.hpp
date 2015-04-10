@@ -187,13 +187,15 @@ namespace smil
 
 
     /**
-    * Enhance contrast
+    * Min and Max values of an histogram ignoring left/right low values (lower than a given height/cumulative height).
+    *
     */
     template <class T>
-    RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double leftSat, double rightSat)
+    vector<T> histogramRange(const Image<T> &imIn, double ignoreHeight, bool cumulativeHeight=true)
     {
-        ASSERT_ALLOCATED(&imIn);
-        ASSERT_SAME_SIZE(&imIn, &imOut);
+        vector<T> rVect;
+        
+        ASSERT(imIn.isAllocated(), rVect);
         
         size_t *h = new size_t[ImDtTypes<T>::cardinal()];
         histogram(imIn, h);
@@ -206,40 +208,59 @@ namespace smil
         T threshValRight = rangeV[1];
         
         // left
-        satVol = imVol * leftSat / 100.;
+        satVol = imVol * ignoreHeight / 100.;
         curVol=0;
         for (size_t i=rangeV[0]; i<rangeV[1]; i++)
         {
-            curVol += double(h[i]);
+            if (cumulativeHeight)
+              curVol += double(h[i]);
+            else
+              curVol = double(h[i]);
+
             if (curVol>satVol)
               break;
             threshValLeft = i;
         }
         
         // Right
-        satVol = imVol * rightSat / 100.;
+        satVol = imVol * ignoreHeight / 100.;
         curVol=0;
         for (size_t i=rangeV[1]; i>size_t(rangeV[0]); i--)
         {
-            curVol += h[i];
+            if (cumulativeHeight)
+              curVol += double(h[i]);
+            else
+              curVol = double(h[i]);
+
             if (curVol>satVol)
               break;
             threshValRight = i;
         }
         
-        stretchHist(imIn, threshValLeft, threshValRight, imOut);
-        imOut.modified();
-        
         delete[] h;
+        
+        rVect.push_back(threshValLeft);
+        rVect.push_back(threshValRight);
+        
+        return rVect;
+    }
+    
+    /**
+    * Enhance contrast
+    */
+    template <class T>
+    RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double sat=0.25)
+    {
+        vector<T> rangeV = histogramRange(imIn, sat, true);
+        
+        ASSERT(rangeV.size()==2);
+        
+        stretchHist(imIn, rangeV[0], rangeV[1], imOut);
+        imOut.modified();
         
         return RES_OK;
     }
 
-    template <class T>
-    RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double sat=0.5)
-    {
-        return enhanceContrast(imIn, imOut, sat/2., sat/2.);
-    }
 
     template <class T>
     bool IncrementThresholds(vector<double> &thresholdIndexes, map<T, UINT> &hist, UINT threshLevels, double totalFrequency, double &globalMean, vector<double> &classMean, vector<double> &classFrequency)
