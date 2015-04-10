@@ -189,9 +189,11 @@ namespace smil
     /**
     * Min and Max values of an histogram ignoring left/right low values (lower than a given height/cumulative height).
     *
+    * If \b cumulative is true, it stops when the integral of the histogram values reaches \b ignorePercent * NbrPixels
+    * Otherwise, it stops at the first value of the histogram higher than \b ignorePercent * max(histogram)
     */
     template <class T>
-    vector<T> histogramRange(const Image<T> &imIn, double ignoreHeight, bool cumulativeHeight=true)
+    vector<T> histogramRange(const Image<T> &imIn, double ignorePercent, bool cumulative=true)
     {
         vector<T> rVect;
         
@@ -200,19 +202,25 @@ namespace smil
         size_t *h = new size_t[ImDtTypes<T>::cardinal()];
         histogram(imIn, h);
         
-        double imVol = imIn.getPixelCount();
+        double imVol;
+        if (cumulative)
+            imVol = imIn.getPixelCount();
+        else
+            imVol = *std::max_element(h, h+ImDtTypes<T>::cardinal());
+        
         double satVol;
         double curVol;
         vector<T> rangeV = rangeVal(imIn);
         T threshValLeft = rangeV[0];
         T threshValRight = rangeV[1];
         
+        satVol = imVol * ignorePercent / 100.;
+        
         // left
-        satVol = imVol * ignoreHeight / 100.;
         curVol=0;
         for (size_t i=rangeV[0]; i<rangeV[1]; i++)
         {
-            if (cumulativeHeight)
+            if (cumulative)
               curVol += double(h[i]);
             else
               curVol = double(h[i]);
@@ -223,11 +231,10 @@ namespace smil
         }
         
         // Right
-        satVol = imVol * ignoreHeight / 100.;
         curVol=0;
         for (size_t i=rangeV[1]; i>size_t(rangeV[0]); i--)
         {
-            if (cumulativeHeight)
+            if (cumulative)
               curVol += double(h[i]);
             else
               curVol = double(h[i]);
