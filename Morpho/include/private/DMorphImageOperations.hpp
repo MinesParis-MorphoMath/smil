@@ -82,10 +82,15 @@ namespace smil
         { 
             return this->_exec(imIn, imOut, se); 
         }
+        inline RES_T operator()(const imageInType &imIn, const StrElt &se=DEFAULT_SE) 
+        { 
+            return this->_exec(imIn, se); 
+        }
         
         virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
         virtual RES_T finalize(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
         virtual RES_T _exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
+        virtual RES_T _exec(const imageInType &imIn, const StrElt &se);
         
         virtual RES_T processImage(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
         virtual inline void processSlice(sliceInType linesIn, sliceOutType linesOut, size_t &lineNbr, const StrElt &se);
@@ -94,8 +99,8 @@ namespace smil
         
         static bool isInplaceSafe(const StrElt &/*se*/) { return false; }
         
-        const Image<T_in> *imIn;
-        Image<T_out> *imOut;
+        const Image<T_in> *imageIn;
+        Image<T_out> *imageOut;
         
     protected:
           size_t imSize[3];

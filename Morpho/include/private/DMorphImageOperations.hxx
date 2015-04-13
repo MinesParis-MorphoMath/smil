@@ -40,16 +40,16 @@ namespace smil
 {
   
     template <class T_in, class T_out>
-    RES_T MorphImageFunctionBase<T_in, T_out>::initialize(const imageInType &_imIn, imageOutType &_imOut, const StrElt &se)
+    RES_T MorphImageFunctionBase<T_in, T_out>::initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
     {
-        this->imIn = &_imIn;
-        this->imOut = &_imOut;
+        this->imageIn = &imIn;
+        this->imageOut = &imOut;
         
-        _imIn.getSize(imSize);
-        slicesIn = _imIn.getSlices();
-        slicesOut = _imOut.getSlices();
-        pixelsIn = _imIn.getPixels();
-        pixelsOut = _imOut.getPixels();
+        imIn.getSize(imSize);
+        slicesIn = imIn.getSlices();
+        slicesOut = imOut.getSlices();
+        pixelsIn = imIn.getPixels();
+        pixelsOut = imOut.getPixels();
         
         sePoints = se.points;
 
@@ -112,6 +112,28 @@ namespace smil
         retVal = processImage(imIn, imOut, se2);
         
         finalize(imIn, imOut, se);
+        
+        return retVal;
+    }
+    template <class T_in, class T_out>
+    RES_T MorphImageFunctionBase<T_in, T_out>::_exec(const imageInType &imIn, const StrElt &se)
+    {
+        ASSERT_ALLOCATED(&imIn)
+        
+        imageOutType &_imOut = (imageOutType&)imIn;
+        
+        StrElt se2;
+        if (se.size>1)
+        se2 = se.homothety(se.size);
+        else se2 = se;
+        
+        this->initialize(imIn, _imOut, se2);
+        
+        RES_T retVal;
+        
+        retVal = processImage(imIn, _imOut, se2);
+        
+        finalize(imIn, _imOut, se);
         
         return retVal;
     }

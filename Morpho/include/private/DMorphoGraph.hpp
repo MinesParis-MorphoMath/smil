@@ -48,16 +48,34 @@ namespace smil
     {
     public:
         typedef MorphImageFunctionBase<T1, T2> parentClass;
+        typedef Image<T1> imageInType;
+        typedef Image<T2> imageOutType;
         
         mosaicToGraphFunct(/*graphT *externGraph=NULL*/)
           : graphPtr(auto_ptr<graphT>(new graphT())), graph(*graphPtr.get())
         {
+            imEdgeValues = NULL;
+            imNodeValues = NULL;
         }
         mosaicToGraphFunct(graphT &externGraph)
           : graph(externGraph)
         {
+            imEdgeValues = NULL;
+            imNodeValues = NULL;
             externGraph.clear();
         }
+        virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+        {
+            parentClass::initialize(imIn, imOut, se);
+            
+            if (imEdgeValues)
+              edgeValuePixels = imEdgeValues->getPixels();
+            if (imNodeValues)
+              nodeValuePixels = imNodeValues->getPixels();
+            
+            return RES_OK;
+        }
+        
         virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsetList)
         {
             T1 curVal = parentClass::pixelsIn[pointOffset];
@@ -68,84 +86,185 @@ namespace smil
                 T1 val = parentClass::pixelsIn[pointOffset + *dOffset];
                 if (val!=curVal)
                 {
+                    if (imNodeValues)
+                    {
+                        graph.addNode(curVal, nodeValuePixels[pointOffset]);
+                        graph.addNode(val, nodeValuePixels[pointOffset + *dOffset]);
+                    }
+
 //                   mixed = true;
                   // Add an edge between the two basins. 
                   // If the edge already exists, its weight will be the minimum value between the existing and the new one (pixelsOut[pointOffset]).
-                  graph.addEdge(val, curVal, parentClass::pixelsOut[pointOffset]);
+                    if (imEdgeValues)
+                      graph.addEdge(curVal, val, edgeValuePixels[pointOffset]);
+                    else
+                      graph.addEdge(curVal, val);
                 }
                 dOffset++;
             }
         }
     protected:
         auto_ptr<graphT> graphPtr;
+        typename ImDtTypes<T2>::lineType edgeValuePixels;
+        typename ImDtTypes<T2>::lineType nodeValuePixels;
     public:
         graphT &graph;
+        const Image<T2> *imEdgeValues;
+        const Image<T2> *imNodeValues;
     };
     
     /**
     */ 
-    template <class T1, class T2>
-    Graph<T1,T2> mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imValues, const StrElt &se=DEFAULT_SE)
-    {
-        typedef Graph<T1,T2> graphT;
-        
-        ASSERT(imMosaic.isAllocated() && imValues.isAllocated(), graphT());
-        
-        mosaicToGraphFunct<T1, T2, Graph<T1,T2> > f;
-        
-        ASSERT(f._exec(imMosaic, (Image<T2>&)imValues, se)==RES_OK, graphT());
-        
-        return f.graph;
-        
-    }
     template <class T1, class T2, class graphT>
-    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imValues, graphT &graph, const StrElt &se=DEFAULT_SE)
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, graphT &graph, const StrElt &se=DEFAULT_SE)
     {
-        ASSERT(imMosaic.isAllocated() && imValues.isAllocated(), RES_ERR);
+        ASSERT_ALLOCATED(&imMosaic);
         
         mosaicToGraphFunct<T1, T2, graphT > f(graph);
         
-        ASSERT(f._exec(imMosaic, (Image<T2>&)imValues, se)==RES_OK, RES_ERR);
+        ASSERT(f._exec(imMosaic, se)==RES_OK);
         
         return RES_OK;
     }
-
-    template <class T1, class T2>
-    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imValues, Graph<T1,T2> &graph, const StrElt &se=DEFAULT_SE)
+    template <class T1, class T2, class graphT>
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, graphT &graph, const StrElt &se=DEFAULT_SE)
     {
-        return mosaicToGraph<T1, T2, Graph<T1,T2> >(imMosaic, imValues, graph, se);
+        ASSERT_ALLOCATED(&imMosaic, &imEdgeValues);
+        ASSERT( haveSameSize(&imMosaic, &imEdgeValues, NULL) );
+        
+        mosaicToGraphFunct<T1, T2, graphT > f(graph);
+        f.imEdgeValues = &imEdgeValues;
+        
+        ASSERT(f._exec(imMosaic, se)==RES_OK);
+        
+        return RES_OK;
+    }
+    template <class T1, class T2, class graphT>
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, const Image<T2> &imNodeValues, graphT &graph, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imMosaic, &imEdgeValues, &imNodeValues);
+        ASSERT( haveSameSize(&imMosaic, &imEdgeValues, &imNodeValues, NULL) );
+        
+        mosaicToGraphFunct<T1, T2, graphT > f(graph);
+        f.imEdgeValues = &imEdgeValues;
+        f.imNodeValues = &imNodeValues;
+        
+        ASSERT(f._exec(imMosaic, se)==RES_OK);
+        
+        return RES_OK;
+    }
+    
+    template <class T1>
+    Graph<T1,UINT> mosaicToGraph(const Image<T1> &imMosaic, const StrElt &se=DEFAULT_SE)
+    {
+        Graph<T1,UINT> graph;
+        mosaicToGraph(imMosaic, graph, se);
+        return graph;
+        
+    }
+    template <class T1, class T2>
+    Graph<T1,T2> mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, const StrElt &se=DEFAULT_SE)
+    {
+        Graph<T1,T2> graph;
+        mosaicToGraph(imMosaic, imEdgeValues, graph, se);
+        return graph;
+        
+    }
+    template <class T1, class T2>
+    Graph<T1,T2> mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, const Image<T2> &imNodeValues, const StrElt &se=DEFAULT_SE)
+    {
+        Graph<T1,T2> graph;
+        mosaicToGraph(imMosaic, imEdgeValues, imNodeValues, graph, se);
+        return graph;
+        
+    }
+
+    template <class T1>
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, Graph<T1,UINT> &graph, const StrElt &se=DEFAULT_SE)
+    {
+        return mosaicToGraph<T1, UINT, Graph<T1,UINT> >(imMosaic, graph, se);
+    }
+    template <class T1, class T2>
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, Graph<T1,T2> &graph, const StrElt &se=DEFAULT_SE)
+    {
+        return mosaicToGraph<T1, T2, Graph<T1,T2> >(imMosaic, imEdgeValues, graph, se);
+    }
+    template <class T1, class T2>
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, const Image<T2> &imNodeValues, Graph<T1,T2> &graph, const StrElt &se=DEFAULT_SE)
+    {
+        return mosaicToGraph<T1, T2, Graph<T1,T2> >(imMosaic, imEdgeValues, imNodeValues, graph, se);
     }
 
 #ifndef SWIG
+    template <class T1>
+    ENABLE_IF( !IS_SAME(T1,size_t), RES_T ) // SFINAE Only if T1!=size_t && T2!=size_t
+    mosaicToGraph(const Image<T1> &imMosaic, Graph<> &graph, const StrElt &se=DEFAULT_SE)
+    {
+        return mosaicToGraph<T1, UINT, Graph<> >(imMosaic, graph, se);
+    }
     template <class T1, class T2>
     ENABLE_IF( !IS_SAME(T1,size_t) && !IS_SAME(T2,size_t), RES_T ) // SFINAE Only if T1!=size_t && T2!=size_t
-    mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imValues, Graph<> &graph, const StrElt &se=DEFAULT_SE)
+    mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, Graph<> &graph, const StrElt &se=DEFAULT_SE)
     {
-        return mosaicToGraph<T1, T2, Graph<> >(imMosaic, imValues, graph, se);
+        return mosaicToGraph<T1, T2, Graph<> >(imMosaic, imEdgeValues, graph, se);
+    }
+    template <class T1, class T2>
+    ENABLE_IF( !IS_SAME(T1,size_t) && !IS_SAME(T2,size_t), RES_T ) // SFINAE Only if T1!=size_t && T2!=size_t
+    mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, const Image<T2> &imNodeValues, Graph<> &graph, const StrElt &se=DEFAULT_SE)
+    {
+        return mosaicToGraph<T1, T2, Graph<> >(imMosaic, imEdgeValues, imNodeValues, graph, se);
     }
 
+    template <class T1>
+    ENABLE_IF( !IS_SAME(T1,UINT), RES_T ) // SFINAE Only if T1!=UINT
+    mosaicToGraph(const Image<T1> &imMosaic, Graph<UINT,UINT> &graph, const StrElt &se=DEFAULT_SE)
+    {
+        return mosaicToGraph<T1, UINT, Graph<UINT,UINT> >(imMosaic, graph, se);
+    }
     template <class T1, class T2>
     ENABLE_IF( !IS_SAME(T1,UINT), RES_T ) // SFINAE Only if T1!=UINT
-    mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imValues, Graph<UINT,T2> &graph, const StrElt &se=DEFAULT_SE)
+    mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, Graph<UINT,T2> &graph, const StrElt &se=DEFAULT_SE)
     {
-        return mosaicToGraph<T1, T2, Graph<UINT,T2> >(imMosaic, imValues, graph, se);
+        return mosaicToGraph<T1, T2, Graph<UINT,T2> >(imMosaic, imEdgeValues, graph, se);
+    }
+    template <class T1, class T2>
+    ENABLE_IF( !IS_SAME(T1,UINT), RES_T ) // SFINAE Only if T1!=UINT
+    mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, const Image<T2> &imNodeValues, Graph<UINT,T2> &graph, const StrElt &se=DEFAULT_SE)
+    {
+        return mosaicToGraph<T1, T2, Graph<UINT,T2> >(imMosaic, imEdgeValues, imNodeValues, graph, se);
     }
 
     template <class T1, class T2>
     ENABLE_IF( !IS_SAME(T2,UINT), RES_T ) // SFINAE Only if T2!=UINT
-    mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imValues, Graph<T1,UINT> &graph, const StrElt &se=DEFAULT_SE)
+    mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, Graph<T1,UINT> &graph, const StrElt &se=DEFAULT_SE)
     {
-        return mosaicToGraph<T1, T2, Graph<T1,UINT> >(imMosaic, imValues, graph, se);
+        return mosaicToGraph<T1, T2, Graph<T1,UINT> >(imMosaic, imEdgeValues, graph, se);
+    }
+    template <class T1, class T2>
+    ENABLE_IF( !IS_SAME(T2,UINT), RES_T ) // SFINAE Only if T2!=UINT
+    mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, const Image<T2> &imNodeValues, Graph<T1,UINT> &graph, const StrElt &se=DEFAULT_SE)
+    {
+        return mosaicToGraph<T1, T2, Graph<T1,UINT> >(imMosaic, imEdgeValues, imNodeValues, graph, se);
     }
 #else // SWIG
+    template <class T1>
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, Graph<> &graph, const StrElt &se=DEFAULT_SE);
     template <class T1, class T2>
-    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imValues, Graph<> &graph, const StrElt &se=DEFAULT_SE);
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, Graph<> &graph, const StrElt &se=DEFAULT_SE);
+    template <class T1, class T2>
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, const Image<T2> &imNodeValues, Graph<> &graph, const StrElt &se=DEFAULT_SE);
     
+    template <class T1>
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, Graph<UINT,UINT> &graph, const StrElt &se=DEFAULT_SE);
     template <class T1, class T2>
-    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imValues, Graph<UINT,T2> &graph, const StrElt &se=DEFAULT_SE);
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, Graph<UINT,T2> &graph, const StrElt &se=DEFAULT_SE);
+    template <class T1, class T2>
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, const Image<T2> &imNodeValues, Graph<UINT,T2> &graph, const StrElt &se=DEFAULT_SE);
 
     template <class T1, class T2>
-    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imValues, Graph<T1,UINT> &graph, const StrElt &se=DEFAULT_SE);
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, Graph<T1,UINT> &graph, const StrElt &se=DEFAULT_SE);
+    template <class T1, class T2>
+    RES_T mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, const Image<T2> &imNodeValues, Graph<T1,UINT> &graph, const StrElt &se=DEFAULT_SE);
 #endif // SWIG
 
     
