@@ -145,6 +145,9 @@ void QVtkViewerWidget::setRepresentationType(RepresentationType type)
         volumeRayCastFunction = vtkVolumeRayCastMIPFunction::New();
         ((vtkVolumeRayCastMIPFunction*)volumeRayCastFunction)->SetMaximizeMethodToOpacity();
         break;
+      default:
+        volumeRayCastFunction = vtkVolumeRayCastCompositeFunction::New();
+        break;
     }
     volumeRayCastMapper->SetVolumeRayCastFunction(volumeRayCastFunction);
     
