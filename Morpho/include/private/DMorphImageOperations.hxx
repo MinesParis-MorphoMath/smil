@@ -289,6 +289,7 @@ namespace smil
     template <class T_in, class lineFunction_T, class T_out, class Enable>
     RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
     {
+        return RES_OK;
     }
     
     template <class T_in, class lineFunction_T, class T_out>
@@ -399,43 +400,6 @@ namespace smil
     return RES_ERR_NOT_IMPLEMENTED;
     }
 
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    inline void MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_extract_translated_line(const Image<T_in> *imIn, const int &x, const int &y, const int &z, lineInType outBuf)
-    {
-        if (z<0 || z>=int(imIn->getDepth()) || y<0 || y>=int(imIn->getHeight()))
-          copyLine<T_in>(borderBuf, lineLen, outBuf);
-        //     memcpy(outBuf, borderBuf, lineLen*sizeof(T));
-        else
-            shiftLine<T_in>(imIn->getSlices()[z][y], x, lineLen, outBuf, this->borderValue);
-    }
-
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    inline void MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_shifted_line(lineInType inBuf1, lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf)
-    {
-        if (tmpBuf==NULL)
-          tmpBuf = cpBuf;
-        shiftLine<T_in>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
-        lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);
-    }
-
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    inline void MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_shifted_line_2ways(lineInType inBuf1, lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf)
-    {
-        if (tmpBuf==NULL)
-          tmpBuf = cpBuf;
-        shiftLine<T_in>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
-        lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);
-        shiftLine<T_in>(inBuf2, -dx, lineLen, tmpBuf, this->borderValue);
-        lineFunction._exec(outBuf, tmpBuf, lineLen, outBuf);
-    }
-
-
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    inline void MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_line(const lineInType inBuf, const Image<T_in> *imIn, const int &x, const int &y, const int &z, lineOutType outBuf)
-    {
-        _extract_translated_line(imIn, x, y, z, cpBuf);
-        lineFunction._exec(inBuf, cpBuf, lineLen, outBuf);
-    }
 
 
     template <class T_in, class lineFunction_T, class T_out, class Enable>
@@ -559,10 +523,10 @@ namespace smil
             destLines = destSlices[s];
             
             // Process first line
-            _exec_shifted_line(srcLines[0], srcLines[0], -1, lineLen, buf0);
-            _exec_shifted_line(buf0, buf0, 1, lineLen, buf3);
+            _exec_shifted_line<T_in, T_out>(srcLines[0], srcLines[0], -1, lineLen, buf0, cpBuf);
+            _exec_shifted_line<T_out, T_out>(buf0, buf0, 1, lineLen, buf3, buf4);
             
-            _exec_shifted_line(srcLines[1], srcLines[1], 1, lineLen, buf1);
+            _exec_shifted_line<T_in, T_out>(srcLines[1], srcLines[1], 1, lineLen, buf1, cpBuf);
             lineFunction(buf3, buf1, lineLen, buf4);
             lineFunction(borderBuf, buf4, lineLen, destLines[0]);
             
@@ -580,13 +544,13 @@ namespace smil
                 
                 if(!((l%2==0) ^ (s%2==0)))
                 {
-                _exec_shifted_line(curSrcLine, curSrcLine, -1, lineLen, buf2);
-                _exec_shifted_line(buf1, buf1, -1, lineLen, buf3);
+                  _exec_shifted_line<T_in, T_out>(curSrcLine, curSrcLine, -1, lineLen, buf2, cpBuf);
+                  _exec_shifted_line<T_out, T_out>(buf1, buf1, -1, lineLen, buf3, buf4);
                 }
                 else
                 {
-                _exec_shifted_line(curSrcLine, curSrcLine, 1, lineLen, buf2);
-                _exec_shifted_line(buf1, buf1, 1, lineLen, buf3);
+                  _exec_shifted_line<T_in, T_out>(curSrcLine, curSrcLine, 1, lineLen, buf2, cpBuf);
+                  _exec_shifted_line<T_out, T_out>(buf1, buf1, 1, lineLen, buf3, buf4);
                 }
 
                 lineFunction(buf0, buf2, lineLen, buf4);
@@ -599,9 +563,9 @@ namespace smil
             }
             
             if (!((nLines%2==0) ^ (s%2==0)))
-              _exec_shifted_line(buf1, buf1, -1, lineLen, buf3);
+              _exec_shifted_line<T_out, T_out>(buf1, buf1, -1, lineLen, buf3, buf4);
             else
-              _exec_shifted_line(buf1, buf1, 1, lineLen, buf3);
+              _exec_shifted_line<T_out, T_out>(buf1, buf1, 1, lineLen, buf3, buf4);
             lineFunction(buf3, buf0, lineLen, buf4);
             lineFunction(borderBuf, buf4, lineLen, destLines[nLines-1]);
             

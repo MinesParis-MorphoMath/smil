@@ -178,29 +178,61 @@ namespace smil
         lineInType borderBuf, cpBuf;
         size_t lineLen;
         
-        inline void _extract_translated_line(const imageInType *imIn, const int &x, const int &y, const int &z, lineInType outBuf);
+        inline void _extract_translated_line(const Image<T_in> *imIn, const int &x, const int &y, const int &z, lineInType outBuf)
+        {
+            if (z<0 || z>=int(imIn->getDepth()) || y<0 || y>=int(imIn->getHeight()))
+              copyLine<T_in>(borderBuf, lineLen, outBuf);
+            //     memcpy(outBuf, borderBuf, lineLen*sizeof(T));
+            else
+                shiftLine<T_in>(imIn->getSlices()[z][y], x, lineLen, outBuf, this->borderValue);
+        }
         
-        inline void _exec_shifted_line(const lineInType inBuf1, const lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf);
-        inline void _exec_shifted_line(const lineInType inBuf1, const lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf)
+        inline void _exec_line(const lineInType inBuf, const Image<T_in> *imIn, const int &x, const int &y, const int &z, lineOutType outBuf)
+        {
+            _extract_translated_line(imIn, x, y, z, cpBuf);
+            lineFunction._exec(inBuf, cpBuf, lineLen, outBuf);
+        }
+        
+        template <class T1, class T2>
+        inline void _exec_shifted_line(const typename ImDtTypes<T1>::lineType inBuf1, const typename ImDtTypes<T1>::lineType inBuf2, const int &dx, const int &lineLen, typename ImDtTypes<T2>::lineType outBuf, typename ImDtTypes<T1>::lineType tmpBuf)
+        {
+            if (tmpBuf==NULL)
+              tmpBuf = cpBuf;
+            shiftLine<T1>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
+            lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);
+        }
+        
+        template <class T1, class T2>
+        inline void _exec_shifted_line(const typename ImDtTypes<T1>::lineType inBuf1, const typename ImDtTypes<T1>::lineType inBuf2, const int &dx, const int &lineLen, typename ImDtTypes<T2>::lineType outBuf)
         {
             return _exec_shifted_line(inBuf1, inBuf2, dx, lineLen, outBuf, cpBuf);
         }
         
-        inline void _exec_shifted_line(const lineInType inBuf, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf)
+        template <class T1, class T2>
+        inline void _exec_shifted_line(const typename ImDtTypes<T1>::lineType inBuf, const int &dx, const int &lineLen, typename ImDtTypes<T2>::lineType outBuf, typename ImDtTypes<T1>::lineType tmpBuf)
         {
             return _exec_shifted_line(inBuf, inBuf, dx, lineLen, outBuf, tmpBuf);
         }
-        inline void _exec_shifted_line(const lineInType inBuf, const int &dx, const int &lineLen, lineOutType outBuf)
+        
+        template <class T1, class T2>
+        inline void _exec_shifted_line(const typename ImDtTypes<T1>::lineType inBuf, const int &dx, const int &lineLen, typename ImDtTypes<T2>::lineType outBuf)
         {
             return _exec_shifted_line(inBuf, inBuf, dx, lineLen, outBuf, cpBuf);
         }
         
-        inline void _exec_shifted_line_2ways(const lineInType inBuf1, const lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf=NULL);
+        inline void _exec_shifted_line_2ways(lineInType inBuf1, lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf)
+        {
+            if (tmpBuf==NULL)
+              tmpBuf = cpBuf;
+            shiftLine<T_in>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
+            lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);
+            shiftLine<T_in>(inBuf2, -dx, lineLen, tmpBuf, this->borderValue);
+            lineFunction._exec(outBuf, tmpBuf, lineLen, outBuf);
+        }
         inline void _exec_shifted_line_2ways(const lineInType inBuf, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf=NULL)
         {
             return _exec_shifted_line_2ways(inBuf, inBuf, dx, lineLen, outBuf, tmpBuf);
         }
-        inline void _exec_line(const lineInType inBuf, const imageInType *imIn, const int &x, const int &y, const int &z, lineOutType outBuf);
     };
 
     template <class T_in, class lineFunction_T, class T_out>
