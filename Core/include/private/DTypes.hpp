@@ -81,6 +81,9 @@ namespace smil
         typedef lineType *sliceType;
         typedef sliceType *volType;
         
+        typedef std::vector<T, Allocator<T> > vectorType;
+        typedef std::vector< vectorType > matrixType;
+        
         typedef double floatType;
         
         static inline pixelType min() { return numeric_limits<T>::min(); }

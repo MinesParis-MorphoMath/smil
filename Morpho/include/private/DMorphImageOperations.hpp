@@ -129,7 +129,7 @@ namespace smil
 
 
 
-    template <class T_in, class lineFunction_T, class T_out=T_in>
+    template <class T_in, class lineFunction_T, class T_out=T_in, typename Enable=void>
     class MorphImageFunction : public MorphImageFunctionBase<T_in, T_out>
     {
       public:
@@ -178,7 +178,7 @@ namespace smil
         lineInType borderBuf, cpBuf;
         size_t lineLen;
         
-        inline void _extract_translated_line(const imageInType *imIn, const int &x, const int &y, const int &z, lineOutType outBuf);
+        inline void _extract_translated_line(const imageInType *imIn, const int &x, const int &y, const int &z, lineInType outBuf);
         
         inline void _exec_shifted_line(const lineInType inBuf1, const lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf);
         inline void _exec_shifted_line(const lineInType inBuf1, const lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf)
@@ -203,6 +203,24 @@ namespace smil
         inline void _exec_line(const lineInType inBuf, const imageInType *imIn, const int &x, const int &y, const int &z, lineOutType outBuf);
     };
 
+    template <class T_in, class lineFunction_T, class T_out>
+    class MorphImageFunction<T_in, lineFunction_T, T_out, ENABLE_IF( IS_SAME(T_in, T_out), T_in ) > 
+      : public MorphImageFunction<T_in, lineFunction_T, T_out, void>
+    {
+      public:
+        typedef Image<T_in> imageType;
+        typedef typename ImDtTypes<T_in>::lineType lineType;
+        typedef typename ImDtTypes<T_in>::sliceType sliceType;
+        typedef typename ImDtTypes<T_in>::volType volType;
+        
+        MorphImageFunction(T_in border=ImDtTypes<T_in>::min(), T_out initialValue = ImDtTypes<T_out>::min()) 
+          : MorphImageFunction<T_in, lineFunction_T, T_out, void>(border, initialValue) 
+        {
+        }
+        
+        virtual RES_T _exec(const imageType &imIn, imageType &imOut, const StrElt &se);
+    };
+    
 /** \} */
 
 } // namespace smil

@@ -76,10 +76,10 @@ namespace smil
     template <class T_in, class lineFunction_T, class T_out>
     RES_T unaryMorphArrowImageFunction<T_in, lineFunction_T, T_out>::_exec_single_generic(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
     {
-        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_ALLOCATED(&imIn);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
-        if (&imIn==&imOut)
+        if ((void*)&imIn==(void*)&imOut)
         {
             Image<T_in> tmpIm = imIn;
             return _exec_single_generic(tmpIm, imOut, se);
@@ -100,8 +100,9 @@ namespace smil
         volOutType destSlices = imOut.getSlices();
         
         int nthreads = Core::getInstance()->getNumberOfThreads();
-        lineInType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
-
+        typename ImDtTypes<T_in>::matrixType bufsIn(nthreads, typename ImDtTypes<T_in>::vectorType(this->lineLen));
+        typename ImDtTypes<T_out>::matrixType bufsOut(nthreads, typename ImDtTypes<T_out>::vectorType(this->lineLen));
+        
         size_t l;
 
         for (size_t s=0;s<nSlices;s++)
@@ -119,23 +120,23 @@ namespace smil
             size_t x, y, z;
             lineFunction_T arrowLineFunction;
             
-            lineInType tmpBuf = _bufs[0];
-            lineInType tmpBuf2 = _bufs[nthreads];
+            int tid = 0;
+            
       #ifdef USE_OPEN_MP
-            int tid = omp_get_thread_num();
-            tmpBuf = _bufs[tid];
-            tmpBuf2 = _bufs[tid+nthreads];
+            tid = omp_get_thread_num();
       #endif // _OPENMP
+            lineInType tmpBuf = bufsIn[tid].data();
+            lineOutType tmpBuf2 = bufsOut[tid].data();
             
         #pragma omp for
             for (l=0;l<nLines;l++)
             {
                 lineInType lineIn  = srcLines[l];
-                lineInType lineOut = destLines[l];
+                lineOutType lineOut = destLines[l];
 
                 oddLine = oddSe && l%2;
                 
-                fillLine<T_in>(tmpBuf2, this->lineLen, 0);
+                fillLine<T_out>(tmpBuf2, this->lineLen, T_out(0));
                 
                 for (UINT p=0;p<sePtsNumber;p++)
                 {
@@ -147,7 +148,7 @@ namespace smil
                     this->_extract_translated_line(&imIn, x, y, z, tmpBuf);
                     arrowLineFunction._exec(lineIn, tmpBuf, this->lineLen, tmpBuf2);
                 }
-                copyLine<T_in>(tmpBuf2, this->lineLen, lineOut);
+                copyLine<T_out>(tmpBuf2, this->lineLen, lineOut);
              }
           }  // pragma omp parallel
         }
