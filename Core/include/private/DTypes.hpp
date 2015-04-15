@@ -82,6 +82,7 @@ namespace smil
         typedef sliceType *volType;
         
         typedef std::vector<T, Allocator<T> > vectorType;
+//         typedef std::vector<T> vectorType;
         typedef std::vector< vectorType > matrixType;
         
         typedef double floatType;

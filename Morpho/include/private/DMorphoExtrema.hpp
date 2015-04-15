@@ -242,7 +242,9 @@ namespace smil
         testLine<T, T> testOp;
 
         // Storing steep in imOut.
+    #ifdef USE_OPEN_MP
         #pragma omp parallel
+    #endif // USE_OPEN_MP
         {
             size_t offset;
 	    arrowPropagate <T, T, T> funcPropagation;
@@ -256,7 +258,9 @@ namespace smil
                 arrowLines = arrowSlices[s];
                 outLines = outSlices[s];
                 
+            #ifdef USE_OPEN_MP
                 #pragma omp for
+            #endif // USE_OPEN_MP
                 for (size_t l=0; l<size[1]; ++l)
                 {
                     equOp._exec(arrowLines[l], cstBuf, size[0], outLines[l]);
@@ -267,7 +271,9 @@ namespace smil
             arrowEqu (imIn, arrows, cpSe);
             for (size_t s=0; s<size[2]; ++s)
             {
+            #ifdef USE_OPEN_MP
                 #pragma omp for
+            #endif // USE_OPEN_MP
                 for (size_t l=0; l<size[1]; ++l)
                 {
                     for (size_t p=0; p<size[0]; ++p) 
@@ -284,7 +290,9 @@ namespace smil
             for (size_t s=0; s<size[2]; ++s)
             {
                 outLines = outSlices[s];
+            #ifdef USE_OPEN_MP
                 #pragma omp for
+            #endif // USE_OPEN_MP
                 for (size_t l=0; l<size[1]; ++l)
                 {
                     shiftOp._exec (outLines[l], 1, size[0], outLines[l]) ;

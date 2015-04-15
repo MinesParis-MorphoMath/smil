@@ -135,7 +135,7 @@ TEMPLATE_WRAP_FUNC(mean);
 TEMPLATE_WRAP_FUNC(median);
 
 %include "Morpho/include/private/DMorphoArrow.hpp"
-TEMPLATE_WRAP_FUNC(arrow);
+TEMPLATE_WRAP_FUNC_2T_CROSS(arrow);
 
 %include "Morpho/include/private/DMorphoWatershed.hpp"
 TEMPLATE_WRAP_FUNC(watershed);

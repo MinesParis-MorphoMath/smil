@@ -449,8 +449,6 @@ namespace smil
         size_t imSize[3];
         imOut.getSize(imSize);
         
-        int nthreads = Core::getInstance()->getNumberOfThreads();
-        
         int nX = min( int(ceil(double(imSize[0])/width)), nbr_along_x );
         int xPad = imSize[0] % width;
         int nXfull = xPad==0 ? nX : nX-1;
@@ -460,12 +458,17 @@ namespace smil
         int nYfull = yPad==0 ? nY : nY-1;
         
         size_t cpLen = nXfull*width + xPad;
-        
+
+#ifdef USE_OPEN_MP
+        int nthreads = Core::getInstance()->getNumberOfThreads();
         #pragma omp parallel num_threads(nthreads)
+#endif // USE_OPEN_MP
         {
             // Copy along X
             
+#ifdef USE_OPEN_MP
             #pragma omp for
+#endif // USE_OPEN_MP
             for (int j=0;j<height;j++)
             {
                 typename ImDtTypes<T>::lineType lineIn = linesIn[y0+j] + x0;
@@ -479,13 +482,17 @@ namespace smil
                 copyLine<T>(lineIn, xPad, lineOut);
             }
             
+#ifdef USE_OPEN_MP
             #pragma omp barrier
+#endif // USE_OPEN_MP
             
             // Copy along Y
             
             for (int n=1;n<nYfull;n++)
             {
+#ifdef USE_OPEN_MP
                 #pragma omp for
+#endif // USE_OPEN_MP
                 for (int j=0;j<height;j++)
                 {
                     typename ImDtTypes<T>::lineType lineIn = linesOut[j];
@@ -496,7 +503,9 @@ namespace smil
             }
             for (int n=nYfull;n<nY;n++)
             {
+#ifdef USE_OPEN_MP
                 #pragma omp for
+#endif // USE_OPEN_MP
                 for (int j=0;j<yPad;j++)
                 {
                     typename ImDtTypes<T>::lineType lineIn = linesOut[j];

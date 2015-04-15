@@ -158,8 +158,7 @@ namespace smil
         int imH = imIn.getHeight();
         int imD = imIn.getDepth();
         int kernelRadius = (kernel.size()-1)/2;
-        int nthreads = Core::getInstance()->getNumberOfThreads();
-        
+                
         double *partialKernWeights = new double[kernelRadius];
         double pkwSum = 0;
         for (int i=0;i<kernelRadius;i++)
@@ -176,7 +175,8 @@ namespace smil
         for (int z=0;z<imD;z++)
         {
             #ifdef USE_OPEN_MP
-                  #pragma omp parallel private(sIn, sOut) num_threads(nthreads)
+                int nthreads = Core::getInstance()->getNumberOfThreads();
+                #pragma omp parallel private(sIn, sOut) num_threads(nthreads)
             #endif // USE_OPEN_MP
             {
                 sIn = slicesIn[z];

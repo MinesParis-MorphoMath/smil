@@ -235,7 +235,9 @@ namespace smil
                 if (x>=0 && x<int(imSize[0]))
                 offsetList.push_back(relOffsetList[i]);
             }
+          #ifdef USE_OPEN_MP
             #pragma omp critical
+          #endif // USE_OPEN_MP
             {
               processPixel(offset, offsetList);
             }
@@ -262,7 +264,7 @@ namespace smil
     ///******************************************************************************
     ///******************************************************************************
 
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
+    template <class T_in, class lineFunction_T, class T_out, bool Enable>
     bool MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::isInplaceSafe(const StrElt &se)
     {
         int st = se.getType();
@@ -286,21 +288,65 @@ namespace smil
         }
     }
     
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+    template <class T_in, class lineFunction_T, class T_out, bool Enable>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::initialize(const imageInType &imIn, imageOutType &/*imOut*/, const StrElt &/*se*/)
     {
+        this->lineLen = imIn.getWidth();
+        
+        this->borderBuf = ImDtTypes<T_in>::createLine(this->lineLen);
+        this->cpBuf = ImDtTypes<T_in>::createLine(this->lineLen);
+        fillLine<T_in> f;
+        f(this->borderBuf, this->lineLen, this->borderValue);
+        
         return RES_OK;
     }
     
-    template <class T_in, class lineFunction_T, class T_out>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, ENABLE_IF( IS_SAME(T_in, T_out), T_in ) >::_exec(const imageType &imIn, imageType &imOut, const StrElt &se)
+    template <class T_in, class lineFunction_T, class T_out, bool Enable>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::finalize(const imageInType &/*imIn*/, imageOutType &/*imOut*/, const StrElt &/*se*/)
     {
+        ImDtTypes<T_in>::deleteLine(this->borderBuf);
+        ImDtTypes<T_in>::deleteLine(this->cpBuf);
+        
+        return RES_OK;
+    }
+    
+    template <class T_in, class lineFunction_T, class T_out, bool Enable>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+    {
+        ASSERT_ALLOCATED(&imIn)
+        ASSERT_SAME_SIZE(&imIn, &imOut)
+        
+        if ((void*)&imIn==(void*)&imOut)
+        {
+            Image<T_in> tmpIm(imIn, true); // clone
+            return _exec(imIn, imOut, se);
+        }
+        
+        ImageFreezer freeze(imOut);
+        
+        StrElt se2;
+        if (se.size>1)
+        se2 = se.homothety(se.size);
+        else se2 = se;
+        
+        this->initialize(imIn, imOut, se2);
+        
+        RES_T retVal;
+        
+        retVal = _exec_single(imIn, imOut, se2);
+        
+        this->finalize(imIn, imOut, se);
+        
+        return retVal;
+    }
+    
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true >::_exec(const imageType &imIn, imageType &imOut, const StrElt &se)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        
         int seSize = se.size;
         int seType = se.getType () ;
-
-
-        if (!areAllocated(&imIn, &imOut, NULL))
-          return RES_ERR_BAD_ALLOCATION;
     
         if (seSize==0)
         {
@@ -314,24 +360,19 @@ namespace smil
             return RES_OK;
         }
         
-        this->lineLen = imIn.getWidth();
-        
-        this->borderBuf = ImDtTypes<T_in>::createLine(this->lineLen);
-        this->cpBuf = ImDtTypes<T_in>::createLine(this->lineLen);
-        fillLine<T_in> f;
-        f(this->borderBuf, this->lineLen, this->borderValue);
+        this->initialize(imIn, imOut, se);
         
         ImageFreezer freezer(imOut);
         
         Image<T_in> *inImage;
-        Image<T_out> *outImage, *tmpImage = NULL;
+        Image<T_in> *outImage, *tmpImage = NULL;
         
         inImage = (Image<T_in>*)&imIn;
         
         if (this->isInplaceSafe(se) || (&imIn!=&imOut && seSize==1))
-            outImage = (Image<T_out> *)&imOut;
+            outImage = (Image<T_in> *)&imOut;
         else
-            outImage = tmpImage = new Image<T_out>(imOut);
+            outImage = tmpImage = new Image<T_in>(imOut);
 
 
     //     else
@@ -362,9 +403,7 @@ namespace smil
             delete tmpImage;
         }
         
-        ImDtTypes<T_in>::deleteLine(this->borderBuf);
-        ImDtTypes<T_in>::deleteLine(this->cpBuf);
-        
+        this->finalize(imIn, imOut, se);
         
         imOut.modified();
         return RES_OK;
@@ -372,8 +411,8 @@ namespace smil
 
     
     
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_single(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_single(const imageType &imIn, imageType &imOut, const StrElt &se)
     {
         int st = se.getType();
         
@@ -402,8 +441,8 @@ namespace smil
 
 
 
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_single_generic(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se)
     {
         int sePtsNumber = se.points.size();
         if (sePtsNumber==0)
@@ -413,9 +452,9 @@ namespace smil
         int nLines = imIn.getHeight();
 
         int nthreads = Core::getInstance()->getNumberOfThreads();
-        lineInType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
-        lineInType tmpBuf = _bufs[0];
-        lineInType tmpBuf2 = _bufs[nthreads];
+        lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
+        lineType tmpBuf = _bufs[0];
+        lineType tmpBuf2 = _bufs[nthreads];
 
         const Image<T_in> *tmpIm;
         
@@ -423,11 +462,11 @@ namespace smil
           tmpIm = new Image<T_in>(imIn, true); // clone
         else tmpIm = &imIn;
         
-        volInType srcSlices = tmpIm->getSlices();
-        volOutType destSlices = imOut.getSlices();
+        volType srcSlices = tmpIm->getSlices();
+        volType destSlices = imOut.getSlices();
         
         //lineInType *srcLines;
-        lineOutType *destLines, lineOut;
+        lineType *destLines, lineOut;
         
         bool oddSe = se.odd; 
         int oddLine = 0;
@@ -466,7 +505,7 @@ namespace smil
             y = l - pts[0].y;
             x = pts[0].x + (oddLine && y%2);
 
-            _extract_translated_line(tmpIm, x, y, z, tmpBuf);
+            this->_extract_translated_line(tmpIm, x, y, z, tmpBuf);
             
             lineOut = destLines[l];
             for (p=1;p<sePtsNumber;p++)
@@ -475,11 +514,11 @@ namespace smil
                 y = l - pts[p].y;
                 x = pts[p].x + (oddLine && y%2);
                 
-                _extract_translated_line(tmpIm, x, y, z, tmpBuf2);
-                lineFunction._exec(tmpBuf, tmpBuf2, this->lineLen, tmpBuf);
+                this->_extract_translated_line(tmpIm, x, y, z, tmpBuf2);
+                this->lineFunction._exec(tmpBuf, tmpBuf2, this->lineLen, tmpBuf);
             }
             
-            copyLine<T_in, T_out>(tmpBuf, this->lineLen, lineOut);
+            copyLine<T_in>(tmpBuf, this->lineLen, lineOut);
             }
         }
         }
@@ -491,31 +530,31 @@ namespace smil
     }
 
 
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_single_hexagonal_SE(const imageInType &imIn, imageOutType &imOut)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_single_hexagonal_SE(const imageType &imIn, imageType &imOut)
     {
         int nSlices = imIn.getSliceCount();
         int nLines = imIn.getHeight();
 
         //     int nthreads = Core::getInstance()->getNumberOfThreads();
-        typename ImDtTypes<T_out>::matrixType _bufs(5, typename ImDtTypes<T_out>::vectorType(this->lineLen));
+        typename ImDtTypes<T_in>::matrixType _bufs(5, typename ImDtTypes<T_in>::vectorType(this->lineLen));
         
-        lineOutType buf0 = _bufs[0].data();
-        lineOutType buf1 = _bufs[1].data();
-        lineOutType buf2 = _bufs[2].data();
-        lineOutType buf3 = _bufs[3].data();
-        lineOutType buf4 = _bufs[4].data();
+        lineType buf0 = _bufs[0].data();
+        lineType buf1 = _bufs[1].data();
+        lineType buf2 = _bufs[2].data();
+        lineType buf3 = _bufs[3].data();
+        lineType buf4 = _bufs[4].data();
         
-        lineOutType tmpBuf;
+        lineType tmpBuf;
             
-        volInType srcSlices = imIn.getSlices();
-        volOutType destSlices = imOut.getSlices();
+        volType srcSlices = imIn.getSlices();
+        volType destSlices = imOut.getSlices();
         
-        sliceInType srcLines;
-        sliceOutType destLines;
+        sliceType srcLines;
+        sliceType destLines;
         
-        lineInType curSrcLine;
-        lineOutType curDestLine;
+        lineType curSrcLine;
+        lineType curDestLine;
         
         for (int s=0;s<nSlices;s++)
         {
@@ -523,12 +562,12 @@ namespace smil
             destLines = destSlices[s];
             
             // Process first line
-            _exec_shifted_line<T_in, T_out>(srcLines[0], srcLines[0], -1, lineLen, buf0, cpBuf);
-            _exec_shifted_line<T_out, T_out>(buf0, buf0, 1, lineLen, buf3, buf4);
+            this->_exec_shifted_line(srcLines[0], srcLines[0], -1, this->lineLen, buf0, this->cpBuf);
+            this->_exec_shifted_line(buf0, buf0, 1, this->lineLen, buf3, buf4);
             
-            _exec_shifted_line<T_in, T_out>(srcLines[1], srcLines[1], 1, lineLen, buf1, cpBuf);
-            lineFunction(buf3, buf1, lineLen, buf4);
-            lineFunction(borderBuf, buf4, lineLen, destLines[0]);
+            this->_exec_shifted_line(srcLines[1], srcLines[1], 1, this->lineLen, buf1, this->cpBuf);
+            lineFunction(buf3, buf1, this->lineLen, buf4);
+            lineFunction(this->borderBuf, buf4, this->lineLen, destLines[0]);
             
         //     int tid;
         // #pragma omp parallel
@@ -544,17 +583,17 @@ namespace smil
                 
                 if(!((l%2==0) ^ (s%2==0)))
                 {
-                  _exec_shifted_line<T_in, T_out>(curSrcLine, curSrcLine, -1, lineLen, buf2, cpBuf);
-                  _exec_shifted_line<T_out, T_out>(buf1, buf1, -1, lineLen, buf3, buf4);
+                  this->_exec_shifted_line(curSrcLine, curSrcLine, -1, this->lineLen, buf2, this->cpBuf);
+                  this->_exec_shifted_line(buf1, buf1, -1, this->lineLen, buf3, buf4);
                 }
                 else
                 {
-                  _exec_shifted_line<T_in, T_out>(curSrcLine, curSrcLine, 1, lineLen, buf2, cpBuf);
-                  _exec_shifted_line<T_out, T_out>(buf1, buf1, 1, lineLen, buf3, buf4);
+                  this->_exec_shifted_line(curSrcLine, curSrcLine, 1, this->lineLen, buf2, this->cpBuf);
+                  this->_exec_shifted_line(buf1, buf1, 1, this->lineLen, buf3, buf4);
                 }
 
-                lineFunction(buf0, buf2, lineLen, buf4);
-                lineFunction(buf3, buf4, lineLen, curDestLine);
+                lineFunction(buf0, buf2, this->lineLen, buf4);
+                lineFunction(buf3, buf4, this->lineLen, curDestLine);
                 tmpBuf = buf0;
                 buf0 = buf1;
                 buf1 = buf2;
@@ -563,11 +602,11 @@ namespace smil
             }
             
             if (!((nLines%2==0) ^ (s%2==0)))
-              _exec_shifted_line<T_out, T_out>(buf1, buf1, -1, lineLen, buf3, buf4);
+              this->_exec_shifted_line(buf1, buf1, -1, this->lineLen, buf3, buf4);
             else
-              _exec_shifted_line<T_out, T_out>(buf1, buf1, 1, lineLen, buf3, buf4);
-            lineFunction(buf3, buf0, lineLen, buf4);
-            lineFunction(borderBuf, buf4, lineLen, destLines[nLines-1]);
+              this->_exec_shifted_line(buf1, buf1, 1, this->lineLen, buf3, buf4);
+            lineFunction(buf3, buf0, this->lineLen, buf4);
+            lineFunction(this->borderBuf, buf4, this->lineLen, destLines[nLines-1]);
             
         }
 
@@ -576,8 +615,8 @@ namespace smil
         return RES_OK;
     }
 
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_single_square_SE(const imageInType &imIn, imageOutType &imOut)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_single_square_SE(const imageType &imIn, imageType &imOut)
     {
         _exec_single_vertical_segment(imIn, imOut);
         _exec_single_horizontal_segment(imOut, 1, imOut);
@@ -585,8 +624,8 @@ namespace smil
         return RES_OK;
     }
 
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_single_cube_SE(const imageInType &imIn, imageOutType &imOut)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_single_cube_SE(const imageType &imIn, imageType &imOut)
     {
         _exec_single_vertical_segment(imIn, imOut);
         _exec_single_horizontal_segment(imOut, 1, imOut);
@@ -595,17 +634,17 @@ namespace smil
     return RES_OK;
     }
 
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_single_horizontal_2points(const imageInType &imIn, int dx, imageOutType &imOut, bool)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_single_horizontal_2points(const imageType &imIn, int dx, imageType &imOut, bool)
     {
       int lineCount = imIn.getLineCount();
       
       int nthreads = Core::getInstance()->getNumberOfThreads();
-      lineInType *_bufs = this->createAlignedBuffers(nthreads, this->lineLen);
-      lineInType buf = _bufs[0];
+      lineType *_bufs = this->createAlignedBuffers(nthreads, this->lineLen);
+      lineType buf = _bufs[0];
       
-      sliceInType srcLines = imIn.getLines();
-      sliceOutType destLines = imOut.getLines();
+      sliceType srcLines = imIn.getLines();
+      sliceType destLines = imOut.getLines();
       
     #ifdef USE_OPEN_MP
       int tid;
@@ -631,14 +670,14 @@ namespace smil
       return RES_OK;
     }
 
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_single_vertical_2points(const imageInType &imIn, int dy, imageOutType &imOut)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_single_vertical_2points(const imageType &imIn, int dy, imageType &imOut)
     {
         int imHeight = imIn.getHeight();
-        volInType srcSlices = imIn.getSlices();
-        volOutType destSlices = imOut.getSlices();
-        sliceInType srcLines;
-        sliceOutType destLines;
+        volType srcSlices = imIn.getSlices();
+        volType destSlices = imOut.getSlices();
+        sliceType srcLines;
+        sliceType destLines;
 
         int l;
 
@@ -665,20 +704,20 @@ namespace smil
         return RES_OK;
     }
 
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_single_horizontal_segment(const imageInType &imIn, int xsize, imageOutType &imOut)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_single_horizontal_segment(const imageType &imIn, int xsize, imageType &imOut)
     {
         int lineCount = imIn.getLineCount();
         
         int nthreads = Core::getInstance()->getNumberOfThreads();
-        lineInType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
-        lineInType buf1 = _bufs[0];
-        lineInType buf2 = _bufs[nthreads];
+        lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
+        lineType buf1 = _bufs[0];
+        lineType buf2 = _bufs[nthreads];
         
-        sliceInType srcLines = imIn.getLines();
-        sliceOutType destLines = imOut.getLines();
+        sliceType srcLines = imIn.getLines();
+        sliceType destLines = imOut.getLines();
         
-        lineInType lineIn;
+        lineType lineIn;
         
       #ifdef USE_OPEN_MP
             int tid;
@@ -710,19 +749,19 @@ namespace smil
     }
 
     // Z-Horizontal segment
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_single_depth_segment(const imageInType &imIn, int /*zsize*/, imageOutType &imOut)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_single_depth_segment(const imageType &imIn, int /*zsize*/, imageType &imOut)
     {
         size_t w, h, d;
         imIn.getSize(&w, &h, &d);
         
         int nthreads = Core::getInstance()->getNumberOfThreads();
-        lineInType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
-        lineInType buf1 = _bufs[0];
-        lineInType buf2 = _bufs[nthreads];
+        lineType *_bufs = this->createAlignedBuffers(2*nthreads, this->lineLen);
+        lineType buf1 = _bufs[0];
+        lineType buf2 = _bufs[nthreads];
         
-        volInType srcSlices = imIn.getSlices();
-        volOutType destSlices = imOut.getSlices();
+        volType srcSlices = imIn.getSlices();
+        volType destSlices = imOut.getSlices();
         
       #ifdef USE_OPEN_MP
             int tid;
@@ -741,7 +780,7 @@ namespace smil
         #endif
             for (y=0;y<h;y++)
             {
-            this->lineFunction(borderBuf, srcSlices[0][y], this->lineLen, buf1);
+            this->lineFunction(this->borderBuf, srcSlices[0][y], this->lineLen, buf1);
                 
             for (size_t z=1;z<d;z++)
             {
@@ -752,28 +791,28 @@ namespace smil
               swap(buf1, buf2);
             }
             
-            this->lineFunction(borderBuf, buf1, this->lineLen, destSlices[d-1][y]);
+            this->lineFunction(this->borderBuf, buf1, this->lineLen, destSlices[d-1][y]);
             }
         }
         
         return RES_OK;
     }
 
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_single_vertical_segment(const imageInType &imIn, imageOutType &imOut)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_single_vertical_segment(const imageType &imIn, imageType &imOut)
     {
         UINT imHeight = imIn.getHeight();
         size_t imWidth = imIn.getWidth();
-        volInType srcSlices = imIn.getSlices();
-        volOutType destSlices = imOut.getSlices();
-        sliceInType srcLines;
-        sliceOutType destLines;
+        volType srcSlices = imIn.getSlices();
+        volType destSlices = imOut.getSlices();
+        sliceType srcLines;
+        sliceType destLines;
 
         int tid = 0, nthreads = MIN(Core::getInstance()->getNumberOfThreads(), imHeight/4);
         nthreads = MAX(nthreads, 1);
         int nbufs = 4;
-        lineInType *_bufs = this->createAlignedBuffers(nbufs*nthreads, this->lineLen);
-        lineInType buf1, buf2, firstLineBuf;
+        lineType *_bufs = this->createAlignedBuffers(nbufs*nthreads, this->lineLen);
+        lineType buf1, buf2, firstLineBuf;
         
         size_t firstLine, blockSize;
         
@@ -802,13 +841,15 @@ namespace smil
             // Process first line
             copyLine<T_in>(srcLines[firstLine], imWidth, buf1);
             if (firstLine==0)
-              lineFunction(buf1, borderBuf, imWidth, buf2);
+              lineFunction(buf1, this->borderBuf, imWidth, buf2);
             else
               lineFunction(buf1, srcLines[firstLine-1], imWidth, buf2);
             lineFunction(srcLines[firstLine], srcLines[firstLine+1], imWidth, buf1);
             lineFunction(buf1, buf2, imWidth, firstLineBuf);
             
+          #ifdef USE_OPEN_MP
             #pragma omp barrier
+          #endif // USE_OPEN_MP
             
             for (size_t i = firstLine+1 ; i<firstLine+blockSize-1 ; i++) 
             {
@@ -819,12 +860,14 @@ namespace smil
             }
               
             if (firstLine+blockSize==imHeight)
-              lineFunction(srcLines[firstLine+blockSize-1], borderBuf, imWidth, buf2);
+              lineFunction(srcLines[firstLine+blockSize-1], this->borderBuf, imWidth, buf2);
             else
               lineFunction(srcLines[firstLine+blockSize-1], srcLines[firstLine+blockSize], imWidth, buf2);
             lineFunction(buf1, buf2, imWidth, destLines[firstLine+blockSize-1]);
             
+          #ifdef USE_OPEN_MP
             #pragma omp barrier
+          #endif // USE_OPEN_MP
             
             // finaly write the first line
             copyLine<T_in>(firstLineBuf, imWidth, destLines[firstLine]);
@@ -834,22 +877,22 @@ namespace smil
         return RES_OK;
     }
     
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_single_cross(const imageInType &imIn, imageOutType &imOut)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_single_cross(const imageType &imIn, imageType &imOut)
     {
         UINT imHeight = imIn.getHeight();
         size_t imWidth = imIn.getWidth();
-        volInType srcSlices = imIn.getSlices();
-        volOutType destSlices = imOut.getSlices();
-        sliceInType srcLines;
-        sliceOutType destLines;
+        volType srcSlices = imIn.getSlices();
+        volType destSlices = imOut.getSlices();
+        sliceType srcLines;
+        sliceType destLines;
 
         int tid = 0, nthreads = MIN(Core::getInstance()->getNumberOfThreads(), imHeight/4);
         nthreads = MAX(nthreads, 1);
         int nbufs = 6;
-        lineInType *_bufs = this->createAlignedBuffers(nbufs*nthreads, this->lineLen);
-        lineInType buf1, buf2, buf3, buf4, tmpBuf, firstLineBuf;
-        lineInType swap_buf;
+        lineType *_bufs = this->createAlignedBuffers(nbufs*nthreads, this->lineLen);
+        lineType buf1, buf2, buf3, buf4, tmpBuf, firstLineBuf;
+        lineType swap_buf;
         
         size_t firstLine, blockSize;
         
@@ -880,22 +923,24 @@ namespace smil
             
             // Process first line
             copyLine<T_in>(srcLines[firstLine], imWidth, buf1);
-            _exec_shifted_line_2ways(buf1, 1, imWidth, buf4, tmpBuf);
+            this->_exec_shifted_line_2ways(buf1, 1, imWidth, buf4, tmpBuf);
             
             copyLine<T_in>(srcLines[firstLine+1], imWidth, buf2);
 
             lineFunction(buf4, buf2, imWidth, tmpBuf);
             if (firstLine==0)
-              lineFunction(borderBuf, tmpBuf, imWidth, firstLineBuf);
+              lineFunction(this->borderBuf, tmpBuf, imWidth, firstLineBuf);
             else
               lineFunction(srcLines[firstLine-1], tmpBuf, imWidth, firstLineBuf);
             
+          #ifdef USE_OPEN_MP
             #pragma omp barrier
+          #endif // USE_OPEN_MP
             
             for (size_t i = firstLine+2 ; i<firstLine+blockSize ; i++) 
             {
               copyLine<T_in>(srcLines[i], imWidth, buf3);
-              _exec_shifted_line_2ways(buf2, 1, imWidth, buf4, tmpBuf);
+              this->_exec_shifted_line_2ways(buf2, 1, imWidth, buf4, tmpBuf);
               
               lineFunction(buf1, buf3, imWidth, tmpBuf);
               lineFunction(buf4, tmpBuf, imWidth, destLines[i-1]);
@@ -906,14 +951,16 @@ namespace smil
               buf3 = swap_buf;
             }
               
-            _exec_shifted_line_2ways(buf2, 1, imWidth, buf4, tmpBuf);
+            this->_exec_shifted_line_2ways(buf2, 1, imWidth, buf4, tmpBuf);
             lineFunction(buf1, buf4, imWidth, buf4);
             if (firstLine+blockSize==imHeight)
-              lineFunction(buf4, borderBuf, imWidth, destLines[firstLine+blockSize-1]);
+              lineFunction(buf4, this->borderBuf, imWidth, destLines[firstLine+blockSize-1]);
             else
               lineFunction(buf4, srcLines[firstLine+blockSize], imWidth, destLines[firstLine+blockSize-1]);
             
+          #ifdef USE_OPEN_MP
             #pragma omp barrier
+          #endif // USE_OPEN_MP
             
             // finaly write the first line
             copyLine<T_in>(firstLineBuf, imWidth, destLines[firstLine]);
@@ -923,29 +970,31 @@ namespace smil
         return RES_OK;
     }
 
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_single_cross_3d(const imageInType &imIn, imageOutType &imOut)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_single_cross_3d(const imageType &imIn, imageType &imOut)
     {
         size_t w,h,d ;
         imIn.getSize (&w, &h, &d) ;
 
-        volInType srcSlices = imIn.getSlices();
-        volOutType destSlices = imOut.getSlices();
-        sliceInType srcLines;
-        sliceOutType destLines;
+        volType srcSlices = imIn.getSlices();
+        volType destSlices = imOut.getSlices();
+        sliceType srcLines;
+        sliceType destLines;
 
         int tid=0, nthreads = MIN(Core::getInstance()->getNumberOfThreads (), h/4);
         nthreads = MAX (nthreads, 1) ;
         int nbufs = 6;
-        lineInType *_bufs = this->createAlignedBuffers ( nbufs * nthreads, this->lineLen ) ;
-        lineInType buf1, buf2, buf3, buf4, tmp1, firstLineBuf;
-        lineInType swap_buf;
+        lineType *_bufs = this->createAlignedBuffers ( nbufs * nthreads, this->lineLen ) ;
+        lineType buf1, buf2, buf3, buf4, tmp1, firstLineBuf;
+        lineType swap_buf;
 
         size_t firstLine, blockSize;
         
             srcLines = srcSlices[0];
             destLines = destSlices[0];
+          #ifdef USE_OPEN_MP
             #pragma omp parallel private(tid,blockSize,firstLine,buf1,buf2,buf3,buf4,tmp1,firstLineBuf,swap_buf) num_threads(nthreads)
+          #endif // USE_OPEN_MP
             {
                 #ifdef USE_OPEN_MP
                 tid = omp_get_thread_num();
@@ -964,23 +1013,25 @@ namespace smil
 
                 // Process first line.
                 copyLine<T_in>(srcLines[firstLine], w, buf1);
-                _exec_shifted_line_2ways(buf1, 1, w, tmp1, buf4);
-                lineFunction(borderBuf, srcSlices[0][firstLine], w, buf4);
+                this->_exec_shifted_line_2ways(buf1, 1, w, tmp1, buf4);
+                lineFunction(this->borderBuf, srcSlices[0][firstLine], w, buf4);
                 lineFunction(buf4, srcSlices[1][firstLine], w, buf4);
                 lineFunction(buf4, tmp1, w, buf4);
                 copyLine<T_in>(srcLines[firstLine+1], w, buf2);
                 lineFunction(buf4, buf2, w, tmp1);
                 if (firstLine==0)
-                  lineFunction(borderBuf, tmp1, w, firstLineBuf);
+                  lineFunction(this->borderBuf, tmp1, w, firstLineBuf);
                 else
                   lineFunction(srcLines[firstLine-1], tmp1, w, firstLineBuf); 
+            #ifdef USE_OPEN_MP
                 #pragma omp barrier
+            #endif // USE_OPEN_MP
                 for (size_t i=firstLine+2; i<firstLine+blockSize; ++i) {
                     copyLine<T_in>(srcLines[i], w, buf3);
-                    _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1) ;
+                    this->_exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1) ;
                     lineFunction (buf1, buf3, w, tmp1);
                     lineFunction (buf4, tmp1, w, tmp1); 
-                    lineFunction(borderBuf, srcSlices[0][i-1], w, buf4);
+                    lineFunction(this->borderBuf, srcSlices[0][i-1], w, buf4);
                     lineFunction(buf4, srcSlices[1][i-1], w, buf4);
                     lineFunction (buf4, tmp1, w, destLines[i-1]);
 
@@ -990,17 +1041,19 @@ namespace smil
           buf3 = swap_buf;
                 }
 
-                _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1);
+                this->_exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1);
                 lineFunction (buf1, buf4, w, tmp1);
-                lineFunction(borderBuf, srcSlices[0][firstLine+blockSize-1], w, buf4);
+                lineFunction(this->borderBuf, srcSlices[0][firstLine+blockSize-1], w, buf4);
                 lineFunction(buf4, srcSlices[1][firstLine+blockSize-1], w, buf4);
                 lineFunction(tmp1, buf4, w, buf4);
                 if (firstLine+blockSize == h) 
-                    lineFunction (buf4, borderBuf, w, destLines[firstLine+blockSize-1]); 
+                    lineFunction (buf4, this->borderBuf, w, destLines[firstLine+blockSize-1]); 
                 else
                     lineFunction (buf4, srcLines[firstLine+blockSize], w, destLines[firstLine+blockSize-1]);
 
+            #ifdef USE_OPEN_MP
                 #pragma omp barrier
+            #endif // USE_OPEN_MP
                 // finally write the first line
                 copyLine<T_in>(firstLineBuf, w, destLines[firstLine]);
 
@@ -1015,20 +1068,22 @@ namespace smil
 
                     // Process first line.
                     copyLine<T_in>(srcLines[firstLine], w, buf1);
-                    _exec_shifted_line_2ways(buf1, 1, w, tmp1, buf4);
+                    this->_exec_shifted_line_2ways(buf1, 1, w, tmp1, buf4);
                     lineFunction(srcSlices[s-1][firstLine], srcSlices[s][firstLine], w, buf4);
                     lineFunction(buf4, srcSlices[s+1][firstLine], w, buf4);
                     lineFunction(buf4, tmp1, w, buf4);
                     copyLine<T_in>(srcLines[firstLine+1], w, buf2);
                     lineFunction(buf4, buf2, w, tmp1);
                     if (firstLine==0)
-                      lineFunction(borderBuf, tmp1, w, firstLineBuf);
+                      lineFunction(this->borderBuf, tmp1, w, firstLineBuf);
                     else
                       lineFunction(srcLines[firstLine-1], tmp1, w, firstLineBuf); 
+                #ifdef USE_OPEN_MP
                     #pragma omp barrier
+                #endif // USE_OPEN_MP
                     for (size_t i=firstLine+2; i<firstLine+blockSize; ++i) {
                         copyLine<T_in>(srcLines[i], w, buf3);
-                        _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1) ;
+                        this->_exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1) ;
                         lineFunction (buf1, buf3, w, tmp1);
                         lineFunction (buf4, tmp1, w, tmp1); 
                         lineFunction(srcSlices[s-1][i-1], srcSlices[s][i-1], w, buf4);
@@ -1041,17 +1096,19 @@ namespace smil
                       buf3 = swap_buf;
                     }
 
-                    _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1);
+                    this->_exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1);
                     lineFunction (buf1, buf4, w, tmp1);
                     lineFunction(srcSlices[s-1][firstLine+blockSize-1], srcSlices[s][firstLine+blockSize-1], w, buf4);
                     lineFunction(buf4, srcSlices[s+1][firstLine+blockSize-1], w, buf4);
                     lineFunction(tmp1, buf4, w, buf4);
                     if (firstLine+blockSize == h) 
-                        lineFunction (buf4, borderBuf, w, destLines[firstLine+blockSize-1]); 
+                        lineFunction (buf4, this->borderBuf, w, destLines[firstLine+blockSize-1]); 
                     else
                         lineFunction (buf4, srcLines[firstLine+blockSize], w, destLines[firstLine+blockSize-1]);
 
+                #ifdef USE_OPEN_MP
                     #pragma omp barrier
+                #endif // USE_OPEN_MP
                     // finally write the first line
                     copyLine<T_in>(firstLineBuf, w, destLines[firstLine]);
 
@@ -1067,24 +1124,26 @@ namespace smil
 
                 // Process first line.
                 copyLine<T_in>(srcLines[firstLine], w, buf1);
-                _exec_shifted_line_2ways(buf1, 1, w, tmp1, buf4);
+                this->_exec_shifted_line_2ways(buf1, 1, w, tmp1, buf4);
                     lineFunction(srcSlices[d-2][firstLine], srcSlices[d-1][firstLine], w, buf4);
-                    lineFunction(buf4, borderBuf, w, buf4);
+                    lineFunction(buf4, this->borderBuf, w, buf4);
                 lineFunction(buf4, tmp1, w, buf4);
                 copyLine<T_in>(srcLines[firstLine+1], w, buf2);
                 lineFunction(buf4, buf2, w, tmp1);
                 if (firstLine==0)
-                  lineFunction(borderBuf, tmp1, w, firstLineBuf);
+                  lineFunction(this->borderBuf, tmp1, w, firstLineBuf);
                 else
                   lineFunction(srcLines[firstLine-1], tmp1, w, firstLineBuf); 
+            #ifdef USE_OPEN_MP
                 #pragma omp barrier
+            #endif // USE_OPEN_MP
                 for (size_t i=firstLine+2; i<firstLine+blockSize; ++i) {
                     copyLine<T_in>(srcLines[i], w, buf3);
-                    _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1) ;
+                    this->_exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1) ;
                     lineFunction (buf1, buf3, w, tmp1);
                     lineFunction (buf4, tmp1, w, tmp1); 
                     lineFunction(srcSlices[d-2][i-1], srcSlices[d-1][i-1], w, buf4);
-                    lineFunction(buf4, borderBuf, w, buf4);
+                    lineFunction(buf4, this->borderBuf, w, buf4);
                     lineFunction (buf4, tmp1, w, destLines[i-1]);
 
            swap_buf = buf1;
@@ -1093,17 +1152,19 @@ namespace smil
           buf3 = swap_buf;
                 }
 
-                _exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1);
+                this->_exec_shifted_line_2ways (buf2, 1, w, buf4, tmp1);
                 lineFunction (buf1, buf4, w, tmp1);
                 lineFunction(srcSlices[d-2][firstLine+blockSize-1], srcSlices[d-1][firstLine+blockSize-1], w, buf4);
-                lineFunction(buf4, borderBuf, w, buf4);
+                lineFunction(buf4, this->borderBuf, w, buf4);
                 lineFunction(tmp1, buf4, w, buf4);
                 if (firstLine+blockSize == h) 
-                    lineFunction (buf4, borderBuf, w, destLines[firstLine+blockSize-1]); 
+                    lineFunction (buf4, this->borderBuf, w, destLines[firstLine+blockSize-1]); 
                 else
                     lineFunction (buf4, srcLines[firstLine+blockSize], w, destLines[firstLine+blockSize-1]);
 
+            #ifdef USE_OPEN_MP
                 #pragma omp barrier
+            #endif // USE_OPEN_MP
                 // finally write the first line
                 copyLine<T_in>(firstLineBuf, w, destLines[firstLine]);
 
@@ -1112,8 +1173,8 @@ namespace smil
     return RES_OK;
     }
 
-    template <class T_in, class lineFunction_T, class T_out, class Enable>
-    RES_T MorphImageFunction<T_in, lineFunction_T, T_out, Enable>::_exec_rhombicuboctahedron(const imageInType &imIn, imageOutType &imOut, unsigned int size)
+    template <class T_in, class lineFunction_T>
+    RES_T MorphImageFunction<T_in, lineFunction_T, T_in, true>::_exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size)
     {
         double nbSquareDbl = (((double) size)/(1+sqrt(2.)));
         double nbSquareFloor = floor(nbSquareDbl);

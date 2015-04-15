@@ -129,7 +129,7 @@ namespace smil
 
 
 
-    template <class T_in, class lineFunction_T, class T_out=T_in, typename Enable=void>
+    template <class T_in, class lineFunction_T, class T_out=T_in, bool Enable=IS_SAME(T_in, T_out) >
     class MorphImageFunction : public MorphImageFunctionBase<T_in, T_out>
     {
       public:
@@ -147,30 +147,20 @@ namespace smil
         
         
         MorphImageFunction(T_in border=ImDtTypes<T_in>::min(), T_out initialValue = ImDtTypes<T_out>::min()) 
-          : MorphImageFunctionBase<T_in, T_out>(border, initialValue) 
+          : MorphImageFunctionBase<T_in, T_out>(border, initialValue),
+            lineLen(0)
         {
         }
         
+        
+        virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
+        virtual RES_T finalize(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
         
         static bool isInplaceSafe(const StrElt &se);
         
       protected:
         virtual RES_T _exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
-        
-        virtual RES_T _exec_single(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
-        virtual RES_T _exec_single_generic(const imageInType &imIn, imageOutType &imOut, const StrElt &se);                                 // Inplace unsafe !!
-        virtual RES_T _exec_single_hexagonal_SE(const imageInType &imIn, imageOutType &imOut);                                         // Inplace safe
-        virtual RES_T _exec_single_square_SE(const imageInType &imIn, imageOutType &imOut);                                                 // Inplace unsafe !!
-        virtual RES_T _exec_single_cube_SE(const imageInType &imIn, imageOutType &imOut);                                                 // Inplace unsafe !!
-        virtual RES_T _exec_single_horizontal_2points(const imageInType &imIn, int dx, imageOutType &imOut, bool oddLines=false);        // Inplace safe
-        virtual RES_T _exec_single_vertical_2points(const imageInType &imIn, int dx, imageOutType &imOut);                                // Inplace unsafe !!
-        virtual RES_T _exec_single_horizontal_segment(const imageInType &imIn, int xsize, imageOutType &imOut);                        // Inplace safe
-        virtual RES_T _exec_single_vertical_segment(const imageInType &imIn, imageOutType &imOut);                                        // Inplace unsafe !!
-        virtual RES_T _exec_single_cross(const imageInType &imIn, imageOutType &imOut);                                                // Inplace unsafe !!
-        virtual RES_T _exec_single_cross_3d(const imageInType &imIn, imageOutType &imOut);
-        virtual RES_T _exec_single_depth_segment(const imageInType &imIn, int zsize, imageOutType &imOut);                                 // Inplace safe
-        virtual RES_T _exec_rhombicuboctahedron(const imageInType &imIn, imageOutType &imOut, unsigned int size);                        // Inplace unsafe !!
-
+        virtual RES_T _exec_single(const imageInType &/*imIn*/, imageOutType &/*imOut*/, const StrElt &/*se*/) { return RES_OK; }
         
 
         lineFunction_T lineFunction;
@@ -193,12 +183,11 @@ namespace smil
             lineFunction._exec(inBuf, cpBuf, lineLen, outBuf);
         }
         
-        template <class T1, class T2>
-        inline void _exec_shifted_line(const typename ImDtTypes<T1>::lineType inBuf1, const typename ImDtTypes<T1>::lineType inBuf2, const int &dx, const int &lineLen, typename ImDtTypes<T2>::lineType outBuf, typename ImDtTypes<T1>::lineType tmpBuf)
+        inline void _exec_shifted_line(const lineInType inBuf1, const lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf)
         {
             if (tmpBuf==NULL)
               tmpBuf = cpBuf;
-            shiftLine<T1>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
+            shiftLine<T_in>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
             lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);
         }
         
@@ -235,9 +224,9 @@ namespace smil
         }
     };
 
-    template <class T_in, class lineFunction_T, class T_out>
-    class MorphImageFunction<T_in, lineFunction_T, T_out, ENABLE_IF( IS_SAME(T_in, T_out), T_in ) > 
-      : public MorphImageFunction<T_in, lineFunction_T, T_out, void>
+    template <class T_in, class lineFunction_T>
+    class MorphImageFunction<T_in, lineFunction_T, T_in, true> 
+      : public MorphImageFunction<T_in, lineFunction_T, T_in, false>
     {
       public:
         typedef Image<T_in> imageType;
@@ -245,12 +234,29 @@ namespace smil
         typedef typename ImDtTypes<T_in>::sliceType sliceType;
         typedef typename ImDtTypes<T_in>::volType volType;
         
-        MorphImageFunction(T_in border=ImDtTypes<T_in>::min(), T_out initialValue = ImDtTypes<T_out>::min()) 
-          : MorphImageFunction<T_in, lineFunction_T, T_out, void>(border, initialValue) 
+        MorphImageFunction(T_in border=ImDtTypes<T_in>::min(), T_in initialValue = ImDtTypes<T_in>::min()) 
+          : MorphImageFunction<T_in, lineFunction_T, T_in, false>(border, initialValue),
+          lineFunction(MorphImageFunction<T_in, lineFunction_T, T_in, false>::lineFunction) // take ref from parent
         {
         }
         
+        lineFunction_T &lineFunction;
+
         virtual RES_T _exec(const imageType &imIn, imageType &imOut, const StrElt &se);
+        virtual RES_T _exec_single(const imageType &imIn, imageType &imOut, const StrElt &se);
+        virtual RES_T _exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se);                                 // Inplace unsafe !!
+        
+        virtual RES_T _exec_single_hexagonal_SE(const imageType &imIn, imageType &imOut);                                         // Inplace safe
+        virtual RES_T _exec_single_square_SE(const imageType &imIn, imageType &imOut);                                                 // Inplace unsafe !!
+        virtual RES_T _exec_single_cube_SE(const imageType &imIn, imageType &imOut);                                                 // Inplace unsafe !!
+        virtual RES_T _exec_single_horizontal_2points(const imageType &imIn, int dx, imageType &imOut, bool oddLines=false);        // Inplace safe
+        virtual RES_T _exec_single_vertical_2points(const imageType &imIn, int dx, imageType &imOut);                                // Inplace unsafe !!
+        virtual RES_T _exec_single_horizontal_segment(const imageType &imIn, int xsize, imageType &imOut);                        // Inplace safe
+        virtual RES_T _exec_single_vertical_segment(const imageType &imIn, imageType &imOut);                                        // Inplace unsafe !!
+        virtual RES_T _exec_single_cross(const imageType &imIn, imageType &imOut);                                                // Inplace unsafe !!
+        virtual RES_T _exec_single_cross_3d(const imageType &imIn, imageType &imOut);
+        virtual RES_T _exec_single_depth_segment(const imageType &imIn, int zsize, imageType &imOut);                                 // Inplace safe
+        virtual RES_T _exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size);                        // Inplace unsafe !!
     };
     
 /** \} */

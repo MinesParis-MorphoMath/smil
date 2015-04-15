@@ -63,18 +63,11 @@ namespace smil
         {
         }
         virtual RES_T _exec_single(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
-        virtual RES_T _exec_single_generic(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
     };
 
 
     template <class T_in, class lineFunction_T, class T_out>
     RES_T unaryMorphArrowImageFunction<T_in, lineFunction_T, T_out>::_exec_single(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
-    {
-        return _exec_single_generic(imIn, imOut, se);
-    }
-
-    template <class T_in, class lineFunction_T, class T_out>
-    RES_T unaryMorphArrowImageFunction<T_in, lineFunction_T, T_out>::_exec_single_generic(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
     {
         ASSERT_ALLOCATED(&imIn);
         ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -82,7 +75,7 @@ namespace smil
         if ((void*)&imIn==(void*)&imOut)
         {
             Image<T_in> tmpIm = imIn;
-            return _exec_single_generic(tmpIm, imOut, se);
+            return _exec_single(tmpIm, imOut, se);
         }
         
         if (!areAllocated(&imIn, &imOut, NULL))
@@ -94,12 +87,16 @@ namespace smil
         
         size_t nSlices = imIn.getSliceCount();
         size_t nLines = imIn.getHeight();
+        
+        this->initialize(imIn, imOut, se);
+        this->lineLen = imIn.getWidth();
 
         
         volInType srcSlices = imIn.getSlices();
         volOutType destSlices = imOut.getSlices();
         
         int nthreads = Core::getInstance()->getNumberOfThreads();
+        typename ImDtTypes<T_in>::vectorType vec(this->lineLen);
         typename ImDtTypes<T_in>::matrixType bufsIn(nthreads, typename ImDtTypes<T_in>::vectorType(this->lineLen));
         typename ImDtTypes<T_out>::matrixType bufsOut(nthreads, typename ImDtTypes<T_out>::vectorType(this->lineLen));
         
@@ -128,7 +125,9 @@ namespace smil
             lineInType tmpBuf = bufsIn[tid].data();
             lineOutType tmpBuf2 = bufsOut[tid].data();
             
+      #ifdef USE_OPEN_MP
         #pragma omp for
+      #endif // USE_OPEN_MP
             for (l=0;l<nLines;l++)
             {
                 lineInType lineIn  = srcLines[l];

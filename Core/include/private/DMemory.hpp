@@ -75,6 +75,7 @@
   
 #include <math.h>
 #include <string>
+#include <memory>
 #include <limits>
 #include <sstream>
 #include <vector>
@@ -104,7 +105,7 @@ namespace smil
     
     
     template<typename T>
-    class Allocator 
+    class Allocator : public std::allocator<T>
     {
     public : 
         //    typedefs
@@ -127,7 +128,8 @@ namespace smil
     public : 
         inline explicit Allocator() {}
         inline ~Allocator() {}
-        inline explicit Allocator(Allocator const&) {}
+        inline explicit Allocator(Allocator const&)
+          : std::allocator<T>() {}
         template<typename U>
         inline explicit Allocator(Allocator<U> const&) {}
 

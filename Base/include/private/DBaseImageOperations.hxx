@@ -100,9 +100,9 @@ namespace smil
         sliceType srcLines = imIn.getLines();
         sliceType destLines = imOut.getLines();
         
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -135,9 +135,9 @@ namespace smil
 
         // Use it for operations on lines
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -168,9 +168,9 @@ namespace smil
         lineType *srcLines2 = imIn2.getLines();
         lineType *destLines = imOut.getLines();
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -239,9 +239,9 @@ namespace smil
         fillLine<T> f;
         f(constBuf, lineLen, value);
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -277,9 +277,9 @@ namespace smil
         fillLine<T> f;
         f(constBuf, lineLen, value);
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -316,9 +316,9 @@ namespace smil
         sliceType2 srcLines3 = imIn3.getLines();
         sliceType2 destLines = imOut.getLines();
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -358,9 +358,9 @@ namespace smil
         fillLine<T2> f;
         f(constBuf, lineLen, value);
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -400,9 +400,9 @@ namespace smil
         fillLine<T2> f;
         f(constBuf, lineLen, value);
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -444,9 +444,9 @@ namespace smil
         f(constBuf1, lineLen, value1);
         f(constBuf2, lineLen, value2);
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {

@@ -133,7 +133,6 @@ namespace smil
         typename Image<T1>::volType slIn = imIn.getSlices() + startZ;
         typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
         
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         size_t y;
         
         for (size_t z=0;z<realSz;z++)
@@ -143,6 +142,7 @@ namespace smil
             
         
             #ifdef USE_OPEN_MP
+                int nthreads = Core::getInstance()->getNumberOfThreads();
                 #pragma omp parallel private(y)
             #endif // USE_OPEN_MP
             {

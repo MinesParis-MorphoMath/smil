@@ -174,9 +174,13 @@ namespace smil
             lineInType pixelsTmp = tmp.getPixels () ;
          
             // Adding the first point of each line to tmp.
+        #ifdef USE_OPEN_MP
             #pragma omp parallel
+        #endif // USE_OPEN_MP
             {
+        #ifdef USE_OPEN_MP
                 #pragma omp for
+        #endif // USE_OPEN_MP
                 for (size_t i=0; i<this->imSize[2]*this->imSize[1]; ++i) {
                     pixelsTmp[i*this->imSize[0]] = this->pixelsIn[i*this->imSize[0]];
                 }
@@ -263,9 +267,13 @@ namespace smil
             lineOutType lineOut;
 
             for (size_t s=0; s<nSlices; ++s) {
+        #ifdef USE_OPEN_MP
                 #pragma omp parallel private(lineIn,lineOut,l,v,previous_value,previous_label)
+        #endif // USE_OPEN_MP
                 {
+        #ifdef USE_OPEN_MP
                     #pragma omp for
+        #endif // USE_OPEN_MP
                     for (l=0; l<nLines; ++l) {
                         lineIn = srcLines[l+s*nSlices];
                         lineOut = desLines[l+s*nSlices];

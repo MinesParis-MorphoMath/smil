@@ -195,7 +195,9 @@ namespace smil
         long int min;
 
         for (z=0; z<size[2]; ++z) {
+          #ifdef USE_OPEN_MP
             #pragma omp for private(offset,x,y,min)    
+          #endif // USE_OPEN_MP
             for (x=0; x<size[0];++x) {
                 offset = z*size[1]*size[0]+x;
                 if (pixelsIn[offset] == T1(0)) {
@@ -219,7 +221,9 @@ namespace smil
                 }
             }
             
+        #ifdef USE_OPEN_MP
             #pragma omp for private(x,y,offset)
+        #endif // USE_OPEN_MP
             for (y=0; y<size[1]; ++y) {
                 offset = z*size[1]*size[0]+y*size[0]; 
                 for (x=1; x<size[0]; ++x) {
@@ -235,7 +239,9 @@ namespace smil
             }
         }
         for (y=0; y<size[1]; ++y) {
+          #ifdef USE_OPEN_MP
             #pragma omp for private(x,z,offset)
+          #endif // USE_OPEN_MP
             for (x=0; x<size[0]; ++x) {
                 offset = y*size[0]+x;
                 for (z=1; z<size[2]; ++z) {
@@ -278,7 +284,9 @@ namespace smil
         long int  min;
 
         for (z=0; z<size[2]; ++z) {
+          #ifdef USE_OPEN_MP
             #pragma omp for private(offset,x,y,min)    
+          #endif // USE_OPEN_MP
             for (x=0; x<size[0];++x) {
                 offset = z*size[1]*size[0]+x;
                 if (pixelsIn[offset] == T1(0)) {
@@ -302,7 +310,9 @@ namespace smil
                 }
             }
             
+          #ifdef USE_OPEN_MP
             #pragma omp for private(x,y,offset)
+          #endif // USE_OPEN_MP
             for (y=0; y<size[1]; ++y) {
                 offset = z*size[1]*size[0]+y*size[0]; 
                 for (x=1; x<size[0]; ++x) {
@@ -356,7 +366,9 @@ namespace smil
         long int tmpdist, tmpdist2;
 
         for (z=0; z<size[2]; ++z) {
+          #ifdef USE_OPEN_MP
             #pragma omp for private(offset,x,y,min)    
+          #endif // USE_OPEN_MP
             for (x=0; x<size[0];++x) {
                 offset = z*size[1]*size[0]+x;
                 if (pixelsIn[offset] == T1(0)) {
@@ -379,7 +391,9 @@ namespace smil
                        pixelsTmp[offset+y*size[0]] = (1+pixelsTmp[offset+(y+1)*size[0]]); 
                 }
             }
+          #ifdef USE_OPEN_MP
             #pragma omp for private(offset,y,s,t,q,w,tmpdist,tmpdist2)
+          #endif // USE_OPEN_MP
             for (y=0; y<size[1]; ++y) {
                     offset = z*size[1]*size[0]+y*size[0];
                     q=0; t[0]=0; s[0]=0;
@@ -458,7 +472,9 @@ namespace smil
         long int w;
 
         for (z=0; z<size[2]; ++z) {
+          #ifdef USE_OPEN_MP
             #pragma omp for private(offset,x,y,min)    
+          #endif // USE_OPEN_MP
             for (x=0; x<size[0];++x) {
                 offset = z*size[1]*size[0]+x;
                 if (pixelsIn[offset] == T1(0)) {
@@ -485,7 +501,9 @@ namespace smil
    
             #define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
 
+          #ifdef USE_OPEN_MP
             #pragma omp for private(offset,y,s,t,q,w)
+          #endif // USE_OPEN_MP
              for (y=0; y<size[1]; ++y) {
                     offset = z*size[1]*size[0]+y*size[0];
                     q=0; t[0]=0; s[0]=0;
