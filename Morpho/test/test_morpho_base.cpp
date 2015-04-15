@@ -589,14 +589,14 @@ class Test_Dilate_Rhombicuboctahedron : public TestCase
 int main()
 {
       TestSuite ts;
-      ADD_TEST(ts, Test_Dilate_2Points);
-      ADD_TEST(ts, Test_3Points_Hex);
-      ADD_TEST(ts, Test_Dilate_Vert);
-      ADD_TEST(ts, Test_Dilate_Cross);
-      ADD_TEST(ts, Test_Dilate_Hex);
+//       ADD_TEST(ts, Test_Dilate_2Points);
+//       ADD_TEST(ts, Test_3Points_Hex);
+//       ADD_TEST(ts, Test_Dilate_Vert);
+//       ADD_TEST(ts, Test_Dilate_Cross);
+//       ADD_TEST(ts, Test_Dilate_Hex);
       ADD_TEST(ts, Test_Dilate_Squ);
-      ADD_TEST(ts, Test_Dilate_3D);
-      ADD_TEST(ts, Test_Dilate_Rhombicuboctahedron);
+//       ADD_TEST(ts, Test_Dilate_3D);
+//       ADD_TEST(ts, Test_Dilate_Rhombicuboctahedron);
       
 //       UINT BENCH_NRUNS = 5E3;
 //       Image_UINT8 im1(1024, 1024), im2(im1);

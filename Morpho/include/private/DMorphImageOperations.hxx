@@ -354,13 +354,15 @@ namespace smil
             return RES_OK;
         }
         
+        this->initialize(imIn, imOut, se);
+        
         if (seType==SE_Rhombicuboctahedron) 
         {
             _exec_rhombicuboctahedron (imIn, imOut, se.size);
+            this->finalize(imIn, imOut, se);
             return RES_OK;
         }
         
-        this->initialize(imIn, imOut, se);
         
         ImageFreezer freezer(imOut);
         
@@ -1180,13 +1182,13 @@ namespace smil
         double nbSquareFloor = floor(nbSquareDbl);
         int nbSquare = (int) (((nbSquareDbl - nbSquareFloor) < 0.5f) ? (nbSquareFloor) : (nbSquareFloor+1));
 
-        ASSERT(_exec (imIn, imOut, Cross3DSE ())==RES_OK);
+        ASSERT(_exec_single (imIn, imOut, Cross3DSE ())==RES_OK);
 
         for (size_t i=1; i<size-nbSquare; ++i) 
-            ASSERT(_exec(imOut, imOut, Cross3DSE ())==RES_OK);
+            ASSERT(_exec_single(imOut, imOut, Cross3DSE ())==RES_OK);
         
         for (int i=0; i<nbSquare; ++i)
-            ASSERT(_exec(imOut, imOut, CubeSE ())==RES_OK);
+            ASSERT(_exec_single(imOut, imOut, CubeSE ())==RES_OK);
 
         return RES_OK;
     }

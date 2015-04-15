@@ -229,14 +229,16 @@ namespace smil
       : public MorphImageFunction<T_in, lineFunction_T, T_in, false>
     {
       public:
+        typedef MorphImageFunction<T_in, lineFunction_T, T_in, false> parentClass;
+        
         typedef Image<T_in> imageType;
         typedef typename ImDtTypes<T_in>::lineType lineType;
         typedef typename ImDtTypes<T_in>::sliceType sliceType;
         typedef typename ImDtTypes<T_in>::volType volType;
         
         MorphImageFunction(T_in border=ImDtTypes<T_in>::min(), T_in initialValue = ImDtTypes<T_in>::min()) 
-          : MorphImageFunction<T_in, lineFunction_T, T_in, false>(border, initialValue),
-          lineFunction(MorphImageFunction<T_in, lineFunction_T, T_in, false>::lineFunction) // take ref from parent
+          : parentClass(border, initialValue),
+          lineFunction(parentClass::lineFunction) // take ref from parent
         {
         }
         
