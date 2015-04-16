@@ -129,10 +129,10 @@ namespace smil
         
     protected:
         size_t edgeNbr;
-        set<size_t> nodes;
-        std::map<size_t, edgeWT> nodeValues;
+        set<nodeT> nodes;
+        std::map<nodeT, edgeWT> nodeValues;
         std::vector< EdgeType > edges;
-        std::map< size_t, std::vector<size_t> > nodeEdges;
+        std::map< nodeT, std::vector<size_t> > nodeEdges;
         
     public:
         //! Default constructor
@@ -365,7 +365,7 @@ namespace smil
 #endif // SWIG
         //! Get a vector containing the graph edges
         vector< EdgeType > &getEdges() { return edges; }  // rvalue
-        map<size_t, edgeWT> &getNodeValues() { return nodeValues; }  // rvalue
+        map<nodeT, edgeWT> &getNodeValues() { return nodeValues; }  // rvalue
         const map< size_t, std::vector<size_t> > &getNodeEdges() const { return nodeEdges; } // lvalue
         //! Get a map containing the edges linked to a given node
         std::vector<size_t> getNodeEdges(const size_t &node) 

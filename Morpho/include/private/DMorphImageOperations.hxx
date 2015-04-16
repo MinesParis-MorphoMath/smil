@@ -160,7 +160,7 @@ namespace smil
             processLine(linesIn[curLine], linesOut[curLine], imSize[0], se);
     }
     
-    // Todo: offset list for 3D odd SE !!
+    // TODO : offset list for 3D odd SE !!
     template <class T_in, class T_out>
     void MorphImageFunctionBase<T_in, T_out>::processLine(lineInType pixIn, lineOutType /*pixOut*/, size_t &pixNbr, const StrElt &se)
     {
