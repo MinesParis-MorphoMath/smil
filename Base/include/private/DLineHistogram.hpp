@@ -45,9 +45,9 @@ namespace smil
     struct threshLine : public unaryLineFunctionBase<T>
     {
         T minVal, maxVal, trueVal, falseVal;
-        typedef typename ImDtTypes<T>::lineType lineType;
+        typedef typename unaryLineFunctionBase<T>::lineType lineType;
         
-        inline void _exec(const lineType &lIn, int size, lineType &lOut)
+        virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
         {
             for(int i=0;i<size;i++)
                 lOut[i] = lIn[i] >= minVal && lIn[i] <= maxVal  ? trueVal : falseVal;
@@ -59,9 +59,9 @@ namespace smil
     {
         T inOrig, outOrig;
         double coeff;
-        typedef typename ImDtTypes<T>::lineType lineType;
+        typedef typename unaryLineFunctionBase<T>::lineType lineType;
         
-        inline void _exec(const lineType &lIn, int size, lineType &lOut)
+        virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
         {
             double newVal;
             

@@ -44,7 +44,7 @@ namespace smil
     template <class T>
     struct unaryLineFunctionBase
     {
-        typedef typename Image<T>::lineType lineType;
+        typedef typename Image<T>::lineType __restrict lineType;
         typedef typename Image<T>::sliceType sliceType;
         
         unaryLineFunctionBase() {}
@@ -53,7 +53,7 @@ namespace smil
             this->_exec(lineIn, size, lineOut);
         }
         
-        virtual void _exec(const lineType, const size_t, lineType) {}
+        virtual void _exec(const lineType, const size_t, lineType) = 0;
         virtual void _exec_aligned(const lineType lineIn, const size_t size, lineType lineOut) { _exec(lineIn, size, lineOut); }
         virtual void _exec(lineType, const size_t, const T) {}
         virtual void _exec_aligned(lineType lineIn, const size_t size, T value) { _exec(lineIn, size, value); }
@@ -97,15 +97,19 @@ namespace smil
 
 
     // Base abstract struct of line binary function
-    template <class T>
+    template <class T1, class T2=T1, class T_out=T1>
     struct binaryLineFunctionBase
     {
-        typedef typename Image<T>::lineType lineType;
-        typedef typename Image<T>::sliceType sliceType;
+        typedef typename Image<T1>::lineType __restrict lineType1;
+        typedef typename Image<T2>::lineType __restrict lineType2;
+        typedef typename Image<T_out>::lineType __restrict lineOutType;
+        typedef lineType1 lineType;
         
-        virtual void _exec(const lineType, const lineType, const size_t, lineType) {}
-        virtual void _exec_aligned(const lineType lineIn1, const lineType lineIn2, const size_t size, lineType lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
-        inline void operator()(const lineType lineIn1, const lineType lineIn2, const size_t size, lineType lineOut)
+        typedef typename Image<T1>::sliceType sliceType;
+        
+        virtual void _exec(const lineType1, const lineType2, const size_t, lineOutType) = 0;
+        virtual void _exec_aligned(const lineType1 lineIn1, const lineType2 lineIn2, const size_t size, lineOutType lineOut) { _exec(lineIn1, lineIn2, size, lineOut); }
+        inline void operator()(const lineType1 lineIn1, const lineType2 lineIn2, const size_t size, lineOutType lineOut)
         { 
             return _exec(lineIn1, lineIn2, size, lineOut); 
             if (size<SIMD_VEC_SIZE)
@@ -113,9 +117,9 @@ namespace smil
                 _exec(lineIn1, lineIn2, size, lineOut); 
                 return;
             }
-            size_t ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn1);
-            size_t ptrOffset2 = ImDtTypes<T>::ptrOffset(lineIn2);
-            size_t ptrOffset3 = ImDtTypes<T>::ptrOffset(lineOut);
+            size_t ptrOffset1 = ImDtTypes<T1>::ptrOffset(lineIn1);
+            size_t ptrOffset2 = ImDtTypes<T2>::ptrOffset(lineIn2);
+            size_t ptrOffset3 = ImDtTypes<T_out>::ptrOffset(lineOut);
             
             // all aligned
             if (!ptrOffset1 && !ptrOffset2 && !ptrOffset3)
@@ -136,15 +140,15 @@ namespace smil
             }
             
         }
-        inline void operator()(const lineType lineIn1, const T value, const size_t size, lineType lineOut)
+        inline void operator()(const lineType1 lineIn1, const T2 value, const size_t size, lineOutType lineOut)
         { 
             if (size<SIMD_VEC_SIZE)
             {
                 _exec(lineIn1, value, size, lineOut); 
                 return;
             }
-            unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn1);
-            unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineOut);
+            unsigned long ptrOffset1 = ImDtTypes<T1>::ptrOffset(lineIn1);
+            unsigned long ptrOffset2 = ImDtTypes<T2>::ptrOffset(lineOut);
             
             // all aligned
             if (!ptrOffset1 && !ptrOffset2)
@@ -169,25 +173,28 @@ namespace smil
 
 
     // Base abstract struct of line binary function
-    template <class T>
+    template <class T1, class T2=T1, class T3=T1, class T_out=T1>
     struct tertiaryLineFunctionBase
     {
-        typedef typename Image<T>::lineType lineType;
-        typedef typename Image<T>::sliceType sliceType;
+        typedef typename Image<T1>::lineType __restrict lineType1;
+        typedef typename Image<T2>::lineType __restrict lineType2;
+        typedef typename Image<T3>::lineType __restrict lineType3;
+        typedef typename Image<T_out>::lineType __restrict lineOutType;
+        typedef lineType1 lineType;
         
-        virtual void _exec(const lineType /*lineIn1*/, const lineType /*lineIn2*/, const lineType /*lineIn3*/, const size_t /*size*/, lineType /*lineOut*/) {}
-        virtual void _exec_aligned(const lineType lineIn1, const lineType lineIn2, const lineType lineIn3, const size_t size, lineType lineOut) { _exec(lineIn1, lineIn2, lineIn3, size, lineOut); }
-        virtual void operator()(const lineType lineIn1, const lineType lineIn2, const lineType lineIn3, const size_t size, lineType lineOut)
+        virtual void _exec(const lineType1 /*lineIn1*/, const lineType2 /*lineIn2*/, const lineType3 /*lineIn3*/, const size_t /*size*/, lineOutType /*lineOut*/) = 0;
+        virtual void _exec_aligned(const lineType1 lineIn1, const lineType2 lineIn2, const lineType3 lineIn3, const size_t size, lineOutType lineOut) { _exec(lineIn1, lineIn2, lineIn3, size, lineOut); }
+        virtual void operator()(const lineType1 lineIn1, const lineType2 lineIn2, const lineType3 lineIn3, const size_t size, lineOutType lineOut)
         { 
             if (size<SIMD_VEC_SIZE)
             {
                 _exec(lineIn1, lineIn2, lineIn3, size, lineOut);
                 return;
             }
-            unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn1);
-            unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineIn2);
-            unsigned long ptrOffset3 = ImDtTypes<T>::ptrOffset(lineIn3);
-            unsigned long ptrOffset4 = ImDtTypes<T>::ptrOffset(lineOut);
+            unsigned long ptrOffset1 = ImDtTypes<T1>::ptrOffset(lineIn1);
+            unsigned long ptrOffset2 = ImDtTypes<T2>::ptrOffset(lineIn2);
+            unsigned long ptrOffset3 = ImDtTypes<T3>::ptrOffset(lineIn3);
+            unsigned long ptrOffset4 = ImDtTypes<T_out>::ptrOffset(lineOut);
             
             // all aligned
             if (!ptrOffset1 && !ptrOffset2 && !ptrOffset3 && !ptrOffset4)

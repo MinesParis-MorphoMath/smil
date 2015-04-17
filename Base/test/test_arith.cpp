@@ -108,6 +108,54 @@ class Test_Equal : public TestCase
   }
 };
 
+class Test_Bit : public TestCase
+{
+  virtual void run()
+  {
+      UINT8 vec1[20] = {
+          97, 223,  13, 127,
+        229, 210,  57, 114,
+        248, 104, 182,  67,
+        194, 251,  31,  69,
+          92,  79, 250, 114,
+      };
+      UINT8 vec2[20] = {
+        229, 131,  91,  79,
+        226, 139, 162,  39,
+        226,  59, 230, 230,
+          86, 100, 176, 158,
+        122, 132, 213, 219,
+      };
+      
+      Image_UINT8 im1(4,5);
+      Image_UINT8 im2(im1);
+      Image_UINT8 im3(im1);
+      Image_UINT8 imTruth(im1);
+      
+      im1 << vec1;
+      im2 << vec2;
+      
+      UINT8 vecAnd[20] = { 
+          97, 131,   9,  79,
+        224, 130,  32,  34,
+        224,  40, 166,  66,
+          66,  96,  16,   4,
+          88,   4, 208,  82,
+      };
+      
+      bitAnd(im1, im2, im3);
+      imTruth << vecAnd;
+      
+      TEST_ASSERT(im3==imTruth);
+      if (retVal!=RES_OK)
+      {
+          im3.printSelf(1);
+          imTruth.printSelf(1);
+      }
+      
+  }
+};
+
 class Test_ApplyLookup : public TestCase
 {
   virtual void run()
@@ -155,6 +203,7 @@ int main(void)
       ADD_TEST(ts, Test_Cast);
       ADD_TEST(ts, Test_Fill);
       ADD_TEST(ts, Test_Equal);
+      ADD_TEST(ts, Test_Bit);
       ADD_TEST(ts, Test_ApplyLookup);
       
       return ts.run();
