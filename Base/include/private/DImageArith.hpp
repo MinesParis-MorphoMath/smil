@@ -249,10 +249,10 @@ namespace smil
         typename Image<T1>::lineType pixIn = imIn.getPixels();
         typename Image<T2>::lineType pixOut = imOut.getPixels();
         
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         size_t i, nPix = imIn.getPixelCount();
         
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {

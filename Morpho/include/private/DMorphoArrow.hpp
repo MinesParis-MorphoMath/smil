@@ -398,8 +398,10 @@ namespace smil
 	lineArrowType *destLines;
 
 	bool oddSe = cpSe.odd, oddLine = 0;
-
+        
+    #ifdef USE_OPEN_MP
 	#pragma omp parallel private(oddLine)
+    #endif // USE_OPEN_MP
 	{
 	T* borderBuf = ImDtTypes < T >::createLine ( lineLen );
 	T* cpBuf = ImDtTypes < T >::createLine ( lineLen );
@@ -426,7 +428,9 @@ namespace smil
 	  srcLines = srcSlices[s];
 	  destLines = destSlices[s];
 
+    #ifdef USE_OPEN_MP
 	  #pragma omp for
+    #endif // USE_OPEN_MP
 	  for ( size_t l = 0; l < nLines; ++l )
 	  {
 	        oddLine = oddSe && l %2;
@@ -533,7 +537,9 @@ namespace smil
 
 	bool oddSe = cpSe.odd, oddLine = 0;
 
+    #ifdef USE_OPEN_MP
 	#pragma omp parallel private(oddLine)
+    #endif // USE_OPEN_MP
 	{
 	T* borderBuf = ImDtTypes < T >::createLine ( lineLen );
 	T* cpBuf = ImDtTypes < T >::createLine ( lineLen );
@@ -560,7 +566,9 @@ namespace smil
 	  srcLines = srcSlices[s];
 	  destLines = destSlices[s];
 
+    #ifdef USE_OPEN_MP
 	  #pragma omp for
+    #endif // USE_OPEN_MP
 	  for ( size_t l = 0; l < nLines; ++l )
 	  {
 	        oddLine = oddSe && l %2;
