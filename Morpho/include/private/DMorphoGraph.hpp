@@ -274,7 +274,8 @@ namespace smil
     {
         ASSERT_ALLOCATED(&imOut);
         
-        map<size_t,size_t> nodeMap = graph.labelizeNodes();
+        typedef typename graphT::NodeType NodeType;
+        map<NodeType,NodeType> nodeMap = graph.labelizeNodes();
         map<T,T> lut(nodeMap.begin(), nodeMap.end()); 
         
         return applyLookup(imMosRef, lut, imOut);

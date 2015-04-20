@@ -649,7 +649,7 @@ namespace smil
         
         
         typedef typename Graph<labelT,UINT>::EdgeType EdgeType;
-        vector<EdgeType> &edges = graph.getEdges();
+        const vector<EdgeType> &edges = graph.getEdges();
         UINT edgesNbr = edges.size();
         
         for (UINT i=0;i<edgesNbr;i++)
@@ -672,7 +672,7 @@ namespace smil
         
         
         typedef typename Graph<labelT,UINT>::EdgeType EdgeType;
-        vector<EdgeType> &edges = graph.getEdges();
+        const vector<EdgeType> &edges = graph.getEdges();
         UINT edgesNbr = edges.size();
         
         for (UINT i=0;i<edgesNbr;i++)

@@ -73,12 +73,46 @@ class Test_MST : public TestCase
 };
 
 
+class Test_Labelize : public TestCase
+{
+    virtual void run()
+    {
+        Graph<> graph;
+        graph.addEdge(Edge<>(0,1));
+        graph.addEdge(Edge<>(2,3));
+        graph.addEdge(Edge<>(4,5));
+        graph.addEdge(Edge<>(5,8));
+        graph.addEdge(Edge<>(3,8));
+        
+        map<size_t, size_t> labels = graph.labelizeNodes(), labelsTruth;
+
+        labelsTruth[0] = 0;
+        labelsTruth[1] = 0;
+        labelsTruth[2] = 2;
+        labelsTruth[3] = 2;
+        labelsTruth[4] = 2;
+        labelsTruth[5] = 2;
+        labelsTruth[8] = 2;
+
+        TEST_ASSERT(labels==labelsTruth);
+        
+        if (retVal!=RES_OK)
+        {
+            cout << endl;
+            for (map<size_t, size_t>::const_iterator it=labels.begin();it!=labels.end();it++)
+              cout << it->first << "-" << it->second << endl;
+        }
+    }
+};
+
+
 
 int main()
 {
       TestSuite ts;
 
       ADD_TEST(ts, Test_MST);
+      ADD_TEST(ts, Test_Labelize);
       
       return ts.run();
 }

@@ -48,18 +48,18 @@ namespace smil
      * Non-oriented edge
      * \see Graph
      */
-    template <class T=size_t>
+    template <class NodeT=size_t, class WeightT=size_t>
     class Edge
     {
     public:
-        typedef T WeightType;
+        typedef WeightT WeightType;
         //! Default constructor
         Edge()
           : source(0), target(0), weight(1)
         {
         }
         //! Constructor using two nodes and an optional weight (default 1).
-        Edge(size_t a, size_t b, T w=1)
+        Edge(NodeT a, NodeT b, WeightT w=1)
           : source(a), target(b), weight(w)
         {
         }
@@ -82,11 +82,11 @@ namespace smil
         }
         
         //! Source node
-        size_t source;
+        NodeT source;
         //! Target node
-        size_t target;
+        NodeT target;
         //! Edge weight/value
-        T weight;
+        WeightT weight;
         
         inline bool isActive() const { return (source!=0 || target!=0);  }
         inline void desactivate()
@@ -114,25 +114,34 @@ namespace smil
         }
     };
 
+    
     /**
      * Non-oriented graph
      * \see Edge
      */
-    template <class nodeT=size_t, class edgeWT=size_t>
+    template <class NodeT=size_t, class WeightT=size_t>
     class Graph : public BaseObject
     {
     public:
+        typedef Graph<NodeT, WeightT> GraphType;
         
-        typedef nodeT NodeType;
-        typedef Edge<edgeWT> EdgeType;
-        typedef edgeWT EdgeWeightType;
+        typedef NodeT NodeType;
+        typedef WeightT NodeWeightType;
+        typedef std::map<NodeT, WeightT> NodeValuesType;
+        typedef set<NodeT> NodeListType;
         
+        typedef Edge<NodeT, WeightT> EdgeType;
+        typedef WeightT EdgeWeightType;
+        
+        typedef std::vector< Edge<NodeT,WeightT> > EdgeListType;
+        typedef std::vector<size_t> NodeEdgesType;
+        typedef std::map< NodeT, NodeEdgesType > NodeEdgeListType;
     protected:
         size_t edgeNbr;
-        set<size_t> nodes;
-        std::map<size_t, edgeWT> nodeValues;
-        std::vector< EdgeType > edges;
-        std::map< size_t, std::vector<size_t> > nodeEdges;
+        NodeListType nodes;
+        NodeValuesType nodeValues;
+        EdgeListType edges;
+        NodeEdgeListType nodeEdgeList;
         
     public:
         //! Default constructor
@@ -148,7 +157,7 @@ namespace smil
             nodes(rhs.nodes),
             nodeValues(rhs.nodeValues),
             edges(rhs.edges),
-            nodeEdges(rhs.nodeEdges)
+            nodeEdgeList(rhs.nodeEdgeList)
         {
         }
         
@@ -159,7 +168,7 @@ namespace smil
             nodes = rhs.nodes;
             nodeValues = rhs.nodeValues;
             edges = rhs.edges;
-            nodeEdges = rhs.nodeEdges;
+            nodeEdgeList = rhs.nodeEdgeList;
             edgeNbr = rhs.edgeNbr;
             return *this;
         }
@@ -170,16 +179,16 @@ namespace smil
             nodes.clear();
             nodeValues.clear();
             edges.clear();
-            nodeEdges.clear();
+            nodeEdgeList.clear();
             edgeNbr = 0;
         }
         
         //! Add a node given its index and its optional value
-        void addNode(const size_t &ind)
+        void addNode(const NodeT &ind)
         {
             nodes.insert(ind);
         }
-        void addNode(const size_t &ind, const nodeT &val)
+        void addNode(const NodeT &ind, const WeightT &val)
         {
             nodes.insert(ind);
             nodeValues[ind] = val;
@@ -187,13 +196,13 @@ namespace smil
         
         inline EdgeType *findEdge(const EdgeType &e)
         {
-            typename vector< EdgeType >::iterator foundEdge = find(edges.begin(), edges.end(), e);
+            typename EdgeListType::iterator foundEdge = find(edges.begin(), edges.end(), e);
             if (foundEdge!=edges.end())
                 return &(*foundEdge);
             else return NULL;
         }
         
-        inline EdgeType *findEdge(const size_t &src, const size_t &targ)
+        inline EdgeType *findEdge(const NodeT &src, const NodeT &targ)
         {
             return findEdge(EdgeType(src, targ));
         }
@@ -208,7 +217,7 @@ namespace smil
         {
             if (checkIfExists)
             {
-                typename vector< EdgeType >::iterator foundEdge = find(edges.begin(), edges.end(), e);
+                typename EdgeListType::iterator foundEdge = find(edges.begin(), edges.end(), e);
                 if (foundEdge!=edges.end())
                 {
                     (*foundEdge).weight = min((*foundEdge).weight, e.weight);
@@ -218,8 +227,8 @@ namespace smil
             edges.push_back(e);
             nodes.insert(e.source);
             nodes.insert(e.target);
-            nodeEdges[e.source].push_back(edgeNbr);
-            nodeEdges[e.target].push_back(edgeNbr);
+            nodeEdgeList[e.source].push_back(edgeNbr);
+            nodeEdgeList[e.target].push_back(edgeNbr);
             
             edgeNbr++;
         }
@@ -230,28 +239,28 @@ namespace smil
          *         If the edge doen't exist, create a new one.
          *         If the edge already exists, the edge weight will be the minimum between the existing a the new weight.
          */
-        void addEdge(const size_t src, const size_t targ, edgeWT weight=1, bool checkIfExists=true)
+        void addEdge(const NodeT src, const NodeT targ, WeightT weight=1, bool checkIfExists=true)
         {
             addEdge(EdgeType(src, targ, weight), checkIfExists);
         }
         
         void sortEdges()
         {
-            vector< Edge<edgeWT> > sEdges = edges;
+            EdgeListType sEdges = edges;
             sort(sEdges.begin(), sEdges.end());
             
             nodes.clear();
             edges.clear();
-            nodeEdges.clear();
+            nodeEdgeList.clear();
             edgeNbr = 0;
             
-            for (typename vector< Edge<edgeWT> >::const_iterator it=sEdges.begin();it!=sEdges.end();it++)
+            for (typename EdgeListType::const_iterator it=sEdges.begin();it!=sEdges.end();it++)
               addEdge(*it, false);
         }
         
-        Graph<nodeT, edgeWT> clone()
+        GraphType clone()
         {
-            return Graph<nodeT, edgeWT>(*this);
+            return GraphType(*this);
         }
         
         size_t getNodeNbr()
@@ -265,38 +274,38 @@ namespace smil
         }
         
     protected:
-        void removeNode(const size_t ind)
+        void removeNode(const NodeT ind)
         {
-            set<size_t>::iterator fNode = nodes.find(ind);
+            typename NodeListType::iterator fNode = nodes.find(ind);
             if (fNode!=nodes.end())
               nodes.erase(fNode);
             removeNodeEdges(ind);
         }
-        void removeNodeEdge(const size_t nodeIndex, const size_t edgeIndex)
+        void removeNodeEdge(const NodeT node, const size_t edgeIndex)
         {
-            map< size_t, std::vector<size_t> >::iterator nEdges = nodeEdges.find(nodeIndex);
-            if (nEdges==nodeEdges.end())
+            typename NodeEdgeListType::iterator nEdges = nodeEdgeList.find(node);
+            if (nEdges==nodeEdgeList.end())
               return;
             
-            std::vector<size_t> &eList = nEdges->second;
+            NodeEdgesType &eList = nEdges->second;
             
-            vector<size_t>::iterator ei = find(eList.begin(), eList.end(), edgeIndex);
+            typename NodeEdgesType::iterator ei = find(eList.begin(), eList.end(), edgeIndex);
             if (ei!=eList.end())
               eList.erase(ei);
         }
     public:
         //! Remove all edges linked to the node \b nodeIndex
-        void removeNodeEdges(const size_t nodeIndex)
+        void removeNodeEdges(const NodeT node)
         {
-            map< size_t, vector<size_t> >::iterator fNodeEdges = nodeEdges.find(nodeIndex);
-            if (fNodeEdges==nodeEdges.end())
+            typename NodeEdgeListType::iterator fNodeEdges = nodeEdgeList.find(node);
+            if (fNodeEdges==nodeEdgeList.end())
               return;
             
-            vector<size_t> &nedges = fNodeEdges->second;
-            for (vector<size_t>::iterator it=nedges.begin();it!=nedges.end();it++)
+            NodeEdgesType &nedges = fNodeEdges->second;
+            for (NodeEdgesType::iterator it=nedges.begin();it!=nedges.end();it++)
             {
                 EdgeType &e = edges[*it];
-                if (e.source==nodeIndex)
+                if (e.source==node)
                   removeNodeEdge(e.target, *it);
                 else
                   removeNodeEdge(e.source, *it);
@@ -312,14 +321,14 @@ namespace smil
             
             EdgeType &edge = edges[index];
             
-             removeNodeEdge(edge.source, index);
+            removeNodeEdge(edge.source, index);
             removeNodeEdge(edge.target, index);
             edge.desactivate();
         }
         //! Find and remove an edge linking \b src to \b targ
-        void removeEdge(const size_t src, const size_t targ)
+        void removeEdge(const NodeT src, const NodeT targ)
         {
-            typename vector< EdgeType >::iterator foundEdge = find(edges.begin(), edges.end(), EdgeType(src,targ));
+            typename EdgeListType::iterator foundEdge = find(edges.begin(), edges.end(), EdgeType(src,targ));
             if (foundEdge==edges.end())
               return;
             
@@ -328,7 +337,7 @@ namespace smil
         // Remove a given edge
         void removeEdge(const EdgeType &edge)
         {
-            typename vector< EdgeType >::iterator foundEdge = find(edges.begin(), edges.end(), edge);
+            typename EdgeListType::iterator foundEdge = find(edges.begin(), edges.end(), edge);
             if (foundEdge==edges.end())
               return;
             
@@ -338,11 +347,11 @@ namespace smil
         void removeHighEdges( EdgeWeightType EdgeThreshold)
         {
             size_t nb_edges = edges.size();
-            for (int index= 0; index < nb_edges; index++)
+            for (size_t index= 0; index < nb_edges; index++)
             {
-                        EdgeType &e = edges[index];
+                EdgeType &e = edges[index];
                 if (e.weight>EdgeThreshold)
-                removeEdge(index);
+                  removeEdge(index);
 
             }
         }
@@ -360,28 +369,29 @@ namespace smil
         }
 
 #ifndef SWIG
-        const vector< EdgeType > &getEdges() const { return edges; }  // lvalue
-        const map<size_t, edgeWT> &getNodeValues() const { return nodeValues; }  // lvalue
+        const NodeListType &getNodes() const { return nodes; }  // lvalue
+        const EdgeListType &getEdges() const { return edges; }  // lvalue
+        const NodeValuesType &getNodeValues() const { return nodeValues; }  // lvalue
+        const NodeEdgeListType &getNodeEdges() const { return nodeEdgeList; } // lvalue
 #endif // SWIG
-        //! Get a vector containing the graph edges
-        vector< EdgeType > &getEdges() { return edges; }  // rvalue
-        map<size_t, edgeWT> &getNodeValues() { return nodeValues; }  // rvalue
-        const map< size_t, std::vector<size_t> > &getNodeEdges() const { return nodeEdges; } // lvalue
+        NodeListType &getNodes() { return nodes; }  // rvalue
+        //! Get a vector containing the graph edges        
+        EdgeListType &getEdges() { return edges; }  // rvalue
+        NodeValuesType &getNodeValues() { return nodeValues; }  // rvalue
+        NodeEdgeListType &getNodeEdges() { return nodeEdgeList; } // rvalue
+        
         //! Get a map containing the edges linked to a given node
-        std::vector<size_t> getNodeEdges(const size_t &node) 
+        NodeEdgesType getNodeEdges(const size_t &node) 
         { 
-            map< size_t, std::vector<size_t> >::iterator it = nodeEdges.find(node);
-            if (it!=nodeEdges.end())
+            typename NodeEdgeListType::iterator it = nodeEdgeList.find(node);
+            if (it!=nodeEdgeList.end())
               return it->second;
             else return vector<size_t>();
           
         }
-#ifndef SWIG
-        map< size_t, std::vector<size_t> > &getNodeEdges() { return nodeEdges; } // rvalue
-#endif // SWIG
         
         //! Compute the Minimum Spanning Tree graph
-        Graph<nodeT,edgeWT> computeMST()
+        GraphType computeMST()
         {
             return graphMST(*this);
         }
@@ -393,18 +403,18 @@ namespace smil
             os << s << "Edges: " << endl << "source-target (weight) " << endl;
             
             string s2 = s + "\t";
-            for (typename vector< EdgeType >::const_iterator it=edges.begin();it!=edges.end();it++)
+            for (typename EdgeListType::const_iterator it=edges.begin();it!=edges.end();it++)
               if ((*it).isActive())
                 (*it).printSelf(os, s2);
         }
         
         //! Labelize the nodes.
         //! Give a different label to each group of connected nodes.
-        //! Return a map [ node_index, label_value ]
-        map<size_t,size_t> labelizeNodes() const
+        //! Return a map [ node, label_value ]
+        map<NodeT,NodeT> labelizeNodes() const
         {
-            map<size_t,size_t> lookup;
-            set<size_t> nodeList(nodes);
+            map<NodeT,NodeT> lookup;
+            set<NodeT> nodeList(nodes);
             
             while(!nodeList.empty())
             {
@@ -414,18 +424,18 @@ namespace smil
         }
         
     protected:        
-        void propagateLabel(const size_t &ind, const size_t &lbl, map<size_t,size_t> &lookup, set<size_t> &nList) const
+        void propagateLabel(const NodeT &ind, const NodeT &lbl, map<NodeT,NodeT> &lookup, set<NodeT> &nList) const
         {
-            set<size_t>::iterator foundNode = nList.find(ind);
+            typename NodeListType::iterator foundNode = nList.find(ind);
             if (foundNode==nList.end())
               return;
             
             lookup[ind] = lbl;
             nList.erase(foundNode);
             
-            const vector<size_t> &nEdges = nodeEdges.at(ind);
+            const NodeEdgesType &nEdges = nodeEdgeList.at(ind);
             
-            for (vector<size_t>::const_iterator it=nEdges.begin();it!=nEdges.end();it++)
+            for (typename NodeEdgesType::const_iterator it=nEdges.begin();it!=nEdges.end();it++)
             {
                 const EdgeType &e = edges[*it];
                 if (e.source!=ind)
@@ -440,18 +450,24 @@ namespace smil
     template <class graphT>
     graphT graphMST(const graphT &graph)
     {
+        typedef typename graphT::NodeType NodeType;
         typedef typename graphT::EdgeType EdgeType;
-        std::set<size_t> visitedInd;
+        typedef typename graphT::EdgeListType EdgeListType;
+        typedef typename graphT::NodeEdgesType NodeEdgesType;
+        typedef typename graphT::NodeEdgeListType NodeEdgeListType;
+        
+        std::set<NodeType> visitedNodes;
         std::priority_queue< EdgeType > pq;
         graphT mst;
         
-        const map< size_t, std::vector<size_t> > &nodeEdges = graph.getNodeEdges();
-        const vector< EdgeType > &edges = graph.getEdges();
+        const EdgeListType &edges = graph.getEdges();
+        const NodeEdgeListType &nodeEdgeList = graph.getNodeEdges();
         
-        int u = (*nodeEdges.begin()).first;
-        visitedInd.insert(u);
-        const vector<size_t> &neigh = nodeEdges.at(u);
-        for (vector<size_t>::const_iterator it=neigh.begin();it!=neigh.end();it++)
+        NodeType curNode = (*nodeEdgeList.begin()).first;
+        visitedNodes.insert(curNode);
+        
+        const NodeEdgesType &nodeEdges = nodeEdgeList.at(curNode);
+        for (typename NodeEdgesType::const_iterator it=nodeEdges.begin();it!=nodeEdges.end();it++)
             pq.push(edges[*it]);
         
         while(!pq.empty())
@@ -459,20 +475,17 @@ namespace smil
             EdgeType edge = pq.top();
             pq.pop();
             
-            if(visitedInd.find(edge.source) == visitedInd.end())
-              u = edge.source;
-            else if (visitedInd.find(edge.target) == visitedInd.end())
-              u = edge.target;
-            else u = -1;
+            if(visitedNodes.find(edge.source) == visitedNodes.end())
+              curNode = edge.source;
+            else if (visitedNodes.find(edge.target) == visitedNodes.end())
+              curNode = edge.target;
+            else continue;
             
-            if (u>=0)
-            {
-                mst.addEdge(edge, false);
-                visitedInd.insert(u);
-                vector<size_t> const& neigh = nodeEdges.at(u);
-                for (vector<size_t>::const_iterator it=neigh.begin();it!=neigh.end();it++)
-                    pq.push(edges[*it]);
-            }
+            mst.addEdge(edge, false);
+            visitedNodes.insert(curNode);
+            NodeEdgesType const& nodeEdges = nodeEdgeList.at(curNode);
+            for (typename NodeEdgesType::const_iterator it=nodeEdges.begin();it!=nodeEdges.end();it++)
+                pq.push(edges[*it]);
         }
         return mst;
     }

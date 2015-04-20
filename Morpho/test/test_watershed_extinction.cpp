@@ -356,16 +356,19 @@ class Test_Watershed_Extinction_Graph : public TestCase
         Image_UINT8 imTruth (imIn) ;
         Image_UINT8 imResult (imIn) ;
 
-        Graph<UINT8,UINT8> graph;
+        typedef Graph<UINT8,UINT8> GraphT;
+        typedef Graph<UINT8,UINT8>::EdgeType EdgeT;
 
+        GraphT graph;
+        
         imIn << vecIn;
         imMark << vecMark;
 
-        vector<Edge<UINT8> > trueEdges;
-        trueEdges.push_back(Edge<UINT8>(4,5, 4));
-        trueEdges.push_back(Edge<UINT8>(1,2, 5));
-        trueEdges.push_back(Edge<UINT8>(2,4, 9));
-        trueEdges.push_back(Edge<UINT8>(5,3, 10));
+        vector< EdgeT > trueEdges;
+        trueEdges.push_back(EdgeT(4,5, 4));
+        trueEdges.push_back(EdgeT(1,2, 5));
+        trueEdges.push_back(EdgeT(2,4, 9));
+        trueEdges.push_back(EdgeT(5,3, 10));
 
         watershedExtinctionGraph (imIn, imMark, imResult, graph, "a", se) ;
         
@@ -373,13 +376,13 @@ class Test_Watershed_Extinction_Graph : public TestCase
         if (retVal!=RES_OK)
             graph.printSelf();
         
-        vector<Edge<UINT8> > trueEdges2;
-        trueEdges2.push_back(Edge<UINT8>(5,3, 1));
-        trueEdges2.push_back(Edge<UINT8>(2,4, 2));
-        trueEdges2.push_back(Edge<UINT8>(1,2, 3));
-        trueEdges2.push_back(Edge<UINT8>(4,5, 4));
+        vector<EdgeT > trueEdges2;
+        trueEdges2.push_back(EdgeT(5,3, 1));
+        trueEdges2.push_back(EdgeT(2,4, 2));
+        trueEdges2.push_back(EdgeT(1,2, 3));
+        trueEdges2.push_back(EdgeT(4,5, 4));
         
-        Graph<UINT8,UINT8> rankGraph = watershedExtinctionGraph (imIn, imMark, imResult, "a", se) ;
+        GraphT rankGraph = watershedExtinctionGraph (imIn, imMark, imResult, "a", se) ;
         
         TEST_ASSERT(trueEdges2==rankGraph.getEdges());
         if (retVal!=RES_OK)
