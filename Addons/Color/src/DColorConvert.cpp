@@ -50,7 +50,9 @@ namespace smil
         Image<UINT8>::lineType y = imXyzOut.getPixels().arrays[1];
         Image<UINT8>::lineType z = imXyzOut.getPixels().arrays[2];
         
+#ifdef USE_OPEN_MP        
       #pragma omp for
+#endif // USE_OPEN_MP        
         for (size_t i=0;i<imRgbIn.getPixelCount();i++)
         {
             x[i] = UINT8(floor(0.5+(yc1 * r[i] + yc2 * g[i] + yc3 * b[i])/0.982));
@@ -78,7 +80,9 @@ namespace smil
         Image<UINT8>::lineType g = imRgbOut.getPixels().arrays[1];
         Image<UINT8>::lineType b = imRgbOut.getPixels().arrays[2];
         
+#ifdef USE_OPEN_MP        
       #pragma omp for
+#endif // USE_OPEN_MP        
         for (size_t i=0;i<imXyzIn.getPixelCount();i++)
         {
             float Rf, Gf,Bf;
@@ -164,7 +168,9 @@ namespace smil
         Image<UINT8>::lineType b = imLabOut.getPixels().arrays[2];
 
       
+#ifdef USE_OPEN_MP        
       #pragma omp for
+#endif // USE_OPEN_MP        
         for (size_t i=0;i<imXyzIn.getPixelCount();i++)
         {
             float L, A, B;
@@ -212,7 +218,9 @@ namespace smil
         Image<UINT8>::lineType z = imXyzOut.getPixels().arrays[2];
         
       
+#ifdef USE_OPEN_MP        
       #pragma omp for
+#endif // USE_OPEN_MP        
         for (size_t i=0;i<imLabIn.getPixelCount();i++)
         {
             float X, Y, Z;
@@ -263,7 +271,9 @@ namespace smil
         Image<UINT8>::lineType l = imHlsOut.getPixels().arrays[1];
         Image<UINT8>::lineType s = imHlsOut.getPixels().arrays[2];
         
+#ifdef USE_OPEN_MP        
       #pragma omp for
+#endif // USE_OPEN_MP        
         for (size_t i=0;i<imRgbIn.getPixelCount();i++)
         {
             /* R, G, B are extracted */
@@ -385,7 +395,9 @@ namespace smil
         Image<UINT8>::lineType g = imRgbOut.getPixels().arrays[1];
         Image<UINT8>::lineType b = imRgbOut.getPixels().arrays[2];
         
+#ifdef USE_OPEN_MP        
       #pragma omp for
+#endif // USE_OPEN_MP        
         for (size_t i=0;i<imHlsIn.getPixelCount();i++)
         {
             float phi1,phi;
