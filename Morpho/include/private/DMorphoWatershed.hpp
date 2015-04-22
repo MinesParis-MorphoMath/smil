@@ -51,6 +51,7 @@ namespace smil
     {
       public:
         BaseFlooding()
+          : STAT_QUEUED(ImDtTypes<labelT>::max())
         {
         }
         virtual ~BaseFlooding()
@@ -59,6 +60,7 @@ namespace smil
         
        protected:
         
+        const labelT STAT_QUEUED;
         
         typename ImDtTypes<T>::lineType inPixels;
         typename ImDtTypes<labelT>::lineType lblPixels;
@@ -88,6 +90,8 @@ namespace smil
             ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);
             ASSERT_SAME_SIZE(&imIn, &imMarkers, &imBasinsOut);
             
+            ASSERT(maxVal(imMarkers)<STAT_QUEUED);
+              
             ImageFreezer freeze(imBasinsOut);
             
             copy(imMarkers, imBasinsOut);
@@ -139,6 +143,13 @@ namespace smil
                 {
                   if (lblPixels[offset]!=0)
                   {
+//                       if (lblPixels[offset]==STAT_QUEUED)
+//                       {
+//                           stringstream ss;
+//                           ss << "Error: markers must have values between 1 and " << int(STAT_QUEUED-1) << " (" << int(STAT_QUEUED) << " is a reserved value)";
+//                           ERR_MSG(ss.str());
+//                           return RES_ERR;
+//                       }
                       hq.push(inPixels[offset], offset);
                   }
                   offset++;
@@ -192,14 +203,23 @@ namespace smil
         
         inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
         {
-                labelT nbLbl = lblPixels[nbOffset];
-                
-                if (nbLbl==0) 
-                {
-                    lblPixels[nbOffset] = lblPixels[curOffset];
-                    hq.push(inPixels[nbOffset], nbOffset);
-//                     insertPixel(nbOffset, lblPixels[curOffset]);
-                }
+            labelT nbStat = this->lblPixels[nbOffset];
+            
+            if (nbStat==0) // Add it to the tmp offsets queue
+            {
+                hq.push(inPixels[nbOffset], nbOffset);
+                this->lblPixels[nbOffset] = STAT_QUEUED;
+            }
+            else if (nbStat<STAT_QUEUED)
+            {
+                if (this->lblPixels[curOffset]==0 || this->lblPixels[curOffset]==STAT_QUEUED)
+                    this->lblPixels[curOffset] = this->lblPixels[nbOffset];
+//                 }
+//                 else if (this->lblPixels[curOffset]!=this->lblPixels[nbOffset])
+//                   this->wsPixels[curOffset] = STAT_WS_LINE;
+            }
+            
+            
         }
         
 

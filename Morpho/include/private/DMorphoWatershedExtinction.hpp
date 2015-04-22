@@ -316,7 +316,9 @@ namespace smil
             
             if (l2==0) 
             {
-                this->lblPixels[nbOffset] = l1; //labelNbr+1;
+                if (this->inPixels[nbOffset]<=currentLevel)
+                  this->lblPixels[nbOffset] = l1; //labelNbr+1;
+                else this->lblPixels[nbOffset] = ImDtTypes<labelT>::max();
                 this->hq.push(this->inPixels[nbOffset], nbOffset);
             }
             else if (equivalentLabels[l1]!=equivalentLabels[l2])

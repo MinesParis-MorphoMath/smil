@@ -89,7 +89,14 @@ class Test_Basins : public TestCase
       TEST_ASSERT(imLbl==imLblTruth);
       
       if (retVal!=RES_OK)
+      {
         imLbl.printSelf(1, true);
+        imLblTruth.printSelf(1, true);
+        
+        Image<dtType> imOut(imIn);
+        watershed(imIn, imMark, imOut, se);
+        imOut.printSelf(1, true);
+      }
   }
 };
 
