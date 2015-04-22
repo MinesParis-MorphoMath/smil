@@ -143,13 +143,6 @@ namespace smil
                 {
                   if (lblPixels[offset]!=0)
                   {
-//                       if (lblPixels[offset]==STAT_QUEUED)
-//                       {
-//                           stringstream ss;
-//                           ss << "Error: markers must have values between 1 and " << int(STAT_QUEUED-1) << " (" << int(STAT_QUEUED) << " is a reserved value)";
-//                           ERR_MSG(ss.str());
-//                           return RES_ERR;
-//                       }
                       hq.push(inPixels[offset], offset);
                   }
                   offset++;
@@ -203,20 +196,18 @@ namespace smil
         
         inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
         {
-            labelT nbStat = this->lblPixels[nbOffset];
+            labelT nbLbl = this->lblPixels[nbOffset];
             
-            if (nbStat==0) // Add it to the tmp offsets queue
+            if (nbLbl==0) // Add it to the tmp offsets queue
             {
                 hq.push(inPixels[nbOffset], nbOffset);
                 this->lblPixels[nbOffset] = STAT_QUEUED;
             }
-            else if (nbStat<STAT_QUEUED)
+            else if (nbLbl<STAT_QUEUED)
             {
-                if (this->lblPixels[curOffset]==0 || this->lblPixels[curOffset]==STAT_QUEUED)
-                    this->lblPixels[curOffset] = this->lblPixels[nbOffset];
-//                 }
-//                 else if (this->lblPixels[curOffset]!=this->lblPixels[nbOffset])
-//                   this->wsPixels[curOffset] = STAT_WS_LINE;
+                labelT curLbl = this->lblPixels[curOffset];
+                if (curLbl==0 || curLbl==STAT_QUEUED)
+                  this->lblPixels[curOffset] = this->lblPixels[nbOffset];
             }
             
             

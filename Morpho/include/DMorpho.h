@@ -53,6 +53,7 @@
 #include "private/DMorphoMeasures.hpp"
 #include "private/DMorphoResidues.hpp"
 #include "private/DMorphoWatershed.hpp"
+#include "private/DMorphoWatershedExtinction.hpp"
 #include "private/DSkeleton.hpp"
 
  

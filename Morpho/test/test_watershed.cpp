@@ -73,13 +73,13 @@ class Test_Basins : public TestCase
       basins(imIn, imMark, imLbl, se);
       
       dtType2 vecLblTruth[] = { 
-        1,    1,    1,    1,    1,    1,
-          1,    1,    1,    1,    1,    1,
-        2,    2,    3,    3,    3,    3,
-          2,    2,    3,    3,    3,    3,
-        2,    2,    2,    3,    3,    3,
-          2,    2,    2,    3,    3,    3,
-        2,    2,    2,    2,    3,    3,
+       1,       1,       1,       1,       1,       1,
+           1,       1,       1,       1,       1,       1,
+       2,       3,       3,       3,       3,       3,
+           2,       3,       3,       3,       3,       3,
+       2,       2,       3,       3,       3,       3,
+           2,       2,       2,       3,       3,       3,
+       2,       2,       2,       2,       3,       3,
       };
       
       Image<dtType2> imLblTruth(imIn);
@@ -92,10 +92,6 @@ class Test_Basins : public TestCase
       {
         imLbl.printSelf(1, true);
         imLblTruth.printSelf(1, true);
-        
-        Image<dtType> imOut(imIn);
-        watershed(imIn, imMark, imOut, se);
-        imOut.printSelf(1, true);
       }
   }
 };

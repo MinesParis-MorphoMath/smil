@@ -66,6 +66,9 @@ int main()
     BENCH_IMG(basins, im2, imLbl, imLbl2);
     
     BENCH_IMG(watershed, im2, imLbl, im4);
+    
+    BENCH_NRUNS = 10;
+    BENCH_IMG(watershedExtinction, im2, imLbl, im4);
         
 }
 
