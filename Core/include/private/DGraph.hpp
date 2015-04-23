@@ -96,7 +96,9 @@ namespace smil
         }
         inline bool operator ==(const Edge &rhs) const
         {
-            if (rhs.source==source && rhs.target==target)
+            if (rhs.weight!=weight)
+              return false;
+            else if (rhs.source==source && rhs.target==target)
               return true;
             else if (rhs.source==target && rhs.target==source)
               return true;

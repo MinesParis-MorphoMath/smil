@@ -98,8 +98,8 @@ class Test_Extinction_Flooding : public TestCase
     0,   40,    0,    0,    0,
        0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,
-       0,    5,    0,   10,    0,
-    0,    0,    0,    0,   10,
+       0,    3,    0,    8,    0,
+    0,    0,    0,    0,    8,
        0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,
        0,    9,    0,    4,    0,
@@ -147,11 +147,11 @@ class Test_Area_Extinction : public TestCase
         
         // Area
         UINT16 areaTruth[] = {
-          0,  25,   0,   0,   0,
-          0,   0,   0,   0,   0,
-          0,   0,   0,   0,   0,
-          0,   6,   0,   8,   0,
-          0,   6,   0,   0,   8,
+          0,    25,     0,     0,     0,
+          0,     0,     0,     0,     0,
+          0,     0,     0,     0,     0,
+          0,     4,     0,     6,     0,
+          0,     4,     0,     0,     6,
 
         };
         imTruth << areaTruth;
@@ -366,21 +366,22 @@ class Test_Watershed_Extinction_Graph : public TestCase
 
         vector< EdgeT > trueEdges;
         trueEdges.push_back(EdgeT(4,5, 4));
-        trueEdges.push_back(EdgeT(1,2, 5));
+        trueEdges.push_back(EdgeT(1,2, 3));
         trueEdges.push_back(EdgeT(2,4, 9));
-        trueEdges.push_back(EdgeT(5,3, 10));
+        trueEdges.push_back(EdgeT(5,3, 8));
 
         watershedExtinctionGraph (imIn, imMark, imResult, graph, "a", se) ;
         
+//         imResult.printSelf(1);
         TEST_ASSERT(trueEdges==graph.getEdges());
         if (retVal!=RES_OK)
             graph.printSelf();
         
         vector<EdgeT > trueEdges2;
-        trueEdges2.push_back(EdgeT(5,3, 1));
-        trueEdges2.push_back(EdgeT(2,4, 2));
-        trueEdges2.push_back(EdgeT(1,2, 3));
-        trueEdges2.push_back(EdgeT(4,5, 4));
+        trueEdges2.push_back(EdgeT(2,4, 1));
+        trueEdges2.push_back(EdgeT(5,3, 2));
+        trueEdges2.push_back(EdgeT(4,5, 3));
+        trueEdges2.push_back(EdgeT(1,2, 4));
         
         GraphT rankGraph = watershedExtinctionGraph (imIn, imMark, imResult, "a", se) ;
         
