@@ -69,15 +69,23 @@ namespace smil
             if (newSize)
               initialize(newSize);
         }
-        void reset()
+        virtual ~FIFO_Queue()
         {
             if (data)
               delete[] data;
         }
+        
+        void reset()
+        {
+            if (data)
+              delete[] data;
+            data = NULL;
+            _size = realSize = 0;
+        }
         void initialize(size_t newSize)
         {
             reset();
-            realSize = newSize+1;
+            realSize = max( newSize+1, size_t(16)); // Avoid to have to small buffer
             data = new T[realSize];
             _size = 0;
             first = 0;
@@ -95,7 +103,7 @@ namespace smil
         }
         void push(T val)
         {
-            if (last>=realSize-1)
+            if (last==realSize)
               swap();
             data[last++] = val;
             _size++;
@@ -181,8 +189,10 @@ namespace smil
             for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
             {
                 if (stacks[i])
-                    delete stacks[i];
-                stacks[i] = NULL;
+                {
+                  delete stacks[i];
+                  stacks[i] = NULL;
+                }
             }
             
             initialized = false;
@@ -193,10 +203,10 @@ namespace smil
             if (initialized)
               reset();
             
-            vector<T> rVals = rangeVal(img);
+//             vector<T> rVals = rangeVal(img);
             
-            GRAY_LEVEL_MIN = rVals[0];
-            GRAY_LEVEL_NBR = rVals[1]-rVals[0]+1;
+            GRAY_LEVEL_MIN = ImDtTypes<T>::min();
+            GRAY_LEVEL_NBR = ImDtTypes<T>::cardinal();
             
             stacks = new StackType*[GRAY_LEVEL_NBR]();
             tokenNbr = new size_t[GRAY_LEVEL_NBR];
@@ -207,8 +217,11 @@ namespace smil
                 histogram(img, h);
 
                 for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
+                {
                   if (h[i]!=0)
                     stacks[i] = new StackType(h[i]);
+                  else stacks[i] = NULL;
+                }
                     
                 delete[] h;
             }

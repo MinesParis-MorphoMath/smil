@@ -46,7 +46,7 @@ namespace smil
      * @{
      */
 
-    template <class T, class labelT, class HQ_Type=HierarchicalQueue<T> >
+    template <class T, class labelT, class HQ_Type=HierarchicalQueue<T, UINT, FIFO_Queue<T> > >
     class BaseFlooding
     {
       public:
@@ -222,7 +222,7 @@ namespace smil
     };
   
 
-    template <class T, class labelT, class HQ_Type=HierarchicalQueue<T> >
+    template <class T, class labelT, class HQ_Type=HierarchicalQueue<T, UINT, FIFO_Queue<T> > >
     class WatershedFlooding 
 #ifndef SWIG    
         : public BaseFlooding<T, labelT, HQ_Type>

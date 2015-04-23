@@ -67,7 +67,7 @@ namespace smil
     * 
     * \demo{custom_extinction_value.py]
     */
-    template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T> >
+    template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T, UINT, FIFO_Queue<T> > >
     class ExtinctionFlooding 
 #ifndef SWIG    
         : public BaseFlooding<T, labelT, HQ_Type>
@@ -360,7 +360,7 @@ namespace smil
     };
 
 
-    template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T> >
+    template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T, UINT, FIFO_Queue<T> > >
     class AreaExtinctionFlooding : public ExtinctionFlooding<T, labelT, extValType, HQ_Type>
     {
       public:
@@ -416,7 +416,7 @@ namespace smil
         }
     };
 
-    template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T> >
+    template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T, UINT, FIFO_Queue<T> > >
     class VolumeExtinctionFlooding : public ExtinctionFlooding<T, labelT, extValType, HQ_Type>
     {
         vector<UINT> areas, volumes;
@@ -484,7 +484,7 @@ namespace smil
         
     };
 
-    template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T> >
+    template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T, UINT, FIFO_Queue<T> > >
     class DynamicExtinctionFlooding : public AreaExtinctionFlooding<T, labelT, extValType, HQ_Type>
     {
         virtual labelT mergeBasins(const labelT &lbl1, const labelT &lbl2)
