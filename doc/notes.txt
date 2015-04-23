@@ -1,2 +1,7 @@
 Git pull rebase par défaut:
 git config  --bool pull.rebase true
+
+Rebase with git flow feature (before feature finish):
+git checkout develop
+git rebase develop feature/foo
+git flow feature finish foo
