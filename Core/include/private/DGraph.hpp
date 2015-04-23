@@ -94,16 +94,16 @@ namespace smil
             source = 0;
             target = 0;
         }
+        // Don't test the weight values (only to check if the edge exists)
         inline bool operator ==(const Edge &rhs) const
         {
-            if (rhs.weight!=weight)
-              return false;
-            else if (rhs.source==source && rhs.target==target)
+            if (rhs.source==source && rhs.target==target)
               return true;
             else if (rhs.source==target && rhs.target==source)
               return true;
             return false;
         }
+        inline bool operator !=(const Edge &rhs) const { return !this->operator ==(rhs); }
         
         inline bool operator <(const Edge &rhs) const
         {
@@ -116,6 +116,25 @@ namespace smil
         }
     };
 
+    // Compare two vectors of edges (test also the weight values)
+    template <class NodeT, class WeightT>
+    bool operator == (const vector< Edge<NodeT,WeightT> > &e1, const vector< Edge<NodeT,WeightT> > &e2)
+    {
+        if (e1.size()!=e2.size())
+          return false;
+        
+        typedef Edge<NodeT,WeightT> EdgeT;
+        typename vector<EdgeT>::const_iterator it1 = e1.begin(), it2 = e2.begin();
+        
+        for (;it1!=e1.end();it1++, it2++)
+        {
+          if ((*it1)!=(*it2))
+            return false;
+          if (it1->weight!=it2->weight)
+            return false;
+        }
+        return true;
+    }
     
     /**
      * Non-oriented graph

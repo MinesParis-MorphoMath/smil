@@ -96,6 +96,9 @@ class Test_MosaicToGraph : public TestCase
       trueEdges.push_back(Edge<>(4,1,4));
       
       TEST_ASSERT(trueEdges==graph.getEdges());
+      if (retVal!=RES_OK)
+          graph.printSelf();
+      
       TEST_ASSERT(graph.getNodeValues()[1]==10);
       
 //       for (vector<Edge>::const_iterator it=graph.getEdges().begin();it!=graph.getEdges().end();it++)
