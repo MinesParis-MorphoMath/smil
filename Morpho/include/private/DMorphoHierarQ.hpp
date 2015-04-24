@@ -85,7 +85,7 @@ namespace smil
         void initialize(size_t newSize)
         {
             reset();
-            realSize = max( newSize+1, size_t(16)); // Avoid to have to small buffer
+            realSize = max( newSize+1, size_t(8) ); // Avoid to have to small buffer
             data = new T[realSize];
             _size = 0;
             first = 0;
@@ -97,7 +97,7 @@ namespace smil
         }
         void swap()
         {
-            memcpy(data, data+first, (last-first)*sizeof(T));
+            memmove(data, data+first, (last-first)*sizeof(T));
             first = 0;
             last = _size;
         }
