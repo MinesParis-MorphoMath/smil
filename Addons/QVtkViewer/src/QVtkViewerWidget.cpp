@@ -23,6 +23,7 @@
 #include "QVtkViewerWidget.h"
 
 #include <QMenu>
+#include <climits>
 
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
@@ -48,7 +49,7 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
     camera = renderer->GetActiveCamera();
     
     imageImport = vtkImageImport::New();
-
+    
     representationType = NONE;
 
     volumeRayCastFunction = NULL;
@@ -57,11 +58,16 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
     //             volumeRayCastMapper->SetSampleDistance(0.1);
 
     opacityTransfertFunction = vtkPiecewiseFunction::New();
-
+    colorOpacityTransfertFunction = vtkPiecewiseFunction::New();
+    
+    colorTransfertFunction = vtkDiscretizableColorTransferFunction::New();
+    colorTransfertFunction->DiscretizeOn();
+    
     volumeProperty = vtkVolumeProperty::New();
     volumeProperty->SetColor(opacityTransfertFunction);
     volumeProperty->SetScalarOpacity(opacityTransfertFunction);
     volumeProperty->SetInterpolationTypeToLinear();
+//     volumeProperty->SetIndependentComponents(0);
 
 
     volume = vtkVolume::New();
@@ -85,8 +91,7 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
     orientationMarker->SetOrientationMarker( axesActor );
     orientationMarker->SetInteractor( renderWindow->GetInteractor() );
     orientationMarker->SetViewport( 0.0, 0.0, 0.4, 0.4 );
-    orientationMarker->SetEnabled( 1 );
-    orientationMarker->InteractiveOn();
+    orientationMarker->SetEnabled( 0 );
         
     camera->SetViewUp(0, -1, 0);
             
@@ -109,6 +114,8 @@ QVtkViewerWidget::~QVtkViewerWidget()
     volumeRayCastMapper->Delete();
     volumeRayCastFunction->Delete();
     opacityTransfertFunction->Delete();
+    colorOpacityTransfertFunction->Delete();
+    colorTransfertFunction->Delete();
     volumeProperty->Delete();
     imageImport->Delete();
     outlineActor->Delete();
@@ -120,6 +127,38 @@ QVtkViewerWidget::~QVtkViewerWidget()
     
     vtkQtEventConnect->Delete();
     
+}
+
+void QVtkViewerWidget::initLookup(int typeMax)
+{
+    QVector<QColor> rainbowColorTable;
+    for(int i=0;i<256;i++)
+      rainbowColorTable.append(QColor::fromHsvF(double(i)/255., 1.0, 1.0));
+    
+    colorTransfertFunction->SetNumberOfValues(256);
+    int factor = typeMax / 255;
+    unsigned char curC = 0;
+    for(int i=0;i<256;i++,curC+=47)
+      colorTransfertFunction->AddRGBPoint(i*factor, rainbowColorTable[curC].redF(), rainbowColorTable[curC].greenF(), rainbowColorTable[curC].blueF());
+    colorTransfertFunction->Build();
+}
+
+void QVtkViewerWidget::showNormal()
+{
+    volumeProperty->SetGradientOpacity((vtkPiecewiseFunction*)NULL);
+    volumeProperty->SetColor(opacityTransfertFunction);
+    volumeProperty->SetScalarOpacity(opacityTransfertFunction);
+    volumeProperty->SetInterpolationTypeToLinear();
+    show();
+}
+
+void QVtkViewerWidget::showLabel()
+{
+    volumeProperty->SetGradientOpacity(colorOpacityTransfertFunction);
+    volumeProperty->SetColor(colorTransfertFunction);
+    volumeProperty->SetScalarOpacity(colorOpacityTransfertFunction);
+    volumeProperty->SetInterpolationTypeToNearest();
+    show();
 }
 
 void QVtkViewerWidget::update()
@@ -158,6 +197,7 @@ void QVtkViewerWidget::setRepresentationType(RepresentationType type)
 void QVtkViewerWidget::showAxes()
 {
     orientationMarker->SetEnabled(1);
+    orientationMarker->InteractiveOn();
     interactor->Render(); 
 }
 

@@ -47,8 +47,10 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
 #include <vtkAxesActor.h>
+#include <vtkImageCast.h>
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkEventQtSlotConnect.h>
+#include <vtkDiscretizableColorTransferFunction.h>
 
 
 class QVtkViewerWidget : public QWidget
@@ -79,6 +81,8 @@ protected:
     vtkVolume *volume;
     vtkVolumeProperty *volumeProperty;
     vtkPiecewiseFunction *opacityTransfertFunction;
+    vtkPiecewiseFunction *colorOpacityTransfertFunction;
+    vtkDiscretizableColorTransferFunction *colorTransfertFunction;
     
     vtkCubeSource *cube;
     vtkOutlineFilter *outline;
@@ -90,9 +94,12 @@ protected:
     
     vtkEventQtSlotConnect *vtkQtEventConnect;
     
+    void initLookup(int typeMax);
     
     void setRepresentationType(RepresentationType type);
     void showAxes();
+    void showNormal();
+    void showLabel();
     void hideAxes();
     void setInterpolationTypeToLinear();
     void setInterpolationTypeToNearest();

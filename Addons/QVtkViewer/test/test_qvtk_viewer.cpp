@@ -32,12 +32,16 @@ class Test_Show : public TestCase
 {
   virtual void run()
   {
-      Image_UINT8 im1(500, 50, 50);
-      QVtkViewer<UINT8> viewer(im1);
-      viewer.show();
-      im1 << UINT8(127);
+//       Image_UINT8 im1("crop_300_OK_BIN.vtk");
+//       Image_UINT8 im1("crop_300_OK_Labeled_UINT8.vtk");
+      Image_UINT16 im1("crop_300_OK_Labeled.vtk");
       
-//       Gui::execLoop();
+      QVtkViewer<UINT16> viewer(im1);
+      viewer.showLabel();
+//       viewer.show();
+//       im1 << UINT8(127);
+      
+      Gui::execLoop();
   }
 };
 

@@ -73,6 +73,11 @@ namespace smil
               imageImport->SetDataScalarTypeToShort();
             
             opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
+
+            colorOpacityTransfertFunction->AddSegment(0, 0., 1, 0.);
+            colorOpacityTransfertFunction->AddSegment(1, 1., ImDtTypes<T>::max(), 1.0);
+            
+            initLookup(ImDtTypes<T>::max());
         }
         QVtkViewer(Image<T> &im)
           : ImageViewer<T>(), 
@@ -88,6 +93,11 @@ namespace smil
             setImage(im);
             
             opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
+            
+            colorOpacityTransfertFunction->AddSegment(0, 0., 1, 0.);
+            colorOpacityTransfertFunction->AddSegment(1, 1., ImDtTypes<T>::max(), 1.0);
+            
+            initLookup(ImDtTypes<T>::max());
         }
         ~QVtkViewer()
         {
@@ -133,7 +143,7 @@ namespace smil
         }
         virtual void show()
         {
-            QVtkViewerWidget::show();
+            QVtkViewerWidget::showNormal();
             this->drawImage();
         }
         virtual void show(Image<T> &im) 
@@ -143,6 +153,8 @@ namespace smil
         }
         virtual void showLabel()
         {
+            QVtkViewerWidget::showLabel();
+            this->drawImage();
         }
         virtual bool isVisible()
         {
@@ -189,7 +201,10 @@ namespace smil
         }
         
     protected:
-        
+        void initLookup(int typeMax)
+        {
+            QVtkViewerWidget::initLookup(typeMax);
+        }
     };
 
     /*@}*/
