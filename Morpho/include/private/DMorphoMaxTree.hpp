@@ -834,10 +834,9 @@ void  ComputeDeltaUOMSERSC(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
     //self,node = 1, nParent =0, stop=0, delta = 0, isPrevMaxT = 0):
     int child; // index node
     T current_residue, stab_residue;
-    UINT cNode, cParent, wNode, wParent; // attributes
+    UINT cNode, cParent, wNode; // attributes
     CriterionT aNode, aParent,aAncestor;
     T lNode, lParent,lAncestor; // node levels, the same type than input image
-    int toto;
     float stability, fillRatio, AspectRatio, fac;
 
 
