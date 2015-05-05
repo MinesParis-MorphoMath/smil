@@ -221,12 +221,12 @@ class Test_UO_MSER : public TestCase
       dataType1 vecTrans[] =
       {
         0,   0,   0,   0,   0,   0,   0,   0,
-        0,   5,   5,   5,   5,   5,   5,   0,
-        0,   5,  13,  13,  13,  13,   5,   0,
-        0,   5,  13,  13,  13,  13,   5,   0,
-        0,   5,  13,  13,  13,  13,   5,   0,
-        0,   5,  13,  13,  13,  13,   5,   0,
-        0,   5,   5,   5,   5,   5,   5,   0,
+        0,   6,   6,   6,   6,   6,   6,   0,
+        0,   6,  13,  13,  13,  13,   6,   0,
+        0,   6,  13,  13,  13,  13,   6,   0,
+        0,   6,  13,  13,  13,  13,   6,   0,
+        0,   6,  13,  13,  13,  13,   6,   0,
+        0,   6,   6,   6,   6,   6,   6,   0,
         0,   0,   0,   0,   0,   0,   0,   0,
       };
       
@@ -248,13 +248,19 @@ class Test_UO_MSER : public TestCase
       imTrans << vecTrans;
       TEST_ASSERT(im2==imTrans);
       
+      if (retVal!=RES_OK)
+      {
+        im2.printSelf(1);
+        imTrans.printSelf(1);
+      }
+      
       imIndic << vecIndic;
       TEST_ASSERT(imLbl==imIndic);
       
       if (retVal!=RES_OK)
       {
-        im2.printSelf(1);
         imLbl.printSelf(1);
+        imIndic.printSelf(1);
       }
   }
 };
