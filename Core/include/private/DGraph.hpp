@@ -265,18 +265,21 @@ namespace smil
             addEdge(EdgeType(src, targ, weight), checkIfExists);
         }
         
-        void sortEdges()
+        void sortEdges(bool reverse=false)
         {
             EdgeListType sEdges = edges;
-            sort(sEdges.begin(), sEdges.end());
+	    if (!reverse)
+	      sort(sEdges.begin(), sEdges.end());
+	    else
+	      sort(sEdges.rbegin(), sEdges.rend());
             
             nodes.clear();
             edges.clear();
             nodeEdgeList.clear();
             edgeNbr = 0;
             
-            for (typename EdgeListType::const_iterator it=sEdges.begin();it!=sEdges.end();it++)
-              addEdge(*it, false);
+	    for (typename EdgeListType::const_iterator it=sEdges.begin();it!=sEdges.end();it++)
+	      addEdge(*it, false);
         }
         
         GraphType clone()
