@@ -304,7 +304,7 @@ namespace smil
         ImageFreezer freeze(imOut);
         
         Image<UINT8> imStatus(imIn);
-        HierarchicalQueue<T,UINT> pq;
+        HierarchicalQueue<T> pq;
         
         // Make sure that imIn >= imMask
         ASSERT((sup(imIn, imMask, imOut)==RES_OK));

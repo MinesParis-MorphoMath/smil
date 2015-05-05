@@ -128,7 +128,7 @@ namespace smil
         T* data;
     };
 
-    template <class TokenType=UINT>
+    template <class TokenType=size_t>
     class STD_Queue : public queue<TokenType>
     {
     public:
@@ -140,7 +140,7 @@ namespace smil
       static const bool preallocate = false;
     };
 
-    template <class TokenType=UINT>
+    template <class TokenType=size_t>
     class STD_Stack : public stack<TokenType>
     {
     public:
@@ -151,7 +151,7 @@ namespace smil
         }
     };
     
-    template <class T, class TokenType=UINT, class StackType=STD_Queue<TokenType> >
+    template <class T, class TokenType=size_t, class StackType=STD_Queue<TokenType> >
     class HierarchicalQueue
     {
     private:

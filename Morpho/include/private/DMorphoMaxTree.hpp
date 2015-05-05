@@ -836,7 +836,7 @@ void  ComputeDeltaUOMSERSC(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
     T current_residue, stab_residue;
     UINT cNode, cParent, wNode; // attributes
     CriterionT aNode, aParent,aAncestor;
-    T lNode, lParent,lAncestor; // node levels, the same type than input image
+    T lNode, lParent,lAncestor; /*wParent set but not used*/ // node levels, the same type than input image
     float stability, fillRatio, AspectRatio, fac;
 
 
@@ -847,7 +847,7 @@ void  ComputeDeltaUOMSERSC(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
 
 
     cParent =  tree.getCriterion(nParent).ymax-tree.getCriterion(nParent).ymin+1;// #current criterion
-    wParent =  tree.getCriterion(nParent).xmax-tree.getCriterion(nParent).xmin+1;// #width   
+//     wParent =  tree.getCriterion(nParent).xmax-tree.getCriterion(nParent).xmin+1;// #width   
     aParent  = tree.getCriterion(nParent).crit;
     aAncestor  = tree.getCriterion(first_ancestor).crit;
     lParent =  tree.getLevel(nParent);// #current level
