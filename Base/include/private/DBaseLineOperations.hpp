@@ -41,26 +41,33 @@ namespace smil
 
 
     // Base abstract struct of line unary function
-    template <class T>
+    template <class T, class T_out=T>
     struct unaryLineFunctionBase
     {
-        typedef typename Image<T>::lineType __restrict lineType;
-        typedef typename Image<T>::sliceType sliceType;
+        typedef Image<T> imageInType;
+        typedef typename imageInType::lineType __restrict lineInType;
+        typedef typename imageInType::sliceType sliceInType;
+        
+        typedef Image<T_out> imageOutType;
+        typedef typename imageOutType::lineType __restrict lineOutType;
+        typedef typename imageOutType::sliceType sliceOutType;
+        
+        typedef lineInType lineType;
         
         unaryLineFunctionBase() {}
-        unaryLineFunctionBase(const lineType lineIn, const size_t size, lineType lineOut)
+        unaryLineFunctionBase(const lineInType lineIn, const size_t size, lineOutType lineOut)
         {
             this->_exec(lineIn, size, lineOut);
         }
         
-        virtual void _exec(const lineType, const size_t, lineType) = 0;
-        virtual void _exec_aligned(const lineType lineIn, const size_t size, lineType lineOut) { _exec(lineIn, size, lineOut); }
-        virtual void _exec(lineType, const size_t, const T) {}
-        virtual void _exec_aligned(lineType lineIn, const size_t size, T value) { _exec(lineIn, size, value); }
-        inline void operator()(const lineType lineIn, const size_t size, lineType lineOut)
+        virtual void _exec(const lineInType, const size_t, lineOutType) = 0;
+        virtual void _exec_aligned(const lineInType lineIn, const size_t size, lineOutType lineOut) { _exec(lineIn, size, lineOut); }
+        virtual void _exec(lineOutType, const size_t, const T_out) {}
+        virtual void _exec_aligned(lineOutType lineOut, const size_t size, T_out value) { _exec(lineOut, size, value); }
+        inline void operator()(const lineInType lineIn, const size_t size, lineOutType lineOut)
         { 
             unsigned long ptrOffset1 = ImDtTypes<T>::ptrOffset(lineIn);
-            unsigned long ptrOffset2 = ImDtTypes<T>::ptrOffset(lineOut);
+            unsigned long ptrOffset2 = ImDtTypes<T_out>::ptrOffset(lineOut);
             
             // both aligned
             if (!ptrOffset1 && !ptrOffset2)
@@ -80,7 +87,7 @@ namespace smil
                 _exec(lineIn, size, lineOut); 
             }
         }
-        inline void operator()(const lineType lineIn, const size_t size, T value)
+        inline void operator()(const lineInType lineIn, const size_t size, T_out value)
         { 
             if (size<SIMD_VEC_SIZE)
             {

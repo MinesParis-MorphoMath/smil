@@ -41,13 +41,16 @@ namespace smil
     //! @{
 
   
-    template <class T>
-    struct threshLine : public unaryLineFunctionBase<T>
+    template <class T, class T_out=T>
+    struct threshLine : public unaryLineFunctionBase<T, T_out>
     {
-        T minVal, maxVal, trueVal, falseVal;
-        typedef typename unaryLineFunctionBase<T>::lineType lineType;
+        T minVal, maxVal;
+        T_out trueVal, falseVal;
         
-        virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
+        typedef typename unaryLineFunctionBase<T,T_out>::lineInType lineInType;
+        typedef typename unaryLineFunctionBase<T,T_out>::lineOutType lineOutType;
+        
+        virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
         {
             for(int i=0;i<size;i++)
                 lOut[i] = lIn[i] >= minVal && lIn[i] <= maxVal  ? trueVal : falseVal;

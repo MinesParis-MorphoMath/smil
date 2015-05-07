@@ -68,37 +68,42 @@ namespace smil
         operator RES_T() { return retVal; }
     };
 
-    template <class T, class lineFunction_T>
+    template <class T, class lineFunction_T, class T_out=T>
     class unaryImageFunction : public imageFunctionBase<T>
     {
     public:
         typedef imageFunctionBase<T> parentClass;
-        typedef Image<T> imageType;
-        typedef typename imageType::pixelType pixelType;
-        typedef typename imageType::lineType lineType;
-        typedef typename imageType::sliceType sliceType;
+        typedef Image<T> imageInType;
+        typedef typename imageInType::pixelType pixelInType;
+        typedef typename imageInType::lineType lineInType;
+        typedef typename imageInType::sliceType sliceInType;
+
+        typedef Image<T_out> imageOutType;
+        typedef typename imageOutType::pixelType pixelOutType;
+        typedef typename imageOutType::lineType lineOutType;
+        typedef typename imageOutType::sliceType sliceOutType;
 
         unaryImageFunction() {}
-        unaryImageFunction( const imageType &imIn, imageType &ImOut ) 
+        unaryImageFunction( const imageInType &imIn, imageOutType &ImOut ) 
         {
             this->retVal = this->_exec ( imIn, ImOut );
         }
-        unaryImageFunction( imageType &imOut, const T &value ) 
+        unaryImageFunction( imageOutType &imOut, const T_out &value ) 
         {
             this->retVal = this->_exec (imOut, value);
         }
         
-        inline RES_T operator() ( const imageType &imIn, imageType &ImOut )
+        inline RES_T operator() ( const imageInType &imIn, imageOutType &ImOut )
         {
             return this->_exec ( imIn, ImOut );
         }
-        inline RES_T operator() ( imageType &ImOut, const T &value )
+        inline RES_T operator() ( imageOutType &ImOut, const T_out &value )
         {
             return this->_exec ( ImOut, value );
         }
 
-        RES_T _exec ( const imageType &imIn, imageType &imOut );
-        RES_T _exec ( imageType &imOut, const T &value );
+        RES_T _exec ( const imageInType &imIn, imageOutType &imOut );
+        RES_T _exec ( imageOutType &imOut, const T_out &value );
 
     //   protected:
         lineFunction_T lineFunction;

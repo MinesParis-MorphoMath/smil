@@ -109,13 +109,13 @@ namespace smil
     /**
     * Image threshold
     */
-    template <class T>
-    RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, T trueVal, T falseVal, Image<T> &imOut)
+    template <class T, class T_out>
+    RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, T_out trueVal, T_out falseVal, Image<T_out> &imOut)
     {
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
-        unaryImageFunction<T, threshLine<T> > iFunc;
+        unaryImageFunction<T, threshLine<T,T_out>, T_out > iFunc;
         
         iFunc.lineFunction.minVal = minVal;
         iFunc.lineFunction.maxVal = maxVal;
@@ -125,20 +125,20 @@ namespace smil
         return iFunc(imIn, imOut);
     }
 
-    template <class T>
-    RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, Image<T> &imOut)
+    template <class T, class T_out>
+    RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, Image<T_out> &imOut)
     {
-        return threshold<T>(imIn, minVal, maxVal, ImDtTypes<T>::max(), ImDtTypes<T>::min(), imOut);
+        return threshold<T>(imIn, minVal, maxVal, ImDtTypes<T_out>::max(), ImDtTypes<T_out>::min(), imOut);
     }
 
-    template <class T>
-    RES_T threshold(const Image<T> &imIn, T minVal, Image<T> &imOut)
+    template <class T, class T_out>
+    RES_T threshold(const Image<T> &imIn, T minVal, Image<T_out> &imOut)
     {
-        return threshold<T>(imIn, minVal, ImDtTypes<T>::max(), ImDtTypes<T>::max(), ImDtTypes<T>::min(), imOut);
+        return threshold<T>(imIn, minVal, ImDtTypes<T>::max(), ImDtTypes<T_out>::max(), ImDtTypes<T_out>::min(), imOut);
     }
 
-    template <class T>
-    RES_T threshold(const Image<T> &imIn, Image<T> &imOut)
+    template <class T, class T_out>
+    RES_T threshold(const Image<T> &imIn, Image<T_out> &imOut)
     {
         T tVal = otsuThreshold(imIn, imOut);
         if (tVal==ImDtTypes<T>::min())
@@ -478,16 +478,16 @@ namespace smil
     * 
     * \demo{thresholds.py}
     */
-    template <class T>
-    vector<T> otsuThreshold(const Image<T> &imIn, Image<T> &imOut, UINT nbrThresholds)
+    template <class T, class T_out>
+    vector<T> otsuThreshold(const Image<T> &imIn, Image<T_out> &imOut, UINT nbrThresholds)
     {
         if (!areAllocated(&imIn, &imOut, NULL))
           return vector<T>();
         
         vector<T> tVals = otsuThresholdValues<T>(imIn, nbrThresholds);
-        map<T, T> lut;
+        map<T, T_out> lut;
         T i = ImDtTypes<T>::min();
-        T lbl = 0;
+        T_out lbl = 0;
         for (typename vector<T>::iterator it=tVals.begin();it!=tVals.end();it++,lbl++)
         {
             while(i<(*it))
@@ -507,26 +507,26 @@ namespace smil
         
     }
 
-    template <class T>
-    T otsuThreshold(const Image<T> &imIn, Image<T> &imOut)
+    template <class T, class T_out>
+    T otsuThreshold(const Image<T> &imIn, Image<T_out> &imOut)
     {
         if (!areAllocated(&imIn, &imOut, NULL))
           return ImDtTypes<T>::min();
         
         vector<T> tVals = otsuThresholdValues<T>(imIn, 1);
-        threshold<T>(imIn, tVals[0], imOut);
+        threshold(imIn, tVals[0], imOut);
         return tVals[0];
     }
 
 
-    template <class T>
-    vector<T> otsuThreshold(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, UINT nbrThresholds=1)
+    template <class T, class T_out>
+    vector<T> otsuThreshold(const Image<T> &imIn, const Image<T> &imMask, Image<T_out> &imOut, UINT nbrThresholds=1)
     {
         if (!areAllocated(&imIn, &imOut, NULL))
           return vector<T>();
         
         vector<T> tVals = otsuThresholdValues<T>(imIn, imMask, nbrThresholds);
-        threshold<T>(imIn, tVals[0], imOut);
+        threshold(imIn, tVals[0], imOut);
         
         return tVals;
         

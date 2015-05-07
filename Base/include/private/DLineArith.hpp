@@ -69,10 +69,18 @@ namespace smil
         
         virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
         {
+            return this->fill(lIn, size, lOut);
+        }
+        virtual void _exec(lineType lInOut, const size_t size, const T value)
+        {
+            return this->fill(lInOut, size, value);
+        }
+        static void fill(const lineType lIn, const size_t size, lineType lOut)
+        {
             for (size_t i=0;i<size;i++)
               lOut[i] = lIn[i];
         }
-        virtual void _exec(lineType lInOut, const size_t size, const T value)
+        static void fill(lineType lInOut, const size_t size, const T value)
         {
             for (size_t i=0;i<size;i++)
               lInOut[i] = value;
@@ -82,13 +90,11 @@ namespace smil
     template <class T>
     inline void shiftLine(const typename Image<T>::lineType __restrict lIn, int dx, size_t lineLen, typename Image<T>::lineType __restrict lOut, T borderValue = ImDtTypes<T>::min())
     {
-        fillLine<T> fillFunc;
-
         if (dx==0)
             copyLine<T>(lIn, lineLen, lOut);
         else if (dx>0)
         {
-            fillFunc(lOut, dx, borderValue);
+            fillLine<T>::fill(lOut, dx, borderValue);
             typename Image<T>::lineType __restrict tmpL = lOut+dx;
             copyLine<T>(lIn, lineLen-dx, tmpL);
         }
@@ -96,7 +102,7 @@ namespace smil
         {
             typename Image<T>::lineType __restrict tmpL = lIn-dx;
             copyLine<T>(tmpL, lineLen+dx, lOut);
-            fillFunc(lOut+(lineLen+dx), -dx, borderValue);
+            fillLine<T>::fill(lOut+(lineLen+dx), -dx, borderValue);
         }
     }
 

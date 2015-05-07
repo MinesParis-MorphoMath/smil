@@ -120,19 +120,22 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(applyLookup);
 TEMPLATE_WRAP_SUPPL_FUNC(fill);
 TEMPLATE_WRAP_SUPPL_FUNC(equ);
 TEMPLATE_WRAP_SUPPL_FUNC(diff);
+TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(test);
+TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(compare);
 
 
 %include "DImageHistogram.hpp"
 TEMPLATE_WRAP_FUNC(histogram);
-TEMPLATE_WRAP_FUNC(threshold);
+
+TEMPLATE_WRAP_FUNC_2T_CROSS(threshold);
 
 TEMPLATE_WRAP_FUNC(histogramRange);
 TEMPLATE_WRAP_FUNC_2T_CROSS(stretchHist);
 TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(stretchHist);
-
 TEMPLATE_WRAP_FUNC(enhanceContrast);
+
 TEMPLATE_WRAP_FUNC(otsuThresholdValues);
-TEMPLATE_WRAP_FUNC(otsuThreshold);
+TEMPLATE_WRAP_FUNC_2T_CROSS(otsuThreshold);
 
 
 %include "DImageConvolution.hpp"
