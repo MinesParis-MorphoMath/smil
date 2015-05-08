@@ -281,7 +281,7 @@ namespace smil
                         else
                         {
                             T val;
-                            for (int i=0;i<width;i++)
+                            for (size_t i=0;i<width;i++)
                             {
                               val = curLine[i];
                               endswap(&val);

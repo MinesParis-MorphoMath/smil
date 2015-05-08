@@ -276,11 +276,11 @@ namespace smil
         typename Image<T>::sliceType lines = img.getLines();
         typename Image<T>::lineType pixels;
 
-        for (size_t j=0;j<qOverlayImage->height();j++)
+        for (int j=0;j<qOverlayImage->height();j++)
         {
             srcLine = (QRgb*)(this->qOverlayImage->scanLine(j));
             pixels = *lines++;
-            for (size_t i=0;i<qOverlayImage->width();i++)
+            for (int i=0;i<qOverlayImage->width();i++)
             {
                 value = overlayColorTable.indexOf(srcLine[i]);
                 pixels[i] = value>=0 ? T(value) : T(0);

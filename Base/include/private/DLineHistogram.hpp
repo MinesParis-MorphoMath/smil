@@ -52,7 +52,7 @@ namespace smil
         
         virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
         {
-            for(int i=0;i<size;i++)
+            for(size_t i=0;i<size;i++)
                 lOut[i] = lIn[i] >= minVal && lIn[i] <= maxVal  ? trueVal : falseVal;
         }
     };
@@ -68,7 +68,7 @@ namespace smil
         {
             double newVal;
             
-            for(UINT i=0;i<size;i++)
+            for(size_t i=0;i<size;i++)
             {
                 newVal = double(outOrig) + (double(lIn[i])-double(inOrig))*coeff;
                 if (newVal > double(numeric_limits<T>::max()))
