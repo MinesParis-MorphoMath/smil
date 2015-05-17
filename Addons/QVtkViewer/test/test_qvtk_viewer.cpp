@@ -34,15 +34,16 @@ class Test_Show : public TestCase
   {
 //       Image_UINT8 im1("crop_300_OK_BIN.vtk");
 //       Image_UINT8 im1("crop_300_OK_Labeled_UINT8.vtk");
-//       Image_UINT16 im1("crop_300_OK_Labeled.vtk");
-      Image_UINT16 im1(50,50,50);
+      Image_UINT16 im1("crop_300_OK_Labeled.vtk");
+//       Image_UINT16 im1(50,50,50);
       
       QVtkViewer<UINT16> viewer(im1);
       viewer.showLabel();
       viewer.show();
+      viewer.showLabel();
 //       im1 << UINT8(127);
       
-//       Gui::execLoop();
+      Gui::execLoop();
   }
 };
 

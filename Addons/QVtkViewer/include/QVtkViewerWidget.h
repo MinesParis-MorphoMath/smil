@@ -52,13 +52,15 @@
 #include <vtkEventQtSlotConnect.h>
 #include <vtkDiscretizableColorTransferFunction.h>
 
+#include "Gui/Qt/PureQt/ImageViewerWidget.h"
 
-class QVtkViewerWidget : public QWidget
+class QVtkViewerWidget : public ImageViewerWidget
 {
     Q_OBJECT
     
 public:
-    QHBoxLayout *horizontalLayout;
+    typedef ImageViewerWidget parentClass;
+    
     QVTKWidget *qvtkWidget;
     
     QVtkViewerWidget(QWidget *parent = 0);
@@ -106,8 +108,11 @@ protected:
     void setAutorangeOn();
     void setAutorangeOff();
     
+//     virtual void keyPressEvent(QKeyEvent *event) { parentClass::keyPressEvent(event); }
+    virtual void setLabelImage(bool val);
 public slots:
     void showContextMenu(vtkObject*, unsigned long, void*, void*, vtkCommand *command);
+    void keyPressed(vtkObject*, unsigned long, void*, void*, vtkCommand *command);
     
 };
 

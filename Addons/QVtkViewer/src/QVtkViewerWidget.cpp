@@ -23,6 +23,8 @@
 #include "QVtkViewerWidget.h"
 
 #include <QMenu>
+#include <QKeyEvent>
+
 #include <climits>
 
 #include "vtkRenderer.h"
@@ -30,12 +32,12 @@
 #include "vtkEventQtSlotConnect.h"
 
 QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
-    QWidget(parent)
+    ImageViewerWidget(parent)
 {
     resize(400, 330);
-    horizontalLayout = new QHBoxLayout(this);
+//     horizontalLayout = new QHBoxLayout(this);
     qvtkWidget = new QVTKWidget(this);
-    horizontalLayout->addWidget(qvtkWidget);
+    layout->addWidget(qvtkWidget);
    
 //     connect(qvtkWidget, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
    
@@ -100,12 +102,16 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
                             this, SLOT(showContextMenu(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
                             NULL, 1.0
                            );
+    vtkQtEventConnect->Connect(qvtkWidget->GetRenderWindow()->GetInteractor(), vtkCommand::KeyPressEvent, 
+                            this, SLOT(keyPressed(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
+                            NULL, 1.0
+                           );
 }
 
 QVtkViewerWidget::~QVtkViewerWidget()
 {
     delete qvtkWidget;
-    delete horizontalLayout;
+//     delete horizontalLayout;
     
     // VTK Objects
        
@@ -150,6 +156,7 @@ void QVtkViewerWidget::showNormal()
     volumeProperty->SetScalarOpacity(opacityTransfertFunction);
     volumeProperty->SetInterpolationTypeToLinear();
     show();
+    interactor->Render();
 }
 
 void QVtkViewerWidget::showLabel()
@@ -159,6 +166,7 @@ void QVtkViewerWidget::showLabel()
     volumeProperty->SetScalarOpacity(colorOpacityTransfertFunction);
     volumeProperty->SetInterpolationTypeToNearest();
     show();
+    interactor->Render();
 }
 
 void QVtkViewerWidget::update()
@@ -166,6 +174,19 @@ void QVtkViewerWidget::update()
     volume->Update();
     interactor->Render();
     QWidget::update();
+}
+
+void QVtkViewerWidget::setLabelImage(bool val)
+{
+    if (drawLabelized==val)
+      return;
+    
+    drawLabelized = val;
+    
+    if (drawLabelized)
+        showLabel();
+    else
+        showNormal();
 }
 
 void QVtkViewerWidget::setRepresentationType(RepresentationType type)
@@ -218,7 +239,6 @@ void QVtkViewerWidget::setInterpolationTypeToNearest()
     volumeProperty->SetInterpolationTypeToNearest();
     interactor->Render(); 
 }
-
 
 void QVtkViewerWidget::showContextMenu(vtkObject*, unsigned long, void*, void*, vtkCommand *command)
 {
@@ -274,4 +294,12 @@ void QVtkViewerWidget::showContextMenu(vtkObject*, unsigned long, void*, void*, 
         else if (selectedItem->text()=="Nearest")
           setInterpolationTypeToNearest();
     }
+}
+
+void QVtkViewerWidget::keyPressed(vtkObject *caller, unsigned long, void*, void*, vtkCommand *command)
+{
+    vtkRenderWindowInteractor *iren = static_cast<vtkRenderWindowInteractor*>(caller);
+    
+    QKeyEvent kEvt(QEvent::KeyPress, iren->GetKeyCode()-'a' + Qt::Key_A, Qt::NoModifier);
+    keyPressEvent(&kEvt);
 }

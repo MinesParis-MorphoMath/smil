@@ -132,16 +132,6 @@ protected:
     void updateTitle();
     void displayHint(QString msg, int timerVal=1000);
 
-//     QAction *openAct;
-//     QAction *printAct;
-//     QAction *exitAct;
-//     QAction *zoomInAct;
-//     QAction *zoomOutAct;
-//     QAction *normalSizeAct;
-//     QAction *fitToWindowAct;
-//     QAction *aboutAct;
-//     QAction *aboutQtAct;
-//     QAction *helpAct;
     QMap<QString, QAction*> actionMap;
     
     QString name;
