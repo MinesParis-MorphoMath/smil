@@ -113,6 +113,7 @@ namespace smil
 
     typedef Point<double> DoublePoint;
     typedef Point<int> IntPoint;
+    typedef Point<UINT> UintPoint;
     
     typedef vector<double> Vector_double;
     typedef vector<Vector_double> Matrix_double;

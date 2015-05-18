@@ -112,6 +112,8 @@ PTR_ARG_OUT_APPLY(s)
 
 %template(DoublePoint) Point<double>;
 %template(IntPoint) Point<int>;
+%template(UintPoint) Point<UINT>;
+%template(Size_tPoint) Point<size_t>;
 
 
 //////////////////////////////////////////////////////////
@@ -128,6 +130,7 @@ PTR_ARG_OUT_APPLY(s)
 namespace std 
 {
     TEMPLATE_WRAP_CLASS(vector, Vector);
+    
 #ifdef USE_64BIT_IDS
     %template(Vector_size_t) vector<size_t>;
 #endif // USE_64BIT_IDS
