@@ -105,11 +105,10 @@ protected:
     void hideAxes();
     void setInterpolationTypeToLinear();
     void setInterpolationTypeToNearest();
-    void setAutorangeOn();
-    void setAutorangeOff();
     
 //     virtual void keyPressEvent(QKeyEvent *event) { parentClass::keyPressEvent(event); }
     virtual void setLabelImage(bool val);
+    virtual void setAutoRange(bool /*on*/) {};
 public slots:
     void showContextMenu(vtkObject*, unsigned long, void*, void*, vtkCommand *command);
     void keyPressed(vtkObject*, unsigned long, void*, void*, vtkCommand *command);

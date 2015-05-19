@@ -111,7 +111,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     hintLabel->setAutoFillBackground(true);
     hintLabel->hide();
     hintLabel->move(QPoint(10,10));
-    hintLabel->setEnabled(false);
+    hintLabel->setEnabled(true);
     
     hintTimer = new QTimer();
     hintTimer->setSingleShot(true);
@@ -137,8 +137,6 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     createActions();
     
     connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
-    
-    hintLabel->setEnabled(true);
     
     layout = new QGridLayout(this);
     layout->setAlignment(Qt::AlignBottom);

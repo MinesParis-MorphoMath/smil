@@ -35,6 +35,7 @@
 #include "QVtkViewerWidget.h"
 #include "Gui/include/private/DImageViewer.hpp"
 #include "Core/include/DTypes.h"
+#include "Base/include/private/DMeasures.hpp"
 
 namespace smil
 {
@@ -72,7 +73,7 @@ namespace smil
             else if (is_same<T,INT16>::value)
               imageImport->SetDataScalarTypeToShort();
             
-            opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
+            setAutoRange(false);
 
             colorOpacityTransfertFunction->AddSegment(0, 0., 1, 0.);
             colorOpacityTransfertFunction->AddSegment(1, 1., ImDtTypes<T>::max(), 1.0);
@@ -92,7 +93,7 @@ namespace smil
             
             setImage(im);
             
-            opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
+            setAutoRange(false);
             
             colorOpacityTransfertFunction->AddSegment(0, 0., 1, 0.);
             colorOpacityTransfertFunction->AddSegment(1, 1., ImDtTypes<T>::max(), 1.0);
@@ -121,6 +122,18 @@ namespace smil
             camera->SetFocalPoint(imSize[0]/2, imSize[1]/2, imSize[2]/2);
             int d = 2.5 * (imSize[0] > imSize[1] ? imSize[0] : imSize[1]);
             camera->SetPosition(imSize[0], imSize[1]/2, -d);
+        }
+        
+        virtual void setAutoRange(bool on)
+        {
+            opacityTransfertFunction->RemoveAllPoints();
+            if (on)
+            {
+                vector<T> r = rangeVal(*this->image);
+                opacityTransfertFunction->AddSegment(r[0], 0., r[1], 1.0);
+            }
+            else
+              opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
         }
         
         virtual void onSizeChanged(size_t /*width*/, size_t /*height*/, size_t /*depth*/)

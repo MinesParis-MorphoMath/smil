@@ -38,6 +38,7 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
 //     horizontalLayout = new QHBoxLayout(this);
     qvtkWidget = new QVTKWidget(this);
     layout->addWidget(qvtkWidget);
+    this->hintLabel->setParent(qvtkWidget);
    
 //     connect(qvtkWidget, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
    
@@ -110,6 +111,7 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
 
 QVtkViewerWidget::~QVtkViewerWidget()
 {
+    this->hintLabel->setParent(this->parentWidget());
     delete qvtkWidget;
 //     delete horizontalLayout;
     
@@ -296,10 +298,18 @@ void QVtkViewerWidget::showContextMenu(vtkObject*, unsigned long, void*, void*, 
     }
 }
 
-void QVtkViewerWidget::keyPressed(vtkObject *caller, unsigned long, void*, void*, vtkCommand *command)
+void QVtkViewerWidget::keyPressed(vtkObject *caller, unsigned long, void*, void*, vtkCommand */*command*/)
 {
     vtkRenderWindowInteractor *iren = static_cast<vtkRenderWindowInteractor*>(caller);
+    char key = iren->GetKeyCode();
     
-    QKeyEvent kEvt(QEvent::KeyPress, iren->GetKeyCode()-'a' + Qt::Key_A, Qt::NoModifier);
+    switch(key)
+    {
+      case 'r':
+        setAutoRange(!this->autoRange);
+    }
+    
+    QKeyEvent kEvt(QEvent::KeyPress, key-'a' + Qt::Key_A, Qt::NoModifier);
     keyPressEvent(&kEvt);
 }
+
