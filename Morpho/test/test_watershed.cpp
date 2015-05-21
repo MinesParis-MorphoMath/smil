@@ -97,6 +97,69 @@ class Test_Basins : public TestCase
 };
 
 
+class Test_Basins2 : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dtType;
+      typedef UINT16 dtType2;
+      
+      dtType vecIn[] = { 
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0
+      };
+      
+      dtType2 vecMark[] = { 
+        1, 1, 1, 1, 1, 1,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         3, 3, 3, 3, 3, 3,
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        2, 2, 2, 2, 2, 2
+      };
+      
+      Image<dtType> imIn(6,7);
+      Image<dtType2> imMark(imIn);
+      Image<dtType2> imLbl(imIn);
+
+      imIn << vecIn;
+      imMark << vecMark;
+      
+      StrElt se = hSE();
+      
+      basins(imIn, imMark, imLbl, se);
+      
+      dtType2 vecLblTruth[] = { 
+        1, 1, 1, 1, 1, 1,
+         1, 1, 1, 1, 1, 1,
+        3, 3, 3, 3, 3, 3,
+         3, 3, 3, 3, 3, 3,
+        3, 3, 3, 3, 3, 3,
+         2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2
+      };
+      
+      Image<dtType2> imLblTruth(imIn);
+      
+      imLblTruth << vecLblTruth;
+      
+      TEST_ASSERT(imLbl==imLblTruth);
+      
+      if (retVal!=RES_OK)
+      {
+        imLbl.printSelf(1, true);
+        imLblTruth.printSelf(1, true);
+      }
+  }
+};
+
+
 class Test_ProcessWatershedHierarchicalQueue : public TestCase
 {
   virtual void run()
@@ -322,6 +385,7 @@ int main()
       TestSuite ts;
       
       ADD_TEST(ts, Test_Basins);
+      ADD_TEST(ts, Test_Basins2);
       ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
 
       typedef Test_Watershed<UINT8> Test_WS_UINT8;
