@@ -839,11 +839,13 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
         {
             act = linkMenu.addAction(widget->windowTitle());
             act->setData(wIndex);
+            act->setCheckable(true);
             if (linkedWidgets.contains(static_cast<ImageViewerWidget*>(widget)))
             {
                 QFont aFont = act->font();
                 aFont.setBold(true);
                 act->setFont(aFont);
+                act->setChecked(true);
             }
         }
         wIndex++;
