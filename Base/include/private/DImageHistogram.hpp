@@ -47,13 +47,39 @@ namespace smil
 
 #ifndef SWIG
     template <class T>
-    RES_T histogram(const Image<T> &imIn, size_t *h)
+    ENABLE_IF( !IS_FLOAT(T), RES_T )
+    histogram(const Image<T> &imIn, size_t *h)
     {
         for (size_t i=0;i<ImDtTypes<T>::cardinal();i++)
             h[i] = 0;
 
         typename Image<T>::lineType pixels = imIn.getPixels();
         for (size_t i=0;i<imIn.getPixelCount();i++)
+            h[size_t(pixels[i]-ImDtTypes<T>::min())]++;
+        
+        return RES_OK;
+    }
+    
+    template <class T>
+    ENABLE_IF( IS_FLOAT(T), RES_T )
+    histogram(const Image<T> &/*imIn*/, size_t */*h*/)
+    {
+        return RES_ERR_NOT_IMPLEMENTED;
+    }
+    
+    template <class T>
+    RES_T histogram(const Image<T> &imIn, const Image<T> &imMask, size_t *h)
+    {
+        ASSERT(haveSameSize(&imIn, &imMask, NULL));
+        
+        for (size_t i=0;i<ImDtTypes<T>::cardinal();i++)
+            h[i] = 0;
+
+        typename Image<T>::lineType pixels = imIn.getPixels();
+        typename Image<T>::lineType maskPix = imMask.getPixels();
+        
+        for (size_t i=0;i<imIn.getPixelCount();i++)
+          if (maskPix[i]!=0)
             h[size_t(pixels[i]-ImDtTypes<T>::min())]++;
         
         return RES_OK;
@@ -87,21 +113,14 @@ namespace smil
     template <class T>
     std::map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask)
     {
+        size_t *buf = new size_t[ImDtTypes<T>::cardinal()];
+        histogram<T>(imIn, imMask, buf);
+        
         map<T, UINT> h;
+        for (size_t i=0;i<ImDtTypes<T>::cardinal();i++)
+            h.insert(pair<T,UINT>(i+ImDtTypes<T>::min(), buf[i]));
         
-        for (T i=ImDtTypes<T>::min();;i++)
-        {
-            h.insert(pair<T,UINT>(i, 0));
-            if (i==ImDtTypes<T>::max())
-              break;
-        }
-        
-        typename Image<T>::lineType inPix = imIn.getPixels();
-        typename Image<T>::lineType maskPix = imMask.getPixels();
-        
-        for (size_t i=0;i<imIn.getPixelCount();i++)
-            if (maskPix[i]!=0)
-                h[T(inPix[i])] += 1;
+        delete[] buf;
         
         return h;
     }
