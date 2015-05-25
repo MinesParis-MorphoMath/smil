@@ -81,6 +81,7 @@ public:
     virtual void setCurSlice(int) {}
     virtual void redrawImage() {}
     virtual void createOverlayImage();
+    virtual void deleteOverlayImage();
 
     void setName(QString name);
     void setImageSize(int w, int h, int d=1);
@@ -89,7 +90,7 @@ public:
     
     QStatusBar *statusBar;
     QImage *qImage;
-    QImage *qOverlayImage;
+    QVector<QImage*> qOverlayImage;
     QImage::Format imageFormat;
     
     bool drawLabelized;
@@ -122,6 +123,7 @@ protected:
     QTimer *iconTimer;
     MagnifyView *magnView;
 
+    size_t imWidth, imHeight, imDepth;
     int lastPixX, lastPixY, lastPixZ;
     
     bool magnActivated;
@@ -162,6 +164,8 @@ public slots:
     {
         displayHint(QString::number(newVal) + "/" + QString::number(slider->maximum()));
         setCurSlice(newVal);
+        if (!qOverlayImage.isEmpty())
+          updatePixmaps(qOverlayImage[newVal], &overlayPixmaps);
     }
     virtual void overlayDataChanged(bool triggerEvents=true);
     void updateIcon();

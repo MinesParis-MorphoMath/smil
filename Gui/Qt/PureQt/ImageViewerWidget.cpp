@@ -94,7 +94,6 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     initColorTables();
     scaleFactor = 1.0;
     qImage = new QImage();
-    qOverlayImage = NULL;
 
     magnView = new MagnifyView(this);
     magnView->hide();
@@ -168,8 +167,8 @@ ImageViewerWidget::~ImageViewerWidget()
     delete layout;
     
     delete qImage;
-    if (qOverlayImage)
-      delete qOverlayImage;
+    if (!qOverlayImage.isEmpty())
+      deleteOverlayImage();
     delete imScene;
     delete magnView;
     
@@ -186,11 +185,24 @@ ImageViewerWidget::~ImageViewerWidget()
 
 void ImageViewerWidget::createOverlayImage()
 {
-    if (qOverlayImage)
-      delete qOverlayImage;
-    qOverlayImage = new QImage(qImage->width(), qImage->height(), QImage::Format_ARGB32_Premultiplied);
-    qOverlayImage->setColorTable(overlayColorTable);
-    qOverlayImage->fill(Qt::transparent);
+    if (!qOverlayImage.isEmpty())
+      deleteOverlayImage();
+    for (size_t i=0;i<imDepth;i++)
+    {
+        QImage *im = new QImage(imWidth, imHeight, QImage::Format_ARGB32_Premultiplied);
+        im->setColorTable(overlayColorTable);
+        im->fill(Qt::transparent);
+        qOverlayImage.append(im);
+    }
+}
+
+void ImageViewerWidget::deleteOverlayImage()
+{
+    if (!qOverlayImage.isEmpty())
+      return;
+    for (size_t i=0;i<imDepth;i++)
+      delete qOverlayImage[i];
+    qOverlayImage.clear();
 }
 
 void ImageViewerWidget::updateIcon()
@@ -223,6 +235,10 @@ void ImageViewerWidget::initColorTables()
 
 void ImageViewerWidget::setImageSize(int w, int h, int d)
 {
+    imWidth = w;
+    imHeight = h;
+    imDepth = d;
+    
     if (d<=slider->sliderPosition())
       slider->setSliderPosition(d-1);
     if (d>1)
@@ -298,11 +314,8 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
         int scaleFact = log(double(QWidget::height())/qImage->height())/log(0.8);
         scale(pow(0.8, scaleFact), true);
     }
-    if (qOverlayImage)
-    {
-        delete qOverlayImage;
-        qOverlayImage = NULL;
-    }
+    if (!qOverlayImage.isEmpty())
+      deleteOverlayImage();
 }
 
 void ImageViewerWidget::setLabelImage(bool val)
@@ -429,12 +442,12 @@ void ImageViewerWidget::dataChanged()
 
 void ImageViewerWidget::overlayDataChanged(bool /*triggerEvents*/)
 {
-    updatePixmaps(qOverlayImage, &overlayPixmaps);
+    updatePixmaps(qOverlayImage[slider->sliderPosition()], &overlayPixmaps);
 }
 
 void ImageViewerWidget::clearOverlay()
 {
-    if (!qOverlayImage)
+    if (qOverlayImage.isEmpty())
       return;
     
     QList<QGraphicsPixmapItem*>::iterator it = overlayPixmaps.begin();
@@ -445,7 +458,8 @@ void ImageViewerWidget::clearOverlay()
         it++;
     }
     
-    qOverlayImage->fill(Qt::transparent);
+    for (size_t i=0;i<imDepth;i++)
+      qOverlayImage[i]->fill(Qt::transparent);
 
     overlayDataChanged();
 }
@@ -597,7 +611,7 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
         } 
         else if (cursorMode==cursorDraw && drawing)
         {
-            QPainter painter(qOverlayImage);
+            QPainter painter(qOverlayImage[slider->sliderPosition()]);
             if (drawPen.color()==Qt::black)
                 painter.setCompositionMode(QPainter::CompositionMode_Clear);
             painter.setPen(drawPen);
@@ -654,7 +668,7 @@ void ImageViewerWidget::sceneMouseReleaseEvent ( QGraphicsSceneMouseEvent * even
       displayProfile(true);
     else if (cursorMode==cursorDraw && drawing)
     {
-        QPainter painter(qOverlayImage);
+        QPainter painter(qOverlayImage[slider->sliderPosition()]);
         if (drawPen.color()==Qt::black)
             painter.setCompositionMode(QPainter::CompositionMode_Clear);
         painter.setPen(drawPen);
@@ -798,7 +812,7 @@ void ImageViewerWidget::setCursorMode(const int &mode)
     if (mode==cursorDraw)
     {
       colorPicker->show();
-      if (!qOverlayImage)
+      if (qOverlayImage.isEmpty())
         createOverlayImage();
     }
     else
