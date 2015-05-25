@@ -92,12 +92,20 @@ namespace smil
     template <class T>
     std::map<T, UINT> histogram(const Image<T> &imIn)
     {
-        size_t *buf = new size_t[ImDtTypes<T>::cardinal()];
-        histogram<T>(imIn, buf);
+        vector<T> rVals = rangeVal(imIn);
+        size_t card = rVals[1]-rVals[0]+1;
+        
+        size_t *buf = new size_t[card];
+        for (size_t i=0;i<card;i++)
+            buf[i] = 0;
+
+        typename Image<T>::lineType pixels = imIn.getPixels();
+        for (size_t i=0;i<imIn.getPixelCount();i++)
+            buf[size_t(pixels[i]-rVals[0])]++;
         
         map<T, UINT> h;
-        for (size_t i=0;i<ImDtTypes<T>::cardinal();i++)
-            h.insert(pair<T,UINT>(i+ImDtTypes<T>::min(), buf[i]));
+        for (size_t i=0;i<card;i++)
+            h.insert(pair<T,UINT>(i+rVals[0], buf[i]));
         
         delete[] buf;
         
@@ -113,12 +121,25 @@ namespace smil
     template <class T>
     std::map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask)
     {
-        size_t *buf = new size_t[ImDtTypes<T>::cardinal()];
-        histogram<T>(imIn, imMask, buf);
-        
         map<T, UINT> h;
-        for (size_t i=0;i<ImDtTypes<T>::cardinal();i++)
-            h.insert(pair<T,UINT>(i+ImDtTypes<T>::min(), buf[i]));
+        
+        ASSERT(haveSameSize(&imIn, &imMask, NULL), h);
+        
+        vector<T> rVals = rangeVal(imIn);
+        size_t card = rVals[1]-rVals[0]+1;
+        
+        size_t *buf = new size_t[card];
+        for (size_t i=0;i<card;i++)
+            buf[i] = 0;
+
+        typename Image<T>::lineType pixels = imIn.getPixels();
+        typename Image<T>::lineType maskPixels = imMask.getPixels();
+        for (size_t i=0;i<imIn.getPixelCount();i++)
+          if (maskPixels[i]!=0)
+            buf[size_t(pixels[i]-rVals[0])]++;
+        
+        for (size_t i=0;i<card;i++)
+            h.insert(pair<T,UINT>(i+rVals[0], buf[i]));
         
         delete[] buf;
         
@@ -175,7 +196,7 @@ namespace smil
         ASSERT_ALLOCATED(&imIn);
         ASSERT_SAME_SIZE(&imIn, &imOut);
 
-        unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
+        unaryImageFunction<T1, stretchHistLine<T1,T2>, T2 > iFunc;
         iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (inMaxVal-inMinVal);
         iFunc.lineFunction.inOrig = inMinVal;
         iFunc.lineFunction.outOrig = outMinVal;
@@ -189,7 +210,7 @@ namespace smil
         ASSERT_ALLOCATED(&imIn);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
-        unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
+        unaryImageFunction<T1, stretchHistLine<T1,T2>, T2 > iFunc;
         vector<T1> rangeV = rangeVal(imIn);
         iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (rangeV[1]-rangeV[0]);
         iFunc.lineFunction.inOrig = rangeV[0];

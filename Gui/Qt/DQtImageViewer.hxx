@@ -444,7 +444,6 @@ namespace smil
         {
             histoPlot = new PlotWidget();
             histoPlot->setWindowTitle(QString(this->image->getName()) + " histogram");
-            histoPlot->setAxisScale(QwtPlot::xBottom, ImDtTypes<T>::min(), ImDtTypes<T>::max());
 
             QwtPlotCurve *defaultCurve = histoPlot->getCurrentCurve();
             defaultCurve->setStyle( QwtPlotCurve::Steps );
@@ -453,6 +452,8 @@ namespace smil
 
 
         map<T, UINT> hist = histogram(*(this->image));
+        
+        histoPlot->setAxisScale(QwtPlot::xBottom, hist.begin()->first, hist.rbegin()->first);
 
         QwtPlotCurve *curve = histoPlot->getCurrentCurve();
 
@@ -464,8 +465,8 @@ namespace smil
         int i=0;
         for(typename map<T,UINT>::iterator it=hist.begin();it!=hist.end();it++,i++)
         {
-            xVals[i] = (*it).first;
-            yVals[i] = (*it).second;
+            xVals[i] = it->first;
+            yVals[i] = it->second;
         }
         curve->setData(xVals, yVals, ptsNbr);
 
@@ -477,7 +478,7 @@ namespace smil
 #else // QWT_VERSION < 0x060000
         QVector<QPointF> samples;
         for(typename map<T,UINT>::iterator it=hist.begin();it!=hist.end();it++)
-          samples.push_back(QPointF((*it).first, (*it).second));
+          samples.push_back(QPointF(it->first, it->second));
 
         QwtPointSeriesData *myData = new QwtPointSeriesData();
         myData->setSamples(samples);
