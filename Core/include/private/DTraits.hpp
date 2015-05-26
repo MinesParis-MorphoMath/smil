@@ -69,9 +69,24 @@ namespace smil
           static bool const value = sizeof check(m_d) == 1 &&  !is_same<B volatile const, void volatile const>::value;
     };
     
+    template <typename T>
+    struct is_integer
+    {
+        static bool const value = !std::numeric_limits<T>::is_iec559;
+    };
+    
+    template <typename T>
+    struct is_float
+    {
+        static bool const value = std::numeric_limits<T>::is_iec559;
+    };
+    
+    
     #define ENABLE_IF(COND, RET_TYPE) typename smil::enable_if< ( COND ), RET_TYPE >::type
     #define IS_SAME(A, B) ( smil::is_same<A, B>::value )
     #define IS_DERIVED_FROM(D, B) ( smil::is_base_of<B, D>::value )
+    #define IS_INTEGER(T) ( smil::is_integer<T>::value )
+    #define IS_FLOAT(T) ( smil::is_float<T>::value )
       
 } // namespace smil
 

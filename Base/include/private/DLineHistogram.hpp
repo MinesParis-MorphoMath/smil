@@ -57,25 +57,27 @@ namespace smil
         }
     };
 
-    template <class T>
-    struct stretchHistLine : public unaryLineFunctionBase<T>
+    template <class Tin, class Tout>
+    struct stretchHistLine : public unaryLineFunctionBase<Tin, Tout>
     {
-        T inOrig, outOrig;
+        Tin inOrig;
+        Tout outOrig;
         double coeff;
-        typedef typename unaryLineFunctionBase<T>::lineType lineType;
+        typedef typename unaryLineFunctionBase<Tin>::lineType lineInType;
+        typedef typename unaryLineFunctionBase<Tout>::lineType lineOutType;
         
-        virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
+        virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
         {
             double newVal;
             
             for(size_t i=0;i<size;i++)
             {
                 newVal = double(outOrig) + (double(lIn[i])-double(inOrig))*coeff;
-                if (newVal > double(numeric_limits<T>::max()))
-                    newVal = numeric_limits<T>::max();
-                else if (newVal < double(numeric_limits<T>::min()))
-                    newVal = numeric_limits<T>::min();
-                lOut[i] = T(round(newVal));
+                if (newVal > double(numeric_limits<Tout>::max()))
+                    newVal = numeric_limits<Tout>::max();
+                else if (newVal < double(numeric_limits<Tout>::min()))
+                    newVal = numeric_limits<Tout>::min();
+                lOut[i] = Tout(round(newVal));
                 
             }
         }
