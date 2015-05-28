@@ -168,8 +168,7 @@ public:
 
 
 #define GET_TREE_OBJ(type, node) type[node >> COLUMN_SHIFT][node & COLUMN_MOD]
-#define ORDONNEE(offset,largeur) ((offset)/(largeur))
-#define ABSCISSE(offset,largeur) (offset - (int(offset)/(largeur))*largeur)
+
 
 
 
@@ -187,7 +186,7 @@ class MaxTree
 public:
     struct CriterionT
     {
-        OffsetT ymin, ymax, xmin, xmax;
+        OffsetT ymin, ymax, xmin, xmax, zmin, zmax;
         BaseCriterionT crit;
         inline void initialize() { crit.init(); }
         inline void reset() { crit.reset(); }
@@ -197,6 +196,7 @@ public:
   
 private:
     size_t GRAY_LEVEL_NBR;
+    Image<T> const *img;
     
     PriorityQueue<T, OffsetT> pq;
     
@@ -238,17 +238,18 @@ private:
         criteria[page] = new CriterionT[COLUMN_SIZE]();
     }
 
-    T initialize(const Image<T> &img, OffsetT *img_eti)
+    T initialize(const Image<T> &imIn, OffsetT *img_eti)
     {
         if (initialized)
           reset();
         
-        typename ImDtTypes<T>::lineType pix = img.getPixels();
+        this->img = &imIn;
+        typename ImDtTypes<T>::lineType pix = img->getPixels();
         
         T minValue = ImDtTypes<T>::max();
         T tMinV = ImDtTypes<T>::min();
         OffsetT minOff = 0;
-        for (size_t i=0;i<img.getPixelCount();i++)
+        for (size_t i=0;i<img->getPixelCount();i++)
           if (pix[i]<minValue)
           {
               minValue = pix[i];
@@ -267,20 +268,23 @@ private:
         img_eti[minOff] = curLabel;
         labels[minValue] = curLabel;
 
-        pq.initialize(img);
+        pq.initialize(*img);
         pq.push(minValue, minOff);
-        getCriterion(curLabel).ymin = ORDONNEE(minOff, img.getWidth());
-        getCriterion(curLabel).ymax = ORDONNEE(minOff, img.getWidth());
-        getCriterion(curLabel).xmin = ABSCISSE(minOff, img.getWidth());
-        getCriterion(curLabel).xmax = ABSCISSE(minOff, img.getWidth());
+        
+        size_t x, y, z;
+        img->getCoordsFromOffset(minOff, x, y, z);
+        
+        getCriterion(curLabel).xmin = getCriterion(curLabel).xmax = x;
+        getCriterion(curLabel).ymin = getCriterion(curLabel).ymax = y;
+        getCriterion(curLabel).zmin = getCriterion(curLabel).zmax = z;
 
         getCriterion(curLabel).initialize();
         curLabel++;
         
         initialized = true;
 
-        imWidth = img.getWidth();
-        imHeight = img.getHeight();
+        imWidth = img->getWidth();
+        imHeight = img->getHeight();
 
         return minValue;
     }
@@ -318,7 +322,7 @@ private:
         return curLabel++;
     }
     
-    bool subFlood(typename ImDtTypes<T>::lineType imgPix, int imWidth, UINT *img_eti, OffsetT p, OffsetT p_suiv)
+    bool subFlood(typename ImDtTypes<T>::lineType imgPix, UINT *img_eti, OffsetT p, OffsetT p_suiv)
     {
         int indice;
         
@@ -335,10 +339,15 @@ private:
         else 
             indice = img_eti[p_suiv] = labels[imgPix[p_suiv]];
         
-        getCriterion(indice).ymax = MAX(getCriterion(indice).ymax, ORDONNEE(p_suiv,imWidth));
-        getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, ORDONNEE(p_suiv,imWidth));
-        getCriterion(indice).xmax = MAX(getCriterion(indice).xmax, ABSCISSE(p_suiv,imWidth));
-        getCriterion(indice).xmin = MIN(getCriterion(indice).xmin, ABSCISSE(p_suiv,imWidth));
+        size_t x, y, z;
+        img->getCoordsFromOffset(p_suiv, x, y, z);
+        
+        getCriterion(indice).xmin = MIN(getCriterion(indice).xmin, x);
+        getCriterion(indice).xmax = MAX(getCriterion(indice).xmax, x);
+        getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, y);
+        getCriterion(indice).ymax = MAX(getCriterion(indice).ymax, y);
+        getCriterion(indice).zmin = MIN(getCriterion(indice).zmin, z);
+        getCriterion(indice).zmax = MAX(getCriterion(indice).zmax, z);
         getCriterion(indice).update();
         pq.push(imgPix[p_suiv], p_suiv);
         
@@ -358,39 +367,42 @@ private:
             size_t imDepth = img.getDepth();
             size_t pixPerSlice = imWidth*imHeight;
             typename ImDtTypes<T>::lineType imgPix = img.getPixels();
+            size_t x, y, z;
             
             while( (pq.getHigherLevel()>=level) && !pq.isEmpty())
             {
                 p = pq.pop();
+                img.getCoordsFromOffset(p, x, y, z);
                 
-                int p_suiv;
+                size_t p_suiv;
 
-                if ( p%pixPerSlice<pixPerSlice-imWidth && img_eti[p_suiv=p+imWidth]==0) //y+1
-                  if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
-                    continue;
-
-                if ( p%pixPerSlice>imWidth-1 && img_eti[p_suiv=p-imWidth]==0) //y-1
-                  if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
-                    continue;
-                  
-                if ( ((p_suiv=p+1) % imWidth !=0) && img_eti[p_suiv]==0) //x+1
-                  if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
-                    continue;
-                  
-                if ( (((p_suiv=p-1) % imWidth )!=imWidth-1) && p_suiv>=0 && img_eti[p_suiv]==0) //x-1
-                  if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
-                    continue;
-                  
                 if (imDepth>1) // for 3D
                 {
-                    if ( p/pixPerSlice<imDepth-1 && img_eti[p_suiv=p+pixPerSlice]==0) //z+1
-                      if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
+                    if ( z<imDepth-1 && img_eti[p_suiv=p+pixPerSlice]==0) //z+1
+                      if (subFlood(imgPix, img_eti, p, p_suiv))
                         continue;
                       
-                    if ( p/pixPerSlice>1 && img_eti[p_suiv=p-pixPerSlice]==0) //z-1
-                      if (subFlood(imgPix, imWidth, img_eti, p, p_suiv))
+                    if ( z>0 && img_eti[p_suiv=p-pixPerSlice]==0) //z-1
+                      if (subFlood(imgPix, img_eti, p, p_suiv))
                         continue;
                 }
+                
+                if ( y<imHeight-1 && img_eti[p_suiv=p+imWidth]==0) //y+1
+                  if (subFlood(imgPix, img_eti, p, p_suiv))
+                    continue;
+
+                if ( y>0 && img_eti[p_suiv=p-imWidth]==0) //y-1
+                  if (subFlood(imgPix, img_eti, p, p_suiv))
+                    continue;
+                  
+                if ( x<imWidth-1 && img_eti[p_suiv=p+1]==0) //x+1
+                  if (subFlood(imgPix, img_eti, p, p_suiv))
+                    continue;
+                  
+                if ( x>0 && img_eti[p_suiv=p-1]==0) //x-1
+                  if (subFlood(imgPix, img_eti, p, p_suiv))
+                    continue;
+                  
             }
     }
     
