@@ -197,16 +197,20 @@ namespace smil
         inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
         {
             labelT nbLbl = this->lblPixels[nbOffset];
+            labelT curLbl = lblPixels[curOffset]==STAT_QUEUED ? 0 : lblPixels[curOffset];
             
             if (nbLbl==0) // Add it to the tmp offsets queue
             {
                 hq.push(inPixels[nbOffset], nbOffset);
-                this->lblPixels[nbOffset] = STAT_QUEUED;
+                // Propagate label on plateaus
+                if (inPixels[nbOffset]==inPixels[curOffset] && curLbl!=0)
+                  this->lblPixels[nbOffset] = curLbl;
+                else
+                  this->lblPixels[nbOffset] = STAT_QUEUED;
             }
             else if (nbLbl<STAT_QUEUED)
             {
-                labelT curLbl = this->lblPixels[curOffset];
-                if (curLbl==0 || curLbl==STAT_QUEUED)
+                if (curLbl==0)
                   this->lblPixels[curOffset] = this->lblPixels[nbOffset];
             }
             

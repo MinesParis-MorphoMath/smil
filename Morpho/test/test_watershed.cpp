@@ -97,7 +97,7 @@ class Test_Basins : public TestCase
 };
 
 
-class Test_Basins2 : public TestCase
+class Test_Basins_Plateaus : public TestCase
 {
   virtual void run()
   {
@@ -327,6 +327,88 @@ class Test_Watershed : public TestCase
   }
 };
 
+class Test_Watershed_Plateaus : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dtType;
+      typedef UINT16 dtType2;
+      
+      dtType vecIn[] = { 
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0
+      };
+      
+      dtType2 vecMark[] = { 
+        1, 1, 1, 1, 1, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         3, 3, 3, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 2,
+        2, 2, 2, 2, 2, 2
+      };
+      
+      Image<dtType> imIn(6,7);
+      Image<dtType2> imMark(imIn);
+      Image<dtType> imWS(imIn);
+      Image<dtType2> imLbl(imIn);
+
+      imIn << vecIn;
+      imMark << vecMark;
+      
+      StrElt se = hSE();
+      
+      watershed(imIn, imMark, imWS, imLbl, se);
+      
+      dtType vecWSTruth[] = { 
+        0,    0,    0,    0,    0,    0,
+          0,    0,    0,    0,    0,    0,
+      255,  255,  255,  255,  255,    0,
+          0,    0,    0,    0,  255,  255,
+        0,    0,    0,    0,  255,    0,
+        255,  255,  255,  255,    0,    0,
+        0,    0,    0,    0,    0,    0,
+      };
+      
+      Image<dtType> imWSTruth(imIn);
+      imWSTruth << vecWSTruth;
+      
+      dtType2 vecLblTruth[] = { 
+        1,       1,       1,       1,       1,       1,
+            1,       1,       1,       1,       1,       1,
+        1,       1,       1,       1,       1,       1,
+            3,       3,       3,       3,       1,       1,
+        3,       3,       3,       3,       2,       2,
+            3,       3,       3,       2,       2,       2,
+        2,       2,       2,       2,       2,       2,
+      };
+      
+      Image<dtType2> imLblTruth(imIn);
+      imLblTruth << vecLblTruth;
+      
+      TEST_ASSERT(imWS==imWSTruth);
+      if (retVal!=RES_OK)
+      {
+        imWS.printSelf(1, true);
+        imWSTruth.printSelf(1, true);
+      }
+      
+      TEST_ASSERT(imLbl==imLblTruth);
+      if (retVal!=RES_OK)
+      {
+        imLbl.printSelf(1, true);
+        imLblTruth.printSelf(1, true);
+      }
+  }
+};
+
+
 class Test_Watershed_Indempotence : public TestCase
 {
   virtual void run()
@@ -385,13 +467,15 @@ int main()
       TestSuite ts;
       
       ADD_TEST(ts, Test_Basins);
-      ADD_TEST(ts, Test_Basins2);
+      ADD_TEST(ts, Test_Basins_Plateaus);
       ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
 
       typedef Test_Watershed<UINT8> Test_WS_UINT8;
       typedef Test_Watershed<UINT16> Test_WS_UINT16;
       ADD_TEST(ts, Test_WS_UINT8);
       ADD_TEST(ts, Test_WS_UINT16);
+      
+      ADD_TEST(ts, Test_Watershed_Plateaus);
 
       ADD_TEST(ts, Test_Watershed_Indempotence);
       
