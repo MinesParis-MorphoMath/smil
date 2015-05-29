@@ -107,12 +107,12 @@ namespace smil
         queue<size_t> *swap ;
         T2 cur_level=T2(2);
 
-        size_t size[3];
+        int size[3];
         imIn.getSize (size) ;
 
         pixelsIn = imIn.getPixels ();
 
-        size_t i=0;
+        int i=0;
         
         for (i=0; i<size[2]*size[1]*size[0]; ++i)
         {
@@ -187,7 +187,7 @@ namespace smil
         lineInType pixelsIn = tmp.getPixels () ;
         lineOutType pixelsOut = imOut.getPixels () ;
 
-        size_t size[3];
+        int size[3];
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
@@ -276,7 +276,7 @@ namespace smil
         lineInType pixelsIn = tmp.getPixels () ;
         lineOutType pixelsOut = imOut.getPixels () ;
 
-        size_t size[3];
+        int size[3];
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
@@ -347,7 +347,7 @@ namespace smil
         lineOutType pixelsOut = imOut.getPixels () ;
         lineOutType pixelsTmp = tmp.getPixels () ;
 
-        size_t size[3];
+        int size[3];
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;
@@ -456,7 +456,7 @@ namespace smil
         lineOutType pixelsOut = imOut.getPixels () ;
         lineOutType pixelsTmp = tmp.getPixels () ;
 
-        size_t size[3];
+        int size[3];
         imIn.getSize (size) ;
         size_t offset ;
         int x,y,z;

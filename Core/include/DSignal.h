@@ -31,13 +31,15 @@
 
 #include <iostream>
 #include <vector>
+#include <algorithm>
+
 using namespace std;
 
 #include "DCommon.h"
+#include "Core/include/DSlot.h"
 
 namespace smil
 {
-    class BaseSlot;
     class BaseObject;
 
     class Event
@@ -61,10 +63,60 @@ namespace smil
       {
         disconnectAll();
       }
-      virtual void connect(BaseSlot *slot, bool _register=true);
-      virtual void disconnect(BaseSlot *slot, bool _unregister=true);
-      virtual void disconnectAll();
-      virtual void trigger(Event *e=NULL);
+
+      virtual void connect(BaseSlot *slot, bool _register=true)
+      {
+        vector<BaseSlot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
+        
+        if (it!=_slots.end())
+          return;
+        
+        _slots.push_back(slot);
+        if (_register)
+          slot->registerSignal(this);
+      }
+
+      virtual void disconnect(BaseSlot *slot, bool _unregister=true)
+      {
+        vector<BaseSlot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
+        
+        if (it==_slots.end())
+          return;
+        
+        _slots.erase(it);
+        
+        if (_unregister)
+          slot->unregisterSignal(this, false);
+      }
+
+      virtual void disconnectAll()
+      {
+        vector<BaseSlot*>::iterator it = _slots.begin();
+        
+        while(it!=_slots.end())
+        {
+          (*it)->unregisterSignal(this, false);
+          it++;
+        }
+      }
+
+      virtual void trigger(Event *e)
+      {
+        if (!enabled)
+          return;
+        
+        if (e && sender)
+          e->sender = sender;
+        
+        vector<BaseSlot*>::iterator it = _slots.begin();
+        
+        while(it!=_slots.end())
+        {
+          (*it)->_run(e);
+          it++;
+        }
+      }
+      
       const BaseObject *sender;
       bool enabled;
     protected:

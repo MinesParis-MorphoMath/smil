@@ -215,12 +215,14 @@ namespace smil
         return mosaicToGraph<T1, T2, Graph<> >(imMosaic, imEdgeValues, imNodeValues, graph, se);
     }
 
+#ifdef USE_64BIT_IDS
     template <class T1>
     ENABLE_IF( !IS_SAME(T1,UINT), RES_T ) // SFINAE Only if T1!=UINT
     mosaicToGraph(const Image<T1> &imMosaic, Graph<UINT,UINT> &graph, const StrElt &se=DEFAULT_SE)
     {
         return mosaicToGraph<T1, UINT, Graph<UINT,UINT> >(imMosaic, graph, se);
     }
+#endif // USE_64BIT_IDS
     template <class T1, class T2>
     ENABLE_IF( !IS_SAME(T1,UINT), RES_T ) // SFINAE Only if T1!=UINT
     mosaicToGraph(const Image<T1> &imMosaic, const Image<T2> &imEdgeValues, Graph<UINT,T2> &graph, const StrElt &se=DEFAULT_SE)

@@ -138,7 +138,7 @@ class Test_MeasBoundingBox : public TestCase
       Image_UINT8 im(5,5,5);
       im << vec;
       
-      vector<UINT> bbox = measBoundBox(im);
+      vector<size_t> bbox = measBoundBox(im);
       
       TEST_ASSERT(bbox[0]==1 && bbox[1]==2 && bbox[2]==0 && bbox[3]==3 && bbox[4]==4 && bbox[5]==4);
   }

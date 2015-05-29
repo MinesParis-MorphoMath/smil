@@ -90,7 +90,7 @@ namespace smil
     * Image histogram
     */
     template <class T>
-    std::map<T, UINT> histogram(const Image<T> &imIn)
+    std::map<T, UINT> histogram(const Image<T> &imIn, bool fullRange=false)
     {
         vector<T> rVals = rangeVal(imIn);
         size_t card = rVals[1]-rVals[0]+1;
@@ -104,9 +104,18 @@ namespace smil
             buf[size_t(pixels[i]-rVals[0])]++;
         
         map<T, UINT> h;
+        
+        if (fullRange)
+          for (T i=ImDtTypes<T>::min();i<rVals[0];i++)
+              h.insert(pair<T,UINT>(i, 0));
+        
         for (size_t i=0;i<card;i++)
             h.insert(pair<T,UINT>(i+rVals[0], buf[i]));
         
+        if (fullRange)
+          for (T i=rVals[1];i<=ImDtTypes<T>::max() && i!=ImDtTypes<T>::min();i++)
+              h.insert(pair<T,UINT>(i, 0));
+          
         delete[] buf;
         
         return h;
@@ -119,7 +128,7 @@ namespace smil
     * Calculates the histogram of the image imIn only for pixels x where imMask(x)!=0
     */
     template <class T>
-    std::map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask)
+    std::map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask, bool fullRange=false)
     {
         map<T, UINT> h;
         
@@ -138,9 +147,17 @@ namespace smil
           if (maskPixels[i]!=0)
             buf[size_t(pixels[i]-rVals[0])]++;
         
+        if (fullRange)
+          for (T i=ImDtTypes<T>::min();i<rVals[0];i++)
+              h.insert(pair<T,UINT>(i, 0));
+        
         for (size_t i=0;i<card;i++)
             h.insert(pair<T,UINT>(i+rVals[0], buf[i]));
         
+        if (fullRange)
+          for (T i=rVals[1];i<=ImDtTypes<T>::max() && i!=ImDtTypes<T>::min();i++)
+              h.insert(pair<T,UINT>(i, 0));
+          
         delete[] buf;
         
         return h;

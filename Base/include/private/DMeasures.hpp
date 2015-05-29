@@ -412,7 +412,7 @@ namespace smil
         size_t imH = im.getHeight();
         
         vector<IntPoint> bPoints;
-        if ( x0>=int(imW) || y0>=int(imH) || x1>=int(imW) || y1>=int(imH) )
+        if ( x0>=imW || y0>=imH || x1>=imW || y1>=imH )
           bPoints = bresenhamPoints(x0, y0, x1, y1, imW, imH);
         else
           bPoints = bresenhamPoints(x0, y0, x1, y1); // no image range check (faster)
@@ -465,7 +465,7 @@ namespace smil
 
 
     template <class T>
-    struct measBoundBoxFunc : public MeasureFunctionWithPos<T, Vector_UINT >
+    struct measBoundBoxFunc : public MeasureFunctionWithPos<T, vector<size_t> >
     {
         typedef typename Image<T>::lineType lineType;
         double xMin, xMax, yMin, yMax, zMin, zMax;
@@ -514,7 +514,7 @@ namespace smil
     * \return xMin, yMin (,zMin), xMax, yMax (,zMax)
     */
     template <class T>
-    Vector_UINT measBoundBox(Image<T> &im)
+    vector<size_t> measBoundBox(Image<T> &im)
     {
         measBoundBoxFunc<T> func;
         return func(im, true);

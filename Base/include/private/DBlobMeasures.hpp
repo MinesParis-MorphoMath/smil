@@ -169,7 +169,7 @@ namespace smil
     * Return a map(labelValue, Box) with the bounding box for each label value.
     */
     template <class T>
-    map<T, Vector_UINT > measBoundBoxes(const Image<T> &imLbl, const bool onlyNonZero=true)
+    map<T, vector<size_t> > measBoundBoxes(const Image<T> &imLbl, const bool onlyNonZero=true)
     {
         return processBlobMeasure<T, T, measBoundBoxFunc<T> >(imLbl, onlyNonZero);
     }
@@ -179,7 +179,7 @@ namespace smil
     * Return a map(labelValue, Box) with the bounding box for each label value.
     */
     template <class T, class labelT>
-    map<labelT, Vector_UINT > measBoundBoxes(const Image<T> &imIn, map<labelT, Blob> &blobs)
+    map<labelT, vector<size_t> > measBoundBoxes(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
         return processBlobMeasure<T, labelT, measBoundBoxFunc<T> >(imIn, blobs);
     }

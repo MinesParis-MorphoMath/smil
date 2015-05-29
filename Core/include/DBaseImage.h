@@ -139,6 +139,13 @@ namespace smil
             s[2] = this->depth;
         }
         
+        inline void getSize(int s[3]) const
+        {
+            s[0] = this->width;
+            s[1] = this->height;
+            s[2] = this->depth;
+        }
+        
         //! Get the number of pixels
         inline size_t getPixelCount() const {
             return this->pixelCount;

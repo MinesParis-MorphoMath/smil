@@ -283,7 +283,7 @@ namespace smil
     * \param imOut Output image.
     */
     template <class T>
-    RES_T drawDisc(Image<T> &imOut, int x0, int y0, int radius, T value=ImDtTypes<T>::max(), int zSlice=0)
+    RES_T drawDisc(Image<T> &imOut, int x0, int y0, size_t zSlice, int radius, T value=ImDtTypes<T>::max())
     {
         ASSERT_ALLOCATED(&imOut);
         ASSERT((zSlice<imOut.getDepth()), "zSlice is out of range", RES_ERR);
@@ -315,6 +315,14 @@ namespace smil
             
         return RES_OK;
     }
+    
+    // 2D Overload
+    template <class T>
+    RES_T drawDisc(Image<T> &imOut, int x0, int y0, int radius, T value=ImDtTypes<T>::max())
+    {
+        return drawDisc(imOut, x0, y0, 0, radius, value);
+    }
+    
 
     /**
     * Draw a box (3D)

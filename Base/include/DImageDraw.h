@@ -43,7 +43,7 @@ namespace smil
     * @{
     */
     
-    static std::vector<IntPoint> bresenhamPoints(int p1x, int p1y, int p2x, int p2y, int xMax=0, int yMax=0)
+    inline std::vector<IntPoint> bresenhamPoints(int p1x, int p1y, int p2x, int p2y, int xMax=0, int yMax=0)
     {
         vector<IntPoint> points;
         int F, x, y;

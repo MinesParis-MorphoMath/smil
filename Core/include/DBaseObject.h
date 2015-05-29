@@ -99,7 +99,11 @@ namespace smil
         }
 
     private:
-        void _clone(const BaseObject &rhs);
+        void _clone(const BaseObject &rhs)
+        {
+            this->className = rhs.getClassName();
+            this->triggerEvents = rhs.triggerEvents;
+        }
 
     public:
 
@@ -108,7 +112,10 @@ namespace smil
         typedef void parentClass;
         virtual const char *getInfoString(const char * = "") const { return NULL; }
         virtual void printSelf(ostream & = std::cout, string ="") const {};
-        virtual const char *getClassName() const;
+        virtual const char *getClassName() const
+        {
+            return this->className.c_str();
+        }
 
         virtual void setName(const char *_name)
         {

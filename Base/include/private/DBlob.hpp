@@ -153,7 +153,7 @@ namespace smil
                 for (;it!=it_end;it++)
                 {
                   typename ImDtTypes<T>::lineType line = pixels + (*it).offset;
-                  for (int i=0;i<(*it).size;i++)
+                  for (size_t i=0;i<it->size;i++)
                     line[i] = outVal;
                 }
             }
@@ -202,7 +202,7 @@ namespace smil
                 for (;it!=it_end;it++)
                 {
                   typename ImDtTypes<T>::lineType line = pixels + (*it).offset;
-                  for (int i=0;i<(*it).size;i++)
+                  for (size_t i=0;i<it->size;i++)
                     line[i] = outVal;
                 }
             }
