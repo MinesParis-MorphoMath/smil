@@ -43,7 +43,7 @@
 namespace smil
 {
     template <>
-    inline void copyLine<RGB>(const Image<RGB>::lineType lIn, const size_t size, Image<RGB>::lineType lOut)
+    inline void copyLine<RGB>(const unaryLineFunctionBase<RGB>::lineInType lIn, const size_t size, unaryLineFunctionBase<RGB>::lineInType lOut)
     {
         for (UINT n=0;n<3;n++)
           memcpy(lOut.arrays[n], lIn.arrays[n], size*sizeof(UINT8));
@@ -56,7 +56,7 @@ namespace smil
     }
     
     template <>
-    inline void shiftLine(const Image<RGB>::lineType lIn, int dx, size_t lineLen, Image<RGB>::lineType lOut, RGB borderValue)
+    inline void shiftLine(const unaryLineFunctionBase<RGB>::lineInType lIn, int dx, size_t lineLen, unaryLineFunctionBase<RGB>::lineInType lOut, RGB borderValue)
     {
         for (UINT n=0;n<3;n++)
             shiftLine<UINT8>(lIn.arrays[n], dx, lineLen, lOut.arrays[n], borderValue[n]);

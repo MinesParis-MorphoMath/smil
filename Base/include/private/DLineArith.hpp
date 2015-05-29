@@ -46,14 +46,14 @@ namespace smil
     * copy line
     */
     template <class T1, class T2>
-    inline void copyLine(const typename Image<T1>::lineType __restrict lIn, const size_t size, typename Image<T2>::lineType __restrict lOut)
+    inline void copyLine(const typename unaryLineFunctionBase<T1>::lineInType lIn, const size_t size, typename unaryLineFunctionBase<T2>::lineInType lOut)
     {
         for (size_t i=0;i<size;i++)
           lOut[i] = lIn[i];
     }
 
     template <class T>
-    inline void copyLine(const typename Image<T>::lineType __restrict lIn, const size_t size, typename Image<T>::lineType __restrict lOut)
+    inline void copyLine(const typename unaryLineFunctionBase<T>::lineInType lIn, const size_t size, typename unaryLineFunctionBase<T>::lineInType lOut)
     {
         for (size_t i=0;i<size;i++)
           lOut[i] = lIn[i];
@@ -88,7 +88,7 @@ namespace smil
     };
 
     template <class T>
-    inline void shiftLine(const typename Image<T>::lineType __restrict lIn, int dx, size_t lineLen, typename Image<T>::lineType __restrict lOut, T borderValue = ImDtTypes<T>::min())
+    inline void shiftLine(const typename unaryLineFunctionBase<T>::lineInType lIn, int dx, size_t lineLen, typename unaryLineFunctionBase<T>::lineInType lOut, T borderValue = ImDtTypes<T>::min())
     {
         if (dx==0)
             copyLine<T>(lIn, lineLen, lOut);

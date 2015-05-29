@@ -102,6 +102,7 @@ namespace smil
         }
         typedef typename ImDtTypes<T>::pixelType pixelType;
         typedef typename ImDtTypes<T>::lineType lineType;
+        typedef typename ImDtTypes<T>::restrictLineType restrictLineType;
         typedef typename ImDtTypes<T>::sliceType sliceType;
         typedef typename ImDtTypes<T>::volType volType;
         

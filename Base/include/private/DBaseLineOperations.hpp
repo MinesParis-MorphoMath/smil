@@ -45,11 +45,11 @@ namespace smil
     struct unaryLineFunctionBase
     {
         typedef Image<T> imageInType;
-        typedef typename imageInType::lineType __restrict lineInType;
+        typedef typename imageInType::restrictLineType lineInType;
         typedef typename imageInType::sliceType sliceInType;
         
         typedef Image<T_out> imageOutType;
-        typedef typename imageOutType::lineType __restrict lineOutType;
+        typedef typename imageOutType::restrictLineType lineOutType;
         typedef typename imageOutType::sliceType sliceOutType;
         
         typedef lineInType lineType;
@@ -107,9 +107,9 @@ namespace smil
     template <class T1, class T2=T1, class T_out=T1>
     struct binaryLineFunctionBase
     {
-        typedef typename Image<T1>::lineType __restrict lineType1;
-        typedef typename Image<T2>::lineType __restrict lineType2;
-        typedef typename Image<T_out>::lineType __restrict lineOutType;
+        typedef typename Image<T1>::restrictLineType lineType1;
+        typedef typename Image<T2>::restrictLineType lineType2;
+        typedef typename Image<T_out>::restrictLineType lineOutType;
         typedef lineType1 lineType;
         
         typedef typename Image<T1>::sliceType sliceType;
@@ -183,10 +183,10 @@ namespace smil
     template <class T1, class T2=T1, class T3=T1, class T_out=T1>
     struct tertiaryLineFunctionBase
     {
-        typedef typename Image<T1>::lineType __restrict lineType1;
-        typedef typename Image<T2>::lineType __restrict lineType2;
-        typedef typename Image<T3>::lineType __restrict lineType3;
-        typedef typename Image<T_out>::lineType __restrict lineOutType;
+        typedef typename Image<T1>::restrictLineType lineType1;
+        typedef typename Image<T2>::restrictLineType lineType2;
+        typedef typename Image<T3>::restrictLineType lineType3;
+        typedef typename Image<T_out>::restrictLineType lineOutType;
         typedef lineType1 lineType;
         
         virtual void _exec(const lineType1 /*lineIn1*/, const lineType2 /*lineIn2*/, const lineType3 /*lineIn3*/, const size_t /*size*/, lineOutType /*lineOut*/) = 0;
