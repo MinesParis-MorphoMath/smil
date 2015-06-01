@@ -29,7 +29,7 @@
 
 %include smilCommon.i
 
-SMIL_MODULE(smilVtkInterface)
+SMIL_MODULE(smilVtk)
 
 
 %{
@@ -43,7 +43,7 @@ SMIL_MODULE(smilVtkInterface)
 %include "DVtkInterface.hpp"
 
 TEMPLATE_WRAP_CLASS(VtkInt,VtkInt)
-
+TEMPLATE_WRAP_SUPPL_CLASS(VtkInt,VtkInt)
 
 #ifdef SWIGPYTHON
 
@@ -68,6 +68,8 @@ def VtkInt(*args):
       return VtkInt_UINT8(im)
     elif dt=="unsigned short":
       return VtkInt_UINT16(im)
+    elif dt=="short":
+      return VtkInt_INT16(im)
 %}
 
         

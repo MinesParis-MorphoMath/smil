@@ -19,7 +19,7 @@ class Test_Python_Import : public TestCase
           PyRun_String("import vtk", Py_file_input, globals, NULL);
           PyRun_SimpleString("vIm = vtk.vtkImageData()");
           PyRun_SimpleString("vIm.SetExtent(0, 49, 0, 49, 0, 49)");
-          PyRun_SimpleString("vIm.SetScalarTypeToUnsignedShort()");
+          PyRun_SimpleString("vIm.SetScalarTypeToUnsignedChar()");
           PyRun_SimpleString("vIm.SetNumberOfScalarComponents(1)");
           PyRun_SimpleString("vIm.AllocateScalars()");
 

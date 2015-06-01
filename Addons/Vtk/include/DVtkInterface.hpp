@@ -47,6 +47,16 @@ namespace smil
      * @{
      */
     
+    template <class T>
+    int getVtkType()
+    {
+      return -1;
+    }
+    template<> int getVtkType<UINT8>() { return VTK_UNSIGNED_CHAR; }
+    template<> int getVtkType<UINT16>() { return VTK_UNSIGNED_SHORT; }
+    template<> int getVtkType<INT8>() { return VTK_SIGNED_CHAR; }
+    template<> int getVtkType<INT16>() { return VTK_SHORT; }
+    
     /**
      * 
     * VTK Image Interface
@@ -58,14 +68,21 @@ namespace smil
     public:
         typedef SharedImage<T> parentClass;
         
-        VtkInt(vtkImageData *data)
+        VtkInt(vtkImageData *imData)
         {
             BaseObject::className = "VtkInt";
             parentClass::init();
             
-            int *s = data->GetExtent();
-            typename Image<T>::lineType pix = static_cast<typename Image<T>::lineType>(data->GetScalarPointer());
-            this->attach(pix, s[1]+1, s[3]+1, s[5]+1);
+            if( getVtkType<T>()!=imData->GetScalarType() )
+            {
+                ERR_MSG("Wrong image type");
+                return;
+            }
+            
+            int *dims = imData->GetDimensions();
+            
+            typename Image<T>::lineType pix = static_cast<typename Image<T>::lineType>(imData->GetScalarPointer());
+            this->attach(pix, dims[0], dims[1], dims[2]);
 
           
         }
@@ -75,22 +92,37 @@ namespace smil
             BaseObject::className = "VtkInt";
             parentClass::init();
             
-            vtkImageData * data = (vtkImageData*)vtkPythonUtil::GetPointerFromObject(obj, "vtkImageData" );
+            vtkImageData * imData = (vtkImageData*)vtkPythonUtil::GetPointerFromObject(obj, "vtkImageData" );
 
-            if ( data == 0 ) // if the PyObject is not a vtk.vtkImageData object
+            if ( imData == 0 ) // if the PyObject is not a vtk.vtkImageData object
             {
                 PyErr_SetString( PyExc_TypeError, "Not a vtkImageData" );
             }
             else
             {
-                int *s = data->GetExtent();
-                typename Image<T>::lineType pix = static_cast<typename Image<T>::lineType>(data->GetScalarPointer());
-                this->attach(pix, s[1]+1, s[3]+1, s[5]+1);
+                if( getVtkType<T>()!=imData->GetScalarType() )
+                {
+                    ERR_MSG("Wrong image type");
+                    return;
+                }
+                
+                int *dims = imData->GetDimensions();
+                typename Image<T>::lineType pix = static_cast<typename Image<T>::lineType>(imData->GetScalarPointer());
+                this->attach(pix, dims[0], dims[1], dims[2]);
             }
          }
     #endif // Py_PYCONFIG_H
     };
 
+    template <>
+    class VtkInt<RGB>
+    {
+      public:
+        VtkInt(vtkImageData *)
+        {
+        }
+    };
+    
     /*@}*/
     
 } // namespace smil
