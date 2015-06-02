@@ -53,18 +53,17 @@ import __builtin__
 
 
 def QVtkViewer(im):
-    t = str(type(im))
-    t_spl = t.split(".Image")
+    objType = str(type(im))
     if im.getName()=="":
       name = __builtin__._find_object_name(im)
       if name!="":
         im.setName(name)
-    if len(t_spl)<2:
+    if not hasattr(im, "getPixel"):
       print "Input must be an Image"
       return
-    imT = t_spl[-1][:-2]
+    imT = objType.split("_")[-1][:-2]
     current_module = sys.modules[__name__]
-    viewerFunc = getattr(current_module, "QVtkViewer" + imT)
+    viewerFunc = getattr(current_module, "QVtkViewer_" + imT)
     return viewerFunc(im)
 %}
 

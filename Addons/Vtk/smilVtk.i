@@ -35,6 +35,7 @@ SMIL_MODULE(smilVtk)
 %{
 /* Includes the header in the wrapper code */
 #include "DVtkInterface.hpp"
+#include "DVtkIO.hpp"
 %}
 
 %import smilCore.i
@@ -44,6 +45,12 @@ SMIL_MODULE(smilVtk)
 
 TEMPLATE_WRAP_CLASS(VtkInt,VtkInt)
 TEMPLATE_WRAP_SUPPL_CLASS(VtkInt,VtkInt)
+
+
+%include "DVtkIO.hpp"
+
+TEMPLATE_WRAP_FUNC(readDICOM)
+TEMPLATE_WRAP_SUPPL_FUNC(readDICOM)
 
 #ifdef SWIGPYTHON
 

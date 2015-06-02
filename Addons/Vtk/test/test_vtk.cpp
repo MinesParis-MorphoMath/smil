@@ -1,5 +1,6 @@
 
 #include "DVtkInterface.hpp"
+#include "DVtkIO.hpp"
 #include "Core/include/DTest.h"
 
 
