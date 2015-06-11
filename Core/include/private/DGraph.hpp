@@ -511,6 +511,9 @@ namespace smil
             for (typename NodeEdgesType::const_iterator it=nodeEdges.begin();it!=nodeEdges.end();it++)
                 pq.push(edges[*it]);
         }
+        // Copy node values
+        mst.getNodeValues() = graph.getNodeValues();
+        
         return mst;
     }
     
