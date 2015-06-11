@@ -722,7 +722,7 @@ struct AreaCriterion
 // NEW BMI    # ##################################################
 //(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
 template <class T, class CriterionT, class OffsetT>
-void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent,  int first_ancestor, UINT stop, UINT delta, int isPrevMaxT){
+void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent,  int first_ancestor, UINT stop, UINT delta, int isPrevMaxT,UINT minArea=0,T threshold=0){
 
   // "node": the current node; "nParent": its direct parent (allows
   // attribute comparison for Delta versions); "first_ancestor": the
@@ -774,7 +774,7 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
       indicatrice_node[node] = indicatrice_node[nParent];
       int isMaxT = 0;
       if(cNode < stop){
-        if (stab_residue > transformee_node[node]){
+        if (stab_residue > transformee_node[node] && stab_residue > threshold && aNode.value > minArea){
           isMaxT = 1;
           transformee_node[node] = stab_residue;
 
@@ -790,11 +790,11 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
       child=tree.getChild(node);
       while (child!=0){
         if(flag && (cNode < stop)){
-          ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node,first_ancestor, stop, delta,isMaxT);
+          ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node,first_ancestor, stop, delta,isMaxT,minArea,threshold);
         }
         else{
 
-          ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node, nParent,stop, delta,isMaxT);
+          ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node, nParent,stop, delta,isMaxT,minArea,threshold);
         }
         child = tree.getBrother(child);
       }
@@ -927,7 +927,7 @@ void  ComputeDeltaUOMSERSC(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
 
 
 template <class T, class CriterionT, class OffsetT>
-void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize,UINT delta = 0, bool use_textShape =0)
+void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize,UINT delta = 0, UINT minArea=0,T threshold=0, bool use_textShape =0)
 {
 
   int child;
@@ -943,7 +943,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
     while (child!=0) 
       {
        if(!use_textShape)
-        ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
+        ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/,minArea,threshold);
        else
         ComputeDeltaUOMSERSC(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
 
@@ -955,7 +955,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
 #endif // SWIG
 
     template <class T1, class T2>
-    RES_T ultimateOpenMSER(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, int stopSize=-1, UINT delta = 0, bool use_textShape =0)
+    RES_T ultimateOpenMSER(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, int stopSize=-1, UINT delta = 0, UINT minArea=0,T1 threshold=0, bool use_textShape =0)
     {
         ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
         ASSERT_SAME_SIZE(&imIn, &imTrans, &imIndic);
@@ -974,7 +974,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
         T1 *transformee_node = new T1[tree.getLabelMax()]();
         UINT *indicatrice_node = new UINT[tree.getLabelMax()]();
 
-        compute_contrast_MSER(tree, transformee_node, indicatrice_node, root, stopSize,delta,use_textShape);
+        compute_contrast_MSER(tree, transformee_node, indicatrice_node, root, stopSize,delta,minArea,threshold,use_textShape);
 
         
         typename ImDtTypes<T1>::lineType transformeePix = imTrans.getPixels();
