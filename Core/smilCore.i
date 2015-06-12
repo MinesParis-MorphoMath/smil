@@ -190,6 +190,7 @@ namespace std
 
 #ifdef USE_64BIT_IDS
     TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, size_t, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_size_t, Map)
 #endif // USE_64BIT_IDS
 
 #ifndef SMIL_WRAP_double

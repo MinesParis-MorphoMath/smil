@@ -118,6 +118,7 @@ namespace smil
     typedef vector<double> Vector_double;
     typedef vector<Vector_double> Matrix_double;
     typedef vector<UINT> Vector_UINT;
+    typedef vector<size_t> Vector_size_t;
     
     struct Rectangle
     {
