@@ -36,6 +36,12 @@ ENDIF(CMAKE_VERSION VERSION_GREATER 2.8.10)
 
 CMAKE_POLICY(SET CMP0017 NEW)
 
+
+# FORBID COMPILATION IN SOURCE DIR
+IF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
+    MESSAGE(FATAL_ERROR "Compilation in source directory is deprecated and will result in build errors. Please build in a different directory.")
+ENDIF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
+
 ############
 
 SET(MODULES	Core
