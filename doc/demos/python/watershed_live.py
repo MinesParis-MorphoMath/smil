@@ -15,6 +15,7 @@ class myWSFlooding(WatershedFlooding_UINT8_UINT16):
     if self.nbrPixProcessed>=self.refresh_every:
         self.imgWS.modified()
         self.imgLbl.modified()
+        Gui.processEvents()
         self.nbrPixProcessed = 0
     else:
         self.nbrPixProcessed += 1

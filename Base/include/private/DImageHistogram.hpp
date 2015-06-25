@@ -418,6 +418,9 @@ namespace smil
       return true;
     }
 
+    /**
+     * Return the different threshold values and the value of the resulting variance between classes
+     */
     template <class T>
     vector<T> otsuThresholdValues(map<T, UINT> &hist, UINT threshLevels=1)
     {
@@ -511,6 +514,7 @@ namespace smil
         {
             threshVals.push_back(T(maxVarThresholdIndexes[j])); //= histogram->GetBinMax(0,maxVarThresholdIndexes[j]);
         }
+        threshVals.push_back(maxVarBetween);
         
         return threshVals;
     }
