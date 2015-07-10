@@ -280,6 +280,9 @@ namespace smil
         * See \ref numpy_page "NumPy interface page".
         */
         PyObject * getNumArray(bool c_contigous=false);
+        
+        //! Copy pixel values from a given NumPy array
+        void fromNumArray(PyObject *obj);
     #endif // defined SWIGPYTHON && defined USE_NUMPY
         
         //! Trigger modified event (allows to force display update)

@@ -37,7 +37,7 @@
   
 template <class T> class Image;
 
-template <class T> int getNumpyType(Image<T> &im) { return NPY_VOID; } // Default
+template <class T> int getNumpyType(Image<T> &/*im*/) { return NPY_VOID; } // Default
 
 template <> int getNumpyType(Image<UINT8> &/*im*/) { return NPY_UBYTE; }
 template <> int getNumpyType(Image<INT8> &/*im*/) { return NPY_BYTE; }

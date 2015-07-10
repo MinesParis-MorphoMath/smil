@@ -954,6 +954,34 @@ namespace smil
             return res;
         }
     }
+    
+    template <class T>
+    void Image<T>::fromNumArray(PyObject *obj)
+    {
+        PyArrayObject *arr = NULL;
+        PyArray_Descr *descr = NULL;
+
+        if (PyArray_GetArrayParamsFromObject(obj, NULL, 1, &descr, NULL, NULL, &arr, NULL) != 0) 
+        {
+            ERR_MSG("Input must be a NumPy array");
+            return;
+        }
+        descr = PyArray_DESCR(arr);
+        if (descr && descr->type_num!=getNumpyType(*this))
+        {
+            ERR_MSG("Wrong input NumPy array data type");
+            return;
+        }
+        npy_intp *dims = PyArray_DIMS(arr);
+        setSize(dims[0], dims[1], dims[2]);
+        T *data = (T*)PyArray_DATA(arr);
+        if (data)
+        {
+            for (size_t i=0;i<pixelCount;i++)
+              pixels[i] = data[i];
+        }
+        modified();
+    }
     #endif // defined SWIGPYTHON && defined USE_NUMPY
 
     typedef Image<UINT8> Image_UINT8;
