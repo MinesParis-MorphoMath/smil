@@ -38,92 +38,92 @@ class Test_DendroModule : public TestCase
   virtual void run()
   {	
       // Construction dendrogramme exemple
-	Dendrogram<UINT16,UINT16,UINT16> dendroTest(11);
-	DendroNode<UINT16,UINT16> dendroNodeA,dendroNodeB,dendroNodeC,dendroNodeD,dendroNodeE,
-			dendroNodeF,dendroNodeG,dendroNodeH,dendroNodeI,dendroNodeJ,dendroNodeK;
-	
-	// Nodes A, B, C, D, E, F are leafs
-	// NodeA
-	dendroNodeA.setValuation(3);
-	dendroNodeA.setMarker(0); //already default value, just to make things clearer
-	dendroNodeA.setFather(&dendroNodeG);
-	// NodeB
-	dendroNodeB.setValuation(1);
-	dendroNodeB.setMarker(1);
-	dendroNodeB.setFather(&dendroNodeG);
-	// NodeC
-	dendroNodeC.setValuation(4);
-	dendroNodeC.setMarker(0);
-	dendroNodeC.setFather(&dendroNodeH);
-	// NodeD
-	dendroNodeD.setValuation(2);
-	dendroNodeD.setMarker(2);
-	dendroNodeD.setFather(&dendroNodeH);
-	// NodeE
-	dendroNodeE.setValuation(5);
-	dendroNodeE.setMarker(3);
-	dendroNodeE.setFather(&dendroNodeI);
-	// NodeF
-	dendroNodeF.setValuation(2);
-	dendroNodeF.setMarker(0);
-	dendroNodeF.setFather(&dendroNodeI);
-	
-	// Nodes G, H, I, J, K are internal nodes
-	// NodeG	
-	dendroNodeG.setChildLeft(&dendroNodeA);
-	dendroNodeG.setChildRight(&dendroNodeB);
-	dendroNodeG.setNeighborLeft(&dendroNodeA);
-	dendroNodeG.setNeighborRight(&dendroNodeB);
-	dendroNodeG.setInternalNodeValuationInitial(1);
-	dendroNodeG.setFather(&dendroNodeK);
-	// NodeH	
-	dendroNodeH.setChildLeft(&dendroNodeC);
-	dendroNodeH.setChildRight(&dendroNodeD);
-	dendroNodeH.setNeighborLeft(&dendroNodeC);
-	dendroNodeH.setNeighborRight(&dendroNodeD);
-	dendroNodeH.setInternalNodeValuationInitial(2);
-	dendroNodeH.setFather(&dendroNodeJ);
-	// NodeI	
-	dendroNodeI.setChildLeft(&dendroNodeE);
-	dendroNodeI.setChildRight(&dendroNodeF);
-	dendroNodeI.setNeighborLeft(&dendroNodeE);
-	dendroNodeI.setNeighborRight(&dendroNodeF);
-	dendroNodeI.setInternalNodeValuationInitial(1);
-	dendroNodeI.setFather(&dendroNodeJ);
-	// NodeJ	
-	dendroNodeJ.setChildLeft(&dendroNodeH);
-	dendroNodeJ.setChildRight(&dendroNodeI);
-	dendroNodeJ.setNeighborLeft(&dendroNodeD);
-	dendroNodeJ.setNeighborRight(&dendroNodeE);
-	dendroNodeJ.setInternalNodeValuationInitial(7);
-	dendroNodeJ.setFather(&dendroNodeK);
-	// NodeK	
-	dendroNodeK.setChildLeft(&dendroNodeG);
-	dendroNodeK.setChildRight(&dendroNodeJ);
-	dendroNodeK.setNeighborLeft(&dendroNodeB);
-	dendroNodeK.setNeighborRight(&dendroNodeC);
-	dendroNodeK.setInternalNodeValuationInitial(8);
-	dendroNodeK.setFather(&dendroNodeK);
-
-
-	// remplissage de dendroTest avec les noeuds créés
-	dendroTest.addDendroNodes(&dendroNodeA);
-	dendroTest.addDendroNodes(&dendroNodeB);
-	dendroTest.addDendroNodes(&dendroNodeC);
-	dendroTest.addDendroNodes(&dendroNodeD);
-	dendroTest.addDendroNodes(&dendroNodeE);
-	dendroTest.addDendroNodes(&dendroNodeF);
-	dendroTest.addDendroNodes(&dendroNodeG);
-	dendroTest.addDendroNodes(&dendroNodeH);
-	dendroTest.addDendroNodes(&dendroNodeI);
-	dendroTest.addDendroNodes(&dendroNodeJ);
-	dendroTest.addDendroNodes(&dendroNodeK);
+// 	Dendrogram<UINT16,UINT16,UINT16> dendroTest(11);
+// 	DendroNode<UINT16> dendroNodeA,dendroNodeB,dendroNodeC,dendroNodeD,dendroNodeE,
+// 			dendroNodeF,dendroNodeG,dendroNodeH,dendroNodeI,dendroNodeJ,dendroNodeK;
+// 	
+// 	// Nodes A, B, C, D, E, F are leafs
+// 	// NodeA
+// 	dendroNodeA.setValuation(3);
+// 	dendroNodeA.setMarker(0); //already default value, just to make things clearer
+// 	dendroNodeA.setFather(&dendroNodeG);
+// 	// NodeB
+// 	dendroNodeB.setValuation(1);
+// 	dendroNodeB.setMarker(1);
+// 	dendroNodeB.setFather(&dendroNodeG);
+// 	// NodeC
+// 	dendroNodeC.setValuation(4);
+// 	dendroNodeC.setMarker(0);
+// 	dendroNodeC.setFather(&dendroNodeH);
+// 	// NodeD
+// 	dendroNodeD.setValuation(2);
+// 	dendroNodeD.setMarker(2);
+// 	dendroNodeD.setFather(&dendroNodeH);
+// 	// NodeE
+// 	dendroNodeE.setValuation(5);
+// 	dendroNodeE.setMarker(3);
+// 	dendroNodeE.setFather(&dendroNodeI);
+// 	// NodeF
+// 	dendroNodeF.setValuation(2);
+// 	dendroNodeF.setMarker(0);
+// 	dendroNodeF.setFather(&dendroNodeI);
+// 	
+// 	// Nodes G, H, I, J, K are internal nodes
+// 	// NodeG	
+// 	dendroNodeG.setChildLeft(&dendroNodeA);
+// 	dendroNodeG.setChildRight(&dendroNodeB);
+// 	dendroNodeG.setNeighborLeft(&dendroNodeA);
+// 	dendroNodeG.setNeighborRight(&dendroNodeB);
+// 	dendroNodeG.setInternalNodeValuationInitial(1);
+// 	dendroNodeG.setFather(&dendroNodeK);
+// 	// NodeH	
+// 	dendroNodeH.setChildLeft(&dendroNodeC);
+// 	dendroNodeH.setChildRight(&dendroNodeD);
+// 	dendroNodeH.setNeighborLeft(&dendroNodeC);
+// 	dendroNodeH.setNeighborRight(&dendroNodeD);
+// 	dendroNodeH.setInternalNodeValuationInitial(2);
+// 	dendroNodeH.setFather(&dendroNodeJ);
+// 	// NodeI	
+// 	dendroNodeI.setChildLeft(&dendroNodeE);
+// 	dendroNodeI.setChildRight(&dendroNodeF);
+// 	dendroNodeI.setNeighborLeft(&dendroNodeE);
+// 	dendroNodeI.setNeighborRight(&dendroNodeF);
+// 	dendroNodeI.setInternalNodeValuationInitial(1);
+// 	dendroNodeI.setFather(&dendroNodeJ);
+// 	// NodeJ	
+// 	dendroNodeJ.setChildLeft(&dendroNodeH);
+// 	dendroNodeJ.setChildRight(&dendroNodeI);
+// 	dendroNodeJ.setNeighborLeft(&dendroNodeD);
+// 	dendroNodeJ.setNeighborRight(&dendroNodeE);
+// 	dendroNodeJ.setInternalNodeValuationInitial(7);
+// 	dendroNodeJ.setFather(&dendroNodeK);
+// 	// NodeK	
+// 	dendroNodeK.setChildLeft(&dendroNodeG);
+// 	dendroNodeK.setChildRight(&dendroNodeJ);
+// 	dendroNodeK.setNeighborLeft(&dendroNodeB);
+// 	dendroNodeK.setNeighborRight(&dendroNodeC);
+// 	dendroNodeK.setInternalNodeValuationInitial(8);
+// 	dendroNodeK.setFather(&dendroNodeK);
+// 
+// 
+// 	// remplissage de dendroTest avec les noeuds créés
+// 	dendroTest.addDendroNodes(&dendroNodeA);
+// 	dendroTest.addDendroNodes(&dendroNodeB);
+// 	dendroTest.addDendroNodes(&dendroNodeC);
+// 	dendroTest.addDendroNodes(&dendroNodeD);
+// 	dendroTest.addDendroNodes(&dendroNodeE);
+// 	dendroTest.addDendroNodes(&dendroNodeF);
+// 	dendroTest.addDendroNodes(&dendroNodeG);
+// 	dendroTest.addDendroNodes(&dendroNodeH);
+// 	dendroTest.addDendroNodes(&dendroNodeI);
+// 	dendroTest.addDendroNodes(&dendroNodeJ);
+// 	dendroTest.addDendroNodes(&dendroNodeK);
 	
 
 // TEST sortNode   
 //     cout << " \n *********TEST_SORT_NODES********" << endl;
 //     dendroTest.sortNodes();
-//     std::vector<DendroNode<UINT16,UINT16>*> dendroTestNodes = dendroTest.getDendroNodes();
+//     std::vector<DendroNode<UINT16>*> dendroTestNodes = dendroTest.getDendroNodes();
 //     for (int i=0;i<dendroTestNodes.size();i++){
 // 		cout << "dendroTestNodes["<<i
 // 		<<"].getValuation= " 
@@ -133,7 +133,7 @@ class Test_DendroModule : public TestCase
 // TEST Hierarchy    
 //     cout << "***********TEST_HIERARCHY**********" << endl;
 //     Dendrogram<UINT16,UINT16,UINT16>::HierarchicalDendrogramConstruction(dendroTest,"marker");
-//     std::vector<DendroNode<UINT16,UINT16>*> dendroTestNodesAfterHierarchy = dendroTest.getDendroNodes();
+//     std::vector<DendroNode<UINT16>*> dendroTestNodesAfterHierarchy = dendroTest.getDendroNodes();
 //     for (int i=0;i<dendroTestNodesAfterHierarchy.size();i++){
 // 		cout << "dendroTestNodesAfterHierarchy["<<i
 // 		<<"].getValuation = " 
@@ -146,7 +146,7 @@ class Test_DendroModule : public TestCase
 
 // STEP 1 : Creation of the graph...
 // ... either by hand...
-       smil::Graph<float,UINT16> g1;
+       smil::Graph<UINT16,UINT16> g1;
        g1.addNode(1,3);
        g1.addNode(2,1);
        g1.addNode(3,4);
@@ -166,7 +166,7 @@ class Test_DendroModule : public TestCase
        
 // ... or by using the mosaicToGraph function
        
-       Graph<UINT32,float> g2;
+       Graph<UINT32,UINT32> g2;
        Image<UINT8>  imIn = smil::Image<UINT8>("/home/afehri/Dropbox/Images/imTestPerso/cameramanMosaic.png");     
        Image<UINT16> imMosaic(imIn);
        Image<UINT16> imNodeValues(imIn);
@@ -188,18 +188,18 @@ class Test_DendroModule : public TestCase
 
 // STEP 2 : Computation of the associated Minimum Spanning Tree
 //        Graph<UINT16,UINT16> MST1 = graphMST(g1);
-       Graph<UINT32,float> MST2 = graphMST(g2);
+       Graph<UINT32,UINT32> MST2 = graphMST(g2);
 //        MST1.sortReverseEdges(); // we sort edges by growing valuation
 //        MST2.sortReverseEdges();
        cout << "STEP 2 complete : MST computation" << endl;
 //        
 // STEP 3 : We compute dendrograms associated with these MST
 // 	Dendrogram<UINT16,UINT16,UINT16> dendro1 = Dendrogram<UINT16,UINT16,UINT16>(MST1);
-	Dendrogram<float,UINT32,UINT32> dendro2 = Dendrogram<float,UINT32,UINT32>(MST2);
+	Dendrogram<UINT32,UINT32,UINT32> dendro2 = Dendrogram<UINT32,UINT32,UINT32>(MST2);
 
 //     cout << " \n *********TEST_SORT_NODES********" << endl;
 /*    dendro1.sortNodes(true);
-    std::vector<DendroNode<UINT16,UINT16>*> dendro1Nodes = dendro1.getDendroNodes();
+    std::vector<DendroNode<UINT16>*> dendro1Nodes = dendro1.getDendroNodes();
     for (int i=0;i<dendro1Nodes.size();i++){
 		cout << "dendroTestNodes["<<i
 		<<"].getValuation= " 
@@ -207,7 +207,7 @@ class Test_DendroModule : public TestCase
 	}*/	
 	
 //     dendro2.sortNodes(true);
-//     std::vector<DendroNode<UINT16,UINT16>*> dendro2Nodes = dendro2.getDendroNodes();
+//     std::vector<DendroNode<UINT16>*> dendro2Nodes = dendro2.getDendroNodes();
 //     for (int i=0;i<dendro2Nodes.size();i++){
 // 		cout << "dendroTestNodes["<<i
 // 		<<"].getInternalNodeValuationInitial= " 
@@ -224,7 +224,7 @@ class Test_DendroModule : public TestCase
 	
 // STEP 4 : Modifications of the dendrogram 
 // 	Dendrogram<UINT16,UINT16,UINT16>::HierarchicalDendrogramConstruction(dendro1,"stochasticSurfacic");
-	Dendrogram<float,UINT32,UINT32>::HierarchicalDendrogramConstruction(dendro2,"surfacic",2);
+// 	Dendrogram<UINT32,UINT32,UINT32>::HierarchicalDendrogramConstruction(dendro2,"surfacic",2,imMosaic);
 	cout << "STEP 4 complete : Modifications of the dendrogram " << endl;
 	
 // 	dendro2.sortNodes(true);//sort Nodes of dendro2 by decreasing internalNodeValuationInitial
@@ -241,9 +241,9 @@ class Test_DendroModule : public TestCase
 	dendro2.sortNodes(true);//sort Nodes of dendro2 by decreasing internalNodeValuationInitial
 	float lambda = 100000000;
 	string name_image = "/home/afehri/ownCloud/Images/imTestPerso/cameramanMosaic.png"; //"/home/afehri/Dev/Results/toolsHierarchy/volumic/images/tools";	
-	std::vector<DendroNode<float,UINT32>*>& dendroNodes2 = dendro2.getDendroNodes();
+	std::vector<DendroNode<UINT32>*>& dendroNodes2 = dendro2.getDendroNodes();
 	
-	Dendrogram<float,UINT32,UINT32>::removeMSTEdgesDendrogram(dendro2,MST2,lambda);	
+	Dendrogram<UINT32,UINT32,UINT32>::removeMSTEdgesDendrogram(dendro2,MST2,lambda);	
 	graphToMosaic(imIn, MST2, imMosaicEnd);
 	Image<UINT8> imFinal(imIn);
 	smil::copy(imMosaicEnd,imFinal);
@@ -262,7 +262,7 @@ class Test_DendroModule : public TestCase
 // 	Gui::execLoop();
 	
 // 	for (int i=0;i<dendroNodes2.size();i++){
-// 		DendroNode<UINT16,UINT16> &curNode = *dendroNodes2[i];
+// 		DendroNode<UINT16> &curNode = *dendroNodes2[i];
 // 		if (lambda!=curNode.getInternalNodeValuationInitial()){
 // 			lambda = curNode.getInternalNodeValuationInitial();
 // 			if (lambda!=0){// we verify that it's an internal node

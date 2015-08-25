@@ -35,6 +35,7 @@
 
 #include "Core/include/DCore.h"
 #include "Morpho/include/DMorpho.h"
+#include "Morpho/include/DStructuringElement.h"
 
 #include <unistd.h> // For usleep
 
@@ -50,15 +51,16 @@ namespace smil
   /**
    * DendroNode : node of a dendrogram
    */
-  template <class WeightT = size_t, class MarkerLabelT = size_t>
+  template <class MarkerLabelT = size_t>
   class DendroNode 
   {
   protected: 
-    WeightT valuation;
-    WeightT internalNodeValuationInitial;
-    WeightT internalNodeValuationFinal;
+    float valuation;
+    float internalNodeValuationInitial;
+    float internalNodeValuationFinal;
     MarkerLabelT marker;
     MarkerLabelT label;
+    vector<MarkerLabelT> lookupProgeny;
     bool isInternalNode;
     DendroNode* father;
     DendroNode* childLeft; 
@@ -66,10 +68,10 @@ namespace smil
     DendroNode* neighborLeft;
     DendroNode* neighborRight;
   public: 
-    typedef DendroNode<WeightT, MarkerLabelT> DendroNodeType;
+    typedef DendroNode<MarkerLabelT> DendroNodeType;
     //! Default constructor
     DendroNode():
-    valuation(0),internalNodeValuationInitial(0),internalNodeValuationFinal(0),marker(0),label(0),isInternalNode(0),
+    valuation(0),internalNodeValuationInitial(0),internalNodeValuationFinal(0),marker(0),label(0),lookupProgeny(0),isInternalNode(0),
     father(0),childLeft(0),childRight(0),neighborLeft(0),neighborRight(0)
     {
     }
@@ -80,6 +82,7 @@ namespace smil
       valuation = dendroNodeToCopy.valuation;
       marker = dendroNodeToCopy.marker;
       label=dendroNodeToCopy.label;
+      lookupProgeny=dendroNodeToCopy.lookupProgeny;
       isInternalNode = dendroNodeToCopy.isInternalNode;
       if (dendroNodeToCopy.father != NULL){
 	father = new DendroNode(*(dendroNodeToCopy.father));
@@ -119,6 +122,7 @@ namespace smil
 	internalNodeValuationFinal = dendroNodeToCopy.internalNodeValuationFinal;
 	valuation = dendroNodeToCopy.valuation;
 	marker = dendroNodeToCopy.marker;
+	lookupProgeny = dendroNodeToCopy.marker; 
 	label=dendroNodeToCopy.label;
 	isInternalNode = dendroNodeToCopy.isInternalNode;
 	if (dendroNodeToCopy.father != NULL){
@@ -164,16 +168,18 @@ namespace smil
     {
     }
     //! Setters and getters
-    WeightT getInternalNodeValuationInitial(){return internalNodeValuationInitial;};
-    void setInternalNodeValuationInitial(WeightT nValuation){internalNodeValuationInitial = nValuation;};
-    WeightT getInternalNodeValuationFinal(){return internalNodeValuationFinal;};
-    void setInternalNodeValuationFinal(WeightT nValuation){internalNodeValuationFinal = nValuation;};
-    WeightT getValuation(){return valuation;};
-    void setValuation(WeightT nValuation){valuation = nValuation;};
+    float getInternalNodeValuationInitial(){return internalNodeValuationInitial;};
+    void setInternalNodeValuationInitial(float nValuation){internalNodeValuationInitial = nValuation;};
+    float getInternalNodeValuationFinal(){return internalNodeValuationFinal;};
+    void setInternalNodeValuationFinal(float nValuation){internalNodeValuationFinal = nValuation;};
+    float getValuation(){return valuation;};
+    void setValuation(float nValuation){valuation = nValuation;};
     MarkerLabelT getMarker(){return marker;};
-    void setMarker(WeightT nMarker){marker=nMarker;};
+    void setMarker(float nMarker){marker=nMarker;};
     MarkerLabelT getLabel(){return label;};
-    void setLabel(WeightT nLabel){label=nLabel;};
+    void setLabel(float nLabel){label=nLabel;};
+    std::vector<MarkerLabelT> &getLookupProgeny(){return lookupProgeny;}
+    void setLookupProgeny(std::vector<MarkerLabelT> nLookupProgeny){lookupProgeny = nLookupProgeny;}
     bool getIsInternalNode(){return isInternalNode;};
     void setIsInternalNode(bool nIsInternalNode){isInternalNode = nIsInternalNode;};
     DendroNode * getFather() {return father;};
@@ -224,14 +230,14 @@ namespace smil
   /**
    * Dendrogram
    */
-  template <class WeightT = size_t, class MarkerLabelT = size_t, class NodeT = size_t>
+  template <class MarkerLabelT = size_t, class NodeT = size_t,class ValGraphT = size_t>
   class Dendrogram 
   {
   public:
-    typedef DendroNode<WeightT,MarkerLabelT> DendroNodeType;
-    typedef std::map<NodeT, WeightT> NodeValuesType;
-    typedef std::vector< Edge<NodeT,WeightT> > EdgeListType;
-    typedef Graph<NodeT, WeightT> GraphType;
+    typedef DendroNode<MarkerLabelT> DendroNodeType;
+    typedef std::map<NodeT, ValGraphT> NodeValuesType;
+    typedef std::vector< Edge<NodeT,ValGraphT> > EdgeListType;
+    
     //! Default constructor
     Dendrogram(){};
     //! Copy constructor
@@ -246,7 +252,7 @@ namespace smil
 //     };
   
     //! Constructor from a MST graph
-    Dendrogram(GraphType& mst){
+    Dendrogram(Graph<NodeT, ValGraphT> & mst){
       mst.sortEdges(true);//sort Edges of the MST by increasing weights of edges
       // Extract informations from the MST
       size_t leavesNbr = mst.getNodeNbr();
@@ -256,6 +262,7 @@ namespace smil
       
       // Set the number of required nodes and creates them in dendroNodes
       nbrNodes = leavesNbr+internalNodesNbr;
+//       nbrNodes = 2*leavesNbr - 1 ;
       for (size_t i = 0;i<nbrNodes;i++){
 	DendroNodeType* nNode = new DendroNodeType;
 	dendroNodes.push_back(nNode);
@@ -265,7 +272,11 @@ namespace smil
       DendroNodeType &curNode = *dendroNodes[i];//dendroNodes is filled with leavesNbr leaves and then with internalNodesNbr internal nodes
       curNode.setLabel(mstNodes.find(i)->first); // so Leaves have labels from 0 to leavesNbr-1
       curNode.setValuation(mstNodes.find(i)->second);
-//       cout << "mstNodes.find(" << i << ")->second = " << mstNodes.find(i+1)->first << endl; 
+      
+    // initialize the lookupProgeny
+      std::vector<MarkerLabelT> nLookupProgeny(leavesNbr,0);
+      nLookupProgeny.at(mstNodes.find(i)->first) = 1;
+      curNode.setLookupProgeny(nLookupProgeny);// new lookupProgeny for each leaf, with 1 for the label of the leaf, and 0 elsewhere  
     }
 
     // Filling the internal nodes
@@ -275,8 +286,9 @@ namespace smil
       curNode.setLabel(leavesNbr+i);
       curNode.setInternalNodeValuationInitial(mstEdges[i].weight);
 
-      WeightT NeighborLeftLabel = min(mstEdges[i].source,mstEdges[i].target); //min(mstEdges[i].source,mstEdges[i].target);
-      WeightT NeighborRightLabel = max(mstEdges[i].source,mstEdges[i].target); //max(mstEdges[i].source,mstEdges[i].target);
+      MarkerLabelT NeighborLeftLabel = min(mstEdges[i].source,mstEdges[i].target); //min(mstEdges[i].source,mstEdges[i].target);
+      MarkerLabelT NeighborRightLabel = max(mstEdges[i].source,mstEdges[i].target); //max(mstEdges[i].source,mstEdges[i].target);
+   
 // //       cout << "mstEdges[i].source = " << mstEdges[i].source << " ; mstEdges[i].target = " << mstEdges[i].target << 
 // //       " ; mstEdges[i].weight = " << mstEdges[i].weight <<endl;
 
@@ -288,21 +300,32 @@ namespace smil
       
       curNode.getChildLeft()->setFather(&curNode);
       curNode.getChildRight()->setFather(&curNode);
+      
+      std::vector<MarkerLabelT> lookupChildLeft = curNode.getChildLeft()->getLookupProgeny();
+      std::vector<MarkerLabelT> lookupChildRight = curNode.getChildRight()->getLookupProgeny();
+      std::vector<MarkerLabelT> nLookupProgeny(leavesNbr,0);
+      for (MarkerLabelT i = 0; i<lookupChildLeft.size() ; i++){
+	if (lookupChildLeft.at(i)<lookupChildRight.at(i)){nLookupProgeny.at(i)=lookupChildRight.at(i);}
+	else{nLookupProgeny.at(i)=lookupChildLeft.at(i);}
+      }
+      curNode.setLookupProgeny(nLookupProgeny);// new lookupProgeny for each leaf, with 1 for the label of the leaf, and 0 elsewhere
     }
     //last node parameters
     DendroNodeType &lastNode = *dendroNodes[leavesNbr+internalNodesNbr-1];
     lastNode.setFather(&lastNode); //the last internal node is its own father 
+
+    
     }; //end Dendrogram(mst)
     
     //! Constructor with a given number of nodes
-    Dendrogram(size_t nNbrNodes)
-    {	
-      nbrNodes = nNbrNodes;
-      for (size_t i = 0;i<nNbrNodes;i++){
-	DendroNodeType* nNode = new DendroNodeType;
-	dendroNodes.push_back(nNode);
-      }
-    }
+//     Dendrogram(size_t nNbrNodes)
+//     {	
+//       nbrNodes = nNbrNodes;
+//       for (size_t i = 0;i<nNbrNodes;i++){
+// 	DendroNodeType* nNode = new DendroNodeType;
+// 	dendroNodes.push_back(nNode);
+//       }
+//     }
     //! Destructor
     ~Dendrogram(){
       for (size_t i = 0 ;i<nbrNodes; i++){
@@ -329,7 +352,7 @@ namespace smil
       for (size_t i = 0; i<nbrNodes ; i++){
 	DendroNodeType &curNode = *dendroNodes[i];
 	if (curNode.getIsInternalNode() == 1){
-	  WeightT temp = curNode.getInternalNodeValuationFinal();
+	  float temp = curNode.getInternalNodeValuationFinal();
 	  curNode.setInternalNodeValuationInitial(temp);
 	  curNode.setInternalNodeValuationFinal(0);
 	}
@@ -337,36 +360,81 @@ namespace smil
     }; 
 #endif
     //! Given an internal node index lambda of the dendrogram, remove corresponding edge in the associated MST 
-    static void removeMSTEdgesDendrogram(Dendrogram& dendrogram,GraphType& associated_mst,WeightT lambda){
+    static void removeMSTEdgesDendrogram(Dendrogram<MarkerLabelT,NodeT,ValGraphT>& dendrogram,Graph<NodeT, ValGraphT>& associated_mst,float lambda){
       std::vector<DendroNodeType*>&dendroNodes = dendrogram.getDendroNodes();
-      size_t leavesNbr = associated_mst.getNodeNbr();
-      size_t internalNodesNbr = associated_mst.getEdgeNbr();
-      
-      for (size_t i=0; i<internalNodesNbr+leavesNbr; i++){
-	DendroNodeType &curNode = *dendroNodes[i];
+      size_t nodeNbr = dendrogram.getNbrNodes();
+//       size_t internalNodesNbr = associated_mst.getEdgeNbr();
+//       size_t leavesNbr = associated_mst.getNodeNbr();
+      for (size_t i=0; i<nodeNbr; i++){
+	DendroNodeType &curNode = *dendroNodes.at(i);
 	if (curNode.getInternalNodeValuationInitial()>lambda && curNode.getIsInternalNode()==true){
 	  MarkerLabelT srcToRemove = curNode.getNeighborLeft()->getLabel();
 	  MarkerLabelT targetToRemove = curNode.getNeighborRight()->getLabel();
 	  associated_mst.removeEdge(srcToRemove,targetToRemove);
 	  associated_mst.removeEdge(targetToRemove,srcToRemove);
+	} 
       } 
-    } 
     };
     
     //! Computes a new hierarchy from a given dendrogram hierarchy
-    static void HierarchicalDendrogramConstruction(Dendrogram& dendrogram,std::string typeOfHierarchy,int nParam = 2){
-      dendrogram.sortNodes(); // sort by decreasing values of internalNodeValuationInitial
-      std::vector<DendroNodeType*>&dendroNodes = dendrogram.getDendroNodes();		
+    static void HierarchicalDendrogramConstruction(Dendrogram<MarkerLabelT,NodeT,ValGraphT>& dendrogram,const std::string typeOfHierarchy,const int nParam = 50,
+						   const smil::Image<MarkerLabelT>& imMosa = smil::Image<MarkerLabelT>(),const std::string typeOfTransform = "erode",
+						  const StrElt &se = DEFAULT_SE){
+      //,const StrElt &se=DEFAULT_SE
+      dendrogram.sortNodes(); // sort by increasing values of internalNodeValuationInitial
+      std::vector<DendroNodeType*>&dendroNodes = dendrogram.getDendroNodes();
       
       if (typeOfHierarchy == "surfacic"){
 	for (size_t i=0;i<dendroNodes.size();i++){// only one dendroNodes traversal, and only on internal nodes,
 						    // because leaves already have surface as valuations
 	  DendroNodeType &curNode = *dendroNodes[i];
 	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
-	    WeightT childLeftValuation = curNode.getChildLeft()->getValuation();
-	    WeightT childRightValuation = curNode.getChildRight()->getValuation();
+	    float childLeftValuation = curNode.getChildLeft()->getValuation();
+	    float childRightValuation = curNode.getChildRight()->getValuation();
 	    curNode.setValuation(childLeftValuation+childRightValuation);
-	    curNode.setInternalNodeValuationFinal(min(childLeftValuation,childRightValuation));
+	    curNode.setInternalNodeValuationFinal(fmin(childLeftValuation,childRightValuation));
+	  }
+	}
+      dendrogram.putValuationsFinalInInitial();
+      }
+      else if (typeOfHierarchy == "surfacicImageReturn"){
+	for (size_t i=0;i<dendroNodes.size();i++){// only one dendroNodes traversal, and only on internal nodes,
+						    // because leaves already have surface as valuations
+	  DendroNodeType &curNode = *dendroNodes[i];
+	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
+	    std::vector<MarkerLabelT> lookupChildLeft = curNode.getChildLeft()->getLookupProgeny();
+	    std::vector<MarkerLabelT> lookupChildRight = curNode.getChildRight()->getLookupProgeny();
+	    
+	    std::map<MarkerLabelT,MarkerLabelT> lookupMapChildLeft;
+	    for (MarkerLabelT j=0 ; j<lookupChildLeft.size() ; j++){lookupMapChildLeft[j] = lookupChildLeft.at(j);}
+	    
+	    std::map<MarkerLabelT,MarkerLabelT> lookupMapChildRight;
+	    for (MarkerLabelT j=0 ; j<lookupChildRight.size() ; j++){lookupMapChildRight[j] = lookupChildRight.at(j);}
+	    
+	    smil::Image<MarkerLabelT> imTmpLeft(imMosa);
+	    smil::Image<MarkerLabelT> imTmpRight(imMosa);
+	    
+	    applyLookup(imMosa,lookupMapChildLeft,imTmpLeft);
+	    applyLookup(imMosa,lookupMapChildRight,imTmpRight);
+	    
+	    if (typeOfTransform == "erode"){
+	      erode(imTmpLeft,imTmpLeft,se);
+	      erode(imTmpRight,imTmpRight,se); 
+	    }
+	    else if (typeOfTransform == "dilate"){
+	    dilate(imTmpLeft,imTmpLeft,se);
+	    dilate(imTmpRight,imTmpRight,se); 
+	    }
+	    else{
+	      cout << "Please choose typeOfTransform in the following: erode, dilate" << endl;
+	    }
+	    float childLeftSurf = area(imTmpLeft); 
+	    float childRightSurf = area(imTmpRight);
+	    
+	    float childLeftValuation = childLeftSurf;
+	    float childRightValuation = childRightSurf;
+	    curNode.setValuation(childLeftValuation+childRightValuation);
+	    curNode.setInternalNodeValuationFinal(fmin(childLeftValuation,childRightValuation));
 	  }
 	}
       dendrogram.putValuationsFinalInInitial();
@@ -375,8 +443,8 @@ namespace smil
 	for (size_t i=0;i<dendroNodes.size();i++){// First dendroNodes traversal, to get the "surfacic" dendrogram
 	  DendroNodeType &curNode = *dendroNodes[i];
 	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
-	    WeightT childLeftValuation = curNode.getChildLeft()->getValuation();
-	    WeightT childRightValuation = curNode.getChildRight()->getValuation();
+	    float childLeftValuation = curNode.getChildLeft()->getValuation();
+	    float childRightValuation = curNode.getChildRight()->getValuation();
 	    curNode.setValuation(childLeftValuation+childRightValuation);
 // 	    cout << "childLeftValuation = " << childLeftValuation << " ; childRightValuation = " << childRightValuation << endl;
 // 	    cout << "curNode.getInternalNodeValuationFinal = " << curNode.getInternalNodeValuationFinal() << endl;
@@ -384,16 +452,77 @@ namespace smil
 	}
 	
 	DendroNodeType &curNodeTmp = *dendroNodes[1];
-	WeightT totalSurface = curNodeTmp.getAncestor()->getValuation(); // get the total surface of the domain
+	float totalSurface = curNodeTmp.getAncestor()->getValuation(); // get the total surface of the domain
 	
 	for (size_t i=0;i<dendroNodes.size();i++){// Second dendroNodes traversal, to get the stochasticSurfacic dendrogram
 	  DendroNodeType &curNode = *dendroNodes[i];
 	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
-	    WeightT childLeftSurf = curNode.getChildLeft()->getValuation();
-	    WeightT childRightSurf = curNode.getChildRight()->getValuation();
-	    WeightT newVal = 1-pow(1-(childLeftSurf/totalSurface),nParam)
+	    float childLeftSurf = curNode.getChildLeft()->getValuation();
+	    float childRightSurf = curNode.getChildRight()->getValuation();
+	    float newVal = 1-pow(1-(childLeftSurf/totalSurface),nParam)
 			    -pow(1-(childRightSurf/totalSurface),nParam)
-			    +pow(1-((childRightSurf+childRightSurf)/totalSurface),nParam);
+			    +pow(1-((childLeftSurf+childRightSurf)/totalSurface),nParam);
+// 	    cout << i << endl;
+// 	    cout << "newVal = " << newVal << endl;
+// 	    cout << "childLeftVal + childRightVal = " << childLeftSurf+childRightSurf << endl;
+// 	    cout << "surface = " << curNode.getValuation()<< endl;
+// 	    cout << "totalSurface = " << totalSurface<< endl;
+	    curNode.setInternalNodeValuationFinal(newVal);
+	  }
+	}
+      dendrogram.putValuationsFinalInInitial();
+      }
+      else if (typeOfHierarchy == "stochasticSurfacicImageReturn"){
+	for (size_t i=0;i<dendroNodes.size();i++){// First dendroNodes traversal, to get the "surfacic" dendrogram
+	  DendroNodeType &curNode = *dendroNodes[i];
+	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
+	    float childLeftValuation = curNode.getChildLeft()->getValuation();
+	    float childRightValuation = curNode.getChildRight()->getValuation();
+	    curNode.setValuation(childLeftValuation+childRightValuation);
+// 	    cout << "childLeftValuation = " << childLeftValuation << " ; childRightValuation = " << childRightValuation << endl;
+// 	    cout << "curNode.getInternalNodeValuationFinal = " << curNode.getInternalNodeValuationFinal() << endl;
+	  }
+	}
+	
+	DendroNodeType &curNodeTmp = *dendroNodes[1];
+	float totalSurface = curNodeTmp.getAncestor()->getValuation(); // get the total surface of the domain
+	
+	for (size_t i=0;i<dendroNodes.size();i++){// Second dendroNodes traversal, to get the stochasticSurfacic dendrogram
+	  DendroNodeType &curNode = *dendroNodes[i];
+	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
+	    std::vector<MarkerLabelT> lookupChildLeft = curNode.getChildLeft()->getLookupProgeny();
+	    std::vector<MarkerLabelT> lookupChildRight = curNode.getChildRight()->getLookupProgeny();
+	    
+	    std::map<MarkerLabelT,MarkerLabelT> lookupMapChildLeft;
+	    for (MarkerLabelT j=0 ; j<lookupChildLeft.size() ; j++){lookupMapChildLeft[j] = lookupChildLeft.at(j);}
+	    
+	    std::map<MarkerLabelT,MarkerLabelT> lookupMapChildRight;
+	    for (MarkerLabelT j=0 ; j<lookupChildRight.size() ; j++){lookupMapChildRight[j] = lookupChildRight.at(j);}
+	    
+	    smil::Image<MarkerLabelT> imTmpLeft(imMosa);
+	    smil::Image<MarkerLabelT> imTmpRight(imMosa);
+	    
+	    applyLookup(imMosa,lookupMapChildLeft,imTmpLeft);
+	    applyLookup(imMosa,lookupMapChildRight,imTmpRight);
+	    
+	    if (typeOfTransform == "erode"){
+	      erode(imTmpLeft,imTmpLeft,se);
+	      erode(imTmpRight,imTmpRight,se); 
+	    }
+	    else if (typeOfTransform == "dilate"){
+	      dilate(imTmpLeft,imTmpLeft,se);
+	      dilate(imTmpRight,imTmpRight,se); 
+	    }
+	    else{
+	      cout << "Please choose typeOfTransform in the following: erode, dilate" << endl;
+	    }
+	    float childLeftSurf = area(imTmpLeft); 
+	    float childRightSurf = area(imTmpRight);
+	    
+	    float newVal = 1-pow(1-(childLeftSurf/totalSurface),nParam)
+			    -pow(1-(childRightSurf/totalSurface),nParam)
+			    +pow(1-((childLeftSurf+childRightSurf)/totalSurface),nParam);
+// 	    cout << " noeud " << curNode.getLabel() << " : left,right,newVal : " << childLeftSurf << " ; " << childRightSurf << " ; " << newVal << endl; 
 // 	    cout << i << endl;
 // 	    cout << "newVal = " << newVal << endl;
 // 	    cout << "childLeftVal + childRightVal = " << childLeftSurf+childRightSurf << endl;
@@ -405,20 +534,20 @@ namespace smil
       dendrogram.putValuationsFinalInInitial();
       }
       else if (typeOfHierarchy == "volumic"){
-	for (WeightT i=0;i<dendroNodes.size();i++){//First dendroNodes traversal, to get the "surfacic" dendrogram
+	for (float i=0;i<dendroNodes.size();i++){//First dendroNodes traversal, to get the "surfacic" dendrogram
 	  DendroNodeType &curNode = *dendroNodes[i];
 	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
-	    WeightT childLeftValuation = curNode.getChildLeft()->getValuation();
-	    WeightT childRightValuation = curNode.getChildRight()->getValuation();
+	    float childLeftValuation = curNode.getChildLeft()->getValuation();
+	    float childRightValuation = curNode.getChildRight()->getValuation();
 	    curNode.setValuation(childLeftValuation+childRightValuation);
 	  }
 	}
 	for (size_t i=0;i<dendroNodes.size();i++){//Second dendroNodes traversal, to get the "volumic" dendrogram 
 	  DendroNodeType &curNode = *dendroNodes[i];
 	  if (curNode.getIsInternalNode() == 1){// we verify that the node is not the ancestor
-// 	    WeightT height = curNode.getFather()->getInternalNodeValuationInitial();
-	    WeightT height = curNode.getInternalNodeValuationInitial();
-	    WeightT surface = curNode.getValuation();
+// 	    float height = curNode.getFather()->getInternalNodeValuationInitial();
+	    float height = curNode.getInternalNodeValuationInitial();
+	    float surface = curNode.getValuation();
 // 	    curNode.setValuation(surface);
 	    curNode.setValuation(height*surface);
 	  }
@@ -426,23 +555,81 @@ namespace smil
 	for (size_t i=0;i<dendroNodes.size();i++){//Third dendroNodes traversal, to get the final valuation of internal nodes
 	  DendroNodeType &curNode = *dendroNodes[i];
 	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
-	    WeightT childLeftValuation = curNode.getChildLeft()->getValuation();
-	    WeightT childRightValuation = curNode.getChildRight()->getValuation();
-	    WeightT height = curNode.getInternalNodeValuationInitial();
-	    curNode.setInternalNodeValuationFinal(height*min(childLeftValuation,childRightValuation));
+	    float childLeftValuation = curNode.getChildLeft()->getValuation();
+	    float childRightValuation = curNode.getChildRight()->getValuation();
+	    float height = curNode.getInternalNodeValuationInitial();
+	    curNode.setInternalNodeValuationFinal(height*fmin(childLeftValuation,childRightValuation));
+	  }
+	}
+	dendrogram.putValuationsFinalInInitial();
+      }
+      else if (typeOfHierarchy == "volumicImageReturn"){
+	for (float i=0;i<dendroNodes.size();i++){//First dendroNodes traversal, to get the "surfacic" dendrogram
+	  DendroNodeType &curNode = *dendroNodes[i];
+	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
+	    std::vector<MarkerLabelT> lookupChildLeft = curNode.getChildLeft()->getLookupProgeny();
+	    std::vector<MarkerLabelT> lookupChildRight = curNode.getChildRight()->getLookupProgeny();
+	    
+	    std::map<MarkerLabelT,MarkerLabelT> lookupMapChildLeft;
+	    for (MarkerLabelT j=0 ; j<lookupChildLeft.size() ; j++){lookupMapChildLeft[j] = lookupChildLeft.at(j);}
+	    
+	    std::map<MarkerLabelT,MarkerLabelT> lookupMapChildRight;
+	    for (MarkerLabelT j=0 ; j<lookupChildRight.size() ; j++){lookupMapChildRight[j] = lookupChildRight.at(j);}
+	    
+	    smil::Image<MarkerLabelT> imTmpLeft(imMosa);
+	    smil::Image<MarkerLabelT> imTmpRight(imMosa);
+	    
+	    applyLookup(imMosa,lookupMapChildLeft,imTmpLeft);
+	    applyLookup(imMosa,lookupMapChildRight,imTmpRight);
+	    
+	    if (typeOfTransform == "erode"){
+	      erode(imTmpLeft,imTmpLeft,se);
+	      erode(imTmpRight,imTmpRight,se); 
+	    }
+	    else if (typeOfTransform == "dilate"){
+	    dilate(imTmpLeft,imTmpLeft,se);
+	    dilate(imTmpRight,imTmpRight,se); 
+	    }
+	    else{
+	      cout << "Please choose typeOfTransform in the following: erode, dilate" << endl;
+	    }
+	    float childLeftSurf = area(imTmpLeft); 
+	    float childRightSurf = area(imTmpRight);
+	
+	    curNode.setValuation(childLeftSurf+childRightSurf);
+	  }
+	}
+	for (size_t i=0;i<dendroNodes.size();i++){//Second dendroNodes traversal, to get the "volumic" dendrogram 
+	  DendroNodeType &curNode = *dendroNodes[i];
+	  if (curNode.getIsInternalNode() == 1){// we verify that the node is not the ancestor
+// 	    float height = curNode.getFather()->getInternalNodeValuationInitial();
+	    float height = curNode.getInternalNodeValuationInitial();
+	    float surface = curNode.getValuation();
+// 	    curNode.setValuation(surface);
+	    curNode.setValuation(height*surface);
+	  }
+	}
+	for (size_t i=0;i<dendroNodes.size();i++){//Third dendroNodes traversal, to get the final valuation of internal nodes
+	  DendroNodeType &curNode = *dendroNodes[i];
+	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
+	    
+	    float childLeftValuation = curNode.getChildLeft()->getValuation();
+	    float childRightValuation = curNode.getChildRight()->getValuation();
+	    float height = curNode.getInternalNodeValuationInitial();
+	    curNode.setInternalNodeValuationFinal(height*fmin(childLeftValuation,childRightValuation));
 	  }
 	}
 	dendrogram.putValuationsFinalInInitial();
       }
       else if (typeOfHierarchy == "stochasticVolumic"){
-	WeightT totalSurface = 0;
-	WeightT totalDepth = 0;
+	float totalSurface = 0;
+	float totalDepth = 0;
 	
-	for (WeightT i=0;i<dendroNodes.size();i++){//First dendroNodes traversal, to get the "surfacic" dendrogram
+	for (float i=0;i<dendroNodes.size();i++){//First dendroNodes traversal, to get the "surfacic" dendrogram
 	  DendroNodeType &curNode = *dendroNodes[i];
 	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
-	    WeightT childLeftValuation = curNode.getChildLeft()->getValuation();
-	    WeightT childRightValuation = curNode.getChildRight()->getValuation();
+	    float childLeftValuation = curNode.getChildLeft()->getValuation();
+	    float childRightValuation = curNode.getChildRight()->getValuation();
 	    curNode.setValuation(childLeftValuation+childRightValuation);
 	  }
 	}
@@ -450,14 +637,14 @@ namespace smil
 	DendroNodeType &curNodeTmp = *dendroNodes[1];
 	totalSurface = curNodeTmp.getAncestor()->getValuation(); // get the total surface of the domain
 	totalDepth = curNodeTmp.getAncestor()->getInternalNodeValuationInitial(); // get the total depth of the domain
-	WeightT totalVolume = totalSurface*totalDepth;
+	float totalVolume = totalSurface*totalDepth;
 	
 	for (size_t i=0;i<dendroNodes.size();i++){//Second dendroNodes traversal, to get the "volumic" dendrogram 
 	  DendroNodeType &curNode = *dendroNodes[i];
 	  if (curNode.getIsInternalNode() == 1){// we verify that the node is not the ancestor
-// 	    WeightT height = curNode.getFather()->getInternalNodeValuationInitial();
-	    WeightT height = curNode.getInternalNodeValuationInitial();
-	    WeightT surface = curNode.getValuation();
+// 	    float height = curNode.getFather()->getInternalNodeValuationInitial();
+	    float height = curNode.getInternalNodeValuationInitial();
+	    float surface = curNode.getValuation();
 // 	    curNode.setValuation(surface);
 	    curNode.setValuation(height*surface);
 	  }
@@ -466,10 +653,86 @@ namespace smil
 	for (size_t i=0;i<dendroNodes.size();i++){// Third dendroNodes traversal, to get the stochasticVolumic dendrogram
 	  DendroNodeType &curNode = *dendroNodes[i];
 	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
-	    WeightT childLeftVol = curNode.getChildLeft()->getValuation();
-	    WeightT childRightVol = curNode.getChildRight()->getValuation();
+	    float childLeftVol = curNode.getChildLeft()->getValuation();
+	    float childRightVol = curNode.getChildRight()->getValuation();
 	    
-	    WeightT newVal = 1 - pow(1-(childLeftVol/totalVolume),nParam)-pow(1-(childRightVol/totalVolume),nParam)
+	    float newVal = 1 - pow(1-(childLeftVol/totalVolume),nParam)
+			      -pow(1-(childRightVol/totalVolume),nParam)
+			      +pow(1-(childLeftVol+childRightVol)/totalVolume,nParam);
+	    curNode.setInternalNodeValuationFinal(newVal);
+	    cout << i << endl;
+	    cout << "newVal = " << newVal << endl;
+	    cout << "childLeftVol = " << childLeftVol << endl;
+	    cout << "childRightVol = " << childRightVol << endl;
+	    cout << "totalVolume = " << totalVolume << endl;
+	  }
+	}
+	dendrogram.putValuationsFinalInInitial();
+      }
+      else if (typeOfHierarchy == "stochasticVolumicImageReturn"){
+	float totalSurface = 0;
+	float totalDepth = 0;
+	
+	for (float i=0;i<dendroNodes.size();i++){//First dendroNodes traversal, to get the "surfacic" dendrogram
+	  DendroNodeType &curNode = *dendroNodes[i];
+	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
+	    std::vector<MarkerLabelT> lookupChildLeft = curNode.getChildLeft()->getLookupProgeny();
+	    std::vector<MarkerLabelT> lookupChildRight = curNode.getChildRight()->getLookupProgeny();
+	    
+	    std::map<MarkerLabelT,MarkerLabelT> lookupMapChildLeft;
+	    for (MarkerLabelT j=0 ; j<lookupChildLeft.size() ; j++){lookupMapChildLeft[j] = lookupChildLeft.at(j);}
+	    
+	    std::map<MarkerLabelT,MarkerLabelT> lookupMapChildRight;
+	    for (MarkerLabelT j=0 ; j<lookupChildRight.size() ; j++){lookupMapChildRight[j] = lookupChildRight.at(j);}
+	    
+	    smil::Image<MarkerLabelT> imTmpLeft(imMosa);
+	    smil::Image<MarkerLabelT> imTmpRight(imMosa);
+	    
+	    applyLookup(imMosa,lookupMapChildLeft,imTmpLeft);
+	    applyLookup(imMosa,lookupMapChildRight,imTmpRight);
+	    
+	    if (typeOfTransform == "erode"){
+	      erode(imTmpLeft,imTmpLeft,se);
+	      erode(imTmpRight,imTmpRight,se); 
+	    }
+	    else if (typeOfTransform == "dilate"){
+	    dilate(imTmpLeft,imTmpLeft,se);
+	    dilate(imTmpRight,imTmpRight,se); 
+	    }
+	    else{
+	      cout << "Please choose typeOfTransform in the following: erode, dilate" << endl;
+	    }
+	    float childLeftSurf = area(imTmpLeft); 
+	    float childRightSurf = area(imTmpRight);
+	    
+	    curNode.setValuation(childLeftSurf+childRightSurf);
+	  }
+	}
+	
+	DendroNodeType &curNodeTmp = *dendroNodes[1];
+	totalSurface = curNodeTmp.getAncestor()->getValuation(); // get the total surface of the domain
+	totalDepth = curNodeTmp.getAncestor()->getInternalNodeValuationInitial(); // get the total depth of the domain
+	float totalVolume = totalSurface*totalDepth;
+	
+	for (size_t i=0;i<dendroNodes.size();i++){//Second dendroNodes traversal, to get the "volumic" dendrogram 
+	  DendroNodeType &curNode = *dendroNodes[i];
+	  if (curNode.getIsInternalNode() == 1){// we verify that the node is not the ancestor
+// 	    float height = curNode.getFather()->getInternalNodeValuationInitial();
+	    float height = curNode.getInternalNodeValuationInitial();
+	    float surface = curNode.getValuation();
+// 	    curNode.setValuation(surface);
+	    curNode.setValuation(height*surface);
+	  }
+	}
+
+	for (size_t i=0;i<dendroNodes.size();i++){// Third dendroNodes traversal, to get the stochasticVolumic dendrogram
+	  DendroNodeType &curNode = *dendroNodes[i];
+	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
+	    float childLeftVol = curNode.getChildLeft()->getValuation();
+	    float childRightVol = curNode.getChildRight()->getValuation();
+	    
+	    float newVal = 1 - pow(1-(childLeftVol/totalVolume),nParam)
+			      -pow(1-(childRightVol/totalVolume),nParam)
 			      +pow(1-(childLeftVol+childRightVol)/totalVolume,nParam);
 	    curNode.setInternalNodeValuationFinal(newVal);
 // 	    cout << i << endl;
@@ -485,23 +748,24 @@ namespace smil
 	for (size_t i=0;i<dendroNodes.size();i++){//First dendroNodes traversal, to get the "marker" dendrogram
 	  DendroNodeType &curNode = *dendroNodes[i];
 	  if (curNode.getIsInternalNode() == 1){// we verify that it's an internal node
-	    WeightT markerLeft = curNode.getChildLeft()->getMarker();
-	    WeightT markerRight = curNode.getChildRight()->getMarker();
+	    float markerLeft = curNode.getChildLeft()->getMarker();
+	    float markerRight = curNode.getChildRight()->getMarker();
 	    curNode.setMarker(max(markerLeft,markerRight));    
 	  }
 	}
 	for (size_t i=0;i<dendroNodes.size();i++){//Second dendroNodes traversal, to get the final valuation of internal nodes
 	  DendroNodeType &curNode = *dendroNodes[i];
 	  if (curNode.getIsInternalNode() == 1){
-	    WeightT markerLeft = curNode.getChildLeft()->getMarker();
-	    WeightT markerRight = curNode.getChildRight()->getMarker();
-	    curNode.setInternalNodeValuationFinal(min(markerLeft,markerRight));
+	    float markerLeft = curNode.getChildLeft()->getMarker();
+	    float markerRight = curNode.getChildRight()->getMarker();
+	    curNode.setInternalNodeValuationFinal(fmin(markerLeft,markerRight));
 	  }
 	}
 	dendrogram.putValuationsFinalInInitial();
       }
       else {cout<< "void Dendrogram::HierarchicalDendrogramConstruction(Dendrogram& dendrogram,std::string typeOfHierarchy) \n"<<
-	"Please choose one of the following hierarchies: surfacic, volumic, stochasticSurfacic, stochasticVolumic, marker" << endl;
+	"Please choose one of the following hierarchies: surfacic, volumic, stochasticSurfacic, stochasticVolumic, " << 
+	"surfacicImageReturn, volumicImageReturn, stochasticSurfacicImageReturn, stochasticVolumicImageReturn, marker" << endl;
       }
     };
     
@@ -519,8 +783,8 @@ namespace smil
 //       return &curNode;
 //     }
     size_t getNbrNodes(){return nbrNodes;}
-    WeightT getNodeValue(size_t nodeIndex,string nameOfValueWanted){
-      DendroNodeType &curNode = *dendroNodes[nodeIndex];
+    float getNodeValue(size_t nodeIndex,string nameOfValueWanted){
+      DendroNodeType &curNode = *dendroNodes.at(nodeIndex);
       if (nameOfValueWanted == "valuation"){
 	return curNode.getValuation();
       }
@@ -569,3 +833,4 @@ namespace smil
 
 
 #endif // _SAMPLE_MODULE_HPP 
+ 
