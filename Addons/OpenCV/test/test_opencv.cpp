@@ -36,7 +36,7 @@ class Test_SmilToCv : public TestCase
 
 
 
-int main(int argc, char *argv[])
+int main(int /*argc*/, char */*argv*/[])
 {
       TestSuite ts;
       

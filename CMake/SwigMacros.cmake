@@ -56,9 +56,21 @@ SET(_STWD "${_STWD}%enddef\n\n")
 # SWIG WRAP CROSS CLASS 2 TYPES
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_CROSS(class, name)\n")
 FOREACH(_IMG_TYPE ${IMAGE_TYPES})
-	FOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
-		SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE} \#\#  _${_IMG_TYPE2}) class<${_IMG_TYPE},${_IMG_TYPE2}  >;\n")
-	ENDFOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+        FOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+                SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE} \#\#  _${_IMG_TYPE2}) class<${_IMG_TYPE},${_IMG_TYPE2}  >;\n")
+        ENDFOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
+# SWIG WRAP CROSS CLASS 3 TYPES
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_3T_CROSS(class, name)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+        FOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+                FOREACH(_IMG_TYPE3 ${IMAGE_TYPES})
+                        SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE} \#\#  _${_IMG_TYPE2} \#\#  _${_IMG_TYPE3}) \
+                        class<${_IMG_TYPE},${_IMG_TYPE2},${_IMG_TYPE3}  >;\n")
+                ENDFOREACH(_IMG_TYPE3 ${IMAGE_TYPES})
+        ENDFOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
 ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 
