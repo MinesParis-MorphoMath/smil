@@ -83,11 +83,16 @@ namespace smil
     public:
         OpenCVInt(PyObject *obj)
         {
+            if (!obj)
+            {
+                ERR_MSG("input object is NULL.");
+                return;
+            }
             python_iplimage *pIm = (python_iplimage*)obj;
             IplImage *cvIm = pIm->img;
             if (!cvIm)
             {
-                cout << "Error: Input object must be an IplImage." << endl;
+                ERR_MSG("Error: Input object must be an IplImage.");
                 return;
             }
             BaseObject::className = "OpenCVInt";
