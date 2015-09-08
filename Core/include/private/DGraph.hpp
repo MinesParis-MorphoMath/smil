@@ -448,7 +448,7 @@ namespace smil
         }
         
     protected:        
-        void propagateLabel(const NodeT &ind, const NodeT &lbl, map<NodeT,NodeT> &lookup, set<NodeT> &nList) const
+        void propagateLabel(const NodeT ind, const NodeT lbl, map<NodeT,NodeT> &lookup, set<NodeT> &nList) const
         {
             typename NodeListType::iterator foundNode = nList.find(ind);
             if (foundNode==nList.end())
