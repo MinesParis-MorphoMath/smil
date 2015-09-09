@@ -198,6 +198,8 @@ TEMPLATE_WRAP_FUNC(areaOpen);
 TEMPLATE_WRAP_FUNC(areaClose);
 
 %include "Morpho/include/private/DMorphoGraph.hpp"
+%feature("director") mosaicToGraphFunct;
+TEMPLATE_WRAP_CLASS_2T_CROSS(mosaicToGraphFunct, mosaicToGraphFunct);
 TEMPLATE_WRAP_FUNC(mosaicToGraph);
 TEMPLATE_WRAP_FUNC_2T_CROSS(mosaicToGraph);
 TEMPLATE_WRAP_FUNC(graphToMosaic);

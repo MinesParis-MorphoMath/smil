@@ -215,15 +215,15 @@ namespace smil
             nodeValues[ind] = val;
         }
         
-        inline EdgeType *findEdge(const EdgeType &e)
+        inline int findEdge(const EdgeType &e)
         {
             typename EdgeListType::iterator foundEdge = find(edges.begin(), edges.end(), e);
             if (foundEdge!=edges.end())
-                return &(*foundEdge);
-            else return NULL;
+                return foundEdge-edges.begin();
+            else return -1;
         }
         
-        inline EdgeType *findEdge(const NodeT &src, const NodeT &targ)
+        inline int findEdge(const NodeT &src, const NodeT &targ)
         {
             return findEdge(EdgeType(src, targ));
         }
@@ -237,14 +237,9 @@ namespace smil
         void addEdge(const EdgeType &e, bool checkIfExists=true)
         {
             if (checkIfExists)
-            {
-                typename EdgeListType::iterator foundEdge = find(edges.begin(), edges.end(), e);
-                if (foundEdge!=edges.end())
-                {
-                    (*foundEdge).weight = min((*foundEdge).weight, e.weight);
-                    return;
-                }
-            }
+              if (findEdge(e)!=-1)
+                return;
+
             edges.push_back(e);
             nodes.insert(e.source);
             nodes.insert(e.target);
@@ -260,7 +255,7 @@ namespace smil
          *         If the edge doen't exist, create a new one.
          *         If the edge already exists, the edge weight will be the minimum between the existing a the new weight.
          */
-        void addEdge(const NodeT src, const NodeT targ, WeightT weight=1, bool checkIfExists=true)
+        void addEdge(const NodeT src, const NodeT targ, WeightT weight=0, bool checkIfExists=true)
         {
             addEdge(EdgeType(src, targ, weight), checkIfExists);
         }

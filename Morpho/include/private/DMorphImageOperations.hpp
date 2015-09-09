@@ -78,11 +78,11 @@ namespace smil
         }
         
         
-        inline RES_T operator()(const imageInType &imIn, imageOutType &imOut, const StrElt &se=DEFAULT_SE) 
+        RES_T operator()(const imageInType &imIn, imageOutType &imOut, const StrElt &se=DEFAULT_SE) 
         { 
             return this->_exec(imIn, imOut, se); 
         }
-        inline RES_T operator()(const imageInType &imIn, const StrElt &se=DEFAULT_SE) 
+        RES_T operator()(const imageInType &imIn, const StrElt &se=DEFAULT_SE) 
         { 
             return this->_exec(imIn, se); 
         }
