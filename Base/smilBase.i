@@ -146,7 +146,7 @@ TEMPLATE_WRAP_FUNC(gaussianFilter);
 
 TEMPLATE_WRAP_FUNC(drawLine);
 TEMPLATE_WRAP_FUNC(drawRectangle);
-TEMPLATE_WRAP_FUNC(drawRectangles);
+TEMPLATE_WRAP_FUNC_2T_CROSS(drawRectangles);
 TEMPLATE_WRAP_FUNC(drawBox);
 TEMPLATE_WRAP_FUNC(drawCircle);
 TEMPLATE_WRAP_FUNC(drawSphere);

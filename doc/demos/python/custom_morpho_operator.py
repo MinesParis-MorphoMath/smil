@@ -4,8 +4,8 @@ class myMeanMorphoFunction(MorphImageFunctionBase_UINT8):
   def processPixel(self, i, relOffList):
     pixSum = 0.
     for nb in relOffList:
-      pixSum += self.imIn[i + nb]
-    self.imOut[i] = int(pixSum / len(relOffList))
+      pixSum += self.imageIn[i + nb]
+    self.imageOut[i] = int(pixSum / len(relOffList))
 
 
 imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/lena.png")

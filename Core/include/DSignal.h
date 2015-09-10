@@ -100,7 +100,7 @@ namespace smil
         }
       }
 
-      virtual void trigger(Event *e)
+      virtual void trigger(Event *e=NULL)
       {
         if (!enabled)
           return;

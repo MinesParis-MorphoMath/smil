@@ -157,19 +157,19 @@ namespace smil
     * Draw a list of rectangles
     * 
     */
-    template <class T>
-    RES_T drawRectangles(Image<T> &imOut, const map<UINT, Vector_UINT> &coordsVect, T value=0, bool fill=false)
+    template <class T, class MapT>
+    RES_T drawRectangles(Image<T> &imOut, const map<MapT, Vector_size_t> &coordsVect, bool fill=false)
     {
         ASSERT_ALLOCATED(&imOut);
         ImageFreezer freeze(imOut);
         
-        map<UINT, Vector_UINT>::const_iterator it = coordsVect.begin();
+        typename map<MapT, Vector_size_t>::const_iterator it = coordsVect.begin();
         if (it->second.size()!=4)
           return RES_ERR;
         for (;it!=coordsVect.end();it++)
         {
-            vector<UINT> coords = it->second;
-            T val = value==0 ? T(it->first) : value;
+            vector<size_t> coords = it->second;
+            T val = T(it->first);
             if (drawRectangle<T>(imOut, coords[0], coords[1], coords[2]-coords[0]+1, coords[3]-coords[1]+1, val, fill)!=RES_OK)
               return RES_ERR;
         }
