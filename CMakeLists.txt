@@ -160,6 +160,9 @@ IF(CMAKE_COMPILER_IS_GNUCC)
         # Try to have a clean code to avoid silly bugs
 #         ADD_DEFINITIONS("-pedantic -Wall -Wextra -Weffc++  -Wsign-compare -Wsign-conversion -Wconversion")
         ADD_DEFINITIONS("-Wall -Wextra -Wsign-compare")
+        IF(CMAKE_CROSSCOMPILING)
+            ADD_DEFINITIONS("-Wno-maybe-uninitialized")
+        ENDIF(CMAKE_CROSSCOMPILING)
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 
 
@@ -350,9 +353,16 @@ ENDIF(WRAP_CPP OR WRAP_PYTHON OR WRAP_JAVA OR WRAP_OCTAVE OR WRAP_RUBY OR WRAP_P
 
 ###### GUI ######
 
-FIND_PACKAGE(Qt4 QUIET)
+IF(NOT IGNORE_QT4)
+    FIND_PACKAGE(Qt4 QUIET)
+ENDIF(NOT IGNORE_QT4)
+
 IF(NOT QT4_FOUND)
     FIND_PACKAGE(Qt5Widgets QUIET)
+    IF(Qt5Core_FOUND)
+        SET(IGNORE_QT4 TRUE CACHE BOOL "")
+        MARK_AS_ADVANCED(IGNORE_QT4)
+    ENDIF(Qt5Core_FOUND)
 ENDIF(NOT QT4_FOUND)
 
 IF(QT4_FOUND OR Qt5Core_FOUND)
