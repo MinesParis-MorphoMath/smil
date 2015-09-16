@@ -211,7 +211,7 @@ namespace smil
             // all misaligned but with same misalignment
             else if (ptrOffset1==ptrOffset2 && ptrOffset2==ptrOffset3)
             {
-                unsigned long misAlignSize = SIMD_VEC_SIZE - ptrOffset1;
+                size_t misAlignSize = SIMD_VEC_SIZE - ptrOffset1;
                 _exec(lineIn1, lineIn2, lineIn3, misAlignSize, lineOut); 
                 _exec_aligned(lineIn1+misAlignSize, lineIn2+misAlignSize, lineIn3+misAlignSize, size-misAlignSize, lineOut+misAlignSize); 
             }

@@ -171,6 +171,7 @@ IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	# 4 -> 32 BITS, 8 -> 64 BITS
 	MESSAGE(STATUS "64 bits system detected")
 	OPTION(USE_64BIT_IDS "Compile for 64 bits system" ON)
+	MARK_AS_ADVANCED(USE_64BIT_IDS)
 	IF(USE_64BIT_IDS)
 		ADD_DEFINITIONS("-DUSE_64BIT_IDS")
 		IF(NOT WIN32)
@@ -217,6 +218,7 @@ ENDIF(MSVC)
 ###### OPTIMIZATIONS ######
 
 OPTION(USE_SSE_INT "Use sse intrinsics" OFF)
+MARK_AS_ADVANCED(USE_SSE_INT)
 IF(USE_SSE_INT)
 	ADD_DEFINITIONS("-DSMIL_USE_SSE_INT")
 ENDIF(USE_SSE_INT)
@@ -229,6 +231,7 @@ IF(USE_OPTIMIZATION)
 	SET(TARGET_ARCHITECTURE "auto" CACHE STRING "CPU architecture to optimize for. Using an incorrect setting here can result in crashes of the resulting binary because of invalid instructions used.\nSetting the value to \"auto\" will try to optimize for the architecture where cmake is called.\nOther supported values are: \"none\", \"generic\", \"core\", \"merom\" (65nm Core2), \"penryn\" (45nm Core2), \"nehalem\", \"westmere\", \"sandy-bridge\", \"atom\", \"k8\", \"k8-sse3\", \"barcelona\", \"istanbul\", \"magny-cours\", \"bulldozer\", \"interlagos\".")
 
 	OPTION(VERBOSE_OPTIMIZATION "Show verbose optimizations" OFF)
+	MARK_AS_ADVANCED(VERBOSE_OPTIMIZATION)
 
 	IF(CMAKE_COMPILER_IS_GNUCC)
 	    AddCompilerFlag("-ftree-vectorize -ftree-slp-vectorize")

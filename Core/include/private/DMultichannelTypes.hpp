@@ -481,18 +481,18 @@ namespace smil
             MultichannelArray ba(*this, this->index + dp);
             return ba;
         }
-        inline MultichannelArray operator + (size_t dp) const
-        {
-            MultichannelArray ba(*this, this->index + dp);
-            return ba;
-        }
 #ifndef USE_64BIT_IDS
-        inline MultichannelArray operator + (unsigned long dp) const
+        inline MultichannelArray operator + (long unsigned int dp) const
         {
             MultichannelArray ba(*this, this->index + dp);
             return ba;
         }
 #endif // USE_64BIT_IDS
+        inline MultichannelArray operator + (size_t dp) const
+        {
+            MultichannelArray ba(*this, this->index + dp);
+            return ba;
+        }
         MultichannelArray operator - (int dp);
 #ifndef SWIG
         MultichannelArray& operator ++ (int)
