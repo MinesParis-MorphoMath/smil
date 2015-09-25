@@ -82,7 +82,7 @@ namespace smil
             image->getSize(imSize);
             this->setName(image->getName());
             
-            if (&im)
+            if (image)
               image->onModified.connect(&this->updateSlot);
         }
         virtual Image<T> *getImage()
