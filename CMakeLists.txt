@@ -443,7 +443,7 @@ IF(USE_QT)
             IF(QWT_FOUND)
                 ADD_DEFINITIONS("-DUSE_QWT")
                 INCLUDE_DIRECTORIES(${QWT_INCLUDE_DIR})
-                LIST(APPEND SMIL_EXT_DEPS qwt)
+                LIST(APPEND SMIL_EXT_DEPS ${QWT_LIBRARY})
             ENDIF(QWT_FOUND)
       ENDIF(USE_QWT)
 
