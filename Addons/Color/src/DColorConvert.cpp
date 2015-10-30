@@ -283,10 +283,10 @@ namespace smil
 
             //      tR = static_cast< typename value_type::value_type> (floor(0.5+tmp));
 
-            double mymax,mymin,Mid;
+            double mymax, mymin, Mid = 0;
             double L1re,Hre,S1re;
             double   L1ou,Hou,S1ou;
-            double   lambda,phi,k;
+            double   lambda = 0, phi, k;
             double  Rf,Gf,Bf;
 
             Rf=((double)(R)/255.0)*(1.0);
@@ -403,7 +403,7 @@ namespace smil
             float phi1,phi;
             float lambda1;
             int    lambda;
-            float Rou,Gou,Bou;
+            float Rou = 0, Gou = 0, Bou = 0;
             float k;
 
             /* H, L, S are extracted */
