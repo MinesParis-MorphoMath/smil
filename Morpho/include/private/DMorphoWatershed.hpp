@@ -51,6 +51,7 @@ namespace smil
     {
       public:
         BaseFlooding()
+          : STAT_QUEUED(ImDtTypes<labelT>::max())
         {
         }
         virtual ~BaseFlooding()
@@ -59,6 +60,7 @@ namespace smil
         
        protected:
         
+        const labelT STAT_QUEUED;
         
         typename ImDtTypes<T>::lineType inPixels;
         typename ImDtTypes<labelT>::lineType lblPixels;
@@ -88,6 +90,8 @@ namespace smil
             ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);
             ASSERT_SAME_SIZE(&imIn, &imMarkers, &imBasinsOut);
             
+            ASSERT(maxVal(imMarkers)<STAT_QUEUED);
+              
             ImageFreezer freeze(imBasinsOut);
             
             copy(imMarkers, imBasinsOut);
@@ -129,7 +133,7 @@ namespace smil
             return RES_OK;
         }
         
-        virtual RES_T processImage(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
+        virtual RES_T processImage(const Image<T> &/*imIn*/, Image<labelT> &/*imLbl*/, const StrElt &/*se*/)
         {
             // Put the marker pixels in the HQ
             size_t offset = 0;
@@ -192,14 +196,25 @@ namespace smil
         
         inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
         {
-                labelT nbLbl = lblPixels[nbOffset];
-                
-                if (nbLbl==0) 
-                {
-                    lblPixels[nbOffset] = lblPixels[curOffset];
-                    hq.push(inPixels[nbOffset], nbOffset);
-//                     insertPixel(nbOffset, lblPixels[curOffset]);
-                }
+            labelT nbLbl = this->lblPixels[nbOffset];
+            labelT curLbl = lblPixels[curOffset]==STAT_QUEUED ? 0 : lblPixels[curOffset];
+            
+            if (nbLbl==0) // Add it to the tmp offsets queue
+            {
+                hq.push(inPixels[nbOffset], nbOffset);
+                // Propagate label on plateaus
+                if (inPixels[nbOffset]==inPixels[curOffset] && curLbl!=0)
+                  this->lblPixels[nbOffset] = curLbl;
+                else
+                  this->lblPixels[nbOffset] = STAT_QUEUED;
+            }
+            else if (nbLbl<STAT_QUEUED)
+            {
+                if (curLbl==0)
+                  this->lblPixels[curOffset] = this->lblPixels[nbOffset];
+            }
+            
+            
         }
         
 
@@ -304,7 +319,7 @@ namespace smil
         }
         inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
         {
-            UINT8 nbStat = this->wsPixels[nbOffset];
+            T nbStat = this->wsPixels[nbOffset];
             
             if (nbStat==STAT_CANDIDATE) // Add it to the tmp offsets queue
             {

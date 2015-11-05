@@ -35,6 +35,7 @@
 #include "QVtkViewerWidget.h"
 #include "Gui/include/private/DImageViewer.hpp"
 #include "Core/include/DTypes.h"
+#include "Base/include/private/DMeasures.hpp"
 
 namespace smil
 {
@@ -65,17 +66,39 @@ namespace smil
           : ImageViewer<T>(), 
             QVtkViewerWidget()
         {
-            imageImport->SetDataScalarType(VTK_UNSIGNED_CHAR);
-            opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
+            if (is_same<T,UINT8>::value)
+              imageImport->SetDataScalarTypeToUnsignedChar();
+            else if (is_same<T,UINT16>::value)
+              imageImport->SetDataScalarTypeToUnsignedShort();
+            else if (is_same<T,INT16>::value)
+              imageImport->SetDataScalarTypeToShort();
+            
+            setAutoRange(false);
+
+            colorOpacityTransfertFunction->AddSegment(0, 0., 1, 0.);
+            colorOpacityTransfertFunction->AddSegment(1, 1., ImDtTypes<T>::max(), 1.0);
+            
+            initLookup(ImDtTypes<T>::max());
         }
         QVtkViewer(Image<T> &im)
           : ImageViewer<T>(), 
           QVtkViewerWidget()
         {
+            if (is_same<T,UINT8>::value)
+              imageImport->SetDataScalarTypeToUnsignedChar();
+            else if (is_same<T,UINT16>::value)
+              imageImport->SetDataScalarTypeToUnsignedShort();
+            else if (is_same<T,INT16>::value)
+              imageImport->SetDataScalarTypeToShort();
+            
             setImage(im);
             
-            imageImport->SetDataScalarType(VTK_UNSIGNED_CHAR);
-            opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
+            setAutoRange(false);
+            
+            colorOpacityTransfertFunction->AddSegment(0, 0., 1, 0.);
+            colorOpacityTransfertFunction->AddSegment(1, 1., ImDtTypes<T>::max(), 1.0);
+            
+            initLookup(ImDtTypes<T>::max());
         }
         ~QVtkViewer()
         {
@@ -101,7 +124,19 @@ namespace smil
             camera->SetPosition(imSize[0], imSize[1]/2, -d);
         }
         
-        virtual void onSizeChanged(size_t width, size_t height, size_t depth)
+        virtual void setAutoRange(bool on)
+        {
+            opacityTransfertFunction->RemoveAllPoints();
+            if (on)
+            {
+                vector<T> r = rangeVal(*this->image);
+                opacityTransfertFunction->AddSegment(r[0], 0., r[1], 1.0);
+            }
+            else
+              opacityTransfertFunction->AddSegment(ImDtTypes<T>::min(), 0., ImDtTypes<T>::max(), 1.0);
+        }
+        
+        virtual void onSizeChanged(size_t /*width*/, size_t /*height*/, size_t /*depth*/)
         {
         }
         
@@ -121,7 +156,7 @@ namespace smil
         }
         virtual void show()
         {
-            QVtkViewerWidget::show();
+            QVtkViewerWidget::showNormal();
             this->drawImage();
         }
         virtual void show(Image<T> &im) 
@@ -131,6 +166,8 @@ namespace smil
         }
         virtual void showLabel()
         {
+            QVtkViewerWidget::showLabel();
+            this->drawImage();
         }
         virtual bool isVisible()
         {
@@ -141,7 +178,7 @@ namespace smil
             QString buf = _name + QString(" (") + QString(parentClass::image->getTypeAsString()) + QString(")");
             QVtkViewerWidget::setWindowTitle(buf);
         }
-        virtual void drawOverlay(const Image<T> &im)
+        virtual void drawOverlay(const Image<T> &/*im*/)
         {
         }
         virtual void clearOverlay() {  }
@@ -177,11 +214,10 @@ namespace smil
         }
         
     protected:
-        
-
-        
-        
-        
+        void initLookup(int typeMax)
+        {
+            QVtkViewerWidget::initLookup(typeMax);
+        }
     };
 
     /*@}*/

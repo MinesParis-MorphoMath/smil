@@ -55,34 +55,34 @@ namespace smil
 
         //! Default constructor
         SharedImage()
+          : Image<T>()
         {
             this->className = "SharedImage";
-            parentClass::init();
             attached = false;
         }
         
         SharedImage(const Image<T> &img)
+          : Image<T>()
         {
             this->className = "SharedImage";
-            parentClass::init();
             attached = false;
             
             this->attach(img);
         }
         
         SharedImage(lineType dataPtr, size_t width, size_t height, size_t depth=1)
+          : Image<T>()
         {
             this->className = "SharedImage";
-            parentClass::init();
             attached = false;
             
             this->attach(dataPtr, width, height, depth);
         }
         
         SharedImage(const SharedImage<T> &img)
+          : Image<T>()
         {
             this->className = "SharedImage";
-            parentClass::init();
             attached = false;
             
             this->clone(img);
@@ -174,7 +174,7 @@ namespace smil
       protected:
         bool attached;
         
-        virtual RES_T setSize(size_t w, size_t h, size_t d = 1, bool doAllocate = true)
+        virtual RES_T setSize(size_t w, size_t h, size_t d = 1, bool /*doAllocate*/ = true)
         {
             this->width = w;
             this->height = h;

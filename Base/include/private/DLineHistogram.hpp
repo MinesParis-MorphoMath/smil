@@ -41,38 +41,43 @@ namespace smil
     //! @{
 
   
-    template <class T>
-    struct threshLine : public unaryLineFunctionBase<T>
+    template <class T, class T_out=T>
+    struct threshLine : public unaryLineFunctionBase<T, T_out>
     {
-        T minVal, maxVal, trueVal, falseVal;
-        typedef typename ImDtTypes<T>::lineType lineType;
+        T minVal, maxVal;
+        T_out trueVal, falseVal;
         
-        inline void _exec(const lineType &lIn, int size, lineType &lOut)
+        typedef typename unaryLineFunctionBase<T,T_out>::lineInType lineInType;
+        typedef typename unaryLineFunctionBase<T,T_out>::lineOutType lineOutType;
+        
+        virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
         {
-            for(int i=0;i<size;i++)
+            for(size_t i=0;i<size;i++)
                 lOut[i] = lIn[i] >= minVal && lIn[i] <= maxVal  ? trueVal : falseVal;
         }
     };
 
-    template <class T>
-    struct stretchHistLine : public unaryLineFunctionBase<T>
+    template <class Tin, class Tout>
+    struct stretchHistLine : public unaryLineFunctionBase<Tin, Tout>
     {
-        T inOrig, outOrig;
+        Tin inOrig;
+        Tout outOrig;
         double coeff;
-        typedef typename ImDtTypes<T>::lineType lineType;
+        typedef typename unaryLineFunctionBase<Tin>::lineType lineInType;
+        typedef typename unaryLineFunctionBase<Tout>::lineType lineOutType;
         
-        inline void _exec(const lineType &lIn, int size, lineType &lOut)
+        virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
         {
             double newVal;
             
-            for(UINT i=0;i<size;i++)
+            for(size_t i=0;i<size;i++)
             {
                 newVal = double(outOrig) + (double(lIn[i])-double(inOrig))*coeff;
-                if (newVal > double(numeric_limits<T>::max()))
-                    newVal = numeric_limits<T>::max();
-                else if (newVal < double(numeric_limits<T>::min()))
-                    newVal = numeric_limits<T>::min();
-                lOut[i] = T(round(newVal));
+                if (newVal > double(numeric_limits<Tout>::max()))
+                    newVal = numeric_limits<Tout>::max();
+                else if (newVal < double(numeric_limits<Tout>::min()))
+                    newVal = numeric_limits<Tout>::min();
+                lOut[i] = Tout(round(newVal));
                 
             }
         }

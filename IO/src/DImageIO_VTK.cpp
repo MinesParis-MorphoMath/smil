@@ -97,10 +97,14 @@ namespace smil
             else if (wrd=="SCALARS")
             {
                 hStruct.scalarTypeStr = bufElems[2];
-                if (hStruct.scalarTypeStr=="unsigned_char")
+                if (hStruct.scalarTypeStr=="UNSIGNED_CHAR")
                   hStruct.scalarType = ImageFileInfo::SCALAR_TYPE_UINT8;
-                else if (hStruct.scalarTypeStr=="unsigned_short")
+                else if (hStruct.scalarTypeStr=="UNSIGNED_SHORT")
                   hStruct.scalarType = ImageFileInfo::SCALAR_TYPE_UINT16;                
+                else if (hStruct.scalarTypeStr=="SHORT")
+                  hStruct.scalarType = ImageFileInfo::SCALAR_TYPE_INT16;                
+                else
+                  hStruct.scalarType = ImageFileInfo::SCALAR_TYPE_UNKNOWN;                
             }
             else if (wrd=="COLOR_SCALARS")
             {
@@ -111,7 +115,7 @@ namespace smil
         return RES_OK;
     }
     
-    RES_T getVTKFileInfo(const char* filename, ImageFileInfo &fInfo)
+    RES_T getVTKFileInfo(const char* /*filename*/, ImageFileInfo &/*fInfo*/)
     {
         return RES_OK;
     }

@@ -7,7 +7,7 @@ class myWSFlooding(WatershedFlooding_UINT8_UINT16):
     self.imgWS.updatesEnabled = True
     self.imgLbl.updatesEnabled = True
     self.nbrPixProcessed = 0
-    self.refresh_every = 1 # refresh every n pixels processed
+    self.refresh_every = 10 # refresh every n pixels processed
     return RES_OK
   def processPixel(self, offset):
     # Call parent class method
@@ -15,6 +15,7 @@ class myWSFlooding(WatershedFlooding_UINT8_UINT16):
     if self.nbrPixProcessed>=self.refresh_every:
         self.imgWS.modified()
         self.imgLbl.modified()
+        Gui.processEvents()
         self.nbrPixProcessed = 0
     else:
         self.nbrPixProcessed += 1

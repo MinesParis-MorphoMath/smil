@@ -21,6 +21,8 @@ class Test_Python_Import : public TestCase
 
       PyObject *pyobj = PyDict_GetItem(globals, PyUnicode_FromString( "cvIm" ));
       
+      TEST_ASSERT(pyobj);
+      
       OpenCVInt<UINT8> cvIm(pyobj);
       
       TEST_ASSERT(cvIm.isAllocated());
@@ -32,7 +34,7 @@ class Test_Python_Import : public TestCase
     }
 };
 
-int main(int argc, char *argv[])
+int main(int /*argc*/, char */*argv*/[])
 {
       TestSuite ts;
       

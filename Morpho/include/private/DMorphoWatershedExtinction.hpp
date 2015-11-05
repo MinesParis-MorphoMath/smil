@@ -105,10 +105,10 @@ namespace smil
             basinNbr = 0;
         }
         
-        inline virtual void insertPixel(const size_t &offset, const labelT &lbl) {}
-        inline virtual void raiseLevel(const labelT &lbl) {}
-        inline virtual labelT mergeBasins(const labelT &lbl1, const labelT &lbl2) { return 0; };
-        inline virtual void finalize(const labelT &lbl) {}
+        inline virtual void insertPixel(const size_t &/*offset*/, const labelT &/*lbl*/) {}
+        inline virtual void raiseLevel(const labelT &/*lbl*/) {}
+        inline virtual labelT mergeBasins(const labelT &/*lbl1*/, const labelT &/*lbl2*/) { return 0; };
+        inline virtual void finalize(const labelT &/*lbl*/) {}
         
         virtual void updateEquTable(const labelT &lbl1, const labelT &lbl2)
         {
@@ -246,7 +246,7 @@ namespace smil
             
             while(mIt!=pendingMerges.end())
             {
-                if (*lIt<=this->currentLevel)
+//                 if (*lIt<=this->currentLevel)
                 {
                 
                     labelT l1_orig = mIt->first, l1 = equivalentLabels[l1_orig];
@@ -277,13 +277,13 @@ namespace smil
                         updateEquTable(eaten, eater);
                     }
                     pendingMerges.erase(mIt);
-                    mergeLevels.erase(lIt);
+//                     mergeLevels.erase(lIt);
                 }
-                else
-                {
-                    mIt++;
-                    lIt++;
-                }
+//                 else
+//                 {
+//                     mIt++;
+//                     lIt++;
+//                 }
             }
         }
 
@@ -307,34 +307,30 @@ namespace smil
             
             lastOffset = curOffset;
         }
+        
         inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
         {
-            labelT l1 = this->lblPixels[curOffset];
-            labelT l2 = this->lblPixels[nbOffset];
+            labelT nbLbl = this->lblPixels[nbOffset];
+            labelT curLbl = this->lblPixels[curOffset]==this->STAT_QUEUED ? 0 : this->lblPixels[curOffset];
             
-            if (l1==l2) return;
-            
-            if (l2==0) 
+            if (nbLbl==0) // Add it to the tmp offsets queue
             {
-                this->lblPixels[nbOffset] = l1; //labelNbr+1;
                 this->hq.push(this->inPixels[nbOffset], nbOffset);
+                // Propagate label on plateaus
+                if (this->inPixels[nbOffset]==this->inPixels[curOffset] && curLbl!=0)
+                  this->lblPixels[nbOffset] = curLbl;
+                else
+                  this->lblPixels[nbOffset] = this->STAT_QUEUED;
             }
-            else if (equivalentLabels[l1]!=equivalentLabels[l2])
+            else if (nbLbl<this->STAT_QUEUED)
             {
-                typename std::pair<labelT,labelT> p = make_pair<labelT>(min(l1,l2), max(l1,l2));
-                typename std::vector< std::pair<labelT,labelT> >::iterator mFound = find(pendingMerges.begin(), pendingMerges.end(), p);
-                if (mFound==pendingMerges.end())
-                {
-                    pendingMerges.push_back(p);
-                    mergeLevels.push_back(this->inPixels[nbOffset]);
-                }
-                else // Merge will append at the lower level
-                {
-                    size_t ind = mFound - pendingMerges.begin();
-                    if (this->inPixels[nbOffset]<mergeLevels[ind])
-                      mergeLevels[ind] = this->inPixels[nbOffset];
-                }
+                labelT curLbl = this->lblPixels[curOffset];
+                if (curLbl==0 || curLbl==this->STAT_QUEUED)
+                  this->lblPixels[curOffset] = this->lblPixels[nbOffset];
+                else if (equivalentLabels[nbLbl]!=equivalentLabels[curLbl])
+                  pendingMerges.push_back( make_pair<labelT>(min(curLbl,nbLbl), max(curLbl,nbLbl)) );
             }
+
         }
 
         
@@ -370,8 +366,6 @@ namespace smil
               minValues[lbl] = this->inPixels[offset];
             
             areas[lbl]++;
-            size_t aa = areas[lbl];
-            int i=0;
         }
         virtual labelT mergeBasins(const labelT &lbl1, const labelT &lbl2)
         {
@@ -588,7 +582,7 @@ namespace smil
      * 
      * \demo{extinction_values.py}
      */
-    template < class T,        class labelT, class outT > 
+    template < class T, class labelT, class outT > 
     RES_T watershedExtinctionGraph (const Image < T > &imIn,
                                     const Image < labelT > &imMarkers,
                                     Image < labelT > &imBasinsOut,
@@ -651,7 +645,7 @@ namespace smil
         
         
         typedef typename Graph<labelT,UINT>::EdgeType EdgeType;
-        vector<EdgeType> &edges = graph.getEdges();
+        const vector<EdgeType> &edges = graph.getEdges();
         UINT edgesNbr = edges.size();
         
         for (UINT i=0;i<edgesNbr;i++)
@@ -674,7 +668,7 @@ namespace smil
         
         
         typedef typename Graph<labelT,UINT>::EdgeType EdgeType;
-        vector<EdgeType> &edges = graph.getEdges();
+        const vector<EdgeType> &edges = graph.getEdges();
         UINT edgesNbr = edges.size();
         
         for (UINT i=0;i<edgesNbr;i++)

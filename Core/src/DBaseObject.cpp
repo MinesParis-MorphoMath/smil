@@ -42,11 +42,6 @@ using namespace smil;
 //     }
 
 
-    void BaseObject::_clone(const BaseObject &rhs)
-    {
-        this->className = rhs.getClassName();
-        this->triggerEvents = rhs.triggerEvents;
-    }
 
 
     Core *BaseObject::getCoreInstance()
@@ -54,8 +49,4 @@ using namespace smil;
         return Core::getInstance();
     }
 
-    const char *BaseObject::getClassName() const
-    {
-        return this->className.c_str();
-    }
 

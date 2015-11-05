@@ -56,9 +56,20 @@ SET(_STWD "${_STWD}%enddef\n\n")
 # SWIG WRAP CROSS CLASS 2 TYPES
 SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_CROSS(class, name)\n")
 FOREACH(_IMG_TYPE ${IMAGE_TYPES})
-	FOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
-		SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE}_${_IMG_TYPE2}) class<${_IMG_TYPE},${_IMG_TYPE2}  >;\n")
-	ENDFOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+        FOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+                SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE} \#\#  _${_IMG_TYPE2}) class<${_IMG_TYPE},${_IMG_TYPE2}  >;\n")
+        ENDFOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
+# SWIG WRAP CROSS CLASS 3 TYPES
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_3T_CROSS(class, name)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+        FOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+                FOREACH(_IMG_TYPE3 ${IMAGE_TYPES})
+                        SET(_STWD "${_STWD}  %template(name \#\# _${_IMG_TYPE} \#\#  _${_IMG_TYPE2} \#\#  _${_IMG_TYPE3}) class<${_IMG_TYPE},${_IMG_TYPE2},${_IMG_TYPE3}  >;\n")
+                ENDFOREACH(_IMG_TYPE3 ${IMAGE_TYPES})
+        ENDFOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
 ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 
@@ -146,10 +157,30 @@ ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 
 
-# SWIG WRAP VECTOR
-SET(_STWD "${_STWD}%define TEMPLATE_WRAP_VECTOR_SUBTYPE(class)\n")
+# SWIG WRAP SUBTYPES (ex. std::vector)
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_SUBTYPE(class, subclass, basename)\n")
 FOREACH(_IMG_TYPE ${IMAGE_TYPES})
-        SET(_STWD "${_STWD}  %template(Vector_ \#\# class \#\# _${_IMG_TYPE}) vector< class<${_IMG_TYPE}> >;\n")
+        SET(_STWD "${_STWD}  %template(basename \#\# _ \#\# subclass \#\# _${_IMG_TYPE}) class< subclass<${_IMG_TYPE}> >;\n")
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_SUBTYPES_CROSS(class, subclass, basename)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+        FOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+                SET(_STWD "${_STWD}  %template(basename \#\# _ \#\# subclass \#\# _${_IMG_TYPE} \#\# _${_IMG_TYPE2}) class< subclass <${_IMG_TYPE}, ${_IMG_TYPE2}> >;\n")
+        ENDFOREACH(_IMG_TYPE2 ${IMAGE_TYPES})
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_SUBTYPES_FIX_FIRST(class, subclass, fixedType, basename)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+        SET(_STWD "${_STWD}  %template(basename \#\# _ \#\# subclass \#\# _ \#\# fixedType \#\# _${_IMG_TYPE}) class< subclass <fixedType, ${_IMG_TYPE}> >;\n")
+ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
+SET(_STWD "${_STWD}%enddef\n\n")
+
+SET(_STWD "${_STWD}%define TEMPLATE_WRAP_CLASS_2T_SUBTYPES_FIX_SECOND(class, subclass, fixedType, basename)\n")
+FOREACH(_IMG_TYPE ${IMAGE_TYPES})
+        SET(_STWD "${_STWD}  %template(basename \#\# _ \#\# subclass \#\# _ \#\# _${_IMG_TYPE} \#\# fixedType) class< subclass <${_IMG_TYPE}, fixedType> >;\n")
 ENDFOREACH(_IMG_TYPE ${IMAGE_TYPES})
 SET(_STWD "${_STWD}%enddef\n\n")
 

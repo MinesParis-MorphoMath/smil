@@ -48,6 +48,7 @@ namespace smil
     {
         typedef COLOR_UINT8_3 pixelType;
         typedef COLOR_UINT8_3_Array lineType;
+        typedef COLOR_UINT8_3_Array restrictLineType;
         typedef lineType* sliceType;
         typedef sliceType* volType;
         

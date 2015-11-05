@@ -37,16 +37,19 @@ class Test_MosaicToGraph : public TestCase
 {
   virtual void run()
   {
-      typedef UINT8 dataType;
-      typedef Image<dataType> imType;
+      typedef UINT16 dataType1;
+      typedef UINT8 dataType2;
+      typedef Image<dataType1> imType1;
+      typedef Image<dataType2> imType2;
       
-      imType im1(7,7);
-      imType im2(im1);
-      imType im3(im1);
-      imType im4(im1);
+      imType1 im1(7,7);
+      imType2 im2(im1);
+      imType2 im3(im1);
+      imType1 im4(im1);
+      imType1 im5(im1);
       
       // Mosaic
-      dataType vec1[] = {
+      dataType1 vec1[] = {
         0, 0, 0, 0, 0, 0, 1, 
         0, 0, 0, 0, 1, 1, 1, 
         0, 2, 0, 0, 1, 1, 1, 
@@ -57,8 +60,8 @@ class Test_MosaicToGraph : public TestCase
       };
       im1 << vec1;
       
-      // Values (gradient)
-      dataType vec2[] = {
+      // Edge Values (gradient)
+      dataType2 vec2[] = {
         0, 0, 0, 10, 20, 20, 60, 
         0, 0, 0, 10, 10, 10, 10, 
         0, 2, 0, 7, 20, 10, 10, 
@@ -69,8 +72,20 @@ class Test_MosaicToGraph : public TestCase
       };
       im2 << vec2;
       
+      // Node Values
+      dataType2 vec3[] = {
+        0, 0, 0, 0, 0, 0, 10, 
+        0, 0, 0, 0, 10, 10, 10, 
+        0, 20, 0, 0, 10, 10, 10, 
+        20, 20, 0, 0, 0, 10, 0, 
+        20, 0, 30, 0, 0, 40, 0, 
+        20, 0, 30, 0, 00, 40, 0, 
+        0, 0, 30, 0, 40, 40, 0
+      };
+      im3 << vec3;
+      
       Graph<> graph;
-      mosaicToGraph(im1, im2, graph);
+      mosaicToGraph(im1, im2, im3, graph);
       
       vector<Edge<> > trueEdges;
       trueEdges.push_back(Edge<>(1,0,7));
@@ -81,6 +96,10 @@ class Test_MosaicToGraph : public TestCase
       trueEdges.push_back(Edge<>(4,1,4));
       
       TEST_ASSERT(trueEdges==graph.getEdges());
+      if (retVal!=RES_OK)
+          graph.printSelf();
+      
+      TEST_ASSERT(graph.getNodeValues()[1]==10);
       
 //       for (vector<Edge>::const_iterator it=graph.getEdges().begin();it!=graph.getEdges().end();it++)
 //         cout << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
@@ -90,9 +109,9 @@ class Test_MosaicToGraph : public TestCase
       graph.removeEdge(3,2);
       graph.removeEdge(3,0);
       
-      graphToMosaic(im1, graph, im3);
+      graphToMosaic(im1, graph, im4);
       
-      dataType vec4[] = {
+      dataType1 vec5[] = {
         0,   0,   0,   0,   0,   0,   0,
         0,   0,   0,   0,   0,   0,   0,
         0,   0,   0,   0,   0,   0,   0,
@@ -101,13 +120,13 @@ class Test_MosaicToGraph : public TestCase
         0,   0,   3,   0,   0,   0,   0,
         0,   0,   3,   0,   0,   0,   0,
       };
-      im4 << vec4;
+      im5 << vec5;
       
-      TEST_ASSERT(im3==im4);
+      TEST_ASSERT(im5==im4);
       if (retVal!=RES_OK)
       {
-        im3.printSelf(1);
         im4.printSelf(1);
+        im5.printSelf(1);
       }
   }
 };
@@ -163,7 +182,7 @@ class Test_DrawGraph : public TestCase
 };
 
 
-int main(int argc, char *argv[])
+int main()
 {
       TestSuite ts;
       ADD_TEST(ts, Test_MosaicToGraph);

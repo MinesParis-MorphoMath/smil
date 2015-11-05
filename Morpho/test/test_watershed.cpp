@@ -73,13 +73,13 @@ class Test_Basins : public TestCase
       basins(imIn, imMark, imLbl, se);
       
       dtType2 vecLblTruth[] = { 
-        1,    1,    1,    1,    1,    1,
-          1,    1,    1,    1,    1,    1,
-        2,    2,    3,    3,    3,    3,
-          2,    2,    3,    3,    3,    3,
-        2,    2,    2,    3,    3,    3,
-          2,    2,    2,    3,    3,    3,
-        2,    2,    2,    2,    3,    3,
+       1,       1,       1,       1,       1,       1,
+           1,       1,       1,       1,       1,       1,
+       2,       3,       3,       3,       3,       3,
+           2,       3,       3,       3,       3,       3,
+       2,       2,       3,       3,       3,       3,
+           2,       2,       2,       3,       3,       3,
+       2,       2,       2,       2,       3,       3,
       };
       
       Image<dtType2> imLblTruth(imIn);
@@ -89,7 +89,73 @@ class Test_Basins : public TestCase
       TEST_ASSERT(imLbl==imLblTruth);
       
       if (retVal!=RES_OK)
+      {
         imLbl.printSelf(1, true);
+        imLblTruth.printSelf(1, true);
+      }
+  }
+};
+
+
+class Test_Basins_Plateaus : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dtType;
+      typedef UINT16 dtType2;
+      
+      dtType vecIn[] = { 
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0
+      };
+      
+      dtType2 vecMark[] = { 
+        1, 1, 1, 1, 1, 1,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         3, 3, 3, 3, 3, 3,
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        2, 2, 2, 2, 2, 2
+      };
+      
+      Image<dtType> imIn(6,7);
+      Image<dtType2> imMark(imIn);
+      Image<dtType2> imLbl(imIn);
+
+      imIn << vecIn;
+      imMark << vecMark;
+      
+      StrElt se = hSE();
+      
+      basins(imIn, imMark, imLbl, se);
+      
+      dtType2 vecLblTruth[] = { 
+        1, 1, 1, 1, 1, 1,
+         1, 1, 1, 1, 1, 1,
+        3, 3, 3, 3, 3, 3,
+         3, 3, 3, 3, 3, 3,
+        3, 3, 3, 3, 3, 3,
+         2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2
+      };
+      
+      Image<dtType2> imLblTruth(imIn);
+      
+      imLblTruth << vecLblTruth;
+      
+      TEST_ASSERT(imLbl==imLblTruth);
+      
+      if (retVal!=RES_OK)
+      {
+        imLbl.printSelf(1, true);
+        imLblTruth.printSelf(1, true);
+      }
   }
 };
 
@@ -178,12 +244,12 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
 
 
 
-
+template <class dtType=UINT8>
 class Test_Watershed : public TestCase
 {
   virtual void run()
   {
-      UINT8 vecIn[] = { 
+      dtType vecIn[] = { 
         2, 2, 2, 2, 2, 2,
          7, 7, 7, 7, 7, 7,
         2, 7, 5, 6, 2, 2,
@@ -193,7 +259,7 @@ class Test_Watershed : public TestCase
         2, 2, 2, 2, 4, 2
       };
       
-      UINT8 vecMark[] = { 
+      dtType vecMark[] = { 
         1, 1, 1, 1, 1, 1,
          0, 0, 0, 0, 0, 0,
         2, 0, 0, 0, 3, 3,
@@ -203,10 +269,10 @@ class Test_Watershed : public TestCase
         2, 2, 2, 2, 0, 3
       };
       
-      Image_UINT8 imIn(6,7);
-      Image_UINT8 imMark(imIn);
-      Image_UINT8 imWs(imIn);
-      Image_UINT8 imLbl(imIn);
+      Image<dtType> imIn(6,7);
+      Image<dtType> imMark(imIn);
+      Image<dtType> imWs(imIn);
+      Image<dtType> imLbl(imIn);
 
       imIn << vecIn;
       imMark << vecMark;
@@ -215,7 +281,7 @@ class Test_Watershed : public TestCase
       
       watershed(imIn, imMark, imWs, imLbl, se);
       
-      UINT8 vecLblTruth[] = { 
+      dtType vecLblTruth[] = { 
         1,    1,    1,    1,    1,    1,
           1,    1,    1,    1,    1,    1,
         2,    3,    3,    3,    3,    3,
@@ -225,18 +291,20 @@ class Test_Watershed : public TestCase
         2,    2,    2,    2,    3,    3,
       };
       
-      UINT8 vecWsTruth[] = { 
+      dtType maxV = ImDtTypes<dtType>::max();
+      
+      dtType vecWsTruth[] = { 
         0,    0,    0,    0,    0,    0,
-        255,  255,  255,  255,  255,  255,
-        0,  255,    0,    0,    0,    0,
-          0,  255,    0,    0,    0,    0,
-        0,    0,  255,  255,    0,    0,
-          0,    0,    0,  255,    0,    0,
-        0,    0,    0,    0,  255,    0,
+        maxV,  maxV,  maxV,  maxV,  maxV,  maxV,
+        0,  maxV,    0,    0,    0,    0,
+          0,  maxV,    0,    0,    0,    0,
+        0,    0,  maxV,  maxV,    0,    0,
+          0,    0,    0,  maxV,    0,    0,
+        0,    0,    0,    0,  maxV,    0,
       };
       
-      Image_UINT8 imLblTruth(imIn);
-      Image_UINT8 imWsTruth(imIn);
+      Image<dtType> imLblTruth(imIn);
+      Image<dtType> imWsTruth(imIn);
       
       imLblTruth << vecLblTruth;
       imWsTruth << vecWsTruth;
@@ -252,12 +320,94 @@ class Test_Watershed : public TestCase
       
       // Test idempotence
       
-      Image_UINT8 imWs2(imIn);
+      Image<dtType> imWs2(imIn);
       
       watershed(imWs, imMark, imWs2, imLbl, se);
       TEST_ASSERT(imWs2==imWs);
   }
 };
+
+class Test_Watershed_Plateaus : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dtType;
+      typedef UINT16 dtType2;
+      
+      dtType vecIn[] = { 
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0
+      };
+      
+      dtType2 vecMark[] = { 
+        1, 1, 1, 1, 1, 0,
+         0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         3, 3, 3, 0, 0, 0,
+        0, 0, 0, 0, 0, 0,
+         0, 0, 0, 0, 0, 2,
+        2, 2, 2, 2, 2, 2
+      };
+      
+      Image<dtType> imIn(6,7);
+      Image<dtType2> imMark(imIn);
+      Image<dtType> imWS(imIn);
+      Image<dtType2> imLbl(imIn);
+
+      imIn << vecIn;
+      imMark << vecMark;
+      
+      StrElt se = hSE();
+      
+      watershed(imIn, imMark, imWS, imLbl, se);
+      
+      dtType vecWSTruth[] = { 
+        0,    0,    0,    0,    0,    0,
+          0,    0,    0,    0,    0,    0,
+      255,  255,  255,  255,  255,    0,
+          0,    0,    0,    0,  255,  255,
+        0,    0,    0,    0,  255,    0,
+        255,  255,  255,  255,    0,    0,
+        0,    0,    0,    0,    0,    0,
+      };
+      
+      Image<dtType> imWSTruth(imIn);
+      imWSTruth << vecWSTruth;
+      
+      dtType2 vecLblTruth[] = { 
+        1,       1,       1,       1,       1,       1,
+            1,       1,       1,       1,       1,       1,
+        1,       1,       1,       1,       1,       1,
+            3,       3,       3,       3,       1,       1,
+        3,       3,       3,       3,       2,       2,
+            3,       3,       3,       2,       2,       2,
+        2,       2,       2,       2,       2,       2,
+      };
+      
+      Image<dtType2> imLblTruth(imIn);
+      imLblTruth << vecLblTruth;
+      
+      TEST_ASSERT(imWS==imWSTruth);
+      if (retVal!=RES_OK)
+      {
+        imWS.printSelf(1, true);
+        imWSTruth.printSelf(1, true);
+      }
+      
+      TEST_ASSERT(imLbl==imLblTruth);
+      if (retVal!=RES_OK)
+      {
+        imLbl.printSelf(1, true);
+        imLblTruth.printSelf(1, true);
+      }
+  }
+};
+
 
 class Test_Watershed_Indempotence : public TestCase
 {
@@ -311,52 +461,23 @@ class Test_Watershed_Indempotence : public TestCase
 };
 
 
-class Test_Build : public TestCase
-{
-  virtual void run()
-  {
-      UINT8 vecIn[] = { 
-        1, 2, 0, 5, 5, 5, 3, 3, 3, 1, 1
-      };
-      
-      UINT8 vecMark[] = { 
-        0, 0, 0, 0, 4, 1, 1, 2, 0, 0, 0
-      };
-      
-      Image_UINT8 imIn(11,1);
-      Image_UINT8 imMark(imIn);
-      Image_UINT8 imBuild(imIn);
 
-      imIn << vecIn;
-      imMark << vecMark;
-      
-      dualBuild(imIn, imMark, imBuild, sSE());
-      
-      UINT8 vecTruth[] = { 
-        0, 0, 0, 0, 4, 2, 2, 2, 1, 1, 1
-      };
-      
-      Image_UINT8 imTruth(imIn);
-      
-      imTruth << vecTruth;
-      
-      TEST_ASSERT(imBuild==imTruth);
-      
-      if (retVal!=RES_OK)
-        imBuild.printSelf(1);
-  }
-};
-
-
-int main(int argc, char *argv[])
+int main()
 {
       TestSuite ts;
       
       ADD_TEST(ts, Test_Basins);
+      ADD_TEST(ts, Test_Basins_Plateaus);
       ADD_TEST(ts, Test_ProcessWatershedHierarchicalQueue);
-      ADD_TEST(ts, Test_Watershed);
+
+      typedef Test_Watershed<UINT8> Test_WS_UINT8;
+      typedef Test_Watershed<UINT16> Test_WS_UINT16;
+      ADD_TEST(ts, Test_WS_UINT8);
+      ADD_TEST(ts, Test_WS_UINT16);
+      
+      ADD_TEST(ts, Test_Watershed_Plateaus);
+
       ADD_TEST(ts, Test_Watershed_Indempotence);
-      ADD_TEST(ts, Test_Build);
       
       return ts.run();
       

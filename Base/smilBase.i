@@ -69,8 +69,11 @@ PTR_ARG_OUT_APPLY(d)
 
 TEMPLATE_WRAP_FUNC_2T_CROSS(copy);
 TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(copy);
+TEMPLATE_WRAP_FUNC_2T_CROSS(cast);
+TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(cast);
 
 TEMPLATE_WRAP_FUNC(crop);
+TEMPLATE_WRAP_SUPPL_FUNC(crop);
 TEMPLATE_WRAP_FUNC(clone);
 
 #ifdef SMIL_WRAP_RGB
@@ -91,6 +94,7 @@ TEMPLATE_WRAP_FUNC(subNoSat);
 TEMPLATE_WRAP_FUNC(mul);
 TEMPLATE_WRAP_FUNC(mulNoSat);
 TEMPLATE_WRAP_FUNC(div);
+TEMPLATE_WRAP_FUNC(log);
 
 TEMPLATE_WRAP_FUNC(equ);
 TEMPLATE_WRAP_FUNC(diff);
@@ -112,22 +116,26 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(compare);
 TEMPLATE_WRAP_FUNC(mask);
 TEMPLATE_WRAP_FUNC_2T_CROSS(applyLookup);
 
-# Suppl. Types
+// Suppl. Types
 TEMPLATE_WRAP_SUPPL_FUNC(fill);
 TEMPLATE_WRAP_SUPPL_FUNC(equ);
 TEMPLATE_WRAP_SUPPL_FUNC(diff);
+TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(test);
+TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(compare);
 
 
 %include "DImageHistogram.hpp"
 TEMPLATE_WRAP_FUNC(histogram);
-TEMPLATE_WRAP_FUNC(threshold);
 
+TEMPLATE_WRAP_FUNC_2T_CROSS(threshold);
+
+TEMPLATE_WRAP_FUNC(histogramRange);
 TEMPLATE_WRAP_FUNC_2T_CROSS(stretchHist);
 TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(stretchHist);
-
 TEMPLATE_WRAP_FUNC(enhanceContrast);
+
 TEMPLATE_WRAP_FUNC(otsuThresholdValues);
-TEMPLATE_WRAP_FUNC(otsuThreshold);
+TEMPLATE_WRAP_FUNC_2T_CROSS(otsuThreshold);
 
 
 %include "DImageConvolution.hpp"
@@ -138,7 +146,7 @@ TEMPLATE_WRAP_FUNC(gaussianFilter);
 
 TEMPLATE_WRAP_FUNC(drawLine);
 TEMPLATE_WRAP_FUNC(drawRectangle);
-TEMPLATE_WRAP_FUNC(drawRectangles);
+TEMPLATE_WRAP_FUNC_2T_CROSS(drawRectangles);
 TEMPLATE_WRAP_FUNC(drawBox);
 TEMPLATE_WRAP_FUNC(drawCircle);
 TEMPLATE_WRAP_FUNC(drawSphere);
@@ -146,6 +154,7 @@ TEMPLATE_WRAP_FUNC(drawDisc);
 #ifdef USE_FREETYPE
 TEMPLATE_WRAP_FUNC(drawText);
 #endif // USE_FREETYPE
+TEMPLATE_WRAP_FUNC(copyPattern);
 
 TEMPLATE_WRAP_FUNC(vFlip);
 TEMPLATE_WRAP_FUNC(trans);
@@ -195,7 +204,7 @@ TEMPLATE_WRAP_FUNC(measCenteredCovariance);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 TEMPLATE_WRAP_FUNC(isBinary);
 
-# Suppl. Types
+// Suppl. Types
 TEMPLATE_WRAP_SUPPL_FUNC(vol);
 %apply double *OUTPUT{double &mean_val};
 %apply double *OUTPUT{double &std_dev_val};

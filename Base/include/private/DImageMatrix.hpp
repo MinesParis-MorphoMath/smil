@@ -112,12 +112,12 @@ namespace smil
         lineType outLine;
         lineType col;
         
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         
         size_t y;
         
         #ifdef USE_OPEN_MP
-              #pragma omp parallel private(line, outLine, col)
+            int nthreads = Core::getInstance()->getNumberOfThreads();
+            #pragma omp parallel private(line, outLine, col)
         #endif // USE_OPEN_MP
         {
           

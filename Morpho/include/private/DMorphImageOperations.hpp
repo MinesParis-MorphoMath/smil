@@ -78,24 +78,29 @@ namespace smil
         }
         
         
-        inline RES_T operator()(const imageInType &imIn, imageOutType &imOut, const StrElt &se=DEFAULT_SE) 
+        RES_T operator()(const imageInType &imIn, imageOutType &imOut, const StrElt &se=DEFAULT_SE) 
         { 
             return this->_exec(imIn, imOut, se); 
+        }
+        RES_T operator()(const imageInType &imIn, const StrElt &se=DEFAULT_SE) 
+        { 
+            return this->_exec(imIn, se); 
         }
         
         virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
         virtual RES_T finalize(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
         virtual RES_T _exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
+        virtual RES_T _exec(const imageInType &imIn, const StrElt &se);
         
         virtual RES_T processImage(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
         virtual inline void processSlice(sliceInType linesIn, sliceOutType linesOut, size_t &lineNbr, const StrElt &se);
         virtual inline void processLine(lineInType pixIn, lineOutType pixOut, size_t &pixNbr, const StrElt &se);
         virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsets);
         
-        static bool isInplaceSafe(const StrElt &se) { return false; }
+        static bool isInplaceSafe(const StrElt &/*se*/) { return false; }
         
-        const Image<T_in> *imIn;
-        Image<T_out> *imOut;
+        const Image<T_in> *imageIn;
+        Image<T_out> *imageOut;
         
     protected:
           size_t imSize[3];
@@ -124,29 +129,125 @@ namespace smil
 
 
 
-    template <class T, class lineFunction_T>
-    class MorphImageFunction : public MorphImageFunctionBase<T>
+    template <class T_in, class lineFunction_T, class T_out=T_in, bool Enable=IS_SAME(T_in, T_out) >
+    class MorphImageFunction : public MorphImageFunctionBase<T_in, T_out>
     {
       public:
-        typedef imageFunctionBase<T> parentClass;
-        typedef Image<T> imageType;
-        typedef typename ImDtTypes<T>::lineType lineType;
-        typedef typename ImDtTypes<T>::sliceType sliceType;
-        typedef typename ImDtTypes<T>::volType volType;
+        typedef MorphImageFunctionBase<T_in, T_out> parentClass;
         
-        MorphImageFunction(T border=ImDtTypes<T>::min()) 
-          : MorphImageFunctionBase<T>(border, border) 
+        typedef Image<T_in> imageInType;
+        typedef typename ImDtTypes<T_in>::lineType lineInType;
+        typedef typename ImDtTypes<T_in>::sliceType sliceInType;
+        typedef typename ImDtTypes<T_in>::volType volInType;
+        
+        typedef Image<T_out> imageOutType;
+        typedef typename ImDtTypes<T_out>::lineType lineOutType;
+        typedef typename ImDtTypes<T_out>::sliceType sliceOutType;
+        typedef typename ImDtTypes<T_out>::volType volOutType;
+        
+        
+        MorphImageFunction(T_in border=ImDtTypes<T_in>::min(), T_out initialValue = ImDtTypes<T_out>::min()) 
+          : MorphImageFunctionBase<T_in, T_out>(border, initialValue),
+            lineLen(0)
         {
         }
         
         
+        virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
+        virtual RES_T finalize(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
+        
         static bool isInplaceSafe(const StrElt &se);
         
       protected:
-        virtual RES_T _exec(const imageType &imIn, imageType &imOut, const StrElt &se);
+        virtual RES_T _exec(const imageInType &imIn, imageOutType &imOut, const StrElt &se);
+        virtual RES_T _exec_single(const imageInType &/*imIn*/, imageOutType &/*imOut*/, const StrElt &/*se*/) { return RES_OK; }
         
+
+        lineFunction_T lineFunction;
+        
+        lineInType borderBuf, cpBuf;
+        size_t lineLen;
+        
+        inline void _extract_translated_line(const Image<T_in> *imIn, const int &x, const int &y, const int &z, lineInType outBuf)
+        {
+            if (z<0 || z>=int(imIn->getDepth()) || y<0 || y>=int(imIn->getHeight()))
+              copyLine<T_in>(borderBuf, lineLen, outBuf);
+            //     memcpy(outBuf, borderBuf, lineLen*sizeof(T));
+            else
+                shiftLine<T_in>(imIn->getSlices()[z][y], x, lineLen, outBuf, this->borderValue);
+        }
+        
+        inline void _exec_line(const lineInType inBuf, const Image<T_in> *imIn, const int &x, const int &y, const int &z, lineOutType outBuf)
+        {
+            _extract_translated_line(imIn, x, y, z, cpBuf);
+            lineFunction._exec(inBuf, cpBuf, lineLen, outBuf);
+        }
+        
+        inline void _exec_shifted_line(const lineInType inBuf1, const lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf)
+        {
+            if (tmpBuf==NULL)
+              tmpBuf = cpBuf;
+            shiftLine<T_in>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
+            lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);
+        }
+        
+        template <class T1, class T2>
+        inline void _exec_shifted_line(const typename ImDtTypes<T1>::lineType inBuf1, const typename ImDtTypes<T1>::lineType inBuf2, const int &dx, const int &lineLen, typename ImDtTypes<T2>::lineType outBuf)
+        {
+            return _exec_shifted_line(inBuf1, inBuf2, dx, lineLen, outBuf, cpBuf);
+        }
+        
+        template <class T1, class T2>
+        inline void _exec_shifted_line(const typename ImDtTypes<T1>::lineType inBuf, const int &dx, const int &lineLen, typename ImDtTypes<T2>::lineType outBuf, typename ImDtTypes<T1>::lineType tmpBuf)
+        {
+            return _exec_shifted_line(inBuf, inBuf, dx, lineLen, outBuf, tmpBuf);
+        }
+        
+        template <class T1, class T2>
+        inline void _exec_shifted_line(const typename ImDtTypes<T1>::lineType inBuf, const int &dx, const int &lineLen, typename ImDtTypes<T2>::lineType outBuf)
+        {
+            return _exec_shifted_line(inBuf, inBuf, dx, lineLen, outBuf, cpBuf);
+        }
+        
+        inline void _exec_shifted_line_2ways(lineInType inBuf1, lineInType inBuf2, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf)
+        {
+            if (tmpBuf==NULL)
+              tmpBuf = cpBuf;
+            shiftLine<T_in>(inBuf2, dx, lineLen, tmpBuf, this->borderValue);
+            lineFunction._exec(inBuf1, tmpBuf, lineLen, outBuf);
+            shiftLine<T_in>(inBuf2, -dx, lineLen, tmpBuf, this->borderValue);
+            lineFunction._exec(outBuf, tmpBuf, lineLen, outBuf);
+        }
+        inline void _exec_shifted_line_2ways(const lineInType inBuf, const int &dx, const int &lineLen, lineOutType outBuf, lineInType tmpBuf=NULL)
+        {
+            return _exec_shifted_line_2ways(inBuf, inBuf, dx, lineLen, outBuf, tmpBuf);
+        }
+    };
+
+    template <class T_in, class lineFunction_T>
+    class MorphImageFunction<T_in, lineFunction_T, T_in, true> 
+      : public MorphImageFunction<T_in, lineFunction_T, T_in, false>
+    {
+      public:
+        typedef MorphImageFunction<T_in, lineFunction_T, T_in, false> parentClass;
+        
+        typedef Image<T_in> imageType;
+        typedef typename ImDtTypes<T_in>::lineType lineType;
+        typedef typename ImDtTypes<T_in>::sliceType sliceType;
+        typedef typename ImDtTypes<T_in>::volType volType;
+        
+        MorphImageFunction(T_in border=ImDtTypes<T_in>::min(), T_in initialValue = ImDtTypes<T_in>::min()) 
+          : parentClass(border, initialValue),
+          lineFunction(parentClass::lineFunction) // take ref from parent
+        {
+        }
+        
+        lineFunction_T &lineFunction;
+
+        virtual RES_T _exec(const imageType &imIn, imageType &imOut, const StrElt &se);
         virtual RES_T _exec_single(const imageType &imIn, imageType &imOut, const StrElt &se);
         virtual RES_T _exec_single_generic(const imageType &imIn, imageType &imOut, const StrElt &se);                                 // Inplace unsafe !!
+        
         virtual RES_T _exec_single_hexagonal_SE(const imageType &imIn, imageType &imOut);                                         // Inplace safe
         virtual RES_T _exec_single_square_SE(const imageType &imIn, imageType &imOut);                                                 // Inplace unsafe !!
         virtual RES_T _exec_single_cube_SE(const imageType &imIn, imageType &imOut);                                                 // Inplace unsafe !!
@@ -158,39 +259,8 @@ namespace smil
         virtual RES_T _exec_single_cross_3d(const imageType &imIn, imageType &imOut);
         virtual RES_T _exec_single_depth_segment(const imageType &imIn, int zsize, imageType &imOut);                                 // Inplace safe
         virtual RES_T _exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size);                        // Inplace unsafe !!
-
-        
-
-        lineFunction_T lineFunction;
-        
-        lineType borderBuf, cpBuf;
-        size_t lineLen;
-        
-        inline void _extract_translated_line(const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf);
-        
-        inline void _exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf);
-        inline void _exec_shifted_line(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf)
-        {
-            return _exec_shifted_line(inBuf1, inBuf2, dx, lineLen, outBuf, cpBuf);
-        }
-        
-        inline void _exec_shifted_line(const lineType inBuf, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf)
-        {
-            return _exec_shifted_line(inBuf, inBuf, dx, lineLen, outBuf, tmpBuf);
-        }
-        inline void _exec_shifted_line(const lineType inBuf, const int &dx, const int &lineLen, lineType outBuf)
-        {
-            return _exec_shifted_line(inBuf, inBuf, dx, lineLen, outBuf, cpBuf);
-        }
-        
-        inline void _exec_shifted_line_2ways(const lineType inBuf1, const lineType inBuf2, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf=NULL);
-        inline void _exec_shifted_line_2ways(const lineType inBuf, const int &dx, const int &lineLen, lineType outBuf, lineType tmpBuf=NULL)
-        {
-            return _exec_shifted_line_2ways(inBuf, inBuf, dx, lineLen, outBuf, tmpBuf);
-        }
-        inline void _exec_line(const lineType inBuf, const Image<T> *imIn, const int &x, const int &y, const int &z, lineType outBuf);
     };
-
+    
 /** \} */
 
 } // namespace smil

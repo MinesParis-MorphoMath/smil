@@ -58,8 +58,11 @@ namespace smil
 
     #define INLINE inline
 
-
-
+#ifdef _MSC_VER
+    #define TEMPL_SPEC_DECL template
+#else // _MSC_VER
+    #define TEMPL_SPEC_DECL template <>
+#endif // _MSC_VER
 
     #define SMART_POINTER(T) boost::shared_ptr< T >
     #define SMART_IMAGE(T) SMART_POINTER( D_Image< T > )
@@ -81,6 +84,17 @@ namespace smil
     #define MAX(a, b) (a > b ? a : b);
     #endif // MAX
 
+#ifndef SWIG
+    struct map_comp_value_less
+    {
+        template <typename Lhs, typename Rhs>
+        bool operator()(const Lhs& lhs, const Rhs& rhs) const
+        {
+            return lhs.second < rhs.second;
+        }
+    };
+#endif // SWIG
+  
     template <class T>
     struct Point
     {
@@ -99,10 +113,12 @@ namespace smil
 
     typedef Point<double> DoublePoint;
     typedef Point<int> IntPoint;
+    typedef Point<UINT> UintPoint;
     
     typedef vector<double> Vector_double;
     typedef vector<Vector_double> Matrix_double;
     typedef vector<UINT> Vector_UINT;
+    typedef vector<size_t> Vector_size_t;
     
     struct Rectangle
     {
@@ -133,11 +149,6 @@ namespace smil
     };
 
     
-    inline double round(double r) 
-    {
-        return (r > 0.0) ? floor(r + 0.5) : ceil(r - 0.5);
-    }
-
     // Misc Macros
 
     #ifdef _MSC_VER

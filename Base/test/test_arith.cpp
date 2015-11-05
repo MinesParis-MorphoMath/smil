@@ -26,6 +26,37 @@
 
 using namespace smil;
 
+class Test_Cast : public TestCase
+{
+  virtual void run()
+  {
+      INT16 vec1[20]         = {   -32768, 2, -12532,  32767, -5, -3024L,   2042L,   -8, 9,  10, -11, 12,  13, 14,  15,  16,  17,  18,  19,  20 };
+      UINT16 vecTruth[20] = { 
+            0, 32770, 20236, 65535,
+        32763, 29744, 34810, 32760,
+        32777, 32778, 32757, 32780,
+        32781, 32782, 32783, 32784,
+        32785, 32786, 32787, 32788,
+      };
+      
+      Image<INT16> im1(4,5);
+      Image<UINT16> im2(im1);
+      Image<UINT16> imTruth(im1);
+      
+      im1 << vec1;
+      imTruth << vecTruth;
+      
+      TEST_ASSERT(cast(im1, im2)==RES_OK);
+      TEST_ASSERT(equ(im2, imTruth));
+      
+      if (retVal!=RES_OK)
+      {
+          im2.printSelf(1);
+          imTruth.printSelf(1);
+      }
+  }
+};
+
 class Test_Fill : public TestCase
 {
   virtual void run()
@@ -77,6 +108,54 @@ class Test_Equal : public TestCase
   }
 };
 
+class Test_Bit : public TestCase
+{
+  virtual void run()
+  {
+      UINT8 vec1[20] = {
+          97, 223,  13, 127,
+        229, 210,  57, 114,
+        248, 104, 182,  67,
+        194, 251,  31,  69,
+          92,  79, 250, 114,
+      };
+      UINT8 vec2[20] = {
+        229, 131,  91,  79,
+        226, 139, 162,  39,
+        226,  59, 230, 230,
+          86, 100, 176, 158,
+        122, 132, 213, 219,
+      };
+      
+      Image_UINT8 im1(4,5);
+      Image_UINT8 im2(im1);
+      Image_UINT8 im3(im1);
+      Image_UINT8 imTruth(im1);
+      
+      im1 << vec1;
+      im2 << vec2;
+      
+      UINT8 vecAnd[20] = { 
+          97, 131,   9,  79,
+        224, 130,  32,  34,
+        224,  40, 166,  66,
+          66,  96,  16,   4,
+          88,   4, 208,  82,
+      };
+      
+      bitAnd(im1, im2, im3);
+      imTruth << vecAnd;
+      
+      TEST_ASSERT(im3==imTruth);
+      if (retVal!=RES_OK)
+      {
+          im3.printSelf(1);
+          imTruth.printSelf(1);
+      }
+      
+  }
+};
+
 class Test_ApplyLookup : public TestCase
 {
   virtual void run()
@@ -117,12 +196,14 @@ class Test_ApplyLookup : public TestCase
 };
 
 
-int main(int argc, char *argv[])
+int main(void)
 {
       TestSuite ts;
 
+      ADD_TEST(ts, Test_Cast);
       ADD_TEST(ts, Test_Fill);
       ADD_TEST(ts, Test_Equal);
+      ADD_TEST(ts, Test_Bit);
       ADD_TEST(ts, Test_ApplyLookup);
       
       return ts.run();

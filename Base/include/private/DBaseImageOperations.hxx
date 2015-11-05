@@ -88,8 +88,8 @@ namespace smil
 
 
 
-    template <class T, class lineFunction_T>
-    RES_T unaryImageFunction<T, lineFunction_T>::_exec(const imageType &imIn, imageType &imOut)
+    template <class T, class lineFunction_T, class T_out>
+    RES_T unaryImageFunction<T, lineFunction_T, T_out>::_exec(const imageInType &imIn, imageOutType &imOut)
     {
         if (!areAllocated(&imIn, &imOut, NULL))
             return RES_ERR_BAD_ALLOCATION;
@@ -97,12 +97,12 @@ namespace smil
         int lineLen = imIn.getWidth();
         int lineCount = imIn.getLineCount();
 
-        sliceType srcLines = imIn.getLines();
-        sliceType destLines = imOut.getLines();
+        sliceInType srcLines = imIn.getLines();
+        sliceOutType destLines = imOut.getLines();
         
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -118,8 +118,8 @@ namespace smil
     }
 
 
-    template <class T, class lineFunction_T>
-    RES_T unaryImageFunction<T, lineFunction_T>::_exec(imageType &imOut, const T &value)
+    template <class T, class lineFunction_T, class T_out>
+    RES_T unaryImageFunction<T, lineFunction_T, T_out>::_exec(imageOutType &imOut, const T_out &value)
     {
         if (!areAllocated(&imOut, NULL))
             return RES_ERR_BAD_ALLOCATION;
@@ -127,17 +127,17 @@ namespace smil
         size_t lineLen = imOut.getWidth();
         int lineCount = imOut.getLineCount();
 
-        sliceType destLines = imOut.getLines();
-        lineType constBuf = ImDtTypes<T>::createLine(lineLen);
+        sliceOutType destLines = imOut.getLines();
+        lineOutType constBuf = ImDtTypes<T_out>::createLine(lineLen);
 
         // Fill the first aligned buffer with the constant value
-        fillLine<T>(constBuf, lineLen, value);
+        fillLine<T_out>(constBuf, lineLen, value);
 
         // Use it for operations on lines
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -147,7 +147,7 @@ namespace smil
             for (i=0;i<lineCount;i++)
                 lineFunction._exec(constBuf, lineLen, destLines[i]);
         }
-        ImDtTypes<T>::deleteLine(constBuf);
+        ImDtTypes<T_out>::deleteLine(constBuf);
         imOut.modified();
         
         return RES_OK;
@@ -168,9 +168,9 @@ namespace smil
         lineType *srcLines2 = imIn2.getLines();
         lineType *destLines = imOut.getLines();
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -239,9 +239,9 @@ namespace smil
         fillLine<T> f;
         f(constBuf, lineLen, value);
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -277,9 +277,9 @@ namespace smil
         fillLine<T> f;
         f(constBuf, lineLen, value);
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -316,9 +316,9 @@ namespace smil
         sliceType2 srcLines3 = imIn3.getLines();
         sliceType2 destLines = imOut.getLines();
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -358,9 +358,9 @@ namespace smil
         fillLine<T2> f;
         f(constBuf, lineLen, value);
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -400,9 +400,9 @@ namespace smil
         fillLine<T2> f;
         f(constBuf, lineLen, value);
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {
@@ -444,9 +444,9 @@ namespace smil
         f(constBuf1, lineLen, value1);
         f(constBuf2, lineLen, value2);
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {

@@ -26,66 +26,32 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "Core/include/DSlot.h"
-#include "Core/include/DSignal.h"
 
-#include <algorithm>
 
-namespace smil
+#include "Core/include/DCore.h"
+#include "DMorpho.h"
+
+using namespace smil;
+
+
+int main()
 {
-
-    void Signal::connect(BaseSlot *slot, bool _register)
-    {
-      vector<BaseSlot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
-      
-      if (it!=_slots.end())
-        return;
-      
-      _slots.push_back(slot);
-      if (_register)
-        slot->registerSignal(this);
-    }
-
-    void Signal::disconnect(BaseSlot *slot, bool _unregister)
-    {
-      vector<BaseSlot*>::iterator it = std::find(_slots.begin(), _slots.end(), slot);
-      
-      if (it==_slots.end())
-        return;
-      
-      _slots.erase(it);
-      
-      if (_unregister)
-        slot->unregisterSignal(this, false);
-    }
-
-    void Signal::disconnectAll()
-    {
-      vector<BaseSlot*>::iterator it = _slots.begin();
-      
-      while(it!=_slots.end())
-      {
-        (*it)->unregisterSignal(this, false);
-        it++;
-      }
-    }
-
-    void Signal::trigger(Event *e)
-    {
-      if (!enabled)
-        return;
-      
-      if (e && sender)
-        e->sender = sender;
-      
-      vector<BaseSlot*>::iterator it = _slots.begin();
-      
-      while(it!=_slots.end())
-      {
-        (*it)->_run(e);
-        it++;
-      }
-    }
+    Image_UINT8 im1(5562, 7949);
+    Image_UINT8 im2(im1);
+    Image_UINT8 im3(im1);
     
-} // namespace smil
+    StrElt generic_sSE(sSE());
+    generic_sSE.seT = SE_Generic;
+    
+    UINT BENCH_NRUNS = 1E2;
+    
+    BENCH_IMG(sup, im1, im2, im3);
+    BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
+    BENCH_IMG_STR(arrowGrt, "hSE", im1, im2, hSE());
+    
+    cout << endl;
+    
+    // 3D
+    
+}
 

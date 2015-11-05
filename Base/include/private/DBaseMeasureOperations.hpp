@@ -49,12 +49,12 @@ namespace smil
         typedef _retType retType;
         retType retVal;
         
-        virtual void initialize(const Image<T> &imIn)
+        virtual void initialize(const Image<T> &/*imIn*/)
         {
             retVal = retType();
         }
-        virtual void processSequence(lineType lineIn, size_t size) {}
-        virtual void finalize(const Image<T> &imIn) {}
+        virtual void processSequence(lineType /*lineIn*/, size_t /*size*/) {}
+        virtual void finalize(const Image<T> &/*imIn*/) {}
         
         virtual RES_T processImage(const Image<T> &imIn, bool onlyNonZero=false)
         {
@@ -74,11 +74,15 @@ namespace smil
                 for (size_t i=0;i<pixCount;i++)
                 {
                     if (pixels[i]!=T(0))
-                      curSize++;
+                    {
+                        if (curSize==0 && curStart==0)
+                          curStart = i;
+                        curSize++;
+                    }
                     else if (curSize>0)
                     {
                       processSequence(pixels + curStart, curSize);
-                      curStart = i;
+                      curStart = 0;
                       curSize = 0;
                     }
                 }
@@ -121,7 +125,7 @@ namespace smil
     {
         typedef typename Image<T>::lineType lineType;
         typedef _retType retType;
-        virtual void processSequence(lineType lineIn, size_t size, size_t x, size_t y, size_t z) {}
+        virtual void processSequence(lineType /*lineIn*/, size_t /*size*/, size_t /*x*/, size_t /*y*/, size_t /*z*/) {}
         virtual RES_T processImage(const Image<T> &imIn, bool onlyNonZero=false)
         {
             this->initialize(imIn);
@@ -194,7 +198,7 @@ namespace smil
             return this->retVal;
         }
     private:
-        virtual void processSequence(lineType lineIn, size_t size) {}
+        virtual void processSequence(lineType /*lineIn*/, size_t /*size*/) {}
     };
     
     

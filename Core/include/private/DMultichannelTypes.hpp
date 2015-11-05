@@ -319,6 +319,7 @@ namespace smil
         operator signed char() const { return double(*this); }
         operator char() const { return double(*this); }
         operator long int() const { return static_cast<long int>(double(*this)); }
+        operator short int() const { return static_cast<short int>(double(*this)); }
 
         virtual const T& value(const UINT &i) const
         {
@@ -480,9 +481,17 @@ namespace smil
             MultichannelArray ba(*this, this->index + dp);
             return ba;
         }
+#ifndef USE_64BIT_IDS
+        inline MultichannelArray operator + (long unsigned int dp) const
+        {
+            MultichannelArray ba(*this, this->index + dp);
+            return ba;
+        }
+#endif // USE_64BIT_IDS
         inline MultichannelArray operator + (size_t dp) const
         {
-            return operator+((int)dp);
+            MultichannelArray ba(*this, this->index + dp);
+            return ba;
         }
         MultichannelArray operator - (int dp);
 #ifndef SWIG

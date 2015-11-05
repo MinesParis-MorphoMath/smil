@@ -39,13 +39,13 @@ class Test_Histogram : public TestCase
       Image_UINT8 im1(4,4);
       
       UINT8 vec1[16] = { 50, 51, 45, 50,
-                        50, 35, 255, 45,
-                        255, 255, 255, 50,
-                        35, 45, 255, 48
+                        50, 35, 254, 45,
+                        254, 254, 254, 50,
+                        35, 45, 254, 48
                       };
       im1 << vec1;
       
-      map<UINT8, UINT> hist = histogram(im1);
+      map<UINT8, UINT> hist = histogram(im1, true);
       map<UINT8, UINT> truth;
       
       for (int i=0;i<256;i++)
@@ -56,14 +56,17 @@ class Test_Histogram : public TestCase
       truth[48] = 1;
       truth[50] = 4;
       truth[51] = 1;
-      truth[255] = 5;
+      truth[254] = 5;
      
-//       map<UINT8, UINT>::iterator it1 = hist.begin();
-//       map<UINT8, UINT>::iterator it2 = truth.begin();
-//       for (;it1!=hist.end();it1++,it2++)
-//         cout << int((*it1).first) << ": " << int((*it1).second) << " " << int((*it2).second) << endl;
-
       TEST_ASSERT(hist==truth);
+      
+      if (retVal!=RES_OK)
+      {
+          map<UINT8, UINT>::iterator it1 = hist.begin();
+          map<UINT8, UINT>::iterator it2 = truth.begin();
+          for (;it1!=hist.end();it1++,it2++)
+            cout << int(it1->first) << ": " << int(it1->second) << " " << int(it2->second) << endl;
+      }
   }
 };
 
@@ -120,7 +123,7 @@ class Test_Stretch_Histogram : public TestCase
 	98, 101, 105,  98,
 	98, 114, 131,  82,
 	255, 111, 147,  98,
-	49, 127,   0,  92,
+	49, 128,   0,  92,
       };
 
       im1 << vec1;
@@ -170,7 +173,7 @@ class Test_Otsu : public TestCase
   }
 };
 
-int main(int argc, char *argv[])
+int main()
 {
     TestSuite ts;
 

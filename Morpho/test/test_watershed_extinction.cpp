@@ -73,8 +73,8 @@ class Test_Extinction_Flooding : public TestCase
 
         UINT8 basinsTruth[] = {
     1,    1,    1,    1,    1,
-       1,    1,    3,    3,    3,
-    2,    2,    3,    3,    3,
+       1,    1,    1,    1,    1,
+    1,    1,    3,    3,    3,
        2,    2,    3,    3,    3,
     2,    2,    3,    3,    3,
        2,    2,    3,    3,    3,
@@ -98,8 +98,8 @@ class Test_Extinction_Flooding : public TestCase
     0,   40,    0,    0,    0,
        0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,
-       0,    5,    0,   10,    0,
-    0,    0,    0,    0,   10,
+       0,    3,    0,    8,    0,
+    0,    0,    0,    0,    8,
        0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,
        0,    9,    0,    4,    0,
@@ -147,11 +147,11 @@ class Test_Area_Extinction : public TestCase
         
         // Area
         UINT16 areaTruth[] = {
-          0,  25,   0,   0,   0,
-          0,   0,   0,   0,   0,
-          0,   0,   0,   0,   0,
-          0,   6,   0,   8,   0,
-          0,   6,   0,   0,   8,
+          0,    25,     0,     0,     0,
+          0,     0,     0,     0,     0,
+          0,     0,     0,     0,     0,
+          0,     4,     0,     6,     0,
+          0,     4,     0,     0,     6,
 
         };
         imTruth << areaTruth;
@@ -356,30 +356,34 @@ class Test_Watershed_Extinction_Graph : public TestCase
         Image_UINT8 imTruth (imIn) ;
         Image_UINT8 imResult (imIn) ;
 
-        Graph<UINT8,UINT8> graph;
+        typedef Graph<UINT8,UINT8> GraphT;
+        typedef Graph<UINT8,UINT8>::EdgeType EdgeT;
 
+        GraphT graph;
+        
         imIn << vecIn;
         imMark << vecMark;
 
-        vector<Edge<UINT8> > trueEdges;
-        trueEdges.push_back(Edge<UINT8>(4,5, 4));
-        trueEdges.push_back(Edge<UINT8>(1,2, 5));
-        trueEdges.push_back(Edge<UINT8>(2,4, 9));
-        trueEdges.push_back(Edge<UINT8>(5,3, 10));
+        vector< EdgeT > trueEdges;
+        trueEdges.push_back(EdgeT(4,5, 4));
+        trueEdges.push_back(EdgeT(1,2, 3));
+        trueEdges.push_back(EdgeT(2,4, 9));
+        trueEdges.push_back(EdgeT(5,3, 8));
 
         watershedExtinctionGraph (imIn, imMark, imResult, graph, "a", se) ;
         
+//         imResult.printSelf(1);
         TEST_ASSERT(trueEdges==graph.getEdges());
         if (retVal!=RES_OK)
             graph.printSelf();
         
-        vector<Edge<UINT8> > trueEdges2;
-        trueEdges2.push_back(Edge<UINT8>(5,3, 1));
-        trueEdges2.push_back(Edge<UINT8>(2,4, 2));
-        trueEdges2.push_back(Edge<UINT8>(1,2, 3));
-        trueEdges2.push_back(Edge<UINT8>(4,5, 4));
+        vector<EdgeT > trueEdges2;
+        trueEdges2.push_back(EdgeT(2,4, 1));
+        trueEdges2.push_back(EdgeT(5,3, 2));
+        trueEdges2.push_back(EdgeT(4,5, 3));
+        trueEdges2.push_back(EdgeT(1,2, 4));
         
-        Graph<UINT8,UINT8> rankGraph = watershedExtinctionGraph (imIn, imMark, imResult, "a", se) ;
+        GraphT rankGraph = watershedExtinctionGraph (imIn, imMark, imResult, "a", se) ;
         
         TEST_ASSERT(trueEdges2==rankGraph.getEdges());
         if (retVal!=RES_OK)
@@ -454,7 +458,7 @@ class Test_Watershed_Extinction_Compare : public TestCase
 };
 
 
-int main(int argc, char *argv[])
+int main()
 {
     TestSuite ts;
 

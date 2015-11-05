@@ -32,7 +32,7 @@
 using namespace smil;
 
 
-int main(int argc, char *argv[])
+int main()
 {
     UINT BENCH_NRUNS = 1E3;
     

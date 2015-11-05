@@ -350,7 +350,7 @@ class Test_Sup : public TestCase
 
 
     
-int main(int argc, char *argv[])
+int main()
 {
       TestSuite ts;
       ADD_TEST(ts, Test_Array);
@@ -366,9 +366,7 @@ int main(int argc, char *argv[])
       pixels++;
       
 //       im1.show();
-      int i[5];
-      UINT8 j[5];
-//       Gui::execLoop();
+
       return ts.run();
   
 }

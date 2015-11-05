@@ -86,18 +86,13 @@ namespace smil
         return RES_OK;
     }
 
-    static size_t
-    WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp)
+    static std::string memoryCallbackBuffer;
+    
+    static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void */*stream*/)
     {
-        size_t realsize = size * nmemb;
-        string *mem = (string*)userp;
-
-        int pos = mem->size();
-        mem->resize(mem->size() + realsize);
-        mem->replace(pos, realsize, (const char*)contents);
-
-        return realsize;
-    }
+        memoryCallbackBuffer.append((char*)contents, size*nmemb);
+        return size*nmemb;
+    }    
     
     /**
     * Download file data into a string buffer.
@@ -105,23 +100,25 @@ namespace smil
     string getHttpFile(const char *url) 
     {
         CURL *curl_handle;
-        string buffer;
+        memoryCallbackBuffer.clear();
 
-        curl_global_init(CURL_GLOBAL_ALL);
-        CURLcode res;
+//         curl_global_init(CURL_GLOBAL_ALL);
+        CURLcode res = CURLE_OK;
         curl_handle = curl_easy_init();
         if (curl_handle)
         {
             curl_easy_setopt(curl_handle, CURLOPT_URL, url);
             curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-            curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&buffer);
             res = curl_easy_perform(curl_handle);
-            curl_easy_cleanup(curl_handle);
-            curl_global_cleanup();
+            curl_easy_cleanup(curl_handle);        
         }
-        else res = CURLE_FAILED_INIT;
+        if (res != CURLE_OK) 
+        {
+            ERR_MSG("curl_easy_perform() failed");
+        }
+//         else res = CURLE_FAILED_INIT;
 
-        return buffer;
+        return memoryCallbackBuffer;
     }
 #endif // USE_CURL
     

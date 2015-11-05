@@ -38,6 +38,8 @@
 #include <map>
 #include <set>
 #include <iostream>
+#include <iterator> // std::back_inserter
+
 namespace smil
 {
   
@@ -52,7 +54,7 @@ namespace smil
     {
         typedef typename Image<T>::lineType lineType;
 
-        virtual void processSequence(lineType lineIn, size_t size)
+        virtual void processSequence(lineType /*lineIn*/, size_t size)
         {
             this->retVal += size;
         }
@@ -104,7 +106,7 @@ namespace smil
         double sum1, sum2;
         double pixNbr;
 
-        virtual void initialize(const Image<T> &imIn)
+        virtual void initialize(const Image<T> &/*imIn*/)
         {
             this->retVal.clear();
             sum1 = sum2 = pixNbr = 0.;
@@ -120,7 +122,7 @@ namespace smil
                 sum2 += curV*curV;
             }
         }
-        virtual void finalize(const Image<T> &imIn)
+        virtual void finalize(const Image<T> &/*imIn*/)
         {
             double mean_val = pixNbr==0 ? 0 : sum1/pixNbr;
             double std_dev_val = pixNbr==0 ? 0 : sqrt(sum2/pixNbr - mean_val*mean_val);
@@ -151,7 +153,7 @@ namespace smil
     struct measMinValFunc : public MeasureFunctionBase<T, T>
     {
         typedef typename Image<T>::lineType lineType;
-        virtual void initialize(const Image<T> &imIn)
+        virtual void initialize(const Image<T> &/*imIn*/)
         {
             this->retVal = numeric_limits<T>::max();
         }
@@ -168,7 +170,7 @@ namespace smil
     {
         typedef typename Image<T>::lineType lineType;
         Point<UINT> pt;
-        virtual void initialize(const Image<T> &imIn)
+        virtual void initialize(const Image<T> &/*imIn*/)
         {
             this->retVal = numeric_limits<T>::max();
         }
@@ -212,7 +214,7 @@ namespace smil
     struct measMaxValFunc : public MeasureFunctionBase<T, T>
     {
         typedef typename Image<T>::lineType lineType;
-        virtual void initialize(const Image<T> &imIn)
+        virtual void initialize(const Image<T> &/*imIn*/)
         {
             this->retVal = numeric_limits<T>::min();
         }
@@ -229,7 +231,7 @@ namespace smil
     {
         typedef typename Image<T>::lineType lineType;
         Point<UINT> pt;
-        virtual void initialize(const Image<T> &imIn)
+        virtual void initialize(const Image<T> &/*imIn*/)
         {
             this->retVal = numeric_limits<T>::min();
         }
@@ -274,7 +276,7 @@ namespace smil
     {
         typedef typename Image<T>::lineType lineType;
         T minVal, maxVal;
-        virtual void initialize(const Image<T> &imIn)
+        virtual void initialize(const Image<T> &/*imIn*/)
         {
             this->retVal.clear();
             maxVal = numeric_limits<T>::min();
@@ -291,7 +293,7 @@ namespace smil
                 minVal = val;
             }
         }
-        virtual void finalize(const Image<T> &imIn)
+        virtual void finalize(const Image<T> &/*imIn*/)
         {
             this->retVal.push_back(minVal);
             this->retVal.push_back(maxVal);
@@ -317,7 +319,7 @@ namespace smil
         typedef typename Image<T>::lineType lineType;
         set<T> valList;
         
-        virtual void initialize(const Image<T> &imIn)
+        virtual void initialize(const Image<T> &/*imIn*/)
         {
             this->retVal.clear();
             valList.clear();
@@ -326,12 +328,9 @@ namespace smil
         virtual void processSequence(lineType lineIn, size_t size)
         {
             for (size_t i=0;i<size;i++)
-            {
-                if (valList.find(lineIn[i])==valList.end())
-                  valList.insert(lineIn[i]);
-            }
+                valList.insert(lineIn[i]);
         }
-        virtual void finalize(const Image<T> &imIn)
+        virtual void finalize(const Image<T> &/*imIn*/)
         {
             // Copy the content of the set into the ret vector
             std::copy(valList.begin(), valList.end(), std::back_inserter(this->retVal));
@@ -340,6 +339,8 @@ namespace smil
 
     /**
      * Get the list of the pixel values present in the image
+     * 
+     * \see histogram
      */
     template <class T>
     vector<T> valueList(const Image<T> &imIn, bool onlyNonZero=true)
@@ -355,7 +356,7 @@ namespace smil
       map<int,int> nbList;
       int maxNb;
       T mode;
-        virtual void initialize(const Image<T> &imIn)
+        virtual void initialize(const Image<T> &/*imIn*/)
         {
           //BMI            this->retVal.clear();
             nbList.clear();
@@ -394,7 +395,6 @@ namespace smil
     template <class T>
     T measModeVal(const Image<T> &imIn, bool onlyNonZero=true)
     {
-
         measModeValFunc<T> func;
         return func(imIn, onlyNonZero);
     }
@@ -412,7 +412,7 @@ namespace smil
         size_t imH = im.getHeight();
         
         vector<IntPoint> bPoints;
-        if ( x0>=int(imW) || y0>=int(imH) || x1>=int(imW) || y1>=int(imH) )
+        if ( x0>=imW || y0>=imH || x1>=imW || y1>=imH )
           bPoints = bresenhamPoints(x0, y0, x1, y1, imW, imH);
         else
           bPoints = bresenhamPoints(x0, y0, x1, y1); // no image range check (faster)
@@ -431,7 +431,7 @@ namespace smil
     {
         typedef typename Image<T>::lineType lineType;
         double xSum, ySum, zSum, tSum;
-        virtual void initialize(const Image<T> &imIn)
+        virtual void initialize(const Image<T> &/*imIn*/)
         {
             this->retVal.clear();
             xSum = ySum = zSum = tSum = 0.;
@@ -465,7 +465,7 @@ namespace smil
 
 
     template <class T>
-    struct measBoundBoxFunc : public MeasureFunctionWithPos<T, Vector_UINT >
+    struct measBoundBoxFunc : public MeasureFunctionWithPos<T, vector<size_t> >
     {
         typedef typename Image<T>::lineType lineType;
         double xMin, xMax, yMin, yMax, zMin, zMax;
@@ -484,7 +484,7 @@ namespace smil
             zMin = imSize[2];
             zMax = 0;
         }
-        virtual void processSequence(lineType lineIn, size_t size, size_t x, size_t y, size_t z)
+        virtual void processSequence(lineType /*lineIn*/, size_t size, size_t x, size_t y, size_t z)
         {
             if (x<xMin) xMin = x;
             if (x+size-1>xMax) xMax = x+size-1;
@@ -496,7 +496,7 @@ namespace smil
               if (z>zMax) zMax = z;
             }
         }
-        virtual void finalize(const Image<T> &imIn)
+        virtual void finalize(const Image<T> &/*imIn*/)
         {
             this->retVal.push_back(UINT(xMin));
             this->retVal.push_back(UINT(yMin));
@@ -514,7 +514,7 @@ namespace smil
     * \return xMin, yMin (,zMin), xMax, yMax (,zMax)
     */
     template <class T>
-    Vector_UINT measBoundBox(Image<T> &im)
+    vector<size_t> measBoundBox(Image<T> &im)
     {
         measBoundBoxFunc<T> func;
         return func(im, true);
@@ -553,7 +553,7 @@ namespace smil
                 }
             }
         }
-        virtual void finalize(const Image<T> &imIn)
+        virtual void finalize(const Image<T> &/*imIn*/)
         {
             this->retVal.push_back(m000);
             this->retVal.push_back(m100);

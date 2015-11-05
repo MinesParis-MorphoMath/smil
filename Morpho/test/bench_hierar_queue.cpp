@@ -38,7 +38,7 @@
 
 using namespace smil;
 
-int main(int argc, char *argv[])
+int main()
 {
     Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png");
     Image_UINT8 im2(im1);
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     BENCH_IMG(minima, im2, im3, sSE());
     
 #if _OPENMP >= 201107 // ( >= 3.1 )
-//     BENCH_IMG(fastMinima, im2, im3, sSE());
+    BENCH_IMG(fastMinima, im2, im3, sSE());
 #endif 
     
     label(im3, imLbl);
@@ -66,6 +66,9 @@ int main(int argc, char *argv[])
     BENCH_IMG(basins, im2, imLbl, imLbl2);
     
     BENCH_IMG(watershed, im2, imLbl, im4);
+    
+    BENCH_NRUNS = 10;
+    BENCH_IMG(watershedExtinction, im2, imLbl, im4);
         
 }
 

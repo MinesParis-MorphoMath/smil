@@ -50,7 +50,9 @@ namespace smil
         Image<UINT8>::lineType y = imXyzOut.getPixels().arrays[1];
         Image<UINT8>::lineType z = imXyzOut.getPixels().arrays[2];
         
+#ifdef USE_OPEN_MP        
       #pragma omp for
+#endif // USE_OPEN_MP        
         for (size_t i=0;i<imRgbIn.getPixelCount();i++)
         {
             x[i] = UINT8(floor(0.5+(yc1 * r[i] + yc2 * g[i] + yc3 * b[i])/0.982));
@@ -78,7 +80,9 @@ namespace smil
         Image<UINT8>::lineType g = imRgbOut.getPixels().arrays[1];
         Image<UINT8>::lineType b = imRgbOut.getPixels().arrays[2];
         
+#ifdef USE_OPEN_MP        
       #pragma omp for
+#endif // USE_OPEN_MP        
         for (size_t i=0;i<imXyzIn.getPixelCount();i++)
         {
             float Rf, Gf,Bf;
@@ -155,10 +159,6 @@ namespace smil
         ASSERT_ALLOCATED(&imXyzIn, &imLabOut);
         ASSERT_SAME_SIZE(&imXyzIn, &imLabOut);
         
-        static const float yc1 = 0.607f,       yc2 = 0.174f,   yc3 = 0.201f;
-        static const float uc1 = 0.299f,       uc2 = 0.587f,   uc3 = 0.114f;
-        static const float vc1 = 0.000f,       vc2 = 0.066f,   vc3 = 1.117f;
-        
         Image<UINT8>::lineType x = imXyzIn.getPixels().arrays[0];
         Image<UINT8>::lineType y = imXyzIn.getPixels().arrays[1];
         Image<UINT8>::lineType z = imXyzIn.getPixels().arrays[2];
@@ -168,7 +168,9 @@ namespace smil
         Image<UINT8>::lineType b = imLabOut.getPixels().arrays[2];
 
       
+#ifdef USE_OPEN_MP        
       #pragma omp for
+#endif // USE_OPEN_MP        
         for (size_t i=0;i<imXyzIn.getPixelCount();i++)
         {
             float L, A, B;
@@ -216,7 +218,9 @@ namespace smil
         Image<UINT8>::lineType z = imXyzOut.getPixels().arrays[2];
         
       
+#ifdef USE_OPEN_MP        
       #pragma omp for
+#endif // USE_OPEN_MP        
         for (size_t i=0;i<imLabIn.getPixelCount();i++)
         {
             float X, Y, Z;
@@ -267,7 +271,9 @@ namespace smil
         Image<UINT8>::lineType l = imHlsOut.getPixels().arrays[1];
         Image<UINT8>::lineType s = imHlsOut.getPixels().arrays[2];
         
+#ifdef USE_OPEN_MP        
       #pragma omp for
+#endif // USE_OPEN_MP        
         for (size_t i=0;i<imRgbIn.getPixelCount();i++)
         {
             /* R, G, B are extracted */
@@ -277,10 +283,10 @@ namespace smil
 
             //      tR = static_cast< typename value_type::value_type> (floor(0.5+tmp));
 
-            double mymax,mymin,Mid;
+            double mymax, mymin, Mid = 0;
             double L1re,Hre,S1re;
             double   L1ou,Hou,S1ou;
-            double   lambda,phi,k;
+            double   lambda = 0, phi, k;
             double  Rf,Gf,Bf;
 
             Rf=((double)(R)/255.0)*(1.0);
@@ -389,13 +395,15 @@ namespace smil
         Image<UINT8>::lineType g = imRgbOut.getPixels().arrays[1];
         Image<UINT8>::lineType b = imRgbOut.getPixels().arrays[2];
         
+#ifdef USE_OPEN_MP        
       #pragma omp for
+#endif // USE_OPEN_MP        
         for (size_t i=0;i<imHlsIn.getPixelCount();i++)
         {
             float phi1,phi;
             float lambda1;
             int    lambda;
-            float Rou,Gou,Bou;
+            float Rou = 0, Gou = 0, Bou = 0;
             float k;
 
             /* H, L, S are extracted */

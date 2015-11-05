@@ -126,23 +126,23 @@ namespace smil
         ASSERT(startX<inW && startY<inH && startZ<inD);
         ASSERT(outStartX<outW && outStartY<outH && outStartZ<outD);
         
-        int realSx = min( min(sizeX, inW-startX), outW-outStartX );
-        int realSy = min( min(sizeY, inH-startY), outH-outStartY );
-        int realSz = min( min(sizeZ, inD-startZ), outD-outStartZ );
+        size_t realSx = min( min(sizeX, inW-startX), outW-outStartX );
+        size_t realSy = min( min(sizeY, inH-startY), outH-outStartY );
+        size_t realSz = min( min(sizeZ, inD-startZ), outD-outStartZ );
 
         typename Image<T1>::volType slIn = imIn.getSlices() + startZ;
         typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
         
-        int nthreads = Core::getInstance()->getNumberOfThreads();
-        int y;
+        size_t y;
         
-        for (int z=0;z<realSz;z++)
+        for (size_t z=0;z<realSz;z++)
         {
             typename Image<T1>::sliceType lnIn = *slIn + startY;
             typename Image<T2>::sliceType lnOut = *slOut + outStartY;
             
         
             #ifdef USE_OPEN_MP
+                int nthreads = Core::getInstance()->getNumberOfThreads();
                 #pragma omp parallel private(y)
             #endif // USE_OPEN_MP
             {
@@ -232,6 +232,39 @@ namespace smil
         return copy<T>(imIn, imOut);
     }
 
+    /**
+     * Cast from an image type to another
+     * 
+     */
+    template <class T1, class T2>
+    RES_T cast(const Image<T1> &imIn, Image<T2> &imOut)
+    {
+        ASSERT_ALLOCATED(&imIn);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        T1 floor_t1 = ImDtTypes<T1>::min();
+        T2 floor_t2 = ImDtTypes<T2>::min();
+        double coeff = double(ImDtTypes<T2>::cardinal()) / double(ImDtTypes<T1>::cardinal());
+        
+        typename Image<T1>::lineType pixIn = imIn.getPixels();
+        typename Image<T2>::lineType pixOut = imOut.getPixels();
+        
+        size_t i, nPix = imIn.getPixelCount();
+        
+        #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
+            #pragma omp parallel private(i) num_threads(nthreads)
+        #endif // USE_OPEN_MP
+        {
+            #ifdef USE_OPEN_MP
+                #pragma omp for
+            #endif // USE_OPEN_MP
+            for (i=0;i<nPix;i++)
+                pixOut[i] = floor_t2 + T2( coeff * double(pixIn[i]-floor_t1) );
+        }
+        
+        return RES_OK;
+    }
 
     /**
      * Copy a channel of multichannel image into a single channel image
@@ -792,6 +825,22 @@ namespace smil
     }
 
     /**
+    * Logarithm
+    * 
+    * Possible bases: 0 or none (natural logarithm, or base e), 2, 10
+    */
+    template <class T>
+    RES_T log(const Image<T> &imIn, Image<T> &imOut, int base=0)
+    {
+        ASSERT_ALLOCATED(&imIn);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        unaryImageFunction<T, logLine<T> > func;
+        func.lineFunction.base = base;
+        return func(imIn, imOut);
+    }
+    
+    /**
     * Logic AND operator
     */
     template <class T>
@@ -1014,6 +1063,31 @@ namespace smil
     }
 
 
+    /**
+    * Apply a lookup map
+    * 
+    * \b Python \b example:
+    * \code{.py}
+    * im1 = Image("http://cmm.ensmp.fr/~faessel/smil/images/balls.png")
+    * imLbl = Image(im1, "UINT16")
+    * imLbl2 = Image(imLbl)
+    * 
+    * label(im1, imLbl)
+    * 
+    * # We can use a Smil Map
+    * # lookup = Map_UINT16_UINT16() 
+    * # or directly a python dict
+    * lookup = dict()
+    * 
+    * lookup[1] = 2
+    * lookup[5] = 3
+    * lookup[2] = 1
+    * 
+    * imLbl.showLabel()
+    * imLbl2.showLabel()
+    * 
+    * \endcode
+    */
     template <class T1, class mapT, class T2>
     RES_T applyLookup(const Image<T1> &imIn, const mapT &_map, Image<T2> &imOut, T2 defaultValue=T2(0))
     {
@@ -1022,8 +1096,8 @@ namespace smil
         ASSERT_SAME_SIZE(&imIn, &imOut);
 
         // Verify that the max(measure) doesn't exceed the T2 type max
-        typename mapT::const_iterator max_it = std::max_element(_map.begin(), _map.end());
-        ASSERT(( (*max_it).second < ImDtTypes<T2>::max() ), "Input map max exceeds data type max!", RES_ERR);
+        typename mapT::const_iterator max_it = std::max_element(_map.begin(), _map.end(), map_comp_value_less());
+        ASSERT(( max_it->second < ImDtTypes<T2>::max() ), "Input map max exceeds data type max!", RES_ERR);
 
         
         typename Image<T1>::lineType pixIn = imIn.getPixels();
@@ -1035,7 +1109,7 @@ namespace smil
         {
           it = _map.find(*pixIn);
           if (it!=_map.end())
-            *pixOut = it->second;
+            *pixOut = T2(it->second);
           else
             *pixOut = defaultValue;
           pixIn++;
@@ -1048,9 +1122,6 @@ namespace smil
     
     
 #ifndef SWIG
-    /**
-    * Apply a lookup map
-    */
     template <class T1, class T2>
     ENABLE_IF( !IS_SAME(T1,UINT8) && !IS_SAME(T1,UINT16), RES_T ) // SFINAE General case
     applyLookup(const Image<T1> &imIn, const map<T1,T2> &lut, Image<T2> &imOut, T2 defaultValue=T2(0))

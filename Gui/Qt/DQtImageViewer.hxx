@@ -34,6 +34,7 @@
 #include <QGraphicsSceneEvent>
 #include <QList>
 #include <QUrl>
+#include <QMimeData>
 
 #ifdef USE_QWT
 #include "PureQt/PlotWidget.h"
@@ -90,11 +91,8 @@ namespace smil
         BASE_QT_VIEWER::setImageSize(im.getWidth(), im.getHeight(), im.getDepth());
         if (im.getName()!=string(""))
           setName(this->image->getName());
-        if (qOverlayImage)
-        {
-          delete qOverlayImage;
-          qOverlayImage = NULL;
-        }
+        if (!qOverlayImage.isEmpty())
+          deleteOverlayImage();
     }
 
     template <class T>
@@ -174,7 +172,7 @@ namespace smil
         if (profilePlot && profilePlot->isVisible())
           displayProfile(true);
     #endif // USE_QWT
-        qApp->processEvents();
+//         qApp->processEvents();
     }
 
 
@@ -237,24 +235,28 @@ namespace smil
     template <class T>
     void QtImageViewer<T>::drawOverlay(const Image<T> &im)
     {
-        if (!qOverlayImage)
+        if (qOverlayImage.isEmpty())
           createOverlayImage();
 
-        typename Image<T>::sliceType lines = im.getSlices()[slider->value()];
         typename Image<T>::lineType pixels;
 
-        qOverlayImage->fill(0);
+        for (size_t i=0;i<im.getDepth();i++)
+          qOverlayImage[i]->fill(0);
 
         QRgb *destLine;
 
-        for (size_t j=0;j<im.getHeight();j++)
+        for (size_t k=0;k<im.getDepth();k++)
         {
-            destLine = (QRgb*)(this->qOverlayImage->scanLine(j));
-            pixels = *lines++;
-            for (size_t i=0;i<im.getWidth();i++)
+            typename Image<T>::sliceType lines = im.getSlices()[k];
+            for (size_t j=0;j<im.getHeight();j++)
             {
-              if (pixels[i]!=T(0))
-                destLine[i] = overlayColorTable[(UINT8)pixels[i]];
+                destLine = (QRgb*)(this->qOverlayImage[k]->scanLine(j));
+                pixels = *lines++;
+                for (size_t i=0;i<im.getWidth();i++)
+                {
+                if (pixels[i]!=T(0))
+                    destLine[i] = overlayColorTable[(UINT8)pixels[i]];
+                }
             }
         }
 
@@ -265,24 +267,27 @@ namespace smil
     template <class T>
     RES_T QtImageViewer<T>::getOverlay(Image<T> &img)
     {
-        if (!qOverlayImage)
+        if (qOverlayImage.isEmpty())
           createOverlayImage();
 
-        img.setSize(qOverlayImage->width(), qOverlayImage->height());
+        img.setSize(qOverlayImage[0]->width(), qOverlayImage[0]->height(), qOverlayImage.size());
 
         QRgb *srcLine;
         int value;
-        typename Image<T>::sliceType lines = img.getLines();
         typename Image<T>::lineType pixels;
 
-        for (size_t j=0;j<qOverlayImage->height();j++)
+        for (size_t k=0;k<imDepth;k++)
         {
-            srcLine = (QRgb*)(this->qOverlayImage->scanLine(j));
-            pixels = *lines++;
-            for (size_t i=0;i<qOverlayImage->width();i++)
+            typename Image<T>::sliceType lines = img.getSlices()[k];
+            for (size_t j=0;j<imHeight;j++)
             {
-                value = overlayColorTable.indexOf(srcLine[i]);
-                pixels[i] = value>=0 ? T(value) : T(0);
+                srcLine = (QRgb*)(this->qOverlayImage[k]->scanLine(j));
+                pixels = *lines++;
+                for (size_t i=0;i<imWidth;i++)
+                {
+                    value = overlayColorTable.indexOf(srcLine[i]);
+                    pixels[i] = value>=0 ? T(value) : T(0);
+                }
             }
         }
         img.modified();
@@ -338,9 +343,9 @@ namespace smil
         if (this->image->getDepth()>1)
           txt = txt + ", " + QString::number(z);
         txt = txt + ") " + QString::number(pixVal);
-        if (qOverlayImage)
+        if (!qOverlayImage.isEmpty())
         {
-            int index = overlayColorTable.indexOf(qOverlayImage->pixel(x,y));
+            int index = overlayColorTable.indexOf(qOverlayImage[z]->pixel(x,y));
             if (index>=0)
               txt = txt + "\n+ " + QString::number(index);
         }
@@ -364,7 +369,7 @@ namespace smil
         int imH = qImage->height();
 
         typename ImDtTypes<T>::sliceType pSlice = parentClass::image->getSlices()[z];
-        typename ImDtTypes<T>::lineType pLine;
+        typename ImDtTypes<T>::lineType pLine = pSlice[0]; // dummy initialization
         T pVal;
 
         QGraphicsTextItem *textItem;
@@ -443,7 +448,6 @@ namespace smil
         {
             histoPlot = new PlotWidget();
             histoPlot->setWindowTitle(QString(this->image->getName()) + " histogram");
-            histoPlot->setAxisScale(QwtPlot::xBottom, ImDtTypes<T>::min(), ImDtTypes<T>::max());
 
             QwtPlotCurve *defaultCurve = histoPlot->getCurrentCurve();
             defaultCurve->setStyle( QwtPlotCurve::Steps );
@@ -452,6 +456,8 @@ namespace smil
 
 
         map<T, UINT> hist = histogram(*(this->image));
+        
+        histoPlot->setAxisScale(QwtPlot::xBottom, hist.begin()->first, hist.rbegin()->first);
 
         QwtPlotCurve *curve = histoPlot->getCurrentCurve();
 
@@ -463,8 +469,8 @@ namespace smil
         int i=0;
         for(typename map<T,UINT>::iterator it=hist.begin();it!=hist.end();it++,i++)
         {
-            xVals[i] = (*it).first;
-            yVals[i] = (*it).second;
+            xVals[i] = it->first;
+            yVals[i] = it->second;
         }
         curve->setData(xVals, yVals, ptsNbr);
 
@@ -476,7 +482,7 @@ namespace smil
 #else // QWT_VERSION < 0x060000
         QVector<QPointF> samples;
         for(typename map<T,UINT>::iterator it=hist.begin();it!=hist.end();it++)
-          samples.push_back(QPointF((*it).first, (*it).second));
+          samples.push_back(QPointF(it->first, it->second));
 
         QwtPointSeriesData *myData = new QwtPointSeriesData();
         myData->setSamples(samples);

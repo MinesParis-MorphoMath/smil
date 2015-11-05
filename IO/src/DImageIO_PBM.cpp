@@ -200,7 +200,7 @@ namespace smil
     
 #ifdef SMIL_WRAP_RGB      
     template <>
-    RES_T PGMImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
+    RES_T PGMImageFileHandler<RGB>::read(const char * /*filename*/, Image<RGB> &/*image*/)
     {
 //         FILE *fp = fopen( filename, "rb" );
 // 
@@ -248,7 +248,7 @@ namespace smil
 
 #ifdef SMIL_WRAP_RGB  
     template <>
-    RES_T PGMImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
+    RES_T PGMImageFileHandler<RGB>::write(const Image<RGB> &/*image*/, const char * /*filename*/)
     {
 //         FILE* fp = fopen( filename, "wb" );
 // 

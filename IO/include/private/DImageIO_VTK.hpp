@@ -68,6 +68,13 @@ namespace smil
         streampos startPos;
     };
     
+    // Big/Little endian swap
+    template <class T>
+    void endswap(T *objp)
+    {
+        unsigned char *memp = reinterpret_cast<unsigned char*>(objp);
+        std::reverse(memp, memp + sizeof(T));
+    }
     
     RES_T readVTKHeader(ifstream &fp, VTKHeader &hStruct);
     RES_T getVTKFileInfo(const char* filename, ImageFileInfo &fInfo);
@@ -78,9 +85,12 @@ namespace smil
       public:
         VTKImageFileHandler()
           : ImageFileHandler<T>("BMP"),
+            littleEndian(false),
             writeBinary(true)
         {
         }
+        
+        bool littleEndian;
         
         virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
         {
@@ -141,8 +151,9 @@ namespace smil
             
             ImageFileInfo::ScalarType scalarType = hStruct.scalarType==ImageFileInfo::SCALAR_TYPE_UNKNOWN ? ImageFileInfo::SCALAR_TYPE_UINT8 : hStruct.scalarType; // default, if not specified in the file header
             
-            if ( (typeid(T)==typeid(unsigned char) && scalarType!=ImageFileInfo::SCALAR_TYPE_UINT8) ||
-                 (typeid(T)==typeid(unsigned short) && scalarType!=ImageFileInfo::SCALAR_TYPE_UINT16))
+            if ( (typeid(T)==typeid(unsigned char) && scalarType!=ImageFileInfo::SCALAR_TYPE_UINT8)
+                || (typeid(T)==typeid(unsigned short) && scalarType!=ImageFileInfo::SCALAR_TYPE_UINT16)
+                || (typeid(T)==typeid(short) && scalarType!=ImageFileInfo::SCALAR_TYPE_INT16))
             {
                 cout << "Error: input file type is " << hStruct.scalarTypeStr << endl;
                 fp.close();
@@ -188,7 +199,19 @@ namespace smil
                     for (int y=height-1;y>=0;y--)
                     {
                         curLine = curSlice[y];
-                        fp.read((char*)curLine, sizeof(T)*width);
+                        
+                        if (littleEndian || sizeof(T)==1)
+                            fp.read((char*)curLine, sizeof(T)*width);
+                        else
+                        {
+                            T val;
+                            for (int i=0;i<width;i++)
+                            {
+                              fp.read((char*)&val, sizeof(T));
+                              endswap(&val);
+                              curLine[i] = val;
+                            }
+                        }
                     }
                 }
             }
@@ -253,7 +276,18 @@ namespace smil
                     for (int y=height-1;y>=0;y--)
                     {
                         curLine = curSlice[y];
-                        fp.write((char*)curLine, sizeof(T)*width);
+                        if (littleEndian || sizeof(T)==1)
+                            fp.write((char*)curLine, sizeof(T)*width);
+                        else
+                        {
+                            T val;
+                            for (size_t i=0;i<width;i++)
+                            {
+                              val = curLine[i];
+                              endswap(&val);
+                              fp.write((char*)&val, sizeof(T));
+                            }
+                        }
                     }
                 }
             }

@@ -21,4 +21,5 @@ links.add(imDist, displMax)
 for i in range(1, 10):
   print("\nThreshold level: " + str(i*10))
   links[0].args[1] = i*10
+  Gui.processEvents() # refresh images
   time.sleep(1)

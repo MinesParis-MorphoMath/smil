@@ -69,7 +69,7 @@ namespace smil
             return RES_OK;
         }
 
-        virtual RES_T processImage(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
+        virtual RES_T processImage(const imageInType &imIn, imageOutType &/*imOut*/, const StrElt &/*se*/)
         {
             this->pixelsIn = imIn.getPixels();
             for (size_t i=0; i<this->imSize[2]*this->imSize[1]*this->imSize[0]; i++) 
@@ -160,7 +160,7 @@ namespace smil
             return RES_OK;
         }
 
-        virtual RES_T processImage (const imageInType &imIn, imageOutType &imOut, const StrElt &se) {
+        virtual RES_T processImage (const imageInType &imIn, imageOutType &imOut, const StrElt &/*se*/) {
             Image<T1> tmp(imIn);
             Image<T1> tmp2(imIn);
             ASSERT(clone(imIn, tmp)==RES_OK);
@@ -174,9 +174,13 @@ namespace smil
             lineInType pixelsTmp = tmp.getPixels () ;
          
             // Adding the first point of each line to tmp.
+        #ifdef USE_OPEN_MP
             #pragma omp parallel
+        #endif // USE_OPEN_MP
             {
+        #ifdef USE_OPEN_MP
                 #pragma omp for
+        #endif // USE_OPEN_MP
                 for (size_t i=0; i<this->imSize[2]*this->imSize[1]; ++i) {
                     pixelsTmp[i*this->imSize[0]] = this->pixelsIn[i*this->imSize[0]];
                 }
@@ -263,9 +267,13 @@ namespace smil
             lineOutType lineOut;
 
             for (size_t s=0; s<nSlices; ++s) {
+        #ifdef USE_OPEN_MP
                 #pragma omp parallel private(lineIn,lineOut,l,v,previous_value,previous_label)
+        #endif // USE_OPEN_MP
                 {
+        #ifdef USE_OPEN_MP
                     #pragma omp for
+        #endif // USE_OPEN_MP
                     for (l=0; l<nLines; ++l) {
                         lineIn = srcLines[l+s*nSlices];
                         lineOut = desLines[l+s*nSlices];
@@ -365,7 +373,7 @@ namespace smil
                                     x += (y+1)%2;
 
                                 nb_o = x + y*size[0] + z*size[0]*size[1];
-                                if (x >= 0 && x < size[0] && y >= 0 && y < size[1] && z >= 0 && z<size[2] && outP [nb_o] != lblNbr && inP [nb_o] == inP[o])
+                                if (x < size[0] && y < size[1] && z<size[2] && outP [nb_o] != lblNbr && inP [nb_o] == inP[o])
                                 {
                                     outP[nb_o] = lblNbr;
                                     propagation.push (nb_o);
@@ -453,7 +461,6 @@ namespace smil
         return lblNbr;
     }
 
-    
     /**
     * Image labelization with the size of each connected components
     * 
@@ -469,9 +476,12 @@ namespace smil
         Image<T2> imLabel(imIn);
         
         ASSERT(label(imIn, imLabel, se)!=0);
-         map<T2, double> areas = measAreas(imLabel);
+        map<T2, double> areas = measAreas(imLabel);
         ASSERT(!areas.empty());
         
+        double maxV = std::max_element(areas.begin(), areas.end(), map_comp_value_less())->second;
+        ASSERT((maxV < double(ImDtTypes<T2>::max())), "Areas max value exceeds data type max!", 0);
+
         ASSERT(applyLookup(imLabel, areas, imOut)==RES_OK);
         
         return RES_OK;

@@ -68,7 +68,7 @@ class Test_RW_RAW : public TestCase
 };
 
 
-int main(int argc, char *argv[])
+int main(void)
 {
     Image_UINT8 im1;
     Image_UINT8 im2;

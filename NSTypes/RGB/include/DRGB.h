@@ -93,17 +93,17 @@ namespace smil
     }
 
     template <>
-    inline void QtImageViewer<RGB>::drawOverlay(const Image<RGB> &im)
+    inline void QtImageViewer<RGB>::drawOverlay(const Image<RGB> &/*im*/)
     {
     }
 
 #ifdef USE_QWT
    template <>
-   inline void QtImageViewer<RGB>::displayHistogram(bool update)
+   inline void QtImageViewer<RGB>::displayHistogram(bool /*update*/)
    {
    }
    template <>
-   inline void QtImageViewer<RGB>::displayProfile(bool update)
+   inline void QtImageViewer<RGB>::displayProfile(bool /*update*/)
    {
    }
 #endif // USE_QWT
@@ -120,8 +120,9 @@ namespace smil
 
 #if defined SWIGPYTHON && defined USE_NUMPY
     template <>
-    PyObject * Image<RGB>::getNumArray(bool c_contigous)
+    PyObject * Image<RGB>::getNumArray(bool /*c_contigous*/)
     {
+        return NULL;
     }
 #endif // defined SWIGPYTHON and defined USE_NUMPY
 

@@ -47,14 +47,40 @@ namespace smil
 
 #ifndef SWIG
     template <class T>
-    RES_T histogram(const Image<T> &imIn, size_t *h)
+    ENABLE_IF( !IS_FLOAT(T), RES_T )
+    histogram(const Image<T> &imIn, size_t *h)
     {
-        for (int i=int(ImDtTypes<T>::min());i<=int(ImDtTypes<T>::max());i++)
+        for (size_t i=0;i<ImDtTypes<T>::cardinal();i++)
             h[i] = 0;
 
         typename Image<T>::lineType pixels = imIn.getPixels();
         for (size_t i=0;i<imIn.getPixelCount();i++)
-            h[UINT(pixels[i]-ImDtTypes<T>::min())]++;
+            h[size_t(pixels[i]-ImDtTypes<T>::min())]++;
+        
+        return RES_OK;
+    }
+    
+    template <class T>
+    ENABLE_IF( IS_FLOAT(T), RES_T )
+    histogram(const Image<T> &/*imIn*/, size_t */*h*/)
+    {
+        return RES_ERR_NOT_IMPLEMENTED;
+    }
+    
+    template <class T>
+    RES_T histogram(const Image<T> &imIn, const Image<T> &imMask, size_t *h)
+    {
+        ASSERT(haveSameSize(&imIn, &imMask, NULL));
+        
+        for (size_t i=0;i<ImDtTypes<T>::cardinal();i++)
+            h[i] = 0;
+
+        typename Image<T>::lineType pixels = imIn.getPixels();
+        typename Image<T>::lineType maskPix = imMask.getPixels();
+        
+        for (size_t i=0;i<imIn.getPixelCount();i++)
+          if (maskPix[i]!=0)
+            h[size_t(pixels[i]-ImDtTypes<T>::min())]++;
         
         return RES_OK;
     }
@@ -64,15 +90,32 @@ namespace smil
     * Image histogram
     */
     template <class T>
-    std::map<T, UINT> histogram(const Image<T> &imIn)
+    std::map<T, UINT> histogram(const Image<T> &imIn, bool fullRange=false)
     {
-        size_t *buf = new size_t[ImDtTypes<T>::cardinal()];
-        histogram<T>(imIn, buf);
+        vector<T> rVals = rangeVal(imIn);
+        size_t card = rVals[1]-rVals[0]+1;
+        
+        size_t *buf = new size_t[card];
+        for (size_t i=0;i<card;i++)
+            buf[i] = 0;
+
+        typename Image<T>::lineType pixels = imIn.getPixels();
+        for (size_t i=0;i<imIn.getPixelCount();i++)
+            buf[size_t(pixels[i]-rVals[0])]++;
         
         map<T, UINT> h;
-        for (size_t i=ImDtTypes<T>::min();i<=ImDtTypes<T>::max();i++)
-            h.insert(pair<T,UINT>(i, buf[i]));
         
+        if (fullRange)
+          for (T i=ImDtTypes<T>::min();i<rVals[0];i++)
+              h.insert(pair<T,UINT>(i, 0));
+        
+        for (size_t i=0;i<card;i++)
+            h.insert(pair<T,UINT>(i+rVals[0], buf[i]));
+        
+        if (fullRange)
+          for (T i=rVals[1];i<=ImDtTypes<T>::max() && i!=ImDtTypes<T>::min();i++)
+              h.insert(pair<T,UINT>(i, 0));
+          
         delete[] buf;
         
         return h;
@@ -85,23 +128,37 @@ namespace smil
     * Calculates the histogram of the image imIn only for pixels x where imMask(x)!=0
     */
     template <class T>
-    std::map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask)
+    std::map<T, UINT> histogram(const Image<T> &imIn, const Image<T> &imMask, bool fullRange=false)
     {
         map<T, UINT> h;
         
-        for (T i=ImDtTypes<T>::min();;i++)
-        {
-            h.insert(pair<T,UINT>(i, 0));
-            if (i==ImDtTypes<T>::max())
-              break;
-        }
+        ASSERT(haveSameSize(&imIn, &imMask, NULL), h);
         
-        typename Image<T>::lineType inPix = imIn.getPixels();
-        typename Image<T>::lineType maskPix = imMask.getPixels();
+        vector<T> rVals = rangeVal(imIn);
+        size_t card = rVals[1]-rVals[0]+1;
         
+        size_t *buf = new size_t[card];
+        for (size_t i=0;i<card;i++)
+            buf[i] = 0;
+
+        typename Image<T>::lineType pixels = imIn.getPixels();
+        typename Image<T>::lineType maskPixels = imMask.getPixels();
         for (size_t i=0;i<imIn.getPixelCount();i++)
-            if (maskPix[i]!=0)
-                h[T(inPix[i])] += 1;
+          if (maskPixels[i]!=0)
+            buf[size_t(pixels[i]-rVals[0])]++;
+        
+        if (fullRange)
+          for (T i=ImDtTypes<T>::min();i<rVals[0];i++)
+              h.insert(pair<T,UINT>(i, 0));
+        
+        for (size_t i=0;i<card;i++)
+            h.insert(pair<T,UINT>(i+rVals[0], buf[i]));
+        
+        if (fullRange)
+          for (T i=rVals[1];i<=ImDtTypes<T>::max() && i!=ImDtTypes<T>::min();i++)
+              h.insert(pair<T,UINT>(i, 0));
+          
+        delete[] buf;
         
         return h;
     }
@@ -109,13 +166,13 @@ namespace smil
     /**
     * Image threshold
     */
-    template <class T>
-    RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, T trueVal, T falseVal, Image<T> &imOut)
+    template <class T, class T_out>
+    RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, T_out trueVal, T_out falseVal, Image<T_out> &imOut)
     {
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
-        unaryImageFunction<T, threshLine<T> > iFunc;
+        unaryImageFunction<T, threshLine<T,T_out>, T_out > iFunc;
         
         iFunc.lineFunction.minVal = minVal;
         iFunc.lineFunction.maxVal = maxVal;
@@ -125,20 +182,20 @@ namespace smil
         return iFunc(imIn, imOut);
     }
 
-    template <class T>
-    RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, Image<T> &imOut)
+    template <class T, class T_out>
+    RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, Image<T_out> &imOut)
     {
-        return threshold<T>(imIn, minVal, maxVal, ImDtTypes<T>::max(), ImDtTypes<T>::min(), imOut);
+        return threshold<T>(imIn, minVal, maxVal, ImDtTypes<T_out>::max(), ImDtTypes<T_out>::min(), imOut);
     }
 
-    template <class T>
-    RES_T threshold(const Image<T> &imIn, T minVal, Image<T> &imOut)
+    template <class T, class T_out>
+    RES_T threshold(const Image<T> &imIn, T minVal, Image<T_out> &imOut)
     {
-        return threshold<T>(imIn, minVal, ImDtTypes<T>::max(), ImDtTypes<T>::max(), ImDtTypes<T>::min(), imOut);
+        return threshold<T>(imIn, minVal, ImDtTypes<T>::max(), ImDtTypes<T_out>::max(), ImDtTypes<T_out>::min(), imOut);
     }
 
-    template <class T>
-    RES_T threshold(const Image<T> &imIn, Image<T> &imOut)
+    template <class T, class T_out>
+    RES_T threshold(const Image<T> &imIn, Image<T_out> &imOut)
     {
         T tVal = otsuThreshold(imIn, imOut);
         if (tVal==ImDtTypes<T>::min())
@@ -153,7 +210,10 @@ namespace smil
     template <class T1, class T2>
     RES_T stretchHist(const Image<T1> &imIn, T1 inMinVal, T1 inMaxVal, Image<T2> &imOut, T2 outMinVal=numeric_limits<T2>::min(), T2 outMaxVal=numeric_limits<T2>::max())
     {
-        unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
+        ASSERT_ALLOCATED(&imIn);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+
+        unaryImageFunction<T1, stretchHistLine<T1,T2>, T2 > iFunc;
         iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (inMaxVal-inMinVal);
         iFunc.lineFunction.inOrig = inMinVal;
         iFunc.lineFunction.outOrig = outMinVal;
@@ -164,7 +224,10 @@ namespace smil
     template <class T1, class T2>
     RES_T stretchHist(const Image<T1> &imIn, Image<T2> &imOut, T2 outMinVal, T2 outMaxVal)
     {
-        unaryImageFunction<T2, stretchHistLine<T2> > iFunc;
+        ASSERT_ALLOCATED(&imIn);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        unaryImageFunction<T1, stretchHistLine<T1,T2>, T2 > iFunc;
         vector<T1> rangeV = rangeVal(imIn);
         iFunc.lineFunction.coeff = double (outMaxVal-outMinVal) / double (rangeV[1]-rangeV[0]);
         iFunc.lineFunction.inOrig = rangeV[0];
@@ -176,68 +239,92 @@ namespace smil
     template <class T1, class T2>
     RES_T stretchHist(const Image<T1> &imIn, Image<T2> &imOut)
     {
-        Image<T1> tmpIm(imIn);
-        RES_T res = stretchHist<T1>(imIn, tmpIm, (T1)numeric_limits<T2>::min(), (T1)numeric_limits<T2>::max());
-        if (res!=RES_OK)
-          return res;
-        return copy(tmpIm, imOut);
+        return stretchHist<T1,T2>(imIn, imOut, numeric_limits<T2>::min(), numeric_limits<T2>::max());
     }
 
 
     /**
-    * Enhance contrast
+    * Min and Max values of an histogram ignoring left/right low values (lower than a given height/cumulative height).
+    *
+    * If \b cumulative is true, it stops when the integral of the histogram values reaches \b ignorePercent * NbrPixels
+    * Otherwise, it stops at the first value of the histogram higher than \b ignorePercent * max(histogram)
     */
     template <class T>
-    RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double leftSat, double rightSat)
+    vector<T> histogramRange(const Image<T> &imIn, double ignorePercent, bool cumulative=true)
     {
-        ASSERT_ALLOCATED(&imIn, &imOut);
-        ASSERT_SAME_SIZE(&imIn, &imOut);
+        vector<T> rVect;
+        
+        ASSERT(imIn.isAllocated(), rVect);
         
         size_t *h = new size_t[ImDtTypes<T>::cardinal()];
         histogram(imIn, h);
         
-        double imVol = imIn.getPixelCount();
+        double imVol;
+        if (cumulative)
+            imVol = imIn.getPixelCount();
+        else
+            imVol = *std::max_element(h, h+ImDtTypes<T>::cardinal());
+        
         double satVol;
         double curVol;
         vector<T> rangeV = rangeVal(imIn);
         T threshValLeft = rangeV[0];
         T threshValRight = rangeV[1];
         
+        satVol = imVol * ignorePercent / 100.;
+        
         // left
-        satVol = imVol * leftSat / 100.;
         curVol=0;
         for (size_t i=rangeV[0]; i<rangeV[1]; i++)
         {
-            curVol += double(h[i]);
+            if (cumulative)
+              curVol += double(h[i]);
+            else
+              curVol = double(h[i]);
+
             if (curVol>satVol)
               break;
             threshValLeft = i;
         }
         
         // Right
-        satVol = imVol * rightSat / 100.;
         curVol=0;
         for (size_t i=rangeV[1]; i>size_t(rangeV[0]); i--)
         {
-            curVol += h[i];
+            if (cumulative)
+              curVol += double(h[i]);
+            else
+              curVol = double(h[i]);
+
             if (curVol>satVol)
               break;
             threshValRight = i;
         }
         
-        stretchHist(imIn, threshValLeft, threshValRight, imOut);
-        imOut.modified();
-        
         delete[] h;
+        
+        rVect.push_back(threshValLeft);
+        rVect.push_back(threshValRight);
+        
+        return rVect;
+    }
+    
+    /**
+    * Enhance contrast
+    */
+    template <class T>
+    RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double sat=0.25)
+    {
+        vector<T> rangeV = histogramRange(imIn, sat, true);
+        
+        ASSERT(rangeV.size()==2);
+        
+        stretchHist(imIn, rangeV[0], rangeV[1], imOut);
+        imOut.modified();
         
         return RES_OK;
     }
 
-    template <class T>
-    RES_T enhanceContrast(const Image<T> &imIn, Image<T> &imOut, double sat=0.5)
-    {
-        return enhanceContrast(imIn, imOut, sat/2., sat/2.);
-    }
 
     template <class T>
     bool IncrementThresholds(vector<double> &thresholdIndexes, map<T, UINT> &hist, UINT threshLevels, double totalFrequency, double &globalMean, vector<double> &classMean, vector<double> &classFrequency)
@@ -331,6 +418,9 @@ namespace smil
       return true;
     }
 
+    /**
+     * Return the different threshold values and the value of the resulting variance between classes
+     */
     template <class T>
     vector<T> otsuThresholdValues(map<T, UINT> &hist, UINT threshLevels=1)
     {
@@ -424,6 +514,7 @@ namespace smil
         {
             threshVals.push_back(T(maxVarThresholdIndexes[j])); //= histogram->GetBinMax(0,maxVarThresholdIndexes[j]);
         }
+        threshVals.push_back(maxVarBetween);
         
         return threshVals;
     }
@@ -448,16 +539,16 @@ namespace smil
     * 
     * \demo{thresholds.py}
     */
-    template <class T>
-    vector<T> otsuThreshold(const Image<T> &imIn, Image<T> &imOut, UINT nbrThresholds)
+    template <class T, class T_out>
+    vector<T> otsuThreshold(const Image<T> &imIn, Image<T_out> &imOut, UINT nbrThresholds)
     {
         if (!areAllocated(&imIn, &imOut, NULL))
           return vector<T>();
         
         vector<T> tVals = otsuThresholdValues<T>(imIn, nbrThresholds);
-        map<T, T> lut;
+        map<T, T_out> lut;
         T i = ImDtTypes<T>::min();
-        T lbl = 0;
+        T_out lbl = 0;
         for (typename vector<T>::iterator it=tVals.begin();it!=tVals.end();it++,lbl++)
         {
             while(i<(*it))
@@ -477,26 +568,26 @@ namespace smil
         
     }
 
-    template <class T>
-    T otsuThreshold(const Image<T> &imIn, Image<T> &imOut)
+    template <class T, class T_out>
+    T otsuThreshold(const Image<T> &imIn, Image<T_out> &imOut)
     {
         if (!areAllocated(&imIn, &imOut, NULL))
           return ImDtTypes<T>::min();
         
         vector<T> tVals = otsuThresholdValues<T>(imIn, 1);
-        threshold<T>(imIn, tVals[0], imOut);
+        threshold(imIn, tVals[0], imOut);
         return tVals[0];
     }
 
 
-    template <class T>
-    vector<T> otsuThreshold(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, UINT nbrThresholds=1)
+    template <class T, class T_out>
+    vector<T> otsuThreshold(const Image<T> &imIn, const Image<T> &imMask, Image<T_out> &imOut, UINT nbrThresholds=1)
     {
         if (!areAllocated(&imIn, &imOut, NULL))
           return vector<T>();
         
         vector<T> tVals = otsuThresholdValues<T>(imIn, imMask, nbrThresholds);
-        threshold<T>(imIn, tVals[0], imOut);
+        threshold(imIn, tVals[0], imOut);
         
         return tVals;
         

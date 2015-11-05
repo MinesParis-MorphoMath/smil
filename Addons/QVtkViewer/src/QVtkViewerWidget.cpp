@@ -23,18 +23,22 @@
 #include "QVtkViewerWidget.h"
 
 #include <QMenu>
+#include <QKeyEvent>
+
+#include <climits>
 
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
 #include "vtkEventQtSlotConnect.h"
 
 QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
-    QWidget(parent)
+    ImageViewerWidget(parent)
 {
     resize(400, 330);
-    horizontalLayout = new QHBoxLayout(this);
+//     horizontalLayout = new QHBoxLayout(this);
     qvtkWidget = new QVTKWidget(this);
-    horizontalLayout->addWidget(qvtkWidget);
+    layout->addWidget(qvtkWidget);
+    this->hintLabel->setParent(qvtkWidget);
    
 //     connect(qvtkWidget, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
    
@@ -48,7 +52,7 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
     camera = renderer->GetActiveCamera();
     
     imageImport = vtkImageImport::New();
-
+    
     representationType = NONE;
 
     volumeRayCastFunction = NULL;
@@ -57,11 +61,16 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
     //             volumeRayCastMapper->SetSampleDistance(0.1);
 
     opacityTransfertFunction = vtkPiecewiseFunction::New();
-
+    colorOpacityTransfertFunction = vtkPiecewiseFunction::New();
+    
+    colorTransfertFunction = vtkDiscretizableColorTransferFunction::New();
+    colorTransfertFunction->DiscretizeOn();
+    
     volumeProperty = vtkVolumeProperty::New();
     volumeProperty->SetColor(opacityTransfertFunction);
     volumeProperty->SetScalarOpacity(opacityTransfertFunction);
     volumeProperty->SetInterpolationTypeToLinear();
+//     volumeProperty->SetIndependentComponents(0);
 
 
     volume = vtkVolume::New();
@@ -85,8 +94,7 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
     orientationMarker->SetOrientationMarker( axesActor );
     orientationMarker->SetInteractor( renderWindow->GetInteractor() );
     orientationMarker->SetViewport( 0.0, 0.0, 0.4, 0.4 );
-    orientationMarker->SetEnabled( 1 );
-    orientationMarker->InteractiveOn();
+    orientationMarker->SetEnabled( 0 );
         
     camera->SetViewUp(0, -1, 0);
             
@@ -95,12 +103,17 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
                             this, SLOT(showContextMenu(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
                             NULL, 1.0
                            );
+    vtkQtEventConnect->Connect(qvtkWidget->GetRenderWindow()->GetInteractor(), vtkCommand::KeyPressEvent, 
+                            this, SLOT(keyPressed(vtkObject*, unsigned long, void*, void*, vtkCommand*)),
+                            NULL, 1.0
+                           );
 }
 
 QVtkViewerWidget::~QVtkViewerWidget()
 {
+    this->hintLabel->setParent(this->parentWidget());
     delete qvtkWidget;
-    delete horizontalLayout;
+//     delete horizontalLayout;
     
     // VTK Objects
        
@@ -109,6 +122,8 @@ QVtkViewerWidget::~QVtkViewerWidget()
     volumeRayCastMapper->Delete();
     volumeRayCastFunction->Delete();
     opacityTransfertFunction->Delete();
+    colorOpacityTransfertFunction->Delete();
+    colorTransfertFunction->Delete();
     volumeProperty->Delete();
     imageImport->Delete();
     outlineActor->Delete();
@@ -122,11 +137,58 @@ QVtkViewerWidget::~QVtkViewerWidget()
     
 }
 
+void QVtkViewerWidget::initLookup(int typeMax)
+{
+    QVector<QColor> rainbowColorTable;
+    for(int i=0;i<256;i++)
+      rainbowColorTable.append(QColor::fromHsvF(double(i)/255., 1.0, 1.0));
+    
+    colorTransfertFunction->SetNumberOfValues(256);
+    int factor = typeMax / 255;
+    unsigned char curC = 0;
+    for(int i=0;i<256;i++,curC+=47)
+      colorTransfertFunction->AddRGBPoint(i*factor, rainbowColorTable[curC].redF(), rainbowColorTable[curC].greenF(), rainbowColorTable[curC].blueF());
+    colorTransfertFunction->Build();
+}
+
+void QVtkViewerWidget::showNormal()
+{
+    volumeProperty->SetGradientOpacity((vtkPiecewiseFunction*)NULL);
+    volumeProperty->SetColor(opacityTransfertFunction);
+    volumeProperty->SetScalarOpacity(opacityTransfertFunction);
+    volumeProperty->SetInterpolationTypeToLinear();
+    show();
+    interactor->Render();
+}
+
+void QVtkViewerWidget::showLabel()
+{
+    volumeProperty->SetGradientOpacity(colorOpacityTransfertFunction);
+    volumeProperty->SetColor(colorTransfertFunction);
+    volumeProperty->SetScalarOpacity(colorOpacityTransfertFunction);
+    volumeProperty->SetInterpolationTypeToNearest();
+    show();
+    interactor->Render();
+}
+
 void QVtkViewerWidget::update()
 {
     volume->Update();
     interactor->Render();
     QWidget::update();
+}
+
+void QVtkViewerWidget::setLabelImage(bool val)
+{
+    if (drawLabelized==val)
+      return;
+    
+    drawLabelized = val;
+    
+    if (drawLabelized)
+        showLabel();
+    else
+        showNormal();
 }
 
 void QVtkViewerWidget::setRepresentationType(RepresentationType type)
@@ -145,6 +207,9 @@ void QVtkViewerWidget::setRepresentationType(RepresentationType type)
         volumeRayCastFunction = vtkVolumeRayCastMIPFunction::New();
         ((vtkVolumeRayCastMIPFunction*)volumeRayCastFunction)->SetMaximizeMethodToOpacity();
         break;
+      default:
+        volumeRayCastFunction = vtkVolumeRayCastCompositeFunction::New();
+        break;
     }
     volumeRayCastMapper->SetVolumeRayCastFunction(volumeRayCastFunction);
     
@@ -155,6 +220,7 @@ void QVtkViewerWidget::setRepresentationType(RepresentationType type)
 void QVtkViewerWidget::showAxes()
 {
     orientationMarker->SetEnabled(1);
+    orientationMarker->InteractiveOn();
     interactor->Render(); 
 }
 
@@ -175,7 +241,6 @@ void QVtkViewerWidget::setInterpolationTypeToNearest()
     volumeProperty->SetInterpolationTypeToNearest();
     interactor->Render(); 
 }
-
 
 void QVtkViewerWidget::showContextMenu(vtkObject*, unsigned long, void*, void*, vtkCommand *command)
 {
@@ -232,3 +297,19 @@ void QVtkViewerWidget::showContextMenu(vtkObject*, unsigned long, void*, void*, 
           setInterpolationTypeToNearest();
     }
 }
+
+void QVtkViewerWidget::keyPressed(vtkObject *caller, unsigned long, void*, void*, vtkCommand */*command*/)
+{
+    vtkRenderWindowInteractor *iren = static_cast<vtkRenderWindowInteractor*>(caller);
+    char key = iren->GetKeyCode();
+    
+    switch(key)
+    {
+      case 'r':
+        setAutoRange(!this->autoRange);
+    }
+    
+    QKeyEvent kEvt(QEvent::KeyPress, key-'a' + Qt::Key_A, Qt::NoModifier);
+    keyPressEvent(&kEvt);
+}
+

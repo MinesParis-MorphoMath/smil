@@ -41,14 +41,9 @@ SMIL_MODULE(smilCore)
 // Init
 //////////////////////////////////////////////////////////
 
-///// Numpy /////
-#if defined SWIGPYTHON && defined USE_NUMPY
 %init
 %{
-    // Required by NumPy in Python initialization
-    import_array();
 %}
-#endif // defined SWIGPYTHON && defined USE_NUMPY
 
 
 //////////////////////////////////////////////////////////
@@ -117,6 +112,8 @@ PTR_ARG_OUT_APPLY(s)
 
 %template(DoublePoint) Point<double>;
 %template(IntPoint) Point<int>;
+%template(UintPoint) Point<UINT>;
+%template(Size_tPoint) Point<size_t>;
 
 
 //////////////////////////////////////////////////////////
@@ -127,22 +124,30 @@ PTR_ARG_OUT_APPLY(s)
 
 
 %include std_vector.i
+%include std_set.i
 
 // Expose std::vector<> as a Python list
 namespace std 
 {
-    %template(Vector_UINT) vector<UINT>;
+    TEMPLATE_WRAP_CLASS(vector, Vector);
+    
 #ifdef USE_64BIT_IDS
     %template(Vector_size_t) vector<size_t>;
 #endif // USE_64BIT_IDS
-    %template(Vector_UINT8) vector<UINT8>;
-    %template(Vector_UINT16) vector<UINT16>;
     %template(Vector_int) vector<int>;
     %template(Vector_double) vector<double>;
     %template(Vector_string) vector<string>;
     
     %template(Matrix_double) vector<Vector_double>;
     %template(Vector_IntPoint) vector< smil::Point<int> >;
+
+    TEMPLATE_WRAP_CLASS(set, Set);
+    
+#if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
+    %template(Vector_UINT) vector<UINT>;
+    %template(Set_UINT) set<UINT>;
+#endif // !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
+
 }
 
 #endif // SWIGXML
@@ -182,6 +187,11 @@ namespace std
     TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, UINT, Map)
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
 #endif
+
+#ifdef USE_64BIT_IDS
+    TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, size_t, Map)
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_size_t, Map)
+#endif // USE_64BIT_IDS
 
 #ifndef SMIL_WRAP_double
     TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
@@ -307,18 +317,37 @@ namespace smil
 #include "DGraph.hpp"
 %}
 
+
+
+
+
+#ifndef SMIL_WRAP_UINT32
+    %template(Vector_Edge_UINT) std::vector< Edge<UINT,UINT> >;
+    TEMPLATE_WRAP_CLASS_2T_SUBTYPES_FIX_FIRST(std::vector, Edge, UINT, Vector);
+    TEMPLATE_WRAP_CLASS_2T_SUBTYPES_FIX_SECOND(std::vector, Edge, UINT, Vector);
+#endif // SMIL_WRAP_UINT32
+    
 %include "Core/include/private/DGraph.hpp"
 
 
+#ifndef SWIGXML
+    
+    // Base UINT Edge
+    TEMPLATE_WRAP_CLASS_2T_CROSS(smil::Edge, Edge);
+    
+    TEMPLATE_WRAP_CLASS_2T_SUBTYPES_CROSS(vector, Edge, Vector);
+    
+#ifndef SMIL_WRAP_UINT32
+    
+    TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Edge, UINT, Edge);
+    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Edge, UINT, Edge);
+    
+#endif // SMIL_WRAP_UINT32
+
+#endif // SWIGXML
+
 namespace smil
 {
-    // Base (size_t) Edge
-#ifndef SMIL_WRAP_UINT32
-    %template(Edge_UINT) Edge<UINT>;
-#endif // SMIL_WRAP_UINT32
-    TEMPLATE_WRAP_CLASS(Edge, Edge);
-
-
     // Graph & MST
     %template(Graph_SIZE_T) Graph<size_t,size_t>;
     %template(graphMST_SIZE_T) graphMST<Graph<UINT,UINT> >;
@@ -335,13 +364,52 @@ namespace smil
 
 }
 
-#ifndef SWIGXML
-namespace std 
-{
-#ifndef SMIL_WRAP_UINT32
-    %template(EdgeVector_UINT) std::vector< smil::Edge<UINT> >;
-#endif // SMIL_WRAP_UINT32
+
+
+//////////////////////////////////////////////////////////
+// Internal definitions 
+// (not visible by other modules)
+//////////////////////////////////////////////////////////
+#ifndef SWIGIMPORTED
+
+    // Numpy
+    #if defined SWIGPYTHON && defined USE_NUMPY
+    %init
+    %{
+        // Required by NumPy in Python initialization
+        import_array();
+    %}
+    %{
+    #include "Core/include/private/DNumpyInterface.hpp"
+    %}
+
+    %include "Core/include/private/DNumpyInterface.hpp"
+
+    TEMPLATE_WRAP_CLASS(NumpyInt,NumpyInt)
+
+%pythoncode %{
+
+
+def NumpyInt(array):
+    """
+    * Create a SharedImage interface with a NumPy array
+    """
+
+    if str(type(array))!="<type 'numpy.ndarray'>":
+      print("You must specify a NumPy array")
+      return
     
-    TEMPLATE_WRAP_VECTOR_SUBTYPE(Edge);
-}
-#endif // SWIGXML
+    dt = array.dtype.name
+    
+    if dt=='uint8':
+      return NumpyInt_UINT8(array)
+    elif dt=='uint16':
+      return NumpyInt_UINT16(array)
+    elif dt=='uint32':
+      return NumpyInt_UINT32(array)
+%}
+
+        
+    #endif // defined SWIGPYTHON && defined USE_NUMPY
+#endif // SWIGIMPORTED
+

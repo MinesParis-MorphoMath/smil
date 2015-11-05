@@ -139,6 +139,13 @@ namespace smil
             s[2] = this->depth;
         }
         
+        inline void getSize(int s[3]) const
+        {
+            s[0] = this->width;
+            s[1] = this->height;
+            s[2] = this->depth;
+        }
+        
         //! Get the number of pixels
         inline size_t getPixelCount() const {
             return this->pixelCount;
@@ -247,6 +254,8 @@ namespace smil
         bool imState;
         bool update;
     };
+    
+#ifndef SWIG    
 
     /**
     * Check if all images in a list have the same size.
@@ -326,6 +335,10 @@ namespace smil
 
     #define CHECK_SAME_SIZE(...) (Core::getInstance()->autoResizeImages ? setSameSize(__VA_ARGS__, NULL) : haveSameSize(__VA_ARGS__, NULL))
     #define ASSERT_SAME_SIZE(...) ASSERT(CHECK_SAME_SIZE(__VA_ARGS__), RES_ERR_BAD_SIZE)
+
+    
+#endif // SWIG
+
 
 } // namespace smil
 

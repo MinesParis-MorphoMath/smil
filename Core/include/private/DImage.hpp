@@ -102,6 +102,7 @@ namespace smil
         }
         typedef typename ImDtTypes<T>::pixelType pixelType;
         typedef typename ImDtTypes<T>::lineType lineType;
+        typedef typename ImDtTypes<T>::restrictLineType restrictLineType;
         typedef typename ImDtTypes<T>::sliceType sliceType;
         typedef typename ImDtTypes<T>::volType volType;
         
@@ -279,6 +280,9 @@ namespace smil
         * See \ref numpy_page "NumPy interface page".
         */
         PyObject * getNumArray(bool c_contigous=false);
+        
+        //! Copy pixel values from a given NumPy array
+        void fromNumArray(PyObject *obj);
     #endif // defined SWIGPYTHON && defined USE_NUMPY
         
         //! Trigger modified event (allows to force display update)
@@ -448,6 +452,7 @@ namespace smil
     RES_T drawOverlay(const Image<T> &imToDraw, Image<T> &imOut)
     {
         imOut.getViewer()->drawOverlay(imToDraw);
+        return RES_OK;
     }
 
 /** @}*/

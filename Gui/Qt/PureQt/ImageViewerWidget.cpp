@@ -32,6 +32,7 @@
 #include <QTimer>
 #include <QApplication>
 #include <QMenu>
+#include <QMimeData>
 #include <QScrollBar>
 #include <QColorDialog>
 #include <QInputDialog>
@@ -93,7 +94,6 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     initColorTables();
     scaleFactor = 1.0;
     qImage = new QImage();
-    qOverlayImage = NULL;
 
     magnView = new MagnifyView(this);
     magnView->hide();
@@ -110,7 +110,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     hintLabel->setAutoFillBackground(true);
     hintLabel->hide();
     hintLabel->move(QPoint(10,10));
-    hintLabel->setEnabled(false);
+    hintLabel->setEnabled(true);
     
     hintTimer = new QTimer();
     hintTimer->setSingleShot(true);
@@ -136,8 +136,6 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
     createActions();
     
     connect(this, SIGNAL(customContextMenuRequested(const QPoint&)), this, SLOT(showContextMenu(const QPoint&)));
-    
-    hintLabel->setEnabled(true);
     
     layout = new QGridLayout(this);
     layout->setAlignment(Qt::AlignBottom);
@@ -169,8 +167,8 @@ ImageViewerWidget::~ImageViewerWidget()
     delete layout;
     
     delete qImage;
-    if (qOverlayImage)
-      delete qOverlayImage;
+    if (!qOverlayImage.isEmpty())
+      deleteOverlayImage();
     delete imScene;
     delete magnView;
     
@@ -187,11 +185,24 @@ ImageViewerWidget::~ImageViewerWidget()
 
 void ImageViewerWidget::createOverlayImage()
 {
-    if (qOverlayImage)
-      delete qOverlayImage;
-    qOverlayImage = new QImage(qImage->width(), qImage->height(), QImage::Format_ARGB32_Premultiplied);
-    qOverlayImage->setColorTable(overlayColorTable);
-    qOverlayImage->fill(Qt::transparent);
+    if (!qOverlayImage.isEmpty())
+      deleteOverlayImage();
+    for (size_t i=0;i<imDepth;i++)
+    {
+        QImage *im = new QImage(imWidth, imHeight, QImage::Format_ARGB32_Premultiplied);
+        im->setColorTable(overlayColorTable);
+        im->fill(Qt::transparent);
+        qOverlayImage.append(im);
+    }
+}
+
+void ImageViewerWidget::deleteOverlayImage()
+{
+    if (!qOverlayImage.isEmpty())
+      return;
+    for (size_t i=0;i<imDepth;i++)
+      delete qOverlayImage[i];
+    qOverlayImage.clear();
 }
 
 void ImageViewerWidget::updateIcon()
@@ -224,6 +235,10 @@ void ImageViewerWidget::initColorTables()
 
 void ImageViewerWidget::setImageSize(int w, int h, int d)
 {
+    imWidth = w;
+    imHeight = h;
+    imDepth = d;
+    
     if (d<=slider->sliderPosition())
       slider->setSliderPosition(d-1);
     if (d>1)
@@ -299,11 +314,8 @@ void ImageViewerWidget::setImageSize(int w, int h, int d)
         int scaleFact = log(double(QWidget::height())/qImage->height())/log(0.8);
         scale(pow(0.8, scaleFact), true);
     }
-    if (qOverlayImage)
-    {
-        delete qOverlayImage;
-        qOverlayImage = NULL;
-    }
+    if (!qOverlayImage.isEmpty())
+      deleteOverlayImage();
 }
 
 void ImageViewerWidget::setLabelImage(bool val)
@@ -428,14 +440,14 @@ void ImageViewerWidget::dataChanged()
     emit onDataChanged();
 }
 
-void ImageViewerWidget::overlayDataChanged(bool triggerEvents)
+void ImageViewerWidget::overlayDataChanged(bool /*triggerEvents*/)
 {
-    updatePixmaps(qOverlayImage, &overlayPixmaps);
+    updatePixmaps(qOverlayImage[slider->sliderPosition()], &overlayPixmaps);
 }
 
 void ImageViewerWidget::clearOverlay()
 {
-    if (!qOverlayImage)
+    if (qOverlayImage.isEmpty())
       return;
     
     QList<QGraphicsPixmapItem*>::iterator it = overlayPixmaps.begin();
@@ -446,7 +458,8 @@ void ImageViewerWidget::clearOverlay()
         it++;
     }
     
-    qOverlayImage->fill(Qt::transparent);
+    for (size_t i=0;i<imDepth;i++)
+      qOverlayImage[i]->fill(Qt::transparent);
 
     overlayDataChanged();
 }
@@ -483,7 +496,7 @@ void ImageViewerWidget::scale(double factor, bool absolute)
     emit(onScrollBarPositionChanged(horizontalScrollBar()->value(), verticalScrollBar()->value()));
 }
 
-void ImageViewerWidget::leaveEvent (QEvent *event)
+void ImageViewerWidget::leaveEvent (QEvent * /*event*/)
 {
     // Hide valueLabel and magnView when mouse quits the window
     valueLabel->hide();
@@ -552,7 +565,7 @@ void ImageViewerWidget::mouseReleaseEvent ( QMouseEvent * event )
     QGraphicsView::mouseReleaseEvent(event);
 }
 
-void ImageViewerWidget::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
+void ImageViewerWidget::mouseMoveEvent(QGraphicsSceneMouseEvent* /*event*/)
 {
 
 }
@@ -598,7 +611,7 @@ void ImageViewerWidget::sceneMouseMoveEvent ( QGraphicsSceneMouseEvent * event )
         } 
         else if (cursorMode==cursorDraw && drawing)
         {
-            QPainter painter(qOverlayImage);
+            QPainter painter(qOverlayImage[slider->sliderPosition()]);
             if (drawPen.color()==Qt::black)
                 painter.setCompositionMode(QPainter::CompositionMode_Clear);
             painter.setPen(drawPen);
@@ -655,7 +668,7 @@ void ImageViewerWidget::sceneMouseReleaseEvent ( QGraphicsSceneMouseEvent * even
       displayProfile(true);
     else if (cursorMode==cursorDraw && drawing)
     {
-        QPainter painter(qOverlayImage);
+        QPainter painter(qOverlayImage[slider->sliderPosition()]);
         if (drawPen.color()==Qt::black)
             painter.setCompositionMode(QPainter::CompositionMode_Clear);
         painter.setPen(drawPen);
@@ -799,7 +812,7 @@ void ImageViewerWidget::setCursorMode(const int &mode)
     if (mode==cursorDraw)
     {
       colorPicker->show();
-      if (!qOverlayImage)
+      if (qOverlayImage.isEmpty())
         createOverlayImage();
     }
     else
@@ -840,11 +853,13 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
         {
             act = linkMenu.addAction(widget->windowTitle());
             act->setData(wIndex);
+            act->setCheckable(true);
             if (linkedWidgets.contains(static_cast<ImageViewerWidget*>(widget)))
             {
                 QFont aFont = act->font();
                 aFont.setBold(true);
                 act->setFont(aFont);
+                act->setChecked(true);
             }
         }
         wIndex++;
@@ -883,8 +898,7 @@ void ImageViewerWidget::showContextMenu(const QPoint& pos)
         else if (selectedItem->text()=="Width...")
         {
             bool ok;
-            int lWidth = QInputDialog::getInteger(this, tr(""), tr("Line width:"), drawPen.width(), 1, 
-10, 1, &ok);
+            int lWidth = QInputDialog::getInt(this, tr(""), tr("Line width:"), drawPen.width(), 1, 10, 1, &ok);
             if (ok)
                 drawPen.setWidth(lWidth);
         }        

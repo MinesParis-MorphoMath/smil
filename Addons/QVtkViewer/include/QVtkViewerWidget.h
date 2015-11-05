@@ -47,16 +47,20 @@
 #include <vtkPolyDataMapper.h>
 #include <vtkActor.h>
 #include <vtkAxesActor.h>
+#include <vtkImageCast.h>
 #include <vtkOrientationMarkerWidget.h>
 #include <vtkEventQtSlotConnect.h>
+#include <vtkDiscretizableColorTransferFunction.h>
 
+#include "Gui/Qt/PureQt/ImageViewerWidget.h"
 
-class QVtkViewerWidget : public QWidget
+class QVtkViewerWidget : public ImageViewerWidget
 {
     Q_OBJECT
     
 public:
-    QHBoxLayout *horizontalLayout;
+    typedef ImageViewerWidget parentClass;
+    
     QVTKWidget *qvtkWidget;
     
     QVtkViewerWidget(QWidget *parent = 0);
@@ -79,6 +83,8 @@ protected:
     vtkVolume *volume;
     vtkVolumeProperty *volumeProperty;
     vtkPiecewiseFunction *opacityTransfertFunction;
+    vtkPiecewiseFunction *colorOpacityTransfertFunction;
+    vtkDiscretizableColorTransferFunction *colorTransfertFunction;
     
     vtkCubeSource *cube;
     vtkOutlineFilter *outline;
@@ -90,17 +96,22 @@ protected:
     
     vtkEventQtSlotConnect *vtkQtEventConnect;
     
+    void initLookup(int typeMax);
     
     void setRepresentationType(RepresentationType type);
     void showAxes();
+    void showNormal();
+    void showLabel();
     void hideAxes();
     void setInterpolationTypeToLinear();
     void setInterpolationTypeToNearest();
-    void setAutorangeOn();
-    void setAutorangeOff();
     
+//     virtual void keyPressEvent(QKeyEvent *event) { parentClass::keyPressEvent(event); }
+    virtual void setLabelImage(bool val);
+    virtual void setAutoRange(bool /*on*/) {};
 public slots:
     void showContextMenu(vtkObject*, unsigned long, void*, void*, vtkCommand *command);
+    void keyPressed(vtkObject*, unsigned long, void*, void*, vtkCommand *command);
     
 };
 

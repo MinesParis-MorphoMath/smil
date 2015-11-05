@@ -466,6 +466,7 @@ namespace smil
     template <class T>
     void Image<T>::fromIntVector(vector<int> inVector)
     {
+        ASSERT((inVector.size()==pixelCount), "Vector length doesn't match image size.", );
         for (size_t i=0;i<min(pixelCount, inVector.size());i++)
           pixels[i] = inVector[i];
         modified();
@@ -912,7 +913,7 @@ namespace smil
     }
 
 
-    #if defined SWIGPYTHON && defined USE_NUMPY
+    #if defined SWIGPYTHON && defined USE_NUMPY && defined(SWIG_WRAP_CORE)
     #include "Core/include/DNumpy.h"
 
     template <class T>
@@ -952,6 +953,34 @@ namespace smil
             Py_DECREF(array);
             return res;
         }
+    }
+    
+    template <class T>
+    void Image<T>::fromNumArray(PyObject *obj)
+    {
+        PyArrayObject *arr = NULL;
+        PyArray_Descr *descr = NULL;
+
+        if (PyArray_GetArrayParamsFromObject(obj, NULL, 1, &descr, NULL, NULL, &arr, NULL) != 0) 
+        {
+            ERR_MSG("Input must be a NumPy array");
+            return;
+        }
+        descr = PyArray_DESCR(arr);
+        if (descr && descr->type_num!=getNumpyType(*this))
+        {
+            ERR_MSG("Wrong input NumPy array data type");
+            return;
+        }
+        npy_intp *dims = PyArray_DIMS(arr);
+        setSize(dims[0], dims[1], dims[2]);
+        T *data = (T*)PyArray_DATA(arr);
+        if (data)
+        {
+            for (size_t i=0;i<pixelCount;i++)
+              pixels[i] = data[i];
+        }
+        modified();
     }
     #endif // defined SWIGPYTHON && defined USE_NUMPY
 

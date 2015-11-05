@@ -30,7 +30,7 @@
 using namespace smil;
 
 
-int main(int argc, char *argv[])
+int main(void)
 {
     UINT BENCH_NRUNS = 100;
     

@@ -35,6 +35,7 @@ SMIL_MODULE(smilMorpho)
 #include "DMorphoBase.hpp"
 #include "DMorphoResidues.hpp"
 #include "DMorphoGeodesic.hpp"
+#include "DMorphoDistance.hpp"
 #include "DMorphoExtrema.hpp"
 #include "DMorphoFilter.hpp"
 #include "DMorphoArrow.hpp"
@@ -110,6 +111,8 @@ TEMPLATE_WRAP_FUNC(buildOpen);
 TEMPLATE_WRAP_FUNC(buildClose);
 TEMPLATE_WRAP_FUNC(fillHoles);
 TEMPLATE_WRAP_FUNC(levelPics);
+
+%include "Morpho/include/private/DMorphoDistance.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist);
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist_euclidean);
 
@@ -122,6 +125,8 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(minimaLabeled);
 TEMPLATE_WRAP_FUNC_2T_CROSS(maximaLabeled);
 TEMPLATE_WRAP_FUNC_2T_CROSS(hMinimaLabeled);
 TEMPLATE_WRAP_FUNC_2T_CROSS(hMaximaLabeled);
+TEMPLATE_WRAP_FUNC(fastMinima);
+TEMPLATE_WRAP_FUNC(fastMaxima);
 
 %include "Morpho/include/private/DMorphoFilter.hpp"
 TEMPLATE_WRAP_FUNC(asfClose);
@@ -130,7 +135,7 @@ TEMPLATE_WRAP_FUNC(mean);
 TEMPLATE_WRAP_FUNC(median);
 
 %include "Morpho/include/private/DMorphoArrow.hpp"
-TEMPLATE_WRAP_FUNC(arrow);
+TEMPLATE_WRAP_FUNC_2T_CROSS(arrow);
 
 %include "Morpho/include/private/DMorphoWatershed.hpp"
 TEMPLATE_WRAP_FUNC(watershed);
@@ -193,6 +198,9 @@ TEMPLATE_WRAP_FUNC(areaOpen);
 TEMPLATE_WRAP_FUNC(areaClose);
 
 %include "Morpho/include/private/DMorphoGraph.hpp"
+%feature("director") mosaicToGraphFunct;
+TEMPLATE_WRAP_CLASS_2T_CROSS(mosaicToGraphFunct, mosaicToGraphFunct);
+TEMPLATE_WRAP_FUNC(mosaicToGraph);
 TEMPLATE_WRAP_FUNC_2T_CROSS(mosaicToGraph);
 TEMPLATE_WRAP_FUNC(graphToMosaic);
 TEMPLATE_WRAP_FUNC_2T_CROSS(drawGraph);

@@ -34,6 +34,7 @@
 #include "Core/include/private/DSharedImage.hpp"
 
 #include <vtkImageData.h>
+#include <vtkImageFlip.h>
 
 #if defined Py_PYCONFIG_H  || defined SWIGPYTHON
 #include <vtkPythonUtil.h>
@@ -47,6 +48,16 @@ namespace smil
      * @{
      */
     
+    template <class T>
+    int getVtkType()
+    {
+      return -1;
+    }
+    template<> int getVtkType<UINT8>() { return VTK_UNSIGNED_CHAR; }
+    template<> int getVtkType<UINT16>() { return VTK_UNSIGNED_SHORT; }
+    template<> int getVtkType<INT8>() { return VTK_SIGNED_CHAR; }
+    template<> int getVtkType<INT16>() { return VTK_SHORT; }
+    
     /**
      * 
     * VTK Image Interface
@@ -58,39 +69,78 @@ namespace smil
     public:
         typedef SharedImage<T> parentClass;
         
-        VtkInt(vtkImageData *data)
+        VtkInt(vtkImageData *imData, bool flipImage=true)
         {
             BaseObject::className = "VtkInt";
             parentClass::init();
             
-            int *s = data->GetExtent();
-            typename Image<T>::lineType pix = static_cast<typename Image<T>::lineType>(data->GetScalarPointer());
-            this->attach(pix, s[1]+1, s[3]+1, s[5]+1);
-
-          
+            flip = vtkImageFlip::New();
+            attach(imData, flipImage);
         }
     #if defined Py_PYCONFIG_H  || defined SWIGPYTHON
-        VtkInt(PyObject *obj)
+        VtkInt(PyObject *obj, bool flipImage=true)
         {
             BaseObject::className = "VtkInt";
             parentClass::init();
             
-            vtkImageData * data = (vtkImageData*)vtkPythonUtil::GetPointerFromObject(obj, "vtkImageData" );
+            flip = vtkImageFlip::New();
+            
+            vtkImageData * imData = (vtkImageData*)vtkPythonUtil::GetPointerFromObject(obj, "vtkImageData" );
 
-            if ( data == 0 ) // if the PyObject is not a vtk.vtkImageData object
+            if ( imData == 0 ) // if the PyObject is not a vtk.vtkImageData object
             {
                 PyErr_SetString( PyExc_TypeError, "Not a vtkImageData" );
             }
             else
             {
-                int *s = data->GetExtent();
-                typename Image<T>::lineType pix = static_cast<typename Image<T>::lineType>(data->GetScalarPointer());
-                this->attach(pix, s[1]+1, s[3]+1, s[5]+1);
+                attach(imData, flipImage);
             }
          }
     #endif // Py_PYCONFIG_H
+    
+          
+          RES_T attach(vtkImageData *imData, bool flipImage)
+          {
+              if( getVtkType<T>()!=imData->GetScalarType() )
+              {
+                  ERR_MSG("Wrong image type");
+                  cout << "vtkImageData type is " << imData->GetScalarTypeAsString() << endl;
+                  return RES_ERR;
+              }
+              
+              int *dims = imData->GetDimensions();
+
+              if (flipImage)
+              {
+                  flip->SetInput(imData);
+                  flip->SetFilteredAxis(1);
+                  flip->Update();
+                  
+                  typename Image<T>::lineType pix = static_cast<typename Image<T>::lineType>(flip->GetOutput()->GetScalarPointer());
+                  SharedImage<T>::attach(pix, dims[0], dims[1], dims[2]);
+              }
+              else
+              {
+                  typename Image<T>::lineType pix = static_cast<typename Image<T>::lineType>(imData->GetScalarPointer());
+                  SharedImage<T>::attach(pix, dims[0], dims[1], dims[2]);
+              }
+              
+              return RES_OK;
+          }
+    protected:
+          vtkImageFlip *flip;
+          bool _flipImage;
     };
 
+    template <>
+    class VtkInt<RGB>
+    {
+      public:
+        VtkInt(vtkImageData *)
+        {
+        }
+    };
+    
     /*@}*/
     
 } // namespace smil

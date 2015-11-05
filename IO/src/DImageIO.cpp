@@ -101,7 +101,7 @@ namespace smil
                   auto_ptr< ImageFileHandler<UINT8> > fHandler(getHandlerForFile<UINT8>(filename));
                   if (fHandler->read(filename, *img)==RES_OK)
                     return img;
-                  else ERR_MSG("Error reading 8 bit image");
+                  else ERR_MSG("Error reading unsigned 8 bit image");
               }
               else if (fInfo.scalarType==ImageFileInfo::SCALAR_TYPE_UINT16)
               {
@@ -109,7 +109,15 @@ namespace smil
                   auto_ptr< ImageFileHandler<UINT16> > fHandler(getHandlerForFile<UINT16>(filename));
                   if (fHandler->read(filename, *img)==RES_OK)
                     return img;
-                  else ERR_MSG("Error reading 16 bit image");
+                  else ERR_MSG("Error reading unsigned 16 bit image");
+              }
+              else if (fInfo.scalarType==ImageFileInfo::SCALAR_TYPE_INT16)
+              {
+                  Image<INT16> *img = new Image<INT16>();
+                  auto_ptr< ImageFileHandler<INT16> > fHandler(getHandlerForFile<INT16>(filename));
+                  if (fHandler->read(filename, *img)==RES_OK)
+                    return img;
+                  else ERR_MSG("Error reading signed 16 bit image");
               }
               else ERR_MSG("Unsupported GRAY data type");
           }

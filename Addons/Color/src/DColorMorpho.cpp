@@ -48,11 +48,13 @@ namespace smil
             R = imIn.getPixels().arrays[0];
             G = imIn.getPixels().arrays[1];
             B = imIn.getPixels().arrays[2];
+            
+            return RES_OK;
         }
         void processPixel(size_t pointOffset, vector<int> &dOffsetList)
         {
             double distMax = 0;
-            double dist;
+            double dist = 0;
             RGB pVal = pixelsIn[pointOffset];
             double r = pVal.r, g = pVal.g, b = pVal.b;
             size_t dOff;
@@ -113,6 +115,8 @@ namespace smil
             H = imIn.getPixels().arrays[0];
             L = imIn.getPixels().arrays[1];
             S = imIn.getPixels().arrays[2];
+            
+            return RES_OK;
         }
         void processPixel(size_t pointOffset, vector<int> &dOffsetList)
         {
@@ -132,7 +136,7 @@ namespace smil
                 
                 
                 // Calc. distance
-                double dummy, d_delta_H;
+                double d_delta_H;
                 d_delta_H = std::fabs(h - Hf);
 
                 // Circular H gradient. Check that we are between 0 and pi

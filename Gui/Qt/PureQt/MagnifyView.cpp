@@ -130,7 +130,7 @@ void MagnifyView::zoomOut()
     setGridSize(gridSize-2);
 }
 
-void MagnifyView::scaleImage(double factor)
+void MagnifyView::scaleImage(double /*factor*/)
 {
 }
 

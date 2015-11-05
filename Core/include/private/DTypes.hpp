@@ -78,12 +78,19 @@ namespace smil
     {
         typedef T pixelType;
         typedef pixelType *lineType;
+#ifndef SWIG        
+        typedef lineType __restrict restrictLineType;
+#endif // SWIG        
         typedef lineType *sliceType;
         typedef sliceType *volType;
         
+        typedef std::vector<T, Allocator<T> > vectorType;
+//         typedef std::vector<T> vectorType;
+        typedef std::vector< vectorType > matrixType;
+        
         typedef double floatType;
         
-        static inline pixelType min() { return numeric_limits<T>::is_signed ? -numeric_limits<T>::max() : numeric_limits<T>::min(); }
+        static inline pixelType min() { return numeric_limits<T>::min(); }
         static inline pixelType max() { return numeric_limits<T>::max(); }
         static inline size_t cardinal() { return max()-min()+1; }
         static inline lineType createLine(size_t lineLen) { return createAlignedBuffer<T>(lineLen); }
@@ -100,7 +107,7 @@ namespace smil
 
 
     template <class T>
-    inline const char *getDataTypeAsString(T *val=NULL)
+    inline const char *getDataTypeAsString(T * /*val*/ =(T*)NULL)
     {
         return "Unknown";
     }
@@ -112,6 +119,8 @@ namespace smil
 
     DECL_DATA_TYPE_STR(UINT8)
     DECL_DATA_TYPE_STR(UINT16)
+    DECL_DATA_TYPE_STR(INT8)
+    DECL_DATA_TYPE_STR(INT16)
     DECL_DATA_TYPE_STR(int)
     DECL_DATA_TYPE_STR(float)
     DECL_DATA_TYPE_STR(double)

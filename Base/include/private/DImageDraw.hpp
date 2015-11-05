@@ -157,19 +157,19 @@ namespace smil
     * Draw a list of rectangles
     * 
     */
-    template <class T>
-    RES_T drawRectangles(Image<T> &imOut, const map<UINT, Vector_UINT> &coordsVect, T value=0, bool fill=false)
+    template <class T, class MapT>
+    RES_T drawRectangles(Image<T> &imOut, const map<MapT, vector<size_t> > &coordsVectMap, bool fill=false)
     {
         ASSERT_ALLOCATED(&imOut);
         ImageFreezer freeze(imOut);
         
-        map<UINT, Vector_UINT>::const_iterator it = coordsVect.begin();
+        typename map<MapT, vector<size_t> >::const_iterator it = coordsVectMap.begin();
         if (it->second.size()!=4)
           return RES_ERR;
-        for (;it!=coordsVect.end();it++)
+        for (;it!=coordsVectMap.end();it++)
         {
-            vector<UINT> coords = it->second;
-            T val = value==0 ? T(it->first) : value;
+            const vector<size_t> &coords = it->second;
+            T val = T(it->first);
             if (drawRectangle<T>(imOut, coords[0], coords[1], coords[2]-coords[0]+1, coords[3]-coords[1]+1, val, fill)!=RES_OK)
               return RES_ERR;
         }
@@ -283,7 +283,7 @@ namespace smil
     * \param imOut Output image.
     */
     template <class T>
-    RES_T drawDisc(Image<T> &imOut, int x0, int y0, int radius, T value=ImDtTypes<T>::max(), int zSlice=0)
+    RES_T drawDisc(Image<T> &imOut, int x0, int y0, size_t zSlice, int radius, T value=ImDtTypes<T>::max())
     {
         ASSERT_ALLOCATED(&imOut);
         ASSERT((zSlice<imOut.getDepth()), "zSlice is out of range", RES_ERR);
@@ -315,6 +315,14 @@ namespace smil
             
         return RES_OK;
     }
+    
+    // 2D Overload
+    template <class T>
+    RES_T drawDisc(Image<T> &imOut, int x0, int y0, int radius, T value=ImDtTypes<T>::max())
+    {
+        return drawDisc(imOut, x0, y0, 0, radius, value);
+    }
+    
 
     /**
     * Draw a box (3D)
@@ -415,11 +423,131 @@ namespace smil
     template <class T>
     RES_T drawText(Image<T> &imOut, size_t x, size_t y, string txt, string font, UINT size=20, T value=ImDtTypes<T>::max())
     {
-        return drawText(imOut, x, y, 0, txt, font, size);
+        return drawText(imOut, x, y, 0, txt, font, size, value);
     }
 
     #endif // USE_FREETYPE
 
+    /**
+     * Copy a given pattern (zone of input image) several times in an output image.
+     * 
+     * Only 2D for now.
+     * 
+     * If nbr_along_x and int nbr_along_y are not specified, fill completely the output image with a maximum number of parterns.
+     * If x0, y0, width and height are not specified, the full image imIn will be copied.
+     * 
+     * Python example:
+     * \code{.py}
+     * im1 = Image(256,256)
+     * im2 = Image(im1)
+     * drawDisc(im1, 100,100, 15)
+     * copyPattern(im1, 80, 80, 40, 40, im2)
+     * im2.show()
+     * \endcode
+     */
+    // TODO Extend to 3D
+    template <class T>
+    RES_T copyPattern(const Image<T> &imIn, int x0, int y0, int width, int height, Image<T> &imOut, int nbr_along_x, int nbr_along_y)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut)
+        
+        typename ImDtTypes<T>::sliceType linesIn = imIn.getSlices()[0];
+        typename ImDtTypes<T>::sliceType linesOut = imOut.getSlices()[0];
+        
+        size_t imSize[3];
+        imOut.getSize(imSize);
+        
+        int nX = min( int(ceil(double(imSize[0])/width)), nbr_along_x );
+        int xPad = imSize[0] % width;
+        int nXfull = xPad==0 ? nX : nX-1;
+        
+        int nY = min( int(ceil(double(imSize[1])/height)), nbr_along_y );
+        int yPad = imSize[1] % height;
+        int nYfull = yPad==0 ? nY : nY-1;
+        
+        size_t cpLen = nXfull*width + xPad;
+
+#ifdef USE_OPEN_MP
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+        #pragma omp parallel num_threads(nthreads)
+#endif // USE_OPEN_MP
+        {
+            // Copy along X
+            
+#ifdef USE_OPEN_MP
+            #pragma omp for
+#endif // USE_OPEN_MP
+            for (int j=0;j<height;j++)
+            {
+                typename ImDtTypes<T>::lineType lineIn = linesIn[y0+j] + x0;
+                typename ImDtTypes<T>::lineType lineOut = linesOut[j];
+                
+                for (int i=0;i<nXfull;i++)
+                {
+                    copyLine<T>(lineIn, width, lineOut);
+                    lineOut += width;
+                }
+                copyLine<T>(lineIn, xPad, lineOut);
+            }
+            
+#ifdef USE_OPEN_MP
+            #pragma omp barrier
+#endif // USE_OPEN_MP
+            
+            // Copy along Y
+            
+            for (int n=1;n<nYfull;n++)
+            {
+#ifdef USE_OPEN_MP
+                #pragma omp for
+#endif // USE_OPEN_MP
+                for (int j=0;j<height;j++)
+                {
+                    typename ImDtTypes<T>::lineType lineIn = linesOut[j];
+                    typename ImDtTypes<T>::lineType lineOut = linesOut[n*height + j];
+                    
+                    copyLine<T>(lineIn, cpLen, lineOut);
+                }
+            }
+            for (int n=nYfull;n<nY;n++)
+            {
+#ifdef USE_OPEN_MP
+                #pragma omp for
+#endif // USE_OPEN_MP
+                for (int j=0;j<yPad;j++)
+                {
+                    typename ImDtTypes<T>::lineType lineIn = linesOut[j];
+                    typename ImDtTypes<T>::lineType lineOut = linesOut[n*height + j];
+                    
+                    copyLine<T>(lineIn, cpLen, lineOut);
+                }
+            }
+        }
+          
+        
+        return RES_OK;
+        
+    }
+    
+    template <class T>
+    RES_T copyPattern(const Image<T> &imIn, int x0, int y0, int width, int height, Image<T> &imOut)
+    {
+        return copyPattern(imIn, x0, y0, width, height, imOut, numeric_limits<int>::max(), numeric_limits<int>::max());
+    }
+    
+    template <class T>
+    RES_T copyPattern(const Image<T> &imIn, Image<T> &imOut, int nbr_along_x, int nbr_along_y)
+    {
+        return copyPattern(imIn, 0, 0, imIn.getWidth(), imIn.getHeight(), imOut, nbr_along_x, nbr_along_y);
+    }
+
+    template <class T>
+    RES_T copyPattern(const Image<T> &imIn, Image<T> &imOut)
+    {
+        return copyPattern(imIn, 0, 0, imIn.getWidth(), imIn.getHeight(), imOut, numeric_limits<int>::max(), numeric_limits<int>::max());
+    }
+    
+    
 /** @}*/
 
 } // namespace smil

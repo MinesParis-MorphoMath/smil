@@ -113,6 +113,130 @@ class Test_MaxTree : public TestCase
   }
 };
 
+class Test_MaxTree_3D : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT8 dataType1;
+      typedef UINT16 dataType2;
+      
+      typedef Image<dataType1> imType1;
+      typedef Image<dataType2> imType2;
+      
+      imType1 im1(5,5,4);
+      imType1 im2(im1);
+      imType1 im3(im1);
+      
+      imType2 imLbl(im1);
+      
+      dataType1 vec1[] = 
+      {
+          50,  30,   0,   0,   0,
+          0,   0,   0,   0, 255,
+          20,  20,   0,   0,   0,
+          0,   0,   0,   0,   0,
+          0,   0,   0,   0,   0,
+
+          0,   0,   5,   5,   0,
+          0,   0,   0,   0,   0,
+          0,   7,   6,   5,   0,
+          0,  10,  10,  30,  10,
+          0,   0,   0,   6,   0,
+
+          0,  10,  10,  30,  10,
+          0,   0,   0,   0,   0,
+          0,  10,  30,  30,  30,
+          10,   0,   0,   0,   0,
+          0,  10,  10,  10,  10,
+
+          0,   0,   0,   0,   0,
+          0,   0,   0,   0,   0,
+          0,   0,   0,  20,   0,
+          5,   0,   0,   0,   0,
+          0,   0,   0,  20,  20,
+      };
+      
+      im1 << vec1;
+      
+      ultimateOpen(im1, im2, imLbl);
+      
+      dataType1 vecTrans[] =
+      {
+        50,  30,   0,   0,   0,
+        0,   0,   0,   0, 255,
+        13,  13,   0,   0,   0,
+        0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,
+
+        0,   0,   5,   5,   0,
+        0,   0,   0,   0,   0,
+        0,   6,   6,   5,   0,
+        0,   6,   6,  23,   6,
+        0,   0,   0,   6,   0,
+
+        0,  10,  10,  30,  10,
+        0,   0,   0,   0,   0,
+        0,   6,  23,  23,  23,
+        10,   0,   0,   0,   0,
+        0,   6,   6,   6,   6,
+
+        0,   0,   0,   0,   0,
+        0,   0,   0,   0,   0,
+        0,   0,   0,  13,   0,
+        5,   0,   0,   0,   0,
+        0,   0,   0,  14,  14,
+      };
+      
+      dataType2 vecIndic[] =
+      {
+        2,     2,     0,     0,     0,
+        0,     0,     0,     0,     2,
+        2,     2,     0,     0,     0,
+        0,     0,     0,     0,     0,
+        0,     0,     0,     0,     0,
+
+        0,     0,     2,     2,     0,
+        0,     0,     0,     0,     0,
+        0,     4,     4,     4,     0,
+        0,     4,     4,     2,     4,
+        0,     0,     0,     4,     0,
+
+        0,     2,     2,     2,     2,
+        0,     0,     0,     0,     0,
+        0,     4,     2,     2,     2,
+        2,     0,     0,     0,     0,
+        0,     4,     4,     4,     4,
+
+        0,     0,     0,     0,     0,
+        0,     0,     0,     0,     0,
+        0,     0,     0,     2,     0,
+        2,     0,     0,     0,     0,
+        0,     0,     0,     2,     2,
+      };
+      
+      imType1 imTrans(im1);
+      imType2 imIndic(imLbl);
+      
+      imTrans << vecTrans;
+      TEST_ASSERT(im2==imTrans);
+      
+      if (retVal!=RES_OK)
+      {
+        im2.printSelf(1);
+        imTrans.printSelf(1);
+      }
+      
+      imIndic << vecIndic;
+      TEST_ASSERT(imLbl==imIndic);
+      
+      if (retVal!=RES_OK)
+      {
+        imLbl.printSelf(1);
+        imIndic.printSelf(1);
+      }
+  }
+};
+
 class Test_DeltaUO : public TestCase
 {
   virtual void run()
@@ -221,12 +345,12 @@ class Test_UO_MSER : public TestCase
       dataType1 vecTrans[] =
       {
         0,   0,   0,   0,   0,   0,   0,   0,
-        0,   5,   5,   5,   5,   5,   5,   0,
-        0,   5,  13,  13,  13,  13,   5,   0,
-        0,   5,  13,  13,  13,  13,   5,   0,
-        0,   5,  13,  13,  13,  13,   5,   0,
-        0,   5,  13,  13,  13,  13,   5,   0,
-        0,   5,   5,   5,   5,   5,   5,   0,
+        0,   6,   6,   6,   6,   6,   6,   0,
+        0,   6,  13,  13,  13,  13,   6,   0,
+        0,   6,  13,  13,  13,  13,   6,   0,
+        0,   6,  13,  13,  13,  13,   6,   0,
+        0,   6,  13,  13,  13,  13,   6,   0,
+        0,   6,   6,   6,   6,   6,   6,   0,
         0,   0,   0,   0,   0,   0,   0,   0,
       };
       
@@ -248,13 +372,19 @@ class Test_UO_MSER : public TestCase
       imTrans << vecTrans;
       TEST_ASSERT(im2==imTrans);
       
+      if (retVal!=RES_OK)
+      {
+        im2.printSelf(1);
+        imTrans.printSelf(1);
+      }
+      
       imIndic << vecIndic;
       TEST_ASSERT(imLbl==imIndic);
       
       if (retVal!=RES_OK)
       {
-        im2.printSelf(1);
         imLbl.printSelf(1);
+        imIndic.printSelf(1);
       }
   }
 };
@@ -311,13 +441,15 @@ class Test_AttributeOpening : public TestCase
 };
 
 
-int main(int argc, char *argv[])
+int main()
 {
       TestSuite ts;
       ADD_TEST(ts, Test_MaxTree);
+      ADD_TEST(ts, Test_MaxTree_3D);
       ADD_TEST(ts, Test_DeltaUO);
       ADD_TEST(ts, Test_UO_MSER);
       ADD_TEST(ts, Test_AttributeOpening);
+      
       return ts.run();
 }
 

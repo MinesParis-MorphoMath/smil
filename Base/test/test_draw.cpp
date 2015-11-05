@@ -152,7 +152,7 @@ class Test_DrawText : public TestCase
   }
 };
 
-int main(int argc, char *argv[])
+int main(void)
 {
       TestSuite ts;
 
