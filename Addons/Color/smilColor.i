@@ -44,7 +44,7 @@ SMIL_MODULE(smilColor)
 %import smilMorpho.i
 
 
-%include "DColorConvert.h"
-%include "DColorMorpho.h"
+%include "Addons/Color/include/DColorConvert.h"
+%include "Addons/Color/include/DColorMorpho.h"
 
 TEMPLATE_WRAP_FUNC(RGBToLuminance);
