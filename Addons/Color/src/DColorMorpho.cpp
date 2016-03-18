@@ -100,7 +100,7 @@ namespace smil
     Image<UINT8> gradient_LAB(const Image<RGB> &imIn, const StrElt &se, bool convertFirstToLAB)
     {
         Image<UINT8> imOut(imIn);
-        ASSERT(gradient_LAB(imIn, se, convertFirstToLAB)==RES_OK, RES_ERR, imOut)
+        ASSERT(gradient_LAB(imIn, imOut, se, convertFirstToLAB)==RES_OK, RES_ERR, imOut)
         return imOut;
     }
     
