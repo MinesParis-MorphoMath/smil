@@ -54,7 +54,7 @@ namespace smil
         void processPixel(size_t pointOffset, vector<int> &dOffsetList)
         {
             double distMax = 0;
-            double dist;
+            double dist = 0;
             RGB pVal = pixelsIn[pointOffset];
             double r = pVal.r, g = pVal.g, b = pVal.b;
             size_t dOff;

@@ -124,7 +124,10 @@ PTR_ARG_OUT_APPLY(s)
 
 
 %include std_vector.i
-%include std_set.i
+
+#ifndef SWIGJAVA
+    %include std_set.i
+#endif // SWIGJAVA
 
 // Expose std::vector<> as a Python list
 namespace std 
@@ -141,11 +144,17 @@ namespace std
     %template(Matrix_double) vector<Vector_double>;
     %template(Vector_IntPoint) vector< smil::Point<int> >;
 
+#ifndef SWIGJAVA
     TEMPLATE_WRAP_CLASS(set, Set);
+#endif // SWIGJAVA
     
 #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
     %template(Vector_UINT) vector<UINT>;
-    %template(Set_UINT) set<UINT>;
+    
+    #ifndef SWIGJAVA
+        %template(Set_UINT) set<UINT>;
+    #endif // SWIGJAVA
+
 #endif // !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
 
 }
