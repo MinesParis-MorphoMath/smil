@@ -243,7 +243,7 @@ namespace smil
 
         // Storing steep in imOut.
     #ifdef USE_OPEN_MP
-        #pragma omp parallel
+        #pragma omp parallel 
     #endif // USE_OPEN_MP
         {
             size_t offset;
