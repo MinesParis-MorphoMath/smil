@@ -144,7 +144,7 @@ MACRO(ADD_SMIL_LIBRARY _LIB_NAME)
 
   		  SET_SOURCE_FILES_PROPERTIES(${LIB_NAME}.i PROPERTIES CPLUSPLUS ON)
   		  
-  		  ADD_DEFINITIONS(-DSWIG_WRAP_${UPPER_LIB_NAME} -Wno-maybe-uninitialized)
+  		  ADD_DEFINITIONS(-DSWIG_WRAP_${UPPER_LIB_NAME} -Wno-maybe-uninitialized -Wno-strict-aliasing -Wno-unused-function)
 		  
 		  IF(WRAP_CPP)
 			SMIL_WRAP_CPP(${LIB_NAME} ${CPP_LIB_NAME})
@@ -216,7 +216,7 @@ MACRO(ADD_SMIL_LIBRARY _LIB_NAME)
 		  # Keep Java in last position because of the "package" flags (which should not have a general impact)
 		  IF(WRAP_JAVA)
 			SET(CMAKE_SWIG_OUTDIR "${LIBRARY_OUTPUT_PATH}/smilJava")
-			SET_PROPERTY(SOURCE ${LIB_NAME}.i PROPERTY SWIG_FLAGS -package smil${COMPONENT_PREFIX}Java)
+                        SET_PROPERTY(SOURCE ${LIB_NAME}.i PROPERTY SWIG_FLAGS -package smil${COMPONENT_PREFIX}Java)
 			SWIG_ADD_MODULE(${JAVA_LIB_NAME} java ${LIB_NAME}.i)
 			SWIG_LINK_LIBRARIES(${JAVA_LIB_NAME} ${LIB_DEPS})
 			IF(LIB_SRCS)

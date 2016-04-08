@@ -449,15 +449,11 @@ namespace smil
         logLine() : base(0) {}
         virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
         {
-            if (base==2)
+            if (base!=0)
             {
-              for (size_t i=0;i<size;i++)
-                  lOut[i] = log2(lIn[i]);
-            }
-            else if (base==10)
-            {
-              for (size_t i=0;i<size;i++)
-                  lOut[i] = log10(lIn[i]);
+                double baseLog = log(double(base));
+                for (size_t i=0;i<size;i++)
+                    lOut[i] = log(lIn[i]) / baseLog;
             }
             else
             {
