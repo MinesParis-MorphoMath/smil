@@ -486,6 +486,36 @@ namespace smil
         
         return RES_OK;
     }
+    
+    /**
+    * Image labelization with the volume (sum of values) of each connected components in the imLabelsInit image
+    * 
+    */
+    template<class T1, class T2>
+    size_t labelWithVolume(const Image<T1> &imIn, const Image<T2> &imLabelsInit, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        ImageFreezer freezer(imOut);
+        
+        Image<T2> imLabel(imIn);
+        
+        ASSERT(label(imLabelsInit, imLabel, se)!=0);
+	label(imLabelsInit, imLabel, se);
+	bool onlyNonZeros = true;
+	map<T2, Blob> blobs = computeBlobs(imLabel,onlyNonZeros);
+        map<T2, double> volumes = measVolumes(imIn,blobs);
+        ASSERT(!volumes.empty());
+        
+        double maxV = std::max_element(volumes.begin(), volumes.end(), map_comp_value_less())->second;
+        cout << maxV << endl;
+	ASSERT((maxV < double(ImDtTypes<T2>::max())), "Volumes max value exceeds data type max!", 0);
+
+        ASSERT(applyLookup(imLabel, volumes, imOut)==RES_OK);
+        
+        return RES_OK;
+    }
 
 
     template <class T1, class T2>
