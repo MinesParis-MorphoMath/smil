@@ -166,6 +166,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithoutFunctor);
 TEMPLATE_WRAP_FUNC_2T_CROSS(lambdaLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(fastLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithArea);
+TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithVolume);
 TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 
 %ignore smil::CompStrEltList::operator[];
