@@ -109,8 +109,8 @@ namespace smil
     {
       return -1;
     }
-    template<> int getCvType<UINT8>() { return CV_8UC1; }
-    template<> int getCvType<UINT16>() { return CV_16UC1; }
+    template<> inline int getCvType<UINT8>() { return CV_8UC1; }
+    template<> inline int getCvType<UINT16>() { return CV_16UC1; }
     
     /**
      * Create a OpneCV Mat from a Smil image (the data is copied)
