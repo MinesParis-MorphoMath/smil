@@ -74,7 +74,7 @@ namespace smil
     private:
         struct python_iplimage
         {
-            PyObject_HEAD
+            PyObject_HEAD;
             IplImage *img;
             PyObject *data;
             size_t offset;
