@@ -63,9 +63,11 @@ namespace smil
             while(dOffset!=dOffsetList.end())
             {
                 dOff = pointOffset + *dOffset;
-                dist = ( r - R[dOff]) * ( r - R[dOff])
+                dist = (
+                        ( r - R[dOff]) * ( r - R[dOff])
                      + ( g - G[dOff]) * ( g - G[dOff])
-                     + ( b - B[dOff]) * ( b - B[dOff]);
+                     + ( b - B[dOff]) * ( b - B[dOff])
+                        )/3;
 //                 dist = pixelsIn[dOff].r;
         //         pixelsOut[pointOffset] = max(pixelsOut[pointOffset], pixelsIn[dOff]);
                 if (dist>distMax)

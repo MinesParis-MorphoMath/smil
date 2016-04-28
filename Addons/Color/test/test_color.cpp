@@ -141,9 +141,24 @@ class Test_Gradient : public TestCase
         im1 << RGBArray(vecLAB, 5);
         
         UINT8 vecGRAD_LAB[] = { 
-            180, 180, 124, 237, 237,
+            104, 104, 71, 137, 137,
         };
         imTruth << vecGRAD_LAB;
+        
+        gradient_LAB(im1, im2, sSE(), false);
+        TEST_ASSERT(im2==imTruth);
+        
+        UINT8 vecLAB2[] = { 
+          255, 255, 0, 0, 0, 
+          0, 0, 255, 255, 255,
+          0, 0, 255, 255, 255
+        };
+        im1 << RGBArray(vecLAB2, 5);
+        
+        UINT8 vecGRAD_LAB2[] = { 
+            0, 255, 255, 0, 0
+        };
+        imTruth << vecGRAD_LAB2;
         
         gradient_LAB(im1, im2, sSE(), false);
         TEST_ASSERT(im2==imTruth);
