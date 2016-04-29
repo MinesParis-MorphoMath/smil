@@ -57,7 +57,7 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
 
     volumeRayCastFunction = NULL;
     volumeRayCastMapper = vtkVolumeRayCastMapper::New();
-    volumeRayCastMapper->SetInput(imageImport->GetOutput());
+    volumeRayCastMapper->SetInputConnection(imageImport->GetOutputPort());
     //             volumeRayCastMapper->SetSampleDistance(0.1);
 
     opacityTransfertFunction = vtkPiecewiseFunction::New();
@@ -81,9 +81,9 @@ QVtkViewerWidget::QVtkViewerWidget(QWidget *parent) :
 
     cube = vtkCubeSource::New();
     outline = vtkOutlineFilter::New();
-    outline->SetInput(cube->GetOutput());
+    outline->SetInputConnection(cube->GetOutputPort());
     outlineMapper = vtkPolyDataMapper::New();
-    outlineMapper->SetInput(outline->GetOutput());
+    outlineMapper->SetInputConnection(outline->GetOutputPort());
     outlineActor = vtkActor::New();
     outlineActor->SetMapper(outlineMapper);
     renderer->AddViewProp(outlineActor);
