@@ -380,8 +380,69 @@ namespace smil
         
         return RES_OK;
     }
+
+    
+    
+    static void RGB2HSV(float &r, float &g, float &b, float &h, float &s, float &v)
+    {
+        float K = 0.f;
+
+        if (g < b)
+        {
+            std::swap(g, b);
+            K = -1.f;
+        }
+
+        if (r < g)
+        {
+            std::swap(r, g);
+            K = -2.f / 6.f - K;
+        }
+
+        float chroma = r - std::min(g, b);
+        h = fabs(K + (g - b) / (6.f * chroma + 1e-20f));
+        s = chroma / (r + 1e-20f);
+        v = r;
+    }
     
 
+    RES_T RGBToHSV(const Image<RGB> &imRgbIn, Image<RGB> &imHsvOut)
+    {
+        ASSERT_ALLOCATED(&imRgbIn, &imHsvOut);
+        ASSERT_SAME_SIZE(&imRgbIn, &imHsvOut);
+        
+        Image<UINT8>::lineType R = imRgbIn.getPixels().arrays[0];
+        Image<UINT8>::lineType G = imRgbIn.getPixels().arrays[1];
+        Image<UINT8>::lineType B = imRgbIn.getPixels().arrays[2];
+        
+        Image<UINT8>::lineType H = imHsvOut.getPixels().arrays[0];
+        Image<UINT8>::lineType S = imHsvOut.getPixels().arrays[1];
+        Image<UINT8>::lineType V = imHsvOut.getPixels().arrays[2];
+        
+#ifdef USE_OPEN_MP        
+      #pragma omp for
+#endif // USE_OPEN_MP        
+        for (size_t i=0;i<imRgbIn.getPixelCount();i++)
+        {
+            float r = static_cast<float> (R[i]);
+            float g = static_cast<float> (G[i]);
+            float b = static_cast<float> (B[i]);
+            
+            float h, s, v;
+
+            RGB2HSV(r, g, b, h, s, v);
+
+            H[i] = h * 255;
+            S[i] = s * 255;
+            V[i] = v;
+        }
+        
+
+        imHsvOut.modified();
+        
+        return RES_OK;
+    }
+    
     RES_T HLSToRGB(const Image<RGB> &imHlsIn, Image<RGB> &imRgbOut)
     {
         ASSERT_ALLOCATED(&imHlsIn, &imRgbOut);
