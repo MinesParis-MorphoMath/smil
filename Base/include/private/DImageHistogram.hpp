@@ -169,6 +169,9 @@ namespace smil
     template <class T, class T_out>
     RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, T_out trueVal, T_out falseVal, Image<T_out> &imOut)
     {
+        if (minVal>maxVal) // Loop threshold
+          return threshold(imIn, maxVal, minVal, falseVal, trueVal, imOut);
+        
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
