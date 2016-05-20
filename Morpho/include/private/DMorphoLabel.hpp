@@ -292,8 +292,9 @@ namespace smil
             }
         return RES_OK;  
         }
+
+        compOperatorT compareFunc;
     protected :
-            compOperatorT compareFunc;
         T2 labels;
     };
      
@@ -460,6 +461,30 @@ namespace smil
 
         return lblNbr;
     }
+
+    /**
+    * Lambda-flat zones fast labelization
+    * 
+    * Return the number of labels (or 0 if error).
+    */
+    template<class T1, class T2>
+    size_t lambdaFastLabel(const Image<T1> &imIn, const T1 &lambdaVal, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        labelFunctFast<T1,T2,lambdaEqualOperator<T1> > f;
+        f.compareFunc.lambda = lambdaVal;
+        
+        ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
+        
+        size_t lblNbr = f.getLabelNbr();
+        
+        ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+        
+        return lblNbr;
+    }
+
 
     /**
     * Image labelization with the size of each connected components
