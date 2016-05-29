@@ -31,6 +31,7 @@
 #define _D_IMAGE_DRAW_H
 
 #include <vector>
+#include <algorithm>
 
 #include "Core/include/DCommon.h"
 
@@ -48,10 +49,12 @@ namespace smil
         vector<IntPoint> points;
         int F, x, y;
 
+        bool swapped = false;
         if (p1x > p2x)  // Swap points if p1 is on the right of p2
         {
             swap(p1x, p2x);
             swap(p1y, p2y);
+            swapped = true;
         }
 
         // Handle trivial cases separately for algorithm speed up.
@@ -197,6 +200,9 @@ namespace smil
                 }
             }
         }
+        // If input points have been swapped, reverse the vector
+        if (swapped)
+          std::reverse(points.begin(), points.end());
         return points;
     }
 
