@@ -133,6 +133,7 @@ TEMPLATE_WRAP_FUNC(asfClose);
 TEMPLATE_WRAP_FUNC(asfOpen);
 TEMPLATE_WRAP_FUNC(mean);
 TEMPLATE_WRAP_FUNC(median);
+TEMPLATE_WRAP_FUNC(rank);
 
 %include "Morpho/include/private/DMorphoArrow.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(arrow);
@@ -165,7 +166,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(label);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithoutFunctor);
 TEMPLATE_WRAP_FUNC_2T_CROSS(lambdaLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(fastLabel);
-TEMPLATE_WRAP_FUNC_2T_CROSS(lambdaFastLabel);
+
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithArea);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithVolume);
 TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
@@ -196,6 +197,7 @@ TEMPLATE_WRAP_FUNC(zhangSkeleton);
 %include "Morpho/include/private/DMorphoMaxTree.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpenMSER);
+
 TEMPLATE_WRAP_FUNC(areaOpen);
 TEMPLATE_WRAP_FUNC(areaClose);
 
