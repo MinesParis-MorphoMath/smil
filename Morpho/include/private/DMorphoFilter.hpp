@@ -153,6 +153,10 @@ namespace smil
             parentClass::pixelsOut[pointOffset] = vals[dOffsetList.size()/2];
         }
     };
+
+
+
+
     
     /**
     * Median filter
@@ -167,6 +171,53 @@ namespace smil
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
         medianFunct<T> f;
+        
+        ASSERT((f._exec(imIn, imOut, se)==RES_OK));
+        
+        return RES_OK;
+        
+    }
+
+
+
+    template <class T>
+    class rankFunct : public MorphImageFunctionBase<T, T>
+    {
+    public:
+        typedef MorphImageFunctionBase<T, T> parentClass;
+        
+      rankFunct(double per) : MorphImageFunctionBase<T, T>(),percentile(per)
+        {}
+      virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsetList)
+        {
+            vector<T> vals;
+            vector<int>::iterator dOffset = dOffsetList.begin();
+            while(dOffset!=dOffsetList.end())
+            {
+                vals.push_back(parentClass::pixelsIn[pointOffset + *dOffset]);
+                dOffset++;
+            }
+            sort(vals.begin(), vals.end());
+            parentClass::pixelsOut[pointOffset] = vals[static_cast<int>(dOffsetList.size()*this->percentile)];
+        }
+    private:
+      double percentile;
+    };
+
+    
+    /**
+    * Rank filter
+    * 
+    * \not_vectorized
+    * \not_parallelized
+    */ 
+    template <class T>
+    RES_T rank(const Image<T> &imIn, Image<T> &imOut, double percentile, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        rankFunct<T> f(percentile);
         
         ASSERT((f._exec(imIn, imOut, se)==RES_OK));
         
