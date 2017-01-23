@@ -168,6 +168,8 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(fastLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(lambdaFastLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithArea);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithVolume);
+TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithMaxima);
+TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithMean);
 TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 
 %ignore smil::CompStrEltList::operator[];

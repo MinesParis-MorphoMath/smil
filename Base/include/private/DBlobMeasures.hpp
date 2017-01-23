@@ -111,7 +111,7 @@ namespace smil
     }
 
     /**
-    * Measure the maximum value of each blob in imIn.
+    * Measure the sum of values of each blob in imIn.
     * Return a map(labelValue, double) with the max value for each label.
     */
     template <class T, class labelT>

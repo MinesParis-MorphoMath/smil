@@ -251,7 +251,7 @@ namespace smil
     /**
     * Max value of an image
     *
-    * Returns the min of the pixel values.
+    * Returns the max of the pixel values.
     * \param imIn Input image.
     */
     template <class T>

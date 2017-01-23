@@ -541,6 +541,74 @@ namespace smil
         
         return RES_OK;
     }
+    
+    /**
+    * Image labelization with the maximum values of each connected components in the imLabelsInit image
+    * 
+    */
+    template<class T1, class T2>
+    size_t labelWithMaxima(const Image<T1> &imIn, const Image<T2> &imLabelsInit, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        ImageFreezer freezer(imOut);
+        
+        Image<T2> imLabel(imIn);
+        
+        ASSERT(label(imLabelsInit, imLabel, se)!=0);
+	label(imLabelsInit, imLabel, se);
+	bool onlyNonZeros = true;
+	map<T2, Blob> blobs = computeBlobs(imLabel,onlyNonZeros);
+        map<T2, T1> markers = measMaxVals(imIn,blobs);
+        ASSERT(!markers.empty());
+        
+        double maxV = std::max_element(markers.begin(), markers.end(), map_comp_value_less())->second;
+        cout << maxV << endl;
+	ASSERT((maxV < double(ImDtTypes<T2>::max())), "Markers max value exceeds data type max!", 0);
+
+        ASSERT(applyLookup(imLabel, markers, imOut)==RES_OK);
+        
+        return RES_OK;
+    }
+    
+    
+    /**
+    * Image labelization with the mean values of each connected components in the imLabelsInit image
+    * 
+    */
+    template<class T1, class T2>
+    size_t labelWithMean(const Image<T1> &imIn, const Image<T2> &imLabelsInit, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        ImageFreezer freezer(imOut);
+        
+        Image<T2> imLabel(imIn);
+        
+        ASSERT(label(imLabelsInit, imLabel, se)!=0);
+	label(imLabelsInit, imLabel, se);
+	bool onlyNonZeros = true;
+	map<T2, Blob> blobs = computeBlobs(imLabel,onlyNonZeros);
+        map<T2, std::vector<double> > meanValsStd = measMeanVals(imIn,blobs);
+	map<T2,double> markers;
+	
+	for (typename std::map<T2, std::vector<double> >::iterator iter = meanValsStd.begin(); iter != meanValsStd.end(); ++iter){
+	  markers[iter->first] = (iter->second)[0];
+// 	  cout << "iter->first = " << iter->first << "  iter->second[0] " << iter->second[0] << endl; 
+	}
+	
+        ASSERT(!markers.empty());
+        
+        double maxV = std::max_element(markers.begin(), markers.end(), map_comp_value_less())->second;
+//         cout << maxV << endl;
+	ASSERT((maxV < double(ImDtTypes<T2>::max())), "Markers max value exceeds data type max!", 0);
+
+        ASSERT(applyLookup(imLabel, markers, imOut)==RES_OK);
+        
+        return RES_OK;
+    }
 
 
     template <class T1, class T2>
