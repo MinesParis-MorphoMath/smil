@@ -462,7 +462,7 @@ RES_T arrowMinFunction < T, arrowT >::_exec ( const imageInType & in,
     }
 
 	return RES_OK;
-};
+}
 
     template < class T, class arrowT > RES_T arrowMin ( const Image < T > &im,
 							Image < arrowT >
@@ -605,7 +605,7 @@ RES_T arrowMinFunction < T, arrowT >::_exec ( const imageInType & in,
 	}
 
 	return RES_OK;
-    };
+    }
 
     template < class T > RES_T arrowMinStep ( const Image < T > &im,
 							Image < T >
