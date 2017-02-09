@@ -76,6 +76,7 @@ namespace smil
             for (UINT i=0;i<N;i++)
               c[i] = mc.value(i);
         }
+        virtual ~MultichannelType() {}
 
         MultichannelType& operator =(const MultichannelType &mc)
         {

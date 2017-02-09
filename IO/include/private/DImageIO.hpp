@@ -55,6 +55,8 @@ namespace smil
         : fileExtention(ext)
       {
       }
+      virtual ~ImageFileHandler() {}
+
       const char *fileExtention;
       
       virtual RES_T getFileInfo(const char*, ImageFileInfo &) 

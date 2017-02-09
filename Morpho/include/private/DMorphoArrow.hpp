@@ -250,7 +250,7 @@ namespace smil
             typedef typename outIT::lineType outLT;
 
             arrowPropagate () {}
-            ~arrowPropagate () {}
+            virtual ~arrowPropagate () {}
 
             RES_T _exec ( const Image<arrowT> &imArrow, Image<statutT> &imStatut, Image<outT> &imOut, const StrElt &se, const size_t &offset ) 
             {

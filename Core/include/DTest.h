@@ -52,6 +52,7 @@ namespace smil
           outStream(NULL) 
       {
       }
+      virtual ~TestCase() {}
       virtual void init() {}
       virtual void run() = 0;
       virtual void end() {}
