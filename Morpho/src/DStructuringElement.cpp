@@ -154,8 +154,8 @@ void StrElt::printSelf(ostream &os, string indent) const
     if (!ptNbr)
       return;
     
-      for (UINT i=0;i<ptNbr;i++)
-        os << indent << "#" << i+1 << ": (" << points[i].x << "," << points[i].y << "," << points[i].z << ")" << endl;
+    for (UINT i=0;i<ptNbr;i++)
+      os << indent << "#" << i+1 << ": (" << points[i].x << "," << points[i].y << "," << points[i].z << ")" << endl;
       
 }
 
