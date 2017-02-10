@@ -443,8 +443,8 @@ namespace smil
             dilate(labelIm2, tmpIm2, se);
             addNoSat(labelIm1, labelIm2, sumIm);
             threshold(sumIm, threshMin, threshMax, sumIm);
-            if (&maskIm)
-              inf(maskIm, sumIm, sumIm);
+            // if (&maskIm) // a reference cannot be NULL
+            inf(maskIm, sumIm, sumIm);
             mask(tmpIm1, sumIm, tmpIm1);
             mask(tmpIm2, sumIm, tmpIm2);
             sup(labelIm1, tmpIm1, labelIm1);
