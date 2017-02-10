@@ -32,6 +32,11 @@
 
 
 
+#if __cplusplus >= 201103L
+#include <memory>
+#define auto_ptr unique_ptr
+#else
+#endif // __cplusplus > 201103L
 
 #include "IO/include/DCommonIO.h"
 #include "DImageIO.hpp"

@@ -152,7 +152,7 @@ namespace smil
     public : 
         inline explicit Allocator() {}
         inline ~Allocator() {}
-        inline explicit Allocator(Allocator const&)
+        inline  Allocator(Allocator const&)
           : std::allocator<T>() {}
         template<typename U>
         inline explicit Allocator(Allocator<U> const&) {}

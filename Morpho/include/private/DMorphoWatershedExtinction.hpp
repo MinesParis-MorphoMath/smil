@@ -328,7 +328,7 @@ namespace smil
                 if (curLbl==0 || curLbl==this->STAT_QUEUED)
                   this->lblPixels[curOffset] = this->lblPixels[nbOffset];
                 else if (equivalentLabels[nbLbl]!=equivalentLabels[curLbl])
-                  pendingMerges.push_back( make_pair<labelT>(min(curLbl,nbLbl), max(curLbl,nbLbl)) );
+                  pendingMerges.push_back( make_pair(min(curLbl,nbLbl), max(curLbl,nbLbl)) );
             }
 
         }
