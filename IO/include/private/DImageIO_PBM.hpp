@@ -44,8 +44,8 @@ namespace smil
     */
     /*@{*/
     
-    RES_T readNetPBMFileInfo(ifstream &fp, ImageFileInfo &fInfo);
-    RES_T readNetPBMFileInfo(const char* filename, ImageFileInfo &fInfo);
+    RES_T readNetPBMFileInfo(ifstream &fp, ImageFileInfo &fInfo, unsigned int &maxval);
+    RES_T readNetPBMFileInfo(const char* filename, ImageFileInfo &fInfo, unsigned int &maxval);
     
     template <class T> class Image;
 
@@ -60,7 +60,8 @@ namespace smil
         
         virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
         {
-            return readNetPBMFileInfo(filename, fInfo);
+            unsigned int dum;
+            return readNetPBMFileInfo(filename, fInfo, dum);
         }
         
         virtual RES_T read(const char* filename, Image<T> &image)
@@ -84,7 +85,8 @@ namespace smil
         
         virtual RES_T getFileInfo(const char* filename, ImageFileInfo &fInfo)
         {
-            return readNetPBMFileInfo(filename, fInfo);
+            unsigned int dum;
+            return readNetPBMFileInfo(filename, fInfo, dum);
         }
         
         virtual RES_T read(const char* filename, Image<T> &image)
@@ -99,7 +101,8 @@ namespace smil
             }
             
             ImageFileInfo fInfo;
-            ASSERT(readNetPBMFileInfo(fp, fInfo)==RES_OK, RES_ERR_IO);
+            unsigned int dum; // no maxval in PBM format
+            ASSERT(readNetPBMFileInfo(fp, fInfo, dum)==RES_OK, RES_ERR_IO);
             ASSERT(fInfo.colorType==ImageFileInfo::COLOR_TYPE_BINARY, "Not an binary image", RES_ERR_IO);
             
             size_t width = fInfo.width;
