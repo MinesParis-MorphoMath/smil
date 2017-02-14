@@ -356,8 +356,8 @@ namespace smil
 
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h )
         long int size_array = MAX(size[0],size[1]); 
-        long int s[size_array]; // sets of the least minimizers that occurs during the scan from left to right.
-        long int t[size_array]; // sets of points with the same least minimizer 
+        vector<long int> s(size_array); // sets of the least minimizers that occurs during the scan from left to right.
+        vector<long int> t(size_array); // sets of points with the same least minimizer 
         s[0] = 0;
         t[0] = 0;
         long int q = 0;
@@ -392,7 +392,7 @@ namespace smil
                 }
             }
           #ifdef USE_OPEN_MP
-            #pragma omp for private(offset,y,s,t,q,w,tmpdist,tmpdist2)
+            #pragma omp for private(offset,y,q,w,tmpdist,tmpdist2)
           #endif // USE_OPEN_MP
             for (y=0; y<size[1]; ++y) {
                     offset = z*size[1]*size[0]+y*size[0];
@@ -464,8 +464,8 @@ namespace smil
         long int min;
 
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
-        long int s[size[0]]; // sets of the least minimizers that occurs during the scan from left to right.
-        long int t[size[0]]; // sets of points with the same least minimizer 
+        vector<long int> s(size[0]); // sets of the least minimizers that occurs during the scan from left to right.
+        vector<long int> t(size[0]); // sets of points with the same least minimizer 
         s[0] = 0;
         t[0] = 0;
         long int q = 0;
@@ -502,7 +502,7 @@ namespace smil
             #define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
 
           #ifdef USE_OPEN_MP
-            #pragma omp for private(offset,y,s,t,q,w)
+            #pragma omp for private(offset,y,q,w)
           #endif // USE_OPEN_MP
              for (y=0; y<size[1]; ++y) {
                     offset = z*size[1]*size[0]+y*size[0];

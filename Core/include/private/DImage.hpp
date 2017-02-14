@@ -254,7 +254,7 @@ namespace smil
             printSelf(std::cout, displayPixVals, hexaGrid);
         }
         //! Get the description of the image as a string
-        virtual const char *getInfoString(string indent = "") const 
+        virtual const char *getInfoString(const char *indent = "") const 
         {
             stringstream s;
             this->printSelf(s, indent);

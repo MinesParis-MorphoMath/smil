@@ -211,8 +211,6 @@ namespace smil
           return RES_ERR;
         }
         
-        vector<string>::const_iterator it = fileList.begin();
-        
         size_t w = image.getWidth(), h = image.getHeight();
         Image<T> tmpIm(w, h);
         

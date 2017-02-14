@@ -415,7 +415,7 @@ namespace smil
             return graphMST(*this);
         }
         
-        virtual void printSelf(ostream &os = std::cout, string s ="")
+        virtual void printSelf(ostream &os = std::cout, string s ="") const
         {
             os << s << "Number of nodes: " << nodes.size() << endl;
             os << s << "Number of edges: " << edges.size() << endl;

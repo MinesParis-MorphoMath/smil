@@ -180,8 +180,7 @@ namespace smil
     #define ERR_MSG(msg) Error(msg, __FUNC__, __FILE__, __LINE__).show()
 
     #define ASSERT_NARGS_CHOOSER(...) \
-        GET_4TH_ARG(__VA_ARGS__, ASSERT_3_ARGS, \
-                    ASSERT_2_ARGS, ASSERT_1_ARG, )
+      GET_4TH_ARG(__VA_ARGS__, ASSERT_3_ARGS, ASSERT_2_ARGS, ASSERT_1_ARG, ...)
 
     #ifdef _MSC_VER
             #define ASSERT(...) EXPAND( ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__) )

@@ -74,13 +74,17 @@ namespace smil
             this->pixelsIn = imIn.getPixels();
             for (size_t i=0; i<this->imSize[2]*this->imSize[1]*this->imSize[0]; i++) 
             {
-                if (this->pixelsOut[i]==T2(0))
-                    processPixel(i);
+              if (this->pixelsOut[i] == T2(0)) {
+                vector<int> dum;
+                processPixel(i, dum);
+              }
             }
             return RES_OK;
         }
-        
-        virtual void processPixel(size_t pointOffset)
+
+        virtual void processPixel(size_t pointOffset,
+                                  __attribute__((__unused__))
+                                  vector<int> &dOffsets)
         {
 
             T1 pVal = this->pixelsIn[pointOffset];
