@@ -144,7 +144,10 @@ MACRO(ADD_SMIL_LIBRARY _LIB_NAME)
 
   		  SET_SOURCE_FILES_PROPERTIES(${LIB_NAME}.i PROPERTIES CPLUSPLUS ON)
   		  
-  		  ADD_DEFINITIONS(-DSWIG_WRAP_${UPPER_LIB_NAME} -Wno-maybe-uninitialized -Wno-strict-aliasing -Wno-unused-function)
+		  ADD_DEFINITIONS(-DSWIG_WRAP_${UPPER_LIB_NAME} -Wno-strict-aliasing -Wno-unused-function)
+		  IF(NOT CMAKE_COMPILER_IS_CLANGXX)
+		    ADD_DEFINITIONS(-Wno-maybe-unitialized)
+		  ENDIF(NOT CMAKE_COMPILER_IS_CLANGXX)
 		  
 		  IF(WRAP_CPP)
 			SMIL_WRAP_CPP(${LIB_NAME} ${CPP_LIB_NAME})
