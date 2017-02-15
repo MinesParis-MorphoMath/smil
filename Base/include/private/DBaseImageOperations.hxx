@@ -200,9 +200,9 @@ namespace smil
 
         lineType tmpBuf = ImDtTypes<T>::createLine(lineLen);
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {

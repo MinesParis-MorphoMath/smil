@@ -215,22 +215,31 @@ namespace smil
 #ifdef USE_QWT
 // #include "Gui/Qt/DQtImageViewer.hpp"
 #endif // USE_QWT
-    
+
     template <class T, UINT N>
-    inline RES_T mul(const Image< MultichannelType<T,N> > &imIn, const double &dValue, Image< MultichannelType<T,N> > &imOut)
-    {
+    inline RES_T
+    mul(__attribute__((__unused__)) const Image<MultichannelType<T, N> > &imIn,
+        __attribute__((__unused__)) const double &dValue,
+        __attribute__((__unused__)) Image<MultichannelType<T, N> > &imOut) {
       return RES_ERR_NOT_IMPLEMENTED;
     }
 
     template <class T, UINT N, class T2>
-    inline RES_T stretchHist(const Image< MultichannelType<T,N> > &imIn, Image<T2> &imOut, T2 outMinVal, T2 outMaxVal)
-    {
+    inline RES_T stretchHist(__attribute__((__unused__))
+                             const Image<MultichannelType<T, N> > &imIn,
+                             __attribute__((__unused__)) Image<T2> &imOut,
+                             __attribute__((__unused__)) T2 outMinVal,
+                             __attribute__((__unused__)) T2 outMaxVal) {
       return RES_ERR_NOT_IMPLEMENTED;
     }
-    
+
     template <class T, UINT N, class T1>
-    inline RES_T stretchHist(const Image<T1> &imIn, Image< MultichannelType<T,N> > &imOut, MultichannelType<T,N> outMinVal, MultichannelType<T,N> outMaxVal)
-    {
+    inline RES_T
+    stretchHist(__attribute__((__unused__)) const Image<T1> &imIn,
+                __attribute__((__unused__))
+                Image<MultichannelType<T, N> > &imOut,
+                __attribute__((__unused__)) MultichannelType<T, N> outMinVal,
+                __attribute__((__unused__)) MultichannelType<T, N> outMaxVal) {
       return RES_ERR_NOT_IMPLEMENTED;
     }
     
