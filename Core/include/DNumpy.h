@@ -34,7 +34,8 @@
 
 #include "numpy/arrayobject.h"
 
-  
+namespace smil {
+
 template <class T> class Image;
 
 template <class T> int getNumpyType(Image<T> &/*im*/) { return NPY_VOID; } // Default
@@ -64,5 +65,6 @@ template <> int getNumpyType(Image<double> &/*im*/) { return NPY_DOUBLE; }
 //                     NPY_VOID,
 //                     /*
 
+}
 
 #endif // _D_NUMPY_H
