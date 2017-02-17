@@ -83,8 +83,7 @@ namespace smil
         }
 
         virtual void processPixel(size_t pointOffset,
-                                  __attribute__((__unused__))
-                                  vector<int> &dOffsets)
+                                  SMIL_UNUSED vector<int> &dOffsets)
         {
 
             T1 pVal = this->pixelsIn[pointOffset];

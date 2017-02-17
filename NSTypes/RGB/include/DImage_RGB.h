@@ -218,28 +218,26 @@ namespace smil
 
     template <class T, UINT N>
     inline RES_T
-    mul(__attribute__((__unused__)) const Image<MultichannelType<T, N> > &imIn,
-        __attribute__((__unused__)) const double &dValue,
-        __attribute__((__unused__)) Image<MultichannelType<T, N> > &imOut) {
+    mul(SMIL_UNUSED const Image<MultichannelType<T, N> > &imIn,
+        SMIL_UNUSED const double &dValue,
+        SMIL_UNUSED Image<MultichannelType<T, N> > &imOut) {
       return RES_ERR_NOT_IMPLEMENTED;
     }
 
     template <class T, UINT N, class T2>
-    inline RES_T stretchHist(__attribute__((__unused__))
-                             const Image<MultichannelType<T, N> > &imIn,
-                             __attribute__((__unused__)) Image<T2> &imOut,
-                             __attribute__((__unused__)) T2 outMinVal,
-                             __attribute__((__unused__)) T2 outMaxVal) {
+    inline RES_T stretchHist(SMIL_UNUSED const Image<MultichannelType<T, N> > &imIn,
+                             SMIL_UNUSED Image<T2> &imOut,
+                             SMIL_UNUSED T2 outMinVal,
+                             SMIL_UNUSED T2 outMaxVal) {
       return RES_ERR_NOT_IMPLEMENTED;
     }
 
     template <class T, UINT N, class T1>
     inline RES_T
-    stretchHist(__attribute__((__unused__)) const Image<T1> &imIn,
-                __attribute__((__unused__))
-                Image<MultichannelType<T, N> > &imOut,
-                __attribute__((__unused__)) MultichannelType<T, N> outMinVal,
-                __attribute__((__unused__)) MultichannelType<T, N> outMaxVal) {
+    stretchHist(SMIL_UNUSED const Image<T1> &imIn,
+                SMIL_UNUSED Image<MultichannelType<T, N> > &imOut,
+                SMIL_UNUSED MultichannelType<T, N> outMinVal,
+                SMIL_UNUSED MultichannelType<T, N> outMaxVal) {
       return RES_ERR_NOT_IMPLEMENTED;
     }
     

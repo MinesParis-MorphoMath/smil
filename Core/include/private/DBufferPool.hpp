@@ -54,7 +54,7 @@ namespace smil
 
       typedef typename ImDtTypes<T>::lineType bufferType;
       
-      RES_T initialize(size_t bufSize, __attribute__((__unused__))size_t nbr=0)
+      RES_T initialize(size_t bufSize, SMIL_UNUSED size_t nbr=0)
       {
           if (buffers.size()!=0)
             clear();

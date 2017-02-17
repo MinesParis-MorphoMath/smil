@@ -54,6 +54,11 @@ namespace smil
     #define MESSAGE(msg)
     #endif // VERBOSE 
 
+#if defined __GNUC__ || defined __clang__
+#define SMIL_UNUSED __attribute__((__unused__))
+#else // MSVC et al.
+#define SMIL_UNUSED
+#endif
 
 
     #define INLINE inline
