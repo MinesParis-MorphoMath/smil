@@ -204,6 +204,8 @@ namespace smil
     /**
     * Rank filter
     * 
+    * \not_vectorized
+    * \not_parallelized
     */ 
     template <class T>
     RES_T rank(const Image<T> &imIn, Image<T> &imOut, double percentile, const StrElt &se=DEFAULT_SE)
