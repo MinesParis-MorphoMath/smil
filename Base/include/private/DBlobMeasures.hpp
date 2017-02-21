@@ -139,6 +139,15 @@ namespace smil
     {
         return processBlobMeasure<T, labelT, measModeValFunc<T> >(imIn, blobs);
     }
+        /**
+    * Measure the median value of imIn in each blob.
+    * Return a map(labelValue, T) with the m median value for each label.
+    */
+    template <class T, class labelT>
+    map<labelT, T > measMedianVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
+    {
+        return processBlobMeasure<T, labelT, measMedianValFunc<T> >(imIn, blobs);
+    }
 
     /**
     * Measure barycenter of a labeled image.

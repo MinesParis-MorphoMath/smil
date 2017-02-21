@@ -401,6 +401,73 @@ namespace smil
         measModeValFunc<T> func;
         return func(imIn, onlyNonZero);
     }
+    template <class T>
+    struct measMedianValFunc : public MeasureFunctionBase<T, T >
+    {
+        typedef typename Image<T>::lineType lineType;
+
+      map<int,int> nbList;
+      size_t acc_elem,total_elems;
+      T medianval;
+        virtual void initialize(const Image<T> &/*imIn*/)
+        {
+          //BMI            this->retVal.clear();
+            nbList.clear();
+            medianval = 0;
+	    acc_elem=0;
+	    total_elems=0;
+        }
+
+        virtual void processSequence(lineType lineIn, size_t size)
+        {
+
+            for (size_t i=0;i<size;i++){
+              T val = lineIn[i];
+              if(val>0){
+		total_elems ++;
+                if (nbList.find(val)==nbList.end()){
+                  nbList.insert(std::pair<int,int>(val,1));
+                  }
+                else
+                  nbList[val]++;
+
+              }// if (val>0)
+            }// for i= 0; i < size
+	    //            this->retVal = medianval;
+        }// virtual processSequence
+      virtual void finalize(const Image<T> &/*imIn*/)
+        {
+	  typedef std::map<int, int>::iterator it_type;
+
+	  for(it_type my_iterator = nbList.begin(); my_iterator != nbList.end(); my_iterator++) {
+	    acc_elem = acc_elem + my_iterator->second ;//  nbList;
+	    std::cout<<"iterator_values"<<my_iterator->first<< my_iterator->second<<"\n";
+	    if(acc_elem > total_elems/2.0){
+	      medianval = my_iterator->first;
+	      std::cout<< "acc_elem="<<acc_elem<<"medianval="<<"\n";
+	      break;
+	    }
+	    // iterator->first = key
+	    // iterator->second = value
+	  }// iterator
+
+	  this->retVal = medianval;
+	  //this->retVal.push_back(xSum/tSum);
+	    
+        }
+
+    };// END measMedianValFunc
+
+    /**
+     * Get the mode of the histogram present in the image, i.e. the
+     * value that appears most often.
+     */
+    template <class T>
+    T measMedianVal(const Image<T> &imIn, bool onlyNonZero=true)
+    {
+        measMedianValFunc<T> func;
+        return func(imIn, onlyNonZero);
+    }
     
     /**
      * Get image values along a profile.
