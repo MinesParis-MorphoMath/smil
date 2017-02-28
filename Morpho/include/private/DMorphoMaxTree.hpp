@@ -901,14 +901,15 @@ void  ComputeDeltaUOMSERSC(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
             isMaxT = 1;
             transformee_node[node] = stab_residue;
 
-            if(! (isPrevMaxT and flag)){
+            if(! (isPrevMaxT && flag)){
                 indicatrice_node[node]  = cNode + 1;                
             }
 
         }
     }
-    else
-        indicatrice_node[node]  = 0;
+	else{
+		indicatrice_node[node] = 0;
+	}
 
     child=tree.getChild(node);
     while (child!=0){

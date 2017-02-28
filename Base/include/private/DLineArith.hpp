@@ -95,12 +95,12 @@ namespace smil
         else if (dx>0)
         {
             fillLine<T>::fill(lOut, dx, borderValue);
-            typename Image<T>::lineType __restrict tmpL = lOut+dx;
+            typename Image<T>::restrictLineType tmpL = lOut+dx;
             copyLine<T>(lIn, lineLen-dx, tmpL);
         }
         else
         {
-            typename Image<T>::lineType __restrict tmpL = lIn-dx;
+            typename Image<T>::restrictLineType tmpL = lIn-dx;
             copyLine<T>(tmpL, lineLen+dx, lOut);
             fillLine<T>::fill(lOut+(lineLen+dx), -dx, borderValue);
         }
@@ -451,14 +451,14 @@ namespace smil
         {
             if (base!=0)
             {
-                double baseLog = log(double(base));
+                double baseLog = std::log(double(base));
                 for (size_t i=0;i<size;i++)
-                    lOut[i] = log(lIn[i]) / baseLog;
+                    lOut[i] = std::log(lIn[i]) / baseLog;
             }
             else
             {
               for (size_t i=0;i<size;i++)
-                  lOut[i] = log(lIn[i]);
+                  lOut[i] = std::log(lIn[i]);
             }
         }
     };

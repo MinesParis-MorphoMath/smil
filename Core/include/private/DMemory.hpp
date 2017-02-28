@@ -104,6 +104,9 @@
 #include <sstream>
 #include <vector>
 #include <stdio.h>
+#if defined(_MSC_VER)
+   #include <algorithm>
+#endif
 
 namespace smil
 {
