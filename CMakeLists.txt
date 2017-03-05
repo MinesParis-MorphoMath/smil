@@ -404,8 +404,8 @@ IF(USE_QT)
       ENDIF(NOT QT4_FOUND OR NOT Qt5Core_FOUND)
       
       IF(CMAKE_CROSSCOMPILING)
-              SET(QT_HEADERS_DIR “/usr/i686-w64-mingw32/include”)
-              SET(QT_LIBRARY_DIR “/usr/i686-w64-mingw32/lib”)
+              SET(QT_HEADERS_DIR "/usr/i686-w64-mingw32/include")
+              SET(QT_LIBRARY_DIR "/usr/i686-w64-mingw32/lib")
       ENDIF()
       SET(QT_USE_FRAMEWORKS OFF CACHE INTERNAL "" FORCE)
 
