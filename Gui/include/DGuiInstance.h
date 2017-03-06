@@ -58,9 +58,6 @@ namespace smil
     
     class Gui;
     
-    template <>
-    RES_T UniqueInstance<Gui>::initialize();
-    
     /**
      * Gui module instance
      */
