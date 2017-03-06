@@ -149,7 +149,7 @@ MACRO(ADD_SMIL_LIBRARY _LIB_NAME)
 		    ADD_DEFINITIONS(-Wno-strict-aliasing -Wno-unused-function)
 		  ENDIF(NOT MSVC)
 		  IF(NOT CMAKE_COMPILER_IS_CLANGXX AND NOT MSVC)
-		    ADD_DEFINITIONS(-Wno-maybe-unitialized)
+		    ADD_DEFINITIONS("-Wno-maybe-uninitialized")
 		  ENDIF(NOT CMAKE_COMPILER_IS_CLANGXX AND NOT MSVC)
 		  
 		  IF(WRAP_CPP)
