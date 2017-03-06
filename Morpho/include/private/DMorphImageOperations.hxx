@@ -464,7 +464,7 @@ namespace smil
           tmpIm = new Image<T_in>(imIn, true); // clone
         else tmpIm = &imIn;
         
-        volType srcSlices = tmpIm->getSlices();
+        //volType srcSlices = tmpIm->getSlices();
         volType destSlices = imOut.getSlices();
         
         //lineInType *srcLines;

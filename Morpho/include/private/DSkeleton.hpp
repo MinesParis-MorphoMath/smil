@@ -150,7 +150,7 @@ namespace smil
             typedef typename Image<T>::sliceType sliceType;
             typedef typename Image<T>::lineType lineType;
             
-            lineType tab = tmpIm.getPixels();
+            // lineType tab = tmpIm.getPixels();
             const sliceType lines = tmpIm.getLines();
             lineType curLine;
             lineType curPix;

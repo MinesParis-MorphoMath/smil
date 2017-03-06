@@ -165,6 +165,9 @@ namespace smil
         string description;
         string function;
         string file;
+#if defined NDEBUG && defined __clang__
+        SMIL_UNUSED
+#endif // NDEBUG && __clang__
         int line;
         string expression;
         string message;

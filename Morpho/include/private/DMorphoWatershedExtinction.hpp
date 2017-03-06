@@ -242,7 +242,7 @@ namespace smil
               return;
             
             typename std::vector< std::pair<labelT,labelT> >::iterator mIt = pendingMerges.begin();
-            typename std::vector<T>::iterator lIt = mergeLevels.begin();
+            // typename std::vector<T>::iterator lIt = mergeLevels.begin();
             
             while(mIt!=pendingMerges.end())
             {

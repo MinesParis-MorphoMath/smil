@@ -205,12 +205,12 @@ namespace smil
     RES_T fastExtrema (const Image<T> &imIn, Image<T> &imOut, const StrElt &se, const char *operation, const T& border_value) {
 
         // Typedefs
-        typedef Image<T> inT;
+        // typedef Image<T> inT;
         typedef Image<T> outT;
         typedef Image<T> arrowT;
         typedef typename outT::lineType outLineT;
         typedef typename arrowT::lineType arrowLineT;
-        typedef typename inT::volType inVolT;
+        // typedef typename inT::volType inVolT;
         typedef typename outT::volType outVolT;
         typedef typename arrowT::volType arrowVolT;
 
@@ -224,7 +224,7 @@ namespace smil
         UINT sePtsNumber = cpSe.points.size();
         if (sePtsNumber == 0) return RES_OK;
             // Images related.
-        inVolT inSlices = imIn.getSlices();
+        // inVolT inSlices = imIn.getSlices();
         outVolT outSlices = imOut.getSlices();
         arrowVolT arrowSlices = arrows.getSlices();
         outLineT* outLines;

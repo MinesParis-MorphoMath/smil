@@ -60,7 +60,10 @@ namespace smil
       bool stopIfError;
       stringstream *outStream;
       RES_T retVal;
-      int tElapsed;
+#ifdef __clang__
+      SMIL_UNUSED
+#endif // __clang__
+        int tElapsed;
     };
 
 
@@ -113,7 +116,10 @@ namespace smil
       int run();
     private:
       list<TestCase*> funcList;
-      int tElapsed;
+#ifdef __clang__
+      SMIL_UNUSED
+#endif // __clang__
+        int tElapsed;
     };
 
 
