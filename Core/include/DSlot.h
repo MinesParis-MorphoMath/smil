@@ -82,6 +82,8 @@ namespace smil
         run(static_cast<eventT*>(e));
       }
 #endif // SWIG      
+    private:
+      using BaseSlot::run;
     };
 
     template <class T, class eventT=Event>

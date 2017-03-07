@@ -335,7 +335,10 @@ namespace smil
                   this->wsPixels[curOffset] = STAT_WS_LINE;
             }
         }
-        
+#ifndef SWIG
+      using BaseFlooding<T, labelT, HQ_Type>::flood;
+      using BaseFlooding<T, labelT, HQ_Type>::initialize;
+#endif // SWIG
     };
     
     /**

@@ -544,6 +544,7 @@ namespace smil
     template <class T>
     struct rightShiftLine : public unaryLineFunctionBase<T>
     {
+        using unaryLineFunctionBase<T>::_exec;
         typedef typename unaryLineFunctionBase<T>::lineType lineType;
         virtual void _exec(const lineType, const size_t, lineType) {}
         virtual void _exec(const lineType lIn1, const UINT shift , const size_t size, lineType lOut)

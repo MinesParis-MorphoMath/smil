@@ -165,6 +165,7 @@ namespace smil
             return RES_OK;
         }
         
+        using Image<T>::clone;
         virtual RES_T clone(const SharedImage<T> &rhs)
         {
             return attach(rhs.getPixels(), rhs.getWidth(), rhs.getHeight(), rhs.getDepth());
