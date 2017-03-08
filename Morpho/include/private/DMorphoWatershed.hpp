@@ -473,14 +473,15 @@ namespace smil
         ASSERT_SAME_SIZE(&imIn, &basinsOut);
         
         Image<T2> imLbl2(basinsOut);
-        Image<T2> *nullIm = NULL;
+        Image<T2> nullIm(basinsOut);
+        fill(nullIm, ImDtTypes<T2>::max()); // invariant to liblSkiz inf
         
         // Create the label images
         label(imIn, basinsOut, se);
         inv(basinsOut, imLbl2);
         mask(imLbl2, basinsOut, imLbl2);
         
-        ASSERT(lblSkiz(basinsOut, imLbl2, *nullIm, se)==RES_OK);
+        ASSERT(lblSkiz(basinsOut, imLbl2, nullIm, se)==RES_OK);
         
         // Clean result image
         open(basinsOut, basinsOut);
