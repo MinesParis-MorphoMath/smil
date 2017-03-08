@@ -44,7 +44,7 @@
 #endif // USE_QWT
 
 
-#include <math.h>
+#include <cmath>
 
 #include "ImageViewerWidget.h"
 #include "ColorPicker.h"

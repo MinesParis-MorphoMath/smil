@@ -32,9 +32,9 @@
 
 
 #include <fstream>
-#include <stdlib.h>
+#include <cstdlib>
 #include <string>
-#include <ctype.h>
+#include <cctype>
 
 #include "Core/include/private/DTypes.hpp"
 #include "Core/include/private/DImage.hpp"

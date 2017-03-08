@@ -30,7 +30,7 @@
 #ifndef _D_IMAGE_HISTOGRAM_HPP
 #define _D_IMAGE_HISTOGRAM_HPP
 
-#include <limits.h>
+#include <climits>
 
 #include "DLineHistogram.hpp"
 #include "DImageArith.hpp"

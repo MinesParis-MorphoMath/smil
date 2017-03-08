@@ -32,13 +32,12 @@
 #include <omp.h>
 #endif
 
-  #include <stdlib.h> 
+#include <cstdlib>
 #ifdef _MSC_VER
   #include <intrin.h>
   #include <algorithm>
 // TODO: find asm instructions for arm platforms
 #elif defined(__arm__) 
-  #include <stdlib.h> 
 #else
   #include <cpuid.h>
 #endif // _MSC_VER

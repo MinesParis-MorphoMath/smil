@@ -34,7 +34,7 @@
 #include "Core/include/DTypes.h"
 #include "Core/include/DErrors.h"
 
-#include <stdarg.h>
+#include <cstdarg>
 
 namespace smil
 {

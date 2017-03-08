@@ -28,8 +28,8 @@
 
 
 
-#include <stdio.h>
-#include <time.h>
+#include <cstdio>
+#include <ctime>
 
 #include "Core/include/DCore.h"
 #include "DMorpho.h"

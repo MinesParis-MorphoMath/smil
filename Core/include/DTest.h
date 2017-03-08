@@ -30,7 +30,7 @@
 #ifndef _DTEST_H
 #define _DTEST_H
 
-#include <time.h>
+#include <ctime>
 #include <iostream>
 #include <list>
 #include <sstream>

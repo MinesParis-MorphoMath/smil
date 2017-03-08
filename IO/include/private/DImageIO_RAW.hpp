@@ -31,8 +31,8 @@
 #define _D_IMAGE_IO_RAW_HPP
 
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <string>
 
 #include "Core/include/private/DImage.hpp"

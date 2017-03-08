@@ -30,7 +30,7 @@
 #ifndef _DTIME_H
 #define _DTIME_H
 
-#include <time.h>
+#include <ctime>
 #include <iomanip>
 
 #ifdef _MSC_VER

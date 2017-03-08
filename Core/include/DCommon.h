@@ -31,13 +31,13 @@
 #define _DCOMMON_H
 
 
-#include <string.h>
+#include <cstring>
 #include <memory>
 #include <limits>
 #include <vector>
 #include <map>
-#include <math.h>
-#include <stdarg.h>
+#include <cmath>
+#include <cstdarg>
 
 
 #include "private/DTypes.hpp"

@@ -97,13 +97,13 @@
   #endif
 
   
-#include <math.h>
+#include <cmath>
 #include <string>
 #include <memory>
 #include <limits>
 #include <sstream>
 #include <vector>
-#include <stdio.h>
+#include <cstdio>
 #if defined(_MSC_VER)
    #include <algorithm>
 #endif
