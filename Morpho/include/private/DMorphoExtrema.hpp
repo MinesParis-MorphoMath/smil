@@ -36,7 +36,8 @@
 namespace smil
 {
     /**
-    * \addtogroup Morpho
+    * \ingroup Morpho
+    * \defgroup Extrema
     * \{
     */
 
@@ -305,12 +306,18 @@ namespace smil
         return RES_OK ;
     }
 
+    /**
+     * Regional minima computation based on arrowing graphs
+     */
     template <class T>
     inline RES_T fastMinima (const Image<T> &imIn, Image<T> &imOut, const StrElt &se) 
     {
         return fastExtrema (imIn, imOut, se, ">", numeric_limits<T>::max()) ; 
     }
 
+    /**
+     * Regional maxima computation based on arrowing graphs
+     */
     template <class T>
     inline RES_T fastMaxima (const Image<T> &imIn, Image<T> &imOut, const StrElt &se)
     {
