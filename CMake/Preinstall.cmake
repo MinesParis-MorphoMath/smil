@@ -218,7 +218,7 @@ ENDFOREACH()
 
 LIST(APPEND PKG_CONFIG_SMIL_STR
   "prefix=${CMAKE_INSTALL_PREFIX}\n"
-  "libdir=\${prefix}/lib/Smil\n"
+  "libdir=\${prefix}/lib${LIBSUFFIX}/Smil\n"
   "includedir=\${prefix}/include\n"
   "\n"
   "Name: Smil\n"
@@ -232,6 +232,6 @@ LIST(APPEND PKG_CONFIG_SMIL_STR
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/smil.pc ${PKG_CONFIG_SMIL_STR})
 INSTALL(FILES
   ${CMAKE_CURRENT_BINARY_DIR}/smil.pc
-  DESTINATION lib/pkgconfig
+  DESTINATION lib${LIBSUFFIX}/pkgconfig
   COMPONENT dev
   )
