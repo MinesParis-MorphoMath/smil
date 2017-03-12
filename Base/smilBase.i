@@ -146,7 +146,11 @@ TEMPLATE_WRAP_FUNC(gaussianFilter);
 
 TEMPLATE_WRAP_FUNC(drawLine);
 TEMPLATE_WRAP_FUNC(drawRectangle);
+#ifdef SWIGPYTHON
+TEMPLATE_WRAP_FUNC_2T(drawRectangles);
+#else
 TEMPLATE_WRAP_FUNC_2T_CROSS(drawRectangles);
+#endif // SWIGPYTHON
 TEMPLATE_WRAP_FUNC(drawBox);
 TEMPLATE_WRAP_FUNC(drawCircle);
 TEMPLATE_WRAP_FUNC(drawSphere);
