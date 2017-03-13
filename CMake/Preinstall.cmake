@@ -112,11 +112,6 @@ STRING(REPLACE ";" " " BUF "${USE_SMIL_LIBS}")
 LIST(APPEND CMAKE_USE_SMIL_STR "SET(SMIL_LIBRARIES ${BUF})")
 
 FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/UseSmil.cmake ${CMAKE_USE_SMIL_STR})
-INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/UseSmil.cmake.install
-      DESTINATION include/Smil
-      RENAME UseSmil.cmake
-      COMPONENT dev
-      )
 
 # Generate cmake file UseSmil.cmake (for installation)
 
