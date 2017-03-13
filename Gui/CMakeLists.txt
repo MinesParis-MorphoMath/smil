@@ -26,7 +26,6 @@
 
 SET(MODULE_NAME Gui)
 SET(MODULE_DEPS)
-SET(BUILD_SHARED_LIBS FALSE)
 INCLUDE_DIRECTORIES(../Core/include ../Core/include/private ${CMAKE_CURRENT_BINARY_DIR} ../IO/include ../IO/include/private)
 
 SET(ADD_SRCS)
