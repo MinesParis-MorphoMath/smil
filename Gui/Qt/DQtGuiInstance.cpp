@@ -30,12 +30,13 @@
 #ifdef USE_QT
 
 #include <QTimer>
-#include <unistd.h>
+
 
 #if defined(Q_OS_WIN)
 #include <conio.h>
 #include <QTimer>
 #else
+#include <unistd.h>
 #include <QSocketNotifier>
 #endif
 #include <QThread>
