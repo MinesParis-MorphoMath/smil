@@ -219,13 +219,13 @@ namespace smil
     template <class T>
     RES_T fullThin(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
     {
-        return fullThin(imIn, CompStrElt(compSE), imOut);
+        return fullThin(imIn, CompStrEltList(compSE), imOut);
     }
 
     template <class T>
     RES_T fullThin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
     {
-        return fullThin(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+      return fullThin(imIn, CompStrEltList(CompStrElt(foreSE, backSE)), imOut);
     }
 
     /**
