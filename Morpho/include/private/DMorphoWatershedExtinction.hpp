@@ -39,7 +39,7 @@ namespace smil
 
     /**
      * \ingroup Morpho
-     * \defgroup WatershedExtinction
+     * \defgroup WatershedExtinction Watershed Extinction
      * @{
      */
     
@@ -65,7 +65,7 @@ namespace smil
     * 
     * Can be derivated in wrapped languages thanks to Swig directors.
     * 
-    * \demo{custom_extinction_value.py]
+    * \demo{custom_extinction_value.py}
     */
     template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T> >
     class ExtinctionFlooding 

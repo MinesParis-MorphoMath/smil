@@ -138,8 +138,8 @@ namespace smil
     * Mean value and standard deviation
     *
     * Returns mean and standard deviation of the pixel values.
-    * If onlyNonZero is true, only non-zero pixels are considered.
     * \param imIn Input image.
+    * \param onlyNonZero If true, only non-zero pixels are considered.
     */
     template <class T>
     Vector_double meanVal(const Image<T> &imIn, bool onlyNonZero=false)
@@ -192,6 +192,7 @@ namespace smil
     *
     * Returns the min of the pixel values.
     * \param imIn Input image.
+    * \param onlyNonZero If true, only non-zero pixels are considered.
     */
     template <class T>
     T minVal(const Image<T> &imIn, bool onlyNonZero=false)
@@ -253,6 +254,7 @@ namespace smil
     *
     * Returns the max of the pixel values.
     * \param imIn Input image.
+    * \param onlyNonZero If true, only non-zero pixels are considered.
     */
     template <class T>
     T maxVal(const Image<T> &imIn, bool onlyNonZero=false)
@@ -305,6 +307,7 @@ namespace smil
     *
     * Returns the min and the max of the pixel values.
     * \param imIn Input image.
+    * \param onlyNonZero If true, only non-zero pixels are considered.
     */
     template <class T>
     vector<T> rangeVal(const Image<T> &imIn, bool onlyNonZero=false)
@@ -578,7 +581,7 @@ namespace smil
     * \return * For 2D images: m00, m10, m01, m11, m20, m02
     * \return * For 3D images: m000, m100, m010, m110, m200, m020, m001, m101, m011, m002
     * 
-    * \link http://en.wikipedia.org/wiki/Image_moment
+    * See <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on Wikipedia</a>
     */
     template <class T>
     Vector_double measInertiaMatrix(const Image<T> &im, const bool onlyNonZero=true)

@@ -40,7 +40,7 @@ namespace smil
 {
     /**
     * \ingroup Morpho
-    * \defgroup Geodesic
+    * \defgroup Geodesic Geodesic Transforms
     * @{
     */
 

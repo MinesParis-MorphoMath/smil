@@ -49,7 +49,7 @@
 namespace smil
 {
    /**
-    * \defgroup Gui
+    * \ingroup Gui
     */
     /*@{*/
 

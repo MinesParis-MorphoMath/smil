@@ -42,7 +42,7 @@ namespace smil
 {
     /**
      * \ingroup Morpho
-     * \defgroup Watershed
+     * \defgroup Watershed Watershed Segmentation
      * @{
      */
 
@@ -348,6 +348,7 @@ namespace smil
     * \param[in] imIn Input image.
     * \param[in] imMarkers Label image containing the markers. 
     * \param[out] imBasinsOut (optional) Output image containing the basins.
+    * \param[in] se Structuring element
     * After processing, this image will contain the basins with the same label values as the initial markers.
     * 
     * \demo{constrained_watershed.py}
@@ -378,6 +379,7 @@ namespace smil
     * Hierachical queue based algorithm as described by S. Beucher (2011) \cite beucher_hierarchical_2011
     * \param[in] imIn Input image.
     * \param[in] imMarkers Label image containing the markers. 
+    * \param[in] se Structuring element
     * \param[out] imOut Output image containing the watershed lines.
     * \param[out] imBasinsOut (optional) Output image containing the basins.
     * After processing, this image will contain the basins with the same label values as the initial markers.

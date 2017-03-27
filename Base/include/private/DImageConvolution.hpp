@@ -39,7 +39,7 @@ namespace smil
   
     /**
     * \ingroup Base
-    * \defgroup Convolution
+    * \defgroup Convolution Convolution
     * @{
     */
     

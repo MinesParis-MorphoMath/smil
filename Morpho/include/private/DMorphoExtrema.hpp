@@ -37,7 +37,7 @@ namespace smil
 {
     /**
     * \ingroup Morpho
-    * \defgroup Extrema
+    * \defgroup Extrema Regional Minima and Maxima
     * \{
     */
 

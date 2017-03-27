@@ -38,7 +38,7 @@ namespace smil
 {
     /**
     * \ingroup Morpho
-    * \defgroup Filters
+    * \defgroup Filters Morphological Filters
     * @{
     */
 
@@ -117,8 +117,6 @@ namespace smil
     /**
     * Mean filter
     * 
-    * \not_vectorized
-    * \not_parallelized
     */ 
     template <class T>
     RES_T mean(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
@@ -161,8 +159,6 @@ namespace smil
     /**
     * Median filter
     * 
-    * \not_vectorized
-    * \not_parallelized
     */ 
     template <class T>
     RES_T median(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
@@ -208,8 +204,6 @@ namespace smil
     /**
     * Rank filter
     * 
-    * \not_vectorized
-    * \not_parallelized
     */ 
     template <class T>
     RES_T rank(const Image<T> &imIn, Image<T> &imOut, double percentile, const StrElt &se=DEFAULT_SE)

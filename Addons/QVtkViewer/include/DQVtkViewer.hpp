@@ -45,7 +45,7 @@ namespace smil
     
    /**
     * \ingroup Addons
-    * \defgroup QVtkViewer
+    * \defgroup QVtkViewer VTK Viewer
     * @{
     */
    

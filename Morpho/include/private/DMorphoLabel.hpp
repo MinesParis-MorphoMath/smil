@@ -44,7 +44,7 @@ namespace smil
 {
    /**
     * \ingroup Morpho
-    * \defgroup Labelling
+    * \defgroup Labelling Labelling
     * @{
     */
   
@@ -645,8 +645,6 @@ namespace smil
     * Return for each pixel the number of different values in the neighborhoud.
     * Usefull in order to find interfaces or multiple points between basins.
     * 
-    * \not_vectorized
-    * \not_parallelized
     */ 
     template <class T1, class T2>
     RES_T neighbors(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)

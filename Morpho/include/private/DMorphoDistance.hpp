@@ -40,7 +40,7 @@ namespace smil
 {
     /**
     * \ingroup Morpho
-    * \defgroup Distance
+    * \defgroup Distance Distance Function
     * @{
     */
 

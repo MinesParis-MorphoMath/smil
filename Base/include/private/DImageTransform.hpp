@@ -38,7 +38,7 @@ namespace smil
   
     /**
     * \ingroup Base
-    * \defgroup Transform
+    * \defgroup Transform Image Transformations
     * @{
     */
 

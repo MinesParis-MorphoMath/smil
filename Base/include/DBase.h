@@ -31,7 +31,7 @@
 #define _DBASE_H
 
 /**
- * \defgroup Base
+ * \defgroup Base Base Operators
  * @{
  */
 

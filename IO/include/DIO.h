@@ -31,7 +31,7 @@
 #define _D_IMAGE_IO_H
 
 /**
- * \defgroup IO
+ * \defgroup IO IO and Image Formats
  */
 
 #include "Core/include/DCommon.h"

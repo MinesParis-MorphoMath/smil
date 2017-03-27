@@ -41,7 +41,7 @@ namespace smil
   
     /**
     * \ingroup Base
-    * \defgroup Histogram
+    * \defgroup Histogram Histogram
     * \{
     */
 

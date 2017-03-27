@@ -42,7 +42,7 @@ namespace smil
 {
     /**
     * \ingroup Morpho
-    * \defgroup HierarQ
+    * \defgroup HierarQ Hierarchical Queues
     * @{
     */
 

@@ -37,7 +37,7 @@ namespace smil
 {
     /**
     * \ingroup Morpho
-    * \defgroup MaxTree
+    * \defgroup MaxTree Max Tree
     * \{
     */
 
@@ -661,9 +661,10 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,CiterionT,OffsetT> &tree, T* tra
      * Max-tree based algorithm as described by Fabrizio and Marcotegui (2009) \cite fabrizio_fast_2009
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[out] imOut The transformation image
+     * \param[out] imTrans The transformation image
      * \param[out] imIndic The indicator image
      * \param[in] stopSize (optional)
+     * \param[in] delta
      */
     template <class T1, class T2>
     RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, int stopSize=-1, UINT delta = 0)
@@ -1080,7 +1081,7 @@ void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, 
      * Max-tree based algorithm
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[in] size The size of the opening
+     * \param[in] stopSize The size of the opening
      * \param[out] imOut Output image
     */
     template <class T>
@@ -1095,7 +1096,7 @@ void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, 
      * Max-tree based algorithm
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[in] size The size of the closing
+     * \param[in] stopSize The size of the closing
      * \param[out] imOut Output image
     */
     template <class T>

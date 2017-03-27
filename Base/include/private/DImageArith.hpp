@@ -385,7 +385,7 @@ namespace smil
     * 
     * Addition between two images (or between an image and a constant value)
     * \param imIn1 input image 1
-    * \param imIn2 (or val) input image 2 (or constant value)
+    * \param imIn2 input image 2
     * \param imOut output image
     * \see Image::operator+
     */
@@ -412,7 +412,7 @@ namespace smil
     * 
     * Addition between two images (or between an image and a constant value) without checking the saturation
     * \param imIn1 input image 1
-    * \param "imIn2 (or val)" input image 2 (or constant value)
+    * \param imIn2 input image 2
     * \param imOut output image
     */
     template <class T>
@@ -439,7 +439,7 @@ namespace smil
     * 
     * Subtraction between two images (or between an image and a constant value)
     * \param imIn1 input image 1
-    * \param "imIn2 (or val)" input image 2 (or a constant value)
+    * \param imIn2 input image 2
     * \param imOut output image containing \c imIn1-imIn2 (or \c imIn1-val)
     */
     template <class T>
@@ -468,7 +468,7 @@ namespace smil
     * 
     * Subtraction between two images (or between an image and a constant value)
     * \param imIn1 input image 1
-    * \param "imIn2 (or val)" input image 2 (or a constant value)
+    * \param imIn2 input image 2
     * \param imOut output image containing \c imIn1-imIn2 (or \c imIn1-val)
     */
     template <class T>

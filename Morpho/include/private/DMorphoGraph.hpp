@@ -39,7 +39,7 @@ namespace smil
 {
     /**
     * \ingroup Morpho
-    * \defgroup Graph
+    * \defgroup Graph Graph
     * @{
     */
 

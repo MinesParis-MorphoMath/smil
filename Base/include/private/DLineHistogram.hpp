@@ -36,8 +36,7 @@
 namespace smil
 {
 
-    //! \ingroup Base
-    //! \defgroup Histogram
+    //! \ingroup Histogram
     //! @{
 
   

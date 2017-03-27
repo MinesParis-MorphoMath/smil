@@ -40,7 +40,7 @@ namespace smil
   
     /**
     * \ingroup Base
-    * \defgroup Draw
+    * \defgroup Draw Draw Operations
     * @{
     */
     
