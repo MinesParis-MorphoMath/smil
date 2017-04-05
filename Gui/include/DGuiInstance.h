@@ -58,6 +58,12 @@ namespace smil
     
     class Gui;
     
+#ifndef _MSC_VER
+    // MSVC cannot find the implementation...
+    template <>
+    RES_T UniqueInstance<Gui>::initialize();
+#endif // _MSC_VER
+    
     /**
      * Gui module instance
      */
