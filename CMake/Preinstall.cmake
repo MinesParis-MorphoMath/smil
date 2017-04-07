@@ -200,6 +200,7 @@ IF(USE_QT)
   IF(USE_QT_VERSION EQUAL 5)
     # Qt libs are needed by Smil header files...
     LIST(APPEND PKG_CONFIG_SMIL_LIBS " -lQt5Widgets -lQt5Gui -lQt5Core")
+    LIST(APPEND PKG_CONFIG_SMIL_CFLAGS " -fPIC")
     FOREACH(INC ${Qt5Widgets_INCLUDE_DIRS})
       LIST(APPEND PKG_CONFIG_SMIL_CFLAGS " -I${INC}")
     ENDFOREACH()
