@@ -216,32 +216,7 @@ namespace smil
 // #include "Gui/Qt/DQtImageViewer.hpp"
 #endif // USE_QWT
 
-    template <class T, UINT N>
-    inline RES_T
-    mul(SMIL_UNUSED const Image<MultichannelType<T, N> > &imIn,
-        SMIL_UNUSED const double &dValue,
-        SMIL_UNUSED Image<MultichannelType<T, N> > &imOut) {
-      return RES_ERR_NOT_IMPLEMENTED;
-    }
 
-    template <class T, UINT N, class T2>
-    inline RES_T stretchHist(SMIL_UNUSED const Image<MultichannelType<T, N> > &imIn,
-                             SMIL_UNUSED Image<T2> &imOut,
-                             SMIL_UNUSED T2 outMinVal,
-                             SMIL_UNUSED T2 outMaxVal) {
-      return RES_ERR_NOT_IMPLEMENTED;
-    }
-
-    template <class T, UINT N, class T1>
-    inline RES_T
-    stretchHist(SMIL_UNUSED const Image<T1> &imIn,
-                SMIL_UNUSED Image<MultichannelType<T, N> > &imOut,
-                SMIL_UNUSED MultichannelType<T, N> outMinVal,
-                SMIL_UNUSED MultichannelType<T, N> outMaxVal) {
-      return RES_ERR_NOT_IMPLEMENTED;
-    }
-    
-    
 } // namespace smil
 
 #endif // _IMAGE_RGB_H

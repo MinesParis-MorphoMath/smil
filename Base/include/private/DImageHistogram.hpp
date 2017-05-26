@@ -62,7 +62,7 @@ namespace smil
     
     template <class T>
     ENABLE_IF( IS_FLOAT(T), RES_T )
-    histogram(const Image<T> &/*imIn*/, size_t */*h*/)
+    histogram(const Image<T> &/*imIn*/, size_t * /*h*/)
     {
         return RES_ERR_NOT_IMPLEMENTED;
     }
