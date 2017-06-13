@@ -762,7 +762,7 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
                     //self,node = 1, nParent =0, stop=0, delta = 0, isPrevMaxT = 0):
   int child; // index node
   T current_residue, stab_residue;
-  UINT cNode, cParent,cAncestor; // attributes
+  UINT cNode, cParent; // attributes
       CriterionT aNode, aParent,aAncestor;
       T lNode, lParent, lAncestor; // node levels, the same type than input image
       float stability;
@@ -772,7 +772,7 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
       aNode =  tree.getCriterion(node).crit;
       lNode =  tree.getLevel(node);// #current level
 
-      cAncestor =  tree.getCriterion(first_ancestor).ymax-tree.getCriterion(first_ancestor).ymin+1;// #current criterion
+      //  cAncestor =  tree.getCriterion(first_ancestor).ymax-tree.getCriterion(first_ancestor).ymin+1;// #current criterion
       cParent =  tree.getCriterion(nParent).ymax-tree.getCriterion(nParent).ymin+1;// #current criterion
       aParent  = tree.getCriterion(nParent).crit;
       aAncestor  = tree.getCriterion(first_ancestor).crit;
