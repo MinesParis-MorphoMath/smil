@@ -256,13 +256,13 @@ namespace smil
     template <class T>
     RES_T fullThick(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
     {
-        return fullThick(imIn, CompStrElt(compSE), imOut);
+        return fullThick(imIn, CompStrEltList(compSE), imOut);
     }
 
     template <class T>
     RES_T fullThick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
     {
-        return fullThick(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+      return fullThick(imIn, CompStrEltList(CompStrElt(foreSE, backSE)), imOut);
     }
 
 /** \} */
