@@ -43,6 +43,10 @@ IF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
     MESSAGE(FATAL_ERROR "Compilation in source directory is deprecated and will result in build errors. Please build in a different directory.")
 ENDIF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 
+# Generate compilation database
+# to be used by external tools like clang-tidy or rtags
+SET(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
+
 ############
 
 SET(MODULES	Core
