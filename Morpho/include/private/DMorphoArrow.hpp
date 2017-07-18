@@ -426,7 +426,9 @@ RES_T arrowMinFunction < T, arrowT >::_exec ( const imageInType & in,
 	    srcLines = srcSlices[s];
 	    destLines = destSlices[s];
 
+	    #ifdef USE_OPEN_MP
 	    #pragma omp for
+	    #endif // USE_OPEN_MP
 	    for ( size_t l = 0; l < nLines; ++l )
 	    {
 	        oddLine = oddSe && l %2;
