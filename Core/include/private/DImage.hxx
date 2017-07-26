@@ -40,6 +40,13 @@
 #include "IO/include/private/DImageIO.hxx"
 #include "Gui/include/DGuiInstance.h"
 
+#ifdef SMIL_WRAP_RGB
+#include "NSTypes/RGB/include/DRGB.h"
+#endif // SMIL_WRAP_RGB
+
+#ifdef SMIL_WRAP_BIT
+#include "NSTypes/Bit/include/DBit.h"
+#endif // SMIL_WRAP_BIT
 
 namespace smil
 {
