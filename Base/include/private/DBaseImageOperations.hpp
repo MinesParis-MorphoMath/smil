@@ -54,11 +54,11 @@ namespace smil
         
         RES_T retVal;
 
-        imageFunctionBase() : alignedBuffers ( NULL ) {};
+        imageFunctionBase() : alignedBuffers ( NULL ) {}
         ~imageFunctionBase()
         {
             deleteAlignedBuffers();
-        };
+        }
 
         lineType *createAlignedBuffers ( size_t nbr, size_t len );
         void deleteAlignedBuffers();

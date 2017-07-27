@@ -111,7 +111,7 @@ namespace smil
         Core *getCoreInstance();
         typedef void parentClass;
         virtual const char *getInfoString(const char * = "") const { return NULL; }
-        virtual void printSelf(ostream & = std::cout, string ="") const {};
+        virtual void printSelf(ostream & = std::cout, string ="") const {}
         virtual const char *getClassName() const
         {
             return this->className.c_str();

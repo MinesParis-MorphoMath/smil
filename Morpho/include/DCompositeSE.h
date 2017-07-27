@@ -53,7 +53,7 @@ namespace smil
         StrElt fgSE;
         StrElt bgSE;
         
-        CompStrElt() : BaseObject("CompStrElt") {};
+        CompStrElt() : BaseObject("CompStrElt") {}
         ~CompStrElt() {}
         CompStrElt(const CompStrElt &rhs);
         CompStrElt(const StrElt &fg, const StrElt &bg);

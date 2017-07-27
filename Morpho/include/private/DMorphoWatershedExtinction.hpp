@@ -107,7 +107,7 @@ namespace smil
         
         inline virtual void insertPixel(const size_t &/*offset*/, const labelT &/*lbl*/) {}
         inline virtual void raiseLevel(const labelT &/*lbl*/) {}
-        inline virtual labelT mergeBasins(const labelT &/*lbl1*/, const labelT &/*lbl2*/) { return 0; };
+        inline virtual labelT mergeBasins(const labelT &/*lbl1*/, const labelT &/*lbl2*/) { return 0; }
         inline virtual void finalize(const labelT &/*lbl*/) {}
         
         virtual void updateEquTable(const labelT &lbl1, const labelT &lbl2)

@@ -64,7 +64,7 @@ void SSE_INT_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
         p2 += size;
         p3 += size;
     }
-};
+}
 
 #endif // __SSE__
 
@@ -90,7 +90,7 @@ void SSE_AV_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
         p2 += size;
         p3 += size;
     }
-};
+}
 
 
 void bench_INT_vs_AV()
