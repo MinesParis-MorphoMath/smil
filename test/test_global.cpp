@@ -29,7 +29,9 @@
 
 #include "Core/include/DCore.h"
 
+#ifdef SMIL_WRAP_RGB
 #include "NSTypes/RGB/include/DRGB.h"
+#endif // SMIL_WRAP_RGB
 
 // #include "Addons/MorphM/include/private/DMorphMImage.hpp"
 
@@ -43,6 +45,7 @@ using namespace smil;
 
 int main()
 {
+#if defined(USE_CURL) && defined(USE_PNG)
 
    Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/lena.png");
    im1.show();
@@ -60,9 +63,11 @@ int main()
 //     ImageViewer<UINT8> *viewer;
 
 
+#ifdef SMIL_WRAP_RGB
    BaseImage *im = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
    if (im)
     im->show();
+#endif // SMIL_WRAP_RGB
    
 //    Image<UINT16> im1("/home/faessel/tmp/test_image16.tif");
    
@@ -73,5 +78,6 @@ int main()
 //     
 //     Gui::execLoop();
 
+#endif // USE_CURL && USE_PNG
 }
 
