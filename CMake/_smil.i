@@ -57,7 +57,6 @@ ${SWIG_INCLUDE_DEFINITIONS}
 
 import sys, gc, os
 import time
-import __main__
 
 if sys.version_info >= (3,0,0):
   import builtins as __builtin__
@@ -95,7 +94,7 @@ __builtin__._find_object_name = _find_object_name
 
 def _find_images(gbl_dict=None):
     if not gbl_dict:
-      gbl_dict = __main__.__dict__
+      gbl_dict = globals()
     imgs = dict()
     for it in gbl_dict.items():
       if isinstance(it[1], BaseImage):
@@ -126,7 +125,7 @@ def deleteAll():
     imgs = _find_images()
     for im in imgs.keys():
       im.hide()
-      __main__.__dict__.pop(imgs[im], None)
+      globals().pop(imgs[im], None)
       del im
     
     
