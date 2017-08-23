@@ -62,7 +62,8 @@ namespace smil
     RES_T getJPGFileInfo(const char* filename, ImageFileInfo &fInfo)
     {
         /* open image file */
-        FILE *fp = fopen (filename, "rb");
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "rb");
         
         if (!fp)
         {
@@ -113,7 +114,8 @@ namespace smil
     RES_T JPGImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
     {
         /* open image file */
-        FILE *fp = fopen (filename, "rb");
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "rb");
         
         if (!fp)
         {
@@ -171,7 +173,8 @@ namespace smil
     RES_T JPGImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
     {
         /* open image file */
-        FILE *fp = fopen (filename, "wb");
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "wb");
         
         if (!fp)
         {

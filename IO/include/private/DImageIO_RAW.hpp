@@ -55,7 +55,7 @@ namespace smil
         FILE *fp = NULL;
 
         /* open image file */
-        fp = fopen (filename, "rb");
+        SMIL_OPEN(fp, filename, "rb");
         
         ASSERT(fp, "Error: couldn't open file", RES_ERR_IO);
 
@@ -86,7 +86,7 @@ namespace smil
         FILE *fp = NULL;
 
         /* open image file */
-        fp = fopen (filename, "wb");
+        SMIL_OPEN(fp, filename, "wb");
         
         ASSERT(fp, "Error: couldn't open file", RES_ERR_IO);
 

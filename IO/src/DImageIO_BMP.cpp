@@ -116,7 +116,8 @@ namespace smil
     RES_T getBMPFileInfo(const char* filename, ImageFileInfo &fInfo)
     {
         /* open image file */
-        FILE *fp = fopen (filename, "rb");
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "rb");
         
         if (!fp)
         {
@@ -152,7 +153,8 @@ namespace smil
     template <>
     RES_T BMPImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image)
     {
-        FILE *fp = fopen( filename, "rb" );
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "rb");
 
         ASSERT(fp!=NULL, string("Cannot open file ") + filename + " for input", RES_ERR_IO);
         
@@ -215,7 +217,8 @@ namespace smil
     template <>
     RES_T BMPImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
     {
-        FILE *fp = fopen( filename, "rb" );
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "rb");
 
         ASSERT(fp!=NULL, string("Cannot open file ") + filename + " for input", RES_ERR_IO);
         
@@ -261,7 +264,8 @@ namespace smil
     template <>
     RES_T BMPImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename)
     {
-        FILE* fp = fopen( filename, "wb" );
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "wb");
 
         if ( fp == NULL )
         {
@@ -333,7 +337,8 @@ namespace smil
     template <>
     RES_T BMPImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
     {
-        FILE* fp = fopen( filename, "wb" );
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "wb");
 
         if ( fp == NULL )
         {

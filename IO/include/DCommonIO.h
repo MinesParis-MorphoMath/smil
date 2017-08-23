@@ -35,6 +35,12 @@
 
 #include <cstdio>
 
+#ifdef _MSC_VER
+#define SMIL_OPEN(FILEPTR, NAME, MODE) fopen_s(&FILEPTR, NAME, MODE)
+#else // _MSC_VER
+#define SMIL_OPEN(FILEPTR, NAME, MODE) FILEPTR = fopen(NAME, MODE)
+#endif // _MSC_VER
+
 namespace smil
 {
   
