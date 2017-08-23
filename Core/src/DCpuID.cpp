@@ -96,7 +96,8 @@ CpuID::CpuID()
         if (vendor == "GenuineIntel") {
             do {
 #ifdef _MSC_VER
-				// TODO Write equivalent intel style assembly code
+	      // TODO Write equivalent intel style assembly code
+	      eaxFeatures = 0;
 #else // _MSC_VER
 				__asm__ __volatile__ (
                     "mov $0x04, %%eax\n\t"
