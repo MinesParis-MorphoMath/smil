@@ -276,7 +276,7 @@ namespace smil
                             
                         updateEquTable(eaten, eater);
                     }
-                    pendingMerges.erase(mIt);
+                    mIt = pendingMerges.erase(mIt);
 //                     mergeLevels.erase(lIt);
                 }
 //                 else
