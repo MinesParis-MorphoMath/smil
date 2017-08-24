@@ -38,8 +38,7 @@ namespace smil
 {
 
 
-        template <>
-        RES_T UniqueInstance<Gui>::initialize()
+        RES_T Gui::initialize()
         {
                 if (Gui::_instance == NULL)
                 {
