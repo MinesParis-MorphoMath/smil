@@ -11,7 +11,7 @@
 # FREETYPE_LIBRARY, where to find the FREETYPE library.
 
 FIND_PATH(FREETYPE_INCLUDE_DIR_FT2BUILD ft2build.h
-  freetype2
+  /usr/include/freetype2
   /usr/include/
   /usr/local/include/
 )
