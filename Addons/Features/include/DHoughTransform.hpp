@@ -83,6 +83,7 @@ namespace smil
                 }
             }
         }
+	return RES_OK;
     }
     
     template <class T1, class T2>
@@ -126,7 +127,7 @@ namespace smil
                 }
             }
         }
-        
+        return RES_OK;
     }
     
     template <class T1, class T2>
@@ -134,8 +135,9 @@ namespace smil
     {
         UINT wIn = imIn.getWidth();
         UINT hIn = imIn.getHeight();
-        
-        double rhoMax = sqrt(wIn*wIn + hIn*hIn);
+       
+        // Commente - rhoMax non utilise	
+        // double rhoMax = sqrt(wIn*wIn + hIn*hIn);
         
         UINT wOut = resol * wIn;
         UINT hOut = resol * hIn;
@@ -181,7 +183,7 @@ namespace smil
             }
         }
         stretchHist(imCentersOut, imOut);
-        
+        return RES_OK;    
     }
     
     
