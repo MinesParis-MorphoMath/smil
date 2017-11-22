@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,12 +32,12 @@
 #include <omp.h>
 #endif
 
-  #include <stdlib.h> 
+#include <cstdlib>
 #ifdef _MSC_VER
   #include <intrin.h>
+  #include <algorithm>
 // TODO: find asm instructions for arm platforms
 #elif defined(__arm__) 
-  #include <stdlib.h> 
 #else
   #include <cpuid.h>
 #endif // _MSC_VER
@@ -96,7 +96,8 @@ CpuID::CpuID()
         if (vendor == "GenuineIntel") {
             do {
 #ifdef _MSC_VER
-				// TODO Write equivalent intel style assembly code
+	      // TODO Write equivalent intel style assembly code
+	      eaxFeatures = 0;
 #else // _MSC_VER
 				__asm__ __volatile__ (
                     "mov $0x04, %%eax\n\t"

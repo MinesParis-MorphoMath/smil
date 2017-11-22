@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -32,7 +32,7 @@
 
 #include <string>
 #include <algorithm>
-#include <ctype.h>
+#include <cctype>
 
 #ifdef USE_CURL
 #include <curl/curl.h>
@@ -70,7 +70,7 @@ namespace smil
         curl_handle = curl_easy_init();
         if (curl_handle) 
         {
-            fp = fopen(outfilename,"wb");
+            SMIL_OPEN(fp, outfilename, "wb");
             curl_easy_setopt(curl_handle, CURLOPT_URL, url);
             curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
             curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, fp);

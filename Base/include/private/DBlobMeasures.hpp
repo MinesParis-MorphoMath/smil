@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -111,7 +111,7 @@ namespace smil
     }
 
     /**
-    * Measure the maximum value of each blob in imIn.
+    * Measure the sum of values of each blob in imIn.
     * Return a map(labelValue, double) with the max value for each label.
     */
     template <class T, class labelT>
@@ -138,6 +138,15 @@ namespace smil
     map<labelT, T > measModeVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
         return processBlobMeasure<T, labelT, measModeValFunc<T> >(imIn, blobs);
+    }
+        /**
+    * Measure the median value of imIn in each blob.
+    * Return a map(labelValue, T) with the m median value for each label.
+    */
+    template <class T, class labelT>
+    map<labelT, T > measMedianVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
+    {
+        return processBlobMeasure<T, labelT, measMedianValFunc<T> >(imIn, blobs);
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -53,7 +53,7 @@ namespace smil
         StrElt fgSE;
         StrElt bgSE;
         
-        CompStrElt() : BaseObject("CompStrElt") {};
+        CompStrElt() : BaseObject("CompStrElt") {}
         ~CompStrElt() {}
         CompStrElt(const CompStrElt &rhs);
         CompStrElt(const StrElt &fg, const StrElt &bg);

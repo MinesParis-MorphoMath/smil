@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -43,6 +43,7 @@ namespace smil
     RES_T LABToXYZ(const Image<RGB> &imLabIn, Image<RGB> &imXyzOut);
     RES_T RGBToHLS(const Image<RGB> &imRgbIn, Image<RGB> &imHlsOut);
     RES_T HLSToRGB(const Image<RGB> &imHlsIn, Image<RGB> &imRgbOut);
+    RES_T RGBToHSV(const Image<RGB> &imRgbIn, Image<RGB> &imHlsOut);
     
     RES_T RGBToLAB(const Image<RGB> &imRgbIn, Image<RGB> &imLabOut);
     RES_T LABToRGB(const Image<RGB> &imLabIn, Image<RGB> &imRgbOut);

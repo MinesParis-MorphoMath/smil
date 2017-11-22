@@ -27,8 +27,8 @@
  */
 
 
-#include <stdio.h>
-#include <time.h>
+#include <cstdio>
+#include <ctime>
 
 
 #include "Core/include/DCore.h"
@@ -37,7 +37,9 @@
 #include "Gui/include/DGui.h"
 
 #include "Core/include/DColor.h"
+#ifdef SMIL_WRAP_RGB
 #include "NSTypes/RGB/include/DRGB.h"
+#endif // SMIL_WRAP_RGB
 
 
 using namespace smil;
@@ -74,13 +76,19 @@ int main(void)
     Image_UINT8 im2;
     Image_UINT8 im3;
 
+#if defined(USE_CURL) && defined(USE_PNG)
     read("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png", im1);
+#endif // USE_CURL && USE_PNG
 
     
+#ifdef SMIL_WRAP_RGB
     Image<RGB> rgbIm;
+#endif // SMIL_WRAP_RGB
 
+#if defined(USE_CURL) && defined(USE_PNG)
     BaseImage *im0 = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
     delete im0;
+#endif // USE_CURL && USE_PNG
     
     
     TestSuite ts;

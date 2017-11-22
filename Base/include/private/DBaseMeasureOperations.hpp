@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -45,6 +45,7 @@ namespace smil
     template <class T, class _retType>
     struct MeasureFunctionBase
     {
+        virtual ~MeasureFunctionBase() {}
         typedef typename Image<T>::lineType lineType;
         typedef _retType retType;
         retType retVal;

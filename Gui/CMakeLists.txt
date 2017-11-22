@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+# Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,6 @@
 
 SET(MODULE_NAME Gui)
 SET(MODULE_DEPS)
-SET(BUILD_SHARED_LIBS FALSE)
 INCLUDE_DIRECTORIES(../Core/include ../Core/include/private ${CMAKE_CURRENT_BINARY_DIR} ../IO/include ../IO/include/private)
 
 SET(ADD_SRCS)

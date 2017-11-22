@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -31,8 +31,8 @@
 #define _D_IMAGE_IO_RAW_HPP
 
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <cstdlib>
 #include <string>
 
 #include "Core/include/private/DImage.hpp"
@@ -55,7 +55,7 @@ namespace smil
         FILE *fp = NULL;
 
         /* open image file */
-        fp = fopen (filename, "rb");
+        SMIL_OPEN(fp, filename, "rb");
         
         ASSERT(fp, "Error: couldn't open file", RES_ERR_IO);
 
@@ -86,7 +86,7 @@ namespace smil
         FILE *fp = NULL;
 
         /* open image file */
-        fp = fopen (filename, "wb");
+        SMIL_OPEN(fp, filename, "wb");
         
         ASSERT(fp, "Error: couldn't open file", RES_ERR_IO);
 

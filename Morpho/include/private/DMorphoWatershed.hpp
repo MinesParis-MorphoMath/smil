@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -42,7 +42,7 @@ namespace smil
 {
     /**
      * \ingroup Morpho
-     * \defgroup Watershed
+     * \defgroup Watershed Watershed Segmentation
      * @{
      */
 
@@ -335,7 +335,10 @@ namespace smil
                   this->wsPixels[curOffset] = STAT_WS_LINE;
             }
         }
-        
+#ifndef SWIG
+      using BaseFlooding<T, labelT, HQ_Type>::flood;
+      using BaseFlooding<T, labelT, HQ_Type>::initialize;
+#endif // SWIG
     };
     
     /**
@@ -345,6 +348,7 @@ namespace smil
     * \param[in] imIn Input image.
     * \param[in] imMarkers Label image containing the markers. 
     * \param[out] imBasinsOut (optional) Output image containing the basins.
+    * \param[in] se Structuring element
     * After processing, this image will contain the basins with the same label values as the initial markers.
     * 
     * \demo{constrained_watershed.py}
@@ -375,6 +379,7 @@ namespace smil
     * Hierachical queue based algorithm as described by S. Beucher (2011) \cite beucher_hierarchical_2011
     * \param[in] imIn Input image.
     * \param[in] imMarkers Label image containing the markers. 
+    * \param[in] se Structuring element
     * \param[out] imOut Output image containing the watershed lines.
     * \param[out] imBasinsOut (optional) Output image containing the basins.
     * After processing, this image will contain the basins with the same label values as the initial markers.
@@ -443,8 +448,8 @@ namespace smil
             dilate(labelIm2, tmpIm2, se);
             addNoSat(labelIm1, labelIm2, sumIm);
             threshold(sumIm, threshMin, threshMax, sumIm);
-            if (&maskIm)
-              inf(maskIm, sumIm, sumIm);
+            // if (&maskIm) // a reference cannot be NULL
+            inf(maskIm, sumIm, sumIm);
             mask(tmpIm1, sumIm, tmpIm1);
             mask(tmpIm2, sumIm, tmpIm2);
             sup(labelIm1, tmpIm1, labelIm1);
@@ -470,14 +475,15 @@ namespace smil
         ASSERT_SAME_SIZE(&imIn, &basinsOut);
         
         Image<T2> imLbl2(basinsOut);
-        Image<T2> *nullIm = NULL;
+        Image<T2> nullIm(basinsOut);
+        fill(nullIm, ImDtTypes<T2>::max()); // invariant to liblSkiz inf
         
         // Create the label images
         label(imIn, basinsOut, se);
         inv(basinsOut, imLbl2);
         mask(imLbl2, basinsOut, imLbl2);
         
-        ASSERT(lblSkiz(basinsOut, imLbl2, *nullIm, se)==RES_OK);
+        ASSERT(lblSkiz(basinsOut, imLbl2, nullIm, se)==RES_OK);
         
         // Clean result image
         open(basinsOut, basinsOut);

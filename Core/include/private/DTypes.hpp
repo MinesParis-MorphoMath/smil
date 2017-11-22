@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -56,9 +56,10 @@ namespace smil
 
     // typedef unsigned char __attribute__ ((vector_size (16))) alUINT8;
 
-    #ifndef _MSC_VER
+	// Why this directive for msvc (windows) ?
+    //#ifndef _MSC_VER
     typedef signed char INT8;
-    #endif // _MSC_VER
+    //#endif // _MSC_VER
     typedef short INT16;
     typedef int INT32;
 
@@ -79,7 +80,7 @@ namespace smil
         typedef T pixelType;
         typedef pixelType *lineType;
 #ifndef SWIG        
-        typedef lineType __restrict restrictLineType;
+        typedef pixelType * __restrict restrictLineType;
 #endif // SWIG        
         typedef lineType *sliceType;
         typedef sliceType *volType;

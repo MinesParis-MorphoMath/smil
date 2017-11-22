@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -133,6 +133,7 @@ TEMPLATE_WRAP_FUNC(asfClose);
 TEMPLATE_WRAP_FUNC(asfOpen);
 TEMPLATE_WRAP_FUNC(mean);
 TEMPLATE_WRAP_FUNC(median);
+TEMPLATE_WRAP_FUNC(rank);
 
 %include "Morpho/include/private/DMorphoArrow.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(arrow);
@@ -165,7 +166,11 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(label);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithoutFunctor);
 TEMPLATE_WRAP_FUNC_2T_CROSS(lambdaLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(fastLabel);
+TEMPLATE_WRAP_FUNC_2T_CROSS(lambdaFastLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithArea);
+TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithVolume);
+TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithMaxima);
+TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithMean);
 TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 
 %ignore smil::CompStrEltList::operator[];
@@ -194,6 +199,7 @@ TEMPLATE_WRAP_FUNC(zhangSkeleton);
 %include "Morpho/include/private/DMorphoMaxTree.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpenMSER);
+
 TEMPLATE_WRAP_FUNC(areaOpen);
 TEMPLATE_WRAP_FUNC(areaClose);
 

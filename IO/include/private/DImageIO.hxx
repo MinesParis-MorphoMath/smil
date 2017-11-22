@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,6 +32,11 @@
 
 
 
+#if __cplusplus >= 201103L
+#include <memory>
+#define auto_ptr unique_ptr
+#else
+#endif // __cplusplus > 201103L
 
 #include "IO/include/DCommonIO.h"
 #include "DImageIO.hpp"
@@ -205,8 +210,6 @@ namespace smil
           ERR_MSG("The fileList must contain the same number of filename as the image depth.");
           return RES_ERR;
         }
-        
-        vector<string>::const_iterator it = fileList.begin();
         
         size_t w = image.getWidth(), h = image.getHeight();
         Image<T> tmpIm(w, h);

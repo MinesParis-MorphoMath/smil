@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -33,11 +33,12 @@
 #include "Core/include/DImage.h"
 #include "Base/include/private/DImageHistogram.hpp"
 #include <complex>
+#include <math.h>
 namespace smil
 {
     /**
     * \ingroup Morpho
-    * \defgroup MaxTree
+    * \defgroup MaxTree Max Tree
     * \{
     */
 
@@ -560,6 +561,7 @@ void compute_max(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UINT* 
         unsigned int max_criterion;
         UINT child;
         UINT hauteur = tree.getCriterion(node).ymax-tree.getCriterion(node).ymin+1;
+	//	std::cout<<"IN COMPUTE_MAX:"<<"; node="<<node<<"\n";
         m = (hauteur==hauteur_parent) ? tree.getLevel(node)-previous_value : tree.getLevel(node)-valeur_parent;
         if (hauteur>=stop) 
         {
@@ -587,8 +589,12 @@ void compute_max(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UINT* 
         }
         if (hauteur==hauteur_parent) 
         {
+
                 while (child!=0) 
                 {
+		  //		  if(child > tree.getLabelMax()){
+		  //		  std::cout<<"ERROR call child:"<<child<<"\n";
+		  //		  }
                     if (hauteur_parent>stop) 
                       compute_max(tree, transformee_node, indicatrice_node, child, stop, max_node, max_criterion, hauteur, tree.getLevel(node), previous_value);
                     else 
@@ -597,9 +603,13 @@ void compute_max(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UINT* 
                 }
         } 
         else 
-        {
+	  {
                 while (child!=0) 
                 {
+		  //		  if(child > tree.getLabelMax()){
+		  //		  std::cout<<"ERROR call child:"<<child<<"\n";
+		  //		  }
+
                     compute_max(tree, transformee_node, indicatrice_node, child, stop, max_node, max_criterion, hauteur, tree.getLevel(node), valeur_parent);
                     child = tree.getBrother(child);
                 }
@@ -612,10 +622,11 @@ void compute_contrast(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, U
 
   int child;
   UINT hauteur;
+  //  std::cout<<"IN compute_contrast\n";
 
   transformee_node[root]=0;
   indicatrice_node[root]=0;
-
+  //  std::cout<<"IN compute_contrast 2\n";
   tree.updateCriteria(root);
 
   hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
@@ -623,6 +634,7 @@ void compute_contrast(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, U
   if(delta == 0){
     while (child!=0) 
       {
+	//	std::cout<<"child"<<child<<"; level"<<tree.getLevel(child);
         compute_max(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
         child = tree.getBrother(child);
       }
@@ -630,6 +642,7 @@ void compute_contrast(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, U
   else{
     while (child!=0) 
       {
+	//	std::cout<<"child"<<child<<"; level"<<tree.getLevel(child);
         ComputeDeltaUO(tree, transformee_node, indicatrice_node, child, root/*parent*/, (T)0/* prev_residue*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
 
         child = tree.getBrother(child);
@@ -641,6 +654,7 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,CiterionT,OffsetT> &tree, T* tra
 {
         int child;
         UINT hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
+
         transformee_node[root]=0;
         indicatrice_node[root]=0;
         tree.updateCriteria(root);
@@ -661,13 +675,16 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,CiterionT,OffsetT> &tree, T* tra
      * Max-tree based algorithm as described by Fabrizio and Marcotegui (2009) \cite fabrizio_fast_2009
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[out] imOut The transformation image
+     * \param[out] imTrans The transformation image
      * \param[out] imIndic The indicator image
      * \param[in] stopSize (optional)
+     * \param[in] delta
      */
     template <class T1, class T2>
     RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, int stopSize=-1, UINT delta = 0)
     {
+
+
         ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
         ASSERT_SAME_SIZE(&imIn, &imTrans, &imIndic);
         
@@ -676,15 +693,17 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,CiterionT,OffsetT> &tree, T* tra
           
         int imSize = imIn.getPixelCount();
         UINT *img_eti = new UINT[imSize]();
-        
+     
+
         MaxTree<T1> tree;
         int root = tree.build(imIn, img_eti);
-        
+
+	std::cout<<"ULTIMATE OPEN, after tree.build"<<"NB VERTEX="<<tree.getLabelMax()<<"\n";
         T1 *transformee_node = new T1[tree.getLabelMax()]();
         UINT *indicatrice_node = new UINT[tree.getLabelMax()]();
-
+	//	std::cout<<"ULTIMATE OPEN, after memory allocation\n";
         compute_contrast(tree, transformee_node, indicatrice_node, root, stopSize,delta);
-
+	//	std::cout<<"ULTIMATE OPEN, compute_contrast\n";
         
         typename ImDtTypes<T1>::lineType transformeePix = imTrans.getPixels();
         typename ImDtTypes<T2>::lineType indicatricePix = imIndic.getPixels();
@@ -717,12 +736,23 @@ struct AreaCriterion
   inline void merge(AreaCriterion &other) { value += other.value; }
   inline void update() { value += 1; }
 };
+struct HeightCriterion
+{
+  size_t ymax;
+  size_t ymin;
+  size_t value;
+  inline void init() { ymax = 0; ymin=6500000; }
+  inline void reset() { ymax = 0; ymin = 6500000;}
+  inline void merge(HeightCriterion &other) { ymax = max(ymax,other.ymax);ymin = min(ymin,other.ymin); }
+  inline void update() { value = ymax-ymin+1; }
+};
 
 
 // NEW BMI    # ##################################################
 //(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
 template <class T, class CriterionT, class OffsetT>
-void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent,  int first_ancestor, UINT stop, UINT delta, int isPrevMaxT,UINT minArea=0,T threshold=0){
+void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent,  int first_ancestor, UINT stop, UINT delta, UINT method, int isPrevMaxT,UINT minArea=0,T threshold=0,T mymax=0){
+  // method:  1 (MSER), 2 (RGR)
 
   // "node": the current node; "nParent": its direct parent (allows
   // attribute comparison for Delta versions); "first_ancestor": the
@@ -731,8 +761,8 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
 
                     //self,node = 1, nParent =0, stop=0, delta = 0, isPrevMaxT = 0):
   int child; // index node
-  T current_residue, stab_residue;
-      UINT cNode, cParent; // attributes
+  T current_residue, stab_residue = 0;
+  UINT cNode, cParent; // attributes
       CriterionT aNode, aParent,aAncestor;
       T lNode, lParent, lAncestor; // node levels, the same type than input image
       float stability;
@@ -742,7 +772,7 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
       aNode =  tree.getCriterion(node).crit;
       lNode =  tree.getLevel(node);// #current level
 
-
+      //  cAncestor =  tree.getCriterion(first_ancestor).ymax-tree.getCriterion(first_ancestor).ymin+1;// #current criterion
       cParent =  tree.getCriterion(nParent).ymax-tree.getCriterion(nParent).ymin+1;// #current criterion
       aParent  = tree.getCriterion(nParent).crit;
       aAncestor  = tree.getCriterion(first_ancestor).crit;
@@ -757,17 +787,76 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
       else{
         flag = 0;
       }
-      if (flag){
-        stability  = 1 - ((aAncestor.value - aNode.value)*1.0/aAncestor.value);
-        current_residue  =  lNode - lAncestor ;
-        stab_residue = round(current_residue * stability);
-      }
-      else{
-        stability = 1 - ((aParent.value - aNode.value)*1.0/aParent.value);
-        current_residue  = (lNode - lParent);
-        stab_residue = round(current_residue * stability);
+      float relativeGrowthRate;//BMI RGR
+      double lgARoot = std::log((double)tree.getImWidth()*tree.getImHeight());
+      double factor ;
 
+      if(method == 2){//RGR
+	factor = ImDtTypes<T>::max()/((double)100*lgARoot);//BMI RGR La valeur max sera max/10 pour un changement d'aire de 1 a taille_im en pixels
       }
+      else if (method == 3){//MSER_sub
+	factor = ImDtTypes<T>::max()/((double)100.0);//BMI
+	factor = mymax/((double)40.0);//BMI
+	//	std::cout<<"factor3="<<factor<<"\n";
+      }
+      if (flag){
+        current_residue  =  lNode - lAncestor ;
+	if(method == 1){ // mser stability
+	  stability  = 1 - ((aAncestor.value - aNode.value)*1.0/(aAncestor.value));
+	  stab_residue = round(current_residue * stability);
+	}
+	else if (method == 2){// relative growth rate
+	  relativeGrowthRate = factor * (std::log((double)aAncestor.value ) - std::log((double) aNode.value ));
+	  //	  std::cout<<"aAncestor:"<<aAncestor.value<<", aNode="<<aNode.value<<", rgr="<<relativeGrowthRate<<"\n";
+	  if(current_residue > relativeGrowthRate){
+	    stab_residue = round(current_residue - relativeGrowthRate);
+	  }
+	  else{stab_residue = 0;}
+
+	  //	  std::cout<<"Hg="<<cParent<<"; Hp="<<cNode<<"; Levels="<<int(lNode)<<", "<<int(lAncestor)<<";;;";
+	  //	  std::cout<<"current="<<int(current_residue)<<"; rel="<<relativeGrowthRate<<"; stb_res="<<int(stab_residue)<<"\n";
+	}// end RGR
+	else if (method == 3){// MSER sustraire
+	  stability  = factor*( ((aAncestor.value - aNode.value)*1.0/(aAncestor.value)) );
+	  //	  std::cout<<"factor="<<factor<<"current="<<current_residue<<"stab="<<stability<<"\n";
+	  if(current_residue > stability){
+	    stab_residue = round(current_residue - stability);
+	  }
+	  else{stab_residue = 0;}
+	}// end MSER_sub
+	
+	//	std::cout<<"Ag="<<aAncestor.value<<"; Ap="<<aNode.value<<"; diff_logs="<<(std::log((double)aAncestor.value ) - std::log((double) aNode.value ))<<"; ";
+      }// if flag
+      else{
+        current_residue  = (lNode - lParent);
+	if(method == 1){ // mser stability
+	  stability = 1 - ((aParent.value - aNode.value)*1.0/(aParent.value));// relative growth rate
+	  stab_residue = round(current_residue * stability);
+	}
+	else if (method == 2){// relative growth rate
+	  relativeGrowthRate = factor * (std::log((double)aParent.value ) - std::log((double) aNode.value ));
+	  //	  std::cout<<"aAncestor:"<<aAncestor.value<<", aNode="<<aNode.value<<", rgr="<<relativeGrowthRate<<"\n";
+	  if(current_residue > relativeGrowthRate){
+	    stab_residue = round(current_residue - relativeGrowthRate);
+	  }
+	  else{stab_residue = 0;}
+	  //	  std::cout<<"NFHg="<<cParent<<"; Hp="<<cNode<<"; Levels="<<int(lNode)<<", "<<int(lParent)<<";;;";
+	  //	  std::cout<<"current="<<int(current_residue)<<"; rel="<<int(relativeGrowthRate)<<"; stb_res="<<int(stab_residue)<<"\n";
+	}// end RGR
+	else if (method == 3){
+	  stability = factor*( ((aParent.value - aNode.value)*1.0/(aParent.value)));// msersub
+	  //	  std::cout<<"factor="<<factor<<"current="<<current_residue<<"stab="<<stability<<"\n";
+	  if(current_residue > stability){
+	    stab_residue = round(current_residue - stability);
+	  }
+	  else{stab_residue = 0;}
+	  
+	}
+	else{
+	  std::cout<<"ERROR UNKOWN METHOD\n";
+	}
+      }// if not flag
+
 
 
       transformee_node[node] = transformee_node[nParent];
@@ -790,11 +879,11 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
       child=tree.getChild(node);
       while (child!=0){
         if(flag && (cNode < stop)){
-          ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node,first_ancestor, stop, delta,isMaxT,minArea,threshold);
+          ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node,first_ancestor, stop, delta,method,isMaxT,minArea,threshold,mymax);
         }
         else{
 
-          ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node, nParent,stop, delta,isMaxT,minArea,threshold);
+          ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node, nParent,stop, delta,method,isMaxT,minArea,threshold,mymax);
         }
         child = tree.getBrother(child);
       }
@@ -901,14 +990,15 @@ void  ComputeDeltaUOMSERSC(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
             isMaxT = 1;
             transformee_node[node] = stab_residue;
 
-            if(! (isPrevMaxT and flag)){
+            if(! (isPrevMaxT && flag)){
                 indicatrice_node[node]  = cNode + 1;                
             }
 
         }
     }
-    else
-        indicatrice_node[node]  = 0;
+	else{
+		indicatrice_node[node] = 0;
+	}
 
     child=tree.getChild(node);
     while (child!=0){
@@ -927,7 +1017,7 @@ void  ComputeDeltaUOMSERSC(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
 
 
 template <class T, class CriterionT, class OffsetT>
-void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize,UINT delta = 0, UINT minArea=0,T threshold=0, bool use_textShape =0)
+void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize,UINT delta = 0, UINT method = 2, UINT minArea=0,T threshold=0, bool use_textShape =0)
 {
 
   int child;
@@ -940,14 +1030,27 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
   //  hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
   child = tree.getChild(root);
 
+  // BEGIN COMPUTE DYNAMIC, BMI
+  
+  int mynode;
+  T mylevel, mymax;
+  mymax = 0;
+  for(mynode = 0; mynode < tree.getLabelMax(); mynode ++){
+    mylevel = tree.getLevel(mynode);
+    if(mylevel > mymax){
+      mymax = mylevel;
+    }
+  }
+  std::cout<<"mymax="<<mymax<<"\n";
+  // END COMPUTE DYNAMIC, BMI
     while (child!=0) 
       {
        if(!use_textShape)
-        ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/,minArea,threshold);
+	 ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, method,0 /*isPrevMaxT*/,minArea,threshold,mymax);
        else
-        ComputeDeltaUOMSERSC(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
+         ComputeDeltaUOMSERSC(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
 
-        child = tree.getBrother(child);
+       child = tree.getBrother(child);
       }
 
 }
@@ -955,7 +1058,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
 #endif // SWIG
 
     template <class T1, class T2>
-    RES_T ultimateOpenMSER(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, int stopSize=-1, UINT delta = 0, UINT minArea=0,T1 threshold=0, bool use_textShape =0)
+    RES_T ultimateOpenMSER(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, int stopSize=-1, UINT delta = 0, UINT method = 2, UINT minArea=0,T1 threshold=0, bool use_textShape =0)
     {
         ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
         ASSERT_SAME_SIZE(&imIn, &imTrans, &imIndic);
@@ -974,7 +1077,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
         T1 *transformee_node = new T1[tree.getLabelMax()]();
         UINT *indicatrice_node = new UINT[tree.getLabelMax()]();
 
-        compute_contrast_MSER(tree, transformee_node, indicatrice_node, root, stopSize,delta,minArea,threshold,use_textShape);
+        compute_contrast_MSER(tree, transformee_node, indicatrice_node, root, stopSize,delta,method,minArea,threshold,use_textShape);
 
         
         typename ImDtTypes<T1>::lineType transformeePix = imTrans.getPixels();
@@ -1074,12 +1177,27 @@ void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, 
 #endif // SWIG
 
     /**
-    * Area opening
+    * Height opening
      * 
      * Max-tree based algorithm
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
      * \param[in] size The size of the opening
+     * \param[out] imOut Output image
+    */
+    template <class T>
+    RES_T heightOpen(const Image<T> &imIn, int stopSize, Image<T> &imOut)
+    {
+        return attributeOpen<T, HeightCriterion>(imIn, imOut, stopSize);
+    }
+
+    /**
+    * Area opening
+     * 
+     * Max-tree based algorithm
+     * \warning 4-connex only (6-connex in 3D)
+     * \param[in] imIn Input image
+     * \param[in] stopSize The size of the opening
      * \param[out] imOut Output image
     */
     template <class T>
@@ -1094,7 +1212,7 @@ void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, 
      * Max-tree based algorithm
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[in] size The size of the closing
+     * \param[in] stopSize The size of the closing
      * \param[out] imOut Output image
     */
     template <class T>

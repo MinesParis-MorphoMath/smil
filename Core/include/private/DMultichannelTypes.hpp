@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@
 #include "Core/include/DTypes.h"
 #include "Core/include/DErrors.h"
 
-#include <stdarg.h>
+#include <cstdarg>
 
 namespace smil
 {
@@ -76,6 +76,7 @@ namespace smil
             for (UINT i=0;i<N;i++)
               c[i] = mc.value(i);
         }
+        virtual ~MultichannelType() {}
 
         MultichannelType& operator =(const MultichannelType &mc)
         {
@@ -218,7 +219,7 @@ namespace smil
         {
             MultichannelType newmc;
             for (UINT i=0;i<N;i++)
-              newmc.value(i) = this->value(i) * val;
+              newmc.value(i) = static_cast<T>(this->value(i) * val);
             return newmc;
         }
         MultichannelType operator *(const size_t &val) const
@@ -239,7 +240,7 @@ namespace smil
         {
             MultichannelType newmc;
             for (UINT i=0;i<N;i++)
-              newmc.value(i) = this->value(i) / val;
+              newmc.value(i) = static_cast<T>(this->value(i) / val);
             return newmc;
         }
         MultichannelType operator /(const size_t &val)  const { return this->operator/(double(val)); }
@@ -308,18 +309,29 @@ namespace smil
               dval += c[i];
             return dval/N;
         }
-        operator int() const { return double(*this); }
-        operator UINT() const { return double(*this); }
+
+        operator int() const { return static_cast<int>(double(*this)); }
+        operator UINT() const { return static_cast<UINT>(double(*this)); }
 #ifdef USE_64BIT_IDS
-        operator size_t() const { return double(*this); }
+        operator size_t() const { return static_cast<size_t>(double(*this)); }
 #endif // USE_64BIT_IDS
-        operator UINT8() const { return double(*this); }
-        operator UINT16() const { return double(*this); }
-        operator bool() const { return double(*this); }
-        operator signed char() const { return double(*this); }
-        operator char() const { return double(*this); }
-        operator long int() const { return static_cast<long int>(double(*this)); }
-        operator short int() const { return static_cast<short int>(double(*this)); }
+        operator UINT8() const { return static_cast<UINT8>(double(*this)); }
+        operator UINT16() const { return static_cast<UINT16>(double(*this)); }
+        operator bool() const {
+          if (double(*this))
+            return true;
+          return false;
+        }
+        operator signed char() const {
+          return static_cast<signed char>(double(*this));
+        }
+        operator char() const { return static_cast<char>(double(*this)); }
+        operator long int() const {
+          return static_cast<long int>(double(*this));
+        }
+        operator short int() const {
+          return static_cast<short int>(double(*this));
+        }
 
         virtual const T& value(const UINT &i) const
         {
@@ -524,7 +536,7 @@ namespace smil
         }
         operator char *()
         {
-                return arrays;
+                return (char *)arrays;
         }
         
         ostream& printSelf(ostream &os=cout);

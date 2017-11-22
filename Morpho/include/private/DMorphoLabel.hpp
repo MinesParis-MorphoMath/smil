@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ namespace smil
 {
    /**
     * \ingroup Morpho
-    * \defgroup Labelling
+    * \defgroup Labelling Labelling
     * @{
     */
   
@@ -74,13 +74,16 @@ namespace smil
             this->pixelsIn = imIn.getPixels();
             for (size_t i=0; i<this->imSize[2]*this->imSize[1]*this->imSize[0]; i++) 
             {
-                if (this->pixelsOut[i]==T2(0))
-                    processPixel(i);
+              if (this->pixelsOut[i] == T2(0)) {
+                vector<int> dum;
+                processPixel(i, dum);
+              }
             }
             return RES_OK;
         }
-        
-        virtual void processPixel(size_t pointOffset)
+
+        virtual void processPixel(size_t pointOffset,
+                                  SMIL_UNUSED vector<int> &dOffsets)
         {
 
             T1 pVal = this->pixelsIn[pointOffset];
@@ -292,8 +295,9 @@ namespace smil
             }
         return RES_OK;  
         }
+
+        compOperatorT compareFunc;
     protected :
-            compOperatorT compareFunc;
         T2 labels;
     };
      
@@ -462,6 +466,30 @@ namespace smil
     }
 
     /**
+    * Lambda-flat zones fast labelization
+    * 
+    * Return the number of labels (or 0 if error).
+    */
+    template<class T1, class T2>
+    size_t lambdaFastLabel(const Image<T1> &imIn, const T1 &lambdaVal, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        labelFunctFast<T1,T2,lambdaEqualOperator<T1> > f;
+        f.compareFunc.lambda = lambdaVal;
+        
+        ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
+        
+        size_t lblNbr = f.getLabelNbr();
+        
+        ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+        
+        return lblNbr;
+    }
+
+
+    /**
     * Image labelization with the size of each connected components
     * 
     */
@@ -483,6 +511,104 @@ namespace smil
         ASSERT((maxV < double(ImDtTypes<T2>::max())), "Areas max value exceeds data type max!", 0);
 
         ASSERT(applyLookup(imLabel, areas, imOut)==RES_OK);
+        
+        return RES_OK;
+    }
+    
+    /**
+    * Image labelization with the volume (sum of values) of each connected components in the imLabelsInit image
+    * 
+    */
+    template<class T1, class T2>
+    size_t labelWithVolume(const Image<T1> &imIn, const Image<T2> &imLabelsInit, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        ImageFreezer freezer(imOut);
+        
+        Image<T2> imLabel(imIn);
+        
+        ASSERT(label(imLabelsInit, imLabel, se)!=0);
+	label(imLabelsInit, imLabel, se);
+	bool onlyNonZeros = true;
+	map<T2, Blob> blobs = computeBlobs(imLabel,onlyNonZeros);
+        map<T2, double> volumes = measVolumes(imIn,blobs);
+        ASSERT(!volumes.empty());
+        
+        double maxV = std::max_element(volumes.begin(), volumes.end(), map_comp_value_less())->second;
+        cout << maxV << endl;
+	ASSERT((maxV < double(ImDtTypes<T2>::max())), "Volumes max value exceeds data type max!", 0);
+
+        ASSERT(applyLookup(imLabel, volumes, imOut)==RES_OK);
+        
+        return RES_OK;
+    }
+    
+    /**
+    * Image labelization with the maximum values of each connected components in the imLabelsInit image
+    * 
+    */
+    template<class T1, class T2>
+    size_t labelWithMaxima(const Image<T1> &imIn, const Image<T2> &imLabelsInit, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        ImageFreezer freezer(imOut);
+        
+        Image<T2> imLabel(imIn);
+        
+        ASSERT(label(imLabelsInit, imLabel, se)!=0);
+	label(imLabelsInit, imLabel, se);
+	bool onlyNonZeros = true;
+	map<T2, Blob> blobs = computeBlobs(imLabel,onlyNonZeros);
+        map<T2, T1> markers = measMaxVals(imIn,blobs);
+        ASSERT(!markers.empty());
+        
+        double maxV = std::max_element(markers.begin(), markers.end(), map_comp_value_less())->second;
+        cout << maxV << endl;
+	ASSERT((maxV < double(ImDtTypes<T2>::max())), "Markers max value exceeds data type max!", 0);
+
+        ASSERT(applyLookup(imLabel, markers, imOut)==RES_OK);
+        
+        return RES_OK;
+    }
+    
+    
+    /**
+    * Image labelization with the mean values of each connected components in the imLabelsInit image
+    * 
+    */
+    template<class T1, class T2>
+    size_t labelWithMean(const Image<T1> &imIn, const Image<T2> &imLabelsInit, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        ImageFreezer freezer(imOut);
+        
+        Image<T2> imLabel(imIn);
+        
+        ASSERT(label(imLabelsInit, imLabel, se)!=0);
+	label(imLabelsInit, imLabel, se);
+	bool onlyNonZeros = true;
+	map<T2, Blob> blobs = computeBlobs(imLabel,onlyNonZeros);
+        map<T2, std::vector<double> > meanValsStd = measMeanVals(imIn,blobs);
+	map<T2,double> markers;
+	
+	for (typename std::map<T2, std::vector<double> >::iterator iter = meanValsStd.begin(); iter != meanValsStd.end(); ++iter){
+	  markers[iter->first] = (iter->second)[0];
+// 	  cout << "iter->first = " << iter->first << "  iter->second[0] " << iter->second[0] << endl; 
+	}
+	
+        ASSERT(!markers.empty());
+        
+        double maxV = std::max_element(markers.begin(), markers.end(), map_comp_value_less())->second;
+//         cout << maxV << endl;
+	ASSERT((maxV < double(ImDtTypes<T2>::max())), "Markers max value exceeds data type max!", 0);
+
+        ASSERT(applyLookup(imLabel, markers, imOut)==RES_OK);
         
         return RES_OK;
     }
@@ -519,8 +645,6 @@ namespace smil
     * Return for each pixel the number of different values in the neighborhoud.
     * Usefull in order to find interfaces or multiple points between basins.
     * 
-    * \not_vectorized
-    * \not_parallelized
     */ 
     template <class T1, class T2>
     RES_T neighbors(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)

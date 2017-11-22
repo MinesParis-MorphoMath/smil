@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+# Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -74,8 +74,8 @@ IF(DOXYGEN_FOUND AND DOXYGEN_CONFIG_FILE)
 					    ${CMAKE_CURRENT_BINARY_DIR}/images/${_FCH_NAME_WE}.eps
 				    COMMAND ${IMAGEMAGICK_CONVERT_EXECUTABLE}
 					${_FCH} ${CMAKE_CURRENT_BINARY_DIR}/images/${_FCH_NAME_WE}.png
-				    COMMAND ${SVG_CONVERT_EPS_CMD}
-					${_FCH} ${IMAGEMAGICK_CONVERT_EXECUTABLE}/images/${_FCH_NAME_WE}.eps
+				    COMMAND ${IMAGEMAGICK_CONVERT_EXECUTABLE}
+					${_FCH} ${CMAKE_CURRENT_BINARY_DIR}/images/${_FCH_NAME_WE}.eps
 				    COMMENT "Converting ${_FCH_NAME_WE}.svg"
 				    DEPENDS ${_FCH}
 			    )

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 #ifndef _DTIME_H
 #define _DTIME_H
 
-#include <time.h>
+#include <ctime>
 #include <iomanip>
 
 #ifdef _MSC_VER
@@ -51,7 +51,7 @@ namespace smil
     inline int gettimeofday (struct timeval *tp, void *tz)
     {
         struct _timeb timebuffer;
-        _ftime (&timebuffer);
+        _ftime_s (&timebuffer);
         tp->tv_sec = timebuffer.time;
         tp->tv_usec = timebuffer.millitm * 1000;
         return 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -464,7 +464,7 @@ namespace smil
           tmpIm = new Image<T_in>(imIn, true); // clone
         else tmpIm = &imIn;
         
-        volType srcSlices = tmpIm->getSlices();
+        //volType srcSlices = tmpIm->getSlices();
         volType destSlices = imOut.getSlices();
         
         //lineInType *srcLines;

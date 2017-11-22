@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -385,7 +385,7 @@ namespace smil
     * 
     * Addition between two images (or between an image and a constant value)
     * \param imIn1 input image 1
-    * \param imIn2 (or val) input image 2 (or constant value)
+    * \param imIn2 input image 2
     * \param imOut output image
     * \see Image::operator+
     */
@@ -412,7 +412,7 @@ namespace smil
     * 
     * Addition between two images (or between an image and a constant value) without checking the saturation
     * \param imIn1 input image 1
-    * \param "imIn2 (or val)" input image 2 (or constant value)
+    * \param imIn2 input image 2
     * \param imOut output image
     */
     template <class T>
@@ -439,7 +439,7 @@ namespace smil
     * 
     * Subtraction between two images (or between an image and a constant value)
     * \param imIn1 input image 1
-    * \param "imIn2 (or val)" input image 2 (or a constant value)
+    * \param imIn2 input image 2
     * \param imOut output image containing \c imIn1-imIn2 (or \c imIn1-val)
     */
     template <class T>
@@ -468,7 +468,7 @@ namespace smil
     * 
     * Subtraction between two images (or between an image and a constant value)
     * \param imIn1 input image 1
-    * \param "imIn2 (or val)" input image 2 (or a constant value)
+    * \param imIn2 input image 2
     * \param imOut output image containing \c imIn1-imIn2 (or \c imIn1-val)
     */
     template <class T>
@@ -1097,7 +1097,7 @@ namespace smil
 
         // Verify that the max(measure) doesn't exceed the T2 type max
         typename mapT::const_iterator max_it = std::max_element(_map.begin(), _map.end(), map_comp_value_less());
-        ASSERT(( max_it->second < ImDtTypes<T2>::max() ), "Input map max exceeds data type max!", RES_ERR);
+        ASSERT(( max_it->second <= ImDtTypes<T2>::max() ), "Input map max exceeds data type max!", RES_ERR);
 
         
         typename Image<T1>::lineType pixIn = imIn.getPixels();

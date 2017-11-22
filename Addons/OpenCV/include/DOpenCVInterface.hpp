@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ namespace smil
     private:
         struct python_iplimage
         {
-            PyObject_HEAD
+            PyObject_HEAD;
             IplImage *img;
             PyObject *data;
             size_t offset;

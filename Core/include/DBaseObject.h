@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -111,7 +111,7 @@ namespace smil
         Core *getCoreInstance();
         typedef void parentClass;
         virtual const char *getInfoString(const char * = "") const { return NULL; }
-        virtual void printSelf(ostream & = std::cout, string ="") const {};
+        virtual void printSelf(ostream & = std::cout, string ="") const {}
         virtual const char *getClassName() const
         {
             return this->className.c_str();

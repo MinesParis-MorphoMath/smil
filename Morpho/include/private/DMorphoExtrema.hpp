@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,8 @@
 namespace smil
 {
     /**
-    * \addtogroup Morpho
+    * \ingroup Morpho
+    * \defgroup Extrema Regional Minima and Maxima
     * \{
     */
 
@@ -205,12 +206,12 @@ namespace smil
     RES_T fastExtrema (const Image<T> &imIn, Image<T> &imOut, const StrElt &se, const char *operation, const T& border_value) {
 
         // Typedefs
-        typedef Image<T> inT;
+        // typedef Image<T> inT;
         typedef Image<T> outT;
         typedef Image<T> arrowT;
         typedef typename outT::lineType outLineT;
         typedef typename arrowT::lineType arrowLineT;
-        typedef typename inT::volType inVolT;
+        // typedef typename inT::volType inVolT;
         typedef typename outT::volType outVolT;
         typedef typename arrowT::volType arrowVolT;
 
@@ -224,7 +225,7 @@ namespace smil
         UINT sePtsNumber = cpSe.points.size();
         if (sePtsNumber == 0) return RES_OK;
             // Images related.
-        inVolT inSlices = imIn.getSlices();
+        // inVolT inSlices = imIn.getSlices();
         outVolT outSlices = imOut.getSlices();
         arrowVolT arrowSlices = arrows.getSlices();
         outLineT* outLines;
@@ -243,7 +244,7 @@ namespace smil
 
         // Storing steep in imOut.
     #ifdef USE_OPEN_MP
-        #pragma omp parallel
+        #pragma omp parallel 
     #endif // USE_OPEN_MP
         {
             size_t offset;
@@ -305,12 +306,18 @@ namespace smil
         return RES_OK ;
     }
 
+    /**
+     * Regional minima computation based on arrowing graphs
+     */
     template <class T>
     inline RES_T fastMinima (const Image<T> &imIn, Image<T> &imOut, const StrElt &se) 
     {
         return fastExtrema (imIn, imOut, se, ">", numeric_limits<T>::max()) ; 
     }
 
+    /**
+     * Regional maxima computation based on arrowing graphs
+     */
     template <class T>
     inline RES_T fastMaxima (const Image<T> &imIn, Image<T> &imOut, const StrElt &se)
     {

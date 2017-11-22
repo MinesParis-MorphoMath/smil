@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -56,7 +56,7 @@ namespace smil
         {
             if (T::_instance == NULL)
                 T::_instance = new T();
-                return RES_OK;
+            return RES_OK;
         }
 
         static void kill ()

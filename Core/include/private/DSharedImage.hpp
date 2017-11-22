@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -165,6 +165,7 @@ namespace smil
             return RES_OK;
         }
         
+        using Image<T>::clone;
         virtual RES_T clone(const SharedImage<T> &rhs)
         {
             return attach(rhs.getPixels(), rhs.getWidth(), rhs.getHeight(), rhs.getDepth());

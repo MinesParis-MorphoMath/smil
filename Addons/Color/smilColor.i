@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -44,7 +44,7 @@ SMIL_MODULE(smilColor)
 %import smilMorpho.i
 
 
-%include "DColorConvert.h"
-%include "DColorMorpho.h"
+%include "Addons/Color/include/DColorConvert.h"
+%include "Addons/Color/include/DColorMorpho.h"
 
 TEMPLATE_WRAP_FUNC(RGBToLuminance);

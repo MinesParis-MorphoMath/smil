@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -132,8 +132,24 @@ PTR_ARG_OUT_APPLY(s)
 // Expose std::vector<> as a Python list
 namespace std 
 {
+
+%{
+// Silence Clang dynamic-class-memaccess warning
+// TODO remove when swig generates code without warnings
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdynamic-class-memaccess"
+#endif // __clang__
+%}
+
     TEMPLATE_WRAP_CLASS(vector, Vector);
     
+%{
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif // __clang__
+%}
+
 #ifdef USE_64BIT_IDS
     %template(Vector_size_t) vector<size_t>;
 #endif // USE_64BIT_IDS

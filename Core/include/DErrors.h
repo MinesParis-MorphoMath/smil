@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -165,6 +165,9 @@ namespace smil
         string description;
         string function;
         string file;
+#if defined NDEBUG && defined __clang__
+        SMIL_UNUSED
+#endif // NDEBUG && __clang__
         int line;
         string expression;
         string message;
@@ -180,8 +183,7 @@ namespace smil
     #define ERR_MSG(msg) Error(msg, __FUNC__, __FILE__, __LINE__).show()
 
     #define ASSERT_NARGS_CHOOSER(...) \
-        GET_4TH_ARG(__VA_ARGS__, ASSERT_3_ARGS, \
-                    ASSERT_2_ARGS, ASSERT_1_ARG, )
+      GET_4TH_ARG(__VA_ARGS__, ASSERT_3_ARGS, ASSERT_2_ARGS, ASSERT_1_ARG, ...)
 
     #ifdef _MSC_VER
             #define ASSERT(...) EXPAND( ASSERT_NARGS_CHOOSER(__VA_ARGS__)(__FUNC__, __FILE__, __LINE__, __VA_ARGS__) )

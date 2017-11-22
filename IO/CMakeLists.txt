@@ -1,4 +1,4 @@
-# Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+# Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without
@@ -26,7 +26,6 @@
 
 
 SET(MODULE_NAME IO)
-SET(BUILD_SHARED_LIBS FALSE)
 SET(MODULE_DEPS smilGui)
 
 SET(EXCL_SRCS)

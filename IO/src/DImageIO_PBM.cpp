@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@
 namespace smil
 {
   
-    RES_T readNetPBMFileInfo(ifstream &fp, ImageFileInfo &fInfo)
+    RES_T readNetPBMFileInfo(ifstream &fp, ImageFileInfo &fInfo, unsigned int &maxval)
     {
         std::string buf;
 
@@ -103,8 +103,7 @@ namespace smil
         
         if (fInfo.colorType!=ImageFileInfo::COLOR_TYPE_BINARY)
         {
-            int dum;
-            fp >> dum; // Max pixel value
+            fp >> maxval; // Max pixel value
         }
         
         fp.seekg(1, ios_base::cur); // endl
@@ -115,7 +114,7 @@ namespace smil
         return RES_OK;
     }
     
-    RES_T readNetPBMFileInfo(const char* filename, ImageFileInfo &fInfo)
+    RES_T readNetPBMFileInfo(const char* filename, ImageFileInfo &fInfo, unsigned int &maxval)
     {
         /* open image file */
         ifstream fp(filename, ios_base::binary);
@@ -126,7 +125,7 @@ namespace smil
             return RES_ERR_IO;
         }
         
-        RES_T ret = readNetPBMFileInfo(fp, fInfo);
+        RES_T ret = readNetPBMFileInfo(fp, fInfo, maxval);
         
         fp.close();
         return ret;
@@ -145,7 +144,8 @@ namespace smil
         }
         
         ImageFileInfo fInfo;
-        ASSERT(readNetPBMFileInfo(fp, fInfo)==RES_OK, RES_ERR_IO);
+        unsigned int maxval;
+        ASSERT(readNetPBMFileInfo(fp, fInfo, maxval)==RES_OK, RES_ERR_IO);
         ASSERT(fInfo.colorType==ImageFileInfo::COLOR_TYPE_GRAY, "Not an 8bit gray image", RES_ERR_IO);
         
         int width = fInfo.width;
@@ -161,8 +161,11 @@ namespace smil
         {
             ImDtTypes<UINT8>::lineType pixels = image.getPixels();
             
-            for (size_t i=0;i<image.getPixelCount();i++, pixels++)
-              fp >> *((int*)pixels);
+            for (size_t i=0;i<image.getPixelCount();i++, pixels++) {
+              int px;
+              fp >> px;
+              *((int*)pixels) = px * ImDtTypes<UINT8>::max() / maxval;
+            }
         }
         
         fp.close();
@@ -188,7 +191,7 @@ namespace smil
         fp << "P5" << endl;
         fp << "# " << filename << endl;
         fp << width << " " << height << endl;
-        fp << (int)maxVal(image) << endl;
+        fp << "255" << endl;
         
         fp.write((char*)image.getPixels(), width*height);
         

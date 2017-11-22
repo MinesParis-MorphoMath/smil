@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -52,7 +52,7 @@
  * \images{smilApp}
  * 
  * The first time you will execute the application, the JRE will need to download native libraries corresponding to your platform. The download may take several seconds.
- * \section demo_sec Run an example script
+ * \section example_sec Run an example script
  * See the <a href=examples.html>examples</a> page.
  * In a script page, click on "Execute script online" to run it.
  * 

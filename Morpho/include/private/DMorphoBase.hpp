@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ namespace smil
 {
     /**
     * \ingroup Morpho 
-    * \defgroup morpho_base Base operators
+    * \defgroup morpho_base Base Morphological Operators
     * \{
     */
 
@@ -94,7 +94,7 @@ namespace smil
      * 
      * \param imIn Input image
      * \param imOut Output image
-     * \param seSize The size of the default structuring element
+     * \param se Structuring element
      * \param borderVal (optional) The border value
      */
     template <class T>

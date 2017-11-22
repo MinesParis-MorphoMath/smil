@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,7 @@ namespace smil
 {
    /**
     * \ingroup Morpho
-    * \defgroup HitOrMiss
+    * \defgroup HitOrMiss Hit-or-Miss Transform
     * \{
     */
 
@@ -219,13 +219,13 @@ namespace smil
     template <class T>
     RES_T fullThin(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
     {
-        return fullThin(imIn, CompStrElt(compSE), imOut);
+        return fullThin(imIn, CompStrEltList(compSE), imOut);
     }
 
     template <class T>
     RES_T fullThin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
     {
-        return fullThin(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+      return fullThin(imIn, CompStrEltList(CompStrElt(foreSE, backSE)), imOut);
     }
 
     /**
@@ -256,13 +256,13 @@ namespace smil
     template <class T>
     RES_T fullThick(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
     {
-        return fullThick(imIn, CompStrElt(compSE), imOut);
+        return fullThick(imIn, CompStrEltList(compSE), imOut);
     }
 
     template <class T>
     RES_T fullThick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE, Image<T> &imOut)
     {
-        return fullThick(imIn, CompStrElt(CompStrElt(foreSE, backSE)), imOut);
+      return fullThick(imIn, CompStrEltList(CompStrElt(foreSE, backSE)), imOut);
     }
 
 /** \} */

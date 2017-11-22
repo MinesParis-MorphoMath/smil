@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -154,8 +154,8 @@ void StrElt::printSelf(ostream &os, string indent) const
     if (!ptNbr)
       return;
     
-      for (UINT i=0;i<ptNbr;i++)
-        os << indent << "#" << i+1 << ": (" << points[i].x << "," << points[i].y << "," << points[i].z << ")" << endl;
+    for (UINT i=0;i<ptNbr;i++)
+      os << indent << "#" << i+1 << ": (" << points[i].x << "," << points[i].y << "," << points[i].z << ")" << endl;
       
 }
 

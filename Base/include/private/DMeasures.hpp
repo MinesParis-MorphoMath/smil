@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -138,8 +138,8 @@ namespace smil
     * Mean value and standard deviation
     *
     * Returns mean and standard deviation of the pixel values.
-    * If onlyNonZero is true, only non-zero pixels are considered.
     * \param imIn Input image.
+    * \param onlyNonZero If true, only non-zero pixels are considered.
     */
     template <class T>
     Vector_double meanVal(const Image<T> &imIn, bool onlyNonZero=false)
@@ -192,6 +192,7 @@ namespace smil
     *
     * Returns the min of the pixel values.
     * \param imIn Input image.
+    * \param onlyNonZero If true, only non-zero pixels are considered.
     */
     template <class T>
     T minVal(const Image<T> &imIn, bool onlyNonZero=false)
@@ -251,8 +252,9 @@ namespace smil
     /**
     * Max value of an image
     *
-    * Returns the min of the pixel values.
+    * Returns the max of the pixel values.
     * \param imIn Input image.
+    * \param onlyNonZero If true, only non-zero pixels are considered.
     */
     template <class T>
     T maxVal(const Image<T> &imIn, bool onlyNonZero=false)
@@ -305,6 +307,7 @@ namespace smil
     *
     * Returns the min and the max of the pixel values.
     * \param imIn Input image.
+    * \param onlyNonZero If true, only non-zero pixels are considered.
     */
     template <class T>
     vector<T> rangeVal(const Image<T> &imIn, bool onlyNonZero=false)
@@ -396,6 +399,73 @@ namespace smil
     T measModeVal(const Image<T> &imIn, bool onlyNonZero=true)
     {
         measModeValFunc<T> func;
+        return func(imIn, onlyNonZero);
+    }
+    template <class T>
+    struct measMedianValFunc : public MeasureFunctionBase<T, T >
+    {
+        typedef typename Image<T>::lineType lineType;
+
+      map<int,int> nbList;
+      size_t acc_elem,total_elems;
+      T medianval;
+        virtual void initialize(const Image<T> &/*imIn*/)
+        {
+          //BMI            this->retVal.clear();
+            nbList.clear();
+            medianval = 0;
+	    acc_elem=0;
+	    total_elems=0;
+        }
+
+        virtual void processSequence(lineType lineIn, size_t size)
+        {
+
+            for (size_t i=0;i<size;i++){
+              T val = lineIn[i];
+              if(val>0){
+		total_elems ++;
+                if (nbList.find(val)==nbList.end()){
+                  nbList.insert(std::pair<int,int>(val,1));
+                  }
+                else
+                  nbList[val]++;
+
+              }// if (val>0)
+            }// for i= 0; i < size
+	    //            this->retVal = medianval;
+        }// virtual processSequence
+      virtual void finalize(const Image<T> &/*imIn*/)
+        {
+	  typedef std::map<int, int>::iterator it_type;
+
+	  for(it_type my_iterator = nbList.begin(); my_iterator != nbList.end(); my_iterator++) {
+	    acc_elem = acc_elem + my_iterator->second ;//  nbList;
+	    std::cout<<"iterator_values"<<my_iterator->first<< my_iterator->second<<"\n";
+	    if(acc_elem > total_elems/2.0){
+	      medianval = my_iterator->first;
+	      std::cout<< "acc_elem="<<acc_elem<<"medianval="<<"\n";
+	      break;
+	    }
+	    // iterator->first = key
+	    // iterator->second = value
+	  }// iterator
+
+	  this->retVal = medianval;
+	  //this->retVal.push_back(xSum/tSum);
+	    
+        }
+
+    };// END measMedianValFunc
+
+    /**
+     * Get the mode of the histogram present in the image, i.e. the
+     * value that appears most often.
+     */
+    template <class T>
+    T measMedianVal(const Image<T> &imIn, bool onlyNonZero=true)
+    {
+        measMedianValFunc<T> func;
         return func(imIn, onlyNonZero);
     }
     
@@ -578,7 +648,7 @@ namespace smil
     * \return * For 2D images: m00, m10, m01, m11, m20, m02
     * \return * For 3D images: m000, m100, m010, m110, m200, m020, m001, m101, m011, m002
     * 
-    * \link http://en.wikipedia.org/wiki/Image_moment
+    * See <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on Wikipedia</a>
     */
     template <class T>
     Vector_double measInertiaMatrix(const Image<T> &im, const bool onlyNonZero=true)

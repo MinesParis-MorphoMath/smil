@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -77,11 +77,11 @@ TEMPLATE_WRAP_SUPPL_FUNC(crop);
 TEMPLATE_WRAP_FUNC(clone);
 
 #ifdef SMIL_WRAP_RGB
-%template(copyChannel) copyChannel<RGB, UINT8>;
-%template(copyToChannel) copyToChannel<UINT8, RGB>;
-%template(splitChannels) splitChannels<RGB, UINT8>;
-%template(mergeChannels) mergeChannels<UINT8, RGB>;
-%template(crop) crop<RGB>;
+%template(copyChannel) smil::copyChannel<RGB, UINT8>;
+%template(copyToChannel) smil::copyToChannel<UINT8, RGB>;
+%template(splitChannels) smil::splitChannels<RGB, UINT8>;
+%template(mergeChannels) smil::mergeChannels<UINT8, RGB>;
+%template(crop) smil::crop<RGB>;
 #endif // SMIL_WRAP_RGB
 
 TEMPLATE_WRAP_FUNC(inv);
@@ -146,7 +146,11 @@ TEMPLATE_WRAP_FUNC(gaussianFilter);
 
 TEMPLATE_WRAP_FUNC(drawLine);
 TEMPLATE_WRAP_FUNC(drawRectangle);
+#ifdef SWIGPYTHON
+TEMPLATE_WRAP_FUNC_2T(drawRectangles);
+#else
 TEMPLATE_WRAP_FUNC_2T_CROSS(drawRectangles);
+#endif // SWIGPYTHON
 TEMPLATE_WRAP_FUNC(drawBox);
 TEMPLATE_WRAP_FUNC(drawCircle);
 TEMPLATE_WRAP_FUNC(drawSphere);
@@ -195,6 +199,7 @@ TEMPLATE_WRAP_FUNC(maxVal);
 TEMPLATE_WRAP_FUNC(rangeVal);
 TEMPLATE_WRAP_FUNC(valueList);
 TEMPLATE_WRAP_FUNC(measModeVal);
+TEMPLATE_WRAP_FUNC(measMedianVal);
 TEMPLATE_WRAP_FUNC(profile);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
@@ -230,6 +235,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(measMeanVals);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measVolumes);
 TEMPLATE_WRAP_FUNC_2T_CROSS(valueLists);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measModeVals);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measMedianVals);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measBarycenters);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measBoundBoxes);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measInertiaMatrices);

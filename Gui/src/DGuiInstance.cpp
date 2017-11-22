@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,8 +38,7 @@ namespace smil
 {
 
 
-        template <>
-        RES_T UniqueInstance<Gui>::initialize()
+        RES_T Gui::initialize()
         {
                 if (Gui::_instance == NULL)
                 {

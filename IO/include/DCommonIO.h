@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,13 @@
 #include "Core/include/DErrors.h"
 #include "Core/include/private/DImage.hpp"
 
-#include <stdio.h>
+#include <cstdio>
+
+#ifdef _MSC_VER
+#define SMIL_OPEN(FILEPTR, NAME, MODE) fopen_s(&FILEPTR, NAME, MODE)
+#else // _MSC_VER
+#define SMIL_OPEN(FILEPTR, NAME, MODE) FILEPTR = fopen(NAME, MODE)
+#endif // _MSC_VER
 
 namespace smil
 {

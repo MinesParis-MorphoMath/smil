@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ SMIL_MODULE(smil_)
 %init
 %{
     std::cout << "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}" << std::endl;
-    std::cout << "Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES" << std::endl;
+    std::cout << "Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES" << std::endl;
     std::cout << "All rights reserved." << std::endl;
     std::cout << std::endl;
 %}
@@ -57,7 +57,6 @@ ${SWIG_INCLUDE_DEFINITIONS}
 
 import sys, gc, os
 import time
-import __main__
 
 if sys.version_info >= (3,0,0):
   import builtins as __builtin__
@@ -75,7 +74,7 @@ __builtin__.imageTypes = [ ${IMAGE_TYPES_STR}, ]
 
 def AboutSmil():
     print("SMIL (Simple Morphological Image Library) ${SMIL_VERSION}")
-    print("Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES")
+    print("Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES")
     print("All rights reserved.")
 
 
@@ -95,7 +94,7 @@ __builtin__._find_object_name = _find_object_name
 
 def _find_images(gbl_dict=None):
     if not gbl_dict:
-      gbl_dict = __main__.__dict__
+      gbl_dict = globals()
     imgs = dict()
     for it in gbl_dict.items():
       if isinstance(it[1], BaseImage):
@@ -126,7 +125,7 @@ def deleteAll():
     imgs = _find_images()
     for im in imgs.keys():
       im.hide()
-      __main__.__dict__.pop(imgs[im], None)
+      globals().pop(imgs[im], None)
       del im
     
     

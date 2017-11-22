@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -59,6 +59,7 @@ namespace smil
         {
             this->_exec(lineIn, size, lineOut);
         }
+        virtual ~unaryLineFunctionBase() {}
         
         virtual void _exec(const lineInType, const size_t, lineOutType) = 0;
         virtual void _exec_aligned(const lineInType lineIn, const size_t size, lineOutType lineOut) { _exec(lineIn, size, lineOut); }
@@ -107,6 +108,7 @@ namespace smil
     template <class T1, class T2=T1, class T_out=T1>
     struct binaryLineFunctionBase
     {
+        virtual ~binaryLineFunctionBase() {}
         typedef typename Image<T1>::restrictLineType lineType1;
         typedef typename Image<T2>::restrictLineType lineType2;
         typedef typename Image<T_out>::restrictLineType lineOutType;
@@ -183,6 +185,7 @@ namespace smil
     template <class T1, class T2=T1, class T3=T1, class T_out=T1>
     struct tertiaryLineFunctionBase
     {
+        virtual ~tertiaryLineFunctionBase() {}
         typedef typename Image<T1>::restrictLineType lineType1;
         typedef typename Image<T2>::restrictLineType lineType2;
         typedef typename Image<T3>::restrictLineType lineType3;

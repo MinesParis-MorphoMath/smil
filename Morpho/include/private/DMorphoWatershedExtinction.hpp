@@ -39,7 +39,7 @@ namespace smil
 
     /**
      * \ingroup Morpho
-     * \defgroup WatershedExtinction
+     * \defgroup WatershedExtinction Watershed Extinction
      * @{
      */
     
@@ -65,7 +65,7 @@ namespace smil
     * 
     * Can be derivated in wrapped languages thanks to Swig directors.
     * 
-    * \demo{custom_extinction_value.py]
+    * \demo{custom_extinction_value.py}
     */
     template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T> >
     class ExtinctionFlooding 
@@ -107,7 +107,7 @@ namespace smil
         
         inline virtual void insertPixel(const size_t &/*offset*/, const labelT &/*lbl*/) {}
         inline virtual void raiseLevel(const labelT &/*lbl*/) {}
-        inline virtual labelT mergeBasins(const labelT &/*lbl1*/, const labelT &/*lbl2*/) { return 0; };
+        inline virtual labelT mergeBasins(const labelT &/*lbl1*/, const labelT &/*lbl2*/) { return 0; }
         inline virtual void finalize(const labelT &/*lbl*/) {}
         
         virtual void updateEquTable(const labelT &lbl1, const labelT &lbl2)
@@ -242,7 +242,7 @@ namespace smil
               return;
             
             typename std::vector< std::pair<labelT,labelT> >::iterator mIt = pendingMerges.begin();
-            typename std::vector<T>::iterator lIt = mergeLevels.begin();
+            // typename std::vector<T>::iterator lIt = mergeLevels.begin();
             
             while(mIt!=pendingMerges.end())
             {
@@ -276,7 +276,7 @@ namespace smil
                             
                         updateEquTable(eaten, eater);
                     }
-                    pendingMerges.erase(mIt);
+                    mIt = pendingMerges.erase(mIt);
 //                     mergeLevels.erase(lIt);
                 }
 //                 else
@@ -328,7 +328,7 @@ namespace smil
                 if (curLbl==0 || curLbl==this->STAT_QUEUED)
                   this->lblPixels[curOffset] = this->lblPixels[nbOffset];
                 else if (equivalentLabels[nbLbl]!=equivalentLabels[curLbl])
-                  pendingMerges.push_back( make_pair<labelT>(min(curLbl,nbLbl), max(curLbl,nbLbl)) );
+                  pendingMerges.push_back( make_pair(min(curLbl,nbLbl), max(curLbl,nbLbl)) );
             }
 
         }

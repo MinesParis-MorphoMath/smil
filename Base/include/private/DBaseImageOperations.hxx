@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -200,9 +200,9 @@ namespace smil
 
         lineType tmpBuf = ImDtTypes<T>::createLine(lineLen);
 
-        int nthreads = Core::getInstance()->getNumberOfThreads();
         int i;
         #ifdef USE_OPEN_MP
+            int nthreads = Core::getInstance()->getNumberOfThreads();
             #pragma omp parallel private(i) num_threads(nthreads)
         #endif // USE_OPEN_MP
         {

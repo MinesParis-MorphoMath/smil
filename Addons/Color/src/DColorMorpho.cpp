@@ -63,9 +63,11 @@ namespace smil
             while(dOffset!=dOffsetList.end())
             {
                 dOff = pointOffset + *dOffset;
-                dist = ( r - R[dOff]) * ( r - R[dOff])
+                dist = (
+                        ( r - R[dOff]) * ( r - R[dOff])
                      + ( g - G[dOff]) * ( g - G[dOff])
-                     + ( b - B[dOff]) * ( b - B[dOff]);
+                     + ( b - B[dOff]) * ( b - B[dOff])
+                        )/3;
 //                 dist = pixelsIn[dOff].r;
         //         pixelsOut[pointOffset] = max(pixelsOut[pointOffset], pixelsIn[dOff]);
                 if (dist>distMax)
@@ -100,7 +102,7 @@ namespace smil
     Image<UINT8> gradient_LAB(const Image<RGB> &imIn, const StrElt &se, bool convertFirstToLAB)
     {
         Image<UINT8> imOut(imIn);
-        ASSERT(gradient_LAB(imIn, se, convertFirstToLAB)==RES_OK, RES_ERR, imOut)
+        ASSERT(gradient_LAB(imIn, imOut, se, convertFirstToLAB)==RES_OK, RES_ERR, imOut)
         return imOut;
     }
     

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -97,13 +97,16 @@
   #endif
 
   
-#include <math.h>
+#include <cmath>
 #include <string>
 #include <memory>
 #include <limits>
 #include <sstream>
 #include <vector>
-#include <stdio.h>
+#include <cstdio>
+#if defined(_MSC_VER)
+   #include <algorithm>
+#endif
 
 namespace smil
 {
@@ -152,7 +155,7 @@ namespace smil
     public : 
         inline explicit Allocator() {}
         inline ~Allocator() {}
-        inline explicit Allocator(Allocator const&)
+        inline  Allocator(Allocator const&)
           : std::allocator<T>() {}
         template<typename U>
         inline explicit Allocator(Allocator<U> const&) {}

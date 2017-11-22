@@ -75,7 +75,7 @@ class Test_Areas : public TestCase
   virtual void run()
   {
       Image_UINT8 im(1024,1024);
-      Image_UINT8::lineType pixels = im.getPixels();
+      // Image_UINT8::lineType pixels = im.getPixels();
       
       fill(im, UINT8(0));
       drawRectangle(im, 200,200,512,512,UINT8(127), 1);
@@ -91,7 +91,7 @@ class Test_Barycenters : public TestCase
   virtual void run()
   {
       Image_UINT8 im(1024,1024);
-      Image_UINT8::lineType pixels = im.getPixels();
+      // Image_UINT8::lineType pixels = im.getPixels();
       
       fill(im, UINT8(0));
       drawRectangle(im, 200,200,50,50, UINT8(127), 1);

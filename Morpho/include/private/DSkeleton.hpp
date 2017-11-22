@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -37,7 +37,7 @@ namespace smil
 {
     /**
     * \ingroup Morpho
-    * \defgroup Skeleton
+    * \defgroup Skeleton Skeleton
     * \{
     */
 
@@ -150,7 +150,7 @@ namespace smil
             typedef typename Image<T>::sliceType sliceType;
             typedef typename Image<T>::lineType lineType;
             
-            lineType tab = tmpIm.getPixels();
+            // lineType tab = tmpIm.getPixels();
             const sliceType lines = tmpIm.getLines();
             lineType curLine;
             lineType curPix;

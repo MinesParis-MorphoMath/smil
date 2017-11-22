@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -240,6 +240,7 @@ namespace smil
 
         /**
          * Print a description of the image
+         * \param os Output stream
          * \param displayPixVals If true, display pixel values
          * \param hexaGrid If true (and displayPixVals is true), display pixel values as an hexahedral grid
          * \param indent Optional prefix
@@ -254,7 +255,7 @@ namespace smil
             printSelf(std::cout, displayPixVals, hexaGrid);
         }
         //! Get the description of the image as a string
-        virtual const char *getInfoString(string indent = "") const 
+        virtual const char *getInfoString(const char *indent = "") const 
         {
             stringstream s;
             this->printSelf(s, indent);
@@ -338,25 +339,25 @@ namespace smil
         Image<T>& operator /= (const Image<T> &rhs);
         //! Value division assignment
         Image<T>& operator /= (const T &value);
-        //! Equal boolean operator (see \ref equ).
+        //! Equal boolean operator (see equ()).
         ResImage<T>operator == (const Image<T> &rhs);
-        //! Diff boolean operator (see \ref equ).
+        //! Diff boolean operator (see equ()).
         ResImage<T>operator != (const Image<T> &rhs);
-        //! Lower boolean operator (see \ref low)
+        //! Lower boolean operator (see low())
         ResImage<T>operator < (const Image<T> &rhs);
-        //! Lower boolean operator (see \ref low)
+        //! Lower boolean operator (see low())
         ResImage<T>operator < (const T &value);
-        //! Lower or equal boolean operator (see \ref lowOrEqu)
+        //! Lower or equal boolean operator (see lowOrEqu())
         ResImage<T>operator <= (const Image<T> &rhs);
-        //! Lower or equal boolean operator (see \ref lowOrEqu)
+        //! Lower or equal boolean operator (see lowOrEqu())
         ResImage<T>operator <= (const T &value);
-        //! Greater boolean operator (see \ref grt)
+        //! Greater boolean operator (see grt())
         ResImage<T>operator > (const Image<T> &rhs);
-        //! Greater boolean operator (see \ref grt)
+        //! Greater boolean operator (see grt())
         ResImage<T>operator > (const T &value);
-        //! Greater or equal boolean operator (see \ref grt)
+        //! Greater or equal boolean operator (see grt())
         ResImage<T>operator >= (const Image<T> &rhs);
-        //! Greater or equal boolean operator (see \ref grt)
+        //! Greater or equal boolean operator (see grt())
         ResImage<T>operator >= (const T &value);
 
         ResImage<T>operator | (const Image<T> &rhs);

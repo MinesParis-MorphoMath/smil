@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,6 +40,13 @@
 #include "IO/include/private/DImageIO.hxx"
 #include "Gui/include/DGuiInstance.h"
 
+#ifdef SMIL_WRAP_RGB
+#include "NSTypes/RGB/include/DRGB.h"
+#endif // SMIL_WRAP_RGB
+
+#ifdef SMIL_WRAP_BIT
+#include "NSTypes/Bit/include/DBit.h"
+#endif // SMIL_WRAP_BIT
 
 namespace smil
 {
@@ -912,9 +919,18 @@ namespace smil
         return *this;
     }
 
+    typedef Image<UINT8> Image_UINT8;
+    typedef Image<UINT16> Image_UINT16;
+    typedef Image<UINT32> Image_UINT32;
+    typedef Image<bool> Image_bool;
+    
 
-    #if defined SWIGPYTHON && defined USE_NUMPY && defined(SWIG_WRAP_CORE)
-    #include "Core/include/DNumpy.h"
+} // namespace smil
+
+#if defined SWIGPYTHON && defined USE_NUMPY && defined(SWIG_WRAP_CORE)
+#include "Core/include/DNumpy.h"
+
+namespace smil {
 
     template <class T>
     PyObject * Image<T>::getNumArray(bool c_contigous)
@@ -982,17 +998,10 @@ namespace smil
         }
         modified();
     }
-    #endif // defined SWIGPYTHON && defined USE_NUMPY
-
-    typedef Image<UINT8> Image_UINT8;
-    typedef Image<UINT16> Image_UINT16;
-    typedef Image<UINT32> Image_UINT32;
-    typedef Image<bool> Image_bool;
-    
 
 } // namespace smil
 
 
+#endif // defined SWIGPYTHON && defined USE_NUMPY
 
 #endif // _IMAGE_HXX
-

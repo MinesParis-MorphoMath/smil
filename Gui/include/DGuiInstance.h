@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -49,7 +49,7 @@
 namespace smil
 {
    /**
-    * \defgroup Gui
+    * \ingroup Gui
     */
     /*@{*/
 
@@ -58,8 +58,6 @@ namespace smil
     
     class Gui;
     
-    template <>
-    RES_T UniqueInstance<Gui>::initialize();
     
     /**
      * Gui module instance
@@ -76,6 +74,7 @@ namespace smil
         // Public interface
     //     static void kill();
 
+        static RES_T initialize();
         /**
          * Run the event loop
          */

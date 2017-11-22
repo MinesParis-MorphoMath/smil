@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 #ifndef _DTEST_H
 #define _DTEST_H
 
-#include <time.h>
+#include <ctime>
 #include <iostream>
 #include <list>
 #include <sstream>
@@ -52,6 +52,7 @@ namespace smil
           outStream(NULL) 
       {
       }
+      virtual ~TestCase() {}
       virtual void init() {}
       virtual void run() = 0;
       virtual void end() {}
@@ -59,7 +60,10 @@ namespace smil
       bool stopIfError;
       stringstream *outStream;
       RES_T retVal;
-      int tElapsed;
+#ifdef __clang__
+      SMIL_UNUSED
+#endif // __clang__
+        int tElapsed;
     };
 
 
@@ -112,7 +116,10 @@ namespace smil
       int run();
     private:
       list<TestCase*> funcList;
-      int tElapsed;
+#ifdef __clang__
+      SMIL_UNUSED
+#endif // __clang__
+        int tElapsed;
     };
 
 

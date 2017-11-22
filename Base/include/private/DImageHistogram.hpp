@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,7 +30,7 @@
 #ifndef _D_IMAGE_HISTOGRAM_HPP
 #define _D_IMAGE_HISTOGRAM_HPP
 
-#include <limits.h>
+#include <climits>
 
 #include "DLineHistogram.hpp"
 #include "DImageArith.hpp"
@@ -41,7 +41,7 @@ namespace smil
   
     /**
     * \ingroup Base
-    * \defgroup Histogram
+    * \defgroup Histogram Histogram
     * \{
     */
 
@@ -62,7 +62,7 @@ namespace smil
     
     template <class T>
     ENABLE_IF( IS_FLOAT(T), RES_T )
-    histogram(const Image<T> &/*imIn*/, size_t */*h*/)
+    histogram(const Image<T> &/*imIn*/, size_t * /*h*/)
     {
         return RES_ERR_NOT_IMPLEMENTED;
     }
@@ -169,6 +169,9 @@ namespace smil
     template <class T, class T_out>
     RES_T threshold(const Image<T> &imIn, T minVal, T maxVal, T_out trueVal, T_out falseVal, Image<T_out> &imOut)
     {
+        if (minVal>maxVal) // Loop threshold
+          return threshold(imIn, maxVal, minVal, falseVal, trueVal, imOut);
+        
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,12 +30,13 @@
 #ifdef USE_QT
 
 #include <QTimer>
-#include <unistd.h>
+
 
 #if defined(Q_OS_WIN)
 #include <conio.h>
 #include <QTimer>
 #else
+#include <unistd.h>
 #include <QSocketNotifier>
 #endif
 #include <QThread>

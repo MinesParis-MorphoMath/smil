@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -167,7 +167,8 @@ namespace smil
     RES_T getPNGFileInfo(const char* filename, ImageFileInfo &fInfo)
     {
         /* open image file */
-        FILE *fp = fopen (filename, "rb");
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "rb");
         
         if (!fp)
         {
@@ -215,7 +216,8 @@ namespace smil
     RES_T StandardPNGRead(const char *filename, Image<T> &image)
     {
         /* open image file */
-        FILE *fp = fopen (filename, "rb");
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "rb");
         
         if (!fp)
         {
@@ -262,7 +264,8 @@ namespace smil
     RES_T PNGImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
     {
         /* open image file */
-        FILE *fp = fopen (filename, "rb");
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "rb");
         
         if (!fp)
         {
@@ -321,7 +324,8 @@ namespace smil
     RES_T StandardPNGWrite(const Image<T> &image, const char *filename)
     {
         /* open image file */
-        FILE *fp = fopen (filename, "wb");
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "wb");
         
         if (!fp)
         {
@@ -366,7 +370,8 @@ namespace smil
     RES_T PNGImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
     {
         /* open image file */
-        FILE *fp = fopen (filename, "wb");
+        FILE *fp;
+        SMIL_OPEN(fp, filename, "wb");
         
         if (!fp)
         {

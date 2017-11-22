@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -215,26 +215,8 @@ namespace smil
 #ifdef USE_QWT
 // #include "Gui/Qt/DQtImageViewer.hpp"
 #endif // USE_QWT
-    
-    template <class T, UINT N>
-    inline RES_T mul(const Image< MultichannelType<T,N> > &imIn, const double &dValue, Image< MultichannelType<T,N> > &imOut)
-    {
-      return RES_ERR_NOT_IMPLEMENTED;
-    }
 
-    template <class T, UINT N, class T2>
-    inline RES_T stretchHist(const Image< MultichannelType<T,N> > &imIn, Image<T2> &imOut, T2 outMinVal, T2 outMaxVal)
-    {
-      return RES_ERR_NOT_IMPLEMENTED;
-    }
-    
-    template <class T, UINT N, class T1>
-    inline RES_T stretchHist(const Image<T1> &imIn, Image< MultichannelType<T,N> > &imOut, MultichannelType<T,N> outMinVal, MultichannelType<T,N> outMaxVal)
-    {
-      return RES_ERR_NOT_IMPLEMENTED;
-    }
-    
-    
+
 } // namespace smil
 
 #endif // _IMAGE_RGB_H
