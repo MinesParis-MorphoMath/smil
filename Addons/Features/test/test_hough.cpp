@@ -60,7 +60,7 @@ class Test_Hough_Circles : public TestCase
     }
 };
 
-int main(int argc __attribute__((unused)), char *argv[] __attribute__((unused)))
+int main(int argc SMIL_UNUSED, char *argv[] SMIL_UNUSED)
 {
 
       TestSuite ts;
