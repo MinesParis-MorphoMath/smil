@@ -34,7 +34,7 @@
 #include "DMorphoHierarQ.hpp"//BMI
 #include "Core/include/DImage.h"
 #include "Base/include/private/DImageHistogram.hpp"
-
+#include "Morpho/include/private/DMorphoMaxTreeCriteria.hpp"
 
 #include <complex>
 #include <math.h>
@@ -73,20 +73,9 @@ struct EmptyCriterion
   // BEGIN BMI
 
 
-template <class T, class BaseCriterionT=EmptyCriterion, class OffsetT=size_t, class LabelT = UINT32>
+template <class T, , class CriterionT, class OffsetT=size_t, class LabelT = UINT32>
 class MaxTree2
 {
-public:
-    struct CriterionT
-    {
-        OffsetT ymin, ymax, xmin, xmax, zmin, zmax;
-        BaseCriterionT crit;
-        inline void initialize() { crit.init(); }
-        inline void reset() { crit.reset(); }
-        inline void merge(CriterionT &other) { crit.merge(other.crit); }
-        inline void update() { crit.update(); }
-    };
-  
 private:
     size_t GRAY_LEVEL_NBR;
     Image<T> const *img;
@@ -245,7 +234,7 @@ private:
         getCriterion(indice).ymax = MAX(getCriterion(indice).ymax, y);
         getCriterion(indice).zmin = MIN(getCriterion(indice).zmin, z);
         getCriterion(indice).zmax = MAX(getCriterion(indice).zmax, z);
-        getCriterion(indice).update();
+        getCriterion(indice).update(x,y,z);
         hq.push(imgPix[p_suiv], p_suiv);
 
 	//	std::cout<<"PUSH:offset="<<p_suiv<<", val="<<int(imgPix[p_suiv])<<"\n";
