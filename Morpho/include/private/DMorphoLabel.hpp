@@ -59,13 +59,18 @@ namespace smil
         typedef typename parentClass::imageInType imageInType;
         typedef typename parentClass::imageOutType imageOutType;
         
-        T2 getLabelNbr() { return labels; }
+        size_t getLabelNbr() { return real_labels; }
+
+        void set_max_value_label (const T2 &mvl) {max_value_label = mvl;}
 
         virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
         {
             parentClass::initialize(imIn, imOut, se);
             fill(imOut, T2(0));
-            labels = T2(0);
+            labels = 0;
+            real_labels = 0;
+            if (max_value_label == 0)
+                max_value_label = ImDtTypes<T2>::max();
             return RES_OK;
         }
 
@@ -95,8 +100,11 @@ namespace smil
             int x, y, z, n_x, n_y, n_z;
             IntPoint p;
 
+            ++real_labels;
             ++labels;
-            this->pixelsOut[pointOffset] = labels;
+            if (labels == max_value_label)
+                labels = 1;
+            this->pixelsOut[pointOffset] = (T2)labels;
             propagation.push (pointOffset); 
 
             bool oddLine = 0;
@@ -128,7 +136,7 @@ namespace smil
                          this->pixelsOut[nbOffset] != labels &&
                          compareFunc(this->pixelsIn[nbOffset], pVal))
                     {
-                        this->pixelsOut[nbOffset] = labels;
+                        this->pixelsOut[nbOffset] = T2(labels);
                         propagation.push (nbOffset);
                     }
                 }
@@ -139,6 +147,8 @@ namespace smil
         compOperatorT compareFunc;
     protected:
         T2 labels;
+        size_t real_labels;
+        T2 max_value_label;
     };
 
     template <class T1, class T2, class compOperatorT=std::equal_to<T1> >
@@ -153,13 +163,18 @@ namespace smil
         typedef typename imageOutType::lineType lineOutType;
         typedef typename imageOutType::sliceType sliceOutType;
 
-        T2 getLabelNbr() { return labels; }
+        size_t getLabelNbr() { return labels_real; }
+
+        void set_max_value_label (const T2 &mvl) {max_value_label = mvl;}
 
         virtual RES_T initialize (const imageInType &imIn, imageOutType &imOut, const StrElt &se) 
         {
             parentClass::initialize(imIn, imOut, se);
             fill(imOut, T2(0));
             labels = T2(0);
+            labels_real = 0;
+            if (max_value_label == 0)
+                max_value_label = ImDtTypes<T2>::max();
             return RES_OK;
         }
 
@@ -206,7 +221,11 @@ namespace smil
                 if (pixelsTmp[i] != T1(0)) {
                     if (this->pixelsOut[i] == T2(0)) {
                         if (!is_not_a_gap) {
-                            current_label = ++labels;
+                            ++labels;
+                            ++labels_real;
+                            if (labels == max_value_label)
+                                labels=1;
+                            current_label = (T2)labels;
                         }
                         this->pixelsOut[i] = current_label;
                         process_labeling = true;
@@ -299,6 +318,8 @@ namespace smil
         compOperatorT compareFunc;
     protected :
         T2 labels;
+        size_t labels_real;
+        T2 max_value_label;
     };
      
     
@@ -334,7 +355,8 @@ namespace smil
         fill (imOut, T2(0));
 
         // Processing vars.
-        T2 lblNbr = 0;
+        size_t lblNbr = 0;
+        size_t lblNbr_real = 0;
         size_t size[3]; imIn.getSize (size) ;
         UINT sePtsNumber = cpSe.points.size();
         if (sePtsNumber == 0) return 0;
@@ -355,8 +377,12 @@ namespace smil
                     o = p + l*size[0] + s*size[0]*size[1];
                     if (inP[o] != T1(0) && outP[o] == T2(0)) 
                     {
+                        ++lblNbr_real;
                         ++lblNbr ;
-                        outP [o] = lblNbr;
+                        if (lblNbr == ImDtTypes<T2>::max()-1)
+                                lblNbr = 1;
+                        
+                        outP [o] = T2(lblNbr);
                         propagation.push (o);
                         do 
                         {
@@ -379,7 +405,7 @@ namespace smil
                                 nb_o = x + y*size[0] + z*size[0]*size[1];
                                 if (x < size[0] && y < size[1] && z<size[2] && outP [nb_o] != lblNbr && inP [nb_o] == inP[o])
                                 {
-                                    outP[nb_o] = lblNbr;
+                                    outP[nb_o] = T2(lblNbr);
                                     propagation.push (nb_o);
                                 }
                             }
@@ -389,7 +415,7 @@ namespace smil
             }
         }
 
-        return lblNbr;
+        return lblNbr_real;
     }
  
     /**
@@ -415,8 +441,33 @@ namespace smil
         
         size_t lblNbr = f.getLabelNbr();
         
-        ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+        if (lblNbr > size_t(ImDtTypes<T2>::max()))
+                std::cerr << "Label number exceeds data type max!" << std::endl;
         
+        return lblNbr;
+    }
+
+    /**
+    * Image labelization
+    * 
+    * Return the number of labels (or 0 if error).
+    */
+    template<class T1, class T2>
+    size_t label(const Image<T1> &imIn, Image<T2> &imOut, const T2& max_value_label, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        labelFunctGeneric<T1,T2> f;
+        f.set_max_value_label (max_value_label);
+        
+        ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
+        
+        size_t lblNbr = f.getLabelNbr();
+        
+        if (lblNbr > size_t(ImDtTypes<T2>::max()))
+                std::cerr << "Label number exceeds data type max!" << std::endl;
+
         return lblNbr;
     }
 
@@ -438,7 +489,8 @@ namespace smil
         
         size_t lblNbr = f.getLabelNbr();
         
-        ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+        if (lblNbr > size_t(ImDtTypes<T2>::max()))
+                std::cerr << "Label number exceeds data type max!" << std::endl;
         
         return lblNbr;
     }
@@ -460,7 +512,32 @@ namespace smil
         
         size_t lblNbr = f.getLabelNbr();
         
-        ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+        if (lblNbr > size_t(ImDtTypes<T2>::max()))
+                std::cerr << "Label number exceeds data type max!" << std::endl;
+
+        return lblNbr;
+    }
+
+    /**
+    * Image labelization
+    * 
+    * Return the number of labels (or 0 if error).
+    */
+    template<class T1, class T2>
+    size_t fastLabel(const Image<T1> &imIn, Image<T2> &imOut, const T2& max_value_label, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        labelFunctFast<T1,T2> f;
+        f.set_max_value_label (max_value_label);
+        
+        ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
+        
+        size_t lblNbr = f.getLabelNbr();
+        
+        if (lblNbr > size_t(ImDtTypes<T2>::max()))
+                std::cerr << "Label number exceeds data type max!" << std::endl;
 
         return lblNbr;
     }
@@ -483,7 +560,8 @@ namespace smil
         
         size_t lblNbr = f.getLabelNbr();
         
-        ASSERT((lblNbr < size_t(ImDtTypes<T2>::max())), "Label number exceeds data type max!", 0);
+        if (lblNbr < size_t(ImDtTypes<T2>::max()))
+                std::cerr << "Label number exceeds data type max!" << std::endl;
         
         return lblNbr;
     }
