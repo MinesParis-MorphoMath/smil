@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -30,136 +30,25 @@
 #ifndef _D_MAX_TREE
 #define _D_MAX_TREE
 
+#include "DMorphImageOperations.hpp"//BMI
+#include "DMorphoHierarQ.hpp"//BMI
 #include "Core/include/DImage.h"
 #include "Base/include/private/DImageHistogram.hpp"
+
+
 #include <complex>
 #include <math.h>
 namespace smil
 {
     /**
     * \ingroup Morpho
-    * \defgroup MaxTree Max Tree
+    * \defgroup MaxTree
     * \{
     */
 
     
 #ifndef SWIG
 
-template <class T, class TokenType=UINT>
-class PriorityQueue
-{
-private:
-    typedef TokenType* StackType;
-    
-    size_t GRAY_LEVEL_NBR;
-    size_t TYPE_FLOOR;
-    StackType *stacks;
-    size_t *tokenNbr;
-    size_t size;
-    size_t higherLevel;
-    
-    bool initialized;
-    
-public:
-    PriorityQueue()
-    {
-        GRAY_LEVEL_NBR = ImDtTypes<T>::max()-ImDtTypes<T>::min()+1;
-        TYPE_FLOOR = -ImDtTypes<T>::min();
-        
-        stacks = new StackType[GRAY_LEVEL_NBR];
-        for (size_t i=0;i<GRAY_LEVEL_NBR;i++)
-          stacks[i] = NULL;
-        tokenNbr = new size_t[GRAY_LEVEL_NBR];
-        initialized = false;
-    }
-    ~PriorityQueue()
-    {
-        reset();
-        delete[] stacks;
-        delete[] tokenNbr;
-    }
-    
-    void reset()
-    {
-        if (!initialized)
-          return;
-        
-        for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
-        {
-            if (stacks[i])
-                delete[] stacks[i];
-            stacks[i] = NULL;
-        }
-        
-        initialized = false;
-    }
-    
-    void initialize(const Image<T> &img)
-    {
-        if (initialized)
-          reset();
-        
-        size_t *h = new size_t[GRAY_LEVEL_NBR];
-        histogram(img, h);
-
-        for(size_t i=0;i<GRAY_LEVEL_NBR;i++)
-            if (h[i]!=0)
-              stacks[i] = new TokenType[h[i]+1];
-            
-        delete[] h;
-        memset(tokenNbr, 0, GRAY_LEVEL_NBR*sizeof(size_t));
-        size = 0;
-        higherLevel = 0;
-        
-        initialized = true;
-    }
-    
-    inline size_t getSize()
-    {
-        return size;
-    }
-    
-    inline bool isEmpty()
-    {
-        return size==0;
-    }
-    
-    inline size_t getHigherLevel()
-    {
-        return higherLevel;
-    }
-    
-    inline void push(T value, TokenType dOffset)
-    {
-        size_t level = TYPE_FLOOR + value;
-        if (level>higherLevel)
-          higherLevel = level;
-        stacks[level][tokenNbr[level]++] = dOffset;
-        size++;
-    }
-    
-    inline TokenType pop()
-    {
-        size_t hlSize = tokenNbr[higherLevel];
-        TokenType dOffset = stacks[higherLevel][hlSize-1];
-        if (hlSize>1)
-          tokenNbr[higherLevel]--;
-        else if (size>1) // Find new higher level (non empty stack)
-        {
-            tokenNbr[higherLevel] = 0;
-            for (size_t i=higherLevel-1;i<numeric_limits<size_t>::max();i--)
-              if (tokenNbr[i]>0)
-              {
-                  higherLevel = i;
-                  break;
-              }
-        }
-        size--;
-        
-        return dOffset;
-    }
-  
-};
 
 #define COLUMN_NBR 16
 #define COLUMN_SIZE 131072
@@ -181,6 +70,337 @@ struct EmptyCriterion
   inline void update() {  }
 };
 
+  // BEGIN BMI
+
+
+template <class T, class BaseCriterionT=EmptyCriterion, class OffsetT=size_t, class LabelT = UINT32>
+class MaxTree2
+{
+public:
+    struct CriterionT
+    {
+        OffsetT ymin, ymax, xmin, xmax, zmin, zmax;
+        BaseCriterionT crit;
+        inline void initialize() { crit.init(); }
+        inline void reset() { crit.reset(); }
+        inline void merge(CriterionT &other) { crit.merge(other.crit); }
+        inline void update() { crit.update(); }
+    };
+  
+private:
+    size_t GRAY_LEVEL_NBR;
+    Image<T> const *img;
+    
+  //    PriorityQueue<T, OffsetT> pq;
+  //  HierarchicalQueue<T,size_t, STD_Queue<size_t> > &hq;
+  HierarchicalQueue<T,OffsetT> hq;
+
+    T **levels;
+    
+    LabelT **children;
+    LabelT **brothers;
+    CriterionT **criteria;
+    
+  LabelT *labels, curLabel;
+    
+    bool initialized;
+
+    size_t imWidth ;
+    size_t imHeight ;
+
+    void reset()
+    {
+        if (!initialized)
+          return;
+        
+        for (OffsetT i=0;i<COLUMN_NBR;i++)
+        {
+            if (!levels[i])
+              break;
+            delete[] levels[i]; levels[i] = NULL;
+            delete[] children[i]; children[i] = NULL;
+            delete[] brothers[i]; brothers[i] = NULL;
+            delete[] criteria[i]; criteria[i] = NULL;
+        }
+    }
+
+    void allocatePage(UINT page)
+    {
+        levels[page] =  new T[COLUMN_SIZE]();
+        children[page] = new LabelT[COLUMN_SIZE]();
+        brothers[page] =  new LabelT[COLUMN_SIZE]();
+        criteria[page] = new CriterionT[COLUMN_SIZE]();
+    }
+
+    T initialize(const Image<T> &imIn, LabelT *img_eti)
+    {
+        if (initialized)
+          reset();
+        
+        this->img = &imIn;
+        typename ImDtTypes<T>::lineType pix = img->getPixels();
+        
+        T minValue = ImDtTypes<T>::max();
+        T tMinV = ImDtTypes<T>::min();
+        OffsetT minOff = 0;
+        for (size_t i=0;i<img->getPixelCount();i++)
+          if (pix[i]<minValue)
+          {
+              minValue = pix[i];
+              minOff = i;
+              if (minValue==tMinV)
+                break;
+          }
+          
+        allocatePage(0);
+        
+        curLabel = 1;
+        levels[0][curLabel] = minValue;
+        
+        memset(labels, 0, GRAY_LEVEL_NBR*sizeof(LabelT));// BMI labels? quel rapport avec img_eti?
+        
+        img_eti[minOff] = curLabel;
+        labels[minValue] = curLabel;
+
+        hq.initialize(*img);
+        hq.push(minValue, minOff);
+
+
+        size_t x, y, z;
+        img->getCoordsFromOffset(minOff, x, y, z);
+	//	std::cout<<"PUSH:offset="<<minOff<<"(x,y)="<<x<<", "<<y<<", val="<<minValue<<"\n";
+
+        
+        getCriterion(curLabel).xmin = getCriterion(curLabel).xmax = x;
+        getCriterion(curLabel).ymin = getCriterion(curLabel).ymax = y;
+        getCriterion(curLabel).zmin = getCriterion(curLabel).zmax = z;
+
+        getCriterion(curLabel).initialize();
+        curLabel++;
+        
+        initialized = true;
+
+        imWidth = img->getWidth();
+        imHeight = img->getHeight();
+
+        return minValue;
+    }
+    
+    int nextLowerLabel(T valeur)
+    {
+        if ((curLabel & COLUMN_MOD) == 0)
+            allocatePage(curLabel >> COLUMN_SHIFT);
+
+        getLevel(curLabel) = valeur;
+        int i;
+        for(i=valeur-1;labels[i]==0;i--);
+
+        getChild(curLabel) = getChild(labels[i]);
+        getChild(labels[i]) = curLabel;
+        getBrother(curLabel) = getBrother(getChild(curLabel));
+        getBrother(getChild(curLabel)) = 0;
+        getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
+        getCriterion(curLabel).xmin = numeric_limits<unsigned short>::max();
+        getCriterion(curLabel).reset();
+        return curLabel++;
+    }
+
+    int nextHigherLabel(T parent_valeur, T valeur)
+    {
+            if ((curLabel & COLUMN_MOD) == 0)
+              allocatePage(curLabel >> COLUMN_SHIFT);
+
+        getLevel(curLabel) = valeur;
+        getBrother(curLabel) = getChild(labels[parent_valeur]);
+        getChild(labels[parent_valeur]) = curLabel;
+        getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
+        getCriterion(curLabel).xmin = numeric_limits<unsigned short>::max();
+        getCriterion(curLabel).reset();
+        return curLabel++;
+    }
+    
+    bool subFlood(typename ImDtTypes<T>::lineType imgPix, LabelT *img_eti, OffsetT p, OffsetT p_suiv)
+    {
+        LabelT indice;
+        
+        if (imgPix[p_suiv]>imgPix[p]) 
+        {
+              LabelT j;
+              for(j=imgPix[p]+1;j<imgPix[p_suiv];j++) 
+                labels[j]=0;
+              indice = img_eti[p_suiv] = labels[j] = nextHigherLabel(imgPix[p], imgPix[p_suiv]);
+          
+        } 
+        else if (labels[imgPix[p_suiv]]==0) 
+            indice = img_eti[p_suiv] = labels[imgPix[p_suiv]] = nextLowerLabel(imgPix[p_suiv]);
+        else 
+            indice = img_eti[p_suiv] = labels[imgPix[p_suiv]];
+        
+        size_t x, y, z;
+        img->getCoordsFromOffset(p_suiv, x, y, z);
+        
+        getCriterion(indice).xmin = MIN(getCriterion(indice).xmin, x);
+        getCriterion(indice).xmax = MAX(getCriterion(indice).xmax, x);
+        getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, y);
+        getCriterion(indice).ymax = MAX(getCriterion(indice).ymax, y);
+        getCriterion(indice).zmin = MIN(getCriterion(indice).zmin, z);
+        getCriterion(indice).zmax = MAX(getCriterion(indice).zmax, z);
+        getCriterion(indice).update();
+        hq.push(imgPix[p_suiv], p_suiv);
+
+	//	std::cout<<"PUSH:offset="<<p_suiv<<", val="<<int(imgPix[p_suiv])<<"\n";
+        
+        if (imgPix[p_suiv]>imgPix[p])
+        {
+                hq.push(imgPix[p], p);
+		//		std::cout<<"PUSH_P:offset="<<p<<", val="<<int(imgPix[p])<<"\n";
+                return true;
+        }
+        return false;
+    }
+
+    void flood(const Image<T> &img, UINT *img_eti, unsigned int level)
+    {
+            OffsetT p;
+            size_t imWidth = img.getWidth();
+            size_t imHeight = img.getHeight();
+            size_t imDepth = img.getDepth();
+            size_t pixPerSlice = imWidth*imHeight;
+            typename ImDtTypes<T>::lineType imgPix = img.getPixels();
+            size_t x, y, z;
+            
+            while( (hq.getHigherLevel()>=level) && !hq.isEmpty())
+            {
+                p = hq.pop();
+
+                img.getCoordsFromOffset(p, x, y, z);
+		//		std::cout<<"POP:offset="<<p<<"(x,y)="<<x<<", "<<y<<"\n";
+		//		std::cout<<"-------------------------\n";
+
+                OffsetT p_suiv;
+
+                if (imDepth>1) // for 3D
+                {
+                    if ( z<imDepth-1 && img_eti[p_suiv=p+pixPerSlice]==0) //z+1
+                      if (subFlood(imgPix, img_eti, p, p_suiv))
+                        continue;
+                      
+                    if ( z>0 && img_eti[p_suiv=p-pixPerSlice]==0) //z-1
+                      if (subFlood(imgPix, img_eti, p, p_suiv))
+                        continue;
+                }
+                
+                if ( y<imHeight-1 && img_eti[p_suiv=p+imWidth]==0) //y+1
+                  if (subFlood(imgPix, img_eti, p, p_suiv))
+                    continue;
+
+                if ( y>0 && img_eti[p_suiv=p-imWidth]==0) //y-1
+                  if (subFlood(imgPix, img_eti, p, p_suiv))
+                    continue;
+                  
+                if ( x<imWidth-1 && img_eti[p_suiv=p+1]==0) //x+1
+                  if (subFlood(imgPix, img_eti, p, p_suiv))
+                    continue;
+                  
+                if ( x>0 && img_eti[p_suiv=p-1]==0) //x-1
+                  if (subFlood(imgPix, img_eti, p, p_suiv))
+                    continue;
+                  
+            }
+    }
+    
+public:
+  MaxTree2():hq(true)
+    {
+        GRAY_LEVEL_NBR = ImDtTypes<T>::max()-ImDtTypes<T>::min()+1;
+	//	hq.reverse();// change priority order (max first)
+	//	hq =   HierarchicalQueue<T,OffsetT> (true);
+
+        children = new LabelT*[COLUMN_NBR]();
+        brothers =  new LabelT*[COLUMN_NBR]();
+        levels = new T*[COLUMN_NBR]();
+        criteria = new CriterionT*[COLUMN_NBR]();
+        labels = new LabelT[GRAY_LEVEL_NBR];
+        
+        initialized = false;
+    }
+    ~MaxTree2()
+    {
+        reset();
+        
+        delete[] children;
+        delete[] brothers;
+        delete[] levels;
+        delete[] criteria;
+        delete[] labels;
+    }
+    
+    inline CriterionT &getCriterion(const LabelT node)
+    {
+        return GET_TREE_OBJ(criteria, node);
+    }
+  
+    inline T &getLevel(const LabelT node)
+    {
+        return GET_TREE_OBJ(levels, node);
+    }
+  
+    inline LabelT &getChild(const LabelT node)
+    {
+        return GET_TREE_OBJ(children, node);
+    }
+  
+    inline LabelT &getBrother(const LabelT node)
+    {
+        return GET_TREE_OBJ(brothers, node);
+    }
+    
+    inline LabelT getLabelMax()
+    {
+        return curLabel;
+    }
+
+    inline int getImWidth()
+    {
+        return imWidth;
+    }
+
+    inline int getImHeight()
+    {
+        return imHeight;
+    }
+
+    int build(const Image<T> &img, LabelT *img_eti)
+    {
+            T minValue = initialize(img, img_eti);
+
+            flood(img, img_eti, minValue);
+            return labels[minValue];
+    }
+    
+    CriterionT updateCriteria(LabelT node) 
+    {
+        LabelT child = getChild(node);
+        while (child!=0)
+        {
+            CriterionT c = updateCriteria(child);
+            getCriterion(node).ymin = MIN(getCriterion(node).ymin, c.ymin);
+            getCriterion(node).ymax = MAX(getCriterion(node).ymax, c.ymax);
+            getCriterion(node).xmin = MIN(getCriterion(node).xmin, c.xmin);
+            getCriterion(node).xmax = MAX(getCriterion(node).xmax, c.xmax);
+            getCriterion(node).merge(getCriterion(child));
+            child = getBrother(child);
+        }
+        return getCriterion(node);
+    }
+    
+};
+
+  // END BMI
+
+
+
+
 template <class T, class BaseCriterionT=EmptyCriterion, class OffsetT=UINT>
 class MaxTree
 {
@@ -199,8 +419,10 @@ private:
     size_t GRAY_LEVEL_NBR;
     Image<T> const *img;
     
-    PriorityQueue<T, OffsetT> pq;
-    
+  //    PriorityQueue<T, OffsetT> pq;
+  //  HierarchicalQueue<T,size_t, STD_Queue<size_t> > &hq;
+  HierarchicalQueue<T,OffsetT> hq;
+
     T **levels;
     
     OffsetT **children;
@@ -269,11 +491,14 @@ private:
         img_eti[minOff] = curLabel;
         labels[minValue] = curLabel;
 
-        pq.initialize(*img);
-        pq.push(minValue, minOff);
-        
+        hq.initialize(*img);
+        hq.push(minValue, minOff);
+
+
         size_t x, y, z;
         img->getCoordsFromOffset(minOff, x, y, z);
+	//	std::cout<<"PUSH:offset="<<minOff<<"(x,y)="<<x<<", "<<y<<", val="<<minValue<<"\n";
+
         
         getCriterion(curLabel).xmin = getCriterion(curLabel).xmax = x;
         getCriterion(curLabel).ymin = getCriterion(curLabel).ymax = y;
@@ -350,11 +575,14 @@ private:
         getCriterion(indice).zmin = MIN(getCriterion(indice).zmin, z);
         getCriterion(indice).zmax = MAX(getCriterion(indice).zmax, z);
         getCriterion(indice).update();
-        pq.push(imgPix[p_suiv], p_suiv);
+        hq.push(imgPix[p_suiv], p_suiv);
+
+	//	std::cout<<"PUSH:offset="<<p_suiv<<", val="<<int(imgPix[p_suiv])<<"\n";
         
         if (imgPix[p_suiv]>imgPix[p])
         {
-                pq.push(imgPix[p], p);
+                hq.push(imgPix[p], p);
+		//		std::cout<<"PUSH_P:offset="<<p<<", val="<<int(imgPix[p])<<"\n";
                 return true;
         }
         return false;
@@ -370,11 +598,14 @@ private:
             typename ImDtTypes<T>::lineType imgPix = img.getPixels();
             size_t x, y, z;
             
-            while( (pq.getHigherLevel()>=level) && !pq.isEmpty())
+            while( (hq.getHigherLevel()>=level) && !hq.isEmpty())
             {
-                p = pq.pop();
+                p = hq.pop();
+
                 img.getCoordsFromOffset(p, x, y, z);
-                
+		//		std::cout<<"POP:offset="<<p<<"(x,y)="<<x<<", "<<y<<"\n";
+		//		std::cout<<"-------------------------\n";
+
                 size_t p_suiv;
 
                 if (imDepth>1) // for 3D
@@ -408,10 +639,12 @@ private:
     }
     
 public:
-    MaxTree()
+  MaxTree():hq(true)
     {
         GRAY_LEVEL_NBR = ImDtTypes<T>::max()-ImDtTypes<T>::min()+1;
-        
+	//	hq.reverse();// change priority order (max first)
+	//	hq =   HierarchicalQueue<T,OffsetT> (true);
+
         children = new OffsetT*[COLUMN_NBR]();
         brothers =  new OffsetT*[COLUMN_NBR]();
         levels = new T*[COLUMN_NBR]();
@@ -675,10 +908,9 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,CiterionT,OffsetT> &tree, T* tra
      * Max-tree based algorithm as described by Fabrizio and Marcotegui (2009) \cite fabrizio_fast_2009
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[out] imTrans The transformation image
+     * \param[out] imOut The transformation image
      * \param[out] imIndic The indicator image
      * \param[in] stopSize (optional)
-     * \param[in] delta
      */
     template <class T1, class T2>
     RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, int stopSize=-1, UINT delta = 0)
@@ -761,8 +993,8 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
 
                     //self,node = 1, nParent =0, stop=0, delta = 0, isPrevMaxT = 0):
   int child; // index node
-  T current_residue, stab_residue = 0;
-  UINT cNode, cParent; // attributes
+  T current_residue, stab_residue;
+  UINT cNode, cParent,cAncestor; // attributes
       CriterionT aNode, aParent,aAncestor;
       T lNode, lParent, lAncestor; // node levels, the same type than input image
       float stability;
@@ -772,7 +1004,7 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
       aNode =  tree.getCriterion(node).crit;
       lNode =  tree.getLevel(node);// #current level
 
-      //  cAncestor =  tree.getCriterion(first_ancestor).ymax-tree.getCriterion(first_ancestor).ymin+1;// #current criterion
+      cAncestor =  tree.getCriterion(first_ancestor).ymax-tree.getCriterion(first_ancestor).ymin+1;// #current criterion
       cParent =  tree.getCriterion(nParent).ymax-tree.getCriterion(nParent).ymin+1;// #current criterion
       aParent  = tree.getCriterion(nParent).crit;
       aAncestor  = tree.getCriterion(first_ancestor).crit;
@@ -796,8 +1028,8 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
       }
       else if (method == 3){//MSER_sub
 	factor = ImDtTypes<T>::max()/((double)100.0);//BMI
-	factor = mymax/((double)40.0);//BMI
-	//	std::cout<<"factor3="<<factor<<"\n";
+	factor = mymax/((double)25.0);//BMI
+	//	std::cout<<"mymax="<<int(mymax)<<"; factor3="<<factor<<"\n";
       }
       if (flag){
         current_residue  =  lNode - lAncestor ;
@@ -990,15 +1222,14 @@ void  ComputeDeltaUOMSERSC(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
             isMaxT = 1;
             transformee_node[node] = stab_residue;
 
-            if(! (isPrevMaxT && flag)){
+            if(! (isPrevMaxT and flag)){
                 indicatrice_node[node]  = cNode + 1;                
             }
 
         }
     }
-	else{
-		indicatrice_node[node] = 0;
-	}
+    else
+        indicatrice_node[node]  = 0;
 
     child=tree.getChild(node);
     while (child!=0){
@@ -1048,9 +1279,9 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
        if(!use_textShape)
 	 ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, method,0 /*isPrevMaxT*/,minArea,threshold,mymax);
        else
-         ComputeDeltaUOMSERSC(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
+        ComputeDeltaUOMSERSC(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
 
-       child = tree.getBrother(child);
+        child = tree.getBrother(child);
       }
 
 }
@@ -1103,11 +1334,11 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
     
 #ifndef SWIG
 
-template <class T, class CriterionT, class OffsetT>
-void processMaxTree(MaxTree<T,CriterionT,OffsetT> &tree, UINT node, T* lut_out, T previousLevel, UINT stop)
+  template <class T, class CriterionT, class OffsetT, class LabelT>
+  void processMaxTree(MaxTree2<T,CriterionT,OffsetT,LabelT> &tree, LabelT node, T* lut_out, T previousLevel, UINT stop)
 {
                                 //MORPHEE_ENTER_FUNCTION("s_OpeningTree::computeMaxTree");
-        UINT child;
+        LabelT child;
         T nodeLevel = tree.getLevel(node);
         T currentLevel = (tree.getCriterion(node).crit.value < stop)? previousLevel:nodeLevel;
 
@@ -1122,11 +1353,11 @@ void processMaxTree(MaxTree<T,CriterionT,OffsetT> &tree, UINT node, T* lut_out, 
         
 }
 
-template <class T, class CriterionT, class OffsetT>
-void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, int root, UINT stopSize)
+  template <class T, class CriterionT, class OffsetT, class LabelT>
+  void compute_AttributeOpening(MaxTree2<T,CriterionT,OffsetT,LabelT> &tree, T* lut_node, LabelT root, UINT stopSize)
 {
 
-    int child;
+    LabelT child;
 
     lut_node[root] = tree.getLevel(root);
 
@@ -1144,18 +1375,27 @@ void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, 
 }
 
     
-    template <class T, class CriterionT>
+  template <class T, class CriterionT, class LabelT>
     RES_T attributeOpen(const Image<T> &imIn, Image<T> &imOut, int stopSize)
     {
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
-        int imSize = imIn.getPixelCount();
-        UINT *img_eti = new UINT[imSize]();
+        size_t imSize = imIn.getPixelCount();
+        LabelT *img_eti = new LabelT[imSize]();
         
-        MaxTree<T,CriterionT> tree;
-        int root = tree.build(imIn, img_eti);
-        
+        MaxTree2<T,CriterionT> tree;
+        LabelT root = tree.build(imIn, img_eti);
+
+	// BEGIN BMI, DEBUG
+
+	// for(size_t i=0;i<imSize;i++) {
+	//   if(i%4 == 0){
+	//     std::cout<<"\n";
+	//   }
+	//   std::cout<<img_eti[i]<<",";
+	// }
+	  // END BEGIN BMI, DEBUG
         T *out_node = new T[tree.getLabelMax()]();
 
         compute_AttributeOpening(tree, out_node, root, stopSize);
@@ -1163,7 +1403,7 @@ void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, 
         
         typename ImDtTypes<T>::lineType outPix = imOut.getPixels();
 
-        for(int i=0;i<imSize;i++) 
+        for(size_t i=0;i<imSize;i++) 
             outPix[i] = out_node[img_eti[i]];
         
         delete[] img_eti;
@@ -1197,13 +1437,13 @@ void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, 
      * Max-tree based algorithm
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[in] stopSize The size of the opening
+     * \param[in] size The size of the opening
      * \param[out] imOut Output image
     */
     template <class T>
     RES_T areaOpen(const Image<T> &imIn, int stopSize, Image<T> &imOut)
     {
-        return attributeOpen<T, AreaCriterion>(imIn, imOut, stopSize);
+      return attributeOpen<T, AreaCriterion,UINT32>(imIn, imOut, stopSize);
     }
     
     /**
@@ -1212,7 +1452,7 @@ void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, 
      * Max-tree based algorithm
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[in] stopSize The size of the closing
+     * \param[in] size The size of the closing
      * \param[out] imOut Output image
     */
     template <class T>
@@ -1225,7 +1465,7 @@ void compute_AttributeOpening(MaxTree<T,CriterionT,OffsetT> &tree, T* lut_node, 
         
         Image<T> tmpIm(imIn);
         inv(imIn, tmpIm);        
-        RES_T res = attributeOpen<T, AreaCriterion>(tmpIm, imOut, stopSize);
+        RES_T res = attributeOpen<T, AreaCriterion,UINT32>(tmpIm, imOut, stopSize);
         inv(imOut, imOut);
         
         return res;
