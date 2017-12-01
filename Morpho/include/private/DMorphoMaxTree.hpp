@@ -73,7 +73,7 @@ struct EmptyCriterion
   // BEGIN BMI
 
 
-template <class T, , class CriterionT, class OffsetT=size_t, class LabelT = UINT32>
+template <class T, class CriterionT, class OffsetT=size_t, class LabelT = UINT32>
 class MaxTree2
 {
 private:
@@ -160,9 +160,9 @@ private:
 	//	std::cout<<"PUSH:offset="<<minOff<<"(x,y)="<<x<<", "<<y<<", val="<<minValue<<"\n";
 
         
-        getCriterion(curLabel).xmin = getCriterion(curLabel).xmax = x;
-        getCriterion(curLabel).ymin = getCriterion(curLabel).ymax = y;
-        getCriterion(curLabel).zmin = getCriterion(curLabel).zmax = z;
+	//        getCriterion(curLabel).xmin = getCriterion(curLabel).xmax = x; // A voir comment on peut melanger des criteres... BMI
+	//        getCriterion(curLabel).ymin = getCriterion(curLabel).ymax = y;
+	//        getCriterion(curLabel).zmin = getCriterion(curLabel).zmax = z;
 
         getCriterion(curLabel).initialize();
         curLabel++;
@@ -188,8 +188,6 @@ private:
         getChild(labels[i]) = curLabel;
         getBrother(curLabel) = getBrother(getChild(curLabel));
         getBrother(getChild(curLabel)) = 0;
-        getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
-        getCriterion(curLabel).xmin = numeric_limits<unsigned short>::max();
         getCriterion(curLabel).reset();
         return curLabel++;
     }
@@ -202,8 +200,6 @@ private:
         getLevel(curLabel) = valeur;
         getBrother(curLabel) = getChild(labels[parent_valeur]);
         getChild(labels[parent_valeur]) = curLabel;
-        getCriterion(curLabel).ymin = numeric_limits<unsigned short>::max();
-        getCriterion(curLabel).xmin = numeric_limits<unsigned short>::max();
         getCriterion(curLabel).reset();
         return curLabel++;
     }
@@ -228,12 +224,6 @@ private:
         size_t x, y, z;
         img->getCoordsFromOffset(p_suiv, x, y, z);
         
-        getCriterion(indice).xmin = MIN(getCriterion(indice).xmin, x);
-        getCriterion(indice).xmax = MAX(getCriterion(indice).xmax, x);
-        getCriterion(indice).ymin = MIN(getCriterion(indice).ymin, y);
-        getCriterion(indice).ymax = MAX(getCriterion(indice).ymax, y);
-        getCriterion(indice).zmin = MIN(getCriterion(indice).zmin, z);
-        getCriterion(indice).zmax = MAX(getCriterion(indice).zmax, z);
         getCriterion(indice).update(x,y,z);
         hq.push(imgPix[p_suiv], p_suiv);
 
@@ -366,8 +356,13 @@ public:
             flood(img, img_eti, minValue);
             return labels[minValue];
     }
+
+  // BMI (from Andres)
+  /// Update criteria of a given max-tree node
+  CriterionT updateCriteria(const int node);
     
-    CriterionT updateCriteria(LabelT node) 
+
+    CriterionT PREVIOUS_OLD_FROMJONATHAN_updateCriteria(LabelT node) 
     {
         LabelT child = getChild(node);
         while (child!=0)
@@ -386,6 +381,22 @@ public:
 };
 
   // END BMI
+
+// Update criteria on a given max-tree node.// From Andres
+template <class T, class CriterionT, class OffsetT, class LabelT>
+inline CriterionT MaxTree2<T, CriterionT,OffsetT,LabelT>::updateCriteria( const int node )
+{
+  LabelT child = getChild(node);
+  while ( child != 0 )
+  {
+    CriterionT c = updateCriteria( child );
+    getCriterion( node ).merge(&getCriterion( child ) );
+    child = getBrother( child );
+  }
+  return getCriterion( node );
+}
+
+
 
 
 
@@ -949,22 +960,22 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,CiterionT,OffsetT> &tree, T* tra
 
 #ifndef SWIG
 
-struct AreaCriterion
+struct BMIAreaCriterion
 {
   size_t value;
   inline void init() { value = 1; }
   inline void reset() { value = 0; }
-  inline void merge(AreaCriterion &other) { value += other.value; }
+  inline void merge(BMIAreaCriterion &other) { value += other.value; }
   inline void update() { value += 1; }
 };
-struct HeightCriterion
+struct BMIHeightCriterion
 {
   size_t ymax;
   size_t ymin;
   size_t value;
   inline void init() { ymax = 0; ymin=6500000; }
   inline void reset() { ymax = 0; ymin = 6500000;}
-  inline void merge(HeightCriterion &other) { ymax = max(ymax,other.ymax);ymin = min(ymin,other.ymin); }
+  inline void merge(BMIHeightCriterion &other) { ymax = max(ymax,other.ymax);ymin = min(ymin,other.ymin); }
   inline void update() { value = ymax-ymin+1; }
 };
 
@@ -1286,7 +1297,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
         int imSize = imIn.getPixelCount();
         UINT *img_eti = new UINT[imSize]();
         
-        MaxTree<T1, AreaCriterion> tree;
+        MaxTree<T1, BMIAreaCriterion> tree;
         int root = tree.build(imIn, img_eti);
 
         if(stopSize == -1){
@@ -1323,13 +1334,14 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
     
 #ifndef SWIG
 
-  template <class T, class CriterionT, class OffsetT, class LabelT>
-  void processMaxTree(MaxTree2<T,CriterionT,OffsetT,LabelT> &tree, LabelT node, T* lut_out, T previousLevel, UINT stop)
+  template <class T, class CriterionT, class OffsetT, class LabelT, class tAttType>
+  void processMaxTree(MaxTree2<T,CriterionT,OffsetT,LabelT> &tree, LabelT node, T* lut_out, T previousLevel, tAttType stop)
 {
                                 //MORPHEE_ENTER_FUNCTION("s_OpeningTree::computeMaxTree");
         LabelT child;
         T nodeLevel = tree.getLevel(node);
-        T currentLevel = (tree.getCriterion(node).crit.value < stop)? previousLevel:nodeLevel;
+
+	T currentLevel = ( tree.getCriterion( node ).getAttributeValue() < stop ) ? previousLevel : nodeLevel;
 
         lut_out[node] = currentLevel;
         
@@ -1342,8 +1354,8 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
         
 }
 
-  template <class T, class CriterionT, class OffsetT, class LabelT>
-  void compute_AttributeOpening(MaxTree2<T,CriterionT,OffsetT,LabelT> &tree, T* lut_node, LabelT root, UINT stopSize)
+  template <class T, class CriterionT, class OffsetT, class LabelT, class tAttType>
+  void compute_AttributeOpening(MaxTree2<T,CriterionT,OffsetT,LabelT> &tree, T* lut_node, LabelT root, tAttType stopSize)
 {
 
     LabelT child;
@@ -1364,8 +1376,8 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
 }
 
     
-  template <class T, class CriterionT, class LabelT>
-    RES_T attributeOpen(const Image<T> &imIn, Image<T> &imOut, int stopSize)
+  template <class T, class CriterionT, class OffsetT, class LabelT>
+    RES_T attributeOpen(const Image<T> &imIn, Image<T> &imOut, size_t stopSize)
     {
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -1373,7 +1385,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
         size_t imSize = imIn.getPixelCount();
         LabelT *img_eti = new LabelT[imSize]();
         
-        MaxTree2<T,CriterionT> tree;
+        MaxTree2<T,CriterionT,OffsetT,LabelT> tree;
         LabelT root = tree.build(imIn, img_eti);
 
 	// BEGIN BMI, DEBUG
@@ -1432,7 +1444,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
     template <class T>
     RES_T areaOpen(const Image<T> &imIn, int stopSize, Image<T> &imOut)
     {
-      return attributeOpen<T, AreaCriterion,UINT32>(imIn, imOut, stopSize);
+      return attributeOpen<T, AreaCriterion,size_t,UINT32>(imIn, imOut, stopSize);
     }
     
     /**
@@ -1454,7 +1466,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
         
         Image<T> tmpIm(imIn);
         inv(imIn, tmpIm);        
-        RES_T res = attributeOpen<T, AreaCriterion,UINT32>(tmpIm, imOut, stopSize);
+        RES_T res = attributeOpen<T, AreaCriterion,size_t,UINT32>(tmpIm, imOut, stopSize);
         inv(imOut, imOut);
         
         return res;

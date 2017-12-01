@@ -84,8 +84,8 @@ public:
   virtual void initialize()
   {
     attribute_value_ = 0;
-    y_max_ = std::numeric_limits<int>::lowest();
-    y_min_ = std::numeric_limits<int>::max();
+    y_max_ = std::numeric_limits<size_t>::min();//lowest instead of min in Andres code
+    y_min_ = std::numeric_limits<size_t>::max();
   }
 
   virtual void reset()
@@ -112,8 +112,8 @@ protected:
   }
 
 private:
-  int y_max_;
-  int y_min_;
+  size_t y_max_;// BMI: int in Andres code
+  size_t y_min_;// BMI: int in Andres code
 };
 
 
