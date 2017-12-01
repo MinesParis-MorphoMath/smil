@@ -50,8 +50,8 @@ namespace smil
 #ifndef SWIG
 
 
-#define COLUMN_NBR 16
-#define COLUMN_SIZE 131072
+#define COLUMN_NBR 20// 16
+#define COLUMN_SIZE 2097152//131072
 
 #define COLUMN_SHIFT (COLUMN_NBR+1)
 #define COLUMN_MOD (COLUMN_SIZE-1)
