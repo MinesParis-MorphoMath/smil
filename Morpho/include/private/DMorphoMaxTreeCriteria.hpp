@@ -8,7 +8,7 @@
 
 #include "DMorphoHierarQ.hpp"//BMI
 
-namespace smil  
+namespace smil
 {
 
 /// Generic criterion for the max-tree. A user-defined criterion should be derived from this class.
@@ -19,7 +19,7 @@ public:
   GenericCriterion(){}
 
   virtual ~GenericCriterion(){}
-  
+
 public:
   virtual void initialize() = 0;
   virtual void reset() = 0;
@@ -27,10 +27,10 @@ public:
   virtual void update(const size_t x, const size_t y,const size_t z) = 0;
   tAttType getAttributeValue()
   {
-    compute(); 
+    compute();
     return attribute_value_;
   }
-  
+
 protected:
   virtual void compute() = 0;
 
@@ -63,12 +63,12 @@ public:
     attribute_value_ += dynamic_cast<AreaCriterion&>(*other_criteron).attribute_value_;
   }
 
-  virtual void update(const size_t x,const size_t y,const size_t z)
-  {
+  virtual void update(SMIL_UNUSED const size_t x, SMIL_UNUSED const size_t y,
+                      SMIL_UNUSED const size_t z) {
     attribute_value_ += 1;
   }
 
-protected:  
+protected:
   virtual void compute(){}
 };
 
@@ -99,8 +99,8 @@ public:
     y_min_ = std::min(y_min_, dynamic_cast<HeightCriterion&>(*other_criteron).y_min_);
   }
 
-  virtual void update(const size_t x, const size_t y, const size_t z)
-  {
+  virtual void update(SMIL_UNUSED const size_t x, const size_t y,
+                      SMIL_UNUSED const size_t z) {
     y_max_ = std::max(y_max_, y);
     y_min_ = std::min(y_min_, y);
   }

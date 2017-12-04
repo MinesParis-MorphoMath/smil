@@ -379,7 +379,7 @@ namespace smil
                     {
                         ++lblNbr_real;
                         ++lblNbr ;
-                        if (lblNbr == ImDtTypes<T2>::max()-1)
+                        if (lblNbr == (size_t)(ImDtTypes<T2>::max() - 1))
                                 lblNbr = 1;
                         
                         outP [o] = T2(lblNbr);
@@ -461,7 +461,7 @@ namespace smil
                     {
                         ++lblNbr_real;
                         ++lblNbr ;
-                        if (lblNbr == ImDtTypes<T2>::max()-1)
+                        if (lblNbr == (size_t)ImDtTypes<T2>::max()-1)
                                 lblNbr = 1;
                         
                         outP [o] = T2(lblNbr);

@@ -42,7 +42,7 @@ namespace smil
 {
     /**
     * \ingroup Morpho
-    * \defgroup MaxTree
+    * \defgroup MaxTree MaxTree Algorithm
     * \{
     */
 
@@ -554,7 +554,7 @@ private:
         
         if (imgPix[p_suiv]>imgPix[p]) 
         {
-              int j;
+              unsigned int j;
               for(j=imgPix[p]+1;j<imgPix[p_suiv];j++) 
                 labels[j]=0;
               indice = img_eti[p_suiv] = labels[j] = nextHigherLabel(imgPix[p], imgPix[p_suiv]);
@@ -908,9 +908,10 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,CiterionT,OffsetT> &tree, T* tra
      * Max-tree based algorithm as described by Fabrizio and Marcotegui (2009) \cite fabrizio_fast_2009
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[out] imOut The transformation image
+     * \param[in] imTrans The transformation image
      * \param[out] imIndic The indicator image
      * \param[in] stopSize (optional)
+     * \param[in] delta (optional)
      */
     template <class T1, class T2>
     RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, int stopSize=-1, UINT delta = 0)
@@ -994,7 +995,8 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
                     //self,node = 1, nParent =0, stop=0, delta = 0, isPrevMaxT = 0):
   int child; // index node
   T current_residue, stab_residue;
-  UINT cNode, cParent,cAncestor; // attributes
+  UINT cNode, cParent; // attributes
+  // UINT cAncestor; // never read
       CriterionT aNode, aParent,aAncestor;
       T lNode, lParent, lAncestor; // node levels, the same type than input image
       float stability;
@@ -1004,8 +1006,11 @@ void  ComputeDeltaUOMSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_nod
       aNode =  tree.getCriterion(node).crit;
       lNode =  tree.getLevel(node);// #current level
 
-      cAncestor =  tree.getCriterion(first_ancestor).ymax-tree.getCriterion(first_ancestor).ymin+1;// #current criterion
-      cParent =  tree.getCriterion(nParent).ymax-tree.getCriterion(nParent).ymin+1;// #current criterion
+      // cAncestor = tree.getCriterion(first_ancestor).ymax -
+      //             tree.getCriterion(first_ancestor).ymin +
+      //             1; // #current criterion
+      cParent = tree.getCriterion(nParent).ymax -
+                tree.getCriterion(nParent).ymin + 1; // #current criterion
       aParent  = tree.getCriterion(nParent).crit;
       aAncestor  = tree.getCriterion(first_ancestor).crit;
       lParent =  tree.getLevel(nParent);// #current level
@@ -1276,12 +1281,17 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
   // END COMPUTE DYNAMIC, BMI
     while (child!=0) 
       {
-       if(!use_textShape)
-	 ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, method,0 /*isPrevMaxT*/,minArea,threshold,mymax);
-       else
-        ComputeDeltaUOMSERSC(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
-
-        child = tree.getBrother(child);
+      if (!use_textShape) {
+        ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child,
+                           root /*parent*/, root /*first_ancestor*/,
+                           stopSize /*stop*/, delta, method, 0 /*isPrevMaxT*/,
+                           minArea, threshold, mymax);
+      } else {
+        ComputeDeltaUOMSERSC(tree, transformee_node, indicatrice_node, child,
+                             root /*parent*/, root /*first_ancestor*/,
+                             stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
+      }
+      child = tree.getBrother(child);
       }
 
 }
@@ -1423,7 +1433,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
      * Max-tree based algorithm
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[in] size The size of the opening
+     * \param[in] stopSize The size of the opening
      * \param[out] imOut Output image
     */
     template <class T>
@@ -1438,7 +1448,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
      * Max-tree based algorithm
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[in] size The size of the opening
+     * \param[in] stopSize The size of the opening
      * \param[out] imOut Output image
     */
     template <class T>
@@ -1453,7 +1463,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
      * Max-tree based algorithm
      * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[in] size The size of the closing
+     * \param[in] stopSize The size of the closing
      * \param[out] imOut Output image
     */
     template <class T>
