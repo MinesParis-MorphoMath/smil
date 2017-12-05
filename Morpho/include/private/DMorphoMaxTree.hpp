@@ -97,6 +97,7 @@ private:
     size_t imWidth ;
     size_t imHeight ;
 
+
     void reset()
     {
         if (!initialized)
@@ -121,8 +122,27 @@ private:
         criteria[page] = new CriterionT[COLUMN_SIZE]();
     }
 
-    T initialize(const Image<T> &imIn, LabelT *img_eti)
+    T initialize(const Image<T> &imIn, LabelT *img_eti, const StrElt &se)
     {
+      imIn.getSize(imSize);
+      pixPerSlice = imSize[0]*imSize[1];
+
+	// BMI BEGIN
+	sePtsNbr = sePts.size();
+	dOffsets.clear();
+	sePts.clear();
+	oddSE = se.odd;
+            
+	// set an offset distance for each se point (!=0,0,0)
+	for(vector<IntPoint>::const_iterator it = se.points.begin() ; it!=se.points.end() ; it++)
+	  if (it->x!=0 || it->y!=0 || it->z!=0)
+            {
+	      sePts.push_back(*it);
+	      dOffsets.push_back(it->x + it->y*imSize[0] + it->z*imSize[0]*imSize[1]);
+            }
+            
+	sePtsNbr = sePts.size();
+	// BMI END
         if (initialized)
           reset();
         
@@ -246,47 +266,47 @@ private:
             size_t imDepth = img.getDepth();
             size_t pixPerSlice = imWidth*imHeight;
             typename ImDtTypes<T>::lineType imgPix = img.getPixels();
-            size_t x, y, z;
+            size_t x0, y0, z0;
             
             while( (hq.getHigherLevel()>=level) && !hq.isEmpty())
             {
                 p = hq.pop();
 
-                img.getCoordsFromOffset(p, x, y, z);
-		//		std::cout<<"POP:offset="<<p<<"(x,y)="<<x<<", "<<y<<"\n";
-		//		std::cout<<"-------------------------\n";
+                img.getCoordsFromOffset(p, x0, y0, z0);
+		//                std::cout<<"POP:offset="<<p<<"(x,y)="<<x0<<", "<<y0<<"\n";
+                //std::cout<<"-------------------------\n";
 
-                OffsetT p_suiv;
-
-                if (imDepth>1) // for 3D
-                {
-                    if ( z<imDepth-1 && img_eti[p_suiv=p+pixPerSlice]==0) //z+1
-                      if (subFlood(imgPix, img_eti, p, p_suiv))
-                        continue;
-                      
-                    if ( z>0 && img_eti[p_suiv=p-pixPerSlice]==0) //z-1
-                      if (subFlood(imgPix, img_eti, p, p_suiv))
-                        continue;
-                }
                 
-                if ( y<imHeight-1 && img_eti[p_suiv=p+imWidth]==0) //y+1
-                  if (subFlood(imgPix, img_eti, p, p_suiv))
-                    continue;
+                bool oddLine = oddSE && ((y0)%2);
+                
+                int x, y, z; // not size_t in order to (possibly be negative!)
+                OffsetT p_suiv;
+                
+                for(UINT i=0;i<sePtsNbr;i++)
+                {
+                    IntPoint &pt = sePts[i];
+                    x = x0 + pt.x;
+                    y = y0 + pt.y;
+                    z = z0 + pt.z;
+                    
+                    if (oddLine)
+                      x += (((y+1)%2)!=0);
+                  
+                    if (x>=0 && x<(int)imSize[0] && y>=0 && y<(int)imSize[1] && z>=0 && z<(int)imSize[2])
+                    {
+                        p_suiv = p + dOffsets[i];
+			if(img_eti[p_suiv]==0){                        
+			  if (oddLine)
+			    p_suiv += (((y+1)%2)!=0);
 
-                if ( y>0 && img_eti[p_suiv=p-imWidth]==0) //y-1
-                  if (subFlood(imgPix, img_eti, p, p_suiv))
-                    continue;
+			  if(subFlood(imgPix, img_eti, p, p_suiv))
+			    continue;
+			}
+                    }
+                }// for each ngb
                   
-                if ( x<imWidth-1 && img_eti[p_suiv=p+1]==0) //x+1
-                  if (subFlood(imgPix, img_eti, p, p_suiv))
-                    continue;
-                  
-                if ( x>0 && img_eti[p_suiv=p-1]==0) //x-1
-                  if (subFlood(imgPix, img_eti, p, p_suiv))
-                    continue;
-                  
-            }
-    }
+            }// while hq.notEmpty
+    }//void flood
     
 public:
   MaxTree2():hq(true)
@@ -302,6 +322,7 @@ public:
         labels = new LabelT[GRAY_LEVEL_NBR];
         
         initialized = false;
+
     }
     ~MaxTree2()
     {
@@ -313,7 +334,16 @@ public:
         delete[] criteria;
         delete[] labels;
     }
-    
+protected:
+        size_t imSize[3], pixPerSlice;
+
+        vector<IntPoint> sePts;
+        UINT sePtsNbr;
+        bool oddSE;
+        vector<int> dOffsets;
+
+public:
+
     inline CriterionT &getCriterion(const LabelT node)
     {
         return GET_TREE_OBJ(criteria, node);
@@ -349,12 +379,12 @@ public:
         return imHeight;
     }
 
-    int build(const Image<T> &img, LabelT *img_eti)
+    int build(const Image<T> &img, LabelT *img_eti, const StrElt &se)
     {
-            T minValue = initialize(img, img_eti);
+      T minValue = initialize(img, img_eti,se);
 
-            flood(img, img_eti, minValue);
-            return labels[minValue];
+      flood(img, img_eti, minValue);// BMI: dOffset already contains se information
+      return labels[minValue];
     }
 
   // BMI (from Andres)
@@ -588,7 +618,7 @@ private:
         return false;
     }
 
-    void flood(const Image<T> &img, UINT *img_eti, unsigned int level)
+  void flood(const Image<T> &img, UINT *img_eti, unsigned int level)
     {
             OffsetT p;
             size_t imWidth = img.getWidth();
@@ -1373,11 +1403,11 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
       }
   
   
-}
+}// compute_AttributeOpening
 
     
   template <class T, class CriterionT, class OffsetT, class LabelT>
-    RES_T attributeOpen(const Image<T> &imIn, Image<T> &imOut, size_t stopSize)
+    RES_T attributeOpen(const Image<T> &imIn, Image<T> &imOut, size_t stopSize, const StrElt &se)
     {
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -1386,7 +1416,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
         LabelT *img_eti = new LabelT[imSize]();
         
         MaxTree2<T,CriterionT,OffsetT,LabelT> tree;
-        LabelT root = tree.build(imIn, img_eti);
+        LabelT root = tree.build(imIn, img_eti,se);
 
 	// BEGIN BMI, DEBUG
 
@@ -1427,10 +1457,57 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
      * \param[out] imOut Output image
     */
     template <class T>
-    RES_T heightOpen(const Image<T> &imIn, int stopSize, Image<T> &imOut)
+    RES_T heightOpen(const Image<T> &imIn, size_t stopSize, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-        return attributeOpen<T, HeightCriterion>(imIn, imOut, stopSize);
-    }
+      return attributeOpen<T, HeightCriterion,size_t,UINT32>(imIn, imOut, stopSize,se);
+    }// END heightOpen
+
+    template <class T>
+    RES_T heightClose(const Image<T> &imIn, size_t stopSize, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        ImageFreezer freeze(imOut);
+        
+        Image<T> tmpIm(imIn);
+        inv(imIn, tmpIm);        
+        RES_T res = attributeOpen<T, HeightCriterion,size_t,UINT32>(tmpIm, imOut, stopSize, se);
+        inv(imOut, imOut);
+        
+        return res;
+    }// END heightClose
+
+    /**
+    * Width opening
+     * 
+     * Max-tree based algorithm
+     * \warning 4-connex only (6-connex in 3D)
+     * \param[in] imIn Input image
+     * \param[in] size The size of the opening
+     * \param[out] imOut Output image
+    */
+    template <class T>
+    RES_T widthOpen(const Image<T> &imIn, size_t stopSize, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+      return attributeOpen<T, WidthCriterion,size_t,UINT32>(imIn, imOut, stopSize,se);
+    }// END widthOpen
+
+    template <class T>
+    RES_T widthClose(const Image<T> &imIn, size_t stopSize, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+        ASSERT_ALLOCATED(&imIn, &imOut);
+        ASSERT_SAME_SIZE(&imIn, &imOut);
+        
+        ImageFreezer freeze(imOut);
+        
+        Image<T> tmpIm(imIn);
+        inv(imIn, tmpIm);        
+        RES_T res = attributeOpen<T, WidthCriterion,size_t,UINT32>(tmpIm, imOut, stopSize, se);
+        inv(imOut, imOut);
+        
+        return res;
+    }// END widthClose
 
     /**
     * Area opening
@@ -1442,9 +1519,9 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
      * \param[out] imOut Output image
     */
     template <class T>
-    RES_T areaOpen(const Image<T> &imIn, int stopSize, Image<T> &imOut)
+    RES_T areaOpen(const Image<T> &imIn, size_t stopSize, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
-      return attributeOpen<T, AreaCriterion,size_t,UINT32>(imIn, imOut, stopSize);
+      return attributeOpen<T, AreaCriterion,size_t,UINT32>(imIn, imOut, stopSize,se);
     }
     
     /**
@@ -1457,7 +1534,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
      * \param[out] imOut Output image
     */
     template <class T>
-    RES_T areaClose(const Image<T> &imIn, int stopSize, Image<T> &imOut)
+    RES_T areaClose(const Image<T> &imIn, size_t stopSize, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -1466,7 +1543,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
         
         Image<T> tmpIm(imIn);
         inv(imIn, tmpIm);        
-        RES_T res = attributeOpen<T, AreaCriterion,size_t,UINT32>(tmpIm, imOut, stopSize);
+        RES_T res = attributeOpen<T, AreaCriterion,size_t,UINT32>(tmpIm, imOut, stopSize, se);
         inv(imOut, imOut);
         
         return res;
@@ -1477,5 +1554,5 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
 } // namespace smil
 
 
-#endif // _D_SKELETON_HPP
+#endif // _D_MAX_TREE_HPP
 
