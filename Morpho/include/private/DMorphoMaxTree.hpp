@@ -759,8 +759,8 @@ public:
 
 // NEW BMI    # ##################################################
 //(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
-template <class T, class CiterionT, class OffsetT>
-void  ComputeDeltaUO(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, int nParent, T prev_residue, UINT stop, UINT delta, int isPrevMaxT){
+template <class T, class CriterionT, class OffsetT, class LabelT, class tAttType>
+void  ComputeDeltaUO(MaxTree2<T,CriterionT,OffsetT,LabelT> &tree, T* transformee_node, tAttType* indicatrice_node, int node, int nParent, T prev_residue, tAttType stop, UINT delta, int isPrevMaxT){
 
                     //self,node = 1, nParent =0, stop=0, delta = 0, isPrevMaxT = 0):
   int child; // index node
@@ -768,11 +768,11 @@ void  ComputeDeltaUO(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UI
       UINT cNode, cParent; // attributes
       T lNode, lParent; // node levels, the same type than input image
 
-      cNode =  tree.getCriterion(node).ymax-tree.getCriterion(node).ymin+1;// #current criterion
+      cNode =  tree.getCriterion(node).getAttributeValue();//ymax-tree.getCriterion(node).ymin+1;// #current criterion
       lNode =  tree.getLevel(node);// #current level
 
 
-      cParent =  tree.getCriterion(nParent).ymax-tree.getCriterion(nParent).ymin+1;// #current criterion
+      cParent =  tree.getCriterion(nParent).getAttributeValue();//ymax-tree.getCriterion(nParent).ymin+1;// #current criterion
       lParent =  tree.getLevel(nParent);// #current level
 
       int flag;
@@ -816,14 +816,14 @@ void  ComputeDeltaUO(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UI
       }
 
 }
-template <class T, class CiterionT, class OffsetT>
-void compute_max(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int node, UINT stop, T max_tr, unsigned int max_in, unsigned int hauteur_parent, T valeur_parent, T previous_value)
+  template <class T1, class T2>
+  void compute_max(MaxTree2<T1,HeightCriterion,size_t,UINT32> &tree, T1* transformee_node, T2* indicatrice_node, UINT32 node, T2 stop, T1 max_tr, T2 max_in, T2 hauteur_parent, T1 valeur_parent, T1 previous_value)
 {
-        T m;
-        T max_node;
-        unsigned int max_criterion;
-        UINT child;
-        UINT hauteur = tree.getCriterion(node).ymax-tree.getCriterion(node).ymin+1;
+        T1 m;
+        T1 max_node;
+        T2 max_criterion;
+        UINT32 child;
+        T2 hauteur = tree.getCriterion(node).getAttributeValue();//ymax-tree.getCriterion(node).ymin+1;
 	//	std::cout<<"IN COMPUTE_MAX:"<<"; node="<<node<<"\n";
         m = (hauteur==hauteur_parent) ? tree.getLevel(node)-previous_value : tree.getLevel(node)-valeur_parent;
         if (hauteur>=stop) 
@@ -879,12 +879,12 @@ void compute_max(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UINT* 
         }
 }
 
-template <class T, class CiterionT, class OffsetT>
-void compute_contrast(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize,UINT delta = 0)
+  template <class T1, class T2>
+void compute_contrast(MaxTree2<T1,HeightCriterion,size_t,UINT32> &tree, T1* transformee_node, T2* indicatrice_node, UINT32 root, T2 stopSize,UINT delta = 0)
 {
 
-  int child;
-  UINT hauteur;
+  UINT32 child;
+  T2 hauteur;
   //  std::cout<<"IN compute_contrast\n";
 
   transformee_node[root]=0;
@@ -892,13 +892,14 @@ void compute_contrast(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, U
   //  std::cout<<"IN compute_contrast 2\n";
   tree.updateCriteria(root);
 
-  hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
+  hauteur = tree.getCriterion(root).getAttributeValue();//ymax - tree.getCriterion(root).ymin+1;
   child = tree.getChild(root);
   if(delta == 0){
     while (child!=0) 
       {
 	//	std::cout<<"child"<<child<<"; level"<<tree.getLevel(child);
-        compute_max(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
+
+      compute_max(tree, transformee_node, indicatrice_node, child, stopSize, (T1)0, (T2)0, hauteur, tree.getLevel(root), tree.getLevel(root));
         child = tree.getBrother(child);
       }
   }// END delta == 0
@@ -906,14 +907,14 @@ void compute_contrast(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, U
     while (child!=0) 
       {
 	//	std::cout<<"child"<<child<<"; level"<<tree.getLevel(child);
-        ComputeDeltaUO(tree, transformee_node, indicatrice_node, child, root/*parent*/, (T)0/* prev_residue*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
+        ComputeDeltaUO(tree, transformee_node, indicatrice_node, child, root/*parent*/, (T1)0/* prev_residue*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
 
         child = tree.getBrother(child);
       }
   }//END dela != 0
 }
-template <class T, class CiterionT, class OffsetT>
-void compute_contrast_matthieuNoDelta(MaxTree<T,CiterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize)
+template <class T, class CriterionT, class OffsetT>
+void compute_contrast_matthieuNoDelta(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_node, UINT* indicatrice_node, int root, UINT stopSize)
 {
         int child;
         UINT hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
@@ -942,9 +943,12 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,CiterionT,OffsetT> &tree, T* tra
      * \param[out] imIndic The indicator image
      * \param[in] stopSize (optional)
      */
-    template <class T1, class T2>
-    RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, int stopSize=-1, UINT delta = 0)
+
+
+  template <class T1, class T2>
+    RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, const StrElt &se, T2 stopSize=-1, UINT delta = 0)
     {
+
 
 
         ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
@@ -957,12 +961,12 @@ void compute_contrast_matthieuNoDelta(MaxTree<T,CiterionT,OffsetT> &tree, T* tra
         UINT *img_eti = new UINT[imSize]();
      
 
-        MaxTree<T1> tree;
-        int root = tree.build(imIn, img_eti);
+        MaxTree2<T1,HeightCriterion,size_t,UINT32> tree;
+        UINT32 root = tree.build(imIn, img_eti,se);
 
 	std::cout<<"ULTIMATE OPEN, after tree.build"<<"NB VERTEX="<<tree.getLabelMax()<<"\n";
         T1 *transformee_node = new T1[tree.getLabelMax()]();
-        UINT *indicatrice_node = new UINT[tree.getLabelMax()]();
+        T2 *indicatrice_node = new T2[tree.getLabelMax()]();
 	//	std::cout<<"ULTIMATE OPEN, after memory allocation\n";
         compute_contrast(tree, transformee_node, indicatrice_node, root, stopSize,delta);
 	//	std::cout<<"ULTIMATE OPEN, compute_contrast\n";
@@ -1371,7 +1375,7 @@ void compute_contrast_MSER(MaxTree<T,CriterionT,OffsetT> &tree, T* transformee_n
         LabelT child;
         T nodeLevel = tree.getLevel(node);
 
-	T currentLevel = ( tree.getCriterion( node ).getAttributeValue() < stop ) ? previousLevel : nodeLevel;
+	T currentLevel = ( tree.getCriterion( node ) < stop ) ? previousLevel : nodeLevel;
 
         lut_out[node] = currentLevel;
         

@@ -25,7 +25,7 @@ public:
   virtual void reset() = 0;
   virtual void merge(GenericCriterion* other_criteron) = 0;
   virtual void update(const size_t x, const size_t y,const size_t z) = 0;
-  virtual bool operator < (GenericCriterion* other_criteron) = 0;
+  virtual bool operator < (const tAttType& other_attribute) = 0;
   tAttType getAttributeValue()
   {
     compute(); 
@@ -68,8 +68,8 @@ public:
   {
     attribute_value_ += 1;
   }
-  virtual bool operator < (GenericCriterion* other_criteron){
-    return (attribute_value_ < dynamic_cast<AreaCriterion&>(*other_criteron).attribute_value_);
+  virtual bool operator < (const size_t& other_attribute){
+    return (attribute_value_ < other_attribute);
   }
 protected:  
   virtual void compute(){}
@@ -107,8 +107,8 @@ public:
     y_max_ = std::max(y_max_, y);
     y_min_ = std::min(y_min_, y);
   }
-  virtual bool operator < (GenericCriterion* other_criteron){
-    return (attribute_value_ < dynamic_cast<HeightCriterion&>(*other_criteron).attribute_value_);
+  virtual bool operator < (const size_t& other_attribute){
+    return (attribute_value_ < other_attribute);
   }
 
 protected:
@@ -156,8 +156,8 @@ public:
     x_max_ = std::max(x_max_, x);
     x_min_ = std::min(x_min_, x);
   }
-  virtual bool operator < (GenericCriterion* other_criteron){
-    return (attribute_value_ < dynamic_cast<WidthCriterion&>(*other_criteron).attribute_value_);
+  virtual bool operator < (const size_t & other_attribute){
+    return (attribute_value_ < other_attribute);
   }
 
 protected:
@@ -214,8 +214,8 @@ public:
     y_max_ = std::max(y_max_, y);
     y_min_ = std::min(y_min_, y);
   }
-  virtual bool operator < (GenericCriterion* other_criteron){// AttributeOpen with this criterion would be a Height Opening
-    return (attribute_value_.first < dynamic_cast<HACriterion&>(*other_criteron).attribute_value_.first);
+  virtual bool operator < (const std::pair<size_t,size_t>& other_attribute){// AttributeOpen with this criterion would be a Height Opening
+    return (attribute_value_.first < other_attribute.first);
   }
 
 protected:
