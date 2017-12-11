@@ -16,7 +16,7 @@ template<class tAttType>
 class GenericCriterion
 {
 public:
-  GenericCriterion(){}
+  GenericCriterion(){initialize();}
 
   virtual ~GenericCriterion(){}
   
@@ -44,7 +44,7 @@ protected:
 class AreaCriterion : public GenericCriterion<size_t>
 {
 public:
-  AreaCriterion(){}
+  AreaCriterion(){initialize();}
 
   virtual ~AreaCriterion(){}
 
@@ -79,7 +79,7 @@ protected:
 class HeightCriterion : public GenericCriterion<size_t>
 {
 public:
-  HeightCriterion(){}
+  HeightCriterion(){initialize();}
 
   virtual ~HeightCriterion(){}
 
@@ -128,7 +128,7 @@ private:
 class WidthCriterion : public GenericCriterion<size_t>
 {
 public:
-  WidthCriterion(){}
+  WidthCriterion(){initialize();}
 
   virtual ~WidthCriterion(){}
 
@@ -180,7 +180,7 @@ private:
   class HACriterion : public GenericCriterion< std::pair<size_t,size_t> >
 {
 public:
-  HACriterion(){}
+  HACriterion(){initialize();}
 
   virtual ~HACriterion(){}
 
