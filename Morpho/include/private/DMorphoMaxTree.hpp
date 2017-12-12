@@ -387,12 +387,13 @@ public:
       T minValue = initialize(img, img_eti,se);
 
       flood(img, img_eti, minValue);// BMI: dOffset already contains se information
+      updateCriteria(labels[minValue]);
       return labels[minValue];
     }
 
   // BMI (from Andres)
   /// Update criteria of a given max-tree node
-  CriterionT updateCriteria(const int node);
+  void updateCriteria(const int node);
     
 
     CriterionT PREVIOUS_OLD_FROMJONATHAN_updateCriteria(LabelT node) 
@@ -417,30 +418,16 @@ public:
 
 // Update criteria on a given max-tree node.// From Andres
 template <class T, class CriterionT, class OffsetT, class LabelT>
-inline CriterionT MaxTree2<T, CriterionT,OffsetT,LabelT>::updateCriteria( const int node )
+inline void MaxTree2<T, CriterionT,OffsetT,LabelT>::updateCriteria( const int node )
 {
   LabelT child = getChild(node);
   while ( child != 0 )
   {
-    //    std::cout<<"call update with child:"<<child<<"\n";
-    CriterionT c = updateCriteria( child );
-    //    std::cout<<"BEFORE MERGE("<<node<<","<<child<<")="<<getCriterion ( node ).getAttributeValue()<<","<<getCriterion ( child ).getAttributeValue()<<"\n";
+    updateCriteria( child );
     getCriterion( node ).merge(&getCriterion( child ) );
-    //    std::cout<<"AFTER MERGE:"<<getCriterion ( node ).getAttributeValue()<<"\n";
-
-    //DEBUG    LabelT child_toto = child;
     child = getBrother( child );
-    //    std::cout<<"get brother:"<<child_toto<<","<<child<<"\n";
-    //    std::cout<<"------------------\n";
-
   }
-  return getCriterion( node );
 }
-
-
-
-
-
 
 
 // NEW BMI    # ##################################################
@@ -576,7 +563,7 @@ void compute_contrast(MaxTree2<T1,HeightCriterion,size_t,UINT32> &tree, T1* tran
   transformee_node[root]=0;
   indicatrice_node[root]=0;
   //  std::cout<<"IN compute_contrast 2\n";
-  tree.updateCriteria(root);
+  //  tree.updateCriteria(root);
 
   hauteur = tree.getCriterion(root).getAttributeValue();//ymax - tree.getCriterion(root).ymin+1;
   child = tree.getChild(root);
@@ -618,8 +605,6 @@ void compute_contrast(MaxTree2<T1,HeightCriterion,size_t,UINT32> &tree, T1* tran
   template <class T1, class T2>
     RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, const StrElt &se, T2 stopSize=-1, UINT delta = 0)
     {
-
-
 
         ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
         ASSERT_SAME_SIZE(&imIn, &imTrans, &imIndic);
@@ -663,26 +648,145 @@ void compute_contrast(MaxTree2<T1,HeightCriterion,size_t,UINT32> &tree, T1* tran
 
 
 #ifndef SWIG
+// NEW BMI    # ##################################################
+//(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
+template <class T, class CriterionT, class OffsetT, class LabelT, class tAttType>
+void  ComputeDeltaUOMSER(MaxTree2<T,CriterionT,OffsetT,LabelT> &tree, T* transformee_node, tAttType* indicatrice_node, int node, int nParent,  int first_ancestor, tAttType stop, UINT delta, UINT method, int isPrevMaxT,UINT minArea=0,T threshold=0,T mymax=0){
+  // method:  1 (MSER), 2 (RGR)
 
-struct BMIAreaCriterion
-{
-  size_t value;
-  inline void init() { value = 1; }
-  inline void reset() { value = 0; }
-  inline void merge(BMIAreaCriterion &other) { value += other.value; }
-  inline void update() { value += 1; }
-};
-struct BMIHeightCriterion
-{
-  size_t ymax;
-  size_t ymin;
-  size_t value;
-  inline void init() { ymax = 0; ymin=6500000; }
-  inline void reset() { ymax = 0; ymin = 6500000;}
-  inline void merge(BMIHeightCriterion &other) { ymax = max(ymax,other.ymax);ymin = min(ymin,other.ymin); }
-  inline void update() { value = ymax-ymin+1; }
-};
+  // "node": the current node; "nParent": its direct parent (allows
+  // attribute comparison for Delta versions); "first_ancestor": the
+  // first ancestor with a different attribute (used for residue
+  // computation level(first_ancestor) - level(node) and for area stability computation
 
+                    //self,node = 1, nParent =0, stop=0, delta = 0, isPrevMaxT = 0):
+  int child; // index node
+  T current_residue, stab_residue;
+  UINT hNode, hParent; // attributes
+      size_t aNode, aParent,aAncestor;
+      T lNode, lParent, lAncestor; // node levels, the same type than input image
+      float stability;
+
+
+      hNode =  tree.getCriterion(node).getAttributeValue().H;// #current criterion
+      aNode =  tree.getCriterion(node).getAttributeValue().A;
+      lNode =  tree.getLevel(node);// #current level
+
+      hParent =  tree.getCriterion(nParent).getAttributeValue().H;// #current criterion
+      aParent  = tree.getCriterion(nParent).getAttributeValue().A;
+      aAncestor  = tree.getCriterion(first_ancestor).getAttributeValue().A;
+      lParent =  tree.getLevel(nParent);// #current level
+      lAncestor =  tree.getLevel(first_ancestor);// #current level
+      int flag;
+
+
+      if ((hParent - hNode) <= delta){
+        flag = 1;
+      }
+      else{
+        flag = 0;
+      }
+      float relativeGrowthRate;//BMI RGR
+      double lgARoot = std::log((double)tree.getImWidth()*tree.getImHeight());
+      double factor ;
+
+      if(method == 2){//RGR
+	factor = ImDtTypes<T>::max()/((double)100*lgARoot);//BMI RGR La valeur max sera max/10 pour un changement d'aire de 1 a taille_im en pixels
+      }
+      else if (method == 3){//MSER_sub
+	factor = ImDtTypes<T>::max()/((double)100.0);//BMI
+	factor = mymax/((double)25.0);//BMI
+	//	std::cout<<"mymax="<<int(mymax)<<"; factor3="<<factor<<"\n";
+      }
+      if (flag){
+        current_residue  =  lNode - lAncestor ;
+	if(method == 1){ // mser stability
+	  stability  = 1 - ((aAncestor - aNode)*1.0/(aAncestor));
+	  stab_residue = round(current_residue * stability);
+	}
+	else if (method == 2){// relative growth rate
+	  relativeGrowthRate = factor * (std::log((double)aAncestor ) - std::log((double) aNode ));
+	  //	  std::cout<<"aAncestor:"<<aAncestor.value<<", aNode="<<aNode.value<<", rgr="<<relativeGrowthRate<<"\n";
+	  if(current_residue > relativeGrowthRate){
+	    stab_residue = round(current_residue - relativeGrowthRate);
+	  }
+	  else{stab_residue = 0;}
+
+	  //	  std::cout<<"Hg="<<cParent<<"; Hp="<<cNode<<"; Levels="<<int(lNode)<<", "<<int(lAncestor)<<";;;";
+	  //	  std::cout<<"current="<<int(current_residue)<<"; rel="<<relativeGrowthRate<<"; stb_res="<<int(stab_residue)<<"\n";
+	}// end RGR
+	else if (method == 3){// MSER sustraire
+	  stability  = factor*( ((aAncestor - aNode)*1.0/(aAncestor)) );
+	  //	  std::cout<<"factor="<<factor<<"current="<<current_residue<<"stab="<<stability<<"\n";
+	  if(current_residue > stability){
+	    stab_residue = round(current_residue - stability);
+	  }
+	  else{stab_residue = 0;}
+	}// end MSER_sub
+	
+	//	std::cout<<"Ag="<<aAncestor.value<<"; Ap="<<aNode.value<<"; diff_logs="<<(std::log((double)aAncestor.value ) - std::log((double) aNode.value ))<<"; ";
+      }// if flag
+      else{
+        current_residue  = (lNode - lParent);
+	if(method == 1){ // mser stability
+	  stability = 1 - ((aParent - aNode)*1.0/(aParent));// relative growth rate
+	  stab_residue = round(current_residue * stability);
+	}
+	else if (method == 2){// relative growth rate
+	  relativeGrowthRate = factor * (std::log((double)aParent ) - std::log((double) aNode ));
+	  //	  std::cout<<"aAncestor:"<<aAncestor.value<<", aNode="<<aNode.value<<", rgr="<<relativeGrowthRate<<"\n";
+	  if(current_residue > relativeGrowthRate){
+	    stab_residue = round(current_residue - relativeGrowthRate);
+	  }
+	  else{stab_residue = 0;}
+	  //	  std::cout<<"NFHg="<<cParent<<"; Hp="<<cNode<<"; Levels="<<int(lNode)<<", "<<int(lParent)<<";;;";
+	  //	  std::cout<<"current="<<int(current_residue)<<"; rel="<<int(relativeGrowthRate)<<"; stb_res="<<int(stab_residue)<<"\n";
+	}// end RGR
+	else if (method == 3){
+	  stability = factor*( ((aParent - aNode)*1.0/(aParent)));// msersub
+	  //	  std::cout<<"factor="<<factor<<"current="<<current_residue<<"stab="<<stability<<"\n";
+	  if(current_residue > stability){
+	    stab_residue = round(current_residue - stability);
+	  }
+	  else{stab_residue = 0;}
+	  
+	}
+	else{
+	  std::cout<<"ERROR UNKOWN METHOD\n";
+	}
+      }// if not flag
+
+
+
+      transformee_node[node] = transformee_node[nParent];
+      indicatrice_node[node] = indicatrice_node[nParent];
+      int isMaxT = 0;
+      if(hNode < stop){
+        if (stab_residue > transformee_node[node] && stab_residue > threshold && aNode > minArea){
+          isMaxT = 1;
+          transformee_node[node] = stab_residue;
+
+          if(! (isPrevMaxT && flag)){
+            indicatrice_node[node]  = hNode + 1;
+          }
+          
+        }
+      }
+      else{
+        indicatrice_node[node]  = 0;
+      }
+      child=tree.getChild(node);
+      while (child!=0){
+        if(flag && (hNode < stop)){
+          ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node,first_ancestor, stop, delta,method,isMaxT,minArea,threshold,mymax);
+        }
+        else{
+
+          ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, node, nParent,stop, delta,method,isMaxT,minArea,threshold,mymax);
+        }
+        child = tree.getBrother(child);
+      }
+}
 
 
 inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT width,UINT height,float &fillRatio,float &AspectRatio)
@@ -718,8 +822,184 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
 }
 
 
+// NEW BMI    # ##################################################
+//(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0, hauteur, tree.getLevel(root), tree.getLevel(root));
+  template <class T, class CriterionT, class OffsetT, class LabelT, class tAttType>
+  void  ComputeDeltaUOMSERSC(MaxTree2<T,CriterionT,OffsetT,LabelT> &tree, T* transformee_node, tAttType* indicatrice_node,int node, int nParent,  int first_ancestor, tAttType stop, UINT delta, int isPrevMaxT){
+
+    // "node": the current node; "nParent": its direct parent (allows
+    // attribute comparison for Delta versions); "first_ancestor": the
+    // first ancestor with a different attribute (used for residue
+    // computation level(first_ancestor) - level(node) and for area stability computation
+
+    //self,node = 1, nParent =0, stop=0, delta = 0, isPrevMaxT = 0):
+    int child; // index node
+    T current_residue, stab_residue;
+    UINT hNode, hParent, wNode; // attributes
+    size_t aNode, aParent,aAncestor;
+    T lNode, lParent,lAncestor; /*wParent set but not used*/ // node levels, the same type than input image
+    float stability, fillRatio, AspectRatio, fac;
+
+
+    hNode =  tree.getCriterion(node).getAttributeValue().H;// #current criterion
+    wNode =  tree.getCriterion(node).getAttributeValue().W;// #width
+    aNode =  tree.getCriterion(node).getAttributeValue().A;
+    lNode =  tree.getLevel(node);// #current level
+
+
+    hParent =  tree.getCriterion(nParent).getAttributeValue().H;// #current criterion
+//     wParent =  tree.getCriterion(nParent).xmax-tree.getCriterion(nParent).xmin+1;// #width   
+    aParent  = tree.getCriterion(nParent).getAttributeValue().A;
+    aAncestor  = tree.getCriterion(first_ancestor).getAttributeValue().A;
+    lParent =  tree.getLevel(nParent);// #current level
+    lAncestor =  tree.getLevel(first_ancestor);// #current level
+    int flag;
+
+
+    if ((hParent - hNode) <= delta){
+        flag = 1;
+    }
+    else{
+        flag = 0;
+    }
+    
+    computeFillAspectRatioFactor(wNode,hNode,aNode,tree.getImWidth(),tree.getImHeight(),fillRatio,AspectRatio);
+
+    if (flag){//no significant attribute change
+        stability = pow((1.0 - ((aAncestor - aNode)*1.0/aAncestor)),1.0/3);
+        fac =  (stability * AspectRatio * fillRatio);
+        current_residue  =  lNode - lAncestor ;
+        stab_residue = round(current_residue * fac);
+    }
+    else{
+        stability = pow((1.0 - ((aParent - aNode)*1.0/aParent)),1.0/3);
+        fac =  (stability * AspectRatio * fillRatio);
+        current_residue  = (lNode - lParent);
+        stab_residue = round(current_residue * fac);
+    }
+
+
+    transformee_node[node] = transformee_node[nParent];
+    indicatrice_node[node] = indicatrice_node[nParent];
+
+
+    int isMaxT = 0;
+    if(hNode < stop){
+
+        if (stab_residue > transformee_node[node]){
+            isMaxT = 1;
+            transformee_node[node] = stab_residue;
+
+            if(! (isPrevMaxT and flag)){
+                indicatrice_node[node]  = hNode + 1;                
+            }
+
+        }
+    }
+    else
+        indicatrice_node[node]  = 0;
+
+    child=tree.getChild(node);
+    while (child!=0){
+        if(flag && (hNode < stop)){
+            ComputeDeltaUOMSERSC(tree, transformee_node, indicatrice_node, child, node,first_ancestor, stop, delta,isMaxT);
+        }
+        else{
+            ComputeDeltaUOMSERSC(tree, transformee_node, indicatrice_node, child, node, nParent,stop, delta,isMaxT);
+        }
+        child = tree.getBrother(child);
+    }
+
+}
+
+  template <class T1,  class T2>
+  void compute_contrast_MSER(MaxTree2<T1,HWACriterion,size_t,UINT32> &tree, T1* transformee_node, T2* indicatrice_node, UINT32 root, T2 stopSize,UINT delta = 0, UINT method = 2, UINT minArea=0,T1 threshold=0, bool use_textShape =0)
+{
+
+  int child;
+//   UINT hauteur;
+
+  transformee_node[root]=0;
+  indicatrice_node[root]=0;
+
+  //  tree.updateCriteria(root); // already in tree building function
+  //  hauteur = tree.getCriterion(root).ymax - tree.getCriterion(root).ymin+1;
+  child = tree.getChild(root);
+
+  // BEGIN COMPUTE DYNAMIC, BMI
+  
+  int mynode;
+  T1 mylevel, mymax;
+  mymax = 0;
+  for(mynode = 0; mynode < tree.getLabelMax(); mynode ++){
+    mylevel = tree.getLevel(mynode);
+    if(mylevel > mymax){
+      mymax = mylevel;
+    }
+  }
+  std::cout<<"mymax="<<mymax<<"\n";
+  // END COMPUTE DYNAMIC, BMI
+    while (child!=0) 
+      {
+	if(!use_textShape)
+	  ComputeDeltaUOMSER(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, method,0 /*isPrevMaxT*/,minArea,threshold,mymax);
+	else
+	  ComputeDeltaUOMSERSC(tree, transformee_node, indicatrice_node, child, root/*parent*/,root /*first_ancestor*/, stopSize /*stop*/, delta, 0 /*isPrevMaxT*/);
+
+       child = tree.getBrother(child);
+      }
+
+}
+
+
+
+
 #endif // SWIG
 
+    template <class T1, class T2>
+    RES_T ultimateOpenMSER(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, const StrElt &se,T2 stopSize=-1, UINT delta = 0, UINT method = 2, UINT minArea=0,T1 threshold=0, bool use_textShape =0)
+    {
+        ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
+        ASSERT_SAME_SIZE(&imIn, &imTrans, &imIndic);
+        
+        int imSize = imIn.getPixelCount();
+        UINT *img_eti = new UINT[imSize]();
+        
+        MaxTree2<T1, HWACriterion> tree;
+        int root = tree.build(imIn, img_eti,se);
+
+        if(stopSize == -1){
+          stopSize= imIn.getHeight()-1;
+        }
+
+        
+        T1 *transformee_node = new T1[tree.getLabelMax()]();
+        T2 *indicatrice_node = new T2[tree.getLabelMax()]();
+
+        compute_contrast_MSER(tree, transformee_node, indicatrice_node, root, stopSize,delta,method,minArea,threshold,use_textShape);
+
+        
+        typename ImDtTypes<T1>::lineType transformeePix = imTrans.getPixels();
+        typename ImDtTypes<T2>::lineType indicatricePix = imIndic.getPixels();
+
+        for(int i=0;i<imSize;i++) 
+        {
+            transformeePix[i]=transformee_node[img_eti[i]];
+            indicatricePix[i]=indicatrice_node[img_eti[i]];
+        }
+        
+        delete[] img_eti;
+        delete[] transformee_node;
+        delete[] indicatrice_node;
+            
+        imTrans.modified();
+        imIndic.modified();
+        
+        return RES_OK;
+    }  
+
+    
+    
     
     
 #ifndef SWIG
@@ -731,7 +1011,7 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
         LabelT child;
         T nodeLevel = tree.getLevel(node);
 
-	T currentLevel = ( tree.getCriterion( node ) < stop ) ? previousLevel : nodeLevel;
+	T currentLevel = ( tree.getCriterion( node ).getAttributeValue() < stop ) ? previousLevel : nodeLevel;
 
         lut_out[node] = currentLevel;
 	//	std::cout<<"node:"<<node<<"->"<<int(currentLevel)<<"\n";
@@ -752,8 +1032,16 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
 
     lut_node[root] = tree.getLevel(root);
 
-    tree.updateCriteria(root);
+    //    tree.updateCriteria(root);
 
+    //DEBUG
+    // LabelT lab;
+
+    // for(lab = 1; lab < tree.getLabelMax(); lab ++){
+    //   std::cout<<"lab="<<lab<<", att="<<tree.getCriterion(lab).getAttributeValue()<<"\n";
+    // }
+    
+    // END DEBUG
     child = tree.getChild(root);
 
     while (child!=0) 
