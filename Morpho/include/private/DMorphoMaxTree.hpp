@@ -601,7 +601,7 @@ void compute_contrast(MaxTree2<T1,HeightCriterion,size_t,UINT32> &tree, T1* tran
 
 
   template <class T1, class T2>
-    RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, const StrElt &se, T2 stopSize=0, UINT delta = 0)
+    RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, T2 stopSize=0, UINT delta = 0, const StrElt &se = DEFAULT_SE)
     {
 
         ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
@@ -963,7 +963,7 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
 #endif // SWIG
 
     template <class T1, class T2>
-    RES_T ultimateOpenMSER(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, const StrElt &se,T2 stopSize=0, UINT delta = 0, UINT method = 2, UINT minArea=0,T1 threshold=0, bool use_textShape =0)
+    RES_T ultimateOpenMSER(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic,T2 stopSize=0, UINT delta = 0, const StrElt &se = DEFAULT_SE, UINT method = 2, UINT minArea=0,T1 threshold=0, bool use_textShape =0)
     {
         ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
         ASSERT_SAME_SIZE(&imIn, &imTrans, &imIndic);

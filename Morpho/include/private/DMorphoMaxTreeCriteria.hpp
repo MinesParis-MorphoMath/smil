@@ -251,7 +251,7 @@ public:
   virtual void initialize()
   {
 
-    attribute_value_ = {1,0};
+    attribute_value_ = {1,0,0};
 
     x_max_ = std::numeric_limits<size_t>::min();//lowest instead of min in Andres code
     x_min_ = std::numeric_limits<size_t>::max();

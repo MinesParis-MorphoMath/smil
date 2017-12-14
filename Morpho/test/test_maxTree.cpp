@@ -267,7 +267,7 @@ class Test_DeltaUO : public TestCase
       
       im1 << vec1;
       
-      ultimateOpen(im1, im2, imLbl, 7, 1);
+      ultimateOpen(im1, im2, imLbl, (dataType2)7, 1);
       
       dataType1 vecTrans[] =
       {
@@ -336,7 +336,7 @@ class Test_UO_MSER : public TestCase
       
       im1 << vec1;
       
-      ultimateOpenMSER(im1, im2, imLbl, 4 0);
+      ultimateOpenMSER(im1, im2, imLbl, (dataType2)4, 0);
       
       dataType1 vecTrans[] =
       {
