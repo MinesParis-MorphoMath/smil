@@ -125,7 +125,7 @@ private:
     T initialize(const Image<T> &imIn, LabelT *img_eti, const StrElt &se)
     {
       imIn.getSize(imSize);
-      pixPerSlice = imSize[0]*imSize[1];
+
 
 	// BMI BEGIN
 	sePtsNbr = sePts.size();
@@ -262,10 +262,7 @@ private:
     void flood(const Image<T> &img, UINT *img_eti, unsigned int level)
     {
             OffsetT p;
-            size_t imWidth = img.getWidth();
-            size_t imHeight = img.getHeight();
-            size_t imDepth = img.getDepth();
-            size_t pixPerSlice = imWidth*imHeight;
+
             typename ImDtTypes<T>::lineType imgPix = img.getPixels();
             size_t x0, y0, z0;
             
@@ -338,7 +335,7 @@ public:
         delete[] labels;
     }
 protected:
-        size_t imSize[3], pixPerSlice;
+        size_t imSize[3];
 
         vector<IntPoint> sePts;
         UINT sePtsNbr;
@@ -604,13 +601,13 @@ void compute_contrast(MaxTree2<T1,HeightCriterion,size_t,UINT32> &tree, T1* tran
 
 
   template <class T1, class T2>
-    RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, const StrElt &se, T2 stopSize=-1, UINT delta = 0)
+    RES_T ultimateOpen(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, const StrElt &se, T2 stopSize=0, UINT delta = 0)
     {
 
         ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
         ASSERT_SAME_SIZE(&imIn, &imTrans, &imIndic);
         
-        if (stopSize==-1)
+        if (stopSize==0)
           stopSize = imIn.getHeight()-1;
           
         int imSize = imIn.getPixelCount();
@@ -930,7 +927,7 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
 
   // BEGIN COMPUTE DYNAMIC, BMI
   
-  int mynode;
+  UINT32 mynode;
   T1 mylevel, mymax;
   mymax = 0;
   for(mynode = 0; mynode < tree.getLabelMax(); mynode ++){
@@ -966,7 +963,7 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
 #endif // SWIG
 
     template <class T1, class T2>
-    RES_T ultimateOpenMSER(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, const StrElt &se,T2 stopSize=-1, UINT delta = 0, UINT method = 2, UINT minArea=0,T1 threshold=0, bool use_textShape =0)
+    RES_T ultimateOpenMSER(const Image<T1> &imIn, Image<T1> &imTrans, Image<T2> &imIndic, const StrElt &se,T2 stopSize=0, UINT delta = 0, UINT method = 2, UINT minArea=0,T1 threshold=0, bool use_textShape =0)
     {
         ASSERT_ALLOCATED(&imIn, &imTrans, &imIndic);
         ASSERT_SAME_SIZE(&imIn, &imTrans, &imIndic);
@@ -977,7 +974,7 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
         MaxTree2<T1, HWACriterion> tree;
         int root = tree.build(imIn, img_eti,se);
 
-        if(stopSize == -1){
+        if(stopSize == 0){
           stopSize= imIn.getHeight()-1;
         }
 
