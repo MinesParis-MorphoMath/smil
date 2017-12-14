@@ -198,7 +198,8 @@ public:
   virtual void initialize()
   {
 
-    attribute_value_ = {1,0};
+    attribute_value_.H = 1;
+    attribute_value_.A = 0;
 
     y_max_ = std::numeric_limits<size_t>::min();//lowest instead of min in Andres code
     y_min_ = std::numeric_limits<size_t>::max();
@@ -251,7 +252,9 @@ public:
   virtual void initialize()
   {
 
-    attribute_value_ = {1,0,0};
+    attribute_value_.H = 1;
+    attribute_value_.W = 1;
+    attribute_value_.A = 0;
 
     x_max_ = std::numeric_limits<size_t>::min();//lowest instead of min in Andres code
     x_min_ = std::numeric_limits<size_t>::max();
