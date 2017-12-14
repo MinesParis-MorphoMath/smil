@@ -66,7 +66,7 @@ class Test_MaxTree : public TestCase
       
       im1 << vec1;
       
-      ultimateOpen(im1, im2, imLbl);
+      ultimateOpen(im1, im2, imLbl, CrossSE());
       
       dataType1 vecTrans[] =
       {
@@ -158,7 +158,7 @@ class Test_MaxTree_3D : public TestCase
       
       im1 << vec1;
       
-      ultimateOpen(im1, im2, imLbl);
+      ultimateOpen(im1, im2, imLbl, Cross3DSE());
       
       dataType1 vecTrans[] =
       {
@@ -267,7 +267,7 @@ class Test_DeltaUO : public TestCase
       
       im1 << vec1;
       
-      ultimateOpen(im1, im2, imLbl, (dataType2)7, 1);
+      ultimateOpen(im1, im2, imLbl, CrossSE(), (dataType2)7, 1);
       
       dataType1 vecTrans[] =
       {
@@ -336,7 +336,7 @@ class Test_UO_MSER : public TestCase
       
       im1 << vec1;
       
-      ultimateOpenMSER(im1, im2, imLbl, (dataType2)4, 0);
+      ultimateOpenMSER(im1, im2, imLbl, CrossSE(),(dataType2)4, 0,3);
       
       dataType1 vecTrans[] =
       {
