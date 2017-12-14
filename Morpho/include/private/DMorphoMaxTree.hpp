@@ -594,11 +594,12 @@ void compute_contrast(MaxTree2<T1,HeightCriterion,size_t,UINT32> &tree, T1* tran
      * Ultimate Opening using the max-trees
      * 
      * Max-tree based algorithm as described by Fabrizio and Marcotegui (2009) \cite fabrizio_fast_2009
-     * \warning 4-connex only (6-connex in 3D)
      * \param[in] imIn Input image
-     * \param[out] imOut The transformation image
+     * \param[out] imTrans The transformation image
      * \param[out] imIndic The indicator image
+     * \param[in] structuring element
      * \param[in] stopSize (optional)
+     * \param[in] delta (optional)
      */
 
 

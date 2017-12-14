@@ -64,7 +64,7 @@ public:
     attribute_value_ += dynamic_cast<AreaCriterion&>(*other_criteron).attribute_value_;
   }
 
-  virtual void update(const size_t x,const size_t y,const size_t z)
+  virtual void update(SMIL_UNUSED const size_t x, SMIL_UNUSED const size_t y, SMIL_UNUSED const size_t z)
   {
     attribute_value_ += 1;
   }
@@ -102,7 +102,7 @@ public:
     y_min_ = std::min(y_min_, dynamic_cast<HeightCriterion&>(*other_criteron).y_min_);
   }
 
-  virtual void update(const size_t x, const size_t y, const size_t z)
+  virtual void update(SMIL_UNUSED const size_t x, const size_t y, SMIL_UNUSED const size_t z)
   {
     y_max_ = std::max(y_max_, y);
     y_min_ = std::min(y_min_, y);
@@ -151,7 +151,7 @@ public:
     x_min_ = std::min(x_min_, dynamic_cast<WidthCriterion&>(*other_criteron).x_min_);
   }
 
-  virtual void update(const size_t x, const size_t y, const size_t z)
+  virtual void update(const size_t x, SMIL_UNUSED const size_t y, SMIL_UNUSED const size_t z)
   {
     x_max_ = std::max(x_max_, x);
     x_min_ = std::min(x_min_, x);
@@ -216,7 +216,7 @@ public:
 
   }
 
-  virtual void update(const size_t x, const size_t y, const size_t z)
+  virtual void update(SMIL_UNUSED const size_t x, const size_t y, SMIL_UNUSED const size_t z)
   {
     attribute_value_.A += 1;
     y_max_ = std::max(y_max_, y);
@@ -275,7 +275,7 @@ public:
 
   }
 
-  virtual void update(const size_t x, const size_t y, const size_t z)
+  virtual void update(const size_t x, const size_t y, SMIL_UNUSED const size_t z)
   {
     attribute_value_.A += 1;
     x_max_ = std::max(x_max_, x);
