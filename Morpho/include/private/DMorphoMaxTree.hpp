@@ -60,16 +60,6 @@ namespace smil
 #define GET_TREE_OBJ(type, node) type[node >> COLUMN_SHIFT][node & COLUMN_MOD]
 
 
-
-
-struct EmptyCriterion
-{
-  inline void init() {}
-  inline void reset() {}
-  inline void merge(EmptyCriterion &/*other*/) { }
-  inline void update() {  }
-};
-
   // BEGIN BMI
 
 
