@@ -467,8 +467,6 @@ namespace smil
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
         vector<long int> s(size[0]); // sets of the least minimizers that occurs during the scan from left to right.
         vector<long int> t(size[0]); // sets of points with the same least minimizer 
-        s[0] = 0;
-        t[0] = 0;
         long int q = 0;
         long int w;
 
@@ -501,6 +499,7 @@ namespace smil
         }
 
         copy (tmp, imOut);
+
         #define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
         #define __sep(x,y) (y*y - x*x + pixelsTmp[offset+y]*pixelsTmp[offset+y] - pixelsTmp[offset+x] * pixelsTmp[offset+x]) / (2*(y-x))
 
@@ -537,6 +536,7 @@ namespace smil
 
         copy (imOut, tmp);
 
+
         #define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i*nbrPixelsPerSlice]*pixelsTmp[offset+i*nbrPixelsPerSlice]
         #define __sep(x,y) (y*y - x*x + pixelsTmp[offset+y*nbrPixelsPerSlice]*pixelsTmp[offset+y*nbrPixelsPerSlice] - pixelsTmp[offset+x*nbrPixelsPerSlice] * pixelsTmp[offset+x*nbrPixelsPerSlice]) / (2*(y-x))
         for (y=0; y<size[1]; ++y) {
@@ -557,7 +557,7 @@ namespace smil
                                         if (w<size[2]) {q++; s[q]=z; t[q]=w;}
                                 }
                         }
-                        for (z=size[2]-1;z>=0; --z) {
+                        for (z=size[2]-1; z>=0; --z) {
                                 pixelsOut[offset+z*nbrPixelsPerSlice] = __f_euclidean (z, s[q]);
                                 if (z == t[q]) {
                                         --q;
