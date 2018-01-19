@@ -61,16 +61,13 @@ namespace smil
         
         size_t getLabelNbr() { return real_labels; }
 
-        void set_max_value_label (const T2 &mvl) {max_value_label = mvl;}
-
         virtual RES_T initialize(const imageInType &imIn, imageOutType &imOut, const StrElt &se)
         {
             parentClass::initialize(imIn, imOut, se);
             fill(imOut, T2(0));
             labels = 0;
             real_labels = 0;
-            if (max_value_label == 0)
-                max_value_label = ImDtTypes<T2>::max();
+            max_value_label = ImDtTypes<T2>::max();
             return RES_OK;
         }
 
@@ -165,16 +162,13 @@ namespace smil
 
         size_t getLabelNbr() { return labels_real; }
 
-        void set_max_value_label (const T2 &mvl) {max_value_label = mvl;}
-
         virtual RES_T initialize (const imageInType &imIn, imageOutType &imOut, const StrElt &se) 
         {
             parentClass::initialize(imIn, imOut, se);
             fill(imOut, T2(0));
             labels = T2(0);
             labels_real = 0;
-            if (max_value_label == 0)
-                max_value_label = ImDtTypes<T2>::max();
+            max_value_label = ImDtTypes<T2>::max();
             return RES_OK;
         }
 
@@ -530,30 +524,6 @@ namespace smil
     }
 
     /**
-    * Image labelization
-    * 
-    * Return the number of labels (or 0 if error).
-    */
-    template<class T1, class T2>
-    size_t label(const Image<T1> &imIn, Image<T2> &imOut, const T2& max_value_label, const StrElt &se=DEFAULT_SE)
-    {
-        ASSERT_ALLOCATED(&imIn, &imOut);
-        ASSERT_SAME_SIZE(&imIn, &imOut);
-        
-        labelFunctGeneric<T1,T2> f;
-        f.set_max_value_label (max_value_label);
-        
-        ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
-        
-        size_t lblNbr = f.getLabelNbr();
-        
-        if (lblNbr > size_t(ImDtTypes<T2>::max()))
-                std::cerr << "Label number exceeds data type max!" << std::endl;
-
-        return lblNbr;
-    }
-
-    /**
     * Lambda-flat zones labelization
     * 
     * Return the number of labels (or 0 if error).
@@ -589,30 +559,6 @@ namespace smil
         ASSERT_SAME_SIZE(&imIn, &imOut);
         
         labelFunctFast<T1,T2> f;
-        
-        ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
-        
-        size_t lblNbr = f.getLabelNbr();
-        
-        if (lblNbr > size_t(ImDtTypes<T2>::max()))
-                std::cerr << "Label number exceeds data type max!" << std::endl;
-
-        return lblNbr;
-    }
-
-    /**
-    * Image labelization
-    * 
-    * Return the number of labels (or 0 if error).
-    */
-    template<class T1, class T2>
-    size_t fastLabel(const Image<T1> &imIn, Image<T2> &imOut, const T2& max_value_label, const StrElt &se=DEFAULT_SE)
-    {
-        ASSERT_ALLOCATED(&imIn, &imOut);
-        ASSERT_SAME_SIZE(&imIn, &imOut);
-        
-        labelFunctFast<T1,T2> f;
-        f.set_max_value_label (max_value_label);
         
         ASSERT((f._exec(imIn, imOut, se)==RES_OK), 0);
         

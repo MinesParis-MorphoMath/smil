@@ -456,8 +456,9 @@ namespace smil
         lineOutType pixelsOut = imOut.getPixels () ;
         lineOutType pixelsTmp = tmp.getPixels () ;
 
-        int size[3];
+        size_t size[3];
         imIn.getSize (size) ;
+        size_t nbrPixelsPerSlice = size[0]*size[1];
         size_t offset ;
         int x,y,z;
         T2 infinite= ImDtTypes<T2>::max();
@@ -476,7 +477,7 @@ namespace smil
             #pragma omp for private(offset,x,y,min)    
           #endif // USE_OPEN_MP
             for (x=0; x<size[0];++x) {
-                offset = z*size[1]*size[0]+x;
+                offset = z*nbrPixelsPerSlice+x;
                 if (pixelsIn[offset] == T1(0)) {
                     pixelsTmp[offset] = T2(0); 
                 } else {
@@ -497,35 +498,76 @@ namespace smil
                        pixelsTmp[offset+y*size[0]] = (1+pixelsTmp[offset+(y+1)*size[0]]); 
                 }
             }
-            copy (tmp, imOut);
-   
-            #define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
+        }
+
+        copy (tmp, imOut);
+        #define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
+        #define __sep(x,y) (y*y - x*x + pixelsTmp[offset+y]*pixelsTmp[offset+y] - pixelsTmp[offset+x] * pixelsTmp[offset+x]) / (2*(y-x))
+
+        for (z=0; z<size[2]; ++z) {   
 
           #ifdef USE_OPEN_MP
-            #pragma omp for private(offset,y,q,w)
+            #pragma omp for private(offset,y,x,q,w)
           #endif // USE_OPEN_MP
              for (y=0; y<size[1]; ++y) {
-                    offset = z*size[1]*size[0]+y*size[0];
+                    offset = z*nbrPixelsPerSlice+y*size[0];
                     q=0; t[0]=0; s[0]=0;
                     // SCAN 3
-                    for (int u=1; u<size[0];++u) {
-                        while (q>=0 && __f_euclidean (t[q], s[q]) > __f_euclidean (t[q], u)) {
+                    for (x=1; x<size[0];++x) {
+                        while (q>=0 && __f_euclidean (t[q], s[q]) > __f_euclidean (t[q], x)) {
                             q--;
                         }
-                        if (q<0) {q=0; s[0]=u;}
+                        if (q<0) {q=0; s[0]=x;}
                         else {
-                            w= 1 + ( u*u - s[q]*s[q] + pixelsTmp[offset + u]*pixelsTmp[offset + u] - pixelsTmp[offset + s[q]] * pixelsTmp[offset + s[q]] ) / (2*(u-s[q]));
-                            if (w<size[0]) {q++; s[q]=u; t[q]=w;}
+                            w= 1 + __sep(s[q], x);
+                            if (w<size[0]) {q++; s[q]=x; t[q]=w;}
                         }
                     }
                     // SCAN 4
-                    for (int u=size[0]-1; u>=0; --u) {
-                        pixelsOut[offset+u] = __f_euclidean (u, s[q]) ;
-                        if (u == t[q])
-                            q--;
+                    for (x=size[0]-1; x>=0; --x) {
+                        pixelsOut[offset+x] = __f_euclidean (x, s[q]) ;
+                        if (x == t[q])
+                            --q;
                     }
              }
+             
         }
+        #undef __f_euclidean
+        #undef __sep
+
+        copy (imOut, tmp);
+
+        #define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i*nbrPixelsPerSlice]*pixelsTmp[offset+i*nbrPixelsPerSlice]
+        #define __sep(x,y) (y*y - x*x + pixelsTmp[offset+y*nbrPixelsPerSlice]*pixelsTmp[offset+y*nbrPixelsPerSlice] - pixelsTmp[offset+x*nbrPixelsPerSlice] * pixelsTmp[offset+x*nbrPixelsPerSlice]) / (2*(y-x))
+        for (y=0; y<size[1]; ++y) {
+
+                #ifdef USE_OPENMP
+                        #pragma omp for private(x,z, offset)
+                #endif
+                for (x=0; x<size[0]; ++x) {
+                        offset = y*size[0]+x;
+                        q=0; t[0]=0; s[0];
+                        for (int z=1; z<size[2]; ++z) {
+                                while (q>=0 && __f_euclidean (t[q], s[q]) > __f_euclidean (t[q], z)) {
+                                        q--;
+                                }
+                                if (q<0) {q=0; s[0] = z;}
+                                else {
+                                        w= 1 + __sep(s[q], z); 
+                                        if (w<size[2]) {q++; s[q]=z; t[q]=w;}
+                                }
+                        }
+                        for (z=size[2]-1;z>=0; --z) {
+                                pixelsOut[offset+z*nbrPixelsPerSlice] = __f_euclidean (z, s[q]);
+                                if (z == t[q]) {
+                                        --q;
+                                }
+                        }
+                }
+        }
+        #undef __f_euclidean
+        #undef __sep
+
         return RES_OK;
     }
 
