@@ -471,37 +471,36 @@ namespace smil
         long int w;
 
         for (z=0; z<size[2]; ++z) {
-          #ifdef USE_OPEN_MP
-            #pragma omp for private(offset,x,y,min)    
-          #endif // USE_OPEN_MP
+//          #ifdef USE_OPEN_MP
+//            #pragma omp for private(offset,x,y,min)    
+//          #endif // USE_OPEN_MP
             for (x=0; x<size[0];++x) {
                 offset = z*nbrPixelsPerSlice+x;
                 if (pixelsIn[offset] == T1(0)) {
-                    pixelsTmp[offset] = T2(0); 
+                    pixelsOut[offset] = T2(0); 
                 } else {
-                    pixelsTmp[offset] = infinite;
+                    pixelsOut[offset] = infinite;
                 }
                 // SCAN 1
                 for (y=1; y<size[1]; ++y) {
                     if (pixelsIn[offset+y*size[0]] == T1(0)) {
-                        pixelsTmp[offset+y*size[0]] = T2(0);
+                        pixelsOut[offset+y*size[0]] = T2(0);
                     } else {
-                        pixelsTmp[offset+y*size[0]] = (1 + pixelsTmp[offset+(y-1)*size[0]] > infinite) ? infinite : 1 + pixelsTmp[offset+(y-1)*size[0]];
+                        pixelsOut[offset+y*size[0]] = (1 + pixelsOut[offset+(y-1)*size[0]] > infinite) ? infinite : 1 + pixelsOut[offset+(y-1)*size[0]];
                     }
                 }
                 // SCAN 2
                 for (y=size[1]-2; y>=0; --y) {
-                    min = (pixelsTmp[offset+(y+1)*size[0]]+1 > infinite) ? infinite : pixelsTmp[offset+(y+1)*size[0]]+1; 
-                    if (min < pixelsTmp[offset+y*size[0]])
-                       pixelsTmp[offset+y*size[0]] = (1+pixelsTmp[offset+(y+1)*size[0]]); 
+                    if (pixelsOut[offset+(y+1)*size[0]] < pixelsOut[offset+y*size[0]])
+                       pixelsOut[offset+y*size[0]] = (1+pixelsOut[offset+(y+1)*size[0]] < infinite) ? 1+pixelsOut[offset+(y+1)*size[0]] : infinite; 
                 }
             }
         }
 
-        copy (tmp, imOut);
+        copy (imOut, tmp);
 
         #define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i]*pixelsTmp[offset+i]
-        #define __sep(x,y) (y*y - x*x + pixelsTmp[offset+y]*pixelsTmp[offset+y] - pixelsTmp[offset+x] * pixelsTmp[offset+x]) / (2*(y-x))
+        #define __sep(a,b) (b*b - a*a + pixelsTmp[offset+b]*pixelsTmp[offset+b] - pixelsTmp[offset+a] * pixelsTmp[offset+a]) / (2*(b-a))
 
         for (z=0; z<size[2]; ++z) {   
 
@@ -535,24 +534,24 @@ namespace smil
         #undef __sep
 
         copy (imOut, tmp);
-
-
-        #define __f_euclidean(x,i) (x-i)*(x-i)+pixelsTmp[offset+i*nbrPixelsPerSlice]*pixelsTmp[offset+i*nbrPixelsPerSlice]
-        #define __sep(x,y) (y*y - x*x + pixelsTmp[offset+y*nbrPixelsPerSlice]*pixelsTmp[offset+y*nbrPixelsPerSlice] - pixelsTmp[offset+x*nbrPixelsPerSlice] * pixelsTmp[offset+x*nbrPixelsPerSlice]) / (2*(y-x))
+        // The previous pixels are already squarred ...
+        #define __f_euclidean(a,i) (a-i)*(a-i)+pixelsTmp[offset+i*nbrPixelsPerSlice]
+        #define __sep(a,b) (b*b - a*a + pixelsTmp[offset+b*nbrPixelsPerSlice] - pixelsTmp[offset+a*nbrPixelsPerSlice]) / (2*(b-a))
         for (y=0; y<size[1]; ++y) {
 
-                #ifdef USE_OPENMP
-                        #pragma omp for private(x,z, offset)
-                #endif
+              #ifdef USE_OPENMP
+                #pragma omp for private(x,z, offset)
+              #endif
                 for (x=0; x<size[0]; ++x) {
                         offset = y*size[0]+x;
-                        q=0; t[0]=0; s[0];
+                        q=0; t[0]=0; s[0]=0;
                         for (int z=1; z<size[2]; ++z) {
                                 while (q>=0 && __f_euclidean (t[q], s[q]) > __f_euclidean (t[q], z)) {
                                         q--;
                                 }
-                                if (q<0) {q=0; s[0] = z;}
+                                if (q<0) {q=0; s[0]=z;}
                                 else {
+                                        
                                         w= 1 + __sep(s[q], z); 
                                         if (w<size[2]) {q++; s[q]=z; t[q]=w;}
                                 }
