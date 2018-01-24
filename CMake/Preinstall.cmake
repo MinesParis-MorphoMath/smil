@@ -215,9 +215,19 @@ IF(USE_QT)
   ENDIF(USE_QT_VERSION EQUAL 5)
 ENDIF(USE_QT)
 # Generate spaces-separated strings
-FOREACH(LIB ${PKG_CONFIG_SMIL_DEPS})
-  LIST(APPEND PKG_CONFIG_SMIL_LIBS_PRIV " ${LIB}")
-ENDFOREACH()
+IF(BUILD_SHARED_LIBS)
+  # Smil libs are shared objects
+  # put Smil library dependencies into Libs.private field
+  FOREACH(LIB ${PKG_CONFIG_SMIL_DEPS})
+    LIST(APPEND PKG_CONFIG_SMIL_LIBS_PRIV " ${LIB}")
+  ENDFOREACH()
+ELSE()
+  # Smil libs are archives
+  # applications have to link with Smil library dependencies
+  FOREACH(LIB ${PKG_CONFIG_SMIL_DEPS})
+    LIST(APPEND PKG_CONFIG_SMIL_LIBS " ${LIB}")
+  ENDFOREACH()
+ENDIF(BUILD_SHARED_LIBS)
 
 LIST(APPEND PKG_CONFIG_SMIL_STR
   "prefix=${CMAKE_INSTALL_PREFIX}\n"
