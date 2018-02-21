@@ -462,7 +462,7 @@ namespace smil
         size_t offset ;
         int x,y,z;
         T2 infinite= ImDtTypes<T2>::max();
-        long int min;
+        // JOE long int min;
 
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
         vector<long int> s(size[0]); // sets of the least minimizers that occurs during the scan from left to right.
@@ -545,7 +545,7 @@ namespace smil
                 for (x=0; x<size[0]; ++x) {
                         offset = y*size[0]+x;
                         q=0; t[0]=0; s[0]=0;
-                        for (int z=1; z<size[2]; ++z) {
+                        for (z=1; z<size[2]; ++z) {
                                 while (q>=0 && __f_euclidean (t[q], s[q]) > __f_euclidean (t[q], z)) {
                                         q--;
                                 }
