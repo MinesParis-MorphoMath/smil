@@ -77,7 +77,7 @@ int main(void)
     Image_UINT8 im3;
 
 #if defined(USE_CURL) && defined(USE_PNG)
-    read("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png", im1);
+    read("http://smil.cmm.mines-paristech.fr/images/barbara.png", im1);
 #endif // USE_CURL && USE_PNG
 
     
@@ -86,7 +86,7 @@ int main(void)
 #endif // SMIL_WRAP_RGB
 
 #if defined(USE_CURL) && defined(USE_PNG)
-    BaseImage *im0 = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
+    BaseImage *im0 = createFromFile("http://smil.cmm.mines-paristech.fr/images/arearea.png");
     delete im0;
 #endif // USE_CURL && USE_PNG
     

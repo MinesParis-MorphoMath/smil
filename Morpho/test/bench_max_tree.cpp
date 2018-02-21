@@ -35,7 +35,7 @@ using namespace smil;
 
 int main()
 {
-    Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/barbara.png");
+    Image_UINT8 im1("http://smil.cmm.mines-paristech.fr/images/barbara.png");
     Image_UINT8 im2(im1);
     Image_UINT8 im3(im1);
     

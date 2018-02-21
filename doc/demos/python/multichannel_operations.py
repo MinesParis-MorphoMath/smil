@@ -1,7 +1,7 @@
 from smilPython import *
 
 # Load a RGB image
-im1 = Image("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png")
+im1 = Image("http://smil.cmm.mines-paristech.fr/images/arearea.png")
 im1.show()
 
 # Copy the green channel into a UINT8 image

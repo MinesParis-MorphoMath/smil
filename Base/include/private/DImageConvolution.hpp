@@ -50,7 +50,7 @@ namespace smil
      * 
      * \b Example:
      * \code{.py}
-     * im1 = Image("http://cmm.ensmp.fr/~faessel/smil/images/lena.png")
+     * im1 = Image("http://smil.cmm.mines-paristech.fr/images/lena.png")
      * im2 = Image(im1)
      * kern = [ 0.0545, 0.2442, 0.4026, 0.2442, 0.0545 ]
      * horizConvolve(im1, kern, im2)

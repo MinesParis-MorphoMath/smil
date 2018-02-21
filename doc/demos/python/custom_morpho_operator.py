@@ -8,7 +8,7 @@ class myMeanMorphoFunction(MorphImageFunctionBase_UINT8):
     self.imageOut[i] = int(pixSum / len(relOffList))
 
 
-imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/lena.png")
+imIn = Image("http://smil.cmm.mines-paristech.fr/images/lena.png")
 imOut = Image(imIn)
 
 func = myMeanMorphoFunction()

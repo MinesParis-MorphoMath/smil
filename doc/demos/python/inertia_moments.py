@@ -2,7 +2,7 @@ from smilPython import *
 from math import *
 
 # Load an image
-imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/tools.png")
+imIn = Image("http://smil.cmm.mines-paristech.fr/images/tools.png")
 imIn.show()
 
 imThr = Image(imIn)

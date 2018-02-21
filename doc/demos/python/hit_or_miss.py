@@ -1,7 +1,7 @@
 from smilPython import *
 
 # Load an image
-im1 = Image("http://cmm.ensmp.fr/~faessel/smil/images/balls.png")
+im1 = Image("http://smil.cmm.mines-paristech.fr/images/balls.png")
 im1.show()
 
 # Create the skeleton using a thinning with a combination of the 4 rotations of the composite SE sL1 and sL2

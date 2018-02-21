@@ -1068,7 +1068,7 @@ namespace smil
     * 
     * \b Python \b example:
     * \code{.py}
-    * im1 = Image("http://cmm.ensmp.fr/~faessel/smil/images/balls.png")
+    * im1 = Image("http://smil.cmm.mines-paristech.fr/images/balls.png")
     * imLbl = Image(im1, "UINT16")
     * imLbl2 = Image(imLbl)
     * 

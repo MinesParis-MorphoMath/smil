@@ -47,7 +47,7 @@ int main()
 {
 #if defined(USE_CURL) && defined(USE_PNG)
 
-   Image_UINT8 im1("http://cmm.ensmp.fr/~faessel/smil/images/lena.png");
+   Image_UINT8 im1("http://smil.cmm.mines-paristech.fr/images/lena.png");
    im1.show();
 
 
@@ -64,7 +64,7 @@ int main()
 
 
 #ifdef SMIL_WRAP_RGB
-   BaseImage *im = createFromFile("http://cmm.ensmp.fr/~faessel/smil/images/arearea.png");
+   BaseImage *im = createFromFile("http://smil.cmm.mines-paristech.fr/images/arearea.png");
    if (im)
     im->show();
 #endif // SMIL_WRAP_RGB

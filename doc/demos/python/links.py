@@ -2,7 +2,7 @@ from smilPython import *
 import time
 
 # Load an image
-imIn= Image("http://cmm.ensmp.fr/~faessel/smil/images/DNA_small.png")
+imIn= Image("http://smil.cmm.mines-paristech.fr/images/DNA_small.png")
 imThresh = Image(imIn)
 imDist = Image(imIn)
 

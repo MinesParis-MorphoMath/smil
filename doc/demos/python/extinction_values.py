@@ -1,6 +1,6 @@
 from smilPython import *
 
-imIn = Image("http://cmm.ensmp.fr/~faessel/smil/images/lena.png")
+imIn = Image("http://smil.cmm.mines-paristech.fr/images/lena.png")
 imGrad = Image(imIn)
 imMark = Image(imIn, "UINT16")
 imBasins = Image(imMark)

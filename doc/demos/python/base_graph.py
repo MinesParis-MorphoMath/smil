@@ -1,6 +1,6 @@
 from smilPython import *
 
-im1 = Image("http://cmm.ensmp.fr/~faessel/smil/images/mosaic.png")
+im1 = Image("http://smil.cmm.mines-paristech.fr/images/mosaic.png")
 im2 = Image(im1)
 im3 = Image(im1)
 imMos = Image(im1, "UINT16")
