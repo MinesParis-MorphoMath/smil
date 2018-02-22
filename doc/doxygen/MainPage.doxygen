@@ -30,11 +30,6 @@
  * \mainpage About
  * \image html smil.png
  * \image latex smil.eps
- * \author Matthieu Faessel (matthieu.faessel at mines-paristech dot fr)
- * 
- * \copyright
- * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES. \n
- * All rights reserved (see \ref licence_page "licence").
  * 
  * \section intro_sec Introduction
  * 
@@ -45,8 +40,7 @@
  * Developed using templates, Smil can be used with any standard types (char, short, int, double, ...).\n
  * 
  * It uses <a href="http://www.swig.org/" target="_blank">swig</a> and can be wrapped in several languages: 
- * for now, \b python, \b java, \b ruby and \b octave are available, but Swig allows potentially to generate wrapper code for nineteen 
- * different target languages (Allegro, CL, C#, CFFI, CLISP, ... see <a href="http://www.swig.org/compare.html" target="_blank">swig features page</a>).
+ * for now, \b python, \b java, \b ruby and \b octave are available.
  * 
  * Smil is free software, available under a BSD-style open source license.\n
  * See the \ref licence_page "licence" page for more information.
