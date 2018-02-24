@@ -1,8 +1,8 @@
 /**
- * \page authors_page Smil Authors
+ * \page p10_authors_page Smil Authors
  *
  * \section authors_section Authors
- * \subsection section_author Main author 
+ * \subsection section_author First author 
  *   - Matthieu Faessel (matthieu dot faessel at mines-paristech dot fr)
  * 
  * \subsection section_maintainer Maintainer
@@ -14,12 +14,13 @@
  *   - Etienne Decencière-Ferrandière
  *   - Michel Bilodeau
  *   - Pierre Guillou
+ *   - Serge Koudoro
  *   - Theodore Chabardes - (theodore dot chabardes at mines-paristech dot fr)
  *
  * \copyright
  * Copyright (c) 2011-2017, Matthieu FAESSEL and ARMINES. \n
  * Copyright (c) 2017-2018, Centre de Morphologie Mathématique - Mines-ParisTech. \n
- * All rights reserved (see \ref licence_page "licence").
+ * All rights reserved (see \ref p20_licence_page "licence").
  * 
  * 
  */

@@ -27,7 +27,7 @@
  */
 
 /**
- * \page numpy_page Python NumPy interface
+ * \page p50_numpy_page Python NumPy interface
  * 
  * <a href="http://numpy.scipy.org/" target="_blank">NumPy</a> is a package for scientific computing with Python.
  * Smil allows to create a NumPy array containing the image pixels with the method Image::getNumArray.
