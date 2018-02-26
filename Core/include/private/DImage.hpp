@@ -278,7 +278,7 @@ namespace smil
         * \param c_contigous If true, return an array corresponding to the aligment of C data (C_CONTIGOUS NumPy array flag). 
         * If false (default), return a F_CONTIGOUS array.
         * 
-        * See \ref numpy_page "NumPy interface page".
+        * See \ref p50_numpy_page "NumPy interface page".
         */
         PyObject * getNumArray(bool c_contigous=false);
         
