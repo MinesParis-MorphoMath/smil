@@ -40,6 +40,19 @@
 #ifndef _D_PROTO_H
 #define _D_PROTO_H
 
+/**
+ * @addtogroup XXX
+ *   or
+ * @defgroup   XXX YYY
+ *   or
+ * @ingroup    XXX
+ *
+ * @{ */
+ */
 
-#endif // _DPROTO_H
+/* Replace this comment and put your code here
+
+
+/** @} */
+#endif // _D_PROTO_H
 

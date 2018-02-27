@@ -3,19 +3,50 @@
  *
  * \section style_section Programming Guidelines (or Best Common Practices)
  *
- *  - <a href="http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines">C++ Core Guidelines</a> by Bjarne Stroustrup and Herb Sutter;
- *  - <a href="http://www.codingstandard.com/">PRQA - High Integrity C++ Coding Standard Version 4.0</a>
+ * This is about good programming practices : what to do and not in your 
+ * programs. Suggestions about reliability, security, ...
+ *
+ * Writing programming guidelines specific to a project is a long, tedious and
+ * and useless task while there are very good references on the subject.
+ *
+ * Take the time, even slowly, to read and understand some references...
+ *
+ *  - <a href="http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines">
+ * C++ Core Guidelines</a> by Bjarne Stroustrup and Herb Sutter;
+ *  - <a href="http://www.codingstandard.com/">PRQA - High Integrity C++ 
+ * Coding Standard Version 4.0</a>
  *  - <a href="https://llvm.org/docs/CodingStandards.html">LLVM Coding Style</a>
  *
  * \section format_section Code Formatting
- * The suggested way to format source code is to use the tool <b><code>clang-format</code></b>. 
- * or...
  *
- *   - <b>Formating style page</b> : use style page
+ * Code formatting isn't just an aesthetic issue. An homogeneous and clear 
+ * presentation contributes to unambigous and easy understanding of code.
+ *
+ * The code style is that proposed by <b><code>LLVM</code></b> with some small
+ * enhancements. And the tool is <b><code>clang-format</code></b>.
+ *
+ * Formatting is done simply with the following commands, the first one just 
+ * creates a backup copy before formatting, inplace, the original source code :
+ * \n
+ *
+ *     $ cp -p <i>filename filename.bak</i>
+ *     $ clang-format -i -style=file <i>filename</i>
  * 
- * \section proto_section  Source file prototype
- *   - You can use the prototype file : <b><code>dev-tools/DProto.h</code></b>
+ * Obs :
+ *   - the choosen style has minors differences from <code>LLVM</code> style.
+ *     These differences are set at <code>.clang-format</code> file placed at
+ *     the root of source file tree.
+ *   - <b><code>clang-format</code></b> packaged as :
+ *     - Ubuntu : <code>clang-format</code> 
+ *     - CentOS/RedHat/Fedora : <code>clang</code>
+ *
+ * \section proto_section  Source file prototypes :
  * 
+ *   - You can use the prototype file : <b><code>dev-tools/DProto.hpp</code></b>
+ * 
+ * \tableofcontents
+ * 
+ * \n \n
  */
 
 
