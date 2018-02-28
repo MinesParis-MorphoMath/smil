@@ -1,5 +1,6 @@
 # emacs backup files
 *~
+*.bak
 
 # build directories
 /*build*/

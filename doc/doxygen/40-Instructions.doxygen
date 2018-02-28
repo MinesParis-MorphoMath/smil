@@ -3,7 +3,7 @@
  *
  * \section style_section Programming Guidelines (or Best Common Practices)
  *
- * This is about good programming practices : what to do and not in your 
+ * This is about good programming practices : what to do and not in your
  * programs. Suggestions about reliability, security, ...
  *
  * Writing programming guidelines specific to a project is a long, tedious and
@@ -13,41 +13,97 @@
  *
  *  - <a href="http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines">
  * C++ Core Guidelines</a> by Bjarne Stroustrup and Herb Sutter;
- *  - <a href="http://www.codingstandard.com/">PRQA - High Integrity C++ 
+ *  - <a href="http://www.codingstandard.com/">PRQA - High Integrity C++
  * Coding Standard Version 4.0</a>
  *  - <a href="https://llvm.org/docs/CodingStandards.html">LLVM Coding Style</a>
  *
+ * Some common mistakes or bad practices :
+ *  - warnings are acceptable just while still debugging. Code in the master
+ * branch shall be free of warnings;
+ *  - code doing different things, even if related, shall be break down in
+ * different source files (modular programming);
+ *  - avoid duplication of source code;
+ *  - as in french language, words/symbols/tokens/operators shall be separated
+ * by spaces (<code>clang-format</code> may solve this...);
+ *  - meaningless (or wrong meaning) variable names;
+ *  - hard coding (using something like a <b><code>#define SIZE 256</code></b>)
+ * parameters which can change or limit the usage of the program;
+ *  - forgetting to remove "dead code" (some lines useful only while the code
+ * was being debugged/validated).
+ *
  * \section format_section Code Formatting
  *
- * Code formatting isn't just an aesthetic issue. An homogeneous and clear 
- * presentation contributes to unambigous and easy understanding of code.
+ * Code formatting isn't just an aesthetic issue. An homogeneous and clear
+ * presentation contributes to unambigous and easy understanding.
  *
  * The code style is that proposed by <b><code>LLVM</code></b> with some small
  * enhancements. And the tool is <b><code>clang-format</code></b>.
  *
- * Formatting is done simply with the following commands, the first one just 
+ * Formatting is done simply with the following commands, the first one just
  * creates a backup copy before formatting, inplace, the original source code :
  * \n
  *
- *     $ cp -p <i>filename filename.bak</i>
- *     $ clang-format -i -style=file <i>filename</i>
- * 
+ *     $ cp -p filename filename.bak
+ *     $ clang-format -i -style=file filename
+ *
  * Obs :
+ *   - no problem if you don't follow this style. It's enough to run the formatter on the final version of your file, before integrating it to the master or develop branch; 
  *   - the choosen style has minors differences from <code>LLVM</code> style.
  *     These differences are set at <code>.clang-format</code> file placed at
- *     the root of source file tree.
+ *     the root of source file tree :
+ *     - <code>AllowShortFunctionsOnASingleLine: false</code>
+ *     - <code>BreakBeforeBraces:                Allman</code>
+ *     - <code>AlignConsecutiveAssignments:      true</code>
+ *     - <code>AlignConsecutiveDeclarations:     true</code>
  *   - <b><code>clang-format</code></b> packaged as :
- *     - Ubuntu : <code>clang-format</code> 
+ *     - Ubuntu : <code>clang-format</code>
  *     - CentOS/RedHat/Fedora : <code>clang</code>
+ *   - <b>clang-format</b> documentation can be found <a
+ * href="https://clang.llvm.org/docs/ClangFormat.html">here</a>
  *
  * \section proto_section  Source file prototypes :
- * 
- *   - You can use the prototype file : <b><code>dev-tools/DProto.hpp</code></b>
- * 
+ *
+ * To help you start with your coding, inside directory
+ * <b><code>dev-tools</code></b>, you'll find two files :
+ *
+ *   - <b><code>dev-tools/DProto.hpp</code></b>
+ *   - <b><code>dev-tools/DProto.cpp</code></b>
+ *
+ * As you can see at file <b><code>DProto.hpp</code></b>, the content inside
+ * headers file shall be protected by a couple <b><code>"#ifdef
+ * _SOMETHING_H"</code></b> and <b><code>"#endif"</code></b> directives, to
+ * avoid a code being included twice.
+ *
+ * The way to build these variable is defined from the filename :
+ *   - a <b><code>"_"</code></b> (underline) is used as a prefix;
+ *   - <b><code>"."</code></b> (dot) are converted to <b><code>"_"</code></b>;
+ *   - words are separated by <b><code>"_"</code></b> even it they don't appear
+ * this way in the filename.
+ *
+ * As an example, if the filename is <b><code>DMorphoBestCode.h</code></b>, the
+ * directive name becomes <b><code>_D_MORPHO_BEST_CODE_H</code></b>.
+ *
+ * \section naming_section Naming guidelines
+ *
+ *  <b>To be done !!!</b>
+ *
+ *  - Avoid meaningless names. Exceptions may be for some usual loop control
+ * variables : x, y, z, i, j, k;
+ *  - Files :
+ *    - C++ source filenames begin always with <b>D</b>;
+ *    - File extensions per directory :
+ *      - <b><code>src</code></b> : <code>.cpp</code> - C++ source files
+ *      - <b><code>include</code></b> : <code>.h</code> - C++ headers
+ *      - <b><code>include/private</code></b> : <code>.hpp</code> - C++ headers
+ *  - Classes
+ *  - Variables
+ *  - Functions and Methods
+ *  - Macros and defines : every character in uppercase.
+ *
+ * \section doc_section Source code documentation with Doxygen
+ *
+ * To be done !!!
+ *
  * \tableofcontents
- * 
  * \n \n
  */
-
-
- 
