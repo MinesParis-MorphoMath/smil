@@ -45,8 +45,6 @@
  * Smil is free software, available under a BSD-style open source license.\n
  * See the \ref p20_licence_page "licence" page for more information.
  * 
- * \section demo_sec Demo
- * A Java \ref p60_webstart_page "Web Start version" can be executed online.
  * \tableofcontents
  * 
  * \image html inplace_unsafe.png

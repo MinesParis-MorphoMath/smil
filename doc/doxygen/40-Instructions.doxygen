@@ -19,15 +19,18 @@
  *
  * Some common mistakes or bad practices :
  *  - warnings are acceptable just while still debugging. Code in the master
- * branch shall be free of warnings;
+ * branch shall be free of warnings (same as errors);
  *  - code doing different things, even if related, shall be break down in
  * different source files (modular programming);
  *  - avoid duplication of source code;
  *  - as in french language, words/symbols/tokens/operators shall be separated
  * by spaces (<code>clang-format</code> may solve this...);
  *  - meaningless (or wrong meaning) variable names;
- *  - hard coding (using something like a <b><code>#define SIZE 256</code></b>)
- * parameters which can change or limit the usage of the program;
+ *  - hard coding (using something like <b><code>"# define SIZE 256"</code></b>)
+ * for parameters which can change with time or limit the usability of the
+ * program;
+ *  - lack of out of bounds checking;
+ *  - adequate error and exception handling;
  *  - forgetting to remove "dead code" (some lines useful only while the code
  * was being debugged/validated).
  *
@@ -47,14 +50,18 @@
  *     $ clang-format -i -style=file filename
  *
  * Obs :
- *   - no problem if you don't follow this style. It's enough to run the formatter on the final version of your file, before integrating it to the master or develop branch; 
+ *   - no problem if you don't follow this style. It's enough to run the
+ * formatter on the final version of your file, before integrating it to the
+ * master or develop branch;
  *   - the choosen style has minors differences from <code>LLVM</code> style.
  *     These differences are set at <code>.clang-format</code> file placed at
  *     the root of source file tree :
  *     - <code>AllowShortFunctionsOnASingleLine: false</code>
- *     - <code>BreakBeforeBraces:                Allman</code>
+ *     - <code>BreakBeforeBraces:                Linux</code>
  *     - <code>AlignConsecutiveAssignments:      true</code>
  *     - <code>AlignConsecutiveDeclarations:     true</code>
+ *     - <code>NamespaceIndentation:             All</code>
+ *     - <code>ReflowComents:                    false</code>
  *   - <b><code>clang-format</code></b> packaged as :
  *     - Ubuntu : <code>clang-format</code>
  *     - CentOS/RedHat/Fedora : <code>clang</code>
@@ -65,9 +72,8 @@
  *
  * To help you start with your coding, inside directory
  * <b><code>dev-tools</code></b>, you'll find two files :
- *
- *   - <b><code>dev-tools/DProto.hpp</code></b>
- *   - <b><code>dev-tools/DProto.cpp</code></b>
+ * <b><code>dev-tools/DProto.hpp</code></b> and
+ * <b><code>dev-tools/DProto.cpp</code></b>.
  *
  * As you can see at file <b><code>DProto.hpp</code></b>, the content inside
  * headers file shall be protected by a couple <b><code>"#ifdef
