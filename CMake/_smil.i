@@ -76,6 +76,7 @@ __builtin__.imageTypes = [ ${IMAGE_TYPES_STR}, ]
 def AboutSmil():
     print("SMIL (Simple Morphological Image Library) ${SMIL_VERSION}")
     print("Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES")
+    print("Copyright (c) 2017-2018, CMM - Centre de Morphologie Mathematique")
     print("All rights reserved.")
 
 
