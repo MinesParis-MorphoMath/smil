@@ -38,6 +38,7 @@ SMIL_MODULE(smil_)
 %{
     std::cout << "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}" << std::endl;
     std::cout << "Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES" << std::endl;
+    std::cout << "Copyright (c) 2017-2018, CMM - Centre de Morphologie Mathematique" << std::endl;
     std::cout << "All rights reserved." << std::endl;
     std::cout << std::endl;
 %}
