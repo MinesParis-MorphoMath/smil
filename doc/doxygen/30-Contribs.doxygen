@@ -1,12 +1,17 @@
 /**
- * \page p30_contribs_page Contributions to Smil
+ * @page p30_contribs_page Contributions to Smil
  *
  *   - <b>Amin Fehri</b>
  *     - Something
  *   - <b>Beatriz Marcotegui</b>
  *     - Something
- *   - <b>Pierre Guillou</b>
- *     - Something
+ *   - <b>Pierre Guillou</b> : many code corrections and improvements :
+ *     - <code>Python 3</code> and <code>C++11</code> compatibility;
+ *     - <code>MSVC</code> porting issues;
+ *     - <code>pkg-config</code> generation;
+ *     - bugs and warnings under <code>GCC</code> and <code>Clang</code>
+ *     - warnings while generating documentation (<code>doxygen</code>);
+ *     - <code>git</code> repository management.
  *   - <b>Serge Koudoro</b>
  *     - Something
  *   - <b>Theodore Chabardès</b> :

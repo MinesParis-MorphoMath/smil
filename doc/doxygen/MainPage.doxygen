@@ -27,31 +27,31 @@
  */
 
 /**
- * \mainpage About
- * \image html smil.png
- * \image latex smil.eps
+ * @mainpage About
+ * @image html smil.png
+ * @image latex smil.eps
  * 
- * \section intro_sec Introduction
+ * @section intro_sec Introduction
  * 
  * Smil is a 2D/3D image library written in C++. \n
  * 
- * It aims to be lightweight, \ref benchs.py "fast", easy to use and to extend. \n
+ * It aims to be lightweight, @ref benchs.py "fast", easy to use and to extend. \n
  * 
  * Developed using templates, Smil can be used with any standard types (char, short, int, double, ...).\n
  * 
  * It uses <a href="http://www.swig.org/" target="_blank">swig</a> and can be wrapped in several languages: 
- * for now, \b python, \b java, \b ruby and \b octave are available.
+ * for now, @b python, @b java, @b ruby and @b octave are available.
  * 
  * Smil is free software, available under a BSD-style open source license.\n
- * See the \ref p20_licence_page "licence" page for more information.
+ * See the @ref p20_licence_page "licence" page for more information.
  * 
- * \tableofcontents
+ * @tableofcontents
  * 
- * \image html inplace_unsafe.png
- * \image html inplace_half.png
- * \image html inplace_full.png
- * \image html vectorized.png
- * \image html parallelized.png
+ * @image html inplace_unsafe.png
+ * @image html inplace_half.png
+ * @image html inplace_full.png
+ * @image html vectorized.png
+ * @image html parallelized.png
 */
 
 

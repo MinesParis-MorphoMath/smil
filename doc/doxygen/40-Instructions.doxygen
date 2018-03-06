@@ -1,7 +1,7 @@
 /**
- * \page p40_instructions_page Programming Guidelines
+ * @page p40_instructions_page Programming Guidelines
  *
- * \section style_section Programming Guidelines (or Best Common Practices)
+ * @section style_section Programming Guidelines (or Best Common Practices)
  *
  * This is about good programming practices : what to do and not in your
  * programs. Suggestions about reliability, security, ...
@@ -32,9 +32,11 @@
  *  - lack of out of bounds checking;
  *  - adequate error and exception handling;
  *  - forgetting to remove "dead code" (some lines useful only while the code
- * was being debugged/validated).
+ * was being debugged/validated);
+ *  - incoherence over time : not doing the same thing the same way at different
+ * moments.
  *
- * \section format_section Code Formatting
+ * @section format_section Code Formatting
  *
  * Code formatting isn't just an aesthetic issue. An homogeneous and clear
  * presentation contributes to unambigous and easy understanding.
@@ -56,19 +58,24 @@
  *   - the choosen style has minors differences from <code>LLVM</code> style.
  *     These differences are set at <code>.clang-format</code> file placed at
  *     the root of source file tree :
- *     - <code>AllowShortFunctionsOnASingleLine: false</code>
- *     - <code>BreakBeforeBraces:                Linux</code>
- *     - <code>AlignConsecutiveAssignments:      true</code>
- *     - <code>AlignConsecutiveDeclarations:     true</code>
- *     - <code>NamespaceIndentation:             All</code>
- *     - <code>ReflowComents:                    false</code>
+ * \n
+ *
+ *     AllowShortFunctionsOnASingleLine: false
+ *     BreakBeforeBraces:                Linux
+ *     AlignConsecutiveAssignments:      true
+ *     AlignConsecutiveDeclarations:     true
+ *     NamespaceIndentation:             All
+ *     ReflowComents:                    true
+ *     SortIncludes:                     false
+ *     SortUsingDeclarations:            false
+ *
  *   - <b><code>clang-format</code></b> packaged as :
  *     - Ubuntu : <code>clang-format</code>
  *     - CentOS/RedHat/Fedora : <code>clang</code>
  *   - <b>clang-format</b> documentation can be found <a
  * href="https://clang.llvm.org/docs/ClangFormat.html">here</a>
  *
- * \section proto_section  Source file prototypes :
+ * @section proto_section  Source file prototypes :
  *
  * To help you start with your coding, inside directory
  * <b><code>dev-tools</code></b>, you'll find two files :
@@ -89,7 +96,7 @@
  * As an example, if the filename is <b><code>DMorphoBestCode.h</code></b>, the
  * directive name becomes <b><code>_D_MORPHO_BEST_CODE_H</code></b>.
  *
- * \section naming_section Naming guidelines
+ * @section naming_section Naming guidelines
  *
  *  <b>To be done !!!</b>
  *
@@ -106,10 +113,31 @@
  *  - Functions and Methods
  *  - Macros and defines : every character in uppercase.
  *
- * \section doc_section Source code documentation with Doxygen
+ * @section doc_section Source code documentation with Doxygen
  *
  * To be done !!!
  *
- * \tableofcontents
+ * @subsection doxyoddities_section Doxygen / clang-format Oddities
+ *
+ *  - Use <b><code>"@tag"</code></b> syntax instead of
+ * <b><code>"\tag"</code></b> : clang-format doesn't handle these two
+ * constructions the same way and, sometimes, may break the structure. It seems
+ * that using <b><code>"@tag"</code></b> gives more predictable results. Still
+ * better, remember : be coherent and do the same thing the same way all the
+ * time.
+ *  - for the same reason, always insert a blank comment line between two blocks
+ * of doxygen documentation. For example, between description and parameters of
+ * some function : \n
+ *
+ *     /**
+ *      * Image Beautifier
+ *      *
+ *      * Image Beautifier based on the algorithm described by John Beautiful
+ *      *
+ *      * @param[in]  imgIn Input image
+ *      * @param[out] imgOut Image beautified
+ *      * /
+ *
+ * @tableofcontents
  * \n \n
  */
