@@ -365,6 +365,18 @@ namespace smil
             odd = false;
             
             addPoint(0,0,0);
+	    for (x = -2; x <= 2; x++)
+	      for (y = -1; y <= 1; y++)
+		for (z = -1; z <= 1; z++)
+		  addPoint(x, y, z);
+	    for (x = -1; x <= 1; x++)
+	      for (y = -2; y <= 2; y++)
+		for (z = -1; z <= 1; z++)
+		  addPoint(x, y, z);
+	    for (x = -1; x <= 1; x++)
+	      for (y = -1; y <= 1; y++)
+		for (z = -2; z <= 2; z++)
+		  addPoint(x, y, z);
         }
     };
 
