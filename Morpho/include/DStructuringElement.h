@@ -364,6 +364,8 @@ namespace smil
             seT = SE_Rhombicuboctahedron;
             odd = false;
             
+            int x, y, z;
+
             addPoint(0,0,0);
 	    for (x = -2; x <= 2; x++)
 	      for (y = -1; y <= 1; y++)
