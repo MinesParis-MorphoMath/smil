@@ -63,11 +63,11 @@ namespace smil
 
     #define INLINE inline
 
-#ifdef _MSC_VER
+#if defined (_MSC_VER) && !defined (__clang__)
     #define TEMPL_SPEC_DECL template
-#else // _MSC_VER
+#else
     #define TEMPL_SPEC_DECL template <>
-#endif // _MSC_VER
+#endif // _MSC_VER && !__clang__
 
     #define SMART_POINTER(T) boost::shared_ptr< T >
     #define SMART_IMAGE(T) SMART_POINTER( D_Image< T > )
