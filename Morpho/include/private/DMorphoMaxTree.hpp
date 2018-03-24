@@ -879,7 +879,7 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
             isMaxT = 1;
             transformee_node[node] = stab_residue;
 
-            if(! (isPrevMaxT and flag)){
+            if(! (isPrevMaxT && flag)) {
                 indicatrice_node[node]  = hNode + 1;                
             }
 
