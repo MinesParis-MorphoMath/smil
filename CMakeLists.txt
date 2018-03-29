@@ -750,6 +750,16 @@ IF(USE_WRAPPER)
 		# Trick to avoid to rebuild every time even without the dependencies having changed
 		SET_SOURCE_FILES_PROPERTIES(${SWIG_MAIN_INTERFACE} PROPERTIES SWIG_MODULE_NAME smil_Python)
 		MESSAGE(STATUS "Wrap for python version ${PYTHON_VERSION}")
+		IF(MSVC)
+		  # Anaconda does not provide Python libraries with
+		  # debug symbols
+		  IF(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+		    SET(CMAKE_BUILD_TYPE "Release" CACHE STRING "" FORCE)
+		    MESSAGE(STATUS
+		      "Changing build type to 'Release' for Python on Windows")
+		  ENDIF(NOT CMAKE_BUILD_TYPE STREQUAL "Release")
+		ENDIF(MSVC)
+
 		SET(CMAKE_SWIG_OUTDIR "${LIBRARY_OUTPUT_PATH}/smilPython")
 		ADD_SWIG_MODULE(smil_Python python ${SWIG_MAIN_INTERFACE})
 		SWIG_LINK_LIBRARIES(smil_Python ${SMIL_LIBS} ${PYTHON_LIBRARIES})
