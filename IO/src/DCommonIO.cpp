@@ -88,7 +88,7 @@ namespace smil
 
     static std::string memoryCallbackBuffer;
     
-    static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void */*stream*/)
+    static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void * /*stream*/)
     {
         memoryCallbackBuffer.append((char*)contents, size*nmemb);
         return size*nmemb;
