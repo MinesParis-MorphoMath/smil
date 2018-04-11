@@ -280,20 +280,24 @@ void QVtkViewerWidget::showContextMenu(vtkObject*, unsigned long, void*, void*, 
     QAction* selectedItem = contMenu.exec(globalPos);
     if (selectedItem)
     {
-        if (selectedItem->text()=="Composite")
+        QString selectedText = selectedItem->text();
+        if (selectedText[0]=='&')
+          selectedText = selectedText.right(selectedText.size()-1);
+        
+        if (selectedText=="Composite")
           setRepresentationType(COMPOSITE);
-        else if (selectedItem->text()=="MIP")
+        else if (selectedText=="MIP")
           setRepresentationType(MIP);
-        else if (selectedItem->text()=="Show axes")
+        else if (selectedText=="Show axes")
         {
             if (orientationMarker->GetEnabled())
               hideAxes();
             else
               showAxes();
         }
-        else if (selectedItem->text()=="Linear")
+        else if (selectedText=="Linear")
           setInterpolationTypeToLinear();
-        else if (selectedItem->text()=="Nearest")
+        else if (selectedText=="Nearest")
           setInterpolationTypeToNearest();
     }
 }

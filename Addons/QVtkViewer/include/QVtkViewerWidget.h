@@ -23,12 +23,12 @@
 #ifndef QVTK_VIEWER_H
 #define QVTK_VIEWER_H
 
-#include <QtGui/QAction>
-#include <QtGui/QApplication>
-#include <QtGui/QButtonGroup>
-#include <QtGui/QHBoxLayout>
-#include <QtGui/QHeaderView>
-#include <QtGui/QWidget>
+#include <QAction>
+#include <QApplication>
+#include <QButtonGroup>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QWidget>
 #include "QVTKWidget.h"
 
 
