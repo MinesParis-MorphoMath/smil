@@ -460,15 +460,15 @@ namespace smil
         imIn.getSize (size) ;
         size_t nbrPixelsPerSlice = size[0]*size[1];
         size_t offset ;
-        int x,y,z;
+        size_t x,y,z;
         T2 infinite= ImDtTypes<T2>::max();
         // JOE long int min;
 
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
-        vector<long int> s(size[0]); // sets of the least minimizers that occurs during the scan from left to right.
-        vector<long int> t(size[0]); // sets of points with the same least minimizer 
-        long int q = 0;
-        long int w;
+        vector<size_t> s(size[0]); // sets of the least minimizers that occurs during the scan from left to right.
+        vector<size_t> t(size[0]); // sets of points with the same least minimizer 
+        size_t q = 0;
+        size_t w;
 
         for (z=0; z<size[2]; ++z) {
 //          #ifdef USE_OPEN_MP
