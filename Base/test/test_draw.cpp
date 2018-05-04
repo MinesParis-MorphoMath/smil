@@ -120,8 +120,9 @@ class Test_DrawText : public TestCase
       Image_UINT8 im2(20,15);
       fill(im1, UINT8(127));
       
-      TEST_ASSERT(drawText(im1, 4, 10, "ok", "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf", 10)==RES_OK);
-      
+      // JOE TEST_ASSERT(drawText(im1, 4, 10, "ok", "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf", 10)==RES_OK);
+      TEST_ASSERT(drawText(im1, 4, 10, "ok", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 10)==RES_OK);
+
       UINT8 vec[20*15] = 
       {   
         127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 127, 
