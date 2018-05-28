@@ -1,0 +1,12 @@
+
+* Document distance functions (Morpho/include/private/DMorphoDistance.hpp)
+
+* Check some wrong doxygen tags (everywhere)
+
+* maxtree (use histogram to allocate right structures size)
+
+* some functions work only on 2D images (e.g., areaOpen, ...)
+
+* it seems that there are a memory problem at watershed function
+
+
