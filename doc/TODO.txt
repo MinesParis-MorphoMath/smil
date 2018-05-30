@@ -7,6 +7,7 @@
 
 * some functions work only on 2D images (e.g., areaOpen, ...)
 
-* it seems that there are a memory problem at watershed function
+* it seems that there are a memory leak problem at watershed function
 
-
+* python online documentation
+ 
