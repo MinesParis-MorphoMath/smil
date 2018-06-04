@@ -51,7 +51,7 @@ namespace smil
     /** 
     * \addtogroup IO
     */
-    /*@{*/
+    /**@{*/
     
     struct PNGHeader;
     
@@ -92,7 +92,7 @@ namespace smil
     TEMPL_SPEC_DECL RES_T PNGImageFileHandler<UINT16>::write(const Image<UINT16> &image, const char *filename);
     TEMPL_SPEC_DECL RES_T PNGImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
     
-/*@}*/
+/**@}*/
 
 } // namespace smil
 

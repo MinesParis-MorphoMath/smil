@@ -41,7 +41,7 @@ namespace smil
     /** 
     * \addtogroup IO
     */
-    /*@{*/
+    /**@{*/
     
     struct BMPHeader;
     
@@ -83,7 +83,7 @@ namespace smil
     TEMPL_SPEC_DECL RES_T BMPImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
 #endif // SMIL_WRAP_RGB    
     
-/*@}*/
+/**@}*/
 
 } // namespace smil
 

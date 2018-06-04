@@ -42,7 +42,7 @@ namespace smil
     /** 
     * \addtogroup IO
     */
-    /*@{*/
+    /**@{*/
     
     RES_T readNetPBMFileInfo(ifstream &fp, ImageFileInfo &fInfo, unsigned int &maxval);
     RES_T readNetPBMFileInfo(const char* filename, ImageFileInfo &fInfo, unsigned int &maxval);
@@ -176,7 +176,7 @@ namespace smil
     TEMPL_SPEC_DECL RES_T PGMImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
 #endif // SMIL_WRAP_RGB    
     
-/*@}*/
+/**@}*/
 
 } // namespace smil
 

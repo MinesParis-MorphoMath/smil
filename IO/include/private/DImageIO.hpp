@@ -44,7 +44,7 @@ namespace smil
     /** 
     * \addtogroup IO
     */
-    /*@{*/
+    /**@{*/
     
 
     template <class T=void>
@@ -125,7 +125,7 @@ namespace smil
     
     BaseImage *createFromFile(const char *filename);
 
-/*@}*/
+/**@}*/
 
 } // namespace smil
 

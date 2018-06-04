@@ -170,6 +170,9 @@ namespace smil
         return RES_OK;
     }
 
+    /**
+     * Distance Cross3D function (???).
+     */
     template <class T1, class T2>
     RES_T dist_cross_3d (const Image<T1> &imIn, Image<T2> &imOut) {
         ASSERT_ALLOCATED (&imIn, &imOut);
@@ -259,6 +262,9 @@ namespace smil
         return RES_OK;
     }
 
+    /**
+     * Distance Cross function (???).
+     */
     template <class T1, class T2>
     RES_T dist_cross (const Image<T1> &imIn, Image<T2> &imOut) {
         ASSERT_ALLOCATED (&imIn, &imOut);
@@ -330,6 +336,9 @@ namespace smil
         return RES_OK;
     }
 
+    /**
+     * Distance Square function (???).
+     */
     template <class T1, class T2>
     RES_T dist_square (const Image<T1> &imIn, Image<T2> &imOut) {
         ASSERT_ALLOCATED (&imIn, &imOut);
@@ -439,6 +448,9 @@ namespace smil
         return RES_OK;
     }
 
+    /**
+     * Euclidean Distance function.
+     */
     template <class T1, class T2>
     RES_T dist_euclidean (const Image<T1> &imIn, Image<T2> &imOut) {
         ASSERT_ALLOCATED (&imIn, &imOut);

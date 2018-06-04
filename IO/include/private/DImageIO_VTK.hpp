@@ -48,7 +48,7 @@ namespace smil
     /** 
     * \addtogroup IO
     */
-    /*@{*/
+    /**@{*/
   
     struct VTKHeader
     {
@@ -321,7 +321,7 @@ namespace smil
         return RES_ERR_NOT_IMPLEMENTED;
     }
 
-/*@}*/
+/**@}*/
 
 } // namespace smil
 

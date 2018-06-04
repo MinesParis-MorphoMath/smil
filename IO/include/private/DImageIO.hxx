@@ -62,7 +62,7 @@ namespace smil
     /** 
     * \addtogroup IO
     */
-    /*@{*/
+    /**@{*/
     
 
      
@@ -227,7 +227,7 @@ namespace smil
     
     BaseImage *createFromFile(const char *filename);
 
-/*@}*/
+/**@}*/
 
 } // namespace smil
 

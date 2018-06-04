@@ -50,7 +50,7 @@ namespace smil
     /** 
     * \addtogroup IO
     */
-    /*@{*/
+    /**@{*/
     
     RES_T getTIFFFileInfo(const char* filename, ImageFileInfo &fInfo);
 
@@ -90,7 +90,7 @@ namespace smil
     TEMPL_SPEC_DECL RES_T TIFFImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
 
     
-/*@}*/
+/**@}*/
 
 } // namespace smil
 

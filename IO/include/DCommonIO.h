@@ -47,7 +47,7 @@ namespace smil
     /** 
     * \addtogroup IO
     */
-    /*@{*/
+    /**@{*/
     
     string getFileExtension(const char *fileName);
 
@@ -94,7 +94,7 @@ namespace smil
     string getHttpFile(const char *url);
 
     #endif // USE_CURL
-/*@}*/
+/**@}*/
 
 } // namespace smil
 
