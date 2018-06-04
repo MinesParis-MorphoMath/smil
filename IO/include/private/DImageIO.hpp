@@ -114,7 +114,7 @@ namespace smil
     * \b Example:
     * \code{.py}
     * im1 = Image("img3d.vtk")
-    * fileNames = [ "img%d.png"%i for i in range(im1.getDepth()) ]
+    * fileNames = [ "img{:03d}.png".format(i) for i in range(im1.getDepth()) ]
     * write(im1, fileNames)
     * \endcode
     */
