@@ -38,7 +38,7 @@ namespace smil
     /**
     * \ingroup Gui
     */
-    /*@{*/
+    /**@{*/
 
     template <class T>
     class Image;
@@ -68,7 +68,7 @@ namespace smil
         bool labelImage;
     };
 
-/*@}*/
+/**@}*/
 
 } // namespace smil
 

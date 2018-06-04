@@ -51,7 +51,7 @@ namespace smil
    /**
     * \ingroup Gui
     */
-    /*@{*/
+    /**@{*/
 
     template <class T>
     class ImageViewer;
@@ -107,7 +107,7 @@ namespace smil
       #endif
     }
 
-/*@}*/
+/**@}*/
 
 } // namespace smil
 

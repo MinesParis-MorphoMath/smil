@@ -40,7 +40,7 @@ namespace smil
     /**
     * \ingroup Base
     */
-    /*@{*/
+    /**@{*/
   
     class Base : public UniqueInstance<Base>
     {
@@ -55,7 +55,7 @@ namespace smil
     protected:
     };
 
-/*@}*/
+/**@}*/
 
 } // namespace smil
 

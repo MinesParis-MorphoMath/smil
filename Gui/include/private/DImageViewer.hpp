@@ -41,7 +41,7 @@ namespace smil
    /**
     * \ingroup Gui
     */
-    /*@{*/
+    /**@{*/
 
     /**
     * Base image viewer.
@@ -137,7 +137,7 @@ namespace smil
         size_t imSize[3];
     };
 
-    /*@}*/
+    /**@}*/
     
 } // namespace smil
 

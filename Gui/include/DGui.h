@@ -34,12 +34,12 @@
 /**
  * \defgroup Gui Gui and Image Display
  */
-/*@{*/
+/**@{*/
 
 #include "DGuiInstance.h"
 #include "private/DImageViewer.hpp"
 
 
-/*@}*/
+/**@}*/
 
 #endif // _D_GUI_H
