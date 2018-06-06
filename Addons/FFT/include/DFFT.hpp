@@ -136,7 +136,7 @@ namespace smil
         return RES_OK;
     }   
 
-   /*@}*/
+   /**@}*/
     
 } // namespace smil
 

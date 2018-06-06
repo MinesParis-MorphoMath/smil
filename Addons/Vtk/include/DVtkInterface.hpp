@@ -141,7 +141,7 @@ namespace smil
         }
     };
     
-    /*@}*/
+    /**@}*/
     
 } // namespace smil
 

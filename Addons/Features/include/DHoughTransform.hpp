@@ -186,7 +186,7 @@ namespace smil
         return RES_OK;    
     }
     
-    
+   /**@}*/ 
 } // namespace smil
 
 #endif // _D_HOUGH_TRANSFORM_HPP
