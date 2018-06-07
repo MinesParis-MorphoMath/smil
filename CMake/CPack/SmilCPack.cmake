@@ -39,7 +39,7 @@ INCLUDE(InstallRequiredSystemLibraries)
 
 
 SET(CPACK_PACKAGE_NAME "Smil")
-SET(CPACK_PACKAGE_CONTACT "matthieu.faessel@mines-paristech.fr")
+SET(CPACK_PACKAGE_CONTACT "Jose-Marcio.Martins@mines-paristech.fr")
 
 IF(WIN32)
       SET(DEFAULT_GENERATOR NSIS)
