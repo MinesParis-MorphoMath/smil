@@ -1,13 +1,26 @@
 
 * Document distance functions (Morpho/include/private/DMorphoDistance.hpp)
 
-* Check some wrong doxygen tags (everywhere)
+* Check some wrong doxygen tags (everywhere in source code)
 
 * maxtree (use histogram to allocate right structures size)
 
 * some functions work only on 2D images (e.g., areaOpen, ...)
+  voir avec Bea
 
 * it seems that there are a memory leak problem at watershed function
+  Saw in huge images : 2000 x 2000 x 2000 (8 Gb)
 
 * python online documentation
+
+* Dans CMAKE/CPack
+  * ajouter possibles dependances par packet
+
+* Correct tests :
+  1 - test_global (Failed)
+      Segmentation fault : sometimes
+  2 - test_globalMB (Failed)
+      Segmentation fault : sometimes
+  8 - Base_test_draw (Failed)
+      font path problem
  
