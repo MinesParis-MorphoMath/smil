@@ -616,10 +616,10 @@ namespace smil
                 m020 += pxVal * y * y;
                 if (im3d)
                 {
-                    m001 = pxVal * z;
-                    m101 = pxVal * x * z;
-                    m011 = pxVal * y * z;
-                    m002 = pxVal * z * z;
+                    m001 += pxVal * z;
+                    m101 += pxVal * x * z;
+                    m011 += pxVal * y * z;
+                    m002 += pxVal * z * z;
                 }
             }
         }
