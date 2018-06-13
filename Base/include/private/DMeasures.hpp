@@ -646,7 +646,7 @@ namespace smil
     * Measure inertia moments
     * 
     * \return * For 2D images: m00, m10, m01, m11, m20, m02
-    * \return * For 3D images: m000, m100, m010, m110, m200, m020, m001, m101, m011, m002
+    * \return * For 3D images: m000, m100, m010, m001, m110, m101, m011, m200, m020, m002
     * 
     * See <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on Wikipedia</a>
     */
