@@ -502,7 +502,7 @@ namespace smil
                     }
                 }
                 // SCAN 2
-                for (y=size[1]-2; y>=0; --y) {
+                for (y=size[1]-2; y>=0 && y < size[1]; --y) {
                     if (pixelsOut[offset+(y+1)*size[0]] < pixelsOut[offset+y*size[0]])
                        pixelsOut[offset+y*size[0]] = (1+pixelsOut[offset+(y+1)*size[0]] < infinite) ? 1+pixelsOut[offset+(y+1)*size[0]] : infinite; 
                 }
@@ -534,7 +534,7 @@ namespace smil
                         }
                     }
                     // SCAN 4
-                    for (x=size[0]-1; x>=0; --x) {
+                    for (x=size[0]-1; x>=0 && x < size[0]; --x) {
                         pixelsOut[offset+x] = __f_euclidean (x, s[q]) ;
                         if (x == t[q])
                             --q;
@@ -568,7 +568,7 @@ namespace smil
                                         if (w<size[2]) {q++; s[q]=z; t[q]=w;}
                                 }
                         }
-                        for (z=size[2]-1; z>=0; --z) {
+                        for (z=size[2]-1; z>=0 && z < size[2]; --z) {
                                 pixelsOut[offset+z*nbrPixelsPerSlice] = __f_euclidean (z, s[q]);
                                 if (z == t[q]) {
                                         --q;
