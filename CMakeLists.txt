@@ -569,6 +569,7 @@ IF(WRAP_PYTHON)
 			  PATHS 
 			    ${PYTHON_INCLUDE_PATH}
 			    /usr/include /usr/local/include 
+			    /usr/lib/python${PYTHON_VERSION}/site-packages/numpy/core/include/
 			    /usr/local/lib/python${PYTHON_VERSION}/site-packages/numpy/core/include/
 		)
 
