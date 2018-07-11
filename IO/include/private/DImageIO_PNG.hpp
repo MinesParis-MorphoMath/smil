@@ -83,15 +83,31 @@ namespace smil
         }
     };
 
-    // Specializations
-    TEMPL_SPEC_DECL RES_T PNGImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image);
-    TEMPL_SPEC_DECL RES_T PNGImageFileHandler<UINT16>::read(const char *filename, Image<UINT16> &image);
-    TEMPL_SPEC_DECL RES_T PNGImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image);
+  // Specializations
+  template<>
+  class PNGImageFileHandler<UINT8> : public ImageFileHandler<UINT8> {
+  public:
+    PNGImageFileHandler() : ImageFileHandler<UINT8>("PNG") {}
+    RES_T read(const char *filename, Image<UINT8> &image);
+    RES_T write(const Image<UINT8> &image, const char *filename);
+  };
 
-    TEMPL_SPEC_DECL RES_T PNGImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename);
-    TEMPL_SPEC_DECL RES_T PNGImageFileHandler<UINT16>::write(const Image<UINT16> &image, const char *filename);
-    TEMPL_SPEC_DECL RES_T PNGImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
-    
+  template<>
+  class PNGImageFileHandler<UINT16> : public ImageFileHandler<UINT16> {
+  public:
+    PNGImageFileHandler() : ImageFileHandler<UINT16>("PNG") {}
+    RES_T read(const char *filename, Image<UINT16> &image);
+    RES_T write(const Image<UINT16> &image, const char *filename);
+  };
+
+  template<>
+  class PNGImageFileHandler<RGB> : public ImageFileHandler<RGB> {
+  public:
+    PNGImageFileHandler() : ImageFileHandler<RGB>("PNG") {}
+    RES_T read(const char *filename, Image<RGB> &image);
+    RES_T write(const Image<RGB> &image, const char *filename);
+  };
+
 /**@}*/
 
 } // namespace smil
