@@ -142,19 +142,16 @@ namespace smil
         return RES_OK;
     }
     
-    template <>
     RES_T TIFFImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image)
     {
         return StandardTIFFRead(filename, image);
     }
 
-    template <>
     RES_T TIFFImageFileHandler<UINT16>::read(const char *filename, Image<UINT16> &image)
     {
         return StandardTIFFRead(filename, image);
     }
 
-    template <>
     RES_T TIFFImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
     {
         /* open image file */
@@ -233,19 +230,16 @@ namespace smil
         return RES_OK;
     }
     
-    template <>
     RES_T TIFFImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename)
     {
         return StandardTIFFWrite(image, filename);
     }
     
-    template <>
     RES_T TIFFImageFileHandler<UINT16>::write(const Image<UINT16> &image, const char *filename)
     {
         return StandardTIFFWrite(image, filename);
     }
     
-    template <>
     RES_T TIFFImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
     {
         /* open image file */

@@ -84,29 +84,11 @@ namespace smil
     };
 
   // Specializations
-  template<>
-  class PNGImageFileHandler<UINT8> : public ImageFileHandler<UINT8> {
-  public:
-    PNGImageFileHandler() : ImageFileHandler<UINT8>("PNG") {}
-    RES_T read(const char *filename, Image<UINT8> &image);
-    RES_T write(const Image<UINT8> &image, const char *filename);
-  };
-
-  template<>
-  class PNGImageFileHandler<UINT16> : public ImageFileHandler<UINT16> {
-  public:
-    PNGImageFileHandler() : ImageFileHandler<UINT16>("PNG") {}
-    RES_T read(const char *filename, Image<UINT16> &image);
-    RES_T write(const Image<UINT16> &image, const char *filename);
-  };
-
-  template<>
-  class PNGImageFileHandler<RGB> : public ImageFileHandler<RGB> {
-  public:
-    PNGImageFileHandler() : ImageFileHandler<RGB>("PNG") {}
-    RES_T read(const char *filename, Image<RGB> &image);
-    RES_T write(const Image<RGB> &image, const char *filename);
-  };
+  IMAGEFILEHANDLER_TEMP_SPEC(PNG, UINT8);
+  IMAGEFILEHANDLER_TEMP_SPEC(PNG, UINT16);
+#ifdef SMIL_WRAP_RGB
+  IMAGEFILEHANDLER_TEMP_SPEC(PNG, RGB);
+#endif // SMIL_WRAP_RGB
 
 /**@}*/
 

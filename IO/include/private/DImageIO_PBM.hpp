@@ -165,17 +165,14 @@ namespace smil
     {
         return RES_ERR;
     }
-    
-    // Specializations
 
-    TEMPL_SPEC_DECL RES_T PGMImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image);
-    TEMPL_SPEC_DECL RES_T PGMImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename);
+  // Specializations
+  IMAGEFILEHANDLER_TEMP_SPEC(PGM, UINT8);
 
-#ifdef SMIL_WRAP_RGB    
-    TEMPL_SPEC_DECL RES_T PGMImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image);
-    TEMPL_SPEC_DECL RES_T PGMImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
-#endif // SMIL_WRAP_RGB    
-    
+#ifdef SMIL_WRAP_RGB
+  IMAGEFILEHANDLER_TEMP_SPEC(PGM, RGB);
+#endif // SMIL_WRAP_RGB
+
 /**@}*/
 
 } // namespace smil

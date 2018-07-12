@@ -80,16 +80,11 @@ namespace smil
         }
     };
 
-    // Specializations
-    TEMPL_SPEC_DECL RES_T TIFFImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image);
-    TEMPL_SPEC_DECL RES_T TIFFImageFileHandler<UINT16>::read(const char *filename, Image<UINT16> &image);
-    TEMPL_SPEC_DECL RES_T TIFFImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image);
-    
-    TEMPL_SPEC_DECL RES_T TIFFImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename);
-    TEMPL_SPEC_DECL RES_T TIFFImageFileHandler<UINT16>::write(const Image<UINT16> &image, const char *filename);
-    TEMPL_SPEC_DECL RES_T TIFFImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
+  // Specializations
+  IMAGEFILEHANDLER_TEMP_SPEC(TIFF, UINT8);
+  IMAGEFILEHANDLER_TEMP_SPEC(TIFF, UINT16);
+  IMAGEFILEHANDLER_TEMP_SPEC(TIFF, RGB);
 
-    
 /**@}*/
 
 } // namespace smil

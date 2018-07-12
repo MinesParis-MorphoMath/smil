@@ -63,11 +63,20 @@ namespace smil
 
     #define INLINE inline
 
-#if defined (_MSC_VER) && !defined (__clang__)
-    #define TEMPL_SPEC_DECL template
-#else
-    #define TEMPL_SPEC_DECL template <>
-#endif // _MSC_VER && !__clang__
+  // Generate template specializations (or instanciations?) for
+  // ImageHandler subclasses (in IO/DImageIO_{BMP,JPG,PBM,PNG,TIFF})
+#define IMAGEFILEHANDLER_TEMP_SPEC(FORMAT, PIXELTYPE)                          \
+  template <>                                                                  \
+  class FORMAT##ImageFileHandler<PIXELTYPE>                                    \
+      : public ImageFileHandler<PIXELTYPE>                                     \
+  {                                                                            \
+  public:                                                                      \
+    FORMAT##ImageFileHandler() : ImageFileHandler<PIXELTYPE>(#FORMAT)          \
+    {                                                                          \
+    }                                                                          \
+    RES_T read(const char *filename, Image<PIXELTYPE> &image);                 \
+    RES_T write(const Image<PIXELTYPE> &image, const char *filename);          \
+  };
 
     #define SMART_POINTER(T) boost::shared_ptr< T >
     #define SMART_IMAGE(T) SMART_POINTER( D_Image< T > )

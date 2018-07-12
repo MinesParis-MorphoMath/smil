@@ -110,7 +110,6 @@ namespace smil
         return RES_OK;
     }
         
-    template <>
     RES_T JPGImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
     {
         /* open image file */
@@ -169,7 +168,6 @@ namespace smil
 
 
     
-    template <>
     RES_T JPGImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
     {
         /* open image file */

@@ -131,7 +131,6 @@ namespace smil
         return ret;
     }
     
-    template <>
     RES_T PGMImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image)
     {
         /* open image file */
@@ -174,7 +173,6 @@ namespace smil
     }
 
 
-    template <>
     RES_T PGMImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename)
     {
         /* open image file */
@@ -202,7 +200,6 @@ namespace smil
     
     
 #ifdef SMIL_WRAP_RGB      
-    template <>
     RES_T PGMImageFileHandler<RGB>::read(const char * /*filename*/, Image<RGB> &/*image*/)
     {
 //         FILE *fp = fopen( filename, "rb" );
@@ -250,7 +247,6 @@ namespace smil
 
 
 #ifdef SMIL_WRAP_RGB  
-    template <>
     RES_T PGMImageFileHandler<RGB>::write(const Image<RGB> &/*image*/, const char * /*filename*/)
     {
 //         FILE* fp = fopen( filename, "wb" );

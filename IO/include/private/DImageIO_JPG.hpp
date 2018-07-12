@@ -80,9 +80,8 @@ namespace smil
         }
     };
 
-    // Specializations
-    TEMPL_SPEC_DECL RES_T JPGImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image);
-    TEMPL_SPEC_DECL RES_T JPGImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename);
+  // Specializations
+  IMAGEFILEHANDLER_TEMP_SPEC(JPG, RGB);
 
 /**@}*/
 
