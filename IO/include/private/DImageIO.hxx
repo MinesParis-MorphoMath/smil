@@ -80,12 +80,12 @@ namespace smil
     #endif // USE_PNG
 
     #ifdef USE_JPEG
-        else if (fileExt=="JPG")
+        else if (fileExt=="JPG" || fileExt=="JPEG")
             return new JPGImageFileHandler<T>();
     #endif // USE_JPEG
 
     #ifdef USE_TIFF
-        else if (fileExt=="TIF")
+        else if (fileExt=="TIF" || fileExt=="TIFF")
             return new TIFFImageFileHandler<T>();
     #endif // USE_TIFF
 
