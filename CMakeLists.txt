@@ -182,14 +182,14 @@ IF(USE_STATIC_DEPEND_LIBS)
 	ADD_DEFINITIONS("-Wl,-Bstatic")
 ENDIF(USE_STATIC_DEPEND_LIBS)
 
-IF(CMAKE_COMPILER_IS_GNUCC)
+IF(CMAKE_COMPILER_IS_GNUCXX)
         # Try to have a clean code to avoid silly bugs
 #         ADD_DEFINITIONS("-pedantic -Wall -Wextra -Weffc++  -Wsign-compare -Wsign-conversion -Wconversion")
         ADD_DEFINITIONS("-Wall -Wextra -Wsign-compare")
         IF(CMAKE_CROSSCOMPILING)
             ADD_DEFINITIONS("-Wno-maybe-uninitialized")
         ENDIF(CMAKE_CROSSCOMPILING)
-ENDIF(CMAKE_COMPILER_IS_GNUCC)
+ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 
 # 64 Bits
@@ -259,7 +259,7 @@ IF(USE_OPTIMIZATION)
 	OPTION(VERBOSE_OPTIMIZATION "Show verbose optimizations" OFF)
 	MARK_AS_ADVANCED(VERBOSE_OPTIMIZATION)
 
-	IF(CMAKE_COMPILER_IS_GNUCC)
+	IF(CMAKE_COMPILER_IS_GNUCXX)
 	    AddCompilerFlag("-ftree-vectorize -ftree-slp-vectorize")
 	    IF(TARGET_ARCHITECTURE STREQUAL "auto")
 		AddCompilerFlag("-march=native -mtune=generic")
@@ -272,9 +272,9 @@ IF(USE_OPTIMIZATION)
 	    ENDIF(VERBOSE_OPTIMIZATION)
 	ELSEIF(CMAKE_COMPILER_IS_CLANGXX)
 # 		ADD_DEFINITIONS(" -mllvm -vectorize")
-	ELSE(CMAKE_COMPILER_IS_GNUCC)
+	ELSE(CMAKE_COMPILER_IS_GNUCXX)
  		OptimizeForArchitecture()
-	ENDIF(CMAKE_COMPILER_IS_GNUCC)
+	ENDIF(CMAKE_COMPILER_IS_GNUCXX)
 
 	MESSAGE(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}")
 ELSE(USE_OPTIMIZATION)
