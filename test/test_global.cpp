@@ -67,6 +67,7 @@ int main()
    BaseImage *im = createFromFile("http://smil.cmm.mines-paristech.fr/images/arearea.png");
    if (im)
     im->show();
+   delete im;
 #endif // SMIL_WRAP_RGB
    
 //    Image<UINT16> im1("/home/faessel/tmp/test_image16.tif");
@@ -79,5 +80,5 @@ int main()
 //     Gui::execLoop();
 
 #endif // USE_CURL && USE_PNG
+   return 0;
 }
-
