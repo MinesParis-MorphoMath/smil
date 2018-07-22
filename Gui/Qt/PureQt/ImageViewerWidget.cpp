@@ -163,6 +163,7 @@ ImageViewerWidget::ImageViewerWidget(QWidget *parent)
 
 ImageViewerWidget::~ImageViewerWidget()
 {
+    delete line;
     delete slider;
     delete layout;
     
@@ -198,7 +199,7 @@ void ImageViewerWidget::createOverlayImage()
 
 void ImageViewerWidget::deleteOverlayImage()
 {
-    if (!qOverlayImage.isEmpty())
+    if (qOverlayImage.isEmpty())
       return;
     for (size_t i=0;i<imDepth;i++)
       delete qOverlayImage[i];
