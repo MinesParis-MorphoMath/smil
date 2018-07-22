@@ -83,9 +83,6 @@ class Test_Thin : public TestCase
       if (retVal!=RES_OK)
         im2.printSelf(1);
       
-      
-      return;
-      
       dataType thinLVec[] = 
       {
         255,   0, 255,   0,   0, 255, 255,   0, 255, 255,
@@ -103,7 +100,6 @@ class Test_Thin : public TestCase
       imThin << thinLVec;
       
       thin(im1, sel, im2);
-      im2.printSelf(1);
       TEST_ASSERT(im2==imThin);
       if (retVal!=RES_OK)
         im2.printSelf(1);
