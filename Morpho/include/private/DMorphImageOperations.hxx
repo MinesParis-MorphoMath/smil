@@ -120,7 +120,7 @@ namespace smil
     {
         ASSERT_ALLOCATED(&imIn)
         
-        imageOutType &_imOut = (imageOutType&)imIn;
+        imageOutType _imOut(imIn);
         
         StrElt se2;
         if (se.size>1)
