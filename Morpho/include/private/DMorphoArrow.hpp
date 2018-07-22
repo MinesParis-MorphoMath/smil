@@ -88,7 +88,6 @@ namespace smil
         size_t nSlices = imIn.getSliceCount();
         size_t nLines = imIn.getHeight();
         
-        this->initialize(imIn, imOut, se);
         this->lineLen = imIn.getWidth();
 
         
