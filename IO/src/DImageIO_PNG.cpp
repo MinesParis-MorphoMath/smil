@@ -258,6 +258,7 @@ namespace smil
         return StandardPNGRead(filename, image);
     }
 
+#ifdef SMIL_WRAP_RGB
     RES_T PNGImageFileHandler<RGB>::read(const char *filename, Image<RGB> &image)
     {
         /* open image file */
@@ -315,6 +316,7 @@ namespace smil
         
         return RES_OK;
     }
+#endif // SMIL_WRAP_RGB
 
 
     template <class T>
@@ -360,7 +362,8 @@ namespace smil
     {
         return StandardPNGWrite(image, filename);
     }
-    
+
+#ifdef SMIL_WRAP_RGB
     RES_T PNGImageFileHandler<RGB>::write(const Image<RGB> &image, const char *filename)
     {
         /* open image file */
@@ -418,7 +421,7 @@ namespace smil
 
         return RES_OK;
     }
-    
+#endif // SMIL_WRAP_RGB
 
 } // namespace smil
 
