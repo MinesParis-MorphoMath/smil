@@ -50,7 +50,12 @@ namespace smil
           maxNumberOfBuffers(std::numeric_limits<size_t>::max())
       {}
       ~BufferPool()
-      {}
+      {
+        for (typename vector<bufferType>::iterator it = buffers.begin();
+             it != buffers.end(); it++) {
+          ImDtTypes<T>::deleteLine(*it);
+        }
+      }
 
       typedef typename ImDtTypes<T>::lineType bufferType;
       
