@@ -74,7 +74,7 @@ namespace smil
           {
               while (!availableBuffers.empty())
               {
-                  ImDtTypes<T>::deleteLine(availableBuffers.front());
+                  ImDtTypes<T>::deleteLine(availableBuffers.top());
                   availableBuffers.pop();
               }
           }
