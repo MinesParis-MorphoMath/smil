@@ -42,15 +42,12 @@ namespace smil
         RES_T retVal = RES_OK;
         
         list<TestCase*>::iterator f;
-        int totTestsNbr = 0;
+        int totTestsNbr = funcList.size();
         int curTestNbr = 1;
         int nPassed = 0;
         int nFailed = 0;
         
         double t1, t2;
-        
-        for (f=funcList.begin();f!=funcList.end();f++)
-          totTestsNbr++;
         
         for (f=funcList.begin();f!=funcList.end();f++)
         {
