@@ -94,8 +94,8 @@ namespace smil
 
         int dy            = p2y - p1y;  // y-increment from p1 to p2
         int dx            = p2x - p1x;  // x-increment from p1 to p2
-        int dy2           = (dy << 1);  // dy << 1 == 2*dy
-        int dx2           = (dx << 1);
+        int dx2           = (dx << 1);  // dx << 1 == 2*dx
+        int dy2           = 2 * dy;     // dy can be negative, prefer * over <<
         int dy2_minus_dx2 = dy2 - dx2;  // precompute constant for speed up
         int dy2_plus_dx2  = dy2 + dx2;
 
