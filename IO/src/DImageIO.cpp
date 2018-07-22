@@ -92,6 +92,7 @@ namespace smil
           
           ImageFileHandler<void> *fHandler  = getHandlerForFile<void>(filename);
           ASSERT(fHandler, NULL);
+          delete fHandler;
             
           if (fInfo.colorType==ImageFileInfo::COLOR_TYPE_GRAY)
           {
