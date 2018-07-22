@@ -89,7 +89,7 @@ void Core::registerObject(BaseObject *obj)
     obj->registered = true;
 
     if (string(obj->getClassName())=="Image")
-        inst->registeredImages.push_back(static_cast<BaseImage*>(obj));
+        inst->registeredImages.push_back(reinterpret_cast<BaseImage*>(obj));
 
 #if DEBUG_LEVEL > 1
     cout << "Core::registerObject: " << obj->getClassName() << " " << obj << " created." << endl;
@@ -108,7 +108,9 @@ void Core::unregisterObject(BaseObject *obj)
     obj->registered = false;
 
     if (string(obj->getClassName())=="Image")
-        inst->registeredImages.erase(std::remove(inst->registeredImages.begin(), inst->registeredImages.end(), static_cast<BaseImage*>(obj)));
+      inst->registeredImages.erase(std::remove(
+          inst->registeredImages.begin(), inst->registeredImages.end(),
+          reinterpret_cast<BaseImage *>(obj)));
 
 #if DEBUG_LEVEL > 1
     cout << "Core::unregisterObject: " << obj->getClassName() << " " << obj << " deleted." << endl;
