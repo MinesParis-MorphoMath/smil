@@ -46,7 +46,7 @@ namespace smil
     {
         string fName(fileName);
         string::size_type idx = fName.rfind('.');
-        string fExt = fName.substr(idx+1).c_str();
+        string fExt = fName.substr(idx+1);
         transform(fExt.begin(), fExt.end(), fExt.begin(), ::toupper);
         return fExt;
     }
