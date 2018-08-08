@@ -34,7 +34,8 @@
 #include "Morpho/include/private/DMorphImageOperations.hxx"
 
 #include <complex>
-
+#define _USE_MATH_DEFINES // for C++ 
+#include <math.h>
 namespace smil
 {
 
