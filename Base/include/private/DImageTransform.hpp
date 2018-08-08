@@ -260,6 +260,95 @@ namespace smil
         return imOut;
     }
 
+    /**
+    * BMI: 08.08.2018
+    *
+    * Resize imIn to sx,sy -> imOut. No bilinear interpolation. Closest value
+    * 
+    * Quick implementation (needs better integration and optimization).
+    */
+    template <class T>
+    RES_T resizeClosest(Image<T> &imIn, size_t sx, size_t sy, Image<T> &imOut)
+    {
+        ASSERT_ALLOCATED(&imIn)
+        
+        if (&imIn==&imOut)
+        {
+            Image<T> tmpIm(imIn, true); // clone
+            return resizeClosest(tmpIm, sx, sy, imIn);
+        }
+        
+        ImageFreezer freeze(imOut);
+        
+        imOut.setSize(sx, sy);
+        
+        ASSERT_ALLOCATED(&imOut)
+      
+        size_t w = imIn.getWidth();
+        size_t h = imIn.getHeight();
+        
+        typedef typename Image<T>::lineType lineType;
+        
+        lineType pixIn = imIn.getPixels();
+        lineType pixOut = imOut.getPixels();
+        
+        size_t A, B, C, D, maxVal = numeric_limits<T>::max() ;
+        size_t x, y, index;
+        
+        double x_ratio = ((double)(w-1))/sx;
+        double y_ratio = ((double)(h-1))/sy;
+        double x_diff, y_diff;
+        int offset = 0 ;
+        
+        for (size_t i=0;i<sy;i++) 
+        {
+            for (size_t j=0;j<sx;j++) 
+            {
+                x = (int)(x_ratio * j) ;
+                y = (int)(y_ratio * i) ;
+                x_diff = (x_ratio * j) - x ;
+                y_diff = (y_ratio * i) - y ;
+                index = y*w+x ;
+
+                A = size_t(pixIn[index]) & maxVal ;
+                B = size_t(pixIn[index+1]) & maxVal ;
+                C = size_t(pixIn[index+w]) & maxVal ;
+                D = size_t(pixIn[index+w+1]) & maxVal ;
+                
+                // Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
+		if( (x_diff<0.5) && (y_diff<0.5)){
+		  pixOut[offset++] = A;
+		}
+		else if(x_diff<0.5){
+		  pixOut[offset++] = B;
+		}
+
+		else if(y_diff<0.5){
+		  pixOut[offset++] = C;
+		}
+		else{
+		  pixOut[offset++] = D;
+		}
+		//                pixOut[offset++] = T(A*(1.-x_diff)*(1.-y_diff) +  B*(x_diff)*(1.-y_diff) + C*(y_diff)*(1.-x_diff)   +  D*(x_diff*y_diff));
+            }
+        }
+        
+        return RES_OK;
+    }
+    
+    
+
+    /**
+    * Resize imIn with the dimensions of imOut and put the result in imOut.
+    */
+    template <class T>
+    RES_T resizeClosest(Image<T> &imIn, Image<T> &imOut)
+    {
+        return resizeClosest(imIn, imOut.getWidth(), imOut.getHeight(), imOut);
+    }
+    
+    
+
 
     /**
     * 2D bilinear resize algorithm.
@@ -354,6 +443,24 @@ namespace smil
         return resize(tmpIm, cx, cy, imIn);
     }
     
+    /**
+    * Scale image
+    * If imIn has the size (W,H), the size of imOut will be (W*cx, H*cy).
+    */
+    template <class T>
+    RES_T scaleClosest(Image<T> &imIn, double cx, double cy, Image<T> &imOut)
+    {
+        return resizeClosest<T>(imIn, size_t(imIn.getWidth()*cx), size_t(imIn.getHeight()*cy), imOut);
+    }
+
+    template <class T>
+    RES_T scaleClosest(Image<T> &imIn, double cx, double cy)
+    {
+        ASSERT_ALLOCATED(&imIn)
+        Image<T> tmpIm(imIn, true); // clone
+        return resizeClosest(tmpIm, cx, cy, imIn);
+    }
+    
 
     template <class T>
     RES_T resize(Image<T> &imIn, UINT sx, UINT sy)
@@ -362,6 +469,15 @@ namespace smil
         Image<T> tmpIm(imIn, true); // clone
         imIn.setSize(sx, sy);
         return resize<T>(tmpIm, imIn);
+    }
+
+    template <class T>
+    RES_T resizeClosest(Image<T> &imIn, UINT sx, UINT sy)
+    {
+        ASSERT_ALLOCATED(&imIn)
+        Image<T> tmpIm(imIn, true); // clone
+        imIn.setSize(sx, sy);
+        return resizeClosest<T>(tmpIm, imIn);
     }
 
 
