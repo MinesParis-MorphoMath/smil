@@ -320,11 +320,11 @@ namespace smil
 		  pixOut[offset++] = A;
 		}
 		else if(x_diff<0.5){
-		  pixOut[offset++] = B;
+		  pixOut[offset++] = C;
 		}
 
 		else if(y_diff<0.5){
-		  pixOut[offset++] = C;
+		  pixOut[offset++] = B;
 		}
 		else{
 		  pixOut[offset++] = D;
