@@ -311,23 +311,17 @@ namespace smil
         inline virtual void processNeighbor(const size_t &curOffset, const size_t &nbOffset)
         {
             labelT nbLbl = this->lblPixels[nbOffset];
-            labelT curLbl = this->lblPixels[curOffset]==this->STAT_QUEUED ? 0 : this->lblPixels[curOffset];
+            labelT curLbl = this->lblPixels[curOffset];//==this->STAT_QUEUED ? 0 : this->lblPixels[curOffset];
             
             if (nbLbl==0) // Add it to the tmp offsets queue
             {
                 this->hq.push(this->inPixels[nbOffset], nbOffset);
-                // Propagate label on plateaus
-                if (this->inPixels[nbOffset]==this->inPixels[curOffset] && curLbl!=0)
-                  this->lblPixels[nbOffset] = curLbl;
-                else
-                  this->lblPixels[nbOffset] = this->STAT_QUEUED;
+		this->lblPixels[nbOffset] = curLbl;
+
             }
-            else if (nbLbl<this->STAT_QUEUED)
+            else
             {
-                labelT curLbl = this->lblPixels[curOffset];
-                if (curLbl==0 || curLbl==this->STAT_QUEUED)
-                  this->lblPixels[curOffset] = this->lblPixels[nbOffset];
-                else if (equivalentLabels[nbLbl]!=equivalentLabels[curLbl])
+               if (equivalentLabels[nbLbl]!=equivalentLabels[curLbl])
                   pendingMerges.push_back( make_pair(min(curLbl,nbLbl), max(curLbl,nbLbl)) );
             }
 
