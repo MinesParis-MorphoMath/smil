@@ -295,8 +295,8 @@ namespace smil
         size_t A, B, C, D, maxVal = numeric_limits<T>::max() ;
         size_t x, y, index;
         
-        double x_ratio = ((double)(w-1))/sx;
-        double y_ratio = ((double)(h-1))/sy;
+        double x_ratio = ((double)(w))/sx;// BMI -1 removed
+        double y_ratio = ((double)(h))/sy;// BMI -1 removed
         double x_diff, y_diff;
         int offset = 0 ;
         
@@ -310,10 +310,28 @@ namespace smil
                 y_diff = (y_ratio * i) - y ;
                 index = y*w+x ;
 
+
+
                 A = size_t(pixIn[index]) & maxVal ;
-                B = size_t(pixIn[index+1]) & maxVal ;
-                C = size_t(pixIn[index+w]) & maxVal ;
-                D = size_t(pixIn[index+w+1]) & maxVal ;
+		if(x==w-1){
+		  B = size_t(pixIn[index]) & maxVal ;
+		}
+		else{
+		  B = size_t(pixIn[index+1]) & maxVal ;
+		}
+		if(y<h-1){
+		  C = size_t(pixIn[index+w]) & maxVal ;
+		}
+		else{
+		  C = size_t(pixIn[index]) & maxVal ;
+		}
+		size_t myindex;
+		myindex = index;
+		if(y<h-1)
+		  myindex+=w;
+		if(x<w-1)
+		  myindex+=1;
+                D = size_t(pixIn[myindex]) & maxVal ;
                 
                 // Y = A(1-w)(1-h) + B(w)(1-h) + C(h)(1-w) + Dwh
 		if( (x_diff<0.5) && (y_diff<0.5)){
@@ -322,14 +340,12 @@ namespace smil
 		else if(x_diff<0.5){
 		  pixOut[offset++] = C;
 		}
-
 		else if(y_diff<0.5){
 		  pixOut[offset++] = B;
 		}
 		else{
 		  pixOut[offset++] = D;
 		}
-		//                pixOut[offset++] = T(A*(1.-x_diff)*(1.-y_diff) +  B*(x_diff)*(1.-y_diff) + C*(y_diff)*(1.-x_diff)   +  D*(x_diff*y_diff));
             }
         }
         
