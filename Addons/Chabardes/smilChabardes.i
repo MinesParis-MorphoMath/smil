@@ -27,8 +27,7 @@ RES_T pruneSKIZ (const Image<UINT16> &_im_, Image<UINT16> &_out_, const StrElt &
 RES_T find_triple_points (const Image<UINT16> &_im_, const Image<UINT8> &_skiz_, Image<UINT8> &_out_, const UINT& val, const StrElt &_se_);
 RES_T find_triple_points (const Image<UINT16> &_im_, const Image<UINT16> &_skiz_, Image<UINT16> &_out_, const UINT& val, const StrElt &_se_);
 RES_T find_triple_points (const Image<UINT8> &_im_, const Image<UINT8> &_skiz_, Image<UINT8> &_out_, const UINT& val, const StrElt &_se_);
-RES_T extend_triple_points (Image<UINT8> &_triple_, const Image<UINT8> &_skiz_,
-const StrElt& _se_);
+RES_T extend_triple_points (Image<UINT8> &_triple_, const Image<UINT8> &_skiz_, const StrElt& _se_);
 RES_T extend_triple_points (Image<UINT16> &_triple_, const Image<UINT16> &_skiz_, const StrElt& _se_);
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist_per_label);
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist_cross_3d_per_label);
