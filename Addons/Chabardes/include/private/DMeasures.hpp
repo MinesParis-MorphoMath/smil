@@ -18,7 +18,7 @@ namespace smil
         {
                 if (it->second != 0) {
                        equivalence.insert (pair<T,T>(it->first,nbr_components));                
-                       nbr_components ++;
+                       nbr_components++;
                 }
         }
 
@@ -29,11 +29,10 @@ namespace smil
         T *in = imIn.getPixels ();
         StrElt se = s.noCenter();
         UINT sePtsNumber = se.points.size();
-        UINT nthreads = Core::getInstance()->getNumberOfThreads ();
 
         vector<double> vec = vector<double> (nbr_components*nbr_components, 0.0);
 
-
+        UINT SMIL_UNUSED nthreads = Core::getInstance()->getNumberOfThreads ();
         //# pragma omp parallel num_threads(nthreads) 
         {
                 index p, q;
@@ -46,7 +45,7 @@ namespace smil
                 ForEachPixel (p)
                 {
                         max = 0;
-                        for (int i=0; i<nbr_components; ++i)
+                        for (uint32_t i=0; i<nbr_components; ++i)
                         {
                                 counts[i] = 0;
                         }
@@ -60,7 +59,7 @@ namespace smil
                         }
                         ENDForEachNeighborOf
 
-                        for (int i=0; i<nbr_components; ++i)
+                        for (uint32_t i=0; i<nbr_components; ++i)
                         {
                                 max = (counts[i] > counts[max] || (counts[i] == counts[max] && vec_local[i] < vec_local[max])) ? i : max;
                         }
@@ -74,7 +73,7 @@ namespace smil
                 {
                         #pragma omp ordered
                         {
-                                for (int i=0; i<vec.size(); ++i)
+                                for (uint64_t i=0; i<vec.size(); ++i)
                                 {
                                         vec[i] += vec_local[i];
                                 }

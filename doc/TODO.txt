@@ -28,4 +28,6 @@
   Needs   -std=c++11
 
 * Doc Addons
+
+* Find a better name for Chabardes Addon
  

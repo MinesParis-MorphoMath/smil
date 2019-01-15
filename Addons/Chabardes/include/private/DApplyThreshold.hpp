@@ -17,7 +17,7 @@ namespace smil
         T* out = _out_.getPixels ();
         T* im = _im_.getPixels ();
 
-        UINT nthreads = Core::getInstance()->getNumberOfThreads ();
+        UINT SMIL_UNUSED nthreads = Core::getInstance()->getNumberOfThreads ();
         #pragma omp parallel for num_threads(nthreads)
         for (size_t p=0; p<s; ++p)
         {
@@ -53,11 +53,10 @@ namespace smil
         Image<T> _tmp_ = Image<T> (_im_);
         dist_cross_3d_per_label (_im_, _tmp_); 
 
-
         T* im = _im_.getPixels ();
         T* tmp = _tmp_.getPixels ();
 
-        UINT nthreads = Core::getInstance()->getNumberOfThreads ();
+        UINT SMIL_UNUSED nthreads = Core::getInstance()->getNumberOfThreads ();
 //        #pragma omp parallel for num_threads(nthreads)
         for (size_t p=0; p<s; ++p)
         {
@@ -213,19 +212,19 @@ namespace smil
 
         T2 cur_level = T2(2);
 
-        size_t size[3];
+        int size[3];
         imIn.getSize (size) ;
-        size_t s = size[0]*size[1]*size[2];
+        int64_t s = size[0]*size[1]*size[2];
 
         size_t cur;
-        size_t x,y,z,n_x,n_y,n_z;
+        int64_t x,y,z,n_x,n_y,n_z;
 
         vector<IntPoint> sePoints = se.points;
         vector<IntPoint>::iterator pt;
 
         bool oddLine;
 
-        for (size_t p=0; p<s; ++p) {
+        for (int64_t p=0; p<s; ++p) {
                 if (pixelsOut[p] > 0) {
                         level->push (p);
                         
@@ -300,7 +299,7 @@ namespace smil
     }
 
     template <class T1, class T2>
-    RES_T find_triple_points (const Image<T1> &_im_, const Image<T2> &_skiz_, Image<T2> &_out_, const UINT& val, const StrElt& _se_)
+    RES_T findTriplePoints (const Image<T1> &_im_, const Image<T2> &_skiz_, Image<T2> &_out_, const UINT& val, const StrElt& _se_)
     {
         T1* in = _im_.getPixels ();
         T2* skiz = _skiz_.getPixels ();
@@ -340,7 +339,7 @@ namespace smil
     }
 
     template <class T>
-    RES_T extend_triple_points (Image<T> &_triple_, const Image<T> &_skiz_, const StrElt& _se_)
+    RES_T extendTriplePoints (Image<T> &_triple_, const Image<T> &_skiz_, const StrElt& _se_)
     {
         T* triple = _triple_.getPixels ();
         T* skiz = _skiz_.getPixels ();

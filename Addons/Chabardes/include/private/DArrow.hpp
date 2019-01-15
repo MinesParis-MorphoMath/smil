@@ -332,7 +332,7 @@ namespace smil
         this->lineLen = imIn.getWidth();
 
         
-        volInType srcSlices = imIn.getSlices();
+        // JOE volInType srcSlices = imIn.getSlices();
         volInType src2Slices = imIn2.getSlices();
         volOutType destSlices = imOut.getSlices();
         
@@ -345,7 +345,7 @@ namespace smil
 
         for (size_t s=0;s<nSlices;s++)
         {
-            lineInType *srcLines = srcSlices[s];
+            // JOE lineInType *srcLines = srcSlices[s];
             lineInType *src2Lines = src2Slices[s];
             lineOutType *destLines = destSlices[s];
             
