@@ -55,17 +55,17 @@ namespace smil
         int size = se.size ;
 
         if (size > 1) 
-            return dist_generic(imIn, imOut, se);
+            return distGeneric(imIn, imOut, se);
         switch (st) 
         {
             case SE_Cross:
-                return dist_cross (imIn, imOut);
+                return distCross (imIn, imOut);
             case SE_Cross3D:
-                return dist_cross_3d (imIn, imOut);
+                return distCross3d (imIn, imOut);
             case SE_Squ:
-                return dist_square (imIn, imOut);
+                return distSquare (imIn, imOut);
             default:
-                return dist_generic (imIn, imOut, se); 
+                return distGeneric (imIn, imOut, se); 
         } 
     }
 
@@ -73,7 +73,7 @@ namespace smil
      * Generic Distance function.
      */
     template <class T1, class T2>
-    RES_T dist_generic(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
+    RES_T distGeneric(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se=DEFAULT_SE) 
     {
             ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -112,7 +112,7 @@ namespace smil
 
         pixelsIn = imIn.getPixels ();
 
-        int i=0;
+        long int i=0;
         
         for (i=0; i<size[2]*size[1]*size[0]; ++i)
         {
@@ -123,7 +123,7 @@ namespace smil
         }
 
         size_t cur;
-        int x,y,z, n_x, n_y, n_z;
+        long int x,y,z, n_x, n_y, n_z;
 
         vector<IntPoint> sePoints = se.points;
         vector<IntPoint>::iterator pt ;
@@ -174,7 +174,7 @@ namespace smil
      * Distance Cross3D function (???).
      */
     template <class T1, class T2>
-    RES_T dist_cross_3d (const Image<T1> &imIn, Image<T2> &imOut) {
+    RES_T distCross3d (const Image<T1> &imIn, Image<T2> &imOut) {
         ASSERT_ALLOCATED (&imIn, &imOut);
         ASSERT_SAME_SIZE (&imIn, &imOut);
 
@@ -193,7 +193,7 @@ namespace smil
         int size[3];
         imIn.getSize (size) ;
         size_t offset ;
-        int x,y,z;
+        long int x,y,z;
         T2 infinite=ImDtTypes<T2>::max();
         long int min;
 
@@ -266,7 +266,7 @@ namespace smil
      * Distance Cross function (???).
      */
     template <class T1, class T2>
-    RES_T dist_cross (const Image<T1> &imIn, Image<T2> &imOut) {
+    RES_T distCross (const Image<T1> &imIn, Image<T2> &imOut) {
         ASSERT_ALLOCATED (&imIn, &imOut);
         ASSERT_SAME_SIZE (&imIn, &imOut);
 
@@ -285,7 +285,7 @@ namespace smil
         int size[3];
         imIn.getSize (size) ;
         size_t offset ;
-        int x,y,z;
+        long int x,y,z;
         T2 infinite=ImDtTypes<T2>::max();
         long int  min;
 
@@ -340,7 +340,7 @@ namespace smil
      * Distance Square function (???).
      */
     template <class T1, class T2>
-    RES_T dist_square (const Image<T1> &imIn, Image<T2> &imOut) {
+    RES_T distSquare (const Image<T1> &imIn, Image<T2> &imOut) {
         ASSERT_ALLOCATED (&imIn, &imOut);
         ASSERT_SAME_SIZE (&imIn, &imOut);
 
@@ -452,7 +452,7 @@ namespace smil
      * Euclidean Distance function.
      */
     template <class T1, class T2>
-    RES_T dist_euclidean (const Image<T1> &imIn, Image<T2> &imOut) {
+    RES_T distEuclidean (const Image<T1> &imIn, Image<T2> &imOut) {
         ASSERT_ALLOCATED (&imIn, &imOut);
         ASSERT_SAME_SIZE (&imIn, &imOut);
 
@@ -468,19 +468,19 @@ namespace smil
         lineOutType pixelsOut = imOut.getPixels () ;
         lineOutType pixelsTmp = tmp.getPixels () ;
 
-        size_t size[3];
+        int size[3];
         imIn.getSize (size) ;
         size_t nbrPixelsPerSlice = size[0]*size[1];
         size_t offset ;
-        size_t x,y,z;
+        int x,y,z;
         T2 infinite= ImDtTypes<T2>::max();
         // JOE long int min;
 
         // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h ) 
-        vector<size_t> s(size[0]); // sets of the least minimizers that occurs during the scan from left to right.
-        vector<size_t> t(size[0]); // sets of points with the same least minimizer 
-        size_t q = 0;
-        size_t w;
+        vector<long int> s(size[0]); // sets of the least minimizers that occurs during the scan from left to right.
+        vector<long int> t(size[0]); // sets of points with the same least minimizer 
+        long int q = 0;
+        long int w;
 
         for (z=0; z<size[2]; ++z) {
 //          #ifdef USE_OPEN_MP
@@ -586,7 +586,7 @@ namespace smil
     * Base distance function performed with successive erosions.
     */
     template <class T>
-    RES_T dist_v0(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T distV0(const Image<T> &imIn, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);

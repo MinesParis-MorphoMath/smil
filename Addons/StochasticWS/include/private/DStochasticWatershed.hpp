@@ -164,7 +164,7 @@ namespace smil
     {
         Image<labelT> tmp = Image<labelT> (img);
 
-        dist_euclidean (img, tmp);
+        distEuclidean (img, tmp);
 
         labelT nbr_tiles = maxVal (img);
         labelT *pixels = img.getPixels ();
