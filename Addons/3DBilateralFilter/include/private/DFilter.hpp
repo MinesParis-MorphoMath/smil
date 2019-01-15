@@ -2,12 +2,13 @@
 #define _D_CHABARDES_FILTERS_HPP_
 
 #include "Core/include/private/DImage.hpp"
+#include <stdlib.h>
 
 namespace smil
 {
         template <class T>
         RES_T recursiveBilateralFilter (const Image<T> &imIn, Image<T> &imOut, float sigmaW, float sigmaR) {
-                size_t S[3];
+                int    S[3];
                 imOut.getSize (S);
                 size_t nbrPixels = S[0] * S[1] * S[2];
                 size_t nbrPixelsPerSlice = S[0]*S[1];
@@ -83,7 +84,7 @@ namespace smil
 
                                         // From left to right
                                         for (int x=1; x<S[0]; ++x) {
-                                                float alpha = range_table[abs(lineIn[x] - lineIn[x-1])];
+                                                float alpha = range_table[labs(lineIn[x] - lineIn[x-1])];
                                                 lineFac_causal[x] = inv_alpha_f + alpha * lineFac_causal[x-1];
                                                 lineOut_causal[x] = inv_alpha_f * lineIn[x] + alpha * lineOut_causal[x-1];
 
@@ -98,7 +99,7 @@ namespace smil
 
                                         // From right to left
                                         for (int x=S[0]-2; x>=0; --x) {
-                                                float alpha = range_table[abs(lineIn[x] - lineIn[x+1])];
+                                                float alpha = range_table[labs(lineIn[x] - lineIn[x+1])];
                                                 lineFac_anti[x] = inv_alpha_f + alpha * lineFac_anti[x+1];
                                                 lineOut_anti[x] = inv_alpha_f * lineIn[x] + alpha * lineOut_anti[x+1];
                                         }
@@ -134,7 +135,7 @@ namespace smil
                                         linePreviousFac = &sliceFac_causal[(y-1)*S[0]];
 
                                         for (int x=0; x<S[0]; ++x) {
-                                                float alpha = range_table[abs(lineIn[x] - linePreviousIn[x])];
+                                                float alpha = range_table[labs(lineIn[x] - linePreviousIn[x])];
                                                 lineFac_causal[x] = inv_alpha_f + alpha * linePreviousFac[x];
                                                 lineOut_causal[x] = inv_alpha_f * lineTmp[x] + alpha * linePreviousOut[x];
                                         }
@@ -162,7 +163,7 @@ namespace smil
                                         linePreviousFac = &sliceFac_anti[(y+1)*S[0]];
 
                                         for (int x=0; x<S[0]; ++x) {
-                                                float alpha = range_table[abs(lineIn[x] - linePreviousIn[x])];
+                                                float alpha = range_table[labs(lineIn[x] - linePreviousIn[x])];
                                                 lineFac_anti[x] = inv_alpha_f + alpha * linePreviousFac[x];
                                                 lineOut_anti[x] = inv_alpha_f * lineTmp[x] + alpha * linePreviousOut[x];
                                         }
@@ -195,7 +196,7 @@ namespace smil
                                 lineOut_causal = &sliceOut_causal[y*S[0]];
                                 lineFac_causal = &sliceFac_causal[y*S[0]];
 
-                                for (size_t x=0; x<S[0]; ++x) {
+                                for (int x=0; x<S[0]; ++x) {
                                         lineFac_causal[x] = 1.f;
                                         lineOut_causal[x] = lineTmp[x];
                                 }
@@ -221,7 +222,7 @@ namespace smil
                                         linePreviousFac = &slicePreviousFac[y*S[0]];
 
                                         for (int x=0; x<S[0]; ++x) {
-                                                float alpha = range_table[abs(lineIn[x] - linePreviousIn[x])];
+                                                float alpha = range_table[labs(lineIn[x] - linePreviousIn[x])];
                                                 lineFac_causal[x] = inv_alpha_f + alpha * linePreviousFac[x];
                                                 lineOut_causal[x] = inv_alpha_f * lineTmp[x] + alpha * linePreviousOut[x];
                                         }
@@ -240,7 +241,7 @@ namespace smil
                                 lineOut_anti = &sliceOut_anti[y*S[0]];
                                 lineFac_anti = &sliceFac_anti[y*S[0]];
 
-                                for (size_t x=0; x<S[0]; ++x) {
+                                for (int x=0; x<S[0]; ++x) {
                                         lineFac_anti[x] = 1.f;
                                         lineOut_anti[x] = lineTmp[x];
                                 }
@@ -266,7 +267,7 @@ namespace smil
                                         linePreviousFac = &slicePreviousFac[y*S[0]];
 
                                         for (int x=0; x<S[0]; ++x) {
-                                                float alpha = range_table[abs(lineIn[x] - linePreviousIn[x])];
+                                                float alpha = range_table[labs(lineIn[x] - linePreviousIn[x])];
                                                 lineFac_anti[x] = inv_alpha_f + alpha * linePreviousFac[x];
                                                 lineOut_anti[x] = inv_alpha_f * lineTmp[x] + alpha * linePreviousOut[x];
                                         }

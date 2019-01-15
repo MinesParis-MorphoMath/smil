@@ -14,4 +14,5 @@ SMIL_MODULE(smil3DBilateralFilter)
 
 RES_T recursiveBilateralFilter (const Image<UINT8> &imIn, Image<UINT8> &imOut, float sigmaW, float sigmaR);
 RES_T recursiveBilateralFilter (const Image<UINT16> &imIn, Image<UINT16> &imOut, float sigmaW, float sigmaR);
+RES_T recursiveBilateralFilter (const Image<UINT32> &imIn, Image<UINT32> &imOut, float sigmaW, float sigmaR);
 
