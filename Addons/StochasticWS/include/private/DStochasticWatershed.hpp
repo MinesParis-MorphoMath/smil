@@ -76,7 +76,8 @@ namespace smil
         {
             index p, q;
             UINT pts;
-            size_t S[3]; img.getSize (S);
+            size_t S[3];
+	    img.getSize (S);
             size_t nbrPixelsInSlice = S[0]*S[1];
             size_t nbrPixels = nbrPixelsInSlice*S[2];
             StrElt se = s.noCenter();
@@ -119,7 +120,7 @@ namespace smil
     void displayStochasticMarker (const Image<labelT> &img, std::vector<int> &markers, stochastic_graph<labelT, T>& graph, std::vector<labelT> &originals, Image<labelT> &out, const StrElt &s)
     {
         std::map<labelT, labelT> correspondances;
-        size_t i=0;
+        uint32_t i=0;
         for (typename std::vector<labelT>::iterator it=originals.begin(); it!=originals.end(); ++it) {
                 correspondances[*it] = i;
                 ++i;
@@ -282,7 +283,7 @@ namespace smil
         T cur_label = 0;
         labels = vector<labelT> (nbr_nodes+1, 0);
 
-        for (size_t i=1; i<nbr_nodes; ++i) {
+        for (uint32_t i=1; i<nbr_nodes; ++i) {
                 if (labels[i] == 0) {
                         nbr_labels++;
                         if (nbr_labels == ImDtTypes<labelT>::max() )
@@ -299,12 +300,12 @@ namespace smil
    template <class labelT, class T>
    size_t CCLUnionFind_stochasticGraph (stochastic_graph<labelT, T> &graph, vector <labelT> &labels)
    {
-        size_t nbr_nodes = graph.nodes.size()-1;
-        size_t nbr_labels = 0;
+        uint32_t nbr_nodes = graph.nodes.size()-1;
+        uint32_t nbr_labels = 0;
         labels = vector<labelT> (nbr_nodes+1, 0);
 
         struct subset subsets[nbr_nodes + 1];
-        for (size_t i=1; i<nbr_nodes+1; ++i) {
+        for (uint32_t i=1; i<nbr_nodes+1; ++i) {
                 subsets[i].parent = i;
                 subsets[i].rank = 0;
         } 
@@ -313,8 +314,8 @@ namespace smil
                 Union (subsets, it->source, it->dest);
         }
 
-        for (int i=1; i<nbr_nodes+1; ++i) {
-                int root = Find (subsets, i);
+        for (uint32_t i=1; i<nbr_nodes+1; ++i) {
+                uint32_t root = Find (subsets, i);
                 labels[i] = root;
                 if (root == i)
                         nbr_labels++;
@@ -332,7 +333,7 @@ namespace smil
 
         map<labelT, labelT> back;
         // The nodes
-        for (size_t j=1; j<labels.size(); ++j) {
+        for (uint32_t j=1; j<labels.size(); ++j) {
                 if (labels[j] == i) {
                         out.nodes.push_back (stochastic_node<T>(graph.nodes[j].surface, graph.nodes[j].area, graph.nodes[j].dist_max));
                         originals.push_back (j);
@@ -340,7 +341,7 @@ namespace smil
                 }
         }
         // The edges
-        for (size_t j=1; j<out.nodes.size(); ++j) {
+        for (uint32_t j=1; j<out.nodes.size(); ++j) {
                 for (typename map<labelT, size_t>::iterator it = graph.nodes[originals[j]].edges.begin(); it != graph.nodes[originals[j]].edges.end(); ++it) {
                         if (out.nodes[j].edges.find(back[it->first]) == out.nodes[j].edges.end()) {
                                 out.edges.push_back (stochastic_edge<labelT, T> (j, back[it->first], graph.edges[it->second].weight, graph.edges[it->second].altitude, graph.edges[it->second].length, graph.edges[it->second].dist_max));
@@ -360,7 +361,7 @@ namespace smil
 
         // Copy the nodes.
         out.nodes.push_back (stochastic_node<T> (0,0,0));
-        for (size_t i=1; i<graph.nodes.size(); ++i) {
+        for (uint32_t i=1; i<graph.nodes.size(); ++i) {
                 out.nodes.push_back (stochastic_node<T> (graph.nodes[i].surface, graph.nodes[i].area, graph.nodes[i].dist_max));
         }
 
@@ -370,13 +371,13 @@ namespace smil
 
         struct subset subsets[graph.nodes.size()];
         // Initialise subsets for union-find.
-        for  (size_t i=0; i<graph.nodes.size(); ++i) {
+        for  (uint32_t i=0; i<graph.nodes.size(); ++i) {
                 subsets[i].parent = i;
                 subsets[i].rank = 0;
         }
 
-        size_t nbr_of_edges = 0;
-        size_t i = 0;
+        uint32_t nbr_of_edges = 0;
+        uint32_t i = 0;
         while (nbr_of_edges != graph.nodes.size()-2) {
                 stochastic_edge<labelT, T> e = edges[i];
                 ++i;
@@ -393,7 +394,7 @@ namespace smil
 
         out.edges = mst_edges;
 
-        for (size_t i=0; i< mst_edges.size(); ++i) {
+        for (uint32_t i=0; i< mst_edges.size(); ++i) {
                 out.nodes[mst_edges[i].source].edges[mst_edges[i].dest] = i;
                 out.nodes[mst_edges[i].dest].edges[mst_edges[i].source] = i;
         }
@@ -406,11 +407,11 @@ namespace smil
         std::vector<double> out;
         double total_area;
 
-        for (size_t i=0; i<graph.nodes.size(); ++i) {
+        for (uint32_t i=0; i<graph.nodes.size(); ++i) {
                 out.push_back (double(graph.nodes[i].area));
                 total_area += double(graph.nodes[i].area);
         }
-        for (size_t i=0; i<graph.nodes.size(); ++i) {
+        for (uint32_t i=0; i<graph.nodes.size(); ++i) {
                 out[i] /= total_area;
         }
         return out;
@@ -422,7 +423,7 @@ namespace smil
         double prob = 1./total_nodes;
 
         out.push_back(0);
-        for (size_t i=1; i<graph.nodes.size(); ++i) {
+        for (uint32_t i=1; i<graph.nodes.size(); ++i) {
                 out.push_back (prob);
         }
         return out;
@@ -436,7 +437,7 @@ namespace smil
 //        size_t nbr_markers = prob_dist.size();
         size_t nbr_markers = dist2 (generator); 
 
-        for (size_t n=0; n<nbr_markers; ++n) {
+        for (uint32_t n=0; n<nbr_markers; ++n) {
                 double number = distribution (generator);
                 double cumulate = prob_dist[0];
                 int i=0; 
@@ -539,7 +540,7 @@ namespace smil
 
         std::sort (graph.edges.begin(), graph.edges.end(), compWeight<labelT, T>); 
 
-        size_t i=0;
+        uint32_t i=0;
         // Applying the sort to the graph.
         for (typename std::vector<stochastic_edge<labelT, T> >::iterator it=graph.edges.begin(); it!=graph.edges.end(); ++it) {
                 graph.nodes[it->source].edges[it->dest] = i; 
@@ -550,7 +551,7 @@ namespace smil
         size_t clusters[nbr_nodes+1];
         struct subset subsets[nbr_nodes + 1];
         // Initialise subsets for union-find.
-        for (size_t i=1; i<nbr_nodes+1; ++i) {
+        for (uint32_t i=1; i<nbr_nodes+1; ++i) {
                 subsets[i].parent = i;
                 subsets[i].rank = 0;
                 clusters[i] = i;
@@ -585,14 +586,14 @@ namespace smil
         std::vector<double> dist_max = std::vector<double> (nbr_weights, 0.);
         std::vector<double> out = std::vector<double> (nbr_weights, 0.);
 
-        size_t i=0;
+        uint32_t i=0;
         for (typename std::vector<stochastic_node<labelT> >::iterator it=graph.nodes.begin(); it!=graph.nodes.end(); ++it) {
                 area[i] = double(it->area);
                 surface[i] = double(it->surface); 
                 dist_max[i] = double(it->dist_max);
                 ++i;
         }
-        size_t j=0;
+        uint32_t j=0;
         for (typename std::vector<hierarchy>::iterator it=h.begin(); it!=h.end(); ++it) {
                 area[i] = area[it->left] + area[it->right];
                 surface[i] = surface[it->left] + surface[it->right] - graph.edges[j].length; 
@@ -619,11 +620,11 @@ namespace smil
 
         std::vector<bool> connected = std::vector<bool> (weights.size(), false);
         // A node is connected to itself.
-        for (size_t i=0; i<graph.nodes.size(); ++i) {
+        for (uint32_t i=0; i<graph.nodes.size(); ++i) {
                 connected[i] = true;
         }
 
-        size_t i=0, j=graph.nodes.size();
+        uint32_t i=0, j=graph.nodes.size();
         for (typename std::vector<hierarchy>::iterator it=h.begin(); it!=h.end(); ++it) {
                 double ratio = (weights[it->left] < weights[it->right]) ? weights[it->left] : weights[it->right]; 
                 ratio /= graph.edges[i].dist_max;
@@ -681,12 +682,12 @@ namespace smil
         generator.seed (std::chrono::system_clock::now().time_since_epoch().count());
 
         #pragma omp parallel for
-        for (size_t i=1; i<nbr_subgraphs+1; ++i) {
+        for (uint32_t i=1; i<nbr_subgraphs+1; ++i) {
                 vector<labelT> originals;
                 stochastic_graph<labelT, T> sub = getSubStochasticGraph (graph, i, labels, originals);
                 stochastic_graph<labelT, T> mst = KruskalMST (sub);
 
-                for (size_t j=0; j<n_seeds; ++j) {
+                for (uint32_t j=0; j<n_seeds; ++j) {
                         std::vector<double> prob_dist = uniformDistribution (mst);
                         std::vector<int> markers = generateMarkers (prob_dist, generator);
 
@@ -719,7 +720,7 @@ namespace smil
         mosaicToStochasticGraph (primary, gradient, graph, s);
 
         std::vector<labelT> labels;
-        size_t nbr_subgraphs = CCLUnionFind_stochasticGraph (graph, labels);
+        // size_t nbr_subgraphs = CCLUnionFind_stochasticGraph (graph, labels);
 
         // Cutting all edges...
         for (typename std::vector<stochastic_edge<labelT, T> >::iterator it=graph.edges.begin(); it!=graph.edges.end(); ++it) {
@@ -729,7 +730,7 @@ namespace smil
         std::default_random_engine generator;
         generator.seed (std::chrono::system_clock::now().time_since_epoch().count());
 
-        for (size_t j=0; j<n_seeds; ++j) {
+        for (uint32_t j=0; j<n_seeds; ++j) {
                 std::vector<double> prob_dist = uniformDistribution (graph);
                 std::vector<int> markers = generateMarkers (prob_dist, generator);
 
@@ -768,12 +769,12 @@ namespace smil
         generator.seed (std::chrono::system_clock::now().time_since_epoch().count());
 
         #pragma omp parallel for
-        for (size_t i=1; i<nbr_subgraphs+1; ++i) {
+        for (uint32_t i=1; i<nbr_subgraphs+1; ++i) {
                 vector<labelT> originals;
                 stochastic_graph<labelT, T> sub = getSubStochasticGraph (graph, i, labels, originals);
                 stochastic_graph<labelT, T> mst = KruskalMST (sub);
 
-                for (size_t j=0; j<n_seeds; ++j) {
+                for (uint32_t j=0; j<n_seeds; ++j) {
                         std::vector<double> prob_dist = uniformDistribution (mst);
                         std::vector<int> markers = generateMarkers (prob_dist, generator);
 
@@ -823,7 +824,7 @@ namespace smil
         std::default_random_engine generator;
         generator.seed (std::chrono::system_clock::now().time_since_epoch().count());
 
-        for (size_t j=0; j<n_seeds; ++j) {
+        for (uint32_t j=0; j<n_seeds; ++j) {
                 std::vector<double> prob_dist = uniformDistribution (graph);
                 std::vector<int> markers = generateMarkers (prob_dist, generator);
 
@@ -869,7 +870,7 @@ namespace smil
         generator.seed (std::chrono::system_clock::now().time_since_epoch().count());
 
 //        #pragma omp parallel for
-        for (size_t i=1; i<nbr_subgraphs+1; ++i) {
+        for (uint32_t i=1; i<nbr_subgraphs+1; ++i) {
                 vector<labelT> originals;
                 stochastic_graph<labelT, T> sub = getSubStochasticGraph (graph, i, labels, originals);
 
@@ -877,7 +878,7 @@ namespace smil
                         
                         stochastic_graph<labelT, T> mst = KruskalMST (sub);
 
-                        for (size_t j=0; j<n_seeds; ++j) {
+                        for (uint32_t j=0; j<n_seeds; ++j) {
                                 std::vector<double> prob_dist = uniformDistribution (mst);
                                 std::vector<int> markers = generateMarkers (prob_dist, generator);
 

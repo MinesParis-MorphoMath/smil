@@ -23,4 +23,9 @@
       Segmentation fault : sometimes
   8 - Base_test_draw (Failed)
       font path problem
+
+* StochasticWS
+  Needs   -std=c++11
+
+* Doc Addons
  
