@@ -1,3 +1,33 @@
+/*
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of Matthieu FAESSEL, or ARMINES nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' AND ANY
+ * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE LIABLE FOR ANY
+ * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+
 #ifndef _DAPPLYTHRESHOLD_HPP_
 #define _DAPPLYTHRESHOLD_HPP_
 
@@ -6,7 +36,16 @@
 
 namespace smil
 {
+    /**
+    * \ingroup Addons
+    * \defgroup CThresh Threshold
+    * @{
+    */
 
+    /**
+     * Apply Threshold
+     *
+     */
     template <class T>
     RES_T applyThreshold (const Image<T>& _im_, const vector<T>& modes, Image<T>& _out_)
     {
@@ -26,6 +65,10 @@ namespace smil
         return RES_OK;
     }
 
+    /**
+     * Area Threshold
+     *
+     */
     template <class T>
     RES_T areaThreshold (const Image<T> &_im_, const T &threshold, Image<T> &_out_)
     {
@@ -42,6 +85,10 @@ namespace smil
         return RES_OK;
     }
 
+    /**
+     * Range Threshold
+     *
+     */
     template <class T>
     RES_T rangeThreshold (const Image<T> &_im_, const T &threshold, Image<T> &_out_)
     {
@@ -270,6 +317,10 @@ namespace smil
     }
 
 
+    /**
+     * rasterLabels
+     *
+     */
     template <class T>
     RES_T rasterLabels (const Image<T>& _im_, Image<T>& _out_)
     {
@@ -298,6 +349,10 @@ namespace smil
         return RES_OK;
     }
 
+    /**
+     *  Find Triple Points
+     *
+     */
     template <class T1, class T2>
     RES_T findTriplePoints (const Image<T1> &_im_, const Image<T2> &_skiz_, Image<T2> &_out_, const UINT& val, const StrElt& _se_)
     {
@@ -338,6 +393,10 @@ namespace smil
         return RES_OK;
     }
 
+    /**
+     * Extend Triple Points
+     *
+     */
     template <class T>
     RES_T extendTriplePoints (Image<T> &_triple_, const Image<T> &_skiz_, const StrElt& _se_)
     {
@@ -392,6 +451,10 @@ namespace smil
         return RES_OK; 
     }
 
+    /**
+     * pruneSKIZ
+     *
+     */
     template <class T>
     RES_T pruneSKIZ (const Image<T>& _im_, Image<T> &_out_, const StrElt &_se_)
     {
@@ -483,6 +546,7 @@ namespace smil
 
         return RES_OK;
     }
+/** @} */
 }
 
 #endif // _DAPPLYTHRESHOLD_HPP_

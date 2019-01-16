@@ -36,10 +36,14 @@ namespace smil
 {
     /**
      * \ingroup Addons
-     * \defgroup Features Features detection
+     * \defgroup Features Features detection (Hough)
      * @{
      */
-    
+
+    /**
+     * Hough Lines
+     *
+     */	
     template <class T1, class T2>
     RES_T houghLines(Image<T1> &imIn, double thetaRes, double rhoRes, Image<T2> &imOut)
     {
@@ -86,6 +90,10 @@ namespace smil
 	return RES_OK;
     }
     
+    /**
+     * Hough Circles
+     *
+     */	
     template <class T1, class T2>
     RES_T houghCircles(Image<T1> &imIn, double xyResol, double rhoResol, Image<T2> &imOut)
     {
@@ -130,6 +138,10 @@ namespace smil
         return RES_OK;
     }
     
+    /**
+     * Hough Circles
+     *
+     */	
     template <class T1, class T2>
     RES_T houghCircles(Image<T1> &imIn, double resol, Image<T2> &imOut, Image<T2> &imRadiiOut)
     {
