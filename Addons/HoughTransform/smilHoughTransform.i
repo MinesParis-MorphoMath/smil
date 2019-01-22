@@ -29,7 +29,7 @@
 
 %include smilCommon.i
 
-SMIL_MODULE(smilFeatures)
+SMIL_MODULE(smilHoughTransform)
 
 
 %{

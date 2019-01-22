@@ -1,7 +1,7 @@
 
 
 #include "Core/include/DCore.h"
-#include "Addons/Features/include/DHoughTransform.hpp"
+#include "../HoughTransform/include/DHoughTransform.hpp"
 
 
 using namespace smil;
