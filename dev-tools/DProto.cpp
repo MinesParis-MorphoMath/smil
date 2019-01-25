@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
- * Copyright (c) 2017-2018, Centre de Morphologie Mathematique
+ * Copyright (c) 2017-2019, Centre de Morphologie Mathematique
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -36,4 +36,18 @@
  *
  */
 
+/**
+ * @addtogroup XXX
+ *   or
+ * @defgroup   XXX YYY
+ *   or
+ * @ingroup    XXX
+ *
+ * @{ */
+ */
+
+/* Replace this comment and put your code here */
+
+
+/** @} */
 
