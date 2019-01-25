@@ -36,6 +36,8 @@
  *
  */
 
+using namespace smil;
+
 /**
  * @addtogroup XXX
  *   or

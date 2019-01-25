@@ -54,6 +54,7 @@ SET(MODULES	Core
 		Base
 		IO
 		Morpho
+		Advanced
 )
 
 SET(SMIL_MAJOR_VERSION 0)

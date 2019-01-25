@@ -36,12 +36,9 @@
  *
  */
 
+#include "Advanced/include/DDummyAdvanced.hpp"
 
-#ifndef _D_PROTO_H
-#define _D_PROTO_H
-
-namespace smil
-{
+using namespace smil;
 
 /**
  * @addtogroup XXX
@@ -54,10 +51,12 @@ namespace smil
 
 /* Replace this comment and put your code here */
 
+int protoTest(int i)
+{
+  return i * i;
+}
+
+
 
 /** @} */
-
-} // namespace smil
-
-#endif // _D_PROTO_H
 

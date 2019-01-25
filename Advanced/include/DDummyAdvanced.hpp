@@ -52,12 +52,10 @@ namespace smil
  *
  * @{ */
 
-/* Replace this comment and put your code here */
-
-
-/** @} */
+  int protoTest(int i);
 
 } // namespace smil
 
+/** @} */
 #endif // _D_PROTO_H
 
