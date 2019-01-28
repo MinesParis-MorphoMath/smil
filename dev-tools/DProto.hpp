@@ -1,4 +1,5 @@
 /*
+ * __HEAD__
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * Copyright (c) 2017-2019, Centre de Morphologie Mathematique
  * All rights reserved.
@@ -33,7 +34,10 @@
  * History :
  *   - XX/XX/XXXX - by Joe.Denver
  *     Just created it...
+ *   - XX/XX/XXXX - by Joe.Denver
+ *     Modified something
  *
+ * __HEAD__ - Stop here !
  */
 
 
