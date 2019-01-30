@@ -30,4 +30,6 @@
 * Doc Addons
 
 * Find a better name for Chabardes Addon
- 
+
+* QVtkViewer : file smilQVtkViewer.i 
+  Solve problem when checking getPixel attribute

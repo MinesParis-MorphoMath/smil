@@ -1,0 +1,205 @@
+#ifndef __FAST_AREA_OPENIN_UNION_FIND_T_HPP__
+#define __FAST_AREA_OPENIN_UNION_FIND_T_HPP__
+
+#include "Core/include/DCore.h"
+
+/// Interface to SMIL Vincent Morard
+/// Date : 7 march 2011
+
+/* This program computes the grey scale area opening or closing.
+ * The input is a grey scale image (im), and its output is
+ * a grey-scale image (opening).
+ * The time complexity of this algorithm is linear in the
+ * number of pixels.
+ *
+ * (c) Arnold Meijster, Michael Wilkinson, University of Groningen
+ *
+ * Feel free to use for scientific or educational purposes, but do
+ * not remove author information, or better still, cite the following
+ * article ;-)
+ *
+ * A. Meijster and M.H.F. Wilkinson. A comparison of algorithms for
+ * connected set  openings and closings. IEEE Trans. PAMI, in press.
+ */
+
+namespace smil
+{
+  int *SortPixels;
+
+  typedef UINT8 **ShortImage;
+
+  /*************** Grey Scale Area Opening *****************/
+
+  void PixelUpSort(int width, int height, ShortImage im, int *SortPixels)
+  {
+    int i, j, current, s, *idx[MAXGREYVAL], hist[MAXGREYVAL];
+    UINT8 *tmp;
+    /* first, we build a histogram */
+    for (i = 0; i < MAXGREYVAL; i++)
+      hist[i] = 0;
+    for (j = 0; j < height; j++)
+      for (i = 0, tmp = im[j]; i < width; i++, tmp++)
+        hist[*tmp]++;
+    /* Now we compute offsets for the sorted array */
+    s = 0;
+    for (i = 0; i < MAXGREYVAL; i++) {
+      idx[i] = SortPixels + s;
+      s += hist[i];
+    }
+    /* Now we do the actual sorting */
+    for (j = 0; j < height; j++)
+      for (i = 0, current = j * width, tmp = im[j]; i < width;
+           i++, tmp++, current++)
+        *(idx[*tmp]++) = current;
+    return;
+  }
+
+  void PixelDownSort(int width, int height, ShortImage im, int *SortPixels)
+  {
+    int i, j, current, s, *idx[MAXGREYVAL], hist[MAXGREYVAL];
+    UINT8 *tmp;
+    /* first, we build a histogram */
+    for (i = 0; i < MAXGREYVAL; i++)
+      hist[i] = 0;
+    for (j = 0; j < height; j++)
+      for (i = 0, tmp = im[j]; i < width; i++, tmp++)
+        hist[*tmp]++;
+    /* Now we compute offsets for the sorted array */
+    s = 0;
+    for (i = MAXGREYVAL - 1; i >= 0; i--) {
+      idx[i] = SortPixels + s;
+      s += hist[i];
+    }
+    /* Now we do the actual sorting */
+    for (j = 0; j < height; j++)
+      for (i = 0, current = j * width, tmp = im[j]; i < width;
+           i++, tmp++, current++)
+        *(idx[*tmp]++) = current;
+    return;
+  }
+
+#define Link1(p)                                                               \
+  {                                                                            \
+    root = (p);                                                                \
+    while (opening[root] >= 0)                                                 \
+      root = opening[root];                                                    \
+    newroot = root;                                                            \
+    if (root != pixel) {                                                       \
+      if ((-opening[root]) < lambda) {                                         \
+        opening[pixel] += opening[root];                                       \
+        opening[root] = pixel;                                                 \
+        newroot       = pixel;                                                 \
+      } else                                                                   \
+        opening[pixel] = -lambda;                                              \
+    }                                                                          \
+    r = (p);                                                                   \
+    while (r != root) {                                                        \
+      h          = opening[r];                                                 \
+      opening[r] = newroot;                                                    \
+      r          = h;                                                          \
+    }                                                                          \
+  }
+
+#define Link2(p)                                                               \
+  {                                                                            \
+    root = (p);                                                                \
+    while (opening[root] >= 0)                                                 \
+      root = opening[root];                                                    \
+    newroot = root;                                                            \
+    if (root != pixel) {                                                       \
+      if ((im[root] == im[pixel]) || ((-opening[root]) < lambda)) {            \
+        opening[pixel] += opening[root];                                       \
+        opening[root] = pixel;                                                 \
+        newroot       = pixel;                                                 \
+      } else                                                                   \
+        opening[pixel] = -lambda;                                              \
+    }                                                                          \
+    r = (p);                                                                   \
+    while (r != root) {                                                        \
+      h          = opening[r];                                                 \
+      opening[r] = newroot;                                                    \
+      r          = h;                                                          \
+    }                                                                          \
+  }
+
+  void GreyAreaOpening(int lambda, int width, int height, ShortImage image,
+                       greyval *opening)
+  {
+    int i, pixel, imsize = width * height;
+    greyval gval;
+    int x, y, h, r, root, newroot, neigh;
+    greyval *current;
+    UINT8 *im = image[0];
+
+    /* Sort pixels first */
+    PixelDownSort(width, height, image, SortPixels);
+
+    /* Forall pixels in increasing grey value and scan line order do Tarjan */
+    for (i = 0, current = SortPixels; i < imsize; i++, current++) {
+      pixel = *current;
+      gval  = im[pixel];
+
+      opening[pixel] = -1;
+      x              = pixel % width;
+      y              = pixel / width;
+      if (x - 1 >= 0 && gval <= im[(neigh = pixel - 1)])
+        Link1(neigh);
+      if (x + 1 < width && gval < im[(neigh = pixel + 1)])
+        Link1(neigh);
+      if (y - 1 >= 0 && gval <= im[(neigh = pixel - width)])
+        Link1(neigh);
+      if (y + 1 < height && gval < im[(neigh = pixel + width)])
+        Link1(neigh);
+    }
+    /* Forall pixels in (increasing greyscale,scan line) order do Resolve */
+    for (current = &SortPixels[imsize - 1]; current >= SortPixels; current--)
+      opening[*current] =
+          (opening[*current] < 0 ? im[*current] : opening[opening[*current]]);
+    return;
+  }
+
+  template <class T1, class T2>
+  RES_T ImAreaOpening_UnionFind(const Image<T1> &imIn, int size,
+                                Image<T2> &imOut)
+  {
+    // Check inputs
+    ASSERT_ALLOCATED(&imIn)
+    ASSERT_SAME_SIZE(&imIn, &imOut)
+
+    ImageFreezer freeze(imOut);
+    fill(imOut, T2(0));
+
+    int W                                  = imIn.getWidth();
+    int H                                  = imIn.getHeight();
+    typename Image<T1>::lineType bufferIn  = imIn.getPixels();
+    typename Image<T2>::lineType bufferOut = imOut.getPixels();
+
+    // Change the way to read the image for the output image
+    GImage outputImage;
+    outputImage    = (GImage) malloc(H * sizeof(greyval *));
+    outputImage[0] = bufferOut;
+    for (int i = 1; i < H; i++)
+      outputImage[i] = outputImage[i - 1] + W;
+
+    ShortImage inputImage;
+    inputImage    = (ShortImage) malloc(H * sizeof(UINT8 *));
+    inputImage[0] = bufferIn;
+    for (int i = 1; i < H; i++)
+      inputImage[i] = inputImage[i - 1] + W;
+
+    SortPixels = (int *) malloc(W * H * sizeof(int));
+    if (SortPixels == 0)
+      return RES_ERR_BAD_ALLOCATION;
+
+    GreyAreaOpening(size, W, H, inputImage, outputImage[0]);
+
+    // Free the extra memory
+    free(inputImage);
+    free(outputImage);
+    free(SortPixels);
+
+    return RES_OK;
+  }
+} // namespace smil
+
+#endif
