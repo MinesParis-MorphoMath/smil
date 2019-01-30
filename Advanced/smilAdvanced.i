@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,93 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+
 %include smilCommon.i
 
 SMIL_MODULE(smilAdvanced)
 
 
-// Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
-%import smilCore.i
-
 %{
-#include "Advanced/include/DDummyAdvanced.hpp"
+/* Includes needed header(s)/definitions in the wrapped code */
+#include "DSerna.h"
+#include "DMorard.h"
+
 %}
 
-//////////////////////////////////////////////////////////
-// Advanced Instance
-//////////////////////////////////////////////////////////
+%import smilCore.i
+# %import smilMorpho.i
 
-#ifdef SWIGPYTHON
-%include "Advanced/include/DDummyAdvanced.hpp"
-#endif // SWIGPYTHON
 
-// int protoTest(int i);
+%include "DMorphoPathOpening.h"
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImPathOpeningBruteForce);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImPathClosingBruteForce);
+TEMPLATE_WRAP_FUNC(ImPathOpening);
+TEMPLATE_WRAP_FUNC(ImPathClosing);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImUltimatePathOpening);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImUltimatePathClosing);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImBinaryPathOpening);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImBinaryPathClosing);
 
+TEMPLATE_WRAP_FUNC(ImGeodesicPathOpening);
+TEMPLATE_WRAP_FUNC(ImGeodesicPathClosing);
+TEMPLATE_WRAP_FUNC(ImUltimateGeodesicPathOpening);
+TEMPLATE_WRAP_FUNC(ImUltimateGeodesicPathClosing);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImGeodesicElongation);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImGeodesicExtremities);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImLabelFlatZonesWithElongation);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImLabelFlatZonesWithExtremities);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImLabelFlatZonesWithGeodesicDiameter);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImGeodesicDiameter);
+ //BMI TEMPLATE_WRAP_FUNC(ImGeodesicTortuosity);
+
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImUltimatePathOpening_GraphV2);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImUltimatePathClosing_GraphV2);
+TEMPLATE_WRAP_FUNC(ImPathClosing_GraphV2);
+TEMPLATE_WRAP_FUNC(ImPathOpening_GraphV2);
+
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImThresholdWithUniqueCCForBackGround);
+TEMPLATE_WRAP_FUNC(CountNbCCperThreshold);
+TEMPLATE_WRAP_FUNC(CountNbPixelOfNDG);
+TEMPLATE_WRAP_FUNC(MeanValueOf);
+TEMPLATE_WRAP_FUNC_2T_CROSS(PseudoPatternSpectrum);
+
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImSupSmallRegion);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measComputeVolume);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measComputeIndFromPatternSpectrum);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImThresholdWithMuAndSigma);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImElongationFromSkeleton);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImFromSkeletonSupTriplePoint);
+TEMPLATE_WRAP_FUNC(FromSkeletonComputeGranulometry);
+
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImFromSK_AreaForEachCC);
+
+### Has prototype but not implementation
+### TEMPLATE_WRAP_FUNC_2T_CROSS(ImLayerDist);
+
+//TEMPLATE_WRAP_FUNC(ImFalseColorHSL);  -> check if necessary, otherwise remove it
+//TEMPLATE_WRAP_FUNC(GetConfusionMatrix); -> check the use of RGB
+
+TEMPLATE_WRAP_FUNC(Thibault_GLSZM);
+TEMPLATE_WRAP_FUNC(Thibault_GLDZM);
+TEMPLATE_WRAP_FUNC(Thibault_GLDZM_Diameter);
+TEMPLATE_WRAP_FUNC(Thibault_GLDZM_Elongation);
+TEMPLATE_WRAP_FUNC(Thibault_GLDZM_Tortuosity);
+
+
+
+%include "DFastAreaOpening.h"
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_PixelQueue);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_PixelQueue);
+ /*TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_MaxTree);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_MaxTree);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_UnionFind);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_UnionFind);*/
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_Line);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_Line);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_LineSupEqu);
+ /*TEMPLATE_WRAP_FUNC_2T_CROSS(ImInertiaThinning_MaxTree);
+   TEMPLATE_WRAP_FUNC_2T_CROSS(ImInertiaThickening_MaxTree);*/
+
+
+%include "DFastFilter.h"
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImFastBilateralFilter);
