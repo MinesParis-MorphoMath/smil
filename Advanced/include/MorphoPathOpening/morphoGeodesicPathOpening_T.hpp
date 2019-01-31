@@ -84,8 +84,8 @@ namespace smil
                     }
                   }
 
-                  //!(FLOAT_EQ_CORRIGE(Dist,DataTraits<F_SIMPLE
-                  //!>::default_value::max_value()))){ //==> Dist != max_value()
+                  // !(FLOAT_EQ_CORRIGE(Dist,DataTraits<F_SIMPLE
+                  // !>::default_value::max_value()))){ //==> Dist != max_value()
                   if (NewDist) {
                     DistanceMap[X + Y * W + Z * W * H] = Dist;
                     if (Dist > DistMax) {
@@ -245,9 +245,9 @@ namespace smil
                     }
 
                     if (NewDist) {
-                      //!(FLOAT_EQ_CORRIGE(Dist,DataTraits<float
-                      //!>::default_value::max_value()))){ //==> Dist !=
-                      //!max_value()
+                      // !(FLOAT_EQ_CORRIGE(Dist,DataTraits<float
+                      // !>::default_value::max_value()))){ //==> Dist !=
+                      // !max_value()
                       DistanceMap[X + Y * W + Z * W * H] = Dist;
                       if (Dist > DistMax) {
                         DistMax = Dist;

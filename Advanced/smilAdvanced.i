@@ -33,8 +33,7 @@ SMIL_MODULE(smilAdvanced)
 
 %{
 /* Includes needed header(s)/definitions in the wrapped code */
-#include "DSerna.h"
-#include "DMorard.h"
+#include "DAdvanced.h"
 
 %}
 
