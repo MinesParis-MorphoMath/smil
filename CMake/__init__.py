@@ -18,4 +18,5 @@ for m in all__:
       for k in d.keys():
         globals()[k] = d[k]
     except:
+      print(" Error loading Smil submodule : ", m)
       pass

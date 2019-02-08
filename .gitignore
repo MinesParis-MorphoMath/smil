@@ -1,3 +1,9 @@
+# Divers from Smil
+*.old
+#*.org
+#
+
+
 # emacs backup files
 *~
 *.bak

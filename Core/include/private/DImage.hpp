@@ -364,9 +364,14 @@ namespace smil
         ResImage<T>operator | (const T &value);
         Image<T>& operator |= (const Image<T> &rhs);
         Image<T>& operator |= (const T &value);
+
+        //! Bitwise and operator 
         ResImage<T>operator & (const Image<T> &rhs);
+        //! Bitwise and operator 
         ResImage<T>operator & (const T &value);
+        //! Bitwise and assignement 
         Image<T>& operator &= (const Image<T> &rhs);
+        //! Bitwise and assignement 
         Image<T>& operator &= (const T &value);
         
         //! Boolean operator

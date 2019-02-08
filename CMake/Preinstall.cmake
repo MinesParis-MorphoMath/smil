@@ -165,6 +165,7 @@ LIST(APPEND PKG_CONFIG_SMIL_DEPS "-lstdc++" "-lm")
 LIST(APPEND PKG_CONFIG_SMIL_LIBS
   " -lsmilBase -lsmilCore -lsmilGui"
   " -lsmilIO -lsmilMorpho -lsmilRGB"
+  " -lsmilAdvanced"
   )
 IF(USE_OPEN_MP)
   LIST(APPEND PKG_CONFIG_SMIL_CFLAGS " -fopenmp")

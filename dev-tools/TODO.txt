@@ -30,4 +30,13 @@
 * Doc Addons
 
 * Find a better name for Chabardes Addon
- 
+
+* QVtkViewer : file smilQVtkViewer.i 
+  Solve problem when checking getPixel attribute
+  Doesn't work because getPixel is defined as an inline method.
+  * Temporary check disabled - replace getPixel by another attribute
+  * Possible solution : use getPixels
+
+* Advanced DMorphoPathOpening.h
+  Lacking doxygen documentation in the end of file
+

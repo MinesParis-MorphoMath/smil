@@ -26,14 +26,20 @@
 
 
 SET(MODULE_NAME Advanced)
-SET(MODULE_DEPS ${SMIL_LIB_PREFIX}Core)
 
+SET(MODULE_DEPS 
+	${SMIL_LIB_PREFIX}Core
+	${SMIL_LIB_PREFIX}Gui
+	)
+
+LIST(APPEND MODULE_DEPS)
 
 ADD_SMIL_LIBRARY(${MODULE_NAME} ${MODULE_DEPS})
+ADD_SMIL_TESTS(${MODULE_NAME} ${MODULE_DEPS})
 
-IF(NOT USE_OPEN_MP)
-    SET(EXCL_SRCS test_parallel_watershed.cpp
-		  bench_parallel_hierar_queue.cpp)
-ENDIF(NOT USE_OPEN_MP)
+#IF(NOT USE_OPEN_MP)
+#    SET(EXCL_SRCS test_parallel_watershed.cpp
+#		  bench_parallel_hierar_queue.cpp)
+#ENDIF(NOT USE_OPEN_MP)
 
 # ADD_SMIL_TESTS(${MODULE_NAME} ${MODULE_DEPS} EXCLUDED_SOURCES ${EXCL_SRCS})

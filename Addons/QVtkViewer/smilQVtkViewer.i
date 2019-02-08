@@ -49,7 +49,7 @@ TEMPLATE_WRAP_CLASS(QVtkViewer,QVtkViewer)
 %pythoncode %{
 
 import sys
-import __builtin__
+# import __builtin__
 
 
 def QVtkViewer(im):
@@ -58,9 +58,11 @@ def QVtkViewer(im):
       name = __builtin__._find_object_name(im)
       if name!="":
         im.setName(name)
-    if not hasattr(im, "getPixel"):
-      print "Input must be an Image"
-      return
+    # this has been commented because getPixel is an inline function
+    # so it can t be an attribute of an image
+    #if not hasattr(im, "getPixel"):
+    #  print "Input must be an Image"
+    #  return
     imT = objType.split("_")[-1][:-2]
     current_module = sys.modules[__name__]
     viewerFunc = getattr(current_module, "QVtkViewer_" + imT)
