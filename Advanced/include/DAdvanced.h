@@ -13,6 +13,8 @@
 // by Andres Serna
 #include "DMorphoPathOpening.h"
 
+#include "DGrayLevelDistance.h"
+
 // by Morard
 #include "DFastAreaOpening.h"
 
