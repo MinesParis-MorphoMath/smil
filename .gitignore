@@ -1,6 +1,9 @@
 # Divers from Smil
 *.old
-#*.org
+*.org
+*.sav
+*.save
+*.tmp
 #
 
 
