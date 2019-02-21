@@ -94,7 +94,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(ImFromSK_AreaForEachCC);
 
 %include "DGrayLevelDistance.h"
 
-TEMPLATE_WRAP_FUNC(GLSZM);
+TEMPLATE_WRAP_FUNC(grayLevelSizeZM);
 TEMPLATE_WRAP_FUNC(grayLevelDistanceZM);
 TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Diameter);
 TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Elongation);
@@ -122,3 +122,4 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_LineSupEqu);
 
 %include "DFastFilter.h"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImFastBilateralFilter);
+

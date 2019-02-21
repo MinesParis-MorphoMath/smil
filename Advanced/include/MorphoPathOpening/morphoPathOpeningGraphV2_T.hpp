@@ -1,3 +1,44 @@
+/* __HEAD__
+ * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2017-2019, Centre de Morphologie Mathematique
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ *     * Neither the name of Matthieu FAESSEL, or ARMINES nor the
+ *       names of its contributors may be used to endorse or promote products
+ *       derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+ * THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * Description :
+ *   Portage de MorphM vers Smil
+ *
+ * History :
+ *   - XX/XX/XXXX - by Andres Serna
+ *     Ported from MorphM
+ *   - 10/02/2019 - by Jose-Marcio
+ *     Integrated into Smil Advanced Source Tree with some cosmetics
+ *
+ * __HEAD__ - Stop here !
+ */
+
 #ifndef __MORPHO_GRAPHV2_PATH_OPENING_T_HPP__
 #define __MORPHO_GRAPHV2_PATH_OPENING_T_HPP__
 
@@ -6,137 +47,155 @@
 
 namespace smil
 {
-#define SQRT_2 1.4142
 
-  // *****************************************************************************
+#define SQRT_2 1.414213562
+
+#ifndef EPSILON
+#define EPSILON 1e-10
+#endif
+
+  // **************************************************************************
   // ComputeLambda : The path to update Lambda : max path on the pixel x,y in
   // the direction Dir. Lambda : (size : W*H*8) 8 for the 8 directions
-  // *****************************************************************************
-  float ComputeLambda_GraphV2(float *Lambda, int W, int H, int x, int y,
-                              int Dir, int Dim = 8)
+  // **************************************************************************
+  inline float LambdaXY(float *Lambda, int x, int y, int W, int H, int Dir,
+                         int Dim)
   {
-    float L = 1;
+    int ind = (x + y * W) * Dim + (Dir - 1);
+
+    if (ind < H * W * Dim)
+      return Lambda[ind];
+    return 0.;
+  }
+
+  // . 4 . 2 .
+  // 7       6
+  // .   .   .
+  // 5       8
+  // . 1 . 3 .
+  inline float ComputeLambda_GraphV2(float *Lambda, int W, int H, int x, int y,
+                                     int Dir, int Dim = 8)
+  {
+    float L = 1.;
+    
     switch (Dir) {
     case 1: // Vertical N to	S
       if (y - 1 >= 0) {
-        if (x - 1 >= 0) {
-          L = ((Lambda[(x + (y - 1) * W) * Dim] <=
-                Lambda[(x - 1 + (y - 1) * W) * Dim])
-                   ? (Lambda[(x - 1 + (y - 1) * W) * Dim] + SQRT_2)
-                   : (Lambda[(x + (y - 1) * W) * Dim] + 1));
-          if (Lambda[(x + (y - 1) * W) * Dim] == 0 &&
-              Lambda[(x - 1 + (y - 1) * W) * Dim] == 0)
-            L = 1;
-        } else
-          L = Lambda[(x + (y - 1) * W) * Dim] + 1;
-      }
+        float La = LambdaXY(Lambda, x, y - 1, W, H, Dir, Dim);
 
+        if (x - 1 >= 0) {
+          float Lb = LambdaXY(Lambda, x - 1, y - 1, W, H, Dir, Dim);
+
+          if (std::abs(La) > EPSILON || std::abs(Lb) > EPSILON)
+            L = (La <= Lb) ? (Lb + SQRT_2) : (La + 1);
+        } else {
+          L = La;
+        }
+      }
       break;
+
     case 2: // Vertical S to	N
       if (y + 1 < H) {
-        if (x + 1 < W) {
-          L = ((Lambda[(x + (y + 1) * W) * Dim + 1] <=
-                Lambda[(x + 1 + (y + 1) * W) * Dim + 1])
-                   ? (Lambda[(x + 1 + (y + 1) * W) * Dim + 1] + SQRT_2)
-                   : (Lambda[(x + (y + 1) * W) * Dim + 1] + 1));
-          if (Lambda[(x + (y + 1) * W) * Dim + 1] == 0 &&
-              Lambda[(x + 1 + (y + 1) * W) * Dim + 1] == 0)
-            L = 1;
-        } else
-          L = Lambda[(x + (y + 1) * W) * Dim + 1] + 1;
-      }
+        float La = LambdaXY(Lambda, x, y + 1, W, H, Dir, Dim);
 
+        if (x + 1 < W) {
+          float Lb = LambdaXY(Lambda, x + 1, y + 1, W, H, Dir, Dim);
+
+          if (std::abs(La) > EPSILON || std::abs(Lb) > EPSILON)
+            L = (La <= Lb) ? (Lb + SQRT_2) : (La + 1);
+        } else {
+          L = La;
+        }
+      }
       break;
 
     case 3: // Vertical N to	S	-->2
       if (y - 1 >= 0) {
-        if (x + 1 < W) {
-          L = ((Lambda[(x + (y - 1) * W) * Dim + 2] <=
-                Lambda[(x + 1 + (y - 1) * W) * Dim + 2])
-                   ? (Lambda[(x + 1 + (y - 1) * W) * Dim + 2] + SQRT_2)
-                   : (Lambda[(x + (y - 1) * W) * Dim + 2] + 1));
-          if (Lambda[(x + (y - 1) * W) * Dim + 2] == 0 &&
-              Lambda[(x + 1 + (y - 1) * W) * Dim + 2] == 0)
-            L = 1;
-        } else
-          L = Lambda[(x + (y - 1) * W) * Dim + 2] + 1;
-      }
+        float La = LambdaXY(Lambda, x, y - 1, W, H, Dir, Dim);
 
+        if (x + 1 < W) {
+          float Lb = LambdaXY(Lambda, x + 1, y - 1, W, H, Dir, Dim);
+
+          if (std::abs(La) > EPSILON || std::abs(Lb) > EPSILON)
+            L = (La <= Lb) ? (Lb + SQRT_2) : (La + 1);
+        } else {
+          L = La;
+        }
+      }
       break;
+
     case 4: // Vertical S to	N	-->2
       if (y + 1 < H) {
+        float La = LambdaXY(Lambda, x, y + 1, W, H, Dir, Dim);
+
         if (x - 1 >= 0) {
-          L = ((Lambda[(x + (y + 1) * W) * Dim + 3] <=
-                Lambda[(x - 1 + (y + 1) * W) * Dim + 3])
-                   ? (Lambda[(x - 1 + (y + 1) * W) * Dim + 3] + SQRT_2)
-                   : (Lambda[(x + (y + 1) * W) * Dim + 3] + 1));
-          if (Lambda[(x + (y + 1) * W) * Dim + 3] == 0 &&
-              Lambda[(x - 1 + (y + 1) * W) * Dim + 3] == 0)
-            L = 1;
-        } else
-          L = Lambda[(x + (y + 1) * W) * Dim + 3] + 1;
+          float Lb = LambdaXY(Lambda, x - 1, y + 1, W, H, Dir, Dim);
+
+          if (std::abs(La) > EPSILON || std::abs(Lb) > EPSILON)
+            L = (La <= Lb) ? (Lb + SQRT_2) : (La + 1);
+        } else {
+          L = La;
+        }
       }
       break;
 
     case 5: // Horizontal O to	E	-->1
       if (x - 1 >= 0) {
-        if (y - 1 >= 0) {
-          L = ((Lambda[((x - 1) + y * W) * Dim + 4] <=
-                Lambda[(x - 1 + (y - 1) * W) * Dim + 4])
-                   ? (Lambda[(x - 1 + (y - 1) * W) * Dim + 4] + SQRT_2)
-                   : (Lambda[((x - 1) + y * W) * Dim + 4] + 1));
-          if (Lambda[(x - 1 + y * W) * Dim + 4] == 0 &&
-              Lambda[(x - 1 + (y - 1) * W) * Dim + 4] == 0)
-            L = 1;
-        } else
-          L = Lambda[((x - 1) + y * W) * Dim + 4] + 1;
-      }
+        float La = LambdaXY(Lambda, x - 1, y, W, H, Dir, Dim);
 
+        if (y - 1 >= 0) {
+          float Lb = LambdaXY(Lambda, x - 1, y - 1, W, H, Dir, Dim);
+
+          if (std::abs(La) > EPSILON || std::abs(Lb) > EPSILON)
+            L = (La <= Lb) ? (Lb + SQRT_2) : (La + 1);
+        } else {
+          L = La;
+        }
+      }
       break;
 
     case 6: // Horizontal E to	O	-->1
       if (x + 1 < W) {
-        if (y + 1 < H) {
-          L = ((Lambda[((x + 1) + y * W) * Dim + 5] <=
-                Lambda[(x + 1 + (y + 1) * W) * Dim + 5])
-                   ? (Lambda[(x + 1 + (y + 1) * W) * Dim + 5] + SQRT_2)
-                   : (Lambda[((x + 1) + y * W) * Dim + 5] + 1));
-          if (Lambda[(x + 1 + y * W) * Dim + 5] == 0 &&
-              Lambda[(x + 1 + (y + 1) * W) * Dim + 5] == 0)
-            L = 1;
-        } else
-          L = Lambda[((x + 1) + y * W) * Dim + 5] + 1;
-      }
+        float La = LambdaXY(Lambda, x + 1, y, W, H, Dir, Dim);
 
+        if (y + 1 < H) {
+          float Lb = LambdaXY(Lambda, x + 1, y + 1, W, H, Dir, Dim);
+
+          if (std::abs(La) > EPSILON || std::abs(Lb) > EPSILON)
+            L = (La <= Lb) ? (Lb + SQRT_2) : (La + 1);
+        } else {
+          L = La;
+        }
+      }
       break;
 
     case 7: // Horizontal O to	E	-->2
       if (x - 1 >= 0) {
-        if (y + 1 < H) {
-          L = ((Lambda[((x - 1) + y * W) * Dim + 6] <=
-                Lambda[(x - 1 + (y + 1) * W) * Dim + 6])
-                   ? (Lambda[(x - 1 + (y + 1) * W) * Dim + 6] + SQRT_2)
-                   : (Lambda[((x - 1) + y * W) * Dim + 6] + 1));
-          if (Lambda[(x - 1 + y * W) * Dim + 6] == 0 &&
-              Lambda[(x - 1 + (y + 1) * W) * Dim + 6] == 0)
-            L = 1;
-        } else
-          L = Lambda[((x - 1) + y * W) * Dim + 6] + 1;
-      }
+        float La = LambdaXY(Lambda, x - 1, y, W, H, Dir, Dim);
 
+        if (y + 1 < H) {
+          float Lb = LambdaXY(Lambda, x - 1, y + 1, W, H, Dir, Dim);
+
+          if (std::abs(La) > EPSILON || std::abs(Lb) > EPSILON)
+            L = (La <= Lb) ? (Lb + SQRT_2) : (La + 1);
+        } else {
+          L = La;
+        }
+      }
       break;
+
     case 8: // Horizontal E to	O	-->2
       if (x + 1 < W) {
+        float La = LambdaXY(Lambda, x + 1, y, W, H, Dir, Dim);
+
         if (y - 1 >= 0) {
-          L = ((Lambda[((x + 1) + y * W) * Dim + 7] <=
-                Lambda[(x + 1 + (y - 1) * W) * Dim + 7])
-                   ? (Lambda[(x + 1 + (y - 1) * W) * Dim + 7] + SQRT_2)
-                   : (Lambda[((x + 1) + y * W) * Dim + 7] + 1));
-          if (Lambda[((x + 1) + y * W) * Dim + 7] == 0 &&
-              Lambda[(x + 1 + (y - 1) * W) * Dim + 7] == 0)
-            L = 1;
-        } else
-          L = Lambda[((x + 1) + y * W) * Dim + 7] + 1;
+          float Lb = LambdaXY(Lambda, x + 1, y - 1, W, H, Dir, Dim);
+
+          if (std::abs(La) > EPSILON || std::abs(Lb) > EPSILON)
+            L = (La <= Lb) ? (Lb + SQRT_2) : (La + 1);
+        } else {
+          L = La;
+        }
       }
       break;
     }
@@ -146,7 +205,7 @@ namespace smil
 
   // Type 0 ou 2
   // Fast Path update
-  void UpdateLambdaV_GraphV2(UINT8 *imIn, float *Lambda, UINT8 *IsAlreadyPush,
+  static void UpdateLambdaV_GraphV2(UINT8 *imIn, float *Lambda, UINT8 *IsAlreadyPush,
                              int W, int H, std::queue<int> *FIFO_Lplus,
                              std::queue<int> *FIFO_Lmoins, int k, int Type)
   {
@@ -229,7 +288,7 @@ namespace smil
 
   // Type 0 ou 2
   // Fast Path	update
-  void UpdateLambdaH_GraphV2(UINT8 *imIn, float *Lambda, UINT8 *IsAlreadyPush,
+  static void UpdateLambdaH_GraphV2(UINT8 *imIn, float *Lambda, UINT8 *IsAlreadyPush,
                              int W, int H, std::queue<int> *FIFO_Lplus,
                              std::queue<int> *FIFO_Lmoins, int k, int Type)
   {
@@ -527,8 +586,8 @@ namespace smil
 
         // On ecrit si on a un residu plus grand que l'ancien  (max)
         if (pixelsTrans[i] <= (ULONG) Sub && Sub > 0 && Accumulation[i] <= 0) {
-          pixelsTrans[i] = Sub;
-          pixelsInd[i] = Lenght + 1; // On ecrit l'indicatrice
+          pixelsTrans[i]  = Sub;
+          pixelsInd[i]    = Lenght + 1; // On ecrit l'indicatrice
           Accumulation[i] = lambdaAttribute;
         } else if (Accumulation[i] >= 1) {
           // Ou si l'accumulation est active

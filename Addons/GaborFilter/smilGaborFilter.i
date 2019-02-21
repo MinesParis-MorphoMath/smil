@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -25,25 +25,22 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+
 %include smilCommon.i
 
-SMIL_MODULE(smilAdvanced)
+SMIL_MODULE(smilGaborFilter)
 
-
-// Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
 %import smilCore.i
 
 %{
-#include "Advanced/include/DDummyAdvanced.hpp"
+/* Includes needed header(s)/definitions in the wrapped code */
+#include "DGaborFilter.h"
+
 %}
 
-//////////////////////////////////////////////////////////
-// Advanced Instance
-//////////////////////////////////////////////////////////
+%import smilCore.i
+# %import smilMorpho.i
 
-#ifdef SWIGPYTHON
-%include "Advanced/include/DDummyAdvanced.hpp"
-#endif // SWIGPYTHON
-
-// int protoTest(int i);
+%include "DGaborFilter.h"
+TEMPLATE_WRAP_FUNC(gaborFilter)
 

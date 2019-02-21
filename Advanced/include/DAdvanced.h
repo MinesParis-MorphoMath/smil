@@ -20,6 +20,4 @@
 
 #include "DFastFilter.h"
 
-
-
 #endif //__DADVANCED_H__
