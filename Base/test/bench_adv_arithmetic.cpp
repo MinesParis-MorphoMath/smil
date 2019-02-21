@@ -20,7 +20,6 @@
  *
  */
 
-
 #include <cstdio>
 #include <ctime>
 
@@ -29,27 +28,24 @@
 
 using namespace smil;
 
-
 int main(void)
 {
-    int sx = 1024; //24;
-    int sy = 1024;
-    
-    Image_UINT8 im1(sx, sy);
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
+  int sx = 1024; // 24;
+  int sy = 1024;
 
-    Image_UINT16 im4(im1);
+  Image_UINT8 im1(sx, sy);
+  Image_UINT8 im2(im1);
+  Image_UINT8 im3(im1);
 
-    double BENCH_NRUNS = 1E2;
-    
-//     UINT8 val = 127;
-    std::map<UINT8, UINT8> lut;
-    for (int i=0;i<256;i++)
-      lut[i] = 255-i;
-    
-    BENCH_IMG(randFill, im1);
-    BENCH_IMG(applyLookup, im1, lut, im2);
+  Image_UINT16 im4(im1);
 
+  double BENCH_NRUNS = 1E2;
+
+  //     UINT8 val = 127;
+  std::map<UINT8, UINT8> lut;
+  for (int i = 0; i < 256; i++)
+    lut[i] = 255 - i;
+
+  BENCH_IMG(randFill, im1);
+  BENCH_IMG(applyLookup, im1, lut, im2);
 }
-

@@ -119,7 +119,3 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_LineSupEqu);
 //TEMPLATE_WRAP_FUNC_2T_CROSS(ImInertiaThickening_MaxTree);
 
 
-
-%include "DFastFilter.h"
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImFastBilateralFilter);
-
