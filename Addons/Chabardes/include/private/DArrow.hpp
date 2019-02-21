@@ -2,11 +2,22 @@
 #define _ARROW_HPP_
 
 #include "Morpho/include/DMorpho.h"
-#include "DGenerateLocales.hpp"
+#include "DGenerateLocales.hxx"
 
 namespace smil
 {
+  /**
+   * @ingroup Addons
+   * @defgroup AddonArrow  Arrow
+   *
+   * @{
+   */
+
   // SIMD version of WP2 - Nifty Revised.
+  /**
+   * @brief hammingWeight SIMD version of WP2 - Nifty Revised.
+   *
+   */
   template <class T> RES_T hammingWeight(const Image<T> &_im_, Image<T> &_out_)
   {
     typedef Image<T> imI;
@@ -112,7 +123,10 @@ namespace smil
     return RES_OK;
   }
 
-  // SIMD version of WP2 - Nifty Revised.
+  /**
+   * hammingWeight
+   * @brief hammingWeight SIMD version of WP2 - Nifty Revised.
+   */
   RES_T hammingWeight(const Image<UINT8> &_im_, Image<UINT8> &_out_)
   {
     typedef Image<UINT8> imI;
@@ -191,6 +205,10 @@ namespace smil
     return RES_OK;
   }
 
+  /**
+   * arrowComplement
+   *
+   */
   template <class T1, class T2>
   RES_T arrowComplement(const Image<T1> &_im_, Image<T2> &_out_,
                         const StrElt &s)
@@ -268,6 +286,10 @@ namespace smil
     return RES_OK;
   }
 
+  /*
+   * binaryMorphArrowImageFunction
+   *
+   */
   template <class T_in, class lineFunction_T, class T_out = T_in>
   class binaryMorphArrowImageFunction
       : public MorphImageFunction<T_in, lineFunction_T, T_out>
@@ -296,6 +318,10 @@ namespace smil
                                const StrElt &se);
   };
 
+  /**
+   * binaryMorphArrowImageFunction
+   *
+   */
   template <class T_in, class lineFunction_T, class T_out>
   RES_T
   binaryMorphArrowImageFunction<T_in, lineFunction_T, T_out>::_exec_single(
@@ -391,6 +417,10 @@ namespace smil
     return RES_OK;
   }
 
+  /**
+   * arrowLowDual
+   *
+   */
   template <class T_in, class T_out>
   RES_T arrowLowDual(const Image<T_in> &imIn, const Image<T_in> &imIn2,
                      Image<T_out> &imOut, const StrElt &se = DEFAULT_SE,
@@ -401,6 +431,10 @@ namespace smil
     return iFunc._exec_single(imIn, imIn2, imOut, se);
   }
 
+  /**
+   * arrowLowOrEquDual
+   *
+   */
   template <class T_in, class T_out>
   RES_T arrowLowOrEquDual(const Image<T_in> &imIn, const Image<T_in> &imIn2,
                           Image<T_out> &imOut, const StrElt &se = DEFAULT_SE,
@@ -411,6 +445,10 @@ namespace smil
     return iFunc._exec_single(imIn, imIn2, imOut, se);
   }
 
+  /**
+   * arrowGrtDual
+   *
+   */
   template <class T_in, class T_out>
   RES_T arrowGrtDual(const Image<T_in> &imIn, const Image<T_in> &imIn2,
                      Image<T_out> &imOut, const StrElt &se = DEFAULT_SE,
@@ -421,6 +459,10 @@ namespace smil
     return iFunc._exec_single(imIn, imIn2, imOut, se);
   }
 
+  /**
+   * arrowGrtOrEquDual
+   *
+   */
   template <class T_in, class T_out>
   RES_T arrowGrtOrEquDual(const Image<T_in> &imIn, const Image<T_in> &imIn2,
                           Image<T_out> &imOut, const StrElt &se = DEFAULT_SE,
@@ -431,6 +473,10 @@ namespace smil
     return iFunc._exec_single(imIn, imIn2, imOut, se);
   }
 
+  /**
+   * arrowEquDual
+   *
+   */
   template <class T_in, class T_out>
   RES_T arrowEquDual(const Image<T_in> &imIn, const Image<T_in> &imIn2,
                      Image<T_out> &imOut, const StrElt &se = DEFAULT_SE,
@@ -441,6 +487,10 @@ namespace smil
     return iFunc._exec_single(imIn, imIn2, imOut, se);
   }
 
+  /**
+   * arrowDual
+   *
+   */
   template <class T_in, class T_out>
   RES_T arrowDual(const Image<T_in> &imIn, const Image<T_in> &imIn2,
                   const char *operation, Image<T_out> &imOut,
@@ -462,6 +512,7 @@ namespace smil
       return RES_ERR;
   }
 
+  /** @} */
 } // namespace smil
 
 #endif // _ARROW_HPP_

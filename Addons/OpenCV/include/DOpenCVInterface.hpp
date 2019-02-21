@@ -41,8 +41,8 @@ namespace smil
 {
 
    /**
-    * \ingroup Addons
-    * \defgroup OpenCVInterface OpenCV Interface
+    * @ingroup Addons
+    * @defgroup AddonOpenCVInterface OpenCV Interface
     * @{
     */
    

@@ -2,8 +2,14 @@
 #define _DCHABARDES_H_
 
 //#include "DSSE.h"
-#include "DMisc.h"
-#include "private/DMeasures.hpp"
+
+#include "DMeasures.hpp"
+
+#include "DApplyThreshold.hpp"
+
+#include "DArrow.hpp"
+
+#include "DLineArith.hpp"
 
 #endif // _DCHABARDES_H_
 

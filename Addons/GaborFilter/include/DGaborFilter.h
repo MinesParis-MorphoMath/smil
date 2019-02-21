@@ -51,8 +51,10 @@ namespace smil
    * @defgroup  AddonGaborFilter        Gabor Filter
    *
    * @brief A 2D Gabor filter implementation by Vincent Morard
-   * @{
-   */
+   *
+   *   See : <a href="https://en.wikipedia.org/wiki/Gabor_filter">
+   *       Gabor Filter on Wikipedia</a>   
+   * @{ */
 
   /**
    * @brief gaborFilter Gabor Filter
