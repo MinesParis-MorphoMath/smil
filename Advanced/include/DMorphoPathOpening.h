@@ -508,33 +508,6 @@ namespace smil
   RES_T ImLayerDist(Image<T1> &imIn, int labelIn, int labelOut, float dx,
                     float dy, float dz, Image<T2> &imOut);
 
-  template <class T>
-  RES_T Thibault_GLSZM(const Image<T> &imIn, int NbNDG, char *szFileName);
-
-  template <class T>
-  RES_T Thibault_GLDZM(const Image<T> &imIn, int NbNDG, int GeodesicMethod,
-                       char *szFileName);
-  template <class T>
-  RES_T Thibault_GLDZM_Diameter(const Image<T> &imIn, int NbNDG,
-                                char *szFileName)
-  {
-    return Thibault_GLDZM(imIn, NbNDG, 1, szFileName);
-  }
-
-  template <class T>
-  RES_T Thibault_GLDZM_Elongation(const Image<T> &imIn, int NbNDG,
-                                  char *szFileName)
-  {
-    return Thibault_GLDZM(imIn, NbNDG, 2, szFileName);
-  }
-
-  template <class T>
-  RES_T Thibault_GLDZM_Tortuosity(const Image<T> &imIn, int NbNDG,
-                                  char *szFileName)
-  {
-    return Thibault_GLDZM(imIn, NbNDG, 3, szFileName);
-  }
-
   /** @} */
 } // namespace smil
 
@@ -543,6 +516,5 @@ namespace smil
 #include "MorphoPathOpening/morphoGeodesicPathOpening_T.hpp"
 #include "MorphoPathOpening/morphoPathOpeningGraphV2_T.hpp"
 #include "MorphoPathOpening/PO_Utilities_T.hpp"
-#include "MorphoPathOpening/GLSZM.hpp"
 
 #endif // _DMORPHO_PATH_OPENING_H_

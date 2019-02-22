@@ -6,8 +6,8 @@
 namespace smil
 {
   /**
-   * @ingroup   Advanced
-   * @defgroup  AdvFastFilter        Fast Bilateral Filter
+   * @ingroup   Addons
+   * @defgroup  AddonFastFilter        Fast Bilateral Filter
    * @{ */
 
   /** @brief FastBilateral filter : Smooth the picture while conserving the
@@ -31,6 +31,6 @@ namespace smil
   /** @} */
 } // namespace smil
 
-#include "FastBilateralFilter/FastBilateralFilter_T.hpp"
+#include "FastBilateralFilter.hpp"
 
 #endif // _DFAST_FILTER_H_

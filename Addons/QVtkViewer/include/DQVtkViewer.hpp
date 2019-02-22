@@ -44,8 +44,8 @@ namespace smil
     template <class T> class Image;
     
    /**
-    * \ingroup Addons
-    * \defgroup QVtkViewer VTK Viewer
+    * @ingroup Addons
+    * @defgroup AddonQVtkViewer VTK Viewer
     * @{
     */
    

@@ -10,144 +10,131 @@
 
 namespace smil
 {
-
-struct index
-{
+  struct index {
     size_t x;
     size_t y;
     size_t z;
     size_t o;
-    index(){}
-    index(const index& i) : x(i.x), y(i.y), z(i.z), o(i.o)
-    {}
-};
+    index()
+    {
+    }
+    index(const index &i) : x(i.x), y(i.y), z(i.z), o(i.o)
+    {
+    }
+  };
 
 #define WS ImDtTypes<labelT>::max()
-#define IndexToCoor(a) \
-    a.z = a.o / nbrPixelsInSlice; \
-    a.y = (a.o % nbrPixelsInSlice) / S[0]; \
-    a.x = a.o % S[0];
-#define CoorToIndex(a) \
-    a.o = a.x + a.y * S[0] + a.z * nbrPixelsInSlice
-#define ForEachPixel(a) \
-    for (size_t i = 0; i < nbrPixels; ++i) \
-    { \
-        a.o = i; \
-        IndexToCoor(a);
-#define ENDForEachPixel \
-    }
-#define ForEachNeighborOf(a,b) \
-    for (pts = 0; pts<sePtsNumber; ++pts) \
-    { \
-        b.x = a.x + se.points[pts].x; \
-        b.y = a.y + se.points[pts].y; \
-        b.z = a.z + se.points[pts].z; \
-        if (b.x < S[0] && b.y < S[1] && b.z < S[2]) \
-        { \
-            CoorToIndex(b);
-#define ENDForEachNeighborOf \
-    }}
+#define IndexToCoor(a)                                                         \
+  a.z = a.o / nbrPixelsInSlice;                                                \
+  a.y = (a.o % nbrPixelsInSlice) / S[0];                                       \
+  a.x = a.o % S[0];
+#define CoorToIndex(a) a.o = a.x + a.y * S[0] + a.z * nbrPixelsInSlice
+#define ForEachPixel(a)                                                        \
+  for (size_t i = 0; i < nbrPixels; ++i) {                                     \
+    a.o = i;                                                                   \
+    IndexToCoor(a);
+#define ENDForEachPixel }
+#define ForEachNeighborOf(a, b)                                                \
+  for (pts = 0; pts < sePtsNumber; ++pts) {                                    \
+    b.x = a.x + se.points[pts].x;                                              \
+    b.y = a.y + se.points[pts].y;                                              \
+    b.z = a.z + se.points[pts].z;                                              \
+    if (b.x < S[0] && b.y < S[1] && b.z < S[2]) {                              \
+      CoorToIndex(b);
+#define ENDForEachNeighborOf                                                   \
+  }                                                                            \
+  }
 
 #define LIVEVERSION
 
-template <class T1, class T2>
-void geoDistance (const Image<T1> &_in_, Image<T2> &_out_, const StrElt &se)
-{
+  template <class T1, class T2>
+  void geoDistance(const Image<T1> &_in_, Image<T2> &_out_, const StrElt &se)
+  {
     queue<size_t> *c1 = new queue<size_t>(), *c2 = new queue<size_t>(), *tmp;
-    T1* in = _in_.getPixels ();
-    T2* out = _out_.getPixels ();
+    T1 *in  = _in_.getPixels();
+    T2 *out = _out_.getPixels();
     index p, q;
- 
+
     UINT sePtsNumber = se.points.size();
     UINT pts;
-    size_t S[3]; _in_.getSize (S);
-    size_t nbrPixelsInSlice = S[0]*S[1];
-    size_t nbrPixels = nbrPixelsInSlice * S[2];
+    size_t S[3];
+    _in_.getSize(S);
+    size_t nbrPixelsInSlice = S[0] * S[1];
+    size_t nbrPixels        = nbrPixelsInSlice * S[2];
 
     ForEachPixel(p)
     {
-        if (out[p.o] == 1)
-        {
-            c2->push (p.o);
-        }
+      if (out[p.o] == 1) {
+        c2->push(p.o);
+      }
     }
     ENDForEachPixel
 
+        T2 d = 1;
+    while (!c2->empty()) {
+      tmp = c1;
+      c1  = c2;
+      c2  = tmp;
+      ++d;
 
-    T2 d=1;
-    while (!c2->empty())
-    {
-        tmp = c1;
-        c1 = c2;
-        c2 = tmp;
-        ++d;
+      while (!c1->empty()) {
+        p.o = c1->front();
+        c1->pop();
+        IndexToCoor(p);
 
-        while (!c1->empty())
+        ForEachNeighborOf(p, q)
         {
-            p.o = c1->front();
-            c1->pop();
-            IndexToCoor(p);
-
-            ForEachNeighborOf (p, q)
-            {
-                if (in[p.o] == in[q.o] && out[q.o] == 0)
-                {
-                    out[q.o] = d;
-                    c2->push(q.o);
-                }
-            }
-            ENDForEachNeighborOf
+          if (in[p.o] == in[q.o] && out[q.o] == 0) {
+            out[q.o] = d;
+            c2->push(q.o);
+          }
         }
+        ENDForEachNeighborOf
+      }
     }
 
-    delete c1; delete c2;
-}
+    delete c1;
+    delete c2;
+  }
 
-
-int __kbhit__ () 
-{
-    static const int STDIN = 0;
+  int __kbhit__()
+  {
+    static const int STDIN  = 0;
     static bool initialized = false;
 
-    if (!initialized)
-    {
-	termios term;
-	tcgetattr(STDIN, &term);
-	term.c_lflag &= ~ICANON;
-	tcsetattr(STDIN, TCSANOW, &term);
-	setbuf (stdin, NULL);
-	initialized =true;
+    if (!initialized) {
+      termios term;
+      tcgetattr(STDIN, &term);
+      term.c_lflag &= ~ICANON;
+      tcsetattr(STDIN, TCSANOW, &term);
+      setbuf(stdin, NULL);
+      initialized = true;
     }
 
     int bytesWaiting;
-    ioctl (STDIN, FIONREAD, &bytesWaiting);
+    ioctl(STDIN, FIONREAD, &bytesWaiting);
     return bytesWaiting;
-}
+  }
 
-bool __pause__ () 
-{
-
+  bool __pause__()
+  {
     int ch;
     struct termios oldt, newt;
 
-    tcgetattr (STDIN_FILENO, &oldt);
+    tcgetattr(STDIN_FILENO, &oldt);
     newt = oldt;
     newt.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr (STDIN_FILENO, TCSANOW, &newt);
-    ch = getchar ();
-    tcsetattr (STDIN_FILENO, TCSANOW, &oldt);
+    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+    ch = getchar();
+    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     return ch == ' ';
-}
+  }
 
-inline bool __letthrough__ () 
-{
-    return __kbhit__ () != 0; 
-}
+  inline bool __letthrough__()
+  {
+    return __kbhit__() != 0;
+  }
 
-}
-
-
-
-
+} // namespace smil
 
 #endif // _D_UTILS_H_

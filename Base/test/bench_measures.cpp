@@ -20,7 +20,6 @@
  *
  */
 
-
 #include <cstdio>
 #include <ctime>
 
@@ -31,19 +30,16 @@
 
 using namespace smil;
 
-
 int main(void)
 {
-    UINT BENCH_NRUNS = 1E2;
-    
-    Image_UINT8 im(1024,1024);
-    // Image_UINT8::lineType pixels = im.getPixels();
-    
-    randFill(im);
-    BENCH_IMG(histogram, im);
-    BENCH_IMG(area, im);
-    
-    BENCH_IMG(isBinary, im);
+  UINT BENCH_NRUNS = 1E2;
 
+  Image_UINT8 im(1024, 1024);
+  // Image_UINT8::lineType pixels = im.getPixels();
+
+  randFill(im);
+  BENCH_IMG(histogram, im);
+  BENCH_IMG(area, im);
+
+  BENCH_IMG(isBinary, im);
 }
-

@@ -8,11 +8,15 @@ namespace smil
 #define round(x) ((int) ((x) + 0.5))
   double Sum = 1;
 
-  // -------------------------------------------- Calcul des caracteristiques
-  // -------------------------------------------- */ F0 - Small Zone Emphasis,
-  // SZE. Petites zones.
-  //@return SZE.*/
-  double SZE(int *matrix, int Width, int nbGrayLevel)
+  // --------------------------------------------
+  // Calcul des caracteristiques
+  // --------------------------------------------
+
+  /** F0 - Small Zone Emphasis,
+   * SZE. Petites zones.
+   * @return SZE.
+   */
+  inline double SZE(int *matrix, int Width, int nbGrayLevel)
   {
     double val = 0.0;
     for (int n = 0; n < nbGrayLevel; n++)
@@ -21,9 +25,10 @@ namespace smil
     return val / Sum;
   }
 
-  // F1 - Large Zone Emphasis, LZE. Grande zone.
-  // @return LZE.*/
-  double LZE(int *matrix, int Width, int nbGrayLevel)
+  /** F1 - Large Zone Emphasis, LZE. Grande zone.
+   * @return LZE.
+   */
+  inline double LZE(int *matrix, int Width, int nbGrayLevel)
   {
     double val = 0.0;
     for (int n = 0; n < nbGrayLevel; n++)
@@ -33,8 +38,9 @@ namespace smil
   }
 
   /** F2 - Low Gray level Zone Emphasis, LGZE.
-   * @return LGZE.*/
-  double LGZE(int *matrix, int Width, int nbGrayLevel)
+   * @return LGZE.
+   */
+  inline double LGZE(int *matrix, int Width, int nbGrayLevel)
   {
     double val = 0.0;
     for (int n = 0; n < nbGrayLevel; n++)
@@ -44,8 +50,9 @@ namespace smil
   }
 
   /** F3 - High Gray level Zone Emphasis, HGZE.
-   * @return HGZE.*/
-  double HGZE(int *matrix, int Width, int nbGrayLevel)
+   * @return HGZE.
+   */
+  inline double HGZE(int *matrix, int Width, int nbGrayLevel)
   {
     double val = 0.0;
     for (int n = 0; n < nbGrayLevel; n++)
@@ -55,8 +62,9 @@ namespace smil
   }
 
   /** F4 - Small Zone Low Gray level Emphasis, SZLGE.
-   * @return SZLGE.*/
-  double SZLGE(int *matrix, int Width, int nbGrayLevel)
+   * @return SZLGE.
+   */
+  inline double SZLGE(int *matrix, int Width, int nbGrayLevel)
   {
     double val = 0.0;
     for (int n = 0; n < nbGrayLevel; n++)
@@ -67,8 +75,9 @@ namespace smil
   }
 
   /** F5 - Small Zone High Gray level Emphasis, SZHGE.
-   * @return SZHGE.*/
-  double SZHGE(int *matrix, int Width, int nbGrayLevel)
+   * @return SZHGE.
+   */
+  inline double SZHGE(int *matrix, int Width, int nbGrayLevel)
   {
     double val = 0.0;
     for (int n = 0; n < nbGrayLevel; n++)
@@ -79,8 +88,9 @@ namespace smil
   }
 
   /** F6 - Large Zone Low Gray level Emphasis, LZLGE.
-   * @return LSLGLE.*/
-  double LZLGE(int *matrix, int Width, int nbGrayLevel)
+   * @return LSLGLE.
+   */
+  inline double LZLGE(int *matrix, int Width, int nbGrayLevel)
   {
     double val = 0.0;
     for (int n = 0; n < nbGrayLevel; n++)
@@ -91,8 +101,9 @@ namespace smil
   }
 
   /** F7 - Large Zone High Gray level Emphasis, LZHGE.
-   * @return LZHGE.*/
-  double LZHGE(int *matrix, int Width, int nbGrayLevel)
+   * @return LZHGE.
+   */
+  inline double LZHGE(int *matrix, int Width, int nbGrayLevel)
   {
     double val = 0.0;
     for (int n = 0; n < nbGrayLevel; n++)
@@ -103,8 +114,9 @@ namespace smil
   }
 
   /** F8 - Gray Level Non Uniform, GLNU. Homogeneite spectrale.
-   * @return GLNU.*/
-  double GLNU(int *matrix, int Width, int nbGrayLevel)
+   * @return GLNU.
+   */
+  inline double GLNU(int *matrix, int Width, int nbGrayLevel)
   {
     double v, val = 0.0;
     for (int n = 0; n < nbGrayLevel; n++) {
@@ -117,8 +129,9 @@ namespace smil
   }
 
   /** F9 - Size Zone Non Uniform, SZNU. Uniformite.
-   * @return SZNU.*/
-  double SZNU(int *matrix, int Width, int nbGrayLevel)
+   * @return SZNU.
+   */
+  inline double SZNU(int *matrix, int Width, int nbGrayLevel)
   {
     double v, val = 0.0;
     for (int s = 0; s < Width; s++) {
@@ -132,8 +145,9 @@ namespace smil
 
   /** F10 - Zone Percentage, ZPC. Egalite des isotailles (pourcentage
    * primitives).
-   * @return ZPC.*/
-  double ZPC(int *matrix, int Width, int nbGrayLevel)
+   * @return ZPC.
+   */
+  inline double ZPC(int *matrix, int Width, int nbGrayLevel)
   {
     double val = 0.0;
     for (int n = 0; n < nbGrayLevel; n++)
@@ -143,8 +157,9 @@ namespace smil
   }
 
   /** F11 - Methode qui calcule le barycentre sur les niveaux de gris.
-   * @return Le barycentre sur les niveaux de gris.*/
-  double BARYGL(int *matrix, int Width, int nbGrayLevel)
+   * @return Le barycentre sur les niveaux de gris.
+   */
+  inline double BARYGL(int *matrix, int Width, int nbGrayLevel)
   {
     double mean = 0.0;
     for (int n = 0; n < nbGrayLevel; n++)
@@ -154,8 +169,9 @@ namespace smil
   }
 
   /** F12 - Methode qui calcule le barycentre sur les tailles.
-   * @return Le barycentre sur les tailles.*/
-  double BARYS(int *matrix, int Width, int nbGrayLevel)
+   * @return Le barycentre sur les tailles.
+   */
+  inline double BARYS(int *matrix, int Width, int nbGrayLevel)
   {
     double mean = 0.0;
     for (int n = 0; n < nbGrayLevel; n++)
@@ -164,7 +180,7 @@ namespace smil
     return mean / Sum;
   }
 
-  void ComputeFeatures(int *Matrix, int W, int H, char *szFileName)
+  inline void ComputeFeatures(int *Matrix, int W, int H, char *szFileName)
   {
     double Features[12];
 
@@ -190,9 +206,9 @@ namespace smil
     fclose(fic);
   }
 
-  int ComputeBinaryCC(int *DistanceMap, std::queue<int> *fifoSave, int W, int H,
-                      int D, int BaryX, int BaryY, int BaryZ,
-                      int GeodesicMethod = 0)
+  inline int ComputeBinaryCC(int *DistanceMap, std::queue<int> *fifoSave, int W,
+                             int H, int D, int BaryX, int BaryY, int BaryZ,
+                             int GeodesicMethod = 0)
   {
     if (fifoSave->empty())
       return 0;
@@ -225,7 +241,8 @@ namespace smil
 
     // Get the max distance
     bool NewDist;
-    int k, l, Ind, j;
+    int k, l, j;
+    int Ind;
     DistanceMap[IndStart] = 1;
     fifoCurrent.push(IndStart);
     DistMax = 1;
@@ -238,7 +255,7 @@ namespace smil
       Z = (currentPixel - X - Y * W) / (W * H);
 
       Dist    = static_cast<float>(ImDtTypes<float>::max());
-      NewDist = 0;
+      NewDist = false;
 
       // For all the neighbour
       for (j = -1; j <= 1; j++)
@@ -253,14 +270,17 @@ namespace smil
                     DistanceMap[Ind] = -2;
                   } else if (DistanceMap[Ind] != 0 && DistanceMap[Ind] != -2) {
                     float D = sqrt((float) ((j * j) + (k) * (k) + (l) * (l)));
-                    if (NewDist == 0 || Dist > (DistanceMap[Ind] + D)) {
+                    if (!NewDist || Dist > (DistanceMap[Ind] + D)) {
                       Dist    = (float) DistanceMap[Ind] + D;
-                      NewDist = 1;
+                      NewDist = true;
                     }
                   }
 
-                  // !(FLOAT_EQ_CORRIGE(Dist,DataTraits<F_SIMPLE
-                  // !>::default_value::max_value()))){ //==> Dist != max_value()
+                  /*
+                   *!(FLOAT_EQ_CORRIGE(Dist,DataTraits<F_SIMPLE>::
+                   *        default_value::max_value()))){
+                   *  ==> Dist != max_value()
+                   */
                   if (NewDist) {
                     DistanceMap[X + Y * W + Z * W * H] = Dist;
                     if (Dist > DistMax) {
@@ -309,8 +329,9 @@ namespace smil
     return res;
   }
 
-  double ComputeBinary(int *pixelDone, int W, int H, int D, int *Matrix, int mW,
-                       SMIL_UNUSED int mH, int Level, int GeodesicMethod = 0)
+  inline double ComputeBinary(int *pixelDone, int W, int H, int D, int *Matrix,
+                              int mW, SMIL_UNUSED int mH, int Level,
+                              int GeodesicMethod = 0)
   {
     std::queue<int> fifoCurrent, fifoSave;
     int X, Y, Z, currentPixel, i, j, k, l, Ind;
@@ -379,8 +400,8 @@ namespace smil
     return Max;
   }
 
-  double Compute2D(UINT8 *bufferIn, int W, int H, int Z, int NbNDG, int *Matrix,
-                   int mW, int mH, int GeodesicMethod = 0)
+  inline double Compute2D(UINT8 *bufferIn, int W, int H, int Z, int NbNDG,
+                          int *Matrix, int mW, int mH, int GeodesicMethod = 0)
   {
     int *pixelDone = new int[W * H];
     int i, k, j, Level;
@@ -413,7 +434,7 @@ namespace smil
   }
 
   template <class T1>
-  RES_T Thibault_GLSZM(const Image<T1> &imIn, int NbNDG, char *szFileName)
+  RES_T GLSZM(const Image<T1> &imIn, int NbNDG, char *szFileName)
   {
     // Check inputs
     ASSERT_ALLOCATED(&imIn)
@@ -449,8 +470,8 @@ namespace smil
 
   // distance zone matrix
   template <class T1>
-  RES_T Thibault_GLDZM(const Image<T1> &imIn, int NbNDG, int GeodesicMethod,
-                       char *szFileName)
+  RES_T grayLevelDistanceZM(const Image<T1> &imIn, int NbNDG,
+                            int GeodesicMethod, char *szFileName)
   {
     // Check inputs
     ASSERT_ALLOCATED(&imIn)
