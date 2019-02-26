@@ -31,7 +31,7 @@
 
 * Find a better name for Chabardes Addon
 
-* QVtkViewer : file smilQVtkViewer.i 
+* QVtkViewer : file smilQVtkViewer.i  OK !
   Solve problem when checking getPixel attribute
   Doesn't work because getPixel is defined as an inline method.
   * Temporary check disabled - replace getPixel by another attribute
@@ -39,4 +39,11 @@
 
 * Advanced DMorphoPathOpening.h
   Lacking doxygen documentation in the end of file
+
+* Put Advanced and Addons in a namespace other than smilPython
+
+* Dans les tests :
+  * Morpho/include/private/DMorphoDistance.hpp
+    * distEuclidean
+    * distV0
 
