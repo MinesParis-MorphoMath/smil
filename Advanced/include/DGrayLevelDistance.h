@@ -10,6 +10,7 @@ namespace smil
    * @defgroup  AdvGrayLevelDistance   Gray Level ... Zone Matrix
    * by Guillaume Thibault
    *
+   * Shall change int to long to support images bigger than 2 Gpixels (mainly 3D)
    *    
    * * <a href="http://thibault.biz/Research/ThibaultMatrices/GLDZM/GLDZM.html">
    *     Distance (to border) Zone Matrix</a>

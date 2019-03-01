@@ -258,11 +258,11 @@ namespace smil
       NewDist = false;
 
       // For all the neighbour
-      for (j = -1; j <= 1; j++)
-        if (Z + j >= 0 && Z + j < D)
-          for (k = -1; k <= 1; k++)
-            if (X + k >= 0 && X + k < W)
-              for (l = -1; l <= 1; l++)
+      for (j = -1; j <= 1; j++) {
+        if (Z + j >= 0 && Z + j < D) {
+          for (k = -1; k <= 1; k++) {
+            if (X + k >= 0 && X + k < W) {
+              for (l = -1; l <= 1; l++) {
                 if (Y + l >= 0 && Y + l < H && (k != 0 || l != 0 || j != 0)) {
                   Ind = X + k + (Y + l) * W + (Z + j) * W * H;
                   if (DistanceMap[Ind] == -1) {
@@ -291,11 +291,15 @@ namespace smil
                     }
                   }
                 }
-
+              }
+            }
+          }
+        }
+      }
     } while (!fifoCurrent.empty());
 
-    // Write on DistanceMap the Max Distance for all the pixel of the CC, we pop
-    // fifoSave
+    // Write on DistanceMap the Max Distance for all the pixel of the CC,
+    // we pop fifoSave
     int size = (int) fifoSave->size();
     int res;
     do {
@@ -363,11 +367,11 @@ namespace smil
           NbPixel++;
 
           // For all the neigbour
-          for (j = -1; j <= 1; j++)
-            if (Z + j >= 0 && Z + j < D)
-              for (k = -1; k <= 1; k++)
-                if (X + k >= 0 && X + k < W)
-                  for (l = -1; l <= 1; l++)
+          for (j = -1; j <= 1; j++) {
+            if (Z + j >= 0 && Z + j < D) {
+              for (k = -1; k <= 1; k++) {
+                if (X + k >= 0 && X + k < W) {
+                  for (l = -1; l <= 1; l++) {
                     if (Y + l >= 0 && Y + l < H &&
                         (k != 0 || l != 0 || j != 0)) {
                       Ind = (X + k) + (Y + l) * W + (Z + j) * W * H;
@@ -378,6 +382,11 @@ namespace smil
                           fifoSave.push(Ind);
                       }
                     }
+                  }
+                }
+              }
+            }
+          }
         } while (!fifoCurrent.empty());
 
         if (GeodesicMethod) {
@@ -434,7 +443,7 @@ namespace smil
   }
 
   template <class T1>
-  RES_T GLSZM(const Image<T1> &imIn, int NbNDG, char *szFileName)
+  RES_T grayLevelSizeZM(const Image<T1> &imIn, int NbNDG, char *szFileName)
   {
     // Check inputs
     ASSERT_ALLOCATED(&imIn)

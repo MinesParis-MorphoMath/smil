@@ -101,7 +101,6 @@ TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Elongation);
 TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Tortuosity);
 
 
-
 %include "DFastAreaOpening.h"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_PixelQueue);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_PixelQueue);

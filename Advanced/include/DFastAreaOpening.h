@@ -18,6 +18,11 @@ namespace smil
    * output buffer. Hence, we have already converted the input image in INT32.
    * (not const) First, the result of the area op will be store in imIn. Then we
    * convert it into imOut
+   *
+   * Following functions were deactivated - why ? :
+   * * ImArea(Opening|Closing)_MaxTree
+   * * ImArea(Opening|Closing)_UnionFind
+   * * ImInertia(Thinning|Thickening)_MaxTree
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : Area Closing of imIn

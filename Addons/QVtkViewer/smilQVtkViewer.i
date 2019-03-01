@@ -60,9 +60,9 @@ def QVtkViewer(im):
         im.setName(name)
     # this has been commented because getPixel is an inline function
     # so it can t be an attribute of an image
-    if not hasattr(im, "getPixels"):
-      print "Input must be an Image"
-      return
+    #if not hasattr(im, "getPixels"):
+    #  print "Input must be an Image"
+    #  return
 
     imT = objType.split("_")[-1][:-2]
     current_module = sys.modules[__name__]
