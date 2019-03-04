@@ -9,8 +9,6 @@ namespace smil
    * @ingroup   Advanced
    * @defgroup  AdvGrayLevelDistance   Gray Level ... Zone Matrix
    * by Guillaume Thibault
-   *
-   * Shall change int to long to support images bigger than 2 Gpixels (mainly 3D)
    *    
    * * <a href="http://thibault.biz/Research/ThibaultMatrices/GLDZM/GLDZM.html">
    *     Distance (to border) Zone Matrix</a>
@@ -29,7 +27,10 @@ namespace smil
    *   * <a href="http://thibault.biz/Doc/Publications/ShapeAndTextureIndexesIJPRAI2013">Shape and Texture Indexes: Application to Cell Nuclei Classification</a> - IJPRAI 2013.
    *   * <a href="http://thibault.biz/Doc/Publications/AdvancedStatisticalMatrices_IEEEbme_2014.pdf">Advanced Statistical Matrices for Texture Characterization: Application to Cell Classification</a> - IEEE Transaction on BioMedical Engineering 2014.
    *   * <a href="https://arxiv.org/abs/1611.06009">Fuzzy Statistical Matrices for Cell Classification</a> - ArXiv 2016.
-   * 
+   *
+   * * Problems to handle :
+   *
+   *   * Shall change int to long to support images bigger than 2 Gpixels (mainly 3D)
    * @{ */
 
   /** 
