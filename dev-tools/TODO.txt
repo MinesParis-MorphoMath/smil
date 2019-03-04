@@ -47,3 +47,7 @@
     * distEuclidean
     * distV0
 
+* In Advanced : GLSZM
+  * Shall change int to long to support images bigger than 2 Gpixels 
+    (common in 3D images)
+
