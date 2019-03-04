@@ -61,7 +61,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(ImLabelFlatZonesWithElongation);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImLabelFlatZonesWithExtremities);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImLabelFlatZonesWithGeodesicDiameter);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImGeodesicDiameter);
- //BMI TEMPLATE_WRAP_FUNC(ImGeodesicTortuosity);
+//BMI TEMPLATE_WRAP_FUNC(ImGeodesicTortuosity);
 
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImUltimatePathOpening_GraphV2);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImUltimatePathClosing_GraphV2);
@@ -87,30 +87,34 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(ImFromSK_AreaForEachCC);
 ### Has prototype but not implementation
 ### TEMPLATE_WRAP_FUNC_2T_CROSS(ImLayerDist);
 
-//TEMPLATE_WRAP_FUNC(ImFalseColorHSL);  -> check if necessary, otherwise remove it
-//TEMPLATE_WRAP_FUNC(GetConfusionMatrix); -> check the use of RGB
+//  -> check if necessary, otherwise remove it
+//TEMPLATE_WRAP_FUNC(ImFalseColorHSL);
+//  -> check the use of RGB
+//TEMPLATE_WRAP_FUNC(GetConfusionMatrix);
 
-TEMPLATE_WRAP_FUNC(Thibault_GLSZM);
-TEMPLATE_WRAP_FUNC(Thibault_GLDZM);
-TEMPLATE_WRAP_FUNC(Thibault_GLDZM_Diameter);
-TEMPLATE_WRAP_FUNC(Thibault_GLDZM_Elongation);
-TEMPLATE_WRAP_FUNC(Thibault_GLDZM_Tortuosity);
+%include "DGrayLevelDistance.h"
 
+TEMPLATE_WRAP_FUNC(grayLevelSizeZM);
+TEMPLATE_WRAP_FUNC(grayLevelDistanceZM);
+TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Diameter);
+TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Elongation);
+TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Tortuosity);
 
 
 %include "DFastAreaOpening.h"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_PixelQueue);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_PixelQueue);
- /*TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_MaxTree);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_MaxTree);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_UnionFind);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_UnionFind);*/
+
+//TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_MaxTree);
+//TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_MaxTree);
+//TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_UnionFind);
+//TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_UnionFind);
+
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_Line);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_Line);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_LineSupEqu);
- /*TEMPLATE_WRAP_FUNC_2T_CROSS(ImInertiaThinning_MaxTree);
-   TEMPLATE_WRAP_FUNC_2T_CROSS(ImInertiaThickening_MaxTree);*/
+
+//TEMPLATE_WRAP_FUNC_2T_CROSS(ImInertiaThinning_MaxTree);
+//TEMPLATE_WRAP_FUNC_2T_CROSS(ImInertiaThickening_MaxTree);
 
 
-%include "DFastFilter.h"
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImFastBilateralFilter);

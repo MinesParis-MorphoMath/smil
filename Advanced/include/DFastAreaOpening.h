@@ -8,16 +8,23 @@ namespace smil
   /**
    * @ingroup   Advanced 
    * @defgroup  AdvFastArea    Fast Area Opening/Closing
-   * @{ */
-
-  // AREA OPENING
-
-  /** @brief Area closing with pixel queue algorithm (V4)
+   *
    * This algorithm needs an INT32 input and an INT32 output. It can be an
    * inplace transform However, we are working with UINT8 and UINT8 input and
    * output buffer. Hence, we have already converted the input image in INT32.
    * (not const) First, the result of the area op will be store in imIn. Then we
    * convert it into imOut
+   *
+   * The following functions were deactivated in the Swig interface - why ? :
+   * * ImArea(Opening|Closing)_MaxTree
+   * * ImArea(Opening|Closing)_UnionFind
+   * * ImInertia(Thinning|Thickening)_MaxTree
+   *
+   * @{ */
+
+  // AREA OPENING
+
+  /** @brief Area closing with pixel queue algorithm (V4)
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : Area Closing of imIn

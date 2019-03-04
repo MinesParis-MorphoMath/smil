@@ -43,8 +43,8 @@
 namespace smil
 {
     /**
-     * \ingroup Addons
-     * \defgroup VtkInterface VTK Image Interface
+     * @ingroup Addons
+     * @defgroup AddonVtkInterface VTK Image Interface
      * @{
      */
     

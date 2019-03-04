@@ -1,4 +1,4 @@
-// Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
+// Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 // All rights reserved.
 // 
 // Redistribution and use in source and binary forms, with or without
@@ -26,48 +26,19 @@
 
 
 
-
 %include smilCommon.i
 
-SMIL_MODULE(smilQVtkViewer)
+SMIL_MODULE(smilFastBilateralFilter)
 
 
 %{
-/* Includes the header in the wrapper code */
-#include "DQVtkViewer.hpp"
+/* Includes needed header(s)/definitions in the wrapped code */
+#include "DFastFilter.h"
+
 %}
 
 %import smilCore.i
 
-%include "DQVtkViewer.hpp"
+%include "DFastFilter.h"
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImFastBilateralFilter);
 
-TEMPLATE_WRAP_CLASS(QVtkViewer,QVtkViewer)
-
-
-#ifdef SWIGPYTHON
-
-%pythoncode %{
-
-import sys
-# import __builtin__
-
-
-def QVtkViewer(im):
-    objType = str(type(im))
-    if im.getName()=="":
-      name = __builtin__._find_object_name(im)
-      if name!="":
-        im.setName(name)
-    # this has been commented because getPixel is an inline function
-    # so it can t be an attribute of an image
-    #if not hasattr(im, "getPixels"):
-    #  print "Input must be an Image"
-    #  return
-
-    imT = objType.split("_")[-1][:-2]
-    current_module = sys.modules[__name__]
-    viewerFunc = getattr(current_module, "QVtkViewer_" + imT)
-    return viewerFunc(im)
-%}
-
-#endif // SWIGPYTHON

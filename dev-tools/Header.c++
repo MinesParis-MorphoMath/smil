@@ -28,30 +28,15 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Description :
- *   Portage de MorphM vers Smil
+ *   This file does... some very complex morphological operation...
  *
  * History :
- *   - XX/XX/XXXX - by Andres Serna
- *     Ported from MorphM
- *   - 10/02/2019 - by Jose-Marcio
- *     Integrated into Smil Advanced Source Tree with some cosmetics
+ *   - XX/XX/XXXX - by Joe.Denver
+ *     Just created it...A
+ *   - XX/XX/XXXX - by Joe.Denver
+ *     Modified something
  *
  * __HEAD__ - Stop here !
  */
 
 
-#ifndef __MPO_UTILITIES_HPP__
-#define __MPO_UTILITIES_HPP__
-
-namespace smil
-{
-//! Defines for comparing two float types
-#define EPSILON 0.000000001
-
-  typedef struct tagMyPOINTS {
-    int Seuil, Dist;
-  } MyPOINTS;
-
-} // namespace smil
-
-#endif // __MPO_UTILITIES_HPP__

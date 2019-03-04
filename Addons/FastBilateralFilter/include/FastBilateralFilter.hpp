@@ -10,7 +10,7 @@ using namespace std;
 namespace smil
 {
   template <class Tin>
-  void _fastBilateralFilter(Tin *T, int W, int H, int Z, int methodS,
+  static void _fastBilateralFilter(Tin *T, int W, int H, int Z, int methodS,
                             int methodG, int nS, double EcTSx, double EcTSy,
                             double EcTSz, double EcTGx, double EcTGy,
                             double EcTGz)
