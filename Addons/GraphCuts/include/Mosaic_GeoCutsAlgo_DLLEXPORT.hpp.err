@@ -1,0 +1,38 @@
+#ifndef __MORPHEE_MOSAIC_GEOCUTSALGO_DLLEXPORT_HPP__
+#define __MORPHEE_MOSAIC_GEOCUTSALGO_DLLEXPORT_HPP__
+
+/*!
+ * @file   Mosaic_GeoCutsAlgo_DLLEXPORT.hpp.hpp
+ *
+ * @brief Defines some macro that makes it possible to have some
+ * symbols visible when creating a dll (aka DLLEXPORT). The "visible" symbols
+ * can then be used by other modules.
+ *
+ * @warning This mechanism has an effect only on Windows.
+ */
+
+namespace morphee
+{
+  namespace graphalgo
+  {
+    /*!
+     * @defgroup Mosaic_GeoCutsAlgo_group
+     *
+     */
+
+#ifdef __MORPHEE_DYNAMIC_LIBRARY
+#ifdef __MORPHEE_DYNAMIC_MOSAIC_GEOCUTSALGO_LIBRARY_EXPORT
+#define __MGCA __declspec(dllexport)
+#pragma message(" - Exporting Morphee Mosaic_GeoCutsAlgo")
+#else
+#define __MGCA __declspec(dllimport)
+#pragma message(" - Dynamic link to Morphee Mosaic_GeoCutsAlgo")
+#endif
+#else
+#define __MGCA
+#endif
+
+    //! @} Mosaic_GeoCutsAlgo_group
+  } // namespace graphalgo
+} // namespace morphee
+#endif //__MORPHEE_MOSAIC_GEOCUTSALGO_DLLEXPORT_HPP__
