@@ -31,7 +31,6 @@
 #include <QWidget>
 #include "QVTKWidget.h"
 
-
 #include <vtkImageImport.h>
 #include <vtkCamera.h>
 #include <vtkVolumeRayCastCompositeFunction.h>
@@ -56,63 +55,64 @@
 
 class QVtkViewerWidget : public ImageViewerWidget
 {
-    Q_OBJECT
-    
-public:
-    typedef ImageViewerWidget parentClass;
-    
-    QVTKWidget *qvtkWidget;
-    
-    QVtkViewerWidget(QWidget *parent = 0);
-    ~QVtkViewerWidget();
-    
-    
-    enum RepresentationType { NONE, COMPOSITE, MIP };
-    virtual void update();
-    
-protected:
-    vtkRenderer *renderer;
-    vtkRenderWindow *renderWindow;
-    vtkRenderWindowInteractor *interactor;
-    vtkCamera *camera;
+  Q_OBJECT
 
-    vtkImageImport *imageImport;
-    RepresentationType representationType;
-    vtkVolumeRayCastFunction *volumeRayCastFunction;
-    vtkVolumeRayCastMapper *volumeRayCastMapper;
-    vtkVolume *volume;
-    vtkVolumeProperty *volumeProperty;
-    vtkPiecewiseFunction *opacityTransfertFunction;
-    vtkPiecewiseFunction *colorOpacityTransfertFunction;
-    vtkDiscretizableColorTransferFunction *colorTransfertFunction;
-    
-    vtkCubeSource *cube;
-    vtkOutlineFilter *outline;
-    vtkPolyDataMapper *outlineMapper;
-    vtkActor *outlineActor;
-    
-    vtkAxesActor *axesActor;
-    vtkOrientationMarkerWidget *orientationMarker;
-    
-    vtkEventQtSlotConnect *vtkQtEventConnect;
-    
-    void initLookup(int typeMax);
-    
-    void setRepresentationType(RepresentationType type);
-    void showAxes();
-    void showNormal();
-    void showLabel();
-    void hideAxes();
-    void setInterpolationTypeToLinear();
-    void setInterpolationTypeToNearest();
-    
-//     virtual void keyPressEvent(QKeyEvent *event) { parentClass::keyPressEvent(event); }
-    virtual void setLabelImage(bool val);
-    virtual void setAutoRange(bool /*on*/) {};
+public:
+  typedef ImageViewerWidget parentClass;
+
+  QVTKWidget *qvtkWidget;
+
+  QVtkViewerWidget(QWidget *parent = 0);
+  ~QVtkViewerWidget();
+
+  enum RepresentationType { NONE, COMPOSITE, MIP };
+  virtual void update();
+
+protected:
+  vtkRenderer *renderer;
+  vtkRenderWindow *renderWindow;
+  vtkRenderWindowInteractor *interactor;
+  vtkCamera *camera;
+
+  vtkImageImport *imageImport;
+  RepresentationType representationType;
+  vtkVolumeRayCastFunction *volumeRayCastFunction;
+  vtkVolumeRayCastMapper *volumeRayCastMapper;
+  vtkVolume *volume;
+  vtkVolumeProperty *volumeProperty;
+  vtkPiecewiseFunction *opacityTransfertFunction;
+  vtkPiecewiseFunction *colorOpacityTransfertFunction;
+  vtkDiscretizableColorTransferFunction *colorTransfertFunction;
+
+  vtkCubeSource *cube;
+  vtkOutlineFilter *outline;
+  vtkPolyDataMapper *outlineMapper;
+  vtkActor *outlineActor;
+
+  vtkAxesActor *axesActor;
+  vtkOrientationMarkerWidget *orientationMarker;
+
+  vtkEventQtSlotConnect *vtkQtEventConnect;
+
+  void initLookup(int typeMax);
+
+  void setRepresentationType(RepresentationType type);
+  void showAxes();
+  void showNormal();
+  void showLabel();
+  void hideAxes();
+  void setInterpolationTypeToLinear();
+  void setInterpolationTypeToNearest();
+
+  //     virtual void keyPressEvent(QKeyEvent *event) {
+  //     parentClass::keyPressEvent(event); }
+  virtual void setLabelImage(bool val);
+  virtual void setAutoRange(bool /*on*/){};
 public slots:
-    void showContextMenu(vtkObject*, unsigned long, void*, void*, vtkCommand *command);
-    void keyPressed(vtkObject*, unsigned long, void*, void*, vtkCommand *command);
-    
+  void showContextMenu(vtkObject *, unsigned long, void *, void *,
+                       vtkCommand *command);
+  void keyPressed(vtkObject *, unsigned long, void *, void *,
+                  vtkCommand *command);
 };
 
 #endif
