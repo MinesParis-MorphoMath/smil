@@ -47,8 +47,8 @@
 namespace smil
 {
   /**
-   * @ingroup Addons
-   * @defgroup  xAddonGaborFilter        Addon : Gabor Filter
+   * @ingroup   AddonFilters
+   * @defgroup  AddonGaborFilter        Gabor Filter (2D)
    *
    * @brief A 2D Gabor filter implementation by Vincent Morard
    *
@@ -73,6 +73,6 @@ namespace smil
   /** @} */
 } // namespace smil
 
-#include "GaborFilter.hpp"
+#include "filterGabor/GaborFilter.hpp"
 
 #endif // _DGABOR_FILTER_H_

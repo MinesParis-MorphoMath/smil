@@ -31,48 +31,27 @@
  *   2D Gabor filter implementation by Vincent Morard
  *
  * History :
- *   - XX/XX/XXXX - by Vincent Morard
- *     Just created it
- *   - 21/02/2019 - by Jose-Marcio Martins da Cruz
+ *   - 05/03/2019 - by Jose-Marcio Martins da Cruz
+ *     Just created the plugin
  *     Formatting and removing some warnings and minor differences
  *
  * __HEAD__ - Stop here !
  */
  
- #ifndef _DGABOR_FILTER_H_
-#define _DGABOR_FILTER_H_
+ #ifndef _D_FILTERS_H_
+#define _D_FILTERS_H_
 
 #include "Core/include/DCore.h"
 
 namespace smil
 {
   /**
-   * @ingroup Addons
-   * @defgroup  xAddonGaborFilter        Addon : Gabor Filter
-   *
-   * @brief A 2D Gabor filter implementation by Vincent Morard
-   *
-   *   See : <a href="https://en.wikipedia.org/wiki/Gabor_filter">
-   *       Gabor Filter on Wikipedia</a>   
-   * @{ */
-
-  /**
-   * @brief gaborFilter Gabor Filter
-   * @param[in] imIn : input Image
-   * @param[in] sigma :
-   * @param[in] theta :
-   * @param[in] lambda :
-   * @param[in] psi :
-   * @param[in] gamma :
-   * @param[out] imOut : outputImage
+   * @ingroup   Addons
+   * @defgroup  AddonFilters        Non Morphological Filters
    */
-  template <class T>
-  RES_T gaborFilter(const Image<T> &imIn, double sigma, double theta,
-                    double lambda, double psi, double gamma, Image<T> &imOut);
 
-  /** @} */
 } // namespace smil
 
-#include "GaborFilter.hpp"
+#include "DGaborFilter.h"
 
-#endif // _DGABOR_FILTER_H_
+#endif // _D_FILTERS_H_
