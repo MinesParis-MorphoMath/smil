@@ -2,7 +2,7 @@
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * Copyright (c) 2017-2019, Centre de Morphologie Mathematique
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -15,16 +15,16 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Description :
@@ -38,7 +38,7 @@
  *
  * __HEAD__ - Stop here !
  */
- 
+
 #ifndef __GABOR_FILTER_HPP__
 #define __GABOR_FILTER_HPP__
 
@@ -46,15 +46,19 @@
 
 namespace smil
 {
-  namespace filters {
-#define VM_MAX(x, y) ((x > y) ? (x) : (y))
+#define VM_MAX(x, y) (((x) > (y)) ? (x) : (y))
 
   template <class T1, class T2>
-  static RES_T _computeGaborFilterConvolution(T1 *bufferIn, int W, int H, double sigma,
-                                       double theta, double lambda, double psi,
-                                       double gamma, T2 *bufferOut)
+  static RES_T _computeGaborFilterConvolution(T1 *bufferIn, int W, int H,
+                                              double sigma, double theta,
+                                              double lambda, double psi,
+                                              double gamma, T2 *bufferOut)
   {
-    int i, j, k, l, Xmax, Ymax, nstds = 3, dx, dy;
+    int i, j, k, l;
+    int Xmax, Ymax;
+    int nstds = 3;
+    int dx, dy;
+
     double dXmax, dYmax;
 
     //**********************
@@ -86,14 +90,16 @@ namespace smil
       }
 
     double *gabor = new double[dx * dy];
-    for (i = 0; i < dx; i++)
-      for (j = 0; j < dy; j++)
-        gabor[i + j * dx] =
-            exp(-0.5 * ((x_theta[i + j * dx] * x_theta[i + j * dx]) /
-                            (sigma_x * sigma_x) +
-                        (y_theta[i + j * dx] * y_theta[i + j * dx]) /
-                            (sigma_y * sigma_y))) *
-            cos(2 * 3.14159 / lambda * x_theta[i + j * dx] + psi);
+    for (i = 0; i < dx; i++) {
+      for (j = 0; j < dy; j++) {
+        int pos = i + j * dx;
+
+        gabor[pos] =
+            exp(-0.5 * ((x_theta[pos] * x_theta[pos]) / (sigma_x * sigma_x) +
+                        (y_theta[pos] * y_theta[pos]) / (sigma_y * sigma_y))) *
+            cos(2 * 3.14159 / lambda * x_theta[pos] + psi);
+      }
+    }
     delete[] x_theta;
     delete[] y_theta;
 
@@ -126,8 +132,8 @@ namespace smil
   }
 
   /*
-  *
-  */
+   *
+   */
   template <class T>
   RES_T gaborFilter(const Image<T> &imIn, double sigma, double theta,
                     double lambda, double psi, double gamma, Image<T> &imOut)
@@ -152,11 +158,11 @@ namespace smil
   }
 
   /*
-  *
-  */
+   *
+   */
   template <class T1>
-  static void t_createGaborKernel(T1 *gabor, double sigma, double theta, double lambda,
-                           double psi, double gamma)
+  static void t_createGaborKernel(T1 *gabor, double sigma, double theta,
+                                  double lambda, double psi, double gamma)
   {
     int i, j, Xmax, Ymax, nstds = 3, dx, dy;
     double dXmax, dYmax;
@@ -199,7 +205,6 @@ namespace smil
             cos(2 * 3.14159 / lambda * x_theta[i + j * dx] + psi);
     delete[] x_theta;
     delete[] y_theta;
-  }
   }
 } // namespace smil
 
