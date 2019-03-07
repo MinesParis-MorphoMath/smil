@@ -4,4 +4,3 @@
 #include "private/DStochasticWatershed.hpp"
 
 #endif // _DSTOCHASTICWS_H_
-

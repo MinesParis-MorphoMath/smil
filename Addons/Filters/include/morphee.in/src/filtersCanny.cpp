@@ -12,7 +12,7 @@ namespace morphee
     // Date : 26 july 2012
 
     //****************************************************************
-    //*												Template (interface)
+    //*	Template (interface)
     //****************************************************************
 
     template <typename T1, typename T2>
