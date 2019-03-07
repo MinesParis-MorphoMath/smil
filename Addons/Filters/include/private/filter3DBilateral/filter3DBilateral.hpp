@@ -35,10 +35,9 @@
 
 namespace smil
 {
-
   template <class T>
-  RES_T recursiveBilateralFilter(const Image<T> &imIn,
-                                 float sigmaW, float sigmaR, Image<T> &imOut)
+  RES_T recursiveBilateralFilter(const Image<T> &imIn, float sigmaW,
+                                 float sigmaR, Image<T> &imOut)
   {
     int S[3];
     imOut.getSize(S);
@@ -59,7 +58,7 @@ namespace smil
      * * ca ne peut pas marcher avec des images de type non entier
      *   puisqu'on essaye d'allouer range_table avec une valeur
      *   non entiere
-     * * pour des images a 32 ou 64 bits, on alloue des images 
+     * * pour des images a 32 ou 64 bits, on alloue des images
      *   de taille "gigantesques" peut-etre sans en avoir besoin
      * * ne serait-il plus raisonnable que la dimension de range
      *   table soit plutot la valeur maximale de l'image ?

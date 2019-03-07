@@ -35,10 +35,11 @@ namespace smil
   /**
    * @ingroup AddonFilters
    * @defgroup Addon3DBilateralFilters 3D Bilateral Filter
-   * 
+   *
    * Fast 3D bilateral filter implementation
    *
-   * * Possible problems with very large images or images of type UINT32 and bigger
+   * * Possible problems with very large images or images of type UINT32 and
+   * bigger
    * * Works only with images of integer type.
    * * lacking documentation about parameters
    *
@@ -49,13 +50,13 @@ namespace smil
   /**
    * @brief recursiveBilateralFilter 3D Bilateral Filter
    * @param[in]  imIn : input Image
-   * @param[in]  sigmaW : 
-   * @param[in]  sigmaR : 
+   * @param[in]  sigmaW :
+   * @param[in]  sigmaR :
    * @param[out] imOut : output Image
    */
   template <class T>
-  RES_T recursiveBilateralFilter(const Image<T> &imIn,
-                                 float sigmaW, float sigmaR, Image<T> &imOut);
+  RES_T recursiveBilateralFilter(const Image<T> &imIn, float sigmaW,
+                                 float sigmaR, Image<T> &imOut);
 
   /** @} */
 } // namespace smil
