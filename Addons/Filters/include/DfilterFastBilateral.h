@@ -6,9 +6,15 @@
 namespace smil
 {
   /**
-   * @ingroup   Addons
+   * @ingroup   AddonFilters
    * @defgroup  AddonFastFilter        Fast Bilateral Filter
+   *
+   * @brief A 2D Fast Bilateral Filter
+   *
+   * @author Vincent Morard
    * @{ */
+
+
 
   /** @brief FastBilateral filter : Smooth the picture while conserving the
    * edges
@@ -31,6 +37,6 @@ namespace smil
   /** @} */
 } // namespace smil
 
-#include "FastBilateralFilter.hpp"
+#include "private/filterFastBilateral/DfilterFastBilateral.hpp"
 
 #endif // _DFAST_FILTER_H_

@@ -47,12 +47,13 @@ namespace smil
 {
   /**
    * @ingroup   Addons
-   * @defgroup  AddonFilters        Non Morphological Filters
+   * @defgroup  AddonFilters    Filters (Non Morphological)
    */
 
 } // namespace smil
 
 #include "DfilterGabor.h"
 #include "DfilterCanny.h"
+#include "DfilterFastBilateral.h"
 
 #endif // _D_FILTERS_H_

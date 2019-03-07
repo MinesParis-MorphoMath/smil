@@ -50,21 +50,25 @@ namespace smil
    * @ingroup   AddonFilters
    * @defgroup  AddonGaborFilter        Gabor Filter (2D)
    *
-   * @brief A 2D Gabor filter implementation by Vincent Morard
+   * @brief A 2D Gabor filter implementation
+   *
+   * Texture analysis with the computation of a Gabor filter
    *
    * @see Gabor Filter <a href="https://en.wikipedia.org/wiki/Gabor_filter">
-   *       on Wikipedia</a>   
+   *       on Wikipedia</a>
+   *
+   * @author Vincent Morard
    * @{ */
 
   /**
    * @brief filterGabor Gabor Filter
    * @param[in] imIn : input Image
-   * @param[in] sigma :
-   * @param[in] theta :
-   * @param[in] lambda :
-   * @param[in] psi :
-   * @param[in] gamma :
-   * @param[out] imOut : outputImage
+   * @param[in] sigma : size of the gaussian
+   * @param[in] theta : orientation of the kernel (in rad)
+   * @param[in] lambda : frequency of the cos
+   * @param[in] psi : phase of the cos (in rad)
+   * @param[in] gamma : anisotropy of the kernel
+   * @param[out] imOut : output Image (must be F_SIMPLE or F_DOUBLE ???)
    */
   template <class T>
   RES_T filterGabor(const Image<T> &imIn, double sigma, double theta,
