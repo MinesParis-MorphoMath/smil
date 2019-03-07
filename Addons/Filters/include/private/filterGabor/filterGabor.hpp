@@ -135,7 +135,7 @@ namespace smil
    *
    */
   template <class T>
-  RES_T gaborFilter(const Image<T> &imIn, double sigma, double theta,
+  RES_T filterGabor(const Image<T> &imIn, double sigma, double theta,
                     double lambda, double psi, double gamma, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);

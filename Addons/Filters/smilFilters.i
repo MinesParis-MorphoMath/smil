@@ -34,13 +34,17 @@ SMIL_MODULE(smilFilters)
 
 %{
 /* Includes needed header(s)/definitions in the wrapped code */
-#include "DGaborFilter.h"
+#include "DfilterGabor.h"
+#include "DfilterCanny.h"
 
 %}
 
 %import smilCore.i
 # %import smilMorpho.i
 
-%include "DGaborFilter.h"
-TEMPLATE_WRAP_FUNC(gaborFilter)
+%include "DfilterGabor.h"
+TEMPLATE_WRAP_FUNC(filterGabor)
+
+%include "DfilterCanny.h"
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImCannyEdgeDetection)
 

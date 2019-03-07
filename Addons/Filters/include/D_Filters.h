@@ -52,6 +52,7 @@ namespace smil
 
 } // namespace smil
 
-#include "DGaborFilter.h"
+#include "DfilterGabor.h"
+#include "DfilterCanny.h"
 
 #endif // _D_FILTERS_H_

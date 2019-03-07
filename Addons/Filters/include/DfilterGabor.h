@@ -52,12 +52,12 @@ namespace smil
    *
    * @brief A 2D Gabor filter implementation by Vincent Morard
    *
-   *   See : <a href="https://en.wikipedia.org/wiki/Gabor_filter">
-   *       Gabor Filter on Wikipedia</a>   
+   * @see Gabor Filter <a href="https://en.wikipedia.org/wiki/Gabor_filter">
+   *       on Wikipedia</a>   
    * @{ */
 
   /**
-   * @brief gaborFilter Gabor Filter
+   * @brief filterGabor Gabor Filter
    * @param[in] imIn : input Image
    * @param[in] sigma :
    * @param[in] theta :
@@ -67,12 +67,12 @@ namespace smil
    * @param[out] imOut : outputImage
    */
   template <class T>
-  RES_T gaborFilter(const Image<T> &imIn, double sigma, double theta,
+  RES_T filterGabor(const Image<T> &imIn, double sigma, double theta,
                     double lambda, double psi, double gamma, Image<T> &imOut);
 
   /** @} */
 } // namespace smil
 
-#include "filterGabor/GaborFilter.hpp"
+#include "private/filterGabor/filterGabor.hpp"
 
 #endif // _DGABOR_FILTER_H_
