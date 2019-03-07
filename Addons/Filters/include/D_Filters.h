@@ -38,7 +38,7 @@
  * __HEAD__ - Stop here !
  */
  
- #ifndef _D_FILTERS_H_
+#ifndef _D_FILTERS_H_
 #define _D_FILTERS_H_
 
 #include "Core/include/DCore.h"
@@ -55,5 +55,6 @@ namespace smil
 #include "DfilterGabor.h"
 #include "DfilterCanny.h"
 #include "DfilterFastBilateral.h"
+#include "Dfilter3DBilateral.h"
 
 #endif // _D_FILTERS_H_

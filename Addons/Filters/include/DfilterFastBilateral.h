@@ -37,6 +37,6 @@ namespace smil
   /** @} */
 } // namespace smil
 
-#include "private/filterFastBilateral/DfilterFastBilateral.hpp"
+#include "private/filterFastBilateral/filterFastBilateral.hpp"
 
 #endif // _DFAST_FILTER_H_

@@ -27,8 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _D_CHABARDES_FILTERS_HPP_
-#define _D_CHABARDES_FILTERS_HPP_
+#ifndef _D_3D_BILATERAL_FILTER_HPP_
+#define _D_3D_BILATERAL_FILTER_HPP_
 
 #include "Core/include/private/DImage.hpp"
 #include <stdlib.h>
@@ -37,8 +37,8 @@ namespace smil
 {
 
   template <class T>
-  RES_T recursiveBilateralFilter(const Image<T> &imIn, Image<T> &imOut,
-                                 float sigmaW, float sigmaR)
+  RES_T recursiveBilateralFilter(const Image<T> &imIn,
+                                 float sigmaW, float sigmaR, Image<T> &imOut)
   {
     int S[3];
     imOut.getSize(S);
@@ -360,4 +360,4 @@ namespace smil
 
 } // namespace smil
 
-#endif // _D_CHABARDES_FILTERS_HPP_
+#endif // _D_3D_BILATERAL_FILTER_HPP_
