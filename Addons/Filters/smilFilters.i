@@ -37,7 +37,7 @@ SMIL_MODULE(smilFilters)
 #include "DfilterGabor.h"
 #include "DfilterCanny.h"
 #include "DfilterFastBilateral.h"
-
+#include "Dfilter3DBilateral.h"
 %}
 
 %import smilCore.i
@@ -51,4 +51,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(ImCannyEdgeDetection)
 
 %include "DfilterFastBilateral.h"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImFastBilateralFilter);
+
+%include "Dfilter3DBilateral.h"
+TEMPLATE_WRAP_FUNC(recursiveBilateralFilter);
 

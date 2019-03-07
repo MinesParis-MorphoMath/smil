@@ -33,28 +33,33 @@
 namespace smil
 {
   /**
-   * @ingroup Addons
-   * @defgroup AddonBilateralFilters 3D Bilateral Filter
+   * @ingroup AddonFilters
+   * @defgroup Addon3DBilateralFilters 3D Bilateral Filter
    * 
-   * This is a Fast 3D bilateral filter implementation by Theodore Chabardes
+   * Fast 3D bilateral filter implementation
    *
    * * Possible problems with very large images or images of type UINT32 and bigger
    * * Works only with images of integer type.
+   * * lacking documentation about parameters
    *
+   * @author Theodore Chabardes
    * @{
    * */
 
   /**
-   *
-   * 3D Bilateral Filter
+   * @brief recursiveBilateralFilter 3D Bilateral Filter
+   * @param[in]  imIn : input Image
+   * @param[in]  sigmaW : 
+   * @param[in]  sigmaR : 
+   * @param[out] imOut : output Image
    */
   template <class T>
-  RES_T recursiveBilateralFilter(const Image<T> &imIn, Image<T> &imOut,
-                                 float sigmaW, float sigmaR);
+  RES_T recursiveBilateralFilter(const Image<T> &imIn,
+                                 float sigmaW, float sigmaR, Image<T> &imOut);
 
   /** @} */
 } // namespace smil
 
-#include "DFilter.hpp"
+#include "private/filter3DBilateral/filter3DBilateral.hpp"
 
 #endif // _D3DBILATERALFILTER_H_
