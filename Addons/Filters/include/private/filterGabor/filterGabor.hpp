@@ -134,32 +134,6 @@ namespace smil
   /*
    *
    */
-  template <class T>
-  RES_T filterGabor(const Image<T> &imIn, double sigma, double theta,
-                    double lambda, double psi, double gamma, Image<T> &imOut)
-  {
-    ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
-
-    ImageFreezer freeze(imOut);
-
-    size_t s[3];
-    imIn.getSize(s);
-
-    // TODO: check that image is 2D
-
-    typename ImDtTypes<T>::lineType bufferIn  = imIn.getPixels();
-    typename ImDtTypes<T>::lineType bufferOut = imOut.getPixels();
-
-    _computeGaborFilterConvolution(bufferIn, s[0], s[1], sigma, theta, lambda,
-                                   psi, gamma, bufferOut);
-
-    return RES_OK;
-  }
-
-  /*
-   *
-   */
   template <class T1>
   static void t_createGaborKernel(T1 *gabor, double sigma, double theta,
                                   double lambda, double psi, double gamma)
@@ -205,6 +179,128 @@ namespace smil
             cos(2 * 3.14159 / lambda * x_theta[i + j * dx] + psi);
     delete[] x_theta;
     delete[] y_theta;
+  }
+
+  /*
+   *
+   */
+  template <class T>
+  RES_T ImGaborFilterConvolution(const Image<T> &imIn, double sigma,
+                                 double theta, double lambda, double psi,
+                                 double gamma, Image<T> &imOut)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    ImageFreezer freeze(imOut);
+
+    size_t S[3];
+    imIn.getSize(S);
+
+    if (S[2] > 1) {
+      // This is a 3D Image...
+      return RES_ERR;
+    }
+
+    typename ImDtTypes<T>::lineType bufferIn  = imIn.getPixels();
+    typename ImDtTypes<T>::lineType bufferOut = imOut.getPixels();
+
+    _computeGaborFilterConvolution(bufferIn, S[0], S[1], sigma, theta, lambda,
+                                   psi, gamma, bufferOut);
+
+    return RES_OK;
+  }
+
+  /*
+   *
+   */
+  template <class T>
+  RES_T ImGaborFilterConvolutionNorm(const Image<T> &imIn, double sigma,
+                                     double theta, double lambda, double psi,
+                                     double gamma, double Min, double Max,
+                                     Image<T> &imOut, Image<T> &imGabor)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut, &imGabor);
+    ASSERT_SAME_SIZE(&imIn, &imOut, &imGabor);
+
+    RES_T res = ImGaborFilterConvolution(imIn, sigma, theta, lambda, psi, gamma,
+                                         imGabor);
+    if (res != RES_OK) {
+      // tell something
+      return res;
+    }
+
+    size_t S[3];
+    imIn.getSize(S);
+
+    if (S[2] > 1) {
+      // This is a 3D Image...
+      return RES_ERR;
+    }
+
+    typename ImDtTypes<T>::lineType bufferGabor = imGabor.getPixels();
+    typename ImDtTypes<T>::lineType bufferOut   = imOut.getPixels();
+
+    int W, H;
+    W = S[0];
+    H = S[1];
+
+    T dtMax = imOut.getDataTypeMax();
+    for (int i = W * H - 1; i >= 0; i--) {
+      bufferOut[i] = (T)((bufferGabor[i] - Min) / (Max - Min) * dtMax);
+    }
+    return RES_OK;
+  }
+
+  /*
+   *
+   */
+  template <class T>
+  RES_T ImGaborFilterConvolutionNormAuto(const Image<T> &imIn, double sigma,
+                                         double theta, double lambda,
+                                         double psi, double gamma, double *Min,
+                                         double *Max, Image<T> &imOut,
+                                         Image<T> &imGabor)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut, &imGabor);
+    ASSERT_SAME_SIZE(&imIn, &imOut, &imGabor);
+
+    RES_T res = ImGaborFilterConvolution(imIn, sigma, theta, lambda, psi, gamma,
+                                         imGabor);
+    if (res != RES_OK) {
+      // tell something
+      return res;
+    }
+
+    size_t S[3];
+    imIn.getSize(S);
+
+    if (S[2] > 1) {
+      // This is a 3D Image...
+      return RES_ERR;
+    }
+
+    typename ImDtTypes<T>::lineType bufferGabor = imGabor.getPixels();
+    typename ImDtTypes<T>::lineType bufferOut   = imOut.getPixels();
+
+    int W, H;
+    W = S[0];
+    H = S[1];
+
+    *Min = bufferGabor[0];
+    *Max = bufferGabor[0];
+    for (int i = W * H - 1; i > 0; i--) {
+      if (*Min > bufferGabor[i])
+        *Min = bufferGabor[i];
+      if (*Max < bufferGabor[i])
+        *Max = bufferGabor[i];
+    }
+
+    T dtMax = imOut.getDataTypeMax();
+    for (int i = W * H - 1; i >= 0; i--) {
+      bufferOut[i] = (T)((bufferGabor[i] - *Min) / (*Max - *Min) * dtMax);
+    }
+    return RES_OK;
   }
 } // namespace smil
 

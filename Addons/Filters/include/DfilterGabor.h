@@ -2,7 +2,7 @@
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * Copyright (c) 2017-2019, Centre de Morphologie Mathematique
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -15,16 +15,16 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Description :
@@ -38,8 +38,8 @@
  *
  * __HEAD__ - Stop here !
  */
- 
- #ifndef _DGABOR_FILTER_H_
+
+#ifndef _DGABOR_FILTER_H_
 #define _DGABOR_FILTER_H_
 
 #include "Core/include/DCore.h"
@@ -57,11 +57,11 @@ namespace smil
    * @see Gabor Filter <a href="https://en.wikipedia.org/wiki/Gabor_filter">
    *       on Wikipedia</a>
    *
-   * @author Vincent Morard
+   * @author Vincent Morard / Jose-Marcio Martins da Cruz
    * @{ */
 
   /**
-   * @brief filterGabor Gabor Filter
+   * @brief ImGaborFilterConvolution Gabor Filter
    * @param[in] imIn : input Image
    * @param[in] sigma : size of the gaussian
    * @param[in] theta : orientation of the kernel (in rad)
@@ -71,9 +71,49 @@ namespace smil
    * @param[out] imOut : output Image (must be F_SIMPLE or F_DOUBLE ???)
    */
   template <class T>
-  RES_T filterGabor(const Image<T> &imIn, double sigma, double theta,
-                    double lambda, double psi, double gamma, Image<T> &imOut);
+  RES_T ImGaborFilterConvolution(const Image<T> &imIn, double sigma,
+                                 double theta, double lambda, double psi,
+                                 double gamma, Image<T> &imOut);
 
+  /**
+   * @brief ImGaborFilterConvolutionNorm Gabor Filter (normalized between 
+   *   Min and Max)
+   * @param[in] imIn : input Image
+   * @param[in] sigma : size of the gaussian
+   * @param[in] theta : orientation of the kernel (in rad)
+   * @param[in] lambda : frequency of the cos
+   * @param[in] psi : phase of the cos (in rad)
+   * @param[in] gamma : anisotropy of the kernel
+   * @param[in] Min :
+   * @param[in] Max :
+   * @param[out] imOut : output Image (must be F_SIMPLE or F_DOUBLE ???)
+   * @param[out] imGabor : output Image (must be F_SIMPLE or F_DOUBLE ???)
+   */
+  template <class T>
+  RES_T ImGaborFilterConvolutionNorm(const Image<T> &imIn, double sigma,
+                                     double theta, double lambda, double psi,
+                                     double gamma, double Min, double Max,
+                                     Image<T> &imOut, Image<T> &imGabor);
+
+  /**
+   * @brief ImGaborFilterConvolutionNormAuto Gabor Filter (automatically normalized)
+   * @param[in] imIn : input Image
+   * @param[in] sigma : size of the gaussian
+   * @param[in] theta : orientation of the kernel (in rad)
+   * @param[in] lambda : frequency of the cos
+   * @param[in] psi : phase of the cos (in rad)
+   * @param[in] gamma : anisotropy of the kernel
+   * @param[out] Min :
+   * @param[out] Max :
+   * @param[out] imOut : output Image (must be F_SIMPLE or F_DOUBLE ???)
+   * @param[out] imGabor : output Image (must be F_SIMPLE or F_DOUBLE ???)
+   */
+  template <class T>
+  RES_T ImGaborFilterConvolutionNormAuto(const Image<T> &imIn, double sigma,
+                                         double theta, double lambda,
+                                         double psi, double gamma, double *Min,
+                                         double *Max, Image<T> &imOut,
+                                         Image<T> &imGabor);
   /** @} */
 } // namespace smil
 

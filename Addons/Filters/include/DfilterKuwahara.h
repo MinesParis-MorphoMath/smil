@@ -62,7 +62,7 @@ namespace smil
    *       on Wikipedia</a>
    *
    * @warning Not yet implemented for RGB Images
-   * @author Vincent Morard
+   * @author Vincent Morard / Jose-Marcio Martins da Cruz
    * @{ */
 
   /**

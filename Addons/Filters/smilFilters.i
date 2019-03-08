@@ -47,7 +47,9 @@ SMIL_MODULE(smilFilters)
 # %import smilMorpho.i
 
 %include "DfilterGabor.h"
-TEMPLATE_WRAP_FUNC(filterGabor)
+TEMPLATE_WRAP_FUNC(ImGaborFilterConvolution)
+TEMPLATE_WRAP_FUNC(ImGaborFilterConvolutionNorm)
+TEMPLATE_WRAP_FUNC(ImGaborFilterConvolutionNormAuto)
 
 %include "DfilterCanny.h"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImCannyEdgeDetection)
@@ -60,7 +62,7 @@ TEMPLATE_WRAP_FUNC(ImDericheEdgeDetection);
 
 %include "DfilterKuwahara.h"
 TEMPLATE_WRAP_FUNC(ImKuwaharaFilter);
-// TEMPLATE_WRAP_FUNC(ImKuwaharaFilterRGB);
+TEMPLATE_WRAP_FUNC(ImKuwaharaFilterRGB);
 
 %include "Dfilter3DBilateral.h"
 TEMPLATE_WRAP_FUNC(recursiveBilateralFilter);

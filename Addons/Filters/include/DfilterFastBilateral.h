@@ -11,7 +11,7 @@ namespace smil
    *
    * @brief A 2D Fast Bilateral Filter
    *
-   * @author Vincent Morard
+   * @author Vincent Morard / Jose-Marcio Martins da Cruz
    * @{ */
 
 
