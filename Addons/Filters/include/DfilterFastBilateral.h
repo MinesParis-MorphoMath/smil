@@ -7,7 +7,7 @@ namespace smil
 {
   /**
    * @ingroup   AddonFilters
-   * @defgroup  AddonFastFilter        Fast Bilateral Filter
+   * @defgroup  AddonFastFilter        Fast Bilateral Filter (2D)
    *
    * @brief A 2D Fast Bilateral Filter
    *
