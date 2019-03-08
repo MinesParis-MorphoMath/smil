@@ -76,7 +76,7 @@ namespace smil
    * * John Canny, A computational approach to edge detection, IEEE Pami, 
    * vol. 8, n° 6, novembre 1986, pp 679-698
    *
-   * @author Vincent Morard
+   * @author Vincent Morard / Jose-Marcio Martins da Cruz
    * @{ */
 
   /**

@@ -60,7 +60,7 @@ namespace smil
    *   <a href="https://en.wikipedia.org/wiki/Deriche_edge_detector">
    *   on Wikipedia</a>
    *
-   * @author Vincent Morard
+   * @author Vincent Morard / Jose-Marcio Martins da Cruz
    * @{ */
 
 
