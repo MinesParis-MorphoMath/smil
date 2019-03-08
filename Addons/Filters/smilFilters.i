@@ -48,6 +48,10 @@ SMIL_MODULE(smilFilters)
 %import smilCore.i
 # %import smilMorpho.i
 
+
+// *******************************
+// Filters from Morph-M
+// *******************************
 %include "DfilterGabor.h"
 TEMPLATE_WRAP_FUNC(ImGaborFilterConvolution)
 TEMPLATE_WRAP_FUNC(ImGaborFilterConvolutionNorm)
@@ -74,6 +78,9 @@ TEMPLATE_WRAP_FUNC(ImSigmaFilterRGB);
 TEMPLATE_WRAP_FUNC(ImMeanShiftFilter);
 TEMPLATE_WRAP_FUNC(ImMeanShiftFilterRGB);
 
+// *******************************
+// Filters from Theodore Chabardes
+// *******************************
 %include "Dfilter3DBilateral.h"
 TEMPLATE_WRAP_FUNC(recursiveBilateralFilter);
 
