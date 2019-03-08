@@ -310,35 +310,6 @@ Gaussian.
       delete[] dY;
       return RES_OK;
     }
-
-#if 0
-    template <class T1, class T2>
-    RES_T t_ImCannyEdgeDetection(const Image<T1> &imIn, const double Sigma,
-                                 Image<T2> &imOut)
-    {
-      // Check inputs
-      if (!imIn.isAllocated() || !imOut.isAllocated()) {
-        MORPHEE_REGISTER_ERROR("Image not allocated");
-        return RES_NOT_ALLOCATED;
-      }
-      if (!t_CheckWindowSizes(imIn, imOut)) {
-        MORPHEE_REGISTER_ERROR("Bad window sizes");
-        return RES_ERROR_BAD_WINDOW_SIZE;
-      }
-
-      if (imIn.getWzSize() != 1) {
-        MORPHEE_REGISTER_ERROR("3D image not supported yet");
-        return RES_ERROR;
-      }
-
-      int W, H;
-      W = imIn.getWxSize();
-      H = imIn.getWySize();
-
-      // Canny edge detection
-      return Canny(imIn.rawPointer(), W, H, Sigma, imOut.rawPointer());
-    }
-#endif
     
     template <class T1, class T2>
     RES_T ImCannyEdgeDetection(const Image<T1> &imIn, const double Sigma,
