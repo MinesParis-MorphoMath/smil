@@ -39,6 +39,8 @@ SMIL_MODULE(smilFilters)
 #include "DfilterFastBilateral.h"
 #include "DfilterDeriche.h"
 #include "DfilterKuwahara.h"
+#include "DfilterSigma.h"
+#include "DfilterMeanShift.h"
 
 #include "Dfilter3DBilateral.h"
 %}
@@ -63,6 +65,14 @@ TEMPLATE_WRAP_FUNC(ImDericheEdgeDetection);
 %include "DfilterKuwahara.h"
 TEMPLATE_WRAP_FUNC(ImKuwaharaFilter);
 TEMPLATE_WRAP_FUNC(ImKuwaharaFilterRGB);
+
+%include "DfilterSigma.h"
+TEMPLATE_WRAP_FUNC(ImSigmaFilter);
+TEMPLATE_WRAP_FUNC(ImSigmaFilterRGB);
+
+%include "DfilterMeanShift.h"
+TEMPLATE_WRAP_FUNC(ImMeanShiftFilter);
+TEMPLATE_WRAP_FUNC(ImMeanShiftFilterRGB);
 
 %include "Dfilter3DBilateral.h"
 TEMPLATE_WRAP_FUNC(recursiveBilateralFilter);

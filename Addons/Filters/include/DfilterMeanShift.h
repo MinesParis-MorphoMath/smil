@@ -31,35 +31,60 @@
  *   2D Gabor filter implementation by Vincent Morard
  *
  * History :
- *   - 05/03/2019 - by Jose-Marcio Martins da Cruz
- *     Just created the plugin
+ *   - XX/XX/XXXX - by Vincent Morard
+ *     Just created it
+ *   - 21/02/2019 - by Jose-Marcio Martins da Cruz
  *     Formatting and removing some warnings and minor differences
  *
  * __HEAD__ - Stop here !
  */
  
-#ifndef _D_FILTERS_H_
-#define _D_FILTERS_H_
+ #ifndef _D_MEANSHIFT_FILTER_H_
+#define _D_MEANSHIFT_FILTER_H_
 
 #include "Core/include/DCore.h"
 
 namespace smil
 {
   /**
-   * @ingroup   Addons
-   * @defgroup  AddonFilters    Filters (Non Morphological)
-   */
+   * @ingroup   AddonFilters
+   * @defgroup  AddonMeanShiftFilter         Mean Shift Filter (2D)
+   *
+   * @brief A 2D "Mean Shift" filter implementation
+   *
+   * Performs a noise an efficient reduction using clustering
+   * @see Mean Shift on <a href=https://en.wikipedia.org/wiki/Mean_shift>
+   * Wikipedia</a>
+   *
+   * @author Vincent Morard / Jose-Marcio Martins da Cruz
+   * @{ */
 
+  /**
+   * @brief Performs a noise an efficient reduction using clustering
+   * @param[in] imIn : input Image
+   * @param[in] radius :
+   * @param[in] tonalDistance :
+   * @param[out] imOut : output Image
+   */
+  template <class T>
+  RES_T ImMeanShiftFilter(const Image<T> &imIn, const UINT8 radius,
+                    const int tonalDistance, Image<T> &imOut);
+
+  /**
+   * @brief Performs a noise an efficient reduction using clustering (RGB Images)
+   * @param[in] imIn : input Image
+   * @param[in] radius :
+   * @param[in] tonalDistance :
+   * @param[out] imOut : output Image
+   * @warning Yet to be done !!!
+   */
+  template <class T>
+  RES_T ImMeanShiftFilterRGB(const Image<T> &imIn, const UINT8 radius,
+                    const int tonalDistance, Image<T> &imOut);
+                      
+  /** @} */
 } // namespace smil
 
-#include "DfilterGabor.h"
-#include "DfilterCanny.h"
-#include "DfilterFastBilateral.h"
-#include "DfilterDeriche.h"
-#include "DfilterKuwahara.h"
-#include "DfilterSigma.h"
-#include "DfilterSigma.h"
+#include "private/filterMeanShift/filterMeanShift.hpp"
 
-#include "Dfilter3DBilateral.h"
-
-#endif // _D_FILTERS_H_
+#endif // _D_MEANSHIFT_FILTER_H_
