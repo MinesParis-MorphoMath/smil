@@ -58,7 +58,7 @@ OK ======== morphee.in/include/private/filterKuwahara_T.hpp
       RES_C operator()(const IMAGE &imIn, UINT32 gaussSz, IMAGEOUT &imOut)
       RES_C operator()(const IMAGE &imIn, UINT32 gaussSz, IMAGEOUT &imOut)
     RES_C t_ImHarrisOperator(const IMAGE &imIn, UINT32 gaussSz, IMAGEOUT &imOut)
-======== morphee.in/include/private/filterSigma_T.hpp
+OK ======== morphee.in/include/private/filterSigma_T.hpp
     RES_C t_ImSigmaFilter(const Image<T1> &imIn, const UINT8 radius,
     RES_C t_ImSigmaFilterRGB(const Image<T1> &imIn, const UINT8 radius,
 * ======== morphee.in/include/private/filtersNoise_T.hpp
