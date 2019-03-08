@@ -76,6 +76,7 @@ namespace smil
 
       initLookup(ImDtTypes<T>::max());
     }
+
     QVtkViewer(Image<T> &im) : ImageViewer<T>(), QVtkViewerWidget()
     {
       if (is_same<T, UINT8>::value)
@@ -95,6 +96,7 @@ namespace smil
 
       initLookup(ImDtTypes<T>::max());
     }
+
     ~QVtkViewer()
     {
     }
@@ -139,11 +141,10 @@ namespace smil
 
     virtual void drawImage()
     {
-      //             T rVals[2];
-      //             rangeVal(*this->image, rVals);
-      //             opacityTransfertFunction->RemoveAllPoints();
-      //             opacityTransfertFunction->AddSegment(rVals[0], 0.,
-      //             rVals[1], 1.0);
+      // T rVals[2];
+      // rangeVal(*this->image, rVals);
+      // opacityTransfertFunction->RemoveAllPoints();
+      // opacityTransfertFunction->AddSegment(rVals[0], 0., rVals[1], 1.0);
 
       QVtkViewerWidget::update();
     }
@@ -152,25 +153,30 @@ namespace smil
     {
       QVtkViewerWidget::hide();
     }
+
     virtual void show()
     {
       QVtkViewerWidget::showNormal();
       this->drawImage();
     }
+
     virtual void show(Image<T> &im)
     {
       this->setImage(im);
       this->show();
     }
+
     virtual void showLabel()
     {
       QVtkViewerWidget::showLabel();
       this->drawImage();
     }
+
     virtual bool isVisible()
     {
       return QVtkViewerWidget::isVisible();
     }
+
     virtual void setName(const char *_name)
     {
       QString buf = _name + QString(" (") +
@@ -178,9 +184,11 @@ namespace smil
                     QString(")");
       QVtkViewerWidget::setWindowTitle(buf);
     }
+
     virtual void drawOverlay(const Image<T> & /*im*/)
     {
     }
+
     virtual void clearOverlay()
     {
     }
@@ -222,7 +230,7 @@ namespace smil
     }
   };
 
-  /*@}*/
+  /** @} */
 
 } // namespace smil
 
