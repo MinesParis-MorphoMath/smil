@@ -5,7 +5,8 @@
 *.save
 *.tmp
 #
-
+morphee.in/*
+archive/*
 
 # emacs backup files
 *~

@@ -31,32 +31,52 @@
  *   2D Gabor filter implementation by Vincent Morard
  *
  * History :
- *   - 05/03/2019 - by Jose-Marcio Martins da Cruz
- *     Just created the plugin
+ *   - XX/XX/XXXX - by Vincent Morard
+ *     Just created it
+ *   - 21/02/2019 - by Jose-Marcio Martins da Cruz
  *     Formatting and removing some warnings and minor differences
  *
  * __HEAD__ - Stop here !
  */
  
-#ifndef _D_FILTERS_H_
-#define _D_FILTERS_H_
+ #ifndef _DGABOR_FILTER_H_
+#define _DGABOR_FILTER_H_
 
 #include "Core/include/DCore.h"
 
 namespace smil
 {
   /**
-   * @ingroup   Addons
-   * @defgroup  AddonFilters    Filters (Non Morphological)
-   */
+   * @ingroup   AddonFilters
+   * @defgroup  AddonGaborFilter        Gabor Filter (2D)
+   *
+   * @brief A 2D Gabor filter implementation
+   *
+   * Texture analysis with the computation of a Gabor filter
+   *
+   * @see Gabor Filter <a href="https://en.wikipedia.org/wiki/Gabor_filter">
+   *       on Wikipedia</a>
+   *
+   * @author Vincent Morard
+   * @{ */
 
+  /**
+   * @brief filterGabor Gabor Filter
+   * @param[in] imIn : input Image
+   * @param[in] sigma : size of the gaussian
+   * @param[in] theta : orientation of the kernel (in rad)
+   * @param[in] lambda : frequency of the cos
+   * @param[in] psi : phase of the cos (in rad)
+   * @param[in] gamma : anisotropy of the kernel
+   * @param[out] imOut : output Image (must be F_SIMPLE or F_DOUBLE ???)
+   */
+  template <class T>
+  RES_T filterGabor(const Image<T> &imIn, double sigma, double theta,
+                    double lambda, double psi, double gamma, Image<T> &imOut);
+
+  /** @} */
 } // namespace smil
 
-#include "DfilterGabor.h"
-#include "DfilterCanny.h"
-#include "DfilterFastBilateral.h"
-#include "Dfilter3DBilateral.h"
-#include "DfilterDeriche.h"
-#include "DfilterKuwahara.h"
+#include "private/filterGabor/filterGabor.hpp"
 
-#endif // _D_FILTERS_H_
+#endif // _DGABOR_FILTER_H_

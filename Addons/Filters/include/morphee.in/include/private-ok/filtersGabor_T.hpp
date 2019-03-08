@@ -189,8 +189,7 @@ namespace morphee
     }
 
     template <class T1, class T2, class T3>
-    RES_C
-    t_ImGaborFilterConvolutionNormAuto(const Image<T1> &imIn, double sigma,
+    RES_C t_ImGaborFilterConvolutionNormAuto(const Image<T1> &imIn, double sigma,
                                        double theta, double lambda, double psi,
                                        double gamma, double *Min, double *Max,
                                        Image<T2> &imOut, Image<T3> &imGabor)
