@@ -31,32 +31,63 @@
  *   2D Gabor filter implementation by Vincent Morard
  *
  * History :
- *   - 05/03/2019 - by Jose-Marcio Martins da Cruz
- *     Just created the plugin
+ *   - XX/XX/XXXX - by Vincent Morard
+ *     Just created it
+ *   - 21/02/2019 - by Jose-Marcio Martins da Cruz
  *     Formatting and removing some warnings and minor differences
  *
  * __HEAD__ - Stop here !
  */
  
-#ifndef _D_FILTERS_H_
-#define _D_FILTERS_H_
+ #ifndef _D_KUWAHARA_FILTER_H_
+#define _D_KUWAHARA_FILTER_H_
 
 #include "Core/include/DCore.h"
 
 namespace smil
 {
   /**
-   * @ingroup   Addons
-   * @defgroup  AddonFilters    Filters (Non Morphological)
-   */
+   * @ingroup   AddonFilters
+   * @defgroup  AddonKuwaharaFilter        Kuwahara Filter (2D)
+   *
+   * @brief A 2D Kuwahara filter implementation
+   *
+   * Performs the Kuwahara Filter, a noise-reduction filter that
+   * preserves edges. In the case of a 5x5 sampling window, the mean
+   * brightness and the variance of each of the four 3x3 regions,
+   * are calculated and the value of the center pixel is set to the
+   * mean value of the region that with the smallest variance.
+   *
+   * @see Kuwahara Filter <a href="https://en.wikipedia.org/wiki/Kuwahara_filter">
+   *       on Wikipedia</a>
+   *
+   * @warning Not yet implemented for RGB Images
+   * @author Vincent Morard
+   * @{ */
 
+  /**
+   * @brief  ImKuwaharaFilter Kuwahara Filter
+   * @param[in] imIn : input Image
+   * @param[in] radius : 
+   * @param[out] imOut : output Image (must be F_SIMPLE or F_DOUBLE ???)
+   */
+  template <class T>
+  RES_T ImKuwaharaFilter(const Image<T> &imIn, const int radius,
+                           Image<T> &imOut);
+
+  /**
+   * @brief  ImKuwaharaFilterRGB Kuwahara Filter (color images)
+   * @param[in] imIn : input Image
+   * @param[in] radius : 
+   * @param[out] imOut : output Image (must be F_SIMPLE or F_DOUBLE ???)
+   */
+  template <class T>
+  RES_T ImKuwaharaFilterRGB(const Image<T> &imIn, const int radius,
+                          Image<T> &imOut);
+                           
+  /** @} */
 } // namespace smil
 
-#include "DfilterGabor.h"
-#include "DfilterCanny.h"
-#include "DfilterFastBilateral.h"
-#include "Dfilter3DBilateral.h"
-#include "DfilterDeriche.h"
-#include "DfilterKuwahara.h"
+#include "private/filterKuwahara/filterKuwahara.hpp"
 
-#endif // _D_FILTERS_H_
+#endif // _D_KUWAHARA_FILTER_H_

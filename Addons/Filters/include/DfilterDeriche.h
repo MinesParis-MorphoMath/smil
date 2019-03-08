@@ -39,7 +39,7 @@
  * __HEAD__ - Stop here !
  */
  
- #ifndef _D_FILTER_DERICHE_H_
+#ifndef _D_FILTER_DERICHE_H_
 #define _D_FILTER_DERICHE_H_
 
 #include "Core/include/DCore.h"
@@ -70,9 +70,9 @@ namespace smil
      * @param[out] imOut Edges of imIn
      */
     template <class T>
-    RES_T ImDericheEdgeDetection(const Image<T> *imIn,
+    RES_T ImDericheEdgeDetection(const Image<T> &imIn,
                                         const double Alpha,
-                                        Image<T> *imOut);
+                                        Image<T> &imOut);
                    
   /** @} */
 } // namespace smil

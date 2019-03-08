@@ -1,0 +1,90 @@
+PROBLEMS :
+
+* depends on boost library
+  * filtersNoise
+
+* depends on morphm (Convolution Kernel)
+  * filtersConvolve_T.hpp
+  * filtersDifferential_T.hpp
+  * filtersGaussian_T.hpp
+
+
+======== morphee.in/include/private/filterKuwahara_T.hpp
+    RES_C t_ImKuwaharaFilter(const Image<T1> &imIn, const int radius,
+    RES_C t_ImKuwaharaFilterRGB(const Image<T1> &imIn, const int radius,
+======== morphee.in/include/private/filterMeanShift_T.hpp
+    RES_C t_ImMeanShift(const Image<T1> &imIn, const UINT8 radius,
+    RES_C t_ImMeanShiftRGB(const Image<T1> &imIn, const UINT8 radius,
+======== morphee.in/include/private/filtersConvolve_T.hpp
+    RES_C t_ImConvolve(const image_type1 &imIn,
+    RES_C t_ImConvolve(const Image<T1> &imIn,
+======== morphee.in/include/private/filtersDifferential_T.hpp
+    RES_C t_ImLaplacianFilter(const image_type1 &imIn, image_type2 &imOut)
+    RES_C t_ImDifferentialGradient(const image_type1 &imIn, UINT16 dimension,
+    RES_C t_ImDifferentialGradientX(const image_type1 &imIn, image_type2 &imOut)
+    RES_C t_ImDifferentialGradientY(const image_type1 &imIn, image_type2 &imOut)
+======== morphee.in/include/private/filtersDiffusion_T.hpp
+      RES_C compute_displacements(const image_type &im)
+      RES_C initFromImage(const image_type &im)
+      RES_C centered_difference_scheme_along_dimension(
+      RES_C compute_whole_gradient(const image_type &im,
+      RES_C apply_scalar_functionnal_by_precomputing(
+      RES_C transform_gradient_to_squared_modulus(
+      RES_C process_init(const input_image_type &im)
+      RES_C process_step(const processing_step_input_image_type &im_in,
+      RES_C process_init(const input_image_type &im)
+      RES_C process_step(const processing_step_input_image_type &im_in,
+      RES_C process_init(const input_image_type &im)
+      RES_C process_step(const processing_step_input_image_type &im_in,
+    RES_C t_DiffusionFunction(const t_imageIn &imIn, const UINT32 nosteps,
+    RES_C t_Gradient(const t_imageIn &imIn, std::vector<t_imageOut *> &v_imOut)
+    RES_C t_HeatDiffusion(const __imageIn &imIn, const UINT32 nosteps,
+    RES_C t_PeronaMalikDiffusion(const __imageIn &imIn, const UINT32 nosteps,
+    RES_C t_WeickertDiffusion(const __imageIn &imIn, const UINT32 nosteps,
+======== morphee.in/include/private/filtersGaussianRecursive_T.hpp
+    RES_C ImGaussianRecursive_Helper(ImageReal &imIn, int filterRadius,
+======== morphee.in/include/private/filtersGaussian_T.hpp
+    RES_C t_fillGaussianKernel(selement::ConvolutionKernel<T> &kernel)
+    RES_C t_ImGaussianFilter_Slow(const Image<T1> &imIn, INT32 filterRadius,
+    RES_C t_ImGaussianFilter_Separable(const Image<T1> &imIn,
+      RES_C operator()(const Image<T1> &imIn, INT32 filterRadius,
+      RES_C operator()(const Image<pixel_3<T1>> &imIn, INT32 filterRadius,
+    RES_C t_ImGaussianFilter(const Image<T1> &imIn, INT32 filterRadius,
+======== morphee.in/include/private/filtersHarris_T.hpp
+      RES_C operator()(const IMAGE &imIn, UINT32 gaussSz, IMAGEOUT &imOut)
+      RES_C operator()(const IMAGE &imIn, UINT32 gaussSz, IMAGEOUT &imOut)
+      RES_C operator()(const IMAGE &imIn, UINT32 gaussSz, IMAGEOUT &imOut)
+    RES_C t_ImHarrisOperator(const IMAGE &imIn, UINT32 gaussSz, IMAGEOUT &imOut)
+======== morphee.in/include/private/filterSigma_T.hpp
+    RES_C t_ImSigmaFilter(const Image<T1> &imIn, const UINT8 radius,
+    RES_C t_ImSigmaFilterRGB(const Image<T1> &imIn, const UINT8 radius,
+======== morphee.in/include/private/filtersNoise_T.hpp
+    RES_C t_ImAddNoiseSaltAndPepper(const __Image &imIn,
+    RES_C t_ImAddNoiseGaussian(const __Image &imIn, const F_DOUBLE sigma,
+    RES_C t_ImAddNoisePoissonian(const __Image &imIn, __Image &imOut);
+    RES_C t_ImAddNoiseUniform(const __Image &imIn, Tparam minVal, Tparam maxVal,
+======== morphee.in/include/private/filtersNoise_T_impl.hpp
+    RES_C t_ImAddNoiseSaltAndPepper(const __Image &imIn, const F_DOUBLE freq,
+    RES_C t_ImAddNoiseGaussian(const __Image &imIn, const F_DOUBLE sigma,
+    RES_C t_ImAddNoisePoissonian(const __Image &imIn, __Image &imOut)
+    RES_C t_ImAddNoiseUniform(const __Image &imIn, Tparam minVal, Tparam maxVal,
+======== morphee.in/include/private/filtersZoomInOut_T.hpp
+    RES_C t_ImDecimation(const __imageInOut &imin,
+    RES_C t_ImZoom(const __imageInOut &imin,
+
+
+======== morphee.in/include/private-ok/filterFastBilateral_T.hpp
+    RES_C t_ImFastBilateralFilter(const Image<T1> &imIn, const UINT8 Method,
+    RES_C t_ImFastBilateralFilterRGB(const Image<T1> &imIn, const UINT8 Method,
+======== morphee.in/include/private-ok/filtersDeriche_T.hpp
+    RES_C Deriche(T1 *imIn, int W, int H, double Alpha, T2 *imOut)
+    RES_C t_ImDericheEdgeDetection(const Image<T1> &imIn, const double Alpha,
+======== morphee.in/include/private-ok/filtersGabor_T.hpp
+    RES_C ComputeGaborFilterConvolution(T1 *bufferIn, int W, int H,
+    RES_C t_ImGaborFilterConvolution(const Image<T1> &imIn, double sigma,
+    RES_C t_ImGaborFilterConvolutionNorm(const Image<T1> &imIn, double sigma,
+    RES_C t_ImGaborFilterConvolutionNormAuto(const Image<T1> &imIn, double sigma,
+    RES_C t_createGaborKernel(Image<T1> &imOut, double sigma, double theta,
+    RES_C t_ImDisplayKernel(const Image<T1> &imIn, Image<T2> &imOut)
+    RES_C t_ImNormalized(const Image<T1> &imIn, double Max, Image<T2> &imOut)
+
