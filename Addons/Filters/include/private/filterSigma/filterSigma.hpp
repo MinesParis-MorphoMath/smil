@@ -1,5 +1,5 @@
-#ifndef __FAST_SIGMA_FILTER_T_HPP__
-#define __FAST_SIGMA_FILTER_T_HPP__
+#ifndef _D_SIGMA_FILTER_HPP_
+#define _D_SIGMA_FILTER_HPP_
 
 namespace smil
 {
@@ -86,13 +86,13 @@ namespace smil
     return RES_OK;
   }
 
-#if 0
   template <class T>
-  RES_C t_ImSigmaFilterRGB(const Image<T> &imIn, const UINT8 radius,
+  RES_T t_ImSigmaFilterRGB(const Image<T> &imIn, const UINT8 radius,
                            const double sigma,
                            const double percentageNbMinPixel,
                            const bool excludeOutlier, Image<T> &imOut)
   {
+#if 0
     MORPHEE_ENTER_FUNCTION("t_ImSigmaFilterRGB");
 
     // Check inputs
@@ -186,8 +186,9 @@ namespace smil
       }
 
     delete[] pixelsf;
+#endif
     return RES_OK;
   }
-#endif
+
 } // namespace smil
 #endif

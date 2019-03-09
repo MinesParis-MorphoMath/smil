@@ -52,12 +52,13 @@ namespace smil
 
 } // namespace smil
 
-#include "DfilterGabor.h"
 #include "DfilterCanny.h"
-#include "DfilterFastBilateral.h"
 #include "DfilterDeriche.h"
+#include "DfilterFastBilateral.h"
+#include "DfilterGabor.h"
 #include "DfilterKuwahara.h"
-#include "DfilterSigma.h"
+#include "DfilterMeanShift.h"
+#include "DfilterNormalize.h"
 #include "DfilterSigma.h"
 
 #include "Dfilter3DBilateral.h"

@@ -15,7 +15,7 @@ PROBLEMS :
 OK ======== morphee.in/include/private/filterKuwahara_T.hpp
     RES_C t_ImKuwaharaFilter(const Image<T1> &imIn, const int radius,
     RES_C t_ImKuwaharaFilterRGB(const Image<T1> &imIn, const int radius,
-======== morphee.in/include/private/filterMeanShift_T.hpp
+OK ======== morphee.in/include/private/filterMeanShift_T.hpp
     RES_C t_ImMeanShift(const Image<T1> &imIn, const UINT8 radius,
     RES_C t_ImMeanShiftRGB(const Image<T1> &imIn, const UINT8 radius,
 * ======== morphee.in/include/private/filtersConvolve_T.hpp
@@ -26,7 +26,7 @@ OK ======== morphee.in/include/private/filterKuwahara_T.hpp
     RES_C t_ImDifferentialGradient(const image_type1 &imIn, UINT16 dimension,
     RES_C t_ImDifferentialGradientX(const image_type1 &imIn, image_type2 &imOut)
     RES_C t_ImDifferentialGradientY(const image_type1 &imIn, image_type2 &imOut)
-======== morphee.in/include/private/filtersDiffusion_T.hpp
+* ======== morphee.in/include/private/filtersDiffusion_T.hpp
       RES_C compute_displacements(const image_type &im)
       RES_C initFromImage(const image_type &im)
       RES_C centered_difference_scheme_along_dimension(
@@ -53,7 +53,7 @@ OK ======== morphee.in/include/private/filterKuwahara_T.hpp
       RES_C operator()(const Image<T1> &imIn, INT32 filterRadius,
       RES_C operator()(const Image<pixel_3<T1>> &imIn, INT32 filterRadius,
     RES_C t_ImGaussianFilter(const Image<T1> &imIn, INT32 filterRadius,
-======== morphee.in/include/private/filtersHarris_T.hpp
+* ======== morphee.in/include/private/filtersHarris_T.hpp
       RES_C operator()(const IMAGE &imIn, UINT32 gaussSz, IMAGEOUT &imOut)
       RES_C operator()(const IMAGE &imIn, UINT32 gaussSz, IMAGEOUT &imOut)
       RES_C operator()(const IMAGE &imIn, UINT32 gaussSz, IMAGEOUT &imOut)
