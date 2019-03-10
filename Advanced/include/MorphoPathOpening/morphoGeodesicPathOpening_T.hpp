@@ -608,7 +608,7 @@ namespace smil
       return RES_ERR_BAD_ALLOCATION;
     }
 
-    std::vector<std::vector<MyPOINTS>> PathOp(W * H * Z);
+    std::vector<std::vector<MyPOINTS> > PathOp(W * H * Z);
     MyPOINTS Pt;
 
     // For all the level which are needed

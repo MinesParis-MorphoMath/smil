@@ -51,7 +51,7 @@ class Test_MST : public TestCase
     graph.addEdge(Edge<>(4, 1, 3));
 
     Graph<> mst = graphMST(graph);
-    vector<Edge<>> mstTruth;
+    vector<Edge<> > mstTruth;
     mstTruth.push_back(Edge<>(0, 2, 1));
     mstTruth.push_back(Edge<>(4, 0, 1));
     mstTruth.push_back(Edge<>(3, 4, 1));
@@ -60,7 +60,7 @@ class Test_MST : public TestCase
     TEST_ASSERT(mst.getEdges() == mstTruth);
 
     if (retVal != RES_OK) {
-      for (vector<Edge<>>::const_iterator it = mst.getEdges().begin();
+      for (vector<Edge<> >::const_iterator it = mst.getEdges().begin();
            it != mst.getEdges().end(); it++)
         cout << (*it).source << "-" << (*it).target << " (" << (*it).weight
              << ")" << endl;

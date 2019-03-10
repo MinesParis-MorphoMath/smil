@@ -408,7 +408,7 @@ namespace smil
 
     // each pixel have vector of MyPoints to store each changement in the PO
     // We are able to build all the Lenght for the PathOP
-    std::vector<std::vector<MyPOINTS>> PathOp(W * H);
+    std::vector<std::vector<MyPOINTS> > PathOp(W * H);
 
     float *Lambda = new float[W * H * 8];
     if (Lambda == NULL) {
