@@ -28,17 +28,16 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Description :
- *   2D Gabor filter implementation by Vincent Morard
+ *   Gaussian Filters
  *
  * History :
- *   - 08/03/2019 - by Jose-Marcio Martins da Cruz
- *     Just created it
+ *   - XX/03/2019 - ported from Morph-M by Jose-Marcio Martins da Cruz
  *
  * __HEAD__ - Stop here !
  */
 
-#ifndef _D_NORMALIZE_FILTER_H_
-#define _D_NORMALIZE_FILTER_H_
+#ifndef _D_GAUSSIAN_FILTER_H_
+#define _D_GAUSSIAN_FILTER_H_
 
 #include "Core/include/DCore.h"
 
@@ -46,57 +45,27 @@ namespace smil
 {
   /**
    * @ingroup   AddonFilters
-   * @defgroup  AddonScaleFilter      Image Normalize
+   * @defgroup  AddonGaussianFilter        Gaussian Filters
    *
-   * @brief Various filters to normalize images
+   * @brief Gaussian Filters
+   *
+   * @warning Not yet fully implemented
    *
    * @author Jose-Marcio Martins da Cruz
    * @{ */
 
   /**
-   * @brief ImNormalize : Linear conversion of pixels values to the range [Min,
-   * Max]
+   * @brief filterGabor Gabor Filter
    * @param[in] imIn : input Image
-   * @param[in] Min : Minimum value in the output image
-   * @param[in] Max : Maximum value in the output image
+   * @param[in] radius :
    * @param[out] imOut : output Image
    */
   template <class T1, class T2>
-  RES_T ImNormalize(const Image<T1> &imIn, const T2 Min, const T2 Max,
-                    Image<T2> &imOut);
-
-  /**
-   * @brief ImNormalizeAuto : Linear conversion of pixels values to the domain
-   * range
-   * @param[in] imIn : input Image
-   * @param[out] imOut : output Image
-   */
-  template <class T1, class T2>
-  RES_T ImNormalizeAuto(const Image<T1> &imIn, Image<T2> &imOut);
-
-  /**
-   * @brief ImNormalizeSCurve : S Curve transform
-   *
-   * This function emulates the "S Curve" caracteristic of film photography.
-   *
-   * Use a sigmoid function centered at "pivot" with derivative "ratio". 
-   * 
-   * @param[in] imIn : input Image
-   * @param[in] pivot : 
-   * * if 0, takes the median of the histogram of input image as pivot
-   * * otherwise, use this value
-   * @param[in] ratio : derivative of output image at pivot value
-   * @param[out] imOut : output Image
-   */
-  template <class T1, class T2>
-  RES_T ImNormalizeSCurve(const Image<T1> &imIn, const T1 pivot,
-                        const double ratio, Image<T2> &imOut);
+  RES_T ImGaussianFilter(const Image<T1> &imIn, INT32 radius, Image<T2> &imOut);
 
   /** @} */
 } // namespace smil
 
-#include "private/common/gaussianKernel.hpp"
+// #include "private/filterGaussian/filterGaussian.hpp"
 
-#include "private/filterNormalize/filterNormalize.hpp"
-
-#endif // _D_NORMALIZE_FILTER_H_
+#endif // _D_GAUSSIAN_FILTER_H_

@@ -85,6 +85,7 @@ TEMPLATE_WRAP_FUNC(ImMeanShiftFilter);
 %include "DfilterNormalize.h"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImNormalize);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImNormalizeAuto);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImNormalizeSCurve);
 
 // *******************************
 // Filters from Theodore Chabardes
