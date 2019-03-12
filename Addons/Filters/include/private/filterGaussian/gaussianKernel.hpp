@@ -92,8 +92,17 @@ namespace smil
 
     template <typename T> void Convolve(T *in, int W, int H, int D, T *out)
     {
-      // convolution in X
+#ifdef USE_OPEN_MP
+      int nthreads = Core::getInstance()->getNumberOfThreads();
+#endif // USE_OPEN_MP
+
+      /*
+       * convolution in X
+       */
       T *outX = new T[W * H * D];
+#ifdef USE_OPEN_MP
+      #pragma omp parallel num_threads(nthreads)
+#endif // USE_OPEN_MP
       {
 #ifdef USE_OPEN_MP
 #pragma omp for
@@ -118,8 +127,13 @@ namespace smil
         }
       }
 
-      // convolution in Y
+      /*
+       * convolution in Y
+       */
       T *outY = new T[W * H * D];
+#ifdef USE_OPEN_MP
+      #pragma omp parallel num_threads(nthreads)
+#endif // USE_OPEN_MP
       {
         int stride = W;      
 
@@ -146,10 +160,11 @@ namespace smil
         }
       }
 
-      // convolution in Z
+      /*
+       * convolution in Z
+       */
 #ifdef USE_OPEN_MP
-      int nthreads = Core::getInstance()->getNumberOfThreads();
-  #pragma omp parallel private(lOut) num_threads(nthreads)
+      #pragma omp parallel num_threads(nthreads)
 #endif // USE_OPEN_MP
       {
         int stride = W * H;
