@@ -148,7 +148,7 @@ namespace smil
               double sumK = 0.;
 
               for (int i = -radius; i <= radius; i++) {
-                if ((z + i < 0) || (z + i > H - 1))
+                if ((y + i < 0) || (y + i > H - 1))
                   continue;
                 double valK = getKernelValue(i);
                 sumV += outX[i0 + i * stride] * valK;

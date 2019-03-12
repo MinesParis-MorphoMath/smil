@@ -13,7 +13,7 @@ namespace smil
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    // ImageFreezer freeze(imOut);
+    ImageFreezer freeze(imOut);
 
     size_t S[3];
     imIn.getSize(S);
@@ -51,7 +51,7 @@ namespace smil
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    // ImageFreezer freeze(imOut);
+    ImageFreezer freeze(imOut);
 
     size_t S[3];
     imIn.getSize(S);
@@ -92,7 +92,7 @@ namespace smil
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    // ImageFreezer freeze(imOut);
+    ImageFreezer freeze(imOut);
 
     size_t S[3];
     imIn.getSize(S);
