@@ -95,8 +95,6 @@ namespace smil
   /** @} */
 } // namespace smil
 
-#include "private/common/gaussianKernel.hpp"
-
 #include "private/filterNormalize/filterNormalize.hpp"
 
 #endif // _D_NORMALIZE_FILTER_H_

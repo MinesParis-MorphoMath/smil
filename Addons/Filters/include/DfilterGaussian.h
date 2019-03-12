@@ -31,7 +31,7 @@
  *   Gaussian Filters
  *
  * History :
- *   - XX/03/2019 - ported from Morph-M by Jose-Marcio Martins da Cruz
+ *   - 12/03/2019 - by Jose-Marcio Martins da Cruz
  *
  * __HEAD__ - Stop here !
  */
@@ -45,27 +45,26 @@ namespace smil
 {
   /**
    * @ingroup   AddonFilters
-   * @defgroup  AddonGaussianFilter        Gaussian Filters
+   * @defgroup  AddonGaussianFilter        Gaussian Filter (3D)
    *
-   * @brief Gaussian Filters
+   * @brief Gaussian Filter
    *
-   * @warning Not yet fully implemented
    *
    * @author Jose-Marcio Martins da Cruz
    * @{ */
 
   /**
-   * @brief filterGabor Gabor Filter
+   * @brief filterGaussian Gaussian Filter (3D)
    * @param[in] imIn : input Image
-   * @param[in] radius :
+   * @param[in] radius : Gaussian kernel radius
    * @param[out] imOut : output Image
    */
-  template <class T1, class T2>
-  RES_T ImGaussianFilter(const Image<T1> &imIn, INT32 radius, Image<T2> &imOut);
+  template <class T>
+  RES_T ImGaussianFilter(Image<T> &imIn, int radius, Image<T> &imOut);
 
   /** @} */
 } // namespace smil
 
-// #include "private/filterGaussian/filterGaussian.hpp"
+#include "private/filterGaussian/gaussianKernel.hpp"
 
 #endif // _D_GAUSSIAN_FILTER_H_

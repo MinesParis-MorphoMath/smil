@@ -44,6 +44,7 @@ SMIL_MODULE(smilFilters)
 #include "DfilterMeanShift.h"
 
 #include "DfilterNormalize.h"
+#include "DfilterGaussian.h"
 
 #include "Dfilter3DBilateral.h"
 
@@ -86,6 +87,9 @@ TEMPLATE_WRAP_FUNC(ImMeanShiftFilter);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImNormalize);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImNormalizeAuto);
 TEMPLATE_WRAP_FUNC_2T_CROSS(ImNormalizeSCurve);
+
+%include "DfilterGaussian.h"
+TEMPLATE_WRAP_FUNC(ImGaussianFilter);
 
 // *******************************
 // Filters from Theodore Chabardes

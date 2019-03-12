@@ -55,11 +55,12 @@ namespace smil
 #include "DfilterDeriche.h"
 #include "DfilterFastBilateral.h"
 #include "DfilterGabor.h"
-#include "DfilterGaussian.h"
 #include "DfilterKuwahara.h"
 #include "DfilterMeanShift.h"
-#include "DfilterNormalize.h"
 #include "DfilterSigma.h"
+
+#include "DfilterNormalize.h"
+#include "DfilterGaussian.h"
 
 #include "Dfilter3DBilateral.h"
 
