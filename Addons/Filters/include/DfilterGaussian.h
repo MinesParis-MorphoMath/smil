@@ -28,19 +28,16 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Description :
- *   2D Gabor filter implementation by Vincent Morard
+ *   Gaussian Filters
  *
  * History :
- *   - XX/XX/XXXX - by Vincent Morard
- *     Just created it
- *   - 21/02/2019 - by Jose-Marcio Martins da Cruz
- *     Formatting and removing some warnings and minor differences
+ *   - 12/03/2019 - by Jose-Marcio Martins da Cruz
  *
  * __HEAD__ - Stop here !
  */
 
-#ifndef _D_SIGMA_FILTER_H_
-#define _D_SIGMA_FILTER_H_
+#ifndef _D_GAUSSIAN_FILTER_H_
+#define _D_GAUSSIAN_FILTER_H_
 
 #include "Core/include/DCore.h"
 
@@ -48,49 +45,26 @@ namespace smil
 {
   /**
    * @ingroup   AddonFilters
-   * @defgroup  AddonSigmaFilter        Sigma Filter (2D)
+   * @defgroup  AddonGaussianFilter        Gaussian Filter (3D)
    *
-   * @brief A 2D Sigma filter implementation
+   * @brief Gaussian Filter
    *
-   * Performs a noise reduction following the Lee paper
    *
-   * @see
-   *
-   * @author Vincent Morard / Jose-Marcio Martins da Cruz
+   * @author Jose-Marcio Martins da Cruz
    * @{ */
 
   /**
-   * @brief Performs a noise reduction following the Lee paper
+   * @brief filterGaussian Gaussian Filter (3D)
    * @param[in] imIn : input Image
-   * @param[in] radius :
-   * @param[in] sigma :
-   * @param[in] percentageNbMinPixel :
-   * @param[in] excludeOutlier :
+   * @param[in] radius : Gaussian kernel radius
    * @param[out] imOut : output Image
    */
   template <class T>
-  RES_T ImSigmaFilter(const Image<T> &imIn, const UINT8 radius,
-                      const double sigma, const double percentageNbMinPixel,
-                      const bool excludeOutlier, Image<T> &imOut);
+  RES_T ImGaussianFilter(Image<T> &imIn, int radius, Image<T> &imOut);
 
-  /**
-   * @brief Performs a noise reduction following the Lee paper (RGB Images)
-   * @param[in] imIn : input Image
-   * @param[in] radius :
-   * @param[in] sigma :
-   * @param[in] percentageNbMinPixel :
-   * @param[in] excludeOutlier :
-   * @param[out] imOut : output Image
-   * @warning Yet to be done !!!
-   */
-  template <class T>
-  RES_T ImSigmaFilterRGB(const Image<T> &imIn, const UINT8 radius,
-                         const double sigma, const double percentageNbMinPixel,
-                         const bool excludeOutlier, Image<T> &imOut);
   /** @} */
 } // namespace smil
 
-#include "private/filterSigma/filterSigma.hpp"
+#include "private/filterGaussian/gaussianKernel.hpp"
 
-#endif // _D_SIGMA_FILTER_H_
-
+#endif // _D_GAUSSIAN_FILTER_H_

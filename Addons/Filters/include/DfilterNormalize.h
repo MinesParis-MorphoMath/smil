@@ -31,16 +31,14 @@
  *   2D Gabor filter implementation by Vincent Morard
  *
  * History :
- *   - XX/XX/XXXX - by Vincent Morard
+ *   - 08/03/2019 - by Jose-Marcio Martins da Cruz
  *     Just created it
- *   - 21/02/2019 - by Jose-Marcio Martins da Cruz
- *     Formatting and removing some warnings and minor differences
  *
  * __HEAD__ - Stop here !
  */
 
-#ifndef _D_SIGMA_FILTER_H_
-#define _D_SIGMA_FILTER_H_
+#ifndef _D_NORMALIZE_FILTER_H_
+#define _D_NORMALIZE_FILTER_H_
 
 #include "Core/include/DCore.h"
 
@@ -48,49 +46,55 @@ namespace smil
 {
   /**
    * @ingroup   AddonFilters
-   * @defgroup  AddonSigmaFilter        Sigma Filter (2D)
+   * @defgroup  AddonScaleFilter      Image Normalize
    *
-   * @brief A 2D Sigma filter implementation
+   * @brief Various filters to normalize images
    *
-   * Performs a noise reduction following the Lee paper
-   *
-   * @see
-   *
-   * @author Vincent Morard / Jose-Marcio Martins da Cruz
+   * @author Jose-Marcio Martins da Cruz
    * @{ */
 
   /**
-   * @brief Performs a noise reduction following the Lee paper
+   * @brief ImNormalize : Linear conversion of pixels values to the range [Min,
+   * Max]
    * @param[in] imIn : input Image
-   * @param[in] radius :
-   * @param[in] sigma :
-   * @param[in] percentageNbMinPixel :
-   * @param[in] excludeOutlier :
+   * @param[in] Min : Minimum value in the output image
+   * @param[in] Max : Maximum value in the output image
    * @param[out] imOut : output Image
    */
-  template <class T>
-  RES_T ImSigmaFilter(const Image<T> &imIn, const UINT8 radius,
-                      const double sigma, const double percentageNbMinPixel,
-                      const bool excludeOutlier, Image<T> &imOut);
+  template <class T1, class T2>
+  RES_T ImNormalize(const Image<T1> &imIn, const T2 Min, const T2 Max,
+                    Image<T2> &imOut);
 
   /**
-   * @brief Performs a noise reduction following the Lee paper (RGB Images)
+   * @brief ImNormalizeAuto : Linear conversion of pixels values to the domain
+   * range
    * @param[in] imIn : input Image
-   * @param[in] radius :
-   * @param[in] sigma :
-   * @param[in] percentageNbMinPixel :
-   * @param[in] excludeOutlier :
    * @param[out] imOut : output Image
-   * @warning Yet to be done !!!
    */
-  template <class T>
-  RES_T ImSigmaFilterRGB(const Image<T> &imIn, const UINT8 radius,
-                         const double sigma, const double percentageNbMinPixel,
-                         const bool excludeOutlier, Image<T> &imOut);
+  template <class T1, class T2>
+  RES_T ImNormalizeAuto(const Image<T1> &imIn, Image<T2> &imOut);
+
+  /**
+   * @brief ImNormalizeSCurve : S Curve transform
+   *
+   * This function emulates the "S Curve" caracteristic of film photography.
+   *
+   * Use a sigmoid function centered at "pivot" with derivative "ratio". 
+   * 
+   * @param[in] imIn : input Image
+   * @param[in] pivot : 
+   * * if 0, takes the median of the histogram of input image as pivot
+   * * otherwise, use this value
+   * @param[in] ratio : derivative of output image at pivot value
+   * @param[out] imOut : output Image
+   */
+  template <class T1, class T2>
+  RES_T ImNormalizeSCurve(const Image<T1> &imIn, const T1 pivot,
+                        const double ratio, Image<T2> &imOut);
+
   /** @} */
 } // namespace smil
 
-#include "private/filterSigma/filterSigma.hpp"
+#include "private/filterNormalize/filterNormalize.hpp"
 
-#endif // _D_SIGMA_FILTER_H_
-
+#endif // _D_NORMALIZE_FILTER_H_

@@ -28,12 +28,11 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Description :
- *   2D Gabor filter implementation by Vincent Morard
+ *   Main include file for filters
  *
  * History :
  *   - 05/03/2019 - by Jose-Marcio Martins da Cruz
- *     Just created the plugin
- *     Formatting and removing some warnings and minor differences
+ *     Just created this file
  *
  * __HEAD__ - Stop here !
  */
@@ -52,13 +51,16 @@ namespace smil
 
 } // namespace smil
 
-#include "DfilterGabor.h"
 #include "DfilterCanny.h"
-#include "DfilterFastBilateral.h"
 #include "DfilterDeriche.h"
+#include "DfilterFastBilateral.h"
+#include "DfilterGabor.h"
 #include "DfilterKuwahara.h"
+#include "DfilterMeanShift.h"
 #include "DfilterSigma.h"
-#include "DfilterSigma.h"
+
+#include "DfilterNormalize.h"
+#include "DfilterGaussian.h"
 
 #include "Dfilter3DBilateral.h"
 

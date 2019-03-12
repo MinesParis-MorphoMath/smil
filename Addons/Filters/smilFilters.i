@@ -34,6 +34,7 @@ SMIL_MODULE(smilFilters)
 
 %{
 /* Includes needed header(s)/definitions in the wrapped code */
+
 #include "DfilterGabor.h"
 #include "DfilterCanny.h"
 #include "DfilterFastBilateral.h"
@@ -41,6 +42,11 @@ SMIL_MODULE(smilFilters)
 #include "DfilterKuwahara.h"
 #include "DfilterSigma.h"
 #include "DfilterMeanShift.h"
+
+#include "DfilterNormalize.h"
+#include "DfilterGaussian.h"
+
+#include "Dfilter3DBilateral.h"
 
 #include "Dfilter3DBilateral.h"
 %}
@@ -68,19 +74,32 @@ TEMPLATE_WRAP_FUNC(ImDericheEdgeDetection);
 
 %include "DfilterKuwahara.h"
 TEMPLATE_WRAP_FUNC(ImKuwaharaFilter);
-TEMPLATE_WRAP_FUNC(ImKuwaharaFilterRGB);
+// TEMPLATE_WRAP_FUNC(ImKuwaharaFilterRGB);
 
 %include "DfilterSigma.h"
 TEMPLATE_WRAP_FUNC(ImSigmaFilter);
-TEMPLATE_WRAP_FUNC(ImSigmaFilterRGB);
+// TEMPLATE_WRAP_FUNC(ImSigmaFilterRGB);
 
 %include "DfilterMeanShift.h"
 TEMPLATE_WRAP_FUNC(ImMeanShiftFilter);
-TEMPLATE_WRAP_FUNC(ImMeanShiftFilterRGB);
+// TEMPLATE_WRAP_FUNC(ImMeanShiftFilterRGB);
+
+// *******************************
+// Filters from Jose-Marcio
+// *******************************
+%include "DfilterNormalize.h"
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImNormalize);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImNormalizeAuto);
+TEMPLATE_WRAP_FUNC_2T_CROSS(ImNormalizeSCurve);
+
+%include "DfilterGaussian.h"
+TEMPLATE_WRAP_FUNC(ImGaussianFilter);
 
 // *******************************
 // Filters from Theodore Chabardes
 // *******************************
 %include "Dfilter3DBilateral.h"
 TEMPLATE_WRAP_FUNC(recursiveBilateralFilter);
+
+
 

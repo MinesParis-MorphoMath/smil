@@ -1,3 +1,4 @@
+
 #ifndef __MEAN_SHIFT_FILTER_T_HPP__
 #define __MEAN_SHIFT_FILTER_T_HPP__
 
@@ -89,10 +90,10 @@ namespace smil
     return RES_OK;
   }
 
-#if 0
+#if 1
   template <class T>
-  RES_T t_ImMeanShiftFilterRGB(const Image<T> &imIn, const UINT8 radius,
-                         const int tonalDistance, Image<T> &imOut)
+  RES_T ImMeanShiftFilterRGB(const Image<T> &imIn, const UINT8 radius,
+                    const int tonalDistance, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -114,6 +115,7 @@ namespace smil
     W = S[0];
     H = S[1];
 
+#if 0
     double *pixelsf = new double[W * H * 3];
     for (int i = 0; i < W * H; i++) {
       int r = (int) bufferIn[i].channel1;
@@ -211,9 +213,11 @@ namespace smil
     }
 
     delete[] pixelsf;
+#endif
     return RES_OK;
   }
 #endif
 
 } // namespace smil
 #endif
+
