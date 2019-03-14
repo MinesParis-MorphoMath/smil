@@ -107,7 +107,7 @@ namespace smil
                                       const Image<T> &imGrad,
                                       const Image<T> &imMarker,
                                       const StrElt &nl, Image<T> &imOut);
-#if 1
+
   /*! @brief Geo Cuts algorithm with curvature term on a region adjacency
    * graph, imMosaic is a mosaic, ImMarker is composed of three values 0 for
    * unmarked pixels, 2 and 3 for object and background markers
@@ -127,7 +127,7 @@ namespace smil
                                         const Image<T> &imMarker,
                                         const CVariant &Beta, const StrElt &nl,
                                         Image<T> &imOut);
-#endif
+
   /*! @brief Multiple object segmentation, Geo Cuts algorithm on a region
    * adjacency graph, imMosaic is a mosaic, ImMarker is composed of three
    * values 0 for unmarked pixels, >0 for objects markers
@@ -203,7 +203,7 @@ namespace smil
    * @author Jean Stawiaski
    * @{
    */
-#if 1
+
   /*! @brief Markov Random Fields segmentation with two labels (2 and 3) with
    * The Ising Model
    * @note: For Beta and sigma parameters, read Markov Random Fields section
@@ -260,9 +260,11 @@ namespace smil
   RES_T MAP_MRF_Potts(const Image<T> &imIn, const Image<T> &imMosaic,
                       const Image<T> &imMarker, const CVariant &Beta,
                       const CVariant &Sigma, const StrElt &nl, Image<T> &imOut);
-#endif
   /**  @} defgroup GeoCutsAlgo_Markov_group */
 
 } // namespace smil
+
+#include "private/MosaicGeoCuts/Mosaic_GeoCutsAlgo_impl_T.hpp"
+
 
 #endif //__MOSAIC_GEOCUTSALGO_HPP__

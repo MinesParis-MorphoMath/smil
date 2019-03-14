@@ -21,7 +21,7 @@
 #else
 #include "../boost_ext/kolmogorov_max_flow.hpp"
 #endif
-
+/
 #include <morphee/selement/include/selementNeighborList.hpp>
 #include <morphee/selement/include/private/selementNeighborhood_T.hpp>
 #include <morphee/stats/include/private/statsMeasure_T.hpp>
@@ -37,7 +37,7 @@ namespace morphee
     // ImageLabel and ImageMarker should be unsigned integers
     template <class ImageLabel, class ImageVal, class ImageMarker, class SE,
               class ImageOut>
-    RES_C t_GeoCuts_MinSurfaces_with_steps(const ImageLabel &imLabel,
+    RES_T t_GeoCuts_MinSurfaces_with_steps(const ImageLabel &imLabel,
                                            const ImageVal &imVal,
                                            const ImageMarker &imMarker,
                                            const SE &nl, F_SIMPLE step_x,
@@ -183,13 +183,16 @@ namespace morphee
                 dy = std::abs(it.getY() - nit.getY());
                 dz = std::abs(it.getZ() - nit.getZ());
 
-                // 		      F_SIMPLE dist ;
-                // 		      dist = std::sqrt(std::pow(step_x*dx,2) +
-                // std::pow(step_y*dy,2) + std::pow(step_z*dz,2)); 		      if(dist == 0)
-                // 			{
-                // 			  std::cout << "ERROR : Distance between pixels equal to
-                // zero! Setting it to 1.\n" ; 			  dist = 1 ;
-                // 			}
+                // F_SIMPLE dist ;
+                // dist = std::sqrt(std::pow(step_x*dx,2) +
+                // std::pow(step_y*dy,2) + std::pow(step_z*dz,2));
+                // if(dist == 0)
+                // {
+                // 	 std::cout <<
+                //     "ERROR : Distance between pixels equal to zero! " <<
+                //     " Setting it to 1.\n" ;
+                //   dist = 1 ;
+                // }
 
                 F_SIMPLE surf = 1; // TODO : this only works with 4-connexity
                                    // (in 2d) or 6-connexity (in 3d)
@@ -205,13 +208,13 @@ namespace morphee
                   surf = 1;
                 }
 
-                // 		      if (o2%1000 == 0)
-                // 			{
-                // 			  std::cout << " surf : " << surf ;
-                // 			}
+                // 	if (o2%1000 == 0)
+                // 	{
+                // 		std::cout << " surf : " << surf ;
+                // 	}
 
-                // 		      F_SIMPLE grad = diff/dist ;
-                // 		      F_SIMPLE weighted_surf = grad * surf ;
+                // 	F_SIMPLE grad = diff/dist ;
+                //  F_SIMPLE weighted_surf = grad * surf ;
 
                 // Cette fonction devrait être remplacée par une fonction
                 // paramètre
@@ -219,16 +222,19 @@ namespace morphee
                 // F_DOUBLE cost = dist/(1+diff);
                 // F_DOUBLE cost = leak * surf ;
                 F_DOUBLE cost = surf / (1 + diff);
-                // 		      if (o2%1000 == 0)
-                // 			{
-                // 			  std::cout << " cost : " << cost << "\n";
-                // 			}
+                // if (o2%1000 == 0)
+                // {
+                // 	 std::cout << " cost : " << cost << "\n";
+                // }
 
-                // std::cout <<  "dx: " << (double)dx << " dy: " <<  (double)dy
-                // << " dz: " <<  (double)dz << " dist: " <<  (double)dist << "
-                // surf: " <<  (double)surf << " grad: " <<  (double)grad << "
-                // w_s: " <<  (double)weighted_surf << " cost: " <<  (double)cost
-                // << "\n";
+                // std::cout <<  " dx: " << (double)dx <<
+                //               " dy: " <<  (double)dy <<
+                //               " dz: " <<  (double)dz <<
+                //               " dist: " <<  (double)dist <<
+                //               " surf: " <<  (double)surf <<
+                //               " grad: " <<  (double)grad <<
+                //               " w_s: " <<  (double)weighted_surf <<
+                //               " cost: " <<  (double)cost << "\n";
 
                 if (label2_prec == label2) // same label2 means same edge (thus,
                                            // keep e3 and e4)
@@ -359,7 +365,7 @@ namespace morphee
     // ImageLabel and ImageMarker should be unsigned integers
     template <class ImageLabel, class ImageVal, class ImageMarker, class SE,
               class ImageOut>
-    RES_C t_GeoCuts_MinSurfaces_with_steps_vGradient(
+    RES_T t_GeoCuts_MinSurfaces_with_steps_vGradient(
         const ImageLabel &imLabel, const ImageVal &imVal,
         const ImageMarker &imMarker, const SE &nl, F_SIMPLE step_x,
         F_SIMPLE step_y, F_SIMPLE step_z, ImageOut &imOut)
@@ -503,7 +509,7 @@ namespace morphee
 
                 // 		      F_SIMPLE dist ;
                 // 		      dist = std::sqrt(std::pow(step_x*dx,2) +
-                // std::pow(step_y*dy,2) + std::pow(step_z*dz,2)); 		      if(dist == 0)
+                // std::pow(step_y*dy,2) + std::pow(step_z*dz,2)); if(dist == 0)
                 // 			{
                 // 			  std::cout << "ERROR : Distance between pixels equal to
                 // zero! Setting it to 1.\n" ; 			  dist = 1 ;
@@ -545,7 +551,7 @@ namespace morphee
                 // std::cout <<  "dx: " << (double)dx << " dy: " <<  (double)dy
                 // << " dz: " <<  (double)dz << " dist: " <<  (double)dist << "
                 // surf: " <<  (double)surf << " grad: " <<  (double)grad << "
-                // w_s: " <<  (double)weighted_surf << " cost: " <<  (double)cost
+                // w_s: " <<  (double)weighted_surf << " cost: " << (double)cost
                 // << "\n";
 
                 if (label2_prec == label2) // same label2 means same edge (thus,

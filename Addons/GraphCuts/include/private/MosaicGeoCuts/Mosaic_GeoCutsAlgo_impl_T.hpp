@@ -4,39 +4,46 @@
 #include <time.h>
 
 #include <boost/config.hpp>
-#include <boost/utility.hpp>            // for boost::tie
-#include <boost/graph/graph_traits.hpp> // for boost::graph_traits
+// for boost::tie
+#include <boost/utility.hpp>
+// for boost::graph_traits
+#include <boost/graph/graph_traits.hpp> 
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/graphviz.hpp>
-//#include <boost/graph/kruskal_min_spanning_tree.hpp>
-//#include <boost/graph/dijkstra_shortest_paths.hpp>
-//#include <boost/graph/push_relabel_max_flow.hpp>
-//#include <boost/graph/edmonds_karp_max_flow.hpp>
+//#include <boost/graph/graphviz.hpp>
 
 #include <boost/version.hpp>
 #if BOOST_VERSION >= 104700
 #include <boost/graph/boykov_kolmogorov_max_flow.hpp>
 #elif BOOST_VERSION >= 103500
 #include <boost/graph/kolmogorov_max_flow.hpp>
-#else
-#include "../boost_ext/kolmogorov_max_flow.hpp"
 #endif
 
-#include <morphee/selement/include/selementNeighborList.hpp>
-#include <morphee/selement/include/private/selementNeighborhood_T.hpp>
-#include <morphee/stats/include/private/statsMeasure_T.hpp>
-#include <morphee/image/include/private/imagePixelwise_T.hpp>
+
+//#include <morphee/selement/include/selementNeighborList.hpp>
+//#include <morphee/selement/include/private/selementNeighborhood_T.hpp>
+//#include <morphee/stats/include/private/statsMeasure_T.hpp>
+//#include <morphee/image/include/private/imagePixelwise_T.hpp>
 
 #include <vector>
-//#include <morphee/common/include/commonTypesOperator.hpp>
 
-namespace morphee
+#define MORPHEE_ENTER_FUNCTION(a) 
+#define MORPHEE_REGISTER_ERROR(a) 
+
+typedef off_t offset_t;
+
+namespace smil
 {
-  namespace graphalgo
+  using namespace boost;
+#if 0
+
   {
+    /*
+     *
+     *
+     */
     template <class ImageIn, class ImageGrad, class ImageMarker, class SE,
               class ImageOut>
-    RES_C t_GeoCuts_MinSurfaces_with_steps_old(const ImageIn &imIn,
+    RES_T t_GeoCuts_MinSurfaces_with_steps_old(const ImageIn &imIn,
                                                const ImageGrad &imGrad,
                                                const ImageMarker &imMarker,
                                                const SE &nl, F_SIMPLE step_x,
@@ -301,41 +308,27 @@ namespace morphee
 
       return RES_OK;
     }
+#endif
 
-    template <class ImageIn, class ImageGrad, class ImageMarker, class SE,
-              class ImageOut>
-    RES_C t_GeoCuts_MinSurfaces(const ImageIn &imIn, const ImageGrad &imGrad,
-                                const ImageMarker &imMarker, const SE &nl,
-                                ImageOut &imOut)
+    /*
+     *
+     *
+     */
+    template <class T>
+    RES_T t_GeoCuts_MinSurfaces(const Image<T> &imIn, const Image<T> &imGrad,
+                                const Image<T> &imMarker, const StrElt &nl,
+                                Image<T> &imOut)
     {
       MORPHEE_ENTER_FUNCTION("t_GeoCuts_MinSurfaces");
 
-      std::cout << "Enter function t_GeoCuts_MinSurfaces" << std::endl;
+      ASSERT_ALLOCATED(&imIn, &imGrad, &imMarker, &imOut);
+      ASSERT_SAME_SIZE(&imIn, &imGrad, &imMarker, &imOut);
 
-      if ((!imOut.isAllocated())) {
-        MORPHEE_REGISTER_ERROR("Not allocated");
-        return RES_NOT_ALLOCATED;
-      }
-
-      if ((!imIn.isAllocated())) {
-        MORPHEE_REGISTER_ERROR("Not allocated");
-        return RES_NOT_ALLOCATED;
-      }
-
-      if ((!imGrad.isAllocated())) {
-        MORPHEE_REGISTER_ERROR("Not allocated");
-        return RES_NOT_ALLOCATED;
-      }
-
-      if ((!imMarker.isAllocated())) {
-        MORPHEE_REGISTER_ERROR("Not allocated");
-        return RES_NOT_ALLOCATED;
-      }
-
-      // common image iterator
-      typename ImageIn::const_iterator it, iend;
+#if 0
       morphee::selement::Neighborhood<SE, ImageIn> neighb(imIn, nl);
       typename morphee::selement::Neighborhood<SE, ImageIn>::iterator nit, nend;
+#endif
+
       offset_t o0;
       offset_t o1;
 
@@ -343,13 +336,16 @@ namespace morphee
       typedef boost::adjacency_list_traits<boost::vecS, boost::vecS,
                                            boost::directedS>
           Traits;
-      typedef boost::adjacency_list<
-          boost::vecS, boost::vecS, boost::directedS,
-          boost::property<boost::vertex_name_t, std::string>,
-          boost::property<
-              boost::edge_capacity_t, double,
-              boost::property<boost::edge_residual_capacity_t, double,
-                              boost::property<boost::edge_reverse_t,
+
+      typedef boost::adjacency_list<boost::vecS,
+                                    boost::vecS,
+                                    boost::directedS,
+                                    boost::property<boost::vertex_name_t,
+                                    std::string>,
+          boost::property<boost::edge_capacity_t, double,
+                          boost::property<boost::edge_residual_capacity_t,
+                                          double,
+                                          boost::property<boost::edge_reverse_t,
                                               Traits::edge_descriptor>>>>
           Graph_d;
 
@@ -372,12 +368,12 @@ namespace morphee
       int max, not_used;
 
       std::cout << "build Region Adjacency Graph" << std::endl;
-
       std::cout << "build Region Adjacency Graph Vertices" << std::endl;
 
       clock_t t1 = clock();
 
-      morphee::stats::t_measMinMax(imIn, not_used, max);
+      max = maxVal(imIn);
+
       numVert = max;
       std::cout << "number of Vertices : " << numVert << std::endl;
 
@@ -395,12 +391,20 @@ namespace morphee
 
       std::cout << "Building Region Adjacency Graph Edges" << std::endl;
       t1 = clock();
+      
+      typename Image<T>::lineType bufIn     = imIn.getPixels();
+      typename Image<T>::lineType bufOut    = imOut.getPixels();
+      typename Image<T>::lineType bufMarker = imMarker.getPixels();
+      typename Image<T>::lineType bufGrad   = imGrad.getPixels();
 
-      for (it = imIn.begin(), iend = imIn.end(); it != iend; ++it) {
-        o1           = it.getOffset();
-        int val      = imIn.pixelFromOffset(o1);
-        int marker   = imMarker.pixelFromOffset(o1);
+      int oMax = imIn.getPixelCount();
+      for (o1 = 0; o1 < oMax; o1++) {
+        int val      = imIn.getPixel(o1);
+        int marker   = imMarker.getPixel(o1);
         int val_prec = 0, marker_prec = 0;
+
+        if (val <= 0)
+          continue;
 
         if (val > 0) {
           if (marker == 2 && marker_prec != marker && val_prec != val) {
@@ -417,24 +421,29 @@ namespace morphee
               rev[e3]             = e4;
             }
             tt_marker2 += clock() - temps_marker2;
-          } else if (marker == 3 && marker_prec != marker && val_prec != val) {
-            clock_t temps_marker3 = clock();
-            boost::tie(e3, in1)   = boost::edge(vSink, val, g);
-            if (in1 == 0) {
-              // std::cout<<"Add new edge marker 3"<<std::endl;
-              boost::tie(e4, in1) = boost::add_edge(val, vSink, g);
-              boost::tie(e3, in1) = boost::add_edge(vSink, val, g);
-              capacity[e4]        = (std::numeric_limits<double>::max)();
-              capacity[e3]        = (std::numeric_limits<double>::max)();
-              rev[e4]             = e3;
-              rev[e3]             = e4;
+          } else {
+            if (marker == 3 && marker_prec != marker && val_prec != val) {
+              clock_t temps_marker3 = clock();
+              boost::tie(e3, in1)   = boost::edge(vSink, val, g);
+              if (in1 == 0) {
+                // std::cout<<"Add new edge marker 3"<<std::endl;
+                boost::tie(e4, in1) = boost::add_edge(val, vSink, g);
+                boost::tie(e3, in1) = boost::add_edge(vSink, val, g);
+                capacity[e4]        = (std::numeric_limits<double>::max)();
+                capacity[e3]        = (std::numeric_limits<double>::max)();
+                rev[e4]             = e3;
+                rev[e3]             = e4;
+              }
+              tt_marker3 += clock() - temps_marker3;
             }
-            tt_marker3 += clock() - temps_marker3;
           }
 
+          double val_grad_o1 = imGrad.getPixel(o1);
+          // val de val2 precedente
+          int val2_prec      = val; 
+
+#if 0
           neighb.setCenter(o1);
-          double val_grad_o1 = imGrad.pixelFromOffset(o1);
-          int val2_prec      = val; // val de val2 precedente
 
           for (nit = neighb.begin(), nend = neighb.end(); nit != nend; ++nit) {
             const offset_t o2 = nit.getOffset();
@@ -446,9 +455,9 @@ namespace morphee
                 double maxi        = std::max(val_grad_o1, val_grad_o2);
                 double cost        = 10000.0 / (1.0 + std::pow(maxi, 4));
 
-                if (val2_prec ==
-                    val2) // same val2 means same edge (thus, keep e3 and e4)
+                if (val2_prec == val2) 
                 {
+                  // same val2 means same edge (thus, keep e3 and e4)
                   capacity[e4] = capacity[e4] + cost;
                   capacity[e3] = capacity[e3] + cost;
                 } else {
@@ -483,6 +492,7 @@ namespace morphee
           }
           val_prec    = val;
           marker_prec = marker;
+#endif
         }
       }
 
@@ -520,6 +530,7 @@ namespace morphee
                 << double(t2 - t1) / CLOCKS_PER_SEC << " seconds\n";
 
       t1 = clock();
+#if 0
       for (it = imIn.begin(), iend = imIn.end(); it != iend; ++it) {
         o1      = it.getOffset();
         int val = imIn.pixelFromOffset(o1);
@@ -535,16 +546,23 @@ namespace morphee
             imOut.setPixel(o1, 4);
         }
       }
+
       t2 = clock();
       std::cout << "Computing imOut took : " << double(t2 - t1) / CLOCKS_PER_SEC
                 << " seconds\n";
-
+#endif
       return RES_OK;
     }
+#endif
 
+#if 0
+    /*
+     *
+     *
+     */
     template <class ImageIn, class ImageGrad, class ImageMarker, class SE,
               class ImageOut>
-    RES_C t_GeoCuts_MinSurfaces_With_Line(const ImageIn &imIn,
+    RES_T t_GeoCuts_MinSurfaces_With_Line(const ImageIn &imIn,
                                           const ImageGrad &imGrad,
                                           const ImageMarker &imMarker,
                                           const SE &nl, ImageOut &imOut)
@@ -755,9 +773,13 @@ namespace morphee
       return RES_OK;
     }
 
+    /*
+     *
+     *
+     */
     template <class ImageIn, class ImageGrad, class ImageCurvature,
               class ImageMarker, typename _Beta, class SE, class ImageOut>
-    RES_C t_GeoCuts_Regularized_MinSurfaces(const ImageIn &imIn,
+    RES_T t_GeoCuts_Regularized_MinSurfaces(const ImageIn &imIn,
                                             const ImageGrad &imGrad,
                                             const ImageCurvature &imCurvature,
                                             const ImageMarker &imMarker,
@@ -972,9 +994,13 @@ namespace morphee
       return RES_OK;
     }
 
+    /*
+     *
+     *
+     */
     template <class ImageIn, class ImageGrad, class ImageMarker, class SE,
               class ImageOut>
-    RES_C t_GeoCuts_MultiWay_MinSurfaces(const ImageIn &imIn,
+    RES_T t_GeoCuts_MultiWay_MinSurfaces(const ImageIn &imIn,
                                          const ImageGrad &imGrad,
                                          const ImageMarker &imMarker,
                                          const SE &nl, ImageOut &imOut)
@@ -1197,9 +1223,13 @@ namespace morphee
       return RES_OK;
     }
 
+    /*
+     *
+     *
+     */
     template <class ImageIn, class ImageGrad, class ImageMosaic,
               class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_Optimize_Mosaic(const ImageIn &imIn,
+    RES_T t_GeoCuts_Optimize_Mosaic(const ImageIn &imIn,
                                     const ImageGrad &imGrad,
                                     const ImageMosaic &imMosaic,
                                     const ImageMarker &imMarker, const SE &nl,
@@ -1439,9 +1469,13 @@ namespace morphee
       return RES_OK;
     }
 
+    /*
+     *
+     *
+     */
     template <class ImageIn, class ImageMosaic, class ImageMarker, class SE,
               class ImageOut>
-    RES_C t_GeoCuts_Segment_Graph(const ImageIn &imIn,
+    RES_T t_GeoCuts_Segment_Graph(const ImageIn &imIn,
                                   const ImageMosaic &imMosaic,
                                   const ImageMarker &imMarker, const SE &nl,
                                   ImageOut &imOut)
@@ -1675,9 +1709,13 @@ namespace morphee
       return RES_OK;
     }
 
+    /*
+     *
+     *
+     */
     template <class ImageIn, class ImageMosaic, class ImageMarker,
               typename _Beta, typename _Sigma, class SE, class ImageOut>
-    RES_C t_MAP_MRF_Ising(const ImageIn &imIn, const ImageMosaic &imMosaic,
+    RES_T t_MAP_MRF_Ising(const ImageIn &imIn, const ImageMosaic &imMosaic,
                           const ImageMarker &imMarker, const _Beta Beta,
                           const _Sigma Sigma, const SE &nl, ImageOut &imOut)
     {
@@ -1932,10 +1970,13 @@ namespace morphee
       return RES_OK;
     }
 
+    /*
+     *
+     *
+     */
     template <class ImageIn, class ImageMosaic, class ImageMarker,
               typename _Beta, typename _Sigma, class SE, class ImageOut>
-    RES_C
-    t_MAP_MRF_edge_preserving(const ImageIn &imIn, const ImageMosaic &imMosaic,
+    RES_T t_MAP_MRF_edge_preserving(const ImageIn &imIn, const ImageMosaic &imMosaic,
                               const ImageMarker &imMarker, const _Beta Beta,
                               const _Sigma Sigma, const SE &nl, ImageOut &imOut)
     {
@@ -2189,9 +2230,13 @@ namespace morphee
       return RES_OK;
     }
 
+    /*
+     *
+     *
+     */
     template <class ImageIn, class ImageMosaic, class ImageMarker,
               typename _Beta, typename _Sigma, class SE, class ImageOut>
-    RES_C t_MAP_MRF_Potts(const ImageIn &imIn, const ImageMosaic &imMosaic,
+    RES_T t_MAP_MRF_Potts(const ImageIn &imIn, const ImageMosaic &imMosaic,
                           const ImageMarker &imMarker, const _Beta Beta,
                           const _Sigma Sigma, const SE &nl, ImageOut &imOut)
     {
@@ -2585,8 +2630,8 @@ namespace morphee
 
       return RES_OK;
     }
-
-  } // namespace graphalgo
-} // namespace morphee
+  
+#endif
+} // namespace smil
 
 #endif // GRAPHALGO_IMPL_T_HPP
