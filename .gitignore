@@ -6,7 +6,7 @@
 *.tmp
 #
 morphee.in/*
-archive/*
+*/archive/*
 
 # emacs backup files
 *~

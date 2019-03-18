@@ -1,5 +1,5 @@
-#ifndef __MOSAIC_GEOCUTSALGO_HPP__
-#define __MOSAIC_GEOCUTSALGO_HPP__
+#ifndef __MOSAIC_GEOCUTSALGO_H__
+#define __MOSAIC_GEOCUTSALGO_H__
 
 #define __MGCA
 
@@ -261,10 +261,13 @@ namespace smil
                       const Image<T> &imMarker, const CVariant &Beta,
                       const CVariant &Sigma, const StrElt &nl, Image<T> &imOut);
   /**  @} defgroup GeoCutsAlgo_Markov_group */
+  
+  template <class T>
+  void testHandleSE(const Image<T> &img, StrElt se = DEFAULT_SE);
 
 } // namespace smil
 
-#include "private/MosaicGeoCuts/Mosaic_GeoCutsAlgo_impl_T.hpp"
+#include "private/MosaicGeoCuts/Mosaic_GeoCuts_impl.hpp"
 
 
-#endif //__MOSAIC_GEOCUTSALGO_HPP__
+#endif //__MOSAIC_GEOCUTSALGO_H__

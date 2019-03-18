@@ -24,27 +24,35 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-
 %include smilCommon.i
 
 SMIL_MODULE(smilGraphCuts)
 
-
 %{
 /* Includes needed header(s)/definitions in the wrapped code */
-#include "DGraphCut.h"
-
+#include "Mosaic_GeoCuts.h"
 %}
 
 %import smilCore.i
+%import smilMorpho.i
 
-// using namespace bidonSpace;
+%include "Mosaic_GeoCuts.h"
+// TEMPLATE_WRAP_FUNC(GeoCuts_MinSurfaces);
+// TEMPLATE_WRAP_FUNC(GeoCuts_MinSurfaces_with_Line);
+// TEMPLATE_WRAP_FUNC(GeoCuts_MinSurfaces_with_steps);
+// TEMPLATE_WRAP_FUNC(GeoCuts_MinSurfaces_with_steps_vGradient);
+// TEMPLATE_WRAP_FUNC(GeoCuts_MinSurfaces_with_steps_old);
+TEMPLATE_WRAP_FUNC(GeoCuts_MultiWay_MinSurfaces);
+// TEMPLATE_WRAP_FUNC(GeoCuts_Optimize_Mosaic);
+// TEMPLATE_WRAP_FUNC(GeoCuts_Regularized_MinSurfaces);
+// TEMPLATE_WRAP_FUNC(GeoCuts_Segment_Graph);
+// TEMPLATE_WRAP_FUNC(MAP_MRF_edge_preserving);
+// TEMPLATE_WRAP_FUNC(MAP_MRF_Ising);
+// TEMPLATE_WRAP_FUNC(MAP_MRF_Potts);
 
-%include "DGraphCut.h"
+TEMPLATE_WRAP_FUNC(testHandleSE);
 
-// int getBidon();
 
-// TEMPLATE_WRAP_FUNC_2T_CROSS(ImFastBilateralFilter);
+
 
 

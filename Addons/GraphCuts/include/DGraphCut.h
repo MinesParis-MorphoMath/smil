@@ -57,6 +57,6 @@ namespace smil
 
 } // namespace smil
 
-#include "Mosaic_GeoCutsAlgo.h"
+#include "Mosaic_GeoCuts.h"
 
 #endif // _D_GRAPHCUT_H
