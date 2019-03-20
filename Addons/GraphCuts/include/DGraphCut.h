@@ -32,10 +32,8 @@
  *   This file does... some very complex morphological operation...
  *
  * History :
- *   - 04/.3/2019 - by Jose-Marcio Martins da Cruz
+ *   - 04/03/2019 - by Jose-Marcio Martins da Cruz
  *     Just created it...
- *   - XX/XX/XXXX - by Joe.Denver
- *     Modified something
  *
  * __HEAD__ - Stop here !
  */
@@ -47,16 +45,15 @@ namespace smil
 {
   /**
    * @ingroup    Addons
-   * @defgroup   AddonGraphCut Graph Cuts
+   * @defgroup   AddonGraphCut Graph Geo Cuts
    *
    * @warning Not yet implemented
    *
-   * @{ */
-
-  /** @} */
+   */
 
 } // namespace smil
 
+#include "GeoCuts.h"
 #include "Mosaic_GeoCuts.h"
 
 #endif // _D_GRAPHCUT_H

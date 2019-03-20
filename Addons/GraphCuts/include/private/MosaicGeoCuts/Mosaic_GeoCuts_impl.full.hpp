@@ -91,7 +91,7 @@ namespace smil
    *
    *
    */
-#if 0
+#if 1
   template <class T>
   RES_T GeoCuts_MinSurfaces(const Image<T> &imIn, const Image<T> &imGrad,
                             const Image<T> &imMarker, const StrElt &nl,
