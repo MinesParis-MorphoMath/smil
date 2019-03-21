@@ -206,10 +206,10 @@ namespace smil
    * @param[out] imOut : Image<T> out
    */
   // line no 9964
-  template <class T>
-  RES_T GeoCuts_Multiway_MinSurfaces(const Image<T> &imIn,
-                                     const Image<T> &imMarker, const StrElt &nl,
-                                     Image<T> &imOut);
+  template <class T1, class T2>
+  RES_T GeoCuts_Multiway_MinSurfaces(const Image<T1> &imIn,
+                                     const Image<T2> &imMarker, const StrElt &nl,
+                                     Image<T2> &imOut);
 
   /** @} */
 
@@ -504,5 +504,11 @@ namespace smil
   /** @} */
 
 } // namespace smil
+
+
+#include "private/GeoCuts/geo-cuts-tools.hpp"
+#include "private/GeoCuts/MinSurfaces.hpp"
+
+
 
 #endif // __D_GEOCUTS_H__

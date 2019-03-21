@@ -1549,7 +1549,8 @@ namespace morphee
       int current_nb_of_edges = 0 ;
 
       for( int i = val_edges.size()-1 ; i>=0; i--){
-        
+        
+
         if( current_nb_of_edges < min_nb_of_edges ){
           last_edge_value = val_edges[i];
           last_analyzed = last_edge_value;
@@ -2494,7 +2495,8 @@ namespace morphee
 
                 vs = merged_nodes1.back();
                 merged_nodes1.pop_back();
-                
+                
+
                 Tree_out2.vertexData(vs,&vdata2);
 
                 if( vdata2 == 0 ){
@@ -2508,11 +2510,13 @@ namespace morphee
                   }
                 }
             }
-            
+            
+
             while( merged_nodes2.size() > 0 ){
                 vs = merged_nodes2.back();
                 merged_nodes2.pop_back();
-                
+                
+
                 Tree_out2.vertexData(vs,&vdata2);
                 if( vdata2 == 0 ){
                   Tree_out2.setVertexData(vs, E_star ) ;
