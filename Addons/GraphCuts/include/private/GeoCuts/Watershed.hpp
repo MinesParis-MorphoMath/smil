@@ -28,7 +28,7 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Description :
- *   Porting GeoCuts module from Morph-M - This is the MinSurfaces part
+ *   Porting GeoCuts module from Morph-M - This is the Watershed submodule
  *
  * History :
  *   - 20/03/2019 - by Jose-Marcio Martins da Cruz
@@ -39,8 +39,8 @@
  * __HEAD__ - Stop here !
  */
 
-#ifndef _D_GEOCUTS_MINSURFACE_HPP_
-#define _D_GEOCUTS_MINSURFACE_HPP_
+#ifndef _D_GEOCUTS_WATERSHED_HPP_
+#define _D_GEOCUTS_WATERSHED_HPP_
 
 #if 0
 #include <morphee/selement/include/selementNeighborList.hpp>
@@ -83,27 +83,22 @@
 
 #include <vector>
 
-// ##################################################
-// BEGIN FROM STAWIASKI JAN 2012
-// ##################################################
-
-typedef struct {
-  float x;
-  float y;
-  float p;
-} morceau;
-
-typedef std::list<morceau> affine_par_morceaux;
-
 using namespace geocuts;
 
 namespace smil
 {
+  /*
+   *
+   *
+   *
+   */
   template <class T1, class T2>
-  RES_T GeoCuts_Multiway_MinSurfaces(const Image<T1> &imIn,
-                                     const Image<T2> &imMarker,
-                                     const StrElt &nl, Image<T2> &imOut)
+  RES_T GeoCuts_Multiway_Watershed(const Image<T1> &imIn,
+                                   const Image<T2> &imMarker,
+                                   const double Power, const StrElt &nl,
+                                   Image<T2> &imOut)
   {
+    std::cout << "Enter function Multi way watershed" << std::endl;
     ASSERT_ALLOCATED(&imIn, &imMarker, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imMarker, &imOut);
 
@@ -111,13 +106,15 @@ namespace smil
     typename Image<T2>::lineType bufMarker = imMarker.getPixels();
     typename Image<T2>::lineType bufOut    = imOut.getPixels();
 
+    double exposant = Power;
+
     // needed for max flow: capacit map, rev_capacity map, etc.
     typedef boost::adjacency_list_traits<boost::vecS, boost::vecS,
                                          boost::directedS>
         Traits_d;
 
     typedef boost::adjacency_list<
-        boost::listS, boost::vecS, boost::directedS,
+        boost::vecS, boost::vecS, boost::directedS,
         boost::property<boost::vertex_name_t, std::string>,
         boost::property<
             boost::edge_capacity_t, double,
@@ -147,7 +144,7 @@ namespace smil
     size_t pixelCount = imIn.getPixelCount();
     for (off_t i = 0; i < (off_t) pixelCount; i++) {
       boost::add_vertex(g);
-      bufOut[i] = 1;
+      bufOut[i] = (T2) 1;
     }
 
     std::cout << "number of Labels: " << numLabels << std::endl;
@@ -191,15 +188,15 @@ namespace smil
             if (o2 <= o1)
               continue;
 
-            T2 val2 = bufIn[o2];
-
-            double cost = 10000.0 / (1.0 + 1.5 * (val1 - val2) * (val1 - val2));
+            T2 val2       = bufIn[o2];
+            double valeur = (255.0 / (std::abs((double) (val1 - val2)) + 1));
+            double cost   = std::pow(valeur, exposant);
 
             bool hasEdge            = false;
             boost::tie(e4, hasEdge) = boost::add_edge(o1, o2, g);
             boost::tie(e3, hasEdge) = boost::add_edge(o2, o1, g);
-            capacity[e4]            = cost + 1;
-            capacity[e3]            = cost + 1;
+            capacity[e4]            = cost;
+            capacity[e3]            = cost;
             rev[e4]                 = e3;
             rev[e3]                 = e4;
           }
@@ -238,11 +235,10 @@ namespace smil
         }
       }
 
-      std::cout << "Compute Max flow" << nbk << std::endl;
+      std::cout << "Compute Max flow" << std::endl;
       boost::property_map<Graph_d, boost::vertex_index_t>::type indexmap =
           boost::get(boost::vertex_index, g);
       std::vector<boost::default_color_type> color(boost::num_vertices(g));
-
 #if BOOST_VERSION >= 104700
       double flow =
           boykov_kolmogorov_max_flow(g, capacity, residual_capacity, rev,
@@ -251,7 +247,6 @@ namespace smil
       double flow = kolmogorov_max_flow(g, capacity, residual_capacity, rev,
                                         &color[0], indexmap, vSource, vSink);
 #endif
-
       std::cout << "c  The total flow:" << std::endl;
       std::cout << "s " << flow << std::endl << std::endl;
 
@@ -282,10 +277,9 @@ namespace smil
         }
       }
     }
-
     return RES_OK;
   }
 
 } // namespace smil
 
-#endif // _D_GEOCUTS_MINSURFACE_HPP_
+#endif // _D_GEOCUTS_WATERSHED_HPP_
