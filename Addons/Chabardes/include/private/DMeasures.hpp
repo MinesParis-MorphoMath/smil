@@ -38,7 +38,7 @@ namespace smil
 {
   /**
    * @ingroup Addons
-   * @defgroup AddonMeasures Measures
+   * @addtogroup AddonMeasures 
    * @{
    */
 

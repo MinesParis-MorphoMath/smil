@@ -31,7 +31,7 @@
 #define _DMORPHO_H
 
 /**
- * \defgroup Morpho Morphological Operators
+ * XXXdefgroup Morpho Morphological Operators
  * @{
  */
 

@@ -36,7 +36,7 @@ namespace smil
 {
     /**
      * @ingroup Addons
-     * @defgroup AddonHough Features detection (Hough)
+     * @addtogroup AddonHoughTransform Features detection (Hough)
      * @{
      */
 

@@ -30,8 +30,12 @@
 #ifndef _DBASE_H
 #define _DBASE_H
 
+/*
+ * XXX defgroup Base Base Operators
+ * @{
+ */
+
 /**
- * \defgroup Base Base Operators
  * @{
  */
 

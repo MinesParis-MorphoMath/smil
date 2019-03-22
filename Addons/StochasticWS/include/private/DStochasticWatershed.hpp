@@ -40,7 +40,7 @@ namespace smil
 {
   /**
    * @ingroup Addons
-   * @defgroup AddonStochasticWatershed Stochastic Watershed
+   * @addtogroup AddonStochasticWatershed Stochastic Watershed
    * @{
    */
 

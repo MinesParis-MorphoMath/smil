@@ -46,7 +46,7 @@ namespace smil
 {
   /**
    * @ingroup   Addons
-   * @defgroup  AddonFilters    Filters (Non Morphological)
+   * @addtogroup  AddonFilters    Filters (Non Morphological)
    */
 
 } // namespace smil

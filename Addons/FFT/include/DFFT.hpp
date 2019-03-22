@@ -38,7 +38,7 @@ namespace smil
 {
   /**
    * @ingroup Addons
-   * @defgroup AddonFft FFT(W) based functions
+   * @addtogroup AddonFFT FFT(W) based functions
    * @{
    */
 

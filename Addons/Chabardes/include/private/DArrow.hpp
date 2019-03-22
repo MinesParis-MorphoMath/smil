@@ -8,7 +8,7 @@ namespace smil
 {
   /**
    * @ingroup Addons
-   * @defgroup AddonArrow  Arrow
+   * @addtogroup AddonArrow  
    *
    * @{
    */

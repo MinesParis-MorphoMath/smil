@@ -43,7 +43,7 @@ namespace smil
 
   /**
    * @ingroup Addons
-   * @defgroup AddonVtkViewer VTK Viewer
+   * @addtogroup AddonQVtkViewer VTK Viewer
    * @{
    */
 

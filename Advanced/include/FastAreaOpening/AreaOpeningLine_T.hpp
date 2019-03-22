@@ -8,7 +8,7 @@
 /// Author Vincent Morard
 /// Date : 7 march 2011
 /// See :
-///	Morard V. and Dokladal P. and Decencière E.
+///	Morard V. and Dokladal P. and Decenciere E.
 ///	LINEAR OPENINGS IN CONSTANT TIME WITH ARBITRARY ORIENTATIONS
 // This algorithm is not exact !
 

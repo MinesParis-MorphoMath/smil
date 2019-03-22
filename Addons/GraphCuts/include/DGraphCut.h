@@ -45,7 +45,7 @@ namespace smil
 {
   /**
    * @ingroup    Addons
-   * @defgroup   AddonGraphCut Graph Geo Cuts
+   * @addtogroup   AddonGraphCut Graph Geo Cuts
    *
    * @warning Not yet implemented
    *

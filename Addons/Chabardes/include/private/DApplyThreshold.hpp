@@ -36,8 +36,8 @@
 namespace smil
 {
   /**
-   * \ingroup Addons
-   * \defgroup AddonThresh Threshold
+   * @ingroup Addons
+   * @addtogroup AddonThresh 
    * @{
    */
 

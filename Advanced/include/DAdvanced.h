@@ -4,7 +4,7 @@
 #define _DADVANCED_H_
 
 /**
- * @defgroup   Advanced Advanced Algorithms
+ * XXXdefgroup   Advanced Advanced Algorithms
  * @{
  */
 

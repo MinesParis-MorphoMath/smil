@@ -4,12 +4,6 @@
 typedef float F_SIMPLE;
 typedef double CVariant;
 
-// #include <morphee/image/include/imageInterface.hpp>
-// #include <morphee/image/include/imageInterface.hpp>
-// #include <morphee/selement/include/selementXXX.hpp>
-// #include <morphee/graph/include/private/graph_T.hpp>
-
-// #include "Mosaic_GeoCutsAlgo_DLLEXPORT.hpp"
 
 #include "Morpho/include/DMorpho.h"
 
@@ -18,7 +12,7 @@ namespace smil
 {
   /**
    * @ingroup AddonGraphCut
-   * @defgroup MosaicGraphCut Mosaix Graph Cut
+   * @defgroup MosaicGraphCut Mosaic Graph Cut
    */
 
   /**
@@ -47,6 +41,10 @@ namespace smil
   RES_T GeoCuts_MinSurfaces(const Image<T> &imIn, const Image<T> &imGrad,
                             const Image<T> &imMarker, const StrElt &nl,
                             Image<T> &imOut);
+
+  /** 
+   * @cond
+   */
 
   /** @brief Geo Cuts algorithm on a region adjacency graph, imMosaic is a
    * mosaic, ImMarker is composed of three values 0 for unmarked pixels, 2 and
@@ -108,7 +106,7 @@ namespace smil
   /** @brief Multiple object segmentation, Geo Cuts algorithm on a region
    * adjacency graph, imMosaic is a mosaic, ImMarker is composed of three
    * values 0 for unmarked pixels, >0 for objects markers
-   *
+   *#ifndef DOXYGEN_SKIP_THIS
    * @param[in] imIn : Image<T> in
    * @param[in] imGrad : Image<T> gradient
    * @param[in] imMarker : Image<T> marker
@@ -187,77 +185,10 @@ namespace smil
                               const Image<T> &imMarker, const StrElt &nl,
                               Image<T> &imOut);
 
+  /** 
+   * @endcond 
+   */
   /** @} */
-
-  /**
-   * @ingroup MosaicGraphCut
-   * @defgroup MosaicGeoCutsAlgo_Markov    Mosaic GeoCutsAlgo_Marcov
-   * @brief Segmentation by minimum surfaces (object label =2, background
-   * label = 3)
-   * @warning  some annoted functions are tests functions, no guarentee on the
-   * results !!!
-   *
-   * @author Jean Stawiaski
-   * @{
-   */
-
-  /** @brief Markov Random Fields segmentation with two labels (2 and 3) with
-   * The Ising Model
-   * @note: For Beta and sigma parameters, read Markov Random Fields section
-   * on jean Stawiaski thesis
-   *
-   * @param[in] imIn     : Image<T> imIn
-   * @param[in] imMosaic : Image<T> imMosaic
-   * @param[in] imMarker : Image<T> imMarker
-   * @param[in] Beta     :
-   * @param[in] Sigma    :
-   * @param[in] nl       : StrElt nl
-   * @param[out] imOut   : Image<T> out
-   */
-  template <class T>
-  RES_T MAP_MRF_Ising(const Image<T> &imIn, const Image<T> &imMosaic,
-                      const Image<T> &imMarker, const CVariant &Beta,
-                      const CVariant &Sigma, const StrElt &nl, Image<T> &imOut);
-
-  /** @brief Markov Random Fields segmentation with two labels (2 and 3) with
-   * edge preserving prior
-   * @note: For Beta and sigma parameters, read Markov Random Fields section
-   * on jean Stawiaski thesis
-   *
-   * @param[in] imIn     : Image<T> imIn
-   * @param[in] imMosaic : Image<T> imMosaic
-   * @param[in] imMarker : Image<T> imMarker
-   * @param[in] Beta     :
-   * @param[in] Sigma    :
-   * @param[in] nl       : StrElt nl
-   * @param[out] imOut   : Image<T> out
-   */
-  template <class T>
-  RES_T MAP_MRF_edge_preserving(const Image<T> &imIn, const Image<T> &imMosaic,
-                                const Image<T> &imMarker, const CVariant &Beta,
-                                const CVariant &Sigma, const StrElt &nl,
-                                Image<T> &imOut);
-
-  /** @brief Multi-Label MAP Markov Random Field with Ising prior (Potts
-   * Model)
-   * @note: For Beta and sigma parameters, read Markov Random Fields section
-   * on jean Stawiaski thesis
-   * @warning MAP_MRF_Potts : These function are tests functions, no guarentee
-   * on the results !!!
-   *
-   * @param[in] imIn     : Image<T> imIn
-   * @param[in] imMosaic : Image<T> imMosaic
-   * @param[in] imMarker : Image<T> imMarker
-   * @param[in] Beta     :
-   * @param[in] Sigma    :
-   * @param[in] nl       : StrElt nl
-   * @param[out] imOut   : Image<T> out
-   */
-  template <class T>
-  RES_T MAP_MRF_Potts(const Image<T> &imIn, const Image<T> &imMosaic,
-                      const Image<T> &imMarker, const CVariant &Beta,
-                      const CVariant &Sigma, const StrElt &nl, Image<T> &imOut);
-  /**  @} */
 
   template <class T>
   void testHandleSE(const Image<T> &img, StrElt se = DEFAULT_SE);
