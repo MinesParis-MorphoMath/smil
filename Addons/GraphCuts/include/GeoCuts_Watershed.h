@@ -13,7 +13,7 @@ namespace smil
 {
   /**
    * @ingroup GeoCutGroup
-   * @defgroup GeoCuts_Watershed    Watershed Algorithms
+   * @defgroup geoCutsWatershed    Watershed Algorithms
    * @brief Watershed algorithms
    * @warning  some annoted functions are tests functions, no guarentee on the
    * results !!!
@@ -32,7 +32,7 @@ namespace smil
    */
   // line no 6633
   template <class T>
-  RES_T GeoCuts_Stochastic_Watershed(const Image<T> &imIn,
+  RES_T geoCutsStochastic_Watershed(const Image<T> &imIn,
                                      const Image<T> &imVal,
                                      const CVariant &nbmarkers,
                                      const StrElt &nl, Image<T> &imOut);
@@ -49,7 +49,7 @@ namespace smil
    */
   // line no 6922
   template <class T>
-  RES_T GeoCuts_Stochastic_Watershed_2(const Image<T> &imIn,
+  RES_T geoCutsStochastic_Watershed_2(const Image<T> &imIn,
                                        const Image<T> &imVal,
                                        const Image<T> &imMarker,
                                        const CVariant &nbmarkers,
@@ -66,7 +66,7 @@ namespace smil
    */
   // line no 7236
   template <class T>
-  RES_T GeoCuts_Watershed_MinCut(const Image<T> &imIn, const Image<T> &imMarker,
+  RES_T geoCutsWatershed_MinCut(const Image<T> &imIn, const Image<T> &imMarker,
                                  const CVariant &Power, const StrElt &nl,
                                  Image<T> &imOut);
 
@@ -79,7 +79,7 @@ namespace smil
    */
   // line no 7401
   template <class T>
-  RES_T GeoCuts_Watershed_Prog_MinCut(const Image<T> &imIn,
+  RES_T geoCutsWatershed_Prog_MinCut(const Image<T> &imIn,
                                       const Image<T> &imMarker,
                                       const StrElt &nl, Image<T> &imOut);
 
@@ -94,7 +94,7 @@ namespace smil
    */
   // line no 7603
   template <class T>
-  RES_T GeoCuts_Watershed_SPF(const Image<T> &imIn, const Image<T> &imMarker,
+  RES_T geoCutsWatershed_SPF(const Image<T> &imIn, const Image<T> &imMarker,
                               const CVariant &Power, const StrElt &nl,
                               Image<T> &imOut);
 
@@ -107,7 +107,7 @@ namespace smil
    */
   // line no 9002
   template <class T>
-  RES_T GeoCuts_Watershed_SpanningForest(const Image<T> &imIn,
+  RES_T geoCutsWatershed_SpanningForest(const Image<T> &imIn,
                                          const Image<T> &imMarker,
                                          const StrElt &nl, Image<T> &imOut);
 
@@ -120,7 +120,7 @@ namespace smil
    */
   // line no 9199
   template <class T>
-  RES_T GeoCuts_Watershed_SpanningForest_v2(const Image<T> &imIn,
+  RES_T geoCutsWatershed_SpanningForest_v2(const Image<T> &imIn,
                                             const Image<T> &imMarker,
                                             const StrElt &nl, Image<T> &imOut);
 
@@ -135,14 +135,14 @@ namespace smil
    */
   // line no 10160
   template <class T1, class T2>
-  RES_T GeoCuts_Multiway_Watershed(const Image<T1> &imIn,
+  RES_T geoCutsMultiway_Watershed(const Image<T1> &imIn,
                                    const Image<T2> &imMarker,
                                    const double Power, const StrElt &nl,
                                    Image<T2> &imOut);
 
   /** @brief Shortest path forest with length of a path = reliability of the
    * path
-   * @warning GeoCuts_Max_Fiability_Forest : These function are tests
+   * @warning geoCutsMax_Fiability_Forest : These function are tests
    * functions, no guarentee on the results !!!
    *
    * @param[in] imIn : Image<T> in
@@ -152,7 +152,7 @@ namespace smil
    */
   // line no 7846
   template <class T>
-  RES_T GeoCuts_Max_Fiability_Forest(const Image<T> &imIn,
+  RES_T geoCutsMax_Fiability_Forest(const Image<T> &imIn,
                                      const Image<T> &imMarker, const StrElt &nl,
                                      Image<T> &imOut);
 
@@ -166,7 +166,7 @@ namespace smil
    */
   // line no 8073
   template <class T>
-  RES_T GeoCuts_BiCriteria_Shortest_Forest(const Image<T> &imIn,
+  RES_T geoCutsBiCriteria_Shortest_Forest(const Image<T> &imIn,
                                            const Image<T> &imMarker,
                                            const StrElt &nl, Image<T> &imOut);
 
@@ -179,7 +179,7 @@ namespace smil
    */
   // line no 8271
   template <class T>
-  RES_T GeoCuts_Lexicographical_Shortest_Forest(const Image<T> &imIn,
+  RES_T geoCutsLexicographical_Shortest_Forest(const Image<T> &imIn,
                                                 const Image<T> &imMarker,
                                                 const StrElt &nl,
                                                 Image<T> &imOut);
@@ -196,7 +196,7 @@ namespace smil
    */
   // line no 8576
   template <class T>
-  RES_T GeoCuts_Vectorial_Shortest_Forest(const Image<T> &imIn,
+  RES_T geoCutsVectorial_Shortest_Forest(const Image<T> &imIn,
                                           const Image<T> &imMarker,
                                           const StrElt &nl, Image<T> &imOut);
 
@@ -212,12 +212,12 @@ namespace smil
    */
   // line no 8482
   template <class T>
-  RES_T GeoCuts_Vectorial_Lexicographical_Shortest_Forest(
+  RES_T geoCutsVectorial_Lexicographical_Shortest_Forest(
       const Image<T> &imIn, const Image<T> &imMarker, const StrElt &nl,
       Image<T> &imOut);
 
   /** @brief Not working yet
-   * @warning GeoCuts_Reg_SpanningForest : Not working yet
+   * @warning geoCutsReg_SpanningForest : Not working yet
    *
    * @param[in] imIn : Image<T> in
    * @param[in] imMarker : Image<T> marker
@@ -226,7 +226,7 @@ namespace smil
    */
   // line no 9473
   template <class T>
-  RES_T GeoCuts_Reg_SpanningForest(const Image<T> &imIn,
+  RES_T geoCutsReg_SpanningForest(const Image<T> &imIn,
                                    const Image<T> &imMarker, const StrElt &nl,
                                    Image<T> &imOut);
 

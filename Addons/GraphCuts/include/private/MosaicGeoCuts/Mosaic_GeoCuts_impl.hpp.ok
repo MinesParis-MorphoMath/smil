@@ -106,7 +106,7 @@ namespace smil
    *
    */
   template <class T>
-  RES_T GeoCuts_MinSurfaces(const Image<T> &imIn, const Image<T> &imGrad,
+  RES_T geoCutsMinSurfaces(const Image<T> &imIn, const Image<T> &imGrad,
                             const Image<T> &imMarker, const StrElt &nl,
                             Image<T> &imOut)
   {
@@ -361,7 +361,7 @@ namespace smil
 #if 0
   template <class ImageIn, class ImageGrad, class ImageMarker, class SE,
             class ImageOut>
-  RES_T GeoCuts_MinSurfaces_with_Line(
+  RES_T geoCutsMinSurfaces_with_Line(
       const ImageIn &imIn, const ImageGrad &imGrad, const ImageMarker &imMarker,
       const SE &nl, ImageOut &imOut)
 
@@ -378,7 +378,7 @@ namespace smil
   // ImageLabel and ImageMarker should be unsigned integers
   template <class ImageLabel, class ImageVal, class ImageMarker, class SE,
             class ImageOut>
-  RES_T GeoCuts_MinSurfaces_with_steps(
+  RES_T geoCutsMinSurfaces_with_steps(
       const ImageLabel &imLabel, const ImageVal &imVal,
       const ImageMarker &imMarker, const SE &nl, F_SIMPLE step_x,
       F_SIMPLE step_y, F_SIMPLE step_z, ImageOut &imOut)
@@ -394,7 +394,7 @@ namespace smil
   // ImageLabel and ImageMarker should be unsigned integers
   template <class ImageLabel, class ImageVal, class ImageMarker, class SE,
             class ImageOut>
-  RES_T GeoCuts_MinSurfaces_with_steps_vGradient(
+  RES_T geoCutsMinSurfaces_with_steps_vGradient(
       const ImageLabel &imLabel, const ImageVal &imVal,
       const ImageMarker &imMarker, const SE &nl, F_SIMPLE step_x,
       F_SIMPLE step_y, F_SIMPLE step_z, ImageOut &imOut)
@@ -409,7 +409,7 @@ namespace smil
 #if 0
   template <class ImageIn, class ImageGrad, class ImageMarker, class SE,
             class ImageOut>
-  RES_T GeoCuts_MinSurfaces_with_steps_old(
+  RES_T geoCutsMinSurfaces_with_steps_old(
       const ImageIn &imIn, const ImageGrad &imGrad, const ImageMarker &imMarker,
       const SE &nl, F_SIMPLE step_x, F_SIMPLE step_y, F_SIMPLE step_z,
       ImageOut &imOut)
@@ -422,7 +422,7 @@ namespace smil
    *
    */
   template <class T>
-  RES_T GeoCuts_MultiWay_MinSurfaces(const Image<T> &imIn,
+  RES_T geoCutsMultiWay_MinSurfaces(const Image<T> &imIn,
                                      const Image<T> &imGrad,
                                      const Image<T> &imMarker, const StrElt &nl,
                                      Image<T> &imOut)
@@ -630,7 +630,7 @@ namespace smil
 #if 0
   template <class ImageIn, class ImageGrad, class ImageMosaic,
             class ImageMarker, class SE, class ImageOut>
-  RES_T GeoCuts_Optimize_Mosaic(
+  RES_T geoCutsOptimize_Mosaic(
       const ImageIn &imIn, const ImageGrad &imGrad, const ImageMosaic &imMosaic,
       const ImageMarker &imMarker, const SE &nl, ImageOut &imOut)
 #endif
@@ -644,7 +644,7 @@ namespace smil
 #if 0
   template <class ImageIn, class ImageGrad, class ImageCurvature,
             class ImageMarker, typename _Beta, class SE, class ImageOut>
-  RES_T GeoCuts_Regularized_MinSurfaces(
+  RES_T geoCutsRegularized_MinSurfaces(
       const ImageIn &imIn, const ImageGrad &imGrad,
       const ImageCurvature &imCurvature, const ImageMarker &imMarker,
       const _Beta Beta, const SE &nl, ImageOut &imOut)
@@ -659,7 +659,7 @@ namespace smil
 #if 0
   template <class ImageIn, class ImageMosaic, class ImageMarker, class SE,
             class ImageOut>
-  RES_T GeoCuts_Segment_Graph(const ImageIn &imIn, const ImageMosaic &imMosaic,
+  RES_T geoCutsSegment_Graph(const ImageIn &imIn, const ImageMosaic &imMosaic,
                               const ImageMarker &imMarker, const SE &nl,
                               ImageOut &imOut)
 #endif

@@ -8,7 +8,7 @@ namespace smil
 {
   /**
    * @ingroup GeoCutGroup
-   * @defgroup GeoCuts_MinSurface     Minimum surfaces segmentation
+   * @defgroup geoCutsMinSurface     Minimum surfaces segmentation
    * @brief Segmentation by minimum surfaces (object label = 2, background
    * label = 3)
    *
@@ -74,13 +74,13 @@ namespace smil
 
   // line no 4434
   template <class T>
-  RES_T ParametricGeoCuts(const Image<T> &imIn, const Image<T> &ImGradx,
+  RES_T geoCutsParametric(const Image<T> &imIn, const Image<T> &ImGradx,
                           const Image<T> &ImGrady, const Image<T> &imMarker,
                           const StrElt &nl, Image<T> &imOut);
 
   // line no 5816
   template <class T>
-  RES_T GeoCuts_Stochastic_Watershed_Variance(
+  RES_T geoCutsStochastic_Watershed_Variance(
       const Image<T> &imIn, const Image<T> &imIn2, const Image<T> &imVal,
       const CVariant &nbmarkers, const CVariant &alpha, const StrElt &nl,
       Image<T> &imOut);
@@ -88,13 +88,13 @@ namespace smil
 #if 0
   template <class T>
     // lineno 4857
-    RES_T GeoCuts_Stochastic_Watershed_Graph(
+    RES_T geoCutsStochastic_Watershed_Graph(
         const Image<T> &imIn, const Image<T> &imVal, CommonGraph32 &GIn,
         const CVariant &nbmarkers, const StrElt &nl, Image<T> &imOut);
 
   // line no 5141
   template <class T>
-    RES_T GeoCuts_Stochastic_Watershed_Graph_NP(
+    RES_T geoCutsStochastic_Watershed_Graph_NP(
         const Image<T> &imIn, const Image<T> &imVal, CommonGraph32 &GIn,
         const CVariant &nbmarkers, const StrElt &nl, Image<T> &imOut);
 
@@ -107,7 +107,7 @@ namespace smil
 
   // line no 4668
   template <class T>
-  RES_T GeoCuts_Boundary_Constrained_MinSurfaces(const Image<T> &imIn,
+  RES_T geoCutsBoundary_Constrained_MinSurfaces(const Image<T> &imIn,
                                                  const Image<T> &imMarker,
                                                  const Image<T> &imMarker2,
                                                  const StrElt &nl,
@@ -141,7 +141,7 @@ namespace smil
    */
   // line no 6266
   template <class T>
-  RES_T GeoCuts(const Image<T> &imIn, const Image<T> &imGradx,
+  RES_T geoCuts(const Image<T> &imIn, const Image<T> &imGradx,
                 const Image<T> &imGrady, const Image<T> &imMarker,
                 const StrElt &nl, Image<T> &imOut);
 
@@ -156,7 +156,7 @@ namespace smil
    */
   // line no 6468
   template <class T>
-  RES_T GeoCuts_MinSurfaces(const Image<T> &imIn, const Image<T> &imMarker,
+  RES_T geoCutsMinSurfaces(const Image<T> &imIn, const Image<T> &imMarker,
                             const StrElt &nl, Image<T> &imOut);
 
   /** @brief Geo Cuts algorithm on a pixel adjacency graph, ImMarker is
@@ -170,7 +170,7 @@ namespace smil
    */
   // line no 9789
   template <class T>
-  RES_T GeoCuts_MinSurfaces_With_Line(const Image<T> &imIn,
+  RES_T geoCutsMinSurfaces_With_Line(const Image<T> &imIn,
                                       const Image<T> &imMarker,
                                       const StrElt &nl, Image<T> &imOut);
 
@@ -185,7 +185,7 @@ namespace smil
    */
   // line no 9964
   template <class T1, class T2>
-  RES_T GeoCuts_Multiway_MinSurfaces(const Image<T1> &imIn,
+  RES_T geoCutsMultiway_MinSurfaces(const Image<T1> &imIn,
                                      const Image<T2> &imMarker,
                                      const StrElt &nl, Image<T2> &imOut);
 

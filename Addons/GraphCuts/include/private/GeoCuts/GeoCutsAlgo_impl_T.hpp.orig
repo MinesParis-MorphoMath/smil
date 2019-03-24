@@ -4431,14 +4431,14 @@ namespace morphee
 
     template <class ImageIn, class ImageGradx, class ImageGrady,
               class ImageMarker, class SE, class ImageOut>
-    RES_C t_ParametricGeoCuts(const ImageIn &imIn, const ImageGradx &imGradx,
+    RES_C t_geoCutsParametric(const ImageIn &imIn, const ImageGradx &imGradx,
                               const ImageGrady &imGrady,
                               const ImageMarker &imMarker, const SE &nl,
                               ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_ParametricGeoCuts");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsParametric");
 
-      std::cout << "Enter function t_ParametricGeoCuts" << std::endl;
+      std::cout << "Enter function t_geoCutsParametric" << std::endl;
 
       if ((!imOut.isAllocated())) {
         MORPHEE_REGISTER_ERROR("Not allocated");
@@ -4665,11 +4665,11 @@ namespace morphee
 
     template <class ImageIn, class ImageMarker, class ImageMarker2, class SE,
               class ImageOut>
-    RES_C t_GeoCuts_Boundary_Constrained_MinSurfaces(
+    RES_C t_geoCutsBoundary_Constrained_MinSurfaces(
         const ImageIn &imIn, const ImageMarker &imMarker,
         const ImageMarker2 &imMarker2, const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Boundary_Constrained_MinSurfaces");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsBoundary_Constrained_MinSurfaces");
 
       std::cout << "Enter function Geo-Cuts " << std::endl;
 
@@ -4854,13 +4854,13 @@ namespace morphee
 
     template <class ImageIn, class ImageVal, class BoostGraph,
               typename _nbmarkers, class SE, class ImageOut>
-    RES_C t_GeoCuts_Stochastic_Watershed_Graph(const ImageIn &imIn,
+    RES_C t_geoCutsStochastic_Watershed_Graph(const ImageIn &imIn,
                                                const ImageVal &imVal,
                                                BoostGraph &Gin,
                                                const _nbmarkers nbmarkers,
                                                const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Stochastic_Watershed_Graph");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsStochastic_Watershed_Graph");
 
       std::cout << "Enter function Geo-Cuts Stochastic Watershed graph"
                 << std::endl;
@@ -5138,13 +5138,13 @@ namespace morphee
 
     template <class ImageIn, class ImageVal, class BoostGraph,
               typename _nbmarkers, class SE, class ImageOut>
-    RES_C t_GeoCuts_Stochastic_Watershed_Graph_NP(const ImageIn &imIn,
+    RES_C t_geoCutsStochastic_Watershed_Graph_NP(const ImageIn &imIn,
                                                   const ImageVal &imVal,
                                                   BoostGraph &Gin,
                                                   const _nbmarkers nbmarkers,
                                                   const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Stochastic_Watershed_Graph_NP");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsStochastic_Watershed_Graph_NP");
 
       std::cout
           << "Enter function Geo-Cuts Stochastic Watershed graph non ponctual"
@@ -5813,14 +5813,14 @@ namespace morphee
 
     template <class ImageIn, class ImageIn2, class ImageVal,
               typename _nbmarkers, typename _alpha, class SE, class ImageOut>
-    RES_C t_GeoCuts_Stochastic_Watershed_Variance(const ImageIn &imIn,
+    RES_C t_geoCutsStochastic_Watershed_Variance(const ImageIn &imIn,
                                                   const ImageIn2 &imVal,
                                                   const ImageVal &imGrad,
                                                   const _nbmarkers nbmarkers,
                                                   const _alpha alpha,
                                                   const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Stochastic_Watershed");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsStochastic_Watershed");
 
       std::cout << "Enter function Geo-Cuts Stochastic Watershed" << std::endl;
 
@@ -6465,11 +6465,11 @@ namespace morphee
     }
 
     template <class ImageIn, class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_MinSurfaces(const ImageIn &imIn,
+    RES_C t_geoCutsMinSurfaces(const ImageIn &imIn,
                                 const ImageMarker &imMarker, const SE &nl,
                                 ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_MinSurfaces");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsMinSurfaces");
 
       std::cout << "Enter function Geo-Cuts " << std::endl;
 
@@ -6630,12 +6630,12 @@ namespace morphee
 
     template <class ImageIn, class ImageVal, typename _nbmarkers, class SE,
               class ImageOut>
-    RES_C t_GeoCuts_Stochastic_Watershed(const ImageIn &imIn,
+    RES_C t_geoCutsStochastic_Watershed(const ImageIn &imIn,
                                          const ImageVal &imVal,
                                          const _nbmarkers nbmarkers,
                                          const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Stochastic_Watershed");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsStochastic_Watershed");
 
       std::cout << "Enter function Geo-Cuts Stochastic Watershed" << std::endl;
 
@@ -6919,13 +6919,13 @@ namespace morphee
 
     template <class ImageIn, class ImageVal, class ImageMark,
               typename _nbmarkers, class SE, class ImageOut>
-    RES_C t_GeoCuts_Stochastic_Watershed_2(const ImageIn &imIn,
+    RES_C t_geoCutsStochastic_Watershed_2(const ImageIn &imIn,
                                            const ImageVal &imVal,
                                            const ImageMark &imMark,
                                            const _nbmarkers nbmarkers,
                                            const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Stochastic_Watershed_2");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsStochastic_Watershed_2");
 
       std::cout << "Enter function Geo-Cuts Stochastic Watershed_2"
                 << std::endl;
@@ -7233,12 +7233,12 @@ namespace morphee
 
     template <class ImageIn, class ImageMarker, typename _Power, class SE,
               class ImageOut>
-    RES_C t_GeoCuts_Watershed_MinCut(const ImageIn &imIn,
+    RES_C t_geoCutsWatershed_MinCut(const ImageIn &imIn,
                                      const ImageMarker &imMarker,
                                      const _Power Power, const SE &nl,
                                      ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Watershed_MinCut");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsWatershed_MinCut");
 
       std::cout << "Enter function Geo-Cuts Watershed" << std::endl;
 
@@ -7398,13 +7398,13 @@ namespace morphee
     }
 
     template <class ImageIn, class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_Watershed_Prog_MinCut(const ImageIn &imIn,
+    RES_C t_geoCutsWatershed_Prog_MinCut(const ImageIn &imIn,
                                           const ImageMarker &imMarker,
                                           const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Watershed_Prog_MinCut");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsWatershed_Prog_MinCut");
 
-      std::cout << "Enter function GeoCuts_Watershed_Prog_MinCut" << std::endl;
+      std::cout << "Enter function geoCutsWatershed_Prog_MinCut" << std::endl;
 
       if ((!imOut.isAllocated())) {
         MORPHEE_REGISTER_ERROR("Not allocated");
@@ -7600,10 +7600,10 @@ namespace morphee
 
     template <class ImageIn, class ImageMarker, typename _Power, class SE,
               class ImageOut>
-    RES_C t_GeoCuts_Watershed_SPF(const ImageIn &imIn, const ImageMarker &imMarker,
+    RES_C t_geoCutsWatershed_SPF(const ImageIn &imIn, const ImageMarker &imMarker,
                             const _Power Power, const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Watershed_SPF");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsWatershed_SPF");
 
       std::cout << "Enter function Geo-Cuts Watershed SPF" << std::endl;
 
@@ -7843,13 +7843,13 @@ namespace morphee
     }
 
     template <class ImageIn, class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_Max_Fiability_Forest(const ImageIn &imIn,
+    RES_C t_geoCutsMax_Fiability_Forest(const ImageIn &imIn,
                                          const ImageMarker &imMarker,
                                          const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Max_Fiability_Forest");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsMax_Fiability_Forest");
 
-      std::cout << "Enter function t_GeoCuts_Max_Fiability_Forest" << std::endl;
+      std::cout << "Enter function t_geoCutsMax_Fiability_Forest" << std::endl;
 
       if ((!imOut.isAllocated())) {
         MORPHEE_REGISTER_ERROR("Not allocated");
@@ -8070,13 +8070,13 @@ namespace morphee
     }
 
     template <class ImageIn, class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_BiCriteria_Shortest_Forest(const ImageIn &imIn,
+    RES_C t_geoCutsBiCriteria_Shortest_Forest(const ImageIn &imIn,
                                                const ImageMarker &imMarker,
                                                const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_BiCriteria_Shortest_Forest");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsBiCriteria_Shortest_Forest");
 
-      std::cout << "Enter function t_GeoCuts_BiCriteria_Shortest_Forest"
+      std::cout << "Enter function t_geoCutsBiCriteria_Shortest_Forest"
                 << std::endl;
 
       if ((!imOut.isAllocated())) {
@@ -8268,14 +8268,14 @@ namespace morphee
     }
 
     template <class ImageIn, class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_Lexicographical_Shortest_Forest(const ImageIn &imIn,
+    RES_C t_geoCutsLexicographical_Shortest_Forest(const ImageIn &imIn,
                                                     const ImageMarker &imMarker,
                                                     const SE &nl,
                                                     ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Lexicographical_Shortest_Forest");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsLexicographical_Shortest_Forest");
 
-      std::cout << "Enter function t_GeoCuts_Lexicographical_Shortest_Forest"
+      std::cout << "Enter function t_geoCutsLexicographical_Shortest_Forest"
                 << std::endl;
 
       if ((!imOut.isAllocated())) {
@@ -8479,15 +8479,15 @@ namespace morphee
     }
 
     template <class ImageIn, class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_Vectorial_Lexicographical_Shortest_Forest(
+    RES_C t_geoCutsVectorial_Lexicographical_Shortest_Forest(
         const ImageIn &imIn, const ImageMarker &imMarker, const SE &nl,
         ImageOut &imOut)
     {
       MORPHEE_ENTER_FUNCTION(
-          "t_GeoCuts_Vectorial_Lexicographical_Shortest_Forest");
+          "t_geoCutsVectorial_Lexicographical_Shortest_Forest");
 
       std::cout << "Enter function "
-                   "t_GeoCuts_Vectorial_Lexicographical_Shortest_Forest"
+                   "t_geoCutsVectorial_Lexicographical_Shortest_Forest"
                 << std::endl;
 
       if ((!imOut.isAllocated())) {
@@ -8753,13 +8753,13 @@ namespace morphee
     }
 
     template <class ImageIn, class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_Vectorial_Shortest_Forest(const ImageIn &imIn,
+    RES_C t_geoCutsVectorial_Shortest_Forest(const ImageIn &imIn,
                                               const ImageMarker &imMarker,
                                               const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Vectorial_Shortest_Forest");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsVectorial_Shortest_Forest");
 
-      std::cout << "Enter function t_GeoCuts_Vectorial_Shortest_Forest"
+      std::cout << "Enter function t_geoCutsVectorial_Shortest_Forest"
                 << std::endl;
 
       if ((!imOut.isAllocated())) {
@@ -8999,13 +8999,13 @@ namespace morphee
     }
 
     template <class ImageIn, class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_Watershed_SpanningForest(const ImageIn &imIn,
+    RES_C t_geoCutsWatershed_SpanningForest(const ImageIn &imIn,
                                              const ImageMarker &imMarker,
                                              const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Watershed_SpanningForest");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsWatershed_SpanningForest");
 
-      std::cout << "Enter function t_GeoCuts_Watershed_SpanningForest"
+      std::cout << "Enter function t_geoCutsWatershed_SpanningForest"
                 << std::endl;
 
       if ((!imOut.isAllocated())) {
@@ -9196,13 +9196,13 @@ namespace morphee
     }
 
     template <class ImageIn, class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_Watershed_SpanningForest_v2(const ImageIn &imIn,
+    RES_C t_geoCutsWatershed_SpanningForest_v2(const ImageIn &imIn,
                                                 const ImageMarker &imMarker,
                                                 const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Watershed_SpanningForest_v2");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsWatershed_SpanningForest_v2");
 
-      std::cout << "Enter function t_GeoCuts_Watershed_SpanningForest_v2"
+      std::cout << "Enter function t_geoCutsWatershed_SpanningForest_v2"
                 << std::endl;
 
       if ((!imOut.isAllocated())) {
@@ -9470,13 +9470,13 @@ namespace morphee
     }
 
     template <class ImageIn, class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_Reg_SpanningForest(const ImageIn &imIn,
+    RES_C t_geoCutsReg_SpanningForest(const ImageIn &imIn,
                                        const ImageMarker &imMarker,
                                        const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Reg_SpanningForest");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsReg_SpanningForest");
 
-      std::cout << "Enter function GeoCuts_SpanningForest" << std::endl;
+      std::cout << "Enter function geoCutsSpanningForest" << std::endl;
 
       if ((!imOut.isAllocated())) {
         MORPHEE_REGISTER_ERROR("Not allocated");
@@ -9786,11 +9786,11 @@ namespace morphee
     }
 
     template <class ImageIn, class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_MinSurfaces_With_Line(const ImageIn &imIn,
+    RES_C t_geoCutsMinSurfaces_With_Line(const ImageIn &imIn,
                                           const ImageMarker &imMarker,
                                           const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_MinSurfaces_With_Line");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsMinSurfaces_With_Line");
 
       std::cout << "Enter function Geo-Cuts" << std::endl;
 
@@ -9961,11 +9961,11 @@ namespace morphee
     }
 
     template <class ImageIn, class ImageMarker, class SE, class ImageOut>
-    RES_C t_GeoCuts_Multiway_MinSurfaces(const ImageIn &imIn,
+    RES_C t_geoCutsMultiway_MinSurfaces(const ImageIn &imIn,
                                          const ImageMarker &imMarker,
                                          const SE &nl, ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Multiway_MinSurfaces");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsMultiway_MinSurfaces");
 
       std::cout << "Enter function Multi way Geo-Cuts" << std::endl;
 
@@ -10157,12 +10157,12 @@ namespace morphee
 
     template <class ImageIn, class ImageMarker, typename _Power, class SE,
               class ImageOut>
-    RES_C t_GeoCuts_Multiway_Watershed(const ImageIn &imIn,
+    RES_C t_geoCutsMultiway_Watershed(const ImageIn &imIn,
                                        const ImageMarker &imMarker,
                                        const _Power Power, const SE &nl,
                                        ImageOut &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_GeoCuts_Multiway_Watershed");
+      MORPHEE_ENTER_FUNCTION("t_geoCutsMultiway_Watershed");
 
       std::cout << "Enter function Multi way watershed" << std::endl;
 

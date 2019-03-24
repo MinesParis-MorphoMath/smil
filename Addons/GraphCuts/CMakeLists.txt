@@ -27,7 +27,7 @@
 
 SET(MODULE_NAME GraphCuts)
 
-SET(MODULE_DEPS ${SMIL_LIB_PREFIX}Core)
+SET(MODULE_DEPS smilCore smilBase smilMorpho)
 
 LIST(APPEND MODULE_DEPS)
 

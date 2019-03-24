@@ -39,54 +39,45 @@
  * __HEAD__ - Stop here !
  */
 
-#ifndef _D_GEOCUTS_WATERSHED_HPP_
-#define _D_GEOCUTS_WATERSHED_HPP_
+#include <cstddef>
+#include <vector>
 
-#if 0
-#include <morphee/selement/include/selementNeighborList.hpp>
-#include <morphee/selement/include/private/selementNeighborhood_T.hpp>
-#include <morphee/image/include/private/image_T.hpp>
-#include <morphee/image/include/imageUtils.hpp>
-#endif
+#include "Core/include/DCore.h"
+#include "Morpho/include/DMorpho.h"
+
+// #include "GeoCuts.h"
+#include "GeoCuts_Watershed.h"
+#include "src-geo-cuts-tools.hpp"
 
 /*
- *
- *
  *
  */
 #ifndef __BOOST_INCLUDED__
 #define __BOOST_INCLUDED__
 
 #include <boost/config.hpp>
+#include <boost/version.hpp>
+
 // for boost::tie
+// #include <boost/type_traits.hpp>
 #include <boost/utility.hpp>
 // for boost::graph_traits
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
-// JOE #include <boost/graph/graphviz.hpp>
-// JOE #include <boost/graph/prim_minimum_spanning_tree.hpp>
-// JOE #include <boost/graph/dijkstra_shortest_paths.hpp>
-// JOE #include <boost/graph/johnson_all_pairs_shortest.hpp>
 
 #include <boost/version.hpp>
-
-#if 0
-// FROM STAWIASKI JAN 2012
-#include "../boost_ext/kolmogorov_max_flow_min_cost.hpp"
-//#include "../boost_ext/maximum_spanning_tree.hpp"
-//STAWIASKI JAN2012 commented, why?
-//#include "../boost_ext/boost_compare.hpp"
-#include <boost/graph/connected_components.hpp>
+#if BOOST_VERSION >= 104700
+#include <boost/graph/boykov_kolmogorov_max_flow.hpp>
+#elif BOOST_VERSION >= 103500
+#include <boost/graph/kolmogorov_max_flow.hpp>
 #endif
 
 #endif //  __BOOST_INCLUDED__
 
-#include <vector>
-
-using namespace geocuts;
 
 namespace smil
 {
+#if 0
   /*
    *
    *
@@ -98,7 +89,6 @@ namespace smil
                                    const double Power, const StrElt &nl,
                                    Image<T2> &imOut)
   {
-    std::cout << "Enter function Multi way watershed" << std::endl;
     ASSERT_ALLOCATED(&imIn, &imMarker, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imMarker, &imOut);
 
@@ -279,7 +269,8 @@ namespace smil
     }
     return RES_OK;
   }
-
+#endif
 } // namespace smil
 
-#endif // _D_GEOCUTS_WATERSHED_HPP_
+
+

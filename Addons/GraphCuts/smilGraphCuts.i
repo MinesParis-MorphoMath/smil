@@ -42,15 +42,15 @@ SMIL_MODULE(smilGraphCuts)
 %import smilMorpho.i
 
 %include "Mosaic_GeoCuts.h"
-TEMPLATE_WRAP_FUNC(GeoCuts_MinSurfaces);
-// TEMPLATE_WRAP_FUNC(GeoCuts_MinSurfaces_with_Line);
-// TEMPLATE_WRAP_FUNC(GeoCuts_MinSurfaces_with_steps);
-// TEMPLATE_WRAP_FUNC(GeoCuts_MinSurfaces_with_steps_vGradient);
-// TEMPLATE_WRAP_FUNC(GeoCuts_MinSurfaces_with_steps_old);
-TEMPLATE_WRAP_FUNC(GeoCuts_MultiWay_MinSurfaces);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Regularized_MinSurfaces);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Optimize_Mosaic);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Segment_Graph);
+TEMPLATE_WRAP_FUNC(geoCutsMinSurfaces);
+// TEMPLATE_WRAP_FUNC(geoCutsMinSurfaces_with_Line);
+// TEMPLATE_WRAP_FUNC(geoCutsMinSurfaces_with_steps);
+// TEMPLATE_WRAP_FUNC(geoCutsMinSurfaces_with_steps_vGradient);
+// TEMPLATE_WRAP_FUNC(geoCutsMinSurfaces_with_steps_old);
+TEMPLATE_WRAP_FUNC(geoCutsMultiWay_MinSurfaces);
+// TEMPLATE_WRAP_FUNC(geoCutsRegularized_MinSurfaces);
+// TEMPLATE_WRAP_FUNC(geoCutsOptimize_Mosaic);
+// TEMPLATE_WRAP_FUNC(geoCutsSegment_Graph);
 // TEMPLATE_WRAP_FUNC(MAP_MRF_Ising);
 // TEMPLATE_WRAP_FUNC(MAP_MRF_edge_preserving);
 // TEMPLATE_WRAP_FUNC(MAP_MRF_Potts);
@@ -64,31 +64,31 @@ TEMPLATE_WRAP_FUNC(testHandleSE);
 //
 %include "GeoCuts_MinSurfaces.h"
 //
-// TEMPLATE_WRAP_FUNC(GeoCuts);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Boundary_Constrained_MinSurfaces);
-// TEMPLATE_WRAP_FUNC(GeoCuts_MinSurfaces);
-// TEMPLATE_WRAP_FUNC(GeoCuts_MinSurfaces_With_Line);
-TEMPLATE_WRAP_FUNC_2T_CROSS(GeoCuts_Multiway_MinSurfaces);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Stochastic_Watershed_Variance);
-// TEMPLATE_WRAP_FUNC(ParametricGeoCuts);
+// TEMPLATE_WRAP_FUNC(geoCuts);
+// TEMPLATE_WRAP_FUNC(geoCutsBoundary_Constrained_MinSurfaces);
+// TEMPLATE_WRAP_FUNC(geoCutsMinSurfaces);
+// TEMPLATE_WRAP_FUNC(geoCutsMinSurfaces_With_Line);
+TEMPLATE_WRAP_FUNC_2T_CROSS(geoCutsMultiway_MinSurfaces);
+// TEMPLATE_WRAP_FUNC(geoCutsStochastic_Watershed_Variance);
+// TEMPLATE_WRAP_FUNC(geoCutsParametric);
 
 //
 %include "GeoCuts_Watershed.h"
 //
-// TEMPLATE_WRAP_FUNC(GeoCuts_BiCriteria_Shortest_Forest);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Lexicographical_Shortest_Forest);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Max_Fiability_Forest);
-TEMPLATE_WRAP_FUNC_2T_CROSS(GeoCuts_Multiway_Watershed);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Reg_SpanningForest);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Stochastic_Watershed);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Stochastic_Watershed_2);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Vectorial_Lexicographical_Shortest_Forest);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Vectorial_Shortest_Forest);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Watershed_MinCut);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Watershed_Prog_MinCut);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Watershed_SpanningForest);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Watershed_SpanningForest_v2);
-// TEMPLATE_WRAP_FUNC(GeoCuts_Watershed_SPF);
+// TEMPLATE_WRAP_FUNC(geoCutsBiCriteria_Shortest_Forest);
+// TEMPLATE_WRAP_FUNC(geoCutsLexicographical_Shortest_Forest);
+// TEMPLATE_WRAP_FUNC(geoCutsMax_Fiability_Forest);
+TEMPLATE_WRAP_FUNC_2T_CROSS(geoCutsMultiway_Watershed);
+// TEMPLATE_WRAP_FUNC(geoCutsReg_SpanningForest);
+// TEMPLATE_WRAP_FUNC(geoCutsStochastic_Watershed);
+// TEMPLATE_WRAP_FUNC(geoCutsStochastic_Watershed_2);
+// TEMPLATE_WRAP_FUNC(geoCutsVectorial_Lexicographical_Shortest_Forest);
+// TEMPLATE_WRAP_FUNC(geoCutsVectorial_Shortest_Forest);
+// TEMPLATE_WRAP_FUNC(geoCutsWatershed_MinCut);
+// TEMPLATE_WRAP_FUNC(geoCutsWatershed_Prog_MinCut);
+// TEMPLATE_WRAP_FUNC(geoCutsWatershed_SpanningForest);
+// TEMPLATE_WRAP_FUNC(geoCutsWatershed_SpanningForest_v2);
+// TEMPLATE_WRAP_FUNC(geoCutsWatershed_SPF);
 
 //
 %include "GeoCuts_Markov.h"
