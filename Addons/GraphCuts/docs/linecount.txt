@@ -23,7 +23,7 @@
 ..   6468    165   ++   geoCutsMinSurfaces
 ..   6633    289   bb   geoCutsStochastic_Watershed
 ..   6922    314   bb   geoCutsStochastic_Watershed_2
-..   7236    165   ++   geoCutsWatershed_MinCut
+OK ? 7236    165   ++   geoCutsWatershed_MinCut
 ..   7401    202   ++   geoCutsWatershed_Prog_MinCut
 ..   7603    243   ++   geoCutsWatershed_SPF
 ..   7846    227   ++   geoCutsMax_Fiability_Forest

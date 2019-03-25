@@ -44,6 +44,7 @@
 
 namespace geocuts
 {
+  /** @cond */
   /*
    * Some useful tools
    */
@@ -168,7 +169,7 @@ typedef std::list<morceau> affine_par_morceaux;
   typedef property_map<graphVecVec_t, vertex_index_t>::type VertexIndex_T;
 
 #endif
-
+  /** @endcond */
 } // namespace geocuts
 
 #endif // _D_GEOCUTSTOOLS_HPP_

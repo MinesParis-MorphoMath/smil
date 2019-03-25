@@ -847,6 +847,7 @@ namespace smil
         return *this;
     }
 
+    /** @cond */
     template <class T>
     ResImage<T>Image<T>::operator & (const Image<T> &rhs)
     {
@@ -876,6 +877,7 @@ namespace smil
         inf(*this, value, *this);
         return *this;
     }
+    /** @endcond */
 
     template <class T>
     Image<T>::operator bool()

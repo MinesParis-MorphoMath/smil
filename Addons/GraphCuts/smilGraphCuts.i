@@ -51,9 +51,6 @@ TEMPLATE_WRAP_FUNC(geoCutsMultiWay_MinSurfaces);
 // TEMPLATE_WRAP_FUNC(geoCutsRegularized_MinSurfaces);
 // TEMPLATE_WRAP_FUNC(geoCutsOptimize_Mosaic);
 // TEMPLATE_WRAP_FUNC(geoCutsSegment_Graph);
-// TEMPLATE_WRAP_FUNC(MAP_MRF_Ising);
-// TEMPLATE_WRAP_FUNC(MAP_MRF_edge_preserving);
-// TEMPLATE_WRAP_FUNC(MAP_MRF_Potts);
 
 TEMPLATE_WRAP_FUNC(testHandleSE);
 
@@ -64,9 +61,10 @@ TEMPLATE_WRAP_FUNC(testHandleSE);
 //
 %include "GeoCuts_MinSurfaces.h"
 //
-// TEMPLATE_WRAP_FUNC(geoCuts);
+// ++ in src : geoCuts
+TEMPLATE_WRAP_FUNC_2T_CROSS(geoCuts);
 // TEMPLATE_WRAP_FUNC(geoCutsBoundary_Constrained_MinSurfaces);
-// TEMPLATE_WRAP_FUNC(geoCutsMinSurfaces);
+// ++ in src TEMPLATE_WRAP_FUNC_2T_CROSS(geoCutsMinSurfaces);
 // TEMPLATE_WRAP_FUNC(geoCutsMinSurfaces_With_Line);
 TEMPLATE_WRAP_FUNC_2T_CROSS(geoCutsMultiway_MinSurfaces);
 // TEMPLATE_WRAP_FUNC(geoCutsStochastic_Watershed_Variance);
@@ -78,13 +76,14 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(geoCutsMultiway_MinSurfaces);
 // TEMPLATE_WRAP_FUNC(geoCutsBiCriteria_Shortest_Forest);
 // TEMPLATE_WRAP_FUNC(geoCutsLexicographical_Shortest_Forest);
 // TEMPLATE_WRAP_FUNC(geoCutsMax_Fiability_Forest);
+// ++ in src and in private geoCutsMultiway_Watershed 
 TEMPLATE_WRAP_FUNC_2T_CROSS(geoCutsMultiway_Watershed);
 // TEMPLATE_WRAP_FUNC(geoCutsReg_SpanningForest);
 // TEMPLATE_WRAP_FUNC(geoCutsStochastic_Watershed);
 // TEMPLATE_WRAP_FUNC(geoCutsStochastic_Watershed_2);
 // TEMPLATE_WRAP_FUNC(geoCutsVectorial_Lexicographical_Shortest_Forest);
 // TEMPLATE_WRAP_FUNC(geoCutsVectorial_Shortest_Forest);
-// TEMPLATE_WRAP_FUNC(geoCutsWatershed_MinCut);
+// ++ in src TEMPLATE_WRAP_FUNC_2T_CROSS(geoCutsWatershed_MinCut);
 // TEMPLATE_WRAP_FUNC(geoCutsWatershed_Prog_MinCut);
 // TEMPLATE_WRAP_FUNC(geoCutsWatershed_SpanningForest);
 // TEMPLATE_WRAP_FUNC(geoCutsWatershed_SpanningForest_v2);
