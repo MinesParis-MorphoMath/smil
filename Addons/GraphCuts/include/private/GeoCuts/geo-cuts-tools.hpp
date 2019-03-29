@@ -56,6 +56,10 @@ namespace geocuts
 #ifndef __BOOST_INCLUDED__
 #define __BOOST_INCLUDED__
 
+/*
+ *To prevent doxygen try to document boost included headers 
+ */
+/** @cond */
 #include <boost/config.hpp>
 // for boost::tie
 #include <boost/utility.hpp>
@@ -75,15 +79,7 @@ namespace geocuts
 #include <boost/graph/kolmogorov_max_flow.hpp>
 #define GC_KMaxFlow kolmogorov_max_flow
 #endif
-
-#if 0
-// FROM STAWIASKI JAN 2012
-#include "../boost_ext/kolmogorov_max_flow_min_cost.hpp"
-//#include "../boost_ext/maximum_spanning_tree.hpp"
-//STAWIASKI JAN2012 commented, why?
-//#include "../boost_ext/boost_compare.hpp"
-#include <boost/graph/connected_components.hpp>
-#endif
+/** @endcond */
 
 #endif //  __BOOST_INCLUDED__
 
