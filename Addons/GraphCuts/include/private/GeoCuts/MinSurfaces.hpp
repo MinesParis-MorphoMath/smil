@@ -100,7 +100,7 @@ using namespace geocuts;
 namespace smil
 {
   template <class T1, class T2>
-  RES_T GeoCuts_Multiway_MinSurfaces(const Image<T1> &imIn,
+  RES_T geoCutsMultiway_MinSurfaces(const Image<T1> &imIn,
                                      const Image<T2> &imMarker,
                                      const StrElt &nl, Image<T2> &imOut)
   {

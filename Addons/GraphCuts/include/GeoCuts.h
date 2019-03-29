@@ -1,9 +1,6 @@
 #ifndef __D_GEOCUTS_H__
 #define __D_GEOCUTS_H__
 
-typedef float F_SIMPLE;
-typedef double CVariant;
-
 namespace smil
 {
   /**
@@ -27,11 +24,11 @@ namespace smil
 
 } // namespace smil
 
+typedef float F_SIMPLE;
+typedef double CVariant;
 
 #include "GeoCuts_Markov.h"
 #include "GeoCuts_MinSurfaces.h"
 #include "GeoCuts_Watershed.h"
-
-
 
 #endif // __D_GEOCUTS_H__

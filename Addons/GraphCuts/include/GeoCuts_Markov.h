@@ -9,10 +9,10 @@ namespace smil
 
   /**
    * @ingroup GeoCutGroup
-   * @defgroup GeoCuts_Markov    GeoCuts Markov Random Fields
+   * @defgroup geoCutsMarkov    GeoCuts Markov Random Fields
    * @brief Segmentation by minimum surfaces (object label = 2, background
    * label = 3)
-   * @warning  some annoted functions are tests functions, no guarentee on the
+   * @warning  some annotated functions are tests functions, no guarantee on the
    * results !!!
    *
    * @author Jean Stawiaski
