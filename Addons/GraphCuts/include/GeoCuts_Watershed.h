@@ -62,7 +62,7 @@ namespace smil
   // line no 7236
   template <class T1, class T2>
   RES_T geoCutsWatershed_MinCut(const Image<T1> &imIn, const Image<T2> &imMarker,
-                                 const CVariant &Power, const StrElt &nl,
+                                 const double Power, const StrElt &nl,
                                  Image<T2> &imOut);
 
   /** @brief Watershed as a Minimum Cut (2 labels) with progressive power map
