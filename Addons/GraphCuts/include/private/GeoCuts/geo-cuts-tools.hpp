@@ -58,7 +58,7 @@ namespace geocuts
 #define __BOOST_INCLUDED__
 
 /*
- *To prevent doxygen try to document boost included headers 
+ *To prevent doxygen try to document boost included headers
  */
 /** @cond */
 #include <boost/config.hpp>
@@ -80,21 +80,21 @@ namespace geocuts
 #include <boost/graph/kolmogorov_max_flow.hpp>
 #define GC_KMaxFlow kolmogorov_max_flow
 #endif
-/** @endcond */
+  /** @endcond */
 
 #endif //  __BOOST_INCLUDED__
 
-static int debugOn = false;
+  static int debugOn = false;
 
-/*
-typedef struct {
-  float x;
-  float y;
-  float p;
-} morceau;
+  /*
+  typedef struct {
+    float x;
+    float y;
+    float p;
+  } morceau;
 
-typedef std::list<morceau> affine_par_morceaux;
-*/
+  typedef std::list<morceau> affine_par_morceaux;
+  */
 
 #ifndef SMIL_ENTER_FUNCTION
 #define SMIL_ENTER_FUNCTION(a)                                                 \
@@ -137,7 +137,6 @@ typedef std::list<morceau> affine_par_morceaux;
     }
     return pts;
   }
-
 
   /*
    *

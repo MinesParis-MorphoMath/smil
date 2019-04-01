@@ -83,7 +83,6 @@
 
 #include <vector>
 
-
 typedef struct {
   float x;
   float y;
@@ -186,17 +185,17 @@ namespace smil
           if (marker == 2) {
             boost::tie(e4, hasEdge) = boost::add_edge(vSource, o1, g);
             boost::tie(e3, hasEdge) = boost::add_edge(o1, vSource, g);
-            capacity[e4]        = (std::numeric_limits<double>::max)();
-            capacity[e3]        = (std::numeric_limits<double>::max)();
-            rev[e4]             = e3;
-            rev[e3]             = e4;
+            capacity[e4]            = (std::numeric_limits<double>::max)();
+            capacity[e3]            = (std::numeric_limits<double>::max)();
+            rev[e4]                 = e3;
+            rev[e3]                 = e4;
           } else if (marker == 3) {
             boost::tie(e4, hasEdge) = boost::add_edge(o1, vSink, g);
             boost::tie(e3, hasEdge) = boost::add_edge(vSink, o1, g);
-            capacity[e4]        = (std::numeric_limits<double>::max)();
-            capacity[e3]        = (std::numeric_limits<double>::max)();
-            rev[e4]             = e3;
-            rev[e3]             = e4;
+            capacity[e4]            = (std::numeric_limits<double>::max)();
+            capacity[e3]            = (std::numeric_limits<double>::max)();
+            rev[e4]                 = e3;
+            rev[e3]                 = e4;
           }
 
           for (it = itBegin; it != itEnd; it++) {
@@ -211,7 +210,7 @@ namespace smil
             if (o2 <= o1)
               continue;
 
-            T2 val2       = bufIn[o2];
+            T2 val2     = bufIn[o2];
             double cost = 1000 / (1 + 1.5 * (val1 - val2) * (val1 - val2));
 
             bool hasEdge            = false;
@@ -260,17 +259,17 @@ namespace smil
           if (divergence < 0 && marker == 0) {
             boost::tie(e4, hasEdge) = boost::add_edge(vSource, o1, g);
             boost::tie(e3, hasEdge) = boost::add_edge(o1, vSource, g);
-            capacity[e4]        = std::abs(divergence);
-            capacity[e3]        = std::abs(divergence);
-            rev[e4]             = e3;
-            rev[e3]             = e4;
+            capacity[e4]            = std::abs(divergence);
+            capacity[e3]            = std::abs(divergence);
+            rev[e4]                 = e3;
+            rev[e3]                 = e4;
           } else if (divergence > 0 && marker == 0) {
             boost::tie(e4, hasEdge) = boost::add_edge(o1, vSink, g);
             boost::tie(e3, hasEdge) = boost::add_edge(vSink, o1, g);
-            capacity[e4]        = divergence;
-            capacity[e3]        = divergence;
-            rev[e4]             = e3;
-            rev[e3]             = e4;
+            capacity[e4]            = divergence;
+            capacity[e3]            = divergence;
+            rev[e4]                 = e3;
+            rev[e3]                 = e4;
           }
         }
       }
@@ -286,7 +285,7 @@ namespace smil
         boykov_kolmogorov_max_flow(g, capacity, residual_capacity, rev,
                                    &color[0], indexmap, vSource, vSink);
 #else
-    double flow  = kolmogorov_max_flow(g, capacity, residual_capacity, rev,
+    double flow = kolmogorov_max_flow(g, capacity, residual_capacity, rev,
                                       &color[0], indexmap, vSource, vSink);
 #endif
 
@@ -305,7 +304,7 @@ namespace smil
 
     return RES_OK;
   }
- 
+
   /*
    *
    *
@@ -354,7 +353,7 @@ namespace smil
     Graph_d::vertex_descriptor vSource, vSink;
     T1 numVertex = maxVal(imIn);
     // T2 numLabels = maxVal(imMarker);
-    T2 numEdges  = 0;
+    T2 numEdges = 0;
 
     std::cout << "build graph vertices" << std::endl;
     std::cout << "number of vertices : " << numVertex << std::endl;
@@ -468,7 +467,6 @@ namespace smil
     return RES_OK;
   }
 
-  
   /*
    *
    *
@@ -476,8 +474,8 @@ namespace smil
    */
   template <class T1, class T2>
   RES_T geoCutsMultiway_MinSurfaces(const Image<T1> &imIn,
-                                     const Image<T2> &imMarker,
-                                     const StrElt &nl, Image<T2> &imOut)
+                                    const Image<T2> &imMarker, const StrElt &nl,
+                                    Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imMarker, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imMarker, &imOut);

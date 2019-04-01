@@ -87,8 +87,8 @@ namespace smil
    */
   template <class T1, class T2>
   RES_T geoCutsWatershed_MinCut(const Image<T1> &imIn,
-                                  const Image<T2> &imMarker, const double Power,
-                                  const StrElt &nl, Image<T2> &imOut)
+                                const Image<T2> &imMarker, const double Power,
+                                const StrElt &nl, Image<T2> &imOut)
   {
     std::cout << "Enter function Geo-Cuts Watershed" << std::endl;
 
@@ -170,17 +170,17 @@ namespace smil
           if (marker == 2) {
             boost::tie(e4, hasEdge) = boost::add_edge(vSource, o1, g);
             boost::tie(e3, hasEdge) = boost::add_edge(o1, vSource, g);
-            capacity[e4]        = (std::numeric_limits<double>::max)();
-            capacity[e3]        = (std::numeric_limits<double>::max)();
-            rev[e4]             = e3;
-            rev[e3]             = e4;
+            capacity[e4]            = (std::numeric_limits<double>::max)();
+            capacity[e3]            = (std::numeric_limits<double>::max)();
+            rev[e4]                 = e3;
+            rev[e3]                 = e4;
           } else if (marker == 3) {
             boost::tie(e4, hasEdge) = boost::add_edge(o1, vSink, g);
             boost::tie(e3, hasEdge) = boost::add_edge(vSink, o1, g);
-            capacity[e4]        = (std::numeric_limits<double>::max)();
-            capacity[e3]        = (std::numeric_limits<double>::max)();
-            rev[e4]             = e3;
-            rev[e3]             = e4;
+            capacity[e4]            = (std::numeric_limits<double>::max)();
+            capacity[e3]            = (std::numeric_limits<double>::max)();
+            rev[e4]                 = e3;
+            rev[e3]                 = e4;
           }
 
           for (it = itBegin; it != itEnd; it++) {
@@ -246,9 +246,8 @@ namespace smil
    */
   template <class T1, class T2>
   RES_T geoCutsMultiway_Watershed(const Image<T1> &imIn,
-                                   const Image<T2> &imMarker,
-                                   const double Power, const StrElt &nl,
-                                   Image<T2> &imOut)
+                                  const Image<T2> &imMarker, const double Power,
+                                  const StrElt &nl, Image<T2> &imOut)
   {
     std::cout << "Enter function Multi way watershed" << std::endl;
     ASSERT_ALLOCATED(&imIn, &imMarker, &imOut);
