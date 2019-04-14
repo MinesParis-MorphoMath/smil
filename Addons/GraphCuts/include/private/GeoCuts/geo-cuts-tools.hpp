@@ -44,7 +44,6 @@
 
 namespace geocuts
 {
-  /** @cond */
   /*
    * Some useful tools
    */
@@ -67,22 +66,18 @@ namespace geocuts
 // for boost::graph_traits
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
-  // JOE #include <boost/graph/graphviz.hpp>
-  // JOE #include <boost/graph/prim_minimum_spanning_tree.hpp>
-  // JOE #include <boost/graph/dijkstra_shortest_paths.hpp>
-  // JOE #include <boost/graph/johnson_all_pairs_shortest.hpp>
-
 #include <boost/version.hpp>
+
 #if BOOST_VERSION >= 104700
 #include <boost/graph/boykov_kolmogorov_max_flow.hpp>
-#define GC_KMaxFlow boykov_kolmogorov_max_flow
 #elif BOOST_VERSION >= 103500
 #include <boost/graph/kolmogorov_max_flow.hpp>
-#define GC_KMaxFlow kolmogorov_max_flow
 #endif
-  /** @endcond */
 
+/** @endcond */
 #endif //  __BOOST_INCLUDED__
+
+  /** @cond */
 
   static int debugOn = false;
 
@@ -107,11 +102,9 @@ namespace geocuts
 #define SMIL_REGISTER_ERROR(a)
 #endif
 
-// #include <math.h>
 #define M_PI 3.14159265358979323846
 #define INFINI_POSITIF std::numeric_limits<double>::max)()
 #define _SECURE_SCL 0
-  // #include <stdio.h>
 
   /* This function selects points from an Structuring element
    * generating a positive offset
@@ -138,33 +131,8 @@ namespace geocuts
     return pts;
   }
 
-  /*
-   *
-   */
-  using namespace boost;
-#if 1
-  // needed for max flow: capacit map, rev_capacity map, etc.
-  typedef adjacency_list_traits<vecS, vecS, directedS> traitsVecVec_t;
-
-  typedef adjacency_list<
-      vecS, vecS, directedS, property<vertex_name_t, std::string>,
-      property<edge_capacity_t, double,
-               property<edge_residual_capacity_t, double,
-                        property<edge_reverse_t, Traits_T::edge_descriptor>>>>
-      graphVecVec_t;
-
-  // edge capacity
-  typedef property_map<graphVecVec_t, edge_capacity_t>::type EdgeCap_T;
-  // edge reverse
-  typedef property_map<graphVecVec_t, edge_reverse_t>::type EdgeRevCap_T;
-  // edge residual capacity
-  typedef property_map<graphVecVec_t, edge_residual_capacity_t>::type
-      EdgeResCap_T;
-  //
-  typedef property_map<graphVecVec_t, vertex_index_t>::type VertexIndex_T;
-
-#endif
   /** @endcond */
 } // namespace geocuts
 
 #endif // _D_GEOCUTSTOOLS_HPP_
+

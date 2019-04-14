@@ -106,7 +106,6 @@ namespace smil
   /** @brief Multiple object segmentation, Geo Cuts algorithm on a region
    * adjacency graph, imMosaic is a mosaic, ImMarker is composed of three
    * values 0 for unmarked pixels, >0 for objects markers
-   *#ifndef DOXYGEN_SKIP_THIS
    * @param[in] imIn : Image<T> in
    * @param[in] imGrad : Image<T> gradient
    * @param[in] imMarker : Image<T> marker
@@ -195,6 +194,6 @@ namespace smil
 
 } // namespace smil
 
-#include "private/MosaicGeoCuts/Mosaic_GeoCuts_impl.hpp"
+#include "private/MosaicGeoCuts/Mosaic_GeoCuts.hpp"
 
 #endif //__MOSAIC_GEOCUTSALGO_H__

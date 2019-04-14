@@ -29,7 +29,7 @@
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Description :
- *   This file does... some very complex morphological operation...
+ *   This file does... 
  *
  * History :
  *   - 04/03/2019 - by Jose-Marcio Martins da Cruz

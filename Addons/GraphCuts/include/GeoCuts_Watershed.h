@@ -17,6 +17,7 @@ namespace smil
    * @{
    */
 
+  /** @cond */
   /** @brief Stochastic Watershed (first example of a deterministic approach)
    *
    * @param[in] imIn  Image<T> in
@@ -31,7 +32,9 @@ namespace smil
                                      const Image<T> &imVal,
                                      const CVariant &nbmarkers,
                                      const StrElt &nl, Image<T> &imOut);
+  /** @endcond */
 
+  /** @cond */
   /** @brief Stochastic Watershed with deterministic and probabilistic markers
    * (first example of a deterministic approach)
    *
@@ -49,6 +52,7 @@ namespace smil
                                        const Image<T> &imMarker,
                                        const CVariant &nbmarkers,
                                        const StrElt &nl, Image<T> &imOut);
+  /** @endcond */
 
   /** @brief Watershed as a Minimum Cut (2 labels)
    * @note See Jean Stawiaski Thesis to understand Power parameter effect
@@ -65,6 +69,7 @@ namespace smil
                                  const double Power, const StrElt &nl,
                                  Image<T2> &imOut);
 
+  /** @cond */
   /** @brief Watershed as a Minimum Cut (2 labels) with progressive power map
    *
    * @param[in] imIn  Image<T> in
@@ -77,7 +82,9 @@ namespace smil
   RES_T geoCutsWatershed_Prog_MinCut(const Image<T> &imIn,
                                       const Image<T> &imMarker,
                                       const StrElt &nl, Image<T> &imOut);
-
+  /** @endcond */
+  
+  /** @cond */
   /** @brief Watershed as a Shortest Path Forest
    * @note See Jean Stawiaski Thesis to understand Power parameter effect
    *
@@ -92,7 +99,9 @@ namespace smil
   RES_T geoCutsWatershed_SPF(const Image<T> &imIn, const Image<T> &imMarker,
                               const CVariant &Power, const StrElt &nl,
                               Image<T> &imOut);
-
+  /** @endcond */
+  
+  /** @cond */
   /** @brief Watershed as a minimum spanning forest
    *
    * @param[in] imIn  Image<T> in
@@ -105,7 +114,9 @@ namespace smil
   RES_T geoCutsWatershed_SpanningForest(const Image<T> &imIn,
                                          const Image<T> &imMarker,
                                          const StrElt &nl, Image<T> &imOut);
-
+  /** @endcond */
+  
+  /** @cond */
   /** @brief Watershed as a minimum spanning forest (min and 1/2 gradient)
    *
    * @param[in] imIn  Image<T> in
@@ -118,7 +129,8 @@ namespace smil
   RES_T geoCutsWatershed_SpanningForest_v2(const Image<T> &imIn,
                                             const Image<T> &imMarker,
                                             const StrElt &nl, Image<T> &imOut);
-
+  /** @endcond */
+  
   /** @brief Watershed as a mutli_terminal cut (multi label)
    * @note See Jean Stawiaski Thesis to understand Power parameter effect
    *
@@ -135,6 +147,7 @@ namespace smil
                                    const double Power, const StrElt &nl,
                                    Image<T2> &imOut);
 
+  /** @cond */
   /** @brief Shortest path forest with length of a path = reliability of the
    * path
    * @warning geoCutsMax_Fiability_Forest : These function are tests
@@ -150,7 +163,9 @@ namespace smil
   RES_T geoCutsMax_Fiability_Forest(const Image<T> &imIn,
                                      const Image<T> &imMarker, const StrElt &nl,
                                      Image<T> &imOut);
-
+  /** @endcond */
+  
+  /** @cond */
   /** @brief Watershed as a shortest path forest with lexicographical ordering
    * of (max path and shortest path)
    *
@@ -164,7 +179,9 @@ namespace smil
   RES_T geoCutsBiCriteria_Shortest_Forest(const Image<T> &imIn,
                                            const Image<T> &imMarker,
                                            const StrElt &nl, Image<T> &imOut);
+  /** @endcond */
 
+  /** @cond */
   /** @brief Watershed as a shortest path forest with lexicographical ordering
    *
    * @param[in] imIn  Image<T> in
@@ -178,7 +195,9 @@ namespace smil
                                                 const Image<T> &imMarker,
                                                 const StrElt &nl,
                                                 Image<T> &imOut);
+  /** @endcond */
 
+  /** @cond */
   /** @brief Color Watershed on color images as a shortest path forest with
    * lexicographical ordering of vector attributes
    * @note COLOR IMAGES
@@ -194,7 +213,9 @@ namespace smil
   RES_T geoCutsVectorial_Shortest_Forest(const Image<T> &imIn,
                                           const Image<T> &imMarker,
                                           const StrElt &nl, Image<T> &imOut);
-
+  /** @endcond */
+  
+  /** @cond */
   /** @brief Color Watershed on color images as a shortest path forest with
    * lexicographical ordering of vector attributes and lexicographical
    * distances
@@ -210,7 +231,9 @@ namespace smil
   RES_T geoCutsVectorial_Lexicographical_Shortest_Forest(
       const Image<T> &imIn, const Image<T> &imMarker, const StrElt &nl,
       Image<T> &imOut);
-
+  /** @endcond */
+  
+  /** @cond */
   /** @brief Not working yet
    * @warning geoCutsReg_SpanningForest  Not working yet
    *
@@ -224,6 +247,7 @@ namespace smil
   RES_T geoCutsReg_SpanningForest(const Image<T> &imIn,
                                    const Image<T> &imMarker, const StrElt &nl,
                                    Image<T> &imOut);
+  /** @endcond */
 
   /** @} */
 } // namespace smil

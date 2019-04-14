@@ -17,62 +17,9 @@ namespace smil
    * * José-Marcio Martins da Cruz
    * @{
    */
-  // ##################################################
-  // BEGIN FROM STAWIASKI JAN 2012
-  // ##################################################
-#if 0
-  // line begin 1
-  // line no 4148
-  template <class T>
-    RES_T NeighborhoodGraphFromMosaic_WithMeanGradientValue_AndQuadError(
-        const Image<T> &imIn, const Image<T> &imGrad, const Image<T> &imVal,
-        const CVariant &alpha, const StrElt &nl, CommonGraph32 &Gout);
-
-  // line no 88 (old), 668 (2), 1275
-  template <class T>
-    RES_T TreeReweighting(
-        const Image<T> &imWs, const Image<T> &imIn, const Image<T> &imGrad,
-        CommonGraph32 &Treein, const CVariant &alpha1, const CVariant &alpha2,
-        const CVariant &alpha3, const StrElt &nl, CommonGraph32 &Gout);
-
-  // line no 3546, 3226 (minimean)
-  template <class T>
-    RES_T AverageLinkageTree(const Image<T> &imIn, const Image<T> &imGrad,
-                             const StrElt &nl, CommonGraph32 &Tout);
-
-  // line no 3899
-  template <class T> 
-    RES_T AverageLinkageTree_MS(const Image<T> &imWs, const Image<T> &imIn,
-                                const Image<T> &imGrad, const StrElt &nl,
-                                CommonGraph32 &Tout);
-
-  // line no 1959
-  template <class T>
-    RES_T ScaleSetHierarchyReweighting(
-        const Image<T> &imWs, const Image<T> &imIn, const Image<T> &imGrad,
-        const CommonGraph32 &Treein, const StrElt &nl, CommonGraph32 &Tree_out);
-
-  // line no 2638
-  template <class T>
-    RES_T MSMinCutInHierarchy(const Image<T> &imWs, const Image<T> &imIn,
-                              const Image<T> &imGrad, const CVariant &alpha1,
-                              const CommonGraph32 &Treein, const StrElt &nl,
-                              CommonGraph32 &Tree_out);
-
-  // line no 5461
-  template <class T>
-    RES_T GetUltrametricContourMap(const Image<T> &imIn,
-                                   const CommonGraph32 &Tree, const StrElt &nl,
-                                   Image<T> &imOut);
-
-  // line no 5618
-  template <class T>
-    RES_T GetScaleSetUltrametricContourMap(const Image<T> &imIn,
-                                           const CommonGraph32 &Tree,
-                                           const StrElt &nl, Image<T> &imOut);
-#endif
 
   // line no 4434
+  /** @cond */
   /** @brief geoCutsParametric
    *
    * @param[in] imIn  Image<T> in
@@ -86,8 +33,10 @@ namespace smil
   RES_T geoCutsParametric(const Image<T> &imIn, const Image<T> &imGradx,
                           const Image<T> &imGrady, const Image<T> &imMarker,
                           const StrElt &nl, Image<T> &imOut);
+  /** @endcond */
 
   // line no 5816
+  /** @cond */
   /** @brief geoCutsStochastic_Watershed_Variance
    *
    * @param[in] imIn1  Image<T> in1
@@ -103,28 +52,10 @@ namespace smil
       const Image<T> &imIn1, const Image<T> &imIn2, const Image<T> &imVal,
       const CVariant &nbmarkers, const CVariant &alpha, const StrElt &nl,
       Image<T> &imOut);
-
-#if 0
-  template <class T>
-    // lineno 4857
-    RES_T geoCutsStochastic_Watershed_Graph(
-        const Image<T> &imIn, const Image<T> &imVal, CommonGraph32 &GIn,
-        const CVariant &nbmarkers, const StrElt &nl, Image<T> &imOut);
-
-  // line no 5141
-  template <class T>
-    RES_T geoCutsStochastic_Watershed_Graph_NP(
-        const Image<T> &imIn, const Image<T> &imVal, CommonGraph32 &GIn,
-        const CVariant &nbmarkers, const StrElt &nl, Image<T> &imOut);
-
-  // line no 5426
-  template <class T>
-    RES_T UpdateSpanningTreeFromForest(const CommonGraph32 &ForestIn,
-                                       const CommonGraph32 &Tin,
-                                       CommonGraph32 &Tout);
-#endif
+  /** @endcond */
 
   // line no 4668
+  /** @cond */  
   /** @brief geoCutsStochastic_Watershed_Variance
    *
    * @param[in] imIn  Image<T> in1
@@ -139,23 +70,8 @@ namespace smil
                                                  const Image<T> &imMarker2,
                                                  const StrElt &nl,
                                                  Image<T> &imOut);
+  /** @endcond */
 
-#if 0
-  // line no 3550
-  template <class T>
-    RES_T AverageLinkageTree(const Image<T> &imIn, const Image<T> &imGrad,
-                             const StrElt &nl, CommonGraph32 &Tout);
-
-  // line no 3903
-  template <class T>
-    RES_T AverageLinkageTree_MS(const Image<T> &imWs, const Image<T> &imIn,
-                                const Image<T> &imGrad, const StrElt &nl,
-                                CommonGraph32 &Tout);
-#endif
-
-  // ##################################################
-  // END FROM STAWIASKI JAN 2012
-  // ##################################################
 
   /** @brief Returns Geo Cuts algorithm
    *
@@ -186,6 +102,7 @@ namespace smil
   RES_T geoCutsMinSurfaces(const Image<T1> &imIn, const Image<T2> &imMarker,
                             const StrElt &nl, Image<T2> &imOut);
 
+  /** @cond */
   /** @brief Geo Cuts algorithm on a pixel adjacency graph, ImMarker is
    * composed of three values 0 for unmarked pixels, 2 and 3 for object and
    * background markers
@@ -200,6 +117,7 @@ namespace smil
   RES_T geoCutsMinSurfaces_With_Line(const Image<T> &imIn,
                                       const Image<T> &imMarker,
                                       const StrElt &nl, Image<T> &imOut);
+  /** @endcond */
 
   /** @brief Multiple object segmentation, Geo Cuts algorithm on a pixel
    * adjacency graph, ImMarker is composed of three values 0 for unmarked
