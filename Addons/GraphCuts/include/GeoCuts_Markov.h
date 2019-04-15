@@ -1,12 +1,8 @@
 #ifndef __D_GEOCUTS_MARKOV_H__
 #define __D_GEOCUTS_MARKOV_H__
 
-typedef float F_SIMPLE;
-typedef double CVariant;
-
 namespace smil
 {
-
   /**
    * @ingroup GeoCutGroup
    * @defgroup geoCutsMarkov    GeoCuts Markov Random Fields
@@ -32,10 +28,10 @@ namespace smil
    * @param[out] imOut : Image<T> out
    */
   // line no 10360
-  template <class T>
-  RES_T MAP_MRF_Ising(const Image<T> &imIn, const Image<T> &imMarker,
-                      const CVariant &Beta, const CVariant &Sigma,
-                      const StrElt &nl, Image<T> &imOut);
+  template <class T1, class T2>
+  RES_T geoCutsMRF_Ising(const Image<T1> &imIn, const Image<T2> &imMarker,
+                         double Beta, double Sigma, const StrElt &nl,
+                         Image<T2> &imOut);
 
   /** @brief Markov Random Fields segmentation with two labels (2 labels,
    * object = 2, background = 3) with edge preserving prior
@@ -50,10 +46,11 @@ namespace smil
    * @param[out] imOut : Image<T> out
    */
   // line no 10568
-  template <class T>
-  RES_T MAP_MRF_edge_preserving(const Image<T> &imIn, const Image<T> &imMarker,
-                                const CVariant &Beta, const CVariant &Sigma,
-                                const StrElt &nl, Image<T> &imOut);
+  template <class T1, class T2>
+  RES_T geoCutsMRF_EdgePreserving(const Image<T1> &imIn,
+                                  const Image<T2> &imMarker, double Beta,
+                                  double Sigma, const StrElt &nl,
+                                  Image<T2> &imOut);
 
   /** @brief Multi-Label MAP Markov Random Field with Ising prior (Potts
    * Model)
@@ -68,14 +65,15 @@ namespace smil
    * @param[out] imOut : Image<T> out
    */
   // line no 10989
-  template <class T>
-  RES_T MAP_MRF_Potts(const Image<T> &imIn, const Image<T> &imMarker,
-                      const CVariant &Beta, const CVariant &Sigma,
-                      const StrElt &nl, Image<T> &imOut);
+  template <class T1, class T2>
+  RES_T geoCutsMRF_Potts(const Image<T1> &imIn, const Image<T2> &imMarker,
+                         double Beta, double Sigma, const StrElt &nl,
+                         Image<T2> &imOut);
 
   /** @} */
 } // namespace smil
 
 #include "private/GeoCuts/geo-cuts-tools.hpp"
+#include "private/GeoCuts/MarkovRandomFields.hpp"
 
 #endif // __D_GEOCUTS_MARKOV_H__

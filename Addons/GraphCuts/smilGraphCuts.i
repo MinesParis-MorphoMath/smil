@@ -61,6 +61,8 @@ TEMPLATE_WRAP_FUNC(testHandleSE);
 //
 %include "GeoCuts_MinSurfaces.h"
 //
+// Min Surfaces
+//
 // ++ in src : geoCuts
 TEMPLATE_WRAP_FUNC_2T_CROSS(geoCuts);
 // TEMPLATE_WRAP_FUNC(geoCutsBoundary_Constrained_MinSurfaces);
@@ -72,6 +74,8 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(geoCutsMultiway_MinSurfaces);
 
 //
 %include "GeoCuts_Watershed.h"
+//
+// Watershed
 //
 // TEMPLATE_WRAP_FUNC(geoCutsBiCriteria_Shortest_Forest);
 // TEMPLATE_WRAP_FUNC(geoCutsLexicographical_Shortest_Forest);
@@ -91,9 +95,11 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(geoCutsWatershed_MinCut);
 //
 %include "GeoCuts_Markov.h"
 //
-// TEMPLATE_WRAP_FUNC(MAP_MRF_edge_preserving);
-// TEMPLATE_WRAP_FUNC(MAP_MRF_Ising);
-// TEMPLATE_WRAP_FUNC(MAP_MRF_Potts);
+// Markov Random Fields
+//
+TEMPLATE_WRAP_FUNC_2T_CROSS(geoCutsMRF_Ising);
+TEMPLATE_WRAP_FUNC_2T_CROSS(geoCutsMRF_EdgePreserving);
+TEMPLATE_WRAP_FUNC_2T_CROSS(geoCutsMRF_Potts);
 
 
 

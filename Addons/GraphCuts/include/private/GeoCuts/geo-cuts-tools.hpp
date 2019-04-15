@@ -131,6 +131,31 @@ namespace geocuts
     return pts;
   }
 
+#if 0
+  typedef graph_traits<Graph>::vertex_descriptor vertexDescriptor_T;
+
+  inline kolmogorovMaxFlow(Graph& g,
+                           CapacityEdgeMap capacity,
+                           ResidualCapacityEdgeMap residual_capacity,
+                           ReverseEdgeMap rev,
+                           ColorMap color,
+                           IndexMap indexmap,
+                           vertexDescriptor_T vSource,
+                           vertexDescriptor_T vSink);
+  {
+    double flow;
+
+#if BOOST_VERSION >= 104700
+    flow = boykov_kolmogorov_max_flow(g, capacity, residual_capacity, rev,
+                                   color, indexmap, vSource, vSink);
+#else
+    flow = kolmogorov_max_flow(g, capacity, residual_capacity, rev,
+                                      color, indexmap, vSource, vSink);
+#endif
+    return flow;    
+  }                                   
+#endif
+
   /** @endcond */
 } // namespace geocuts
 
