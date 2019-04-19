@@ -649,7 +649,7 @@ void  ComputeDeltaUOMSER(MaxTree2<T,CriterionT,OffsetT,LabelT> &tree, T* transfo
 
                     //self,node = 1, nParent =0, stop=0, delta = 0, isPrevMaxT = 0):
   int child; // index node
-  T current_residue, stab_residue;
+  T current_residue, stab_residue = 0;
   UINT hNode, hParent; // attributes
       size_t aNode, aParent,aAncestor;
       T lNode, lParent, lAncestor; // node levels, the same type than input image

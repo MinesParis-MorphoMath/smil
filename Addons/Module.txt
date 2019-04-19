@@ -1,3 +1,29 @@
-/**
- * \defgroup Addons Addons
+/*
+ * @defgroup Addons  Addons
  */ 
+
+/**
+ * @ingroup Addons
+ *
+ * @defgroup AddonColor            Colour images conversions
+ * @defgroup AddonFilters          Filters (Non Morphological)
+ * @defgroup AddonFFT              FFT(W) based functions
+ * @defgroup AddonHoughTransform   Features detection (Hough)
+ * @defgroup AddonGraphCut         Graph Geo Cuts
+ * @defgroup AddonMorphM           MorphM Image Interface
+ * @defgroup AddonOpenCV           OpenCV Interface
+ * @defgroup AddonQVtkViewer       VTK Viewer
+ * @defgroup AddonVtkInterface     VTK Image Interface
+ */
+ 
+/**
+ * @ingroup Addons
+ *
+ * @defgroup AddonStochasticWatershed     Stochastic Watershed
+ *
+ * @defgroup Addon3DBilateral             3D Bilateral Filter
+ *
+ * @defgroup AddonThresh                  Threshold (Theo)
+ * @defgroup AddonMeasures                Measures  (Theo)
+ * @defgroup AddonArrow                   Arrow     (Theo)
+ */

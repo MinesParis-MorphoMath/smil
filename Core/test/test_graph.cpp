@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -14,18 +14,18 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 #include "DTest.h"
 
@@ -34,86 +34,78 @@
 #include <iostream>
 #include <fstream>
 
-
-
 using namespace smil;
-
-
-
 
 class Test_MST : public TestCase
 {
-    virtual void run()
-    {
-        Graph<> graph;
-        graph.addEdge(Edge<>(0,2, 1));
-        graph.addEdge(Edge<>(1,3, 1));
-        graph.addEdge(Edge<>(1,4, 2));
-        graph.addEdge(Edge<>(2,1, 7));
-        graph.addEdge(Edge<>(2,3, 3));
-        graph.addEdge(Edge<>(3,4, 1));
-        graph.addEdge(Edge<>(4,0, 1));
-        graph.addEdge(Edge<>(4,1, 3));
-        
-        Graph<> mst = graphMST(graph);
-        vector<Edge<> > mstTruth;
-        mstTruth.push_back(Edge<>(0,2,1));
-        mstTruth.push_back(Edge<>(4,0,1));
-        mstTruth.push_back(Edge<>(3,4,1));
-        mstTruth.push_back(Edge<>(1,3,1));
-        
-        TEST_ASSERT(mst.getEdges()==mstTruth);
-        
-        if (retVal!=RES_OK)
-        {
-            for (vector<Edge<> >::const_iterator it=mst.getEdges().begin();it!=mst.getEdges().end();it++)
-              cout << (*it).source << "-" << (*it).target << " (" << (*it).weight << ")" << endl;
-        }
-    }
-};
+  virtual void run()
+  {
+    Graph<> graph;
+    graph.addEdge(Edge<>(0, 2, 1));
+    graph.addEdge(Edge<>(1, 3, 1));
+    graph.addEdge(Edge<>(1, 4, 2));
+    graph.addEdge(Edge<>(2, 1, 7));
+    graph.addEdge(Edge<>(2, 3, 3));
+    graph.addEdge(Edge<>(3, 4, 1));
+    graph.addEdge(Edge<>(4, 0, 1));
+    graph.addEdge(Edge<>(4, 1, 3));
 
+    Graph<> mst = graphMST(graph);
+    vector<Edge<> > mstTruth;
+    mstTruth.push_back(Edge<>(0, 2, 1));
+    mstTruth.push_back(Edge<>(4, 0, 1));
+    mstTruth.push_back(Edge<>(3, 4, 1));
+    mstTruth.push_back(Edge<>(1, 3, 1));
+
+    TEST_ASSERT(mst.getEdges() == mstTruth);
+
+    if (retVal != RES_OK) {
+      for (vector<Edge<> >::const_iterator it = mst.getEdges().begin();
+           it != mst.getEdges().end(); it++)
+        cout << (*it).source << "-" << (*it).target << " (" << (*it).weight
+             << ")" << endl;
+    }
+  }
+};
 
 class Test_Labelize : public TestCase
 {
-    virtual void run()
-    {
-        Graph<> graph;
-        graph.addEdge(Edge<>(0,1));
-        graph.addEdge(Edge<>(2,3));
-        graph.addEdge(Edge<>(4,5));
-        graph.addEdge(Edge<>(5,8));
-        graph.addEdge(Edge<>(3,8));
-        
-        map<size_t, size_t> labels = graph.labelizeNodes(), labelsTruth;
+  virtual void run()
+  {
+    Graph<> graph;
+    graph.addEdge(Edge<>(0, 1));
+    graph.addEdge(Edge<>(2, 3));
+    graph.addEdge(Edge<>(4, 5));
+    graph.addEdge(Edge<>(5, 8));
+    graph.addEdge(Edge<>(3, 8));
 
-        labelsTruth[0] = 0;
-        labelsTruth[1] = 0;
-        labelsTruth[2] = 2;
-        labelsTruth[3] = 2;
-        labelsTruth[4] = 2;
-        labelsTruth[5] = 2;
-        labelsTruth[8] = 2;
+    map<size_t, size_t> labels = graph.labelizeNodes(), labelsTruth;
 
-        TEST_ASSERT(labels==labelsTruth);
-        
-        if (retVal!=RES_OK)
-        {
-            cout << endl;
-            for (map<size_t, size_t>::const_iterator it=labels.begin();it!=labels.end();it++)
-              cout << it->first << "-" << it->second << endl;
-        }
+    labelsTruth[0] = 0;
+    labelsTruth[1] = 0;
+    labelsTruth[2] = 2;
+    labelsTruth[3] = 2;
+    labelsTruth[4] = 2;
+    labelsTruth[5] = 2;
+    labelsTruth[8] = 2;
+
+    TEST_ASSERT(labels == labelsTruth);
+
+    if (retVal != RES_OK) {
+      cout << endl;
+      for (map<size_t, size_t>::const_iterator it = labels.begin();
+           it != labels.end(); it++)
+        cout << it->first << "-" << it->second << endl;
     }
+  }
 };
-
-
 
 int main()
 {
-      TestSuite ts;
+  TestSuite ts;
 
-      ADD_TEST(ts, Test_MST);
-      ADD_TEST(ts, Test_Labelize);
-      
-      return ts.run();
+  ADD_TEST(ts, Test_MST);
+  ADD_TEST(ts, Test_Labelize);
+
+  return ts.run();
 }
-

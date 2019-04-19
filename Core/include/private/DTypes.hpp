@@ -43,15 +43,17 @@ using namespace std;
 
 namespace smil
 {
-    typedef int INT;
-    typedef unsigned int UINT;
-    typedef unsigned char UINT8;
+    typedef int            INT;
+    typedef long           LONG;
+    typedef unsigned int   UINT;
+    typedef unsigned long  ULONG;
+    typedef unsigned char  UINT8;
     typedef unsigned short UINT16;
-    typedef unsigned int UINT32;
+    typedef unsigned int   UINT32;
 #ifdef _MSC_VER
         typedef unsigned __int64 UINT64;
 #else
-    typedef uint64_t UINT64;
+    typedef uint64_t       UINT64;
 #endif
 
     // typedef unsigned char __attribute__ ((vector_size (16))) alUINT8;

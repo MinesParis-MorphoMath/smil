@@ -114,7 +114,7 @@ TEMPLATE_WRAP_FUNC(levelPics);
 
 %include "Morpho/include/private/DMorphoDistance.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist);
-TEMPLATE_WRAP_FUNC_2T_CROSS(dist_euclidean);
+TEMPLATE_WRAP_FUNC_2T_CROSS(distEuclidean);
 
 %include "Morpho/include/private/DMorphoExtrema.hpp"
 TEMPLATE_WRAP_FUNC(hMinima);

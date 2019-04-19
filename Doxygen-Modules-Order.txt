@@ -1,0 +1,12 @@
+
+
+/**
+ * @defgroup IO          IO and Image Formats
+ * @defgroup Core        Core Data Structures
+ * @defgroup Base        Base Operators
+ * @defgroup Morpho      Morpho Morphological Operators
+ * @defgroup Gui         Gui and Image Display
+ * @defgroup Advanced    Advanced Algorithms
+ * @defgroup NSTypes     NSTypes
+ * @defgroup Addons      Addons (Plugins)
+ */

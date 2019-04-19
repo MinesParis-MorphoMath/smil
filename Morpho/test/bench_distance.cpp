@@ -46,7 +46,7 @@ class Test_Distance : public TestCase
         drawLine(im1, 30,10,3,3, UINT8(0));
         drawRectangle (im1, 10,30,3,3,UINT8(0), true);
         im1.setPixel (30,30,UINT(0));
-        dist_v0 (im1, im3, CrossSE());
+        distV0 (im1, im3, CrossSE());
 
         UINT BENCH_NRUNS = 100;
         BENCH_IMG(dist, im1, im2, CrossSE());

@@ -20,7 +20,6 @@
  *
  */
 
-
 #include <cstdio>
 #include <ctime>
 
@@ -29,44 +28,39 @@
 
 using namespace smil;
 
-
 int main(void)
 {
-    int sx = 1024; //24;
-    int sy = 1024;
-    
-    Image_UINT8 im1(sx, sy);
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
+  int sx = 1024; // 24;
+  int sy = 1024;
 
-    Image_UINT16 im4(im1);
+  Image_UINT8 im1(sx, sy);
+  Image_UINT8 im2(im1);
+  Image_UINT8 im3(im1);
 
-    double BENCH_NRUNS = 1E4;
-    
-    UINT8 val = 127;
-    
-    BENCH_IMG(fill, im1, val);
-    BENCH_IMG(copy, im1, im3);
-    BENCH_CROSS_IMG(copy, im1, im4);
-    BENCH_IMG(inv, im1, im2);
-    BENCH_IMG(inf, im1, im2, im3);
-    BENCH_IMG_STR(inf, "val", im1, val, im3);
-    BENCH_IMG(sup, im1, im2, im3);
-    BENCH_IMG_STR(sup, "val", im1, val, im3);
-    BENCH_IMG(add, im1, im2, im3);
-    BENCH_IMG(addNoSat, im1, im2, im3);
-    BENCH_IMG_STR(add, "val", im1, val, im3);
-    BENCH_IMG(sub, im1, im2, im3);
-    BENCH_IMG(subNoSat, im1, im2, im3);
-    BENCH_IMG_STR(sub, "val", im1, val, im3);
-    BENCH_IMG(grt, im1, im2, im3);
-    BENCH_IMG(div, im1, im2, im3);
-    BENCH_IMG(mul, im1, im2, im3);
-    BENCH_IMG_STR(mul, "val", im1, val, im3);
-    BENCH_IMG(mulNoSat, im1, im2, im3);
-    BENCH_IMG_STR(mulNoSat, "val", im1, val, im3);
+  Image_UINT16 im4(im1);
 
+  double BENCH_NRUNS = 1E4;
 
+  UINT8 val = 127;
 
+  BENCH_IMG(fill, im1, val);
+  BENCH_IMG(copy, im1, im3);
+  BENCH_CROSS_IMG(copy, im1, im4);
+  BENCH_IMG(inv, im1, im2);
+  BENCH_IMG(inf, im1, im2, im3);
+  BENCH_IMG_STR(inf, "val", im1, val, im3);
+  BENCH_IMG(sup, im1, im2, im3);
+  BENCH_IMG_STR(sup, "val", im1, val, im3);
+  BENCH_IMG(add, im1, im2, im3);
+  BENCH_IMG(addNoSat, im1, im2, im3);
+  BENCH_IMG_STR(add, "val", im1, val, im3);
+  BENCH_IMG(sub, im1, im2, im3);
+  BENCH_IMG(subNoSat, im1, im2, im3);
+  BENCH_IMG_STR(sub, "val", im1, val, im3);
+  BENCH_IMG(grt, im1, im2, im3);
+  BENCH_IMG(div, im1, im2, im3);
+  BENCH_IMG(mul, im1, im2, im3);
+  BENCH_IMG_STR(mul, "val", im1, val, im3);
+  BENCH_IMG(mulNoSat, im1, im2, im3);
+  BENCH_IMG_STR(mulNoSat, "val", im1, val, im3);
 }
-

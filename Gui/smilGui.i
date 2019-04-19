@@ -85,6 +85,19 @@ TEMPLATE_WRAP_CLASS(QtImageViewer, QtImageViewer);
   // Process Qt events from the Python input hook.
   PyOS_InputHook = qtLoop;
 %}
+
+%pythoncode %{
+try:
+    __IPYTHON__
+    import IPython
+    if IPython.version_info[0] >= 5:
+        get_ipython().magic("%gui qt")
+except NameError:
+    print("err")
+    pass
+
+%}
+
 #endif // SWIGPYTHON
 
 #endif // USE_QT

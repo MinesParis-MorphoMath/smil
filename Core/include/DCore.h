@@ -31,7 +31,7 @@
 #define _DCORE_H
 
 /**
- * \defgroup Core Core Data Structures
+ * XXXdefgroup Core Core Data Structures
  * @{
  */
 
