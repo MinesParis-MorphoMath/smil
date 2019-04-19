@@ -33,6 +33,9 @@
 #include "DMorphoGraph.hpp"
 
 #include <set>
+#define HQ_CANDIDATE 0
+#define HQ_QUEUED 1
+#define HQ_DONE 2
 
 namespace smil
 {
@@ -80,6 +83,7 @@ namespace smil
         T currentLevel;
         vector<labelT> equivalentLabels;
         vector<extValType> extinctionValues;
+      vector<UINT8> imStatus;
         size_t lastOffset;
         
         std::vector< std::pair<labelT,labelT> > pendingMerges;
@@ -91,7 +95,7 @@ namespace smil
         {
             equivalentLabels.resize(nbr);
             extinctionValues.resize(nbr, 0);
-            
+
             for (UINT i=0;i<nbr;i++)
               equivalentLabels[i] = i;
             
@@ -101,7 +105,7 @@ namespace smil
         {
             equivalentLabels.clear();
             extinctionValues.clear();
-            
+            imStatus.clear();
             basinNbr = 0;
         }
         
@@ -217,7 +221,7 @@ namespace smil
             labelNbr = maxVal(imLbl);
             createBasins(labelNbr+1);
             currentLevel = ImDtTypes<T>::min();
-            
+	    imStatus.resize(imIn.getPixelCount (),HQ_CANDIDATE);
             graph = NULL;
             
             return RES_OK;
@@ -226,7 +230,7 @@ namespace smil
         virtual RES_T processImage(const Image<T> &imIn, Image<labelT> &imLbl, const StrElt &se)
         {
             BaseFlooding<T, labelT, HQ_Type>::processImage(imIn, imLbl, se);
-            
+	    //	    std::cout<<"PROCESSMERGES_IMAGE,"<<pendingMerges.size()<<"\n";
             processMerges();
             
             // Update last level of flooding.
@@ -291,6 +295,7 @@ namespace smil
         {
             if (this->inPixels[curOffset] > currentLevel) 
             {
+	      //std::cout<<"PROCESSMERGES_Px,"<<pendingMerges.size()<<"\n";
                 processMerges();
                 
                 currentLevel = this->inPixels[curOffset];
@@ -304,7 +309,8 @@ namespace smil
             labelT l1 = this->lblPixels[curOffset];
             
             insertPixel(curOffset, equivalentLabels[l1]);
-            
+	    imStatus[curOffset]=HQ_DONE;// Pixel pops out from the queue -> DONE
+
             lastOffset = curOffset;
         }
         
@@ -317,12 +323,24 @@ namespace smil
             {
                 this->hq.push(this->inPixels[nbOffset], nbOffset);
 		this->lblPixels[nbOffset] = curLbl;
+		imStatus[nbOffset] = HQ_QUEUED; //QUEUED
+		//                size_t totox0, totoy0, totoz0;
+                
+		//                getCoordsFromOffset(nbOffset, totox0, totoy0, totoz0);
+
+		//std::cout<<"ngb push:"<<totox0<<","<<totoy0<<"\n";
 
             }
             else
             {
-               if (equivalentLabels[nbLbl]!=equivalentLabels[curLbl])
+	      if(imStatus[nbOffset]== HQ_DONE){//DONE
+		if (equivalentLabels[nbLbl]!=equivalentLabels[curLbl]){
+		  //		  std::cout<<"PENDING!!!!!!!!!!!!!! Eq[nb]="<<int(equivalentLabels[nbLbl])<<"Eq[cur]="<<int(equivalentLabels[curLbl])<<"\n";
                   pendingMerges.push_back( make_pair(min(curLbl,nbLbl), max(curLbl,nbLbl)) );
+		  processMerges();// BMI, do not wait the end of the plateau. Process Merge as soon as a 2 basins meet
+
+		}// eq != eq
+	      }// QUEUED
             }
 
         }
@@ -360,6 +378,7 @@ namespace smil
               minValues[lbl] = this->inPixels[offset];
             
             areas[lbl]++;
+	    //	    std::cout<<"label="<<int(lbl)<<"; areas[lbl]="<<areas[lbl]<<"\n";
         }
         virtual labelT mergeBasins(const labelT &lbl1, const labelT &lbl2)
         {
@@ -375,10 +394,13 @@ namespace smil
                 eater = lbl2;
                 eaten = lbl1;
             }
-            
+	    //	    std::cout<<"eaten:"<<int(eaten)<<"eater"<<int(eater)<<"\n";
+	    //	    std::cout<<"BEFORE: A_eaten:"<<areas[eaten]<<"eater"<<areas[eater]<<"\n";
             this->extinctionValues[eaten] = areas[eaten];
             areas[eater] += areas[eaten];
             
+	    //	    std::cout<<"AFTER: A_eaten:"<<areas[eaten]<<"eater"<<areas[eater]<<"\n";
+	    //	    std::cout<<"....\n";
             return eater;
         }
         virtual void finalize(const labelT &lbl)
