@@ -93,7 +93,7 @@ try:
     if IPython.version_info[0] >= 5:
         get_ipython().magic("%gui qt")
 except NameError:
-    print("err")
+    # print("err")
     pass
 
 %}

@@ -53,16 +53,14 @@
 
 * Add Smoothing in Deriche filter
 
-* Verify Portage of Gabor filters (not coherent avec what comes from Morph-M)
-  * not all where ported :
-    RES_C ComputeGaborFilterConvolution(T1 *bufferIn, int W, int H,
-    RES_C t_ImGaborFilterConvolution(const Image<T1> &imIn, double sigma,
-    RES_C t_ImGaborFilterConvolutionNorm(const Image<T1> &imIn, double sigma,
-    RES_C t_ImGaborFilterConvolutionNormAuto(const Image<T1> &imIn, double sigma,
-    RES_C t_createGaborKernel(Image<T1> &imOut, double sigma, double theta,
-    RES_C t_ImDisplayKernel(const Image<T1> &imIn, Image<T2> &imOut)
-    RES_C t_ImNormalized(const Image<T1> &imIn, double Max, Image<T2> &imOut)
-
 * Verify on FastBilateralFilter 
   * ImFastBilateralFilterRGB - not ported
+
+* Tests on everything
+
+* Tests on python after Swig
+
+* BlobMap template without type name
+
+
 

@@ -613,7 +613,7 @@ namespace smil
       Graph_d::edge_descriptor e1, e2, e3, e4;
       Graph_d::vertex_descriptor vSource, vSink;
 
-      for (off_t i = 0; i < pixelCount; i++) {
+      for (off_t i = 0; i < (off_t) pixelCount; i++) {
         boost::add_vertex(g);
         bufOut[i] = 0;
       }

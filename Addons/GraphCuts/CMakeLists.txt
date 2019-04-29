@@ -29,7 +29,7 @@ SET(MODULE_DEPS smilCore smilBase smilMorpho)
 
 FIND_PACKAGE(Boost COMPONENTS system graph)
 IF(Boost_FOUND)
-  MESSAGE("    Boost found (GraphCuts Addon) !")
+  MESSAGE(STATUS "    Boost found (GraphCuts Addon) !")
 ENDIF()
 
 FILE(GLOB SRCS src/*.cpp)
