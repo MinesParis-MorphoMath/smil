@@ -71,10 +71,6 @@ SET (MODULES  Core
 
 INCLUDE(SmilVersion.txt)
 
-##SET(SMIL_MAJOR_VERSION 0)
-##SET(SMIL_MINOR_VERSION 9)
-##SET(SMIL_PATCH_VERSION 2)
-
 SET(SMIL_VERSION ${SMIL_MAJOR_VERSION}.${SMIL_MINOR_VERSION})
 IF(SMIL_PATCH_VERSION)
   SET(SMIL_VERSION ${SMIL_VERSION}.${SMIL_PATCH_VERSION})
@@ -84,7 +80,6 @@ ADD_DEFINITIONS("-DSMIL_MAJOR_VERSION=${SMIL_MAJOR_VERSION}")
 ADD_DEFINITIONS("-DSMIL_MINOR_VERSION=${SMIL_MINOR_VERSION}")
 ADD_DEFINITIONS("-DSMIL_PATCH_VERSION=${SMIL_PATCH_VERSION}")
 ADD_DEFINITIONS("-DSMIL_VERSION=${SMIL_VERSION}")
-
 
 LIST(APPEND CMAKE_MODULE_PATH
   "${CMAKE_CURRENT_SOURCE_DIR}/CMake"
@@ -98,12 +93,15 @@ INCLUDE(GenMacros)
 SET(SMIL_LIB_PREFIX smil)
 SET(SMIL_EXT_DEPS)
 
+IF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND PREFIX)
+  SET(CMAKE_INSTALL_PREFIX ${PREFIX} CACHE FORCE)
+ENDIF()
 
-## ADDITIONAL SEARCH PATHS (Usefull for windows)
+## ADDITIONAL SEARCH PATHS (Usefull for windows and virtual environnments)
 SET(ADDITIONAL_SEARCH_PATHS "" CACHE STRING "Additional paths to search libraries/files")
-IF(UNIX)
-  MARK_AS_ADVANCED(ADDITIONAL_SEARCH_PATHS)
-ENDIF(UNIX)
+# IF(UNIX)
+#   MARK_AS_ADVANCED(ADDITIONAL_SEARCH_PATHS)
+# ENDIF(UNIX)
 IF(ADDITIONAL_SEARCH_PATHS)
   FOREACH(_PATH ${ADDITIONAL_SEARCH_PATHS})
     LIST(APPEND CMAKE_PREFIX_PATH ${_PATH} ${_PATH}/bin)
@@ -326,8 +324,13 @@ IF(CCACHE_FOUND)
   SET_PROPERTY(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
 ENDIF(CCACHE_FOUND)
 
-###### WRAPPING ######
-
+#
+#
+#
+### WRAPPING ###
+#
+#
+#
 OPTION(WRAP_CPP "Wrap non-template C++ headers and libraries" FALSE)
 IF(WRAP_CPP)
   INCLUDE(WrapCpp)
@@ -337,15 +340,23 @@ ENDIF(WRAP_CPP)
 
 OPTION(WRAP_PYTHON "Wrap Python" FALSE)
 IF(WRAP_PYTHON)
-  if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.12")
-    find_package (Python COMPONENTS Interpreter Development NumPy)
-    
+  if (${CMAKE_VERSION} VERSION_GREATER "3.13")
+    find_package (Python COMPONENTS Interpreter Development Numpy)
+
     include_directories(${Python_INCLUDE_DIRS})
     include_directories(${Python_Numpy_INCLUDE_DIRS})
-    SET(PYTHON_VERSION ${Python_VERSION})
+    include_directories(${Python_Numpy_INCLUDE_DIR})
+
+    STRING(REGEX MATCH "[0-9]\\.[0-9]" PYTHON_VERSION "${Python_VERSION}")
+    STRING(REGEX MATCH "[0-9]" PYTHON_MAJOR "${PYTHON_VERSION}")
+
   else()
-    find_package (PythonInterp REQUIRED)
-    find_package (PythonLibs REQUIRED)
+    find_package (PythonInterp 3)
+    find_package (PythonLibs   3)
+    if (NOT PYTHONINTERP_FOUND AND NOT PYTHONLIBS_FOUND)
+      find_package (PythonInterp REQUIRED)
+      find_package (PythonLibs   REQUIRED)
+    endif ()
 
     INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
     IF(PYTHONLIBS_VERSION_STRING)
@@ -353,9 +364,43 @@ IF(WRAP_PYTHON)
     ELSE(PYTHONLIBS_VERSION_STRING)
       STRING(REGEX MATCH "[0-9]\\.[0-9]" PYTHON_VERSION "${PYTHON_LIBRARIES}")
     ENDIF(PYTHONLIBS_VERSION_STRING)
+    STRING(REGEX MATCH "[0-9]" PYTHON_MAJOR "${PYTHON_VERSION}")
   endif ()
 
   ADD_CUSTOM_TARGET(python)
+ENDIF(WRAP_PYTHON)
+
+#
+# As we're wrapping to Python, let's find Numpy includes dir
+#
+#IF(WRAP_PYTHON AND NOT Python_Numpy_INCLUDE_DIRS)
+IF(WRAP_PYTHON)
+  OPTION(USE_NUMPY "Use Numpy for python pixels manipulation." OFF)
+
+  IF(USE_NUMPY)
+    IF (NOT Python_Numpy_INCLUDE_DIR)
+      IF (CONDA_PREFIX)
+        SET(PYTHON_PREFIX ${CONDA_PREFIX})
+      ELSE ()
+        SET(PYTHON_PREFIX /usr)
+      ENDIF ()
+      FIND_PATH(PYTHON_NUMPY_INCLUDE_DIR numpy/arrayobject.h
+          DOC "Directory where the numpy/arrayobject.h header file can be found."
+          PATHS 
+            ${PYTHON_PREFIX}/lib/python${PYTHON_VERSION}/site-packages/numpy/core/include/
+            ${PYTHON_PREFIX}/lib/python${PYTHON_VERSION}/dist-packages/numpy/core/include/
+            ${PYTHON_PREFIX}/lib/python${PYTHON_MAJOR}/site-packages/numpy/core/include/
+            ${PYTHON_PREFIX}/lib/python${PYTHON_MAJOR}/dist-packages/numpy/core/include/
+            ${PYTHON_PREFIX}/include/)
+
+      IF(PYTHON_NUMPY_INCLUDE_DIR)
+        ADD_DEFINITIONS("-DUSE_NUMPY")
+        INCLUDE_DIRECTORIES(${PYTHON_NUMPY_INCLUDE_DIR})
+      ENDIF(CONDA_PREFIX)
+      MESSAGE(STATUS "Numpy includes: " ${PYTHON_NUMPY_INCLUDE_DIR})
+    ENDIF (NOT Python_Numpy_INCLUDE_DIRS)
+  ENDIF(USE_NUMPY)
+  ADD_DEFINITIONS("-DUSE_NUMPY")
 ENDIF(WRAP_PYTHON)
 
 OPTION(WRAP_JAVA "Wrap Java" FALSE)
@@ -402,7 +447,8 @@ IF(WRAP_CPP OR WRAP_PYTHON OR WRAP_JAVA OR WRAP_OCTAVE OR WRAP_RUBY OR WRAP_PHP)
     IF(USE_64BIT_IDS)
       ADD_DEFINITIONS(-DMS_WIN64)
     ENDIF(USE_64BIT_IDS)
-    # CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/_FindSWIG.cmake ${PROJECT_BINARY_DIR}/FindSWIG.cmake)
+    # CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/_FindSWIG.cmake 
+      #              ${PROJECT_BINARY_DIR}/FindSWIG.cmake)
     # LIST(APPEND CMAKE_FIND_ROOT_PATH /usr/local/mingw32)
   ENDIF(CMAKE_CROSSCOMPILING)
 
@@ -568,7 +614,7 @@ ENDIF(USE_CURL)
 
 
 ###### MISC ######
-
+SET(USE_FREETYPE OFF)
 FIND_PACKAGE(FreeType QUIET)
 IF(FREETYPE_FOUND)
   OPTION(USE_FREETYPE "Use FreeType library for text drawing" ON)
@@ -583,25 +629,6 @@ IF(USE_FREETYPE)
   LIST(APPEND SMIL_EXT_DEPS ${FREETYPE_LIBRARY})
   ADD_PKG_CONFIG_DEFS(freetype2)
 ENDIF(USE_FREETYPE)
-
-IF(WRAP_PYTHON)
-  OPTION(USE_NUMPY "Use Numpy for python pixels manipulation." OFF)
-  IF(USE_NUMPY)
-    FIND_PATH(PYTHON_NUMPY_INCLUDE_DIR numpy/arrayobject.h
-        DOC "Directory where the numpy/arrayobject.h header file can be found. This file is part of the numpy package"
-        PATHS 
-          ${PYTHON_INCLUDE_PATH}
-          /usr/include /usr/local/include 
-          /usr/local/lib/python${PYTHON_VERSION}/site-packages/numpy/core/include/
-    )
-
-    ADD_DEFINITIONS("-DUSE_NUMPY")
-    INCLUDE_DIRECTORIES(${PYTHON_NUMPY_INCLUDE_DIR})
-    LINK_DIRECTORIES(/usr/lib/pyshared/python2.7/numpy/core/)
-  ENDIF(USE_NUMPY)
-ENDIF(WRAP_PYTHON)
-
-
 
 
 ###### DOC ######
@@ -788,12 +815,14 @@ IF(USE_WRAPPER)
           "${SMIL_LIBRARIES_INSTALL_PATH}\n${SMIL_LIBRARIES_INSTALL_PATH}/smilPython")
     CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/__init__.py 
           ${LIBRARY_OUTPUT_PATH}/smilPython/__init__.py COPYONLY)
-    # SET_TARGET_PROPERTIES(_smilPython PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/smilPython)
+    # SET_TARGET_PROPERTIES(_smilPython PROPERTIES 
+    #          LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/smilPython)
     INSTALL(TARGETS _smil_Python LIBRARY DESTINATION 
           ${SMIL_LIBRARIES_INSTALL_PATH} COMPONENT python)
     INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/smilPython/smil_Python.py
           ${LIBRARY_OUTPUT_PATH}/smilPython/__init__.py
       DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}/smilPython COMPONENT python)
+
     IF(UNIX)
       IF(${PYTHON_VERSION} LESS 2.7)
         INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/smilPython.pth
@@ -805,6 +834,7 @@ IF(USE_WRAPPER)
           COMPONENT python)
       ENDIF(${PYTHON_VERSION} LESS 2.7)
     ENDIF(UNIX)
+
     ADD_DEPENDENCIES(python _smil_Python)
   ENDIF(WRAP_PYTHON)
 
@@ -860,5 +890,6 @@ IF(BUILD_PACKAGE)
   LIST(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake/CPack")
   INCLUDE(SmilCPack)
 ENDIF(BUILD_PACKAGE)
+
 
 

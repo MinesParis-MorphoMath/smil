@@ -60,7 +60,20 @@
 
 * Tests on python after Swig
 
-* BlobMap template without type name
+* BlobMap template without type name (swig => python)
+
+* Update some CMake package checks :
+  FreeType (local) => Freetype (shall disable it ?)
+  Python and Python Numpy
+  Qwt (local)
+  PHP5 (local) => PHP5 ... or even 7 ?
+
+* CPack TGZ packages... and eventually others
+
+* Conda packages
+
+* Select Python 2 or 3
+
 
 
 

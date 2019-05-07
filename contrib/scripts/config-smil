@@ -1,0 +1,163 @@
+#! /bin/bash
+
+#
+# Copyright (c) 2019, Centre de Morphologie Mathematique
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' 
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+# THE POSSIBILITY OF SUCH DAMAGE.
+#
+# Description :
+#   This script helps Smil configuration with some default usual options
+#
+# History :
+#   - 05/05/2019 - by José-Marcio Martins da Cruz
+#     Just created it
+#
+
+OPT=
+SRCDIR=
+PREFIX=/usr/local
+ADDONS="Color Filters HoughTransform"
+OTHER=
+
+Fatal()
+{
+  echo "$*"
+  exit 1
+}
+
+Message()
+{
+  echo "$*"
+}
+
+Help()
+{
+  app=$(basename $0)
+  HStr="
+  
+  $app
+  
+  Usage : 
+    $app [ options ] SourceDirectory
+    
+  Options :
+    HELP | help 
+      This message
+
+    PREFIX=prefix
+      This option defines the prefix where Smil will be installed.
+      Default value is /usr/local.
+
+    ADDON=name,name,name,...
+      A comma separated list of Addons to enable
+      Default enabled Addons : $ADDONS 
+      
+  Example :
+    $app ADDON=GraphCuts PREFIX=/usr/local/Smil-27 /home/sources/smil
+
+  Author :
+    Jose-Marcio Martins da Cruz
+  
+  See also :
+    Full Smil documentation at : http://smil.mines-paristech.fr
+
+"
+  printf "%s\n" "$HStr"
+  exit 0
+}
+
+for arg in $*
+do
+  case $arg in
+    help|HELP)
+      Help
+      exit 0
+      ;;
+    PREFIX=*)
+      PREFIX=$(echo $arg | awk -F= '{print $2}')
+      ;;
+    ADDON=*)
+      addon=$(echo $arg | awk -F= '{print $2}' | sed -e "s/,/ /g")
+      ADDONS="$ADDONS $addon"
+      ;;
+    *=*)
+      Fatal "  ERROR : Unknown option : $arg"
+      ;;
+    *)
+      if [ -f $arg/SmilVersion.txt ]
+      then
+        SRCDIR=$arg
+      else
+        OTHER="$OTHER $arg"
+      fi
+      ;;
+  esac
+done
+
+if [ -z $SRCDIR ]
+then
+  Fatal "  ERROR : Smil source directory undefined"
+fi
+
+OPT_ADDONS=
+for addon in $ADDONS
+do
+  if [ -f $SRCDIR/Addons/$addon/CMakeLists.txt ]
+  then
+    echo "-- Enabling Addon $addon"
+    addon=$(echo $addon | tr [:lower:] [:upper:])
+    OPT_ADDONS="$OPT_ADDONS -DADDON_${addon}:BOOL=ON"
+  else
+    Fatal "  ERROR : Unknown Addon $addon"
+  fi
+done
+echo "$OPT_ADDONS"
+
+if [ -n "$CONDA_PREFIX" ]
+then
+  echo ""
+  echo "* Configuring Smil for Anaconda at : $CONDA_PREFIX"
+  OPT="-DADDITIONAL_SEARCH_PATHS:STRING=$CONDA_PREFIX \
+       -DCONDA_PREFIX:STRING=$CONDA_PREFIX"
+else
+  OPT="-DBUILD_TEST:BOOL=ON"
+fi
+echo ""
+
+#echo "* Options : $OPT"
+
+OPT="$OPT \
+  -Wno-dev \
+  -DCMAKE_INSTALL_PREFIX:STRING=$PREFIX \
+  -DBUILD_TEST:BOOL=OFF \
+  -DUSE_64BIT_IDS:BOOL=ON \
+  -DUSE_CURL:BOOL=ON \
+  -DUSE_FREETYPE:BOOL=ON \
+  -DUSE_JPEG:BOOL=ON \
+  -DUSE_NUMPY:BOOL=ON \
+  -DUSE_OPEN_MP:BOOL=ON \
+  -DUSE_OPTIMIZATION:BOOL=ON \
+  -DUSE_PNG:BOOL=ON \
+  -DUSE_QT:BOOL=ON \
+  -DUSE_TIFF:BOOL=ON \
+  -DVERBOSE_OPTIMIZATION:BOOL=OFF \
+  -DWRAP_PYTHON:BOOL=ON \
+"
+
+cmake -version
+cmake $OPT $OPT_ADDONS $OTHER $SRCDIR
+
