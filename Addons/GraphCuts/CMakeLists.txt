@@ -27,7 +27,7 @@
 SET(MODULE_NAME GraphCuts)
 SET(MODULE_DEPS smilCore smilBase smilMorpho)
 
-FIND_PACKAGE(Boost COMPONENTS system graph)
+FIND_PACKAGE(Boost REQUIRED COMPONENTS system graph)
 IF(Boost_FOUND)
   MESSAGE(STATUS "    Boost found (GraphCuts Addon) !")
 ENDIF()
