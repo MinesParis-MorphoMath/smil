@@ -80,6 +80,30 @@ Help()
   exit 0
 }
 
+FindSourceDir()
+{
+  CF=$0
+  Dir=
+
+  while [ "$CF" != "/" -a "$CF" != ".." ]
+  do
+    CF=$(dirname $CF)
+    b=$(basename $CF)
+    if [ "$b" == "smil" ]
+    then
+      if [ -f $CF/SmilVersion.txt ]
+      then
+        Dir=$CF
+        break;
+      fi
+    fi
+  done
+  echo $Dir
+}
+
+#
+#
+#
 for arg in $*
 do
   case $arg in
@@ -110,7 +134,10 @@ done
 
 if [ -z $SRCDIR ]
 then
-  Fatal "  ERROR : Smil source directory undefined"
+  Dir=$(FindSourceDir $0)
+  [ -z $Dir ] && Fatal "  ERROR : Smil source directory undefined"
+  SRCDIR=$Dir
+  Message "-- Configuring source directory : $Dir"
 fi
 
 OPT_ADDONS=
@@ -125,7 +152,7 @@ do
     Fatal "  ERROR : Unknown Addon $addon"
   fi
 done
-echo "$OPT_ADDONS"
+echo "-- Addons : $OPT_ADDONS"
 
 if [ -n "$CONDA_PREFIX" ]
 then
