@@ -55,19 +55,19 @@ Help()
     $app [ options ] SourceDirectory
     
   Options :
-    HELP | help 
+    --help 
       This message
 
-    PREFIX=prefix
+    --prefix=prefix
       This option defines the prefix where Smil will be installed.
       Default value is /usr/local.
 
-    ADDON=name,name,name,...
+    --addon=name,name,name,...
       A comma separated list of Addons to enable
       Default enabled Addons : $ADDONS 
-      
+
   Example :
-    $app ADDON=GraphCuts PREFIX=/usr/local/Smil-27 /home/sources/smil
+    $app --addon=GraphCuts --prefix=/usr/local/Smil-27 /home/sources/smil
 
   Author :
     Jose-Marcio Martins da Cruz
@@ -107,26 +107,29 @@ FindSourceDir()
 for arg in $*
 do
   case $arg in
-    help|HELP)
+    --help)
       Help
       exit 0
       ;;
-    PREFIX=*)
+    --prefix=*)
       PREFIX=$(echo $arg | awk -F= '{print $2}')
       ;;
-    ADDON=*)
+    --addon=*)
       addon=$(echo $arg | awk -F= '{print $2}' | sed -e "s/,/ /g")
       ADDONS="$ADDONS $addon"
       ;;
-    *=*)
-      Fatal "  ERROR : Unknown option : $arg"
+    -D*)
+      OTHER="$OTHER $arg"
+      ;;
+    -*)
+      Fatal "  ERROR : Unknown or mispelled option : $arg"
       ;;
     *)
       if [ -f $arg/SmilVersion.txt ]
       then
         SRCDIR=$arg
       else
-        OTHER="$OTHER $arg"
+        Fatal "  ERROR : Unknown or mispelled option : $arg"
       fi
       ;;
   esac
