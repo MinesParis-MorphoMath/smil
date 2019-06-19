@@ -126,7 +126,7 @@ class Test_MeasBoundingBox : public TestCase
   }
 };
 
-class Test_MeasInertiaMatrix : public TestCase
+class Test_MeasImageMoments : public TestCase
 {
   virtual void run()
   {
@@ -138,7 +138,7 @@ class Test_MeasInertiaMatrix : public TestCase
     Image_UINT8 im(5, 5);
     im << vec;
 
-    Vector_double mat = measInertiaMatrix(im, true);
+    Vector_double mat = measImageMoments(im, true);
 
     TEST_ASSERT(mat[0] == 5 && mat[1] == 11 && mat[2] == 11 && mat[3] == 22 &&
                 mat[4] == 27 && mat[5] == 27);
@@ -230,7 +230,7 @@ int main(void)
   ADD_TEST(ts, Test_MeasureBarycenter);
   ADD_TEST(ts, Test_MeasBoundingBox);
   ADD_TEST(ts, Test_MeasCovariance);
-  ADD_TEST(ts, Test_MeasInertiaMatrix);
+  ADD_TEST(ts, Test_MeasImageMoments);
   ADD_TEST(ts, Test_MinMax);
 
   return ts.run();

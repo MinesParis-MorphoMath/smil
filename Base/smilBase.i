@@ -205,7 +205,7 @@ TEMPLATE_WRAP_FUNC(measMedianVal);
 TEMPLATE_WRAP_FUNC(profile);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
-TEMPLATE_WRAP_FUNC(measInertiaMatrix);
+TEMPLATE_WRAP_FUNC(measImageMoments);
 TEMPLATE_WRAP_FUNC(measCovariance);
 TEMPLATE_WRAP_FUNC(measCenteredCovariance);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
@@ -227,7 +227,7 @@ TEMPLATE_WRAP_SUPPL_FUNC(rangeVal);
 TEMPLATE_WRAP_FUNC(measAreas);
 TEMPLATE_WRAP_FUNC(measBarycenters);
 TEMPLATE_WRAP_FUNC(measBoundBoxes);
-TEMPLATE_WRAP_FUNC(measInertiaMatrices);
+TEMPLATE_WRAP_FUNC(measImageBlobsMoments);
 
 TEMPLATE_WRAP_FUNC(measAreas);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measMinVals);
@@ -240,7 +240,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(measModeVals);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measMedianVals);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measBarycenters);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measBoundBoxes);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measInertiaMatrices);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measImageBlobsMoments);
 
 %include "DImageMatrix.hpp"
 TEMPLATE_WRAP_FUNC(matMul);

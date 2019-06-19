@@ -197,9 +197,9 @@ namespace smil
     * Measure inertia moments of each label.
     */
     template <class T>
-    map<T, Vector_double> measInertiaMatrices(const Image<T> &imLbl, const bool onlyNonZero=true)
+    map<T, Vector_double> measImageBlobsMoments(const Image<T> &imLbl, const bool onlyNonZero=true)
     {
-        return processBlobMeasure<T, T, measInertiaMatrixFunc<T> >(imLbl, onlyNonZero);
+        return processBlobMeasure<T, T, measImageMomentsFunc<T> >(imLbl, onlyNonZero);
     }
     
     /**
@@ -208,9 +208,9 @@ namespace smil
     * \demo{inertia_moments.py}
     */
     template <class T, class labelT>
-    map<labelT, Vector_double> measInertiaMatrices(const Image<T> &imIn, map<labelT, Blob> &blobs)
+    map<labelT, Vector_double> measImageBlobsMoments(const Image<T> &imIn, map<labelT, Blob> &blobs)
     {
-        return processBlobMeasure<T, labelT, measInertiaMatrixFunc<T> >(imIn, blobs);
+        return processBlobMeasure<T, labelT, measImageMomentsFunc<T> >(imIn, blobs);
     }
     
 /** @}*/

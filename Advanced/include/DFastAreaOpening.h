@@ -186,9 +186,9 @@ namespace smil
 } // namespace smil
 
 // FastAreaOpening Module header
-#include "FastAreaOpening/AreaOpeningPixelQueue_T.hpp"
-#include "FastAreaOpening/AreaOpeningMaxTree_T.hpp"
-#include "FastAreaOpening/AreaOpeningUnionFind_T.hpp"
-#include "FastAreaOpening/AreaOpeningLine_T.hpp"
+#include "FastAreaOpening/AreaOpeningPixelQueue.hpp"
+#include "FastAreaOpening/AreaOpeningMaxTree.hpp"
+#include "FastAreaOpening/AreaOpeningUnionFind.hpp"
+#include "FastAreaOpening/AreaOpeningLine.hpp"
 
 #endif // _DFAST_AREA_OPENING_H_

@@ -592,7 +592,7 @@ namespace smil
 
 
     template <class T>
-    struct measInertiaMatrixFunc : public MeasureFunctionWithPos<T, Vector_double>
+    struct measImageMomentsFunc : public MeasureFunctionWithPos<T, Vector_double>
     {
         typedef typename Image<T>::lineType lineType;
         double m000, m100, m010, m110, m200, m020, m001, m101, m011, m002;
@@ -651,9 +651,9 @@ namespace smil
     * See <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on Wikipedia</a>
     */
     template <class T>
-    Vector_double measInertiaMatrix(const Image<T> &im, const bool onlyNonZero=true)
+    Vector_double measImageMoments(const Image<T> &im, const bool onlyNonZero=true)
     {
-        measInertiaMatrixFunc<T> func;
+        measImageMomentsFunc<T> func;
         return func(im, onlyNonZero);
     }
         
