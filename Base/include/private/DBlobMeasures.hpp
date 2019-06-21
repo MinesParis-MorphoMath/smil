@@ -194,7 +194,7 @@ namespace smil
     }
 
     /**
-    * Measure inertia moments of each label.
+    * Measure image moments of each label.
     */
     template <class T>
     map<T, Vector_double> measImageBlobsMoments(const Image<T> &imLbl, const bool onlyNonZero=true)
@@ -203,7 +203,7 @@ namespace smil
     }
     
     /**
-    * Measure blobs inertia moments.
+    * Measure blobs image moments.
     * 
     * \demo{inertia_moments.py}
     */
