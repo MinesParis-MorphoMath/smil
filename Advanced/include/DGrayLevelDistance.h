@@ -8,8 +8,7 @@ namespace smil
   /**
    * @ingroup   Advanced
    * @defgroup  AdvGrayLevelDistance   Gray Level ... Zone Matrix
-   * by Guillaume Thibault
-   *    
+   *
    * * <a href="http://thibault.biz/Research/ThibaultMatrices/GLDZM/GLDZM.html">
    *     Distance (to border) Zone Matrix</a>
    *
@@ -31,6 +30,9 @@ namespace smil
    * * Problems to handle :
    *
    *   * Shall change int to long to support images bigger than 2 Gpixels (mainly 3D)
+   *
+   * @author Guillaume Thibault
+   *
    * @{ */
 
   /** 

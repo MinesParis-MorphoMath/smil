@@ -5,11 +5,11 @@
 
 #include <queue>
 
-/// Author Vincent Morard
-/// Date : 7 march 2011
-/// See :
-///	Morard V. and Dokladal P. and Decenciere E.
-///	LINEAR OPENINGS IN CONSTANT TIME WITH ARBITRARY ORIENTATIONS
+// Author Vincent Morard
+// Date : 7 march 2011
+// See :
+//	Morard V. and Dokladal P. and Decenciere E.
+//	LINEAR OPENINGS IN CONSTANT TIME WITH ARBITRARY ORIENTATIONS
 // This algorithm is not exact !
 
 namespace smil
@@ -105,7 +105,7 @@ namespace smil
       if (currentPixel == -1)
         break;
 
-      ////////////////////////////////////////////////////////////////
+      //
       F = bufferIn[currentPixel];
       // -1-   si on a un front montant, on empile
       if (F > MyStack[stackSize - 1].F) { // Test *stackSize == 0  à supprimer
@@ -150,7 +150,7 @@ namespace smil
       }
       wp++;
 
-      ////////////////////////////////////////////////////////////////
+      //
 
       pixelDone[lastPixel] = currentPixel;
       lastPixel            = currentPixel;
@@ -277,7 +277,7 @@ namespace smil
           break;
       }
 
-      ////////////////////////////////////////////////////////////////
+      //
       F = bufferIn[currentPixel];
       // -1-   si on a un front montant, on empile
       if (F > MyStack[stackSize - 1].F) { // Test *stackSize == 0  à supprimer
@@ -322,7 +322,7 @@ namespace smil
       }
       wp++;
 
-      ////////////////////////////////////////////////////////////////
+      //
 
       pixelDone[lastPixel] = currentPixel;
       lastPixel            = currentPixel;

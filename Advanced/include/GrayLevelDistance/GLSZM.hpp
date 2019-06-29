@@ -12,7 +12,7 @@ namespace smil
   // Calcul des caracteristiques
   // --------------------------------------------
 
-  /** F0 - Small Zone Emphasis,
+  /* F0 - Small Zone Emphasis,
    * SZE. Petites zones.
    * @return SZE.
    */
@@ -25,7 +25,7 @@ namespace smil
     return val / Sum;
   }
 
-  /** F1 - Large Zone Emphasis, LZE. Grande zone.
+  /* F1 - Large Zone Emphasis, LZE. Grande zone.
    * @return LZE.
    */
   inline double LZE(int *matrix, int Width, int nbGrayLevel)
@@ -37,7 +37,7 @@ namespace smil
     return val / Sum;
   }
 
-  /** F2 - Low Gray level Zone Emphasis, LGZE.
+  /* F2 - Low Gray level Zone Emphasis, LGZE.
    * @return LGZE.
    */
   inline double LGZE(int *matrix, int Width, int nbGrayLevel)
@@ -49,7 +49,7 @@ namespace smil
     return val / Sum;
   }
 
-  /** F3 - High Gray level Zone Emphasis, HGZE.
+  /* F3 - High Gray level Zone Emphasis, HGZE.
    * @return HGZE.
    */
   inline double HGZE(int *matrix, int Width, int nbGrayLevel)
@@ -61,7 +61,7 @@ namespace smil
     return val / Sum;
   }
 
-  /** F4 - Small Zone Low Gray level Emphasis, SZLGE.
+  /* F4 - Small Zone Low Gray level Emphasis, SZLGE.
    * @return SZLGE.
    */
   inline double SZLGE(int *matrix, int Width, int nbGrayLevel)
@@ -74,7 +74,7 @@ namespace smil
     return val / Sum;
   }
 
-  /** F5 - Small Zone High Gray level Emphasis, SZHGE.
+  /* F5 - Small Zone High Gray level Emphasis, SZHGE.
    * @return SZHGE.
    */
   inline double SZHGE(int *matrix, int Width, int nbGrayLevel)
@@ -87,7 +87,7 @@ namespace smil
     return val / Sum;
   }
 
-  /** F6 - Large Zone Low Gray level Emphasis, LZLGE.
+  /* F6 - Large Zone Low Gray level Emphasis, LZLGE.
    * @return LSLGLE.
    */
   inline double LZLGE(int *matrix, int Width, int nbGrayLevel)
@@ -100,7 +100,7 @@ namespace smil
     return val / Sum;
   }
 
-  /** F7 - Large Zone High Gray level Emphasis, LZHGE.
+  /* F7 - Large Zone High Gray level Emphasis, LZHGE.
    * @return LZHGE.
    */
   inline double LZHGE(int *matrix, int Width, int nbGrayLevel)
@@ -113,7 +113,7 @@ namespace smil
     return val / Sum;
   }
 
-  /** F8 - Gray Level Non Uniform, GLNU. Homogeneite spectrale.
+  /* F8 - Gray Level Non Uniform, GLNU. Homogeneite spectrale.
    * @return GLNU.
    */
   inline double GLNU(int *matrix, int Width, int nbGrayLevel)
@@ -128,7 +128,7 @@ namespace smil
     return val / Sum;
   }
 
-  /** F9 - Size Zone Non Uniform, SZNU. Uniformite.
+  /* F9 - Size Zone Non Uniform, SZNU. Uniformite.
    * @return SZNU.
    */
   inline double SZNU(int *matrix, int Width, int nbGrayLevel)
@@ -143,7 +143,7 @@ namespace smil
     return val / Sum;
   }
 
-  /** F10 - Zone Percentage, ZPC. Egalite des isotailles (pourcentage
+  /* F10 - Zone Percentage, ZPC. Egalite des isotailles (pourcentage
    * primitives).
    * @return ZPC.
    */
@@ -156,7 +156,7 @@ namespace smil
     return Sum / val;
   }
 
-  /** F11 - Methode qui calcule le barycentre sur les niveaux de gris.
+  /* F11 - Methode qui calcule le barycentre sur les niveaux de gris.
    * @return Le barycentre sur les niveaux de gris.
    */
   inline double BARYGL(int *matrix, int Width, int nbGrayLevel)
@@ -168,7 +168,7 @@ namespace smil
     return mean / Sum;
   }
 
-  /** F12 - Methode qui calcule le barycentre sur les tailles.
+  /* F12 - Methode qui calcule le barycentre sur les tailles.
    * @return Le barycentre sur les tailles.
    */
   inline double BARYS(int *matrix, int Width, int nbGrayLevel)

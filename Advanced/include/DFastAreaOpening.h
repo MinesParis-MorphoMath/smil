@@ -6,8 +6,8 @@
 namespace smil
 {
   /**
-   * @ingroup   Advanced 
-   * @defgroup  AdvFastArea    Fast Area Opening/Closing
+   * @ingroup   Advanced
+   * @defgroup  AdvMorardFastArea            Area Opening/Closing
    *
    * This algorithm needs an INT32 input and an INT32 output. It can be an
    * inplace transform However, we are working with UINT8 and UINT8 input and
@@ -24,7 +24,8 @@ namespace smil
 
   // AREA OPENING
 
-  /** @brief Area closing with pixel queue algorithm (V4)
+  /**
+   * @brief Area closing with pixel queue algorithm (V4)
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : Area Closing of imIn
@@ -33,7 +34,8 @@ namespace smil
   RES_T ImAreaClosing_PixelQueue(const Image<T1> &imIn, int size,
                                  Image<T2> &imOut);
 
-  /** @brief Area Opening with pixel queue algorithm (V4)
+  /**
+   * @brief Area Opening with pixel queue algorithm (V4)
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : Area Opening of imIn
@@ -54,7 +56,8 @@ namespace smil
     return inv(imOut, imOut);
   }
 
-  /** @brief Area opening with a max tree algorithm (V4)
+  /**
+   * @brief Area opening with a max tree algorithm (V4)
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : Area Opening of imIn
@@ -63,7 +66,8 @@ namespace smil
   RES_T ImAreaOpening_MaxTree(const Image<T1> &imIn, int size,
                               Image<T2> &imOut);
 
-  /** @brief Area closing with a max tree algorithm (V4)
+  /**
+   * @brief Area closing with a max tree algorithm (V4)
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : Area Closing of imIn
@@ -83,7 +87,8 @@ namespace smil
     return inv(imOut, imOut);
   }
 
-  /** @brief Area opening with an union find algorithm (V4)
+  /**
+   * @brief Area opening with an union find algorithm (V4)
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : Area opening of imIn
@@ -92,7 +97,8 @@ namespace smil
   RES_T ImAreaOpening_UnionFind(const Image<T1> &imIn, int size,
                                 Image<T2> &imOut);
 
-  /** @brief Area closing with an union find algorithm (V4)
+  /**
+   * @brief Area closing with an union find algorithm (V4)
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : Area Closing of imIn
@@ -113,7 +119,8 @@ namespace smil
     return inv(imOut, imOut);
   }
 
-  /** @brief Non exact implementation of the Area opening with an 1D line (V4)
+  /**
+   * @brief Non exact implementation of the Area opening with an 1D line (V4)
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : Area Opening of imIn
@@ -121,7 +128,8 @@ namespace smil
   template <class T1, class T2>
   RES_T ImAreaOpening_Line(const Image<T1> &imIn, int size, Image<T2> &imOut);
 
-  /** @brief Non exact implementation of the Area closing with an 1D line (V4)
+  /**
+   * @brief Non exact implementation of the Area closing with an 1D line (V4)
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : Area Closing of imIn
@@ -141,7 +149,8 @@ namespace smil
     return inv(imOut, imOut);
   }
 
-  /** @brief Non exact implementation of the Area opening with an 1D line (V4)
+  /**
+   * @brief Non exact implementation of the Area opening with an 1D line (V4)
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : Area Opening of imIn
@@ -152,7 +161,8 @@ namespace smil
 
   // INERTIA THINNINGS
 
-  /** @brief Inertia thinning with a max tree algorithm (V4)
+  /** 
+   * @brief Inertia thinning with a max tree algorithm (V4)
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : inertia thinning of imIn
@@ -161,7 +171,8 @@ namespace smil
   RES_T ImInertiaThinning_MaxTree(const Image<T1> &imIn, double size,
                                   Image<T2> &imOut);
 
-  /** @brief Inertia thickening with a max tree algorithm (V4)
+  /**
+   * @brief Inertia thickening with a max tree algorithm (V4)
    * @param[in]  imIn : the initial image
    * @param[in]  size :
    * @param[out] imOut : Area inertia thickening of imIn

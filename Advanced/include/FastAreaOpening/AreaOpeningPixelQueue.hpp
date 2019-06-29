@@ -3,18 +3,18 @@
 
 #include "Core/include/DCore.h"
 
-/// Interface to SMIL  Vincent Morard
-/// Date : 7 march 2011
+// Interface to SMIL  Vincent Morard
+// Date : 7 march 2011
 
-/// This program computes the grey scale area closing using
-/// Vincent's priority-queue algorithm.
-/// The input is a grey scale image (im), and its output is
-/// a grey-scale image (out).
-/// The time complexity of this algorithm is quadratic in the
-/// number of pixels, and AlogA in the area A of the closing.
-///
-/// (c) Arnold Meijster and Michael Wilkinson
-///
+// This program computes the grey scale area closing using
+// Vincent's priority-queue algorithm.
+// The input is a grey scale image (im), and its output is
+// a grey-scale image (out).
+// The time complexity of this algorithm is quadratic in the
+// number of pixels, and AlogA in the area A of the closing.
+//
+// (c) Arnold Meijster and Michael Wilkinson
+//
 
 namespace smil
 {

@@ -3,8 +3,8 @@
 
 #include "Core/include/DCore.h"
 
-/// Interface to SMIL Vincent Morard
-/// Date : 7 march 2011
+// Interface to SMIL Vincent Morard
+// Date : 7 march 2011
 
 /* This program computes the grey scale area opening or closing.
  * The input is a grey scale image (im), and its output is

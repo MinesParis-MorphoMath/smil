@@ -6,8 +6,9 @@
 namespace smil
 {
   /**
-   * @ingroup   Advanced
-   * @defgroup  AdvMorphoPathOpening   Morpho Path Opening/Closing
+   * @ingroup  Advanced
+   * @defgroup AdvMorardMorphoPathOpening   Morpho Path Opening/Closing
+   *
    * @{ */
 
   /** @brief Grayscale Path Opening Operation made by "staking" the results of
@@ -499,10 +500,12 @@ namespace smil
   template <class T>
   RES_T MeanValueOf(const Image<T> &imIn, bool slideBySlide, double *Value);
 
+#if 0
   template <class T1, class T2>
   RES_T GetConfusionMatrix(const Image<T1> &imMask, const Image<T2> &imIn2,
                            int seuil, int *FP, int *FN, int *TP, int *TN,
                            Image<RGB> &imOut, int WantImOut = 1);
+#endif
 
   template <class T1, class T2>
   RES_T ImLayerDist(Image<T1> &imIn, int labelIn, int labelOut, float dx,

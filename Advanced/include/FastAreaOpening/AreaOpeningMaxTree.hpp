@@ -3,8 +3,8 @@
 
 #include "Core/include/DCore.h"
 
-/// Interface to SMIL Vincent Morard
-/// Date : 7 march 2011
+// Interface to SMIL Vincent Morard
+// Date : 7 march 2011
 
 /* maxtree3a.c
  * May 26, 2005  Erik R. Urbach
