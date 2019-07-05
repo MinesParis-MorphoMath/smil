@@ -55,7 +55,7 @@ namespace smil
     H = imIn.getHeight();
     Z = imIn.getDepth();
     if (Z > 0) {
-      return RES_OK;
+      return RES_ERR;
     }
 
     typename Image<T>::lineType bufferIn  = imIn.getPixels();
@@ -89,7 +89,7 @@ namespace smil
     H = imIn.getHeight();
     Z = imIn.getDepth();
     if (Z > 0) {
-      return RES_OK;
+      return RES_ERR;
     }
 
     typename Image<T>::lineType bufferIn  = imIn.getPixels();
