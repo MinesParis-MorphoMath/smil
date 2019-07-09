@@ -50,11 +50,14 @@ namespace smil
     ASSERT_ALLOCATED(&imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
+    ImageFreezer freeze(imIn);
+    ImageFreezer freeze(imOut);
+
     int W, H, Z, i, j, k;
     W = imIn.getWidth();
     H = imIn.getHeight();
     Z = imIn.getDepth();
-    if (Z > 0) {
+    if (Z > 1) {
       return RES_ERR;
     }
 
@@ -84,11 +87,14 @@ namespace smil
     ASSERT_ALLOCATED(&imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
+    ImageFreezer freeze(imIn);
+    ImageFreezer freeze(imOut);
+
     int W, H, Z, i, j, k;
     W = imIn.getWidth();
     H = imIn.getHeight();
     Z = imIn.getDepth();
-    if (Z > 0) {
+    if (Z > 1) {
       return RES_ERR;
     }
 

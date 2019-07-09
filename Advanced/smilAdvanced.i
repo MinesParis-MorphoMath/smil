@@ -120,15 +120,15 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_LineSupEqu);
 //TEMPLATE_WRAP_FUNC_2T_CROSS(ImInertiaThickening_MaxTree);
 
 %include "DFastLine.h"
-//TEMPLATE_WRAP_FUNC(ImLineOpen);
-//TEMPLATE_WRAP_FUNC(ImLineClose);
-//TEMPLATE_WRAP_FUNC(ImLineDilate);
-//TEMPLATE_WRAP_FUNC(ImLineErode);
+TEMPLATE_WRAP_FUNC(ImLineOpen);
+TEMPLATE_WRAP_FUNC(ImLineClose);
+TEMPLATE_WRAP_FUNC(ImLineDilate);
+TEMPLATE_WRAP_FUNC(ImLineErode);
 
-//TEMPLATE_WRAP_FUNC(ImSquareOpen);
-//TEMPLATE_WRAP_FUNC(ImSquareClose);
-//TEMPLATE_WRAP_FUNC(ImSquareDilate);
-//TEMPLATE_WRAP_FUNC(ImSquareErode);
+TEMPLATE_WRAP_FUNC(ImSquareOpen);
+TEMPLATE_WRAP_FUNC(ImSquareClose);
+TEMPLATE_WRAP_FUNC(ImSquareDilate);
+TEMPLATE_WRAP_FUNC(ImSquareErode);
 
 TEMPLATE_WRAP_FUNC(ImFastLineOpen_Morard);
 //TEMPLATE_WRAP_FUNC(ImFastLineClose_Morard);
