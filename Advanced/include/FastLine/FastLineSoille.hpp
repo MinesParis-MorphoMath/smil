@@ -1,9 +1,7 @@
 #ifndef __FAST_LINE_SOILLE_T_HPP__
 #define __FAST_LINE_SOILLE_T_HPP__
 
-#include <morphee/image/include/private/image_T.hpp>
-#include <morphee/common/include/commonTypes.hpp>
-#include <morphee/image/include/morpheeImage.hpp>
+#include "Core/include/DCore.h"
 
 // Morph-M interface by Vincent Morard
 // 1 september 2010
@@ -26,10 +24,9 @@
 //     Computer Graphics, second edition
 //     Prentice Hall
 
-namespace morphee
+namespace smil
 {
-  namespace FastLine
-  {
+
 #define PI 3.14159265358979323846
 
 #ifndef MIN
@@ -245,8 +242,8 @@ namespace morphee
       return (y - y0 + 1);
     } /* ComputeBresenhamLineNY */
 
-    template <class T1>
-    void DilateHorLine(T1 *f, ulong width, ulong k, T1 *g, T1 *h, T1 *h2, T1 *r)
+    template <class T>
+    void DilateHorLine(T *f, ulong width, ulong k, T *g, T *h, T *h2, T *r)
     /* k is length of SE in number of pixels */
     /* width is length of g, h, h2, and r */
     {
@@ -296,9 +293,9 @@ namespace morphee
       }
     } /* DilateHorLine */
 
-    template <class T1>
-    void DilateVerLine(T1 *f, ulong width, ulong height, ulong k, T1 *g, T1 *h,
-                       T1 *h2, T1 *r)
+    template <class T>
+    void DilateVerLine(T *f, ulong width, ulong height, ulong k, T *g, T *h,
+                       T *h2, T *r)
     /* k is length of SE in number of pixels */
     /* height is length of g, h, h2, and r */
     {
@@ -349,9 +346,9 @@ namespace morphee
       }
     } /* DilateVerLine */
 
-    template <class T1>
-    void DilateLine(T1 *f, ulong width, ulong height, ulong k, ulong nx,
-                    ulong *p, T1 *g, T1 *h, T1 *h2, T1 *r)
+    template <class T>
+    void DilateLine(T *f, ulong width, ulong height, ulong k, ulong nx,
+                    ulong *p, T *g, T *h, T *h2, T *r)
     /* k is length of SE in number of pixels */
     /* nx is length of p, g, h, and r */
     {
@@ -404,12 +401,12 @@ namespace morphee
       }
     } /* DilateLine */
 
-    template <class T1>
-    void ImageGrayDilateHor(ImageGray *img, ulong k, T1 *g, T1 *h, T1 *h2,
+    template <class T>
+    void ImageGrayDilateHor(ImageGray *img, ulong k, T *g, T *h, T *h2,
                             ImageGray *out)
     {
-      T1 *f       = (T1 *) img->Pixmap;
-      T1 *r       = (T1 *) out->Pixmap;
+      T *f       = (T *) img->Pixmap;
+      T *r       = (T *) out->Pixmap;
       ulong width = img->Width, y;
 
       for (y = 0; y < img->Height; y++) {
@@ -419,12 +416,12 @@ namespace morphee
       }
     } /* ImageGrayDilateHor */
 
-    template <class T1>
-    void ImageGrayDilateVer(ImageGray *img, ulong k, T1 *g, T1 *h, T1 *h2,
+    template <class T>
+    void ImageGrayDilateVer(ImageGray *img, ulong k, T *g, T *h, T *h2,
                             ImageGray *out)
     {
-      T1 *f       = (T1 *) img->Pixmap;
-      T1 *r       = (T1 *) out->Pixmap;
+      T *f       = (T *) img->Pixmap;
+      T *r       = (T *) out->Pixmap;
       ulong width = img->Width, height = img->Height, x;
 
       for (x = 0; x < width; x++) {
@@ -434,13 +431,13 @@ namespace morphee
       }
     } /* ImageGrayDilateVer */
 
-    template <class T1>
+    template <class T>
     void ImageGrayDilateLine(ImageGray *img, ulong k, long dx, long dy,
-                             ulong phase, ulong *p, T1 *g, T1 *h, T1 *h2,
+                             ulong phase, ulong *p, T *g, T *h, T *h2,
                              ImageGray *out)
     {
-      T1 *f       = (T1 *) img->Pixmap;
-      T1 *r       = (T1 *) out->Pixmap;
+      T *f       = (T *) img->Pixmap;
+      T *r       = (T *) out->Pixmap;
       ulong width = img->Width, height = img->Height, nx;
       long x, y;
 
@@ -513,40 +510,36 @@ namespace morphee
       }
     } /* ImageGrayDilateLine */
 
-    template <class T1, class T2>
-    RES_C t_ImFastLineDilate_Soille(const Image<T1> &imIn, const int angle,
-                                    const int radius, Image<T2> &imOut)
+    template <class T>
+    RES_T mFastLineDilate_Soille(const Image<T> &imIn, const int angle,
+                                    const int radius, Image<T> &imOut)
     {
       // Check inputs
-      if (!imIn.isAllocated() || !imOut.isAllocated()) {
-        MORPHEE_REGISTER_ERROR("Image not allocated");
-        return RES_NOT_ALLOCATED;
-      }
-      if (!t_CheckWindowSizes(imIn, imOut)) {
-        MORPHEE_REGISTER_ERROR("Bad window sizes");
-        return RES_ERROR_BAD_WINDOW_SIZE;
-      }
+      ASSERT_ALLOCATED(&imIn);
+      ASSERT_ALLOCATED(&imOut);
+      ASSERT_SAME_SIZE(&imIn, &imOut);
 
       int W, H;
-      W = imIn.getWxSize();
-      H = imIn.getWySize();
+      W = imIn.getWidth();
+      H = imIn.getHeight();
 
       int maxnx = MAX(W, H);
-      T1 *g     = new T1[maxnx];
-      T1 *h     = new T1[maxnx];
-      T1 *h2    = new T1[maxnx];
+      T *g     = new T[maxnx];
+      T *h     = new T[maxnx];
+      T *h2    = new T[maxnx];
       ulong *p  = new ulong[maxnx];
 
       ImageGray MyImgIn, MyImgOut;
 
       MyImgIn.Width  = W;
       MyImgIn.Height = H;
-      MyImgIn.Pixmap = (void *) imIn.rawPointer();
 
       MyImgOut.Width  = W;
       MyImgOut.Height = H;
-      MyImgOut.Pixmap = (void *) imOut.rawPointer();
 
+      typename Image<T>::lineType MyImgIn.Pixmap  = imIn.getPixels();
+      typename Image<T>::lineType MyImgOut.Pixmap = imOut.getPixels();
+    
       int dx = (int) (cos(angle * PI / 180.0) * maxnx);
       int dy = (int) (-sin(angle * PI / 180.0) * maxnx);
 
@@ -554,10 +547,10 @@ namespace morphee
         // Be carreful with the boundaries of the picture:
         // With some angle, some pixel are not choosen... and their values are 0
         // So we copy the init picture
-        T2 *bufferOut      = imOut.rawPointer();
-        const T1 *bufferIn = imIn.rawPointer();
+        T *bufferOut      = imOut.rawPointer();
+        const T *bufferIn = imIn.rawPointer();
         for (int i = W * H - 1; i >= 0; i--)
-          bufferOut[i] = (T2) bufferIn[i];
+          bufferOut[i] = (T) bufferIn[i];
       }
 
       ImageGrayDilateLine(&MyImgIn, radius * 2 + 1, dx, dy, 1, p, g, h, h2,
@@ -570,7 +563,6 @@ namespace morphee
 
       return RES_OK;
     }
-  } // namespace FastLine
-} // namespace morphee
+} // namespace smil
 
 #endif

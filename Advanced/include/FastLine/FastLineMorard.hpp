@@ -508,7 +508,7 @@ namespace smil
     H                 = imIn.getHeight();
 
     typename Image<T>::lineType bufferIn = imIn.getPixels();
-    typename Image<T>::lineType bufferOut = imIn.getPixels();
+    typename Image<T>::lineType bufferOut = imOut.getPixels();
 
     int maxnx = MAX(W, H);
     LineIdx   = new int[maxnx + 3];

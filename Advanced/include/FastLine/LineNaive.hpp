@@ -50,7 +50,6 @@ namespace smil
     ASSERT_ALLOCATED(&imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    ImageFreezer freeze(imIn);
     ImageFreezer freeze(imOut);
 
     int W, H, Z, i, j, k;
@@ -87,7 +86,6 @@ namespace smil
     ASSERT_ALLOCATED(&imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    ImageFreezer freeze(imIn);
     ImageFreezer freeze(imOut);
 
     int W, H, Z, i, j, k;
