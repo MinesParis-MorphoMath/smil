@@ -7,7 +7,28 @@ namespace smil
 {
   /**
    * @ingroup   Advanced
-   * @defgroup  AdvLine   Mathematical Morphology with Line
+   * @defgroup  AdvLine   Line Based Operators
+   *
+   * 
+   * @brief Based on Erik R Urbach (2006)
+   * implementation of algorithm by Soille et al [1] for erosions and
+   * dilations with linear structuring elements (S.E.) at arbitrary angles.
+   * S.E. line drawing using Bresenham's Line Algorithm [2].
+   *
+   * @par Related papers:
+   *
+   * [1] P. Soille and E. Breen and R. Jones.
+   *     Recursive implementation of erosions and dilations along discrete
+   *     lines at arbitrary angles.
+   *     IEEE Transactions on Pattern Analysis and Machine Intelligence,
+   *     Vol. 18, Number 5, Pages 562-567, May 1996.
+   *
+   * [2] Donald Hearn and M. Pauline Baker
+   *     Computer Graphics, second edition
+   *     Prentice Hall
+   *
+   * @author Vincent Morard, Jose-Marcio Martins da Cruz
+   * @date 1st September 2010, 8 July 2019 
    *
    * @{ */
 
@@ -156,89 +177,49 @@ namespace smil
   /**
    * @brief ImSquareErode : the SE is a segment of radius "radius" pixels
    * @param[in]  imIn the initial image
-   * @param[in]  radius the size of the segment  will be radius*2+1
+   * @param[in]  radius the size of the square side will be radius*2+1
    * @param[out] imOut Result
    */
   template <class T>
   RES_T ImSquareErode(const Image<T> &imIn, const int radius, Image<T> &imOut)
   {
     return ImSquareErode_Soille(imIn, radius, imOut);
-#if 0   
-    Image<T> imTmp(imIn);
-
-    RES_T res = ImLineErode(imIn, 0, radius, imTmp);
-    if (res == RES_OK)
-      res = ImLineErode(imTmp, 90, radius, imOut);
-    return res;
-#endif
   }
 
   /**
    * @brief ImSquareDilate : the SE is a segment of radius "radius" pixels
    * @param[in]  imIn the initial image
-   * @param[in]  radius the size of the segment  will be radius*2+1
+   * @param[in]  radius the size of the square side  will be radius*2+1
    * @param[out] imOut Result
    */
   template <class T>
   RES_T ImSquareDilate(const Image<T> &imIn, const int radius, Image<T> &imOut)
   {
     return ImSquareDilate_Soille(imIn, radius, imOut);
-#if 0
-    Image<T> imTmp(imIn);
-
-    RES_T res = ImLineDilate(imIn, 0, radius, imTmp);
-    if (res == RES_OK)
-      res = ImLineDilate(imTmp, 90, radius, imOut);
-    return res;
-#endif
   }
 
   /**
    * @brief ImSquareOpen : the SE is a segment of radius "radius" pixels
    * @param[in]  imIn the initial image
-   * @param[in]  radius the size of the segment  will be radius*2+1
+   * @param[in]  radius the size of the square side  will be radius*2+1
    * @param[out] imOut Result
    */
   template <class T>
   RES_T ImSquareOpen(const Image<T> &imIn, const int radius, Image<T> &imOut)
   {
     return ImSquareOpen_Soille(imIn, radius, imOut);
-#if 0
-    Image<T> imTmp(imIn);
-
-    RES_T res = ImLineErode(imIn, 0, radius, imTmp);
-    if (res == RES_OK)
-      res = ImLineErode(imTmp, 90, radius, imOut);
-    if (res == RES_OK)
-      res = ImLineDilate(imOut, 0, radius, imTmp);
-    if (res == RES_OK)
-      res = ImLineDilate(imTmp, 90, radius, imOut);
-    return res;
-#endif
   }  
 
   /** 
    * @brief ImSquareClose : the SE is a segment of radius "radius" pixels
    * @param[in]  imIn the initial image
-   * @param[in]  radius the size of the segment  will be radius*2+1
+   * @param[in]  radius the size of the square side  will be radius*2+1
    * @param[out] imOut Result
    */
   template <class T>
   RES_T ImSquareClose(const Image<T> &imIn, const int radius, Image<T> &imOut)
   {
     return ImSquareClose_Soille(imIn, radius, imOut);
-#if 0
-    Image<T> imTmp(imIn);
-
-    RES_T res = ImLineDilate(imIn, 0, radius, imTmp);
-    if (res == RES_OK)
-      res = ImLineDilate(imTmp, 90, radius, imOut);
-    if (res == RES_OK)
-      res = ImLineErode(imOut, 0, radius, imTmp);
-    if (res == RES_OK)
-      res = ImLineErode(imTmp, 90, radius, imOut);
-    return res;
-#endif
   }
 
 #endif

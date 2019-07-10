@@ -98,7 +98,9 @@ namespace smil
   {
     ulong idx;
     long x0;
-    long dp = 2 * dy - 2 * phase, twody = 2 * dy, twodydx = 2 * dy - 2 * dx;
+    long dp      = 2 * dy - 2 * phase;
+    long twody   = 2 * dy;
+    long twodydx = 2 * dy - 2 * dx;
 
     while ((x < 0) || (y < 0)) {
       if (dp >= 0) {
@@ -131,8 +133,11 @@ namespace smil
   /* Computes pixel coords along line with slope -1<m<0 */
   /* Returns # of pixel coords (num) written to array p (num <= width) */
   {
-    ulong x0 = x, idx = y * width + x;
-    long dp = 2 * dy - 2 * phase, twody = 2 * dy, twodydx = 2 * dy - 2 * dx;
+    ulong x0     = x;
+    ulong idx    = y * width + x;
+    long dp      = 2 * dy - 2 * phase;
+    long twody   = 2 * dy;
+    long twodydx = 2 * dy - 2 * dx;
 
     while (y >= (long) height) {
       if (dp >= 0) {
@@ -170,7 +175,9 @@ namespace smil
   /* Returns # of pixel coords (num) written to array p (num <= height) */
   {
     ulong y0, idx;
-    long dp = 2 * dx - 2 * phase, twodx = 2 * dx, twodxdy = 2 * dx - 2 * dy;
+    long dp      = 2 * dx - 2 * phase;
+    long twodx   = 2 * dx;
+    long twodxdy = 2 * dx - 2 * dy;
 
     while ((x < 0) || (y < 0)) {
       if (dp >= 0) {
@@ -204,7 +211,9 @@ namespace smil
   /* Returns # of pixel coords (num) written to array p (num <= height) */
   {
     ulong y0, idx;
-    long dp = 2 * dx - 2 * phase, twodx = 2 * dx, twodxdy = 2 * dx - 2 * dy;
+    long dp      = 2 * dx - 2 * phase;
+    long twodx   = 2 * dx;
+    long twodxdy = 2 * dx - 2 * dy;
 
     while (x >= (long) width) {
       if (dp >= 0) {
@@ -403,7 +412,8 @@ namespace smil
   {
     T *f        = (T *) img->Pixmap;
     T *r        = (T *) out->Pixmap;
-    ulong width = img->Width, y;
+    ulong width = img->Width;
+    ulong y;
 
     for (y = 0; y < img->Height; y++) {
       DilateHorLine(f, width, k, g, h, h2, r);
@@ -418,7 +428,8 @@ namespace smil
   {
     T *f        = (T *) img->Pixmap;
     T *r        = (T *) out->Pixmap;
-    ulong width = img->Width, height = img->Height, x;
+    ulong width = img->Width ulong height = img->Height;
+    ulong x;
 
     for (x = 0; x < width; x++) {
       DilateVerLine(f, width, height, k, g, h, h2, r);
@@ -432,9 +443,11 @@ namespace smil
                            ulong phase, ulong *p, T *g, T *h, T *h2,
                            SoilleImage *out)
   {
-    T *f        = (T *) img->Pixmap;
-    T *r        = (T *) out->Pixmap;
-    ulong width = img->Width, height = img->Height, nx;
+    T *f         = (T *) img->Pixmap;
+    T *r         = (T *) out->Pixmap;
+    ulong width  = img->Width;
+    ulong height = img->Height;
+    ulong nx;
     long x, y;
 
     if (dy == 0)
