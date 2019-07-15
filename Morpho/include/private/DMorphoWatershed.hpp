@@ -74,7 +74,7 @@ namespace smil
     }
 
     vector<IntPoint> sePts;
-    UINT sePtsNbr;
+    size_t sePtsNbr;
     bool oddSE;
     vector<int> dOffsets;
 
@@ -165,12 +165,12 @@ namespace smil
 
       getCoordsFromOffset(curOffset, x0, y0, z0);
 
-      bool oddLine = oddSE && ((y0) % 2);
+      bool oddLine = oddSE && ((y0 % 2) != 0);
 
       int x, y, z;
       size_t nbOffset;
 
-      for (UINT i = 0; i < sePtsNbr; i++) {
+      for (size_t i = 0; i < sePtsNbr; i++) {
         IntPoint &pt = sePts[i];
         x            = x0 + pt.x;
         y            = y0 + pt.y;
@@ -291,7 +291,7 @@ namespace smil
       if (!tmpOffsets.empty()) {
         if (this->wsPixels[curOffset] != STAT_WS_LINE) {
           size_t *offsets = tmpOffsets.data();
-          for (UINT i = 0; i < tmpOffsets.size(); i++) {
+          for (size_t i = 0; i < tmpOffsets.size(); i++) {
             this->hq.push(this->inPixels[*offsets], *offsets);
             this->wsPixels[*offsets] = STAT_QUEUED;
 
@@ -301,6 +301,7 @@ namespace smil
         tmpOffsets.clear();
       }
     }
+
     inline virtual void processNeighbor(const size_t &curOffset,
                                         const size_t &nbOffset)
     {
