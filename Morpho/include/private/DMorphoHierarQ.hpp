@@ -256,15 +256,7 @@ namespace smil
 
     inline void findNewReferenceLevel()
     {
-#ifdef USE_OPEN_MP
-      int nthreads = Core::getInstance()->getNumberOfThreads();
-#pragma omp parallel num_threads(nthreads)
-#endif // USE_OPEN_MP
-
       if (reverseOrder) {
-#ifdef USE_OPEN_MP
-#pragma omp for
-#endif // USE_OPEN_MP
         for (size_t i = higherLevel - 1; i != GRAY_LEVEL_MAX; i--) {
           if (tokenNbr[i] > 0) {
             higherLevel = i;
@@ -272,9 +264,6 @@ namespace smil
           }
         }
       } else {
-#ifdef USE_OPEN_MP
-#pragma omp for
-#endif // USE_OPEN_MP
         for (size_t i = higherLevel + 1; i < GRAY_LEVEL_NBR; i++) {
           if (tokenNbr[i] > 0) {
             higherLevel = i;
