@@ -256,6 +256,8 @@ namespace smil
 
     inline void findNewReferenceLevel()
     {
+      // XXX JOE - there still may be a problem here...
+      //    it was ImDtTypes<T>::max()
       if (reverseOrder) {
         for (size_t i = higherLevel - 1; i != GRAY_LEVEL_MAX; i--) {
           if (tokenNbr[i] > 0) {
