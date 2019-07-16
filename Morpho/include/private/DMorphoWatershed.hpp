@@ -65,6 +65,8 @@ namespace smil
     typename ImDtTypes<labelT>::lineType lblPixels;
 
     size_t imSize[3], pixPerSlice;
+    size_t pixelCount = 0;
+
     inline void getCoordsFromOffset(size_t off, size_t &x, size_t &y,
                                     size_t &z) const
     {
@@ -115,6 +117,7 @@ namespace smil
       inPixels  = imIn.getPixels();
       lblPixels = imLbl.getPixels();
 
+      pixelCount = imIn.getPixelCount();
       imIn.getSize(imSize);
       pixPerSlice = imSize[0] * imSize[1];
 
@@ -140,6 +143,7 @@ namespace smil
                                Image<labelT> & /*imLbl*/, const StrElt & /*se*/)
     {
       // Put the marker pixels in the HQ
+      /*
       size_t offset = 0;
       for (size_t k = 0; k < imSize[2]; k++)
         for (size_t j = 0; j < imSize[1]; j++)
@@ -149,7 +153,15 @@ namespace smil
             }
             offset++;
           }
-
+      */
+      
+      for (size_t offset = 0; offset < pixelCount; offset++)
+      {
+        if (lblPixels[offset] != 0)
+          hq.push(inPixels[offset], offset);
+      }
+      
+      
       currentLevel = ImDtTypes<T>::min();
 
       while (!hq.isEmpty()) {

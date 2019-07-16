@@ -144,6 +144,7 @@ namespace smil
   private:
     size_t GRAY_LEVEL_NBR;
     size_t GRAY_LEVEL_MIN;
+    size_t GRAY_LEVEL_MAX;
     StackType **stacks;
     size_t *tokenNbr;
     size_t size;
@@ -189,6 +190,7 @@ namespace smil
       // vector<T> rVals = rangeVal(img);
 
       GRAY_LEVEL_MIN = ImDtTypes<T>::min();
+      GRAY_LEVEL_MAX = ImDtTypes<T>::max();
       GRAY_LEVEL_NBR = ImDtTypes<T>::cardinal();
 
       stacks   = new StackType *[GRAY_LEVEL_NBR]();
@@ -254,19 +256,31 @@ namespace smil
 
     inline void findNewReferenceLevel()
     {
+#ifdef USE_OPEN_MP
+      int nthreads = Core::getInstance()->getNumberOfThreads();
+#pragma omp parallel num_threads(nthreads)
+#endif // USE_OPEN_MP
+
       if (reverseOrder) {
-        for (size_t i = higherLevel - 1; i != numeric_limits<size_t>::max();
-             i--)
+#ifdef USE_OPEN_MP
+#pragma omp for
+#endif // USE_OPEN_MP
+        for (size_t i = higherLevel - 1; i != GRAY_LEVEL_MAX; i--) {
           if (tokenNbr[i] > 0) {
             higherLevel = i;
             break;
           }
+        }
       } else {
-        for (size_t i = higherLevel + 1; i < GRAY_LEVEL_NBR; i++)
+#ifdef USE_OPEN_MP
+#pragma omp for
+#endif // USE_OPEN_MP
+        for (size_t i = higherLevel + 1; i < GRAY_LEVEL_NBR; i++) {
           if (tokenNbr[i] > 0) {
             higherLevel = i;
             break;
           }
+        }
       }
     }
 
@@ -277,19 +291,21 @@ namespace smil
       stacks[higherLevel]->pop();
       size--;
 
-      if (hlSize > 1)
+      if (hlSize > 1) {
         tokenNbr[higherLevel]--;
-      else if (size > 0) // Find new ref level (non empty stack)
-      {
-        tokenNbr[higherLevel] = 0;
-        findNewReferenceLevel();
-      } else // Empty -> re-initilize
-      {
-        tokenNbr[higherLevel] = 0;
-        if (reverseOrder)
-          higherLevel = 0;
-        else
-          higherLevel = ImDtTypes<size_t>::max();
+      } else {
+        if (size > 0) {
+          // Find new ref level (non empty stack)
+          tokenNbr[higherLevel] = 0;
+          findNewReferenceLevel();
+        } else {
+          // Empty -> re-initilize
+          tokenNbr[higherLevel] = 0;
+          if (reverseOrder)
+            higherLevel = 0;
+          else
+            higherLevel = ImDtTypes<size_t>::max();
+        }
       }
       return dOffset;
     }
