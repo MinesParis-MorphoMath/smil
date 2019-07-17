@@ -75,11 +75,20 @@ class Test_Basins : public TestCase
       dtType2 vecLblTruth[] = { 
        1,       1,       1,       1,       1,       1,
            1,       1,       1,       1,       1,       1,
+       2,       2,       3,       3,       3,       3,
+           2,       2,       3,       3,       3,       3,
+       2,       2,       2,       3,       3,       3,
+           2,       2,       2,       3,       3,       3,
+       2,       2,       2,       2,       3,       3,
+/* Previous truth XXX JOE
+       1,       1,       1,       1,       1,       1,
+           1,       1,       1,       1,       1,       1,
        2,       3,       3,       3,       3,       3,
            2,       3,       3,       3,       3,       3,
        2,       2,       3,       3,       3,       3,
            2,       2,       2,       3,       3,       3,
        2,       2,       2,       2,       3,       3,
+*/
       };
       
       Image<dtType2> imLblTruth(imIn);
@@ -199,13 +208,22 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
       flooding.processImage(imIn, imLbl, se);
 
       UINT8 vecLblTruth[] = { 
+    1,    1,    1,    1,    1,    1,
+       1,    1,    1,    1,    1,    1,
+    2,    3,    3,    3,    3,    3,
+       2,    3,    3,    3,    3,    3,
+    2,    2,    3,    3,    3,    3,
+       2,    2,    2,    3,    3,    3,
+    2,    2,    2,    2,    3,    3,
+/* previous truth XXX JOE
         1,    1,    1,    1,    1,    1,
           1,    1,    1,    1,    1,    1,
-        2,    3,    3,    3,    3,    3,
-          2,    3,    3,    3,    3,    3,
         2,    2,    3,    3,    3,    3,
+          2,    2,    3,    3,    3,    3,
+        2,    2,    2,    3,    3,    3,
           2,    2,    2,    3,    3,    3,
         2,    2,    2,    2,    3,    3,
+*/
       };
       
       UINT8 vecStatusTruth[] = { 

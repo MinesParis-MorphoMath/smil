@@ -73,6 +73,15 @@ class Test_Extinction_Flooding : public TestCase
 
         UINT8 basinsTruth[] = {
     1,    1,    1,    1,    1,
+       1,    1,    3,    3,    3,
+    2,    2,    3,    3,    3,
+       2,    2,    3,    3,    3,
+    2,    2,    3,    3,    3,
+       2,    2,    3,    3,    3,
+    4,    4,    4,    5,    5,
+       4,    4,    5,    5,    5,
+/* previous truth XXX JOE
+    1,    1,    1,    1,    1,
        1,    1,    1,    1,    1,
     1,    1,    3,    3,    3,
        2,    2,    3,    3,    3,
@@ -80,6 +89,7 @@ class Test_Extinction_Flooding : public TestCase
        2,    2,    3,    3,    3,
     4,    4,    4,    5,    5,
        4,    4,    5,    5,    5,
+*/
         };
         imTruth << basinsTruth;
           
@@ -98,11 +108,21 @@ class Test_Extinction_Flooding : public TestCase
     0,   40,    0,    0,    0,
        0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,
+       0,    3,    0,    6,    0,
+    0,    0,    0,    0,    6,
+       0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,
+       0,    9,    0,    3,    0,
+/* XXX JOE
+    0,   40,    0,    0,    0,
+       0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,
        0,    3,    0,    8,    0,
     0,    0,    0,    0,    8,
        0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,
        0,    9,    0,    4,    0,
+*/
         };
         imTruth << areaTruth;
         
@@ -365,11 +385,18 @@ class Test_Watershed_Extinction_Graph : public TestCase
         imMark << vecMark;
 
         vector< EdgeT > trueEdges;
+
+        trueEdges.push_back(EdgeT(4,5, 3));
+        trueEdges.push_back(EdgeT(1,2, 3));
+        trueEdges.push_back(EdgeT(2,4, 9));
+        trueEdges.push_back(EdgeT(5,3, 6));
+
+/* previous truth XXX JOE
         trueEdges.push_back(EdgeT(4,5, 4));
         trueEdges.push_back(EdgeT(1,2, 3));
         trueEdges.push_back(EdgeT(2,4, 9));
         trueEdges.push_back(EdgeT(5,3, 8));
-
+*/
         watershedExtinctionGraph (imIn, imMark, imResult, graph, "a", se) ;
         
 //         imResult.printSelf(1);
