@@ -338,8 +338,8 @@ namespace smil
   /**
    * Constrained basins.
    *
-   * Hierachical queue based algorithm as described by S. Beucher (2011) @cite
-   * beucher_hierarchical_2011 
+   * Hierachical queue based algorithm as described by S. Beucher (2011) 
+   * @cite beucher_hierarchical_2011 
    * @param[in] imIn Input image. 
    * @param[in] imMarkers Label image containing the markers. 
    * @param[out] imBasinsOut (optional) Output image containing the basins. 
@@ -373,8 +373,8 @@ namespace smil
   /**
    * Constrained watershed.
    *
-   * Hierachical queue based algorithm as described by S. Beucher (2011) @cite
-   * beucher_hierarchical_2011
+   * Hierachical queue based algorithm as described by S. Beucher (2011) 
+   * @cite beucher_hierarchical_2011
    * 
    * @param[in] imIn Input image. 
    * @param[in] imMarkers Label image containing the markers. 

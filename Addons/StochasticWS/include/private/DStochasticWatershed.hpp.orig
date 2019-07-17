@@ -385,11 +385,11 @@ namespace smil
   }
 
   template <class labelT, class T>
-  void visit_stochastic_node(const labelT &l, stochastic_graph<labelT, T> &r,
-                             vector<labelT> &visited, const size_t &i)
+  void visit_stochastic_node(const T &l, stochastic_graph<labelT, T> &r,
+                             vector<T> &visited, const size_t &i)
   {
     visited[i] = l;
-    for (typename map<labelT, size_t>::iterator it = r.nodes[i].edges.begin();
+    for (typename map<T, size_t>::iterator it = r.nodes[i].edges.begin();
          it != r.nodes[i].edges.end(); ++it) {
       if (visited[it->first] == 0 && r.edges[it->second].weight == 1.) {
         visit_stochastic_node(l, r, visited, it->first);
@@ -403,7 +403,7 @@ namespace smil
   {
     size_t nbr_nodes  = r.nodes.size();
     size_t nbr_labels = 0;
-    labelT cur_label  = 0;
+    T cur_label       = 0;
     labels            = vector<labelT>(nbr_nodes + 1, 0);
 
     for (uint32_t i = 1; i < nbr_nodes; ++i) {
@@ -456,14 +456,14 @@ namespace smil
   {
     stochastic_graph<labelT, T> out;
 
-    out.nodes.push_back(stochastic_node<labelT>(0, 0, 0));
+    out.nodes.push_back(stochastic_node<T>(0, 0, 0));
     originals.push_back(0);
 
     map<labelT, labelT> back;
     // The nodes
     for (uint32_t j = 1; j < labels.size(); ++j) {
       if (labels[j] == i) {
-        out.nodes.push_back(stochastic_node<labelT>(graph.nodes[j].surface,
+        out.nodes.push_back(stochastic_node<T>(graph.nodes[j].surface,
                                                graph.nodes[j].area,
                                                graph.nodes[j].dist_max));
         originals.push_back(j);
@@ -496,9 +496,9 @@ namespace smil
     stochastic_graph<labelT, T> out;
 
     // Copy the nodes.
-    out.nodes.push_back(stochastic_node<labelT>(0, 0, 0));
+    out.nodes.push_back(stochastic_node<T>(0, 0, 0));
     for (uint32_t i = 1; i < graph.nodes.size(); ++i) {
-      out.nodes.push_back(stochastic_node<labelT>(graph.nodes[i].surface,
+      out.nodes.push_back(stochastic_node<T>(graph.nodes[i].surface,
                                              graph.nodes[i].area,
                                              graph.nodes[i].dist_max));
     }
@@ -860,7 +860,7 @@ namespace smil
                                    const Image<T> &gradient, Image<labelT> &out,
                                    const size_t &n_seeds, const StrElt &se)
   {
-    fill<labelT>(out, ImDtTypes<labelT>::max());
+    fill<T>(out, ImDtTypes<labelT>::max());
 
     stochastic_graph<labelT, T> graph;
     mosaicToStochasticGraph(primary, gradient, graph, se);
@@ -926,7 +926,7 @@ namespace smil
                            const Image<T> &gradient, Image<labelT> &out,
                            const size_t &n_seeds, const StrElt &se)
   {
-    fill<labelT>(out, ImDtTypes<labelT>::max());
+    fill<T>(out, ImDtTypes<labelT>::max());
 
     stochastic_graph<labelT, T> graph;
     mosaicToStochasticGraph(primary, gradient, graph, se);
@@ -976,7 +976,7 @@ namespace smil
                                      Image<labelT> &out, const size_t &n_seeds,
                                      const double &t0, const StrElt &se)
   {
-    fill<labelT>(out, ImDtTypes<labelT>::max());
+    fill<T>(out, ImDtTypes<labelT>::max());
 
     stochastic_graph<labelT, T> graph;
     mosaicToStochasticGraph(primary, gradient, graph, se);
@@ -1050,7 +1050,7 @@ namespace smil
                              const size_t &n_seeds, const double &t0,
                              const StrElt &se)
   {
-    fill<labelT>(out, ImDtTypes<labelT>::max());
+    fill<T>(out, ImDtTypes<labelT>::max());
 
     stochastic_graph<labelT, T> graph;
     mosaicToStochasticGraph(primary, gradient, graph, se);
@@ -1107,7 +1107,7 @@ namespace smil
                                     Image<labelT> &out, const size_t &n_seeds,
                                     const double &r0, const StrElt &se)
   {
-    fill<labelT>(out, labelT(0));
+    fill<T>(out, T(0));
 
     stochastic_graph<labelT, T> graph;
     mosaicToStochasticGraph(primary, gradient, graph, se);

@@ -6,31 +6,20 @@ SMIL_MODULE(smilStochasticWS)
 
 %{
 /* Includes .hppe.hppeader in .hppe wrapper code */
-#include "DStochasticWatershed.hpp"
+/* #include "DStochasticWatershed.hpp" */
+#include "DStochasticWS.h"
 %}
 
 #include <jansson.hpp>
 
 %import smilCore.i
 
-%include"DStochasticWatershed.hpp"
-void stochasticWatershed (const Image<UINT8>& primary, const Image<UINT8>& gradient, Image<UINT8> &out, const size_t& n_seeds, const StrElt& se);
-void stochasticWatershed (const Image<UINT16>& primary, const Image<UINT16>& gradient, Image<UINT16> &out, const size_t& n_seeds, const StrElt& se);
-void stochasticWatershed (const Image<UINT32>& primary, const Image<UINT32>& gradient, Image<UINT32> &out, const size_t& n_seeds, const StrElt& se);
+// %include "DStochasticWatershed.hpp"
+%include "DStochasticWS.h"
 
-size_t stochasticFlatZones (const Image<UINT8>& primary, const Image<UINT8>& gradient, Image<UINT8> &out, const size_t& n_seeds, const double& t0, const StrElt& s);
-size_t stochasticFlatZones (const Image<UINT16>& primary, const Image<UINT16>& gradient, Image<UINT16> &out, const size_t& n_seeds, const double& t0, const StrElt& s);
-size_t stochasticFlatZones (const Image<UINT32>& primary, const Image<UINT32>& gradient, Image<UINT32> &out, const size_t& n_seeds, const double& t0, const StrElt& s);
-
-size_t overSegmentationCorrection (const Image<UINT8>& primary, const Image<UINT8>& gradient, Image<UINT8> &out, const size_t& n_seeds, const double& r0, const StrElt& s);
-size_t overSegmentationCorrection (const Image<UINT16>& primary, const Image<UINT16>& gradient, Image<UINT16> &out, const size_t& n_seeds, const double& r0, const StrElt& s);
-size_t overSegmentationCorrection (const Image<UINT32>& primary, const Image<UINT32>& gradient, Image<UINT32> &out, const size_t& n_seeds, const double& r0, const StrElt& s);
-
-void stochasticWatershedParallel (const Image<UINT8>& primary, const Image<UINT8>& gradient, Image<UINT8> &out, const size_t& n_seeds, const StrElt& se);
-void stochasticWatershedParallel (const Image<UINT16>& primary, const Image<UINT16>& gradient, Image<UINT16> &out, const size_t& n_seeds, const StrElt& se);
-void stochasticWatershedParallel (const Image<UINT32>& primary, const Image<UINT32>& gradient, Image<UINT32> &out, const size_t& n_seeds, const StrElt& se);
-
-size_t stochasticFlatZonesParallel (const Image<UINT8>& primary, const Image<UINT8>& gradient, Image<UINT8> &out, const size_t& n_seeds, const double& t0, const StrElt& s);
-size_t stochasticFlatZonesParallel (const Image<UINT16>& primary, const Image<UINT16>& gradient, Image<UINT16> &out, const size_t& n_seeds, const double& t0, const StrElt& s);
-size_t stochasticFlatZonesParallel (const Image<UINT32>& primary, const Image<UINT32>& gradient, Image<UINT32> &out, const size_t& n_seeds, const double& t0, const StrElt& s);
+TEMPLATE_WRAP_FUNC_2T_CROSS(stochasticWatershed);
+TEMPLATE_WRAP_FUNC_2T_CROSS(stochasticWatershedParallel);
+TEMPLATE_WRAP_FUNC_2T_CROSS(stochasticFlatZones);
+TEMPLATE_WRAP_FUNC_2T_CROSS(stochasticFlatZonesParallel);
+TEMPLATE_WRAP_FUNC_2T_CROSS(overSegmentationCorrection);
 
