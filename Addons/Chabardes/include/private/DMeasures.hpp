@@ -110,7 +110,7 @@ namespace smil
       ENDForEachPixel
 
 #pragma omp for ordered schedule(static, 1)
-          for (int t = 0; t < omp_get_num_threads(); ++t)
+      for (int t = 0; t < omp_get_num_threads(); ++t)
       {
 #pragma omp ordered
         {

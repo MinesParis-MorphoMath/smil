@@ -138,7 +138,7 @@ namespace smil
   };
 
   template <class T, class TokenType = size_t,
-            class StackType = STD_Queue<TokenType>>
+            class StackType = STD_Queue<TokenType> >
   class HierarchicalQueue
   {
   private:

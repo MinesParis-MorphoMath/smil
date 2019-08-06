@@ -30,7 +30,7 @@
 OPT=
 SRCDIR=
 PREFIX=/usr/local
-ADDONS="Color Filters HoughTransform"
+ADDONS="Color Filters HoughTransform Chabardes StochasticWS"
 OTHER=
 
 Fatal()

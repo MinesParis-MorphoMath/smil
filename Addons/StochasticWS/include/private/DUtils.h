@@ -24,16 +24,19 @@ namespace smil
   };
 
 #define WS ImDtTypes<labelT>::max()
+
 #define IndexToCoor(a)                                                         \
   a.z = a.o / nbrPixelsInSlice;                                                \
   a.y = (a.o % nbrPixelsInSlice) / S[0];                                       \
   a.x = a.o % S[0];
 #define CoorToIndex(a) a.o = a.x + a.y * S[0] + a.z * nbrPixelsInSlice
+
 #define ForEachPixel(a)                                                        \
   for (size_t i = 0; i < nbrPixels; ++i) {                                     \
     a.o = i;                                                                   \
     IndexToCoor(a);
 #define ENDForEachPixel }
+
 #define ForEachNeighborOf(a, b)                                                \
   for (pts = 0; pts < sePtsNumber; ++pts) {                                    \
     b.x = a.x + se.points[pts].x;                                              \

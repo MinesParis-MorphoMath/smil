@@ -47,12 +47,13 @@ namespace smil
   /*
   * class BaseFlooding
   */
-  template <class T, class labelT, class HQ_Type = HierarchicalQueue<T>>
+  template <class T, class labelT, class HQ_Type = HierarchicalQueue<T> >
   class BaseFlooding
   {
   public:
     BaseFlooding() : STAT_QUEUED(ImDtTypes<labelT>::max())
     {
+      pixelCount = 0;
     }
     virtual ~BaseFlooding()
     {
@@ -65,7 +66,7 @@ namespace smil
     typename ImDtTypes<labelT>::lineType lblPixels;
 
     size_t imSize[3], pixPerSlice;
-    size_t pixelCount = 0;
+    size_t pixelCount;
 
     inline void getCoordsFromOffset(size_t off, size_t &x, size_t &y,
                                     size_t &z) const
@@ -224,7 +225,7 @@ namespace smil
   /*
   * class WatershedFlooding
   */
-  template <class T, class labelT, class HQ_Type = HierarchicalQueue<T>>
+  template <class T, class labelT, class HQ_Type = HierarchicalQueue<T> >
   class WatershedFlooding
 #ifndef SWIG
       : public BaseFlooding<T, labelT, HQ_Type>
