@@ -28,7 +28,7 @@
 
 
 
-#include "DMorphoDistance.hpp"
+#include "DMorphoDistance.h"
 
 using namespace smil;
 

@@ -340,7 +340,7 @@ ENDIF(WRAP_CPP)
 
 OPTION(WRAP_PYTHON "Wrap Python" FALSE)
 IF(WRAP_PYTHON)
-  if (${CMAKE_VERSION} VERSION_GREATER "3.13")
+  if (${CMAKE_VERSION} VERSION_GREATER "3.20")
     find_package (Python COMPONENTS Interpreter Development Numpy)
 
     include_directories(${Python_INCLUDE_DIRS})

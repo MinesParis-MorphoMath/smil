@@ -1,7 +1,7 @@
 /**
- * @page p40_instructions_page Contribution Guidelines
+ * @page p402_web_instructions Contribution Guidelines
  *
- * @section style_section Contribution Guidelines 
+ * @section style_section_2 Contribution Guidelines 
  *
  * This is about good programming practices : what to do and not in your
  * programs. Suggestions about reliability, security, ...
@@ -36,7 +36,7 @@
  *  - incoherence over time : not doing the same thing the same way at different
  * moments.
  *
- * @section format_section Code Formatting
+ * @section format_section_2 Code Formatting
  *
  * Code formatting isn't just an aesthetic issue. An homogeneous and clear
  * presentation contributes to unambigous and easy understanding.
@@ -75,7 +75,7 @@
  *   - <b>clang-format</b> documentation can be found <a
  * href="https://clang.llvm.org/docs/ClangFormat.html">here</a>
  *
- * @section proto_section  Source file prototypes :
+ * @section proto_section_2  Source file prototypes :
  *
  * To help you start with your coding, inside directory
  * <b><code>dev-tools</code></b>, you'll find two files :
@@ -96,9 +96,9 @@
  * As an example, if the filename is <b><code>DMorphoBestCode.h</code></b>, the
  * directive name becomes <b><code>_D_MORPHO_BEST_CODE_H</code></b>.
  *
- * @section naming_section Naming guidelines
+ * @section naming_section_2 Naming guidelines
  *
- *  <b>To be done !!!</b>
+ *  <b>Under construction !!!</b>
  *
  *  - Avoid meaningless names. Exceptions may be for some usual loop control
  * variables : x, y, z, i, j, k;
@@ -113,11 +113,11 @@
  *  - Functions and Methods
  *  - Macros and defines : every character in uppercase.
  *
- * @section doc_section Source code documentation with Doxygen
+ * @section doc_section_2 Code documentation (Doxygen)
  *
- * To be done !!!
+ * <b>Under construction !!!</b>
  *
- * @subsection doxyoddities_section Doxygen / clang-format Oddities
+ * @subsection doxyoddities_section-2 Doxygen / clang-format Oddities
  *
  *  - Use <b><code>"@tag"</code></b> syntax instead of
  * <b><code>"\tag"</code></b> : clang-format doesn't handle these two

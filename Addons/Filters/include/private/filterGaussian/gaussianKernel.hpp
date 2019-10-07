@@ -90,7 +90,8 @@ namespace smil
       delete[] kernel;
     }
 
-    template <typename T> void Convolve(T *in, int W, int H, int D, T *out)
+    template <typename T>
+    void Convolve(T *in, int W, int H, int D, T *out)
     {
 #ifdef USE_OPEN_MP
       int nthreads = Core::getInstance()->getNumberOfThreads();

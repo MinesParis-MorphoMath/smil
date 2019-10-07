@@ -92,11 +92,14 @@ namespace smil
     #endif // PI
 
     #ifndef MIN
-    #define MIN(a, b) (a < b ? a : b);
+    #define MIN(a, b) ((a) < (b) ? (a) : (b))
     #endif // MIN
     #ifndef MAX
-    #define MAX(a, b) (a > b ? a : b);
+    #define MAX(a, b) ((a) > (b) ? (a) : (b))
     #endif // MAX
+    #ifndef ABS
+    #define ABS(a) ((a) >= 0 ? (a) : -(a))
+    #endif // ABS
 
 #ifndef SWIG
     struct map_comp_value_less
