@@ -41,23 +41,19 @@
 
 using namespace std;
 
-#define NEWTDEFS   1
+#define NEWTDEFS   0
 
 namespace smil
 {
-#if NEWTDEFS
     typedef int            INT;
     typedef long           LONG;
     typedef unsigned int   UINT;
     typedef unsigned long  ULONG;
+#if NEWTDEFS
     typedef uint8_t        UINT8;
     typedef uint16_t       UINT16;
     typedef uint32_t       UINT32;
 #else
-    typedef int            INT;
-    typedef long           LONG;
-    typedef unsigned int   UINT;
-    typedef unsigned long  ULONG;
     typedef unsigned char  UINT8;
     typedef unsigned short UINT16;
     typedef unsigned int   UINT32;

@@ -293,7 +293,7 @@ namespace smil
           }
           for (x = ppLine - 2; x >= 0; --x) {
             if (pixelsOut[offset + x] != 0 &&
-                pixelsOut[offset + x] > pixelsOut[offset + x + 1]) {
+                pixelsOut[offset + x] > pixelsOut[offset + x + 1] ) {
               pixelsOut[offset + x] = pixelsOut[offset + x + 1] + 1;
             }
           }
@@ -774,6 +774,9 @@ namespace smil
       level      = next_level;
       next_level = swap;
     } while (!level->empty());
+    
+    delete level;
+    delete next_level;
 
     return RES_OK;
   }
