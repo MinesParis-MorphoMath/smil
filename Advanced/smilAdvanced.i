@@ -41,52 +41,6 @@ SMIL_MODULE(smilAdvanced)
 %import smilMorpho.i
 
 
-%include "DMorphoPathOpening.h"
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImPathOpeningBruteForce);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImPathClosingBruteForce);
-TEMPLATE_WRAP_FUNC(ImPathOpening);
-TEMPLATE_WRAP_FUNC(ImPathClosing);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImUltimatePathOpening);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImUltimatePathClosing);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImBinaryPathOpening);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImBinaryPathClosing);
-
-TEMPLATE_WRAP_FUNC(ImGeodesicPathOpening);
-TEMPLATE_WRAP_FUNC(ImGeodesicPathClosing);
-TEMPLATE_WRAP_FUNC(ImUltimateGeodesicPathOpening);
-TEMPLATE_WRAP_FUNC(ImUltimateGeodesicPathClosing);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImGeodesicElongation);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImGeodesicExtremities);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImLabelFlatZonesWithElongation);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImLabelFlatZonesWithExtremities);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImLabelFlatZonesWithGeodesicDiameter);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImGeodesicDiameter);
-//BMI TEMPLATE_WRAP_FUNC(ImGeodesicTortuosity);
-
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImUltimatePathOpening_GraphV2);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImUltimatePathClosing_GraphV2);
-TEMPLATE_WRAP_FUNC(ImPathClosing_GraphV2);
-TEMPLATE_WRAP_FUNC(ImPathOpening_GraphV2);
-
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImThresholdWithUniqueCCForBackGround);
-TEMPLATE_WRAP_FUNC(CountNbCCperThreshold);
-TEMPLATE_WRAP_FUNC(CountNbPixelOfNDG);
-TEMPLATE_WRAP_FUNC(MeanValueOf);
-TEMPLATE_WRAP_FUNC_2T_CROSS(PseudoPatternSpectrum);
-
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImSupSmallRegion);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measComputeVolume);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measComputeIndFromPatternSpectrum);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImThresholdWithMuAndSigma);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImElongationFromSkeleton);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImFromSkeletonSupTriplePoint);
-TEMPLATE_WRAP_FUNC(FromSkeletonComputeGranulometry);
-
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImFromSK_AreaForEachCC);
-
-### Has prototype but not implementation
-### TEMPLATE_WRAP_FUNC_2T_CROSS(ImLayerDist);
-
 //  -> check if necessary, otherwise remove it
 //TEMPLATE_WRAP_FUNC(ImFalseColorHSL);
 //  -> check the use of RGB
@@ -100,24 +54,7 @@ TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Diameter);
 TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Elongation);
 TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Tortuosity);
 
-//
-//
-//
-%include "DFastAreaOpening.h"
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_PixelQueue);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_PixelQueue);
 
-//TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_MaxTree);
-//TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_MaxTree);
-//TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_UnionFind);
-//TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_UnionFind);
-
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_Line);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaClosing_Line);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImAreaOpening_LineSupEqu);
-
-//TEMPLATE_WRAP_FUNC_2T_CROSS(ImInertiaThinning_MaxTree);
-//TEMPLATE_WRAP_FUNC_2T_CROSS(ImInertiaThickening_MaxTree);
 
 %include "DFastLine.h"
 TEMPLATE_WRAP_FUNC(ImLineDilate);

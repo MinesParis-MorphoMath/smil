@@ -14,6 +14,7 @@
  * @defgroup AddonOpenCV           OpenCV Interface
  * @defgroup AddonQVtkViewer       VTK Viewer
  * @defgroup AddonVtkInterface     VTK Image Interface
+ * @defgroup AddonPathOpening      Path Opening
  */
  
 /**

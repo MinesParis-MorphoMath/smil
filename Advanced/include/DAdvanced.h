@@ -16,10 +16,10 @@
 #include "DFastLine.h"
    
 // by Andres Serna
-#include "DMorphoPathOpening.h"
+// #include "DMorphoPathOpening.h"
 
 // by Morard
-#include "DFastAreaOpening.h"
+// #include "DFastAreaOpening.h"
 
 #include "DGrayLevelDistance.h"
 
