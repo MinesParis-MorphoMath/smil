@@ -50,7 +50,7 @@ namespace smil
      * Geodesic dilation
      */
     template <class T>
-    RES_T geoDil(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T geoDilate(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
         ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
@@ -68,11 +68,17 @@ namespace smil
         return RES_OK;
     }
 
+    template <class T>
+    RES_T geoDil(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+      return geoDilate(imIn, imMask, imOut, se);
+    }
+
     /**
      * Geodesic erosion
      */
     template <class T>
-    RES_T geoEro(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    RES_T geoErode(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
     {
         ASSERT_ALLOCATED(&imIn, &imMask, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imMask, &imOut);
@@ -88,6 +94,12 @@ namespace smil
             ASSERT((sup(imOut, imMask, imOut)==RES_OK));
         }
         return RES_OK;
+    }
+
+    template <class T>
+    RES_T geoEro(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+    {
+      return geoErode(imIn, imMask, imOut, se);
     }
 
     template <class T>

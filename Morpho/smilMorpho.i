@@ -100,7 +100,9 @@ TEMPLATE_WRAP_FUNC(dualTopHat);
 
 %include "Morpho/include/private/DMorphoGeodesic.hpp"
 TEMPLATE_WRAP_FUNC(geoDil);
+TEMPLATE_WRAP_FUNC(geoDilate);
 TEMPLATE_WRAP_FUNC(geoEro);
+TEMPLATE_WRAP_FUNC(geoErode);
 TEMPLATE_WRAP_FUNC(geoBuild);
 TEMPLATE_WRAP_FUNC(geoDualBuild);
 TEMPLATE_WRAP_FUNC(build);
