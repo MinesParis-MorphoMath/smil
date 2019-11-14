@@ -36,8 +36,8 @@
 namespace smil
 {
    /**
-    * \ingroup Morpho
-    * \defgroup Arrow Arrow Graphs
+    * @ingroup Morpho
+    * @defgroup Arrow Arrow Graphs
     * @{
     */
 
@@ -195,11 +195,11 @@ namespace smil
     /**
     * Arrow operator
     * 
-    * \param imIn
-    * \param operation "==", ">", ">=", "<" or "<="
-    * \param imOut
-    * \param se
-    * \param borderValue
+    * @param imIn
+    * @param operation "==", ">", ">=", "<" or "<="
+    * @param imOut
+    * @param se
+    * @param borderValue
     */
     template <class T_in, class T_out>
     RES_T arrow(const Image<T_in> &imIn, const char *operation, Image<T_out> &imOut, const StrElt &se=DEFAULT_SE, T_in borderValue=numeric_limits<T_in>::min())
@@ -622,7 +622,7 @@ RES_T arrowMinFunction < T, arrowT >::_exec ( const imageInType & in,
     }
 
 
-/** \} */
+/** @} */
 
 } // namespace smil
 

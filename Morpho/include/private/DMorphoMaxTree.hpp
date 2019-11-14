@@ -41,9 +41,9 @@
 namespace smil
 {
     /**
-    * \ingroup Morpho
-    * \defgroup MaxTree MaxTree Algorithm
-    * \{
+    * @ingroup Morpho
+    * @defgroup MaxTree MaxTree Algorithm
+    * @{
     */
 
     
@@ -580,13 +580,13 @@ void compute_contrast(MaxTree2<T1,HeightCriterion,size_t,UINT32> &tree, T1* tran
     /**
      * Ultimate Opening using the max-trees
      * 
-     * Max-tree based algorithm as described by Fabrizio and Marcotegui (2009) \cite fabrizio_fast_2009
-     * \param[in] imIn Input image
-     * \param[out] imTrans The transformation image
-     * \param[out] imIndic The indicator image
-     * \param[in] stopSize (optional)
-     * \param[in] delta (optional)
-     * \param[in] se structuring element
+     * Max-tree based algorithm as described by Fabrizio and Marcotegui (2009) @cite fabrizio_fast_2009
+     * @param[in] imIn Input image
+     * @param[out] imTrans The transformation image
+     * @param[out] imIndic The indicator image
+     * @param[in] stopSize (optional)
+     * @param[in] delta (optional)
+     * @param[in] se structuring element
      */
 
 
@@ -1095,11 +1095,11 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
     * Height opening
      * 
      * Max-tree based algorithm
-     * \warning 4-connex only (6-connex in 3D)
-     * \param[in] imIn Input image
-     * \param[in] stopSize The size of the opening
-     * \param[out] imOut Output image
-     * \param[in] se Structuring element
+     * @warning 4-connex only (6-connex in 3D)
+     * @param[in] imIn Input image
+     * @param[in] stopSize The size of the opening
+     * @param[out] imOut Output image
+     * @param[in] se Structuring element
     */
     template <class T>
     RES_T heightOpen(const Image<T> &imIn, size_t stopSize, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
@@ -1127,11 +1127,11 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
     * Width opening
      * 
      * Max-tree based algorithm
-     * \warning 4-connex only (6-connex in 3D)
-     * \param[in] imIn Input image
-     * \param[in] stopSize The size of the opening
-     * \param[out] imOut Output image
-     * \param[in] se Structuring element
+     * @warning 4-connex only (6-connex in 3D)
+     * @param[in] imIn Input image
+     * @param[in] stopSize The size of the opening
+     * @param[out] imOut Output image
+     * @param[in] se Structuring element
     */
     template <class T>
     RES_T widthOpen(const Image<T> &imIn, size_t stopSize, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
@@ -1159,11 +1159,11 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
     * Area opening
      * 
      * Max-tree based algorithm
-     * \warning 4-connex only (6-connex in 3D)
-     * \param[in] imIn Input image
-     * \param[in] stopSize The size of the opening
-     * \param[out] imOut Output image
-     * \param[in] se Structuring element
+     * @warning 4-connex only (6-connex in 3D)
+     * @param[in] imIn Input image
+     * @param[in] stopSize The size of the opening
+     * @param[out] imOut Output image
+     * @param[in] se Structuring element
     */
     template <class T>
     RES_T areaOpen(const Image<T> &imIn, size_t stopSize, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
@@ -1175,11 +1175,11 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
     * Area closing
      * 
      * Max-tree based algorithm
-     * \warning 4-connex only (6-connex in 3D)
-     * \param[in] imIn Input image
-     * \param[in] stopSize The size of the closing
-     * \param[out] imOut Output image
-     * \param[in] se Structuring element
+     * @warning 4-connex only (6-connex in 3D)
+     * @param[in] imIn Input image
+     * @param[in] stopSize The size of the closing
+     * @param[out] imOut Output image
+     * @param[in] se Structuring element
     */
     template <class T>
     RES_T areaClose(const Image<T> &imIn, size_t stopSize, Image<T> &imOut, const StrElt &se=DEFAULT_SE)
@@ -1197,7 +1197,7 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
         return res;
     }
     
-    /** \} */
+    /** @} */
 
 } // namespace smil
 

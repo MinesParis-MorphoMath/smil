@@ -37,8 +37,8 @@
 namespace smil
 {
     /**
-    * \ingroup Morpho
-    * \defgroup MorphoMeasures Measures
+    * @ingroup Morpho
+    * @defgroup MorphoMeasures Measures
     * @{
     */
 
@@ -46,9 +46,9 @@ namespace smil
     /**
     * Granulometry by openings.
     * 
-    * Performs openings of increasing size (using steps of \b stepSize) and measure the corresponding volume difference.
+    * Performs openings of increasing size (using steps of @b stepSize) and measure the corresponding volume difference.
     * 
-    * If \b CDF is true, return a Cumulative Distribution Function
+    * If @b CDF is true, return a Cumulative Distribution Function
     */ 
     template <class T>
     vector<double> measGranulometry(const Image<T> &imIn, const StrElt &se=DEFAULT_SE, const unsigned int stepSize=1, bool CDF=true)

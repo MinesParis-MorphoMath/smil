@@ -37,8 +37,8 @@
 namespace smil
 {
     /**
-    * \defgroup CompSE Composite Structuring Elements
-    * \ingroup StrElt
+    * @defgroup CompSE Composite Structuring Elements
+    * @ingroup StrElt
     * @{
     */
   
@@ -69,7 +69,7 @@ namespace smil
 
     /**
     * Composite structuring element list
-    * \see CompStrElt
+    * @see CompStrElt
     */
     class CompStrEltList : public BaseObject
     {

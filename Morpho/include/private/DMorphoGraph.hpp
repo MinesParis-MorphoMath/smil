@@ -38,8 +38,8 @@
 namespace smil
 {
     /**
-    * \ingroup Morpho
-    * \defgroup Graph Graph
+    * @ingroup Morpho
+    * @defgroup Graph Graph
     * @{
     */
 
@@ -472,7 +472,7 @@ namespace smil
 #endif //SWIG
     
     
-/** \} */
+/** @} */
 
 } // namespace smil
 

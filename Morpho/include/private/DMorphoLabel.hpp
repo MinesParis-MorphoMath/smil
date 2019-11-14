@@ -43,8 +43,8 @@
 namespace smil
 {
    /**
-    * \ingroup Morpho
-    * \defgroup Labelling Labelling
+    * @ingroup Morpho
+    * @defgroup Labelling Labelling
     * @{
     */
   
@@ -767,7 +767,7 @@ namespace smil
     }
 
     
-/** \} */
+/** @} */
 
 } // namespace smil
 

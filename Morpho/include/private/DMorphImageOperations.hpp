@@ -41,14 +41,14 @@
 namespace smil
 {
     /**
-    * \ingroup Morpho 
-    * \{
+    * @ingroup Morpho 
+    * @{
     */
   
     /**
      * Base morpho operator class.
      * 
-     * \demo{custom_morpho_operator.py}
+     * @demo{custom_morpho_operator.py}
      */
     template <class T_in, class T_out=T_in>
     class MorphImageFunctionBase 
@@ -261,7 +261,7 @@ namespace smil
         virtual RES_T _exec_rhombicuboctahedron(const imageType &imIn, imageType &imOut, unsigned int size);                        // Inplace unsafe !!
     };
     
-/** \} */
+/** @} */
 
 } // namespace smil
 

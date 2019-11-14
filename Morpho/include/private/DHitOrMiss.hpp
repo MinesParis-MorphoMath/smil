@@ -37,9 +37,9 @@
 namespace smil
 {
    /**
-    * \ingroup Morpho
-    * \defgroup HitOrMiss Hit-or-Miss Transform
-    * \{
+    * @ingroup Morpho
+    * @defgroup HitOrMiss Hit-or-Miss Transform
+    * @{
     */
 
 
@@ -265,7 +265,7 @@ namespace smil
       return fullThick(imIn, CompStrEltList(CompStrElt(foreSE, backSE)), imOut);
     }
 
-/** \} */
+/** @} */
 
 } // namespace smil
 

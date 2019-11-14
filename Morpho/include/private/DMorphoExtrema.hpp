@@ -36,9 +36,9 @@
 namespace smil
 {
     /**
-    * \ingroup Morpho
-    * \defgroup Extrema Regional Minima and Maxima
-    * \{
+    * @ingroup Morpho
+    * @defgroup Extrema Regional Minima and Maxima
+    * @{
     */
 
     // Extrema
@@ -324,7 +324,7 @@ namespace smil
         return fastExtrema (imIn, imOut, se, "<", numeric_limits<T>::min()) ;
     }
     
-/** \} */
+/** @} */
 
 } // namespace smil
 

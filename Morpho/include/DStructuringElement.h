@@ -37,8 +37,8 @@
 namespace smil
 {
     /**
-    * \defgroup StrElt Structuring Elements
-    * \ingroup Morpho
+    * @defgroup StrElt Structuring Elements
+    * @ingroup Morpho
     * @{
     */
 
@@ -86,20 +86,20 @@ namespace smil
         
         /**
          * Construct a structuring element with points defined by their indexes.
-         * \param oddSE Specify if we want to use an hexagonal grid (true) or a square grid (false)
-         * \param indexList The list of point indexes
+         * @param oddSE Specify if we want to use an hexagonal grid (true) or a square grid (false)
+         * @param indexList The list of point indexes
          * 
          * The index values are defined for each grid type as follow:
-         * \images{se_indexes}
+         * @images{se_indexes}
          * 
-         * \b Example:
-         * \code{.py}
+         * @b Example:
+         * @code{.py}
          * # Create a diagonal SE with the two points (0,0) and (1,1),
          * # on the square grid:
          * diagSE_s = StrElt(False, (0,8))
          * # on the hexagonal grid:
          * diagSE_h = StrElt(True, (0,6))
-         * \endcode
+         * @endcode
          */
         StrElt(bool oddSE, vector<UINT> indexList)
           : BaseObject("StrElt"),
@@ -155,7 +155,7 @@ namespace smil
     * Square structuring element.
     * 
     * Points :
-    * \images{squ_se}
+    * @images{squ_se}
     * 
     */
     class SquSE : public StrElt
@@ -174,7 +174,7 @@ namespace smil
     * Square structuring element without center point.
     * 
     * Points :
-    * \images{squ_se0}
+    * @images{squ_se0}
     * 
     */
 
@@ -195,7 +195,7 @@ namespace smil
     * Hexagonal structuring element.
     * 
     * Points :
-    * \images{hex_se}
+    * @images{hex_se}
     * 
     */
     class HexSE : public StrElt
@@ -214,7 +214,7 @@ namespace smil
     * Hexagonal structuring element without center point.
     * 
     * Points :
-    * \images{hex_se0}
+    * @images{hex_se0}
     * 
     */
 
@@ -235,7 +235,7 @@ namespace smil
     * Cross structuring element.
     * 
     * Points :
-    * \images{cross_se}
+    * @images{cross_se}
     * 
     */
 
@@ -255,7 +255,7 @@ namespace smil
     * Horizontal segment structuring element.
     * 
     * Points :
-    * \images{horiz_se}
+    * @images{horiz_se}
     * 
     */
 
@@ -275,7 +275,7 @@ namespace smil
     * Vertical segment structuring element.
     * 
     * Points :
-    * \images{vert_se}
+    * @images{vert_se}
     * 
     */
 
@@ -296,7 +296,7 @@ namespace smil
     * 3D Cubic structuring element (26 neighbors).
     * 
     * Points :
-    * \images{cube_se}
+    * @images{cube_se}
     * 
     */
     class CubeSE : public StrElt
@@ -328,7 +328,7 @@ namespace smil
     * 3D Cross structuring element (6 neighbors).
     * 
     * Points :
-    * \images{cross3d_se}
+    * @images{cross3d_se}
     * 
     */
     class Cross3DSE : public StrElt

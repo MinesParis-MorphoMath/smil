@@ -37,8 +37,8 @@
 namespace smil
 {
     /**
-    * \ingroup Morpho
-    * \defgroup Filters Morphological Filters
+    * @ingroup Morpho
+    * @defgroup Filters Morphological Filters
     * @{
     */
 

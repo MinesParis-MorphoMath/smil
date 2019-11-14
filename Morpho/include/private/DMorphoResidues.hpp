@@ -36,8 +36,8 @@
 namespace smil
 {
     /**
-    * \ingroup Morpho
-    * \defgroup Residues Morphological Residues
+    * @ingroup Morpho
+    * @defgroup Residues Morphological Residues
     * @{
     */
 

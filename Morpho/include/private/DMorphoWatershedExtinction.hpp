@@ -41,8 +41,8 @@ namespace smil
 {
 
     /**
-     * \ingroup Morpho
-     * \defgroup WatershedExtinction Watershed Extinction
+     * @ingroup Morpho
+     * @defgroup WatershedExtinction Watershed Extinction
      * @{
      */
     
@@ -68,7 +68,7 @@ namespace smil
     * 
     * Can be derivated in wrapped languages thanks to Swig directors.
     * 
-    * \demo{custom_extinction_value.py}
+    * @demo{custom_extinction_value.py}
     */
     template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T> >
     class ExtinctionFlooding 
@@ -596,7 +596,7 @@ namespace smil
      /**
      * Calculation of the minimum spanning tree, simultaneously to the image flooding, with edges weighted according to volume extinction values.
      * 
-     * \demo{extinction_values.py}
+     * @demo{extinction_values.py}
      */
     template < class T, class labelT, class outT > 
     RES_T watershedExtinctionGraph (const Image < T > &imIn,
