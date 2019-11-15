@@ -25,6 +25,8 @@
 # History :
 #   - 05/05/2019 - by José-Marcio Martins da Cruz
 #     Just created it
+#   - 15/11/2019 - by Jose-Marcio Martins da Cruz
+#     Update for release 0.9.2
 #
 
 OPT=
@@ -32,6 +34,7 @@ SRCDIR=
 PREFIX=/usr/local
 ADDONS="Color Filters HoughTransform Chabardes StochasticWS"
 OTHER=
+Arch=auto
 
 Fatal()
 {
@@ -65,6 +68,14 @@ Help()
     --addon=name,name,name,...
       A comma separated list of Addons to enable
       Default enabled Addons : $ADDONS 
+
+    --generic
+      Compile for a generic architecture. Default is to optimize for the 
+      processor in the computer Smil is being compiled.
+
+    --auto
+      Optimize Smil generated code for the processor at this computer.
+      This is the default option.
 
   Example :
     $app --addon=GraphCuts --prefix=/usr/local/Smil-27 /home/sources/smil
@@ -118,6 +129,20 @@ do
       addon=$(echo $arg | awk -F= '{print $2}' | sed -e "s/,/ /g")
       ADDONS="$ADDONS $addon"
       ;;
+    --gcc8)
+      # CMAKE_CXX_FLAGS:STRING=-std=c++11 -Wno-error=class-memaccess \
+      #                        -Wno-error=ignored-qualifiers \
+      #                        -Wno-error=stringop-truncation
+      # -Wno-unused-parameter
+      ;;
+
+    --generic)
+      Arch=generic
+      ;;
+    --auto)
+      Arch=auto
+      ;;
+
     -D*)
       OTHER="$OTHER $arg"
       ;;
@@ -167,6 +192,18 @@ else
   OPT="-DBUILD_TEST:BOOL=ON"
 fi
 echo ""
+
+case $Arch in
+  generic)
+    OPT+=" -DTARGET_ARCHITECTURE:STRING=generic"
+    ;;
+  auto)
+    OPT+=" -DTARGET_ARCHITECTURE:STRING=auto"
+    ;;
+  *)
+    OPT+=" -DTARGET_ARCHITECTURE:STRING=auto"
+    ;;
+esac
 
 #echo "* Options : $OPT"
 

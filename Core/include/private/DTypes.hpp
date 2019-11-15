@@ -90,7 +90,8 @@ namespace smil
         typedef T pixelType;
         typedef pixelType *lineType;
 #ifndef SWIG        
-        typedef pixelType * __restrict restrictLineType;
+        typedef pixelType * restrictLineType;
+        // XXX JOE typedef pixelType * __restrict restrictLineType;
 #endif // SWIG        
         typedef lineType *sliceType;
         typedef sliceType *volType;

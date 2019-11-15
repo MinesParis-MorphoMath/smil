@@ -3,8 +3,9 @@
 #ifndef _DPATH_OPENING_H_
 #define _DPATH_OPENING_H_
 
-/*
- * @ingroup AddonPathOpening
+/**
+ * @ingroup Addons
+ * @addtogroup AddonPathOpening
  *
  * @{
  */
