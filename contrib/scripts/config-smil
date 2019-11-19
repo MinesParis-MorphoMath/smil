@@ -32,9 +32,17 @@
 OPT=
 SRCDIR=
 PREFIX=/usr/local
-ADDONS="Color Filters HoughTransform Chabardes StochasticWS"
+ADDONS="Color Filters HoughTransform Chabardes StochasticWS FFT"
 OTHER=
 Arch=auto
+
+CXX_FLAGS="-std=c++11"
+GCC8=NO
+
+TEST=OFF
+PACKAGE=OFF
+
+verbose=false
 
 Fatal()
 {
@@ -76,6 +84,10 @@ Help()
     --auto
       Optimize Smil generated code for the processor at this computer.
       This is the default option.
+
+    --test
+
+    --package
 
   Example :
     $app --addon=GraphCuts --prefix=/usr/local/Smil-27 /home/sources/smil
@@ -129,11 +141,8 @@ do
       addon=$(echo $arg | awk -F= '{print $2}' | sed -e "s/,/ /g")
       ADDONS="$ADDONS $addon"
       ;;
-    --gcc8)
-      # CMAKE_CXX_FLAGS:STRING=-std=c++11 -Wno-error=class-memaccess \
-      #                        -Wno-error=ignored-qualifiers \
-      #                        -Wno-error=stringop-truncation
-      # -Wno-unused-parameter
+    --gcc8|--gcc9)
+      GCC8=YES
       ;;
 
     --generic)
@@ -143,9 +152,21 @@ do
       Arch=auto
       ;;
 
+    --test)
+      TEST=ON
+      ;;
+    --package)
+      PACKAGE=ON
+      ;;
+
     -D*)
       OTHER="$OTHER $arg"
       ;;
+
+    -v)
+      verbose=yes
+      ;;
+
     -*)
       Fatal "  ERROR : Unknown or mispelled option : $arg"
       ;;
@@ -175,7 +196,7 @@ do
   then
     echo "-- Enabling Addon $addon"
     addon=$(echo $addon | tr [:lower:] [:upper:])
-    OPT_ADDONS="$OPT_ADDONS -DADDON_${addon}:BOOL=ON"
+    OPT_ADDONS+=" -DADDON_${addon}:BOOL=ON"
   else
     Fatal "  ERROR : Unknown Addon $addon"
   fi
@@ -186,45 +207,40 @@ if [ -n "$CONDA_PREFIX" ]
 then
   echo ""
   echo "* Configuring Smil for Anaconda at : $CONDA_PREFIX"
-  OPT="-DADDITIONAL_SEARCH_PATHS:STRING=$CONDA_PREFIX \
-       -DCONDA_PREFIX:STRING=$CONDA_PREFIX"
-else
-  OPT="-DBUILD_TEST:BOOL=ON"
+  OPT+=" -DADDITIONAL_SEARCH_PATHS:STRING=$CONDA_PREFIX \
+         -DCONDA_PREFIX:STRING=$CONDA_PREFIX"
 fi
 echo ""
 
-case $Arch in
-  generic)
-    OPT+=" -DTARGET_ARCHITECTURE:STRING=generic"
-    ;;
-  auto)
-    OPT+=" -DTARGET_ARCHITECTURE:STRING=auto"
-    ;;
-  *)
-    OPT+=" -DTARGET_ARCHITECTURE:STRING=auto"
-    ;;
-esac
 
-#echo "* Options : $OPT"
+echo "* Options : $OPT"
 
-OPT="$OPT \
-  -Wno-dev \
-  -DCMAKE_INSTALL_PREFIX:STRING=$PREFIX \
-  -DBUILD_TEST:BOOL=OFF \
-  -DUSE_64BIT_IDS:BOOL=ON \
-  -DUSE_CURL:BOOL=ON \
-  -DUSE_FREETYPE:BOOL=ON \
-  -DUSE_JPEG:BOOL=ON \
-  -DUSE_NUMPY:BOOL=ON \
-  -DUSE_OPEN_MP:BOOL=ON \
-  -DUSE_OPTIMIZATION:BOOL=ON \
-  -DUSE_PNG:BOOL=ON \
-  -DUSE_QT:BOOL=ON \
-  -DUSE_TIFF:BOOL=ON \
-  -DVERBOSE_OPTIMIZATION:BOOL=OFF \
-  -DWRAP_PYTHON:BOOL=ON \
+OPT="$OPT
+  -Wno-dev
+  -DCMAKE_INSTALL_PREFIX:STRING=$PREFIX
+  -DBUILD_TEST:BOOL=$TEST
+  -DBUILD_PACKAGE:BOOL=$PACKAGE
+  -DTARGET_ARCHITECTURE:STRING=$Arch
+  -DUSE_64BIT_IDS:BOOL=ON
+  -DUSE_CURL:BOOL=ON
+  -DUSE_FREETYPE:BOOL=ON
+  -DUSE_JPEG:BOOL=ON
+  -DUSE_NUMPY:BOOL=ON
+  -DUSE_OPEN_MP:BOOL=ON
+  -DUSE_OPTIMIZATION:BOOL=ON
+  -DUSE_PNG:BOOL=ON
+  -DUSE_QT:BOOL=ON
+  -DUSE_TIFF:BOOL=ON
+  -DVERBOSE_OPTIMIZATION:BOOL=OFF
+  -DWRAP_PYTHON:BOOL=ON
+  -DCMAKE_CXX_FLAGS:STRING=$CXX_FLAGS
+  -DGCC8:BOOL=$GCC8
 "
+#  -DCMAKE_CXX_FLAGS:STRING=\"$CXX_FLAGS\"
 
 cmake -version
+
+[ "$verbose" = "yes" ] && echo cmake $OPT $OPT_ADDONS $OTHER $SRCDIR
 cmake $OPT $OPT_ADDONS $OTHER $SRCDIR
+
 

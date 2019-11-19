@@ -203,6 +203,13 @@ IF(CMAKE_COMPILER_IS_GNUCC)
   ENDIF(CMAKE_CROSSCOMPILING)
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 
+IF(GCC8)
+  ADD_DEFINITIONS("-Wno-error=class-memaccess")
+  ADD_DEFINITIONS("-Wno-error=ignored-qualifiers")
+  ADD_DEFINITIONS("-Wno-error=stringop-truncation")
+  ADD_DEFINITIONS("-Wno-unused-parameter")
+  ADD_DEFINITIONS("-Wno-deprecated-copy")
+ENDIF(GCC8)
 
 # 64 Bits
 IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
