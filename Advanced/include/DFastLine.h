@@ -10,22 +10,13 @@ namespace smil
    * @defgroup  AdvLine   Line Based Operators
    *
    * 
-   * @brief Implementation of the algorithm by Soille et al [1] for erosions and
+   * @brief Implementation of the algorithm by Soille et al
+   * @cite SoilleBJ96 @cite Soille_2003 for erosions and
    * dilations with linear Structuring Elements (S.E.) and arbitrary angles.
    *
-   * S.E. line drawing using Bresenham's Line Algorithm [2].
-   *  Based on Erik R Urbach (2006) implementation in C.
+   * Line Structuring Element using Bresenham's Line Drawing Algorithm 
+   * @cite Hearn_1986. Based on Erik R Urbach (2006) implementation in C.
    *
-   * @par Related papers:
-   *
-   * [1] P. Soille and E. Breen and R. Jones.
-   *     Recursive implementation of erosions and dilations along discrete
-   *     lines at arbitrary angles.
-   *     IEEE Transactions on Pattern Analysis and Machine Intelligence,
-   *     Vol. 18, Number 5, Pages 562-567, May 1996.
-   *
-   * [2] Donald Hearn and M. Pauline Baker Computer Graphics, second edition
-   *     Prentice Hall
    *
    * @remark This module works only on 2D images.
    *
