@@ -42,7 +42,7 @@ namespace smil
     if (b.x < S[0] && b.y < S[1] && b.z < S[2]) {                              \
       CoorToIndex(b);
 #define ENDForEachNeighborOf                                                   \
-  }                                                                            \
+    }                                                                            \
   }
 
 #define LIVEVERSION
@@ -70,7 +70,7 @@ namespace smil
     }
     ENDForEachPixel
 
-        T2 d = 1;
+    T2 d = 1;
     while (!c2->empty()) {
       tmp = c1;
       c1  = c2;

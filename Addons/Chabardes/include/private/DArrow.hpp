@@ -8,11 +8,13 @@ namespace smil
 {
   /**
    * @ingroup Addons
-   * @addtogroup AddonArrow  
+   * @addtogroup AddonArrow
    *
    * @{
    */
 
+  // Are these functions useful ??? 
+  /** @cond */
   // SIMD version of WP2 - Nifty Revised.
   /**
    * @brief hammingWeight SIMD version of WP2 - Nifty Revised.
@@ -204,6 +206,7 @@ namespace smil
 
     return RES_OK;
   }
+  /** @endcond */
 
   /**
    * arrowComplement
@@ -286,6 +289,7 @@ namespace smil
     return RES_OK;
   }
 
+  /** @cond */
   /*
    * binaryMorphArrowImageFunction
    *
@@ -416,6 +420,8 @@ namespace smil
 
     return RES_OK;
   }
+
+  /** @endcond */
 
   /**
    * arrowLowDual
