@@ -88,7 +88,10 @@ namespace smil
 
   private:
     StrElt se;
-    
+
+    /*
+     * Check if a point is inside image bounds
+     */
     bool ptInImage(off_t x, off_t y, off_t z, size_t *size)
     {
       if (x < 0 || x >= (off_t) size[0])
@@ -103,6 +106,7 @@ namespace smil
     /*
      * Generic Distance function.
      */
+    // OK
     template <class T1, class T2>
     RES_T distGeneric(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se)
     {
@@ -137,24 +141,24 @@ namespace smil
       queue<size_t> *swap;
       T2 cur_level = T2(2);
 
-      int size[3];
+      size_t size[3];
       imIn.getSize(size);
       // pixels per line
-      // int ppl = size[0];
+      size_t ppLine = size[0];
       // pixels per slice
-      // int pps = size[0] * size[1];
+      size_t ppSlice = size[0] * size[1];
 
       pixelsIn = imIn.getPixels();
 
-      for (off_t i = 0, iMax = size[2] * size[1] * size[0]; i < iMax; ++i) {
+      for (off_t i = 0, iMax = imIn.getPixelCount(); i < iMax; ++i) {
         if (pixelsOut[i] > T2(0)) {
           level->push(i);
           pixelsOut[i] = T2(1);
         }
       }
 
-      size_t cur;
-      long int x, y, z, n_x, n_y, n_z;
+      off_t cur;
+      off_t x, y, z, n_x, n_y, n_z;
 
       vector<IntPoint> sePoints = se.points;
       vector<IntPoint>::iterator pt;
@@ -166,9 +170,9 @@ namespace smil
           cur = level->front();
           pt  = sePoints.begin();
 
-          z = cur / (size[1] * size[0]);
-          y = (cur - z * size[1] * size[0]) / size[0];
-          x = cur - y * size[0] - z * size[1] * size[0];
+          z = cur / ppSlice;
+          y = (cur - z * ppSlice) / ppLine;
+          x = cur - y * ppLine - z * ppSlice;
 
           oddLine = se.odd && (y % 2);
 
@@ -178,15 +182,14 @@ namespace smil
             n_x += (oddLine && ((n_y + 1) % 2) != 0) ? 1 : 0;
             n_z = z + pt->z;
 
-            if (n_x >= 0 && n_x < (int) size[0] && n_y >= 0 &&
-                n_y < (int) size[1] && n_z >= 0 && n_z < (int) size[2] &&
-                pixelsOut[n_x + (n_y) *size[0] + (n_z) *size[1] * size[0]] ==
-                    T2(0) &&
-                pixelsIn[n_x + (n_y) *size[0] + (n_z) *size[1] * size[0]] >
-                    T1(0)) {
-              pixelsOut[n_x + (n_y) *size[0] + (n_z) *size[1] * size[0]] =
-                  T2(cur_level);
-              next_level->push(n_x + (n_y) *size[0] + (n_z) *size[1] * size[0]);
+            off_t offset = n_x + n_y * ppLine + n_z * ppSlice;
+
+            // if (n_x >= 0 && n_x < (int) ppLine && n_y >= 0 &&
+            //    n_y < (int) size[1] && n_z >= 0 && n_z < (int) size[2] &&
+            if (ptInImage(n_x, n_y, n_z, size) && pixelsOut[offset] == T2(0) &&
+                pixelsIn[offset] > T1(0)) {
+              pixelsOut[offset] = T2(cur_level);
+              next_level->push(offset);
             }
             ++pt;
           }
@@ -315,6 +318,7 @@ namespace smil
     /*
      * Distance Cross function (???).
      */
+    // OK
     template <class T1, class T2>
     RES_T distCross(const Image<T1> &imIn, Image<T2> &imOut)
     {
@@ -333,18 +337,18 @@ namespace smil
       lineInType pixelsIn   = tmp.getPixels();
       lineOutType pixelsOut = imOut.getPixels();
 
-      int size[3];
+      off_t size[3];
       imIn.getSize(size);
-      size_t offset;
-      long int x, y, z;
-      T2 infinite = ImDtTypes<T2>::max();
-      long int min;
+      off_t offset;
+      off_t x, y, z;
 
-      for (z = 0; z < size[2]; ++z) {
+      T2 infinite = ImDtTypes<T2>::max();
+
+      for (z = 0; z < (off_t) size[2]; ++z) {
 #ifdef USE_OPEN_MP
-#pragma omp for private(offset, x, y, min)
+#pragma omp for private(offset, x, y)
 #endif // USE_OPEN_MP
-        for (x = 0; x < size[0]; ++x) {
+        for (x = 0; x < (off_t) size[0]; ++x) {
           offset = z * size[1] * size[0] + x;
           if (pixelsIn[offset] == T1(0)) {
             pixelsOut[offset] = T2(0);
@@ -352,39 +356,49 @@ namespace smil
             pixelsOut[offset] = infinite;
           }
 
-          for (y = 1; y < size[1]; ++y) {
+          for (y = 1; y < (off_t) size[1]; ++y) {
             if (pixelsIn[offset + y * size[0]] == T1(0)) {
               pixelsOut[offset + y * size[0]] = T2(0);
             } else {
-              pixelsOut[offset + y * size[0]] =
-                  (1 + pixelsOut[offset + (y - 1) * size[0]] > infinite)
-                      ? infinite
-                      : 1 + pixelsOut[offset + (y - 1) * size[0]];
+              // pixelsOut[offset + y * size[0]] =
+              //    (1 + pixelsOut[offset + (y - 1) * size[0]] > infinite)
+              //        ? infinite
+              //        : 1 + pixelsOut[offset + (y - 1) * size[0]];
+              if (pixelsOut[offset + (y - 1) * size[0]] < infinite)
+                pixelsOut[offset + y * size[0]] =
+                    pixelsOut[offset + (y - 1) * size[0]] + 1;
+              else
+                pixelsOut[offset + y * size[0]] = infinite;
             }
           }
 
-          for (y = size[1] - 2; y >= 0; --y) {
-            min = (pixelsOut[offset + (y + 1) * size[0]] + 1 > infinite)
-                      ? infinite
-                      : pixelsOut[offset + (y + 1) * size[0]] + 1;
-            if (min < pixelsOut[offset + y * size[0]])
+          for (y = (off_t) size[1] - 2; y >= 0; --y) {
+            T2 minVal;
+            // minVal = (pixelsOut[offset + (y + 1) * size[0]] + 1 > infinite)
+            //          ? infinite
+            //          : pixelsOut[offset + (y + 1) * size[0]] + 1;
+
+            minVal = pixelsOut[offset + (y + 1) * size[0]];
+            if (minVal < infinite)
+              minVal = pixelsOut[offset + (y + 1) * size[0]] + 1;
+            if (minVal < pixelsOut[offset + y * size[0]])
               pixelsOut[offset + y * size[0]] =
-                  (1 + pixelsOut[offset + (y + 1) * size[0]]);
+                  (pixelsOut[offset + (y + 1) * size[0]] + 1);
           }
         }
 
 #ifdef USE_OPEN_MP
 #pragma omp for private(x, y, offset)
 #endif // USE_OPEN_MP
-        for (y = 0; y < size[1]; ++y) {
+        for (y = 0; y < (off_t) size[1]; ++y) {
           offset = z * size[1] * size[0] + y * size[0];
-          for (x = 1; x < size[0]; ++x) {
+          for (x = 1; x < (off_t) size[0]; ++x) {
             if (pixelsOut[offset + x] != 0 &&
                 pixelsOut[offset + x] > pixelsOut[offset + x - 1]) {
               pixelsOut[offset + x] = pixelsOut[offset + x - 1] + 1;
             }
           }
-          for (x = size[0] - 2; x >= 0; --x) {
+          for (x = (off_t) size[0] - 2; x >= 0; --x) {
             if (pixelsOut[offset + x] != 0 &&
                 pixelsOut[offset + x] > pixelsOut[offset + x + 1]) {
               pixelsOut[offset + x] = pixelsOut[offset + x + 1] + 1;
@@ -416,32 +430,32 @@ namespace smil
       lineOutType pixelsOut = imOut.getPixels();
       lineOutType pixelsTmp = tmp.getPixels();
 
-      int size[3];
+      off_t size[3];
       imIn.getSize(size);
-      size_t offset;
-      int x, y, z;
+      off_t offset;
+      off_t x, y, z;
       T2 infinite = ImDtTypes<T2>::max();
-      long int min;
 
-      // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u :
-      // f(x,h)
-      // <= f(x,i)) : h )
-      long int size_array = MAX(size[0], size[1]);
-      vector<long int> s(
-          size_array); // sets of the least minimizers that occurs
-                       // during the scan from left to right.
-      vector<long int> t(
-          size_array); // sets of points with the same least minimizer
-      s[0]       = 0;
-      t[0]       = 0;
-      long int q = 0;
-      long int w;
+      off_t minV;
 
-      long int tmpdist, tmpdist2;
+      // H(x,u) is a minimizer,
+      // = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h )
+      size_t size_array = MAX(size[0], size[1]);
+      // sets of the least minimizers that occurs
+      // during the scan from left to right.
+      vector<off_t> s(size_array);
+      // sets of points with the same least minimizer
+      vector<off_t> t(size_array);
+      s[0]    = 0;
+      t[0]    = 0;
+      off_t q = 0;
+      off_t w;
+
+      off_t tmpdist, tmpdist2;
 
       for (z = 0; z < size[2]; ++z) {
 #ifdef USE_OPEN_MP
-#pragma omp for private(offset, x, y, min)
+#pragma omp for private(offset, x, y, minV)
 #endif // USE_OPEN_MP
         for (x = 0; x < size[0]; ++x) {
           offset = z * size[1] * size[0] + x;
@@ -455,22 +469,33 @@ namespace smil
             if (pixelsIn[offset + y * size[0]] == T1(0)) {
               pixelsTmp[offset + y * size[0]] = T2(0);
             } else {
-              pixelsTmp[offset + y * size[0]] =
-                  (1 + pixelsTmp[offset + (y - 1) * size[0]] > infinite)
-                      ? infinite
-                      : 1 + pixelsTmp[offset + (y - 1) * size[0]];
+              // pixelsTmp[offset + y * size[0]] =
+              //     (1 + pixelsTmp[offset + (y - 1) * size[0]] > infinite)
+              //         ? infinite
+              //         : 1 + pixelsTmp[offset + (y - 1) * size[0]];
+              if (pixelsTmp[offset + (y - 1) * size[0]] < infinite) {
+                pixelsTmp[offset + y * size[0]] =
+                    pixelsTmp[offset + (y - 1) * size[0]] + 1;
+              } else {
+                pixelsTmp[offset + y * size[0]] = infinite;
+              }
             }
           }
           // SCAN 2
           for (y = size[1] - 2; y >= 0; --y) {
-            min = (pixelsTmp[offset + (y + 1) * size[0]] + 1 > infinite)
-                      ? infinite
-                      : pixelsTmp[offset + (y + 1) * size[0]] + 1;
-            if (min < pixelsTmp[offset + y * size[0]])
+            // minV = (pixelsTmp[offset + (y + 1) * size[0]] + 1 > infinite)
+            //           ? infinite
+            //           : pixelsTmp[offset + (y + 1) * size[0]] + 1;
+            minV = pixelsTmp[offset + (y + 1) * size[0]];
+            if (minV < infinite)
+              minV = pixelsTmp[offset + (y + 1) * size[0]] + 1;
+
+            if (minV < pixelsTmp[offset + y * size[0]])
               pixelsTmp[offset + y * size[0]] =
                   (1 + pixelsTmp[offset + (y + 1) * size[0]]);
           }
         }
+
 #ifdef USE_OPEN_MP
 #pragma omp for private(offset, y, q, w, tmpdist, tmpdist2)
 #endif // USE_OPEN_MP
@@ -480,15 +505,37 @@ namespace smil
           t[0]   = 0;
           s[0]   = 0;
           // SCAN 3
-          for (int u = 1; u < size[0]; ++u) {
-            tmpdist = (t[q] > s[q]) ? t[q] - s[q] : s[q] - t[q];
-            tmpdist = (tmpdist >= pixelsTmp[offset + s[q]])
-                          ? tmpdist
-                          : pixelsTmp[offset + s[q]];
-            tmpdist2 = (t[q] > u) ? t[q] - u : u - t[q];
-            tmpdist2 = (tmpdist2 >= pixelsTmp[offset + u])
-                           ? tmpdist2
-                           : pixelsTmp[offset + u];
+          for (off_t u = 1; u < size[0]; ++u) {
+#if 1
+            do {
+              tmpdist = std::abs(t[q] - s[q]);
+              if (tmpdist < pixelsTmp[offset + s[q]])
+                tmpdist = pixelsTmp[offset + s[q]];
+
+              tmpdist2 = std::abs(t[q] - u);
+              if (tmpdist2 < pixelsTmp[offset + u])
+                tmpdist2 = pixelsTmp[offset + u];
+              if (tmpdist > tmpdist2)
+                q--;
+            } while (q >= 0 && tmpdist > tmpdist2);
+#else
+            // tmpdist = (t[q] > s[q]) ? t[q] - s[q] : s[q] - t[q];
+            // tmpdist = (tmpdist >= pixelsTmp[offset + s[q]])
+            //              ? tmpdist
+            //              : pixelsTmp[offset + s[q]];
+
+            tmpdist = std::abs(t[q] - s[q]);
+            if (tmpdist < pixelsTmp[offset + s[q]])
+              tmpdist = pixelsTmp[offset + s[q]];
+
+            // tmpdist2 = (t[q] > u) ? t[q] - u : u - t[q];
+            // tmpdist2 = (tmpdist2 >= pixelsTmp[offset + u])
+            //               ? tmpdist2
+            //               : pixelsTmp[offset + u];
+
+            tmpdist2 = std::abs(t[q] - u);
+            if (tmpdist2 < pixelsTmp[offset + u])
+              tmpdist2 = pixelsTmp[offset + u];
 
             while (q >= 0 && tmpdist > tmpdist2) {
               q--;
@@ -503,18 +550,31 @@ namespace smil
                                : pixelsTmp[offset + u];
               }
             }
+#endif
             if (q < 0) {
               q    = 0;
               s[0] = u;
             } else {
               if (pixelsTmp[offset + s[q]] <= pixelsTmp[offset + u]) {
+#if 0
                 w = (s[q] + pixelsTmp[offset + u] >= (s[q] + u) / 2)
                         ? s[q] + pixelsTmp[offset + u]
                         : (s[q] + u) / 2;
+#else
+                w = s[q] + pixelsTmp[offset + u];
+                if (w < (s[q] + u) / 2)
+                  w = (s[q] + u) / 2;
+#endif
               } else {
+#if 0
                 w = (u - pixelsTmp[offset + s[q]] >= (s[q] + u) / 2)
                         ? (s[q] + u) / 2
                         : u - pixelsTmp[offset + s[q]];
+#else
+                w = u - pixelsTmp[offset + s[q]];
+                if (w >= (s[q] + u) / 2)
+                  w = (s[q] + u) / 2;
+#endif
               }
               w = 1 + w;
               if (w < size[0]) {
@@ -524,13 +584,20 @@ namespace smil
               }
             }
           }
+
           // SCAN 4
-          for (int u = size[0] - 1; u >= 0; --u) {
+          for (off_t u = size[0] - 1; u >= 0; --u) {
+#if 0
             pixelsOut[offset + u] = (u > s[q]) ? u - s[q] : s[q] - u;
             pixelsOut[offset + u] =
                 (pixelsOut[offset + u] >= pixelsTmp[offset + s[q]])
                     ? pixelsOut[offset + u]
                     : pixelsTmp[offset + s[q]];
+#else
+            pixelsOut[offset + u] = std::abs(u - s[q]);
+            if (pixelsOut[offset + u] < pixelsTmp[offset + s[q]])
+              pixelsOut[offset + u] = pixelsTmp[offset + s[q]];
+#endif
             if (u == t[q])
               q--;
           }
@@ -582,9 +649,11 @@ namespace smil
 
     // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h)
     // <= f(x,i)) : h )
-    vector<long int> s(size[0]); // sets of the least minimizers that occurs
-                                 // during the scan from left to right.
-    vector<long int> t(size[0]); // sets of points with the same least minimizer
+    // sets of the least minimizers that occurs
+    // during the scan from left to right.
+    vector<long int> s(size[0]);
+    // sets of points with the same least minimizer
+    vector<long int> t(size[0]);
     long int q = 0;
     long int w;
 

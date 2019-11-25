@@ -70,7 +70,7 @@ class TestDistanceSquare : public TestCase
     };
     imTruth << vecTruth;
       
-    dist(im1, im2, sSE());
+    distance(im1, im2, sSE());
     TEST_ASSERT(im2==imTruth);
     if (retVal!=RES_OK)
       im2.printSelf(1);
@@ -111,7 +111,7 @@ class TestDistanceCross : public TestCase
     };
     imTruth << vecTruth;
       
-    dist(im1, im2, cSE());
+    distance(im1, im2, cSE());
     TEST_ASSERT(im2==imTruth);
     if (retVal!=RES_OK)
      im2.printSelf(1);

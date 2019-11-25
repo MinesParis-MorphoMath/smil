@@ -14,8 +14,10 @@
 
 namespace smil
 {
-  struct AreaOP {
-    int F, StartPos, Passed, PosInBuffer;
+  template <typename T> struct AreaOP {
+    T F;
+    int StartPos, PosInBuffer;
+    bool Passed;
   };
 
 #define NOT_DONE -1
@@ -37,7 +39,7 @@ namespace smil
     typename Image<T2>::lineType bufferOut = imOut.getPixels();
 
     std::queue<int> FAH[256];
-    AreaOP MyStack[256];
+    AreaOP<T1> MyStack[256];
     int currentPixel, X, Y, i, j, k, lastPixel, wp, stackSize, index;
     T1 levelMaxInFAH;
     int *pixelDone = new int[W * H];
@@ -52,13 +54,13 @@ namespace smil
     // Add the first pixel in the queue
     levelMaxInFAH            = bufferIn[currentPixel];
     (MyStack[0]).StartPos    = 0;
-    (MyStack[0]).Passed      = 0;
+    (MyStack[0]).Passed      = false;
     (MyStack[0]).F           = levelMaxInFAH;
     (MyStack[0]).PosInBuffer = currentPixel;
     wp                       = 1;
     stackSize                = 1;
-    // JOE T1 F;
-    INT F;
+
+    T1 F;
 
     while (1) {
       X = currentPixel % W;
@@ -94,7 +96,8 @@ namespace smil
       }
 
       currentPixel = -1;
-      for (i = levelMaxInFAH; i >= 0; i--) // A mieux faire!!!
+      // A mieux faire!!!
+      for (i = levelMaxInFAH; i >= 0; i--)
         if (!FAH[i].empty()) {
           currentPixel = FAH[i].front();
           FAH[i].pop();
@@ -108,9 +111,10 @@ namespace smil
       //
       F = bufferIn[currentPixel];
       // -1-   si on a un front montant, on empile
-      if (F > MyStack[stackSize - 1].F) { // Test *stackSize == 0  à supprimer
+      // Test *stackSize == 0   supprimer
+      if (F > MyStack[stackSize - 1].F) {
         (MyStack[stackSize]).StartPos    = wp;
-        (MyStack[stackSize]).Passed      = 0;
+        (MyStack[stackSize]).Passed      = false;
         (MyStack[stackSize]).F           = F;
         (MyStack[stackSize]).PosInBuffer = currentPixel;
         stackSize++;
@@ -135,7 +139,7 @@ namespace smil
               bufferOut[index] = (MyStack[stackSize]).F;
 
             (MyStack[0]).StartPos    = wp;
-            (MyStack[0]).Passed      = 1;
+            (MyStack[0]).Passed      = true;
             (MyStack[0]).F           = F;
             (MyStack[0]).PosInBuffer = currentPixel;
             stackSize                = 1;
@@ -203,7 +207,7 @@ namespace smil
     typename Image<T2>::lineType bufferOut = imOut.getPixels();
 
     std::queue<int> FAH[256];
-    AreaOP MyStack[256];
+    AreaOP<T1> MyStack[256];
     int currentPixel, X, Y, i, j, k, levelMaxInFAH, lastPixel, wp, stackSize,
         index;
     int *pixelDone = new int[W * H];
@@ -218,13 +222,13 @@ namespace smil
     // Add the first pixel in the queue
     levelMaxInFAH            = bufferIn[currentPixel];
     (MyStack[0]).StartPos    = 0;
-    (MyStack[0]).Passed      = 0;
+    (MyStack[0]).Passed      = false;
     (MyStack[0]).F           = levelMaxInFAH;
     (MyStack[0]).PosInBuffer = currentPixel;
     wp                       = 1;
     stackSize                = 1;
-    // JOE T1 F;
-    INT F;
+
+    T1 F;
 
     while (1) {
       X = currentPixel % W;
@@ -259,7 +263,8 @@ namespace smil
 
       F            = bufferIn[currentPixel];
       currentPixel = -1;
-      for (i = F; i <= 255; i++) // A mieux faire!!!
+      // A mieux faire!!!
+      for (i = F; i <= 255; i++)
         if (!FAH[i].empty()) {
           currentPixel = FAH[i].front();
           FAH[i].pop();
@@ -267,7 +272,8 @@ namespace smil
         }
       // No pixel in the FAH -> End of treatment
       if (currentPixel == -1) {
-        for (i = F; i >= 0; i--) // A mieux faire!!!
+        // A mieux faire!!!
+        for (i = F; i >= 0; i--)
           if (!FAH[i].empty()) {
             currentPixel = FAH[i].front();
             FAH[i].pop();
@@ -280,9 +286,10 @@ namespace smil
       //
       F = bufferIn[currentPixel];
       // -1-   si on a un front montant, on empile
-      if (F > MyStack[stackSize - 1].F) { // Test *stackSize == 0  à supprimer
+      // Test *stackSize == 0 a supprimer
+      if (F > MyStack[stackSize - 1].F) {
         (MyStack[stackSize]).StartPos    = wp;
-        (MyStack[stackSize]).Passed      = 0;
+        (MyStack[stackSize]).Passed      = false;
         (MyStack[stackSize]).F           = F;
         (MyStack[stackSize]).PosInBuffer = currentPixel;
         stackSize++;
@@ -307,7 +314,7 @@ namespace smil
               bufferOut[index] = (MyStack[stackSize]).F;
 
             (MyStack[0]).StartPos    = wp;
-            (MyStack[0]).Passed      = 1;
+            (MyStack[0]).Passed      = true;
             (MyStack[0]).F           = F;
             (MyStack[0]).PosInBuffer = currentPixel;
             stackSize                = 1;
