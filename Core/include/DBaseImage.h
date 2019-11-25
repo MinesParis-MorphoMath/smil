@@ -114,15 +114,17 @@ namespace smil
         //! Set image size
         //! Set image size and allocate it if \b doAllocate is true
         virtual RES_T setSize(size_t w, size_t h, size_t d = 1, bool doAllocate = true) = 0;
-        
+
+        //! Get image size
         inline void getSize(size_t *w, size_t *h, size_t *d) const
         {
             *w = this->width;
             *h = this->height;
             *d = this->depth;
         }
-        
+ 
 #ifndef SWIGPYTHON
+        //! Get image size
         inline void getSize(int *w, int *h, int *d) const
         {
             *w = this->width;
@@ -130,7 +132,7 @@ namespace smil
             *d = this->depth;
         }
 #endif // SWIGPYTHON
-        
+
         //! Get image size
         inline void getSize(size_t s[3]) const
         {
@@ -138,7 +140,16 @@ namespace smil
             s[1] = this->height;
             s[2] = this->depth;
         }
+
+        //! Get image size
+        inline void getSize(off_t s[3]) const
+        {
+            s[0] = this->width;
+            s[1] = this->height;
+            s[2] = this->depth;
+        }
         
+        //! Get image size
         inline void getSize(int s[3]) const
         {
             s[0] = this->width;
