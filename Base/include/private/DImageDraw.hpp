@@ -43,7 +43,7 @@ namespace smil
 {
   
     /**
-    * \ingroup Draw
+    * @ingroup Draw
     * @{
     */
     
@@ -52,10 +52,10 @@ namespace smil
     * Draws a line between two points P0(x0,y0) and P1(x1,y1).
     * This function is based on the Bresenham's line algorithm.
     * (works only on 2D images)
-    * \param im Modified image
-    * \param x0,y0 Coordinates of the first point
-    * \param x1,y1 Coordinates of the second point
-    * \param value Pixel value on the line
+    * @param im Modified image
+    * @param x0,y0 Coordinates of the first point
+    * @param x1,y1 Coordinates of the second point
+    * @param value Pixel value on the line
     */
     template <class T>
     RES_T drawLine(Image<T> &im, int x0, int y0, int x1, int y1, T value=ImDtTypes<T>::max())
@@ -82,11 +82,11 @@ namespace smil
     }
     
     /**
-     * \overload 
-     * \brief Draw line from vector
-     * \param imOut Modified image
-     * \param coords Vector containing the coordiantes of the two end points (x0, y0, x1, y1)
-     * \param value Pixel value on the line
+     * @overload 
+     * @brief Draw line from vector
+     * @param imOut Modified image
+     * @param coords Vector containing the coordiantes of the two end points (x0, y0, x1, y1)
+     * @param value Pixel value on the line
      */
     template <class T>
     RES_T drawLine(Image<T> &imOut, vector<UINT> coords, T value=ImDtTypes<T>::max())
@@ -101,13 +101,13 @@ namespace smil
     /**
     * Draw a rectangle
     * 
-    * \param imOut Output image.
-    * \param x0,y0 Coordinates of the first point
-    * \param width Width of the rectangle
-    * \param height Height of the rectangle
-    * \param value Pixel value on the rectangle
-    * \param fill Fill the rectangle
-    * \param zSlice Select the slice (for 3D images)
+    * @param imOut Output image.
+    * @param x0,y0 Coordinates of the first point
+    * @param width Width of the rectangle
+    * @param height Height of the rectangle
+    * @param value Pixel value on the rectangle
+    * @param fill Fill the rectangle
+    * @param zSlice Select the slice (for 3D images)
     */
     template <class T>
     RES_T drawRectangle(Image<T> &imOut, int x0, int y0, size_t width, size_t height, T value=ImDtTypes<T>::max(), bool fill=false, size_t zSlice=0)
@@ -190,13 +190,13 @@ namespace smil
     * Draw a circle
     * 
     * Bressenham's Midpoint Circle algoritm
-    * \see drawDisc
+    * @see drawDisc
     * 
-    * \param imOut Output image.
-    * \param x0,y0 Coordinates of the center
-    * \param radius Radius of the circle
-    * \param value Pixel value on the circle
-    * \param zSlice Select the slice (for 3D images)
+    * @param imOut Output image.
+    * @param x0,y0 Coordinates of the center
+    * @param radius Radius of the circle
+    * @param value Pixel value on the circle
+    * @param zSlice Select the slice (for 3D images)
     */
     template <class T>
     RES_T drawCircle(Image<T> &imOut, int x0, int y0, int radius, T value=ImDtTypes<T>::max(), size_t zSlice=0)
@@ -244,10 +244,10 @@ namespace smil
     /**
     * Draw a sphere
     * 
-    * \param imOut Output image.
-    * \param x0,y0,z0 Coordinates of the center
-    * \param radius Radius of the circle
-    * \param value Pixel value on the sphere
+    * @param imOut Output image.
+    * @param x0,y0,z0 Coordinates of the center
+    * @param radius Radius of the circle
+    * @param value Pixel value on the sphere
     */
     template <class T>
     RES_T drawSphere(Image<T> &imOut, int x0, int y0, int z0, int radius, T value=ImDtTypes<T>::max())
@@ -294,13 +294,13 @@ namespace smil
     /**
     * Draw a disc
     * 
-    * \see drawCircle
+    * @see drawCircle
     * 
-    * \param imOut Output image.
-    * \param x0,y0 Coordinates of the center
-    * \param radius Radius of the circle
-    * \param value Pixel value on the circle
-    * \param zSlice Select the slice (for 3D images)
+    * @param imOut Output image.
+    * @param x0,y0 Coordinates of the center
+    * @param radius Radius of the circle
+    * @param value Pixel value on the circle
+    * @param zSlice Select the slice (for 3D images)
     */
     template <class T>
     RES_T drawDisc(Image<T> &imOut, int x0, int y0, size_t zSlice, int radius, T value=ImDtTypes<T>::max())
@@ -348,11 +348,11 @@ namespace smil
     * Draw a box (3D)
     * 
     * 
-    * \param imOut Output image.
-    * \param x0,y0,z0 Coordinates of the first point
-    * \param width,height,depth Dimensions of the box
-    * \param value Pixel value on the box
-    * \param fill Fill the box
+    * @param imOut Output image.
+    * @param x0,y0,z0 Coordinates of the first point
+    * @param width,height,depth Dimensions of the box
+    * @param value Pixel value on the box
+    * @param fill Fill the box
     */
     template <class T>
     RES_T drawBox(Image<T> &imOut, size_t x0, size_t y0, size_t z0, size_t width, size_t height, size_t depth, T value=ImDtTypes<T>::max(), bool fill=false)
@@ -461,13 +461,13 @@ namespace smil
      * If x0, y0, width and height are not specified, the full image imIn will be copied.
      * 
      * Python example:
-     * \code{.py}
+     * @code{.py}
      * im1 = Image(256,256)
      * im2 = Image(im1)
      * drawDisc(im1, 100,100, 15)
      * copyPattern(im1, 80, 80, 40, 40, im2)
      * im2.show()
-     * \endcode
+     * @endcode
      */
     // TODO Extend to 3D
     template <class T>

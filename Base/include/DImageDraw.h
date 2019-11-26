@@ -39,8 +39,8 @@ namespace smil
 {
   
     /**
-    * \ingroup Base
-    * \defgroup Draw Draw Operations
+    * @ingroup Base
+    * @defgroup Draw Draw Operations
     * @{
     */
     

@@ -673,6 +673,9 @@ namespace smil
           if (pixelsIn[offset + y * size[0]] == T1(0)) {
             pixelsOut[offset + y * size[0]] = T2(0);
           } else {
+            // BUG : 
+            // 1 + pixelsOut[offset + (y - 1) * size[0]]
+            //    will never be greater than infinite
             pixelsOut[offset + y * size[0]] =
                 (1 + pixelsOut[offset + (y - 1) * size[0]] > infinite)
                     ? infinite

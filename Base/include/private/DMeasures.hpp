@@ -44,8 +44,8 @@ namespace smil
 {
   
 /**
- * \ingroup Base
- * \defgroup Measures Base measures
+ * @ingroup Base
+ * @defgroup Measures Base measures
  * @{
  */
 
@@ -64,7 +64,7 @@ namespace smil
     * Area of an image
     *
     * Returns the number of non-zero pixels
-    * \param imIn Input image.
+    * @param imIn Input image.
     */
     template <class T>
     size_t area(const Image<T> &imIn)
@@ -90,7 +90,7 @@ namespace smil
     * Volume of an image
     *
     * Returns the sum of the pixel values.
-    * \param imIn Input image.
+    * @param imIn Input image.
     */
     template <class T>
     double vol(const Image<T> &imIn)
@@ -138,8 +138,8 @@ namespace smil
     * Mean value and standard deviation
     *
     * Returns mean and standard deviation of the pixel values.
-    * \param imIn Input image.
-    * \param onlyNonZero If true, only non-zero pixels are considered.
+    * @param imIn Input image.
+    * @param onlyNonZero If true, only non-zero pixels are considered.
     */
     template <class T>
     Vector_double meanVal(const Image<T> &imIn, bool onlyNonZero=false)
@@ -191,8 +191,8 @@ namespace smil
     * Min value of an image
     *
     * Returns the min of the pixel values.
-    * \param imIn Input image.
-    * \param onlyNonZero If true, only non-zero pixels are considered.
+    * @param imIn Input image.
+    * @param onlyNonZero If true, only non-zero pixels are considered.
     */
     template <class T>
     T minVal(const Image<T> &imIn, bool onlyNonZero=false)
@@ -253,8 +253,8 @@ namespace smil
     * Max value of an image
     *
     * Returns the max of the pixel values.
-    * \param imIn Input image.
-    * \param onlyNonZero If true, only non-zero pixels are considered.
+    * @param imIn Input image.
+    * @param onlyNonZero If true, only non-zero pixels are considered.
     */
     template <class T>
     T maxVal(const Image<T> &imIn, bool onlyNonZero=false)
@@ -306,8 +306,8 @@ namespace smil
     * Min and Max values of an image
     *
     * Returns the min and the max of the pixel values.
-    * \param imIn Input image.
-    * \param onlyNonZero If true, only non-zero pixels are considered.
+    * @param imIn Input image.
+    * @param onlyNonZero If true, only non-zero pixels are considered.
     */
     template <class T>
     vector<T> rangeVal(const Image<T> &imIn, bool onlyNonZero=false)
@@ -343,7 +343,7 @@ namespace smil
     /**
      * Get the list of the pixel values present in the image
      * 
-     * \see histogram
+     * @see histogram
      */
     template <class T>
     vector<T> valueList(const Image<T> &imIn, bool onlyNonZero=true)
@@ -581,7 +581,7 @@ namespace smil
     /**
     * Bounding Box measure
     * 
-    * \return xMin, yMin (,zMin), xMax, yMax (,zMax)
+    * @return xMin, yMin (,zMin), xMax, yMax (,zMax)
     */
     template <class T>
     vector<size_t> measBoundBox(Image<T> &im)
@@ -645,8 +645,8 @@ namespace smil
     /**
     * Measure image moments
     * 
-    * \return * For 2D images: m00, m10, m01, m11, m20, m02
-    * \return * For 3D images: m000, m100, m010, m001, m110, m101, m011, m200, m020, m002
+    * @return * For 2D images: m00, m10, m01, m11, m20, m02
+    * @return * For 3D images: m000, m100, m010, m001, m110, m101, m011, m200, m020, m002
     * 
     * See <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on Wikipedia</a>
     */
@@ -660,8 +660,8 @@ namespace smil
     /**
      * Covariance between two images
      * 
-     * The direction is given by \b dx, \b dy and \b dz.
-     * The lenght corresponds to the max number of steps \b maxSteps
+     * The direction is given by @b dx, @b dy and @b dz.
+     * The lenght corresponds to the max number of steps @b maxSteps
      */
     template <class T>
     vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2, size_t dx, size_t dy, size_t dz, UINT maxSteps=0, bool normalize=false)
@@ -725,8 +725,8 @@ namespace smil
     /**
      * Auto-covariance
      * 
-     * The direction is given by \b dx, \b dy and \b dz.
-     * The lenght corresponds to the max number of steps \b maxSteps
+     * The direction is given by @b dx, @b dy and @b dz.
+     * The lenght corresponds to the max number of steps @b maxSteps
      */
     template <class T>
     vector<double> measCovariance(const Image<T> &imIn, size_t dx, size_t dy, size_t dz, UINT maxSteps=0, bool normalize=false)
@@ -737,8 +737,8 @@ namespace smil
     /**
      * Centered auto-covariance
      * 
-     * The direction is given by \b dx, \b dy and \b dz.
-     * The lenght corresponds to the max number of steps \b maxSteps
+     * The direction is given by @b dx, @b dy and @b dz.
+     * The lenght corresponds to the max number of steps @b maxSteps
      */
     template <class T>
     vector<double> measCenteredCovariance(const Image<T> &imIn, size_t dx, size_t dy, size_t dz, UINT maxSteps=0, bool normalize=false)
@@ -771,7 +771,7 @@ namespace smil
 
     /**
     * Test if an image is binary.
-    * Return \b true if the only pixel values are ImDtTypes<T>::min() and ImDtTypes<T>::max() 
+    * Return @b true if the only pixel values are ImDtTypes<T>::min() and ImDtTypes<T>::max() 
     */
     template <class T>
     bool isBinary(const Image<T> &imIn)

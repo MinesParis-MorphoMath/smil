@@ -41,7 +41,7 @@ using namespace std;
 namespace smil
 {
     /**
-    * \ingroup Core
+    * @ingroup Core
     * @{
     */
 

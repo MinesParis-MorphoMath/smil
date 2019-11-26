@@ -38,7 +38,7 @@ namespace smil
 {
   
     /**
-    * \ingroup Arith
+    * @ingroup Arith
     * @{
     */
 

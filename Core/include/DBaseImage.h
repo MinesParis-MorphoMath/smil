@@ -112,7 +112,7 @@ namespace smil
         }
         
         //! Set image size
-        //! Set image size and allocate it if \b doAllocate is true
+        //! Set image size and allocate it if @b doAllocate is true
         virtual RES_T setSize(size_t w, size_t h, size_t d = 1, bool doAllocate = true) = 0;
 
         //! Get image size

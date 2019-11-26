@@ -46,7 +46,7 @@ namespace smil
   
     /**
      * Non-oriented edge
-     * \see Graph
+     * @see Graph
      */
     template <class NodeT=size_t, class WeightT=size_t>
     class Edge
@@ -138,7 +138,7 @@ namespace smil
     
     /**
      * Non-oriented graph
-     * \see Edge
+     * @see Edge
      */
     template <class NodeT=size_t, class WeightT=size_t>
     class Graph : public BaseObject
@@ -230,7 +230,7 @@ namespace smil
         
         /**
          * Add an edge to the graph. 
-         * If checkIfExists is \b true:
+         * If checkIfExists is @b true:
          *         If the edge doen't exist, create a new one.
          *         If the edge already exists, the edge weight will be the minimum between the existing a the new weight.
          */
@@ -250,8 +250,8 @@ namespace smil
         }
         
         /**
-         * Add an edge to the graph given two nodes \b src and \b targ and an optional weight
-         * If checkIfExists is \b true:
+         * Add an edge to the graph given two nodes @b src and @b targ and an optional weight
+         * If checkIfExists is @b true:
          *         If the edge doen't exist, create a new one.
          *         If the edge already exists, the edge weight will be the minimum between the existing a the new weight.
          */
@@ -313,7 +313,7 @@ namespace smil
               eList.erase(ei);
         }
     public:
-        //! Remove all edges linked to the node \b nodeIndex
+        //! Remove all edges linked to the node @b nodeIndex
         void removeNodeEdges(const NodeT node)
         {
             typename NodeEdgeListType::iterator fNodeEdges = nodeEdgeList.find(node);
@@ -344,7 +344,7 @@ namespace smil
             removeNodeEdge(edge.target, index);
             edge.desactivate();
         }
-        //! Find and remove an edge linking \b src to \b targ
+        //! Find and remove an edge linking @b src to @b targ
         void removeEdge(const NodeT src, const NodeT targ)
         {
             typename EdgeListType::iterator foundEdge = find(edges.begin(), edges.end(), EdgeType(src,targ));

@@ -41,21 +41,21 @@ namespace smil
 {
   
 /**
- * \ingroup Base
- * \defgroup Arith Arithmetic operations
+ * @ingroup Base
+ * @defgroup Arith Arithmetic operations
  * @{
  */
 
     /**
     * Fill an image with a given value.
     *
-    * \param imOut Output image.
-    * \param value The value to fill.
+    * @param imOut Output image.
+    * @param value The value to fill.
     *
-    * \vectorized
-    * \parallelized
+    * @vectorized
+    * @parallelized
     * 
-    * \see Image::operator<<
+    * @see Image::operator<<
     * 
     */
     template <class T>
@@ -69,9 +69,9 @@ namespace smil
     /**
     * Fill an image with random values.
     *
-    * \param imOut Output image.
+    * @param imOut Output image.
     *
-    * \see Image::operator<<
+    * @see Image::operator<<
     * 
     */
     template <class T>
@@ -102,13 +102,13 @@ namespace smil
     * Copy image
     * 
     * Copy an image (or a zone) into an output image
-    * \param imIn input image
-    * \param "startX startY [startZ]" (optional) start position of the zone in the input image
-    * \param "sizeX sizeY [sizeZ]" (optional) size of the zone in the input image
-    * \param imOut output image
-    * \param "outStartX outStartY [outStartZ]" (optional) position to copy the selected zone in the output image (default is the origin (0,0,0))
+    * @param imIn input image
+    * @param "startX startY [startZ]" (optional) start position of the zone in the input image
+    * @param "sizeX sizeY [sizeZ]" (optional) size of the zone in the input image
+    * @param imOut output image
+    * @param "outStartX outStartY [outStartZ]" (optional) position to copy the selected zone in the output image (default is the origin (0,0,0))
     * 
-    * \demo{copy_crop.py}
+    * @demo{copy_crop.py}
     */
     template <class T1, class T2>
     RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ, Image<T2> &imOut, size_t outStartX=0, size_t outStartY=0, size_t outStartZ=0)
@@ -268,7 +268,7 @@ namespace smil
 
     /**
      * Copy a channel of multichannel image into a single channel image
-     * \demo{multichannel_operations.py}
+     * @demo{multichannel_operations.py}
      */
     template <class MCT1, class T2>
     RES_T copyChannel(const Image<MCT1> &imIn, const UINT &chanNum, Image<T2> &imOut)
@@ -288,7 +288,7 @@ namespace smil
    
     /**
      * Copy a single channel image into a channel of multichannel image
-     * \demo{multichannel_operations.py}
+     * @demo{multichannel_operations.py}
      */
     template <class T1, class MCT2>
     RES_T copyToChannel(const Image<T1> &imIn, const UINT &chanNum, Image<MCT2> &imOut)
@@ -308,7 +308,7 @@ namespace smil
    
     /**
      * Split channels of multichannel image to a 3D image with each channel on a Z slice
-     * \demo{multichannel_operations.py}
+     * @demo{multichannel_operations.py}
      */
     template <class MCT1, class T2>
     RES_T splitChannels(const Image<MCT1> &imIn, Image<T2> &im3DOut)
@@ -336,7 +336,7 @@ namespace smil
    
     /**
      * Merge slices of a 3D image into a multichannel image
-     * \demo{multichannel_operations.py}
+     * @demo{multichannel_operations.py}
      */
     template <class T1, class MCT2>
     RES_T mergeChannels(const Image<T1> &imIn, Image<MCT2> &imOut)
@@ -366,10 +366,10 @@ namespace smil
     /**
     * Invert an image.
     *
-    * \param imIn Input image.
-    * \param imOut Output image.
+    * @param imIn Input image.
+    * @param imOut Output image.
     *
-    * \see Image::operator~
+    * @see Image::operator~
     */
     template <class T>
     RES_T inv(const Image<T> &imIn, Image<T> &imOut)
@@ -384,10 +384,10 @@ namespace smil
     * Addition
     * 
     * Addition between two images (or between an image and a constant value)
-    * \param imIn1 input image 1
-    * \param imIn2 input image 2
-    * \param imOut output image
-    * \see Image::operator+
+    * @param imIn1 input image 1
+    * @param imIn2 input image 2
+    * @param imOut output image
+    * @see Image::operator+
     */
     template <class T>
     RES_T add(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -411,9 +411,9 @@ namespace smil
     * Addition (without saturation check)
     * 
     * Addition between two images (or between an image and a constant value) without checking the saturation
-    * \param imIn1 input image 1
-    * \param imIn2 input image 2
-    * \param imOut output image
+    * @param imIn1 input image 1
+    * @param imIn2 input image 2
+    * @param imOut output image
     */
     template <class T>
     RES_T addNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -438,9 +438,9 @@ namespace smil
     * Subtraction
     * 
     * Subtraction between two images (or between an image and a constant value)
-    * \param imIn1 input image 1
-    * \param imIn2 input image 2
-    * \param imOut output image containing \c imIn1-imIn2 (or \c imIn1-val)
+    * @param imIn1 input image 1
+    * @param imIn2 input image 2
+    * @param imOut output image containing @c imIn1-imIn2 (or @c imIn1-val)
     */
     template <class T>
     RES_T sub(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -467,9 +467,9 @@ namespace smil
     * Subtraction (without type minimum check)
     * 
     * Subtraction between two images (or between an image and a constant value)
-    * \param imIn1 input image 1
-    * \param imIn2 input image 2
-    * \param imOut output image containing \c imIn1-imIn2 (or \c imIn1-val)
+    * @param imIn1 input image 1
+    * @param imIn2 input image 2
+    * @param imOut output image containing @c imIn1-imIn2 (or @c imIn1-val)
     */
     template <class T>
     RES_T subNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -566,7 +566,7 @@ namespace smil
 
     /**
     * Equality operator
-    * \return[imOut] image with imOut(x)=max(T) when imIn1(x)=imIn2(x) and 0 otherwise
+    * @return[imOut] image with imOut(x)=max(T) when imIn1(x)=imIn2(x) and 0 otherwise
     */
     template <class T>
     RES_T equ(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -588,7 +588,7 @@ namespace smil
 
     /**
     * Test equality between two images
-    * \return True if imIn1=imIn2, False otherwise
+    * @return True if imIn1=imIn2, False otherwise
     */
     template <class T>
     bool equ(const Image<T> &imIn1, const Image<T> &imIn2)
@@ -632,7 +632,7 @@ namespace smil
     /**
     * Absolute difference ("vertical distance") between two images.
     * 
-    * \return abs(p1-p2) for each pixels pair.
+    * @return abs(p1-p2) for each pixels pair.
     */
     template <class T>
     RES_T absDiff(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -906,15 +906,15 @@ namespace smil
     /**
     * Test
     * 
-    * If imIn1(x)!=0, imOut(x)=imIn2(x)\n
+    * If imIn1(x)!=0, imOut(x)=imIn2(x)
     * imOut(x)=imIn3(x) otherwise.
     * 
     * Can also be used with constant values and result of operators.
     * 
-    * \par Examples
-    * \code
+    * @par Examples
+    * @code
     * test(im1>100, 255, 0, im2)
-    * \endcode
+    * @endcode
     */
     template <class T1, class T2>
     RES_T test(const Image<T1> &imIn1, const Image<T2> &imIn2, const Image<T2> &imIn3, Image<T2> &imOut)
@@ -1066,8 +1066,8 @@ namespace smil
     /**
     * Apply a lookup map
     * 
-    * \b Python \b example:
-    * \code{.py}
+    * @b Python @b example:
+    * @code{.py}
     * im1 = Image("http://smil.cmm.mines-paristech.fr/images/balls.png")
     * imLbl = Image(im1, "UINT16")
     * imLbl2 = Image(imLbl)
@@ -1086,7 +1086,7 @@ namespace smil
     * imLbl.showLabel()
     * imLbl2.showLabel()
     * 
-    * \endcode
+    * @endcode
     */
     template <class T1, class mapT, class T2>
     RES_T applyLookup(const Image<T1> &imIn, const mapT &_map, Image<T2> &imOut, T2 defaultValue=T2(0))

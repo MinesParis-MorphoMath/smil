@@ -39,7 +39,7 @@ namespace smil
     template <class T> class Image;
     
    /**
-    * \ingroup Gui
+    * @ingroup Gui
     */
     /**@{*/
 

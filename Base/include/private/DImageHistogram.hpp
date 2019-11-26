@@ -40,9 +40,9 @@ namespace smil
 {
   
     /**
-    * \ingroup Base
-    * \defgroup Histogram Histogram
-    * \{
+    * @ingroup Base
+    * @defgroup Histogram Histogram
+    * @{
     */
 
 #ifndef SWIG
@@ -249,8 +249,8 @@ namespace smil
     /**
     * Min and Max values of an histogram ignoring left/right low values (lower than a given height/cumulative height).
     *
-    * If \b cumulative is true, it stops when the integral of the histogram values reaches \b ignorePercent * NbrPixels
-    * Otherwise, it stops at the first value of the histogram higher than \b ignorePercent * max(histogram)
+    * If @b cumulative is true, it stops when the integral of the histogram values reaches @b ignorePercent * NbrPixels
+    * Otherwise, it stops at the first value of the histogram higher than @b ignorePercent * max(histogram)
     */
     template <class T>
     vector<T> histogramRange(const Image<T> &imIn, double ignorePercent, bool cumulative=true)
@@ -540,7 +540,7 @@ namespace smil
     /**
     * Otsu Threshold
     * 
-    * \demo{thresholds.py}
+    * @demo{thresholds.py}
     */
     template <class T, class T_out>
     vector<T> otsuThreshold(const Image<T> &imIn, Image<T_out> &imOut, UINT nbrThresholds)
@@ -596,7 +596,7 @@ namespace smil
         
     }
 
-/** \} */
+/** @} */
 
 } // namespace smil
 

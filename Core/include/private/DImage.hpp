@@ -39,7 +39,7 @@ namespace smil
 {
   
     /**
-    * \ingroup Core
+    * @ingroup Core
     * @{
     */
 
@@ -55,7 +55,7 @@ namespace smil
     /**
     * Main Image class.
     * 
-    * \tparam T Image data type (UINT8, UINT16, ...)
+    * @tparam T Image data type (UINT8, UINT16, ...)
     */  
     template <class T>
     class Image : public BaseImage
@@ -94,7 +94,7 @@ namespace smil
         void drain(Image<T> *im, bool deleteSrc=false);
       
         //! Get the image type.
-        //! \return The type of the image data as a string ("UINT8", "UINT16", ...)
+        //! @return The type of the image data as a string ("UINT8", "UINT16", ...)
         virtual const char* getTypeAsString()
         {
                 T *dum = NULL;
@@ -200,7 +200,7 @@ namespace smil
         virtual ImageViewer<T> *getViewer();
         
         //! Check if the image is visible
-        //! \return \b true if the viewer is visible, \b false otherwise
+        //! @return @b true if the viewer is visible, @b false otherwise
         virtual bool isVisible();
         
         virtual void init();
@@ -240,10 +240,10 @@ namespace smil
 
         /**
          * Print a description of the image
-         * \param os Output stream
-         * \param displayPixVals If true, display pixel values
-         * \param hexaGrid If true (and displayPixVals is true), display pixel values as an hexahedral grid
-         * \param indent Optional prefix
+         * @param os Output stream
+         * @param displayPixVals If true, display pixel values
+         * @param hexaGrid If true (and displayPixVals is true), display pixel values as an hexahedral grid
+         * @param indent Optional prefix
          */        
         void printSelf(ostream &os, bool displayPixVals, bool hexaGrid=false, string indent="") const;
         virtual void printSelf(ostream &os=std::cout, string indent="") const
@@ -273,12 +273,12 @@ namespace smil
         
     #if defined SWIGPYTHON && defined USE_NUMPY
         /**
-        * Return a NumPy array containing the \b real image pixel values (not a copy).
+        * Return a NumPy array containing the @b real image pixel values (not a copy).
         * 
-        * \param c_contigous If true, return an array corresponding to the aligment of C data (C_CONTIGOUS NumPy array flag). 
+        * @param c_contigous If true, return an array corresponding to the aligment of C data (C_CONTIGOUS NumPy array flag). 
         * If false (default), return a F_CONTIGOUS array.
         * 
-        * See \ref p50_numpy_page "NumPy interface page".
+        * See @ref p50_numpy_page "NumPy interface page".
         */
         PyObject * getNumArray(bool c_contigous=false);
         
@@ -375,8 +375,8 @@ namespace smil
         Image<T>& operator &= (const T &value);
         
         //! Boolean operator
-        //! \return \b true, if if every pixel has the max type value ( vol(im)==ImDtTypes<T>::max()*pixelCount )
-        //! \return \b false, otherwise
+        //! @return @b true, if if every pixel has the max type value ( vol(im)==ImDtTypes<T>::max()*pixelCount )
+        //! @return @b false, otherwise
         operator bool();
         
         //! Import image data from an array

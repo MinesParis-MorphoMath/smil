@@ -38,8 +38,8 @@ namespace smil
 {
   
     /**
-    * \ingroup Base
-    * \defgroup Convolution Convolution
+    * @ingroup Base
+    * @defgroup Convolution Convolution
     * @{
     */
     
@@ -48,14 +48,14 @@ namespace smil
     /**
      * Horizontal convolution
      * 
-     * \b Example:
-     * \code{.py}
+     * @b Example:
+     * @code{.py}
      * im1 = Image("http://smil.cmm.mines-paristech.fr/images/lena.png")
      * im2 = Image(im1)
      * kern = [ 0.0545, 0.2442, 0.4026, 0.2442, 0.0545 ]
      * horizConvolve(im1, kern, im2)
      * showAll()
-     * \endcode
+     * @endcode
      */
     // Inplace safe
     template <class T>
@@ -140,7 +140,7 @@ namespace smil
     /**
      * Vertical convolution
      * 
-     * \see horizConvolve
+     * @see horizConvolve
      */
     template <class T>
     RES_T vertConvolve(const Image<T> &imIn, const vector<double> &kernel, Image<T> &imOut)
@@ -224,7 +224,7 @@ namespace smil
     /**
      * Convolution in both x and y directions using the same 1D kernel
      * 
-     * \see horizConvolve
+     * @see horizConvolve
      */
     template <class T>
     RES_T convolve(const Image<T> &imIn, const vector<double> &kernel, Image<T> &imOut)

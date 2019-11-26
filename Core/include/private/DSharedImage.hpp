@@ -38,7 +38,7 @@
 namespace smil
 {
     /**
-    * \ingroup Core
+    * @ingroup Core
     * @{
     */
 

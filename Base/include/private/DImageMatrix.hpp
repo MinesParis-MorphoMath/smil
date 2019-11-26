@@ -37,8 +37,8 @@ namespace smil
 {
   
     /**
-    * \ingroup Base
-    * \defgroup Matrix Matrix operations
+    * @ingroup Base
+    * @defgroup Matrix Matrix operations
     * @{
     */
 
@@ -77,8 +77,8 @@ namespace smil
     /**
      * Matrix multiplication (for now, only in 2D)
      * 
-     * \vectorized
-     * \parallelized
+     * @vectorized
+     * @parallelized
      */
     template <class T>
     RES_T matMul(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)

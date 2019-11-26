@@ -40,7 +40,7 @@ namespace smil
   
     
     /**
-     * \defgroup Gui Gui
+     * @defgroup Gui Gui
      */
      /*@{*/
 

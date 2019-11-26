@@ -36,9 +36,9 @@
 namespace smil
 {
 
-    //! \ingroup Histogram
-    //! @{
-
+    /** @ingroup Histogram
+     * @{
+     */
   
     template <class T, class T_out=T>
     struct threshLine : public unaryLineFunctionBase<T, T_out>

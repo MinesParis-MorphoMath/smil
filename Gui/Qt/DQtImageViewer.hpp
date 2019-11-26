@@ -50,7 +50,7 @@ namespace smil
     template <class T> class Image;
     
    /**
-    * \ingroup Gui
+    * @ingroup Gui
     */
     /*@{*/
 
@@ -60,12 +60,12 @@ namespace smil
      * Requires the Qt libraries. To use it, you must set the option USE_QT to ON.
      * 
      * Keyboard shortcuts:
-     * \li \b Z/A Zoom In/Out
-     * \li \b V Show/Hide the value of the pixel under the mouse cursor
-     * \li \b M Show/Hide the magnifying window
-     * \li \b R Enable/diable the auto-adjust range feature (allows to automatically adjust range for low contrasted images).
-     * \li \b H SHow the histogram window (requires the Qwt library)
-     * \li \b P SHow the plot window (requires the Qwt library)
+     * @li @b Z/A Zoom In/Out
+     * @li @b V Show/Hide the value of the pixel under the mouse cursor
+     * @li @b M Show/Hide the magnifying window
+     * @li @b R Enable/diable the auto-adjust range feature (allows to automatically adjust range for low contrasted images).
+     * @li @b H SHow the histogram window (requires the Qwt library)
+     * @li @b P SHow the plot window (requires the Qwt library)
      */
     template <class T>
     class QtImageViewer 

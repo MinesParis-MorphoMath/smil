@@ -37,8 +37,8 @@ namespace smil
 {
   
 /**
- * \ingroup Base
- * \defgroup BlobMesures Mesures on blobs
+ * @ingroup Base
+ * @defgroup BlobMesures Mesures on blobs
  * @{
  */
 

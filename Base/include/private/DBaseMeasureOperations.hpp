@@ -37,8 +37,8 @@ namespace smil
 {
   
 /**
- * \ingroup Base
- * \defgroup Measures Base measures
+ * @ingroup Base
+ * @defgroup Measures Base measures
  * @{
  */
 

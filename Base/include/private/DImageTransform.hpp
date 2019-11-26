@@ -37,8 +37,8 @@ namespace smil
 {
   
     /**
-    * \ingroup Base
-    * \defgroup Transform Image Transformations
+    * @ingroup Base
+    * @defgroup Transform Image Transformations
     * @{
     */
 
@@ -46,12 +46,12 @@ namespace smil
     * Crop image
     * 
     * Crop an image into an output image
-    * \param imIn input image
-    * \param "startX startY [startZ]" start position of the zone in the input image
-    * \param "sizeX sizeY [sizeZ]" size of the zone in the input image
-    * \param imOut output image
+    * @param imIn input image
+    * @param "startX startY [startZ]" start position of the zone in the input image
+    * @param "sizeX sizeY [sizeZ]" size of the zone in the input image
+    * @param imOut output image
     * 
-    * \demo{copy_crop.py}
+    * @demo{copy_crop.py}
     */
     template <class T>
     RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t startZ, size_t sizeX, size_t sizeY, size_t sizeZ, Image<T> &imOut)
