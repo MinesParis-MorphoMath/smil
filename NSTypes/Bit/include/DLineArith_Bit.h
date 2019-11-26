@@ -37,7 +37,7 @@
 #include "Base/include/private/DLineArith.hpp"
 
 /**
- * \ingroup Arith
+ * @ingroup Arith
  * @{
  */
 

@@ -37,7 +37,7 @@
 #include "Core/include/DColor.h"
 
 /**
- * \ingroup Arith
+ * @ingroup Arith
  * @{
  */
 

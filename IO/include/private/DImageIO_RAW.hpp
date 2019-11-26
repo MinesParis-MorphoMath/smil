@@ -42,7 +42,7 @@ using namespace std;
 namespace smil
 {
     /** 
-    * \addtogroup IO
+    * @addtogroup IO
     */
     /**@{*/
   

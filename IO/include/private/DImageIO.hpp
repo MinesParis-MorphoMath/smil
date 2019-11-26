@@ -42,7 +42,7 @@ namespace smil
 {
   
     /** 
-    * \addtogroup IO
+    * @addtogroup IO
     */
     /**@{*/
     
@@ -111,12 +111,12 @@ namespace smil
     * 
     * The file list must contain the same number of filenames as the 3D image depth.
     * 
-    * \b Example:
-    * \code{.py}
+    * @b Example:
+    * @code{.py}
     * im1 = Image("img3d.vtk")
     * fileNames = [ "img{:03d}.png".format(i) for i in range(im1.getDepth()) ]
     * write(im1, fileNames)
-    * \endcode
+    * @endcode
     */
     template <class T>
     RES_T write(const Image<T> &image, const vector<string> fileList);

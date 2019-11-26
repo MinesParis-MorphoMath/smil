@@ -49,7 +49,7 @@ namespace smil
 {
   
     /** 
-    * \addtogroup IO
+    * @addtogroup IO
     */
     /**@{*/
     
