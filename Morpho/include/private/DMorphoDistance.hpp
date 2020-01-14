@@ -815,7 +815,7 @@ namespace smil
     UINT sePtsNbr;
 
     typedef size_t OffsetT;
-    HierarchicalQueue<T1, OffsetT> hq;
+    HierarchicalQueue<T2, OffsetT> hq;
     // T3D fah      PriorityQueueT<float, OffsetT> hq(true);
     // Set image to 1 when pixels are !=0
     ASSERT(inf(imIn, T1(1), tmp) == RES_OK);

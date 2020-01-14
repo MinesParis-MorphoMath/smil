@@ -38,7 +38,7 @@ SMIL_MODULE(smil_)
 %{
     std::cout << "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}" << std::endl;
     std::cout << "Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES" << std::endl;
-    std::cout << "Copyright (c) 2017-2019, CMM - Centre de Morphologie Mathematique" << std::endl;
+    std::cout << "Copyright (c) 2017-2020, CMM - Centre de Morphologie Mathematique" << std::endl;
     std::cout << "All rights reserved." << std::endl;
     std::cout << std::endl;
 %}
@@ -76,7 +76,7 @@ __builtin__.imageTypes = [ ${IMAGE_TYPES_STR}, ]
 def AboutSmil():
     print("SMIL (Simple Morphological Image Library) ${SMIL_VERSION}")
     print("Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES")
-    print("Copyright (c) 2017-2019, CMM - Centre de Morphologie Mathematique")
+    print("Copyright (c) 2017-2020, CMM - Centre de Morphologie Mathematique")
     print("All rights reserved.")
 
 
