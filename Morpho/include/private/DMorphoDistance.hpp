@@ -106,7 +106,6 @@ namespace smil
     /*
      * Generic Distance function.
      */
-    // OK
     template <class T1, class T2>
     RES_T distGeneric(const Image<T1> &imIn, Image<T2> &imOut, const StrElt &se)
     {
@@ -126,9 +125,9 @@ namespace smil
       Image<T1> tmp(imIn);
       Image<T1> tmp2(imIn);
 
-      // Set image to 1 when pixels are !=0
+      // Set image to 1 when pixels are != 0
       ASSERT(inf(imIn, T1(1), tmp) == RES_OK);
-      ASSERT(mul(tmp, T1(255), tmp) == RES_OK);
+      // ASSERT(mul(tmp, T1(255), tmp) == RES_OK);
 
       // Demi-Gradient to remove sources inside cluster of sources.
       ASSERT(erode(tmp, tmp2, se) == RES_OK);
@@ -318,7 +317,6 @@ namespace smil
     /*
      * Distance Cross function (???).
      */
-    // OK
     template <class T1, class T2>
     RES_T distCross(const Image<T1> &imIn, Image<T2> &imOut)
     {
@@ -843,14 +841,13 @@ namespace smil
     size_t x1, y1, z1;
     size_t x2, y2, z2;
 
-    // off_t p0, p1, p2, p3, oo;
     off_t p0, p1, p2;
 
     float current_dist, wd;
 
     size_t imSize[3];
     imIn.getSize(imSize);
-    size_t maxOffset = imSize[2] * imSize[1] * imSize[0];
+    off_t maxOffset = imSize[2] * imSize[1] * imSize[0];
     std::vector<float> distVector(maxOffset, ImDtTypes<float>::max());
 
     // INITIALIZE
@@ -863,7 +860,7 @@ namespace smil
     // pixels with computed distance value)
     //  maxOffset+1 for pixels not processed yet (or background pixels)
     hq.initialize(imIn);
-    for (off_t i = 0; i < (off_t) maxOffset; ++i) {
+    for (off_t i = 0; i < maxOffset; ++i) {
       if ((pixelsIn[i] > T1(0)) && (pixelsMask[i] > 0)) {
         imIn.getCoordsFromOffset(i, x0, y0, z0);
         //	  std::cout<<"PROCESS:"<<x0<<","<<y0<<"\n";
