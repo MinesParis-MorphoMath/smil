@@ -36,12 +36,11 @@ namespace smil
    * @ingroup AddonFilters
    * @defgroup Addon3DBilateral 3D Bilateral Filter
    *
-   * Fast 3D bilateral filter implementation
+   * Fast 3D recursive bilateral filter implementation based on the one 
+   * proposed by Qingxiong Yang @cite Qingxiong_2012
    *
    * * Possible problems with very large images or images of type UINT32 and
    * bigger
-   * * Works only with images of integer type.
-   * * lacking documentation about parameters
    *
    * @author Theodore Chabardes
    * @{
@@ -50,9 +49,17 @@ namespace smil
   /**
    * @brief recursiveBilateralFilter 3D Bilateral Filter
    * @param[in]  imIn : input Image
-   * @param[in]  sigmaW :
-   * @param[in]  sigmaR :
+   * @param[in]  sigmaW : standard deviation of the spatial filter kernel
+   * @param[in]  sigmaR : standard deviation of the range kernel
    * @param[out] imOut : output Image
+   *
+   * <b>sigmaW</b> and <b>sigmaR</b> heavily depend on the image. A simple rule 
+   * of thumb to choose initial values to try for <b>sigmaW</b> and 
+   * <b>sigmaR</b> is :
+   * * <b>sigmaW</b> : smaller than the mean radius of objects to be 
+   *   preserved (e.g. 10 pixels);
+   * * <b>sigmaR</b> : smaller than the minimal gradient to be preserved 
+   *   (e.g. 10 for 8 bits images).
    */
   template <class T>
   RES_T recursiveBilateralFilter(const Image<T> &imIn, float sigmaW,
