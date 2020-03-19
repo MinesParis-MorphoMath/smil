@@ -352,6 +352,8 @@ namespace smil
 
     /**
     * Rhombicuboctahedron struturing element (80 neighbors).
+    * Points :
+    * @images{rhombicuboctaedron_se}
     *
     */
     class RhombicuboctahedronSE : public StrElt

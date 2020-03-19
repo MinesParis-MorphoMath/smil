@@ -131,8 +131,8 @@ namespace smil
   /**
    * Zhang 2D skeleton
    *
-   * Implementation corresponding to the algorithm described in \cite
-   * khanyile_comparative_2011.
+   * Implementation corresponding to the algorithm described in 
+   * @cite khanyile_comparative_2011.
    */
   template <class T> RES_T zhangSkeleton(const Image<T> &imIn, Image<T> &imOut)
   {
