@@ -687,7 +687,7 @@ namespace smil
     * 
     */
     template<class T1, class T2>
-    size_t labelWithMean(const Image<T1> &imIn, const Image<T2> &imLabelsInit, Image<T2> &imOut, const StrElt &se=DEFAULT_SE)
+    size_t labelWithMean(const Image<T1> &imIn, const Image<T2> &imLabelsInit, Image<T1> &imOut, const StrElt &se=DEFAULT_SE)
     {
         ASSERT_ALLOCATED(&imIn, &imOut);
         ASSERT_SAME_SIZE(&imIn, &imOut);
