@@ -207,26 +207,11 @@ namespace smil
     RES_T doIt(Image<T> &imIn, int size, int tolerance, int step, bool rebuild,
                Image<T> &imOut)
     {
-#if 0
-      if (tolerance < 0) {
-        MORPHEE_REGISTER_ERROR("tolerance must be >=0");
-        return RES_ERROR_BAD_ARG;
-      }
+      ASSERT_ALLOCATED(&imIn, &imOut);
+      ASSERT_SAME_SIZE(&imIn, &imOut);
+      ASSERT(tolerance >= 0);
+      ASSERT(step > 0);
 
-      // Check inputs
-      if (!imIn.isAllocated() || !imOut.isAllocated()) {
-        MORPHEE_REGISTER_ERROR("Image not allocated");
-        return RES_NOT_ALLOCATED;
-      }
-      if (!t_CheckWindowSizes(imIn, imOut)) {
-        MORPHEE_REGISTER_ERROR("Bad window sizes");
-        return RES_ERROR_BAD_WINDOW_SIZE;
-      }
-      if (step <= 0) {
-        MORPHEE_REGISTER_ERROR("Bad arg step must be >=1");
-        return RES_ERROR_BAD_ARG;
-      }
-#endif
       // lenghtDir and SQRT_2 are never used...
       // JOE double SQRT_2 = sqrt(2.);
       // JOE double lengthDir;
@@ -243,13 +228,6 @@ namespace smil
 
       // Initialisation
       memset(bufferOut, 0, W * H * sizeof(T));
-      // JOE int *LineIdx = new int[W + H];
-#if 0
-      if (LineIdx == 0) {
-        MORPHEE_REGISTER_ERROR("LineIdx = new int[W+H];");
-        return RES_ERROR_MEMORY;
-      }
-#endif
       off_t *indx = new off_t[W + H];
 
       // First direction Left to right
@@ -687,13 +665,13 @@ namespace smil
                                             int tolerance, int step,
                                             bool rebuild, Image<T> &imOut)
   {
-    ParsimoniousPathOpening_C<T> pc;
+    ParsimoniousPathOpening_C<T> pOpen;
 
     // checks :
     // imIn, imOut : allocated and same size
     // Size, tolerance, step : > 0
 
-    return pc.doIt(imIn, Size, tolerance, step, rebuild, imOut);
+    return pOpen.doIt(imIn, Size, tolerance, step, rebuild, imOut);
   }
 
   /** @} */
