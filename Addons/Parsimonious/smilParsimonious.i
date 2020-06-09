@@ -38,28 +38,17 @@
  * __HEAD__ - Stop here !
  */
 
+%include smilCommon.i
 
-#ifndef _D_PROTO_H
-#define _D_PROTO_H
+SMIL_MODULE(smilParsimonious)
 
-namespace smil
-{
+%{
+/* Includes the header in the wrapper code */
+#include "DParsimonious.hpp"
+%}
 
-/**
- * @addtogroup XXX
- *   or
- * @defgroup   XXX YYY
- *   or
- * @ingroup    XXX
- *
- * @{ */
+%import smilCore.i
 
-/* Replace this comment and put your code here */
-
-
-/** @} */
-
-} // namespace smil
-
-#endif // _D_PROTO_H
+%include "DParsimonious.hpp"
+TEMPLATE_WRAP_FUNC(ImParsimoniousIncompletePathOpening)
 
