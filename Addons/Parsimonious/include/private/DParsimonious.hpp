@@ -102,7 +102,7 @@ namespace smil
     /*
      *
      */
-    int rank_filter_indx(T *x, off_t *indx, int n, off_t SE, int r, T *y)
+    void rank_filter_indx(T *x, off_t *indx, int n, off_t SE, int r, T *y)
     {
       uint64_t HWidth = numeric_limits<T>::max();
 
@@ -145,14 +145,12 @@ namespace smil
 
       delete[] indx_pad;
       delete[] H;
-
-      return 0;
     }
 
     /*
      *
      */
-    int conj_dilation(T *x, int n, int SE, T *y)
+    void conj_dilation(T *x, int n, int SE, T *y)
     {
       uint64_t HWidth = numeric_limits<T>::max();
       T *H            = new T[HWidth];
@@ -176,13 +174,12 @@ namespace smil
 
       delete[] x_pad;
       delete[] H;
-      return 0;
     }
 
     /*
      *
      */
-    int rank_open(T *x, off_t *indx, int n, int SE, int r, T *y)
+    void rank_open(T *x, off_t *indx, int n, int SE, int r, T *y)
     {
       T *xi  = new T[n];
       T *dxi = new T[n];
@@ -195,8 +192,6 @@ namespace smil
 
       delete[] xi;
       delete[] dxi;
-
-      return 0;
     }
 
   public:
@@ -204,7 +199,7 @@ namespace smil
      *
      *
      */
-    RES_T doIt(Image<T> &imIn, int size, int tolerance, int step, bool rebuild,
+    RES_T doIt(Image<T> &imIn, int size, int tolerance, int step,
                Image<T> &imOut)
     {
       ASSERT_ALLOCATED(&imIn, &imOut);
@@ -643,14 +638,6 @@ namespace smil
       // JOE delete[] LineIdx;
       delete[] indx;
 
-      if (rebuild) { // Reconstruction
-        // RES_T res = t_ImUnderBuild(imIn, imOut, imOut);
-        // if (res != RES_OK) {
-        //  MORPHEE_REGISTER_ERROR("Error in t_ImParsimoniousPathOpening in "
-        //                         "function t_ImUnderBuild");
-        //  return res;
-        //}
-      }
       return RES_OK;
     }
   };
@@ -667,11 +654,24 @@ namespace smil
   {
     ParsimoniousPathOpening_C<T> pOpen;
 
+    RES_T res = RES_ERR;
     // checks :
     // imIn, imOut : allocated and same size
     // Size, tolerance, step : > 0
 
-    return pOpen.doIt(imIn, Size, tolerance, step, rebuild, imOut);
+    res = pOpen.doIt(imIn, Size, tolerance, step, rebuild, imOut);
+#if 0
+    if (res == RES_OK && rebuild) {
+      // Reconstruction
+      // res = t_ImUnderBuild(imIn, imOut, imOut);
+      // if (res != RES_OK) {
+      //  MORPHEE_REGISTER_ERROR("Error in t_ImParsimoniousPathOpening in "
+      //                         "function t_ImUnderBuild");
+      //  return res;
+      //}
+    }
+#endif
+    return res;
   }
 
   /** @} */
