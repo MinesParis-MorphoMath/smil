@@ -654,23 +654,22 @@ namespace smil
   {
     ParsimoniousPathOpening_C<T> pOpen;
 
-    RES_T res = RES_ERR;
-    // checks :
+    RES_T res;
+
+    // checks (done inside functor)
     // imIn, imOut : allocated and same size
     // Size, tolerance, step : > 0
 
-    res = pOpen.doIt(imIn, Size, tolerance, step, rebuild, imOut);
-#if 0
+    res = pOpen.doIt(imIn, Size, tolerance, step, imOut);
+
+    /* Shall this be done here ??? */
+    /* Do rebuild */
     if (res == RES_OK && rebuild) {
-      // Reconstruction
-      // res = t_ImUnderBuild(imIn, imOut, imOut);
-      // if (res != RES_OK) {
-      //  MORPHEE_REGISTER_ERROR("Error in t_ImParsimoniousPathOpening in "
-      //                         "function t_ImUnderBuild");
-      //  return res;
-      //}
+      // res = build(imIn, imOut, imOut);
+      if (res != RES_OK)
+        ERR_MSG("Error while rebuilding after Path Opening");
     }
-#endif
+
     return res;
   }
 

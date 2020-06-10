@@ -41,6 +41,9 @@
 #ifndef __FAST_PIPATH_OPENING_H__
 #define __FAST_PIPATH_OPENING_H__
 
+#include "Core/include/DCore.h"
+#include "Morpho/include/DMorpho.h"
+
 namespace smil
 {
   /**
