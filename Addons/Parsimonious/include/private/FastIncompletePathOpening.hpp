@@ -63,12 +63,19 @@ namespace smil
    */
   template <class T> class ParsimoniousPathOpening_C
   {
-  private:
-    int MIRROR_BORDERS = 0;
+    // better to define this as a boolean
+    bool MIRROR_BORDERS = true;
 
-    // try to define this as inline functions
-    //#define MAXOF(x, y) ((x) > (y) ? (x) : (y))
-    // #define MINOF(x, y) ((x) < (y) ? (x) : (y))
+  public:
+    ParsimoniousPathOpening_C()
+    {
+      MIRROR_BORDERS = false;
+    }
+    ~ParsimoniousPathOpening_C()
+    {
+    }
+
+  private:
     T MAXOF(T x, T y)
     {
       return x > y ? x : y;
@@ -81,15 +88,15 @@ namespace smil
     /*
      *
      */
-    T rank(T *H, T r)
+    T rank(T *H, int r)
     {
-      uint64_t cnt = 0;
+      int cnt = 0;
       T ii;
       /*
        * size of HWidth shall be bigger than size of T
        * this loop may be really long when T is of type UINT32
        */
-      size_t HWidth = numeric_limits<T>::max();
+      off_t HWidth = numeric_limits<T>::max();
 
       for (ii = 0; ii < HWidth; ii++) {
         cnt += H[ii];
@@ -102,31 +109,32 @@ namespace smil
     /*
      *
      */
-    void rank_filter_indx(T *x, off_t *indx, int n, off_t SE, int r, T *y)
+    RES_T rank_filter_indx(T *x, off_t *indx, int n, int SE, int r, T *y)
     {
+      // cout << "Enter rank_filter_indx " << n << " " << SE << " " << r <<
+      // endl;
       uint64_t HWidth = numeric_limits<T>::max();
 
-      T *H = new T[HWidth];
+      // cout << "HWidth " << HWidth << endl;
+      T *H = new T[HWidth]();
 
       //  pad border
-      off_t *indx_pad = new off_t[n + 2 * SE];
+      off_t *indx_pad = new off_t[n + 2 * SE]();
       memcpy(indx_pad + SE, indx, n * sizeof(off_t));
 
-      switch (MIRROR_BORDERS) {
-      case 0:
+      if (!MIRROR_BORDERS) {
         //  pad border by replicating
         for (off_t ii = 0; ii < SE; ii++) {
           indx_pad[ii]          = indx[0];
           indx_pad[n + SE + ii] = indx[n - 1];
         }
-        break;
-      case 1:
+      } else {
         //  pad border by mirroring
         for (off_t ii = 0; ii < SE; ii++) {
-          indx_pad[ii]          = indx[SE - ii];
+          indx_pad[ii] = indx[SE - ii];
+          // JOE XXX shall check if (n >= 2 + ii)
           indx_pad[n + ii + SE] = indx[n - 2 - ii];
         }
-        break;
       }
 
       // init histogram
@@ -145,21 +153,24 @@ namespace smil
 
       delete[] indx_pad;
       delete[] H;
+
+      return RES_OK;
     }
 
     /*
      *
      */
-    void conj_dilation(T *x, int n, int SE, T *y)
+    RES_T conj_dilation(T *x, int n, int SE, T *y)
     {
       uint64_t HWidth = numeric_limits<T>::max();
-      T *H            = new T[HWidth];
-
+      T *H            = new T[HWidth]();
       //  pad border by replicating
-      T *x_pad = new T[n + 2 * SE];
+      T *x_pad = new T[n + 2 * SE]();
       memcpy(x_pad + SE, x, n * sizeof(T));
-      memset(x_pad, x[0], SE);
-      memset(x_pad + n + SE, x[n - 1], SE);
+      for (off_t i = 0; i < SE; i++) {
+        x_pad[i]          = x[0];
+        x_pad[n + SE + i] = x[n - 1];
+      }
 
       // init histogram
       for (off_t ii = 0; ii < SE; ii++)
@@ -174,15 +185,17 @@ namespace smil
 
       delete[] x_pad;
       delete[] H;
+
+      return RES_OK;
     }
 
     /*
      *
      */
-    void rank_open(T *x, off_t *indx, int n, int SE, int r, T *y)
+    RES_T rank_open(T *x, off_t *indx, int n, int SE, int r, T *y)
     {
-      T *xi  = new T[n];
-      T *dxi = new T[n];
+      T *xi  = new T[n]();
+      T *dxi = new T[n]();
 
       rank_filter_indx(x, indx, n, SE, r, xi);
       conj_dilation(xi, n, SE, dxi);
@@ -192,6 +205,8 @@ namespace smil
 
       delete[] xi;
       delete[] dxi;
+
+      return RES_OK;
     }
 
   public:
@@ -204,26 +219,23 @@ namespace smil
     {
       ASSERT_ALLOCATED(&imIn, &imOut);
       ASSERT_SAME_SIZE(&imIn, &imOut);
+      ASSERT(imIn.getDepth() == 1);
       ASSERT(tolerance >= 0);
       ASSERT(step > 0);
 
-      // lenghtDir and SQRT_2 are never used...
-      // JOE double SQRT_2 = sqrt(2.);
-      // JOE double lengthDir;
       int Dir, DirH, DirV;
-      off_t i, j, whichLine;
-      // int stackSize;
+      int i, j, whichLine;
 
       off_t W = (off_t) imIn.getWidth();
       off_t H = (off_t) imIn.getHeight();
-      T F;
+      T F     = 0;
 
       typename ImDtTypes<T>::lineType bufferIn  = imIn.getPixels();
       typename ImDtTypes<T>::lineType bufferOut = imOut.getPixels();
 
       // Initialisation
-      memset(bufferOut, 0, W * H * sizeof(T));
-      off_t *indx = new off_t[W + H];
+      fill(imOut, T(0));
+      off_t *indx = new off_t[W + H]();
 
       // First direction Left to right
       // printf ("direction 1: left-to-right\n");
@@ -655,10 +667,6 @@ namespace smil
     ParsimoniousPathOpening_C<T> pOpen;
 
     RES_T res;
-
-    // checks (done inside functor)
-    // imIn, imOut : allocated and same size
-    // Size, tolerance, step : > 0
 
     res = pOpen.doIt(imIn, Size, tolerance, step, imOut);
 

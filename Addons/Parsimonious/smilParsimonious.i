@@ -44,11 +44,11 @@ SMIL_MODULE(smilParsimonious)
 
 %{
 /* Includes the header in the wrapper code */
-#include "DParsimonious.hpp"
+#include "DParsimonious.h"
 %}
 
 %import smilCore.i
 
-%include "DParsimonious.hpp"
+%include "DParsimonious.h"
 TEMPLATE_WRAP_FUNC(ImParsimoniousIncompletePathOpening)
 

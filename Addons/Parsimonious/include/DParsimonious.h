@@ -82,6 +82,6 @@ namespace smil
 
 } // namespace smil
 
-#include "private/private/DParsimonious.hpp"
+#include "private/FastIncompletePathOpening.hpp"
 
-#endif __FAST_PIPATH_OPENING_H__
+#endif // __FAST_PIPATH_OPENING_H__
