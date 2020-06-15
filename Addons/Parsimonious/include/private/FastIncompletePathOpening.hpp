@@ -70,7 +70,7 @@ namespace smil
   public:
     ParsimoniousPathOpening_C()
     {
-      MIRROR_BORDERS = false;
+      MIRROR_BORDERS = true;
     }
     ~ParsimoniousPathOpening_C()
     {
