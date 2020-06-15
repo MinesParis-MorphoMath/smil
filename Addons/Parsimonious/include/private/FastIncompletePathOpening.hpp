@@ -70,21 +70,13 @@ namespace smil
   public:
     ParsimoniousPathOpening_C()
     {
-      MIRROR_BORDERS = true;
+      MIRROR_BORDERS = false;
     }
     ~ParsimoniousPathOpening_C()
     {
     }
 
   private:
-    T MAXOF(T x, T y)
-    {
-      return x > y ? x : y;
-    }
-    T MINOF(T x, T y)
-    {
-      return x < y ? x : y;
-    }
 
     /*
      *
@@ -132,7 +124,8 @@ namespace smil
         for (off_t ii = 0; ii < SE; ii++) {
           indx_pad[ii] = indx[SE - ii];
           // JOE - BUG shall check if (n >= 2 + ii)
-          indx_pad[n + ii + SE] = indx[n - 2 - ii];
+          off_t ix = max((off_t) 0, n - 2 - ii);
+          indx_pad[n + ii + SE] = indx[ix];
         }
       }
 
@@ -200,7 +193,7 @@ namespace smil
       conj_dilation(xi, n, SE, dxi);
 
       for (off_t ii = 0; ii < n; ii++)
-        y[indx[ii]] = MAXOF(y[indx[ii]], MINOF(x[indx[ii]], dxi[ii]));
+        y[indx[ii]] = max(y[indx[ii]], min(x[indx[ii]], dxi[ii]));
 
       delete[] xi;
       delete[] dxi;
