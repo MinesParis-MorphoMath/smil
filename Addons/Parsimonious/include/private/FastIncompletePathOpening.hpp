@@ -53,6 +53,7 @@
 #define __FAST_PIPATH_OPENING_HPP__
 
 #include <queue>
+#include "Morpho/include/DMorpho.h"
 
 namespace smil
 {
@@ -69,7 +70,7 @@ namespace smil
   public:
     ParsimoniousPathOpening_C()
     {
-      MIRROR_BORDERS = false;
+      MIRROR_BORDERS = true;
     }
     ~ParsimoniousPathOpening_C()
     {
@@ -94,7 +95,7 @@ namespace smil
       T ii;
       /*
        * size of HWidth shall be bigger than size of T
-       * this loop may be really long when T is of type UINT32
+       * this loop may take really long when T is of type UINT32
        */
       off_t HWidth = numeric_limits<T>::max();
 
@@ -111,11 +112,9 @@ namespace smil
      */
     RES_T rank_filter_indx(T *x, off_t *indx, int n, int SE, int r, T *y)
     {
-      // cout << "Enter rank_filter_indx " << n << " " << SE << " " << r <<
-      // endl;
+      // cout << "rank_filter_indx " << n << " " << SE << " " << r << endl;
       uint64_t HWidth = numeric_limits<T>::max();
 
-      // cout << "HWidth " << HWidth << endl;
       T *H = new T[HWidth]();
 
       //  pad border
@@ -132,7 +131,7 @@ namespace smil
         //  pad border by mirroring
         for (off_t ii = 0; ii < SE; ii++) {
           indx_pad[ii] = indx[SE - ii];
-          // JOE XXX shall check if (n >= 2 + ii)
+          // JOE - BUG shall check if (n >= 2 + ii)
           indx_pad[n + ii + SE] = indx[n - 2 - ii];
         }
       }
@@ -389,8 +388,10 @@ namespace smil
           whichLine += DirV;
           cnt++;
         } while (i <= W - 2 && whichLine >= 1);
+        // cout << "Cinq" << endl;
         rank_open(bufferIn, indx, cnt, size, tolerance, bufferOut);
       }
+
       for (i = 0; i < W - 1; i += step) {
         // JOE wp        = 0;
         // JOE Length    = 0;
@@ -611,6 +612,7 @@ namespace smil
         } while (i >= 1 && whichLine >= 1);
         rank_open(bufferIn, indx, cnt, size, tolerance, bufferOut);
       }
+
       for (i = 1; i < W; i += step) {
         // JOE wp        = 0;
         // JOE Length    = 0;
@@ -669,11 +671,14 @@ namespace smil
     RES_T res;
 
     res = pOpen.doIt(imIn, Size, tolerance, step, imOut);
+    if (res != RES_OK) {
+      ERR_MSG("Error doint path opening");
+      return res;
+    }
 
-    /* Shall this be done here ??? */
     /* Do rebuild */
-    if (res == RES_OK && rebuild) {
-      // res = build(imIn, imOut, imOut);
+    if (rebuild) {
+      res = build(imIn, imOut, imOut);
       if (res != RES_OK)
         ERR_MSG("Error while rebuilding after Path Opening");
     }
