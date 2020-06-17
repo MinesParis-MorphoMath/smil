@@ -122,10 +122,11 @@ namespace smil
       } else {
         //  pad border by mirroring
         for (off_t ii = 0; ii < SE; ii++) {
-          indx_pad[ii] = indx[SE - ii];
-          // JOE - BUG shall check if (n >= 2 + ii)
-          off_t ix = max((off_t) 0, n - 2 - ii);
-          indx_pad[n + ii + SE] = indx[ix];
+          off_t ix;
+          ix = min((off_t) (n - 1), SE - ii);
+          indx_pad[ii] = indx[ix];
+          ix = max((off_t) 0, n - 2 - ii);
+          indx_pad[n + ii + SE] = indx[ix]; 
         }
       }
 
@@ -189,8 +190,8 @@ namespace smil
       T *xi  = new T[n]();
       T *dxi = new T[n]();
 
-      rank_filter_indx(x, indx, n, SE, r, xi);
-      conj_dilation(xi, n, SE, dxi);
+      (void ) rank_filter_indx(x, indx, n, SE, r, xi);
+      (void ) conj_dilation(xi, n, SE, dxi);
 
       for (off_t ii = 0; ii < n; ii++)
         y[indx[ii]] = max(y[indx[ii]], min(x[indx[ii]], dxi[ii]));
