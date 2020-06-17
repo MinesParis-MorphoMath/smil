@@ -70,13 +70,32 @@ namespace smil
    * @param[in]  Size :
    * @param[in]  tolerance :
    * @param[in]  step :
-   * @param[in]  rec :
+   * @param[in]  rebuild :
    * @param[out] imOut : output Image
    */
   template <class T>
   RES_T ImParsimoniousIncompletePathOpening(Image<T> &imIn, int Size,
                                             int tolerance, int step,
                                             bool rebuild, Image<T> &imOut);
+
+  /**
+   * @brief ImNormalizeAuto : Linear conversion of pixels values to the domain
+   * range
+   * @param[in]  imIn : input Image
+   * @param[in]  Size :
+   * @param[in]  tolerance :
+   * @param[in]  step :
+   * @param[out] imOut : output Image
+   */
+  template <class T>
+  RES_T ImParsimoniousIncompletePathOpening(Image<T> &imIn, int Size,
+                                            int tolerance, int step,
+                                            Image<T> &imOut)
+  {
+    return ImParsimoniousIncompletePathOpening(imIn, Size,
+                                               tolerance, step,
+                                               true, imOut);
+  }
 
   /** @} */
 

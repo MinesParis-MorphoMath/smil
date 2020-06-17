@@ -672,7 +672,7 @@ namespace smil
 
     /* Do rebuild */
     if (rebuild) {
-      res = build(imIn, imOut, imOut);
+      res = geoBuild(imOut, imIn, imOut);
       if (res != RES_OK)
         ERR_MSG("Error while rebuilding after Path Opening");
     }
