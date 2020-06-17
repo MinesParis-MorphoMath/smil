@@ -198,6 +198,15 @@ IF(CMAKE_COMPILER_IS_GNUCC)
   # Try to have a clean code to avoid silly bugs
   # ADD_DEFINITIONS("-pedantic -Wall -Wextra -Weffc++  -Wsign-compare -Wsign-conversion -Wconversion")
   ADD_DEFINITIONS("-Wall -Wextra -Wsign-compare")
+  IF(${CMAKE_CXX_COMPILER_VERSION} VERSION_GREATER "7.99.99")
+    ADD_DEFINITIONS("-Wno-error=class-memaccess")
+    ADD_DEFINITIONS("-Wno-error=ignored-qualifiers")
+    ADD_DEFINITIONS("-Wno-error=stringop-truncation")
+    ADD_DEFINITIONS("-Wno-unused-parameter")
+    ADD_DEFINITIONS("-Wno-deprecated-copy")
+    # pour Swig
+    ADD_DEFINITIONS("-Wno-missing-field-initializers")  
+  ENDIF(CMAKE_CXX_COMPILER_VERSION)
   IF(CMAKE_CROSSCOMPILING)
     ADD_DEFINITIONS("-Wno-maybe-uninitialized")
   ENDIF(CMAKE_CROSSCOMPILING)
@@ -209,6 +218,8 @@ IF(GCC8)
   ADD_DEFINITIONS("-Wno-error=stringop-truncation")
   ADD_DEFINITIONS("-Wno-unused-parameter")
   ADD_DEFINITIONS("-Wno-deprecated-copy")
+  # pour Swig
+  ADD_DEFINITIONS("-Wno-missing-field-initializers")
 ENDIF(GCC8)
 
 # 64 Bits

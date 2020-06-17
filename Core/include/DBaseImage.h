@@ -197,6 +197,14 @@ namespace smil
             x = off % this->width;
         }
 
+        //! Get x,y(,z) coordinates for a given offset
+        inline void getCoordsFromOffset(off_t off, off_t &x, off_t &y, off_t &z) const
+        {
+            z = off / (this->width*this->height);
+            y = (off % (this->width*this->height))/this->width;
+            x = off % this->width;
+        }
+
         //! Get the description of the image
         virtual const char *getInfoString(const char * = "") const { return NULL; }
         //! Get the type of the image as a string ("UINT8",...)

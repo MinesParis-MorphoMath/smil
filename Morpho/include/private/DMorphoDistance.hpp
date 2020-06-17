@@ -837,15 +837,15 @@ namespace smil
 
     T2 T2_maxVal = ImDtTypes<T2>::max();
 
-    size_t x0, y0, z0;
-    size_t x1, y1, z1;
-    size_t x2, y2, z2;
+    off_t x0, y0, z0;
+    off_t x1, y1, z1;
+    off_t x2, y2, z2;
 
     off_t p0, p1, p2;
 
     float current_dist, wd;
 
-    size_t imSize[3];
+    off_t imSize[3];
     imIn.getSize(imSize);
     off_t maxOffset = imSize[2] * imSize[1] * imSize[0];
     std::vector<float> distVector(maxOffset, ImDtTypes<float>::max());

@@ -123,7 +123,7 @@ namespace smil
 
     size_t wOut = xyResol * wIn;
     size_t hOut = xyResol * hIn;
-    size_t dOut = rhoResol * rhoMax;
+    off_t  dOut = rhoResol * rhoMax;
 
     ImageFreezer freeze(imOut);
     imOut.setSize(wOut, hOut, dOut);
@@ -133,7 +133,7 @@ namespace smil
     typename Image<T1>::lineType lIn;
     typename Image<T2>::volType slicesOut = imOut.getSlices();
 
-    size_t rho;
+    off_t rho;
     double coef = 1 / (xyResol * rhoResol);
 
 #ifdef USE_OPEN_MP
