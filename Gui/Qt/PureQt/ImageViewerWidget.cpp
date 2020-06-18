@@ -368,6 +368,8 @@ void ImageViewerWidget::saveAs(const char *fileName)
     
     if (fName.isEmpty())
       return;
+    // replace by something like 
+    // QPixmap pixmap = this->grab();
     QPixmap pixMap = QPixmap::grabWidget(this);  
     pixMap.save(fName);  
 }
