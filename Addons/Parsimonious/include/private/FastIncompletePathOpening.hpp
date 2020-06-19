@@ -123,18 +123,15 @@ namespace smil
         //  pad border by mirroring
         for (off_t ii = 0; ii < SE; ii++) {
           off_t ix, iy;
-          /*
-          ix = min((off_t) (n - 1), SE - ii);
-          indx_pad[ii] = indx[ix];
-          ix = max((off_t) 0, n - 2 - ii);
-          indx_pad[n + ii + SE] = indx[ix]; 
-          */
-          ix = SE - ii - 1;
-          iy = (SE + ii - 1) % n;
+          ix = ii;
+          iy = (SE - ii) % n;
           indx_pad[ix] = indx[iy];
-          ix = n + SE + ii;
-          iy = (SE + ii - 2) % n;
-          indx_pad[ix] = indx[iy];
+          ix = SE + n + ii;
+          iy = n - 2 - ii;
+          while (iy < 0)
+            iy += n;
+          iy = iy % n;
+          indx_pad[ix] = indx[iy];          
         }
       }
 
