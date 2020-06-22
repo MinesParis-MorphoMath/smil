@@ -52,16 +52,18 @@ namespace smil
    * @{
    *
    *   Parsimonious incomplete-path openings
-   *   Author : Petr Dokladal (based on V. Morard's code)
-   *   implements Parsimonious Incomplete-Path Openings using the Rank Opening
+   *   Author : Petr Dokladal (based on V. Morard code)
+   *
+   *   Implements Parsimonious Incomplete-Path Openings using the Rank Opening
    *   (see Pierre Soille, On morphological operators based on rank filters,
-   *    Pattern Recognition 35 (2002) 527-535)
+   *    Pattern Recognition 35 (2002) 527-535).
+   *
    *   The rank opening is implemented as a rank filter followed by a dilation.
    *   It uses histograms.
    *
    * @author Petr Dokladal / Jose-Marcio Martins da Cruz
    *
-   * @{ */
+   */
 
   /**
    * @brief ImParsimoniousIncompletePathOpening
@@ -106,6 +108,7 @@ namespace smil
 
 } // namespace smil
 
+/** @cond */
 #include "private/FastIncompletePathOpening.hpp"
-
+/** @endcond */
 #endif // __FAST_PIPATH_OPENING_H__
