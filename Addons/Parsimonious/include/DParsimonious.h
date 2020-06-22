@@ -52,7 +52,7 @@ namespace smil
    * @{
    *
    *   Parsimonious incomplete-path openings
-   *   Author : Petr Dokladal (based on V. Morard code)
+   *   Author : Petr Dokladal (based on Vincent Morard code)
    *
    *   Implements Parsimonious Incomplete-Path Openings using the Rank Opening
    *   (see Pierre Soille, On morphological operators based on rank filters,
@@ -61,7 +61,7 @@ namespace smil
    *   The rank opening is implemented as a rank filter followed by a dilation.
    *   It uses histograms.
    *
-   * @author Petr Dokladal / Jose-Marcio Martins da Cruz
+   * @author Petr Dokladal, Jose-Marcio Martins da Cruz
    *
    */
 
@@ -79,6 +79,7 @@ namespace smil
    * import smilPython as sp
    * if sp.ImParsimoniousIncompletePathOpening(imIn, 10, 20, 10, imOut):
    *   pass
+   * @endcode
    */
   template <class T>
   RES_T ImParsimoniousIncompletePathOpening(Image<T> &imIn, int Size,
