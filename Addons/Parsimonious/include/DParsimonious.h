@@ -48,7 +48,7 @@ namespace smil
 {
   /**
    * @ingroup Addons
-   * @addtogroup Parsimonious Parsimonious Path Opening
+   * @addtogroup AddonParsimonious Parsimonious Path Opening
    * @{
    *
    *   Parsimonious incomplete-path openings
