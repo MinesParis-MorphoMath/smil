@@ -423,8 +423,17 @@ class linkManager:
     
     def __del__(self):
       self.clear()
-      
 
+# dictionnary of renamed functions
+
+def GeoDist(*args):
+  return distanceGeodesic(*args)
+
+def geoDil(*args):
+  return geoDilate(*args)
+
+def geoEro(*args):
+  return geoErode(*args)
 
 %}
 

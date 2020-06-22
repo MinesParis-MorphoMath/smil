@@ -64,14 +64,19 @@ namespace smil
    * @{ */
 
   /**
-   * @brief ImNormalizeAuto : Linear conversion of pixels values to the domain
-   * range
+   * @brief ImParsimoniousIncompletePathOpening
+   * 
    * @param[in]  imIn : input Image
-   * @param[in]  Size :
+   * @param[in]  Size : size of Structuring Element
    * @param[in]  tolerance :
    * @param[in]  step :
-   * @param[in]  rebuild :
+   * @param[in]  rebuild : do Geodesic Rebuild after PathOpening
    * @param[out] imOut : output Image
+   *
+   * @code{.py}
+   * import smilPython as sp
+   * if sp.ImParsimoniousIncompletePathOpening(imIn, 10, 20, 10, imOut):
+   *   pass
    */
   template <class T>
   RES_T ImParsimoniousIncompletePathOpening(Image<T> &imIn, int Size,
@@ -79,10 +84,10 @@ namespace smil
                                             bool rebuild, Image<T> &imOut);
 
   /**
-   * @brief ImNormalizeAuto : Linear conversion of pixels values to the domain
-   * range
+   * @brief ImParsimoniousIncompletePathOpening
+   * 
    * @param[in]  imIn : input Image
-   * @param[in]  Size :
+   * @param[in]  Size : size of Structuring Element
    * @param[in]  tolerance :
    * @param[in]  step :
    * @param[out] imOut : output Image
