@@ -51,18 +51,21 @@ namespace smil
    * @addtogroup AddonParsimonious Parsimonious Path Opening
    * @{
    *
-   *   Parsimonious incomplete-path openings
-   *   Author : Petr Dokladal (based on Vincent Morard code)
+   *   @brief Parsimonious incomplete-path openings
    *
+   *   @details
    *   Implements Parsimonious Incomplete-Path Openings using the Rank Opening
-   *   (See @cite Soille_2002 : Pierre Soille, On morphological operators based on rank filters).
+   *   (See Pierre Soille @cite Soille_2002 and 
+   *   Petr Dokladal \cite dokladal:hal-01478089).
    *
    *   The rank opening is implemented as a rank filter followed by a dilation.
    *   It uses histograms.
    *
-   * @author Petr Dokladal, Jose-Marcio Martins da Cruz
+   * @author Petr Dokladal (based on Vincent Morard code), 
+   * @author Jose-Marcio Martins da Cruz (port to Smil)
    *
-   * @example demo-parsimonious-path-opening.py
+   * @details xxx
+   * @include demo-parsimonious-path-opening.py
    *
    */
 
