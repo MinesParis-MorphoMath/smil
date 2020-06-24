@@ -61,10 +61,11 @@ namespace smil
    *   The rank opening is implemented as a rank filter followed by a dilation.
    *   It uses histograms.
    *
-   * @author Petr Dokladal (based on Vincent Morard code), 
-   * @author Jose-Marcio Martins da Cruz (port to Smil)
+   *   @author Petr Dokladal (based on Vincent Morard code),
+   *   @author Jose-Marcio Martins da Cruz (port to Smil)
    *
-   * @details xxx
+   * @par Example of use
+   *
    * @include demo-parsimonious-path-opening.py
    *
    */
@@ -78,6 +79,8 @@ namespace smil
    * @param[in]  step :
    * @param[in]  rebuild : do Geodesic Rebuild after PathOpening
    * @param[out] imOut : output Image
+   *
+   * @warning This function may be very slow on UINT32 image type.
    *
    */
   template <class T>
