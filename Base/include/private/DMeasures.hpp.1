@@ -62,7 +62,7 @@ namespace smil
    * Area of an image
    *
    * Returns the number of non-zero pixels
-   * @param[in] imIn Input image.
+   * @param imIn Input image.
    */
   template <class T> size_t area(const Image<T> &imIn)
   {
@@ -85,7 +85,7 @@ namespace smil
    * Volume of an image
    *
    * Returns the sum of the pixel values.
-   * @param[in] imIn Input image.
+   * @param imIn Input image.
    */
   template <class T> double vol(const Image<T> &imIn)
   {
@@ -129,8 +129,8 @@ namespace smil
    * Mean value and standard deviation
    *
    * Returns mean and standard deviation of the pixel values.
-   * @param[in] imIn Input image.
-   * @param[in] onlyNonZero If true, only non-zero pixels are considered.
+   * @param imIn Input image.
+   * @param onlyNonZero If true, only non-zero pixels are considered.
    */
   template <class T>
   Vector_double meanVal(const Image<T> &imIn, bool onlyNonZero = false)
@@ -178,8 +178,8 @@ namespace smil
    * Min value of an image
    *
    * Returns the min of the pixel values.
-   * @param[in] imIn Input image.
-   * @param[in] onlyNonZero If true, only non-zero pixels are considered.
+   * @param imIn Input image.
+   * @param onlyNonZero If true, only non-zero pixels are considered.
    */
   template <class T> T minVal(const Image<T> &imIn, bool onlyNonZero = false)
   {
@@ -235,8 +235,8 @@ namespace smil
    * Max value of an image
    *
    * Returns the max of the pixel values.
-   * @param[in] imIn Input image.
-   * @param[in] onlyNonZero If true, only non-zero pixels are considered.
+   * @param imIn Input image.
+   * @param onlyNonZero If true, only non-zero pixels are considered.
    */
   template <class T> T maxVal(const Image<T> &imIn, bool onlyNonZero = false)
   {
@@ -284,8 +284,8 @@ namespace smil
    * Min and Max values of an image
    *
    * Returns the min and the max of the pixel values.
-   * @param[in] imIn Input image.
-   * @param[in] onlyNonZero If true, only non-zero pixels are considered.
+   * @param imIn Input image.
+   * @param onlyNonZero If true, only non-zero pixels are considered.
    */
   template <class T>
   vector<T> rangeVal(const Image<T> &imIn, bool onlyNonZero = false)
@@ -368,13 +368,11 @@ namespace smil
    * value that appears most often.
    */
   template <class T>
-  T modeVal(const Image<T> &imIn, bool onlyNonZero = true)
+  T measModeVal(const Image<T> &imIn, bool onlyNonZero = true)
   {
     measModeValFunc<T> func;
     return func(imIn, onlyNonZero);
   }
-
-
   template <class T>
   struct measMedianValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
@@ -406,7 +404,6 @@ namespace smil
       }   // for i= 0; i < size
           //            this->retVal = medianval;
     }     // virtual processSequence
-    
     virtual void finalize(const Image<T> & /*imIn*/)
     {
       typedef std::map<int, int>::iterator it_type;
@@ -433,16 +430,16 @@ namespace smil
   }; // END measMedianValFunc
 
   /**
-   * Get the median of the image histogram.
+   * Get the mode of the histogram present in the image, i.e. the
+   * value that appears most often.
    */
   template <class T>
-  T medianVal(const Image<T> &imIn, bool onlyNonZero = true)
+  T measMedianVal(const Image<T> &imIn, bool onlyNonZero = true)
   {
     measMedianValFunc<T> func;
     return func(imIn, onlyNonZero);
   }
 
-  
   /**
    * Get image values along a profile.
    */
@@ -619,35 +616,12 @@ namespace smil
   /**
    * Measure image moments
    *
-   * @param[in] im : Input image
-   * @param[in] onlyNonZero : use only non zero values
-   * @return For 2D images: vector(m00, m10, m01, m11, m20, m02)
-   * @return For 3D images: vector(m000, m100, m010, m001, m110, m101, m011, m200,
-   * m020, m002)
+   * @return * For 2D images: m00, m10, m01, m11, m20, m02
+   * @return * For 3D images: m000, m100, m010, m001, m110, m101, m011, m200,
+   * m020, m002
    *
-   * @see <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on
+   * See <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on
    * Wikipedia</a>
-   *
-   * @par Inertia matrix can be evaluated :
-   * 
-   *  @arg For @b 3D images :
-   *    @f[
-   *    M = 
-   *      \begin{bmatrix}
-   *        m020 + m002  & -m110 & -m101 \\
-   *       -m110 & m200 + m002   & -m011 \\
-   *       -m101 & -m011 &  m200 + m020 
-   *      \end{bmatrix}
-   *    @f]
-   *    @arg For @b 2D images :   
-   *    @f[
-   *    M = 
-   *      \begin{bmatrix}
-   *        m20 & -m11 \\
-   *       -m11 &  m20
-   *      \end{bmatrix}
-   *    @f]
-   * 
    */
   template <class T>
   Vector_double measImageMoments(const Image<T> &im,
@@ -660,52 +634,23 @@ namespace smil
   /**
    * Covariance between two images
    *
-   * @param[in] imIn1, imIn2 : Input Images
-   * @param[in] dx, dy, dz : direction
-   * @param[in] maxSteps : number maximum of displacements to evaluate
-   * @param[in] normalize : normalize result with respect to @b vec[0]
-   * @return vec[h]
-   *
    * The direction is given by @b dx, @b dy and @b dz.
-   * The lenght corresponds to the max number of steps @b maxSteps. @b h are 
-   * displacements in the direction defined by @b dx, @b dy and @b dz.
-   *
-   * @f[
-   *    vec[h] = \sum_{p \:\in\: imIn1} \frac{imIn1(p) \;.\; imIn2(p + h)}{N_p}
-   * @f]
-   * @f$N_p@f$ is the number of pixels used in each term of the sum, which may 
-   * different for each term in the sum.
+   * The lenght corresponds to the max number of steps @b maxSteps
    */
   template <class T>
   vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2,
                                 size_t dx, size_t dy, size_t dz,
-                                size_t maxSteps = 0, bool normalize = false)
+                                UINT maxSteps = 0, bool normalize = false)
   {
     vector<double> vec;
     ASSERT(areAllocated(&imIn1, &imIn2, NULL), vec);
     ASSERT(haveSameSize(&imIn1, &imIn2, NULL),
            "Input images must have the same size", vec);
-    ASSERT((dx + dy + dz > 0), 
-           "dx, dy and dz can't be all zero at the same time", vec);
 
     size_t s[3];
     imIn1.getSize(s);
-
-    if (maxSteps == 0) {
-      maxSteps = max(max(s[0], s[1]), s[2]);
-      if (dx > 0)
-        maxSteps = min(maxSteps, s[0]);
-      if (dy > 0)
-        maxSteps = min(maxSteps, s[1]);
-      if (dz > 0)
-        maxSteps = min(maxSteps, s[2]);
-      if (maxSteps > 0)
-        maxSteps--;
-      else {
-        return vec;
-      }
-    }
-
+    if (maxSteps == 0)
+      maxSteps = max(max(s[0], s[1]), s[2]) - 1;
     vec.clear();
 
     typename ImDtTypes<T>::volType slicesIn1 = imIn1.getSlices();
@@ -716,28 +661,21 @@ namespace smil
     typename ImDtTypes<T>::lineType lineIn2;
     typename ImDtTypes<T>::lineType bufLine = ImDtTypes<T>::createLine(s[0]);
 
-    for (size_t len = 0; len <= maxSteps; len++) {
+    for (UINT len = 0; len <= maxSteps; len++) {
       double prod = 0;
+      size_t xLen = s[0] - dx * len;
+      size_t yLen = s[1] - dy * len;
+      size_t zLen = s[2] - dz * len;
 
-      size_t mdx = min(dx * len, s[0] - 1);
-      size_t mdy = min(dy * len, s[1] - 1);
-      size_t mdz = min(dz * len, s[2] - 1);
-      
-      size_t xLen = s[0] - mdx;
-      size_t yLen = s[1] - mdy;
-      size_t zLen = s[2] - mdz;
-      
       for (size_t z = 0; z < zLen; z++) {
         curSliceIn1 = slicesIn1[z];
-        curSliceIn2 = slicesIn2[z + mdz];
-        for (size_t y = 0; y < yLen; y++) {
+        curSliceIn2 = slicesIn2[z + len * dz];
+        for (UINT y = 0; y < yLen; y++) {
           lineIn1 = curSliceIn1[y];
-          lineIn2 = curSliceIn2[y + mdy];
-          copyLine<T>(lineIn2 + mdx, xLen, bufLine);
-          // Vectorized loop
-          for (size_t x = 0; x < xLen; x++) {
+          lineIn2 = curSliceIn2[y + len * dy];
+          copyLine<T>(lineIn2 + len * dx, xLen, bufLine);
+          for (size_t x = 0; x < xLen; x++) // Vectorized loop
             prod += lineIn1[x] * bufLine[x];
-          }
         }
       }
       if (xLen * yLen * zLen != 0)
@@ -763,8 +701,8 @@ namespace smil
    * The lenght corresponds to the max number of steps @b maxSteps
    */
   template <class T>
-  vector<double> measAutoCovariance(const Image<T> &imIn, size_t dx, size_t dy,
-                                size_t dz, size_t maxSteps = 0,
+  vector<double> measCovariance(const Image<T> &imIn, size_t dx, size_t dy,
+                                size_t dz, UINT maxSteps = 0,
                                 bool normalize = false)
   {
     return measCovariance(imIn, imIn, dx, dy, dz, maxSteps, normalize);
@@ -777,36 +715,14 @@ namespace smil
    * The lenght corresponds to the max number of steps @b maxSteps
    */
   template <class T>
-  vector<double> measCenteredAutoCovariance(const Image<T> &imIn, size_t dx,
-                                        size_t dy, size_t dz, size_t maxSteps = 0,
+  vector<double> measCenteredCovariance(const Image<T> &imIn, size_t dx,
+                                        size_t dy, size_t dz, UINT maxSteps = 0,
                                         bool normalize = false)
   {
     Image<float> imMean(imIn, true);
     float meanV = meanVal(imMean)[0];
     sub(imMean, meanV, imMean);
-    return measAutoCovariance(imMean, dx, dy, dz, maxSteps, normalize);
-  }
-
-  /**
-   * Centered covariance
-   *
-   * The direction is given by @b dx, @b dy and @b dz.
-   * The lenght corresponds to the max number of steps @b maxSteps
-   */
-  template <class T>
-  vector<double> measCenteredCovariance(const Image<T> &imIn1, const Image<T> &imIn2, size_t dx,
-                                        size_t dy, size_t dz, size_t maxSteps = 0,
-                                        bool normalize = false)
-  {
-    Image<float> imMean1(imIn1, true);
-    float meanV1 = meanVal(imMean1)[0];
-    sub(imMean1, meanV1, imMean1);
-
-    Image<float> imMean2(imIn2, true);
-    float meanV2 = meanVal(imMean2)[0];
-    sub(imMean2, meanV2, imMean2);
-
-    return measCovariance(imMean1, imMean2, dx, dy, dz, maxSteps, normalize);
+    return measCovariance(imMean, dx, dy, dz, maxSteps, normalize);
   }
 
   /**

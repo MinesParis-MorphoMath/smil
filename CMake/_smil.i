@@ -427,13 +427,34 @@ class linkManager:
 # dictionnary of renamed functions
 
 def GeoDist(*args):
+  """
+  Function renamed to follow naming style. Better use distanceGeodesic
+  """
   return distanceGeodesic(*args)
 
 def geoDil(*args):
+  """
+  Function renamed to follow naming style. Better use geoDilate
+  """
   return geoDilate(*args)
 
 def geoEro(*args):
+  """
+  Function renamed to follow naming style. Better use geoErode
+  """
   return geoErode(*args)
+
+def measMedianVal(*args):
+  """
+  Function renamed to follow naming style. Better use medianVal
+  """
+  return medianVal(*args)
+
+def measModeVal(*args):
+  """
+  Function renamed to follow naming style. Better use modeVal
+  """
+  return modeVal(*args)
 
 %}
 

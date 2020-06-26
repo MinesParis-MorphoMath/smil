@@ -200,14 +200,16 @@ TEMPLATE_WRAP_FUNC(minVal);
 TEMPLATE_WRAP_FUNC(maxVal);
 TEMPLATE_WRAP_FUNC(rangeVal);
 TEMPLATE_WRAP_FUNC(valueList);
-TEMPLATE_WRAP_FUNC(measModeVal);
-TEMPLATE_WRAP_FUNC(measMedianVal);
+TEMPLATE_WRAP_FUNC(modeVal);
+TEMPLATE_WRAP_FUNC(medianVal);
 TEMPLATE_WRAP_FUNC(profile);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
 TEMPLATE_WRAP_FUNC(measImageMoments);
 TEMPLATE_WRAP_FUNC(measCovariance);
+TEMPLATE_WRAP_FUNC(measAutoCovariance);
 TEMPLATE_WRAP_FUNC(measCenteredCovariance);
+TEMPLATE_WRAP_FUNC(measCenteredAutoCovariance);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 TEMPLATE_WRAP_FUNC(isBinary);
 
