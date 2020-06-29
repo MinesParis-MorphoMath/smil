@@ -690,20 +690,24 @@ namespace smil
 
     size_t s[3];
     imIn1.getSize(s);
+    
+    size_t maxH = max(max(s[0], s[1]), s[2]);
+    if (dx > 0)
+      maxH = min(maxH, s[0]);
+    if (dy > 0)
+      maxH = min(maxH, s[1]);
+    if (dz > 0)
+      maxH = min(maxH, s[2]);
+    if (maxH > 0)
+      maxH--;
 
+    if (maxSteps == 0)
+      maxSteps = maxH;
+
+    maxSteps = min(maxSteps, maxH);
     if (maxSteps == 0) {
-      maxSteps = max(max(s[0], s[1]), s[2]);
-      if (dx > 0)
-        maxSteps = min(maxSteps, s[0]);
-      if (dy > 0)
-        maxSteps = min(maxSteps, s[1]);
-      if (dz > 0)
-        maxSteps = min(maxSteps, s[2]);
-      if (maxSteps > 0)
-        maxSteps--;
-      else {
-        return vec;
-      }
+      ERR_MSG("Too small");
+      return vec;
     }
 
     vec.clear();

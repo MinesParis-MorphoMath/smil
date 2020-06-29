@@ -2,6 +2,7 @@
 * Document distance functions (Morpho/include/private/DMorphoDistance.hpp)
 
 * Check some wrong doxygen tags (everywhere in source code)
+  Work in progress...
 
 * maxtree (use histogram to allocate right structures size)
 
@@ -10,6 +11,8 @@
 
 * it seems that there are a memory leak problem at watershed function
   Saw in huge images : 2000 x 2000 x 2000 (8 Gb)
+  OK - size of iterators variables enough just for image size smaller
+  than 32 bits. 
 
 * python online documentation
 
@@ -26,6 +29,7 @@
 
 * StochasticWS
   Needs   -std=c++11
+  OK !
 
 * Doc Addons
 
@@ -39,6 +43,7 @@
 
 * Advanced DMorphoPathOpening.h
   Lacking doxygen documentation in the end of file
+  Ask Petr what to do with this stuff...
 
 * Put Advanced and Addons in a namespace other than smilPython
 
@@ -46,6 +51,7 @@
   * Morpho/include/private/DMorphoDistance.hpp
     * distEuclidean
     * distV0
+  Renamed !!!
 
 * In Advanced : GLSZM
   * Shall change int to long to support images bigger than 2 Gpixels 
@@ -74,6 +80,5 @@
 
 * Select Python 2 or 3
 
-
-
+* review Hough Transform - test fails (inside an infinite loop ?)
 

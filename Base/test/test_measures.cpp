@@ -164,14 +164,14 @@ class Test_MeasCovariance : public TestCase
     im1 << vec1;
     im2 << vec2;
 
-    Vector_double cov = measCovariance(im1, im2, 1, 0, 0, 5);
+    Vector_double cov = measCovariance(im1, im2, 1, 0, 0, 4);
 
     TEST_ASSERT(cov[0] == 13929.6);
     TEST_ASSERT(cov[1] == 10913);
     TEST_ASSERT(cov[2] == 13026.4);
     TEST_ASSERT(cov[3] == 14196);
     TEST_ASSERT(cov[4] == 10114.8);
-    TEST_ASSERT(cov[5] == 0);
+    TEST_ASSERT(cov.size() == 5);
 
     if (retVal != RES_OK)
       for (vector<double>::iterator it = cov.begin(); it != cov.end(); it++)
