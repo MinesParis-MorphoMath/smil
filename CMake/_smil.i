@@ -444,6 +444,12 @@ def geoEro(*args):
   """
   return geoErode(*args)
 
+def dist(*args):
+  """
+  Function renamed to follow naming style. Better use distance
+  """
+  return distance(*args)
+
 def measMedianVal(*args):
   """
   Function renamed to follow naming style. Better use medianVal

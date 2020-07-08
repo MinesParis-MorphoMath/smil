@@ -62,7 +62,14 @@ namespace smil
    * Area of an image
    *
    * Returns the number of non-zero pixels
+   *
    * @param[in] imIn Input image.
+   *
+   * @warning The name of this function comes from times where images were
+   * mostly 2D only. In those days, the area of an image was said to be the
+   * area of @b xy plane where pixel values are non-zero, i.e., the number of
+   * non-zero pixels.
+   * This may be confusing for 3D images, but the idea remains the same.
    */
   template <class T> size_t area(const Image<T> &imIn)
   {
@@ -86,6 +93,12 @@ namespace smil
    *
    * Returns the sum of the pixel values.
    * @param[in] imIn Input image.
+   *
+   * @warning The name of this function comes from times where images were
+   * mostly 2D only. In those days, the volume of an image was said to be the
+   * volume defined by the @b xy plane with the third dimension being the
+   * intensity (pixel values).
+   * This may be confusing for 3D images, but the idea remains the same.
    */
   template <class T> double vol(const Image<T> &imIn)
   {
@@ -644,7 +657,7 @@ namespace smil
    *    M = 
    *      \begin{bmatrix}
    *        m20 & -m11 \\
-   *       -m11 &  m20
+   *       -m11 &  m02
    *      \end{bmatrix}
    *    @f]
    * 
@@ -658,7 +671,8 @@ namespace smil
   }
 
   /**
-   * Covariance between two images
+   * Covariance of two images in the direction defined by @b dx, 
+   * @b dy and @b dz.
    *
    * @param[in] imIn1, imIn2 : Input Images
    * @param[in] dx, dy, dz : direction
@@ -792,10 +806,27 @@ namespace smil
   }
 
   /**
-   * Centered covariance
+   * Centered covariance of two images in the direction defined by @b dx,
+   * @b dy and @b dz.
+   *
+   * @param[in] imIn1, imIn2 : Input Images
+   * @param[in] dx, dy, dz : direction
+   * @param[in] maxSteps : number maximum of displacements to evaluate
+   * @param[in] normalize : normalize result with respect to @b vec[0]
+   * @return vec[h]
    *
    * The direction is given by @b dx, @b dy and @b dz.
-   * The lenght corresponds to the max number of steps @b maxSteps
+   * The lenght corresponds to the max number of steps @b maxSteps. @b h are
+   * displacements in the direction defined by @b dx, @b dy and @b dz.
+   *
+   * @f[
+   *    vec[h] = \sum_{p \:\in\: imIn1} \frac{(imIn1(p) - meanVal(imIn1))
+   *                     \;.\; (imIn2(p + h) - meanVal(imIn2))}{N_p}
+   * @f]
+   *
+   * @f$N_p@f$ is the number of pixels used in each term of the sum, which may
+   * different for each term in the sum.
+   *
    */
   template <class T>
   vector<double> measCenteredCovariance(const Image<T> &imIn1, const Image<T> &imIn2, size_t dx,
