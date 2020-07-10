@@ -32,7 +32,7 @@ macro (pdebug msg)
 endmacro (pdebug)
 
 SET (CPACK_BUILD_BINARY_PACKAGES ON  CACHE BOOL "Build standard packages")
-SET (CPACK_BUILD_DEVEL_PACKAGES  OFF CACHE BOOL "Build devel packages")
+SET (CPACK_BUILD_DEVEL_PACKAGES  ON CACHE BOOL "Build devel packages")
 
 FILE (GLOB NATIVE_LIB_DEPENDENCIES ${CMAKE_CURRENT_BINARY_DIR}/depends/*)
 

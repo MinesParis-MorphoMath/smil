@@ -26,13 +26,13 @@
 #   - 05/05/2019 - by José-Marcio Martins da Cruz
 #     Just created it
 #   - 15/11/2019 - by Jose-Marcio Martins da Cruz
-#     Update for release 0.9.2
+#     Update for release 0.10.3
 #
 
 OPT=
 SRCDIR=
 PREFIX=/usr/local
-ADDONS="Color Filters HoughTransform Chabardes StochasticWS FFT"
+ADDONS="Color Filters HoughTransform Chabardes StochasticWS FFT Parsimonious"
 OTHER=
 Arch=auto
 

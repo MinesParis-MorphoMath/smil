@@ -36,7 +36,7 @@ using namespace smil;
 int main()
 {
     Image_UINT8 im1(1024, 1024);
-    Image_UINT16 im2(im1);
+    Image_UINT32 im2(im1);
     
     fill(im1, UINT8(0));
     drawRectangle(im1, 10,10,400,400, UINT8(255), true);
