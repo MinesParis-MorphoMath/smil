@@ -63,5 +63,6 @@ int main()
     BENCH_IMG_STR(dilate, "Cross3DSE", im1, im2, Cross3DSE());
     BENCH_IMG_STR(open, "CubeSE", im1, im2, CubeSE());
     BENCH_IMG_STR(open, "Cross3DSE", im1, im2, Cross3DSE());
+    BENCH_IMG_STR(open, "RhombicuboctahedronSE", im1, im2, RhombicuboctahedronSE());
 }
 

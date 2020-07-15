@@ -607,7 +607,7 @@ void compute_contrast(MaxTree2<T1,HeightCriterion,size_t,UINT32> &tree, T1* tran
         MaxTree2<T1,HeightCriterion,size_t,UINT32> tree;
         UINT32 root = tree.build(imIn, img_eti,se);
 
-	std::cout<<"ULTIMATE OPEN, after tree.build"<<"NB VERTEX="<<tree.getLabelMax()<<"\n";
+	// std::cout<<"ULTIMATE OPEN, after tree.build"<<"NB VERTEX="<<tree.getLabelMax()<<"\n";
         T1 *transformee_node = new T1[tree.getLabelMax()]();
         T2 *indicatrice_node = new T2[tree.getLabelMax()]();
 	//	std::cout<<"ULTIMATE OPEN, after memory allocation\n";
