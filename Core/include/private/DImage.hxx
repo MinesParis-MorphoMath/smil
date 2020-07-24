@@ -990,14 +990,48 @@ namespace smil {
             ERR_MSG("Wrong input NumPy array data type");
             return;
         }
+        int ndim = PyArray_NDIM(arr);
+        if (ndim > 3) {
+            ERR_MSG("Numpy array has more than three axes");
+            return;        
+        }
         npy_intp *dims = PyArray_DIMS(arr);
+        for (int i = 0; i < 3; i++) {
+          if (i >= ndim)
+            dims[i] = 1;
+        }
+       
         setSize(dims[0], dims[1], dims[2]);
+#if 0
         T *data = (T*)PyArray_DATA(arr);
         if (data)
         {
             for (size_t i=0;i<pixelCount;i++)
               pixels[i] = data[i];
         }
+#else
+
+#if 1
+        for (npy_intp i = 0; i < dims[0]; i++) {
+          for (npy_intp j = 0; j < dims[1]; j++) {
+            for (npy_intp k = 0; k < dims[2]; k++) {
+              T *v = (T *) PyArray_GETPTR3(arr, i, j, k);
+              setPixel(i, j, k, *v);
+            }
+          }
+        }
+#else
+        npy_intp ind[3];
+        for (ind[0] = 0; ind[0] < dims[0]; ind[0]++) {
+          for (ind[1] = 0; ind[1] < dims[1]; ind[1]++) {
+            for (ind[2] = 0; ind[2] < dims[2]; ind[2]++) {
+              T *v = (T *) PyArray_GetPtr(arr, ind);
+              setPixel(ind[0], ind[1], ind[2], *v);
+            }
+          }
+        }
+#endif
+#endif
         modified();
     }
 
