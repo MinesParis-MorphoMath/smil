@@ -1011,7 +1011,7 @@ namespace smil {
         }
 #else
 
-#if 1
+#if 0
         for (npy_intp i = 0; i < dims[0]; i++) {
           for (npy_intp j = 0; j < dims[1]; j++) {
             for (npy_intp k = 0; k < dims[2]; k++) {
