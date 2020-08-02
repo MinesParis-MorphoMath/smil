@@ -192,6 +192,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(drawBlobs)
 
 %include "DMeasures.hpp"
 TEMPLATE_WRAP_FUNC(vol);
+TEMPLATE_WRAP_FUNC(volume);
 %apply double *OUTPUT{double &mean_val};
 %apply double *OUTPUT{double &std_dev_val};
 TEMPLATE_WRAP_FUNC(meanVal);
@@ -215,6 +216,7 @@ TEMPLATE_WRAP_FUNC(isBinary);
 
 // Suppl. Types
 TEMPLATE_WRAP_SUPPL_FUNC(vol);
+TEMPLATE_WRAP_SUPPL_FUNC(volume);
 %apply double *OUTPUT{double &mean_val};
 %apply double *OUTPUT{double &std_dev_val};
 TEMPLATE_WRAP_SUPPL_FUNC(meanVal);

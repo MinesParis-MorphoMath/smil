@@ -94,13 +94,35 @@ namespace smil
    * Returns the sum of the pixel values.
    * @param[in] imIn Input image.
    *
+   * This is the same than the @b volume function call. Better use the
+   * unabridged name. The abridged name remains for back compatibility.
+   *
+   */
+  template <class T> double vol(const Image<T> &imIn)
+  {
+#if 1
+    return volume(imIn);
+#else
+    measVolFunc<T> func;
+    return func(imIn, false);
+#endif
+  }
+
+  /**
+   * Volume of an image
+   *
+   * The volume of an image, i.e., the sum of the pixel values.
+   *
+   * @param[in] imIn Input image.
+   * @return the volume (as a double)
+   *
    * @warning The name of this function comes from times where images were
    * mostly 2D only. In those days, the volume of an image was said to be the
    * volume defined by the @b xy plane with the third dimension being the
    * intensity (pixel values).
    * This may be confusing for 3D images, but the idea remains the same.
    */
-  template <class T> double vol(const Image<T> &imIn)
+  template <class T> double volume(const Image<T> &imIn)
   {
     measVolFunc<T> func;
     return func(imIn, false);
@@ -380,13 +402,11 @@ namespace smil
    * Get the mode of the histogram present in the image, i.e. the
    * value that appears most often.
    */
-  template <class T>
-  T modeVal(const Image<T> &imIn, bool onlyNonZero = true)
+  template <class T> T modeVal(const Image<T> &imIn, bool onlyNonZero = true)
   {
     measModeValFunc<T> func;
     return func(imIn, onlyNonZero);
   }
-
 
   template <class T>
   struct measMedianValFunc : public MeasureFunctionBase<T, T> {
@@ -419,7 +439,7 @@ namespace smil
       }   // for i= 0; i < size
           //            this->retVal = medianval;
     }     // virtual processSequence
-    
+
     virtual void finalize(const Image<T> & /*imIn*/)
     {
       typedef std::map<int, int>::iterator it_type;
@@ -448,14 +468,12 @@ namespace smil
   /**
    * Get the median of the image histogram.
    */
-  template <class T>
-  T medianVal(const Image<T> &imIn, bool onlyNonZero = true)
+  template <class T> T medianVal(const Image<T> &imIn, bool onlyNonZero = true)
   {
     measMedianValFunc<T> func;
     return func(imIn, onlyNonZero);
   }
 
-  
   /**
    * Get image values along a profile.
    */
@@ -635,32 +653,32 @@ namespace smil
    * @param[in] im : Input image
    * @param[in] onlyNonZero : use only non zero values
    * @return For 2D images: vector(m00, m10, m01, m11, m20, m02)
-   * @return For 3D images: vector(m000, m100, m010, m001, m110, m101, m011, m200,
-   * m020, m002)
+   * @return For 3D images: vector(m000, m100, m010, m001, m110, m101, m011,
+   * m200, m020, m002)
    *
    * @see <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on
    * Wikipedia</a>
    *
    * @par Inertia matrix can be evaluated :
-   * 
+   *
    *  @arg For @b 3D images :
    *    @f[
-   *    M = 
+   *    M =
    *      \begin{bmatrix}
    *        m020 + m002  & -m110 & -m101 \\
    *       -m110 & m200 + m002   & -m011 \\
-   *       -m101 & -m011 &  m200 + m020 
+   *       -m101 & -m011 &  m200 + m020
    *      \end{bmatrix}
    *    @f]
-   *    @arg For @b 2D images :   
+   *    @arg For @b 2D images :
    *    @f[
-   *    M = 
+   *    M =
    *      \begin{bmatrix}
    *        m20 & -m11 \\
    *       -m11 &  m02
    *      \end{bmatrix}
    *    @f]
-   * 
+   *
    */
   template <class T>
   Vector_double measImageMoments(const Image<T> &im,
@@ -671,7 +689,7 @@ namespace smil
   }
 
   /**
-   * Covariance of two images in the direction defined by @b dx, 
+   * Covariance of two images in the direction defined by @b dx,
    * @b dy and @b dz.
    *
    * @param[in] imIn1, imIn2 : Input Images
@@ -681,13 +699,13 @@ namespace smil
    * @return vec[h]
    *
    * The direction is given by @b dx, @b dy and @b dz.
-   * The lenght corresponds to the max number of steps @b maxSteps. @b h are 
+   * The lenght corresponds to the max number of steps @b maxSteps. @b h are
    * displacements in the direction defined by @b dx, @b dy and @b dz.
    *
    * @f[
    *    vec[h] = \sum_{p \:\in\: imIn1} \frac{imIn1(p) \;.\; imIn2(p + h)}{N_p}
    * @f]
-   * @f$N_p@f$ is the number of pixels used in each term of the sum, which may 
+   * @f$N_p@f$ is the number of pixels used in each term of the sum, which may
    * different for each term in the sum.
    */
   template <class T>
@@ -699,12 +717,12 @@ namespace smil
     ASSERT(areAllocated(&imIn1, &imIn2, NULL), vec);
     ASSERT(haveSameSize(&imIn1, &imIn2, NULL),
            "Input images must have the same size", vec);
-    ASSERT((dx + dy + dz > 0), 
+    ASSERT((dx + dy + dz > 0),
            "dx, dy and dz can't be all zero at the same time", vec);
 
     size_t s[3];
     imIn1.getSize(s);
-    
+
     size_t maxH = max(max(s[0], s[1]), s[2]);
     if (dx > 0)
       maxH = min(maxH, s[0]);
@@ -740,11 +758,11 @@ namespace smil
       size_t mdx = min(dx * len, s[0] - 1);
       size_t mdy = min(dy * len, s[1] - 1);
       size_t mdz = min(dz * len, s[2] - 1);
-      
+
       size_t xLen = s[0] - mdx;
       size_t yLen = s[1] - mdy;
       size_t zLen = s[2] - mdz;
-      
+
       for (size_t z = 0; z < zLen; z++) {
         curSliceIn1 = slicesIn1[z];
         curSliceIn2 = slicesIn2[z + mdz];
@@ -782,8 +800,8 @@ namespace smil
    */
   template <class T>
   vector<double> measAutoCovariance(const Image<T> &imIn, size_t dx, size_t dy,
-                                size_t dz, size_t maxSteps = 0,
-                                bool normalize = false)
+                                    size_t dz, size_t maxSteps = 0,
+                                    bool normalize = false)
   {
     return measCovariance(imIn, imIn, dx, dy, dz, maxSteps, normalize);
   }
@@ -796,8 +814,9 @@ namespace smil
    */
   template <class T>
   vector<double> measCenteredAutoCovariance(const Image<T> &imIn, size_t dx,
-                                        size_t dy, size_t dz, size_t maxSteps = 0,
-                                        bool normalize = false)
+                                            size_t dy, size_t dz,
+                                            size_t maxSteps = 0,
+                                            bool normalize  = false)
   {
     Image<float> imMean(imIn, true);
     float meanV = meanVal(imMean)[0];
@@ -829,9 +848,10 @@ namespace smil
    *
    */
   template <class T>
-  vector<double> measCenteredCovariance(const Image<T> &imIn1, const Image<T> &imIn2, size_t dx,
-                                        size_t dy, size_t dz, size_t maxSteps = 0,
-                                        bool normalize = false)
+  vector<double>
+  measCenteredCovariance(const Image<T> &imIn1, const Image<T> &imIn2,
+                         size_t dx, size_t dy, size_t dz, size_t maxSteps = 0,
+                         bool normalize = false)
   {
     Image<float> imMean1(imIn1, true);
     float meanV1 = meanVal(imMean1)[0];

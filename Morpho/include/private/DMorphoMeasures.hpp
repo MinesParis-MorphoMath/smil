@@ -47,7 +47,17 @@ namespace smil
    * Performs openings of increasing size (using steps of @b stepSize) and
    * measure the corresponding volume difference.
    *
-   * If @b CDF is true, return a Cumulative Distribution Function
+   * @param[in] imIn : Input Image
+   * @param[in] se : structuring element
+   * @param[in] stepSize : step size of increasing structuring element
+   * @param[in] CDF : returns a Cumulative Distribution Function instead of raw
+   * values
+   * @param[in] maxSeSize : max size of structuring element (stop criteria) - no
+   * limit when set to @b 0
+   * @return a vector with the volume differences corresponding to each size of
+   * the structuring element or the CDF if the @b CDF parameter is set to @b
+   * true
+   *
    */
   template <class T>
   vector<double>
@@ -65,17 +75,16 @@ namespace smil
     size_t seSize = stepSize;
 
     double v0 = vol(imIn);
-    double v1;
     T minv = minVal(imEro);
 
     do {
       erode(imEro, imEro, se(stepSize));
       dilate(imEro, imOpen, se(seSize));
-      v1 = vol(imOpen);
+      double v1 = vol(imOpen);
       res.push_back(v0 - v1);
       v0 = v1;
       seSize += stepSize;
-    } while (maxVal(imEro) > minv || (maxSeSize > 0 && maxSeSize > seSize));
+    } while (maxVal(imEro) > minv && (maxSeSize == 0 || maxSeSize >= seSize));
 
     if (CDF) {
       double aSum = 0;

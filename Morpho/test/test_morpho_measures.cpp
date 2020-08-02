@@ -56,8 +56,9 @@ class TestGranulometry : public TestCase
       im1 << vec1;
       
       vector<double> granulo = measGranulometry(im1, hSE(), 1, false);
-      
-      TEST_ASSERT(granulo[0]==12 && granulo[1]==7 && granulo[2]==24);
+
+      TEST_ASSERT(granulo[0]==3060 && granulo[1]==1785 && granulo[2]==6120);      
+      // TEST_ASSERT(granulo[0]==12 && granulo[1]==7 && granulo[2]==24);
       if (retVal!=RES_OK)
         for (UINT i=0;i<granulo.size();i++)
           cout << i << " " << granulo[i] << endl;
