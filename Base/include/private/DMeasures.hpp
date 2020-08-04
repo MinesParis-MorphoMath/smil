@@ -61,11 +61,12 @@ namespace smil
   /**
    * Area of an image
    *
-   * Returns the number of non-zero pixels
+   * The area of an image is defined as the number of non-zero pixels
    *
-   * @param[in] imIn Input image.
+   * @param[in] imIn : Input image.
+   * @return the number of non-zero pixels
    *
-   * @warning The name of this function comes from times where images were
+   * @note The name of this function comes from times where images were
    * mostly 2D only. In those days, the area of an image was said to be the
    * area of @b xy plane where pixel values are non-zero, i.e., the number of
    * non-zero pixels.
@@ -91,8 +92,8 @@ namespace smil
   /**
    * Volume of an image
    *
-   * Returns the sum of the pixel values.
-   * @param[in] imIn Input image.
+   * @param[in] imIn : Input image.
+   * @return the sum of pixel values
    *
    * This is the same than the @b volume function call. Better use the
    * unabridged name. The abridged name remains for back compatibility.
@@ -111,12 +112,12 @@ namespace smil
   /**
    * Volume of an image
    *
-   * The volume of an image, i.e., the sum of the pixel values.
+   * The volume of an image is defined as the sum of the pixel values.
    *
-   * @param[in] imIn Input image.
-   * @return the volume (as a double)
+   * @param[in] imIn : Input image.
+   * @return the sum of pixel values (as a double)
    *
-   * @warning The name of this function comes from times where images were
+   * @note The name of this function comes from times where images were
    * mostly 2D only. In those days, the volume of an image was said to be the
    * volume defined by the @b xy plane with the third dimension being the
    * intensity (pixel values).
@@ -163,9 +164,11 @@ namespace smil
   /**
    * Mean value and standard deviation
    *
-   * Returns mean and standard deviation of the pixel values.
-   * @param[in] imIn Input image.
-   * @param[in] onlyNonZero If true, only non-zero pixels are considered.
+   * @b mean and <b>standard deviation</b> of the pixel values.
+   *
+   * @param[in] imIn : Input image.
+   * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
+   * @return a vector with the mean and standard deviation of pixel values
    */
   template <class T>
   Vector_double meanVal(const Image<T> &imIn, bool onlyNonZero = false)
@@ -212,9 +215,9 @@ namespace smil
   /**
    * Min value of an image
    *
-   * Returns the min of the pixel values.
-   * @param[in] imIn Input image.
-   * @param[in] onlyNonZero If true, only non-zero pixels are considered.
+   * @param[in] imIn : Input image.
+   * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
+   * @return the min of the pixel values.
    */
   template <class T> T minVal(const Image<T> &imIn, bool onlyNonZero = false)
   {
@@ -269,9 +272,9 @@ namespace smil
   /**
    * Max value of an image
    *
-   * Returns the max of the pixel values.
-   * @param[in] imIn Input image.
-   * @param[in] onlyNonZero If true, only non-zero pixels are considered.
+   * @param[in] imIn : Input image.
+   * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
+   * @return the max of the pixel values.
    */
   template <class T> T maxVal(const Image<T> &imIn, bool onlyNonZero = false)
   {
@@ -318,9 +321,9 @@ namespace smil
   /**
    * Min and Max values of an image
    *
-   * Returns the min and the max of the pixel values.
-   * @param[in] imIn Input image.
-   * @param[in] onlyNonZero If true, only non-zero pixels are considered.
+   * @param[in] imIn : Input image.
+   * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
+   * @returns a vector with the min and the max of the pixel values.
    */
   template <class T>
   vector<T> rangeVal(const Image<T> &imIn, bool onlyNonZero = false)
@@ -356,7 +359,13 @@ namespace smil
   /**
    * Get the list of the pixel values present in the image
    *
+   * @param[in] imIn : Input image.
+   * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
+   * @return a vector with the values found in the image.
+   *
    * @see histogram
+   * @warning In huge images of type @b UINT32, this function may return a
+   * huge vector.
    */
   template <class T>
   vector<T> valueList(const Image<T> &imIn, bool onlyNonZero = true)
@@ -364,6 +373,7 @@ namespace smil
     valueListFunc<T> func;
     return func(imIn, onlyNonZero);
   }
+
   template <class T> struct measModeValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
 
@@ -401,6 +411,11 @@ namespace smil
   /**
    * Get the mode of the histogram present in the image, i.e. the
    * value that appears most often.
+   *
+   * @param[in] imIn : input image
+   * @param[in] onlyNonZero : consider only non zero values
+   * @return the value that appears more often
+   * @note In a multimodal distribution, returns the biggest one.
    */
   template <class T> T modeVal(const Image<T> &imIn, bool onlyNonZero = true)
   {
@@ -447,12 +462,8 @@ namespace smil
       for (it_type my_iterator = nbList.begin(); my_iterator != nbList.end();
            my_iterator++) {
         acc_elem = acc_elem + my_iterator->second; //  nbList;
-        std::cout << "iterator_values" << my_iterator->first
-                  << my_iterator->second << "\n";
         if (acc_elem > total_elems / 2.0) {
           medianval = my_iterator->first;
-          std::cout << "acc_elem=" << acc_elem << "medianval="
-                    << "\n";
           break;
         }
         // iterator->first = key
@@ -467,6 +478,9 @@ namespace smil
 
   /**
    * Get the median of the image histogram.
+   * @param[in] imIn : Input image.
+   * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
+   * @return the median of the image histogram
    */
   template <class T> T medianVal(const Image<T> &imIn, bool onlyNonZero = true)
   {
@@ -475,7 +489,14 @@ namespace smil
   }
 
   /**
-   * Get image values along a profile.
+   * Get image values along a line defined by the points  @f$(x_0, y_0)@f$ and
+   * @f$(x_1, y_1)@f$ in the slice @f$z@f$.
+   *
+   * @param[in] im : input image
+   * @param[in] x0, y0 : start point
+   * @param[in] x1, y1 : end point
+   * @param[in] z : slice
+   * @return vector with pixel values
    */
   template <class T>
   vector<T> profile(const Image<T> &im, size_t x0, size_t y0, size_t x1,
@@ -491,8 +512,8 @@ namespace smil
     if (x0 >= imW || y0 >= imH || x1 >= imW || y1 >= imH)
       bPoints = bresenhamPoints(x0, y0, x1, y1, imW, imH);
     else
-      bPoints =
-          bresenhamPoints(x0, y0, x1, y1); // no image range check (faster)
+      // no image range check (faster)
+      bPoints = bresenhamPoints(x0, y0, x1, y1);
 
     typename Image<T>::sliceType lines = im.getSlices()[z];
 
@@ -532,6 +553,12 @@ namespace smil
     }
   };
 
+  /**
+   * measBarycenter
+   * Gets the barycenter of an image
+   * @param[in] im : input image
+   * @return vector with the coordinates of barycenter
+   */
   template <class T> Vector_double measBarycenter(Image<T> &im)
   {
     measBarycenterFunc<T> func;
@@ -588,9 +615,10 @@ namespace smil
     }
   };
   /**
-   * Bounding Box measure
+   * Bounding Box measure - gets the coordinates of the bounding box
    *
-   * @return xMin, yMin (,zMin), xMax, yMax (,zMax)
+   * @param[in] im : input image
+   * @return a vector with <b> xMin, yMin (,zMin), xMax, yMax (,zMax) </b>
    */
   template <class T> vector<size_t> measBoundBox(Image<T> &im)
   {
@@ -656,6 +684,9 @@ namespace smil
    * @return For 3D images: vector(m000, m100, m010, m001, m110, m101, m011,
    * m200, m020, m002)
    *
+   * @see measImageBlobsMoments() call if you want to evaluate moments for each
+   * blob.
+   *
    * @see <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on
    * Wikipedia</a>
    *
@@ -692,21 +723,25 @@ namespace smil
    * Covariance of two images in the direction defined by @b dx,
    * @b dy and @b dz.
    *
+   * The direction is given by @b dx, @b dy and @b dz.
+   *
+   * The lenght corresponds to the max number of steps @b maxSteps. When @b 0,
+   * the length is limites by the dimensions of the image.
+   *
+   * @f[
+   *    vec[h] = \sum_{p \:\in\: imIn1} \frac{imIn1(p) \;.\; imIn2(p + h)}{N_p}
+   * @f]
+   * where @b h are displacements in the direction defined by @b dx, @b dy and
+   * @b dz.
+   *
+   * @f$N_p@f$ is the number of pixels used in each term of the sum, which may
+   * different for each term in the sum.
+   *
    * @param[in] imIn1, imIn2 : Input Images
    * @param[in] dx, dy, dz : direction
    * @param[in] maxSteps : number maximum of displacements to evaluate
    * @param[in] normalize : normalize result with respect to @b vec[0]
    * @return vec[h]
-   *
-   * The direction is given by @b dx, @b dy and @b dz.
-   * The lenght corresponds to the max number of steps @b maxSteps. @b h are
-   * displacements in the direction defined by @b dx, @b dy and @b dz.
-   *
-   * @f[
-   *    vec[h] = \sum_{p \:\in\: imIn1} \frac{imIn1(p) \;.\; imIn2(p + h)}{N_p}
-   * @f]
-   * @f$N_p@f$ is the number of pixels used in each term of the sum, which may
-   * different for each term in the sum.
    */
   template <class T>
   vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2,
@@ -828,23 +863,26 @@ namespace smil
    * Centered covariance of two images in the direction defined by @b dx,
    * @b dy and @b dz.
    *
-   * @param[in] imIn1, imIn2 : Input Images
-   * @param[in] dx, dy, dz : direction
-   * @param[in] maxSteps : number maximum of displacements to evaluate
-   * @param[in] normalize : normalize result with respect to @b vec[0]
-   * @return vec[h]
-   *
    * The direction is given by @b dx, @b dy and @b dz.
-   * The lenght corresponds to the max number of steps @b maxSteps. @b h are
-   * displacements in the direction defined by @b dx, @b dy and @b dz.
+   *
+   * The lenght corresponds to the max number of steps @b maxSteps. When @b 0,
+   * the length is limites by the dimensions of the image.
    *
    * @f[
    *    vec[h] = \sum_{p \:\in\: imIn1} \frac{(imIn1(p) - meanVal(imIn1))
    *                     \;.\; (imIn2(p + h) - meanVal(imIn2))}{N_p}
    * @f]
+   * where @b h are displacements in the direction defined by @b dx, @b dy and
+   * @b dz.
    *
    * @f$N_p@f$ is the number of pixels used in each term of the sum, which may
    * different for each term in the sum.
+   *
+   * @param[in] imIn1, imIn2 : Input Images
+   * @param[in] dx, dy, dz : direction
+   * @param[in] maxSteps : number maximum of displacements to evaluate
+   * @param[in] normalize : normalize result with respect to @b vec[0]
+   * @return vec[h]
    *
    */
   template <class T>
@@ -866,7 +904,11 @@ namespace smil
 
   /**
    * Non-zero point offsets.
-   * Return a vector conatining the offset of all non-zero points in image.
+   *
+   * @param[in] imIn : input image
+   * @return a vector containing the offset of all non-zero points in image.
+   * @warning In huge images this can return a very big vector, in the same
+   * order than the image size.
    */
   template <class T> Vector_UINT nonZeroOffsets(Image<T> &imIn)
   {
@@ -885,8 +927,10 @@ namespace smil
 
   /**
    * Test if an image is binary.
-   * Return @b true if the only pixel values are ImDtTypes<T>::min() and
-   * ImDtTypes<T>::max()
+   *
+   * @param[in] imIn : image
+   * @return @b true if the only pixel values are @b ImDtTypes<T>::min() and
+   * @b ImDtTypes<T>::max()
    */
   template <class T> bool isBinary(const Image<T> &imIn)
   {
