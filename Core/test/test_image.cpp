@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,19 +27,36 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _D_IMAGE_IO_H
-#define _D_IMAGE_IO_H
+#include "DImage.h"
+#include "DTest.h"
 
-/*
- * XXX @defgroup IO IO and Image Formats
- */
+#include <iostream>
+#include <fstream>
 
-#include "Core/include/DCommon.h"
-#include "DCommonIO.h"
-#include "private/DImageIO.hpp"
-#include "private/DImageIO.hxx"
-#include "private/DImageIO_RAW.hpp"
+using namespace smil;
 
-using namespace std;
+class Test_Image : public TestCase
+{
+  virtual void run()
+  {
+    Image_UINT8  im8(16, 16);
+    Image_UINT16 im16(16, 16);
+    Image_UINT32 im32(16, 16);
 
-#endif // _D_IMAGE_IO_H
+    im8.printSelf(1);
+    im16.printSelf(1);
+    im32.printSelf(1);
+    
+    TEST_ASSERT(2 == 2);
+  }
+};
+
+int main()
+{
+  TestSuite ts;
+
+  ADD_TEST(ts, Test_Image);
+
+
+  return ts.run();
+}

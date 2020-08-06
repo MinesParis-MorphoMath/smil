@@ -45,6 +45,9 @@ namespace smil
   /**
    * @ingroup Base
    * @defgroup Measures Base measures
+   *
+   * Common useful measures on images, not based on Morphological operations
+   *
    * @{
    */
 
@@ -415,7 +418,8 @@ namespace smil
    * @param[in] imIn : input image
    * @param[in] onlyNonZero : consider only non zero values
    * @return the value that appears more often
-   * @note In a multimodal distribution, returns the biggest one.
+   * @note In a multimodal distribution, returns one one value : the biggest 
+   * one or the first found.
    */
   template <class T> T modeVal(const Image<T> &imIn, bool onlyNonZero = true)
   {
@@ -726,7 +730,7 @@ namespace smil
    * The direction is given by @b dx, @b dy and @b dz.
    *
    * The lenght corresponds to the max number of steps @b maxSteps. When @b 0,
-   * the length is limites by the dimensions of the image.
+   * the length is limited by the dimensions of the image.
    *
    * @f[
    *    vec[h] = \sum_{p \:\in\: imIn1} \frac{imIn1(p) \;.\; imIn2(p + h)}{N_p}
@@ -866,7 +870,7 @@ namespace smil
    * The direction is given by @b dx, @b dy and @b dz.
    *
    * The lenght corresponds to the max number of steps @b maxSteps. When @b 0,
-   * the length is limites by the dimensions of the image.
+   * the length is limited by the dimensions of the image.
    *
    * @f[
    *    vec[h] = \sum_{p \:\in\: imIn1} \frac{(imIn1(p) - meanVal(imIn1))
