@@ -59,7 +59,7 @@ namespace smil
   /**
    * @addtogroup IO
    */
-  /**@{*/
+  /* *@{*/
 
   /** @cond */
   template <class T>
@@ -141,7 +141,7 @@ namespace smil
       return RES_ERR;
   }
 
-  /**
+  /*
    * Read a stack of 2D images and convert then into a 3D image
    *
    */
@@ -175,11 +175,8 @@ namespace smil
     return RES_OK;
   }
 
-  /**
+  /*
    * Write image file
-   *
-   * @param[in] image : image to write to file
-   * @param[in] filename : file name 
    */
   template <class T> RES_T write(const Image<T> &image, const char *filename)
   {
@@ -193,11 +190,8 @@ namespace smil
       return RES_ERR;
   }
 
-  /**
+  /*
    * Write 3D image into a stack of 2D image files
-   *
-   * @param[in] image : image to write to file
-   * @param[in] fileList : list of filenames.
    */
   template <class T>
   RES_T write(const Image<T> &image, const vector<string> fileList)
@@ -220,21 +214,20 @@ namespace smil
     return RES_OK;
   }
 
-  /**
+  /*
   * Get information about file
   *
-  * @param[in] filename :
-  * @param[out] fInfo :
   */
   RES_T getFileInfo(const char *filename, ImageFileInfo &fInfo);
 
-  /**
+
+  /*
   * createFromFile 
-  * TBD
+  *
   */
   BaseImage *createFromFile(const char *filename);
 
-  /**@}*/
+  /* *@}*/
 
 } // namespace smil
 

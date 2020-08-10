@@ -50,7 +50,8 @@ namespace smil
     /**
     * Measure label areas.
     * Return a map(labelValue, size_t) with the area of each label value.
-    * @demo{blob_measures.py}
+    *
+    * @smilexample{blob_measures.py}
     */
     template <class T>
     map<T, double> measAreas(const Image<T> &imLbl, const bool onlyNonZero=true)
@@ -153,7 +154,7 @@ namespace smil
     * Measure barycenter of a labeled image.
     * Return a map(labelValue, Point) with the barycenter point coordinates for each label.
     * 
-    * @demo{blob_measures.py}
+    * @smilexample{blob_measures.py}
     */
     template <class T>
     map<T, Vector_double> measBarycenters(const Image<T> &imLbl, const bool onlyNonZero=true)
@@ -205,7 +206,7 @@ namespace smil
     /**
     * Measure blobs image moments.
     * 
-    * @demo{inertia_moments.py}
+    * @smilexample{inertia_moments.py}
     */
     template <class T, class labelT>
     map<labelT, Vector_double> measImageBlobsMoments(const Image<T> &imIn, map<labelT, Blob> &blobs)

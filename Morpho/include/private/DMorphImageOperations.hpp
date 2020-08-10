@@ -48,7 +48,7 @@ namespace smil
     /**
      * Base morpho operator class.
      * 
-     * @demo{custom_morpho_operator.py}
+     * @smilexample{custom_morpho_operator.py}
      */
     template <class T_in, class T_out=T_in>
     class MorphImageFunctionBase 

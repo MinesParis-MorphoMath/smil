@@ -348,7 +348,7 @@ namespace smil
    * processing, this image will contain the basins with the same label values
    * as the initial markers.
    *
-   * @demo{constrained_watershed.py}
+   * @smilexample{constrained_watershed.py}
    */
   template <class T, class labelT>
   RES_T basins(const Image<T> &imIn, const Image<labelT> &imMarkers,
@@ -385,7 +385,7 @@ namespace smil
    * After processing, this image will contain the basins with the same label
    * values as the initial markers.
    *
-   * @demo{constrained_watershed.py}
+   * @smilexample{constrained_watershed.py}
    */
 
   template <class T, class labelT>

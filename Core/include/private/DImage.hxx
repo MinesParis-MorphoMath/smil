@@ -29,7 +29,8 @@
 
 #ifndef _IMAGE_HXX
 #define _IMAGE_HXX
-
+/** @cond */
+  
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -762,7 +763,6 @@ namespace smil
     return *this;
   }
 
-  /** @cond */
   template <class T> ResImage<T> Image<T>::operator&(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
@@ -788,7 +788,6 @@ namespace smil
     inf(*this, value, *this);
     return *this;
   }
-  /** @endcond */
 
   template <class T> Image<T>::operator bool()
   {
@@ -934,5 +933,6 @@ namespace smil
 } // namespace smil
 
 #endif // defined SWIGPYTHON && defined USE_NUMPY
-
+/** @endcond */
+  
 #endif // _IMAGE_HXX

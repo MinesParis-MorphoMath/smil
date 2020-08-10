@@ -295,7 +295,7 @@ namespace smil
      * Return a NumPy array containing the @b real image pixel values (not a
      * copy).
      *
-     * @param c_contigous If true, return an array corresponding to the aligment
+     * @param c_contigous : If true, return an array corresponding to the aligment
      * of C data (C_CONTIGOUS NumPy array flag). If false (default), return a
      * F_CONTIGOUS array.
      *

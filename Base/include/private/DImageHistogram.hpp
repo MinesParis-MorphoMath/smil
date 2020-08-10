@@ -540,7 +540,7 @@ namespace smil
     /**
     * Otsu Threshold
     * 
-    * @demo{thresholds.py}
+    * @smilexample{thresholds.py}
     */
     template <class T, class T_out>
     vector<T> otsuThreshold(const Image<T> &imIn, Image<T_out> &imOut, UINT nbrThresholds)

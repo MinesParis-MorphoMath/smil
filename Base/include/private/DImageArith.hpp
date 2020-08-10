@@ -107,7 +107,7 @@ namespace smil
    * @param[in] "outStartX outStartY [outStartZ]" (optional) position to copy
    * the selected zone in the output image (default is the origin (0,0,0))
    *
-   * @demo{copy_crop.py}
+   * @smilexample{copy_crop.py}
    */
   template <class T1, class T2>
   RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t startZ,
@@ -276,7 +276,8 @@ namespace smil
 
   /**
    * Copy a channel of multichannel image into a single channel image
-   * @demo{multichannel_operations.py}
+   *
+   * @smilexample{multichannel_operations.py}
    */
   template <class MCT1, class T2>
   RES_T copyChannel(const Image<MCT1> &imIn, const UINT &chanNum,
@@ -297,7 +298,8 @@ namespace smil
 
   /**
    * Copy a single channel image into a channel of multichannel image
-   * @demo{multichannel_operations.py}
+   *
+   * @smilexample{multichannel_operations.py}
    */
   template <class T1, class MCT2>
   RES_T copyToChannel(const Image<T1> &imIn, const UINT &chanNum,
@@ -319,7 +321,8 @@ namespace smil
   /**
    * Split channels of multichannel image to a 3D image with each channel on a Z
    * slice
-   * @demo{multichannel_operations.py}
+   *
+   * @smilexample{multichannel_operations.py}
    */
   template <class MCT1, class T2>
   RES_T splitChannels(const Image<MCT1> &imIn, Image<T2> &im3DOut)
@@ -346,7 +349,8 @@ namespace smil
 
   /**
    * Merge slices of a 3D image into a multichannel image
-   * @demo{multichannel_operations.py}
+   *
+   * @smilexample{multichannel_operations.py}
    */
   template <class T1, class MCT2>
   RES_T mergeChannels(const Image<T1> &imIn, Image<MCT2> &imOut)

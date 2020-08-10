@@ -73,7 +73,14 @@ namespace smil
           fileType(FILE_TYPE_BINARY), width(0), height(0), depth(0),
           dataStartPos(0)
     {
+      filename = "Unknown";
+      valid = false;
     }
+
+    ~ImageFileInfo()
+    {
+    }
+
     enum ColorType {
       COLOR_TYPE_GRAY,
       COLOR_TYPE_RGB,
@@ -82,6 +89,7 @@ namespace smil
       COLOR_TYPE_BINARY,
       COLOR_TYPE_UNKNOWN
     };
+
     enum ScalarType {
       SCALAR_TYPE_UINT8,
       SCALAR_TYPE_UINT16,
@@ -91,13 +99,28 @@ namespace smil
       SCALAR_TYPE_DOUBLE,
       SCALAR_TYPE_UNKNOWN
     };
+
     enum FileType { FILE_TYPE_ASCII, FILE_TYPE_BINARY };
+
+    bool valid;
+    string filename;
     UINT channels;
     ColorType colorType;
     ScalarType scalarType;
     FileType fileType;
     size_t width, height, depth;
     streampos dataStartPos;
+
+    // virtual void printSelf(ostream &os) const;
+
+    /**
+     * Print content of ImageFileInfo
+     *
+     * @param[in] os : output stream to write to
+     *
+     * @smilexample{example-imagefileinfo-print.py}
+     */
+    void printSelf(ostream &os = std::cout);
   };
 
 #ifdef USE_CURL

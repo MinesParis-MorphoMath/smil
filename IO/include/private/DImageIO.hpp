@@ -38,8 +38,8 @@ namespace smil
   /**
    * @addtogroup IO
    */
-  /**@{*/
 
+  /**@{*/
   template <class T = void> class ImageFileHandler
   {
   public:
@@ -90,7 +90,7 @@ namespace smil
   template <class T> RES_T read(const char *filename, Image<T> &image);
 
   /**
-   * Read a stack of 2D images
+   * Read a stack of 2D images and convert then into a 3D image
    *
    * @param[in] fileList : list of 2D image files to read
    * @param[out] image : output image
@@ -103,28 +103,46 @@ namespace smil
   template <class T> RES_T read(const vector<string> fileList, Image<T> &image);
 
   /**
-   * Write image file
+   * Write image into file
+   *
+   * @param[in] image : image to write to file
+   * @param[in] filename : file name    
    */
   template <class T> RES_T write(const Image<T> &image, const char *filename);
 
   /**
-   * Write a 3D image as a stack of 2D images
+   * Write a 3D image as a stack of 2D image files
    *
    * The file list must contain the same number of filenames as the 3D image
    * depth.
    *
+   * @param[in] image : image to write to file
+   * @param[in] fileList : list of filenames.   
+   *
    * @b Example:
    * @code{.py}
+   *   
    * im1 = Image("img3d.vtk")
    * fileNames = [ "img{:03d}.png".format(i) for i in range(im1.getDepth()) ]
    * write(im1, fileNames)
+   *
    * @endcode
    */
   template <class T>
   RES_T write(const Image<T> &image, const vector<string> fileList);
 
+  /**
+  * Get information about file
+  *
+  * @param[in] filename :
+  * @param[out] fInfo :
+  */
   RES_T getFileInfo(const char *filename, ImageFileInfo &fInfo);
 
+  /**
+  * createFromFile 
+  * TBD
+  */
   BaseImage *createFromFile(const char *filename);
 
   /**@}*/
