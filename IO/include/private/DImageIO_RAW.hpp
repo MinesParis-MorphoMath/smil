@@ -45,7 +45,7 @@ namespace smil
    */
   /**@{*/
 
-  /**
+  /*
    * RAW file read
    *
    * @param[in] filename : file name
@@ -80,7 +80,7 @@ namespace smil
     return RES_OK;
   }
 
-  /**
+  /*
    * RAW file write
    *
    * @param[in] image : input image

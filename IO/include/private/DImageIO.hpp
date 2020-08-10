@@ -40,6 +40,7 @@ namespace smil
    */
 
   /**@{*/
+
   template <class T = void> class ImageFileHandler
   {
   public:
@@ -86,6 +87,13 @@ namespace smil
    *
    * @param[in] filename : filename (with path) to read
    * @param[out] image : output image
+   *
+   * @note
+   * The following file types are recognized : @b BMP @b JPG @b PBM @b PNG @b
+   * TIFF @b VTK
+   *
+   *
+   * @smilexample{example-read.py}
    */
   template <class T> RES_T read(const char *filename, Image<T> &image);
 
@@ -98,6 +106,9 @@ namespace smil
    * @note
    * The output 3D image will have the width and height of the first (2D) image
    * and the number of images for depth.
+   * @note
+   * The following file types are recognized : @b BMP @b JPG @b PBM @b PNG @b
+   * TIFF @b VTK
    *
    */
   template <class T> RES_T read(const vector<string> fileList, Image<T> &image);
@@ -106,7 +117,7 @@ namespace smil
    * Write image into file
    *
    * @param[in] image : image to write to file
-   * @param[in] filename : file name    
+   * @param[in] filename : file name
    */
   template <class T> RES_T write(const Image<T> &image, const char *filename);
 
@@ -117,11 +128,11 @@ namespace smil
    * depth.
    *
    * @param[in] image : image to write to file
-   * @param[in] fileList : list of filenames.   
+   * @param[in] fileList : list of filenames.
    *
    * @b Example:
    * @code{.py}
-   *   
+   *
    * im1 = Image("img3d.vtk")
    * fileNames = [ "img{:03d}.png".format(i) for i in range(im1.getDepth()) ]
    * write(im1, fileNames)
@@ -132,17 +143,55 @@ namespace smil
   RES_T write(const Image<T> &image, const vector<string> fileList);
 
   /**
-  * Get information about file
-  *
-  * @param[in] filename :
-  * @param[out] fInfo :
-  */
+   * Get information about an image file
+   *
+   * @param[in] filename : filename
+   * @param[out] fInfo : struct ImageFileInfo with image information
+   */
   RES_T getFileInfo(const char *filename, ImageFileInfo &fInfo);
 
   /**
-  * createFromFile 
-  * TBD
-  */
+   * Get an image saved in a @b RAW format
+   *
+   * @param[in] filename : file name
+   * @param[in] width, height, depth : image dimensions
+   * @param[out] image : output image
+   *
+   * @note
+   * - @b RAW format here means a format without metadata, i.e. just a stream of
+   * data and not the @b RAW format from camera makers (@b NEF, @b RAF, @b CR2,
+   * ...)
+   *
+   * @note
+   * - Pixel data type and image dimensions shall be known in advance as the
+   * file doesn't contains metadata
+   *
+   * @note
+   * - At some contexts data may need to be adapted. E.g. transformed from @b
+   * bigendian to @b littleendian or from @b float to @b UINT8.
+   *
+   * @smilexample{example-readRAW.py}
+   */
+  RES_T readRAW(const char *filename, size_t width, size_t height, size_t depth,
+                Image<T> &image);
+
+  /**
+   * Save an image in a @b RAW format
+   *
+   * @param[in] image : input image
+   * @param[in] filename : file name
+   *
+   * @note
+   * @b RAW format here means a format without metadata, i.e. just a stream of
+   * data and not the @b RAW format from camera makers (@b NEF, @b RAF, @b CR2,
+   * ...)
+   */
+  template <class T> RES_T writeRAW(Image<T> &image, const char *filename);
+
+  /**
+   * createFromFile
+   * TBD
+   */
   BaseImage *createFromFile(const char *filename);
 
   /**@}*/

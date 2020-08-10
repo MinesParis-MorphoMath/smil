@@ -50,6 +50,7 @@ namespace smil
 
   string getFileExtension(const char *fileName);
 
+  /** @cond */
   class FileCloser
   {
   public:
@@ -66,6 +67,7 @@ namespace smil
   protected:
     FILE *fp;
   };
+  /** @endcond */
 
   struct ImageFileInfo {
     ImageFileInfo()
@@ -125,7 +127,20 @@ namespace smil
 
 #ifdef USE_CURL
 
+  /**
+   * Get a file from an URL 
+   *
+   * @param[in] url : URL where to get the file
+   * @param[in] outfilename : name of the file where to save the file
+   */
   RES_T getHttpFile(const char *url, const char *outfilename);
+
+  /**
+   * Get a file from an URL 
+   *
+   * @param[in] url : URL where to get the file
+   * @return string : a buffer with file content
+   */
   string getHttpFile(const char *url);
 
 #endif // USE_CURL
