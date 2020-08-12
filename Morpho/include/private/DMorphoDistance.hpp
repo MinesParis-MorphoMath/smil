@@ -617,175 +617,6 @@ namespace smil
   }
 
   /*
-   * Euclidean Distance function.
-   */
-  template <class T1, class T2>
-  RES_T distanceEuclidean(const Image<T1> &imIn, Image<T2> &imOut)
-  {
-    ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
-
-    ImageFreezer freeze(imOut);
-    Image<T2> tmp(imIn);
-
-    typedef Image<T1> imageInType;
-    typedef typename imageInType::lineType lineInType;
-    typedef Image<T2> imageOutType;
-    typedef typename imageOutType::lineType lineOutType;
-
-    lineInType pixelsIn   = imIn.getPixels();
-    lineOutType pixelsOut = imOut.getPixels();
-    lineOutType pixelsTmp = tmp.getPixels();
-
-    int size[3];
-    imIn.getSize(size);
-    size_t nbrPixelsPerSlice = size[0] * size[1];
-    size_t offset;
-    int x, y, z;
-    T2 infinite = ImDtTypes<T2>::max();
-    // JOE long int min;
-
-    // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h)
-    // <= f(x,i)) : h )
-    // sets of the least minimizers that occurs
-    // during the scan from left to right.
-    vector<long int> s(size[0]);
-    // sets of points with the same least minimizer
-    vector<long int> t(size[0]);
-    long int q = 0;
-    long int w;
-
-    for (z = 0; z < size[2]; ++z) {
-      // #ifdef USE_OPEN_MP
-      //   #pragma omp for private(offset,x,y,min)
-      // #endif // USE_OPEN_MP
-      for (x = 0; x < size[0]; ++x) {
-        offset = z * nbrPixelsPerSlice + x;
-        if (pixelsIn[offset] == T1(0)) {
-          pixelsOut[offset] = T2(0);
-        } else {
-          pixelsOut[offset] = infinite;
-        }
-        // SCAN 1
-        for (y = 1; y < size[1]; ++y) {
-          if (pixelsIn[offset + y * size[0]] == T1(0)) {
-            pixelsOut[offset + y * size[0]] = T2(0);
-          } else {
-            // BUG : 
-            // 1 + pixelsOut[offset + (y - 1) * size[0]]
-            //    will never be greater than infinite
-            pixelsOut[offset + y * size[0]] =
-                (1 + pixelsOut[offset + (y - 1) * size[0]] > infinite)
-                    ? infinite
-                    : 1 + pixelsOut[offset + (y - 1) * size[0]];
-          }
-        }
-        // SCAN 2
-        for (y = size[1] - 2; y >= 0 && y < size[1]; --y) {
-          if (pixelsOut[offset + (y + 1) * size[0]] <
-              pixelsOut[offset + y * size[0]])
-            pixelsOut[offset + y * size[0]] =
-                (1 + pixelsOut[offset + (y + 1) * size[0]] < infinite)
-                    ? 1 + pixelsOut[offset + (y + 1) * size[0]]
-                    : infinite;
-        }
-      }
-    }
-
-    copy(imOut, tmp);
-
-#define __f_euclidean(x, i)                                                    \
-  (x - i) * (x - i) + pixelsTmp[offset + i] * pixelsTmp[offset + i]
-#define __sep(a, b)                                                            \
-  (b * b - a * a + pixelsTmp[offset + b] * pixelsTmp[offset + b] -             \
-   pixelsTmp[offset + a] * pixelsTmp[offset + a]) /                            \
-      (2 * (b - a))
-
-    for (z = 0; z < size[2]; ++z) {
-#ifdef USE_OPEN_MP
-#pragma omp for private(offset, y, x, q, w)
-#endif // USE_OPEN_MP
-      for (y = 0; y < size[1]; ++y) {
-        offset = z * nbrPixelsPerSlice + y * size[0];
-        q      = 0;
-        t[0]   = 0;
-        s[0]   = 0;
-        // SCAN 3
-        for (x = 1; x < size[0]; ++x) {
-          while (q >= 0 && __f_euclidean(t[q], s[q]) > __f_euclidean(t[q], x)) {
-            q--;
-          }
-          if (q < 0) {
-            q    = 0;
-            s[0] = x;
-          } else {
-            w = 1 + __sep(s[q], x);
-            if (w < size[0]) {
-              q++;
-              s[q] = x;
-              t[q] = w;
-            }
-          }
-        }
-        // SCAN 4
-        for (x = size[0] - 1; x >= 0 && x < size[0]; --x) {
-          pixelsOut[offset + x] = __f_euclidean(x, s[q]);
-          if (x == t[q])
-            --q;
-        }
-      }
-    }
-#undef __f_euclidean
-#undef __sep
-
-    copy(imOut, tmp);
-// The previous pixels are already squarred ...
-#define __f_euclidean(a, i)                                                    \
-  (a - i) * (a - i) + pixelsTmp[offset + i * nbrPixelsPerSlice]
-#define __sep(a, b)                                                            \
-  (b * b - a * a + pixelsTmp[offset + b * nbrPixelsPerSlice] -                 \
-   pixelsTmp[offset + a * nbrPixelsPerSlice]) /                                \
-      (2 * (b - a))
-    for (y = 0; y < size[1]; ++y) {
-#ifdef USE_OPENMP
-#pragma omp for private(x, z, offset)
-#endif
-      for (x = 0; x < size[0]; ++x) {
-        offset = y * size[0] + x;
-        q      = 0;
-        t[0]   = 0;
-        s[0]   = 0;
-        for (z = 1; z < size[2]; ++z) {
-          while (q >= 0 && __f_euclidean(t[q], s[q]) > __f_euclidean(t[q], z)) {
-            q--;
-          }
-          if (q < 0) {
-            q    = 0;
-            s[0] = z;
-          } else {
-            w = 1 + __sep(s[q], z);
-            if (w < size[2]) {
-              q++;
-              s[q] = z;
-              t[q] = w;
-            }
-          }
-        }
-        for (z = size[2] - 1; z >= 0 && z < size[2]; --z) {
-          pixelsOut[offset + z * nbrPixelsPerSlice] = __f_euclidean(z, s[q]);
-          if (z == t[q]) {
-            --q;
-          }
-        }
-      }
-    }
-#undef __f_euclidean
-#undef __sep
-
-    return RES_OK;
-  }
-
-  /*
    * Geodesic Distance Function
    */
   template <class T1, class T2>
@@ -976,6 +807,174 @@ namespace smil
   } // END distanceGeodesic
 
   /*
+   * Euclidean Distance function.
+   */
+  template <class T1, class T2>
+  RES_T distanceEuclidean(const Image<T1> &imIn, Image<T2> &imOut)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    ImageFreezer freeze(imOut);
+    Image<T2> tmp(imIn);
+
+    typedef Image<T1> imageInType;
+    typedef typename imageInType::lineType lineInType;
+    typedef Image<T2> imageOutType;
+    typedef typename imageOutType::lineType lineOutType;
+
+    lineInType pixelsIn   = imIn.getPixels();
+    lineOutType pixelsOut = imOut.getPixels();
+    lineOutType pixelsTmp = tmp.getPixels();
+
+    int size[3];
+    imIn.getSize(size);
+    size_t nbrPixelsPerSlice = size[0] * size[1];
+    size_t offset;
+    int x, y, z;
+    T2 infinite = ImDtTypes<T2>::max();
+
+    // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h)
+    // <= f(x,i)) : h )
+    // sets of the least minimizers that occurs
+    // during the scan from left to right.
+    vector<long int> s(size[0]);
+    // sets of points with the same least minimizer
+    vector<long int> t(size[0]);
+    long int q = 0;
+    long int w;
+
+    for (z = 0; z < size[2]; ++z) {
+      // #ifdef USE_OPEN_MP
+      //   #pragma omp for private(offset,x,y,min)
+      // #endif // USE_OPEN_MP
+      for (x = 0; x < size[0]; ++x) {
+        offset = z * nbrPixelsPerSlice + x;
+        if (pixelsIn[offset] == T1(0)) {
+          pixelsOut[offset] = T2(0);
+        } else {
+          pixelsOut[offset] = infinite;
+        }
+        // SCAN 1
+        for (y = 1; y < size[1]; ++y) {
+          if (pixelsIn[offset + y * size[0]] == T1(0)) {
+            pixelsOut[offset + y * size[0]] = T2(0);
+          } else {
+            // BUG :
+            // 1 + pixelsOut[offset + (y - 1) * size[0]]
+            //    will never be greater than infinite
+            pixelsOut[offset + y * size[0]] =
+                (1 + pixelsOut[offset + (y - 1) * size[0]] > infinite)
+                    ? infinite
+                    : 1 + pixelsOut[offset + (y - 1) * size[0]];
+          }
+        }
+        // SCAN 2
+        for (y = size[1] - 2; y >= 0 && y < size[1]; --y) {
+          if (pixelsOut[offset + (y + 1) * size[0]] <
+              pixelsOut[offset + y * size[0]])
+            pixelsOut[offset + y * size[0]] =
+                (1 + pixelsOut[offset + (y + 1) * size[0]] < infinite)
+                    ? 1 + pixelsOut[offset + (y + 1) * size[0]]
+                    : infinite;
+        }
+      }
+    }
+
+    copy(imOut, tmp);
+
+#define __f_euclidean(x, i)                                                    \
+  (x - i) * (x - i) + pixelsTmp[offset + i] * pixelsTmp[offset + i]
+#define __sep(a, b)                                                            \
+  (b * b - a * a + pixelsTmp[offset + b] * pixelsTmp[offset + b] -             \
+   pixelsTmp[offset + a] * pixelsTmp[offset + a]) /                            \
+      (2 * (b - a))
+
+    for (z = 0; z < size[2]; ++z) {
+#ifdef USE_OPEN_MP
+#pragma omp for private(offset, y, x, q, w)
+#endif // USE_OPEN_MP
+      for (y = 0; y < size[1]; ++y) {
+        offset = z * nbrPixelsPerSlice + y * size[0];
+        q      = 0;
+        t[0]   = 0;
+        s[0]   = 0;
+        // SCAN 3
+        for (x = 1; x < size[0]; ++x) {
+          while (q >= 0 && __f_euclidean(t[q], s[q]) > __f_euclidean(t[q], x)) {
+            q--;
+          }
+          if (q < 0) {
+            q    = 0;
+            s[0] = x;
+          } else {
+            w = 1 + __sep(s[q], x);
+            if (w < size[0]) {
+              q++;
+              s[q] = x;
+              t[q] = w;
+            }
+          }
+        }
+        // SCAN 4
+        for (x = size[0] - 1; x >= 0 && x < size[0]; --x) {
+          pixelsOut[offset + x] = __f_euclidean(x, s[q]);
+          if (x == t[q])
+            --q;
+        }
+      }
+    }
+#undef __f_euclidean
+#undef __sep
+
+    copy(imOut, tmp);
+// The previous pixels are already squarred ...
+#define __f_euclidean(a, i)                                                    \
+  (a - i) * (a - i) + pixelsTmp[offset + i * nbrPixelsPerSlice]
+#define __sep(a, b)                                                            \
+  (b * b - a * a + pixelsTmp[offset + b * nbrPixelsPerSlice] -                 \
+   pixelsTmp[offset + a * nbrPixelsPerSlice]) /                                \
+      (2 * (b - a))
+    for (y = 0; y < size[1]; ++y) {
+#ifdef USE_OPENMP
+#pragma omp for private(x, z, offset)
+#endif
+      for (x = 0; x < size[0]; ++x) {
+        offset = y * size[0] + x;
+        q      = 0;
+        t[0]   = 0;
+        s[0]   = 0;
+        for (z = 1; z < size[2]; ++z) {
+          while (q >= 0 && __f_euclidean(t[q], s[q]) > __f_euclidean(t[q], z)) {
+            q--;
+          }
+          if (q < 0) {
+            q    = 0;
+            s[0] = z;
+          } else {
+            w = 1 + __sep(s[q], z);
+            if (w < size[2]) {
+              q++;
+              s[q] = z;
+              t[q] = w;
+            }
+          }
+        }
+        for (z = size[2] - 1; z >= 0 && z < size[2]; --z) {
+          pixelsOut[offset + z * nbrPixelsPerSlice] = __f_euclidean(z, s[q]);
+          if (z == t[q]) {
+            --q;
+          }
+        }
+      }
+    }
+#undef __f_euclidean
+#undef __sep
+
+    return RES_OK;
+  }
+
+  /*
    * Base distance function performed with successive erosions.
    */
   template <class T>
@@ -1002,8 +1001,9 @@ namespace smil
     return RES_OK;
   }
 
-  /** @} */
   /** @endcond */
+
+  /** @} */
 } // namespace smil
 
 #endif // _D_MORPHO_DISTANCE_HPP

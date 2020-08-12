@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -27,19 +27,14 @@
  */
 
 
- 
-#ifndef _D_GUI_H
-#define _D_GUI_H
+#include "Base/include/DImageDraw.h"
 
-/**
- * XXXdefgroup Gui Gui and Image Display
- */
-/**@{*/
-
-#include "DGuiInstance.h"
-#include "private/DImageViewer.hpp"
-
-
-/**@}*/
-
-#endif // _D_GUI_H
+namespace smil
+{
+  std::vector<IntPoint> bresenhamLine(int p1x, int p1y, int p2x, int p2y)
+  {
+    int xMax = max(p1x, p2x);
+    int yMax = max(p1y, p2y);
+    return bresenhamPoints(p1x, p1y, p2x, p2y, xMax, yMax);
+  }
+} // namespace smil

@@ -46,9 +46,9 @@
 
   /**
    * @brief Distance function
-   * @param imIn Input Image
-   * @param imOut Output Image
-   * @param se Structuring Element
+   * @param[in] imIn : Input Image
+   * @param[out] imOut : Output Image
+   * @param[in] se : Structuring Element
    */
   template <class T1, class T2>
   RES_T distance(const Image<T1> &imIn, Image<T2> &imOut,
@@ -57,20 +57,23 @@
 
   /**
    * @brief Euclidean distance function.
-   * @param imIn Input Image
-   * @param imOut Output Image
+   * @param[in] imIn : Input Image
+   * @param[out] imOut : Output Image
    */
   template <class T1, class T2>
   RES_T distanceEuclidean(const Image<T1> &imIn, Image<T2> &imOut);
   
-
+  template <class T1, class T2>
+  RES_T dist_euclidean(const Image<T1> &imIn, Image<T2> &imOut);
 
   /**
    * @brief Geodesic distance function
-   * @param imIn Input Image
-   * @param imMask Mask Image
-   * @param imOut Output Image
-   * @param se Structuring Element
+   * @param[in] imIn : Input Image
+   * @param[in] imMask : Mask Image
+   * @param[out] imOut : Output Image
+   * @param[in] se : Structuring Element
+   *
+   * @smilexample{example-distance-geodesic.py}
    */
   template <class T1, class T2>
   RES_T distanceGeodesic(const Image<T1> &imIn, const Image<T1> &imMask,

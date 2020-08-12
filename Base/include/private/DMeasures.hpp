@@ -51,6 +51,7 @@ namespace smil
    * @{
    */
 
+  /** @cond */
   template <class T>
   struct measAreaFunc : public MeasureFunctionBase<T, double> {
     typedef typename Image<T>::lineType lineType;
@@ -60,6 +61,7 @@ namespace smil
       this->retVal += size;
     }
   };
+  /** @endcond */
 
   /**
    * Area of an image
@@ -81,6 +83,7 @@ namespace smil
     return static_cast<size_t>(func(imIn, true));
   }
 
+  /** @cond */
   template <class T>
   struct measVolFunc : public MeasureFunctionBase<T, double> {
     typedef typename Image<T>::lineType lineType;
@@ -91,7 +94,8 @@ namespace smil
         this->retVal += double(lineIn[i]);
     }
   };
-
+  /** @endcond */
+  
   /**
    * Volume of an image
    *
@@ -132,6 +136,7 @@ namespace smil
     return func(imIn, false);
   }
 
+  /** @cond */
   template <class T>
   struct measMeanValFunc : public MeasureFunctionBase<T, Vector_double> {
     typedef typename Image<T>::lineType lineType;
@@ -163,15 +168,14 @@ namespace smil
       this->retVal.push_back(std_dev_val);
     }
   };
-
+  /** @endcond */
+  
   /**
    * Mean value and standard deviation
    *
-   * @b mean and <b>standard deviation</b> of the pixel values.
-   *
    * @param[in] imIn : Input image.
    * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
-   * @return a vector with the mean and standard deviation of pixel values
+   * @return a vector with the @b mean and <b>standard deviation</b> of pixel values
    */
   template <class T>
   Vector_double meanVal(const Image<T> &imIn, bool onlyNonZero = false)
@@ -180,6 +184,7 @@ namespace smil
     return func(imIn, onlyNonZero);
   }
 
+  /** @cond */
   template <class T> struct measMinValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
     virtual void initialize(const Image<T> & /*imIn*/)
@@ -214,7 +219,8 @@ namespace smil
         }
     }
   };
-
+  /** @endcond */
+  
   /**
    * Min value of an image
    *
@@ -237,6 +243,7 @@ namespace smil
     return func.retVal;
   }
 
+  /** @cond */
   template <class T> struct measMaxValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
     virtual void initialize(const Image<T> & /*imIn*/)
@@ -271,6 +278,7 @@ namespace smil
         }
     }
   };
+  /** @endcond */
 
   /**
    * Max value of an image
@@ -294,6 +302,7 @@ namespace smil
     return func.retVal;
   }
 
+  /** @cond */
   template <class T>
   struct measMinMaxValFunc : public MeasureFunctionBase<T, vector<T>> {
     typedef typename Image<T>::lineType lineType;
@@ -320,6 +329,7 @@ namespace smil
       this->retVal.push_back(maxVal);
     }
   };
+  /** @endcond */
 
   /**
    * Min and Max values of an image
@@ -335,6 +345,7 @@ namespace smil
     return func(imIn, onlyNonZero);
   }
 
+  /** @cond */
   template <class T>
   struct valueListFunc : public MeasureFunctionBase<T, vector<T>> {
     typedef typename Image<T>::lineType lineType;
@@ -358,6 +369,7 @@ namespace smil
                 std::back_inserter(this->retVal));
     }
   };
+  /** @endcond */
 
   /**
    * Get the list of the pixel values present in the image
@@ -377,6 +389,7 @@ namespace smil
     return func(imIn, onlyNonZero);
   }
 
+  /** @cond */
   template <class T> struct measModeValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
 
@@ -410,6 +423,7 @@ namespace smil
 
     } // virtual
   };  // END measModeValFunc
+  /** @endcond */
 
   /**
    * Get the mode of the histogram present in the image, i.e. the
@@ -418,8 +432,11 @@ namespace smil
    * @param[in] imIn : input image
    * @param[in] onlyNonZero : consider only non zero values
    * @return the value that appears more often
-   * @note In a multimodal distribution, returns one one value : the biggest 
-   * one or the first found.
+   *
+   * @note
+   * As this function returns only one value :
+   * - in a distribution with the same maximum for many values, it returns the first one;
+   * - in a multimodal distribution, it returns the first biggest one;
    */
   template <class T> T modeVal(const Image<T> &imIn, bool onlyNonZero = true)
   {
@@ -427,6 +444,7 @@ namespace smil
     return func(imIn, onlyNonZero);
   }
 
+  /** @cond */
   template <class T>
   struct measMedianValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
@@ -479,6 +497,7 @@ namespace smil
     }
 
   }; // END measMedianValFunc
+  /** @endcond */
 
   /**
    * Get the median of the image histogram.
@@ -528,6 +547,7 @@ namespace smil
     return vec;
   }
 
+  /** @cond */
   template <class T>
   struct measBarycenterFunc : public MeasureFunctionWithPos<T, Vector_double> {
     typedef typename Image<T>::lineType lineType;
@@ -556,6 +576,7 @@ namespace smil
         this->retVal.push_back(zSum / tSum);
     }
   };
+  /** @endcond */
 
   /**
    * measBarycenter
@@ -569,6 +590,7 @@ namespace smil
     return func(im, false);
   }
 
+  /** @cond */
   template <class T>
   struct measBoundBoxFunc : public MeasureFunctionWithPos<T, vector<size_t>> {
     typedef typename Image<T>::lineType lineType;
@@ -618,6 +640,8 @@ namespace smil
         this->retVal.push_back(UINT(zMax));
     }
   };
+  /** @endcond */
+
   /**
    * Bounding Box measure - gets the coordinates of the bounding box
    *
@@ -630,6 +654,7 @@ namespace smil
     return func(im, true);
   }
 
+  /** @cond */
   template <class T>
   struct measImageMomentsFunc
       : public MeasureFunctionWithPos<T, Vector_double> {
@@ -679,6 +704,8 @@ namespace smil
         this->retVal.push_back(m002);
     }
   };
+  /** @endcond */
+
   /**
    * Measure image moments
    *
@@ -836,6 +863,12 @@ namespace smil
    *
    * The direction is given by @b dx, @b dy and @b dz.
    * The lenght corresponds to the max number of steps @b maxSteps
+   *
+   * @param[in] imIn : Input Image
+   * @param[in] dx, dy, dz : direction
+   * @param[in] maxSteps : number maximum of displacements to evaluate
+   * @param[in] normalize : normalize result with respect to @b vec[0]
+   * @return vec[h]   
    */
   template <class T>
   vector<double> measAutoCovariance(const Image<T> &imIn, size_t dx, size_t dy,
@@ -850,6 +883,12 @@ namespace smil
    *
    * The direction is given by @b dx, @b dy and @b dz.
    * The lenght corresponds to the max number of steps @b maxSteps
+   *
+   * @param[in] imIn : Input Image
+   * @param[in] dx, dy, dz : direction
+   * @param[in] maxSteps : number maximum of displacements to evaluate
+   * @param[in] normalize : normalize result with respect to @b vec[0]
+   * @return vec[h]   
    */
   template <class T>
   vector<double> measCenteredAutoCovariance(const Image<T> &imIn, size_t dx,

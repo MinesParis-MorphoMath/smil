@@ -14,19 +14,18 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
-
-
 
 #ifndef _D_MORPHO_INSTANCE_H
 #define _D_MORPHO_INSTANCE_H
@@ -34,40 +33,53 @@
 #include "Core/include/private/DInstance.hpp"
 #include "DStructuringElement.h"
 
-
 namespace smil
 {
-    /**
-    * @ingroup Morpho
-    */
-    /*@{*/
+  /**
+   * @ingroup Morpho
+   */
+  /** @{*/
 
-    class  Morpho : public UniqueInstance<Morpho>
+  class Morpho : public UniqueInstance<Morpho>
+  {
+    /** @cond */
+    friend class UniqueInstance<Morpho>;
+
+  protected:
+    Morpho()
     {
-        friend class UniqueInstance<Morpho>;
+      this->defaultSE = SquSE();
+    }
 
-    protected:
-        Morpho ()
-        {
-            this->defaultSE = SquSE();
-        }
-        
-        ~Morpho () {}
+    ~Morpho()
+    {
+    }
+    /** @endcond */
+  public:
+    // Public interface
 
-    public:
-        // Public interface
+    /**
+     * Get Default Structuring Element
+     * @return default structuring element
+     */
+    static StrElt &getDefaultSE();
 
-        static StrElt &getDefaultSE();
-        static void setDefaultSE(const StrElt &se);
-    protected:
-        StrElt defaultSE;
-    private:
-    };
+    /**
+     * Modify Default Structuring Element
+     * @param[in] se : structuring element
+     *
+     * @smilexample{example-default-se.py}
+     */
+    static void setDefaultSE(const StrElt &se);
 
-/*@}*/
+  protected:
+    StrElt defaultSE;
+
+  private:
+  };
+
+  /**@}*/
 
 } // namespace smil
-
-
 
 #endif // _D_MORPHO_INSTANCE_H

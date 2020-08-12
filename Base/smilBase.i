@@ -168,6 +168,8 @@ TEMPLATE_WRAP_FUNC(resize);
 TEMPLATE_WRAP_FUNC(scale);
 TEMPLATE_WRAP_FUNC(addBorder);
 
+// %template(bresenhamLine);
+
 %include "DBlob.hpp"
 
 // workaround for undefined SWIGPY_SLICE_ARG with swig 2.0.3 and 2.0.4

@@ -151,44 +151,6 @@ namespace smil
   RES_T getFileInfo(const char *filename, ImageFileInfo &fInfo);
 
   /**
-   * Get an image saved in a @b RAW format
-   *
-   * @param[in] filename : file name
-   * @param[in] width, height, depth : image dimensions
-   * @param[out] image : output image
-   *
-   * @note
-   * - @b RAW format here means a format without metadata, i.e. just a stream of
-   * data and not the @b RAW format from camera makers (@b NEF, @b RAF, @b CR2,
-   * ...)
-   *
-   * @note
-   * - Pixel data type and image dimensions shall be known in advance as the
-   * file doesn't contains metadata
-   *
-   * @note
-   * - At some contexts data may need to be adapted. E.g. transformed from @b
-   * bigendian to @b littleendian or from @b float to @b UINT8.
-   *
-   * @smilexample{example-readRAW.py}
-   */
-  RES_T readRAW(const char *filename, size_t width, size_t height, size_t depth,
-                Image<T> &image);
-
-  /**
-   * Save an image in a @b RAW format
-   *
-   * @param[in] image : input image
-   * @param[in] filename : file name
-   *
-   * @note
-   * @b RAW format here means a format without metadata, i.e. just a stream of
-   * data and not the @b RAW format from camera makers (@b NEF, @b RAF, @b CR2,
-   * ...)
-   */
-  template <class T> RES_T writeRAW(Image<T> &image, const char *filename);
-
-  /**
    * createFromFile
    * TBD
    */

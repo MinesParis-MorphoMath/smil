@@ -75,16 +75,19 @@ namespace smil
         RES_T setNumberOfThreads(UINT nbr);
         void resetNumberOfThreads();
         size_t getAllocatedMemory();
+        const CpuID &getCpuID() { return cpuID; }
+
         void registerObject(BaseObject *obj);
         void unregisterObject(BaseObject *obj);
+        vector<BaseObject*> getRegisteredObjects();
+        vector<BaseImage*> getImages();
+
         void showAllImages();
         void hideAllImages();
         void deleteAllImages();
-        vector<BaseObject*> getRegisteredObjects();
-        vector<BaseImage*> getImages();
         int getImageIndex(BaseImage *img);
+
         void getCompilationInfos(ostream &outStream = std::cout);
-        const CpuID &getCpuID() { return cpuID; }
         
         Signal onBaseImageCreated;
         Signal onBaseImageDestroyed;
