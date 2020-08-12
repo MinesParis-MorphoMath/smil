@@ -67,7 +67,7 @@ namespace smil
   /**
    * Fill an image with random values.
    *
-   * @param[out] imOut Output image.
+   * @param[in, out] imOut Output image.
    *
    * @see Image::operator<<
    *
@@ -95,16 +95,22 @@ namespace smil
   }
 
   /**
-   * Copy image
+   * Copy image (or a zone) into an output image
    *
-   * Copy an image (or a zone) into an output image
-   * @param[in] imIn input image
-   * @param[in] "startX startY [startZ]" (optional) start position of the zone
+   * This is the most complete version of @b smil::copy().
+   *
+   * It copies a region of @b imIn
+   * defined by its start point <b>(startX, startY, startZ)</b> and size
+   * <b>(sizeX, sizeY, sizeZ)</b> into a region on @b imOut beginning at
+   * position <b>(outStartX, outStartY, outStartZ)</b>.
+   *
+   * @param[in] imIn : input image
+   * @param[in] startX, startY, [startZ] : (optional) start position of the zone
    * in the input image
-   * @param[in] "sizeX sizeY [sizeZ]" (optional) size of the zone in the input
-   * image
-   * @param[out] imOut output image
-   * @param[in] "outStartX outStartY [outStartZ]" (optional) position to copy
+   * @param[in] sizeX,  sizeY,  [sizeZ] : (optional) size of the zone in the
+   * input image
+   * @param[out] imOut : output image
+   * @param[in] outStartX, outStartY, [outStartZ] : (optional) position to copy
    * the selected zone in the output image (default is the origin (0,0,0))
    *
    * @smilexample{copy_crop.py}
@@ -160,7 +166,13 @@ namespace smil
     return RES_OK;
   }
 
-  // 2D overload
+  /**
+   * Copy Image
+   *
+   * @b 2D version of the general @b smil::copy function.
+   *
+   * @overload
+   */
   template <class T1, class T2>
   RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t sizeX,
              size_t sizeY, Image<T2> &imOut, size_t outStartX = 0,
@@ -170,6 +182,15 @@ namespace smil
                 outStartY, outStartZ);
   }
 
+  /**
+   * Copy Image
+   *
+   * Copies the entire content of @b imIn beginning at <b>(startX, startY,
+   * startZ)</b> into @b imOut beginning at <b>(outStartX, outStartY,
+   * outStartZ)</b>.
+   *
+   * @overload
+   */
   template <class T1, class T2>
   RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t startZ,
              Image<T2> &imOut, size_t outStartX = 0, size_t outStartY = 0,
@@ -179,7 +200,14 @@ namespace smil
                 imIn.getDepth(), imOut, outStartX, outStartY, outStartZ);
   }
 
-  // 2D overload
+  /**
+   * Copy Image (2D overload)
+   *
+   * Copies the entire content of @b imIn beginning at <b>(startX, startY)</b>
+   * into @b imOut beginning at <b>(outStartX, outStartY)</b>.
+   *
+   * @overload
+   */
   template <class T1, class T2>
   RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY,
              Image<T2> &imOut, size_t outStartX = 0, size_t outStartY = 0,
@@ -189,6 +217,14 @@ namespace smil
                 imOut, outStartX, outStartY, outStartZ);
   }
 
+  /**
+   * Copy Image
+   *
+   * Copies the entire content of @b imIn into @b imOut beginning at
+   <b>(outStartX, outStartY, outStartZ)</b>
+
+   * @overload
+   */
   template <class T1, class T2>
   RES_T copy(const Image<T1> &imIn, Image<T2> &imOut, size_t outStartX,
              size_t outStartY, size_t outStartZ = 0)
@@ -198,6 +234,17 @@ namespace smil
   }
 
   // Copy/cast two images with different types but same size (quick way)
+  /**
+   * Copy / cast two images, convert their types.
+   *
+   * If @b imIn and @b imOut sizes are different, the contents of @b imIn
+   * beginning at <b> (0,0,0)</b> will copied to @b imOut, at the same place but
+   * the size of @b imOut won't be adjusted.
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   *
+   */
   template <class T1, class T2>
   RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
   {
@@ -217,6 +264,15 @@ namespace smil
     return RES_OK;
   }
 
+  /**
+   * Copy Image
+   *
+   * Copy one image to the other. @b imOut shall be of the same kind of @b imIn.
+   * Its size will be set to the same of @b imIn
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   */
   template <class T> RES_T copy(const Image<T> &imIn, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
@@ -229,7 +285,15 @@ namespace smil
   /**
    * Clone an image
    *
-   * Set same size and copy contents
+   * Make @b imOut a clone @b imIn, with the same size and content.
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   *
+   * @note
+   * @b imOut must be previously declared as an image with the same data type of
+   * @b imIn. Its initial size doesn't matter. It will be set to the same size
+   * of @b imIn.
    */
   template <class T> RES_T clone(const Image<T> &imIn, Image<T> &imOut)
   {
@@ -242,6 +306,15 @@ namespace smil
   /**
    * Cast from an image type to another
    *
+   * Copies the content of @b imIn into @b imOut scaling pixel values to the
+   * data type of @b imOut.
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   *
+   * @note
+   * @b imOut shall be a previously allocated image with the same size of @b
+   * imIn.
    */
   template <class T1, class T2>
   RES_T cast(const Image<T1> &imIn, Image<T2> &imOut)
@@ -277,6 +350,16 @@ namespace smil
   /**
    * Copy a channel of multichannel image into a single channel image
    *
+   * @param[in] imIn : input image
+   * @param[in] chanNum : channel in the input image to copy
+   * @param[out] imOut : output image
+   *
+   * @note
+   * - @b imIn et @b imOut are @b 2D images
+   * - @b imOut shall be a previosly allocated single channel image with the
+   * same size than @b imIn.
+   * - @b chanNum shall be a valid channel of @b imIn.
+   *
    * @smilexample{multichannel_operations.py}
    */
   template <class MCT1, class T2>
@@ -298,6 +381,16 @@ namespace smil
 
   /**
    * Copy a single channel image into a channel of multichannel image
+   *
+   * @param[in] imIn : input image
+   * @param[in] chanNum : channel in the output image to copy
+   * @param[out] imOut : output image
+   *
+   * @note
+   * - @b imIn et @b imOut are @b 2D images
+   * - @b imOut shall be a previosly allocated multichannel image with the same
+   * size than @b imIn.
+   * - @b chanNum shall be a valid channel of @b imOut.
    *
    * @smilexample{multichannel_operations.py}
    */
@@ -321,6 +414,15 @@ namespace smil
   /**
    * Split channels of multichannel image to a 3D image with each channel on a Z
    * slice
+   *
+   * @param[in] imIn : input image
+   * @param[out] im3DOut : output image
+   *
+   * @note
+   * - @b imIn is a @b 2D image
+   * - @b im3DOut whall be a previously allocated image. Its size will be set to
+   * the same as @b imIn, but its depth will be set the the number of channels
+   * of @b imIn.
    *
    * @smilexample{multichannel_operations.py}
    */
@@ -349,6 +451,11 @@ namespace smil
 
   /**
    * Merge slices of a 3D image into a multichannel image
+   *
+   * This function has the inverse behaviour of function splitChannels()
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
    *
    * @smilexample{multichannel_operations.py}
    */
@@ -379,8 +486,8 @@ namespace smil
   /**
    * Invert an image.
    *
-   * @param[in] imIn Input image.
-   * @param[out] imOut Output image.
+   * @param[in] imIn : Input image.
+   * @param[out] imOut : Output image.
    *
    * @see Image::operator~
    */
@@ -393,12 +500,13 @@ namespace smil
   }
 
   /**
-   * Addition
+   * Addition (with saturation check)
    *
-   * Addition between two images (or between an image and a constant value)
-   * @param[in] imIn1 input image 1
-   * @param[in] imIn2 input image 2
-   * @param[out] imOut output image
+   * Addition between two images.
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
    * @see Image::operator+
    */
   template <class T>
@@ -410,6 +518,16 @@ namespace smil
     return binaryImageFunction<T, addLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Addition (with saturation check)
+   *
+   * Addition a single value to each pixel of an image.
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] value : value to be added to each pixel in imIn
+   * @param[out] imOut : output image
+   * @see Image::operator+
+   */
   template <class T>
   RES_T add(const Image<T> &imIn1, const T &value, Image<T> &imOut)
   {
@@ -422,11 +540,11 @@ namespace smil
   /**
    * Addition (without saturation check)
    *
-   * Addition between two images (or between an image and a constant value)
-   * without checking the saturation
-   * @param[in] imIn1 input image 1
-   * @param[in] imIn2 input image 2
-   * @param[out] imOut output image
+   * Addition between two images.
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
    */
   template <class T>
   RES_T addNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -437,6 +555,15 @@ namespace smil
     return binaryImageFunction<T, addNoSatLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Addition (without saturation check)
+   *
+   * Addition a single value to each pixel of an image.
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] value : value to be added to each pixel in imIn
+   * @param[out] imOut output image
+   */
   template <class T>
   RES_T addNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
   {
@@ -447,12 +574,11 @@ namespace smil
   }
 
   /**
-   * Subtraction
+   * Subtraction between two images
    *
-   * Subtraction between two images (or between an image and a constant value)
-   * @param[in] imIn1 input image 1
-   * @param[in] imIn2 input image 2
-   * @param[out] imOut output image containing @c imIn1-imIn2 (or @c imIn1-val)
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image containing <b>imIn1 - imIn2</b>
    */
   template <class T>
   RES_T sub(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -463,12 +589,27 @@ namespace smil
     return binaryImageFunction<T, subLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Subtraction between an image and a constant value
+   *
+   * @param[in] imIn : input image
+   * @param[in] value : value to be subtracted from each pixel in the image
+   * @param[out] imOut : output image containing <b>imIn - val</b>
+   */
   template <class T>
-  RES_T sub(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+  RES_T sub(const Image<T> &imIn, const T &value, Image<T> &imOut)
   {
-    return binaryImageFunction<T, subLine<T>>(imIn1, value, imOut);
+    return binaryImageFunction<T, subLine<T>>(imIn, value, imOut);
   }
 
+  /**
+   * Subtraction between a value and an image
+   *
+   * @param[in] value : value to which each pixel of the image will be
+   * subtracted.
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image containing <b>val - imIn</b>
+   */
   template <class T>
   RES_T sub(const T &value, const Image<T> &imIn, Image<T> &imOut)
   {
@@ -476,12 +617,11 @@ namespace smil
   }
 
   /**
-   * Subtraction (without type minimum check)
+   * Subtraction (without type minimum check) between two images
    *
-   * Subtraction between two images (or between an image and a constant value)
-   * @param[in] imIn1 input image 1
-   * @param[in] imIn2 input image 2
-   * @param[out] imOut output image containing @c imIn1-imIn2 (or @c imIn1-val)
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image containing <b>imIn1 - imIn2</b>
    */
   template <class T>
   RES_T subNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -492,15 +632,31 @@ namespace smil
     return binaryImageFunction<T, subNoSatLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Subtraction (without type minimum check) between an image and a constant
+   * value
+   *
+   * @param[in] imIn : input image
+   * @param[in] value : value to be subtracted from each pixel in the image
+   * @param[out] imOut : output image containing <b>imIn - val</b>
+   */
   template <class T>
-  RES_T subNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+  RES_T subNoSat(const Image<T> &imIn, const T &value, Image<T> &imOut)
   {
-    ASSERT_ALLOCATED(&imIn1, &imOut);
-    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    return binaryImageFunction<T, subNoSatLine<T>>(imIn1, value, imOut);
+    return binaryImageFunction<T, subNoSatLine<T>>(imIn, value, imOut);
   }
 
+  /**
+   * Subtraction (without type minimum check) between a value and an image
+   *
+   * @param[in] value : value to which each pixel of the image will be
+   * subtracted.
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image containing <b>val - imIn</b>
+   */
   template <class T>
   RES_T subNoSat(const T &value, const Image<T> &imIn, Image<T> &imOut)
   {
@@ -512,6 +668,10 @@ namespace smil
 
   /**
    * Sup of two images
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
    */
   template <class T>
   RES_T sup(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -522,6 +682,13 @@ namespace smil
     return binaryImageFunction<T, supLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Sup of two images
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @return an image, which is the @b sup of @b imIn1 and @b imIn2
+   */
   template <class T>
   ResImage<T> sup(const Image<T> &imIn1, const Image<T> &imIn2)
   {
@@ -534,27 +701,45 @@ namespace smil
     return newIm;
   }
 
+  /**
+   * Sup of an image and a value
+   *
+   * @param[in] imIn : input image
+   * @param[in] value : input value
+   * @param[out] imOut : output image
+   */
   template <class T>
-  RES_T sup(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+  RES_T sup(const Image<T> &imIn, const T &value, Image<T> &imOut)
   {
-    ASSERT_ALLOCATED(&imIn1, &imOut);
-    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    return binaryImageFunction<T, supLine<T>>(imIn1, value, imOut);
+    return binaryImageFunction<T, supLine<T>>(imIn, value, imOut);
   }
 
   /**
    * Inf of two images
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
    */
   template <class T>
-  RES_T inf(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+  RES_T inf(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
   {
-    ASSERT_ALLOCATED(&imIn1, &imOut);
-    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
 
-    return binaryImageFunction<T, infLine<T>>(imIn1, value, imOut);
+    return binaryImageFunction<T, infLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Inf of two images
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @return an image, which is the @b inf of @b imIn1 and @b imIn2
+   */
   template <class T>
   ResImage<T> inf(const Image<T> &imIn1, const Image<T> &imIn2)
   {
@@ -567,19 +752,39 @@ namespace smil
     return newIm;
   }
 
+  /**
+   * Inf of an image and a value
+   *
+   * @param[in] imIn : input image
+   * @param[in] value : input value
+   * @param[out] imOut : output image
+   */
   template <class T>
-  RES_T inf(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
+  RES_T inf(const Image<T> &imIn, const T &value, Image<T> &imOut)
   {
-    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
-    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    return binaryImageFunction<T, infLine<T>>(imIn1, imIn2, imOut);
+    return binaryImageFunction<T, infLine<T>>(imIn, value, imOut);
   }
 
   /**
-   * Equality operator
-   * @return[imOut] image with imOut(x)=max(T) when imIn1(x)=imIn2(x) and 0
-   * otherwise
+   * Equality operator (pixel by pixel)
+   *
+   * Comparison, pixel by pixel, between two images.
+   *
+   * The result is a binary image where :
+   * - <b><c> imOut(x) = (imIn1(x) == imIn2(x) ? max(T) : 0)</c></b>
+   *
+   * In other words, the result is an image indicating which pixels are equal in
+   * both images.
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
+   *
+   * @note
+   * The functions equ() are the inverse of functions diff()
    */
   template <class T>
   RES_T equ(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -590,6 +795,24 @@ namespace smil
     return binaryImageFunction<T, equLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Equality operator (pixel by pixel)
+   *
+   * Comparison, pixel by pixel, between an image and a value.
+   *
+   * The result is a binary image where :
+   * - <b><c> imOut(x) = (imIn(x) == value ? max(T) : 0)</c></b>
+   *
+   * In other words, the result is an image indicating which pixels are equal to
+   * the value.
+   *
+   * @param[in] imIn : input image
+   * @param[in] value : input value
+   * @param[out] imOut : output image
+   *
+   * @note
+   * The functions equ() are the inverse of functions diff()
+   */
   template <class T>
   RES_T equ(const Image<T> &imIn, const T &value, Image<T> &imOut)
   {
@@ -601,7 +824,14 @@ namespace smil
 
   /**
    * Test equality between two images
-   * @return True if imIn1=imIn2, False otherwise
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @return @b True if <b>imIn1 == imIn2</b>, @b False otherwise
+   *
+   * @warning
+   * Don't confuse this function with the two others with the same name but
+   * checking equality for each pixel. The difference are in the parameters.
    */
   template <class T> bool equ(const Image<T> &imIn1, const Image<T> &imIn2)
   {
@@ -622,6 +852,21 @@ namespace smil
   /**
    * Difference between two images.
    *
+   * Comparison, pixel by pixel, between two images.
+   *
+   * The result is a binary image where :
+   * - <b><c> imOut(x) = (imIn1(x) != imIn2(x) ? max(T) : 0)</c></b>
+   *
+   * In other words, the result is an image indicating which pixels are
+   * different in both images.
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
+   *
+   * @note
+   * The functions diff() are the inverse of functions equ()
+   *
    */
   template <class T>
   RES_T diff(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -632,6 +877,24 @@ namespace smil
     return binaryImageFunction<T, diffLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Difference between an image and a value
+   *
+   * Comparison, pixel by pixel, between an image and a value.
+   *
+   * The result is a binary image where :
+   * - <b><c> imOut(x) = (imIn(x) != value ? max(T) : 0)</c></b>
+   *
+   * In other words, the result is an image indicating which pixels are
+   * different to the value.
+   *
+   * @param[in] imIn : input image
+   * @param[in] value : input value
+   * @param[out] imOut : output image
+   *
+   * @note
+   * The functions diff() are the inverse of functions equ()
+   */
   template <class T>
   RES_T diff(const Image<T> &imIn, const T &value, Image<T> &imOut)
   {
@@ -644,7 +907,7 @@ namespace smil
   /**
    * Absolute difference ("vertical distance") between two images.
    *
-   * Absolute difference between two images : @f$ abs(imIn1 - imIn2) @f$
+   * Absolute difference between two images : <b><c>abs(imIn1 - imIn2)</c></b>
    *
    * @param[in] imIn1 : input image
    * @param[in] imIn2 : input image
@@ -662,6 +925,16 @@ namespace smil
 
   /**
    * Greater operator
+   *
+   * Comparison, pixel by pixel, between two images
+   *
+   * The result is a binary image where :
+   * - <b><c> imOut(x) = (imIn1(x) > imIn2(x) ? max(T) : 0)</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
+   *
    */
   template <class T>
   RES_T grt(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -672,17 +945,40 @@ namespace smil
     return binaryImageFunction<T, grtLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Greater operator
+   *
+   * Comparison, pixel by pixel, between an image and a value.
+   *
+   * The result is a binary image where :
+   * - <b><c> imOut(x) = (imIn(x) > value ? max(T) : 0)</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[in] value : input value
+   * @param[out] imOut : output image
+   *
+   */
   template <class T>
-  RES_T grt(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+  RES_T grt(const Image<T> &imIn, const T &value, Image<T> &imOut)
   {
-    ASSERT_ALLOCATED(&imIn1, &imOut);
-    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    return binaryImageFunction<T, grtLine<T>>(imIn1, value, imOut);
+    return binaryImageFunction<T, grtLine<T>>(imIn, value, imOut);
   }
 
   /**
    * Greater or equal operator
+   *
+   * Comparison, pixel by pixel, between two images
+   *
+   * The result is a binary image where :
+   * - <b><c> imOut(x) = (imIn1(x) >= imIn2(x) ? max(T) : 0)</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
+   *
    */
   template <class T>
   RES_T grtOrEqu(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -693,17 +989,40 @@ namespace smil
     return binaryImageFunction<T, grtOrEquLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Greater or equal operator
+   *
+   * Comparison, pixel by pixel, between an image and a value.
+   *
+   * The result is a binary image where :
+   * - <b><c> imOut(x) >= (imIn(x) > value ? max(T) : 0)</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[in] value : input value
+   * @param[out] imOut : output image
+   *
+   */
   template <class T>
-  RES_T grtOrEqu(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+  RES_T grtOrEqu(const Image<T> &imIn, const T &value, Image<T> &imOut)
   {
-    ASSERT_ALLOCATED(&imIn1, &imOut);
-    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    return binaryImageFunction<T, grtOrEquLine<T>>(imIn1, value, imOut);
+    return binaryImageFunction<T, grtOrEquLine<T>>(imIn, value, imOut);
   }
 
   /**
    * Lower operator
+   *
+   * Comparison, pixel by pixel, between two images
+   *
+   * The result is a binary image where :
+   * - <b><c> imOut(x) = (imIn1(x) < imIn2(x) ? max(T) : 0)</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
+   *
    */
   template <class T>
   RES_T low(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -714,17 +1033,40 @@ namespace smil
     return binaryImageFunction<T, lowLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Lower operator
+   *
+   * Comparison, pixel by pixel, between an image and a value.
+   *
+   * The result is a binary image where :
+   * - <b><c> imOut(x) = (imIn(x) < value ? max(T) : 0)</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[in] value : input value
+   * @param[out] imOut : output image
+   *
+   */
   template <class T>
-  RES_T low(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+  RES_T low(const Image<T> &imIn, const T &value, Image<T> &imOut)
   {
-    ASSERT_ALLOCATED(&imIn1, &imOut);
-    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    return binaryImageFunction<T, lowLine<T>>(imIn1, value, imOut);
+    return binaryImageFunction<T, lowLine<T>>(imIn, value, imOut);
   }
 
   /**
    * Lower or equal operator
+   *
+   * Comparison, pixel by pixel, between two images
+   *
+   * The result is a binary image where :
+   * - <b><c> imOut(x) = (imIn1(x) <= imIn2(x) ? max(T) : 0)</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
+   *
    */
   template <class T>
   RES_T lowOrEqu(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -735,17 +1077,38 @@ namespace smil
     return binaryImageFunction<T, lowOrEquLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Lower or equal operator
+   *
+   * Comparison, pixel by pixel, between an image and a value
+   *
+   * The result is a binary image where :
+   * - <b><c> imOut(x) = (imIn(x) <= value ? max(T) : 0)</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[in] value : input value
+   * @param[out] imOut : output image
+   *
+   */
   template <class T>
-  RES_T lowOrEqu(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+  RES_T lowOrEqu(const Image<T> &imIn, const T &value, Image<T> &imOut)
   {
-    ASSERT_ALLOCATED(&imIn1, &imOut);
-    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    return binaryImageFunction<T, lowOrEquLine<T>>(imIn1, value, imOut);
+    return binaryImageFunction<T, lowOrEquLine<T>>(imIn, value, imOut);
   }
 
   /**
-   * Division
+   * Division between two images
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn2(x) != 0 ? imIn1(x) / imIn2(x) : max(T))</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
+   *
    */
   template <class T>
   RES_T div(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -765,6 +1128,17 @@ namespace smil
   //         return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
   //     }
 
+  /**
+   * Division : an image and a value
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = (value != 0 ? imIn(x) / value : max(T))</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[in] dValue : input value
+   * @param[out] imOut : output image
+   *
+   */
   template <class T>
   RES_T div(const Image<T> &imIn, const double &dValue, Image<T> &imOut)
   {
@@ -781,7 +1155,16 @@ namespace smil
   }
 
   /**
-   * Multiply
+   * Multiply two images
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn1(x) * imIn2(x) <= max(T) ? imIn1(x) * imIn2(x) :
+   * max(T))</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
+   *
    */
   template <class T>
   RES_T mul(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -800,6 +1183,19 @@ namespace smil
   //
   //         return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
   //     }
+
+  /**
+   * Multiply an image and a value
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn(x) * dValue <= max(T) ? imIn(x) * dValue :
+   * max(T))</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[in] dValue : input value
+   * @param[out] imOut : output image
+   *
+   */
   template <class T>
   RES_T mul(const Image<T> &imIn, const double &dValue, Image<T> &imOut)
   {
@@ -821,6 +1217,14 @@ namespace smil
 
   /**
    * Multiply (without type max check)
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn1(x) * imIn2(x) % (max(T) + 1))</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
+   *
+   * @note In reality mulNoSat() and mul() gives the same result
    */
   template <class T>
   RES_T mulNoSat(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -831,19 +1235,38 @@ namespace smil
     return binaryImageFunction<T, mulLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Multiply an image and a value (without type max check)
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn(x) * value  % (max(T) + 1))</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[in] value : input value
+   * @param[out] imOut : output image
+   *
+   * @note In reality mulNoSat() and mul() gives the same result
+   */
   template <class T>
-  RES_T mulNoSat(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+  RES_T mulNoSat(const Image<T> &imIn, const T &value, Image<T> &imOut)
   {
-    ASSERT_ALLOCATED(&imIn1, &imOut);
-    ASSERT_SAME_SIZE(&imIn1, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    return binaryImageFunction<T, mulLine<T>>(imIn1, value, imOut);
+    return binaryImageFunction<T, mulLine<T>>(imIn, value, imOut);
   }
 
   /**
-   * Logarithm
+   * Logarithm of an image
    *
-   * Possible bases: 0 or none (natural logarithm, or base e), 2, 10
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn(x) != 0 ? log(imIn(x)) : max(T))</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] base : base of the function logarithm
+   *
+   * @note Possible bases: 0 or none (natural logarithm, or base e), 2, 10
    */
   template <class T>
   RES_T log(const Image<T> &imIn, Image<T> &imOut, int base = 0)
@@ -857,7 +1280,17 @@ namespace smil
   }
 
   /**
-   * Logic AND operator
+   * Logic AND operator, pixel by pixel, of two images
+   *
+   * This function evaluates the logical @b AND of two images. This function
+   * works both @b binary and @b  grey images
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn(x) != 0 AND imIn2(x) != 0 ? 1 : 0)</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
    */
   template <class T>
   RES_T logicAnd(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -878,7 +1311,17 @@ namespace smil
   }
 
   /**
-   * Logic OR operator
+   * Logic OR operator, pixel by pixel, of two images
+   *
+   * This function evaluates the logical @b OR of two images. This function
+   * works both @b binary and @b  grey images
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn(x) != 0 OR imIn2(x) != 0 ? 1 : 0)</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
    */
   template <class T>
   RES_T logicOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -899,7 +1342,18 @@ namespace smil
   }
 
   /**
-   * Logic XOR operator
+   * Logic XOR operator, pixel by pixel, of two images
+   *
+   * This function evaluates the logical @b OR of two images. This function
+   * works both @b binary and @b  grey images
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn1(x) != 0 && imIn2(x) == 0) || (imIn1(x) == 0 &&
+   * imIn2(x) != 0) ? 1 : 0)</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
    */
   template <class T>
   RES_T logicXOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
@@ -922,60 +1376,105 @@ namespace smil
   /**
    * Test
    *
-   * If imIn1(x)!=0, imOut(x)=imIn2(x)
-   * imOut(x)=imIn3(x) otherwise.
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn(x) != 0 ? imInT(x] : imInF(x))</c></b>
    *
+   * @param[in] imIn : input image
+   * @param[in] imInT : input image with values to set when @b true
+   * @param[in] imInF : input image with values to set when @b false
+   * @param[out] imOut : output image
+   *
+   * @note
    * Can also be used with constant values and result of operators.
    *
-   * @par Examples
+   * @par Example
    * @code
-   * test(im1>100, 255, 0, im2)
+   * import smilPython as sp
+   * ...
+   * sp.test(imIn > 100, 255, 0, imOut)
    * @endcode
    */
   template <class T1, class T2>
-  RES_T test(const Image<T1> &imIn1, const Image<T2> &imIn2,
-             const Image<T2> &imIn3, Image<T2> &imOut)
+  RES_T test(const Image<T1> &imIn, const Image<T2> &imInT,
+             const Image<T2> &imInF, Image<T2> &imOut)
   {
-    ASSERT_ALLOCATED(&imIn1, &imIn2, &imIn3, &imOut);
-    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imIn3, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imInT, &imInF, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imInT, &imInF, &imOut);
 
-    return tertiaryImageFunction<T1, testLine<T1, T2>>(imIn1, imIn2, imIn3,
+    return tertiaryImageFunction<T1, testLine<T1, T2>>(imIn, imInT, imInF,
                                                        imOut);
   }
 
+  /**
+   * Test
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn(x) != 0 ? imInT(x] : value)</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[in] imInT : input image with values to set when @b true
+   * @param[in] value : input value to set when @b false
+   * @param[out] imOut : output image
+   *
+   */
   template <class T1, class T2>
-  RES_T test(const Image<T1> &imIn1, const Image<T2> &imIn2, const T2 &value,
+  RES_T test(const Image<T1> &imIn, const Image<T2> &imInT, const T2 &value,
              Image<T2> &imOut)
   {
-    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
-    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imInT, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imInT, &imOut);
 
-    return tertiaryImageFunction<T1, testLine<T1, T2>>(imIn1, imIn2, value,
+    return tertiaryImageFunction<T1, testLine<T1, T2>>(imIn, imInT, value,
                                                        imOut);
   }
 
+  /**
+   * Test
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn(x) != 0 ? value : imInF(x])</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[in] value : input value to set when @b true
+   * @param[in] imInF : input image with values to set when @b false
+   * @param[out] imOut : output image
+   *
+   */
   template <class T1, class T2>
-  RES_T test(const Image<T1> &imIn1, const T2 &value, const Image<T2> &imIn2,
+  RES_T test(const Image<T1> &imIn, const T2 &value, const Image<T2> &imInF,
              Image<T2> &imOut)
   {
-    ASSERT_ALLOCATED(&imIn1, &imIn2, &imOut);
-    ASSERT_SAME_SIZE(&imIn1, &imIn2, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imInF, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imInF, &imOut);
 
-    return tertiaryImageFunction<T1, testLine<T1, T2>>(imIn1, value, imIn2,
+    return tertiaryImageFunction<T1, testLine<T1, T2>>(imIn, value, imInF,
                                                        imOut);
   }
 
+  /**
+   * Test
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imIn(x) != 0 ? value : imInF(x])</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[in] valueT : input value to set when @b true
+   * @param[in] valueF : input value to set when @b false
+   * @param[out] imOut : output image
+   *
+   */
   template <class T1, class T2>
-  RES_T test(const Image<T1> &imIn, const T2 &value1, const T2 &value2,
+  RES_T test(const Image<T1> &imIn, const T2 &valueT, const T2 &valueF,
              Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    return tertiaryImageFunction<T1, testLine<T1, T2>>(imIn, value1, value2,
+    return tertiaryImageFunction<T1, testLine<T1, T2>>(imIn, valueT, valueF,
                                                        imOut);
   }
 
+  /** @cond */
   template <class T1, class imOrValT, class trueT, class falseT, class T2>
   RES_T _compare_base(const Image<T1> &imIn, const char *compareType,
                       const imOrValT &imOrVal, const trueT &trueImOrVal,
@@ -1006,23 +1505,29 @@ namespace smil
 
     return RES_OK;
   }
+  /** @endcond */
 
   /**
    * Compare each pixel of two images (or an image and a value)
    *
-   * Compare each pixel of two images (or an image and a value) and set the
-   * corresponding pixel of @b imOut to the same pixel of @b trueIm (or
-   * @b trueVal) if result is @b true or @b falseIm (or @b falseVal) if not.
+   * Compare each pixel of two images and set the corresponding pixel of @b
+   * imOut to the same pixel of @b trueIm if result is @b true or @b falseIm if
+   * not.
+   *
    *
    * @param[in] imIn1 : input image
    * @param[in] compareType : one of "<", "<=", "==", "!=", ">=", ">"
    * @param[in] imIn2 : input image (or a constant @b value)
-   * @param[in] trueIm : image to take pixel values from (or @b trueVal) when
-   * comparison is @b true
-   * @param[in] falseIm : image to take pixel values from (or @b falseVal) when
-   * comparison is @b false
+   * @param[in] trueIm : image to take pixel values from when comparison is @b
+   * true
+   * @param[in] falseIm : image to take pixel values from when comparison is @b
+   * false
    * @param[out] imOut : output image
    *
+   * @note
+   * Parameters of kind image in this call (@b imIn2, @b trueIm and @b falseIm)
+   * can be replaced by the respective scalar values (@b value, @b trueVal and
+   * @b falseVal). See the next function prototypes.
    */
   template <class T1, class T2>
   RES_T compare(const Image<T1> &imIn1, const char *compareType,
@@ -1033,6 +1538,23 @@ namespace smil
         imIn1, compareType, imIn2, trueIm, falseIm, imOut);
   }
 
+  /**
+   * Compare each pixel of two images (or an image and a value)
+   *
+   * Compare each pixel of two images and set the corresponding pixel of @b
+   * imOut to @b trueVal if result is @b true or @b falseIm if not.
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] compareType : one of "<", "<=", "==", "!=", ">=", ">"
+   * @param[in] imIn2 : input image (or a constant @b value)
+   * @param[in] trueVal : value to set when comparison is @b true
+   * @param[in] falseIm : image to take pixel values from when comparison is @b
+   * false
+   * @param[out] imOut : output image
+   *
+   * @overload
+   * @see the first reference to this function
+   */
   template <class T1, class T2>
   RES_T compare(const Image<T1> &imIn1, const char *compareType,
                 const Image<T1> &imIn2, const T2 &trueVal,
@@ -1042,6 +1564,24 @@ namespace smil
         imIn1, compareType, imIn2, trueVal, falseIm, imOut);
   }
 
+  /**
+   * Compare each pixel of two images (or an image and a value)
+   *
+   * Compare each pixel of two images and set the corresponding pixel of @b
+   * imOut to the same pixel of @b trueIm if result is @b true or @b falseVal if
+   * not.
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] compareType : one of "<", "<=", "==", "!=", ">=", ">"
+   * @param[in] imIn2 : input image
+   * @param[in] trueIm : image to take pixel values from when comparison is @b
+   * true
+   * @param[in] falseVal : value to set when comparison is @b false
+   * @param[out] imOut : output image
+   *
+   * @overload
+   * @see the first reference to this function
+   */
   template <class T1, class T2>
   RES_T compare(const Image<T1> &imIn1, const char *compareType,
                 const Image<T1> &imIn2, const Image<T2> &trueIm,
@@ -1051,6 +1591,22 @@ namespace smil
         imIn1, compareType, imIn2, trueIm, falseVal, imOut);
   }
 
+  /**
+   * Compare each pixel of two images (or an image and a value)
+   *
+   * Compare each pixel of two images and set the corresponding pixel of @b
+   * imOut to @b trueVal if result is @b true or @b falseVal if not.
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] compareType : one of "<", "<=", "==", "!=", ">=", ">"
+   * @param[in] imIn2 : input image
+   * @param[in] trueVal : value to set when comparison is @b true
+   * @param[in] falseVal : value to set when comparison is @b false
+   * @param[out] imOut : output image
+   *
+   * @overload
+   * @see the first reference to this function
+   */
   template <class T1, class T2>
   RES_T compare(const Image<T1> &imIn1, const char *compareType,
                 const Image<T1> &imIn2, const T2 &trueVal, const T2 &falseVal,
@@ -1060,6 +1616,25 @@ namespace smil
                                                     trueVal, falseVal, imOut);
   }
 
+  /**
+   * Compare each pixel of two images (or an image and a value)
+   *
+   * Compare each pixel of an image and a value and set the corresponding pixel
+   * of @b imOut to the same pixel of @b trueIm if result is @b true or @b
+   * falseIm if not.
+   *
+   * @param[in] imIn : input image
+   * @param[in] compareType : one of "<", "<=", "==", "!=", ">=", ">"
+   * @param[in] value : input value
+   * @param[in] trueIm : image to take pixel values from when comparison is @b
+   * true
+   * @param[in] falseIm : image to take pixel values from when comparison is @b
+   * false
+   * @param[out] imOut : output image
+   *
+   * @overload
+   * @see the first reference to this function
+   */
   template <class T1, class T2>
   RES_T compare(const Image<T1> &imIn, const char *compareType, const T1 &value,
                 const Image<T2> &trueIm, const Image<T2> &falseIm,
@@ -1069,6 +1644,23 @@ namespace smil
         imIn, compareType, value, trueIm, falseIm, imOut);
   }
 
+  /**
+   * Compare each pixel of two images (or an image and a value)
+   *
+   * Compare each pixel of an image and a value and set the corresponding pixel
+   * of @b imOut to @b trueVal if result is @b true or @b falseIm if not.
+   *
+   * @param[in] imIn : input image
+   * @param[in] compareType : one of "<", "<=", "==", "!=", ">=", ">"
+   * @param[in] value : input value
+   * @param[in] trueVal : value to set when comparison is @b true
+   * @param[in] falseIm : image to take pixel values from when
+   * comparison is @b false
+   * @param[out] imOut : output image
+   *
+   * @overload
+   * @see the first reference to this function
+   */
   template <class T1, class T2>
   RES_T compare(const Image<T1> &imIn, const char *compareType, const T1 &value,
                 const T2 &trueVal, const Image<T2> &falseIm, Image<T2> &imOut)
@@ -1077,6 +1669,24 @@ namespace smil
                                                     trueVal, falseIm, imOut);
   }
 
+  /**
+   * Compare each pixel of two images (or an image and a value)
+   *
+   * Compare each pixel of an image and a value and set the corresponding pixel
+   * of @b imOut to the same pixel of @b trueIm if result is @b true or @b
+   * falseVal if not.
+   *
+   * @param[in] imIn : input image
+   * @param[in] compareType : one of "<", "<=", "==", "!=", ">=", ">"
+   * @param[in] value : input value
+   * @param[in] trueIm : image to take pixel values from when comparison is @b
+   * true
+   * @param[in] falseVal : value to set when comparison is @b false
+   * @param[out] imOut : output image
+   *
+   * @overload
+   * @see the first reference to this function
+   */
   template <class T1, class T2>
   RES_T compare(const Image<T1> &imIn, const char *compareType, const T1 &value,
                 const Image<T2> &trueIm, const T2 &falseVal, Image<T2> &imOut)
@@ -1085,6 +1695,22 @@ namespace smil
                                                     trueIm, falseVal, imOut);
   }
 
+  /**
+   * Compare each pixel of two images (or an image and a value)
+   *
+   * Compare each pixel of an image and a value and set the corresponding pixel
+   * of @b imOut to @b trueVal if result is @b true or @b falseVal if not.
+   *
+   * @param[in] imIn : input image
+   * @param[in] compareType : one of "<", "<=", "==", "!=", ">=", ">"
+   * @param[in] value : input value
+   * @param[in] trueVal : value to set when comparison is @b true
+   * @param[in] falseVal : value to set when comparison is @b false
+   * @param[out] imOut : output image
+   *
+   * @overload
+   * @see the first reference to this function
+   */
   template <class T1, class T2>
   RES_T compare(const Image<T1> &imIn, const char *compareType, const T1 &value,
                 const T2 &trueVal, const T2 &falseVal, Image<T2> &imOut)
@@ -1096,9 +1722,13 @@ namespace smil
   /**
    * Image mask
    *
-   * Returns an image imOut where
-   * - imOut(x) = imIn(x) if imMask(x) != 0
-   * - imOut(x) = 0 otherwise
+   * The result is a image where :
+   * - <b><c> imOut(x) = (imMask(x) != 0 ? imIn(x) : 0)</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[in] imMask : input mask image
+   * @param[out] imOut : output image
+   *
    */
   template <class T>
   RES_T mask(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut)
@@ -1107,29 +1737,19 @@ namespace smil
   }
 
   /**
-   * Apply a lookup map
+   * Apply a lookup map to a labeled image
    *
-   * @b Python @b example:
-   * @code{.py}
-   * im1 = Image("http://smil.cmm.mines-paristech.fr/images/balls.png")
-   * imLbl = Image(im1, "UINT16")
-   * imLbl2 = Image(imLbl)
+   * Converts a labeled image into a labeled image, converting labels based on a
+   * lookup map (or dictionary, in @b python)
    *
-   * label(im1, imLbl)
+   * @param[in] imIn : labeled input image
+   * @param[in] _map : lookup map
+   * @param[out] imOut : output labeled image
+   * @param[in] defaultValue : values to be assigned when the input value isn't
+   * present in the keys of the lookup map <b>(_map)</b>
    *
-   * # We can use a Smil Map
-   * # lookup = Map_UINT16_UINT16()
-   * # or directly a python dict
-   * lookup = dict()
+   * @smilexample{example-applylookup.py}
    *
-   * lookup[1] = 2
-   * lookup[5] = 3
-   * lookup[2] = 1
-   *
-   * imLbl.showLabel()
-   * imLbl2.showLabel()
-   *
-   * @endcode
    */
   template <class T1, class mapT, class T2>
   RES_T applyLookup(const Image<T1> &imIn, const mapT &_map, Image<T2> &imOut,
@@ -1165,6 +1785,7 @@ namespace smil
   }
 
 #ifndef SWIG
+  /** @cond */
   template <class T1, class T2>
   // SFINAE General case
   ENABLE_IF(!IS_SAME(T1, UINT8) && !IS_SAME(T1, UINT16), RES_T)
@@ -1206,6 +1827,7 @@ namespace smil
 
     return RES_OK;
   }
+  /** @endcond */
 #else  // SWIG
   template <class T1, class T2>
   RES_T applyLookup(const Image<T1> &imIn, const map<T1, T2> &lut,
