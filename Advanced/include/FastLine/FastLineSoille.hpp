@@ -511,7 +511,7 @@ namespace smil
     } /* ImageGrayDilateLine */
 
   public:
-    RES_T ImLineDilate(const Image<T> &imIn, const int angle, const int radius,
+    RES_T lineDilate(const Image<T> &imIn, const int angle, const int radius,
                        Image<T> &imOut)
     {
       // Check inputs
@@ -561,7 +561,7 @@ namespace smil
       return RES_OK;
     }
 
-    RES_T ImLineErode(const Image<T> &imIn, const int angle, const int radius,
+    RES_T lineErode(const Image<T> &imIn, const int angle, const int radius,
                       Image<T> &imOut)
     {
       RES_T r = RES_OK;
@@ -569,37 +569,37 @@ namespace smil
 
       r = inv(imIn, imTmp);
       if (r == RES_OK)
-        r = ImLineDilate(imTmp, angle, radius, imOut);
+        r = lineDilate(imTmp, angle, radius, imOut);
       if (r == RES_OK)
         r = inv(imOut, imOut);
       return r;
     }
 
-    RES_T ImLineOpen(const Image<T> &imIn, const int angle, const int radius,
+    RES_T lineOpen(const Image<T> &imIn, const int angle, const int radius,
                      Image<T> &imOut)
     {
       RES_T r = RES_OK;
       Image<T> imTmp(imIn);
 
-      r = ImLineErode(imIn, angle, radius, imTmp);
+      r = lineErode(imIn, angle, radius, imTmp);
       if (r == RES_OK)
-        r = ImLineDilate(imTmp, angle, radius, imOut);
+        r = lineDilate(imTmp, angle, radius, imOut);
       return r;
     }
 
-    RES_T ImLineClose(const Image<T> &imIn, const int angle, const int radius,
+    RES_T lineClose(const Image<T> &imIn, const int angle, const int radius,
                       Image<T> &imOut)
     {
       RES_T r = RES_OK;
       Image<T> imTmp(imIn);
 
-      r = ImLineDilate(imIn, angle, radius, imTmp);
+      r = lineDilate(imIn, angle, radius, imTmp);
       if (r == RES_OK)
-        r = ImLineErode(imTmp, angle, radius, imOut);
+        r = lineErode(imTmp, angle, radius, imOut);
       return r;
     }
 
-    RES_T ImCircleDilate(const Image<T> &imIn, const int radius,
+    RES_T circleDilate(const Image<T> &imIn, const int radius,
                          Image<T> &imOut)
     {
       RES_T r;
@@ -616,14 +616,14 @@ namespace smil
         rd = alpha * PI / 180.;
         kalpha = k0 * std::max(fabs(cos(rd)), fabs(sin(rd))) + 0.5;
 
-        r = ImLineDilate(imOut, (int) alpha, (int) kalpha, imOut);
+        r = lineDilate(imOut, (int) alpha, (int) kalpha, imOut);
         if (r != RES_OK)
           break;
       }
       return r;
     }
 
-    RES_T ImCircleErode(const Image<T> &imIn, const int radius, Image<T> &imOut)
+    RES_T circleErode(const Image<T> &imIn, const int radius, Image<T> &imOut)
     {
       RES_T r;
       int i, nbAngle = 8;
@@ -639,78 +639,78 @@ namespace smil
         rd = alpha * PI / 180.;
         kalpha = k0 * std::max(fabs(cos(rd)), fabs(sin(rd))) + 0.5;
 
-        r = ImLineErode(imOut, (int) alpha, (int) kalpha, imOut);
+        r = lineErode(imOut, (int) alpha, (int) kalpha, imOut);
         if (r != RES_OK)
           break;
       }
       return r;
     }
 
-    RES_T ImCircleOpen(const Image<T> &imIn, const int radius, Image<T> &imOut)
+    RES_T circleOpen(const Image<T> &imIn, const int radius, Image<T> &imOut)
     {
       RES_T r;
 
-      r = ImCircleErode(imIn, radius, imOut);
+      r = circleErode(imIn, radius, imOut);
       if (r == RES_OK)
-        r = ImCircleDilate(imOut, radius, imOut);
+        r = circleDilate(imOut, radius, imOut);
       return r;
     }
 
-    RES_T ImCircleClose(const Image<T> &imIn, const int radius, Image<T> &imOut)
+    RES_T circleClose(const Image<T> &imIn, const int radius, Image<T> &imOut)
     {
       RES_T r;
-      r = ImCircleDilate(imIn, radius, imOut);
+      r = circleDilate(imIn, radius, imOut);
       if (r == RES_OK)
-        r = ImCircleErode(imOut, radius, imOut);
+        r = circleErode(imOut, radius, imOut);
       return r;
     }
 
-    RES_T ImSquareDilate(const Image<T> &imIn, const int radius,
+    RES_T squareDilate(const Image<T> &imIn, const int radius,
                          Image<T> &imOut)
     {
       Image<T> imTmp(imIn);
 
-      RES_T res = ImLineDilate(imIn, 0, radius, imTmp);
+      RES_T res = lineDilate(imIn, 0, radius, imTmp);
       if (res == RES_OK)
-        res = ImLineDilate(imTmp, 90, radius, imOut);
+        res = lineDilate(imTmp, 90, radius, imOut);
       return res;
     }
 
-    RES_T ImSquareErode(const Image<T> &imIn, const int radius, Image<T> &imOut)
+    RES_T squareErode(const Image<T> &imIn, const int radius, Image<T> &imOut)
     {
       Image<T> imTmp(imIn);
 
-      RES_T res = ImLineErode(imIn, 0, radius, imTmp);
+      RES_T res = lineErode(imIn, 0, radius, imTmp);
       if (res == RES_OK)
-        res = ImLineErode(imTmp, 90, radius, imOut);
+        res = lineErode(imTmp, 90, radius, imOut);
       return res;
     }
 
-    RES_T ImSquareOpen(const Image<T> &imIn, const int radius, Image<T> &imOut)
+    RES_T squareOpen(const Image<T> &imIn, const int radius, Image<T> &imOut)
     {
       Image<T> imTmp(imIn);
 
-      RES_T res = ImLineErode(imIn, 0, radius, imTmp);
+      RES_T res = lineErode(imIn, 0, radius, imTmp);
       if (res == RES_OK)
-        res = ImLineErode(imTmp, 90, radius, imOut);
+        res = lineErode(imTmp, 90, radius, imOut);
       if (res == RES_OK)
-        res = ImLineDilate(imOut, 0, radius, imTmp);
+        res = lineDilate(imOut, 0, radius, imTmp);
       if (res == RES_OK)
-        res = ImLineDilate(imTmp, 90, radius, imOut);
+        res = lineDilate(imTmp, 90, radius, imOut);
       return res;
     }
 
-    RES_T ImSquareClose(const Image<T> &imIn, const int radius, Image<T> &imOut)
+    RES_T squareClose(const Image<T> &imIn, const int radius, Image<T> &imOut)
     {
       Image<T> imTmp(imIn);
 
-      RES_T res = ImLineDilate(imIn, 0, radius, imTmp);
+      RES_T res = lineDilate(imIn, 0, radius, imTmp);
       if (res == RES_OK)
-        res = ImLineDilate(imTmp, 90, radius, imOut);
+        res = lineDilate(imTmp, 90, radius, imOut);
       if (res == RES_OK)
-        res = ImLineErode(imOut, 0, radius, imTmp);
+        res = lineErode(imOut, 0, radius, imTmp);
       if (res == RES_OK)
-        res = ImLineErode(imTmp, 90, radius, imOut);
+        res = lineErode(imTmp, 90, radius, imOut);
       return res;
     }
   };
@@ -725,105 +725,105 @@ namespace smil
    * Line Based Morphological operators
    */
   template <class T>
-  RES_T ImLineDilate_Soille(const Image<T> &imIn, const int angle,
+  RES_T lineDilate_Soille(const Image<T> &imIn, const int angle,
                             const int radius, Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
-    return soille.ImLineDilate(imIn, angle, radius, imOut);
+    return soille.lineDilate(imIn, angle, radius, imOut);
   }
 
   template <class T>
-  RES_T ImLineErode_Soille(const Image<T> &imIn, const int angle,
+  RES_T lineErode_Soille(const Image<T> &imIn, const int angle,
                            const int radius, Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
-    return soille.ImLineErode(imIn, angle, radius, imOut);
+    return soille.lineErode(imIn, angle, radius, imOut);
   }
 
   template <class T>
-  RES_T ImLineOpen_Soille(const Image<T> &imIn, const int angle,
+  RES_T lineOpen_Soille(const Image<T> &imIn, const int angle,
                           const int radius, Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
-    return soille.ImLineOpen(imIn, angle, radius, imOut);
+    return soille.lineOpen(imIn, angle, radius, imOut);
   }
 
   template <class T>
-  RES_T ImLineClose_Soille(const Image<T> &imIn, const int angle,
+  RES_T lineClose_Soille(const Image<T> &imIn, const int angle,
                            const int radius, Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
-    return soille.ImLineClose(imIn, angle, radius, imOut);
+    return soille.lineClose(imIn, angle, radius, imOut);
   }
 
   /*
    * Line Based Morphological operators on circles
    */
   template <class T>
-  RES_T ImCircleDilate_Soille(const Image<T> &imIn, const int radius,
+  RES_T circleDilate_Soille(const Image<T> &imIn, const int radius,
                               Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
-    return soille.ImCircleDilate(imIn, radius, imOut);
+    return soille.circleDilate(imIn, radius, imOut);
   }
 
   template <class T>
-  RES_T ImCircleErode_Soille(const Image<T> &imIn, const int radius,
+  RES_T circleErode_Soille(const Image<T> &imIn, const int radius,
                              Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
-    return soille.ImCircleErode(imIn, radius, imOut);
+    return soille.circleErode(imIn, radius, imOut);
   }
 
   template <class T>
-  RES_T ImCircleOpen_Soille(const Image<T> &imIn, const int radius,
+  RES_T circleOpen_Soille(const Image<T> &imIn, const int radius,
                             Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
-    return soille.ImCircleOpen(imIn, radius, imOut);
+    return soille.circleOpen(imIn, radius, imOut);
   }
 
   template <class T>
-  RES_T ImCircleClose_Soille(const Image<T> &imIn, const int radius,
+  RES_T circleClose_Soille(const Image<T> &imIn, const int radius,
                              Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
-    return soille.ImCircleClose(imIn, radius, imOut);
+    return soille.circleClose(imIn, radius, imOut);
   }
 
   /*
    * Line Based Morphological operators on squares
    */
   template <class T>
-  RES_T ImSquareDilate_Soille(const Image<T> &imIn, const int radius,
+  RES_T squareDilate_Soille(const Image<T> &imIn, const int radius,
                               Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
-    return soille.ImSquareDilate(imIn, radius, imOut);
+    return soille.squareDilate(imIn, radius, imOut);
   }
 
   template <class T>
-  RES_T ImSquareErode_Soille(const Image<T> &imIn, const int radius,
+  RES_T squareErode_Soille(const Image<T> &imIn, const int radius,
                              Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
-    return soille.ImSquareErode(imIn, radius, imOut);
+    return soille.squareErode(imIn, radius, imOut);
   }
 
   template <class T>
-  RES_T ImSquareOpen_Soille(const Image<T> &imIn, const int radius,
+  RES_T squareOpen_Soille(const Image<T> &imIn, const int radius,
                             Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
-    return soille.ImSquareOpen(imIn, radius, imOut);
+    return soille.squareOpen(imIn, radius, imOut);
   }
 
   template <class T>
-  RES_T ImSquareClose_Soille(const Image<T> &imIn, const int radius,
+  RES_T squareClose_Soille(const Image<T> &imIn, const int radius,
                              Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
-    return soille.ImSquareClose(imIn, radius, imOut);
+    return soille.squareClose(imIn, radius, imOut);
   }
 
 } // namespace smil

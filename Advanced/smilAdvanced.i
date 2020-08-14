@@ -57,20 +57,20 @@ TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Tortuosity);
 
 
 %include "DFastLine.h"
-TEMPLATE_WRAP_FUNC(ImLineDilate);
-TEMPLATE_WRAP_FUNC(ImLineErode);
-TEMPLATE_WRAP_FUNC(ImLineOpen);
-TEMPLATE_WRAP_FUNC(ImLineClose);
+TEMPLATE_WRAP_FUNC(lineDilate);
+TEMPLATE_WRAP_FUNC(lineErode);
+TEMPLATE_WRAP_FUNC(lineOpen);
+TEMPLATE_WRAP_FUNC(lineClose);
 
-TEMPLATE_WRAP_FUNC(ImSquareDilate);
-TEMPLATE_WRAP_FUNC(ImSquareErode);
-TEMPLATE_WRAP_FUNC(ImSquareOpen);
-TEMPLATE_WRAP_FUNC(ImSquareClose);
+TEMPLATE_WRAP_FUNC(squareDilate);
+TEMPLATE_WRAP_FUNC(squareErode);
+TEMPLATE_WRAP_FUNC(squareOpen);
+TEMPLATE_WRAP_FUNC(squareClose);
 
-TEMPLATE_WRAP_FUNC(ImCircleDilate);
-TEMPLATE_WRAP_FUNC(ImCircleErode);
-TEMPLATE_WRAP_FUNC(ImCircleOpen);
-TEMPLATE_WRAP_FUNC(ImCircleClose);
+TEMPLATE_WRAP_FUNC(circleDilate);
+TEMPLATE_WRAP_FUNC(circleErode);
+TEMPLATE_WRAP_FUNC(circleOpen);
+TEMPLATE_WRAP_FUNC(circleClose);
 
 TEMPLATE_WRAP_FUNC(ImFastLineOpen_Morard);
 //TEMPLATE_WRAP_FUNC(ImFastLineClose_Morard);
