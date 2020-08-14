@@ -38,8 +38,17 @@
 namespace smil
 {
   /**
-   * @ingroup AddonColor
+   * @addtogroup AddonColor
+   *
    * @{
+   * @details
+   * Color space conversion format conversion and @b gradient :
+   * - RGB
+   * - LAB
+   * - HSV
+   * - CIE XYZ https://fr.wikipedia.org/wiki/CIE_XYZ
+   * - Luminance
+   *
    */
 
   /**

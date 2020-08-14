@@ -185,7 +185,7 @@ namespace smil
    *
    */
   template <class T>
-  RES_T ImGaborFilterConvolution(const Image<T> &imIn, double sigma,
+  RES_T gaborFilterConvolution(const Image<T> &imIn, double sigma,
                                  double theta, double lambda, double psi,
                                  double gamma, Image<T> &imOut)
   {
@@ -215,7 +215,7 @@ namespace smil
    *
    */
   template <class T>
-  RES_T ImGaborFilterConvolutionNorm(const Image<T> &imIn, double sigma,
+  RES_T gaborFilterConvolutionNorm(const Image<T> &imIn, double sigma,
                                      double theta, double lambda, double psi,
                                      double gamma, double Min, double Max,
                                      Image<T> &imOut, Image<T> &imGabor)
@@ -223,7 +223,7 @@ namespace smil
     ASSERT_ALLOCATED(&imIn, &imOut, &imGabor);
     ASSERT_SAME_SIZE(&imIn, &imOut, &imGabor);
 
-    RES_T res = ImGaborFilterConvolution(imIn, sigma, theta, lambda, psi, gamma,
+    RES_T res = gaborFilterConvolution(imIn, sigma, theta, lambda, psi, gamma,
                                          imGabor);
     if (res != RES_OK) {
       // tell something
@@ -256,7 +256,7 @@ namespace smil
    *
    */
   template <class T>
-  RES_T ImGaborFilterConvolutionNormAuto(const Image<T> &imIn, double sigma,
+  RES_T gaborFilterConvolutionNormAuto(const Image<T> &imIn, double sigma,
                                          double theta, double lambda,
                                          double psi, double gamma, double *Min,
                                          double *Max, Image<T> &imOut,
@@ -265,7 +265,7 @@ namespace smil
     ASSERT_ALLOCATED(&imIn, &imOut, &imGabor);
     ASSERT_SAME_SIZE(&imIn, &imOut, &imGabor);
 
-    RES_T res = ImGaborFilterConvolution(imIn, sigma, theta, lambda, psi, gamma,
+    RES_T res = gaborFilterConvolution(imIn, sigma, theta, lambda, psi, gamma,
                                          imGabor);
     if (res != RES_OK) {
       // tell something

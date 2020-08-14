@@ -39,7 +39,7 @@
 namespace smil
 {
   /**
-   * @ingroup AddonColor
+   * @addtogroup AddonColor
    * @{
    */
    

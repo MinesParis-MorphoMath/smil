@@ -5,7 +5,7 @@
 namespace smil
 {
   template <class T>
-  RES_T ImMeanShiftFilter(const Image<T> &imIn, const UINT8 radius,
+  RES_T meanShiftFilter(const Image<T> &imIn, const UINT8 radius,
                     const int tonalDistance, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
@@ -92,7 +92,7 @@ namespace smil
 
 #if 1
   template <class T>
-  RES_T ImMeanShiftFilterRGB(const Image<T> &imIn, const UINT8 radius,
+  RES_T meanShiftFilterRGB(const Image<T> &imIn, const UINT8 radius,
                     const int tonalDistance, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);

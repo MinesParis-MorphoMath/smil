@@ -76,17 +76,18 @@ namespace smil
    * * John Canny, A computational approach to edge detection, IEEE Pami, 
    * vol. 8, n° 6, novembre 1986, pp 679-698
    *
-   * @author Vincent Morard / Jose-Marcio Martins da Cruz
+   * @author Vincent Morard
+   * @author Jose-Marcio Martins da Cruz (port from @c Morph-M)
    * @{ */
 
   /**
-   * @brief ImCannyEdgeDetection Canny Filter
+   * @brief cannyEdgeDetection Canny Filter
    * @param[in] imIn : input Image
    * @param[in] sigma :
    * @param[out] imOut : output Image
    */
   template <class T1, class T2>
-  RES_T ImCannyEdgeDetection(const Image<T1> &imIn, const double sigma,
+  RES_T cannyEdgeDetection(const Image<T1> &imIn, const double sigma,
                              Image<T2> &imOut);
 
   /** @} */

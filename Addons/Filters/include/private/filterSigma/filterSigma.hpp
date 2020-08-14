@@ -5,7 +5,7 @@
 namespace smil
 {
   template <class T>
-  RES_T ImSigmaFilter(const Image<T> &imIn, const UINT8 radius,
+  RES_T sigmaFilter(const Image<T> &imIn, const UINT8 radius,
                         const double sigma, const double percentageNbMinPixel,
                         const bool excludeOutlier, Image<T> &imOut)
   {
@@ -88,13 +88,13 @@ namespace smil
   }
 
   template <class T>
-  RES_T t_ImSigmaFilterRGB(const Image<T> &imIn, const UINT8 radius,
+  RES_T t_sigmaFilterRGB(const Image<T> &imIn, const UINT8 radius,
                            const double sigma,
                            const double percentageNbMinPixel,
                            const bool excludeOutlier, Image<T> &imOut)
   {
 #if 0
-    MORPHEE_ENTER_FUNCTION("t_ImSigmaFilterRGB");
+    MORPHEE_ENTER_FUNCTION("t_sigmaFilterRGB");
 
     // Check inputs
     if (!imIn.isAllocated() || !imOut.isAllocated()) {

@@ -62,27 +62,28 @@ namespace smil
    *       on Wikipedia</a>
    *
    * @warning Not yet implemented for RGB Images
-   * @author Vincent Morard / Jose-Marcio Martins da Cruz
+   * @author Vincent Morard
+   * @author Jose-Marcio Martins da Cruz (port from @c Morph-M)
    * @{ */
 
   /**
-   * @brief  ImKuwaharaFilter Kuwahara Filter
+   * @brief  kuwaharaFilter Kuwahara Filter
    * @param[in] imIn : input Image
    * @param[in] radius : 
    * @param[out] imOut : output Image (must be F_SIMPLE or F_DOUBLE ???)
    */
   template <class T>
-  RES_T ImKuwaharaFilter(const Image<T> &imIn, const int radius,
+  RES_T kuwaharaFilter(const Image<T> &imIn, const int radius,
                            Image<T> &imOut);
 
   /**
-   * @brief  ImKuwaharaFilterRGB Kuwahara Filter (color images)
+   * @brief  kuwaharaFilterRGB Kuwahara Filter (color images)
    * @param[in] imIn : input Image
    * @param[in] radius : 
    * @param[out] imOut : output Image (must be F_SIMPLE or F_DOUBLE ???)
    */
   template <class T>
-  RES_T ImKuwaharaFilterRGB(const Image<T> &imIn, const int radius,
+  RES_T kuwaharaFilterRGB(const Image<T> &imIn, const int radius,
                           Image<T> &imOut);
                            
   /** @} */

@@ -56,7 +56,8 @@ namespace smil
    *
    * @see
    *
-   * @author Vincent Morard / Jose-Marcio Martins da Cruz
+   * @author Vincent Morard
+   * @author Jose-Marcio Martins da Cruz (port from @c Morph-M)
    * @{ */
 
   /**
@@ -69,7 +70,7 @@ namespace smil
    * @param[out] imOut : output Image
    */
   template <class T>
-  RES_T ImSigmaFilter(const Image<T> &imIn, const UINT8 radius,
+  RES_T sigmaFilter(const Image<T> &imIn, const UINT8 radius,
                       const double sigma, const double percentageNbMinPixel,
                       const bool excludeOutlier, Image<T> &imOut);
 
@@ -84,7 +85,7 @@ namespace smil
    * @warning Yet to be done !!!
    */
   template <class T>
-  RES_T ImSigmaFilterRGB(const Image<T> &imIn, const UINT8 radius,
+  RES_T sigmaFilterRGB(const Image<T> &imIn, const UINT8 radius,
                          const double sigma, const double percentageNbMinPixel,
                          const bool excludeOutlier, Image<T> &imOut);
   /** @} */

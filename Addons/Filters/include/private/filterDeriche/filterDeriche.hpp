@@ -424,7 +424,7 @@ namespace smil
   }
 
   template <class T>
-  RES_T ImDericheEdgeDetection(const Image<T> &imIn, const double Alpha,
+  RES_T dericheEdgeDetection(const Image<T> &imIn, const double Alpha,
                                Image<T> &imOut)
   {
       ASSERT_ALLOCATED(&imIn, &imOut);

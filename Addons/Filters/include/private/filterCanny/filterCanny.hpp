@@ -312,7 +312,7 @@ Gaussian.
     }
     
     template <class T1, class T2>
-    RES_T ImCannyEdgeDetection(const Image<T1> &imIn, const double Sigma,
+    RES_T cannyEdgeDetection(const Image<T1> &imIn, const double Sigma,
                                  Image<T2> &imOut)
     {
       ASSERT_ALLOCATED(&imIn, &imOut);

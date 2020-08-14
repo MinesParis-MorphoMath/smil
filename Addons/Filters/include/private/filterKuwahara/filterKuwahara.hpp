@@ -4,10 +4,10 @@
 namespace smil
 {
   template <class T>
-  RES_T ImKuwaharaFilter(const Image<T> &imIn, const int radius,
+  RES_T kuwaharaFilter(const Image<T> &imIn, const int radius,
                          Image<T> &imOut)
   {
-    // MORPHEE_ENTER_FUNCTION("t_ImKuwaharaFilter");
+    // MORPHEE_ENTER_FUNCTION("t_kuwaharaFilter");
 
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -111,7 +111,7 @@ namespace smil
   }
 
   template <class T1, class T2>
-  RES_T ImKuwaharaFilterRGB(const Image<T1> &imIn, const int radius,
+  RES_T kuwaharaFilterRGB(const Image<T1> &imIn, const int radius,
                             Image<T2> &imOut)
   {
     return RES_OK;
@@ -120,10 +120,10 @@ namespace smil
 
 #if 0
     template <class T1, class T2>
-    RES_T ImKuwaharaFilterRGB(const Image<T1> &imIn, const int radius,
+    RES_T kuwaharaFilterRGB(const Image<T1> &imIn, const int radius,
                                 Image<T2> &imOut)
     {
-      MORPHEE_ENTER_FUNCTION("t_ImKuwaharaFilterRGB");
+      MORPHEE_ENTER_FUNCTION("t_kuwaharaFilterRGB");
       // Check inputs
       if (!imIn.isAllocated() || !imOut.isAllocated()) {
         MORPHEE_REGISTER_ERROR("Image not allocated");
@@ -148,24 +148,24 @@ namespace smil
         return res;
       }
 
-      res = t_ImKuwaharaFilter(imInR, radius, imInR);
+      res = t_kuwaharaFilter(imInR, radius, imInR);
       if (res != RES_OK) {
         MORPHEE_REGISTER_ERROR(
-            "t_ImKuwaharaFilter() in t_ImFastGaussianFilterRGB ");
+            "t_kuwaharaFilter() in t_ImFastGaussianFilterRGB ");
         return res;
       }
 
-      res = t_ImKuwaharaFilter(imInG, radius, imInG);
+      res = t_kuwaharaFilter(imInG, radius, imInG);
       if (res != RES_OK) {
         MORPHEE_REGISTER_ERROR(
-            "t_ImKuwaharaFilter() in t_ImFastGaussianFilterRGB ");
+            "t_kuwaharaFilter() in t_ImFastGaussianFilterRGB ");
         return res;
       }
 
-      res = t_ImKuwaharaFilter(imInB, radius, imInB);
+      res = t_kuwaharaFilter(imInB, radius, imInB);
       if (res != RES_OK) {
         MORPHEE_REGISTER_ERROR(
-            "t_ImKuwaharaFilter() in t_ImFastGaussianFilterRGB ");
+            "t_kuwaharaFilter() in t_ImFastGaussianFilterRGB ");
         return res;
       }
 

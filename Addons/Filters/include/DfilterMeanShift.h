@@ -56,7 +56,8 @@ namespace smil
    * @see Mean Shift on <a href=https://en.wikipedia.org/wiki/Mean_shift>
    * Wikipedia</a>
    *
-   * @author Vincent Morard / Jose-Marcio Martins da Cruz
+   * @author Vincent Morard
+   * @author Jose-Marcio Martins da Cruz (port from @c Morph-M)
    * @{ */
 
   /**
@@ -67,7 +68,7 @@ namespace smil
    * @param[out] imOut : output Image
    */
   template <class T>
-  RES_T ImMeanShiftFilter(const Image<T> &imIn, const UINT8 radius,
+  RES_T meanShiftFilter(const Image<T> &imIn, const UINT8 radius,
                     const int tonalDistance, Image<T> &imOut);
 
   /**
@@ -79,7 +80,7 @@ namespace smil
    * @warning Yet to be done !!!
    */
   template <class T>
-  RES_T ImMeanShiftFilterRGB(const Image<T> &imIn, const UINT8 radius,
+  RES_T meanShiftFilterRGB(const Image<T> &imIn, const UINT8 radius,
                     const int tonalDistance, Image<T> &imOut);
                       
   /** @} */

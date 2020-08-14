@@ -60,7 +60,8 @@ namespace smil
    *   <a href="https://en.wikipedia.org/wiki/Deriche_edge_detector">
    *   on Wikipedia</a>
    *
-   * @author Vincent Morard / Jose-Marcio Martins da Cruz
+   * @author Vincent Morard
+   * @author Jose-Marcio Martins da Cruz (port from @c Morph-M)
    * @{ */
 
 
@@ -70,7 +71,7 @@ namespace smil
      * @param[out] imOut Edges of imIn
      */
     template <class T>
-    RES_T ImDericheEdgeDetection(const Image<T> &imIn,
+    RES_T dericheEdgeDetection(const Image<T> &imIn,
                                         const double Alpha,
                                         Image<T> &imOut);
                    

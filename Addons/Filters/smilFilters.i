@@ -43,7 +43,7 @@ SMIL_MODULE(smilFilters)
 #include "DfilterSigma.h"
 #include "DfilterMeanShift.h"
 
-#include "DfilterNormalize.h"
+#include "DfilterRangeScale.h"
 #include "DfilterGaussian.h"
 
 #include "Dfilter3DBilateral.h"
@@ -59,38 +59,38 @@ SMIL_MODULE(smilFilters)
 // Filters from Morph-M
 // *******************************
 %include "DfilterGabor.h"
-TEMPLATE_WRAP_FUNC(ImGaborFilterConvolution)
-TEMPLATE_WRAP_FUNC(ImGaborFilterConvolutionNorm)
-TEMPLATE_WRAP_FUNC(ImGaborFilterConvolutionNormAuto)
+TEMPLATE_WRAP_FUNC(gaborFilterConvolution)
+TEMPLATE_WRAP_FUNC(gaborFilterConvolutionNorm)
+TEMPLATE_WRAP_FUNC(gaborFilterConvolutionNormAuto)
 
 %include "DfilterCanny.h"
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImCannyEdgeDetection)
+TEMPLATE_WRAP_FUNC_2T_CROSS(cannyEdgeDetection)
 
 // %include "DfilterFastBilateral.h"
 // TEMPLATE_WRAP_FUNC_2T_CROSS(ImFastBilateralFilter);
 
 %include "DfilterDeriche.h"
-TEMPLATE_WRAP_FUNC(ImDericheEdgeDetection);
+TEMPLATE_WRAP_FUNC(dericheEdgeDetection);
 
 %include "DfilterKuwahara.h"
-TEMPLATE_WRAP_FUNC(ImKuwaharaFilter);
-// TEMPLATE_WRAP_FUNC(ImKuwaharaFilterRGB);
+TEMPLATE_WRAP_FUNC(kuwaharaFilter);
+// TEMPLATE_WRAP_FUNC(kuwaharaFilterRGB);
 
 %include "DfilterSigma.h"
-TEMPLATE_WRAP_FUNC(ImSigmaFilter);
-// TEMPLATE_WRAP_FUNC(ImSigmaFilterRGB);
+TEMPLATE_WRAP_FUNC(sigmaFilter);
+// TEMPLATE_WRAP_FUNC(sigmaFilterRGB);
 
 %include "DfilterMeanShift.h"
-TEMPLATE_WRAP_FUNC(ImMeanShiftFilter);
-// TEMPLATE_WRAP_FUNC(ImMeanShiftFilterRGB);
+TEMPLATE_WRAP_FUNC(meanShiftFilter);
+// TEMPLATE_WRAP_FUNC(meanShiftFilterRGB);
 
 // *******************************
 // Filters from Jose-Marcio
 // *******************************
-%include "DfilterNormalize.h"
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImNormalize);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImNormalizeAuto);
-TEMPLATE_WRAP_FUNC_2T_CROSS(ImNormalizeSCurve);
+%include "DfilterRangeScale.h"
+TEMPLATE_WRAP_FUNC_2T_CROSS(imageScaleRange);
+// TEMPLATE_WRAP_FUNC_2T_CROSS(imageScaleRangeAuto);
+TEMPLATE_WRAP_FUNC_2T_CROSS(imageScaleRangeSCurve);
 
 %include "DfilterGaussian.h"
 TEMPLATE_WRAP_FUNC(ImGaussianFilter);

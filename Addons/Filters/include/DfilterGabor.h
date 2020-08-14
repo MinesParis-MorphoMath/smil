@@ -57,11 +57,12 @@ namespace smil
    * @see Gabor Filter <a href="https://en.wikipedia.org/wiki/Gabor_filter">
    *       on Wikipedia</a>
    *
-   * @author Vincent Morard / Jose-Marcio Martins da Cruz
+   * @author Vincent Morard
+   * @author Jose-Marcio Martins da Cruz (port from @c Morph-M)
    * @{ */
 
   /**
-   * @brief ImGaborFilterConvolution Gabor Filter
+   * @brief gaborFilterConvolution Gabor Filter
    * @param[in] imIn : input Image
    * @param[in] sigma : size of the gaussian
    * @param[in] theta : orientation of the kernel (in rad)
@@ -71,12 +72,12 @@ namespace smil
    * @param[out] imOut : output Image (must be F_SIMPLE or F_DOUBLE ???)
    */
   template <class T>
-  RES_T ImGaborFilterConvolution(const Image<T> &imIn, double sigma,
+  RES_T gaborFilterConvolution(const Image<T> &imIn, double sigma,
                                  double theta, double lambda, double psi,
                                  double gamma, Image<T> &imOut);
 
   /**
-   * @brief ImGaborFilterConvolutionNorm Gabor Filter (normalized between 
+   * @brief gaborFilterConvolutionNorm Gabor Filter (normalized between 
    *   Min and Max)
    * @param[in] imIn : input Image
    * @param[in] sigma : size of the gaussian
@@ -90,13 +91,13 @@ namespace smil
    * @param[out] imGabor : output Image (must be F_SIMPLE or F_DOUBLE ???)
    */
   template <class T>
-  RES_T ImGaborFilterConvolutionNorm(const Image<T> &imIn, double sigma,
+  RES_T gaborFilterConvolutionNorm(const Image<T> &imIn, double sigma,
                                      double theta, double lambda, double psi,
                                      double gamma, double Min, double Max,
                                      Image<T> &imOut, Image<T> &imGabor);
 
   /**
-   * @brief ImGaborFilterConvolutionNormAuto Gabor Filter (automatically normalized)
+   * @brief gaborFilterConvolutionNormAuto Gabor Filter (automatically normalized)
    * @param[in] imIn : input Image
    * @param[in] sigma : size of the gaussian
    * @param[in] theta : orientation of the kernel (in rad)
@@ -109,7 +110,7 @@ namespace smil
    * @param[out] imGabor : output Image (must be F_SIMPLE or F_DOUBLE ???)
    */
   template <class T>
-  RES_T ImGaborFilterConvolutionNormAuto(const Image<T> &imIn, double sigma,
+  RES_T gaborFilterConvolutionNormAuto(const Image<T> &imIn, double sigma,
                                          double theta, double lambda,
                                          double psi, double gamma, double *Min,
                                          double *Max, Image<T> &imOut,
