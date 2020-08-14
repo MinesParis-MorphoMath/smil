@@ -5,8 +5,8 @@
  * @defgroup IO          IO and Image Formats
  * @defgroup Base        Base Operators
  * @defgroup Morpho      Morphological Operators
- * @defgroup Gui         Gui and Image Display
  * @defgroup Advanced    Advanced Algorithms
- * @defgroup NSTypes     NSTypes
+ * @defgroup Gui         Gui and Image Display
  * @defgroup Addons      Addons (Plugins)
+ * @defgroup NSTypes     NSTypes
  */
