@@ -46,7 +46,7 @@ namespace smil
 {
   /**
    * @ingroup   AddonFilters
-   * @defgroup  AddonScaleRangeFilter      Image Scale Range of Values
+   * @defgroup  AddonScaleRangeFilter      Image Scale : Range of Values
    *
    * @brief Filters to map a range of values in a input image into a different
    * range of values in the output image.

@@ -45,10 +45,10 @@ namespace smil
    
   /**
    * @brief gradient_LAB
-   * @param[in] imIn  input RGB Image
-   * @param[out] imOut output Image (UINT8 Gray Level)
-   * @param[in] se Structuring Element
-   * @param[in] convertFirstToLAB Convert to LAB
+   * @param[in] imIn : input RGB Image
+   * @param[out] imOut : output Image (UINT8 Gray Level)
+   * @param[in] se : Structuring Element
+   * @param[in] convertFirstToLAB : Convert to LAB
    */
   RES_T gradient_LAB(const Image<RGB> &imIn, Image<UINT8> &imOut,
                      const StrElt &se       = DEFAULT_SE,
@@ -56,10 +56,10 @@ namespace smil
 
   /**
    * @brief gradient_LAB
-   * @param[in] imIn  input RGB Image
-   * @param[in] se Structuring Element
-   * @param[in] convertFirstToLAB Convert to LAB
-   * @return Image  (UINT8 Gray Level)
+   * @param[in] imIn : input RGB Image
+   * @param[in] se : Structuring Element
+   * @param[in] convertFirstToLAB : Convert to LAB
+   * @return Image (UINT8 Gray Level)
    */
   Image<UINT8> gradient_LAB(const Image<RGB> &imIn,
                             const StrElt &se       = DEFAULT_SE,
@@ -67,10 +67,10 @@ namespace smil
 
   /**
    * @brief gradient_HLS
-   * @param[in] imIn  input RGB Image
-   * @param[out] imOut output Image (UINT8 Gray Level)
-   * @param[in] se Structuring Element
-   * @param[in] convertFirstToHLS Convert to LAB
+   * @param[in] imIn : input RGB Image
+   * @param[out] imOut : output Image (UINT8 Gray Level)
+   * @param[in] se : Structuring Element
+   * @param[in] convertFirstToHLS : Convert to LAB
    */
   RES_T gradient_HLS(const Image<RGB> &imIn, Image<UINT8> &imOut,
                      const StrElt &se       = DEFAULT_SE,
@@ -78,9 +78,9 @@ namespace smil
 
   /**
    * @brief gradient_HLS
-   * @param[in] imIn  input RGB Image
-   * @param[in] se Structuring Element
-   * @param[in] convertFirstToHLS Convert to HLS
+   * @param[in] imIn : input RGB Image
+   * @param[in] se : Structuring Element
+   * @param[in] convertFirstToHLS : Convert to HLS
    * @return Image  (UINT8 Gray Level)
    */
   Image<UINT8> gradient_HLS(const Image<RGB> &imIn,

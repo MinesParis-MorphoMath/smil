@@ -43,81 +43,85 @@ namespace smil
    * @{
    * @details
    * Color space conversion format conversion and @b gradient :
-   * - RGB
-   * - LAB
-   * - HSV
-   * - CIE XYZ https://fr.wikipedia.org/wiki/CIE_XYZ
+   * - RGB - <a href=https://en.wikipedia.org/wiki/RGB_color_space>RGB color
+   * space</a>
+   * - CIE LAB - <a href=https://en.wikipedia.org/wiki/CIELAB_color_space>CIE
+   * LAB color space</a>
+   * - CIE XYZ - <a href=https://fr.wikipedia.org/wiki/CIE_XYZ>CIE XYZ color
+   * space</a>
+   * - HSV - <a href=https://en.wikipedia.org/wiki/HSL_and_HSV>HSL and HSV color
+   * space</a>
    * - Luminance
    *
    */
 
   /**
    * @brief RGBToXYZ
-   * @param[in] imRgbIn  input Image
-   * @param[out] imXyzOut  output Image
+   * @param[in] imRgbIn : input Image
+   * @param[out] imXyzOut : output Image
    */
   RES_T RGBToXYZ(const Image<RGB> &imRgbIn, Image<RGB> &imXyzOut);
 
   /**
    * @brief XYZToRGB
-   * @param[in] imXyzIn  input Image
-   * @param[out] imRgbOut  output Image
+   * @param[in] imXyzIn : input Image
+   * @param[out] imRgbOut : output Image
    */
   RES_T XYZToRGB(const Image<RGB> &imXyzIn, Image<RGB> &imRgbOut);
 
   /**
    * @brief XYZToLAB
-   * @param[in] imXyzIn  input Image
-   * @param[out] imLabOut  output Image
+   * @param[in] imXyzIn : input Image
+   * @param[out] imLabOut : output Image
    */
   RES_T XYZToLAB(const Image<RGB> &imXyzIn, Image<RGB> &imLabOut);
 
   /**
    * @brief LABToXYZ
-   * @param[in] imLabIn  input Image
-   * @param[out] imXyzOut  output Image
+   * @param[in] imLabIn : input Image
+   * @param[out] imXyzOut : output Image
    */
   RES_T LABToXYZ(const Image<RGB> &imLabIn, Image<RGB> &imXyzOut);
 
   /**
    * @brief RGBToHLS
-   * @param[in] imRgbIn  input Image
-   * @param[out] imHlsOut  output Image
+   * @param[in] imRgbIn : input Image
+   * @param[out] imHlsOut : output Image
    */
   RES_T RGBToHLS(const Image<RGB> &imRgbIn, Image<RGB> &imHlsOut);
 
   /**
    * @brief HLSToRGB
-   * @param[in] imHlsIn  input Image
-   * @param[out] imRgbOut  output Image
+   * @param[in] imHlsIn : input Image
+   * @param[out] imRgbOut : output Image
    */
   RES_T HLSToRGB(const Image<RGB> &imHlsIn, Image<RGB> &imRgbOut);
 
   /**
    * @brief RGBToHSV
-   * @param[in] imRgbIn  input Image
-   * @param[out] imHlsOut  output Image
+   * @param[in] imRgbIn : input Image
+   * @param[out] imHlsOut : output Image
    */
   RES_T RGBToHSV(const Image<RGB> &imRgbIn, Image<RGB> &imHlsOut);
-  
+
   /**
    * @brief RGBToLAB
-   * @param[in] imRgbIn  input Image
-   * @param[out] imLabOut  output Image
+   * @param[in] imRgbIn : input Image
+   * @param[out] imLabOut : output Image
    */
   RES_T RGBToLAB(const Image<RGB> &imRgbIn, Image<RGB> &imLabOut);
 
   /**
    * @brief LABToRGB
-   * @param[in] imLabIn  input Image
-   * @param[out] imRgbOut  output Image
+   * @param[in] imLabIn : input Image
+   * @param[out] imRgbOut : output Image
    */
   RES_T LABToRGB(const Image<RGB> &imLabIn, Image<RGB> &imRgbOut);
 
   /**
    * @brief RGBToLuminance
-   * @param[in] imRgbIn  input Image
-   * @param[out] imLumOut  output Image
+   * @param[in] imRgbIn : input Image
+   * @param[out] imLumOut : output Image
    */
   template <class T>
   RES_T RGBToLuminance(const Image<RGB> &imRgbIn, Image<T> &imLumOut)
