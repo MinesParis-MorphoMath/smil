@@ -38,9 +38,8 @@
 
  namespace smil
  {
-   /**
-   * @ingroup Morpho
-   * @defgroup Distance Distance Function
+  /**
+   * @ingroup Distance
    * @{
    */
 
@@ -63,8 +62,10 @@
   template <class T1, class T2>
   RES_T distanceEuclidean(const Image<T1> &imIn, Image<T2> &imOut);
   
+  /** @cond */
   template <class T1, class T2>
   RES_T dist_euclidean(const Image<T1> &imIn, Image<T2> &imOut);
+  /** @endcond */
 
   /**
    * @brief Geodesic distance function

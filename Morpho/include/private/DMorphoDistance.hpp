@@ -974,6 +974,7 @@ namespace smil
     return RES_OK;
   }
 
+  /** @cond */
   /*
    * Base distance function performed with successive erosions.
    */

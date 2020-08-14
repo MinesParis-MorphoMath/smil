@@ -39,8 +39,7 @@
 namespace smil
 {
   /**
-   * @ingroup Morpho
-   * @defgroup morpho_base Base Morphological Operators
+   * @ingroup MorphoBase
    * @{
    */
 

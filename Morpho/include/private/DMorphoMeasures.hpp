@@ -37,7 +37,7 @@ namespace smil
 {
   /**
    * @ingroup Morpho
-   * @defgroup MorphoMeasures Measures
+   * @defgroup MorphoMeasures Morphological Measures
    * @{
    */
 

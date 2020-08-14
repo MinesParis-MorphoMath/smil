@@ -36,9 +36,9 @@
 namespace smil
 {
   /**
-   * \ingroup Morpho
-   * \defgroup Skeleton Skeleton
-   * \{
+   * @ingroup Morpho
+   * @defgroup Skeleton Skeleton
+   * @{
    */
 
   /**
@@ -353,7 +353,7 @@ namespace smil
     return RES_OK;
   }
 
-  /** \} */
+  /** @} */
 
 } // namespace smil
 
