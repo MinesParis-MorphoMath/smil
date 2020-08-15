@@ -41,6 +41,11 @@ namespace smil
    * @ingroup Base
    * @defgroup Histogram Histogram
    * @{
+   * @brief Histogram evaluation and applications
+   *
+   * This module contains functions to evaluate image histograms and some 
+   * applications such as contrast enhancement, histogram manipulation and 
+   * thresholding
    */
 
 #ifndef SWIG
@@ -494,6 +499,7 @@ namespace smil
     return RES_OK;
   }
 
+  /** @cond */
   template <class T>
   bool IncrementThresholds(vector<double> &thresholdIndexes, map<T, UINT> &hist,
                            UINT threshLevels, double totalFrequency,
@@ -580,10 +586,15 @@ namespace smil
     // we incremented
     return true;
   }
+  /** @endcond */
 
   /**
    * Return the different threshold values and the value of the resulting
    * variance between classes
+   *
+   * @param[in] hist : image histogram
+   * @param[in] threshLevels : number of threshold levels (default : @b 1)
+   * @return vector with the threshold levels
    */
   template <class T>
   vector<T> otsuThresholdValues(map<T, UINT> &hist, UINT threshLevels = 1)
@@ -674,6 +685,14 @@ namespace smil
     return threshVals;
   }
 
+  /**
+   * Return the different threshold values and the value of the resulting
+   * variance between classes
+   *
+   * @param[in] im : image
+   * @param[in] threshLevels : number of threshold levels (default : @b 1)
+   * @return vector with the threshold levels
+   */
   template <class T>
   vector<T> otsuThresholdValues(const Image<T> &im, UINT threshLevels = 1)
   {
@@ -681,6 +700,15 @@ namespace smil
     return otsuThresholdValues(hist, threshLevels);
   }
 
+  /**
+   * Return the different threshold values and the value of the resulting
+   * variance between classes
+   *
+   * @param[in] im : image
+   * @param[in] imMask : image mask
+   * @param[in] threshLevels : number of threshold levels (default : @b 1)
+   * @return vector with the threshold levels
+   */
   template <class T>
   vector<T> otsuThresholdValues(const Image<T> &im, const Image<T> &imMask,
                                 UINT threshLevels = 1)
@@ -691,6 +719,16 @@ namespace smil
 
   /**
    * Otsu Threshold
+   *
+   * Image threshold based on the Otsu algorithm.
+   *
+   * @see
+   * - <a href="https://en.wikipedia.org/wiki/Otsu%27s_method">Otsu's method</a>
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] nbrThresholds : number of thresholds. The output image will have
+   * <c>nbrThresholds + 1</c> classes.
    *
    * @smilexample{thresholds.py}
    */
@@ -721,6 +759,21 @@ namespace smil
     return tVals;
   }
 
+  /**
+   * Otsu Threshold
+   *
+   * Image threshold based on the Otsu algorithm.
+   *
+   * Output image will have only two classes.
+   *
+   * @see
+   * - <a href="https://en.wikipedia.org/wiki/Otsu%27s_method">Otsu's method</a>
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   *
+   * @overload
+   */
   template <class T, class T_out>
   T otsuThreshold(const Image<T> &imIn, Image<T_out> &imOut)
   {
@@ -732,6 +785,23 @@ namespace smil
     return tVals[0];
   }
 
+  /**
+   * Otsu Threshold
+   *
+   * Image threshold based on the Otsu algorithm (a mask will be applied before
+   * threshold).
+   *
+   * @see
+   * - <a href="https://en.wikipedia.org/wiki/Otsu%27s_method">Otsu's method</a>
+   *
+   * @param[in] imIn : input image
+   * @param[in] imMask : mask image
+   * @param[out] imOut : output image
+   * @param[in] nbrThresholds : number of thresholds. The output image will have
+   * <c>nbrThresholds + 1</c> classes.
+   *
+   * @smilexample{thresholds.py}
+   */
   template <class T, class T_out>
   vector<T> otsuThreshold(const Image<T> &imIn, const Image<T> &imMask,
                           Image<T_out> &imOut, UINT nbrThresholds = 1)
