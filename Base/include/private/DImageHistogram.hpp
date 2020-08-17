@@ -315,11 +315,10 @@ namespace smil
    * <b><c>[min(T2), max(T2)]</c></b>
    *
    * @param[in] imIn : input image
-   * @param[in] inMinVal, inMaxVal : input range to evaluate the multiplying
+   * @param[in] inMinVal, inMaxVal : input range
    * coefficient
    * @param[out] imOut : output image
-   * @param[out] outMinVal, outMaxVal : output range to evaluate the multiplying
-   * coefficient
+   * @param[out] outMinVal, outMaxVal : output range
    *
    */
   template <class T1, class T2>
@@ -357,8 +356,7 @@ namespace smil
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
-   * @param[out] outMinVal, outMaxVal : output range to evaluate the multiplying
-   * coefficient
+   * @param[out] outMinVal, outMaxVal : output range
    *
    */
   template <class T1, class T2>
@@ -589,8 +587,8 @@ namespace smil
   /** @endcond */
 
   /**
-   * Return the different threshold values and the value of the resulting
-   * variance between classes
+   * Return threshold values and the value of the resulting variance between 
+   * classes
    *
    * @param[in] hist : image histogram
    * @param[in] threshLevels : number of threshold levels (default : @b 1)
@@ -686,8 +684,8 @@ namespace smil
   }
 
   /**
-   * Return the different threshold values and the value of the resulting
-   * variance between classes
+   * Return threshold values and the value of the resulting variance between
+   * classes
    *
    * @param[in] im : image
    * @param[in] threshLevels : number of threshold levels (default : @b 1)
@@ -701,8 +699,8 @@ namespace smil
   }
 
   /**
-   * Return the different threshold values and the value of the resulting
-   * variance between classes
+   * Return threshold values and the value of the resulting variance between 
+   * classes
    *
    * @param[in] im : image
    * @param[in] imMask : image mask

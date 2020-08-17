@@ -141,6 +141,6 @@ namespace smil
   /** @} */
 } // namespace smil
 
-#include "private/filterRangeScale/filterRangeScale.hpp"
+#include "private/filterScaleRange/filterScaleRange.hpp"
 
 #endif // _D_SCALE_FILTER_H_

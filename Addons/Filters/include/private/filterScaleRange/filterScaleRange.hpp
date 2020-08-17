@@ -118,7 +118,7 @@ namespace smil
 
 #if 1
     return imageScaleRange(imIn, imOut.getDataTypeMin(), imOut.getDataTypeMax(),
-                           imOut);
+                           imOut, onlyNonZero);
 #else
 
     ImageFreezer freeze(imOut);
