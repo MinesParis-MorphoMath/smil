@@ -16,6 +16,7 @@
  * @defgroup AddonVtkInterface     VTK Image Interface
  * @defgroup AddonPathOpening      Path Opening
  * @defgroup AddonParsimonious     Parsimonious Path Opening
+ * @defgroup AddonTransformations  Image Transformations
  */
  
 /**
