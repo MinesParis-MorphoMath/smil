@@ -53,11 +53,11 @@ SMIL_MODULE(smilTransformations)
 
 TEMPLATE_WRAP_FUNC(imageTranspose);
 
-// TEMPLATE_WRAP_FUNC(imageResize);
-// TEMPLATE_WRAP_FUNC(imageScale);
-
 TEMPLATE_WRAP_FUNC(imageVertFlip);
 TEMPLATE_WRAP_FUNC(imageHorizFlip);
 
-// TEMPLATE_WRAP_FUNC(imageRotate)
+TEMPLATE_WRAP_FUNC(imageRotate);
+
+// TEMPLATE_WRAP_FUNC(imageResize);
+// TEMPLATE_WRAP_FUNC(imageScale);
 

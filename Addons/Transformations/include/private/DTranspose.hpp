@@ -119,33 +119,6 @@ namespace smil
       ERR_MSG("Wrong value for parameter order");
       return RES_ERR;
     }
-#if 0
-    if (order == "yxz" || order == "yx") {
-      lut[0] = 1;
-      lut[1] = 0;
-      lut[2] = 2;
-    }
-    if (order == "xzy") {
-      lut[0] = 0;
-      lut[1] = 2;
-      lut[2] = 1;
-    }
-    if (order == "yzx") {
-      lut[0] = 1;
-      lut[1] = 2;
-      lut[2] = 0;
-    }
-    if (order == "zxy") {
-      lut[0] = 2;
-      lut[1] = 0;
-      lut[2] = 1;
-    }
-    if (order == "zyx") {
-      lut[0] = 2;
-      lut[1] = 1;
-      lut[2] = 0;
-    }
-#endif
 
     imIn.getSize(szIn);
     for (int i = 0; i < 3; i++)
@@ -156,24 +129,18 @@ namespace smil
     }
     {
       size_t ix[3];
-      T pixVal;
 
 #ifdef USE_OPEN_MP
-      // int nthreads = Core::getInstance()->getNumberOfThreads();
-      // int nthreads = omp_get_num_threads(void);
-#pragma omp parallel private(ix, pixVal)
+#pragma omp parallel private(ix)
 #endif // USE_OPEN_MP
-
-      {
         for (ix[2] = 0; ix[2] < szIn[2]; ix[2]++) {
           for (ix[1] = 0; ix[1] < szIn[1]; ix[1]++) {
             for (ix[0] = 0; ix[0] < szIn[0]; ix[0]++) {
-              pixVal = imIn.getPixel(ix[0], ix[1], ix[2]);
+              T pixVal = imIn.getPixel(ix[0], ix[1], ix[2]);
               imOut.setPixel(ix[lut[0]], ix[lut[1]], ix[lut[2]], pixVal);
             }
           }
         }
-      }
     }
     imOut.modified();
     return RES_OK;
