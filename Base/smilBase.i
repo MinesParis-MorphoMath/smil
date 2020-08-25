@@ -213,6 +213,7 @@ TEMPLATE_WRAP_FUNC(measCovariance);
 TEMPLATE_WRAP_FUNC(measAutoCovariance);
 TEMPLATE_WRAP_FUNC(measCenteredCovariance);
 TEMPLATE_WRAP_FUNC(measCenteredAutoCovariance);
+TEMPLATE_WRAP_FUNC(measImageEntropy);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 TEMPLATE_WRAP_FUNC(isBinary);
 
@@ -247,6 +248,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(measMedianVals);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measBarycenters);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measBoundBoxes);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measImageBlobsMoments);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measBlobsEntropy);
 
 %include "DImageMatrix.hpp"
 TEMPLATE_WRAP_FUNC(matMul);

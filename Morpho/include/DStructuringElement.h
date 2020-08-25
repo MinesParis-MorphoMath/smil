@@ -38,6 +38,17 @@ namespace smil
   /*
    * @defgroup StrElt Structuring Elements
    * @ingroup Morpho
+   *
+   * @details In mathematical morphology, a structuring element is a shape, used
+   * to probe or interact with a given image, with the purpose of drawing
+   * conclusions on how this shape fits or misses the shapes in the image. It is
+   * typically used in morphological operations, such as dilation, erosion,
+   * opening, and closing, as well as the hit-or-miss transform.
+   *
+   * @see 
+   * <a href="https://en.wikipedia.org/wiki/Structuring_element">Structuring
+   * Element</a>
+   *
    * @{
    */
 

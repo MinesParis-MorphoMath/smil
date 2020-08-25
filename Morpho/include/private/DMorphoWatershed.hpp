@@ -41,13 +41,24 @@ namespace smil
   /**
    * @ingroup Morpho
    * @defgroup Watershed Watershed Segmentation
+   * @brief Image segmentation - Watershed
+   *
+   * @details In the study of image processing, a watershed is a transformation
+   * defined on a grayscale image. The name refers metaphorically to a
+   * geological watershed, or drainage divide, which separates adjacent drainage
+   * basins. The watershed transformation treats the image it operates upon like
+   * a topographic map, with the brightness of each point representing its
+   * height, and finds the lines that run along the tops of ridges.
+   *
+   * @see <a href="https://en.wikipedia.org/wiki/Watershed_(image_processing)">
+   * Watershed - Image segmentation</a>
    * @{
    */
 
   /*
-  * class BaseFlooding
-  */
-  template <class T, class labelT, class HQ_Type = HierarchicalQueue<T> >
+   * class BaseFlooding
+   */
+  template <class T, class labelT, class HQ_Type = HierarchicalQueue<T>>
   class BaseFlooding
   {
   public:
@@ -155,14 +166,12 @@ namespace smil
             offset++;
           }
       */
-      
-      for (size_t offset = 0; offset < pixelCount; offset++)
-      {
+
+      for (size_t offset = 0; offset < pixelCount; offset++) {
         if (lblPixels[offset] != 0)
           hq.push(inPixels[offset], offset);
       }
-      
-      
+
       currentLevel = ImDtTypes<T>::min();
 
       while (!hq.isEmpty()) {
@@ -220,12 +229,12 @@ namespace smil
 
   protected:
     HQ_Type hq;
-  };  // end Class BaseFlooding
+  }; // end Class BaseFlooding
 
   /*
-  * class WatershedFlooding
-  */
-  template <class T, class labelT, class HQ_Type = HierarchicalQueue<T> >
+   * class WatershedFlooding
+   */
+  template <class T, class labelT, class HQ_Type = HierarchicalQueue<T>>
   class WatershedFlooding
 #ifndef SWIG
       : public BaseFlooding<T, labelT, HQ_Type>
@@ -339,11 +348,11 @@ namespace smil
   /**
    * Constrained basins.
    *
-   * Hierachical queue based algorithm as described by S. Beucher (2011) 
-   * @cite beucher_hierarchical_2011 
-   * @param[in] imIn Input image. 
-   * @param[in] imMarkers Label image containing the markers. 
-   * @param[out] imBasinsOut (optional) Output image containing the basins. 
+   * Hierachical queue based algorithm as described by S. Beucher (2011)
+   * @cite beucher_hierarchical_2011
+   * @param[in] imIn Input image.
+   * @param[in] imMarkers Label image containing the markers.
+   * @param[out] imBasinsOut (optional) Output image containing the basins.
    * @param[in] se Structuring element After
    * processing, this image will contain the basins with the same label values
    * as the initial markers.
@@ -374,11 +383,11 @@ namespace smil
   /**
    * Constrained watershed.
    *
-   * Hierachical queue based algorithm as described by S. Beucher (2011) 
+   * Hierachical queue based algorithm as described by S. Beucher (2011)
    * @cite beucher_hierarchical_2011
-   * 
-   * @param[in] imIn Input image. 
-   * @param[in] imMarkers Label image containing the markers. 
+   *
+   * @param[in] imIn Input image.
+   * @param[in] imMarkers Label image containing the markers.
    * @param[in] se Structuring element
    * @param[out] imOut Output image containing the watershed lines.
    * @param[out] imBasinsOut (optional) Output image containing the basins.

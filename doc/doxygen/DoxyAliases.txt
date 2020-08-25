@@ -49,6 +49,9 @@ ALIASES += demos_root=\home_web_root/demos
 ALIASES += images{1}="\image html \1.png \n \image latex \1.eps"
 ALIASES += images{2}="\image html \1.png \2 \n \image latex \1.eps \2"
 
+ALIASES += devdoc="\if DOXYGEN_DEVEL_DOC"
+ALIASES += enddevdoc="\endif"
+
 
 ########################################################
 # JAVA WEB START

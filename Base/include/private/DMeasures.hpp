@@ -35,6 +35,7 @@
 #include "DImageArith.hpp"
 #include "Base/include/DImageDraw.h"
 
+#include <cmath>
 #include <map>
 #include <set>
 #include <iostream>
@@ -63,6 +64,14 @@ namespace smil
   };
   /** @endcond */
 
+  //
+  //     ##    #####   ######    ##
+  //    #  #   #    #  #        #  #
+  //   #    #  #    #  #####   #    #
+  //   ######  #####   #       ######
+  //   #    #  #   #   #       #    #
+  //   #    #  #    #  ######  #    #
+  //
   /**
    * Area of an image
    *
@@ -95,7 +104,15 @@ namespace smil
     }
   };
   /** @endcond */
-  
+
+  //
+  //   #    #   ####   #       #    #  #    #  ######
+  //   #    #  #    #  #       #    #  ##  ##  #
+  //   #    #  #    #  #       #    #  # ## #  #####
+  //   #    #  #    #  #       #    #  #    #  #
+  //    #  #   #    #  #       #    #  #    #  #
+  //     ##     ####   ######   ####   #    #  ######
+  //
   /**
    * Volume of an image
    *
@@ -136,6 +153,14 @@ namespace smil
     return func(imIn, false);
   }
 
+  //
+  //   #    #  ######    ##    #    #  #    #    ##    #
+  //   ##  ##  #        #  #   ##   #  #    #   #  #   #
+  //   # ## #  #####   #    #  # #  #  #    #  #    #  #
+  //   #    #  #       ######  #  # #  #    #  ######  #
+  //   #    #  #       #    #  #   ##   #  #   #    #  #
+  //   #    #  ######  #    #  #    #    ##    #    #  ######
+  //
   /** @cond */
   template <class T>
   struct measMeanValFunc : public MeasureFunctionBase<T, Vector_double> {
@@ -169,13 +194,14 @@ namespace smil
     }
   };
   /** @endcond */
-  
+
   /**
    * Mean value and standard deviation
    *
    * @param[in] imIn : Input image.
    * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
-   * @return a vector with the @b mean and <b>standard deviation</b> of pixel values
+   * @return a vector with the @b mean and <b>standard deviation</b> of pixel
+   * values
    */
   template <class T>
   Vector_double meanVal(const Image<T> &imIn, bool onlyNonZero = false)
@@ -184,6 +210,14 @@ namespace smil
     return func(imIn, onlyNonZero);
   }
 
+  //
+  //   #    #     #    #    #  #    #    ##    #
+  //   ##  ##     #    ##   #  #    #   #  #   #
+  //   # ## #     #    # #  #  #    #  #    #  #
+  //   #    #     #    #  # #  #    #  ######  #
+  //   #    #     #    #   ##   #  #   #    #  #
+  //   #    #     #    #    #    ##    #    #  ######
+  //
   /** @cond */
   template <class T> struct measMinValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
@@ -220,7 +254,7 @@ namespace smil
     }
   };
   /** @endcond */
-  
+
   /**
    * Min value of an image
    *
@@ -243,6 +277,14 @@ namespace smil
     return func.retVal;
   }
 
+  //
+  //   #    #    ##    #    #  #    #    ##    #
+  //   ##  ##   #  #    #  #   #    #   #  #   #
+  //   # ## #  #    #    ##    #    #  #    #  #
+  //   #    #  ######    ##    #    #  ######  #
+  //   #    #  #    #   #  #    #  #   #    #  #
+  //   #    #  #    #  #    #    ##    #    #  ######
+  //
   /** @cond */
   template <class T> struct measMaxValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
@@ -302,6 +344,14 @@ namespace smil
     return func.retVal;
   }
 
+  //
+  //   #    #     #    #    #  #    #    ##    #    #  #    #    ##    #
+  //   ##  ##     #    ##   #  ##  ##   #  #    #  #   #    #   #  #   #
+  //   # ## #     #    # #  #  # ## #  #    #    ##    #    #  #    #  #
+  //   #    #     #    #  # #  #    #  ######    ##    #    #  ######  #
+  //   #    #     #    #   ##  #    #  #    #   #  #    #  #   #    #  #
+  //   #    #     #    #    #  #    #  #    #  #    #    ##    #    #  ######
+  //
   /** @cond */
   template <class T>
   struct measMinMaxValFunc : public MeasureFunctionBase<T, vector<T>> {
@@ -345,6 +395,14 @@ namespace smil
     return func(imIn, onlyNonZero);
   }
 
+  //
+  //   #    #    ##    #       #    #  ######  #          #     ####    #####
+  //   #    #   #  #   #       #    #  #       #          #    #          #
+  //   #    #  #    #  #       #    #  #####   #          #     ####      #
+  //   #    #  ######  #       #    #  #       #          #         #     #
+  //    #  #   #    #  #       #    #  #       #          #    #    #     #
+  //     ##    #    #  ######   ####   ######  ######     #     ####      #
+  //
   /** @cond */
   template <class T>
   struct valueListFunc : public MeasureFunctionBase<T, vector<T>> {
@@ -389,6 +447,14 @@ namespace smil
     return func(imIn, onlyNonZero);
   }
 
+  //
+  //   #    #   ####   #####   ######  #    #    ##    #
+  //   ##  ##  #    #  #    #  #       #    #   #  #   #
+  //   # ## #  #    #  #    #  #####   #    #  #    #  #
+  //   #    #  #    #  #    #  #       #    #  ######  #
+  //   #    #  #    #  #    #  #        #  #   #    #  #
+  //   #    #   ####   #####   ######    ##    #    #  ######
+  //
   /** @cond */
   template <class T> struct measModeValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
@@ -435,7 +501,8 @@ namespace smil
    *
    * @note
    * As this function returns only one value :
-   * - in a distribution with the same maximum for many values, it returns the first one;
+   * - in a distribution with the same maximum for many values, it returns the
+   * first one;
    * - in a multimodal distribution, it returns the first biggest one;
    */
   template <class T> T modeVal(const Image<T> &imIn, bool onlyNonZero = true)
@@ -444,6 +511,14 @@ namespace smil
     return func(imIn, onlyNonZero);
   }
 
+  //
+  //   #    #  ######  #####      #      ##    #    #  #    #    ##    #
+  //   ##  ##  #       #    #     #     #  #   ##   #  #    #   #  #   #
+  //   # ## #  #####   #    #     #    #    #  # #  #  #    #  #    #  #
+  //   #    #  #       #    #     #    ######  #  # #  #    #  ######  #
+  //   #    #  #       #    #     #    #    #  #   ##   #  #   #    #  #
+  //   #    #  ######  #####      #    #    #  #    #    ##    #    #  ######
+  //
   /** @cond */
   template <class T>
   struct measMedianValFunc : public MeasureFunctionBase<T, T> {
@@ -511,6 +586,14 @@ namespace smil
     return func(imIn, onlyNonZero);
   }
 
+  //
+  //   #####   #####    ####   ######     #    #       ######
+  //   #    #  #    #  #    #  #          #    #       #
+  //   #    #  #    #  #    #  #####      #    #       #####
+  //   #####   #####   #    #  #          #    #       #
+  //   #       #   #   #    #  #          #    #       #
+  //   #       #    #   ####   #          #    ######  ######
+  //
   /**
    * Get image values along a line defined by the points  @f$(x_0, y_0)@f$ and
    * @f$(x_1, y_1)@f$ in the slice @f$z@f$.
@@ -547,6 +630,14 @@ namespace smil
     return vec;
   }
 
+  //
+  // #####     ##    #####  #   #  ####   ######  #    #  #####  ######  #####
+  // #    #   #  #   #    #  # #  #    #  #       ##   #    #    #       #    #
+  // #####   #    #  #    #   #   #       #####   # #  #    #    #####   #    #
+  // #    #  ######  #####    #   #       #       #  # #    #    #       #####
+  // #    #  #    #  #   #    #   #    #  #       #   ##    #    #       #   #
+  // #####   #    #  #    #   #    ####   ######  #    #    #    ######  #    #
+  //
   /** @cond */
   template <class T>
   struct measBarycenterFunc : public MeasureFunctionWithPos<T, Vector_double> {
@@ -590,6 +681,14 @@ namespace smil
     return func(im, false);
   }
 
+  //
+  //   #####    ####   #    #  #    #  #####   #####    ####   #    #
+  //   #    #  #    #  #    #  ##   #  #    #  #    #  #    #   #  #
+  //   #####   #    #  #    #  # #  #  #    #  #####   #    #    ##
+  //   #    #  #    #  #    #  #  # #  #    #  #    #  #    #    ##
+  //   #    #  #    #  #    #  #   ##  #    #  #    #  #    #   #  #
+  //   #####    ####    ####   #    #  #####   #####    ####   #    #
+  //
   /** @cond */
   template <class T>
   struct measBoundBoxFunc : public MeasureFunctionWithPos<T, vector<size_t>> {
@@ -654,6 +753,14 @@ namespace smil
     return func(im, true);
   }
 
+  //
+  //   #    #   ####   #    #  ######  #    #   #####   ####
+  //   ##  ##  #    #  ##  ##  #       ##   #     #    #
+  //   # ## #  #    #  # ## #  #####   # #  #     #     ####
+  //   #    #  #    #  #    #  #       #  # #     #         #
+  //   #    #  #    #  #    #  #       #   ##     #    #    #
+  //   #    #   ####   #    #  ######  #    #     #     ####
+  //
   /** @cond */
   template <class T>
   struct measImageMomentsFunc
@@ -750,6 +857,14 @@ namespace smil
     return func(im, onlyNonZero);
   }
 
+  //
+  //    ####    ####   #    #    ##    #####   #    ##    #    #   ####   ######
+  //   #    #  #    #  #    #   #  #   #    #  #   #  #   ##   #  #    #  #
+  //   #       #    #  #    #  #    #  #    #  #  #    #  # #  #  #       #####
+  //   #       #    #  #    #  ######  #####   #  ######  #  # #  #       #
+  //   #    #  #    #   #  #   #    #  #   #   #  #    #  #   ##  #    #  #
+  //    ####    ####     ##    #    #  #    #  #  #    #  #    #   ####   ######
+  //
   /**
    * Covariance of two images in the direction defined by @b dx,
    * @b dy and @b dz.
@@ -868,7 +983,7 @@ namespace smil
    * @param[in] dx, dy, dz : direction
    * @param[in] maxSteps : number maximum of displacements to evaluate
    * @param[in] normalize : normalize result with respect to @b vec[0]
-   * @return vec[h]   
+   * @return vec[h]
    */
   template <class T>
   vector<double> measAutoCovariance(const Image<T> &imIn, size_t dx, size_t dy,
@@ -888,7 +1003,7 @@ namespace smil
    * @param[in] dx, dy, dz : direction
    * @param[in] maxSteps : number maximum of displacements to evaluate
    * @param[in] normalize : normalize result with respect to @b vec[0]
-   * @return vec[h]   
+   * @return vec[h]
    */
   template <class T>
   vector<double> measCenteredAutoCovariance(const Image<T> &imIn, size_t dx,
@@ -945,6 +1060,141 @@ namespace smil
     return measCovariance(imMean1, imMean2, dx, dy, dz, maxSteps, normalize);
   }
 
+  //
+  //   ######  #    #   #####  #####    ####   #####    #   #
+  //   #       ##   #     #    #    #  #    #  #    #    # #
+  //   #####   # #  #     #    #    #  #    #  #    #     #
+  //   #       #  # #     #    #####   #    #  #####      #
+  //   #       #   ##     #    #   #   #    #  #          #
+  //   ######  #    #     #    #    #   ####   #          #
+  //
+  /** @cond */
+  template <class T>
+  struct measEntropyFunc : public MeasureFunctionBase<T, double> {
+    typedef typename Image<T>::lineType lineType;
+
+    map<T, UINT> histo;
+
+    virtual void initialize(const Image<T> & /*imIn*/)
+    {
+      histo.clear();
+    }
+
+    virtual void processSequence(lineType lineIn, size_t size)
+    {
+      for (size_t i = 0; i < size; i++) {
+        T val = lineIn[i];
+
+        UINT nb    = histo[val];
+        histo[val] = ++nb;
+      }
+    }
+
+    virtual void finalize(const Image<T> & /*imIn*/)
+    {
+      double entropy = 0.;
+      double sumP    = 0.;
+      double sumN    = 0.;
+
+      typename map<T, UINT>::iterator it;
+      for (it = histo.begin(); it != histo.end(); it++) {
+        if (it->second > 0) {
+          sumN += it->second;
+          sumP += it->second * log2(it->second);
+        }
+      }
+      if (sumN > 0)
+        entropy = log2(sumN) - sumP / sumN;
+
+      this->retVal = entropy;
+    }
+  }; // END measEntropyFunc
+
+  /** @endcond */
+
+  /**
+   * @b measImageEntropy : Image entropy
+   *
+   * @details Evaluate Shannon entropy of the image (in bits)
+   *
+   * @param[in] imIn : input image
+   * @return image entropy
+   *
+   * @see measBlobsEntropy() to compute entropy inside each label.
+   */
+  template <class T> double measImageEntropy(const Image<T> &imIn)
+  {
+    ASSERT_ALLOCATED(&imIn);
+
+#if 0
+    double entropy = 0.;
+    double sumP    = 0.;
+    double sumN    = 0.;
+
+    map<T, UINT> hist = histogram(imIn, false);
+    typename map<T, UINT>::iterator it;
+    for (it = hist.begin(); it != hist.end(); it++) {
+      if (it->second > 0) {
+        sumP += it->second * log2(it->second);
+        sumN += it->second;
+      }
+    }
+
+    if (sumN > 0)
+      entropy = log2(sumN) - sumP / sumN;
+
+    return entropy;
+#else
+    measEntropyFunc<T> func;
+    return func(imIn, false);
+#endif
+  }
+
+  /**
+   * @b measImageEntropy : Image entropy
+   *
+   * Evaluate Shannon entropy of the image in a region defined by a mask.
+   *
+   * @param[in] imIn : input image
+   * @param[in] imMask : mask defining where the entropy shall be evaluated
+   * @return image entropy
+   *
+   * @see measBlobsEntropy() to compute entropy inside each label.
+   *
+   */
+  template <class T>
+  double measImageEntropy(const Image<T> &imIn, const Image<T> &imMask)
+  {
+    ASSERT_ALLOCATED(&imIn, &imMask);
+    ASSERT_SAME_SIZE(&imIn, &imMask);
+
+    double entropy = 0.;
+    double sumP    = 0.;
+    double sumN    = 0.;
+
+    map<T, UINT> hist = histogram(imIn, imMask, false);
+    typename map<T, UINT>::iterator it;
+    for (it = hist.begin(); it != hist.end(); it++) {
+      if (it->second > 0) {
+        sumP += it->second * log2(it->second);
+        sumN += it->second;
+      }
+    }
+
+    if (sumN > 0)
+      entropy = log2(sumN) - sumP / sumN;
+
+    return entropy;
+  }
+
+  //
+  //    ####    #####  #    #  ######  #####    ####
+  //   #    #     #    #    #  #       #    #  #
+  //   #    #     #    ######  #####   #    #   ####
+  //   #    #     #    #    #  #       #####        #
+  //   #    #     #    #    #  #       #   #   #    #
+  //    ####      #    #    #  ######  #    #   ####
+  //
   /**
    * Non-zero point offsets.
    *

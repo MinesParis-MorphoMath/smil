@@ -51,7 +51,7 @@ namespace smil
    * @addtogroup AddonTransformations Image Transformations
    * @{
    *
-   *   @brief Image transformations
+   *   @brief Common useful image transformations
    *
    *   @details
    *   Some image transformations functions. Most of these calls are intended

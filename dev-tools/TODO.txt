@@ -1,5 +1,5 @@
 
-* Document distance functions (Morpho/include/private/DMorphoDistance.hpp)
+* Documentation
 
 * Check some wrong doxygen tags (everywhere in source code)
   Work in progress...
@@ -74,11 +74,33 @@
   Qwt (local)
   PHP5 (local) => PHP5 ... or even 7 ?
 
-* CPack TGZ packages... and eventually others
-
 * Conda packages
 
 * Select Python 2 or 3
 
 * review Hough Transform - test fails (inside an infinite loop ?)
+
+* From scikit-image 
+  * measures : 
+    * entropy
+    * image moments :
+      centered moments
+      with image values or not
+    * histogram on blobs
+    * entropy on blobs
+  * filters
+    * 2D -> 3D
+    * median
+    * min/max
+    * multiOtsu
+  * convexHull (boundingBox ?)
+  * optical flow
+  * noise/denoise
+  * transforms
+    * FFT
+    * Radon
+    * Hough (better)
+  * skimage-viewer ?
+
+* Doc doxygen dev : @devdoc and @enddevdoc
 

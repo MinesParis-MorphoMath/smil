@@ -52,7 +52,8 @@ namespace smil
    *
    * @note
    * Some of these filters were ported from @b Morph-M (antecessor of @b Smil) :
-   * Canny, Deriche, Gabor, Kuwahara, Mean Shift and Sigma.
+   * Canny, Deriche, Gabor, Kuwahara, Mean Shift and Sigma and are only 2D 
+   * filters. Not optimized for Smil.
    */
 
 } // namespace smil

@@ -51,7 +51,8 @@ namespace smil
    *
    * @param[in] imLbl : input labeled image
    * @param[in] onlyNonZero : skip a blob having a null label
-   * @return a map of pairs <b><label, double></b> with the @b area of each blob.
+   * @return a map of pairs <b><label, double></b> with the @b area of each
+   * blob.
    *
    * @smilexample{blob_measures.py}
    */
@@ -66,7 +67,8 @@ namespace smil
    * Measure areas from a pre-generated Blob map (faster).
    *
    * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, double></b> with the @b area of each blob.
+   * @return a map of pairs <b><label, double></b> with the @b area of each
+   * blob.
    *
    */
   template <class labelT>
@@ -82,7 +84,8 @@ namespace smil
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, T></b> with the @b min image value in each blob.
+   * @return a map of pairs <b><label, T></b> with the @b min image value in
+   * each blob.
    */
   template <class T, class labelT>
   map<labelT, T> measMinVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
@@ -95,7 +98,8 @@ namespace smil
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, T></b> with the @b max image value in each blob.
+   * @return a map of pairs <b><label, T></b> with the @b max image value in
+   * each blob.
    */
   template <class T, class labelT>
   map<labelT, T> measMaxVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
@@ -108,7 +112,8 @@ namespace smil
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, <T, T>></b> with a vector with the @b min and @b max pixel values in each blob.
+   * @return a map of pairs <b><label, <T, T>></b> with a vector with the @b min
+   * and @b max pixel values in each blob.
    */
   template <class T, class labelT>
   map<labelT, vector<T>> measRangeVals(const Image<T> &imIn,
@@ -122,7 +127,8 @@ namespace smil
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, <double, double>></b> with a vector with the @b mean and <b> standard deviation</b> pixel values in each blob.
+   * @return a map of pairs <b><label, <double, double>></b> with a vector with
+   * the @b mean and <b> standard deviation</b> pixel values in each blob.
    */
   template <class T, class labelT>
   map<labelT, Vector_double> measMeanVals(const Image<T> &imIn,
@@ -136,7 +142,8 @@ namespace smil
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, double></b> with the @b volume (sum of pixel values) in each blob.
+   * @return a map of pairs <b><label, double></b> with the @b volume (sum of
+   * pixel values) in each blob.
    */
   template <class T, class labelT>
   map<labelT, double> measVolumes(const Image<T> &imIn,
@@ -150,7 +157,8 @@ namespace smil
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, vector<T>></b> with the list of pixel values in each blob.
+   * @return a map of pairs <b><label, vector<T>></b> with the list of pixel
+   * values in each blob.
    */
   template <class T, class labelT>
   map<labelT, vector<T>> valueLists(const Image<T> &imIn,
@@ -163,7 +171,8 @@ namespace smil
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, T></b> with the @b mode value in each blob.
+   * @return a map of pairs <b><label, T></b> with the @b mode value in each
+   * blob.
    */
   template <class T, class labelT>
   map<labelT, T> measModeVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
@@ -175,7 +184,8 @@ namespace smil
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, T></b> with the @b median value in each blob.
+   * @return a map of pairs <b><label, T></b> with the @b median value in each
+   * blob.
    */
   template <class T, class labelT>
   map<labelT, T> measMedianVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
@@ -188,7 +198,8 @@ namespace smil
    *
    * @param[in] imLbl : input labeled image
    * @param[in] onlyNonZero : skip a blob having a null label
-   * @return a map of pairs <b><label, Vector<double>></b> with the coordinates of the @b barycenter of each blob.
+   * @return a map of pairs <b><label, Vector<double>></b> with the coordinates
+   * of the @b barycenter of each blob.
    *
    * @smilexample{blob_measures.py}
    */
@@ -204,7 +215,8 @@ namespace smil
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, Vector<double>></b> with the coordinates of the @b barycenter of each blob.
+   * @return a map of pairs <b><label, Vector<double>></b> with the coordinates
+   * of the @b barycenter of each blob.
    */
   template <class T, class labelT>
   map<labelT, Vector_double> measBarycenters(const Image<T> &imIn,
@@ -218,7 +230,8 @@ namespace smil
    *
    * @param[in] imLbl : input labeled image
    * @param[in] onlyNonZero : skip a blob having a null label
-   * @return a map of pairs <b><label, Vector<size_t>></b> with the coordinates of the <b>bounding box</b> of each label.
+   * @return a map of pairs <b><label, Vector<size_t>></b> with the coordinates
+   * of the <b>bounding box</b> of each label.
    */
   template <class T>
   map<T, vector<size_t>> measBoundBoxes(const Image<T> &imLbl,
@@ -232,7 +245,8 @@ namespace smil
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, Vector<size_t>></b> with the coordinates of the <b>bounding box</b> of each label.
+   * @return a map of pairs <b><label, Vector<size_t>></b> with the coordinates
+   * of the <b>bounding box</b> of each label.
    */
   template <class T, class labelT>
   map<labelT, vector<size_t>> measBoundBoxes(const Image<T> &imIn,
@@ -246,7 +260,8 @@ namespace smil
    *
    * @param[in] imLbl : input labeled image
    * @param[in] onlyNonZero : skip a blob having a null label
-   * @return a map of pairs <b><label, Vector<double>></b> with the <b>image moments</b> of each label.
+   * @return a map of pairs <b><label, Vector<double>></b> with the <b>image
+   * moments</b> of each label.
    * @see measImageMoments()
    */
   template <class T>
@@ -262,7 +277,10 @@ namespace smil
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, Vector<double>></b> with the <b>image moments</b> of each label..
+   *
+   * @return a map of pairs <b><label, Vector<double>></b> with the first and
+   * second order <b>image moments</b> of each label.
+   *
    * @see measImageMoments()
    *
    * @smilexample{inertia_moments.py}
@@ -272,6 +290,24 @@ namespace smil
                                                    map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, measImageMomentsFunc<T>>(imIn, blobs);
+  }
+
+  /**
+   * Measure blobs image moments (faster with blobs pre-generated).
+   *
+   * @param[in] imIn : input labeled image
+   * @param[in] blobs : input Blob map
+   *
+   * @return a map of pairs <b><label, Vector<double>></b> with the entropy of
+   * the image in each blob.
+   *
+   * @see measImageEntropy()
+   */
+  template <class T, class labelT>
+  map<labelT, double> measBlobsEntropy(const Image<T> &imIn,
+                                              map<labelT, Blob> &blobs)
+  {
+    return processBlobMeasure<T, labelT, measEntropyFunc<T>>(imIn, blobs);
   }
 
   /** @}*/
