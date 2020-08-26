@@ -41,17 +41,17 @@ namespace smil
    * @{
    */
 
-  // 
+  //
   // ######  #    #  #    #   ####   #####       #####     ##     ####   ######
   // #       #    #  ##   #  #    #    #         #    #   #  #   #       #
   // #####   #    #  # #  #  #         #  #####  #####   #    #   ####   #####
   // #       #    #  #  # #  #         #         #    #  ######       #  #
   // #       #    #  #   ##  #    #    #         #    #  #    #  #    #  #
   // #        ####   #    #   ####     #         #####   #    #   ####   ######
-  // 
+  //
   /*
-  *
-  */
+   *
+   */
   template <class T, class _retType> struct MeasureFunctionBase {
     virtual ~MeasureFunctionBase()
     {
@@ -105,7 +105,11 @@ namespace smil
       return RES_OK;
     }
 
-    virtual RES_T processImage(const Image<T> &imIn, SMIL_UNUSED const Image<T> &imMask)
+    /*
+     * To be tested - added by Joe in Aug 25, 2020
+     */
+    virtual RES_T processImage(const Image<T> &imIn,
+                               SMIL_UNUSED const Image<T> &imMask)
     {
       initialize(imIn);
       ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION);
@@ -139,25 +143,35 @@ namespace smil
       finalize(imIn);
       return retVal;
     }
-    
+
     virtual retType operator()(const Image<T> &imIn, const Blob &blob)
+    {
+      processImage(imIn, blob);
+      return retVal;
+    }
+
+    /*
+     * To be tested - added by Joe in Aug 25, 2020
+     */
+    virtual retType operator()(const Image<T> &imIn, const Blob &blob,
+                               SMIL_UNUSED bool flag)
     {
       processImage(imIn, blob);
       return retVal;
     }
   };
 
-  // 
+  //
   // ######  #    #  #    #   ####   #####       #    #  #####    ####    ####
   // #       #    #  ##   #  #    #    #         #    #  #    #  #    #  #
   // #####   #    #  # #  #  #         #  #####  #    #  #    #  #    #   ####
   // #       #    #  #  # #  #         #         # ## #  #####   #    #       #
   // #       #    #  #   ##  #    #    #         ##  ##  #       #    #  #    #
   // #        ####   #    #   ####     #         #    #  #        ####    ####
-  // 
+  //
   /*
-  *
-  */
+   *
+   */
   template <class T, class _retType>
   struct MeasureFunctionWithPos : public MeasureFunctionBase<T, _retType> {
     typedef typename Image<T>::lineType lineType;
@@ -232,17 +246,17 @@ namespace smil
     }
   };
 
-  // 
+  //
   // #####   #        ####   #####           #    #  ######    ##     ####
   // #    #  #       #    #  #    #          ##  ##  #        #  #   #
   // #####   #       #    #  #####   #####   # ## #  #####   #    #   ####
   // #    #  #       #    #  #    #          #    #  #       ######       #
   // #    #  #       #    #  #    #          #    #  #       #    #  #    #
   // #####   ######   ####   #####           #    #  ######  #    #   ####
-  // 
+  //
   /*
-  *
-  */
+   *
+   */
   template <class T, class labelT, class funcT>
   map<labelT, typename funcT::retType>
   processBlobMeasure(const Image<T> &imIn, const map<labelT, Blob> &blobs)
@@ -285,8 +299,8 @@ namespace smil
   }
 
   /*
-  *
-  */
+   *
+   */
   template <class T, class labelT, class funcT>
   map<labelT, typename funcT::retType>
   processBlobMeasure(const Image<T> &imIn, bool onlyNonZero = true)

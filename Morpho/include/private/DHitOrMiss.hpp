@@ -48,14 +48,19 @@ namespace smil
    * first structuring element fits in the foreground of the input image, and
    * the second structuring element misses it completely.
    *
-   * @see <a href="https://en.wikipedia.org/wiki/Hit-or-miss_transform"> 
+   * @see <a href="https://en.wikipedia.org/wiki/Hit-or-miss_transform">
    * Hit-or-mis Transform</a>
    *
    * @{
    */
 
   /**
-   * Hit Or Miss transform
+   * hitOrMiss() - Hit Or Miss transform
+   *
+   * @param[in] imIn : input image
+   * @param[in] foreSE, backSE : foreground an background structuring elements
+   * @param[out] imOut : output image
+   * @param[in] borderVal : value to be assigned to border pixels
    */
   template <class T>
   RES_T hitOrMiss(const Image<T> &imIn, const StrElt &foreSE,
@@ -77,7 +82,15 @@ namespace smil
   }
 
   /**
-   * Hit Or Miss transform
+   * hitOrMiss() - Hit Or Miss transform
+   *
+   * @param[in] imIn : input image
+   * @param[in] compSE : composite structuring element with both foreground and
+   * background structuring elements
+   * @param[out] imOut : output image
+   * @param[in] borderVal : value to be assigned to border pixels
+   *
+   * @overload
    */
   template <class T>
   RES_T hitOrMiss(const Image<T> &imIn, const CompStrElt &compSE,
@@ -87,7 +100,15 @@ namespace smil
   }
 
   /**
-   * Hit Or Miss transform
+   * hitOrMiss() - Hit Or Miss transform
+   *
+   * @param[in] imIn : input image
+   * @param[in] mhtSE : vector with composite structuring elements with both
+   * foreground and background structuring elements
+   * @param[out] imOut : output image
+   * @param[in] borderVal : value to be assigned to border pixels
+   *
+   * @overload
    */
   template <class T>
   RES_T hitOrMiss(const Image<T> &imIn, const CompStrEltList &mhtSE,
@@ -112,7 +133,15 @@ namespace smil
   }
 
   /**
-   * Thinning transform
+   * thin() - Thinning transform
+   *
+   * @b Thinnings consist in removing foreground image pixels matching a
+   * configuration given by a composite SE. In other words, the hit-or-miss
+   * transform of the image by this SE is subtracted from the original image.
+   *
+   * @param[in] imIn : input image
+   * @param[in] foreSE, backSE : foreground an background structuring elements
+   * @param[out] imOut : output image
    */
   template <class T>
   RES_T thin(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE,
@@ -132,12 +161,32 @@ namespace smil
     return RES_OK;
   }
 
+  /**
+   * thin() - Thinning transform
+   *
+   * @param[in] imIn : input image
+   * @param[in] compSE : composite structuring element with both foreground and
+   * background structuring elements
+   * @param[out] imOut : output image
+   *
+   * @overload
+   */
   template <class T>
   RES_T thin(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
   {
     return thin(imIn, compSE.fgSE, compSE.bgSE, imOut);
   }
 
+  /**
+   * thin() - Thinning transform
+   *
+   * @param[in] imIn : input image
+   * @param[in] mhtSE : vector with composite structuring elements with both
+   * foreground and background structuring elements
+   * @param[out] imOut : output image
+   *
+   * @overload
+   */
   template <class T>
   RES_T thin(const Image<T> &imIn, const CompStrEltList &mhtSE, Image<T> &imOut)
   {
@@ -159,7 +208,16 @@ namespace smil
   }
 
   /**
-   * Thicking transform
+   * thick() - Thicking transform
+   *
+   * A @b thickening consists in adding background pixels having a specific
+   * configuration to the set of foreground pixels. This is achieved by adding 
+   * to the input image the hit or miss transform by the corresponding composite
+   * SE.
+   *
+   * @param[in] imIn : input image
+   * @param[in] foreSE, backSE : foreground an background structuring elements
+   * @param[out] imOut : output image
    */
   template <class T>
   RES_T thick(const Image<T> &imIn, const StrElt &foreSE, const StrElt &backSE,
@@ -178,12 +236,32 @@ namespace smil
     return RES_OK;
   }
 
+  /**
+   * thick() - Thicking transform
+   *
+   * @param[in] imIn : input image
+   * @param[in] compSE : composite structuring element with both foreground and
+   * background structuring elements
+   * @param[out] imOut : output image
+   *
+   * @overload
+   */
   template <class T>
   RES_T thick(const Image<T> &imIn, const CompStrElt &compSE, Image<T> &imOut)
   {
     return thick(imIn, compSE.fgSE, compSE.bgSE, imOut);
   }
 
+  /**
+   * thick() - Thicking transform
+   *
+   * @param[in] imIn : input image
+   * @param[in] mhtSE : vector with composite structuring elements with both
+   * foreground and background structuring elements
+   * @param[out] imOut : output image
+   *
+   * @overload
+   */
   template <class T>
   RES_T thick(const Image<T> &imIn, const CompStrEltList &mhtSE,
               Image<T> &imOut)
@@ -206,7 +284,16 @@ namespace smil
   }
 
   /**
-   * Thinning transform (full)
+   * fullThin() - Thinning transform (full)
+   *
+   * thin() applied repeatedly till output image remains "stable". Output image
+   * "stability" is defined when the volume of the output image remains stops
+   * changing.
+   *
+   * @param[in] imIn : input image
+   * @param[in] mhtSE : vector with composite structuring elements with both
+   * foreground and background structuring elements
+   * @param[out] imOut : output image
    */
   template <class T>
   RES_T fullThin(const Image<T> &imIn, const CompStrEltList &mhtSE,
@@ -231,6 +318,16 @@ namespace smil
     return RES_OK;
   }
 
+  /**
+   * fullThin() - Thinning transform (full)
+   *
+   * @param[in] imIn : input image
+   * @param[in] compSE : composite structuring element with both foreground and
+   * background structuring elements
+   * @param[out] imOut : output image
+   *
+   * @overload
+   */
   template <class T>
   RES_T fullThin(const Image<T> &imIn, const CompStrElt &compSE,
                  Image<T> &imOut)
@@ -238,6 +335,15 @@ namespace smil
     return fullThin(imIn, CompStrEltList(compSE), imOut);
   }
 
+  /**
+   * fullThin() - Thinning transform (full)
+   *
+   * @param[in] imIn : input image
+   * @param[in] foreSE, backSE : foreground an background structuring elements
+   * @param[out] imOut : output image
+   *
+   * @overload
+   */
   template <class T>
   RES_T fullThin(const Image<T> &imIn, const StrElt &foreSE,
                  const StrElt &backSE, Image<T> &imOut)
@@ -246,7 +352,16 @@ namespace smil
   }
 
   /**
-   * Thicking transform (full)
+   * fullThick() - Thicking transform (full)
+   *
+   * thick() applied repeatedly till output image remains "stable". Output image
+   * "stability" is defined when the volume of the output image remains stops
+   * changing.
+   *
+   * @param[in] imIn : input image
+   * @param[in] mhtSE : vector with composite structuring elements with both
+   * foreground and background structuring elements
+   * @param[out] imOut : output image
    */
   template <class T>
   RES_T fullThick(const Image<T> &imIn, const CompStrEltList &mhtSE,
@@ -270,6 +385,16 @@ namespace smil
     return RES_OK;
   }
 
+  /**
+   * fullThick() - Thicking transform (full)
+   *
+   * @param[in] imIn : input image
+   * @param[in] compSE : composite structuring element with both foreground and
+   * background structuring elements
+   * @param[out] imOut : output image
+   *
+   * @overload
+   */
   template <class T>
   RES_T fullThick(const Image<T> &imIn, const CompStrElt &compSE,
                   Image<T> &imOut)
@@ -277,6 +402,16 @@ namespace smil
     return fullThick(imIn, CompStrEltList(compSE), imOut);
   }
 
+  /**
+   * fullThick() - Thicking transform (full)
+   *
+   * @param[in] imIn : input image
+   * @param[in] foreSE, backSE : foreground an background structuring elements
+   * background structuring elements
+   * @param[out] imOut : output image
+   *
+   * @overload
+   */
   template <class T>
   RES_T fullThick(const Image<T> &imIn, const StrElt &foreSE,
                   const StrElt &backSE, Image<T> &imOut)

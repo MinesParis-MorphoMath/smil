@@ -42,6 +42,10 @@ namespace smil
   /**
    * @ingroup Base
    * @defgroup Arith Arithmetic operations
+   *
+   * @details This modules provides some logic and arithmetic operations on
+   * images.
+   *
    * @{
    */
 
@@ -237,9 +241,9 @@ namespace smil
   /**
    * Copy / cast two images, convert their types.
    *
-   * If @b imIn and @b imOut sizes are different, the contents of @b imIn
+   * If @b imIn and @b imOut types may be different, the contents of @b imIn
    * beginning at <b> (0,0,0)</b> will copied to @b imOut, at the same place but
-   * the size of @b imOut won't be adjusted.
+   * the range of @b imOut won't be adjusted.
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -1087,7 +1091,7 @@ namespace smil
    *
    * @param[in] imIn : input image
    * @param[in] value : input value
-   * @param[out] imOut : output image
+   * @param[out] imOut : output imageBase/include/private/DImageArith.hpp:
    *
    */
   template <class T>
@@ -1119,14 +1123,17 @@ namespace smil
     return binaryImageFunction<T, divLine<T>>(imIn1, imIn2, imOut);
   }
 
-  //     template <class T>
-  //     RES_T div(const Image<T> &imIn, const T &value, Image<T> &imOut)
-  //     {
-  //         ASSERT_ALLOCATED(&imIn, &imOut);
-  //         ASSERT_SAME_SIZE(&imIn, &imOut);
-  //
-  //         return binaryImageFunction<T, divLine<T> >(imIn, value, imOut);
-  //     }
+  /** @cond */
+  /*  JOE - 25/08/2020 Is this really needed ??? */
+  template <class T>
+  RES_T div(const Image<T> &imIn, const T &value, Image<T> &imOut)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    return binaryImageFunction<T, divLine<T>>(imIn, (double) value, imOut);
+  }
+  /** @endcond */
 
   /**
    * Division : an image and a value
@@ -1140,7 +1147,7 @@ namespace smil
    *
    */
   template <class T>
-  RES_T div(const Image<T> &imIn, const double &dValue, Image<T> &imOut)
+  RES_T div(const Image<T> &imIn, double &dValue, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -1175,14 +1182,17 @@ namespace smil
     return binaryImageFunction<T, mulLine<T>>(imIn1, imIn2, imOut);
   }
 
-  //     template <class T>
-  //     RES_T mul(const Image<T> &imIn1, const T &value, Image<T> &imOut)
-  //     {
-  //         ASSERT_ALLOCATED(&imIn1, &imOut);
-  //         ASSERT_SAME_SIZE(&imIn1, &imOut);
-  //
-  //         return binaryImageFunction<T, mulLine<T> >(imIn1, value, imOut);
-  //     }
+  /** @cond */
+  /*  JOE - 25/08/2020 Is this really needed ??? */
+  template <class T>
+  RES_T mul(const Image<T> &imIn1, const T &value, Image<T> &imOut)
+  {
+    ASSERT_ALLOCATED(&imIn1, &imOut);
+    ASSERT_SAME_SIZE(&imIn1, &imOut);
+
+    return binaryImageFunction<T, mulLine<T>>(imIn1, (double) value, imOut);
+  }
+  /** @endcond */
 
   /**
    * Multiply an image and a value
@@ -1301,6 +1311,19 @@ namespace smil
     return binaryImageFunction<T, logicAndLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Bitwise AND operator, pixel by pixel, of two images
+   *
+   * This function evaluates the bitwise @b AND of two images. This function
+   * works both @b binary and @b  grey images
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = imIn(x) & imIn2(x)</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
+   */
   template <class T>
   RES_T bitAnd(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
   {
@@ -1332,6 +1355,19 @@ namespace smil
     return binaryImageFunction<T, logicOrLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Bitwise OR operator, pixel by pixel, of two images
+   *
+   * This function evaluates the bitwise @b OR of two images. This function
+   * works both @b binary and @b  grey images
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = imIn(x) | imIn2(x)</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
+   */
   template <class T>
   RES_T bitOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
   {
@@ -1344,8 +1380,8 @@ namespace smil
   /**
    * Logic XOR operator, pixel by pixel, of two images
    *
-   * This function evaluates the logical @b OR of two images. This function
-   * works both @b binary and @b  grey images
+   * This function evaluates the logical <b>exclusive OR</b> of two images. This
+   * function works both @b binary and @b  grey images
    *
    * The result is a image where :
    * - <b><c> imOut(x) = (imIn1(x) != 0 && imIn2(x) == 0) || (imIn1(x) == 0 &&
@@ -1364,6 +1400,19 @@ namespace smil
     return binaryImageFunction<T, logicXOrLine<T>>(imIn1, imIn2, imOut);
   }
 
+  /**
+   * Bitwise XOR operator, pixel by pixel, of two images
+   *
+   * This function evaluates the bitwise <b>exclusive OR</b> of two images.
+   * This function works both @b binary and @b  grey images
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = imIn(x) ^ imIn2(x)</c></b>
+   *
+   * @param[in] imIn1 : input image
+   * @param[in] imIn2 : input image
+   * @param[out] imOut : output image
+   */
   template <class T>
   RES_T bitXOr(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
   {

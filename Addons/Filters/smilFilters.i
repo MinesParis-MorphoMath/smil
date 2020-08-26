@@ -93,7 +93,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(imageScaleRange);
 TEMPLATE_WRAP_FUNC_2T_CROSS(imageScaleRangeSCurve);
 
 %include "DfilterGaussian.h"
-TEMPLATE_WRAP_FUNC(ImGaussianFilter);
+TEMPLATE_WRAP_FUNC(imageGaussianFilter);
 
 // *******************************
 // Filters from Theodore Chabardes

@@ -60,7 +60,7 @@ namespace smil
    * @param[out] imOut : output Image
    */
   template <class T>
-  RES_T ImGaussianFilter(Image<T> &imIn, int radius, Image<T> &imOut);
+  RES_T imageGaussianFilter(Image<T> &imIn, int radius, Image<T> &imOut);
 
   /** @} */
 } // namespace smil
