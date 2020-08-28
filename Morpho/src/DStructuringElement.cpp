@@ -14,148 +14,163 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <algorithm>
+#include <string>
 
 #include "Morpho/include/DStructuringElement.h"
 
 using namespace smil;
 
-IntPoint SE_SquIndices[] = { IntPoint(0,0,0), IntPoint(1,0,0), IntPoint(1,-1,0), 
-      IntPoint(0,-1,0), IntPoint(-1,-1,0), IntPoint(-1,0,0), 
-      IntPoint(-1,1,0), IntPoint(0,1,0), IntPoint(1,1,0) };
-IntPoint SE_HexIndices[] = { IntPoint(0,0,0), IntPoint(1,0,0), IntPoint(0,-1,0), 
-      IntPoint(-1,-1,0), IntPoint(-1,0,0), IntPoint(-1,1,0), IntPoint(0,1,0) };
+IntPoint SE_SquIndices[] = {
+    IntPoint(0, 0, 0),  IntPoint(1, 0, 0),   IntPoint(1, -1, 0),
+    IntPoint(0, -1, 0), IntPoint(-1, -1, 0), IntPoint(-1, 0, 0),
+    IntPoint(-1, 1, 0), IntPoint(0, 1, 0),   IntPoint(1, 1, 0)};
+IntPoint SE_HexIndices[] = {IntPoint(0, 0, 0),  IntPoint(1, 0, 0),
+                            IntPoint(0, -1, 0), IntPoint(-1, -1, 0),
+                            IntPoint(-1, 0, 0), IntPoint(-1, 1, 0),
+                            IntPoint(0, 1, 0)};
 
-
-
-StrElt& StrElt::operator=(const StrElt &rhs)
+StrElt &StrElt::operator=(const StrElt &rhs)
 {
-    this->clone(rhs);
-    return *this;
+  this->clone(rhs);
+  return *this;
 }
 
 void StrElt::clone(const StrElt &rhs)
 {
-    this->seT = rhs.seT;
-    this->size = rhs.size;
-    this->odd = rhs.odd;
-    this->points = rhs.points;
+  this->seT    = rhs.seT;
+  this->size   = rhs.size;
+  this->odd    = rhs.odd;
+  this->points = rhs.points;
 }
 
 void StrElt::addPoint(const UINT index)
 {
-    if (odd)
-      addPoint(SE_HexIndices[index]);
-    else
-      addPoint(SE_SquIndices[index]);
+  if (odd)
+    addPoint(SE_HexIndices[index]);
+  else
+    addPoint(SE_SquIndices[index]);
 }
 
 void StrElt::addPoint(int x, int y, int z)
 {
-    IntPoint p(x,y,z);
-    if (find(points.begin(), points.end(), p)==points.end())
-      this->points.push_back(p);
+  IntPoint p(x, y, z);
+  if (find(points.begin(), points.end(), p) == points.end())
+    this->points.push_back(p);
 }
 
 void StrElt::addPoint(const IntPoint &pt)
 {
-    if (find(points.begin(), points.end(), pt)==points.end())
-      points.push_back(pt);
+  if (find(points.begin(), points.end(), pt) == points.end())
+    points.push_back(pt);
 }
 
 StrElt StrElt::homothety(const UINT s) const
 {
-    StrElt newSE;;
-    newSE.points = this->points;
-    newSE.odd = odd;
-    int oddLine = 0;
-    for (UINT i=0;i<s-1;i++)
-    {
-        vector<IntPoint> pts = newSE.points;
-        for(vector<IntPoint>::iterator it = pts.begin();it!=pts.end();it++)
-        {
-          const IntPoint &p = *it;
-          for(vector<IntPoint>::const_iterator it2 = points.begin();it2!=points.end();it2++)
-          {
-              const IntPoint &p2 = *it2;
-              if (odd)
-                oddLine = (p2.z+1)%2 && p2.y%2 && p.y%2;
-              newSE.addPoint(p2.x+p.x+oddLine, p2.y+p.y, p2.z+p.z);
-          }
-        }
+  StrElt newSE;
+  ;
+  newSE.points = this->points;
+  newSE.odd    = odd;
+  int oddLine  = 0;
+  for (UINT i = 0; i < s - 1; i++) {
+    vector<IntPoint> pts = newSE.points;
+    for (vector<IntPoint>::iterator it = pts.begin(); it != pts.end(); it++) {
+      const IntPoint &p = *it;
+      for (vector<IntPoint>::const_iterator it2 = points.begin();
+           it2 != points.end(); it2++) {
+        const IntPoint &p2 = *it2;
+        if (odd)
+          oddLine = (p2.z + 1) % 2 && p2.y % 2 && p.y % 2;
+        newSE.addPoint(p2.x + p.x + oddLine, p2.y + p.y, p2.z + p.z);
+      }
     }
-    return newSE;
+  }
+  return newSE;
 }
 
 const StrElt StrElt::operator()(int s) const
 {
-    StrElt se(*this);
-    se.size = s;
-    return se;
+  StrElt se(*this);
+  se.size = s;
+  return se;
 }
 
 // Transpose points
 StrElt StrElt::transpose() const
 {
-    StrElt se;
-    se.seT = this->seT;
-    se.size = this->size;
-    se.odd = this->odd;
+  StrElt se;
+  se.seT  = this->seT;
+  se.size = this->size;
+  se.odd  = this->odd;
 
-    for (vector<IntPoint>::const_iterator it=this->points.begin();it!=this->points.end();it++)
-    {
-        const IntPoint &p = *it;
-        se.addPoint(-p.x - (this->odd && p.y%2), -p.y, -p.z);
-    }
-    
-    return se;
+  for (vector<IntPoint>::const_iterator it = this->points.begin();
+       it != this->points.end(); it++) {
+    const IntPoint &p = *it;
+    se.addPoint(-p.x - (this->odd && p.y % 2), -p.y, -p.z);
+  }
+
+  return se;
 }
 
 // Remove central pixel
 StrElt StrElt::noCenter() const
 {
-    StrElt se;
+  StrElt se;
 
-    se.odd = this->odd;
-    se.seT = this->seT;
-    se.size = this->size;
+  se.odd  = this->odd;
+  se.seT  = this->seT;
+  se.size = this->size;
 
-    vector < IntPoint >::const_iterator it_start = this->points.begin () ;
-    vector < IntPoint >::const_iterator it_end = this->points.end () ;
-    vector < IntPoint >::const_iterator it;
+  vector<IntPoint>::const_iterator it_start = this->points.begin();
+  vector<IntPoint>::const_iterator it_end   = this->points.end();
+  vector<IntPoint>::const_iterator it;
 
-    for ( it=it_start; it!=it_end; ++it )
-        if (it->x != 0 || it->y != 0 || it->z != 0)
-        {
-            se.addPoint (*it);
-        }
-    return se;
+  for (it = it_start; it != it_end; ++it)
+    if (it->x != 0 || it->y != 0 || it->z != 0) {
+      se.addPoint(*it);
+    }
+  return se;
 }
 
 void StrElt::printSelf(ostream &os, string indent) const
 {
-    os << indent << "Structuring Element" << endl;
-    os << indent << "Type: " << seT << endl;
-    os << indent << "Size: " << size << endl;
-    size_t ptNbr = points.size();
-    os << indent << "Point Nbr: " << ptNbr << endl;
-    if (!ptNbr)
-      return;
-    
-    for (UINT i=0;i<ptNbr;i++)
-      os << indent << "#" << i+1 << ": (" << points[i].x << "," << points[i].y << "," << points[i].z << ")" << endl;
-      
-}
+  std::map<int, string> seNames;
+  seNames[SE_Squ]                 = "SquSE";
+  seNames[SE_Squ0]                = "SquSE0";
+  seNames[SE_Hex]                 = "HexSE";
+  seNames[SE_Hex0]                = "HexSE0";
+  seNames[SE_Cross]               = "CrossSE";
+  seNames[SE_Horiz]               = "HorizSE";
+  seNames[SE_Vert]                = "VertSE";
+  seNames[SE_Cube]                = "CubeSE";
+  seNames[SE_Cross3D]             = "Cross3DSE";
+  seNames[SE_Rhombicuboctahedron] = "RhombicuboctahedronSE";
+  seNames[SE_Generic]             = "GenericSE";
 
+  os << indent << "Structuring Element" << endl;
+  string name = seNames[seT];
+  os << indent << "Type      : " << seT << "    " << name << endl;
+  os << indent << "Size      : " << size << endl;
+  os << indent << "Grid      : " << (odd ? "Hexagonal" : "Square") << endl;
+  size_t ptNbr = points.size();
+  os << indent << "Point Nbr : " << ptNbr << endl;
+  if (!ptNbr)
+    return;
+
+  for (UINT i = 0; i < ptNbr; i++)
+    os << indent << "#" << i + 1 << ": (" << points[i].x << "," << points[i].y
+       << "," << points[i].z << ")" << endl;
+}

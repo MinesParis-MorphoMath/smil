@@ -36,7 +36,7 @@
 namespace smil
 {
   /**
-   * @ingroup Morpho
+   * @ingroup StrElt
    */
   /** @{*/
 

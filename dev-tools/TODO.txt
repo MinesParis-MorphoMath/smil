@@ -82,7 +82,7 @@
 
 * From scikit-image 
   * measures : 
-    * entropy
+    * entropy => OK
     * image moments :
       centered moments
       with image values or not
@@ -101,6 +101,9 @@
     * Radon
     * Hough (better)
   * skimage-viewer ?
+
+* Other functions to add :
+  * other kinds of gradients (See Soille 2003)
 
 * Doc doxygen dev : @devdoc and @enddevdoc
 

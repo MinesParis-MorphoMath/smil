@@ -32,7 +32,7 @@
 OPT=
 SRCDIR=
 PREFIX=/usr/local
-ADDONS="Color Filters HoughTransform Chabardes StochasticWS FFT Parsimonious"
+ADDONS="Color Filters HoughTransform Chabardes StochasticWS FFT Parsimonious Transformations"
 OTHER=
 Arch=auto
 
@@ -41,6 +41,8 @@ CXX_FLAGS="-std=c++11"
 
 TEST=OFF
 PACKAGE=OFF
+DOC=OFF
+DEVDOC=OFF
 
 verbose=false
 
@@ -84,6 +86,9 @@ Help()
     --auto
       Optimize Smil generated code for the processor at this computer.
       This is the default option.
+
+    --doc
+    --devdoc
 
     --test
 
@@ -152,6 +157,13 @@ do
       Arch=auto
       ;;
 
+    --doc)
+      DOC=ON
+      ;;
+    --devdoc)
+      DEVDOC=ON
+      DOC=ON
+      ;;
     --test)
       TEST=ON
       ;;
@@ -231,6 +243,10 @@ OPT="$OPT
   -DUSE_PNG:BOOL=ON
   -DUSE_QT:BOOL=ON
   -DUSE_TIFF:BOOL=ON
+  -DBUILD_DOC:BOOL=$DOC
+  -DDOXYGEN_GENERATE_HTML:BOOL=$DOC
+  -DDOXYGEN_GENERATE_LATEX:BOOL=$DOC
+  -DDOXYGEN_DEVEL_DOC:BOOL=$DEVDOC
   -DVERBOSE_OPTIMIZATION:BOOL=OFF
   -DWRAP_PYTHON:BOOL=ON
   -DCMAKE_CXX_FLAGS:STRING=$CXX_FLAGS

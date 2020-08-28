@@ -240,7 +240,7 @@ class Test_Trans : public TestCase
       RGBArray bit(vec1, 49);
       RGBArray bit2(vec1, 49);
       
-      trans(im1, 2, -2, im2);
+      translate(im1, 2, -2, im2);
       
       UINT8 vec3[] = {
         0,   0,   0,   0,   0,   0,   0,

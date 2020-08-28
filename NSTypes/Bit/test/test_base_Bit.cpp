@@ -94,7 +94,7 @@ class Test_Trans : public TestCase
       BitArray bit(vec1, 49);
       BitArray bit2(vec1, 49);
       
-      trans(im1, 2, -2, im2);
+      translate(im1, 2, -2, im2);
       
       bool vec3[] = {
         0, 0, 0, 0, 0, 0, 0, 

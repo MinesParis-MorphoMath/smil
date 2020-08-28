@@ -40,16 +40,19 @@ namespace smil
 {
   /**
    * @ingroup MorphoBase
+   *
    * @{
    */
 
   /**
-   * Morphological grayscale dilation
+   * @brief dilate() - Morphological grayscale dilation
+   *
+   * @details  Morphological grayscale dilation
    *
    * @begintheory{dilation}
    * Denoting an image by @f$ f(x) @f$  and the @ref StrElt "structuring
    * function" by @f$ B(x) @f$, the grayscale dilation of @f$ f @f$ by @f$ B @f$
-   * is given by @cite serra_image_1982 :
+   * is given by @cite Serra_1982 :
    * @f[ (f\oplus B)(x)=\sup_{y \in \Re^3 }[f(y)+B(x-y)] @f]
    * @endtheory
    *
@@ -70,15 +73,15 @@ namespace smil
   }
 
   /**
-   * Morphological grayscale dilation using the default structuring element but
-   * being able to set its size
+   * dilate() - Morphological grayscale dilation using the default structuring
+   * element but being able to set its size
    *
    * @param[in] imIn Input image
    * @param[out] imOut Output image
    * @param[in] seSize The size of the default structuring element
    * @param[in] borderVal (optional) The border value
    *
-   * @note 
+   * @note
    * If you want to use a structuring element different of the default
    * you should set it before
    * @smilexample{example-default-se.py}
@@ -91,12 +94,12 @@ namespace smil
   }
 
   /**
-   * Morphological grayscale erosion
+   * erode() - Morphological grayscale erosion
    *
    * @begintheory{erosion}
    * Denoting an image by @f$ f(x) @f$  and the @ref StrElt (or structuring
    * function) by @f$ B(x) @f$, the grayscale erosion of @f$ f @f$ by @f$ B @f$
-   * is given by @cite serra_image_1982 :
+   * is given by @cite Serra_1982 :
    * @f[ (f\ominus B)(x)=\inf_{y \in \Re^3 }[f(y)-B(x-y)] @f]
    * @endtheory
    *
@@ -117,15 +120,15 @@ namespace smil
   }
 
   /**
-   * Morphological grayscale erosion using the default structuring element but
-   * being able to set its size
+   * erode() - Morphological grayscale erosion using the default structuring
+   * element but being able to set its size
    *
    * @param[in] imIn : Input image
    * @param[out] imOut : Output image
    * @param[in] seSize : The size of the default structuring element
    * @param[in] borderVal : (optional) The border value
    *
-   * @note 
+   * @note
    * If you want to use a structuring element different of the default
    * you should set it before
    */
@@ -137,7 +140,7 @@ namespace smil
   }
 
   /**
-   * Morphological grayscale closing
+   * close() - Morphological grayscale closing
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -168,8 +171,8 @@ namespace smil
   }
 
   /**
-   * Morphological grayscale closing using the default structuring element but
-   * being able to set its size
+   * close() - Morphological grayscale closing using the default structuring
+   * element but being able to set its size
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -186,7 +189,7 @@ namespace smil
   }
 
   /**
-   * Morphological grayscale opening
+   * open() - Morphological grayscale opening
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -217,14 +220,14 @@ namespace smil
   }
 
   /**
-   * Morphological grayscale opening using the default structuring element but
-   * being able to set its size
+   * open() - Morphological grayscale opening using the default structuring
+   * element but being able to set its size
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
    * @param[in] seSize : size of structuring element
    *
-   * @note 
+   * @note
    * If you want to use a structuring element different of the default
    * you should set it before
    */

@@ -1,7 +1,7 @@
 /**
  * @page p402_web_instructions Contribution Guidelines
  *
- * @section style_section_2 Contribution Guidelines 
+ * @section style_section_2 Guidelines
  *
  * This is about good programming practices : what to do and not in your
  * programs. Suggestions about reliability, security, ...
@@ -17,12 +17,15 @@
  * Coding Standard Version 4.0</a>
  *  - <a href="https://llvm.org/docs/CodingStandards.html">LLVM Coding Style</a>
  *
+ * @subsection commonmistakes Common bad practices :
+ *
  * Some common mistakes or bad practices :
  *  - warnings are acceptable just while still debugging. Code in the master
  * branch shall be free of warnings (same as errors);
  *  - code doing different things, even if related, shall be break down in
  * different source files (modular programming);
- *  - avoid duplication of source code;
+ *  - avoid duplication of source code. If you have the same piece of code doing
+ *    the same thing in different places of the program, create a function;
  *  - as in french language, words/symbols/tokens/operators shall be separated
  * by spaces (<code>clang-format</code> may solve this...);
  *  - meaningless (or wrong meaning) variable names;
@@ -35,7 +38,8 @@
  * was being debugged/validated);
  *  - incoherence over time : not doing the same thing the same way at different
  * moments.
- *
+
+
  * @section format_section_2 Code Formatting
  *
  * Code formatting isn't just an aesthetic issue. An homogeneous and clear
@@ -74,7 +78,7 @@
  *     - CentOS/RedHat/Fedora : <code>clang</code>
  *   - <b>clang-format</b> documentation can be found <a
  * href="https://clang.llvm.org/docs/ClangFormat.html">here</a>
- *
+
  * @section proto_section_2  Source file prototypes :
  *
  * To help you start with your coding, inside directory
@@ -98,46 +102,83 @@
  *
  * @section naming_section_2 Naming guidelines
  *
- *  <b>Under construction !!!</b>
+ * @txtbold{Rule of thumb} : Every name exposed to Smil users shall be
+ * @txtbold{meaninfull}. Avoid @txtbold{acronyms} or @txtbold{shortcuts},
+ * unless they are fully known by users out of Smil development group. Every
+ * name exposed to users shall be directly related to some concept usually
+ * found in textbooks and vice-versa.
  *
  *  - Avoid meaningless names. Exceptions may be for some usual loop control
  * variables : x, y, z, i, j, k;
- *  - Files :
+ *  - @txtbold{Functions and Methods} : 
+ *    - function names are a sequence of words without spaces, with the first 
+ *      character of each word in uppercase, except the first one. E.g. : 
+ *      @txttype{lambdaLabel}, @txttype{imageResize}, 
+ *      @txttype{distanceEuclidean}, ...
+ *    - function name length shall be limited to something like 15-20
+ *      characters. The full description of what that function does shall be
+ *      done in the documentation, not in the name of the function. If the
+ *      function name is too long it can, usually, be shortened.
+ *  - @txtbold{Macros and defines} : every character in uppercase. \n
+ *    Although using macros are discouraged you should always put all 
+ *    caracteres in macros and defines in @txtbold{uppercase}
+ *  - @txtbold{Classes}
+ *  - @txtbold{Variables}
+ *  - @txtbold{Files}
  *    - C++ source filenames begin always with <b>D</b>;
  *    - File extensions per directory :
  *      - <b><code>src</code></b> : <code>.cpp</code> - C++ source files
  *      - <b><code>include</code></b> : <code>.h</code> - C++ headers
  *      - <b><code>include/private</code></b> : <code>.hpp</code> - C++ headers
- *  - Classes
- *  - Variables
- *  - Functions and Methods
- *  - Macros and defines : every character in uppercase.
+
  *
  * @section doc_section_2 Code documentation (Doxygen)
  *
- * <b>Under construction !!!</b>
+ * @subsection funcdoc Function documentation
+ *
+ * All functions shall be documented with a header like the following. Some
+ * parts may be missing if not necessary.
+ *
+ *     /**
+ *      * imageBeautifier() - Image Beautifier
+ *      *
+ *      * Image Beautifier based on the algorithm described by John Beautiful
+ *      *
+ *      * @note
+ *      *  This is a note about imageBeautifier()
+ *      * 
+ *      * @warning
+ *      *  This is a warning about imageBeautifier()
+ *      *  
+ *      * @see
+ *      *  Some bibliographic reference about imageBeautifier()
+ *      *
+ *      * @param[in]  imgIn : Input image
+ *      * @param[out] imgOut : Image beautified
+ *      * @returns Some result or error code
+ *      * / 
  *
  * @subsection doxyoddities_section-2 Doxygen / clang-format Oddities
  *
  *  - Use <b><code>"@tag"</code></b> syntax instead of
- * <b><code>"\tag"</code></b> : clang-format doesn't handle these two
+ * <b><code>"\tag"</code></b> : @txttype{clang-format} doesn't handle these two
  * constructions the same way and, sometimes, may break the structure. It seems
  * that using <b><code>"@tag"</code></b> gives more predictable results. Still
  * better, remember : be coherent and do the same thing the same way all the
  * time.
  *  - for the same reason, always insert a blank comment line between two blocks
- * of doxygen documentation. For example, between description and parameters of
- * some function : \n
- *
- *     /**
- *      * Image Beautifier
- *      *
- *      * Image Beautifier based on the algorithm described by John Beautiful
- *      *
- *      * @param[in]  imgIn Input image
- *      * @param[out] imgOut Image beautified
- *      * /
+ * of doxygen documentation. This will prevent some @txttype{Doxygen} oddities.
+ *  - @txttype{clang-format} has problems when handling comments in the same 
+ * line than code. So, avoid things like this :
+ * @code{.unparsed}
+ *      if (x > 0) { // Yeah, it's ok
+ * @endcode
+ *    and privilegiate this :
+ * @code{.unparsed}
+ *      // Yeah, it's ok
+ *      if (x > 0) {
+ * @endcode
  *
  * @tableofcontents
- * \n \n
+ * \n
  */

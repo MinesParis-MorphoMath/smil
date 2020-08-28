@@ -73,7 +73,7 @@ namespace smil
   //   #    #  #    #  ######  #    #
   //
   /**
-   * Area of an image
+   * area() - Area of an image
    *
    * The area of an image is defined as the number of non-zero pixels
    *
@@ -114,7 +114,7 @@ namespace smil
   //     ##     ####   ######   ####   #    #  ######
   //
   /**
-   * Volume of an image
+   * vol() - Volume of an image
    *
    * @param[in] imIn : Input image.
    * @return the sum of pixel values
@@ -134,7 +134,7 @@ namespace smil
   }
 
   /**
-   * Volume of an image
+   * colume() - Volume of an image
    *
    * The volume of an image is defined as the sum of the pixel values.
    *
@@ -196,7 +196,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * Mean value and standard deviation
+   * meanVal() - Mean value and standard deviation
    *
    * @param[in] imIn : Input image.
    * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
@@ -256,7 +256,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * Min value of an image
+   * minVal() - Min value of an image
    *
    * @param[in] imIn : Input image.
    * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
@@ -268,6 +268,14 @@ namespace smil
     return func(imIn, onlyNonZero);
   }
 
+  /**
+   * minVal() - Min value of an image
+   *
+   * @param[in] imIn : Input image.
+   * @param[out] pt : point coordinates of the minimum value in the image.
+   * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
+   * @return the min of the pixel values.
+   */
   template <class T>
   T minVal(const Image<T> &imIn, Point<UINT> &pt, bool onlyNonZero = false)
   {
@@ -323,7 +331,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * Max value of an image
+   * maxVal() - Max value of an image
    *
    * @param[in] imIn : Input image.
    * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
@@ -335,6 +343,14 @@ namespace smil
     return func(imIn, onlyNonZero);
   }
 
+  /**
+   * maxVal() - Max value of an image
+   *
+   * @param[in] imIn : Input image.
+   * @param[out] pt : point coordinates of the maximum value in the image.
+   * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
+   * @return the max of the pixel values.
+   */
   template <class T>
   T maxVal(const Image<T> &imIn, Point<UINT> &pt, bool onlyNonZero = false)
   {
@@ -382,7 +398,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * Min and Max values of an image
+   * rangeVal() - Min and Max values of an image
    *
    * @param[in] imIn : Input image.
    * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
@@ -430,7 +446,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * Get the list of the pixel values present in the image
+   * valueList() - Get the list of the pixel values present in the image
    *
    * @param[in] imIn : Input image.
    * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
@@ -492,7 +508,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * Get the mode of the histogram present in the image, i.e. the
+   * modeVal() - Get the mode of the histogram present in the image, i.e. the
    * value that appears most often.
    *
    * @param[in] imIn : input image
@@ -575,7 +591,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * Get the median of the image histogram.
+   * medianVal() - Get the median of the image histogram.
    * @param[in] imIn : Input image.
    * @param[in] onlyNonZero : If true, only non-zero pixels are considered.
    * @return the median of the image histogram
@@ -595,8 +611,8 @@ namespace smil
   //   #       #    #   ####   #          #    ######  ######
   //
   /**
-   * Get image values along a line defined by the points  @f$(x_0, y_0)@f$ and
-   * @f$(x_1, y_1)@f$ in the slice @f$z@f$.
+   * profile() - Get image values along a line defined by the points  
+   * @f$(x_0, y_0)@f$ and @f$(x_1, y_1)@f$ in the slice @f$z@f$.
    *
    * @param[in] im : input image
    * @param[in] x0, y0 : start point
@@ -670,8 +686,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * measBarycenter
-   * Gets the barycenter of an image
+   * measBarycenter() - Gets the barycenter coordinates of an image
    * @param[in] im : input image
    * @return vector with the coordinates of barycenter
    */
@@ -742,7 +757,8 @@ namespace smil
   /** @endcond */
 
   /**
-   * Bounding Box measure - gets the coordinates of the bounding box
+   * measBoundBox() - Bounding Box measure - gets the coordinates of the
+   * bounding box
    *
    * @param[in] im : input image
    * @return a vector with <b> xMin, yMin (,zMin), xMax, yMax (,zMax) </b>
@@ -814,7 +830,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * Measure image moments
+   * measImageMoments() - Measure image moments
    *
    * @param[in] im : Input image
    * @param[in] onlyNonZero : use only non zero values
@@ -857,6 +873,116 @@ namespace smil
     return func(im, onlyNonZero);
   }
 
+  /**
+   * measMoments() - evaluate image moments
+   *
+   * @param[in] im : Input image
+   * @param[in] onlyNonZero : use only non zero values
+   * @param[in] centered : use the image @b barycenter as a reference to 
+   * evaluate moments.
+   * @return For 2D images: vector(m00, m10, m01, m11, m20, m02)
+   * @return For 3D images: vector(m000, m100, m010, m001, m110, m101, m011,
+   * m200, m020, m002)
+   *
+   * @see measImageBlobsMoments() call if you want to evaluate moments for each
+   * blob.
+   *
+   * @see <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on
+   * Wikipedia</a>
+   *
+   * @par Inertia matrix can be evaluated :
+   *
+   *  @arg For @b 3D images :
+   *    @f[
+   *    M =
+   *      \begin{bmatrix}
+   *        m020 + m002  & -m110 & -m101 \\
+   *       -m110 & m200 + m002   & -m011 \\
+   *       -m101 & -m011 &  m200 + m020
+   *      \end{bmatrix}
+   *    @f]
+   *    @arg For @b 2D images :
+   *    @f[
+   *    M =
+   *      \begin{bmatrix}
+   *        m20 & -m11 \\
+   *       -m11 &  m02
+   *      \end{bmatrix}
+   *    @f]
+   *
+   */
+  template <class T>
+  Vector_double measMoments(Image<T> &im, const bool onlyNonZero = true,
+                            const bool centered = false)
+  {
+    Vector_double m;
+
+    measImageMomentsFunc<T> func;
+    m = func(im, onlyNonZero);
+
+    if (!centered)
+      return m;
+
+    bool im3d = (im.getDimension() == 3);
+    double m000, m100, m010, m110, m200, m020, m001, m101, m011, m002;
+    double c000, c100, c010, c110, c200, c020, c001, c101, c011, c002;
+
+    Vector_double bary;
+    bary = measBarycenter(im);
+    double xc, yc, zc;
+    xc = bary[0];
+    yc = bary[1];
+    if (im3d)
+      zc = bary[2];
+
+    m000 = m100 = m010 = m110 = m200 = m020 = m001 = m101 = m011 = m002 = 0.;
+
+    int i = 0;
+    m000  = m[i++];
+    m100  = m[i++];
+    m010  = m[i++];
+    if (im3d)
+      m001 = m[i++];
+    m110 = m[i++];
+    if (im3d) {
+      m101 = m[i++];
+      m110 = m[i++];
+    }
+    m200 = m[i++];
+    m020 = m[i++];
+    if (im3d)
+      m002 = m[i++];
+
+    c000 = m000;
+    c100 = m100 - xc * m000;
+    c010 = m010 - yc * m000;
+    c001 = m001 - zc * m000;
+    c110 = m110 - xc * m010 - yc * m100 + xc * yc * m000;
+    c101 = m101 - xc * m001 - zc * m100 + xc * zc * m000;
+    c110 = m011 - yc * m001 - zc * m010 + yc * zc * m000;
+    c200 = m200 - 2 * xc * m100 + xc * xc * m000;
+    c020 = m020 - 2 * yc * m100 + yc * yc * m000;
+    c002 = m002 - 2 * zc * m100 + zc * zc * m000;
+
+    m.clear();
+    m.push_back(c000);
+    m.push_back(c100);
+    m.push_back(c010);
+    if (im3d)
+      m.push_back(c001);
+    m.push_back(c110);
+    if (im3d) {
+      m.push_back(c101);
+      m.push_back(c011);
+    }
+    m.push_back(c200);
+    m.push_back(c020);
+    if (im3d)
+      m.push_back(c002);
+
+    return m;
+  }
+
   //
   //    ####    ####   #    #    ##    #####   #    ##    #    #   ####   ######
   //   #    #  #    #  #    #   #  #   #    #  #   #  #   ##   #  #    #  #
@@ -866,8 +992,8 @@ namespace smil
   //    ####    ####     ##    #    #  #    #  #  #    #  #    #   ####   ######
   //
   /**
-   * Covariance of two images in the direction defined by @b dx,
-   * @b dy and @b dz.
+   * measCovariance() - Covariance of two images in the direction defined by 
+   * @b dx, @b dy and @b dz.
    *
    * The direction is given by @b dx, @b dy and @b dz.
    *
@@ -974,7 +1100,7 @@ namespace smil
   }
 
   /**
-   * Auto-covariance
+   * measAutoCovariance() - Auto-covariance
    *
    * The direction is given by @b dx, @b dy and @b dz.
    * The lenght corresponds to the max number of steps @b maxSteps
@@ -1018,8 +1144,8 @@ namespace smil
   }
 
   /**
-   * Centered covariance of two images in the direction defined by @b dx,
-   * @b dy and @b dz.
+   * measCenteredCovariance() - Centered covariance of two images in the
+   * direction defined by @b dx, @b dy and @b dz.
    *
    * The direction is given by @b dx, @b dy and @b dz.
    *
@@ -1113,7 +1239,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * @b measImageEntropy : Image entropy
+   * measImageEntropy() - Image entropy
    *
    * @details Evaluate Shannon entropy of the image (in bits)
    *
@@ -1151,7 +1277,7 @@ namespace smil
   }
 
   /**
-   * @b measImageEntropy : Image entropy
+   * measImageEntropy() - Image entropy
    *
    * Evaluate Shannon entropy of the image in a region defined by a mask.
    *
@@ -1196,7 +1322,7 @@ namespace smil
   //    ####      #    #    #  ######  #    #   ####
   //
   /**
-   * Non-zero point offsets.
+   * nonZeroOffsets() - Returns the offsets of pixels having non nul values.
    *
    * @param[in] imIn : input image
    * @return a vector containing the offset of all non-zero points in image.
@@ -1219,7 +1345,7 @@ namespace smil
   }
 
   /**
-   * Test if an image is binary.
+   * isBinary() - Test if an image is binary.
    *
    * @param[in] imIn : image
    * @return @b true if the only pixel values are @b ImDtTypes<T>::min() and

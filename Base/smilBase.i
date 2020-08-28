@@ -209,6 +209,7 @@ TEMPLATE_WRAP_FUNC(profile);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
 TEMPLATE_WRAP_FUNC(measImageMoments);
+TEMPLATE_WRAP_FUNC(measMoments);
 TEMPLATE_WRAP_FUNC(measCovariance);
 TEMPLATE_WRAP_FUNC(measAutoCovariance);
 TEMPLATE_WRAP_FUNC(measCenteredCovariance);

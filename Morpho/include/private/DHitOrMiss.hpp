@@ -48,8 +48,10 @@ namespace smil
    * first structuring element fits in the foreground of the input image, and
    * the second structuring element misses it completely.
    *
-   * @see <a href="https://en.wikipedia.org/wiki/Hit-or-miss_transform">
+   * @see 
+   * - <a href="https://en.wikipedia.org/wiki/Hit-or-miss_transform">
    * Hit-or-mis Transform</a>
+   * - @soillebook{p. 139}
    *
    * @{
    */
@@ -288,7 +290,7 @@ namespace smil
    *
    * thin() applied repeatedly till output image remains "stable". Output image
    * "stability" is defined when the volume of the output image remains stops
-   * changing.
+   * changing (@txtitalic{idempotence}).
    *
    * @param[in] imIn : input image
    * @param[in] mhtSE : vector with composite structuring elements with both
@@ -356,7 +358,7 @@ namespace smil
    *
    * thick() applied repeatedly till output image remains "stable". Output image
    * "stability" is defined when the volume of the output image remains stops
-   * changing.
+   * changing (@txtitalic{idempotence}).
    *
    * @param[in] imIn : input image
    * @param[in] mhtSE : vector with composite structuring elements with both

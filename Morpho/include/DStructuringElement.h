@@ -33,33 +33,22 @@
 #include "Core/include/DCommon.h"
 #include "Core/include/DBaseObject.h"
 
+#include <string>
+
 namespace smil
 {
-  /*
-   * @defgroup StrElt Structuring Elements
-   * @ingroup Morpho
-   *
-   * @details In mathematical morphology, a structuring element is a shape, used
-   * to probe or interact with a given image, with the purpose of drawing
-   * conclusions on how this shape fits or misses the shapes in the image. It is
-   * typically used in morphological operations, such as dilation, erosion,
-   * opening, and closing, as well as the hit-or-miss transform.
-   *
-   * @see 
-   * <a href="https://en.wikipedia.org/wiki/Structuring_element">Structuring
-   * Element</a>
-   *
-   * @{
-   */
-
   /**
-   * @ingroup StrElt
-   * @{
+   * @addtogroup StrElt
+   *
+   * @details My structuring element...
    */
+  /** @{ */
   enum seType {
     SE_Generic,
     SE_Hex,
+    SE_Hex0,
     SE_Squ,
+    SE_Squ0,
     SE_Cross,
     SE_Horiz,
     SE_Vert,
@@ -74,17 +63,26 @@ namespace smil
   class StrElt : public BaseObject
   {
   public:
+    /** Class constructor - generic structurant element
+     * @param[in] s : size of the structinrg element
+     */
     StrElt(UINT s = 1)
         : BaseObject("StrElt"), odd(false), seT(SE_Generic), size(s)
     {
     }
 
+    /** Class constructor - clone another structuring element
+     *
+     * @param[in] rhs : structuring element
+     */
     StrElt(const StrElt &rhs) : BaseObject(rhs)
     {
       this->clone(rhs);
     }
 
 #ifndef SWIG
+    /** @cond */
+    /* Available only under C++ */
     StrElt(bool oddSE, UINT nbrPts, ...)
         : BaseObject("StrElt"), odd(oddSE), seT(SE_Generic), size(1)
     {
@@ -97,9 +95,12 @@ namespace smil
         addPoint(index);
       }
     }
+    /** @endcond */
 #endif // SWIG
 
     /**
+     * Class constructor
+     *
      * Construct a structuring element with points defined by their indexes.
      * @param oddSE Specify if we want to use an hexagonal grid (true) or a
      * square grid (false)
@@ -120,53 +121,166 @@ namespace smil
     StrElt(bool oddSE, vector<UINT> indexList)
         : BaseObject("StrElt"), odd(oddSE), seT(SE_Generic), size(1)
     {
-      for (vector<UINT>::iterator it = indexList.begin(); it != indexList.end();
-           it++)
+      vector<UINT>::iterator it;
+      for (it = indexList.begin(); it != indexList.end(); it++)
         addPoint(*it);
     }
 
+    /** @cond */
     ~StrElt()
     {
     }
+    /** @endcond */
 
+    /**
+     * getPoint() - Get the coordinates (as a point) of the pixel of order @c i
+     * in the structuring element
+     *
+     * @param[in] i : pixel index
+     * @returns the coordinates of the pixel, relative to the StrElt center
+     */
     IntPoint getPoint(const UINT i)
     {
       return points[i];
     }
+
+    /**
+     * getSize() - Get the size of the Structuring Element
+     *
+     * @returns the size of the structuring element
+     */
     UINT getSize() const
     {
       return size;
     }
 
+    /**
+     * Clone a structuring element
+     *
+     * Clone a strunturing element to, eventually, create another one based on
+     * it.
+     *
+     * @b Example:
+     * @code{.py}
+     * import smilPython as sp
+     *
+     * se = sp.VertSE()
+     * se.addPoint(1,0)
+     * print(se)
+     * # print result :
+     * Structuring Element
+     * Type      : 5    VertSE
+     * Size      : 1
+     * Point Nbr : 4
+     * #1: (0,0,0)
+     * #2: (0,-1,0)
+     * #3: (0,1,0)
+     * #4: (1,0,0)
+     * @endcode
+     */
     StrElt &operator=(const StrElt &rhs);
+
+    /**
+     * clone() - Clone a structuring element
+     *
+     * @param[in] rhs : structuring element to be cloned
+     * @returns a structuring element
+     */
     void clone(const StrElt &rhs);
 
     //! List of neighbor points
     vector<IntPoint> points;
 
+    /**
+     * addPoint() - Add a point to the structurant element based on an index on
+     * a grid.
+     *
+     * Index are defined as in the following drawings :
+     * - Grids : @txtbold{Square} and @txtbold{Hexagonal}
+     *   @images{grids}
+     *
+     * @param[in] index : index to predefined point coordinates, as above.
+     *
+     * @b Example:
+     * @code{.py}
+     * import smilPython as sp
+     *
+     * # Create a diagonal structuring element in a square grid,
+     * diagSE_s = sp.StrElt(False)
+     * diagSE_s.addPoint(0)
+     * diagSE_s.addPoint(4)
+     * diagSE_s.addPoint(8)
+     *
+     * # Create a diagonal structuring element in an hexagonal grid:
+     * diagSE_h = sp.StrElt(True)
+     * diagSE_h.addPoint(0)
+     * diagSE_h.addPoint(3)
+     * diagSE_h.addPoint(6)
+     * @endcode
+     */
     void addPoint(const UINT index);
+
+    /**
+     * addPoint() - Add a point to the structurant element given its coordinates
+     */
     void addPoint(int x, int y, int z = 0);
+    /**
+     * addPoint() - Add a point to the structurant element given its coordinates
+     * in a @txttype{IntPoint} data structure.
+     */
     void addPoint(const IntPoint &pt);
+
+    /**
+     */
     const StrElt operator()(int s = 1) const;
 
-    //! Construct and return an homothetic SE with size s
+    /**
+     * Construct and return an homothetic SE with size s
+     */
     StrElt homothety(const UINT s) const;
 
-    //! Return the opposite SE (symmetry with respect to 0)
+    /**
+     * Return the opposite SE (symmetry with respect to 0)
+     */
     StrElt transpose() const;
 
-    //! Return the SE with no center
+    /**
+     * Return the SE with no center
+     */
     StrElt noCenter() const;
 
-    bool odd;
-    seType seT;
-    UINT size;
+    /**
+     * Get the type of the structuring element
+     */
     virtual seType getType() const
     {
       return seT;
     }
 
+    string getName()
+    {
+      std::map<int, string> seNames;
+
+      seNames[SE_Squ]                 = "SquSE";
+      seNames[SE_Squ0]                = "SquSE0";
+      seNames[SE_Hex]                 = "HexSE";
+      seNames[SE_Hex0]                = "HexSE0";
+      seNames[SE_Cross]               = "CrossSE";
+      seNames[SE_Horiz]               = "HorizSE";
+      seNames[SE_Vert]                = "VertSE";
+      seNames[SE_Cube]                = "CubeSE";
+      seNames[SE_Cross3D]             = "Cross3DSE";
+      seNames[SE_Rhombicuboctahedron] = "RhombicuboctahedronSE";
+      seNames[SE_Generic]             = "GenericSE";
+
+      return seNames[seT];
+    }
+
     virtual void printSelf(ostream &os = std::cout, string indent = "") const;
+
+    bool odd;
+    seType seT;
+    UINT size;
   };
 
   inline void operator<<(ostream &os, StrElt &se)
@@ -207,6 +321,7 @@ namespace smil
     SquSE0(UINT s = 1) : StrElt(false, 8, 1, 2, 3, 4, 5, 6, 7, 8)
     {
       className = "SquSE0";
+      seT       = SE_Squ0;
       odd       = false;
       size      = s;
     }
@@ -237,13 +352,13 @@ namespace smil
    * @images{hex_se0}
    *
    */
-
   class HexSE0 : public StrElt
   {
   public:
     HexSE0(UINT s = 1) : StrElt(true, 6, 1, 2, 3, 4, 5, 6)
     {
       className = "HexSE0";
+      seT       = SE_Hex0;
       size      = s;
     }
   };
@@ -317,10 +432,11 @@ namespace smil
   public:
     CubeSE(UINT s = 1) : StrElt(s)
     {
-      this->className = "CubeSE";
-      this->seT       = SE_Cube;
-      odd             = false;
-      int zList[]     = {0, -1, 1};
+      className = "CubeSE";
+      seT       = SE_Cube;
+      odd       = false;
+
+      int zList[] = {0, -1, 1};
       for (int i = 0; i < 3; i++) {
         int z = zList[i];
         addPoint(0, 0, z);
@@ -395,6 +511,8 @@ namespace smil
   };
 
   // Shortcuts
+  /** @cond */
+  /* Only available inside C++ programs */
   inline HexSE hSE(UINT s = 1)
   {
     return HexSE(s);
@@ -423,6 +541,7 @@ namespace smil
   {
     return RhombicuboctahedronSE(s);
   }
+  /** @endcond */
 
 #define DEFAULT_SE Morpho::getDefaultSE()
 
