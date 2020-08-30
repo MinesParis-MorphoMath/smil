@@ -217,8 +217,8 @@ namespace smil
                                         const size_t &nbOffset)
     {
       labelT nbLbl = this->lblPixels[nbOffset];
-      labelT curLbl =
-          lblPixels[curOffset]; //==STAT_QUEUED ? 0 : lblPixels[curOffset];
+      labelT curLbl = lblPixels[curOffset]; 
+      //==STAT_QUEUED ? 0 : lblPixels[curOffset];
 
       if (nbLbl == 0) // Add it to the tmp offsets queue
       {
@@ -329,7 +329,8 @@ namespace smil
     {
       T nbStat = this->wsPixels[nbOffset];
 
-      if (nbStat == STAT_CANDIDATE) // Add it to the tmp offsets queue
+      // Add it to the tmp offsets queue
+      if (nbStat == STAT_CANDIDATE) 
       {
         tmpOffsets.push_back(nbOffset);
       } else if (nbStat == STAT_LABELED) {

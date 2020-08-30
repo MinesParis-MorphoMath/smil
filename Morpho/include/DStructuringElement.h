@@ -69,6 +69,7 @@ namespace smil
     StrElt(UINT s = 1)
         : BaseObject("StrElt"), odd(false), seT(SE_Generic), size(s)
     {
+      this->setName();
     }
 
     /** Class constructor - clone another structuring element
@@ -78,6 +79,7 @@ namespace smil
     StrElt(const StrElt &rhs) : BaseObject(rhs)
     {
       this->clone(rhs);
+      this->setName();
     }
 
 #ifndef SWIG
@@ -94,6 +96,7 @@ namespace smil
         index = va_arg(vl, UINT);
         addPoint(index);
       }
+      this->setName();
     }
     /** @endcond */
 #endif // SWIG
@@ -124,6 +127,7 @@ namespace smil
       vector<UINT>::iterator it;
       for (it = indexList.begin(); it != indexList.end(); it++)
         addPoint(*it);
+      this->setName();
     }
 
     /** @cond */
@@ -222,45 +226,88 @@ namespace smil
 
     /**
      * addPoint() - Add a point to the structurant element given its coordinates
+     *
+     * @param[in] x, y, [z] : point coordinates
      */
     void addPoint(int x, int y, int z = 0);
+
     /**
      * addPoint() - Add a point to the structurant element given its coordinates
      * in a @txttype{IntPoint} data structure.
+     *
+     * @param[in] pt : a point to be added to the structuring element (itself)
      */
     void addPoint(const IntPoint &pt);
 
     /**
+     * @b operator() -
      */
     const StrElt operator()(int s = 1) const;
 
     /**
-     * Construct and return an homothetic SE with size s
+     * homothety() - Build and return an homothetic SE with size @b s
+     *
+     * @param[in] s : size of the new structuring element
+     * @returns a structuring element of size @b s
      */
     StrElt homothety(const UINT s) const;
 
     /**
-     * Return the opposite SE (symmetry with respect to 0)
+     * transpose() - Return the opposite SE (symmetry with respect to 0)
+     *
+     * @returns a structuring element
      */
     StrElt transpose() const;
 
     /**
      * Return the SE with no center
+     *
+     * Remove the central point of the Structuring Element
+     *
+     * @return a structuring element
      */
     StrElt noCenter() const;
 
     /**
-     * Get the type of the structuring element
+     * getType() - Get the type of the structuring element
+     *
+     * @return the content of the @b seT private field
      */
     virtual seType getType() const
     {
       return seT;
     }
 
-    string getName()
+    /** setName() - Set the name of the structuring element
+     *
+     * @param[in] name - the new name
+     */
+    void setName(string name)
     {
-      std::map<int, string> seNames;
+      this->name = name;
+    }
 
+    /** setName() - Set the name of the structuring element
+     *
+     * Set the structuring element based on the type field @txtbold{seT}
+     */
+    void setName()
+    {
+      std::map<seType, string> seNames = {
+          {SE_Generic, "GenericSE"},
+          {SE_Squ, "SquSE"},
+          {SE_Squ0, "SquSE0"},
+          {SE_Hex, "HexSE"},
+          {SE_Hex0, "HexSE0"},
+          {SE_Cross, "CrossSE"},
+          {SE_Horiz, "HorizSE"},
+          {SE_Vert, "VertSE"},
+          {SE_Cube, "CubeSE"},
+          {SE_Cross3D, "Cross3DSE"},
+          {SE_Rhombicuboctahedron, "RhombicuboctahedronSE"},
+      };
+
+#if 0
       seNames[SE_Squ]                 = "SquSE";
       seNames[SE_Squ0]                = "SquSE0";
       seNames[SE_Hex]                 = "HexSE";
@@ -272,10 +319,31 @@ namespace smil
       seNames[SE_Cross3D]             = "Cross3DSE";
       seNames[SE_Rhombicuboctahedron] = "RhombicuboctahedronSE";
       seNames[SE_Generic]             = "GenericSE";
-
-      return seNames[seT];
+#endif
+      std::map<seType, string>::iterator it;
+      it = seNames.find(seT);
+      if (it != seNames.end())
+        this->name = seNames[seT];
+      else
+        this->name = "Unknown";
     }
 
+    /**
+     * getName() - Get the name of the structurint element
+     *
+     * @returns the name of the structuring element (as a string)
+     */
+    string getName()
+    {
+      return name;
+    }
+
+    /**
+    * printSelf() - Print the contents of the structuring element
+    *
+    * @note
+    * In @txtbold{Python} this has the same effect than @txtbold{print(se)}
+    */
     virtual void printSelf(ostream &os = std::cout, string indent = "") const;
 
     bool odd;
@@ -300,9 +368,10 @@ namespace smil
   public:
     SquSE(UINT s = 1) : StrElt(false, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8)
     {
-      className = "SquSE";
+      className = "SquSE : StrElt";
       seT       = SE_Squ;
       size      = s;
+      this->setName();
     }
   };
 
@@ -324,6 +393,7 @@ namespace smil
       seT       = SE_Squ0;
       odd       = false;
       size      = s;
+      this->setName();
     }
   };
 
@@ -339,9 +409,10 @@ namespace smil
   public:
     HexSE(UINT s = 1) : StrElt(true, 7, 0, 1, 2, 3, 4, 5, 6)
     {
-      className = "HexSE";
+      className = "HexSE : StrElt";
       seT       = SE_Hex;
       size      = s;
+      this->setName();
     }
   };
 
@@ -360,6 +431,7 @@ namespace smil
       className = "HexSE0";
       seT       = SE_Hex0;
       size      = s;
+      this->setName();
     }
   };
 
@@ -376,9 +448,10 @@ namespace smil
   public:
     CrossSE(UINT s = 1) : StrElt(false, 5, 0, 1, 5, 3, 7)
     {
-      className = "CrossSE";
+      className = "CrossSE : StrElt";
       seT       = SE_Cross;
       size      = s;
+      this->setName();
     }
   };
 
@@ -395,9 +468,10 @@ namespace smil
   public:
     HorizSE(UINT s = 1) : StrElt(false, 3, 0, 1, 5)
     {
-      className = "HorizSE";
+      className = "HorizSE : StrElt";
       seT       = SE_Horiz;
       size      = s;
+      this->setName();
     }
   };
 
@@ -414,9 +488,10 @@ namespace smil
   public:
     VertSE(UINT s = 1) : StrElt(false, 3, 0, 3, 7)
     {
-      className = "VertSE";
+      className = "VertSE : StrElt";
       seT       = SE_Vert;
       size      = s;
+      this->setName();
     }
   };
 
@@ -432,9 +507,10 @@ namespace smil
   public:
     CubeSE(UINT s = 1) : StrElt(s)
     {
-      className = "CubeSE";
+      className = "CubeSE : StrElt";
       seT       = SE_Cube;
       odd       = false;
+      this->setName();
 
       int zList[] = {0, -1, 1};
       for (int i = 0; i < 3; i++) {
@@ -464,9 +540,11 @@ namespace smil
   public:
     Cross3DSE(UINT s = 1) : StrElt(s)
     {
-      className = "Cross3DSE";
+      className = "Cross3DSE : StrElt";
       seT       = SE_Cross3D;
       odd       = false;
+      this->setName();
+
       addPoint(0, 0, 0);
       addPoint(1, 0, 0);
       addPoint(0, -1, 0);
@@ -488,9 +566,10 @@ namespace smil
   public:
     RhombicuboctahedronSE(UINT s = 1) : StrElt(s)
     {
-      className = "RhombicuboctahedronSE";
+      className = "RhombicuboctahedronSE : StrElt";
       seT       = SE_Rhombicuboctahedron;
       odd       = false;
+      this->setName();
 
       int x, y, z;
 

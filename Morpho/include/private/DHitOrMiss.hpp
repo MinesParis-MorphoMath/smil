@@ -39,11 +39,13 @@ namespace smil
    * @ingroup Morpho
    * @defgroup HitOrMiss Hit-or-Miss Transform
    *
-   * @brief Hit-or-mis Operations
+   * @anchor ops-hit-or-miss
+   * @brief Hit-or-miss Morphological Operations
    *
    * In mathematical morphology, hit-or-miss transform is an operation that
    * detects a given configuration (or pattern) in a binary image, using the
-   * morphological erosion operator and a pair of disjoint structuring elements.
+   * morphological erosion operator and a pair of disjoint structuring elements
+   * (see CompStrElt and CompStrEltList).
    * The result of the hit-or-miss transform is the set of positions where the
    * first structuring element fits in the foreground of the input image, and
    * the second structuring element misses it completely.

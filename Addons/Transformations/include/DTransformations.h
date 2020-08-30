@@ -63,7 +63,7 @@ namespace smil
    */
 
   /**
-   * @brief @b imageTranspose : 3D image transposition
+   * @brief mageTranspose() : 3D image transposition
    *
    * Transpose 3D images. The image is mirrored with respect to the main
    * diagonal and the shape is adapted.
@@ -76,7 +76,7 @@ namespace smil
    * nothing but just copies input image into output image.
    *
    * @param[in]  imIn : input Image
-   * @param[in]  order : size of Structuring Element
+   * @param[in]  order : axis order in the output image
    * @param[out] imOut : output Image
    *
    */
@@ -85,7 +85,10 @@ namespace smil
                        const string order = "yxz");
 
   /**
-   * @brief @b imageTranspose : 3D image transposition
+   * @brief imageTranspose() : 3D image transposition
+   *
+   * @param[in,out]  im : input/output Image
+   * @param[in]  order : axis order in the output image
    *
    * @overload
    */
@@ -96,7 +99,7 @@ namespace smil
   }
 
   /**
-   * @brief @b imageVertFlip : Vertical Flip
+   * @brief imageVertFlip() : Vertical Flip
    *
    * Mirror an image using an horizontal line (or plan for 3D images) in the
    * center of the image.
@@ -107,7 +110,9 @@ namespace smil
   template <class T> RES_T imageVertFlip(Image<T> &imIn, Image<T> &imOut);
 
   /**
-   * @brief @b imageVertFlip : Vertical Flip
+   * @brief imageVertFlip() : Vertical Flip
+   *
+   * @param[in,out]  im : input/output Image
    *
    * @overload
    */
@@ -117,7 +122,7 @@ namespace smil
   }
 
   /**
-   * @brief @b imageHorizFlip : Horizontal Flip
+   * @brief imageHorizFlip() : Horizontal Flip
    *
    * Mirror an image using a vertical line (or plan for 3D images) in the
    * center of the image.
@@ -128,7 +133,9 @@ namespace smil
   template <class T> RES_T imageHorizFlip(Image<T> &imIn, Image<T> &imOut);
 
   /**
-   * @brief @b imageHorizFlip : Horizontal Flip
+   * @brief imageHorizFlip() : Horizontal Flip
+   *
+   * @param[in,out]  im : input/output Image
    *
    * @overload
    */
@@ -138,7 +145,7 @@ namespace smil
   }
 
   /**
-   * @brief @b imageRotate : Rotate an image by an angle multiple of 90 degres
+   * @brief imageRotate() : Rotate an image by an angle multiple of 90 degres
    *
    * @param[in]  imIn : input Image
    * @param[in]  angle : rotation angle (0, 90, 180 or 270, 360, 450, ...) in
@@ -155,7 +162,11 @@ namespace smil
   RES_T imageRotate(Image<T> &imIn, int angle, Image<T> &imOut);
 
   /**
-   * @brief @b imageRotate : Rotate an image by an angle multiple of 90 degres
+   * @brief imageRotate() : Rotate an image by an angle multiple of 90 degres
+   *
+   * @param[in,out]  im : input/output Image
+   * @param[in]  angle : rotation angle (0, 90, 180 or 270, 360, 450, ...) in
+   * degres
    *
    * @overload
    */

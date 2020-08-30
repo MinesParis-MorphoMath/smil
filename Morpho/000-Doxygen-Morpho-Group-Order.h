@@ -1,6 +1,13 @@
 /*
  * Morpho group - ordering
  */
+ 
+/**
+ * @addtogroup Morpho
+ *
+ * @details About group Morpho...
+ */
+
 /**
  *
  * @defgroup StrElt               Structuring Elements
@@ -116,7 +123,6 @@
  */
 
 /**
-* @ingroup StrElt
-*
-* @defgroup CompSE               Composite Structuring Elements
-*/
+ * @ingroup StrElt
+ * @defgroup CompSE               Composite Structuring Elements
+ */

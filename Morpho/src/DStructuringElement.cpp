@@ -37,7 +37,16 @@ using namespace smil;
 IntPoint SE_SquIndices[] = {
     IntPoint(0, 0, 0),  IntPoint(1, 0, 0),   IntPoint(1, -1, 0),
     IntPoint(0, -1, 0), IntPoint(-1, -1, 0), IntPoint(-1, 0, 0),
-    IntPoint(-1, 1, 0), IntPoint(0, 1, 0),   IntPoint(1, 1, 0)};
+    IntPoint(-1, 1, 0), IntPoint(0, 1, 0),   IntPoint(1, 1, 0),
+
+    IntPoint(0, 0, -1),  IntPoint(1, 0, -1),   IntPoint(1, -1, -1),
+    IntPoint(0, -1, -1), IntPoint(-1, -1, -1), IntPoint(-1, 0, -1),
+    IntPoint(-1, 1, -1), IntPoint(0, 1, -1),   IntPoint(1, 1, -1),
+
+    IntPoint(0, 0, 1),  IntPoint(1, 0, 1),   IntPoint(1, -1, 1),
+    IntPoint(0, -1, 1), IntPoint(-1, -1, 1), IntPoint(-1, 0, 1),
+    IntPoint(-1, 1, 1), IntPoint(0, 1, 1),   IntPoint(1, 1, 1)};
+
 IntPoint SE_HexIndices[] = {IntPoint(0, 0, 0),  IntPoint(1, 0, 0),
                             IntPoint(0, -1, 0), IntPoint(-1, -1, 0),
                             IntPoint(-1, 0, 0), IntPoint(-1, 1, 0),
@@ -115,6 +124,7 @@ StrElt StrElt::transpose() const
   se.seT  = this->seT;
   se.size = this->size;
   se.odd  = this->odd;
+  // JOE se.setName();
 
   for (vector<IntPoint>::const_iterator it = this->points.begin();
        it != this->points.end(); it++) {
@@ -147,22 +157,10 @@ StrElt StrElt::noCenter() const
 
 void StrElt::printSelf(ostream &os, string indent) const
 {
-  std::map<int, string> seNames;
-  seNames[SE_Squ]                 = "SquSE";
-  seNames[SE_Squ0]                = "SquSE0";
-  seNames[SE_Hex]                 = "HexSE";
-  seNames[SE_Hex0]                = "HexSE0";
-  seNames[SE_Cross]               = "CrossSE";
-  seNames[SE_Horiz]               = "HorizSE";
-  seNames[SE_Vert]                = "VertSE";
-  seNames[SE_Cube]                = "CubeSE";
-  seNames[SE_Cross3D]             = "Cross3DSE";
-  seNames[SE_Rhombicuboctahedron] = "RhombicuboctahedronSE";
-  seNames[SE_Generic]             = "GenericSE";
-
   os << indent << "Structuring Element" << endl;
-  string name = seNames[seT];
-  os << indent << "Type      : " << seT << "    " << name << endl;
+  os << indent << "Class     : " << className << endl;
+  os << indent << "Name      : " << name << endl;
+  os << indent << "Type      : " << seT << endl;
   os << indent << "Size      : " << size << endl;
   os << indent << "Grid      : " << (odd ? "Hexagonal" : "Square") << endl;
   size_t ptNbr = points.size();
