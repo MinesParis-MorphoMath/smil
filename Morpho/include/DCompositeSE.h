@@ -129,7 +129,7 @@ namespace smil
     CompStrEltList operator~();
 
     /** operator |() - Append composite SEs to current list
-    *
+     *
      * @b Example:
      * @code{.py}
      * import smilPython as sp
@@ -138,25 +138,53 @@ namespace smil
      * csel |= sp.HMT_sL2()
      *
      * print(csel)
-    * @endcode
-    * 
-    */
+     * @endcode
+     *
+     */
     CompStrEltList operator|(const CompStrEltList &rhs);
-    //! Get the nth CompStrElt
+
+    /** Get the nth CompStrElt
+     *
+     */
     CompStrElt &operator[](const UINT n)
     {
       return compSeList[n];
     }
 
+    /**
+     *
+     */
     void add(const CompStrElt &cse);
+    /**
+     *
+     */
     void add(const StrElt &fgse, const StrElt &bgse);
 
-    //! Add as the nrot rotations of the StrElt pair
-    //! The rotation is 6/nrot counterclockwise for Hex
-    //! and 8/nrot for Squ
+    /** Add as the nrot rotations of the StrElt pair
+     *
+     * The rotation is 6/nrot counterclockwise for Hex
+     * and 8/nrot for Squ
+     */
+
     void add(const StrElt &fgse, const StrElt &bgse, UINT nrot);
+    /**
+     *
+     */
     void add(const CompStrElt &cse, UINT nrot);
+
+    /**
+     *
+     */
     CompStrEltList &rotate(int steps = 1);
+    
+    /**
+    *
+    *
+    */
+    void setName(string name)
+    {
+      this->name = name;
+    }
 
     virtual void printSelf(ostream &os = std::cout, string indent = "") const;
   };
@@ -168,6 +196,7 @@ namespace smil
     HMT_sL1(UINT nrot = 1)
     {
       this->add(StrElt(false, 3, 8, 1, 2), StrElt(false, 3, 4, 5, 6), nrot);
+      this->name = "HMT_sL1";
     }
   };
 
@@ -178,6 +207,7 @@ namespace smil
     HMT_sL2(UINT nrot = 1)
     {
       this->add(StrElt(false, 2, 1, 3), StrElt(false, 3, 5, 6, 7), nrot);
+      this->name = "HMT_sL2";
     }
   };
 
@@ -188,6 +218,7 @@ namespace smil
     HMT_hL(UINT nrot = 1)
     {
       this->add(StrElt(true, 2, 1, 2), StrElt(true, 2, 4, 5), nrot);
+      this->name = "HMT_hL";
     }
   };
 
@@ -198,6 +229,7 @@ namespace smil
     HMT_sM(UINT nrot = 1)
     {
       add(StrElt(false, 2, 1, 8), StrElt(false, 4, 3, 4, 5, 6), nrot);
+      this->name = "HMT_sM";
     }
   };
 
@@ -208,6 +240,7 @@ namespace smil
     HMT_hM(UINT nrot = 1)
     {
       add(StrElt(true, 1, 1), StrElt(true, 3, 3, 4, 5), nrot);
+      this->name = "HMT_hM";
     }
   };
 
@@ -218,6 +251,7 @@ namespace smil
     HMT_sD(UINT nrot = 1)
     {
       add(StrElt(false, 4, 3, 4, 5, 6), StrElt(false, 2, 1, 8), nrot);
+      this->name = "HMT_sD";
     }
   };
 
@@ -228,6 +262,7 @@ namespace smil
     HMT_hD(UINT nrot = 1)
     {
       add(StrElt(true, 3, 3, 4, 5), StrElt(true, 1, 1), nrot);
+      this->name = "HMT_hD";
     }
   };
 
@@ -238,6 +273,7 @@ namespace smil
     HMT_sE(UINT nrot = 1)
     {
       add(StrElt(false, 5, 3, 4, 5, 6, 7), StrElt(false, 1, 0), nrot);
+      this->name = "HMT_sE";
     }
   };
 
@@ -248,6 +284,7 @@ namespace smil
     HMT_hE(UINT nrot = 1)
     {
       add(StrElt(true, 4, 3, 4, 5, 6), StrElt(true, 1, 0), nrot);
+      this->name = "HMT_hE";
     }
   };
 
@@ -260,6 +297,7 @@ namespace smil
     HMT_sS1(UINT nrot = 1)
     {
       add(StrElt(false, 2, 3, 7), StrElt(false, 3, 0, 1, 5), nrot);
+      this->name = "HMT_sS1";
     }
   };
 
@@ -270,6 +308,7 @@ namespace smil
     HMT_hS1(UINT nrot = 1)
     {
       add(StrElt(true, 4, 2, 3, 5, 6), StrElt(true, 3, 0, 1, 4), nrot);
+      this->name = "HMT_hS1";
     }
   };
 
@@ -280,6 +319,7 @@ namespace smil
     HMT_sS2(UINT nrot = 1)
     {
       add(StrElt(false, 4, 2, 5, 6, 7), StrElt(false, 3, 0, 1, 3), nrot);
+      this->name = "HMT_sS2";
     }
   };
 
@@ -290,6 +330,7 @@ namespace smil
     HMT_hS2(UINT nrot = 1)
     {
       add(StrElt(true, 4, 2, 4, 5, 6), StrElt(false, 3, 0, 1, 3), nrot);
+      this->name = "HMT_hS2";
     }
   };
 
@@ -301,6 +342,7 @@ namespace smil
     HMT_sS3(UINT nrot = 1)
     {
       add(StrElt(false, 5, 3, 4, 5, 6, 7), StrElt(false, 1, 1), nrot);
+      this->name = "HMT_sS3";
     }
   };
 
@@ -312,6 +354,7 @@ namespace smil
     HMT_sI()
     {
       add(StrElt(false, 1, 0), StrElt(false, 8, 1, 2, 3, 4, 5, 6, 7, 8));
+      this->name = "HMT_sI";
     }
   };
 
@@ -322,6 +365,7 @@ namespace smil
     HMT_hI()
     {
       add(StrElt(true, 1, 0), StrElt(true, 6, 1, 2, 3, 4, 5, 6));
+      this->name = "HMT_hI";
     }
   };
 
@@ -332,6 +376,7 @@ namespace smil
     HMT_sLineEnd(UINT nrot = 1)
     {
       add(StrElt(false, 2, 0, 1), StrElt(false, 5, 3, 4, 5, 6, 7), nrot);
+      this->name = "HMT_sLineEnd";
     }
   };
 
@@ -343,6 +388,7 @@ namespace smil
     {
       add(StrElt(false, 4, 0, 1, 4, 6), StrElt(false, 1, 5), nrot);
       add(StrElt(false, 4, 0, 1, 3, 5), StrElt(false, 2, 2, 4), nrot);
+      this->name = "HMT_sLineJunc";
     }
   };
 
