@@ -62,17 +62,17 @@ namespace smil
    *
    *
    */
-  template <class T> class ParsimoniousPathOpening_C
+  template <class T> class ParsimoniousPathOpeningClass
   {
     // better to define this as a boolean
     bool MIRROR_BORDERS = true;
 
   public:
-    ParsimoniousPathOpening_C()
+    ParsimoniousPathOpeningClass()
     {
       MIRROR_BORDERS = true;
     }
-    ~ParsimoniousPathOpening_C()
+    ~ParsimoniousPathOpeningClass()
     {
     }
 
@@ -665,7 +665,7 @@ namespace smil
                                             int tolerance, int step,
                                             bool rebuild, Image<T> &imOut)
   {
-    ParsimoniousPathOpening_C<T> pOpen;
+    ParsimoniousPathOpeningClass<T> pOpen;
 
     RES_T res;
 

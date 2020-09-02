@@ -107,3 +107,5 @@
 
 * Doc doxygen dev : @devdoc and @enddevdoc
 
+* Rotation of Structured elements (works only on 2D) - DCompositeSE.cpp
+

@@ -90,8 +90,7 @@ TEMPLATE_WRAP_CLASS(MorphImageFunctionBase, MorphImageFunctionBase);
 %include "Morpho/include/private/DMorphoBase.hpp"
 TEMPLATE_WRAP_FUNC(dilate);
 TEMPLATE_WRAP_FUNC(erode);
-TEMPLATE_WRAP_FUNC(close);
-TEMPLATE_WRAP_FUNC(open);
+
 
 %include "Morpho/include/private/DMorphoResidues.hpp"
 TEMPLATE_WRAP_FUNC(gradient);
@@ -138,6 +137,8 @@ TEMPLATE_WRAP_FUNC(fastMinima);
 TEMPLATE_WRAP_FUNC(fastMaxima);
 
 %include "Morpho/include/private/DMorphoFilter.hpp"
+TEMPLATE_WRAP_FUNC(close);
+TEMPLATE_WRAP_FUNC(open);
 TEMPLATE_WRAP_FUNC(asfClose);
 TEMPLATE_WRAP_FUNC(asfOpen);
 TEMPLATE_WRAP_FUNC(mean);

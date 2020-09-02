@@ -162,11 +162,11 @@ namespace smil
 
     /** Add as the nrot rotations of the StrElt pair
      *
-     * The rotation is 6/nrot counterclockwise for Hex
+     * The rotation step is 6/nrot counterclockwise for Hex
      * and 8/nrot for Squ
      */
-
     void add(const StrElt &fgse, const StrElt &bgse, UINT nrot);
+  
     /**
      *
      */

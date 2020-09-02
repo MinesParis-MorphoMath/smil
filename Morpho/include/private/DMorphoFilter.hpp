@@ -33,6 +33,10 @@
 #include "Core/include/DImage.h"
 #include "DMorphImageOperations.hxx"
 
+#include "Base/include/private/DImageArith.hpp"
+#include "Morpho/include/DMorphoInstance.h"
+#include "DHitOrMiss.hpp"
+
 namespace smil
 {
   /**
@@ -40,6 +44,105 @@ namespace smil
    * @defgroup Filters Morphological Filters
    * @{
    */
+
+  /**
+   * close() - Morphological grayscale closing
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
+   */
+  template <class T>
+  RES_T close(const Image<T> &imIn, Image<T> &imOut,
+              const StrElt &se = DEFAULT_SE)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    ImageFreezer freeze(imOut);
+
+    bool inplaceSafe = MorphImageFunction<T, supLine<T>>::isInplaceSafe(se);
+    Image<T> *imTmp;
+    if (inplaceSafe)
+      imTmp = &imOut;
+    else
+      imTmp = new Image<T>(imIn);
+
+    ASSERT((dilate(imIn, *imTmp, se) == RES_OK));
+    ASSERT((erode(*imTmp, imOut, se) == RES_OK));
+
+    if (!inplaceSafe)
+      delete imTmp;
+
+    return RES_OK;
+  }
+
+  /**
+   * close() - Morphological grayscale closing using the default structuring
+   * element but being able to set its size
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] seSize : size of structuring element
+   *
+   * @note
+   * If you want to use a structuring element different of the default
+   * you should set it before
+   */
+  template <class T>
+  RES_T close(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
+  {
+    return close(imIn, imOut, DEFAULT_SE(seSize));
+  }
+
+  /**
+   * open() - Morphological grayscale opening
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
+   */
+  template <class T>
+  RES_T open(const Image<T> &imIn, Image<T> &imOut,
+             const StrElt &se = DEFAULT_SE)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+    ImageFreezer freeze(imOut);
+
+    bool inplaceSafe = MorphImageFunction<T, supLine<T>>::isInplaceSafe(se);
+    Image<T> *imTmp;
+    if (inplaceSafe)
+      imTmp = &imOut;
+    else
+      imTmp = new Image<T>(imIn);
+
+    ASSERT((erode(imIn, *imTmp, se) == RES_OK));
+    ASSERT((dilate(*imTmp, imOut, se) == RES_OK));
+
+    if (!inplaceSafe)
+      delete imTmp;
+
+    return RES_OK;
+  }
+
+  /**
+   * open() - Morphological grayscale opening using the default structuring
+   * element but being able to set its size
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] seSize : size of structuring element
+   *
+   * @note
+   * If you want to use a structuring element different of the default
+   * you should set it before
+   */
+  template <class T>
+  RES_T open(const Image<T> &imIn, Image<T> &imOut, UINT seSize)
+  {
+    return open(imIn, imOut, DEFAULT_SE(seSize));
+  }
+
 
   /**
    * Alternate Sequential Filter beginning by a closing
