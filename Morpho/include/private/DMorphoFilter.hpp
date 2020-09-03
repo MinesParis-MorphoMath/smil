@@ -42,11 +42,25 @@ namespace smil
   /**
    * @ingroup Morpho
    * @defgroup Filters Morphological Filters
+   *
+   * @details @txtbold{Morphological Filters}
+   *
+   * Morphological filters are morphological image transformations which are 
+   * both @b increasing and @b idempotent, i.e., 
+   * - @f$ A < B => \psi(A) < \psi(B) @f$
+   * - @f$ \psi(\psi(A)) = \psi(A) @f$
+   *
+   * @see
+   * - @soillebook{Chap. 8}
+   * - @serra82book{Chap. }
+   * - @serra88book{Chap. }
    * @{
    */
 
   /**
    * close() - Morphological grayscale closing
+   *
+   * A @b closing filter is defined as a @b dilation followed by an @b erosion.
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -80,6 +94,8 @@ namespace smil
    * close() - Morphological grayscale closing using the default structuring
    * element but being able to set its size
    *
+   * A @b closing filter is defined as a @b dilation followed by an @b erosion.
+   *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
    * @param[in] seSize : size of structuring element
@@ -96,6 +112,8 @@ namespace smil
 
   /**
    * open() - Morphological grayscale opening
+   *
+   * A @b opening filter is defined as an @b erosion followed by a @b dilation.
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -129,6 +147,8 @@ namespace smil
    * open() - Morphological grayscale opening using the default structuring
    * element but being able to set its size
    *
+   * A @b opening filter is defined as an @b erosion followed by a @b dilation.
+   *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
    * @param[in] seSize : size of structuring element
@@ -149,7 +169,7 @@ namespace smil
    *
    * Sequence of closings and openings with increasing size <b>1, 2, ...,
    * max_size</b>. The @b max_size is given by the size of the structuring
-   * element (for example @b 3 for @b hSE(3)).
+   * element (for example @b 3 for @b SE(3)).
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -181,7 +201,7 @@ namespace smil
    *
    * Sequence of openings and closings with increasing size <b>1, 2, ...,
    * max_size</b>. The @b max_size is given by the size of the structuring
-   * element (for example @b 3 for @b hSE(3)).
+   * element (for example @b 3 for @b SE(3)).
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image

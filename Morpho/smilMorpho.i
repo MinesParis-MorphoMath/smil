@@ -203,6 +203,7 @@ TEMPLATE_WRAP_FUNC(fullThick);
 
 %include "Morpho/include/private/DSkeleton.hpp"
 TEMPLATE_WRAP_FUNC(skiz);
+TEMPLATE_WRAP_FUNC(pruneSkiz);
 TEMPLATE_WRAP_FUNC(skeleton);
 TEMPLATE_WRAP_FUNC_2T_CROSS(extinctionValues);
 TEMPLATE_WRAP_FUNC(zhangSkeleton);

@@ -41,8 +41,7 @@ namespace smil
 {
 
    /**
-    * @ingroup Core
-    * @defgroup NumpyInterface Numpy Interface
+    * @addtogroup NumpyInterface
     * @{
     */
    

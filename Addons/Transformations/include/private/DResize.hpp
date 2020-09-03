@@ -32,7 +32,7 @@
  *
  *
  * History :
- *   - 08/06/2020 - by Jose-Marcio Martins da Cruz
+ *   - 02/09/2020 - by Jose-Marcio Martins da Cruz
  *
  *
  * __HEAD__ - Stop here !
@@ -58,9 +58,24 @@ namespace smil
    */
   template <class T>
   class ImageResizeClass {
-    ImageResizeClass();
-    ~ImageResizeClass();
-  }
+    ImageResizeClass() : method("linear")
+    {
+    }
+
+    ~ImageResizeClass()
+    {
+    }
+    
+    RES_T resize(Image<T> imIn, size_t w, size_t h, size_t d, Image<T> imOut);
+    RES_T resize(Image<T> imIn, size_t w, size_t h, Image<T> imOut);
+
+    RES_T resize(Image<T> imIn, double kw, double kh, double kd, Image<T> imOut);        
+    RES_T resize(Image<T> imIn, double kw, double kh, Image<T> imOut);        
+    RES_T resize(Image<T> imIn, double k, Image<T> imOut);    
+
+  private:
+    string method;
+  };
 
 
 } // namespace smil

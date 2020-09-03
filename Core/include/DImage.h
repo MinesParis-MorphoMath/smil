@@ -38,6 +38,6 @@
 #include "private/DImage.hpp"
 #include "private/DImage.hxx"
 
-/** @] */
+/** @} */
 
 #endif // _DIMAGE_H

@@ -37,7 +37,7 @@ namespace smil
 {
   /**
    * @ingroup Addons
-   * @addtogroup AddonThresh 
+   * @addtogroup AddonThresh
    * @{
    */
 
@@ -46,16 +46,16 @@ namespace smil
    *
    */
   template <class T>
-  RES_T applyThreshold(const Image<T> &_im_, const vector<T> &modes,
-                       Image<T> &_out_)
+  RES_T applyThreshold(const Image<T> &imIn, const vector<T> &modes,
+                       Image<T> &imOut)
   {
     size_t S[3];
-    _im_.getSize(S);
+    imIn.getSize(S);
 
     size_t s = S[0] * S[1] * S[2];
 
-    T *out = _out_.getPixels();
-    T *im  = _im_.getPixels();
+    T *out = imOut.getPixels();
+    T *im  = imIn.getPixels();
 
     UINT SMIL_UNUSED nthreads = Core::getInstance()->getNumberOfThreads();
 #pragma omp parallel for num_threads(nthreads)
@@ -70,10 +70,10 @@ namespace smil
    *
    */
   template <class T>
-  RES_T areaThreshold(const Image<T> &_im_, const T &threshold, Image<T> &_out_)
+  RES_T areaThreshold(const Image<T> &imIn, const T &threshold, Image<T> &imOut)
   {
-    map<T, double> m = measAreas(_im_, false);
-    vector<T> v(maxVal<T>(_im_) + 1, 0);
+    map<T, double> m = measAreas(imIn, false);
+    vector<T> v(maxVal<T>(imIn) + 1, 0);
     for (typename map<T, double>::iterator it = m.begin(); it != m.end();
          ++it) {
       if (it->second > threshold)
@@ -81,7 +81,7 @@ namespace smil
       else
         v[it->first] = 0;
     }
-    applyThreshold(_im_, v, _out_);
+    applyThreshold(imIn, v, imOut);
     return RES_OK;
   }
 
@@ -90,19 +90,19 @@ namespace smil
    *
    */
   template <class T>
-  RES_T rangeThreshold(const Image<T> &_im_, const T &threshold,
-                       Image<T> &_out_)
+  RES_T rangeThreshold(const Image<T> &imIn, const T &threshold,
+                       Image<T> &imOut)
   {
-    vector<T> v(maxVal<T>(_im_) + 1, 0);
+    vector<T> v(maxVal<T>(imIn) + 1, 0);
 
     size_t S[3];
-    _im_.getSize(S);
+    imIn.getSize(S);
     size_t s = S[0] * S[1] * S[2];
 
-    Image<T> _tmp_ = Image<T>(_im_);
-    dist_cross_3d_per_label(_im_, _tmp_);
+    Image<T> _tmp_ = Image<T>(imIn);
+    dist_cross_3d_per_label(imIn, _tmp_);
 
-    T *im  = _im_.getPixels();
+    T *im  = imIn.getPixels();
     T *tmp = _tmp_.getPixels();
 
     UINT SMIL_UNUSED nthreads = Core::getInstance()->getNumberOfThreads();
@@ -110,8 +110,8 @@ namespace smil
     for (size_t p = 0; p < s; ++p) {
       v[im[p]] = (v[im[p]] < tmp[p]) ? tmp[p] : v[im[p]];
     }
-    applyThreshold(_im_, v, _tmp_);
-    compare(_tmp_, ">", threshold, _im_, T(0), _out_);
+    applyThreshold(imIn, v, _tmp_);
+    compare(_tmp_, ">", threshold, imIn, T(0), imOut);
 
     return RES_OK;
   }
@@ -335,15 +335,15 @@ namespace smil
    * rasterLabels
    *
    */
-  template <class T> RES_T rasterLabels(const Image<T> &_im_, Image<T> &_out_)
+  template <class T> RES_T rasterLabels(const Image<T> &imIn, Image<T> &imOut)
   {
     size_t S[3];
-    _im_.getSize(S);
+    imIn.getSize(S);
 
     size_t s = S[0] * S[1] * S[2];
 
-    T *out = _out_.getPixels();
-    T *im  = _im_.getPixels();
+    T *out = imOut.getPixels();
+    T *im  = imIn.getPixels();
     map<T, T> m;
 
     T count = 1;
@@ -366,16 +366,16 @@ namespace smil
    *
    */
   template <class T1, class T2>
-  RES_T findTriplePoints(const Image<T1> &_im_, const Image<T2> &_skiz_,
-                         Image<T2> &_out_, const UINT &val, const StrElt &_se_)
+  RES_T findTriplePoints(const Image<T1> &imIn, const Image<T2> &_skiz_,
+                         Image<T2> &imOut, const UINT &val, const StrElt &_se_)
   {
-    T1 *in   = _im_.getPixels();
+    T1 *in   = imIn.getPixels();
     T2 *skiz = _skiz_.getPixels();
-    T2 *out  = _out_.getPixels();
-    fill<T2>(_out_, T2(0));
+    T2 *out  = imOut.getPixels();
+    fill<T2>(imOut, T2(0));
 
     size_t S[3];
-    _im_.getSize(S);
+    imIn.getSize(S);
     size_t nbrPixelsInSlice = S[0] * S[1];
     size_t nbrPixels        = nbrPixelsInSlice * S[2];
     StrElt se               = _se_;
@@ -467,15 +467,15 @@ namespace smil
    *
    */
   template <class T>
-  RES_T pruneSKIZ(const Image<T> &_im_, Image<T> &_out_, const StrElt &_se_)
+  RES_T pruneSKIZ(const Image<T> &imIn, Image<T> &imOut, const StrElt &_se_)
   {
-    T *in  = _im_.getPixels();
-    T *out = _out_.getPixels();
+    T *in  = imIn.getPixels();
+    T *out = imOut.getPixels();
 
-    fill<T>(_out_, T(0));
+    fill<T>(imOut, T(0));
 
     size_t S[3];
-    _im_.getSize(S);
+    imIn.getSize(S);
     size_t nbrPixelsInSlice = S[0] * S[1];
     size_t nbrPixels        = nbrPixelsInSlice * S[2];
     StrElt se               = _se_;
@@ -506,7 +506,9 @@ namespace smil
               }
             }
           }
-          ENDForEachNeighborOf if (!up || !down)
+          ENDForEachNeighborOf 
+
+          if (!up || !down)
           {
             out[p.o] = in[p.o];
           }
@@ -554,6 +556,7 @@ namespace smil
 
     return RES_OK;
   }
+
   /** @} */
 } // namespace smil
 

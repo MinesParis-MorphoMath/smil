@@ -47,7 +47,7 @@ namespace smil
     class BaseImage;
 
    /**
-    * @ingroup Core
+    * @addtogroup Core
     * @{
     */
     

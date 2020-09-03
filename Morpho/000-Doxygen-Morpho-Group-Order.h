@@ -55,9 +55,9 @@
  * @defgroup HitOrMiss            Hit-or-Miss Transform
  * @ingroup Morpho
  */
- 
+
 /**
- * @defgroup Extrema              Regional Minima and Maxima
+ * @defgroup Skeleton             Skeletons
  * @ingroup Morpho
  */
  
@@ -65,22 +65,23 @@
  * @defgroup Filters              Morphological Filters
  * @ingroup Morpho
  */
- 
+
+/**
+ * @defgroup Residues             Morphological Residues
+ * @ingroup Morpho
+ */
+
+/**
+ * @defgroup Extrema              Regional Minima and Maxima
+ * @ingroup Morpho
+ */
+
 /**
  * @defgroup Labelling            Labelling
  * @ingroup Morpho
  */
  
-/**
- * @defgroup Residues             Morphological Residues
- * @ingroup Morpho
- */
- 
-/**
- * @defgroup Skeleton             Skeleton
- * @ingroup Morpho
- */
- 
+
 /**
  * @defgroup Watershed            Watershed Segmentation
  * @ingroup Morpho

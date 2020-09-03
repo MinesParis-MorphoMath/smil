@@ -38,14 +38,33 @@ namespace smil
   /**
    * @ingroup Morpho
    * @defgroup Skeleton Skeleton
+   *
+   * @details
+   * @b Skeletons result from sequential iterations of thinnings with specific
+   * composite SEs that generate a medial axis of the input set. This medial
+   * axis are called skeleton. It consists of a compact representation which
+   * preserves only those points of a set whose minimum distance to the
+   * boundary of the set reaches at least two distinct boundary points.
+   *
+   * @see
+   *  - soillebook{Chap. 5}
+   *
    * @{
    */
 
   /**
-   * Skiz by influence zones
+   * skiz() - Skeleton by Influence Zones @txtbold{(Skiz)}
    *
-   * Thinning of the background with a HMT_sL followed by a thinning with a
-   * HMT_hM.
+   * Thinning of the background with a Composite Structuring Element
+   * @b HMT_sL(6) followed by a thinning with a Composite Structuring Element
+   * @b HMT_hM(6).
+   *
+   * @see
+   * - @soillebook{p. 170}
+   * - @b HMT_sL() and @b HMT_hM() in CompStrEltList
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
    */
   template <class T> RES_T skiz(const Image<T> &imIn, Image<T> &imOut)
   {
@@ -62,7 +81,11 @@ namespace smil
   }
 
   /**
-   * Morphological skeleton
+   * skeleton() - Morphological skeleton
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T skeleton(const Image<T> &imIn, Image<T> &imOut,
@@ -95,6 +118,10 @@ namespace smil
 
   /**
    * Extinction values
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T1, class T2>
   RES_T extinctionValues(const Image<T1> &imIn, Image<T2> &imOut,
@@ -131,8 +158,11 @@ namespace smil
   /**
    * Zhang 2D skeleton
    *
-   * Implementation corresponding to the algorithm described in 
+   * Implementation corresponding to the algorithm described in
    * @cite khanyile_comparative_2011.
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
    */
   template <class T> RES_T zhangSkeleton(const Image<T> &imIn, Image<T> &imOut)
   {
@@ -349,6 +379,247 @@ namespace smil
     } while (ptsDeleted); // do
 
     copy(tmpIm, 1, 1, imOut);
+
+    return RES_OK;
+  }
+
+  /*
+   *
+   * #####   #####   #    #  #    #  ######
+   * #    #  #    #  #    #  ##   #  #
+   * #    #  #    #  #    #  # #  #  #####
+   * #####   #####   #    #  #  # #  #
+   * #       #   #   #    #  #   ##  #
+   * #       #    #   ####   #    #  ######
+   *
+   */
+
+  struct OffsetStruct {
+    off_t x, y, z;
+    off_t o;
+    off_t w, h, d;
+
+    OffsetStruct(size_t S[3])
+    {
+      w = S[0];
+      h = S[1];
+      d = S[2];
+      x = y = z = o = 0;
+    }
+
+    OffsetStruct(const OffsetStruct &offset)
+    {
+      w = offset.w;
+      h = offset.h;
+      d = offset.d;
+      x = offset.x;
+      y = offset.y;
+      z = offset.z;
+      o = offset.o;
+    }
+
+    OffsetStruct(size_t w, size_t h, size_t d = 1)
+    {
+      this->w = w;
+      this->h = h;
+      this->d = d;
+      x = y = z = o = 0;
+    }
+
+    void setCoords(off_t x, off_t y, off_t z = 0)
+    {
+      this->x = x;
+      this->y = y;
+      this->z = z;
+      this->o = x + y * w + z * w * h;
+    }
+
+    void setOffset(off_t offset)
+    {
+      this->o = offset;
+
+      this->x = offset % w;
+      offset  = (offset - this->x) / w;
+      this->y = offset % h;
+      this->z = (offset - this->y) / h;
+    }
+
+    IntPoint getPoint()
+    {
+      IntPoint pt(x, y, z);
+      return pt;
+    }
+
+    off_t getOffset()
+    {
+      return o;
+    }
+
+    void shift(off_t dx, off_t dy, off_t dz)
+    {
+      x += dx;
+      y += dy;
+      z += dz;
+      this->o = x + y * w + z * w * h;
+    }
+
+    void shift(IntPoint p)
+    {
+      x += p.x;
+      y += p.y;
+      z += p.z;
+      this->o = x + y * w + z * w * h;
+    }
+
+    bool pointInWindow(off_t x, off_t y, off_t z)
+    {
+      return (x >= 0 && x < w && y >= 0 && y < h && z >= 0 && z < d);
+    }
+
+    bool inImage()
+    {
+      return (x >= 0 && x < w && y >= 0 && y < h && z >= 0 && z < d);
+    }
+  };
+
+  /**
+   * pruneSkiz() -
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
+   *
+   */
+  template <class T>
+  RES_T pruneSkiz(const Image<T> &imIn, Image<T> &imOut,
+                  const StrElt &se = DEFAULT_SE)
+  {
+    T *in  = imIn.getPixels();
+    T *out = imOut.getPixels();
+
+    fill<T>(imOut, T(0));
+
+    size_t S[3];
+    imIn.getSize(S);
+
+    size_t nbrPixels   = S[0] * S[1] * S[2];
+    size_t sePtsNumber = se.points.size();
+
+#ifdef USE_OPEN_MP
+    UINT nthreads = Core::getInstance()->getNumberOfThreads();
+#pragma omp parallel num_threads(nthreads)
+#endif
+    {
+#ifdef USE_OPEN_MP
+#pragma omp for
+#endif
+      for (size_t i = 0; i < nbrPixels; ++i) {
+        OffsetStruct pt(S);
+        pt.setOffset(i);
+
+        bool up   = false;
+        bool down = false;
+        if (in[pt.o] > 0 && in[pt.o] != ImDtTypes<T>::max()) {
+          for (UINT pts = 0; pts < sePtsNumber; ++pts) {
+            OffsetStruct qt(S);
+            qt = pt;
+            qt.shift(se.points[pts]);
+
+            if (qt.inImage()) {
+              if (in[qt.o] != ImDtTypes<T>::max()) {
+                if (in[qt.o] >= in[pt.o] + 1) {
+                  up = true;
+                }
+                if (in[qt.o] <= in[pt.o] - 1) {
+                  down = true;
+                }
+              }
+            }
+          }
+
+          if (!up || !down) {
+            out[pt.o] = in[pt.o];
+          }
+        }
+      }
+    }
+
+    return RES_OK;
+  }
+
+  template <class T>
+  RES_T pruneSkizOld(const Image<T> &imIn, Image<T> &imOut, const StrElt &se)
+  {
+    T *in  = imIn.getPixels();
+    T *out = imOut.getPixels();
+
+    struct index {
+      size_t x;
+      size_t y;
+      size_t z;
+      size_t o;
+      index(){};
+    };
+
+    OffsetStruct idx;
+
+    fill<T>(imOut, T(0));
+
+    size_t S[3];
+    imIn.getSize(S);
+    size_t nbrPixelsInSlice = S[0] * S[1];
+    size_t nbrPixels        = nbrPixelsInSlice * S[2];
+    // StrElt se               = se;
+    UINT sePtsNumber = se.points.size();
+
+#ifdef USE_OPEN_MP
+    UINT nthreads = Core::getInstance()->getNumberOfThreads();
+#pragma omp parallel num_threads(nthreads)
+#endif
+    {
+      index p, q;
+      UINT pts;
+      bool up, down;
+
+#ifdef USE_OPEN_MP
+#pragma omp for
+#endif
+      for (size_t i = 0; i < nbrPixels; ++i) {
+        p.o = i;
+        p.z = p.o / nbrPixelsInSlice;
+        p.y = (p.o % nbrPixelsInSlice) / S[0];
+        p.x = p.o % S[0];
+
+        up   = false;
+        down = false;
+        if (in[p.o] > 0 && in[p.o] != ImDtTypes<T>::max()) {
+          p.z = p.o / nbrPixelsInSlice;
+          p.y = (p.o % nbrPixelsInSlice) / S[0];
+          p.x = p.o % S[0];
+          for (pts = 0; pts < sePtsNumber; ++pts) {
+            q.x = p.x + se.points[pts].x;
+            q.y = p.y + se.points[pts].y;
+            q.z = p.z + se.points[pts].z;
+            if (q.x < S[0] && q.y < S[1] && q.z < S[2]) {
+              q.o = q.x + q.y * S[0] + q.z * nbrPixelsInSlice;
+
+              if (in[q.o] != ImDtTypes<T>::max()) {
+                if (in[q.o] >= in[p.o] + 1) {
+                  up = true;
+                }
+                if (in[q.o] <= in[p.o] - 1) {
+                  down = true;
+                }
+              }
+            }
+          }
+
+          if (!up || !down) {
+            out[p.o] = in[p.o];
+          }
+        }
+      }
+    }
 
     return RES_OK;
   }

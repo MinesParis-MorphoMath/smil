@@ -30,9 +30,9 @@ RES_T rasterLabels (const Image<UINT8> &_im_, Image<UINT8>& _out_);
 RES_T rasterLabels (const Image<UINT16> &_im_, Image<UINT16>& _out_);
 RES_T rasterLabels (const Image<UINT32> &_im_, Image<UINT32>& _out_);
 
-RES_T pruneSKIZ (const Image<UINT8> &_im_, Image<UINT8> &_out_, const StrElt &_se_);
-RES_T pruneSKIZ (const Image<UINT16> &_im_, Image<UINT16> &_out_, const StrElt &_se_);
-RES_T pruneSKIZ (const Image<UINT32> &_im_, Image<UINT32> &_out_, const StrElt &_se_);
+// RES_T pruneSKIZ (const Image<UINT8> &_im_, Image<UINT8> &_out_, const StrElt &_se_);
+// RES_T pruneSKIZ (const Image<UINT16> &_im_, Image<UINT16> &_out_, const StrElt &_se_);
+// RES_T pruneSKIZ (const Image<UINT32> &_im_, Image<UINT32> &_out_, const StrElt &_se_);
 
 RES_T findTriplePoints (const Image<UINT16> &_im_, const Image<UINT8> &_skiz_, Image<UINT8> &_out_, const UINT& val, const StrElt &_se_);
 RES_T findTriplePoints (const Image<UINT16> &_im_, const Image<UINT16> &_skiz_, Image<UINT16> &_out_, const UINT& val, const StrElt &_se_);

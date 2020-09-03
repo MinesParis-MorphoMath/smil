@@ -49,7 +49,7 @@ namespace smil
   *
   * @param[in] (p1x, p1y), (p2x, p2y) : end points
   * @param[in] xMax, yMax : maximum values of X and y
-  * @return vector of points with the intermediate points
+  * @return vector with the intermediate points between extreme points.
   * 
   * @see 
   *  - <a href="https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm">Bresenham's Line algorithm</a>
@@ -200,7 +200,7 @@ namespace smil
   * using the Bresenham Line Draw Algorithm
   *
   * @param[in] (p1x, p1y), (p2x, p2y) : end points
-  * @return vector of points with the intermediate points
+  * @return vector with intermediate points between extreme points
   * 
   * @see 
   *  - <a href="https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm">Bresenham's Line algorithm</a>

@@ -203,5 +203,6 @@ namespace smil
 #include "private/DTranspose.hpp"
 #include "private/DFlip.hpp"
 #include "private/DRotate.hpp"
+#include "private/DResize.hpp"
 
 #endif // __IM_TRANSFORMATIONS_H__

@@ -578,8 +578,13 @@ namespace smil
   /**
    * lambdaLabel() - Lambda-flat zones labelization
    *
+   * @details 
+   * In this mode of labeling, two neighbour pixels have the same label if 
+   * there are a path between them at which the value difference from pixel to
+   * pixel doesn't exceed @b lambdaVal
+   *
    * @param[in] imIn : input image
-   * @param[in] lambdaVal : lambda expression
+   * @param[in] lambdaVal : lambda value
    * @param[out] imOut : output image
    * @param[in] se : structuring element
    * @returns the number of labels (or 0 if error)
@@ -887,7 +892,7 @@ namespace smil
   /**
    * neighbors() - Neighbors count
    *
-   * Return for each pixel the number of different values in the neighborhoud.
+   * Return for each pixel the number of different values in the neighborhood.
    *
    * Usefull in order to find interfaces or multiple points between basins (see
    * basins())
