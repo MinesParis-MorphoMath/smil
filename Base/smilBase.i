@@ -48,6 +48,7 @@ SMIL_MODULE(smilBase)
 #include "DMeasures.hpp"
 #include "DImageMatrix.hpp"
 #include "DBlobMeasures.hpp"
+#include "DBlobOperations.hpp"
 
 #include <stdexcept>
 
@@ -250,6 +251,9 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(measBarycenters);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measBoundBoxes);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measImageBlobsMoments);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measBlobsEntropy);
+
+%include "DBlobOperations.hpp"
+TEMPLATE_WRAP_FUNC_2T_CROSS(imageAreaThreshold);
 
 %include "DImageMatrix.hpp"
 TEMPLATE_WRAP_FUNC(matMul);

@@ -51,14 +51,17 @@ namespace smil
   {
     size_t S[3];
     imIn.getSize(S);
-
     size_t s = S[0] * S[1] * S[2];
 
     T *out = imOut.getPixels();
     T *im  = imIn.getPixels();
 
-    UINT SMIL_UNUSED nthreads = Core::getInstance()->getNumberOfThreads();
+    ImageFreezer freeze(imOut);
+
+#ifdef USE_OPEN_MP
+    UINT nthreads = Core::getInstance()->getNumberOfThreads();
 #pragma omp parallel for num_threads(nthreads)
+#endif
     for (size_t p = 0; p < s; ++p) {
       out[p] = modes[im[p]];
     }
@@ -74,8 +77,8 @@ namespace smil
   {
     map<T, double> m = measAreas(imIn, false);
     vector<T> v(maxVal<T>(imIn) + 1, 0);
-    for (typename map<T, double>::iterator it = m.begin(); it != m.end();
-         ++it) {
+    typename map<T, double>::iterator it;
+    for (it = m.begin(); it != m.end(); ++it) {
       if (it->second > threshold)
         v[it->first] = it->first;
       else
@@ -105,8 +108,10 @@ namespace smil
     T *im  = imIn.getPixels();
     T *tmp = _tmp_.getPixels();
 
+#ifdef USE_OPEN_MP
     UINT SMIL_UNUSED nthreads = Core::getInstance()->getNumberOfThreads();
-    //        #pragma omp parallel for num_threads(nthreads)
+    // #pragma omp parallel for num_threads(nthreads)
+#endif
     for (size_t p = 0; p < s; ++p) {
       v[im[p]] = (v[im[p]] < tmp[p]) ? tmp[p] : v[im[p]];
     }
@@ -441,7 +446,8 @@ namespace smil
           c.push(p.o);
         }
       }
-      ENDForEachPixel while (!c.empty())
+      ENDForEachPixel;
+      while (!c.empty())
       {
         p.o = c.front();
         c.pop();
@@ -455,7 +461,7 @@ namespace smil
             triple[q.o] = ImDtTypes<T>::max();
           }
         }
-        ENDForEachNeighborOf
+        ENDForEachNeighborOf;
       }
     }
 

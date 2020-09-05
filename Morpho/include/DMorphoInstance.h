@@ -36,10 +36,16 @@
 namespace smil
 {
   /**
+   * @defgroup UniqueInstance Morpho Instance - Default Structuring Element
    * @ingroup StrElt
+   *
+   * @brief    Instance with default Structuring Element
+   * @{
    */
-  /** @{*/
 
+  /** Morpho
+  *
+  */
   class Morpho : public UniqueInstance<Morpho>
   {
     /** @cond */

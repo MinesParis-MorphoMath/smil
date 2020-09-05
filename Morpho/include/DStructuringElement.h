@@ -40,9 +40,10 @@ namespace smil
   /**
    * @addtogroup StrElt
    *
-   * @details My structuring element...
+   * @details Morphological Structuring Elements Definitions
+   *
+   * @{
    */
-  /** @{ */
   enum seType {
     SE_Generic,
     SE_Hex,

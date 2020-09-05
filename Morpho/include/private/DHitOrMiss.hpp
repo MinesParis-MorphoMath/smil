@@ -51,9 +51,9 @@ namespace smil
    * the second structuring element misses it completely.
    *
    * @see 
+   * - @soillebook{p. 139}
    * - <a href="https://en.wikipedia.org/wiki/Hit-or-miss_transform">
    * Hit-or-mis Transform</a>
-   * - @soillebook{p. 139}
    *
    * @{
    */

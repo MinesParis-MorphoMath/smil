@@ -29,16 +29,18 @@
 
 SMIL_MODULE(smil_)
 
-
 %feature("autodoc", "1");
-
 
 #ifndef SWIGJAVA
 %init
 %{
-    std::cout << "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}" << std::endl;
-    std::cout << "Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES" << std::endl;
-    std::cout << "Copyright (c) 2017-2020, CMM - Centre de Morphologie Mathematique" << std::endl;
+    std::cout << "SMIL (Simple Morphological Image Library) ${SMIL_VERSION}" << 
+        std::endl;
+    std::cout << "Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES" << 
+        std::endl;
+    std::cout << 
+        "Copyright (c) 2017-2020, CMM - Centre de Morphologie Mathematique" << 
+        std::endl;
     std::cout << "All rights reserved." << std::endl;
     std::cout << std::endl;
 %}
@@ -51,7 +53,14 @@ ${SWIG_INCLUDE_DEFINITIONS}
 
 
 
-
+// 
+// #####    #   #   #####  #    #   ####   #    #
+// #    #    # #      #    #    #  #    #  ##   #
+// #    #     #       #    ######  #    #  # #  #
+// #####      #       #    #    #  #    #  #  # #
+// #          #       #    #    #  #    #  #   ##
+// #          #       #    #    #   ####   #    #
+// 
 #ifdef SWIGPYTHON
 
 %pythoncode %{
@@ -169,16 +178,29 @@ core.onBaseImageDestroyed.connect(_delImageSlot)
       
 def Image(*args):
     """
-    * Image(): create an empty ${DEFAULT_IMAGE_TYPE} image.
-    * Image(width, height [, depth]): create a ${DEFAULT_IMAGE_TYPE} image with size 'width'x'height'[x'depth'].
-    * Image(im): create an image with same type and same size as 'im'.
-    * Image(im, width, height [, depth]): create an image with same type 'im' and with size 'width'x'height'[x'depth'].
-    * Image("TYPE"): create an empty image with the desired type.
+    * Image(): 
+      Create an empty ${DEFAULT_IMAGE_TYPE} image.
+    * Image(width, height [, depth]):
+      Create a ${DEFAULT_IMAGE_TYPE} image with size 'width'x'height'[x'depth'].
+    * Image(im):
+      Create an image with same type and same size as 'im'.
+    * Image(im, width, height [, depth]):
+      Create an image with same type 'im' and with size 
+        'width x height [x depth]'.
+    * Image("TYPE"):
+      Create an empty image with the desired type.
       The available image types are: ${DATA_TYPES_STR}
-    * Image("TYPE", width, height [, depth]): will create an image with the desired type and dimensions.
-    * Image(im, "TYPE"): create an image with type 'TYPE' and with same size as 'im'.
-    * Image("fileName"): create an image and load the file "fileName".
-    * Image("fileName", "TYPE"): create an image with type 'TYPE' and load the file "fileName".
+    * Image("TYPE", width, height [, depth]):
+      Will create an image with the desired type and dimensions.
+    * Image(im, "TYPE"):
+      Create an image with type 'TYPE' and with same size as 'im'.
+    * Image("fileName"):
+      Create an image and load the file "fileName".
+      OBS : "filename" can be an URL if Smil was compiled and 
+      linked against curl library.
+    * Image("fileName", "TYPE"):
+      Create an image with type 'TYPE' and load the file "fileName".
+      
     """
 
     argNbr = len(args)
@@ -252,13 +274,17 @@ def Image(*args):
 def Images(nbr, *args, **keywords):
     return [ Image(*args) for i in range(nbr) ]
 
+#
+# Benchmarking Smil tests (need to be compiled with TEST option set to ON)
+#
 def bench(func, *args, **keywords):
     """
     bench(function, [func_args], [options]):
-    Execute bench. Return the mean execution time (in msecs) for one function execution.
+      Execute bench. Return the mean execution time (in msecs) for one 
+      function execution.
     Available options:
-    * nbr_runs: number of times the function will be executed (default is 1E3)
-    * print_res: print results (default is True)
+      * nbr_runs: number of times the function will be executed (default is 1E3)
+      * print_res: print results (default is True)
     """
     #default values
     nbr_runs = 1E3
@@ -424,8 +450,18 @@ class linkManager:
     def __del__(self):
       self.clear()
 
-# dictionnary of renamed functions
+#
+# Some shortcuts
+#
+def getDefaultSE():
+  return Morpho.getDefaultSE()
 
+def setDefaultSE(*args):
+  Morpho.setDefaultSE(*args)
+
+#
+# dictionnary of renamed functions
+#
 def GeoDist(*args):
   """
   Function renamed to follow naming style. Better use distanceGeodesic

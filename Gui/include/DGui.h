@@ -32,7 +32,7 @@
 #define _D_GUI_H
 
 /**
- * XXXdefgroup Gui Gui and Image Display
+ * @addtogroup Gui
  */
 /**@{*/
 

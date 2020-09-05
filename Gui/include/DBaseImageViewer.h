@@ -36,7 +36,7 @@
 namespace smil
 {
     /**
-    * @ingroup Core
+    * @ingroup Gui
     */
     /**@{*/
 

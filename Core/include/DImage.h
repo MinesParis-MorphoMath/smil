@@ -31,7 +31,7 @@
 #define _DIMAGE_H
 
 /**
- * @ingroup Core
+ * @addtogroup CoreImage
  * @{
  */
 

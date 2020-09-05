@@ -298,7 +298,7 @@ namespace smil
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
    *
-   * @return a map of pairs <b><label, Vector<double>></b> with the entropy of
+   * @return a map of pairs <b><label, double></b> with the entropy of
    * the image in each blob.
    *
    * @see measImageEntropy()

@@ -17,6 +17,9 @@
  * @defgroup BlobMesures  Mesures on blobs
  * @ingroup  Base
 
+ * @defgroup BlobOps      Operations using blobs
+ * @ingroup  Base
+
  * @defgroup Convolution  Convolution
  * @ingroup  Base
 

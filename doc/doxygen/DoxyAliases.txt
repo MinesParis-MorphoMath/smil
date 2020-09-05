@@ -53,14 +53,16 @@ ALIASES += devdoc="\if DOXYGEN_DEVEL_DOC"
 ALIASES += enddevdoc="\endif"
 
 
-ALIASES += soillebook="\cite Soille_2003 P. Soille, 2003"
-ALIASES += soillebook{1}="\cite Soille_2003 P. Soille, 2003, \1"
+ALIASES += soillebook="\cite Soille_2003 P. Soille, Morphological %Image Analysis, 2003"
+ALIASES += soillebook{1}="\cite Soille_2003 P. Soille, Morphological %Image Analysis, 2003, \1"
 
-ALIASES += serra82book="\cite Serra_1982 Jean Serra, 1982"
-ALIASES += serra82book{1}="\cite Serra_1982 Jean Serra, 1982, \1"
+ALIASES += serra82book="\cite Serra_1982 Jean Serra, %Image Analysis and Mathematical Morphology - Vol. 1, 1982"
+ALIASES += serra82book{1}="\cite Serra_1982 Jean Serra, %Image Analysis and Mathematical Morphology - Vol. 1, 1982, \1"
 
-ALIASES += serra88book="\cite Serra_1988 Jean Serra, 1988"
-ALIASES += serra88book{1}="\cite Serra_1988 Jean Serra, 1988, \1"
+ALIASES += serra88book="\cite Serra_1988 Jean Serra, %Image Analysis and Mathematical Morphology - Vol. 2, 1988"
+ALIASES += serra88book{1}="\cite Serra_1988 Jean Serra, %Image Analysis and Mathematical Morphology - Vol. 2, 1988, \1"
+
+ALIASES += wikipedia{2}="<a href=https://en.wikipedia.org/wiki/\1>\2</a>"
 
 ALIASES += txtbold{1}="<b>\1</b>"
 ALIASES += txttype{1}="<code>\1</code>"

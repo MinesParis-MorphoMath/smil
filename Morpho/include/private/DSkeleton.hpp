@@ -47,7 +47,7 @@ namespace smil
    * boundary of the set reaches at least two distinct boundary points.
    *
    * @see
-   *  - soillebook{Chap. 5}
+   *  - @soillebook{Chap. 5}
    *
    * @{
    */
@@ -111,13 +111,13 @@ namespace smil
       sup(imOut, imTemp, imTemp);
       idempt = equ(imTemp, imOut);
       copy(imTemp, imOut);
-
     } while (!idempt);
+
     return RES_OK;
   }
 
   /**
-   * Extinction values
+   * extinctionValues() - Extinction values
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -140,9 +140,7 @@ namespace smil
     fill(imOut, ImDtTypes<T2>::min());
 
     T2 r = 1;
-
     bool idempt = false;
-
     do {
       erode(imEro, imEro, se);
       open(imEro, imTemp1, se);
@@ -150,13 +148,13 @@ namespace smil
       test(imTemp1, r++, imOut, imTemp2);
       idempt = equ(imTemp2, imOut);
       copy(imTemp2, imOut);
-
     } while (!idempt);
+
     return RES_OK;
   }
 
   /**
-   * Zhang 2D skeleton
+   * zhangSkeleton() - Zhang 2D skeleton
    *
    * Implementation corresponding to the algorithm described in
    * @cite khanyile_comparative_2011.
@@ -176,7 +174,8 @@ namespace smil
     fill(tmpIm, ImDtTypes<T>::min());
     copy(imIn, tmpIm, 1, 1);
     copy(imIn, modifiedIm, 1, 1);
-    write(tmpIm, "tmpIm.png");
+    // write(tmpIm, "tmpIm.png");
+
     typedef typename Image<T>::sliceType sliceType;
     typedef typename Image<T>::lineType lineType;
 
@@ -394,94 +393,6 @@ namespace smil
    *
    */
 
-  struct OffsetStruct {
-    off_t x, y, z;
-    off_t o;
-    off_t w, h, d;
-
-    OffsetStruct(size_t S[3])
-    {
-      w = S[0];
-      h = S[1];
-      d = S[2];
-      x = y = z = o = 0;
-    }
-
-    OffsetStruct(const OffsetStruct &offset)
-    {
-      w = offset.w;
-      h = offset.h;
-      d = offset.d;
-      x = offset.x;
-      y = offset.y;
-      z = offset.z;
-      o = offset.o;
-    }
-
-    OffsetStruct(size_t w, size_t h, size_t d = 1)
-    {
-      this->w = w;
-      this->h = h;
-      this->d = d;
-      x = y = z = o = 0;
-    }
-
-    void setCoords(off_t x, off_t y, off_t z = 0)
-    {
-      this->x = x;
-      this->y = y;
-      this->z = z;
-      this->o = x + y * w + z * w * h;
-    }
-
-    void setOffset(off_t offset)
-    {
-      this->o = offset;
-
-      this->x = offset % w;
-      offset  = (offset - this->x) / w;
-      this->y = offset % h;
-      this->z = (offset - this->y) / h;
-    }
-
-    IntPoint getPoint()
-    {
-      IntPoint pt(x, y, z);
-      return pt;
-    }
-
-    off_t getOffset()
-    {
-      return o;
-    }
-
-    void shift(off_t dx, off_t dy, off_t dz)
-    {
-      x += dx;
-      y += dy;
-      z += dz;
-      this->o = x + y * w + z * w * h;
-    }
-
-    void shift(IntPoint p)
-    {
-      x += p.x;
-      y += p.y;
-      z += p.z;
-      this->o = x + y * w + z * w * h;
-    }
-
-    bool pointInWindow(off_t x, off_t y, off_t z)
-    {
-      return (x >= 0 && x < w && y >= 0 && y < h && z >= 0 && z < d);
-    }
-
-    bool inImage()
-    {
-      return (x >= 0 && x < w && y >= 0 && y < h && z >= 0 && z < d);
-    }
-  };
-
   /**
    * pruneSkiz() -
    *
@@ -494,6 +405,9 @@ namespace smil
   RES_T pruneSkiz(const Image<T> &imIn, Image<T> &imOut,
                   const StrElt &se = DEFAULT_SE)
   {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
     T *in  = imIn.getPixels();
     T *out = imOut.getPixels();
 
@@ -514,14 +428,14 @@ namespace smil
 #pragma omp for
 #endif
       for (size_t i = 0; i < nbrPixels; ++i) {
-        OffsetStruct pt(S);
+        OffsetPoint pt(S);
         pt.setOffset(i);
 
         bool up   = false;
         bool down = false;
         if (in[pt.o] > 0 && in[pt.o] != ImDtTypes<T>::max()) {
           for (UINT pts = 0; pts < sePtsNumber; ++pts) {
-            OffsetStruct qt(S);
+            OffsetPoint qt(S);
             qt = pt;
             qt.shift(se.points[pts]);
 
@@ -539,83 +453,6 @@ namespace smil
 
           if (!up || !down) {
             out[pt.o] = in[pt.o];
-          }
-        }
-      }
-    }
-
-    return RES_OK;
-  }
-
-  template <class T>
-  RES_T pruneSkizOld(const Image<T> &imIn, Image<T> &imOut, const StrElt &se)
-  {
-    T *in  = imIn.getPixels();
-    T *out = imOut.getPixels();
-
-    struct index {
-      size_t x;
-      size_t y;
-      size_t z;
-      size_t o;
-      index(){};
-    };
-
-    OffsetStruct idx;
-
-    fill<T>(imOut, T(0));
-
-    size_t S[3];
-    imIn.getSize(S);
-    size_t nbrPixelsInSlice = S[0] * S[1];
-    size_t nbrPixels        = nbrPixelsInSlice * S[2];
-    // StrElt se               = se;
-    UINT sePtsNumber = se.points.size();
-
-#ifdef USE_OPEN_MP
-    UINT nthreads = Core::getInstance()->getNumberOfThreads();
-#pragma omp parallel num_threads(nthreads)
-#endif
-    {
-      index p, q;
-      UINT pts;
-      bool up, down;
-
-#ifdef USE_OPEN_MP
-#pragma omp for
-#endif
-      for (size_t i = 0; i < nbrPixels; ++i) {
-        p.o = i;
-        p.z = p.o / nbrPixelsInSlice;
-        p.y = (p.o % nbrPixelsInSlice) / S[0];
-        p.x = p.o % S[0];
-
-        up   = false;
-        down = false;
-        if (in[p.o] > 0 && in[p.o] != ImDtTypes<T>::max()) {
-          p.z = p.o / nbrPixelsInSlice;
-          p.y = (p.o % nbrPixelsInSlice) / S[0];
-          p.x = p.o % S[0];
-          for (pts = 0; pts < sePtsNumber; ++pts) {
-            q.x = p.x + se.points[pts].x;
-            q.y = p.y + se.points[pts].y;
-            q.z = p.z + se.points[pts].z;
-            if (q.x < S[0] && q.y < S[1] && q.z < S[2]) {
-              q.o = q.x + q.y * S[0] + q.z * nbrPixelsInSlice;
-
-              if (in[q.o] != ImDtTypes<T>::max()) {
-                if (in[q.o] >= in[p.o] + 1) {
-                  up = true;
-                }
-                if (in[q.o] <= in[p.o] - 1) {
-                  down = true;
-                }
-              }
-            }
-          }
-
-          if (!up || !down) {
-            out[p.o] = in[p.o];
           }
         }
       }

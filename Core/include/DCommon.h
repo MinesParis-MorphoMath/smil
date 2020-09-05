@@ -44,10 +44,11 @@ using namespace std;
 
 namespace smil
 {
-  /*
-  * @ingroup  CoreExtraTypes
-  * @brief   Some extra useful data types
-  * @details Some extra useful data types
+  /**
+  * @addtogroup  CoreExtraTypes
+  *
+  * @brief   Some useful data types when handling images
+  *
   * @{
   */
   
@@ -122,18 +123,33 @@ namespace smil
     T x;
     T y;
     T z;
+
+    /** Contructor - an empty point
+    */
     Point() : x(0), y(0), z(0)
     {
     }
+
+    /** Constructor from another point
+    */
     Point(const Point &pt) : x(pt.x), y(pt.y), z(pt.z)
     {
     }
+
+    /** @b 3D Point Constructor
+    */
     Point(T _x, T _y, T _z) : x(_x), y(_y), z(_z)
     {
     }
+
+    /** @b 2D Point Constructor
+    */
     Point(T _x, T _y) : x(_x), y(_y), z(0)
     {
     }
+
+    /** operator== - comparison
+    */
     bool operator==(const Point &p2)
     {
       return (x == p2.x && y == p2.y && z == p2.z);
@@ -141,38 +157,59 @@ namespace smil
   };
 
   /** DoublePoint
+  *
+  * Point coordinates defined as @b double values
   */
   typedef Point<double> DoublePoint;
+
   /** IntPoint
+  *
+  * Point coordinates defined as @b int values
   */
   typedef Point<int> IntPoint;
+
   /** UintPoint
+  *
+  * Point coordinates defined as @b UINT (unsigned int) values
   */
   typedef Point<UINT> UintPoint;
 
   /** Vector_double
   *
+  * A vector of @b double values
   */
   typedef vector<double> Vector_double;
+
   /** Matrix_double
   *
+  * A Matrix of @b double values implemented as a vector of vectors
   */
   typedef vector<Vector_double> Matrix_double;
+
   /** Vector_UINT
   *
+  * A vector of @b UINT (unsigned int) values
   */
   typedef vector<UINT> Vector_UINT;
+
   /** Vector_size_t
-  * 
+  *
+  * A vector of @b size_t values (natural - non negative values)
   */
   typedef vector<size_t> Vector_size_t;
+
+  /** Vector_off_t
+  *
+  * A vector of @b off_t values (integer - positive and negative values)
+  */
+  typedef vector<off_t> Vector_off_t;
 
   /**
    * Rectangle
    */
   struct Rectangle {
     UINT x0, y0;
-    UINT xSzie, ySize;
+    UINT xSize, ySize;
   };
 
   /** Box
@@ -180,10 +217,16 @@ namespace smil
   struct Box {
     UINT x0, y0, z0;
     UINT x1, y1, z1;
+
+    /** Box constructor - build an empty Box structure
+    */
     Box()
     {
       x0 = x1 = y0 = y1 = z0 = z1 = 0;
     }
+
+    /** Box constructor - build a Box copying data from another Box
+    */
     Box(const Box &rhs)
     {
       x0 = rhs.x0;
@@ -193,19 +236,170 @@ namespace smil
       z0 = rhs.z0;
       z1 = rhs.z1;
     }
+    
+    /** getWidth() - Get the box width
+    * @returns box width
+    */
     UINT getWidth() const
     {
       return x1 - x0 + 1;
     }
+
+    /** getHeight() - Get the box width
+    * @returns box height
+    */
     UINT getHeight() const
     {
       return y1 - y0 + 1;
     }
+
+    /** getDepth() - Get the box depth
+    * @returns box depth
+    */
     UINT getDepth() const
     {
       return z1 - z0 + 1;
     }
   };
+
+  /** OffsetPoint 
+  *
+  * A structure with offset and point coordinates and some methods to handle
+  * them.
+  *
+  * Shall be initialized with the dimensions of the image, in order to be able
+  * to convert from @b Point to @b Offset and vice-versa, and to check if a
+  * point is inside the image bounds.
+  */
+  struct OffsetPoint {
+    off_t x, y, z;
+    off_t o;
+    off_t w, h, d;
+
+    /** OffsetPoint - constructor
+    * @details Build the data structure based on the image bounds
+    * @param[in] Sz : vector with the three image bounds
+    */
+    OffsetPoint(size_t Sz[3])
+    {
+      w = Sz[0];
+      h = Sz[1];
+      d = Sz[2];
+      x = y = z = o = 0;
+    }
+
+    /** OffsetPoint - constructor
+    *
+    * @details Build the data structure copying data from another OffsetPoint
+    * data
+    * @param[in] offset :
+    */
+    OffsetPoint(const OffsetPoint &offset)
+    {
+      w = offset.w;
+      h = offset.h;
+      d = offset.d;
+      x = offset.x;
+      y = offset.y;
+      z = offset.z;
+      o = offset.o;
+    }
+
+    /** OffsetPoint - constructor
+    *
+    * @param[in] w, h, d : image bounds
+    */
+    OffsetPoint(size_t w, size_t h, size_t d = 1)
+    {
+      this->w = w;
+      this->h = h;
+      this->d = d;
+      x = y = z = o = 0;
+    }
+
+    /** setCoords() - set coordinates and adapt offset
+    * @param[in] x, y, z :
+    */
+    void setCoords(off_t x, off_t y, off_t z = 0)
+    {
+      this->x = x;
+      this->y = y;
+      this->z = z;
+      this->o = x + y * w + z * w * h;
+    }
+
+    /** setOffset() - set offset and adapt coordinates
+    * @param[in] offset :
+    */
+    void setOffset(off_t offset)
+    {
+      this->o = offset;
+
+      this->x = offset % w;
+      offset  = (offset - this->x) / w;
+      this->y = offset % h;
+      this->z = (offset - this->y) / h;
+    }
+
+    /** getPoint() - get coordinates as a point
+    * @returns The coordinates of the structure as a point
+    */
+    IntPoint getPoint()
+    {
+      IntPoint pt(x, y, z);
+      return pt;
+    }
+
+    /** getOffset() - get coordinates as an offset
+    * @returns The coordinates of the structure as an offset
+    */
+    off_t getOffset()
+    {
+      return o;
+    }
+
+    /** shift() - move the point by some displacements
+    * @param[in] dx, dy, [dz] : amount to shift the offset structure
+    */
+    void shift(off_t dx, off_t dy, off_t dz = 0)
+    {
+      x += dx;
+      y += dy;
+      z += dz;
+      this->o = x + y * w + z * w * h;
+    }
+
+    /** shift() - move the point by some displacements given by a point
+    * @param[in] p : 
+    */ 
+    void shift(IntPoint p)
+    {
+      x += p.x;
+      y += p.y;
+      z += p.z;
+      this->o = x + y * w + z * w * h;
+    }
+
+    /** inImage() - check if point coordinates is inside image bounds
+    * @param[in] x, y, [z] :
+    * @returns @b True if the three coordinates are inside image bounds, 
+    * @b False otherwise
+    */
+    bool inImage(off_t x, off_t y, off_t z)
+    {
+      return (x >= 0 && x < w && y >= 0 && y < h && z >= 0 && z < d);
+    }
+
+    /** inImage() - check if point coordinates is inside image bounds
+    * @returns @b True if the three coordinates are inside image bounds, 
+    * @b False otherwise
+    */
+    bool inImage()
+    {
+      return (x >= 0 && x < w && y >= 0 && y < h && z >= 0 && z < d);
+    }
+  };
+
 
   // Misc Macros
   /** @cond */
