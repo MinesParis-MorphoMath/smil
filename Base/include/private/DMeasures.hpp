@@ -611,7 +611,7 @@ namespace smil
   //   #       #    #   ####   #          #    ######  ######
   //
   /**
-   * profile() - Get image values along a line defined by the points  
+   * profile() - Get image values along a line defined by the points
    * @f$(x_0, y_0)@f$ and @f$(x_1, y_1)@f$ in the slice @f$z@f$.
    *
    * @param[in] im : input image
@@ -779,8 +779,7 @@ namespace smil
   //
   /** @cond */
   template <class T>
-  struct measImageMomentsFunc
-      : public MeasureFunctionWithPos<T, Vector_double> {
+  struct measMomentsFunc : public MeasureFunctionWithPos<T, Vector_double> {
     typedef typename Image<T>::lineType lineType;
     double m000, m100, m010, m110, m200, m020, m001, m101, m011, m002;
     bool im3d;
@@ -829,62 +828,66 @@ namespace smil
   };
   /** @endcond */
 
-  /**
-   * measImageMoments() - Measure image moments
-   *
-   * @param[in] im : Input image
-   * @param[in] onlyNonZero : use only non zero values
-   * @return For 2D images: vector(m00, m10, m01, m11, m20, m02)
-   * @return For 3D images: vector(m000, m100, m010, m001, m110, m101, m011,
-   * m200, m020, m002)
-   *
-   * @see measImageBlobsMoments() call if you want to evaluate moments for each
-   * blob.
-   *
-   * @see <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on
-   * Wikipedia</a>
-   *
-   * @par Inertia matrix can be evaluated :
-   *
-   *  @arg For @b 3D images :
-   *    @f[
-   *    M =
-   *      \begin{bmatrix}
-   *        m020 + m002  & -m110 & -m101 \\
-   *       -m110 & m200 + m002   & -m011 \\
-   *       -m101 & -m011 &  m200 + m020
-   *      \end{bmatrix}
-   *    @f]
-   *    @arg For @b 2D images :
-   *    @f[
-   *    M =
-   *      \begin{bmatrix}
-   *        m20 & -m11 \\
-   *       -m11 &  m02
-   *      \end{bmatrix}
-   *    @f]
-   *
-   */
-  template <class T>
-  Vector_double measImageMoments(const Image<T> &im,
-                                 const bool onlyNonZero = true)
+  /** @cond */
+  inline Vector_double centerMoments(Vector_double &moments)
   {
-    measImageMomentsFunc<T> func;
-    return func(im, onlyNonZero);
+    double EPSILON = 1e-8;
+
+    Vector_double m(moments.size(), 0);
+    if (moments[0] < EPSILON)
+      return m;
+
+    bool im3d = (moments.size() == 10);
+
+    /* Moments order in moment vector :
+     * 2D - m00   m10   m01   m11   m20   m02
+     * 3D - m000  m100  m010  m001  m110  m101  m011  m200  m020  m002
+     */
+    m = moments;
+    if (im3d) {
+      // m000
+      m[0] = moments[0];
+      // m100 m010 m001
+      m[1] = 0.;
+      m[2] = 0.;
+      m[3] = 0.;
+      // m110 m101 m011
+      m[4] -= moments[2] * moments[1] / moments[0];
+      m[5] -= moments[3] * moments[1] / moments[0];
+      m[6] -= moments[3] * moments[2] / moments[0];
+      // m200 m020 m002
+      m[7] -= moments[1] * moments[1] / moments[0];
+      m[8] -= moments[2] * moments[2] / moments[0];
+      m[9] -= moments[3] * moments[3] / moments[0];
+    } else {
+      // m00
+      m[0] = moments[0];
+      // m10 m01
+      m[1] = 0.;
+      m[2] = 0.;
+      // m11
+      m[3] -= moments[2] * moments[1] / moments[0];
+      // m20 m02
+      m[4] -= moments[1] * moments[1] / moments[0];
+      m[5] -= moments[2] * moments[2] / moments[0];
+    }
+
+    return m;
   }
+  /** @endcond */
 
   /**
-   * measMoments() - evaluate image moments
+   * measMoments() - Measure image moments
    *
-   * @param[in] im : Input image
+   * @param[in] im : input image
    * @param[in] onlyNonZero : use only non zero values
-   * @param[in] centered : use the image @b barycenter as a reference to 
-   * evaluate moments.
+   * @param[in] centered : returns centered moments
+   *
    * @return For 2D images: vector(m00, m10, m01, m11, m20, m02)
    * @return For 3D images: vector(m000, m100, m010, m001, m110, m101, m011,
    * m200, m020, m002)
    *
-   * @see measImageBlobsMoments() call if you want to evaluate moments for each
+   * @see measBlobMoments() call if you want to evaluate moments for each
    * blob.
    *
    * @see <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on
@@ -917,68 +920,11 @@ namespace smil
   {
     Vector_double m;
 
-    measImageMomentsFunc<T> func;
+    measMomentsFunc<T> func;
     m = func(im, onlyNonZero);
 
-    if (!centered)
-      return m;
-
-    bool im3d = (im.getDimension() == 3);
-    double m000, m100, m010, m110, m200, m020, m001, m101, m011, m002;
-    double c000, c100, c010, c110, c200, c020, c001, c101, c011, c002;
-
-    Vector_double bary;
-    bary = measBarycenter(im);
-    double xc, yc, zc;
-    xc = bary[0];
-    yc = bary[1];
-    if (im3d)
-      zc = bary[2];
-
-    m000 = m100 = m010 = m110 = m200 = m020 = m001 = m101 = m011 = m002 = 0.;
-
-    int i = 0;
-    m000  = m[i++];
-    m100  = m[i++];
-    m010  = m[i++];
-    if (im3d)
-      m001 = m[i++];
-    m110 = m[i++];
-    if (im3d) {
-      m101 = m[i++];
-      m110 = m[i++];
-    }
-    m200 = m[i++];
-    m020 = m[i++];
-    if (im3d)
-      m002 = m[i++];
-
-    c000 = m000;
-    c100 = m100 - xc * m000;
-    c010 = m010 - yc * m000;
-    c001 = m001 - zc * m000;
-    c110 = m110 - xc * m010 - yc * m100 + xc * yc * m000;
-    c101 = m101 - xc * m001 - zc * m100 + xc * zc * m000;
-    c110 = m011 - yc * m001 - zc * m010 + yc * zc * m000;
-    c200 = m200 - 2 * xc * m100 + xc * xc * m000;
-    c020 = m020 - 2 * yc * m100 + yc * yc * m000;
-    c002 = m002 - 2 * zc * m100 + zc * zc * m000;
-
-    m.clear();
-    m.push_back(c000);
-    m.push_back(c100);
-    m.push_back(c010);
-    if (im3d)
-      m.push_back(c001);
-    m.push_back(c110);
-    if (im3d) {
-      m.push_back(c101);
-      m.push_back(c011);
-    }
-    m.push_back(c200);
-    m.push_back(c020);
-    if (im3d)
-      m.push_back(c002);
+    if (centered)
+      m = centerMoments(m);
 
     return m;
   }
@@ -991,8 +937,93 @@ namespace smil
   //   #    #  #    #   #  #   #    #  #   #   #  #    #  #   ##  #    #  #
   //    ####    ####     ##    #    #  #    #  #  #    #  #    #   ####   ######
   //
-  /**
-   * measCovariance() - Covariance of two images in the direction defined by 
+  template <class T>
+  inline vector<double>
+  genericCovariance(const Image<T> &imIn1, const Image<T> &imIn2, size_t dx,
+                    size_t dy, size_t dz, size_t maxSteps = 0,
+                    bool normalize = false)
+  {
+    vector<double> vec;
+    ASSERT(areAllocated(&imIn1, &imIn2, NULL), vec);
+    ASSERT(haveSameSize(&imIn1, &imIn2, NULL),
+           "Input images must have the same size", vec);
+    ASSERT((dx + dy + dz > 0),
+           "dx, dy and dz can't be all zero at the same time", vec);
+
+    size_t s[3];
+    imIn1.getSize(s);
+
+    size_t maxH = max(max(s[0], s[1]), s[2]);
+    if (dx > 0)
+      maxH = min(maxH, s[0]);
+    if (dy > 0)
+      maxH = min(maxH, s[1]);
+    if (dz > 0)
+      maxH = min(maxH, s[2]);
+    if (maxH > 0)
+      maxH--;
+
+    if (maxSteps == 0)
+      maxSteps = maxH;
+
+    maxSteps = min(maxSteps, maxH);
+    if (maxSteps == 0) {
+      ERR_MSG("Too small");
+      return vec;
+    }
+
+    vec.clear();
+
+    typename ImDtTypes<T>::volType slicesIn1 = imIn1.getSlices();
+    typename ImDtTypes<T>::volType slicesIn2 = imIn2.getSlices();
+    typename ImDtTypes<T>::sliceType curSliceIn1;
+    typename ImDtTypes<T>::sliceType curSliceIn2;
+    typename ImDtTypes<T>::lineType lineIn1;
+    typename ImDtTypes<T>::lineType lineIn2;
+    typename ImDtTypes<T>::lineType bufLine = ImDtTypes<T>::createLine(s[0]);
+
+    for (size_t len = 0; len <= maxSteps; len++) {
+      double prod = 0;
+
+      size_t mdx = min(dx * len, s[0] - 1);
+      size_t mdy = min(dy * len, s[1] - 1);
+      size_t mdz = min(dz * len, s[2] - 1);
+
+      size_t xLen = s[0] - mdx;
+      size_t yLen = s[1] - mdy;
+      size_t zLen = s[2] - mdz;
+
+      for (size_t z = 0; z < zLen; z++) {
+        curSliceIn1 = slicesIn1[z];
+        curSliceIn2 = slicesIn2[z + mdz];
+        for (size_t y = 0; y < yLen; y++) {
+          lineIn1 = curSliceIn1[y];
+          lineIn2 = curSliceIn2[y + mdy];
+          copyLine<T>(lineIn2 + mdx, xLen, bufLine);
+          // Vectorized loop
+          for (size_t x = 0; x < xLen; x++) {
+            prod += lineIn1[x] * bufLine[x];
+          }
+        }
+      }
+      if (xLen * yLen * zLen != 0)
+        prod /= (xLen * yLen * zLen);
+      vec.push_back(prod);
+    }
+
+    if (normalize) {
+      double orig = vec[0];
+      for (vector<double>::iterator it = vec.begin(); it != vec.end(); it++)
+        *it /= orig;
+    }
+
+    ImDtTypes<T>::deleteLine(bufLine);
+
+    return vec;
+  }
+#if 0
+  /*
+   * measCovariance() - Covariance of two images in the direction defined by
    * @b dx, @b dy and @b dz.
    *
    * The direction is given by @b dx, @b dy and @b dz.
@@ -1002,6 +1033,11 @@ namespace smil
    *
    * @f[
    *    vec[h] = \sum_{p \:\in\: imIn1} \frac{imIn1(p) \;.\; imIn2(p + h)}{N_p}
+   * @f]
+   *
+   * @f[
+   *    vec[h] = \sum_{p \:\in\: imIn1} \frac{(imIn1(p) - meanVal(imIn1))
+   *                     \;.\; (imIn2(p + h) - meanVal(imIn2))}{N_p}
    * @f]
    * where @b h are displacements in the direction defined by @b dx, @b dy and
    * @b dz.
@@ -1098,6 +1134,59 @@ namespace smil
 
     return vec;
   }
+#endif
+
+  /**
+   * measCovariance() - Centered covariance of two images in the
+   * direction defined by @b dx, @b dy and @b dz.
+   *
+
+   * The direction is given by @b dx, @b dy and @b dz.
+   *
+   * The lenght corresponds to the max number of steps @b maxSteps. When @b 0,
+   * the length is limited by the dimensions of the image.
+   *
+   * @f[
+   *    vec[h] = \sum_{p \:\in\: imIn1} \frac{imIn1(p) \;.\; imIn2(p + h)}{N_p}
+   * @f]
+   *
+   * where @b h are displacements in the direction defined by @b dx, @b dy and
+   * @b dz.
+   *
+   * @f$N_p@f$ is the number of pixels used in each term of the sum, which may
+   * different for each term in the sum.
+   *
+   * @param[in] imIn1, imIn2 : Input Images
+   * @param[in] dx, dy, dz : direction
+   * @param[in] maxSteps : number maximum of displacements to evaluate
+   * @param[in] centered : if this parameter is set to @b true, the mean value
+   *  (meanVal()) will be subtracted from each input image
+   * @param[in] normalize : normalize result with respect to @b vec[0]
+
+   * @return vec[h]
+   *
+   */
+  template <class T>
+  vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2,
+                                size_t dx, size_t dy, size_t dz,
+                                size_t maxSteps = 0, bool centered = false,
+                                bool normalize = false)
+  {
+    if (centered) {
+      Image<float> imMean1(imIn1, true);
+      float meanV1 = meanVal(imMean1)[0];
+      sub(imMean1, meanV1, imMean1);
+
+      Image<float> imMean2(imIn2, true);
+      float meanV2 = meanVal(imMean2)[0];
+      sub(imMean2, meanV2, imMean2);
+
+      return genericCovariance(imMean1, imMean2, dx, dy, dz, maxSteps,
+                               normalize);
+    } else {
+      return genericCovariance(imIn1, imIn2, dx, dy, dz, maxSteps, normalize);
+    }
+  }
 
   /**
    * measAutoCovariance() - Auto-covariance
@@ -1108,82 +1197,25 @@ namespace smil
    * @param[in] imIn : Input Image
    * @param[in] dx, dy, dz : direction
    * @param[in] maxSteps : number maximum of displacements to evaluate
+   * @param[in] centered : if this parameter is set to @b true, the mean value
+   *  (meanVal()) will be subtracted from the input image
    * @param[in] normalize : normalize result with respect to @b vec[0]
    * @return vec[h]
    */
   template <class T>
   vector<double> measAutoCovariance(const Image<T> &imIn, size_t dx, size_t dy,
                                     size_t dz, size_t maxSteps = 0,
+                                    bool centered  = false,
                                     bool normalize = false)
   {
-    return measCovariance(imIn, imIn, dx, dy, dz, maxSteps, normalize);
-  }
-
-  /**
-   * Centered auto-covariance
-   *
-   * The direction is given by @b dx, @b dy and @b dz.
-   * The lenght corresponds to the max number of steps @b maxSteps
-   *
-   * @param[in] imIn : Input Image
-   * @param[in] dx, dy, dz : direction
-   * @param[in] maxSteps : number maximum of displacements to evaluate
-   * @param[in] normalize : normalize result with respect to @b vec[0]
-   * @return vec[h]
-   */
-  template <class T>
-  vector<double> measCenteredAutoCovariance(const Image<T> &imIn, size_t dx,
-                                            size_t dy, size_t dz,
-                                            size_t maxSteps = 0,
-                                            bool normalize  = false)
-  {
-    Image<float> imMean(imIn, true);
-    float meanV = meanVal(imMean)[0];
-    sub(imMean, meanV, imMean);
-    return measAutoCovariance(imMean, dx, dy, dz, maxSteps, normalize);
-  }
-
-  /**
-   * measCenteredCovariance() - Centered covariance of two images in the
-   * direction defined by @b dx, @b dy and @b dz.
-   *
-   * The direction is given by @b dx, @b dy and @b dz.
-   *
-   * The lenght corresponds to the max number of steps @b maxSteps. When @b 0,
-   * the length is limited by the dimensions of the image.
-   *
-   * @f[
-   *    vec[h] = \sum_{p \:\in\: imIn1} \frac{(imIn1(p) - meanVal(imIn1))
-   *                     \;.\; (imIn2(p + h) - meanVal(imIn2))}{N_p}
-   * @f]
-   * where @b h are displacements in the direction defined by @b dx, @b dy and
-   * @b dz.
-   *
-   * @f$N_p@f$ is the number of pixels used in each term of the sum, which may
-   * different for each term in the sum.
-   *
-   * @param[in] imIn1, imIn2 : Input Images
-   * @param[in] dx, dy, dz : direction
-   * @param[in] maxSteps : number maximum of displacements to evaluate
-   * @param[in] normalize : normalize result with respect to @b vec[0]
-   * @return vec[h]
-   *
-   */
-  template <class T>
-  vector<double>
-  measCenteredCovariance(const Image<T> &imIn1, const Image<T> &imIn2,
-                         size_t dx, size_t dy, size_t dz, size_t maxSteps = 0,
-                         bool normalize = false)
-  {
-    Image<float> imMean1(imIn1, true);
-    float meanV1 = meanVal(imMean1)[0];
-    sub(imMean1, meanV1, imMean1);
-
-    Image<float> imMean2(imIn2, true);
-    float meanV2 = meanVal(imMean2)[0];
-    sub(imMean2, meanV2, imMean2);
-
-    return measCovariance(imMean1, imMean2, dx, dy, dz, maxSteps, normalize);
+    if (centered) {
+      Image<float> imMean(imIn, true);
+      float meanV = meanVal(imMean)[0];
+      sub(imMean, meanV, imMean);
+      return genericCovariance(imMean, imMean, dx, dy, dz, maxSteps, normalize);
+    } else {
+      return genericCovariance(imIn, imIn, dx, dy, dz, maxSteps, normalize);
+    }
   }
 
   //

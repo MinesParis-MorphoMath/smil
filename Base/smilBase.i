@@ -209,12 +209,11 @@ TEMPLATE_WRAP_FUNC(medianVal);
 TEMPLATE_WRAP_FUNC(profile);
 TEMPLATE_WRAP_FUNC(measBarycenter);
 TEMPLATE_WRAP_FUNC(measBoundBox);
-TEMPLATE_WRAP_FUNC(measImageMoments);
 TEMPLATE_WRAP_FUNC(measMoments);
 TEMPLATE_WRAP_FUNC(measCovariance);
 TEMPLATE_WRAP_FUNC(measAutoCovariance);
-TEMPLATE_WRAP_FUNC(measCenteredCovariance);
-TEMPLATE_WRAP_FUNC(measCenteredAutoCovariance);
+// TEMPLATE_WRAP_FUNC(measCenteredCovariance);
+// TEMPLATE_WRAP_FUNC(measCenteredAutoCovariance);
 TEMPLATE_WRAP_FUNC(measImageEntropy);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 TEMPLATE_WRAP_FUNC(isBinary);
@@ -236,7 +235,7 @@ TEMPLATE_WRAP_SUPPL_FUNC(rangeVal);
 TEMPLATE_WRAP_FUNC(measAreas);
 TEMPLATE_WRAP_FUNC(measBarycenters);
 TEMPLATE_WRAP_FUNC(measBoundBoxes);
-TEMPLATE_WRAP_FUNC(measImageBlobsMoments);
+TEMPLATE_WRAP_FUNC(measBlobMoments);
 
 TEMPLATE_WRAP_FUNC(measAreas);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measMinVals);
@@ -249,11 +248,13 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(measModeVals);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measMedianVals);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measBarycenters);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measBoundBoxes);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measImageBlobsMoments);
+TEMPLATE_WRAP_FUNC_2T_CROSS(measBlobMoments);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measBlobsEntropy);
 
 %include "DBlobOperations.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(imageAreaThreshold);
+TEMPLATE_WRAP_FUNC(inertiaMatrices);
+TEMPLATE_WRAP_FUNC_2T_CROSS(inertiaMatrices);
 
 %include "DImageMatrix.hpp"
 TEMPLATE_WRAP_FUNC(matMul);

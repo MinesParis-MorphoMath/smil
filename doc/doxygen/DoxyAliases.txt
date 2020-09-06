@@ -122,8 +122,9 @@ ALIASES += txtitalic{1}="<i>\1</i>"
 ########################################################
 
 ALIASES += smilexample{1}="<b>Example</b>   @include \1 "
-ALIASES += smilexample{2}="<b>Example</b>   @include \1 @include \2"
-ALIASES += smilexample{3}="<b>Example</b>   @include \1 @include \2 @include \3"
+ALIASES += smilexample{2}="<b>Example : \1</b>   @include \2 "
+#ALIASES += smilexample{2}="<b>Example</b>   @include \1 @include \2"
+#ALIASES += smilexample{3}="<b>Example</b>   @include \1 @include \2 @include \3"
 
 ALIASES += smilcode{1}="@par Example { }  @n @include \1 "
 

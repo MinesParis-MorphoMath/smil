@@ -47,7 +47,7 @@ namespace smil
    */
 
   /**
-   * Calculate the area of each region in a labeled image
+   * measAreas() - Calculate the area of each region in a labeled image
    *
    * @param[in] imLbl : input labeled image
    * @param[in] onlyNonZero : skip a blob having a null label
@@ -64,7 +64,7 @@ namespace smil
 
   /**
    *
-   * Measure areas from a pre-generated Blob map (faster).
+   * measAreas() - Measure areas from a pre-generated Blob map (faster).
    *
    * @param[in] blobs : input Blob map
    * @return a map of pairs <b><label, double></b> with the @b area of each
@@ -80,65 +80,7 @@ namespace smil
   }
 
   /**
-   * Measure the minimum value of each blob in imIn.
-   *
-   * @param[in] imIn : input labeled image
-   * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, T></b> with the @b min image value in
-   * each blob.
-   */
-  template <class T, class labelT>
-  map<labelT, T> measMinVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
-  {
-    return processBlobMeasure<T, labelT, measMinValFunc<T>>(imIn, blobs);
-  }
-
-  /**
-   * Measure the maximum value of each blob in imIn.
-   *
-   * @param[in] imIn : input labeled image
-   * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, T></b> with the @b max image value in
-   * each blob.
-   */
-  template <class T, class labelT>
-  map<labelT, T> measMaxVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
-  {
-    return processBlobMeasure<T, labelT, measMaxValFunc<T>>(imIn, blobs);
-  }
-
-  /**
-   * Measure the min and max values of each blob in imIn.
-   *
-   * @param[in] imIn : input labeled image
-   * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, <T, T>></b> with a vector with the @b min
-   * and @b max pixel values in each blob.
-   */
-  template <class T, class labelT>
-  map<labelT, vector<T>> measRangeVals(const Image<T> &imIn,
-                                       map<labelT, Blob> &blobs)
-  {
-    return processBlobMeasure<T, labelT, measMinMaxValFunc<T>>(imIn, blobs);
-  }
-
-  /**
-   * Measure the mean value and the std dev. of each blob in imIn.
-   *
-   * @param[in] imIn : input labeled image
-   * @param[in] blobs : input Blob map
-   * @return a map of pairs <b><label, <double, double>></b> with a vector with
-   * the @b mean and <b> standard deviation</b> pixel values in each blob.
-   */
-  template <class T, class labelT>
-  map<labelT, Vector_double> measMeanVals(const Image<T> &imIn,
-                                          map<labelT, Blob> &blobs)
-  {
-    return processBlobMeasure<T, labelT, measMeanValFunc<T>>(imIn, blobs);
-  }
-
-  /**
-   * Measure the sum of values of each blob in imIn.
+   * measVolumes() - measVolumesMeasure the sum of values of each blob in imIn.
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
@@ -153,7 +95,66 @@ namespace smil
   }
 
   /**
-   * Measure the list of values of each blob in imIn.
+   * measMinVals() - Measure the minimum value of each blob in imIn.
+   *
+   * @param[in] imIn : input labeled image
+   * @param[in] blobs : input Blob map
+   * @return a map of pairs <b><label, T></b> with the @b min image value in
+   * each blob.
+   */
+  template <class T, class labelT>
+  map<labelT, T> measMinVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
+  {
+    return processBlobMeasure<T, labelT, measMinValFunc<T>>(imIn, blobs);
+  }
+
+  /**
+   * measMaxVals() - Measure the maximum value of each blob in imIn.
+   *
+   * @param[in] imIn : input labeled image
+   * @param[in] blobs : input Blob map
+   * @return a map of pairs <b><label, T></b> with the @b max image value in
+   * each blob.
+   */
+  template <class T, class labelT>
+  map<labelT, T> measMaxVals(const Image<T> &imIn, map<labelT, Blob> &blobs)
+  {
+    return processBlobMeasure<T, labelT, measMaxValFunc<T>>(imIn, blobs);
+  }
+
+  /**
+   * measRangeVals() - Measure the min and max values of each blob in imIn.
+   *
+   * @param[in] imIn : input labeled image
+   * @param[in] blobs : input Blob map
+   * @return a map of pairs <b><label, <T, T>></b> with a vector with the @b min
+   * and @b max pixel values in each blob.
+   */
+  template <class T, class labelT>
+  map<labelT, vector<T>> measRangeVals(const Image<T> &imIn,
+                                       map<labelT, Blob> &blobs)
+  {
+    return processBlobMeasure<T, labelT, measMinMaxValFunc<T>>(imIn, blobs);
+  }
+
+  /**
+   * measMeanVals() - Measure the mean value and the std dev. of each blob in
+   * imIn.
+   *
+   * @param[in] imIn : input labeled image
+   * @param[in] blobs : input Blob map
+   * @return a map of pairs <b><label, <double, double>></b> with a vector with
+   * the @b mean and <b> standard deviation</b> pixel values in each blob.
+   */
+  template <class T, class labelT>
+  map<labelT, Vector_double> measMeanVals(const Image<T> &imIn,
+                                          map<labelT, Blob> &blobs)
+  {
+    return processBlobMeasure<T, labelT, measMeanValFunc<T>>(imIn, blobs);
+  }
+
+  /**
+   * valueLists() - Measure the list of values of each blob in imIn.
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
@@ -166,8 +167,9 @@ namespace smil
   {
     return processBlobMeasure<T, labelT, valueListFunc<T>>(imIn, blobs);
   }
+
   /**
-   * Measure the mode value of imIn in each blob.
+   * measModeVals() - Measure the mode value of imIn in each blob.
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
@@ -180,7 +182,7 @@ namespace smil
     return processBlobMeasure<T, labelT, measModeValFunc<T>>(imIn, blobs);
   }
   /**
-   * Measure the median value of imIn in each blob.
+   * measMedianVals() - Measure the median value of imIn in each blob.
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
@@ -194,7 +196,7 @@ namespace smil
   }
 
   /**
-   * Measure barycenter of a labeled image.
+   * measBarycenters() - Measure barycenter of a labeled image.
    *
    * @param[in] imLbl : input labeled image
    * @param[in] onlyNonZero : skip a blob having a null label
@@ -211,7 +213,7 @@ namespace smil
   }
 
   /**
-   * Measure the barycenter of each blob in imIn.
+   * measBarycenters() - Measure the barycenter of each blob in imIn.
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
@@ -226,7 +228,7 @@ namespace smil
   }
 
   /**
-   * Measure bounding boxes of labeled image.
+   * measBoundBoxes() - Measure bounding boxes of labeled image.
    *
    * @param[in] imLbl : input labeled image
    * @param[in] onlyNonZero : skip a blob having a null label
@@ -241,7 +243,8 @@ namespace smil
   }
 
   /**
-   * Measure bounding boxes of each blob (faster with blobs pre-generated).
+   * measBoundBoxes() - Measure bounding boxes of each blob (faster with blobs
+   * pre-generated).
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
@@ -256,44 +259,74 @@ namespace smil
   }
 
   /**
-   * Measure image moments of each label.
-   *
-   * @param[in] imLbl : input labeled image
-   * @param[in] onlyNonZero : skip a blob having a null label
-   * @return a map of pairs <b><label, Vector<double>></b> with the <b>image
-   * moments</b> of each label.
-   * @see measImageMoments()
-   */
-  template <class T>
-  map<T, Vector_double> measImageBlobsMoments(const Image<T> &imLbl,
-                                              const bool onlyNonZero = true)
-  {
-    return processBlobMeasure<T, T, measImageMomentsFunc<T>>(imLbl,
-                                                             onlyNonZero);
-  }
-
-  /**
-   * Measure blobs image moments (faster with blobs pre-generated).
+   * measBlobMoments() - Measure blobs image moments (faster with blobs
+   * pre-generated).
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
+   * @param[in] central : moments are evaluated with respect to the blob
+   * barycenter
    *
    * @return a map of pairs <b><label, Vector<double>></b> with the first and
    * second order <b>image moments</b> of each label.
    *
-   * @see measImageMoments()
+   * @see measMoments()
    *
-   * @smilexample{inertia_moments.py}
+   * @smilexample{Calculating moments, example-blob-moments.py}
+   *
+   * @smilexample{Getting blob orientation in space, inertia_moments.py}
    */
   template <class T, class labelT>
-  map<labelT, Vector_double> measImageBlobsMoments(const Image<T> &imIn,
-                                                   map<labelT, Blob> &blobs)
+  map<labelT, Vector_double> measBlobMoments(const Image<T> &imIn,
+                                             map<labelT, Blob> &blobs,
+                                             bool central = false)
   {
-    return processBlobMeasure<T, labelT, measImageMomentsFunc<T>>(imIn, blobs);
+    map<labelT, Vector_double> bmoments;
+    bmoments = processBlobMeasure<T, labelT, measMomentsFunc<T>>(imIn, blobs);
+    if (central) {
+      typedef typename map<labelT, Vector_double>::iterator mIter;
+      for (mIter it = bmoments.begin(); it != bmoments.end(); it++) {
+        it->second = centerMoments(it->second);
+      }
+    }
+    return bmoments;
   }
 
   /**
-   * Measure blobs image moments (faster with blobs pre-generated).
+   * measBlobMoments() - Measure image moments of each label.
+   *
+   * @param[in] imLbl : input @b labeled image
+   * @param[in] onlyNonZero : skip a blob having a null label
+
+   * @param[in] central : moments are evaluated with respect to the blob
+   * barycenter
+   *
+   * @return a map of pairs <b><label, Vector<double>></b> with the <b>image
+   * moments</b> of each label.
+   *
+   * @note
+   * Whenever possible it's better to privilegiate the other version of this
+   * function, as you have more control on what you get.
+   * @see measMoments()
+   */
+  template <class T>
+  map<T, Vector_double> measBlobMoments(const Image<T> &imLbl,
+                                        const bool onlyNonZero = true,
+                                        bool central          = false)
+  {
+    map<T, Vector_double> bmoments;
+    bmoments = processBlobMeasure<T, T, measMomentsFunc<T>>(imLbl, onlyNonZero);
+    if (central) {
+      typedef typename map<T, Vector_double>::iterator mIter;
+      for (mIter it = bmoments.begin(); it != bmoments.end(); it++) {
+        it->second = centerMoments(it->second);
+      }
+    }
+    return bmoments;
+  }
+
+  /**
+   * measBlobsEntropy() - Measure blobs entropy.
    *
    * @param[in] imIn : input labeled image
    * @param[in] blobs : input Blob map
@@ -305,7 +338,7 @@ namespace smil
    */
   template <class T, class labelT>
   map<labelT, double> measBlobsEntropy(const Image<T> &imIn,
-                                              map<labelT, Blob> &blobs)
+                                       map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, measEntropyFunc<T>>(imIn, blobs);
   }

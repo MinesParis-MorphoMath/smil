@@ -43,16 +43,13 @@ def fitRectangle(mat):
 
     return xc, yc, a, b, theta
 
-
 # Compute Blobs
 blobs = computeBlobs(imLbl)
 
-
 # Compute Inertia Matrices
 
-mats  = measImageBlobsMoments(imIn, blobs)
+mats  = measBlobMoments(imIn, blobs)
 bboxes = measBoundBoxes(imLbl)
-
 imDraw = Image(imIn)
 
 print("Label\tA\tB\tTheta")
