@@ -43,45 +43,160 @@ namespace smil
    * @{
    */
 
-  /**
-   * Matrix transposition (for now, only in 2D)
-   *
-   * @note
-   * For a @b 3D version of this function, with some other options, see
-   * imageTranspose()
-   *
-   * @param[in] imIn : input image
-   * @param[out] imOut : output image
-   */
-  template <class T> RES_T matTrans(const Image<T> &imIn, Image<T> &imOut)
+  /** @cond */
+  template <class T> class ImageTransposeClass
   {
-    ASSERT_ALLOCATED(&imIn);
-    size_t w, h, d;
-    imIn.getSize(&w, &h, &d);
+  private:
+    vector<int> lut{1, 0, 2};
 
-    ImageFreezer freezer(imOut);
-
-    //         typedef typename ImDtTypes<T>::sliceType sliceType;
-    typedef typename ImDtTypes<T>::lineType lineType;
-
-    if (d == 1) // 2D
+    bool setOrder(string order)
     {
-      ASSERT((imOut.setSize(h, w) == RES_OK));
+      lut.resize(3);
+      if (order == "yxz" || order == "yx") {
+        lut[0] = 1;
+        lut[1] = 0;
+        lut[2] = 2;
+        return true;
+      }
+      if (order == "xzy") {
+        lut[0] = 0;
+        lut[1] = 2;
+        lut[2] = 1;
+        return true;
+      }
+      if (order == "yzx") {
+        lut[0] = 1;
+        lut[1] = 2;
+        lut[2] = 0;
+        return true;
+      }
+      if (order == "zxy") {
+        lut[0] = 2;
+        lut[1] = 0;
+        lut[2] = 1;
+        return true;
+      }
+      if (order == "zyx") {
+        lut[0] = 2;
+        lut[1] = 1;
+        lut[2] = 0;
+        return true;
+      }
+      return false;
+    }
 
-      lineType pIn  = imIn.getPixels();
-      lineType pOut = imOut.getPixels();
+  public:
+    ImageTransposeClass()
+    {
+      setOrder("yxz");
+    }
+    ImageTransposeClass(string order)
+    {
+      if (!setOrder(order))
+        ERR_MSG("Unknown transpose order " + order);
+    }
 
-      for (size_t y = 0; y < w; y++)
-        for (size_t x = 0; x < h; x++, pOut++)
-          *pOut = pIn[x * w + y];
+    RES_T transpose(const Image<T> &imIn, Image<T> &imOut, string order)
+    {
+      ASSERT_ALLOCATED(&imIn, &imOut);
 
+      if (&imIn == &imOut) {
+        Image<T> imTmp(imIn, true);
+        return transpose(imTmp, imOut, order);
+      }
+
+      size_t szIn[3], szOut[3];
+
+      if (order == "xyz" || order == "xy") {
+        imOut = Image<T>(imIn, true);
+        return RES_OK;
+      }
+
+      if (order == "")
+        order = "yxz";
+
+      if (!setOrder(order)) {
+        ERR_MSG("Wrong value for parameter order");
+        return RES_ERR;
+      }
+
+      imIn.getSize(szIn);
+      for (int i = 0; i < 3; i++)
+        szOut[i] = szIn[lut[i]];
+
+      ASSERT(imOut.setSize(szOut) == RES_OK);
+
+      ImageFreezer freeze(imOut);
+      {
+        size_t ix[3];
+
+#ifdef USE_OPEN_MP
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+#  pragma omp parallel private(ix) num_threads(nthreads)
+#endif // USE_OPEN_MP
+        for (ix[2] = 0; ix[2] < szIn[2]; ix[2]++) {
+          for (ix[1] = 0; ix[1] < szIn[1]; ix[1]++) {
+            for (ix[0] = 0; ix[0] < szIn[0]; ix[0]++) {
+              T pixVal = imIn.getPixel(ix[0], ix[1], ix[2]);
+              imOut.setPixel(ix[lut[0]], ix[lut[1]], ix[lut[2]], pixVal);
+            }
+          }
+        }
+      }
+      imOut.modified();
       return RES_OK;
-    } else
-      return RES_ERR_NOT_IMPLEMENTED;
+    }
+  };
+  /** @endcond */
+  
+  /**
+   * @brief matTranspose() : 3D image transposition
+   *
+   * Transpose 3D images. The image is mirrored with respect to the main
+   * diagonal and the shape is adapted.
+   *
+   * The order parameter defines where to redirect input axes.
+   * E.g. : if @b order is @b xzy, axes @b y and @b z will be exchanged.
+   *
+   * Possible values for parameter @b order are : <b> xyz, xzy, yxz, yzx, zxy,
+   * zyx, xy, yx</b> and an empty string.
+   * @note
+   * - @b xyz and @b xy, does nothing but just copies input image into output 
+   *   image.
+   * - @b yxz or @b yx correspond to the usual transposition of @b 2D matrices.
+   *   When applied to @b 3D images, all slices are transposed. 
+   *
+   * @param[in]  imIn : input Image
+   * @param[in]  order : axis order in the output image
+   * @param[out] imOut : output Image
+   *
+   */
+  template <class T>
+  RES_T matTranspose(const Image<T> &imIn, Image<T> &imOut, string order = "yxz")
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ImageTransposeClass<T> tmat(order);
+    return tmat.transpose(imIn, imOut, order);
   }
 
   /**
-   * Matrix multiplication (for now, only in 2D)
+   * @brief matTranspose() : 3D image transposition
+   *
+   * @param[in,out]  im : input/output Image
+   * @param[in]  order : axis order in the output image
+   *
+   * @overload
+   */
+  template <class T>
+  RES_T matTranspose(Image<T> &im, const string order = "yxz")
+  {
+    ASSERT_ALLOCATED(&im);
+    ImageTransposeClass<T> tmat(order);
+    return tmat.transpose(im, im, order);
+  }
+
+  /**
+   * matMultiply() - Matrix multiplication (for now, only in 2D)
    *
    * @param[in] imIn1 : input image
    * @param[in] imIn2 : input image
@@ -91,7 +206,7 @@ namespace smil
    * @parallelized
    */
   template <class T>
-  RES_T matMul(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
+  RES_T matMultiply(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn1, &imIn2);
     size_t size1[3], size2[3];
@@ -111,7 +226,7 @@ namespace smil
     Image<T> transIm(size2[1], size2[0]);
 
     // Transpose imIn2 matrix to allow vectorization
-    ASSERT((matTrans(imIn2, transIm) == RES_OK));
+    ASSERT((matTranspose(imIn2, transIm) == RES_OK));
 
     typedef typename ImDtTypes<T>::sliceType sliceType;
     typedef typename ImDtTypes<T>::lineType lineType;

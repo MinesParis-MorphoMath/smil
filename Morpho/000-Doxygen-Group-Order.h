@@ -71,6 +71,12 @@
  * @ingroup Morpho
  */
 
+ 
+/**
+ * @defgroup Geodesic             Geodesic Transforms
+ * @ingroup Morpho
+ */
+
 /**
  * @defgroup Extrema              Regional Minima and Maxima
  * @ingroup Morpho
@@ -89,11 +95,6 @@
  
 /**
  * @defgroup MorphoMeasures       Morphological Measures
- * @ingroup Morpho
- */
- 
-/**
- * @defgroup Geodesic             Geodesic Transforms
  * @ingroup Morpho
  */
  

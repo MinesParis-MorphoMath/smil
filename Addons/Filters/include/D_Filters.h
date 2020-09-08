@@ -68,7 +68,6 @@ namespace smil
 #include "DfilterSigma.h"
 
 #include "DfilterScale.h"
-#include "DfilterGaussian.h"
 
 #include "Dfilter3DBilateral.h"
 

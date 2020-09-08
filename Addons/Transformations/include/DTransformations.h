@@ -200,7 +200,6 @@ namespace smil
 
 } // namespace smil
 
-#include "private/DTranspose.hpp"
 #include "private/DFlip.hpp"
 #include "private/DRotate.hpp"
 #include "private/DResize.hpp"

@@ -44,9 +44,6 @@ SMIL_MODULE(smilFilters)
 #include "DfilterMeanShift.h"
 
 #include "DfilterScaleRange.h"
-#include "DfilterGaussian.h"
-
-#include "Dfilter3DBilateral.h"
 
 #include "Dfilter3DBilateral.h"
 %}
@@ -91,9 +88,6 @@ TEMPLATE_WRAP_FUNC(meanShiftFilter);
 TEMPLATE_WRAP_FUNC_2T_CROSS(imageScaleRange);
 // TEMPLATE_WRAP_FUNC_2T_CROSS(imageScaleRangeAuto);
 TEMPLATE_WRAP_FUNC_2T_CROSS(imageScaleRangeSCurve);
-
-%include "DfilterGaussian.h"
-TEMPLATE_WRAP_FUNC(imageGaussianFilter);
 
 // *******************************
 // Filters from Theodore Chabardes

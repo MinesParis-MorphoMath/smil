@@ -39,6 +39,6 @@ int main(void)
 
   UINT BENCH_NRUNS = 100;
 
-  BENCH_IMG(matTrans, im1, im2);
-  BENCH_IMG(matMul, im1, im2, im3);
+  BENCH_IMG(matTranspose, im1, im2);
+  BENCH_IMG(matMultiply, im1, im2, im3);
 }

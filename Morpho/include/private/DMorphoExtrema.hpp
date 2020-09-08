@@ -44,7 +44,7 @@ namespace smil
   // Extrema
 
   /**
-   * Minima
+   * minima() - Minima
    */
   template <class T>
   RES_T minima(const Image<T> &imIn, Image<T> &imOut,
@@ -68,7 +68,7 @@ namespace smil
   }
 
   /**
-   * Maxima
+   * maxima() - Maxima
    */
   template <class T>
   RES_T maxima(const Image<T> &imIn, Image<T> &imOut,
@@ -92,7 +92,7 @@ namespace smil
   }
 
   /**
-   * Calculate the minima and labelize them
+   * minimaLabeled() - Calculate the minima and labelize them
    */
   template <class T1, class T2>
   RES_T minimaLabeled(const Image<T1> &imIn, Image<T2> &imOut,
@@ -111,7 +111,7 @@ namespace smil
   }
 
   /**
-   * Calculate the maxima and labelize them
+   * maximaLabeled() - Calculate the maxima and labelize them
    */
   template <class T1, class T2>
   RES_T maximaLabeled(const Image<T1> &imIn, Image<T2> &imOut,
@@ -130,7 +130,7 @@ namespace smil
   }
 
   /**
-   * h-Minima
+   * hMinima() - h-Minima
    */
   template <class T>
   RES_T hMinima(const Image<T> &imIn, const T &height, Image<T> &imOut,
@@ -150,7 +150,7 @@ namespace smil
   }
 
   /**
-   * Calculate the h-minima and labelize them
+   * hMinimaLabeled() - Calculate the h-minima and labelize them
    */
   template <class T1, class T2>
   RES_T hMinimaLabeled(const Image<T1> &imIn, const T1 &height,
@@ -169,7 +169,7 @@ namespace smil
   }
 
   /**
-   * h-Maxima
+   * hMaxima() - h-Maxima
    */
   template <class T>
   RES_T hMaxima(const Image<T> &imIn, const T &height, Image<T> &imOut,
@@ -189,7 +189,7 @@ namespace smil
   }
 
   /**
-   * Calculate the h-maxima and labelize them
+   * hMaximaLabeled() - Calculate the h-maxima and labelize them
    */
   template <class T1, class T2>
   RES_T hMaximaLabeled(const Image<T1> &imIn, const T1 &height,
@@ -207,6 +207,9 @@ namespace smil
     return RES_OK;
   }
 
+  /** @cond 
+   * Local function
+   */
   template <class T>
   RES_T fastExtrema(const Image<T> &imIn, Image<T> &imOut, const StrElt &se,
                     const char *operation, const T &border_value)
@@ -304,9 +307,10 @@ namespace smil
 
     return RES_OK;
   }
+  /** @endcond */
 
   /**
-   * Regional minima computation based on arrowing graphs
+   * fastMinima() - Regional minima computation based on arrowing graphs
    */
   template <class T>
   inline RES_T fastMinima(const Image<T> &imIn, Image<T> &imOut,
@@ -316,7 +320,7 @@ namespace smil
   }
 
   /**
-   * Regional maxima computation based on arrowing graphs
+   * fastMaxima() - Regional maxima computation based on arrowing graphs
    */
   template <class T>
   inline RES_T fastMaxima(const Image<T> &imIn, Image<T> &imOut,

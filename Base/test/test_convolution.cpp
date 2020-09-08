@@ -53,8 +53,10 @@ class Test_ConvolHoriz : public TestCase
     horizConvolve(im1, vector<double>(kern, kern + 5), im2);
     TEST_ASSERT(im2 == im3);
 
-    if (retVal != RES_OK)
+    if (retVal != RES_OK) {
+      im1.printSelf(1);
       im2.printSelf(1);
+    }
   }
 };
 
@@ -108,11 +110,12 @@ class Test_GaussianFilter : public TestCase
     im1 << vec1;
 
     UINT8 vecTruth[] = {
-        69,  74,  81,  95,  95,  104, 125, 121, 106, 113, 82,  93,  99,
-        114, 122, 124, 132, 126, 116, 127, 99,  105, 113, 135, 152, 143,
-        126, 115, 105, 113, 130, 116, 115, 133, 149, 140, 118, 109, 98,
-        101, 151, 118, 93,  94,  109, 118, 117, 119, 107, 108,
+        69,  74,  81,  95,  95,  104, 124, 120, 106, 113, 82,  93,  99,
+        114, 121, 124, 132, 127, 116, 128, 99,  105, 114, 135, 152, 143,
+        126, 115, 105, 113, 130, 116, 115, 133, 149, 140, 118, 108, 98,
+        100, 150, 118, 94,  94,  108, 118, 117, 119, 108, 108,
     };
+
     im3 << vecTruth;
 
     gaussianFilter(im1, 2, im2);

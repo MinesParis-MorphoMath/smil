@@ -40,7 +40,7 @@ class Test_Transpose : public TestCase
 
     im1 << vec1;
 
-    matTrans(im1, im2);
+    matTranspose(im1, im2);
     imTrans << vecTrans;
     TEST_ASSERT(im2 == imTrans);
 
@@ -70,7 +70,7 @@ class Test_Multiply : public TestCase
     im1 << vec1;
     im2 << vec2;
 
-    matMul(im1, im2, im3);
+    matMultiply(im1, im2, im3);
     imMul << vecMul;
     TEST_ASSERT(im3 == imMul);
 

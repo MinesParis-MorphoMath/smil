@@ -102,8 +102,6 @@ namespace smil
       return imageTranspose(imTmp, imOut, order);
     }
 
-    ImageFreezer freeze(imOut);
-
     size_t szIn[3], szOut[3];
     int lut[3];
 
@@ -123,24 +121,28 @@ namespace smil
     imIn.getSize(szIn);
     for (int i = 0; i < 3; i++)
       szOut[i] = szIn[lut[i]];
+
     int r = imOut.setSize(szOut);
     if (r != RES_OK) {
       ERR_MSG("Can't set imOut size");
     }
+
+    ImageFreezer freeze(imOut);
+
     {
       size_t ix[3];
 
 #ifdef USE_OPEN_MP
 #pragma omp parallel private(ix)
 #endif // USE_OPEN_MP
-        for (ix[2] = 0; ix[2] < szIn[2]; ix[2]++) {
-          for (ix[1] = 0; ix[1] < szIn[1]; ix[1]++) {
-            for (ix[0] = 0; ix[0] < szIn[0]; ix[0]++) {
-              T pixVal = imIn.getPixel(ix[0], ix[1], ix[2]);
-              imOut.setPixel(ix[lut[0]], ix[lut[1]], ix[lut[2]], pixVal);
-            }
+      for (ix[2] = 0; ix[2] < szIn[2]; ix[2]++) {
+        for (ix[1] = 0; ix[1] < szIn[1]; ix[1]++) {
+          for (ix[0] = 0; ix[0] < szIn[0]; ix[0]++) {
+            T pixVal = imIn.getPixel(ix[0], ix[1], ix[2]);
+            imOut.setPixel(ix[lut[0]], ix[lut[1]], ix[lut[2]], pixVal);
           }
         }
+      }
     }
     imOut.modified();
     return RES_OK;

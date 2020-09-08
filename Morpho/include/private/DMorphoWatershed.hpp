@@ -41,7 +41,7 @@ namespace smil
   /**
    * @ingroup Morpho
    * @defgroup Watershed Watershed Segmentation
-   * @brief Image segmentation - Watershed
+   * @brief %Image segmentation - Watershed
    *
    * @details In the study of image processing, a watershed is a transformation
    * defined on a grayscale image. The name refers metaphorically to a

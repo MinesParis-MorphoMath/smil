@@ -45,9 +45,21 @@ namespace smil
    */
 
   // Geodesy
-
+  /*
+   * ######  #    #  #    #   ####    #####     #     ####   #    #   ####
+   * #       #    #  ##   #  #    #     #       #    #    #  ##   #  #
+   * #####   #    #  # #  #  #          #       #    #    #  # #  #   ####
+   * #       #    #  #  # #  #          #       #    #    #  #  # #       #
+   * #       #    #  #   ##  #    #     #       #    #    #  #   ##  #    #
+   * #        ####   #    #   ####      #       #     ####   #    #   ####
+   */
   /**
-   * Geodesic dilation
+   * geoDilate() - Geodesic dilation
+   *
+   * @param[in] imIn : input image
+   * @param[in] imMask : mask
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T geoDilate(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut,
@@ -78,7 +90,12 @@ namespace smil
   /** @endcond */
 
   /**
-   * Geodesic erosion
+   * geoErode() - Geodesic erosion
+   *
+   * @param[in] imIn : input image
+   * @param[in] imMask : mask
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T geoErode(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut,
@@ -109,7 +126,12 @@ namespace smil
   /** @endcond */
 
   /**
-   * Geodesic Reconstruction
+   * geoBuild() - Geodesic Reconstruction
+   *
+   * @param[in] imIn : input image
+   * @param[in] imMask : mask
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T geoBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut,
@@ -135,7 +157,12 @@ namespace smil
   }
 
   /**
-   * Geodesic Dual Reconstruction
+   * geoDualBuild() - Geodesic Dual Reconstruction
+   *
+   * @param[in] imIn : input image
+   * @param[in] imMask : mask
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T geoDualBuild(const Image<T> &imIn, const Image<T> &imMask,
@@ -161,6 +188,14 @@ namespace smil
     return RES_OK;
   }
 
+  /*
+   * #    #   #   ######  #####          ####   #    #  ######  #    #  ######
+   * #    #   #   #       #    #        #    #  #    #  #       #    #  #
+   * ######   #   #####   #    #  ###   #    #  #    #  #####   #    #  ####
+   * #    #   #   #       #####         #  # #  #    #  #       #    #  #
+   * #    #   #   #       #   #         #   #   #    #  #       #    #  #
+   * #    #   #   ######  #    #         ### #   ####   ######   ####   ######
+   */
   /** @cond */
   template <class T>
   RES_T initBuildHierarchicalQueue(const Image<T> &imIn,
@@ -291,7 +326,6 @@ namespace smil
     }
     return RES_OK;
   }
-  /** @endcond */
 
   template <class T> struct minFunctor {
     inline T operator()(T a, T b)
@@ -306,9 +340,15 @@ namespace smil
       return max(a, b);
     }
   };
+  /** @endcond */
 
   /**
-   * Dual reconstruction (using hierarchical queues).
+   * dualBuild() - Dual reconstruction (using hierarchical queues).
+   *
+   * @param[in] imIn : input image
+   * @param[in] imMask : mask
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T dualBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut,
@@ -340,7 +380,12 @@ namespace smil
   }
 
   /**
-   * Reconstruction (using hierarchical queues).
+   * build() - Reconstruction (using hierarchical queues).
+   *
+   * @param[in] imIn : input image
+   * @param[in] imMask : mask
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T build(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut,
@@ -375,7 +420,12 @@ namespace smil
   }
 
   /**
-   * Reconstruction (using hierarchical queues).
+   * binBuild() - Reconstruction (using hierarchical queues).
+   *
+   * @param[in] imIn : input image
+   * @param[in] imMask : mask
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T binBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut,
@@ -442,9 +492,14 @@ namespace smil
   //     }
 
   /**
-   * h-Reconstuction
+   * hBuild() - h-Reconstuction
    *
    * Performs a subtraction of size @b height followed by a reconstruction
+   *
+   * @param[in] imIn : input image
+   * @param[in] height : value to be subtracted to the image values
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T hBuild(const Image<T> &imIn, const T &height, Image<T> &imOut,
@@ -467,9 +522,14 @@ namespace smil
   }
 
   /**
-   * Dual h-Reconstuction
+   * hDualBuild() - Dual h-Reconstuction
    *
    * Performs an addition of size @b height followed by a dual reconstruction
+   *
+   * @param[in] imIn : input image
+   * @param[in] height : value to be added to the image values
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T hDualBuild(const Image<T> &imIn, const T &height, Image<T> &imOut,
@@ -492,9 +552,13 @@ namespace smil
   }
 
   /**
-   * Opening by reconstruction
+   * buildOpen() - Opening by reconstruction
    *
    * Erosion followed by a reconstruction
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T buildOpen(const Image<T> &imIn, Image<T> &imOut,
@@ -513,7 +577,11 @@ namespace smil
   }
 
   /**
-   * Closing by reconstruction
+   * buildClose() - Closing by reconstruction
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T buildClose(const Image<T> &imIn, Image<T> &imOut,
@@ -532,7 +600,11 @@ namespace smil
   }
 
   /**
-   * Hole filling
+   * fillHoles() - Hole filling
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T fillHoles(const Image<T> &imIn, Image<T> &imOut,
@@ -554,7 +626,11 @@ namespace smil
   }
 
   /**
-   * Dual hole filling
+   * levelPics() - Dual hole filling
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T levelPics(const Image<T> &imIn, Image<T> &imOut,

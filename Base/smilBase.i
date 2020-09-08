@@ -257,5 +257,5 @@ TEMPLATE_WRAP_FUNC(inertiaMatrices);
 TEMPLATE_WRAP_FUNC_2T_CROSS(inertiaMatrices);
 
 %include "DImageMatrix.hpp"
-TEMPLATE_WRAP_FUNC(matMul);
-
+TEMPLATE_WRAP_FUNC(matMultiply);
+TEMPLATE_WRAP_FUNC(matTranspose);

@@ -136,81 +136,11 @@ namespace smil
 
   /** inertiaMatrices() -
    *
-   * @param[in] imLbl : input @b labeled image
-   * @param[in] onlyNonZero :
-   * @param[in] central : blobs centered on their barycenters
-   */
-  template <typename T>
-  map<T, Vector_double> inertiaMatrices(const Image<T> &imLbl,
-                                        const bool onlyNonZero = true,
-                                        const bool central    = false)
-  {
-    map<T, Vector_double> inertia;
-
-    if (!imLbl.isAllocated())
-    {
-      ERR_MSG("Input image not allocated !!!");
-      return inertia;
-    }
-
-    bool im3d = (imLbl.getDimension() == 3);
- 
-    map<T, Blob> blobs            = computeBlobs(imLbl, onlyNonZero);
-    map<T, Vector_double> moments = measBlobMoments(imLbl, blobs);
-
-    typedef typename map<T, Blob>::iterator blobIter;
-    for (blobIter it = blobs.begin(); it != blobs.end(); it++) {
-      if (central)
-        moments[it->first] = centerMoments(moments[it->first]);
-
-      Vector_double m(3);
-      if (im3d) {
-        Vector_double mr(9, 0.);
-
-        if (moments[it->first].size() != 10)
-        {
-          ERR_MSG("Not enough moments...");
-          continue;
-        }
-        mr[0] = moments[it->first][8] + moments[it->first][9];
-        mr[1] = - moments[it->first][4];
-        mr[2] = - moments[it->first][5];
-
-        mr[3] = - moments[it->first][4];
-        mr[4] = moments[it->first][7] + moments[it->first][9];
-        mr[5] = - moments[it->first][6];
-
-        mr[6] = - moments[it->first][5];
-        mr[7] = - moments[it->first][6];
-        mr[8] = moments[it->first][7] + moments[it->first][8];
-        m = mr;
-        inertia[it->first] = mr;
-      } else {
-        Vector_double mr(4, 0.);
-
-        if (moments[it->first].size() != 6)
-        {
-          ERR_MSG("Not enough moments...");
-          continue;
-        }
-        mr.resize(4);
-        mr[0] = moments[it->first][4];
-        mr[1] = - moments[it->first][3];
-        
-        mr[2] = - moments[it->first][3];
-        mr[3] = moments[it->first][5];
-        m = mr;
-        inertia[it->first] = mr;
-      }
-    }
-    return inertia;
-  }
-
-  /** inertiaMatrices() -
-   *
    * @param[in] imIn : input image
    * @param[in] blobs : blobs in the image
    * @param[in] central : blobs centered on their barycenters
+   *
+   * @smilexample{example-inertia-matrix.py}
    */
   template <typename T, typename labelT>
   map<labelT, Vector_double> inertiaMatrices(const Image<T> &imIn,
@@ -273,6 +203,82 @@ namespace smil
       }
     }
     return inertia;
+  }
+
+  /** inertiaMatrices() -
+   *
+   * @param[in] imLbl : input @b labeled image
+   * @param[in] onlyNonZero :
+   * @param[in] central : blobs centered on their barycenters
+   */
+  template <typename T>
+  map<T, Vector_double> inertiaMatrices(const Image<T> &imLbl,
+                                        const bool onlyNonZero = true,
+                                        const bool central    = false)
+  {
+    map<T, Vector_double> inertia;
+
+    if (!imLbl.isAllocated())
+    {
+      ERR_MSG("Input image not allocated !!!");
+      return inertia;
+    }
+
+    map<T, Blob> blobs            = computeBlobs(imLbl, onlyNonZero);
+#if 1
+    return inertiaMatrices(imLbl, blobs, central);
+#else
+    map<T, Vector_double> moments = measBlobMoments(imLbl, blobs);
+
+    bool im3d = (imLbl.getDimension() == 3);
+ 
+    typedef typename map<T, Blob>::iterator blobIter;
+    for (blobIter it = blobs.begin(); it != blobs.end(); it++) {
+      if (central)
+        moments[it->first] = centerMoments(moments[it->first]);
+
+      Vector_double m(3);
+      if (im3d) {
+        Vector_double mr(9, 0.);
+
+        if (moments[it->first].size() != 10)
+        {
+          ERR_MSG("Not enough moments...");
+          continue;
+        }
+        mr[0] = moments[it->first][8] + moments[it->first][9];
+        mr[1] = - moments[it->first][4];
+        mr[2] = - moments[it->first][5];
+
+        mr[3] = - moments[it->first][4];
+        mr[4] = moments[it->first][7] + moments[it->first][9];
+        mr[5] = - moments[it->first][6];
+
+        mr[6] = - moments[it->first][5];
+        mr[7] = - moments[it->first][6];
+        mr[8] = moments[it->first][7] + moments[it->first][8];
+        m = mr;
+        inertia[it->first] = mr;
+      } else {
+        Vector_double mr(4, 0.);
+
+        if (moments[it->first].size() != 6)
+        {
+          ERR_MSG("Not enough moments...");
+          continue;
+        }
+        mr.resize(4);
+        mr[0] = moments[it->first][4];
+        mr[1] = - moments[it->first][3];
+        
+        mr[2] = - moments[it->first][3];
+        mr[3] = moments[it->first][5];
+        m = mr;
+        inertia[it->first] = mr;
+      }
+    }
+    return inertia;
+#endif
   }
 
   /** @}*/

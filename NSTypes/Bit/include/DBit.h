@@ -60,7 +60,7 @@ namespace smil
 
     
     template <>
-    RES_T matMul<Bit>(const Image<Bit> &imIn1, const Image<Bit> &imIn2, Image<Bit> &imOut)
+    RES_T matMultiply<Bit>(const Image<Bit> &imIn1, const Image<Bit> &imIn2, Image<Bit> &imOut)
     {
       return RES_ERR_NOT_IMPLEMENTED; 
     }
