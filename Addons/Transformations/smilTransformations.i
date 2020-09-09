@@ -51,11 +51,6 @@ SMIL_MODULE(smilTransformations)
 
 %include "DTransformations.h"
 
-TEMPLATE_WRAP_FUNC(imageVertFlip);
-TEMPLATE_WRAP_FUNC(imageHorizFlip);
-
-TEMPLATE_WRAP_FUNC(imageRotate);
-
 // TEMPLATE_WRAP_FUNC(imageResize);
 // TEMPLATE_WRAP_FUNC(imageScale);
 

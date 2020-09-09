@@ -38,8 +38,8 @@
  * __HEAD__ - Stop here !
  */
 
-#ifndef _D_IMAGE_FLIP_HPP_
-#define _D_IMAGE_FLIP_HPP_
+#ifndef _D_IMAGE_ROTATE_HPP_
+#define _D_IMAGE_ROTATE_HPP_
 
 #include "Core/include/DCore.h"
 #include "Base/include/DBase.h"
@@ -53,82 +53,58 @@
 
 namespace smil
 {
-  /*
-   *
-   */
-  template <class T> RES_T imageVertFlip(Image<T> &imIn, Image<T> &imOut)
-  {
-    if (&imIn == &imOut) {
-      Image<T> imTmp = Image<T>(imIn, true);
-      return imageHorizFlip(imTmp, imOut);
-    }
 
-    ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
-
-    typename Image<T>::sliceType *slicesIn  = imIn.getSlices();
-    typename Image<T>::sliceType *slicesOut = imOut.getSlices();
-    typename Image<T>::sliceType linesIn;
-    typename Image<T>::sliceType linesOut;
-
-    size_t width  = imIn.getWidth();
-    size_t height = imIn.getHeight();
-    size_t depth  = imIn.getDepth();
-
-#ifdef USE_OPEN_MP
-#pragma omp parallel for
-#endif // USE_OPEN_MP
-    for (size_t k = 0; k < depth; k++) {
-      linesIn  = slicesIn[k];
-      linesOut = slicesOut[k];
-
-      for (size_t j = 0; j < height; j++)
-        copyLine<T>(linesIn[j], width, linesOut[height - 1 - j]);
-    }
-
-    imOut.modified();
-
-    return RES_OK;
-  }
 
   /*
    *
    */
-  template <class T> RES_T imageHorizFlip(Image<T> &imIn, Image<T> &imOut)
+
+
+
+  /*
+   * First primitive version
+   */
+  template <class T>
+  RES_T XrotateX90(Image<T> &imIn, int count, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
-
-    if (&imIn == &imOut) {
-      Image<T> imTmp = Image<T>(imIn, true);
-      return imageHorizFlip(imTmp, imOut);
+    RES_T result = RES_OK;
+    
+    if (&imIn == &imOut)
+    {
+      Image<T> imTmp(imIn, true);
+      return rotate(imTmp, count, imOut);
     }
 
-    typename Image<T>::sliceType linesIn  = imIn.getLines();
-    typename Image<T>::sliceType linesOut = imOut.getLines();
+    count = count % 4;
 
-    size_t width  = imIn.getWidth();
-    size_t height = imIn.getHeight();
-    size_t depth  = imIn.getDepth();
-
-#ifdef USE_OPEN_MP
-#pragma omp parallel for
-#endif // USE_OPEN_MP
-    for (size_t k = 0; k < height * depth; k++) {
-      T *lIn  = linesIn[k];
-      T *lOut = linesOut[k];
-
-      for (size_t j = 0; 2 * j < width; j++) {
-        lOut[j]             = lIn[width - 1 - j];
-        lOut[width - 1 - j] = lIn[j];
-      }
+    ImageFreezer freeze(imOut);
+    switch (count) {
+    case 0:
+      result = copy(imIn, imOut);
+      break;
+    case 1:
+      result = matTranspose(imIn, imOut);
+      if (result == RES_OK)
+        result = horizFlip(imOut, imOut);
+      break;
+    case 2:
+      result = vertFlip(imIn, imOut);
+      if (result == RES_OK)
+        result = horizFlip(imOut, imOut);
+      break;
+    case 3:
+      result = horizFlip(imIn, imOut);
+      if (result == RES_OK)
+        result = matTranspose(imOut, imOut);
+      break;
+    default:
+      result = RES_ERR;
+      break;
     }
 
-    imOut.modified();
-
-    return RES_OK;
+    return result;
   }
-
 } // namespace smil
 
-#endif // _D_IMAGE_FLIP_HPP_
+#endif // _D_IMAGE_ROTATE_HPP_

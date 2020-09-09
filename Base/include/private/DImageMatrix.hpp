@@ -44,7 +44,7 @@ namespace smil
    */
 
   /** @cond */
-  template <class T> class ImageTransposeClass
+  template <class T> class ImageTransposeFunc
   {
   private:
     vector<int> lut{1, 0, 2};
@@ -86,11 +86,11 @@ namespace smil
     }
 
   public:
-    ImageTransposeClass()
+    ImageTransposeFunc()
     {
       setOrder("yxz");
     }
-    ImageTransposeClass(string order)
+    ImageTransposeFunc(string order)
     {
       if (!setOrder(order))
         ERR_MSG("Unknown transpose order " + order);
@@ -175,7 +175,7 @@ namespace smil
   RES_T matTranspose(const Image<T> &imIn, Image<T> &imOut, string order = "yxz")
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
-    ImageTransposeClass<T> tmat(order);
+    ImageTransposeFunc<T> tmat(order);
     return tmat.transpose(imIn, imOut, order);
   }
 
@@ -191,7 +191,7 @@ namespace smil
   RES_T matTranspose(Image<T> &im, const string order = "yxz")
   {
     ASSERT_ALLOCATED(&im);
-    ImageTransposeClass<T> tmat(order);
+    ImageTransposeFunc<T> tmat(order);
     return tmat.transpose(im, im, order);
   }
 

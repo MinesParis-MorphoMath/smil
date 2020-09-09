@@ -41,8 +41,16 @@ namespace smil
    * @{
    */
 
+  /*
+   *  ####   #####    ####   #####
+   * #    #  #    #  #    #  #    #
+   * #       #    #  #    #  #    #
+   * #       #####   #    #  #####
+   * #    #  #   #   #    #  #
+   *  ####   #    #   ####   #
+   */
   /**
-   * Crop image
+   * crop() - Crop image
    *
    * Crop an image into an output image
    * @param imIn : input image
@@ -73,7 +81,7 @@ namespace smil
   }
 
   /**
-   * Crop image
+   * crop() - Crop image
    *
    * Crop an image in the same image.
    *
@@ -93,7 +101,7 @@ namespace smil
 
   // 2D overload
   /**
-   * @b 2D Crop image
+   * crop() - @b 2D Crop image
    *
    * Crop an image (this is just an overload)
    *
@@ -104,7 +112,7 @@ namespace smil
    * @param imOut : input image
    *
    * @overload
-   */  
+   */
   template <class T>
   RES_T crop(const Image<T> &imIn, size_t startX, size_t startY, size_t sizeX,
              size_t sizeY, Image<T> &imOut)
@@ -113,7 +121,7 @@ namespace smil
   }
 
   /**
-   * @b 2D Crop image
+   * crop() - @b 2D Crop image
    *
    * Crop an image in itself (this is just an overload)
    *
@@ -123,7 +131,7 @@ namespace smil
    * @param sizeX, sizeY : size of the zone in the input image
    *
    * @overload
-   */  
+   */
   template <class T>
   RES_T crop(Image<T> &imInOut, size_t startX, size_t startY, size_t sizeX,
              size_t sizeY)
@@ -131,8 +139,16 @@ namespace smil
     return crop(imInOut, startX, startY, 0, sizeX, sizeY, 1);
   }
 
+  /*
+   *   ##    #####   #####   #####    ####   #####   #####   ######  #####
+   *  #  #   #    #  #    #  #    #  #    #  #    #  #    #  #       #    #
+   * #    #  #    #  #    #  #####   #    #  #    #  #    #  #####   #    #
+   * ######  #    #  #    #  #    #  #    #  #####   #    #  #       #####
+   * #    #  #    #  #    #  #    #  #    #  #   #   #    #  #       #   #
+   * #    #  #####   #####   #####    ####   #    #  #####   ######  #    #
+   */
   /**
-   * Add a border of size @b bSize around the original image
+   * addBorder() - Add a border of size @b bSize around the original image
    *
    * @param[in] imIn : input image
    * @param[in] bSize : border size
@@ -140,7 +156,7 @@ namespace smil
    * @param[in] borderValue : value to assign to each pixel in the border
    *
    * @note
-   *  Image size is increased by <b><c>2 * bSize</c></b> in each direction
+   *  Image size is increased by @txtbold{2 * bSize} pixels in each direction
    *
    */
   template <class T>
@@ -173,76 +189,301 @@ namespace smil
     return RES_OK;
   }
 
-  /**
-   * Vertical flip (horizontal mirror).
-   *
-   * Quick implementation (needs better integration and optimization).
+  /*
+   * ######  #          #    #####
+   * #       #          #    #    #
+   * #####   #          #    #    #
+   * #       #          #    #####
+   * #       #          #    #
+   * #       ######     #    #
    */
-  template <class T> RES_T vFlip(Image<T> &imIn, Image<T> &imOut)
+  /**
+   * @cond
+   * FlipClassFunc
+   */
+  template <class T> class FlipClassFunc
   {
-    if (&imIn == &imOut)
-      return vFlip(imIn);
-
-    ASSERT_ALLOCATED(&imIn);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
-
-    typename Image<T>::sliceType *slicesIn  = imIn.getSlices();
-    typename Image<T>::sliceType *slicesOut = imOut.getSlices();
-    typename Image<T>::sliceType linesIn;
-    typename Image<T>::sliceType linesOut;
-
-    size_t width  = imIn.getWidth();
-    size_t height = imIn.getHeight();
-    size_t depth  = imIn.getDepth();
-
-    for (size_t k = 0; k < depth; k++) {
-      linesIn  = slicesIn[k];
-      linesOut = slicesOut[k];
-
-      for (size_t j = 0; j < height; j++)
-        copyLine<T>(linesIn[j], width, linesOut[height - 1 - j]);
+  private:
+    void copyReverse(T *in, size_t width, T *out)
+    {
+      for (size_t i = 0; i < width; i++)
+        out[i] = in[width - 1 - i];
     }
 
-    imOut.modified();
+  public:
+    RES_T flipIt(Image<T> &imIn, Image<T> &imOut, string direction)
+    {
+      ASSERT_ALLOCATED(&imIn, &imOut);
+      ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    return RES_OK;
-  }
-
-  template <class T> RES_T vFlip(Image<T> &imInOut)
-  {
-    ASSERT_ALLOCATED(&imInOut)
-
-    typename Image<T>::sliceType *slicesIn = imInOut.getSlices();
-    typename Image<T>::sliceType linesIn;
-
-    size_t width  = imInOut.getWidth();
-    size_t height = imInOut.getHeight();
-    size_t depth  = imInOut.getDepth();
-
-    typename Image<T>::lineType tmpLine = ImDtTypes<T>::createLine(width);
-
-    for (size_t k = 0; k < depth; k++) {
-      linesIn = slicesIn[k];
-
-      for (size_t j = 0; j < height / 2; j++) {
-        copyLine<T>(linesIn[j], width, tmpLine);
-        copyLine<T>(linesIn[height - 1 - j], width, linesIn[j]);
-        copyLine<T>(tmpLine, width, linesIn[height - 1 - j]);
+      if (&imIn == &imOut) {
+        Image<T> imTmp = Image<T>(imIn, true);
+        return flipIt(imTmp, imOut, direction);
       }
-    }
 
-    ImDtTypes<T>::deleteLine(tmpLine);
-    imInOut.modified();
-    return RES_OK;
+      bool vflip = (direction == "vertical");
+
+      typename Image<T>::sliceType *slicesIn  = imIn.getSlices();
+      typename Image<T>::sliceType *slicesOut = imOut.getSlices();
+
+      size_t width  = imIn.getWidth();
+      size_t height = imIn.getHeight();
+      size_t depth  = imIn.getDepth();
+
+      ImageFreezer freeze(imOut);
+#ifdef USE_OPEN_MP
+      int nthreads = Core::getInstance()->getNumberOfThreads();
+#pragma omp parallel for num_threads(nthreads)
+#endif // USE_OPEN_MP
+      for (size_t k = 0; k < depth; k++) {
+        typename Image<T>::sliceType linesIn;
+        typename Image<T>::sliceType linesOut;
+        linesIn  = slicesIn[k];
+        linesOut = slicesOut[k];
+
+        if (vflip)
+          for (size_t j = 0; j < height; j++)
+            copyLine<T>(linesIn[j], width, linesOut[height - 1 - j]);
+        else
+          for (size_t j = 0; j < height; j++)
+            copyReverse(linesIn[j], width, linesOut[j]);
+      }
+
+      return RES_OK;
+    }
+  };
+  /** @endcond */
+
+  /**
+   * vertFlip() : Vertical Flip
+   *
+   * Mirror an image using an horizontal line (or plan for 3D images) in the
+   * center of the image. In 3D images, each slice is flipped vertically.
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   */
+  template <class T> RES_T vertFlip(Image<T> &imIn, Image<T> &imOut)
+  {
+    string direction = "vertical";
+    FlipClassFunc<T> flip;
+    return flip.flipIt(imIn, imOut, "vertical");
   }
 
   /**
-   * Image translation.
+   * vertFlip() : Vertical Flip
    *
+   * @param[in,out]  im : input/output Image
+   *
+   * @overload
+   */
+  template <class T> RES_T vertFlip(Image<T> &im)
+  {
+    return vertFlip(im, im);
+  }
+
+  /**
+   * horizFlip() : Horizontal Flip
+   *
+   * Mirror an image using a vertical line (or plan for 3D images) in the
+   * center of the image. In 3D images, each slice is flipped horizontally.
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   */
+  template <class T> RES_T horizFlip(Image<T> &imIn, Image<T> &imOut)
+  {
+    string direction = "horizontal";
+    FlipClassFunc<T> flip;
+    return flip.flipIt(imIn, imOut, direction);
+  }
+
+  /**
+   * horizFlip() : Horizontal Flip
+   *
+   * @param[in,out]  im : input/output Image
+   *
+   * @overload
+   */
+  template <class T> RES_T horizFlip(Image<T> &im)
+  {
+    return horizFlip(im, im);
+  }
+
+  /*
+   * #####    ####    #####    ##     #####  ######
+   * #    #  #    #     #     #  #      #    #
+   * #    #  #    #     #    #    #     #    #####
+   * #####   #    #     #    ######     #    #
+   * #   #   #    #     #    #    #     #    #
+   * #    #   ####      #    #    #     #    ######
+   */
+  /** @cond */
+  template <class T> class ImageRotateFunct
+  {
+  public:
+    ImageRotateFunct()
+    {
+    }
+
+    ~ImageRotateFunct()
+    {
+    }
+
+    RES_T Rotate(Image<T> &imIn, int count, Image<T> &imOut)
+    {
+      count = count % 4;
+
+      return RotateX90(imIn, count, imOut);
+    }
+
+  private:
+    RES_T RotateX90(Image<T> &imIn, int count, Image<T> &imOut)
+    {
+      ASSERT_ALLOCATED(&imIn, &imOut);
+
+      count     = count % 4;
+      int angle = count * 90;
+
+      if (angle == 0) {
+        ImageFreezer freeze(imOut);
+        return copy(imIn, imOut);
+      }
+
+      off_t w = imIn.getWidth();
+      off_t h = imIn.getHeight();
+      off_t d = imIn.getDepth();
+
+      /* 90 and 270 degres */
+      if (angle == 90 || angle == 270) {
+        imOut.setSize(h, w, d);
+      } else {
+        imOut.setSize(w, h, d);
+      }
+
+      ImageFreezer freeze(imOut);
+
+      typedef typename ImDtTypes<T>::lineType lineType;
+      lineType pixIn  = imIn.getPixels();
+      lineType pixOut = imOut.getPixels();
+
+      switch (angle) {
+      case 90:
+#ifdef USE_OPEN_MP
+#pragma omp parallel for
+#endif // USE_OPEN_MP
+        for (off_t k = 0; k < d; k++) {
+          off_t offset = k * w * h;
+          T *sIn       = (T *) (pixIn + offset);
+          T *sOut      = (T *) (pixOut + offset);
+          for (off_t j = 0; j < h; j++) {
+            for (off_t i = 0; i < w; i++) {
+              sOut[i * h + (w - 1 - j)] = sIn[j * w + i];
+            }
+          }
+        }
+        break;
+      case 180:
+#ifdef USE_OPEN_MP
+#pragma omp parallel for
+#endif // USE_OPEN_MP
+        for (off_t k = 0; k < d; k++) {
+          off_t offset = k * w * h;
+          T *sIn       = (T *) (pixIn + offset);
+          T *sOut      = (T *) (pixOut + offset);
+          for (off_t j = 0; j < h; j++) {
+            for (off_t i = 0; i < w; i++) {
+              sOut[(h - 1 - j) * w + (w - 1 - i)] = sIn[j * w + i];
+            }
+          }
+        }
+        break;
+      case 270:
+#ifdef USE_OPEN_MP
+#pragma omp parallel for
+#endif // USE_OPEN_MP
+        for (off_t k = 0; k < d; k++) {
+          off_t offset = k * w * h;
+          T *sIn       = (T *) (pixIn + offset);
+          T *sOut      = (T *) (pixOut + offset);
+          for (off_t j = 0; j < h; j++) {
+            for (off_t i = 0; i < w; i++) {
+              sOut[(w - 1 - i) * h + j] = sIn[j * w + i];
+            }
+          }
+        }
+        break;
+      default:
+        break;
+      }
+
+      imOut.modified();
+      return RES_OK;
+    }
+  };
+  /** @endcond */
+
+  /**
+   * rotateX90() - Rotate an image by an angle multiple of 90 degres
+   *
+   * @param[in]  imIn : input Image
+   * @param[in]  count : number of 90 degres steps to rotate
+   * @param[out] imOut : output Image
+   *
+   * @note
+   * - If @b count equals @b 0, just copy the input image into the output image.
+   * @note
+   * - When calling this function on @b 3D images, rotation is done around @b z
+   * axis.
+   * - Rotation around @b x or @b y axis is possible thanks to matTranspose()
+   * call. See the example below on how to rotate around @b y axis.
+   *
+   * @smilexample{Rotation around axis y, example-3D-image-rotate.py}
+   */
+  template <class T> RES_T rotateX90(Image<T> &imIn, int count, Image<T> &imOut)
+  {
+    ImageRotateFunct<T> imr;
+
+    if (&imIn == &imOut) {
+      Image<T> imTmp(imIn, true);
+      return imr.Rotate(imTmp, count, imOut);
+    }
+
+    return imr.Rotate(imIn, count, imOut);
+  }
+
+  /**
+   * rotateX90() - Rotate an image by an angle multiple of 90 degres
+   *
+   * @param[in,out]  im : input/output Image
+   * @param[in]  count : number of 90 degres steps to rotate
+   *
+   * @overload
+   */
+  template <class T> RES_T rotateX90(Image<T> &im, int count)
+  {
+    return rotateX90(im, count, im);
+  }
+
+  /*
+   * #####  #####     ##    #    #   ####   #         ##     #####  ######
+   *   #    #    #   #  #   ##   #  #       #        #  #      #    #
+   *   #    #    #  #    #  # #  #   ####   #       #    #     #    #####
+   *   #    #####   ######  #  # #       #  #       ######     #    #
+   *   #    #   #   #    #  #   ##  #    #  #       #    #     #    #
+   *   #    #    #  #    #  #    #   ####   ######  #    #     #    ######
+   */
+  /**
+   * translate() - %Image translation.
+   *
+   * @param[in] imIn : input image
+   * @param[in] dx, dy, dz : shift to be applied
+   * @param[out] imOut : output image
+   * @param[in] borderValue : value to be assigned to moved pixels
    */
   template <class T>
   RES_T translate(const Image<T> &imIn, int dx, int dy, int dz, Image<T> &imOut,
-              T borderValue = ImDtTypes<T>::min())
+                  T borderValue = ImDtTypes<T>::min())
   {
     ASSERT_ALLOCATED(&imIn)
     ASSERT_SAME_SIZE(&imIn, &imOut)
@@ -276,13 +517,14 @@ namespace smil
     return RES_OK;
   }
 
-  template <class T>
-  RES_T translate(const Image<T> &imIn, int dx, int dy, Image<T> &imOut,
-              T borderValue = ImDtTypes<T>::min())
-  {
-    return translate<T>(imIn, dx, dy, 0, imOut, borderValue);
-  }
-
+  /**
+   * translate() - %Image translation.
+   *
+   *
+   * @param[in] imIn : input image
+   * @param[in] dx, dy, dz : shift to be applied
+   * @returns translated image
+   */
   template <class T>
   ResImage<T> translate(const Image<T> &imIn, int dx, int dy, int dz)
   {
@@ -291,6 +533,30 @@ namespace smil
     return imOut;
   }
 
+  /**
+   * translate() - @txtbold{2D Image} translation.
+   *
+   * The same translation is applied to each slice
+   *
+   * @param[in] imIn : input image
+   * @param[in] dx, dy : shift to be applied
+   * @param[out] imOut : output image
+   * @param[in] borderValue : value to be assigned to moved pixels
+   */
+  template <class T>
+  RES_T translate(const Image<T> &imIn, int dx, int dy, Image<T> &imOut,
+                  T borderValue = ImDtTypes<T>::min())
+  {
+    return translate<T>(imIn, dx, dy, 0, imOut, borderValue);
+  }
+
+  /**
+   * translate() - @txtbold{2D Image} translation.
+   *
+   * @param[in] imIn : input image
+   * @param[in] dx, dy : shift to be applied
+   * @returns translated image
+   */
   template <class T> ResImage<T> translate(const Image<T> &imIn, int dx, int dy)
   {
     ResImage<T> imOut(imIn);
@@ -298,10 +564,19 @@ namespace smil
     return imOut;
   }
 
+  /*
+   * #####   ######   ####      #    ######  ######
+   * #    #  #       #          #        #   #
+   * #    #  #####    ####      #       #    #####
+   * #####   #            #     #      #     #
+   * #   #   #       #    #     #     #      #
+   * #    #  ######   ####      #    ######  ######
+   */
   /**
    * BMI: 08.08.2018
    *
-   * Resize imIn to sx,sy -> imOut. No bilinear interpolation. Closest value
+   * resize() - Resize imIn to sx,sy -> imOut. No bilinear interpolation.
+   * Closest value
    *
    * Quick implementation (needs better integration and optimization).
    */
@@ -381,7 +656,8 @@ namespace smil
   }
 
   /**
-   * Resize imIn with the dimensions of imOut and put the result in imOut.
+   * resizeClosest() - Resize imIn with the dimensions of imOut and put the
+   * result in imOut.
    */
   template <class T> RES_T resizeClosest(Image<T> &imIn, Image<T> &imOut)
   {
@@ -389,7 +665,18 @@ namespace smil
   }
 
   /**
-   * 2D bilinear resize algorithm.
+   * resizeClosest() -
+   */
+  template <class T> RES_T resizeClosest(Image<T> &imIn, UINT sx, UINT sy)
+  {
+    ASSERT_ALLOCATED(&imIn)
+    Image<T> tmpIm(imIn, true); // clone
+    imIn.setSize(sx, sy);
+    return resizeClosest<T>(tmpIm, imIn);
+  }
+
+  /**
+   * resize() - 2D bilinear resize algorithm.
    *
    * Resize imIn to sx,sy -> imOut.
    *
@@ -451,11 +738,25 @@ namespace smil
   }
 
   /**
-   * Resize imIn with the dimensions of imOut and put the result in imOut.
+   * resize() - Resize imIn with the dimensions of imOut and put the result in
+   * imOut.
    */
   template <class T> RES_T resize(Image<T> &imIn, Image<T> &imOut)
   {
     return resize(imIn, imOut.getWidth(), imOut.getHeight(), imOut);
+  }
+
+  /**
+   * resize() -
+   */
+  template <class T> RES_T resize(Image<T> &imIn, UINT sx, UINT sy)
+
+  {
+    ASSERT_ALLOCATED(&imIn)
+    Image<T> tmpIm(imIn, true); // clone
+
+    imIn.setSize(sx, sy);
+    return resize<T>(tmpIm, imIn);
   }
 
   /**
@@ -469,6 +770,9 @@ namespace smil
                      size_t(imIn.getHeight() * cy), imOut);
   }
 
+  /**
+   * scale() -
+   */
   template <class T> RES_T scale(Image<T> &imIn, double cx, double cy)
   {
     ASSERT_ALLOCATED(&imIn)
@@ -477,7 +781,7 @@ namespace smil
   }
 
   /**
-   * Scale image
+   * scaleClosest() - Scale image
    * If imIn has the size (W,H), the size of imOut will be (W*cx, H*cy).
    */
   template <class T>
@@ -487,27 +791,15 @@ namespace smil
                             size_t(imIn.getHeight() * cy), imOut);
   }
 
+  /**
+   * scaleClosest() - Scale image
+   * If imIn has the size (W,H), the size of imOut will be (W*cx, H*cy).
+   */
   template <class T> RES_T scaleClosest(Image<T> &imIn, double cx, double cy)
   {
     ASSERT_ALLOCATED(&imIn)
     Image<T> tmpIm(imIn, true); // clone
     return resizeClosest(tmpIm, cx, cy, imIn);
-  }
-
-  template <class T> RES_T resize(Image<T> &imIn, UINT sx, UINT sy)
-  {
-    ASSERT_ALLOCATED(&imIn)
-    Image<T> tmpIm(imIn, true); // clone
-    imIn.setSize(sx, sy);
-    return resize<T>(tmpIm, imIn);
-  }
-
-  template <class T> RES_T resizeClosest(Image<T> &imIn, UINT sx, UINT sy)
-  {
-    ASSERT_ALLOCATED(&imIn)
-    Image<T> tmpIm(imIn, true); // clone
-    imIn.setSize(sx, sy);
-    return resizeClosest<T>(tmpIm, imIn);
   }
 
   /** @}*/

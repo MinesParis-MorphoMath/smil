@@ -62,118 +62,7 @@ namespace smil
    *
    */
 
-  /**
-   * @brief mageTranspose() : 3D image transposition
-   *
-   * Transpose 3D images. The image is mirrored with respect to the main
-   * diagonal and the shape is adapted.
-   *
-   * The order parameter defines where to redirect input axes.
-   * E.g. : if @b order is @b xzy, axes @b y and @b z will be exchanged.
-   *
-   * Possible values for parameter @b order are : <b> xyz, xzy, yxz, yzx, zxy,
-   * zyx, xy, yx</b> and an empty string. Notice that @b xyz and @b xy, does
-   * nothing but just copies input image into output image.
-   *
-   * @param[in]  imIn : input Image
-   * @param[in]  order : axis order in the output image
-   * @param[out] imOut : output Image
-   *
-   */
-  template <class T>
-  RES_T imageTranspose(const Image<T> &imIn, Image<T> &imOut,
-                       const string order = "yxz");
 
-  /**
-   * @brief imageTranspose() : 3D image transposition
-   *
-   * @param[in,out]  im : input/output Image
-   * @param[in]  order : axis order in the output image
-   *
-   * @overload
-   */
-  template <class T>
-  RES_T imageTranspose(Image<T> &im, const string order = "yxz")
-  {
-    return imageTranspose(im, im, order);
-  }
-
-  /**
-   * @brief imageVertFlip() : Vertical Flip
-   *
-   * Mirror an image using an horizontal line (or plan for 3D images) in the
-   * center of the image.
-   *
-   * @param[in] imIn : input image
-   * @param[out] imOut : output image
-   */
-  template <class T> RES_T imageVertFlip(Image<T> &imIn, Image<T> &imOut);
-
-  /**
-   * @brief imageVertFlip() : Vertical Flip
-   *
-   * @param[in,out]  im : input/output Image
-   *
-   * @overload
-   */
-  template <class T> RES_T imageVertFlip(Image<T> &im)
-  {
-    return imageVertFlip(im, im);
-  }
-
-  /**
-   * @brief imageHorizFlip() : Horizontal Flip
-   *
-   * Mirror an image using a vertical line (or plan for 3D images) in the
-   * center of the image.
-   *
-   * @param[in] imIn : input image
-   * @param[out] imOut : output image
-   */
-  template <class T> RES_T imageHorizFlip(Image<T> &imIn, Image<T> &imOut);
-
-  /**
-   * @brief imageHorizFlip() : Horizontal Flip
-   *
-   * @param[in,out]  im : input/output Image
-   *
-   * @overload
-   */
-  template <class T> RES_T imageHorizFlip(Image<T> &im)
-  {
-    return imageHorizFlip(im, im);
-  }
-
-  /**
-   * @brief imageRotate() : Rotate an image by an angle multiple of 90 degres
-   *
-   * @param[in]  imIn : input Image
-   * @param[in]  angle : rotation angle (0, 90, 180 or 270, 360, 450, ...) in
-   * degres
-   * @param[out] imOut : output Image
-   *
-   * @note
-   * - If @b angle equals @b 0, just copy the input image into the output image.
-   * @note
-   * - When calling this function on @b 3D images, all slices are rotated the
-   * same way than the first slice.
-   */
-  template <class T>
-  RES_T imageRotate(Image<T> &imIn, int angle, Image<T> &imOut);
-
-  /**
-   * @brief imageRotate() : Rotate an image by an angle multiple of 90 degres
-   *
-   * @param[in,out]  im : input/output Image
-   * @param[in]  angle : rotation angle (0, 90, 180 or 270, 360, 450, ...) in
-   * degres
-   *
-   * @overload
-   */
-  template <class T> RES_T imageRotate(Image<T> &im, int angle)
-  {
-    return imageRotate(im, angle, im);
-  }
 
   /** @cond */
   template <class T>
@@ -200,8 +89,6 @@ namespace smil
 
 } // namespace smil
 
-#include "private/DFlip.hpp"
-#include "private/DRotate.hpp"
 #include "private/DResize.hpp"
 
 #endif // __IM_TRANSFORMATIONS_H__

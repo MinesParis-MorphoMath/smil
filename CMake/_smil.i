@@ -498,6 +498,18 @@ def measModeVal(*args):
   """
   return modeVal(*args)
 
+def hFlip(*args):
+  """
+  Function renamed to follow naming style. Better use horizFlip
+  """
+  return horizFlip(*args)
+
+def vFlip(*args):
+  """
+  Function renamed to follow naming style. Better use vertFlip
+  """
+  return vertFlip(*args)
+
 %}
 
 #endif // SWIGPYTHON
