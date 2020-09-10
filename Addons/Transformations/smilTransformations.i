@@ -44,13 +44,18 @@ SMIL_MODULE(smilTransformations)
 %{
 /* Includes the header in the wrapper code */
 #include "DTransformations.h"
+#include "private/DResize.hpp"
+
 %}
 
 %import smilCore.i
 
-
 %include "DTransformations.h"
+%include "private/DResize.hpp"
 
-// TEMPLATE_WRAP_FUNC(imageResize);
-// TEMPLATE_WRAP_FUNC(imageScale);
+TEMPLATE_WRAP_FUNC(imageResize);
+TEMPLATE_WRAP_FUNC(imageScale);
+
+TEMPLATE_WRAP_FUNC(imageResizeClosest);
+TEMPLATE_WRAP_FUNC(imageScaleClosest);
 

@@ -63,7 +63,15 @@ namespace smil
    */
 
 
+#if 0
+  template <class T>
+  RES_T imageResizeClosest( Image<T> &imIn, size_t width, size_t height,
+                    size_t depth, Image<T> &imOut);
 
+  template <typename T>
+  RES_T imageResizeClosest( Image<T> &imIn, size_t sx, size_t sy,
+                           Image<T> &imOut);
+                           
   /** @cond */
   template <class T>
   RES_T imageScale(const Image<T> &imIn, float kWidth, float kHeight,
@@ -76,14 +84,12 @@ namespace smil
   template <class T>
   RES_T imageScale(const Image<T> &imIn, float k, Image<T> &imOut);
 
-  template <class T>
-  RES_T imageResize(const Image<T> &imIn, size_t width, size_t height,
-                    size_t depth, Image<T> &imOut);
 
   template <class T>
   RES_T imageResize(const Image<T> &imIn, size_t width, size_t height,
                     Image<T> &imOut);
   /** @endcond */
+#endif
 
   /** @} */
 

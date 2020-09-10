@@ -578,7 +578,7 @@ namespace smil
    * resize() - Resize imIn to sx,sy -> imOut. No bilinear interpolation.
    * Closest value
    *
-   * Quick implementation (needs better integration and optimization).
+   * @warning Quick implementation (needs better integration and optimization).
    */
   template <class T>
   RES_T resizeClosest(Image<T> &imIn, size_t sx, size_t sy, Image<T> &imOut)

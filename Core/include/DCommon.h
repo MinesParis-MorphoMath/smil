@@ -37,6 +37,7 @@
 #include <map>
 #include <cmath>
 #include <cstdarg>
+#include <iostream>
 
 #include "private/DTypes.hpp"
 
@@ -153,6 +154,18 @@ namespace smil
     bool operator==(const Point &p2)
     {
       return (x == p2.x && y == p2.y && z == p2.z);
+    }
+    
+    /** operator- - difference
+    */
+    Point<double> operator-(const Point &p2)
+    {
+      return Point<double>((double ) x - p2.x, (double ) y - p2.y, (double ) z - p2.z);
+    }
+
+    void printSelf(string indent = "")
+    {
+      cout << indent << " " << x << "\t" << y << "\t" << z << endl; 
     }
   };
 
