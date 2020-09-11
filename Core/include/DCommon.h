@@ -126,30 +126,41 @@ namespace smil
     T z;
 
     /** Contructor - an empty point
+    *
+    * All coordinates are set to @b 0
     */
     Point() : x(0), y(0), z(0)
     {
     }
 
     /** Constructor from another point
+    *
+    * @note
+    * Both points shall be of the same data type
     */
     Point(const Point &pt) : x(pt.x), y(pt.y), z(pt.z)
     {
     }
 
     /** @b 3D Point Constructor
+    *
+    * @param[in] _x, _y, _z : initial coordinates
     */
     Point(T _x, T _y, T _z) : x(_x), y(_y), z(_z)
     {
     }
 
     /** @b 2D Point Constructor
+    *
+    * @param[in] _x, _y : initial coordinates
     */
     Point(T _x, T _y) : x(_x), y(_y), z(0)
     {
     }
 
     /** operator== - comparison
+    *
+    * @param[in] p2 : point
     */
     bool operator==(const Point &p2)
     {
@@ -162,27 +173,12 @@ namespace smil
     * To be able to accomodate negative values of all data types, the type of
     * returned Point is @b Point<double>
     *
-    * @code{.py}
+    * @smilexample{example-point-minus.py}
     *
-    * import smilPython as sp
-    * p1 = sp.IntPoint(10, 30, 40)
-    * p2 = sp.IntPoint(40, 30, 10)
-    * p3 = p2 - p1
-    * p3.printSelf(" Difference : ")
-    *
-    * @endcode
     */
     Point<double> operator-(const Point &p2)
     {
       return Point<double>((double ) x - p2.x, (double ) y - p2.y, (double ) z - p2.z);
-    }
-    
-    UINT L1()
-    {
-      if (std::is_unsigned<x>::value)
-        return x + y + z;
-      else
-        return abs(x) + abs(y) + abs(z);
     }
 
     /** printSelf() - Print point coordinates
@@ -193,6 +189,7 @@ namespace smil
       cout << indent << " " << x << "\t" << y << "\t" << z << endl; 
     }
   };
+
 
   /** DoublePoint
   *
