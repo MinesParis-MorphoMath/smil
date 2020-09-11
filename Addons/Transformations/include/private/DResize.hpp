@@ -61,10 +61,10 @@ namespace smil
   /** @cond
    *
    */
-  template <class T> class ImageResizeFunc
+  template <class T> class ImageResizeFuncNew
   {
   public:
-    ImageResizeFunc(string method)
+    ImageResizeFuncNew(string method)
     {
       if (method != "linear" && method != "trilinear" && method != "closest")
         this->method = "trilinear";
@@ -72,12 +72,12 @@ namespace smil
         this->method = method;
     }
 
-    ImageResizeFunc()
+    ImageResizeFuncNew()
     {
       method = "trilinear";
     }
 
-    ~ImageResizeFunc()
+    ~ImageResizeFuncNew()
     {
     }
 
@@ -93,11 +93,29 @@ namespace smil
         return resize(tmpIm, width, height, depth, imIn);
       }
 
-      if (algorithm == "closest")
-        return resizeClosest(imIn, width, height, depth, imOut);
-      if (algorithm == "linear" || algorithm == "trilinear")
-        return resizeTrilinear(imIn, width, height, depth, imOut);
-      return resizeTrilinear(imIn, width, height, depth, imOut);
+      size_t dz = imIn.getDepth();
+      if (algorithm == "auto") {
+        if (isBinary(imIn))
+          algorithm = "closest";
+        else
+          algorithm = dz > 1 ? "trilinear" : "bilinear";
+      }
+
+      if (algorithm == "closest") {
+        if (dz > 1)
+          return resize3DClosest(imIn, width, height, depth, imOut);
+        else
+          return resize2DClosest(imIn, width, height, imOut);
+      }
+
+      if (algorithm == "bilinear" || algorithm == "trilinear") {
+        if (dz > 1)
+          return resizeTrilinear(imIn, width, height, depth, imOut);
+        else
+          return resizeBilinear(imIn, width, height, imOut);
+      }
+      ERR_MSG("* Unknown algorithm " + algorithm);
+      return RES_ERR;
     }
 
     RES_T resize(Image<T> &imIn, size_t width, size_t height, Image<T> &imOut,
@@ -144,17 +162,68 @@ namespace smil
 
   private:
     /*
-     * closest interpolation algorithm - naive loop implementation
+     *  ####   #        ####    ####   ######   ####    #####
+     * #    #  #       #    #  #       #       #          #
+     * #       #       #    #   ####   #####    ####      #
+     * #       #       #    #       #  #            #     #
+     * #    #  #       #    #  #    #  #       #    #     #
+     *  ####   ######   ####    ####   ######   ####      #
      */
-    RES_T resizeClosest(Image<T> &imIn, size_t sx, size_t sy, size_t sz,
-                        Image<T> &imOut)
+    /*
+     * 2D - closest interpolation algorithm - naive loop implementation
+     */
+    RES_T resize2DClosest(Image<T> &imIn, size_t sx, size_t sy, Image<T> &imOut)
     {
       size_t width  = imIn.getWidth();
       size_t height = imIn.getHeight();
       size_t depth  = imIn.getDepth();
 
-      if (depth == 1)
-        sz = 1;
+      if (depth > 1) {
+        return resize3DClosest(imIn, sx, sy, depth, imOut);
+      }
+
+      imOut.setSize(sx, sy, 1);
+      ImageFreezer freeze(imOut);
+
+      double cx = ((double) (width)) / sx;
+      double cy = ((double) (height)) / sy;
+
+      T *pixIn  = imIn.getPixels();
+      T *pixOut = imOut.getPixels();
+
+      for (size_t j = 0; j < sy; j++) {
+#ifdef USE_OPEN_MP
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+#pragma omp parallel for num_threads(nthreads)
+#endif // USE_OPEN_MP
+        for (size_t i = 0; i < sx; i++) {
+          size_t xo = round(cx * i);
+          size_t yo = round(cy * j);
+
+          xo = min(xo, width - 1);
+          yo = min(yo, height - 1);
+
+          T v                = pixIn[yo * width + xo];
+          pixOut[j * sx + i] = v;
+        }
+      }
+
+      return RES_OK;
+    }
+
+    /*
+     * 3D - closest interpolation algorithm - naive loop implementation
+     */
+    RES_T resize3DClosest(Image<T> &imIn, size_t sx, size_t sy, size_t sz,
+                          Image<T> &imOut)
+    {
+      size_t width  = imIn.getWidth();
+      size_t height = imIn.getHeight();
+      size_t depth  = imIn.getDepth();
+
+      if (depth > 1) {
+        return resize2DClosest(imIn, sx, sy, imOut);
+      }
       imOut.setSize(sx, sy, sz);
 
       ImageFreezer freeze(imOut);
@@ -163,19 +232,26 @@ namespace smil
       double cy = ((double) (height)) / sy;
       double cz = ((double) (depth)) / sz;
 
+      T *pixIn  = imIn.getPixels();
+      T *pixOut = imOut.getPixels();
+
       for (size_t k = 0; k < sz; k++) {
         for (size_t j = 0; j < sy; j++) {
+#ifdef USE_OPEN_MP
+          int nthreads = Core::getInstance()->getNumberOfThreads();
+#pragma omp parallel for num_threads(nthreads)
+#endif // USE_OPEN_MP
           for (size_t i = 0; i < sx; i++) {
-            size_t xo = lround(cx * i);
-            size_t yo = lround(cy * j);
-            size_t zo = lround(cz * k);
+            size_t xo = round(cx * i);
+            size_t yo = round(cy * j);
+            size_t zo = round(cz * k);
 
             xo = min(xo, width - 1);
             yo = min(yo, height - 1);
             zo = min(zo, depth - 1);
 
-            T v = imIn.getPixel(xo, yo, zo);
-            imOut.setPixel(i, j, k, v);
+            T v = pixIn[(zo * depth + yo) * width + xo];
+            pixOut[(k * sy + j) * sx + i] = v;
           }
         }
       }
@@ -183,99 +259,124 @@ namespace smil
     }
 
     /*
-    * Trilinear interpolation algorithm - naive loop implementation
-    */
-    template <typename TW>
-    Point<TW> ptInWindow(Point<TW> &p, size_t w, size_t h, size_t d)
+     * #          #    #    #  ######    ##       #    #####   ######
+     * #          #    ##   #  #        #  #      #    #    #  #
+     * #          #    # #  #  #####   #    #     #    #    #  #####
+     * #          #    #  # #  #       ######     #    #####   #
+     * #          #    #   ##  #       #    #     #    #   #   #
+     * ######     #    #    #  ######  #    #     #    #    #  ######
+     */
+    /*
+     * 2D - Bilinear interpolation algorithm - naive loop implementation
+     */
+    RES_T resizeBilinear(Image<T> &imIn, size_t sx, size_t sy, Image<T> &imOut)
     {
-      Point<TW> t;
-      t.x = max(p.x, off_t(0));
-      t.x = min(t.x, off_t(w - 1));
-      t.y = max(p.y, off_t(0));
-      t.y = min(t.y, off_t(h - 1));
-      t.z = max(p.z, off_t(0));
-      t.z = min(t.z, off_t(d - 1));
-      return t;
+      off_t width  = imIn.getWidth();
+      off_t height = imIn.getHeight();
+      off_t depth  = imIn.getDepth();
+
+      if (depth > 1) {
+        return resizeTrilinear(imIn, sx, sy, depth, imOut);
+      }
+
+      imOut.setSize(sx, sy, 1);
+      ImageFreezer freeze(imOut);
+
+      double cx = ((double) (width)) / sx;
+      double cy = ((double) (height)) / sy;
+
+      T *pixIn  = imIn.getPixels();
+      T *pixOut = imOut.getPixels();
+
+      for (size_t j = 0; j < sy; j++) {
+        off_t dy = width;
+#ifdef USE_OPEN_MP
+        int nthreads = Core::getInstance()->getNumberOfThreads();
+#pragma omp parallel for num_threads(nthreads)
+#endif
+        for (size_t i = 0; i < sx; i++) {
+          Point<double> P(cx * i, cy * j, 0);
+
+          off_t xl = (off_t) floor(P.x);
+          off_t xh = (xl + 1) < width ? xl + 1 : xl;
+          off_t yl = (off_t) floor(P.y);
+          off_t yh = (yl + 1) < height ? yl + 1 : yl;
+
+          double cxl = xh > xl ? (P.x - xl) : 1.;
+          double cxh = 1. - cxl;
+          double cyl = yh > yl ? (P.y - yl) : 1.;
+          double cyh = 1. - cyl;
+
+          T vp = pixIn[yl * dy + xl] * cxh * cyh +
+                 pixIn[yl * dy + xh] * cxl * cyh +
+                 pixIn[yh * dy + xl] * cxh * cyl +
+                 pixIn[yh * dy + xh] * cxl * cyl;
+
+          pixOut[j * sx + i] = vp;
+        }
+      }
+      return RES_OK;
     }
 
-    T getImPixel(const Image<T> &im, Point<off_t> &p)
-    {
-      return im.getPixel(p.x, p.y, p.z);
-    }
-
-    off_t lFloor(double x)
-    {
-      return (off_t) floor(x);
-    }
-
-    off_t lCeil(double x)
-    {
-      return (off_t) ceil(x);
-    }
-
+    /*
+     * 3D - Trilinear interpolation algorithm - naive loop implementation
+     */
     RES_T resizeTrilinear(Image<T> &imIn, size_t sx, size_t sy, size_t sz,
                           Image<T> &imOut)
     {
-      size_t width  = imIn.getWidth();
-      size_t height = imIn.getHeight();
-      size_t depth  = imIn.getDepth();
+      off_t width  = imIn.getWidth();
+      off_t height = imIn.getHeight();
+      off_t depth  = imIn.getDepth();
 
-      if (depth == 1)
-        sz = 1;
+      if (depth == 1) {
+        return resizeBilinear(imIn, sx, sy, imOut);
+      }
+
       imOut.setSize(sx, sy, sz);
-
       ImageFreezer freeze(imOut);
 
       double cx = ((double) (width)) / sx;
       double cy = ((double) (height)) / sy;
       double cz = ((double) (depth)) / sz;
 
+      T *pixIn  = imIn.getPixels();
+      T *pixOut = imOut.getPixels();
+
       for (size_t k = 0; k < sz; k++) {
+        off_t dz = width * height;
         for (size_t j = 0; j < sy; j++) {
+          off_t dy = width;
+#ifdef USE_OPEN_MP
+          int nthreads = Core::getInstance()->getNumberOfThreads();
+#pragma omp parallel for num_threads(nthreads)
+#endif
           for (size_t i = 0; i < sx; i++) {
             Point<double> P(cx * i, cy * j, cz * k);
-            vector<Point<off_t>> Pts(8);
 
-            // 000 001 010 011 100 101 110 111
-            Pts[0] = {lFloor(P.x), lFloor(P.y), lFloor(P.z)};
-            Pts[1] = {lCeil(P.x), lFloor(P.y), lFloor(P.z)};
-            Pts[2] = {lFloor(P.x), lCeil(P.y), lFloor(P.z)};
-            Pts[3] = {lCeil(P.x), lCeil(P.y), lFloor(P.z)};
-            Pts[4] = {lFloor(P.x), lFloor(P.y), lCeil(P.z)};
-            Pts[5] = {lCeil(P.x), lFloor(P.y), lCeil(P.z)};
-            Pts[6] = {lFloor(P.x), lCeil(P.y), lCeil(P.z)};
-            Pts[7] = {lCeil(P.x), lCeil(P.y), lCeil(P.z)};
+            off_t xl = floor(P.x);
+            off_t xh = (xl + 1) < width ? xl + 1 : xl;
+            off_t yl = floor(P.y);
+            off_t yh = (yl + 1) < height ? yl + 1 : yl;
+            off_t zl = floor(P.z);
+            off_t zh = (zl + 1) < depth ? zl + 1 : zl;
 
-            std::vector<Point<off_t>>::iterator it;
-            for (it = Pts.begin(); it != Pts.end(); it++)
-              *it = ptInWindow(*it, width, height, depth);
+            double cxl = xh > xl ? (P.x - xl) : 1.;
+            double cxh = 1. - cxl;
+            double cyl = yh > yl ? (P.y - yl) : 1.;
+            double cyh = 1. - cyl;
+            double czl = zh > zl ? (P.z - zl) : 1.;
+            double czh = 1. - czl;
 
-            double cxl = 1., cxh = 0.;
-            if (Pts[1].x > Pts[0].x) {
-              cxl = (P.x - Pts[0].x) / (Pts[1].x - Pts[0].x);
-              cxh = (Pts[1].x - P.x) / (Pts[1].x - Pts[0].x);
-            }
-            double cyl = 1., cyh = 0.;
-            if (Pts[2].y > Pts[0].y) {
-              cyl = (P.y - Pts[0].y) / (Pts[2].y - Pts[0].y);
-              cyh = (Pts[2].y - P.y) / (Pts[2].y - Pts[0].y);
-            }
-            double czl = 1., czh = 0.;
-            if (Pts[4].z > Pts[0].z) {
-              cyl = ((double) (P.z - Pts[0].z)) / (Pts[4].y - Pts[0].y);
-              cyh = ((double) (Pts[4].z - P.z)) / (Pts[4].y - Pts[0].y);
-            }
+            T vp = pixIn[zl * dz + yl * dy + xl] * cxh * cyh * czh +
+                   pixIn[zl * dz + yl * dy + xh] * cxl * cyh * czh +
+                   pixIn[zl * dz + yh * dy + xl] * cxh * cyl * czh +
+                   pixIn[zl * dz + yh * dy + xh] * cxl * cyl * czh +
+                   pixIn[zh * dz + yl * dy + xl] * cxh * cyh * czl +
+                   pixIn[zh * dz + yl * dy + xh] * cxl * cyh * czl +
+                   pixIn[zh * dz + yh * dy + xl] * cxh * cyl * czl +
+                   pixIn[zh * dz + yh * dy + xh] * cxl * cyl * czl;
 
-            double vp = getImPixel(imIn, Pts[0]) * cxh * cyh * czh +
-                        getImPixel(imIn, Pts[1]) * cxl * cyh * czh +
-                        getImPixel(imIn, Pts[2]) * cxh * cyl * czh +
-                        getImPixel(imIn, Pts[3]) * cxl * cyl * czh +
-                        getImPixel(imIn, Pts[4]) * cxh * cyh * czl +
-                        getImPixel(imIn, Pts[5]) * cxl * cyh * czl +
-                        getImPixel(imIn, Pts[6]) * cxh * cyl * czl +
-                        getImPixel(imIn, Pts[7]) * cxl * cyl * czl;
-
-            imOut.setPixel(i, j, k, T(vp));
+            pixOut[(k * sy + j) * sx + i] = vp;
           }
         }
       }
@@ -300,18 +401,22 @@ namespace smil
    * - @b trilinear (extension of @b bilinear algorithm for @b 3D images) - this
    * is the algorithm to use on @txtbold{gray level} images.
    *
+   * @note
+   * When algorithm is set to @b auto, the applied algorithm will be @b closest
+   * for binary images and @b trilinear or @b bilinear for gray level images
+   *
    * @param[in] imIn : input image
    * @param[in] sx, sy, sz : dimensions to be set on output image
    * @param[out] imOut : output image
    * @param[in] algorithm : the interpolation algorithm to use. Can be @b
-   * trilinear (default), @b bilinear ou @b closest.
+   * trilinear (default), @b bilinear, @b closest or @b auto.
    */
   template <typename T>
   RES_T imageResize(Image<T> &imIn, size_t sx, size_t sy, size_t sz,
                     Image<T> &imOut, string algorithm = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
-    ImageResizeFunc<T> func(algorithm);
+    ImageResizeFuncNew<T> func(algorithm);
     return func.resize(imIn, sx, sy, sz, imOut, algorithm);
   }
 
@@ -335,7 +440,7 @@ namespace smil
     ASSERT_ALLOCATED(&imIn, &imOut)
     size_t depth = imOut.getDepth();
 
-    ImageResizeFunc<T> func(algorithm);
+    ImageResizeFuncNew<T> func(algorithm);
     return func.resize(imIn, sx, sy, depth, imOut, algorithm);
   }
 
@@ -362,7 +467,7 @@ namespace smil
     size_t height = imOut.getHeight();
     size_t depth  = imOut.getDepth();
 
-    ImageResizeFunc<T> func(algorithm);
+    ImageResizeFuncNew<T> func(algorithm);
     return func.resize(imIn, width, height, depth, imOut, algorithm);
   }
 
@@ -381,18 +486,22 @@ namespace smil
    * - @b trilinear (extension of @b bilinear algorithm for @b 3D images) - this
    * is the algorithm to use on @txtbold{gray level} images.
    *
+   * @note
+   * When algorithm is set to @b auto, the applied algorithm will be @b closest
+   * for binary images and @b trilinear or @b bilinear for gray level images
+   *
    * @param[in] imIn : input image
    * @param[in] kx, ky, kz : scale factors
    * @param[out] imOut : output image
    * @param[in] algorithm : the interpolation algorithm to use. Can be @b
-   trilinear (default), @b bilinear ou @b closest.
+   * trilinear (default), @b bilinear, @b closest or @b auto.
    */
   template <typename T>
   RES_T imageScale(Image<T> &imIn, double kx, double ky, double kz,
                    Image<T> &imOut, string algorithm = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
-    ImageResizeFunc<T> func(algorithm);
+    ImageResizeFuncNew<T> func(algorithm);
     return func.scale(imIn, kx, ky, kz, imOut, algorithm);
   }
 
@@ -413,15 +522,15 @@ namespace smil
                    string algorithm = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
-    ImageResizeFunc<T> func(algorithm);
+    ImageResizeFuncNew<T> func(algorithm);
     return func.scale(imIn, kx, ky, 1., imOut, algorithm);
   }
 
   /** imageScale() - image scale (resize by a factor)
    *
-   * @details 3D image scale - Scaling images is almost the same than resizing.
-   Input parameters are the factors to multiply each dimension of the input
-   image instead of the dimensions of output image.
+   * @details 3D image scale - Scaling images is almost the same than resizing.   
+   * Input parameters are the factors to multiply each dimension of the input
+   * image instead of the dimensions of output image.
    *
    *
    * @param[in] imIn : input image
@@ -435,12 +544,12 @@ namespace smil
                    string algorithm = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
-    ImageResizeFunc<T> func(algorithm);
+    ImageResizeFuncNew<T> func(algorithm);
     return func.scale(imIn, k, k, k, imOut, algorithm);
   }
 
   /******************************* */
-  /* 
+  /*
    *  ####   #       #####
    * #    #  #       #    #
    * #    #  #       #    #
@@ -471,7 +580,7 @@ namespace smil
     return imageResize(imIn, sx, sy, sz, imOut, "closest");
 #else
     ASSERT_ALLOCATED(&imIn, &imOut)
-    ImageResizeFunc<T> func("closest");
+    ImageResizeFuncNew<T> func("closest");
     return func.resize(imIn, sx, sy, sz, imOut);
 #endif
   }
@@ -497,7 +606,7 @@ namespace smil
     ASSERT_ALLOCATED(&imIn, &imOut)
     size_t depth = imOut.getDepth();
 
-    ImageResizeFunc<T> func("closest");
+    ImageResizeFuncNew<T> func("closest");
     return func.resize(imIn, sx, sy, depth, imOut);
 #endif
   }
@@ -525,7 +634,7 @@ namespace smil
     size_t height = imOut.getHeight();
     size_t depth  = imOut.getDepth();
 
-    ImageResizeFunc<T> func("closest");
+    ImageResizeFuncNew<T> func("closest");
     return func.resize(imIn, width, height, depth, imOut);
 #endif
   }
@@ -552,7 +661,7 @@ namespace smil
     return imageScale(imIn, kx, ky, kz, imOut, "closest");
 #else
     ASSERT_ALLOCATED(&imIn, &imOut)
-    ImageResizeFunc<T> func("closest");
+    ImageResizeFuncNew<T> func("closest");
     return func.scale(imIn, kx, ky, kz, imOut);
 #endif
   }
@@ -573,7 +682,7 @@ namespace smil
     return imageScale(imIn, kx, ky, imOut, "closest");
 #else
     ASSERT_ALLOCATED(&imIn, &imOut)
-    ImageResizeFunc<T> func("closest");
+    ImageResizeFuncNew<T> func("closest");
     return func.scale(imIn, kx, ky, 1., imOut);
 #endif
   }
@@ -595,7 +704,7 @@ namespace smil
     return imageScale(imIn, k, k, k, imOut, "closest");
 #else
     ASSERT_ALLOCATED(&imIn, &imOut)
-    ImageResizeFunc<T> func("closest");
+    ImageResizeFuncNew<T> func("closest");
     return func.scale(imIn, k, k, k, imOut);
 #endif
   }

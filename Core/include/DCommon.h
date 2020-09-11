@@ -156,13 +156,38 @@ namespace smil
       return (x == p2.x && y == p2.y && z == p2.z);
     }
     
-    /** operator- - difference
+    /** operator- - difference between two points
+    *
+    * @note
+    * To be able to accomodate negative values of all data types, the type of
+    * returned Point is @b Point<double>
+    *
+    * @code{.py}
+    *
+    * import smilPython as sp
+    * p1 = sp.IntPoint(10, 30, 40)
+    * p2 = sp.IntPoint(40, 30, 10)
+    * p3 = p2 - p1
+    * p3.printSelf(" Difference : ")
+    *
+    * @endcode
     */
     Point<double> operator-(const Point &p2)
     {
       return Point<double>((double ) x - p2.x, (double ) y - p2.y, (double ) z - p2.z);
     }
+    
+    UINT L1()
+    {
+      if (std::is_unsigned<x>::value)
+        return x + y + z;
+      else
+        return abs(x) + abs(y) + abs(z);
+    }
 
+    /** printSelf() - Print point coordinates
+    * @param[in] indent : prefix to add to each line
+    */
     void printSelf(string indent = "")
     {
       cout << indent << " " << x << "\t" << y << "\t" << z << endl; 
