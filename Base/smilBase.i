@@ -254,7 +254,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(measBlobMoments);
 TEMPLATE_WRAP_FUNC_2T_CROSS(measBlobsEntropy);
 
 %include "DBlobOperations.hpp"
-TEMPLATE_WRAP_FUNC_2T_CROSS(imageAreaThreshold);
+TEMPLATE_WRAP_FUNC_2T_CROSS(areaThreshold);
 TEMPLATE_WRAP_FUNC(inertiaMatrices);
 TEMPLATE_WRAP_FUNC_2T_CROSS(inertiaMatrices);
 

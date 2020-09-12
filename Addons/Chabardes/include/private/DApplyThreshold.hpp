@@ -41,7 +41,7 @@ namespace smil
    * @{
    */
 
-  /**
+  /*
    * Apply Threshold
    *
    */
@@ -68,7 +68,8 @@ namespace smil
     return RES_OK;
   }
 
-  /**
+#if 0
+  /*
    * Area Threshold
    *
    */
@@ -87,6 +88,7 @@ namespace smil
     applyThreshold(imIn, v, imOut);
     return RES_OK;
   }
+#endif
 
   /**
    * Range Threshold

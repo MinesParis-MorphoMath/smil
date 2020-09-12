@@ -32,7 +32,7 @@
 OPT=
 SRCDIR=
 PREFIX=/usr/local
-ADDONS="Color Filters HoughTransform Chabardes StochasticWS FFT Parsimonious Transformations"
+ADDONS="Color Filters HoughTransform Chabardes StochasticWS FFT Parsimonious "
 OTHER=
 Arch=auto
 

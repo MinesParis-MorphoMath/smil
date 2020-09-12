@@ -56,7 +56,7 @@ namespace smil
   };
   /** @endcond */
 
-  /** imageAreaThreshold() -
+  /** areaThreshold() -
    *
    * @param[in] imIn : input image (@b binary or @b labeled)
    * @param[in] threshold : threshold level
@@ -71,7 +71,7 @@ namespace smil
    * @smilexample{example-areathreshold.py}
    */
   template <typename T1, typename T2>
-  RES_T imageAreaThreshold(const Image<T1> &imIn, const int threshold,
+  RES_T areaThreshold(const Image<T1> &imIn, const int threshold,
                            const bool gt, Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);

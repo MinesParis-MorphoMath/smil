@@ -14,13 +14,13 @@ SMIL_MODULE(smilChabardes)
 %import smilCore.i
 
 %include "DApplyThreshold.hpp"
-RES_T applyThreshold (const Image<UINT8> &_im_, const vector<UINT8>& modes, Image<UINT8>& _out_);
-RES_T applyThreshold (const Image<UINT16> &_im_, const vector<UINT16>& modes, Image<UINT16>& _out_);
-RES_T applyThreshold (const Image<UINT32> &_im_, const vector<UINT32>& modes, Image<UINT32>& _out_);
+// RES_T applyThreshold (const Image<UINT8> &_im_, const vector<UINT8>& modes, Image<UINT8>& _out_);
+// RES_T applyThreshold (const Image<UINT16> &_im_, const vector<UINT16>& modes, Image<UINT16>& _out_);
+// RES_T applyThreshold (const Image<UINT32> &_im_, const vector<UINT32>& modes, Image<UINT32>& _out_);
 
-RES_T areaThreshold (const Image<UINT8> &_im_, const UINT8 &threshold, Image<UINT8> &_out_);
-RES_T areaThreshold (const Image<UINT16> &_im_, const UINT16 &threshold, Image<UINT16> &_out_);
-RES_T areaThreshold (const Image<UINT32> &_im_, const UINT32 &threshold, Image<UINT32> &_out_);
+// RES_T areaThreshold (const Image<UINT8> &_im_, const UINT8 &threshold, Image<UINT8> &_out_);
+// RES_T areaThreshold (const Image<UINT16> &_im_, const UINT16 &threshold, Image<UINT16> &_out_);
+// RES_T areaThreshold (const Image<UINT32> &_im_, const UINT32 &threshold, Image<UINT32> &_out_);
 
 RES_T rangeThreshold (const Image<UINT8> &_im_, const UINT8 &threshold, Image<UINT8> &_out_);
 RES_T rangeThreshold (const Image<UINT16> &_im_, const UINT16 &threshold, Image<UINT16> &_out_);
