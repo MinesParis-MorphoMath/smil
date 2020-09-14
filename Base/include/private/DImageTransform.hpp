@@ -702,8 +702,8 @@ namespace smil
       imOut.setSize(sx, sy, 1);
       ImageFreezer freeze(imOut);
 
-      double cx = ((double) (width)) / sx;
-      double cy = ((double) (height)) / sy;
+      double cx = ((double) (width - 1)) / (sx - 1);
+      double cy = ((double) (height - 1)) / (sy - 1);
 
       T *pixIn  = imIn.getPixels();
       T *pixOut = imOut.getPixels();
@@ -745,9 +745,9 @@ namespace smil
 
       ImageFreezer freeze(imOut);
 
-      double cx = ((double) (width)) / sx;
-      double cy = ((double) (height)) / sy;
-      double cz = ((double) (depth)) / sz;
+      double cx = ((double) (width - 1)) / (sx - 1);
+      double cy = ((double) (height - 1)) / (sy - 1);
+      double cz = ((double) (depth - 1)) / (sz - 1);
 
       T *pixIn  = imIn.getPixels();
       T *pixOut = imOut.getPixels();
@@ -799,8 +799,8 @@ namespace smil
       imOut.setSize(sx, sy, 1);
       ImageFreezer freeze(imOut);
 
-      double cx = ((double) (width)) / sx;
-      double cy = ((double) (height)) / sy;
+      double cx = ((double) (width - 1)) / (sx - 1);
+      double cy = ((double) (height - 1)) / (sy - 1);
 
       T *pixIn  = imIn.getPixels();
       T *pixOut = imOut.getPixels();
@@ -852,9 +852,9 @@ namespace smil
       imOut.setSize(sx, sy, sz);
       ImageFreezer freeze(imOut);
 
-      double cx = ((double) (width)) / sx;
-      double cy = ((double) (height)) / sy;
-      double cz = ((double) (depth)) / sz;
+      double cx = ((double) (width - 1)) / (sx - 1);
+      double cy = ((double) (height - 1)) / (sy - 1);
+      double cz = ((double) (depth - 1)) / (sz - 1);
 
       T *pixIn  = imIn.getPixels();
       T *pixOut = imOut.getPixels();
