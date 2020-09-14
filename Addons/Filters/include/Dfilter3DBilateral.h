@@ -49,8 +49,8 @@ namespace smil
   /**
    * @brief recursiveBilateralFilter 3D Bilateral Filter
    * @param[in]  imIn : input Image
-   * @param[in]  sigmaW : standard deviation of the spatial filter kernel
-   * @param[in]  sigmaR : standard deviation of the range kernel
+   * @param[in]  sigmaW : spatial standard deviation of kernel
+   * @param[in]  sigmaR : range standard deviation of the kernel
    * @param[out] imOut : output Image
    *
    * <b>sigmaW</b> and <b>sigmaR</b> heavily depend on the image. A simple rule 

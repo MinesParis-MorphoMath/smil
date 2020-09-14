@@ -46,15 +46,6 @@ SMIL_MODULE(smilAdvanced)
 //  -> check the use of RGB
 //TEMPLATE_WRAP_FUNC(GetConfusionMatrix);
 
-%include "DGrayLevelDistance.h"
-
-TEMPLATE_WRAP_FUNC(grayLevelSizeZM);
-TEMPLATE_WRAP_FUNC(grayLevelDistanceZM);
-TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Diameter);
-TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Elongation);
-TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Tortuosity);
-
-
 
 %include "DFastLine.h"
 TEMPLATE_WRAP_FUNC(lineDilate);

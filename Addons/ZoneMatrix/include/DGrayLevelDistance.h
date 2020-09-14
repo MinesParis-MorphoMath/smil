@@ -6,8 +6,7 @@
 namespace smil
 {
   /**
-   * @ingroup   Advanced
-   * @defgroup  AdvGrayLevelDistance   Gray Level ... Zone Matrix
+   * @addtogroup   AddonZoneMatrix
    *
    * * <a href="http://thibault.biz/Research/ThibaultMatrices/GLDZM/GLDZM.html">
    *     Distance (to border) Zone Matrix</a>
@@ -36,7 +35,7 @@ namespace smil
    * @{ */
 
   /** 
-   * @brief grayLevelSizeZM
+   * @brief grayLevelSizeZM() - 
    * @param[in]  imIn : the initial image
    * @param[in]  NbNDG : NbNDG
    * @param[in] szFileName : output file with results
@@ -45,7 +44,7 @@ namespace smil
   RES_T grayLevelSizeZM(const Image<T> &imIn, int NbNDG, char *szFileName);
 
   /** 
-   * @brief grayLevelDistanceZM
+   * @brief grayLevelDistanceZM() - 
    * @param[in]  imIn : the initial image
    * @param[in]  NbNDG : NbNDG
    * @param[in]  GeodesicMethod : GeodesicMethod
@@ -56,7 +55,7 @@ namespace smil
                             char *szFileName);
 
   /** 
-   * @brief grayLevelDistanceZM_Diameter
+   * @brief grayLevelDistanceZM_Diameter () -
    * @param[in]  imIn : the initial image
    * @param[in]  NbNDG : NbNDG
    * @param[in] szFileName : output file with results
@@ -69,7 +68,7 @@ namespace smil
   }
 
   /** 
-   * @brief grayLevelDistanceZM_Elongation
+   * @brief grayLevelDistanceZM_Elongation() -
    * @param[in]  imIn : the initial image
    * @param[in]  NbNDG : NbNDG
    * @param[in] szFileName : output file with results
@@ -82,7 +81,7 @@ namespace smil
   }
 
   /** 
-   * @brief grayLevelDistanceZM_Tortuosity
+   * @brief grayLevelDistanceZM_Tortuosity() -
    * @param[in]  imIn : the initial image
    * @param[in]  NbNDG : NbNDG
    * @param[in] szFileName : output file with results
@@ -98,6 +97,6 @@ namespace smil
 } // namespace smil
 
 // Gray Level Distannce Module header
-#include "GrayLevelDistance/GLSZM.hpp"
+#include "private/GLSZM.hpp"
 
 #endif // _DGRAY_LEVEL_DISTANCE_H_

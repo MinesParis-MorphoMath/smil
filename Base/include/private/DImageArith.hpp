@@ -50,7 +50,7 @@ namespace smil
    */
 
   /**
-   * Fill an image with a given value.
+   * fill() - Fill an image with a given value.
    *
    * @param[out] imOut Output image.
    * @param[in] value The value to fill.
@@ -61,7 +61,8 @@ namespace smil
    * @see Image::operator<<
    *
    */
-  template <class T> RES_T fill(Image<T> &imOut, const T &value)
+  template <class T>
+  RES_T fill(Image<T> &imOut, const T &value)
   {
     ASSERT_ALLOCATED(&imOut);
 
@@ -69,14 +70,15 @@ namespace smil
   }
 
   /**
-   * Fill an image with random values.
+   * randFill() - Fill an image with random values.
    *
    * @param[in, out] imOut Output image.
    *
    * @see Image::operator<<
    *
    */
-  template <class T> RES_T randFill(Image<T> &imOut)
+  template <class T>
+  RES_T randFill(Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imOut);
 
@@ -99,7 +101,7 @@ namespace smil
   }
 
   /**
-   * Copy image (or a zone) into an output image
+   * copy() - Copy image (or a zone) into an output image
    *
    * This is the most complete version of @b smil::copy().
    *
@@ -171,7 +173,7 @@ namespace smil
   }
 
   /**
-   * Copy Image
+   * copy() - Copy Image
    *
    * @b 2D version of the general @b smil::copy function.
    *
@@ -187,7 +189,7 @@ namespace smil
   }
 
   /**
-   * Copy Image
+   * copy() - Copy Image
    *
    * Copies the entire content of @b imIn beginning at <b>(startX, startY,
    * startZ)</b> into @b imOut beginning at <b>(outStartX, outStartY,
@@ -205,7 +207,7 @@ namespace smil
   }
 
   /**
-   * Copy Image (2D overload)
+   * copy() - Copy Image (2D overload)
    *
    * Copies the entire content of @b imIn beginning at <b>(startX, startY)</b>
    * into @b imOut beginning at <b>(outStartX, outStartY)</b>.
@@ -222,7 +224,7 @@ namespace smil
   }
 
   /**
-   * Copy Image
+   * copy() - Copy Image
    *
    * Copies the entire content of @b imIn into @b imOut beginning at
    <b>(outStartX, outStartY, outStartZ)</b>
@@ -239,7 +241,7 @@ namespace smil
 
   // Copy/cast two images with different types but same size (quick way)
   /**
-   * Copy / cast two images, convert their types.
+   * copy() - Copy / cast two images, convert their types.
    *
    * If @b imIn and @b imOut types may be different, the contents of @b imIn
    * beginning at <b> (0,0,0)</b> will copied to @b imOut, at the same place but
@@ -269,7 +271,7 @@ namespace smil
   }
 
   /**
-   * Copy Image
+   * copy() - Copy Image
    *
    * Copy one image to the other. @b imOut shall be of the same kind of @b imIn.
    * Its size will be set to the same of @b imIn
@@ -277,7 +279,8 @@ namespace smil
    * @param[in] imIn : input image
    * @param[out] imOut : output image
    */
-  template <class T> RES_T copy(const Image<T> &imIn, Image<T> &imOut)
+  template <class T>
+  RES_T copy(const Image<T> &imIn, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
 
@@ -287,7 +290,7 @@ namespace smil
   }
 
   /**
-   * Clone an image
+   * clone() - Clone an image
    *
    * Make @b imOut a clone @b imIn, with the same size and content.
    *
@@ -299,7 +302,8 @@ namespace smil
    * @b imIn. Its initial size doesn't matter. It will be set to the same size
    * of @b imIn.
    */
-  template <class T> RES_T clone(const Image<T> &imIn, Image<T> &imOut)
+  template <class T>
+  RES_T clone(const Image<T> &imIn, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn);
 
@@ -308,7 +312,7 @@ namespace smil
   }
 
   /**
-   * Cast from an image type to another
+   * cast() - Cast from an image type to another
    *
    * Copies the content of @b imIn into @b imOut scaling pixel values to the
    * data type of @b imOut.
@@ -328,8 +332,13 @@ namespace smil
 
     T1 floor_t1 = ImDtTypes<T1>::min();
     T2 floor_t2 = ImDtTypes<T2>::min();
-    double coeff =
-        double(ImDtTypes<T2>::cardinal()) / double(ImDtTypes<T1>::cardinal());
+
+    // can't use cardinal on floating point data types...
+    // double coeff =
+    //  double(ImDtTypes<T2>::cardinal()) /  double(ImDtTypes<T1>::cardinal());
+
+    double coeff = double(ImDtTypes<T2>::max() - ImDtTypes<T2>::min()) /
+                   double(ImDtTypes<T1>::max() - ImDtTypes<T1>::min());
 
     typename Image<T1>::lineType pixIn  = imIn.getPixels();
     typename Image<T2>::lineType pixOut = imOut.getPixels();
@@ -352,7 +361,8 @@ namespace smil
   }
 
   /**
-   * Copy a channel of multichannel image into a single channel image
+   * copyChannel() - Copy a channel of multichannel image into a single channel
+   * image
    *
    * @param[in] imIn : input image
    * @param[in] chanNum : channel in the input image to copy
@@ -384,7 +394,8 @@ namespace smil
   }
 
   /**
-   * Copy a single channel image into a channel of multichannel image
+   * copyToChannel() - Copy a single channel image into a channel of
+   * multichannel image
    *
    * @param[in] imIn : input image
    * @param[in] chanNum : channel in the output image to copy
@@ -416,8 +427,8 @@ namespace smil
   }
 
   /**
-   * Split channels of multichannel image to a 3D image with each channel on a Z
-   * slice
+   * splitChannels() - Split channels of multichannel image to a 3D image with
+   * each channel on a Z slice
    *
    * @param[in] imIn : input image
    * @param[out] im3DOut : output image
@@ -454,7 +465,7 @@ namespace smil
   }
 
   /**
-   * Merge slices of a 3D image into a multichannel image
+   * mergeChannels() - Merge slices of a 3D image into a multichannel image
    *
    * This function has the inverse behaviour of function splitChannels()
    *
@@ -488,14 +499,15 @@ namespace smil
   }
 
   /**
-   * Invert an image.
+   * inv() - Invert an image.
    *
    * @param[in] imIn : Input image.
    * @param[out] imOut : Output image.
    *
    * @see Image::operator~
    */
-  template <class T> RES_T inv(const Image<T> &imIn, Image<T> &imOut)
+  template <class T>
+  RES_T inv(const Image<T> &imIn, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -504,7 +516,7 @@ namespace smil
   }
 
   /**
-   * Addition (with saturation check)
+   * add() - Addition (with saturation check)
    *
    * Addition between two images.
    *
@@ -523,7 +535,7 @@ namespace smil
   }
 
   /**
-   * Addition (with saturation check)
+   * add() - Addition (with saturation check)
    *
    * Addition a single value to each pixel of an image.
    *
@@ -542,7 +554,7 @@ namespace smil
   }
 
   /**
-   * Addition (without saturation check)
+   * addNoSat() - Addition (without saturation check)
    *
    * Addition between two images.
    *
@@ -560,7 +572,7 @@ namespace smil
   }
 
   /**
-   * Addition (without saturation check)
+   * addNoSat() - Addition (without saturation check)
    *
    * Addition a single value to each pixel of an image.
    *
@@ -578,7 +590,7 @@ namespace smil
   }
 
   /**
-   * Subtraction between two images
+   * sub() - Subtraction between two images
    *
    * @param[in] imIn1 : input image
    * @param[in] imIn2 : input image
@@ -594,7 +606,7 @@ namespace smil
   }
 
   /**
-   * Subtraction between an image and a constant value
+   * sub() - Subtraction between an image and a constant value
    *
    * @param[in] imIn : input image
    * @param[in] value : value to be subtracted from each pixel in the image
@@ -607,7 +619,7 @@ namespace smil
   }
 
   /**
-   * Subtraction between a value and an image
+   * sub() - Subtraction between a value and an image
    *
    * @param[in] value : value to which each pixel of the image will be
    * subtracted.
@@ -621,7 +633,7 @@ namespace smil
   }
 
   /**
-   * Subtraction (without type minimum check) between two images
+   * subNoSat() - Subtraction (without type minimum check) between two images
    *
    * @param[in] imIn1 : input image
    * @param[in] imIn2 : input image
@@ -637,8 +649,8 @@ namespace smil
   }
 
   /**
-   * Subtraction (without type minimum check) between an image and a constant
-   * value
+   * subNoSat() - Subtraction (without type minimum check) between an image and
+   * a constant value
    *
    * @param[in] imIn : input image
    * @param[in] value : value to be subtracted from each pixel in the image
@@ -654,7 +666,8 @@ namespace smil
   }
 
   /**
-   * Subtraction (without type minimum check) between a value and an image
+   * subNoSat() - Subtraction (without type minimum check) between a value and
+   * an image
    *
    * @param[in] value : value to which each pixel of the image will be
    * subtracted.
@@ -671,7 +684,7 @@ namespace smil
   }
 
   /**
-   * Sup of two images
+   * sup() - Sup of two images
    *
    * @param[in] imIn1 : input image
    * @param[in] imIn2 : input image
@@ -687,7 +700,7 @@ namespace smil
   }
 
   /**
-   * Sup of two images
+   * sup() - Sup of two images
    *
    * @param[in] imIn1 : input image
    * @param[in] imIn2 : input image
@@ -706,7 +719,7 @@ namespace smil
   }
 
   /**
-   * Sup of an image and a value
+   * sup() - Sup of an image and a value
    *
    * @param[in] imIn : input image
    * @param[in] value : input value
@@ -722,7 +735,7 @@ namespace smil
   }
 
   /**
-   * Inf of two images
+   * inf() - Inf of two images
    *
    * @param[in] imIn1 : input image
    * @param[in] imIn2 : input image
@@ -738,7 +751,7 @@ namespace smil
   }
 
   /**
-   * Inf of two images
+   * inf() - Inf of two images
    *
    * @param[in] imIn1 : input image
    * @param[in] imIn2 : input image
@@ -757,7 +770,7 @@ namespace smil
   }
 
   /**
-   * Inf of an image and a value
+   * inf() - Inf of an image and a value
    *
    * @param[in] imIn : input image
    * @param[in] value : input value
@@ -773,15 +786,14 @@ namespace smil
   }
 
   /**
-   * Equality operator (pixel by pixel)
+   * equ() - Equality operator (pixel by pixel)
    *
    * Comparison, pixel by pixel, between two images.
    *
    * The result is a binary image where :
    * - <b><c> imOut(x) = (imIn1(x) == imIn2(x) ? max(T) : 0)</c></b>
    *
-   * In other words, the result is an image indicating which pixels are equal in
-   * both images.
+   * The result is an image indicating which pixels are equal in both images.
    *
    * @param[in] imIn1 : input image
    * @param[in] imIn2 : input image
@@ -800,15 +812,14 @@ namespace smil
   }
 
   /**
-   * Equality operator (pixel by pixel)
+   * equ() - Equality operator (pixel by pixel)
    *
    * Comparison, pixel by pixel, between an image and a value.
    *
    * The result is a binary image where :
    * - <b><c> imOut(x) = (imIn(x) == value ? max(T) : 0)</c></b>
    *
-   * In other words, the result is an image indicating which pixels are equal to
-   * the value.
+   * The result is an image indicating which pixels are equal to the value.
    *
    * @param[in] imIn : input image
    * @param[in] value : input value
@@ -827,7 +838,7 @@ namespace smil
   }
 
   /**
-   * Test equality between two images
+   * equ() - Test equality between two images
    *
    * @param[in] imIn1 : input image
    * @param[in] imIn2 : input image
@@ -837,7 +848,8 @@ namespace smil
    * Don't confuse this function with the two others with the same name but
    * checking equality for each pixel. The difference are in the parameters.
    */
-  template <class T> bool equ(const Image<T> &imIn1, const Image<T> &imIn2)
+  template <class T>
+  bool equ(const Image<T> &imIn1, const Image<T> &imIn2)
   {
     ASSERT(CHECK_ALLOCATED(&imIn1, &imIn2), false);
     ASSERT(CHECK_SAME_SIZE(&imIn1, &imIn2), false);
@@ -854,7 +866,7 @@ namespace smil
   }
 
   /**
-   * Difference between two images.
+   * diff() - Difference between two images.
    *
    * Comparison, pixel by pixel, between two images.
    *
@@ -882,7 +894,7 @@ namespace smil
   }
 
   /**
-   * Difference between an image and a value
+   * diff() - Difference between an image and a value
    *
    * Comparison, pixel by pixel, between an image and a value.
    *
@@ -909,7 +921,7 @@ namespace smil
   }
 
   /**
-   * Absolute difference ("vertical distance") between two images.
+   * absDiff() - Absolute difference ("vertical distance") between two images.
    *
    * Absolute difference between two images : <b><c>abs(imIn1 - imIn2)</c></b>
    *
@@ -928,7 +940,7 @@ namespace smil
   }
 
   /**
-   * Greater operator
+   * grt() - Greater operator
    *
    * Comparison, pixel by pixel, between two images
    *
@@ -950,7 +962,7 @@ namespace smil
   }
 
   /**
-   * Greater operator
+   * grt() - Greater operator
    *
    * Comparison, pixel by pixel, between an image and a value.
    *
@@ -972,7 +984,7 @@ namespace smil
   }
 
   /**
-   * Greater or equal operator
+   * grtOrEqu() - Greater or equal operator
    *
    * Comparison, pixel by pixel, between two images
    *
@@ -994,7 +1006,7 @@ namespace smil
   }
 
   /**
-   * Greater or equal operator
+   * grtOrEqu() - Greater or equal operator
    *
    * Comparison, pixel by pixel, between an image and a value.
    *
@@ -1016,7 +1028,7 @@ namespace smil
   }
 
   /**
-   * Lower operator
+   * low() - Lower operator
    *
    * Comparison, pixel by pixel, between two images
    *
@@ -1038,7 +1050,7 @@ namespace smil
   }
 
   /**
-   * Lower operator
+   * low() - Lower operator
    *
    * Comparison, pixel by pixel, between an image and a value.
    *
@@ -1060,7 +1072,7 @@ namespace smil
   }
 
   /**
-   * Lower or equal operator
+   * lowOrEqu() - Lower or equal operator
    *
    * Comparison, pixel by pixel, between two images
    *
@@ -1082,7 +1094,7 @@ namespace smil
   }
 
   /**
-   * Lower or equal operator
+   * lowOrEqu() - Lower or equal operator
    *
    * Comparison, pixel by pixel, between an image and a value
    *
@@ -1104,7 +1116,7 @@ namespace smil
   }
 
   /**
-   * Division between two images
+   * div() - Division between two images
    *
    * The result is a image where :
    * - <b><c> imOut(x) = (imIn2(x) != 0 ? imIn1(x) / imIn2(x) : max(T))</c></b>
@@ -1136,7 +1148,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * Division : an image and a value
+   * div() - Division : an image and a value
    *
    * The result is a image where :
    * - <b><c> imOut(x) = (value != 0 ? imIn(x) / value : max(T))</c></b>
@@ -1162,7 +1174,7 @@ namespace smil
   }
 
   /**
-   * Multiply two images
+   * mul() - Multiply two images
    *
    * The result is a image where :
    * - <b><c> imOut(x) = (imIn1(x) * imIn2(x) <= max(T) ? imIn1(x) * imIn2(x) :
@@ -1195,7 +1207,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * Multiply an image and a value
+   * mul() - Multiply an image and a value
    *
    * The result is a image where :
    * - <b><c> imOut(x) = (imIn(x) * dValue <= max(T) ? imIn(x) * dValue :
@@ -1226,7 +1238,7 @@ namespace smil
   }
 
   /**
-   * Multiply (without type max check)
+   * mulNoSat() - Multiply (without type max check)
    * The result is a image where :
    * - <b><c> imOut(x) = (imIn1(x) * imIn2(x) % (max(T) + 1))</c></b>
    *
@@ -1246,7 +1258,7 @@ namespace smil
   }
 
   /**
-   * Multiply an image and a value (without type max check)
+   * mulNoSat() - Multiply an image and a value (without type max check)
    *
    * The result is a image where :
    * - <b><c> imOut(x) = (imIn(x) * value  % (max(T) + 1))</c></b>
@@ -1267,7 +1279,7 @@ namespace smil
   }
 
   /**
-   * Logarithm of an image
+   * log() - Logarithm of an image
    *
    * The result is a image where :
    * - <b><c> imOut(x) = (imIn(x) != 0 ? log(imIn(x)) : max(T))</c></b>
@@ -1290,7 +1302,7 @@ namespace smil
   }
 
   /**
-   * Logic AND operator, pixel by pixel, of two images
+   * logicAnd() - Logic AND operator, pixel by pixel, of two images
    *
    * This function evaluates the logical @b AND of two images. This function
    * works both @b binary and @b  grey images
@@ -1312,7 +1324,7 @@ namespace smil
   }
 
   /**
-   * Bitwise AND operator, pixel by pixel, of two images
+   * bitAnd() - Bitwise AND operator, pixel by pixel, of two images
    *
    * This function evaluates the bitwise @b AND of two images. This function
    * works both @b binary and @b  grey images
@@ -1334,7 +1346,7 @@ namespace smil
   }
 
   /**
-   * Logic OR operator, pixel by pixel, of two images
+   * logicOr() - Logic OR operator, pixel by pixel, of two images
    *
    * This function evaluates the logical @b OR of two images. This function
    * works both @b binary and @b  grey images
@@ -1356,7 +1368,7 @@ namespace smil
   }
 
   /**
-   * Bitwise OR operator, pixel by pixel, of two images
+   * bitOr() - Bitwise OR operator, pixel by pixel, of two images
    *
    * This function evaluates the bitwise @b OR of two images. This function
    * works both @b binary and @b  grey images
@@ -1378,7 +1390,7 @@ namespace smil
   }
 
   /**
-   * Logic XOR operator, pixel by pixel, of two images
+   * logicXOr() - Logic XOR operator, pixel by pixel, of two images
    *
    * This function evaluates the logical <b>exclusive OR</b> of two images. This
    * function works both @b binary and @b  grey images
@@ -1401,7 +1413,7 @@ namespace smil
   }
 
   /**
-   * Bitwise XOR operator, pixel by pixel, of two images
+   * bitXOr() - Bitwise XOR operator, pixel by pixel, of two images
    *
    * This function evaluates the bitwise <b>exclusive OR</b> of two images.
    * This function works both @b binary and @b  grey images
@@ -1423,7 +1435,7 @@ namespace smil
   }
 
   /**
-   * Test
+   * test() - Test
    *
    * The result is a image where :
    * - <b><c> imOut(x) = (imIn(x) != 0 ? imInT(x] : imInF(x))</c></b>
@@ -1455,7 +1467,7 @@ namespace smil
   }
 
   /**
-   * Test
+   * test() - Test
    *
    * The result is a image where :
    * - <b><c> imOut(x) = (imIn(x) != 0 ? imInT(x] : value)</c></b>
@@ -1478,7 +1490,7 @@ namespace smil
   }
 
   /**
-   * Test
+   * test() - Test
    *
    * The result is a image where :
    * - <b><c> imOut(x) = (imIn(x) != 0 ? value : imInF(x])</c></b>
@@ -1501,7 +1513,7 @@ namespace smil
   }
 
   /**
-   * Test
+   * test() - Test
    *
    * The result is a image where :
    * - <b><c> imOut(x) = (imIn(x) != 0 ? value : imInF(x])</c></b>
@@ -1557,7 +1569,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * Compare each pixel of two images (or an image and a value)
+   * compare() - Compare each pixel of two images (or an image and a value)
    *
    * Compare each pixel of two images and set the corresponding pixel of @b
    * imOut to the same pixel of @b trueIm if result is @b true or @b falseIm if
@@ -1588,7 +1600,7 @@ namespace smil
   }
 
   /**
-   * Compare each pixel of two images (or an image and a value)
+   * compare() - Compare each pixel of two images (or an image and a value)
    *
    * Compare each pixel of two images and set the corresponding pixel of @b
    * imOut to @b trueVal if result is @b true or @b falseIm if not.
@@ -1614,7 +1626,7 @@ namespace smil
   }
 
   /**
-   * Compare each pixel of two images (or an image and a value)
+   * compare() - Compare each pixel of two images (or an image and a value)
    *
    * Compare each pixel of two images and set the corresponding pixel of @b
    * imOut to the same pixel of @b trueIm if result is @b true or @b falseVal if
@@ -1641,7 +1653,7 @@ namespace smil
   }
 
   /**
-   * Compare each pixel of two images (or an image and a value)
+   * compare() - Compare each pixel of two images (or an image and a value)
    *
    * Compare each pixel of two images and set the corresponding pixel of @b
    * imOut to @b trueVal if result is @b true or @b falseVal if not.
@@ -1666,7 +1678,7 @@ namespace smil
   }
 
   /**
-   * Compare each pixel of two images (or an image and a value)
+   * compare() - Compare each pixel of two images (or an image and a value)
    *
    * Compare each pixel of an image and a value and set the corresponding pixel
    * of @b imOut to the same pixel of @b trueIm if result is @b true or @b
@@ -1694,7 +1706,7 @@ namespace smil
   }
 
   /**
-   * Compare each pixel of two images (or an image and a value)
+   * compare() - Compare each pixel of two images (or an image and a value)
    *
    * Compare each pixel of an image and a value and set the corresponding pixel
    * of @b imOut to @b trueVal if result is @b true or @b falseIm if not.
@@ -1719,7 +1731,7 @@ namespace smil
   }
 
   /**
-   * Compare each pixel of two images (or an image and a value)
+   * compare() - Compare each pixel of two images (or an image and a value)
    *
    * Compare each pixel of an image and a value and set the corresponding pixel
    * of @b imOut to the same pixel of @b trueIm if result is @b true or @b
@@ -1745,7 +1757,7 @@ namespace smil
   }
 
   /**
-   * Compare each pixel of two images (or an image and a value)
+   * compare() - Compare each pixel of two images (or an image and a value)
    *
    * Compare each pixel of an image and a value and set the corresponding pixel
    * of @b imOut to @b trueVal if result is @b true or @b falseVal if not.
@@ -1769,7 +1781,7 @@ namespace smil
   }
 
   /**
-   * Image mask
+   * mask() - Image mask
    *
    * The result is a image where :
    * - <b><c> imOut(x) = (imMask(x) != 0 ? imIn(x) : 0)</c></b>
@@ -1786,7 +1798,7 @@ namespace smil
   }
 
   /**
-   * Apply a lookup map to a labeled image
+   * applyLookup() - Apply a lookup map to a labeled image
    *
    * Converts a labeled image into a labeled image, converting labels based on a
    * lookup map (or dictionary, in @b python)

@@ -7,7 +7,7 @@ namespace smil
    *
    */
   template <class T1, class T2>
-  RES_T imageScaleRange(const Image<T1> &imIn, const T1 inMin, const T1 inMax,
+  RES_T expand(const Image<T1> &imIn, const T1 inMin, const T1 inMax,
                         const T2 outMin, const T2 outMax, Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
@@ -65,7 +65,7 @@ namespace smil
    *
    */
   template <class T1, class T2>
-  RES_T imageScaleRange(const Image<T1> &imIn, const T2 Min, const T2 Max,
+  RES_T expand(const Image<T1> &imIn, const T2 Min, const T2 Max,
                         Image<T2> &imOut, bool onlyNonZero)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
@@ -110,14 +110,14 @@ namespace smil
    *
    */
   template <class T1, class T2>
-  RES_T imageScaleRange(const Image<T1> &imIn, Image<T2> &imOut,
+  RES_T expand(const Image<T1> &imIn, Image<T2> &imOut,
                         bool onlyNonZero)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
 #if 1
-    return imageScaleRange(imIn, imOut.getDataTypeMin(), imOut.getDataTypeMax(),
+    return expand(imIn, imOut.getDataTypeMin(), imOut.getDataTypeMax(),
                            imOut, onlyNonZero);
 #else
 
@@ -165,7 +165,7 @@ namespace smil
    *
    */
   template <class T1, class T2>
-  RES_T imageScaleRangeSCurve(const Image<T1> &imIn, const T1 pivot,
+  RES_T sCurve(const Image<T1> &imIn, const T1 pivot,
                               const double ratio, Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
