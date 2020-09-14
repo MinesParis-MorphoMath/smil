@@ -45,8 +45,7 @@
 namespace smil
 {
   /**
-   * @ingroup     Addons
-   * @addtogroup  AddonFilters    Filters (Non Morphological)
+   * @ingroup  AddonFilters    Filters (Non Morphological)
    *
    * A set of non "Mathematical Morphology" based image filters.
    *
@@ -67,7 +66,7 @@ namespace smil
 #include "DfilterMeanShift.h"
 #include "DfilterSigma.h"
 
-#include "DfilterScale.h"
+// #include "DfilterScale.h"
 
 #include "Dfilter3DBilateral.h"
 

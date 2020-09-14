@@ -3,7 +3,25 @@
 
 namespace smil
 {
-  /*
+
+
+  /**
+   * @brief expand() - Linear conversion of pixels values to the range
+   * [Min, Max]
+   *
+   * Values in the input image are linearly mapped into the output image with
+   * the following rules :
+   * - if <b>imIn(x) <= inMin</b>, imOut(x) will be mapped in the range <b>[0,
+   * outMin]</b>
+   * - if <b>inMin < imIn(x) <= inMax</b>, imOut(x) will be mapped in the range
+   * <b>[outMin, outMax]</b>
+   * - if <b>imIn(x) > inMax</b>, imOut(x) will be mapped in the range
+   * <b>[outMax, max(T2)]</b>
+   *
+   * @param[in] imIn : input Image
+   * @param[in] inMin, inMax : control range in the input image
+   * @param[in] outMin, outMax : control range in the output image
+   * @param[out] imOut : output Image
    *
    */
   template <class T1, class T2>
@@ -61,8 +79,21 @@ namespace smil
     return RES_OK;
   }
 
-  /*
+  /**
+   * @brief expand() - Linear conversion of pixel values to the range
+   * [Min, Max]
    *
+   * Maps a range of values in the input image into the range <b>[Min, Max]</b>
+   * in the output image.
+   *
+   * If @b onlyNonZero is @b true uses <b>[minVal(), maxVal()]</b> as the range
+   * of values in the input image, otherwise, uses the full range of values.
+   *
+   * @param[in] imIn : input image
+   * @param[in] Min : Minimum value in the output image
+   * @param[in] Max : Maximum value in the output image
+   * @param[out] imOut : output Image
+   * @param[in] onlyNonZero : defines how to find input image range of values
    */
   template <class T1, class T2>
   RES_T expand(const Image<T1> &imIn, const T2 Min, const T2 Max,
@@ -106,8 +137,19 @@ namespace smil
     return RES_OK;
   }
 
-  /*
+  /**
+   * @brief expand() - Linear conversion of pixels values to the
+   * domain range
    *
+   * Maps a range in the input image into the  range <b>[min(T2), max(T2)]</b>
+   * in the output image.
+   *
+   * If @b onlyNonZero is @b true uses <b>[minVal(), maxVal()]</b> as the range
+   * of values in the input image, otherwise, uses the full range of values.
+   *
+   * @param[in] imIn : input Image
+   * @param[out] imOut : output Image
+   * @param[in] onlyNonZero : defines how to find input image range of values
    */
   template <class T1, class T2>
   RES_T expand(const Image<T1> &imIn, Image<T2> &imOut,
@@ -161,8 +203,23 @@ namespace smil
 #endif
   }
 
-  /*
+  /**
+   * @brief sCurve() - S Curve transform
    *
+   * This function emulates the <b>S Curve</b> caracteristic of film
+   * photography.
+   *
+   * Use a sigmoid function centered at @b pivot with derivative @b ratio.
+   *
+   * One use of this filter is to set (increase or decrease) the contrast in the
+   * neighborhood of the @b pivot.
+   *
+   * @param[in] imIn : input Image
+   * @param[in] pivot :
+   * * if 0, takes the median of the histogram of input image as pivot
+   * * otherwise, use this value
+   * @param[in] ratio : derivative of output image at pivot value
+   * @param[out] imOut : output Image
    */
   template <class T1, class T2>
   RES_T sCurve(const Image<T1> &imIn, const T1 pivot,

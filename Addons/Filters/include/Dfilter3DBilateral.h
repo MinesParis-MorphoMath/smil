@@ -34,7 +34,7 @@ namespace smil
 {
   /**
    * @ingroup AddonFilters
-   * @defgroup Addon3DBilateral 3D Bilateral Filter
+   * @defgroup Addon3DBilateral Bilateral Filter (3D)
    *
    * Fast 3D recursive bilateral filter implementation based on the one 
    * proposed by Qingxiong Yang @cite Qingxiong_2012

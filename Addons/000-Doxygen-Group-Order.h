@@ -1,5 +1,5 @@
 /*
- * @defgroup Addons  Addons
+ * defgroup Addons  Addons
  */ 
 
 /**
@@ -8,7 +8,7 @@
  * @defgroup AddonColor                   Colour images conversions
  * @ingroup Addons
  *
- * @defgroup AddonFilters                 Filters (Non Morphological)
+ * @defgroup AddonFilters                 Non Morphological Filters
  * @ingroup Addons
  *
  * @defgroup AddonStochasticWatershed     Stochastic Watershed
@@ -33,9 +33,6 @@
  * @ingroup Addons
  *
  * @defgroup AddonZoneMatrix              Gray Level Zone Matrix
- * @ingroup Addons
- *
- * @defgroup Addon3DBilateral             3D Bilateral Filter
  * @ingroup Addons
  *
  * @defgroup AddonThresh                  Threshold (Theo)

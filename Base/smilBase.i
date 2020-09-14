@@ -124,6 +124,13 @@ TEMPLATE_WRAP_SUPPL_FUNC(diff);
 TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(test);
 TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(compare);
 
+// *******************************
+// Filters from Jose-Marcio
+// *******************************
+TEMPLATE_WRAP_FUNC_2T_CROSS(expand);
+// TEMPLATE_WRAP_FUNC_2T_CROSS(expandAuto);
+TEMPLATE_WRAP_FUNC_2T_CROSS(sCurve);
+
 
 %include "DImageHistogram.hpp"
 TEMPLATE_WRAP_FUNC(histogram);

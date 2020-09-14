@@ -38,9 +38,238 @@ namespace smil
   /**
    * @ingroup Base
    * @defgroup Transform Image Transformations
-   * @{
+   * 
    */
 
+  /**
+    * @defgroup TransformCut Cut and paste
+    * @ingroup Transform
+    *
+    * @addtogroup TransformCut
+    *
+    * @{
+    */
+
+  /* 
+   *  ####    ####   #####    #   #
+   * #    #  #    #  #    #    # #
+   * #       #    #  #    #     #
+   * #       #    #  #####      #
+   * #    #  #    #  #          #
+   *  ####    ####   #          #
+   */
+
+  /**
+   * copy() - Copy image (or a zone) into an output image
+   *
+   * This is the most complete version of @b smil::copy().
+   *
+   * It copies a region of @b imIn
+   * defined by its start point <b>(startX, startY, startZ)</b> and size
+   * <b>(sizeX, sizeY, sizeZ)</b> into a region on @b imOut beginning at
+   * position <b>(outStartX, outStartY, outStartZ)</b>.
+   *
+   * @param[in] imIn : input image
+   * @param[in] startX, startY, [startZ] : (optional) start position of the zone
+   * in the input image
+   * @param[in] sizeX,  sizeY,  [sizeZ] : (optional) size of the zone in the
+   * input image
+   * @param[out] imOut : output image
+   * @param[in] outStartX, outStartY, [outStartZ] : (optional) position to copy
+   * the selected zone in the output image (default is the origin (0,0,0))
+   *
+   * @smilexample{copy_crop.py}
+   */
+  template <class T1, class T2>
+  RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t startZ,
+             size_t sizeX, size_t sizeY, size_t sizeZ, Image<T2> &imOut,
+             size_t outStartX = 0, size_t outStartY = 0, size_t outStartZ = 0)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+
+    size_t inW = imIn.getWidth();
+    size_t inH = imIn.getHeight();
+    size_t inD = imIn.getDepth();
+
+    size_t outW = imOut.getWidth();
+    size_t outH = imOut.getHeight();
+    size_t outD = imOut.getDepth();
+
+    ASSERT(startX < inW && startY < inH && startZ < inD);
+    ASSERT(outStartX < outW && outStartY < outH && outStartZ < outD);
+
+    size_t realSx = min(min(sizeX, inW - startX), outW - outStartX);
+    size_t realSy = min(min(sizeY, inH - startY), outH - outStartY);
+    size_t realSz = min(min(sizeZ, inD - startZ), outD - outStartZ);
+
+    typename Image<T1>::volType slIn  = imIn.getSlices() + startZ;
+    typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
+
+    size_t y;
+
+    for (size_t z = 0; z < realSz; z++) {
+      typename Image<T1>::sliceType lnIn  = *slIn + startY;
+      typename Image<T2>::sliceType lnOut = *slOut + outStartY;
+
+#ifdef USE_OPEN_MP
+      int nthreads = Core::getInstance()->getNumberOfThreads();
+#pragma omp parallel private(y)
+#endif // USE_OPEN_MP
+      {
+#ifdef USE_OPEN_MP
+#pragma omp for schedule(dynamic, nthreads) nowait
+#endif // USE_OPEN_MP
+        for (y = 0; y < realSy; y++)
+          copyLine<T1, T2>(lnIn[y] + startX, realSx, lnOut[y] + outStartX);
+      }
+
+      slIn++;
+      slOut++;
+    }
+
+    imOut.modified();
+    return RES_OK;
+  }
+
+  /**
+   * copy() - Copy Image
+   *
+   * @b 2D version of the general @b smil::copy function.
+   *
+   * @overload
+   */
+  template <class T1, class T2>
+  RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t sizeX,
+             size_t sizeY, Image<T2> &imOut, size_t outStartX = 0,
+             size_t outStartY = 0, size_t outStartZ = 0)
+  {
+    return copy(imIn, startX, startY, 0, sizeX, sizeY, 1, imOut, outStartX,
+                outStartY, outStartZ);
+  }
+
+  /**
+   * copy() - Copy Image
+   *
+   * Copies the entire content of @b imIn beginning at <b>(startX, startY,
+   * startZ)</b> into @b imOut beginning at <b>(outStartX, outStartY,
+   * outStartZ)</b>.
+   *
+   * @overload
+   */
+  template <class T1, class T2>
+  RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t startZ,
+             Image<T2> &imOut, size_t outStartX = 0, size_t outStartY = 0,
+             size_t outStartZ = 0)
+  {
+    return copy(imIn, startX, startY, startZ, imIn.getWidth(), imIn.getHeight(),
+                imIn.getDepth(), imOut, outStartX, outStartY, outStartZ);
+  }
+
+  /**
+   * copy() - Copy Image (2D overload)
+   *
+   * Copies the entire content of @b imIn beginning at <b>(startX, startY)</b>
+   * into @b imOut beginning at <b>(outStartX, outStartY)</b>.
+   *
+   * @overload
+   */
+  template <class T1, class T2>
+  RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY,
+             Image<T2> &imOut, size_t outStartX = 0, size_t outStartY = 0,
+             size_t outStartZ = 0)
+  {
+    return copy(imIn, startX, startY, 0, imIn.getWidth(), imIn.getHeight(), 1,
+                imOut, outStartX, outStartY, outStartZ);
+  }
+
+  /**
+   * copy() - Copy Image
+   *
+   * Copies the entire content of @b imIn into @b imOut beginning at
+   <b>(outStartX, outStartY, outStartZ)</b>
+
+   * @overload
+   */
+  template <class T1, class T2>
+  RES_T copy(const Image<T1> &imIn, Image<T2> &imOut, size_t outStartX,
+             size_t outStartY, size_t outStartZ = 0)
+  {
+    return copy(imIn, 0, 0, 0, imIn.getWidth(), imIn.getHeight(),
+                imIn.getDepth(), imOut, outStartX, outStartY, outStartZ);
+  }
+
+  // Copy/cast two images with different types but same size (quick way)
+  /**
+   * copy() - Copy / cast two images, convert their types.
+   *
+   * If @b imIn and @b imOut types may be different, the contents of @b imIn
+   * beginning at <b> (0,0,0)</b> will copied to @b imOut, at the same place but
+   * the range of @b imOut won't be adjusted.
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   *
+   */
+  template <class T1, class T2>
+  RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
+  {
+    // Swig is (surprisingly;)) lost with overloads of template functions, so we
+    // try to reorient him
+    if (typeid(imIn) == typeid(imOut))
+      return copy(imIn, imOut);
+
+    ASSERT_ALLOCATED(&imIn, &imOut);
+
+    if (!haveSameSize(&imIn, &imOut, NULL))
+      return copy<T1, T2>(imIn, 0, 0, 0, imOut, 0, 0, 0);
+
+    copyLine<T1, T2>(imIn.getPixels(), imIn.getPixelCount(), imOut.getPixels());
+
+    imOut.modified();
+    return RES_OK;
+  }
+
+  /**
+   * copy() - Copy Image
+   *
+   * Copy one image to the other. @b imOut shall be of the same kind of @b imIn.
+   * Its size will be set to the same of @b imIn
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   */
+  template <class T>
+  RES_T copy(const Image<T> &imIn, Image<T> &imOut)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+
+    imOut.setSize(imIn);
+
+    return unaryImageFunction<T, fillLine<T>>(imIn, imOut).retVal;
+  }
+
+  /**
+   * clone() - Clone an image
+   *
+   * Make @b imOut a clone @b imIn, with the same size and content.
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   *
+   * @note
+   * @b imOut must be previously declared as an image with the same data type of
+   * @b imIn. Its initial size doesn't matter. It will be set to the same size
+   * of @b imIn.
+   */
+  template <class T>
+  RES_T clone(const Image<T> &imIn, Image<T> &imOut)
+  {
+    ASSERT_ALLOCATED(&imIn);
+
+    ASSERT((imOut.setSize(imIn) == RES_OK));
+    return copy<T>(imIn, imOut);
+  }
+    
   /*
    *  ####   #####    ####   #####
    * #    #  #    #  #    #  #    #
@@ -191,7 +420,16 @@ namespace smil
     }
     return RES_OK;
   }
+  /** @} */
 
+  /**
+    * @defgroup TransformView Image View
+    * @ingroup Transform
+    *
+    * @addtogroup TransformView
+    *
+    * @{
+    */
   /*
    * ######  #          #    #####
    * #       #          #    #    #
@@ -566,7 +804,17 @@ namespace smil
     translate<T>(imIn, dx, dy, 0, imOut);
     return imOut;
   }
+  
+  /** @} */
 
+  /**
+    * @defgroup TransformSize Image size
+    * @ingroup Transform
+    *
+    * @addtogroup TransformSize
+    *
+    * @{
+    */
   /*
    * #####   ######   ####      #    ######  ######
    * #    #  #       #          #        #   #

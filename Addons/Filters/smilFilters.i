@@ -43,7 +43,7 @@ SMIL_MODULE(smilFilters)
 #include "DfilterSigma.h"
 #include "DfilterMeanShift.h"
 
-#include "DfilterScaleRange.h"
+/* #include "DfilterScaleRange.h" */
 
 #include "Dfilter3DBilateral.h"
 %}
@@ -84,10 +84,10 @@ TEMPLATE_WRAP_FUNC(meanShiftFilter);
 // *******************************
 // Filters from Jose-Marcio
 // *******************************
-%include "DfilterScaleRange.h"
-TEMPLATE_WRAP_FUNC_2T_CROSS(expand);
+// JOE // %include "DfilterScaleRange.h"
+// JOE // TEMPLATE_WRAP_FUNC_2T_CROSS(expand);
 // TEMPLATE_WRAP_FUNC_2T_CROSS(expandAuto);
-TEMPLATE_WRAP_FUNC_2T_CROSS(sCurve);
+// JOE // TEMPLATE_WRAP_FUNC_2T_CROSS(sCurve);
 
 // *******************************
 // Filters from Theodore Chabardes

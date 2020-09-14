@@ -48,456 +48,16 @@ namespace smil
    *
    * @{
    */
+  /** @} */
 
-  /**
-   * fill() - Fill an image with a given value.
-   *
-   * @param[out] imOut Output image.
-   * @param[in] value The value to fill.
-   *
-   * @vectorized
-   * @parallelized
-   *
-   * @see Image::operator<<
-   *
-   */
-  template <class T>
-  RES_T fill(Image<T> &imOut, const T &value)
-  {
-    ASSERT_ALLOCATED(&imOut);
-
-    return unaryImageFunction<T, fillLine<T>>(imOut, value).retVal;
-  }
-
-  /**
-   * randFill() - Fill an image with random values.
-   *
-   * @param[in, out] imOut Output image.
-   *
-   * @see Image::operator<<
-   *
-   */
-  template <class T>
-  RES_T randFill(Image<T> &imOut)
-  {
-    ASSERT_ALLOCATED(&imOut);
-
-    typename ImDtTypes<T>::lineType pixels = imOut.getPixels();
-
-    // Initialize random number generator
-    struct timeval tv;
-    gettimeofday(&tv, 0);
-    srand(tv.tv_usec);
-
-    double rangeT = ImDtTypes<T>::cardinal();
-    T minT        = ImDtTypes<T>::min();
-
-    for (size_t i = 0; i < imOut.getPixelCount(); i++)
-      pixels[i] = T(rand() / double(RAND_MAX) * rangeT + double(minT));
-
-    imOut.modified();
-
-    return RES_OK;
-  }
-
-  /**
-   * copy() - Copy image (or a zone) into an output image
-   *
-   * This is the most complete version of @b smil::copy().
-   *
-   * It copies a region of @b imIn
-   * defined by its start point <b>(startX, startY, startZ)</b> and size
-   * <b>(sizeX, sizeY, sizeZ)</b> into a region on @b imOut beginning at
-   * position <b>(outStartX, outStartY, outStartZ)</b>.
-   *
-   * @param[in] imIn : input image
-   * @param[in] startX, startY, [startZ] : (optional) start position of the zone
-   * in the input image
-   * @param[in] sizeX,  sizeY,  [sizeZ] : (optional) size of the zone in the
-   * input image
-   * @param[out] imOut : output image
-   * @param[in] outStartX, outStartY, [outStartZ] : (optional) position to copy
-   * the selected zone in the output image (default is the origin (0,0,0))
-   *
-   * @smilexample{copy_crop.py}
-   */
-  template <class T1, class T2>
-  RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t startZ,
-             size_t sizeX, size_t sizeY, size_t sizeZ, Image<T2> &imOut,
-             size_t outStartX = 0, size_t outStartY = 0, size_t outStartZ = 0)
-  {
-    ASSERT_ALLOCATED(&imIn, &imOut);
-
-    size_t inW = imIn.getWidth();
-    size_t inH = imIn.getHeight();
-    size_t inD = imIn.getDepth();
-
-    size_t outW = imOut.getWidth();
-    size_t outH = imOut.getHeight();
-    size_t outD = imOut.getDepth();
-
-    ASSERT(startX < inW && startY < inH && startZ < inD);
-    ASSERT(outStartX < outW && outStartY < outH && outStartZ < outD);
-
-    size_t realSx = min(min(sizeX, inW - startX), outW - outStartX);
-    size_t realSy = min(min(sizeY, inH - startY), outH - outStartY);
-    size_t realSz = min(min(sizeZ, inD - startZ), outD - outStartZ);
-
-    typename Image<T1>::volType slIn  = imIn.getSlices() + startZ;
-    typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
-
-    size_t y;
-
-    for (size_t z = 0; z < realSz; z++) {
-      typename Image<T1>::sliceType lnIn  = *slIn + startY;
-      typename Image<T2>::sliceType lnOut = *slOut + outStartY;
-
-#ifdef USE_OPEN_MP
-      int nthreads = Core::getInstance()->getNumberOfThreads();
-#pragma omp parallel private(y)
-#endif // USE_OPEN_MP
-      {
-#ifdef USE_OPEN_MP
-#pragma omp for schedule(dynamic, nthreads) nowait
-#endif // USE_OPEN_MP
-        for (y = 0; y < realSy; y++)
-          copyLine<T1, T2>(lnIn[y] + startX, realSx, lnOut[y] + outStartX);
-      }
-
-      slIn++;
-      slOut++;
-    }
-
-    imOut.modified();
-    return RES_OK;
-  }
-
-  /**
-   * copy() - Copy Image
-   *
-   * @b 2D version of the general @b smil::copy function.
-   *
-   * @overload
-   */
-  template <class T1, class T2>
-  RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t sizeX,
-             size_t sizeY, Image<T2> &imOut, size_t outStartX = 0,
-             size_t outStartY = 0, size_t outStartZ = 0)
-  {
-    return copy(imIn, startX, startY, 0, sizeX, sizeY, 1, imOut, outStartX,
-                outStartY, outStartZ);
-  }
-
-  /**
-   * copy() - Copy Image
-   *
-   * Copies the entire content of @b imIn beginning at <b>(startX, startY,
-   * startZ)</b> into @b imOut beginning at <b>(outStartX, outStartY,
-   * outStartZ)</b>.
-   *
-   * @overload
-   */
-  template <class T1, class T2>
-  RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY, size_t startZ,
-             Image<T2> &imOut, size_t outStartX = 0, size_t outStartY = 0,
-             size_t outStartZ = 0)
-  {
-    return copy(imIn, startX, startY, startZ, imIn.getWidth(), imIn.getHeight(),
-                imIn.getDepth(), imOut, outStartX, outStartY, outStartZ);
-  }
-
-  /**
-   * copy() - Copy Image (2D overload)
-   *
-   * Copies the entire content of @b imIn beginning at <b>(startX, startY)</b>
-   * into @b imOut beginning at <b>(outStartX, outStartY)</b>.
-   *
-   * @overload
-   */
-  template <class T1, class T2>
-  RES_T copy(const Image<T1> &imIn, size_t startX, size_t startY,
-             Image<T2> &imOut, size_t outStartX = 0, size_t outStartY = 0,
-             size_t outStartZ = 0)
-  {
-    return copy(imIn, startX, startY, 0, imIn.getWidth(), imIn.getHeight(), 1,
-                imOut, outStartX, outStartY, outStartZ);
-  }
-
-  /**
-   * copy() - Copy Image
-   *
-   * Copies the entire content of @b imIn into @b imOut beginning at
-   <b>(outStartX, outStartY, outStartZ)</b>
-
-   * @overload
-   */
-  template <class T1, class T2>
-  RES_T copy(const Image<T1> &imIn, Image<T2> &imOut, size_t outStartX,
-             size_t outStartY, size_t outStartZ = 0)
-  {
-    return copy(imIn, 0, 0, 0, imIn.getWidth(), imIn.getHeight(),
-                imIn.getDepth(), imOut, outStartX, outStartY, outStartZ);
-  }
-
-  // Copy/cast two images with different types but same size (quick way)
-  /**
-   * copy() - Copy / cast two images, convert their types.
-   *
-   * If @b imIn and @b imOut types may be different, the contents of @b imIn
-   * beginning at <b> (0,0,0)</b> will copied to @b imOut, at the same place but
-   * the range of @b imOut won't be adjusted.
-   *
-   * @param[in] imIn : input image
-   * @param[out] imOut : output image
-   *
-   */
-  template <class T1, class T2>
-  RES_T copy(const Image<T1> &imIn, Image<T2> &imOut)
-  {
-    // Swig is (surprisingly;)) lost with overloads of template functions, so we
-    // try to reorient him
-    if (typeid(imIn) == typeid(imOut))
-      return copy(imIn, imOut);
-
-    ASSERT_ALLOCATED(&imIn, &imOut);
-
-    if (!haveSameSize(&imIn, &imOut, NULL))
-      return copy<T1, T2>(imIn, 0, 0, 0, imOut, 0, 0, 0);
-
-    copyLine<T1, T2>(imIn.getPixels(), imIn.getPixelCount(), imOut.getPixels());
-
-    imOut.modified();
-    return RES_OK;
-  }
-
-  /**
-   * copy() - Copy Image
-   *
-   * Copy one image to the other. @b imOut shall be of the same kind of @b imIn.
-   * Its size will be set to the same of @b imIn
-   *
-   * @param[in] imIn : input image
-   * @param[out] imOut : output image
-   */
-  template <class T>
-  RES_T copy(const Image<T> &imIn, Image<T> &imOut)
-  {
-    ASSERT_ALLOCATED(&imIn, &imOut);
-
-    imOut.setSize(imIn);
-
-    return unaryImageFunction<T, fillLine<T>>(imIn, imOut).retVal;
-  }
-
-  /**
-   * clone() - Clone an image
-   *
-   * Make @b imOut a clone @b imIn, with the same size and content.
-   *
-   * @param[in] imIn : input image
-   * @param[out] imOut : output image
-   *
-   * @note
-   * @b imOut must be previously declared as an image with the same data type of
-   * @b imIn. Its initial size doesn't matter. It will be set to the same size
-   * of @b imIn.
-   */
-  template <class T>
-  RES_T clone(const Image<T> &imIn, Image<T> &imOut)
-  {
-    ASSERT_ALLOCATED(&imIn);
-
-    ASSERT((imOut.setSize(imIn) == RES_OK));
-    return copy<T>(imIn, imOut);
-  }
-
-  /**
-   * cast() - Cast from an image type to another
-   *
-   * Copies the content of @b imIn into @b imOut scaling pixel values to the
-   * data type of @b imOut.
-   *
-   * @param[in] imIn : input image
-   * @param[out] imOut : output image
-   *
-   * @note
-   * @b imOut shall be a previously allocated image with the same size of @b
-   * imIn.
-   */
-  template <class T1, class T2>
-  RES_T cast(const Image<T1> &imIn, Image<T2> &imOut)
-  {
-    ASSERT_ALLOCATED(&imIn);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
-
-    T1 floor_t1 = ImDtTypes<T1>::min();
-    T2 floor_t2 = ImDtTypes<T2>::min();
-
-    // can't use cardinal on floating point data types...
-    // double coeff =
-    //  double(ImDtTypes<T2>::cardinal()) /  double(ImDtTypes<T1>::cardinal());
-
-    double coeff = double(ImDtTypes<T2>::max() - ImDtTypes<T2>::min()) /
-                   double(ImDtTypes<T1>::max() - ImDtTypes<T1>::min());
-
-    typename Image<T1>::lineType pixIn  = imIn.getPixels();
-    typename Image<T2>::lineType pixOut = imOut.getPixels();
-
-    size_t i, nPix = imIn.getPixelCount();
-
-#ifdef USE_OPEN_MP
-    int nthreads = Core::getInstance()->getNumberOfThreads();
-#pragma omp parallel private(i) num_threads(nthreads)
-#endif // USE_OPEN_MP
-    {
-#ifdef USE_OPEN_MP
-#pragma omp for
-#endif // USE_OPEN_MP
-      for (i = 0; i < nPix; i++)
-        pixOut[i] = floor_t2 + T2(coeff * double(pixIn[i] - floor_t1));
-    }
-
-    return RES_OK;
-  }
-
-  /**
-   * copyChannel() - Copy a channel of multichannel image into a single channel
-   * image
-   *
-   * @param[in] imIn : input image
-   * @param[in] chanNum : channel in the input image to copy
-   * @param[out] imOut : output image
-   *
-   * @note
-   * - @b imIn et @b imOut are @b 2D images
-   * - @b imOut shall be a previosly allocated single channel image with the
-   * same size than @b imIn.
-   * - @b chanNum shall be a valid channel of @b imIn.
-   *
-   * @smilexample{multichannel_operations.py}
-   */
-  template <class MCT1, class T2>
-  RES_T copyChannel(const Image<MCT1> &imIn, const UINT &chanNum,
-                    Image<T2> &imOut)
-  {
-    ASSERT(chanNum < MCT1::channelNumber());
-    ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
-
-    typedef typename MCT1::DataType T1;
-    typename Image<T1>::lineType lineIn  = imIn.getPixels().arrays[chanNum];
-    typename Image<T2>::lineType lineOut = imOut.getPixels();
-
-    copyLine<T1, T2>(lineIn, imIn.getPixelCount(), lineOut);
-    imOut.modified();
-    return RES_OK;
-  }
-
-  /**
-   * copyToChannel() - Copy a single channel image into a channel of
-   * multichannel image
-   *
-   * @param[in] imIn : input image
-   * @param[in] chanNum : channel in the output image to copy
-   * @param[out] imOut : output image
-   *
-   * @note
-   * - @b imIn et @b imOut are @b 2D images
-   * - @b imOut shall be a previosly allocated multichannel image with the same
-   * size than @b imIn.
-   * - @b chanNum shall be a valid channel of @b imOut.
-   *
-   * @smilexample{multichannel_operations.py}
-   */
-  template <class T1, class MCT2>
-  RES_T copyToChannel(const Image<T1> &imIn, const UINT &chanNum,
-                      Image<MCT2> &imOut)
-  {
-    ASSERT(chanNum < MCT2::channelNumber());
-    ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
-
-    typedef typename MCT2::DataType T2;
-    typename Image<T1>::lineType lineIn  = imIn.getPixels();
-    typename Image<T2>::lineType lineOut = imOut.getPixels().arrays[chanNum];
-
-    copyLine<T1, T2>(lineIn, imIn.getPixelCount(), lineOut);
-    imOut.modified();
-    return RES_OK;
-  }
-
-  /**
-   * splitChannels() - Split channels of multichannel image to a 3D image with
-   * each channel on a Z slice
-   *
-   * @param[in] imIn : input image
-   * @param[out] im3DOut : output image
-   *
-   * @note
-   * - @b imIn is a @b 2D image
-   * - @b im3DOut whall be a previously allocated image. Its size will be set to
-   * the same as @b imIn, but its depth will be set the the number of channels
-   * of @b imIn.
-   *
-   * @smilexample{multichannel_operations.py}
-   */
-  template <class MCT1, class T2>
-  RES_T splitChannels(const Image<MCT1> &imIn, Image<T2> &im3DOut)
-  {
-    ASSERT_ALLOCATED(&imIn);
-
-    UINT width = imIn.getWidth(), height = imIn.getHeight();
-    UINT chanNum  = MCT1::channelNumber();
-    UINT pixCount = width * height;
-    ASSERT(im3DOut.setSize(width, height, chanNum) == RES_OK);
-
-    typedef typename MCT1::DataType T1;
-    typename Image<MCT1>::lineType lineIn = imIn.getPixels();
-    typename Image<T2>::lineType lineOut  = im3DOut.getPixels();
-
-    for (UINT i = 0; i < chanNum; i++) {
-      copyLine<T1, T2>(lineIn.arrays[i], pixCount, lineOut);
-      lineOut += pixCount;
-    }
-    im3DOut.modified();
-
-    return RES_OK;
-  }
-
-  /**
-   * mergeChannels() - Merge slices of a 3D image into a multichannel image
-   *
-   * This function has the inverse behaviour of function splitChannels()
-   *
-   * @param[in] imIn : input image
-   * @param[out] imOut : output image
-   *
-   * @smilexample{multichannel_operations.py}
-   */
-  template <class T1, class MCT2>
-  RES_T mergeChannels(const Image<T1> &imIn, Image<MCT2> &imOut)
-  {
-    ASSERT_ALLOCATED(&imIn);
-    UINT chanNum = MCT2::channelNumber();
-    ASSERT(imIn.getDepth() == chanNum);
-
-    UINT width = imIn.getWidth(), height = imIn.getHeight();
-    UINT pixCount = width * height;
-    imOut.setSize(width, height);
-
-    typedef typename MCT2::DataType T2;
-    typename Image<T1>::lineType lineIn    = imIn.getPixels();
-    typename Image<MCT2>::lineType lineOut = imOut.getPixels();
-
-    for (UINT i = 0; i < chanNum; i++) {
-      copyLine<T1, T2>(lineIn, pixCount, lineOut.arrays[i]);
-      lineIn += pixCount;
-    }
-    imOut.modified();
-
-    return RES_OK;
-  }
-
+ /**
+    * @defgroup  ArithArith Arithmetics
+    * @ingroup Arith
+    *
+    * @addtogroup ArithArith
+    *
+    * @{
+    */
   /**
    * inv() - Invert an image.
    *
@@ -1300,7 +860,16 @@ namespace smil
     func.lineFunction.base = base;
     return func(imIn, imOut);
   }
+  /** @} */
 
+  /**
+    * @defgroup  ArithLogic Logical functions
+    * @ingroup Arith
+    *
+    * @addtogroup ArithLogic
+    *
+    * @{
+    */
   /**
    * logicAnd() - Logic AND operator, pixel by pixel, of two images
    *
@@ -1433,7 +1002,16 @@ namespace smil
 
     return binaryImageFunction<T, bitXOrLine<T>>(imIn1, imIn2, imOut);
   }
+  /** @} */
 
+  /**
+    * @defgroup  ArithCompare Comparison functions
+    * @ingroup Arith
+    *
+    * @addtogroup ArithCompare
+    *
+    * @{
+    */
   /**
    * test() - Test
    *
@@ -1779,7 +1357,535 @@ namespace smil
     return _compare_base<T1, T1, T2, T2, T2>(imIn, compareType, value, trueVal,
                                              falseVal, imOut);
   }
+  /** @} */
 
+ /**
+    * @defgroup  ArithRange Range of pixel values
+    * @ingroup Arith
+    *
+    * @addtogroup ArithRange
+    *
+    * @{
+    */
+  /**
+
+   * fill() - Fill an image with a given value.
+   *
+   * @param[out] imOut Output image.
+   * @param[in] value The value to fill.
+   *
+   * @vectorized
+   * @parallelized
+   *
+   * @see Image::operator<<
+   *
+   */
+  template <class T>
+  RES_T fill(Image<T> &imOut, const T &value)
+  {
+    ASSERT_ALLOCATED(&imOut);
+
+    return unaryImageFunction<T, fillLine<T>>(imOut, value).retVal;
+  }
+
+  /**
+   * randFill() - Fill an image with random values.
+   *
+   * @param[in, out] imOut Output image.
+   *
+   * @see Image::operator<<
+   *
+   */
+  template <class T>
+  RES_T randFill(Image<T> &imOut)
+  {
+    ASSERT_ALLOCATED(&imOut);
+
+    typename ImDtTypes<T>::lineType pixels = imOut.getPixels();
+
+    // Initialize random number generator
+    struct timeval tv;
+    gettimeofday(&tv, 0);
+    srand(tv.tv_usec);
+
+    double rangeT = ImDtTypes<T>::cardinal();
+    T minT        = ImDtTypes<T>::min();
+
+    for (size_t i = 0; i < imOut.getPixelCount(); i++)
+      pixels[i] = T(rand() / double(RAND_MAX) * rangeT + double(minT));
+
+    imOut.modified();
+
+    return RES_OK;
+  }
+
+
+  /**
+   * cast() - Cast from an image type to another
+   *
+   * Copies the content of @b imIn into @b imOut scaling pixel values to the
+   * data type of @b imOut.
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   *
+   * @note
+   * @b imOut shall be a previously allocated image with the same size of @b
+   * imIn.
+   */
+  template <class T1, class T2>
+  RES_T cast(const Image<T1> &imIn, Image<T2> &imOut)
+  {
+    ASSERT_ALLOCATED(&imIn);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    T1 floor_t1 = ImDtTypes<T1>::min();
+    T2 floor_t2 = ImDtTypes<T2>::min();
+
+    // can't use cardinal on floating point data types...
+    // double coeff =
+    //  double(ImDtTypes<T2>::cardinal()) /  double(ImDtTypes<T1>::cardinal());
+
+    double coeff = double(ImDtTypes<T2>::max() - ImDtTypes<T2>::min()) /
+                   double(ImDtTypes<T1>::max() - ImDtTypes<T1>::min());
+
+    typename Image<T1>::lineType pixIn  = imIn.getPixels();
+    typename Image<T2>::lineType pixOut = imOut.getPixels();
+
+    size_t i, nPix = imIn.getPixelCount();
+
+#ifdef USE_OPEN_MP
+    int nthreads = Core::getInstance()->getNumberOfThreads();
+#pragma omp parallel private(i) num_threads(nthreads)
+#endif // USE_OPEN_MP
+    {
+#ifdef USE_OPEN_MP
+#pragma omp for
+#endif // USE_OPEN_MP
+      for (i = 0; i < nPix; i++)
+        pixOut[i] = floor_t2 + T2(coeff * double(pixIn[i] - floor_t1));
+    }
+
+    return RES_OK;
+  }
+
+  /**
+   * @brief expand() - Linear conversion of pixels values to the range
+   * [Min, Max]
+   *
+   * Values in the input image are linearly mapped into the output image with
+   * the following rules :
+   * - if <b>imIn(x) <= inMin</b>, imOut(x) will be mapped in the range <b>[0,
+   * outMin]</b>
+   * - if <b>inMin < imIn(x) <= inMax</b>, imOut(x) will be mapped in the range
+   * <b>[outMin, outMax]</b>
+   * - if <b>imIn(x) > inMax</b>, imOut(x) will be mapped in the range
+   * <b>[outMax, max(T2)]</b>
+   *
+   * @param[in] imIn : input Image
+   * @param[in] inMin, inMax : control range in the input image
+   * @param[in] outMin, outMax : control range in the output image
+   * @param[out] imOut : output Image
+   *
+   */
+  template <class T1, class T2>
+  RES_T expand(const Image<T1> &imIn, const T1 inMin, const T1 inMax,
+                        const T2 outMin, const T2 outMax, Image<T2> &imOut)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    ImageFreezer freeze(imOut);
+
+    size_t S[3];
+    imIn.getSize(S);
+
+    typename ImDtTypes<T1>::lineType bufferIn  = imIn.getPixels();
+    typename ImDtTypes<T2>::lineType bufferOut = imOut.getPixels();
+
+    size_t W, H, D;
+    W = S[0];
+    H = S[1];
+    D = S[2];
+
+    if ((inMax - inMin) == 0) {
+      // a flat image - can generate division by 0
+      return RES_ERR;
+    }
+
+    T1 inTop  = imIn.getDataTypeMax();
+    T2 outTop = imOut.getDataTypeMax();
+
+    double k1, k2, k3;
+    k1 = k2 = k3 = 0;
+
+    if (inMin > 0)
+      k1 = ((double) (outMin - 0)) / ((double) (inMin - 0));
+    if (inMax > inMin)
+      k2 = ((double) (outMax - outMin)) / ((double) (inMax - inMin));
+    if (inTop > inMax)
+      k3 = ((double) (outTop - outMax)) / ((double) (inTop - inMax));
+
+    size_t iMax = W * H * D;
+    for (size_t i = 0; i < iMax; i++) {
+      if (bufferIn[i] < inMin) {
+        bufferOut[i] = (T2)(k1 * bufferIn[i]);
+        continue;
+      }
+      if (bufferIn[i] >= inMin && bufferIn[i] < inMax) {
+        bufferOut[i] = (T2)(outMin + k2 * (bufferIn[i] - inMin));
+        continue;
+      }
+      if (bufferIn[i] >= inMax) {
+        bufferOut[i] = (T2)(outMax + k3 * (bufferIn[i] - inMax));
+      }
+    }
+    return RES_OK;
+  }
+
+  /**
+   * @brief expand() - Linear conversion of pixel values to the range
+   * [Min, Max]
+   *
+   * Maps a range of values in the input image into the range <b>[Min, Max]</b>
+   * in the output image.
+   *
+   * If @b onlyNonZero is @b true uses <b>[minVal(), maxVal()]</b> as the range
+   * of values in the input image, otherwise, uses the full range of values.
+   *
+   * @param[in] imIn : input image
+   * @param[in] Min : Minimum value in the output image
+   * @param[in] Max : Maximum value in the output image
+   * @param[out] imOut : output Image
+   * @param[in] onlyNonZero : defines how to find input image range of values
+   */
+  template <class T1, class T2>
+  RES_T expand(const Image<T1> &imIn, const T2 Min, const T2 Max,
+                        Image<T2> &imOut, bool onlyNonZero)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    ImageFreezer freeze(imOut);
+
+    size_t S[3];
+    imIn.getSize(S);
+
+    typename ImDtTypes<T1>::lineType bufferIn  = imIn.getPixels();
+    typename ImDtTypes<T2>::lineType bufferOut = imOut.getPixels();
+
+    size_t W, H, D;
+    W = S[0];
+    H = S[1];
+    D = S[2];
+
+    T1 vMin, vMax;
+    if (onlyNonZero) {
+      vMin = minVal(imIn);
+      vMax = maxVal(imIn);
+    } else {
+      vMin = imIn.getDataTypeMin();
+      vMax = imIn.getDataTypeMax();
+    }
+    if ((vMax - vMin) == 0) {
+      // a flat image - can generate division by 0
+      return RES_ERR;
+    }
+
+    double k = ((double) (Max - Min)) / ((double) (vMax - vMin));
+
+    size_t iMax = W * H * D;
+    for (size_t i = 0; i < iMax; i++)
+      bufferOut[i] = (T2)(Min + k * (bufferIn[i] - vMin));
+
+    return RES_OK;
+  }
+
+  /**
+   * @brief expand() - Linear conversion of pixels values to the
+   * domain range
+   *
+   * Maps a range in the input image into the  range <b>[min(T2), max(T2)]</b>
+   * in the output image.
+   *
+   * If @b onlyNonZero is @b true uses <b>[minVal(), maxVal()]</b> as the range
+   * of values in the input image, otherwise, uses the full range of values.
+   *
+   * @param[in] imIn : input Image
+   * @param[out] imOut : output Image
+   * @param[in] onlyNonZero : defines how to find input image range of values
+   */
+  template <class T1, class T2>
+  RES_T expand(const Image<T1> &imIn, Image<T2> &imOut,
+                        bool onlyNonZero)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+#if 1
+    return expand(imIn, imOut.getDataTypeMin(), imOut.getDataTypeMax(),
+                           imOut, onlyNonZero);
+#else
+
+    ImageFreezer freeze(imOut);
+
+    size_t S[3];
+    imIn.getSize(S);
+
+    typename ImDtTypes<T1>::lineType bufferIn  = imIn.getPixels();
+    typename ImDtTypes<T2>::lineType bufferOut = imOut.getPixels();
+
+    size_t W, H, D;
+    W = S[0];
+    H = S[1];
+    D = S[2];
+
+    T2 Max = imOut.getDataTypeMax();
+    T2 Min = imOut.getDataTypeMin();
+
+    T1 vMin, vMax;
+    if (onlyNonZero) {
+      vMin = minVal(imIn);
+      vMax = maxVal(imIn);
+    } else {
+      vMin = imIn.getDataTypeMin();
+      vMax = imIn.getDataTypeMax();
+    }
+
+    if ((vMax - vMin) == 0) {
+      // a flat image - can generate division by 0
+      return RES_ERR;
+    }
+
+    double k = ((double) (Max - Min)) / ((double) (vMax - vMin));
+
+    size_t iMax = W * H * D;
+    for (size_t i = 0; i < iMax; i++)
+      bufferOut[i] = (T2)(Min + k * (bufferIn[i] - vMin));
+
+    return RES_OK;
+#endif
+  }
+
+  /**
+   * @brief sCurve() - S Curve transform
+   *
+   * This function emulates the <b>S Curve</b> caracteristic of film
+   * photography.
+   *
+   * Use a sigmoid function centered at @b pivot with derivative @b ratio.
+   *
+   * One use of this filter is to set (increase or decrease) the contrast in the
+   * neighborhood of the @b pivot.
+   *
+   * @param[in] imIn : input Image
+   * @param[in] pivot :
+   * * if 0, takes the median of the histogram of input image as pivot
+   * * otherwise, use this value
+   * @param[in] ratio : derivative of output image at pivot value
+   * @param[out] imOut : output Image
+   */
+  template <class T1, class T2>
+  RES_T sCurve(const Image<T1> &imIn, const T1 pivot,
+                              const double ratio, Image<T2> &imOut)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    ImageFreezer freeze(imOut);
+
+    size_t S[3];
+    imIn.getSize(S);
+
+    typename ImDtTypes<T1>::lineType bufferIn  = imIn.getPixels();
+    typename ImDtTypes<T2>::lineType bufferOut = imOut.getPixels();
+
+    size_t W, H, D;
+    W = S[0];
+    H = S[1];
+    D = S[2];
+
+    T1 vMin = minVal(imIn);
+    T1 vMax = maxVal(imIn);
+    if ((vMax - vMin) == 0) {
+      // a flat image - can generate division by 0
+      return RES_ERR;
+    }
+
+    T1 ctr = pivot;
+    if (pivot == 0 || pivot > vMax)
+      ctr = (vMax - vMin) / 2;
+
+    double k = 4. * ratio / (vMax - vMin);
+
+    T2 Max      = imOut.getDataTypeMax();
+    size_t iMax = W * H * D;
+
+    for (size_t i = 0; i < iMax; i++)
+      bufferOut[i] = (T2)(Max / (1. + exp(-k * (bufferIn[i] - ctr))));
+
+    return RES_OK;
+  }
+
+
+
+  /** @} */
+
+ /**
+    * @defgroup  ArithChannel Operations on image channels
+    * @ingroup Arith
+    *
+    * @addtogroup ArithChannel
+    *
+    * @{
+    */
+  /**
+   * copyChannel() - Copy a channel of multichannel image into a single channel
+   * image
+   *
+   * @param[in] imIn : input image
+   * @param[in] chanNum : channel in the input image to copy
+   * @param[out] imOut : output image
+   *
+   * @note
+   * - @b imIn et @b imOut are @b 2D images
+   * - @b imOut shall be a previosly allocated single channel image with the
+   * same size than @b imIn.
+   * - @b chanNum shall be a valid channel of @b imIn.
+   *
+   * @smilexample{multichannel_operations.py}
+   */
+  template <class MCT1, class T2>
+  RES_T copyChannel(const Image<MCT1> &imIn, const UINT &chanNum,
+                    Image<T2> &imOut)
+  {
+    ASSERT(chanNum < MCT1::channelNumber());
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    typedef typename MCT1::DataType T1;
+    typename Image<T1>::lineType lineIn  = imIn.getPixels().arrays[chanNum];
+    typename Image<T2>::lineType lineOut = imOut.getPixels();
+
+    copyLine<T1, T2>(lineIn, imIn.getPixelCount(), lineOut);
+    imOut.modified();
+    return RES_OK;
+  }
+
+  /**
+   * copyToChannel() - Copy a single channel image into a channel of
+   * multichannel image
+   *
+   * @param[in] imIn : input image
+   * @param[in] chanNum : channel in the output image to copy
+   * @param[out] imOut : output image
+   *
+   * @note
+   * - @b imIn et @b imOut are @b 2D images
+   * - @b imOut shall be a previosly allocated multichannel image with the same
+   * size than @b imIn.
+   * - @b chanNum shall be a valid channel of @b imOut.
+   *
+   * @smilexample{multichannel_operations.py}
+   */
+  template <class T1, class MCT2>
+  RES_T copyToChannel(const Image<T1> &imIn, const UINT &chanNum,
+                      Image<MCT2> &imOut)
+  {
+    ASSERT(chanNum < MCT2::channelNumber());
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    typedef typename MCT2::DataType T2;
+    typename Image<T1>::lineType lineIn  = imIn.getPixels();
+    typename Image<T2>::lineType lineOut = imOut.getPixels().arrays[chanNum];
+
+    copyLine<T1, T2>(lineIn, imIn.getPixelCount(), lineOut);
+    imOut.modified();
+    return RES_OK;
+  }
+
+  /**
+   * splitChannels() - Split channels of multichannel image to a 3D image with
+   * each channel on a Z slice
+   *
+   * @param[in] imIn : input image
+   * @param[out] im3DOut : output image
+   *
+   * @note
+   * - @b imIn is a @b 2D image
+   * - @b im3DOut whall be a previously allocated image. Its size will be set to
+   * the same as @b imIn, but its depth will be set the the number of channels
+   * of @b imIn.
+   *
+   * @smilexample{multichannel_operations.py}
+   */
+  template <class MCT1, class T2>
+  RES_T splitChannels(const Image<MCT1> &imIn, Image<T2> &im3DOut)
+  {
+    ASSERT_ALLOCATED(&imIn);
+
+    UINT width = imIn.getWidth(), height = imIn.getHeight();
+    UINT chanNum  = MCT1::channelNumber();
+    UINT pixCount = width * height;
+    ASSERT(im3DOut.setSize(width, height, chanNum) == RES_OK);
+
+    typedef typename MCT1::DataType T1;
+    typename Image<MCT1>::lineType lineIn = imIn.getPixels();
+    typename Image<T2>::lineType lineOut  = im3DOut.getPixels();
+
+    for (UINT i = 0; i < chanNum; i++) {
+      copyLine<T1, T2>(lineIn.arrays[i], pixCount, lineOut);
+      lineOut += pixCount;
+    }
+    im3DOut.modified();
+
+    return RES_OK;
+  }
+
+  /**
+   * mergeChannels() - Merge slices of a 3D image into a multichannel image
+   *
+   * This function has the inverse behaviour of function splitChannels()
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   *
+   * @smilexample{multichannel_operations.py}
+   */
+  template <class T1, class MCT2>
+  RES_T mergeChannels(const Image<T1> &imIn, Image<MCT2> &imOut)
+  {
+    ASSERT_ALLOCATED(&imIn);
+    UINT chanNum = MCT2::channelNumber();
+    ASSERT(imIn.getDepth() == chanNum);
+
+    UINT width = imIn.getWidth(), height = imIn.getHeight();
+    UINT pixCount = width * height;
+    imOut.setSize(width, height);
+
+    typedef typename MCT2::DataType T2;
+    typename Image<T1>::lineType lineIn    = imIn.getPixels();
+    typename Image<MCT2>::lineType lineOut = imOut.getPixels();
+
+    for (UINT i = 0; i < chanNum; i++) {
+      copyLine<T1, T2>(lineIn, pixCount, lineOut.arrays[i]);
+      lineIn += pixCount;
+    }
+    imOut.modified();
+
+    return RES_OK;
+  }
+  /** @} */
+
+  /**
+    * @defgroup  ArithOthers Others functions
+    * @ingroup Arith
+    *
+    * @addtogroup ArithOthers
+    *
+    * @{
+    */
   /**
    * mask() - Image mask
    *
