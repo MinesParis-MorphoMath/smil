@@ -13,11 +13,8 @@ SMIL_MODULE(smilZoneMatrix)
 
 %include "DGrayLevelDistance.h"
 
-// TEMPLATE_WRAP_FUNC(grayLevelSizeZM);
-// TEMPLATE_WRAP_FUNC(grayLevelDistanceZM);
-// TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Diameter);
-// TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Elongation);
-// TEMPLATE_WRAP_FUNC(grayLevelDistanceZM_Tortuosity);
+TEMPLATE_WRAP_FUNC(grayLevelZMSize);
+TEMPLATE_WRAP_FUNC(grayLevelZMDistance);
 
 
 

@@ -49,7 +49,7 @@ namespace smil
    * gradient() - Morphological gradient
    *
    * @details : The morphological gradient of an image is defined as the
-   * difference between its dilation and its erosion :
+   * difference between its @b dilation and its @b erosion :
    * @f[ gradient(im) = \epsilon(im) - \delta(im) @f]
    *
    * @see @soillebook{p. 85-89, 127-130}
@@ -69,7 +69,7 @@ namespace smil
    * gradient() - Morphological gradient
    *
    * @details : The morphological gradient of an image is defined as the
-   * difference between its dilation and its erosion :
+   * difference between its @b dilation and its @b erosion :
    * @f[ gradient(im) = \epsilon(im) - \delta(im) @f]
    *
    * This function allows the use of different structuring elements for the
@@ -102,7 +102,7 @@ namespace smil
    * topHat() - Top-Hat
    *
    * @txtbold{Top-Hat} or @txtbold{Open top-hat} or @txtbold{White top-hat} is
-   * defined as the difference of  the image and its opening : 
+   * defined as the difference of  the image and its @b opening : 
    * @f[ WTH(im) = im - \gamma(im) @f]
    *
    * @see @soillebook{p. 121-127}
@@ -127,7 +127,7 @@ namespace smil
    * dualTopHat() - Dual Top-Hat
    *
    * @txtbold{Dual Top-Hat} or @txtbold{Close top-hat} or
-   * @txtbold{Black top-hat} is defined as the difference of closing of the
+   * @txtbold{Black top-hat} is defined as the difference of @b closing of the
    * image and itself :  @f[ BTH(im) = \phi(im) - im @f]
    *
    * @see @soillebook{p. 121-127}

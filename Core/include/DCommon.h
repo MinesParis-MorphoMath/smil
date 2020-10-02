@@ -46,13 +46,13 @@ using namespace std;
 namespace smil
 {
   /**
-  * @addtogroup  CoreExtraTypes
-  *
-  * @brief   Some useful data types when handling images
-  *
-  * @{
-  */
-  
+   * @addtogroup  CoreExtraTypes
+   *
+   * @brief   Some useful data types when handling images
+   *
+   * @{
+   */
+
 #define VERBOSE 1
 
 #if VERBOSE > 1
@@ -118,125 +118,126 @@ namespace smil
 #endif // SWIG
 
   /**
-    * Struct Point
-    */
-  template <class T> struct Point {
+   * Struct Point
+   */
+  template <class T>
+  struct Point {
     T x;
     T y;
     T z;
 
     /** Contructor - an empty point
-    *
-    * All coordinates are set to @b 0
-    */
+     *
+     * All coordinates are set to @b 0
+     */
     Point() : x(0), y(0), z(0)
     {
     }
 
     /** Constructor from another point
-    *
-    * @note
-    * Both points shall be of the same data type
-    */
+     *
+     * @note
+     * Both points shall be of the same data type
+     */
     Point(const Point &pt) : x(pt.x), y(pt.y), z(pt.z)
     {
     }
 
     /** @b 3D Point Constructor
-    *
-    * @param[in] _x, _y, _z : initial coordinates
-    */
+     *
+     * @param[in] _x, _y, _z : initial coordinates
+     */
     Point(T _x, T _y, T _z) : x(_x), y(_y), z(_z)
     {
     }
 
     /** @b 2D Point Constructor
-    *
-    * @param[in] _x, _y : initial coordinates
-    */
+     *
+     * @param[in] _x, _y : initial coordinates
+     */
     Point(T _x, T _y) : x(_x), y(_y), z(0)
     {
     }
 
     /** operator== - comparison
-    *
-    * @param[in] p2 : point
-    */
+     *
+     * @param[in] p2 : point
+     */
     bool operator==(const Point &p2)
     {
       return (x == p2.x && y == p2.y && z == p2.z);
     }
-    
+
     /** operator- - difference between two points
-    *
-    * @note
-    * To be able to accomodate negative values of all data types, the type of
-    * returned Point is @b Point<double>
-    *
-    * @smilexample{example-point-minus.py}
-    *
-    */
+     *
+     * @note
+     * To be able to accomodate negative values of all data types, the type of
+     * returned Point is @b Point<double>
+     *
+     * @smilexample{example-point-minus.py}
+     *
+     */
     Point<double> operator-(const Point &p2)
     {
-      return Point<double>((double ) x - p2.x, (double ) y - p2.y, (double ) z - p2.z);
+      return Point<double>((double) x - p2.x, (double) y - p2.y,
+                           (double) z - p2.z);
     }
 
     /** printSelf() - Print point coordinates
-    * @param[in] indent : prefix to add to each line
-    */
+     * @param[in] indent : prefix to add to each line
+     */
     void printSelf(string indent = "")
     {
-      cout << indent << " " << x << "\t" << y << "\t" << z << endl; 
+      cout << indent << " " << x << "\t" << y << "\t" << z << endl;
     }
   };
 
-
   /** DoublePoint
-  *
-  * Point coordinates defined as @b double values
-  */
+   *
+   * Point coordinates defined as @b double values
+   */
   typedef Point<double> DoublePoint;
 
   /** IntPoint
-  *
-  * Point coordinates defined as @b int values
-  */
+   *
+   * Point coordinates defined as @b int values
+   */
   typedef Point<int> IntPoint;
 
   /** UintPoint
-  *
-  * Point coordinates defined as @b UINT (unsigned int) values
-  */
+   *
+   * Point coordinates defined as @b UINT (unsigned int) values
+   */
   typedef Point<UINT> UintPoint;
 
   /** Vector_double
-  *
-  * A vector of @b double values
-  */
+   *
+   * A vector of @b double values
+   */
   typedef vector<double> Vector_double;
 
   /** Matrix_double
-  *
-  * A Matrix of @b double values implemented as a vector of vectors
-  */
+   *
+   * A Matrix of @b double values implemented as a vector of vectors
+   */
   typedef vector<Vector_double> Matrix_double;
 
   /** Vector_UINT
-  *
-  * A vector of @b UINT (unsigned int) values
-  */
+   *
+   * A vector of @b UINT (unsigned int) values
+   */
   typedef vector<UINT> Vector_UINT;
 
   /** Vector_size_t
-  *
-  * A vector of @b size_t values (natural - non negative values)
-  */
+   *
+   * A vector of @b size_t values (natural - non negative values)
+   */
   typedef vector<size_t> Vector_size_t;
 
   /** Vector_off_t
-  *
-  * A vector of @b off_t values (integer - positive and negative values)
-  */
+   *
+   * A vector of @b off_t values (integer - positive and negative values)
+   */
   typedef vector<off_t> Vector_off_t;
 
   /**
@@ -248,20 +249,32 @@ namespace smil
   };
 
   /** Box
-  */
+   */
   struct Box {
     UINT x0, y0, z0;
     UINT x1, y1, z1;
 
     /** Box constructor - build an empty Box structure
-    */
+     */
     Box()
     {
       x0 = x1 = y0 = y1 = z0 = z1 = 0;
     }
 
+    /** Box constructor - 
+     */
+    Box(UINT _x0, UINT _x1, UINT _y0, UINT _y1, UINT _z0, UINT _z1)
+    {
+      x0 = _x0;
+      x1 = _x1;
+      y0 = _y0;
+      y1 = _y1;
+      z0 = _z0;
+      z1 = _z1;
+    }
+
     /** Box constructor - build a Box copying data from another Box
-    */
+     */
     Box(const Box &rhs)
     {
       x0 = rhs.x0;
@@ -271,50 +284,50 @@ namespace smil
       z0 = rhs.z0;
       z1 = rhs.z1;
     }
-    
+
     /** getWidth() - Get the box width
-    * @returns box width
-    */
+     * @returns box width
+     */
     UINT getWidth() const
     {
       return x1 - x0 + 1;
     }
 
     /** getHeight() - Get the box width
-    * @returns box height
-    */
+     * @returns box height
+     */
     UINT getHeight() const
     {
       return y1 - y0 + 1;
     }
 
     /** getDepth() - Get the box depth
-    * @returns box depth
-    */
+     * @returns box depth
+     */
     UINT getDepth() const
     {
       return z1 - z0 + 1;
     }
   };
 
-  /** OffsetPoint 
-  *
-  * A structure with offset and point coordinates and some methods to handle
-  * them.
-  *
-  * Shall be initialized with the dimensions of the image, in order to be able
-  * to convert from @b Point to @b Offset and vice-versa, and to check if a
-  * point is inside the image bounds.
-  */
+  /** OffsetPoint
+   *
+   * A structure with offset and point coordinates and some methods to handle
+   * them.
+   *
+   * Shall be initialized with the dimensions of the image, in order to be able
+   * to convert from @b Point to @b Offset and vice-versa, and to check if a
+   * point is inside the image bounds.
+   */
   struct OffsetPoint {
     off_t x, y, z;
     off_t o;
     off_t w, h, d;
 
     /** OffsetPoint - constructor
-    * @details Build the data structure based on the image bounds
-    * @param[in] Sz : vector with the three image bounds
-    */
+     * @details Build the data structure based on the image bounds
+     * @param[in] Sz : vector with the three image bounds
+     */
     OffsetPoint(size_t Sz[3])
     {
       w = Sz[0];
@@ -324,11 +337,11 @@ namespace smil
     }
 
     /** OffsetPoint - constructor
-    *
-    * @details Build the data structure copying data from another OffsetPoint
-    * data
-    * @param[in] offset :
-    */
+     *
+     * @details Build the data structure copying data from another OffsetPoint
+     * data
+     * @param[in] offset :
+     */
     OffsetPoint(const OffsetPoint &offset)
     {
       w = offset.w;
@@ -341,9 +354,9 @@ namespace smil
     }
 
     /** OffsetPoint - constructor
-    *
-    * @param[in] w, h, d : image bounds
-    */
+     *
+     * @param[in] w, h, d : image bounds
+     */
     OffsetPoint(size_t w, size_t h, size_t d = 1)
     {
       this->w = w;
@@ -353,8 +366,8 @@ namespace smil
     }
 
     /** setCoords() - set coordinates and adapt offset
-    * @param[in] x, y, z :
-    */
+     * @param[in] x, y, z :
+     */
     void setCoords(off_t x, off_t y, off_t z = 0)
     {
       this->x = x;
@@ -364,8 +377,8 @@ namespace smil
     }
 
     /** setOffset() - set offset and adapt coordinates
-    * @param[in] offset :
-    */
+     * @param[in] offset :
+     */
     void setOffset(off_t offset)
     {
       this->o = offset;
@@ -377,8 +390,8 @@ namespace smil
     }
 
     /** getPoint() - get coordinates as a point
-    * @returns The coordinates of the structure as a point
-    */
+     * @returns The coordinates of the structure as a point
+     */
     IntPoint getPoint()
     {
       IntPoint pt(x, y, z);
@@ -386,16 +399,16 @@ namespace smil
     }
 
     /** getOffset() - get coordinates as an offset
-    * @returns The coordinates of the structure as an offset
-    */
+     * @returns The coordinates of the structure as an offset
+     */
     off_t getOffset()
     {
       return o;
     }
 
     /** shift() - move the point by some displacements
-    * @param[in] dx, dy, [dz] : amount to shift the offset structure
-    */
+     * @param[in] dx, dy, [dz] : amount to shift the offset structure
+     */
     void shift(off_t dx, off_t dy, off_t dz = 0)
     {
       x += dx;
@@ -405,8 +418,8 @@ namespace smil
     }
 
     /** shift() - move the point by some displacements given by a point
-    * @param[in] p : 
-    */ 
+     * @param[in] p :
+     */
     void shift(IntPoint p)
     {
       x += p.x;
@@ -416,25 +429,24 @@ namespace smil
     }
 
     /** inImage() - check if point coordinates is inside image bounds
-    * @param[in] x, y, [z] :
-    * @returns @b True if the three coordinates are inside image bounds, 
-    * @b False otherwise
-    */
+     * @param[in] x, y, [z] :
+     * @returns @b True if the three coordinates are inside image bounds,
+     * @b False otherwise
+     */
     bool inImage(off_t x, off_t y, off_t z)
     {
       return (x >= 0 && x < w && y >= 0 && y < h && z >= 0 && z < d);
     }
 
     /** inImage() - check if point coordinates is inside image bounds
-    * @returns @b True if the three coordinates are inside image bounds, 
-    * @b False otherwise
-    */
+     * @returns @b True if the three coordinates are inside image bounds,
+     * @b False otherwise
+     */
     bool inImage()
     {
       return (x >= 0 && x < w && y >= 0 && y < h && z >= 0 && z < d);
     }
   };
-
 
   // Misc Macros
   /** @cond */

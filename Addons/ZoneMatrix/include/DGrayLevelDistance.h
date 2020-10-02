@@ -11,87 +11,65 @@ namespace smil
    * * <a href="http://thibault.biz/Research/ThibaultMatrices/GLDZM/GLDZM.html">
    *     Distance (to border) Zone Matrix</a>
    *
-   *   References :
-   *   * <a href="http://thibault.biz/Doc/Publications/AdvancedStatisticalMatrices_ICIP_2011.pdf">
-   Advanced Statistical Matrices for Texture Characterization: Application to DNA Chromatin and Microtubule Network Classification </a> - IEEE ICIP 2012
-   *   * <a href="http://thibault.biz/Doc/Publications/AdvancedStatisticalMatrices_IEEEbme_2014.pdf">
-   Advanced Statistical Matrices for Texture Characterization: Application to Cell Classification</a> - IEEE Transaction on BioMedical Engineering 2014.
+   * @see
+   * - @cite DBLP:journals/corr/ZwanenburgLVL16 - @txtitalic{%Image biomarker 
+   *   standardisation initiative}
    *
-   * * <a href="http://thibault.biz/Research/ThibaultMatrices/GLSZM/GLSZM.html">
-   *     Size Zone Matrix</a>
+   * - @cite thibault_angulo_meyer:2014 - @txtitalic{%Advanced Statistical Matrices for 
+   *  Texture Characterization: Application to Cell Classification}
    *
-   *   References :
-   *   * <a href="https://arxiv.org/abs/1612.07003">Texture Indexes and Gray Level Size Zone Matrix. Application to Cell Nuclei Classification</a> - PRIP 2009.
-   *   * <a href="http://thibault.biz/Doc/Publications/ShapeAndTextureIndexesIJPRAI2013">Shape and Texture Indexes: Application to Cell Nuclei Classification</a> - IJPRAI 2013.
-   *   * <a href="http://thibault.biz/Doc/Publications/AdvancedStatisticalMatrices_IEEEbme_2014.pdf">Advanced Statistical Matrices for Texture Characterization: Application to Cell Classification</a> - IEEE Transaction on BioMedical Engineering 2014.
-   *   * <a href="https://arxiv.org/abs/1611.06009">Fuzzy Statistical Matrices for Cell Classification</a> - ArXiv 2016.
+   * - @cite thibault:hal-00833529 - @txtitalic{%Advanced Statistical Matrices for Texture
+   *   Characterization: Application to DNA Chromatin and Microtubule Network}
+   *   Classification
    *
-   * * Problems to handle :
+   * @author 
+   * - Guillaume Thibault - original code
+   * - José-Marcio Martins da Cruz - port to Smil
    *
-   *   * Shall change int to long to support images bigger than 2 Gpixels (mainly 3D)
-   *
-   * @author Guillaume Thibault
-   *
+   * @todo
+   * - convert data types to usual @Smil data types;
+   * - can't handle images bigger than 2 GBytes;
+   * - loop optimisations to do;
+   * - convert @b C to @b C++ code.
    * @{ */
 
-  /** 
-   * @brief grayLevelSizeZM() - 
+  /**
+   * @brief grayLevelDistanceZM() -
    * @param[in]  imIn : the initial image
    * @param[in]  NbNDG : NbNDG
-   * @param[in] szFileName : output file with results
+   * @param[in]  Method : Geodesic Method
+   * - 0 -> Size
+   * - 1 -> Diameter
+   * - 2 -> Elongation
+   * - 3 -> Tortuosity
+   * @returns a vector with features
+   * - 0 - SZE - Small Zone Emphasis
+   * - 1 - LZE - Large Zone Emphasis
+   * - 2 - LGZE - Low Gray level Zone Emphasis
+   * - 3 - HGZE - High Gray level Zone Emphasis
+   * - 4 - SZLGE - Small Zone Low Gray level Emphasis
+   * - 5 - SZHGE - Small Zone High Gray level Emphasis
+   * - 6 - LZLGE - Large Zone Low Gray level Emphasis
+   * - 7 - LZHGE - Large Zone High Gray level Emphasis
+   * - 8 - GLNU - Gray Level Non Uniform
+   * - 9 - SZNU - Size Zone Non Uniform
+   * - 10 - BARYGL - Barycenter on Gray Levels
+   * - 11 - BARYS - Barycenter on Zone sizes
    */
   template <class T>
-  RES_T grayLevelSizeZM(const Image<T> &imIn, int NbNDG, char *szFileName);
+  vector<double> grayLevelZMDistance(const Image<T> &imIn, int NbNDG,
+                                     int Method);
 
-  /** 
-   * @brief grayLevelDistanceZM() - 
+  /**
+   * @brief grayLevelSizeZM() -
    * @param[in]  imIn : the initial image
    * @param[in]  NbNDG : NbNDG
-   * @param[in]  GeodesicMethod : GeodesicMethod
-   * @param[in] szFileName : output file with results
+   * @returns a vector with features (see grayLevelZMDistance() for description)
+   *
+   * @overload
    */
   template <class T>
-  RES_T grayLevelDistanceZM(const Image<T> &imIn, int NbNDG, int GeodesicMethod,
-                            char *szFileName);
-
-  /** 
-   * @brief grayLevelDistanceZM_Diameter () -
-   * @param[in]  imIn : the initial image
-   * @param[in]  NbNDG : NbNDG
-   * @param[in] szFileName : output file with results
-   */
-  template <class T>
-  RES_T grayLevelDistanceZM_Diameter(const Image<T> &imIn, int NbNDG,
-                                     char *szFileName)
-  {
-    return grayLevelDistanceZM(imIn, NbNDG, 1, szFileName);
-  }
-
-  /** 
-   * @brief grayLevelDistanceZM_Elongation() -
-   * @param[in]  imIn : the initial image
-   * @param[in]  NbNDG : NbNDG
-   * @param[in] szFileName : output file with results
-   */
-  template <class T>
-  RES_T grayLevelDistanceZM_Elongation(const Image<T> &imIn, int NbNDG,
-                                       char *szFileName)
-  {
-    return grayLevelDistanceZM(imIn, NbNDG, 2, szFileName);
-  }
-
-  /** 
-   * @brief grayLevelDistanceZM_Tortuosity() -
-   * @param[in]  imIn : the initial image
-   * @param[in]  NbNDG : NbNDG
-   * @param[in] szFileName : output file with results
-   */
-  template <class T>
-  RES_T grayLevelDistanceZM_Tortuosity(const Image<T> &imIn, int NbNDG,
-                                       char *szFileName)
-  {
-    return grayLevelDistanceZM(imIn, NbNDG, 3, szFileName);
-  }
+  vector<double> grayLevelZMSize(const Image<T> &imIn, int NbNDG);
 
   /** @} */
 } // namespace smil

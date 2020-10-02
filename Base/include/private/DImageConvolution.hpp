@@ -39,7 +39,7 @@ namespace smil
    * @ingroup Base
    * @defgroup Convolution Convolution
    *
-   * @b 2D Convolution with linear kernels
+   * @b 2D and 3D Convolution with linear kernels
    *
    * @{
    */
@@ -124,11 +124,11 @@ namespace smil
 #pragma omp parallel num_threads(nthreads)
 #endif // USE_OPEN_MP
       {
+        for (off_t z = 0; z < D; z++) {
+          for (off_t y = 0; y < H; y++) {
 #ifdef USE_OPEN_MP
 #pragma omp for
 #endif // USE_OPEN_MP
-        for (off_t z = 0; z < D; z++) {
-          for (off_t y = 0; y < H; y++) {
             for (off_t x = 0; x < W; x++) {
               off_t i0    = (z * H + y) * W + x;
               double sumV = 0.;
@@ -157,11 +157,11 @@ namespace smil
       {
         off_t stride = W;
 
+        for (off_t z = 0; z < D; z++) {
+          for (off_t y = 0; y < H; y++) {
 #ifdef USE_OPEN_MP
 #pragma omp for
 #endif // USE_OPEN_MP
-        for (off_t z = 0; z < D; z++) {
-          for (off_t y = 0; y < H; y++) {
             for (off_t x = 0; x < W; x++) {
               off_t i0    = (z * H + y) * W + x;
               double sumV = 0.;
@@ -188,12 +188,11 @@ namespace smil
 #endif // USE_OPEN_MP
       {
         off_t stride = W * H;
-
+        for (off_t z = 0; z < D; z++) {
+          for (off_t y = 0; y < H; y++) {
 #ifdef USE_OPEN_MP
 #pragma omp for
 #endif // USE_OPEN_MP
-        for (off_t z = 0; z < D; z++) {
-          for (off_t y = 0; y < H; y++) {
             for (off_t x = 0; x < W; x++) {
               off_t i0    = (z * H + y) * W + x;
               double sumV = 0.;
@@ -217,7 +216,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * @b gaussianFilter : @b 3D Gaussian filter
+   * @b gaussianFilter() - @b 3D Gaussian filter
    *
    * Gaussian Filter : convolution de l'input image against a Gaussian Kernel
    * of size <b><c>2 * radius + 1</c></b>

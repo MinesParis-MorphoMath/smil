@@ -45,6 +45,10 @@ namespace smil
 
   /**
    * minima() - Minima
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T minima(const Image<T> &imIn, Image<T> &imOut,
@@ -69,6 +73,10 @@ namespace smil
 
   /**
    * maxima() - Maxima
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T maxima(const Image<T> &imIn, Image<T> &imOut,
@@ -93,6 +101,10 @@ namespace smil
 
   /**
    * minimaLabeled() - Calculate the minima and labelize them
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T1, class T2>
   RES_T minimaLabeled(const Image<T1> &imIn, Image<T2> &imOut,
@@ -112,6 +124,10 @@ namespace smil
 
   /**
    * maximaLabeled() - Calculate the maxima and labelize them
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T1, class T2>
   RES_T maximaLabeled(const Image<T1> &imIn, Image<T2> &imOut,
@@ -131,6 +147,11 @@ namespace smil
 
   /**
    * hMinima() - h-Minima
+   *
+   * @param[in] imIn : input image
+   * @param[in] height : 
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T hMinima(const Image<T> &imIn, const T &height, Image<T> &imOut,
@@ -151,6 +172,11 @@ namespace smil
 
   /**
    * hMinimaLabeled() - Calculate the h-minima and labelize them
+   *
+   * @param[in] imIn : input image
+   * @param[in] height : 
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T1, class T2>
   RES_T hMinimaLabeled(const Image<T1> &imIn, const T1 &height,
@@ -170,6 +196,11 @@ namespace smil
 
   /**
    * hMaxima() - h-Maxima
+   *
+   * @param[in] imIn : input image
+   * @param[in] height : 
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   RES_T hMaxima(const Image<T> &imIn, const T &height, Image<T> &imOut,
@@ -190,6 +221,11 @@ namespace smil
 
   /**
    * hMaximaLabeled() - Calculate the h-maxima and labelize them
+   *
+   * @param[in] imIn : input image
+   * @param[in] height : 
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T1, class T2>
   RES_T hMaximaLabeled(const Image<T1> &imIn, const T1 &height,
@@ -311,6 +347,10 @@ namespace smil
 
   /**
    * fastMinima() - Regional minima computation based on arrowing graphs
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   inline RES_T fastMinima(const Image<T> &imIn, Image<T> &imOut,
@@ -321,6 +361,10 @@ namespace smil
 
   /**
    * fastMaxima() - Regional maxima computation based on arrowing graphs
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element
    */
   template <class T>
   inline RES_T fastMaxima(const Image<T> &imIn, Image<T> &imOut,

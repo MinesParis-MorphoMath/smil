@@ -1360,7 +1360,7 @@ namespace smil
   /** @} */
 
  /**
-    * @defgroup  ArithRange Range of pixel values
+    * @defgroup  ArithRange Value range conversion
     * @ingroup Arith
     *
     * @addtogroup ArithRange

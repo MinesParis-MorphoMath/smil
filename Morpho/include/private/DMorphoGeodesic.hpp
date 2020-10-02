@@ -41,6 +41,13 @@ namespace smil
   /**
    * @ingroup Morpho
    * @defgroup Geodesic Geodesic Transforms
+   *
+   * Geodesic Transformations
+   *
+   * @see
+   * - <a href=https://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks/cours/Geodesy.ipynb>Geodesy - Morphological Mathematics courses at Mines-Paristech</a>
+   * - @soillebook{Chap. 6}
+   *
    * @{
    */
 

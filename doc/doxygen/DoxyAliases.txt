@@ -68,6 +68,8 @@ ALIASES += txtbold{1}="<b>\1</b>"
 ALIASES += txttype{1}="<code>\1</code>"
 ALIASES += txtitalic{1}="<i>\1</i>"
 
+ALIASES += Smil="<b>Smil</b>"
+
 ########################################################
 # JAVA WEB START
 ########################################################

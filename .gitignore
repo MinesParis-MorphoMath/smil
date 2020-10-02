@@ -4,6 +4,8 @@
 *.sav
 *.save
 *.tmp
+*.swp
+
 #
 morphee.in/*
 */archive/*

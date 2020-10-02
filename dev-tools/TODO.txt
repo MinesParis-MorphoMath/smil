@@ -29,7 +29,7 @@
 
 * StochasticWS
   Needs   -std=c++11
-  OK !
+    => OK
 
 * Doc Addons
 
@@ -46,12 +46,13 @@
   Ask Petr what to do with this stuff...
 
 * Put Advanced and Addons in a namespace other than smilPython
+  => OK
 
 * Dans les tests :
   * Morpho/include/private/DMorphoDistance.hpp
-    * distEuclidean
-    * distV0
-  Renamed !!!
+    * distEuclidean => OK
+    * distV0 => OK
+  Renamed !!! => OK
 
 * In Advanced : GLSZM
   * Shall change int to long to support images bigger than 2 Gpixels 
@@ -60,7 +61,7 @@
 * Add Smoothing in Deriche filter
 
 * Verify on FastBilateralFilter 
-  * ImFastBilateralFilterRGB - not ported
+  * ImFastBilateralFilterRGB - ported and removed
 
 * Tests on everything
 
@@ -84,10 +85,10 @@
   * measures : 
     * entropy => OK
     * image moments :
-      centered moments
-      with image values or not
+      centered moments => OK
+      with image values or not => OK
     * histogram on blobs
-    * entropy on blobs
+    * entropy on blobs => OK
   * filters
     * 2D -> 3D
     * median
