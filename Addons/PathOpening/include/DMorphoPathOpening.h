@@ -517,7 +517,9 @@ namespace smil
 // MorphoPathOpening Module header
 #include "MorphoPathOpening/morphoPathOpening.hpp"
 #include "MorphoPathOpening/morphoGeodesicPathOpening.hpp"
+
 #include "MorphoPathOpening/morphoPathOpeningGraphV2.hpp"
 #include "MorphoPathOpening/PO_Utilities.hpp"
+
 
 #endif // _DMORPHO_PATH_OPENING_H_

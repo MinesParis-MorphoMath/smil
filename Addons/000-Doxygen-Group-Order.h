@@ -26,6 +26,9 @@
  * @defgroup AddonVtkInterface            VTK Image Interface
  * @ingroup Addons
  *
+ * @defgroup AddonMorphoExtras            Morpho Extras
+ * @ingroup Addons
+ *
  * @defgroup AddonPathOpening             Path Opening
  * @ingroup Addons
  *
