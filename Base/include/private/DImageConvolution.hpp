@@ -436,7 +436,7 @@ namespace smil
    * convolve() - 2D Convolution 
    *
    * 2D convolution by & @txtbold{1D kernel}. Vertical convolution followed by
-   * an horizontal convolution using the sema @txtbold{1D kernel}.
+   * an horizontal convolution using the same @txtbold{1D kernel}.
    *
    * @param[in] imIn : input image
    * @param[in] kernel : the @txtbold{1D kernel} (vector)
