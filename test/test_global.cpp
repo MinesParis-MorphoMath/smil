@@ -37,6 +37,7 @@
 
 // #include "DGraph.hpp"
 
+#include "Smil-build.h"
 #include <vector>
 
 using namespace smil;
@@ -45,7 +46,12 @@ int main()
 {
 #if defined(USE_CURL) && defined(USE_PNG)
 
+#if 0
   Image_UINT8 im1("http://smil.cmm.mines-paristech.fr/images/lena.png");
+#else
+  char *path = pathTestImage("gray/lena.png");
+  Image_UINT8 im1(path);
+#endif
   im1.show();
 
   //     morphee::Image<UINT8> *mIm = new morphee::Image<UINT8>(512,512);

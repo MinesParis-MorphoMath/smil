@@ -35,7 +35,7 @@
  *     Ported from MorphM
  *   - 10/02/2019 - by Jose-Marcio
  *     Integrated into Smil Advanced Source Tree with some cosmetics
- *   - 08/10/2020 - Jose-Marcio 
+ *   - 08/10/2020 - Jose-Marcio
  *     Review + Convert to Functor + Improve C++ style
  *
  * __HEAD__ - Stop here !
@@ -60,12 +60,21 @@ namespace smil
    * @{
    */
 
-  class MorphoGeodesicExtras
+  /** @cond */
+  //
+  // ######  #    #  #    #   ####
+  // #       #    #  ##   #  #    #
+  // #####   #    #  # #  #  #
+  // #       #    #  #  # #  #
+  // #       #    #  #   ##  #    #
+  // #        ####   #    #   ####
+  //
+  class MorphoExtrasGeodesic
   {
-    // TODO : 
+    // TODO :
     // * remplacer des "X + Y * W + Z * W * H" par "currentPixel"
   public:
-    MorphoGeodesicExtras()
+    MorphoExtrasGeodesic()
     {
     }
 
@@ -656,7 +665,8 @@ namespace smil
       return RES_OK;
     }
 
-  }; // MorphoGeodesicExtras
+  }; // MorphoExtrasGeodesic
+  /** @endcond */
 
   //
   // #    #    #   #####  ######  #####   ######    ##     ####   ######
@@ -684,7 +694,7 @@ namespace smil
       return RES_ERR;
     }
 
-    MorphoGeodesicExtras mge;
+    MorphoExtrasGeodesic mge;
     return mge._LabelFlatZones(imIn, selector, imOut);
   }
 
@@ -700,7 +710,7 @@ namespace smil
   RES_T geodesicDiameter(const Image<T1> &imIn, Image<T2> &imOut,
                          bool sliceBySlice = false, double dz_over_dx = 1.)
   {
-    MorphoGeodesicExtras mge;
+    MorphoExtrasGeodesic mge;
     return mge._GeodesicMeasure(imIn, imOut, 0, sliceBySlice, dz_over_dx);
   }
 
@@ -716,7 +726,7 @@ namespace smil
   RES_T geodesicElongation(const Image<T1> &imIn, Image<T2> &imOut,
                            bool sliceBySlice = false, double dz_over_dx = 1.)
   {
-    MorphoGeodesicExtras mge;
+    MorphoExtrasGeodesic mge;
     return mge._GeodesicMeasure(imIn, imOut, 1, sliceBySlice, dz_over_dx);
   }
 
@@ -731,7 +741,7 @@ namespace smil
   RES_T geodesicTortuosity(const Image<T1> &imIn, Image<T2> &imOut,
                            bool sliceBySlice = false)
   {
-    MorphoGeodesicExtras mge;
+    MorphoExtrasGeodesic mge;
     return mge._GeodesicMeasure(imIn, imOut, 2, sliceBySlice, 1.);
   }
 
@@ -747,7 +757,7 @@ namespace smil
   RES_T geodesicExtremities(const Image<T1> &imIn, Image<T2> &imOut,
                             bool sliceBySlice = false, double dz_over_dx = 1.)
   {
-    MorphoGeodesicExtras mge;
+    MorphoExtrasGeodesic mge;
     return mge._GeodesicMeasure(imIn, imOut, 3, sliceBySlice, dz_over_dx);
   }
 

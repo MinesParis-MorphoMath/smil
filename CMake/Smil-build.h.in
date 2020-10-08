@@ -1,0 +1,22 @@
+
+
+#include <string>
+#include <sys/stat.h>
+
+const string DirImagesRoot = "@IMAGESDIR@";
+const string UrlImagesRoot = "http://smil.cmm.mines-paristech.fr/images";
+
+char *pathTestImage(const string &iname)
+{
+  static char buffer[1024];
+  struct stat st;
+  string r;
+  if (stat(DirImagesRoot.c_str(), &st) == 0)
+    r = DirImagesRoot;
+  else
+    r = UrlImagesRoot;
+
+  snprintf(buffer, sizeof buffer, "%s/%s", r.c_str(), iname.c_str());
+  return buffer;
+}
+ 
