@@ -111,7 +111,7 @@ namespace smil
 #endif // SWIG
 
   /**
-   * Image histogram
+   * histogram() - Image histogram
    *
    * @param[in] imIn : input image
    * @param[in] fullRange : result contains all possible values in the image
@@ -152,7 +152,7 @@ namespace smil
   }
 
   /**
-   * Image histogram with a mask image.
+   * histogram() - Image histogram with a mask image.
    *
    * Returns the histogram of the image in the region defined by the image mask.
    *
@@ -201,8 +201,29 @@ namespace smil
     return h;
   }
 
+  /** histogram() - 
+   * @param[in] imIn : input image
+   * @param[in] binSize : size of bin
+   * @return the histogram as a map.
+   */
+  template <typename T>
+  std::map<T, UINT> imageHistogram(const Image<T> imIn, T binSize = 1)
+  {
+    std::map<T, UINT> hist;
+    binSize = std::max(binSize, 1);
+
+    typename Image<T>::lineType pixels = imIn.getPixels();
+    for (off_t i = 0; i < imIn.getPixelCount(); i++)
+      hist[pixels[i] / binSize]++;
+
+    for (auto it = hist.begin(); it != it->end; it++)
+      cout << "  " << it->first << "\t" << it->second << endl;
+
+    return hist;
+  }
+
   /**
-   * Image threshold
+   * threshold() - Image threshold
    *
    * Image threshold based on a range of values defined by <b>[minVal,
    * maxVal]</b>.
@@ -238,7 +259,7 @@ namespace smil
   }
 
   /**
-   * Image threshold
+   * threshold() - Image threshold
    *
    * Image threshold based on a range of values defined by <b>[minVal,
    * maxVal]</b>.
@@ -261,7 +282,7 @@ namespace smil
   }
 
   /**
-   * Image threshold
+   * threshold() - Image threshold
    *
    * Image threshold based on some <b>threshold</b>.
    *
@@ -283,7 +304,7 @@ namespace smil
   }
 
   /**
-   * Otsu Image threshold
+   * threshold() - Otsu Image threshold
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -303,7 +324,7 @@ namespace smil
   }
 
   /**
-   * Stretch histogram
+   * stretchHist() - Stretch histogram
    *
    * Create a new image based on a linear transformation of the histogram of the
    * input image.
@@ -339,7 +360,7 @@ namespace smil
   }
 
   /**
-   * Stretch histogram
+   * stretchHist() - Stretch histogram
    *
    * Create a new image based on a linear transformation of the histogram of the
    * input image.
@@ -377,7 +398,7 @@ namespace smil
   }
 
   /**
-   * Stretch histogram
+   * stretchHist() - Stretch histogram
    *
    * Create a new image based on a linear transformation of the histogram of the
    * input image.
@@ -404,7 +425,7 @@ namespace smil
   }
 
   /**
-   * Min and Max values of an histogram ignoring left/right low values (lower
+   * histogramRange() - Min and Max values of an histogram ignoring left/right low values (lower
    * than a given height/cumulative height).
    *
    * If @b cumulative is true, it stops when the integral of the histogram
@@ -477,7 +498,7 @@ namespace smil
   }
 
   /**
-   * Enhance contrast
+   * enhanceContrast() - Enhance contrast
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -587,6 +608,7 @@ namespace smil
   /** @endcond */
 
   /**
+   * otsuThresholdValues() - 
    * Return threshold values and the value of the resulting variance between 
    * classes
    *
@@ -684,6 +706,7 @@ namespace smil
   }
 
   /**
+   * otsuThresholdValues() - 
    * Return threshold values and the value of the resulting variance between
    * classes
    *
@@ -699,6 +722,7 @@ namespace smil
   }
 
   /**
+   * otsuThresholdValues() - 
    * Return threshold values and the value of the resulting variance between 
    * classes
    *
@@ -716,7 +740,7 @@ namespace smil
   }
 
   /**
-   * Otsu Threshold
+   * otsuThreshold() - Otsu Threshold
    *
    * Image threshold based on the Otsu algorithm.
    *
@@ -758,7 +782,7 @@ namespace smil
   }
 
   /**
-   * Otsu Threshold
+   * otsuThreshold() - Otsu Threshold
    *
    * Image threshold based on the Otsu algorithm.
    *
@@ -784,7 +808,7 @@ namespace smil
   }
 
   /**
-   * Otsu Threshold
+   * otsuThreshold() - Otsu Threshold
    *
    * Image threshold based on the Otsu algorithm (a mask will be applied before
    * threshold).

@@ -1,0 +1,72 @@
+    - ComputeBinaryPathOpening (voir avec Petr)
+    - CountNbCCperThreshold
+    - CountNbPixelOfNDG
+    - FromSkeletonComputeGranulometry
+    - GetConfusionMatrix
+    - ImAreaClosing_PixelQueue *
+    - ImAreaOpening_Line *
+    - ImAreaOpening_LineSupEqu *
+    - ImAreaOpening_MaxTree *
+    - ImAreaOpening_UnionFind *
+    - ImBinaryPathOpening (voir avec Petr)
+    - ImElongationFromSkeleton
+    - ImFalseColorHSL
+    - ImFromSK_AreaForEachCC
+    - ImFromSkeletonSupTriblePointBis
+    - ImFromSkeletonSupTriplePoint
+ X  - ImGeodesicDiameter *
+ X  - ImGeodesicElongation *
+ X  - ImGeodesicExtremities *
+ X  - ImGeodesicPathOpening
+ X  - ImGeodesicTortuosity *
+    - ImInertiaThinning_MaxTree (je ne connais pas mais par rapport au nom, elle pourrait m'interesser) *
+ X  - ImLabelFlatZonesWithElongation *
+ X  - ImLabelFlatZonesWithExtremities *
+ X  - ImLabelFlatZonesWithGeodesicDiameter *
+    - ImLayerDist
+    - ImPathOpening (voir avec Petr)
+    - ImPathOpeningBruteForce (voir avec Petr)
+    - ImPathOpening_GraphV2  (voir avec Petr)
+    - ImSupSmallRegion
+    - ImThresholdWithMuAndSigma
+    - ImThresholdWithUniqueCCForBackGround
+    - ImUltimateGeodesicPathOpening (voir avec Petr)
+    - ImUltimatePathOpening (voir avec Petr)
+    - ImUltimatePathOpening_GraphV2 (voir avec Petr)
+    - MeanValueOf (voir Base/include/private/DMeasures.hpp et Base/include/private/DBlobMeasures.hpp)
+    - measComputeIndFromPatternSpectrum (potentiellement interessante)
+    - measComputeVolume (voir Base/include/private/DMeasures.hpp et Base/include/private/DBlobMeasures.hpp)
+    - PseudoPatternSpectrum (potentiellement interessante)
+
+
+
+
+
+    - geoCuts
+    - geoCutsBiCriteria_Shortest_Forest
+    - geoCutsBoundary_Constrained_MinSurfaces
+    - geoCutsLexicographical_Shortest_Forest
+    - geoCutsMax_Fiability_Forest
+    - geoCutsMinSurfaces
+    - geoCutsMinSurfaces_With_Line
+    - geoCutsMinSurfaces_with_steps_vGradient
+    - geoCutsMRF_EdgePreserving
+    - geoCutsMRF_Ising
+    - geoCutsMRF_Potts
+X   - geoCutsMultiway_MinSurfaces
+    - geoCutsMultiway_Watershed
+    - geoCutsOptimize_Mosaic
+    - geoCutsParametric
+    - geoCutsReg_SpanningForest
+    - geoCutsRegularized_MinSurfaces
+    - geoCutsSegment_Graph
+    - geoCutsStochastic_Watershed
+    - geoCutsStochastic_Watershed_2
+    - geoCutsStochastic_Watershed_Variance
+    - geoCutsVectorial_Lexicographical_Shortest_Forest
+    - geoCutsVectorial_Shortest_Forest
+    - geoCutsWatershed_MinCut
+    - geoCutsWatershed_Prog_MinCut
+    - geoCutsWatershed_SpanningForest
+    - geoCutsWatershed_SpanningForest_v2
+    - geoCutsWatershed_SPF 

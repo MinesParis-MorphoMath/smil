@@ -3,7 +3,7 @@
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * Copyright (c) 2017-2020, Centre de Morphologie Mathematique
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -16,50 +16,53 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Description :
- *   This file does... some very complex morphological operation...
+ *   Area Open using UnionFind Method
  *
  * History :
- *   - 08/06/2020 - by Jose-Marcio Martins da Cruz
+ *   - 15/10/2020 - by Jose-Marcio Martins da Cruz
  *     Porting from xxx
  *
  * __HEAD__ - Stop here !
  */
 
+#ifndef _D_AREA_OPEN_HPP
+#define _D_AREA_OPEN_HPP
 
-#ifndef _D_PROTO_H
-#define _D_PROTO_H
+#include <cmath>
+#include <cstring>
+#include "Core/include/DCore.h"
+
+#include "DAreaOpenUnionFind.hpp"
 
 namespace smil
 {
-
-/**
- * @addtogroup XXX
- *   or
- * @defgroup   XXX YYY
- *   or
- * @ingroup    XXX
- *
- * @{ */
-
-/* Replace this comment and put your code here */
+  /**
+   * @addtogroup XXX
+   *   or
+   * @defgroup   XXX YYY
+   *   or
+   * @ingroup    XXX
+   *
+   * @{
+   */
 
 
-/** @} */
+
+  /** @} */
 
 } // namespace smil
 
-#endif // _D_PROTO_H
-
+#endif // _D_AREA_OPEN_UNION_FIND_HPP
