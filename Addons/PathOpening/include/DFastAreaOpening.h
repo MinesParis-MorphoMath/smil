@@ -6,7 +6,7 @@
 namespace smil
 {
   /**
-   * @ingroup   AddonPathOpening
+   * @ingroup   AddonMorard
    * @defgroup  AddonMorardFastArea            Area Opening/Closing
    *
    * This algorithm needs an INT32 input and an INT32 output. It can be an

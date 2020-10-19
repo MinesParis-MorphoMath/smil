@@ -29,9 +29,6 @@
  * @defgroup AddonMorphoExtras            Morpho Extras
  * @ingroup Addons
  *
- * @defgroup AddonPathOpening             Path Opening
- * @ingroup Addons
- *
  * @defgroup AddonParsimonious            Parsimonious Path Opening
  * @ingroup Addons
  *
@@ -54,6 +51,9 @@
  * @ingroup Addons
  *
  * @defgroup AddonOpenCV                  OpenCV Interface
+ * @ingroup Addons
+ *
+ * @defgroup AddonMorard                  Divers by Morard
  * @ingroup Addons
  *
  */

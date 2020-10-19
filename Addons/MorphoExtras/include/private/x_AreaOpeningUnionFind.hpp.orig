@@ -71,8 +71,13 @@ namespace smil
 // - lambda
 // - r         (local)
 // - h         (local)
+
 // #define Link(p, im, opening, pixel, lambda)
+#if 0
+   inline void Link1(int p, UINT8 *im, greyval *opening, int pixel, int lambda)
+#else
 #define Link1(p)                                                               \
+#endif
   {                                                                            \
     int root, newroot, h, r;                                                   \
                                                                                \

@@ -5,7 +5,7 @@
 
 /**
  * @ingroup Addons
- * @addtogroup AddonPathOpening
+ * @addtogroup AddonMorard
  *
  * @{
  */

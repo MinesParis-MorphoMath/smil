@@ -6,7 +6,7 @@
 namespace smil
 {
   /**
-   * @ingroup  AddonPathOpening
+   * @ingroup  AddonMorard
    * @defgroup AddonMorardMorphoPathOpening   Morpho Path Opening/Closing
    *
    * @{ */

@@ -56,7 +56,6 @@ namespace smil
    *
    * @{
    */
-  /** @cond */
   template <typename T>
   class UnionFindFunctions
   {
@@ -64,6 +63,7 @@ namespace smil
     // P U B L I C
     //
   public:
+
     UnionFindFunctions()
     {
     }
@@ -106,7 +106,7 @@ namespace smil
     //
     // M E T H O D S
     //
-    void mkHistogram(const Image<T> &im)
+    void buildHistogramMap(const Image<T> &im)
     {
       typename Image<T>::lineType pixels = im.getPixels();
       for (size_t i = 0; i < im.getPixelCount(); i++) {
@@ -119,7 +119,6 @@ namespace smil
         histoMap[val].push_back(i);
       }
 
-      // just to debug...
       if (debug) {
         for (auto itk = histoMap.rbegin(); itk != histoMap.rend(); itk++) {
           cout << "Level \t" << int(itk->first) << "\t" << itk->second.size()
@@ -130,8 +129,7 @@ namespace smil
         for (auto itk = histoMap.begin(); itk != histoMap.end(); itk++) {
           auto i = 0;
           cout << endl;
-          cout << "* Histogram Level " << setw(4) << int(itk->first) << "\t"
-               << itk->second.size() << endl;
+          cout << "* Histogram Level " << setw(4) << int(itk->first) << "\t" << itk->second.size() << endl;
           for (auto itv = itk->second.begin(); itv != itk->second.end();
                itv++, i++) {
             if (i % 16 == 0)
@@ -153,18 +151,18 @@ namespace smil
 
       parent.resize(imIn.getPixelCount(), 0);
 
-      bufIn = (T *) imIn.getPixels();
+      bufIn = imIn.getPixels();
 
       debug = false;
     }
 
     // Union Find functions
-    void MakeSet(off_t x)
+    inline void MakeSet(off_t x)
     {
       parent[x] = -1;
     }
 
-    off_t FindRoot(off_t x)
+    inline off_t FindRoot(off_t x)
     {
       if (parent[x] >= 0 && parent[x] != x) {
         parent[x] = FindRoot(parent[x]);
@@ -173,12 +171,12 @@ namespace smil
         return x;
     }
 
-    bool Criterion(off_t x, off_t y)
+    inline bool Criterion(off_t x, off_t y)
     {
       return (bufIn[x] == bufIn[y] || -parent[x] < lambda);
     }
 
-    void Union(off_t n, off_t p)
+    inline void Union(off_t n, off_t p)
     {
       off_t r = FindRoot(n);
 
@@ -192,7 +190,7 @@ namespace smil
       }
     }
 
-    // debug calls
+
     template <typename TD>
     void dumpVector(vector<TD> &b, string head = "")
     {
@@ -224,92 +222,138 @@ namespace smil
     // area open
     RES_T _areaOpen(const Image<T> &imIn, size_t size, Image<T> &imOut)
     {
-      bufOut = (T *) imOut.getPixels();
+      // bufIn  = imIn.getPixels();
+      bufOut = imOut.getPixels();
+
       lambda = size;
 
-      mkHistogram(imIn);
+#define _SORT_REVERSE 1
+      buildHistogramMap(imIn);
 
-      // Tarjan algorithm
+      vector<off_t> sortLevels;
+#if _SORT_REVERSE
       for (auto itk = histoMap.rbegin(); itk != histoMap.rend(); itk++) {
+#else
+      for (auto itk = histoMap.begin(); itk != histoMap.end(); itk++) {
+#endif
         for (auto itv = itk->second.begin(); itv != itk->second.end(); itv++) {
-          off_t pix = *itv;
-          off_t nbg;
-          off_t dc;
-
-          off_t x = pix % width;
-          off_t y = (pix - x) / width;
-          off_t z = (pix - x - y * width) / (width * height);
-
-          MakeSet(pix);
-
-          dc = -1;
-          if (x + dc < 0 || x + dc >= width)
-            continue;
-          nbg = pix + dc;
-          if ((bufIn[pix] < bufIn[nbg]) ||
-              ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
-            Union(nbg, pix);
-
-          dc = 1;
-          if (x + dc < 0 || x + dc >= width)
-            continue;
-          nbg = pix + dc;
-          if ((bufIn[pix] < bufIn[nbg]) ||
-              ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
-            Union(nbg, pix);
-
-          dc = -1;
-          if (y + dc < 0 || y + dc >= height)
-            continue;
-          nbg = pix + dc * width;
-          if ((bufIn[pix] < bufIn[nbg]) ||
-              ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
-            Union(nbg, pix);
-
-          dc = 1;
-          if (y + dc < 0 || y + dc >= height)
-            continue;
-          nbg = pix + dc * width;
-          if ((bufIn[pix] < bufIn[nbg]) ||
-              ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
-            Union(nbg, pix);
-
-          dc = -1;
-          if (z + dc < 0 || z + dc >= depth)
-            continue;
-          nbg = pix + dc * width * height;
-          if ((bufIn[pix] < bufIn[nbg]) ||
-              ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
-            Union(nbg, pix);
-
-          dc = 1;
-          if (y + dc < 0 || y + dc >= depth)
-            continue;
-          nbg = pix + dc * width * height;
-          if ((bufIn[pix] < bufIn[nbg]) ||
-              ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
-            Union(nbg, pix);
+          sortLevels.push_back(*itv);
         }
       }
 
-      // Making output image
-      for (auto itk = histoMap.begin(); itk != histoMap.end(); itk++) {
-        for (auto itv = itk->second.rbegin(); itv != itk->second.rend();
-             itv++) {
-          off_t pix = *itv;
+      if (width <= 16) {
+        dumpImage<T>(bufIn, "imIn");
+      }
+      
+      // Tarjan algorithm
+      const bool ceq = true;
+      int nl         = 0;
+      for (auto itv = sortLevels.begin(); itv != sortLevels.end(); itv++) {
+        off_t pix = *itv;
+        off_t nbg;
+        off_t dc;
 
-          if (parent[pix] >= 0)
-            parent[pix] = parent[parent[pix]];
-          else
-            parent[pix] = bufIn[pix];
+        off_t x = pix % width;
+        off_t y = (pix - x) / width;
 
-          bufOut[pix] = T(parent[pix]);
+        if (false && debug) {
+          if (nl++ % 16 == 0)
+            cout << endl << "1st Pixel : ";
+          cout << " " << setw(4) << pix;
         }
+
+        MakeSet(pix);
+
+        dc = -1;
+        if (x + dc < 0 || x + dc >= width)
+          continue;
+        nbg = pix + dc;
+        if ((bufIn[pix] < bufIn[nbg]) ||
+            (ceq && (bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
+          Union(nbg, pix);
+
+        dc = 1;
+        if (x + dc < 0 || x + dc >= width)
+          continue;
+        nbg = pix + dc;
+        if ((bufIn[pix] < bufIn[nbg]) ||
+            (ceq && (bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
+          Union(nbg, pix);
+
+        dc = -1;
+        if (y + dc < 0 || y + dc >= height)
+          continue;
+        nbg = pix + dc * width;
+        if ((bufIn[pix] < bufIn[nbg]) ||
+            (ceq && (bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
+          Union(nbg, pix);
+
+        dc = 1;
+        if (y + dc < 0 || y + dc >= height)
+          continue;
+        nbg = pix + dc * width;
+        if ((bufIn[pix] < bufIn[nbg]) ||
+            (ceq && (bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
+          Union(nbg, pix);
+      }
+      cout << endl;
+
+      //dumpVector(parent, "parent before");
+      if (false && debug)
+      {
+        vector<off_t> vp(parent);
+        for (size_t i = 0; i < vp.size(); i++)
+        {
+          cout << "node " << setw(4) << i;
+          off_t t = vp[i];
+          while (true) {
+            cout << " " << setw(4) << t;
+            
+            if (t < 0 || t == FindRoot(t))
+              break;
+            t = FindRoot(t);
+          };
+      
+          cout << endl;
+        }
+        cout << endl;
+      }
+
+      // Making output image
+      int nn = 0;
+      for (auto itv = sortLevels.rbegin(); itv != sortLevels.rend(); itv++) {
+        off_t pix = *itv;
+
+        if (debug) {
+          if (nl++ % 16 == 0)
+            cout << endl << "2nd Pixel : ";
+          cout << " " << setw(4) << pix;
+        }
+
+        if (false && parent[pix] < 0) {
+          cout << " **** " << pix << "\t" << pix / width << "\t" << pix % width
+               << "\t" << parent[pix] << "\t" << int(bufIn[pix]) << endl;
+          nn++;
+        }
+
+        if (parent[pix] >= 0)
+          parent[pix] = parent[parent[pix]];
+        else
+          parent[pix] = bufIn[pix];
+
+        bufOut[pix] = T(parent[pix]);
+      }
+      cout << endl;
+
+      // dumpVector(parent, "parent after");
+
+      if (width <= 16) {
+        dumpImage<T>(bufOut, "imOut");
       }
       return RES_OK;
     }
   };
-  /** @endcond */
+
   /**
    * @}
    */

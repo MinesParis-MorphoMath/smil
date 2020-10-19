@@ -100,31 +100,30 @@ namespace smil
     }                                                                          \
   }
 
-  void LinkX(int p, SMIL_UNUSED UINT8 *im, greyval *opening, int pixel,
-                   int lambda)
-  {
-    int root, newroot, h, r;
-
-    root = p;
-    while (opening[root] >= 0)
-      root = opening[root];
-    newroot = root;
-    if (root != pixel) {
-      if (-opening[root] < lambda) {
-        opening[pixel] += opening[root];
-        opening[root] = pixel;
-        newroot       = pixel;
-      } else
-        opening[pixel] = -lambda;
-    }
-    r = p;
-    while (r != root) {
-      h          = opening[r];
-      opening[r] = newroot;
-      r          = h;
-    }
+   inline void Link(int p, UINT8 *im, greyval *opening, int pixel, int lambda)
+  {                                                                            
+    int root, newroot, h, r;                                                   
+                                                                               
+    root = (p);                                                                
+    while ((opening)[root] >= 0)                                               
+      root = (opening)[root];                                                  
+    newroot = root;                                                            
+    if (root != (pixel)) {                                                     
+      if ((-(opening)[root]) < (lambda)) {                                     
+        (opening)[(pixel)] += (opening)[root];                                 
+        (opening)[root] = (pixel);                                             
+        newroot         = (pixel);                                             
+      } else                                                                   
+        (opening)[pixel] = -(lambda);                                          
+    }                                                                          
+    r = (p);                                                                   
+    while (r != root) {                                                        
+      h            = (opening)[r];                                             
+      (opening)[r] = newroot;                                                  
+      r            = h;                                                        
+    }                                                                          
   }
-
+  
 #define Link2(p)                                                               \
   {                                                                            \
     root = (p);                                                                \
@@ -146,9 +145,6 @@ namespace smil
       r          = h;                                                          \
     }                                                                          \
   }
-
-
-// #define Link1(p)   LinkX(p, im, opening, pixel, lambda)
 
   void GreyAreaOpening(int lambda, int width, int height, ShortImage image,
                        greyval *opening)

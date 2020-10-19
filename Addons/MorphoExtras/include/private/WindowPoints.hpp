@@ -63,7 +63,7 @@ namespace smil
    *
    * @{
    */
-
+  /** @cond */
   //
   // ######  #    #  #    #   ####
   // #       #    #  ##   #  #    #
@@ -136,7 +136,7 @@ namespace smil
     off_t height;
     off_t depth;
   };
-
+  /** @endcond */
   /* @} */
 
 } // namespace smil
