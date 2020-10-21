@@ -71,14 +71,12 @@ namespace smil
       // se = CrossSE();
     }
 
-    RES_T areaOpen(const Image<T> &imIn, size_t size, Image<T> &imOut, StrElt &se)
+    RES_T areaOpen(const Image<T> &imIn, size_t size, Image<T> &imOut,
+                   StrElt &se)
     {
       _init(imIn);
 
       this->se = se;
-
-      //bufOut = (T *) imOut.getPixels();
-      //lambda = size;
 
       fill(imOut, T(0));
       ImageFreezer freeze(imOut);
@@ -96,6 +94,7 @@ namespace smil
     off_t width;
     off_t height;
     off_t depth;
+    off_t slice;
 
     off_t lambda;
 
@@ -120,6 +119,7 @@ namespace smil
       width  = imIn.getWidth();
       height = imIn.getHeight();
       depth  = imIn.getDepth();
+      slice  = height * width;
 
       parent.resize(imIn.getPixelCount(), 0);
 
@@ -135,7 +135,7 @@ namespace smil
     {
       typename Image<T>::lineType pixels = im.getPixels();
 #ifdef USE_OPEN_MP
-#  pragma omp for
+#pragma omp for
 #endif // USE_OPEN_MP
       for (size_t i = 0; i < im.getPixelCount(); i++) {
         T val = pixels[i];
@@ -147,28 +147,8 @@ namespace smil
         histoMap[val].push_back(i);
       }
 
-      // just to debug...
-      if (debug) {
-        for (auto itk = histoMap.rbegin(); itk != histoMap.rend(); itk++) {
-          cout << "Level \t" << int(itk->first) << "\t" << itk->second.size()
-               << endl;
-        }
-        cout << endl;
-
-        for (auto itk = histoMap.begin(); itk != histoMap.end(); itk++) {
-          auto i = 0;
-          cout << endl;
-          cout << "* Histogram Level " << setw(4) << int(itk->first) << "\t"
-               << itk->second.size() << endl;
-          for (auto itv = itk->second.begin(); itv != itk->second.end();
-               itv++, i++) {
-            if (i % 16 == 0)
-              cout << endl;
-            cout << " " << setw(4) << *itv;
-          }
-          cout << endl;
-        }
-      }
+      if (debug)
+        dumpHistogram();
     }
 
     //
@@ -208,8 +188,10 @@ namespace smil
     }
 
     //
-    // D E B U G
+    // D E B U G  : D U M P   D A T A
     //
+
+    // vector
     template <typename TD>
     void dumpVector(vector<TD> &b, string head = "")
     {
@@ -224,6 +206,7 @@ namespace smil
       }
     }
 
+    // image
     template <typename TI>
     void dumpImage(TI *b, string head = "")
     {
@@ -238,6 +221,64 @@ namespace smil
       }
     }
 
+    // histogram
+    void dumpHistogram()
+    {
+      for (auto itk = histoMap.rbegin(); itk != histoMap.rend(); itk++) {
+        cout << "Level \t" << int(itk->first) << "\t" << itk->second.size()
+             << endl;
+      }
+      cout << endl;
+
+      for (auto itk = histoMap.begin(); itk != histoMap.end(); itk++) {
+        auto i = 0;
+        cout << endl;
+        cout << "* Histogram Level " << setw(4) << int(itk->first) << "\t"
+             << itk->second.size() << endl;
+        for (auto itv = itk->second.begin(); itv != itk->second.end();
+             itv++, i++) {
+          if (i % 16 == 0)
+            cout << endl;
+          cout << " " << setw(4) << *itv;
+        }
+        cout << endl;
+      }
+    }
+
+    //
+    // L I T T L E   T O O L S
+    //
+    void _pixel2coords(off_t pixel, off_t &x, off_t &y, off_t &z)
+    {
+      x = pixel % width;
+      if (depth > 1) {
+        y = (pixel % slice) / width;
+        z = pixel / slice;
+      } else {
+        y = pixel / width;
+        z = 0;
+      }
+    }
+
+    off_t _coords2pixel(off_t &x, off_t &y, off_t &z)
+    {
+      if (depth > 1)
+        return x + y * width + z * slice;
+      else
+        return x + y * width;
+    }
+
+    bool _pixelInWindow(off_t x, off_t y, off_t z)
+    {
+      if (x < 0 || x >= width)
+        return false;
+      if (y < 0 || y >= height)
+        return false;
+      if (z < 0 || z >= depth)
+        return false;
+      return true;
+    }
+
     //
     // A R E A   O P E N
     //
@@ -246,29 +287,20 @@ namespace smil
       bufOut = (T *) imOut.getPixels();
       lambda = size;
 
-      off_t pixPerSlice = width * height;
-
+      // build histogram as a map
       mkHistogram(imIn);
-      
+
+      // remove central pixel on the structuring element
       se = se.noCenter();
+
       // Tarjan algorithm
       for (auto itk = histoMap.rbegin(); itk != histoMap.rend(); itk++) {
         for (auto itv = itk->second.begin(); itv != itk->second.end(); itv++) {
           off_t pix = *itv;
           off_t nbg;
 
-          off_t x = pix % width;
-          off_t y;
-          off_t z;
-
-          if (depth > 1)
-          {
-            y = (pix % pixPerSlice)/ width;
-            z = pix / pixPerSlice;
-          } else {
-            y = pix / width;
-            z = 0;
-          }
+          off_t x, y, z;
+          _pixel2coords(pix, x, y, z);
 
           MakeSet(pix);
 
@@ -277,16 +309,9 @@ namespace smil
             off_t dy = its->y;
             off_t dz = its->z;
 
-            //if (dx == 0 && dy == 0 && dz == 0)
-            //  continue;
-
-            if (x + dx < 0 || x + dx >= width)
+            if (!_pixelInWindow(x + dx, y + dy, z + dz))
               continue;
-            if (y + dy < 0 || y + dy >= height)
-              continue;
-            if (z + dz < 0 || z + dz >= depth)
-              continue;
-            nbg = pix + dx + (dy + dz * height) * width;
+            nbg = pix + _coords2pixel(dx, dy, dz);
 
             if ((bufIn[pix] < bufIn[nbg]) ||
                 ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
@@ -298,7 +323,7 @@ namespace smil
       // Making output image
       for (auto itk = histoMap.begin(); itk != histoMap.end(); itk++) {
         for (auto itv = itk->second.rbegin(); itv != itk->second.rend();
-            itv++) {
+             itv++) {
           off_t pix = *itv;
 
           if (parent[pix] >= 0)
