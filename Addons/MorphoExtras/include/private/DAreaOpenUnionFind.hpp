@@ -141,8 +141,10 @@ namespace smil
         T val = pixels[i];
 
         size_t capacity = histoMap[val].capacity();
-        if ((capacity - histoMap[val].size()) < 1024)
-          histoMap[val].reserve(capacity + 1024);
+        if ((capacity - histoMap[val].size()) < 512)
+        {
+          histoMap[val].reserve(capacity + 8192);
+        }
 
         histoMap[val].push_back(i);
       }
