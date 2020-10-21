@@ -58,23 +58,23 @@ namespace smil
 
   /**
    * areaOpening() -
-   * 
-   * @param[in] imIn :
-   * @param[in] size :
-   * @param[out] imOut :
-   * @param[in] method :
+   *
+   * @param[in] imIn : input image
+   * @param[in] size : area threshold to stop
+   * @param[out] imOut : output image
+   * @param[in] se: structuring element
+   * @param[in] method : algorithm. Nowadays, only "unionfind" is available
    */
   template <typename T>
   RES_T areaOpening(const Image<T> &imIn, size_t size, Image<T> &imOut,
-                    const string method = "unionfind")
+                    StrElt &se = DEFAULT_SE, const string method = "unionfind")
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    if (method == "unionfind")
-    {
+    if (method == "unionfind") {
       UnionFindFunctions<T> uff;
-      return uff.areaOpen(imIn, size, imOut);
+      return uff.areaOpen(imIn, size, imOut, se);
     }
 
     cout << "This method isn't implemented : " << method << endl;
@@ -83,26 +83,26 @@ namespace smil
 
   /**
    * areaClosing() -
-   * 
-   * @param[in] imIn :
-   * @param[in] size :
-   * @param[out] imOut :
-   * @param[in] method :
+   *
+   * @param[in] imIn : input image
+   * @param[in] size : area threshold to stop
+   * @param[out] imOut : output image
+   * @param[in] se: structuring element
+   * @param[in] method : algorithm. Nowadays, only "unionfind" is available
    */
   template <typename T>
   RES_T areaClosing(const Image<T> &imIn, size_t size, Image<T> &imOut,
-                    const string method = "unionfind")
+                    StrElt &se = DEFAULT_SE, const string method = "unionfind")
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    if (method == "unionfind")
-    {
+    if (method == "unionfind") {
       Image<T> imTmp(imIn);
       RES_T res = inv(imIn, imTmp);
       if (res == RES_OK) {
         UnionFindFunctions<T> uff;
-        res = uff.areaOpen(imTmp, size, imOut);
+        res = uff.areaOpen(imTmp, size, imOut, se);
       }
       if (res == RES_OK)
         res = inv(imOut, imOut);
@@ -112,11 +112,10 @@ namespace smil
     cout << "This method isn't implemented : " << method << endl;
     return RES_ERR;
   }
-  
+
   /**
    * @}
    */
 } // namespace smil
-
 
 #endif // _D_AREA_OPEN_UNION_FIND_HPP

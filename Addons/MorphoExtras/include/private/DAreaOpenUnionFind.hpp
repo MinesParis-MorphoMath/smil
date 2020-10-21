@@ -46,6 +46,7 @@
 #include <iomanip>
 
 #include "Core/include/DCore.h"
+#include "Morpho/include/DMorpho.h"
 
 using namespace std;
 
@@ -66,14 +67,18 @@ namespace smil
   public:
     UnionFindFunctions()
     {
+      se = DEFAULT_SE;
+      // se = CrossSE();
     }
 
-    RES_T areaOpen(const Image<T> &imIn, size_t size, Image<T> &imOut)
+    RES_T areaOpen(const Image<T> &imIn, size_t size, Image<T> &imOut, StrElt &se)
     {
       _init(imIn);
 
-      bufOut = (T *) imOut.getPixels();
-      lambda = size;
+      this->se = se;
+
+      //bufOut = (T *) imOut.getPixels();
+      //lambda = size;
 
       fill(imOut, T(0));
       ImageFreezer freeze(imOut);
@@ -98,6 +103,8 @@ namespace smil
     typename Image<T>::lineType bufIn;
     typename Image<T>::lineType bufOut;
 
+    StrElt se;
+
     map<T, vector<off_t>> histoMap;
     vector<off_t> parent;
 
@@ -106,9 +113,30 @@ namespace smil
     //
     // M E T H O D S
     //
+    void _init(const Image<T> &im)
+    {
+      imIn = im;
+
+      width  = imIn.getWidth();
+      height = imIn.getHeight();
+      depth  = imIn.getDepth();
+
+      parent.resize(imIn.getPixelCount(), 0);
+
+      bufIn = (T *) imIn.getPixels();
+
+      debug = false;
+    }
+
+    //
+    // H I S T O G R A M    M A P
+    //
     void mkHistogram(const Image<T> &im)
     {
       typename Image<T>::lineType pixels = im.getPixels();
+#ifdef USE_OPEN_MP
+#  pragma omp for
+#endif // USE_OPEN_MP
       for (size_t i = 0; i < im.getPixelCount(); i++) {
         T val = pixels[i];
 
@@ -143,22 +171,9 @@ namespace smil
       }
     }
 
-    void _init(const Image<T> &im)
-    {
-      imIn = im;
-
-      width  = imIn.getWidth();
-      height = imIn.getHeight();
-      depth  = imIn.getDepth();
-
-      parent.resize(imIn.getPixelCount(), 0);
-
-      bufIn = (T *) imIn.getPixels();
-
-      debug = false;
-    }
-
-    // Union Find functions
+    //
+    // U N I O N   F I N D
+    //
     void MakeSet(off_t x)
     {
       parent[x] = -1;
@@ -184,7 +199,7 @@ namespace smil
 
       if (r != p) {
         if (Criterion(r, p)) {
-          parent[p] = parent[p] + parent[r];
+          parent[p] += parent[r];
           parent[r] = p;
         } else {
           parent[p] = -lambda;
@@ -192,7 +207,9 @@ namespace smil
       }
     }
 
-    // debug calls
+    //
+    // D E B U G
+    //
     template <typename TD>
     void dumpVector(vector<TD> &b, string head = "")
     {
@@ -221,91 +238,77 @@ namespace smil
       }
     }
 
-    // area open
+    //
+    // A R E A   O P E N
+    //
     RES_T _areaOpen(const Image<T> &imIn, size_t size, Image<T> &imOut)
     {
       bufOut = (T *) imOut.getPixels();
       lambda = size;
 
-      mkHistogram(imIn);
+      off_t pixPerSlice = width * height;
 
+      mkHistogram(imIn);
+      
+      se = se.noCenter();
       // Tarjan algorithm
       for (auto itk = histoMap.rbegin(); itk != histoMap.rend(); itk++) {
         for (auto itv = itk->second.begin(); itv != itk->second.end(); itv++) {
           off_t pix = *itv;
           off_t nbg;
-          off_t dc;
 
           off_t x = pix % width;
-          off_t y = (pix - x) / width;
-          off_t z = (pix - x - y * width) / (width * height);
+          off_t y;
+          off_t z;
+
+          if (depth > 1)
+          {
+            y = (pix % pixPerSlice)/ width;
+            z = pix / pixPerSlice;
+          } else {
+            y = pix / width;
+            z = 0;
+          }
 
           MakeSet(pix);
 
-          dc = -1;
-          if (x + dc < 0 || x + dc >= width)
-            continue;
-          nbg = pix + dc;
-          if ((bufIn[pix] < bufIn[nbg]) ||
-              ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
-            Union(nbg, pix);
+          for (auto its = se.points.begin(); its != se.points.end(); its++) {
+            off_t dx = its->x;
+            off_t dy = its->y;
+            off_t dz = its->z;
 
-          dc = 1;
-          if (x + dc < 0 || x + dc >= width)
-            continue;
-          nbg = pix + dc;
-          if ((bufIn[pix] < bufIn[nbg]) ||
-              ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
-            Union(nbg, pix);
+            //if (dx == 0 && dy == 0 && dz == 0)
+            //  continue;
 
-          dc = -1;
-          if (y + dc < 0 || y + dc >= height)
-            continue;
-          nbg = pix + dc * width;
-          if ((bufIn[pix] < bufIn[nbg]) ||
-              ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
-            Union(nbg, pix);
+            if (x + dx < 0 || x + dx >= width)
+              continue;
+            if (y + dy < 0 || y + dy >= height)
+              continue;
+            if (z + dz < 0 || z + dz >= depth)
+              continue;
+            nbg = pix + dx + (dy + dz * height) * width;
 
-          dc = 1;
-          if (y + dc < 0 || y + dc >= height)
-            continue;
-          nbg = pix + dc * width;
-          if ((bufIn[pix] < bufIn[nbg]) ||
-              ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
-            Union(nbg, pix);
-
-          dc = -1;
-          if (z + dc < 0 || z + dc >= depth)
-            continue;
-          nbg = pix + dc * width * height;
-          if ((bufIn[pix] < bufIn[nbg]) ||
-              ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
-            Union(nbg, pix);
-
-          dc = 1;
-          if (y + dc < 0 || y + dc >= depth)
-            continue;
-          nbg = pix + dc * width * height;
-          if ((bufIn[pix] < bufIn[nbg]) ||
-              ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
-            Union(nbg, pix);
+            if ((bufIn[pix] < bufIn[nbg]) ||
+                ((bufIn[pix] == bufIn[nbg]) && (nbg < pix)))
+              Union(nbg, pix);
+          }
         }
       }
 
       // Making output image
       for (auto itk = histoMap.begin(); itk != histoMap.end(); itk++) {
         for (auto itv = itk->second.rbegin(); itv != itk->second.rend();
-             itv++) {
+            itv++) {
           off_t pix = *itv;
 
           if (parent[pix] >= 0)
             parent[pix] = parent[parent[pix]];
           else
             parent[pix] = bufIn[pix];
-
           bufOut[pix] = T(parent[pix]);
         }
       }
+
       return RES_OK;
     }
   };

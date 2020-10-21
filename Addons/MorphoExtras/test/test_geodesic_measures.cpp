@@ -27,40 +27,77 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "Core/include/DCore.h"
-#include "DMorpho.h"
+#include "DMorphoExtras.h"
+#include "Smil-build.h"
 
 using namespace smil;
 
+class TestDiameter : public TestCase
+{
+  virtual void run()
+  {
+    char *path;
+    
+    path = pathTestImage("bw/eutectic.png");
+    Image_UINT8 imIn(path);
+    Image_UINT16 imOut(imIn);
+
+    path = pathTestImage("bw/eutectic-diameter.png");
+    Image_UINT16 imTruth(path);
+
+    geodesicDiameter(imIn, imOut);
+    TEST_ASSERT(imOut == imTruth);
+    if (retVal != RES_OK)
+      imOut.printSelf();
+  }
+};
+
+class TestExtremities : public TestCase
+{
+  virtual void run()
+  {
+    char *path;
+    
+    path = pathTestImage("bw/eutectic.png");
+    Image_UINT8 imIn(path);
+    Image_UINT8 imOut(imIn);
+
+    path = pathTestImage("bw/eutectic-extremities.png");
+    Image_UINT8 imTruth(path);
+
+    geodesicExtremities(imIn, imOut);
+    TEST_ASSERT(imOut == imTruth);
+    if (retVal != RES_OK)
+      imOut.printSelf();
+  }
+};
+
+class TestElongation : public TestCase
+{
+  virtual void run()
+  {
+    char *path;
+    
+    path = pathTestImage("bw/eutectic.png");
+    Image_UINT8 imIn(path);
+    Image_UINT8 imOut(imIn);
+
+    path = pathTestImage("bw/eutectic-elongation.png");
+    Image_UINT8 imTruth(path);
+
+    geodesicElongation(imIn, imOut);
+    TEST_ASSERT(imOut == imTruth);
+    if (retVal != RES_OK)
+      imOut.printSelf();
+  }
+};
+
 int main()
 {
-  Image_UINT8 im1(5562, 7949);
-  Image_UINT8 im2(im1);
+  TestSuite ts;
+  ADD_TEST(ts, TestDiameter);
+  ADD_TEST(ts, TestElongation);
+  ADD_TEST(ts, TestExtremities);
 
-  StrElt generic_sSE(sSE());
-  generic_sSE.seT = SE_Generic;
-
-  UINT BENCH_NRUNS = 1E2;
-
-  BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
-  BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
-  BENCH_IMG_STR(dilate, "generic sSE", im1, im2, generic_sSE());
-  BENCH_IMG_STR(dilate, "CrossSE", im1, im2, CrossSE());
-  BENCH_IMG_STR(open, "hSE", im1, im2, hSE());
-  BENCH_IMG_STR(open, "sSE", im1, im2, sSE());
-  BENCH_IMG_STR(open, "CrossSE", im1, im2, CrossSE());
-
-  cout << endl;
-
-  // 3D
-
-  im1.setSize(500, 500, 100);
-  im2.setSize(im1);
-
-  BENCH_IMG_STR(dilate, "CubeSE", im1, im2, CubeSE());
-  BENCH_IMG_STR(dilate, "Cross3DSE", im1, im2, Cross3DSE());
-  BENCH_IMG_STR(open, "CubeSE", im1, im2, CubeSE());
-  BENCH_IMG_STR(open, "Cross3DSE", im1, im2, Cross3DSE());
-  BENCH_IMG_STR(open, "RhombicuboctahedronSE", im1, im2,
-                RhombicuboctahedronSE());
+  return ts.run();
 }

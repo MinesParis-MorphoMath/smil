@@ -28,39 +28,23 @@
  */
 
 #include "Core/include/DCore.h"
-#include "DMorpho.h"
+#include "Core/include/DImage.h"
+#include "Morpho/include/DMorpho.h"
+#include "Morpho/include/private/DMorphoBase.hpp"
+#include "Morpho/include/DMorphoInstance.h"
+#include "Morpho/include/DStructuringElement.h"
+#include "Morpho/include/DCompositeSE.h"
+#include "DMorphoExtras.h"
+#include "Smil-build.h"
 
 using namespace smil;
 
 int main()
 {
-  Image_UINT8 im1(5562, 7949);
+  Image_UINT8 im1("http://smil.cmm.mines-paristech.fr/images/barbara.png");
   Image_UINT8 im2(im1);
 
-  StrElt generic_sSE(sSE());
-  generic_sSE.seT = SE_Generic;
-
-  UINT BENCH_NRUNS = 1E2;
-
-  BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
-  BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
-  BENCH_IMG_STR(dilate, "generic sSE", im1, im2, generic_sSE());
-  BENCH_IMG_STR(dilate, "CrossSE", im1, im2, CrossSE());
-  BENCH_IMG_STR(open, "hSE", im1, im2, hSE());
-  BENCH_IMG_STR(open, "sSE", im1, im2, sSE());
-  BENCH_IMG_STR(open, "CrossSE", im1, im2, CrossSE());
-
-  cout << endl;
-
-  // 3D
-
-  im1.setSize(500, 500, 100);
-  im2.setSize(im1);
-
-  BENCH_IMG_STR(dilate, "CubeSE", im1, im2, CubeSE());
-  BENCH_IMG_STR(dilate, "Cross3DSE", im1, im2, Cross3DSE());
-  BENCH_IMG_STR(open, "CubeSE", im1, im2, CubeSE());
-  BENCH_IMG_STR(open, "Cross3DSE", im1, im2, Cross3DSE());
-  BENCH_IMG_STR(open, "RhombicuboctahedronSE", im1, im2,
-                RhombicuboctahedronSE());
+  UINT BENCH_NRUNS = 100;
+  Morpho::setDefaultSE(CrossSE());
+  BENCH_IMG(areaOpening, im1, 10, im2);
 }
