@@ -134,6 +134,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(sCurve);
 
 %include "DImageHistogram.hpp"
 TEMPLATE_WRAP_FUNC(histogram);
+TEMPLATE_WRAP_FUNC(histogramMap);
 
 TEMPLATE_WRAP_FUNC_2T_CROSS(threshold);
 

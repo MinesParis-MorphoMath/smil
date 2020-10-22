@@ -28,23 +28,22 @@
  */
 
 #include "Core/include/DCore.h"
-#include "Core/include/DImage.h"
-#include "Morpho/include/DMorpho.h"
-#include "Morpho/include/private/DMorphoBase.hpp"
-#include "Morpho/include/DMorphoInstance.h"
-#include "Morpho/include/DStructuringElement.h"
-#include "Morpho/include/DCompositeSE.h"
 #include "DMorphoExtras.h"
 #include "Smil-build.h"
 
 using namespace smil;
 
-int main()
+int main(int argc, char *argv[])
 {
   Image_UINT8 im1("http://smil.cmm.mines-paristech.fr/images/barbara.png");
+
+  if (argc > 1)
+    read(argv[1], im1);
+
   Image_UINT8 im2(im1);
 
-  UINT BENCH_NRUNS = 100;
+  UINT BENCH_NRUNS = 5;
   Morpho::setDefaultSE(CrossSE());
   BENCH_IMG(areaOpening, im1, 10, im2);
+  BENCH_IMG(areaOpen, im1, 10, im2);  
 }

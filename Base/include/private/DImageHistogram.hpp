@@ -201,24 +201,24 @@ namespace smil
     return h;
   }
 
-  /** histogram() - 
+  /** histogramMap() - 
    * @param[in] imIn : input image
    * @param[in] binSize : size of bin
    * @return the histogram as a map.
    */
   template <typename T>
-  std::map<T, UINT> imageHistogram(const Image<T> imIn, T binSize = 1)
+  std::map<T, UINT> histogramMap(const Image<T> imIn, T binSize = 1)
   {
     std::map<T, UINT> hist;
-    binSize = std::max(binSize, 1);
+    binSize = std::max(binSize, T(1));
 
     typename Image<T>::lineType pixels = imIn.getPixels();
-    for (off_t i = 0; i < imIn.getPixelCount(); i++)
+    for (size_t i = 0; i < imIn.getPixelCount(); i++)
       hist[pixels[i] / binSize]++;
-
-    for (auto it = hist.begin(); it != it->end; it++)
+#if 0
+    for (auto it = hist.begin(); it != hist.end(); it++)
       cout << "  " << it->first << "\t" << it->second << endl;
-
+#endif
     return hist;
   }
 

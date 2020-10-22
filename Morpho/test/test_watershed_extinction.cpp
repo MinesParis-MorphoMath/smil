@@ -454,9 +454,9 @@ class Test_Watershed_Extinction_Compare : public TestCase
         imGrad << vecGrad;
         imMark << vecMark;
         
-//         Image_UINT8 imIn("http://smil.cmm.mines-paristech.fr/images/lena.png");
-//         gradient(imIn, imGrad);
-//         hMinimaLabeled(imGrad, (UINT8)5, imMark);
+//      Image_UINT8 imIn("http://smil.cmm.mines-paristech.fr/images/lena.png");
+//      gradient(imIn, imGrad);
+//      hMinimaLabeled(imGrad, (UINT8)5, imMark);
                 
         StrElt se = hSE();
         int nRegions = 30;
@@ -496,9 +496,7 @@ int main()
     ADD_TEST(ts, Test_Watershed_Extinction_Graph);
     ADD_TEST(ts, Test_Watershed_Extinction_Compare);
 
-    
     return ts.run();
-
 }
 
 

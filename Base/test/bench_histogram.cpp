@@ -27,6 +27,7 @@
 #include "DImageDraw.hpp"
 #include "DMeasures.hpp"
 #include "DBlobMeasures.hpp"
+#include "Smil-build.h"
 
 using namespace smil;
 
@@ -35,12 +36,13 @@ int main(void)
   UINT BENCH_NRUNS = 1E2;
 
   Image_UINT8 im(1024, 1024);
-  // Image_UINT8::lineType pixels = im.getPixels();
 
   randFill(im);
   BENCH_IMG(histogram, im);
   BENCH_IMG(histogramMap, im);
-  BENCH_IMG(area, im);
 
-  BENCH_IMG(isBinary, im);
+  char *path = pathTestImage("barbara.png");
+  Image_UINT8 imb(path);
+  BENCH_IMG(histogram, imb);
+  BENCH_IMG(histogramMap, imb);  
 }

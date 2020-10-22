@@ -28,12 +28,6 @@
  */
 
 #include "Core/include/DCore.h"
-#include "Core/include/DImage.h"
-#include "Morpho/include/DMorpho.h"
-#include "Morpho/include/private/DMorphoBase.hpp"
-#include "Morpho/include/DMorphoInstance.h"
-#include "Morpho/include/DStructuringElement.h"
-#include "Morpho/include/DCompositeSE.h"
 #include "DMorphoExtras.h"
 #include "Smil-build.h"
 

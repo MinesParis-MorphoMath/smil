@@ -44,6 +44,7 @@
 #include <cmath>
 #include <cstring>
 #include <iomanip>
+#include <mutex>
 
 #include "Core/include/DCore.h"
 #include "Morpho/include/DMorpho.h"
@@ -134,19 +135,21 @@ namespace smil
     void mkHistogram(const Image<T> &im)
     {
       typename Image<T>::lineType pixels = im.getPixels();
+      mutex mtx;
+
 #ifdef USE_OPEN_MP
 #pragma omp for
-#endif // USE_OPEN_MP
+#endif
       for (size_t i = 0; i < im.getPixelCount(); i++) {
         T val = pixels[i];
 
+        mtx.lock();
         size_t capacity = histoMap[val].capacity();
         if ((capacity - histoMap[val].size()) < 512)
-        {
           histoMap[val].reserve(capacity + 8192);
-        }
 
         histoMap[val].push_back(i);
+        mtx.unlock();
       }
 
       if (debug)
