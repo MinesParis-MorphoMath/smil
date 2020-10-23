@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 
   Image_UINT8 im2(im1);
 
-  UINT BENCH_NRUNS = 5;
+  UINT BENCH_NRUNS = 100;
   Morpho::setDefaultSE(CrossSE());
   BENCH_IMG(areaOpening, im1, 10, im2);
   BENCH_IMG(areaOpen, im1, 10, im2);  

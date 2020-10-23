@@ -22,6 +22,7 @@
 
 #include "Core/include/DCore.h"
 #include "DImageTransform.hpp"
+#include "Smil-build.h"
 
 using namespace smil;
 
@@ -235,6 +236,301 @@ class Test_Scale : public TestCase
   }
 };
 
+class Test_Rotate090 : public TestCase
+{
+  virtual void run()
+  {
+    Image_UINT8 imIn(10,10);
+    Image_UINT8 imOut(imIn);
+    Image_UINT8 imRef(imIn);
+
+    UINT8 vIn[100] = {
+      1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 3, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 4, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 5, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    };
+
+    UINT8 vRef[100] = {
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   1,
+      0,   0,   0,   0,   0,   0,   0,   0,   2,   0,
+      0,   0,   0,   0,   0,   0,   0,   3,   0,   0,
+      0,   0,   0,   0,   0,   0,   4,   0,   0,   0,
+      0,   0,   0,   0,   0,   5,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+      0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    };
+
+    imIn << vIn;
+    imRef << vRef;
+
+    rotateX90(imIn, 1, imOut);
+
+    TEST_ASSERT(imOut == imRef);
+    if (retVal != RES_OK) {
+      cout << "* imRef" << endl; 
+      imRef.printSelf("imRef");
+      cout << "* imOut" << endl; 
+      imOut.printSelf("imOut");
+    }
+  }
+};
+
+class Test_Rotate180 : public TestCase
+{
+  virtual void run()
+  {
+    Image_UINT8 imIn(10,10);
+    Image_UINT8 imOut(imIn);
+    Image_UINT8 imRef(imIn);
+
+    UINT8 vIn[100] = {
+      1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 3, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 4, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 5, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    };
+
+    UINT8 vRef[100] = {
+       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+       0,   0,   0,   0,   0,   5,   0,   0,   0,   0,
+       0,   0,   0,   0,   0,   0,   4,   0,   0,   0,
+       0,   0,   0,   0,   0,   0,   0,   3,   0,   0,
+       0,   0,   0,   0,   0,   0,   0,   0,   2,   0,
+       0,   0,   0,   0,   0,   0,   0,   0,   0,   1,
+    };
+
+    imIn << vIn;
+    imRef << vRef;
+
+    rotateX90(imIn, 2, imOut);
+
+    TEST_ASSERT(imOut == imRef);
+    if (retVal != RES_OK) {
+      cout << "* imRef" << endl; 
+      imRef.printSelf("imRef");
+      cout << "* imOut" << endl; 
+      imOut.printSelf("imOut");
+    }
+  }
+};
+
+class Test_Rotate270 : public TestCase
+{
+  virtual void run()
+  {
+    Image_UINT8 imIn(10,10);
+    Image_UINT8 imOut(imIn);
+    Image_UINT8 imRef(imIn);
+
+    UINT8 vIn[100] = {
+      1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 3, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 4, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 5, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    };
+
+    UINT8 vRef[100] = {
+       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+       0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+       0,   0,   0,   0,   5,   0,   0,   0,   0,   0,
+       0,   0,   0,   4,   0,   0,   0,   0,   0,   0,
+       0,   0,   3,   0,   0,   0,   0,   0,   0,   0,
+       0,   2,   0,   0,   0,   0,   0,   0,   0,   0,
+       1,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+    };
+
+    imIn << vIn;
+    imRef << vRef;
+
+    rotateX90(imIn, 3, imOut);
+
+    TEST_ASSERT(imOut == imRef);
+    if (retVal != RES_OK) {
+      cout << "* imRef" << endl; 
+      imRef.printSelf("imRef");
+      cout << "* imOut" << endl; 
+      imOut.printSelf("imOut");
+    }
+  }
+};
+
+class Test_Rotate360 : public TestCase
+{
+  virtual void run()
+  {
+    Image_UINT8 imIn(10,10);
+    Image_UINT8 imOut(imIn);
+    Image_UINT8 imRef(imIn);
+
+    UINT8 vIn[100] = {
+      1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 3, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 4, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 5, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    };
+
+    UINT8 vRef[100] = {
+      1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 3, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 4, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 5, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    };
+
+    imIn << vIn;
+    imRef << vRef;
+
+    rotateX90(imIn, 4, imOut);
+
+    TEST_ASSERT(imOut == imRef);
+    if (retVal != RES_OK) {
+      cout << "* imRef" << endl; 
+      imRef.printSelf("imRef");
+      cout << "* imOut" << endl; 
+      imOut.printSelf("imOut");
+    }
+  }
+};
+
+
+class Test_HorizFlip : public TestCase
+{
+  virtual void run()
+  {
+    Image_UINT8 imIn(10,10);
+    Image_UINT8 imOut(imIn);
+    Image_UINT8 imRef(imIn);
+
+    UINT8 vIn[100] = {
+      1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 3, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 4, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 5, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    };
+
+    UINT8 vRef[100] = {
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+      0, 0, 0, 0, 0, 0, 0, 0, 2, 0,
+      0, 0, 0, 0, 0, 0, 0, 3, 0, 0,
+      0, 0, 0, 0, 0, 0, 4, 0, 0, 0,
+      0, 0, 0, 0, 0, 5, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    };
+
+    imIn << vIn;
+    imRef << vRef;
+
+    horizFlip(imIn, imOut);
+
+    TEST_ASSERT(imOut == imRef);
+    if (retVal != RES_OK) {
+      cout << "* imRef" << endl; 
+      imRef.printSelf("imRef");
+      cout << "* imOut" << endl; 
+      imOut.printSelf("imOut");
+    }
+  }
+};
+
+class Test_VertFlip : public TestCase
+{
+  virtual void run()
+  {
+    Image_UINT8 imIn(10,10);
+    Image_UINT8 imOut(imIn);
+    Image_UINT8 imRef(imIn);
+
+    UINT8 vIn[100] = {
+      1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 3, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 4, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 5, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    };
+
+    UINT8 vRef[100] = {
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 5, 0, 0, 0, 0, 0,
+      0, 0, 0, 4, 0, 0, 0, 0, 0, 0,
+      0, 0, 3, 0, 0, 0, 0, 0, 0, 0,
+      0, 2, 0, 0, 0, 0, 0, 0, 0, 0,
+      1, 0, 0, 0, 0, 0, 0, 0, 0, 0
+    };
+
+    imIn << vIn;
+    imRef << vRef;
+
+    vertFlip(imIn, imOut);
+
+    TEST_ASSERT(imOut == imRef);
+    if (retVal != RES_OK) {
+      cout << "* imRef" << endl; 
+      imRef.printSelf("imRef");
+      cout << "* imOut" << endl; 
+      imOut.printSelf("imOut");
+    }
+  }
+};
+
 int main(void)
 {
   TestSuite ts;
@@ -242,6 +538,14 @@ int main(void)
   ADD_TEST(ts, Test_Resize);
   ADD_TEST(ts, Test_Resize_Closest);
   ADD_TEST(ts, Test_Scale);
+
+  ADD_TEST(ts, Test_Rotate090);
+  ADD_TEST(ts, Test_Rotate180);
+  ADD_TEST(ts, Test_Rotate270);  
+  ADD_TEST(ts, Test_Rotate360);  
+
+  ADD_TEST(ts, Test_HorizFlip);  
+  ADD_TEST(ts, Test_VertFlip);  
 
   return ts.run();
 }
