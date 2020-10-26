@@ -57,13 +57,14 @@ namespace smil
    * @ingroup Addons
    * @addtogroup AddonMorphoExtras
    */
-  /**
+  /** @cond */
+  /*
    * @ingroup AddonMorphoExtras
    * @defgroup AddonMorphoExtrasGeodesic Geodesic Extra Tools
    *
    * @{
    */
-  /** @cond */
+  
   //
   // ######  #    #  #    #   ####
   // #       #    #  ##   #  #    #

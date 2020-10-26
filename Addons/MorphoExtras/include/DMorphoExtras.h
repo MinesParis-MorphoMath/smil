@@ -4,7 +4,7 @@
 #include "Core/include/DCore.h"
 
 #include "private/WindowPoints.hpp"
-#include "private/GeodesicPathOpening.hpp"
+//#include "private/GeodesicPathOpening.hpp"
 
 #include "private/DAreaOpen.hpp"
 

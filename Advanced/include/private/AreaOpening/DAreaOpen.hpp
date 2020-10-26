@@ -44,14 +44,15 @@
 #include <cmath>
 #include <cstring>
 #include "Core/include/DCore.h"
+#include "Morpho/include/DMorpho.h"
+#include "Morpho/include/DStructuringElement.h"
 
 #include "DAreaOpenUnionFind.hpp"
 
 namespace smil
 {
   /**
-   * @ingroup  AddonMorphoExtras
-   * @defgroup AddonMorphoExtrasAttrOpen      Attribute Open/Close
+   * @addtogroup AdvAreaOpen
    *
    * @{
    */

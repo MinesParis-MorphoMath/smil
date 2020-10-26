@@ -14,6 +14,11 @@
  */
 
 /**
+ * @defgroup GraphTypes               Graph Data Types
+ * @ingroup  Core
+ */
+
+/**
  * @defgroup CoreImage                Image Class and Methods
  * @ingroup  Core
  */

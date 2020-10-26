@@ -28,7 +28,8 @@
  */
 
 #include "Core/include/DCore.h"
-#include "DMorphoExtras.h"
+#include "Morpho/include/DMorpho.h"
+#include "DAdvanced.h"
 #include "Smil-build.h"
 
 using namespace smil;

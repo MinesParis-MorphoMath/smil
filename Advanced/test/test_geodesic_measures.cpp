@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "DMorphoExtras.h"
+#include "DAdvanced.h"
 #include "Smil-build.h"
 
 using namespace smil;

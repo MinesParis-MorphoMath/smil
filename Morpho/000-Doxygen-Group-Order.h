@@ -115,12 +115,12 @@
  
 /**
  * @defgroup Arrow                Arrow Graphs
- * @ingroup Morpho
+ * @ingroup  Morpho
  */
  
 /**
- * @defgroup Graph                Graph
- * @ingroup Morpho
+ * @defgroup MorphoGraph          Morpho Graph Algorithms
+ * @ingroup  Morpho
  *
  */
 

@@ -14,5 +14,7 @@
 /* @} */
 
 #include "DFastLine.h"
-   
+#include "DGeodesicAttributes.h"
+#include "DAreaOpen.h"
+
 #endif //__DADVANCED_H__

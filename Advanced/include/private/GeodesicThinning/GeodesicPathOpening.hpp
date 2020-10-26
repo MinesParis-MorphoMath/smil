@@ -53,11 +53,13 @@ using namespace std;
 
 namespace smil
 {
-  /*
-   * @ingroup Addons
-   * @addtogroup AddonMorphoExtras
-   */
   /**
+   * @ingroup    Advanced
+   * @addtogroup AdvGeoTools
+   *
+   * @{
+   */
+  /*
    * @ingroup AddonMorphoExtras
    * @defgroup AddonMorphoExtrasGeodesic Geodesic Extra Tools
    *

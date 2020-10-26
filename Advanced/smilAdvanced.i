@@ -68,3 +68,25 @@ TEMPLATE_WRAP_FUNC(ImFastLineOpen_Morard);
 
 
 
+%include "private/GeodesicThinning/GeodesicPathOpening.hpp"
+
+TEMPLATE_WRAP_FUNC_2T_CROSS(labelFlatZones);
+
+TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicDiameter);
+TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicElongation);
+TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicTortuosity);
+TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicExtremities);
+TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicMeasure);
+
+TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicPathOpening);
+TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicPathClosing);
+
+TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicUltimatePathOpening);
+TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicUltimatePathClosing);
+
+
+%include "DAreaOpen.h"
+%include "private/AreaOpening/DAreaOpen.hpp"
+%include "private/AreaOpening/DAreaOpenUnionFind.hpp"
+TEMPLATE_WRAP_FUNC(areaOpening);
+//TEMPLATE_WRAP_FUNC(areaClosing);

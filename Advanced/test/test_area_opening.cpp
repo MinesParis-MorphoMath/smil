@@ -28,7 +28,7 @@
  */
 
 #include "Core/include/DCore.h"
-#include "DMorphoExtras.h"
+#include "DAreaOpen.h"
 #include "Smil-build.h"
 
 using namespace smil;

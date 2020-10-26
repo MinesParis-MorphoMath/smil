@@ -251,8 +251,9 @@ namespace smil
   /** Box
    */
   struct Box {
-    UINT x0, y0, z0;
-    UINT x1, y1, z1;
+    off_t x0, y0, z0;
+    off_t x1, y1, z1;
+    size_t width, height, depth;
 
     /** Box constructor - build an empty Box structure
      */
@@ -261,9 +262,9 @@ namespace smil
       x0 = x1 = y0 = y1 = z0 = z1 = 0;
     }
 
-    /** Box constructor - 
+    /** Box constructor -
      */
-    Box(UINT _x0, UINT _x1, UINT _y0, UINT _y1, UINT _z0, UINT _z1)
+    Box(off_t _x0, off_t _x1, off_t _y0, off_t _y1, off_t _z0, off_t _z1)
     {
       x0 = _x0;
       x1 = _x1;
@@ -288,7 +289,7 @@ namespace smil
     /** getWidth() - Get the box width
      * @returns box width
      */
-    UINT getWidth() const
+    off_t getWidth() const
     {
       return x1 - x0 + 1;
     }
@@ -296,7 +297,7 @@ namespace smil
     /** getHeight() - Get the box width
      * @returns box height
      */
-    UINT getHeight() const
+    off_t getHeight() const
     {
       return y1 - y0 + 1;
     }
@@ -304,10 +305,11 @@ namespace smil
     /** getDepth() - Get the box depth
      * @returns box depth
      */
-    UINT getDepth() const
+    off_t getDepth() const
     {
       return z1 - z0 + 1;
     }
+
   };
 
   /** OffsetPoint
@@ -442,6 +444,7 @@ namespace smil
      * @returns @b True if the three coordinates are inside image bounds,
      * @b False otherwise
      */
+
     bool inImage()
     {
       return (x >= 0 && x < w && y >= 0 && y < h && z >= 0 && z < d);

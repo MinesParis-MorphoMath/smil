@@ -6,8 +6,8 @@
 namespace smil
 {
   /**
-   * @ingroup   Advanced
-   * @defgroup  AdvLine   Line Based Operators
+   * @ingroup     Advanced
+   * @addtogroup  AdvLine   Line Based Operators
    *
    * @brief Morphological operators using @txtbold{line segments} as structuring
    * elements.
@@ -285,7 +285,7 @@ namespace smil
 } // namespace smil
 
 //#include "FastLine/LineNaive.hpp"
-#include "FastLine/FastLineMorard.hpp"
-#include "FastLine/FastLineSoille.hpp"
+#include "private/FastLine/FastLineMorard.hpp"
+#include "private/FastLine/FastLineSoille.hpp"
 
 #endif
