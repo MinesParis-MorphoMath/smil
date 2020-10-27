@@ -939,6 +939,17 @@ namespace smil
   }
 
   /**
+   * geodesicDiameter() - @txtbold{Barycenter Geodesic Diameter}
+   *
+   * @details This function evaluates, for each blob, its
+   * @txtbold{Barycenter Geodesic Diameter}. This value is defined as the
+   * biggest @txtbold{Geodesic Distance} between any two points in the blob.
+   * *
+   * The blob is labeled with the result.
+   *
+   * @see
+   * For a detailled description of this attribute, see @cite morard:hal-00834415
+   *
    *
    * @param[in] imIn : binary input image
    * @param[out] imOut : output image
@@ -955,6 +966,22 @@ namespace smil
   }
 
   /**
+   * geodesicElongation() - @txtbold{Geodesic Elongation}
+   *
+   * @details This function evaluates, for each blob, its
+   * @txtbold{Geodesic Elongation} defined by the relation : 
+   * 
+   * @f[
+   *  E(X) = \dfrac{\pi \:.\: L^{2}(X)}{4 \:.\: S(X)}
+   * @f]
+   * 
+   * where @f$L(X)@f$ is the @txtbold{Geodesic Diameter} of the blob and
+   * @f$S(X)@f$ is the @txtbold{Area} of the blob.
+   * 
+   * The blob is labeled with the result.
+   *
+   * @see
+   * For a detailled description of this attribute, see @cite morard:hal-00834415
    *
    * @param[in] imIn : binary input image
    * @param[out] imOut : output image
@@ -971,6 +998,23 @@ namespace smil
   }
 
   /**
+   * geodesicTortuosity() - @txtbold{Geodesic Tortuoisity}
+   * 
+   * @details This function evaluates, for each blob, its
+   * @txtbold{Geodesic Tortuoisity} defined by the relation : 
+   *
+   * @f[
+   *   T(X) = \dfrac{L(X)}{L_{Euclidean}(X)}
+   * @f]
+   *
+   * where @f$L(X)@f$ is the @txtbold{Geodesic Diameter} of the blob and
+   * @f$L_{Euclidean}(X)@f$ is the @txtbold{Euclidean Distance} between the
+   * @txtbold{Geodesic Extremities} of the blob.
+   *
+   * The blob is labeled with the result.
+   *
+   * @see
+   * For a detailled description of this attribute, see @cite morard:hal-00834415
    *
    * @param[in] imIn : binary input image
    * @param[out] imOut : output image
@@ -986,6 +1030,10 @@ namespace smil
   }
 
   /**
+   * geodesicExtremities() - @txtbold{Geodesic Extremities}
+   *
+   * This function finds the @txtbold{Geodesic Extremities} of each blob and set
+   * the pixel value of each extremity to an integer beginning with @b 1.
    *
    * @param[in] imIn : binary input image
    * @param[out] imOut : output image
@@ -1002,16 +1050,20 @@ namespace smil
   }
 
   /**
+   * geodesicMeasure() -
+   * 
    * @param[in] imIn : binary input image
    * @param[out] imOut : output image
    * @param[in] method :
    * - 0 : geodesic diameter
-   * - 1 : elongation
-   * - 2 : tortuosity
-   * - 3 : extremities
+   * - 1 : geodesic elongation
+   * - 2 : geodesic tortuosity
+   * - 3 : geodesic extremities
    * @param[in] sliceBySlice : apply the algorithm to the whole image or slice
    * by slice
    * @param[in] dz_over_dx :
+   *
+   * @overload
    */
   template <typename T1, typename T2>
   RES_T geodesicMeasure(const Image<T1> &imIn, Image<T2> &imOut, int method,
@@ -1022,6 +1074,8 @@ namespace smil
   }
 
   /**
+   * geodesicPathOpening() -
+   * 
    * @param[in] imIn : input image
    * @param[in] lenght :
    * @param[in] method :
@@ -1047,6 +1101,8 @@ namespace smil
   }
 
   /**
+   * geodesicPathClosing() -
+   * 
    * @param[in] imIn : input image
    * @param[in] lenght :
    * @param[in] method :
@@ -1084,6 +1140,8 @@ namespace smil
   }
 
   /**
+   * geodesicUltimatePathOpening() -
+   * 
    * @param[in] imIn : input image
    * @param[out] imTrans : input image
    * @param[out] imInd : input image
@@ -1105,6 +1163,7 @@ namespace smil
   }
 
   /**
+   * geodesicUltimatePathClosing() -
    * @param[in] imIn : input image
    * @param[out] imTrans : input image
    * @param[out] imInd : input image

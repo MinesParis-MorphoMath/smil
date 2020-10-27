@@ -661,7 +661,7 @@ namespace smil
    *
    */
   template <class T>
-  RES_T ImParsimoniousIncompletePathOpening(Image<T> &imIn, int Size,
+  RES_T parsimoniousPathOpening(Image<T> &imIn, int Size,
                                             int tolerance, int step,
                                             bool rebuild, Image<T> &imOut)
   {

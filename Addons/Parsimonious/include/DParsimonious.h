@@ -71,7 +71,7 @@ namespace smil
    */
 
   /**
-   * @brief ImParsimoniousIncompletePathOpening
+   * @brief parsimoniousPathOpening
    * 
    * @param[in]  imIn : input Image
    * @param[in]  Size : size of Structuring Element
@@ -84,12 +84,12 @@ namespace smil
    *
    */
   template <class T>
-  RES_T ImParsimoniousIncompletePathOpening(Image<T> &imIn, int Size,
+  RES_T parsimoniousPathOpening(Image<T> &imIn, int Size,
                                             int tolerance, int step,
                                             bool rebuild, Image<T> &imOut);
 
   /**
-   * @brief ImParsimoniousIncompletePathOpening
+   * @brief parsimoniousPathOpening
    * 
    * @param[in]  imIn : input Image
    * @param[in]  Size : size of Structuring Element
@@ -98,11 +98,11 @@ namespace smil
    * @param[out] imOut : output Image
    */
   template <class T>
-  RES_T ImParsimoniousIncompletePathOpening(Image<T> &imIn, int Size,
+  RES_T parsimoniousPathOpening(Image<T> &imIn, int Size,
                                             int tolerance, int step,
                                             Image<T> &imOut)
   {
-    return ImParsimoniousIncompletePathOpening(imIn, Size,
+    return parsimoniousPathOpening(imIn, Size,
                                                tolerance, step,
                                                true, imOut);
   }

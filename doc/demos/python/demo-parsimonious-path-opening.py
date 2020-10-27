@@ -33,7 +33,7 @@ for yy in np.arange(0, YY, NN):
         im_in_np[:] = img_ii[:]
 
         im_out = smil.Image(im_in)
-        smil.ImParsimoniousIncompletePathOpening(im_in, Size, tolerance, step,
+        smil.parsimoniousPathOpening(im_in, Size, tolerance, step,
                                                  False, im_out)
         im_out_np = im_out.getNumArray().transpose()
         img_out_slice = img_out[yy:min(yy + NN, YY), xx:min(xx + NN, XX)]

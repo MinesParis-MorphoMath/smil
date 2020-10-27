@@ -50,5 +50,5 @@ SMIL_MODULE(smilParsimonious)
 %import smilCore.i
 
 %include "DParsimonious.h"
-TEMPLATE_WRAP_FUNC(ImParsimoniousIncompletePathOpening)
+TEMPLATE_WRAP_FUNC(parsimoniousPathOpening)
 
