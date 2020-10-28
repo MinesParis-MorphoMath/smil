@@ -25,17 +25,13 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
-
-
 %include smilCommon.i
 
 SMIL_MODULE(smilCore)
 
-
 %{
 #include "DImage.hxx"
 %}
-
 
 //////////////////////////////////////////////////////////
 // Init
@@ -45,7 +41,6 @@ SMIL_MODULE(smilCore)
 %{
 %}
 
-
 //////////////////////////////////////////////////////////
 // Errors
 //////////////////////////////////////////////////////////
@@ -53,16 +48,11 @@ SMIL_MODULE(smilCore)
 %ignore Error;
 %include "Core/include/DErrors.h"
 
-
-
 //////////////////////////////////////////////////////////
 // Types
 //////////////////////////////////////////////////////////
 
-
 %include "Core/include/private/DTypes.hpp"
-
-
 
 // BitArray
 #ifdef SMIL_WRAP_BIT
@@ -75,7 +65,6 @@ SMIL_MODULE(smilCore)
 #else
 %include "include/DColor.h"
 #endif // SMIL_WRAP_RGB
-
 
 //////////////////////////////////////////////////////////
 // Typemaps
@@ -90,22 +79,19 @@ PTR_ARG_OUT_APPLY(h)
 PTR_ARG_OUT_APPLY(d)
 PTR_ARG_OUT_APPLY(s)
 
-
-
 //////////////////////////////////////////////////////////
 // BaseObject
 //////////////////////////////////////////////////////////
 
 %extend smil::BaseObject 
 {
-        std::string  __str__() 
-        {
-            std::stringstream os;
-            self->printSelf(os);
-            return os.str();
-        }
+  std::string  __str__() 
+  {
+    std::stringstream os;
+    self->printSelf(os);
+    return os.str();
+  }
 }
-
 
 %include "Core/include/DCommon.h"
 %include "Core/include/DBaseObject.h"
@@ -115,64 +101,61 @@ PTR_ARG_OUT_APPLY(s)
 %template(UintPoint) Point<UINT>;
 %template(Size_tPoint) Point<size_t>;
 
-
 //////////////////////////////////////////////////////////
 // Vectors
 //////////////////////////////////////////////////////////
 
 #ifndef SWIGXML
 
-
 %include std_vector.i
 
 #ifndef SWIGJAVA
-    %include std_set.i
+  %include std_set.i
 #endif // SWIGJAVA
 
 // Expose std::vector<> as a Python list
 namespace std 
 {
 
-%{
-// Silence Clang dynamic-class-memaccess warning
-// TODO remove when swig generates code without warnings
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdynamic-class-memaccess"
-#endif // __clang__
-%}
+  %{
+    // Silence Clang dynamic-class-memaccess warning
+    // TODO remove when swig generates code without warnings
+    #ifdef __clang__
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wdynamic-class-memaccess"
+    #endif // __clang__
+  %}
 
-    TEMPLATE_WRAP_CLASS(vector, Vector);
-    
-%{
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif // __clang__
-%}
+  TEMPLATE_WRAP_CLASS(vector, Vector);
 
-#ifdef USE_64BIT_IDS
+  %{
+    #ifdef __clang__
+    #pragma clang diagnostic pop
+    #endif // __clang__
+  %}
+
+  #ifdef USE_64BIT_IDS
     %template(Vector_size_t) vector<size_t>;
-#endif // USE_64BIT_IDS
-    %template(Vector_int) vector<int>;
-    %template(Vector_double) vector<double>;
-    %template(Vector_string) vector<string>;
+  #endif // USE_64BIT_IDS
+  %template(Vector_int) vector<int>;
+  %template(Vector_double) vector<double>;
+  %template(Vector_string) vector<string>;
     
-    %template(Matrix_double) vector<Vector_double>;
-    %template(Vector_IntPoint) vector< smil::Point<int> >;
+  %template(Matrix_double) vector<Vector_double>;
+  %template(Vector_IntPoint) vector< smil::Point<int> >;
 
-#ifndef SWIGJAVA
+  #ifndef SWIGJAVA
     TEMPLATE_WRAP_CLASS(set, Set);
-#endif // SWIGJAVA
+  #endif // SWIGJAVA
     
-#if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
+  #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
     %template(Vector_UINT) vector<UINT>;
     
     #ifndef SWIGJAVA
-        %template(Set_UINT) set<UINT>;
+      %template(Set_UINT) set<UINT>;
     #endif // SWIGJAVA
 
-#endif // !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
-
+  #endif // !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
 }
 
 #endif // SWIGXML
@@ -183,53 +166,51 @@ namespace std
 
 #ifndef SWIGXML
 
-
 %include std_map.i
-
 
 // Expose std::map<> as a Python dict
 namespace std 
 {
 #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
-    %template(Map_UINT) map<UINT,UINT>;
-    %template(Map_UINT_double) map<UINT,double>;
-    %template(Map_UINT_Vector_double) map<UINT,Vector_double>;
-    %template(Map_UINT_Vector_UINT) map<UINT,Vector_UINT>;
+  %template(Map_UINT) map<UINT,UINT>;
+  %template(Map_UINT_double) map<UINT,double>;
+  %template(Map_UINT_Vector_double) map<UINT,Vector_double>;
+  %template(Map_UINT_Vector_UINT) map<UINT,Vector_UINT>;
 #endif
 
 #ifdef USE_64BIT_IDS
-    %template(Map_SIZE_T) map<size_t,size_t>;
+  %template(Map_SIZE_T) map<size_t,size_t>;
 #endif // USE_64BIT_IDS
     
-    TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE(vector)
+TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE(vector)
 #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
-    TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE_FIX_FIRST(vector, UINT)
+  TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE_FIX_FIRST(vector, UINT)
 #endif
 
-    TEMPLATE_WRAP_CLASS_2T_CROSS(map, Map)
+  TEMPLATE_WRAP_CLASS_2T_CROSS(map, Map)
     
 #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
-    TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, UINT, Map)
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
+  TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, UINT, Map)
+  TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
 #endif
 
 #ifdef USE_64BIT_IDS
-    TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, size_t, Map)
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_size_t, Map)
+  TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, size_t, Map)
+  TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_size_t, Map)
 #endif // USE_64BIT_IDS
 
 #ifndef SMIL_WRAP_double
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
+  TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
 #endif
     
 #ifndef SMIL_WRAP_RGB
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
+  TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
 #endif // SMIL_WRAP_RGB
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_double, Map)
+  TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_double, Map)
 #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_UINT, Map)
+  TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_UINT, Map)
 #endif
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Box, Map)
+  TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Box, Map)
 }
 
 #endif // SWIGXML
@@ -247,7 +228,7 @@ namespace std
 
 namespace std 
 {
-    %template(ObjVector) vector<BaseObject*>;
+  %template(ObjVector) vector<BaseObject*>;
 }
 
 #endif // SWIGXML
@@ -267,13 +248,12 @@ namespace std
 %include "Core/include/DSlot.h"
 %include "Core/include/DCoreEvents.h"
 
-
 namespace smil
 {
-    %template(BaseImageEventSlot) Slot<BaseImageEvent>;
-    %template(EventSlot) Slot<Event>;
-    %template(ViewerFunctionSlot) MemberFunctionSlot<BaseImageViewer, Event>;
-    %template(FunctionSlot_) FunctionSlot<Event>;
+  %template(BaseImageEventSlot) Slot<BaseImageEvent>;
+  %template(EventSlot) Slot<Event>;
+  %template(ViewerFunctionSlot) MemberFunctionSlot<BaseImageViewer, Event>;
+  %template(FunctionSlot_) FunctionSlot<Event>;
 }
 
 //////////////////////////////////////////////////////////
@@ -282,7 +262,6 @@ namespace smil
 
 // Import smilGui for viewers stuff
 %import smilGui.i
-
 
 %ignore smil::Image::operator[];
 
@@ -299,8 +278,8 @@ namespace smil
 
 %extend smil::Image
 {
-    T __getitem__(size_t i) { return self->getPixelNoCheck(i); }
-    void __setitem__(size_t i, T val) { return self->setPixelNoCheck(i, val); }
+  T __getitem__(size_t i) { return self->getPixelNoCheck(i); }
+  void __setitem__(size_t i, T val) { return self->setPixelNoCheck(i, val); }
 }
 #endif // SWIGPYTHON
 
@@ -313,24 +292,24 @@ namespace smil
 
 namespace std 
 {
-    %template(ImgVector) std::vector<BaseImage*>;
+  %template(ImgVector) std::vector<BaseImage*>;
 }
 
 #endif // SWIGXML
 
 namespace smil
 {
-    TEMPLATE_WRAP_CLASS(Image, Image);
-    TEMPLATE_WRAP_CLASS(ResImage, ResImage);
-    TEMPLATE_WRAP_FUNC(createImage);
-    TEMPLATE_WRAP_FUNC(castBaseImage);
-    TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
-    TEMPLATE_WRAP_FUNC(drawOverlay);
+  TEMPLATE_WRAP_CLASS(Image, Image);
+  TEMPLATE_WRAP_CLASS(ResImage, ResImage);
+  TEMPLATE_WRAP_FUNC(createImage);
+  TEMPLATE_WRAP_FUNC(castBaseImage);
+  TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
+  TEMPLATE_WRAP_FUNC(drawOverlay);
     
-    TEMPLATE_WRAP_SUPPL_CLASS(Image, Image);
-    TEMPLATE_WRAP_SUPPL_FUNC(createImage);
-    TEMPLATE_WRAP_SUPPL_FUNC(castBaseImage);
-    TEMPLATE_WRAP_SUPPL_CLASS(SharedImage, SharedImage);
+  TEMPLATE_WRAP_SUPPL_CLASS(Image, Image);
+  TEMPLATE_WRAP_SUPPL_FUNC(createImage);
+  TEMPLATE_WRAP_SUPPL_FUNC(castBaseImage);
+  TEMPLATE_WRAP_SUPPL_CLASS(SharedImage, SharedImage);
 }
 
 
@@ -342,30 +321,25 @@ namespace smil
 #include "DGraph.hpp"
 %}
 
-
-
-
-
 #ifndef SMIL_WRAP_UINT32
-    %template(Vector_Edge_UINT) std::vector< Edge<UINT,UINT> >;
-    TEMPLATE_WRAP_CLASS_2T_SUBTYPES_FIX_FIRST(std::vector, Edge, UINT, Vector);
-    TEMPLATE_WRAP_CLASS_2T_SUBTYPES_FIX_SECOND(std::vector, Edge, UINT, Vector);
+  %template(Vector_Edge_UINT) std::vector< Edge<UINT,UINT> >;
+  TEMPLATE_WRAP_CLASS_2T_SUBTYPES_FIX_FIRST(std::vector, Edge, UINT, Vector);
+  TEMPLATE_WRAP_CLASS_2T_SUBTYPES_FIX_SECOND(std::vector, Edge, UINT, Vector);
 #endif // SMIL_WRAP_UINT32
     
 %include "Core/include/private/DGraph.hpp"
 
-
 #ifndef SWIGXML
     
-    // Base UINT Edge
-    TEMPLATE_WRAP_CLASS_2T_CROSS(smil::Edge, Edge);
+  // Base UINT Edge
+  TEMPLATE_WRAP_CLASS_2T_CROSS(smil::Edge, Edge);
     
-    TEMPLATE_WRAP_CLASS_2T_SUBTYPES_CROSS(vector, Edge, Vector);
+  TEMPLATE_WRAP_CLASS_2T_SUBTYPES_CROSS(vector, Edge, Vector);
     
 #ifndef SMIL_WRAP_UINT32
     
-    TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Edge, UINT, Edge);
-    TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Edge, UINT, Edge);
+  TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Edge, UINT, Edge);
+  TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Edge, UINT, Edge);
     
 #endif // SMIL_WRAP_UINT32
 
@@ -373,23 +347,21 @@ namespace smil
 
 namespace smil
 {
-    // Graph & MST
-    %template(Graph_SIZE_T) Graph<size_t,size_t>;
-    %template(graphMST_SIZE_T) graphMST<Graph<UINT,UINT> >;
+  // Graph & MST
+  %template(Graph_SIZE_T) Graph<size_t,size_t>;
+  %template(graphMST_SIZE_T) graphMST<Graph<UINT,UINT> >;
     
-    TEMPLATE_WRAP_CLASS_2T_CROSS(Graph, Graph);
+  TEMPLATE_WRAP_CLASS_2T_CROSS(Graph, Graph);
     
-    #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT) 
-        %template(Graph_UINT) Graph<UINT,UINT>;
-        %template(graphMST_UINT) graphMST<Graph<UINT,UINT> >;
+  #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT) 
+    %template(Graph_UINT) Graph<UINT,UINT>;
+    %template(graphMST_UINT) graphMST<Graph<UINT,UINT> >;
 
-        TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
-        TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
-    #endif
+    TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Graph, UINT, Graph);
+      TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Graph, UINT, Graph);
+  #endif
 
 }
-
-
 
 //////////////////////////////////////////////////////////
 // Internal definitions 
@@ -397,23 +369,22 @@ namespace smil
 //////////////////////////////////////////////////////////
 #ifndef SWIGIMPORTED
 
-    // Numpy
-    #if defined SWIGPYTHON && defined USE_NUMPY
-    %init
-    %{
-        // Required by NumPy in Python initialization
-        import_array();
-    %}
-    %{
-    #include "Core/include/private/DNumpyInterface.hpp"
-    %}
+  // Numpy
+  #if defined SWIGPYTHON && defined USE_NUMPY
+  %init
+  %{
+    // Required by NumPy in Python initialization
+    import_array();
+  %}
+  %{
+  #include "Core/include/private/DNumpyInterface.hpp"
+  %}
 
-    %include "Core/include/private/DNumpyInterface.hpp"
+  %include "Core/include/private/DNumpyInterface.hpp"
 
-    TEMPLATE_WRAP_CLASS(NumpyInt,NumpyInt)
+  TEMPLATE_WRAP_CLASS(NumpyInt,NumpyInt)
 
 %pythoncode %{
-
 
 def NumpyInt(array):
     """
@@ -435,6 +406,6 @@ def NumpyInt(array):
 %}
 
         
-    #endif // defined SWIGPYTHON && defined USE_NUMPY
+  #endif // defined SWIGPYTHON && defined USE_NUMPY
 #endif // SWIGIMPORTED
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -14,18 +14,18 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
-
 
 #ifndef _DMORPHO_DISTANCE_H
 #define _DMORPHO_DISTANCE_H
@@ -35,40 +35,38 @@
 #include "DMorphoInstance.h"
 #include "DStructuringElement.h"
 
-
- namespace smil
- {
+namespace smil
+{
   /**
    * @ingroup Distance
    * @{
    */
 
   /**
-   * @brief Distance function
+   * @brief distance() - Distance function
    * @param[in] imIn : Binary input image
    * @param[out] imOut : Output image
    * @param[in] se : Structuring Element
    */
   template <class T1, class T2>
   RES_T distance(const Image<T1> &imIn, Image<T2> &imOut,
-             const StrElt &se = DEFAULT_SE);
-
+                 const StrElt &se = DEFAULT_SE);
 
   /**
-   * @brief Euclidean distance function.
+   * @brief distanceEuclidean() - Euclidean distance function.
    * @param[in] imIn : Binary input image
    * @param[out] imOut : Output image
    */
   template <class T1, class T2>
   RES_T distanceEuclidean(const Image<T1> &imIn, Image<T2> &imOut);
-  
+
   /** @cond */
   template <class T1, class T2>
   RES_T dist_euclidean(const Image<T1> &imIn, Image<T2> &imOut);
   /** @endcond */
 
   /**
-   * @brief Geodesic distance function
+   * @brief distanceGeodesic() - Geodesic distance function
    * @param[in] imIn : Binary input image
    * @param[in] imMask : Binary mask image
    * @param[out] imOut : Output image
@@ -80,8 +78,10 @@
   RES_T distanceGeodesic(const Image<T1> &imIn, const Image<T1> &imMask,
                          Image<T2> &imOut, const StrElt &se = DEFAULT_SE);
 
-  /* Internal functions - not to be called by user programs */
-
+  /*
+   * Internal functions - old deprecated prototypes - not to be called by user
+   * programs
+   */
   /** @cond */
   template <class T1, class T2>
   RES_T dist(const Image<T1> &imIn, Image<T2> &imOut,
@@ -91,35 +91,36 @@
   }
 
   /**
-   * @brief Generic Distance function.
-   * @param imIn Input Image
-   * @param imOut Output Image
-   * @param se Structuring Element
+   * @brief distGeneric() - Generic Distance function.
+   * @param imIn : Input Image
+   * @param imOut : Output Image
+   * @param se : Structuring Element
    */
   template <class T1, class T2>
   RES_T distGeneric(const Image<T1> &imIn, Image<T2> &imOut,
                     const StrElt &se = DEFAULT_SE);
-                    
+
   /**
-   * @brief Distance function using a Cross3DSE Structuring Element
-   * @param imIn Input Image
-   * @param imOut Output Image
+   * @brief distCross3d() - Distance function using a Cross3DSE Structuring
+   * Element
+   * @param imIn : Input Image
+   * @param imOut : Output Image
    */
   template <class T1, class T2>
   RES_T distCross3d(const Image<T1> &imIn, Image<T2> &imOut);
 
   /**
-   * @brief Distance  function using a CrossSE Structuring Element
-   * @param imIn Input Image
-   * @param imOut Output Image
+   * @brief distCross() - Distance  function using a CrossSE Structuring Element
+   * @param imIn : Input Image
+   * @param imOut : Output Image
    */
   template <class T1, class T2>
   RES_T distCross(const Image<T1> &imIn, Image<T2> &imOut);
 
   /**
-   * @brief Distance  function using a Square Structuring Element
-   * @param imIn Input Image
-   * @param imOut Output Image
+   * @brief distSquare() - Distance  function using a Square Structuring Element
+   * @param imIn : Input Image
+   * @param imOut : Output Image
    */
   template <class T1, class T2>
   RES_T distSquare(const Image<T1> &imIn, Image<T2> &imOut);
@@ -129,28 +130,30 @@
   {
     return distanceEuclidean(imIn, imOut);
   }
-  
+
   template <class T1, class T2>
   RES_T distGeodesic(const Image<T1> &imIn, const Image<T1> &imMask,
                      Image<T2> &imOut, const StrElt &se = DEFAULT_SE)
   {
     return distanceGeodesic(imIn, imMask, imOut, se);
   }
+  /** @endcond */
 
+  /** @cond */
   /**
    * @brief Distance function performed with successive erosions.
-   * @param imIn Input Image
-   * @param imOut Output Image
-   * @param se Structuring Element
+   * @param imIn : Input Image
+   * @param imOut : Output Image
+   * @param se : Structuring Element
    */
   template <class T>
   RES_T distV0(const Image<T> &imIn, Image<T> &imOut,
                const StrElt &se = DEFAULT_SE);
   /** @endcond */
-}
+} // namespace smil
 
 #include "private/DMorphoDistance.hpp"
- 
+
 /** @}*/
 
 #endif // _DMORPHO_DISTANCE_H

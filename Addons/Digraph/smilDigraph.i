@@ -27,12 +27,11 @@
 
 %include smilCommon.i
 
-SMIL_MODULE(smilMorphoExtras)
-
+SMIL_MODULE(smilDigraph)
 
 %{
 /* Includes needed header(s)/definitions in the wrapped code */
-#include "DMorphoExtras.h"
+#include "DDigraph.h"
 
 %}
 

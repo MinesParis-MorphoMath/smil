@@ -27,8 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _D_GRAPH_HPP
-#define _D_GRAPH_HPP
+#ifndef _D_DIGRAPH_HPP
+#define _D_DIGRAPH_HPP
 
 #include "Core/include/DBaseObject.h"
 
@@ -44,7 +44,7 @@
 namespace smil
 {
   /**
-   * @addtogroup GraphTypes
+   * @addtogroup DigraphTypes
    * @{
    */
 
@@ -58,35 +58,35 @@ namespace smil
   //
   /**
    * Non-oriented edge
-   * @see Graph
+   * @see Digraph
    */
   template <class NodeT = size_t, class WeightT = size_t>
-  class Edge
+  class Diedge
   {
   public:
     typedef WeightT WeightType;
 
     /** Default constructor
      */
-    Edge() : source(0), target(0), weight(1)
+    Diedge() : source(0), target(0), weight(1)
     {
     }
 
     /** Constructor using two nodes and an optional weight (default 1).
      */
-    Edge(NodeT a, NodeT b, WeightT w = 1) : source(a), target(b), weight(w)
+    Diedge(NodeT a, NodeT b, WeightT w = 1) : source(a), target(b), weight(w)
     {
     }
 
     /** Copy constructor
      */
-    Edge(const Edge &rhs)
+    Diedge(const Diedge &rhs)
         : source(rhs.source), target(rhs.target), weight(rhs.weight)
     {
     }
 
     /** @cond */
-    virtual ~Edge()
+    virtual ~Diedge()
     {
     }
     /** @endcond */
@@ -94,7 +94,7 @@ namespace smil
     /**
      * Copy an edge
      */
-    Edge &operator=(const Edge &rhs)
+    Diedge &operator=(const Diedge &rhs)
     {
       source = rhs.source;
       target = rhs.target;
@@ -108,6 +108,8 @@ namespace smil
     NodeT target;
     //! Edge weight/value
     WeightT weight;
+
+    bool oriented;
 
     /**
      * Check if the edge is active
@@ -130,7 +132,7 @@ namespace smil
     }
 
     // Don't test the weight values (only to check if the edge exists)
-    inline bool operator==(const Edge &rhs) const
+    inline bool operator==(const Diedge &rhs) const
     {
       if (rhs.source == source && rhs.target == target)
         return true;
@@ -139,12 +141,12 @@ namespace smil
       return false;
     }
 
-    inline bool operator!=(const Edge &rhs) const
+    inline bool operator!=(const Diedge &rhs) const
     {
       return !this->operator==(rhs);
     }
 
-    inline bool operator<(const Edge &rhs) const
+    inline bool operator<(const Diedge &rhs) const
     {
       return weight > rhs.weight;
     }
@@ -161,14 +163,14 @@ namespace smil
    * Check if two vectors of edges are equal
    */
   template <class NodeT, class WeightT>
-  bool operator==(const vector<Edge<NodeT, WeightT>> &e1,
-                  const vector<Edge<NodeT, WeightT>> &e2)
+  bool operator==(const vector<Diedge<NodeT, WeightT>> &e1,
+                  const vector<Diedge<NodeT, WeightT>> &e2)
   {
     if (e1.size() != e2.size())
       return false;
 
-    typedef Edge<NodeT, WeightT>           EdgeT;
-    typename vector<EdgeT>::const_iterator it1 = e1.begin(), it2 = e2.begin();
+    typedef Diedge<NodeT, WeightT>           DiedgeT;
+    typename vector<DiedgeT>::const_iterator it1 = e1.begin(), it2 = e2.begin();
 
     for (; it1 != e1.end() && it2 != e2.end(); it1++, it2++) {
       if ((*it1) != (*it2))
@@ -189,61 +191,63 @@ namespace smil
   //  ####   #    #  #    #  #       #    #
   //
   /**
-   * Non-oriented graph
-   * @see Edge
+   * Non-oriented Digraph
+   * @see Diedge
    */
   template <class NodeT = size_t, class WeightT = size_t>
-  class Graph : public BaseObject
+  class Digraph : public BaseObject
   {
   public:
-    typedef Graph<NodeT, WeightT> GraphType;
+    typedef Digraph<NodeT, WeightT> DigraphType;
 
     typedef NodeT                    NodeType;
     typedef WeightT                  NodeWeightType;
     typedef std::map<NodeT, WeightT> NodeValuesType;
     typedef set<NodeT>               NodeListType;
 
-    typedef Edge<NodeT, WeightT> EdgeType;
-    typedef WeightT              EdgeWeightType;
+    typedef Diedge<NodeT, WeightT> DiedgeType;
+    typedef WeightT                DiedgeWeightType;
 
-    typedef std::vector<Edge<NodeT, WeightT>> EdgeListType;
-    typedef std::vector<size_t>               NodeEdgesType;
-    typedef std::map<NodeT, NodeEdgesType>    NodeEdgeListType;
+    typedef std::vector<Diedge<NodeT, WeightT>> DiedgeListType;
+    typedef std::vector<size_t>                 NodeDiedgesType;
+    typedef std::map<NodeT, NodeDiedgesType>    NodeDiedgeListType;
 
   protected:
-    size_t           edgeNbr;
-    NodeListType     nodes;
-    NodeValuesType   nodeValues;
-    EdgeListType     edges;
-    NodeEdgeListType nodeEdgeList;
+    size_t             edgeNbr;
+    NodeListType       nodes;
+    NodeValuesType     nodeValues;
+    DiedgeListType     edges;
+    NodeDiedgeListType nodeEdgeList;
+    bool               oriented;
 
   public:
     //! Default constructor
-    Graph() : BaseObject("Graph"), edgeNbr(0)
+    Digraph() : BaseObject("Digraph"), edgeNbr(0), oriented(true)
     {
     }
 
     //! Copy constructor
-    Graph(const Graph &rhs)
-        : BaseObject("Graph"), edgeNbr(rhs.edgeNbr), nodes(rhs.nodes),
+    Digraph(const Digraph &rhs)
+        : BaseObject("Digraph"), edgeNbr(rhs.edgeNbr), nodes(rhs.nodes),
           nodeValues(rhs.nodeValues), edges(rhs.edges),
-          nodeEdgeList(rhs.nodeEdgeList)
+          nodeEdgeList(rhs.nodeEdgeList), oriented(rhs.oriented)
     {
     }
 
     /** @cond */
-    virtual ~Graph()
+    virtual ~Digraph()
     {
     }
     /** @endcond */
 
-    Graph &operator=(const Graph &rhs)
+    Digraph &operator=(const Digraph &rhs)
     {
       nodes        = rhs.nodes;
       nodeValues   = rhs.nodeValues;
       edges        = rhs.edges;
       nodeEdgeList = rhs.nodeEdgeList;
       edgeNbr      = rhs.edgeNbr;
+      oriented = rhs.oriented;
       return *this;
     }
 
@@ -255,6 +259,7 @@ namespace smil
       edges.clear();
       nodeEdgeList.clear();
       edgeNbr = 0;
+      oriented = true;
     }
 
     //! Add a node given its index
@@ -273,9 +278,9 @@ namespace smil
     /**
      * findEdge() - Find an edge by its content - return its index
      */
-    int findEdge(const EdgeType &e)
+    int findEdge(const DiedgeType &e)
     {
-      typename EdgeListType::iterator foundEdge =
+      typename DiedgeListType::iterator foundEdge =
           find(edges.begin(), edges.end(), e);
       if (foundEdge != edges.end())
         return foundEdge - edges.begin();
@@ -288,7 +293,7 @@ namespace smil
      */
     int findEdge(const NodeT &src, const NodeT &targ)
     {
-      return findEdge(EdgeType(src, targ));
+      return findEdge(DiedgeType(src, targ));
     }
 
     /**
@@ -298,7 +303,7 @@ namespace smil
      * - If the edge already exists, the edge weight will be the minimum
      * between the existing a the new weight.
      */
-    void addEdge(const EdgeType &e, bool checkIfExists = true)
+    void addEdge(const DiedgeType &e, bool checkIfExists = true)
     {
       if (checkIfExists)
         if (findEdge(e) != -1)
@@ -325,7 +330,7 @@ namespace smil
     void addEdge(const NodeT src, const NodeT targ, WeightT weight = 0,
                  bool checkIfExists = true)
     {
-      addEdge(EdgeType(src, targ, weight), checkIfExists);
+      addEdge(DiedgeType(src, targ, weight), checkIfExists);
     }
 
     /**
@@ -333,7 +338,7 @@ namespace smil
      */
     void sortEdges(bool reverse = false)
     {
-      EdgeListType sEdges = edges;
+      DiedgeListType sEdges = edges;
       if (!reverse)
         sort(sEdges.begin(), sEdges.end());
       else
@@ -344,21 +349,21 @@ namespace smil
       nodeEdgeList.clear();
       edgeNbr = 0;
 
-      for (typename EdgeListType::const_iterator it = sEdges.begin();
+      for (typename DiedgeListType::const_iterator it = sEdges.begin();
            it != sEdges.end(); it++)
         addEdge(*it, false);
     }
 
     /**
-     * clone() - 
+     * clone() -
      */
-    GraphType clone()
+    DigraphType clone()
     {
-      return GraphType(*this);
+      return DigraphType(*this);
     }
 
     /**
-     * getNodeNbr() - 
+     * getNodeNbr() -
      */
     size_t getNodeNbr()
     {
@@ -384,13 +389,13 @@ namespace smil
 
     void removeNodeEdge(const NodeT node, const size_t edgeIndex)
     {
-      typename NodeEdgeListType::iterator nEdges = nodeEdgeList.find(node);
+      typename NodeDiedgeListType::iterator nEdges = nodeEdgeList.find(node);
       if (nEdges == nodeEdgeList.end())
         return;
 
-      NodeEdgesType &eList = nEdges->second;
+      NodeDiedgesType &eList = nEdges->second;
 
-      typename NodeEdgesType::iterator ei =
+      typename NodeDiedgesType::iterator ei =
           find(eList.begin(), eList.end(), edgeIndex);
       if (ei != eList.end())
         eList.erase(ei);
@@ -402,14 +407,15 @@ namespace smil
      */
     void removeNodeEdges(const NodeT node)
     {
-      typename NodeEdgeListType::iterator fNodeEdges = nodeEdgeList.find(node);
+      typename NodeDiedgeListType::iterator fNodeEdges =
+          nodeEdgeList.find(node);
       if (fNodeEdges == nodeEdgeList.end())
         return;
 
-      NodeEdgesType &nedges = fNodeEdges->second;
-      for (NodeEdgesType::iterator it = nedges.begin(); it != nedges.end();
+      NodeDiedgesType &nedges = fNodeEdges->second;
+      for (NodeDiedgesType::iterator it = nedges.begin(); it != nedges.end();
            it++) {
-        EdgeType &e = edges[*it];
+        DiedgeType &e = edges[*it];
         if (e.source == node)
           removeNodeEdge(e.target, *it);
         else
@@ -427,7 +433,7 @@ namespace smil
       if (index >= edges.size())
         return;
 
-      EdgeType &edge = edges[index];
+      DiedgeType &edge = edges[index];
 
       removeNodeEdge(edge.source, index);
       removeNodeEdge(edge.target, index);
@@ -439,8 +445,8 @@ namespace smil
      */
     void removeEdge(const NodeT src, const NodeT targ)
     {
-      typename EdgeListType::iterator foundEdge =
-          find(edges.begin(), edges.end(), EdgeType(src, targ));
+      typename DiedgeListType::iterator foundEdge =
+          find(edges.begin(), edges.end(), DiedgeType(src, targ));
       if (foundEdge == edges.end())
         return;
 
@@ -450,9 +456,9 @@ namespace smil
     /**
      *  Remove a given edge
      */
-    void removeEdge(const EdgeType &edge)
+    void removeEdge(const DiedgeType &edge)
     {
-      typename EdgeListType::iterator foundEdge =
+      typename DiedgeListType::iterator foundEdge =
           find(edges.begin(), edges.end(), edge);
       if (foundEdge == edges.end())
         return;
@@ -466,11 +472,11 @@ namespace smil
      *
      * @param[in] EdgeThreshold :
      */
-    void removeHighEdges(EdgeWeightType EdgeThreshold)
+    void removeHighEdges(DiedgeWeightType EdgeThreshold)
     {
       size_t nb_edges = edges.size();
       for (size_t index = 0; index < nb_edges; index++) {
-        EdgeType &e = edges[index];
+        DiedgeType &e = edges[index];
         if (e.weight > EdgeThreshold)
           removeEdge(index);
       }
@@ -482,11 +488,11 @@ namespace smil
      *
      * @param[in] EdgeThreshold :
      */
-    void removeLowEdges(EdgeWeightType EdgeThreshold)
+    void removeLowEdges(DiedgeWeightType EdgeThreshold)
     {
       size_t nb_edges = edges.size();
       for (size_t index = 0; index < nb_edges; index++) {
-        EdgeType &e = edges[index];
+        DiedgeType &e = edges[index];
         if (e.weight < EdgeThreshold)
           removeEdge(index);
       }
@@ -499,7 +505,7 @@ namespace smil
       return nodes;
     } // lvalue
 
-    const EdgeListType &getEdges() const
+    const DiedgeListType &getEdges() const
     {
       return edges;
     } // lvalue
@@ -509,7 +515,7 @@ namespace smil
       return nodeValues;
     } // lvalue
 
-    const NodeEdgeListType &getNodeEdges() const
+    const NodeDiedgeListType &getNodeEdges() const
     {
       return nodeEdgeList;
     }  // lvalue
@@ -531,7 +537,7 @@ namespace smil
      *
      * @returns a handle to the list of edges as a @txtbold{vector}
      */
-    EdgeListType &getEdges()
+    DiedgeListType &getEdges()
     {
       return edges;
     } // rvalue
@@ -547,7 +553,7 @@ namespace smil
     /**
      * getNodeEdges()-
      */
-    NodeEdgeListType &getNodeEdges()
+    NodeDiedgeListType &getNodeEdges()
     {
       return nodeEdgeList;
     } // rvalue
@@ -555,9 +561,9 @@ namespace smil
     /**
      * getNodeEdges() - Get a map containing the edges linked to a given node
      */
-    NodeEdgesType getNodeEdges(const size_t &node)
+    NodeDiedgesType getNodeEdges(const size_t &node)
     {
-      typename NodeEdgeListType::iterator it = nodeEdgeList.find(node);
+      typename NodeDiedgeListType::iterator it = nodeEdgeList.find(node);
       if (it != nodeEdgeList.end())
         return it->second;
       else
@@ -567,7 +573,7 @@ namespace smil
     /**
      * computeMST() - Compute the Minimum Spanning Tree graph
      */
-    GraphType computeMST()
+    DigraphType computeMST()
     {
       return graphMST(*this);
     }
@@ -579,10 +585,11 @@ namespace smil
     {
       os << s << "Number of nodes: " << nodes.size() << endl;
       os << s << "Number of edges: " << edges.size() << endl;
+      os << s << "Oriented:        " << (oriented ? "true" : "false") << endl;
       os << s << "Edges: " << endl << "source-target (weight) " << endl;
 
       string s2 = s + "\t";
-      for (typename EdgeListType::const_iterator it = edges.begin();
+      for (typename DiedgeListType::const_iterator it = edges.begin();
            it != edges.end(); it++)
         if ((*it).isActive())
           (*it).printSelf(os, s2);
@@ -590,7 +597,7 @@ namespace smil
 
     /**
      * labelizeNodes() - Labelize the nodes.
-     * 
+     *
      * Give a different label to each group of connected nodes.
      *
      * @returns a map [ node, label_value ]
@@ -618,11 +625,11 @@ namespace smil
       lookup[ind] = lbl;
       nList.erase(foundNode);
 
-      const NodeEdgesType &nEdges = nodeEdgeList.at(ind);
+      const NodeDiedgesType &nEdges = nodeEdgeList.at(ind);
 
-      for (typename NodeEdgesType::const_iterator it = nEdges.begin();
+      for (typename NodeDiedgesType::const_iterator it = nEdges.begin();
            it != nEdges.end(); it++) {
-        const EdgeType &e = edges[*it];
+        const DiedgeType &e = edges[*it];
         if (e.source != ind)
           propagateLabel(e.source, lbl, lookup, nList);
         else if (e.target != ind)
@@ -634,35 +641,35 @@ namespace smil
   /** graphMST() - create a Mininum Spanning Tree
    *
    * @param[in] graph : input graph
-   * 
+   *
    * @returns Minimum Spanning Tree built from input graph
    */
-  template <class graphT>
-  graphT graphMST(const graphT &graph)
+  template <class digraphT>
+  digraphT digraphMST(const digraphT &graph)
   {
-    typedef typename graphT::NodeType         NodeType;
-    typedef typename graphT::EdgeType         EdgeType;
-    typedef typename graphT::EdgeListType     EdgeListType;
-    typedef typename graphT::NodeEdgesType    NodeEdgesType;
-    typedef typename graphT::NodeEdgeListType NodeEdgeListType;
+    typedef typename digraphT::NodeType           NodeType;
+    typedef typename digraphT::DiedgeType         DiedgeType;
+    typedef typename digraphT::DiedgeListType     DiedgeListType;
+    typedef typename digraphT::NodeDiedgesType    NodeDiedgesType;
+    typedef typename digraphT::NodeDiedgeListType NodeDiedgeListType;
 
-    std::set<NodeType>            visitedNodes;
-    std::priority_queue<EdgeType> pq;
-    graphT                        mst;
+    std::set<NodeType>              visitedNodes;
+    std::priority_queue<DiedgeType> pq;
+    digraphT                        mst;
 
-    const EdgeListType &    edges        = graph.getEdges();
-    const NodeEdgeListType &nodeEdgeList = graph.getNodeEdges();
+    const DiedgeListType &    edges        = graph.getEdges();
+    const NodeDiedgeListType &nodeEdgeList = graph.getNodeEdges();
 
     NodeType curNode = (*nodeEdgeList.begin()).first;
     visitedNodes.insert(curNode);
 
-    const NodeEdgesType &nodeEdges = nodeEdgeList.at(curNode);
-    for (typename NodeEdgesType::const_iterator it = nodeEdges.begin();
+    const NodeDiedgesType &nodeEdges = nodeEdgeList.at(curNode);
+    for (typename NodeDiedgesType::const_iterator it = nodeEdges.begin();
          it != nodeEdges.end(); it++)
       pq.push(edges[*it]);
 
     while (!pq.empty()) {
-      EdgeType edge = pq.top();
+      DiedgeType edge = pq.top();
       pq.pop();
 
       if (visitedNodes.find(edge.source) == visitedNodes.end())
@@ -674,8 +681,8 @@ namespace smil
 
       mst.addEdge(edge, false);
       visitedNodes.insert(curNode);
-      NodeEdgesType const &nodeEdges = nodeEdgeList.at(curNode);
-      for (typename NodeEdgesType::const_iterator it = nodeEdges.begin();
+      NodeDiedgesType const &nodeEdges = nodeEdgeList.at(curNode);
+      for (typename NodeDiedgesType::const_iterator it = nodeEdges.begin();
            it != nodeEdges.end(); it++)
         pq.push(edges[*it]);
     }
@@ -689,4 +696,4 @@ namespace smil
 
 } // namespace smil
 
-#endif // _D_GRAPH_HPP
+#endif // _D_DIGRAPH_HPP

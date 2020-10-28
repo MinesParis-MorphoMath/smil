@@ -47,6 +47,8 @@
 
 namespace smil
 {
+
+  // N O N
   int GetNbCC(UINT8 *pixelDone, int W, int H, int D)
   {
     std::queue<int> currentQueue;
@@ -85,6 +87,7 @@ namespace smil
     return Cpt;
   }
 
+  // N O N
   template <class T>
   RES_T CountNbCCperThreshold(const Image<T> &imIn, int *NbCC, int Invert)
   {
@@ -134,6 +137,7 @@ namespace smil
     return RES_OK;
   }
 
+  // N O N
   template <class T1, class T2>
   RES_T ImThresholdWithUniqueCCForBackGround(const Image<T1> &imIn,
                                              Image<T2> &imOut, int sliceBySlice)
@@ -203,6 +207,7 @@ namespace smil
     return RES_OK;
   }
 
+  // N O N
   template <class T1, class T2>
   RES_T PseudoPatternSpectrum(const Image<T1> &imCont, const Image<T2> &imInd,
                               int *patternSpect)
@@ -225,6 +230,7 @@ namespace smil
     return RES_OK;
   }
 
+  // N O N
   // Parcours des composantes connexes et leur suppression si le nombre de pixel
   // de la CC ne correspond pas au niveau de gris de la CC: (Pour traiter
   // l'indicatrice ou le niveau de gris correspond à la longueur de la fibre.)
