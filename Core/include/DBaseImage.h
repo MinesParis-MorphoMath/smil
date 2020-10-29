@@ -183,8 +183,23 @@ namespace smil
     //! Trigger modified event
     virtual void modified() = 0;
 
+    /**
+     * coordsInImage() - checks if the triplet (x, y, z) in inside the image
+     * bounds.
+     *
+     * @param[in] x,y,z : coords of a point
+     */
+    bool coordsInImage(const off_t x, const off_t y, const off_t z = 0)
+    {
+      if (x < 0 || y < 0 || z < 0)
+        return false;
+      if (x >= off_t(width) || y >= off_t(height) || z >= off_t(depth))
+        return false;
+      return true;
+    }
+
     //! Get an offset for given x,y(,z) coordinates
-    inline size_t getOffsetFromCoords(size_t x, size_t y, size_t z = 1) const
+    inline off_t getOffsetFromCoords(size_t x, size_t y, size_t z = 1) const
     {
       if (x >= this->width)
         return -1;
