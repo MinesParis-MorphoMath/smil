@@ -66,13 +66,14 @@ namespace smil
    * @param[in] imIn : input image
    * @param[out] imOut : output image
    */
-  template <class T> RES_T skiz(const Image<T> &imIn, Image<T> &imOut)
+  template <class T>
+  RES_T skiz(const Image<T> &imIn, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     ImageFreezer freezer(imOut);
-    Image<T> tmpIm(imIn);
+    Image<T>     tmpIm(imIn);
     inv(imIn, imOut);
     fullThin(imOut, HMT_hL(6), tmpIm);
     fullThin(tmpIm, HMT_hM(6), imOut);
@@ -139,7 +140,7 @@ namespace smil
     copy(imIn, imEro);
     fill(imOut, ImDtTypes<T2>::min());
 
-    T2 r = 1;
+    T2   r      = 1;
     bool idempt = false;
     do {
       erode(imEro, imEro, se);
@@ -154,60 +155,72 @@ namespace smil
   }
 
   /**
-   * zhangSkeleton() - Zhang 2D skeleton
+   * zhangSkeleton() - Zhang @b 2D skeleton
    *
    * Implementation corresponding to the algorithm described in
+   * @cite zhang_suen_1984, @cite Chen_HSU_1988_99 and
    * @cite khanyile_comparative_2011.
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
+   *
+   * @note
+   * - @b 2D only
    */
-  template <class T> RES_T zhangSkeleton(const Image<T> &imIn, Image<T> &imOut)
+  template <class T>
+  RES_T zhangSkeleton(const Image<T> &imIn, Image<T> &imOut)
   {
     size_t w = imIn.getWidth();
     size_t h = imIn.getHeight();
 
     // Create a copy image with a border to avoid border checks
-    size_t width = w + 2, height = h + 2;
+    size_t   width = w + 2, height = h + 2;
     Image<T> tmpIm(width, height);
     Image<T> modifiedIm(width, height);
+
     fill(tmpIm, ImDtTypes<T>::min());
+    fill(modifiedIm, ImDtTypes<T>::min());
+
     copy(imIn, tmpIm, 1, 1);
     copy(imIn, modifiedIm, 1, 1);
     // write(tmpIm, "tmpIm.png");
 
     typedef typename Image<T>::sliceType sliceType;
-    typedef typename Image<T>::lineType lineType;
+    typedef typename Image<T>::lineType  lineType;
 
     // lineType tab = tmpIm.getPixels();
     const sliceType lines         = tmpIm.getLines();
     const sliceType modifiedLines = modifiedIm.getLines();
-    lineType curLine, modifiedLine;
-    lineType curPix, modifiedPix;
+    lineType        curLine, modifiedLine;
+    lineType        curPix, modifiedPix;
 
     bool ptsDeleted1, ptsDeleted2, ptsDeleted;
 
     bool goOn;
 
     UINT nbrTrans, nbrNonZero;
-    int iteration;
+    int  iteration;
 
     int iWidth        = width;
     int ngbOffsets[8] = {-iWidth - 1, -iWidth, -iWidth + 1, 1,
                          iWidth + 1,  iWidth,  iWidth - 1,  -1};
-    T ngbs[8];
-    /// 0 1 2 OUR DEF
-    /// 7    3
-    /// 6 5  4
-    // 2,4,6 (zhang) -> 1 3 5 (our) PHASE 1
-    // 4,6,8 (zhang) -> 3 5 7 (our)
+    T   ngbs[8];
 
-    // 2,4,8 (zhang) -> 1 3 7 (our) PHASE 2
-    // 2,6,8 (zhang) -> 1 5 7 (our)
-
-    /// 9 2 3 PAPER
-    /// 8 1   4
-    /// 7 6  5
+    /*
+     * 0  1  2 OUR DEF
+     * 7     3
+     * 6  5  4
+     *
+     * 2  4  6 (zhang) -> 1 3 5 (our) PHASE 1
+     * 4  6  8 (zhang) -> 3 5 7 (our)
+     *
+     * 2  4  8 (zhang) -> 1 3 7 (our) PHASE 2
+     * 2  6  8 (zhang) -> 1 5 7 (our)
+     *
+     * 9  2  3 PAPER
+     * 8  1  4
+     * 7  6  5
+     */
 
     iteration = 0;
     int n;
@@ -223,6 +236,7 @@ namespace smil
         curPix       = curLine + 1;
         modifiedLine = modifiedLines[y];
         modifiedPix  = modifiedLine + 1;
+
         for (size_t x = 1; x < width; x++, curPix++, modifiedPix++) {
           if (*curPix != 0) {
             for (n = 0; n < 8; n++) {
@@ -243,51 +257,54 @@ namespace smil
             if (nbrNonZero >= 2 && nbrNonZero <= 6)
               goOn = true;
 
+            if (!goOn)
+              continue;
+
             // --------------------------------------------------
             // Calculate the number of transitions in clockwise direction
             // from point (-1,-1) back to itself
             // --------------------------------------------------
-            if (goOn) {
-              nbrTrans = 0;
-              for (n = 0; n < 7; n++)
-                if (ngbs[n] == 0)
-                  if (ngbs[n + 1] != 0)
-                    nbrTrans++;
-              if (ngbs[7] == 0)
-                if (ngbs[0] != 0)
+            nbrTrans = 0;
+            for (n = 0; n < 7; n++)
+              if (ngbs[n] == 0)
+                if (ngbs[n + 1] != 0)
                   nbrTrans++;
+            if (ngbs[7] == 0)
+              if (ngbs[0] != 0)
+                nbrTrans++;
 
-              if (nbrTrans != 1)
-                goOn = false;
-            }
+            if (nbrTrans != 1)
+              goOn = false;
+
+            if (!goOn)
+              continue;
 
             // --------------------------------------------------
             // P1 , 3,5
             // --------------------------------------------------
 
-            if (goOn) {
-              if (ngbs[1] * ngbs[3] * ngbs[5] != 0) // phase 1
-              {
-                goOn = false;
-              }
-            }
+            if (ngbs[1] * ngbs[3] * ngbs[5] != 0) // phase 1
+              goOn = false;
+
+            if (!goOn)
+              continue;
+
             // --------------------------------------------------
             // P3 , 5,7
             // --------------------------------------------------
-            if (goOn) {
-              if (ngbs[3] * ngbs[5] * ngbs[7] != 0) // phase 1
-              {
-                goOn = false;
-              }
-            }
+            if (ngbs[3] * ngbs[5] * ngbs[7] != 0) // phase 1
+              goOn = false;
+
+            if (!goOn)
+              continue;
+
             // --------------------------------------------------
             // All conditions verified, remove the point
             // --------------------------------------------------
-            if (goOn) {
-              *modifiedPix = 0;
-              //			    std::cout<<".......DELETE1 ("<<x<<","<<y<<")\n";
-              ptsDeleted1 = true;
-            }
+            *modifiedPix = 0;
+            //  std::cout << ".......DELETE1 (" << x << "," << y << ")\n";
+            ptsDeleted1 = true;
+
           } // * curPix != 0
         }   // for x
       }     // for y
@@ -315,56 +332,59 @@ namespace smil
             // Calculate the number of non-zero neighbors
             // --------------------------------------------------
             nbrNonZero = 0;
-            for (n = 0; n < 8; n++)
+            for (n = 0; n < 8; n++) {
               if (ngbs[n] != 0)
                 nbrNonZero++;
+            }
             if (nbrNonZero >= 2 && nbrNonZero <= 6)
               goOn = true;
+
+            if (!goOn)
+              continue;
 
             // --------------------------------------------------
             // Calculate the number of transitions in clockwise direction
             // from point (-1,-1) back to itself
             // --------------------------------------------------
-            if (goOn) {
-              nbrTrans = 0;
-              for (n = 0; n < 7; n++)
-                if (ngbs[n] == 0)
-                  if (ngbs[n + 1] != 0)
-                    nbrTrans++;
-              if (ngbs[7] == 0)
-                if (ngbs[0] != 0)
+            nbrTrans = 0;
+            for (n = 0; n < 7; n++)
+              if (ngbs[n] == 0)
+                if (ngbs[n + 1] != 0)
                   nbrTrans++;
-              if (nbrTrans != 1)
-                goOn = false;
-            }
+            if (ngbs[7] == 0)
+              if (ngbs[0] != 0)
+                nbrTrans++;
+            if (nbrTrans != 1)
+              goOn = false;
+
+            if (!goOn)
+              continue;
 
             // --------------------------------------------------
             // P1 , 3,7
             // --------------------------------------------------
-            if (goOn) {
-              if (ngbs[1] * ngbs[3] * ngbs[7] != 0) // phase 2
-              {
-                goOn = false;
-              }
-            }
+            if (ngbs[1] * ngbs[3] * ngbs[7] != 0) // phase 2
+              goOn = false;
+
+            if (!goOn)
+              continue;
+
             // --------------------------------------------------
             // P1 , 5,7
             // --------------------------------------------------
 
-            if (goOn) {
-              if (ngbs[1] * ngbs[5] * ngbs[7] != 0) // phase 2
-              {
-                goOn = false;
-              }
-            }
+            if (ngbs[1] * ngbs[5] * ngbs[7] != 0) // phase 2
+              goOn = false;
+
+            if (!goOn)
+              continue;
+
             // --------------------------------------------------
             // All conditions verified, remove the point
             // --------------------------------------------------
-            if (goOn) {
-              *modifiedPix = 0;
-              ptsDeleted2  = true;
-              //			    std::cout<<".......DELETE2 ("<<x<<","<<y<<")\n";
-            }
+            *modifiedPix = 0;
+            ptsDeleted2  = true;
+            // std::cout << ".......DELETE2 (" << x << "," << y << ")\n";
           } // * curPix != 0
         }   // for x
       }     // for y
