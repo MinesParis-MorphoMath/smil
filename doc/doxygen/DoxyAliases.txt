@@ -125,8 +125,8 @@ ALIASES += Smil="<b>Smil</b>"
 
 ALIASES += smilexample{1}="<b>Example</b>   @include \1 "
 ALIASES += smilexample{2}="<b>Example : \1</b>   @include \2 "
-#ALIASES += smilexample{2}="<b>Example</b>   @include \1 @include \2"
-#ALIASES += smilexample{3}="<b>Example</b>   @include \1 @include \2 @include \3"
+#ALIASES += smilexample{2}="<b>Example</b>  @include \1 @include \2"
+#ALIASES += smilexample{3}="<b>Example</b>  @include \1 @include \2 @include \3"
 
 ALIASES += smilcode{1}="@par Example { }  @n @include \1 "
 
@@ -141,23 +141,25 @@ ALIASES += download_link{1}="<a href=\download_web_root/\1>\1</a>"
 ########################################################
 
 ALIASES += begin_dynsection{2}=" \
-\htmlonly \
-<script src=\"dynsections.js\" type=\"text/javascript\"></script> \
-<div id=\"\2\" class=\"dynheader closed\" style=\"cursor:pointer;\" onclick=\"return toggleVisibility(this)\"> \
-  <img id=\"\2-trigger\" alt=\"+\" src=\"closed.png\"> \
-  \1 \
-</div> \
-<div id=\"\2-summary\" class=\"dynsummary\" style=\"display: none;\"> </div> \
-<div id=\"\2-content\" class=\"dyncontent\" style=\"display: none;\"> \
-\endhtmlonly"
+  \htmlonly \
+  <script src=\"dynsections.js\" type=\"text/javascript\"></script> \
+  <div id=\"\2\" class=\"dynheader closed\" \
+    style=\"cursor:pointer;\" \
+    onclick=\"return toggleVisibility(this)\"> \
+    <img id=\"\2-trigger\" alt=\"+\" src=\"closed.png\"> \
+    \1 \
+  </div> \
+  <div id=\"\2-summary\" class=\"dynsummary\" style=\"display: none;\"> </div> \
+  <div id=\"\2-content\" class=\"dyncontent\" style=\"display: none;\"> \
+  \endhtmlonly"
 
 ALIASES += end_dynsection=" \
-\htmlonly \
-</div> \
-\endhtmlonly"
+  \htmlonly \
+  </div> \
+  \endhtmlonly"
 
 
-ALIASES += begintheory{1}=\begin_dynsection{"Theoretical Details:",\1}
+ALIASES += begintheory{1}="\begin_dynsection{\"Theoretical Details:\",\1}"
 ALIASES += endtheory=\end_dynsection
 
 
@@ -166,37 +168,38 @@ ALIASES += endtheory=\end_dynsection
 ########################################################
 
 ALIASES += inplace_safe=" \
-\htmlonly \
-<table border=0> \
-<tr><td><img src=\"inplace_full.png\" /> </td><td>Inplace safe</td></tr> \
-</table> \
-\endhtmlonly"
+  \htmlonly \
+  <table border=0> \
+  <tr><td><img src=\"inplace_full.png\" /> </td><td>Inplace safe</td></tr> \
+  </table> \
+  \endhtmlonly"
 
 ALIASES += inplace_safe{1}=" \
-\htmlonly \
-<table border=0> \
-<tr><td><img src=\"inplace_half.png\" /> </td><td>Inplace safe (with internal creation of \1 image(s))</td></tr> \
-</table> \
-\endhtmlonly"
+  \htmlonly \
+  <table border=0> \
+  <tr><td><img src=\"inplace_half.png\" /> \
+  </td><td>Inplace safe (with internal creation of \1 image(s))</td></tr> \
+  </table> \
+  \endhtmlonly"
 
 ALIASES += inplace_unsafe=" \
-\htmlonly \
-<table border=0> \
-<tr><td><img src=\"inplace_unsafe.png\" /> </td><td>Inplace unsafe</td></tr> \
-</table> \
-\endhtmlonly"
+  \htmlonly \
+  <table border=0> \
+  <tr><td><img src=\"inplace_unsafe.png\" /> </td><td>Inplace unsafe</td></tr> \
+  </table> \
+  \endhtmlonly"
 
 ALIASES += vectorized=" \
-\htmlonly \
-<table border=0> \
-<tr><td><img src=\"vectorized.png\" /> </td><td>Vectorized</td></tr> \
-</table> \
-\endhtmlonly"
+  \htmlonly \
+  <table border=0> \
+  <tr><td><img src=\"vectorized.png\" /> </td><td>Vectorized</td></tr> \
+  </table> \
+  \endhtmlonly"
 
 ALIASES += parallelized=" \
-\htmlonly \
-<table border=0> \
-<tr><td><img src=\"parallelized.png\" /> </td><td>Parallelized</td></tr> \
-</table> \
-\endhtmlonly"
+  \htmlonly \
+  <table border=0> \
+  <tr><td><img src=\"parallelized.png\" /> </td><td>Parallelized</td></tr> \
+  </table> \
+  \endhtmlonly"
 

@@ -79,7 +79,7 @@ namespace smil
   IMAGEFILEHANDLER_TEMP_SPEC(TIFF, UINT16);
   IMAGEFILEHANDLER_TEMP_SPEC(TIFF, RGB);
 
-  /**@}*/
+  /*@}*/
 
 } // namespace smil
 

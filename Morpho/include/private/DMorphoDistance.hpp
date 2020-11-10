@@ -38,6 +38,7 @@
 
 namespace smil
 {
+  /** @{ */
   /** @cond */
   /*
    * @ingroup Morpho
@@ -694,7 +695,7 @@ namespace smil
     for (off_t i = 0; i < maxOffset; ++i) {
       if ((pixelsIn[i] > T1(0)) && (pixelsMask[i] > 0)) {
         imIn.getCoordsFromOffset(i, x0, y0, z0);
-        //	  std::cout<<"PROCESS:"<<x0<<","<<y0<<"\n";
+        //    std::cout<<"PROCESS:"<<x0<<","<<y0<<"\n";
         bool oddLine = se.odd && ((y0) % 2);
 
         for (off_t k = 0; k < sePtsNbr; k++) {
@@ -713,7 +714,7 @@ namespace smil
 
             if ((pixelsIn[p1] == 0) && (pixelsMask[p1] > 0)) {
               hq.push(T2(1), i);
-              //		std::cout<<"INIT push:"<<x0<<","<<y0<<"\n";
+              //    std::cout<<"INIT push:"<<x0<<","<<y0<<"\n";
               pixelsOut[i] = 1;
               break;
             }
@@ -973,6 +974,7 @@ namespace smil
 
     return RES_OK;
   }
+  /** @endcond */
 
   /** @cond */
   /*

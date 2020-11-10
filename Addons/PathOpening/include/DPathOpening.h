@@ -10,7 +10,7 @@
  * @{
  */
 
-/* @} */
+/** @} */
 
 // by Andres Serna
 #include "DMorphoPathOpening.h"

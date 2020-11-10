@@ -131,7 +131,7 @@ namespace smil
           while (iy < 0)
             iy += n;
           iy = iy % n;
-          indx_pad[ix] = indx[iy];          
+          indx_pad[ix] = indx[iy];
         }
       }
 
@@ -685,7 +685,6 @@ namespace smil
     return res;
   }
 
-  /** @} */
 
 } // namespace smil
 

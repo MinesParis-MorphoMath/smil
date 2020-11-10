@@ -150,10 +150,10 @@ namespace smil
   RES_T distV0(const Image<T> &imIn, Image<T> &imOut,
                const StrElt &se = DEFAULT_SE);
   /** @endcond */
+
+  /** @}*/
 } // namespace smil
 
 #include "private/DMorphoDistance.hpp"
-
-/** @}*/
 
 #endif // _DMORPHO_DISTANCE_H

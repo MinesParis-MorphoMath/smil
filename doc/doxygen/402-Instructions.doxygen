@@ -38,8 +38,7 @@
  * was being debugged/validated);
  *  - incoherence over time : not doing the same thing the same way at different
  * moments.
-
-
+ *
  * @section format_section_2 Code Formatting
  *
  * Code formatting isn't just an aesthetic issue. An homogeneous and clear
@@ -180,5 +179,5 @@
  * @endcode
  *
  * @tableofcontents
- * \n
+ * 
  */

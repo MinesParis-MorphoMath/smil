@@ -206,8 +206,8 @@ TEMPLATE_WRAP_FUNC(skiz);
 TEMPLATE_WRAP_FUNC(pruneSkiz);
 TEMPLATE_WRAP_FUNC(skeleton);
 TEMPLATE_WRAP_FUNC_2T_CROSS(extinctionValues);
-TEMPLATE_WRAP_FUNC(zhangSkeleton);
-TEMPLATE_WRAP_FUNC(zhangImprovedSkeleton);
+// TEMPLATE_WRAP_FUNC(zhangSkeleton);
+//  TEMPLATE_WRAP_FUNC(zhangImprovedSkeleton);
 
 %include "Morpho/include/private/DMorphoMaxTree.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(ultimateOpen);

@@ -1,6 +1,6 @@
 /*
  * defgroup Addons  Addons
- */ 
+ */
 
 /**
  * @ingroup Addons
@@ -45,6 +45,9 @@
  * @ingroup Addons
  *
  * @defgroup AddonGraphCut                Graph Geo Cuts
+ * @ingroup Addons
+ *
+ * @defgroup AddonZhangSkel               Skeletons (Zhang and others)
  * @ingroup Addons
  *
  * @defgroup AddonMorphM                  MorphM Image Interface
