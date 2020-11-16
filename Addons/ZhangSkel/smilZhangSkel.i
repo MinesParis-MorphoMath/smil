@@ -14,4 +14,4 @@ SMIL_MODULE(smilZhangSkel)
 
 TEMPLATE_WRAP_FUNC(zhangSkeleton);
 TEMPLATE_WRAP_FUNC(zhangThinning);
-TEMPLATE_WRAP_FUNC(zhangSkeletonVarious);
+TEMPLATE_WRAP_FUNC(zhangDerivedSkeleton);

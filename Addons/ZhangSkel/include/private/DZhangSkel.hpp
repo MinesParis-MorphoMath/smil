@@ -557,8 +557,15 @@ namespace smil
     void _init()
     {
       nbOff.resize(8);
-
-      // zhang Org
+      /*
+       * Neighbor numbering
+       *
+       * OUR DEF      ZHANG PAPER
+       * 0  1  2  ->  9  2  3
+       * 7     3  ->  8  1  4
+       * 6  5  4  ->  7  6  5
+       *
+       */
       nbOff[0] = {-1, -1, 0};
       nbOff[1] = {0, -1, 0};
       nbOff[2] = {1, -1, 0};
@@ -581,8 +588,21 @@ namespace smil
       maxV = maxVal(im);
     }
 
-    inline void getNeighborhood(Image<T> &im, off_t x, off_t y,
-                                vector<T> &nghbs, int &Xr, int &Bp)
+    T getNeighborValue(T *buf, off_t offset, off_t x, off_t y, IntPoint &nbg)
+    {
+      if (nbg.x < 0 && x == 0)
+        return 0;
+      if (nbg.x > 0 && x == width - 1)
+        return 0;
+      if (nbg.y < 0 && y == 0)
+        return 0;
+      if (nbg.y > 0 && y == height - 1)
+        return 0;
+      return buf[offset + nbg.x + nbg.y * width];
+    }
+
+    void getNeighborhood(Image<T> &im, off_t x, off_t y,
+                                T nghbs[], int &Xr, int &Bp)
     {
       Xr = 0;
       Bp = 0;
@@ -592,11 +612,7 @@ namespace smil
       off_t pixOffset = x + y * width;
 
       for (auto i = 0; i < 8; i++) {
-        nghbs[i] = minV;
-        if (im.isCoordsInImage(x + nbOff[i].x, y + nbOff[i].y, 0)) {
-          off_t nbOffset = pixOffset + nbOff[i].x + nbOff[i].y * width;
-          nghbs[i]       = buf[nbOffset];
-        }
+        nghbs[i] = getNeighborValue(buf, pixOffset, x, y, nbOff[i]);
         if (nghbs[i] != minV)
           Bp++;
 
@@ -631,11 +647,6 @@ namespace smil
       Image<T> imTmp(imIn, true);
       Image<T> imMod(imIn);
 
-      fill(imTmp, ImDtTypes<T>::min());
-      fill(imMod, ImDtTypes<T>::min());
-
-      copy(imIn, imTmp);
-
       /* P1 to P8 - in this order
        *
        * P4 P3 P2      P0 P1 P2
@@ -650,7 +661,6 @@ namespace smil
 
       /* P R E - T H I N N I N G */
       copy(imTmp, imMod);
-#if 0
       for (off_t y = 0; y < height; y++) {
         for (off_t x = 0; x < width; x++) {
           int Bodd = 0;
@@ -672,7 +682,6 @@ namespace smil
         }
       }
       copy(imMod, imTmp);
-#endif
 
       /* M A I N     L O O P */
       int  iteration = 0;
@@ -698,11 +707,12 @@ namespace smil
 #pragma omp for
 #endif // USE_OPEN_MP
           for (off_t x = 0; x < width; x++) {
-            vector<T> nghbs(8, minV);
             off_t     pixOffset = lineOffset + x;
 
             if (bufTmp[pixOffset] == minV)
               continue;
+
+            T nghbs[8];
             getNeighborhood(imTmp, x, y, nghbs, Xr, Bp);
             if (Bp < 2 || Bp > 6)
               continue;
@@ -733,11 +743,12 @@ namespace smil
 #pragma omp for
 #endif // USE_OPEN_MP
           for (off_t x = 0; x < width; x++) {
-            vector<T> nghbs(8, 0);
             off_t     pixOffset = lineOffset + x;
 
             if (bufTmp[pixOffset] == minV)
               continue;
+
+            T nghbs[8];
             getNeighborhood(imTmp, x, y, nghbs, Xr, Bp);
             if (Bp < 2 || Bp > 6)
               continue;
@@ -768,13 +779,26 @@ namespace smil
   };
   /** @endcond */
 
+  /**
+   * zhangDerivedSkeleton()
+   *
+   * @param[in] imIn : binary input image
+   * @param[out] imOut : output image
+   * @param[in] method : algorithm to use.
+   * - Zhang (default) - @cite zhang_suen_1984
+   * - DongLinHuang - @cite dong_lin_huang_2016
+   */
   template <typename T>
-  RES_T zhangSkeletonVarious(const Image<T> &imIn, Image<T> &imOut, string method = "DongLinHuang")
+  RES_T zhangDerivedSkeleton(const Image<T> &imIn, Image<T> &imOut, string method = "Zhang")
   {
-    ZhangThinning<T> zt;
-    if (method == "DongLinHuang")
+    if (method == "Zhang") {
+        return zhangSkeleton(imIn, imOut);
+    }
+    if (method == "DongLinHuang") {
+        ZhangThinning<T> zt;
         return zt.skDongLinHuang(imIn, imOut);
-
+    }
+    ERR_MSG("Method not implemented : " + method);
     return RES_ERR;
   }
 

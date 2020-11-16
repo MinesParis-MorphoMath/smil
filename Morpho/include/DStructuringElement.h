@@ -106,9 +106,9 @@ namespace smil
      * Class constructor
      *
      * Construct a structuring element with points defined by their indexes.
-     * @param oddSE Specify if we want to use an hexagonal grid (true) or a
+     * @param[in] oddSE : Specify if we want to use an hexagonal grid (true) or a
      * square grid (false)
-     * @param indexList The list of point indexes
+     * @param[in] indexList : The list of point indexes
      *
      * The index values are defined for each grid type as follow:
      * @images{se_indexes}

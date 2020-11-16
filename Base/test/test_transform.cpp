@@ -56,23 +56,8 @@ class Test_Resize : public TestCase
        17,  65, 114, 133, 122, 112, 132, 151, 141, 102,
     };
     */
-    
-    /* new result with new functions - looks better but not the best yet */
-    /*
-    UINT8 vecref[100] = {
-        1,   1,   2,   2,   3,   3,   4,   4,   5,   5,
-        3,   4,   5,   5,   6,  13,  20,  27,  34,  34,
-        5,   6,   8,   9,  10,  23,  36,  49,  63,  63,
-       55,  79, 104,  63,  23,  28,  34,  64,  94,  94,
-      105, 152, 200, 118,  36,  34,  33,  79, 125, 125,
-       55,  83, 111,  96,  80,  65,  49,  87, 124, 124,
-        6,  14,  23,  74, 125,  95,  66,  95, 124, 124,
-       15,  67, 119, 116, 114, 130, 145, 109,  73,  73,
-       25, 120, 215, 159, 104, 164, 225, 124,  23,  23,
-       25, 120, 215, 159, 104, 164, 225, 124,  23,  23,
-    };
-    */
 
+    /* new result with new functions */
     UINT8 vecref[100] = {
         1,   1,   1,   2,   2,   3,   3,   4,   4,   5,
         2,   3,   4,   5,   5,   8,  14,  19,  25,  30,
@@ -92,12 +77,17 @@ class Test_Resize : public TestCase
     resize(im1, 10, 10, im2, "bilinear");
     TEST_ASSERT(im2 == imRef);
     if (!(im2 == imRef)) {
-      cout << "* im1" << endl; 
+      cout << "* im1" << endl;
       im1.printSelf("im1");
-      cout << "* imRef" << endl; 
+      cout << "* imRef" << endl;
       imRef.printSelf("imRef");
-      cout << "* im2" << endl; 
+      cout << "* im2" << endl;
       im2.printSelf("im2");
+
+      Image_UINT8 imDiff(10, 10);
+      diff(im2, imRef, imDiff);
+      cout << "* imDiff" << endl;
+      imDiff.printSelf("imDiff");
     }
   }
 };
@@ -116,25 +106,9 @@ class Test_Resize_Closest : public TestCase
       105, 200,  36,  33, 125,
         6,  23, 125,  66, 124,
        25, 215, 104, 225,  23};
-    
-    /* new result with new functions - looks better but not the best yet */
-    /*
-    UINT8 vecref[100] = {
-        1,   2,   2,   3,   3,   4,   4,   5,   5,   5,
-        5,   8,   8,  10,  10,  36,  36,  63,  63,  63,
-        5,   8,   8,  10,  10,  36,  36,  63,  63,  63,
-      105, 200, 200,  36,  36,  33,  33, 125, 125, 125, 
-      105, 200, 200,  36,  36,  33,  33, 125, 125, 125,
-        6,  23,  23, 125, 125,  66,  66, 124, 124, 124,
-        6,  23,  23, 125, 125,  66,  66, 124, 124, 124,
-       25, 215, 215, 104, 104, 225, 225,  23,  23,  23, 
-       25, 215, 215, 104, 104, 225, 225,  23,  23,  23,
-       25, 215, 215, 104, 104, 225, 225,  23,  23,  23,
-    };
-    */
 
     UINT8 vecref[100] = {
-        1,   1,   2,   2,   3,   3,   4,   4,   5,   5, 
+        1,   1,   2,   2,   3,   3,   4,   4,   5,   5,
         1,   1,   2,   2,   3,   3,   4,   4,   5,   5,
         5,   5,   8,   8,  10,  10,  36,  36,  63,  63,
         5,   5,   8,   8,  10,  10,  36,  36,  63,  63,
@@ -151,11 +125,11 @@ class Test_Resize_Closest : public TestCase
     resize(im1, 10, 10, im2, "closest");
     TEST_ASSERT(im2 == imRef);
     if (!(im2 == imRef)) {
-      cout << "* im1" << endl; 
+      cout << "* im1" << endl;
       im1.printSelf("im1");
-      cout << "* imRef" << endl; 
+      cout << "* imRef" << endl;
       imRef.printSelf("imRef");
-      cout << "* im2" << endl; 
+      cout << "* im2" << endl;
       im2.printSelf("im2");
     }
   }
@@ -190,24 +164,9 @@ class Test_Scale : public TestCase
        17,  65, 114, 133, 122, 112, 132, 151, 141, 102,
     };
     */
-    
-    /* new result with new functions - looks better but not the best yet */
-    /*
-    UINT8 vecref[100] = { 
-        1,   1,   2,   2,   3,   3,   4,   4,   5,   5,
-        3,   4,   5,   5,   6,  13,  20,  27,  34,  34,
-        5,   6,   8,   9,  10,  23,  36,  49,  63,  63,
-       55,  79, 104,  63,  23,  28,  34,  64,  94,  94,
-      105, 152, 200, 118,  36,  34,  33,  79, 125, 125,
-       55,  83, 111,  96,  80,  65,  49,  87, 124, 124,
-        6,  14,  23,  74, 125,  95,  66,  95, 124, 124,
-       15,  67, 119, 116, 114, 130, 145, 109,  73,  73,
-       25, 120, 215, 159, 104, 164, 225, 124,  23,  23,
-       25, 120, 215, 159, 104, 164, 225, 124,  23,  23,
-    };
-    */
 
-    UINT8 vecref[100] = { 
+    /* new result with new functions */
+    UINT8 vecref[100] = {
         1,   1,   1,   2,   2,   3,   3,   4,   4,   5,
         2,   3,   4,   5,   5,   8,  14,  19,  25,  30,
         4,   5,   7,   7,   8,  14,  24,  35,  45,  56,
@@ -226,12 +185,17 @@ class Test_Scale : public TestCase
     scale(im1, 2, 2, im2);
     TEST_ASSERT(im2 == imRef);
     if (!(im2 == imRef)) {
-      cout << "* im1" << endl; 
+      cout << "* im1" << endl;
       im1.printSelf("im1");
-      cout << "* imRef" << endl; 
+      cout << "* imRef" << endl;
       imRef.printSelf("imRef");
-      cout << "* im2" << endl; 
+      cout << "* im2" << endl;
       im2.printSelf("im2");
+
+      Image_UINT8 imDiff(10, 10);
+      diff(im2, imRef, imDiff);
+      cout << "* imDiff" << endl;
+      imDiff.printSelf("imDiff");
     }
   }
 };
@@ -277,9 +241,9 @@ class Test_Rotate090 : public TestCase
 
     TEST_ASSERT(imOut == imRef);
     if (retVal != RES_OK) {
-      cout << "* imRef" << endl; 
+      cout << "* imRef" << endl;
       imRef.printSelf("imRef");
-      cout << "* imOut" << endl; 
+      cout << "* imOut" << endl;
       imOut.printSelf("imOut");
     }
   }
@@ -326,9 +290,9 @@ class Test_Rotate180 : public TestCase
 
     TEST_ASSERT(imOut == imRef);
     if (retVal != RES_OK) {
-      cout << "* imRef" << endl; 
+      cout << "* imRef" << endl;
       imRef.printSelf("imRef");
-      cout << "* imOut" << endl; 
+      cout << "* imOut" << endl;
       imOut.printSelf("imOut");
     }
   }
@@ -375,9 +339,9 @@ class Test_Rotate270 : public TestCase
 
     TEST_ASSERT(imOut == imRef);
     if (retVal != RES_OK) {
-      cout << "* imRef" << endl; 
+      cout << "* imRef" << endl;
       imRef.printSelf("imRef");
-      cout << "* imOut" << endl; 
+      cout << "* imOut" << endl;
       imOut.printSelf("imOut");
     }
   }
@@ -424,9 +388,9 @@ class Test_Rotate360 : public TestCase
 
     TEST_ASSERT(imOut == imRef);
     if (retVal != RES_OK) {
-      cout << "* imRef" << endl; 
+      cout << "* imRef" << endl;
       imRef.printSelf("imRef");
-      cout << "* imOut" << endl; 
+      cout << "* imOut" << endl;
       imOut.printSelf("imOut");
     }
   }
@@ -474,9 +438,9 @@ class Test_HorizFlip : public TestCase
 
     TEST_ASSERT(imOut == imRef);
     if (retVal != RES_OK) {
-      cout << "* imRef" << endl; 
+      cout << "* imRef" << endl;
       imRef.printSelf("imRef");
-      cout << "* imOut" << endl; 
+      cout << "* imOut" << endl;
       imOut.printSelf("imOut");
     }
   }
@@ -523,9 +487,9 @@ class Test_VertFlip : public TestCase
 
     TEST_ASSERT(imOut == imRef);
     if (retVal != RES_OK) {
-      cout << "* imRef" << endl; 
+      cout << "* imRef" << endl;
       imRef.printSelf("imRef");
-      cout << "* imOut" << endl; 
+      cout << "* imOut" << endl;
       imOut.printSelf("imOut");
     }
   }
@@ -541,11 +505,11 @@ int main(void)
 
   ADD_TEST(ts, Test_Rotate090);
   ADD_TEST(ts, Test_Rotate180);
-  ADD_TEST(ts, Test_Rotate270);  
-  ADD_TEST(ts, Test_Rotate360);  
+  ADD_TEST(ts, Test_Rotate270);
+  ADD_TEST(ts, Test_Rotate360);
 
-  ADD_TEST(ts, Test_HorizFlip);  
-  ADD_TEST(ts, Test_VertFlip);  
+  ADD_TEST(ts, Test_HorizFlip);
+  ADD_TEST(ts, Test_VertFlip);
 
   return ts.run();
 }

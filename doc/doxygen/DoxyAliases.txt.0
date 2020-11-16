@@ -1,0 +1,205 @@
+# Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution.
+#     * Neither the name of Matthieu FAESSEL, or ARMINES nor the
+#       names of its contributors may be used to endorse or promote products
+#       derived from this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' AND ANY
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE LIABLE FOR ANY
+# DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+# LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+# ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+# SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+########################################################
+# WEB PAGE
+########################################################
+
+#######  Paths  #######
+
+ALIASES += web_root=http://smil.cmm.mines-paristech.fr
+ALIASES += home_web_root=\web_root
+ALIASES += download_web_root=\home_web_root/releases
+
+# Images
+ALIASES += images_root=\home_web_root/images
+
+# Demos
+ALIASES += demos_root=\home_web_root/demos
+
+
+########################################################
+# MISC
+########################################################
+
+# Images
+ALIASES += images{1}="\image html \1.png \n \image latex \1.eps"
+ALIASES += images{2}="\image html \1.png \2 \n \image latex \1.eps \2"
+
+ALIASES += devdoc="\if DOXYGEN_DEVEL_DOC"
+ALIASES += enddevdoc="\endif"
+
+
+ALIASES += soillebook="\cite Soille_2003 P. Soille, Morphological %Image Analysis, 2003"
+ALIASES += soillebook{1}="\cite Soille_2003 P. Soille, Morphological %Image Analysis, 2003, \1"
+
+ALIASES += serra82book="\cite Serra_1982 Jean Serra, %Image Analysis and Mathematical Morphology - Vol. 1, 1982"
+ALIASES += serra82book{1}="\cite Serra_1982 Jean Serra, %Image Analysis and Mathematical Morphology - Vol. 1, 1982, \1"
+
+ALIASES += serra88book="\cite Serra_1988 Jean Serra, %Image Analysis and Mathematical Morphology - Vol. 2, 1988"
+ALIASES += serra88book{1}="\cite Serra_1988 Jean Serra, %Image Analysis and Mathematical Morphology - Vol. 2, 1988, \1"
+
+ALIASES += wikipedia{2}="<a href=https://en.wikipedia.org/wiki/\1>\2</a>"
+
+ALIASES += txtbold{1}="<b>\1</b>"
+ALIASES += txttype{1}="<code>\1</code>"
+ALIASES += txtitalic{1}="<i>\1</i>"
+
+ALIASES += Smil="<b>Smil</b>"
+
+########################################################
+# JAVA WEB START
+########################################################
+
+# JOE ALIASES += ws_web_root=\web_root/ws
+
+# Main php 
+# JOE ALIASES += ws_main=\ws_web_root/launch.php
+# JOE ALIASES += ws_main_link{1}="<a href=\ws_main>\1</a>"
+
+# Open
+# JOE ALIASES += ws_open{1}=\ws_main?open&amp;\1
+# JOE ALIASES += ws_open_link{1}="<a href=\ws_open{\1}>\1</a>"
+# JOE ALIASES += ws_open_link{2}="<a href=\ws_open{\1}>\2</a>"
+
+# JOE ALIASES += ws_open_image{1}=\ws_main?open&amp;\images_root/\1
+# JOE ALIASES += ws_open_image_link{1}="<a href=\ws_open_image{\1}>\1</a>"
+# JOE ALIASES += ws_open_image_link{2}="<a href=\ws_open_image{\1}>\2</a>"
+
+# Exec
+# JOE ALIASES += ws_exec{1}=\ws_main?exec&amp;\1
+# JOE ALIASES += ws_exec_link{1}="<a href=\ws_exec{\1}>\1</a>"
+# JOE ALIASES += ws_exec_link{2}="<a href=\ws_exec{\1}>\2</a>"
+
+
+# Demos
+# JOE ALIASES += ws_exec_demo{1}=\ws_main?exec&amp;\demos_root/\1
+# JOE ALIASES += ws_exec_demo_link{1}="\smil_js{createWSLaunchButton(\" \ws_exec_demo{\1} \"); }"
+
+# JOE ALIASES += ws_exec_demo_button{1}=" \
+#\htmlonly \
+#    <script src=\"https://www.java.com/js/deployJava.js\"></script> \
+#    <script> \n \
+#      url = \"\ws_exec_demo{\1}\"; \
+#      deployJava.createWebStartLaunchButton(url, '1.6.0'); \
+#    </script> \
+#\endhtmlonly "
+
+
+
+# JOE ALIASES += ws_exec_demo_link{2}="<a href=\ws_exec_demo{\1}>\2</a>"
+
+
+# JOE ALIASES += ws_demo{1}="\xrefitem ws_demos \"Run demo\" \"Demos\" \ws_exec_demo_link{\1}"
+
+## JOE ALIASES += demo{1}="<a href=\ws_exec_demo{\1}><b>Execute script online</b></a>"
+## JOE ALIASES += demo{1}="\xrefitem examples \"Examples\" \"Examples\"  \ref \1 \"\1\" \ws_exec_demo_link{\1,execute online}"
+# JOE ALIASES += demo{1}="\xrefitem examples \"Examples\" \"Examples\" \ref \1 \"\1\" \ws_exec_demo_button{\1}"
+
+########################################################
+# EXAMPLES
+########################################################
+
+ALIASES += smilexample{1}="<b>Example</b>   @include \1 "
+ALIASES += smilexample{2}="<b>Example : \1</b>   @include \2 "
+#ALIASES += smilexample{2}="<b>Example</b>  @include \1 @include \2"
+#ALIASES += smilexample{3}="<b>Example</b>  @include \1 @include \2 @include \3"
+
+ALIASES += smilcode{1}="@par Example { }  @n @include \1 "
+
+########################################################
+# DOWNLOADS
+########################################################
+
+ALIASES += download_link{1}="<a href=\download_web_root/\1>\1</a>"
+
+########################################################
+# DYNAMIC SECTIONS
+########################################################
+
+ALIASES += begin_dynsection{2}=" \
+  \htmlonly \
+  <script src=\"dynsections.js\" type=\"text/javascript\"></script> \
+  <div id=\"\2\" class=\"dynheader closed\" \
+    style=\"cursor:pointer;\" \
+    onclick=\"return toggleVisibility(this)\"> \
+    <img id=\"\2-trigger\" alt=\"+\" src=\"closed.png\"> \
+    \1 \
+  </div> \
+  <div id=\"\2-summary\" class=\"dynsummary\" style=\"display: none;\"> </div> \
+  <div id=\"\2-content\" class=\"dyncontent\" style=\"display: none;\"> \
+  \endhtmlonly"
+
+ALIASES += end_dynsection=" \
+  \htmlonly \
+  </div> \
+  \endhtmlonly"
+
+
+ALIASES += begintheory{1}="\begin_dynsection{\"Theoretical Details:\",\1}"
+ALIASES += endtheory=\end_dynsection
+
+
+########################################################
+# FUNCTIONS - SPECIAL
+########################################################
+
+ALIASES += inplace_safe=" \
+  \htmlonly \
+  <table border=0> \
+  <tr><td><img src=\"inplace_full.png\" /> </td><td>Inplace safe</td></tr> \
+  </table> \
+  \endhtmlonly"
+
+ALIASES += inplace_safe{1}=" \
+  \htmlonly \
+  <table border=0> \
+  <tr><td><img src=\"inplace_half.png\" /> \
+  </td><td>Inplace safe (with internal creation of \1 image(s))</td></tr> \
+  </table> \
+  \endhtmlonly"
+
+ALIASES += inplace_unsafe=" \
+  \htmlonly \
+  <table border=0> \
+  <tr><td><img src=\"inplace_unsafe.png\" /> </td><td>Inplace unsafe</td></tr> \
+  </table> \
+  \endhtmlonly"
+
+ALIASES += vectorized=" \
+  \htmlonly \
+  <table border=0> \
+  <tr><td><img src=\"vectorized.png\" /> </td><td>Vectorized</td></tr> \
+  </table> \
+  \endhtmlonly"
+
+ALIASES += parallelized=" \
+  \htmlonly \
+  <table border=0> \
+  <tr><td><img src=\"parallelized.png\" /> </td><td>Parallelized</td></tr> \
+  </table> \
+  \endhtmlonly"
+

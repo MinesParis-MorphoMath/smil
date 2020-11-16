@@ -9,7 +9,8 @@ Developed using templates, Smil can be used with any standard types (uint8, uint
 
 Smil is free software, available under a BSD-style open source license.
 
-See the licence page for more information. 
+See the licence page for more information.
 
 Full documentation at http://smil.cmm.mines-paristech.fr
+
 

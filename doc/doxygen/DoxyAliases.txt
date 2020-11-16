@@ -1,6 +1,6 @@
 # Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #
@@ -46,8 +46,11 @@ ALIASES += demos_root=\home_web_root/demos
 ########################################################
 
 # Images
-ALIASES += images{1}="\image html \1.png \n \image latex \1.eps"
-ALIASES += images{2}="\image html \1.png \2 \n \image latex \1.eps \2"
+#ALIASES += images{1}="\image html \1.png \\n \image latex \1.eps"
+#ALIASES += images{2}="\image html \1.png \2 \\n \image latex \1.eps \2"
+
+ALIASES += images{1}="\image html \1.png"
+ALIASES += images{2}="\image html \1.png \2.png"
 
 ALIASES += devdoc="\if DOXYGEN_DEVEL_DOC"
 ALIASES += enddevdoc="\endif"
@@ -69,55 +72,6 @@ ALIASES += txttype{1}="<code>\1</code>"
 ALIASES += txtitalic{1}="<i>\1</i>"
 
 ALIASES += Smil="<b>Smil</b>"
-
-########################################################
-# JAVA WEB START
-########################################################
-
-# JOE ALIASES += ws_web_root=\web_root/ws
-
-# Main php 
-# JOE ALIASES += ws_main=\ws_web_root/launch.php
-# JOE ALIASES += ws_main_link{1}="<a href=\ws_main>\1</a>"
-
-# Open
-# JOE ALIASES += ws_open{1}=\ws_main?open&amp;\1
-# JOE ALIASES += ws_open_link{1}="<a href=\ws_open{\1}>\1</a>"
-# JOE ALIASES += ws_open_link{2}="<a href=\ws_open{\1}>\2</a>"
-
-# JOE ALIASES += ws_open_image{1}=\ws_main?open&amp;\images_root/\1
-# JOE ALIASES += ws_open_image_link{1}="<a href=\ws_open_image{\1}>\1</a>"
-# JOE ALIASES += ws_open_image_link{2}="<a href=\ws_open_image{\1}>\2</a>"
-
-# Exec
-# JOE ALIASES += ws_exec{1}=\ws_main?exec&amp;\1
-# JOE ALIASES += ws_exec_link{1}="<a href=\ws_exec{\1}>\1</a>"
-# JOE ALIASES += ws_exec_link{2}="<a href=\ws_exec{\1}>\2</a>"
-
-
-# Demos
-# JOE ALIASES += ws_exec_demo{1}=\ws_main?exec&amp;\demos_root/\1
-# JOE ALIASES += ws_exec_demo_link{1}="\smil_js{createWSLaunchButton(\" \ws_exec_demo{\1} \"); }"
-
-# JOE ALIASES += ws_exec_demo_button{1}=" \
-#\htmlonly \
-#    <script src=\"https://www.java.com/js/deployJava.js\"></script> \
-#    <script> \n \
-#      url = \"\ws_exec_demo{\1}\"; \
-#      deployJava.createWebStartLaunchButton(url, '1.6.0'); \
-#    </script> \
-#\endhtmlonly "
-
-
-
-# JOE ALIASES += ws_exec_demo_link{2}="<a href=\ws_exec_demo{\1}>\2</a>"
-
-
-# JOE ALIASES += ws_demo{1}="\xrefitem ws_demos \"Run demo\" \"Demos\" \ws_exec_demo_link{\1}"
-
-## JOE ALIASES += demo{1}="<a href=\ws_exec_demo{\1}><b>Execute script online</b></a>"
-## JOE ALIASES += demo{1}="\xrefitem examples \"Examples\" \"Examples\"  \ref \1 \"\1\" \ws_exec_demo_link{\1,execute online}"
-# JOE ALIASES += demo{1}="\xrefitem examples \"Examples\" \"Examples\" \ref \1 \"\1\" \ws_exec_demo_button{\1}"
 
 ########################################################
 # EXAMPLES
