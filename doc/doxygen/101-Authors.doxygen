@@ -1,11 +1,13 @@
 /**
+ *
  * @page p10_authors_page Smil Authors
  *
- * @section authors_section Authors
+ * @section  people People
+ *
  * @subsection section_author First author 
  *   - Matthieu Faessel (matthieu dot faessel at mines-paristech dot fr)
  * 
- * @subsection section_maintainer Maintainer
+ * @subsection section_maintainer Maintainer and Current Author
  *   - José-Marcio Martins da Cruz (jose-marcio dot martins at mines-paristech dot fr)
  *
  * @subsection section_contrib Contributors (alphabetical order)
@@ -22,7 +24,7 @@
  * Copyright (c) 2017-2020, Centre de Morphologie Mathématique - Mines-ParisTech. \n
  * All rights reserved (see @ref p20_licence_page "licence").
  * 
- * 
+ * @tableofcontents
  */
 
 

@@ -1,0 +1,20 @@
+
+/**
+ * @page p860 Python NumPy interface
+ *
+ * <a href="http://numpy.scipy.org/" target="_blank"><b>NumPy</b></a> is a
+ * package for scientific computing with Python. Smil allows to
+ * - access, with @b NumPy functions, the @b Smil image pixels with the method
+ *   @b Image::getNumArray().
+ *   - This is @b not a copy of the data but a real access to the image pixels
+ *     via @b NumPy.
+ * - create an @b Smil image from a @b NumPy array with the method @b
+ *   Image::fromNumArray(arr).
+ *
+ * @note This function is wrapped only in python.
+ *
+ * Here is an example of python script:
+ *
+ * @includelineno numpy_array.py
+ *
+ */

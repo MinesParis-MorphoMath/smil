@@ -26,7 +26,7 @@ namespace smil
    * - Guillaume Thibault - original code
    * - José-Marcio Martins da Cruz - port to Smil
    *
-   * @todo
+   * @par ToDo
    * - convert data types to usual @Smil data types;
    * - can't handle images bigger than 2 GBytes;
    * - loop optimisations to do;

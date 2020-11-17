@@ -1,15 +1,21 @@
 
+OBS : 'X' equals OK
+
 * Documentation
 
 * Check some wrong doxygen tags (everywhere in source code)
   Work in progress...
+  402-Instructions.doxygen:184: warning: Reached end of file 
+  	while still inside a (nested) comment. Nesting level 1 
+	(probable line reference: 1)
 
 * maxtree (use histogram to allocate right structures size)
+  or C++ map
 
 * some functions work only on 2D images (e.g., areaOpen, ...)
   voir avec Bea
 
-* it seems that there are a memory leak problem at watershed function
+OK -  it seems that there are a memory leak problem at watershed function
   Saw in huge images : 2000 x 2000 x 2000 (8 Gb)
   OK - size of iterators variables enough just for image size smaller
   than 32 bits. 
@@ -19,7 +25,7 @@
 * Dans CMAKE/CPack
   * ajouter possibles dependances par packet
 
-* Correct tests :
+OK -  Correct tests :
   1 - test_global (Failed)
       Segmentation fault : sometimes
   2 - test_globalMB (Failed)
@@ -27,7 +33,7 @@
   8 - Base_test_draw (Failed)
       font path problem
 
-* StochasticWS
+OK -  StochasticWS
   Needs   -std=c++11
     => OK
 
@@ -45,22 +51,22 @@
   Lacking doxygen documentation in the end of file
   Ask Petr what to do with this stuff...
 
-* Put Advanced and Addons in a namespace other than smilPython
+OK -  Put Advanced and Addons in a namespace other than smilPython
   => OK
 
-* Dans les tests :
-  * Morpho/include/private/DMorphoDistance.hpp
-    * distEuclidean => OK
-    * distV0 => OK
+OK -  Dans les tests :
+  OK - Morpho/include/private/DMorphoDistance.hpp
+    OK - distEuclidean => OK
+    OK - distV0 => OK
   Renamed !!! => OK
 
-* In Advanced : GLSZM
+OK -  In Advanced : GLSZM
   * Shall change int to long to support images bigger than 2 Gpixels 
     (common in 3D images)
 
 * Add Smoothing in Deriche filter
 
-* Verify on FastBilateralFilter 
+OK -  Verify on FastBilateralFilter 
   * ImFastBilateralFilterRGB - ported and removed
 
 * Tests on everything
@@ -83,12 +89,12 @@
 
 * From scikit-image 
   * measures : 
-    * entropy => OK
-    * image moments :
+   * entropy => OK
+    OK -  image moments :
       centered moments => OK
       with image values or not => OK
     * histogram on blobs
-    * entropy on blobs => OK
+    OK -  entropy on blobs => OK
   * filters
     * 2D -> 3D
     * median
@@ -109,4 +115,7 @@
 * Doc doxygen dev : @devdoc and @enddevdoc
 
 * Rotation of Structured elements (works only on 2D) - DCompositeSE.cpp
+
+* Check why test_transform fails on nestor and taurus.
+  Probably conversion double -> T
 

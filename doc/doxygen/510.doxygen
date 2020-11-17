@@ -1,0 +1,49 @@
+/**
+ * @page p510 Programming Practices
+ *
+ *
+ * @section s510_01 Generalities
+ *
+ * This is about good programming practices : what to do and not in your
+ * programs. Suggestions about reliability, security, ...
+ *
+ * Writing programming guidelines specific to a project is a long, tedious and
+ * and useless task while there are very good references on the subject.
+ *
+ * Take the time, even slowly, to read and understand some references...
+ *
+ *  - <a href="http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines">
+ * C++ Core Guidelines</a> by Bjarne Stroustrup and Herb Sutter;
+ *  - <a href="http://www.codingstandard.com/">PRQA - High Integrity C++
+ * Coding Standard Version 4.0</a>
+ *  - <a href="https://llvm.org/docs/CodingStandards.html">LLVM Coding Style</a>
+ *
+ *
+ *
+ * @subsection s510_01_01 Common practices to avoid :
+ *
+ * Some common mistakes or bad practices :
+ *  - @b warnings are acceptable just while still debugging. Code in the master
+ * branch shall be free of warnings (same as errors). @b warnings in the
+ * released code is considered the same way as an @b error;
+ *  - code doing different things, even if related, shall be break down in
+ * different source files (modular programming);
+ *  - avoid duplication of source code. If you have the same piece of code doing
+ *    the same thing in different places of the program, create a function;
+ *  - as in french language, words/symbols/tokens/operators shall be separated
+ * by spaces (<code>clang-format</code> may solve this...);
+ *  - meaningless (or wrong meaning) variable names;
+ *  - hard coding (using something like <b><code>"# define SIZE 256"</code></b>)
+ * for parameters which can change with time or limit the usability of the
+ * program;
+ *  - lack of out of bounds checking;
+ *  - adequate error and exception handling;
+ *  - forgetting to remove "dead code" (some lines useful only while the code
+ * was being debugged/validated);
+ *  - incoherence over time : not doing the same thing the same way at different
+ * moments (it's hard on the long run, we know...);
+ *  - test your code as exhausstively as possible (it's hard, we know).
+ *
+ *
+ * @tableofcontents
+ */

@@ -1,0 +1,16 @@
+/**
+ * @page p500 C++ Programing for (and with) Smil
+ *
+ * Page composed of :
+ *
+ * - @subpage p510 "Programming Practices"
+ * - @subpage p520 "Programming Style"
+ * - @subpage p530 "Naming Conventions"
+ * - @subpage p540 "Documentation (Doxygen)"
+ * - @subpage p550 "Data Types"
+ * - @subpage p560 "Smil Tips and Tricks"
+ *
+ * @section s500_01 Generalities
+ *
+ * @tableofcontents
+ */

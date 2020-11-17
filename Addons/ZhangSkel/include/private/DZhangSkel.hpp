@@ -43,14 +43,26 @@ namespace smil
    * @addtogroup AddonZhangSkel
    *
    * @details
-   * @b Skeletons result from sequential iterations of thinnings with specific
-   * composite SEs that generate a medial axis of the input set. This medial
-   * axis are called skeleton. It consists of a compact representation which
-   * preserves only those points of a set whose minimum distance to the
-   * boundary of the set reaches at least two distinct boundary points.
+   * @b Skeletons result from sequential iterations of thinnings that generate
+   * a medial axis of the input set. This medial axis are called skeleton.
+   *
+   * Algorithms in this Addon don't make use of mathematical morphology
+   * operations but, most of the time, on empirical rules to iteratively
+   * removal of pixels based on their @txtitalic{connectivity} or
+   * @txtitalic{neighborhood} till idempotency.
    *
    * @see
    *  - @soillebook{Chap. 5}
+   *  - @txtbold{Some related papers} :
+   *    @cite blum1967transformation,
+   *    @cite zhang_suen_1984,
+   *    @cite Chen_Hsu_1988_99,
+   *    @cite Huang_Wan_Liu_2003,
+   *    @cite khanyile_comparative_2011,
+   *    @cite dong_lin_huang_2016 or
+   *    @cite jain2017sequential
+   *  - For creating skeletons based on mathematical morphology operators, see
+   * skeleton(), skiz()
    *
    * @{
    */
@@ -789,7 +801,7 @@ namespace smil
    * - DongLinHuang - @cite dong_lin_huang_2016
    */
   template <typename T>
-  RES_T zhangDerivedSkeleton(const Image<T> &imIn, Image<T> &imOut, string method = "Zhang")
+  RES_T imageThinning(const Image<T> &imIn, Image<T> &imOut, string method = "Zhang")
   {
     if (method == "Zhang") {
         return zhangSkeleton(imIn, imOut);

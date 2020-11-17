@@ -1,0 +1,48 @@
+/**
+ * @page p520 Programming Style
+ *
+ * @section s520_01 Generalities
+ *
+ * To be done
+ *
+ * @section s520_02 Code Formatting
+ *
+ * Code formatting isn't just an aesthetic issue. An homogeneous and clear
+ * presentation contributes to unambigous and easy understanding.
+ *
+ * The code style is that proposed by <b><code>LLVM</code></b> with some small
+ * enhancements. And the tool is <b><code>clang-format</code></b>.
+ *
+ * Formatting is done simply with the following commands, the first one just
+ * creates a backup copy before formatting, inplace, the original source code :
+ * \n
+ *
+ *     $ cp -p filename filename.bak
+ *     $ clang-format -i -style=file filename
+ *
+ * Obs :
+ *   - no problem if you don't follow this style. It's enough to run the
+ * formatter on the final version of your file, before integrating it to the
+ * master or develop branch;
+ *   - the choosen style has minors differences from <code>LLVM</code> style.
+ *     These differences are set at <code>.clang-format</code> file placed at
+ *     the root of source file tree :
+ * \n
+ *
+ *     AllowShortFunctionsOnASingleLine: false
+ *     BreakBeforeBraces:                Linux
+ *     AlignConsecutiveAssignments:      true
+ *     AlignConsecutiveDeclarations:     true
+ *     NamespaceIndentation:             All
+ *     ReflowComents:                    true
+ *     SortIncludes:                     false
+ *     SortUsingDeclarations:            false
+ *
+ *   - <b><code>clang-format</code></b> packaged as :
+ *     - Ubuntu : <code>clang-format</code>
+ *     - CentOS/RedHat/Fedora : <code>clang</code>
+ *   - <b>clang-format</b> documentation can be found <a
+ * href="https://clang.llvm.org/docs/ClangFormat.html">here</a>
+ *
+ * @tableofcontents
+ */

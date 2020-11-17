@@ -1,0 +1,55 @@
+/**
+ * @page p530 Naming Guidelines
+ *
+ * @section s530_01 Generalities
+ *
+ * @txtbold{Some common rules of thumb} :
+ * - Every name exposed to Smil users shall be @txtbold{meaninfull}.
+ * - Avoid @txtbold{acronyms} or @txtbold{shortcuts}, unless they are fully
+ * known by users out of Smil development group.
+ * - Every name exposed to users shall be directly related to some concept
+ * usually found in textbooks and vice-versa. If this isn't the case, it shall 
+ * be fully explained in the function/class/.../whatever prototype.
+ *
+ *  - Avoid meaningless names. Exceptions may be for some usual loop control
+ * variables : @b x, @b y, @b z, @b i, @b j, @b k;
+ *
+ *
+ * @section s530_02 Naming guidelines
+ *
+ *
+ * @subsection s530_02_01 Functions and Methods
+ *
+ *  - function names are a sequence of words without spaces, with the first
+ *    character of each word in uppercase, except the first one. E.g. :
+ *    @txttype{lambdaLabel}, @txttype{imageResize},
+ *    @txttype{distanceEuclidean}, ...
+ *  - function name length shall be limited to something like 15-20
+ *    characters.
+ *  - The full description of what that function does shall be
+ *    done in the documentation, not in the name of the function.
+ *  - If the function name is too long it can, usually, be shortened.
+ *
+ * @subsection s530_02_02 Macros and defines
+ *  - every character in uppercase. \n
+ *  - Although using macros are discouraged you should always put all
+ *    caracteres in macros and defines in @txtbold{uppercase}
+ *
+ * @subsection s530_02_03 Classes and Structures
+ * To be done
+ *
+ * @subsection s530_02_04 Variables
+ * To be done
+ *
+ * @subsection s530_02_05 Files
+ *    - C++ source filenames begin always with <b>D</b>;
+ *    - File extensions per directory :
+ *      - <b><code>src</code></b> : <code>.cpp</code> - C++ source files
+ *      - <b><code>include</code></b> : <code>.h</code> - C++ headers
+ *      - <b><code>include/private</code></b> : <code>.hpp</code> - C++ headers
+ *
+ *
+ *
+ * @tableofcontents
+ */
+ 
