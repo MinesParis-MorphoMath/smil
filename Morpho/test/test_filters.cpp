@@ -54,9 +54,9 @@ class Test_Mean : public TestCase
       };
       
       
-      Image_UINT8 im1(4,5);
-      Image_UINT8 im2(im1);
-      Image_UINT8 imTruth(im1);
+      Image<UINT8> im1(4,5);
+      Image<UINT8> im2(im1);
+      Image<UINT8> imTruth(im1);
       
       im1 << vec1;
       
@@ -95,9 +95,9 @@ class Test_Median : public TestCase
       };
       
       
-      Image_UINT8 im1(4,5);
-      Image_UINT8 im2(im1);
-      Image_UINT8 imTruth(im1);
+      Image<UINT8> im1(4,5);
+      Image<UINT8> im2(im1);
+      Image<UINT8> imTruth(im1);
       
       im1 << vec1;
       

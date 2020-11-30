@@ -32,7 +32,7 @@ using namespace smil;
 
 #include <emmintrin.h>
 
-void SSE_INT_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
+void SSE_INT_Sup(Image<UINT8> &im1, Image<UINT8> &im2, Image<UINT8> &im3)
 {
   __m128i r0, r1;
   int size   = im1.getWidth();
@@ -64,7 +64,7 @@ void SSE_INT_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
 
 #endif // __SSE__
 
-void SSE_AV_Sup(Image_UINT8 &im1, Image_UINT8 &im2, Image_UINT8 &im3)
+void SSE_AV_Sup(Image<UINT8> &im1, Image<UINT8> &im2, Image<UINT8> &im3)
 {
   int size   = im1.getWidth();
   int nlines = im1.getLineCount();
@@ -94,9 +94,9 @@ void bench_INT_vs_AV()
   int sx = 1024;
   int sy = 1024;
 
-  Image_UINT8 im1(sx, sy);
-  Image_UINT8 im2(im1);
-  Image_UINT8 im3(im1);
+  Image<UINT8> im1(sx, sy);
+  Image<UINT8> im2(im1);
+  Image<UINT8> im3(im1);
 
   double BENCH_NRUNS = 1E4;
 
@@ -116,9 +116,9 @@ void bench_NCores()
   int sx = 1024;
   int sy = 1024;
 
-  Image_UINT8 im1(sx, sy);
-  Image_UINT8 im2(im1);
-  Image_UINT8 im3(im1);
+  Image<UINT8> im1(sx, sy);
+  Image<UINT8> im2(im1);
+  Image<UINT8> im3(im1);
 
   double BENCH_NRUNS = 1E4;
 
@@ -143,9 +143,9 @@ void bench_Size()
   cout << Core::getInstance()->getNumberOfThreads() << " thread(s)" << endl;
 
   for (size_t sx = 100; sx < 1E6; sx *= 2) {
-    Image_UINT8 im1(sx, sy);
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
+    Image<UINT8> im1(sx, sy);
+    Image<UINT8> im2(im1);
+    Image<UINT8> im3(im1);
 
     double BENCH_NRUNS = 1E7 / sx;
 

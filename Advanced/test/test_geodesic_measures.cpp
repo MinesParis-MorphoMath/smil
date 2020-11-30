@@ -39,11 +39,11 @@ class TestDiameter : public TestCase
     char *path;
     
     path = pathTestImage("bw/eutectic.png");
-    Image_UINT8 imIn(path);
-    Image_UINT16 imOut(imIn);
+    Image<UINT8> imIn(path);
+    Image<UINT16> imOut(imIn);
 
     path = pathTestImage("bw/eutectic-diameter.png");
-    Image_UINT16 imTruth(path);
+    Image<UINT16> imTruth(path);
 
     geodesicDiameter(imIn, imOut);
     TEST_ASSERT(imOut == imTruth);
@@ -59,11 +59,11 @@ class TestExtremities : public TestCase
     char *path;
     
     path = pathTestImage("bw/eutectic.png");
-    Image_UINT8 imIn(path);
-    Image_UINT8 imOut(imIn);
+    Image<UINT8> imIn(path);
+    Image<UINT8> imOut(imIn);
 
     path = pathTestImage("bw/eutectic-extremities.png");
-    Image_UINT8 imTruth(path);
+    Image<UINT8> imTruth(path);
 
     geodesicExtremities(imIn, imOut);
     TEST_ASSERT(imOut == imTruth);
@@ -79,11 +79,11 @@ class TestElongation : public TestCase
     char *path;
     
     path = pathTestImage("bw/eutectic.png");
-    Image_UINT8 imIn(path);
-    Image_UINT8 imOut(imIn);
+    Image<UINT8> imIn(path);
+    Image<UINT8> imOut(imIn);
 
     path = pathTestImage("bw/eutectic-elongation.png");
-    Image_UINT8 imTruth(path);
+    Image<UINT8> imTruth(path);
 
     geodesicElongation(imIn, imOut);
     TEST_ASSERT(imOut == imTruth);

@@ -1,0 +1,40 @@
+/**
+ * @page p560 Smil Tips and Tricks
+ *
+ * @section s560_01 Generalities
+ * To be done
+ *
+ * @section s560_02 Good Practices
+ *
+ * @subsection s560_02_01 Use C++ functors whenever necessary
+ * To be done
+ *
+ * @subsection s560_02_02 Looping on images
+ * To be done
+ *
+ * @section s560_03 Tips
+ *
+ * @subsection s560_03_01  Source file prototypes :
+ *
+ * To help you start with your coding, inside directory
+ * @TB{dev-tools}, you'll find two files :
+ * @TB{dev-tools/DProto.hpp} and
+ * @TB{dev-tools/DProto.cpp}.
+ *
+ * As you can see at file @TB{DProto.hpp}, the content inside
+ * headers file shall be protected by a couple @TB{"#ifdef
+ * _SOMETHING_H"} and @TB{"#endif"} directives, to
+ * avoid a code being included twice.
+ *
+ * The way to build these variable is defined from the filename :
+ *   - a @TB{"_"} (underline) is used as a prefix;
+ *   - @TB{"."} (dot) are converted to @TB{"_"};
+ *   - words are separated by @TB{"_"} even it they don't appear
+ * this way in the filename.
+ *
+ * As an example, if the filename is @TB{DMorphoBestCode.h}, the
+ * directive name becomes @TB{_D_MORPHO_BEST_CODE_H}.
+ *
+ *
+ * @tableofcontents
+ */

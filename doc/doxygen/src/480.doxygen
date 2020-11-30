@@ -1,0 +1,22 @@
+/**
+ * @page p480 Examples
+ *
+ * @section s480_01 Generalities
+ *
+ * @section s480_02 Python examples
+ *
+ * @subsection s480_02_01 Python notebooks
+ *
+ * - <a href=http://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks//smil-basics.ipynb><b>Basic Morphological operators</b></a>
+ * - <a href=http://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks//smil-copy-crop.ipynb><b>Copy and Crop</b></a>
+ * - <a href=http://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks//smil-graphs.ipynb><b>Graphs</b></a>
+ * - <a href=http://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks//smil-hit-or-miss.ipynb><b>Hit or Miss</b></a>
+ * - <a href=http://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks//smil-inertia.ipynb><b>Inertia Moments</b></a>
+ * - <a href=http://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks//smil-measures.ipynb><b>Doing measures on images</b></a>
+ * - <a href=http://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks//smil-multichannel.ipynb><b>Working on multichannel images</b></a>
+ * - <a href=http://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks//smil-numpy.ipynb><b>NumPy</b></a>
+ * - <a href=http://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks//smil-segmentation.ipynb><b>Image Segmentation</b></a>
+ *
+ *
+ * @tableofcontents
+ */

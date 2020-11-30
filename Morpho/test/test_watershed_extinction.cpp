@@ -62,11 +62,11 @@ class Test_Extinction_Flooding : public TestCase
         };
         StrElt se = hSE();
 
-        Image_UINT8 imIn (5,8) ;
-        Image_UINT8 imMark (imIn) ;
-        Image_UINT8 imBasins (imIn) ;
-        Image_UINT8 imTruth (imIn) ;
-        Image_UINT8 imResult (imIn) ;
+        Image<UINT8> imIn (5,8) ;
+        Image<UINT8> imMark (imIn) ;
+        Image<UINT8> imBasins (imIn) ;
+        Image<UINT8> imTruth (imIn) ;
+        Image<UINT8> imResult (imIn) ;
 
         imIn << vecIn;
         imMark << vecMark;
@@ -155,10 +155,10 @@ class Test_Area_Extinction : public TestCase
         };
         StrElt se = sSE();
 
-        Image_UINT8 imIn (5,5) ;
-        Image_UINT16 imMark (imIn) ;
-        Image_UINT16 imTruth (imIn) ;
-        Image_UINT16 imResult (imIn) ;
+        Image<UINT8> imIn (5,5) ;
+        Image<UINT16> imMark (imIn) ;
+        Image<UINT16> imTruth (imIn) ;
+        Image<UINT16> imResult (imIn) ;
 
         imIn << vecIn;
         imMark << vecMark;
@@ -225,10 +225,10 @@ class Test_Volumic_Extinction : public TestCase
         };
         StrElt se = hSE();
 
-        Image_UINT8 imIn (5,5) ;
-        Image_UINT8 imMark (imIn) ;
-        Image_UINT8 imTruth (imIn) ;
-        Image_UINT8 imResult (imIn) ;
+        Image<UINT8> imIn (5,5) ;
+        Image<UINT8> imMark (imIn) ;
+        Image<UINT8> imTruth (imIn) ;
+        Image<UINT8> imResult (imIn) ;
 
         imIn << vecIn;
         imMark << vecMark;
@@ -294,10 +294,10 @@ class Test_Dynamic_Extinction : public TestCase
         };
         StrElt se = sSE();
 
-        Image_UINT8 imIn (5,5) ;
-        Image_UINT8 imMark (imIn) ;
-        Image_UINT8 imTruth (imIn) ;
-        Image_UINT8 imResult (imIn) ;
+        Image<UINT8> imIn (5,5) ;
+        Image<UINT8> imMark (imIn) ;
+        Image<UINT8> imTruth (imIn) ;
+        Image<UINT8> imResult (imIn) ;
 
         imIn << vecIn;
         imMark << vecMark;
@@ -371,10 +371,10 @@ class Test_Watershed_Extinction_Graph : public TestCase
 
         StrElt se = hSE();
 
-        Image_UINT8 imIn (5,8) ;
-        Image_UINT8 imMark (imIn) ;
-        Image_UINT8 imTruth (imIn) ;
-        Image_UINT8 imResult (imIn) ;
+        Image<UINT8> imIn (5,8) ;
+        Image<UINT8> imMark (imIn) ;
+        Image<UINT8> imTruth (imIn) ;
+        Image<UINT8> imResult (imIn) ;
 
         typedef Graph<UINT8,UINT8> GraphT;
         typedef Graph<UINT8,UINT8>::EdgeType EdgeT;
@@ -454,7 +454,7 @@ class Test_Watershed_Extinction_Compare : public TestCase
         imGrad << vecGrad;
         imMark << vecMark;
         
-//      Image_UINT8 imIn("http://smil.cmm.mines-paristech.fr/images/lena.png");
+//      Image<UINT8> imIn("http://smil.cmm.mines-paristech.fr/images/lena.png");
 //      gradient(imIn, imGrad);
 //      hMinimaLabeled(imGrad, (UINT8)5, imMark);
                 

@@ -38,7 +38,7 @@ namespace smil
    * @ingroup Morpho
    * @defgroup Residues Morphological Residues
    *
-   * @details In Mathematical morphology, a @txtbold{Residue} is the symetrical
+   * @details In Mathematical morphology, a @TB{Residue} is the symetrical
    * difference between an image and some transformation or between two
    * transformations.
    *
@@ -52,7 +52,7 @@ namespace smil
    * difference between its @b dilation and its @b erosion :
    * @f[ gradient(im) = \epsilon(im) - \delta(im) @f]
    *
-   * @see @soillebook{p. 85-89, 127-130}
+   * @see @SoilleBook{p. 85-89, 127-130}
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -101,11 +101,11 @@ namespace smil
   /**
    * topHat() - Top-Hat
    *
-   * @txtbold{Top-Hat} or @txtbold{Open top-hat} or @txtbold{White top-hat} is
+   * @TB{Top-Hat} or @TB{Open top-hat} or @TB{White top-hat} is
    * defined as the difference of  the image and its @b opening : 
    * @f[ WTH(im) = im - \gamma(im) @f]
    *
-   * @see @soillebook{p. 121-127}
+   * @see @SoilleBook{p. 121-127}
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -126,11 +126,11 @@ namespace smil
   /**
    * dualTopHat() - Dual Top-Hat
    *
-   * @txtbold{Dual Top-Hat} or @txtbold{Close top-hat} or
-   * @txtbold{Black top-hat} is defined as the difference of @b closing of the
+   * @TB{Dual Top-Hat} or @TB{Close top-hat} or
+   * @TB{Black top-hat} is defined as the difference of @b closing of the
    * image and itself :  @f[ BTH(im) = \phi(im) - im @f]
    *
-   * @see @soillebook{p. 121-127}
+   * @see @SoilleBook{p. 121-127}
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image

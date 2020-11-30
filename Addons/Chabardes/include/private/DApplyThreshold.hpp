@@ -76,7 +76,7 @@ namespace smil
   template <class T>
   RES_T areaThreshold(const Image<T> &imIn, const T &threshold, Image<T> &imOut)
   {
-    map<T, double> m = measAreas(imIn, false);
+    map<T, double> m = blobsArea(imIn, false);
     vector<T> v(maxVal<T>(imIn) + 1, 0);
     typename map<T, double>::iterator it;
     for (it = m.begin(); it != m.end(); ++it) {

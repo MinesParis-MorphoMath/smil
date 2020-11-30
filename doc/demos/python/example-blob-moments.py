@@ -39,10 +39,10 @@ blobs = sp.computeBlobs(iml)
 print("=== > Image : ", imageName, "\n")
 
 # Calculate not centered moments
-moments = sp.measBlobMoments(imo, blobs, False)
+moments = sp.blobsMoments(imo, blobs, False)
 printBlobMoments(moments, "Not centered moments")
 
 print("=" * 102)
 # Calculate centered moments
-moments = sp.measBlobMoments(imo, blobs, True)
+moments = sp.blobsMoments(imo, blobs, True)
 printBlobMoments(moments, "Centered moments")

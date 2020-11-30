@@ -9,14 +9,14 @@ namespace smil
    * @ingroup     Advanced
    * @addtogroup  AdvLine   Line Based Operators
    *
-   * @brief Morphological operators using @txtbold{line segments} as structuring
+   * @brief Morphological operators using @TB{line segments} as structuring
    * elements.
    *
    * @details Implementation of morphological operations by @b line, @b square
    * and @b circle structuring elements using repeately operations with 
    * @b linear structuring elements and arbitrary angles.
    * 
-   * These algorithms are described in @soillebook{Section 3.9, p. 89} and 
+   * These algorithms are described in @SoilleBook{Section 3.9, p. 89} and 
    * @cite SoilleBJ96
    *
    * Line Structuring Element using Bresenham's Line Drawing Algorithm

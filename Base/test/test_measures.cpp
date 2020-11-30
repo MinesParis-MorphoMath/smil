@@ -31,7 +31,7 @@ class Test_ValueList : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1(4, 5);
+    Image<UINT8> im1(4, 5);
 
     UINT8 vec1[] = {1, 0, 0,  5, 0,   0, 4,  45, 0,   255,
                     0, 0, 25, 0, 255, 2, 23, 54, 255, 255};
@@ -54,7 +54,7 @@ class Test_MeasureVolAndArea : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im(256, 256);
+    Image<UINT8> im(256, 256);
 
     UINT8 **lines = im.getLines();
 
@@ -75,7 +75,7 @@ class Test_MeasureBarycenter : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im(256, 256);
+    Image<UINT8> im(256, 256);
 
     UINT8 **lines = im.getLines();
 
@@ -116,7 +116,7 @@ class Test_MeasBoundingBox : public TestCase
 
     };
 
-    Image_UINT8 im(5, 5, 5);
+    Image<UINT8> im(5, 5, 5);
     im << vec;
 
     vector<size_t> bbox = measBoundBox(im);
@@ -135,7 +135,7 @@ class Test_MeasMoments : public TestCase
         1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
     };
 
-    Image_UINT8 im(5, 5);
+    Image<UINT8> im(5, 5);
     im << vec;
 
     Vector_double mat = measMoments(im, true);
@@ -159,8 +159,8 @@ class Test_MeasCovariance : public TestCase
         1,   84, 46,  118, 6,   136, 96, 240, 170, 200, 91,  31,
     };
 
-    Image_UINT8 im1(5, 5);
-    Image_UINT8 im2(im1);
+    Image<UINT8> im1(5, 5);
+    Image<UINT8> im2(im1);
     im1 << vec1;
     im2 << vec2;
 
@@ -183,7 +183,7 @@ class Test_MeanVal : public TestCase
 {
   virtual void run()
   {
-    Image_UINT16 im(10, 1);
+    Image<UINT16> im(10, 1);
 
     fill(im, UINT16(10));
     im.setPixel(0, UINT16(65000));
@@ -198,7 +198,7 @@ class Test_MinMax : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im(5, 5);
+    Image<UINT8> im(5, 5);
 
     UINT8 vec1[25] = {
         10,  207, 10, 182, 118, 222, 96,  36,  14,  147, 150, 104, 159,

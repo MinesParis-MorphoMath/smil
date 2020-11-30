@@ -34,8 +34,8 @@ int main(void)
 {
   UINT BENCH_NRUNS = 1E2;
 
-  Image_UINT8 im(1024, 1024);
-  // Image_UINT8::lineType pixels = im.getPixels();
+  Image<UINT8> im(1024, 1024);
+  // Image<UINT8>::lineType pixels = im.getPixels();
 
   randFill(im);
   BENCH_IMG(histogram, im);

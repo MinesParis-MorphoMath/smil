@@ -42,8 +42,8 @@ class Test_Assign : public TestCase
     UINT8 vecFill[20] = {127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
                          127, 127, 127, 127, 127, 127, 127, 127, 127, 127};
 
-    Image_UINT8 im1(4, 5);
-    Image_UINT8 imTruth(4, 5);
+    Image<UINT8> im1(4, 5);
+    Image<UINT8> imTruth(4, 5);
 
     im1 << UINT8(127);
     imTruth << vecFill;
@@ -70,9 +70,9 @@ class Test_Add : public TestCase
         21, 22, 23, 24, 25, 26, 27, 28, 29, 30,
     };
 
-    Image_UINT8 im1(4, 5);
-    Image_UINT8 im2(im1);
-    Image_UINT8 imTruth(4, 5);
+    Image<UINT8> im1(4, 5);
+    Image<UINT8> im2(im1);
+    Image<UINT8> imTruth(4, 5);
 
     im1 << vec1;
     im2 = (im1 + UINT8(10));

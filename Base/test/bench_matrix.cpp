@@ -33,9 +33,9 @@ int main(void)
   int sx = 1024; // 24;
   int sy = 1024;
 
-  Image_UINT8 im1(sx, sy);
-  Image_UINT8 im2(im1);
-  Image_UINT8 im3(im1);
+  Image<UINT8> im1(sx, sy);
+  Image<UINT8> im2(im1);
+  Image<UINT8> im3(im1);
 
   UINT BENCH_NRUNS = 100;
 

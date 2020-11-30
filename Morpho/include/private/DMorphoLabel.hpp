@@ -58,7 +58,7 @@ namespace smil
    * component (flat zone) of the image.
    *
    * @see 
-   * - @soillebook{p. 35-38}
+   * - @SoilleBook{p. 35-38}
    * @{
    */
 
@@ -698,7 +698,7 @@ namespace smil
     Image<T2> imLabel(imIn);
 
     ASSERT(label(imIn, imLabel, se) != 0);
-    map<T2, double> areas = measAreas(imLabel);
+    map<T2, double> areas = blobsArea(imLabel);
     ASSERT(!areas.empty());
 
     double maxV =
@@ -744,7 +744,7 @@ namespace smil
     label(imLabelsInit, imLabel, se);
     bool onlyNonZeros       = true;
     map<T2, Blob> blobs     = computeBlobs(imLabel, onlyNonZeros);
-    map<T2, double> volumes = measVolumes(imIn, blobs);
+    map<T2, double> volumes = blobsVolume(imIn, blobs);
     ASSERT(!volumes.empty());
 
     double maxV =
@@ -791,7 +791,7 @@ namespace smil
     label(imLabelsInit, imLabel, se);
     bool onlyNonZeros   = true;
     map<T2, Blob> blobs = computeBlobs(imLabel, onlyNonZeros);
-    map<T2, T1> markers = measMaxVals(imIn, blobs);
+    map<T2, T1> markers = blobsMaxVal(imIn, blobs);
     ASSERT(!markers.empty());
 
     double maxV =
@@ -838,7 +838,7 @@ namespace smil
     label(imLabelsInit, imLabel, se);
     bool onlyNonZeros   = true;
     map<T2, Blob> blobs = computeBlobs(imLabel, onlyNonZeros);
-    map<T2, std::vector<double>> meanValsStd = measMeanVals(imIn, blobs);
+    map<T2, std::vector<double>> meanValsStd = blobsMeanVal(imIn, blobs);
     map<T2, double> markers;
 
     for (typename std::map<T2, std::vector<double>>::iterator iter =

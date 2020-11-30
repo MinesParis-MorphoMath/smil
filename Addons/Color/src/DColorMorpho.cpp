@@ -81,7 +81,7 @@ namespace smil
     }
   };
 
-  RES_T gradient_LAB(const Image<RGB> &imIn, Image<UINT8> &imOut,
+  RES_T gradientLAB(const Image<RGB> &imIn, Image<UINT8> &imOut,
                      const StrElt &se, bool convertFirstToLAB)
   {
     ASSERT_ALLOCATED(&imIn);
@@ -97,11 +97,11 @@ namespace smil
       return iFunc._exec(imIn, imOut, se);
   }
 
-  Image<UINT8> gradient_LAB(const Image<RGB> &imIn, const StrElt &se,
+  Image<UINT8> gradientLAB(const Image<RGB> &imIn, const StrElt &se,
                             bool convertFirstToLAB)
   {
     Image<UINT8> imOut(imIn);
-    ASSERT(gradient_LAB(imIn, imOut, se, convertFirstToLAB) == RES_OK, RES_ERR,
+    ASSERT(gradientLAB(imIn, imOut, se, convertFirstToLAB) == RES_OK, RES_ERR,
            imOut)
     return imOut;
   }
@@ -161,7 +161,7 @@ namespace smil
     }
   };
 
-  RES_T gradient_HLS(const Image<RGB> &imIn, Image<UINT8> &imOut,
+  RES_T gradientHLS(const Image<RGB> &imIn, Image<UINT8> &imOut,
                      const StrElt &se, bool convertFirstToHLS)
   {
     ASSERT_ALLOCATED(&imIn);
@@ -177,11 +177,11 @@ namespace smil
       return iFunc._exec(imIn, imOut, se);
   }
 
-  Image<UINT8> gradient_HLS(const Image<RGB> &imIn, const StrElt &se,
+  Image<UINT8> gradientHLS(const Image<RGB> &imIn, const StrElt &se,
                             bool convertFirstToHLS)
   {
     Image<UINT8> imOut(imIn);
-    ASSERT(gradient_HLS(imIn, se, convertFirstToHLS) == RES_OK, RES_ERR, imOut)
+    ASSERT(gradientHLS(imIn, se, convertFirstToHLS) == RES_OK, RES_ERR, imOut)
     return imOut;
   }
 

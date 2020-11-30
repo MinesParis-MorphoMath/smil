@@ -39,9 +39,9 @@ class Test_Image : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8  im8(16, 16);
-    Image_UINT16 im16(16, 16);
-    Image_UINT32 im32(16, 16);
+    Image<UINT8>  im8(16, 16);
+    Image<UINT16> im16(16, 16);
+    Image<UINT32> im32(16, 16);
 
     im8.printSelf(1);
     im16.printSelf(1);

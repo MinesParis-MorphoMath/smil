@@ -388,7 +388,7 @@ namespace smil
    * @param[in] borderValue : value to assign to each pixel in the border
    *
    * @note
-   *  Image size is increased by @txtbold{2 * bSize} pixels in each direction
+   *  Image size is increased by @TB{2 * bSize} pixels in each direction
    *
    */
   template <class T>
@@ -775,7 +775,7 @@ namespace smil
   }
 
   /**
-   * translate() - @txtbold{2D Image} translation.
+   * translate() - @TB{2D Image} translation.
    *
    * The same translation is applied to each slice
    *
@@ -792,7 +792,7 @@ namespace smil
   }
 
   /**
-   * translate() - @txtbold{2D Image} translation.
+   * translate() - @TB{2D Image} translation.
    *
    * @param[in] imIn : input image
    * @param[in] dx, dy : shift to be applied
@@ -1164,7 +1164,7 @@ namespace smil
    * be used when resizing @b binary images or images whose possible values
    * shall be preserved in the output image.
    * - @b trilinear (extension of @b bilinear algorithm for @b 3D images) - this
-   * is the algorithm to use on @txtbold{gray level} images.
+   * is the algorithm to use on @TB{gray level} images.
    *
    * @note
    * When algorithm is set to @b auto, the applied algorithm will be @b closest
@@ -1249,7 +1249,7 @@ namespace smil
    * be used when resizing @b binary images or images whose possible values
    * shall be preserved in the output image.
    * - @b trilinear (extension of @b bilinear algorithm for @b 3D images) - this
-   * is the algorithm to use on @txtbold{gray level} images.
+   * is the algorithm to use on @TB{gray level} images.
    *
    * @note
    * When algorithm is set to @b auto, the applied algorithm will be @b closest

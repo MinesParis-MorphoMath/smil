@@ -35,8 +35,8 @@ int main()
 
   char *path = pathTestImage("bw/H4skeleton.png");
 
-  Image_UINT8 im1(path);
-  Image_UINT8 im2(im1);
+  Image<UINT8> im1(path);
+  Image<UINT8> im2(im1);
 
   BENCH_IMG(zhangSkeleton, im1, im2);
   BENCH_IMG(zhangThinning, im1, im2);

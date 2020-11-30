@@ -36,9 +36,9 @@ class TestDistanceSquare : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1(10,10);
-    Image_UINT8 im2(im1);
-    Image_UINT8 imTruth(im1);
+    Image<UINT8> im1(10,10);
+    Image<UINT8> im2(im1);
+    Image<UINT8> imTruth(im1);
       
     UINT8 vec1[] = 
     { 
@@ -81,9 +81,9 @@ class TestDistanceCross : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1(8,8);
-    Image_UINT8 im2(im1);
-    Image_UINT8 imTruth(im1);
+    Image<UINT8> im1(8,8);
+    Image<UINT8> im2(im1);
+    Image<UINT8> imTruth(im1);
 
     UINT8 vec1[] = 
     { 

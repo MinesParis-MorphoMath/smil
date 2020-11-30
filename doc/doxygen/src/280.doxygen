@@ -1,0 +1,170 @@
+/**
+ * @page p280 Release Notes
+ *
+ * @section s280_06 Smil 0.10.6-dev (xx yyy 202z)
+ *
+ *  - New and change on functions
+ *    - NEW and CHANGE : zhangSkeleton() moved to an Addon and reviewed. Other
+ *      derived versions of this algorithm added
+ *    - CHANGE : @b AreaOpen functions moved from Addon @b MorphoExtras to
+ *      Advanced branch
+ *    - NEW : @TB{images} directory with test images to avoid need to access
+ *    - NEW : Smil-build.h added to help load test images in @TT{test_XXX.cpp}
+ *      programs.
+ *      @Smil web server to launch @TT{make test}
+ *    - NEW : @TB{areaOpening} using algorithm @TB{UnionFind} ported and
+ *      rewrote
+ *    - CHANGE : AddOn @TB{ZoneMatrix} - functions converted to functor
+ *
+ *  - Functions renamed to avoid confusion (mostly on Blobs)
+ *    - measImageEntropy => measEntropy
+ *      - gradient_HLS => gradientHLS
+ *      - gradient_LAB => gradientLAB
+ *
+ *  - Documentation
+ *    - Lots of @TB{Doxygen} documentation being reorganized and completed.
+ *      Work in progress
+ *
+ * @section s280_05 Smil 0.10.5 (14 Sep 2020)
+ *
+ *  - Download link changed
+ *    - To have more visibility, the download URL changed to :
+ *      - git :  ssh://git\@github.com:MinesParis-MorphoMath/smil
+ *      - https : https://github.com/MinesParis-MorphoMath
+ *
+ *  - New and changes on functions
+ *    - NEW : functions measImageEntropy() and measBlobsEntropy() to evaluate
+ * entropy on images and blobs;
+ *    - NEW : function inertiaMatrices() on blobs;
+ *    - CHANGE : functions measMoments() and measBlobMoments() now can also
+ * evaluate centralized moments with respect to barycenters;
+ *    - NEW : function areaThreshold() to filter blobs based on their area
+ * (number
+ * of pixels). Useful in granulometry;
+ *    - CHANGE : function trans() renamed to translate() to avoid confusion by
+ * short names;
+ *    - NEW :function rotateX90() to rotate images by multiples of 90 degres
+ * (handle 3D images);
+ *    - CHANGE : function gaussianFilter() rewritten to handle 3D images;
+ *    - CHANGE : function matTrans() now can handle 3D images and was renamed to
+ * matTranspose() to avoid confusion with translate();
+ *    - CHANGE : function matMul() renamed to matMultiply() to avoid confusion
+ * by short names;
+ *    - NEW : function pruneSkiz() based on a work of Theodore Chabardes;
+ *    - CHANGE/NEW : vFlip() function renamed to vertFlip() and rewritten to
+ * handle 3D images. Added function horizFlip().
+ *    - CHANGE : resize() and scale() functions rewritten with trilinear
+ * algorithm to be able to handle 3D images. An optional parameter is added to
+ * this functions to allow to select between trilinear (for 3D images), bilinear
+ * (for 2D images) or closest algorithm. auto value selects closest for binary
+ * images and XXXlinear for gray level images.
+ *    - REMOVAL : functions resizeClosest() and scaleClosest(), as this
+ * algorithm is integrated into new resize() and scale() functions. The choice
+ * being done by a parameter.
+ *    - NEW : '-' (minus) operator added to Point<T> class, allowing to retrieve
+ * the difference between two points.
+ *
+ *  - Bug fixes
+ *    - When creating images of type UINT32, printSelf() function doesn't show
+ * image type. Just a cosmetic problem.
+ *
+ *  - Library documentation
+ *    - changing the order of items inside pages;
+ *    - new examples;
+ *    - library documentation : lots of work being done - work still in progress
+ * fir some time...
+ *
+ * <hr>
+ *
+ * @section s280_04 Smil 0.10.4 (10 Jul 2020)
+ *
+ *  - Changes :
+ *    - measGranulometry() - changes to handle gray level images
+ *    - measGranulometry() - add parameter maxSeSize to limit the size of
+ * Structuring Element
+ *
+ *  - Bug fixes
+ *    - fromNumArray() function not working as intended
+ *
+ *  - Code cleaning : work in progress while documenting
+ *
+ *
+ * <hr>
+ *
+ *
+ * @section s280_03 Smil 0.10.3 (10 Jul 2020)
+ *
+ *  - Bug fixes
+ *    - Filesystem conflicts on CentOS packages
+ *    - other small bugs
+ *  - Library documentation : work in progress
+ *
+ *
+ * <hr>
+
+* @section s280_02 Smil 0.10.2 (27 Jun 2020)
+*
+ *
+ *  - New modules
+ *    - Parsimonious - Parsimonious Path Opening - (port from @TB{Morph-M})
+ * thanks to Petr Dokladal
+ *    - Line Morphology - (port from @TB{Morph-M})
+ *
+ *  - New functions
+ *    - distanceGeodesic() - thanks to Beatriz Marcotegui
+ *    - measCenteredCovariance() (see below why this function was renamed and a
+ * new one written)
+ *
+ *  - Functions renamed to be consistent with naming conventions, and
+ * homogeneous naming across the library :
+ *    - geoDil() and geoErode() => geoDilate() and geoErode()
+ *    - dist() => distance()
+ *    - dist_euclidean() => distanceEuclidean()
+ *    - GeoDist() => distanceGeodesic()
+ *    - measMedianVal() and measModeVal => medianVal() and modeVal()
+ *    - measCenteredCovariance() => measCenteredAutoCovariance() (notice the new
+ * function added to represent the centered covariance between two images)
+ *
+ *  - Building system updated to ensure compatibility with new versions of
+ * cmake, gcc, Fedora32 and CentOS8;
+ *
+ *  - Many small bugs corrected, most of them related to @TB{segmentation
+ * faults} or @TB{image size} limited to @f$2^{32}@f$ octets;
+ *
+ *  - some parts of code being rewritten with @TB{functors} to hide local
+ * private code
+ *
+ *  - documentation for some functions. Much more to be done in this area.
+ *
+ *  - binaries available for :
+ *    - Ubuntu (16, 18 and 20)
+ *    - Debian (8, 9 and 10)
+ *    - CentOS (7 and 8)
+ *    - Fedora (30, 31 and 32)
+ *
+ * <hr>
+ *
+ * @section s280_01 Smil 0.10.0
+ *
+ *  - A lot of (not so visible) small bugs corrected
+ *  - Binary packages for Ubuntu, Debian and CentOS
+ *  - A web site ... going on...
+ *  - Advanced branch :
+ *    - Line Morphology (@TB{See} @SoilleBook{p.89})
+ *    - Gray Level Distance
+ *  - Functions renamed :
+ *    - dist_xxx() => distanceXxx()
+ *    - measInertiaMatrix() and measInertiaMatrices() => measImageMoments() and
+ * measImageBlobsMoments()
+ *  - New functions :
+ *    - distanceGeodesic()
+ *  - Addons :
+ *    - Filters
+ *    - Graph Cuts
+ *    - Stochastic Watershed
+ *    - Fast Area and Path Opening
+ *  - Anaconda integration (See @ref s260_02)
+ *
+ *
+ * @tableofcontents
+ */

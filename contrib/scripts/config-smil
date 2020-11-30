@@ -3,20 +3,20 @@
 #
 # Copyright (c) 2019, Centre de Morphologie Mathematique
 # All rights reserved.
-# 
+#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted.
 #
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' 
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
 # ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
-# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
-# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
-# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 # THE POSSIBILITY OF SUCH DAMAGE.
 #
 # Description :
@@ -61,14 +61,14 @@ Help()
 {
   app=$(basename $0)
   HStr="
-  
+
   $app
-  
-  Usage : 
+
+  Usage :
     $app [ options ] SourceDirectory
-    
+
   Options :
-    --help 
+    --help
       This message
 
     --prefix=prefix
@@ -77,10 +77,10 @@ Help()
 
     --addon=name,name,name,...
       A comma separated list of Addons to enable
-      Default enabled Addons : $ADDONS 
+      Default enabled Addons : $ADDONS
 
     --generic
-      Compile for a generic architecture. Default is to optimize for the 
+      Compile for a generic architecture. Default is to optimize for the
       processor in the computer Smil is being compiled.
 
     --auto
@@ -89,17 +89,26 @@ Help()
 
     --doc
     --devdoc
+      Build doxygen documentation
 
     --test
+      Add Makefile targets to build test programs (make test)
 
     --package
+      Add Makefile targets to build Linux packages
+
+    -v
+      Verbose
+
+    -Dvar=value
+      Define CMake variables (use with care)
 
   Example :
     $app --addon=GraphCuts --prefix=/usr/local/Smil-27 /home/sources/smil
 
   Author :
     Jose-Marcio Martins da Cruz
-  
+
   See also :
     Full Smil documentation at : http://smil.mines-paristech.fr
 
@@ -249,7 +258,7 @@ OPT="$OPT
   -DCMAKE_CXX_FLAGS:STRING=$CXX_FLAGS
 "
 if [ "$DOC" == "ON" ]
-then 
+then
   OPT+="
   -DDOXYGEN_GENERATE_HTML:BOOL=$DOC
   -DDOXYGEN_GENERATE_LATEX:BOOL=$DOC
@@ -257,7 +266,7 @@ then
 fi
 
 if [ "$DEVDOC" == "ON" ]
-then 
+then
   OPT+="
   -DDOXYGEN_DEVEL_DOC:BOOL=$DEVDOC
 "

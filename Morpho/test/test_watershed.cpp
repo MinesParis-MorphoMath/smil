@@ -193,9 +193,9 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
         2, 2, 2, 2, 0, 3
       };
       
-      Image_UINT8 imIn(6,7);
-      Image_UINT8 imLbl(imIn);
-      Image_UINT8 imWS(imIn);
+      Image<UINT8> imIn(6,7);
+      Image<UINT8> imLbl(imIn);
+      Image<UINT8> imWS(imIn);
 
       imIn << vecIn;
       imLbl << vecLbl;
@@ -236,8 +236,8 @@ class Test_ProcessWatershedHierarchicalQueue : public TestCase
         1,    1,    1,    1,  255,    1,
       };
       
-      Image_UINT8 imLblTruth(imIn);
-      Image_UINT8 imStatusTruth(imIn);
+      Image<UINT8> imLblTruth(imIn);
+      Image<UINT8> imStatusTruth(imIn);
       
       imLblTruth << vecLblTruth;
       imStatusTruth << vecStatusTruth;
@@ -457,10 +457,10 @@ class Test_Watershed_Indempotence : public TestCase
             0,    0,    0,    0,    9,    0,    0,    0,    0,   10,
       };
       
-      Image_UINT8 imIn(10,10);
-      Image_UINT8 imMark(imIn);
-      Image_UINT8 imWs(imIn);
-      Image_UINT8 imWs2(imIn);
+      Image<UINT8> imIn(10,10);
+      Image<UINT8> imMark(imIn);
+      Image<UINT8> imWs(imIn);
+      Image<UINT8> imWs2(imIn);
 
       imIn << vecIn;
       imMark << vecMark;

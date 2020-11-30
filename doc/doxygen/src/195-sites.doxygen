@@ -1,0 +1,23 @@
+/**
+ * @page p195 Smil related sites and links
+ *
+ * - @Smil sites and links
+ *   - @WebServerSmil
+ *   - @UrlSmil{wiki, Smil wiki}
+ *   - @URL{https://github.com/MinesParis-MorphoMath,
+ *          Smil git repository at GitHub}
+ * - @Smil documentation
+ *   - @UrlSmil{publis/Smil-Reference-Manual.pdf, Complete PDF documentation}
+ *   - @UrlSmil{publis/SmilQuickReference.pdf, Smil Quick Reference}
+ *   - @UrlSmil{publis/Smil-in-a-Nutshell.pdf,
+ *              Smil in a Nutshell (let's call it a Quick Start Guide)}
+ *
+ * - @Smil support
+ *   - @URL{https://groupes.renater.fr/sympa/info/smil-users, Forum smil-users}
+ *
+ * - Other @Smil related sites :
+ *   - @WebServerCMM
+ *
+ *
+ * @tableofcontents
+ */

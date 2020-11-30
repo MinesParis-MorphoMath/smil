@@ -35,9 +35,9 @@ using namespace smil;
 
 int main()
 {
-    Image_UINT8 im1(5562, 7949);
-//    Image_UINT8 im1(1024, 1024);
-    Image_UINT8 im2(im1);
+    Image<UINT8> im1(5562, 7949);
+//    Image<UINT8> im1(1024, 1024);
+    Image<UINT8> im2(im1);
     
     StrElt generic_sSE(sSE());
     generic_sSE.seT = SE_Generic;

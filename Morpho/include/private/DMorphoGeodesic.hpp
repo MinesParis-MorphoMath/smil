@@ -46,7 +46,7 @@ namespace smil
    *
    * @see
    * - <a href=https://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks/cours/Geodesy.ipynb>Geodesy - Morphological Mathematics courses at Mines-Paristech</a>
-   * - @soillebook{Chap. 6}
+   * - @SoilleBook{Chap. 6}
    *
    * @{
    */
@@ -350,7 +350,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * dualBuild() - Dual reconstruction (using hierarchical queues).
+   * dualBuild() - Reconstruction by erosion - dual build - (using hierarchical queues).
    *
    * @param[in] imIn : input image
    * @param[in] imMask : mask
@@ -387,7 +387,7 @@ namespace smil
   }
 
   /**
-   * build() - Reconstruction (using hierarchical queues).
+   * build() - Reconstruction by dilation (using hierarchical queues).
    *
    * @param[in] imIn : input image
    * @param[in] imMask : mask
@@ -561,7 +561,7 @@ namespace smil
   /**
    * buildOpen() - Opening by reconstruction
    *
-   * Erosion followed by a reconstruction
+   * Erosion followed by a reconstruction (build)
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -586,6 +586,8 @@ namespace smil
   /**
    * buildClose() - Closing by reconstruction
    *
+   * Dilation followed by a reconstruction (dualBuild)
+   *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
    * @param[in] se : structuring element
@@ -602,6 +604,70 @@ namespace smil
     Image<T> tmpIm(imIn);
     ASSERT((dilate(imIn, tmpIm, se) == RES_OK));
     ASSERT((dualBuild(tmpIm, imIn, imOut, se) == RES_OK));
+
+    return RES_OK;
+  }
+
+  /**
+   * Alternate Sequential reconstructions beginning by a buildOpen
+   *
+   * Sequence of buildOpen() and buildClose() with increasing size <b>1, 2, ...,
+   * max_size</b>. The @b max_size is given by the size of the structuring
+   * element (for example @b 3 for @b SE(3)).
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element with the maximum size of the filter
+   *
+   */
+  template <class T>
+  RES_T asBuildOpen(const Image<T> &imIn, Image<T> &imOut,
+                 const StrElt &se = DEFAULT_SE)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    ImageFreezer freeze(imOut);
+
+    Image<T> tmpIm(imIn, true); // clone
+    for (UINT i = 1; i <= se.size; i++) {
+      ASSERT((buildOpen(tmpIm, imOut, se(i)) == RES_OK));
+      ASSERT((buildClose(imOut, tmpIm, se(i)) == RES_OK));
+    }
+    ASSERT((copy(tmpIm, imOut) == RES_OK));
+
+    return RES_OK;
+  }
+
+
+  /**
+   * Alternate Sequential reconstructions beginning by a buildClose
+   *
+   * Sequence of buildClose() and buildOpen() with increasing size <b>1, 2, ...,
+   * max_size</b>. The @b max_size is given by the size of the structuring
+   * element (for example @b 3 for @b SE(3)).
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] se : structuring element with the maximum size of the filter
+   *
+   * @smilexample{example-asfclose.py}
+   */
+  template <class T>
+  RES_T asBuildClose(const Image<T> &imIn, Image<T> &imOut,
+                 const StrElt &se = DEFAULT_SE)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    ImageFreezer freeze(imOut);
+
+    Image<T> tmpIm(imIn, true); // clone
+    for (UINT i = 1; i <= se.size; i++) {
+      ASSERT((buildClose(tmpIm, imOut, se(i)) == RES_OK));
+      ASSERT((buildOpen(imOut, tmpIm, se(i)) == RES_OK));
+    }
+    ASSERT((copy(tmpIm, imOut) == RES_OK));
 
     return RES_OK;
   }

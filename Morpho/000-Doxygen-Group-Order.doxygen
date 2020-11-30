@@ -21,10 +21,9 @@
  * opening, and closing, as well as the hit-or-miss transform.
  *
  * @see
- * - @serra82book{Chap. II}
- * - @soillebook{p. 64-65}
- * - <a href="https://en.wikipedia.org/wiki/Structuring_element">Structuring
- * Element</a>
+ * - @Serra82Book{Chap. II}
+ * - @SoilleBook{p. 64-65}
+ * - @UrlWikipedia{Structuring_element, Structuring Element}
  */
  
 /**
@@ -38,9 +37,9 @@
  * operations combined with a Structuring Element.
  *
  * @see
- * - @serra82book
- * - @serra88book
- * - @soillebook
+ * - @Serra82Book
+ * - @Serra88Book
+ * - @SoilleBook
  *
  */
  

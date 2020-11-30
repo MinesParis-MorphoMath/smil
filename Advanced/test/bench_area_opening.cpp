@@ -36,12 +36,12 @@ using namespace smil;
 
 int main(int argc, char *argv[])
 {
-  Image_UINT8 im1("http://smil.cmm.mines-paristech.fr/images/barbara.png");
+  Image<UINT8> im1("http://smil.cmm.mines-paristech.fr/images/barbara.png");
 
   if (argc > 1)
     read(argv[1], im1);
 
-  Image_UINT8 im2(im1);
+  Image<UINT8> im2(im1);
 
   UINT BENCH_NRUNS = 100;
   Morpho::setDefaultSE(CrossSE());

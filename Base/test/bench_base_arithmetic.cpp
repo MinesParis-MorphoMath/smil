@@ -33,11 +33,11 @@ int main(void)
   int sx = 1024; // 24;
   int sy = 1024;
 
-  Image_UINT8 im1(sx, sy);
-  Image_UINT8 im2(im1);
-  Image_UINT8 im3(im1);
+  Image<UINT8> im1(sx, sy);
+  Image<UINT8> im2(im1);
+  Image<UINT8> im3(im1);
 
-  Image_UINT16 im4(im1);
+  Image<UINT16> im4(im1);
 
   double BENCH_NRUNS = 1E4;
 

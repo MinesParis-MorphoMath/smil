@@ -145,7 +145,7 @@ class Test_Gradient : public TestCase
         };
         imTruth << vecGRAD_LAB;
         
-        gradient_LAB(im1, im2, sSE(), false);
+        gradientLAB(im1, im2, sSE(), false);
         TEST_ASSERT(im2==imTruth);
         
         UINT8 vecLAB2[] = { 
@@ -160,7 +160,7 @@ class Test_Gradient : public TestCase
         };
         imTruth << vecGRAD_LAB2;
         
-        gradient_LAB(im1, im2, sSE(), false);
+        gradientLAB(im1, im2, sSE(), false);
         TEST_ASSERT(im2==imTruth);
         
         UINT8 vecHLS[] = { 
@@ -175,7 +175,7 @@ class Test_Gradient : public TestCase
         im1 << RGBArray(vecHLS, 5);
         imTruth << vecGRAD_HLS;
         
-        gradient_HLS(im1, im2, sSE(), false);
+        gradientHLS(im1, im2, sSE(), false);
         TEST_ASSERT(im2==imTruth);
         
 //         im2.printSelf(1);

@@ -1,0 +1,51 @@
+/**
+ * @page p210 Getting Smil
+ *
+ * @section s210_01 Generalities
+ * @Smil is available in two flavors :
+ * - @b binary - the easiest way to install and use @Smil;
+ * - @b source files - to have access to everything inside @Smil, fine tune
+ *   your configuration, compile some Addons not enabled by default or some
+ *   other requirement not satisfied by the @b binary flavor.
+ *
+ * @note
+ * @b Anaconda users shall, most of the time, build themselves their own
+ *   version of @Smil. Some time in the future there will be @Smil packages for
+ *   @b Anaconda.
+ *
+ * @section s210_02 Requirements summary
+ *
+ * -  @b C++11 compatible compiler - @b gcc is OK
+ * -  @b git - if you want to install @Smil from sources.
+ * -  @b cmake - if you want to install @Smil from sources.
+ * -  @b swig - if you want to install @Smil from sources.
+ * -  @b Python 2.7 or greater - Python > 3.5 is better.
+ * -  @b Qt 4 or greater (option) - Qt5 is much much better.
+ * -  Image libraries
+ *    - @b libpng
+ *    - @b libtiff
+ *    - @b libjpeg
+ * - @b doxygen, @b inkscape and @b graphviz (option), if you want to build the
+ *   documentation part.
+ *
+ * @note
+ * - We make little effort to ensure compatibility with Linux distribution using
+ * too old versions of some pieces of software (mainly Qt4 and Python 2.7 -
+ * e.g. CentOS 7 and RedHat 7). If you're still using these distributions in
+ * your system and you can't upgrade you'll be more confortable running @Smil
+ * under @b Anaconda.
+ * - @Smil binaries are still available for these two distributions but they don't
+ * come with the Qt dependent part - the graphical user interface allowing you
+ * to display images.
+ *
+ * @section s210_03 Where to get it :
+ * T.B.D.
+ *
+ * @subsection s210_03_01 Binaries
+ *
+ * @subsection s210_03_02 Source code
+ *
+ *
+ *
+ * @tableofcontents
+ */

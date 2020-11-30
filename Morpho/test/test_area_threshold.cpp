@@ -32,9 +32,9 @@ class Test_Area_Threshold : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1(16, 16);
-    Image_UINT8 im2(16, 16);
-    Image_UINT8 imRef(16, 16);
+    Image<UINT8> im1(16, 16);
+    Image<UINT8> im2(16, 16);
+    Image<UINT8> imRef(16, 16);
 
     UINT8 vec1[256] = {
    0,   0,   0,   0,   0,   0,   0, 255,   0,   0,   0,   0,   0,   0,   0,   0,

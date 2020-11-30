@@ -40,11 +40,11 @@ class TestAreaOpening03 : public TestCase
     char *path;
 
     path = pathTestImage("test-results/zquares-y.png");
-    Image_UINT8 imIn(path);
-    Image_UINT8 imOut(imIn);
+    Image<UINT8> imIn(path);
+    Image<UINT8> imOut(imIn);
 
     path = pathTestImage("test-results/zquares-y-03.png");
-    Image_UINT8 imTruth(path);
+    Image<UINT8> imTruth(path);
     areaOpening(imIn, 3, imOut);
     TEST_ASSERT(imOut == imTruth);
     if (retVal != RES_OK)
@@ -59,11 +59,11 @@ class TestAreaOpening06 : public TestCase
     char *path;
 
     path = pathTestImage("test-results/zquares-y.png");
-    Image_UINT8 imIn(path);
-    Image_UINT8 imOut(imIn);
+    Image<UINT8> imIn(path);
+    Image<UINT8> imOut(imIn);
 
     path = pathTestImage("test-results/zquares-y-06.png");
-    Image_UINT8 imTruth(path);
+    Image<UINT8> imTruth(path);
     areaOpening(imIn, 6, imOut);
     TEST_ASSERT(imOut == imTruth);
     if (retVal != RES_OK)
@@ -78,10 +78,10 @@ class TestAreaOpening12 : public TestCase
     char *path;
 
     path = pathTestImage("test-results/zquares-y.png");
-    Image_UINT8 imIn(path);
-    Image_UINT8 imOut(imIn);
+    Image<UINT8> imIn(path);
+    Image<UINT8> imOut(imIn);
     path = pathTestImage("test-results/zquares-y-12.png");
-    Image_UINT8 imTruth(path);
+    Image<UINT8> imTruth(path);
 
     Morpho::setDefaultSE(CrossSE());
     areaOpening(imIn, 12, imOut);
@@ -98,10 +98,10 @@ class TestAreaOpening20 : public TestCase
     char *path;
 
     path = pathTestImage("test-results/zquares-y.png");
-    Image_UINT8 imIn(path);
-    Image_UINT8 imOut(imIn);
+    Image<UINT8> imIn(path);
+    Image<UINT8> imOut(imIn);
     path = pathTestImage("test-results/zquares-y-20.png");
-    Image_UINT8 imTruth(path);
+    Image<UINT8> imTruth(path);
 
     Morpho::setDefaultSE(CrossSE());
     areaOpening(imIn, 20, imOut);
@@ -118,10 +118,10 @@ class TestAreaOpening30 : public TestCase
     char *path;
 
     path = pathTestImage("test-results/zquares-y.png");
-    Image_UINT8 imIn(path);
-    Image_UINT8 imOut(imIn);
+    Image<UINT8> imIn(path);
+    Image<UINT8> imOut(imIn);
     path = pathTestImage("test-results/zquares-y-30.png");
-    Image_UINT8 imTruth(path);
+    Image<UINT8> imTruth(path);
 
     Morpho::setDefaultSE(CrossSE());
     areaOpening(imIn, 30, imOut);

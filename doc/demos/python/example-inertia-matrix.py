@@ -15,8 +15,8 @@ sp.label(imThr, imLbl)
 # compute blobs and get their data
 blobs   = sp.computeBlobs(imLbl)
 central = True
-inertia = sp.inertiaMatrices(imIn, blobs, central)
-barys   = sp.measBarycenters(imIn, blobs)
+inertia = sp.blobsInertiaMatrix(imIn, blobs, central)
+barys   = sp.blobsBarycenter(imIn, blobs)
 
 nshape = (2, 2)
 if imIn.getDimension() == 3:

@@ -60,8 +60,8 @@ namespace smil
    *
    * @param[in] imIn : input image (@b binary or @b labeled)
    * @param[in] threshold : threshold level
-   * @param[in] gt : blobs which area is @txtbold{greater than} will be retained
-   *   if @b gt is @b true, and @txtbold{lesser than} if @b gt is @b false.
+   * @param[in] gt : blobs which area is @TB{greater than} will be retained
+   *   if @b gt is @b true, and @TB{lesser than} if @b gt is @b false.
    * @param[out] imOut : output image
    *
    * @note
@@ -91,7 +91,7 @@ namespace smil
     typedef typename map<T2, Blob>::iterator blobIter;
     typedef typename map<T2, double>::iterator areaIter;
 
-    map<T2, double> areas = measAreas(blobs);
+    map<T2, double> areas = blobsArea(blobs);
 
     map<T2, T2> lut;
     areaIter ait;
@@ -134,7 +134,7 @@ namespace smil
    * #    #    #  ######  #    #     #       #    #    #
    */
 
-  /** inertiaMatrices() -
+  /** blobsInertiaMatrix() -
    *
    * @param[in] imIn : input image
    * @param[in] blobs : blobs in the image
@@ -143,7 +143,7 @@ namespace smil
    * @smilexample{example-inertia-matrix.py}
    */
   template <typename T, typename labelT>
-  map<labelT, Vector_double> inertiaMatrices(const Image<T> &imIn,
+  map<labelT, Vector_double> blobsInertiaMatrix(const Image<T> &imIn,
                                         map<labelT, Blob> &blobs,
                                         const bool central = false)
   {
@@ -157,7 +157,7 @@ namespace smil
 
     bool im3d = (imIn.getDimension() == 3);
 
-    map<labelT, Vector_double> moments = measBlobMoments(imIn, blobs, central);
+    map<labelT, Vector_double> moments = blobsMoments(imIn, blobs, central);
 
     typedef typename map<labelT, Blob>::iterator blobIter;
     for (blobIter it = blobs.begin(); it != blobs.end(); it++) {
@@ -205,14 +205,14 @@ namespace smil
     return inertia;
   }
 
-  /** inertiaMatrices() -
+  /** blobsInertiaMatrix() -
    *
    * @param[in] imLbl : input @b labeled image
    * @param[in] onlyNonZero :
    * @param[in] central : blobs centered on their barycenters
    */
   template <typename T>
-  map<T, Vector_double> inertiaMatrices(const Image<T> &imLbl,
+  map<T, Vector_double> blobsInertiaMatrix(const Image<T> &imLbl,
                                         const bool onlyNonZero = true,
                                         const bool central    = false)
   {
@@ -226,9 +226,9 @@ namespace smil
 
     map<T, Blob> blobs            = computeBlobs(imLbl, onlyNonZero);
 #if 1
-    return inertiaMatrices(imLbl, blobs, central);
+    return blobsInertiaMatrix(imLbl, blobs, central);
 #else
-    map<T, Vector_double> moments = measBlobMoments(imLbl, blobs);
+    map<T, Vector_double> moments = blobsMoments(imLbl, blobs);
 
     bool im3d = (imLbl.getDimension() == 3);
  

@@ -47,10 +47,10 @@ int main()
 #if defined(USE_CURL) && defined(USE_PNG)
 
 #if 0
-  Image_UINT8 im1("http://smil.cmm.mines-paristech.fr/images/lena.png");
+  Image<UINT8> im1("http://smil.cmm.mines-paristech.fr/images/lena.png");
 #else
   char *path = pathTestImage("gray/lena.png");
-  Image_UINT8 im1(path);
+  Image<UINT8> im1(path);
 #endif
   im1.show();
 

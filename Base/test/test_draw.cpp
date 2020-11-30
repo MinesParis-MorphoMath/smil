@@ -33,8 +33,8 @@ class Test_DrawCircle : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1(20, 15);
-    Image_UINT8 im2(20, 15);
+    Image<UINT8> im1(20, 15);
+    Image<UINT8> im2(20, 15);
     fill(im1, UINT8(127));
 
     TEST_ASSERT(drawCircle(im1, 10, 7, 5) == RES_OK);
@@ -77,8 +77,8 @@ class Test_DrawSphere : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1(20, 15);
-    Image_UINT8 im2(20, 15);
+    Image<UINT8> im1(20, 15);
+    Image<UINT8> im2(20, 15);
     fill(im1, UINT8(127));
 
     TEST_ASSERT(drawSphere(im1, 10, 7, 0, 7) == RES_OK);
@@ -123,8 +123,8 @@ class Test_DrawText : public TestCase
   {
 #ifdef USE_FREETYPE
 
-    Image_UINT8 im1(20, 15);
-    Image_UINT8 im2(20, 15);
+    Image<UINT8> im1(20, 15);
+    Image<UINT8> im2(20, 15);
     fill(im1, UINT8(127));
 
 #define N_FONT_PATHS 3

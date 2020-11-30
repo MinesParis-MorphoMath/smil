@@ -32,8 +32,8 @@ class Test_Show : public TestCase
 {
   virtual void run()
   {
-//       Image_UINT8 im1("crop_300_OK_BIN.vtk");
-//       Image_UINT8 im1("crop_300_OK_Labeled_UINT8.vtk");
+//       Image<UINT8> im1("crop_300_OK_BIN.vtk");
+//       Image<UINT8> im1("crop_300_OK_Labeled_UINT8.vtk");
 //       Image_UINT16 im1("crop_300_OK_Labeled.vtk");
       Image_UINT16 im1(50,50,50);
       

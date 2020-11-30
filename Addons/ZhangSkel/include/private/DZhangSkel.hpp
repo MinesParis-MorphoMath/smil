@@ -48,12 +48,12 @@ namespace smil
    *
    * Algorithms in this Addon don't make use of mathematical morphology
    * operations but, most of the time, on empirical rules to iteratively
-   * removal of pixels based on their @txtitalic{connectivity} or
-   * @txtitalic{neighborhood} till idempotency.
+   * removal of pixels based on their @TI{connectivity} or
+   * @TI{neighborhood} till idempotency.
    *
    * @see
-   *  - @soillebook{Chap. 5}
-   *  - @txtbold{Some related papers} :
+   *  - @SoilleBook{Chap. 5}
+   *  - @TB{Some related papers} :
    *    @cite blum1967transformation,
    *    @cite zhang_suen_1984,
    *    @cite Chen_Hsu_1988_99,

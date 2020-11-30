@@ -30,9 +30,9 @@ class Test_Resize : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1(5, 5);
-    Image_UINT8 im2(10, 10);
-    Image_UINT8 imRef(10, 10);
+    Image<UINT8> im1(5, 5);
+    Image<UINT8> im2(10, 10);
+    Image<UINT8> imRef(10, 10);
 
     UINT8 vec1[25] = {
         1,   2,   3,   4,   5,
@@ -84,7 +84,7 @@ class Test_Resize : public TestCase
       cout << "* im2" << endl;
       im2.printSelf("im2");
 
-      Image_UINT8 imDiff(10, 10);
+      Image<UINT8> imDiff(10, 10);
       diff(im2, imRef, imDiff);
       cout << "* imDiff" << endl;
       imDiff.printSelf("imDiff");
@@ -96,9 +96,9 @@ class Test_Resize_Closest : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1(5, 5);
-    Image_UINT8 im2(10, 10);
-    Image_UINT8 imRef(10, 10);
+    Image<UINT8> im1(5, 5);
+    Image<UINT8> im2(10, 10);
+    Image<UINT8> imRef(10, 10);
 
     UINT8 vec1[25] = {
         1,   2,   3,   4,   5,
@@ -139,9 +139,9 @@ class Test_Scale : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1(5, 5);
-    Image_UINT8 im2(10, 10);
-    Image_UINT8 imRef(10, 10);
+    Image<UINT8> im1(5, 5);
+    Image<UINT8> im2(10, 10);
+    Image<UINT8> imRef(10, 10);
 
     UINT8 vec1[25] = {
         1,   2,   3,   4,   5,
@@ -192,7 +192,7 @@ class Test_Scale : public TestCase
       cout << "* im2" << endl;
       im2.printSelf("im2");
 
-      Image_UINT8 imDiff(10, 10);
+      Image<UINT8> imDiff(10, 10);
       diff(im2, imRef, imDiff);
       cout << "* imDiff" << endl;
       imDiff.printSelf("imDiff");
@@ -204,9 +204,9 @@ class Test_Rotate090 : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 imIn(10,10);
-    Image_UINT8 imOut(imIn);
-    Image_UINT8 imRef(imIn);
+    Image<UINT8> imIn(10,10);
+    Image<UINT8> imOut(imIn);
+    Image<UINT8> imRef(imIn);
 
     UINT8 vIn[100] = {
       1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -253,9 +253,9 @@ class Test_Rotate180 : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 imIn(10,10);
-    Image_UINT8 imOut(imIn);
-    Image_UINT8 imRef(imIn);
+    Image<UINT8> imIn(10,10);
+    Image<UINT8> imOut(imIn);
+    Image<UINT8> imRef(imIn);
 
     UINT8 vIn[100] = {
       1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -302,9 +302,9 @@ class Test_Rotate270 : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 imIn(10,10);
-    Image_UINT8 imOut(imIn);
-    Image_UINT8 imRef(imIn);
+    Image<UINT8> imIn(10,10);
+    Image<UINT8> imOut(imIn);
+    Image<UINT8> imRef(imIn);
 
     UINT8 vIn[100] = {
       1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -351,9 +351,9 @@ class Test_Rotate360 : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 imIn(10,10);
-    Image_UINT8 imOut(imIn);
-    Image_UINT8 imRef(imIn);
+    Image<UINT8> imIn(10,10);
+    Image<UINT8> imOut(imIn);
+    Image<UINT8> imRef(imIn);
 
     UINT8 vIn[100] = {
       1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -401,9 +401,9 @@ class Test_HorizFlip : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 imIn(10,10);
-    Image_UINT8 imOut(imIn);
-    Image_UINT8 imRef(imIn);
+    Image<UINT8> imIn(10,10);
+    Image<UINT8> imOut(imIn);
+    Image<UINT8> imRef(imIn);
 
     UINT8 vIn[100] = {
       1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -450,9 +450,9 @@ class Test_VertFlip : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 imIn(10,10);
-    Image_UINT8 imOut(imIn);
-    Image_UINT8 imRef(imIn);
+    Image<UINT8> imIn(10,10);
+    Image<UINT8> imOut(imIn);
+    Image<UINT8> imRef(imIn);
 
     UINT8 vIn[100] = {
       1, 0, 0, 0, 0, 0, 0, 0, 0, 0,

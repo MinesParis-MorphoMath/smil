@@ -1,0 +1,74 @@
+/**
+ * @page p570 Smil source organisation
+ *
+ * @section s570_01 Generalities
+ *
+ * This section describes how @Smil source code is organized.
+ *
+ * Notice that all @TB{Modules} have the same organization
+ * (See \ref s570_03).
+ *
+ * @section s570_02 Smil source code tree
+ *
+ @verbatim
+ <root>
+   |- CMakelists.txt                Smil build configuration file (cmake)
+   +  CMake                         cmake include files
+   |  +  CPack                      Smil package build specifications
+   |  +  swig
+   |  +  CrossCompilation
+   |  +  Qt_MKSPECS_win32-x-g++
+   +  Core                          Module - Data structures definitions
+   +  IO                            Module - Image I/O functions
+   +  Base                          Module - Non morphological image transformations
+   +  Gui                           Module - Graphical User Interface (Qt based)
+   +  Morpho                        Module - Core Morphological functions
+   +  Advanced                      Module - Advanced algorithms
+   +  Addons
+   |  +  Color                      Module - Some color conversion functions
+   |  +  FFT                        Module - Fast Fourier Transform (convolution)
+   |  +  Filters                    Module - Non morphological image filters
+   |  +  HoughTransform             Module
+   |  +  Parsimonious               Module - Parsimonious Path Opening
+   |  +  PathOpening                Module - Path Opening
+   |  +  StochasticWS               Module - Stochastic Watershed
+   |  +  ZhangSkel                  Module - Zhang derived thinning
+   |  +  ZoneMatrix                 Module - Zone Matrix
+   |  +  Vtk                        Module
+   |  +  QVtkViewer                 Module
+   |  +  ...
+   +  NSTypes
+   +  UserModules
+   |  +  SampleModule               Module
+   +  test
+   +  images                        Directory containing images for test
+   +  doc
+   |  +  doxygen
+   |  |  + images
+   |  |  + src
+   |  +  include
+   |  +  demos
+   +  contrib
+   |  +  scripts
+   |  |  |- config-smil
+   |  +  ...
+   +  dev-tools
+   +  ...
+ @endverbatim
+ *
+ * @section s570_03  Organisation inside Modules
+ *
+ @verbatim
+ <XXXX module root>
+   |- CMakelists.txt
+   |- smilXXXX.i
+   +  include
+   |  + private
+   +  src                           Option [X]
+   +  test                          Option [X]
+   +  doc                           Option [X]
+ @endverbatim
+ *
+ *
+ * @tableofcontents
+ */

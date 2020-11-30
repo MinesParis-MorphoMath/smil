@@ -1,0 +1,14 @@
+/**
+ * @page p200 Installing
+ *
+ * @section s200_01 Generalities
+ *
+ * This section is composed of :
+ *
+ * - @subpage p210 "Getting Smil"
+ * - @subpage p230 "Installing binaries"
+ * - @subpage p260 "Installing from sources"
+ *
+ *
+ * @tableofcontents
+ */

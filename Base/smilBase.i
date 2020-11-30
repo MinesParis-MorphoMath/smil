@@ -224,7 +224,7 @@ TEMPLATE_WRAP_FUNC(measCovariance);
 TEMPLATE_WRAP_FUNC(measAutoCovariance);
 // TEMPLATE_WRAP_FUNC(measCenteredCovariance);
 // TEMPLATE_WRAP_FUNC(measCenteredAutoCovariance);
-TEMPLATE_WRAP_FUNC(measImageEntropy);
+TEMPLATE_WRAP_FUNC(measEntropy);
 TEMPLATE_WRAP_FUNC(nonZeroOffsets);
 TEMPLATE_WRAP_FUNC(isBinary);
 
@@ -242,29 +242,29 @@ TEMPLATE_WRAP_SUPPL_FUNC(rangeVal);
 
 
 %include "DBlobMeasures.hpp"
-TEMPLATE_WRAP_FUNC(measAreas);
-TEMPLATE_WRAP_FUNC(measBarycenters);
-TEMPLATE_WRAP_FUNC(measBoundBoxes);
-TEMPLATE_WRAP_FUNC(measBlobMoments);
+TEMPLATE_WRAP_FUNC(blobsArea);
+TEMPLATE_WRAP_FUNC(blobsBarycenter);
+TEMPLATE_WRAP_FUNC(blobsBoundBox);
+TEMPLATE_WRAP_FUNC(blobsMoments);
 
-TEMPLATE_WRAP_FUNC(measAreas);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measMinVals);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measMaxVals);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measRangeVals);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measMeanVals);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measVolumes);
-TEMPLATE_WRAP_FUNC_2T_CROSS(valueLists);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measModeVals);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measMedianVals);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measBarycenters);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measBoundBoxes);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measBlobMoments);
-TEMPLATE_WRAP_FUNC_2T_CROSS(measBlobsEntropy);
+TEMPLATE_WRAP_FUNC(blobsArea);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsMinVal);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsMaxVal);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsRangeVal);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsMeanVal);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsVolume);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsValueList);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsModeVal);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsMedianVal);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsBarycenter);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsBoundBox);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsMoments);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsEntropy);
 
 %include "DBlobOperations.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(areaThreshold);
-TEMPLATE_WRAP_FUNC(inertiaMatrices);
-TEMPLATE_WRAP_FUNC_2T_CROSS(inertiaMatrices);
+TEMPLATE_WRAP_FUNC(blobsInertiaMatrix);
+TEMPLATE_WRAP_FUNC_2T_CROSS(blobsInertiaMatrix);
 
 %include "DImageMatrix.hpp"
 TEMPLATE_WRAP_FUNC(matMultiply);

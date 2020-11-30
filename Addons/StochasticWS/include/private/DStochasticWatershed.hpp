@@ -346,14 +346,14 @@ namespace smil
     }
 
     typedef map<labelT, double> map2;
-    map2 m2 = measAreas(img);
+    map2 m2 = blobsArea(img);
     for (typename map2::iterator it = m2.begin(); it != m2.end(); ++it) {
       graph.nodes[it->first].area = it->second;
     }
     gradient(img, tmp, s);
     compare(img, "==", labelT(0), labelT(0), tmp, tmp);
     compare(tmp, ">", labelT(0), img, labelT(0), tmp);
-    map2 m3 = measAreas(tmp);
+    map2 m3 = blobsArea(tmp);
     for (typename map2::iterator it = m3.begin(); it != m3.end(); ++it) {
       graph.nodes[it->first].surface = it->second;
     }

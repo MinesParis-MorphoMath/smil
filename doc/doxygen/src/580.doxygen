@@ -1,0 +1,137 @@
+/**
+ * @page p580 test and benchmark programs
+ *
+ * @section s580_01 Generalities
+ *
+ * @TB{test} and @TB{benchmark} programs are built if the build process is
+ * configured to create the @TT{"test"} build target. Two ways to do this :
+ * - add the option @TT{"--test"} when configuring @Smil with the script
+ *   @TT{config-smil};
+ * - use @TT{ccmake} to enable the option @TT{"BUILD_TEST"}.
+ *
+ * @note
+ * @TB{test} and @TB{benchmark} programs follow the naming convention :
+ * @TT{test_XXXX.cpp} and @TT{bench_XXXX.cpp}.
+ *
+ *
+ * @section s580_02 test programs
+ *
+ * See below an example of test program (this example is in the @TT{dev-tools}
+ * directory in the source tree : @TT{dev-tools/test_template.cpp}).
+ *
+ * Note the call to the function @TB{@TT{pathTestImage()}}. This function is defined
+ * in the header @TT{Smil-build.h}. When you call this function, it will search
+ * for an image in the @TT{images} directory of the source tree. If it doesn't
+ * find it there, it will try to get it in the @TT{images} directory of @Smil
+ * web server.
+ *
+ * @code{.cpp}
+ * #include "DMorphoMeasures.hpp"
+ * #include "Smil-build.h"
+ *
+ * using namespace smil;
+ *
+ * class TestErode : public TestCase
+ * {
+ *   virtual void run()
+ *   {
+ *     char *path;
+ *
+ *     path = pathTestImage("gray/lena.png");
+ *     Image<UINT8> imIn(path);
+ *     Image<UINT8> ImOut(imIn);
+ *
+ *     path = pathTestImage("gray/lena-erode.png");
+ *     Image<UINT8> imTruth(path);
+ *
+ *     erode(imIn, imOut);
+ *     TEST_ASSERT(imOut == imTruth);
+ *     if (retVal != RES_OK)
+ *       imOut.printSelf();
+ *   }
+ * };
+ *
+ * class TestDilate : public TestCase
+ * {
+ *   virtual void run()
+ *   {
+ *     char *path;
+ *
+ *     path = pathTestImage("gray/lena.png");
+ *     Image<UINT8> imIn(path);
+ *     Image<UINT8> ImOut(imIn);
+ *
+ *     path = pathTestImage("gray/lena-dilate.png");
+ *     Image<UINT8> imTruth(path);
+ *
+ *     dilate(imIn, imOut);
+ *     TEST_ASSERT(imOut == imTruth);
+ *     if (retVal != RES_OK)
+ *       imOut.printSelf();
+ *   }
+ * };
+ *
+ * int main()
+ * {
+ *   TestSuite ts;
+ *   ADD_TEST(ts, TestErode);
+ *   ADD_TEST(ts, TestDilate);
+ *
+ *   return ts.run();
+ * }
+ * @endcode
+ *
+ * There are two ways to launch the built test programs (in the build tree).
+ * -# launch all tests :
+ *    @code{.bash}
+ *    make test
+ *    @endcode
+ * -# launch a single test (as an example) :
+ *    @code{.bash}
+ *    bin/test_hierar_queue
+ *    @endcode
+ *
+ * @section s580_03 bench programs
+ *
+ * See below an example of benchmark program (this example is in the @TT{dev-tools}
+ * directory in the source tree : @TT{dev-tools/bench_template.cpp}).
+ *
+ * @code{.cpp}
+ * #include "Core/include/DCore.h"
+ * #include "DMorpho.h"
+ *
+ * using namespace smil;
+ *
+ * int main()
+ * {
+ *   Image<UINT8> im1(5562, 7949);
+ *   Image<UINT8> im2(im1);
+ *
+ *   UINT BENCH_NRUNS = 1E2;
+ *
+ *   BENCH_IMG_STR(dilate, "hSE", im1, im2, hSE());
+ *   BENCH_IMG_STR(dilate, "sSE", im1, im2, sSE());
+ *   BENCH_IMG_STR(dilate, "CrossSE", im1, im2, CrossSE());
+ *   BENCH_IMG_STR(open, "hSE", im1, im2, hSE());
+ *   BENCH_IMG_STR(open, "sSE", im1, im2, sSE());
+ *   BENCH_IMG_STR(open, "CrossSE", im1, im2, CrossSE());
+ * }
+ * @endcode
+ *
+ * There are two ways to launch the built benchmark programs (in the build tree).
+ * -# launch all benchmarks :
+ *    @code{.bash}
+ *    for b in bin/bench*
+ *    do
+ *      printf "====== %-24s ======\n" $(basename $b)
+ *      $b
+ *    done
+ *    @endcode
+ * -# launch a single benchmark (as an example) :
+ *    @code{.bash}
+ *    bin/bench_hierar_queue
+ *    @endcode
+ *
+ *
+ * @tableofcontents
+ */

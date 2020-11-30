@@ -25,53 +25,134 @@
 # SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ########################################################
+# FONT types
+########################################################
+
+ALIASES += TB{1}="<b>\1</b>"
+ALIASES += TT{1}="<code>\1</code>"
+ALIASES += TI{1}="<i>\1</i>"
+
+
+ALIASES += Smil="@TB{Smil}"
+ALIASES += Linux="@TB{Linux}"
+ALIASES += Linux{1}="@TB{Linux \1}"
+ALIASES += Python="@TB{Python}"
+ALIASES += Python{1}="@TB{Python \1}"
+ALIASES += Anaconda="@TB{Anaconda}"
+ALIASES += Doxygen="@TB{Doxygen}"
+
+########################################################
 # WEB PAGE
 ########################################################
 
 #######  Paths  #######
 
-ALIASES += web_root=http://smil.cmm.mines-paristech.fr
-ALIASES += home_web_root=\web_root
-ALIASES += download_web_root=\home_web_root/releases
+ALIASES += URL{1}="<a href=\"\1\"><b>\1</b></a>"
+ALIASES += URL{2}="<a href=\"\1\"><b>\2</b></a>"
+
+ALIASES += RootSmil="http://smil.cmm.mines-paristech.fr"
+ALIASES += WebServerSmil="@URL{@RootSmil, Smil web server}"
+ALIASES += UrlSmil{2}="@URL{@RootSmil/\1,\2}"
+ALIASES += NotebooksSmil{2}="@URL{@RootSmil/notebooks/\1,\2}"
+
+ALIASES += RootCMM="http://www.cmm.mines-paristech.fr"
+ALIASES += WebServerCMM="@URL{@RootCMM, Centre de Morphologie Mathematique}"
+ALIASES += UrlCmm{2}="@URL{@RootCMM/\1,\2}"
+
+ALIASES += RootGitHub="https://github.com/MinesParis-MorphoMath"
+ALIASES += UrlGitHub{2}="@URL{@RootGitHub/\1,\2}"
+
+ALIASES += RootWikipedia="https://en.wikipedia.org/wiki"
+ALIASES += UrlWikipedia{2}="@URL{@RootWikipedia/\1, \2}"
+
+ALIASES += wikipedia{2}="@UrlWikipedia{\1, \2}"
+
+#ALIASES += web_root=@SmilRoot
+#ALIASES += home_web_root=@web_root
+#ALIASES += download_web_root=@home_web_root/releases
 
 # Images
-ALIASES += images_root=\home_web_root/images
+#ALIASES += images_root=\home_web_root/images
 
 # Demos
-ALIASES += demos_root=\home_web_root/demos
-
+#ALIASES += demos_root=\home_web_root/demos
 
 ########################################################
 # MISC
 ########################################################
 
 # Images
-#ALIASES += images{1}="\image html \1.png \\n \image latex \1.eps"
-#ALIASES += images{2}="\image html \1.png \2 \\n \image latex \1.eps \2"
 
-ALIASES += images{1}="\image html \1.png"
-ALIASES += images{2}="\image html \1.png \2.png"
+
+ALIASES += IncImages{1}=" \
+  @htmlonly \
+  <table align=center border=0> \
+  <tr> \
+  <td><img src=\1.png alt=\1/> </td> \
+  </tr> \
+  </table> \
+  @endhtmlonly"
+
+ALIASES += IncImages{2}=" \
+  @htmlonly \
+  <table align=center border=0> \
+  <tr> \
+  <td><img src=\1.png alt=\1 /> </td> \
+  <td><img src=\2.png alt=\2 /> </td> \
+  </tr> \
+  </table> \
+  @endhtmlonly"
+
+ALIASES += IncImages{3}=" \
+  @htmlonly \
+  <table align=center border=0> \
+  <tr> \
+  <td><img src=\1.png alt=\1/> </td> \
+  <td><img src=\2.png alt=\2/> </td> \
+  <td><img src=\3.png alt=\3/> </td> \
+  </tr> \
+  </table> \
+  @endhtmlonly"
+
+ALIASES += IncImages{4}=" \
+  @htmlonly \
+  <table align=center border=0> \
+  <tr> \
+  <td><img src=\1.png alt=\1/> </td> \
+  <td><img src=\2.png alt=\2/> </td> \
+  <td><img src=\3.png alt=\3/> </td> \
+  <td><img src=\4.png alt=\4/> </td> \
+  </tr> \
+  </table> \
+  @endhtmlonly"
+
 
 ALIASES += devdoc="\if DOXYGEN_DEVEL_DOC"
 ALIASES += enddevdoc="\endif"
 
+########################################################
+# REFERENCES BIBLIOGRAPHIQUES
+########################################################
 
-ALIASES += soillebook="\cite Soille_2003 P. Soille, Morphological %Image Analysis, 2003"
-ALIASES += soillebook{1}="\cite Soille_2003 P. Soille, Morphological %Image Analysis, 2003, \1"
+ALIASES += SoilleBook="\cite Soille_2003 P. Soille, \
+            Morphological %Image Analysis, 2003"
+ALIASES += SoilleBook{1}="\cite Soille_2003 P. Soille, \
+            Morphological %Image Analysis, 2003, \1"
 
-ALIASES += serra82book="\cite Serra_1982 Jean Serra, %Image Analysis and Mathematical Morphology - Vol. 1, 1982"
-ALIASES += serra82book{1}="\cite Serra_1982 Jean Serra, %Image Analysis and Mathematical Morphology - Vol. 1, 1982, \1"
+ALIASES += Serra82Book="\cite Serra_1982 Jean Serra, \
+            %Image Analysis and Mathematical Morphology - Vol. 1, 1982"
+ALIASES += Serra82Book{1}="\cite Serra_1982 Jean Serra, \
+            %Image Analysis and Mathematical Morphology - Vol. 1, 1982, \1"
 
-ALIASES += serra88book="\cite Serra_1988 Jean Serra, %Image Analysis and Mathematical Morphology - Vol. 2, 1988"
-ALIASES += serra88book{1}="\cite Serra_1988 Jean Serra, %Image Analysis and Mathematical Morphology - Vol. 2, 1988, \1"
+ALIASES += Serra88Book="\cite Serra_1988 Jean Serra, \
+            %Image Analysis and Mathematical Morphology - Vol. 2, 1988"
+ALIASES += Serra88Book{1}="\cite Serra_1988 Jean Serra, \
+            %Image Analysis and Mathematical Morphology - Vol. 2, 1988, \1"
 
-ALIASES += wikipedia{2}="<a href=https://en.wikipedia.org/wiki/\1>\2</a>"
 
-ALIASES += txtbold{1}="<b>\1</b>"
-ALIASES += txttype{1}="<code>\1</code>"
-ALIASES += txtitalic{1}="<i>\1</i>"
 
-ALIASES += Smil="<b>Smil</b>"
+# Something like (See [2])
+ALIASES += SSee{1}=" (@TB{See} @cite \1})"
 
 ########################################################
 # EXAMPLES
@@ -79,22 +160,20 @@ ALIASES += Smil="<b>Smil</b>"
 
 ALIASES += smilexample{1}="<b>Example</b>   @include \1 "
 ALIASES += smilexample{2}="<b>Example : \1</b>   @include \2 "
-#ALIASES += smilexample{2}="<b>Example</b>  @include \1 @include \2"
-#ALIASES += smilexample{3}="<b>Example</b>  @include \1 @include \2 @include \3"
 
-ALIASES += smilcode{1}="@par Example { }  @n @include \1 "
+# ALIASES += smilcode{1}="@par Example { }  @n @include \1 "
 
 ########################################################
 # DOWNLOADS
 ########################################################
 
-ALIASES += download_link{1}="<a href=\download_web_root/\1>\1</a>"
+# ALIASES += download_link{1}="<a href=\download_web_root/\1>\1</a>"
 
 ########################################################
 # DYNAMIC SECTIONS
 ########################################################
 
-ALIASES += begin_dynsection{2}=" \
+ALIASES += beginDynSection{2}=" \
   \htmlonly \
   <script src=\"dynsections.js\" type=\"text/javascript\"></script> \
   <div id=\"\2\" class=\"dynheader closed\" \
@@ -107,28 +186,28 @@ ALIASES += begin_dynsection{2}=" \
   <div id=\"\2-content\" class=\"dyncontent\" style=\"display: none;\"> \
   \endhtmlonly"
 
-ALIASES += end_dynsection=" \
+ALIASES += endDynSection=" \
   \htmlonly \
   </div> \
   \endhtmlonly"
 
 
-ALIASES += begintheory{1}="\begin_dynsection{\"Theoretical Details:\",\1}"
-ALIASES += endtheory=\end_dynsection
+ALIASES += begintheory{1}="\beginDynSection{\"Theoretical Details:\",\1}"
+ALIASES += endtheory=\endDynSection
 
 
 ########################################################
 # FUNCTIONS - SPECIAL
 ########################################################
 
-ALIASES += inplace_safe=" \
+ALIASES += InplaceSafe=" \
   \htmlonly \
   <table border=0> \
   <tr><td><img src=\"inplace_full.png\" /> </td><td>Inplace safe</td></tr> \
   </table> \
   \endhtmlonly"
 
-ALIASES += inplace_safe{1}=" \
+ALIASES += InplaceSafe{1}=" \
   \htmlonly \
   <table border=0> \
   <tr><td><img src=\"inplace_half.png\" /> \
@@ -136,10 +215,10 @@ ALIASES += inplace_safe{1}=" \
   </table> \
   \endhtmlonly"
 
-ALIASES += inplace_unsafe=" \
+ALIASES += InplaceUnsafe=" \
   \htmlonly \
   <table border=0> \
-  <tr><td><img src=\"inplace_unsafe.png\" /> </td><td>Inplace unsafe</td></tr> \
+  <tr><td><img src=\"InplaceUnsafe.png\" /> </td><td>Inplace unsafe</td></tr> \
   </table> \
   \endhtmlonly"
 
@@ -156,4 +235,5 @@ ALIASES += parallelized=" \
   <tr><td><img src=\"parallelized.png\" /> </td><td>Parallelized</td></tr> \
   </table> \
   \endhtmlonly"
+
 

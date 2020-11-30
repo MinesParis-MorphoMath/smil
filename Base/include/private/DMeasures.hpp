@@ -887,7 +887,7 @@ namespace smil
    * @return For 3D images: vector(m000, m100, m010, m001, m110, m101, m011,
    * m200, m020, m002)
    *
-   * @see measBlobMoments() call if you want to evaluate moments for each
+   * @see blobsMoments() call if you want to evaluate moments for each
    * blob.
    *
    * @see <a href="http://en.wikipedia.org/wiki/Image_moment">Image moment on
@@ -1271,16 +1271,16 @@ namespace smil
   /** @endcond */
 
   /**
-   * measImageEntropy() - Image entropy
+   * measEntropy() - Image entropy
    *
    * @details Evaluate Shannon entropy of the image (in bits)
    *
    * @param[in] imIn : input image
    * @return image entropy
    *
-   * @see measBlobsEntropy() to compute entropy inside each label.
+   * @see blobsEntropy() to compute entropy inside each label.
    */
-  template <class T> double measImageEntropy(const Image<T> &imIn)
+  template <class T> double measEntropy(const Image<T> &imIn)
   {
     ASSERT_ALLOCATED(&imIn);
 
@@ -1309,7 +1309,7 @@ namespace smil
   }
 
   /**
-   * measImageEntropy() - Image entropy
+   * measEntropy() - Image entropy
    *
    * Evaluate Shannon entropy of the image in a region defined by a mask.
    *
@@ -1317,11 +1317,11 @@ namespace smil
    * @param[in] imMask : mask defining where the entropy shall be evaluated
    * @return image entropy
    *
-   * @see measBlobsEntropy() to compute entropy inside each label.
+   * @see blobsEntropy() to compute entropy inside each label.
    *
    */
   template <class T>
-  double measImageEntropy(const Image<T> &imIn, const Image<T> &imMask)
+  double measEntropy(const Image<T> &imIn, const Image<T> &imMask)
   {
     ASSERT_ALLOCATED(&imIn, &imMask);
     ASSERT_SAME_SIZE(&imIn, &imMask);

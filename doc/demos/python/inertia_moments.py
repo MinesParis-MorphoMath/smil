@@ -48,8 +48,8 @@ blobs = computeBlobs(imLbl)
 
 # Compute Inertia Matrices
 
-mats  = measBlobMoments(imIn, blobs)
-bboxes = measBoundBoxes(imLbl)
+mats  = blobsMoments(imIn, blobs)
+bboxes = blobsBoundBox(imLbl)
 imDraw = Image(imIn)
 
 print("Label\tA\tB\tTheta")

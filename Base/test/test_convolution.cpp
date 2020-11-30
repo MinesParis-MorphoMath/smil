@@ -29,9 +29,9 @@ class Test_ConvolHoriz : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1(10, 5);
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
+    Image<UINT8> im1(10, 5);
+    Image<UINT8> im2(im1);
+    Image<UINT8> im3(im1);
 
     UINT8 vec1[] = {
         59,  39,  15,  156, 35,  75,  132, 123, 25,  88,  66,  188, 77,
@@ -64,9 +64,9 @@ class Test_ConvolVert : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1(10, 5);
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
+    Image<UINT8> im1(10, 5);
+    Image<UINT8> im2(im1);
+    Image<UINT8> im3(im1);
 
     UINT8 vec1[] = {
         59,  39,  15,  156, 35,  75,  132, 123, 25,  88,  66,  188, 77,
@@ -97,9 +97,9 @@ class Test_GaussianFilter : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1(10, 5);
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
+    Image<UINT8> im1(10, 5);
+    Image<UINT8> im2(im1);
+    Image<UINT8> im3(im1);
 
     UINT8 vec1[] = {
         59,  39,  15,  156, 35,  75,  132, 123, 25,  88,  66,  188, 77,

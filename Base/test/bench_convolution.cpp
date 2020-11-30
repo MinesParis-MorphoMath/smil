@@ -32,8 +32,8 @@ int main(void)
 {
   UINT BENCH_NRUNS = 100;
 
-  Image_UINT8 im1(1024, 1024);
-  Image_UINT8 im2(im1);
+  Image<UINT8> im1(1024, 1024);
+  Image<UINT8> im2(im1);
 
   BENCH_IMG_STR(gaussianFilter, "size 2", im1, 2, im2);
   BENCH_IMG_STR(gaussianFilter, "size 20", im1, 20, im2);

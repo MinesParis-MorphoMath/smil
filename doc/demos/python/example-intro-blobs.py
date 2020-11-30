@@ -11,8 +11,8 @@ iml.showLabel()
 blobs = sp.computeBlobs(iml)
 
 # evaluate some measures :
-areas = sp.measAreas(blobs)
-barys = sp.measBarycenters(im, blobs)
+areas = sp.blobsArea(blobs)
+barys = sp.blobsBarycenter(im, blobs)
 
 # print areas and barycenters of each region
 print("{:3s} - {:>6s} - {:>13s}".format("ID", "Area", "Barycenter"))

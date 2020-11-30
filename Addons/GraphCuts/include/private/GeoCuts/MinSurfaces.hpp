@@ -512,12 +512,13 @@ namespace smil
 
     Graph_d::edge_descriptor e1, e2, e3, e4;
     Graph_d::vertex_descriptor vSource, vSink;
-    T1 numVertex = maxVal(imIn);
-    T2 numLabels = maxVal(imMarker);
 
     std::cout << "build graph vertices" << std::endl;
-
     size_t pixelCount = imIn.getPixelCount();
+
+    size_t numVertex = pixelCount;
+    size_t numLabels = maxVal(imMarker);
+
     for (off_t i = 0; i < (off_t) pixelCount; i++) {
       boost::add_vertex(g);
       bufOut[i] = 1;

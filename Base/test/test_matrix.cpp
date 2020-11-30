@@ -34,9 +34,9 @@ class Test_Transpose : public TestCase
     UINT8 vecTrans[20] = {1, 5, 9,  13, 17, 2, 6, 10, 14, 18,
                           3, 7, 11, 15, 19, 4, 8, 12, 16, 20};
 
-    Image_UINT8 im1(4, 5);
-    Image_UINT8 im2(im1);
-    Image_UINT8 imTrans(5, 4);
+    Image<UINT8> im1(4, 5);
+    Image<UINT8> im2(im1);
+    Image<UINT8> imTrans(5, 4);
 
     im1 << vec1;
 
@@ -62,10 +62,10 @@ class Test_Multiply : public TestCase
         9, 12, 15, 19, 26, 33, 29, 40, 51, 39, 54, 69,
     };
 
-    Image_UINT8 im1(2, 4);
-    Image_UINT8 im2(3, 2);
-    Image_UINT8 im3;
-    Image_UINT8 imMul(3, 4);
+    Image<UINT8> im1(2, 4);
+    Image<UINT8> im2(3, 2);
+    Image<UINT8> im3;
+    Image<UINT8> imMul(3, 4);
 
     im1 << vec1;
     im2 << vec2;

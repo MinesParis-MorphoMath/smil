@@ -62,8 +62,8 @@ class Test_Fill : public TestCase
     UINT8 vecFill[20] = {127, 127, 127, 127, 127, 127, 127, 127, 127, 127,
                          127, 127, 127, 127, 127, 127, 127, 127, 127, 127};
 
-    Image_UINT8 im1(4, 5);
-    Image_UINT8 imTruth(4, 5);
+    Image<UINT8> im1(4, 5);
+    Image<UINT8> imTruth(4, 5);
 
     im1 << vec1;
     imTruth << vecFill;
@@ -85,10 +85,10 @@ class Test_Equal : public TestCase
     UINT8 vecEqu[20] = {255, 0, 0,   255, 0,   0,   255, 255, 0,   255,
                         0,   0, 255, 0,   255, 255, 255, 255, 255, 255};
 
-    Image_UINT8 im1(4, 5);
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
-    Image_UINT8 imTruth(im1);
+    Image<UINT8> im1(4, 5);
+    Image<UINT8> im2(im1);
+    Image<UINT8> im3(im1);
+    Image<UINT8> imTruth(im1);
 
     UINT8 *pix;
 
@@ -120,10 +120,10 @@ class Test_Bit : public TestCase
         230, 230, 86, 100, 176, 158, 122, 132, 213, 219,
     };
 
-    Image_UINT8 im1(4, 5);
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
-    Image_UINT8 imTruth(im1);
+    Image<UINT8> im1(4, 5);
+    Image<UINT8> im2(im1);
+    Image<UINT8> im3(im1);
+    Image<UINT8> imTruth(im1);
 
     im1 << vec1;
     im2 << vec2;
@@ -160,9 +160,9 @@ class Test_ApplyLookup : public TestCase
         0, 5, 0, 0, 0, 255, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     };
 
-    Image_UINT8 im1(4, 5);
-    Image_UINT8 im2(im1);
-    Image_UINT8 imTruth(4, 5);
+    Image<UINT8> im1(4, 5);
+    Image<UINT8> im2(im1);
+    Image<UINT8> imTruth(4, 5);
 
     im1 << vec1;
     imTruth << vec2;

@@ -939,11 +939,11 @@ namespace smil
   }
 
   /**
-   * geodesicDiameter() - @txtbold{Barycenter Geodesic Diameter}
+   * geodesicDiameter() - @TB{Barycenter Geodesic Diameter}
    *
    * @details This function evaluates, for each blob, its
-   * @txtbold{Barycenter Geodesic Diameter}. This value is defined as the
-   * biggest @txtbold{Geodesic Distance} between any two points in the blob.
+   * @TB{Barycenter Geodesic Diameter}. This value is defined as the
+   * biggest @TB{Geodesic Distance} between any two points in the blob.
    * *
    * The blob is labeled with the result.
    *
@@ -966,17 +966,17 @@ namespace smil
   }
 
   /**
-   * geodesicElongation() - @txtbold{Geodesic Elongation}
+   * geodesicElongation() - @TB{Geodesic Elongation}
    *
    * @details This function evaluates, for each blob, its
-   * @txtbold{Geodesic Elongation} defined by the relation : 
+   * @TB{Geodesic Elongation} defined by the relation : 
    * 
    * @f[
    *  E(X) = \dfrac{\pi \:.\: L^{2}(X)}{4 \:.\: S(X)}
    * @f]
    * 
-   * where @f$L(X)@f$ is the @txtbold{Geodesic Diameter} of the blob and
-   * @f$S(X)@f$ is the @txtbold{Area} of the blob.
+   * where @f$L(X)@f$ is the @TB{Geodesic Diameter} of the blob and
+   * @f$S(X)@f$ is the @TB{Area} of the blob.
    * 
    * The blob is labeled with the result.
    *
@@ -998,18 +998,18 @@ namespace smil
   }
 
   /**
-   * geodesicTortuosity() - @txtbold{Geodesic Tortuoisity}
+   * geodesicTortuosity() - @TB{Geodesic Tortuoisity}
    * 
    * @details This function evaluates, for each blob, its
-   * @txtbold{Geodesic Tortuoisity} defined by the relation : 
+   * @TB{Geodesic Tortuoisity} defined by the relation : 
    *
    * @f[
    *   T(X) = \dfrac{L(X)}{L_{Euclidean}(X)}
    * @f]
    *
-   * where @f$L(X)@f$ is the @txtbold{Geodesic Diameter} of the blob and
-   * @f$L_{Euclidean}(X)@f$ is the @txtbold{Euclidean Distance} between the
-   * @txtbold{Geodesic Extremities} of the blob.
+   * where @f$L(X)@f$ is the @TB{Geodesic Diameter} of the blob and
+   * @f$L_{Euclidean}(X)@f$ is the @TB{Euclidean Distance} between the
+   * @TB{Geodesic Extremities} of the blob.
    *
    * The blob is labeled with the result.
    *
@@ -1030,9 +1030,9 @@ namespace smil
   }
 
   /**
-   * geodesicExtremities() - @txtbold{Geodesic Extremities}
+   * geodesicExtremities() - @TB{Geodesic Extremities}
    *
-   * This function finds the @txtbold{Geodesic Extremities} of each blob and set
+   * This function finds the @TB{Geodesic Extremities} of each blob and set
    * the pixel value of each extremity to an integer beginning with @b 1.
    *
    * @param[in] imIn : binary input image

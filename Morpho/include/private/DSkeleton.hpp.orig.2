@@ -47,20 +47,20 @@ namespace smil
    * boundary of the set reaches at least two distinct boundary points.
    *
    * @see
-   *  - @soillebook{Chap. 5}
+   *  - @SoilleBook{Chap. 5}
    *
    * @{
    */
 
   /**
-   * skiz() - Skeleton by Influence Zones @txtbold{(Skiz)}
+   * skiz() - Skeleton by Influence Zones @TB{(Skiz)}
    *
    * Thinning of the background with a Composite Structuring Element
    * @b HMT_sL(6) followed by a thinning with a Composite Structuring Element
    * @b HMT_hM(6).
    *
    * @see
-   * - @soillebook{p. 170}
+   * - @SoilleBook{p. 170}
    * - @b HMT_sL() and @b HMT_hM() in CompStrEltList
    *
    * @param[in] imIn : input image

@@ -36,20 +36,20 @@ int main()
 {
     UINT BENCH_NRUNS = 1E3;
     
-    Image_UINT8 im1("http://smil.cmm.mines-paristech.fr/images/barbara.png");
-    Image_UINT8 im2(im1);
-    Image_UINT8 im3(im1);
+    Image<UINT8> im1("http://smil.cmm.mines-paristech.fr/images/barbara.png");
+    Image<UINT8> im2(im1);
+    Image<UINT8> im3(im1);
     threshold(im1, im2);
     label(im2, im3);
     
-    BENCH_IMG(measAreas, im2);
+    BENCH_IMG(blobsArea, im2);
     
     BENCH_IMG(computeBlobs, im3);
     map<UINT8, Blob> blobs = computeBlobs(im3);
     
-    BENCH_STR(measAreas, "Blobs", blobs);
+    BENCH_STR(blobsArea, "Blobs", blobs);
     
-    BENCH_IMG(measVolumes, im1, blobs);
+    BENCH_IMG(blobsVolume, im1, blobs);
 
 }
 

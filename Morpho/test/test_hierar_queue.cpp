@@ -39,7 +39,7 @@ class Test_HierarchicalQueue : public TestCase
 {
   virtual void run()
   {
-      Image_UINT8 img(6,1);
+      Image<UINT8> img(6,1);
       UINT8 vals[] = { 0, 0, 0, 2, 2, 2 };
       img << vals;
       
@@ -86,9 +86,9 @@ class Test_InitHierarchicalQueue : public TestCase
       };
       
       
-      Image_UINT8 imIn(6,7);
-      Image_UINT8 imLbl(imIn);
-      Image_UINT8 imStatus(imIn);
+      Image<UINT8> imIn(6,7);
+      Image<UINT8> imLbl(imIn);
+      Image<UINT8> imStatus(imIn);
 
       imIn << vecIn;
       imLbl << vecLbl;
@@ -114,9 +114,9 @@ class Test_Build : public TestCase
         0, 0, 0, 0, 4, 1, 1, 2, 0, 0, 0
       };
       
-      Image_UINT8 imIn(11,1);
-      Image_UINT8 imMark(imIn);
-      Image_UINT8 imBuild(imIn);
+      Image<UINT8> imIn(11,1);
+      Image<UINT8> imMark(imIn);
+      Image<UINT8> imBuild(imIn);
 
       imIn << vecIn;
       imMark << vecMark;
@@ -127,7 +127,7 @@ class Test_Build : public TestCase
         0, 0, 0, 0, 4, 2, 2, 2, 1, 1, 1
       };
       
-      Image_UINT8 imTruth(imIn);
+      Image<UINT8> imTruth(imIn);
       
       imTruth << vecTruth;
       
@@ -162,9 +162,9 @@ class Test_BinBuild : public TestCase
           0,   0,   0,   0,   0,   0, 255,
       };
       
-      Image_UINT8 imIn(7,7);
-      Image_UINT8 imMark(imIn);
-      Image_UINT8 imBuild(imIn);
+      Image<UINT8> imIn(7,7);
+      Image<UINT8> imMark(imIn);
+      Image<UINT8> imBuild(imIn);
 
       imIn << vecIn;
       imMark << vecMark;
@@ -178,7 +178,7 @@ class Test_BinBuild : public TestCase
         0,   0,   0,   0,   0, 255,   0,
         0,   0,   0,   0,   0,   0, 255,
       };
-      Image_UINT8 imTruth(imIn);
+      Image<UINT8> imTruth(imIn);
       imTruth << vecTruth;
       
       binBuild(imIn, imMark, imBuild, sSE());

@@ -12,13 +12,13 @@ namespace smil
    *     Distance (to border) Zone Matrix</a>
    *
    * @see
-   * - @cite DBLP:journals/corr/ZwanenburgLVL16 - @txtitalic{%Image biomarker 
+   * - @cite DBLP:journals/corr/ZwanenburgLVL16 - @TI{%Image biomarker 
    *   standardisation initiative}
    *
-   * - @cite thibault_angulo_meyer:2014 - @txtitalic{%Advanced Statistical Matrices for 
+   * - @cite thibault_angulo_meyer:2014 - @TI{%Advanced Statistical Matrices for 
    *  Texture Characterization: Application to Cell Classification}
    *
-   * - @cite thibault:hal-00833529 - @txtitalic{%Advanced Statistical Matrices for Texture
+   * - @cite thibault:hal-00833529 - @TI{%Advanced Statistical Matrices for Texture
    *   Characterization: Application to DNA Chromatin and Microtubule Network}
    *   Classification
    *

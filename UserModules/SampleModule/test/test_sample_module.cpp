@@ -30,45 +30,44 @@ class Test_SampleModule : public TestCase
 {
   virtual void run()
   {
-      UINT8 vec1[16] = {
-        1,   2,   3,   4,
-        5,   6,   7,   8,
-        9,  10,  11,  12,
-        13,  14,  15,  16,
-      };
-      
-      Image_UINT8 im1(4,4), im2(im1);
-      im1 << vec1;
-      
-      UINT8 vecTruth[16] = {
-        254, 253, 252, 251,
-        250, 249, 248, 247,
-        246, 245, 244, 243,
-        242, 241, 240, 239,
-      };
-      
-      Image_UINT8 imTruth(im1);
-      imTruth << vecTruth;
-      
-      samplePixelFunction(im1, im2);
-      
-      TEST_ASSERT(im2==imTruth)
-      
-      if (retVal!=RES_OK)
-      {
-          im2.printSelf(1);
-          imTruth.printSelf(1);
-      }
-      
+    UINT8 vec1[16] = {
+      1,   2,   3,   4,
+      5,   6,   7,   8,
+      9,  10,  11,  12,
+      13,  14,  15,  16,
+    };
+
+    Image<UINT8> im1(4,4), im2(im1);
+    im1 << vec1;
+
+    UINT8 vecTruth[16] = {
+      254, 253, 252, 251,
+      250, 249, 248, 247,
+      246, 245, 244, 243,
+      242, 241, 240, 239,
+    };
+
+    Image<UINT8> imTruth(im1);
+    imTruth << vecTruth;
+
+    samplePixelFunction(im1, im2);
+
+    TEST_ASSERT(im2==imTruth)
+
+    if (retVal!=RES_OK)
+    {
+        im2.printSelf(1);
+        imTruth.printSelf(1);
+    }
   }
 };
 
 int main(int argc, char *argv[])
 {
-      TestSuite ts;
+  TestSuite ts;
 
-      ADD_TEST(ts, Test_SampleModule);
-      
-      return ts.run();
+  ADD_TEST(ts, Test_SampleModule);
+
+  return ts.run();
 }
 

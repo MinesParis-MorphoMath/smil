@@ -111,7 +111,7 @@ namespace smil
      * @param[in] indexList : The list of point indexes
      *
      * The index values are defined for each grid type as follow:
-     * @images{se_indexes}
+     * @IncImages{se_indexes}
      *
      * @b Example:
      * @code{.py}
@@ -201,8 +201,8 @@ namespace smil
      * a grid.
      *
      * Index are defined as in the following drawings :
-     * - Grids : @txtbold{Square} and @txtbold{Hexagonal}
-     *   @images{grids}
+     * - Grids : @TB{Square} and @TB{Hexagonal}
+     *   @IncImages{grids}
      *
      * @param[in] index : index to predefined point coordinates, as above.
      *
@@ -234,7 +234,7 @@ namespace smil
 
     /**
      * addPoint() - Add a point to the structurant element given its coordinates
-     * in a @txttype{IntPoint} data structure.
+     * in a @TT{IntPoint} data structure.
      *
      * @param[in] pt : a point to be added to the structuring element (itself)
      */
@@ -290,7 +290,7 @@ namespace smil
 
     /** setName() - Set the name of the structuring element
      *
-     * Set the structuring element based on the type field @txtbold{seT}
+     * Set the structuring element based on the type field @TB{seT}
      */
     void setName()
     {
@@ -343,7 +343,7 @@ namespace smil
     * printSelf() - Print the contents of the structuring element
     *
     * @note
-    * In @txtbold{Python} this has the same effect than @txtbold{print(se)}
+    * In @TB{Python} this has the same effect than @TB{print(se)}
     */
     virtual void printSelf(ostream &os = std::cout, string indent = "") const;
 
@@ -361,7 +361,7 @@ namespace smil
    * Square structuring element.
    *
    * Points :
-   * @images{squ_se}
+   * @IncImages{squ_se}
    *
    */
   class SquSE : public StrElt
@@ -380,7 +380,7 @@ namespace smil
    * Square structuring element without center point.
    *
    * Points :
-   * @images{squ_se0}
+   * @IncImages{squ_se0}
    *
    */
 
@@ -402,7 +402,7 @@ namespace smil
    * Hexagonal structuring element.
    *
    * Points :
-   * @images{hex_se}
+   * @IncImages{hex_se}
    *
    */
   class HexSE : public StrElt
@@ -421,7 +421,7 @@ namespace smil
    * Hexagonal structuring element without center point.
    *
    * Points :
-   * @images{hex_se0}
+   * @IncImages{hex_se0}
    *
    */
   class HexSE0 : public StrElt
@@ -440,7 +440,7 @@ namespace smil
    * Cross structuring element.
    *
    * Points :
-   * @images{cross_se}
+   * @IncImages{cross_se}
    *
    */
 
@@ -460,7 +460,7 @@ namespace smil
    * Horizontal segment structuring element.
    *
    * Points :
-   * @images{horiz_se}
+   * @IncImages{horiz_se}
    *
    */
 
@@ -480,7 +480,7 @@ namespace smil
    * Vertical segment structuring element.
    *
    * Points :
-   * @images{vert_se}
+   * @IncImages{vert_se}
    *
    */
 
@@ -500,7 +500,7 @@ namespace smil
    * 3D Cubic structuring element (26 neighbors).
    *
    * Points :
-   * @images{cube_se}
+   * @IncImages{cube_se}
    *
    */
   class CubeSE : public StrElt
@@ -533,7 +533,7 @@ namespace smil
    * 3D Cross structuring element (6 neighbors).
    *
    * Points :
-   * @images{cross3d_se}
+   * @IncImages{cross3d_se}
    *
    */
   class Cross3DSE : public StrElt
@@ -559,7 +559,7 @@ namespace smil
   /**
    * Rhombicuboctahedron struturing element (80 neighbors).
    * Points :
-   * @images{rhombicuboctaedron_se}
+   * @IncImages{rhombicuboctaedron_se}
    *
    */
   class RhombicuboctahedronSE : public StrElt

@@ -1,0 +1,125 @@
+/**
+ * @page p540 Documentation (Doxygen)
+ *
+ * @section s540_01 Generalities
+ *
+ * @TB{Doxygen} documentation can be found here :
+ * @URL{https://www.doxygen.nl/manual, Doxygen manual}
+ *
+ *
+ * @section s540_02 Documenting Smil
+ *
+ * @subsection s540_02_01 Function documentation
+ *
+ * All functions shall be documented with a header like the following. Some
+ * parts may be missing if not necessary.
+ *
+ * @verbatim
+  /**
+    * imageBeautifier() - Image Beautifier
+    *
+    * Image Beautifier based on the algorithm described by John Beautiful
+    *
+    * @note
+    *  This is a note about imageBeautifier()
+    *
+    * @warning
+    *  This is a warning about imageBeautifier()
+    *
+    * @see
+    *  Some bibliographic reference about imageBeautifier()
+    *
+    * @param[in]  imgIn : Input image
+    * @param[out] imgOut : Image beautified
+    * @returns Some result or error code
+    */
+  @endverbatim
+ *
+ * @section s540_03 Aliases and macros
+ * Other than @TB{Doxygen} commands, @Smil defines some aliases and macros.
+ * They are defined at @TT{doc/doxygen/DoxyAliases.txt} file.
+ *
+ * Alias                 | Description
+ * --------------------- | -------------
+ * \@TB{1}               | Text style bold
+ * \@TT{1}               | Text style typewriter
+ * \@TI{1}               | Text style italic
+ * \@Smil                | @Smil
+ * \@Linux               | @Linux
+ * \@Linux{1}            | @Linux @b text
+ * \@Python              | @Python
+ * \@Python{1}           | @Python @b text
+ * \@Anaconda            | @Anaconda
+ * \@URL{1}              | Display an URL as a link and text
+ * \@URL{2}              | Display an URL as a link and a text
+ * \@RootSmil            | %http://smil.cmm.mines-paristech.fr
+ * \@WebServerSmil       | Display \@RootSmil as link and server name as text
+ * \@UrlSmil{2}          | Display Smil server URL as link and text
+ * \@RootCMM             | %http://www.cmm.mines-paristech.fr
+ * \@WebServerCMM        | Display \@RootSmil as link and server name as text
+ * \@UrlCmm{2}           | Display CMM content URL as link and text
+ * \@RootGitHub          | %https://github.com/MinesParis-MorphoMath
+ * \@UrlGitHub{2}        | Display Github content URL as link and text
+ * \@RootWikipedia       | %https://en.wikipedia.org/wiki
+ * \@UrlWikipedia{2}     | Display Wikipedia content URL as link and text
+ * \@wikipedia{2}        | Deprecated (use \@UrlWikipedia{2}
+ * \@IncImages{1}        | Display one image
+ * \@IncImages{2}        | Display two images side by side
+ * \@IncImages{3}        | Display three images side by side
+ * \@IncImages{4}        | Display four images side by side
+ * \@devdoc              | Begin developer documentation section
+ * \@enddevdoc           | End developer documentation section
+ * \@SoilleBook          | Reference to Pierre Soille book (2003)
+ * \@SoilleBook{1}       | Reference to internal (p, ...) P. Soille book
+ * \@Serra82Book         | Reference to Jean Serra book (1982)
+ * \@Serra82Book{1}      | Reference to internal (p, ...) J. Serra book (1982)
+ * \@Serra88Book         | Reference to Jean Serra book (1988)
+ * \@Serra88Book{1}      | Reference to internal (p, ...) J. Serra book (1988)
+ * \@SSee{1}             | Bibliography : (@TB{See [3]})
+ * \@smilexample{1}      | @TB{Example} and \@include example file
+ * \@smilexample{2}      | @TB{Example : some text} and \@include example file
+ * \@beginDynSection{2}  | Begin a "dynamic open" generic section
+ * \@endDynSection       | End a "dynamic open" generic section
+ * \@begintheory{1}      | Begin a "dynamic open" theory explaining section
+ * \@endtheory           | End a "dynamic open" theory section
+ * \@InplaceSafe        | Icon indicating some function is inplace safe
+ * \@InplaceSafe{1}     | Icon and text indicating some function is inplace safe
+ * \@InplaceUnsafe      | Icon indicating some function is inplace unsafe
+ * \@vectorized          | Icon indicating some function is vectorized
+ * \@parallelized        | Icon indicating some function is parallelized
+ *
+ *
+ *
+ * @section s540_04 Tips and Tricks
+ * @subsection s540_04_01 Doxygen / clang-format Oddities
+ *
+ *  -# Use @TB{@TT{"@tag"}} syntax instead of @TB{@TT{"\tag"}} :
+ * @TT{clang-format} doesn't handle these two
+ * constructions the same way and, sometimes, may break the structure. It seems
+ * that using @TB{@TT{"@tag"}} gives more predictable results. Still
+ * better, remember : be coherent and do the same thing the same way all the
+ * time.
+ *
+ *  -# for the same reason, always insert a blank comment line between two blocks
+ * of doxygen documentation. This will prevent some @TT{Doxygen} oddities.
+ *
+ *  -# @TT{clang-format} has problems when handling comments in the same
+ * line than code. So, avoid things like this :
+ *
+ *    - avoid this
+ @verbatim
+        if (x >= 0 && x < width) {  // Check if inside the image
+ @endverbatim
+ *    - this is OK
+ @verbatim
+        // Check if inside the image
+        if (x >= 0 && x < width) {
+ @endverbatim
+ *    - this is OK too
+ @verbatim
+        if (x >= 0 && x < width) {
+          // Yes, x is inside the image
+ @endverbatim
+ *
+ * @tableofcontents
+ */

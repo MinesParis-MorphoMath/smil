@@ -113,7 +113,7 @@ namespace smil
      * Check if the edge is active
      *
      * An @b Edge is considered @b active if both @b source and @b target node
-     * indexes are @txtbold{non zero}.
+     * indexes are @TB{non zero}.
      */
     inline bool isActive() const
     {
@@ -519,7 +519,7 @@ namespace smil
     /**
      * getNodes() - get the list of nodes
      *
-     * @returns a handle to the list of nodes in the graph as a @txtbold{set}
+     * @returns a handle to the list of nodes in the graph as a @TB{set}
      */
     NodeListType &getNodes()
     {
@@ -529,7 +529,7 @@ namespace smil
     /**
      * getEdges() - Get a vector containing the graph edges
      *
-     * @returns a handle to the list of edges as a @txtbold{vector}
+     * @returns a handle to the list of edges as a @TB{vector}
      */
     EdgeListType &getEdges()
     {

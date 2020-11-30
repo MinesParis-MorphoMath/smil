@@ -35,14 +35,14 @@ int main(void)
 {
   UINT BENCH_NRUNS = 1E2;
 
-  Image_UINT8 im(1024, 1024);
+  Image<UINT8> im(1024, 1024);
 
   randFill(im);
   BENCH_IMG(histogram, im);
   BENCH_IMG(histogramMap, im);
 
   char *path = pathTestImage("barbara.png");
-  Image_UINT8 imb(path);
+  Image<UINT8> imb(path);
   BENCH_IMG(histogram, imb);
   BENCH_IMG(histogramMap, imb);  
 }

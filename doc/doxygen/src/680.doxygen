@@ -1,0 +1,14 @@
+
+/**
+ * @page p680 Hints
+ *
+ * @section s680_01 smilPyGoodies
+ * Some Goodies for smilPython
+ *
+ * @TB{Download} :  
+ *  <a href=https://github.com/MinesParis-MorphoMath/smilPyGoodies>
+ *     smilPyGoodies</a>
+   @verbatim
+      git clone https://github.com/MinesParis-MorphoMath/smilPyGoodies
+   @endverbatim
+ */

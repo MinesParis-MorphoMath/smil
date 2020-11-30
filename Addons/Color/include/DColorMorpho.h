@@ -44,46 +44,46 @@ namespace smil
    */
    
   /**
-   * @brief gradient_LAB
+   * @brief gradientLAB
    * @param[in] imIn : input RGB Image
    * @param[out] imOut : output Image (UINT8 Gray Level)
    * @param[in] se : Structuring Element
    * @param[in] convertFirstToLAB : Convert to LAB
    */
-  RES_T gradient_LAB(const Image<RGB> &imIn, Image<UINT8> &imOut,
+  RES_T gradientLAB(const Image<RGB> &imIn, Image<UINT8> &imOut,
                      const StrElt &se       = DEFAULT_SE,
                      bool convertFirstToLAB = true);
 
   /**
-   * @brief gradient_LAB
+   * @brief gradientLAB
    * @param[in] imIn : input RGB Image
    * @param[in] se : Structuring Element
    * @param[in] convertFirstToLAB : Convert to LAB
    * @return Image (UINT8 Gray Level)
    */
-  Image<UINT8> gradient_LAB(const Image<RGB> &imIn,
+  Image<UINT8> gradientLAB(const Image<RGB> &imIn,
                             const StrElt &se       = DEFAULT_SE,
                             bool convertFirstToLAB = true);
 
   /**
-   * @brief gradient_HLS
+   * @brief gradientHLS
    * @param[in] imIn : input RGB Image
    * @param[out] imOut : output Image (UINT8 Gray Level)
    * @param[in] se : Structuring Element
    * @param[in] convertFirstToHLS : Convert to LAB
    */
-  RES_T gradient_HLS(const Image<RGB> &imIn, Image<UINT8> &imOut,
+  RES_T gradientHLS(const Image<RGB> &imIn, Image<UINT8> &imOut,
                      const StrElt &se       = DEFAULT_SE,
                      bool convertFirstToHLS = true);
 
   /**
-   * @brief gradient_HLS
+   * @brief gradientHLS
    * @param[in] imIn : input RGB Image
    * @param[in] se : Structuring Element
    * @param[in] convertFirstToHLS : Convert to HLS
    * @return Image  (UINT8 Gray Level)
    */
-  Image<UINT8> gradient_HLS(const Image<RGB> &imIn,
+  Image<UINT8> gradientHLS(const Image<RGB> &imIn,
                             const StrElt &se       = DEFAULT_SE,
                             bool convertFirstToHLS = true);
   /** @} */

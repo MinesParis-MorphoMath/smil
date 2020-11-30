@@ -3,9 +3,9 @@
  *
  * @section s530_01 Generalities
  *
- * @txtbold{Some common rules of thumb} :
- * - Every name exposed to Smil users shall be @txtbold{meaninfull}.
- * - Avoid @txtbold{acronyms} or @txtbold{shortcuts}, unless they are fully
+ * @TB{Some common rules of thumb} :
+ * - Every name exposed to Smil users shall be @TB{meaninfull}.
+ * - Avoid @TB{acronyms} or @TB{shortcuts}, unless they are fully
  * known by users out of Smil development group.
  * - Every name exposed to users shall be directly related to some concept
  * usually found in textbooks and vice-versa. If this isn't the case, it shall 
@@ -22,8 +22,8 @@
  *
  *  - function names are a sequence of words without spaces, with the first
  *    character of each word in uppercase, except the first one. E.g. :
- *    @txttype{lambdaLabel}, @txttype{imageResize},
- *    @txttype{distanceEuclidean}, ...
+ *    @TT{lambdaLabel}, @TT{imageResize},
+ *    @TT{distanceEuclidean}, ...
  *  - function name length shall be limited to something like 15-20
  *    characters.
  *  - The full description of what that function does shall be
@@ -33,7 +33,7 @@
  * @subsection s530_02_02 Macros and defines
  *  - every character in uppercase. \n
  *  - Although using macros are discouraged you should always put all
- *    caracteres in macros and defines in @txtbold{uppercase}
+ *    caracteres in macros and defines in @TB{uppercase}
  *
  * @subsection s530_02_03 Classes and Structures
  * To be done

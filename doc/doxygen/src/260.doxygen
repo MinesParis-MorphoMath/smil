@@ -1,0 +1,195 @@
+/**
+ * @page p260 Installing from sources
+ *
+ * @section s260_01 Generalities
+ *
+ * Typical workflow for installing @Smil from sources is :
+ * @note
+ * If you're installing @Smil under @b Anaconda, please read the instructions
+ * on @ref s260_02 before.
+ *
+ * -# @TB{get Smil} source repository :
+ @verbatim
+ cd /somewhere
+ git clone https://github.com/MinesParis-MorphoMath
+ mkdir -p build
+ cd build
+ @endverbatim
+ *
+ * -# @TB{install requirements} - this step depends on the operating system.
+ *   - For linux distributions, there are some scripts under the
+ *     @TT{contrib/scripts} to easy installation or requirements. The following
+ *     shall work fine for @TT{Ubuntu}, @TT{Debian}, @TT{CentOS} and @TT{Fedora}
+ @verbatim
+ source /etc/os-release
+ sudo source ../smil/contrib/scripts/requirements-$ID.sh
+ @endverbatim
+ *   These scripts are also available at
+ *     @UrlSmil{download/contrib/scripts/, contrib/scripts}
+ *
+ * -# @TB{configure and compile} : you have two options
+ *   - use the @TT{contrib} configuration script :
+ @verbatim
+ contrib/scripts/config-smil -h
+ contrib/scripts/config-smil --auto --test
+ make -j 8
+ sudo make install
+ @endverbatim
+ *   - use @TT{ccmake} to fine tune @Smil configuration :
+ @verbatim
+ ccmake ../smil
+ make -j 8
+ sudo make install
+ @endverbatim
+ *   - you can do both : quick configuration with the @TT{config-smil} script
+ *     and fine tune it with @TT{ccmake}.
+ *
+ *
+ * @warning
+ * If you're building @Smil with the @TB{Swig Python} interface, you
+ * MUST REMEMBER that each build is specific to the @Python library version
+ * @Smil was built with.
+ * So, if when building @Smil, @Python{3.5} was found and later you upgraded
+ * it to, say, @Python{3.6}, they won't be compatible and you'll need to rebuild
+ * @Smil.
+ *
+ *
+ *
+ * @section s260_02 Anaconda
+ * Running @Smil under @TB{Anaconda} has many advantages :
+ * - @TB{Anaconda} can be installed and configured at @TB{user space}, that
+ *   means, you don't need to have privileges on your computer to install,
+ *   configure and add the packages you need;
+ * - in some conservative distributions (e.g. CentOS) you'll be able to use
+ *   recent versions of many tools : @TT{gcc, Python, Qt, ...}.
+ *
+ * The downside is that you'll need to install @Smil from sources... but that's
+ * not that hard. Just follow these steps :
+ * -# @TB{Install Anaconda}, if not already done. Visit the @TB{Anaconda} web
+ *  site and check their
+ *  @URL{https://docs.anaconda.com/anaconda/install/linux/,
+ *   Installing Instructions}
+ *  - @TB{Quick instructions} :
+ @verbatim
+ # get it (YYYY-MM is the year and month of the last release)
+ wget https://repo.anaconda.com/archive/Anaconda3-YYYY.MM-Linux-x86_64.sh
+ # launch the installer and answer all questions
+ bash ./Anaconda3-YYYY.MM-Linux-x86_64.sh
+ @endverbatim
+ *    You'll need to login again to have your @TB{conda base} environment
+ *    available.
+ *  - @TB{Create an environment for Smil} - a good practice says to use
+ *    @TB{base} environment only for administrations purposes.
+ @verbatim
+ # the option "python=3.8" is optional
+ conda create -n smil python=3.8
+ conda activate smil
+ conda install gxx_linux-64 cmake swig \
+               libpng jpeg libtiff curl \
+               numpy ipython \
+               qt pyqt
+ @endverbatim
+ *
+ * -# @TB{get Smil} source repository :
+ @verbatim
+ cd /somewhere
+ git clone https://github.com/MinesParis-MorphoMath
+ mkdir -p build
+ cd build
+ @endverbatim
+ * -# @TB{configure and compile}
+ @verbatim
+ contrib/scripts/config-smil -h
+ contrib/scripts/config-smil --auto --prefix=/whatever/Smil-38
+ make -j 8
+ sudo make install
+ @endverbatim
+ *    You'll need to add a @TT{--prefix} option to indicate where you want
+ *    to install @Smil. This may happen in two situations :
+ *    - you don't have privileges on your computer
+ *    - you'll need @Smil in more than one environment with different versions
+ *      of @Python.
+ *
+ * -# @TB{post-install} - you may eventually set some environment variables :
+ @verbatim
+ export PYTHONPATH=/whatever/Smil-38/lib/Smil
+ export LD_LIBRARY_PATH=$CONDA_PREFIX/lib
+ @endverbatim
+ *
+ * -# @TB{test your installation} with the following commands :
+ @verbatim
+ $ ipython
+ Python 3.8.5 (default, Jul 28 2020, 12:59:40)
+ Type 'copyright', 'credits' or 'license' for more information
+ IPython 7.13.0 -- An enhanced Interactive Python. Type '?' for help.
+
+ In [1]: import smilPython as sp
+ SMIL (Simple Morphological Image Library) 0.10.6-dev
+ Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
+ Copyright (c) 2017-2020, CMM - Centre de Morphologie Mathematique
+ All rights reserved.
+
+ In [2]: im = sp.Image()
+ In [3]: im.show()
+ @endverbatim
+ *
+ *
+ * @section s260_03 Configuration script config-smil
+ *
+ @verbatim
+  $ ../smil/contrib/scripts/config-smil --help
+
+  config-smil
+
+  Usage :
+    config-smil [ options ] SourceDirectory
+
+  Options :
+    --help
+      This message
+
+    --prefix=prefix
+      This option defines the prefix where Smil will be installed.
+      Default value is /usr/local.
+
+    --addon=name,name,name,...
+      A comma separated list of Addons to enable
+      Default enabled Addons : Color Filters HoughTransform Chabardes StochasticWS FFT Parsimonious
+
+    --generic
+      Compile for a generic architecture. Default is to optimize for the
+      processor in the computer Smil is being compiled.
+
+    --auto
+      Optimize Smil generated code for the processor at this computer.
+      This is the default option.
+
+    --doc
+    --devdoc
+      Build doxygen documentation
+
+    --test
+      Add Makefile targets to build test programs (make test)
+
+    --package
+      Add Makefile targets to build Linux packages
+
+    -v
+      Verbose
+
+    -Dvar=value
+      Define CMake variables (use with care)
+
+  Example :
+    config-smil --addon=GraphCuts --prefix=/usr/local/Smil-27 /home/sources/smil
+
+  Author :
+    Jose-Marcio Martins da Cruz
+
+  See also :
+    Full Smil documentation at : http://smil.mines-paristech.fr
+
+ @endverbatim
+ *
+ * @tableofcontents
+ */

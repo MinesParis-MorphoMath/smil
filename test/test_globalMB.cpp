@@ -37,8 +37,8 @@ using namespace smil;
 
 int main()
 {
-  Image_UINT8 im1(1000, 1023);
-  Image_UINT8 im2(im1);
+  Image<UINT8> im1(1000, 1023);
+  Image<UINT8> im2(im1);
   ImageViewer<UINT8> *viewer;
 
   im1.show("im1");

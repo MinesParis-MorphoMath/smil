@@ -253,7 +253,7 @@ namespace smil
   /**
    * horizConvolve() - 2D Horizontal convolution
    *
-   * 2D horizontal convolution using a @txtbold{1D kernel}
+   * 2D horizontal convolution using a @TB{1D kernel}
    *
    * @param[in] imIn : input image
    * @param[in] kernel : an <b>1D kernel</b> (as a vector)
@@ -350,7 +350,7 @@ namespace smil
   /**
    * vertConvolve() - 2D Vertical convolution
    *
-   * 2D vertical convolution using a @txtbold{1D kernel}
+   * 2D vertical convolution using a @TB{1D kernel}
    *
    * @param[in] imIn : input image
    * @param[in] kernel : an <b>1D kernel</b> (vector)
@@ -435,11 +435,11 @@ namespace smil
   /**
    * convolve() - 2D Convolution 
    *
-   * 2D convolution by & @txtbold{1D kernel}. Vertical convolution followed by
-   * an horizontal convolution using the same @txtbold{1D kernel}.
+   * 2D convolution by & @TB{1D kernel}. Vertical convolution followed by
+   * an horizontal convolution using the same @TB{1D kernel}.
    *
    * @param[in] imIn : input image
-   * @param[in] kernel : the @txtbold{1D kernel} (vector)
+   * @param[in] kernel : the @TB{1D kernel} (vector)
    * @param[out] imOut : output image
    *
    * @see horizConvolve()

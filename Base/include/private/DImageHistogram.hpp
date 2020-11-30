@@ -310,7 +310,7 @@ namespace smil
    * @param[out] imOut : output image
    *
    * @see
-   * - <a href="https://en.wikipedia.org/wiki/Otsu%27s_method">Otsu's method</a>
+   * - @UrlWikipedia{Otsu%27s_method, Otsu's method}
    *
    */
   template <class T, class T_out>
@@ -745,7 +745,7 @@ namespace smil
    * Image threshold based on the Otsu algorithm.
    *
    * @see
-   * - <a href="https://en.wikipedia.org/wiki/Otsu%27s_method">Otsu's method</a>
+   * - @UrlWikipedia{Otsu%27s_method, Otsu's method}
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -789,7 +789,7 @@ namespace smil
    * Output image will have only two classes.
    *
    * @see
-   * - <a href="https://en.wikipedia.org/wiki/Otsu%27s_method">Otsu's method</a>
+   * - @UrlWikipedia{Otsu%27s_method, Otsu's method}
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -814,7 +814,7 @@ namespace smil
    * threshold).
    *
    * @see
-   * - <a href="https://en.wikipedia.org/wiki/Otsu%27s_method">Otsu's method</a>
+   * - @UrlWikipedia{Otsu%27s_method, Otsu's method}
    *
    * @param[in] imIn : input image
    * @param[in] imMask : mask image

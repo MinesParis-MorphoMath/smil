@@ -43,7 +43,7 @@ namespace smil
    * @ingroup Morpho
    * @defgroup Filters Morphological Filters
    *
-   * @details @txtbold{Morphological Filters}
+   * @details @TB{Morphological Filters}
    *
    * Morphological filters are morphological image transformations which are 
    * both @b increasing and @b idempotent, i.e., 
@@ -51,9 +51,9 @@ namespace smil
    * - @f$ \psi(\psi(A)) = \psi(A) @f$
    *
    * @see
-   * - @soillebook{Chap. 8}
-   * - @serra82book{Chap. }
-   * - @serra88book{Chap. }
+   * - @SoilleBook{Chap. 8}
+   * - @Serra82Book{Chap. }
+   * - @Serra88Book{Chap. }
    * @{
    */
 

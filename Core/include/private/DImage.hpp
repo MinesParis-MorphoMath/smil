@@ -299,7 +299,7 @@ namespace smil
      * of C data (C_CONTIGOUS NumPy array flag). If false (default), return a
      * F_CONTIGOUS array.
      *
-     * See @ref p860 "NumPy interface page".
+     * See @ref p660 "NumPy interface page".
      */
     PyObject *getNumArray(bool c_contigous = false);
 

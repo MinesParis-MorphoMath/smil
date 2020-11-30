@@ -31,8 +31,8 @@ class Test_ComputeBlobs : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im(10, 10);
-    Image_UINT8::lineType pixels = im.getPixels();
+    Image<UINT8> im(10, 10);
+    Image<UINT8>::lineType pixels = im.getPixels();
 
     fill(im, UINT8(0));
     for (int i = 12; i < 27; i++)
@@ -72,13 +72,13 @@ class Test_Areas : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im(1024, 1024);
-    // Image_UINT8::lineType pixels = im.getPixels();
+    Image<UINT8> im(1024, 1024);
+    // Image<UINT8>::lineType pixels = im.getPixels();
 
     fill(im, UINT8(0));
     drawRectangle(im, 200, 200, 512, 512, UINT8(127), 1);
 
-    map<UINT8, double> areas = measAreas(im);
+    map<UINT8, double> areas = blobsArea(im);
     TEST_ASSERT(areas[127] == 262144);
   }
 };
@@ -87,14 +87,14 @@ class Test_Barycenters : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im(1024, 1024);
-    // Image_UINT8::lineType pixels = im.getPixels();
+    Image<UINT8> im(1024, 1024);
+    // Image<UINT8>::lineType pixels = im.getPixels();
 
     fill(im, UINT8(0));
     drawRectangle(im, 200, 200, 50, 50, UINT8(127), 1);
     drawRectangle(im, 600, 200, 70, 70, UINT8(255), 1);
 
-    map<UINT8, Vector_double> barycenters = measBarycenters(im);
+    map<UINT8, Vector_double> barycenters = blobsBarycenter(im);
     TEST_ASSERT(barycenters[127][0] == 224.5);
     TEST_ASSERT(barycenters[127][1] == 224.5);
     TEST_ASSERT(barycenters[255][0] == 634.5);
@@ -106,8 +106,8 @@ class Test_MeasureVolumes : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im(10, 10);
-    Image_UINT8::lineType pixels = im.getPixels();
+    Image<UINT8> im(10, 10);
+    Image<UINT8>::lineType pixels = im.getPixels();
 
     fill(im, UINT8(0));
     for (int i = 12; i < 27; i++)
@@ -119,10 +119,10 @@ class Test_MeasureVolumes : public TestCase
 
     map<UINT8, Blob> blobs = computeBlobs(im, true);
 
-    Image_UINT8 im2(im);
+    Image<UINT8> im2(im);
     fill(im2, UINT8(100));
 
-    map<UINT8, double> vols = measVolumes(im2, blobs);
+    map<UINT8, double> vols = blobsVolume(im2, blobs);
     TEST_ASSERT(vols[127] == 1500 && vols[255] == 4200);
   }
 };

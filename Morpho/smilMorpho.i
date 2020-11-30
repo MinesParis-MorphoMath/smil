@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
@@ -51,7 +51,7 @@ SMIL_MODULE(smilMorpho)
 #include "DMorphoGraph.hpp"
 #include "DMorphoMeasures.hpp"
 %}
- 
+
 
 // Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)
 %import smilCore.i
@@ -111,6 +111,8 @@ TEMPLATE_WRAP_FUNC(hBuild);
 TEMPLATE_WRAP_FUNC(hDualBuild);
 TEMPLATE_WRAP_FUNC(buildOpen);
 TEMPLATE_WRAP_FUNC(buildClose);
+TEMPLATE_WRAP_FUNC(asBuildOpen);
+TEMPLATE_WRAP_FUNC(asBuildClose);
 TEMPLATE_WRAP_FUNC(fillHoles);
 TEMPLATE_WRAP_FUNC(levelPics);
 
@@ -242,7 +244,7 @@ def open(*args):
       return builtinOpen(*args)
     else:
       return _smilMorphoPython.open(*args)
-      
+
 open.__doc__ = "Builtin function:\n" + builtinOpen.__doc__ + "\n\nSmil function:\n" + _smilMorphoPython.open.__doc__
 
 %}

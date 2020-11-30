@@ -85,11 +85,11 @@ class Test_Curl : public TestCase
 {
   virtual void run()
   {
-    Image_UINT8 im1;
+    Image<UINT8> im1;
 
     read("http://smil.cmm.mines-paristech.fr/images/barbara.png", im1);
     TEST_ASSERT(im1.isAllocated());
-    Image_UINT8 im2("http://smil.cmm.mines-paristech.fr/images/barbara.png");
+    Image<UINT8> im2("http://smil.cmm.mines-paristech.fr/images/barbara.png");
     TEST_ASSERT(im2.isAllocated());
     BaseImage *im0 =
         createFromFile("http://smil.cmm.mines-paristech.fr/images/arearea.png");

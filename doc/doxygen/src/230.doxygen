@@ -1,0 +1,166 @@
+/**
+ * @page p230 Installing binaries
+ *
+ * @section s230_01 Generalities
+ *
+ * @Smil binary packages are available for some @Linux distributions :
+ * @b Ubuntu, @b CentOS, @b Debian and @b Fedora.
+ *
+ * @note
+ * - @TB{Anaconda} Anaconda is a virtual environment commonly found in the research
+ * community. For the moment, there isn't packages for @TB{Anaconda}. Even if
+ * sometimes the system package may work if
+ * the system @Python and the @TB{Anaconda} @Python has the same
+ * version, the recommended way is to build and install @Smil under the
+ * @TB{Anaconda} environment it will be used.
+ *
+ * Installing @Smil binaries follows always the same logic :
+ * -# Get GPG package signing key;
+ * -# Configure package repository;
+ * -# Get and install package.
+ *
+ *
+ * @section s230_02 Linux Distributions
+ *
+ * @subsection s230_02_01 Ubuntu
+ *
+ * - Add GPG key
+   @verbatim
+     KURI=http://smil.cmm.mines-paristech.fr/packages/jmartins@cmm.gpg.key
+     wget -O- $KURI 2>/dev/null | apt-key add -
+   @endverbatim
+ * - Add @Smil repository (replace @b DISTRO by the release name :
+    @TB{xenial bionic focal} ...)
+   @verbatim
+     apt-add-repository \
+      'deb [arch=amd64] http://smil.cmm.mines-paristech.fr/packages/ubuntu DISTRO main'
+   @endverbatim
+ * - Install @Smil packages
+   @verbatim
+     # Retrieve or update list of packages available
+     apt-get update
+     # look for smil packages
+     apt-cache search smil | grep ^smil
+     # install all smil packages
+     apt-get install smil-*
+   @endverbatim
+ *
+ * @note
+ * The last line will install all @Smil packages. If you want just some of them,
+ * you can check those you want and just install them. To see what's available,
+ * launch :
+   @verbatim
+     apt-cache search smil | grep ^smil
+   @endverbatim
+ *
+ *
+ *
+ * @subsection s230_02_02 Debian
+ *
+ * - Add GPG key
+   @verbatim
+     KURI=http://smil.cmm.mines-paristech.fr/packages/jmartins@cmm.gpg.key
+     wget -O- $KURI 2>/dev/null | apt-key add -
+   @endverbatim
+ * - Add the following line to @TT{/etc/apt/sources.list} (replace
+ *   @b DISTRO by the release name (@TB{jessie stretch buster} …).
+    @TB{xenial bionic focal} ...)
+   @verbatim
+    deb [arch=amd64] http://smil.cmm.mines-paristech.fr/packages/debian DISTRO main
+   @endverbatim
+ * - Install @Smil packages
+   @verbatim
+     # Retrieve or update list of packages available
+     apt-get update
+     # look for smil packages
+     apt-cache search smil | grep ^smil
+     # install all smil packages
+     apt-get install smil-*
+   @endverbatim
+ *
+ * @note
+ * The last line will install all @Smil packages. If you want just some of them,
+ * you can check those you want and just install them. To see what's available,
+ * launch :
+   @verbatim
+     apt-cache search smil | grep ^smil
+   @endverbatim
+ *
+ * @subsection s230_02_03 CentOS
+ *
+ * - Install repository file - @TT{/etc/yum.repos.d/CMM-Smil.repo} :
+   @verbatim
+     #
+     #
+     [cmm-smil]
+     name=Smil for CentOS-$releasever
+     baseurl=http://smil.cmm.mines-paristech.fr/packages/centos/$releasever/$basearch/
+     enabled=1
+     gpgcheck=1
+   @endverbatim
+ *
+ * - Import GPG keys
+   @verbatim
+     rpm --import http://smil.cmm.mines-paristech.fr/packages/jmartins@cmm.gpg.key
+   @endverbatim
+ *
+ * - Install @Smil packages
+   @verbatim
+     # first of all, it's always a good idea to clean the cache
+     dnf clean all
+     # to see which packages are available :
+     dnf search smil
+     # to install Python interface to Smil :
+     dnf install smil-python
+     # to install all smil packages :
+     dnf -y install smil-*
+   @endverbatim
+ *
+ *
+ *
+ * @subsection s230_02_04 Fedora
+ *
+ * - Install repository file - @TT{/etc/yum.repos.d/CMM-Smil.repo} :
+   @verbatim
+     #
+     #
+     [cmm-smil]
+     name=Smil for CentOS-$releasever
+     baseurl=http://smil.cmm.mines-paristech.fr/packages/fedora/$releasever/$basearch/
+     enabled=1
+     gpgcheck=1
+   @endverbatim
+ *
+ * - Import GPG keys
+   @verbatim
+     rpm --import http://smil.cmm.mines-paristech.fr/packages/jmartins@cmm.gpg.key
+   @endverbatim
+ *
+ * - Install @Smil packages
+   @verbatim
+     # first of all, it's always a good idea to clean the cache
+     dnf clean all
+     # to see which packages are available :
+     dnf search smil
+     # to install Python interface to Smil :
+     dnf install smil-python
+     # to install all smil packages :
+     dnf -y install smil-*
+   @endverbatim
+ *
+ *
+ * @section s230_03 Upgrading
+ *
+ * @Smil binary packages may be upgraded in the usual way any other package is
+ * upgraded.
+ *
+ * Nonetheless:
+ * - sometimes it's a good idea to remove old releases before installed new
+ *   ones. This is because sometimes it may happen that we reorganize things
+ *   or rename or disable some Addons.
+ *   And you may end with old versions of some Addons.
+ * - when you upgrade the major release of your distribution, the repository
+ *   may be disabled during the upgrade process. Take this into account.
+ *
+ * @tableofcontents
+ */

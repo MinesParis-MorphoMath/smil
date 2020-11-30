@@ -1,0 +1,29 @@
+/**
+ * @page p550 Data Types
+ *
+ * @section s550_01 Generalities
+ *
+ * @section s550_02 SMIL Data types
+ *
+ * @subsection s550_02_01 Image content
+ *
+ * - @TB{UINT8} :
+ * - @TB{UINT16} :
+ * - @TB{UINT32} :
+ * - @TB{RGB}
+ *
+ * @subsection s550_02_02 Other data types inside source code
+ *
+ * @subsection s550_02_03 Generic data types
+ *
+ * - @TB{size_t} : this is a POSIX defined data type. It's
+ * usually used to indicate the @TB{size} of an object. It's
+ * an @TB{unsigned integer}.
+ * - @TB{off_t} : this is a POSIX defined data type. It's
+ * usually used to indicate the @TB{offset} of some data inside an
+ * object. It's an @TB{signed integer}.
+ *
+ *
+ *
+ * @tableofcontents
+ */

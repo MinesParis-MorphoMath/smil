@@ -1,0 +1,19 @@
+/**
+ * @page p600 Python Programming with Smil
+ *
+ * @section s600_01 Generalities
+ *
+ * Very probably, few people will use @b Smil under @b C++. @b Python is the
+ * most frequent programming language we saw being used with @Smil.
+ *
+ * This section is composed of :
+ *
+ * - @subpage p610
+ * - @subpage p660
+ * - @subpage p680
+ * - @subpage p690
+ * - <a href=examples.html><b>Examples in Python</b></a>
+ *
+ *
+ * @tableofcontents
+ */
