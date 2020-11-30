@@ -18,8 +18,21 @@
  *
  *  - Functions renamed to avoid confusion (mostly on Blobs)
  *    - measImageEntropy => measEntropy
- *      - gradient_HLS => gradientHLS
- *      - gradient_LAB => gradientLAB
+ *    - gradient_HLS => gradientHLS
+ *    - gradient_LAB => gradientLAB
+ *    - measAreas => blobsArea
+ *    - measVolumes => blobsVolume
+ *    - measMinVals => blobsMinVal
+ *    - measMaxVals => blobsMaxVal
+ *    - measRangeVals => blobsRangeVal
+ *    - measMeanVals => blobsMeanVal
+ *    - valueLists=> blobsValueList
+ *    - measModeVals => blobsModeVal
+ *    - measMedianVals => blobsMedianVal
+ *    - measBarycenters => blobsBarycenter
+ *    - measBoundBoxes => blobsBoundBox
+ *    - measBlobMoments => blobsMoments
+ *    - measBlobsEntropy => blobsEntropy
  *
  *  - Documentation
  *    - Lots of @TB{Doxygen} documentation being reorganized and completed.
