@@ -792,7 +792,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * imageThining()
+   * imageThinning()
    *
    * @param[in] imIn : binary input image
    * @param[out] imOut : output image

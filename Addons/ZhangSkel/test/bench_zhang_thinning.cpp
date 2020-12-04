@@ -40,6 +40,6 @@ int main()
 
   BENCH_IMG(zhangSkeleton, im1, im2);
   BENCH_IMG(zhangThinning, im1, im2);
-  BENCH_IMG(imageThining, im1, im2, "Zhang");
-  BENCH_IMG(imageThining, im1, im2, "DongLinHuang");
+  BENCH_IMG(imageThinning, im1, im2, "Zhang");
+  BENCH_IMG(imageThinning, im1, im2, "DongLinHuang");
 }
