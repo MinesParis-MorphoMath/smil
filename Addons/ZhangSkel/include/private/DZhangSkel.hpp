@@ -792,7 +792,7 @@ namespace smil
   /** @endcond */
 
   /**
-   * zhangDerivedSkeleton()
+   * imageThining()
    *
    * @param[in] imIn : binary input image
    * @param[out] imOut : output image
