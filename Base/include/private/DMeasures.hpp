@@ -1380,20 +1380,23 @@ namespace smil
    * isBinary() - Test if an image is binary.
    *
    * @param[in] imIn : image
-   * @return @b true if the only pixel values are @b ImDtTypes<T>::min() and
-   * @b ImDtTypes<T>::max()
+   * @return @b true if the only pixel values are @b 0 and any other positive
+   * value.
    */
   template <class T> bool isBinary(const Image<T> &imIn)
   {
     CHECK_ALLOCATED(&imIn);
 
+    map<T, size_t> h;
     typename Image<T>::lineType pixels = imIn.getPixels();
 
-    for (size_t i = 0; i < imIn.getPixelCount(); i++)
-      if (pixels[i] != ImDtTypes<T>::min() && pixels[i] != ImDtTypes<T>::max())
+    for (size_t i = 0; i < imIn.getPixelCount(); i++) {
+      h[pixels[i]]++;
+      if (h.size() > 2)
         return false;
+    }
 
-    return true;
+    return h[0] > 0 && h.size() == 2;
   }
 
   /** @}*/

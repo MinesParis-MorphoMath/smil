@@ -63,7 +63,7 @@ TEMPLATE_WRAP_FUNC(circleErode);
 TEMPLATE_WRAP_FUNC(circleOpen);
 TEMPLATE_WRAP_FUNC(circleClose);
 
-TEMPLATE_WRAP_FUNC(ImFastLineOpen_Morard);
+TEMPLATE_WRAP_FUNC(imFastLineOpen);
 //TEMPLATE_WRAP_FUNC(ImFastLineClose_Morard);
 
 

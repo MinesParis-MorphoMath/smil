@@ -95,7 +95,7 @@ namespace smil
         int pos = i + j * dx;
 
         gabor[pos] =
-            exp(-0.5 * ((x_theta[pos] * x_theta[pos]) / (sigma_x * sigma_x) +
+            std::exp(-0.5 * ((x_theta[pos] * x_theta[pos]) / (sigma_x * sigma_x) +
                         (y_theta[pos] * y_theta[pos]) / (sigma_y * sigma_y))) *
             cos(2 * 3.14159 / lambda * x_theta[pos] + psi);
       }
@@ -172,7 +172,7 @@ namespace smil
     for (j = 0; j < dy; j++)
       for (i = 0; i < dx; i++)
         gabor[i + j * dx] =
-            (T1) exp(-0.5 * ((x_theta[i + j * dx] * x_theta[i + j * dx]) /
+            (T1) std::exp(-0.5 * ((x_theta[i + j * dx] * x_theta[i + j * dx]) /
                                  (sigma_x * sigma_x) +
                              (y_theta[i + j * dx] * y_theta[i + j * dx]) /
                                  (sigma_y * sigma_y))) *

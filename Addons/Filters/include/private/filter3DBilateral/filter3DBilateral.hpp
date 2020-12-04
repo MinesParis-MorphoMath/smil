@@ -50,7 +50,7 @@ namespace smil
     UINT nthreads = Core::getInstance()->getNumberOfThreads();
 
     // Creating a range table.
-    float alpha_f     = exp(-sqrt(2.0) / sigmaW);
+    float alpha_f     = std::exp(-sqrt(2.0) / sigmaW);
     float inv_alpha_f = 1.f - alpha_f;
 
     /* JOE XXX
@@ -73,7 +73,7 @@ namespace smil
 
     float ii = 0.f;
     for (size_t i = 0; i <= ImDtTypes<T>::max(); ++i) {
-      range_table[i] = alpha_f * exp(ii * inv_sigma_range);
+      range_table[i] = alpha_f * std::exp(ii * inv_sigma_range);
       ii -= 1.f;
     }
 

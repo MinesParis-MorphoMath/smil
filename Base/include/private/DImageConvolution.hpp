@@ -60,7 +60,7 @@ namespace smil
 
       double sum = 0;
       for (int i = -radius; i <= radius; i++) {
-        kernel[i + radius] = exp(-(pow(i / sigma, 2) / 2));
+        kernel[i + radius] = std::exp(-(pow(i / sigma, 2) / 2));
         sum += kernel[i + radius];
       }
       for (int i = -radius; i <= radius; i++) {

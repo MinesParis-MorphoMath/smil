@@ -43,8 +43,8 @@ namespace smil
    * @{
    * @brief Histogram evaluation and applications
    *
-   * This module contains functions to evaluate image histograms and some 
-   * applications such as contrast enhancement, histogram manipulation and 
+   * This module contains functions to evaluate image histograms and some
+   * applications such as contrast enhancement, histogram manipulation and
    * thresholding
    */
 
@@ -201,15 +201,19 @@ namespace smil
     return h;
   }
 
-  /** histogramMap() - 
+  /** histogramMap() -
+   *
    * @param[in] imIn : input image
    * @param[in] binSize : size of bin
    * @return the histogram as a map.
    */
   template <typename T>
-  std::map<T, UINT> histogramMap(const Image<T> imIn, T binSize = 1)
+  std::map<T, UINT> histogramMap(const Image<T> &imIn, T binSize = 1)
   {
+
     std::map<T, UINT> hist;
+    ASSERT(imIn.isAllocated(), hist);
+
     binSize = std::max(binSize, T(1));
 
     typename Image<T>::lineType pixels = imIn.getPixels();
@@ -221,6 +225,35 @@ namespace smil
 #endif
     return hist;
   }
+
+  /** histogramMap() -
+   *
+   * @param[in] imIn : input image
+   * @param[in] imMask : image mask
+   * @param[in] binSize : size of bin
+   * @return the histogram as a map.
+   */
+  template <typename T>
+  std::map<T, UINT> histogramMap(const Image<T> &imIn, const Image<T> imMask, T binSize = 1)
+  {
+
+    std::map<T, UINT> hist;
+    ASSERT(imIn.isAllocated(), hist);
+    ASSERT(imMask.isAllocated(), hist);
+    ASSERT(haveSameSize(&imIn, &imMask), hist);
+
+    binSize = std::max(binSize, T(1));
+
+    typename Image<T>::lineType pixels = imIn.getPixels();
+    for (size_t i = 0; i < imIn.getPixelCount(); i++)
+      hist[pixels[i] / binSize]++;
+#if 0
+    for (auto it = hist.begin(); it != hist.end(); it++)
+      cout << "  " << it->first << "\t" << it->second << endl;
+#endif
+    return hist;
+  }
+
 
   /**
    * threshold() - Image threshold
@@ -608,8 +641,8 @@ namespace smil
   /** @endcond */
 
   /**
-   * otsuThresholdValues() - 
-   * Return threshold values and the value of the resulting variance between 
+   * otsuThresholdValues() -
+   * Return threshold values and the value of the resulting variance between
    * classes
    *
    * @param[in] hist : image histogram
@@ -706,7 +739,7 @@ namespace smil
   }
 
   /**
-   * otsuThresholdValues() - 
+   * otsuThresholdValues() -
    * Return threshold values and the value of the resulting variance between
    * classes
    *
@@ -722,8 +755,8 @@ namespace smil
   }
 
   /**
-   * otsuThresholdValues() - 
-   * Return threshold values and the value of the resulting variance between 
+   * otsuThresholdValues() -
+   * Return threshold values and the value of the resulting variance between
    * classes
    *
    * @param[in] im : image

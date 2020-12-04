@@ -409,9 +409,9 @@ namespace smil
     {
       T *f        = (T *) img->Pixmap;
       T *r        = (T *) out->Pixmap;
-      ulong width = img->Width, y;
+      ulong width = img->Width;
 
-      for (y = 0; y < img->Height; y++) {
+      for (ulong y = 0; y < img->Height; y++) {
         DilateHorLine(f, width, k, g, h, h2, r);
         f += width;
         r += width;
@@ -423,9 +423,10 @@ namespace smil
     {
       T *f        = (T *) img->Pixmap;
       T *r        = (T *) out->Pixmap;
-      ulong width = img->Width, height = img->Height, x;
+      ulong width = img->Width;
+      ulong height = img->Height;
 
-      for (x = 0; x < width; x++) {
+      for (ulong x = 0; x < width; x++) {
         DilateVerLine(f, width, height, k, g, h, h2, r);
         f++;
         r++;
@@ -542,7 +543,7 @@ namespace smil
       MyImgOut.Width  = W;
       MyImgOut.Height = H;
       MyImgOut.Pixmap = (void *) imOut.getPixels();
-      
+
       float rd = angle * PI / 180.;
       int   r = radius;
       r = (int ) floor(r * std::max(fabs(cos(rd)), fabs(sin(rd))) + 0.5);
@@ -605,7 +606,7 @@ namespace smil
       RES_T r;
       int i, nbAngle = 8;
       double alpha, kalpha, rd, k0;
-      
+
       r = copy(imIn, imOut);
       if (r != RES_OK)
         return r;

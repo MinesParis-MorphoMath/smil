@@ -538,7 +538,7 @@ namespace smil
   //  Start of global code
   //
   template <class T>
-  RES_T ImFastLineOpen_Morard(const Image<T> &imIn, const int angle,
+  RES_T imFastLineOpen(const Image<T> &imIn, const int angle,
                                 const int radius, Image<T> &imOut)
   {
     MorardLineMorpho<T> morard;

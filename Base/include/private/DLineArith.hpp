@@ -462,6 +462,25 @@ namespace smil
     }
   };
 
+  template <class T> struct expLine : public unaryLineFunctionBase<T> {
+    typedef typename unaryLineFunctionBase<T>::lineType lineType;
+    int base;
+    expLine() : base(0)
+    {
+    }
+    virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
+    {
+      if (base != 0) {
+        double baseLog = std::log(double(base));
+        for (size_t i = 0; i < size; i++)
+          lOut[i] = std::exp(lIn[i] * baseLog);
+      } else {
+        for (size_t i = 0; i < size; i++)
+          lOut[i] = std::exp(lIn[i]);
+      }
+    }
+  };
+
   template <class T> struct logicAndLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,

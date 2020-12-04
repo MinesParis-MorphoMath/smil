@@ -68,7 +68,7 @@ Gaussian.
     //****************************************************************************
     inline float Gauss(float x, float Sigma)
     {
-      return (float) exp((double) ((-x * x) / (2 * Sigma * Sigma)));
+      return (float) std::exp((double) ((-x * x) / (2 * Sigma * Sigma)));
     }
 
     //****************************************************************************

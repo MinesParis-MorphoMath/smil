@@ -15,6 +15,9 @@
  *    - NEW : @TB{areaOpening} using algorithm @TB{UnionFind} ported and
  *      rewrote
  *    - CHANGE : AddOn @TB{ZoneMatrix} - functions converted to functor
+ *    - CHANGE : function isBinary(), now return @TB{true} if there are only
+ *      two values in the image : 0 and any other positive value.
+ *    - NEW - function exp() to revert the function log()
  *
  *  - Functions renamed to avoid confusion (mostly on Blobs)
  *    - measImageEntropy => measEntropy
@@ -26,13 +29,14 @@
  *    - measMaxVals => blobsMaxVal
  *    - measRangeVals => blobsRangeVal
  *    - measMeanVals => blobsMeanVal
- *    - valueLists=> blobsValueList
+ *    - valueLists => blobsValueList
  *    - measModeVals => blobsModeVal
  *    - measMedianVals => blobsMedianVal
  *    - measBarycenters => blobsBarycenter
  *    - measBoundBoxes => blobsBoundBox
  *    - measBlobMoments => blobsMoments
  *    - measBlobsEntropy => blobsEntropy
+ *    - ImFastLineOpen_Morard => imFastLineOpen
  *
  *  - Documentation
  *    - Lots of @TB{Doxygen} documentation being reorganized and completed.

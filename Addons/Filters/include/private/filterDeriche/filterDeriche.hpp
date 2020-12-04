@@ -85,10 +85,10 @@ namespace smil
     double s1, s2, s;
     int i, j;
 
-    g = ((1 - exp(-Alpha)) * (1 - exp(-Alpha))) /
-        (1 + 2 * Alpha * exp(-Alpha) - exp(-2 * Alpha));
-    a1 = exp(-Alpha);
-    a2 = exp(-2 * Alpha);
+    g = ((1 - std::exp(-Alpha)) * (1 - std::exp(-Alpha))) /
+        (1 + 2 * Alpha * std::exp(-Alpha) - std::exp(-2 * Alpha));
+    a1 = std::exp(-Alpha);
+    a2 = std::exp(-2 * Alpha);
     c1 = Alpha + 1;
     c2 = Alpha - 1;
 
@@ -150,10 +150,10 @@ namespace smil
     double s1, s2, s;
     int i, j;
 
-    g  = (float) (((1 - exp(-Alpha)) * (1 - exp(-Alpha))) /
-                 (1 + 2 * Alpha * exp(-Alpha) - exp(-2 * Alpha)));
-    a1 = (float) exp(-Alpha);
-    a2 = (float) exp(-2 * Alpha);
+    g  = (float) (((1 - std::exp(-Alpha)) * (1 - std::exp(-Alpha))) /
+                 (1 + 2 * Alpha * std::exp(-Alpha) - std::exp(-2 * Alpha)));
+    a1 = (float) std::exp(-Alpha);
+    a2 = (float) std::exp(-2 * Alpha);
     c1 = (float) (Alpha + 1);
     c2 = (float) (Alpha - 1);
 

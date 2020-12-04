@@ -48,16 +48,16 @@ namespace smil
    * @details The connected component @b labelling of a binary image is a
    * transformation directly associated with the notion of connectivity. It
    * consists in setting each pixel belonging to a connected component of the
-   * input binary image to a specific grey level value, different values being 
-   * considered for each connected component (the background components are 
+   * input binary image to a specific grey level value, different values being
+   * considered for each connected component (the background components are
    * usually not processed and they keep their original value, i.e., zero). The
    * resulting  image is called a <b>label image</b>.
    *
-   * The notion of labelling extends directly to grey scale image. In this 
-   * latter case, a distinct label is given to each grey scale connected 
+   * The notion of labelling extends directly to grey scale image. In this
+   * latter case, a distinct label is given to each grey scale connected
    * component (flat zone) of the image.
    *
-   * @see 
+   * @see
    * - @SoilleBook{p. 35-38}
    * @{
    */
@@ -578,8 +578,8 @@ namespace smil
   /**
    * lambdaLabel() - Lambda-flat zones labelization
    *
-   * @details 
-   * In this mode of labeling, two neighbour pixels have the same label if 
+   * @details
+   * In this mode of labeling, two neighbour pixels have the same label if
    * there are a path between them at which the value difference from pixel to
    * pixel doesn't exceed @b lambdaVal
    *
@@ -672,7 +672,7 @@ namespace smil
   }
 
   /**
-   * labelWithArea() - Image labelization with the size (area) of each connected 
+   * labelWithArea() - Image labelization with the size (area) of each connected
    * components
    *
    * @param[in] imIn : input image
@@ -713,13 +713,13 @@ namespace smil
   }
 
   /**
-   * labelWithVolume() - Image labelization with the volume (sum of values) of 
-   * each connected components in the imLabelsInit image
+   * labelWithVolume() - Image labelization with the volume (sum of values) of
+   * each connected components in the imLabelIn image
    *
    * @param[in] imIn : input image
-   * @param[in] imLabelsInit : an image with disconnected regions to initiate 
+   * @param[in] imLabelIn : an image with disconnected regions to initiate
    * labeling
-   * @param[out] imOut : output image
+   * @param[out] imLabelOut : output image
    * @param[in] se : structuring element
    * @returns the number of labels (or 0 if error)
    *
@@ -730,18 +730,18 @@ namespace smil
    * in the image if they have the same volume.
    */
   template <class T1, class T2>
-  size_t labelWithVolume(const Image<T1> &imIn, const Image<T2> &imLabelsInit,
-                         Image<T2> &imOut, const StrElt &se = DEFAULT_SE)
+  size_t labelWithVolume(const Image<T1> &imIn, const Image<T2> &imLabelIn,
+                         Image<T2> &imLabelOut, const StrElt &se = DEFAULT_SE)
   {
-    ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imLabelOut);
+    ASSERT_SAME_SIZE(&imIn, &imLabelOut);
 
-    ImageFreezer freezer(imOut);
+    ImageFreezer freezer(imLabelOut);
 
     Image<T2> imLabel(imIn);
 
-    ASSERT(label(imLabelsInit, imLabel, se) != 0);
-    label(imLabelsInit, imLabel, se);
+    ASSERT(label(imLabelIn, imLabel, se) != 0);
+    label(imLabelIn, imLabel, se);
     bool onlyNonZeros       = true;
     map<T2, Blob> blobs     = computeBlobs(imLabel, onlyNonZeros);
     map<T2, double> volumes = blobsVolume(imIn, blobs);
@@ -754,19 +754,19 @@ namespace smil
     ASSERT((maxV < double(ImDtTypes<T2>::max())),
            "Volumes max value exceeds data type max!", 0);
 
-    ASSERT(applyLookup(imLabel, volumes, imOut) == RES_OK);
+    ASSERT(applyLookup(imLabel, volumes, imLabelOut) == RES_OK);
 
     return RES_OK;
   }
 
   /**
-   * labelwithMaxima() - Image labelization with the maximum values of each 
-   * connected components in the imLabelsInit image
+   * labelwithMaxima() - Image labelization with the maximum values of each
+   * connected components in the imLabelIn image
    *
    * @param[in] imIn : input image
-   * @param[in] imLabelsInit : an image with disconnected regions to initiate 
+   * @param[in] imLabelIn : an image with disconnected regions to initiate
    * labeling
-   * @param[out] imOut : output image
+   * @param[out] imLabelOut : output image
    * @param[in] se : structuring element
    * @returns the number of labels (or 0 if error)
    *
@@ -777,18 +777,18 @@ namespace smil
    * in the image if they have the maximum value.
    */
   template <class T1, class T2>
-  size_t labelWithMaxima(const Image<T1> &imIn, const Image<T2> &imLabelsInit,
-                         Image<T2> &imOut, const StrElt &se = DEFAULT_SE)
+  size_t labelWithMaxima(const Image<T1> &imIn, const Image<T2> &imLabelIn,
+                         Image<T2> &imLabelOut, const StrElt &se = DEFAULT_SE)
   {
-    ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imLabelOut);
+    ASSERT_SAME_SIZE(&imIn, &imLabelOut);
 
-    ImageFreezer freezer(imOut);
+    ImageFreezer freezer(imLabelOut);
 
     Image<T2> imLabel(imIn);
 
-    ASSERT(label(imLabelsInit, imLabel, se) != 0);
-    label(imLabelsInit, imLabel, se);
+    ASSERT(label(imLabelIn, imLabel, se) != 0);
+    label(imLabelIn, imLabel, se);
     bool onlyNonZeros   = true;
     map<T2, Blob> blobs = computeBlobs(imLabel, onlyNonZeros);
     map<T2, T1> markers = blobsMaxVal(imIn, blobs);
@@ -801,19 +801,19 @@ namespace smil
     ASSERT((maxV < double(ImDtTypes<T2>::max())),
            "Markers max value exceeds data type max!", 0);
 
-    ASSERT(applyLookup(imLabel, markers, imOut) == RES_OK);
+    ASSERT(applyLookup(imLabel, markers, imLabelOut) == RES_OK);
 
     return RES_OK;
   }
 
   /**
    * labelWithMean() - Image labelization with the mean values of each connected
-   * components in the imLabelsInit image
+   * components in the imLabelIn image
    *
    * @param[in] imIn : input image
-   * @param[in] imLabelsInit : an image with disconnected regions to initiate 
+   * @param[in] imLabelIn : an image with disconnected regions to initiate
    * labeling
-   * @param[out] imOut : output image
+   * @param[out] imLabelOut : output image
    * @param[in] se : structuring element
    * @returns the number of labels (or 0 if error)
    *
@@ -824,18 +824,18 @@ namespace smil
    * in the image if they have the same mean value.
    */
   template <class T1, class T2>
-  size_t labelWithMean(const Image<T1> &imIn, const Image<T2> &imLabelsInit,
-                       Image<T1> &imOut, const StrElt &se = DEFAULT_SE)
+  size_t labelWithMean(const Image<T1> &imIn, const Image<T2> &imLabelIn,
+                       Image<T1> &imLabelOut, const StrElt &se = DEFAULT_SE)
   {
-    ASSERT_ALLOCATED(&imIn, &imOut);
-    ASSERT_SAME_SIZE(&imIn, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imLabelOut);
+    ASSERT_SAME_SIZE(&imIn, &imLabelOut);
 
-    ImageFreezer freezer(imOut);
+    ImageFreezer freezer(imLabelOut);
 
     Image<T2> imLabel(imIn);
 
-    ASSERT(label(imLabelsInit, imLabel, se) != 0);
-    label(imLabelsInit, imLabel, se);
+    ASSERT(label(imLabelIn, imLabel, se) != 0);
+    label(imLabelIn, imLabel, se);
     bool onlyNonZeros   = true;
     map<T2, Blob> blobs = computeBlobs(imLabel, onlyNonZeros);
     map<T2, std::vector<double>> meanValsStd = blobsMeanVal(imIn, blobs);
@@ -845,7 +845,7 @@ namespace smil
              meanValsStd.begin();
          iter != meanValsStd.end(); ++iter) {
       markers[iter->first] = (iter->second)[0];
-      // 	  cout << "iter->first = " << iter->first << "  iter->second[0] " <<
+      //    cout << "iter->first = " << iter->first << "  iter->second[0] " <<
       // iter->second[0] << endl;
     }
 
@@ -858,7 +858,7 @@ namespace smil
     ASSERT((maxV < double(ImDtTypes<T2>::max())),
            "Markers max value exceeds data type max!", 0);
 
-    ASSERT(applyLookup(imLabel, markers, imOut) == RES_OK);
+    ASSERT(applyLookup(imLabel, markers, imLabelOut) == RES_OK);
 
     return RES_OK;
   }

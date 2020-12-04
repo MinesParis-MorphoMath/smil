@@ -38,7 +38,7 @@ namespace smil
   /**
    * @ingroup Base
    * @defgroup Transform Image Transformations
-   * 
+   *
    */
 
   /**
@@ -50,7 +50,7 @@ namespace smil
     * @{
     */
 
-  /* 
+  /*
    *  ####    ####   #####    #   #
    * #    #  #    #  #    #    # #
    * #       #    #  #    #     #
@@ -269,7 +269,7 @@ namespace smil
     ASSERT((imOut.setSize(imIn) == RES_OK));
     return copy<T>(imIn, imOut);
   }
-    
+
   /*
    *  ####   #####    ####   #####
    * #    #  #    #  #    #  #    #
@@ -319,7 +319,7 @@ namespace smil
    * Crop an image in the same image.
    *
    * @param[in,out] imInOut : input image
-   * @param[in] startX, startY, startZ : start position of the zone in the 
+   * @param[in] startX, startY, startZ : start position of the zone in the
    * input image
    * @param[in] sizeX, sizeY, sizeZ : size of the zone in the input image
    *
@@ -804,7 +804,7 @@ namespace smil
     translate<T>(imIn, dx, dy, 0, imOut);
     return imOut;
   }
-  
+
   /** @} */
 
   /**
@@ -850,7 +850,7 @@ namespace smil
      * Public resize members
      */
     RES_T resize(Image<T> &imIn, size_t width, size_t height, size_t depth,
-                 Image<T> &imOut, string algorithm = "trilinear")
+                 Image<T> &imOut, string method = "trilinear")
     {
       ASSERT_ALLOCATED(&imIn, &imOut)
       if (&imIn == &imOut) {
@@ -859,44 +859,44 @@ namespace smil
       }
 
       size_t dz = imIn.getDepth();
-      if (algorithm == "auto") {
+      if (method == "auto") {
         if (isBinary(imIn))
-          algorithm = "closest";
+          method = "closest";
         else
-          algorithm = dz > 1 ? "trilinear" : "bilinear";
+          method = dz > 1 ? "trilinear" : "bilinear";
       }
 
-      if (algorithm == "closest") {
+      if (method == "closest") {
         if (dz > 1)
           return resize3DClosest(imIn, width, height, depth, imOut);
         else
           return resize2DClosest(imIn, width, height, imOut);
       }
 
-      if (algorithm == "bilinear" || algorithm == "trilinear") {
+      if (method == "bilinear" || method == "trilinear") {
         if (dz > 1)
           return resizeTrilinear(imIn, width, height, depth, imOut);
         else
           return resizeBilinear(imIn, width, height, imOut);
       }
-      ERR_MSG("* Unknown algorithm " + algorithm);
+      ERR_MSG("* Unknown method " + method);
       return RES_ERR;
     }
 
     RES_T resize(Image<T> &imIn, size_t width, size_t height, Image<T> &imOut,
-                 string algorithm = "trilinear")
+                 string method = "trilinear")
     {
       ASSERT_ALLOCATED(&imIn, &imOut)
 
       size_t depth = imIn.getDepth();
-      return resize(imIn, width, height, depth, imOut, algorithm);
+      return resize(imIn, width, height, depth, imOut, method);
     }
 
     /*
      * Public scale member
      */
     RES_T scale(Image<T> &imIn, double kx, double ky, double kz,
-                Image<T> &imOut, string algorithm = "trilinear")
+                Image<T> &imOut, string method = "trilinear")
     {
       ASSERT_ALLOCATED(&imIn, &imOut)
 
@@ -916,13 +916,13 @@ namespace smil
       if (depth > 1)
         depth = max(1L, lround(kz * depth));
 
-      return resize(imIn, width, height, depth, imOut, algorithm);
+      return resize(imIn, width, height, depth, imOut, method);
     }
 
     RES_T scale(Image<T> &imIn, size_t kx, size_t ky, Image<T> &imOut,
-                string algorithm = "trilinear")
+                string method = "trilinear")
     {
-      return scale(imIn, kx, ky, 1., imOut, algorithm);
+      return scale(imIn, kx, ky, 1., imOut, method);
     }
 
   private:
@@ -935,7 +935,7 @@ namespace smil
      *  ####   ######   ####    ####   ######   ####      #
      */
     /*
-     * 2D - closest interpolation algorithm - naive loop implementation
+     * 2D - closest interpolation method - naive loop implementation
      */
     RES_T resize2DClosest(Image<T> &imIn, size_t sx, size_t sy, Image<T> &imOut)
     {
@@ -977,7 +977,7 @@ namespace smil
     }
 
     /*
-     * 3D - closest interpolation algorithm - naive loop implementation
+     * 3D - closest interpolation method - naive loop implementation
      */
     RES_T resize3DClosest(Image<T> &imIn, size_t sx, size_t sy, size_t sz,
                           Image<T> &imOut)
@@ -1032,7 +1032,7 @@ namespace smil
      * ######     #    #    #  ######  #    #     #    #    #  ######
      */
     /*
-     * 2D - Bilinear interpolation algorithm - naive loop implementation
+     * 2D - Bilinear interpolation method - naive loop implementation
      */
     RES_T resizeBilinear(Image<T> &imIn, size_t sx, size_t sy, Image<T> &imOut)
     {
@@ -1084,7 +1084,7 @@ namespace smil
     }
 
     /*
-     * 3D - Trilinear interpolation algorithm - naive loop implementation
+     * 3D - Trilinear interpolation method - naive loop implementation
      */
     RES_T resizeTrilinear(Image<T> &imIn, size_t sx, size_t sy, size_t sz,
                           Image<T> &imOut)
@@ -1155,85 +1155,85 @@ namespace smil
   /** resize() - 3D image resize
    *
    * @details Resize a 3D image - the value of each pixel in the output image is
-   * calculated from the input image after an interpolation algorithm.
+   * calculated from the input image after an interpolation method.
    *
-   * There are two available algorithms :
-   * - @b closest - this is the simpler algorithm. Pixel values in the output
+   * There are two available methods :
+   * - @b closest - this is the simpler method. Pixel values in the output
    * image are taken from the nearest corresponding pixel in the input image.
-   * This algorithm doesn't increases the number of possible values. So, it must
+   * This method doesn't increases the number of possible values. So, it must
    * be used when resizing @b binary images or images whose possible values
    * shall be preserved in the output image.
-   * - @b trilinear (extension of @b bilinear algorithm for @b 3D images) - this
-   * is the algorithm to use on @TB{gray level} images.
+   * - @b trilinear (extension of @b bilinear method for @b 3D images) - this
+   * is the method to use on @TB{gray level} images.
    *
    * @note
-   * When algorithm is set to @b auto, the applied algorithm will be @b closest
+   * When method is set to @b auto, the applied method will be @b closest
    * for binary images and @b trilinear or @b bilinear for gray level images
    *
    * @param[in] imIn : input image
    * @param[in] sx, sy, sz : dimensions to be set on output image
    * @param[out] imOut : output image
-   * @param[in] algorithm : the interpolation algorithm to use. Can be @b
+   * @param[in] method : the interpolation method to use. Can be @b
    * trilinear (default), @b bilinear, @b closest or @b auto.
    */
   template <typename T>
   RES_T resize(Image<T> &imIn, size_t sx, size_t sy, size_t sz,
-                    Image<T> &imOut, string algorithm = "trilinear")
+                    Image<T> &imOut, string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
-    ImageResizeFunc<T> func(algorithm);
-    return func.resize(imIn, sx, sy, sz, imOut, algorithm);
+    ImageResizeFunc<T> func(method);
+    return func.resize(imIn, sx, sy, sz, imOut, method);
   }
 
   /** resize() - 2D image resize
    *
    * @details Resize a 2D image - the value of each pixel in the output image is
-   * calculated from the input image after an interpolation algorithm.
+   * calculated from the input image after an interpolation method.
    *
    * @param[in] imIn : input image
    * @param[in] sx, sy : dimensions to be set on output image
    * @param[out] imOut : output image
-   * @param[in] algorithm : the interpolation algorithm to use. Can be @b
+   * @param[in] method : the interpolation method to use. Can be @b
    * trilinear (default), @b bilinear ou @b closest.
    *
    * @overload
    */
   template <typename T>
   RES_T resize(Image<T> &imIn, size_t sx, size_t sy, Image<T> &imOut,
-                    string algorithm = "trilinear")
+                    string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
     size_t depth = imOut.getDepth();
 
-    ImageResizeFunc<T> func(algorithm);
-    return func.resize(imIn, sx, sy, depth, imOut, algorithm);
+    ImageResizeFunc<T> func(method);
+    return func.resize(imIn, sx, sy, depth, imOut, method);
   }
 
   /** resize() - 3D image resize
    *
    * @details Resize a 3D image - the value of each pixel in the output image is
-   * calculated from the input image after an interpolation algorithm.
+   * calculated from the input image after an interpolation method.
    *
    * The size of the output image is already set to what it should be.
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
-   * @param[in] algorithm : the interpolation algorithm to use. Can be @b
+   * @param[in] method : the interpolation method to use. Can be @b
    * trilinear (default), @b bilinear ou @b closest.
    *
    * @overload
    */
   template <typename T>
   RES_T resize(Image<T> &imIn, Image<T> &imOut,
-                    string algorithm = "trilinear")
+                    string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
     size_t width  = imOut.getWidth();
     size_t height = imOut.getHeight();
     size_t depth  = imOut.getDepth();
 
-    ImageResizeFunc<T> func(algorithm);
-    return func.resize(imIn, width, height, depth, imOut, algorithm);
+    ImageResizeFunc<T> func(method);
+    return func.resize(imIn, width, height, depth, imOut, method);
   }
 
   /** scale() - 3D image scale (resize by a factor)
@@ -1242,32 +1242,32 @@ namespace smil
    Input parameters are the factors to multiply each dimension of the input
    image instead of the dimensions of output image.
    *
-   * There are two available algorithms :
-   * - @b closest - this is the simpler algorithm. Pixel values in the output
+   * There are two available methods :
+   * - @b closest - this is the simpler method. Pixel values in the output
    * image are taken from the nearest corresponding pixel in the input image.
-   * This algorithm doesn't increases the number of possible values. So, it must
+   * This method doesn't increases the number of possible values. So, it must
    * be used when resizing @b binary images or images whose possible values
    * shall be preserved in the output image.
-   * - @b trilinear (extension of @b bilinear algorithm for @b 3D images) - this
-   * is the algorithm to use on @TB{gray level} images.
+   * - @b trilinear (extension of @b bilinear method for @b 3D images) - this
+   * is the method to use on @TB{gray level} images.
    *
    * @note
-   * When algorithm is set to @b auto, the applied algorithm will be @b closest
+   * When method is set to @b auto, the applied method will be @b closest
    * for binary images and @b trilinear or @b bilinear for gray level images
    *
    * @param[in] imIn : input image
    * @param[in] kx, ky, kz : scale factors
    * @param[out] imOut : output image
-   * @param[in] algorithm : the interpolation algorithm to use. Can be @b
+   * @param[in] method : the interpolation method to use. Can be @b
    * trilinear (default), @b bilinear, @b closest or @b auto.
    */
   template <typename T>
   RES_T scale(Image<T> &imIn, double kx, double ky, double kz,
-                   Image<T> &imOut, string algorithm = "trilinear")
+                   Image<T> &imOut, string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
-    ImageResizeFunc<T> func(algorithm);
-    return func.scale(imIn, kx, ky, kz, imOut, algorithm);
+    ImageResizeFunc<T> func(method);
+    return func.scale(imIn, kx, ky, kz, imOut, method);
   }
 
   /** scale() - 2D image scale
@@ -1279,21 +1279,21 @@ namespace smil
    * @param[in] imIn : input image
    * @param[in] kx, ky : scale factors
    * @param[out] imOut : output image
-   * @param[in] algorithm : the interpolation algorithm to use. Can be @b
+   * @param[in] method : the interpolation method to use. Can be @b
    * trilinear (default), @b bilinear ou @b closest.
    */
   template <typename T>
   RES_T scale(Image<T> &imIn, double kx, double ky, Image<T> &imOut,
-                   string algorithm = "trilinear")
+                   string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
-    ImageResizeFunc<T> func(algorithm);
-    return func.scale(imIn, kx, ky, 1., imOut, algorithm);
+    ImageResizeFunc<T> func(method);
+    return func.scale(imIn, kx, ky, 1., imOut, method);
   }
 
   /** scale() - image scale (resize by a factor)
    *
-   * @details 3D image scale - Scaling images is almost the same than resizing.   
+   * @details 3D image scale - Scaling images is almost the same than resizing.
    * Input parameters are the factors to multiply each dimension of the input
    * image instead of the dimensions of output image.
    *
@@ -1301,16 +1301,16 @@ namespace smil
    * @param[in] imIn : input image
    * @param[in] k : scale factor applied to each axis.
    * @param[out] imOut : output image
-   * @param[in] algorithm : the interpolation algorithm to use. Can be @b
+   * @param[in] method : the interpolation method to use. Can be @b
    trilinear (default), @b bilinear ou @b closest.
    */
   template <typename T>
   RES_T scale(Image<T> &imIn, double k, Image<T> &imOut,
-                   string algorithm = "trilinear")
+                   string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
-    ImageResizeFunc<T> func(algorithm);
-    return func.scale(imIn, k, k, k, imOut, algorithm);
+    ImageResizeFunc<T> func(method);
+    return func.scale(imIn, k, k, k, imOut, method);
   }
 
 
@@ -1419,7 +1419,7 @@ namespace smil
   }
 
   /**
-   * resize() - 2D bilinear resize algorithm.
+   * resize() - 2D bilinear resize method.
    *
    * Resize imIn to sx,sy -> imOut.
    *

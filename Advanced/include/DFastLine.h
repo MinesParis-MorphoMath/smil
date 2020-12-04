@@ -13,10 +13,10 @@ namespace smil
    * elements.
    *
    * @details Implementation of morphological operations by @b line, @b square
-   * and @b circle structuring elements using repeately operations with 
+   * and @b circle structuring elements using repeately operations with
    * @b linear structuring elements and arbitrary angles.
-   * 
-   * These algorithms are described in @SoilleBook{Section 3.9, p. 89} and 
+   *
+   * These algorithms are described in @SoilleBook{Section 3.9, p. 89} and
    * @cite SoilleBJ96
    *
    * Line Structuring Element using Bresenham's Line Drawing Algorithm
@@ -117,7 +117,8 @@ namespace smil
   }
 
   /**
-   * @brief squareOpen() : the SE is a square which side is <b>(2 * hSide + 1)</b>
+   * @brief squareOpen() : the SE is a square which side is <b>(2 * hSide +
+   * 1)</b>
    * @param[in]  imIn : input image
    * @param[in]  hSide : Half side of the Structuring Element
    * @param[out] imOut : output image
@@ -167,7 +168,8 @@ namespace smil
     return circleErode_Soille(imIn, radius, imOut);
   }
 
-  /** @brief circleOpen() : the SE is a <b>disk</b> of radius <b>radius</b> pixels
+  /** @brief circleOpen() : the SE is a <b>disk</b> of radius <b>radius</b>
+   * pixels
    *
    * @param[in]  imIn : input image
    * @param[in]  radius : the diameter of the disk will be <b>2 * radius + 1</b>
@@ -195,17 +197,38 @@ namespace smil
   //*************************************************
   // MORARD 'S ALGORITHM
   //*************************************************
-  /** @brief ImFastLineXXX_Morard() : the Structuring Element is a segment of
+  /** @brief imFastLineOpen() : the Structuring Element is a segment of
    * length <b>(2 * hLen + 1)</b> pixels and an orientation <b>angle</b>
    * @param[in]  imIn : input image
    * @param[in]  angle : (in degres)
    * @param[in]  hLen : Half Length of the Structuring Element
    * @param[out] imOut : output image
    */
-
   template <class T>
-  RES_T ImFastLineOpen_Morard(const Image<T> &imIn, const int angle,
-                              const int hLen, Image<T> &imOut);
+  RES_T imFastLineOpen(const Image<T> &imIn, const int angle, const int hLen,
+                       Image<T> &imOut);
+
+  /** @brief imFastLineClose() : the Structuring Element is a segment of
+   * length <b>(2 * hLen + 1)</b> pixels and an orientation <b>angle</b>
+   * @param[in]  imIn : input image
+   * @param[in]  angle : (in degres)
+   * @param[in]  hLen : Half Length of the Structuring Element
+   * @param[out] imOut : output image
+   */
+  template <class T>
+  RES_T imFastLineClose(const Image<T> &imIn, const int angle, const int hLen,
+                        Image<T> &imOut)
+  {
+    RES_T    r;
+    Image<T> imTmp(imIn);
+
+    inv(imIn, imTmp);
+
+    r = imFastLineOpen(imTmp, angle, hLen, imOut);
+    if (r == RES_OK)
+      return inv(imOut, imOut);
+    return RES_ERR;
+  }
 
 #if 0
    template <class T>

@@ -860,6 +860,33 @@ namespace smil
     func.lineFunction.base = base;
     return func(imIn, imOut);
   }
+
+  /**
+   * exp() - exponential of an image
+   *
+   * The result is a image where :
+   * - <b><c> imOut(x) = exp(imIn(x)</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] base : base of the function logarithm
+   *
+   * @note
+   * - Possible bases: 0 or none (natural logarithm, or base e), 2, 10
+   * @see
+   * - log()
+   */
+  template <class T>
+  RES_T exp(const Image<T> &imIn, Image<T> &imOut, int base = 0)
+  {
+    ASSERT_ALLOCATED(&imIn);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    unaryImageFunction<T, expLine<T>> func;
+    func.lineFunction.base = base;
+    return func(imIn, imOut);
+  }
+
   /** @} */
 
   /**
@@ -1722,7 +1749,7 @@ namespace smil
     size_t iMax = W * H * D;
 
     for (size_t i = 0; i < iMax; i++)
-      bufferOut[i] = (T2)(Max / (1. + exp(-k * (bufferIn[i] - ctr))));
+      bufferOut[i] = (T2)(Max / (1. + std::exp(-k * (bufferIn[i] - ctr))));
 
     return RES_OK;
   }

@@ -54,11 +54,11 @@ namespace smil
     if (methodS == 1) // Gauss
     {
       for (i = nS; i >= 0; i--) {
-        if (exp(-0.5 * ((double) i / EcTSx) * ((double) i / EcTSx)) < prec)
+        if (std::exp(-0.5 * ((double) i / EcTSx) * ((double) i / EcTSx)) < prec)
           nSx = i;
-        if (exp(-0.5 * ((double) i / EcTSy) * ((double) i / EcTSy)) < prec)
+        if (std::exp(-0.5 * ((double) i / EcTSy) * ((double) i / EcTSy)) < prec)
           nSy = i;
-        if (exp(-0.5 * ((double) i / EcTSz) * ((double) i / EcTSz)) < prec)
+        if (std::exp(-0.5 * ((double) i / EcTSz) * ((double) i / EcTSz)) < prec)
           nSz = i;
       }
     } else // Tukey
@@ -90,13 +90,13 @@ namespace smil
       val1 = (double) i / EcTSx;
       val2 = (double) i / EcTGx;
       if (methodS == 1)
-        PrecalSx[i] = exp(-0.5 * val1 * val1);
+        PrecalSx[i] = std::exp(-0.5 * val1 * val1);
       else if (i <= EcTSx)
         PrecalSx[i] = 0.5 * (1 - val1 * val1) * (1 - val1 * val1);
       else
         PrecalSx[i] = 0;
       if (methodG == 1)
-        PrecalCx[i] = exp(-0.5 * val2 * val2);
+        PrecalCx[i] = std::exp(-0.5 * val2 * val2);
       else if (i <= EcTGx)
         PrecalCx[i] = 0.5 * (1 - val2 * val2) * (1 - val2 * val2);
       else
@@ -104,13 +104,13 @@ namespace smil
       val1 = (double) i / EcTSy;
       val2 = (double) i / EcTGy;
       if (methodS == 1)
-        PrecalSy[i] = exp(-0.5 * val1 * val1);
+        PrecalSy[i] = std::exp(-0.5 * val1 * val1);
       else if (i <= EcTSy)
         PrecalSy[i] = 0.5 * (1 - val1 * val1) * (1 - val1 * val1);
       else
         PrecalSy[i] = 0;
       if (methodG == 1)
-        PrecalCy[i] = exp(-0.5 * val2 * val2);
+        PrecalCy[i] = std::exp(-0.5 * val2 * val2);
       else if (i <= EcTGy)
         PrecalCy[i] = 0.5 * (1 - val2 * val2) * (1 - val2 * val2);
       else
@@ -118,13 +118,13 @@ namespace smil
       val1 = (double) i / EcTSz;
       val2 = (double) i / EcTGz;
       if (methodS == 1)
-        PrecalSz[i] = exp(-0.5 * val1 * val1);
+        PrecalSz[i] = std::exp(-0.5 * val1 * val1);
       else if (i <= EcTSz)
         PrecalSz[i] = 0.5 * (1 - val1 * val1) * (1 - val1 * val1);
       else
         PrecalSz[i] = 0;
       if (methodG == 1)
-        PrecalCz[i] = exp(-0.5 * val2 * val2);
+        PrecalCz[i] = std::exp(-0.5 * val2 * val2);
       else if (i <= EcTGz)
         PrecalCz[i] = 0.5 * (1 - val2 * val2) * (1 - val2 * val2);
       else

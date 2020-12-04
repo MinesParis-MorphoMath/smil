@@ -44,5 +44,5 @@ int main(void)
   char *path = pathTestImage("barbara.png");
   Image<UINT8> imb(path);
   BENCH_IMG(histogram, imb);
-  BENCH_IMG(histogramMap, imb);  
+  BENCH_IMG(histogramMap, imb);
 }

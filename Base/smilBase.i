@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
@@ -194,7 +194,7 @@ TEMPLATE_WRAP_FUNC(addBorder);
 #endif // SWIGPY_SLICE_ARG
 %}
 
-namespace std 
+namespace std
 {
     %template(PixelSequenceVector) vector<PixelSequence>;
     TEMPLATE_WRAP_MAP_FIX_SECOND(Blob, BlobMap);
