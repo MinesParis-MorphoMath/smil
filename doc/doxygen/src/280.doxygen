@@ -1,7 +1,7 @@
 /**
  * @page p280 Release Notes
  *
- * @section s280_06 Smil 0.10.6-dev (xx yyy 202z)
+ * @section s280_06 Smil 0.11.0 (04 dec 2020)
  *
  *  - New and change on functions
  *    - NEW and CHANGE : zhangSkeleton() moved to an Addon and reviewed. Other
