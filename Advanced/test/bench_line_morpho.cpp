@@ -36,12 +36,13 @@ using namespace smil;
 
 int main(int argc, char *argv[])
 {
-  char *path = pathTestImage("bw/balls.png");
-
-  //if (argc > 1)
-  //  read(argv[1], imIn);
-
-  Image<UINT8> imIn(path);
+  Image<UINT8> imIn;
+  if (argc > 1) {
+    read(argv[1], imIn);
+  } else {
+    char *path = pathTestImage("bw/balls.png");
+    imIn = Image<UINT8>(path);
+  }
   Image<UINT8> imOut(imIn);
 
   int angle = 30;
