@@ -31,6 +31,7 @@
 #define _D_HOUGH_TRANSFORM_HPP
 
 #include "Core/include/private/DImage.hxx"
+#include "Base/include/DBase.h"
 
 namespace smil
 {
