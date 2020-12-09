@@ -1159,7 +1159,7 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
     * Area opening
      * 
      * Max-tree based algorithm
-     * @warning 4-connex only (6-connex in 3D)
+     * 
      * @param[in] imIn Input image
      * @param[in] stopSize The size of the opening
      * @param[out] imOut Output image
@@ -1175,7 +1175,7 @@ inline void computeFillAspectRatioFactor(UINT wNode,UINT cNode,UINT area,UINT wi
     * Area closing
      * 
      * Max-tree based algorithm
-     * @warning 4-connex only (6-connex in 3D)
+     * 
      * @param[in] imIn Input image
      * @param[in] stopSize The size of the closing
      * @param[out] imOut Output image

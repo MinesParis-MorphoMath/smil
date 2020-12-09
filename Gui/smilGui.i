@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
@@ -87,12 +87,18 @@ TEMPLATE_WRAP_CLASS(QtImageViewer, QtImageViewer);
 %}
 
 %pythoncode %{
-try:
+import os
+
+pythonEnv = 'NO'
+if 'JUPYTER' in os.environ:
+  pythonEnv = os.environ['JUPYTER'].lower()
+if pythonEnv not in ['yes', 'YES', 'true', 'TRUE']:
+  try:
     __IPYTHON__
     import IPython
     if IPython.version_info[0] >= 5:
-        get_ipython().magic("%gui qt")
-except NameError:
+      get_ipython().magic("%gui qt")
+  except NameError:
     # print("err")
     pass
 
