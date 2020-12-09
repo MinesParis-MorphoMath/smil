@@ -89,10 +89,10 @@ TEMPLATE_WRAP_CLASS(QtImageViewer, QtImageViewer);
 %pythoncode %{
 import os
 
-pythonEnv = 'NO'
-if 'JUPYTER' in os.environ:
-  pythonEnv = os.environ['JUPYTER'].lower()
-if pythonEnv not in ['yes', 'YES', 'true', 'TRUE']:
+jupyterEnv = 'no'
+if 'JUPYTER_NOTEBOOKS' in os.environ:
+  jupyterEnv = os.environ['JUPYTER_NOTEBOOKS']
+if jupyterEnv.lower() not in ['yes', 'true', '1']:
   try:
     __IPYTHON__
     import IPython
