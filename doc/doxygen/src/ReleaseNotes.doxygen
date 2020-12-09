@@ -1,6 +1,15 @@
 /**
  * @page ReleaseNotes Release Notes
  *
+ * @section s280_07 Smil 0.11.1-dev
+ *   - @TB{New}
+ *     - ..
+ *   - @TB{Change}
+ *     - ..
+ *   - @TB{Bugs}
+ *     - Incompatibility between Jupyter notebooks and Qt when importing
+ *       @smilPython
+ *
  * @section s280_06 Smil 0.11.0 (04 dec 2020)
  *
  *  - New and change on functions

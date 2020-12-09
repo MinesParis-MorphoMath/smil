@@ -34,6 +34,7 @@ ALIASES += TI{1}="<i>\1</i>"
 
 
 ALIASES += Smil="@TB{Smil}"
+ALIASES += smilPython="@TB{smilPython}"
 ALIASES += Linux="@TB{Linux}"
 ALIASES += Linux{1}="@TB{Linux \1}"
 ALIASES += Python="@TB{Python}"
