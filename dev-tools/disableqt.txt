@@ -1,0 +1,16 @@
+
+# Disable QT Gui, needed to run Smil with jupyter notebooks
+
+Core/src/DTimer.cpp                 OK : everything under (#ifdef USE_QT
+Core/include/DTimer.h               OK : everything under (#ifdef USE_QT
+Gui/Qt/DQtGuiInstance.cpp           OK : everything under (#ifdef USE_QT
+Gui/Qt/DQtImageViewer.cpp           OK : everything under (#ifdef USE_QT
+Gui/Qt/DQtImageViewer.hpp           OK : nothing to do, USE_QT in a comment
+Gui/src/DGuiInstance.cpp            OK : call isGuiDisabled() in initialize
+Gui/smilGui.i                       OK :
+Gui/include/DGuiInstance.h          OK : inline bool isGuiDisabled()
+NSTypes/Bit/src/DGui_Bit.cpp        OK : everything under (#ifdef USE_QT
+NSTypes/RGB/include/DRGB.h          OK : everything under (#ifdef USE_QT
+
+
+Core/include/private/DInstance.hpp  OK => getenv("DisableQt") ->disableQt
