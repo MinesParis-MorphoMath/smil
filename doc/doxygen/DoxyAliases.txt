@@ -41,6 +41,9 @@ ALIASES += Python="@TB{Python}"
 ALIASES += Python{1}="@TB{Python \1}"
 ALIASES += Anaconda="@TB{Anaconda}"
 ALIASES += Doxygen="@TB{Doxygen}"
+ALIASES += QT="@TB{Qt}"
+ALIASES += Jupyter=@TB{Jupyter}
+ALIASES += JupyterHub=@TB{JupyterHub}
 
 ########################################################
 # WEB PAGE

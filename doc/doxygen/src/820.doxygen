@@ -1,0 +1,42 @@
+/**
+ * @page p820 F.A.Q - Frequently Asked Questions
+ *
+ * @section s820_01 Jupyter Notebooks
+ *
+ * @subsection s820_01_01 - Smil and Notebooks
+ * As long as notebooks run on a web interface, you can't use any @QT or
+ * @Smil @TB{Gui} feature. So you must disable them. Use the environnment
+ * variable @TB{SMIL_DISABLE_GUI}.
+ *
+ * - Disable @TB{Gui} before importing @Smil :
+ @code{.py}
+# disable Qt Gui
+import os
+os.environ['SMIL_DISABLE_GUI'] = 'yes'
+
+# import smilPython
+import smilPython as sp
+# functions using matplotlib to display images on jupyter notebooks
+from smilPyGoodies import *
+...
+ @endcode
+ *
+ * - With @JupyterHub add @TB{SMIL_DISABLE_GUI} to its environnment :
+ *   - Launch @Jupyter hub this way :
+ @code{.bash}
+export SMIL_DISABLE_GUI=true
+jupyterhub [options]
+ @endcode
+ *   You must, also, tell @JupyterHub to not remove this variable from the
+ *   environnment. Include it its configuration file, with the following line.
+ *   The configuration file shall be something like
+ *   @TT{/etc/jupyterhub/jupyterhub_config.py}
+ @code{.py}
+c.Spawner.env_keep.append('SMIL_DISABLE_GUI')
+ @endcode
+ *
+ * <hr> <br>
+ *
+ * @tableofcontents
+ */
+
