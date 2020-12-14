@@ -87,7 +87,7 @@ TEMPLATE_WRAP_CLASS(QtImageViewer, QtImageViewer);
 import os
 
 def QtGui():
-  envVars = ['JUPYTER_NOTEBOOKS', 'DisableQtGui', 'DisableGui']
+  envVars = ['JUPYTER_NOTEBOOKS', 'DisableQtGui', 'SMIL_DISABLE_GUI']
   for k in envVars:
     if k in os.environ:
       return not os.environ[k].lower() in ['yes', 'true', '1']

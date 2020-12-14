@@ -1,5 +1,5 @@
 /**
- * @page p195 Smil related sites and links
+ * @page p195 Smil useful links
  *
  * - @Smil sites and links
  *   - @WebServerSmil
@@ -11,9 +11,10 @@
  *   - @UrlSmil{publis/SmilQuickReference.pdf, Smil Quick Reference}
  *   - @UrlSmil{publis/Smil-in-a-Nutshell.pdf,
  *              Smil in a Nutshell (or... @TI{Quick starting with smilPython})}
- *
  * - @Smil support
  *   - @URL{https://groupes.renater.fr/sympa/info/smil-users, Forum smil-users}
+ *   - @UrlSmil{doc/faq.html, Frequently Asked Questions}
+ *   - @UrlSmil{doc/troubleshooting.html, Troubleshooting}
  *
  * - Other @Smil related sites :
  *   - @WebServerCMM
