@@ -6,7 +6,7 @@
  * @subsection s820_01_01 - Smil and Notebooks
  * As long as notebooks run on a web interface, you can't use any @QT or
  * @Smil @TB{Gui} feature. So you must disable them. Use the environnment
- * variable @TB{SMIL_DISABLE_GUI}.
+ * variable @TT{SMIL_DISABLE_GUI}.
  *
  * - Disable @TB{Gui} before importing @Smil :
  @code{.py}
@@ -20,19 +20,35 @@ import smilPython as sp
 from smilPyGoodies import *
 ...
  @endcode
+ * <br>
  *
- * - With @JupyterHub add @TB{SMIL_DISABLE_GUI} to its environnment :
- *   - Launch @Jupyter hub this way :
+ * - Use @TB{iPython} profile to define @TT{SMIL_DISABLE_GUI} :
+ @code{.py}
+    ipython profile create
+
+    cat > ~/.ipython/profile_default/startup/50-smil-jupyter.py <<EOT
+    import os
+    os.environ["SMIL_DISABLE_GUI"]=true
+    EOT
+ @endcode
+ * @TB{See : }
+ *  @URL{https://ipython.readthedocs.io/en/stable/development/config.html,
+ *            iPython doc} to learn more about @iPython profiles.
+ * <br>
+ *
+ *
+ * - With @JupyterHub add @TB{SMIL_DISABLE_GUI} to its environnment.
+ *   Launch @Jupyter hub as :
  @code{.bash}
-export SMIL_DISABLE_GUI=true
-jupyterhub [options]
+    export SMIL_DISABLE_GUI=true
+    jupyterhub [options]
  @endcode
  *   You must, also, tell @JupyterHub to not remove this variable from the
  *   environnment. Include it its configuration file, with the following line.
  *   The configuration file shall be something like
  *   @TT{/etc/jupyterhub/jupyterhub_config.py}
  @code{.py}
-c.Spawner.env_keep.append('SMIL_DISABLE_GUI')
+    c.Spawner.env_keep.append('SMIL_DISABLE_GUI')
  @endcode
  *
  * <hr> <br>
