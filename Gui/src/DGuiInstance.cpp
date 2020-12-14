@@ -41,10 +41,14 @@ namespace smil
     if (Gui::_instance == NULL) {
 #ifdef USE_QT
       // Check if there is already a qapplication running
-      if (!qApp)
-        Gui::_instance = new QtAppGui;
-      else
-        Gui::_instance = new QtGui;
+      if (!isGuiDisabled()) {
+        if (!qApp)
+          Gui::_instance = new QtAppGui;
+        else
+          Gui::_instance = new QtGui;
+      } else {
+        Gui::_instance = new Gui;
+      }
 #else  // USE_QT
       Gui::_instance = new Gui;
 #endif // USE_QT
