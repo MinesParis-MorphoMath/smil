@@ -1,0 +1,35 @@
+
+#
+# __rewrite__
+GeoDist                  distanceGeodesic
+geoDil                   geoDilate
+geoEro                   geoErode
+dist                     distance
+dist_euclidean           distanceEuclidean
+measMedianVal            medianVal
+measModeVal              modeVal
+hFlip                    horizFlip
+vFlip                    vertFlip
+
+# 30/Nov/2020
+measImageEntropy         measEntropy
+gradient_HLS             gradientHLS
+gradient_LAB             gradientLAB
+measAreas                blobsArea
+measVolumes              blobsVolume
+measMinVals              blobsMinVal
+measMaxVals              blobsMaxVal
+measRangeVals            blobsRangeVal
+measMeanVals             blobsMeanVal
+valueLists               blobsValueList
+measModeVals             blobsModeVal
+measMedianVals           blobsMedianVal
+measBarycenters          blobsBarycenter
+measBoundBoxes           blobsBoundBox
+measBlobMoments          blobsMoments
+measBlobsEntropy         blobsEntropy
+
+#
+# __shortcuts__
+getDefaultSE             Morpho.getDefaultSE
+setDefaultSE             Morpho.setDefaultSE

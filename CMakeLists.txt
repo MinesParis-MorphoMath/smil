@@ -831,13 +831,18 @@ IF(USE_WRAPPER)
           "${SMIL_LIBRARIES_INSTALL_PATH}\n${SMIL_LIBRARIES_INSTALL_PATH}/smilPython")
     CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/__init__.py
           ${LIBRARY_OUTPUT_PATH}/smilPython/__init__.py COPYONLY)
+    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/smilFuncRewrite.py
+          ${LIBRARY_OUTPUT_PATH}/smilPython/smilFuncRewrite.py COPYONLY)
     # SET_TARGET_PROPERTIES(_smilPython PROPERTIES
     #          LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/smilPython)
     INSTALL(TARGETS _smil_Python LIBRARY DESTINATION
           ${SMIL_LIBRARIES_INSTALL_PATH} COMPONENT python)
-    INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/smilPython/smil_Python.py
-          ${LIBRARY_OUTPUT_PATH}/smilPython/__init__.py
-      DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}/smilPython COMPONENT python)
+    INSTALL(FILES 
+            ${LIBRARY_OUTPUT_PATH}/smilPython/smil_Python.py
+            ${LIBRARY_OUTPUT_PATH}/smilPython/smilFuncRewrite.py
+            ${LIBRARY_OUTPUT_PATH}/smilPython/__init__.py
+            DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}/smilPython 
+            COMPONENT python)
 
     IF(UNIX)
       IF(${PYTHON_VERSION} LESS 2.7)
