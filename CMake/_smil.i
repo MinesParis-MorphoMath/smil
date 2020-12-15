@@ -76,6 +76,7 @@ else:
 from smilCorePython import *
 from smilBasePython import *
 from smilIOPython import *
+#from smilMorphoPython import *
 
 __builtin__.dataTypes = [ ${DATA_TYPES_QUOTE_STR}, ]
 __builtin__.imageTypes = [ ${IMAGE_TYPES_STR}, ]
@@ -453,163 +454,11 @@ class linkManager:
 #
 # Some shortcuts
 #
-def getDefaultSE():
-  return Morpho.getDefaultSE()
-
-def setDefaultSE(*args):
-  Morpho.setDefaultSE(*args)
-
+#def getDefaultSE():
+#  return Morpho.getDefaultSE()
 #
-# dictionnary of renamed functions
-#
-def GeoDist(*args):
-  """
-  Function renamed to follow naming style. Better use distanceGeodesic
-  """
-  return distanceGeodesic(*args)
-
-def geoDil(*args):
-  """
-  Function renamed to follow naming style. Better use geoDilate
-  """
-  return geoDilate(*args)
-
-def geoEro(*args):
-  """
-  Function renamed to follow naming style. Better use geoErode
-  """
-  return geoErode(*args)
-
-def dist(*args):
-  """
-  Function renamed to follow naming style. Better use distance
-  """
-  return distance(*args)
-
-def measMedianVal(*args):
-  """
-  Function renamed to follow naming style. Better use medianVal
-  """
-  return medianVal(*args)
-
-def measModeVal(*args):
-  """
-  Function renamed to follow naming style. Better use modeVal
-  """
-  return modeVal(*args)
-
-def hFlip(*args):
-  """
-  Function renamed to follow naming style. Better use horizFlip
-  """
-  return horizFlip(*args)
-
-def vFlip(*args):
-  """
-  Function renamed to follow naming style. Better use vertFlip
-  """
-  return vertFlip(*args)
-
-#
-# 30/Nov/2020
-#
-def measImageEntropy(*args):
-    """
-    Function renamed to follow naming style. Better use measEntropy
-    """
-    return measEntropy(*args)
-
-def gradient_HLS(*args):
-    """
-    Function renamed to follow naming style. Better use gradientHLS
-    """
-    return gradientHLS(*args)
-
-def gradient_LAB(*args):
-    """
-    Function renamed to follow naming style. Better use gradientLAB
-    """
-    return gradientLAB(*args)
-
-def measAreas(*args):
-    """
-    Function renamed to follow naming style. Better use blobsArea
-    """
-    return blobsArea(*args)
-
-def measVolumes(*args):
-    """
-    Function renamed to follow naming style. Better use blobsVolume
-    """
-    return blobsVolume(*args)
-
-def measMinVals(*args):
-    """
-    Function renamed to follow naming style. Better use blobsMinVal
-    """
-    return blobsMinVal(*args)
-
-def measMaxVals(*args):
-    """
-    Function renamed to follow naming style. Better use blobsMaxVal
-    """
-    return blobsMaxVal(*args)
-
-def measRangeVals(*args):
-    """
-    Function renamed to follow naming style. Better use blobsRangeVal
-    """
-    return blobsRangeVal(*args)
-
-def measMeanVals(*args):
-    """
-    Function renamed to follow naming style. Better use blobsMeanVal
-    """
-    return blobsMeanVal(*args)
-
-def valueLists(*args):
-    """
-    Function renamed to follow naming style. Better use blobsValueList
-    """
-    return blobsValueList(*args)
-
-def measModeVals(*args):
-    """
-    Function renamed to follow naming style. Better use blobsModeVal
-    """
-    return blobsModeVal(*args)
-
-def measMedianVals(*args):
-    """
-    Function renamed to follow naming style. Better use blobsMedianVal
-    """
-    return blobsMedianVal(*args)
-
-def measBarycenters(*args):
-    """
-    Function renamed to follow naming style. Better use blobsBarycenter
-    """
-    return blobsBarycenter(*args)
-
-def measBoundBoxes(*args):
-    """
-    Function renamed to follow naming style. Better use blobsBoundBox
-    """
-    return blobsBoundBox(*args)
-
-def measBlobMoments(*args):
-    """
-    Function renamed to follow naming style. Better use blobsMoments
-    """
-    return blobsMoments(*args)
-
-def measBlobsEntropy(*args):
-    """
-    Function renamed to follow naming style. Better use blobsEntropy
-    """
-    return blobsEntropy(*args)
-
-
+#def setDefaultSE(*args):
+#  Morpho.setDefaultSE(*args)
 
 %}
 
