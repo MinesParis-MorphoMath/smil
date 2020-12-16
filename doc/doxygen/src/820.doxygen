@@ -4,7 +4,7 @@
  * @section s820_01 Jupyter Notebooks
  *
  * @subsection s820_01_01 - Smil and Notebooks
- * As long as notebooks run on a web interface, you can't use any @QT or
+ * As long as notebooks run on a web interface, you can't use any @Qt or
  * @Smil @TB{Gui} feature. So you must disable them. Use the environnment
  * variable @TT{SMIL_DISABLE_GUI}.
  *
