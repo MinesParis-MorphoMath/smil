@@ -3,12 +3,16 @@
  *
  * @section s280_07 Smil 0.11.1-dev
  *   - @TB{New}
- *     - ..
+ *     - NEW : @Python module @TT{smilFuncRewrite} - this module is transparent
+ *       to final users. It allows a better management of functions renamed and
+ *       shortcuts.
+ *     - NEW : Added @TB{FAQ} and @TB{Troubleshooting} pages to web site.
  *   - @TB{Change}
  *     - ..
  *   - @TB{Bugs}
- *     - Incompatibility between Jupyter notebooks and Qt when importing
- *       @smilPython
+ *     - Incompatibility between Jupyter notebooks and @Qt when importing
+ *       @smilPython. An environnement variable (@TT{SMIL_DISABLE_GUI}) was added
+ *       to disable @TB{Gui} when running @Smil with notebooks.
  *
  * @section s280_06 Smil 0.11.0 (04 dec 2020)
  *
@@ -50,6 +54,7 @@
  *  - Documentation
  *    - Lots of @TB{Doxygen} documentation being reorganized and completed.
  *      Work in progress
+ *    - @TB{QuickReferenceGuide}
  *
  * @section s280_05 Smil 0.10.5 (14 Sep 2020)
  *

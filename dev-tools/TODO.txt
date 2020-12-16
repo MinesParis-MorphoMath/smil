@@ -121,3 +121,4 @@ OK -  Verify on FastBilateralFilter
 
 * Accelerate Soille line morphology functions
 
+* Accelerate histogramMap
