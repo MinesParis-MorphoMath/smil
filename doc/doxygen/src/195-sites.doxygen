@@ -3,7 +3,6 @@
  *
  * - @Smil sites and links
  *   - @WebServerSmil
- *   - @UrlSmil{wiki, Smil wiki}
  *   - @URL{https://github.com/MinesParis-MorphoMath,
  *          Smil git repository at GitHub}
  * - @Smil documentation
@@ -19,6 +18,33 @@
  * - Other @Smil related sites :
  *   - @WebServerCMM
  *
+ * - @TB{Mathematical Morphology Courses} at @EMP
+ *   - Jean Serra - Ecole des Mines de Paris - 2000
+ *     - @UrlSmil{publis/Cours-Serra/chap-01-en.pdf, 1 - Basic Notions}
+ *     - @UrlSmil{publis/Cours-Serra/chap-02-en.pdf, 2 - Dilation and Erosion}
+ *     - @UrlSmil{publis/Cours-Serra/chap-03-en.pdf, 3 - Opening and Closing}
+ *     - @UrlSmil{publis/Cours-Serra/chap-04-en.pdf, 4 - Morphological
+ *                Filtering}
+ *     - @UrlSmil{publis/Cours-Serra/chap-05-en.pdf, 5 - Set Connection}
+ *     - @UrlSmil{publis/Cours-Serra/chap-06-en.pdf, 6 - Set Connection and
+ *                Numerical Functions}
+ *     - @UrlSmil{publis/Cours-Serra/chap-07-en.pdf, 7 - Skeletons}
+ *     - @UrlSmil{publis/Cours-Serra/chap-08-en.pdf, 8 - Thinnings}
+ *     - @UrlSmil{publis/Cours-Serra/chap-09-en.pdf, 9 - Skiz and Watershed}
+ *     - @UrlSmil{publis/Cours-Serra/chap-10-en.pdf, 10 - Segmentation}
+ *     - @UrlSmil{publis/Cours-Serra/chap-21-en.pdf, 21 - Measurements}
+ *     - @UrlSmil{publis/Cours-Serra/chap-22-en.pdf, 22 - Covariance}
+ *     - @UrlSmil{publis/Cours-Serra/chap-23-en.pdf, 23 - Linear Erosion}
+ *     - @UrlSmil{publis/Cours-Serra/chap-24-en.pdf, 24 - Boolean RACS}
+ *     - @UrlSmil{publis/Cours-Serra/chap-25-en.pdf, 25 - Random Tesselations}
+ *     - @UrlSmil{publis/Cours-Serra/chap-26-en.pdf, 26 - Boolean Functions}
+ *   - Other courses by Jean Serra
+ *     - @UrlSmil{publis/T-34.pdf, 2001 - Lectures notes on morphological
+ *                operators}
+ *     - @UrlSmil{publis/T-36.pdf, 2001 - Course on 3D morphological operators}
+ *     - @UrlSmil{publis/T-39.pdf, 2005 - Représentations de la couleur en
+ *                coordonnées polaires adaptées au traitement d'images}
+ *     - @UrlSmil{publis/T-37.pdf, 2002 - Course on random sets and functions}
  *
  * @tableofcontents
  */

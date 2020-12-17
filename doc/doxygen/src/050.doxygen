@@ -1,0 +1,36 @@
+/**
+ * @page p050 CMM and the History of Mathematical Morphology
+ *
+ * @section s050_01 Birth of Mathematical Morphology
+ * Mathematical Morphology, as a scientific discipline, was created by
+ * @TI{Georges Matheron} and @TI{Jean Serra} at @TI{Ecole des Mines de Paris}
+ * in the 60's.
+ * @see
+ * - @UrlSmil{publis/C-72.pdf, The birth of Mathematical Morphology}
+ *
+ * @section s050_02 CMM - Our Previous Morpho Math software
+ *
+ * - General purpose software
+ *  - 70’s - @TB{TAsic} for @TB{TAS}
+ *  - 80’s - @TB{AppleMorph} for @TB{Apple II}
+ *  - 80’s - @TB{MicroMorph} pour @TB{DOS}
+ *  - 80’s - @TB{TIM} pour le @TB{MicroMorph}
+ *  - End 80’s - @TB{Xlim} and @TB{Xl3D} and their evolution to @TB{Xlim-3D}
+ *  - 90’s - @TB{MicroMorph} for @TB{Windows}
+ *  - 2000’s - @TB{Morph-M}
+ *  - 2010’s - @TB{Mamba}
+ *  - 2011's - @Smil
+ * - Dedicated software
+ *  - 80's - @TB{Quantimet 570} - for @TI{Leica}
+ *  - 80's - @TB{NS1500} - for @TI{Nachet Vision}
+ *  - 80's - MorphoPericolor - for @TI{Matra-SEPimage}
+ *  - 80's - Unnamed - for @TI{Allan Bradley}
+ *  - 90's :Hardware : @TB{PIMM - Processeur Intégré de Morphologie Mathématique}
+ *    - @TB{Prometheus Project}
+ *    - @TB{MAVT}
+ *    - @TB{RACE}
+ *    - @TB{OCAS}
+ *
+ *
+ * @tableofcontents
+ */

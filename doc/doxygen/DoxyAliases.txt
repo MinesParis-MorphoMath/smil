@@ -35,16 +35,48 @@ ALIASES += TI{1}="<i>\1</i>"
 
 ALIASES += Smil="@TB{Smil}"
 ALIASES += smilPython="@TB{smilPython}"
+
+ALIASES += CMM="@TB{CMM}"
+ALIASES += EMP="@TB{Ecole des Mines de Paris}"
+ALIASES += MorphoMath="@TB{Mathematical Morphology}"
+
 ALIASES += Linux="@TB{Linux}"
 ALIASES += Linux{1}="@TB{Linux \1}"
+ALIASES += CentOS=@TB{CentOS}
+ALIASES += Fedora=@TB{Fedora}
+ALIASES += Ubuntu=@TB{Ubuntu}
+ALIASES += Debian=@TB{Debian}
+
+ALIASES += CMake=@TB{Cmake}
+ALIASES += Swig=@TB{Swig}
+
+ALIASES += Doxygen=@TB{Doxygen}
+ALIASES += Qt=@TB{Qt}
+
 ALIASES += Python="@TB{Python}"
 ALIASES += Python{1}="@TB{Python \1}"
-ALIASES += iPython="@TB{iPython}"
-ALIASES += Anaconda="@TB{Anaconda}"
-ALIASES += Doxygen="@TB{Doxygen}"
-ALIASES += Qt="@TB{Qt}"
 ALIASES += Jupyter=@TB{Jupyter}
 ALIASES += JupyterHub=@TB{JupyterHub}
+
+ALIASES += iPython="@TB{iPython}"
+ALIASES += Anaconda="@TB{Anaconda}"
+
+#ALIASES += BeginPython="@code{.py}"
+#ALIASES += EndPython="@endcode"
+ALIASES += BeginPython="@verbatim"
+ALIASES += EndPython="@endverbatim"
+
+#ALIASES += BeginBash="@code{.bash}"
+#ALIASES += EndBash="@endcode"
+ALIASES += BeginBash="@verbatim"
+ALIASES += EndBash="@endverbatim"
+
+ALIASES += BeginCpp="@code{.cpp}"
+ALIASES += EndCpp="@endcode"
+
+ALIASES += BeginDevDoc="@cond"
+ALIASES += EndDevDoc="@endcond"
+
 
 ########################################################
 # WEB PAGE
@@ -57,7 +89,7 @@ ALIASES += URL{2}="<a href=\"\1\"><b>\2</b></a>"
 
 ALIASES += RootSmil="http://smil.cmm.mines-paristech.fr"
 ALIASES += WebServerSmil="@URL{@RootSmil, Smil web server}"
-ALIASES += UrlSmil{2}="@URL{@RootSmil/\1,\2}"
+ALIASES += UrlSmil{2}="@URL{@RootSmil/\1, \2}"
 ALIASES += NotebooksSmil{2}="@URL{@RootSmil/notebooks/\1,\2}"
 
 ALIASES += RootCMM="http://www.cmm.mines-paristech.fr"
