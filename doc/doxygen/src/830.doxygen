@@ -1,9 +1,35 @@
 /**
  * @page p830 Troubleshooting
  *
- * @section s830_01 Generalities
+ * @section s830_05 smilPython
+ *  @subsection s830_05_01 Python/Qt modules lacking
+ *  If you have this message when importing @smilPython :
+ @BeginBash
+  Could not load requested Qt binding. Please ensure that
+  PyQt4 >= 4.7, PyQt5, PySide >= 1.0.3 or PySide2 is available,
+  and only one is imported per session.
+
+  Currently-imported Qt library:                              None
+  PyQt4 available (requires QtCore, QtGui, QtSvg):            False
+  PyQt5 available (requires QtCore, QtGui, QtSvg, QtWidgets): False
+  PySide >= 1.0.3 installed:                                  False
+  PySide2 installed:                                          False
+  Tried to load:                ['pyqtdefault', 'pyside', 'pyqt5', 'pyside2']
+ @EndBash
+ * Some modules are lacking in your system. Install them :
+ * - @Ubuntu and @Debian :
+ @BeginBash
+ apt-get -y install python3-qtpy python3-pyqt5
+ apt-get -y install libqt5gui5 libqt5core5a libqt5widgets5 python3-pyqt5.qtsvg
+ @EndBash
+ * - @CentOS and @Fedora
+ @BeginBash
+ dnf install python3-pyside2
+ @EndBash
  *
- *
+ *  @subsection s830_0502 Python and libpython versions
+ *  When building @Smil interfaced with @Python (@smilPython), @Swig uses the
+ *  version of @TB{libpython} it found.
  *
  *
  * @tableofcontents

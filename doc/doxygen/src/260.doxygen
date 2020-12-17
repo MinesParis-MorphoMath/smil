@@ -1,7 +1,9 @@
 /**
  * @page p260 Installing from sources
  *
- * @section s260_01 Generalities
+ *
+ *
+ * @section s260_01 Typical workflow
  *
  * Typical workflow for installing @Smil from sources is :
  * @note
@@ -27,8 +29,8 @@
  *   These scripts are also available at
  *     @UrlSmil{download/contrib/scripts/, contrib/scripts}
  *
- * -# @TB{configure and compile} : you have two options
- *   - use the @TT{contrib} configuration script :
+ * -# @TB{Configure and compile} : you have two options
+ *   - @TB{Easy Build :} use the @TT{config-smil} configuration script :
  @verbatim
  contrib/scripts/config-smil -h
  contrib/scripts/config-smil --auto --test
@@ -55,7 +57,73 @@
  *
  *
  *
- * @section s260_02 Anaconda
+ * @section s260_02 config-smil
+ *
+ @verbatim
+  $ ../smil/contrib/scripts/config-smil --help
+
+  config-smil
+
+  Usage :
+    config-smil [ options ] SourceDirectory
+
+  Options :
+    --help
+      This message
+
+    --prefix=prefix
+      This option defines the prefix where Smil will be installed.
+      Default value is /usr/local.
+
+    --addon=name,name,name,...
+      A comma separated list of Addons to enable
+      Default enabled Addons : Color Filters HoughTransform Chabardes StochasticWS FFT Parsimonious
+
+    --generic
+      Compile for a generic architecture. Default is to optimize for the
+      processor in the computer Smil is being compiled.
+
+    --auto
+      Optimize Smil generated code for the processor at this computer.
+      This is the default option.
+
+    --doc
+    --devdoc
+      Build doxygen documentation
+
+    --test
+      Add Makefile targets to build test programs (make test)
+
+    --package
+      Add Makefile targets to build Linux packages
+
+    -v
+      Verbose
+
+    -Dvar=value
+      Define CMake variables (use with care)
+
+  Example :
+    config-smil --addon=GraphCuts --prefix=/usr/local/Smil-27 /home/sources/smil
+
+  Author :
+    Jose-Marcio Martins da Cruz
+
+  See also :
+    Full Smil documentation at : http://smil.mines-paristech.fr
+
+ @endverbatim
+ *
+ *
+ *
+ * @section s260_03 Addons
+ *
+ * T.B.D.
+ *
+ *
+ *
+ * @section s260_04 Anaconda
+ *
  * Running @Smil under @TB{Anaconda} has many advantages :
  * - @TB{Anaconda} can be installed and configured at @TB{user space}, that
  *   means, you don't need to have privileges on your computer to install,
@@ -133,63 +201,6 @@
  In [3]: im.show()
  @endverbatim
  *
- *
- * @section s260_03 Configuration script config-smil
- *
- @verbatim
-  $ ../smil/contrib/scripts/config-smil --help
-
-  config-smil
-
-  Usage :
-    config-smil [ options ] SourceDirectory
-
-  Options :
-    --help
-      This message
-
-    --prefix=prefix
-      This option defines the prefix where Smil will be installed.
-      Default value is /usr/local.
-
-    --addon=name,name,name,...
-      A comma separated list of Addons to enable
-      Default enabled Addons : Color Filters HoughTransform Chabardes StochasticWS FFT Parsimonious
-
-    --generic
-      Compile for a generic architecture. Default is to optimize for the
-      processor in the computer Smil is being compiled.
-
-    --auto
-      Optimize Smil generated code for the processor at this computer.
-      This is the default option.
-
-    --doc
-    --devdoc
-      Build doxygen documentation
-
-    --test
-      Add Makefile targets to build test programs (make test)
-
-    --package
-      Add Makefile targets to build Linux packages
-
-    -v
-      Verbose
-
-    -Dvar=value
-      Define CMake variables (use with care)
-
-  Example :
-    config-smil --addon=GraphCuts --prefix=/usr/local/Smil-27 /home/sources/smil
-
-  Author :
-    Jose-Marcio Martins da Cruz
-
-  See also :
-    Full Smil documentation at : http://smil.mines-paristech.fr
-
- @endverbatim
  *
  * @tableofcontents
  */
