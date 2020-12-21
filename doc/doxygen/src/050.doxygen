@@ -8,12 +8,12 @@
  * @see
  * - @UrlSmil{publis/C-72.pdf, The birth of Mathematical Morphology}
  *
- * @section s050_02 CMM - Our Previous Morpho Math software
+ * @section s050_02 Our Previous Morpho Math software
  *
  * - General purpose software
  *  - 70’s - @TB{TAsic} for @TB{TAS}
  *  - 80’s - @TB{AppleMorph} for @TB{Apple II}
- *  - 80’s - @TB{MicroMorph} pour @TB{DOS}
+ *  - 80’s - @TB{MicroMorph} pour @TB{DOS} @cite beucher_micromorph
  *  - 80’s - @TB{TIM} pour le @TB{MicroMorph}
  *  - End 80’s - @TB{Xlim} and @TB{Xl3D} and their evolution to @TB{Xlim-3D}
  *  - 90’s - @TB{MicroMorph} for @TB{Windows}

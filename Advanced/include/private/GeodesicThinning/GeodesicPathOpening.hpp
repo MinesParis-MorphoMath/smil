@@ -761,6 +761,8 @@ namespace smil
       off_t Xtort, Ytort, Ztort;
       double DistMax = -1, Dist;
 
+      Xtort = Ytort = Ztort = 0;
+
       // Find the BaryCentre
       queue<off_t> fifoCurrent = fifoSave; // Copy of fifoCurrent
 
@@ -969,15 +971,15 @@ namespace smil
    * geodesicElongation() - @TB{Geodesic Elongation}
    *
    * @details This function evaluates, for each blob, its
-   * @TB{Geodesic Elongation} defined by the relation : 
-   * 
+   * @TB{Geodesic Elongation} defined by the relation :
+   *
    * @f[
    *  E(X) = \dfrac{\pi \:.\: L^{2}(X)}{4 \:.\: S(X)}
    * @f]
-   * 
+   *
    * where @f$L(X)@f$ is the @TB{Geodesic Diameter} of the blob and
    * @f$S(X)@f$ is the @TB{Area} of the blob.
-   * 
+   *
    * The blob is labeled with the result.
    *
    * @see
@@ -999,9 +1001,9 @@ namespace smil
 
   /**
    * geodesicTortuosity() - @TB{Geodesic Tortuoisity}
-   * 
+   *
    * @details This function evaluates, for each blob, its
-   * @TB{Geodesic Tortuoisity} defined by the relation : 
+   * @TB{Geodesic Tortuoisity} defined by the relation :
    *
    * @f[
    *   T(X) = \dfrac{L(X)}{L_{Euclidean}(X)}
@@ -1051,7 +1053,7 @@ namespace smil
 
   /**
    * geodesicMeasure() -
-   * 
+   *
    * @param[in] imIn : binary input image
    * @param[out] imOut : output image
    * @param[in] method :
@@ -1075,7 +1077,7 @@ namespace smil
 
   /**
    * geodesicPathOpening() -
-   * 
+   *
    * @param[in] imIn : input image
    * @param[in] lenght :
    * @param[in] method :
@@ -1102,7 +1104,7 @@ namespace smil
 
   /**
    * geodesicPathClosing() -
-   * 
+   *
    * @param[in] imIn : input image
    * @param[in] lenght :
    * @param[in] method :
@@ -1141,7 +1143,7 @@ namespace smil
 
   /**
    * geodesicUltimatePathOpening() -
-   * 
+   *
    * @param[in] imIn : input image
    * @param[out] imTrans : input image
    * @param[out] imInd : input image

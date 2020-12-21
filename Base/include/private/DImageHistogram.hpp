@@ -219,10 +219,7 @@ namespace smil
     typename Image<T>::lineType pixels = imIn.getPixels();
     for (size_t i = 0; i < imIn.getPixelCount(); i++)
       hist[pixels[i] / binSize]++;
-#if 0
-    for (auto it = hist.begin(); it != hist.end(); it++)
-      cout << "  " << it->first << "\t" << it->second << endl;
-#endif
+
     return hist;
   }
 
@@ -247,10 +244,7 @@ namespace smil
     typename Image<T>::lineType pixels = imIn.getPixels();
     for (size_t i = 0; i < imIn.getPixelCount(); i++)
       hist[pixels[i] / binSize]++;
-#if 0
-    for (auto it = hist.begin(); it != hist.end(); it++)
-      cout << "  " << it->first << "\t" << it->second << endl;
-#endif
+
     return hist;
   }
 

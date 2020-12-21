@@ -12,14 +12,16 @@
  *              Smil in a Nutshell (or... @TI{Quick starting with smilPython})}
  * - @Smil support
  *   - @URL{https://groupes.renater.fr/sympa/info/smil-users, Forum smil-users}
- *   - @UrlSmil{doc/faq.html, Frequently Asked Questions}
- *   - @UrlSmil{doc/troubleshooting.html, Troubleshooting}
+ *   - @UrlSmil{doc/p820.html, Frequently Asked Questions}
+ *   - @UrlSmil{doc/p830.html, Troubleshooting}
  *
  * - Other @Smil related sites :
  *   - @WebServerCMM
  *
  * - @TB{Mathematical Morphology Courses} at @EMP
- *   - Jean Serra - Ecole des Mines de Paris - 2000
+ *   - Mathematical Morphology 2020 - by Beatriz Marcotegui and Samy Blusseau
+ *     - ...
+ *   - Mathematical Morphology - 2000 - by Jean Serra
  *     - @UrlSmil{publis/Cours-Serra/chap-01-en.pdf, 1 - Basic Notions}
  *     - @UrlSmil{publis/Cours-Serra/chap-02-en.pdf, 2 - Dilation and Erosion}
  *     - @UrlSmil{publis/Cours-Serra/chap-03-en.pdf, 3 - Opening and Closing}
