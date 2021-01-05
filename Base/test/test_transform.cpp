@@ -75,8 +75,15 @@ class Test_Resize : public TestCase
     imRef << vecref;
 
     resize(im1, 10, 10, im2, "bilinear");
-    TEST_ASSERT(im2 == imRef);
-    if (!(im2 == imRef)) {
+
+    Image<UINT8> imDiff(10, 10);
+    absDiff(im2, imRef, imDiff);
+    /* OK if the max difference between the two images is no more than "1"
+     * in value and no more than a few pixels (2 here)
+     */
+    bool ok = maxVal(imDiff) <= 1 && area(imDiff) < 3;
+    TEST_ASSERT(ok);
+    if (!ok) {
       cout << "* im1" << endl;
       im1.printSelf("im1");
       cout << "* imRef" << endl;
@@ -123,6 +130,7 @@ class Test_Resize_Closest : public TestCase
     imRef << vecref;
 
     resize(im1, 10, 10, im2, "closest");
+
     TEST_ASSERT(im2 == imRef);
     if (!(im2 == imRef)) {
       cout << "* im1" << endl;
@@ -183,8 +191,15 @@ class Test_Scale : public TestCase
     imRef << vecref;
 
     scale(im1, 2, 2, im2);
-    TEST_ASSERT(im2 == imRef);
-    if (!(im2 == imRef)) {
+
+    Image<UINT8> imDiff(10, 10);
+    absDiff(im2, imRef, imDiff);
+    /* OK if the max difference between the two images is no more than "1"
+     * in value and no more than a few pixels (2 here)
+     */
+    bool ok = maxVal(imDiff) <= 1 && area(imDiff) < 3;
+    TEST_ASSERT(ok);
+    if (!ok) {
       cout << "* im1" << endl;
       im1.printSelf("im1");
       cout << "* imRef" << endl;

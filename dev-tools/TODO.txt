@@ -3,7 +3,7 @@ OBS : 'X' equals OK
 
 * Documentation
 
-* Check some wrong doxygen tags (everywhere in source code)
+OK - * Check some wrong doxygen tags (everywhere in source code)
   Work in progress...
   402-Instructions.doxygen:184: warning: Reached end of file 
   	while still inside a (nested) comment. Nesting level 1 
@@ -84,6 +84,7 @@ OK -  Verify on FastBilateralFilter
 * Conda packages
 
 * Select Python 2 or 3
+  In fact... disable Python 2 - no more supported
 
 * review Hough Transform - test fails (inside an infinite loop ?)
 

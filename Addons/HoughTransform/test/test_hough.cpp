@@ -16,7 +16,7 @@ class Test_Hough_Lines : public TestCase {
 
     Image<UINT8> im1(7,5);
     Image<UINT8> im2;
- 
+
     im1 << vec1;
 
     houghLines(im1, 1, 10, im2);
@@ -59,7 +59,7 @@ int main(int argc SMIL_UNUSED, char *argv[] SMIL_UNUSED)
   ADD_TEST(ts, Test_Hough_Lines);
   ADD_TEST(ts, Test_Hough_Circles);
 
-  //return ts.run();
+  return ts.run();
   return 0;
 }
 
