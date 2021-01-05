@@ -47,7 +47,7 @@ namespace smil
    *
    * @param[in]  imIn - input image
    * @param[in]  thetaRes - angle resolution - scale in fraction of 180 degres
-   * @param[in]  rhoRes - length resolution - fraction of maximum distance in 
+   * @param[in]  rhoRes - length resolution - fraction of maximum distance in
    *   the image
    * @param[out] imOut - output image
    *
@@ -74,11 +74,6 @@ namespace smil
 
     double thetaStep = PI / wOut;
     double rhoStep   = rhoMax / hOut;
-
-#ifdef USE_OPEN_MP
-    int nthreads = Core::getInstance()->getNumberOfThreads();
-#pragma omp parallel num_threads(nthreads)
-#endif // USE_OPEN_MP
 
     for (off_t j = 0; j < (off_t ) hIn; j++) {
       lIn = linesIn[j];
@@ -109,7 +104,7 @@ namespace smil
    * @brief Hough Circles (2D Images)
    * @param[in]  imIn : input image
    * @param[in]  xyResol : distance resolution for circle center
-   * @param[in]  rhoResol : distance resolution for radius 
+   * @param[in]  rhoResol : distance resolution for radius
    * @param[out] imOut : output image with Hough Transform for circles
    *
    */
@@ -137,11 +132,6 @@ namespace smil
     off_t rho;
     double coef = 1 / (xyResol * rhoResol);
 
-#ifdef USE_OPEN_MP
-    int nthreads = Core::getInstance()->getNumberOfThreads();
-#pragma omp parallel num_threads(nthreads)
-#endif // USE_OPEN_MP
-    
     for (off_t j = 0; j < (off_t ) hIn; j++) {
       lIn = linesIn[j];
       for (off_t i = 0; i < (off_t ) wIn; i++) {

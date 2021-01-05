@@ -118,11 +118,29 @@
  *
  * @section s260_03 Addons
  *
- * T.B.D.
+ * This area in the source tree contains some programs which, for some reason,
+ * aren't part of Smil core code : need particular external libraries,
+ * experimental, not fully validated, ...
+ *
+ * This addons can be enabled/disabled at configuration time (with @TT{cmake}
+ * or @TT{ccmake}. Addons enabled by default at current release are :
+ * @TT{Color}, @TT{Filters}, @TT{StochasticWS}, @TT{Parsimonious},
+ * @TT{ZhangSkel}, @TT{FFT}, @TT{HoughTransform} and @TT{Chabardes}.
  *
  *
+ * @section s260_04 User Modules
  *
- * @section s260_04 Anaconda
+ * This area in the source tree is reserved for programs created by final users.
+ *
+ * To create your own module, just duplicate the @TT{SampleModule} directory
+ * inside the @TT{UserModules} directory, and replace all references to
+ * @TT{"SampleModule"} by the name of your module. And adapt all files inside
+ * to fit your needs. We hope this example is quite self-explanatory.
+ *
+ * Don't forget to enable @TT{UserModules} at configuration time, with
+ * @TT{cmake} or @TT{ccmake}.
+ *
+ * @section s260_05 Anaconda
  *
  * Running @Smil under @TB{Anaconda} has many advantages :
  * - @TB{Anaconda} can be installed and configured at @TB{user space}, that

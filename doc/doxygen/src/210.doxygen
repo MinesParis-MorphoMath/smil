@@ -38,13 +38,12 @@
  * come with the Qt dependent part - the graphical user interface allowing you
  * to display images.
  *
- * @section s210_03 Where to get it :
- * T.B.D.
+ * @section s210_03 Where to get it
+ * - @TB{Binaries} are available at @WebServerSmil. Use the usual package
+ * manager of your OS distribution : @TT{apt-get} (@Ubuntu and @Debian)
+ * or @TT{dnf} (@CentOS and @Fedora).  See @ref p230.
  *
- * @subsection s210_03_01 Binaries
- *
- * @subsection s210_03_02 Source code
- *
+ * - @TB{Sources} are available from @UrlGitHub{Smil, github}. See @ref p260.
  *
  *
  * @tableofcontents
