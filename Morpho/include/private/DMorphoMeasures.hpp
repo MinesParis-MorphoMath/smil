@@ -76,15 +76,18 @@ namespace smil
 
     double v0 = vol(imIn);
     T minv = minVal(imEro);
+    T maxv = maxVal(imEro);
 
     do {
       erode(imEro, imEro, se(stepSize));
       dilate(imEro, imOpen, se(seSize));
       double v1 = vol(imOpen);
       res.push_back(v0 - v1);
+
       v0 = v1;
       seSize += stepSize;
-    } while (maxVal(imEro) > minv && (maxSeSize == 0 || maxSeSize >= seSize));
+      maxv = maxVal(imEro);
+    } while (maxv > minv && (maxSeSize == 0 || maxSeSize >= seSize));
 
     if (CDF) {
       double aSum = 0;
@@ -94,7 +97,6 @@ namespace smil
       for (size_t i = 1; i < res.size(); i++)
         res[i] = res[i] / aSum + res[i - 1];
     }
-
     return res;
   }
 
