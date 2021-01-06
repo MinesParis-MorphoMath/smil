@@ -54,7 +54,7 @@ doInstall()
 
 # Required
 doInstall git \
-          gcc gcc++ \
+          gcc g++ \
           cmake cmake-data \
           cmake-extras extra-cmake-modules \
           cmake-curses-gui \
