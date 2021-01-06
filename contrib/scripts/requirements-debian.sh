@@ -39,6 +39,7 @@
 
 Python3=yes
 Qt5=yes
+Vtk=no
 Doc=yes
 
 doInstall()
@@ -92,7 +93,10 @@ doInstall pngtools \
 # * AddOn FFT
 doInstall libfftw3-dev libfftw3-double3
 # * AddOn VTK
-doInstall libvtk6-dev
+if [ "$Vtk" = "yes" ]
+then
+  doInstall libvtk6-dev
+fi
 
 if [ "Qt5" = "no" ]
 then
@@ -119,7 +123,10 @@ then
   # Recommended to be able to manipulate 3d images
   doInstall python-libtiff
   # Option, if AddOn VTK is enabled
-  doInstall python-vtk6
+  if [ "$Vtk" = "yes" ]
+  then
+    doInstall python-vtk6
+  fi
 else
   # Python 3.x
   # Required
@@ -131,5 +138,8 @@ else
   doInstall python3-pip
   pip3 install libtiff
   # Option, if AddOn VTK is enabled
-  pip3 install vtk
+  if [ "$Vtk" = "yes" ]
+  then
+    pip3 install vtk
+  fi
 fi
