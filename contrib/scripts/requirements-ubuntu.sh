@@ -104,7 +104,8 @@ else
   # Qt 5
   # With ccmake, set the value USE_QT_VERSION => 5
   doInstall qt5-qmake \
-            qtbase5-dev
+            qtbase5-dev \
+            libqwt-qt5-dev
 fi
 
 
