@@ -48,6 +48,7 @@ doInstall()
   do
     Has=$(apt-cache search $arg 2>/dev/null)
     [ "$Has" = "" ] && continue
+    echo "======> Installing $arg =========="
     apt-get -y install $arg
   done
 }
