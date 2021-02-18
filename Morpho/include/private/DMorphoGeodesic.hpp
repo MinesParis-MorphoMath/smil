@@ -690,9 +690,42 @@ namespace smil
 
     Image<T> tmpIm(imIn);
 
-    ASSERT((fill(tmpIm, numeric_limits<T>::max()) == RES_OK));
+    ASSERT((fill(tmpIm, ImDtTypes<T>::max()) == RES_OK));
+
+#if 1
+    off_t w = tmpIm.getWidth();
+    off_t h = tmpIm.getHeight();
+    off_t d = tmpIm.getDepth();
+
+    T bVal = ImDtTypes<T>::min();
+    if (d > 2) {
+      for (off_t j = 0; j < h; j++) {
+        for (off_t i = 0; i < w; i++) {
+          tmpIm.setPixel(i, j, 0, bVal);
+          tmpIm.setPixel(i, j, d - 1, bVal);
+        }
+      }
+    }
+    if (h > 2) {
+      for (off_t k = 0; k < d; k++) {
+        for (off_t i = 0; i < w; i++) {
+          tmpIm.setPixel(i, 0, k, bVal);
+          tmpIm.setPixel(i, h - 1, k, bVal);
+        }
+      }
+    }
+    if (w > 2) {
+      for (off_t k = 0; k < d; k++) {
+        for (off_t j = 0; j < h; j++) {
+          tmpIm.setPixel(0, j, k, bVal);
+          tmpIm.setPixel(w - 1, j, k, bVal);
+        }
+      }
+    }
+#else
     ASSERT((drawRectangle(tmpIm, 0, 0, tmpIm.getWidth(), tmpIm.getHeight(),
                           ImDtTypes<T>::min()) == RES_OK));
+#endif
     ASSERT((dualBuild(tmpIm, imIn, imOut, se) == RES_OK));
 
     return RES_OK;
