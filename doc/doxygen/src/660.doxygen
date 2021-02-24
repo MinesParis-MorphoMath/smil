@@ -2,6 +2,8 @@
 /**
  * @page p660 Python NumPy interface
  *
+ * @section s660_01 Generalities
+ *
  * <a href="http://numpy.scipy.org/" target="_blank"><b>NumPy</b></a> is a
  * package for scientific computing with Python. Smil allows to
  * - access, with @b NumPy functions, the @b Smil image pixels with the method
@@ -11,10 +13,43 @@
  * - create an @b Smil image from a @b NumPy array with the method @b
  *   Image::fromNumArray(arr).
  *
- * @note This function is wrapped only in python.
+ * @note These functions are available only inside @Python environnment.
  *
- * Here is an example of python script:
+ * @section s660_02 Some examples
  *
+ * @subsection s660_02_01 From Numpy to Smil
+ *
+ * Create a @Smil image from a @Numpy array with @TB{fromNumArray()}
+ *
+ * @includelineno numpy_np2sp.py
+ *
+ * @note
+ *  - The content of the image is a @TB{copy} of the content of the @Numpy
+ *    array;
+ *  - The image size will be derived from the array shape;
+ *  - for a more complex example, take a look on
+ *    @TI{"how to read 3D Tiff images"}
+ *    at @UrlGitHub{smilPyGoodies, smilPyGoodies/smilPyRead3D}.
+ *
+ * @subsection s660_02_02 From Smil to Numpy
+ *
+ * From a @Smil image, do some operation under @Numpy. Use @TB{getNumArray()}.
+ *
+ * @includelineno numpy_sp2np.py
+ *
+ * @note
+ *  - the array returned by @TB{getNumArray()} is a pointer to the @Smil image,
+ *    @TB{not a copy}.
+ *
+ * @subsection s660_02_03 From Smil to Numpy to Smil
+ *
+ * -# From a @TT{16 bits} @Smil Image, use @Numpy to convert it to @TT{8 bits}
+ *  image
+ * @includelineno numpy_sp2np2sp.py
+ *
+ * -# Use @Numpy to easily create a @Smil image with a circle inside it.
  * @includelineno numpy_array.py
+ *
+ * @tableofcontents
  *
  */
