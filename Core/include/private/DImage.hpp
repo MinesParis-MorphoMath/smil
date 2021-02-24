@@ -292,19 +292,31 @@ namespace smil
 
 #if defined SWIGPYTHON && defined USE_NUMPY
     /**
+     * getNumArray() -
+     *
      * Return a NumPy array containing the @b real image pixel values (not a
      * copy).
      *
-     * @param c_contigous : If true, return an array corresponding to the aligment
+     * @param[in] c_contigous : If true, return an array corresponding to the aligment
      * of C data (C_CONTIGOUS NumPy array flag). If false (default), return a
      * F_CONTIGOUS array.
+     * @return a pointer to the image data as a @Numpy array
      *
-     * See @ref p660 "NumPy interface page".
+     * See @ref p660 for examples.
      */
     PyObject *getNumArray(bool c_contigous = false);
 
-    //! Copy pixel values from a given NumPy array
-    void fromNumArray(PyObject *obj);
+    /**
+     *  fromNumArray() -
+     *
+     * Copy pixel values from a given NumPy array. The image size will be
+     * derived from the array shape.
+     *
+     * @param[in] array : a @Numpy array.
+     *
+     * See @ref p660 for examples.
+     */
+    void fromNumArray(PyObject *array);
 #endif // defined SWIGPYTHON && defined USE_NUMPY
 
     //! Trigger modified event (allows to force display update)

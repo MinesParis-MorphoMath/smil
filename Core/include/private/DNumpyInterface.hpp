@@ -38,6 +38,9 @@ namespace smil
 {
   /**
    * @addtogroup NumpyInterface
+   *
+   * @see @ref p660
+   *
    * @{
    */
 
