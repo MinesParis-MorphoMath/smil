@@ -1,8 +1,11 @@
-from smilPython import *
+
+import smilPython as sp
 import numpy as np
 
 # Create an image
-im1 = Image(256, 512, 2)
+sx = 256
+sy = 384
+im1 = sp.Image(sx, sy)
 im1.show()
 
 # Create a numpy array containing the real image pixels
@@ -11,13 +14,17 @@ imArr = im1.getNumArray()
 # Display the dimensions of the created array
 print("Array dims:", imArr.shape)
 
-# Do something with the array...
+# Do something with the array... E.g., draw a circle
 imArr[:] = 0
-radius, cx, cy = 64, 127, 164
-y, x = np.ogrid[-radius: radius, 0 : radius]
-index = x**2 + y**2 <= radius**2
-imArr[cx-radius:cx+radius, cy-radius:cy+radius, 0][index] = 255
+# the circle will be centered at the center of the image
+radius, cx, cy = 64, sy//2, sx//2
+y, x = np.ogrid[0:sx, 0:sy]
+# get the indexes of the pixels inside the circle
+index = (x - cx)**2 + (y - cy)**2 <= radius**2
+imArr[:,:][index] = 255
 
 # Call the "modified" method in order to update the viewer content
 im1.modified()
+
+input()
 

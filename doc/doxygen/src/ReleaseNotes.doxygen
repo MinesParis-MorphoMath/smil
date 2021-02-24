@@ -7,12 +7,19 @@
  *       to final users. It allows a better management of functions renamed and
  *       shortcuts.
  *     - NEW : Added @TB{FAQ} and @TB{Troubleshooting} pages to web site.
+ *     - NEW : submodule @TB{geodesic tools} inside Advanced Algorithms. With
+ *        functions : @TT{geodesicDiameter}, @TT{geodesicElongation},
+ *        @TT{geodesicTortuosity}, @TT{geodesicExtremities},
+ *        @TT{geodesicMeasure}, @TT{geodesicPathOpening},
+ *        @TT{geodesicPathClosing}, @TT{geodesicUltimatePathOpening} and
+ *        @TT{geodesicUltimatePathClosing}. (Need a little more documentation).
  *   - @TB{Change}
  *     - ..
  *   - @TB{Bugs}
  *     - Incompatibility between Jupyter notebooks and @Qt when importing
  *       @smilPython. An environnement variable (@TT{SMIL_DISABLE_GUI}) was added
  *       to disable @TB{Gui} when running @Smil with notebooks.
+ *     - @TT{fillHoles} function didn't work with @TB{3D} and @TB{1D} images.
  *
  * @section s280_06 Smil 0.11.0 (04 dec 2020)
  *
