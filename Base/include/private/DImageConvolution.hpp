@@ -263,7 +263,7 @@ namespace smil
    * @code{.py}
    * import smilPython as sp
    *
-   * im1 = sp.Image("http://smil.cmm.mines-paristech.fr/images/lena.png")
+   * im1 = sp.Image("https://smil.cmm.minesparis.psl.eu/images/lena.png")
    * im2 = sp.Image(im1)
    * kern = [ 0.0545, 0.2442, 0.4026, 0.2442, 0.0545 ]
    * sp.horizConvolve(im1, kern, im2)

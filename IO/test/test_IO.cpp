@@ -34,6 +34,8 @@
 #include "NSTypes/RGB/include/DRGB.h"
 #endif // SMIL_WRAP_RGB
 
+#include "Smil-build.h"
+
 using namespace smil;
 
 class Test_RW_RAW : public TestCase
@@ -87,12 +89,14 @@ class Test_Curl : public TestCase
   {
     Image<UINT8> im1;
 
-    read("http://smil.cmm.mines-paristech.fr/images/barbara.png", im1);
+    const char *bImage = SmilWebImages "/barbara.png";
+    const char *aImage = SmilWebImages "/arearea.png";
+
+    read(bImage, im1);
     TEST_ASSERT(im1.isAllocated());
-    Image<UINT8> im2("http://smil.cmm.mines-paristech.fr/images/barbara.png");
+    Image<UINT8> im2(bImage);
     TEST_ASSERT(im2.isAllocated());
-    BaseImage *im0 =
-        createFromFile("http://smil.cmm.mines-paristech.fr/images/arearea.png");
+    BaseImage *im0 = createFromFile(aImage);
     TEST_ASSERT(im0 != NULL);
     delete im0;
   }

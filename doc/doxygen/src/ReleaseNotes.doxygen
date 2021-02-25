@@ -1,18 +1,29 @@
 /**
  * @page ReleaseNotes Release Notes
  *
- * @section s280_07 Smil 0.11.1-dev
+ * @section s280_08 Smil 0.11.2-dev
+ *   - @TB{Bugs}
+ *     - Getting an image from an URL (@TB{Image()}, getHttpFile(),
+ *       createFromFile() or read()) didn't work nor with URL redirections nor
+ *       with @TB{https} protocol (only @TB{http}).
+ *   - @TB{Change}
+ *      - All URLs of the form @TT{http://smil.cmm.mines-paristech.fr} changed
+ *        to @TT{https://smil.cmm.minesparis.psl.eu}
+ *   - @TB{Documentation}
+ *      - Beginning of documentation about @Smil programming under @Python
+ *
+ * @section s280_07 Smil 0.11.1 (24 feb 2021)
  *   - @TB{New}
  *     - NEW : @Python module @TT{smilFuncRewrite} - this module is transparent
  *       to final users. It allows a better management of functions renamed and
  *       shortcuts.
  *     - NEW : Added @TB{FAQ} and @TB{Troubleshooting} pages to web site.
  *     - NEW : submodule @TB{geodesic tools} inside Advanced Algorithms. With
- *        functions : @TT{geodesicDiameter}, @TT{geodesicElongation},
- *        @TT{geodesicTortuosity}, @TT{geodesicExtremities},
- *        @TT{geodesicMeasure}, @TT{geodesicPathOpening},
- *        @TT{geodesicPathClosing}, @TT{geodesicUltimatePathOpening} and
- *        @TT{geodesicUltimatePathClosing}. (Need a little more documentation).
+ *        functions : geodesicDiameter(), geodesicElongation(),
+ *        geodesicTortuosity(), geodesicExtremities(),
+ *        geodesicMeasure(), geodesicPathOpening(),
+ *        geodesicPathClosing(), geodesicUltimatePathOpening() and
+ *        geodesicUltimatePathClosing(). (Need a little more documentation).
  *   - @TB{Change}
  *     - ..
  *   - @TB{Bugs}
@@ -40,23 +51,23 @@
  *    - NEW - function exp() to revert the function log()
  *
  *  - Functions renamed to avoid confusion (mostly on Blobs)
- *    - measImageEntropy => measEntropy
- *    - gradient_HLS => gradientHLS
- *    - gradient_LAB => gradientLAB
- *    - measAreas => blobsArea
- *    - measVolumes => blobsVolume
- *    - measMinVals => blobsMinVal
- *    - measMaxVals => blobsMaxVal
- *    - measRangeVals => blobsRangeVal
- *    - measMeanVals => blobsMeanVal
- *    - valueLists => blobsValueList
- *    - measModeVals => blobsModeVal
- *    - measMedianVals => blobsMedianVal
- *    - measBarycenters => blobsBarycenter
- *    - measBoundBoxes => blobsBoundBox
- *    - measBlobMoments => blobsMoments
- *    - measBlobsEntropy => blobsEntropy
- *    - ImFastLineOpen_Morard => imFastLineOpen
+ *    - measImageEntropy() => measEntropy()
+ *    - gradient_HLS() => gradientHLS()
+ *    - gradient_LAB() => gradientLAB()
+ *    - measAreas() => blobsArea()
+ *    - measVolumes() => blobsVolume()
+ *    - measMinVals() => blobsMinVal()
+ *    - measMaxVals() => blobsMaxVal()
+ *    - measRangeVals() => blobsRangeVal()
+ *    - measMeanVals() => blobsMeanVal()
+ *    - valueLists() => blobsValueList()
+ *    - measModeVals() => blobsModeVal()
+ *    - measMedianVals() => blobsMedianVal()
+ *    - measBarycenters() => blobsBarycenter()
+ *    - measBoundBoxes() => blobsBoundBox()
+ *    - measBlobMoments() => blobsMoments()
+ *    - measBlobsEntropy() => blobsEntropy()
+ *    - ImFastLineOpen_Morard() => imFastLineOpen()
  *
  *  - Documentation
  *    - Lots of @TB{Doxygen} documentation being reorganized and completed.

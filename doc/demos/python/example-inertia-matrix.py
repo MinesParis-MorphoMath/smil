@@ -3,7 +3,7 @@ import numpy as np
 from numpy import linalg as la
 
 # get image
-imIn = sp.Image("http://smil.cmm.mines-paristech.fr/images/tools.png")
+imIn = sp.Image("https://smil.cmm.minesparis.psl.eu/images/tools.png")
 
 # labelize input image
 imThr = sp.Image(imIn)

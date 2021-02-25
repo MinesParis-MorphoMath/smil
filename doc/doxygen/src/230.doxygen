@@ -26,14 +26,14 @@
  *
  * - Add GPG key
    @verbatim
-     KURI=http://smil.cmm.mines-paristech.fr/packages/jmartins@cmm.gpg.key
+     KURI=https://smil.cmm.minesparis.psl.eu/packages/jmartins@cmm.gpg.key
      wget -O- $KURI 2>/dev/null | apt-key add -
    @endverbatim
  * - Add @Smil repository (replace @b DISTRO by the release name :
     @TB{xenial bionic focal} ...)
    @verbatim
      apt-add-repository \
-      'deb [arch=amd64] http://smil.cmm.mines-paristech.fr/packages/ubuntu DISTRO main'
+      'deb [arch=amd64] https://smil.cmm.minesparis.psl.eu/packages/ubuntu DISTRO main'
    @endverbatim
  * - Install @Smil packages
    @verbatim
@@ -59,14 +59,14 @@
  *
  * - Add GPG key
    @verbatim
-     KURI=http://smil.cmm.mines-paristech.fr/packages/jmartins@cmm.gpg.key
+     KURI=https://smil.cmm.minesparis.psl.eu/packages/jmartins@cmm.gpg.key
      wget -O- $KURI 2>/dev/null | apt-key add -
    @endverbatim
  * - Add the following line to @TT{/etc/apt/sources.list} (replace
  *   @b DISTRO by the release name (@TB{jessie stretch buster} …).
     @TB{xenial bionic focal} ...)
    @verbatim
-    deb [arch=amd64] http://smil.cmm.mines-paristech.fr/packages/debian DISTRO main
+    deb [arch=amd64] https://smil.cmm.minesparis.psl.eu/packages/debian DISTRO main
    @endverbatim
  * - Install @Smil packages
    @verbatim
@@ -94,14 +94,14 @@
      #
      [cmm-smil]
      name=Smil for CentOS-$releasever
-     baseurl=http://smil.cmm.mines-paristech.fr/packages/centos/$releasever/$basearch/
+     baseurl=https://smil.cmm.minesparis.psl.eu/packages/centos/$releasever/$basearch/
      enabled=1
      gpgcheck=1
    @endverbatim
  *
  * - Import GPG keys
    @verbatim
-     rpm --import http://smil.cmm.mines-paristech.fr/packages/jmartins@cmm.gpg.key
+     rpm --import https://smil.cmm.minesparis.psl.eu/packages/jmartins@cmm.gpg.key
    @endverbatim
  *
  * - Install @Smil packages
@@ -126,14 +126,14 @@
      #
      [cmm-smil]
      name=Smil for CentOS-$releasever
-     baseurl=http://smil.cmm.mines-paristech.fr/packages/fedora/$releasever/$basearch/
+     baseurl=https://smil.cmm.minesparis.psl.eu/packages/fedora/$releasever/$basearch/
      enabled=1
      gpgcheck=1
    @endverbatim
  *
  * - Import GPG keys
    @verbatim
-     rpm --import http://smil.cmm.mines-paristech.fr/packages/jmartins@cmm.gpg.key
+     rpm --import https://smil.cmm.minesparis.psl.eu/packages/jmartins@cmm.gpg.key
    @endverbatim
  *
  * - Install @Smil packages

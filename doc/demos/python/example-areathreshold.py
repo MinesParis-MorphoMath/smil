@@ -3,7 +3,7 @@ import time
 
 thresh = 1000
 
-im = sp.Image("http://smil.cmm.mines-paristech.fr/images/balls.png")
+im = sp.Image("https://smil.cmm.minesparis.psl.eu/images/balls.png")
 iml = sp.Image(im)
 img = sp.Image(im)
 ims = sp.Image(im)

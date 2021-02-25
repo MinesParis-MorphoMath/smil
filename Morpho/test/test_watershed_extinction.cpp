@@ -454,7 +454,7 @@ class Test_Watershed_Extinction_Compare : public TestCase
         imGrad << vecGrad;
         imMark << vecMark;
         
-//      Image<UINT8> imIn("http://smil.cmm.mines-paristech.fr/images/lena.png");
+//      Image<UINT8> imIn("https://smil.cmm.minesparis.psl.eu/images/lena.png");
 //      gradient(imIn, imGrad);
 //      hMinimaLabeled(imGrad, (UINT8)5, imMark);
                 

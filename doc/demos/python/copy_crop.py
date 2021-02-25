@@ -1,7 +1,7 @@
 from smilPython import *
 
-im1 = Image("http://smil.cmm.mines-paristech.fr/images/barbara.png")
-im2 = Image("http://smil.cmm.mines-paristech.fr/images/lena.png")
+im1 = Image("https://smil.cmm.minesparis.psl.eu/images/barbara.png")
+im2 = Image("https://smil.cmm.minesparis.psl.eu/images/lena.png")
 im3 = Image(im1)
 
 im1.show()

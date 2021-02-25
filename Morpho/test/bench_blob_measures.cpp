@@ -36,7 +36,7 @@ int main()
 {
     UINT BENCH_NRUNS = 1E3;
     
-    Image<UINT8> im1("http://smil.cmm.mines-paristech.fr/images/barbara.png");
+    Image<UINT8> im1("https://smil.cmm.minesparis.psl.eu/images/barbara.png");
     Image<UINT8> im2(im1);
     Image<UINT8> im3(im1);
     threshold(im1, im2);

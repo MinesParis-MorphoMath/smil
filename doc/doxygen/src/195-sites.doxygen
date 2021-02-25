@@ -7,7 +7,8 @@
  *          Smil git repository at GitHub}
  * - @Smil documentation
  *   - @UrlSmil{publis/Smil-Reference-Manual.pdf, Complete PDF documentation}
- *   - @UrlSmil{publis/SmilQuickReference.pdf, Smil Quick Reference}
+ *   - @UrlSmil{publis/SmilQuickReference.pdf, Smil Quick Reference} - a handy
+ *      list of all functions available under @Smil
  *   - @UrlSmil{publis/Smil-in-a-Nutshell.pdf,
  *              Smil in a Nutshell (or... @TI{Quick starting with smilPython})}
  * - @Smil support

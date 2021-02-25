@@ -1,7 +1,7 @@
 from smilPython import *
 
 # Load an image
-imIn = Image("http://smil.cmm.mines-paristech.fr/images/DNA_small.png")
+imIn = Image("https://smil.cmm.minesparis.psl.eu/images/DNA_small.png")
 imIn.show()
 
 imThr = Image(imIn)

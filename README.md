@@ -11,6 +11,6 @@ Smil is free software, available under a BSD-style open source license.
 
 See the licence page for more information.
 
-Full documentation at http://smil.cmm.mines-paristech.fr
+Full documentation at https://smil.cmm.minesparis.psl.eu
 
 

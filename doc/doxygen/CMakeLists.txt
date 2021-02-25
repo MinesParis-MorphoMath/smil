@@ -225,7 +225,7 @@ IF(DOXYGEN_FOUND AND DOXYGEN_CONFIG_FILE)
 
   # Add compiler definitions to doxygen PREDEFINED
   SET(DOXYGEN_PREDEFINED
-      SMIL_HOME_PAGE=http://smil.cmm.mines-paristech.fr/
+      SMIL_HOME_PAGE=https://smil.cmm.minesparis.psl.eu/
   )
   FOREACH(_DEF ${COMP_DEFS})
     SET(DOXYGEN_PREDEFINED "${DOXYGEN_PREDEFINED} ${_DEF} DOXYGEN")

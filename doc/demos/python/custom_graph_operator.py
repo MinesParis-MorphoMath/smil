@@ -33,7 +33,7 @@ class customMosaicToGraphFunct(mosaicToGraphFunct_UINT16_UINT16):
       return RES_OK
 
 
-im1 = Image("http://smil.cmm.mines-paristech.fr/images/mosaic.png")
+im1 = Image("https://smil.cmm.minesparis.psl.eu/images/mosaic.png")
 im2 = Image(im1)
 im3 = Image(im1)
 imMos = Image(im1, "UINT16")

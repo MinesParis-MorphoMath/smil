@@ -13,7 +13,7 @@ namespace smil
    * @see
    * <i>Jean Stawiaski</i>,
    * <a
-   * href="http://smil.cmm.mines-paristech.fr/publis/These_Jean_Stawiaski.pdf">
+   * href="https://smil.cmm.minesparis.psl.eu/publis/These_Jean_Stawiaski.pdf">
    *  Mathematical Morphology and Graphs :  Applications
    * to Interactive Medical Image Segmentation</a>, PhD Thesis - 2008
    *
