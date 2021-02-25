@@ -96,7 +96,7 @@ namespace smil
       default:
         s = "UNKNOWN";
         break;
-    }  
+    }
     os << " scalarType  " << s << endl;
     switch (fileType) {
       case FILE_TYPE_ASCII:
@@ -145,7 +145,11 @@ namespace smil
       curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, write_data);
       curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, fp);
       curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
+      curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 3L);
       res = curl_easy_perform(curl_handle);
+      if (res != CURLE_OK) {
+        cout << "Curl error : " << res << endl;
+      }
       curl_easy_cleanup(curl_handle);
       fclose(fp);
     } else
@@ -179,6 +183,7 @@ namespace smil
     if (curl_handle) {
       curl_easy_setopt(curl_handle, CURLOPT_URL, url);
       curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+      curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 3L);
       res = curl_easy_perform(curl_handle);
       curl_easy_cleanup(curl_handle);
     }

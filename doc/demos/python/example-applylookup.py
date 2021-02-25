@@ -1,6 +1,6 @@
 import smilPython as sp
 
-im = sp.Image("http://smil.cmm.mines-paristech.fr/images/balls.png")
+im = sp.Image("https://smil.cmm.minesparis.psl.eu/images/balls.png")
 imLbl1 = sp.Image(im, "UINT16")
 imLbl2 = sp.Image(imLbl1)
 

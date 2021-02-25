@@ -210,11 +210,13 @@ def Image(*args):
     img = None
     fillImg = False
 
-    if argNbr==0: # No argument -> return default image type
+    if argNbr==0:
+        # No argument -> return default image type
         img = imageTypes[0](256,256)
         fillImg = True
 
-    elif type(args[0])==int: # First arg is a number (should be a size)
+    elif type(args[0])==int:
+        # First arg is a number (should be a size)
         img = imageTypes[0](*args)
         fillImg = True
 
@@ -241,24 +243,26 @@ def Image(*args):
             img = srcImgType(srcIm, False) # (don t clone data)
         fillImg = True
 
-    elif args[0] in dataTypes: # First arg is an image type string ("UINT8", ...)
+    elif args[0] in dataTypes:
+        # First arg is an image type string ("UINT8", ...)
         imgType = imageTypes[dataTypes.index(args[0])]
         img = imgType(*args[1:])
         fillImg = True
 
-    # Create/load from an existing image fileName
-    elif argNbr>0 and type(args[0])==str:
-        if (os.path.exists(args[0]) or args[0][:7]=="http://"):
+    elif argNbr > 0 and type(args[0]) == str:
+        # Create/load from an existing image fileName
+        urlPrefix = ('http://', 'https://')
+        if (os.path.exists(args[0]) or args[0].startswith(urlPrefix)):
             if argNbr>1 and args[1] in dataTypes:
                 imgType = imageTypes[dataTypes.index(args[1])]
                 img = imgType()
                 read(args[0], img)
             else:
                 baseImg = createFromFile(args[0])
-                if baseImg!=None:
+                if baseImg != None:
                   img = autoCastBaseImage(baseImg)
         else:
-            print("File not found:", args[0])
+            print("File not found: ", args[0])
 
     else:
         img = imageTypes[0](*args)

@@ -52,10 +52,10 @@
  * \@Anaconda            | @Anaconda
  * \@URL{1}              | Display an URL as a link and text
  * \@URL{2}              | Display an URL as a link and a text
- * \@RootSmil            | %http://smil.cmm.mines-paristech.fr
+ * \@RootSmil            | %https://smil.cmm.minesparis.psl.eu
  * \@WebServerSmil       | Display \@RootSmil as link and server name as text
  * \@UrlSmil{2}          | Display Smil server URL as link and text
- * \@RootCMM             | %http://www.cmm.mines-paristech.fr
+ * \@RootCMM             | %https://www.cmm.minesparis.psl.eu
  * \@WebServerCMM        | Display \@RootSmil as link and server name as text
  * \@UrlCmm{2}           | Display CMM content URL as link and text
  * \@RootGitHub          | %https://github.com/MinesParis-MorphoMath

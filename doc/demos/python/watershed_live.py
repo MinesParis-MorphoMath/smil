@@ -22,7 +22,7 @@ class myWSFlooding(WatershedFlooding_UINT8_UINT16):
 
 
 if not "imIn" in globals():
-  imIn = Image("http://smil.cmm.mines-paristech.fr/images/lena.png")
+  imIn = Image("https://smil.cmm.minesparis.psl.eu/images/lena.png")
   imGrad = Image(imIn)
   imWS = Image(imIn)
   imMark = Image(imIn, "UINT16")

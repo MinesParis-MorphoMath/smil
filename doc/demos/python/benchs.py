@@ -6,7 +6,7 @@ bench_nruns = 1E3
 
 
 # Load an image
-imIn = Image("http://smil.cmm.mines-paristech.fr/images/DNA_small.png")
+imIn = Image("https://smil.cmm.minesparis.psl.eu/images/DNA_small.png")
 
 im1 = Image(sx, sy)
 im2 = Image(im1)

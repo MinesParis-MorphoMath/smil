@@ -237,7 +237,7 @@ LIST(APPEND PKG_CONFIG_SMIL_STR
   "\n"
   "Name: Smil\n"
   "Description: Simple (but efficient) Morphological Image Library\n"
-  "URL: http://smil.cmm.mines-paristech.fr/doc/index.html\n"
+  "URL: https://smil.cmm.minesparis.psl.eu/doc/index.html\n"
   "Version: ${SMIL_VERSION}\n"
   "Libs: -L\${libdir} ${PKG_CONFIG_SMIL_LIBS}\n"
   "Libs.private: ${PKG_CONFIG_SMIL_LIBS_PRIV}\n"

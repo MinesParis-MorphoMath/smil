@@ -3,10 +3,10 @@
 #include <string>
 #include <sys/stat.h>
 
-#define URLIMAGES   "http://smil.cmm.mines-paristech.fr/images"
+#define SmilWebImages   "https://smil.cmm.minesparis.psl.eu/images"
 
 const string DirImagesRoot = "@IMAGESDIR@";
-const string UrlImagesRoot = "http://smil.cmm.mines-paristech.fr/images";
+const string UrlImagesRoot = SmilWebImages;
 
 char *pathTestImage(const string &iname)
 {
@@ -21,4 +21,4 @@ char *pathTestImage(const string &iname)
   snprintf(buffer, sizeof buffer, "%s/%s", r.c_str(), iname.c_str());
   return buffer;
 }
- 
+

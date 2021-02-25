@@ -21,7 +21,7 @@ class myAreaExtinction(ExtinctionFlooding_UINT8_UINT16):
     self.extinctionValues[lbl] += self.areas[lbl]
 
 
-imIn = Image("http://smil.cmm.mines-paristech.fr/images/lena.png")
+imIn = Image("https://smil.cmm.minesparis.psl.eu/images/lena.png")
 imGrad = Image(imIn)
 imMark = Image(imIn, "UINT16")
 imExtRank = Image(imIn, "UINT16")

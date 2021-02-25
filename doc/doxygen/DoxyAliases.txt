@@ -88,12 +88,12 @@ ALIASES += EndDevDoc="@endcond"
 ALIASES += URL{1}="<a href=\"\1\"><b>\1</b></a>"
 ALIASES += URL{2}="<a href=\"\1\"><b>\2</b></a>"
 
-ALIASES += RootSmil="http://smil.cmm.mines-paristech.fr"
+ALIASES += RootSmil="https://smil.cmm.minesparis.psl.eu"
 ALIASES += WebServerSmil="@URL{@RootSmil, Smil web server}"
 ALIASES += UrlSmil{2}="@URL{@RootSmil/\1, \2}"
 ALIASES += NotebooksSmil{2}="@URL{@RootSmil/notebooks/\1,\2}"
 
-ALIASES += RootCMM="http://www.cmm.mines-paristech.fr"
+ALIASES += RootCMM="https://www.cmm.minesparis.psl.eu"
 ALIASES += WebServerCMM="@URL{@RootCMM, Centre de Morphologie Mathematique}"
 ALIASES += UrlCmm{2}="@URL{@RootCMM/\1,\2}"
 

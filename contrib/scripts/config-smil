@@ -117,7 +117,7 @@ Help()
     Jose-Marcio Martins da Cruz
 
   See also :
-    Full Smil documentation at : http://smil.mines-paristech.fr
+    Full Smil documentation at : https://smil.cmm.minesparis.psl.eu
 
 "
   printf "%s\n" "$HStr"

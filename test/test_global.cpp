@@ -47,7 +47,7 @@ int main()
 #if defined(USE_CURL) && defined(USE_PNG)
 
 #if 0
-  Image<UINT8> im1("http://smil.cmm.mines-paristech.fr/images/lena.png");
+  Image<UINT8> im1("https://smil.cmm.minesparis.psl.eu/images/lena.png");
 #else
   char *path = pathTestImage("gray/lena.png");
   Image<UINT8> im1(path);
@@ -67,7 +67,7 @@ int main()
 
 #ifdef SMIL_WRAP_RGB
   BaseImage *im =
-      createFromFile("http://smil.cmm.mines-paristech.fr/images/arearea.png");
+      createFromFile("https://smil.cmm.minesparis.psl.eu/images/arearea.png");
   if (im)
     im->show();
   delete im;

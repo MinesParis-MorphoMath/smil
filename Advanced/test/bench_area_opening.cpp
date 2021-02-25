@@ -36,7 +36,7 @@ using namespace smil;
 
 int main(int argc, char *argv[])
 {
-  Image<UINT8> im1("http://smil.cmm.mines-paristech.fr/images/barbara.png");
+  Image<UINT8> im1("https://smil.cmm.minesparis.psl.eu/images/barbara.png");
 
   if (argc > 1)
     read(argv[1], im1);

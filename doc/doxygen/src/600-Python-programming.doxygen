@@ -14,6 +14,9 @@
  * - @subpage p690
  * - <a href=examples.html><b>Examples in Python</b></a>
  *
+ * @see
+ *   - @UrlSmil{publis/SmilQuickReference.pdf, Smil Quick Reference} - a handy
+ *     list of all functions available under @Smil
  *
  * @tableofcontents
  */

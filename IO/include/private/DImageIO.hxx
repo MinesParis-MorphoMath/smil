@@ -106,12 +106,13 @@ namespace smil
    */
   template <class T> RES_T read(const char *filename, Image<T> &image)
   {
-    string fileExt    = getFileExtension(filename);
-    string filePrefix = (string(filename).substr(0, 7));
-
     RES_T res;
 
-    if (filePrefix == "http://") {
+    string fileExt    = getFileExtension(filename);
+    string filePrefix = (string(filename).substr(0, 7));
+    string prefix     = string(filename);
+
+    if (prefix.find("http://") == 0 || prefix.find("https://") == 0) {
 #ifdef USE_CURL
       string tmpFileName = "_smilTmpIO." + fileExt;
       if (getHttpFile(filename, tmpFileName.c_str()) != RES_OK) {
@@ -127,7 +128,9 @@ namespace smil
       res = RES_ERR;
 #endif // USE_CURL
       return res;
-    } else if (filePrefix == "file://") {
+    }
+
+    if (prefix.find("file://") == 0) {
       string fName = filename;
       string buf   = fName.substr(7, fName.length() - 7);
       return read(buf.c_str(), image);
@@ -222,7 +225,7 @@ namespace smil
 
 
   /*
-  * createFromFile 
+  * createFromFile
   *
   */
   BaseImage *createFromFile(const char *filename);

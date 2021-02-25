@@ -18,14 +18,14 @@ def printBlobMoments(m, title=""):
 #
 binaryImage = False
 if binaryImage:
-    imageName = "http://smil.cmm.mines-paristech.fr/images/balls.png"
+    imageName = "https://smil.cmm.minesparis.psl.eu/images/balls.png"
     imo = sp.Image(imageName)
     iml = sp.Image(imo, 'UINT16')
     # normalize binary image values
     imo /= 255
     sp.label(imo, iml)
 else:
-    imageName = "http://smil.cmm.mines-paristech.fr/images/tools.png"
+    imageName = "https://smil.cmm.minesparis.psl.eu/images/tools.png"
     imo = sp.Image(imageName)
     imThr = sp.Image(imo)
     sp.topHat(imo, imThr, sp.hSE(20))

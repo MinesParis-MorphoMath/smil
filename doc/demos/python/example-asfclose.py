@@ -1,7 +1,7 @@
 
 import smilpython as sp
 
-imin = sp.Image("http://smil.cmm.mines-paristech.fr/images/lena.png")
+imin = sp.Image("https://smil.cmm.minesparis.psl.eu/images/lena.png")
 
 imout = sp.Image(imin)
 
