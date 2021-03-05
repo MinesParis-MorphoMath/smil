@@ -52,6 +52,8 @@
 #include "private/DBlobMeasures.hpp"
 #include "private/DBlobOperations.hpp"
 
+#include "private/DImageCompare.hpp"
+
 /** @} */
 
 #endif // _DBASE_H

@@ -3,15 +3,28 @@
  * @page p610 Quick start with smilPython
  *
  * @section s610_01 Generalities
- * TBD
  *
- * @section s610_02 First program
- * TBD
+ * Most @Smil features are available under @Python, thanks to @Swig as a
+ * module names @smilPython.
  *
- * @section s610_03 Some rules to remember
  *
- * @subsection s610_03_01 How to create a Smil Image instance
+ * @section s610_02 Your first program
  *
+ * Type the following lines in your prefered text editor (copy and paste works
+ * fine) and name it, e.g., @TT{first-smil.py}.
+ *
+ * @includelineno first-program.py
+ * Run it and try to modify it.
+ * @note
+ *  - near all @Smil functions return a value which means :
+ *    - @TB{1} - if the function executed with no error
+ *    - @TB{0} or @TB{any other value} - an error occured. Usually there will
+ *      be some message to explain the error.
+ *  - it's a good practice to verify the returned value and stop processing on
+ *    errors and handle it.
+ *
+ * @section s610_03 Some rules
+ * *
  * TBD
  *
  * @tableofcontents

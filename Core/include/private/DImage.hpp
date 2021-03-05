@@ -263,14 +263,20 @@ namespace smil
      */
     void printSelf(ostream &os, bool displayPixVals, bool hexaGrid = false,
                    string indent = "") const;
+
     virtual void printSelf(ostream &os = std::cout, string indent = "") const
     {
       printSelf(os, false, false, indent);
     }
 
-    void printSelf(bool displayPixVals, bool hexaGrid = false)
+    virtual void printSelf(string indent)
     {
-      printSelf(std::cout, displayPixVals, hexaGrid);
+      printSelf(std::cout, false, false, indent);
+    }
+
+    void printSelf(bool displayPixVals, bool hexaGrid = false, string indent = "")
+    {
+      printSelf(std::cout, displayPixVals, hexaGrid, indent);
     }
 
     //! Get the description of the image as a string

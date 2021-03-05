@@ -49,6 +49,7 @@ SMIL_MODULE(smilBase)
 #include "DImageMatrix.hpp"
 #include "DBlobMeasures.hpp"
 #include "DBlobOperations.hpp"
+#include "DImageCompare.hpp"
 
 #include <stdexcept>
 
@@ -269,3 +270,9 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(blobsInertiaMatrix);
 %include "DImageMatrix.hpp"
 TEMPLATE_WRAP_FUNC(matMultiply);
 TEMPLATE_WRAP_FUNC(matTranspose);
+
+%include "DImageCompare.hpp"
+TEMPLATE_WRAP_FUNC(indexJaccard);
+TEMPLATE_WRAP_FUNC(indexRuzicka);
+TEMPLATE_WRAP_FUNC(distanceHamming);
+
