@@ -275,4 +275,10 @@ TEMPLATE_WRAP_FUNC(matTranspose);
 TEMPLATE_WRAP_FUNC(indexJaccard);
 TEMPLATE_WRAP_FUNC(indexRuzicka);
 TEMPLATE_WRAP_FUNC(distanceHamming);
+TEMPLATE_WRAP_FUNC(indexAccuracy);
+TEMPLATE_WRAP_FUNC(indexPrecision);
+TEMPLATE_WRAP_FUNC(indexRecall);
+TEMPLATE_WRAP_FUNC(indexFscore);
+TEMPLATE_WRAP_FUNC(indexSensitivity);
+TEMPLATE_WRAP_FUNC(indexSpecificity);
 

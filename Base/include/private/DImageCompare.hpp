@@ -43,11 +43,27 @@
 
 namespace smil
 {
+// Estimator epsilon
+#define DXM 0.5
+
   /**
    * @ingroup Base
    * @defgroup DIndex Image Similarities
    *
-   * @details This module provides functions to compare images similarities
+   * @details This module provides functions to evaluate the similarity between
+   * two images. The main usage may be to validate algorithms when comparing
+   * results of some work with some @TI{Ground Truth}
+   *
+   * The following conventions are used in the definition of some indices :
+   *
+   * - @f$TP = \{p \in imIn \:|\: imIn(p) = True \land  imGt(p) = True  \} @f$
+   *
+   * - @f$FP = \{p \in imIn \:|\: imIn(p) = True \land  imGt(p) = False  \} @f$
+   *
+   * - @f$TN = \{p \in imIn \:|\: imIn(p) = False \land  imGt(p) = False  \} @f$
+   *
+   * - @f$FN = \{p \in imIn \:|\: imIn(p) = False \land  imGt(p) = True  \} @f$
+   *
    *
    *
    * @{ */
@@ -58,38 +74,35 @@ namespace smil
    * - for binary images, this function returns the
    *    @TB{Jaccard similarity coefficient} defined by :
    * @f[
-   *  Jaccard(imA, imB) = \dfrac{|imA \cap imB|}{\vert imA \cup imB \vert} =
-   *    \dfrac{area(logicAnd(imA, \; imB))}{area(logicOr(imA, \; imB))}
+   *  Jaccard(imGt, imIn) = \dfrac{|imGt \cap imIn|}{\vert imGt \cup imIn \vert}
+   * = \dfrac{area(logicAnd(imGt, \; imIn))}{area(logicOr(imGt, \; imIn))}
    * @f]
-   * - for non binary images, this function returns the
+   * - for non binary (multiclass) images, this function returns the
    *    @TB{Weighted Jaccard similarity coefficient}, also known as
    *    @TB{Ruzicka coefficient} - see indexRuzicka()
    *
    * @see
    * - Wikipedia : @UrlWikipedia{Jaccard_index, Jaccard Index}
    *
-   * @param[in] imIn1 : First input image
-   * @param[in] imIn2 : Second input image
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
    * @returns Jaccard similarity coefficient between the two images
    */
   template <typename T>
-  double indexJaccard(const Image<T> &imIn1, const Image<T> &imIn2)
+  double indexJaccard(const Image<T> &imGt, const Image<T> &imIn)
   {
-    ASSERT_ALLOCATED(&imIn1, &imIn2);
-    ASSERT_SAME_SIZE(&imIn1, &imIn2);
-    if (isBinary(imIn1) && isBinary(imIn2)) {
-      Image<T> imOr(imIn1);
-      Image<T> imAnd(imIn1);
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
+    if (isBinary(imGt) && isBinary(imIn)) {
+      Image<T> imOr(imGt);
+      Image<T> imAnd(imGt);
 
-      logicOr(imIn1, imIn2, imOr);
-      logicAnd(imIn1, imIn2, imAnd);
+      logicOr(imGt, imIn, imOr);
+      logicAnd(imGt, imIn, imAnd);
 
-      if (area(imOr) > 0)
-        return double(area(imAnd)) / double(area(imOr));
-
-      return 1.;
+      return double(area(imAnd) + DXM) / double(area(imOr) + DXM);
     }
-    return 1.;
+    return indexRuzicka(imGt, imIn);
   }
 
   /**
@@ -99,35 +112,32 @@ namespace smil
    *    @TB{Ruzicka coefficient} - see indexJaccard()
    *
    * @f[
-   *  Ruzicka(imA, imB) = \dfrac{\sum_{i,j,k} min(imA(i,j,k), \; imA(i,j,k))}
-   *                            {\sum_{i,j,k} min(imA(i,j,k), \; imA(i,j,k))} =
-   *                      \dfrac{volume(inf(imA, \; imB))}
-   *                            {volume(sup(imA, \; imB))}
+   *  Ruzicka(imGt, imIn) = \dfrac{\sum_{p} min(imGt(p), \; imIn(p))}
+   *                              {\sum_{p} max(imGt(p), \; imIn(p))}
+   *                      = \dfrac{volume(inf(imGt, \; imIn))}
+   *                              {volume(sup(imGt, \; imIn))}
    * @f]
    *
    * @see
    * - Wikipedia : @UrlWikipedia{Jaccard_index, Jaccard Index}
    *
-   * @param[in] imIn1 : First input image
-   * @param[in] imIn2 : Second input image
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
    * @returns Ruzicka similarity coefficient between the two images
    */
   template <typename T>
-  double indexRuzicka(const Image<T> &imIn1, const Image<T> &imIn2)
+  double indexRuzicka(const Image<T> &imGt, const Image<T> &imIn)
   {
-    ASSERT_ALLOCATED(&imIn1, &imIn2);
-    ASSERT_SAME_SIZE(&imIn1, &imIn2);
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
 
-    Image<T> imMax(imIn1);
-    Image<T> imMin(imIn1);
+    Image<T> imMax(imGt);
+    Image<T> imMin(imGt);
 
-    sup(imIn1, imIn2, imMax);
-    inf(imIn1, imIn2, imMin);
+    sup(imGt, imIn, imMax);
+    inf(imGt, imIn, imMin);
 
-    if (volume(imMax) > 0)
-      return double(volume(imMin)) / double(volume(imMax));
-
-    return 1.;
+    return double(volume(imMin) + DXM) / double(volume(imMax) + DXM);
   }
 
   /**
@@ -138,25 +148,266 @@ namespace smil
    * @see
    * - Wikipedia : @UrlWikipedia{Hamming_distance, Hamming distance}
    *
-   * @param[in] imIn1 : First input image
-   * @param[in] imIn2 : Second input image
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
    * @returns Hamming distance between two images
    */
   template <typename T>
-  size_t distanceHamming(const Image<T> &imIn1, const Image<T> &imIn2)
+  size_t distanceHamming(const Image<T> &imGt, const Image<T> &imIn)
   {
-    ASSERT_ALLOCATED(&imIn1, &imIn2);
-    ASSERT_SAME_SIZE(&imIn1, &imIn2);
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
 
-    Image<T> imOut(imIn1);
+    Image<T> imOut(imGt);
 
-    diff(imIn1, imIn2, imOut);
+    diff(imGt, imIn, imOut);
 
     return area(imOut);
   }
 
+  /**
+   * indexAccuracy()
+   *
+   * Returns the @TB{Rand Index}, also called @TB{Accuracy} or
+   * @TB{Simple matching coefficient}
+   *
+   * @f[
+   *  Accuracy(imGt, imIn) = \dfrac{TP + TN}{TP+FP+TN+FN}
+   * @f]
+   *
+   * @see
+   * - Wikipedia : @UrlWikipedia{Accuracy_and_precision, Accuracy and precision}
+   * - Wikipedia : @UrlWikipedia{Rand_index, Rand Index}
+   * - Wikipedia : @UrlWikipedia{Simple_matching_coefficient,
+   *                             Simple matching coefficient}
+   *
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
+   * @param[in] threshold : difference between pixels accepted as equality.
+   *
+   * @returns the @TB{indexAccuracy}
+   */
+  template <typename T>
+  double indexAccuracy(const Image<T> &imGt, const Image<T> &imIn,
+                   const T threshold = 0)
+  {
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
+
+    size_t nbPixels = imGt.getPixelCount();
+    if (isBinary(imGt) && isBinary(imIn)) {
+      Image<T> imOut(imGt);
+
+      equ(imGt, imIn, imOut);
+      size_t dp = area(imOut);
+      return double(dp) / nbPixels;
+    } else {
+      Image<T> imOut(imGt);
+      absDiff(imGt, imIn, imOut);
+      T tVal = 0;
+      T fVal = 1;
+      compare(imOut, ">", threshold, tVal, fVal, imOut);
+      size_t dp = area(imOut);
+      return double(dp) / nbPixels;
+    }
+  }
+
+  /**
+   * indexPrecision()
+   *
+   * Returns the @TB{Precision} index, also called  @TB{Positive prediction
+   * value}
+   *
+   * @f[
+   *  Precision(imGt, imIn) = \dfrac{TP}{TP+FP}
+   * @f]
+   *
+   * @see
+   * - Wikipedia : @UrlWikipedia{Precision_and_recall, Precision and Recall}
+   *
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
+   * @returns indexPrecision
+   */
+  template <typename T>
+  double indexPrecision(const Image<T> &imGt, const Image<T> &imIn)
+  {
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
+
+    if (!isBinary(imGt) || !isBinary(imIn))
+      return 1.;
+
+    Image<T> imTmp(imGt);
+    inf(imGt, imIn, imTmp);
+
+    return double(area(imTmp) + DXM) / double(area(imIn) + DXM);
+  }
+
+  /**
+   * indexRecall()
+   *
+   * Returns the @TB{Recall} index, also called @TB{Sensitivity} or @TB{Hit
+   * rate} or @TB{True Positive Rate}
+   *
+   * @f[
+   *  Recall(imGt, imIn) = \dfrac{TP}{TP+FN}
+   * @f]
+   *
+   * @see
+   * - Wikipedia : @UrlWikipedia{Precision_and_recall, Precision and Recall}
+   *
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
+   * @returns indexRecall
+   */
+  template <typename T>
+  double indexRecall(const Image<T> &imGt, const Image<T> &imIn)
+  {
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
+
+    return indexSensitivity(imGt, imIn);
+  }
+
+  /**
+   * indexFscore()
+   *
+   * @f[
+   *  F_\beta(imGt, imIn) = (1 + \beta^2) . \dfrac{Precision \; . \; Recall}
+   *            {\beta^2 \; . \; Precision + Recall}
+   * @f]
+   *
+   * @see
+   * - Wikipedia : @UrlWikipedia{F-score, F-score}
+   * - indexPrecision() and indexRecall()
+   *
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
+   * @param[in] beta : @f$ \beta \f$ coefficient (default value : @f$1.@f$)
+   * @returns indexFscore
+   */
+  template <typename T>
+  double indexFscore(const Image<T> &imGt, const Image<T> &imIn,
+                       const double beta = 1.)
+  {
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
+
+    if (!isBinary(imGt) || !isBinary(imIn))
+      return 1.;
+
+    double precision = indexPrecision(imGt, imIn);
+    double recall    = indexRecall(imGt, imIn);
+
+    double b2 = beta * beta;
+    return (1. + b2) * (precision * recall) / (b2 * precision + recall);
+  }
+
+  /**
+   * indexSensitivity()
+   *
+   * Returns the @TB{Sensitivity}, also called @TB{Recall}, @TB{Hit rate} or
+   * @TB{True Positive Rate}
+   *
+   * @f[
+   *  Sensitivity(imGt, imIn) = \dfrac{TP}{TP+FN}
+   * @f]
+   *
+   * @see
+   * - Wikipedia : @UrlWikipedia{Sensitivity_and_specificity,
+   *                             Sensitivity and Specificity}
+   *
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
+   * @returns indexSensitivity
+   */
+  template <typename T>
+  double indexSensitivity(const Image<T> &imGt, const Image<T> &imIn)
+  {
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
+
+    if (!isBinary(imGt) || !isBinary(imIn))
+      return 1.;
+
+    Image<T> imTmp(imGt);
+    inf(imGt, imIn, imTmp);
+
+    return double(area(imTmp) + DXM) / double(area(imGt) + DXM);
+  }
+
+  /**
+   * indexSpecificity()
+   *
+   * Returns the @TB{Specificity} index, also called @TB{Selectivity} or
+   * @TB{True negative rate}
+   *
+   * @f[
+   *  Specificity(imGt, imIn) = \dfrac{TN}{TN+FN}
+   * @f]
+   *
+   * @see
+   * - Wikipedia : @UrlWikipedia{Sensitivity_and_specificity,
+   *                             Sensitivity and Specificity}
+   *
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
+   * @returns indexSpecificity
+   */
+  template <typename T>
+  double indexSpecificity(const Image<T> &imGt, const Image<T> &imIn)
+  {
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
+
+    if (!isBinary(imGt) || !isBinary(imIn))
+      return 1.;
+
+    Image<T> imTmp(imGt);
+
+    size_t nbPixels = imGt.getPixelCount();
+
+    sup(imGt, imIn, imTmp);
+
+    return double(nbPixels - area(imTmp) + DXM) /
+           double(nbPixels - area(imGt) + DXM);
+  }
+
+  /**
+   * indexOverlap()
+   *
+   * Returns the @TB{Overlap} coefficient
+   *
+   * @f[
+   *  Overlap(imGt, imIn) = \dfrac{|imGt \cap imIn|}{min(|imGt|, |imIn|)}
+   * @f]
+   *
+   * @see
+   * - Wikipedia : @UrlWikipedia{Overlap_coefficient, Overlap coefficient}
+   *
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
+   * @returns indexSpecificity   */
+  template <typename T>
+  double indexOverlap(const Image<T> &imGt, const Image<T> &imIn)
+  {
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
+
+    if (!isBinary(imGt) || !isBinary(imIn))
+      return 1.;
+
+    Image<T> imTmp(imGt);
+    inf(imGt, imIn, imTmp);
+
+    return double(area(imTmp) + DXM) /
+           double(min(area(imGt), area(imIn)) + DXM);
+  }
+
   /** @} */
 
+#undef DXM
 } // namespace smil
 
 #endif // _D_IMAGE_COMPARE_HPP
