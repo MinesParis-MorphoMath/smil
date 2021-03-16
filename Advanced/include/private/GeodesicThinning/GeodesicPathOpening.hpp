@@ -139,7 +139,7 @@ namespace smil
     //
     template <class T1, class T2>
     RES_T _GeodesicMeasure(const Image<T1> &imIn, Image<T2> &imOut,
-                           int selector, bool sliceBySlice, double dz_over_dx)
+                           int selector, bool sliceBySlice, double dzOverDx)
     {
       // Check inputs
       ASSERT_ALLOCATED(&imIn)
@@ -178,7 +178,7 @@ namespace smil
         for (size_t i = 0; i < imIn.getPixelCount(); i++)
           DistanceMap[i] = (pixelsIn[i] >= vMed ? -1. : 0.);
 
-        _GeodesicPathBinary(DistanceMap, W, H, Z, selector, 1, 1, dz_over_dx);
+        _GeodesicPathBinary(DistanceMap, W, H, Z, selector, 1, 1, dzOverDx);
 
         for (size_t i = 0; i < imOut.getPixelCount(); i++)
           pixelsOut[i] = (T2) DistanceMap[i];
@@ -957,14 +957,14 @@ namespace smil
    * @param[out] imOut : output image
    * @param[in] sliceBySlice : apply the algorithm to the whole image or slice
    * by slice
-   * @param[in] dz_over_dx :
+   * @param[in] dzOverDx :
    */
   template <typename T1, typename T2>
   RES_T geodesicDiameter(const Image<T1> &imIn, Image<T2> &imOut,
-                         bool sliceBySlice = false, double dz_over_dx = 1.)
+                         bool sliceBySlice = false, double dzOverDx = 1.)
   {
     MorphoExtrasGeodesic mge;
-    return mge._GeodesicMeasure(imIn, imOut, 0, sliceBySlice, dz_over_dx);
+    return mge._GeodesicMeasure(imIn, imOut, 0, sliceBySlice, dzOverDx);
   }
 
   /**
@@ -989,14 +989,14 @@ namespace smil
    * @param[out] imOut : output image
    * @param[in] sliceBySlice : apply the algorithm to the whole image or slice
    * by slice
-   * @param[in] dz_over_dx :
+   * @param[in] dzOverDx :
    */
   template <typename T1, typename T2>
   RES_T geodesicElongation(const Image<T1> &imIn, Image<T2> &imOut,
-                           bool sliceBySlice = false, double dz_over_dx = 1.)
+                           bool sliceBySlice = false, double dzOverDx = 1.)
   {
     MorphoExtrasGeodesic mge;
-    return mge._GeodesicMeasure(imIn, imOut, 1, sliceBySlice, dz_over_dx);
+    return mge._GeodesicMeasure(imIn, imOut, 1, sliceBySlice, dzOverDx);
   }
 
   /**
@@ -1041,14 +1041,14 @@ namespace smil
    * @param[out] imOut : output image
    * @param[in] sliceBySlice : apply the algorithm to the whole image or slice
    * by slice
-   * @param[in] dz_over_dx :
+   * @param[in] dzOverDx :
    */
   template <typename T1, typename T2>
   RES_T geodesicExtremities(const Image<T1> &imIn, Image<T2> &imOut,
-                            bool sliceBySlice = false, double dz_over_dx = 1.)
+                            bool sliceBySlice = false, double dzOverDx = 1.)
   {
     MorphoExtrasGeodesic mge;
-    return mge._GeodesicMeasure(imIn, imOut, 3, sliceBySlice, dz_over_dx);
+    return mge._GeodesicMeasure(imIn, imOut, 3, sliceBySlice, dzOverDx);
   }
 
   /**
@@ -1063,16 +1063,16 @@ namespace smil
    * - 3 : geodesic extremities
    * @param[in] sliceBySlice : apply the algorithm to the whole image or slice
    * by slice
-   * @param[in] dz_over_dx :
+   * @param[in] dzOverDx :
    *
    * @overload
    */
   template <typename T1, typename T2>
   RES_T geodesicMeasure(const Image<T1> &imIn, Image<T2> &imOut, int method,
-                        bool sliceBySlice = false, double dz_over_dx = 1.)
+                        bool sliceBySlice = false, double dzOverDx = 1.)
   {
     MorphoExtrasGeodesic mge;
-    return mge._GeodesicMeasure(imIn, imOut, method, sliceBySlice, dz_over_dx);
+    return mge._GeodesicMeasure(imIn, imOut, method, sliceBySlice, dzOverDx);
   }
 
   /**

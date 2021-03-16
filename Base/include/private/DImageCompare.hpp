@@ -48,22 +48,36 @@ namespace smil
 
   /**
    * @ingroup Base
-   * @defgroup DIndex Image Similarities
+   * @addtogroup Similarity
    *
    * @details This module provides functions to evaluate the similarity between
    * two images. The main usage may be to validate algorithms when comparing
    * results of some work with some @TI{Ground Truth}
    *
-   * The following conventions are used in the definition of some indices :
+   * The following conventions are used in the definition of some indices in
+   * @TB{binary images} :
    *
-   * - @f$TP = \{p \in imIn \:|\: imIn(p) = True \land  imGt(p) = True  \} @f$
+   * - @TB{Positives} :
+   *    @f[ P(imGt) = |\{p \in imGt \;|\; imGt(p) = True  \}| = TP(imGt, imIn)
+   *                                                     + FN(imGt, imIn) @f]
+   * - @TB{Negatives} :
+   *    @f[ N(imGt) = |\{p \in imGt \;|\; imGt(p) = False \}| = TN(imGt, imIn)
+   *                                                     + FP(imGt, imIn) @f]
+   * - @TB{True positives} :
+   *    @f[ TP(imGt, imIn) =
+   *    |\{p \in imIn \:|\: imIn(p) = True \land  imGt(p) = True  \}| @f]
+   * - @TB{False positives} :
+   *    @f[ FP(imGt, imIn) =
+   *    |\{p \in imIn \:|\: imIn(p) = True \land  imGt(p) = False  \}| @f]
+   * - @TB{True negatives} :
+   *    @f[ TN(imGt, imIn) =
+   *    |\{p \in imIn \:|\: imIn(p) = False \land  imGt(p) = False  \}| @f]
+   * - @TB{False negatives} :
+   *    @f[ FN(imGt, imIn) =
+   *    |\{p \in imIn \:|\: imIn(p) = False \land  imGt(p) = True  \}| @f]
    *
-   * - @f$FP = \{p \in imIn \:|\: imIn(p) = True \land  imGt(p) = False  \} @f$
-   *
-   * - @f$TN = \{p \in imIn \:|\: imIn(p) = False \land  imGt(p) = False  \} @f$
-   *
-   * - @f$FN = \{p \in imIn \:|\: imIn(p) = False \land  imGt(p) = True  \} @f$
-   *
+   * @see
+   * - isBinary()
    *
    *
    * @{ */
@@ -77,7 +91,7 @@ namespace smil
    *  Jaccard(imGt, imIn) = \dfrac{|imGt \cap imIn|}{\vert imGt \cup imIn \vert}
    * = \dfrac{area(logicAnd(imGt, \; imIn))}{area(logicOr(imGt, \; imIn))}
    * @f]
-   * - for non binary (multiclass) images, this function returns the
+   * - for non binary images, this function returns the
    *    @TB{Weighted Jaccard similarity coefficient}, also known as
    *    @TB{Ruzicka coefficient} - see indexRuzicka()
    *
@@ -171,9 +185,12 @@ namespace smil
    * Returns the @TB{Rand Index}, also called @TB{Accuracy} or
    * @TB{Simple matching coefficient}
    *
-   * @f[
-   *  Accuracy(imGt, imIn) = \dfrac{TP + TN}{TP+FP+TN+FN}
-   * @f]
+   * - For binary images (see isBinary()) this value is evaluated as :
+   *  @f[
+   *    Accuracy(imGt, imIn) = \dfrac{TP + TN}{TP + FP + TN + FN}
+   *  @f]
+   * - for non binary images, pixels values are considered to be equal if their
+   *   difference is not greater than @TT{threshold}
    *
    * @see
    * - Wikipedia : @UrlWikipedia{Accuracy_and_precision, Accuracy and precision}
@@ -189,7 +206,7 @@ namespace smil
    */
   template <typename T>
   double indexAccuracy(const Image<T> &imGt, const Image<T> &imIn,
-                   const T threshold = 0)
+                       const T threshold = 0)
   {
     ASSERT_ALLOCATED(&imGt, &imIn);
     ASSERT_SAME_SIZE(&imGt, &imIn);
@@ -215,11 +232,11 @@ namespace smil
   /**
    * indexPrecision()
    *
-   * Returns the @TB{Precision} index, also called  @TB{Positive prediction
-   * value}
+   * Returns, for binary images (see isBinary()), the @TB{Precision} index, also
+   * called  @TB{Positive prediction value}
    *
    * @f[
-   *  Precision(imGt, imIn) = \dfrac{TP}{TP+FP}
+   *  Precision(imGt, imIn) = \dfrac{TP}{TP + FP}
    * @f]
    *
    * @see
@@ -235,8 +252,10 @@ namespace smil
     ASSERT_ALLOCATED(&imGt, &imIn);
     ASSERT_SAME_SIZE(&imGt, &imIn);
 
-    if (!isBinary(imGt) || !isBinary(imIn))
-      return 1.;
+    if (!isBinary(imGt) || !isBinary(imIn)) {
+      ERR_MSG("This function is defined only for binary images");
+      return 0.;
+    }
 
     Image<T> imTmp(imGt);
     inf(imGt, imIn, imTmp);
@@ -247,11 +266,11 @@ namespace smil
   /**
    * indexRecall()
    *
-   * Returns the @TB{Recall} index, also called @TB{Sensitivity} or @TB{Hit
-   * rate} or @TB{True Positive Rate}
+   * Returns, for binary images (see isBinary()), the @TB{Recall} index, also
+   * called @TB{Sensitivity} or @TB{Hit rate} or @TB{True Positive Rate}
    *
    * @f[
-   *  Recall(imGt, imIn) = \dfrac{TP}{TP+FN}
+   *  Recall(imGt, imIn) = \dfrac{TP}{TP + FN}
    * @f]
    *
    * @see
@@ -271,7 +290,10 @@ namespace smil
   }
 
   /**
-   * indexFscore()
+   * indexFScore()
+   *
+   * Returns, for binary images (see isBinary()), the @TT{F-Score} between
+   * two images.
    *
    * @f[
    *  F_\beta(imGt, imIn) = (1 + \beta^2) . \dfrac{Precision \; . \; Recall}
@@ -279,23 +301,25 @@ namespace smil
    * @f]
    *
    * @see
-   * - Wikipedia : @UrlWikipedia{F-score, F-score}
+   * - Wikipedia : @UrlWikipedia{F-score, F-Score}
    * - indexPrecision() and indexRecall()
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
    * @param[in] beta : @f$ \beta \f$ coefficient (default value : @f$1.@f$)
-   * @returns indexFscore
+   * @returns indexFScore
    */
   template <typename T>
-  double indexFscore(const Image<T> &imGt, const Image<T> &imIn,
-                       const double beta = 1.)
+  double indexFScore(const Image<T> &imGt, const Image<T> &imIn,
+                     const double beta = 1.)
   {
     ASSERT_ALLOCATED(&imGt, &imIn);
     ASSERT_SAME_SIZE(&imGt, &imIn);
 
-    if (!isBinary(imGt) || !isBinary(imIn))
-      return 1.;
+    if (!isBinary(imGt) || !isBinary(imIn)) {
+      ERR_MSG("This function is defined only for binary images");
+      return 0.;
+    }
 
     double precision = indexPrecision(imGt, imIn);
     double recall    = indexRecall(imGt, imIn);
@@ -307,7 +331,8 @@ namespace smil
   /**
    * indexSensitivity()
    *
-   * Returns the @TB{Sensitivity}, also called @TB{Recall}, @TB{Hit rate} or
+   * Returns, for binary images (see isBinary()), the @TB{Sensitivity}, also
+   * called @TB{Recall}, @TB{Hit rate} or
    * @TB{True Positive Rate}
    *
    * @f[
@@ -328,8 +353,10 @@ namespace smil
     ASSERT_ALLOCATED(&imGt, &imIn);
     ASSERT_SAME_SIZE(&imGt, &imIn);
 
-    if (!isBinary(imGt) || !isBinary(imIn))
-      return 1.;
+    if (!isBinary(imGt) || !isBinary(imIn)) {
+      ERR_MSG("This function is defined only for binary images");
+      return 0.;
+    }
 
     Image<T> imTmp(imGt);
     inf(imGt, imIn, imTmp);
@@ -340,11 +367,12 @@ namespace smil
   /**
    * indexSpecificity()
    *
-   * Returns the @TB{Specificity} index, also called @TB{Selectivity} or
+   * Returns, for binary images (see isBinary()), the @TB{Specificity} index,
+   * also called @TB{Selectivity} or
    * @TB{True negative rate}
    *
    * @f[
-   *  Specificity(imGt, imIn) = \dfrac{TN}{TN+FN}
+   *  Specificity(imGt, imIn) = \dfrac{TN}{TN+FP}
    * @f]
    *
    * @see
@@ -361,8 +389,88 @@ namespace smil
     ASSERT_ALLOCATED(&imGt, &imIn);
     ASSERT_SAME_SIZE(&imGt, &imIn);
 
-    if (!isBinary(imGt) || !isBinary(imIn))
-      return 1.;
+    if (!isBinary(imGt) || !isBinary(imIn)) {
+      ERR_MSG("This function is defined only for binary images");
+      return 0.;
+    }
+
+    Image<T> imTmp(imGt);
+
+    size_t nbPixels = imGt.getPixelCount();
+
+    sup(imGt, imIn, imTmp);
+
+    return double(nbPixels - area(imTmp) + DXM) /
+           double(nbPixels - area(imGt) + DXM);
+  }
+
+
+  /**
+   * indexFallOut()
+   *
+   * Returns, for binary images (see isBinary()), the @TB{Fall Out} index,
+   * also called @TB{False positive rate} or @TB{False alarm rate}
+   *
+   * @f[
+   *  Fallout(imGt, imIn) = \dfrac{FP}{TN+FP}
+   * @f]
+   *
+   * @see
+   * - Wikipedia : @UrlWikipedia{F-score, F-Score}
+   *
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
+   * @returns indexFallOut
+   */
+  template <typename T>
+  double indexFallOut(const Image<T> &imGt, const Image<T> &imIn)
+  {
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
+
+    if (!isBinary(imGt) || !isBinary(imIn)) {
+      ERR_MSG("This function is defined only for binary images");
+      return 0.;
+    }
+
+    Image<T> imTmp(imGt);
+
+    size_t nbPixels = imGt.getPixelCount();
+
+    sup(imGt, imIn, imTmp);
+
+    return double(nbPixels - area(imTmp) + DXM) /
+           double(nbPixels - area(imGt) + DXM);
+  }
+
+  /**
+   * indexMissRate()
+   *
+   * Returns, for binary images (see isBinary()), the @TB{Miss Rate} index,
+   * also called @TB{False negative rate}
+   *
+   * @f[
+   *  Specificity(imGt, imIn) = \dfrac{FN}{TP+FN}
+   * @f]
+   *
+   * @see
+   * - Wikipedia : @UrlWikipedia{Sensitivity_and_specificity,
+   *                             Sensitivity and Specificity}
+   *
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
+   * @returns indexSpecificity
+   */
+  template <typename T>
+  double indexMissRate(const Image<T> &imGt, const Image<T> &imIn)
+  {
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
+
+    if (!isBinary(imGt) || !isBinary(imIn)) {
+      ERR_MSG("This function is defined only for binary images");
+      return 0.;
+    }
 
     Image<T> imTmp(imGt);
 
@@ -377,10 +485,12 @@ namespace smil
   /**
    * indexOverlap()
    *
-   * Returns the @TB{Overlap} coefficient
+   * Returns, for binary images (see isBinary()), the @TB{Overlap} coefficient
    *
    * @f[
-   *  Overlap(imGt, imIn) = \dfrac{|imGt \cap imIn|}{min(|imGt|, |imIn|)}
+   *  Overlap(imGt, imIn) = \dfrac{|imGt \cap imIn|}{min(|imGt|, |imIn|)} =
+   *                        \dfrac{area(inf(imGt, imIn))}
+   *                              {min(area(imGt), area(imIn))}
    * @f]
    *
    * @see
@@ -395,8 +505,10 @@ namespace smil
     ASSERT_ALLOCATED(&imGt, &imIn);
     ASSERT_SAME_SIZE(&imGt, &imIn);
 
-    if (!isBinary(imGt) || !isBinary(imIn))
-      return 1.;
+    if (!isBinary(imGt) || !isBinary(imIn)) {
+      ERR_MSG("This function is defined only for binary images");
+      return 0.;
+    }
 
     Image<T> imTmp(imGt);
     inf(imGt, imIn, imTmp);

@@ -278,7 +278,8 @@ TEMPLATE_WRAP_FUNC(distanceHamming);
 TEMPLATE_WRAP_FUNC(indexAccuracy);
 TEMPLATE_WRAP_FUNC(indexPrecision);
 TEMPLATE_WRAP_FUNC(indexRecall);
-TEMPLATE_WRAP_FUNC(indexFscore);
+TEMPLATE_WRAP_FUNC(indexFScore);
 TEMPLATE_WRAP_FUNC(indexSensitivity);
 TEMPLATE_WRAP_FUNC(indexSpecificity);
+TEMPLATE_WRAP_FUNC(indexOverlap);
 

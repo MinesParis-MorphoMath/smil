@@ -11,9 +11,11 @@
  *      - indexAccuracy()
  *      - indexPrecision()
  *      - indexRecall()
- *      - indexFscore()
+ *      - indexFScore()
  *      - indexSensitivity()
  *      - indexSpecificity()
+ *      - indexFallOut()
+ *      - indexMissRate()
  *      - indexOverlap()
  *  - @TB{Bugs}
  *    - method @TB{printSelf()} of class @TB{Image} doesn't handle parameter

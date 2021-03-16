@@ -5,7 +5,7 @@
  * @defgroup Arith        Arithmetic operations
  * @ingroup  Base
  *
- * @defgroup DIndex       Image Similarities
+ * @defgroup Similarity   Images Similarity
  * @ingroup  Base
 
  * @defgroup Matrix       Matrix operations
