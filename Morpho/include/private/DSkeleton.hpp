@@ -201,23 +201,23 @@ namespace smil
 #pragma omp for
 #endif
       for (size_t i = 0; i < nbrPixels; ++i) {
-        OffsetPoint pt(Size);
-        pt.setOffset(i);
+        ImageBox pt(Size);
+        pt.setReference(i);
 
         bool up   = false;
         bool down = false;
-        if (in[pt.o] > 0 && in[pt.o] != ImDtTypes<T>::max()) {
+        if (in[pt.reference] > 0 && in[pt.reference] != ImDtTypes<T>::max()) {
           for (UINT pts = 0; pts < sePtsNumber; ++pts) {
-            OffsetPoint qt(Size);
+            ImageBox qt(Size);
             qt = pt;
             qt.shift(se.points[pts]);
 
             if (qt.inImage()) {
-              if (in[qt.o] != ImDtTypes<T>::max()) {
-                if (in[qt.o] >= in[pt.o] + 1) {
+              if (in[qt.reference] != ImDtTypes<T>::max()) {
+                if (in[qt.reference] >= in[pt.reference] + 1) {
                   up = true;
                 }
-                if (in[qt.o] <= in[pt.o] - 1) {
+                if (in[qt.reference] <= in[pt.reference] - 1) {
                   down = true;
                 }
               }
@@ -225,7 +225,7 @@ namespace smil
           }
 
           if (!up || !down) {
-            out[pt.o] = in[pt.o];
+            out[pt.reference] = in[pt.reference];
           }
         }
       }

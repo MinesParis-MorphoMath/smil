@@ -433,14 +433,16 @@ namespace smil
       return 0.;
     }
 
-    Image<T> imTmp(imGt);
-
     size_t nbPixels = imGt.getPixelCount();
 
+    Image<T> imTmp(imGt);
     sup(imGt, imIn, imTmp);
+    size_t TN = nbPixels - area(imTmp);
 
-    return double(nbPixels - area(imTmp) + DXM) /
-           double(nbPixels - area(imGt) + DXM);
+    inf(imGt, imIn, imTmp);
+    size_t FP = area(imIn) - area(imTmp);
+
+    return double(FP + DXM) / double(TN + FP + DXM);
   }
 
   /**
@@ -473,13 +475,12 @@ namespace smil
     }
 
     Image<T> imTmp(imGt);
+    inf(imGt, imIn, imTmp);
+    size_t TP = area(imTmp);
+    size_t FN = area(imGt) - TP;
 
-    size_t nbPixels = imGt.getPixelCount();
-
-    sup(imGt, imIn, imTmp);
-
-    return double(nbPixels - area(imTmp) + DXM) /
-           double(nbPixels - area(imGt) + DXM);
+    return double(FN + DXM) /
+           double(TP + FN + DXM);
   }
 
   /**
