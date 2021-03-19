@@ -281,5 +281,8 @@ TEMPLATE_WRAP_FUNC(indexRecall);
 TEMPLATE_WRAP_FUNC(indexFScore);
 TEMPLATE_WRAP_FUNC(indexSensitivity);
 TEMPLATE_WRAP_FUNC(indexSpecificity);
+TEMPLATE_WRAP_FUNC(indexFallOut);
+TEMPLATE_WRAP_FUNC(indexMissRate);
+
 TEMPLATE_WRAP_FUNC(indexOverlap);
 
