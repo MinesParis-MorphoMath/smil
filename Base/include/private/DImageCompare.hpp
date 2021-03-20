@@ -179,6 +179,85 @@ namespace smil
     return area(imOut);
   }
 
+  /** @cond */
+  /**
+   * Not yet integrated
+   */
+  template <typename T>
+  class ContingencyTable {
+    size_t FP, FN, TP, TN;
+    size_t P, N;
+    size_t aGT, aIM;
+
+    ContingencyTable(Image<T> &imGt, Image<T> imIn)
+    {
+      size_t nPixels = imGt.getPixelCount();
+
+      aGT = area(imGt);
+      aIM = area(imIn);
+
+      P = aGT;
+      N = nPixels - P;
+
+      Image<T> imTmp(imGt);
+      inf(imGt, imIn, imTmp);
+      TP = area(imTmp);
+      FP = aIM - TP;
+      FN = aGT - TP;
+      TN = N - TP - FP - FN;
+    }
+
+    double Accuracy()
+    {
+      return double(TP + TN) / double(P + N);
+    }
+
+    double Precision()
+    {
+      return double(TP) / double(TP + FP);
+    }
+
+    double Recall()
+    {
+      return double(TP) / double (TP + FN);
+    }
+
+    double FScore(double beta)
+    {
+      double b2 = b2 * b2;
+      double p = Precision();
+      double r = Recall();
+
+      return (1 + b2) * (p * r) / (b2 * p + r);
+    }
+
+    double Sensitivity()
+    {
+      return double(TP) / double(TP + FN);
+    }
+
+    double Specificity()
+    {
+      return double(TN) / double(TN + FP);
+    }
+
+    double FallOut()
+    {
+      return double(FP) / double(TN + FP);
+    }
+
+    double MissRate()
+    {
+      return double(FN) / double(FP + FN);
+    }
+
+    double Overlap()
+    {
+      return double(TP) / double(min(aGT, aIM));
+    }
+  };
+  /** @endcond */
+
   /**
    * indexAccuracy()
    *
@@ -452,7 +531,7 @@ namespace smil
    * also called @TB{False negative rate}
    *
    * @f[
-   *  Specificity(imGt, imIn) = \dfrac{FN}{TP+FN}
+   *  MissRate(imGt, imIn) = \dfrac{FN}{TP+FN}
    * @f]
    *
    * @see
