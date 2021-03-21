@@ -1361,9 +1361,9 @@ namespace smil
    * @warning In huge images this can return a very big vector, in the same
    * order than the image size.
    */
-  template <class T> Vector_UINT nonZeroOffsets(Image<T> &imIn)
+  template <class T> Vector_size_t nonZeroOffsets(Image<T> &imIn)
   {
-    Vector_UINT offsets;
+    Vector_size_t offsets;
 
     ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, offsets);
 

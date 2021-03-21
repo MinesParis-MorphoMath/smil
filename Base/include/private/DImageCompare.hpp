@@ -100,7 +100,7 @@ namespace smil
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
-   * @returns Jaccard similarity coefficient between the two images
+   * @returns returns @TB{Jaccard} similarity index between two images
    */
   template <typename T>
   double indexJaccard(const Image<T> &imGt, const Image<T> &imIn)
@@ -137,7 +137,7 @@ namespace smil
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
-   * @returns Ruzicka similarity coefficient between the two images
+   * @returns returns @TB{Ruzicka} similarity index between two images
    */
   template <typename T>
   double indexRuzicka(const Image<T> &imGt, const Image<T> &imIn)
@@ -152,31 +152,6 @@ namespace smil
     inf(imGt, imIn, imMin);
 
     return double(volume(imMin) + DXM) / double(volume(imMax) + DXM);
-  }
-
-  /**
-   * distanceHamming()
-   *
-   * Returns the number of pixels with different values in the two images.
-   *
-   * @see
-   * - Wikipedia : @UrlWikipedia{Hamming_distance, Hamming distance}
-   *
-   * @param[in] imGt : @TI{Ground Truth} image
-   * @param[in] imIn : image to verify
-   * @returns Hamming distance between two images
-   */
-  template <typename T>
-  size_t distanceHamming(const Image<T> &imGt, const Image<T> &imIn)
-  {
-    ASSERT_ALLOCATED(&imGt, &imIn);
-    ASSERT_SAME_SIZE(&imGt, &imIn);
-
-    Image<T> imOut(imGt);
-
-    diff(imGt, imIn, imOut);
-
-    return area(imOut);
   }
 
   /** @cond */
@@ -281,7 +256,7 @@ namespace smil
    * @param[in] imIn : image to verify
    * @param[in] threshold : difference between pixels accepted as equality.
    *
-   * @returns the @TB{indexAccuracy}
+   * @returns the @TB{Accuracy} index between two images
    */
   template <typename T>
   double indexAccuracy(const Image<T> &imGt, const Image<T> &imIn,
@@ -323,7 +298,7 @@ namespace smil
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
-   * @returns indexPrecision
+   * @returns returns @TB{Precision} index between two images
    */
   template <typename T>
   double indexPrecision(const Image<T> &imGt, const Image<T> &imIn)
@@ -357,7 +332,7 @@ namespace smil
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
-   * @returns indexRecall
+   * @returns returns @TB{Recall} index between two images
    */
   template <typename T>
   double indexRecall(const Image<T> &imGt, const Image<T> &imIn)
@@ -385,8 +360,8 @@ namespace smil
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
-   * @param[in] beta : @f$ \beta \f$ coefficient (default value : @f$1.@f$)
-   * @returns indexFScore
+   * @param[in] beta : @f$ \beta \f$ coefficient (default value : @TT{1.})
+   * @returns returns @TB{F-Score} index between two images
    */
   template <typename T>
   double indexFScore(const Image<T> &imGt, const Image<T> &imIn,
@@ -424,7 +399,7 @@ namespace smil
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
-   * @returns indexSensitivity
+   * @returns returns @TB{Sensitivity} index between two images
    */
   template <typename T>
   double indexSensitivity(const Image<T> &imGt, const Image<T> &imIn)
@@ -460,7 +435,7 @@ namespace smil
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
-   * @returns indexSpecificity
+   * @returns returns @TB{Specificity} index between two images
    */
   template <typename T>
   double indexSpecificity(const Image<T> &imGt, const Image<T> &imIn)
@@ -499,7 +474,7 @@ namespace smil
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
-   * @returns indexFallOut
+   * @returns returns @TB{FallOut} index between two images
    */
   template <typename T>
   double indexFallOut(const Image<T> &imGt, const Image<T> &imIn)
@@ -540,7 +515,7 @@ namespace smil
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
-   * @returns indexSpecificity
+   * @returns returns @TB{MissRate} index between two images
    */
   template <typename T>
   double indexMissRate(const Image<T> &imGt, const Image<T> &imIn)
@@ -578,7 +553,8 @@ namespace smil
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
-   * @returns indexSpecificity   */
+   * @returns returns @TB{Overlap} index between two images
+   */
   template <typename T>
   double indexOverlap(const Image<T> &imGt, const Image<T> &imIn)
   {
@@ -597,6 +573,94 @@ namespace smil
            double(min(area(imGt), area(imIn)) + DXM);
   }
 
+
+  /**
+   * distanceHamming()
+   *
+   * Returns the number of pixels with different values in the two images.
+   *
+   * @see
+   * - Wikipedia : @UrlWikipedia{Hamming_distance, Hamming distance}
+   *
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
+   * @returns returns @TB{Hamming distance} between two images
+   */
+  template <typename T>
+  size_t distanceHamming(const Image<T> &imGt, const Image<T> &imIn)
+  {
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
+
+    Image<T> imOut(imGt);
+
+    diff(imGt, imIn, imOut);
+
+    return area(imOut);
+  }
+
+  /**
+   * distanceHausdorff() -
+   *
+   *
+   * @see
+   * - Wikipedia : @UrlWikipedia{Hausdorff_distance, Hausdorff distance}
+   *
+   * @param[in] imGt : @TI{Ground Truth} image
+   * @param[in] imIn : image to verify
+   * @returns returns @TB{Hausdorff distance} between two images
+   */
+  template <typename T>
+  double distanceHausdorff(const Image<T> &imGt, const Image<T> &imIn)
+  {
+    ASSERT_ALLOCATED(&imGt, &imIn);
+    ASSERT_SAME_SIZE(&imGt, &imIn);
+
+    if (!isBinary(imGt) || !isBinary(imIn)) {
+      ERR_MSG("This function is defined only for binary images");
+      return 0.;
+    }
+
+    Image<T> imt(imGt);
+
+    gradient(imGt, imt, SquSE());
+    inf(imGt, imt, imt);
+    vector<size_t> pixGt = nonZeroOffsets(imt);
+
+    gradient(imIn, imt, SquSE());
+    inf(imIn, imt, imt);
+    vector<size_t> pixIn = nonZeroOffsets(imt);
+
+    off_t szGt = pixGt.size();
+    vector<double> distGt(szGt, numeric_limits<double>::max());
+    off_t szIn = pixIn.size();
+    vector<double> distIn(szIn, numeric_limits<double>::max());
+
+    size_t Size[3];
+    imGt.getSize(Size);
+    ImageBox box(Size);
+
+    for (off_t i = 0; i < szGt; i++) {
+      for (off_t j = 0; j < szIn; j++) {
+        double d = box.getDistance(pixGt[i], pixIn[j]);
+        if (d < distGt[i])
+          distGt[i] = d;
+        if (d < distIn[j])
+          distIn[j] = d;
+      }
+    }
+
+    double supGt = 0.;
+    for (off_t i = 0; i < szGt; i++)
+      if (distGt[i] > supGt)
+        supGt = distGt[i];
+    double supIn = 0.;
+    for (off_t i = 0; i < szIn; i++)
+      if (distIn[i] > supIn)
+        supIn = distIn[i];
+
+    return max(supGt, supIn);
+  }
   /** @} */
 
 #undef DXM

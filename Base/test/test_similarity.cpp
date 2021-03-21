@@ -195,6 +195,21 @@ class Test_Hamming : public TestCase
   }
 };
 
+class Test_Hausdorff : public TestCase
+{
+  virtual void run()
+  {
+    double rExpect = 90.510;
+
+    double r = distanceHausdorff(imGt, imIn);
+
+    bool ok = abs(r - rExpect) < 0.001;
+    TEST_ASSERT(ok);
+    if (!ok)
+      cout << "\n\t distanceHausdorff \t" << rExpect << "\t" << r << endl;
+  }
+};
+
 int main(void)
 {
   TestSuite ts;
@@ -225,6 +240,7 @@ int main(void)
   ADD_TEST(ts, Test_Overlap);
   ADD_TEST(ts, Test_Jaccard);
   ADD_TEST(ts, Test_Hamming);
+  ADD_TEST(ts, Test_Hausdorff);
 
   return ts.run();
 }
