@@ -3,11 +3,11 @@
  *
  * @section s280_09 Smil 0.11.3-dev
  *  - @TB{New}
+ *    - packages for Anaconda
  *    - A new group of functions to check the similarity between two images.
  *      For the moment :
  *      - indexJaccard()
  *      - indexRuzicka() - weighted Jaccard index
- *      - distanceHamming()
  *      - indexAccuracy()
  *      - indexPrecision()
  *      - indexRecall()
@@ -17,7 +17,11 @@
  *      - indexFallOut()
  *      - indexMissRate()
  *      - indexOverlap()
+ *      - distanceHamming()
+ *      - distanceHausdorff()
  *  - @TB{Bugs}
+ *    - function nonZeroOffsets() return @TB{UINT} when should return
+ *      @TB{size_t} - problem for images with more than 4 Gpixels.
  *    - method @TB{printSelf()} of class @TB{Image} doesn't handle parameter
  *      @TT{indent}
  *  - @TB{Documentation}

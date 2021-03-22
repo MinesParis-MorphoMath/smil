@@ -66,6 +66,7 @@ ALIASES += Jupyter=@TB{Jupyter}
 ALIASES += JupyterHub=@TB{JupyterHub}
 ALIASES += Numpy="@TB{Numpy}"
 ALIASES += ScikitImage="@TB{Scikit-Image}"
+ALIASES += Anaconda="@TB{Anaconda}"
 
 ALIASES += I2D="@TB{2D}"
 ALIASES += I3D="@TB{3D}"
