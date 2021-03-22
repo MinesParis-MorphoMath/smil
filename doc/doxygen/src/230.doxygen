@@ -3,16 +3,16 @@
  *
  * @section s230_01 Generalities
  *
- * @Smil binary packages are available for some @Linux distributions :
- * @b Ubuntu, @b CentOS, @b Debian and @b Fedora.
+ * @Smil binary packages are available for some :
+ * * @Linux distributions : @b Ubuntu, @b CentOS, @b Debian and @b Fedora.
+ * * @Anaconda
  *
  * @note
- * - @TB{Anaconda} Anaconda is a virtual environment commonly found in the research
- * community. For the moment, there isn't packages for @TB{Anaconda}. Even if
- * sometimes the system package may work if
- * the system @Python and the @TB{Anaconda} @Python has the same
- * version, the recommended way is to build and install @Smil under the
- * @TB{Anaconda} environment it will be used.
+ * - @Anaconda is a @Python based virtual environment commonly found in the
+ *   research community. It's very interesting as it's nearly independent
+ *   of @Linux distribution and it comes with the most common packages
+ *   needed in the scientific environnment, which may, sometimes, be a
+ *   nightmare to install.
  *
  * Installing @Smil binaries follows always the same logic :
  * -# Get GPG package signing key;
@@ -148,8 +148,20 @@
      dnf -y install smil-*
    @endverbatim
  *
+ * @section s230_03 Anaconda
  *
- * @section s230_03 Upgrading
+ *  After created your @Anaconda environnment was created, just change to it
+ *  and type :
+ *
+    @verbatim
+      conda install -c bmarchand smil
+    @endverbatim
+ *
+ *  @note
+ *  * for more info and documentation about @Anaconda, see
+ *  @URL{https://conda.io/projects/conda/en/latest/user-guide/index.html, here}.
+ *
+ * @section s230_04 Upgrading
  *
  * @Smil binary packages may be upgraded in the usual way any other package is
  * upgraded.

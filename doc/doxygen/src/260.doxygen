@@ -212,7 +212,7 @@
  In [1]: import smilPython as sp
  SMIL (Simple Morphological Image Library) 0.10.6-dev
  Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
- Copyright (c) 2017-2020, CMM - Centre de Morphologie Mathematique
+ Copyright (c) 2017-2021, CMM - Centre de Morphologie Mathematique
  All rights reserved.
 
  In [2]: im = sp.Image()

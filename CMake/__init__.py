@@ -11,6 +11,7 @@ all__ = [os.path.basename(f)[:-3] for f in glob.glob(os.path.dirname(__file__)+"
 
 smGood = []
 smBad  = []
+smMods = {}
 
 for m in all__:
   if m!="__init__":
@@ -20,7 +21,9 @@ for m in all__:
       for k in d.keys():
         globals()[k] = d[k]
       smGood.append(m)
+      smMods[m] = True
     except:
       print(" Error loading Smil submodule : ", m)
       smBad.append(m)
+      smMods[m] = False
       pass

@@ -1,38 +1,69 @@
 /**
  * @page ReleaseNotes Release Notes
  *
- * @section s280_08 Smil 0.11.2-dev
- *   - @TB{Bugs}
- *     - Getting an image from an URL (@TB{Image()}, getHttpFile(),
- *       createFromFile() or read()) didn't work nor with URL redirections nor
- *       with @TB{https} protocol (only @TB{http}).
- *   - @TB{Change}
- *      - All URLs of the form @TT{http://smil.cmm.mines-paristech.fr} changed
- *        to @TT{https://smil.cmm.minesparis.psl.eu}
- *   - @TB{Documentation}
- *      - Beginning of documentation about @Smil programming under @Python
+ * @section s280_09 Smil 0.11.3-dev
+ *  - @TB{New}
+ *    - packages for Anaconda
+ *    - A new group of functions to check the similarity between two images.
+ *      For the moment :
+ *      - indexJaccard()
+ *      - indexRuzicka() - weighted Jaccard index
+ *      - indexAccuracy()
+ *      - indexPrecision()
+ *      - indexRecall()
+ *      - indexFScore()
+ *      - indexSensitivity()
+ *      - indexSpecificity()
+ *      - indexFallOut()
+ *      - indexMissRate()
+ *      - indexOverlap()
+ *      - distanceHamming()
+ *      - distanceHausdorff()
+ *  - @TB{Bugs}
+ *    - function nonZeroOffsets() return @TB{UINT} when should return
+ *      @TB{size_t} - problem for images with more than 4 Gpixels.
+ *    - method @TB{printSelf()} of class @TB{Image} doesn't handle parameter
+ *      @TT{indent}
+ *  - @TB{Documentation}
+ *    - improved documentation about @Python programming with @Smil.
  *
- * @section s280_07 Smil 0.11.1 (24 feb 2021)
- *   - @TB{New}
- *     - NEW : @Python module @TT{smilFuncRewrite} - this module is transparent
- *       to final users. It allows a better management of functions renamed and
- *       shortcuts.
- *     - NEW : Added @TB{FAQ} and @TB{Troubleshooting} pages to web site.
- *     - NEW : submodule @TB{geodesic tools} inside Advanced Algorithms. With
- *        functions : geodesicDiameter(), geodesicElongation(),
- *        geodesicTortuosity(), geodesicExtremities(),
- *        geodesicMeasure(), geodesicPathOpening(),
- *        geodesicPathClosing(), geodesicUltimatePathOpening() and
- *        geodesicUltimatePathClosing(). (Need a little more documentation).
- *   - @TB{Change}
- *     - ..
- *   - @TB{Bugs}
- *     - Incompatibility between Jupyter notebooks and @Qt when importing
- *       @smilPython. An environnement variable (@TT{SMIL_DISABLE_GUI}) was added
- *       to disable @TB{Gui} when running @Smil with notebooks.
- *     - @TT{fillHoles} function didn't work with @TB{3D} and @TB{1D} images.
+ * @section s280_08 Smil 0.11.2 (25 Feb 2021)
+ *  - @TB{Bugs}
+ *    - Getting an image from an URL (@TB{Image()}, getHttpFile(),
+ *      createFromFile() or read()) didn't work neither with URL redirections nor
+ *      with @TB{https} protocol (only @TB{http}).
+ *  - @TB{Change}
+ *    - All URLs of the form @TT{http://smil.cmm.mines-paristech.fr} changed
+ *      to @TT{https://smil.cmm.minesparis.psl.eu}
+ *  - @TB{Documentation}
+ *    - Beginning of documentation about @Smil programming under @Python
  *
- * @section s280_06 Smil 0.11.0 (04 dec 2020)
+ * @section s280_07 Smil 0.11.1 (24 Feb 2021)
+ *  - @TB{New}
+ *    - NEW : @Python module @TT{smilFuncRewrite} - this module is transparent
+ *      to final users. It allows a better management of functions renamed and
+ *      shortcuts.
+ *    - NEW : Added @TB{FAQ} and @TB{Troubleshooting} pages to web site.
+ *    - NEW : submodule @TB{geodesic tools} inside Advanced Algorithms. With
+ *       functions (not yet documented):
+ *        - geodesicDiameter()
+ *        - geodesicElongation()
+ *        - geodesicTortuosity()
+ *        - geodesicExtremities()
+ *        - geodesicMeasure()
+ *        - geodesicPathOpening()
+ *        - geodesicPathClosing()
+ *        - geodesicUltimatePathOpening()
+ *        - geodesicUltimatePathClosing().
+ *  - @TB{Change}
+ *    - ..
+ *  - @TB{Bugs}
+ *    - Incompatibility between Jupyter notebooks and @Qt when importing
+ *      @smilPython. An environnement variable (@TT{SMIL_DISABLE_GUI}) was added
+ *      to disable @TB{Gui} when running @Smil with notebooks.
+ *    - @TT{fillHoles} function didn't work with @TB{3D} and @TB{1D} images.
+ *
+ * @section s280_06 Smil 0.11.0 (04 Dec 2020)
  *
  *  - New and change on functions
  *    - NEW and CHANGE : zhangSkeleton() moved to an Addon and reviewed. Other

@@ -30,7 +30,7 @@
 #ifndef _IMAGE_HXX
 #define _IMAGE_HXX
 /** @cond */
-  
+
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -464,22 +464,22 @@ namespace smil
       os << indent << "Image name: " << name << endl;
 
     if (depth > 1)
-      os << "3D image" << endl;
+      os << indent  << "3D image" << endl;
     else
-      os << "2D image" << endl;
+      os << indent  << "2D image" << endl;
 
     T *dum = NULL;
-    os << "Data type: " << getDataTypeAsString<T>(dum) << endl;
+    os << indent  << "Data type: " << getDataTypeAsString<T>(dum) << endl;
 
     if (depth > 1)
-      os << "Size: " << width << "x" << height << "x" << depth << endl;
+      os << indent  << "Size: " << width << "x" << height << "x" << depth << endl;
     else
-      os << "Size: " << width << "x" << height << endl;
+      os << indent  << "Size: " << width << "x" << height << endl;
 
     if (allocated)
-      os << "Allocated (" << displayBytes(allocatedSize) << ")" << endl;
+      os << indent  << "Allocated (" << displayBytes(allocatedSize) << ")" << endl;
     else
-      os << "Not allocated" << endl;
+      os << indent  << "Not allocated" << endl;
 
     if (displayPixVals) {
       std::stringstream tStr;
@@ -488,7 +488,7 @@ namespace smil
       if (hexaGrid)
         tSsize = size_t(tSsize * 1.5);
 
-      os << "Pixel values:" << endl;
+      os << indent  << "Pixel values:" << endl;
       size_t i, j, k;
 
       for (k = 0; k < depth; k++) {
@@ -934,5 +934,5 @@ namespace smil
 
 #endif // defined SWIGPYTHON && defined USE_NUMPY
 /** @endcond */
-  
+
 #endif // _IMAGE_HXX

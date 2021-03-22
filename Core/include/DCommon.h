@@ -251,8 +251,8 @@ namespace smil
   /** Box
    */
   struct Box {
-    off_t x0, y0, z0;
-    off_t x1, y1, z1;
+    off_t  x0, y0, z0;
+    off_t  x1, y1, z1;
     size_t width, height, depth;
 
     /** Box constructor - build an empty Box structure
@@ -309,86 +309,104 @@ namespace smil
     {
       return z1 - z0 + 1;
     }
-
   };
 
-  /** OffsetPoint
+  /** ImageBox
    *
-   * A structure with offset and point coordinates and some methods to handle
-   * them.
+   * This class handles the @TB{bounding box} of an image. It allows to store
+   * a reference point inside it and allows to handle some operations and
+   * conversion on pixels coordinates.
    *
    * Shall be initialized with the dimensions of the image, in order to be able
-   * to convert from @b Point to @b Offset and vice-versa, and to check if a
-   * point is inside the image bounds.
+   * to convert back and forth from @b Points to @b Offsets.
    */
-  struct OffsetPoint {
-    off_t x, y, z;
-    off_t o;
-    off_t w, h, d;
+  struct ImageBox {
+    IntPoint pt;
+    off_t    reference;
+    off_t    width, height, depth;
 
-    /** OffsetPoint - constructor
-     * @details Build the data structure based on the image bounds
-     * @param[in] Sz : vector with the three image bounds
+    /** ImageBox - constructor
+     *
+     * @details Build the data structure based on the image bounds. This
+     * data structure may contain a reference point inside it.
+     *
+     * @param[in] Size : array with the three image bounds : @TB{width},
+     *                  @TB{height} and @TB{depth}, as returned by the
+     *                  Image method getSize()
      */
-    OffsetPoint(size_t Sz[3])
+    ImageBox(size_t Size[3])
     {
-      w = Sz[0];
-      h = Sz[1];
-      d = Sz[2];
-      x = y = z = o = 0;
+      width  = Size[0];
+      height = Size[1];
+      depth  = Size[2];
+      pt.x = pt.y = pt.z = 0;
+      reference = 0;
     }
 
-    /** OffsetPoint - constructor
+    /** ImageBox - constructor
      *
-     * @details Build the data structure copying data from another OffsetPoint
+     * @details Build the data structure copying data from another ImageBox
      * data
-     * @param[in] offset :
+     * @param[in] box :
      */
-    OffsetPoint(const OffsetPoint &offset)
+    ImageBox(const ImageBox &box)
     {
-      w = offset.w;
-      h = offset.h;
-      d = offset.d;
-      x = offset.x;
-      y = offset.y;
-      z = offset.z;
-      o = offset.o;
+      *this     = box;
+#if 0
+      width     = box.width;
+      height    = box.height;
+      depth     = box.depth;
+      reference = box.reference;
+#endif
     }
 
-    /** OffsetPoint - constructor
+    /** ImageBox - constructor
      *
-     * @param[in] w, h, d : image bounds
+     * @param[in] width, height[, depth] : image bounds
      */
-    OffsetPoint(size_t w, size_t h, size_t d = 1)
+    ImageBox(size_t width, size_t height, size_t depth = 1)
     {
-      this->w = w;
-      this->h = h;
-      this->d = d;
-      x = y = z = o = 0;
+      this->width  = width;
+      this->height = height;
+      this->depth  = depth;
+      pt.x = pt.y = pt.z = 0;
+      reference = 0;
     }
 
-    /** setCoords() - set coordinates and adapt offset
-     * @param[in] x, y, z :
+    /** setReference() - set reference point
+     *
+     * @param[in] x, y[, z] :
      */
-    void setCoords(off_t x, off_t y, off_t z = 0)
+    void setReference(off_t x, off_t y, off_t z = 0)
     {
-      this->x = x;
-      this->y = y;
-      this->z = z;
-      this->o = x + y * w + z * w * h;
+      this->pt.x = x;
+      this->pt.y = y;
+      this->pt.z = z;
+
+      this->reference = x + y * width + z * width * height;
     }
 
-    /** setOffset() - set offset and adapt coordinates
+    /** setReference() - set reference point
+     *
+     * @param[in] pt :
+     */
+    void setReference(IntPoint pt)
+    {
+      this->pt        = pt;
+      this->reference = pt.x + (pt.y + pt.z * width) * height;
+    }
+
+    /** setReference() - set reference point
      * @param[in] offset :
      */
-    void setOffset(off_t offset)
+    void setReference(off_t offset)
     {
-      this->o = offset;
+      this->reference = offset;
 
-      this->x = offset % w;
-      offset  = (offset - this->x) / w;
-      this->y = offset % h;
-      this->z = (offset - this->y) / h;
+      this->pt.x = offset % width;
+      offset     = (offset - this->pt.x) / width;
+      this->pt.y = offset % height;
+      this->pt.z = (offset - this->pt.y) / height;
     }
 
     /** getPoint() - get coordinates as a point
@@ -396,58 +414,144 @@ namespace smil
      */
     IntPoint getPoint()
     {
-      IntPoint pt(x, y, z);
       return pt;
     }
 
-    /** getOffset() - get coordinates as an offset
+    /** getOffset() - get coordinates as an reference
      * @returns The coordinates of the structure as an offset
      */
     off_t getOffset()
     {
-      return o;
+      return reference;
     }
 
     /** shift() - move the point by some displacements
-     * @param[in] dx, dy, [dz] : amount to shift the offset structure
+     * @param[in] dx, dy[, dz] : amount to shift the reference structure
      */
     void shift(off_t dx, off_t dy, off_t dz = 0)
     {
-      x += dx;
-      y += dy;
-      z += dz;
-      this->o = x + y * w + z * w * h;
+      pt.x += dx;
+      pt.y += dy;
+      pt.z += dz;
+      this->reference = pt.x + (pt.y * width + pt.z * height) * width;
     }
 
     /** shift() - move the point by some displacements given by a point
-     * @param[in] p :
+     * @param[in] dp :
      */
-    void shift(IntPoint p)
+    void shift(IntPoint dp)
     {
-      x += p.x;
-      y += p.y;
-      z += p.z;
-      this->o = x + y * w + z * w * h;
+      pt.x += dp.x;
+      pt.y += dp.y;
+      pt.z += dp.z;
+      this->reference = pt.x + (pt.y + pt.z * height) * width;
     }
 
-    /** inImage() - check if point coordinates is inside image bounds
-     * @param[in] x, y, [z] :
+
+    /** inImage() - check if the reference point is inside image bounds
+     *
      * @returns @b True if the three coordinates are inside image bounds,
      * @b False otherwise
      */
-    bool inImage(off_t x, off_t y, off_t z)
-    {
-      return (x >= 0 && x < w && y >= 0 && y < h && z >= 0 && z < d);
-    }
-
-    /** inImage() - check if point coordinates is inside image bounds
-     * @returns @b True if the three coordinates are inside image bounds,
-     * @b False otherwise
-     */
-
     bool inImage()
     {
-      return (x >= 0 && x < w && y >= 0 && y < h && z >= 0 && z < d);
+      return inImage(pt.x, pt.y, pt.z);
+    }
+
+    /** inImage() - given the coordinates of a pixel, check if it's inside
+     *    image box
+     * @param[in] x, y[, z] :
+     * @returns @b True if the three coordinates are inside image bounds,
+     * @b False otherwise
+     */
+    bool inImage(off_t x, off_t y, off_t z = 0)
+    {
+      return (x >= 0 && x < width && y >= 0 && y < height && z >= 0 &&
+              z < depth);
+    }
+
+    /** inImage() - given the coordinates of a pixel, as a point, check if
+     *    its coordinates are inside the image box
+     * @param[in] p :
+     * @returns @b True if the three coordinates are inside image bounds,
+     * @b False otherwise
+     */
+    bool inImage(IntPoint p)
+    {
+      return inImage(p.x, p.y, p.z);
+    }
+
+    /** getOffset() - given the coordinates of a pixel in a image box, get
+     *  its offset.
+     *
+     * @returns offset
+     */
+    off_t getOffset(IntPoint p)
+    {
+      return p.x + width * (p.y + p.z * height);
+    }
+
+    /** getCoords() - given the offset of a pixel inside an image, returns
+     *  its coordinates as a point
+     *
+     * @returns the coordinates as a point
+     */
+    IntPoint getCoords(off_t off)
+    {
+      IntPoint p;
+      p.x = off % width;
+      off = (off - p.x) / width;
+      p.y = off % height;
+      p.z = (off - p.y) / height;
+
+      return p;
+    }
+
+    /** getDistance() - given the offset of two points inside the image box
+     * returns the Euclidean between them.
+     *
+     * @param[in] pa, pb : points inside the image box
+     * @returns Euclidean distance between points
+     */
+    double getDistance(off_t pa, off_t pb)
+    {
+      IntPoint a = getCoords(pa);
+      IntPoint b = getCoords(pb);
+
+      return getDistance(a, b);
+    }
+
+    /** getDistance() - given a point inside an image box returns the Euclidean
+     * between this point and the reference point.
+     *
+     * @param[in] p : point inside the image box
+     * @returns Euclidean distance between points
+     */
+    double getDistance(off_t p)
+    {
+      return getDistance(reference, p);
+    }
+
+    /** getDistance() - given a point inside an image box returns the Euclidean
+     * between this point and the reference point.
+     *
+     * @param[in] p : point inside the image box
+     * @returns Euclidean distance between points
+     */
+    double getDistance(IntPoint p)
+    {
+      return getDistance(pt, p);
+    }
+
+    /** getDistance() - given two points inside the image box
+     * returns the Euclidean between them.
+     *
+     * @param[in] a, b : points inside the image box
+     * @returns Euclidean distance between points
+     */
+    double getDistance(IntPoint a, IntPoint b)
+    {
+      return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2) + pow(a.z - b.z, 2));
     }
   };
 

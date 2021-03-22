@@ -31,6 +31,12 @@
 ALIASES += TB{1}="<b>\1</b>"
 ALIASES += TT{1}="<code>\1</code>"
 ALIASES += TI{1}="<i>\1</i>"
+ALIASES += TBI{1}="<b><i>\1</i></b>"
+
+ALIASES += BeginComment="@if xcomment"
+ALIASES += EndComment="@endif"
+
+
 
 
 ALIASES += Smil="@TB{Smil}"
@@ -55,9 +61,15 @@ ALIASES += Qt=@TB{Qt}
 
 ALIASES += Python="@TB{Python}"
 ALIASES += Python{1}="@TB{Python \1}"
+ALIASES += IPython="@TB{iPython}"
 ALIASES += Jupyter=@TB{Jupyter}
 ALIASES += JupyterHub=@TB{JupyterHub}
 ALIASES += Numpy="@TB{Numpy}"
+ALIASES += ScikitImage="@TB{Scikit-Image}"
+ALIASES += Anaconda="@TB{Anaconda}"
+
+ALIASES += I2D="@TB{2D}"
+ALIASES += I3D="@TB{3D}"
 
 ALIASES += iPython="@TB{iPython}"
 ALIASES += Anaconda="@TB{Anaconda}"

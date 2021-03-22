@@ -1,8 +1,114 @@
 
 /**
- * @page p690 F.A.Q.
+ * @page p690 HowTo and Tips & Tricks
  *
- * @section s690_01 TBD
+ * @section    s690_01 smilPython module
+ *
+ * @subsection s690_01_01 Importing
+ *  - @TB{How to import smilPython module} - there are two options :
+ @BeginPython
+      import smilPython as sp
+
+      from smilPython import *
+ @EndPython
+ *    Which option privilegiate ? Both have pros and cons :
+ *    - with the first one you need to prefix all calls to @smilPython by the
+ *      prefix @TB{sp} (or other prefered prefix). The advantage is that this
+ *      desambiguate all possible function name conflicts (e.g. read()).
+ *    - the second one is simpler, with the possible inconvenients pointed out
+ *      by the another option.
+ *
+ *  - @TB{Importing smilPython error} - if you get this error, or something similar,
+ *    most of the time, the reason is one of these :
+ @BeginPython
+      In [61]: import smilPython
+      ----------------------------------------------------------
+      ModuleNotFoundError      Traceback (most recent call last)
+      <ipython-input-61-ade08580f09e> in <module>
+      ----> 1 import smilPython
+
+      ModuleNotFoundError: No module named 'smilPython'
+ @EndPython
+ *    - @smilPython isn't installed. Install @smilPython;
+ *    - @Python or @IPython didn't found @smilPython path. This is usually
+ *      solved with something of the kind :
+ @BeginPython
+        export PYTHONPATH=/whatever/lib/Smil
+ @EndPython
+ *    - @smilPython was compiled for a different version of @Python. When
+ *      building @smilPython, it's linked to the installed version of @Python.
+ *      E.g., @smilPython built with @Python 3.5 won't run with @Python 3.6.
+ *      Recompile or reinstall @Smil.
+ *
+ * @BeginComment
+ * **********************************************************************
+ * @EndComment
+ * <hr>
+ * @section s690_02 Tips
+ *
+ * @subsection s690_02_01 Displaying intermediate results
+ *
+ * If you want to display intermediate results of your processing you need to
+ * call any function which will handle the @TB{Gui} interface events and
+ * refresh all images displayed by the application you're working on. Basically
+ * you have two kind of options :
+ *  - with pause waiting an order to continue : in this case, processing will
+ * stop until the user hits the @TT{Enter} key :
+ * @includelineno loop-input.py
+ *
+ *  - with timed pause before continue. The call to @TB{Gui.processEvents()}
+ *    will do the job.
+ * @includelineno loop-sleep.py
+
+ *
+ * @BeginComment
+ * **********************************************************************
+ * @EndComment
+ * <hr>
+ *
+ * @section s690_03 Functions
+ *  - @TB{Order of parameters} - the general rule is :
+ *    - input parameters first;
+ *    - output parameters after;
+ *    - optional parameters (including structuring elements) at the end.
+ *
+ *    But there are some exceptions. In doubt, check the function prototype.
+ *
+ *  - @TB{Images as output parameters} - shall @TB{allways} be predefined. Their
+ *    attributes will be adjusted by the called function.
+ @BeginPython
+      imOut = sp.Image()
+      r = sp.erode(imIn, imOut)
+ @EndPython
+ *    There are some exceptions for attributes adjustements. For example, when
+ *    you want to force the data type of the output image. One example is the
+ *    labelling (label()) of an 'UINT8' input image with more than 256
+ *    connected components. In this case the data type of the output image
+ *    shall be 'UINT16' or 'UINT32'
+ @BeginPython
+      imOut = sp.Image(imIn, 'UINT16')
+      r = sp.label(imIn, imOut)
+ @EndPython
  *
  *
+ * @BeginComment
+ * **********************************************************************
+ * @EndComment
+ * <hr>
+ *
+ * @section s690_99 Other Packages
+ * @subsection s690_99_01 smilPyGoodies
+ * Some Goodies for smilPython
+ *
+ * @TB{Download} :
+ *  <a href=https://github.com/MinesParis-MorphoMath/smilPyGoodies>
+ *     smilPyGoodies</a>
+   @verbatim
+      git clone https://github.com/MinesParis-MorphoMath/smilPyGoodies
+   @endverbatim
+ *
+ * @BeginComment
+ * **********************************************************************
+ * @EndComment
+ * @tableofcontents
  */

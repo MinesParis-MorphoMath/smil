@@ -1,0 +1,140 @@
+/**
+ * @page p620 Smil Images
+ *
+ * @section s620_01 Generalities
+ *
+ * @Smil is a software library intended to handle... @TI{images}. So, @TB{Image}
+ * is the basic and most important data type under @Smil. Near all classes
+ * and functions in the library handle an @TB{Image} data type.
+ *
+ *
+ *  - @TI{An @TB{Image} is the data type used by @Smil to represent and handle an
+ *    @TB{image} in memory.}
+ *
+ * @section s620_02 What you must know about Smil Images
+ *  - From the programming point of view, a @Smil Image is a @b class with
+ *    @TBI{data} and @TBI{methods};
+ *  - Inside the @Smil @Python environnment, image pixels are coded in one of
+ *    three data types : @TT{UINT8}, @TT{UINT16} or @TT{UINT32};
+ *  - @Smil can't directly handle @TB{floating point} coded images. It's a
+ *    design choice :
+ *    - Mathematical Morphology is based more on @TI{order relation} between
+ *      values then on their @TI{difference};
+ *    - from an algorithmic point of view, the set of possible values is
+ *      finite with limited cardinality;
+ *    - it's allways possible to scale and convert a @TB{floating point} coded
+ *      image into an @TB{positive integer} coded image, handle it under @Smil
+ *      and go back at the end.
+ *  - @Smil images can be converted @TB{to} and @TB{from} @Numpy format. See
+ *    fromNumArray() and getNumArray() or examples at page : @ref p660.
+ *  - @TB{Very Important} - all functions having an image as output parameter expect
+ *    receive these parameters as already instantiated images. As an example,
+ *    take the erode() function call :
+ @BeginPython
+      # create an output image instance before calling erode function
+      imOut = sp.Image()
+      r = sp.erode(imIn, imOut, sp.CrossSE())
+ @EndPython
+ *    No matter the past history of @TT{imOut}, it just need to be already
+ *    instantiated before function call. The @Smil function will adjust
+ *    everything shall be adjusted.
+ *
+ * @section s620_03 Declare or create Smil Images
+ * There are several ways to create an instance of an @TB{Image} :
+ *  - create an empty image and, if you want, synthesize its content :
+ @BeginPython
+      # create an empty image
+      im = sp.Image(32, 32)
+      # draw a rectangle on it
+      for i in range(8, 24):
+        for j = range(8, 24):
+          im.setPixel(i, j, 255)
+ @EndPython
+ *    @TB{Note} :
+ *      - default values for image dimensions are : @TT{256, 256, 1}
+ *      - default data type is @TT{UINT8}
+ *  - read an image from some local file :
+ @BeginPython
+      im = sp.Image('barbara.png')
+ @EndPython
+ *  - read an image from @TI{internet} :
+ @BeginPython
+      im = sp.Image('https://example.com/images/barbara.png')
+      # or
+      r = sp.getHttpFile('https://example.com/images/lena.png', 'lena.png')
+      im = sp.Image('lena.png')
+ @EndPython
+ *  - create an @TB{empty} image with the same characteristics (size and data
+ *    type) of another image :
+ @BeginPython
+      im2 = sp.Image(im1)
+ @EndPython
+ *  - create an @TB{empty} image with the same size but different data type
+ *    type of another image :
+ @BeginPython
+      im2 = sp.Image(im1, 'UINT16')
+ @EndPython
+ *  - clone another image
+ @BeginPython
+      im2 = sp.Image()
+      r = sp.clone(im1, im2)
+ @EndPython
+ *  - another way to create an image from a local file
+ @BeginPython
+      im = sp.Image()
+      r = sp.read('barbara.png', im)
+ @EndPython
+ *  - create a 3D image from a stack of 2D images
+ @BeginPython
+      im = sp.Image
+      fNames = [ 'slice-{:03d}.png'.format(x) for x in range(0,256) ]
+      r = sp.read(fNames, im)
+ @EndPython
+ *  - read a @TB{RAW} image
+ @BeginPython
+      type   = 'UINT16'
+      width  = 256
+      height = 384
+      depth  = 512
+      img    = sp.Image(type)
+      r = sp.readRAW(fname, width, height, depth, img)
+ @EndPython
+ *  - create or import an image from @Python (@Numpy or @ScikitImage). See
+ *    examples at section @ref p660.
+ *
+ * @note
+ *  - @Smil can read and identify (by their file extension) different image
+ *    file formats : @TT{png}, @TT{jpg}, @TT{tiff}, @TT{bmp} and @TT{pbm} for
+ *    @TB{2D} images. @TT{RAW} format can be used to read both @TB{2D} and
+ *    @TB{3D} images.
+ *  - @TB{RAW} format means a format without metadata, i.e. just a stream of
+ *    data and not the RAW format from camera makers (@TT{NEF}, @TT{RAF},
+ *    @TT{CR2}, ...). See readRAW().
+ *  - About 3D images : from the most common image file types - (@TT{png},
+ *    @TT{jpeg}, @TT{tiff}, ...) - @TT{tiff} is the only file type able to
+ *    store @TB{3D} images and even floating pointing coded images. But @Smil
+ *    doesn't read directly these images.
+ *
+ * @section s620_04 Save Smil Images
+ *
+ *  To save @Smil images you have, basically, two functions : write() and
+ *  writeRAW().
+ *
+ *  - use write() to save a @I2D image as a single file or a @I3D image as a
+ *    stack of files.
+ @BeginPython
+      # 2D image
+      r = sp.write(im2D, 'file.png')
+
+      # 3D image
+      fNames = [ 'image-{:03d}.png'.format(x) for x in range(0, im3D.getDepth()) ]
+      r = sp.write(im3D, fNames)
+ @EndPython
+ *  - use writeRAW() to save an image (@I2D or @I3D) as a stream of values.
+ @BeginPython
+      r = sp.writeRAW(im, 'image.raw')
+ @EndPython
+ *
+ *
+ * @tableofcontents
+ */

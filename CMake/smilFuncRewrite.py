@@ -87,6 +87,13 @@ def measBlobMoments(*args):
     """
     return blobsMoments(*args)
 
+def measInertiaMatrices(*args):
+    """
+    Function renamed. Use:
+      r = blobsMoments(...)
+    """
+    return blobsMoments(*args)
+
 def measBlobsEntropy(*args):
     """
     Function renamed. Use:
