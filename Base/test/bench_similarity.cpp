@@ -37,13 +37,14 @@ int main(void)
 
   off_t m, M;
 
+  fill(imGt, UINT8(0));
   m = dim/8;
   M = 5*dim/8;
-
   for (off_t j = m; j < M; j++)
     for (off_t i = m; i < M; i++)
       imGt.setPixel(i, j, 255);
 
+  fill(imIn, UINT8(0));
   m = 2*dim/8;
   M = 7*dim/8;
   for (off_t j = m; j < M; j++)
