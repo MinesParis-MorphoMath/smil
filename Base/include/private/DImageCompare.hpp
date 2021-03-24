@@ -641,6 +641,9 @@ namespace smil
     ImageBox box(Size);
 
     for (off_t i = 0; i < szGt; i++) {
+#ifdef USE_OPEN_MP
+#pragma omp parallel for
+#endif // USE_OPEN_MP
       for (off_t j = 0; j < szIn; j++) {
         double d = box.getDistance(pixGt[i], pixIn[j]);
         if (d < distGt[i])
@@ -651,6 +654,7 @@ namespace smil
     }
 
     double supGt = 0.;
+
     for (off_t i = 0; i < szGt; i++)
       if (distGt[i] > supGt)
         supGt = distGt[i];

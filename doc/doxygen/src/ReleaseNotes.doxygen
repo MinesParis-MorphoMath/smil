@@ -1,7 +1,7 @@
 /**
  * @page ReleaseNotes Release Notes
  *
- * @section s280_09 Smil 0.11.3-dev
+ * @section s280_09 Smil 0.11.3 (23 Mar 2021))
  *  - @TB{New}
  *    - packages for Anaconda
  *    - A new group of functions to check the similarity between two images.

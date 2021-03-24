@@ -26,6 +26,10 @@
  @BeginBash
  dnf install python3-pyside2
  @EndBash
+ * - @Anaconda
+ @BeginBash
+ conda install pyqt qtpy
+ @EndBash
  *
  *  @subsection s830_0502 Python and libpython versions
  *  When building @Smil interfaced with @Python (@smilPython), @Swig uses the
