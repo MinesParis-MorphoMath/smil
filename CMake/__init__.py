@@ -9,12 +9,15 @@ from smil_Python import *
 
 all__ = [os.path.basename(f)[:-3] for f in glob.glob(os.path.dirname(__file__)+"/*.py")]
 
+smOld = ['smilChabardesPython']
 smGood = []
 smBad  = []
 smMods = {}
 
 for m in all__:
-  if m!="__init__":
+  if m in smOld:
+    continue
+  if m != "__init__":
     try:
       mod = __import__(m, locals(), globals())
       d = mod.__dict__
