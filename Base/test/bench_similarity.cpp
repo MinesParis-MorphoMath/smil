@@ -67,4 +67,7 @@ int main(void)
 
   BENCH_IMG(distanceHamming, imGt, imIn);
   BENCH_IMG(distanceHausdorff, imGt, imIn);
+
+  // BENCH_IMG(isBinary, imGt);
+  // BENCH_IMG(valueList, imGt);
 }
