@@ -168,7 +168,7 @@ namespace smil
       // Verify that the blob can fit in the image
       Blob::sequences_const_reverse_iterator last =
           blob_it->second.sequences.rbegin();
-      if ((*last).offset + (*last).size >= pixCount) {
+      if ((*last).offset + (*last).size > pixCount) {
         allBlobsFit = false;
       } else {
         Blob::sequences_const_iterator it = blob_it->second.sequences.begin();
@@ -219,7 +219,7 @@ namespace smil
       // Verify that the blob can fit in the image
       Blob::sequences_const_reverse_iterator last =
           blob_it->second.sequences.rbegin();
-      if ((*last).offset + (*last).size >= pixCount) {
+      if ((*last).offset + (*last).size > pixCount) {
         allBlobsFit = false;
       } else {
         Blob::sequences_const_iterator it = blob_it->second.sequences.begin();
