@@ -391,7 +391,8 @@ def NumpyInt(array):
     * Create a SharedImage interface with a NumPy array
     """
 
-    if str(type(array))!="<type 'numpy.ndarray'>":
+    # XXX JOE if str(type(array))!="<type 'numpy.ndarray'>":
+    if not 'numpy.ndarray' in str(type(array)):
       print("You must specify a NumPy array")
       return
     

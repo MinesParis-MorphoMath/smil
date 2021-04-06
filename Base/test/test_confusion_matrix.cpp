@@ -34,7 +34,7 @@ class Test_Accuracy : public TestCase
 {
   virtual void run()
   {
-    ContingencyTable<UINT8> cTable(imGt, imIn);
+    ConfusionMatrix<UINT8> cTable(imGt, imIn);
     double rExpect = 0.641;
 
     double r = cTable.Accuracy();
@@ -50,7 +50,7 @@ class Test_Sensitivity : public TestCase
 {
   virtual void run()
   {
-    ContingencyTable<UINT8> cTable(imGt, imIn);
+    ConfusionMatrix<UINT8> cTable(imGt, imIn);
     double rExpect = 0.563;
 
     double r = cTable.Sensitivity();
@@ -66,7 +66,7 @@ class Test_Specificity : public TestCase
 {
   virtual void run()
   {
-    ContingencyTable<UINT8> cTable(imGt, imIn);
+    ConfusionMatrix<UINT8> cTable(imGt, imIn);
     double rExpect = 0.667;
 
     double r = cTable.Specificity();
@@ -82,7 +82,7 @@ class Test_FallOut : public TestCase
 {
   virtual void run()
   {
-    ContingencyTable<UINT8> cTable(imGt, imIn);
+    ConfusionMatrix<UINT8> cTable(imGt, imIn);
     double rExpect = 0.333;
 
     double r = cTable.FallOut();
@@ -98,7 +98,7 @@ class Test_MissRate : public TestCase
 {
   virtual void run()
   {
-    ContingencyTable<UINT8> cTable(imGt, imIn);
+    ConfusionMatrix<UINT8> cTable(imGt, imIn);
     double rExpect = 0.437;
 
     double r = cTable.MissRate();
@@ -114,7 +114,7 @@ class Test_Precision : public TestCase
 {
   virtual void run()
   {
-    ContingencyTable<UINT8> cTable(imGt, imIn);
+    ConfusionMatrix<UINT8> cTable(imGt, imIn);
     double rExpect = 0.360;
 
     double r = cTable.Precision();
@@ -130,7 +130,7 @@ class Test_Recall : public TestCase
 {
   virtual void run()
   {
-    ContingencyTable<UINT8> cTable(imGt, imIn);
+    ConfusionMatrix<UINT8> cTable(imGt, imIn);
     double rExpect = 0.563;
 
     double r = cTable.Recall();
@@ -146,7 +146,7 @@ class Test_FScore : public TestCase
 {
   virtual void run()
   {
-    ContingencyTable<UINT8> cTable(imGt, imIn);
+    ConfusionMatrix<UINT8> cTable(imGt, imIn);
     double rExpect = 0.439;
 
     double r = cTable.FScore(1.);
@@ -162,7 +162,7 @@ class Test_Overlap : public TestCase
 {
   virtual void run()
   {
-    ContingencyTable<UINT8> cTable(imGt, imIn);
+    ConfusionMatrix<UINT8> cTable(imGt, imIn);
     double rExpect = 0.563;
 
     double r = cTable.Overlap();
@@ -178,7 +178,7 @@ class Test_Jaccard : public TestCase
 {
   virtual void run()
   {
-    ContingencyTable<UINT8> cTable(imGt, imIn);
+    ConfusionMatrix<UINT8> cTable(imGt, imIn);
     double rExpect = 0.281;
 
     double r = cTable.Jaccard();
@@ -194,7 +194,7 @@ class Test_Hamming : public TestCase
 {
   virtual void run()
   {
-    ContingencyTable<UINT8> cTable(imGt, imIn);
+    ConfusionMatrix<UINT8> cTable(imGt, imIn);
     double rExpect = 23552;
 
     double r = distanceHamming(imGt, imIn);
@@ -228,7 +228,7 @@ class Test_All : public TestCase
 {
   virtual void run()
   {
-    ContingencyTable<UINT8> cTable(imGt, imIn);
+    ConfusionMatrix<UINT8> cTable(imGt, imIn);
     bool ok = true;
     double r, rExpect;
 
