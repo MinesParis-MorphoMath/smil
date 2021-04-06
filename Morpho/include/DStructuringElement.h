@@ -32,6 +32,7 @@
 
 #include "Core/include/DCommon.h"
 #include "Core/include/DBaseObject.h"
+#include "Base/include/DImageDraw.h"
 
 #include <string>
 
@@ -192,6 +193,14 @@ namespace smil
      * @returns a structuring element
      */
     void clone(const StrElt &rhs);
+
+    /**
+     * merge() - Merge a structuring element
+     *
+     * @param[in] rhs : structuring element to be merged
+     * @returns a structuring element
+     */
+    void merge(const StrElt &rhs);
 
     //! List of neighbor points
     vector<IntPoint> points;
@@ -383,7 +392,6 @@ namespace smil
    * @IncImages{squ_se0}
    *
    */
-
   class SquSE0 : public StrElt
   {
   public:
@@ -590,6 +598,33 @@ namespace smil
     }
   };
 
+  /**
+   *  LineSE - a line structuring element with arbitrary length and angle.
+   *
+   * The line is defined with the help of a Besenham algorithm
+   */
+  class LineSE : public StrElt
+  {
+  public :
+    /**
+     * LineSE() - constructor
+     *
+     * @param[in] length : length of the segment
+     * @param[in] theta : angle with the horizongal line
+     */
+    LineSE(int length, int theta) : StrElt(1)
+    {
+      int xf = round(length * cos(theta * PI / 180.));
+      int yf = round(length * sin(theta * PI / 180.));
+
+      vector<Point<int>> v;
+
+      v = bresenhamPoints(0, 0, xf, yf);
+      for (size_t i = 0; i < v.size(); i++)
+        addPoint(v[i].x, v[i].y, v[i].z);
+    }
+  };
+
   // Shortcuts
   /** @cond */
   /* Only available inside C++ programs */
@@ -622,6 +657,46 @@ namespace smil
     return RhombicuboctahedronSE(s);
   }
   /** @endcond */
+
+  /** @cond */
+  inline StrElt buildLineSE(int length, int theta)
+  {
+    StrElt se;
+
+    int xf = round(length * cos(theta * PI / 180.));
+    int yf = round(length * sin(theta * PI / 180.));
+
+    vector<Point<int>> v;
+
+    v = bresenhamPoints(0, 0, xf, yf);
+    for (size_t i = 0; i < v.size(); i++)
+      se.addPoint(v[i].x, v[i].y, v[i].z);
+    return se;
+  }
+  /** @endcond */
+
+  /**
+   * mergeSE() - merge two Structuring Elements
+   *
+   * @param[in] se1 : First structuring Element
+   * @param[in] se2 : Second structuring Element
+   * @returns a new structuring element with all points of @TT{se1} and @TT{se2}
+   */
+  inline StrElt mergeSE(StrElt &se1, StrElt &se2)
+  {
+    StrElt se;
+
+    typename vector<IntPoint>::iterator it;
+    for (it = se1.points.begin(); it != se1.points.end(); it++) {
+      const IntPoint &p = *it;
+      se.addPoint(p);
+    }
+    for (it = se2.points.begin(); it != se2.points.end(); it++) {
+      const IntPoint &p = *it;
+      se.addPoint(p);
+    }
+    return se;
+  }
 
 #define DEFAULT_SE Morpho::getDefaultSE()
 

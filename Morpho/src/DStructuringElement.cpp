@@ -66,6 +66,15 @@ void StrElt::clone(const StrElt &rhs)
   this->points = rhs.points;
 }
 
+void StrElt::merge(const StrElt &rhs)
+{
+  // typename vector<IntPoint>::iterator it;
+  for (auto it = rhs.points.begin(); it != rhs.points.end(); it++) {
+      const IntPoint &p = *it;
+      addPoint(p);
+  }
+}
+
 void StrElt::addPoint(const UINT index)
 {
   if (odd)
@@ -172,3 +181,5 @@ void StrElt::printSelf(ostream &os, string indent) const
     os << indent << "#" << i + 1 << ": (" << points[i].x << "," << points[i].y
        << "," << points[i].z << ")" << endl;
 }
+
+
