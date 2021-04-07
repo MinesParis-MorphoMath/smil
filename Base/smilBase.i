@@ -40,6 +40,7 @@ SMIL_MODULE(smilBase)
 /* Includes the header in the wrapper code */
 #include "Core/include/private/DImage.hxx"
 #include "DImageArith.hpp"
+#include "DImageDraw.h"
 #include "DImageDraw.hpp"
 #include "DImageHistogram.hpp"
 #include "DImageTransform.hpp"
@@ -65,6 +66,7 @@ PTR_ARG_OUT_APPLY(h)
 PTR_ARG_OUT_APPLY(d)
 
 %include "DImageArith.hpp"
+%include "DImageDraw.h"
 %include "DImageDraw.hpp"
 %include "DImageTransform.hpp"
 

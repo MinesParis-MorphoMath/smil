@@ -658,7 +658,16 @@ namespace smil
   }
   /** @endcond */
 
-  /** @cond */
+  /**
+   * buildLineSE() - build a line structuring element with arbitrary length and angle.
+   *
+   * The line is defined with the help of a Besenham algorithm
+   *
+   * @param[in] length : length of the structuring element
+   * @param[in] theta : angle of the structuring element with the horizontal
+   *  line
+   * @returns a line structuring element
+   */
   inline StrElt buildLineSE(int length, int theta)
   {
     StrElt se;
@@ -673,7 +682,7 @@ namespace smil
       se.addPoint(v[i].x, v[i].y, v[i].z);
     return se;
   }
-  /** @endcond */
+
 
   /**
    * mergeSE() - merge two Structuring Elements

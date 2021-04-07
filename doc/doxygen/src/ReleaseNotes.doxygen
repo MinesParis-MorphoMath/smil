@@ -1,6 +1,24 @@
 /**
  * @page ReleaseNotes Release Notes
  *
+ * @section s280_10 Smil 0.12.0-dev
+ *  - @TB{New}
+ *    - Functions :
+ *      - mergeSE();
+ *      - buildLineSE();
+ *    - Methods :
+ *      - StrElt::merge() merge();
+ *    - StrElt::LineSE() - a line Structuring Element with arbitrary length
+ *        and angle;
+ *    - Image() allows now to greate images from @Numpy arrays (calls
+ *      @TB{NumpyInt()} function).
+ *  - @TB{Bug}
+ *    - Function @TB{NumpyInt()} didn't work;
+ *    - drawBlobs() had a bug when one blob had the last pixel of the image
+ *        in it;
+ *    - bresenhamLine() and bresenhamPoints() didn't appear in the @Swig
+ *      @Python interface.
+ *
  * @section s280_09 Smil 0.11.3 (23 Mar 2021))
  *  - @TB{New}
  *    - packages for Anaconda

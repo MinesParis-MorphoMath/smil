@@ -68,7 +68,6 @@ void StrElt::clone(const StrElt &rhs)
 
 void StrElt::merge(const StrElt &rhs)
 {
-  // typename vector<IntPoint>::iterator it;
   for (auto it = rhs.points.begin(); it != rhs.points.end(); it++) {
       const IntPoint &p = *it;
       addPoint(p);
@@ -99,7 +98,7 @@ void StrElt::addPoint(const IntPoint &pt)
 StrElt StrElt::homothety(const UINT s) const
 {
   StrElt newSE;
-  ;
+
   newSE.points = this->points;
   newSE.odd    = odd;
   int oddLine  = 0;
