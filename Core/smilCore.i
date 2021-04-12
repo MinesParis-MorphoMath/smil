@@ -405,7 +405,7 @@ def NumpyInt(array):
     elif dt == 'uint32':
       return NumpyInt_UINT32(array)
     else:
-      print('ERROR : Numpy datatype ({:s}) can't be used with Smil'.format(dt))
+      print("ERROR : Numpy datatype ({:s}) can't be used with Smil".format(dt))
       return None
 %}
 

@@ -614,7 +614,11 @@ namespace smil
      * LineSE() - constructor
      *
      * @param[in] length : length of the segment
-     * @param[in] theta : angle with the horizongal line
+     * @param[in] theta : angle (in degrees) with the horizongal line
+     *
+     * @note
+     * - the angle @TB{theta} is defined in the usual counterclockwise
+     *  direction (trigonometric convention).
      */
     LineSE(int length, int theta) : StrElt(1)
     {
@@ -646,10 +650,14 @@ namespace smil
      * Line3DSE() - constructor
      *
      * @param[in] length : length of the segment
-     * @param[in] theta : angle from the Structuring Segment projected
+     * @param[in] theta : angle (in degrees) from the Structuring Segment projected
      *    in a slice with the horizontal line
-     * @param[in] zeta : elevation angle - angle between the Structuring element
-     *    and each slice
+     * @param[in] zeta : elevation angle - angle (in degrees) between the
+     *    Structuring element and each slice
+     *
+     * @note
+     * - the angle @TB{theta} is defined in the usual counterclockwise
+     *  direction (trigonometric convention).
      */
     Line3DSE(int length, int theta, int zeta) : StrElt(1)
     {
@@ -731,7 +739,7 @@ namespace smil
 
 
   /**
-   * mergeSE() - merge two Structuring Elements
+   * merge() - merge two Structuring Elements
    *
    * @param[in] se1 : First structuring Element
    * @param[in] se2 : Second structuring Element
