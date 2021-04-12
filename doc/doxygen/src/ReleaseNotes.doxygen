@@ -4,12 +4,14 @@
  * @section s280_10 Smil 0.12.0-dev
  *  - @TB{New}
  *    - Functions :
- *      - mergeSE();
- *      - buildLineSE();
- *    - Methods :
- *      - StrElt::merge() merge();
- *    - StrElt::LineSE() - a line Structuring Element with arbitrary length
- *        and angle;
+ *      - merge() to create a structuring element from the merge of two other
+ *        s.e.;
+ *      - buildLineSE() to build a line structuring elements;
+ *    - Structurint elements :
+ *      - LineSE() and Line3DSE() - a @I2D and @I3D line Structuring Elements
+ *        with arbitrary length and angles;
+ *      - StrElt::merge() Structuring element method to merge some structuring
+ *        element into the current one;
  *    - Image() allows now to greate images from @Numpy arrays (calls
  *      @TB{NumpyInt()} function).
  *  - @TB{Bug}

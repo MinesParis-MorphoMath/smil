@@ -31,10 +31,19 @@
 
 namespace smil
 {
+#if 0
   std::vector<IntPoint> bresenhamLine(int p1x, int p1y, int p2x, int p2y)
   {
     int xMax = max(p1x, p2x);
     int yMax = max(p1y, p2y);
     return bresenhamPoints(p1x, p1y, p2x, p2y, xMax, yMax);
   }
+# else
+  std::vector<IntPoint> bresenhamLine(int p1x, int p1y, int p2x, int p2y)
+  {
+    Bresenham line(p1x, p1y, p2x, p2y);
+    return line.getPoints();
+  }
+#endif
+
 } // namespace smil

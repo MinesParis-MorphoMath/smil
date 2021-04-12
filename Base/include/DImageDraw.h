@@ -208,13 +208,15 @@ namespace smil
    * @see
    *  - @UrlWikipedia{Bresenham%27s_line_algorithm, Bresenham's Line algorithm}
    */
-  std::vector<IntPoint> bresenhamLine(int p1x, int p1y, int p2x, int p2y);
+  vector<IntPoint> bresenhamLine(int p1x, int p1y, int p2x, int p2y);
 
   /**
    * @brief Bresenham Class
    *
    * Find intermediate points forming a line between two end points,
    * using the Bresenham Line Draw Algorithm - @I2D or @I3D lines
+   *
+   * @smilexample{example-bresenham.py}
    *
    * @see
    *  - @UrlWikipedia{Bresenham%27s_line_algorithm, Bresenham's Line algorithm}
@@ -442,4 +444,4 @@ namespace smil
 
 } // namespace smil
 
-#endif // _D_IMAGE_DRAW_HPP
+#endif // _D_IMAGE_DRAW_H

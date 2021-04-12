@@ -12,6 +12,8 @@
  *    @TB{image} in memory.}
  *
  * @section s620_02 What you must know about Smil Images
+ *  - @TB{Very important} : the origin of coordinates is at the @TB{Top left}
+ *    corner of the image and height coordinates grows downside;
  *  - From the programming point of view, a @Smil Image is a @b class with
  *    @TBI{data} and @TBI{methods};
  *  - Inside the @Smil @Python environnment, image pixels are coded in one of

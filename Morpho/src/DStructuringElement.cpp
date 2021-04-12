@@ -66,14 +66,6 @@ void StrElt::clone(const StrElt &rhs)
   this->points = rhs.points;
 }
 
-void StrElt::merge(const StrElt &rhs)
-{
-  for (auto it = rhs.points.begin(); it != rhs.points.end(); it++) {
-      const IntPoint &p = *it;
-      addPoint(p);
-  }
-}
-
 void StrElt::addPoint(const UINT index)
 {
   if (odd)
@@ -132,13 +124,34 @@ StrElt StrElt::transpose() const
   se.seT  = this->seT;
   se.size = this->size;
   se.odd  = this->odd;
-  // JOE se.setName();
+  se.setName();
 
   for (vector<IntPoint>::const_iterator it = this->points.begin();
        it != this->points.end(); it++) {
     const IntPoint &p = *it;
     se.addPoint(-p.x - (this->odd && p.y % 2), -p.y, -p.z);
   }
+
+  return se;
+}
+
+StrElt StrElt::merge(const StrElt &rhs)
+{
+  StrElt se;
+
+  if (this->odd != rhs.odd)
+    return se;
+
+  se.seT  = SE_Generic;
+  se.size = this->size;
+  se.odd  = this->odd;
+  se.setName();
+
+
+  for (auto it = this->points.begin(); it != this->points.end(); it++)
+      se.addPoint(*it);
+  for (auto it = rhs.points.begin(); it != rhs.points.end(); it++)
+      se.addPoint(*it);
 
   return se;
 }

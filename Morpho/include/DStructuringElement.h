@@ -54,8 +54,10 @@ namespace smil
     SE_Cross,
     SE_Horiz,
     SE_Vert,
+    SE_Line,
     SE_Cube,
     SE_Cross3D,
+    SE_Line3D,
     SE_Rhombicuboctahedron
   };
 
@@ -194,14 +196,6 @@ namespace smil
      */
     void clone(const StrElt &rhs);
 
-    /**
-     * merge() - Merge a structuring element
-     *
-     * @param[in] rhs : structuring element to be merged
-     * @returns a structuring element
-     */
-    void merge(const StrElt &rhs);
-
     //! List of neighbor points
     vector<IntPoint> points;
 
@@ -270,6 +264,14 @@ namespace smil
     StrElt transpose() const;
 
     /**
+     * merge() - Merge a structuring element
+     *
+     * @param[in] rhs : structuring element to be merged
+     * @returns a structuring element
+     */
+    StrElt merge(const StrElt &rhs);
+
+    /**
      * Return the SE with no center
      *
      * Remove the central point of the Structuring Element
@@ -315,6 +317,8 @@ namespace smil
           {SE_Cube, "CubeSE"},
           {SE_Cross3D, "Cross3DSE"},
           {SE_Rhombicuboctahedron, "RhombicuboctahedronSE"},
+          {SE_Line, "LineSE"},
+          {SE_Line3D, "Line3DSE"}
       };
 
 #if 0
@@ -614,12 +618,54 @@ namespace smil
      */
     LineSE(int length, int theta) : StrElt(1)
     {
-      int xf = round(length * cos(theta * PI / 180.));
-      int yf = round(length * sin(theta * PI / 180.));
+      className = "LineSE : StrElt";
+      seT       = SE_Line;
+      odd       = false;
+      this->setName();
+
+      int xf = round(length * cos(-theta * PI / 180.));
+      int yf = round(length * sin(-theta * PI / 180.));
 
       vector<Point<int>> v;
 
       v = bresenhamPoints(0, 0, xf, yf);
+      for (size_t i = 0; i < v.size(); i++)
+        addPoint(v[i].x, v[i].y, v[i].z);
+    }
+  };
+
+ /**
+   *  Line3DSE - a line structuring element with arbitrary length and angle.
+   *
+   * The line is defined with the help of a Besenham algorithm
+   */
+  class Line3DSE : public StrElt
+  {
+  public :
+    /**
+     * Line3DSE() - constructor
+     *
+     * @param[in] length : length of the segment
+     * @param[in] theta : angle from the Structuring Segment projected
+     *    in a slice with the horizontal line
+     * @param[in] zeta : elevation angle - angle between the Structuring element
+     *    and each slice
+     */
+    Line3DSE(int length, int theta, int zeta) : StrElt(1)
+    {
+      className = "Line3DSE : StrElt";
+      seT       = SE_Line3D;
+      odd       = false;
+      this->setName();
+
+      double lenXY = length * cos(zeta * PI / 180.);
+
+      int zf = round(length * sin(zeta * PI / 180.));
+      int xf = round(lenXY * cos(-theta * PI / 180.));
+      int yf = round(lenXY * sin(-theta * PI / 180.));
+
+      Bresenham line(0, 0, 0, xf, yf, zf);
+      vector<IntPoint> v = line.getPoints();
       for (size_t i = 0; i < v.size(); i++)
         addPoint(v[i].x, v[i].y, v[i].z);
     }
@@ -691,7 +737,7 @@ namespace smil
    * @param[in] se2 : Second structuring Element
    * @returns a new structuring element with all points of @TT{se1} and @TT{se2}
    */
-  inline StrElt mergeSE(StrElt &se1, StrElt &se2)
+  inline StrElt merge(StrElt &se1, StrElt &se2)
   {
     StrElt se;
 

@@ -220,6 +220,9 @@ def Image(*args):
         img = imageTypes[0](*args)
         fillImg = True
 
+    elif 'numpy.ndarray' in str(type(args[0])):
+        return NumpyInt(*args)
+
     elif type(args[0]) in imageTypes or hasattr(args[0], "getTypeAsString"):
         # First arg is an image
         srcIm = args[0]
