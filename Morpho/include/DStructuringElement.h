@@ -666,7 +666,7 @@ namespace smil
       odd       = false;
       this->setName();
 
-      double lenXY = length * cos(zeta * PI / 180.);
+      double lenXY = abs(length * cos(zeta * PI / 180.));
 
       int zf = round(length * sin(zeta * PI / 180.));
       int xf = round(lenXY * cos(-theta * PI / 180.));
@@ -681,7 +681,6 @@ namespace smil
 
   // Shortcuts
   /** @cond */
-  /* Only available inside C++ programs */
   inline HexSE hSE(UINT s = 1)
   {
     return HexSE(s);
@@ -745,7 +744,7 @@ namespace smil
    * @param[in] se2 : Second structuring Element
    * @returns a new structuring element with all points of @TT{se1} and @TT{se2}
    */
-  inline StrElt merge(StrElt &se1, StrElt &se2)
+  inline StrElt merge(StrElt se1, StrElt se2)
   {
     StrElt se;
 

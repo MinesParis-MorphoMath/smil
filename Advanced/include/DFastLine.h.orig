@@ -6,16 +6,85 @@
 
 namespace smil
 {
+  /**
+   * @ingroup     Advanced
+   * @addtogroup  AdvLine   Line Based Operators
+   *
+   * @brief Morphological operators using @TB{line segments} as structuring
+   * elements.
+   *
+   * @details Implementation of morphological operations by @b line, @b square
+   * and @b circle structuring elements using repeately operations with
+   * @b linear structuring elements and arbitrary angles.
+   *
+   * These algorithms are described in @SoilleBook{Section 3.9, p. 89} and
+   * @cite SoilleBJ96
+   *
+   * Line Structuring Element using Bresenham's Line Drawing Algorithm
+   * @cite Hearn_1986. Based on Erik R Urbach (2006) implementation in C.
+   *
+   *
+   * @remark This module works only on 2D images.
+   *
+   * @author Vincent Morard - Port to Morph-M - September 2010
+   * @author Jose-Marcio Martins da Cruz - Port to Smil - July 2019
+   *
+   * @{ */
 
+#if 1
+  template <class T>
+  RES_T bLineDilate(const Image<T> &imIn, const int angle, const int hLen,
+                      Image<T> &imOut)
+  {
+    LineSE se1(hLen, angle);
+    LineSE se2(hLen, -angle);
 
-  /** @cond */
+    StrElt se = merge(se1, se2);
+    return dilate(imIn, imOut, se);
+  }
 
+  template <class T>
+  RES_T bLineErode(const Image<T> &imIn, const int angle, const int hLen,
+                      Image<T> &imOut)
+  {
+    LineSE se1(hLen, angle);
+    LineSE se2(hLen, -angle);
+
+    StrElt se = merge(se1, se2);
+    return dilate(imIn, imOut, se);
+  }
+
+  template <class T>
+  RES_T bLineOpen(const Image<T> &imIn, const int angle, const int hLen,
+                      Image<T> &imOut)
+  {
+    LineSE se1(hLen, angle);
+    LineSE se2(hLen, -angle);
+
+    StrElt se = merge(se1, se2);
+
+    RES_T r = erode(imIn, imOut, se);
+    return dilate(imOut, imOut, se);
+  }
+
+  template <class T>
+  RES_T bLineClose(const Image<T> &imIn, const int angle, const int hLen,
+                      Image<T> &imOut)
+  {
+    LineSE se1(hLen, angle);
+    LineSE se2(hLen, -angle);
+
+    StrElt se = merge(se1, se2);
+    RES_T r = dilate(imIn, imOut, se);
+    return erode(imOut, imOut, se);
+  }
+#endif
 
   //*************************************************
   // SOILLE 'S ALGORITHM
   //*************************************************
 
-  /** @brief oldLineDilate() : the Structuring Element is a segment of length
+  /** @brief lineDilate() : the Structuring Element is a segment of length
    * <b>(2 * hLen + 1)</b> pixels and an orientation of <b>angle</b> degrees
    * @param[in]  imIn : input image
    * @param[in]  angle : (in degres)
@@ -23,13 +92,13 @@ namespace smil
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T oldLineDilate(const Image<T> &imIn, const int angle, const int hLen,
+  RES_T lineDilate(const Image<T> &imIn, const int angle, const int hLen,
                    Image<T> &imOut)
   {
     return lineDilate_Soille(imIn, angle, hLen, imOut);
   }
 
-  /** @brief oldLineErode() : the Structuring Element is a segment of length
+  /** @brief lineErode() : the Structuring Element is a segment of length
    * <b>(2 * hLen + 1)</b> pixels and an orientation <b>angle</b> degrees
    * @param[in]  imIn : input image
    * @param[in]  angle : (in degres)
@@ -37,13 +106,13 @@ namespace smil
    * @param[out] imOut : Result
    */
   template <class T>
-  RES_T oldLineErode(const Image<T> &imIn, const int angle, const int hLen,
+  RES_T lineErode(const Image<T> &imIn, const int angle, const int hLen,
                   Image<T> &imOut)
   {
     return lineErode_Soille(imIn, angle, hLen, imOut);
   }
 
-  /** @brief oldLineOpen() : the Structuring Element is a segment of length
+  /** @brief lineOpen() : the Structuring Element is a segment of length
    * <b>(2 * hLen + 1)</b> pixels and an orientation of <b>angle</b> degrees
    * @param[in]  imIn : input image
    * @param[in]  angle : (in degres)
@@ -51,13 +120,13 @@ namespace smil
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T oldLineOpen(const Image<T> &imIn, const int angle, const int hLen,
+  RES_T lineOpen(const Image<T> &imIn, const int angle, const int hLen,
                  Image<T> &imOut)
   {
     return lineOpen_Soille(imIn, angle, hLen, imOut);
   }
 
-  /** @brief oldLineClose() : the Structuring Element is a segment of length
+  /** @brief lineClose() : the Structuring Element is a segment of length
    * <b>(2 * hLen + 1)</b> pixels and an orientation of <b>angle</b> degrees
    * @param[in]  imIn : input image
    * @param[in]  angle : (in degres)
@@ -65,65 +134,65 @@ namespace smil
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T oldLineClose(const Image<T> &imIn, const int angle, const int hLen,
+  RES_T lineClose(const Image<T> &imIn, const int angle, const int hLen,
                   Image<T> &imOut)
   {
     return lineClose_Soille(imIn, angle, hLen, imOut);
   }
 
   /**
-   * @brief oldSquareErode() : the SE is a square which side is <b>(2 * hSide +
+   * @brief squareErode() : the SE is a square which side is <b>(2 * hSide +
    * 1)</b>
    * @param[in]  imIn : input image
    * @param[in]  hSide : Half side of the Structuring Element
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T oldSquareErode(const Image<T> &imIn, const int hSide, Image<T> &imOut)
+  RES_T squareErode(const Image<T> &imIn, const int hSide, Image<T> &imOut)
   {
     return squareErode_Soille(imIn, hSide, imOut);
   }
 
   /**
-   * @brief oldSquareDilate() : the SE is a square which side is <b>(2 * hSide +
+   * @brief squareDilate() : the SE is a square which side is <b>(2 * hSide +
    * 1)</b>
    * @param[in]  imIn : input image
    * @param[in]  hSide : Half side of the Structuring Element
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T oldSquareDilate(const Image<T> &imIn, const int hSide, Image<T> &imOut)
+  RES_T squareDilate(const Image<T> &imIn, const int hSide, Image<T> &imOut)
   {
     return squareDilate_Soille(imIn, hSide, imOut);
   }
 
   /**
-   * @brief oldSquareOpen() : the SE is a square which side is <b>(2 * hSide +
+   * @brief squareOpen() : the SE is a square which side is <b>(2 * hSide +
    * 1)</b>
    * @param[in]  imIn : input image
    * @param[in]  hSide : Half side of the Structuring Element
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T oldSquareOpen(const Image<T> &imIn, const int hSide, Image<T> &imOut)
+  RES_T squareOpen(const Image<T> &imIn, const int hSide, Image<T> &imOut)
   {
     return squareOpen_Soille(imIn, hSide, imOut);
   }
 
   /**
-   * @brief oldSquareClose() : the SE is a square which side is <b>(2 * hSide +
+   * @brief squareClose() : the SE is a square which side is <b>(2 * hSide +
    * 1)</b>
    * @param[in]  imIn : input image
    * @param[in]  hSide : Half side of the Structuring Element
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T oldSquareClose(const Image<T> &imIn, const int hSide, Image<T> &imOut)
+  RES_T squareClose(const Image<T> &imIn, const int hSide, Image<T> &imOut)
   {
     return squareClose_Soille(imIn, hSide, imOut);
   }
 
-  /** @brief oldCircleDilate() : the SE is a <b>disk</b> of radius <b>radius</b>
+  /** @brief circleDilate() : the SE is a <b>disk</b> of radius <b>radius</b>
    * pixels
    *
    * @param[in]  imIn : input image
@@ -131,12 +200,12 @@ namespace smil
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T oldCircleDilate(const Image<T> &imIn, const int radius, Image<T> &imOut)
+  RES_T circleDilate(const Image<T> &imIn, const int radius, Image<T> &imOut)
   {
     return circleDilate_Soille(imIn, radius, imOut);
   }
 
-  /** @brief oldCircleErode() : the SE is a <b>disk</b> of radius <b>radius</b>
+  /** @brief circleErode() : the SE is a <b>disk</b> of radius <b>radius</b>
    * pixels
    *
    * @param[in]  imIn : input image
@@ -144,12 +213,12 @@ namespace smil
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T oldCircleErode(const Image<T> &imIn, const int radius, Image<T> &imOut)
+  RES_T circleErode(const Image<T> &imIn, const int radius, Image<T> &imOut)
   {
     return circleErode_Soille(imIn, radius, imOut);
   }
 
-  /** @brief oldCircleOpen() : the SE is a <b>disk</b> of radius <b>radius</b>
+  /** @brief circleOpen() : the SE is a <b>disk</b> of radius <b>radius</b>
    * pixels
    *
    * @param[in]  imIn : input image
@@ -157,12 +226,12 @@ namespace smil
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T oldCircleOpen(const Image<T> &imIn, const int radius, Image<T> &imOut)
+  RES_T circleOpen(const Image<T> &imIn, const int radius, Image<T> &imOut)
   {
     return circleOpen_Soille(imIn, radius, imOut);
   }
 
-  /** @brief oldCircleClose() : the SE is a <b>disk</b> of radius <b>radius</b>
+  /** @brief circleClose() : the SE is a <b>disk</b> of radius <b>radius</b>
    * pixels
    *
    * @param[in]  imIn : input image
@@ -170,7 +239,7 @@ namespace smil
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T oldCircleClose(const Image<T> &imIn, const int radius, Image<T> &imOut)
+  RES_T circleClose(const Image<T> &imIn, const int radius, Image<T> &imOut)
   {
     return circleClose_Soille(imIn, radius, imOut);
   }
@@ -284,8 +353,8 @@ namespace smil
                                        Image<T> &imOut);
 
 #endif
-  /** @endcond */
 
+  /** @} */
 } // namespace smil
 
 //#include "FastLine/LineNaive.hpp"

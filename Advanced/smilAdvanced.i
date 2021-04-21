@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
@@ -48,6 +48,22 @@ SMIL_MODULE(smilAdvanced)
 
 
 %include "DFastLine.h"
+TEMPLATE_WRAP_FUNC(oldLineDilate);
+TEMPLATE_WRAP_FUNC(oldLineErode);
+TEMPLATE_WRAP_FUNC(oldLineOpen);
+TEMPLATE_WRAP_FUNC(oldLineClose);
+
+TEMPLATE_WRAP_FUNC(oldSquareDilate);
+TEMPLATE_WRAP_FUNC(oldSquareErode);
+TEMPLATE_WRAP_FUNC(oldSquareOpen);
+TEMPLATE_WRAP_FUNC(oldSquareClose);
+
+TEMPLATE_WRAP_FUNC(oldCircleDilate);
+TEMPLATE_WRAP_FUNC(oldCircleErode);
+TEMPLATE_WRAP_FUNC(oldCircleOpen);
+TEMPLATE_WRAP_FUNC(oldCircleClose);
+
+%include "DLineMorpho.h"
 TEMPLATE_WRAP_FUNC(lineDilate);
 TEMPLATE_WRAP_FUNC(lineErode);
 TEMPLATE_WRAP_FUNC(lineOpen);
