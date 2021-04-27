@@ -63,7 +63,7 @@ namespace smil
    */
   template <class T>
   RES_T dilate(const Image<T> &imIn, Image<T> &imOut,
-               const StrElt &se = DEFAULT_SE, T borderVal = ImDtTypes<T>::min())
+               const StrElt &se = DEFAULT_SE, const T borderVal = ImDtTypes<T>::min())
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -88,7 +88,7 @@ namespace smil
    */
   template <class T>
   RES_T dilate(const Image<T> &imIn, Image<T> &imOut, UINT seSize,
-               T borderVal = ImDtTypes<T>::min())
+               const T borderVal = ImDtTypes<T>::min())
   {
     return dilate(imIn, imOut, DEFAULT_SE(seSize), borderVal);
   }
@@ -110,7 +110,7 @@ namespace smil
    */
   template <class T>
   RES_T erode(const Image<T> &imIn, Image<T> &imOut,
-              const StrElt &se = DEFAULT_SE, T borderVal = ImDtTypes<T>::max())
+              const StrElt &se = DEFAULT_SE, const T borderVal = ImDtTypes<T>::max())
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -134,7 +134,7 @@ namespace smil
    */
   template <class T>
   RES_T erode(const Image<T> &imIn, Image<T> &imOut, UINT seSize,
-              T borderVal = ImDtTypes<T>::max())
+              const T borderVal = ImDtTypes<T>::max())
   {
     return erode(imIn, imOut, DEFAULT_SE(seSize), borderVal);
   }

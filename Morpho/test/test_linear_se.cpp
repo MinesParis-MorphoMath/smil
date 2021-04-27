@@ -33,20 +33,6 @@
 
 using namespace smil;
 
-StrElt generateLinearSE(int length, int theta, int zeta = 0)
-{
-  StrElt se;
-
-  int xf = length * cos(theta * PI / 180.);
-  int yf = length * sin(theta * PI / 180.);
-
-  vector<Point<int>> v;
-
-  v = bresenhamPoints(0, 0, xf, yf);
-  for (size_t i = 0; i < v.size(); i++)
-    se.addPoint(v[i].x, v[i].y, v[i].z);
-  return se;
-}
 
 class Test_LinearSE : public TestCase
 {
@@ -57,27 +43,27 @@ class Test_LinearSE : public TestCase
     int    length = 20;
     StrElt se;
 
-    se = generateLinearSE(length, 0);
+    se = LineSE(length, 0);
     se.setName("0 degres");
     se.printSelf();
 
-    se = generateLinearSE(length, 30);
+    se = LineSE(length, 30);
     se.setName("30 degres");
     se.printSelf();
 
-    se = generateLinearSE(length, 45);
+    se = LineSE(length, 45);
     se.setName("45 degres");
     se.printSelf();
 
-    se = generateLinearSE(length, 90);
+    se = LineSE(length, 90);
     se.setName("90 degres");
     se.printSelf();
 
-    se = generateLinearSE(length, 180);
+    se = LineSE(length, 180);
     se.setName("180 degres");
     se.printSelf();
 
-    se = generateLinearSE(length, 270);
+    se = LineSE(length, 270);
     se.setName("270 degres");
     se.printSelf();
 

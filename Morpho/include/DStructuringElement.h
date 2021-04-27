@@ -114,7 +114,8 @@ namespace smil
      * @param[in] indexList : The list of point indexes
      *
      * The index values are defined for each grid type as follow:
-     * @IncImages{se_indexes}
+     * @HtmlImages{se_indexes}
+     * @LatexImages{se_indexes}
      *
      * @b Example:
      * @code{.py}
@@ -205,7 +206,8 @@ namespace smil
      *
      * Index are defined as in the following drawings :
      * - Grids : @TB{Square} and @TB{Hexagonal}
-     *   @IncImages{grids}
+     *   @HtmlImages{grids}
+     *   @LatexImages{grids}
      *
      * @param[in] index : index to predefined point coordinates, as above.
      *
@@ -321,19 +323,6 @@ namespace smil
           {SE_Line3D, "Line3DSE"}
       };
 
-#if 0
-      seNames[SE_Squ]                 = "SquSE";
-      seNames[SE_Squ0]                = "SquSE0";
-      seNames[SE_Hex]                 = "HexSE";
-      seNames[SE_Hex0]                = "HexSE0";
-      seNames[SE_Cross]               = "CrossSE";
-      seNames[SE_Horiz]               = "HorizSE";
-      seNames[SE_Vert]                = "VertSE";
-      seNames[SE_Cube]                = "CubeSE";
-      seNames[SE_Cross3D]             = "Cross3DSE";
-      seNames[SE_Rhombicuboctahedron] = "RhombicuboctahedronSE";
-      seNames[SE_Generic]             = "GenericSE";
-#endif
       std::map<seType, string>::iterator it;
       it = seNames.find(seT);
       if (it != seNames.end())
@@ -360,6 +349,17 @@ namespace smil
     */
     virtual void printSelf(ostream &os = std::cout, string indent = "") const;
 
+    /**
+    * printSelf() - Print the contents of the structuring element
+    *
+    * @note
+    * In @TB{Python} this has the same effect than @TB{print(se)}
+    */
+    virtual void printSelf(string indent) const
+    {
+      printSelf(std::cout, indent);
+    }
+
     bool odd;
     seType seT;
     UINT size;
@@ -374,7 +374,8 @@ namespace smil
    * Square structuring element.
    *
    * Points :
-   * @IncImages{squ_se}
+   * @HtmlImages{squ_se}
+   * @LatexImages{squ_se}
    *
    */
   class SquSE : public StrElt
@@ -393,7 +394,8 @@ namespace smil
    * Square structuring element without center point.
    *
    * Points :
-   * @IncImages{squ_se0}
+   * @HtmlImages{squ_se0}
+   * @LatexImages{squ_se0}
    *
    */
   class SquSE0 : public StrElt
@@ -414,7 +416,8 @@ namespace smil
    * Hexagonal structuring element.
    *
    * Points :
-   * @IncImages{hex_se}
+   * @HtmlImages{hex_se}
+   * @LatexImages{hex_se}
    *
    */
   class HexSE : public StrElt
@@ -433,7 +436,8 @@ namespace smil
    * Hexagonal structuring element without center point.
    *
    * Points :
-   * @IncImages{hex_se0}
+   * @HtmlImages{hex_se0}
+   * @LatexImages{hex_se0}
    *
    */
   class HexSE0 : public StrElt
@@ -452,7 +456,8 @@ namespace smil
    * Cross structuring element.
    *
    * Points :
-   * @IncImages{cross_se}
+   * @HtmlImages{cross_se}
+   * @LatexImages{cross_se}
    *
    */
 
@@ -472,7 +477,8 @@ namespace smil
    * Horizontal segment structuring element.
    *
    * Points :
-   * @IncImages{horiz_se}
+   * @HtmlImages{horiz_se}
+   * @LatexImages{horiz_se}
    *
    */
 
@@ -492,7 +498,8 @@ namespace smil
    * Vertical segment structuring element.
    *
    * Points :
-   * @IncImages{vert_se}
+   * @HtmlImages{vert_se}
+   * @LatexImages{vert_se}
    *
    */
 
@@ -512,7 +519,8 @@ namespace smil
    * 3D Cubic structuring element (26 neighbors).
    *
    * Points :
-   * @IncImages{cube_se}
+   * @HtmlImages{cube_se}
+   * @LatexImages{cube_se}
    *
    */
   class CubeSE : public StrElt
@@ -545,7 +553,8 @@ namespace smil
    * 3D Cross structuring element (6 neighbors).
    *
    * Points :
-   * @IncImages{cross3d_se}
+   * @HtmlImages{cross3d_se}
+   * @LatexImages{cross3d_se}
    *
    */
   class Cross3DSE : public StrElt
@@ -571,7 +580,8 @@ namespace smil
   /**
    * Rhombicuboctahedron struturing element (80 neighbors).
    * Points :
-   * @IncImages{rhombicuboctaedron_se}
+   * @HtmlImages{rhombicuboctaedron_se}
+   * @LatexImages{rhombicuboctaedron_se}
    *
    */
   class RhombicuboctahedronSE : public StrElt
@@ -605,7 +615,23 @@ namespace smil
   /**
    *  LineSE - a line structuring element with arbitrary length and angle.
    *
-   * The line is defined with the help of a Besenham algorithm
+   * The line is defined with the help of a Besenham algorithm.
+   *
+   * @note
+   * - one edge of the structuring element is at the origin. So this S.E. isn't
+   *    symetric. If you need a symetric S.E. you need to compose it with its
+   *    transposed. As an example :
+   @BeginPython
+      import smilPython as sp
+
+      # this way
+      se = sp.LineSE(10, 0)
+      se = sp.merge(se.transpose())
+
+      # or this way
+      se = sp.LineSE(10, 0)
+      se = sp.merge(se, se.transpose())
+   @EndPython
    */
   class LineSE : public StrElt
   {
@@ -642,6 +668,22 @@ namespace smil
    *  Line3DSE - a line structuring element with arbitrary length and angle.
    *
    * The line is defined with the help of a Besenham algorithm
+   *
+   * @note
+   * - one edge of the structuring element is at the origin. So this S.E. isn't
+   *    symetric. If you need a symetric S.E. you need to compose it with its
+   *    transposed. As an example :
+   @BeginPython
+      import smilPython as sp
+
+      # this way
+      se = sp.Line3DSE(10, 0, 45)
+      se = sp.merge(se.transpose())
+
+      # or this way
+      se = sp.Line3DSE(10, 0, 45)
+      se = sp.merge(se, se.transpose())
+   @EndPython
    */
   class Line3DSE : public StrElt
   {

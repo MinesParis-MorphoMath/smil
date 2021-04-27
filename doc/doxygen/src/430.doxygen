@@ -1,0 +1,42 @@
+/**
+ * @page p430 Basic concepts
+ *
+ * @section s430_01 Generalities
+ *
+ * @section s430_02 Data objects
+ *
+ * @subsection s430_02_01 Images
+ * Images are the basic object type in @Smil. Smil was created to manipulate
+ * images using mathematical morphology techniques.
+ *
+ * From the computer point of view, an image is an instance of a class with
+ * two parts :
+ * - @TB{metadata} : side information needed to identify and handle image data :
+ *    size, image type, name, ... You can't access this values directly but you
+ *    can read or modify some values, thanks to Image class methods.
+ * - @TB{pixel values} : organized as an array. Pixel values can be accessed
+ *    individually using class methods or by some pointer directly to the array.
+ *
+ * @Smil Images can basically be declared in one of four data types :
+ *  - @TB{gray images} : @TB{UINT8}, @TB{UINT16} and @TB{UINT32} - meaning
+ *    @TT{unsigned integer} of size 8, 16 or 32 bits. Binary images are defined
+ *    in one of these kinds but having only two possible values (usually 0 and
+ *    the biggest value for that data type)
+ *  - @TB{colour images}
+ *
+ * @subsection s430_02_02 Structuring Elements
+ *
+ * @subsection s430_02_03 Blobs
+ *
+ * @subsection s430_02_04 Points
+ *
+ * @subsection s430_02_05 Graphs
+ *
+ * @section s430_03 Functions and Methods
+ *
+ * @section s430_04 GUI - Graphical User Interface
+ *
+ * @section s430_05 I/O - Reading and Writing images
+ *
+ * @tableofcontents
+ */
