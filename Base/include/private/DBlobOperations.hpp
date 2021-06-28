@@ -58,11 +58,11 @@ namespace smil
 
   /** areaThreshold() -
    *
-   * @param[in] imIn : input image (@b binary or @b labeled)
+   * @param[in] imIn : input @binary image
    * @param[in] threshold : threshold level
+   * @param[out] imOut : output image
    * @param[in] gt : blobs which area is @TB{greater than} will be retained
    *   if @b gt is @b true, and @TB{lesser than} if @b gt is @b false.
-   * @param[out] imOut : output image
    *
    * @note
    * - output image is of the same kind of input image : @b binary or
@@ -70,8 +70,9 @@ namespace smil
    *
    * @smilexample{example-areathreshold.py}
    */
+#if 0
   template <typename T1, typename T2>
-  RES_T areaThreshold(const Image<T1> &imIn, const int threshold,
+  RES_T areaThresholdOld(const Image<T1> &imIn, const int threshold,
                            const bool gt, Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
@@ -124,6 +125,36 @@ namespace smil
 
     return RES_OK;
   }
+#else
+  template <typename T>
+  RES_T areaThreshold(const Image<T> &imIn, const int threshold,
+                      Image<T> &imOut, const bool gt = true)
+  {
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    if (!isBinary(imIn))
+      return RES_OK;
+
+    ImageFreezer freeze(imOut);
+
+    map<UINT32, Blob> blobs;
+    Image<UINT32> imLabel(imOut);
+
+    label(imIn, imLabel);
+    blobs = computeBlobs(imLabel, true);
+
+    map<UINT32, double> areas = blobsArea(blobs);
+
+    for (auto it = areas.cbegin(); it != areas.cend(); it++)
+    {
+      if ((gt && it->second < threshold) || (!gt && it->second > threshold))
+        blobs.erase(it->first);
+    }
+
+    return drawBlobs(blobs, imOut);
+  }
+#endif
 
   /*
    * #    #    #  ######  #####    #####     #      ##
@@ -195,7 +226,7 @@ namespace smil
         mr.resize(4);
         mr[0] = moments[it->first][4];
         mr[1] = - moments[it->first][3];
-        
+
         mr[2] = - moments[it->first][3];
         mr[3] = moments[it->first][5];
         m = mr;
@@ -231,7 +262,7 @@ namespace smil
     map<T, Vector_double> moments = blobsMoments(imLbl, blobs);
 
     bool im3d = (imLbl.getDimension() == 3);
- 
+
     typedef typename map<T, Blob>::iterator blobIter;
     for (blobIter it = blobs.begin(); it != blobs.end(); it++) {
       if (central)
@@ -270,7 +301,7 @@ namespace smil
         mr.resize(4);
         mr[0] = moments[it->first][4];
         mr[1] = - moments[it->first][3];
-        
+
         mr[2] = - moments[it->first][3];
         mr[3] = moments[it->first][5];
         m = mr;
