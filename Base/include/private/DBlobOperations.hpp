@@ -58,7 +58,7 @@ namespace smil
 
   /** areaThreshold() -
    *
-   * @param[in] imIn : input @binary image
+   * @param[in] imIn : input @b binary image
    * @param[in] threshold : threshold level
    * @param[out] imOut : output image
    * @param[in] gt : blobs which area is @TB{greater than} will be retained
@@ -133,21 +133,22 @@ namespace smil
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    if (!isBinary(imIn))
-      return RES_OK;
+    if (!isBinary(imIn)) {
+      ERR_MSG("areaThreshold can be applied only to binary images");
+      return RES_ERR;
+    }
 
     ImageFreezer freeze(imOut);
 
     map<UINT32, Blob> blobs;
-    Image<UINT32> imLabel(imOut);
+    Image<UINT32>     imLabel(imOut);
 
     label(imIn, imLabel);
     blobs = computeBlobs(imLabel, true);
 
     map<UINT32, double> areas = blobsArea(blobs);
 
-    for (auto it = areas.cbegin(); it != areas.cend(); it++)
-    {
+    for (auto it = areas.cbegin(); it != areas.cend(); it++) {
       if ((gt && it->second < threshold) || (!gt && it->second > threshold))
         blobs.erase(it->first);
     }
@@ -174,14 +175,13 @@ namespace smil
    * @smilexample{example-inertia-matrix.py}
    */
   template <typename T, typename labelT>
-  map<labelT, Vector_double> blobsInertiaMatrix(const Image<T> &imIn,
-                                        map<labelT, Blob> &blobs,
-                                        const bool central = false)
+  map<labelT, Vector_double> blobsInertiaMatrix(const Image<T> &   imIn,
+                                                map<labelT, Blob> &blobs,
+                                                const bool central = false)
   {
     map<labelT, Vector_double> inertia;
 
-    if (!imIn.isAllocated())
-    {
+    if (!imIn.isAllocated()) {
       ERR_MSG("Input image not allocated !!!");
       return inertia;
     }
@@ -197,39 +197,37 @@ namespace smil
       if (im3d) {
         Vector_double mr(9, 0.);
 
-        if (moments[it->first].size() != 10)
-        {
+        if (moments[it->first].size() != 10) {
           ERR_MSG("Not enough moments...");
           continue;
         }
         mr[0] = moments[it->first][8] + moments[it->first][9];
-        mr[1] = - moments[it->first][4];
-        mr[2] = - moments[it->first][5];
+        mr[1] = -moments[it->first][4];
+        mr[2] = -moments[it->first][5];
 
-        mr[3] = - moments[it->first][4];
+        mr[3] = -moments[it->first][4];
         mr[4] = moments[it->first][7] + moments[it->first][9];
-        mr[5] = - moments[it->first][6];
+        mr[5] = -moments[it->first][6];
 
-        mr[6] = - moments[it->first][5];
-        mr[7] = - moments[it->first][6];
-        mr[8] = moments[it->first][7] + moments[it->first][8];
-        m = mr;
+        mr[6]              = -moments[it->first][5];
+        mr[7]              = -moments[it->first][6];
+        mr[8]              = moments[it->first][7] + moments[it->first][8];
+        m                  = mr;
         inertia[it->first] = mr;
       } else {
         Vector_double mr(4, 0.);
 
-        if (moments[it->first].size() != 6)
-        {
+        if (moments[it->first].size() != 6) {
           ERR_MSG("Not enough moments...");
           continue;
         }
         mr.resize(4);
         mr[0] = moments[it->first][4];
-        mr[1] = - moments[it->first][3];
+        mr[1] = -moments[it->first][3];
 
-        mr[2] = - moments[it->first][3];
-        mr[3] = moments[it->first][5];
-        m = mr;
+        mr[2]              = -moments[it->first][3];
+        mr[3]              = moments[it->first][5];
+        m                  = mr;
         inertia[it->first] = mr;
       }
     }
@@ -244,18 +242,17 @@ namespace smil
    */
   template <typename T>
   map<T, Vector_double> blobsInertiaMatrix(const Image<T> &imLbl,
-                                        const bool onlyNonZero = true,
-                                        const bool central    = false)
+                                           const bool      onlyNonZero = true,
+                                           const bool      central     = false)
   {
     map<T, Vector_double> inertia;
 
-    if (!imLbl.isAllocated())
-    {
+    if (!imLbl.isAllocated()) {
       ERR_MSG("Input image not allocated !!!");
       return inertia;
     }
 
-    map<T, Blob> blobs            = computeBlobs(imLbl, onlyNonZero);
+    map<T, Blob> blobs = computeBlobs(imLbl, onlyNonZero);
 #if 1
     return blobsInertiaMatrix(imLbl, blobs, central);
 #else
@@ -272,39 +269,37 @@ namespace smil
       if (im3d) {
         Vector_double mr(9, 0.);
 
-        if (moments[it->first].size() != 10)
-        {
+        if (moments[it->first].size() != 10) {
           ERR_MSG("Not enough moments...");
           continue;
         }
         mr[0] = moments[it->first][8] + moments[it->first][9];
-        mr[1] = - moments[it->first][4];
-        mr[2] = - moments[it->first][5];
+        mr[1] = -moments[it->first][4];
+        mr[2] = -moments[it->first][5];
 
-        mr[3] = - moments[it->first][4];
+        mr[3] = -moments[it->first][4];
         mr[4] = moments[it->first][7] + moments[it->first][9];
-        mr[5] = - moments[it->first][6];
+        mr[5] = -moments[it->first][6];
 
-        mr[6] = - moments[it->first][5];
-        mr[7] = - moments[it->first][6];
-        mr[8] = moments[it->first][7] + moments[it->first][8];
-        m = mr;
+        mr[6]              = -moments[it->first][5];
+        mr[7]              = -moments[it->first][6];
+        mr[8]              = moments[it->first][7] + moments[it->first][8];
+        m                  = mr;
         inertia[it->first] = mr;
       } else {
         Vector_double mr(4, 0.);
 
-        if (moments[it->first].size() != 6)
-        {
+        if (moments[it->first].size() != 6) {
           ERR_MSG("Not enough moments...");
           continue;
         }
         mr.resize(4);
         mr[0] = moments[it->first][4];
-        mr[1] = - moments[it->first][3];
+        mr[1] = -moments[it->first][3];
 
-        mr[2] = - moments[it->first][3];
-        mr[3] = moments[it->first][5];
-        m = mr;
+        mr[2]              = -moments[it->first][3];
+        mr[3]              = moments[it->first][5];
+        m                  = mr;
         inertia[it->first] = mr;
       }
     }

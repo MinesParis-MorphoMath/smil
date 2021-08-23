@@ -834,6 +834,7 @@ namespace smil
      * @param[in] typeOfHierarchy Desired type of hierarchy:
      *              "none", "surfacic", "volumic", "stochasticSurfacic",
      * "stochasticVolumic" etc.
+     * @param[in] nParam :
      * @param[in] imMosa (optional) Mosaic image - necessary for hierarchies
      * implying labels image deformations
      * @param[in] typeOfTransform (optional) Type of transform (deformation)

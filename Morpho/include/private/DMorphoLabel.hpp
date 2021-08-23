@@ -102,8 +102,9 @@ namespace smil
                                imageOutType & /*imOut*/, const StrElt & /*se*/)
     {
       this->pixelsIn = imIn.getPixels();
-      for (size_t i = 0;
-           i < this->imSize[2] * this->imSize[1] * this->imSize[0]; i++) {
+
+      size_t nbPixels = imIn.getPixelCount();
+      for (size_t i = 0; i < nbPixels; i++) {
         if (this->pixelsOut[i] == T2(0)) {
           vector<int> dum;
           processPixel(i, dum);

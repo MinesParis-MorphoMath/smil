@@ -68,6 +68,7 @@ ALIASES += Numpy="@TB{Numpy}"
 ALIASES += ScikitImage="@TB{Scikit-Image}"
 ALIASES += Anaconda="@TB{Anaconda}"
 
+ALIASES += I1D="@TB{1D}"
 ALIASES += I2D="@TB{2D}"
 ALIASES += I3D="@TB{3D}"
 

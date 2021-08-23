@@ -40,6 +40,7 @@
 #include <set>
 #include <iostream>
 #include <iterator> // std::back_inserter
+#include <mutex>
 
 namespace smil
 {
@@ -1387,16 +1388,28 @@ namespace smil
   {
     CHECK_ALLOCATED(&imIn);
 
-    map<T, size_t> h;
+    map<T, bool> h;
     typename Image<T>::lineType pixels = imIn.getPixels();
 
+#if 1
+    // Not using OpenMP
+
     for (size_t i = 0; i < imIn.getPixelCount(); i++) {
-      h[pixels[i]]++;
+      h[pixels[i]] = true;
       if (h.size() > 2)
         return false;
     }
+#else
+    // Using OpenMP
+#ifdef USE_OPEN_MP
+#pragma omp for
+#endif
+    for (size_t i = 0; i < imIn.getPixelCount(); i++) {
+      h[pixels[i]] = True;
+    }
+#endif
 
-    return h[0] > 0 && h.size() == 2;
+    return h[0] && h.size() == 2;
   }
 
   /** @}*/
