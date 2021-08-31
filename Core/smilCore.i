@@ -96,10 +96,10 @@ PTR_ARG_OUT_APPLY(s)
 %include "Core/include/DCommon.h"
 %include "Core/include/DBaseObject.h"
 
+%template(Point) Point<off_t>;
 %template(DoublePoint) Point<double>;
 %template(IntPoint) Point<int>;
 %template(UintPoint) Point<UINT>;
-%template(Size_tPoint) Point<size_t>;
 
 //////////////////////////////////////////////////////////
 // Vectors

@@ -51,7 +51,7 @@ namespace smil
    *
    * \code
    * correlation(sourceImg, templateImg, corrImg)
-   * pt = UintPoint()
+   * pt = IntPoint()
    * maxVal(corrImg, pt)
    * # gives the position of the template image within the source image
    * print pt.x, pt.y

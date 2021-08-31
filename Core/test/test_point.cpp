@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
+ * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,13 +27,49 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _D_LINE_ARITH_H
-#define _D_LINE_ARITH_H
+#include "DImage.h"
+#include "DTest.h"
 
-#include "private/DLineArith.hpp"
+#include <iostream>
+#include <fstream>
 
-#if defined __SSE__ && defined SMIL_USE_SSE_INT
-#include "DLineArith_SSE.h"
-#endif // defined  __SSE__ && defined SMIL_USE_SSE_INT
+using namespace smil;
 
-#endif // _D_LINE_ARITH_H
+class Test_Add : public TestCase
+{
+  virtual void run()
+  {
+    Point<off_t> pr(25, 45, 65);
+    Point<off_t> p1(10, 20, 30);
+    Point<off_t> p2(15, 25, 35);
+
+    Point<off_t> p3 = p1 + p2;
+
+    TEST_ASSERT(p3 == pr);
+  }
+};
+
+class Test_Sub : public TestCase
+{
+  virtual void run()
+  {
+    Point<off_t> pr(5, 0, -5);
+    Point<off_t> p1(15, 20, 30);
+    Point<off_t> p2(10, 20, 35);
+
+    Point<off_t> p3 = p1 - p2;
+
+    TEST_ASSERT(p3 == pr);
+  }
+};
+
+
+int main()
+{
+  TestSuite ts;
+
+  ADD_TEST(ts, Test_Add);
+  ADD_TEST(ts, Test_Sub);
+
+  return ts.run();
+}

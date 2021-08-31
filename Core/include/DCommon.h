@@ -120,7 +120,7 @@ namespace smil
   /**
    * Struct Point
    */
-  template <class T>
+  template <class T = off_t>
   struct Point {
     T x;
     T y;
@@ -168,19 +168,24 @@ namespace smil
       return (x == p2.x && y == p2.y && z == p2.z);
     }
 
-    /** operator- - difference between two points
-     *
-     * @note
-     * To be able to accomodate negative values of all data types, the type of
-     * returned Point is @b Point<double>
+    /** operator- - subtract two points
      *
      * @smilexample{example-point-minus.py}
      *
      */
-    Point<double> operator-(const Point &p2)
+    Point operator-(const Point &p2)
     {
-      return Point<double>((double) x - p2.x, (double) y - p2.y,
-                           (double) z - p2.z);
+      return Point(x - p2.x, y - p2.y, z - p2.z);
+    }
+
+    /** operator+ - add two points
+     *
+     * @smilexample{example-point-minus.py}
+     *
+     */
+    Point operator+(const Point &p2)
+    {
+      return Point(x + p2.x, y + p2.y, z + p2.z);
     }
 
     /** printSelf() - Print point coordinates

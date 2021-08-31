@@ -40,7 +40,8 @@ namespace smil
    */
 
   /* @cond */
-  template <> struct addLine<UINT8> : public binaryLineFunctionBase<UINT8> {
+  template <>
+  struct addLine<UINT8> : public binaryLineFunctionBase<UINT8> {
     inline void _exec(UINT8 *lIn1, UINT8 *lIn2, size_t size, UINT8 *lOut)
     {
       for (int i = 0; i < size; i++)
@@ -51,7 +52,7 @@ namespace smil
     inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, size_t size,
                               UINT8 *lOut)
     {
-      __m128i r0, r1;
+      __m128i  r0, r1;
       __m128i *l1 = (__m128i *) lIn1;
       __m128i *l2 = (__m128i *) lIn2;
       __m128i *l3 = (__m128i *) lOut;
@@ -80,7 +81,7 @@ namespace smil
     inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, size_t size,
                               UINT8 *lOut)
     {
-      __m128i r0, r1;
+      __m128i  r0, r1;
       __m128i *l1 = (__m128i *) lIn1;
       __m128i *l2 = (__m128i *) lIn2;
       __m128i *l3 = (__m128i *) lOut;
@@ -99,7 +100,8 @@ namespace smil
     }
   };
 
-  template <> struct subLine<UINT8> : public binaryLineFunctionBase<UINT8> {
+  template <>
+  struct subLine<UINT8> : public binaryLineFunctionBase<UINT8> {
     inline void _exec(UINT8 *lIn1, UINT8 *lIn2, size_t size, UINT8 *lOut)
     {
       for (int i = 0; i < size; i++)
@@ -110,7 +112,7 @@ namespace smil
     inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, size_t size,
                               UINT8 *lOut)
     {
-      __m128i r0, r1;
+      __m128i  r0, r1;
       __m128i *l1 = (__m128i *) lIn1;
       __m128i *l2 = (__m128i *) lIn2;
       __m128i *l3 = (__m128i *) lOut;
@@ -139,7 +141,7 @@ namespace smil
     inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, size_t size,
                               UINT8 *lOut)
     {
-      __m128i r0, r1;
+      __m128i  r0, r1;
       __m128i *l1 = (__m128i *) lIn1;
       __m128i *l2 = (__m128i *) lIn2;
       __m128i *l3 = (__m128i *) lOut;
@@ -158,7 +160,8 @@ namespace smil
     }
   };
 
-  template <> struct supLine<UINT8> : public binaryLineFunctionBase<UINT8> {
+  template <>
+  struct supLine<UINT8> : public binaryLineFunctionBase<UINT8> {
     inline void _exec(UINT8 *lIn1, UINT8 *lIn2, size_t size, UINT8 *lOut)
     {
       for (int i = 0; i < size; i++)
@@ -167,7 +170,7 @@ namespace smil
     inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, size_t size,
                               UINT8 *lOut)
     {
-      __m128i r0, r1;
+      __m128i  r0, r1;
       __m128i *l1 = (__m128i *) lIn1;
       __m128i *l2 = (__m128i *) lIn2;
       __m128i *l3 = (__m128i *) lOut;
@@ -186,7 +189,8 @@ namespace smil
     }
   };
 
-  template <> struct infLine<UINT8> : public binaryLineFunctionBase<UINT8> {
+  template <>
+  struct infLine<UINT8> : public binaryLineFunctionBase<UINT8> {
     inline void _exec(UINT8 *lIn1, UINT8 *lIn2, size_t size, UINT8 *lOut)
     {
       for (int i = 0; i < size; i++)
@@ -195,7 +199,7 @@ namespace smil
     inline void _exec_aligned(UINT8 *lIn1, UINT8 *lIn2, size_t size,
                               UINT8 *lOut)
     {
-      __m128i r0, r1;
+      __m128i  r0, r1;
       __m128i *l1 = (__m128i *) lIn1;
       __m128i *l2 = (__m128i *) lIn2;
       __m128i *l3 = (__m128i *) lOut;
@@ -214,7 +218,7 @@ namespace smil
     }
   };
   /** @endcond */
-  
+
   /** @}*/
 
 } // namespace smil

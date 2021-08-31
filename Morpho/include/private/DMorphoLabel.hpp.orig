@@ -122,6 +122,8 @@ namespace smil
         return;
 
       queue<size_t> propagation;
+      int x, y, z, n_x, n_y, n_z;
+      IntPoint p;
 
       ++real_labels;
       ++labels;
@@ -130,39 +132,33 @@ namespace smil
       this->pixelsOut[pointOffset] = (T2) labels;
       propagation.push(pointOffset);
 
-      size_t pixPerLine = this->imSize[0];
-      size_t pixPerSlice = this->imSize[0] * this->imSize[1];
+      bool oddLine = 0;
+      size_t curOffset, nbOffset;
 
       while (!propagation.empty()) {
-        off_t x, y, z, n_x, n_y, n_z;
-        IntPoint p;
-
-        bool oddLine = false;
-        size_t curOffset, nbOffset;
-
         curOffset = propagation.front();
         pVal      = this->pixelsIn[curOffset];
 
-        z = curOffset / (pixPerSlice);
-        y = (curOffset - z * pixPerSlice) / pixPerLine;
-        x = curOffset - y * pixPerLine -z * pixPerSlice;
+        z = curOffset / (this->imSize[1] * this->imSize[0]);
+        y = (curOffset - z * this->imSize[1] * this->imSize[0]) /
+            this->imSize[0];
+        x = curOffset - y * this->imSize[0] -
+            z * this->imSize[1] * this->imSize[0];
 
         oddLine = this->oddSe && (y % 2);
 
         for (UINT i = 0; i < this->sePointNbr; ++i) {
           p   = this->sePoints[i];
           n_x = x + p.x;
-          n_x += (oddLine && ((n_y + 1) % 2) != 0);
-          if (n_x < 0 || n_x >= off_t(this->imSize[0]))
-            continue;
           n_y = y + p.y;
-          if (n_y < 0 || n_y >= off_t(this->imSize[1]))
-            continue;
+          n_x += (oddLine && ((n_y + 1) % 2) != 0);
           n_z      = z + p.z;
-          if (n_z < 0 || n_z >= off_t(this->imSize[2]))
-            continue;
-          nbOffset = n_x + n_y * pixPerLine + n_z * pixPerSlice;
-          if (nbOffset != curOffset &&
+          nbOffset = n_x + (n_y) * this->imSize[0] +
+                     (n_z) * this->imSize[1] * this->imSize[0];
+          if (nbOffset != curOffset && n_x >= 0 &&
+              n_x < (int) this->imSize[0] && n_y >= 0 &&
+              n_y < (int) this->imSize[1] && n_z >= 0 &&
+              n_z < (int) this->imSize[2] &&
               this->pixelsOut[nbOffset] != labels &&
               compareFunc(this->pixelsIn[nbOffset], pVal)) {
             this->pixelsOut[nbOffset] = T2(labels);
