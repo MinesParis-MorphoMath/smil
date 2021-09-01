@@ -184,42 +184,42 @@ namespace smil
     virtual void modified() = 0;
 
     /**
-     * isCoordsInImage() - checks if the triplet (x, y, z) in inside the image
+     * areCoordsInImage() - checks if the triplet (x, y, z) in inside the image
      * bounds.
      *
      * @param[in] x,y,z : coords of a point
      */
-    virtual bool isCoordsInImage(const off_t x, const off_t y, const off_t z = 0)
+    inline bool areCoordsInImage(const off_t x, const off_t y, const off_t z = 0) const
     {
       if (x < 0 || y < 0 || z < 0)
         return false;
-      if (x >= off_t(width) || y >= off_t(height) || z >= off_t(depth))
+      if (x >= off_t(this->width) || y >= off_t(this->height) || z >= off_t(this->depth))
         return false;
       return true;
     }
 
     /**
-     * isCoordsInImage() - checks if the triplet (x, y, z) in inside the image
+     * areCoordsInImage() - checks if the triplet (x, y, z) in inside the image
      * bounds.
      *
      * @param[in] x,y,z : coords of a point
      *
      * @overload
      */
-    virtual bool isCoordsInImage(const size_t x, const size_t y, const size_t z = 0)
+    inline bool areCoordsInImage(const size_t x, const size_t y, const size_t z = 0) const
     {
-      if (x >= size_t(width) || y >= size_t(height) || z >= size_t(depth))
+      if (x >= size_t(this->width) || y >= size_t(this->height) || z >= size_t(this->depth))
         return false;
       return true;
     }
 
     /**
-     * isCoordsInImage() - checks if a buffer offset in inside the image
+     * isOffsetInImage() - checks if a buffer offset in inside the image
      * bounds.
      *
      * @param[in] offset : offset of a point in the image buffer
      */
-    virtual bool isOffsetInImage(const off_t offset)
+    inline bool isOffsetInImage(const off_t offset) const
     {
       if (offset < 0)
         return false;
@@ -229,12 +229,12 @@ namespace smil
     }
 
     /**
-     * isCoordsInImage() - checks if a buffer offset in inside the image
+     * isOffsetInImage() - checks if a buffer offset in inside the image
      * bounds.
      *
      * @param[in] offset : offset of a point in the image buffer
      */
-    virtual bool isOffsetInImage(const size_t offset)
+    inline bool isOffsetInImage(const size_t offset) const
     {
       if (offset > getPixelCount())
         return false;

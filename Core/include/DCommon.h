@@ -120,7 +120,7 @@ namespace smil
   /**
    * Struct Point
    */
-  template <class T = off_t>
+  template <class T=off_t>
   struct Point {
     T x;
     T y;

@@ -153,15 +153,21 @@ namespace smil
           p   = this->sePoints[i];
           n_x = x + p.x;
           n_x += (oddLine && ((n_y + 1) % 2) != 0);
+          n_y = y + p.y;
+          n_z      = z + p.z;
+          nbOffset = n_x + n_y * pixPerLine + n_z * pixPerSlice;
+
           if (n_x < 0 || n_x >= off_t(this->imSize[0]))
             continue;
-          n_y = y + p.y;
+          //n_y = y + p.y;
           if (n_y < 0 || n_y >= off_t(this->imSize[1]))
             continue;
-          n_z      = z + p.z;
+          //n_z      = z + p.z;
           if (n_z < 0 || n_z >= off_t(this->imSize[2]))
             continue;
-          nbOffset = n_x + n_y * pixPerLine + n_z * pixPerSlice;
+          //if (!parentClass::imageIn->areCoordsInImage(n_x, n_y, n_z))
+          //  continue;
+          //nbOffset = n_x + n_y * pixPerLine + n_z * pixPerSlice;
           if (nbOffset != curOffset &&
               this->pixelsOut[nbOffset] != labels &&
               compareFunc(this->pixelsIn[nbOffset], pVal)) {
