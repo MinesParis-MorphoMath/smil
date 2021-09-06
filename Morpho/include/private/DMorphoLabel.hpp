@@ -135,7 +135,6 @@ namespace smil
 
       while (!propagation.empty()) {
         off_t x, y, z, n_x, n_y, n_z;
-        IntPoint p;
 
         bool oddLine = false;
         size_t curOffset, nbOffset;
@@ -145,12 +144,12 @@ namespace smil
 
         z = curOffset / (pixPerSlice);
         y = (curOffset - z * pixPerSlice) / pixPerLine;
-        x = curOffset - y * pixPerLine -z * pixPerSlice;
+        x = curOffset - y * pixPerLine - z * pixPerSlice;
 
         oddLine = this->oddSe && (y % 2);
 
         for (UINT i = 0; i < this->sePointNbr; ++i) {
-          p   = this->sePoints[i];
+          IntPoint p   = this->sePoints[i];
 
           n_z      = z + p.z;
           if (n_z < 0 || n_z >= off_t(this->imSize[2]))
@@ -164,7 +163,7 @@ namespace smil
           if (n_x < 0 || n_x >= off_t(this->imSize[0]))
             continue;
 
-          //if (!parentClass::imageIn->areCoordsInImage(n_x, n_y, n_z))
+          //if (!this->imageIn->areCoordsInImage(n_x, n_y, n_z))
           //  continue;
 
           nbOffset = n_x + n_y * pixPerLine + n_z * pixPerSlice;
