@@ -356,7 +356,8 @@ ENDIF(WRAP_CPP)
 
 OPTION(WRAP_PYTHON "Wrap Python" FALSE)
 IF(WRAP_PYTHON)
-  if (${CMAKE_VERSION} VERSION_GREATER "3.20")
+  # Provisory hack... shall rework on this
+  if (${CMAKE_VERSION} VERSION_GREATER "4.30")
     find_package (Python COMPONENTS Interpreter Development Numpy)
 
     include_directories(${Python_INCLUDE_DIRS})
@@ -837,11 +838,11 @@ IF(USE_WRAPPER)
     #          LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/smilPython)
     INSTALL(TARGETS _smil_Python LIBRARY DESTINATION
           ${SMIL_LIBRARIES_INSTALL_PATH} COMPONENT python)
-    INSTALL(FILES 
+    INSTALL(FILES
             ${LIBRARY_OUTPUT_PATH}/smilPython/smil_Python.py
             ${LIBRARY_OUTPUT_PATH}/smilPython/smilFuncRewrite.py
             ${LIBRARY_OUTPUT_PATH}/smilPython/__init__.py
-            DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}/smilPython 
+            DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}/smilPython
             COMPONENT python)
 
     IF(UNIX)
