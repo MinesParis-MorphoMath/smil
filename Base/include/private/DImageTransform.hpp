@@ -105,7 +105,7 @@ namespace smil
     typename Image<T1>::volType slIn  = imIn.getSlices() + startZ;
     typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
 
-    size_t y;
+    // size_t y;
 
     for (size_t z = 0; z < realSz; z++) {
       typename Image<T1>::sliceType lnIn  = *slIn + startY;
@@ -113,13 +113,13 @@ namespace smil
 
 #ifdef USE_OPEN_MP
       int nthreads = Core::getInstance()->getNumberOfThreads();
-#pragma omp parallel private(y)
+// #pragma omp parallel private(y)
 #endif // USE_OPEN_MP
       {
 #ifdef USE_OPEN_MP
 #pragma omp for schedule(dynamic, nthreads) nowait
 #endif // USE_OPEN_MP
-        for (y = 0; y < realSy; y++)
+        for (size_t y = 0; y < realSy; y++)
           copyLine<T1, T2>(lnIn[y] + startX, realSx, lnOut[y] + outStartX);
       }
 

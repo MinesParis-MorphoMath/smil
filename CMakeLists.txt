@@ -26,7 +26,7 @@
 
 PROJECT(Smil)
 
-CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
 
 ###### CMAKE POLICIES ######
 
@@ -99,7 +99,8 @@ IF (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT AND PREFIX)
 ENDIF()
 
 ## ADDITIONAL SEARCH PATHS (Usefull for windows and virtual environnments)
-SET(ADDITIONAL_SEARCH_PATHS "" CACHE STRING "Additional paths to search libraries/files")
+SET(ADDITIONAL_SEARCH_PATHS ""
+    CACHE STRING "Additional paths to search libraries/files")
 # IF(UNIX)
 #   MARK_AS_ADVANCED(ADDITIONAL_SEARCH_PATHS)
 # ENDIF(UNIX)
@@ -150,9 +151,12 @@ IF(UNIX)
     # Smil libraries should go to /usr/local/lib
     SET(LIBSUFFIX)
   ENDIF(EXISTS "/usr/lib64" AND NOT IS_SYMLINK "/usr/lib64")
-  SET(SMIL_LIBRARIES_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/lib${LIBSUFFIX}/${CMAKE_PROJECT_NAME})
-  SET(SMIL_HEADERS_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/include/${CMAKE_PROJECT_NAME})
-  SET(SMIL_SHARE_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME})
+  SET(SMIL_LIBRARIES_INSTALL_PATH
+      ${CMAKE_INSTALL_PREFIX}/lib${LIBSUFFIX}/${CMAKE_PROJECT_NAME})
+  SET(SMIL_HEADERS_INSTALL_PATH
+      ${CMAKE_INSTALL_PREFIX}/include/${CMAKE_PROJECT_NAME})
+  SET(SMIL_SHARE_INSTALL_PATH
+      ${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME})
 ENDIF(UNIX)
 
 SET(CMAKE_INSTALL_RPATH ${LIBRARY_OUTPUT_PATH})
@@ -192,7 +196,8 @@ IF(BUILD_SHARED_LIBS)
   SET(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
 ENDIF(BUILD_SHARED_LIBS)
 
-OPTION(USE_STATIC_DEPEND_LIBS "Use the static version on dependency libraries. Requires pkg-config." OFF)
+OPTION(USE_STATIC_DEPEND_LIBS
+  "Use the static version on dependency libraries. Requires pkg-config." OFF)
 MARK_AS_ADVANCED(USE_STATIC_DEPEND_LIBS)
 IF(USE_STATIC_DEPEND_LIBS)
   ADD_DEFINITIONS("-Wl,-Bstatic")
@@ -221,7 +226,8 @@ IF(CMAKE_COMPILER_IS_GNUCC)
 ENDIF(CMAKE_COMPILER_IS_GNUCC)
 
 # 64 Bits
-IF(CMAKE_SIZEOF_VOID_P EQUAL 8)
+IF("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8" OR
+   "${CMAKE_GENERATOR}" MATCHES "(Win64|IA64)")
   # 4 -> 32 BITS, 8 -> 64 BITS
   MESSAGE(STATUS "64 bits system detected")
   OPTION(USE_64BIT_IDS "Compile for 64 bits system" ON)
@@ -357,16 +363,16 @@ ENDIF(WRAP_CPP)
 OPTION(WRAP_PYTHON "Wrap Python" FALSE)
 IF(WRAP_PYTHON)
   # Provisory hack... shall rework on this
-  if (${CMAKE_VERSION} VERSION_GREATER "4.30")
-    find_package (Python COMPONENTS Interpreter Development Numpy)
+  if (${CMAKE_VERSION} VERSION_GREATER "3.12")
+    find_package (Python3 COMPONENTS Interpreter Development NumPy)
 
-    include_directories(${Python_INCLUDE_DIRS})
-    include_directories(${Python_Numpy_INCLUDE_DIRS})
-    include_directories(${Python_Numpy_INCLUDE_DIR})
+    include_directories(${Python3_INCLUDE_DIRS})
+    include_directories(${Python3_NumPy_INCLUDE_DIRS})
+    include_directories(${Python3_NumPy_INCLUDE_DIR})
 
-    STRING(REGEX MATCH "[0-9]\\.[0-9]" PYTHON_VERSION "${Python_VERSION}")
-    STRING(REGEX MATCH "[0-9]" PYTHON_MAJOR "${PYTHON_VERSION}")
-
+    STRING(REGEX MATCH "[0-9]\\.[0-9]" PYTHON_VERSION "${Python3_VERSION}")
+    STRING(REGEX MATCH "[0-9]" PYTHON_MAJOR "${PYTHON3_VERSION}")
+    SET(PYTHON_VERSION ${Python3_VERSION})
   else()
     find_package (PythonInterp 3)
     find_package (PythonLibs   3)
@@ -846,15 +852,15 @@ IF(USE_WRAPPER)
             COMPONENT python)
 
     IF(UNIX)
-      IF(${PYTHON_VERSION} LESS 2.7)
+      IF(${PYTHON_VERSION} VERSION_LESS 2.7)
         INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/smilPython.pth
               DESTINATION /usr/lib/python${PYTHON_VERSION}/site-packages
               COMPONENT python)
-      ELSE(${PYTHON_VERSION} LESS 2.7)
+      ELSE(${PYTHON_VERSION} VERSION_LESS 2.7)
         INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/smilPython.pth
               DESTINATION ${CMAKE_INSTALL_PREFIX}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/dist-packages
           COMPONENT python)
-      ENDIF(${PYTHON_VERSION} LESS 2.7)
+      ENDIF(${PYTHON_VERSION} VERSION_LESS 2.7)
     ENDIF(UNIX)
 
     ADD_DEPENDENCIES(python _smil_Python)

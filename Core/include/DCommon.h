@@ -265,6 +265,7 @@ namespace smil
     Box()
     {
       x0 = x1 = y0 = y1 = z0 = z1 = 0;
+      width = height = depth = 0;
     }
 
     /** Box constructor -
@@ -277,6 +278,9 @@ namespace smil
       y1 = _y1;
       z0 = _z0;
       z1 = _z1;
+      width = x1 - x0 + 1;
+      height = y1 - y0 + 1;
+      depth = z1 - z0 + 1;
     }
 
     /** Box constructor - build a Box copying data from another Box
@@ -289,6 +293,9 @@ namespace smil
       y1 = rhs.y1;
       z0 = rhs.z0;
       z1 = rhs.z1;
+      width = x1 - x0 + 1;
+      height = y1 - y0 + 1;
+      depth = z1 - z0 + 1;
     }
 
     /** getWidth() - Get the box width
