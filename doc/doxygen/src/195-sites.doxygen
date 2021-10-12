@@ -5,6 +5,8 @@
  *   - @WebServerSmil
  *   - @URL{https://github.com/MinesParis-MorphoMath,
  *          Smil git repository at GitHub}
+ *   - @UrlSmil{smil-vs-skimage, Benchmark Smil versus Scikit-Image (morphology
+ *      only)}
  * - @Smil documentation
  *   - @UrlSmil{publis/Smil-Reference-Manual.pdf, Complete PDF documentation}
  *   - @UrlSmil{publis/SmilQuickReference.pdf, Smil Quick Reference} - a handy

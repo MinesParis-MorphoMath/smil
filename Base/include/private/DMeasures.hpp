@@ -1402,14 +1402,14 @@ namespace smil
 #else
     // Using OpenMP
 #ifdef USE_OPEN_MP
-#pragma omp for
+#pragma omp parallel for
 #endif
-    for (size_t i = 0; i < imIn.getPixelCount(); i++) {
+    for (size_t i = 0; i < imIn.getPixelCount() && h.size() <= 2; i++) {
       h[pixels[i]] = True;
     }
 #endif
 
-    return h[0] && h.size() == 2;
+    return h[0] > 0 && h.size() == 2;
   }
 
   /** @}*/

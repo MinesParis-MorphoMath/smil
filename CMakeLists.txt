@@ -363,7 +363,7 @@ ENDIF(WRAP_CPP)
 OPTION(WRAP_PYTHON "Wrap Python" FALSE)
 IF(WRAP_PYTHON)
   # Provisory hack... shall rework on this
-  if (${CMAKE_VERSION} VERSION_GREATER "3.12")
+  if (${CMAKE_VERSION} VERSION_GREATER "4.12")
     find_package (Python3 COMPONENTS Interpreter Development NumPy)
 
     include_directories(${Python3_INCLUDE_DIRS})

@@ -7,7 +7,7 @@
  *      - merge() to create a structuring element from the merge of two other
  *        s.e.;
  *      - buildLineSE() to build a line structuring elements;
- *    - Structurint elements :
+ *    - Structuring elements :
  *      - LineSE() and Line3DSE() - a @I2D and @I3D line Structuring Elements
  *        with arbitrary length and angles;
  *      - StrElt::merge() Structuring element method to merge some structuring

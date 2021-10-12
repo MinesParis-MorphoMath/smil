@@ -618,7 +618,7 @@ namespace smil
     {
       Xr = 0;
       Bp = 0;
-      T prev;
+      T prev = 0;
 
       T *   buf       = im.getPixels();
       off_t pixOffset = x + y * width;

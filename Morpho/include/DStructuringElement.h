@@ -332,7 +332,7 @@ namespace smil
     }
 
     /**
-     * getName() - Get the name of the structurint element
+     * getName() - Get the name of the structuring element
      *
      * @returns the name of the structuring element (as a string)
      */
