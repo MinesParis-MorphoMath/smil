@@ -181,7 +181,7 @@ namespace smil
                             bool convertFirstToHLS)
   {
     Image<UINT8> imOut(imIn);
-    ASSERT(gradientHLS(imIn, se, convertFirstToHLS) == RES_OK, RES_ERR, imOut)
+    ASSERT(gradientHLS(imIn, imOut, se, convertFirstToHLS) == RES_OK, RES_ERR, imOut)
     return imOut;
   }
 

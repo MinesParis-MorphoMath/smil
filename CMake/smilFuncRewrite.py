@@ -5,6 +5,7 @@ from smilCorePython import *
 from smilBasePython import *
 from smilIOPython import *
 from smilMorphoPython import *
+from smilColorPython  import *
 
 
 # -------------------------------

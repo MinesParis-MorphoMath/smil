@@ -130,8 +130,8 @@ TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(compare);
 // *******************************
 // Filters from Jose-Marcio
 // *******************************
-TEMPLATE_WRAP_FUNC_2T_CROSS(expand);
-// TEMPLATE_WRAP_FUNC_2T_CROSS(expandAuto);
+TEMPLATE_WRAP_FUNC_2T_CROSS(scaleRange);
+// TEMPLATE_WRAP_FUNC_2T_CROSS(scaleRangeAuto);
 TEMPLATE_WRAP_FUNC_2T_CROSS(sCurve);
 
 

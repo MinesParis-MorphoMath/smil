@@ -1,7 +1,7 @@
 /**
  * @page ReleaseNotes Release Notes
  *
- * @section s280_10 Smil 0.12.0-dev
+ * @section s280_10 Smil 1.0.0-dev
  *  - @TB{New}
  *    - Functions :
  *      - merge() to create a structuring element from the merge of two other
@@ -18,6 +18,10 @@
  *      completely rewritten from scratch to use Bresenham 3D line structuring
  *      elements and @Smil native dilate() and erode() functions.
  *      The new code is 10 to 20 times faster than the old one.
+ *  - @TB{Change}
+ *    - @TT{labelFlatZones()} - order of parameters to agree with Smil logic and
+ *      set default value to @TT{method} parameter.
+ *    - @TT{geodesicMeasure()} - set default value to @TT{method} parameter.
  *  - @TB{Bug}
  *    - parameter @TT{borderValue} didn't appear in functions erode() and
  *      dilate()
@@ -26,6 +30,7 @@
  *        in it;
  *    - bresenhamLine() and bresenhamPoints() didn't appear in the @Swig
  *      @Python interface.
+ *    - gradientHLS() segmentation fault on the function returning Image.
  *
  * @section s280_09 Smil 0.11.3 (23 Mar 2021))
  *  - @TB{New}
@@ -81,13 +86,12 @@
  *        - geodesicPathClosing()
  *        - geodesicUltimatePathOpening()
  *        - geodesicUltimatePathClosing().
- *  - @TB{Change}
- *    - ..
+ *        - labelFlatZones()
  *  - @TB{Bugs}
  *    - Incompatibility between Jupyter notebooks and @Qt when importing
  *      @smilPython. An environnement variable (@TT{SMIL_DISABLE_GUI}) was added
  *      to disable @TB{Gui} when running @Smil with notebooks.
- *    - @TT{fillHoles} function didn't work with @TB{3D} and @TB{1D} images.
+ *    - @TT{fillHoles()} function didn't work with @TB{3D} and @TB{1D} images.
  *
  * @section s280_06 Smil 0.11.0 (04 Dec 2020)
  *

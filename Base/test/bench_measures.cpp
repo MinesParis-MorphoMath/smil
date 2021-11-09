@@ -43,9 +43,11 @@ int main(void)
   BENCH_IMG(area, im);
   BENCH_IMG(isBinary, im);
 
-  im << 0;
+  UINT8 v = 0;
+  fill(im, v);
   for (off_t x = 0; x < 1024; x++)
     for (off_t y = 0; y < 512; y++)
       im.setPixel(x, y, 255);
   BENCH_IMG(isBinary, im);
+
 }

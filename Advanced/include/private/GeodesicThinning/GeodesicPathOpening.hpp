@@ -68,12 +68,12 @@ namespace smil
 
   /** @cond */
   //
-  // ######  #    #  #    #   ####
-  // #       #    #  ##   #  #    #
-  // #####   #    #  # #  #  #
-  // #       #    #  #  # #  #
-  // #       #    #  #   ##  #    #
-  // #        ####   #    #   ####
+  // ######  #    #  #    #   ####    #####   ####   #####
+  // #       #    #  ##   #  #    #     #    #    #  #    #
+  // #####   #    #  # #  #  #          #    #    #  #    #
+  // #       #    #  #  # #  #          #    #    #  #####
+  // #       #    #  #   ##  #    #     #    #    #  #   #
+  // #        ####   #    #   ####      #     ####   #    #
   //
   struct GeoPoints {
     int Seuil;
@@ -91,7 +91,7 @@ namespace smil
 
   public:
     template <class T1, class T2>
-    RES_T _LabelFlatZones(const Image<T1> &imIn, int method, Image<T2> &imOut)
+    RES_T _LabelFlatZones(const Image<T1> &imIn, Image<T2> &imOut, int method)
     {
       // Check inputs
       ASSERT_ALLOCATED(&imIn)
@@ -921,15 +921,15 @@ namespace smil
   /** Evaluate the XXX for each flat zone in a gray scale image
    *
    * @param[in] imIn : input image
+   * @param[out] imOut : output image
    * @param[in] method :
    * - 0 : geodesic diameter
    * - 1 : elongation
    * - 2 : tortuosity
    * - 3 : extremities
-   * @param[out] imOut : output image
    */
   template <typename T1, typename T2>
-  RES_T labelFlatZones(const Image<T1> &imIn, int method, Image<T2> &imOut)
+  RES_T labelFlatZones(const Image<T1> &imIn, Image<T2> &imOut, int method = 0)
   {
     if (method < 0 || method > 3) {
       ERR_MSG("Wrong method value : shall be in the interval [0,3]");
@@ -937,7 +937,7 @@ namespace smil
     }
 
     MorphoExtrasGeodesic mge;
-    return mge._LabelFlatZones(imIn, method, imOut);
+    return mge._LabelFlatZones(imIn, imOut, method);
   }
 
   /**
@@ -1068,7 +1068,7 @@ namespace smil
    * @overload
    */
   template <typename T1, typename T2>
-  RES_T geodesicMeasure(const Image<T1> &imIn, Image<T2> &imOut, int method,
+  RES_T geodesicMeasure(const Image<T1> &imIn, Image<T2> &imOut, int method = 0,
                         bool sliceBySlice = false, double dzOverDx = 1.)
   {
     MorphoExtrasGeodesic mge;
