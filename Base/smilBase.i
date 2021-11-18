@@ -205,6 +205,8 @@ namespace std
 
 TEMPLATE_WRAP_FUNC(computeBlobs);
 TEMPLATE_WRAP_FUNC_2T_CROSS(drawBlobs)
+TEMPLATE_WRAP_FUNC(getBlobIDFromOffset);
+TEMPLATE_WRAP_FUNC_2T_CROSS(getBlobIDFromOffset);
 
 %include "DMeasures.hpp"
 TEMPLATE_WRAP_FUNC(vol);

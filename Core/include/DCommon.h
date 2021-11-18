@@ -120,12 +120,14 @@ namespace smil
   /**
    * Struct Point
    */
-  template <class T=off_t>
-  struct Point {
+  template <class T=int>
+  class Point
+  {
+  public:
     T x;
     T y;
     T z;
-
+  public:
     /** Contructor - an empty point
      *
      * All coordinates are set to @b 0
@@ -253,76 +255,6 @@ namespace smil
     UINT xSize, ySize;
   };
 
-  /** Box
-   */
-  struct Box {
-    off_t  x0, y0, z0;
-    off_t  x1, y1, z1;
-    size_t width, height, depth;
-
-    /** Box constructor - build an empty Box structure
-     */
-    Box()
-    {
-      x0 = x1 = y0 = y1 = z0 = z1 = 0;
-      width = height = depth = 0;
-    }
-
-    /** Box constructor -
-     */
-    Box(off_t _x0, off_t _x1, off_t _y0, off_t _y1, off_t _z0, off_t _z1)
-    {
-      x0 = _x0;
-      x1 = _x1;
-      y0 = _y0;
-      y1 = _y1;
-      z0 = _z0;
-      z1 = _z1;
-      width = x1 - x0 + 1;
-      height = y1 - y0 + 1;
-      depth = z1 - z0 + 1;
-    }
-
-    /** Box constructor - build a Box copying data from another Box
-     */
-    Box(const Box &rhs)
-    {
-      x0 = rhs.x0;
-      x1 = rhs.x1;
-      y0 = rhs.y0;
-      y1 = rhs.y1;
-      z0 = rhs.z0;
-      z1 = rhs.z1;
-      width = x1 - x0 + 1;
-      height = y1 - y0 + 1;
-      depth = z1 - z0 + 1;
-    }
-
-    /** getWidth() - Get the box width
-     * @returns box width
-     */
-    off_t getWidth() const
-    {
-      return x1 - x0 + 1;
-    }
-
-    /** getHeight() - Get the box width
-     * @returns box height
-     */
-    off_t getHeight() const
-    {
-      return y1 - y0 + 1;
-    }
-
-    /** getDepth() - Get the box depth
-     * @returns box depth
-     */
-    off_t getDepth() const
-    {
-      return z1 - z0 + 1;
-    }
-  };
-
   /** ImageBox
    *
    * This class handles the @TB{bounding box} of an image. It allows to store
@@ -332,11 +264,13 @@ namespace smil
    * Shall be initialized with the dimensions of the image, in order to be able
    * to convert back and forth from @b Points to @b Offsets.
    */
-  struct ImageBox {
+  class ImageBox {
+  public:
     IntPoint pt;
     off_t    reference;
-    off_t    width, height, depth;
+    size_t   width, height, depth;
 
+  public:
     /** ImageBox - constructor
      *
      * @details Build the data structure based on the image bounds. This
@@ -364,12 +298,6 @@ namespace smil
     ImageBox(const ImageBox &box)
     {
       *this     = box;
-#if 0
-      width     = box.width;
-      height    = box.height;
-      depth     = box.depth;
-      reference = box.reference;
-#endif
     }
 
     /** ImageBox - constructor
@@ -476,11 +404,18 @@ namespace smil
      * @returns @b True if the three coordinates are inside image bounds,
      * @b False otherwise
      */
+#if 0
     bool inImage(off_t x, off_t y, off_t z = 0)
     {
       return (x >= 0 && x < width && y >= 0 && y < height && z >= 0 &&
               z < depth);
     }
+#else
+    bool inImage(size_t x, size_t y, size_t z = 0)
+    {
+      return (x < width && y < height && z < depth);
+    }
+#endif
 
     /** inImage() - given the coordinates of a pixel, as a point, check if
      *    its coordinates are inside the image box
@@ -564,6 +499,14 @@ namespace smil
     double getDistance(IntPoint a, IntPoint b)
     {
       return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2) + pow(a.z - b.z, 2));
+    }
+
+    void printSelf()
+    {
+      cout << "ImageBox :" << endl;
+      cout << "  Width :\t" << width << endl;
+      cout << "  Height:\t" << height << endl;
+      cout << "  Depth :\t" << depth << endl;
     }
   };
 

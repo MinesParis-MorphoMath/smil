@@ -22,6 +22,9 @@
  *    - @TT{labelFlatZones()} - order of parameters to agree with Smil logic and
  *      set default value to @TT{method} parameter.
  *    - @TT{geodesicMeasure()} - set default value to @TT{method} parameter.
+ *    - Functions renamed :
+ *      - labelWithMaxima() => labelWithMax()
+ *      - labelFlatZones() => labelFlatZonesWithProperty()
  *  - @TB{Bug}
  *    - parameter @TT{borderValue} didn't appear in functions erode() and
  *      dilate()

@@ -681,6 +681,20 @@ namespace smil
     return lblNbr;
   }
 
+  /** @cond */
+  template <typename T>
+  inline double maxMapValueDouble(map<T, double> &m)
+  {
+    return std::max_element(m.begin(), m.end(), map_comp_value_less())->second;
+  }
+
+  template <typename T>
+  inline double minMapValueDouble(map<T, double> &m)
+  {
+    return std::min_element(m.begin(), m.end(), map_comp_value_less())->second;
+  }
+  /** @endcond */
+
   /**
    * labelWithArea() - Image labelization with the size (area) of each connected
    * components
@@ -727,8 +741,7 @@ namespace smil
    * each connected components in the imLabelIn image
    *
    * @param[in] imIn : input image
-   * @param[in] imLabelIn : an image with disconnected regions to initiate
-   * labeling
+   * @param[in] imLabelIn : an image with regions defined in @b imIn
    * @param[out] imLabelOut : output image
    * @param[in] se : structuring element
    * @returns the number of labels (or 0 if error)
@@ -770,12 +783,11 @@ namespace smil
   }
 
   /**
-   * labelwithMaxima() - Image labelization with the maximum values of each
+   * labelwithMax() - Image labelization with the maximum values of each
    * connected components in the imLabelIn image
    *
    * @param[in] imIn : input image
-   * @param[in] imLabelIn : an image with disconnected regions to initiate
-   * labeling
+   * @param[in] imLabelIn : an image with regions defined in @b imIn
    * @param[out] imLabelOut : output image
    * @param[in] se : structuring element
    * @returns the number of labels (or 0 if error)
@@ -787,8 +799,8 @@ namespace smil
    * in the image if they have the maximum value.
    */
   template <class T1, class T2>
-  size_t labelWithMaxima(const Image<T1> &imIn, const Image<T2> &imLabelIn,
-                         Image<T2> &imLabelOut, const StrElt &se = DEFAULT_SE)
+  size_t labelWithMax(const Image<T1> &imIn, const Image<T2> &imLabelIn,
+                      Image<T2> &imLabelOut, const StrElt &se = DEFAULT_SE)
   {
     ASSERT_ALLOCATED(&imIn, &imLabelOut);
     ASSERT_SAME_SIZE(&imIn, &imLabelOut);
@@ -821,8 +833,7 @@ namespace smil
    * components in the imLabelIn image
    *
    * @param[in] imIn : input image
-   * @param[in] imLabelIn : an image with disconnected regions to initiate
-   * labeling
+   * @param[in] imLabelIn : an image with regions defined in @b imIn
    * @param[out] imLabelOut : output image
    * @param[in] se : structuring element
    * @returns the number of labels (or 0 if error)
@@ -872,6 +883,64 @@ namespace smil
 
     return RES_OK;
   }
+
+#if 0
+  /**
+   * labelWithProperty() - Image labelization with the mean values of each connected
+   * components in the imLabelIn image
+   *
+   * @param[in] imIn : input image
+   * @param[in] imLabelIn : an image with regions defined in @b imIn
+   * @param[out] imLabelOut : output image
+   * @param[in] property :
+   * @param[in] scale :
+   * @param[in] se : structuring element
+   * @returns the number of labels (or 0 if error)
+   *
+   * @note
+   * - The range of type @b T2 of the output image shall be big enough to
+   * accomodate all label values.
+   * - The same label can be assigned to different regions not connected regions
+   * in the image if they have the same mean value.
+   */
+  template <typename T1, typename T2, typename T3>
+  size_t labelWithProperty(const Image<T1> &imLabelIn, const Image<T2> &imIn,
+                           Image<T3> &imLabelOut, const string property,
+                           double scale = 1.,
+                           const StrElt &se = DEFAULT_SE)
+  {
+    ASSERT_ALLOCATED(&imIn, &imLabelIn, &imLabelOut);
+    ASSERT_SAME_SIZE(&imIn, &imLabelIn, &imLabelOut);
+
+    ImageFreezer freezer(imLabelOut);
+
+    Image<T1> imLabel(imIn);
+
+    ASSERT(label(imLabelIn, imLabel, se) != 0);
+    label(imLabelIn, imLabel, se);
+    bool onlyNonZeros   = true;
+    map<T3, Blob> blobs = computeBlobs(imLabel, onlyNonZeros);
+    map<T3, std::vector<double>> meanValsStd = blobsMeanVal(imIn, blobs);
+    map<T3, double> markers;
+
+    typedef typename std::map<T3, std::vector<double>>::iterator iter_T;
+    for (iter_T iter = meanValsStd.begin(); iter != meanValsStd.end(); ++iter) {
+      markers[iter->first] = (iter->second)[0];
+    }
+
+    ASSERT(!markers.empty());
+
+    double maxV =
+        std::max_element(markers.begin(), markers.end(), map_comp_value_less())
+            ->second;
+    ASSERT((maxV < double(ImDtTypes<T3>::max())),
+           "Markers max value exceeds data type max!", 0);
+
+    ASSERT(applyLookup(imLabel, markers, imLabelOut) == RES_OK);
+
+    return RES_OK;
+  }
+#endif
 
   /** @cond */
   template <class T1, class T2>

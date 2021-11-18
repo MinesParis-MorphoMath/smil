@@ -175,15 +175,16 @@ TEMPLATE_WRAP_FUNC_3T_CROSS(watershedExtinctionGraph);
 
 %include "Morpho/include/private/DMorphoLabel.hpp"
 TEMPLATE_WRAP_FUNC_2T_CROSS(label);
-TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithoutFunctor);
-TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithoutFunctor2Partitions);
+//TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithoutFunctor);
+//TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithoutFunctor2Partitions);
 TEMPLATE_WRAP_FUNC_2T_CROSS(lambdaLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(fastLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(lambdaFastLabel);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithArea);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithVolume);
-TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithMaxima);
+TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithMax);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithMean);
+// TEMPLATE_WRAP_FUNC_3T_CROSS(labelWithProperty);
 TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 
 %ignore smil::CompStrEltList::operator[];

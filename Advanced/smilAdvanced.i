@@ -68,15 +68,15 @@ TEMPLATE_WRAP_FUNC(circleClose);
 
 
 
-%include "private/GeodesicThinning/GeodesicPathOpening.hpp"
+%include "private/AdvancedGeodesy/GeodesicPathOpening.hpp"
 
-TEMPLATE_WRAP_FUNC_2T_CROSS(labelFlatZones);
+TEMPLATE_WRAP_FUNC_2T_CROSS(labelFlatZonesWithProperty);
 
 TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicDiameter);
 TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicElongation);
 TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicTortuosity);
 TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicExtremities);
-TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicMeasure);
+TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicProperty);
 
 TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicPathOpening);
 TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicPathClosing);
