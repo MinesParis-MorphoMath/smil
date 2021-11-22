@@ -184,7 +184,7 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithArea);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithVolume);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithMax);
 TEMPLATE_WRAP_FUNC_2T_CROSS(labelWithMean);
-// TEMPLATE_WRAP_FUNC_3T_CROSS(labelWithProperty);
+TEMPLATE_WRAP_FUNC_3T_CROSS(labelWithProperty);
 TEMPLATE_WRAP_FUNC_2T_CROSS(neighbors);
 
 %ignore smil::CompStrEltList::operator[];

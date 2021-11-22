@@ -86,7 +86,6 @@ namespace smil
   {
     // TODO :
     // * remplacer des "X + Y * W + Z * W * H" par "currentPixel"
-    typedef typename vector<IntPoint>::iterator itSe;
 
   public:
     AdvancedGeodesy()
@@ -439,7 +438,6 @@ namespace smil
     const Image<T> * img         = nullptr;
 
     StrElt se = DEFAULT_SE;
-    // typedef typename vector<IntPoint>::iterator itSe;
 
     size_t width  = 1;
     size_t height = 1;
@@ -447,7 +445,7 @@ namespace smil
 
     size_t pixPerLine  = 1;
     size_t pixPerSlice = 1;
-    size_t nbPixels = 1;
+    size_t nbPixels    = 1;
 
     //
     // Auxiliary class functions
@@ -465,7 +463,7 @@ namespace smil
       }
       pixPerLine  = width;
       pixPerSlice = width * height;
-      nbPixels = width * height * depth;
+      nbPixels    = width * height * depth;
 
       if (depth > 1)
         se = CubeSE();
@@ -499,32 +497,24 @@ namespace smil
       return x * x * x;
     }
 
-#if 0
-    void offset2coords(off_t p, off_t W, off_t H, off_t D, off_t &x, off_t &y,
-                      off_t &z)
+#define CVTFUNCS 1
+    void getCoordsFromOffset(off_t offset, off_t W, off_t H, off_t D, off_t &x,
+                            off_t &y, off_t &z)
     {
-      if (p < 0)
-        ERR_MSG("Invalid negative index value is negative");
-      x = p % W;
-      p = (p - x) / W;
-      y = p % H;
-      z = (p - y) / H;
-      if (z > D)
-        ERR_MSG("Invalid slice index greater than image depth");
+      x      = offset % W;
+      offset = (offset - x) / W;
+      y      = offset % H;
+      z      = (offset - y) / H;
+      // X = currentPixel % W;
+      // Y = (currentPixel % (W * H) - X) / W;
+      // Z = (currentPixel - X - Y * W) / (W * H);
     }
 
-    off_t coords2offset(off_t W, off_t H, SMIL_UNUSED off_t D, off_t x, off_t y,
-                       off_t z)
+    off_t getOffsetFromCoords(off_t x, off_t y, off_t z, off_t W, off_t H,
+                             SMIL_UNUSED off_t D)
     {
       return (z * H + y) * W + x;
     }
-
-    off_t offsetAddPoint(off_t p, off_t W, off_t H, off_t D, off_t x, off_t y,
-                        off_t z)
-    {
-      return p + coords2offset(W, H, D, x, y, z);
-    }
-#endif
 
     //
     // Work functions
@@ -553,10 +543,13 @@ namespace smil
         currentPixel = fifoCurrent.front();
         fifoCurrent.pop();
 
+#if CVTFUNCS
+        getCoordsFromOffset(currentPixel, W, H, D, X, Y, Z);
+#else
         X = currentPixel % W;
         Y = (currentPixel % (W * H) - X) / W;
         Z = (currentPixel - X - Y * W) / (W * H);
-        // JOE offset2coords(currentPixel, W, H, D, X, Y, Z);
+#endif
 
         Dist = sqrt(_pow2(X * scaleX - BaryX) + _pow2(Y * scaleY - BaryY) +
                     _pow2(Z * scaleZ - BaryZ));
@@ -578,10 +571,13 @@ namespace smil
       do {
         currentPixel = fifoCurrent.front();
         fifoCurrent.pop();
+#if CVTFUNCS
+        getCoordsFromOffset(currentPixel, W, H, D, X, Y, Z);
+#else
         X = currentPixel % W;
         Y = (currentPixel % (W * H) - X) / W;
         Z = (currentPixel - X - Y * W) / (W * H);
-        // JOE offset2coords(currentPixel, W, H, D, X, Y, Z);
+#endif
 
         // JOE IndCurr = X + (Y * W) + (Z * W * H);
         IndCurr = currentPixel;
@@ -663,10 +659,13 @@ namespace smil
         if (Allongement == 2) {
           // Tortuosity
           off_t X2, Y2, Z2;
+#if CVTFUNCS
+          getCoordsFromOffset(IndStart, W, H, D, X2, Y2, Z2);
+#else
           X2 = IndStart % W;
           Y2 = (IndStart % (W * H) - X2) / W;
           Z2 = (IndStart - X2 - Y2 * W) / (W * H);
-          // JOE offset2coords(IndStart, W, H, D, X2, Y2, Z2);
+#endif
 
           double Eucl;
           Eucl =
@@ -698,7 +697,6 @@ namespace smil
       return;
     } // END GeodesicPathFlatZones
 
-
     //
     //
     //
@@ -729,10 +727,14 @@ namespace smil
           do {
             currentPixel = fifoCurrent.front();
             fifoCurrent.pop();
+
+#if CVTFUNCS
+            getCoordsFromOffset(currentPixel, W, H, D, X, Y, Z);
+#else
             X = currentPixel % W;
             Y = (currentPixel % (W * H) - X) / W;
             Z = (currentPixel - X - Y * W) / (W * H);
-            // JOE offset2coords(currentPixel, W, H, D, X, Y, Z);
+#endif
 
             BaryX += X;
             BaryY += Y;
@@ -778,7 +780,6 @@ namespace smil
       }
     }
 
-
     //
     //
     //
@@ -811,10 +812,13 @@ namespace smil
           do {
             currentPixel = fifoCurrent.front();
             fifoCurrent.pop();
+#if CVTFUNCS
+            getCoordsFromOffset(currentPixel, W, H, D, X, Y, Z);
+#else
             X = currentPixel % W;
             Y = (currentPixel % (W * H) - X) / W;
             Z = (currentPixel - X - Y * W) / (W * H);
-            // JOE offset2coords(currentPixel, W, H, D, X, Y, Z);
+#endif
 
             BaryX += X;
             BaryY += Y;
@@ -879,10 +883,14 @@ namespace smil
       do {
         currentPixel = fifoCurrent.front();
         fifoCurrent.pop();
+
+#if CVTFUNCS
+            getCoordsFromOffset(currentPixel, W, H, D, X, Y, Z);
+#else
         X = currentPixel % W;
         Y = (currentPixel % (W * H) - X) / W;
         Z = (currentPixel - X - Y * W) / (W * H);
-        // JOE offset2coords(currentPixel, W, H, D, X, Y, Z);
+#endif
 
         Dist = (double) sqrt(_pow2(X * scaleX - BaryX) +
                              _pow2(Y * scaleY - BaryY) +
@@ -905,10 +913,13 @@ namespace smil
       do {
         currentPixel = fifoCurrent.front();
         fifoCurrent.pop();
+#if CVTFUNCS
+            getCoordsFromOffset(currentPixel, W, H, D, X, Y, Z);
+#else
         X = currentPixel % W;
         Y = (currentPixel % (W * H) - X) / W;
         Z = (currentPixel - X - Y * W) / (W * H);
-        // JOE offset2coords(currentPixel, W, H, D, X, Y, Z);
+#endif
 
         Dist    = ImDtTypes<double>::max();
         NewDist = false;
@@ -982,10 +993,14 @@ namespace smil
         if (Allongement == 2) {
           // tortuosity
           off_t X2, Y2, Z2;
+
+#if CVTFUNCS
+            getCoordsFromOffset(IndStart, W, H, D, X2, Y2, Z2);
+#else
           X2 = IndStart % W;
           Y2 = (IndStart % (W * H) - X2) / W;
           Z2 = (IndStart - X2 - Y2 * W) / (W * H);
-          // JOE offset2coords(IndStart, W, H, D, X2, Y2, Z2);
+#endif
 
           double Eucl =
               sqrt(_pow2((Xtort - X2) * scaleX) + _pow2((Ytort - Y2) * scaleY) +

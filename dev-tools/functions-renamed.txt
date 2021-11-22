@@ -29,6 +29,9 @@ measBoundBoxes           blobsBoundBox
 measBlobMoments          blobsMoments
 measBlobsEntropy         blobsEntropy
 
+# 19/Nov/2021
+labelWithMaxima          labelWithMax
+
 #
 # __shortcuts__
 getDefaultSE             Morpho.getDefaultSE

@@ -1,13 +1,3 @@
-#
-# Rewrite deprecated functions names for compatibility
-#
-from smilCorePython import *
-from smilBasePython import *
-from smilIOPython import *
-from smilMorphoPython import *
-from smilColorPython  import *
-
-
 # -------------------------------
 # Functions renamed
 #
@@ -67,6 +57,13 @@ def hFlip(*args):
     """
     return horizFlip(*args)
 
+def labelWithMaxima(*args):
+    """
+    Function renamed. Use:
+      r = labelWithMax(...)
+    """
+    return labelWithMax(*args)
+
 def measAreas(*args):
     """
     Function renamed. Use:
@@ -82,13 +79,6 @@ def measBarycenters(*args):
     return blobsBarycenter(*args)
 
 def measBlobMoments(*args):
-    """
-    Function renamed. Use:
-      r = blobsMoments(...)
-    """
-    return blobsMoments(*args)
-
-def measInertiaMatrices(*args):
     """
     Function renamed. Use:
       r = blobsMoments(...)

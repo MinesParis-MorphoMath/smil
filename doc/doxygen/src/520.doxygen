@@ -29,14 +29,23 @@
  *     the root of source file tree :
  * \n
  *
- *     AllowShortFunctionsOnASingleLine: false
- *     BreakBeforeBraces:                Linux
- *     AlignConsecutiveAssignments:      true
- *     AlignConsecutiveDeclarations:     true
- *     NamespaceIndentation:             All
- *     ReflowComents:                    true
- *     SortIncludes:                     false
- *     SortUsingDeclarations:            false
+ *     AlignConsecutiveAssignments:             true
+ *     AlignConsecutiveDeclarations:            true
+ *     AllowShortBlocksOnASingleLine:           false
+ *     AllowShortFunctionsOnASingleLine:        false
+ *     AllowShortIfStatementsOnASingleLine:     false
+ *     AlwaysBreakTemplateDeclarations:         true
+ *     BreakBeforeBraces:                       Linux
+ *     #BreakBeforeBraces:                      Allman
+ *     IndentCaseLabels:                        true
+ *     KeepEmptyLinesAtTheStartOfBlocks:        false
+ *     NamespaceIndentation:                    All
+ *     PenaltyBreakString:                      1000
+ *     SortIncludes:                            false
+ *     SortUsingDeclarations:                   false
+ *     SpaceAfterCStyleCast:                    true
+ *     Standard:                                Cpp11
+ *     TabWidth:                                2
  *
  *   - <b><code>clang-format</code></b> packaged as :
  *     - Ubuntu : <code>clang-format</code>

@@ -4,6 +4,9 @@
  * @section s280_10 Smil 1.0.0-dev
  *  - @TB{New}
  *    - Functions :
+ *      - labelWithProperty() -
+ *      - getBlobIdFromOffset() - returns the blob ID (map key) given the offset
+ *        of a pixel/voxel.
  *      - merge() to create a structuring element from the merge of two other
  *        s.e.;
  *      - buildLineSE() to build a line structuring elements;
@@ -25,6 +28,7 @@
  *    - Functions renamed :
  *      - labelWithMaxima() => labelWithMax()
  *      - labelFlatZones() => labelFlatZonesWithProperty()
+ *      - rangeScale() => scaleRange()
  *  - @TB{Bug}
  *    - parameter @TT{borderValue} didn't appear in functions erode() and
  *      dilate()
