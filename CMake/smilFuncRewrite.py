@@ -1,4 +1,19 @@
-# -------------------------------
+
+#
+# Rewrite deprecated functions names for compatibility
+#
+# -------------------------------------
+from smilAdvancedPython       import *
+from smilBasePython           import *
+from smilColorPython          import *
+from smilCorePython           import *
+from smilFiltersPython        import *
+from smilGuiPython            import *
+from smilIOPython             import *
+from smilMorphoPython         import *
+from smilStochasticWSPython   import *
+  
+# -------------------------------------
 # Functions renamed
 #
 def GeoDist(*args):
@@ -35,20 +50,6 @@ def geoEro(*args):
       r = geoErode(...)
     """
     return geoErode(*args)
-
-def gradient_HLS(*args):
-    """
-    Function renamed. Use:
-      r = gradientHLS(...)
-    """
-    return gradientHLS(*args)
-
-def gradient_LAB(*args):
-    """
-    Function renamed. Use:
-      r = gradientLAB(...)
-    """
-    return gradientLAB(*args)
 
 def hFlip(*args):
     """
@@ -105,6 +106,13 @@ def measImageEntropy(*args):
       r = measEntropy(...)
     """
     return measEntropy(*args)
+
+def measInertiaMatrices(*args):
+    """
+    Function renamed. Use:
+      r = blobsMoments(...)
+    """
+    return blobsMoments(*args)
 
 def measMaxVals(*args):
     """
@@ -183,7 +191,7 @@ def valueLists(*args):
     """
     return blobsValueList(*args)
 
-# -------------------------------
+# -------------------------------------
 # Shortcuts
 #
 def getDefaultSE(*args):

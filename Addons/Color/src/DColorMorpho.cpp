@@ -35,7 +35,8 @@
 
 #include <complex>
 #define _USE_MATH_DEFINES // for C++
-#include <math.h>
+//#include <math.h>
+#include <cmath>
 namespace smil
 {
   class labGrad_func : public MorphImageFunctionBase<RGB, UINT8>
@@ -52,12 +53,20 @@ namespace smil
 
       return RES_OK;
     }
+
+    double pwr2(double x)
+    {
+      return x * x;
+    }
+
     void processPixel(size_t pointOffset, vector<int> &dOffsetList)
     {
       double distMax = 0;
       double dist    = 0;
       RGB pVal       = pixelsIn[pointOffset];
-      double r = pVal.r, g = pVal.g, b = pVal.b;
+      double r = pVal.r;
+      double g = pVal.g;
+      double b = pVal.b;
       size_t dOff;
 
       vector<int>::iterator dOffset = dOffsetList.begin();
@@ -66,6 +75,7 @@ namespace smil
         dist = ((r - R[dOff]) * (r - R[dOff]) + (g - G[dOff]) * (g - G[dOff]) +
                 (b - B[dOff]) * (b - B[dOff])) /
                3;
+        //dist = (pwr2(r - R[dOff]) + pwr2(g - G[dOff]) + pwr2(b - B[dOff]) / 3;
         //                 dist = pixelsIn[dOff].r;
         //         pixelsOut[pointOffset] = max(pixelsOut[pointOffset],
         //         pixelsIn[dOff]);
@@ -120,18 +130,21 @@ namespace smil
 
       return RES_OK;
     }
+
     void processPixel(size_t pointOffset, vector<int> &dOffsetList)
     {
       double distMax = 0;
-      double dist;
       RGB pVal = pixelsIn[pointOffset];
-      double h = double(pVal.r) * 2. * M_PI / 255., l = double(pVal.g) / 255.,
-             s = double(pVal.b) / 255.;
-      size_t dOff;
+      double h = double(pVal.r) * 2. * M_PI / 255.;
+      double l = double(pVal.g) / 255.;
+      double s = double(pVal.b) / 255.;
+      // size_t dOff;
 
-      vector<int>::iterator dOffset = dOffsetList.begin();
-      while (dOffset != dOffsetList.end()) {
-        dOff      = pointOffset + *dOffset;
+      //vector<int>::iterator dOffset = dOffsetList.begin();
+      //while (dOffset != dOffsetList.end()) {
+      for (auto dOffset = dOffsetList.begin(); dOffset != dOffsetList.end(); dOffset++)
+      {
+        size_t dOff      = pointOffset + *dOffset;
         double Hf = double(H[dOff]) / 255. * 2 * M_PI; // Convert to radians
         double Lf = double(L[dOff]) / 255.;
         double Sf = double(S[dOff]) / 255.;
@@ -149,12 +162,13 @@ namespace smil
 
         double d_delta_L = std::fabs(l - Lf);
         double d_weight  = (s + Sf) / 2.;
+        double dist;
 
         dist = d_weight * d_delta_H + (1 - d_weight) * d_delta_L;
 
         if (dist > distMax)
           distMax = dist;
-        dOffset++;
+        //dOffset++;
       }
 
       pixelsOut[pointOffset] = distMax * 255.;
@@ -164,7 +178,7 @@ namespace smil
   RES_T gradientHLS(const Image<RGB> &imIn, Image<UINT8> &imOut,
                      const StrElt &se, bool convertFirstToHLS)
   {
-    ASSERT_ALLOCATED(&imIn);
+    ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     hlsGrad_func iFunc;
@@ -181,7 +195,12 @@ namespace smil
                             bool convertFirstToHLS)
   {
     Image<UINT8> imOut(imIn);
-    ASSERT(gradientHLS(imIn, imOut, se, convertFirstToHLS) == RES_OK, RES_ERR, imOut)
+    // ASSERT(gradientHLS(imIn, imOut, se, convertFirstToHLS) == RES_OK, RES_ERR, imOut)
+    RES_T r = gradientHLS(imIn, imOut, se, convertFirstToHLS);
+    if (r != RES_OK) {
+      ERR_MSG("Error evaluating gradientHLS");
+    }
+
     return imOut;
   }
 

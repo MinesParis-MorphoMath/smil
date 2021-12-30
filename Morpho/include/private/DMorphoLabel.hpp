@@ -708,7 +708,7 @@ namespace smil
    *      @TB{"mean"}, @TB{"stddev"}, @TB{"median"}, @TB{"mode"},
    *      @TB{"nbvalues"}, @TB{"entropy"}
    * @param[in] doRescale : values are rescaled to fullfit the range of the
-   *    output image (@TB{T3})
+   *    output image (@TB{T3}) : (@TT{[min, max] => [1, max(T3)]})
    * @param[in] scale : coefficient to multiply property result of each region
    * @param[in] se : structuring element
    * @returns the number of labels (or 0 if error)
@@ -718,7 +718,7 @@ namespace smil
    *   evaluating the property of each region. The structuring element is needed
    *   just to the labeling operation.
    * - The same label can be assigned to different regions not connected regions
-   * in the image if they have the same property value.
+   *   in the image if they have the same property value.
    * - the number of regions in @TB{imRegions} shall be smaller than the maximum
    *   value of the type @TB{T3}
    * - The range of values of the output image (@TB{T3}) shall be big enough to
@@ -741,6 +741,8 @@ namespace smil
   {
     ASSERT_ALLOCATED(&imIn, &imRegions, &imLabelOut);
     ASSERT_SAME_SIZE(&imIn, &imRegions, &imLabelOut);
+
+    vector<double> retVal(3);
 
     map<string, int> property2key = {
         {"area", 1},     {"volume", 2},  {"max", 3},    {"min", 4},
@@ -854,13 +856,19 @@ namespace smil
     ASSERT(!markers.empty());
 
     double maxV = maxMapValueDouble(markers);
+    double minV = minMapValueDouble(markers);
     double maxT = double(ImDtTypes<T3>::max());
+
+    retVal[1] = minV;
+    retVal[2] = maxV;
+
     if (doRescale) {
-      double minV = minMapValueDouble(markers);
       if (maxV > minV) {
         double k = (maxT - 1.) / (maxV - minV);
-        for (auto it = markers.begin(); it != markers.end(); it++)
-          it->second = 1. + k * (it->second - minV);
+        for (auto it = markers.begin(); it != markers.end(); it++) {
+          if (it->second > 0)
+            it->second = 1. + k * (it->second - minV);
+        }
         cout << "  Values where rescaled :" << endl;
         cout << "    Min : \t" << minV << "\t=> " << 1. << endl;
         cout << "    Max : \t" << maxV << "\t=> " << maxT << endl;
@@ -878,10 +886,13 @@ namespace smil
       ss << "Max " << property << " value (" << maxV
          << ") exceeds data type upper limit (" << maxT << ")";
       ERR_MSG(ss.str());
+      return 0;
     }
 
-    ASSERT(applyLookup(imLabel, markers, imLabelOut) == RES_OK);
+    if (applyLookup(imLabel, markers, imLabelOut) != RES_OK)
+      return 0;
 
+    retVal[0] = nl;
     return nl;
   }
 

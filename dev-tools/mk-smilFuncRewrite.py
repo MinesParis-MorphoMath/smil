@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 #
 # This python script helps creation of module smilFuncRewrite
 #
@@ -7,6 +9,25 @@ import re
 fin = None
 
 fRw = {}
+
+def mkHeader():
+  s = """
+#
+# Rewrite deprecated functions names for compatibility
+#
+# -------------------------------------
+from smilAdvancedPython       import *
+from smilBasePython           import *
+from smilColorPython          import *
+from smilCorePython           import *
+from smilFiltersPython        import *
+from smilGuiPython            import *
+from smilIOPython             import *
+from smilMorphoPython         import *
+from smilStochasticWSPython   import *
+  """
+  print(s)
+
 
 def mkDictFromRewriteFile(fin = None, d = {}):
   k = None
@@ -45,7 +66,7 @@ def mkDictFromListFile(fin = None, d = {}, s = {}):
   return d, s
 
 def mkRewritePrototypes(d = {}, titre = '', helper = ''):
-  print('# -------------------------------')
+  print('# -------------------------------------')
   print('# {:s}'.format(titre))
   print('#')
   for k in sorted(d.keys()):
@@ -65,6 +86,8 @@ def mkRewritePrototypes(d = {}, titre = '', helper = ''):
 #fRw = mkDictFromRewriteFile("dev-tools/smilFuncRewrite.py")
 
 fRw, fSc = mkDictFromListFile("dev-tools/functions-renamed.txt")
+
+mkHeader()
 
 mkRewritePrototypes(fRw, 'Functions renamed', 'Function renamed. Use:')
 

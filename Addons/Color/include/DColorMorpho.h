@@ -42,7 +42,7 @@ namespace smil
    * @addtogroup AddonColor
    * @{
    */
-   
+
   /**
    * @brief gradientLAB
    * @param[in] imIn : input RGB Image

@@ -13,8 +13,6 @@ vFlip                    vertFlip
 
 # 30/Nov/2020
 measImageEntropy         measEntropy
-gradient_HLS             gradientHLS
-gradient_LAB             gradientLAB
 measAreas                blobsArea
 measVolumes              blobsVolume
 measMinVals              blobsMinVal
@@ -28,6 +26,10 @@ measBarycenters          blobsBarycenter
 measBoundBoxes           blobsBoundBox
 measBlobMoments          blobsMoments
 measBlobsEntropy         blobsEntropy
+measInertiaMatrices      blobsMoments
+
+#gradient_HLS             gradientHLS
+#gradient_LAB             gradientLAB
 
 # 19/Nov/2021
 labelWithMaxima          labelWithMax
@@ -36,3 +38,7 @@ labelWithMaxima          labelWithMax
 # __shortcuts__
 getDefaultSE             Morpho.getDefaultSE
 setDefaultSE             Morpho.setDefaultSE
+
+#
+#
+# __additions__
