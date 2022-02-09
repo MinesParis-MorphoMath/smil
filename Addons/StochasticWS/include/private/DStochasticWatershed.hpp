@@ -45,7 +45,8 @@ namespace smil
    * @{
    */
 
-  template <class labelT, class T> class stochastic_edge
+  template <class labelT, class T>
+  class stochastic_edge
   {
   public:
     stochastic_edge(const labelT &s, const labelT &d, const double &w,
@@ -62,7 +63,7 @@ namespace smil
     labelT source;
     labelT dest;
     double weight;
-    T altitude;
+    T      altitude;
     size_t length;
     double dist_max;
     labelT getSource()
@@ -105,7 +106,8 @@ namespace smil
     return e1.weight < e2.weight;
   }
 
-  template <class labelT> class stochastic_node
+  template <class labelT>
+  class stochastic_node
   {
   public:
     stochastic_node(const size_t s, const size_t a, const double d)
@@ -113,9 +115,9 @@ namespace smil
     {
     }
     map<labelT, size_t> edges;
-    size_t area;
-    size_t surface;
-    double dist_max;
+    size_t              area;
+    size_t              surface;
+    double              dist_max;
     map<labelT, size_t> getEdges()
     {
       return edges;
@@ -134,14 +136,15 @@ namespace smil
     }
   };
 
-  template <class labelT, class T> class stochastic_graph
+  template <class labelT, class T>
+  class stochastic_graph
   {
   public:
     stochastic_graph()
     {
     }
     vector<stochastic_edge<labelT, T>> edges;
-    vector<stochastic_node<labelT>> nodes;
+    vector<stochastic_node<labelT>>    nodes;
     vector<stochastic_edge<labelT, T>> getEdges()
     {
       return edges;
@@ -153,7 +156,7 @@ namespace smil
   };
 
   template <class labelT, class T>
-  void stochasticGraphToPDF(const Image<labelT> &img,
+  void stochasticGraphToPDF(const Image<labelT> &        img,
                             stochastic_graph<labelT, T> &graph,
                             Image<labelT> &out, const StrElt &s)
   {
@@ -162,14 +165,14 @@ namespace smil
     labelT *pixels = img.getPixels();
     labelT *outs   = out.getPixels();
     {
-      index p, q;
-      UINT pts;
+      index  p, q;
+      UINT   pts;
       size_t S[3];
       img.getSize(S);
       size_t nbrPixelsInSlice = S[0] * S[1];
       size_t nbrPixels        = nbrPixelsInSlice * S[2];
       StrElt se               = s.noCenter();
-      UINT sePtsNumber        = se.points.size();
+      UINT   sePtsNumber      = se.points.size();
 
       ForEachPixel(p)
       {
@@ -208,14 +211,14 @@ namespace smil
   }
 
   template <class labelT, class T>
-  void displayStochasticMarker(const Image<labelT> &img,
-                               std::vector<int> &markers,
+  void displayStochasticMarker(const Image<labelT> &        img,
+                               std::vector<int> &           markers,
                                stochastic_graph<labelT, T> &graph,
-                               std::vector<labelT> &originals,
+                               std::vector<labelT> &        originals,
                                Image<labelT> &out, const StrElt &s)
   {
     std::map<labelT, labelT> correspondances;
-    uint32_t i = 0;
+    uint32_t                 i = 0;
     for (typename std::vector<labelT>::iterator it = originals.begin();
          it != originals.end(); ++it) {
       correspondances[*it] = i;
@@ -225,14 +228,14 @@ namespace smil
     labelT *pixels = img.getPixels();
     labelT *outs   = out.getPixels();
     {
-      index p, q;
-      UINT pts;
+      index  p, q;
+      UINT   pts;
       size_t S[3];
       img.getSize(S);
       size_t nbrPixelsInSlice = S[0] * S[1];
       size_t nbrPixels        = nbrPixelsInSlice * S[2];
       StrElt se               = s.noCenter();
-      UINT sePtsNumber        = se.points.size();
+      UINT   sePtsNumber      = se.points.size();
       typename std::map<labelT, labelT>::iterator it;
 
       ForEachPixel(p)
@@ -260,15 +263,15 @@ namespace smil
   template <class labelT, class T>
   void mosaicToStochasticGraph(const Image<labelT> &img, const Image<T> &gradI,
                                stochastic_graph<labelT, T> &graph,
-                               const StrElt &s)
+                               const StrElt &               s)
   {
     Image<labelT> tmp = Image<labelT>(img);
 
     distEuclidean(img, tmp);
 
-    labelT nbr_tiles = maxVal(img);
-    labelT *pixels   = img.getPixels();
-    labelT *dists    = tmp.getPixels();
+    labelT  nbr_tiles = maxVal(img);
+    labelT *pixels    = img.getPixels();
+    labelT *dists     = tmp.getPixels();
 
     T *grads = gradI.getPixels();
 
@@ -279,22 +282,22 @@ namespace smil
       graph.nodes.push_back(stochastic_node<labelT>(0, 0, 0));
 
     {
-      index p, q;
-      bool has_zero;
-      UINT pts;
+      index  p, q;
+      bool   has_zero;
+      UINT   pts;
       size_t S[3];
       img.getSize(S);
       size_t nbrPixelsInSlice = S[0] * S[1];
       size_t nbrPixels        = nbrPixelsInSlice * S[2];
       StrElt se               = s.noCenter();
-      UINT sePtsNumber        = se.points.size();
+      UINT   sePtsNumber      = se.points.size();
 
       ForEachPixel(p)
       {
         if (pixels[p.o] != ImDtTypes<T>::max() && pixels[p.o] != 0) {
           graph.nodes[pixels[p.o]].dist_max =
-              (sqrt(dists[p.o]) > graph.nodes[pixels[p.o]].dist_max)
-                  ? sqrt(dists[p.o])
+              (std::sqrt(dists[p.o]) > graph.nodes[pixels[p.o]].dist_max)
+                  ? std::sqrt(dists[p.o])
                   : graph.nodes[pixels[p.o]].dist_max;
 
           std::map<labelT, bool> is_done;
@@ -329,8 +332,8 @@ namespace smil
               graph.edges[graph.nodes[pixels[p.o]].edges[pixels[q.o]]]
                   .dist_max =
                   (graph.edges[graph.nodes[pixels[p.o]].edges[pixels[q.o]]]
-                       .dist_max < sqrt(dists[p.o]))
-                      ? sqrt(dists[p.o])
+                       .dist_max < std::sqrt(dists[p.o]))
+                      ? std::sqrt(dists[p.o])
                       : graph.edges[graph.nodes[pixels[p.o]].edges[pixels[q.o]]]
                             .dist_max;
               if (!has_zero)
@@ -346,7 +349,7 @@ namespace smil
     }
 
     typedef map<labelT, double> map2;
-    map2 m2 = blobsArea(img);
+    map2                        m2 = blobsArea(img);
     for (typename map2::iterator it = m2.begin(); it != m2.end(); ++it) {
       graph.nodes[it->first].area = it->second;
     }
@@ -399,7 +402,7 @@ namespace smil
 
   template <class labelT, class T>
   size_t CCL_stochasticGraph(stochastic_graph<labelT, T> &r,
-                             vector<labelT> &labels)
+                             vector<labelT> &             labels)
   {
     size_t nbr_nodes  = r.nodes.size();
     size_t nbr_labels = 0;
@@ -422,7 +425,7 @@ namespace smil
 
   template <class labelT, class T>
   size_t CCLUnionFind_stochasticGraph(stochastic_graph<labelT, T> &graph,
-                                      vector<labelT> &labels)
+                                      vector<labelT> &             labels)
   {
     uint32_t nbr_nodes  = graph.nodes.size() - 1;
     uint32_t nbr_labels = 0;
@@ -464,8 +467,8 @@ namespace smil
     for (uint32_t j = 1; j < labels.size(); ++j) {
       if (labels[j] == i) {
         out.nodes.push_back(stochastic_node<labelT>(graph.nodes[j].surface,
-                                               graph.nodes[j].area,
-                                               graph.nodes[j].dist_max));
+                                                    graph.nodes[j].area,
+                                                    graph.nodes[j].dist_max));
         originals.push_back(j);
         back[j] = labelT(out.nodes.size() - 1);
       }
@@ -499,8 +502,8 @@ namespace smil
     out.nodes.push_back(stochastic_node<labelT>(0, 0, 0));
     for (uint32_t i = 1; i < graph.nodes.size(); ++i) {
       out.nodes.push_back(stochastic_node<labelT>(graph.nodes[i].surface,
-                                             graph.nodes[i].area,
-                                             graph.nodes[i].dist_max));
+                                                  graph.nodes[i].area,
+                                                  graph.nodes[i].dist_max));
     }
 
     vector<stochastic_edge<labelT, T>> edges = graph.edges;
@@ -544,7 +547,7 @@ namespace smil
   std::vector<double> areaDistribution(stochastic_graph<labelT, T> graph)
   {
     std::vector<double> out;
-    double total_area;
+    double              total_area;
 
     for (uint32_t i = 0; i < graph.nodes.size(); ++i) {
       out.push_back(double(graph.nodes[i].area));
@@ -559,8 +562,8 @@ namespace smil
   std::vector<double> uniformDistribution(stochastic_graph<labelT, T> graph)
   {
     std::vector<double> out;
-    double total_nodes = graph.nodes.size() - 1;
-    double prob        = 1. / total_nodes;
+    double              total_nodes = graph.nodes.size() - 1;
+    double              prob        = 1. / total_nodes;
 
     out.push_back(0);
     for (uint32_t i = 1; i < graph.nodes.size(); ++i) {
@@ -569,20 +572,20 @@ namespace smil
     return out;
   }
 
-  std::vector<int> generateMarkers(const std::vector<double> &prob_dist,
+  std::vector<int> generateMarkers(const std::vector<double> & prob_dist,
                                    std::default_random_engine &generator)
   {
     std::vector<int> markers = std::vector<int>(prob_dist.size(), 0);
 
     std::uniform_real_distribution<double> distribution(0.0, 1.0);
-    std::uniform_int_distribution<int> dist2(1, prob_dist.size());
+    std::uniform_int_distribution<int>     dist2(1, prob_dist.size());
     //        size_t nbr_markers = prob_dist.size();
     size_t nbr_markers = dist2(generator);
 
     for (uint32_t n = 0; n < nbr_markers; ++n) {
       double number   = distribution(generator);
       double cumulate = prob_dist[0];
-      int i           = 0;
+      int    i        = 0;
       while (number > cumulate) {
         i += 1;
         cumulate += prob_dist[i];
@@ -594,10 +597,10 @@ namespace smil
 
   template <class labelT, class T>
   std::vector<size_t> watershedGraph(stochastic_graph<labelT, T> &graph,
-                                     std::vector<int> &markers)
+                                     std::vector<int> &           markers)
   {
     std::vector<size_t> out;
-    std::map<T, int> dist_altitude;
+    std::map<T, int>    dist_altitude;
 
     for (typename std::vector<stochastic_edge<labelT, T>>::iterator it =
              graph.edges.begin();
@@ -615,7 +618,7 @@ namespace smil
     }
 
     std::vector<labelT> basins = std::vector<labelT>(graph.nodes.size(), 0);
-    std::vector<bool> already_pushed =
+    std::vector<bool>   already_pushed =
         std::vector<bool>(graph.edges.size(), false);
 
     labelT basin = 0;
@@ -711,7 +714,7 @@ namespace smil
       ++i;
     }
 
-    size_t clusters[nbr_nodes + 1];
+    size_t        clusters[nbr_nodes + 1];
     struct subset subsets[nbr_nodes + 1];
     // Initialise subsets for union-find.
     for (uint32_t i = 1; i < nbr_nodes + 1; ++i) {
@@ -742,7 +745,7 @@ namespace smil
   }
 
   template <class labelT, class T>
-  std::vector<double> weightHierarchy(std::vector<hierarchy> &h,
+  std::vector<double> weightHierarchy(std::vector<hierarchy> &     h,
                                       stochastic_graph<labelT, T> &graph)
   {
     size_t nbr_weights = graph.nodes.size() + h.size();
@@ -786,7 +789,7 @@ namespace smil
   }
 
   template <class labelT, class T>
-  void bottomUpHierarchy(std::vector<double> &weights,
+  void bottomUpHierarchy(std::vector<double> &   weights,
                          std::vector<hierarchy> &h, const double &r0,
                          stochastic_graph<labelT, T> &graph)
   {
@@ -880,14 +883,14 @@ namespace smil
 
 #pragma omp parallel for
     for (uint32_t i = 1; i < nbr_subgraphs + 1; ++i) {
-      vector<labelT> originals;
+      vector<labelT>              originals;
       stochastic_graph<labelT, T> sub =
           getSubStochasticGraph(graph, i, labels, originals);
       stochastic_graph<labelT, T> mst = KruskalMST(sub);
 
       for (uint32_t j = 0; j < n_seeds; ++j) {
         std::vector<double> prob_dist = uniformDistribution(mst);
-        std::vector<int> markers      = generateMarkers(prob_dist, generator);
+        std::vector<int>    markers   = generateMarkers(prob_dist, generator);
 
         std::vector<size_t> ws = watershedGraph(mst, markers);
 
@@ -946,7 +949,7 @@ namespace smil
 
     for (uint32_t j = 0; j < n_seeds; ++j) {
       std::vector<double> prob_dist = uniformDistribution(graph);
-      std::vector<int> markers      = generateMarkers(prob_dist, generator);
+      std::vector<int>    markers   = generateMarkers(prob_dist, generator);
 
       std::vector<size_t> ws = watershedGraph(graph, markers);
 
@@ -972,7 +975,7 @@ namespace smil
   // Parallel
   template <class labelT, class T>
   size_t stochasticFlatZonesParallel(const Image<labelT> &primary,
-                                     const Image<T> &gradient,
+                                     const Image<T> &     gradient,
                                      Image<labelT> &out, const size_t &n_seeds,
                                      const double &t0, const StrElt &se)
   {
@@ -996,14 +999,14 @@ namespace smil
 
 #pragma omp parallel for
     for (uint32_t i = 1; i < nbr_subgraphs + 1; ++i) {
-      vector<labelT> originals;
+      vector<labelT>              originals;
       stochastic_graph<labelT, T> sub =
           getSubStochasticGraph(graph, i, labels, originals);
       stochastic_graph<labelT, T> mst = KruskalMST(sub);
 
       for (uint32_t j = 0; j < n_seeds; ++j) {
         std::vector<double> prob_dist = uniformDistribution(mst);
-        std::vector<int> markers      = generateMarkers(prob_dist, generator);
+        std::vector<int>    markers   = generateMarkers(prob_dist, generator);
 
         std::vector<size_t> ws = watershedGraph(mst, markers);
 
@@ -1070,7 +1073,7 @@ namespace smil
 
     for (uint32_t j = 0; j < n_seeds; ++j) {
       std::vector<double> prob_dist = uniformDistribution(graph);
-      std::vector<int> markers      = generateMarkers(prob_dist, generator);
+      std::vector<int>    markers   = generateMarkers(prob_dist, generator);
 
       std::vector<size_t> ws = watershedGraph(graph, markers);
 
@@ -1103,7 +1106,7 @@ namespace smil
   // Parallel
   template <class labelT, class T>
   size_t overSegmentationCorrection(const Image<labelT> &primary,
-                                    const Image<T> &gradient,
+                                    const Image<T> &     gradient,
                                     Image<labelT> &out, const size_t &n_seeds,
                                     const double &r0, const StrElt &se)
   {
@@ -1127,7 +1130,7 @@ namespace smil
 
     //        #pragma omp parallel for
     for (uint32_t i = 1; i < nbr_subgraphs + 1; ++i) {
-      vector<labelT> originals;
+      vector<labelT>              originals;
       stochastic_graph<labelT, T> sub =
           getSubStochasticGraph(graph, i, labels, originals);
 
@@ -1136,7 +1139,7 @@ namespace smil
 
         for (uint32_t j = 0; j < n_seeds; ++j) {
           std::vector<double> prob_dist = uniformDistribution(mst);
-          std::vector<int> markers      = generateMarkers(prob_dist, generator);
+          std::vector<int>    markers   = generateMarkers(prob_dist, generator);
 
           std::vector<size_t> ws = watershedGraph(mst, markers);
           for (typename std::vector<size_t>::iterator it = ws.begin();
@@ -1151,8 +1154,8 @@ namespace smil
           it->weight /= n_seeds;
         }
 
-        std::vector<hierarchy> d    = getHierarchy(mst);
-        std::vector<double> weights = weightHierarchy(d, mst);
+        std::vector<hierarchy> d       = getHierarchy(mst);
+        std::vector<double>    weights = weightHierarchy(d, mst);
 
         bottomUpHierarchy(weights, d, r0, mst);
 

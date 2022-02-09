@@ -6,8 +6,8 @@ namespace smil
 {
   template <class T>
   RES_T sigmaFilter(const Image<T> &imIn, const UINT8 radius,
-                        const double sigma, const double percentageNbMinPixel,
-                        const bool excludeOutlier, Image<T> &imOut)
+                    const double sigma, const double percentageNbMinPixel,
+                    const bool excludeOutlier, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -33,8 +33,8 @@ namespace smil
     for (j = 0; j < H; j++) {
       for (i = 0; i < W; i++) {
         double Mean = 0, Std = 0, lowerBound, higherBound;
-        int NbPixel         = 0;
-        int NbPixelInKernel = 0;
+        int    NbPixel         = 0;
+        int    NbPixelInKernel = 0;
         double Sum = 0, Sum2 = 0;
 
         // Compute the mean and the std
@@ -52,7 +52,7 @@ namespace smil
         }
 
         Mean = Sum / (double) NbPixel;
-        Std  = sqrt((Sum2 / (double) NbPixel - (Mean * Mean)));
+        Std  = std::sqrt((Sum2 / (double) NbPixel - (Mean * Mean)));
 
         lowerBound  = bufferIn[(i + j * W)] - (Std * sigma);
         higherBound = bufferIn[(i + j * W)] + (Std * sigma);
@@ -77,7 +77,7 @@ namespace smil
           if (excludeOutlier) {
             bufferOut[(i + j * W)] =
                 (T)((Mean * NbPixel - bufferIn[(i + j * W)]) /
-                     (double) (NbPixel - 1));
+                    (double) (NbPixel - 1));
           } else
             bufferOut[(i + j * W)] = (T) Mean;
         } else
@@ -89,9 +89,8 @@ namespace smil
 
   template <class T>
   RES_T t_sigmaFilterRGB(const Image<T> &imIn, const UINT8 radius,
-                           const double sigma,
-                           const double percentageNbMinPixel,
-                           const bool excludeOutlier, Image<T> &imOut)
+                         const double sigma, const double percentageNbMinPixel,
+                         const bool excludeOutlier, Image<T> &imOut)
   {
 #if 0
     MORPHEE_ENTER_FUNCTION("t_sigmaFilterRGB");
@@ -147,7 +146,7 @@ namespace smil
               }
 
         Mean = Sum / (double) NbPixel;
-        Std  = sqrt((Sum2 - Sum * Sum / (double) NbPixel) / (double) NbPixel);
+        Std  = std::sqrt((Sum2 - Sum * Sum / (double) NbPixel) / (double) NbPixel);
 
         lowerBound  = pixelsf[(i + j * W) * 3] - (Std * sigma);
         higherBound = pixelsf[(i + j * W) * 3] + (Std * sigma);
@@ -193,4 +192,3 @@ namespace smil
 
 } // namespace smil
 #endif
-

@@ -85,7 +85,7 @@ namespace smil
       }
 
       if (distMax > 0)
-        dist = sqrt(distMax);
+        dist = std::sqrt(distMax);
 
       pixelsOut[pointOffset] = dist;
     }

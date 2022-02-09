@@ -61,7 +61,7 @@ namespace smil
 
       double sum = 0;
       for (int i = -radius; i <= radius; i++) {
-        kernel[i + radius] = std::exp(-(pow(i / sigma, 2) / 2));
+        kernel[i + radius] = std::exp(-(std::pow(i / sigma, 2) / 2));
         sum += kernel[i + radius];
       }
       for (int i = -radius; i <= radius; i++) {
@@ -378,7 +378,7 @@ namespace smil
 
     //  Determine kernel coefficients
     for (int i = 0; i < kernelSize; i++) {
-      kernel[i] = double(std::exp(-pow((i - radius) / sigma, 2) / 2.));
+      kernel[i] = double(std::exp(-std::pow((i - radius) / sigma, 2) / 2.));
       sum += kernel[i];
     }
     // Normalize

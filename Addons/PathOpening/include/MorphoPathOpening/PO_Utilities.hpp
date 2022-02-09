@@ -2,7 +2,7 @@
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * Copyright (c) 2017-2021, Centre de Morphologie Mathematique
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -15,16 +15,16 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Description :
@@ -39,7 +39,6 @@
  * __HEAD__ - Stop here !
  */
 
-
 #ifndef __PO_UTILITIES_T_HPP__
 #define __PO_UTILITIES_T_HPP__
 
@@ -50,8 +49,8 @@ namespace smil
   int GetNbCC(UINT8 *pixelDone, int W, int H, int D)
   {
     std::queue<int> currentQueue;
-    int j, k, l, X, Y, Z, currentPixel, Ind;
-    int Cpt = 0;
+    int             j, k, l, X, Y, Z, currentPixel, Ind;
+    int             Cpt = 0;
     for (int i = W * H * D - 1; i >= 0; i--) {
       if (pixelDone[i] == 1) {
         currentQueue.push(i);
@@ -95,8 +94,8 @@ namespace smil
     int Z            = imIn.getDepth();
     int NbWhitePixel = 0;
 
-    int i;
-    ULONG Level;
+    int    i;
+    ULONG  Level;
     UINT8 *pixelDone = new UINT8[W * H * Z];
     if (pixelDone == 0) {
       // MORPHEE_REGISTER_ERROR("Error allocation");
@@ -148,7 +147,7 @@ namespace smil
     int H = imIn.getHeight();
     int Z = imIn.getDepth();
 
-    int i, j, Ind, Slice, Threshold[256];
+    int   i, j, Ind, Slice, Threshold[256];
     ULONG Level;
 
     typename Image<T1>::lineType pixelsIn  = imIn.getPixels();
@@ -236,7 +235,7 @@ namespace smil
     ASSERT_ALLOCATED(&imIn)
     ASSERT_SAME_SIZE(&imIn, &imOut)
 
-    int i, j, x, y, z, k, l, m, nbPixel, W, H, Z;
+    int   i, j, x, y, z, k, l, m, nbPixel, W, H, Z;
     ULONG NDG;
     W = imIn.getWidth();
     H = imIn.getHeight();
@@ -321,7 +320,7 @@ namespace smil
 
     typename Image<T1>::lineType pixelsIn    = imIn.getPixels();
     typename Image<T2>::lineType pixelsLevel = imLevel.getPixels();
-    float signalTot                          = 0;
+    float                        signalTot   = 0;
     *Value                                   = 0;
 
     for (size_t i = 0; i < imLevel.getPixelCount(); ++i) {
@@ -383,10 +382,10 @@ namespace smil
     ImageFreezer freeze(imOut);
     fill(imOut, T2(0));
 
-    int i, j, Ind, Slice;
-    int W = imIn.getWidth();
-    int H = imIn.getHeight();
-    int Z = imIn.getDepth();
+    int   i, j, Ind, Slice;
+    int   W = imIn.getWidth();
+    int   H = imIn.getHeight();
+    int   Z = imIn.getDepth();
     float Mu, Sigma;
 
     typename Image<T1>::lineType pixelsIn  = imIn.getPixels();
@@ -405,7 +404,7 @@ namespace smil
       for (i = 0, j = Ind; i < W * H; ++j, i++)
         Sigma += (pixelsIn[j] - Mu) * (pixelsIn[j] - Mu);
       Sigma /= (float) (W * H);
-      Sigma = sqrt(Sigma);
+      Sigma = std::sqrt(Sigma);
 
       // Write Output
       for (i = 0, j = Ind; i < W * H; ++j, i++)
@@ -433,10 +432,10 @@ namespace smil
     ImageFreezer freeze(imOut);
     fill(imOut, T2(0));
 
-    int i, j, k, l, X, Y, Z, Ind, currentPixel, cptSk, cptBin;
-    int W         = imBin.getWidth();
-    int H         = imBin.getHeight();
-    int D         = imBin.getDepth();
+    int  i, j, k, l, X, Y, Z, Ind, currentPixel, cptSk, cptBin;
+    int  W        = imBin.getWidth();
+    int  H        = imBin.getHeight();
+    int  D        = imBin.getDepth();
     int *bufferIn = new int[W * D * H];
     if (bufferIn == 0) {
       // MORPHEE_REGISTER_ERROR("Error allocation bufferIn");
@@ -446,8 +445,8 @@ namespace smil
     std::queue<int> currentQueue, saveQueue;
 
     typename Image<UINT8>::lineType pixelsBin = imBin.getPixels();
-    typename Image<T1>::lineType pixelsSk     = imSk.getPixels();
-    typename Image<T2>::lineType pixelsOut    = imOut.getPixels();
+    typename Image<T1>::lineType    pixelsSk  = imSk.getPixels();
+    typename Image<T2>::lineType    pixelsOut = imOut.getPixels();
 
     for (size_t i = 0; i < imBin.getPixelCount(); ++i) {
       if (pixelsBin[i] != 0)
@@ -589,10 +588,10 @@ double R,G,B;
 for(;itIn != itInEnd; ++itIn,++itInG,++itInB,++itInR){
   double H = (*itIn)*Scale;
   if(H>240)H=240;
-  
+
 
   HSL_to_RGB2((255-H)/255.0*200.0,230,108,&R,&G,&B);
-  
+
 
   if((*itIn)==0){
     *itInR = (UINT8) 0;
@@ -729,9 +728,9 @@ return morphee::t_colorComposeFrom3(imInR,imInG,imInB,imOut);*/
     for (size_t i = 0; i < imIn.getPixelCount(); ++i)
       bufferIn[i] = ((pixelsIn[i] != 0) ? (1) : (0));
 
-    std::queue<int> currentQueue;
+    std::queue<int>  currentQueue;
     std::vector<int> saveCC;
-    std::queue<int> triplePoint;
+    std::queue<int>  triplePoint;
 
     for (i = W * H * D; i >= 0; i--)
       if (bufferIn[i] == 1) {
@@ -861,7 +860,7 @@ return morphee::t_colorComposeFrom3(imInR,imInG,imInB,imOut);*/
       bufferIn[i] = ((pixelsIn[i] != 0) ? (1) : (0));
 
     std::queue<int> currentQueue;
-    float Dist;
+    float           Dist;
     for (i = W * H * D - 1; i >= 0; i--)
       if (bufferIn[i] == 1) {
         currentQueue.push(i);
@@ -885,9 +884,10 @@ return morphee::t_colorComposeFrom3(imInR,imInG,imInB,imOut);*/
                         (k != 0 || l != 0 || j != 0)) {
                       Ind = (X + k) + (Y + l) * W + (Z + j) * W * H;
                       if (bufferIn[Ind] == 1) {
-                        Dist += sqrt((float) ((j * ScaleZ * j * ScaleZ) +
-                                              (k * ScaleX) * (k * ScaleX) +
-                                              (l * ScaleY) * (l * ScaleY)));
+                        Dist +=
+                            std::sqrt((float) ((j * ScaleZ * j * ScaleZ) +
+                                               (k * ScaleX) * (k * ScaleX) +
+                                               (l * ScaleY) * (l * ScaleY)));
                         NbPixel++;
                         bufferIn[Ind] = 2;
                         currentQueue.push(Ind);
@@ -953,7 +953,7 @@ return morphee::t_colorComposeFrom3(imInR,imInG,imInB,imOut);*/
       bufferIn[i] = ((pixelsIn[i] != 0) ? (1) : (0));
 
     std::queue<int> currentQueue, saveQueue;
-    float Dist;
+    float           Dist;
     for (i = W * H * D - 1; i >= 0; i--)
       if (bufferIn[i] == 1) {
         currentQueue.push(i);
@@ -978,9 +978,10 @@ return morphee::t_colorComposeFrom3(imInR,imInG,imInB,imOut);*/
                         (k != 0 || l != 0 || j != 0)) {
                       Ind = (X + k) + (Y + l) * W + (Z + j) * W * H;
                       if (bufferIn[Ind] == 1) {
-                        Dist += sqrt((float) ((j * ScaleX * j * ScaleX) +
-                                              (k * ScaleY) * (k * ScaleY) +
-                                              (l * ScaleZ) * (l * ScaleZ)));
+                        Dist +=
+                            std::sqrt((float) ((j * ScaleX * j * ScaleX) +
+                                               (k * ScaleY) * (k * ScaleY) +
+                                               (l * ScaleZ) * (l * ScaleZ)));
                         NbPixel++;
                         bufferIn[Ind] = 2;
                         currentQueue.push(Ind);
@@ -1028,7 +1029,7 @@ return morphee::t_colorComposeFrom3(imInR,imInG,imInB,imOut);*/
                         int *NbComposanteConnexe)
   {
     int i, j, k, l, X, Y, Z, currentPixel, Ind;
-    T1 NDG;
+    T1  NDG;
 
     std::queue<int> currentQueue;
 
@@ -1198,7 +1199,7 @@ return morphee::t_colorComposeFrom3(imInR,imInG,imInB,imOut);*/
     int H = imIn.getHeight();
     int Z = imIn.getDepth();
 
-    int nbJDE   = 0;
+    int  nbJDE  = 0;
     int *posJDE = new int[5 * W * H];
 
     for (int k = 0; k < Z; k++) {
@@ -1235,9 +1236,9 @@ return morphee::t_colorComposeFrom3(imInR,imInG,imInB,imOut);*/
               int y = (posJDE[pix] % (W * H) - x) / W;
               int z = (posJDE[pix] - x - y * W) / (W * H);
 
-              dist = sqrt((i - x) * (i - x) * dx * dx +
-                          (j - y) * (j - y) * dy * dy +
-                          (k - z) * (k - z) * dz * dz);
+              dist = std::sqrt((i - x) * (i - x) * dx * dx +
+                               (j - y) * (j - y) * dy * dy +
+                               (k - z) * (k - z) * dz * dz);
               if (dist < distMin)
                 distMin = dist;
             }

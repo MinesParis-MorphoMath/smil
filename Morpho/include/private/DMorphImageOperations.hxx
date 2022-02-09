@@ -266,7 +266,8 @@ namespace smil
     // Example: dilation function
     vector<int>::iterator it = dOffsets.begin();
     while (it != dOffsets.end()) {
-      // pixelsOut[pointOffset] = max(pixelsOut[pointOffset], pixelsIn[pointOffset + *dOffset]);
+      // pixelsOut[pointOffset] = max(pixelsOut[pointOffset],
+      // pixelsIn[pointOffset + *dOffset]);
       it++;
     }
   }
@@ -298,20 +299,20 @@ namespace smil
     int st = se.getType();
 
     switch (st) {
-    case SE_Horiz:
-      return true;
-    case SE_Vert:
-      return true;
-    case SE_Hex:
-      return true;
-    case SE_Squ:
-      return true;
-    case SE_Cube:
-      return true;
-    case SE_Cross:
-      return true;
-    default:
-      return false;
+      case SE_Horiz:
+        return true;
+      case SE_Vert:
+        return true;
+      case SE_Hex:
+        return true;
+      case SE_Squ:
+        return true;
+      case SE_Cube:
+        return true;
+      case SE_Cross:
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -444,22 +445,22 @@ namespace smil
     int st = se.getType();
 
     switch (st) {
-    case SE_Hex:
-      return _exec_single_hexagonal_SE(imIn, imOut);
-    case SE_Squ:
-      return _exec_single_square_SE(imIn, imOut);
-    case SE_Horiz:
-      return _exec_single_horizontal_segment(imIn, 1, imOut);
-    case SE_Cross:
-      return _exec_single_cross(imIn, imOut);
-    case SE_Vert:
-      return _exec_single_vertical_segment(imIn, imOut);
-    case SE_Cube:
-      return _exec_single_cube_SE(imIn, imOut);
-      //           case SE_Cross3D:
-      //             return _exec_single_cross_3d(imIn, imOut);
-    default:
-      return _exec_single_generic(imIn, imOut, se);
+      case SE_Hex:
+        return _exec_single_hexagonal_SE(imIn, imOut);
+      case SE_Squ:
+        return _exec_single_square_SE(imIn, imOut);
+      case SE_Horiz:
+        return _exec_single_horizontal_segment(imIn, 1, imOut);
+      case SE_Cross:
+        return _exec_single_cross(imIn, imOut);
+      case SE_Vert:
+        return _exec_single_vertical_segment(imIn, imOut);
+      case SE_Cube:
+        return _exec_single_cube_SE(imIn, imOut);
+        //           case SE_Cross3D:
+        //             return _exec_single_cross_3d(imIn, imOut);
+      default:
+        return _exec_single_generic(imIn, imOut, se);
     }
 
     return RES_ERR_NOT_IMPLEMENTED;
@@ -1173,7 +1174,7 @@ namespace smil
 #ifdef USE_OPEN_MP
 #pragma omp barrier
 #endif // USE_OPEN_MP
-        // finally write the first line
+       // finally write the first line
         copyLine<T_in>(firstLineBuf, w, destLines[firstLine]);
       }
 
@@ -1247,7 +1248,7 @@ namespace smil
                                                       imageType &      imOut,
                                                       unsigned int     size)
   {
-    double nbSquareDbl   = (((double) size) / (1 + sqrt(2.)));
+    double nbSquareDbl   = (((double) size) / (1 + std::sqrt(2.)));
     double nbSquareFloor = floor(nbSquareDbl);
     int    nbSquare =
         (int) (((nbSquareDbl - nbSquareFloor) < 0.5f) ? (nbSquareFloor)

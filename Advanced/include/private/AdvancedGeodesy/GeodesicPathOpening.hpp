@@ -499,7 +499,7 @@ namespace smil
 
 #define CVTFUNCS 1
     void getCoordsFromOffset(off_t offset, off_t W, off_t H, off_t D, off_t &x,
-                            off_t &y, off_t &z)
+                             off_t &y, off_t &z)
     {
       x      = offset % W;
       offset = (offset - x) / W;
@@ -511,7 +511,7 @@ namespace smil
     }
 
     off_t getOffsetFromCoords(off_t x, off_t y, off_t z, off_t W, off_t H,
-                             SMIL_UNUSED off_t D)
+                              SMIL_UNUSED off_t D)
     {
       return (z * H + y) * W + x;
     }
@@ -551,8 +551,8 @@ namespace smil
         Z = (currentPixel - X - Y * W) / (W * H);
 #endif
 
-        Dist = sqrt(_pow2(X * scaleX - BaryX) + _pow2(Y * scaleY - BaryY) +
-                    _pow2(Z * scaleZ - BaryZ));
+        Dist = std::sqrt(_pow2(X * scaleX - BaryX) + _pow2(Y * scaleY - BaryY) +
+                         _pow2(Z * scaleZ - BaryZ));
 
         if (Dist > DistMax) {
           DistMax  = Dist;
@@ -604,8 +604,8 @@ namespace smil
                   fifoCurrent.push(Ind);
                   DistanceMap[Ind] = -3;
                 } else if (DistanceMap[Ind] != 0 && DistanceMap[Ind] != -3) {
-                  double Dx = sqrt(_pow2(j * scaleX) + _pow2(k * scaleY) +
-                                   _pow2(l * scaleZ));
+                  double Dx = std::sqrt(_pow2(j * scaleX) + _pow2(k * scaleY) +
+                                        _pow2(l * scaleZ));
                   if (!NewDist || Dist > (DistanceMap[Ind] + Dx)) {
                     Dist    = DistanceMap[Ind] + Dx;
                     NewDist = true;
@@ -668,9 +668,9 @@ namespace smil
 #endif
 
           double Eucl;
-          Eucl =
-              sqrt(_pow2((Xtort - X2) * scaleX) + _pow2((Ytort - Y2) * scaleY) +
-                   _pow2((Ztort - Z2) * scaleZ));
+          Eucl = std::sqrt(_pow2((Xtort - X2) * scaleX) +
+                           _pow2((Ytort - Y2) * scaleY) +
+                           _pow2((Ztort - Z2) * scaleZ));
           if (Eucl != 0)
             DistanceMap[currentPixel] = (double) (DistMax / Eucl);
           else
@@ -885,16 +885,16 @@ namespace smil
         fifoCurrent.pop();
 
 #if CVTFUNCS
-            getCoordsFromOffset(currentPixel, W, H, D, X, Y, Z);
+        getCoordsFromOffset(currentPixel, W, H, D, X, Y, Z);
 #else
         X = currentPixel % W;
         Y = (currentPixel % (W * H) - X) / W;
         Z = (currentPixel - X - Y * W) / (W * H);
 #endif
 
-        Dist = (double) sqrt(_pow2(X * scaleX - BaryX) +
-                             _pow2(Y * scaleY - BaryY) +
-                             _pow2(Z * scaleZ - BaryZ));
+        Dist = (double) std::sqrt(_pow2(X * scaleX - BaryX) +
+                                  _pow2(Y * scaleY - BaryY) +
+                                  _pow2(Z * scaleZ - BaryZ));
 
         if (Dist > DistMax) {
           DistMax  = Dist;
@@ -914,7 +914,7 @@ namespace smil
         currentPixel = fifoCurrent.front();
         fifoCurrent.pop();
 #if CVTFUNCS
-            getCoordsFromOffset(currentPixel, W, H, D, X, Y, Z);
+        getCoordsFromOffset(currentPixel, W, H, D, X, Y, Z);
 #else
         X = currentPixel % W;
         Y = (currentPixel % (W * H) - X) / W;
@@ -943,8 +943,8 @@ namespace smil
                 DistanceMap[Ind] = -3;
               } else {
                 if (DistanceMap[Ind] != 0 && DistanceMap[Ind] != -3) {
-                  double Dx = sqrt(_pow2(j * scaleX) + _pow2(k * scaleY) +
-                                   _pow2(l * scaleZ));
+                  double Dx = std::sqrt(_pow2(j * scaleX) + _pow2(k * scaleY) +
+                                        _pow2(l * scaleZ));
                   if (!NewDist || Dist > (DistanceMap[Ind] + Dx)) {
                     Dist    = DistanceMap[Ind] + Dx;
                     NewDist = true;
@@ -995,16 +995,16 @@ namespace smil
           off_t X2, Y2, Z2;
 
 #if CVTFUNCS
-            getCoordsFromOffset(IndStart, W, H, D, X2, Y2, Z2);
+          getCoordsFromOffset(IndStart, W, H, D, X2, Y2, Z2);
 #else
           X2 = IndStart % W;
           Y2 = (IndStart % (W * H) - X2) / W;
           Z2 = (IndStart - X2 - Y2 * W) / (W * H);
 #endif
 
-          double Eucl =
-              sqrt(_pow2((Xtort - X2) * scaleX) + _pow2((Ytort - Y2) * scaleY) +
-                   _pow2((Ztort - Z2) * scaleZ));
+          double Eucl = std::sqrt(_pow2((Xtort - X2) * scaleX) +
+                                  _pow2((Ytort - Y2) * scaleY) +
+                                  _pow2((Ztort - Z2) * scaleZ));
           // JOE - why 0.01 ??? Compare to 0... OK !!! But ...
           if (Eucl != 0)
             DistanceMap[currentPixel] = DistMax / Eucl;

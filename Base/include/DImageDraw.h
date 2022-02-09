@@ -231,7 +231,8 @@ namespace smil
      * @param[in] pi : initial point
      * @param[in] pf : final point
      */
-    Bresenham(const IntPoint &pi, const IntPoint &pf) : BaseObject("Bresenham"), pi(pi), pf(pf)
+    Bresenham(const IntPoint &pi, const IntPoint &pf)
+        : BaseObject("Bresenham"), pi(pi), pf(pf)
     {
       doBresenham3D(pi.x, pi.y, pi.z, pf.x, pf.y, pf.z);
     }
@@ -242,7 +243,8 @@ namespace smil
      *
      * @param[in] pf : final point
      */
-    Bresenham(const IntPoint &pf) : BaseObject("Bresenham"), pi(IntPoint(0,0,0)), pf(pf)
+    Bresenham(const IntPoint &pf)
+        : BaseObject("Bresenham"), pi(IntPoint(0, 0, 0)), pf(pf)
     {
       doBresenham3D(pi.x, pi.y, pi.z, pf.x, pf.y, pf.z);
     }
@@ -254,7 +256,8 @@ namespace smil
      * @param[in] xi, yi, zi : coordinates of initial point
      * @param[in] xf, yf, zf : coordinates of final point
      */
-    Bresenham(int xi, int yi, int zi, int xf, int yf, int zf) : BaseObject("Bresenham")
+    Bresenham(int xi, int yi, int zi, int xf, int yf, int zf)
+        : BaseObject("Bresenham")
     {
       pi.x = xi;
       pi.y = yi;
@@ -316,14 +319,15 @@ namespace smil
       return pts.size();
     }
 
-    /** length() - length of the line (@TI{Euclidean distance} between extremities)
+    /** length() - length of the line (@TI{Euclidean distance} between
+     * extremities)
      *
      * @returns line length
      */
     double length()
     {
-      return sqrt(pow(pf.x - pi.x, 2) + pow(pf.y - pi.y, 2) +
-                        pow(pf.z - pi.z, 2));
+      return std::sqrt(std::pow(pf.x - pi.x, 2) + std::pow(pf.y - pi.y, 2) +
+                       std::pow(pf.z - pi.z, 2));
     }
 
     void printSelf(ostream &os = std::cout, string indent = "")
@@ -334,7 +338,7 @@ namespace smil
 
       for (UINT i = 0; i < pts.size(); i++)
         os << indent << "#" << i + 1 << "\t: (" << pts[i].x << "," << pts[i].y
-            << "," << pts[i].z << ")" << endl;
+           << "," << pts[i].z << ")" << endl;
     }
 
   private:
