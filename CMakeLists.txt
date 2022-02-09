@@ -146,7 +146,8 @@ ENDIF(WIN32)
 IF(UNIX)
   IF(EXISTS "/usr/lib64" AND NOT IS_SYMLINK "/usr/lib64")
     # Smil libraries should go to /usr/local/lib64
-    SET(LIBSUFFIX 64)
+    #SET(LIBSUFFIX 64)
+    SET(LIBSUFFIX)
   ELSE()
     # Smil libraries should go to /usr/local/lib
     SET(LIBSUFFIX)
