@@ -492,13 +492,19 @@ namespace smil
     }
     virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
     {
+      double vmax = std::numeric_limits<T2>::max();
+      double v;
       if (base != 0) {
         double baseLog = std::log(double(base));
-        for (size_t i = 0; i < size; i++)
-          lOut[i] = std::exp(lIn[i] * baseLog);
+        for (size_t i = 0; i < size; i++) {
+          v = std::exp(lIn[i] * baseLog);
+          lOut[i] = std::min(v, vmax);
+        }
       } else {
-        for (size_t i = 0; i < size; i++)
-          lOut[i] = std::exp(lIn[i]);
+        for (size_t i = 0; i < size; i++) {
+          v = std::exp(lIn[i]);
+          lOut[i] = std::min(v, vmax);
+        }
       }
     }
   };
@@ -514,6 +520,8 @@ namespace smil
     }
     virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
     {
+      double vmax = std::numeric_limits<T2>::max();
+      double v;
       if (exponent == 0.) {
         for (size_t i = 0; i < size; i++)
           lOut[i] = T2(1);
@@ -524,8 +532,10 @@ namespace smil
           lOut[i] = lIn[i];
         return;
       }
-      for (size_t i = 0; i < size; i++)
-        lOut[i] = T2(std::pow(lIn[i], exponent));
+      for (size_t i = 0; i < size; i++) {
+        v = std::pow(lIn[i], exponent);
+        lOut[i] = T2(std::min(v, vmax));
+      }
     }
   };
 

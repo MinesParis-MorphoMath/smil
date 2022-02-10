@@ -63,5 +63,10 @@ int main(void)
   BENCH_IMG_STR(mul, "val", im1, val, im3);
   BENCH_IMG(mulNoSat, im1, im2, im3);
   BENCH_IMG_STR(mulNoSat, "val", im1, val, im3);
+
+  val = 2;
+  BENCH_NRUNS = 1E3;
+  BENCH_IMG_STR(exp, "val", im1, im2, val);
+  BENCH_IMG_STR(pow, "val", im1, im2, val);
   BENCH_IMG(sqrt, im1, im2);
 }

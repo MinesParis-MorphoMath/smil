@@ -820,7 +820,7 @@ namespace smil
   /**
    * mulNoSat() - Multiply an image and a value (without type max check)
    *
-   * The result is a image where :
+   * The result is a image where the value of each pixel will be given by :
    * - <b><c> imOut(x) = (imIn(x) * value  % (max(T) + 1))</c></b>
    *
    * @param[in] imIn : input image
@@ -841,8 +841,8 @@ namespace smil
   /**
    * log() - Logarithm of an image
    *
-   * The result is a image where :
-   * - <b><c> imOut(x) = (imIn(x) != 0 ? log(imIn(x)) : max(T))</c></b>
+   * The result is a image where the value of each pixel will be given by :
+   * - <b><c> imOut(x) = (imIn(x) > 0 ? log(imIn(x)) : max(T))</c></b>
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -864,8 +864,8 @@ namespace smil
   /**
    * exp() - exponential of an image
    *
-   * The result is a image where :
-   * - <b><c> imOut(x) = exp(imIn(x)</c></b>
+   * The result is a image where the value of each pixel will be given by :
+   * - <b><c> imOut(x) = exp(imIn(x))</c></b>
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -873,6 +873,7 @@ namespace smil
    *
    * @note
    * - Possible bases: 0 or none (natural logarithm, or base e), 2, 10
+   * - Output value is limited to the maximum value of imOut data type
    * @see
    * - log()
    */
@@ -897,6 +898,8 @@ namespace smil
    * @param[out] imOut : output image
    * @param[in] exponent : exponent to raise the value of each pixel
    *
+   * @note
+   * - Output value is limited to the maximum value of imOut data type
    */
   template <class T1, class T2>
   RES_T pow(const Image<T1> &imIn, Image<T2> &imOut, double exponent = 2)
