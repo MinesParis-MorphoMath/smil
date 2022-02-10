@@ -806,7 +806,8 @@ namespace smil
 
             hq.push(pr1, p1);
 
-            pixelsOut[p1] = current_dist;
+            // pixelsOut[p1] = current_dist;
+            pixelsOut[p1] = pr1;
 
           } // if wk[p_suiv] != DONE
         }   // x1 no border

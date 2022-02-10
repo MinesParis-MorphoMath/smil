@@ -461,14 +461,15 @@ namespace smil
     }
   };
 
-  template <class T>
-  struct logLine : public unaryLineFunctionBase<T> {
-    typedef typename unaryLineFunctionBase<T>::lineType lineType;
+  template <class T1, class T2 = T1>
+  struct logLine : public unaryLineFunctionBase<T1, T2> {
+    typedef typename unaryLineFunctionBase<T1, T2>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T1, T2>::lineOutType lineOutType;
     int                                                 base;
     logLine() : base(0)
     {
     }
-    virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
+    virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
     {
       if (base != 0) {
         double baseLog = std::log(double(base));
@@ -481,14 +482,15 @@ namespace smil
     }
   };
 
-  template <class T>
-  struct expLine : public unaryLineFunctionBase<T> {
-    typedef typename unaryLineFunctionBase<T>::lineType lineType;
+  template <class T1, class T2 = T1>
+  struct expLine : public unaryLineFunctionBase<T1, T2> {
+    typedef typename unaryLineFunctionBase<T1, T2>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T1, T2>::lineOutType lineOutType;
     int                                                 base;
     expLine() : base(0)
     {
     }
-    virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
+    virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
     {
       if (base != 0) {
         double baseLog = std::log(double(base));
@@ -501,18 +503,20 @@ namespace smil
     }
   };
 
-  template <class T>
-  struct powLine : public unaryLineFunctionBase<T> {
-    typedef typename unaryLineFunctionBase<T>::lineType lineType;
+  template <class T1, class T2 = T1>
+  struct powLine : public unaryLineFunctionBase<T1, T2> {
+    typedef typename unaryLineFunctionBase<T1, T2>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T1, T2>::lineOutType lineOutType;
+
     double                                              exponent;
     powLine() : exponent(1)
     {
     }
-    virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
+    virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
     {
       if (exponent == 0.) {
         for (size_t i = 0; i < size; i++)
-          lOut[i] = T(1);
+          lOut[i] = T2(1);
         return;
       }
       if (exponent == 1.) {
@@ -521,20 +525,22 @@ namespace smil
         return;
       }
       for (size_t i = 0; i < size; i++)
-        lOut[i] = T(std::pow(lIn[i], exponent));
+        lOut[i] = T2(std::pow(lIn[i], exponent));
     }
   };
 
-  template <class T>
-  struct sqrtLine : public unaryLineFunctionBase<T> {
-    typedef typename unaryLineFunctionBase<T>::lineType lineType;
+  template <class T1, class T2 = T1>
+  struct sqrtLine : public unaryLineFunctionBase<T1, T2> {
+    typedef typename unaryLineFunctionBase<T1, T2>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T1, T2>::lineOutType lineOutType;
+
     sqrtLine()
     {
     }
-    virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
+    virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
     {
       for (size_t i = 0; i < size; i++)
-        lOut[i] = T(std::sqrt(lIn[i]));
+        lOut[i] = T2(std::sqrt(lIn[i]));
     }
   };
 

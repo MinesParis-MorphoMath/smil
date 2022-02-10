@@ -850,13 +850,13 @@ namespace smil
    *
    * @note Possible bases: 0 or none (natural logarithm, or base e), 2, 10
    */
-  template <class T>
-  RES_T log(const Image<T> &imIn, Image<T> &imOut, int base = 0)
+  template <class T1, class T2>
+  RES_T log(const Image<T1> &imIn, Image<T2> &imOut, int base = 0)
   {
     ASSERT_ALLOCATED(&imIn);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    unaryImageFunction<T, logLine<T>> func;
+    unaryImageFunction<T1, logLine<T1, T2>, T2> func;
     func.lineFunction.base = base;
     return func(imIn, imOut);
   }
@@ -876,13 +876,13 @@ namespace smil
    * @see
    * - log()
    */
-  template <class T>
-  RES_T exp(const Image<T> &imIn, Image<T> &imOut, int base = 0)
+  template <class T1, class T2>
+  RES_T exp(const Image<T1> &imIn, Image<T2> &imOut, int base = 0)
   {
     ASSERT_ALLOCATED(&imIn);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    unaryImageFunction<T, expLine<T>> func;
+    unaryImageFunction<T1, expLine<T1, T2>, T2> func;
     func.lineFunction.base = base;
     return func(imIn, imOut);
   }
@@ -898,13 +898,13 @@ namespace smil
    * @param[in] exponent : exponent to raise the value of each pixel
    *
    */
-  template <class T>
-  RES_T pow(const Image<T> &imIn, Image<T> &imOut, double exponent = 2)
+  template <class T1, class T2>
+  RES_T pow(const Image<T1> &imIn, Image<T2> &imOut, double exponent = 2)
   {
     ASSERT_ALLOCATED(&imIn);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    unaryImageFunction<T, powLine<T>> func;
+    unaryImageFunction<T1, powLine<T1, T2>, T2> func;
     func.lineFunction.exponent = exponent;
     return func(imIn, imOut);
   }
@@ -919,13 +919,13 @@ namespace smil
    * @param[out] imOut : output image
    *
    */
-  template <class T>
-  RES_T sqrt(const Image<T> &imIn, Image<T> &imOut)
+  template <class T1, class T2>
+  RES_T sqrt(const Image<T1> &imIn, Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    unaryImageFunction<T, sqrtLine<T>> func;
+    unaryImageFunction<T1, sqrtLine<T1, T2>, T2> func;
     return func(imIn, imOut);
   }
 
