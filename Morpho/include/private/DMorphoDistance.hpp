@@ -828,7 +828,7 @@ namespace smil
   // ######   ####    ####   ######     #    #####   ######  #    #  #    #
   //
   template <class T1, class T2>
-  RES_T distanceEuclidean(const Image<T1> &imIn, Image<T2> &imOut)
+  RES_T distanceEuclideanOld(const Image<T1> &imIn, Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);

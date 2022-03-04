@@ -119,6 +119,7 @@ TEMPLATE_WRAP_FUNC(levelPics);
 //%include "Morpho/include/private/DMorphoDistance.hpp"
 %include "Morpho/include/DMorphoDistance.h"
 TEMPLATE_WRAP_FUNC_2T_CROSS(distance);
+TEMPLATE_WRAP_FUNC_2T_CROSS(distanceEuclideanOld);
 TEMPLATE_WRAP_FUNC_2T_CROSS(distanceEuclidean);
 TEMPLATE_WRAP_FUNC_2T_CROSS(distanceGeodesic);
 

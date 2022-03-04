@@ -22,6 +22,9 @@
  *      elements and @Smil native dilate() and erode() functions.
  *      The new code is 10 to 20 times faster than the old one.
  *  - @TB{Change}
+ *    - @TT{distanceEuclidean()} - replaced by another one based on hierarchical
+ *      queues. The previous one, a slightly faster, had a but on regions
+ *      touching the border of the image.
  *    - @TT{labelFlatZones()} - order of parameters to agree with Smil logic and
  *      set default value to @TT{method} parameter.
  *    - @TT{geodesicMeasure()} - set default value to @TT{method} parameter.
