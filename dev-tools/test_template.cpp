@@ -1,5 +1,5 @@
 /* __HEAD__
- * Copyright (c) 2017-2021, Centre de Morphologie Mathematique
+ * Copyright (c) 2017-2022, Centre de Morphologie Mathematique
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without

@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
-// Copyright (c) 2017-2021, Centre de Morphologie Mathematique
+// Copyright (c) 2017-2022, Centre de Morphologie Mathematique
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ SMIL_MODULE(smil_)
   std::cout << "Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES" <<
       std::endl;
   std::cout <<
-      "Copyright (c) 2017-2021, CMM - Centre de Morphologie Mathematique" <<
+      "Copyright (c) 2017-2022, CMM - Centre de Morphologie Mathematique" <<
       std::endl;
   std::cout << "All rights reserved." << std::endl;
       std::cout << std::endl;
@@ -97,7 +97,7 @@ __builtin__.imageTypes = [ ${IMAGE_TYPES_STR}, ]
 def AboutSmil():
   print("SMIL (Simple Morphological Image Library) ${SMIL_VERSION}")
   print("Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES")
-  print("Copyright (c) 2017-2021, CMM - Centre de Morphologie Mathematique")
+  print("Copyright (c) 2017-2022, CMM - Centre de Morphologie Mathematique")
   print("All rights reserved.")
 
 
