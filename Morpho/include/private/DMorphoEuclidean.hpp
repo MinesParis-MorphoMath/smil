@@ -69,7 +69,7 @@ namespace smil
 
     template <class T1, class T2>
     RES_T _distance(const Image<T1> &imIn, Image<T2> &imOut,
-                const StrElt &se = DEFAULT_SE)
+                    const StrElt &se = DEFAULT_SE)
     {
       ASSERT_ALLOCATED(&imIn, &imOut);
       ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -169,55 +169,51 @@ namespace smil
 
           off_t p1 = imIn.getOffsetFromPoint(pt1);
 
+          // non NULL input pixel, but without output value
+          // (PixelsOffset == maxOffset+1)
           if ((pixelsIn[p1] == 0) || (pixelsOffset[p1] <= maxOffset))
             continue;
 
-          //if ((pixelsIn[p1] != 0) && (pixelsOffset[p1] > maxOffset)) {
-          {
-            // non NULL input pixel, but without output value
-            // (PixelsOffset == maxOffset+1)
+          int current_dist = ImDtTypes<int>::max(); // INFINITE!!!
 
-            int current_dist = ImDtTypes<int>::max(); // INFINITE!!!
+          off_t oo;
+          for (auto it2 = seLoc.points.begin(); it2 != seLoc.points.end();
+               it2++) {
+            IntPoint ptSe2 = *it2;
+            IntPoint pt2   = pt1 + ptSe2;
 
-            off_t oo;
-            for (auto it2 = seLoc.points.begin(); it2 != seLoc.points.end();
-                 it2++) {
-              IntPoint ptSe2 = *it2;
-              IntPoint pt2   = pt1 + ptSe2;
+            bool oddLine2 = seLoc.odd && (pt1.y % 2 != 0);
+            if (oddLine2 && (((pt2.y + 1) % 2) != 0))
+              pt2.x += 1;
 
-              bool oddLine2 = seLoc.odd && (pt1.y % 2 != 0);
-              if (oddLine2 && (((pt2.y + 1) % 2) != 0))
-                pt2.x += 1;
+            if (!imIn.isPointInImage(pt2))
+              continue;
 
-              if (!imIn.isPointInImage(pt2))
-                continue;
+            off_t p2 = imIn.getOffsetFromPoint(pt2);
 
-              off_t p2 = imIn.getOffsetFromPoint(pt2);
+            if (pixelsOffset[p2] <= maxOffset) {
+              /* voisin de distance calculee */
+              off_t    p3  = pixelsOffset[p2];
+              IntPoint pt3 = imIn.getPointFromOffset(p3);
 
-              if (pixelsOffset[p2] <= maxOffset) {
-                /* voisin de distance calculee */
-                off_t    p3  = pixelsOffset[p2];
-                IntPoint pt3 = imIn.getPointFromOffset(p3);
+              int wd = sqModule(pt1, pt3);
+              if (wd < current_dist) {
+                current_dist = wd;
+                oo           = p2;
+              }
+            } // if ngb knows its distance
+          }   // for ngb
+          T2 pr1 = T2(std::sqrt(current_dist));
 
-                int wd = sqModule(pt1, pt3);
-                if (wd < current_dist) {
-                  current_dist = wd;
-                  oo           = p2;
-                }
-              } // if ngb knows its distance
-            }   // for ngb
-            T2 pr1 = T2(std::sqrt(current_dist));
+          if (pr1 > T2_maxVal)
+            pr1 = T2_maxVal;
 
-            if (pr1 > T2_maxVal)
-              pr1 = T2_maxVal;
+          hq.push(pr1, p1);
 
-            hq.push(pr1, p1);
-
-            pixelsOut[p1] = pr1;
-            pixelsOffset[p1] = pixelsOffset[oo];
-          } // if wk[p_suiv] != DONE
-        }   // for each ngb of p
-      }     // while § EMPTY
+          pixelsOut[p1]    = pr1;
+          pixelsOffset[p1] = pixelsOffset[oo];
+        } // for each ngb of p
+      }   // while ! EMPTY
 
       return RES_OK;
     } // END euclidian_distance
@@ -225,7 +221,7 @@ namespace smil
 
   template <class T1, class T2>
   RES_T distanceEuclidean(const Image<T1> &imIn, Image<T2> &imOut,
-                             const StrElt &se)
+                          const StrElt &se)
   {
     EuclideanFunctor func;
 
