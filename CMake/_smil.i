@@ -88,6 +88,7 @@ except:
 
 __builtin__.dataTypes = [ ${DATA_TYPES_QUOTE_STR}, ]
 __builtin__.imageTypes = [ ${IMAGE_TYPES_STR}, ]
+__builtin__.imageTypesStr = ['Image_'+x for x in dataTypes]
 
 #__builtin__.dataTypes = ["UINT8", "UINT16", "UINT32", "RGB",]
 #__builtin__.imageTypes = [Image_UINT8, Image_UINT16, Image_UINT32, Image_RGB, ]
@@ -316,6 +317,7 @@ def smImage(*args, **kargs):
       'raw' : [True, False],
   }
 
+  #
   def validArgs(kargs):
     ok = True
     for k in kargs:
@@ -328,11 +330,13 @@ def smImage(*args, **kargs):
               format(k, type(kargs[k]), paramTypes[k]))
         ok = False
         continue
-      if not kargs[k] in paramValues[k]:
-        print('ERROR : bad parameter value for {:s} : {:}'.format(k, kargs[k]))
+      if not kargs[k] in paramValues[k] and not isinstance(kargs[k], list):
+        print('ERROR : bad parameter value : {:s} {:}'.format(k, kargs[k]))
+        print('        Valid values : {:}'.format(paramValues[k]))
         ok = False
     return ok
 
+  #
   def _fillImage(img):
     if img.isAllocated():
       try:
@@ -342,16 +346,31 @@ def smImage(*args, **kargs):
         pass
     return img
 
+
+
+  #
+  def dictKeyByValue(d, value):
+    for k, v in d.items():
+      if value == v:
+        return k
+    return None
+
+  #
   def dType2index(dt = 'UINT8'):
     if dt in dataTypes:
       return dataTypes.index(dt)
     return 0
 
+  #
   def dType2dFunc(dt = 'UINT8'):
-    if dt in dataTypes:
-      return imageTypes[dataTypes.index(dt)]
+    if dt in dFuncByStr.keys():
+      return dFuncByStr[dt]
+
+    print('ERROR : bad image type : {:}'.format(dt))
+    print('        Valid types : {:}'.format(paramValues['imtype']))
     return None
 
+  #
   def getFirstInts(args):
     out = []
     for i in range(0, len(args)):
@@ -359,7 +378,11 @@ def smImage(*args, **kargs):
         out.append(args[i])
       else:
         break
+      if len(out) >= 3:
+        break
     return out
+
+
 
   #
   # M A I N
@@ -370,100 +393,126 @@ def smImage(*args, **kargs):
   argNbr = len(args)
   argTypeStr = [str(type(a)) for a in args]
 
+  #
+  #
+  dFuncByStr = {dataTypes[i]:imageTypes[i] for i in range(0, len(dataTypes))}
+  dFuncByType = {('Image_' + dataTypes[i]):imageTypes[i] for i in range(0, len(dataTypes))}
+
   img = None
   fillImg = False
+  imFunc = None
 
+  #
+  # no args or just 'imtype=xxx'
   if len(args) == 0:
     if 'imtype' in kargs:
       imFunc = dType2dFunc(kargs['imtype'])
     else:
       imFunc = imageTypes[0]
-    img = imFunc(256, 256, 1)
-    _fillImage(img)
+    if not imFunc is None:
+      img = imFunc(256, 256, 1)
+      _fillImage(img)
     return img
 
+  #
+  # first args are image dimensions and optional 'imtype'
   if isinstance(args[0], int):
+    imFunc = None
     dims = getFirstInts(args)
+    nInt = len(dims)
     while len(dims) < 3:
       dims.append(1)
     if 'imtype' in kargs:
       imFunc = dType2dFunc(kargs['imtype'])
     else:
-      imFunc = imageTypes[0]
-    img = imFunc(dims[0], dims[1], dims[2])
-    _fillImage(img)
+      if len(args) > nInt and isinstance(args[nInt], str):
+        imFunc = dType2dFunc(args[nInt])
+      else:
+        imFunc = imageTypes[0]
+
+    if not imFunc is None:
+      img = imFunc(dims[0], dims[1], dims[2])
+      _fillImage(img)
     return img
 
   #
-  # O R G    C O D E
-  # default : Image()
-  if argNbr == 0:
-    # No argument -> return default image type
-    img = imageTypes[0](256, 256, 1)
-    _fillImage(img)
-    return img
-
-  # Image(x[, y[, z]])
-  if isinstance(args[0], int):
-    # First arg is a number (should be a size)
-    img = imageTypes[0](*args)
-    _fillImage(img)
-    return img
-
-  # Image(arr) - numpy array
-  if 'numpy.ndarray' in str(type(args[0])):
-    return NumpyInt(*args)
-
-  # Image(imIn)
-  if type(args[0]) in imageTypes or hasattr(args[0], "getTypeAsString"):
-    # First arg is an image
-    srcIm = args[0]
-    if type(srcIm) in imageTypes:
-      srcImgType = type(srcIm)
-    else:
-      srcImgType = imageTypes[dataTypes.index(srcIm.getTypeAsString())]
-    if argNbr > 1:
-      if isinstance(args[1], str):
-        # Second arg is an image type string ("UINT8", ...)
-        if args[1] in dataTypes:
-          imgType = imageTypes[dataTypes.index(args[1])]
-          img = imgType()
-          img.setSize(srcIm)
-        else:
-          print("Unknown image type: " + args[1])
-          print("List of available image types: " + ", ".join(dataTypes))
-          return None
-      else:
-        img = srcImgType(*args[1:])
-    else:
-      img = srcImgType(srcIm, False)  # (don t clone data)
-    _fillImage(img)
-    return img
-
-  # Image('UINTnn' | 'RGB')
+  # first arg is image type ('UINTnn' | 'RGB')
   if isinstance(args[0], str) and args[0] in dataTypes:
-    # First arg is an image type string ("UINT8", ...)
-    imgType = imageTypes[dataTypes.index(args[0])]
-    img = imgType(*args[1:])
-    _fillImage(img)
-    return img
+    imFunc = dType2dFunc(args[0])
+    if not imFunc is None:
+      shape = [256, 256, 1]
+      if 'shape' in kargs:
+        shape = kargs['shape']
+        while len(shape) < 3:
+          shape.append(1)
+      img = imFunc(shape[0], shape[1], shape[2])
+      #img = imgFunc(*args[1:])
+      _fillImage(img)
+      return img
 
+  #
   # Image('nomdefichier.ext' | 'http://')
-  if argNbr > 0 and type(args[0]) == str:
+  if isinstance(args[0], str):
     # Create/load from an existing image fileName
+
+    if 'imtype' in kargs:
+      imFunc = dType2dFunc(kargs['imtype'])
+    if imFunc is None:
+      if len(args) > 1 and isinstance(args[1], str):
+        if args[1] in dataTypes:
+          imFunc = dType2dFunc(args[1])
+
     urlPrefix = ('http://', 'https://')
     if (os.path.exists(args[0]) or args[0].startswith(urlPrefix)):
-      if argNbr > 1 and args[1] in dataTypes:
-        imgType = imageTypes[dataTypes.index(args[1])]
-        img = imgType()
+      if not imFunc is None:
+        img = imFunc()
         read(args[0], img)
       else:
         baseImg = createFromFile(args[0])
         if baseImg != None:
           img = autoCastBaseImage(baseImg)
+      return img
     else:
-      print("File not found: ", args[0])
+      print("File or URL not found: ", args[0])
+      return img
+
+  #
+  # Image(imIn) - First arg is an image
+  if type(args[0]).__name__ in dFuncByType:
+    srcType = type(args[0]).__name__
+    srcIm = args[0]
+
+    if 'imtype' in kargs:
+      imFunc = dType2dFunc(kargs['imtype'])
+    if imFunc is None:
+      if len(args) > 1 and isinstance(args[1], str):
+        if args[1] in dataTypes:
+          imFunc = dType2dFunc(args[1])
+
+    clone = False
+    if 'clone' in kargs:
+      clone = kargs['clone']
+
+    if imFunc is None:
+      if srcType in dFuncByType:
+        imFunc = dFuncByType[srcType]
+        img = imFunc(srcIm, clone)
+        if not clone:
+          _fillImage(img)
+    else:
+      img = imFunc()
+      img.setSize(srcIm)
+      if clone:
+        copy(srcIm, img)
+      else:
+        _fillImage(img)
     return img
+
+  #
+  # Image(arr) - numpy array
+  # if 'numpy.ndarray' in str(type(args[0])):
+  if type(args[0]).__name__ == 'ndarray':
+    return NumpyInt(*args)
 
   # Let C++ try to solve it
   img = imageTypes[0](*args)
