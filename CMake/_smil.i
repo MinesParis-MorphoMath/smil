@@ -130,7 +130,7 @@ __builtin__._find_object_name = _find_object_name
 
 
 # ----------------------------------------------------------------------
-# this function works only inside this module because globals return
+# this function works only inside this module because globals returns
 # only objects defined inside this module
 def _find_images(gbl_dict=None):
   if not gbl_dict:
@@ -156,7 +156,7 @@ __builtin__.getImages = _find_images
 #     #    #    #     #       #
 #
 # ----------------------------------------------------------------------
-# doesn't works - see _find_images
+# doesn't work - see _find_images
 def guess_images_name(gbl_dict=None):
   imgs = _find_images(gbl_dict)
   for im in imgs.keys():
@@ -213,7 +213,7 @@ core.onBaseImageDestroyed.connect(_delImageSlot)
 #
 # ----------------------------------------------------------------------
 #
-# doesn't works - see _find_images
+# doesn't work - see _find_images
 def showAll():
   imgs = _find_images()
   for im in imgs.keys():
@@ -221,7 +221,7 @@ def showAll():
 
 
 # ----------------------------------------------------------------------
-# doesn't works - see _find_images
+# doesn't work - see _find_images
 def hideAll():
   imgs = _find_images()
   for im in imgs.keys():
@@ -229,7 +229,7 @@ def hideAll():
 
 
 # ----------------------------------------------------------------------
-# doesn't works - see _find_images
+# doesn't work - see _find_images
 def deleteAll():
   imgs = _find_images()
   for im in imgs.keys():
@@ -254,7 +254,7 @@ def autoCastBaseImage(baseImg):
 
 # ----------------------------------------------------------------------
 #
-def smImage(*args, **kargs):
+def Image(*args, **kargs):
   """
     smImage()
 
@@ -405,12 +405,17 @@ def smImage(*args, **kargs):
   #
   # no args or just 'imtype=xxx'
   if len(args) == 0:
+    shape = [256, 256, 1]
     if 'imtype' in kargs:
       imFunc = dType2dFunc(kargs['imtype'])
     else:
       imFunc = imageTypes[0]
+    if 'shape' in kargs:
+      shape = kargs['shape']
+      while len(shape) < 3:
+        shape.append(1)
     if not imFunc is None:
-      img = imFunc(256, 256, 1)
+      img = imFunc(shape[0], shape[1], shape[2])
       _fillImage(img)
     return img
 
@@ -734,7 +739,7 @@ def bench(func, *args, **keywords):
 #  ####   ######  #####
 #
 
-def Image(*args):
+def oldImage(*args):
     """
     * Image():
       Create an empty ${DEFAULT_IMAGE_TYPE} image.
