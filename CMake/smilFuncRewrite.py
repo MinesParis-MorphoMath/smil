@@ -12,6 +12,7 @@ from smilGuiPython            import *
 from smilIOPython             import *
 from smilMorphoPython         import *
 from smilStochasticWSPython   import *
+from smil_Python              import *
   
 # -------------------------------------
 # Functions renamed
@@ -207,4 +208,29 @@ def setDefaultSE(*args):
       r = Morpho.setDefaultSE(...)
     """
     return Morpho.setDefaultSE(*args)
+
+# -------------------------------------
+# Additions
+#
+
+#
+#
+def colorGradientHLS(imIn, se = Morpho.getDefaultSE(), convertFirstToHLS = True):
+  imOut = Image(imIn, imtype = 'UINT8')
+  r = gradientHLS(imIn, imOut, se, convertFirstToHLS)
+  if r == 1:
+    return imOut
+  return None
+
+#
+#
+def colorGradientLAB(imIn, se = Morpho.getDefaultSE(), convertFirstToLAB = True):
+  imOut = Image(imIn, imtype = 'UINT8')
+  r = gradientLAB(imIn, imOut, se, convertFirstToLAB)
+  if r == 1:
+    return imOut
+  return None
+
+
+
 
