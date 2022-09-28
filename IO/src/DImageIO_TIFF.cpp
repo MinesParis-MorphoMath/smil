@@ -70,8 +70,8 @@ namespace smil
             return RES_ERR_IO;
         }
         
-        uint32 w, h;
-        uint16 nbits, nsamples;
+        uint32_t w, h;
+        uint16_t nbits, nsamples;
         
         TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &w);
         TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &h);
@@ -119,8 +119,8 @@ namespace smil
             return RES_ERR_IO;
         }
         
-        uint32 width, height;
-        uint16 nbits, nsamples;
+        uint32_t width, height;
+        uint16_t nbits, nsamples;
         
         TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &width);
         TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &height);
@@ -163,8 +163,8 @@ namespace smil
             return RES_ERR_IO;
         }
         
-        uint32 width, height;
-        uint16 nbits, nsamples;
+        uint32_t width, height;
+        uint16_t nbits, nsamples;
         
         TIFFGetField(tif, TIFFTAG_IMAGEWIDTH, &width);
         TIFFGetField(tif, TIFFTAG_IMAGELENGTH, &height);
@@ -208,8 +208,8 @@ namespace smil
             return RES_ERR_IO;
         }
         
-        uint32 width = image.getWidth(), height = image.getHeight();
-        uint16 nbits = 8*sizeof(T), nsamples = 1;
+        uint32_t width = image.getWidth(), height = image.getHeight();
+        uint16_t nbits = 8*sizeof(T), nsamples = 1;
         
         TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, width);
         TIFFSetField(tif, TIFFTAG_IMAGELENGTH, height);
@@ -251,7 +251,7 @@ namespace smil
             return RES_ERR_IO;
         }
         
-        uint32 width = image.getWidth(), height = image.getHeight();
+        uint32_t width = image.getWidth(), height = image.getHeight();
         
         TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, width);
         TIFFSetField(tif, TIFFTAG_IMAGELENGTH, height);
