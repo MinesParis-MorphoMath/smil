@@ -117,7 +117,41 @@
  *    store @TB{3D} images and even floating pointing coded images. But @Smil
  *    doesn't read directly these images.
  *
- * @section s620_04 Save Smil Images
+ * @section s620_04 Image function reference
+ *
+ *   - @TB{Creating mpty images}
+ *     - @TT{Image(shape=(256,256,1), type=UINT8)} : Create an empty image.
+ *
+ *     - @TT{Image()} : Create an empty @I2D image with size @TT{256x256}
+ *
+ *     - @TT{Image(szx, szy=1, szz=1], type=UINT8)} : Alternative syntax of
+ *     previous functions (for compatibility)
+ *
+ *   - @TB{Creating from an existing image}
+ *     - @TT{Image(im, clone=False, type=None)} : Create an image with the same
+ *       characteristics than @TT{im}. Copy the content if @TT{clone} is @TT{True}.
+ *       Change the data type if @TT{type} is different of @TT{None}.
+ *
+ *     - @TT{Image(ndarray)} : Create a @Smil image from a @Numpy array.
+ *       @TT{ndarray} type shall be a valid @Smil type (@TT{UINT8}, @TT{UINT16}
+ *       or @TT{UINT32})
+ *
+ *   - @TB{Creating from file(s)}
+ *     * @TT{Image(path, raw=False, shape=(256,256,1) , type=UINT8)} : create
+ *       a @Smil image from a file.
+ *       If @TT{raw} is @TT{False}, input file type shall be one of valid image
+ *       file types : @TT{.png}, @TT{.jpg}, @TT{.tif} or @TT{.bmp}. @TT{shape}
+ *       and @TT{type} are taken into account only for @TT{raw} file types.
+ *
+ *     * @TT{Image([path, path, ...], raw=False, shape=(256,256,1), type=UINT8)} :
+ *       create a @I3D image from a
+ *       stack (@Python list) of @I2D raw images having the same
+ *       size.
+ *
+ *   - @TB{Creating from internet}
+ *     * @TT{Image(url)} : create a @Smil image from an image file from internet.
+ *
+ * @section s620_05 Save Smil Images
  *
  *  To save @Smil images you have, basically, two functions : write() and
  *  writeRAW().

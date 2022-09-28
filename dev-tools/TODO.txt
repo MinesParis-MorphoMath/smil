@@ -120,6 +120,6 @@ OK -  Verify on FastBilateralFilter
 * Check why test_transform fails on nestor and taurus.
   Probably conversion double -> T
 
-* Accelerate Soille line morphology functions
+OK * Accelerate Soille line morphology functions
 
 * Accelerate histogramMap
