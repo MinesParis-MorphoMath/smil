@@ -37,11 +37,11 @@ ADDONS+="Filters "
 ADDONS+="HoughTransform "
 ADDONS+="StochasticWS "
 ADDONS+="ZhangSkel "
-ADDONS+="Parsimonious "
+#ADDONS+="Parsimonious "
 OTHER=
 Arch=auto
 
-CXX_FLAGS="-std=c++11"
+CXX_FLAGS="-std=c++11 -Wno-unused-parameter"
 #GCC8=NO
 
 TEST=OFF
