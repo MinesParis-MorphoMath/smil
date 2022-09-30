@@ -48,7 +48,7 @@ namespace smil
    */
   template <class T1, class T2>
   inline void copyLine(const typename unaryLineFunctionBase<T1>::lineInType lIn,
-                       const size_t size,
+                       const size_t                                   size,
                        typename unaryLineFunctionBase<T2>::lineInType lOut)
   {
     for (size_t i = 0; i < size; i++)
@@ -57,14 +57,15 @@ namespace smil
 
   template <class T>
   inline void copyLine(const typename unaryLineFunctionBase<T>::lineInType lIn,
-                       const size_t size,
-                       typename unaryLineFunctionBase<T>::lineInType lOut)
+                       const size_t                                        size,
+                       typename unaryLineFunctionBase<T>::lineInType       lOut)
   {
     for (size_t i = 0; i < size; i++)
       lOut[i] = lIn[i];
   }
 
-  template <class T> struct fillLine : public unaryLineFunctionBase<T> {
+  template <class T>
+  struct fillLine : public unaryLineFunctionBase<T> {
     typedef typename unaryLineFunctionBase<T>::lineType lineType;
     fillLine()
     {
@@ -113,7 +114,8 @@ namespace smil
     }
   }
 
-  template <class T> struct invLine : public unaryLineFunctionBase<T> {
+  template <class T>
+  struct invLine : public unaryLineFunctionBase<T> {
     typedef typename unaryLineFunctionBase<T>::lineType lineType;
     inline void _exec(const lineType lineIn, const size_t size, lineType lOut)
     {
@@ -122,7 +124,8 @@ namespace smil
     }
   };
 
-  template <class T> struct addLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct addLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -134,7 +137,8 @@ namespace smil
     }
   };
 
-  template <class T> struct addNoSatLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct addNoSatLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -144,7 +148,8 @@ namespace smil
     }
   };
 
-  template <class T> struct subLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct subLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -156,7 +161,8 @@ namespace smil
     }
   };
 
-  template <class T> struct subNoSatLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct subNoSatLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -166,7 +172,8 @@ namespace smil
     }
   };
 
-  template <class T> struct supLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct supLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -176,7 +183,8 @@ namespace smil
     }
   };
 
-  template <class T> struct infLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct infLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -186,7 +194,8 @@ namespace smil
     }
   };
 
-  template <class T> struct grtLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct grtLine : public binaryLineFunctionBase<T> {
     grtLine() : trueVal(ImDtTypes<T>::max()), falseVal(0)
     {
     }
@@ -212,8 +221,8 @@ namespace smil
     T_out trueVal, falseVal;
 
     typedef binaryLineFunctionBase<T_in, T_in, T_out> parentClass;
-    typedef typename parentClass::lineType lineInType;
-    typedef typename parentClass::lineOutType lineOutType;
+    typedef typename parentClass::lineType            lineInType;
+    typedef typename parentClass::lineOutType         lineOutType;
 
     virtual void _exec(const lineInType lIn1, const lineInType lIn2,
                        const size_t size, lineOutType lOut)
@@ -224,7 +233,8 @@ namespace smil
     }
   };
 
-  template <class T> struct grtOrEquLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct grtOrEquLine : public binaryLineFunctionBase<T> {
     grtOrEquLine() : trueVal(ImDtTypes<T>::max()), falseVal(0)
     {
     }
@@ -250,8 +260,8 @@ namespace smil
     T_out trueVal, falseVal;
 
     typedef binaryLineFunctionBase<T_in, T_in, T_out> parentClass;
-    typedef typename parentClass::lineType lineInType;
-    typedef typename parentClass::lineOutType lineOutType;
+    typedef typename parentClass::lineType            lineInType;
+    typedef typename parentClass::lineOutType         lineOutType;
 
     virtual void _exec(const lineInType lIn1, const lineInType lIn2,
                        const size_t size, lineOutType lOut)
@@ -262,7 +272,8 @@ namespace smil
     }
   };
 
-  template <class T> struct lowLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct lowLine : public binaryLineFunctionBase<T> {
     lowLine() : trueVal(ImDtTypes<T>::max()), falseVal(0)
     {
     }
@@ -288,8 +299,8 @@ namespace smil
     T_out trueVal, falseVal;
 
     typedef binaryLineFunctionBase<T_in, T_in, T_out> parentClass;
-    typedef typename parentClass::lineType lineInType;
-    typedef typename parentClass::lineOutType lineOutType;
+    typedef typename parentClass::lineType            lineInType;
+    typedef typename parentClass::lineOutType         lineOutType;
 
     virtual void _exec(const lineInType lIn1, const lineInType lIn2,
                        const size_t size, lineOutType lOut)
@@ -300,7 +311,8 @@ namespace smil
     }
   };
 
-  template <class T> struct lowOrEquLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct lowOrEquLine : public binaryLineFunctionBase<T> {
     lowOrEquLine() : trueVal(ImDtTypes<T>::max()), falseVal(0)
     {
     }
@@ -326,8 +338,8 @@ namespace smil
     T_out trueVal, falseVal;
 
     typedef binaryLineFunctionBase<T_in, T_in, T_out> parentClass;
-    typedef typename parentClass::lineType lineInType;
-    typedef typename parentClass::lineOutType lineOutType;
+    typedef typename parentClass::lineType            lineInType;
+    typedef typename parentClass::lineOutType         lineOutType;
 
     virtual void _exec(const lineInType lIn1, const lineInType lIn2,
                        const size_t size, lineOutType lOut)
@@ -338,7 +350,8 @@ namespace smil
     }
   };
 
-  template <class T> struct equLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct equLine : public binaryLineFunctionBase<T> {
     equLine() : trueVal(ImDtTypes<T>::max()), falseVal(0)
     {
     }
@@ -355,7 +368,8 @@ namespace smil
     }
   };
 
-  template <class T> struct diffLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct diffLine : public binaryLineFunctionBase<T> {
     diffLine() : trueVal(ImDtTypes<T>::max()), falseVal(0)
     {
     }
@@ -381,8 +395,8 @@ namespace smil
     T_out trueVal, falseVal;
 
     typedef binaryLineFunctionBase<T_in, T_in, T_out> parentClass;
-    typedef typename parentClass::lineType lineInType;
-    typedef typename parentClass::lineOutType lineOutType;
+    typedef typename parentClass::lineType            lineInType;
+    typedef typename parentClass::lineOutType         lineOutType;
 
     virtual void _exec(const lineInType lIn1, const lineInType lIn2,
                        const size_t size, lineOutType lOut)
@@ -399,7 +413,8 @@ namespace smil
    * Returns abs(p1-p2) for each pixels pair
    */
 
-  template <class T> struct absDiffLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct absDiffLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -409,7 +424,8 @@ namespace smil
     }
   };
 
-  template <class T> struct mulLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct mulLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -422,7 +438,8 @@ namespace smil
     }
   };
 
-  template <class T> struct mulNoSatLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct mulNoSatLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -432,7 +449,8 @@ namespace smil
     }
   };
 
-  template <class T> struct divLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct divLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -443,13 +461,15 @@ namespace smil
     }
   };
 
-  template <class T> struct logLine : public unaryLineFunctionBase<T> {
-    typedef typename unaryLineFunctionBase<T>::lineType lineType;
-    int base;
+  template <class T1, class T2 = T1>
+  struct logLine : public unaryLineFunctionBase<T1, T2> {
+    typedef typename unaryLineFunctionBase<T1, T2>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T1, T2>::lineOutType lineOutType;
+    int                                                 base;
     logLine() : base(0)
     {
     }
-    virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
+    virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
     {
       if (base != 0) {
         double baseLog = std::log(double(base));
@@ -462,26 +482,80 @@ namespace smil
     }
   };
 
-  template <class T> struct expLine : public unaryLineFunctionBase<T> {
-    typedef typename unaryLineFunctionBase<T>::lineType lineType;
-    int base;
+  template <class T1, class T2 = T1>
+  struct expLine : public unaryLineFunctionBase<T1, T2> {
+    typedef typename unaryLineFunctionBase<T1, T2>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T1, T2>::lineOutType lineOutType;
+    int                                                 base;
     expLine() : base(0)
     {
     }
-    virtual void _exec(const lineType lIn, const size_t size, lineType lOut)
+    virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
     {
+      double vmax = std::numeric_limits<T2>::max();
+      double v;
       if (base != 0) {
         double baseLog = std::log(double(base));
-        for (size_t i = 0; i < size; i++)
-          lOut[i] = std::exp(lIn[i] * baseLog);
+        for (size_t i = 0; i < size; i++) {
+          v = std::exp(lIn[i] * baseLog);
+          lOut[i] = std::min(v, vmax);
+        }
       } else {
-        for (size_t i = 0; i < size; i++)
-          lOut[i] = std::exp(lIn[i]);
+        for (size_t i = 0; i < size; i++) {
+          v = std::exp(lIn[i]);
+          lOut[i] = std::min(v, vmax);
+        }
       }
     }
   };
 
-  template <class T> struct logicAndLine : public binaryLineFunctionBase<T> {
+  template <class T1, class T2 = T1>
+  struct powLine : public unaryLineFunctionBase<T1, T2> {
+    typedef typename unaryLineFunctionBase<T1, T2>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T1, T2>::lineOutType lineOutType;
+
+    double                                              exponent;
+    powLine() : exponent(1)
+    {
+    }
+    virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
+    {
+      double vmax = std::numeric_limits<T2>::max();
+      double v;
+      if (exponent == 0.) {
+        for (size_t i = 0; i < size; i++)
+          lOut[i] = T2(1);
+        return;
+      }
+      if (exponent == 1.) {
+        for (size_t i = 0; i < size; i++)
+          lOut[i] = lIn[i];
+        return;
+      }
+      for (size_t i = 0; i < size; i++) {
+        v = std::pow(lIn[i], exponent);
+        lOut[i] = T2(std::min(v, vmax));
+      }
+    }
+  };
+
+  template <class T1, class T2 = T1>
+  struct sqrtLine : public unaryLineFunctionBase<T1, T2> {
+    typedef typename unaryLineFunctionBase<T1, T2>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T1, T2>::lineOutType lineOutType;
+
+    sqrtLine()
+    {
+    }
+    virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
+    {
+      for (size_t i = 0; i < size; i++)
+        lOut[i] = T2(std::sqrt(lIn[i]));
+    }
+  };
+
+  template <class T>
+  struct logicAndLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -491,7 +565,8 @@ namespace smil
     }
   };
 
-  template <class T> struct bitAndLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct bitAndLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -501,7 +576,8 @@ namespace smil
     }
   };
 
-  template <class T> struct logicOrLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct logicOrLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -511,7 +587,8 @@ namespace smil
     }
   };
 
-  template <class T> struct bitOrLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct bitOrLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -521,7 +598,8 @@ namespace smil
     }
   };
 
-  template <class T> struct logicXOrLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct logicXOrLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -531,7 +609,8 @@ namespace smil
     }
   };
 
-  template <class T> struct bitXOrLine : public binaryLineFunctionBase<T> {
+  template <class T>
+  struct bitXOrLine : public binaryLineFunctionBase<T> {
     typedef typename binaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const lineType lIn2,
                        const size_t size, lineType lOut)
@@ -541,7 +620,8 @@ namespace smil
     }
   };
 
-  template <class T> struct leftShiftLine : public unaryLineFunctionBase<T> {
+  template <class T>
+  struct leftShiftLine : public unaryLineFunctionBase<T> {
     typedef typename unaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType, const size_t, lineType)
     {
@@ -554,7 +634,8 @@ namespace smil
     }
   };
 
-  template <class T> struct rightShiftLine : public unaryLineFunctionBase<T> {
+  template <class T>
+  struct rightShiftLine : public unaryLineFunctionBase<T> {
     using unaryLineFunctionBase<T>::_exec;
     typedef typename unaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType, const size_t, lineType)
@@ -571,8 +652,8 @@ namespace smil
   template <class T1, class T2>
   struct testLine : public tertiaryLineFunctionBase<T1, T2, T2, T2> {
     typedef tertiaryLineFunctionBase<T1, T2, T2, T2> parentClass;
-    typedef typename parentClass::lineType1 lineType1;
-    typedef typename parentClass::lineOutType lineType2;
+    typedef typename parentClass::lineType1          lineType1;
+    typedef typename parentClass::lineOutType        lineType2;
 
     virtual void _exec(const lineType1 lIn1, const lineType2 lIn2,
                        const lineType2 lIn3, const size_t size, lineType2 lOut)

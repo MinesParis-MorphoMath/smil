@@ -70,36 +70,27 @@
   Options :
     --help
       This message
-
     --prefix=prefix
       This option defines the prefix where Smil will be installed.
       Default value is /usr/local.
-
     --addon=name,name,name,...
       A comma separated list of Addons to enable
       Default enabled Addons : Color Filters HoughTransform Chabardes StochasticWS FFT Parsimonious
-
     --generic
       Compile for a generic architecture. Default is to optimize for the
       processor in the computer Smil is being compiled.
-
     --auto
       Optimize Smil generated code for the processor at this computer.
       This is the default option.
-
     --doc
     --devdoc
       Build doxygen documentation
-
     --test
       Add Makefile targets to build test programs (make test)
-
     --package
       Add Makefile targets to build Linux packages
-
     -v
       Verbose
-
     -Dvar=value
       Define CMake variables (use with care)
 
@@ -167,13 +158,14 @@
  *  - @TB{Create an environment for Smil} - a good practice says to use
  *    @TB{base} environment only for administrations purposes.
  @verbatim
- # the option "python=3.8" is optional
+ # the option "python=3.8" is useful if you want a particular version of Python
  conda create -n smil python=3.8
  conda activate smil
  conda install gxx_linux-64 cmake swig \
                libpng jpeg libtiff curl \
                numpy ipython \
                qt pyqt
+ conda install -c conda-forge qwt
  @endverbatim
  *
  * -# @TB{get Smil} source repository :
@@ -212,7 +204,7 @@
  In [1]: import smilPython as sp
  SMIL (Simple Morphological Image Library) 0.10.6-dev
  Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
- Copyright (c) 2017-2021, CMM - Centre de Morphologie Mathematique
+ Copyright (c) 2017-2022, CMM - Centre de Morphologie Mathematique
  All rights reserved.
 
  In [2]: im = sp.Image()

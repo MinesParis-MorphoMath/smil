@@ -168,7 +168,7 @@ namespace smil
       // Verify that the blob can fit in the image
       Blob::sequences_const_reverse_iterator last =
           blob_it->second.sequences.rbegin();
-      if ((*last).offset + (*last).size >= pixCount) {
+      if ((*last).offset + (*last).size > pixCount) {
         allBlobsFit = false;
       } else {
         Blob::sequences_const_iterator it = blob_it->second.sequences.begin();
@@ -219,7 +219,7 @@ namespace smil
       // Verify that the blob can fit in the image
       Blob::sequences_const_reverse_iterator last =
           blob_it->second.sequences.rbegin();
-      if ((*last).offset + (*last).size >= pixCount) {
+      if ((*last).offset + (*last).size > pixCount) {
         allBlobsFit = false;
       } else {
         Blob::sequences_const_iterator it = blob_it->second.sequences.begin();
@@ -240,6 +240,75 @@ namespace smil
     ASSERT(allBlobsFit, "Some blobs are outside the image", RES_ERR);
 
     return RES_OK;
+  }
+
+  /**
+   * getBlobIDFromOffset() - get the blob ID which contains a pixel (or voxel)
+   * given its offset
+   *
+   * @param[in] blobs  : the @b blobs map
+   * @param[in] offset : the offset to look for
+   * @returns the ID of the blob containing the offset, or @TB{0} if the offset
+   * is in the background.
+   *
+   */
+  template <class labelT>
+  int getBlobIDFromOffset(map<labelT, Blob> &blobs, size_t offset)
+  {
+    int id = 0;
+
+    typename map<labelT, Blob>::const_iterator blob_it;
+    typedef typename Blob::sequences_const_iterator seqit_t;
+
+    for (blob_it = blobs.begin(); blob_it != blobs.end(); blob_it++) {
+      seqit_t it_end = blob_it->second.sequences.end();
+
+      for(seqit_t it = blob_it->second.sequences.begin(); it != it_end; it++)
+      {
+        if (offset >= it->offset && offset < it->offset + it->size)
+          id = blob_it->first;
+      }
+      if (id > 0)
+        break;
+    }
+
+    return id;
+  }
+
+  /**
+   * getBlobIDFromOffset() - get the blob ID which contains a pixel (or voxel)
+   * given its coordinates
+   *
+   * @param[in] blobs  : the @b blobs map
+   * @param[in] imIn : input image where blobs are defined
+   * @param[in] x, y[, z] : point coordinates
+   * @returns the ID of the blob containing pixel (voxel), or @TB{0} if in the
+   * background.
+   *
+   */
+  template <class labelT, class T>
+  int getBlobIDFromOffset(Image<T> imIn, map<labelT, Blob> &blobs, int x, int y, int z = 0)
+  {
+    int id = 0;
+
+    size_t offset = imIn.getOffsetFromCoords(x, y, z);
+
+    typename map<labelT, Blob>::const_iterator blob_it;
+    typedef typename Blob::sequences_const_iterator seqit_t;
+
+    for (blob_it = blobs.begin(); blob_it != blobs.end(); blob_it++) {
+      seqit_t it_end = blob_it->second.sequences.end();
+
+      for(seqit_t it = blob_it->second.sequences.begin(); it != it_end; it++)
+      {
+        if (offset >= it->offset && offset < it->offset + it->size)
+          id = blob_it->first;
+      }
+      if (id > 0)
+        break;
+    }
+
+    return id;
   }
 
   /** @} */

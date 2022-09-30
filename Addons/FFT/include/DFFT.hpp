@@ -51,7 +51,7 @@ namespace smil
    *
    * \code
    * correlation(sourceImg, templateImg, corrImg)
-   * pt = UintPoint()
+   * pt = IntPoint()
    * maxVal(corrImg, pt)
    * # gives the position of the template image within the source image
    * print pt.x, pt.y
@@ -62,7 +62,7 @@ namespace smil
   {
     ASSERT_SAME_SIZE(&imIn1, &imIn2);
 
-    size_t ncols  = imIn1.getWidth();
+    size_t ncols = imIn1.getWidth();
     // complex data column nbr
     size_t nccols = ncols;
     size_t nrows  = imIn2.getHeight();
@@ -72,12 +72,12 @@ namespace smil
     size_t pixNbr = ncols * nrows;
 
     // Allocate arrays for FFT of src and tpl
-    double *src1_real        = fftw_alloc_real(pixNbr);
+    double *      src1_real  = fftw_alloc_real(pixNbr);
     fftw_complex *src1_compl = fftw_alloc_complex(nccols * nrows);
-    double *src2_real        = fftw_alloc_real(pixNbr);
+    double *      src2_real  = fftw_alloc_real(pixNbr);
     fftw_complex *src2_compl = fftw_alloc_complex(nccols * nrows);
 
-    double *res_real        = fftw_alloc_real(pixNbr);
+    double *      res_real  = fftw_alloc_real(pixNbr);
     fftw_complex *res_compl = fftw_alloc_complex(nccols * nrows);
 
     T1 *src1_data = imIn1.getPixels();
@@ -109,7 +109,8 @@ namespace smil
       res_compl[i][1] = (src1_compl[i][1] * src2_compl[i][0] -
                          src1_compl[i][0] * src2_compl[i][1]);
 
-      double norm = sqrt(pow(res_compl[i][0], 2) + pow(res_compl[i][1], 2));
+      double norm =
+          std::sqrt(pow(res_compl[i][0], 2) + pow(res_compl[i][1], 2));
       res_compl[i][0] /= norm;
       res_compl[i][1] /= norm;
     }

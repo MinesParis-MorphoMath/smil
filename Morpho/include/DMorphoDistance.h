@@ -52,13 +52,25 @@ namespace smil
   RES_T distance(const Image<T1> &imIn, Image<T2> &imOut,
                  const StrElt &se = DEFAULT_SE);
 
+  /** @cond */
   /**
    * @brief distanceEuclidean() - Euclidean distance function.
    * @param[in] imIn : Binary input image
    * @param[out] imOut : Output image
    */
   template <class T1, class T2>
-  RES_T distanceEuclidean(const Image<T1> &imIn, Image<T2> &imOut);
+  RES_T distanceEuclideanOld(const Image<T1> &imIn, Image<T2> &imOut);
+  /** @endcond */
+
+  /**
+   * @brief distanceEuclidean() - Euclidean distance function.
+   * @param[in] imIn : Binary input image
+   * @param[out] imOut : Output image
+   * @param[in] se : Structuring Element
+   */
+  template <class T1, class T2>
+  RES_T distanceEuclidean(const Image<T1> &imIn, Image<T2> &imOut,
+                              const StrElt &se = DEFAULT_SE);
 
   /** @cond */
   template <class T1, class T2>
@@ -155,5 +167,7 @@ namespace smil
 } // namespace smil
 
 #include "private/DMorphoDistance.hpp"
+
+#include "private/DMorphoEuclidean.hpp"
 
 #endif // _DMORPHO_DISTANCE_H

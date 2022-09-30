@@ -11,6 +11,7 @@
  *   - José-Marcio Martins da Cruz (jose-marcio dot martins at mines-paristech dot fr)
  *
  * @subsection s101_01_03 Contributors (alphabetical order)
+ *   - Amin Fehri
  *   - Basile Marchand (packages for Anaconda)
  *   - Beatriz Marcotegui
  *   - Etienne Decencière-Ferrandière
@@ -21,7 +22,7 @@
  *
  * @copyright
  * Copyright (c) 2011-2017, Matthieu FAESSEL and ARMINES. \n
- * Copyright (c) 2017-2021, Centre de Morphologie Mathématique - Mines-ParisTech. \n
+ * Copyright (c) 2017-2022, Centre de Morphologie Mathématique - Mines-ParisTech. \n
  * All rights reserved (see @ref p191 "licence").
  *
  * @tableofcontents

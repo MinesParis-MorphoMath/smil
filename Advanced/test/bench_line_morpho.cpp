@@ -45,32 +45,48 @@ int main(int argc, char *argv[])
   }
   Image<UINT8> imOut(imIn);
 
-  int angle = 30;
   int length = 15;
 
-  UINT BENCH_NRUNS = 100;
+  UINT BENCH_NRUNS = 200;
 
   for (int angle = 0; angle < 90; angle += 15) {
     cout << "* angle " << angle << " " << endl;
-    BENCH_IMG(lineDilate, imIn, angle, length, imOut);
-    BENCH_IMG(lineErode, imIn, angle, length, imOut);
-    BENCH_IMG(lineOpen, imIn, angle, length, imOut);
-    BENCH_IMG(lineClose, imIn, angle, length, imOut);
+    BENCH_IMG(lineDilate, imIn, imOut, length, angle);
+    BENCH_IMG(lineErode, imIn, imOut, length, angle);
+    BENCH_IMG(lineOpen, imIn, imOut, length, angle);
+    BENCH_IMG(lineClose, imIn, imOut, length, angle);
+    cout << endl;
+    //BENCH_IMG(oldLineDilate, imIn, angle, length, imOut);
+    //BENCH_IMG(oldLineErode, imIn, angle, length, imOut);
+    //BENCH_IMG(oldLineOpen, imIn, angle, length, imOut);
+    //BENCH_IMG(oldLineClose, imIn, angle, length, imOut);
+    //cout << endl;
+    //BENCH_IMG(imFastLineOpen, imIn, angle, length, imOut);
+    cout << endl;
   }
   cout << endl;
 
-  angle = 30;
-  BENCH_IMG(squareDilate, imIn, length, imOut);
-  BENCH_IMG(squareErode, imIn, length, imOut);
-  BENCH_IMG(squareOpen, imIn, length, imOut);
-  BENCH_IMG(squareClose, imIn, length, imOut);
+  BENCH_IMG(squareDilate, imIn, imOut, 2 * length);
+  BENCH_IMG(squareErode,  imIn, imOut, 2 * length);
+  BENCH_IMG(squareOpen,   imIn, imOut, 2 * length);
+  BENCH_IMG(squareClose,  imIn, imOut, 2 * length);
   cout << endl;
 
-  BENCH_IMG(circleDilate, imIn, length, imOut);
-  BENCH_IMG(circleErode, imIn, length, imOut);
-  BENCH_IMG(circleOpen, imIn, length, imOut);
-  BENCH_IMG(circleClose, imIn, length, imOut);
+  //BENCH_IMG(oldSquareDilate, imIn, length, imOut);
+  //BENCH_IMG(oldSquareErode,  imIn, length, imOut);
+  //BENCH_IMG(oldSquareOpen,   imIn, length, imOut);
+  //BENCH_IMG(oldSquareClose,  imIn, length, imOut);
+  //cout << endl;
+
+  BENCH_IMG(circleDilate, imIn, imOut, length);
+  BENCH_IMG(circleErode,  imIn, imOut, length);
+  BENCH_IMG(circleOpen,   imIn, imOut, length);
+  BENCH_IMG(circleClose,  imIn, imOut, length);
   cout << endl;
 
-  BENCH_IMG(imFastLineOpen, imIn, angle, length, imOut);
+  //BENCH_IMG(oldCircleDilate, imIn, length, imOut);
+  //BENCH_IMG(oldCircleErode,  imIn, length, imOut);
+  //BENCH_IMG(oldCircleOpen,   imIn, length, imOut);
+  //BENCH_IMG(oldCircleClose,  imIn, length, imOut);
+  //cout << endl;
 }

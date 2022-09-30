@@ -50,7 +50,7 @@ namespace smil
     UINT nthreads = Core::getInstance()->getNumberOfThreads();
 
     // Creating a range table.
-    float alpha_f     = std::exp(-sqrt(2.0) / sigmaW);
+    float alpha_f     = std::exp(-std::sqrt(2.0) / sigmaW);
     float inv_alpha_f = 1.f - alpha_f;
 
     /* JOE XXX
@@ -68,8 +68,8 @@ namespace smil
      *     a fonction plutôt qu'a une valeur constante. Probleme
      *     de performance, surement
      */
-    float inv_sigma_range = 1.f / sigmaR;
-    float *range_table    = new float[ImDtTypes<T>::max() + 1];
+    float  inv_sigma_range = 1.f / sigmaR;
+    float *range_table     = new float[ImDtTypes<T>::max() + 1];
 
     float ii = 0.f;
     for (size_t i = 0; i <= ImDtTypes<T>::max(); ++i) {
@@ -86,9 +86,9 @@ namespace smil
 
 #pragma omp parallel num_threads(nthreads)
     {
-      T *lineIn;
-      T *linePreviousIn;
-      T *lineOut;
+      T *    lineIn;
+      T *    linePreviousIn;
+      T *    lineOut;
       float *lineTmp;
       float *lineOut_causal;
       float *lineFac_causal;
@@ -97,9 +97,9 @@ namespace smil
       float *linePreviousOut;
       float *linePreviousFac;
 
-      T *sliceIn;
-      T *slicePreviousIn;
-      T *sliceOut;
+      T *    sliceIn;
+      T *    slicePreviousIn;
+      T *    sliceOut;
       float *sliceTmp;
       float *sliceOut_causal;
       float *sliceFac_causal;

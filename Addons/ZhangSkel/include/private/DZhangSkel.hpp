@@ -618,7 +618,7 @@ namespace smil
     {
       Xr = 0;
       Bp = 0;
-      T prev;
+      T prev = 0;
 
       T *   buf       = im.getPixels();
       off_t pixOffset = x + y * width;
@@ -677,7 +677,7 @@ namespace smil
         for (off_t x = 0; x < width; x++) {
           int Bodd = 0;
           for (size_t i = 0; i < nbOff.size(); i += 2) {
-            if (!imTmp.isCoordsInImage(x + nbOff[i].x, y + nbOff[i].y, 0))
+            if (!imTmp.areCoordsInImage(x + nbOff[i].x, y + nbOff[i].y, 0))
               continue;
             if (bufTmp[(y + nbOff[i].y) * width + x + nbOff[x].x] != 0)
               Bodd++;

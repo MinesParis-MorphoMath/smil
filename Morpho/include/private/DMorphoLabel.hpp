@@ -78,8 +78,8 @@ namespace smil
   class labelFunctGeneric : public MorphImageFunctionBase<T1, T2>
   {
   public:
-    typedef MorphImageFunctionBase<T1, T2> parentClass;
-    typedef typename parentClass::imageInType imageInType;
+    typedef MorphImageFunctionBase<T1, T2>     parentClass;
+    typedef typename parentClass::imageInType  imageInType;
     typedef typename parentClass::imageOutType imageOutType;
 
     size_t getLabelNbr()
@@ -102,8 +102,9 @@ namespace smil
                                imageOutType & /*imOut*/, const StrElt & /*se*/)
     {
       this->pixelsIn = imIn.getPixels();
-      for (size_t i = 0;
-           i < this->imSize[2] * this->imSize[1] * this->imSize[0]; i++) {
+
+      size_t nbPixels = imIn.getPixelCount();
+      for (size_t i = 0; i < nbPixels; i++) {
         if (this->pixelsOut[i] == T2(0)) {
           vector<int> dum;
           processPixel(i, dum);
@@ -112,7 +113,7 @@ namespace smil
       return RES_OK;
     }
 
-    virtual void processPixel(size_t pointOffset,
+    virtual void processPixel(size_t      pointOffset,
                               SMIL_UNUSED vector<int> &dOffsets)
     {
       T1 pVal = this->pixelsIn[pointOffset];
@@ -121,8 +122,6 @@ namespace smil
         return;
 
       queue<size_t> propagation;
-      int x, y, z, n_x, n_y, n_z;
-      IntPoint p;
 
       ++real_labels;
       ++labels;
@@ -131,34 +130,44 @@ namespace smil
       this->pixelsOut[pointOffset] = (T2) labels;
       propagation.push(pointOffset);
 
-      bool oddLine = 0;
-      size_t curOffset, nbOffset;
+      size_t pixPerLine  = this->imSize[0];
+      size_t pixPerSlice = this->imSize[0] * this->imSize[1];
 
       while (!propagation.empty()) {
+        off_t x, y, z, n_x, n_y, n_z;
+
+        bool   oddLine = false;
+        size_t curOffset, nbOffset;
+
         curOffset = propagation.front();
         pVal      = this->pixelsIn[curOffset];
 
-        z = curOffset / (this->imSize[1] * this->imSize[0]);
-        y = (curOffset - z * this->imSize[1] * this->imSize[0]) /
-            this->imSize[0];
-        x = curOffset - y * this->imSize[0] -
-            z * this->imSize[1] * this->imSize[0];
+        z = curOffset / (pixPerSlice);
+        y = (curOffset - z * pixPerSlice) / pixPerLine;
+        x = curOffset - y * pixPerLine - z * pixPerSlice;
 
         oddLine = this->oddSe && (y % 2);
 
         for (UINT i = 0; i < this->sePointNbr; ++i) {
-          p   = this->sePoints[i];
-          n_x = x + p.x;
+          IntPoint p = this->sePoints[i];
+
+          n_z = z + p.z;
+          if (n_z < 0 || n_z >= off_t(this->imSize[2]))
+            continue;
           n_y = y + p.y;
-          n_x += (oddLine && ((n_y + 1) % 2) != 0);
-          n_z      = z + p.z;
-          nbOffset = n_x + (n_y) * this->imSize[0] +
-                     (n_z) * this->imSize[1] * this->imSize[0];
-          if (nbOffset != curOffset && n_x >= 0 &&
-              n_x < (int) this->imSize[0] && n_y >= 0 &&
-              n_y < (int) this->imSize[1] && n_z >= 0 &&
-              n_z < (int) this->imSize[2] &&
-              this->pixelsOut[nbOffset] != labels &&
+          if (n_y < 0 || n_y >= off_t(this->imSize[1]))
+            continue;
+          n_x = x + p.x;
+          if (oddLine && ((n_y + 1) % 2) != 0)
+            n_x++;
+          if (n_x < 0 || n_x >= off_t(this->imSize[0]))
+            continue;
+
+          // if (!this->imageIn->areCoordsInImage(n_x, n_y, n_z))
+          //  continue;
+
+          nbOffset = n_x + n_y * pixPerLine + n_z * pixPerSlice;
+          if (nbOffset != curOffset && this->pixelsOut[nbOffset] != labels &&
               compareFunc(this->pixelsIn[nbOffset], pVal)) {
             this->pixelsOut[nbOffset] = T2(labels);
             propagation.push(nbOffset);
@@ -171,22 +180,22 @@ namespace smil
     compOperatorT compareFunc;
 
   protected:
-    T2 labels;
+    T2     labels;
     size_t real_labels;
-    T2 max_value_label;
+    T2     max_value_label;
   };
 
   template <class T1, class T2, class compOperatorT = std::equal_to<T1>>
   class labelFunctFast : public MorphImageFunctionBase<T1, T2>
   {
   public:
-    typedef MorphImageFunctionBase<T1, T2> parentClass;
-    typedef typename parentClass::imageInType imageInType;
+    typedef MorphImageFunctionBase<T1, T2>     parentClass;
+    typedef typename parentClass::imageInType  imageInType;
     typedef typename parentClass::imageOutType imageOutType;
-    typedef typename imageInType::lineType lineInType;
-    typedef typename imageInType::sliceType sliceInType;
-    typedef typename imageOutType::lineType lineOutType;
-    typedef typename imageOutType::sliceType sliceOutType;
+    typedef typename imageInType::lineType     lineInType;
+    typedef typename imageInType::sliceType    sliceInType;
+    typedef typename imageOutType::lineType    lineOutType;
+    typedef typename imageOutType::sliceType   sliceOutType;
 
     size_t getLabelNbr()
     {
@@ -233,10 +242,10 @@ namespace smil
       }
 
       queue<size_t> propagation;
-      int x, y, z, n_x, n_y, n_z;
-      IntPoint p;
+      int           x, y, z, n_x, n_y, n_z;
+      IntPoint      p;
 
-      T2 current_label      = labels;
+      T2   current_label    = labels;
       bool is_not_a_gap     = false;
       bool process_labeling = false;
       bool oddLine          = 0;
@@ -311,13 +320,13 @@ namespace smil
       size_t nLines  = imIn.getHeight();
       size_t nPixels = imIn.getWidth();
       size_t l, v;
-      T1 previous_value;
-      T2 previous_label;
+      T1     previous_value;
+      T2     previous_label;
 
-      sliceInType srcLines  = imIn.getLines();
+      sliceInType  srcLines = imIn.getLines();
       sliceOutType desLines = imOut.getLines();
-      lineInType lineIn;
-      lineOutType lineOut;
+      lineInType   lineIn;
+      lineOutType  lineOut;
 
       for (size_t s = 0; s < nSlices; ++s) {
 #ifdef USE_OPEN_MP
@@ -350,12 +359,13 @@ namespace smil
     compOperatorT compareFunc;
 
   protected:
-    T2 labels;
+    T2     labels;
     size_t labels_real;
-    T2 max_value_label;
+    T2     max_value_label;
   };
 
-  template <class T> struct lambdaEqualOperator {
+  template <class T>
+  struct lambdaEqualOperator {
     inline bool operator()(T &a, T &b)
     {
       bool retVal = a > b ? (a - b) <= lambda : (b - a) <= lambda;
@@ -375,9 +385,9 @@ namespace smil
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     // Typedefs
-    typedef Image<T1> inT;
-    typedef Image<T2> outT;
-    typedef typename inT::lineType inLineT;
+    typedef Image<T1>               inT;
+    typedef Image<T2>               outT;
+    typedef typename inT::lineType  inLineT;
     typedef typename outT::lineType outLineT;
 
     // Initialisation.
@@ -393,11 +403,11 @@ namespace smil
     if (sePtsNumber == 0)
       return 0;
     queue<size_t> propagation;
-    size_t o, nb_o;
-    size_t x, x0, y, y0, z, z0;
-    bool oddLine;
+    size_t        o, nb_o;
+    size_t        x, x0, y, y0, z, z0;
+    bool          oddLine;
     // Image related.
-    inLineT inP   = imIn.getPixels();
+    inLineT  inP  = imIn.getPixels();
     outLineT outP = imOut.getPixels();
 
     for (size_t s = 0; s < size[2]; ++s) {
@@ -447,8 +457,8 @@ namespace smil
   template <class T1, class T2>
   size_t labelWithoutFunctor2Partitions(const Image<T1> &imIn,
                                         const Image<T1> &imIn2,
-                                        Image<T2> &imOut,
-                                        const StrElt &se = DEFAULT_SE)
+                                        Image<T2> &      imOut,
+                                        const StrElt &   se = DEFAULT_SE)
   {
     // Checks
     ASSERT_ALLOCATED(&imIn, &imIn2, &imOut);
@@ -456,9 +466,9 @@ namespace smil
     ASSERT_SAME_SIZE(&imIn2, &imOut);
 
     // Typedefs
-    typedef Image<T1> inT;
-    typedef Image<T2> outT;
-    typedef typename inT::lineType inLineT;
+    typedef Image<T1>               inT;
+    typedef Image<T2>               outT;
+    typedef typename inT::lineType  inLineT;
     typedef typename outT::lineType outLineT;
 
     // Initialisation.
@@ -474,12 +484,12 @@ namespace smil
     if (sePtsNumber == 0)
       return 0;
     queue<size_t> propagation;
-    size_t o, nb_o;
-    size_t x, x0, y, y0, z, z0;
-    bool oddLine;
+    size_t        o, nb_o;
+    size_t        x, x0, y, y0, z, z0;
+    bool          oddLine;
     // Image related.
-    inLineT inP   = imIn.getPixels();
-    inLineT in2P  = imIn2.getPixels();
+    inLineT  inP  = imIn.getPixels();
+    inLineT  in2P = imIn2.getPixels();
     outLineT outP = imOut.getPixels();
 
     for (size_t s = 0; s < size[2]; ++s) {
@@ -671,6 +681,221 @@ namespace smil
     return lblNbr;
   }
 
+  /** @cond */
+  template <typename T>
+  inline double maxMapValueDouble(map<T, double> &m)
+  {
+    return std::max_element(m.begin(), m.end(), map_comp_value_less())->second;
+  }
+
+  template <typename T>
+  inline double minMapValueDouble(map<T, double> &m)
+  {
+    return std::min_element(m.begin(), m.end(), map_comp_value_less())->second;
+  }
+  /** @endcond */
+
+  /**
+   * labelWithProperty() - Image labelization with the value of the property
+   * of each connected components in the @TT{imRegions image}. The intensity of
+   * each pixel will correspond to the value of the property.
+   *
+   * @param[in] imRegions : an image with regions to be labeled
+   * @param[in] imIn : image where to take values to evaluate properties
+   * @param[out] imLabelOut : output image
+   * @param[in] property : the property to use as label. One of :
+   *      @TB{"area"}, @TB{"volume"}, @TB{"max"}, @TB{"min"},
+   *      @TB{"mean"}, @TB{"stddev"}, @TB{"median"}, @TB{"mode"},
+   *      @TB{"nbvalues"}, @TB{"entropy"}
+   * @param[in] doRescale : values are rescaled to fullfit the range of the
+   *    output image (@TB{T3}) : (@TT{[min, max] => [1, max(T3)]})
+   * @param[in] scale : coefficient to multiply property result of each region
+   * @param[in] se : structuring element
+   * @returns the number of labels (or 0 if error)
+   *
+   * @note
+   * - The image @TT{imRegions} is labeled and blobs are assigned to it before
+   *   evaluating the property of each region. The structuring element is needed
+   *   just to the labeling operation.
+   * - The same label can be assigned to different regions not connected regions
+   *   in the image if they have the same property value.
+   * - the number of regions in @TB{imRegions} shall be smaller than the maximum
+   *   value of the type @TB{T3}
+   * - The range of values of the output image (@TB{T3}) shall be big enough to
+   *   accomodate all property values. If not, use parameters @{TT} or
+   *   @TT{doRescale}
+   * - @TT{scale} and @TT{doRescale} parameters are useful for visualisation
+   *   purposes or when the goal isn't the real value of the property but their
+   *   relative values (order of values). These parameters allows to use image
+   *   with smaller data types. @TT{scale} is ignored when @TT{doRescale} is
+   *   set.
+   * - if the property is @TB{area} then @TT{imIn} and @TT{imRegions} are the
+   *   same.
+   */
+  template <typename T1, typename T2, typename T3>
+  size_t
+  labelWithProperty(const Image<T1> &imRegions, const Image<T2> &imIn,
+                    Image<T3> &  imLabelOut,
+                    const string property = "area", bool doRescale = false,
+                    double scale = 1., const StrElt &se = DEFAULT_SE)
+  {
+    ASSERT_ALLOCATED(&imIn, &imRegions, &imLabelOut);
+    ASSERT_SAME_SIZE(&imIn, &imRegions, &imLabelOut);
+
+    vector<double> retVal(3);
+
+    map<string, int> property2key = {
+        {"area", 1},     {"volume", 2},  {"max", 3},    {"min", 4},
+        {"mean", 5},     {"stddev", 6},  {"median", 7}, {"mode", 8},
+        {"nbvalues", 9}, {"entropy", 10}};
+    if (property2key.find(property) == property2key.end()) {
+      ERR_MSG("Property unknown when calling function labelWithProperty");
+      return 0;
+    }
+    int key = property2key[property];
+
+    ImageFreezer freezer(imLabelOut);
+
+    Image<T3> imLabel(imIn);
+
+    size_t nl = label(imRegions, imLabel, se);
+    if (nl > ImDtTypes<T3>::max()) {
+      string msg =
+          "Increase output image type to include value " + to_string(nl);
+      ERR_MSG(msg);
+      return 0;
+    }
+    if (nl == 0) {
+      ERR_MSG("No labels returned");
+      return nl;
+    }
+    map<T3, Blob>   blobs = computeBlobs(imLabel, true);
+    map<T3, double> markers;
+
+    typedef typename std::map<T3, T2>::iterator                  itT2_T;
+    typedef typename std::map<T3, std::vector<T2>>::iterator     itT2Vec_T;
+    typedef typename std::map<T3, double>::iterator              itD_T;
+    typedef typename std::map<T3, std::vector<double>>::iterator itDVec_T;
+
+    switch (key) {
+      case 1: {
+        // area
+        map<T3, double> values = blobsArea(blobs);
+        for (itD_T iter = values.begin(); iter != values.end(); ++iter) {
+          markers[iter->first] = iter->second;
+        }
+      } break;
+      case 2: {
+        // volume
+        map<T3, double> values = blobsVolume(imIn, blobs);
+        for (itD_T iter = values.begin(); iter != values.end(); ++iter) {
+          markers[iter->first] = iter->second;
+        }
+      } break;
+      case 3: {
+        // min
+        map<T3, T2> values = blobsMinVal(imIn, blobs);
+        for (itT2_T iter = values.begin(); iter != values.end(); ++iter) {
+          markers[iter->first] = iter->second;
+        }
+      } break;
+      case 4: {
+        // max
+        map<T3, T2> values = blobsMaxVal(imIn, blobs);
+        for (itT2_T iter = values.begin(); iter != values.end(); ++iter) {
+          markers[iter->first] = iter->second;
+        }
+      } break;
+      case 5: {
+        // mean
+        map<T3, std::vector<double>> values = blobsMeanVal(imIn, blobs);
+        for (itDVec_T iter = values.begin(); iter != values.end(); ++iter) {
+          markers[iter->first] = (iter->second)[0];
+        }
+      } break;
+      case 6: {
+        // stddev
+        map<T3, std::vector<double>> values = blobsMeanVal(imIn, blobs);
+        for (itDVec_T iter = values.begin(); iter != values.end(); ++iter) {
+          markers[iter->first] = (iter->second)[1];
+        }
+      } break;
+      case 7: {
+        // median
+        map<T3, T2> values = blobsMedianVal(imIn, blobs);
+        for (itT2_T iter = values.begin(); iter != values.end(); ++iter) {
+          markers[iter->first] = iter->second;
+        }
+      } break;
+      case 8: {
+        // median
+        map<T3, T2> values = blobsModeVal(imIn, blobs);
+        for (itT2_T iter = values.begin(); iter != values.end(); ++iter) {
+          markers[iter->first] = iter->second;
+        }
+      } break;
+      case 9: {
+        // values count
+        map<T3, vector<T2>> values = blobsValueList(imIn, blobs);
+        for (itT2Vec_T iter = values.begin(); iter != values.end(); ++iter) {
+          markers[iter->first] = iter->second.size();
+        }
+      } break;
+      case 10: {
+        // entropy
+        map<T3, double> values = blobsEntropy(imIn, blobs);
+        for (itD_T iter = values.begin(); iter != values.end(); ++iter) {
+          markers[iter->first] = iter->second;
+        }
+      } break;
+      default:
+        return 0;
+        break;
+    }
+
+    ASSERT(!markers.empty());
+
+    double maxV = maxMapValueDouble(markers);
+    double minV = minMapValueDouble(markers);
+    double maxT = double(ImDtTypes<T3>::max());
+
+    retVal[1] = minV;
+    retVal[2] = maxV;
+
+    if (doRescale) {
+      if (maxV > minV) {
+        double k = (maxT - 1.) / (maxV - minV);
+        for (auto it = markers.begin(); it != markers.end(); it++) {
+          if (it->second > 0)
+            it->second = 1. + k * (it->second - minV);
+        }
+        cout << "  Values where rescaled :" << endl;
+        cout << "    Min : \t" << minV << "\t=> " << 1. << endl;
+        cout << "    Max : \t" << maxV << "\t=> " << maxT << endl;
+        maxV = maxMapValueDouble(markers);
+      }
+    } else {
+      if (abs(scale - 1.) > 0.001)
+      {
+        for (auto it = markers.begin(); it != markers.end(); it++)
+          it->second *= scale;
+      }
+    }
+    if (maxV > maxT) {
+      stringstream ss;
+      ss << "Max " << property << " value (" << maxV
+         << ") exceeds data type upper limit (" << maxT << ")";
+      ERR_MSG(ss.str());
+      return 0;
+    }
+
+    if (applyLookup(imLabel, markers, imLabelOut) != RES_OK)
+      return 0;
+
+    retVal[0] = nl;
+    return nl;
+  }
+
   /**
    * labelWithArea() - Image labelization with the size (area) of each connected
    * components
@@ -680,8 +905,12 @@ namespace smil
    * @param[in] se : structuring element
    * @returns the number of labels (or 0 if error)
    *
+   * @warning This function is obsolete. Use labelWithProperty() :
+   @BeginCpp
+      labelWithProperty(imIn, imIn, imOut, "area", false, 1., se);
+   @EndCpp
    * @note
-   * - The range of type @b T2 of the output image shall be big enough to
+   * - The range of values of the output image (@TB{T2}) shall be big enough to
    * accomodate all label values.
    * - The same value can be assigned to different disconnected regions
    * in the image if they have the same area.
@@ -690,6 +919,9 @@ namespace smil
   size_t labelWithArea(const Image<T1> &imIn, Image<T2> &imOut,
                        const StrElt &se = DEFAULT_SE)
   {
+#if 1
+    return labelWithProperty(imIn, imIn, imOut, "area", false, 1., se);
+#else
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
@@ -710,6 +942,7 @@ namespace smil
     ASSERT(applyLookup(imLabel, areas, imOut) == RES_OK);
 
     return RES_OK;
+#endif
   }
 
   /**
@@ -717,14 +950,17 @@ namespace smil
    * each connected components in the imLabelIn image
    *
    * @param[in] imIn : input image
-   * @param[in] imLabelIn : an image with disconnected regions to initiate
-   * labeling
+   * @param[in] imLabelIn : an image with regions defined in @b imIn
    * @param[out] imLabelOut : output image
    * @param[in] se : structuring element
    * @returns the number of labels (or 0 if error)
    *
+   * @warning This function is obsolete. Use labelWithProperty()
+   @BeginCpp
+      labelWithProperty(imLabelIn, imIn, imLabelOut, "volume", false, 1., se);
+   @EndCpp
    * @note
-   * - The range of type @b T2 of the output image shall be big enough to
+   * - The range of values of the output image (@TB{T2}) shall be big enough to
    * accomodate all label values.
    * - The same value can be assigned to different disconnected regions
    * in the image if they have the same volume.
@@ -733,6 +969,10 @@ namespace smil
   size_t labelWithVolume(const Image<T1> &imIn, const Image<T2> &imLabelIn,
                          Image<T2> &imLabelOut, const StrElt &se = DEFAULT_SE)
   {
+#if 1
+    return labelWithProperty(imLabelIn, imIn, imLabelOut, "volume", false, 1.,
+                             se);
+#else
     ASSERT_ALLOCATED(&imIn, &imLabelOut);
     ASSERT_SAME_SIZE(&imIn, &imLabelOut);
 
@@ -742,9 +982,9 @@ namespace smil
 
     ASSERT(label(imLabelIn, imLabel, se) != 0);
     label(imLabelIn, imLabel, se);
-    bool onlyNonZeros       = true;
-    map<T2, Blob> blobs     = computeBlobs(imLabel, onlyNonZeros);
-    map<T2, double> volumes = blobsVolume(imIn, blobs);
+    bool            onlyNonZeros = true;
+    map<T2, Blob>   blobs        = computeBlobs(imLabel, onlyNonZeros);
+    map<T2, double> volumes      = blobsVolume(imIn, blobs);
     ASSERT(!volumes.empty());
 
     double maxV =
@@ -757,29 +997,36 @@ namespace smil
     ASSERT(applyLookup(imLabel, volumes, imLabelOut) == RES_OK);
 
     return RES_OK;
+#endif
   }
 
   /**
-   * labelwithMaxima() - Image labelization with the maximum values of each
+   * labelwithMax() - Image labelization with the maximum values of each
    * connected components in the imLabelIn image
    *
    * @param[in] imIn : input image
-   * @param[in] imLabelIn : an image with disconnected regions to initiate
-   * labeling
+   * @param[in] imLabelIn : an image with regions defined in @b imIn
    * @param[out] imLabelOut : output image
    * @param[in] se : structuring element
    * @returns the number of labels (or 0 if error)
    *
+   * @warning This function is obsolete. Use labelWithProperty()
+   @BeginCpp
+      labelWithProperty(imLabelIn, imIn, imLabelOut, "max", false, 1., se);
+   @EndCpp
    * @note
-   * - The range of type @b T2 of the output image shall be big enough to
+   * - The range of values of the output image (@TB{T2}) shall be big enough to
    * accomodate all label values.
    * - The same value can be assigned to different disconnected regions
    * in the image if they have the maximum value.
    */
   template <class T1, class T2>
-  size_t labelWithMaxima(const Image<T1> &imIn, const Image<T2> &imLabelIn,
-                         Image<T2> &imLabelOut, const StrElt &se = DEFAULT_SE)
+  size_t labelWithMax(const Image<T1> &imIn, const Image<T2> &imLabelIn,
+                      Image<T2> &imLabelOut, const StrElt &se = DEFAULT_SE)
   {
+#if 1
+    return labelWithProperty(imLabelIn, imIn, imLabelOut, "max", false, 1., se);
+#else
     ASSERT_ALLOCATED(&imIn, &imLabelOut);
     ASSERT_SAME_SIZE(&imIn, &imLabelOut);
 
@@ -789,21 +1036,22 @@ namespace smil
 
     ASSERT(label(imLabelIn, imLabel, se) != 0);
     label(imLabelIn, imLabel, se);
-    bool onlyNonZeros   = true;
-    map<T2, Blob> blobs = computeBlobs(imLabel, onlyNonZeros);
-    map<T2, T1> markers = blobsMaxVal(imIn, blobs);
+    bool          onlyNonZeros = true;
+    map<T2, Blob> blobs        = computeBlobs(imLabel, onlyNonZeros);
+    map<T2, T1>   markers      = blobsMaxVal(imIn, blobs);
     ASSERT(!markers.empty());
 
     double maxV =
         std::max_element(markers.begin(), markers.end(), map_comp_value_less())
             ->second;
-    cout << maxV << endl;
+    // cout << maxV << endl;
     ASSERT((maxV < double(ImDtTypes<T2>::max())),
            "Markers max value exceeds data type max!", 0);
 
     ASSERT(applyLookup(imLabel, markers, imLabelOut) == RES_OK);
 
     return RES_OK;
+#endif
   }
 
   /**
@@ -811,14 +1059,17 @@ namespace smil
    * components in the imLabelIn image
    *
    * @param[in] imIn : input image
-   * @param[in] imLabelIn : an image with disconnected regions to initiate
-   * labeling
+   * @param[in] imLabelIn : an image with regions defined in @b imIn
    * @param[out] imLabelOut : output image
    * @param[in] se : structuring element
    * @returns the number of labels (or 0 if error)
    *
+   * @warning This function is obsolete. Use labelWithProperty()
+   @BeginCpp
+      labelWithProperty(imLabelIn, imIn, imLabelOut, "mean", false, 1., se);
+   @EndCpp
    * @note
-   * - The range of type @b T2 of the output image shall be big enough to
+   * - The range of values of the output image (@TB{T2}) shall be big enough to
    * accomodate all label values.
    * - The same label can be assigned to different regions not connected regions
    * in the image if they have the same mean value.
@@ -827,6 +1078,10 @@ namespace smil
   size_t labelWithMean(const Image<T1> &imIn, const Image<T2> &imLabelIn,
                        Image<T1> &imLabelOut, const StrElt &se = DEFAULT_SE)
   {
+#if 1
+    return labelWithProperty(imLabelIn, imIn, imLabelOut, "mean", false, 1.,
+                             se);
+#else
     ASSERT_ALLOCATED(&imIn, &imLabelOut);
     ASSERT_SAME_SIZE(&imIn, &imLabelOut);
 
@@ -836,10 +1091,10 @@ namespace smil
 
     ASSERT(label(imLabelIn, imLabel, se) != 0);
     label(imLabelIn, imLabel, se);
-    bool onlyNonZeros   = true;
-    map<T2, Blob> blobs = computeBlobs(imLabel, onlyNonZeros);
+    bool                         onlyNonZeros = true;
+    map<T2, Blob>                blobs = computeBlobs(imLabel, onlyNonZeros);
     map<T2, std::vector<double>> meanValsStd = blobsMeanVal(imIn, blobs);
-    map<T2, double> markers;
+    map<T2, double>              markers;
 
     for (typename std::map<T2, std::vector<double>>::iterator iter =
              meanValsStd.begin();
@@ -854,13 +1109,13 @@ namespace smil
     double maxV =
         std::max_element(markers.begin(), markers.end(), map_comp_value_less())
             ->second;
-    //         cout << maxV << endl;
     ASSERT((maxV < double(ImDtTypes<T2>::max())),
            "Markers max value exceeds data type max!", 0);
 
     ASSERT(applyLookup(imLabel, markers, imLabelOut) == RES_OK);
 
     return RES_OK;
+#endif
   }
 
   /** @cond */
@@ -870,12 +1125,12 @@ namespace smil
   public:
     typedef MorphImageFunctionBase<T1, T2> parentClass;
 
-    virtual inline void processPixel(size_t pointOffset,
+    virtual inline void processPixel(size_t       pointOffset,
                                      vector<int> &dOffsetList)
     {
-      vector<T1> vals;
-      UINT nbrValues                = 0;
-      vector<int>::iterator dOffset = dOffsetList.begin();
+      vector<T1>            vals;
+      UINT                  nbrValues = 0;
+      vector<int>::iterator dOffset   = dOffsetList.begin();
       while (dOffset != dOffsetList.end()) {
         T1 val = parentClass::pixelsIn[pointOffset + *dOffset];
         if (find(vals.begin(), vals.end(), val) == vals.end()) {

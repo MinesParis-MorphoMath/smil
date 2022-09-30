@@ -1,0 +1,90 @@
+
+RES_T geoBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut,
+                const StrElt &se=DEFAULT_SE)
+
+Geodesic Reconstruction
+
+***
+
+RES_T geoDualBuild(const Image<T> &imIn, const Image<T> &imMask,
+                    Image<T> &imOut, const StrElt &se=DEFAULT_SE)
+
+Geodesic Dual Reconstruction
+
+***
+
+RES_T dualBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut,
+                const StrElt &se=DEFAULT_SE)
+
+Reconstruction by erosion - dual build - (using hierarchical queues).
+
+***
+
+RES_T build(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut,
+            const StrElt &se=DEFAULT_SE)
+
+Reconstruction by dilation (using hierarchical queues).
+
+***
+
+RES_T binBuild(const Image<T> &imIn, const Image<T> &imMask, Image<T> &imOut,
+                const StrElt &se=DEFAULT_SE)
+
+Reconstruction (using hierarchical queues).
+
+***
+
+RES_T hBuild(const Image<T> &imIn, const T &height, Image<T> &imOut,
+              const StrElt &se=DEFAULT_SE)
+
+h-Reconstuction
+
+Performs a subtraction of size height followed by a reconstruction
+
+***
+
+RES_T hDualBuild(const Image<T> &imIn, const T &height, Image<T> &imOut,
+                  const StrElt &se=DEFAULT_SE)
+
+Dual h-Reconstuction
+
+Performs an addition of size height followed by a dual reconstruction
+
+***
+
+RES_T buildOpen(const Image<T> &imIn, Image<T> &imOut,
+                const StrElt &se=DEFAULT_SE)
+
+Opening by reconstruction
+
+Erosion followed by a reconstruction (build)
+
+***
+
+RES_T buildClose(const Image<T> &imIn, Image<T> &imOut,
+                const StrElt &se=DEFAULT_SE)
+
+Closing by reconstruction
+
+Dilation followed by a reconstruction (dualBuild)
+
+***
+
+RES_T asBuildOpen(const Image<T> &imIn, Image<T> &imOut,
+                  const StrElt &se=DEFAULT_SE)
+
+Alternate Sequential reconstructions beginning by a buildOpen.
+
+***
+
+RES_T asBuildClose(const Image<T> &imIn, Image<T> &imOut,
+                    const StrElt &se=DEFAULT_SE)
+
+Alternate Sequential reconstructions beginning by a buildClose
+
+
+=======================================================
+
+binBuild and geoBuild... the same ?
+
+

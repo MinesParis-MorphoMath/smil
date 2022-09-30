@@ -13,8 +13,6 @@ vFlip                    vertFlip
 
 # 30/Nov/2020
 measImageEntropy         measEntropy
-gradient_HLS             gradientHLS
-gradient_LAB             gradientLAB
 measAreas                blobsArea
 measVolumes              blobsVolume
 measMinVals              blobsMinVal
@@ -28,8 +26,41 @@ measBarycenters          blobsBarycenter
 measBoundBoxes           blobsBoundBox
 measBlobMoments          blobsMoments
 measBlobsEntropy         blobsEntropy
+measInertiaMatrices      blobsMoments
+
+#gradient_HLS             gradientHLS
+#gradient_LAB             gradientLAB
+
+# 19/Nov/2021
+labelWithMaxima          labelWithMax
 
 #
 # __shortcuts__
 getDefaultSE             Morpho.getDefaultSE
 setDefaultSE             Morpho.setDefaultSE
+
+#
+#
+# __additions__
+
+#
+#
+def colorGradientHLS(imIn, se = Morpho.getDefaultSE(), convertFirstToHLS = True):
+  imOut = Image(imIn, imtype = 'UINT8')
+  r = gradientHLS(imIn, imOut, se, convertFirstToHLS)
+  if r == 1:
+    return imOut
+  return None
+
+#
+#
+def colorGradientLAB(imIn, se = Morpho.getDefaultSE(), convertFirstToLAB = True):
+  imOut = Image(imIn, imtype = 'UINT8')
+  r = gradientLAB(imIn, imOut, se, convertFirstToLAB)
+  if r == 1:
+    return imOut
+  return None
+
+
+
+

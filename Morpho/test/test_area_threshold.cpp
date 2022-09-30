@@ -78,7 +78,7 @@ class Test_Area_Threshold : public TestCase
     imRef << vecref;
 
     // remove all zones with area smaller than 10 pixels
-    areaThreshold(im1, 10, true, im2);
+    areaThreshold(im1, 10, im2, true);
 
     TEST_ASSERT(im2 == imRef);
     if (!(im2 == imRef)) {

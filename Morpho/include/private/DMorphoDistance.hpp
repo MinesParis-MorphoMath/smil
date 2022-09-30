@@ -75,14 +75,14 @@ namespace smil
       if (size > 1)
         return distGeneric(imIn, imOut, se);
       switch (st) {
-      case SE_Cross:
-        return distCross(imIn, imOut);
-      case SE_Cross3D:
-        return distCross3d(imIn, imOut);
-      case SE_Squ:
-        return distSquare(imIn, imOut);
-      default:
-        return distGeneric(imIn, imOut, se);
+        case SE_Cross:
+          return distCross(imIn, imOut);
+        case SE_Cross3D:
+          return distCross3d(imIn, imOut);
+        case SE_Squ:
+          return distSquare(imIn, imOut);
+        default:
+          return distGeneric(imIn, imOut, se);
       }
       return RES_ERR;
     }
@@ -115,12 +115,12 @@ namespace smil
 
       ImageFreezer freeze(imOut);
 
-      typedef Image<T1> imageInType;
-      typedef typename imageInType::lineType lineInType;
-      typedef Image<T2> imageOutType;
+      typedef Image<T1>                       imageInType;
+      typedef typename imageInType::lineType  lineInType;
+      typedef Image<T2>                       imageOutType;
       typedef typename imageOutType::lineType lineOutType;
 
-      lineInType pixelsIn;
+      lineInType  pixelsIn;
       lineOutType pixelsOut = imOut.getPixels();
 
       Image<T1> tmp(imIn);
@@ -139,7 +139,7 @@ namespace smil
       queue<size_t> *level      = new queue<size_t>();
       queue<size_t> *next_level = new queue<size_t>();
       queue<size_t> *swap;
-      T2 cur_level = T2(2);
+      T2             cur_level = T2(2);
 
       size_t size[3];
       imIn.getSize(size);
@@ -160,7 +160,7 @@ namespace smil
       off_t cur;
       off_t x, y, z, n_x, n_y, n_z;
 
-      vector<IntPoint> sePoints = se.points;
+      vector<IntPoint>           sePoints = se.points;
       vector<IntPoint>::iterator pt;
 
       bool oddLine;
@@ -218,22 +218,22 @@ namespace smil
       ASSERT_SAME_SIZE(&imIn, &imOut);
 
       ImageFreezer freeze(imOut);
-      Image<T1> tmp(imIn);
+      Image<T1>    tmp(imIn);
       ASSERT(inf(imIn, T1(1), tmp) == RES_OK);
 
-      typedef Image<T1> imageInType;
-      typedef typename imageInType::lineType lineInType;
-      typedef Image<T2> imageOutType;
+      typedef Image<T1>                       imageInType;
+      typedef typename imageInType::lineType  lineInType;
+      typedef Image<T2>                       imageOutType;
       typedef typename imageOutType::lineType lineOutType;
 
-      lineInType pixelsIn   = tmp.getPixels();
+      lineInType  pixelsIn  = tmp.getPixels();
       lineOutType pixelsOut = imOut.getPixels();
 
       int size[3];
       imIn.getSize(size);
-      size_t offset;
+      size_t   offset;
       long int x, y, z;
-      T2 infinite = ImDtTypes<T2>::max();
+      T2       infinite = ImDtTypes<T2>::max();
       long int min;
 
       for (z = 0; z < size[2]; ++z) {
@@ -325,15 +325,15 @@ namespace smil
       ASSERT_SAME_SIZE(&imIn, &imOut);
 
       ImageFreezer freeze(imOut);
-      Image<T1> tmp(imIn);
+      Image<T1>    tmp(imIn);
       ASSERT(inf(imIn, T1(1), tmp) == RES_OK);
 
-      typedef Image<T1> imageInType;
-      typedef typename imageInType::lineType lineInType;
-      typedef Image<T2> imageOutType;
+      typedef Image<T1>                       imageInType;
+      typedef typename imageInType::lineType  lineInType;
+      typedef Image<T2>                       imageOutType;
       typedef typename imageOutType::lineType lineOutType;
 
-      lineInType pixelsIn   = tmp.getPixels();
+      lineInType  pixelsIn  = tmp.getPixels();
       lineOutType pixelsOut = imOut.getPixels();
 
       off_t size[3];
@@ -418,14 +418,14 @@ namespace smil
       ASSERT_SAME_SIZE(&imIn, &imOut);
 
       ImageFreezer freeze(imOut);
-      Image<T2> tmp(imIn);
+      Image<T2>    tmp(imIn);
 
-      typedef Image<T1> imageInType;
-      typedef typename imageInType::lineType lineInType;
-      typedef Image<T2> imageOutType;
+      typedef Image<T1>                       imageInType;
+      typedef typename imageInType::lineType  lineInType;
+      typedef Image<T2>                       imageOutType;
       typedef typename imageOutType::lineType lineOutType;
 
-      lineInType pixelsIn   = imIn.getPixels();
+      lineInType  pixelsIn  = imIn.getPixels();
       lineOutType pixelsOut = imOut.getPixels();
       lineOutType pixelsTmp = tmp.getPixels();
 
@@ -433,7 +433,7 @@ namespace smil
       imIn.getSize(size);
       off_t offset;
       off_t x, y, z;
-      T2 infinite = ImDtTypes<T2>::max();
+      T2    infinite = ImDtTypes<T2>::max();
 
       off_t minV;
 
@@ -620,6 +620,14 @@ namespace smil
   /*
    * Geodesic Distance Function
    */
+  //
+  //  ####   ######   ####   #####   ######   ####      #     ####
+  // #    #  #       #    #  #    #  #       #          #    #    #
+  // #       #####   #    #  #    #  #####    ####      #    #
+  // #  ###  #       #    #  #    #  #            #     #    #
+  // #    #  #       #    #  #    #  #       #    #     #    #    #
+  //  ####   ######   ####   #####   ######   ####      #     ####
+  //
   template <class T1, class T2>
   RES_T distanceGeodesic(const Image<T1> &imIn, const Image<T1> &imMask,
                          Image<T2> &imOut, const StrElt &se)
@@ -631,20 +639,20 @@ namespace smil
 
     Image<UINT32> imOffset(imIn);
 
-    typedef Image<T1> imageInType;
-    typedef typename imageInType::lineType lineInType;
-    typedef Image<T2> imageOutType;
+    typedef Image<T1>                       imageInType;
+    typedef typename imageInType::lineType  lineInType;
+    typedef Image<T2>                       imageOutType;
     typedef typename imageOutType::lineType lineOutType;
 
-    lineInType pixelsIn, pixelsMask;
+    lineInType  pixelsIn, pixelsMask;
     lineOutType pixelsOut = imOut.getPixels();
 
     Image<T1> tmp(imIn);
 
     vector<IntPoint> sePts;
-    UINT sePtsNbr;
+    UINT             sePtsNbr;
 
-    typedef size_t OffsetT;
+    typedef size_t                 OffsetT;
     HierarchicalQueue<T2, OffsetT> hq;
     // T3D fah      PriorityQueueT<float, OffsetT> hq(true);
     // Set image to 1 when pixels are !=0
@@ -679,7 +687,7 @@ namespace smil
 
     off_t imSize[3];
     imIn.getSize(imSize);
-    off_t maxOffset = imSize[2] * imSize[1] * imSize[0];
+    off_t              maxOffset = imSize[2] * imSize[1] * imSize[0];
     std::vector<float> distVector(maxOffset, ImDtTypes<float>::max());
 
     // INITIALIZE
@@ -798,7 +806,8 @@ namespace smil
 
             hq.push(pr1, p1);
 
-            pixelsOut[p1] = current_dist;
+            // pixelsOut[p1] = current_dist;
+            pixelsOut[p1] = pr1;
 
           } // if wk[p_suiv] != DONE
         }   // x1 no border
@@ -810,21 +819,29 @@ namespace smil
   /*
    * Euclidean Distance function.
    */
+  //
+  // ######  #    #   ####   #          #    #####   ######    ##    #    #
+  // #       #    #  #    #  #          #    #    #  #        #  #   ##   #
+  // #####   #    #  #       #          #    #    #  #####   #    #  # #  #
+  // #       #    #  #       #          #    #    #  #       ######  #  # #
+  // #       #    #  #    #  #          #    #    #  #       #    #  #   ##
+  // ######   ####    ####   ######     #    #####   ######  #    #  #    #
+  //
   template <class T1, class T2>
-  RES_T distanceEuclidean(const Image<T1> &imIn, Image<T2> &imOut)
+  RES_T distanceEuclideanOld(const Image<T1> &imIn, Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     ImageFreezer freeze(imOut);
-    Image<T2> tmp(imIn);
+    Image<T2>    tmp(imIn);
 
-    typedef Image<T1> imageInType;
-    typedef typename imageInType::lineType lineInType;
-    typedef Image<T2> imageOutType;
+    typedef Image<T1>                       imageInType;
+    typedef typename imageInType::lineType  lineInType;
+    typedef Image<T2>                       imageOutType;
     typedef typename imageOutType::lineType lineOutType;
 
-    lineInType pixelsIn   = imIn.getPixels();
+    lineInType  pixelsIn  = imIn.getPixels();
     lineOutType pixelsOut = imOut.getPixels();
     lineOutType pixelsTmp = tmp.getPixels();
 
@@ -832,8 +849,8 @@ namespace smil
     imIn.getSize(size);
     size_t nbrPixelsPerSlice = size[0] * size[1];
     size_t offset;
-    int x, y, z;
-    T2 infinite = ImDtTypes<T2>::max();
+    int    x, y, z;
+    T2     infinite = ImDtTypes<T2>::max();
 
     // H(x,u) is a minimizer, = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h)
     // <= f(x,i)) : h )
@@ -842,8 +859,8 @@ namespace smil
     vector<long int> s(size[0]);
     // sets of points with the same least minimizer
     vector<long int> t(size[0]);
-    long int q = 0;
-    long int w;
+    long int         q = 0;
+    long int         w;
 
     for (z = 0; z < size[2]; ++z) {
       // #ifdef USE_OPEN_MP
@@ -929,6 +946,7 @@ namespace smil
 #undef __sep
 
     copy(imOut, tmp);
+
 // The previous pixels are already squarred ...
 #define __f_euclidean(a, i)                                                    \
   (a - i) * (a - i) + pixelsTmp[offset + i * nbrPixelsPerSlice]
@@ -936,6 +954,7 @@ namespace smil
   (b * b - a * a + pixelsTmp[offset + b * nbrPixelsPerSlice] -                 \
    pixelsTmp[offset + a * nbrPixelsPerSlice]) /                                \
       (2 * (b - a))
+
     for (y = 0; y < size[1]; ++y) {
 #ifdef USE_OPENMP
 #pragma omp for private(x, z, offset)
@@ -971,6 +990,13 @@ namespace smil
     }
 #undef __f_euclidean
 #undef __sep
+
+#ifdef USE_OPEN_MP
+#pragma omp parallel for
+#endif // USE_OPEN_MP
+    for (size_t offset = 0; offset < imOut.getPixelCount(); offset++) {
+      pixelsOut[offset] = T2(std::sqrt(pixelsOut[offset]));
+    }
 
     return RES_OK;
   }

@@ -13,7 +13,8 @@
 
 /* @} */
 
-#include "DFastLine.h"
+#include "DLineMorpho.h"
+//#include "DFastLine.h"
 #include "DGeodesicAttributes.h"
 #include "DAreaOpen.h"
 

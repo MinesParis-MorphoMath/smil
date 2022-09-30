@@ -10,8 +10,8 @@
  *   @b Image::getNumArray().
  *   - This is @b not a copy of the data but a real access to the image pixels
  *     via @b NumPy.
- * - create an @b Smil image from a @b NumPy array with the method @b
- *   Image::fromNumArray(arr).
+ * - create a @b Smil image from a @b NumPy array with one of the methods
+ *   @TB{Image::fromNumArray(arr)} or @TB{Image(arr)} or @TB{NumpyInt(arr)}.
  *
  * @note These functions are available only inside @Python environnment.
  *
@@ -19,9 +19,12 @@
  *
  * @subsection s660_02_01 From Numpy to Smil
  *
- * Create a @Smil image from a @Numpy array with @TB{fromNumArray()}
+ * - Create a @Smil image from a @Numpy array with @TB{Image()}
+ * @includelineno numpy_np2image.py
  *
+ * - Create a @Smil image from a @Numpy array with @TB{fromNumArray()}
  * @includelineno numpy_np2sp.py
+ *
  *
  * @note
  *  - The content of the image is a @TB{copy} of the content of the @Numpy

@@ -50,14 +50,14 @@ namespace smil
    */
   /** @} */
 
- /**
-    * @defgroup  ArithArith Arithmetics
-    * @ingroup Arith
-    *
-    * @addtogroup ArithArith
-    *
-    * @{
-    */
+  /**
+   * @defgroup  ArithArith Arithmetics
+   * @ingroup Arith
+   *
+   * @addtogroup ArithArith
+   *
+   * @{
+   */
   /**
    * inv() - Invert an image.
    *
@@ -415,8 +415,8 @@ namespace smil
     ASSERT(CHECK_SAME_SIZE(&imIn1, &imIn2), false);
 
     typedef typename Image<T>::lineType lineType;
-    lineType pix1 = imIn1.getPixels();
-    lineType pix2 = imIn2.getPixels();
+    lineType                            pix1 = imIn1.getPixels();
+    lineType                            pix2 = imIn2.getPixels();
 
     for (size_t i = 0; i < imIn1.getPixelCount(); i++)
       if (pix1[i] != pix2[i])
@@ -786,7 +786,7 @@ namespace smil
 
     typename ImDtTypes<T>::lineType pixIn  = imIn.getPixels();
     typename ImDtTypes<T>::lineType pixOut = imOut.getPixels();
-    double newVal;
+    double                          newVal;
 
     for (size_t i = 0; i < imIn.getPixelCount(); i++) {
       newVal    = pixIn[i] * dValue;
@@ -820,7 +820,7 @@ namespace smil
   /**
    * mulNoSat() - Multiply an image and a value (without type max check)
    *
-   * The result is a image where :
+   * The result is a image where the value of each pixel will be given by :
    * - <b><c> imOut(x) = (imIn(x) * value  % (max(T) + 1))</c></b>
    *
    * @param[in] imIn : input image
@@ -841,8 +841,8 @@ namespace smil
   /**
    * log() - Logarithm of an image
    *
-   * The result is a image where :
-   * - <b><c> imOut(x) = (imIn(x) != 0 ? log(imIn(x)) : max(T))</c></b>
+   * The result is a image where the value of each pixel will be given by :
+   * - <b><c> imOut(x) = (imIn(x) > 0 ? log(imIn(x)) : max(T))</c></b>
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -850,13 +850,13 @@ namespace smil
    *
    * @note Possible bases: 0 or none (natural logarithm, or base e), 2, 10
    */
-  template <class T>
-  RES_T log(const Image<T> &imIn, Image<T> &imOut, int base = 0)
+  template <class T1, class T2>
+  RES_T log(const Image<T1> &imIn, Image<T2> &imOut, int base = 0)
   {
     ASSERT_ALLOCATED(&imIn);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    unaryImageFunction<T, logLine<T>> func;
+    unaryImageFunction<T1, logLine<T1, T2>, T2> func;
     func.lineFunction.base = base;
     return func(imIn, imOut);
   }
@@ -864,8 +864,8 @@ namespace smil
   /**
    * exp() - exponential of an image
    *
-   * The result is a image where :
-   * - <b><c> imOut(x) = exp(imIn(x)</c></b>
+   * The result is a image where the value of each pixel will be given by :
+   * - <b><c> imOut(x) = exp(imIn(x))</c></b>
    *
    * @param[in] imIn : input image
    * @param[out] imOut : output image
@@ -873,30 +873,75 @@ namespace smil
    *
    * @note
    * - Possible bases: 0 or none (natural logarithm, or base e), 2, 10
+   * - Output value is limited to the maximum value of imOut data type
    * @see
    * - log()
    */
-  template <class T>
-  RES_T exp(const Image<T> &imIn, Image<T> &imOut, int base = 0)
+  template <class T1, class T2>
+  RES_T exp(const Image<T1> &imIn, Image<T2> &imOut, int base = 0)
   {
     ASSERT_ALLOCATED(&imIn);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
-    unaryImageFunction<T, expLine<T>> func;
+    unaryImageFunction<T1, expLine<T1, T2>, T2> func;
     func.lineFunction.base = base;
+    return func(imIn, imOut);
+  }
+
+  /**
+   * pow() - power of an image
+   *
+   * The result is a image where the value of each pixel will be given by :
+   * - <b><c> imOut(x) = pow(imIn(x), exponent)</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   * @param[in] exponent : exponent to raise the value of each pixel
+   *
+   * @note
+   * - Output value is limited to the maximum value of imOut data type
+   */
+  template <class T1, class T2>
+  RES_T pow(const Image<T1> &imIn, Image<T2> &imOut, double exponent = 2)
+  {
+    ASSERT_ALLOCATED(&imIn);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    unaryImageFunction<T1, powLine<T1, T2>, T2> func;
+    func.lineFunction.exponent = exponent;
+    return func(imIn, imOut);
+  }
+
+  /**
+   * sqrt() - square root of an image
+   *
+   * The result is a image where the value of each pixel will be given by :
+   * - <b><c> imOut(x) = sqrt(imIn(x)</c></b>
+   *
+   * @param[in] imIn : input image
+   * @param[out] imOut : output image
+   *
+   */
+  template <class T1, class T2>
+  RES_T sqrt(const Image<T1> &imIn, Image<T2> &imOut)
+  {
+    ASSERT_ALLOCATED(&imIn);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
+
+    unaryImageFunction<T1, sqrtLine<T1, T2>, T2> func;
     return func(imIn, imOut);
   }
 
   /** @} */
 
   /**
-    * @defgroup  ArithLogic Logical functions
-    * @ingroup Arith
-    *
-    * @addtogroup ArithLogic
-    *
-    * @{
-    */
+   * @defgroup  ArithLogic Logical functions
+   * @ingroup Arith
+   *
+   * @addtogroup ArithLogic
+   *
+   * @{
+   */
   /**
    * logicAnd() - Logic AND operator, pixel by pixel, of two images
    *
@@ -1032,13 +1077,13 @@ namespace smil
   /** @} */
 
   /**
-    * @defgroup  ArithCompare Comparison functions
-    * @ingroup Arith
-    *
-    * @addtogroup ArithCompare
-    *
-    * @{
-    */
+   * @defgroup  ArithCompare Comparison functions
+   * @ingroup Arith
+   *
+   * @addtogroup ArithCompare
+   *
+   * @{
+   */
   /**
    * test() - Test
    *
@@ -1386,14 +1431,14 @@ namespace smil
   }
   /** @} */
 
- /**
-    * @defgroup  ArithRange Value range conversion
-    * @ingroup Arith
-    *
-    * @addtogroup ArithRange
-    *
-    * @{
-    */
+  /**
+   * @defgroup  ArithRange Value range conversion
+   * @ingroup Arith
+   *
+   * @addtogroup ArithRange
+   *
+   * @{
+   */
   /**
 
    * fill() - Fill an image with a given value.
@@ -1436,7 +1481,7 @@ namespace smil
     srand(tv.tv_usec);
 
     double rangeT = ImDtTypes<T>::cardinal();
-    T minT        = ImDtTypes<T>::min();
+    T      minT   = ImDtTypes<T>::min();
 
     for (size_t i = 0; i < imOut.getPixelCount(); i++)
       pixels[i] = T(rand() / double(RAND_MAX) * rangeT + double(minT));
@@ -1445,7 +1490,6 @@ namespace smil
 
     return RES_OK;
   }
-
 
   /**
    * cast() - Cast from an image type to another
@@ -1497,7 +1541,7 @@ namespace smil
   }
 
   /**
-   * @brief expand() - Linear conversion of pixels values to the range
+   * @brief scaleRange() - Linear conversion of pixels values to the range
    * [Min, Max]
    *
    * Values in the input image are linearly mapped into the output image with
@@ -1516,8 +1560,8 @@ namespace smil
    *
    */
   template <class T1, class T2>
-  RES_T expand(const Image<T1> &imIn, const T1 inMin, const T1 inMax,
-                        const T2 outMin, const T2 outMax, Image<T2> &imOut)
+  RES_T scaleRange(const Image<T1> &imIn, const T1 inMin, const T1 inMax,
+                   const T2 outMin, const T2 outMax, Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -1571,7 +1615,7 @@ namespace smil
   }
 
   /**
-   * @brief expand() - Linear conversion of pixel values to the range
+   * @brief scaleRange() - Linear conversion of pixel values to the range
    * [Min, Max]
    *
    * Maps a range of values in the input image into the range <b>[Min, Max]</b>
@@ -1587,8 +1631,8 @@ namespace smil
    * @param[in] onlyNonZero : defines how to find input image range of values
    */
   template <class T1, class T2>
-  RES_T expand(const Image<T1> &imIn, const T2 Min, const T2 Max,
-                        Image<T2> &imOut, bool onlyNonZero)
+  RES_T scaleRange(const Image<T1> &imIn, const T2 Min, const T2 Max,
+                   Image<T2> &imOut, bool onlyNonZero)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -1629,7 +1673,7 @@ namespace smil
   }
 
   /**
-   * @brief expand() - Linear conversion of pixels values to the
+   * @brief scaleRange() - Linear conversion of pixels values to the
    * domain range
    *
    * Maps a range in the input image into the  range <b>[min(T2), max(T2)]</b>
@@ -1643,15 +1687,14 @@ namespace smil
    * @param[in] onlyNonZero : defines how to find input image range of values
    */
   template <class T1, class T2>
-  RES_T expand(const Image<T1> &imIn, Image<T2> &imOut,
-                        bool onlyNonZero)
+  RES_T scaleRange(const Image<T1> &imIn, Image<T2> &imOut, bool onlyNonZero)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
 #if 1
-    return expand(imIn, imOut.getDataTypeMin(), imOut.getDataTypeMax(),
-                           imOut, onlyNonZero);
+    return scaleRange(imIn, imOut.getDataTypeMin(), imOut.getDataTypeMax(),
+                      imOut, onlyNonZero);
 #else
 
     ImageFreezer freeze(imOut);
@@ -1713,8 +1756,8 @@ namespace smil
    * @param[out] imOut : output Image
    */
   template <class T1, class T2>
-  RES_T sCurve(const Image<T1> &imIn, const T1 pivot,
-                              const double ratio, Image<T2> &imOut)
+  RES_T sCurve(const Image<T1> &imIn, const T1 pivot, const double ratio,
+               Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -1745,7 +1788,7 @@ namespace smil
 
     double k = 4. * ratio / (vMax - vMin);
 
-    T2 Max      = imOut.getDataTypeMax();
+    T2     Max  = imOut.getDataTypeMax();
     size_t iMax = W * H * D;
 
     for (size_t i = 0; i < iMax; i++)
@@ -1754,18 +1797,16 @@ namespace smil
     return RES_OK;
   }
 
-
-
   /** @} */
 
- /**
-    * @defgroup  ArithChannel Operations on image channels
-    * @ingroup Arith
-    *
-    * @addtogroup ArithChannel
-    *
-    * @{
-    */
+  /**
+   * @defgroup  ArithChannel Operations on image channels
+   * @ingroup Arith
+   *
+   * @addtogroup ArithChannel
+   *
+   * @{
+   */
   /**
    * copyChannel() - Copy a channel of multichannel image into a single channel
    * image
@@ -1791,8 +1832,8 @@ namespace smil
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     typedef typename MCT1::DataType T1;
-    typename Image<T1>::lineType lineIn  = imIn.getPixels().arrays[chanNum];
-    typename Image<T2>::lineType lineOut = imOut.getPixels();
+    typename Image<T1>::lineType    lineIn  = imIn.getPixels().arrays[chanNum];
+    typename Image<T2>::lineType    lineOut = imOut.getPixels();
 
     copyLine<T1, T2>(lineIn, imIn.getPixelCount(), lineOut);
     imOut.modified();
@@ -1824,8 +1865,8 @@ namespace smil
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     typedef typename MCT2::DataType T2;
-    typename Image<T1>::lineType lineIn  = imIn.getPixels();
-    typename Image<T2>::lineType lineOut = imOut.getPixels().arrays[chanNum];
+    typename Image<T1>::lineType    lineIn  = imIn.getPixels();
+    typename Image<T2>::lineType    lineOut = imOut.getPixels().arrays[chanNum];
 
     copyLine<T1, T2>(lineIn, imIn.getPixelCount(), lineOut);
     imOut.modified();
@@ -1858,8 +1899,8 @@ namespace smil
     ASSERT(im3DOut.setSize(width, height, chanNum) == RES_OK);
 
     typedef typename MCT1::DataType T1;
-    typename Image<MCT1>::lineType lineIn = imIn.getPixels();
-    typename Image<T2>::lineType lineOut  = im3DOut.getPixels();
+    typename Image<MCT1>::lineType  lineIn  = imIn.getPixels();
+    typename Image<T2>::lineType    lineOut = im3DOut.getPixels();
 
     for (UINT i = 0; i < chanNum; i++) {
       copyLine<T1, T2>(lineIn.arrays[i], pixCount, lineOut);
@@ -1892,8 +1933,8 @@ namespace smil
     imOut.setSize(width, height);
 
     typedef typename MCT2::DataType T2;
-    typename Image<T1>::lineType lineIn    = imIn.getPixels();
-    typename Image<MCT2>::lineType lineOut = imOut.getPixels();
+    typename Image<T1>::lineType    lineIn  = imIn.getPixels();
+    typename Image<MCT2>::lineType  lineOut = imOut.getPixels();
 
     for (UINT i = 0; i < chanNum; i++) {
       copyLine<T1, T2>(lineIn, pixCount, lineOut.arrays[i]);
@@ -1906,13 +1947,13 @@ namespace smil
   /** @} */
 
   /**
-    * @defgroup  ArithOthers Others functions
-    * @ingroup Arith
-    *
-    * @addtogroup ArithOthers
-    *
-    * @{
-    */
+   * @defgroup  ArithOthers Others functions
+   * @ingroup Arith
+   *
+   * @addtogroup ArithOthers
+   *
+   * @{
+   */
   /**
    * mask() - Image mask
    *

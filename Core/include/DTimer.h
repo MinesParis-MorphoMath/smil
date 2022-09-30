@@ -42,15 +42,20 @@ public:
   timer() : running(false)
   {
   }
+
   ~timer()
   {
     running = false;
     end();
   }
+
   void          start();
+
   void          stop();
-  bool          running;
-  QApplication *app;
+
+  bool          running = false;
+
+  QApplication *app = nullptr;
 
 protected:
   //   pthread_t thread;

@@ -1,8 +1,8 @@
 /* __HEAD__
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
- * Copyright (c) 2017-2021, Centre de Morphologie Mathematique
+ * Copyright (c) 2017-2022, Centre de Morphologie Mathematique
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -15,16 +15,16 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Description :
@@ -38,7 +38,6 @@
  *
  * __HEAD__ - Stop here !
  */
-
 
 #ifndef __MORPHO_GEODESIC_PATH_OPENING_T_HPP__
 #define __MORPHO_GEODESIC_PATH_OPENING_T_HPP__
@@ -60,7 +59,7 @@ namespace smil
     if (fifoSave->empty())
       return;
 
-    int IndStart, currentPixel, X, Y, Z, Xtort, Ytort, Ztort;
+    int   IndStart, currentPixel, X, Y, Z, Xtort, Ytort, Ztort;
     float DistMax = -1, Dist;
 
     // Find the BaryCentre
@@ -74,13 +73,13 @@ namespace smil
       X = currentPixel % W;
       Y = (currentPixel % (W * H) - X) / W;
       Z = (currentPixel - X - Y * W) / (W * H);
-      // Dist = sqrt(pow((double)(X*ScaleX -
+      // Dist = std::sqrt(pow((double)(X*ScaleX -
       // BaryX),2)+pow((double)(Y*ScaleY-BaryY),2)+pow((double)(Z*ScaleZ -
       // BaryZ),2));
-      Dist =
-          (float) sqrt((double) ((X * ScaleX - BaryX) * (X * ScaleX - BaryX) +
-                                 (Y * ScaleY - BaryY) * (Y * ScaleY - BaryY) +
-                                 (Z * ScaleZ - BaryZ) * (Z * ScaleZ - BaryZ)));
+      Dist = (float) std::sqrt(
+          (double) ((X * ScaleX - BaryX) * (X * ScaleX - BaryX) +
+                    (Y * ScaleY - BaryY) * (Y * ScaleY - BaryY) +
+                    (Z * ScaleZ - BaryZ) * (Z * ScaleZ - BaryZ)));
 
       if (Dist > DistMax) {
         DistMax  = Dist;
@@ -90,7 +89,7 @@ namespace smil
 
     // Get the max distance
     bool NewDist;
-    int k, l, Ind, j;
+    int  k, l, Ind, j;
     DistanceMap[IndStart] = 1;
     fifoCurrent.push(IndStart);
     DistMax = 1;
@@ -117,9 +116,9 @@ namespace smil
                     fifoCurrent.push(Ind);
                     DistanceMap[Ind] = -3;
                   } else if (DistanceMap[Ind] != 0 && DistanceMap[Ind] != -3) {
-                    float D = sqrt((j * ScaleX * j * ScaleX) +
-                                   (k * ScaleY) * (k * ScaleY) +
-                                   (l * ScaleZ) * (l * ScaleZ));
+                    float D = std::sqrt((j * ScaleX * j * ScaleX) +
+                                        (k * ScaleY) * (k * ScaleY) +
+                                        (l * ScaleZ) * (l * ScaleZ));
                     if (NewDist == 0 || Dist > (DistanceMap[Ind] + D)) {
                       Dist    = (float) DistanceMap[Ind] + D;
                       NewDist = 1;
@@ -127,7 +126,8 @@ namespace smil
                   }
 
                   // !(FLOAT_EQ_CORRIGE(Dist,DataTraits<F_SIMPLE
-                  // !>::default_value::max_value()))){ //==> Dist != max_value()
+                  // !>::default_value::max_value()))){ //==> Dist !=
+                  // max_value()
                   if (NewDist) {
                     DistanceMap[X + Y * W + Z * W * H] = Dist;
                     if (Dist > DistMax) {
@@ -172,9 +172,9 @@ namespace smil
         Y2 = (IndStart % (W * H) - X2) / W;
         Z2 = (IndStart - X2 - Y2 * W) / (W * H);
         double Eucl =
-            sqrt((double) ((Xtort - X2) * (Xtort - X2) * ScaleX * ScaleX +
-                           (Ytort - Y2) * (Ytort - Y2) * ScaleY * ScaleY +
-                           (Ztort - Z2) * (Ztort - Z2) * ScaleZ * ScaleZ));
+            std::sqrt((double) ((Xtort - X2) * (Xtort - X2) * ScaleX * ScaleX +
+                                (Ytort - Y2) * (Ytort - Y2) * ScaleY * ScaleY +
+                                (Ztort - Z2) * (Ztort - Z2) * ScaleZ * ScaleZ));
         if (Eucl != 0)
           DistanceMap[currentPixel] = (double) (DistMax / Eucl);
         else
@@ -215,7 +215,7 @@ namespace smil
     if (fifoSave->empty())
       return;
 
-    int IndStart, currentPixel, X, Y, Z, Xtort, Ytort, Ztort;
+    int   IndStart, currentPixel, X, Y, Z, Xtort, Ytort, Ztort;
     float DistMax = -1, Dist;
 
     // Find the BaryCentre
@@ -229,13 +229,13 @@ namespace smil
       X = currentPixel % W;
       Y = (currentPixel % (W * H) - X) / W;
       Z = (currentPixel - X - Y * W) / (W * H);
-      // Dist = sqrt(pow((double)(X*ScaleX -
+      // Dist = std::sqrt(pow((double)(X*ScaleX -
       // BaryX),2)+pow((double)(Y*ScaleY-BaryY),2)+pow((double)(Z*ScaleZ -
       // BaryZ),2));
-      Dist =
-          (float) sqrt((double) ((X * ScaleX - BaryX) * (X * ScaleX - BaryX) +
-                                 (Y * ScaleY - BaryY) * (Y * ScaleY - BaryY) +
-                                 (Z * ScaleZ - BaryZ) * (Z * ScaleZ - BaryZ)));
+      Dist = (float) std::sqrt(
+          (double) ((X * ScaleX - BaryX) * (X * ScaleX - BaryX) +
+                    (Y * ScaleY - BaryY) * (Y * ScaleY - BaryY) +
+                    (Z * ScaleZ - BaryZ) * (Z * ScaleZ - BaryZ)));
 
       if (Dist > DistMax) {
         DistMax  = Dist;
@@ -245,7 +245,7 @@ namespace smil
 
     // Get the max distance DistMax (geodesic diameter)
     bool NewDist;
-    int k, l, Ind, IndCurr, j;
+    int  k, l, Ind, IndCurr, j;
     DistanceMap[IndStart] = 1;
     fifoCurrent.push(IndStart);
     DistMax = 1;
@@ -277,9 +277,9 @@ namespace smil
                       DistanceMap[Ind] = -3;
                     } else if (DistanceMap[Ind] != 0 &&
                                DistanceMap[Ind] != -3) {
-                      float D = sqrt((j * ScaleX * j * ScaleX) +
-                                     (k * ScaleY) * (k * ScaleY) +
-                                     (l * ScaleZ) * (l * ScaleZ));
+                      float D = std::sqrt((j * ScaleX * j * ScaleX) +
+                                          (k * ScaleY) * (k * ScaleY) +
+                                          (l * ScaleZ) * (l * ScaleZ));
                       if (NewDist == 0 || Dist > (DistanceMap[Ind] + D)) {
                         Dist    = (float) DistanceMap[Ind] + D;
                         NewDist = 1;
@@ -336,9 +336,9 @@ namespace smil
         Y2 = (IndStart % (W * H) - X2) / W;
         Z2 = (IndStart - X2 - Y2 * W) / (W * H);
         double Eucl =
-            sqrt((double) ((Xtort - X2) * (Xtort - X2) * ScaleX * ScaleX +
-                           (Ytort - Y2) * (Ytort - Y2) * ScaleY * ScaleY +
-                           (Ztort - Z2) * (Ztort - Z2) * ScaleZ * ScaleZ));
+            std::sqrt((double) ((Xtort - X2) * (Xtort - X2) * ScaleX * ScaleX +
+                                (Ytort - Y2) * (Ytort - Y2) * ScaleY * ScaleY +
+                                (Ztort - Z2) * (Ztort - Z2) * ScaleZ * ScaleZ));
         if (Eucl != 0)
           DistanceMap[currentPixel] = (double) (DistMax / Eucl);
         else
@@ -376,8 +376,8 @@ namespace smil
                               float ScaleY = 1, float ScaleZ = 1)
   {
     std::queue<int> fifoCurrent, fifoSave;
-    int X, Y, Z, currentPixel, i, j, k, l, Ind;
-    int BaryX, BaryY, BaryZ;
+    int             X, Y, Z, currentPixel, i, j, k, l, Ind;
+    int             BaryX, BaryY, BaryZ;
 
     // For all pixels
     for (i = W * H * D - 1; i >= 0; i--)
@@ -436,8 +436,8 @@ namespace smil
                                 float ScaleZ = 1)
   {
     std::queue<int> fifoCurrent, fifoSave;
-    int X, Y, Z, currentPixel, i, j, k, l, Ind, IndCurr;
-    int BaryX, BaryY, BaryZ;
+    int             X, Y, Z, currentPixel, i, j, k, l, Ind, IndCurr;
+    int             BaryX, BaryY, BaryZ;
 
     for (i = W * H * D - 1; i >= 0; i--) {
       // For all pixels
@@ -516,13 +516,13 @@ namespace smil
 
     // On passe par des buffers pour des questions de performance, En 3D, on
     // passe de 80 a 50 secondes
-    typename Image<UINT8>::lineType pixelsIn = imIn.getPixels();
-    typename Image<T>::lineType pixelsOut    = imOut.getPixels();
+    typename Image<UINT8>::lineType pixelsIn  = imIn.getPixels();
+    typename Image<T>::lineType     pixelsOut = imOut.getPixels();
 
     // Calcul des niveaux de gris a reellement faire: si un niveau de gris n'est
     // pas present dans l'image initial, aucun changement dans les CC. Donc il
     // n'y a pas besoin de perdre du temps pour ne rien changer...
-    UINT8 Hist[256] = {0};
+    UINT8            Hist[256] = {0};
     std::vector<int> levelToDo;
 
     for (size_t i = 0; i < imIn.getPixelCount(); ++i) {
@@ -583,12 +583,12 @@ namespace smil
 
     typename Image<UINT8>::lineType pixelsIn    = imIn.getPixels();
     typename Image<UINT8>::lineType pixelsTrans = imTrans.getPixels();
-    typename Image<T>::lineType pixelsInd       = imInd.getPixels();
+    typename Image<T>::lineType     pixelsInd   = imInd.getPixels();
 
     // Calcul des niveaux de gris a reellement faire: si un niveau de gris n'est
     // pas present dans l'image initial, aucun changement dans les CC. Donc il
     // n'y a pas besoin de perdre du temps pour ne rien changer...
-    UINT8 Hist[256] = {0};
+    UINT8            Hist[256] = {0};
     std::vector<int> levelToDo;
     // Il faut obligatoirement faire le level 0 pour des questions
     // d'initialisation
@@ -608,8 +608,8 @@ namespace smil
       return RES_ERR_BAD_ALLOCATION;
     }
 
-    std::vector<std::vector<MyPOINTS> > PathOp(W * H * Z);
-    MyPOINTS Pt;
+    std::vector<std::vector<MyPOINTS>> PathOp(W * H * Z);
+    MyPOINTS                           Pt;
 
     // For all the level which are needed
     for (int k = 0; k < (int) levelToDo.size(); k++) {
@@ -642,7 +642,7 @@ namespace smil
     copy(imIn, imPOold);
     typename Image<UINT8>::lineType pixelsPOold = imPOold.getPixels();
 
-    int ValPO, Sub;
+    int   ValPO, Sub;
     INT8 *Accumulation = new INT8[W * H * Z];
     if (Accumulation == NULL) {
       // MORPHEE_REGISTER_ERROR("Accumulation allocation");
@@ -957,7 +957,7 @@ namespace smil
   // ..................................................
   template <class T1, class T2>
   RES_T ImLabelFlatZonesWithGeodesicDiameter(const Image<T1> &imIn,
-                                             Image<T2> &imOut)
+                                             Image<T2> &      imOut)
   {
     // Check inputs
     ASSERT_ALLOCATED(&imIn)
@@ -1027,8 +1027,8 @@ namespace smil
 
     // On passe par des buffers pour des questions de performance, En 3D, on
     // passe de 80 a 50 secondes
-    typename Image<UINT8>::lineType pixelsIn = imIn.getPixels();
-    typename Image<T>::lineType pixelsOut    = imOut.getPixels();
+    typename Image<UINT8>::lineType pixelsIn  = imIn.getPixels();
+    typename Image<T>::lineType     pixelsOut = imOut.getPixels();
 
     double *DistanceMap = new double[W * H * Z];
     if (DistanceMap == NULL) {
@@ -1143,8 +1143,8 @@ pas
     //besoin de perdre du temps pour ne rien changer...
     UINT8 Hist[256];
     std::vector<int>levelToDo;
-    levelToDo.push_back(0);		//Il faut obligatoirement faire le level 0 pour
-des questions d'initialisation for(i=0;i<256;i++) Hist[i]=0;		//Initialement
+    levelToDo.push_back(0);   //Il faut obligatoirement faire le level 0 pour
+des questions d'initialisation for(i=0;i<256;i++) Hist[i]=0;    //Initialement
 NDG non present for(itIn=imIn.begin(),itEnd=imIn.end(); itIn!=itEnd; ++itIn)
       Hist[*itIn]=1;
     for(i=0;i<256;i++)
@@ -1164,9 +1164,9 @@ NDG non present for(itIn=imIn.begin(),itEnd=imIn.end(); itIn!=itEnd; ++itIn)
     //For all the level which are needed
     for(k = 0 ; k<(int)levelToDo.size() ; k++){
       for(i=0,itIn=imIn.begin(),itEnd=imIn.end();itIn!=itEnd;++itIn,++i)
-        DistanceMap[i]=((*itIn>=levelToDo[k])?(-1):(0));		//Threshold
+        DistanceMap[i]=((*itIn>=levelToDo[k])?(-1):(0));    //Threshold
 
-      if(k != (int)levelToDo.size()-1)	// sinon aucune propogation car l'image
+      if(k != (int)levelToDo.size()-1)  // sinon aucune propogation car l'image
 est noir-->pour ajouter le dernier maillon Dist=0
         t_ImGeodesicPathBinary(DistanceMap,W,H,Z);
 
@@ -1200,8 +1200,8 @@ DistanceMap[i],0.5)){ Pt.Dist=DistanceMap[i]; Pt.Seuil=levelToDo[k];
     }
 
     for(i=0,itIn=imIn.begin(),itEnd=imIn.end(); itIn!=itEnd; ++itIn,++i){
-      imPOold[i]=*itIn;		//Copy the image
-      Accumulation[i]=0;	//No accumulation
+      imPOold[i]=*itIn;   //Copy the image
+      Accumulation[i]=0;  //No accumulation
     }
 
     //if the Stop criteria is not defined we set it to max(W,H) -1

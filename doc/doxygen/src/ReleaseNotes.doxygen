@@ -1,7 +1,50 @@
 /**
  * @page ReleaseNotes Release Notes
  *
- * @section s280_09 Smil 0.11.3-dev
+ * @section s280_10 Smil 1.0.0-dev
+ *  - @TB{New}
+ *    - Functions :
+ *      - labelWithProperty() -
+ *      - getBlobIdFromOffset() - returns the blob ID (map key) given the offset
+ *        of a pixel/voxel.
+ *      - merge() to create a structuring element from the merge of two other
+ *        s.e.;
+ *      - buildLineSE() to build a line structuring elements;
+ *    - Structuring elements :
+ *      - LineSE() and Line3DSE() - a @I2D and @I3D line Structuring Elements
+ *        with arbitrary length and angles;
+ *      - StrElt::merge() Structuring element method to merge some structuring
+ *        element into the current one;
+ *    - Image() allows now to create images from @Numpy arrays (calls
+ *      @TB{NumpyInt()} function).
+ *    - Image() function completely rewritten with better error verification
+ *      and some lacking features. See documentation;
+ *    - Advanced module @TB{line based operators} (ported from Morph-M)
+ *      completely rewritten from scratch to use Bresenham 3D line structuring
+ *      elements and @Smil native dilate() and erode() functions.
+ *      The new code is 10 to 20 times faster than the old one.
+ *  - @TB{Change}
+ *    - @TT{distanceEuclidean()} - replaced by another one based on hierarchical
+ *      queues. The previous one, a slightly faster, had a but on regions
+ *      touching the border of the image.
+ *    - @TT{labelFlatZones()} - order of parameters to agree with Smil logic and
+ *      set default value to @TT{method} parameter.
+ *    - @TT{geodesicMeasure()} - set default value to @TT{method} parameter.
+ *    - Functions renamed :
+ *      - labelWithMaxima() => labelWithMax()
+ *      - labelFlatZones() => labelFlatZonesWithProperty()
+ *      - rangeScale() => scaleRange()
+ *  - @TB{Bug}
+ *    - parameter @TT{borderValue} didn't appear in functions erode() and
+ *      dilate()
+ *    - Function @TB{NumpyInt()} didn't work;
+ *    - drawBlobs() had a bug when one blob had the last pixel of the image
+ *        in it;
+ *    - bresenhamLine() and bresenhamPoints() didn't appear in the @Swig
+ *      @Python interface.
+ *    - gradientHLS() segmentation fault on the function returning Image.
+ *
+ * @section s280_09 Smil 0.11.3 (23 Mar 2021))
  *  - @TB{New}
  *    - packages for Anaconda
  *    - A new group of functions to check the similarity between two images.
@@ -55,13 +98,12 @@
  *        - geodesicPathClosing()
  *        - geodesicUltimatePathOpening()
  *        - geodesicUltimatePathClosing().
- *  - @TB{Change}
- *    - ..
+ *        - labelFlatZones()
  *  - @TB{Bugs}
  *    - Incompatibility between Jupyter notebooks and @Qt when importing
  *      @smilPython. An environnement variable (@TT{SMIL_DISABLE_GUI}) was added
  *      to disable @TB{Gui} when running @Smil with notebooks.
- *    - @TT{fillHoles} function didn't work with @TB{3D} and @TB{1D} images.
+ *    - @TT{fillHoles()} function didn't work with @TB{3D} and @TB{1D} images.
  *
  * @section s280_06 Smil 0.11.0 (04 Dec 2020)
  *

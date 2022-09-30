@@ -1,7 +1,7 @@
 /*
  * __HEAD__
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
- * Copyright (c) 2017-2021 Centre de Morphologie Mathematique
+ * Copyright (c) 2017-2022 Centre de Morphologie Mathematique
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -41,6 +41,8 @@
 #ifndef _D_IMAGE_COMPARE_HPP
 #define _D_IMAGE_COMPARE_HPP
 
+#include <algorithm>
+
 namespace smil
 {
 // Estimator epsilon
@@ -77,10 +79,185 @@ namespace smil
    *    |\{p \in imIn \:|\: imIn(p) = False \land  imGt(p) = True  \}| @f]
    *
    * @see
+   * - Wikipedia : @UrlWikipedia{Confusion_matrix, Confusion matrix}
    * - isBinary()
    *
    *
    * @{ */
+
+  /** @cond */
+  /**
+   * Not yet integrated
+   *
+   * @see
+   * - Wikipedia : @UrlWikipedia{Confusion_matrix, Confusion matrix}
+   */
+  template <typename T>
+  class ConfusionMatrix {
+  private:
+    size_t FP, FN, TP, TN;
+    size_t P, N;
+    size_t aGT, aIM;
+    bool   okTable;
+  public:
+    ConfusionMatrix(const Image<T> &imGt, const Image<T> &imIn)
+    {
+      okTable = false;
+      if (!imGt.isAllocated() || !imIn.isAllocated())
+      {
+        ERR_MSG("imGt or imIn aren't allocated");
+        return;
+      }
+      if (!haveSameSize(&imGt, &imIn, NULL))
+      {
+        ERR_MSG("imGt and imIn don't have the same size");
+        return;
+      }
+      if (!isBinary(imGt) || !isBinary(imIn)) {
+        ERR_MSG("This function is defined only for binary images");
+        return;
+      }
+
+      size_t nPixels = imGt.getPixelCount();
+
+      aGT = area(imGt);
+      aIM = area(imIn);
+
+      P = aGT;
+      N = nPixels - P;
+
+      Image<T> imTmp(imGt);
+      inf(imGt, imIn, imTmp);
+      TP = area(imTmp);
+      FP = aIM - TP;
+      FN = aGT - TP;
+      TN = N - FP;
+
+      okTable = true;
+    }
+
+    double Accuracy()
+    {
+      if (!okTable)
+        return 0.;
+
+      return double(TP + TN + DXM) / double(P + N + DXM);
+    }
+
+    double Precision()
+    {
+      if (!okTable)
+        return 0.;
+
+      return double(TP + DXM) / double(TP + FP + DXM);
+    }
+
+    double Recall()
+    {
+      if (!okTable)
+        return 0.;
+
+      return double(TP + DXM) / double (TP + FN + DXM);
+    }
+
+    double FScore(double beta = 1.)
+    {
+      if (!okTable)
+        return 0.;
+
+      double b2 = beta * beta;
+      double p = Precision();
+      double r = Recall();
+
+      return (1 + b2) * (p * r) / (b2 * p + r);
+    }
+
+    double Sensitivity()
+    {
+      if (!okTable)
+        return 0.;
+
+      return double(TP + DXM) / double(TP + FN + DXM);
+    }
+
+    double Specificity()
+    {
+      if (!okTable)
+        return 0.;
+
+      return double(TN + DXM) / double(TN + FP + DXM);
+    }
+
+    double FallOut()
+    {
+      if (!okTable)
+        return 0.;
+
+      return double(FP + DXM) / double(TN + FP + DXM);
+    }
+
+    double MissRate()
+    {
+      if (!okTable)
+        return 0.;
+
+      return double(FN + DXM) / double(TP + FN + DXM);
+    }
+
+    double Overlap()
+    {
+      if (!okTable)
+        return 0.;
+
+      return double(TP + DXM) / double(min(aGT, aIM) + DXM);
+    }
+
+    double Jaccard()
+    {
+      if (!okTable)
+        return 0.;
+
+      return double(TP + DXM) / double(FN + TP + FP + DXM);
+    }
+
+    size_t Hamming()
+    {
+      if (!okTable)
+        return 0.;
+
+      return aGT + aIM - TP;
+    }
+
+    vector<size_t> getTable()
+    {
+      vector<size_t> table(0);
+
+      if (!okTable)
+        return table;
+
+      table.push_back(TN);
+      table.push_back(FN);
+      table.push_back(FP);
+      table.push_back(TP);
+      return table;
+    }
+
+    void printSelf()
+    {
+      if (!okTable)
+        return;
+
+      cout << "Predicted Negative \t" << TN << "\t" << FN << endl;
+      cout << "Predicted Positive \t" << FP << "\t" << TP << endl;
+      cout << endl;
+      cout << "Negative \t" << N << endl;
+      cout << "Positive \t" << P << endl;
+    }
+  };
+
+  /** @endcond */
+
+
 
   /**
    * indexJaccard()
@@ -108,13 +285,8 @@ namespace smil
     ASSERT_ALLOCATED(&imGt, &imIn);
     ASSERT_SAME_SIZE(&imGt, &imIn);
     if (isBinary(imGt) && isBinary(imIn)) {
-      Image<T> imOr(imGt);
-      Image<T> imAnd(imGt);
-
-      logicOr(imGt, imIn, imOr);
-      logicAnd(imGt, imIn, imAnd);
-
-      return double(area(imAnd) + DXM) / double(area(imOr) + DXM);
+      ConfusionMatrix<T> cTable(imGt, imIn);
+      return cTable.Jaccard();
     }
     return indexRuzicka(imGt, imIn);
   }
@@ -154,85 +326,6 @@ namespace smil
     return double(volume(imMin) + DXM) / double(volume(imMax) + DXM);
   }
 
-  /** @cond */
-  /**
-   * Not yet integrated
-   */
-  template <typename T>
-  class ContingencyTable {
-    size_t FP, FN, TP, TN;
-    size_t P, N;
-    size_t aGT, aIM;
-
-    ContingencyTable(Image<T> &imGt, Image<T> imIn)
-    {
-      size_t nPixels = imGt.getPixelCount();
-
-      aGT = area(imGt);
-      aIM = area(imIn);
-
-      P = aGT;
-      N = nPixels - P;
-
-      Image<T> imTmp(imGt);
-      inf(imGt, imIn, imTmp);
-      TP = area(imTmp);
-      FP = aIM - TP;
-      FN = aGT - TP;
-      TN = N - TP - FP - FN;
-    }
-
-    double Accuracy()
-    {
-      return double(TP + TN) / double(P + N);
-    }
-
-    double Precision()
-    {
-      return double(TP) / double(TP + FP);
-    }
-
-    double Recall()
-    {
-      return double(TP) / double (TP + FN);
-    }
-
-    double FScore(double beta)
-    {
-      double b2 = b2 * b2;
-      double p = Precision();
-      double r = Recall();
-
-      return (1 + b2) * (p * r) / (b2 * p + r);
-    }
-
-    double Sensitivity()
-    {
-      return double(TP) / double(TP + FN);
-    }
-
-    double Specificity()
-    {
-      return double(TN) / double(TN + FP);
-    }
-
-    double FallOut()
-    {
-      return double(FP) / double(TN + FP);
-    }
-
-    double MissRate()
-    {
-      return double(FN) / double(FP + FN);
-    }
-
-    double Overlap()
-    {
-      return double(TP) / double(min(aGT, aIM));
-    }
-  };
-  /** @endcond */
-
   /**
    * indexAccuracy()
    *
@@ -247,6 +340,7 @@ namespace smil
    *   difference is not greater than @TT{threshold}
    *
    * @see
+   * - Wikipedia : @UrlWikipedia{Confusion_matrix, Confusion matrix}
    * - Wikipedia : @UrlWikipedia{Accuracy_and_precision, Accuracy and precision}
    * - Wikipedia : @UrlWikipedia{Rand_index, Rand Index}
    * - Wikipedia : @UrlWikipedia{Simple_matching_coefficient,
@@ -265,14 +359,11 @@ namespace smil
     ASSERT_ALLOCATED(&imGt, &imIn);
     ASSERT_SAME_SIZE(&imGt, &imIn);
 
-    size_t nbPixels = imGt.getPixelCount();
     if (isBinary(imGt) && isBinary(imIn)) {
-      Image<T> imOut(imGt);
-
-      equ(imGt, imIn, imOut);
-      size_t dp = area(imOut);
-      return double(dp) / nbPixels;
+      ConfusionMatrix<T> cTable(imGt, imIn);
+      return cTable.Accuracy();
     } else {
+      size_t nbPixels = imGt.getPixelCount();
       Image<T> imOut(imGt);
       absDiff(imGt, imIn, imOut);
       T tVal = 0;
@@ -294,7 +385,10 @@ namespace smil
    * @f]
    *
    * @see
+   * - Wikipedia : @UrlWikipedia{Confusion_matrix, Confusion matrix}
    * - Wikipedia : @UrlWikipedia{Precision_and_recall, Precision and Recall}
+   * @note
+   * - only binary images (two classes)
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
@@ -303,18 +397,8 @@ namespace smil
   template <typename T>
   double indexPrecision(const Image<T> &imGt, const Image<T> &imIn)
   {
-    ASSERT_ALLOCATED(&imGt, &imIn);
-    ASSERT_SAME_SIZE(&imGt, &imIn);
-
-    if (!isBinary(imGt) || !isBinary(imIn)) {
-      ERR_MSG("This function is defined only for binary images");
-      return 0.;
-    }
-
-    Image<T> imTmp(imGt);
-    inf(imGt, imIn, imTmp);
-
-    return double(area(imTmp) + DXM) / double(area(imIn) + DXM);
+    ConfusionMatrix<T> cTable(imGt, imIn);
+    return cTable.Precision();
   }
 
   /**
@@ -328,7 +412,10 @@ namespace smil
    * @f]
    *
    * @see
+   * - Wikipedia : @UrlWikipedia{Confusion_matrix, Confusion matrix}
    * - Wikipedia : @UrlWikipedia{Precision_and_recall, Precision and Recall}
+   * @note
+   * - only binary images (two classes)
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
@@ -337,10 +424,8 @@ namespace smil
   template <typename T>
   double indexRecall(const Image<T> &imGt, const Image<T> &imIn)
   {
-    ASSERT_ALLOCATED(&imGt, &imIn);
-    ASSERT_SAME_SIZE(&imGt, &imIn);
-
-    return indexSensitivity(imGt, imIn);
+    ConfusionMatrix<T> cTable(imGt, imIn);
+    return cTable.Recall();
   }
 
   /**
@@ -355,8 +440,11 @@ namespace smil
    * @f]
    *
    * @see
+   * - Wikipedia : @UrlWikipedia{Confusion_matrix, Confusion matrix}
    * - Wikipedia : @UrlWikipedia{F-score, F-Score}
    * - indexPrecision() and indexRecall()
+   * @note
+   * - only binary images (two classes)
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
@@ -367,19 +455,8 @@ namespace smil
   double indexFScore(const Image<T> &imGt, const Image<T> &imIn,
                      const double beta = 1.)
   {
-    ASSERT_ALLOCATED(&imGt, &imIn);
-    ASSERT_SAME_SIZE(&imGt, &imIn);
-
-    if (!isBinary(imGt) || !isBinary(imIn)) {
-      ERR_MSG("This function is defined only for binary images");
-      return 0.;
-    }
-
-    double precision = indexPrecision(imGt, imIn);
-    double recall    = indexRecall(imGt, imIn);
-
-    double b2 = beta * beta;
-    return (1. + b2) * (precision * recall) / (b2 * precision + recall);
+    ConfusionMatrix<T> cTable(imGt, imIn);
+    return cTable.FScore(beta);
   }
 
   /**
@@ -394,8 +471,11 @@ namespace smil
    * @f]
    *
    * @see
+   * - Wikipedia : @UrlWikipedia{Confusion_matrix, Confusion matrix}
    * - Wikipedia : @UrlWikipedia{Sensitivity_and_specificity,
    *                             Sensitivity and Specificity}
+   * @note
+   * - only binary images (two classes)
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
@@ -404,18 +484,8 @@ namespace smil
   template <typename T>
   double indexSensitivity(const Image<T> &imGt, const Image<T> &imIn)
   {
-    ASSERT_ALLOCATED(&imGt, &imIn);
-    ASSERT_SAME_SIZE(&imGt, &imIn);
-
-    if (!isBinary(imGt) || !isBinary(imIn)) {
-      ERR_MSG("This function is defined only for binary images");
-      return 0.;
-    }
-
-    Image<T> imTmp(imGt);
-    inf(imGt, imIn, imTmp);
-
-    return double(area(imTmp) + DXM) / double(area(imGt) + DXM);
+    ConfusionMatrix<T> cTable(imGt, imIn);
+    return cTable.Sensitivity();
   }
 
   /**
@@ -430,8 +500,11 @@ namespace smil
    * @f]
    *
    * @see
+   * - Wikipedia : @UrlWikipedia{Confusion_matrix, Confusion matrix}
    * - Wikipedia : @UrlWikipedia{Sensitivity_and_specificity,
    *                             Sensitivity and Specificity}
+   * @note
+   * - only binary images (two classes)
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
@@ -440,22 +513,8 @@ namespace smil
   template <typename T>
   double indexSpecificity(const Image<T> &imGt, const Image<T> &imIn)
   {
-    ASSERT_ALLOCATED(&imGt, &imIn);
-    ASSERT_SAME_SIZE(&imGt, &imIn);
-
-    if (!isBinary(imGt) || !isBinary(imIn)) {
-      ERR_MSG("This function is defined only for binary images");
-      return 0.;
-    }
-
-    Image<T> imTmp(imGt);
-
-    size_t nbPixels = imGt.getPixelCount();
-
-    sup(imGt, imIn, imTmp);
-
-    return double(nbPixels - area(imTmp) + DXM) /
-           double(nbPixels - area(imGt) + DXM);
+    ConfusionMatrix<T> cTable(imGt, imIn);
+    return cTable.Specificity();
   }
 
 
@@ -470,7 +529,11 @@ namespace smil
    * @f]
    *
    * @see
-   * - Wikipedia : @UrlWikipedia{F-score, F-Score}
+   * - Wikipedia : @UrlWikipedia{Confusion_matrix, Confusion matrix}
+   * - Wikipedia : @UrlWikipedia{Sensitivity_and_specificity,
+   *                             Sensitivity and specificity}
+   * @note
+   * - only binary images (two classes)
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
@@ -479,24 +542,8 @@ namespace smil
   template <typename T>
   double indexFallOut(const Image<T> &imGt, const Image<T> &imIn)
   {
-    ASSERT_ALLOCATED(&imGt, &imIn);
-    ASSERT_SAME_SIZE(&imGt, &imIn);
-
-    if (!isBinary(imGt) || !isBinary(imIn)) {
-      ERR_MSG("This function is defined only for binary images");
-      return 0.;
-    }
-
-    size_t nbPixels = imGt.getPixelCount();
-
-    Image<T> imTmp(imGt);
-    sup(imGt, imIn, imTmp);
-    size_t TN = nbPixels - area(imTmp);
-
-    inf(imGt, imIn, imTmp);
-    size_t FP = area(imIn) - area(imTmp);
-
-    return double(FP + DXM) / double(TN + FP + DXM);
+    ConfusionMatrix<T> cTable(imGt, imIn);
+    return cTable.FallOut();
   }
 
   /**
@@ -510,8 +557,11 @@ namespace smil
    * @f]
    *
    * @see
+   * - Wikipedia : @UrlWikipedia{Confusion_matrix, Confusion matrix}
    * - Wikipedia : @UrlWikipedia{Sensitivity_and_specificity,
    *                             Sensitivity and Specificity}
+   * @note
+   * - only binary images (two classes)
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
@@ -520,21 +570,8 @@ namespace smil
   template <typename T>
   double indexMissRate(const Image<T> &imGt, const Image<T> &imIn)
   {
-    ASSERT_ALLOCATED(&imGt, &imIn);
-    ASSERT_SAME_SIZE(&imGt, &imIn);
-
-    if (!isBinary(imGt) || !isBinary(imIn)) {
-      ERR_MSG("This function is defined only for binary images");
-      return 0.;
-    }
-
-    Image<T> imTmp(imGt);
-    inf(imGt, imIn, imTmp);
-    size_t TP = area(imTmp);
-    size_t FN = area(imGt) - TP;
-
-    return double(FN + DXM) /
-           double(TP + FN + DXM);
+    ConfusionMatrix<T> cTable(imGt, imIn);
+    return cTable.MissRate();
   }
 
   /**
@@ -550,6 +587,8 @@ namespace smil
    *
    * @see
    * - Wikipedia : @UrlWikipedia{Overlap_coefficient, Overlap coefficient}
+   * @note
+   * - only binary images (two classes)
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
@@ -558,19 +597,8 @@ namespace smil
   template <typename T>
   double indexOverlap(const Image<T> &imGt, const Image<T> &imIn)
   {
-    ASSERT_ALLOCATED(&imGt, &imIn);
-    ASSERT_SAME_SIZE(&imGt, &imIn);
-
-    if (!isBinary(imGt) || !isBinary(imIn)) {
-      ERR_MSG("This function is defined only for binary images");
-      return 0.;
-    }
-
-    Image<T> imTmp(imGt);
-    inf(imGt, imIn, imTmp);
-
-    return double(area(imTmp) + DXM) /
-           double(min(area(imGt), area(imIn)) + DXM);
+    ConfusionMatrix<T> cTable(imGt, imIn);
+    return cTable.Overlap();
   }
 
 
@@ -605,6 +633,8 @@ namespace smil
    *
    * @see
    * - Wikipedia : @UrlWikipedia{Hausdorff_distance, Hausdorff distance}
+   * @note
+   * - only binary images (two classes)
    *
    * @param[in] imGt : @TI{Ground Truth} image
    * @param[in] imIn : image to verify
@@ -640,9 +670,13 @@ namespace smil
     imGt.getSize(Size);
     ImageBox box(Size);
 
+#ifdef OPEN_MP
+#pragma omp parallel for num_threads(4)
+#endif
     for (off_t i = 0; i < szGt; i++) {
       for (off_t j = 0; j < szIn; j++) {
         double d = box.getDistance(pixGt[i], pixIn[j]);
+
         if (d < distGt[i])
           distGt[i] = d;
         if (d < distIn[j])
@@ -650,17 +684,15 @@ namespace smil
       }
     }
 
-    double supGt = 0.;
-    for (off_t i = 0; i < szGt; i++)
-      if (distGt[i] > supGt)
-        supGt = distGt[i];
-    double supIn = 0.;
-    for (off_t i = 0; i < szIn; i++)
-      if (distIn[i] > supIn)
-        supIn = distIn[i];
+    vector<double>::iterator iGt, iIn;
+    iGt = max_element(distGt.begin(), distGt.end());
+    iIn = max_element(distIn.begin(), distIn.end());
 
-    return max(supGt, supIn);
+    return max(*iGt, *iIn);
   }
+
+
+
   /** @} */
 
 #undef DXM

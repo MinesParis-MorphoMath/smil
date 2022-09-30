@@ -35,15 +35,13 @@ PREFIX=/usr/local
 ADDONS="Color       "
 ADDONS+="Filters "
 ADDONS+="HoughTransform "
-ADDONS+="Chabardes "
 ADDONS+="StochasticWS "
-ADDONS+="FFT "
 ADDONS+="ZhangSkel "
-ADDONS+="Parsimonious "
+#ADDONS+="Parsimonious "
 OTHER=
 Arch=auto
 
-CXX_FLAGS="-std=c++11"
+CXX_FLAGS="-std=c++11 -Wno-unused-parameter"
 #GCC8=NO
 
 TEST=OFF

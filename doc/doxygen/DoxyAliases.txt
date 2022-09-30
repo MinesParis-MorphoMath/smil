@@ -68,6 +68,7 @@ ALIASES += Numpy="@TB{Numpy}"
 ALIASES += ScikitImage="@TB{Scikit-Image}"
 ALIASES += Anaconda="@TB{Anaconda}"
 
+ALIASES += I1D="@TB{1D}"
 ALIASES += I2D="@TB{2D}"
 ALIASES += I3D="@TB{3D}"
 
@@ -90,6 +91,10 @@ ALIASES += EndCpp="@endcode"
 ALIASES += BeginDevDoc="@cond"
 ALIASES += EndDevDoc="@endcond"
 
+########################################################
+# FORMULAS
+########################################################
+ALIASES += Math{1}="@f$ \1 @f$"
 
 ########################################################
 # WEB PAGE
@@ -133,15 +138,20 @@ ALIASES += wikipedia{2}="@UrlWikipedia{\1, \2}"
 
 # Images
 
+ALIASES += HtmlImages{1}="@image html \1.png"
+ALIASES += LatexImages{1}="@image latex \1.png width=5cm"
 
-ALIASES += IncImages{1}=" \
-  @htmlonly \
-  <table align=center border=0> \
-  <tr> \
-  <td><img src=\1.png alt=\1/> </td> \
-  </tr> \
-  </table> \
-  @endhtmlonly"
+ALIASES += IncImages{1}="@HtmlImages{\1}"
+#  @LatexImages{\1}"
+
+#ALIASES += IncImages{1}=" \
+#  @htmlonly \
+#  <table align=center border=0> \
+#  <tr> \
+#  <td><img src=\1.png > </td> \
+#  </tr> \
+#  </table> \
+#  @endhtmlonly"
 
 ALIASES += IncImages{2}=" \
   @htmlonly \

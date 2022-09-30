@@ -19,6 +19,6 @@ namespace smil
   /** @} */
 } // namespace smil
 
-#include "private/GeodesicThinning/GeodesicPathOpening.hpp"
+#include "private/AdvancedGeodesy/GeodesicPathOpening.hpp"
 
 #endif

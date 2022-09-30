@@ -41,6 +41,13 @@ int main(void)
   BENCH_IMG(histogram, im);
   BENCH_IMG(histogramMap, im);
   BENCH_IMG(area, im);
-
   BENCH_IMG(isBinary, im);
+
+  UINT8 v = 0;
+  fill(im, v);
+  for (off_t x = 0; x < 1024; x++)
+    for (off_t y = 0; y < 512; y++)
+      im.setPixel(x, y, 255);
+  BENCH_IMG(isBinary, im);
+
 }

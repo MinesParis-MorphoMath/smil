@@ -32,6 +32,7 @@
 
 #include "Core/include/DCommon.h"
 #include "Core/include/DBaseObject.h"
+#include "Base/include/DImageDraw.h"
 
 #include <string>
 
@@ -53,8 +54,10 @@ namespace smil
     SE_Cross,
     SE_Horiz,
     SE_Vert,
+    SE_Line,
     SE_Cube,
     SE_Cross3D,
+    SE_Line3D,
     SE_Rhombicuboctahedron
   };
 
@@ -111,7 +114,8 @@ namespace smil
      * @param[in] indexList : The list of point indexes
      *
      * The index values are defined for each grid type as follow:
-     * @IncImages{se_indexes}
+     * @HtmlImages{se_indexes}
+     * @LatexImages{se_indexes}
      *
      * @b Example:
      * @code{.py}
@@ -202,7 +206,8 @@ namespace smil
      *
      * Index are defined as in the following drawings :
      * - Grids : @TB{Square} and @TB{Hexagonal}
-     *   @IncImages{grids}
+     *   @HtmlImages{grids}
+     *   @LatexImages{grids}
      *
      * @param[in] index : index to predefined point coordinates, as above.
      *
@@ -261,6 +266,14 @@ namespace smil
     StrElt transpose() const;
 
     /**
+     * merge() - Merge a structuring element
+     *
+     * @param[in] rhs : structuring element to be merged
+     * @returns a structuring element
+     */
+    StrElt merge(const StrElt &rhs);
+
+    /**
      * Return the SE with no center
      *
      * Remove the central point of the Structuring Element
@@ -306,21 +319,10 @@ namespace smil
           {SE_Cube, "CubeSE"},
           {SE_Cross3D, "Cross3DSE"},
           {SE_Rhombicuboctahedron, "RhombicuboctahedronSE"},
+          {SE_Line, "LineSE"},
+          {SE_Line3D, "Line3DSE"}
       };
 
-#if 0
-      seNames[SE_Squ]                 = "SquSE";
-      seNames[SE_Squ0]                = "SquSE0";
-      seNames[SE_Hex]                 = "HexSE";
-      seNames[SE_Hex0]                = "HexSE0";
-      seNames[SE_Cross]               = "CrossSE";
-      seNames[SE_Horiz]               = "HorizSE";
-      seNames[SE_Vert]                = "VertSE";
-      seNames[SE_Cube]                = "CubeSE";
-      seNames[SE_Cross3D]             = "Cross3DSE";
-      seNames[SE_Rhombicuboctahedron] = "RhombicuboctahedronSE";
-      seNames[SE_Generic]             = "GenericSE";
-#endif
       std::map<seType, string>::iterator it;
       it = seNames.find(seT);
       if (it != seNames.end())
@@ -330,7 +332,7 @@ namespace smil
     }
 
     /**
-     * getName() - Get the name of the structurint element
+     * getName() - Get the name of the structuring element
      *
      * @returns the name of the structuring element (as a string)
      */
@@ -347,6 +349,17 @@ namespace smil
     */
     virtual void printSelf(ostream &os = std::cout, string indent = "") const;
 
+    /**
+    * printSelf() - Print the contents of the structuring element
+    *
+    * @note
+    * In @TB{Python} this has the same effect than @TB{print(se)}
+    */
+    virtual void printSelf(string indent) const
+    {
+      printSelf(std::cout, indent);
+    }
+
     bool odd;
     seType seT;
     UINT size;
@@ -361,7 +374,8 @@ namespace smil
    * Square structuring element.
    *
    * Points :
-   * @IncImages{squ_se}
+   * @HtmlImages{squ_se}
+   * @LatexImages{squ_se}
    *
    */
   class SquSE : public StrElt
@@ -380,10 +394,10 @@ namespace smil
    * Square structuring element without center point.
    *
    * Points :
-   * @IncImages{squ_se0}
+   * @HtmlImages{squ_se0}
+   * @LatexImages{squ_se0}
    *
    */
-
   class SquSE0 : public StrElt
   {
   public:
@@ -402,7 +416,8 @@ namespace smil
    * Hexagonal structuring element.
    *
    * Points :
-   * @IncImages{hex_se}
+   * @HtmlImages{hex_se}
+   * @LatexImages{hex_se}
    *
    */
   class HexSE : public StrElt
@@ -421,7 +436,8 @@ namespace smil
    * Hexagonal structuring element without center point.
    *
    * Points :
-   * @IncImages{hex_se0}
+   * @HtmlImages{hex_se0}
+   * @LatexImages{hex_se0}
    *
    */
   class HexSE0 : public StrElt
@@ -440,7 +456,8 @@ namespace smil
    * Cross structuring element.
    *
    * Points :
-   * @IncImages{cross_se}
+   * @HtmlImages{cross_se}
+   * @LatexImages{cross_se}
    *
    */
 
@@ -460,7 +477,8 @@ namespace smil
    * Horizontal segment structuring element.
    *
    * Points :
-   * @IncImages{horiz_se}
+   * @HtmlImages{horiz_se}
+   * @LatexImages{horiz_se}
    *
    */
 
@@ -480,7 +498,8 @@ namespace smil
    * Vertical segment structuring element.
    *
    * Points :
-   * @IncImages{vert_se}
+   * @HtmlImages{vert_se}
+   * @LatexImages{vert_se}
    *
    */
 
@@ -500,7 +519,8 @@ namespace smil
    * 3D Cubic structuring element (26 neighbors).
    *
    * Points :
-   * @IncImages{cube_se}
+   * @HtmlImages{cube_se}
+   * @LatexImages{cube_se}
    *
    */
   class CubeSE : public StrElt
@@ -533,7 +553,8 @@ namespace smil
    * 3D Cross structuring element (6 neighbors).
    *
    * Points :
-   * @IncImages{cross3d_se}
+   * @HtmlImages{cross3d_se}
+   * @LatexImages{cross3d_se}
    *
    */
   class Cross3DSE : public StrElt
@@ -559,7 +580,8 @@ namespace smil
   /**
    * Rhombicuboctahedron struturing element (80 neighbors).
    * Points :
-   * @IncImages{rhombicuboctaedron_se}
+   * @HtmlImages{rhombicuboctaedron_se}
+   * @LatexImages{rhombicuboctaedron_se}
    *
    */
   class RhombicuboctahedronSE : public StrElt
@@ -590,9 +612,117 @@ namespace smil
     }
   };
 
+  /**
+   *  LineSE - a line structuring element with arbitrary length and angle.
+   *
+   * The line is defined with the help of a Besenham algorithm.
+   *
+   * @note
+   * - one edge of the structuring element is at the origin. So this S.E. isn't
+   *    symetric. If you need a symetric S.E. you need to compose it with its
+   *    transposed. As an example :
+   @BeginPython
+      import smilPython as sp
+
+      # this way
+      se = sp.LineSE(10, 0)
+      se = sp.merge(se.transpose())
+
+      # or this way
+      se = sp.LineSE(10, 0)
+      se = sp.merge(se, se.transpose())
+   @EndPython
+   */
+  class LineSE : public StrElt
+  {
+  public :
+    /**
+     * LineSE() - constructor
+     *
+     * @param[in] length : length of the segment
+     * @param[in] theta : angle (in degrees) with the horizongal line
+     *
+     * @note
+     * - the angle @TB{theta} is defined in the usual counterclockwise
+     *  direction (trigonometric convention).
+     */
+    LineSE(int length, int theta) : StrElt(1)
+    {
+      className = "LineSE : StrElt";
+      seT       = SE_Line;
+      odd       = false;
+      this->setName();
+
+      int xf = round(length * cos(-theta * PI / 180.));
+      int yf = round(length * sin(-theta * PI / 180.));
+
+      vector<Point<int>> v;
+
+      v = bresenhamPoints(0, 0, xf, yf);
+      for (size_t i = 0; i < v.size(); i++)
+        addPoint(v[i].x, v[i].y, v[i].z);
+    }
+  };
+
+ /**
+   *  Line3DSE - a line structuring element with arbitrary length and angle.
+   *
+   * The line is defined with the help of a Besenham algorithm
+   *
+   * @note
+   * - one edge of the structuring element is at the origin. So this S.E. isn't
+   *    symetric. If you need a symetric S.E. you need to compose it with its
+   *    transposed. As an example :
+   @BeginPython
+      import smilPython as sp
+
+      # this way
+      se = sp.Line3DSE(10, 0, 45)
+      se = sp.merge(se.transpose())
+
+      # or this way
+      se = sp.Line3DSE(10, 0, 45)
+      se = sp.merge(se, se.transpose())
+   @EndPython
+   */
+  class Line3DSE : public StrElt
+  {
+  public :
+    /**
+     * Line3DSE() - constructor
+     *
+     * @param[in] length : length of the segment
+     * @param[in] theta : angle (in degrees) from the Structuring Segment projected
+     *    in a slice with the horizontal line
+     * @param[in] zeta : elevation angle - angle (in degrees) between the
+     *    Structuring element and each slice
+     *
+     * @note
+     * - the angle @TB{theta} is defined in the usual counterclockwise
+     *  direction (trigonometric convention).
+     */
+    Line3DSE(int length, int theta, int zeta) : StrElt(1)
+    {
+      className = "Line3DSE : StrElt";
+      seT       = SE_Line3D;
+      odd       = false;
+      this->setName();
+
+      double lenXY = abs(length * cos(zeta * PI / 180.));
+
+      int zf = round(length * sin(zeta * PI / 180.));
+      int xf = round(lenXY * cos(-theta * PI / 180.));
+      int yf = round(lenXY * sin(-theta * PI / 180.));
+
+      Bresenham line(0, 0, 0, xf, yf, zf);
+      vector<IntPoint> v = line.getPoints();
+      for (size_t i = 0; i < v.size(); i++)
+        addPoint(v[i].x, v[i].y, v[i].z);
+    }
+  };
+
   // Shortcuts
   /** @cond */
-  /* Only available inside C++ programs */
   inline HexSE hSE(UINT s = 1)
   {
     return HexSE(s);
@@ -622,6 +752,55 @@ namespace smil
     return RhombicuboctahedronSE(s);
   }
   /** @endcond */
+
+  /**
+   * buildLineSE() - build a line structuring element with arbitrary length and angle.
+   *
+   * The line is defined with the help of a Besenham algorithm
+   *
+   * @param[in] length : length of the structuring element
+   * @param[in] theta : angle of the structuring element with the horizontal
+   *  line
+   * @returns a line structuring element
+   */
+  inline StrElt buildLineSE(int length, int theta)
+  {
+    StrElt se;
+
+    int xf = round(length * cos(theta * PI / 180.));
+    int yf = round(length * sin(theta * PI / 180.));
+
+    vector<Point<int>> v;
+
+    v = bresenhamPoints(0, 0, xf, yf);
+    for (size_t i = 0; i < v.size(); i++)
+      se.addPoint(v[i].x, v[i].y, v[i].z);
+    return se;
+  }
+
+
+  /**
+   * merge() - merge two Structuring Elements
+   *
+   * @param[in] se1 : First structuring Element
+   * @param[in] se2 : Second structuring Element
+   * @returns a new structuring element with all points of @TT{se1} and @TT{se2}
+   */
+  inline StrElt merge(StrElt se1, StrElt se2)
+  {
+    StrElt se;
+
+    typename vector<IntPoint>::iterator it;
+    for (it = se1.points.begin(); it != se1.points.end(); it++) {
+      const IntPoint &p = *it;
+      se.addPoint(p);
+    }
+    for (it = se2.points.begin(); it != se2.points.end(); it++) {
+      const IntPoint &p = *it;
+      se.addPoint(p);
+    }
+    return se;
+  }
 
 #define DEFAULT_SE Morpho::getDefaultSE()
 

@@ -47,6 +47,11 @@ namespace smil
         bool SSE42;
         bool AES;
         bool AVX;
+
+        // added 15/10/2021
+        bool AVX2;
+        bool AVX512;
+        bool FMA;
     };
 
     // Associativity.
@@ -67,18 +72,18 @@ namespace smil
     {
 
       public:
-        
+
         CpuID();
-        
+
         string getVendor() const { return vendor; }
         unsigned getCores() const { return cores; }
         unsigned getLogical() const { return logical; }
         bool isHyperThreated() const { return hyperThreaded; }
         const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
-        const std::vector<Cache_Descriptors> &getCaches() const { 
-            return L; 
-        }        
-        unsigned int getNbrCacheLevel() const { return L.size (); }        
+        const std::vector<Cache_Descriptors> &getCaches() const {
+            return L;
+        }
+        unsigned int getNbrCacheLevel() const { return L.size (); }
 
       protected:
         UINT32 regs[4];

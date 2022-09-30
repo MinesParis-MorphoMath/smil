@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
@@ -83,9 +83,9 @@ PTR_ARG_OUT_APPLY(s)
 // BaseObject
 //////////////////////////////////////////////////////////
 
-%extend smil::BaseObject 
+%extend smil::BaseObject
 {
-  std::string  __str__() 
+  std::string  __str__()
   {
     std::stringstream os;
     self->printSelf(os);
@@ -96,10 +96,10 @@ PTR_ARG_OUT_APPLY(s)
 %include "Core/include/DCommon.h"
 %include "Core/include/DBaseObject.h"
 
+%template(Point) Point<off_t>;
 %template(DoublePoint) Point<double>;
 %template(IntPoint) Point<int>;
 %template(UintPoint) Point<UINT>;
-%template(Size_tPoint) Point<size_t>;
 
 //////////////////////////////////////////////////////////
 // Vectors
@@ -114,7 +114,7 @@ PTR_ARG_OUT_APPLY(s)
 #endif // SWIGJAVA
 
 // Expose std::vector<> as a Python list
-namespace std 
+namespace std
 {
 
   %{
@@ -140,17 +140,17 @@ namespace std
   %template(Vector_int) vector<int>;
   %template(Vector_double) vector<double>;
   %template(Vector_string) vector<string>;
-    
+
   %template(Matrix_double) vector<Vector_double>;
   %template(Vector_IntPoint) vector< smil::Point<int> >;
 
   #ifndef SWIGJAVA
     TEMPLATE_WRAP_CLASS(set, Set);
   #endif // SWIGJAVA
-    
+
   #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
     %template(Vector_UINT) vector<UINT>;
-    
+
     #ifndef SWIGJAVA
       %template(Set_UINT) set<UINT>;
     #endif // SWIGJAVA
@@ -169,7 +169,7 @@ namespace std
 %include std_map.i
 
 // Expose std::map<> as a Python dict
-namespace std 
+namespace std
 {
 #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
   %template(Map_UINT) map<UINT,UINT>;
@@ -181,14 +181,14 @@ namespace std
 #ifdef USE_64BIT_IDS
   %template(Map_SIZE_T) map<size_t,size_t>;
 #endif // USE_64BIT_IDS
-    
+
 TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE(vector)
 #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
   TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE_FIX_FIRST(vector, UINT)
 #endif
 
   TEMPLATE_WRAP_CLASS_2T_CROSS(map, Map)
-    
+
 #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
   TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(map, UINT, Map)
   TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, UINT, Map)
@@ -202,7 +202,7 @@ TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE(vector)
 #ifndef SMIL_WRAP_double
   TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, double, Map)
 #endif
-    
+
 #ifndef SMIL_WRAP_RGB
   TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, RGB, Map)
 #endif // SMIL_WRAP_RGB
@@ -210,7 +210,7 @@ TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE(vector)
 #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
   TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Vector_UINT, Map)
 #endif
-  TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Box, Map)
+//  TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(map, Box, Map)
 }
 
 #endif // SWIGXML
@@ -226,7 +226,7 @@ TEMPLATE_WRAP_MAP_CROSS_WITH_SECOND_SUBTYPE(vector)
 
 #ifndef SWIGXML
 
-namespace std 
+namespace std
 {
   %template(ObjVector) vector<BaseObject*>;
 }
@@ -290,7 +290,7 @@ namespace smil
 
 #ifndef SWIGXML
 
-namespace std 
+namespace std
 {
   %template(ImgVector) std::vector<BaseImage*>;
 }
@@ -305,7 +305,7 @@ namespace smil
   TEMPLATE_WRAP_FUNC(castBaseImage);
   TEMPLATE_WRAP_CLASS(SharedImage, SharedImage);
   TEMPLATE_WRAP_FUNC(drawOverlay);
-    
+
   TEMPLATE_WRAP_SUPPL_CLASS(Image, Image);
   TEMPLATE_WRAP_SUPPL_FUNC(createImage);
   TEMPLATE_WRAP_SUPPL_FUNC(castBaseImage);
@@ -326,21 +326,21 @@ namespace smil
   TEMPLATE_WRAP_CLASS_2T_SUBTYPES_FIX_FIRST(std::vector, Edge, UINT, Vector);
   TEMPLATE_WRAP_CLASS_2T_SUBTYPES_FIX_SECOND(std::vector, Edge, UINT, Vector);
 #endif // SMIL_WRAP_UINT32
-    
+
 %include "Core/include/private/DGraph.hpp"
 
 #ifndef SWIGXML
-    
+
   // Base UINT Edge
   TEMPLATE_WRAP_CLASS_2T_CROSS(smil::Edge, Edge);
-    
+
   TEMPLATE_WRAP_CLASS_2T_SUBTYPES_CROSS(vector, Edge, Vector);
-    
+
 #ifndef SMIL_WRAP_UINT32
-    
+
   TEMPLATE_WRAP_CLASS_2T_FIX_FIRST(Edge, UINT, Edge);
   TEMPLATE_WRAP_CLASS_2T_FIX_SECOND(Edge, UINT, Edge);
-    
+
 #endif // SMIL_WRAP_UINT32
 
 #endif // SWIGXML
@@ -350,10 +350,10 @@ namespace smil
   // Graph & MST
   %template(Graph_SIZE_T) Graph<size_t,size_t>;
   %template(graphMST_SIZE_T) graphMST<Graph<UINT,UINT> >;
-    
+
   TEMPLATE_WRAP_CLASS_2T_CROSS(Graph, Graph);
-    
-  #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT) 
+
+  #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
     %template(Graph_UINT) Graph<UINT,UINT>;
     %template(graphMST_UINT) graphMST<Graph<UINT,UINT> >;
 
@@ -364,7 +364,7 @@ namespace smil
 }
 
 //////////////////////////////////////////////////////////
-// Internal definitions 
+// Internal definitions
 // (not visible by other modules)
 //////////////////////////////////////////////////////////
 #ifndef SWIGIMPORTED
@@ -391,21 +391,25 @@ def NumpyInt(array):
     * Create a SharedImage interface with a NumPy array
     """
 
-    if str(type(array))!="<type 'numpy.ndarray'>":
+    # XXX JOE if str(type(array))!="<type 'numpy.ndarray'>":
+    if not 'numpy.ndarray' in str(type(array)):
       print("You must specify a NumPy array")
       return
-    
+
     dt = array.dtype.name
-    
-    if dt=='uint8':
+
+    if dt == 'uint8':
       return NumpyInt_UINT8(array)
-    elif dt=='uint16':
+    elif dt == 'uint16':
       return NumpyInt_UINT16(array)
-    elif dt=='uint32':
+    elif dt == 'uint32':
       return NumpyInt_UINT32(array)
+    else:
+      print("ERROR : Numpy datatype ({:s}) can't be used with Smil".format(dt))
+      return None
 %}
 
-        
+
   #endif // defined SWIGPYTHON && defined USE_NUMPY
 #endif // SWIGIMPORTED
 

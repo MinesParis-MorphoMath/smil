@@ -1,13 +1,20 @@
+
 #
 # Rewrite deprecated functions names for compatibility
 #
-from smilCorePython import *
-from smilBasePython import *
-from smilIOPython import *
-from smilMorphoPython import *
-
-
-# -------------------------------
+# -------------------------------------
+from smilAdvancedPython       import *
+from smilBasePython           import *
+from smilColorPython          import *
+from smilCorePython           import *
+from smilFiltersPython        import *
+from smilGuiPython            import *
+from smilIOPython             import *
+from smilMorphoPython         import *
+from smilStochasticWSPython   import *
+from smil_Python              import *
+  
+# -------------------------------------
 # Functions renamed
 #
 def GeoDist(*args):
@@ -45,26 +52,19 @@ def geoEro(*args):
     """
     return geoErode(*args)
 
-def gradient_HLS(*args):
-    """
-    Function renamed. Use:
-      r = gradientHLS(...)
-    """
-    return gradientHLS(*args)
-
-def gradient_LAB(*args):
-    """
-    Function renamed. Use:
-      r = gradientLAB(...)
-    """
-    return gradientLAB(*args)
-
 def hFlip(*args):
     """
     Function renamed. Use:
       r = horizFlip(...)
     """
     return horizFlip(*args)
+
+def labelWithMaxima(*args):
+    """
+    Function renamed. Use:
+      r = labelWithMax(...)
+    """
+    return labelWithMax(*args)
 
 def measAreas(*args):
     """
@@ -81,13 +81,6 @@ def measBarycenters(*args):
     return blobsBarycenter(*args)
 
 def measBlobMoments(*args):
-    """
-    Function renamed. Use:
-      r = blobsMoments(...)
-    """
-    return blobsMoments(*args)
-
-def measInertiaMatrices(*args):
     """
     Function renamed. Use:
       r = blobsMoments(...)
@@ -114,6 +107,13 @@ def measImageEntropy(*args):
       r = measEntropy(...)
     """
     return measEntropy(*args)
+
+def measInertiaMatrices(*args):
+    """
+    Function renamed. Use:
+      r = blobsMoments(...)
+    """
+    return blobsMoments(*args)
 
 def measMaxVals(*args):
     """
@@ -192,7 +192,7 @@ def valueLists(*args):
     """
     return blobsValueList(*args)
 
-# -------------------------------
+# -------------------------------------
 # Shortcuts
 #
 def getDefaultSE(*args):
@@ -208,4 +208,29 @@ def setDefaultSE(*args):
       r = Morpho.setDefaultSE(...)
     """
     return Morpho.setDefaultSE(*args)
+
+# -------------------------------------
+# Additions
+#
+
+#
+#
+def colorGradientHLS(imIn, se = Morpho.getDefaultSE(), convertFirstToHLS = True):
+  imOut = Image(imIn, imtype = 'UINT8')
+  r = gradientHLS(imIn, imOut, se, convertFirstToHLS)
+  if r == 1:
+    return imOut
+  return None
+
+#
+#
+def colorGradientLAB(imIn, se = Morpho.getDefaultSE(), convertFirstToLAB = True):
+  imOut = Image(imIn, imtype = 'UINT8')
+  r = gradientLAB(imIn, imOut, se, convertFirstToLAB)
+  if r == 1:
+    return imOut
+  return None
+
+
+
 

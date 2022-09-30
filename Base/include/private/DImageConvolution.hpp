@@ -33,6 +33,8 @@
 #include "DLineArith.hpp"
 #include "Core/include/private/DBufferPool.hpp"
 
+#include <cmath>
+
 namespace smil
 {
   /**
@@ -44,15 +46,14 @@ namespace smil
    * @{
    */
 
-
-
   /** @cond */
-  template <typename T> class GaussianFilterClass
+  template <typename T>
+  class GaussianFilterFunct
   {
   private:
     vector<double> kernel;
-    int radius;
-    double sigma;
+    int            radius;
+    double         sigma;
 
     void setupKernel()
     {
@@ -60,7 +61,7 @@ namespace smil
 
       double sum = 0;
       for (int i = -radius; i <= radius; i++) {
-        kernel[i + radius] = std::exp(-(pow(i / sigma, 2) / 2));
+        kernel[i + radius] = std::exp(-(std::pow(i / sigma, 2) / 2));
         sum += kernel[i + radius];
       }
       for (int i = -radius; i <= radius; i++) {
@@ -70,25 +71,25 @@ namespace smil
 
     double getKernelValue(int i)
     {
-      if ((i < -radius) || (i > radius))
-        return 0.;
+      // if ((i < -radius) || (i > radius))
+      //  return 0.;
 
       return kernel[i + radius];
     }
 
   public:
-    GaussianFilterClass(int radius, double sigma) : radius(radius), sigma(sigma)
+    GaussianFilterFunct(int radius, double sigma) : radius(radius), sigma(sigma)
     {
       setupKernel();
     }
 
-    GaussianFilterClass(int radius = 2) : radius(radius)
+    GaussianFilterFunct(int radius = 2) : radius(radius)
     {
       sigma = radius / 2.;
       setupKernel();
     }
 
-    ~GaussianFilterClass()
+    ~GaussianFilterFunct()
     {
     }
 
@@ -101,7 +102,7 @@ namespace smil
       return this->Convolve(imIn, imOut);
     }
 
-    RES_T Convolve(Image<T> &imIn, Image<T> &imOut)
+    RES_T ConvolveOld(Image<T> &imIn, Image<T> &imOut)
     {
       typename ImDtTypes<T>::lineType in  = imIn.getPixels();
       typename ImDtTypes<T>::lineType out = imOut.getPixels();
@@ -127,21 +128,19 @@ namespace smil
         for (off_t z = 0; z < D; z++) {
           for (off_t y = 0; y < H; y++) {
 #ifdef USE_OPEN_MP
-#pragma omp for
+#pragma omp for simd
 #endif // USE_OPEN_MP
             for (off_t x = 0; x < W; x++) {
-              off_t i0    = (z * H + y) * W + x;
+              off_t  i0   = (z * H + y) * W + x;
               double sumV = 0.;
-              double sumK = 0.;
 
               for (off_t i = -radius; i <= radius; i++) {
                 if ((x + i < 0) || (x + i > W - 1))
                   continue;
                 double valK = getKernelValue(i);
                 sumV += in[i0 + i] * valK;
-                sumK += valK;
               }
-              outX[i0] = (T)(sumV / sumK);
+              outX[i0] = T(sumV);
             }
           }
         }
@@ -160,21 +159,19 @@ namespace smil
         for (off_t z = 0; z < D; z++) {
           for (off_t y = 0; y < H; y++) {
 #ifdef USE_OPEN_MP
-#pragma omp for
+#pragma omp for simd
 #endif // USE_OPEN_MP
             for (off_t x = 0; x < W; x++) {
-              off_t i0    = (z * H + y) * W + x;
+              off_t  i0   = (z * H + y) * W + x;
               double sumV = 0.;
-              double sumK = 0.;
 
               for (off_t i = -radius; i <= radius; i++) {
                 if ((y + i < 0) || (y + i > H - 1))
                   continue;
                 double valK = getKernelValue(i);
                 sumV += outX[i0 + i * stride] * valK;
-                sumK += valK;
               }
-              outY[i0] = (T)(sumV / sumK);
+              outY[i0] = T(sumV);
             }
           }
         }
@@ -191,21 +188,132 @@ namespace smil
         for (off_t z = 0; z < D; z++) {
           for (off_t y = 0; y < H; y++) {
 #ifdef USE_OPEN_MP
-#pragma omp for
+#pragma omp for simd
 #endif // USE_OPEN_MP
             for (off_t x = 0; x < W; x++) {
-              off_t i0    = (z * H + y) * W + x;
+              off_t  i0   = (z * H + y) * W + x;
               double sumV = 0.;
-              double sumK = 0.;
 
               for (off_t i = -radius; i <= radius; i++) {
                 if ((z + i < 0) || (z + i > D - 1))
                   continue;
                 double valK = getKernelValue(i);
                 sumV += outY[i0 + i * stride] * valK;
-                sumK += valK;
               }
-              out[i0] = (T)(sumV / sumK);
+              out[i0] = T(sumV);
+            }
+          }
+        }
+      }
+
+      return RES_OK;
+    }
+
+    RES_T Convolve(Image<T> &imIn, Image<T> &imOut)
+    {
+      typename ImDtTypes<T>::lineType in  = imIn.getPixels();
+      typename ImDtTypes<T>::lineType out = imOut.getPixels();
+
+      off_t W = imIn.getWidth();
+      off_t H = imIn.getHeight();
+      off_t D = imIn.getDepth();
+
+      size_t nbPixels = imIn.getPixelCount();
+
+      Image<T>                        imTmp(imIn);
+      typename ImDtTypes<T>::lineType tmp = imTmp.getPixels();
+
+#ifdef USE_OPEN_MP
+      int nthreads = Core::getInstance()->getNumberOfThreads();
+#endif // USE_OPEN_MP
+
+      /*
+       * convolution in X
+       */
+      vector<T> outX(nbPixels, 0);
+#ifdef USE_OPEN_MP
+#pragma omp parallel num_threads(nthreads)
+#endif // USE_OPEN_MP
+      {
+        for (off_t z = 0; z < D; z++) {
+          for (off_t y = 0; y < H; y++) {
+#ifdef USE_OPEN_MP
+#pragma omp for simd
+#endif // USE_OPEN_MP
+            for (off_t x = 0; x < W; x++) {
+              off_t  i0   = (z * H + y) * W + x;
+              double sumV = 0.;
+
+              for (off_t i = -radius; i <= radius; i++) {
+                if ((x + i < 0) || (x + i > W - 1))
+                  continue;
+                double valK = getKernelValue(i);
+                sumV += in[i0 + i] * valK;
+              }
+              out[i0] = T(sumV);
+            }
+          }
+        }
+      }
+
+      /*
+       * convolution in Y
+       */
+      copy(imOut, imTmp);
+#ifdef USE_OPEN_MP
+#pragma omp parallel num_threads(nthreads)
+#endif // USE_OPEN_MP
+      {
+        off_t stride = W;
+
+        for (off_t z = 0; z < D; z++) {
+          for (off_t y = 0; y < H; y++) {
+#ifdef USE_OPEN_MP
+#pragma omp for simd
+#endif // USE_OPEN_MP
+            for (off_t x = 0; x < W; x++) {
+              off_t  i0   = (z * H + y) * W + x;
+              double sumV = 0.;
+
+              for (off_t i = -radius; i <= radius; i++) {
+                if ((y + i < 0) || (y + i > H - 1))
+                  continue;
+                double valK = getKernelValue(i);
+                sumV += tmp[i0 + i * stride] * valK;
+              }
+              out[i0] = T(sumV);
+            }
+          }
+        }
+      }
+
+      /*
+       * convolution in Z
+       */
+      if (D > 1) {
+        copy(imOut, imTmp);
+#ifdef USE_OPEN_MP
+#pragma omp parallel num_threads(nthreads)
+#endif // USE_OPEN_MP
+        {
+          off_t stride = W * H;
+          for (off_t z = 0; z < D; z++) {
+            for (off_t y = 0; y < H; y++) {
+#ifdef USE_OPEN_MP
+#pragma omp for simd
+#endif // USE_OPEN_MP
+              for (off_t x = 0; x < W; x++) {
+                off_t  i0   = (z * H + y) * W + x;
+                double sumV = 0.;
+
+                for (off_t i = -radius; i <= radius; i++) {
+                  if ((z + i < 0) || (z + i > D - 1))
+                    continue;
+                  double valK = getKernelValue(i);
+                  sumV += tmp[i0 + i * stride] * valK;
+                }
+                out[i0] = T(sumV);
+              }
             }
           }
         }
@@ -243,12 +351,43 @@ namespace smil
       return gaussianFilter(tmpIm, radius, imOut);
     }
 
-    GaussianFilterClass<T> k;
+    GaussianFilterFunct<T> k;
 
     ImageFreezer freeze(imOut);
     return k.Convolve(imIn, radius, imOut);
   }
 
+  /** @cond */
+  /**
+   * 2D Gaussian filter
+   *
+   * The size of the filter is 2*radius+1
+   */
+  template <class T>
+  RES_T gaussianFilterOrg(const Image<T> &imIn, size_t radius, Image<T> &imOut)
+  {
+    CHECK_ALLOCATED(&imIn, &imOut);
+
+    ImageFreezer freeze(imOut);
+
+    int            kernelSize = radius * 2 + 1;
+    vector<double> kernel(kernelSize);
+
+    double sigma = double(radius) / 2.;
+    double sum   = 0.;
+
+    //  Determine kernel coefficients
+    for (int i = 0; i < kernelSize; i++) {
+      kernel[i] = double(std::exp(-std::pow((i - radius) / sigma, 2) / 2.));
+      sum += kernel[i];
+    }
+    // Normalize
+    for (int i = 0; i < kernelSize; i++)
+      kernel[i] /= sum;
+
+    return convolve(imIn, kernel, imOut);
+  }
+  /** @endcond */
 
   /**
    * horizConvolve() - 2D Horizontal convolution
@@ -285,14 +424,14 @@ namespace smil
 
     typename ImDtTypes<T>::sliceType linesIn  = imIn.getLines();
     typename ImDtTypes<T>::sliceType linesOut = imOut.getLines();
-    typename ImDtTypes<T>::lineType lOut;
+    typename ImDtTypes<T>::lineType  lOut;
 
     int imW          = imIn.getWidth();
     int kernelRadius = (kernel.size() - 1) / 2;
     //         int kLen = 2*kernelRadius+1;
 
     double *partialKernWeights = new double[kernelRadius];
-    double pkwSum              = 0;
+    double  pkwSum             = 0;
     for (int i = 0; i < kernelRadius; i++)
       pkwSum += kernel[i];
     for (int i = 0; i < kernelRadius; i++) {
@@ -300,7 +439,7 @@ namespace smil
       partialKernWeights[i] = pkwSum;
     }
 
-    typedef double bufType; // If float, loops are vectorized
+    typedef double      bufType; // If float, loops are vectorized
     BufferPool<bufType> bufferPool(imW);
 
 #ifdef USE_OPEN_MP
@@ -309,7 +448,7 @@ namespace smil
 #endif // USE_OPEN_MP
     {
       typename ImDtTypes<bufType>::lineType lIn = bufferPool.getBuffer();
-      double sum;
+      double                                sum;
 
 #ifdef USE_OPEN_MP
 #pragma omp for
@@ -367,8 +506,8 @@ namespace smil
 
     ImageFreezer freeze(imOut);
 
-    typename ImDtTypes<T>::volType slicesIn  = imIn.getSlices();
-    typename ImDtTypes<T>::volType slicesOut = imOut.getSlices();
+    typename ImDtTypes<T>::volType   slicesIn  = imIn.getSlices();
+    typename ImDtTypes<T>::volType   slicesOut = imOut.getSlices();
     typename ImDtTypes<T>::sliceType sIn, sOut;
 
     int imW          = imIn.getWidth();
@@ -377,7 +516,7 @@ namespace smil
     int kernelRadius = (kernel.size() - 1) / 2;
 
     double *partialKernWeights = new double[kernelRadius];
-    double pkwSum              = 0;
+    double  pkwSum             = 0;
     for (int i = 0; i < kernelRadius; i++)
       pkwSum += kernel[i];
     for (int i = 0; i < kernelRadius; i++) {
@@ -385,7 +524,7 @@ namespace smil
       partialKernWeights[i] = pkwSum;
     }
 
-    typedef double bufType; // If double, loops are vectorized
+    typedef double      bufType; // If double, loops are vectorized
     BufferPool<bufType> bufferPool(imW);
 
     for (int z = 0; z < imD; z++) {
@@ -433,7 +572,7 @@ namespace smil
   }
 
   /**
-   * convolve() - 2D Convolution 
+   * convolve() - 2D Convolution
    *
    * 2D convolution by & @TB{1D kernel}. Vertical convolution followed by
    * an horizontal convolution using the same @TB{1D kernel}.
@@ -463,8 +602,6 @@ namespace smil
 
     return RES_OK;
   }
-
-
 
   /** @}*/
 

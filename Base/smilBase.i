@@ -40,6 +40,7 @@ SMIL_MODULE(smilBase)
 /* Includes the header in the wrapper code */
 #include "Core/include/private/DImage.hxx"
 #include "DImageArith.hpp"
+#include "DImageDraw.h"
 #include "DImageDraw.hpp"
 #include "DImageHistogram.hpp"
 #include "DImageTransform.hpp"
@@ -65,6 +66,7 @@ PTR_ARG_OUT_APPLY(h)
 PTR_ARG_OUT_APPLY(d)
 
 %include "DImageArith.hpp"
+%include "DImageDraw.h"
 %include "DImageDraw.hpp"
 %include "DImageTransform.hpp"
 
@@ -96,7 +98,10 @@ TEMPLATE_WRAP_FUNC(subNoSat);
 TEMPLATE_WRAP_FUNC(mul);
 TEMPLATE_WRAP_FUNC(mulNoSat);
 TEMPLATE_WRAP_FUNC(div);
-TEMPLATE_WRAP_FUNC(log);
+TEMPLATE_WRAP_FUNC_2T_CROSS(log);
+TEMPLATE_WRAP_FUNC_2T_CROSS(exp);
+TEMPLATE_WRAP_FUNC_2T_CROSS(pow);
+TEMPLATE_WRAP_FUNC_2T_CROSS(sqrt);
 
 TEMPLATE_WRAP_FUNC(equ);
 TEMPLATE_WRAP_FUNC(diff);
@@ -128,8 +133,8 @@ TEMPLATE_WRAP_SUPPL_FUNC_2T_CROSS(compare);
 // *******************************
 // Filters from Jose-Marcio
 // *******************************
-TEMPLATE_WRAP_FUNC_2T_CROSS(expand);
-// TEMPLATE_WRAP_FUNC_2T_CROSS(expandAuto);
+TEMPLATE_WRAP_FUNC_2T_CROSS(scaleRange);
+// TEMPLATE_WRAP_FUNC_2T_CROSS(scaleRangeAuto);
 TEMPLATE_WRAP_FUNC_2T_CROSS(sCurve);
 
 
@@ -203,6 +208,8 @@ namespace std
 
 TEMPLATE_WRAP_FUNC(computeBlobs);
 TEMPLATE_WRAP_FUNC_2T_CROSS(drawBlobs)
+TEMPLATE_WRAP_FUNC(getBlobIDFromOffset);
+TEMPLATE_WRAP_FUNC_2T_CROSS(getBlobIDFromOffset);
 
 %include "DMeasures.hpp"
 TEMPLATE_WRAP_FUNC(vol);
@@ -263,7 +270,8 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(blobsMoments);
 TEMPLATE_WRAP_FUNC_2T_CROSS(blobsEntropy);
 
 %include "DBlobOperations.hpp"
-TEMPLATE_WRAP_FUNC_2T_CROSS(areaThreshold);
+//TEMPLATE_WRAP_FUNC_2T_CROSS(areaThreshold);
+TEMPLATE_WRAP_FUNC(areaThreshold);
 TEMPLATE_WRAP_FUNC(blobsInertiaMatrix);
 TEMPLATE_WRAP_FUNC_2T_CROSS(blobsInertiaMatrix);
 

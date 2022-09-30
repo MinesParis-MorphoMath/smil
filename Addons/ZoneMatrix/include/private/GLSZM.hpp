@@ -218,7 +218,7 @@ namespace smil
       if (fifoSave->empty())
         return 0;
 
-      int IndStart, currentPixel, X, Y, Z, Xtort, Ytort, Ztort;
+      int   IndStart, currentPixel, X, Y, Z, Xtort, Ytort, Ztort;
       float DistMax = -1, Dist;
 
       // Find the BaryCentre
@@ -231,12 +231,12 @@ namespace smil
         X = currentPixel % W;
         Y = (currentPixel % (W * H) - X) / W;
         Z = (currentPixel - X - Y * W) / (W * H);
-        // Dist = sqrt(pow((double)(X*ScaleX -
+        // Dist = std::sqrt(pow((double)(X*ScaleX -
         // BaryX),2)+pow((double)(Y*ScaleY-BaryY),2)+pow((double)(Z*ScaleZ -
         // BaryZ),2));
-        Dist = (float) sqrt(double((X - BaryX) * (X - BaryX) +
-                                   (Y - BaryY) * (Y - BaryY) +
-                                   (Z - BaryZ) * (Z - BaryZ)));
+        Dist = (float) std::sqrt(double((X - BaryX) * (X - BaryX) +
+                                        (Y - BaryY) * (Y - BaryY) +
+                                        (Z - BaryZ) * (Z - BaryZ)));
 
         if (Dist > DistMax) {
           DistMax  = Dist;
@@ -246,8 +246,8 @@ namespace smil
 
       // Get the max distance
       bool NewDist;
-      int k, l, j;
-      int Ind;
+      int  k, l, j;
+      int  Ind;
       DistanceMap[IndStart] = 1;
       fifoCurrent.push(IndStart);
       DistMax = 1;
@@ -277,7 +277,8 @@ namespace smil
                       DistanceMap[Ind] = -2;
                     } else if (DistanceMap[Ind] != 0 &&
                                DistanceMap[Ind] != -2) {
-                      float D = sqrt((float) ((j * j) + (k) * (k) + (l) * (l)));
+                      float D =
+                          std::sqrt((float) ((j * j) + (k) * (k) + (l) * (l)));
                       if (!NewDist || Dist > (DistanceMap[Ind] + D)) {
                         Dist    = (float) DistanceMap[Ind] + D;
                         NewDist = true;
@@ -329,9 +330,9 @@ namespace smil
           X2          = IndStart % W;
           Y2          = (IndStart % (W * H) - X2) / W;
           Z2          = (IndStart - X2 - Y2 * W) / (W * H);
-          double Eucl = sqrt(double((Xtort - X2) * (Xtort - X2) +
-                                    (Ytort - Y2) * (Ytort - Y2) +
-                                    (Ztort - Z2) * (Ztort - Z2)));
+          double Eucl = std::sqrt(double((Xtort - X2) * (Xtort - X2) +
+                                         (Ytort - Y2) * (Ytort - Y2) +
+                                         (Ztort - Z2) * (Ztort - Z2)));
           if (Eucl != 0)
             res = (DistMax / Eucl) * 100;
           else
@@ -343,12 +344,11 @@ namespace smil
     }
 
     double ComputeBinary(int *pixelDone, int W, int H, int D, int *Matrix,
-                         int mW, SMIL_UNUSED int mH, int Level,
-                         int method = 0)
+                         int mW, SMIL_UNUSED int mH, int Level, int method = 0)
     {
       std::queue<int> fifoCurrent, fifoSave;
-      int X, Y, Z, currentPixel, i, j, k, l, Ind;
-      int BaryX, BaryY, BaryZ, NbPixel, Max = 0;
+      int             X, Y, Z, currentPixel, i, j, k, l, Ind;
+      int             BaryX, BaryY, BaryZ, NbPixel, Max = 0;
 
       for (i = W * H * D - 1; i >= 0; i--) { // For all pixels
         if (pixelDone[i] == 1) {
@@ -422,8 +422,8 @@ namespace smil
     double Compute2D(UINT8 *bufferIn, int W, int H, int Z, int NbNDG,
                      int *Matrix, int mW, int mH, int method = 0)
     {
-      int *pixelDone = new int[W * H];
-      int i, k, j, Level;
+      int *  pixelDone = new int[W * H];
+      int    i, k, j, Level;
       double Max, M;
 
       Max = 0;
@@ -465,7 +465,7 @@ namespace smil
       int i, DMax;
 
       typename Image<T1>::lineType pixelsIn = imIn.getPixels();
-      UINT8 *bufferIn                       = new UINT8[W * H * Z];
+      UINT8 *                      bufferIn = new UINT8[W * H * Z];
 
       // Sous echantilonnage
       for (i = W * H * Z - 1; i >= 0; i--)
@@ -502,7 +502,7 @@ namespace smil
       int i, DMax;
 
       typename Image<T1>::lineType pixelsIn = imIn.getPixels();
-      UINT8 *bufferIn                       = new UINT8[W * H * Z];
+      UINT8 *                      bufferIn = new UINT8[W * H * Z];
 
       // Sous echantilonnage
       for (i = W * H * Z - 1; i >= 0; i--)
@@ -538,7 +538,7 @@ namespace smil
   vector<double> grayLevelZMSize(const Image<T1> &imIn, int NbNDG)
   {
     ZoneMatrixFunctor<T1> zm;
-    vector<double> features;
+    vector<double>        features;
 
     zm.Size(imIn, NbNDG, features);
     return features;
@@ -549,7 +549,7 @@ namespace smil
                                      int method)
   {
     ZoneMatrixFunctor<T1> zm;
-    vector<double> features;
+    vector<double>        features;
 
     zm.Distance(imIn, NbNDG, method, features);
     return features;

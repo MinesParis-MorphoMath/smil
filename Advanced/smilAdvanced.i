@@ -1,6 +1,6 @@
 // Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
 // All rights reserved.
-// 
+//
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
 //
@@ -47,7 +47,7 @@ SMIL_MODULE(smilAdvanced)
 //TEMPLATE_WRAP_FUNC(GetConfusionMatrix);
 
 
-%include "DFastLine.h"
+%include "DLineMorpho.h"
 TEMPLATE_WRAP_FUNC(lineDilate);
 TEMPLATE_WRAP_FUNC(lineErode);
 TEMPLATE_WRAP_FUNC(lineOpen);
@@ -63,20 +63,20 @@ TEMPLATE_WRAP_FUNC(circleErode);
 TEMPLATE_WRAP_FUNC(circleOpen);
 TEMPLATE_WRAP_FUNC(circleClose);
 
-TEMPLATE_WRAP_FUNC(imFastLineOpen);
+//TEMPLATE_WRAP_FUNC(imFastLineOpen);
 //TEMPLATE_WRAP_FUNC(ImFastLineClose_Morard);
 
 
 
-%include "private/GeodesicThinning/GeodesicPathOpening.hpp"
+%include "private/AdvancedGeodesy/GeodesicPathOpening.hpp"
 
-TEMPLATE_WRAP_FUNC_2T_CROSS(labelFlatZones);
+TEMPLATE_WRAP_FUNC_2T_CROSS(labelFlatZonesWithProperty);
 
 TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicDiameter);
 TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicElongation);
 TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicTortuosity);
 TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicExtremities);
-TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicMeasure);
+TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicProperty);
 
 TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicPathOpening);
 TEMPLATE_WRAP_FUNC_2T_CROSS(geodesicPathClosing);

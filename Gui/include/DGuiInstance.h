@@ -57,6 +57,8 @@ namespace smil
   // Need this when Qt is enabled and import smilPython under Jupyter
   inline bool isGuiDisabled()
   {
+    // JOE XXX - solve this for windows
+#if 0
     char *env = getenv("SMIL_DISABLE_GUI");
     if (env != nullptr) {
       return (strcasecmp(env, "yes") == 0 || strcasecmp(env, "true") == 0);
@@ -65,6 +67,7 @@ namespace smil
     if (env != nullptr) {
       return (strcasecmp(env, "yes") == 0 || strcasecmp(env, "true") == 0);
     }
+#endif
     return false;
   }
   /** @endcond */

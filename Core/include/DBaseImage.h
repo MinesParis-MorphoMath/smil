@@ -184,42 +184,60 @@ namespace smil
     virtual void modified() = 0;
 
     /**
-     * isCoordsInImage() - checks if the triplet (x, y, z) in inside the image
+     * areCoordsInImage() - checks if the triplet (x, y, z) in inside the image
      * bounds.
      *
      * @param[in] x,y,z : coords of a point
      */
-    virtual bool isCoordsInImage(const off_t x, const off_t y, const off_t z = 0)
+    inline bool areCoordsInImage(const off_t x, const off_t y, const off_t z = 0) const
     {
       if (x < 0 || y < 0 || z < 0)
         return false;
-      if (x >= off_t(width) || y >= off_t(height) || z >= off_t(depth))
+      if (x >= off_t(this->width) || y >= off_t(this->height) || z >= off_t(this->depth))
         return false;
       return true;
     }
 
     /**
-     * isCoordsInImage() - checks if the triplet (x, y, z) in inside the image
+     * areCoordsInImage() - checks if the triplet (x, y, z) in inside the image
      * bounds.
      *
      * @param[in] x,y,z : coords of a point
      *
      * @overload
      */
-    virtual bool isCoordsInImage(const size_t x, const size_t y, const size_t z = 0)
+    inline bool areCoordsInImage(const size_t x, const size_t y, const size_t z = 0) const
     {
-      if (x >= size_t(width) || y >= size_t(height) || z >= size_t(depth))
+      if (x >= size_t(this->width) || y >= size_t(this->height) || z >= size_t(this->depth))
         return false;
       return true;
     }
 
     /**
-     * isCoordsInImage() - checks if a buffer offset in inside the image
+     * isPointInImage() - checks if a Point is in inside the image
+     * bounds.
+     *
+     * @param[in] p : coords of a point
+     *
+     *
+     */
+    inline bool isPointInImage(const IntPoint &p) const
+    {
+      if (p.x < 0 || p.y < 0 || p.z < 0)
+        return false;
+      if (p.x >= int(width) || p.y >= int(height) || p.z >= int(depth))
+        return false;
+      return true;
+    }
+
+
+    /**
+     * isOffsetInImage() - checks if a buffer offset in inside the image
      * bounds.
      *
      * @param[in] offset : offset of a point in the image buffer
      */
-    virtual bool isOffsetInImage(const off_t offset)
+    inline bool isOffsetInImage(const off_t offset) const
     {
       if (offset < 0)
         return false;
@@ -229,12 +247,12 @@ namespace smil
     }
 
     /**
-     * isCoordsInImage() - checks if a buffer offset in inside the image
+     * isOffsetInImage() - checks if a buffer offset in inside the image
      * bounds.
      *
      * @param[in] offset : offset of a point in the image buffer
      */
-    virtual bool isOffsetInImage(const size_t offset)
+    inline bool isOffsetInImage(const size_t offset) const
     {
       if (offset > getPixelCount())
         return false;
@@ -242,15 +260,31 @@ namespace smil
     }
 
     //! Get an offset for given x,y(,z) coordinates
-    inline off_t getOffsetFromCoords(size_t x, size_t y, size_t z = 1) const
+    inline size_t getOffsetFromCoords(size_t x, size_t y, size_t z = 0) const
     {
+      size_t vmax = numeric_limits<size_t>::max();
       if (x >= this->width)
-        return -1;
+        return vmax;
       if (y >= this->height)
-        return -1;
+        return vmax;
       if (z >= this->depth)
-        return -1;
+        return vmax;
       return z * this->width * this->height + y * this->width + x;
+    }
+
+    //! Get an offset for given x,y(,z) coordinates
+    inline size_t getOffsetFromPoint(IntPoint &p) const
+    {
+      size_t vmax = numeric_limits<size_t>::max();
+      if (p.x < 0 || p.y < 0 || p.z < 0)
+        return vmax;
+      if (p.x >= int(width))
+        return vmax;
+      if (p.y >= int(height))
+        return vmax;
+      if (p.z >= int(depth))
+        return vmax;
+      return p.z * width * height + p.y * width + p.x;
     }
 
     //! Get x,y(,z) coordinates for a given offset
@@ -269,6 +303,27 @@ namespace smil
       z = off / (this->width * this->height);
       y = (off % (this->width * this->height)) / this->width;
       x = off % this->width;
+    }
+
+    //! Get x,y(,z) coordinates for a given offset
+    inline vector<size_t> getCoordsFromOffset(size_t off) const
+    {
+      vector<size_t> coords(3);
+
+      coords[2] = off / (this->width * this->height);
+      coords[1] = (off % (this->width * this->height)) / this->width;
+      coords[0] = off % this->width;
+      return coords;
+    }
+
+    inline IntPoint getPointFromOffset(size_t off) const
+    {
+      IntPoint pt;
+
+      pt.z = off / (this->width * this->height);
+      pt.y = (off % (this->width * this->height)) / this->width;
+      pt.x = off % this->width;
+      return pt;
     }
 
     //! Get the description of the image

@@ -1,0 +1,141 @@
+/**
+ * @page p430 Basic concepts
+ *
+ * @section s430_01 Generalities
+ *
+ * @section s430_02 Data objects
+ *
+ * @subsection s430_02_01 Images
+ * Images are the basic object type in @Smil. Smil was created to manipulate
+ * images using mathematical morphology techniques.
+ *
+ * @Smil Images can basically be declared in one of the following data types :
+ *  - @TB{Gray level images} : @TB{UINT8}, @TB{UINT16} and @TB{UINT32} - meaning
+ *    @TT{unsigned integer} of size 8, 16 or 32 bits;
+ *  - @TB{Binary images} : are defined in one of the data types used for
+ *    @TB{gray images} but having only two possible values (usually 0 and the
+ *    biggest value for that data type);
+ *    in one of these kinds but having only two possible values (usually 0 and
+ *    the biggest value for that data type)
+ *  - @TB{Colour images} : support to these kind of images is limited. They're
+ *    represented in their three channels. These images can be converted into
+ *    gray images or each channel can be considered as a gray image and handled
+ *    this way.
+ *
+ *  @Smil images can be of type @I1D, @I2D or @I3D.
+ *
+ * From the computer point of view, an image is an instance of a class with
+ * two parts :
+ * - @TB{metadata} : side information needed to identify and handle image data :
+ *    size, image type, name, ... You can't access this values directly but you
+ *    can read or modify some values, thanks to Image class methods.
+ * - @TB{pixel values} : organized as an array. Pixel values can be accessed
+ *    individually using class methods or by some pointer directly to the array.
+ *
+ *  When called from @Python (module @smilPython), @Smil images can be handled
+ *  by @Numpy functions or converted in both directions.
+ *
+ * @subsection s430_02_02 Structuring Elements
+ *
+ * @TB{Structuring Elements} ar just a small set of points used to probe the image under
+ * study.
+ *
+ * There are some pre defined @TB{Structuring Elements} :
+ * - @I2D
+ *   - HexSE(UINT size) - hexagonal grid
+ *   - VertSE(UINT size)
+ *   - HorizSE(UINT size)
+ *   - CrossSE(UINT size)
+ *   - SquSE(UINT size)
+ *   - LineSE(int length, int theta) - lines with arbitrary length and angle starting from center
+ * - @I3D
+ *   - Cross3DSE(UINT size)
+ *   - CubeSE(UINT size)
+ *   - RhombicuboctaedronSE(UINT size)
+ *   - Line3DSE(int length, int theta, int zeta) - @I3D line with arbitrary lenght and angle starting from center
+ *
+ * @subsection s430_02_03 Blobs
+ *
+ * @TB{Blobs} are just non connected regions in images. A set of pixels sharing
+ * a common property in binary or gray images.
+ *
+ * One can use a blob to evaluate parameters of the region : area (count of
+ * pixels), volume, statistics (mean, standard deviation, ...), moments,
+ * barycenter, inertia matrix, ...
+ *
+ * As a @TI{data type}, a @TB{blob} is a @TT{C++ map}, or @TT{Python dict}
+ * having the label (region identifier) as a key and a transparent content with
+ * all data needed to make calculations on the region.
+ *
+ * Blobs can be used directly to get information about regions in a binary
+ * image as below :
+
+ @BeginPython
+  import smilPython as sp
+
+  # read input image
+  imIn = sp.Image("balls.png")
+
+  # label it
+  imLabel = sp.Image(imIn, 'UINT16')
+  sp.label(imIn, imLabel)
+
+  # compute labels
+  blobs = sp.computeBlobs(imLabel)
+
+  # get some values on each labelled region
+  areas = sp.blobsArea(blobs)
+  bboxs = sp.blobsBoundBox(blobs)
+ @EndPython
+ *
+ * Or you can use blobs as a mask to get informations about regions in a gray
+ * level image. To do that, you should, before all, segment it and get a binary
+ * mask.
+ *
+ @BeginPython
+  import smilPython as sp
+
+  # read input image
+  iName = "https://smil.cmm.minesparis.psl.eu/images/balls.png"
+  imIn = sp.Image(iName)
+
+  # segment it to create a mask and label binary image
+  imThr = sp.Image(iIn)
+  sp.topHat(imIn, imThr, sp.hSE(20))
+  sp.threshold(imThr, imThr)
+  imLabel = sp.Image(imIn, "UINT16")
+
+  # compute blobs from labeled image
+  blobs = sp.computeBlobs(imLabel)
+
+  # get some values from mask
+  areas = sp.blobsArea(blobs)
+  bboxs = sp.blobsBoundBox(blobs)
+
+  # get some values on each labelled region
+  barys = sp.blobsBarycenter(imIn, blobs)
+  # mean and standard deviation of pixel values
+  means = sp.blobsMeanVal(imIn, blobs)
+  # first and second moments
+  moments = sp.blobsMoments(imIn, blobs, True)
+  # inertia matrix
+  inertia = sp.blobsInertiaMatrix(imIn, blobs, True)
+ @EndPython
+ *
+ * Some functions available : blobsArea(), blobsVolume(),
+ * blobsMoments(),blobsMinVal(), blobsMaxVal(), blobsRangeVal(),
+ * blobsValueList(), blobsModeVal(), blobsMeanVal(), blobsBarycenter(),
+ * blobsBoundBox(), blobsEntropy() and drawBlobs().
+ *
+ * @subsection s430_02_04 Points
+ *
+ * @subsection s430_02_05 Graphs
+ *
+ * @section s430_03 Functions and Methods
+ *
+ * @section s430_04 GUI - Graphical User Interface
+ *
+ * @section s430_05 I/O - Reading and Writing images
+ *
+ * @tableofcontents
+ */

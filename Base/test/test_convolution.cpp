@@ -119,10 +119,17 @@ class Test_GaussianFilter : public TestCase
     im3 << vecTruth;
 
     gaussianFilter(im1, 2, im2);
-    TEST_ASSERT(im2 == im3);
 
-    if (retVal != RES_OK)
+    Image<UINT8> ims(im1);
+    sub(im2, im3, ims);
+
+    TEST_ASSERT(maxVal(ims) <= 1);
+
+    if (retVal != RES_OK) {
       im2.printSelf(1);
+      im3.printSelf(1);
+      ims.printSelf(1);
+    }
   }
 };
 
