@@ -17,6 +17,8 @@
  *        element into the current one;
  *    - Image() allows now to create images from @Numpy arrays (calls
  *      @TB{NumpyInt()} function).
+ *    - Image() function completely rewritten with better error verification
+ *      and some lacking features. See documentation;
  *    - Advanced module @TB{line based operators} (ported from Morph-M)
  *      completely rewritten from scratch to use Bresenham 3D line structuring
  *      elements and @Smil native dilate() and erode() functions.

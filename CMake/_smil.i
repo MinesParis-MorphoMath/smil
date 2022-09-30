@@ -256,25 +256,25 @@ def autoCastBaseImage(baseImg):
 #
 def Image(*args, **kargs):
   """
-    smImage()
+    Image()
 
-    smImage(shape=(256,256,1), type=${DEFAULT_IMAGE_TYPE})
+    Image(shape=(256,256,1), type=${DEFAULT_IMAGE_TYPE})
 
-    smImage(szx[, szy, [szz]], type=${DEFAULT_IMAGE_TYPE})
+    Image(szx[, szy, [szz]], type=${DEFAULT_IMAGE_TYPE})
 
-    smImage(im, clone=False, type=None)
+    Image(im, clone=False, type=None)
 
-    smImage(ndarray)
+    Image(ndarray)
 
-    smImage(path, raw=False)
+    Image(path, raw=False)
 
-    smImage(path, raw=True, shape=(256,256,1), type=${DEFAULT_IMAGE_TYPE})
+    Image(path, raw=True, shape=(256,256,1), type=${DEFAULT_IMAGE_TYPE})
 
-    smImage(url)
+    Image(url)
 
-    smImage([path, path, ...], raw=False)
+    Image([path, path, ...], raw=False)
 
-    smImage([path, path, ...], raw=True, shape=(256,256,1), type=${DEFAULT_IMAGE_TYPE})
+    Image([path, path, ...], raw=True, shape=(256,256,1), type=${DEFAULT_IMAGE_TYPE})
 
 
     * Image():

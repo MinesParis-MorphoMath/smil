@@ -60,7 +60,7 @@ ENDIF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 SET(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 ############
-
+        
 SET (MODULES  Core
               Gui
               Base
@@ -144,14 +144,30 @@ IF(WIN32)
 ENDIF(WIN32)
 
 IF(UNIX)
-  IF(EXISTS "/usr/lib64" AND NOT IS_SYMLINK "/usr/lib64")
-    # Smil libraries should go to /usr/local/lib64
-    #SET(LIBSUFFIX 64)
-    SET(LIBSUFFIX)
-  ELSE()
-    # Smil libraries should go to /usr/local/lib
-    SET(LIBSUFFIX)
-  ENDIF(EXISTS "/usr/lib64" AND NOT IS_SYMLINK "/usr/lib64")
+  SET(LIBSUFFIX)
+  execute_process(COMMAND grep ^ID= /etc/os-release
+                  COMMAND sed -e "s/\"//g"
+                  OUTPUT_VARIABLE OSID)
+  #MESSAGE(STATUS "OS_ID : ${OSID}")
+  if (${OSID} MATCHES "(centos|fedora)")
+    #message(STATUS "Found it " ${OSID})
+    IF(EXISTS "/usr/lib64" AND NOT IS_SYMLINK "/usr/lib64")
+      # Smil libraries should go to /usr/local/lib64
+      SET(LIBSUFFIX 64)
+    endif()
+  endif()
+
+  MESSAGE(STATUS "LIBSUFFIX " ${LIBSUFFIX})
+
+  #IF(EXISTS "/usr/lib64" AND NOT IS_SYMLINK "/usr/lib64")
+  #  # Smil libraries should go to /usr/local/lib64
+  #  SET(LIBSUFFIX 64)
+  #  #SET(LIBSUFFIX)
+  #ELSE()
+  #  # Smil libraries should go to /usr/local/lib
+  #  SET(LIBSUFFIX)
+  #ENDIF(EXISTS "/usr/lib64" AND NOT IS_SYMLINK "/usr/lib64")
+
   SET(SMIL_LIBRARIES_INSTALL_PATH
       ${CMAKE_INSTALL_PREFIX}/lib${LIBSUFFIX}/${CMAKE_PROJECT_NAME})
   SET(SMIL_HEADERS_INSTALL_PATH
@@ -427,6 +443,9 @@ IF(WRAP_PYTHON)
   ADD_DEFINITIONS("-DUSE_NUMPY")
 ENDIF(WRAP_PYTHON)
 
+#
+#
+#
 OPTION(WRAP_JAVA "Wrap Java" FALSE)
 IF(WRAP_JAVA)
   FIND_PACKAGE(JNI)
@@ -437,6 +456,9 @@ IF(WRAP_JAVA)
   ADD_CUSTOM_TARGET(java)
 ENDIF(WRAP_JAVA)
 
+#
+#
+#
 OPTION(WRAP_OCTAVE "Wrap Octave" FALSE)
 IF(WRAP_OCTAVE)
   FIND_PATH(OCTAVE_INCLUDE_DIR "octave/oct.h" Path to octave/oct.h)
@@ -461,6 +483,9 @@ IF(WRAP_PHP)
   ADD_CUSTOM_TARGET(php)
 ENDIF(WRAP_PHP)
 
+#
+#
+#
 IF(WRAP_CPP OR WRAP_PYTHON OR WRAP_JAVA OR WRAP_OCTAVE OR WRAP_RUBY OR WRAP_PHP)
 
   SET(USE_WRAPPER TRUE)
