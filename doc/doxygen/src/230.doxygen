@@ -32,8 +32,11 @@
  * - Add @Smil repository (replace @b DISTRO by the release name :
     @TB{xenial bionic focal} ...)
    @verbatim
+     source /etc/os-release
+     DISTRO=$VERSION_CODENAME
      apt-add-repository \
-      'deb [arch=amd64] https://smil.cmm.minesparis.psl.eu/packages/ubuntu DISTRO main'
+      'deb [arch=amd64] https://smil.cmm.minesparis.psl.eu/packages/ubuntu
+      $DISTRO main'
    @endverbatim
  * - Install @Smil packages
    @verbatim
