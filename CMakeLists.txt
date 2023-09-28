@@ -60,7 +60,7 @@ ENDIF(${CMAKE_CURRENT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR})
 SET(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
 ############
-        
+
 SET (MODULES  Core
               Gui
               Base
@@ -883,9 +883,15 @@ IF(USE_WRAPPER)
               DESTINATION /usr/lib/python${PYTHON_VERSION}/site-packages
               COMPONENT python)
       ELSE(${PYTHON_VERSION} VERSION_LESS 2.7)
-        INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/smilPython.pth
-              DESTINATION ${CMAKE_INSTALL_PREFIX}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/dist-packages
-          COMPONENT python)
+       IF (CONDA_PREFIX)
+         INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/smilPython.pth
+                 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python${PYTHON_VERSION}/site-packages
+                 COMPONENT python)
+       ELSE(CONDA_PREFIX)
+         INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/smilPython.pth
+                 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/dist-packages
+                 COMPONENT python)
+       ENDIF(CONDA_PREFIX)
       ENDIF(${PYTHON_VERSION} VERSION_LESS 2.7)
     ENDIF(UNIX)
 

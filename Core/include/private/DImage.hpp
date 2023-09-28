@@ -328,11 +328,13 @@ namespace smil
     //! Trigger modified event (allows to force display update)
     virtual void modified();
 
+    //! Get Maximum value of image data type
     static T getDataTypeMin()
     {
       return ImDtTypes<T>::min();
     }
 
+    //! Get Maximum value of image data type
     static T getDataTypeMax()
     {
       return ImDtTypes<T>::max();
