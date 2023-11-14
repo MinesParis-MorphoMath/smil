@@ -5,6 +5,8 @@
  *   - @WebServerSmil
  *   - @URL{https://github.com/MinesParis-MorphoMath,
  *          Smil git repository at GitHub}
+ *   - @URL{https://anaconda.org/jmarcio/repo,
+ *          Smil Anaconda repository}
  *   - @UrlSmil{smil-vs-skimage, Benchmark Smil versus Scikit-Image (morphology
  *      only)}
  * - @Smil documentation
