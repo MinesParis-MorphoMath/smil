@@ -153,11 +153,11 @@
  *
  * @section s230_03 Anaconda
  *
- *  After created your @Anaconda environnment was created, just change to it
+ *  After created your @Anaconda environnment, just change to it
  *  and type :
  *
     @verbatim
-      conda install -c bmarchand smil
+      conda install -c jmarcio smil
     @endverbatim
  *
  *  @note

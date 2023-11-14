@@ -56,7 +56,7 @@ namespace smil
    *  - @TB{Some related papers} :
    *    @cite blum1967transformation,
    *    @cite zhang_suen_1984,
-   *    @cite Chen_Hsu_1988_99,
+   *    @cite Chen_Hsu_1988,
    *    @cite Huang_Wan_Liu_2003,
    *    @cite khanyile_comparative_2011,
    *    @cite dong_lin_huang_2016 or
@@ -73,7 +73,7 @@ namespace smil
    * zhangSkeleton() - Zhang @b 2D skeleton
    *
    * Implementation corresponding to the algorithm described in
-   * @cite zhang_suen_1984, @cite Chen_HSU_1988_99 and
+   * @cite zhang_suen_1984, @cite Chen_HSU_1988 and
    * @cite khanyile_comparative_2011.
    *
    * @param[in] imIn : input image
@@ -323,7 +323,7 @@ namespace smil
    * zhangSkeleton() - Zhang @b 2D skeleton
    *
    * Implementation corresponding to the algorithm described in
-   * @cite zhang_suen_1984, @cite Chen_HSU_1988_99 and
+   * @cite zhang_suen_1984, @cite Chen_HSU_1988 and
    * @cite khanyile_comparative_2011.
    *
    * @param[in] imIn : input image
@@ -528,7 +528,7 @@ namespace smil
    * zhangThinning() - Zhang @b 2D skeleton
    *
    * Implementation corresponding to the algorithm described in
-   * @cite zhang_suen_1984, @cite Chen_HSU_1988_99 and
+   * @cite zhang_suen_1984, @cite Chen_HSU_1988 and
    * @cite khanyile_comparative_2011.
    *
    * @param[in] imIn : input image
