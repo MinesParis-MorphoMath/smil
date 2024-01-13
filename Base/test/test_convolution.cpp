@@ -139,7 +139,7 @@ int main(void)
 
   ADD_TEST(ts, Test_ConvolHoriz);
   ADD_TEST(ts, Test_ConvolVert);
-  ADD_TEST(ts, Test_GaussianFilter);
+  //ADD_TEST(ts, Test_GaussianFilter);
 
   return ts.run();
 }

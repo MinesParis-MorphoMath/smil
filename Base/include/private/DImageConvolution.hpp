@@ -71,8 +71,8 @@ namespace smil
 
     double getKernelValue(int i)
     {
-      // if ((i < -radius) || (i > radius))
-      //  return 0.;
+      if ((i < -radius) || (i > radius))
+        return 0.;
 
       return kernel[i + radius];
     }
@@ -102,113 +102,6 @@ namespace smil
       return this->Convolve(imIn, imOut);
     }
 
-    RES_T ConvolveOld(Image<T> &imIn, Image<T> &imOut)
-    {
-      typename ImDtTypes<T>::lineType in  = imIn.getPixels();
-      typename ImDtTypes<T>::lineType out = imOut.getPixels();
-
-      off_t W = imIn.getWidth();
-      off_t H = imIn.getHeight();
-      off_t D = imIn.getDepth();
-
-      size_t nbPixels = imIn.getPixelCount();
-
-#ifdef USE_OPEN_MP
-      int nthreads = Core::getInstance()->getNumberOfThreads();
-#endif // USE_OPEN_MP
-
-      /*
-       * convolution in X
-       */
-      vector<T> outX(nbPixels, 0);
-#ifdef USE_OPEN_MP
-#pragma omp parallel num_threads(nthreads)
-#endif // USE_OPEN_MP
-      {
-        for (off_t z = 0; z < D; z++) {
-          for (off_t y = 0; y < H; y++) {
-#ifdef USE_OPEN_MP
-#pragma omp for simd
-#endif // USE_OPEN_MP
-            for (off_t x = 0; x < W; x++) {
-              off_t  i0   = (z * H + y) * W + x;
-              double sumV = 0.;
-
-              for (off_t i = -radius; i <= radius; i++) {
-                if ((x + i < 0) || (x + i > W - 1))
-                  continue;
-                double valK = getKernelValue(i);
-                sumV += in[i0 + i] * valK;
-              }
-              outX[i0] = T(sumV);
-            }
-          }
-        }
-      }
-
-      /*
-       * convolution in Y
-       */
-      vector<T> outY(nbPixels, 0);
-#ifdef USE_OPEN_MP
-#pragma omp parallel num_threads(nthreads)
-#endif // USE_OPEN_MP
-      {
-        off_t stride = W;
-
-        for (off_t z = 0; z < D; z++) {
-          for (off_t y = 0; y < H; y++) {
-#ifdef USE_OPEN_MP
-#pragma omp for simd
-#endif // USE_OPEN_MP
-            for (off_t x = 0; x < W; x++) {
-              off_t  i0   = (z * H + y) * W + x;
-              double sumV = 0.;
-
-              for (off_t i = -radius; i <= radius; i++) {
-                if ((y + i < 0) || (y + i > H - 1))
-                  continue;
-                double valK = getKernelValue(i);
-                sumV += outX[i0 + i * stride] * valK;
-              }
-              outY[i0] = T(sumV);
-            }
-          }
-        }
-      }
-
-      /*
-       * convolution in Z
-       */
-#ifdef USE_OPEN_MP
-#pragma omp parallel num_threads(nthreads)
-#endif // USE_OPEN_MP
-      {
-        off_t stride = W * H;
-        for (off_t z = 0; z < D; z++) {
-          for (off_t y = 0; y < H; y++) {
-#ifdef USE_OPEN_MP
-#pragma omp for simd
-#endif // USE_OPEN_MP
-            for (off_t x = 0; x < W; x++) {
-              off_t  i0   = (z * H + y) * W + x;
-              double sumV = 0.;
-
-              for (off_t i = -radius; i <= radius; i++) {
-                if ((z + i < 0) || (z + i > D - 1))
-                  continue;
-                double valK = getKernelValue(i);
-                sumV += outY[i0 + i * stride] * valK;
-              }
-              out[i0] = T(sumV);
-            }
-          }
-        }
-      }
-
-      return RES_OK;
-    }
-
     RES_T Convolve(Image<T> &imIn, Image<T> &imOut)
     {
       typename ImDtTypes<T>::lineType in  = imIn.getPixels();
@@ -218,7 +111,7 @@ namespace smil
       off_t H = imIn.getHeight();
       off_t D = imIn.getDepth();
 
-      size_t nbPixels = imIn.getPixelCount();
+      //size_t nbPixels = imIn.getPixelCount();
 
       Image<T>                        imTmp(imIn);
       typename ImDtTypes<T>::lineType tmp = imTmp.getPixels();
@@ -230,9 +123,10 @@ namespace smil
       /*
        * convolution in X
        */
-      vector<T> outX(nbPixels, 0);
+      //vector<T> outX(nbPixels, 0);
+      double sk = 0.;
 #ifdef USE_OPEN_MP
-#pragma omp parallel num_threads(nthreads)
+#pragma omp parallel num_threads(nthreads) private(sk)
 #endif // USE_OPEN_MP
       {
         for (off_t z = 0; z < D; z++) {
@@ -244,13 +138,16 @@ namespace smil
               off_t  i0   = (z * H + y) * W + x;
               double sumV = 0.;
 
+              sk = 0.;
               for (off_t i = -radius; i <= radius; i++) {
                 if ((x + i < 0) || (x + i > W - 1))
                   continue;
                 double valK = getKernelValue(i);
+                sk += valK;
                 sumV += in[i0 + i] * valK;
               }
-              out[i0] = T(sumV);
+              //sk = 1.;
+              out[i0] = T(round(sumV / sk));
             }
           }
         }
@@ -261,7 +158,7 @@ namespace smil
        */
       copy(imOut, imTmp);
 #ifdef USE_OPEN_MP
-#pragma omp parallel num_threads(nthreads)
+#pragma omp parallel num_threads(nthreads) private(sk)
 #endif // USE_OPEN_MP
       {
         off_t stride = W;
@@ -275,13 +172,16 @@ namespace smil
               off_t  i0   = (z * H + y) * W + x;
               double sumV = 0.;
 
+              sk = 0.;
               for (off_t i = -radius; i <= radius; i++) {
                 if ((y + i < 0) || (y + i > H - 1))
                   continue;
                 double valK = getKernelValue(i);
+                sk += valK;
                 sumV += tmp[i0 + i * stride] * valK;
               }
-              out[i0] = T(sumV);
+              //sk = 1.;
+              out[i0] = T(round(sumV / sk));
             }
           }
         }
@@ -306,13 +206,15 @@ namespace smil
                 off_t  i0   = (z * H + y) * W + x;
                 double sumV = 0.;
 
+                sk = 0.;
                 for (off_t i = -radius; i <= radius; i++) {
                   if ((z + i < 0) || (z + i > D - 1))
                     continue;
                   double valK = getKernelValue(i);
+                  sk += valK;
                   sumV += tmp[i0 + i * stride] * valK;
                 }
-                out[i0] = T(sumV);
+                out[i0] = T(round(sumV / sk));
               }
             }
           }
