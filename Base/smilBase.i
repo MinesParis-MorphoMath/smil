@@ -158,6 +158,7 @@ TEMPLATE_WRAP_FUNC(horizConvolve);
 TEMPLATE_WRAP_FUNC(vertConvolve);
 TEMPLATE_WRAP_FUNC(convolve);
 TEMPLATE_WRAP_FUNC(gaussianFilter);
+TEMPLATE_WRAP_FUNC(gaussianFilterOrg);
 
 TEMPLATE_WRAP_FUNC(drawLine);
 TEMPLATE_WRAP_FUNC(drawRectangle);
