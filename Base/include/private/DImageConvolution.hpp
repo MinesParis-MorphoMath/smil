@@ -58,6 +58,8 @@ namespace smil
     void setupKernel()
     {
       kernel.resize(2 * radius + 1);
+      if (radius == 0)
+        sigma = 1.;
 
       double sum = 0;
       for (int i = -radius; i <= radius; i++) {
@@ -66,6 +68,7 @@ namespace smil
       }
       for (int i = -radius; i <= radius; i++) {
         kernel[i + radius] /= sum;
+        //cout << "kernel " << i << " " << kernel[i + radius] << "\n";
       }
     }
 
@@ -85,7 +88,10 @@ namespace smil
 
     GaussianFilterFunct(int radius = 2) : radius(radius)
     {
-      sigma = radius / 2.;
+      if (radius > 0)
+        sigma = radius / 2.;
+      else
+        sigma = 1.;
       setupKernel();
     }
 
