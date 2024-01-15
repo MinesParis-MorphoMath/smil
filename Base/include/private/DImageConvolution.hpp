@@ -239,7 +239,9 @@ namespace smil
    *
    * The kernel is defined, in each direction, by :
    * @f[
-   *  k[i] = exp(- \frac{(i - radius)^2}{2}) \; , i \in [-radius, +radius]
+   *  kernel[i] = exp(- \frac{i^2}{2 . \sigma^2}),
+   *  \; i \in [-radius, +radius],
+   *  \;\sigma = radius / 2
    * @f]
    *
    * @param[in] imIn : input image
