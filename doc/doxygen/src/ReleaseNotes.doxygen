@@ -1,6 +1,14 @@
 /**
  * @page ReleaseNotes Release Notes
  *
+ * @section s280_103 Smil 1.0.2 (15 Jan 2024)
+ *  - @TB{Bug}
+ *    - gaussianFilter() - wrong results on image borders and when radios = 0
+ *
+ * @section s280_102 Smil 1.0.1 and 1.0.2  (30 Sep 2023)
+ *  - @TB{New}
+ *    - Packaging for Linux Anaconda
+ *
  * @section s280_10 Smil 1.0.0 (30 Sep 2022)
  *  - @TB{New}
  *    - Functions :
