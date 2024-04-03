@@ -81,7 +81,7 @@ OK -  Verify on FastBilateralFilter
   Qwt (local)
   PHP5 (local) => PHP5 ... or even 7 ?
 
-* Conda packages
+* OK - Conda packages
 
 * Select Python 2 or 3
   In fact... disable Python 2 - no more supported
