@@ -268,8 +268,18 @@ namespace smil
    *   #    #     #    #   #   #    #  #       #
    *    ####      #    #    #   ####   ######  ######
    */
-  #define _NB_STEPS 12
-  #define _D_ANGLE  (180 / _NB_STEPS)
+  int getAngleSteps(int radius)
+  {
+    if (radius < 10)
+      return 4;
+    if (radius < 25)
+      return 6;
+    if (radius < 40)
+      return 12;
+    if (radius < 50)
+      return 15;
+    return 20;
+  }
 
   /** @brief circleDilate() : the SE is a @TB{disk} of radius @TB{radius}
    * pixels
@@ -282,12 +292,15 @@ namespace smil
    * - in @TB{3D} images, the same disk S.E. is applied to each slice.
    */
   template <class T>
-  RES_T circleDilate(const Image<T> &imIn, Image<T> &imOut, const int radius)
+  RES_T circleDilate(const Image<T> &imIn, Image<T> &imOut, int radius)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     copy(imIn, imOut);
+
+    int _NB_STEPS = getAngleSteps(radius);
+    double _D_ANGLE = (180 / _NB_STEPS);
 
     RES_T r = RES_OK;
     double k0 = (radius * PI / _NB_STEPS * 0.5);
@@ -314,12 +327,15 @@ namespace smil
    * - in @TB{3D} images, the same disk S.E. is applied to each slice.
    */
   template <class T>
-  RES_T circleErode(const Image<T> &imIn, Image<T> &imOut, const int radius)
+  RES_T circleErode(const Image<T> &imIn, Image<T> &imOut, int radius)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     copy(imIn, imOut);
+
+    int _NB_STEPS = getAngleSteps(radius);
+    double _D_ANGLE = (180 / _NB_STEPS);
 
     RES_T r = RES_OK;
     double k0 = (radius * PI / _NB_STEPS * 0.5);
