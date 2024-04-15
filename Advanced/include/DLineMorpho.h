@@ -38,23 +38,23 @@ namespace smil
    *
    * The @TB{3D Structuring Element} is a segment of length
    * @Math{(2 \: . \: hLen + 1)} and an orientation given by
-   * angles @Math{\theta} and @Math{\zeta} (in degres).
+   * angles @Math{\theta} and @Math{\zeta} (in radians).
    *
    * @param[in]  imIn : input image
    * @param[in]  hLen : Half Length of the Structuring Element
-   * @param[in]  theta : angle (in degres) of the line in the @TB{h x v} plane
-   * @param[in]  zeta : elevation angle (in degres)
+   * @param[in]  theta : angle (in radians) of the line in the @TB{h x v} plane
+   * @param[in]  zeta : elevation angle (in radians)
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T lineDilate(const Image<T> &imIn, Image<T> &imOut, const int hLen,
-                    const int theta, const int zeta = 0)
+  RES_T lineDilate(const Image<T> &imIn, Image<T> &imOut, int hLen,
+                    double theta, double zeta = 0)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     StrElt se1 = Line3DSE(hLen, theta, zeta);
-    StrElt se2 = Line3DSE(hLen, theta + 180, zeta + 180);
+    StrElt se2 = Line3DSE(hLen, theta + PI, zeta + PI);
     StrElt se  = merge(se1, se2);
 
     return dilate(imIn, imOut, se);
@@ -64,23 +64,23 @@ namespace smil
    *
    * The @TB{3D Structuring Element} is a segment of length
    * @Math{(2 \: . \: hLen + 1)} and an orientation given by
-   * angles @Math{\theta} and @Math{\zeta} (in degres).
+   * angles @Math{\theta} and @Math{\zeta} (in radians).
    *
    * @param[in]  imIn : input image
    * @param[in]  hLen : Half Length of the Structuring Element
-   * @param[in]  theta : angle (in degres) of the line in the @TB{h x v} plane
-   * @param[in]  zeta : elevation angle (in degres)
+   * @param[in]  theta : angle (in radians) of the line in the @TB{h x v} plane
+   * @param[in]  zeta : elevation angle (in radians)
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T lineErode(const Image<T> &imIn, Image<T> &imOut, const int hLen,
-                   const int theta, const int zeta = 0)
+  RES_T lineErode(const Image<T> &imIn, Image<T> &imOut, int hLen,
+                   double theta, double zeta = 0)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     StrElt se1 = Line3DSE(hLen, theta, zeta);
-    StrElt se2 = Line3DSE(hLen, theta + 180, zeta + 180);
+    StrElt se2 = Line3DSE(hLen, theta + PI, zeta + PI);
     StrElt se  = merge(se1, se2);
 
     return dilate(imIn, imOut, se);
@@ -90,23 +90,23 @@ namespace smil
    *
    * The @TB{3D Structuring Element} is a segment of length
    * @Math{(2 \: . \: hLen + 1)} and an orientation given by
-   * angles @Math{\theta} and @Math{\zeta} (in degres).
+   * angles @Math{\theta} and @Math{\zeta} (in radians).
    *
    * @param[in]  imIn : input image
    * @param[in]  hLen : Half Length of the Structuring Element
-   * @param[in]  theta : angle (in degres) of the line in the @TB{h x v} plane
-   * @param[in]  zeta : elevation angle (in degres)
+   * @param[in]  theta : angle (in radians) of the line in the @TB{h x v} plane
+   * @param[in]  zeta : elevation angle (in radians)
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T lineOpen(const Image<T> &imIn, Image<T> &imOut, const int hLen,
-                  const int theta, const int zeta = 0)
+  RES_T lineOpen(const Image<T> &imIn, Image<T> &imOut, int hLen,
+                  double theta, double zeta = 0)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     StrElt se1 = Line3DSE(hLen, theta, zeta);
-    StrElt se2 = Line3DSE(hLen, theta + 180, zeta + 180);
+    StrElt se2 = Line3DSE(hLen, theta + PI, zeta + PI);
     StrElt se  = merge(se1, se2);
 
     RES_T r = erode(imIn, imOut, se);
@@ -119,23 +119,23 @@ namespace smil
    *
    * The @TB{3D Structuring Element} is a segment of length
    * @Math{(2 \: . \: hLen + 1)} and an orientation given by
-   * angles @Math{\theta} and @Math{\zeta} (in degres).
+   * angles @Math{\theta} and @Math{\zeta} (in radians).
    *
    * @param[in]  imIn : input image
    * @param[in]  hLen : Half Length of the Structuring Element
-   * @param[in]  theta : angle (in degres) of the line in the @TB{h x v} plane
-   * @param[in]  zeta : elevation angle (in degres)
+   * @param[in]  theta : angle (in radians) of the line in the @TB{h x v} plane
+   * @param[in]  zeta : elevation angle (in radians)
    * @param[out] imOut : output image
    */
   template <class T>
-  RES_T lineClose(const Image<T> &imIn, Image<T> &imOut, const int hLen,
-                   const int theta, const int zeta = 0)
+  RES_T lineClose(const Image<T> &imIn, Image<T> &imOut, int hLen,
+                   double theta, double zeta = 0)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     StrElt se1 = Line3DSE(hLen, theta, zeta);
-    StrElt se2 = Line3DSE(hLen, theta + 180, zeta + 180);
+    StrElt se2 = Line3DSE(hLen, theta + PI, zeta + PI);
     StrElt se  = merge(se1, se2);
 
     RES_T r = dilate(imIn, imOut, se);
@@ -163,7 +163,7 @@ namespace smil
    * - in @TB{3D} images, the same square S.E. is applied to each slice.
    */
   template <class T>
-  RES_T squareDilate(const Image<T> &imIn, Image<T> &imOut, const int side)
+  RES_T squareDilate(const Image<T> &imIn, Image<T> &imOut, int side)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -195,7 +195,7 @@ namespace smil
    * - in @TB{3D} images, the same square S.E. is applied to each slice.
    */
   template <class T>
-  RES_T squareErode(const Image<T> &imIn, Image<T> &imOut, const int side)
+  RES_T squareErode(const Image<T> &imIn, Image<T> &imOut, int side)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -227,7 +227,7 @@ namespace smil
    * - in @TB{3D} images, the same square S.E. is applied to each slice.
    */
   template <class T>
-  RES_T squareOpen(const Image<T> &imIn, Image<T> &imOut, const int side)
+  RES_T squareOpen(const Image<T> &imIn, Image<T> &imOut, int side)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -249,7 +249,7 @@ namespace smil
    * - in @TB{3D} images, the same square S.E. is applied to each slice.
    */
   template <class T>
-  RES_T squareClose(const Image<T> &imIn, Image<T> &imOut, const int side)
+  RES_T squareClose(const Image<T> &imIn, Image<T> &imOut, int side)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -272,13 +272,15 @@ namespace smil
   {
     if (radius < 10)
       return 4;
-    if (radius < 25)
-      return 6;
-    if (radius < 40)
-      return 12;
+    if (radius < 24)
+      return 8;
     if (radius < 50)
-      return 15;
-    return 20;
+      return 12;
+    if (radius < 100)
+      return 16;
+    if (radius < 224)
+      return 32;
+    return 48;
   }
 
   /** @brief circleDilate() : the SE is a @TB{disk} of radius @TB{radius}
@@ -300,12 +302,12 @@ namespace smil
     copy(imIn, imOut);
 
     int _NB_STEPS = getAngleSteps(radius);
-    double _D_ANGLE = (180 / _NB_STEPS);
+    double _D_ANGLE = (PI / _NB_STEPS);
 
     RES_T r = RES_OK;
     double k0 = (radius * PI / _NB_STEPS * 0.5);
-    for (double angle = 0; angle < 180 && r == RES_OK; angle += _D_ANGLE) {
-      double rd = angle * PI / 180.;
+    for (double angle = 0; angle < PI && r == RES_OK; angle += _D_ANGLE) {
+      double rd = angle;
       int kradius = k0 * max(fabs(cos(rd)), fabs(sin(rd))) + 1;
 
       StrElt se  = LineSE(kradius, angle);
@@ -335,12 +337,12 @@ namespace smil
     copy(imIn, imOut);
 
     int _NB_STEPS = getAngleSteps(radius);
-    double _D_ANGLE = (180 / _NB_STEPS);
+    double _D_ANGLE = (PI / _NB_STEPS);
 
     RES_T r = RES_OK;
     double k0 = (radius * PI / _NB_STEPS * 0.5);
-    for (double angle = 0; angle < 180 && r == RES_OK; angle += _D_ANGLE) {
-      double rd = angle * PI / 180.;
+    for (double angle = 0; angle < PI && r == RES_OK; angle += _D_ANGLE) {
+      double rd = angle;
       int kradius = k0 * max(fabs(cos(rd)), fabs(sin(rd))) + 1;
 
       StrElt se  = LineSE(kradius, angle);
@@ -362,7 +364,7 @@ namespace smil
    * - in @TB{3D} images, the same disk S.E. is applied to each slice.
    */
   template <class T>
-  RES_T circleOpen(const Image<T> &imIn, Image<T> &imOut, const int radius)
+  RES_T circleOpen(const Image<T> &imIn, Image<T> &imOut, int radius)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -384,7 +386,7 @@ namespace smil
    * - in @TB{3D} images, the same disk S.E. is applied to each slice.
    */
   template <class T>
-  RES_T circleClose(const Image<T> &imIn, Image<T> &imOut, const int radius)
+  RES_T circleClose(const Image<T> &imIn, Image<T> &imOut, int radius)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);

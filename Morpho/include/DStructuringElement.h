@@ -626,7 +626,7 @@ namespace smil
 
       # this way
       se = sp.LineSE(10, 0)
-      se = sp.merge(se.transpose())
+      se = se.merge(se.transpose())
 
       # or this way
       se = sp.LineSE(10, 0)
@@ -640,22 +640,23 @@ namespace smil
      * LineSE() - constructor
      *
      * @param[in] length : length of the segment
-     * @param[in] theta : angle (in degrees) with the horizongal line
+     * @param[in] theta : angle (in radians) with the horizongal line
      *
      * @note
      * - the angle @TB{theta} is defined in the usual counterclockwise
      *  direction (trigonometric convention).
      */
-    LineSE(int length, int theta) : StrElt(1)
+    LineSE(int length, double theta) : StrElt(1)
     {
       className = "LineSE : StrElt";
       seT       = SE_Line;
       odd       = false;
       this->setName();
 
-      int xf = round(length * cos(-theta * PI / 180.));
-      int yf = round(length * sin(-theta * PI / 180.));
-
+      //int xf = round(length * cos(-theta * PI / 180.));
+      //int yf = round(length * sin(-theta * PI / 180.));
+      int xf = round(length * cos(-theta));
+      int yf = round(length * sin(-theta));
       vector<Point<int>> v;
 
       v = bresenhamPoints(0, 0, xf, yf);
@@ -692,16 +693,16 @@ namespace smil
      * Line3DSE() - constructor
      *
      * @param[in] length : length of the segment
-     * @param[in] theta : angle (in degrees) from the Structuring Segment projected
+     * @param[in] theta : angle (in radians) from the Structuring Segment projected
      *    in a slice with the horizontal line
-     * @param[in] zeta : elevation angle - angle (in degrees) between the
+     * @param[in] zeta : elevation angle - angle (in radians) between the
      *    Structuring element and each slice
      *
      * @note
      * - the angle @TB{theta} is defined in the usual counterclockwise
      *  direction (trigonometric convention).
      */
-    Line3DSE(int length, int theta, int zeta) : StrElt(1)
+    Line3DSE(int length, double theta, double zeta) : StrElt(1)
     {
       className = "Line3DSE : StrElt";
       seT       = SE_Line3D;
