@@ -5,6 +5,26 @@
 #include "Morpho/include/DMorpho.h"
 
 namespace smil
+
+// February 23, 2006  Erik R. Urbach
+// Email: erik@cs.rug.nl
+// Implementation of algorithm by Soille et al. [1] for erosions and
+// dilations with linear structuring elements (S.E.) at arbitrary angles.
+// S.E. line drawing using Bresenham's Line Algorithm [2].
+// Compilation: gcc -ansi -pedantic -Wall -O3 -o polygonsoille polygonsoille.c
+// -lm
+//
+// Related papers:
+// [1] P. Soille and E. Breen and R. Jones.
+//     Recursive implementation of erosions and dilations along discrete
+//     lines at arbitrary angles.
+//     IEEE Transactions on Pattern Analysis and Machine Intelligence,
+//     Vol. 18, Number 5, Pages 562-567, May 1996.
+// [2] Donald Hearn and M. Pauline Baker
+//     Computer Graphics, second edition
+//     Prentice Hall
+
+
 {
   /**
    * @ingroup     Advanced
@@ -21,6 +41,10 @@ namespace smil
    * @cite SoilleBJ96
    *
    * 3D Line Structuring Element using Bresenham's Line Drawing Algorithm.
+   *
+   * @warning Circle morphological operations based on line segments use
+   * an iteractive algorithm. The circle diameter may not be exactly as
+   * expected. Most of the time it's always inside a 10 % interval.
    *
    *
    *
