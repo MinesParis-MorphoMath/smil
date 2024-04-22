@@ -38,6 +38,7 @@
 
 #include <complex>
 #include <math.h>
+
 namespace smil
 {
   /**
@@ -48,15 +49,6 @@ namespace smil
 
 #ifndef SWIG
 
-#define COLUMN_NBR 20       // 16
-#define COLUMN_SIZE 2097152 // 131072
-
-#define COLUMN_SHIFT (COLUMN_NBR + 1)
-#define COLUMN_MOD (COLUMN_SIZE - 1)
-
-#define GET_TREE_OBJ(type, node) type[node >> COLUMN_SHIFT][node & COLUMN_MOD]
-
-  // BEGIN BMI
 
   template <class T, class CriterionT, class OffsetT = size_t,
             class LabelT = UINT32>
@@ -66,17 +58,16 @@ namespace smil
     size_t          GRAY_LEVEL_NBR;
     Image<T> const *img;
 
-    //    PriorityQueue<T, OffsetT> pq;
-    //  HierarchicalQueue<T,size_t, STD_Queue<size_t> > &hq;
     HierarchicalQueue<T, OffsetT> hq;
 
-    T **levels;
+    vector<T>          levels;
+    vector<LabelT>     children;
+    vector<LabelT>     brothers;
+    vector<CriterionT> criteria;
+    vector<LabelT>     labels;
 
-    LabelT **    children;
-    LabelT **    brothers;
-    CriterionT **criteria;
-
-    LabelT *labels, curLabel;
+    // LabelT *labels;
+    LabelT curLabel;
 
     bool initialized;
 
@@ -88,26 +79,19 @@ namespace smil
       if (!initialized)
         return;
 
-      for (OffsetT i = 0; i < COLUMN_NBR; i++) {
-        if (!levels[i])
-          break;
-        delete[] levels[i];
-        levels[i] = NULL;
-        delete[] children[i];
-        children[i] = NULL;
-        delete[] brothers[i];
-        brothers[i] = NULL;
-        delete[] criteria[i];
-        criteria[i] = NULL;
-      }
+      levels.clear();
+      children.clear();
+      brothers.clear();
+      criteria.clear();
+      labels.clear();
     }
 
-    void allocatePage(UINT page)
+    void allocatePage()
     {
-      levels[page]   = new T[COLUMN_SIZE]();
-      children[page] = new LabelT[COLUMN_SIZE]();
-      brothers[page] = new LabelT[COLUMN_SIZE]();
-      criteria[page] = new CriterionT[COLUMN_SIZE]();
+      levels.resize(levels.size() + 1024 * 1024);
+      children.resize(children.size() + 1024 * 1024);
+      brothers.resize(brothers.size() + 1024 * 1024);
+      criteria.resize(criteria.size() + 1024 * 1024);
     }
 
     T initialize(const Image<T> &imIn, LabelT *img_eti, const StrElt &se)
@@ -149,16 +133,16 @@ namespace smil
             break;
         }
 
-      allocatePage(0);
+      allocatePage();
 
-      curLabel            = 1;
-      levels[0][curLabel] = minValue;
+      curLabel         = 1;
+      levels[curLabel] = minValue;
 
-      memset(labels, 0,
-             GRAY_LEVEL_NBR *
-                 sizeof(LabelT)); // BMI labels? quel rapport avec img_eti?
+      // BMI labels? quel rapport avec img_eti?
+      // memset(old_labels, 0, GRAY_LEVEL_NBR * sizeof(LabelT));
 
       img_eti[minOff]  = curLabel;
+      labels[minValue] = curLabel;
       labels[minValue] = curLabel;
 
       hq.initialize(*img);
@@ -187,8 +171,8 @@ namespace smil
 
     int nextLowerLabel(T valeur)
     {
-      if ((curLabel & COLUMN_MOD) == 0)
-        allocatePage(curLabel >> COLUMN_SHIFT);
+      if (curLabel + 256 > levels.size())
+        allocatePage();
 
       getLevel(curLabel) = valeur;
       int i;
@@ -205,8 +189,8 @@ namespace smil
 
     int nextHigherLabel(T parent_valeur, T valeur)
     {
-      if ((curLabel & COLUMN_MOD) == 0)
-        allocatePage(curLabel >> COLUMN_SHIFT);
+      if (curLabel + 256 > levels.size())
+        allocatePage();
 
       getLevel(curLabel)              = valeur;
       getBrother(curLabel)            = getChild(labels[parent_valeur]);
@@ -266,7 +250,8 @@ namespace smil
 
         bool oddLine = oddSE && ((y0) % 2);
 
-        int     x, y, z; // not size_t in order to (possibly be negative!)
+        // not size_t in order to (possibly be negative!)
+        int     x, y, z;
         OffsetT p_suiv;
 
         for (UINT i = 0; i < sePtsNbr; i++) {
@@ -285,7 +270,7 @@ namespace smil
               p_suiv += (((y + 1) % 2) != 0);
 
             if (img_eti[p_suiv] == 0) {
-              //        std::cout<<"("<<x0<<","<<y0<<"),"<<"("<<x<<","<<y<<"),"<<p<<","<<p_suiv<<"\n";
+              //  std::cout<<"("<<x0<<","<<y0<<"),"<<"("<<x<<","<<y<<"),"<<p<<","<<p_suiv<<"\n";
               if (subFlood(imgPix, img_eti, p, p_suiv))
                 break;
             }
@@ -302,23 +287,13 @@ namespace smil
       //  hq.reverse();// change priority order (max first)
       //  hq =   HierarchicalQueue<T,OffsetT> (true);
 
-      children = new LabelT *[COLUMN_NBR]();
-      brothers = new LabelT *[COLUMN_NBR]();
-      levels   = new T *[COLUMN_NBR]();
-      criteria = new CriterionT *[COLUMN_NBR]();
-      labels   = new LabelT[GRAY_LEVEL_NBR];
+      labels.resize(GRAY_LEVEL_NBR);
 
       initialized = false;
     }
     ~MaxTree2()
     {
       reset();
-
-      delete[] children;
-      delete[] brothers;
-      delete[] levels;
-      delete[] criteria;
-      delete[] labels;
     }
 
   protected:
@@ -332,22 +307,22 @@ namespace smil
   public:
     inline CriterionT &getCriterion(const LabelT node)
     {
-      return GET_TREE_OBJ(criteria, node);
+      return criteria[node];
     }
 
     inline T &getLevel(const LabelT node)
     {
-      return GET_TREE_OBJ(levels, node);
+      return levels[node];
     }
 
     inline LabelT &getChild(const LabelT node)
     {
-      return GET_TREE_OBJ(children, node);
+      return children[node];
     }
 
     inline LabelT &getBrother(const LabelT node)
     {
-      return GET_TREE_OBJ(brothers, node);
+      return brothers[node];
     }
 
     inline LabelT getLabelMax()
@@ -369,30 +344,18 @@ namespace smil
     {
       T minValue = initialize(img, img_eti, se);
 
-      flood(img, img_eti,
-            minValue); // BMI: dOffset already contains se information
+      // BMI: dOffset already contains se information
+      flood(img, img_eti, minValue);
       updateCriteria(labels[minValue]);
+
+      cout << "* Size of data : " << curLabel << "\n";
+
       return labels[minValue];
     }
 
     // BMI (from Andres)
     /// Update criteria of a given max-tree node
     void updateCriteria(const int node);
-
-    CriterionT PREVIOUS_OLD_FROMJONATHAN_updateCriteria(LabelT node)
-    {
-      LabelT child = getChild(node);
-      while (child != 0) {
-        CriterionT c            = updateCriteria(child);
-        getCriterion(node).ymin = MIN(getCriterion(node).ymin, c.ymin);
-        getCriterion(node).ymax = MAX(getCriterion(node).ymax, c.ymax);
-        getCriterion(node).xmin = MIN(getCriterion(node).xmin, c.xmin);
-        getCriterion(node).xmax = MAX(getCriterion(node).xmax, c.xmax);
-        getCriterion(node).merge(getCriterion(child));
-        child = getBrother(child);
-      }
-      return getCriterion(node);
-    }
   };
 
   // END BMI
@@ -412,7 +375,7 @@ namespace smil
 
   // NEW BMI    # ##################################################
   //(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0,
-  //hauteur, tree.getLevel(root), tree.getLevel(root));
+  // hauteur, tree.getLevel(root), tree.getLevel(root));
   template <class T, class CriterionT, class OffsetT, class LabelT,
             class tAttType>
   void ComputeDeltaUO(MaxTree2<T, CriterionT, OffsetT, LabelT> &tree,
@@ -426,22 +389,24 @@ namespace smil
     UINT cNode, cParent; // attributes
     T    lNode, lParent; // node levels, the same type than input image
 
-    cNode = tree.getCriterion(node).getAttributeValue(); // ymax-tree.getCriterion(node).ymin+1;//
-                                                         // #current criterion
-    lNode = tree.getLevel(node); // #current level
+    // ymax-tree.getCriterion(node).ymin+1;
+    // #current criterion
+    cNode = tree.getCriterion(node).getAttributeValue();
+    // #current level
+    lNode = tree.getLevel(node);
 
-    cParent =
-        tree.getCriterion(nParent).getAttributeValue(); // ymax-tree.getCriterion(nParent).ymin+1;//
-                                                        // #current criterion
-    lParent = tree.getLevel(nParent); // #current level
+    // ymax-tree.getCriterion(nParent).ymin+1;//
+    // #current criterion
+    cParent = tree.getCriterion(nParent).getAttributeValue();
+    // #current level
+    lParent = tree.getLevel(nParent);
 
-    int flag;
+    bool flag = false;
 
     if ((cParent - cNode) <= delta) {
-      flag = 1;
-    } else {
-      flag = 0;
+      flag = true;
     }
+
     if (flag) {
       current_residue = prev_residue + lNode - lParent;
     } else {
@@ -550,10 +515,9 @@ namespace smil
     //  std::cout<<"IN compute_contrast 2\n";
     //  tree.updateCriteria(root);
 
-    hauteur =
-        tree.getCriterion(root)
-            .getAttributeValue(); // ymax - tree.getCriterion(root).ymin+1;
-    child = tree.getChild(root);
+    hauteur = tree.getCriterion(root).getAttributeValue();
+    child   = tree.getChild(root);
+    // ymax - tree.getCriterion(root).ymin+1;
     if (delta == 0) {
       while (child != 0) {
         //  std::cout<<"child"<<child<<"; level"<<tree.getLevel(child);
@@ -638,7 +602,7 @@ namespace smil
 #ifndef SWIG
   // NEW BMI    # ##################################################
   //(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0,
-  //hauteur, tree.getLevel(root), tree.getLevel(root));
+  // hauteur, tree.getLevel(root), tree.getLevel(root));
   template <class T, class CriterionT, class OffsetT, class LabelT,
             class tAttType>
   void ComputeDeltaUOMSER(MaxTree2<T, CriterionT, OffsetT, LabelT> &tree,
@@ -661,36 +625,36 @@ namespace smil
     T      current_residue, stab_residue = 0;
     UINT   hNode, hParent; // attributes
     size_t aNode, aParent, aAncestor;
-    T lNode, lParent, lAncestor; // node levels, the same type than input image
+    T      lNode, lParent, lAncestor;
+    // node levels, the same type than input image
     float stability;
 
     hNode = tree.getCriterion(node).getAttributeValue().H; // #current criterion
     aNode = tree.getCriterion(node).getAttributeValue().A;
     lNode = tree.getLevel(node); // #current level
 
-    hParent =
-        tree.getCriterion(nParent).getAttributeValue().H; // #current criterion
+    // #current criterion
+    hParent   = tree.getCriterion(nParent).getAttributeValue().H;
     aParent   = tree.getCriterion(nParent).getAttributeValue().A;
     aAncestor = tree.getCriterion(first_ancestor).getAttributeValue().A;
 
     lParent   = tree.getLevel(nParent);        // #current level
     lAncestor = tree.getLevel(first_ancestor); // #current level
-    int flag;
+
+    bool flag= false;
 
     if ((hParent - hNode) <= delta) {
-      flag = 1;
-    } else {
-      flag = 0;
+      flag = true;
     }
     float  relativeGrowthRate; // BMI RGR
     double lgARoot = std::log((double) tree.getImWidth() * tree.getImHeight());
     double factor;
 
-    if (method == 2) { // RGR
-      factor = ImDtTypes<T>::max() /
-               ((double) 100 *
-                lgARoot); // BMI RGR La valeur max sera max/10 pour un
-                          // changement d'aire de 1 a taille_im en pixels
+    if (method == 2) {
+      // RGR
+      // BMI RGR La valeur max sera max/10 pour un
+      // changement d'aire de 1 a taille_im en pixels
+      factor = ImDtTypes<T>::max() / ((double) 100 * lgARoot);
     } else if (method == 3) {                          // MSER_sub
       factor = ImDtTypes<T>::max() / ((double) 100.0); // BMI
       factor = mymax / ((double) 25.0);                // BMI
@@ -698,7 +662,8 @@ namespace smil
     }
     if (flag) {
       current_residue = lNode - lAncestor;
-      if (method == 1) { // mser stability
+      if (method == 1) {
+        // mser stability
         stability    = 1 - ((aAncestor - aNode) * 1.0 / (aAncestor));
         stab_residue = round(current_residue * stability);
       } else if (method == 2) { // relative growth rate
@@ -826,8 +791,8 @@ namespace smil
       fillRatio   = 1;
     } // 0.9
 
-    if (area < 20 || area > (0.9 * width * height) ||
-        cNode < 5) { //|| cNode > (tree.getImHeight()/3)){
+    if (area < 20 || area > (0.9 * width * height) || cNode < 5) {
+      //|| cNode > (tree.getImHeight()/3)){
       AspectRatio = 0.0;
       fillRatio   = 0.0;
     }
@@ -835,7 +800,7 @@ namespace smil
 
   // NEW BMI    # ##################################################
   //(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0,
-  //hauteur, tree.getLevel(root), tree.getLevel(root));
+  // hauteur, tree.getLevel(root), tree.getLevel(root));
   template <class T, class CriterionT, class OffsetT, class LabelT,
             class tAttType>
   void ComputeDeltaUOMSERSC(MaxTree2<T, CriterionT, OffsetT, LabelT> &tree,
@@ -855,8 +820,8 @@ namespace smil
     UINT   hNode, hParent, wNode; // attributes
     size_t aNode, aParent, aAncestor;
     T      lNode, lParent, lAncestor;
-        /*wParent set but not used*/ // node levels, the same type than input
-                                     // image
+    /*wParent set but not used*/ // node levels, the same type than input
+                                 // image
     float stability, fillRatio, AspectRatio, fac;
 
     hNode = tree.getCriterion(node).getAttributeValue().H; // #current criterion
@@ -864,11 +829,11 @@ namespace smil
     aNode = tree.getCriterion(node).getAttributeValue().A;
     lNode = tree.getLevel(node); // #current level
 
-    hParent =
-        tree.getCriterion(nParent).getAttributeValue().H; // #current criterion
-                                                          //     wParent =
-    //     tree.getCriterion(nParent).xmax-tree.getCriterion(nParent).xmin+1;//
-    //     #width
+    hParent = tree.getCriterion(nParent).getAttributeValue().H;
+    // #current criterion
+    // wParent =
+    // tree.getCriterion(nParent).xmax-tree.getCriterion(nParent).xmin+1;//
+    //  #width
     aParent   = tree.getCriterion(nParent).getAttributeValue().A;
     aAncestor = tree.getCriterion(first_ancestor).getAttributeValue().A;
     lParent   = tree.getLevel(nParent);        // #current level
