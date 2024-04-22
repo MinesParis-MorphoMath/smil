@@ -50,7 +50,7 @@ namespace smil
 
   /// Generic criterion for the max-tree. A user-defined criterion should be
   /// derived from this class.
-  template <class tAttType>
+  template <class Attr_T>
   class GenericCriterion
   {
   public:
@@ -67,8 +67,8 @@ namespace smil
     virtual void reset()                                                = 0;
     virtual void merge(GenericCriterion *other_criteron)                = 0;
     virtual void update(const size_t x, const size_t y, const size_t z) = 0;
-    virtual bool operator<(const tAttType &other_attribute)             = 0;
-    tAttType     getAttributeValue()
+    virtual bool operator<(const Attr_T &other_attribute)             = 0;
+    Attr_T     getAttributeValue()
     {
       compute();
       return attribute_value_;
@@ -78,7 +78,7 @@ namespace smil
     virtual void compute() = 0;
 
   protected:
-    tAttType attribute_value_;
+    Attr_T attribute_value_;
   };
 
   /// Area criterion. Useful for Area Opening/Closing algorithms based on
@@ -108,6 +108,8 @@ namespace smil
 
     virtual void merge(GenericCriterion *other_criteron)
     {
+      // AreaCriterion &oc = dynamic_cast<AreaCriterion &>(*other_criteron);
+
       attribute_value_ +=
           dynamic_cast<AreaCriterion &>(*other_criteron).attribute_value_;
     }
@@ -158,6 +160,8 @@ namespace smil
 
     virtual void merge(GenericCriterion *other_criteron)
     {
+      // HeightCriterion &oc = dynamic_cast<HeightCriterion &>(*other_criteron);
+
       y_max_ = std::max(
           y_max_, dynamic_cast<HeightCriterion &>(*other_criteron).y_max_);
       y_min_ = std::min(
@@ -217,6 +221,8 @@ namespace smil
 
     virtual void merge(GenericCriterion *other_criteron)
     {
+      // WidthCriterion &oc = dynamic_cast<WidthCriterion &>(*other_criteron);
+
       x_max_ = std::max(x_max_,
                         dynamic_cast<WidthCriterion &>(*other_criteron).x_max_);
       x_min_ = std::min(x_min_,
@@ -288,6 +294,8 @@ namespace smil
 
     virtual void merge(GenericCriterion *other_criteron)
     {
+      // HACriterion &oc = dynamic_cast<HACriterion &>(*other_criteron);
+
       attribute_value_.A +=
           dynamic_cast<HACriterion &>(*other_criteron).getAttributeValue().A;
 
@@ -357,6 +365,8 @@ namespace smil
 
     virtual void merge(GenericCriterion *other_criteron)
     {
+      // HWACriterion &oc = dynamic_cast<HWACriterion &>(*other_criteron);
+
       attribute_value_.A +=
           dynamic_cast<HWACriterion &>(*other_criteron).getAttributeValue().A;
 
