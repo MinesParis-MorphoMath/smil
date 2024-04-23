@@ -1,6 +1,20 @@
 /**
  * @page ReleaseNotes Release Notes
  *
+ * @section s280_104 Smil 1.0.4
+ *  - @TB{Change}
+ *    - @TB{UINT32} was removed from default image types. Some features, mainly
+ *      @TT{histogram} and tree based features doesn't work as expected or are
+ *      too CPU and memory consumming. Either way, it doesn't seem that it's a
+ *      real requirement for most applications.
+ *  - @TB{Bug}
+ *    - Attribute opening/closing based on MaxTree - Problem with memory
+ *      allocation on MaxTree limiting the size ofimage being handled.
+ *    - circleErode() and circleDilate() - functions based on line StrElt
+ *      doesn't match expected radius. Improved but still not perfect.
+ *  - @TB{Documentation}
+ *    - minor corrections.
+ *
  * @section s280_103 Smil 1.0.3 (15 Jan 2024)
  *  - @TB{Bug}
  *    - gaussianFilter() - wrong results on image borders and when radios = 0
@@ -52,7 +66,7 @@
  *      @Python interface.
  *    - gradientHLS() segmentation fault on the function returning Image.
  *
- * @section s280_09 Smil 0.11.3 (23 Mar 2021))
+ * @section s280_09 Smil 0.11.3 (23 Mar 2021)
  *  - @TB{New}
  *    - packages for Anaconda
  *    - A new group of functions to check the similarity between two images.

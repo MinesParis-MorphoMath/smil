@@ -53,6 +53,9 @@ namespace smil
 
 #ifndef SWIG
 
+  typedef size_t  Offset_T;
+  typedef UINT32  Label_T;
+
   template <class T, class CriterionT, class Offset_T = size_t,
             class Label_T = UINT32>
   class MaxTree2
@@ -75,6 +78,23 @@ namespace smil
 
     size_t imWidth;
     size_t imHeight;
+
+  public:
+    MaxTree2() : hq(true) // TOTO BMI
+    {
+      GRAY_LEVEL_NBR = ImDtTypes<T>::max() - ImDtTypes<T>::min() + 1;
+      //  hq.reverse();// change priority order (max first)
+      //  hq =   HierarchicalQueue<T,Offset_T> (true);
+
+      labels.resize(GRAY_LEVEL_NBR);
+
+      initialized = false;
+    }
+
+    ~MaxTree2()
+    {
+      reset();
+    }
 
     void reset()
     {
@@ -108,12 +128,13 @@ namespace smil
 
       // set an offset distance for each se point (!=0,0,0)
       for (vector<IntPoint>::const_iterator it = se.points.begin();
-           it != se.points.end(); it++)
+           it != se.points.end(); it++) {
         if (it->x != 0 || it->y != 0 || it->z != 0) {
           sePts.push_back(*it);
           dOffsets.push_back(it->x + it->y * imSize[0] +
                              it->z * imSize[0] * imSize[1]);
         }
+      }
 
       sePtsNbr = sePts.size();
       // BMI END
@@ -127,13 +148,14 @@ namespace smil
       T        minValue = ImDtTypes<T>::max();
       T        tMinV    = ImDtTypes<T>::min();
       Offset_T minOff   = 0;
-      for (size_t i = 0; i < img->getPixelCount(); i++)
+      for (size_t i = 0; i < img->getPixelCount(); i++) {
         if (pix[i] < minValue) {
           minValue = pix[i];
           minOff   = i;
           if (minValue == tMinV)
             break;
         }
+      }
 
       allocatePage();
 
@@ -155,10 +177,10 @@ namespace smil
       //  std::cout<<"PUSH:offset="<<minOff<<"(x,y)="<<x<<", "<<y<<",
       //  val="<<minValue<<"\n";
 
-      //        getCriterion(curLabel).xmin = getCriterion(curLabel).xmax = x;
-      //        // A voir comment on peut melanger des criteres... BMI
-      //        getCriterion(curLabel).ymin = getCriterion(curLabel).ymax = y;
-      //        getCriterion(curLabel).zmin = getCriterion(curLabel).zmax = z;
+      //  getCriterion(curLabel).xmin = getCriterion(curLabel).xmax = x;
+      //  // A voir comment on peut melanger des criteres... BMI
+      //  getCriterion(curLabel).ymin = getCriterion(curLabel).ymax = y;
+      //  getCriterion(curLabel).zmin = getCriterion(curLabel).zmax = z;
 
       getCriterion(curLabel).initialize();
       curLabel++;
@@ -213,11 +235,12 @@ namespace smil
         indice = img_eti[p_suiv] = labels[j] =
             nextHigherLabel(imgPix[p], imgPix[p_suiv]);
 
-      } else if (labels[imgPix[p_suiv]] == 0)
+      } else if (labels[imgPix[p_suiv]] == 0) {
         indice = img_eti[p_suiv] = labels[imgPix[p_suiv]] =
             nextLowerLabel(imgPix[p_suiv]);
-      else
+      } else {
         indice = img_eti[p_suiv] = labels[imgPix[p_suiv]];
+      }
 
       size_t x, y, z;
       img->getCoordsFromOffset(p_suiv, x, y, z);
@@ -225,12 +248,8 @@ namespace smil
       getCriterion(indice).update(x, y, z);
       hq.push(imgPix[p_suiv], p_suiv);
 
-      //  std::cout<<"PUSH:offset="<<p_suiv<<"("<<x<<","<<y<<"),
-      //  val="<<int(imgPix[p_suiv])<<"\n";
-
       if (imgPix[p_suiv] > imgPix[p]) {
         hq.push(imgPix[p], p);
-        //    std::cout<<"PUSH_P:offset="<<p<<", val="<<int(imgPix[p])<<"\n";
         return true;
       }
       return false;
@@ -247,14 +266,12 @@ namespace smil
         p = hq.pop();
 
         img.getCoordsFromOffset(p, x0, y0, z0);
-        //    std::cout<<"POP:offset="<<p<<"(x,y)="<<x0<<", "<<y0<<"\n";
-        //                std::cout<<"-------------------------\n";
 
         bool oddLine = oddSE && ((y0) % 2);
 
         // not size_t in order to (possibly be negative!)
-        int      x, y, z;
-        Offset_T p_suiv;
+        off_t      x, y, z;
+        Offset_T   p_suiv;
 
         for (UINT i = 0; i < sePtsNbr; i++) {
           IntPoint &pt = sePts[i];
@@ -281,21 +298,7 @@ namespace smil
       } // while hq.notEmpty
     }   // void flood
 
-  public:
-    MaxTree2() : hq(true) // TOTO BMI
-    {
-      GRAY_LEVEL_NBR = ImDtTypes<T>::max() - ImDtTypes<T>::min() + 1;
-      //  hq.reverse();// change priority order (max first)
-      //  hq =   HierarchicalQueue<T,Offset_T> (true);
 
-      labels.resize(GRAY_LEVEL_NBR);
-
-      initialized = false;
-    }
-    ~MaxTree2()
-    {
-      reset();
-    }
 
   protected:
     size_t imSize[3];
@@ -370,19 +373,6 @@ namespace smil
   };
 
   // END BMI
-
-  //// Update criteria on a given max-tree node.// From Andres
-  //template <class T, class CriterionT, class Offset_T, class Label_T>
-  //inline void
-  //MaxTree2<T, CriterionT, Offset_T, Label_T>::updateCriteria(const int node)
-  //{
-    //Label_T child = getChild(node);
-    //while (child != 0) {
-      //updateCriteria(child);
-      //getCriterion(node).merge(&getCriterion(child));
-      //child = getBrother(child);
-    //}
-  //}
 
   // NEW BMI    # ##################################################
   //(tree, transformee_node, indicatrice_node, child, stopSize, (T)0, 0,
@@ -678,7 +668,6 @@ namespace smil
         } else {
           stab_residue = 0;
         }
-
       }                       // end RGR
       else if (method == 3) { // MSER sustraire
         stability = factor * (((aAncestor - aNode) * 1.0 / (aAncestor)));
@@ -693,8 +682,8 @@ namespace smil
     else {
       current_residue = (lNode - lParent);
       if (method == 1) { // mser stability
-        stability =
-            1 - ((aParent - aNode) * 1.0 / (aParent)); // relative growth rate
+        // relative growth rate
+        stability =  1 - ((aParent - aNode) * 1.0 / (aParent));
         stab_residue = round(current_residue * stability);
       } else if (method == 2) { // relative growth rate
         relativeGrowthRate =
