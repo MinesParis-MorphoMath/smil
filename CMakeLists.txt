@@ -697,7 +697,7 @@ ENDIF(BUILD_TEST)
 
 ###### IMAGE TYPES WRAPPED ######
 
-SET(IMAGE_TYPES "UINT8;UINT16;UINT32" CACHE STRING "Image types wrapped (first type will be the default one)")
+SET(IMAGE_TYPES "UINT8;UINT16" CACHE STRING "Image types wrapped (first type will be the default one)")
 SET(IMAGE_TYPES_SUPPL "RGB" CACHE STRING "Supplementary image types for base operations (read/write, copy, ...)")
 LIST(GET IMAGE_TYPES 0 DEFAULT_IMAGE_TYPE)
 

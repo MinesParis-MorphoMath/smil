@@ -678,12 +678,10 @@ void ImageViewerWidget::setScrollBarPosition(int x, int y)
 void ImageViewerWidget::wheelEvent(QWheelEvent *event)
 {
   if (event->modifiers() & Qt::ControlModifier) {
-    if (event->delta() > 0)
-      //           zoomInAct->trigger();
+    if(event->angleDelta().y() > 0)
       zoomIn();
-    else
+    else if(event->angleDelta().y() < 0)
       zoomOut();
-
     return;
   }
 

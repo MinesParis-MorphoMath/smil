@@ -4,14 +4,20 @@
  * @section s280_104 Smil 1.0.4
  *  - @TB{Change}
  *    - @TB{UINT32} was removed from default image types. Some features, mainly
- *      @TT{histogram} and tree based features doesn't work as expected or are
+ *      @TT{histogram} and tree based features don't work as expected or are
  *      too CPU and memory consumming. Either way, it doesn't seem that it's a
  *      real requirement for most applications.
+ *    - Option @TB{--imagetypes} to define data types for gray images. Default
+ *      values is @TB{UINT8;UINT16}
+ *    - A plugin @TB{Samg} was added with functions from old \TT{Chabardes} plugin.
+ *      These functions are needed by @TB{Samg} functions. The aren't
+ *      documented.
  *  - @TB{Bug}
  *    - Attribute opening/closing based on MaxTree - Problem with memory
- *      allocation on MaxTree limiting the size ofimage being handled.
+ *      allocation on MaxTree limiting the size of image being handled.
  *    - circleErode() and circleDilate() - functions based on line StrElt
  *      doesn't match expected radius. Improved but still not perfect.
+ *    - some warnings about @Qt deprecated functions.
  *  - @TB{Documentation}
  *    - minor corrections.
  *

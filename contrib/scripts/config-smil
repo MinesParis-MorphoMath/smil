@@ -49,6 +49,8 @@ PACKAGE=OFF
 DOC=OFF
 DEVDOC=OFF
 
+IMGTYPES="UINT8;UINT16"
+
 verbose=false
 
 Fatal()
@@ -91,6 +93,9 @@ Help()
     --auto
       Optimize Smil generated code for the processor at this computer.
       This is the default option.
+
+    --imagetypes=UINT8;UINT16;UINT32
+      Define gray image types to enable. Default is UINT8;UINT16
 
     --doc
     --devdoc
@@ -171,6 +176,11 @@ do
       Arch=auto
       ;;
 
+    --imagetypes=*)
+      IMGTYPES=$(echo $arg | awk -F= '{print $2}' | sed -e "s/,/ /g")
+      IMGTYPES=$(echo $arg | awk -F= '{print $2}')
+      ;;
+
     --doc)
       DOC=ON
       ;;
@@ -238,6 +248,7 @@ then
 fi
 echo ""
 
+OPT+=
 
 echo "* Options : $OPT"
 
@@ -250,6 +261,7 @@ OPT="$OPT
   -DUSE_64BIT_IDS:BOOL=ON
   -DUSE_CURL:BOOL=ON
   -DUSE_FREETYPE:BOOL=ON
+  -DIMAGE_TYPES=$IMGTYPES
   -DUSE_JPEG:BOOL=ON
   -DUSE_NUMPY:BOOL=ON
   -DUSE_OPEN_MP:BOOL=ON
@@ -262,6 +274,7 @@ OPT="$OPT
   -DWRAP_PYTHON:BOOL=ON
   -DCMAKE_CXX_FLAGS:STRING=$CXX_FLAGS
 "
+#  -DIMAGE_TYPES=$IMGTYPES
 if [ "$DOC" == "ON" ]
 then
   OPT+="
