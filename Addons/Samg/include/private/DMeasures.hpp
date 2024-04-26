@@ -38,7 +38,7 @@ namespace smil
 {
   /**
    * @ingroup Addons
-   * @addtogroup AddonMeasures 
+   * @addtogroup AddonMeasures
    * @{
    */
 
@@ -52,7 +52,7 @@ namespace smil
     map<T, UINT> hist = histogram(imIn);
     map<T, T> equivalence;
 
-    T nbr_components = 0;
+    size_t nbr_components = 0;
     for (typename map<T, UINT>::iterator it = hist.begin(); it != hist.end();
          ++it) {
       if (it->second != 0) {
@@ -85,7 +85,7 @@ namespace smil
       ForEachPixel(p)
       {
         max = 0;
-        for (uint32_t i = 0; i < nbr_components; ++i) {
+        for (size_t i = 0; i < nbr_components; ++i) {
           counts[i] = 0;
         }
 
@@ -97,13 +97,14 @@ namespace smil
         }
         ENDForEachNeighborOf
 
-            for (uint32_t i = 0; i < nbr_components; ++i)
+        for (uint32_t i = 0; i < nbr_components; ++i)
         {
           max = (counts[i] > counts[max] ||
                  (counts[i] == counts[max] && vec_local[i] < vec_local[max]))
                     ? i
                     : max;
         }
+
         if (counts[max] != 0)
           vec_local[equivalence[in[p.o]] * nbr_components + max]++;
       }
