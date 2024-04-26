@@ -74,7 +74,7 @@ namespace smil
     UINT SMIL_UNUSED nthreads = Core::getInstance()->getNumberOfThreads();
     //# pragma omp parallel num_threads(nthreads)
     {
-      index p, q;
+      index_T p, q;
       UINT pts;
       vector<double> vec_local =
           vector<double>(nbr_components * nbr_components, 0.0);

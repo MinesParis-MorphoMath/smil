@@ -38,6 +38,7 @@ ADDONS+="HoughTransform "
 ADDONS+="StochasticWS "
 ADDONS+="ZhangSkel "
 #ADDONS+="Parsimonious "
+ADDONS+="Samg "
 OTHER=
 Arch=auto
 

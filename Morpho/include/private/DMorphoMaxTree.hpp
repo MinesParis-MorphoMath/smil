@@ -894,7 +894,7 @@ namespace smil
         mymax = mylevel;
       }
     }
-    std::cout << "mymax=" << mymax << "\n";
+    // std::cout << "mymax=" << mymax << "\n";
     // END COMPUTE DYNAMIC, BMI
     while (child != 0) {
       if (!use_textShape)

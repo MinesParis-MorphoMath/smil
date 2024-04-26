@@ -68,28 +68,6 @@ namespace smil
     return RES_OK;
   }
 
-#if 0
-  /*
-   * Area Threshold
-   *
-   */
-  template <class T>
-  RES_T areaThreshold(const Image<T> &imIn, const T &threshold, Image<T> &imOut)
-  {
-    map<T, double> m = blobsArea(imIn, false);
-    vector<T> v(maxVal<T>(imIn) + 1, 0);
-    typename map<T, double>::iterator it;
-    for (it = m.begin(); it != m.end(); ++it) {
-      if (it->second > threshold)
-        v[it->first] = it->first;
-      else
-        v[it->first] = 0;
-    }
-    applyThreshold(imIn, v, imOut);
-    return RES_OK;
-  }
-#endif
-
   /**
    * Range Threshold
    *
@@ -391,7 +369,7 @@ namespace smil
     UINT nthreads = Core::getInstance()->getNumberOfThreads();
 #pragma omp parallel num_threads(nthreads)
     {
-      index p, q, l;
+      index_T p, q, l;
       UINT pts;
       map<T1, bool> m;
 
@@ -435,7 +413,7 @@ namespace smil
     UINT nthreads = Core::getInstance()->getNumberOfThreads();
 #pragma omp parallel num_threads(nthreads)
     {
-      index p, q;
+      index_T p, q;
       UINT pts;
       queue<size_t> c;
 #pragma omp for
@@ -492,7 +470,7 @@ namespace smil
     UINT nthreads = Core::getInstance()->getNumberOfThreads();
 #pragma omp parallel num_threads(nthreads)
     {
-      index p, q;
+      index_T p, q;
       UINT pts;
       bool up, down;
 
@@ -529,7 +507,7 @@ namespace smil
             UINT nthreads = Core::getInstance()->getNumberOfThreads ();
     //        #pragma omp parallel num_threads(nthreads)
             {
-                index p, q;
+                index_T p, q;
                 UINT pts;
                 queue <size_t> c;
 

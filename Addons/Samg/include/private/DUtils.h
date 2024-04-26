@@ -10,15 +10,15 @@
 
 namespace smil
 {
-  struct index {
+  struct index_T {
     size_t x;
     size_t y;
     size_t z;
     size_t o;
-    index()
+    index_T()
     {
     }
-    index(const index &i) : x(i.x), y(i.y), z(i.z), o(i.o)
+    index_T(const index_T &i) : x(i.x), y(i.y), z(i.z), o(i.o)
     {
     }
   };
@@ -53,7 +53,7 @@ namespace smil
     queue<size_t> *c1 = new queue<size_t>(), *c2 = new queue<size_t>(), *tmp;
     T1 *in  = _in_.getPixels();
     T2 *out = _out_.getPixels();
-    index p, q;
+    index_T p, q;
 
     UINT sePtsNumber = se.points.size();
     UINT pts;

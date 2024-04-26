@@ -54,9 +54,9 @@ namespace smil
    *
    * @details This module provides functions to evaluate the similarity between
    * two images. The main usage may be to validate algorithms when comparing
-   * results of some work with some @TI{Ground Truth}
+   * results of some algorithm against what is expected (the @TI{Ground Truth})
    *
-   * The following conventions are used in the definition of some indices in
+   * The following conventions are used in the definition of some indices for
    * @TB{binary images} :
    *
    * - @TB{Positives} :

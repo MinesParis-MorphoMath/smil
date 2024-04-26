@@ -43,11 +43,11 @@ class Test_Image : public TestCase
     Image<UINT16> im16(16, 16);
     Image<UINT32> im32(16, 16);
 
-    im8.printSelf(1);
-    im16.printSelf(1);
-    im32.printSelf(1);
+    // im8.printSelf(1);
+    // im16.printSelf(1);
+    // im32.printSelf(1);
     
-    TEST_ASSERT(2 == 2);
+    // TEST_ASSERT(2 == 2);
   }
 };
 
