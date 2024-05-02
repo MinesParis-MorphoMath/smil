@@ -637,10 +637,10 @@ namespace smil
   {
   public :
     /**
-     * LineSE() - constructor
+     * LineSE() -
      *
      * @param[in] length : length of the segment
-     * @param[in] theta : angle (in radians) with the horizongal line
+     * @param[in] theta : angle (in degres) with the horizongal line
      *
      * @note
      * - the angle @TB{theta} is defined in the usual counterclockwise
@@ -653,10 +653,10 @@ namespace smil
       odd       = false;
       this->setName();
 
-      //int xf = round(length * cos(-theta * PI / 180.));
-      //int yf = round(length * sin(-theta * PI / 180.));
-      int xf = round(length * cos(-theta));
-      int yf = round(length * sin(-theta));
+      int xf = round(length * cos(-theta * PI / 180.));
+      int yf = round(length * sin(-theta * PI / 180.));
+      //int xf = round(length * cos(-theta));
+      // int yf = round(length * sin(-theta));
       vector<Point<int>> v;
 
       v = bresenhamPoints(0, 0, xf, yf);
@@ -695,7 +695,7 @@ namespace smil
      * @param[in] length : length of the segment
      * @param[in] theta : angle (in radians) from the Structuring Segment projected
      *    in a slice with the horizontal line
-     * @param[in] zeta : elevation angle - angle (in radians) between the
+     * @param[in] zeta : elevation angle - angle (in degres) between the
      *    Structuring element and each slice
      *
      * @note
@@ -721,6 +721,41 @@ namespace smil
         addPoint(v[i].x, v[i].y, v[i].z);
     }
   };
+
+  /**
+   * SymmetricLineSE()
+   *
+   * @param[in] length : length of the segment
+   * @param[in] theta : angle (in degres) with the horizongal line
+   *
+   * @note
+   * - the angle @TB{theta} is defined in the usual counterclockwise
+   *  direction (trigonometric convention).
+   */
+  inline StrElt SymmetricLineSE(int length, double theta)
+  {
+    StrElt se = LineSE(length / 2 + 1, theta);
+    return se.merge(se.transpose());
+  }
+
+  /**
+   * SymmetricLine3DSE() - constructor
+   *
+   * @param[in] length : length of the segment
+   * @param[in] theta : angle (in radians) from the Structuring Segment projected
+   *    in a slice with the horizontal line
+   * @param[in] zeta : elevation angle - angle (in degres) between the
+   *    Structuring element and each slice
+   *
+   * @note
+   * - the angle @TB{theta} is defined in the usual counterclockwise
+   *  direction (trigonometric convention).
+   */
+  inline StrElt SymmetricLine3DSE(int length, double theta, double zeta)
+  {
+    StrElt se = Line3DSE(length / 2 + 1, theta, zeta);
+    return se.merge(se.transpose());
+  }
 
   // Shortcuts
   /** @cond */

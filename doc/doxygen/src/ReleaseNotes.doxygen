@@ -2,6 +2,9 @@
  * @page ReleaseNotes Release Notes
  *
  * @section s280_104 Smil 1.0.4
+ *  - @TB{New}
+ *    - Structuring elements @TB{SymmetricLineSE()} and @TB{SymmetricLine3DSE()}
+ *      created in complement to @TB{LineSE()} and @TB{Line3DSE()}
  *  - @TB{Change}
  *    - @TB{UINT32} was removed from default image types. Some features, mainly
  *      @TT{histogram} and tree based features don't work as expected or are
@@ -12,14 +15,17 @@
  *    - A plugin @TB{Samg} was added with functions from old \TT{Chabardes} plugin.
  *      These functions are needed by @TB{Samg} functions. The aren't
  *      documented.
+ *    - function @TB{stretchHist()} renamed to stretchHistogram().)
  *  - @TB{Bug}
+ *    - Problems when getting the cardinality of values in @TB{UINT32} images
+ *      in the @TB{cardinality()} function.
  *    - Attribute opening/closing based on MaxTree - Problem with memory
  *      allocation on MaxTree limiting the size of image being handled.
  *    - circleErode() and circleDilate() - functions based on line StrElt
  *      doesn't match expected radius. Improved but still not perfect.
  *    - some warnings about @Qt deprecated functions.
  *  - @TB{Documentation}
- *    - minor corrections.
+ *    - minor error corrections and adaptation to the above changes.
  *
  * @section s280_103 Smil 1.0.3 (15 Jan 2024)
  *  - @TB{Bug}

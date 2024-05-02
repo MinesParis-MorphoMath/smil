@@ -50,7 +50,7 @@ PACKAGE=OFF
 DOC=OFF
 DEVDOC=OFF
 
-IMGTYPES="UINT8;UINT16"
+IMGTYPES="UINT8;UINT16;UINT32"
 
 verbose=false
 
@@ -95,8 +95,8 @@ Help()
       Optimize Smil generated code for the processor at this computer.
       This is the default option.
 
-    --imagetypes=UINT8;UINT16;UINT32
-      Define gray image types to enable. Default is UINT8;UINT16
+    --imagetypes=type;type
+      Define gray image types to enable. Default is UINT8;UINT16;UINT32
 
     --doc
     --devdoc
