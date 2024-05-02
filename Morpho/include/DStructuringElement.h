@@ -58,6 +58,8 @@ namespace smil
     SE_Cube,
     SE_Cross3D,
     SE_Line3D,
+    SE_SymmetricLine,
+    SE_SymmetricLine3D,
     SE_Rhombicuboctahedron
   };
 
@@ -320,7 +322,9 @@ namespace smil
           {SE_Cross3D, "Cross3DSE"},
           {SE_Rhombicuboctahedron, "RhombicuboctahedronSE"},
           {SE_Line, "LineSE"},
-          {SE_Line3D, "Line3DSE"}
+          {SE_Line3D, "Line3DSE"},
+          {SE_SymmetricLine, "SymmetricLineSE"},
+          {SE_SymmetricLine3D, "SymmetricLine3DSE"}
       };
 
       std::map<seType, string>::iterator it;
@@ -637,7 +641,8 @@ namespace smil
   {
   public :
     /**
-     * LineSE() -
+     * LineSE() - flat structuring element of arbitrary length and direction
+     * starting at the origin.
      *
      * @param[in] length : length of the segment
      * @param[in] theta : angle (in degres) with the horizongal line
@@ -666,7 +671,8 @@ namespace smil
   };
 
  /**
-   *  Line3DSE - a line structuring element with arbitrary length and angle.
+   *  Line3DSE - 3D structuring element of arbitrary length and direction
+   * starting at the origin.
    *
    * The line is defined with the help of a Besenham algorithm
    *
@@ -732,11 +738,50 @@ namespace smil
    * - the angle @TB{theta} is defined in the usual counterclockwise
    *  direction (trigonometric convention).
    */
-  inline StrElt SymmetricLineSE(int length, double theta)
+#if 1
+  class SymmetricLineSE : public StrElt
+  {
+  public :
+    /**
+     * SymmetricLineSE() -
+     *
+     * @param[in] length : length of the segment
+     * @param[in] theta : angle (in degres) with the horizongal line
+     *
+     * @note
+     * - the angle @TB{theta} is defined in the usual counterclockwise
+     *  direction (trigonometric convention).
+     */
+    SymmetricLineSE(int length, double theta = 0) : StrElt(1)
+    {
+      className = "SymmetricLineSE : StrElt";
+      seT       = SE_SymmetricLine;
+      odd       = false;
+      this->setName();
+
+      int xf = round(length * cos(-theta * PI / 180.) / 2);
+      int yf = round(length * sin(-theta * PI / 180.) / 2);
+      //int xf = round(length * cos(-theta));
+      // int yf = round(length * sin(-theta));
+
+      vector<Point<int>> v;
+      v = bresenhamPoints(0, 0, xf, yf);
+
+      for (size_t i = 0; i < v.size(); i++) {
+        addPoint(v[i].x, v[i].y, v[i].z);
+        if (v[i].x == 0 && v[i].y == 0 && v[i].z == 0)
+          continue;
+        addPoint(-v[i].x, -v[i].y, -v[i].z);
+      }
+    }
+  };
+#else
+  inline StrElt SymmetricLineSE(int length, double theta = 0)
   {
     StrElt se = LineSE(length / 2 + 1, theta);
     return se.merge(se.transpose());
   }
+#endif
 
   /**
    * SymmetricLine3DSE() - constructor
@@ -751,11 +796,52 @@ namespace smil
    * - the angle @TB{theta} is defined in the usual counterclockwise
    *  direction (trigonometric convention).
    */
-  inline StrElt SymmetricLine3DSE(int length, double theta, double zeta)
+#if 1
+  class SymmetricLine3DSE : public StrElt
+  {
+  public :
+    /**
+     * SymmetricLine3DSE() -
+     *
+     * @param[in] length : length of the segment
+     * @param[in] theta : angle (in degres) with the horizongal line
+     *
+     * @note
+     * - the angle @TB{theta} is defined in the usual counterclockwise
+     *  direction (trigonometric convention).
+     */
+    SymmetricLine3DSE(int length, double theta = 0, double zeta = 0) : StrElt(1)
+    {
+      className = "SymmetricLine3DSE : StrElt";
+      seT       = SE_SymmetricLine3D;
+      odd       = false;
+      this->setName();
+
+      length /= 2;
+      double lenXY = abs(length * cos(zeta * PI / 180.));
+
+      int zf = round(length * sin(zeta * PI / 180.));
+      int xf = round(lenXY * cos(-theta * PI / 180.));
+      int yf = round(lenXY * sin(-theta * PI / 180.));
+
+      Bresenham line(0, 0, 0, xf, yf, zf);
+      vector<IntPoint> v = line.getPoints();
+
+      for (size_t i = 0; i < v.size(); i++) {
+        addPoint(v[i].x, v[i].y, v[i].z);
+        if (v[i].x == 0 && v[i].y == 0 && v[i].z == 0)
+          continue;
+        addPoint(-v[i].x, -v[i].y, -v[i].z);
+      }
+    }
+  };
+#else
+  inline StrElt SymmetricLine3DSE(int length, double theta = 0, double zeta = 0)
   {
     StrElt se = Line3DSE(length / 2 + 1, theta, zeta);
     return se.merge(se.transpose());
   }
+#endif
 
   // Shortcuts
   /** @cond */
