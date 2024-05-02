@@ -178,6 +178,13 @@ def measVolumes(*args):
     """
     return blobsVolume(*args)
 
+def stretchHist(*args):
+    """
+    Function renamed. Use:
+      r = stretchHistogram(...)
+    """
+    return stretchHistogram(*args)
+
 def vFlip(*args):
     """
     Function renamed. Use:

@@ -351,7 +351,7 @@ namespace smil
   }
 
   /**
-   * stretchHist() - Stretch histogram
+   * stretchHistogram() - Stretch histogram
    *
    * Create a new image based on a linear transformation of the histogram of the
    * input image.
@@ -370,7 +370,7 @@ namespace smil
    *
    */
   template <class T1, class T2>
-  RES_T stretchHist(const Image<T1> &imIn, T1 inMinVal, T1 inMaxVal,
+  RES_T stretchHistogram(const Image<T1> &imIn, T1 inMinVal, T1 inMaxVal,
                     Image<T2> &imOut, T2 outMinVal = numeric_limits<T2>::min(),
                     T2 outMaxVal = numeric_limits<T2>::max())
   {
@@ -387,7 +387,7 @@ namespace smil
   }
 
   /**
-   * stretchHist() - Stretch histogram
+   * stretchHistogram() - Stretch histogram
    *
    * Create a new image based on a linear transformation of the histogram of the
    * input image.
@@ -408,7 +408,7 @@ namespace smil
    *
    */
   template <class T1, class T2>
-  RES_T stretchHist(const Image<T1> &imIn, Image<T2> &imOut, T2 outMinVal,
+  RES_T stretchHistogram(const Image<T1> &imIn, Image<T2> &imOut, T2 outMinVal,
                     T2 outMaxVal)
   {
     ASSERT_ALLOCATED(&imIn);
@@ -425,7 +425,7 @@ namespace smil
   }
 
   /**
-   * stretchHist() - Stretch histogram
+   * stretchHistogram() - Stretch histogram
    *
    * Create a new image based on a linear transformation of the histogram of the
    * input image.
@@ -445,15 +445,15 @@ namespace smil
    */
 
   template <class T1, class T2>
-  RES_T stretchHist(const Image<T1> &imIn, Image<T2> &imOut)
+  RES_T stretchHistogram(const Image<T1> &imIn, Image<T2> &imOut)
   {
-    return stretchHist<T1, T2>(imIn, imOut, numeric_limits<T2>::min(),
+    return stretchHistogram<T1, T2>(imIn, imOut, numeric_limits<T2>::min(),
                                numeric_limits<T2>::max());
   }
 
   /**
-   * histogramRange() - Min and Max values of an histogram ignoring left/right low values (lower
-   * than a given height/cumulative height).
+   * histogramRange() - Min and Max values of an histogram ignoring left/right
+   * low values (lower than a given height/cumulative height).
    *
    * If @b cumulative is true, it stops when the integral of the histogram
    * values reaches <b>ignorePercent * NbrPixels</b>. Otherwise, it stops at the
@@ -473,7 +473,7 @@ namespace smil
 
     ASSERT(imIn.isAllocated(), rVect);
 
-    size_t *h = new size_t[ImDtTypes<T>::cardinal()];
+    size_t *h = new size_t[size_t (ImDtTypes<T>::cardinal())];
     histogram(imIn, h);
 
     double imVol;
@@ -539,7 +539,7 @@ namespace smil
 
     ASSERT(rangeV.size() == 2);
 
-    stretchHist(imIn, rangeV[0], rangeV[1], imOut);
+    stretchHistogram(imIn, rangeV[0], rangeV[1], imOut);
     imOut.modified();
 
     return RES_OK;

@@ -82,3 +82,17 @@ OK -  it seems that there are a memory leak problem at watershed function
   Probably conversion double -> T
 
 * Accelerate histogramMap
+
+**********************************************
+
+* Rewrite labelWithProperty
+    labelWithProperty(imRegions, imIn, imLabel, property[, se])
+  Review
+    labelWithArea
+    labelWithVolume
+    labelWithMax
+    labelWithMean
+
+* Remove histogramMap ???
+
+
