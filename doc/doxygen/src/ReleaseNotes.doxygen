@@ -3,8 +3,10 @@
  *
  * @section s280_104 Smil 1.0.4
  *  - @TB{New}
- *    - Structuring elements @TB{SymmetricLineSE()} and @TB{SymmetricLine3DSE()}
+ *    - Structuring elements @TB{CenteredLineSE()} and @TB{CenteredLine3DSE()}
  *      created in complement to @TB{LineSE()} and @TB{Line3DSE()}
+ *    - functions rectangleDilate(), rectangleErode, rectangleOpen() and
+ *      rectangleClose(). Generic functions based on line morphology.
  *  - @TB{Change}
  *    - @TB{UINT32} was removed from default image types. Some features, mainly
  *      @TT{histogram} and tree based features don't work as expected or are

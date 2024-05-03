@@ -58,8 +58,8 @@ namespace smil
     SE_Cube,
     SE_Cross3D,
     SE_Line3D,
-    SE_SymmetricLine,
-    SE_SymmetricLine3D,
+    SE_CenteredLine,
+    SE_CenteredLine3D,
     SE_Rhombicuboctahedron
   };
 
@@ -323,8 +323,8 @@ namespace smil
           {SE_Rhombicuboctahedron, "RhombicuboctahedronSE"},
           {SE_Line, "LineSE"},
           {SE_Line3D, "Line3DSE"},
-          {SE_SymmetricLine, "SymmetricLineSE"},
-          {SE_SymmetricLine3D, "SymmetricLine3DSE"}
+          {SE_CenteredLine, "CenteredLineSE"},
+          {SE_CenteredLine3D, "CenteredLine3DSE"}
       };
 
       std::map<seType, string>::iterator it;
@@ -729,7 +729,7 @@ namespace smil
   };
 
   /**
-   * SymmetricLineSE()
+   * CenteredLineSE()
    *
    * @param[in] length : length of the segment
    * @param[in] theta : angle (in degres) with the horizongal line
@@ -739,11 +739,11 @@ namespace smil
    *  direction (trigonometric convention).
    */
 #if 1
-  class SymmetricLineSE : public StrElt
+  class CenteredLineSE : public StrElt
   {
   public :
     /**
-     * SymmetricLineSE() -
+     * CenteredLineSE() -
      *
      * @param[in] length : length of the segment
      * @param[in] theta : angle (in degres) with the horizongal line
@@ -752,10 +752,10 @@ namespace smil
      * - the angle @TB{theta} is defined in the usual counterclockwise
      *  direction (trigonometric convention).
      */
-    SymmetricLineSE(int length, double theta = 0) : StrElt(1)
+    CenteredLineSE(int length, double theta = 0) : StrElt(1)
     {
-      className = "SymmetricLineSE : StrElt";
-      seT       = SE_SymmetricLine;
+      className = "CenteredLineSE : StrElt";
+      seT       = SE_CenteredLine;
       odd       = false;
       this->setName();
 
@@ -776,7 +776,7 @@ namespace smil
     }
   };
 #else
-  inline StrElt SymmetricLineSE(int length, double theta = 0)
+  inline StrElt CenteredLineSE(int length, double theta = 0)
   {
     StrElt se = LineSE(length / 2 + 1, theta);
     return se.merge(se.transpose());
@@ -784,7 +784,7 @@ namespace smil
 #endif
 
   /**
-   * SymmetricLine3DSE() - constructor
+   * CenteredLine3DSE() - constructor
    *
    * @param[in] length : length of the segment
    * @param[in] theta : angle (in radians) from the Structuring Segment projected
@@ -797,23 +797,25 @@ namespace smil
    *  direction (trigonometric convention).
    */
 #if 1
-  class SymmetricLine3DSE : public StrElt
+  class CenteredLine3DSE : public StrElt
   {
   public :
     /**
-     * SymmetricLine3DSE() -
+     * CenteredLine3DSE() -
      *
      * @param[in] length : length of the segment
-     * @param[in] theta : angle (in degres) with the horizongal line
-     *
+     * @param[in] theta : angle (in radians) from the Structuring Segment
+     *   projected in a slice with the horizontal line
+     * @param[in] zeta : elevation angle - angle (in degres) between the
+     *    Structuring element and each slice     *
      * @note
      * - the angle @TB{theta} is defined in the usual counterclockwise
      *  direction (trigonometric convention).
      */
-    SymmetricLine3DSE(int length, double theta = 0, double zeta = 0) : StrElt(1)
+    CenteredLine3DSE(int length, double theta = 0, double zeta = 0) : StrElt(1)
     {
-      className = "SymmetricLine3DSE : StrElt";
-      seT       = SE_SymmetricLine3D;
+      className = "CenteredLine3DSE : StrElt";
+      seT       = SE_CenteredLine3D;
       odd       = false;
       this->setName();
 
@@ -836,7 +838,7 @@ namespace smil
     }
   };
 #else
-  inline StrElt SymmetricLine3DSE(int length, double theta = 0, double zeta = 0)
+  inline StrElt CenteredLine3DSE(int length, double theta = 0, double zeta = 0)
   {
     StrElt se = Line3DSE(length / 2 + 1, theta, zeta);
     return se.merge(se.transpose());

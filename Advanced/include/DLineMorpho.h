@@ -452,8 +452,8 @@ namespace smil
   RES_T rectangleDilate(const Image<T> &imIn, Image<T> &imOut, int side1,
                         int side2, double theta = 0)
   {
-    StrElt se1 = SymmetricLineSE(side1, theta);
-    StrElt se2 = SymmetricLineSE(side2, theta + 90);
+    StrElt se1 = CenteredLineSE(side1, theta);
+    StrElt se2 = CenteredLineSE(side2, theta + 90);
 
     RES_T r = dilate(imIn, imOut, se1);
     if (r == RES_OK)
@@ -476,8 +476,8 @@ namespace smil
   RES_T rectangleErode(const Image<T> &imIn, Image<T> &imOut, int side1,
                        int side2, double theta = 0)
   {
-    StrElt se1 = SymmetricLineSE(side1, theta);
-    StrElt se2 = SymmetricLineSE(side2, theta + 90);
+    StrElt se1 = CenteredLineSE(side1, theta);
+    StrElt se2 = CenteredLineSE(side2, theta + 90);
 
     RES_T r = erode(imIn, imOut, se1);
     if (r == RES_OK)
