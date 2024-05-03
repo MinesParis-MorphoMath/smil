@@ -5,8 +5,9 @@
  *  - @TB{New}
  *    - Structuring elements @TB{CenteredLineSE()} and @TB{CenteredLine3DSE()}
  *      created in complement to @TB{LineSE()} and @TB{Line3DSE()}
- *    - functions rectangleDilate(), rectangleErode, rectangleOpen() and
- *      rectangleClose(). Generic functions based on line morphology.
+ *    - functions rectangleDilate(), rectangleErode(),
+ *      rectangleOpen() and rectangleClose(). Generic functions
+ *      based on line morphology.
  *  - @TB{Change}
  *    - @TB{UINT32} was removed from default image types. Some features, mainly
  *      @TT{histogram} and tree based features don't work as expected or are
@@ -19,6 +20,8 @@
  *      documented.
  *    - function @TB{stretchHist()} renamed to stretchHistogram().)
  *  - @TB{Bug}
+ *    - Deprecated function in @Numpy API, since release 1.19. New code needs
+ *      release 1.15 or newer.
  *    - Problems when getting the cardinality of values in @TB{UINT32} images
  *      in the @TB{cardinality()} function.
  *    - Attribute opening/closing based on MaxTree - Problem with memory
