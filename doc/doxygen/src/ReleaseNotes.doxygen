@@ -14,11 +14,13 @@
  *      too CPU and memory consumming. Either way, it doesn't seem that it's a
  *      real requirement for most applications.
  *    - Option @TB{--imagetypes} to define data types for gray images. Default
- *      values is @TB{UINT8;UINT16}
+ *      values is @TB{UINT8;UINT16;UINT32}
  *    - A plugin @TB{Samg} was added with functions from old \TT{Chabardes} plugin.
  *      These functions are needed by @TB{Samg} functions. The aren't
  *      documented.
  *    - function @TB{stretchHist()} renamed to stretchHistogram().)
+ *    - function @TB{fastLambdaLabel()} removed as its results are wrong. Use
+ *      function @TB{lambdaLabel()} which gives correct results.
  *  - @TB{Bug}
  *    - Deprecated function in @Numpy API, since release 1.19. New code needs
  *      release 1.15 or newer.

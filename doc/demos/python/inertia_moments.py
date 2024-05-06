@@ -52,14 +52,22 @@ mats  = blobsMoments(imIn, blobs)
 bboxes = blobsBoundBox(imLbl)
 imDraw = Image(imIn)
 
-print("Label\tA\tB\tTheta")
+print("{:5s}      {:>5s} {:>5s} {:>6s}".format("Label", "A", "B", "Theta"))
 for b in blobs.keys():
   mat = xc, yc, A, B, theta = fitRectangle(mats[b])
-  print(str(b) + "\t" + str(A) + "\t" + str(B) + "\t" + str(theta))
+  #print(str(b) + "\t" + str(A) + "\t" + str(B) + "\t" + str(theta))
+  print(f"{b:5d}      {A:>5d} {B:>5d} {theta:6.3f}")
   dx = A / 2 * cos(pi - theta)
   dy = A / 2 * sin(pi - theta)
   drawLine(imDraw, int(xc - dx), int(yc - dy), int(xc + dx), int(yc + dy), b)
   dx = B / 2 * sin(theta)
   dy = B / 2 * cos(theta)
   drawLine(imDraw, int(xc - dx), int(yc - dy), int(xc + dx), int(yc + dy), b)
+
+
+print("on Overlay")
 imIn.getViewer().drawOverlay(imDraw)
+
+print("after overlay")
+input()
+

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -37,17 +37,18 @@ int main()
 {
     Image<UINT8> im1(1024, 1024);
     Image<UINT32> im2(im1);
-    
+
     fill(im1, UINT8(0));
     drawRectangle(im1, 10,10,400,400, UINT8(255), true);
     drawRectangle(im1, 500,60,40,400);
     drawLine(im1, 450, 100, 900, 10);
-   
-    
+
+
     UINT BENCH_NRUNS = 100;
     BENCH_IMG(label, im1, im2, CrossSE());
     BENCH_IMG(lambdaLabel, im1, UINT8(10), im2, CrossSE());
     BENCH_IMG(fastLabel, im1, im2, CrossSE());
+    //BENCH_IMG(fastLambdaLabel, im1, UINT8(10), im2, CrossSE());
     BENCH_IMG(labelWithArea, im1, im2, CrossSE());
 }
 

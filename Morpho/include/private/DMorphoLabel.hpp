@@ -590,7 +590,7 @@ namespace smil
    *
    * @details
    * In this mode of labeling, two neighbour pixels have the same label if
-   * there are a path between them at which the value difference from pixel to
+   * there is a path between them at which the value difference from pixel to
    * pixel doesn't exceed @b lambdaVal
    *
    * @param[in] imIn : input image
@@ -649,8 +649,9 @@ namespace smil
     return lblNbr;
   }
 
+  /** @cond */
   /**
-   * lambdaFastLabel() - Lambda-flat zones labelization (faster, use OpenMP)
+   * fastLambdaLabel() - Lambda-flat zones labelization (faster, use OpenMP)
    *
    * @param[in] imIn : input image
    * @param[in] lambdaVal : lambda expression
@@ -662,7 +663,7 @@ namespace smil
    * shall include an example of how to use this...
    */
   template <class T1, class T2>
-  size_t lambdaFastLabel(const Image<T1> &imIn, const T1 &lambdaVal,
+  size_t fastLambdaLabel(const Image<T1> &imIn, const T1 &lambdaVal,
                          Image<T2> &imOut, const StrElt &se = DEFAULT_SE)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
@@ -675,11 +676,12 @@ namespace smil
 
     size_t lblNbr = f.getLabelNbr();
 
-    if (lblNbr < size_t(ImDtTypes<T2>::max()))
+    if (lblNbr > size_t(ImDtTypes<T2>::max()))
       std::cerr << "Label number exceeds data type max!" << std::endl;
 
     return lblNbr;
   }
+  /** @endcond */
 
   /** @cond */
   template <typename T>
