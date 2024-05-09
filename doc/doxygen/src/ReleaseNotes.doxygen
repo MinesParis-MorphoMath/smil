@@ -247,7 +247,7 @@
  * Structuring Element
  *
  *  - Bug fixes
- *    - fromNumArray() function not working as intended
+ *    - fromNumpyArray() function not working as intended
  *
  *  - Code cleaning : work in progress while documenting
  *

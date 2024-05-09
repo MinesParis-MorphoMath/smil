@@ -10,7 +10,7 @@ img = sm.Image(file)
 img.show(file)
 
 # get a NumPy array
-p = img.getNumArray()
+p = img.getNumpyArray()
 
 # let's threshold the image
 t = 127

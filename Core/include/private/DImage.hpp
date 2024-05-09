@@ -298,7 +298,7 @@ namespace smil
 
 #if defined SWIGPYTHON && defined USE_NUMPY
     /**
-     * getNumArray() -
+     * getNumpyArray() -
      *
      * Return a NumPy array containing the @b real image pixel values (not a
      * copy).
@@ -310,10 +310,10 @@ namespace smil
      *
      * See @ref p660 for examples.
      */
-    PyObject *getNumArray(bool c_contigous = false);
+    PyObject *getNumpyArray(bool c_contigous = false);
 
     /**
-     *  fromNumArray() -
+     *  fromNumpyArray() -
      *
      * Copy pixel values from a given NumPy array. The image size will be
      * derived from the array shape.
@@ -322,7 +322,7 @@ namespace smil
      *
      * See @ref p660 for examples.
      */
-    void fromNumArray(PyObject *array);
+    void fromNumpyArray(PyObject *array);
 #endif // defined SWIGPYTHON && defined USE_NUMPY
 
     //! Trigger modified event (allows to force display update)

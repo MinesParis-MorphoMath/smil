@@ -28,7 +28,7 @@
  *      image into an @TB{positive integer} coded image, handle it under @Smil
  *      and go back at the end.
  *  - @Smil images can be converted @TB{to} and @TB{from} @Numpy format. See
- *    fromNumArray() and getNumArray() or examples at page : @ref p660.
+ *    fromNumpyArray() and getNumpyArray() or examples at page : @ref p660.
  *  - @TB{Very Important} - all functions having an image as output parameter expect
  *    receive these parameters as already instantiated images. As an example,
  *    take the erode() function call :

@@ -7,11 +7,11 @@
  * <a href="https://numpy.org/" target="_blank"><b>NumPy</b></a> is a
  * package for scientific computing with Python. Smil allows to
  * - access, with @b NumPy functions, the @b Smil image pixels with the method
- *   @b Image::getNumArray().
+ *   @b Image::getNumpyArray().
  *   - This is @b not a copy of the data but a real access to the image pixels
  *     via @b NumPy.
  * - create a @b Smil image from a @b NumPy array with one of the methods
- *   @TB{Image::fromNumArray(arr)} or @TB{Image(arr)} or @TB{NumpyInt(arr)}.
+ *   @TB{Image::fromNumpyArray(arr)} or @TB{Image(arr)} or @TB{NumpyInt(arr)}.
  *
  * @note These functions are available only inside @Python environnment.
  *
@@ -22,7 +22,7 @@
  * - Create a @Smil image from a @Numpy array with @TB{Image()}
  * @includelineno numpy_np2image.py
  *
- * - Create a @Smil image from a @Numpy array with @TB{fromNumArray()}
+ * - Create a @Smil image from a @Numpy array with @TB{fromNumpyArray()}
  * @includelineno numpy_np2sp.py
  *
  *
@@ -36,12 +36,12 @@
  *
  * @subsection s660_02_02 From Smil to Numpy
  *
- * From a @Smil image, do some operation under @Numpy. Use @TB{getNumArray()}.
+ * From a @Smil image, do some operation under @Numpy. Use @TB{getNumpyArray()}.
  *
  * @includelineno numpy_sp2np.py
  *
  * @note
- *  - the array returned by @TB{getNumArray()} is a pointer to the @Smil image,
+ *  - the array returned by @TB{getNumpyArray()} is a pointer to the @Smil image,
  *    @TB{not a copy}.
  *
  * @subsection s660_02_03 From Smil to Numpy to Smil

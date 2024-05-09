@@ -53,7 +53,7 @@ TEMPLATE_WRAP_CLASS(OpenCVInt,OpenCVInt)
 import cv
 
 def toIplImage(img):
-  return cv.fromarray(img.getNumArray(True))
+  return cv.fromarray(img.getNumpyArray(True))
 
 for t in imageTypes:
     t.cv = toIplImage

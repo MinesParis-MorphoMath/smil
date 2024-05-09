@@ -837,7 +837,7 @@ namespace smil
 
 namespace smil
 {
-  template <class T> PyObject *Image<T>::getNumArray(bool c_contigous)
+  template <class T> PyObject *Image<T>::getNumpyArray(bool c_contigous)
   {
     npy_intp d[3];
     int dim = this->getDimension();
@@ -870,7 +870,7 @@ namespace smil
     }
   }
 
-  template <class T> void Image<T>::fromNumArray(PyObject *obj)
+  template <class T> void Image<T>::fromNumpyArray(PyObject *obj)
   {
 
 
