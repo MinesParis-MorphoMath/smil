@@ -40,7 +40,7 @@
 // TODO: find asm instructions for arm platforms
 #elif defined(__arm__)
 #else
-// JOE CPU #include <cpuid.h>
+#include <cpuid.h>
 #endif // _MSC_VER
 
 #include <fstream>
@@ -48,10 +48,9 @@
 using namespace smil;
 
 CpuID::CpuID()
-    : /* eax(regs[0]), ebx(regs[1]), ecx(regs[2]), edx(regs[3]), */ cores(0),
+    : eax(regs[0]), ebx(regs[1]), ecx(regs[2]), edx(regs[3]), cores(0),
       logical(0)
 {
-#if 0 // JOE CPU
 #ifndef __arm__
   eax = ebx = ecx = edx = 0;
 
@@ -155,7 +154,6 @@ CpuID::CpuID()
   }
 
 #endif // __arm__
-#endif // JOE CPU
 
 #ifdef USE_OPEN_MP
 #pragma omp parallel
@@ -183,12 +181,12 @@ CpuID::CpuID()
   cores = max(cores, 1U);
 }
 
-//void CpuID::load(unsigned i)
-//{
-//#ifdef _MSC_VER
-  //__cpuid((int *) regs, i);
-//#elif defined(__arm__)
-//#else
-  //__cpuid(i, eax, ebx, ecx, edx);
-//#endif // _MSC_VER
-//}
+void CpuID::load(unsigned i)
+{
+#ifdef _MSC_VER
+  __cpuid((int *) regs, i);
+#elif defined(__arm__)
+#else
+  __cpuid(i, eax, ebx, ecx, edx);
+#endif // _MSC_VER
+}

@@ -81,14 +81,14 @@ namespace smil
         bool isHyperThreated() const { return hyperThreaded; }
         const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
         const std::vector<Cache_Descriptors> &getCaches() const {
-            return L;
+          return L;
         }
         unsigned int getNbrCacheLevel() const { return L.size (); }
 
       protected:
-        UINT32 regs[4];
-        UINT32 &eax, &ebx, &ecx, &edx;
-        unsigned eaxFeatures, edxFeatures, ecxFeatures, ebxFeatures;
+        //UINT32 regs[4];
+        //UINT32 &eax, &ebx, &ecx, &edx;
+        //unsigned eaxFeatures, edxFeatures, ecxFeatures, ebxFeatures;
 
         unsigned cores;
         unsigned logical;
@@ -98,7 +98,6 @@ namespace smil
         std::vector<Cache_Descriptors> L;
 
         void load(unsigned i);
-
     };
 } // namespace smil
 
