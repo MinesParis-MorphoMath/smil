@@ -14,16 +14,17 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
 #ifndef _DCPUID_H
@@ -36,78 +37,52 @@
 
 namespace smil
 {
-#if 0
-    struct x_SIMD_Instructions
+  class CpuID
+  {
+  public:
+    CpuID();
+
+    string getVendor() const
     {
-        bool MMX;
-        bool SSE;
-        bool SSE2;
-        bool SSE3;
-        bool SSSE3;
-        bool SSE41;
-        bool SSE42;
-        bool AES;
-        bool AVX;
+      return vendor;
+    }
 
-        // added 15/10/2021
-        bool AVX2;
-        bool AVX512;
-        bool FMA;
-    };
-
-    // Associativity.
-    enum { WDISABLED, W1, W2, W4=4, W8=6, W16=8, W32=10, W48, W64, W96, W128, WFULL };
-
-    // Data cache information.
-    struct x_Cache_Descriptors
+    string getModel() const
     {
-        int type; // 1 : data, 2 : instructions, 3 : unified
-        int size;
-        int sets; // ???
-        int associativity;
-        int lines_per_tag;
-        int line_size;
-    };
-#endif
-    class CpuID
+      return model;
+    }
+
+    string getFlags() const
     {
+      return flags;
+    }
 
-      public:
+    unsigned getCores() const
+    {
+      return cores;
+    }
 
-        CpuID();
+    unsigned getLogical() const
+    {
+      return logical;
+    }
 
-        string getVendor() const { return vendor; }
-        string getModel() const {return model; }
-        string getFlags() const {return flags; }
+    bool isHyperThreated() const
+    {
+      return hyperThreaded;
+    }
 
-        unsigned getCores() const { return cores; }
-        unsigned getLogical() const { return logical; }
-        bool isHyperThreated() const { return hyperThreaded; }
+  protected:
+    unsigned cores;
+    unsigned logical;
+    bool     hyperThreaded;
 
-        // const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
-        // const std::vector<Cache_Descriptors> &getCaches() const {
-        //  return L;
-        //}
-        //unsigned int getNbrCacheLevel() const { return L.size (); }
+    string vendor;
+    string model;
+    string flags;
 
-      protected:
-        //UINT32 regs[4];
-        //UINT32 &eax, &ebx, &ecx, &edx;
-        //unsigned eaxFeatures, edxFeatures, ecxFeatures, ebxFeatures;
-
-        unsigned cores;
-        unsigned logical;
-        bool hyperThreaded;
-
-        string vendor;
-        string model;
-        string flags;
-
-        //SIMD_Instructions simdInstructions;
-        //std::vector<Cache_Descriptors> L;
-
-        bool _get_value(string &s, const char *prefix, string &value);
-    };
+    bool _get_value(string &s, const char *prefix, string &value);
+  };
 } // namespace smil
 
 #endif // _DCPUID_H

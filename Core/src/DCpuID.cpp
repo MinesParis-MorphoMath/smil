@@ -42,32 +42,31 @@
 using namespace smil;
 
 CpuID::CpuID()
-    : /* eax(regs[0]), ebx(regs[1]), ecx(regs[2]), edx(regs[3]), */ cores(0),
-      logical(0)
 {
+  cores         = 0;
+  logical       = 0;
   hyperThreaded = true;
 #ifdef USE_OPEN_MP
-// #pragma omp parallel
+  // #pragma omp parallel
   {
     cores   = omp_get_num_procs();
     logical = omp_get_max_threads();
   }
-  //if (hyperThreaded)
-  //  cores /= 2;
+  // if (hyperThreaded)
+  //   cores /= 2;
 #endif
 
 #if defined(__linux__)
   ifstream fin;
   fin = ifstream("/proc/cpuinfo");
   if (fin.good()) {
-    int nprocs = 0;
-    string   svendor;
-    string   smodel;
-    string   buffer;
+    int    nprocs = 0;
+    string svendor;
+    string smodel;
+    string buffer;
 
-    char    line[1024];
-    while (fin.getline(line, sizeof line))
-    {
+    char line[1024];
+    while (fin.getline(line, sizeof line)) {
       string sline = string(line);
 
       if (_get_value(sline, "processor", buffer))
@@ -84,18 +83,18 @@ CpuID::CpuID()
   }
 #endif // __linux__
 
-  cores = max(cores, 4U);
+  cores   = max(cores, 4U);
   logical = max(logical, 4U);
 }
 
 bool CpuID::_get_value(string &s, const char *prefix, string &value)
 {
-  bool ok = false;
-  regex re(string("^") + string(prefix) + "[[:space:]]*:[[:space:]]*");
+  bool   ok = false;
+  regex  re(string("^") + string(prefix) + "[[:space:]]*:[[:space:]]*");
   smatch sm;
   if (regex_search(s, sm, re)) {
     value = sm.suffix();
-    ok = true;
+    ok    = true;
   }
   return ok;
 }
