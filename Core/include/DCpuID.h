@@ -36,7 +36,8 @@
 
 namespace smil
 {
-    struct SIMD_Instructions
+#if 0
+    struct x_SIMD_Instructions
     {
         bool MMX;
         bool SSE;
@@ -58,7 +59,7 @@ namespace smil
     enum { WDISABLED, W1, W2, W4=4, W8=6, W16=8, W32=10, W48, W64, W96, W128, WFULL };
 
     // Data cache information.
-    struct Cache_Descriptors
+    struct x_Cache_Descriptors
     {
         int type; // 1 : data, 2 : instructions, 3 : unified
         int size;
@@ -67,7 +68,7 @@ namespace smil
         int lines_per_tag;
         int line_size;
     };
-
+#endif
     class CpuID
     {
 
@@ -76,14 +77,18 @@ namespace smil
         CpuID();
 
         string getVendor() const { return vendor; }
+        string getModel() const {return model; }
+        string getFlags() const {return flags; }
+
         unsigned getCores() const { return cores; }
         unsigned getLogical() const { return logical; }
         bool isHyperThreated() const { return hyperThreaded; }
-        const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
-        const std::vector<Cache_Descriptors> &getCaches() const {
-          return L;
-        }
-        unsigned int getNbrCacheLevel() const { return L.size (); }
+
+        // const SIMD_Instructions &getSimdInstructions() const { return simdInstructions; }
+        // const std::vector<Cache_Descriptors> &getCaches() const {
+        //  return L;
+        //}
+        //unsigned int getNbrCacheLevel() const { return L.size (); }
 
       protected:
         //UINT32 regs[4];
@@ -92,12 +97,16 @@ namespace smil
 
         unsigned cores;
         unsigned logical;
-        string vendor;
         bool hyperThreaded;
-        SIMD_Instructions simdInstructions;
-        std::vector<Cache_Descriptors> L;
 
-        void load(unsigned i);
+        string vendor;
+        string model;
+        string flags;
+
+        //SIMD_Instructions simdInstructions;
+        //std::vector<Cache_Descriptors> L;
+
+        bool _get_value(string &s, const char *prefix, string &value);
     };
 } // namespace smil
 
