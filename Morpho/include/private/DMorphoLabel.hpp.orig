@@ -641,7 +641,7 @@ namespace smil
   }
 
   /**
-   * lambdaFastLabel() - Lambda-flat zones labelization (faster, use OpenMP)
+   * fastLambdaLabel() - Lambda-flat zones labelization (faster, use OpenMP)
    *
    * @param[in] imIn : input image
    * @param[in] lambdaVal : lambda expression
@@ -653,7 +653,7 @@ namespace smil
    * shall include an example of how to use this...
    */
   template <class T1, class T2>
-  size_t lambdaFastLabel(const Image<T1> &imIn, const T1 &lambdaVal,
+  size_t fastLambdaLabel(const Image<T1> &imIn, const T1 &lambdaVal,
                          Image<T2> &imOut, const StrElt &se = DEFAULT_SE)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);

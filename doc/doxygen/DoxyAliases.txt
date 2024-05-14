@@ -52,6 +52,7 @@ ALIASES += CentOS=@TB{CentOS}
 ALIASES += Fedora=@TB{Fedora}
 ALIASES += Ubuntu=@TB{Ubuntu}
 ALIASES += Debian=@TB{Debian}
+ALIASES += Intel=@TB{Intel}
 
 ALIASES += CMake=@TB{Cmake}
 ALIASES += Swig=@TB{Swig}
@@ -67,6 +68,8 @@ ALIASES += JupyterHub=@TB{JupyterHub}
 ALIASES += Numpy="@TB{Numpy}"
 ALIASES += ScikitImage="@TB{Scikit-Image}"
 ALIASES += Anaconda="@TB{Anaconda}"
+ALIASES += OpenMP="@TB{OpenMP}"
+ALIASES += SIMD="@TB{SIMD}"
 
 ALIASES += I1D="@TB{1D}"
 ALIASES += I2D="@TB{2D}"

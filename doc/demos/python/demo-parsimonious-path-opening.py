@@ -9,7 +9,7 @@ import pdb
 
 def ImageFromArray(im_arr):
     im = smil.Image(*im_arr.shape[::-1])
-    im_np = im.getNumArray()
+    im_np = im.getNumpyArray()
     im_np[:] = im_arr.transpose()[:]
     return im
 
@@ -29,13 +29,13 @@ for yy in np.arange(0, YY, NN):
         img_ii = np.array(img)[yy:min(yy + NN, YY),
                                xx:min(xx + NN, XX)].transpose()
         im_in = smil.Image(*img_ii.shape)
-        im_in_np = im_in.getNumArray()
+        im_in_np = im_in.getNumpyArray()
         im_in_np[:] = img_ii[:]
 
         im_out = smil.Image(im_in)
         smil.parsimoniousPathOpening(im_in, Size, tolerance, step,
                                                  False, im_out)
-        im_out_np = im_out.getNumArray().transpose()
+        im_out_np = im_out.getNumpyArray().transpose()
         img_out_slice = img_out[yy:min(yy + NN, YY), xx:min(xx + NN, XX)]
         img_out_slice[:] = im_out_np[:]
 

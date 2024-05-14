@@ -115,7 +115,7 @@ namespace smil
 {
 #if defined SWIGPYTHON && defined USE_NUMPY
   template <>
-  PyObject *Image<RGB>::getNumArray(bool /*c_contigous*/)
+  PyObject *Image<RGB>::getNumpyArray(bool /*c_contigous*/)
   {
     return NULL;
   }

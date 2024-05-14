@@ -853,10 +853,6 @@ namespace smil
                  Image<T> &imOut, string method = "trilinear")
     {
       ASSERT_ALLOCATED(&imIn, &imOut)
-      if (&imIn == &imOut) {
-        Image<T> tmpIm(imIn, true);
-        return resize(tmpIm, width, height, depth, imIn);
-      }
 
       size_t dz = imIn.getDepth();
       if (method == "auto") {
@@ -899,11 +895,6 @@ namespace smil
                 Image<T> &imOut, string method = "trilinear")
     {
       ASSERT_ALLOCATED(&imIn, &imOut)
-
-      if (&imIn == &imOut) {
-        Image<T> tmpIm(imIn, true);
-        return scale(tmpIm, kx, ky, kz, imIn);
-      }
 
       size_t width  = imIn.getWidth();
       size_t height = imIn.getHeight();
@@ -1181,6 +1172,10 @@ namespace smil
                     Image<T> &imOut, string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
+    if (&imIn == &imOut) {
+      Image<T> imTmp = imIn.clone(true);
+      return resize(imTmp, sx, sy, sz, imOut, method);
+    }
     ImageResizeFunc<T> func(method);
     return func.resize(imIn, sx, sy, sz, imOut, method);
   }
@@ -1203,6 +1198,11 @@ namespace smil
                     string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
+    if (&imIn == &imOut) {
+      Image<T> imTmp = imIn.clone(true);
+      return resize(imTmp, sx, sy, imOut, method);
+    }
+
     size_t depth = imOut.getDepth();
 
     ImageResizeFunc<T> func(method);
@@ -1228,6 +1228,12 @@ namespace smil
                     string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
+
+    if (&imIn == &imOut) {
+      Image<T> imTmp = imIn.clone(true);
+      return resize(imTmp, imOut, method);
+    }
+
     size_t width  = imOut.getWidth();
     size_t height = imOut.getHeight();
     size_t depth  = imOut.getDepth();
@@ -1266,6 +1272,10 @@ namespace smil
                    Image<T> &imOut, string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
+    if (&imIn == &imOut) {
+      Image<T> imTmp = imIn.clone(true);
+      return scale(imTmp, kx, ky, kz, imOut, method);
+    }
     ImageResizeFunc<T> func(method);
     return func.scale(imIn, kx, ky, kz, imOut, method);
   }
@@ -1287,6 +1297,10 @@ namespace smil
                    string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
+    if (&imIn == &imOut) {
+      Image<T> imTmp = imIn.clone(true);
+      return scale(imTmp, kx, ky, 1, imOut, method);
+    }
     ImageResizeFunc<T> func(method);
     return func.scale(imIn, kx, ky, 1., imOut, method);
   }
@@ -1309,12 +1323,24 @@ namespace smil
                    string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
+    if (&imIn == &imOut) {
+      Image<T> imTmp = imIn.clone(true);
+      return scale(imTmp, k, k, k, imOut, method);
+    }
     ImageResizeFunc<T> func(method);
     return func.scale(imIn, k, k, k, imOut, method);
   }
 
 
 #if 0
+  //
+  //   ####   #       #####
+  //  #    #  #       #    #
+  //  #    #  #       #    #
+  //  #    #  #       #    #
+  //  #    #  #       #    #
+  //   ####   ######  #####
+  //
   /**
    * BMI: 08.08.2018
    *

@@ -111,7 +111,7 @@ namespace smil
     }
     static inline size_t cardinal()
     {
-      return max() - min() + 1;
+      return size_t(max() - min()) + 1;
     }
     static inline lineType createLine(size_t lineLen)
     {

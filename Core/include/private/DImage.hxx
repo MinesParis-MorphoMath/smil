@@ -837,7 +837,7 @@ namespace smil
 
 namespace smil
 {
-  template <class T> PyObject *Image<T>::getNumArray(bool c_contigous)
+  template <class T> PyObject *Image<T>::getNumpyArray(bool c_contigous)
   {
     npy_intp d[3];
     int dim = this->getDimension();
@@ -870,16 +870,49 @@ namespace smil
     }
   }
 
-  template <class T> void Image<T>::fromNumArray(PyObject *obj)
+  template <class T> void Image<T>::fromNumpyArray(PyObject *obj)
   {
+
+
+    /*
+     * int PyArray_GetArrayParamsFromObject(PyObject* op,
+     *    PyArray_Descr* requested_dtype, npy_bool writeable,
+     *    PyArray_Descr** out_dtype, int* out_ndim, npy_intp* out_dims,
+     *    PyArrayObject** out_arr, PyObject* context)
+     *
+     * PyObject *PyArray_FromAny(PyObject *op, PyArray_Descr *dtype,
+     *    int min_depth, int max_depth, int requirements, PyObject *context)
+     *
+     * PyObject *PyArray_CheckFromAny(PyObject *op, PyArray_Descr *dtype,
+     *    int min_depth, int max_depth, int requirements, PyObject *context)
+     *
+     * PyObject *PyArray_FromArray(PyArrayObject *op, PyArray_Descr *newtype,
+     *    int requirements)
+     */
+
+#if 0
     PyArrayObject *arr   = NULL;
     PyArray_Descr *descr = NULL;
 
-    if (PyArray_GetArrayParamsFromObject(obj, NULL, 1, &descr, NULL, NULL, &arr,
+     if (PyArray_GetArrayParamsFromObject(obj, NULL, 1, &descr, NULL, NULL, &arr,
                                          NULL) != 0) {
       ERR_MSG("Input must be a NumPy array");
       return;
     }
+#else
+    PyArrayObject *arr   = NULL;
+    PyArray_Descr *descr = NULL;
+
+    int requirements = NPY_ARRAY_C_CONTIGUOUS;
+    requirements = 0;
+
+    arr = (PyArrayObject *) PyArray_CheckFromAny(obj, descr, 0, 0, requirements, NULL);
+    if (arr == NULL){
+      ERR_MSG("Input must be a NumPy array");
+      return;
+    }
+#endif
+
     descr = PyArray_DESCR(arr);
     if (descr && descr->type_num != getNumpyType(*this)) {
       ERR_MSG("Wrong input NumPy array data type");

@@ -69,7 +69,7 @@ namespace smil
      *     de performance, surement
      */
     float  inv_sigma_range = 1.f / sigmaR;
-    float *range_table     = new float[ImDtTypes<T>::max() + 1];
+    float *range_table     = new float[ImDtTypes<T>::cardinal()];
 
     float ii = 0.f;
     for (size_t i = 0; i <= ImDtTypes<T>::max(); ++i) {

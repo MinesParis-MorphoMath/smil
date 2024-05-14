@@ -211,7 +211,7 @@ namespace smil
         }
       }
     }
-    stretchHist(imCentersOut, imOut);
+    stretchHistogram(imCentersOut, imOut);
     return RES_OK;
   }
 

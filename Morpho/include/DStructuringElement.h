@@ -58,6 +58,8 @@ namespace smil
     SE_Cube,
     SE_Cross3D,
     SE_Line3D,
+    SE_CenteredLine,
+    SE_CenteredLine3D,
     SE_Rhombicuboctahedron
   };
 
@@ -320,7 +322,9 @@ namespace smil
           {SE_Cross3D, "Cross3DSE"},
           {SE_Rhombicuboctahedron, "RhombicuboctahedronSE"},
           {SE_Line, "LineSE"},
-          {SE_Line3D, "Line3DSE"}
+          {SE_Line3D, "Line3DSE"},
+          {SE_CenteredLine, "CenteredLineSE"},
+          {SE_CenteredLine3D, "CenteredLine3DSE"}
       };
 
       std::map<seType, string>::iterator it;
@@ -626,7 +630,7 @@ namespace smil
 
       # this way
       se = sp.LineSE(10, 0)
-      se = sp.merge(se.transpose())
+      se = se.merge(se.transpose())
 
       # or this way
       se = sp.LineSE(10, 0)
@@ -637,25 +641,27 @@ namespace smil
   {
   public :
     /**
-     * LineSE() - constructor
+     * LineSE() - flat structuring element of arbitrary length and direction
+     * starting at the origin.
      *
      * @param[in] length : length of the segment
-     * @param[in] theta : angle (in degrees) with the horizongal line
+     * @param[in] theta : angle (in radians) with the horizongal line
      *
      * @note
      * - the angle @TB{theta} is defined in the usual counterclockwise
      *  direction (trigonometric convention).
      */
-    LineSE(int length, int theta) : StrElt(1)
+    LineSE(int length, double theta) : StrElt(1)
     {
       className = "LineSE : StrElt";
       seT       = SE_Line;
       odd       = false;
       this->setName();
 
-      int xf = round(length * cos(-theta * PI / 180.));
-      int yf = round(length * sin(-theta * PI / 180.));
-
+      // int xf = round(length * cos(-theta * PI / 180.));
+      // int yf = round(length * sin(-theta * PI / 180.));
+      int xf = round(length * cos(-theta));
+      int yf = round(length * sin(-theta));
       vector<Point<int>> v;
 
       v = bresenhamPoints(0, 0, xf, yf);
@@ -665,7 +671,8 @@ namespace smil
   };
 
  /**
-   *  Line3DSE - a line structuring element with arbitrary length and angle.
+   *  Line3DSE - 3D structuring element of arbitrary length and direction
+   * starting at the origin.
    *
    * The line is defined with the help of a Besenham algorithm
    *
@@ -677,11 +684,11 @@ namespace smil
       import smilPython as sp
 
       # this way
-      se = sp.Line3DSE(10, 0, 45)
+      se = sp.Line3DSE(10, 0, PI / 4)
       se = sp.merge(se.transpose())
 
       # or this way
-      se = sp.Line3DSE(10, 0, 45)
+      se = sp.Line3DSE(10, 0, PI / 4)
       se = sp.merge(se, se.transpose())
    @EndPython
    */
@@ -692,27 +699,27 @@ namespace smil
      * Line3DSE() - constructor
      *
      * @param[in] length : length of the segment
-     * @param[in] theta : angle (in degrees) from the Structuring Segment projected
+     * @param[in] theta : angle (in radians) from the Structuring Segment projected
      *    in a slice with the horizontal line
-     * @param[in] zeta : elevation angle - angle (in degrees) between the
+     * @param[in] zeta : elevation angle - angle (in radians) between the
      *    Structuring element and each slice
      *
      * @note
      * - the angle @TB{theta} is defined in the usual counterclockwise
      *  direction (trigonometric convention).
      */
-    Line3DSE(int length, int theta, int zeta) : StrElt(1)
+    Line3DSE(int length, double theta, double zeta) : StrElt(1)
     {
       className = "Line3DSE : StrElt";
       seT       = SE_Line3D;
       odd       = false;
       this->setName();
 
-      double lenXY = abs(length * cos(zeta * PI / 180.));
+      double lenXY = abs(length * cos(zeta));
 
-      int zf = round(length * sin(zeta * PI / 180.));
-      int xf = round(lenXY * cos(-theta * PI / 180.));
-      int yf = round(lenXY * sin(-theta * PI / 180.));
+      int zf = round(length * sin(zeta));
+      int xf = round(lenXY * cos(-theta));
+      int yf = round(lenXY * sin(-theta));
 
       Bresenham line(0, 0, 0, xf, yf, zf);
       vector<IntPoint> v = line.getPoints();
@@ -720,6 +727,123 @@ namespace smil
         addPoint(v[i].x, v[i].y, v[i].z);
     }
   };
+
+  /**
+   * CenteredLineSE()
+   *
+   * @param[in] length : length of the segment
+   * @param[in] theta : angle (in radians) with the horizongal line
+   *
+   * @note
+   * - the angle @TB{theta} is defined in the usual counterclockwise
+   *  direction (trigonometric convention).
+   */
+#if 1
+  class CenteredLineSE : public StrElt
+  {
+  public :
+    /**
+     * CenteredLineSE() -
+     *
+     * @param[in] length : length of the segment
+     * @param[in] theta : angle (in radians) with the horizongal line
+     *
+     * @note
+     * - the angle @TB{theta} is defined in the usual counterclockwise
+     *  direction (trigonometric convention).
+     */
+    CenteredLineSE(int length, double theta = 0) : StrElt(1)
+    {
+      className = "CenteredLineSE : StrElt";
+      seT       = SE_CenteredLine;
+      odd       = false;
+      this->setName();
+
+      int xf = round(length * cos(-theta) / 2);
+      int yf = round(length * sin(-theta) / 2);
+      //int xf = round(length * cos(-theta));
+      // int yf = round(length * sin(-theta));
+
+      vector<Point<int>> v;
+      v = bresenhamPoints(0, 0, xf, yf);
+
+      for (size_t i = 0; i < v.size(); i++) {
+        addPoint(v[i].x, v[i].y, v[i].z);
+        if (v[i].x == 0 && v[i].y == 0 && v[i].z == 0)
+          continue;
+        addPoint(-v[i].x, -v[i].y, -v[i].z);
+      }
+    }
+  };
+#else
+  inline StrElt CenteredLineSE(int length, double theta = 0)
+  {
+    StrElt se = LineSE(length / 2 + 1, theta);
+    return se.merge(se.transpose());
+  }
+#endif
+
+  /**
+   * CenteredLine3DSE() - constructor
+   *
+   * @param[in] length : length of the segment
+   * @param[in] theta : angle (in radians) from the Structuring Segment projected
+   *    in a slice with the horizontal line
+   * @param[in] zeta : elevation angle - angle (in radians) between the
+   *    Structuring element and each slice
+   *
+   * @note
+   * - the angle @TB{theta} is defined in the usual counterclockwise
+   *  direction (trigonometric convention).
+   */
+#if 1
+  class CenteredLine3DSE : public StrElt
+  {
+  public :
+    /**
+     * CenteredLine3DSE() -
+     *
+     * @param[in] length : length of the segment
+     * @param[in] theta : angle (in radians) from the Structuring Segment
+     *   projected in a slice with the horizontal line
+     * @param[in] zeta : elevation angle - angle (in radians) between the
+     *    Structuring element and each slice     *
+     * @note
+     * - the angle @TB{theta} is defined in the usual counterclockwise
+     *  direction (trigonometric convention).
+     */
+    CenteredLine3DSE(int length, double theta = 0, double zeta = 0) : StrElt(1)
+    {
+      className = "CenteredLine3DSE : StrElt";
+      seT       = SE_CenteredLine3D;
+      odd       = false;
+      this->setName();
+
+      length /= 2;
+      double lenXY = abs(length * cos(zeta));
+
+      int zf = round(length * sin(zeta));
+      int xf = round(lenXY * cos(-theta));
+      int yf = round(lenXY * sin(-theta));
+
+      Bresenham line(0, 0, 0, xf, yf, zf);
+      vector<IntPoint> v = line.getPoints();
+
+      for (size_t i = 0; i < v.size(); i++) {
+        addPoint(v[i].x, v[i].y, v[i].z);
+        if (v[i].x == 0 && v[i].y == 0 && v[i].z == 0)
+          continue;
+        addPoint(-v[i].x, -v[i].y, -v[i].z);
+      }
+    }
+  };
+#else
+  inline StrElt CenteredLine3DSE(int length, double theta = 0, double zeta = 0)
+  {
+    StrElt se = Line3DSE(length / 2 + 1, theta, zeta);
+    return se.merge(se.transpose());
+  }
+#endif
 
   // Shortcuts
   /** @cond */
@@ -763,12 +887,12 @@ namespace smil
    *  line
    * @returns a line structuring element
    */
-  inline StrElt buildLineSE(int length, int theta)
+  inline StrElt buildLineSE(int length, double theta)
   {
     StrElt se;
 
-    int xf = round(length * cos(theta * PI / 180.));
-    int yf = round(length * sin(theta * PI / 180.));
+    int xf = round(length * cos(theta));
+    int yf = round(length * sin(theta));
 
     vector<Point<int>> v;
 

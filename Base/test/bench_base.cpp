@@ -157,7 +157,7 @@ void bench_Size()
 
 int main(void)
 {
-  bench_INT_vs_AV();
+  // bench_INT_vs_AV();
   bench_NCores();
   bench_Size();
 

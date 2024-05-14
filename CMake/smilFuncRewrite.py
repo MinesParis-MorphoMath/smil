@@ -38,6 +38,13 @@ def dist_euclidean(*args):
     """
     return distanceEuclidean(*args)
 
+def fromNumArray(*args):
+    """
+    Function renamed. Use:
+      r = fromNumpyArray(...)
+    """
+    return fromNumpyArray(*args)
+
 def geoDil(*args):
     """
     Function renamed. Use:
@@ -51,6 +58,13 @@ def geoEro(*args):
       r = geoErode(...)
     """
     return geoErode(*args)
+
+def getNumArray(*args):
+    """
+    Function renamed. Use:
+      r = getNumpyArray(...)
+    """
+    return getNumpyArray(*args)
 
 def hFlip(*args):
     """
@@ -177,6 +191,13 @@ def measVolumes(*args):
       r = blobsVolume(...)
     """
     return blobsVolume(*args)
+
+def stretchHist(*args):
+    """
+    Function renamed. Use:
+      r = stretchHistogram(...)
+    """
+    return stretchHistogram(*args)
 
 def vFlip(*args):
     """

@@ -3,15 +3,6 @@ OBS : 'X' equals OK
 
 * Documentation
 
-OK - * Check some wrong doxygen tags (everywhere in source code)
-  Work in progress...
-  402-Instructions.doxygen:184: warning: Reached end of file 
-  	while still inside a (nested) comment. Nesting level 1 
-	(probable line reference: 1)
-
-* maxtree (use histogram to allocate right structures size)
-  or C++ map
-
 * some functions work only on 2D images (e.g., areaOpen, ...)
   voir avec Bea
 
@@ -24,18 +15,6 @@ OK -  it seems that there are a memory leak problem at watershed function
 
 * Dans CMAKE/CPack
   * ajouter possibles dependances par packet
-
-OK -  Correct tests :
-  1 - test_global (Failed)
-      Segmentation fault : sometimes
-  2 - test_globalMB (Failed)
-      Segmentation fault : sometimes
-  8 - Base_test_draw (Failed)
-      font path problem
-
-OK -  StochasticWS
-  Needs   -std=c++11
-    => OK
 
 * Doc Addons
 
@@ -51,23 +30,7 @@ OK -  StochasticWS
   Lacking doxygen documentation in the end of file
   Ask Petr what to do with this stuff...
 
-OK -  Put Advanced and Addons in a namespace other than smilPython
-  => OK
-
-OK -  Dans les tests :
-  OK - Morpho/include/private/DMorphoDistance.hpp
-    OK - distEuclidean => OK
-    OK - distV0 => OK
-  Renamed !!! => OK
-
-OK -  In Advanced : GLSZM
-  * Shall change int to long to support images bigger than 2 Gpixels 
-    (common in 3D images)
-
 * Add Smoothing in Deriche filter
-
-OK -  Verify on FastBilateralFilter 
-  * ImFastBilateralFilterRGB - ported and removed
 
 * Tests on everything
 
@@ -80,8 +43,6 @@ OK -  Verify on FastBilateralFilter
   Python and Python Numpy
   Qwt (local)
   PHP5 (local) => PHP5 ... or even 7 ?
-
-* Conda packages
 
 * Select Python 2 or 3
   In fact... disable Python 2 - no more supported
@@ -120,6 +81,18 @@ OK -  Verify on FastBilateralFilter
 * Check why test_transform fails on nestor and taurus.
   Probably conversion double -> T
 
-OK * Accelerate Soille line morphology functions
-
 * Accelerate histogramMap
+
+**********************************************
+
+* Rewrite labelWithProperty
+    labelWithProperty(imRegions, imIn, imLabel, property[, se])
+  Review
+    labelWithArea
+    labelWithVolume
+    labelWithMax
+    labelWithMean
+
+* Remove histogramMap ???
+
+

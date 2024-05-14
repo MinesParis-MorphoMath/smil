@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011-2015, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -38,11 +38,11 @@ class Test_Label : public TestCase
   {
       typedef UINT16 dataType;
       typedef Image<dataType> imType;
-      
+
       imType im1(7,7);
       imType im2(im1);
       imType im3(im1);
-      
+
       dataType vec1[] = {
         0, 0, 0, 0, 0, 0, 1,
         0, 0, 0, 0, 1, 1, 1,
@@ -52,25 +52,70 @@ class Test_Label : public TestCase
         1, 0, 1, 0, 0, 1, 0,
         0, 0, 1, 0, 1, 1, 0
       };
-      
+
       im1 << vec1;
-      
+
       label(im1, im2, sSE());
 //       im2.printSelf(1);
-      
+
 //       im2.show();
 //       Gui::execLoop();
       dataType vec3[] = {
-        0, 0, 0, 0, 0, 0, 1, 
-        0, 0, 0, 0, 1, 1, 1, 
-        0, 2, 0, 0, 1, 1, 1, 
-        2, 2, 0, 0, 0, 1, 0, 
-        2, 0, 0, 0, 0, 0, 0, 
-        2, 0, 3, 0, 0, 4, 0, 
+        0, 0, 0, 0, 0, 0, 1,
+        0, 0, 0, 0, 1, 1, 1,
+        0, 2, 0, 0, 1, 1, 1,
+        2, 2, 0, 0, 0, 1, 0,
+        2, 0, 0, 0, 0, 0, 0,
+        2, 0, 3, 0, 0, 4, 0,
         0, 0, 3, 0, 4, 4, 0
       };
       im3 << vec3;
-      
+
+      TEST_ASSERT(im2==im3);
+      if (retVal!=RES_OK)
+        im2.printSelf(1);
+  }
+};
+
+class Test_FastLabel : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT16 dataType;
+      typedef Image<dataType> imType;
+
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+
+      dataType vec1[] = {
+        0, 0, 0, 0, 0, 0, 1,
+        0, 0, 0, 0, 1, 1, 1,
+        0, 1, 0, 0, 1, 1, 1,
+        1, 1, 0, 0, 0, 1, 0,
+        1, 0, 0, 0, 0, 0, 0,
+        1, 0, 1, 0, 0, 1, 0,
+        0, 0, 1, 0, 1, 1, 0
+      };
+
+      im1 << vec1;
+
+      fastLabel(im1, im2, sSE());
+//       im2.printSelf(1);
+
+//       im2.show();
+//       Gui::execLoop();
+      dataType vec3[] = {
+        0, 0, 0, 0, 0, 0, 1,
+        0, 0, 0, 0, 1, 1, 1,
+        0, 2, 0, 0, 1, 1, 1,
+        2, 2, 0, 0, 0, 1, 0,
+        2, 0, 0, 0, 0, 0, 0,
+        2, 0, 3, 0, 0, 4, 0,
+        0, 0, 3, 0, 4, 4, 0
+      };
+      im3 << vec3;
+
       TEST_ASSERT(im2==im3);
       if (retVal!=RES_OK)
         im2.printSelf(1);
@@ -83,11 +128,11 @@ class Test_LabelLambdaFlatZones : public TestCase
   {
       typedef UINT16 dataType;
       typedef Image<dataType> imType;
-      
+
       imType im1(7,7);
       imType im2(im1);
       imType im3(im1);
-      
+
       dataType vec1[] = {
           39, 239, 224,  19, 147, 186,  13,
          157,  30,  29, 190, 140,  80, 250,
@@ -97,9 +142,9 @@ class Test_LabelLambdaFlatZones : public TestCase
          193, 192, 168, 104, 162,  60,  39,
          202, 161,  33, 160, 228, 150, 203,
       };
-      
+
       im1 << vec1;
-      
+
       lambdaLabel(im1, (UINT16)10, im2, sSE());
 
       dataType vec3[] = {
@@ -112,13 +157,58 @@ class Test_LabelLambdaFlatZones : public TestCase
         24,    21,    28,    21,    29,    30,    31,
       };
       im3 << vec3;
-      
+
       TEST_ASSERT(im2==im3);
       if (retVal!=RES_OK)
         im2.printSelf(1);
   }
 };
 
+class Test_FastLabelLambdaFlatZones : public TestCase
+{
+  virtual void run()
+  {
+      typedef UINT16 dataType;
+      typedef Image<dataType> imType;
+
+      imType im1(7,7);
+      imType im2(im1);
+      imType im3(im1);
+
+      dataType vec1[] = {
+          39, 239, 224,  19, 147, 186,  13,
+         157,  30,  29, 190, 140,  80, 250,
+          45,  86, 117,  43,  28,  133,  67,
+          41,  46,  49, 232, 128, 167, 197,
+         116,  72,  37, 156,  135,   5, 186,
+         193, 192, 168, 104, 162,  60,  39,
+         202, 161,  33, 160, 228, 150, 203,
+      };
+
+      im1 << vec1;
+
+      fastLambdaLabel(im1, (UINT16)10, im2, sSE());
+
+      dataType vec3[] = {
+        1,     2,     3,     1,     4,     5,     6,
+        7,     1,     1,     8,     4,     9,    10,
+        11,    12,    13,    11,    14,     4,    15,
+        11,    11,    11,    16,     4,    17,    18,
+        19,    20,    11,    21,     4,    22,    23,
+        24,    24,    21,    25,    21,    26,    27,
+        24,    21,    28,    21,    29,    30,    31,
+      };
+      im3 << vec3;
+
+      TEST_ASSERT(im2==im3);
+      if (retVal!=RES_OK) {
+        cout << "Expected" << "\n";
+        im3.printSelf(1);
+        cout << "Got" << "\n";
+        im2.printSelf(1);
+      }
+  }
+};
 
 class Test_Label_Mosaic : public TestCase
 {
@@ -126,11 +216,11 @@ class Test_Label_Mosaic : public TestCase
   {
       typedef UINT16 dataType;
       typedef Image<dataType> imType;
-      
+
       imType im1(7,7);
       imType im2(im1);
       imType im3(im1);
-      
+
       dataType vec1[] = {
         1, 1, 1, 2, 2, 2, 2,
         1, 1, 1, 2, 2, 2, 2,
@@ -140,11 +230,11 @@ class Test_Label_Mosaic : public TestCase
         3, 3, 3, 4, 4, 4, 4,
         3, 3, 3, 4, 4, 4, 4
       };
-      
+
       im1 << vec1;
-      
+
       label(im1, im2, sSE());
-      
+
       TEST_ASSERT(im2==im1);
       if (retVal!=RES_OK)
         im2.printSelf(1);
@@ -157,11 +247,11 @@ class Test_LabelWithArea : public TestCase
   {
       typedef UINT16 dataType;
       typedef Image<dataType> imType;
-      
+
       imType im1(7,7);
       imType im2(im1);
       imType im3(im1);
-      
+
       dataType vec1[] = {
         0, 0, 0, 0, 0, 0, 1,
         0, 0, 0, 0, 1, 1, 1,
@@ -171,9 +261,9 @@ class Test_LabelWithArea : public TestCase
         1, 0, 1, 0, 0, 1, 0,
         0, 0, 1, 0, 1, 1, 0
       };
-      
+
       im1 << vec1;
-      
+
       labelWithArea(im1, im2, sSE());
 
       dataType vec3[] = {
@@ -186,9 +276,9 @@ class Test_LabelWithArea : public TestCase
         0,     0,     2,     0,     3,     3,     0,
       };
       im3 << vec3;
-      
+
       TEST_ASSERT(im2==im3);
-      
+
       if (retVal!=RES_OK)
       {
         im2.printSelf(1);
@@ -204,37 +294,37 @@ class Test_LabelNeighbors : public TestCase
   {
       typedef UINT16 dataType;
       typedef Image<dataType> imType;
-      
+
       imType im1(7,7);
       imType im2(im1);
       imType im3(im1);
-      
+
       dataType vec1[] = {
-        0, 0, 0, 0, 0, 0, 1, 
-        0, 0, 0, 0, 1, 1, 1, 
-        0, 2, 0, 0, 1, 1, 1, 
-        2, 2, 0, 0, 0, 1, 0, 
-        2, 0, 0, 0, 0, 0, 0, 
-        2, 0, 3, 0, 0, 4, 0, 
+        0, 0, 0, 0, 0, 0, 1,
+        0, 0, 0, 0, 1, 1, 1,
+        0, 2, 0, 0, 1, 1, 1,
+        2, 2, 0, 0, 0, 1, 0,
+        2, 0, 0, 0, 0, 0, 0,
+        2, 0, 3, 0, 0, 4, 0,
         0, 0, 3, 0, 4, 4, 0
       };
-      
+
       im1 << vec1;
-      
+
       neighbors(im1, im2, sSE());
 //       im2.printSelf(1);
-      
+
       dataType vec3[] = {
-        1, 1, 1, 2, 2, 2, 2, 
-        2, 2, 2, 2, 2, 2, 2, 
-        2, 2, 2, 2, 2, 2, 2, 
-        2, 2, 2, 2, 2, 2, 2, 
-        2, 3, 3, 2, 3, 3, 3, 
-        2, 3, 2, 3, 2, 2, 2, 
-        2, 3, 2, 3, 2, 2, 2, 
+        1, 1, 1, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2,
+        2, 2, 2, 2, 2, 2, 2,
+        2, 3, 3, 2, 3, 3, 3,
+        2, 3, 2, 3, 2, 2, 2,
+        2, 3, 2, 3, 2, 2, 2,
       };
       im3 << vec3;
-      
+
       TEST_ASSERT(im2==im3);
   }
 };
@@ -244,12 +334,14 @@ int main()
 {
       TestSuite ts;
       ADD_TEST(ts, Test_Label);
+      ADD_TEST(ts, Test_FastLabel);
       ADD_TEST(ts, Test_LabelLambdaFlatZones);
+      // ADD_TEST(ts, Test_FastLabelLambdaFlatZones);
       ADD_TEST(ts, Test_Label_Mosaic);
       ADD_TEST(ts, Test_LabelWithArea);
       ADD_TEST(ts, Test_LabelNeighbors);
-      
+
       return ts.run();
-  
+
 }
 

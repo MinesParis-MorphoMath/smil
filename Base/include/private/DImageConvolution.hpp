@@ -105,10 +105,10 @@ namespace smil
       this->sigma  = radius / 2.;
       setupKernel();
 
-      return this->Convolve(imIn, imOut);
+      return this->_do_Convolve(imIn, imOut);
     }
-
-    RES_T Convolve(Image<T> &imIn, Image<T> &imOut)
+  private:
+    RES_T _do_Convolve(Image<T> &imIn, Image<T> &imOut)
     {
       typename ImDtTypes<T>::lineType in  = imIn.getPixels();
       typename ImDtTypes<T>::lineType out = imOut.getPixels();

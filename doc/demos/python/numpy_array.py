@@ -9,7 +9,7 @@ im1 = sp.Image(sx, sy)
 im1.show()
 
 # Create a numpy array containing the real image pixels
-imArr = im1.getNumArray()
+imArr = im1.getNumpyArray()
 
 # Display the dimensions of the created array
 print("Array dims:", imArr.shape)

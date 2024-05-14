@@ -7,4 +7,4 @@ a = a.reshape(10, 10)
 
 # creates a Smil image and set it's content to "a"
 img = sp.Image()
-img.fromNumArray(a)
+img.fromNumpyArray(a)

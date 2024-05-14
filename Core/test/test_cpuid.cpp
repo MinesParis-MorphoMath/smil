@@ -11,6 +11,7 @@ int main()
   cout << "Logical: " << id.getLogical() << endl;
   cout << "HyperThreading: " << id.isHyperThreated() << endl;
 
+#if 0
   SIMD_Instructions si = id.getSimdInstructions();
 
   cout << "MMX: " << si.MMX << endl;
@@ -34,6 +35,6 @@ int main()
     cout << "lines_per_tag: " << L[i].lines_per_tag << endl;
     cout << "line_size: " << L[i].line_size << endl;
   }
-
+#endif
   return 0;
 }

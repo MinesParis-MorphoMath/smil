@@ -69,10 +69,10 @@ IF(DOXYGEN_FOUND AND DOXYGEN_CONFIG_FILE)
           ${CMAKE_CURRENT_BINARY_DIR}/images/${_FCH_NAME_WE}.eps
           COMMAND ${INKSCAPE_EXECUTABLE}
             ${_FCH}
-            --export-png=${CMAKE_CURRENT_BINARY_DIR}/images/${_FCH_NAME_WE}.png
+            --export-type=png --export-filename=${CMAKE_CURRENT_BINARY_DIR}/images/${_FCH_NAME_WE}.png
           COMMAND ${INKSCAPE_EXECUTABLE}
             ${_FCH}
-            --export-eps=${CMAKE_CURRENT_BINARY_DIR}/images/${_FCH_NAME_WE}.eps
+            --export-type=eps --export-filename=${CMAKE_CURRENT_BINARY_DIR}/images/${_FCH_NAME_WE}.eps
           COMMENT "Converting ${_FCH_NAME_WE}.svg"
           DEPENDS ${_FCH}
         )

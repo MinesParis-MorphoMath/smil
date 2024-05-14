@@ -73,7 +73,7 @@ namespace smil
   protected:
     const labelT STAT_QUEUED;
 
-    typename ImDtTypes<T>::lineType inPixels;
+    typename ImDtTypes<T>::lineType      inPixels;
     typename ImDtTypes<labelT>::lineType lblPixels;
 
     size_t imSize[3], pixPerSlice;
@@ -88,19 +88,19 @@ namespace smil
     }
 
     vector<IntPoint> sePts;
-    size_t sePtsNbr;
-    bool oddSE;
-    vector<int> dOffsets;
+    size_t           sePtsNbr;
+    bool             oddSE;
+    vector<int>      dOffsets;
 
     T currentLevel;
 
   public:
     const Image<T> *imgIn;
-    Image<labelT> *imgLbl;
+    Image<labelT>  *imgLbl;
 
     virtual RES_T flood(const Image<T> &imIn, const Image<labelT> &imMarkers,
                         Image<labelT> &imBasinsOut,
-                        const StrElt &se = DEFAULT_SE)
+                        const StrElt  &se = DEFAULT_SE)
     {
       ASSERT_ALLOCATED(&imIn, &imMarkers, &imBasinsOut);
       ASSERT_SAME_SIZE(&imIn, &imMarkers, &imBasinsOut);
@@ -189,7 +189,7 @@ namespace smil
 
       bool oddLine = oddSE && ((y0 % 2) != 0);
 
-      int x, y, z;
+      int    x, y, z;
       size_t nbOffset;
 
       for (size_t i = 0; i < sePtsNbr; i++) {
@@ -216,8 +216,8 @@ namespace smil
     inline virtual void processNeighbor(const size_t &curOffset,
                                         const size_t &nbOffset)
     {
-      labelT nbLbl = this->lblPixels[nbOffset];
-      labelT curLbl = lblPixels[curOffset]; 
+      labelT nbLbl  = this->lblPixels[nbOffset];
+      labelT curLbl = lblPixels[curOffset];
       //==STAT_QUEUED ? 0 : lblPixels[curOffset];
 
       if (nbLbl == 0) // Add it to the tmp offsets queue
@@ -241,7 +241,7 @@ namespace smil
 #endif // SWIG
   {
   protected:
-    vector<size_t> tmpOffsets;
+    vector<size_t>                  tmpOffsets;
     typename ImDtTypes<T>::lineType wsPixels;
     const T STAT_LABELED, STAT_QUEUED, STAT_CANDIDATE, STAT_WS_LINE;
 
@@ -330,8 +330,7 @@ namespace smil
       T nbStat = this->wsPixels[nbOffset];
 
       // Add it to the tmp offsets queue
-      if (nbStat == STAT_CANDIDATE) 
-      {
+      if (nbStat == STAT_CANDIDATE) {
         tmpOffsets.push_back(nbOffset);
       } else if (nbStat == STAT_LABELED) {
         if (this->lblPixels[curOffset] == 0) {
