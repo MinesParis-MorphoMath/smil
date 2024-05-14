@@ -9,18 +9,19 @@
  *      rectangleOpen() and rectangleClose(). Generic functions
  *      based on line morphology.
  *  - @TB{Change}
- *    - @TB{UINT32} was removed from default image types. Some features, mainly
- *      @TT{histogram} and tree based features don't work as expected or are
- *      too CPU and memory consumming. Either way, it doesn't seem that it's a
- *      real requirement for most applications.
+ *    - In functions LineSE() and Line3DSE(), angle units changed from
+ *      @TB{degres} do @TB{radians}.
+ *    - function @TB{stretchHist()} renamed to stretchHistogram().)
+ *    - function @TB{fastLambdaLabel()} removed as its results are wrong. Use
+ *      function @TB{lambdaLabel()} which gives correct results.
  *    - Option @TB{--imagetypes} to define data types for gray images. Default
  *      values is @TB{UINT8;UINT16;UINT32}
  *    - A plugin @TB{Samg} was added with functions from old \TT{Chabardes} plugin.
  *      These functions are needed by @TB{Samg} functions. The aren't
  *      documented.
- *    - function @TB{stretchHist()} renamed to stretchHistogram().)
- *    - function @TB{fastLambdaLabel()} removed as its results are wrong. Use
- *      function @TB{lambdaLabel()} which gives correct results.
+ *    - Experimental code to do @SIMD parallel processing was removed as it
+ *      is specific to @Intel processors. Better use @OpenMP feature for
+ *      this.
  *  - @TB{Bug}
  *    - Deprecated function in @Numpy API, since release 1.19. New code needs
  *      release 1.15 or newer.

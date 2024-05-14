@@ -89,7 +89,7 @@ class Test_LineSE_030 : public TestCase
     StrElt se;
 
     UINT8 value = 0;
-    se          = LineSE(length, 30);
+    se          = LineSE(length, PI / 6);
     fill(im, value);
     im.setPixel(1, h - 2, 1);
     dilate(im, im, se);
@@ -133,7 +133,7 @@ class Test_LineSE_045 : public TestCase
     StrElt se;
 
     UINT8 value = 0;
-    se          = LineSE(length, 45);
+    se          = LineSE(length, PI / 4);
     fill(im, value);
     im.setPixel(1, h - 2, 1);
     dilate(im, im, se);
@@ -177,7 +177,7 @@ class Test_LineSE_090 : public TestCase
     StrElt se;
 
     UINT8 value = 0;
-    se          = LineSE(length, 90);
+    se          = LineSE(length, PI / 2);
     fill(im, value);
     im.setPixel(1, h - 2, 1);
     dilate(im, im, se);
@@ -221,7 +221,7 @@ class Test_LineSE_180 : public TestCase
     StrElt se;
 
     UINT8 value = 0;
-    se          = LineSE(length, 180);
+    se          = LineSE(length, PI);
     fill(im, value);
     im.setPixel(w - 2, h - 2, 1);
     dilate(im, im, se);
@@ -265,7 +265,7 @@ class Test_LineSE_270 : public TestCase
     StrElt se;
 
     UINT8 value = 0;
-    se          = LineSE(length, 270);
+    se          = LineSE(length, 3. * PI / 2);
     fill(im, value);
     im.setPixel(1, 1, 1);
     dilate(im, im, se);

@@ -77,7 +77,7 @@ namespace smil
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     StrElt se1 = Line3DSE(hLen, theta, zeta);
-    StrElt se2 = Line3DSE(hLen, theta + 180, zeta + 180);
+    StrElt se2 = Line3DSE(hLen, theta + PI, zeta + PI);
     StrElt se  = merge(se1, se2);
 
     return dilate(imIn, imOut, se);
@@ -103,7 +103,7 @@ namespace smil
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     StrElt se1 = Line3DSE(hLen, theta, zeta);
-    StrElt se2 = Line3DSE(hLen, theta + 180, zeta + 180);
+    StrElt se2 = Line3DSE(hLen, theta + PI, zeta + PI);
     StrElt se  = merge(se1, se2);
 
     return dilate(imIn, imOut, se);
@@ -129,7 +129,7 @@ namespace smil
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     StrElt se1 = Line3DSE(hLen, theta, zeta);
-    StrElt se2 = Line3DSE(hLen, theta + 180, zeta + 180);
+    StrElt se2 = Line3DSE(hLen, theta + PI, zeta + PI);
     StrElt se  = merge(se1, se2);
 
     RES_T r = erode(imIn, imOut, se);
@@ -158,7 +158,7 @@ namespace smil
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     StrElt se1 = Line3DSE(hLen, theta, zeta);
-    StrElt se2 = Line3DSE(hLen, theta + 180, zeta + 180);
+    StrElt se2 = Line3DSE(hLen, theta + PI, zeta + PI);
     StrElt se  = merge(se1, se2);
 
     RES_T r = dilate(imIn, imOut, se);
@@ -198,7 +198,7 @@ namespace smil
 
     RES_T r = dilate(imIn, imOut, se);
     if (r == RES_OK) {
-      se = LineSE(hLen, 90);
+      se = LineSE(hLen, PI / 2);
       se = merge(se, se.transpose());
 
       return dilate(imOut, imOut, se);
@@ -229,7 +229,7 @@ namespace smil
 
     RES_T r = erode(imIn, imOut, se);
     if (r == RES_OK) {
-      se = LineSE(hLen, 90);
+      se = LineSE(hLen, PI / 2);
       se = merge(se, se.transpose());
 
       return erode(imOut, imOut, se);
@@ -325,11 +325,11 @@ namespace smil
     copy(imIn, imOut);
 
     int    _NB_STEPS = getAngleSteps(radius);
-    double _D_ANGLE  = (180 / _NB_STEPS);
+    double _D_ANGLE  = (PI / _NB_STEPS);
 
     RES_T  r  = RES_OK;
-    double k0 = (radius * 180 / _NB_STEPS * 0.5);
-    for (double angle = 0; angle < 180 && r == RES_OK; angle += _D_ANGLE) {
+    double k0 = (radius * PI / _NB_STEPS * 0.5);
+    for (double angle = 0; angle < PI && r == RES_OK; angle += _D_ANGLE) {
       double rd      = angle;
       int    kradius = k0 * max(fabs(cos(rd)), fabs(sin(rd))) + 1;
 
@@ -360,11 +360,11 @@ namespace smil
     copy(imIn, imOut);
 
     int    _NB_STEPS = getAngleSteps(radius);
-    double _D_ANGLE  = (180 / _NB_STEPS);
+    double _D_ANGLE  = (PI / _NB_STEPS);
 
     RES_T  r  = RES_OK;
-    double k0 = (radius * 180 / _NB_STEPS * 0.5);
-    for (double angle = 0; angle < 180 && r == RES_OK; angle += _D_ANGLE) {
+    double k0 = (radius * PI / _NB_STEPS * 0.5);
+    for (double angle = 0; angle < PI && r == RES_OK; angle += _D_ANGLE) {
       double rd      = angle;
       int    kradius = k0 * max(fabs(cos(rd)), fabs(sin(rd))) + 1;
 
@@ -453,7 +453,7 @@ namespace smil
                         int side2, double theta = 0)
   {
     StrElt se1 = CenteredLineSE(side1, theta);
-    StrElt se2 = CenteredLineSE(side2, theta + 90);
+    StrElt se2 = CenteredLineSE(side2, theta + PI / 2);
 
     RES_T r = dilate(imIn, imOut, se1);
     if (r == RES_OK)
@@ -477,7 +477,7 @@ namespace smil
                        int side2, double theta = 0)
   {
     StrElt se1 = CenteredLineSE(side1, theta);
-    StrElt se2 = CenteredLineSE(side2, theta + 90);
+    StrElt se2 = CenteredLineSE(side2, theta + PI / 2);
 
     RES_T r = erode(imIn, imOut, se1);
     if (r == RES_OK)

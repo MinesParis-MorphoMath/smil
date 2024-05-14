@@ -35,6 +35,10 @@
 #include "DLineHistogram.hpp"
 #include "DImageArith.hpp"
 
+#ifdef USE_OPEN_MP
+#include <omp.h>
+#endif
+
 namespace smil
 {
   /**
@@ -201,6 +205,8 @@ namespace smil
     return h;
   }
 
+  /** @cond */
+
   /** histogramMap() -
    *
    * @param[in] imIn : input image
@@ -247,7 +253,7 @@ namespace smil
 
     return hist;
   }
-
+  /** @endcond */
 
   /**
    * threshold() - Image threshold

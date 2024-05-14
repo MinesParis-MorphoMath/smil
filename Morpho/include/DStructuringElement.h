@@ -645,7 +645,7 @@ namespace smil
      * starting at the origin.
      *
      * @param[in] length : length of the segment
-     * @param[in] theta : angle (in degres) with the horizongal line
+     * @param[in] theta : angle (in radians) with the horizongal line
      *
      * @note
      * - the angle @TB{theta} is defined in the usual counterclockwise
@@ -658,10 +658,10 @@ namespace smil
       odd       = false;
       this->setName();
 
-      int xf = round(length * cos(-theta * PI / 180.));
-      int yf = round(length * sin(-theta * PI / 180.));
-      //int xf = round(length * cos(-theta));
-      // int yf = round(length * sin(-theta));
+      // int xf = round(length * cos(-theta * PI / 180.));
+      // int yf = round(length * sin(-theta * PI / 180.));
+      int xf = round(length * cos(-theta));
+      int yf = round(length * sin(-theta));
       vector<Point<int>> v;
 
       v = bresenhamPoints(0, 0, xf, yf);
@@ -684,11 +684,11 @@ namespace smil
       import smilPython as sp
 
       # this way
-      se = sp.Line3DSE(10, 0, 45)
+      se = sp.Line3DSE(10, 0, PI / 4)
       se = sp.merge(se.transpose())
 
       # or this way
-      se = sp.Line3DSE(10, 0, 45)
+      se = sp.Line3DSE(10, 0, PI / 4)
       se = sp.merge(se, se.transpose())
    @EndPython
    */
@@ -701,7 +701,7 @@ namespace smil
      * @param[in] length : length of the segment
      * @param[in] theta : angle (in radians) from the Structuring Segment projected
      *    in a slice with the horizontal line
-     * @param[in] zeta : elevation angle - angle (in degres) between the
+     * @param[in] zeta : elevation angle - angle (in radians) between the
      *    Structuring element and each slice
      *
      * @note
@@ -715,11 +715,11 @@ namespace smil
       odd       = false;
       this->setName();
 
-      double lenXY = abs(length * cos(zeta * PI / 180.));
+      double lenXY = abs(length * cos(zeta));
 
-      int zf = round(length * sin(zeta * PI / 180.));
-      int xf = round(lenXY * cos(-theta * PI / 180.));
-      int yf = round(lenXY * sin(-theta * PI / 180.));
+      int zf = round(length * sin(zeta));
+      int xf = round(lenXY * cos(-theta));
+      int yf = round(lenXY * sin(-theta));
 
       Bresenham line(0, 0, 0, xf, yf, zf);
       vector<IntPoint> v = line.getPoints();
@@ -732,7 +732,7 @@ namespace smil
    * CenteredLineSE()
    *
    * @param[in] length : length of the segment
-   * @param[in] theta : angle (in degres) with the horizongal line
+   * @param[in] theta : angle (in radians) with the horizongal line
    *
    * @note
    * - the angle @TB{theta} is defined in the usual counterclockwise
@@ -746,7 +746,7 @@ namespace smil
      * CenteredLineSE() -
      *
      * @param[in] length : length of the segment
-     * @param[in] theta : angle (in degres) with the horizongal line
+     * @param[in] theta : angle (in radians) with the horizongal line
      *
      * @note
      * - the angle @TB{theta} is defined in the usual counterclockwise
@@ -759,8 +759,8 @@ namespace smil
       odd       = false;
       this->setName();
 
-      int xf = round(length * cos(-theta * PI / 180.) / 2);
-      int yf = round(length * sin(-theta * PI / 180.) / 2);
+      int xf = round(length * cos(-theta) / 2);
+      int yf = round(length * sin(-theta) / 2);
       //int xf = round(length * cos(-theta));
       // int yf = round(length * sin(-theta));
 
@@ -789,7 +789,7 @@ namespace smil
    * @param[in] length : length of the segment
    * @param[in] theta : angle (in radians) from the Structuring Segment projected
    *    in a slice with the horizontal line
-   * @param[in] zeta : elevation angle - angle (in degres) between the
+   * @param[in] zeta : elevation angle - angle (in radians) between the
    *    Structuring element and each slice
    *
    * @note
@@ -806,7 +806,7 @@ namespace smil
      * @param[in] length : length of the segment
      * @param[in] theta : angle (in radians) from the Structuring Segment
      *   projected in a slice with the horizontal line
-     * @param[in] zeta : elevation angle - angle (in degres) between the
+     * @param[in] zeta : elevation angle - angle (in radians) between the
      *    Structuring element and each slice     *
      * @note
      * - the angle @TB{theta} is defined in the usual counterclockwise
@@ -820,11 +820,11 @@ namespace smil
       this->setName();
 
       length /= 2;
-      double lenXY = abs(length * cos(zeta * PI / 180.));
+      double lenXY = abs(length * cos(zeta));
 
-      int zf = round(length * sin(zeta * PI / 180.));
-      int xf = round(lenXY * cos(-theta * PI / 180.));
-      int yf = round(lenXY * sin(-theta * PI / 180.));
+      int zf = round(length * sin(zeta));
+      int xf = round(lenXY * cos(-theta));
+      int yf = round(lenXY * sin(-theta));
 
       Bresenham line(0, 0, 0, xf, yf, zf);
       vector<IntPoint> v = line.getPoints();
@@ -887,12 +887,12 @@ namespace smil
    *  line
    * @returns a line structuring element
    */
-  inline StrElt buildLineSE(int length, int theta)
+  inline StrElt buildLineSE(int length, double theta)
   {
     StrElt se;
 
-    int xf = round(length * cos(theta * PI / 180.));
-    int yf = round(length * sin(theta * PI / 180.));
+    int xf = round(length * cos(theta));
+    int yf = round(length * sin(theta));
 
     vector<Point<int>> v;
 

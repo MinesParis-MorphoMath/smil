@@ -671,7 +671,7 @@ namespace smil
     ImageBox box(Size);
 
 #ifdef OPEN_MP
-#pragma omp parallel for num_threads(4)
+#pragma omp parallel for 
 #endif
     for (off_t i = 0; i < szGt; i++) {
       for (off_t j = 0; j < szIn; j++) {
