@@ -6,7 +6,7 @@
 
 namespace smil
 {
-  /**
+  /*
    * @ingroup Addons
    * @addtogroup AddonArrow
    *
@@ -125,7 +125,7 @@ namespace smil
     return RES_OK;
   }
 
-  /**
+  /*
    * hammingWeight
    * @brief hammingWeight SIMD version of WP2 - Nifty Revised.
    */
@@ -208,7 +208,7 @@ namespace smil
   }
   /** @endcond */
 
-  /**
+  /*
    * arrowComplement
    *
    */
@@ -322,7 +322,7 @@ namespace smil
                                const StrElt &se);
   };
 
-  /**
+  /*
    * binaryMorphArrowImageFunction
    *
    */
@@ -423,7 +423,7 @@ namespace smil
 
   /** @endcond */
 
-  /**
+  /*
    * arrowLowDual
    *
    */
@@ -451,7 +451,7 @@ namespace smil
     return iFunc._exec_single(imIn, imIn2, imOut, se);
   }
 
-  /**
+  /*
    * arrowGrtDual
    *
    */
@@ -465,7 +465,7 @@ namespace smil
     return iFunc._exec_single(imIn, imIn2, imOut, se);
   }
 
-  /**
+  /*
    * arrowGrtOrEquDual
    *
    */
@@ -479,7 +479,7 @@ namespace smil
     return iFunc._exec_single(imIn, imIn2, imOut, se);
   }
 
-  /**
+  /*
    * arrowEquDual
    *
    */
@@ -493,7 +493,7 @@ namespace smil
     return iFunc._exec_single(imIn, imIn2, imOut, se);
   }
 
-  /**
+  /*
    * arrowDual
    *
    */
@@ -518,7 +518,7 @@ namespace smil
       return RES_ERR;
   }
 
-  /** @} */
+  /* @} */
 } // namespace smil
 
 #endif // _ARROW_HPP_

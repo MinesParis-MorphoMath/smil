@@ -35,7 +35,7 @@
 
 namespace smil
 {
-  /**
+  /*
    * @ingroup Addons
    * @addtogroup AddonThresh
    * @{
@@ -68,7 +68,7 @@ namespace smil
     return RES_OK;
   }
 
-  /**
+  /*
    * Range Threshold
    *
    */
@@ -346,7 +346,7 @@ namespace smil
     return RES_OK;
   }
 
-  /**
+  /*
    *  Find Triple Points
    *
    */
@@ -392,7 +392,7 @@ namespace smil
     return RES_OK;
   }
 
-  /**
+  /*
    * Extend Triple Points
    *
    */
@@ -448,7 +448,7 @@ namespace smil
     return RES_OK;
   }
 
-  /**
+  /*
    * pruneSKIZ
    *
    */
@@ -543,7 +543,7 @@ namespace smil
     return RES_OK;
   }
 
-  /** @} */
+  /* @} */
 } // namespace smil
 
 #endif // _DAPPLYTHRESHOLD_HPP_
