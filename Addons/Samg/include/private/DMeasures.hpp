@@ -36,13 +36,13 @@
 
 namespace smil
 {
-  /**
+  /*
    * @ingroup Addons
    * @addtogroup AddonMeasures
    * @{
    */
 
-  /**
+  /*
    * Measure Haralick Features
    *
    */
@@ -126,7 +126,7 @@ namespace smil
     return vec;
   }
 
-  /**
+  /*
    * CrossCorrelation between two phases
    *
    * The direction is given by \b dx, \b dy and \b dz.
@@ -194,7 +194,7 @@ namespace smil
 
     return vec;
   }
-  /** @}*/
+  /* @}*/
 } // namespace smil
 
 #endif // _D_CHABARDES_MEASURES_HPP_

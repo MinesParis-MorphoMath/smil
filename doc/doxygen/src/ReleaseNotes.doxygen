@@ -1,7 +1,7 @@
 /**
  * @page ReleaseNotes Release Notes
  *
- * @section s280_104 Smil 1.0.4
+ * @section s280_104 Smil 1.1 (14 May 2024)
  *  - @TB{New}
  *    - Structuring elements @TB{CenteredLineSE()} and @TB{CenteredLine3DSE()}
  *      created in complement to @TB{LineSE()} and @TB{Line3DSE()}
