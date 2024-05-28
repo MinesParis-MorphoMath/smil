@@ -42,6 +42,8 @@ ADDONS+="Samg "
 OTHER=
 Arch=auto
 
+USE_QT=OFF
+
 CXX_FLAGS="-std=c++11 -Wno-unused-parameter"
 #GCC8=NO
 
@@ -97,6 +99,9 @@ Help()
 
     --imagetypes=type;type
       Define gray image types to enable. Default is UINT8;UINT16;UINT32
+
+    --withoutqt
+      Disable Qt graphical interface (default is with Qt)
 
     --doc
     --devdoc
@@ -180,6 +185,10 @@ do
     --imagetypes=*)
       IMGTYPES=$(echo $arg | awk -F= '{print $2}' | sed -e "s/,/ /g")
       IMGTYPES=$(echo $arg | awk -F= '{print $2}')
+      ;;
+
+    --withoutqt)
+      USE_QT=OFF
       ;;
 
     --doc)
@@ -268,7 +277,7 @@ OPT="$OPT
   -DUSE_OPEN_MP:BOOL=ON
   -DUSE_OPTIMIZATION:BOOL=ON
   -DUSE_PNG:BOOL=ON
-  -DUSE_QT:BOOL=ON
+  -DUSE_QT:BOOL=$USE_QT
   -DUSE_TIFF:BOOL=ON
   -DBUILD_DOC:BOOL=$DOC
   -DVERBOSE_OPTIMIZATION:BOOL=OFF
