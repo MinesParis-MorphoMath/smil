@@ -160,7 +160,7 @@ FindSourceDir()
 for arg in $*
 do
   case $arg in
-    --help)
+    --help|-h)
       Help
       exit 0
       ;;

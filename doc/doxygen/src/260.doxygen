@@ -32,8 +32,8 @@
  * -# @TB{Configure and compile} : you have two options
  *   - @TB{Easy Build :} use the @TT{config-smil} configuration script :
  @verbatim
- contrib/scripts/config-smil -h
- contrib/scripts/config-smil --auto --test
+ ../smil/contrib/scripts/config-smil -h
+ ../smil/contrib/scripts/config-smil --auto --test
  make -j 8
  sudo make install
  @endverbatim
@@ -177,8 +177,8 @@
  @endverbatim
  * -# @TB{configure and compile}
  @verbatim
- contrib/scripts/config-smil -h
- contrib/scripts/config-smil --auto --prefix=/whatever/Smil-38
+ ../smil/contrib/scripts/config-smil -h
+ ../smil/contrib/scripts/config-smil --auto --prefix=/whatever/Smil-38
  make -j 8
  sudo make install
  @endverbatim

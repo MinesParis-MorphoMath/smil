@@ -101,6 +101,15 @@ def AboutSmil():
   print("Copyright (c) 2017-2024, CMM - Centre de Morphologie Mathematique")
   print("All rights reserved.")
 
+def Version(verbose=False):
+  version = "${SMIL_VERSION}"
+  if not verbose:
+    print(f"{version:}")
+  else:
+    print("SMIL (Simple Morphological Image Library) ${SMIL_VERSION}")
+    #stype = ' '.join(__builtin__.dataTypes)
+    stype = "${DATA_TYPES_STR}"
+    print(f"Image Data types : {stype:}")
 
 # ======================================================================
 #
@@ -257,25 +266,15 @@ def autoCastBaseImage(baseImg):
 def Image(*args, **kargs):
   """
     Image()
-
     Image(shape=(256,256,1), type=${DEFAULT_IMAGE_TYPE})
-
     Image(szx[, szy, [szz]], type=${DEFAULT_IMAGE_TYPE})
-
     Image(im, clone=False, type=None)
-
     Image(ndarray)
-
     Image(path, raw=False)
-
     Image(path, raw=True, shape=(256,256,1), type=${DEFAULT_IMAGE_TYPE})
-
     Image(url)
-
     Image([path, path, ...], raw=False)
-
     Image([path, path, ...], raw=True, shape=(256,256,1), type=${DEFAULT_IMAGE_TYPE})
-
 
     * Image():
       Create an empty ${DEFAULT_IMAGE_TYPE} image.

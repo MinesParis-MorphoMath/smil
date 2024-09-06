@@ -41,11 +41,11 @@
  * - Install @Smil packages
    @verbatim
      # Retrieve or update list of packages available
-     apt-get update
+     sudo apt-get update
      # look for smil packages
-     apt-cache search smil | grep ^smil
+     sudo apt-cache search smil | grep ^smil
      # install all smil packages
-     apt-get install smil-*
+     sudo apt-get install smil-*
    @endverbatim
  *
  * @note
@@ -53,7 +53,7 @@
  * you can check those you want and just install them. To see what's available,
  * launch :
    @verbatim
-     apt-cache search smil | grep ^smil
+     sudo apt-cache search smil | grep ^smil
    @endverbatim
  *
  *
@@ -74,11 +74,11 @@
  * - Install @Smil packages
    @verbatim
      # Retrieve or update list of packages available
-     apt-get update
+     sudo apt-get update
      # look for smil packages
-     apt-cache search smil | grep ^smil
+     sudo apt-cache search smil | grep ^smil
      # install all smil packages
-     apt-get install smil-*
+     sudo apt-get install smil-*
    @endverbatim
  *
  * @note
@@ -86,7 +86,7 @@
  * you can check those you want and just install them. To see what's available,
  * launch :
    @verbatim
-     apt-cache search smil | grep ^smil
+     sudo apt-cache search smil | grep ^smil
    @endverbatim
  *
  * @subsection s230_02_03 CentOS
@@ -110,13 +110,13 @@
  * - Install @Smil packages
    @verbatim
      # first of all, it's always a good idea to clean the cache
-     dnf clean all
+     sudo dnf clean all
      # to see which packages are available :
-     dnf search smil
+     sudo dnf search smil
      # to install Python interface to Smil :
-     dnf install smil-python
+     sudo dnf install smil-python
      # to install all smil packages :
-     dnf -y install smil-*
+     sudo dnf -y install smil-*
    @endverbatim
  *
  *
@@ -142,13 +142,13 @@
  * - Install @Smil packages
    @verbatim
      # first of all, it's always a good idea to clean the cache
-     dnf clean all
+     sudo dnf clean all
      # to see which packages are available :
-     dnf search smil
+     sudo dnf search smil
      # to install Python interface to Smil :
-     dnf install smil-python
+     sudo dnf install smil-python
      # to install all smil packages :
-     dnf -y install smil-*
+     sudo dnf -y install smil-*
    @endverbatim
  *
  * @section s230_03 Anaconda
