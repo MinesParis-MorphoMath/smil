@@ -1,0 +1,10 @@
+
+
+* Original author
+
+  Matthieu Faessel - matthieu.faessel@mines-paristech.fr
+
+* Author and Maintainer 
+
+  José-Marcio Martins da Cruz - jose-marcio.martins@minesparis.psl.eu
+
