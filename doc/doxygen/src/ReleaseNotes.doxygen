@@ -1,6 +1,14 @@
 /**
  * @page ReleaseNotes Release Notes
  *
+ * @section s280_104 Smil 1.1.1 (17 September 2024)
+ *  - @TB{New}
+ *    - Function Version() on Python interface - returning Smil Version
+ *  - @TB{Change}
+ *    - Remove dependencies on X86 and Linux, to be able to run on other
+ *      architectures and operating systems.
+ *  - @TB{Bug}
+ *    - Bug on function fromNumpyArray() which works only on 3D images.
  * @section s280_104 Smil 1.1 (14 May 2024)
  *  - @TB{New}
  *    - Structuring elements @TB{CenteredLineSE()} and @TB{CenteredLine3DSE()}
