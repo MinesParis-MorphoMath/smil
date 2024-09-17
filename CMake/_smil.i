@@ -516,7 +516,10 @@ def Image(*args, **kargs):
   # Image(arr) - numpy array
   # if 'numpy.ndarray' in str(type(args[0])):
   if type(args[0]).__name__ == 'ndarray':
-    return NumpyInt(*args)
+    img = Image()
+    img.fromNumpyArray(args[0])
+    return img
+#    return NumpyInt(*args)
 
   # Let C++ try to solve it
   img = imageTypes[0](*args)

@@ -181,7 +181,7 @@ namespace smil
     *
     *
     */
-    void setName(string name)
+    void setName(const char *name)
     {
       this->name = name;
     }

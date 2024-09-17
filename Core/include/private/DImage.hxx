@@ -51,7 +51,8 @@
 
 namespace smil
 {
-  template <class T> Image<T>::Image() : BaseImage("Image")
+  template <class T>
+  Image<T>::Image() : BaseImage("Image")
   {
     init();
   }
@@ -113,7 +114,8 @@ namespace smil
       drain(im, true);
   }
 
-  template <class T> void Image<T>::drain(Image<T> *im, bool deleteSrc)
+  template <class T>
+  void Image<T>::drain(Image<T> *im, bool deleteSrc)
   {
     if (allocated)
       deallocate();
@@ -142,7 +144,8 @@ namespace smil
       delete im;
   }
 
-  template <class T> void Image<T>::clone(const Image<T> &rhs)
+  template <class T>
+  void Image<T>::clone(const Image<T> &rhs)
   {
     bool isAlloc = rhs.isAllocated();
     this->setSize(rhs, isAlloc);
@@ -162,14 +165,16 @@ namespace smil
     modified();
   }
 
-  template <class T> Image<T>::Image(const char *fileName) : BaseImage("Image")
+  template <class T>
+  Image<T>::Image(const char *fileName) : BaseImage("Image")
   {
     triggerEvents = true;
     init();
     read(fileName, *this);
   }
 
-  template <class T> Image<T>::~Image()
+  template <class T>
+  Image<T>::~Image()
   {
     if (viewer)
       delete viewer;
@@ -178,7 +183,8 @@ namespace smil
     this->deallocate();
   }
 
-  template <class T> void Image<T>::init()
+  template <class T>
+  void Image<T>::init()
   {
     this->slices = NULL;
     this->lines  = NULL;
@@ -191,17 +197,20 @@ namespace smil
     parentClass::init();
   }
 
-  template <class T> RES_T Image<T>::load(const char *fileName)
+  template <class T>
+  RES_T Image<T>::load(const char *fileName)
   {
     return read(fileName, *this);
   }
 
-  template <class T> RES_T Image<T>::save(const char *fileName)
+  template <class T>
+  RES_T Image<T>::save(const char *fileName)
   {
     return write(*this, fileName);
   }
 
-  template <class T> void Image<T>::modified()
+  template <class T>
+  void Image<T>::modified()
   {
     if (!this->updatesEnabled)
       return;
@@ -210,7 +219,8 @@ namespace smil
     onModified.trigger(&event);
   }
 
-  template <class T> void Image<T>::setName(const char *_name)
+  template <class T>
+  void Image<T>::setName(const char *_name)
   {
     parentClass::setName(_name);
 
@@ -218,7 +228,8 @@ namespace smil
       viewer->setName(_name);
   }
 
-  template <class T> void Image<T>::createViewer()
+  template <class T>
+  void Image<T>::createViewer()
   {
     if (viewer)
       return;
@@ -226,24 +237,28 @@ namespace smil
     viewer = Gui::getInstance()->createDefaultViewer<T>(*this);
   }
 
-  template <class T> ImageViewer<T> *Image<T>::getViewer()
+  template <class T>
+  ImageViewer<T> *Image<T>::getViewer()
   {
     createViewer();
     return viewer;
   }
 
-  template <class T> bool Image<T>::isVisible()
+  template <class T>
+  bool Image<T>::isVisible()
   {
     return (viewer && viewer->isVisible());
   }
 
-  template <class T> void Image<T>::hide()
+  template <class T>
+  void Image<T>::hide()
   {
     if (viewer)
       viewer->hide();
   }
 
-  template <class T> void Image<T>::show(const char *_name, bool labelImage)
+  template <class T>
+  void Image<T>::show(const char *_name, bool labelImage)
   {
     if (isVisible())
       return;
@@ -269,12 +284,14 @@ namespace smil
       viewer->showLabel();
   }
 
-  template <class T> void Image<T>::showLabel(const char *_name)
+  template <class T>
+  void Image<T>::showLabel(const char *_name)
   {
     show(_name, true);
   }
 
-  template <class T> void Image<T>::showNormal(const char *_name)
+  template <class T>
+  void Image<T>::showNormal(const char *_name)
   {
     if (_name)
       setName(_name);
@@ -312,7 +329,8 @@ namespace smil
     return RES_OK;
   }
 
-  template <class T> RES_T Image<T>::allocate()
+  template <class T>
+  RES_T Image<T>::allocate()
   {
     if (this->allocated)
       return RES_ERR_BAD_ALLOCATION;
@@ -331,7 +349,8 @@ namespace smil
     return RES_OK;
   }
 
-  template <class T> RES_T Image<T>::restruct(void)
+  template <class T>
+  RES_T Image<T>::restruct(void)
   {
     if (this->slices)
       delete[] this->slices;
@@ -341,8 +360,8 @@ namespace smil
     this->lines  = new lineType[lineCount];
     this->slices = new sliceType[sliceCount];
 
-    sliceType cur_line = this->lines;
-    volType cur_slice  = this->slices;
+    sliceType cur_line  = this->lines;
+    volType   cur_slice = this->slices;
 
     size_t pixelsPerSlice = this->width * this->height;
 
@@ -356,7 +375,8 @@ namespace smil
     return RES_OK;
   }
 
-  template <class T> RES_T Image<T>::deallocate()
+  template <class T>
+  RES_T Image<T>::deallocate()
   {
     if (!this->allocated)
       return RES_OK;
@@ -379,39 +399,45 @@ namespace smil
   }
 
 #ifndef SWIGPYTHON
-  template <class T> void Image<T>::toArray(T outArray[])
+  template <class T>
+  void Image<T>::toArray(T outArray[])
   {
     for (size_t i = 0; i < pixelCount; i++)
       outArray[i] = pixels[i];
   }
 
-  template <class T> void Image<T>::fromArray(const T inArray[])
+  template <class T>
+  void Image<T>::fromArray(const T inArray[])
   {
     for (size_t i = 0; i < pixelCount; i++)
       pixels[i] = inArray[i];
     modified();
   }
 
-  template <class T> void Image<T>::toCharArray(signed char outArray[])
+  template <class T>
+  void Image<T>::toCharArray(signed char outArray[])
   {
     for (size_t i = 0; i < pixelCount; i++)
       outArray[i] = pixels[i];
   }
 
-  template <class T> void Image<T>::fromCharArray(const signed char inArray[])
+  template <class T>
+  void Image<T>::fromCharArray(const signed char inArray[])
   {
     for (size_t i = 0; i < pixelCount; i++)
       pixels[i] = inArray[i];
     modified();
   }
 
-  template <class T> void Image<T>::toIntArray(int outArray[])
+  template <class T>
+  void Image<T>::toIntArray(int outArray[])
   {
     for (size_t i = 0; i < pixelCount; i++)
       outArray[i] = pixels[i];
   }
 
-  template <class T> void Image<T>::fromIntArray(const int inArray[])
+  template <class T>
+  void Image<T>::fromIntArray(const int inArray[])
   {
     for (size_t i = 0; i < pixelCount; i++)
       pixels[i] = inArray[i];
@@ -419,7 +445,8 @@ namespace smil
   }
 #endif // SWIGPYTHON
 
-  template <class T> vector<int> Image<T>::toIntVector()
+  template <class T>
+  vector<int> Image<T>::toIntVector()
   {
     vector<int> vec;
     for (size_t i = 0; i < pixelCount; i++)
@@ -427,7 +454,8 @@ namespace smil
     return vec;
   }
 
-  template <class T> void Image<T>::fromIntVector(vector<int> inVector)
+  template <class T>
+  void Image<T>::fromIntVector(vector<int> inVector)
   {
     ASSERT((inVector.size() == pixelCount),
            "Vector length doesn't match image size.", );
@@ -436,7 +464,8 @@ namespace smil
     modified();
   }
 
-  template <class T> string Image<T>::toString()
+  template <class T>
+  string Image<T>::toString()
   {
     string buf;
     for (size_t i = 0; i < pixelCount; i++)
@@ -444,7 +473,8 @@ namespace smil
     return buf;
   }
 
-  template <class T> void Image<T>::fromString(string pixVals)
+  template <class T>
+  void Image<T>::fromString(string pixVals)
   {
     ASSERT((pixVals.size() == pixelCount),
            "String length doesn't match image size.", );
@@ -464,22 +494,24 @@ namespace smil
       os << indent << "Image name: " << name << endl;
 
     if (depth > 1)
-      os << indent  << "3D image" << endl;
+      os << indent << "3D image" << endl;
     else
-      os << indent  << "2D image" << endl;
+      os << indent << "2D image" << endl;
 
     T *dum = NULL;
-    os << indent  << "Data type: " << getDataTypeAsString<T>(dum) << endl;
+    os << indent << "Data type: " << getDataTypeAsString<T>(dum) << endl;
 
     if (depth > 1)
-      os << indent  << "Size: " << width << "x" << height << "x" << depth << endl;
+      os << indent << "Size: " << width << "x" << height << "x" << depth
+         << endl;
     else
-      os << indent  << "Size: " << width << "x" << height << endl;
+      os << indent << "Size: " << width << "x" << height << endl;
 
     if (allocated)
-      os << indent  << "Allocated (" << displayBytes(allocatedSize) << ")" << endl;
+      os << indent << "Allocated (" << displayBytes(allocatedSize) << ")"
+         << endl;
     else
-      os << indent  << "Not allocated" << endl;
+      os << indent << "Not allocated" << endl;
 
     if (displayPixVals) {
       std::stringstream tStr;
@@ -488,7 +520,7 @@ namespace smil
       if (hexaGrid)
         tSsize = size_t(tSsize * 1.5);
 
-      os << indent  << "Pixel values:" << endl;
+      os << indent << "Pixel values:" << endl;
       size_t i, j, k;
 
       for (k = 0; k < depth; k++) {
@@ -508,7 +540,8 @@ namespace smil
     os << endl;
   }
 
-  template <class T> SharedImage<T> Image<T>::getSlice(size_t sliceNum) const
+  template <class T>
+  SharedImage<T> Image<T>::getSlice(size_t sliceNum) const
   {
     if (sliceNum >= this->depth) {
       ERR_MSG("sliceNum > image depth");
@@ -520,281 +553,324 @@ namespace smil
 
   // OPERATORS
 
-  template <class T> void operator<<(ostream &os, const Image<T> &im)
+  template <class T>
+  void operator<<(ostream &os, const Image<T> &im)
   {
     im.printSelf(os);
   }
 
-  template <class T> Image<T> &Image<T>::operator<<(const char *s)
+  template <class T>
+  Image<T> &Image<T>::operator<<(const char *s)
   {
     read(s, *this);
     return *this;
   }
 
-  template <class T> Image<T> &Image<T>::operator>>(const char *s)
+  template <class T>
+  Image<T> &Image<T>::operator>>(const char *s)
   {
     write(*this, s);
     return *this;
   }
 
-  template <class T> Image<T> &Image<T>::operator<<(const Image<T> &rhs)
+  template <class T>
+  Image<T> &Image<T>::operator<<(const Image<T> &rhs)
   {
     copy(rhs, *this);
     return *this;
   }
 
-  template <class T> Image<T> &Image<T>::operator<<(const T &value)
+  template <class T>
+  Image<T> &Image<T>::operator<<(const T &value)
   {
     fill(*this, value);
     return *this;
   }
 
-  template <class T> ResImage<T> Image<T>::operator~() const
+  template <class T>
+  ResImage<T> Image<T>::operator~() const
   {
     ResImage<T> im(*this);
     inv(*this, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator-() const
+  template <class T>
+  ResImage<T> Image<T>::operator-() const
   {
     ResImage<T> im(*this);
     inv(*this, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator+(const Image<T> &rhs)
+  template <class T>
+  ResImage<T> Image<T>::operator+(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
     add(*this, rhs, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator+(const T &value)
+  template <class T>
+  ResImage<T> Image<T>::operator+(const T &value)
   {
     ResImage<T> im(*this);
     add(*this, value, im);
     return im;
   }
 
-  template <class T> Image<T> &Image<T>::operator+=(const Image<T> &rhs)
+  template <class T>
+  Image<T> &Image<T>::operator+=(const Image<T> &rhs)
   {
     add(*this, rhs, *this);
     return *this;
   }
 
-  template <class T> Image<T> &Image<T>::operator+=(const T &value)
+  template <class T>
+  Image<T> &Image<T>::operator+=(const T &value)
   {
     add(*this, value, *this);
     return *this;
   }
 
-  template <class T> ResImage<T> Image<T>::operator-(const Image<T> &rhs)
+  template <class T>
+  ResImage<T> Image<T>::operator-(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
     sub(*this, rhs, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator-(const T &value)
+  template <class T>
+  ResImage<T> Image<T>::operator-(const T &value)
   {
     ResImage<T> im(*this);
     sub(*this, value, im);
     return im;
   }
 
-  template <class T> Image<T> &Image<T>::operator-=(const Image<T> &rhs)
+  template <class T>
+  Image<T> &Image<T>::operator-=(const Image<T> &rhs)
   {
     sub(*this, rhs, *this);
     return *this;
   }
 
-  template <class T> Image<T> &Image<T>::operator-=(const T &value)
+  template <class T>
+  Image<T> &Image<T>::operator-=(const T &value)
   {
     sub(*this, value, *this);
     return *this;
   }
 
-  template <class T> ResImage<T> Image<T>::operator*(const Image<T> &rhs)
+  template <class T>
+  ResImage<T> Image<T>::operator*(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
     mul(*this, rhs, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator*(const T &value)
+  template <class T>
+  ResImage<T> Image<T>::operator*(const T &value)
   {
     ResImage<T> im(*this);
     mul(*this, value, im);
     return im;
   }
 
-  template <class T> Image<T> &Image<T>::operator*=(const Image<T> &rhs)
+  template <class T>
+  Image<T> &Image<T>::operator*=(const Image<T> &rhs)
   {
     mul(*this, rhs, *this);
     return *this;
   }
 
-  template <class T> Image<T> &Image<T>::operator*=(const T &value)
+  template <class T>
+  Image<T> &Image<T>::operator*=(const T &value)
   {
     mul(*this, value, *this);
     return *this;
   }
 
-  template <class T> ResImage<T> Image<T>::operator/(const Image<T> &rhs)
+  template <class T>
+  ResImage<T> Image<T>::operator/(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
     div(*this, rhs, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator/(const T &value)
+  template <class T>
+  ResImage<T> Image<T>::operator/(const T &value)
   {
     ResImage<T> im(*this);
     div(*this, value, im);
     return im;
   }
 
-  template <class T> Image<T> &Image<T>::operator/=(const Image<T> &rhs)
+  template <class T>
+  Image<T> &Image<T>::operator/=(const Image<T> &rhs)
   {
     div(*this, rhs, *this);
     return *this;
   }
 
-  template <class T> Image<T> &Image<T>::operator/=(const T &value)
+  template <class T>
+  Image<T> &Image<T>::operator/=(const T &value)
   {
     div(*this, value, *this);
     return *this;
   }
 
-  template <class T> ResImage<T> Image<T>::operator==(const Image<T> &rhs)
+  template <class T>
+  ResImage<T> Image<T>::operator==(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
     equ(*this, rhs, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator!=(const Image<T> &rhs)
+  template <class T>
+  ResImage<T> Image<T>::operator!=(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
     diff(*this, rhs, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator<(const Image<T> &rhs)
+  template <class T>
+  ResImage<T> Image<T>::operator<(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
     low(*this, rhs, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator<(const T &value)
+  template <class T>
+  ResImage<T> Image<T>::operator<(const T &value)
   {
     ResImage<T> im(*this);
     low(*this, value, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator<=(const Image<T> &rhs)
+  template <class T>
+  ResImage<T> Image<T>::operator<=(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
     lowOrEqu(*this, rhs, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator<=(const T &value)
+  template <class T>
+  ResImage<T> Image<T>::operator<=(const T &value)
   {
     ResImage<T> im(*this);
     lowOrEqu(*this, value, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator>(const Image<T> &rhs)
+  template <class T>
+  ResImage<T> Image<T>::operator>(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
     grt(*this, rhs, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator>(const T &value)
+  template <class T>
+  ResImage<T> Image<T>::operator>(const T &value)
   {
     ResImage<T> im(*this);
     grt(*this, value, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator>=(const Image<T> &rhs)
+  template <class T>
+  ResImage<T> Image<T>::operator>=(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
     grtOrEqu(*this, rhs, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator>=(const T &value)
+  template <class T>
+  ResImage<T> Image<T>::operator>=(const T &value)
   {
     ResImage<T> im(*this);
     grtOrEqu(*this, value, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator|(const Image<T> &rhs)
+  template <class T>
+  ResImage<T> Image<T>::operator|(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
     sup(*this, rhs, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator|(const T &value)
+  template <class T>
+  ResImage<T> Image<T>::operator|(const T &value)
   {
     ResImage<T> im(*this);
     sup(*this, value, im);
     return im;
   }
 
-  template <class T> Image<T> &Image<T>::operator|=(const Image<T> &rhs)
+  template <class T>
+  Image<T> &Image<T>::operator|=(const Image<T> &rhs)
   {
     sup(*this, rhs, *this);
     return *this;
   }
 
-  template <class T> Image<T> &Image<T>::operator|=(const T &value)
+  template <class T>
+  Image<T> &Image<T>::operator|=(const T &value)
   {
     sup(*this, value, *this);
     return *this;
   }
 
-  template <class T> ResImage<T> Image<T>::operator&(const Image<T> &rhs)
+  template <class T>
+  ResImage<T> Image<T>::operator&(const Image<T> &rhs)
   {
     ResImage<T> im(*this);
     inf(*this, rhs, im);
     return im;
   }
 
-  template <class T> ResImage<T> Image<T>::operator&(const T &value)
+  template <class T>
+  ResImage<T> Image<T>::operator&(const T &value)
   {
     ResImage<T> im(*this);
     inf(*this, value, im);
     return im;
   }
 
-  template <class T> Image<T> &Image<T>::operator&=(const Image<T> &rhs)
+  template <class T>
+  Image<T> &Image<T>::operator&=(const Image<T> &rhs)
   {
     inf(*this, rhs, *this);
     return *this;
   }
 
-  template <class T> Image<T> &Image<T>::operator&=(const T &value)
+  template <class T>
+  Image<T> &Image<T>::operator&=(const T &value)
   {
     inf(*this, value, *this);
     return *this;
   }
 
-  template <class T> Image<T>::operator bool()
+  template <class T>
+  Image<T>::operator bool()
   {
     return vol(*this) == ImDtTypes<T>::max() * pixelCount;
   }
 
-  template <class T> Image<T> &Image<T>::operator<<(const lineType &tab)
+  template <class T>
+  Image<T> &Image<T>::operator<<(const lineType &tab)
   {
     for (size_t i = 0; i < pixelCount; i++)
       pixels[i] = tab[i];
@@ -802,7 +878,8 @@ namespace smil
     return *this;
   }
 
-  template <class T> Image<T> &Image<T>::operator<<(vector<T> &vect)
+  template <class T>
+  Image<T> &Image<T>::operator<<(vector<T> &vect)
   {
     typename vector<T>::iterator it     = vect.begin();
     typename vector<T>::iterator it_end = vect.end();
@@ -816,7 +893,8 @@ namespace smil
     return *this;
   }
 
-  template <class T> Image<T> &Image<T>::operator>>(vector<T> &vect)
+  template <class T>
+  Image<T> &Image<T>::operator>>(vector<T> &vect)
   {
     vect.clear();
     for (size_t i = 0; i < pixelCount; i++) {
@@ -825,10 +903,10 @@ namespace smil
     return *this;
   }
 
-  typedef Image<UINT8> Image_UINT8;
+  typedef Image<UINT8>  Image_UINT8;
   typedef Image<UINT16> Image_UINT16;
   typedef Image<UINT32> Image_UINT32;
-  typedef Image<bool> Image_bool;
+  typedef Image<bool>   Image_bool;
 
 } // namespace smil
 
@@ -837,10 +915,11 @@ namespace smil
 
 namespace smil
 {
-  template <class T> PyObject *Image<T>::getNumpyArray(bool c_contigous)
+  template <class T>
+  PyObject *Image<T>::getNumpyArray(bool c_contigous)
   {
     npy_intp d[3];
-    int dim = this->getDimension();
+    int      dim = this->getDimension();
     if (dim == 3) {
       d[0] = this->getDepth();
       d[1] = this->getHeight();
@@ -855,8 +934,8 @@ namespace smil
     if (c_contigous) {
       return array;
     } else {
-      npy_intp t2[] = {1, 0};
-      npy_intp t3[] = {2, 1, 0};
+      npy_intp     t2[] = {1, 0};
+      npy_intp     t3[] = {2, 1, 0};
       PyArray_Dims trans_dims;
       if (dim == 3)
         trans_dims.ptr = t3;
@@ -870,10 +949,9 @@ namespace smil
     }
   }
 
-  template <class T> void Image<T>::fromNumpyArray(PyObject *obj)
+  template <class T>
+  void Image<T>::fromNumpyArray(PyObject *obj)
   {
-
-
     /*
      * int PyArray_GetArrayParamsFromObject(PyObject* op,
      *    PyArray_Descr* requested_dtype, npy_bool writeable,
@@ -890,28 +968,16 @@ namespace smil
      *    int requirements)
      */
 
-#if 0
-    PyArrayObject *arr   = NULL;
-    PyArray_Descr *descr = NULL;
+    PyArrayObject *arr          = NULL;
+    PyArray_Descr *descr        = NULL;
+    int            requirements = NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_ALIGNED;
 
-     if (PyArray_GetArrayParamsFromObject(obj, NULL, 1, &descr, NULL, NULL, &arr,
-                                         NULL) != 0) {
+    arr = (PyArrayObject *) PyArray_FromAny(obj, descr, 0, 0, requirements,
+                                                 NULL);
+    if (arr == NULL) {
       ERR_MSG("Input must be a NumPy array");
       return;
     }
-#else
-    PyArrayObject *arr   = NULL;
-    PyArray_Descr *descr = NULL;
-
-    int requirements = NPY_ARRAY_C_CONTIGUOUS;
-    requirements = 0;
-
-    arr = (PyArrayObject *) PyArray_CheckFromAny(obj, descr, 0, 0, requirements, NULL);
-    if (arr == NULL){
-      ERR_MSG("Input must be a NumPy array");
-      return;
-    }
-#endif
 
     descr = PyArray_DESCR(arr);
     if (descr && descr->type_num != getNumpyType(*this)) {
@@ -923,43 +989,39 @@ namespace smil
       ERR_MSG("Numpy array has more than three axes");
       return;
     }
+
     npy_intp *dims = PyArray_DIMS(arr);
-    for (int i = 0; i < 3; i++) {
-      if (i >= ndim)
-        dims[i] = 1;
+    if (ndim == 1) {
+      setSize(dims[0], 1);
+      npy_intp ind[ndim];
+      for (ind[0] = 0; ind[0] < dims[0]; ind[0]++) {
+        T *v = (T *) PyArray_GetPtr(arr, ind);
+        setPixel(ind[0], 0, *v);
+      }
     }
-
-    setSize(dims[0], dims[1], dims[2]);
-#if 0
-        T *data = (T*)PyArray_DATA(arr);
-        if (data)
-        {
-            for (size_t i=0;i<pixelCount;i++)
-              pixels[i] = data[i];
-        }
-#else
-
-#if 0
-        for (npy_intp i = 0; i < dims[0]; i++) {
-          for (npy_intp j = 0; j < dims[1]; j++) {
-            for (npy_intp k = 0; k < dims[2]; k++) {
-              T *v = (T *) PyArray_GETPTR3(arr, i, j, k);
-              setPixel(i, j, k, *v);
-            }
-          }
-        }
-#else
-    npy_intp ind[3];
-    for (ind[0] = 0; ind[0] < dims[0]; ind[0]++) {
-      for (ind[1] = 0; ind[1] < dims[1]; ind[1]++) {
-        for (ind[2] = 0; ind[2] < dims[2]; ind[2]++) {
+    if (ndim == 2) {
+      setSize(dims[1], dims[0]);
+      npy_intp ind[ndim];
+      for (ind[0] = 0; ind[0] < dims[0]; ind[0]++) {
+        for (ind[1] = 0; ind[1] < dims[1]; ind[1]++) {
           T *v = (T *) PyArray_GetPtr(arr, ind);
-          setPixel(ind[0], ind[1], ind[2], *v);
+          setPixel(ind[1], ind[0], *v);
         }
       }
     }
-#endif
-#endif
+    if (ndim == 3) {
+      setSize(dims[1], dims[0], dims[2]);
+      npy_intp ind[3];
+      for (ind[0] = 0; ind[0] < dims[0]; ind[0]++) {
+        for (ind[1] = 0; ind[1] < dims[1]; ind[1]++) {
+          for (ind[2] = 0; ind[2] < dims[2]; ind[2]++) {
+            T *v = (T *) PyArray_GetPtr(arr, ind);
+            setPixel(ind[1], ind[0], ind[2], *v);
+          }
+        }
+      }
+    }
+
     modified();
   }
 

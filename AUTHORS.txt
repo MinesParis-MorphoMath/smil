@@ -1,10 +1,16 @@
 
 
-* Original author
+* Authors
 
   Matthieu Faessel - matthieu.faessel@mines-paristech.fr
-
-* Author and Maintainer 
-
   José-Marcio Martins da Cruz - jose-marcio.martins@minesparis.psl.eu
+
+* Contributors
+
+  Beatriz Marcotegui
+  Etienne Decencière-Ferrandière
+  Michel Bilodeau
+  Pierre Guillou
+  Serge Koudoro
+  Theodore Chabardes
 
