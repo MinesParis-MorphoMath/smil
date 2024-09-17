@@ -1,34 +1,25 @@
 
 OBS : 'X' equals OK
 
+* Many warnings on plugin Samg - (Theodore Chabardes)
+
+* Compatibility problem with Swig >= 4.0.2
+
+* OpenMP
+  * revoir l'utilisation de "parallel".
+  * voir où un parallelisation avec SIMD est possible.
+
 * Documentation
 
 * some functions work only on 2D images (e.g., areaOpen, ...)
   voir avec Bea
-
-OK -  it seems that there are a memory leak problem at watershed function
-  Saw in huge images : 2000 x 2000 x 2000 (8 Gb)
-  OK - size of iterators variables enough just for image size smaller
-  than 32 bits. 
-
-* python online documentation
 
 * Dans CMAKE/CPack
   * ajouter possibles dependances par packet
 
 * Doc Addons
 
-* Find a better name for Chabardes Addon
-
-* QVtkViewer : file smilQVtkViewer.i  OK !
-  Solve problem when checking getPixel attribute
-  Doesn't work because getPixel is defined as an inline method.
-  * Temporary check disabled - replace getPixel by another attribute
-  * Possible solution : use getPixels
-
-* Advanced DMorphoPathOpening.h
-  Lacking doxygen documentation in the end of file
-  Ask Petr what to do with this stuff...
+* Find a better name for Chabardes Addon ( SAMG
 
 * Add Smoothing in Deriche filter
 
@@ -36,22 +27,20 @@ OK -  it seems that there are a memory leak problem at watershed function
 
 * Tests on python after Swig
 
-* BlobMap template without type name (swig => python)
-
 * Update some CMake package checks :
   FreeType (local) => Freetype (shall disable it ?)
   Python and Python Numpy
   Qwt (local)
-  PHP5 (local) => PHP5 ... or even 7 ?
+  PHP5 (local) => PHP5 ... or even 8 ?
 
 * Select Python 2 or 3
   In fact... disable Python 2 - no more supported
 
 * review Hough Transform - test fails (inside an infinite loop ?)
 
-* From scikit-image 
-  * measures : 
-   * entropy => OK
+* From scikit-image
+  * measures :
+   * entr8py => OK
     OK -  image moments :
       centered moments => OK
       with image values or not => OK
@@ -71,17 +60,9 @@ OK -  it seems that there are a memory leak problem at watershed function
     * Hough (better)
   * skimage-viewer ?
 
-* Other functions to add :
-  * other kinds of gradients (See Soille 2003)
-
 * Doc doxygen dev : @devdoc and @enddevdoc
 
 * Rotation of Structured elements (works only on 2D) - DCompositeSE.cpp
-
-* Check why test_transform fails on nestor and taurus.
-  Probably conversion double -> T
-
-* Accelerate histogramMap
 
 **********************************************
 

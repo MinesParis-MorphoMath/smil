@@ -340,9 +340,10 @@ namespace smil
      *
      * @returns the name of the structuring element (as a string)
      */
-    string getName()
+    const char *getName() const
     {
-      return name;
+      return name.c_str();
+      // return name;
     }
 
     /**

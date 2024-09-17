@@ -1,5 +1,5 @@
 // Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
-// Copyright (c) 2017-2023, Centre de Morphologie Mathematique
+// Copyright (c) 2017-2024, Centre de Morphologie Mathematique
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -41,7 +41,7 @@ SMIL_MODULE(smil_)
   std::cout << "Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES" <<
       std::endl;
   std::cout <<
-      "Copyright (c) 2017-2023, CMM - Centre de Morphologie Mathematique" <<
+      "Copyright (c) 2017-2024, CMM - Centre de Morphologie Mathematique" <<
       std::endl;
   std::cout << "All rights reserved." << std::endl;
       std::cout << std::endl;
@@ -98,9 +98,18 @@ __builtin__.imageTypesStr = ['Image_'+x for x in dataTypes]
 def AboutSmil():
   print("SMIL (Simple Morphological Image Library) ${SMIL_VERSION}")
   print("Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES")
-  print("Copyright (c) 2017-2023, CMM - Centre de Morphologie Mathematique")
+  print("Copyright (c) 2017-2024, CMM - Centre de Morphologie Mathematique")
   print("All rights reserved.")
 
+def Version(verbose=False):
+  version = "${SMIL_VERSION}"
+  if not verbose:
+    print(f"{version:}")
+  else:
+    print("SMIL (Simple Morphological Image Library) ${SMIL_VERSION}")
+    #stype = ' '.join(__builtin__.dataTypes)
+    stype = "${DATA_TYPES_STR}"
+    print(f"Image Data types : {stype:}")
 
 # ======================================================================
 #
@@ -257,25 +266,15 @@ def autoCastBaseImage(baseImg):
 def Image(*args, **kargs):
   """
     Image()
-
     Image(shape=(256,256,1), type=${DEFAULT_IMAGE_TYPE})
-
     Image(szx[, szy, [szz]], type=${DEFAULT_IMAGE_TYPE})
-
     Image(im, clone=False, type=None)
-
     Image(ndarray)
-
     Image(path, raw=False)
-
     Image(path, raw=True, shape=(256,256,1), type=${DEFAULT_IMAGE_TYPE})
-
     Image(url)
-
     Image([path, path, ...], raw=False)
-
     Image([path, path, ...], raw=True, shape=(256,256,1), type=${DEFAULT_IMAGE_TYPE})
-
 
     * Image():
       Create an empty ${DEFAULT_IMAGE_TYPE} image.
@@ -517,7 +516,10 @@ def Image(*args, **kargs):
   # Image(arr) - numpy array
   # if 'numpy.ndarray' in str(type(args[0])):
   if type(args[0]).__name__ == 'ndarray':
-    return NumpyInt(*args)
+    img = Image()
+    img.fromNumpyArray(args[0])
+    return img
+#    return NumpyInt(*args)
 
   # Let C++ try to solve it
   img = imageTypes[0](*args)
