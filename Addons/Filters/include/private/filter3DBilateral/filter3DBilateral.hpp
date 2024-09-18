@@ -64,7 +64,7 @@ namespace smil
      *   table soit plutot la valeur maximale de l'image ?
      *   A voir si ca ne pose pas d'autres problemes
      * * la boucle "for" :
-     *   * la vérification de fin de boucle se fait avec un appel
+     *   * la verification de fin de boucle se fait avec un appel
      *     a fonction plutôt qu'a une valeur constante. Probleme
      *     de performance, surement
      */

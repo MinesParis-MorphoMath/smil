@@ -195,7 +195,7 @@ namespace smil
      * clone() - Clone a structuring element
      *
      * @param[in] rhs : structuring element to be cloned
-     * @returns a structuring element
+     * 
      */
     void clone(const StrElt &rhs);
 

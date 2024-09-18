@@ -18,12 +18,12 @@ namespace smil
   // Param: T(E) Vint 3D
   // Param: W,H,Z(E) taille Vint
   // Param: methodS,methodG(E) estimator 1->Gauss, !1->Tukey pour filtrage
-  // spatial S et niveau de gris G Param: nS(E) taille voisinage (à l'extérieur,
+  // spatial S et niveau de gris G Param: nS(E) taille voisinage (a l'exterieur,
   // Gaussienne nulle) Param: EcTSx,y,z(E) ecart type Gaussienne filtrage
   // spatial suivant axes x, y et z Param: EcTGx,y,z(E) Ecart type Gaussienne
   // filtrage niveau de gris suivant axes x, y et z Retour: Vint 3D Remarque:
-  // calcul inexact (car le filtre n'est pas décomposable), mais les résultats
-  // sont corrects et beaucoup plus rapide Possibilité de gérer différement le
+  // calcul inexact (car le filtre n'est pas decomposable), mais les resultats
+  // sont corrects et beaucoup plus rapide Possibilite de gérer differement le
   // filtrage suivant les axes valeur typique EcTS=3ou5 EcTG=20ou40 Equivalence
   // Gauss - Tukey: Ect - Ect*Rac(5) Exemple de paramètres correct:
   // D=FastBilateralFilter(D,W,H,Z,2,2,10,3,3,3,20,20,20);
