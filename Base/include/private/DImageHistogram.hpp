@@ -195,65 +195,17 @@ namespace smil
     for (size_t i = 0; i < card; i++)
       h.insert(pair<T, UINT>(i + rVals[0], buf[i]));
 
-    if (fullRange)
-      for (T i = rVals[1]; i <= ImDtTypes<T>::max() && i != ImDtTypes<T>::min();
-           i++)
+    if (fullRange) {
+      T imin = ImDtTypes<T>::min();
+      T imax = ImDtTypes<T>::max();
+      for (T i = rVals[1]; i <= imax && i != imin; i++)
         h.insert(pair<T, UINT>(i, 0));
+    }
 
     delete[] buf;
 
     return h;
   }
-
-  /** @cond */
-
-  /** histogramMap() -
-   *
-   * @param[in] imIn : input image
-   * @param[in] binSize : size of bin
-   * @return the histogram as a map.
-   */
-  template <typename T>
-  std::map<T, UINT> histogramMap(const Image<T> &imIn, T binSize = 1)
-  {
-
-    std::map<T, UINT> hist;
-    ASSERT(imIn.isAllocated(), hist);
-
-    binSize = std::max(binSize, T(1));
-
-    typename Image<T>::lineType pixels = imIn.getPixels();
-    for (size_t i = 0; i < imIn.getPixelCount(); i++)
-      hist[pixels[i] / binSize]++;
-
-    return hist;
-  }
-
-  /** histogramMap() -
-   *
-   * @param[in] imIn : input image
-   * @param[in] imMask : image mask
-   * @param[in] binSize : size of bin
-   * @return the histogram as a map.
-   */
-  template <typename T>
-  std::map<T, UINT> histogramMap(const Image<T> &imIn, const Image<T> imMask, T binSize = 1)
-  {
-
-    std::map<T, UINT> hist;
-    ASSERT(imIn.isAllocated(), hist);
-    ASSERT(imMask.isAllocated(), hist);
-    ASSERT(haveSameSize(&imIn, &imMask), hist);
-
-    binSize = std::max(binSize, T(1));
-
-    typename Image<T>::lineType pixels = imIn.getPixels();
-    for (size_t i = 0; i < imIn.getPixelCount(); i++)
-      hist[pixels[i] / binSize]++;
-
-    return hist;
-  }
-  /** @endcond */
 
   /**
    * threshold() - Image threshold

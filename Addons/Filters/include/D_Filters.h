@@ -59,8 +59,6 @@ namespace smil
 
 #include "DfilterCanny.h"
 #include "DfilterDeriche.h"
-// obsoleted by Dfilter3DBilateral.h
-// #include "DfilterFastBilateral.h"
 #include "DfilterGabor.h"
 #include "DfilterKuwahara.h"
 #include "DfilterMeanShift.h"
