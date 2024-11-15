@@ -28,6 +28,7 @@
 
 
 %include smilCommon.i
+%include <std_container.i>
 
 SMIL_MODULE(smilBase)
 
