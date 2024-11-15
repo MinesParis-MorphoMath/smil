@@ -373,39 +373,14 @@ ENDIF(CCACHE_FOUND)
 OPTION(WRAP_CPP "Wrap non-template C++ headers and libraries" FALSE)
 IF(WRAP_CPP)
   INCLUDE(WrapCpp)
-  FIND_PACKAGE(PythonInterp REQUIRED)
+  FIND_PACKAGE(Python3 REQUIRED)
   INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/include)
 ENDIF(WRAP_CPP)
 
 OPTION(WRAP_PYTHON "Wrap Python" FALSE)
 IF(WRAP_PYTHON)
-  # Provisory hack... shall rework on this
-  if (${CMAKE_VERSION} VERSION_GREATER "4.12")
-    find_package (Python3 COMPONENTS Interpreter Development NumPy)
-
-    include_directories(${Python3_INCLUDE_DIRS})
-    include_directories(${Python3_NumPy_INCLUDE_DIRS})
-    include_directories(${Python3_NumPy_INCLUDE_DIR})
-
-    STRING(REGEX MATCH "[0-9]\\.[0-9]+" PYTHON_VERSION "${Python3_VERSION}")
-    STRING(REGEX MATCH "[0-9]" PYTHON_MAJOR "${PYTHON3_VERSION}")
-    SET(PYTHON_VERSION ${Python3_VERSION})
-  else()
-    find_package (PythonInterp 3)
-    find_package (PythonLibs   3)
-    if (NOT PYTHONINTERP_FOUND AND NOT PYTHONLIBS_FOUND)
-      find_package (PythonInterp REQUIRED)
-      find_package (PythonLibs   REQUIRED)
-    endif ()
-
-    INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_PATH})
-    IF(PYTHONLIBS_VERSION_STRING)
-      STRING(REGEX MATCH "[0-9]\\.[0-9]+" PYTHON_VERSION "${PYTHONLIBS_VERSION_STRING}")
-    ELSE(PYTHONLIBS_VERSION_STRING)
-      STRING(REGEX MATCH "[0-9]\\.[0-9]+" PYTHON_VERSION "${PYTHON_LIBRARIES}")
-    ENDIF(PYTHONLIBS_VERSION_STRING)
-    STRING(REGEX MATCH "[0-9]" PYTHON_MAJOR "${PYTHON_VERSION}")
-  endif ()
+  find_package (Python3 COMPONENTS Interpreter Development)
+  link_libraries(Python3::Python)
 
   ADD_CUSTOM_TARGET(python)
 ENDIF(WRAP_PYTHON)
@@ -418,29 +393,11 @@ IF(WRAP_PYTHON)
   OPTION(USE_NUMPY "Use Numpy for python pixels manipulation." OFF)
 
   IF(USE_NUMPY)
-    IF (NOT Python_Numpy_INCLUDE_DIR)
-      IF (CONDA_PREFIX)
-        SET(PYTHON_PREFIX ${CONDA_PREFIX})
-      ELSE ()
-        SET(PYTHON_PREFIX /usr)
-      ENDIF ()
-      FIND_PATH(PYTHON_NUMPY_INCLUDE_DIR numpy/arrayobject.h
-          DOC "Directory where the numpy/arrayobject.h header file can be found."
-          PATHS
-            ${PYTHON_PREFIX}/lib/python${PYTHON_VERSION}/site-packages/numpy/core/include/
-            ${PYTHON_PREFIX}/lib/python${PYTHON_VERSION}/dist-packages/numpy/core/include/
-            ${PYTHON_PREFIX}/lib/python${PYTHON_MAJOR}/site-packages/numpy/core/include/
-            ${PYTHON_PREFIX}/lib/python${PYTHON_MAJOR}/dist-packages/numpy/core/include/
-            ${PYTHON_PREFIX}/include/)
-
-      IF(PYTHON_NUMPY_INCLUDE_DIR)
-        ADD_DEFINITIONS("-DUSE_NUMPY")
-        INCLUDE_DIRECTORIES(${PYTHON_NUMPY_INCLUDE_DIR})
-      ENDIF(PYTHON_NUMPY_INCLUDE_DIR)
-      MESSAGE(STATUS "Numpy includes: " ${PYTHON_NUMPY_INCLUDE_DIR})
-    ENDIF (NOT Python_Numpy_INCLUDE_DIR)
+    find_package(Python3 REQUIRED COMPONENTS NumPy)
+    add_compile_definitions(USE_NUMPY)
+    link_libraries(Python3::NumPy)
+    message(STATUS "Numpy includes: " ${Python3_NumPy_INCLUDE_DIRS})
   ENDIF(USE_NUMPY)
-  ADD_DEFINITIONS("-DUSE_NUMPY")
 ENDIF(WRAP_PYTHON)
 
 #
@@ -847,7 +804,7 @@ IF(USE_WRAPPER)
     # Trick to avoid to rebuild every time even without the dependencies having changed
     SET_SOURCE_FILES_PROPERTIES(${SWIG_MAIN_INTERFACE} PROPERTIES
         SWIG_MODULE_NAME smil_Python)
-    MESSAGE(STATUS "Wrap for python version ${PYTHON_VERSION}")
+    MESSAGE(STATUS "Wrap for python version ${Python3_VERSION}")
     IF(MSVC)
       # Anaconda does not provide Python libraries with
       # debug symbols
@@ -879,21 +836,15 @@ IF(USE_WRAPPER)
             COMPONENT python)
 
     IF(UNIX)
-      IF(${PYTHON_VERSION} VERSION_LESS 2.7)
+      IF (CONDA_PREFIX)
         INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/smilPython.pth
-              DESTINATION /usr/lib/python${PYTHON_VERSION}/site-packages
-              COMPONENT python)
-      ELSE(${PYTHON_VERSION} VERSION_LESS 2.7)
-       IF (CONDA_PREFIX)
-         INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/smilPython.pth
-                 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python${PYTHON_VERSION}/site-packages
-                 COMPONENT python)
-       ELSE(CONDA_PREFIX)
-         INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/smilPython.pth
-                 DESTINATION ${CMAKE_INSTALL_PREFIX}/lib${LIBSUFFIX}/python${PYTHON_VERSION}/dist-packages
-                 COMPONENT python)
-       ENDIF(CONDA_PREFIX)
-      ENDIF(${PYTHON_VERSION} VERSION_LESS 2.7)
+          DESTINATION ${CMAKE_INSTALL_PREFIX}/lib/python${Python3_VERSION}/site-packages
+          COMPONENT python)
+      ELSE(CONDA_PREFIX)
+        INSTALL(FILES ${LIBRARY_OUTPUT_PATH}/smilPython.pth
+          DESTINATION ${CMAKE_INSTALL_PREFIX}/lib${LIBSUFFIX}/python${Python3_VERSION}/dist-packages
+          COMPONENT python)
+      ENDIF(CONDA_PREFIX)
     ENDIF(UNIX)
 
     ADD_DEPENDENCIES(python _smil_Python)
