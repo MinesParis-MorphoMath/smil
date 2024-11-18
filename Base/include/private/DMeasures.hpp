@@ -1424,7 +1424,7 @@ namespace smil
     }
 #endif
 
-    return h[0] > 0 && h.size() == 2;
+    return h[0] && h.size() == 2;
   }
 
   /** @}*/

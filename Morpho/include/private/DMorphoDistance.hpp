@@ -435,7 +435,7 @@ namespace smil
       off_t x, y, z;
       T2    infinite = ImDtTypes<T2>::max();
 
-      off_t minV;
+      uint32_t minV;
 
       // H(x,u) is a minimizer,
       // = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h )

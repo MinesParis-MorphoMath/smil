@@ -993,7 +993,7 @@ namespace smil
     npy_intp *dims = PyArray_DIMS(arr);
     if (ndim == 1) {
       setSize(dims[0], 1);
-      npy_intp ind[ndim];
+      npy_intp ind[3];
       for (ind[0] = 0; ind[0] < dims[0]; ind[0]++) {
         T *v = (T *) PyArray_GetPtr(arr, ind);
         setPixel(ind[0], 0, *v);
@@ -1001,7 +1001,7 @@ namespace smil
     }
     if (ndim == 2) {
       setSize(dims[1], dims[0]);
-      npy_intp ind[ndim];
+      npy_intp ind[3];
       for (ind[0] = 0; ind[0] < dims[0]; ind[0]++) {
         for (ind[1] = 0; ind[1] < dims[1]; ind[1]++) {
           T *v = (T *) PyArray_GetPtr(arr, ind);
