@@ -36,8 +36,6 @@ OBS : 'X' equals OK
 
 * Doc Addons
 
-
-
 * Add Smoothing in Deriche filter
 
 * More unit tests

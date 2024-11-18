@@ -37,6 +37,11 @@
 #define _USE_MATH_DEFINES // for C++
 //#include <math.h>
 #include <cmath>
+
+#ifndef M_PI
+#define M_PI   3.141592653589793
+#endif
+
 namespace smil
 {
   class labGrad_func : public MorphImageFunctionBase<RGB, UINT8>

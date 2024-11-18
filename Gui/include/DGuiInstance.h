@@ -58,7 +58,7 @@ namespace smil
   inline bool isGuiDisabled()
   {
     // JOE XXX - solve this for windows
-#if 1
+#ifndef _MSC_VER
     char *env = getenv("SMIL_DISABLE_GUI");
     if (env != nullptr) {
       return (strcasecmp(env, "yes") == 0 || strcasecmp(env, "true") == 0);
