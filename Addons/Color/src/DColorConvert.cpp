@@ -126,14 +126,12 @@ namespace smil
     return RES_OK;
   }
 
-  inline float scale_from_255(const float &x, const float &xmin,
-                              const float &xmax)
+  inline float scale_from_255(float x, float xmin, float xmax)
   {
     return (float) ((xmin) + (x) * ((xmax) - (xmin)) / 255.0);
   }
 
-  inline UINT8 scale_to_255(const float &x, const float &xmin,
-                            const float &xmax)
+  inline UINT8 scale_to_255(float x, float xmin, float xmax)
   {
     UINT8 retVal;
     if (x < xmin)
@@ -141,11 +139,13 @@ namespace smil
     else if (x > xmax)
       retVal = 255;
     else
-      retVal = floor(0.5 + (255.0 * ((x) - (xmin)) / ((xmax) - (xmin))));
+      retVal =
+          (UINT8) floor(0.5 + (255.0 * ((x) - (xmin)) / ((xmax) - (xmin))));
 
     return retVal;
   }
-  inline float lab_conditional(const float &x)
+
+  inline float lab_conditional(float x)
   {
     if (x < 0.008856)
       return 7.787 * x + 16 / 116.0;
@@ -172,9 +172,9 @@ namespace smil
     for (size_t i = 0; i < imXyzIn.getPixelCount(); i++) {
       float L, A, B;
 
-      float Xf = scale_from_255(x[i], 0.0, 0.982);
-      float Yf = scale_from_255(y[i], 0.0, 1.0);
-      float Zf = scale_from_255(z[i], 0.0, 1.183);
+      float Xf = (float) scale_from_255(x[i], 0.0, 0.982);
+      float Yf = (float) scale_from_255(y[i], 0.0, 1.0);
+      float Zf = (float) scale_from_255(z[i], 0.0, 1.183);
 
       if (Yf >= 0.008856)
         L = (float) (-16.0 +
@@ -190,9 +190,9 @@ namespace smil
       B = 200.0 * (y_modified - z_modified);
 
       /* rescaling and normalizing of output values */
-      l[i] = scale_to_255(L, 0.0, 100.0397);
-      a[i] = scale_to_255(A, -137.8146, 96.1775);
-      b[i] = scale_to_255(B, -99.2331, 115.6697);
+      l[i] = (float) scale_to_255(L, 0.0, 100.0397);
+      a[i] = (float) scale_to_255(A, -137.8146, 96.1775);
+      b[i] = (float) scale_to_255(B, -99.2331, 115.6697);
     }
 
     imLabOut.modified();
@@ -450,7 +450,7 @@ namespace smil
     for (size_t i = 0; i < imHlsIn.getPixelCount(); i++) {
       float phi1, phi;
       float lambda1;
-      int lambda;
+      int   lambda;
       float Rou = 0, Gou = 0, Bou = 0;
       float k;
 

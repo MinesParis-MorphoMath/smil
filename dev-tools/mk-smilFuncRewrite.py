@@ -19,17 +19,29 @@ def mkHeader():
 # -------------------------------------
 from smilAdvancedPython       import *
 from smilBasePython           import *
-from smilColorPython          import *
 from smilCorePython           import *
-from smilFiltersPython        import *
 from smilGuiPython            import *
 from smilIOPython             import *
 from smilMorphoPython         import *
-from smilStochasticWSPython   import *
-from smil_Python              import *
   """
   print(s)
 
+  # Add here only Addons which are always enabled
+  #    and have functions to be redeclared
+  __Addons__ = ["smilColorPython",
+                "smilFiltersPython",
+                ]
+  for m in __Addons__:
+    s = f"from {m:18s}       import *"
+    print(s)
+  print()
+  s = "from smil_Python              import *"
+  print(s)
+  s = """
+# -------------------------------------
+  """
+  #print(s)
+    
 
 #
 #
