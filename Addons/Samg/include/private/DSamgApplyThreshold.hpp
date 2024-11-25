@@ -31,7 +31,7 @@
 #define _DAPPLYTHRESHOLD_HPP_
 
 #include "Morpho/include/DMorpho.h"
-#include "DUtils.h"
+#include "DSamgUtils.h"
 
 namespace smil
 {

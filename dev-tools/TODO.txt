@@ -1,9 +1,26 @@
 
 OBS : 'X' equals OK
 
-* Many warnings on plugin Samg - (Theodore Chabardes)
+* Entropy
+  * On l'évalue déjà sur l'image entière et sur des blobs. Il faudrait
+    l'évaluer localement dans un voisinage défini par un élement structurant.
 
-* Compatibility problem with Swig >= 4.0.2
+* Numpy interface
+  * investigate implications of new Numpy version 2.0
+  * issues with current interface functions :
+    * when updating image on one side, propagates or not to the other side.
+      Actually some functions allow for it but it's fragile
+    * rotate (transpose) as X and Y axes are inverted in both representations
+
+* Problem with doxygen 1.9.8 - it works with 1.9.1
+  Look for non existent file topics.tex on latex build dir.
+  Hack : remove line input{topics} in refman.tex file
+
+* Theodore Chabardes Addon (Samg)
+  * long list of warnings
+  * no doc
+
+* Compatibility problem with Swig >= 4.0
 
 * OpenMP
   * revoir l'utilisation de "parallel".
@@ -19,28 +36,42 @@ OBS : 'X' equals OK
 
 * Doc Addons
 
-* Find a better name for Chabardes Addon ( SAMG
-
 * Add Smoothing in Deriche filter
 
-* Tests on everything
+* More unit tests
 
-* Tests on python after Swig
+* Unit tests on python interface
 
 * Update some CMake package checks :
   FreeType (local) => Freetype (shall disable it ?)
   Python and Python Numpy
   Qwt (local)
-  PHP5 (local) => PHP5 ... or even 8 ?
+  PHP5 (local) => PHP5 ... or even 8 ? => Discard ?
 
 * Select Python 2 or 3
   In fact... disable Python 2 - no more supported
 
 * review Hough Transform - test fails (inside an infinite loop ?)
 
+* Doc doxygen dev : @devdoc and @enddevdoc
+
+* Rotation of 3D Structured elements - DCompositeSE.cpp
+
+**********************************************
+
+* Rewrite labelWithProperty
+    labelWithProperty(imRegions, imIn, imLabel, property[, se])
+  Review
+    labelWithArea
+    labelWithVolume
+    labelWithMax
+    labelWithMean
+
+* Add binsize option to function histogram
+
 * From scikit-image
   * measures :
-   * entr8py => OK
+   * entropy => OK
     OK -  image moments :
       centered moments => OK
       with image values or not => OK
@@ -59,21 +90,4 @@ OBS : 'X' equals OK
     * Radon
     * Hough (better)
   * skimage-viewer ?
-
-* Doc doxygen dev : @devdoc and @enddevdoc
-
-* Rotation of Structured elements (works only on 2D) - DCompositeSE.cpp
-
-**********************************************
-
-* Rewrite labelWithProperty
-    labelWithProperty(imRegions, imIn, imLabel, property[, se])
-  Review
-    labelWithArea
-    labelWithVolume
-    labelWithMax
-    labelWithMean
-
-* Remove histogramMap ???
-
 

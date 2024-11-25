@@ -39,7 +39,6 @@ int main(void)
 
   randFill(im);
   BENCH_IMG(histogram, im);
-  BENCH_IMG(histogramMap, im);
   BENCH_IMG(area, im);
   BENCH_IMG(isBinary, im);
 

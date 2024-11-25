@@ -39,10 +39,8 @@ int main(void)
 
   randFill(im);
   BENCH_IMG(histogram, im);
-  BENCH_IMG(histogramMap, im);
 
   char *path = pathTestImage("barbara.png");
   Image<UINT8> imb(path);
   BENCH_IMG(histogram, imb);
-  BENCH_IMG(histogramMap, imb);
 }

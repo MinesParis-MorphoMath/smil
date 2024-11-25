@@ -140,7 +140,6 @@ TEMPLATE_WRAP_FUNC_2T_CROSS(sCurve);
 
 %include "DImageHistogram.hpp"
 TEMPLATE_WRAP_FUNC(histogram);
-TEMPLATE_WRAP_FUNC(histogramMap);
 
 TEMPLATE_WRAP_FUNC_2T_CROSS(threshold);
 
@@ -255,7 +254,7 @@ TEMPLATE_WRAP_FUNC(blobsBarycenter);
 TEMPLATE_WRAP_FUNC(blobsBoundBox);
 TEMPLATE_WRAP_FUNC(blobsMoments);
 
-TEMPLATE_WRAP_FUNC(blobsArea);
+// TEMPLATE_WRAP_FUNC(blobsArea);
 TEMPLATE_WRAP_FUNC_2T_CROSS(blobsMinVal);
 TEMPLATE_WRAP_FUNC_2T_CROSS(blobsMaxVal);
 TEMPLATE_WRAP_FUNC_2T_CROSS(blobsRangeVal);

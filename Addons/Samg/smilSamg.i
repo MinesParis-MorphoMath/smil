@@ -6,14 +6,14 @@ SMIL_MODULE(smilSamg)
 
 %{
 /* Includes .hppe.hppeader in .hppe wrapper code */
-#include "DApplyThreshold.hpp"
-#include "DMeasures.hpp"
-#include "DArrow.hpp"
+#include "DSamgApplyThreshold.hpp"
+#include "DSamgMeasures.hpp"
+#include "DSamgArrow.hpp"
 %}
 
 %import smilCore.i
 
-%include "DApplyThreshold.hpp"
+%include "DSamgApplyThreshold.hpp"
 
 TEMPLATE_WRAP_FUNC(applyThreshold);
 TEMPLATE_WRAP_FUNC(rangeThreshold);
@@ -33,10 +33,10 @@ RES_T extendTriplePoints (Image<UINT16> &_triple_, const Image<UINT16> &_skiz_, 
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist_per_label);
 TEMPLATE_WRAP_FUNC_2T_CROSS(dist_cross_3d_per_label);
 
-%include "DMeasures.hpp"
+%include "DSamgMeasures.hpp"
 TEMPLATE_WRAP_FUNC(measCrossCorrelation);
 TEMPLATE_WRAP_FUNC(measHaralickFeatures);
 
-%include "DArrow.hpp"
+%include "DSamgArrow.hpp"
 TEMPLATE_WRAP_FUNC(hammingWeight)
 TEMPLATE_WRAP_FUNC_2T_CROSS(arrowDual);

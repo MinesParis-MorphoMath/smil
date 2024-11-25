@@ -15,11 +15,11 @@ namespace smil
   // Deriche
   // Ce fichier regroupe certaines fonctions permettant d'effectuer la
   // détection de coutour de Deriche. On ne calculera dans ce fichier que
-  // l'image lissée par le filtre récursif de Deriche. OUTLINE corespond au
+  // l'image lissee par le filtre recursif de Deriche. OUTLINE corespond au
   // nombre de pixel que l'on ne prendra pas en compte lors de la convolution.
-  // Aussi, pour pouvoir effectuer la détection de contour à tous les pixels y
+  // Aussi, pour pouvoir effectuer la detection de contour a tous les pixels y
   // compris ceux du bord de l'image, on augmentera la taille de l'image de
-  // 2*OUTLINE. C'est le rôle des fonctions embded et debed
+  // 2*OUTLINE. C'est le role des fonctions embded et debed
   //**************************************************************************
 
 #define OUTLINE 25
@@ -28,7 +28,7 @@ namespace smil
   //**************************************************************************
   // embed
   // Cette fonction retourne un pointeur sur un float qui de l'image initial
-  // ou l'on a ajouté des bordure de largeur et de hauteur de Width
+  // ou l'on a ajoute des bordure de largeur et de hauteur de Width
   //**************************************************************************
   template <typename T>
   double *embed(T *imIn, int W, int H, int size, int *NewW, int *NewH)
@@ -57,7 +57,7 @@ namespace smil
   //**************************************************************************
   // debed
   // Cette fonction retourne inscrit l'image obtenue dans le buffer Dest en
-  // enlevant les bordures ajoutées
+  // enlevant les bordures ajoutees
   //**************************************************************************
   template <typename T>
   void debed(T *imOut, int W, SMIL_UNUSED int H, int size, double *Img, int NewW, int NewH)
@@ -72,10 +72,10 @@ namespace smil
   //**************************************************************************
   // ApplySmoothing_Horizontal
   // On calcule ici le flou suivant la direction horizontale. On calcule tout
-  // d'abord les valeurs des coefficients de la fonction définie par Deriche.
+  // d'abord les valeurs des coefficients de la fonction definie par Deriche.
   // On doit faire attention à la gestion des pixels des bordures: il faut
-  // faire leur initialisation avant de lancer la procédure récursive. La
-  // sortie y correspond à la somme des composantes causales et des
+  // faire leur initialisation avant de lancer la procedure recursive. La
+  // sortie y correspond a la somme des composantes causales et des
   // composantes anticausales.
   //**************************************************************************
   void ApplySmoothing_Horizontal(double *x, double *y, double *Causal,
@@ -141,7 +141,7 @@ namespace smil
   //**************************************************************************
   // ApplySmoothing_Vertical
   // Meme fonction que ApplySmoothing_Horizontal sauf que les composante sont
-  // créées suivant un axe vertical.
+  // creees suivant un axe vertical.
   //**************************************************************************
   void ApplySmoothing_Vertical(double *x, double *y, double *Causal,
                                double *AntiCausal, int W, int H, double Alpha)
@@ -204,8 +204,8 @@ namespace smil
 
   //**************************************************************************
   // ComputeSmoothing
-  // Cette fonction permet de calculer récursivement (au sens traitement du
-  // signal) l'image Lisser suivant les critères définis par Deriche. On
+  // Cette fonction permet de calculer recursivement (au sens traitement du
+  // signal) l'image Lisser suivant les criteres definis par Deriche. On
   // calcule donc les composantes causales et anticausales de l'image
   // d'origine et on fait la somme de ces deux composantes.
   //**************************************************************************
@@ -233,8 +233,8 @@ namespace smil
 
   //**************************************************************************
   // ComputeBli:
-  // On fait la différence des deux images et on compare le resultat à 0
-  // ImgBli est donc une image composé uniquement de 0 et de 1
+  // On fait la difference des deux images et on compare le resultat a 0
+  // ImgBli est donc une image compose uniquement de 0 et de 1
   //**************************************************************************
   bool *ComputeBli(double *ImgFiltrer, double *ImgBuf, int W, int H)
   {
@@ -260,7 +260,7 @@ namespace smil
   //**************************************************************************
   // IsCandidateEdge
   // On regarde le pixel voisin en on regarde s'il y a un franchissement de
-  // zero. On effectue donc la multiplication des 2 pixels et on compare à 0
+  // zero. On effectue donc la multiplication des 2 pixels et on compare a 0
   //**************************************************************************
   bool IsCandidateEdge(bool *Buff, double *Orig, int W, SMIL_UNUSED int H, int i, int j)
   {
@@ -293,7 +293,7 @@ namespace smil
   //**************************************************************************
   // ComputeAdaptativeGradient
   // On calcule un seuil pour chaque pixel. Le seuil sera determiner grace aux
-  // pixels voisins présent dans la fenêtre WINDOW_SIZE
+  // pixels voisins present dans la fenetre WINDOW_SIZE
   //**************************************************************************
   double ComputeAdaptativeGradient(bool *Bli, double *Orig, int W, SMIL_UNUSED int H, int k,
                                    int l)
@@ -334,8 +334,8 @@ namespace smil
 
   //**************************************************************************
   // LocateZeroCrossings
-  // Cette fonction permettra de déterminer pour tous les pixels de l'image
-  // s'il est un pixel appartenant à un contour ou non.
+  // Cette fonction permettra de determiner pour tous les pixels de l'image
+  // s'il est un pixel appartenant a un contour ou non.
   //**************************************************************************
   void LocateZeroCrossings(double *Orig, double *BufFiltrer, bool *ImgBli,
                            int W, int H)
@@ -361,10 +361,10 @@ namespace smil
 
   //**************************************************************************
   // DericheFilter
-  // Tout le traitement est effectué dans cette fonction. On reçoit en entrée
+  // Tout le traitement est effectué dans cette fonction. On recoit en entree
   // l'image étendue avec de nouvelles bordures ainsi que la nouvelle Largeur
-  // et la nouvelle hauteur de l'image. On calcule donc l'image filtrée,
-  // l'image BLI et on effectue la détection des zéros.
+  // et la nouvelle hauteur de l'image. On calcule donc l'image filtree,
+  // l'image BLI et on effectue la detection des zeros.
   //**************************************************************************
   bool DericheFilter(double *Img, int W, int H, double Alpha)
   {
@@ -394,16 +394,16 @@ namespace smil
 
   //************************************************************************
   // Deriche
-  // C'est le point d'entrée de cette méthode, (fonction export). Il prend en
+  // C'est le point d'entree de cette méthode, (fonction export). Il prend en
   // argument l'image source et l'image destination ainsi que la valeur du
-  // paramètre alpha du traitement.
+  // parametre alpha du traitement.
   //************************************************************************
   template <typename T>
   RES_T Deriche(T *imIn, int W, int H, double Alpha, T *imOut)
   {
     int NewW, NewH;
 
-    // On ajoute des bords de largeur et de hauteur OUTLINE pour éviter les
+    // On ajoute des bords de largeur et de hauteur OUTLINE pour eviter les
     // effets de bord.
 
     double *Img = embed(imIn, W, H, OUTLINE, &NewW, &NewH);
@@ -416,7 +416,7 @@ namespace smil
       return RES_ERR_BAD_ALLOCATION;
     }
 
-    // On supprime les bordures créées.
+    // On supprime les bordures creees.
     debed(imOut, W, H, OUTLINE, Img, NewW, NewH);
 
     delete[] Img;

@@ -435,7 +435,7 @@ namespace smil
       off_t x, y, z;
       T2    infinite = ImDtTypes<T2>::max();
 
-      off_t minV;
+      uint32_t minV;
 
       // H(x,u) is a minimizer,
       // = MIN(h: 0 <= h < u & Any (i: 0 <= i < u : f(x,h) <= f(x,i)) : h )
@@ -450,7 +450,7 @@ namespace smil
       off_t q = 0;
       off_t w;
 
-      off_t tmpdist, tmpdist2;
+      uint32_t tmpdist, tmpdist2;
 
       for (z = 0; z < size[2]; ++z) {
 #ifdef USE_OPEN_MP
@@ -650,7 +650,7 @@ namespace smil
     Image<T1> tmp(imIn);
 
     vector<IntPoint> sePts;
-    UINT             sePtsNbr;
+    off_t            sePtsNbr;
 
     typedef size_t                 OffsetT;
     HierarchicalQueue<T2, OffsetT> hq;
@@ -753,7 +753,7 @@ namespace smil
 
       bool oddLine = se.odd && ((y0) % 2);
 
-      for (off_t i = 0; i < sePtsNbr; i++) {
+      for (off_t i = 0; i < (off_t ) sePtsNbr; i++) {
         IntPoint &pt = sePts[i];
         x1           = x0 + pt.x;
         y1           = y0 + pt.y;

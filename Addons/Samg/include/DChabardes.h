@@ -4,13 +4,13 @@
 @cond
 //#include "DSSE.h"
 
-#include "DMeasures.hpp"
+#include "DSamgMeasures.hpp"
 
-#include "DApplyThreshold.hpp"
+#include "DSamgApplyThreshold.hpp"
 
-#include "DArrow.hpp"
+#include "DSamgArrow.hpp"
 
-#include "DLineArith.hpp"
+#include "DSamgLineArith.hpp"
 
 #endif // _DCHABARDES_H_
 @endcond

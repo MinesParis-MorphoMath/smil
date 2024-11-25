@@ -1,7 +1,7 @@
 /**
  * @page ReleaseNotes Release Notes
  *
- * @section s280_104 Smil 1.1.1 (17 September 2024)
+ * @section s280_105 Smil 1.1.1 (17 September 2024)
  *  - @TB{New}
  *    - Function Version() on Python interface - returning Smil Version
  *  - @TB{Change}

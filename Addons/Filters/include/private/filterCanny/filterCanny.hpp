@@ -28,22 +28,22 @@ Gaussian.
 
 //****************************************************************************
 // Canny.cpp
-// Ce fichier regroupe les fonctions permettant de calculer la détection
-// optimale des contours suivant la méthode instaurée par Canny. Le principe est
-// le suivant: On applique à l'image source, un filtre passe bas, gaussien
-// d'écart type s. Le noyau de convolution sera "Gaussien" et le résultat de la
-// convolution sera FlouX et FlouY. En effet le noyau est à 1 dimension donc on
+// Ce fichier regroupe les fonctions permettant de calculer la detection
+// optimale des contours suivant la methode instauree par Canny. Le principe est
+// le suivant: On applique a l'image source, un filtre passe bas, gaussien
+// d'écart type s. Le noyau de convolution sera "Gaussien" et le resultat de la
+// convolution sera FlouX et FlouY. En effet le noyau est a 1 dimension donc on
 // peut l'appliquer suivant les x et suivant les y.
 //
-// On crée un second noyau qui sera cette fois-ci la dérivée d'une gaussienne :
+// On cree un second noyau qui sera cette fois-ci la derivee d'une gaussienne :
 // DGaussien
-// Pour repérer les contours, on applique à l'image FlouX et FlouY le noyau
+// Pour reperer les contours, on applique a l'image FlouX et FlouY le noyau
 // DGaussien
 // on obtient alors les images dX et dY.
 // On supprime alors les maxima de la norme des images dX et dY pour obtenir
 // notre image finale.
 //
-// MAX_SIZE_MASK. On n'autorise pas à avoir un masque de dimension supérieur à
+// MAX_SIZE_MASK. On n'autorise pas a avoir un masque de dimension supérieur a
 // MAX_SIZE_MASK en effet plus sigma (s) est grand, plus le masque de
 // convolution sera grand.
 //******************************************************************************
@@ -96,7 +96,7 @@ Gaussian.
   //****************************************************************************
   // Separable convolution
   // Cette fonction permet de convoluer l'image par un masque (gau)
-  // Le résultat sera stoké dans les variables GauX et GauY
+  // Le resultat sera stocke dans les variables GauX et GauY
   //****************************************************************************
   template <typename T1>
   static void SeparableConvolution(T1 *imIn, int Width, int Height, float *gau,
@@ -132,8 +132,8 @@ Gaussian.
 
   //****************************************************************************
   // SeparableConvolution_dxy
-  // On calcule le résultat de la convolution de l'image avec un masque
-  // Le resultat sera stocker dans la variable appelé Derive
+  // On calcule le resultat de la convolution de l'image avec un masque
+  // Le resultat sera stocker dans la variable appele Derive
   //****************************************************************************
   static void SeparableConvolution_dxy(int Width, int Height, float *Image,
                                        float *gau, int taille, float *Derive,
@@ -166,9 +166,9 @@ Gaussian.
 
   //*************************************************************************
   // On regarde les 2 pixels dans la direction du gradient du pixel central
-  // 1 de chaque coté. On garde le pixel central (i) si le gradient de i est
+  // 1 de chaque cote. On garde le pixel central (i) si le gradient de i est
   // supérieur au gradient des 2 autres pixels
-  // On effectue une interpolation dans le cas où le pixel se situant dans la
+  // On effectue une interpolation dans le cas ou le pixel se situant dans la
   // direction du gradient tombe au milieu de 2 pixels.
   //*************************************************************************
   template <typename T2>
@@ -185,7 +185,7 @@ Gaussian.
         if (i == 0 || j == 0 || i == Width - 1 || j == Height - 1)
           continue;
 
-        // On considère dx et dy comme des vecteurs
+        // On considere dx et dy comme des vecteurs
         VectX = dX[i + j * Width];
         VectY = dY[i + j * Width];
         if (fabs(VectX) < 0.01 && fabs(VectY) < 0.01)
@@ -193,9 +193,9 @@ Gaussian.
 
         N = Norm(VectX, VectY);
 
-        // on suit la direction du gradient qui est indiqué par les vecteurs
+        // on suit la direction du gradient qui est indique par les vecteurs
         // VectX et VectY et retient uniquement les pixels qui correspondent
-        //à des maximum locaux
+        //a des maximum locaux
 
         if (fabs(VectY) > fabs(VectX)) // la direction du vecteur est verticale
         {
@@ -235,11 +235,11 @@ Gaussian.
 
   //*************************************************************************
   // Canny:
-  // Cette fonction comporte 3 paramètres:
+  // Cette fonction comporte 3 parametres:
   // ImgNorme : il s'agit de l'image destination: l'image des contours
   // ImgOrientation : Il s'agit de la direction du gradient.(Peu utilisable)
   // atan(dY/dX) Sigma : il s'agit de l'écart type de l'image. Plus s sera
-  // grand, plus le filtrage sera fort et moins il y aura de détails. Au
+  // grand, plus le filtrage sera fort et moins il y aura de details. Au
   // contraire si s est faible, le filtrage sera faible et on observera plus
   // de contours.
   //*************************************************************************
@@ -264,20 +264,20 @@ Gaussian.
       }
     }
 
-    // Allocation pour les images floutées. On garde les chiffres apres la
+    // Allocation pour les images floutees. On garde les chiffres apres la
     // virgule
     FlouX = new float[W * H];
     FlouY = new float[W * H];
     if (FlouX == NULL || FlouY == NULL)
       return RES_ERR_BAD_ALLOCATION;
 
-    // On applique le filtre gaussien à l'image pour supprimer le bruit
+    // On applique le filtre gaussien a l'image pour supprimer le bruit
     // on effectue 1 convolution 2D qui nous permettra de trouver la
     // composante X et Y
     SeparableConvolution(imIn, W, H, Gaussien, taille, FlouX, FlouY);
 
-    // On effectue maintenant la convolution avec la derivé d'un filtre
-    // gaussien sur l'image précédement obtenue
+    // On effectue maintenant la convolution avec la derive d'un filtre
+    // gaussien sur l'image precedement obtenue
     dX = new float[W * H];
     dY = new float[W * H];
     if (dX == NULL || dY == NULL) {
@@ -288,7 +288,7 @@ Gaussian.
     SeparableConvolution_dxy(W, H, FlouX, dGaussien, taille, dX, true);
     SeparableConvolution_dxy(W, H, FlouY, dGaussien, taille, dY, false);
 
-    // deallocation de la mémoire
+    // deallocation de la memoire
     delete[] FlouX;
     delete[] FlouY;
 

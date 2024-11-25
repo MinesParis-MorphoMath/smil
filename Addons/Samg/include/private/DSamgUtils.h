@@ -1,12 +1,12 @@
 #ifndef _D_UTILS_H_
 #define _D_UTILS_H_
 
-#include <stdio.h>
-#include <sys/ioctl.h>
-#include <sys/select.h>
-#include <termios.h>
-// XXX JOE #include <stropts.h>
-#include <unistd.h>
+// #include <stdio.h>
+// #include <sys/ioctl.h>
+// #include <sys/select.h>
+// #include <termios.h>
+// // XXX JOE #include <stropts.h>
+// #include <unistd.h>
 
 namespace smil
 {
@@ -95,44 +95,6 @@ namespace smil
 
     delete c1;
     delete c2;
-  }
-
-  int __kbhit__()
-  {
-    static const int STDIN  = 0;
-    static bool initialized = false;
-
-    if (!initialized) {
-      termios term;
-      tcgetattr(STDIN, &term);
-      term.c_lflag &= ~ICANON;
-      tcsetattr(STDIN, TCSANOW, &term);
-      setbuf(stdin, NULL);
-      initialized = true;
-    }
-
-    int bytesWaiting;
-    ioctl(STDIN, FIONREAD, &bytesWaiting);
-    return bytesWaiting;
-  }
-
-  bool __pause__()
-  {
-    int ch;
-    struct termios oldt, newt;
-
-    tcgetattr(STDIN_FILENO, &oldt);
-    newt = oldt;
-    newt.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-    ch = getchar();
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-    return ch == ' ';
-  }
-
-  inline bool __letthrough__()
-  {
-    return __kbhit__() != 0;
   }
 
 } // namespace smil

@@ -302,6 +302,7 @@ fi
 
 #  -DCMAKE_CXX_FLAGS:STRING=\"$CXX_FLAGS\"
 
+swig  -version | grep -i version
 cmake -version
 
 [ "$verbose" = "yes" ] && echo cmake $OPT $OPT_ADDONS $OTHER $SRCDIR
