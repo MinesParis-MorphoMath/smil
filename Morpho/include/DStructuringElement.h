@@ -659,10 +659,10 @@ namespace smil
       odd       = false;
       this->setName();
 
-      // int xf = round(length * cos(-theta * PI / 180.));
-      // int yf = round(length * sin(-theta * PI / 180.));
-      int xf = round(length * cos(-theta));
-      int yf = round(length * sin(-theta));
+      // int xf = (int) round(length * cos(-theta * PI / 180.));
+      // int yf = (int) round(length * sin(-theta * PI / 180.));
+      int xf = (int) round(length * cos(-theta));
+      int yf = (int) round(length * sin(-theta));
       vector<Point<int>> v;
 
       v = bresenhamPoints(0, 0, xf, yf);
@@ -718,9 +718,9 @@ namespace smil
 
       double lenXY = abs(length * cos(zeta));
 
-      int zf = round(length * sin(zeta));
-      int xf = round(lenXY * cos(-theta));
-      int yf = round(lenXY * sin(-theta));
+      int zf = (int) round(length * sin(zeta));
+      int xf = (int) round(lenXY * cos(-theta));
+      int yf = (int) round(lenXY * sin(-theta));
 
       Bresenham line(0, 0, 0, xf, yf, zf);
       vector<IntPoint> v = line.getPoints();
@@ -760,10 +760,10 @@ namespace smil
       odd       = false;
       this->setName();
 
-      int xf = round(length * cos(-theta) / 2);
-      int yf = round(length * sin(-theta) / 2);
-      //int xf = round(length * cos(-theta));
-      // int yf = round(length * sin(-theta));
+      int xf = (int) round(length * cos(-theta) / 2);
+      int yf = (int) round(length * sin(-theta) / 2);
+      //int xf = (int) round(length * cos(-theta));
+      // int yf = (int) round(length * sin(-theta));
 
       vector<Point<int>> v;
       v = bresenhamPoints(0, 0, xf, yf);
@@ -823,9 +823,9 @@ namespace smil
       length /= 2;
       double lenXY = abs(length * cos(zeta));
 
-      int zf = round(length * sin(zeta));
-      int xf = round(lenXY * cos(-theta));
-      int yf = round(lenXY * sin(-theta));
+      int zf = (int) round(length * sin(zeta));
+      int xf = (int) round(lenXY * cos(-theta));
+      int yf = (int) round(lenXY * sin(-theta));
 
       Bresenham line(0, 0, 0, xf, yf, zf);
       vector<IntPoint> v = line.getPoints();
@@ -892,8 +892,8 @@ namespace smil
   {
     StrElt se;
 
-    int xf = round(length * cos(theta));
-    int yf = round(length * sin(theta));
+    int xf = (int) round(length * cos(theta));
+    int yf = (int) round(length * sin(theta));
 
     vector<Point<int>> v;
 
