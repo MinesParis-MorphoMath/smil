@@ -435,7 +435,7 @@ namespace smil
                                     {"elongation", 1},
                                     {"tortuosity", 2},
                                     {"extremities", 3}};
-    const Image<T> * img         = nullptr;
+    const Image<T>  *img         = nullptr;
 
     StrElt se = DEFAULT_SE;
 
@@ -769,9 +769,9 @@ namespace smil
           } while (!fifoCurrent.empty());
 
           // One CC have been push, we compute it
-          BaryX = (off_t)(BaryX * scaleX / fifoSave.size());
-          BaryY = (off_t)(BaryY * scaleY / fifoSave.size());
-          BaryZ = (off_t)(BaryZ * scaleZ / fifoSave.size());
+          BaryX = (off_t) (BaryX * scaleX / fifoSave.size());
+          BaryY = (off_t) (BaryY * scaleY / fifoSave.size());
+          BaryZ = (off_t) (BaryZ * scaleZ / fifoSave.size());
 
           _GeodesicPathFlatZones(DistanceMap, LabelMap, fifoSave, W, H, D,
                                  BaryX, BaryY, BaryZ, Allongement, scaleX,
@@ -849,13 +849,13 @@ namespace smil
           } while (!fifoCurrent.empty());
 
           // One CC have been push, we compute it
-          BaryX = (off_t)(BaryX * scaleX / fifoSave.size());
-          BaryY = (off_t)(BaryY * scaleY / fifoSave.size());
-          BaryZ = (off_t)(BaryZ * scaleZ / fifoSave.size());
+          BaryX = (off_t) (BaryX * scaleX / fifoSave.size());
+          BaryY = (off_t) (BaryY * scaleY / fifoSave.size());
+          BaryZ = (off_t) (BaryZ * scaleZ / fifoSave.size());
           _GeodesicPathCC(DistanceMap, fifoSave, W, H, D, BaryX, BaryY, BaryZ,
                           Allongement, scaleX, scaleY, scaleZ);
-        }
-    }
+        } // if distance == -1
+    } // END GeodesicPathBinary
 
     //
     //
@@ -865,6 +865,8 @@ namespace smil
                          off_t BaryZ, int Allongement = 0, double scaleX = 1,
                          double scaleY = 1, double scaleZ = 1)
     {
+      queue<off_t> fifoSave2;
+
       if (fifoSave.empty())
         return;
 
@@ -874,8 +876,9 @@ namespace smil
       double DistMax = -1, Dist;
 
       Xtort = Ytort = Ztort = 0;
-
+      // ------------------------------
       // Find the BaryCentre
+      // ------------------------------
       queue<off_t> fifoCurrent = fifoSave; // Copy of fifoCurrent
 
       // Find the first Pixel (farest from the barycenter -- using Eucludean
@@ -902,7 +905,10 @@ namespace smil
         }
       } while (!fifoCurrent.empty());
 
-      // Get the max distance
+      // ------------------------------
+      // First propagation
+      // ------------------------------
+      cout << "BEGIN FIRST PROPAGATION\n";
       bool  NewDist;
       off_t Ind;
 
@@ -910,9 +916,20 @@ namespace smil
       fifoCurrent.push(IndStart);
       DistMax = 1;
 
+#if CVTFUNCS
+      getCoordsFromOffset(IndStart, W, H, D, X, Y, Z);
+#else
+      X = IndStart % W;
+      Y = (IndStart % (W * H) - X) / W;
+      Z = (IndStart - X - Y * W) / (W * H);
+#endif
+      cout << "FIRST PROPAGATION STARTING POINT " << X << " " << Y << " "
+           << "\n";
+
       do {
         currentPixel = fifoCurrent.front();
         fifoCurrent.pop();
+        fifoSave2.push(currentPixel);
 #if CVTFUNCS
         getCoordsFromOffset(currentPixel, W, H, D, X, Y, Z);
 #else
@@ -941,8 +958,100 @@ namespace smil
               if (DistanceMap[Ind] == -2) {
                 fifoCurrent.push(Ind);
                 DistanceMap[Ind] = -3;
+
               } else {
                 if (DistanceMap[Ind] != 0 && DistanceMap[Ind] != -3) {
+                  double Dx = std::sqrt(_pow2(j * scaleX) + _pow2(k * scaleY) +
+                                        _pow2(l * scaleZ));
+                  if (!NewDist || Dist > (DistanceMap[Ind] + Dx)) {
+                    Dist    = DistanceMap[Ind] + Dx;
+                    NewDist = true;
+                  }
+                }
+              }
+
+              if (NewDist) {
+                DistanceMap[X + Y * W + Z * W * H] = Dist;
+                if (Dist > DistMax) {
+                  DistMax = Dist;
+                  Xtort   = X;
+                  Ytort   = Y;
+                  Ztort   = Z;
+                }
+              } // if (NewDist)
+            } // for l
+          } // for k
+        } // for j
+      } while (!fifoCurrent.empty());
+
+      cout << "END FIRST PROPAGATION, fifoSave size = " << int(fifoSave.size())
+           << "   fifoSave2.SIZE2=" << int(fifoSave2.size()) << "\n";
+      // ------------------------------
+      // Second propagation
+      // ------------------------------
+      int CCsize = 0;
+      do {
+        currentPixel = fifoSave2.front();
+        fifoSave2.pop();
+        DistanceMap[currentPixel] = -3;
+        CCsize                    = CCsize + 1;
+      } while (!fifoSave2.empty());
+
+      cout << "CC size=" << int(CCsize)
+           << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+      IndStart = Xtort + Ytort * W + Ztort * W * H;
+
+      cout << "SECOND PROPAGATION STARTING POINT " << Xtort << " " << Ytort
+           << " " << "\n";
+
+      cout << "BEGIN SECOND PROPAGATION: Xtort = " << int(Xtort)
+           << "Ytort = " << int(Ytort) << " IndStart=" << int(IndStart) << "\n";
+
+      DistanceMap[IndStart] = 1;
+      fifoSave2.push(IndStart);
+      cout << "PUSH  " << int(IndStart) << " , size=" << int(fifoSave2.size())
+           << "\n";
+      DistMax = 1;
+      do {
+        currentPixel = fifoSave2.front();
+        fifoSave2.pop();
+        // cout << "POP  ind="<<int(currentPixel)<<" size =
+        // "<<int(fifoSave2.size())<<"\n" ;
+#if CVTFUNCS
+        getCoordsFromOffset(currentPixel, W, H, D, X, Y, Z);
+#else
+        X = currentPixel % W;
+        Y = (currentPixel % (W * H) - X) / W;
+        Z = (currentPixel - X - Y * W) / (W * H);
+#endif
+
+        Dist    = ImDtTypes<double>::max();
+        NewDist = false;
+
+        // For all the neighbour
+        for (off_t j = -1; j <= 1; j++) {
+          if (Z + j < 0 || Z + j >= D)
+            continue;
+          for (off_t k = -1; k <= 1; k++) {
+            if (X + k < 0 || X + k >= W)
+              continue;
+            for (off_t l = -1; l <= 1; l++) {
+              if (Y + l < 0 || Y + l >= H)
+                continue;
+              if (k == 0 && l == 0 && j == 0)
+                continue;
+
+              Ind = X + k + (Y + l) * W + (Z + j) * W * H;
+
+              if (DistanceMap[Ind] == -3) {
+                fifoSave2.push(Ind);
+                // if(int(fifoSave2.size()/10)*10 == fifoSave2.size()){
+                //   cout << "PUSH  ind="<<int(Ind)<<" size =
+                //   "<<int(fifoSave2.size())<<"\n" ;
+                // }
+                DistanceMap[Ind] = -4;
+              } else {
+                if (DistanceMap[Ind] != 0 && DistanceMap[Ind] != -4) {
                   double Dx = std::sqrt(_pow2(j * scaleX) + _pow2(k * scaleY) +
                                         _pow2(l * scaleZ));
                   if (!NewDist || Dist > (DistanceMap[Ind] + Dx)) {
@@ -964,8 +1073,15 @@ namespace smil
             }
           }
         }
-      } while (!fifoCurrent.empty());
+      } while (!fifoSave2.empty());
+      cout << "END SECOND PROPAGATION, fifoSave size = " << int(fifoSave.size())
+           << "   fifoSave2.SIZE2=" << int(fifoSave2.size()) << "\n";
+      cout << "SECOND PROPAGATION ENDING POINT " << Xtort << " " << Ytort << " "
+           << "\n";
 
+      // ------------------------------
+      // Result back to the CC
+      // ------------------------------
       // Write on DistanceMap the Max Distance for all the pixel of the CC, we
       // pop fifoSave
       off_t size = fifoSave.size();
@@ -1030,7 +1146,7 @@ namespace smil
 
       return;
     } // END GeodesicPathCC
-  };  // AdvancedGeodesy
+  }; // AdvancedGeodesy
   /** @endcond */
 
   //
