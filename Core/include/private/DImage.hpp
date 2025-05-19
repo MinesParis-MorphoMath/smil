@@ -280,7 +280,7 @@ namespace smil
     }
 
     //! Get the description of the image as a string
-    virtual const char *getInfoString(const char *indent = "") const
+    virtual std::string getInfoString(const char *indent = "") const
     {
       stringstream s;
       this->printSelf(s, indent);

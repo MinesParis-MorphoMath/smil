@@ -327,9 +327,9 @@ namespace smil
     }
 
     //! Get the description of the image
-    virtual const char *getInfoString(const char * = "") const
+    virtual std::string getInfoString(const char * = "") const
     {
-      return NULL;
+      return {};
     }
     //! Get the type of the image as a string ("UINT8",...)
     virtual const char *getTypeAsString() = 0;

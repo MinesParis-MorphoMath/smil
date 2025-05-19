@@ -99,9 +99,9 @@ namespace smil
   public:
     Core *getCoreInstance();
     typedef void parentClass;
-    virtual const char *getInfoString(const char * = "") const
+    virtual std::string getInfoString(const char * = "") const
     {
-      return NULL;
+      return {};
     }
     virtual void printSelf(ostream & = std::cout, string = "") const
     {
