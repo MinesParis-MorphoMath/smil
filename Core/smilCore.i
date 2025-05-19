@@ -24,6 +24,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+%{
+#if defined(SWIGPYTHON) && defined(USE_NUMPY)
+// include numpy at the top of the CXX wrapper file
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#include <numpy/arrayobject.h>
+#endif
+%}
 
 %include smilCommon.i
 
