@@ -298,7 +298,7 @@ namespace smil
      *
      * @param[in] name - the new name
      */
-    void setName(string name)
+    void setName(const char *name)
     {
       this->name = name;
     }
