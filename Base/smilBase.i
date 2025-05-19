@@ -86,7 +86,6 @@ TEMPLATE_WRAP_FUNC(clone);
 %template(copyToChannel) smil::copyToChannel<UINT8, RGB>;
 %template(splitChannels) smil::splitChannels<RGB, UINT8>;
 %template(mergeChannels) smil::mergeChannels<UINT8, RGB>;
-%template(crop) smil::crop<RGB>;
 #endif // SMIL_WRAP_RGB
 
 TEMPLATE_WRAP_FUNC(inv);
