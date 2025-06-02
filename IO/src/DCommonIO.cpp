@@ -146,6 +146,7 @@ namespace smil
       curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, fp);
       curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
       curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 3L);
+      curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0L);
       res = curl_easy_perform(curl_handle);
       if (res != CURLE_OK) {
         cout << "Curl error : " << res << endl;
