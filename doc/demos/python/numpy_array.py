@@ -24,5 +24,3 @@ imArr[:, :][index] = 255
 
 # Call the "modified" method in order to update the viewer content
 im1.modified()
-
-input()

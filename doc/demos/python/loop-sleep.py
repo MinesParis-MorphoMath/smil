@@ -13,7 +13,6 @@ imOut = sp.Image(imIn)
 imIn.show("Input image")
 imOut.show()
 
-input("Hit the enter key to begin")
 for i in range(0, 8):
     s = "Open SE({:})".format(i)
     print(s)
@@ -25,5 +24,3 @@ for i in range(0, 8):
     sp.Gui.processEvents()
     # an optional wait of 0.4 seconds
     time.sleep(0.4)
-
-input("Hit the enter key to exit")

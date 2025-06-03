@@ -20,12 +20,8 @@ imB.show("dilate")
 r = sp.erode(imIn, imA, se())
 r = sp.dilate(imIn, imB, se())
 
-input("Hit enter to continue")
-
 # now let's do some filtering with a SE of size 2
 r = sp.open(imIn, imA, se(2))
 imA.setName("open")
 r = sp.close(imIn, imB, se(2))
 imB.setName("close")
-
-input("Hit enter to continue")
