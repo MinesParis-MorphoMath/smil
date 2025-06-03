@@ -41,8 +41,6 @@
 #include "Core/include/DBinary.h"
 #include "Core/include/DCommon.h"
 
-class QwtPointSeriesData;
-
 class QImageGraphicsScene : public QGraphicsScene
 {
   Q_OBJECT
