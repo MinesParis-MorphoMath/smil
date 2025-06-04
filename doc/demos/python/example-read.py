@@ -1,7 +1,7 @@
 import smilPython as sp
 
 img = sp.Image()
-r = sp.getFileInfo("lena.jpg", img)
+r = sp.read("lena.png", img)
 
 # Note, this is the same as :
-img = sp.Image("lena.jpg")
+img = sp.Image("lena.png")

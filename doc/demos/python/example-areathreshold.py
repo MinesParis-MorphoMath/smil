@@ -13,14 +13,14 @@ sp.label(im, iml)
 im.show("balls.png")
 iml.showLabel("iml")
 
-sp.areaThreshold(iml, thresh, True, img)
+sp.areaThreshold(iml, thresh, img, True)
 img.showLabel("img")
-sp.areaThreshold(im, thresh, False, ims)
+sp.areaThreshold(im, thresh, ims, False)
 ims.show("ims")
 
 nlold = 0
 for threshold in range(1, 6000, 20):
-    sp.areaThreshold(im, threshold, True, ims)
+    sp.areaThreshold(im, threshold, ims, True)
     nl = sp.label(ims, iml)
     if nl != nlold:
         print(" Threshold {:6d} : {:3d} blobs".format(threshold, nl))
