@@ -30,11 +30,7 @@
 #ifndef _D_IMAGE_IO_HXX
 #define _D_IMAGE_IO_HXX
 
-#if __cplusplus >= 201103L
 #include <memory>
-#define auto_ptr unique_ptr
-#else
-#endif // __cplusplus > 201103L
 
 #include "IO/include/DCommonIO.h"
 #include "DImageIO.hpp"
@@ -136,7 +132,7 @@ namespace smil
       return read(buf.c_str(), image);
     }
 
-    auto_ptr<ImageFileHandler<T>> fHandler(getHandlerForFile<T>(filename));
+    std::unique_ptr<ImageFileHandler<T>> fHandler(getHandlerForFile<T>(filename));
 
     if (fHandler.get())
       return fHandler->read(filename, image);
@@ -185,7 +181,7 @@ namespace smil
   {
     string fileExt = getFileExtension(filename);
 
-    auto_ptr<ImageFileHandler<T>> fHandler(getHandlerForFile<T>(filename));
+    std::unique_ptr<ImageFileHandler<T>> fHandler(getHandlerForFile<T>(filename));
 
     if (fHandler.get())
       return fHandler->write(image, filename);
