@@ -1,0 +1,85 @@
+name: nonreg-tests_ubuntu-latest
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        py: [
+          "3.9",
+          "3.10",
+          "3.11",
+          "3.12",
+          "3.13",
+        ]
+    env:
+      QT_QPA_PLATFORM: offscreen
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -yq \
+            libaa1-dev \
+            libcurl4-openssl-dev \
+            libfreetype-dev \
+            libpng-dev \
+            libtiff-dev \
+            qtbase5-dev \
+            libqwt-qt5-dev \
+            ninja-build
+
+      - name: Setup Python Version
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.py }}
+
+      - name: Install Python dependencies
+        run: |
+          python3 -m pip install numpy swig
+
+      - name: Run sccache-cache
+        uses: mozilla-actions/sccache-action@v0.0.9
+
+      - name: Create & configure Smil build directory
+        run: |
+          mkdir build && cd build
+          cmake \
+            -DCMAKE_COMPILE_WARNING_AS_ERROR=ON \
+            -DBUILD_TEST=ON \
+            -DWRAP_PYTHON=ON \
+            -DUSE_NUMPY=ON \
+            $GITHUB_WORKSPACE
+        env:
+          CMAKE_GENERATOR: Ninja
+          CMAKE_BUILD_TYPE: Release
+          CMAKE_CC_COMPILER_LAUNCHER: sccache
+          CMAKE_CXX_COMPILER_LAUNCHER: sccache
+          SCCACHE_GHA_ENABLED: "true"
+
+      - name: Build Smil
+        run: |
+          cd build
+          cmake --build . --parallel 3
+
+      - name: Install Smil
+        run: |
+          cd build
+          sudo cmake --build . --target install
+
+      - name: Execute non-regression tests and benchmarks
+        run: |
+          cd build
+          ctest
+
+      - name: Test Python import
+        run: |
+          python -c "import smilPython"
+        env:
+          PYTHONPATH: /usr/local/lib/Smil:/usr/local/lib/Smil/smilPython

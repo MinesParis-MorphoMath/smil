@@ -1,0 +1,23 @@
+name: nonreg-tests
+
+on:
+  # Activate the workflow at each push on dev branch
+  push:
+    branches: [ master ]
+  # Activate the workflow at each pull request on dev branch
+  pull_request:
+    branches: [ master ]
+  # Activate the workflow every Sunday at 23:30 UTC = for Paris 00:30 (summer) or 01:30 (winter)
+  schedule:
+    # * is a special character in YAML so you have to quote the string
+    - cron:  '30 23 * * 0'
+  # Permit manual trigger
+  workflow_dispatch:
+
+jobs:
+  call-macos-latest:
+    uses: ./.github/workflows/nonreg-tests_macos-latest.yml
+  call-windows-latest:
+    uses: ./.github/workflows/nonreg-tests_windows-latest.yml
+  call-ubuntu-latest:
+    uses: ./.github/workflows/nonreg-tests_ubuntu-latest.yml
