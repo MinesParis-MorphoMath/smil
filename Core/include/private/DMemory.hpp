@@ -109,7 +109,7 @@ namespace smil
 #include <stdlib.h>
 namespace smil
 {
-  inline void *aligned_malloc(size_t size, size_t align = SIMD_VEC_SIZE)
+  inline void *aligned_malloc(size_t size, [[maybe_unused]] size_t align = SIMD_VEC_SIZE)
   {
     return malloc(size);
   }
@@ -123,7 +123,7 @@ namespace smil
 #include <stdlib.h>
 namespace smil
 {
-  inline void *aligned_malloc(size_t size, size_t align = SIMD_VEC_SIZE)
+  inline void *aligned_malloc(size_t size, [[maybe_unused]] size_t align = SIMD_VEC_SIZE)
   {
     return malloc(size);
   }

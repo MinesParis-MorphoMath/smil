@@ -498,7 +498,7 @@ namespace smil
     }
 
 #define CVTFUNCS 1
-    void getCoordsFromOffset(off_t offset, off_t W, off_t H, off_t D, off_t &x,
+    void getCoordsFromOffset(off_t offset, off_t W, off_t H, [[maybe_unused]] off_t D, off_t &x,
                              off_t &y, off_t &z)
     {
       x      = offset % W;

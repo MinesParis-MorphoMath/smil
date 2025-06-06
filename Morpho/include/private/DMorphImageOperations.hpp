@@ -102,7 +102,9 @@ namespace smil
     virtual inline void processLine(lineInType pixIn, lineOutType pixOut,
                                     size_t &pixNbr, const StrElt &se);
     virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsets);
-    virtual inline void processPixel(IntPoint &point, vector<IntPoint> &dOffsets)
+    virtual inline void
+    processPixel([[maybe_unused]] IntPoint         &point,
+                 [[maybe_unused]] vector<IntPoint> &dOffsets)
     {
     }
 

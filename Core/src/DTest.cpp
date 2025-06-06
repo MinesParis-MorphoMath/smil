@@ -79,6 +79,8 @@ namespace smil
       }
       (*f)->end();
     }
+    std::cout << "Passed: " << nPassed << '\n';
+    std::cout << "Failed: " << nFailed << '\n';
     if (retVal == RES_OK)
       return 0;
     else

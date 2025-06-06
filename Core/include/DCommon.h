@@ -136,15 +136,6 @@ namespace smil
     {
     }
 
-    /** Constructor from another point
-     *
-     * @note
-     * Both points shall be of the same data type
-     */
-    Point(const Point &pt) : x(pt.x), y(pt.y), z(pt.z)
-    {
-    }
-
     /** @b 3D Point Constructor
      *
      * @param[in] _x, _y, _z : initial coordinates
@@ -287,17 +278,6 @@ namespace smil
       depth  = Size[2];
       pt.x = pt.y = pt.z = 0;
       reference = 0;
-    }
-
-    /** ImageBox - constructor
-     *
-     * @details Build the data structure copying data from another ImageBox
-     * data
-     * @param[in] box :
-     */
-    ImageBox(const ImageBox &box)
-    {
-      *this     = box;
     }
 
     /** ImageBox - constructor
