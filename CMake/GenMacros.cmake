@@ -97,6 +97,14 @@ MACRO(ADD_SMIL_LIBRARY _LIB_NAME)
 
   IF (LIB_SRCS)
     ADD_LIBRARY(${LIB_NAME} ${LIB_SRCS} ${_TARGET_ADDITIONAL_SOURCES})
+
+    if(NOT MSVC)
+      target_compile_options(${LIB_NAME} PRIVATE
+        -Wall -Wextra -Wsign-compare
+        -Wno-strict-aliasing -Wno-unused-function
+      )
+    endif()
+
     IF (_TARGET_COMPILE_FLAGS)
       SET_TARGET_PROPERTIES(${LIB_NAME} PROPERTIES COMPILE_FLAGS 
                             ${_TARGET_COMPILE_FLAGS})
@@ -157,12 +165,7 @@ MACRO(ADD_SMIL_LIBRARY _LIB_NAME)
     SET_SOURCE_FILES_PROPERTIES(${LIB_NAME}.i PROPERTIES CPLUSPLUS ON)
         
     ADD_DEFINITIONS(-DSWIG_WRAP_${UPPER_LIB_NAME})
-    IF(NOT MSVC)
-      ADD_DEFINITIONS(-Wno-strict-aliasing -Wno-unused-function)
-    ENDIF(NOT MSVC)
-    IF(NOT CMAKE_COMPILER_IS_CLANGXX AND NOT MSVC)
-      ADD_DEFINITIONS("-Wno-maybe-uninitialized")
-    ENDIF(NOT CMAKE_COMPILER_IS_CLANGXX AND NOT MSVC)
+
     IF(MSVC)
       ADD_DEFINITIONS("/bigobj")
     ENDIF(MSVC)
