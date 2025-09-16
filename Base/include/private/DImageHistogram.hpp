@@ -34,6 +34,7 @@
 
 #include "DLineHistogram.hpp"
 #include "DImageArith.hpp"
+#include "DMeasures.hpp"
 
 #ifdef USE_OPEN_MP
 #include <omp.h>
