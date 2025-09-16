@@ -61,16 +61,16 @@ namespace smil
 
   BaseImage *createFromFile(const char *filename)
   {
-    string fileExt    = getFileExtension(filename);
-    string filePrefix = (string(filename).substr(0, 7));
-    string prefix     = string(filename);
+    std::string fileExt    = getFileExtension(filename);
+    std::string filePrefix = (std::string(filename).substr(0, 7));
+    std::string prefix     = std::string(filename);
 
     if (prefix.find("http://") == 0 || prefix.find("https://") == 0) {
       BaseImage *img = NULL;
 #ifdef USE_CURL
-      string tmpFileName = "_smilTmpIO." + fileExt;
+      std::string tmpFileName = "_smilTmpIO." + fileExt;
       if (getHttpFile(filename, tmpFileName.c_str()) != RES_OK) {
-        ERR_MSG(string("Error downloading file ") + filename);
+        ERR_MSG(std::string("Error downloading file ") + filename);
         return img;
       }
       img = createFromFile(tmpFileName.c_str());

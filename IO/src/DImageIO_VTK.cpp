@@ -46,7 +46,7 @@ namespace smil
         return nbr;
     }
     
-    RES_T readVTKHeader(ifstream &fp, VTKHeader &hStruct)
+  RES_T readVTKHeader(std::ifstream &fp, VTKHeader &hStruct)
     {
         std::string buf, wrd;
         std::vector<std::string> bufElems;
@@ -77,7 +77,7 @@ namespace smil
             {
                 if (bufElems[1]!="STRUCTURED_POINTS")
                 {
-                    cout << "Error: vtk file type " << bufElems[1] << " not supported (must be STRUCTURED_POINTS)" << endl;
+                  std::cout << "Error: vtk file type " << bufElems[1] << " not supported (must be STRUCTURED_POINTS)" << std::endl;
                     return RES_ERR;
                 }
             }

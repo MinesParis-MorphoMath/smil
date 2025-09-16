@@ -66,11 +66,11 @@ namespace smil
 
     HierarchicalQueue<T, Offset_T> hq;
 
-    vector<T>          levels;
-    vector<Label_T>    children;
-    vector<Label_T>    brothers;
-    vector<CriterionT> criteria;
-    vector<Label_T>    labels;
+    std::vector<T>          levels;
+    std::vector<Label_T>    children;
+    std::vector<Label_T>    brothers;
+    std::vector<CriterionT> criteria;
+    std::vector<Label_T>    labels;
 
     Label_T curLabel;
 
@@ -127,7 +127,7 @@ namespace smil
       oddSE = se.odd;
 
       // set an offset distance for each se point (!=0,0,0)
-      for (vector<IntPoint>::const_iterator it = se.points.begin();
+      for (std::vector<IntPoint>::const_iterator it = se.points.begin();
            it != se.points.end(); it++) {
         if (it->x != 0 || it->y != 0 || it->z != 0) {
           sePts.push_back(*it);
@@ -303,10 +303,10 @@ namespace smil
   protected:
     size_t imSize[3];
 
-    vector<IntPoint> sePts;
+    std::vector<IntPoint> sePts;
     UINT             sePtsNbr;
     bool             oddSE;
-    vector<int>      dOffsets;
+    std::vector<int>      dOffsets;
 
   public:
     inline CriterionT &getCriterion(const Label_T node)

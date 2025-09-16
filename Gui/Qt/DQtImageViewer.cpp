@@ -46,7 +46,7 @@ namespace smil
     size_t h = this->image->getHeight();
 
     if (!parentClass::labelImage && autoRange) {
-      vector<UINT8> rangeV = rangeVal<UINT8>(*this->image);
+      std::vector<UINT8> rangeV = rangeVal<UINT8>(*this->image);
       double        floor  = rangeV[0];
       double        coeff  = 255. / double(rangeV[1] - rangeV[0]);
       UINT8 *       destLine;

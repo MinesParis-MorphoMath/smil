@@ -233,10 +233,10 @@ namespace smil
     typedef MorphImageFunctionBase<T, T> parentClass;
 
     virtual inline void processPixel(size_t pointOffset,
-                                     vector<int> &dOffsetList)
+                                     std::vector<int> &dOffsetList)
     {
       double meanVal                = 0;
-      vector<int>::iterator dOffset = dOffsetList.begin();
+      std::vector<int>::iterator dOffset = dOffsetList.begin();
       while (dOffset != dOffsetList.end()) {
         meanVal += double(parentClass::pixelsIn[pointOffset + *dOffset]);
         dOffset++;
@@ -275,10 +275,10 @@ namespace smil
     typedef MorphImageFunctionBase<T, T> parentClass;
 
     virtual inline void processPixel(size_t pointOffset,
-                                     vector<int> &dOffsetList)
+                                     std::vector<int> &dOffsetList)
     {
-      vector<T> vals;
-      vector<int>::iterator dOffset = dOffsetList.begin();
+      std::vector<T> vals;
+      std::vector<int>::iterator dOffset = dOffsetList.begin();
       while (dOffset != dOffsetList.end()) {
         vals.push_back(parentClass::pixelsIn[pointOffset + *dOffset]);
         dOffset++;
@@ -320,10 +320,10 @@ namespace smil
     {
     }
     virtual inline void processPixel(size_t pointOffset,
-                                     vector<int> &dOffsetList)
+                                     std::vector<int> &dOffsetList)
     {
-      vector<T> vals;
-      vector<int>::iterator dOffset = dOffsetList.begin();
+      std::vector<T> vals;
+      std::vector<int>::iterator dOffset = dOffsetList.begin();
       while (dOffset != dOffsetList.end()) {
         vals.push_back(parentClass::pixelsIn[pointOffset + *dOffset]);
         dOffset++;

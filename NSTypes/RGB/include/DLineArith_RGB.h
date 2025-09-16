@@ -136,7 +136,7 @@ namespace smil
     struct equLine<RGB> : public binaryLineFunctionBase<RGB>
     {
         equLine() 
-          : trueVal(numeric_limits<UINT8>::max()), falseVal(0) {}
+          : trueVal(std::numeric_limits<UINT8>::max()), falseVal(0) {}
           
         UINT8 trueVal, falseVal;
           

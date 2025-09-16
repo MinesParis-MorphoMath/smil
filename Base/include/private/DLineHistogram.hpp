@@ -69,10 +69,10 @@ namespace smil
 
       for (size_t i = 0; i < size; i++) {
         newVal = double(outOrig) + (double(lIn[i]) - double(inOrig)) * coeff;
-        if (newVal > double(numeric_limits<Tout>::max()))
-          newVal = numeric_limits<Tout>::max();
-        else if (newVal < double(numeric_limits<Tout>::min()))
-          newVal = numeric_limits<Tout>::min();
+        if (newVal > double(std::numeric_limits<Tout>::max()))
+          newVal = std::numeric_limits<Tout>::max();
+        else if (newVal < double(std::numeric_limits<Tout>::min()))
+          newVal = std::numeric_limits<Tout>::min();
         lOut[i] = Tout(round(newVal));
       }
     }

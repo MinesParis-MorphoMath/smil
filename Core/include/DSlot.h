@@ -32,8 +32,6 @@
 #include <vector>
 #include <iostream>
 
-using namespace std;
-
 #include "DCommon.h"
 
 namespace smil
@@ -59,7 +57,7 @@ namespace smil
       virtual void registerSignal(Signal *signal);
       virtual void unregisterSignal(Signal *signal, bool _disconnect=true);
       virtual void unregisterAll();
-      vector<Signal*> _signals;
+      std::vector<Signal*> _signals;
 #endif // SWIG      
     };
 

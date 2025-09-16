@@ -51,7 +51,7 @@ namespace smil
       {}
       ~BufferPool()
       {
-        for (typename vector<bufferType>::iterator it = buffers.begin();
+        for (typename std::vector<bufferType>::iterator it = buffers.begin();
              it != buffers.end(); it++) {
           ImDtTypes<T>::deleteLine(*it);
         }
@@ -107,9 +107,9 @@ namespace smil
         }
         return buf;
       }
-      vector<bufferType> getBuffers(size_t nbr)
+      std::vector<bufferType> getBuffers(size_t nbr)
       {
-        vector<bufferType> buffVect;
+        std::vector<bufferType> buffVect;
         
         for (int i=0;i<nbr;i++)
           buffVect.push_back(this->getBuffer());
@@ -122,7 +122,7 @@ namespace smil
           availableBuffers.push(buf);
           buf = NULL;
       }
-      void releaseBuffers(vector<bufferType> &bufs)
+      void releaseBuffers(std::vector<bufferType> &bufs)
       {
           for (int i=0;i<bufs.size();i++)
             availableBuffers.push(bufs[i]);
@@ -132,7 +132,7 @@ namespace smil
       {
           while (!availableBuffers.empty())
             availableBuffers.pop();
-          for (typename vector<bufferType>::iterator it=buffers.begin();it!=buffers.end();it++)
+          for (typename std::vector<bufferType>::iterator it=buffers.begin();it!=buffers.end();it++)
             availableBuffers.push(*it);
       }
     protected:
@@ -147,8 +147,8 @@ namespace smil
         
           return true;
       }
-      stack<bufferType> availableBuffers;
-      vector<bufferType> buffers;
+      std::stack<bufferType> availableBuffers;
+      std::vector<bufferType> buffers;
       size_t bufferSize;
       size_t numberOfBuffers;
       size_t maxNumberOfBuffers;

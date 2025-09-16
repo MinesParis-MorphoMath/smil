@@ -81,6 +81,7 @@ builtinOpen = open
 %include "Morpho/include/DStructuringElement.h"
 #endif // SWIGPYTHON
 
+using namespace std;
 
 %include "Morpho/include/private/DMorphImageOperations.hpp"
 %feature("director") MorphImageFunctionBase;

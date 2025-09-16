@@ -206,7 +206,7 @@ namespace smil
     template <>
     inline char *Image<RGB>::toCharArray()
     {
-        cout << "Not implemented for RGB images" << endl;
+      std::cout << "Not implemented for RGB images" << std::endl;
         return NULL;
     }
 #endif // SWIGPYTHON        

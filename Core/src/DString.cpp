@@ -34,9 +34,9 @@
 namespace smil
 {
 
-    vector<string> splitString(const string &s, const char *delimiters)
+    std::vector<std::string> splitString(const std::string &s, const char *delimiters)
     {
-        vector<string> stringList;
+        std::vector<std::string> stringList;
         size_t current;
         size_t next = -1;
         do
@@ -45,12 +45,12 @@ namespace smil
             next = s.find_first_of( delimiters, current );
             stringList.push_back(s.substr( current, next - current ));
         }
-        while (next != string::npos);
+        while (next != std::string::npos);
         
         return stringList;
     }
     
-    vector<string> splitLines(const string &buf)
+    std::vector<std::string> splitLines(const std::string &buf)
     {
         return splitString(buf, "\n");
     }

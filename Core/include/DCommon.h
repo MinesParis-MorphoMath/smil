@@ -41,8 +41,6 @@
 
 #include "private/DTypes.hpp"
 
-using namespace std;
-
 namespace smil
 {
   /**
@@ -184,9 +182,9 @@ namespace smil
     /** printSelf() - Print point coordinates
      * @param[in] indent : prefix to add to each line
      */
-    void printSelf(string indent = "")
+    void printSelf(std::string indent = "")
     {
-      cout << indent << " " << x << "\t" << y << "\t" << z << endl;
+      std::cout << indent << " " << x << "\t" << y << "\t" << z << std::endl;
     }
   };
 
@@ -212,31 +210,31 @@ namespace smil
    *
    * A vector of @b double values
    */
-  typedef vector<double> Vector_double;
+  typedef std::vector<double> Vector_double;
 
   /** Matrix_double
    *
    * A Matrix of @b double values implemented as a vector of vectors
    */
-  typedef vector<Vector_double> Matrix_double;
+  typedef std::vector<Vector_double> Matrix_double;
 
   /** Vector_UINT
    *
    * A vector of @b UINT (unsigned int) values
    */
-  typedef vector<UINT> Vector_UINT;
+  typedef std::vector<UINT> Vector_UINT;
 
   /** Vector_size_t
    *
    * A vector of @b size_t values (natural - non negative values)
    */
-  typedef vector<size_t> Vector_size_t;
+  typedef std::vector<size_t> Vector_size_t;
 
   /** Vector_off_t
    *
    * A vector of @b off_t values (integer - positive and negative values)
    */
-  typedef vector<off_t> Vector_off_t;
+  typedef std::vector<off_t> Vector_off_t;
 
   /**
    * Rectangle
@@ -483,10 +481,10 @@ namespace smil
 
     void printSelf()
     {
-      cout << "ImageBox :" << endl;
-      cout << "  Width :\t" << width << endl;
-      cout << "  Height:\t" << height << endl;
-      cout << "  Depth :\t" << depth << endl;
+      std::cout << "ImageBox :" << std::endl;
+      std::cout << "  Width :\t" << width << std::endl;
+      std::cout << "  Height:\t" << height << std::endl;
+      std::cout << "  Depth :\t" << depth << std::endl;
     }
   };
 

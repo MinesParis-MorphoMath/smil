@@ -33,12 +33,10 @@
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
 namespace smil
 {
-    vector<string> splitString(const string &buf, const char *delimiters);
-    vector<string> splitLines(const string &buf);
+    std::vector<std::string> splitString(const std::string &buf, const char *delimiters);
+    std::vector<std::string> splitLines(const std::string &buf);
 
 } // namespace smil
 

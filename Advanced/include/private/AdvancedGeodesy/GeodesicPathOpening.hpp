@@ -50,8 +50,6 @@
 #include <map>
 #include "Core/include/DCore.h"
 
-using namespace std;
-
 namespace smil
 {
   /**
@@ -90,7 +88,7 @@ namespace smil
   public:
     AdvancedGeodesy()
     {
-      cout << "Shall be initialized with an input image" << endl;
+      std::cout << "Shall be initialized with an input image" << std::endl;
       _init(nullptr);
     }
 
@@ -111,7 +109,7 @@ namespace smil
   public:
     template <class T1, class T2>
     RES_T labelFlatZonesWithProperty(const Image<T1> &imIn, Image<T2> &imOut,
-                                     string property)
+                                     std::string property)
     {
       // Check inputs
       ASSERT_ALLOCATED(&imIn)
@@ -139,8 +137,8 @@ namespace smil
       typename Image<T1>::lineType pixelsIn  = imIn.getPixels();
       typename Image<T2>::lineType pixelsOut = imOut.getPixels();
 
-      vector<double> DistanceMap(nbPixels);
-      vector<double> LabelMap(nbPixels);
+      std::vector<double> DistanceMap(nbPixels);
+      std::vector<double> LabelMap(nbPixels);
 
       off_t slice, Ind;
       off_t j, i;
@@ -168,7 +166,7 @@ namespace smil
     //
     template <class T1, class T2>
     RES_T GeodesicProperty(const Image<T1> &imIn, Image<T2> &imOut,
-                           string property, bool sliceBySlice, double dzOverDx)
+                           std::string property, bool sliceBySlice, double dzOverDx)
     {
       // Check inputs
       ASSERT_ALLOCATED(&imIn)
@@ -196,7 +194,7 @@ namespace smil
       typename Image<T1>::lineType pixelsIn  = imIn.getPixels();
       typename Image<T2>::lineType pixelsOut = imOut.getPixels();
 
-      vector<double> DistanceMap(nbPixels);
+      std::vector<double> DistanceMap(nbPixels);
 
       T1 vMed = maxVal(imIn) / 2;
       if (sliceBySlice) {
@@ -230,7 +228,7 @@ namespace smil
     //
     template <typename T1, typename T2>
     RES_T GeodesicPathOpening(const Image<T1> &imIn, Image<T2> &imOut,
-                              double Lenght, string &property, double scaleX,
+                              double Lenght, std::string &property, double scaleX,
                               double scaleY, double scaleZ)
     {
       // Check inputs
@@ -269,7 +267,7 @@ namespace smil
       for (auto it = hGood.begin(); it != hGood.end(); it++)
         levelToDo.push_back(it->first);
 
-      vector<double> DistanceMap(nbPixels);
+      std::vector<double> DistanceMap(nbPixels);
 
       // UseLess to compute the first level
       if (levelToDo.size() > 0)
@@ -321,16 +319,16 @@ namespace smil
       typename Image<T1>::lineType pixelsTrans = imTrans.getPixels();
       typename Image<T2>::lineType pixelsInd   = imInd.getPixels();
 
-      map<T1, bool> hGood;
-      vector<T1>    levelToDo;
+      std::map<T1, bool> hGood;
+      std::vector<T1>    levelToDo;
       levelToDo.push_back(0);
       for (off_t i = 0; i < nbPixels; i++)
         hGood[pixelsIn[i]] = true;
       for (auto it = hGood.begin(); it != hGood.end(); it++)
         levelToDo.push_back(it->first + 1);
 
-      vector<double>               DistanceMap(nbPixels);
-      vector<vector<AdvGeoPoints>> PathOp(nbPixels);
+      std::vector<double>               DistanceMap(nbPixels);
+      std::vector<std::vector<AdvGeoPoints>> PathOp(nbPixels);
       AdvGeoPoints                 Pt;
 
       // For all the level which are needed
@@ -364,10 +362,10 @@ namespace smil
       typename Image<T1>::lineType pixelsPOold = imPOold.getPixels();
 
       int          ValPO, Sub;
-      vector<INT8> Accumulation(nbPixels, 0);
+      std::vector<INT8> Accumulation(nbPixels, 0);
 
       // if the Stop criteria is not defined we set it to max(W,H) -1
-      off_t gtDim = max(W, max(H, Z)) - 1;
+      off_t gtDim = std::max(W, std::max(H, Z)) - 1;
       if (stop < 0 || stop > gtDim)
         stop = gtDim;
 
@@ -431,7 +429,7 @@ namespace smil
   private:
     //
     // Class data
-    map<string, int> property2id = {{"geodesicDiameter", 0},
+    std::map<std::string, int> property2id = {{"geodesicDiameter", 0},
                                     {"elongation", 1},
                                     {"tortuosity", 2},
                                     {"extremities", 3}};
@@ -472,9 +470,9 @@ namespace smil
       se = se.noCenter();
     }
 
-    int getPropertyID(string &p)
+    int getPropertyID(std::string &p)
     {
-      map<string, int>::iterator it;
+      std::map<std::string, int>::iterator it;
 
       it = property2id.find(p);
       if (it != property2id.end())
@@ -519,9 +517,9 @@ namespace smil
     //
     // Work functions
     //
-    void _GeodesicPathFlatZones(vector<double> &DistanceMap,
-                                vector<double> &LabelMap,
-                                queue<off_t> &fifoSave, off_t W, off_t H,
+    void _GeodesicPathFlatZones(std::vector<double> &DistanceMap,
+                                std::vector<double> &LabelMap,
+                                std::queue<off_t> &fifoSave, off_t W, off_t H,
                                 off_t D, off_t BaryX, off_t BaryY, off_t BaryZ,
                                 int Allongement = 0, double scaleX = 1,
                                 double scaleY = 1, double scaleZ = 1)
@@ -536,7 +534,7 @@ namespace smil
 
       // Find the BaryCentre
       // Copy of fifoCurrent
-      queue<off_t> fifoCurrent = fifoSave;
+      std::queue<off_t> fifoCurrent = fifoSave;
       // Find the first Pixel (farest from the barycenter -- using Eucludean
       // distance because barycenter could not be inside the object)
       do {
@@ -700,12 +698,12 @@ namespace smil
     //
     //
     //
-    void _GeodesicPathOnLabels(vector<double> &DistanceMap,
-                               vector<double> &LabelMap, off_t W, off_t H,
+    void _GeodesicPathOnLabels(std::vector<double> &DistanceMap,
+                               std::vector<double> &LabelMap, off_t W, off_t H,
                                off_t D, int Allongement = 0, double scaleX = 1,
                                double scaleY = 1, double scaleZ = 1)
     {
-      queue<off_t> fifoCurrent, fifoSave;
+      std::queue<off_t> fifoCurrent, fifoSave;
       off_t        X, Y, Z;
       off_t        currentPixel;
       off_t        Ind, IndCurr;
@@ -786,11 +784,11 @@ namespace smil
     //
     //
     //
-    void _GeodesicPathBinary(vector<double> &DistanceMap, off_t W, off_t H,
+    void _GeodesicPathBinary(std::vector<double> &DistanceMap, off_t W, off_t H,
                              off_t D, int Allongement = 0, double scaleX = 1,
                              double scaleY = 1, double scaleZ = 1)
     {
-      queue<off_t> fifoCurrent, fifoSave;
+      std::queue<off_t> fifoCurrent, fifoSave;
       off_t        X, Y, Z;
       off_t        currentPixel;
       off_t        Ind;
@@ -860,7 +858,7 @@ namespace smil
     //
     //
     //
-    void _GeodesicPathCC(vector<double> &DistanceMap, queue<off_t> &fifoSave,
+    void _GeodesicPathCC(std::vector<double> &DistanceMap, std::queue<off_t> &fifoSave,
                          off_t W, off_t H, off_t D, off_t BaryX, off_t BaryY,
                          off_t BaryZ, int Allongement = 0, double scaleX = 1,
                          double scaleY = 1, double scaleZ = 1)
@@ -876,7 +874,7 @@ namespace smil
       Xtort = Ytort = Ztort = 0;
 
       // Find the BaryCentre
-      queue<off_t> fifoCurrent = fifoSave; // Copy of fifoCurrent
+      std::queue<off_t> fifoCurrent = fifoSave; // Copy of fifoCurrent
 
       // Find the first Pixel (farest from the barycenter -- using Eucludean
       // distance because barycenter could not be inside the object)
@@ -1054,7 +1052,7 @@ namespace smil
    */
   template <typename T1, typename T2>
   RES_T labelFlatZonesWithProperty(const Image<T1> &imIn, Image<T2> &imOut,
-                                   string property = "geodesicDiameter")
+                                   std::string property = "geodesicDiameter")
   {
     AdvancedGeodesy<T1> mge(imIn);
     return mge.labelFlatZonesWithProperty(imIn, imOut, property);
@@ -1195,7 +1193,7 @@ namespace smil
    */
   template <typename T1, typename T2>
   RES_T geodesicProperty(const Image<T1> &imIn, Image<T2> &imOut,
-                         string property   = "geodesicDiameter",
+                         std::string property   = "geodesicDiameter",
                          bool sliceBySlice = false, double dzOverDx = 1.)
   {
     AdvancedGeodesy<T1> mge(imIn);
@@ -1217,7 +1215,7 @@ namespace smil
    */
   template <typename T1, typename T2>
   RES_T geodesicPathOpening(const Image<T1> &imIn, Image<T2> &imOut,
-                            double lenght, string property = "geodesicDiameter",
+                            double lenght, std::string property = "geodesicDiameter",
                             double scaleX = 1., double scaleY = 1.,
                             double scaleZ = 1.)
   {
@@ -1241,7 +1239,7 @@ namespace smil
    */
   template <typename T1, typename T2>
   RES_T geodesicPathClosing(const Image<T1> &imIn, Image<T2> &imOut,
-                            double lenght, string property = "geodesicDiameter",
+                            double lenght, std::string property = "geodesicDiameter",
                             double scaleX = 1., double scaleY = 1.,
                             double scaleZ = 1.)
   {

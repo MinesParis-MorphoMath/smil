@@ -59,7 +59,7 @@ namespace smil
     typedef typename ImDtTypes<T_out>::volType   volOutType;
 
     unaryMorphArrowImageFunction(
-        T_in border             = numeric_limits<T_in>::min(),
+        T_in border             = std::numeric_limits<T_in>::min(),
         T_out /*_initialValue*/ = ImDtTypes<T_out>::min())
         : MorphImageFunction<T_in, lineFunction_T, T_out>(border)
     {
@@ -158,7 +158,7 @@ namespace smil
   template <class T_in, class T_out>
   RES_T arrowLow(const Image<T_in> &imIn, Image<T_out> &imOut,
                  const StrElt &se          = DEFAULT_SE,
-                 T_in          borderValue = numeric_limits<T_in>::min())
+                 T_in          borderValue = std::numeric_limits<T_in>::min())
   {
     unaryMorphArrowImageFunction<T_in, lowSupLine<T_in, T_out>, T_out> iFunc(
         borderValue);
@@ -168,7 +168,7 @@ namespace smil
   template <class T_in, class T_out>
   RES_T arrowLowOrEqu(const Image<T_in> &imIn, Image<T_out> &imOut,
                       const StrElt &se          = DEFAULT_SE,
-                      T_in          borderValue = numeric_limits<T_in>::min())
+                      T_in          borderValue = std::numeric_limits<T_in>::min())
   {
     unaryMorphArrowImageFunction<T_in, lowOrEquSupLine<T_in, T_out>, T_out>
         iFunc(borderValue);
@@ -178,7 +178,7 @@ namespace smil
   template <class T_in, class T_out>
   RES_T arrowGrt(const Image<T_in> &imIn, Image<T_out> &imOut,
                  const StrElt &se          = DEFAULT_SE,
-                 T_in          borderValue = numeric_limits<T_in>::min())
+                 T_in          borderValue = std::numeric_limits<T_in>::min())
   {
     unaryMorphArrowImageFunction<T_in, grtSupLine<T_in, T_out>, T_out> iFunc(
         borderValue);
@@ -188,7 +188,7 @@ namespace smil
   template <class T_in, class T_out>
   RES_T arrowGrtOrEqu(const Image<T_in> &imIn, Image<T_out> &imOut,
                       const StrElt &se          = DEFAULT_SE,
-                      T_in          borderValue = numeric_limits<T_in>::min())
+                      T_in          borderValue = std::numeric_limits<T_in>::min())
   {
     unaryMorphArrowImageFunction<T_in, grtOrEquSupLine<T_in, T_out>, T_out>
         iFunc(borderValue);
@@ -198,7 +198,7 @@ namespace smil
   template <class T_in, class T_out>
   RES_T arrowEqu(const Image<T_in> &imIn, Image<T_out> &imOut,
                  const StrElt &se          = DEFAULT_SE,
-                 T_in          borderValue = numeric_limits<T_in>::min())
+                 T_in          borderValue = std::numeric_limits<T_in>::min())
   {
     unaryMorphArrowImageFunction<T_in, equSupLine<T_in, T_out>, T_out> iFunc(
         borderValue);
@@ -217,7 +217,7 @@ namespace smil
   template <class T_in, class T_out>
   RES_T arrow(const Image<T_in> &imIn, const char *operation,
               Image<T_out> &imOut, const StrElt &se = DEFAULT_SE,
-              T_in borderValue = numeric_limits<T_in>::min())
+              T_in borderValue = std::numeric_limits<T_in>::min())
   {
     if (strcmp(operation, "==") == 0)
       return arrowEqu(imIn, imOut, se, borderValue);
@@ -374,7 +374,7 @@ namespace smil
     typedef typename imageArrowType::sliceType sliceArrowType;
     typedef typename imageArrowType::volType   volArrowType;
 
-    arrowMinFunction(T border = numeric_limits<T>::max())
+    arrowMinFunction(T border = std::numeric_limits<T>::max())
         : borderValue(border), MorphImageFunctionBase<T, arrowT>()
     {
     }
@@ -478,7 +478,7 @@ namespace smil
 
   template <class T, class arrowT>
   RES_T arrowMin(const Image<T> &im, Image<arrowT> &arrow, const StrElt &se,
-                 T borderValue = numeric_limits<T>::max())
+                 T borderValue = std::numeric_limits<T>::max())
   {
     arrowMinFunction<T, arrowT> iFunc(borderValue);
     return iFunc(im, arrow, se);
@@ -498,7 +498,7 @@ namespace smil
     typedef typename imageArrowType::sliceType sliceArrowType;
     typedef typename imageArrowType::volType   volArrowType;
 
-    arrowMinStepFunction(T border = numeric_limits<T>::max())
+    arrowMinStepFunction(T border = std::numeric_limits<T>::max())
         : borderValue(border), MorphImageFunctionBase<T, arrowT>()
     {
       borderValue = border;
@@ -559,7 +559,7 @@ namespace smil
       fillLine<T>(nullBuf, lineLen, arrowT(0));
       fillLine<T>(borderBuf, lineLen, T(borderValue));
       equ.trueVal  = 0;
-      equ.falseVal = numeric_limits<T>::max();
+      equ.falseVal = std::numeric_limits<T>::max();
 
       lineInType    lineIn;
       lineArrowType lineArrow;
@@ -612,7 +612,7 @@ namespace smil
 
   template <class T>
   RES_T arrowMinStep(const Image<T> &im, Image<T> &arrow, const StrElt &se,
-                     T borderValue = numeric_limits<T>::max())
+                     T borderValue = std::numeric_limits<T>::max())
   {
     arrowMinStepFunction<T, T> iFunc(borderValue);
     return iFunc(im, arrow, se);

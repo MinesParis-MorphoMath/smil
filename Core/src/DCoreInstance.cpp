@@ -83,7 +83,7 @@ void Core::registerObject(BaseObject *obj)
 
   obj->registered = true;
 
-  if (string(obj->getClassName()) == "Image")
+  if (std::string(obj->getClassName()) == "Image")
     inst->registeredImages.push_back(reinterpret_cast<BaseImage *>(obj));
 
 #if DEBUG_LEVEL > 1
@@ -103,7 +103,7 @@ void Core::unregisterObject(BaseObject *obj)
 
   obj->registered = false;
 
-  if (string(obj->getClassName()) == "Image")
+  if (std::string(obj->getClassName()) == "Image")
     inst->registeredImages.erase(std::remove(
         inst->registeredImages.begin(), inst->registeredImages.end(),
         reinterpret_cast<BaseImage *>(obj)));
@@ -119,7 +119,7 @@ void Core::unregisterObject(BaseObject *obj)
 
 void Core::deleteRegisteredObjects()
 {
-  vector<BaseObject *> objects = registeredObjects;
+  std::vector<BaseObject *> objects = registeredObjects;
 
   for (UINT i = 0; i < objects.size(); i++)
     delete objects[i];
@@ -155,7 +155,7 @@ void Core::resetNumberOfThreads()
 
 size_t Core::getAllocatedMemory()
 {
-  vector<BaseImage *>::iterator it       = this->registeredImages.begin();
+  std::vector<BaseImage *>::iterator it       = this->registeredImages.begin();
   size_t                        totAlloc = 0;
 
   while (it != this->registeredImages.end())
@@ -163,19 +163,19 @@ size_t Core::getAllocatedMemory()
   return totAlloc;
 }
 
-vector<BaseObject *> Core::getRegisteredObjects()
+std::vector<BaseObject *> Core::getRegisteredObjects()
 {
   return this->registeredObjects;
 }
 
-vector<BaseImage *> Core::getImages()
+std::vector<BaseImage *> Core::getImages()
 {
   return this->registeredImages;
 }
 
 int Core::getImageIndex(BaseImage *img)
 {
-  vector<BaseImage *>::iterator i =
+  std::vector<BaseImage *>::iterator i =
       find(this->registeredImages.begin(), this->registeredImages.end(), img);
   if (i == this->registeredImages.end())
     return -1;
@@ -184,7 +184,7 @@ int Core::getImageIndex(BaseImage *img)
 
 void Core::showAllImages()
 {
-  vector<BaseImage *>::iterator it = this->registeredImages.begin();
+  std::vector<BaseImage *>::iterator it = this->registeredImages.begin();
 
   while (it != this->registeredImages.end())
     (*it++)->show();
@@ -192,7 +192,7 @@ void Core::showAllImages()
 
 void Core::hideAllImages()
 {
-  vector<BaseImage *>::iterator it = this->registeredImages.begin();
+  std::vector<BaseImage *>::iterator it = this->registeredImages.begin();
 
   while (it != this->registeredImages.end())
     (*it++)->hide();
@@ -200,27 +200,27 @@ void Core::hideAllImages()
 
 void Core::deleteAllImages()
 {
-  vector<BaseImage *> imgs = this->registeredImages;
+  std::vector<BaseImage *> imgs = this->registeredImages;
   for (size_t i = 0; i < imgs.size(); i++)
     delete imgs[i];
 }
 
-void Core::getCompilationInfos(ostream &outStream)
+void Core::getCompilationInfos(std::ostream &outStream)
 {
-  outStream << "Build date: " << __DATE__ << " (" << __TIME__ << ")" << endl;
+  outStream << "Build date: " << __DATE__ << " (" << __TIME__ << ")" << std::endl;
 #ifdef DEBUG
-  outStream << "Build type: debug" << endl;
+  outStream << "Build type: debug" << std::endl;
 #else
-  outStream << "Build type: release" << endl;
+  outStream << "Build type: release" << std::endl;
 #endif
-  outStream << "System: " << this->systemName << endl;
-  outStream << "Target Architecture: " << this->targetArchitecture << endl;
+  outStream << "System: " << this->systemName << std::endl;
+  outStream << "Target Architecture: " << this->targetArchitecture << std::endl;
   outStream << "OpenMP support: " << (this->supportOpenMP ? "On" : "Off");
 #ifdef USE_OPEN_MP
-  outStream << " (version " << _OPENMP << ")" << endl;
+  outStream << " (version " << _OPENMP << ")" << std::endl;
 #endif // USE_OPEN_MP
 
-  outStream << "Available SIMD instructions:" << endl;
+  outStream << "Available SIMD instructions:" << std::endl;
 #ifdef __SSE__
   outStream << " SSE";
 #endif
@@ -251,9 +251,9 @@ void Core::getCompilationInfos(ostream &outStream)
 #ifdef __AVX2__
   outStream << " AVX2";
 #endif
-  outStream << endl;
+  outStream << std::endl;
 
-  outStream << "Image Data Types:" << endl;
+  outStream << "Image Data Types:" << std::endl;
 #ifdef SMIL_WRAP_BIT
   outStream << " BIT";
 #endif
@@ -269,9 +269,9 @@ void Core::getCompilationInfos(ostream &outStream)
 #ifdef SMIL_WRAP_RGB
   outStream << " RGB";
 #endif
-  outStream << endl;
+  outStream << std::endl;
 
-  outStream << "Image File Types:" << endl;
+  outStream << "Image File Types:" << std::endl;
 #ifdef USE_PNG
   outStream << " PNG";
 #endif
@@ -282,6 +282,6 @@ void Core::getCompilationInfos(ostream &outStream)
   outStream << " TIFF";
 #endif
   outStream << " RAW";
-  outStream << endl;
+  outStream << std::endl;
 
 }

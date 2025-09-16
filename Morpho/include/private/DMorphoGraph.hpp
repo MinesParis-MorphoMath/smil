@@ -163,10 +163,10 @@ namespace smil
             return parentClass::finalize(imIn, imOut, se);
         }
         
-        virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsetList)
+      virtual inline void processPixel(size_t pointOffset, std::vector<int> &dOffsetList)
         {
             T1 curVal = parentClass::pixelsIn[pointOffset];
-            vector<int>::iterator dOffset = dOffsetList.begin();
+            std::vector<int>::iterator dOffset = dOffsetList.begin();
             
             while(dOffset!=dOffsetList.end())
             {
@@ -179,7 +179,7 @@ namespace smil
                     if (edgeInd!=-1 && imEdgeValues)
                     {
                         EdgeType &edge = edges->at(edgeInd);
-                        edge.weight = min(edge.weight, EdgeWeightType(edgeValuePixels[pointOffset]));
+                        edge.weight = std::min(edge.weight, EdgeWeightType(edgeValuePixels[pointOffset]));
                     }
                     else
                     {
@@ -355,8 +355,8 @@ namespace smil
         ASSERT_ALLOCATED(&imOut);
         
         typedef typename graphT::NodeType NodeType;
-        map<NodeType,NodeType> nodeMap = graph.labelizeNodes();
-        map<T,T> lut(nodeMap.begin(), nodeMap.end()); 
+        std::map<NodeType,NodeType> nodeMap = graph.labelizeNodes();
+        std::map<T,T> lut(nodeMap.begin(), nodeMap.end()); 
         
         return applyLookup(imMosRef, lut, imOut);
     }
@@ -408,10 +408,10 @@ namespace smil
         
         ImageFreezer freeze(imOut);
         
-        map<mosImT, vector<double> > barys = blobsBarycenter(imMosaic);
+        std::map<mosImT, std::vector<double> > barys = blobsBarycenter(imMosaic);
         
         typedef typename graphT::EdgeType EdgeType;
-        typedef const vector< EdgeType > EdgeListType;
+        typedef const std::vector< EdgeType > EdgeListType;
         EdgeListType &edges = graph.getEdges();
         
         for(typename EdgeListType::const_iterator it=edges.begin();it!=edges.end();it++)
@@ -421,8 +421,8 @@ namespace smil
             if (edge.source==edge.target)
               continue;
             
-            vector<double> &p1 = barys[edge.source];
-            vector<double> &p2 = barys[edge.target];
+            std::vector<double> &p1 = barys[edge.source];
+            std::vector<double> &p2 = barys[edge.target];
             
             if (p1.empty() || p2.empty())
               continue;

@@ -54,8 +54,8 @@ namespace smil
         
         
         static const INT_TYPE INT_TYPE_SIZE = sizeof(INT_TYPE)*CHAR_BIT;
-        static inline INT_TYPE INT_TYPE_MIN() { return numeric_limits<INT_TYPE>::min(); }
-        static inline INT_TYPE INT_TYPE_MAX() { return numeric_limits<INT_TYPE>::max(); }
+      static inline INT_TYPE INT_TYPE_MIN() { return std::numeric_limits<INT_TYPE>::min(); }
+      static inline INT_TYPE INT_TYPE_MAX() { return std::numeric_limits<INT_TYPE>::max(); }
         static inline UINT INT_SIZE(UINT bitCount) { return (bitCount-1)/INT_TYPE_SIZE + 1; }
         
         //! Most significant bit
@@ -157,7 +157,7 @@ namespace smil
             return *this;
         }
         
-        ostream& printSelf(ostream &os=cout);
+      std::ostream& printSelf(std::ostream &os=std::cout);
 
     private:
         UINT intWidth;
@@ -178,7 +178,7 @@ namespace smil
     
     
 
-    inline ostream& operator << (ostream &os, BitArray &b)
+  inline std::ostream& operator << (std::ostream &os, BitArray &b)
     {
         return b.printSelf(os);
     }
@@ -215,7 +215,7 @@ namespace smil
         static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return ((unsigned long)(p.intArray)) & (n-1); }
         static inline std::string toString(const Bit &val)
         {
-            stringstream str;
+          std::stringstream str;
             str << int(val);
             return str.str();
         }

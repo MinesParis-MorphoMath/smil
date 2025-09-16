@@ -206,7 +206,7 @@ void ImageViewerWidget::deleteOverlayImage()
 
 void ImageViewerWidget::updateIcon()
 {
-  int size = min(qImage->width(), qImage->height());
+  int size = std::min(qImage->width(), qImage->height());
   setWindowIcon(QIcon(imagePixmaps[0]->pixmap().copy(0, 0, size, size)));
 }
 

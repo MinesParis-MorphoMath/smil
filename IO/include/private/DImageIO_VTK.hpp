@@ -39,8 +39,6 @@
 #include "Core/include/private/DImage.hpp"
 #include "IO/include/private/DImageIO.hpp"
 
-using namespace std;
-
 namespace smil
 {
   /**
@@ -58,10 +56,10 @@ namespace smil
     UINT width, height, depth;
     UINT pointNbr;
     ImageFileInfo::ScalarType scalarType;
-    string scalarTypeStr;
+    std::string scalarTypeStr;
     double scalarCoeff;
     bool binaryFile;
-    streampos startPos;
+    std::streampos startPos;
   };
 
   // Big/Little endian swap
@@ -71,7 +69,7 @@ namespace smil
     std::reverse(memp, memp + sizeof(T));
   }
 
-  RES_T readVTKHeader(ifstream &fp, VTKHeader &hStruct);
+  RES_T readVTKHeader(std::ifstream &fp, VTKHeader &hStruct);
   RES_T getVTKFileInfo(const char *filename, ImageFileInfo &fInfo);
 
   template <class T = void>
@@ -90,11 +88,11 @@ namespace smil
       std::ifstream fp;
 
       /* open image file */
-      fp.open(filename, ios_base::binary);
+      fp.open(filename, std::ios_base::binary);
 
       //     fp.open(filename);
       if (!fp) {
-        cerr << "error: couldn't open " << filename << "!" << endl;
+        std::cerr << "error: couldn't open " << filename << "!" << std::endl;
         return RES_ERR;
       }
 
@@ -123,11 +121,11 @@ namespace smil
       std::ifstream fp;
 
       /* open image file */
-      fp.open(filename, ios_base::binary);
+      fp.open(filename, std::ios_base::binary);
 
       //     fp.open(filename);
       if (!fp) {
-        cerr << "error: couldn't open " << filename << "!" << endl;
+        std::cerr << "error: couldn't open " << filename << "!" << std::endl;
         return RES_ERR;
       }
 
@@ -157,7 +155,7 @@ namespace smil
            scalarType != ImageFileInfo::SCALAR_TYPE_UINT16) ||
           (typeid(T) == typeid(short) &&
            scalarType != ImageFileInfo::SCALAR_TYPE_INT16)) {
-        cout << "Error: input file type is " << hStruct.scalarTypeStr << endl;
+        std::cout << "Error: input file type is " << hStruct.scalarTypeStr << std::endl;
         fp.close();
         return RES_ERR_IO;
       }
@@ -223,9 +221,9 @@ namespace smil
       std::ofstream fp;
 
       /* open image file */
-      fp.open(filename, ios_base::binary);
+      fp.open(filename, std::ios_base::binary);
       if (!fp) {
-        cerr << "error: couldn't open " << filename << "!" << endl;
+        std::cerr << "error: couldn't open " << filename << "!" << std::endl;
         return RES_ERR;
       }
 
@@ -234,25 +232,25 @@ namespace smil
       size_t depth  = image.getDepth();
       size_t pixNbr = width * height * depth;
 
-      fp << "# vtk DataFile Version 3.0" << endl;
-      fp << "vtk output" << endl;
-      fp << "BINARY" << endl;
-      fp << "DATASET STRUCTURED_POINTS" << endl;
-      fp << "DIMENSIONS " << width << " " << height << " " << depth << endl;
-      fp << "SPACING 1.0 1.0 1.0" << endl;
-      fp << "ORIGIN 0 0 0" << endl;
-      fp << "POINT_DATA " << pixNbr << endl;
+      fp << "# vtk DataFile Version 3.0" << std::endl;
+      fp << "vtk output" << std::endl;
+      fp << "BINARY" << std::endl;
+      fp << "DATASET STRUCTURED_POINTS" << std::endl;
+      fp << "DIMENSIONS " << width << " " << height << " " << depth << std::endl;
+      fp << "SPACING 1.0 1.0 1.0" << std::endl;
+      fp << "ORIGIN 0 0 0" << std::endl;
+      fp << "POINT_DATA " << pixNbr << std::endl;
       fp << "SCALARS scalars ";
       if (typeid(T) == typeid(unsigned char))
         fp << "unsigned_char";
       else if (typeid(T) == typeid(unsigned short))
         fp << "unsigned_short";
-      fp << endl;
+      fp << std::endl;
 
       if (writeBinary)
-        fp << "LOOKUP_TABLE default" << endl;
+        fp << "LOOKUP_TABLE default" << std::endl;
       else {
-        cerr << "not implemented (todo..)" << endl;
+        std::cerr << "not implemented (todo..)" << std::endl;
       }
 
       typename Image<T>::volType slices = image.getSlices();

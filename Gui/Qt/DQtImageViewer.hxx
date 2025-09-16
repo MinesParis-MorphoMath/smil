@@ -89,7 +89,7 @@ namespace smil
     {
         ImageViewer<T>::setImage(im);
         BASE_QT_VIEWER::setImageSize(im.getWidth(), im.getHeight(), im.getDepth());
-        if (im.getName()!=string(""))
+        if (im.getName()!=std::string(""))
           setName(this->image->getName());
         if (!qOverlayImage.isEmpty())
           deleteOverlayImage();
@@ -201,7 +201,7 @@ namespace smil
         {
             if (autoRange)
             {
-                vector<T> rangeV = rangeVal(*this->image);
+              std::vector<T> rangeV = rangeVal(*this->image);
                 floor = rangeV[0];
                 coeff = 255. / double(rangeV[1]-rangeV[0]);
             }
@@ -305,10 +305,10 @@ namespace smil
     }
 
     template <class T>
-    void QtImageViewer<T>::setLookup(const map<UINT8,RGB> &lut)
+    void QtImageViewer<T>::setLookup(const std::map<UINT8,RGB> &lut)
     {
         baseColorTable.clear();
-        map<UINT8,RGB>::const_iterator it;
+        std::map<UINT8,RGB>::const_iterator it;
         for (int i=0;i<256;i++)
         {
           it = lut.find(UINT8(i));
@@ -422,7 +422,7 @@ namespace smil
 #endif // Q_OS_WIN32
         else
         {
-            vector<string> files;
+          std::vector<std::string> files;
             for (QList<QUrl>::iterator it=urls.begin();it!=urls.end();it++)
 #ifdef Q_OS_WIN32
               files.push_back((*it).toString().remove("file:///").toStdString());
@@ -455,7 +455,7 @@ namespace smil
         }
 
 
-        map<T, UINT> hist = histogram(*(this->image));
+        std::map<T, UINT> hist = histogram(*(this->image));
         
         histoPlot->setAxisScale(QwtPlot::xBottom, hist.begin()->first, hist.rbegin()->first);
 
@@ -467,7 +467,7 @@ namespace smil
         double *yVals = new double[ptsNbr];
 
         int i=0;
-        for(typename map<T,UINT>::iterator it=hist.begin();it!=hist.end();it++,i++)
+        for(typename std::map<T,UINT>::iterator it=hist.begin();it!=hist.end();it++,i++)
         {
             xVals[i] = it->first;
             yVals[i] = it->second;
@@ -481,7 +481,7 @@ namespace smil
         delete[] yVals;
 #else // QWT_VERSION < 0x060000
         QVector<QPointF> samples;
-        for(typename map<T,UINT>::iterator it=hist.begin();it!=hist.end();it++)
+        for(typename std::map<T,UINT>::iterator it=hist.begin();it!=hist.end();it++)
           samples.push_back(QPointF(it->first, it->second));
 
         QwtPointSeriesData *myData = new QwtPointSeriesData();
@@ -518,7 +518,7 @@ namespace smil
 
         QLineF lnF(this->line->line());
 
-        vector<IntPoint> bPoints = bresenhamPoints(lnF.x1(), lnF.y1(), lnF.x2(), lnF.y2());
+        std::vector<IntPoint> bPoints = bresenhamPoints(lnF.x1(), lnF.y1(), lnF.x2(), lnF.y2());
 
         T value;
         typename Image<T>::sliceType lines = this->image->getSlices()[slider->value()];
@@ -546,7 +546,7 @@ namespace smil
 
 #else // QWT_VERSION < 0x060000
         QVector<QPointF> samples;
-        for(vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++,i++)
+        for(std::vector<IntPoint>::iterator it=bPoints.begin();it!=bPoints.end();it++,i++)
         {
             value = lines[(*it).y][(*it).x];
             samples.push_back(QPointF(i, value));

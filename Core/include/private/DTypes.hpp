@@ -39,8 +39,6 @@
 
 #include <sstream>
 
-using namespace std;
-
 /*
   if NEWTDEFS is set to 1 one have this error :
 
@@ -103,11 +101,11 @@ namespace smil
 
     static inline pixelType min()
     {
-      return numeric_limits<T>::min();
+      return std::numeric_limits<T>::min();
     }
     static inline pixelType max()
     {
-      return numeric_limits<T>::max();
+      return std::numeric_limits<T>::max();
     }
     static inline size_t cardinal()
     {
@@ -127,7 +125,7 @@ namespace smil
     }
     static inline std::string toString(const T &val)
     {
-      stringstream str;
+      std::stringstream str;
       str << double(val);
       return str.str();
     }

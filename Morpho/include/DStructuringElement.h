@@ -128,10 +128,10 @@ namespace smil
      * diagSE_h = StrElt(True, (0,6))
      * @endcode
      */
-    StrElt(bool oddSE, vector<UINT> indexList)
+    StrElt(bool oddSE, std::vector<UINT> indexList)
         : BaseObject("StrElt"), odd(oddSE), seT(SE_Generic), size(1)
     {
-      vector<UINT>::iterator it;
+      std::vector<UINT>::iterator it;
       for (it = indexList.begin(); it != indexList.end(); it++)
         addPoint(*it);
       this->setName();
@@ -200,7 +200,7 @@ namespace smil
     void clone(const StrElt &rhs);
 
     //! List of neighbor points
-    vector<IntPoint> points;
+    std::vector<IntPoint> points;
 
     /**
      * addPoint() - Add a point to the structurant element based on an index on
@@ -309,7 +309,7 @@ namespace smil
      */
     void setName()
     {
-      std::map<seType, string> seNames = {
+      std::map<seType, std::string> seNames = {
           {SE_Generic, "GenericSE"},
           {SE_Squ, "SquSE"},
           {SE_Squ0, "SquSE0"},
@@ -327,7 +327,7 @@ namespace smil
           {SE_CenteredLine3D, "CenteredLine3DSE"}
       };
 
-      std::map<seType, string>::iterator it;
+      std::map<seType, std::string>::iterator it;
       it = seNames.find(seT);
       if (it != seNames.end())
         this->name = seNames[seT];
@@ -352,7 +352,7 @@ namespace smil
     * @note
     * In @TB{Python} this has the same effect than @TB{print(se)}
     */
-    virtual void printSelf(ostream &os = std::cout, string indent = "") const;
+    virtual void printSelf(std::ostream &os = std::cout, std::string indent = "") const;
 
     /**
     * printSelf() - Print the contents of the structuring element
@@ -360,7 +360,7 @@ namespace smil
     * @note
     * In @TB{Python} this has the same effect than @TB{print(se)}
     */
-    virtual void printSelf(string indent) const
+    virtual void printSelf(std::string indent) const
     {
       printSelf(std::cout, indent);
     }
@@ -370,7 +370,7 @@ namespace smil
     UINT size;
   };
 
-  inline void operator<<(ostream &os, StrElt &se)
+  inline void operator<<(std::ostream &os, StrElt &se)
   {
     se.printSelf(os);
   }
@@ -663,7 +663,7 @@ namespace smil
       // int yf = (int) round(length * sin(-theta * PI / 180.));
       int xf = (int) round(length * cos(-theta));
       int yf = (int) round(length * sin(-theta));
-      vector<Point<int>> v;
+      std::vector<Point<int>> v;
 
       v = bresenhamPoints(0, 0, xf, yf);
       for (size_t i = 0; i < v.size(); i++)
@@ -723,7 +723,7 @@ namespace smil
       int yf = (int) round(lenXY * sin(-theta));
 
       Bresenham line(0, 0, 0, xf, yf, zf);
-      vector<IntPoint> v = line.getPoints();
+      std::vector<IntPoint> v = line.getPoints();
       for (size_t i = 0; i < v.size(); i++)
         addPoint(v[i].x, v[i].y, v[i].z);
     }
@@ -765,7 +765,7 @@ namespace smil
       //int xf = (int) round(length * cos(-theta));
       // int yf = (int) round(length * sin(-theta));
 
-      vector<Point<int>> v;
+      std::vector<Point<int>> v;
       v = bresenhamPoints(0, 0, xf, yf);
 
       for (size_t i = 0; i < v.size(); i++) {
@@ -828,7 +828,7 @@ namespace smil
       int yf = (int) round(lenXY * sin(-theta));
 
       Bresenham line(0, 0, 0, xf, yf, zf);
-      vector<IntPoint> v = line.getPoints();
+      std::vector<IntPoint> v = line.getPoints();
 
       for (size_t i = 0; i < v.size(); i++) {
         addPoint(v[i].x, v[i].y, v[i].z);
@@ -895,7 +895,7 @@ namespace smil
     int xf = (int) round(length * cos(theta));
     int yf = (int) round(length * sin(theta));
 
-    vector<Point<int>> v;
+    std::vector<Point<int>> v;
 
     v = bresenhamPoints(0, 0, xf, yf);
     for (size_t i = 0; i < v.size(); i++)
@@ -915,7 +915,7 @@ namespace smil
   {
     StrElt se;
 
-    typename vector<IntPoint>::iterator it;
+    typename std::vector<IntPoint>::iterator it;
     for (it = se1.points.begin(); it != se1.points.end(); it++) {
       const IntPoint &p = *it;
       se.addPoint(p);

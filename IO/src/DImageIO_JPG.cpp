@@ -39,7 +39,7 @@ namespace smil
 {
     struct JPGHeader
     {
-        JPGHeader(const string /*rw*/)
+      JPGHeader(const std::string /*rw*/)
         {
         }
         ~JPGHeader()
@@ -67,7 +67,7 @@ namespace smil
         
         if (!fp)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -118,7 +118,7 @@ namespace smil
         
         if (!fp)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -176,7 +176,7 @@ namespace smil
         
         if (!fp)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         

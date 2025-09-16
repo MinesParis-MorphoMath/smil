@@ -40,13 +40,13 @@
 
 namespace smil
 {
-  void ImageFileInfo::printSelf(ostream &os)
+  void ImageFileInfo::printSelf(std::ostream &os)
   {
-    string s = "";
+    std::string s = "";
 
-    os << "Image info in flie " << filename << endl;
-    os << " filename    " << filename << endl;
-    os << " channels    " << channels << endl;
+    os << "Image info in flie " << filename << std::endl;
+    os << " filename    " << filename << std::endl;
+    os << " channels    " << channels << std::endl;
     switch (colorType) {
       case COLOR_TYPE_GRAY:
         s = "GRAY";
@@ -70,7 +70,7 @@ namespace smil
         s = "UNKNOWN";
         break;
     }
-    os << " colorType   " << s << endl;
+    os << " colorType   " << s << std::endl;
     switch(scalarType) {
       case SCALAR_TYPE_UINT8:
         s = "UINT8";
@@ -97,7 +97,7 @@ namespace smil
         s = "UNKNOWN";
         break;
     }
-    os << " scalarType  " << s << endl;
+    os << " scalarType  " << s << std::endl;
     switch (fileType) {
       case FILE_TYPE_ASCII:
         s = "ASCII";
@@ -109,18 +109,18 @@ namespace smil
         s = "UNKNOWN";
         break;
     }
-    os << " fileType    " << s << endl;
-    os << " size        " << width << "x" << height << "x" << depth << endl;
-    os << " width       " << width << endl;
-    os << " height      " << height << endl;
-    os << " depth       " << depth << endl;
+    os << " fileType    " << s << std::endl;
+    os << " size        " << width << "x" << height << "x" << depth << std::endl;
+    os << " width       " << width << std::endl;
+    os << " height      " << height << std::endl;
+    os << " depth       " << depth << std::endl;
   }
 
-  string getFileExtension(const char *fileName)
+  std::string getFileExtension(const char *fileName)
   {
-    string fName(fileName);
-    string::size_type idx = fName.rfind('.');
-    string fExt           = fName.substr(idx + 1);
+    std::string fName(fileName);
+    std::string::size_type idx = fName.rfind('.');
+    std::string fExt           = fName.substr(idx + 1);
     transform(fExt.begin(), fExt.end(), fExt.begin(), ::toupper);
     return fExt;
   }
@@ -149,7 +149,7 @@ namespace smil
       curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, 0L);
       res = curl_easy_perform(curl_handle);
       if (res != CURLE_OK) {
-        cout << "Curl error : " << res << endl;
+        std::cout << "Curl error : " << res << std::endl;
       }
       curl_easy_cleanup(curl_handle);
       fclose(fp);
@@ -173,7 +173,7 @@ namespace smil
   /**
    * Download file data into a string buffer.
    */
-  string getHttpFile(const char *url)
+  std::string getHttpFile(const char *url)
   {
     CURL *curl_handle;
     memoryCallbackBuffer.clear();

@@ -38,8 +38,6 @@
 #include "Core/include/private/DTypes.hpp"
 #include "Core/include/private/DMemory.hpp"
 
-using namespace std;
-
 namespace smil
 {
   
@@ -73,14 +71,14 @@ namespace smil
     {
         BIN_TYPE val;
         
-        BIN(BIN_TYPE v = numeric_limits<BIN_TYPE>::min()) : val(v) {}
+        BIN(BIN_TYPE v = std::numeric_limits<BIN_TYPE>::min()) : val(v) {}
         BIN(bool b) : val(b ? this->max() : this->min()) {}
         BIN(double v) : val(v==0 ? this->min() : this->max()) {}
         
         static const BIN_TYPE SIZE = sizeof(BIN_TYPE)*CHAR_BIT;
         
-        static inline BIN_TYPE min() { return numeric_limits<BIN_TYPE>::min(); }
-        static inline BIN_TYPE max() { return numeric_limits<BIN_TYPE>::max(); }
+        static inline BIN_TYPE min() { return std::numeric_limits<BIN_TYPE>::min(); }
+        static inline BIN_TYPE max() { return std::numeric_limits<BIN_TYPE>::max(); }
         
         //! Most significant bit
         static const BIN_TYPE MS_BIT = (1UL << (SIZE - 2));
@@ -101,7 +99,7 @@ namespace smil
             b.index = pos;
             return b;
         }
-        ostream& printSelf(ostream &os=cout)
+        std::ostream& printSelf(std::ostream &os=std::cout)
         {
             for (int i=0;i<SIZE;i++)
               os << this->operator[](i) << " ";
@@ -132,7 +130,7 @@ namespace smil
     //     }
     };
 
-    inline ostream& operator << (ostream &os, BIN &b)
+    inline std::ostream& operator << (std::ostream &os, BIN &b)
     {
         return b.printSelf(os);
     }

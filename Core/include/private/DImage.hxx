@@ -446,35 +446,35 @@ namespace smil
 #endif // SWIGPYTHON
 
   template <class T>
-  vector<int> Image<T>::toIntVector()
+  std::vector<int> Image<T>::toIntVector()
   {
-    vector<int> vec;
+    std::vector<int> vec;
     for (size_t i = 0; i < pixelCount; i++)
       vec.push_back(pixels[i]);
     return vec;
   }
 
   template <class T>
-  void Image<T>::fromIntVector(vector<int> inVector)
+  void Image<T>::fromIntVector(std::vector<int> inVector)
   {
     ASSERT((inVector.size() == pixelCount),
            "Vector length doesn't match image size.", );
-    for (size_t i = 0; i < min(pixelCount, inVector.size()); i++)
+    for (size_t i = 0; i < std::min(pixelCount, inVector.size()); i++)
       pixels[i] = inVector[i];
     modified();
   }
 
   template <class T>
-  string Image<T>::toString()
+  std::string Image<T>::toString()
   {
-    string buf;
+    std::string buf;
     for (size_t i = 0; i < pixelCount; i++)
       buf.push_back(pixels[i]);
     return buf;
   }
 
   template <class T>
-  void Image<T>::fromString(string pixVals)
+  void Image<T>::fromString(std::string pixVals)
   {
     ASSERT((pixVals.size() == pixelCount),
            "String length doesn't match image size.", );
@@ -484,34 +484,34 @@ namespace smil
   }
 
   template <class T>
-  void Image<T>::printSelf(ostream &os, bool displayPixVals, bool hexaGrid,
-                           string indent) const
+  void Image<T>::printSelf(std::ostream &os, bool displayPixVals, bool hexaGrid,
+                           std::string indent) const
   {
 #if DEBUG_LEVEL > 1
     cout << "Image::printSelf: " << this << endl;
 #endif // DEBUG_LEVEL > 1
     if (name != "")
-      os << indent << "Image name: " << name << endl;
+      os << indent << "Image name: " << name << std::endl;
 
     if (depth > 1)
-      os << indent << "3D image" << endl;
+      os << indent << "3D image" << std::endl;
     else
-      os << indent << "2D image" << endl;
+      os << indent << "2D image" << std::endl;
 
     T *dum = NULL;
-    os << indent << "Data type: " << getDataTypeAsString<T>(dum) << endl;
+    os << indent << "Data type: " << getDataTypeAsString<T>(dum) << std::endl;
 
     if (depth > 1)
       os << indent << "Size: " << width << "x" << height << "x" << depth
-         << endl;
+         << std::endl;
     else
-      os << indent << "Size: " << width << "x" << height << endl;
+      os << indent << "Size: " << width << "x" << height << std::endl;
 
     if (allocated)
       os << indent << "Allocated (" << displayBytes(allocatedSize) << ")"
-         << endl;
+         << std::endl;
     else
-      os << indent << "Not allocated" << endl;
+      os << indent << "Not allocated" << std::endl;
 
     if (displayPixVals) {
       std::stringstream tStr;
@@ -520,24 +520,24 @@ namespace smil
       if (hexaGrid)
         tSsize = size_t(tSsize * 1.5);
 
-      os << indent << "Pixel values:" << endl;
+      os << indent << "Pixel values:" << std::endl;
       size_t i, j, k;
 
       for (k = 0; k < depth; k++) {
         for (j = 0; j < height; j++) {
           if (hexaGrid && j % 2)
-            os << setw(tSsize / 2 + 1) << " ";
+            os << std::setw(tSsize / 2 + 1) << " ";
           for (i = 0; i < width; i++)
-            os << setw(tSsize + 1) << ImDtTypes<T>::toString(getPixel(i, j, k))
+            os << std::setw(tSsize + 1) << ImDtTypes<T>::toString(getPixel(i, j, k))
                << ",";
-          os << endl;
+          os << std::endl;
         }
-        os << endl;
+        os << std::endl;
       }
-      os << endl;
+      os << std::endl;
     }
 
-    os << endl;
+    os << std::endl;
   }
 
   template <class T>
@@ -554,7 +554,7 @@ namespace smil
   // OPERATORS
 
   template <class T>
-  void operator<<(ostream &os, const Image<T> &im)
+  void operator<<(std::ostream &os, const Image<T> &im)
   {
     im.printSelf(os);
   }
@@ -879,10 +879,10 @@ namespace smil
   }
 
   template <class T>
-  Image<T> &Image<T>::operator<<(vector<T> &vect)
+  Image<T> &Image<T>::operator<<(std::vector<T> &vect)
   {
-    typename vector<T>::iterator it     = vect.begin();
-    typename vector<T>::iterator it_end = vect.end();
+    typename std::vector<T>::iterator it     = vect.begin();
+    typename std::vector<T>::iterator it_end = vect.end();
 
     for (size_t i = 0; i < pixelCount; i++, it++) {
       if (it == it_end)
@@ -894,7 +894,7 @@ namespace smil
   }
 
   template <class T>
-  Image<T> &Image<T>::operator>>(vector<T> &vect)
+  Image<T> &Image<T>::operator>>(std::vector<T> &vect)
   {
     vect.clear();
     for (size_t i = 0; i < pixelCount; i++) {

@@ -37,8 +37,6 @@
 #include "Core/include/DErrors.h"
 #include "Core/include/DColor.h"
 
-using namespace std;
-
 #ifdef USE_PNG
 
 namespace smil

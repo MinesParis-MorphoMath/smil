@@ -196,15 +196,15 @@ namespace smil
     void fromIntArray(const int inArray[]);
 
     //! Copy pixel values to a given int vector
-    vector<int> toIntVector();
+    std::vector<int> toIntVector();
 
     //! Copy pixel values from a given int vector
-    void fromIntVector(const vector<int> inVector);
+    void fromIntVector(const std::vector<int> inVector);
 
     //! Export pixel values to a string
-    string toString();
+    std::string toString();
     //! Import pixel values from string
-    void fromString(string pixVals);
+    void fromString(std::string pixVals);
 
     //! Get the image viewer (create one if needed)
     virtual ImageViewer<T> *getViewer();
@@ -240,7 +240,7 @@ namespace smil
                      doAllocate);
     }
     //! Set the size of image
-    virtual RES_T setSize(const vector<UINT> s, bool doAllocate = true)
+    virtual RES_T setSize(const std::vector<UINT> s, bool doAllocate = true)
     {
       if (s.size() == 3)
         return setSize(s[0], s[1], s[2], doAllocate);
@@ -261,20 +261,20 @@ namespace smil
      * values as an hexahedral grid
      * @param[in] indent Optional prefix
      */
-    void printSelf(ostream &os, bool displayPixVals, bool hexaGrid = false,
-                   string indent = "") const;
+    void printSelf(std::ostream &os, bool displayPixVals, bool hexaGrid = false,
+                   std::string indent = "") const;
 
-    virtual void printSelf(ostream &os = std::cout, string indent = "") const
+    virtual void printSelf(std::ostream &os = std::cout, std::string indent = "") const
     {
       printSelf(os, false, false, indent);
     }
 
-    virtual void printSelf(string indent)
+    virtual void printSelf(std::string indent)
     {
       printSelf(std::cout, false, false, indent);
     }
 
-    void printSelf(bool displayPixVals, bool hexaGrid = false, string indent = "")
+    void printSelf(bool displayPixVals, bool hexaGrid = false, std::string indent = "")
     {
       printSelf(std::cout, displayPixVals, hexaGrid, indent);
     }
@@ -282,7 +282,7 @@ namespace smil
     //! Get the description of the image as a string
     virtual std::string getInfoString(const char *indent = "") const
     {
-      stringstream s;
+      std::stringstream s;
       this->printSelf(s, indent);
       return s.str().c_str();
     }
@@ -431,20 +431,20 @@ namespace smil
     //! Import image data from an array
     Image<T> &operator<<(const lineType &tab);
     //! Import image data from a vector
-    Image<T> &operator<<(vector<T> &vect);
+    Image<T> &operator<<(std::vector<T> &vect);
     //! Export image data to a vector
-    Image<T> &operator>>(vector<T> &vect);
+    Image<T> &operator>>(std::vector<T> &vect);
 
 #ifndef SWIG
     Image<T> &operator<<(const char *s);
 #endif // SWIG
-    inline Image<T> &operator<<(const string s)
+    inline Image<T> &operator<<(const std::string s)
     {
       return this->operator<<(s.c_str());
     }
 
     Image<T> &operator>>(const char *s);
-    inline Image<T> &operator>>(const string s)
+    inline Image<T> &operator>>(const std::string s)
     {
       return this->operator>>(s.c_str());
     }

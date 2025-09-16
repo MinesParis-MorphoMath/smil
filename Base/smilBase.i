@@ -55,6 +55,8 @@ SMIL_MODULE(smilBase)
 
 #include <stdexcept>
 
+using namespace std;
+
 %}
 
 // Import smilCore to have correct function signatures (arguments with Image_UINT8 instead of Image<unsigned char>)

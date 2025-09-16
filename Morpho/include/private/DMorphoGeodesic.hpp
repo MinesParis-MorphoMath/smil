@@ -265,14 +265,14 @@ namespace smil
     typename ImDtTypes<T>::lineType markPixels     = imMask.getPixels();
     typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
 
-    vector<int> dOffsets;
+    std::vector<int> dOffsets;
     operatorT oper;
 
-    vector<IntPoint>::const_iterator it_start = se.points.begin();
-    vector<IntPoint>::const_iterator it_end   = se.points.end();
-    vector<IntPoint>::const_iterator it;
+    std::vector<IntPoint>::const_iterator it_start = se.points.begin();
+    std::vector<IntPoint>::const_iterator it_end   = se.points.end();
+    std::vector<IntPoint>::const_iterator it;
 
-    vector<size_t> tmpOffsets;
+    std::vector<size_t> tmpOffsets;
 
     size_t s[3];
     imIn.getSize(s);
@@ -282,8 +282,8 @@ namespace smil
       dOffsets.push_back(it->x + it->y * s[0] + it->z * s[0] * s[1]);
     }
 
-    vector<int>::iterator it_off_start = dOffsets.begin();
-    vector<int>::iterator it_off;
+    std::vector<int>::iterator it_off_start = dOffsets.begin();
+    std::vector<int>::iterator it_off;
 
     size_t x0, y0, z0;
     size_t curOffset;
@@ -337,14 +337,14 @@ namespace smil
   template <class T> struct minFunctor {
     inline T operator()(T a, T b)
     {
-      return min(a, b);
+      return std::min(a, b);
     }
   };
 
   template <class T> struct maxFunctor {
     inline T operator()(T a, T b)
     {
-      return max(a, b);
+      return std::max(a, b);
     }
   };
   /** @endcond */

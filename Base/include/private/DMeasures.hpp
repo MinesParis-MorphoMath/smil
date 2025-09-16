@@ -228,7 +228,7 @@ namespace smil
     typedef typename Image<T>::lineType lineType;
     virtual void                        initialize(const Image<T> & /*imIn*/)
     {
-      this->retVal = numeric_limits<T>::max();
+      this->retVal = std::numeric_limits<T>::max();
     }
     virtual void processSequence(lineType lineIn, size_t size)
     {
@@ -244,7 +244,7 @@ namespace smil
     Point<UINT>                         pt;
     virtual void                        initialize(const Image<T> & /*imIn*/)
     {
-      this->retVal = numeric_limits<T>::max();
+      this->retVal = std::numeric_limits<T>::max();
     }
     virtual void processSequence(lineType lineIn, size_t size, size_t x,
                                  size_t y, size_t z)
@@ -305,7 +305,7 @@ namespace smil
     typedef typename Image<T>::lineType lineType;
     virtual void                        initialize(const Image<T> & /*imIn*/)
     {
-      this->retVal = numeric_limits<T>::min();
+      this->retVal = std::numeric_limits<T>::min();
     }
     virtual void processSequence(lineType lineIn, size_t size)
     {
@@ -321,7 +321,7 @@ namespace smil
     Point<UINT>                         pt;
     virtual void                        initialize(const Image<T> & /*imIn*/)
     {
-      this->retVal = numeric_limits<T>::min();
+      this->retVal = std::numeric_limits<T>::min();
     }
     virtual void processSequence(lineType lineIn, size_t size, size_t x,
                                  size_t y, size_t z)
@@ -378,14 +378,14 @@ namespace smil
   //
   /** @cond */
   template <class T>
-  struct measMinMaxValFunc : public MeasureFunctionBase<T, vector<T>> {
+  struct measMinMaxValFunc : public MeasureFunctionBase<T, std::vector<T>> {
     typedef typename Image<T>::lineType lineType;
     T                                   minVal, maxVal;
     virtual void                        initialize(const Image<T> & /*imIn*/)
     {
       this->retVal.clear();
-      maxVal = numeric_limits<T>::min();
-      minVal = numeric_limits<T>::max();
+      maxVal = std::numeric_limits<T>::min();
+      minVal = std::numeric_limits<T>::max();
     }
     virtual void processSequence(lineType lineIn, size_t size)
     {
@@ -413,7 +413,7 @@ namespace smil
    * @returns a vector with the min and the max of the pixel values.
    */
   template <class T>
-  vector<T> rangeVal(const Image<T> &imIn, bool onlyNonZero = false)
+  std::vector<T> rangeVal(const Image<T> &imIn, bool onlyNonZero = false)
   {
     measMinMaxValFunc<T> func;
     return func(imIn, onlyNonZero);
@@ -429,9 +429,9 @@ namespace smil
   //
   /** @cond */
   template <class T>
-  struct valueListFunc : public MeasureFunctionBase<T, vector<T>> {
+  struct valueListFunc : public MeasureFunctionBase<T, std::vector<T>> {
     typedef typename Image<T>::lineType lineType;
-    set<T>                              valList;
+    std::set<T>                              valList;
 
     virtual void initialize(const Image<T> & /*imIn*/)
     {
@@ -465,7 +465,7 @@ namespace smil
    * huge vector.
    */
   template <class T>
-  vector<T> valueList(const Image<T> &imIn, bool onlyNonZero = true)
+  std::vector<T> valueList(const Image<T> &imIn, bool onlyNonZero = true)
   {
     valueListFunc<T> func;
     return func(imIn, onlyNonZero);
@@ -484,7 +484,7 @@ namespace smil
   struct measModeValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
 
-    map<int, int> nbList;
+    std::map<int, int> nbList;
     int           maxNb;
     T             mode;
     virtual void  initialize(const Image<T> & /*imIn*/)
@@ -550,7 +550,7 @@ namespace smil
   struct measMedianValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
 
-    map<int, int> nbList;
+    std::map<int, int> nbList;
     size_t        acc_elem, total_elems;
     T             medianval;
     virtual void  initialize(const Image<T> & /*imIn*/)
@@ -632,16 +632,16 @@ namespace smil
    * @return vector with pixel values
    */
   template <class T>
-  vector<T> profile(const Image<T> &im, size_t x0, size_t y0, size_t x1,
+  std::vector<T> profile(const Image<T> &im, size_t x0, size_t y0, size_t x1,
                     size_t y1, size_t z = 0)
   {
-    vector<T> vec;
+    std::vector<T> vec;
     ASSERT(im.isAllocated(), vec);
 
     size_t imW = im.getWidth();
     size_t imH = im.getHeight();
 
-    vector<IntPoint> bPoints;
+    std::vector<IntPoint> bPoints;
     if (x0 >= imW || y0 >= imH || x1 >= imW || y1 >= imH)
       bPoints = bresenhamPoints(x0, y0, x1, y1, imW, imH);
     else
@@ -650,7 +650,7 @@ namespace smil
 
     typename Image<T>::sliceType lines = im.getSlices()[z];
 
-    for (vector<IntPoint>::iterator it = bPoints.begin(); it != bPoints.end();
+    for (std::vector<IntPoint>::iterator it = bPoints.begin(); it != bPoints.end();
          it++)
       vec.push_back(lines[(*it).y][(*it).x]);
 
@@ -718,7 +718,7 @@ namespace smil
   //
   /** @cond */
   template <class T>
-  struct measBoundBoxFunc : public MeasureFunctionWithPos<T, vector<size_t>> {
+  struct measBoundBoxFunc : public MeasureFunctionWithPos<T, std::vector<size_t>> {
     typedef typename Image<T>::lineType lineType;
     double                              xMin, xMax, yMin, yMax, zMin, zMax;
     bool                                im3d;
@@ -776,7 +776,7 @@ namespace smil
    * @return a vector with <b> xMin, yMin (,zMin), xMax, yMax (,zMax) </b>
    */
   template <class T>
-  vector<size_t> measBoundBox(Image<T> &im)
+  std::vector<size_t> measBoundBox(Image<T> &im)
   {
     measBoundBoxFunc<T> func;
     return func(im, true);
@@ -951,12 +951,12 @@ namespace smil
   //    ####    ####     ##    #    #  #    #  #  #    #  #    #   ####   ######
   //
   template <class T>
-  inline vector<double>
+  inline std::vector<double>
   genericCovariance(const Image<T> &imIn1, const Image<T> &imIn2, size_t dx,
                     size_t dy, size_t dz, size_t maxSteps = 0,
                     bool normalize = false)
   {
-    vector<double> vec;
+    std::vector<double> vec;
     ASSERT(areAllocated(&imIn1, &imIn2, NULL), vec);
     ASSERT(haveSameSize(&imIn1, &imIn2, NULL),
            "Input images must have the same size", vec);
@@ -966,20 +966,20 @@ namespace smil
     size_t s[3];
     imIn1.getSize(s);
 
-    size_t maxH = max(max(s[0], s[1]), s[2]);
+    size_t maxH = std::max(std::max(s[0], s[1]), s[2]);
     if (dx > 0)
-      maxH = min(maxH, s[0]);
+      maxH = std::min(maxH, s[0]);
     if (dy > 0)
-      maxH = min(maxH, s[1]);
+      maxH = std::min(maxH, s[1]);
     if (dz > 0)
-      maxH = min(maxH, s[2]);
+      maxH = std::min(maxH, s[2]);
     if (maxH > 0)
       maxH--;
 
     if (maxSteps == 0)
       maxSteps = maxH;
 
-    maxSteps = min(maxSteps, maxH);
+    maxSteps = std::min(maxSteps, maxH);
     if (maxSteps == 0) {
       ERR_MSG("Too small");
       return vec;
@@ -998,9 +998,9 @@ namespace smil
     for (size_t len = 0; len <= maxSteps; len++) {
       double prod = 0;
 
-      size_t mdx = min(dx * len, s[0] - 1);
-      size_t mdy = min(dy * len, s[1] - 1);
-      size_t mdz = min(dz * len, s[2] - 1);
+      size_t mdx = std::min(dx * len, s[0] - 1);
+      size_t mdy = std::min(dy * len, s[1] - 1);
+      size_t mdz = std::min(dz * len, s[2] - 1);
 
       size_t xLen = s[0] - mdx;
       size_t yLen = s[1] - mdy;
@@ -1026,7 +1026,7 @@ namespace smil
 
     if (normalize) {
       double orig = vec[0];
-      for (vector<double>::iterator it = vec.begin(); it != vec.end(); it++)
+      for (std::vector<double>::iterator it = vec.begin(); it != vec.end(); it++)
         *it /= orig;
     }
 
@@ -1065,11 +1065,11 @@ namespace smil
    * @return vec[h]
    */
   template <class T>
-  vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2,
+  std::vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2,
                                 size_t dx, size_t dy, size_t dz,
                                 size_t maxSteps = 0, bool normalize = false)
   {
-    vector<double> vec;
+    std::vector<double> vec;
     ASSERT(areAllocated(&imIn1, &imIn2, NULL), vec);
     ASSERT(haveSameSize(&imIn1, &imIn2, NULL),
            "Input images must have the same size", vec);
@@ -1139,7 +1139,7 @@ namespace smil
 
     if (normalize) {
       double orig = vec[0];
-      for (vector<double>::iterator it = vec.begin(); it != vec.end(); it++)
+      for (std::vector<double>::iterator it = vec.begin(); it != vec.end(); it++)
         *it /= orig;
     }
 
@@ -1180,7 +1180,7 @@ namespace smil
    *
    */
   template <class T>
-  vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2,
+  std::vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2,
                                 size_t dx, size_t dy, size_t dz,
                                 size_t maxSteps = 0, bool centered = false,
                                 bool normalize = false)
@@ -1216,7 +1216,7 @@ namespace smil
    * @return vec[h]
    */
   template <class T>
-  vector<double> measAutoCovariance(const Image<T> &imIn, size_t dx, size_t dy,
+  std::vector<double> measAutoCovariance(const Image<T> &imIn, size_t dx, size_t dy,
                                     size_t dz, size_t maxSteps = 0,
                                     bool centered  = false,
                                     bool normalize = false)
@@ -1244,7 +1244,7 @@ namespace smil
   struct measEntropyFunc : public MeasureFunctionBase<T, double> {
     typedef typename Image<T>::lineType lineType;
 
-    map<T, UINT> histo;
+    std::map<T, UINT> histo;
 
     virtual void initialize(const Image<T> & /*imIn*/)
     {
@@ -1267,7 +1267,7 @@ namespace smil
       double sumP    = 0.;
       double sumN    = 0.;
 
-      typename map<T, UINT>::iterator it;
+      typename std::map<T, UINT>::iterator it;
       for (it = histo.begin(); it != histo.end(); it++) {
         if (it->second > 0) {
           sumN += it->second;
@@ -1303,8 +1303,8 @@ namespace smil
     double sumP    = 0.;
     double sumN    = 0.;
 
-    map<T, UINT> hist = histogram(imIn, false);
-    typename map<T, UINT>::iterator it;
+    std::map<T, UINT> hist = histogram(imIn, false);
+    typename std::map<T, UINT>::iterator it;
     for (it = hist.begin(); it != hist.end(); it++) {
       if (it->second > 0) {
         sumP += it->second * log2(it->second);
@@ -1344,8 +1344,8 @@ namespace smil
     double sumP    = 0.;
     double sumN    = 0.;
 
-    map<T, UINT>                    hist = histogram(imIn, imMask, false);
-    typename map<T, UINT>::iterator it;
+    std::map<T, UINT>                    hist = histogram(imIn, imMask, false);
+    typename std::map<T, UINT>::iterator it;
     for (it = hist.begin(); it != hist.end(); it++) {
       if (it->second > 0) {
         sumP += it->second * log2(it->second);
@@ -1403,7 +1403,7 @@ namespace smil
   {
     CHECK_ALLOCATED(&imIn);
 
-    map<T, bool>                h;
+    std::map<T, bool>                h;
     typename Image<T>::lineType pixels = imIn.getPixels();
 
 #if 1

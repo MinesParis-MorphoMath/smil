@@ -539,7 +539,7 @@ namespace smil
                 return (char *)arrays;
         }
         
-        ostream& printSelf(ostream &os=cout);
+        std::ostream& printSelf(std::ostream &os=std::cout);
 
     protected:
         UINT size;

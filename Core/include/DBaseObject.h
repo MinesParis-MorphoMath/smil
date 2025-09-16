@@ -39,8 +39,6 @@
 #include "DSlot.h"
 #include "DCoreInstance.h"
 
-using namespace std;
-
 namespace smil
 {
   class Core;
@@ -103,7 +101,7 @@ namespace smil
     {
       return {};
     }
-    virtual void printSelf(ostream & = std::cout, string = "") const
+    virtual void printSelf(std::ostream & = std::cout, std::string = "") const
     {
     }
     virtual const char *getClassName() const
@@ -129,8 +127,8 @@ namespace smil
 
   protected:
     bool registered;
-    string className;
-    string name;
+    std::string className;
+    std::string name;
 
     friend class Core;
   };

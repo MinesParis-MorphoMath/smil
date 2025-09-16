@@ -106,7 +106,7 @@ namespace smil
     virtual RES_T getOverlay(Image<T> &img);
 
     //! Set the color table as a 8bits RGB map (keys between 0 and 255)
-    virtual void setLookup(const map<UINT8, RGB> &lut);
+    virtual void setLookup(const std::map<UINT8, RGB> &lut);
     virtual void resetLookup();
 
     virtual void setCurSlice(int)

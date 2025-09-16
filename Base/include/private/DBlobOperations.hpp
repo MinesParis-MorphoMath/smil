@@ -38,8 +38,6 @@
 
 #include <map>
 
-using namespace std;
-
 namespace smil
 {
   /**
@@ -140,13 +138,13 @@ namespace smil
 
     ImageFreezer freeze(imOut);
 
-    map<UINT32, Blob> blobs;
+    std::map<UINT32, Blob> blobs;
     Image<UINT32>     imLabel(imOut);
 
     label(imIn, imLabel);
     blobs = computeBlobs(imLabel, true);
 
-    map<UINT32, double> areas = blobsArea(blobs);
+    std::map<UINT32, double> areas = blobsArea(blobs);
 
     for (auto it = areas.cbegin(); it != areas.cend(); it++) {
       if ((gt && it->second < threshold) || (!gt && it->second > threshold))
@@ -175,11 +173,11 @@ namespace smil
    * @smilexample{example-inertia-matrix.py}
    */
   template <typename T, typename labelT>
-  map<labelT, Vector_double> blobsInertiaMatrix(const Image<T> &   imIn,
-                                                map<labelT, Blob> &blobs,
+  std::map<labelT, Vector_double> blobsInertiaMatrix(const Image<T> &   imIn,
+                                                     std::map<labelT, Blob> &blobs,
                                                 const bool central = false)
   {
-    map<labelT, Vector_double> inertia;
+    std::map<labelT, Vector_double> inertia;
 
     if (!imIn.isAllocated()) {
       ERR_MSG("Input image not allocated !!!");
@@ -188,9 +186,9 @@ namespace smil
 
     bool im3d = (imIn.getDimension() == 3);
 
-    map<labelT, Vector_double> moments = blobsMoments(imIn, blobs, central);
+    std::map<labelT, Vector_double> moments = blobsMoments(imIn, blobs, central);
 
-    typedef typename map<labelT, Blob>::iterator blobIter;
+    typedef typename std::map<labelT, Blob>::iterator blobIter;
     for (blobIter it = blobs.begin(); it != blobs.end(); it++) {
       Vector_double m(3);
 
@@ -241,18 +239,18 @@ namespace smil
    * @param[in] central : blobs centered on their barycenters
    */
   template <typename T>
-  map<T, Vector_double> blobsInertiaMatrix(const Image<T> &imLbl,
+  std::map<T, Vector_double> blobsInertiaMatrix(const Image<T> &imLbl,
                                            const bool      onlyNonZero = true,
                                            const bool      central     = false)
   {
-    map<T, Vector_double> inertia;
+    std::map<T, Vector_double> inertia;
 
     if (!imLbl.isAllocated()) {
       ERR_MSG("Input image not allocated !!!");
       return inertia;
     }
 
-    map<T, Blob> blobs = computeBlobs(imLbl, onlyNonZero);
+    std::map<T, Blob> blobs = computeBlobs(imLbl, onlyNonZero);
 #if 1
     return blobsInertiaMatrix(imLbl, blobs, central);
 #else

@@ -48,7 +48,7 @@ namespace smil
    */
   /**@{*/
 
-  string getFileExtension(const char *fileName);
+  std::string getFileExtension(const char *fileName);
 
   /** @cond */
   class FileCloser
@@ -105,13 +105,13 @@ namespace smil
     enum FileType { FILE_TYPE_ASCII, FILE_TYPE_BINARY };
 
     bool valid;
-    string filename;
+    std::string filename;
     UINT channels;
     ColorType colorType;
     ScalarType scalarType;
     FileType fileType;
     size_t width, height, depth;
-    streampos dataStartPos;
+    std::streampos dataStartPos;
 
     // virtual void printSelf(ostream &os) const;
 
@@ -122,7 +122,7 @@ namespace smil
      *
      * @smilexample{example-imagefileinfo-print.py}
      */
-    void printSelf(ostream &os = std::cout);
+    void printSelf(std::ostream &os = std::cout);
   };
 
 #ifdef USE_CURL
@@ -141,7 +141,7 @@ namespace smil
    * @param[in] url : URL where to get the file
    * @return string : a buffer with file content
    */
-  string getHttpFile(const char *url);
+  std::string getHttpFile(const char *url);
 
 #endif // USE_CURL
   /**@}*/

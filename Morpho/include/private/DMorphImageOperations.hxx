@@ -58,7 +58,7 @@ namespace smil
 
     sePointNbr = sePoints.size();
     relativeOffsets.clear();
-    vector<IntPoint>::iterator pt = sePoints.begin();
+    std::vector<IntPoint>::iterator pt = sePoints.begin();
     se_xmin                       = ImDtTypes<int>::max();
     se_xmax                       = ImDtTypes<int>::min();
     se_ymin                       = ImDtTypes<int>::max();
@@ -187,9 +187,9 @@ namespace smil
     int              x, y, z;
     IntPoint         p;
     size_t           offset = pixIn - pixelsIn;
-    vector<IntPoint> ptList;
-    vector<int>      relOffsetList;
-    vector<int>      offsetList;
+    std::vector<IntPoint> ptList;
+    std::vector<int>      relOffsetList;
+    std::vector<int>      offsetList;
 
     size_t curSlice = offset / (imSize[0] * imSize[1]);
     size_t curLine  = (offset / imSize[0]) % imSize[1];
@@ -261,10 +261,10 @@ namespace smil
 
   template <class T_in, class T_out>
   void MorphImageFunctionBase<T_in, T_out>::processPixel(size_t /*pointOffset*/,
-                                                         vector<int> &dOffsets)
+                                                         std::vector<int> &dOffsets)
   {
     // Example: dilation function
-    vector<int>::iterator it = dOffsets.begin();
+    std::vector<int>::iterator it = dOffsets.begin();
     while (it != dOffsets.end()) {
       // pixelsOut[pointOffset] = max(pixelsOut[pointOffset],
       // pixelsIn[pointOffset + *dOffset]);
@@ -421,7 +421,7 @@ namespace smil
         for (int i = 1; i < seSize; i++) {
           _exec_single(*inImage, *outImage, se);
           if (i < seSize - 1)
-            swap(inImage, outImage);
+            std::swap(inImage, outImage);
         }
       }
     }
@@ -504,7 +504,7 @@ namespace smil
     int tid;
 #endif // USE_OPEN_MP
     int              x, y, z;
-    vector<IntPoint> pts = se.points;
+    std::vector<IntPoint> pts = se.points;
 
     for (int s = 0; s < nSlices; s++) {
       destLines = destSlices[s];
@@ -827,7 +827,7 @@ namespace smil
                              this->lineLen, buf2);
           this->lineFunction(buf1, buf2, this->lineLen, destSlices[z - 1][y]);
 
-          swap(buf1, buf2);
+          std::swap(buf1, buf2);
         }
 
         this->lineFunction(this->borderBuf, buf1, this->lineLen,
@@ -900,7 +900,7 @@ namespace smil
           lineFunction(srcLines[i], srcLines[i + 1], imWidth, buf2);
           lineFunction(buf1, buf2, imWidth, destLines[i]);
 
-          swap(buf1, buf2);
+          std::swap(buf1, buf2);
         }
 
         if (firstLine + blockSize == imHeight)

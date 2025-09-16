@@ -40,6 +40,4 @@
 #include "private/DImageIO.hxx"
 #include "private/DImageIO_RAW.hpp"
 
-using namespace std;
-
 #endif // _D_IMAGE_IO_H

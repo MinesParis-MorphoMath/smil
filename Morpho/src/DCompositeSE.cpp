@@ -86,10 +86,10 @@ CompStrElt CompStrElt::operator~()
 CompStrElt &CompStrElt::rotate(int steps)
 {
   bool odd = fgSE.odd;
-  for (vector<IntPoint>::iterator it = fgSE.points.begin();
+  for (std::vector<IntPoint>::iterator it = fgSE.points.begin();
        it != fgSE.points.end(); it++)
     (*it) = rotatePoint((*it), steps, odd);
-  for (vector<IntPoint>::iterator it = bgSE.points.begin();
+  for (std::vector<IntPoint>::iterator it = bgSE.points.begin();
        it != bgSE.points.end(); it++)
     (*it) = rotatePoint((*it), steps, odd);
   return *this;
@@ -107,13 +107,13 @@ CompStrEltList CompStrElt::operator()(UINT nrot)
   return CompStrEltList(*this, nrot);
 }
 
-void CompStrElt::printSelf(ostream &os, string indent) const
+void CompStrElt::printSelf(std::ostream &os, std::string indent) const
 {
-  os << indent << "Composite Structuring Element" << endl;
-  os << indent << "Name : " << name << endl;
-  os << indent << "Foreground SE:" << endl;
+  os << indent << "Composite Structuring Element" << std::endl;
+  os << indent << "Name : " << name << std::endl;
+  os << indent << "Foreground SE:" << std::endl;
   fgSE.printSelf(os, indent + "\t");
-  os << indent << "Background SE:" << endl;
+  os << indent << "Background SE:" << std::endl;
   bgSE.printSelf(os, indent + "\t");
 }
 
@@ -186,14 +186,14 @@ CompStrEltList &CompStrEltList::rotate(int nrot)
   return *this;
 }
 
-void CompStrEltList::printSelf(ostream &os, string indent) const
+void CompStrEltList::printSelf(std::ostream &os, std::string indent) const
 {
-  os << indent << "HitOrMiss SE (composite structuring element list)" << endl;
-  os << indent << "Name : " << name << endl;
+  os << indent << "HitOrMiss SE (composite structuring element list)" << std::endl;
+  os << indent << "Name : " << name << std::endl;
   int i = 0;
   for (std::vector<CompStrElt>::const_iterator it = compSeList.begin();
        it != compSeList.end(); it++, i++) {
-    os << indent << "CompSE #" << i << ":" << endl;
+    os << indent << "CompSE #" << i << ":" << std::endl;
     (*it).printSelf(os, indent + "\t");
   }
 }

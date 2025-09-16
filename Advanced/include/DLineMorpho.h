@@ -331,7 +331,7 @@ namespace smil
     double k0 = (radius * PI / _NB_STEPS * 0.5);
     for (double angle = 0; angle < PI && r == RES_OK; angle += _D_ANGLE) {
       double rd      = angle;
-      int    kradius = k0 * max(fabs(cos(rd)), fabs(sin(rd))) + 1;
+      int    kradius = k0 * std::max(fabs(cos(rd)), fabs(sin(rd))) + 1;
 
       StrElt se = LineSE(kradius, angle);
       se        = merge(se, se.transpose());
@@ -366,7 +366,7 @@ namespace smil
     double k0 = (radius * PI / _NB_STEPS * 0.5);
     for (double angle = 0; angle < PI && r == RES_OK; angle += _D_ANGLE) {
       double rd      = angle;
-      int    kradius = k0 * max(fabs(cos(rd)), fabs(sin(rd))) + 1;
+      int    kradius = k0 * std::max(fabs(cos(rd)), fabs(sin(rd))) + 1;
 
       StrElt se = LineSE(kradius, angle);
       se        = merge(se, se.transpose());

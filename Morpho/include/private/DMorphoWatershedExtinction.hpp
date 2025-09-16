@@ -48,14 +48,14 @@ namespace smil
     
 
     #ifndef SWIG
-    template <class T>
-    struct CrossVectorComp
+    template <class T> 
+   struct CrossVectorComp
     {
-        CrossVectorComp(const vector<T> &vec)
+      CrossVectorComp(const std::vector<T> &vec)
           : compVec(vec)
         {
         }
-        const vector<T> &compVec;
+      const std::vector<T> &compVec;
         inline bool operator() (const T &i, const T &j)
         {
             return ( compVec[i] > compVec[j] );
@@ -81,9 +81,9 @@ namespace smil
         
         UINT labelNbr, basinNbr;
         T currentLevel;
-        vector<labelT> equivalentLabels;
-        vector<extValType> extinctionValues;
-      vector<UINT8> imStatus;
+      std::vector<labelT> equivalentLabels;
+      std::vector<extValType> extinctionValues;
+      std::vector<UINT8> imStatus;
         size_t lastOffset;
         
         std::vector< std::pair<labelT,labelT> > pendingMerges;
@@ -187,7 +187,7 @@ namespace smil
             ImageFreezer freezer (imExtRankOut);
             
             // Sort by extinctionValues
-            vector<outT> rank(labelNbr);
+            std::vector<outT> rank(labelNbr);
             for (UINT i=0;i<labelNbr;i++)
               rank[i] = i+1;
             
@@ -336,7 +336,7 @@ namespace smil
 	      if(imStatus[nbOffset]== HQ_DONE){//DONE
 		if (equivalentLabels[nbLbl]!=equivalentLabels[curLbl]){
 		  //		  std::cout<<"PENDING!!!!!!!!!!!!!! Eq[nb]="<<int(equivalentLabels[nbLbl])<<"Eq[cur]="<<int(equivalentLabels[curLbl])<<"\n";
-                  pendingMerges.push_back( make_pair(min(curLbl,nbLbl), max(curLbl,nbLbl)) );
+          pendingMerges.push_back( std::make_pair(std::min(curLbl,nbLbl), std::max(curLbl,nbLbl)) );
 		  processMerges();// BMI, do not wait the end of the plateau. Process Merge as soon as a 2 basins meet
 
 		}// eq != eq
@@ -353,8 +353,8 @@ namespace smil
     class AreaExtinctionFlooding : public ExtinctionFlooding<T, labelT, extValType, HQ_Type>
     {
       public:
-        vector<UINT> areas;
-        vector<T> minValues;
+      std::vector<UINT> areas;
+      std::vector<T> minValues;
         
         virtual void createBasins(const UINT &nbr)
         {
@@ -412,8 +412,8 @@ namespace smil
     template <class T, class labelT, class extValType=UINT, class HQ_Type=HierarchicalQueue<T> >
     class VolumeExtinctionFlooding : public ExtinctionFlooding<T, labelT, extValType, HQ_Type>
     {
-        vector<UINT> areas, volumes;
-        vector<T> floodLevels;
+      std::vector<UINT> areas, volumes;
+      std::vector<T> floodLevels;
         
         virtual void createBasins(const UINT &nbr)
         {
@@ -436,7 +436,7 @@ namespace smil
         
         virtual void insertPixel(const size_t &offset, const labelT &lbl)
         {
-            floodLevels[lbl] = max(this->currentLevel, floodLevels[lbl]);
+          floodLevels[lbl] = std::max(this->currentLevel, floodLevels[lbl]);
             volumes[lbl] += this->currentLevel-this->inPixels[offset]; // If currentLevel > pixel value (ex. non-minima markers)
             areas[lbl]++;
         }
@@ -661,7 +661,7 @@ namespace smil
         
         
         typedef typename Graph<labelT,UINT>::EdgeType EdgeType;
-        const vector<EdgeType> &edges = graph.getEdges();
+        const std::vector<EdgeType> &edges = graph.getEdges();
         UINT edgesNbr = edges.size();
         
         for (UINT i=0;i<edgesNbr;i++)
@@ -684,7 +684,7 @@ namespace smil
         
         
         typedef typename Graph<labelT,UINT>::EdgeType EdgeType;
-        const vector<EdgeType> &edges = graph.getEdges();
+        const std::vector<EdgeType> &edges = graph.getEdges();
         UINT edgesNbr = edges.size();
         
         for (UINT i=0;i<edgesNbr;i++)

@@ -37,7 +37,7 @@
 namespace smil
 {
   
-    RES_T readNetPBMFileInfo(ifstream &fp, ImageFileInfo &fInfo, unsigned int &maxval)
+  RES_T readNetPBMFileInfo(std::ifstream &fp, ImageFileInfo &fInfo, unsigned int &maxval)
     {
         std::string buf;
 
@@ -89,7 +89,7 @@ namespace smil
             return RES_ERR_IO;
         }
         
-        streampos curpos;
+        std::streampos curpos;
         // Read comments
         do
         {
@@ -106,7 +106,7 @@ namespace smil
             fp >> maxval; // Max pixel value
         }
         
-        fp.seekg(1, ios_base::cur); // endl
+        fp.seekg(1, std::ios_base::cur); // endl
         
         fInfo.dataStartPos = fp.tellg();
         fInfo.scalarType = ImageFileInfo::SCALAR_TYPE_UINT8;
@@ -117,11 +117,11 @@ namespace smil
     RES_T readNetPBMFileInfo(const char* filename, ImageFileInfo &fInfo, unsigned int &maxval)
     {
         /* open image file */
-        ifstream fp(filename, ios_base::binary);
+      std::ifstream fp(filename, std::ios_base::binary);
         
         if (!fp.is_open())
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -134,11 +134,11 @@ namespace smil
     RES_T PGMImageFileHandler<UINT8>::read(const char *filename, Image<UINT8> &image)
     {
         /* open image file */
-        ifstream fp(filename, ios_base::binary);
+      std::ifstream fp(filename, std::ios_base::binary);
         
         if (!fp.is_open())
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -176,20 +176,20 @@ namespace smil
     RES_T PGMImageFileHandler<UINT8>::write(const Image<UINT8> &image, const char *filename)
     {
         /* open image file */
-        ofstream fp(filename, ios_base::binary);
+      std::ofstream fp(filename, std::ios_base::binary);
         
         if (!fp.is_open())
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
         size_t width = image.getWidth(), height = image.getHeight();
         
-        fp << "P5" << endl;
-        fp << "# " << filename << endl;
-        fp << width << " " << height << endl;
-        fp << "255" << endl;
+        fp << "P5" << std::endl;
+        fp << "# " << filename << std::endl;
+        fp << width << " " << height << std::endl;
+        fp << "255" << std::endl;
         
         fp.write((char*)image.getPixels(), width*height);
         

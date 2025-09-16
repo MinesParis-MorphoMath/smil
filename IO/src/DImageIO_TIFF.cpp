@@ -39,7 +39,7 @@ namespace smil
 {
     struct TIFFHeader
     {
-        TIFFHeader(const string /*rw*/)
+      TIFFHeader(const std::string /*rw*/)
         {
         }
         ~TIFFHeader()
@@ -66,7 +66,7 @@ namespace smil
         
         if (!tif)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -115,7 +115,7 @@ namespace smil
         
         if (!tif)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -159,7 +159,7 @@ namespace smil
         
         if (!tif)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -204,7 +204,7 @@ namespace smil
         
         if (!tif)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -247,7 +247,7 @@ namespace smil
         
         if (!tif)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         

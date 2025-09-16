@@ -121,7 +121,7 @@ namespace smil
         
         if (!fp)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -266,7 +266,7 @@ namespace smil
 
         if ( fp == NULL )
         {
-            cout << "Error: Cannot open file " << filename << " for output." << endl;
+          std::cout << "Error: Cannot open file " << filename << " for output." << std::endl;
             return RES_ERR;
         }
         bmpFileHeader fHeader;
@@ -338,7 +338,7 @@ namespace smil
 
         if ( fp == NULL )
         {
-            cout << "Error: Cannot open file " << filename << " for output." << endl;
+          std::cout << "Error: Cannot open file " << filename << " for output." << std::endl;
             return RES_ERR;
         }
         bmpFileHeader fHeader;

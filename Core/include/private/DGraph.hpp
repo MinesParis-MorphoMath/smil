@@ -149,10 +149,10 @@ namespace smil
       return weight > rhs.weight;
     }
 
-    virtual void printSelf(ostream &os = std::cout, string s = "") const
+    virtual void printSelf(std::ostream &os = std::cout, std::string s = "") const
     {
       os << s << (int) source << "-" << (int) target << " (" << (int) weight
-         << ")" << endl;
+         << ")" << std::endl;
     }
   };
 
@@ -161,14 +161,14 @@ namespace smil
    * Check if two vectors of edges are equal
    */
   template <class NodeT, class WeightT>
-  bool operator==(const vector<Edge<NodeT, WeightT>> &e1,
-                  const vector<Edge<NodeT, WeightT>> &e2)
+  bool operator==(const std::vector<Edge<NodeT, WeightT>> &e1,
+                  const std::vector<Edge<NodeT, WeightT>> &e2)
   {
     if (e1.size() != e2.size())
       return false;
 
     typedef Edge<NodeT, WeightT>           EdgeT;
-    typename vector<EdgeT>::const_iterator it1 = e1.begin(), it2 = e2.begin();
+    typename std::vector<EdgeT>::const_iterator it1 = e1.begin(), it2 = e2.begin();
 
     for (; it1 != e1.end() && it2 != e2.end(); it1++, it2++) {
       if ((*it1) != (*it2))
@@ -201,7 +201,7 @@ namespace smil
     typedef NodeT                    NodeType;
     typedef WeightT                  NodeWeightType;
     typedef std::map<NodeT, WeightT> NodeValuesType;
-    typedef set<NodeT>               NodeListType;
+    typedef std::set<NodeT>               NodeListType;
 
     typedef Edge<NodeT, WeightT> EdgeType;
     typedef WeightT              EdgeWeightType;
@@ -561,7 +561,7 @@ namespace smil
       if (it != nodeEdgeList.end())
         return it->second;
       else
-        return vector<size_t>();
+        return std::vector<size_t>();
     }
 
     /**
@@ -575,13 +575,13 @@ namespace smil
     /**
      * printSelf() -
      */
-    virtual void printSelf(ostream &os = std::cout, string s = "") const
+    virtual void printSelf(std::ostream &os = std::cout, std::string s = "") const
     {
-      os << s << "Number of nodes: " << nodes.size() << endl;
-      os << s << "Number of edges: " << edges.size() << endl;
-      os << s << "Edges: " << endl << "source-target (weight) " << endl;
+      os << s << "Number of nodes: " << nodes.size() << std::endl;
+      os << s << "Number of edges: " << edges.size() << std::endl;
+      os << s << "Edges: " << std::endl << "source-target (weight) " << std::endl;
 
-      string s2 = s + "\t";
+      std::string s2 = s + "\t";
       for (typename EdgeListType::const_iterator it = edges.begin();
            it != edges.end(); it++)
         if ((*it).isActive())
@@ -595,10 +595,10 @@ namespace smil
      *
      * @returns a map [ node, label_value ]
      */
-    map<NodeT, NodeT> labelizeNodes() const
+    std::map<NodeT, NodeT> labelizeNodes() const
     {
-      map<NodeT, NodeT> lookup;
-      set<NodeT>        nodeList(nodes);
+      std::map<NodeT, NodeT> lookup;
+      std::set<NodeT>        nodeList(nodes);
 
       while (!nodeList.empty()) {
         propagateLabel(*(nodeList.begin()), *(nodeList.begin()), lookup,
@@ -609,7 +609,7 @@ namespace smil
 
   protected:
     void propagateLabel(const NodeT ind, const NodeT lbl,
-                        map<NodeT, NodeT> &lookup, set<NodeT> &nList) const
+                        std::map<NodeT, NodeT> &lookup, std::set<NodeT> &nList) const
     {
       typename NodeListType::iterator foundNode = nList.find(ind);
       if (foundNode == nList.end())
