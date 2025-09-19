@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -14,20 +14,19 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
- 
 #ifndef _D_QT_GUI_INSTANCE_H
 #define _D_QT_GUI_INSTANCE_H
 
@@ -37,48 +36,47 @@ class HelpForm;
 
 namespace smil
 {
-  
-    
-    /**
-     * @ingroup Gui
-     */
-     /*@{*/
 
-    class QtGui : public Gui
+  /**
+   * @ingroup Gui
+   */
+  /*@{*/
+
+  class QtGui : public Gui
+  {
+  public:
+    QtGui() : helpForm(NULL)
     {
-    public:
-        QtGui() 
-          : helpForm(NULL)
-        {
-        }
-        virtual ~QtGui();
-        
-    protected:
-        virtual void _execLoop();
-        virtual void _processEvents();
-        virtual void _showHelp();
-    private:
-        HelpForm *helpForm;
-    };
+    }
+    virtual ~QtGui();
 
-    class QtAppGui : public QtGui, public QApplication
-    {
-    public:
-        QtAppGui();
-        ~QtAppGui();
-        
-    protected:
-        virtual void _execLoop();
-        virtual void _processEvents();
-    private:
-        int _argc;
-    };
+  protected:
+    virtual void _execLoop();
+    virtual void _processEvents();
+    virtual void _showHelp();
 
-    int qtLoop();
+  private:
+    HelpForm *helpForm;
+  };
 
-/*@}*/
+  class QtAppGui : public QtGui, public QApplication
+  {
+  public:
+    QtAppGui();
+    ~QtAppGui();
+
+  protected:
+    virtual void _execLoop();
+    virtual void _processEvents();
+
+  private:
+    int _argc;
+  };
+
+  int qtLoop();
+
+  /*@}*/
 
 } // namespace smil
-
 
 #endif // _D_QT_GUI_INSTANCE_H

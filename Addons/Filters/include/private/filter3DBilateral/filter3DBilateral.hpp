@@ -86,9 +86,9 @@ namespace smil
 
 #pragma omp parallel num_threads(nthreads)
     {
-      T *    lineIn;
-      T *    linePreviousIn;
-      T *    lineOut;
+      T     *lineIn;
+      T     *linePreviousIn;
+      T     *lineOut;
       float *lineTmp;
       float *lineOut_causal;
       float *lineFac_causal;
@@ -97,9 +97,9 @@ namespace smil
       float *linePreviousOut;
       float *linePreviousFac;
 
-      T *    sliceIn;
-      T *    slicePreviousIn;
-      T *    sliceOut;
+      T     *sliceIn;
+      T     *slicePreviousIn;
+      T     *sliceOut;
       float *sliceTmp;
       float *sliceOut_causal;
       float *sliceFac_causal;

@@ -35,17 +35,17 @@
 using namespace smil;
 
 IntPoint SE_SquIndices[] = {
-    IntPoint(0, 0, 0),  IntPoint(1, 0, 0),   IntPoint(1, -1, 0),
-    IntPoint(0, -1, 0), IntPoint(-1, -1, 0), IntPoint(-1, 0, 0),
-    IntPoint(-1, 1, 0), IntPoint(0, 1, 0),   IntPoint(1, 1, 0),
+    IntPoint(0, 0, 0),   IntPoint(1, 0, 0),    IntPoint(1, -1, 0),
+    IntPoint(0, -1, 0),  IntPoint(-1, -1, 0),  IntPoint(-1, 0, 0),
+    IntPoint(-1, 1, 0),  IntPoint(0, 1, 0),    IntPoint(1, 1, 0),
 
     IntPoint(0, 0, -1),  IntPoint(1, 0, -1),   IntPoint(1, -1, -1),
     IntPoint(0, -1, -1), IntPoint(-1, -1, -1), IntPoint(-1, 0, -1),
     IntPoint(-1, 1, -1), IntPoint(0, 1, -1),   IntPoint(1, 1, -1),
 
-    IntPoint(0, 0, 1),  IntPoint(1, 0, 1),   IntPoint(1, -1, 1),
-    IntPoint(0, -1, 1), IntPoint(-1, -1, 1), IntPoint(-1, 0, 1),
-    IntPoint(-1, 1, 1), IntPoint(0, 1, 1),   IntPoint(1, 1, 1)};
+    IntPoint(0, 0, 1),   IntPoint(1, 0, 1),    IntPoint(1, -1, 1),
+    IntPoint(0, -1, 1),  IntPoint(-1, -1, 1),  IntPoint(-1, 0, 1),
+    IntPoint(-1, 1, 1),  IntPoint(0, 1, 1),    IntPoint(1, 1, 1)};
 
 IntPoint SE_HexIndices[] = {IntPoint(0, 0, 0),  IntPoint(1, 0, 0),
                             IntPoint(0, -1, 0), IntPoint(-1, -1, 0),
@@ -96,7 +96,8 @@ StrElt StrElt::homothety(const UINT s) const
   int oddLine  = 0;
   for (UINT i = 0; i < s - 1; i++) {
     std::vector<IntPoint> pts = newSE.points;
-    for (std::vector<IntPoint>::iterator it = pts.begin(); it != pts.end(); it++) {
+    for (std::vector<IntPoint>::iterator it = pts.begin(); it != pts.end();
+         it++) {
       const IntPoint &p = *it;
       for (std::vector<IntPoint>::const_iterator it2 = points.begin();
            it2 != points.end(); it2++) {
@@ -147,11 +148,10 @@ StrElt StrElt::merge(const StrElt &rhs)
   se.odd  = this->odd;
   se.setName();
 
-
   for (auto it = this->points.begin(); it != this->points.end(); it++)
-      se.addPoint(*it);
+    se.addPoint(*it);
   for (auto it = rhs.points.begin(); it != rhs.points.end(); it++)
-      se.addPoint(*it);
+    se.addPoint(*it);
 
   return se;
 }
@@ -193,5 +193,3 @@ void StrElt::printSelf(std::ostream &os, std::string indent) const
     os << indent << "#" << i + 1 << ": (" << points[i].x << "," << points[i].y
        << "," << points[i].z << ")" << std::endl;
 }
-
-

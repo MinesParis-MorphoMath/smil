@@ -40,10 +40,10 @@ namespace smil
 
   template <class T, class T_out = T>
   struct threshLine : public unaryLineFunctionBase<T, T_out> {
-    T minVal, maxVal;
+    T     minVal, maxVal;
     T_out trueVal, falseVal;
 
-    typedef typename unaryLineFunctionBase<T, T_out>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T, T_out>::lineInType  lineInType;
     typedef typename unaryLineFunctionBase<T, T_out>::lineOutType lineOutType;
 
     virtual void _exec(const lineInType lIn, const size_t size,
@@ -56,10 +56,10 @@ namespace smil
 
   template <class Tin, class Tout>
   struct stretchHistLine : public unaryLineFunctionBase<Tin, Tout> {
-    Tin inOrig;
-    Tout outOrig;
-    double coeff;
-    typedef typename unaryLineFunctionBase<Tin>::lineType lineInType;
+    Tin                                                    inOrig;
+    Tout                                                   outOrig;
+    double                                                 coeff;
+    typedef typename unaryLineFunctionBase<Tin>::lineType  lineInType;
     typedef typename unaryLineFunctionBase<Tout>::lineType lineOutType;
 
     virtual void _exec(const lineInType lIn, const size_t size,

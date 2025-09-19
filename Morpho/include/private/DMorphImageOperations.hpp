@@ -101,9 +101,10 @@ namespace smil
                                      size_t &lineNbr, const StrElt &se);
     virtual inline void processLine(lineInType pixIn, lineOutType pixOut,
                                     size_t &pixNbr, const StrElt &se);
-    virtual inline void processPixel(size_t pointOffset, std::vector<int> &dOffsets);
+    virtual inline void processPixel(size_t            pointOffset,
+                                     std::vector<int> &dOffsets);
     virtual inline void
-    processPixel([[maybe_unused]] IntPoint         &point,
+    processPixel([[maybe_unused]] IntPoint              &point,
                  [[maybe_unused]] std::vector<IntPoint> &dOffsets)
     {
     }
@@ -114,7 +115,7 @@ namespace smil
     }
 
     const Image<T_in> *imageIn;
-    Image<T_out> *     imageOut;
+    Image<T_out>      *imageOut;
 
   protected:
     size_t      imSize[3];
@@ -124,7 +125,7 @@ namespace smil
     lineOutType pixelsOut;
 
     std::vector<IntPoint> sePoints;
-    UINT             sePointNbr;
+    UINT                  sePointNbr;
     std::vector<int>      relativeOffsets;
 
     int se_xmin;
@@ -310,11 +311,11 @@ namespace smil
                                     imageType &imOut); // Inplace safe
     virtual RES_T
                   _exec_single_vertical_segment(const imageType &imIn,
-                                                imageType &      imOut); // Inplace unsafe !!
+                                                imageType       &imOut); // Inplace unsafe !!
     virtual RES_T _exec_single_cross(const imageType &imIn,
                                      imageType &imOut); // Inplace unsafe !!
     virtual RES_T _exec_single_cross_3d(const imageType &imIn,
-                                        imageType &      imOut);
+                                        imageType       &imOut);
     virtual RES_T _exec_single_depth_segment(const imageType &imIn, int zsize,
                                              imageType &imOut); // Inplace safe
     virtual RES_T

@@ -131,9 +131,9 @@ namespace smil
 
     ImageFreezer freeze(imLumOut);
 
-    ImDtTypes<UINT8>::lineType rArr           = imRgbIn.getPixels().arrays[0];
-    ImDtTypes<UINT8>::lineType gArr           = imRgbIn.getPixels().arrays[1];
-    ImDtTypes<UINT8>::lineType bArr           = imRgbIn.getPixels().arrays[2];
+    ImDtTypes<UINT8>::lineType      rArr      = imRgbIn.getPixels().arrays[0];
+    ImDtTypes<UINT8>::lineType      gArr      = imRgbIn.getPixels().arrays[1];
+    ImDtTypes<UINT8>::lineType      bArr      = imRgbIn.getPixels().arrays[2];
     typename ImDtTypes<T>::lineType outPixels = imLumOut.getPixels();
 
     size_t pixNbr = imRgbIn.getPixelCount();

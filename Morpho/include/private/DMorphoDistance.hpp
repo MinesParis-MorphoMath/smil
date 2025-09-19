@@ -139,7 +139,7 @@ namespace smil
       std::queue<size_t> *level      = new std::queue<size_t>();
       std::queue<size_t> *next_level = new std::queue<size_t>();
       std::queue<size_t> *swap;
-      T2             cur_level = T2(2);
+      T2                  cur_level = T2(2);
 
       size_t size[3];
       imIn.getSize(size);
@@ -539,10 +539,10 @@ namespace smil
             while (q >= 0 && tmpdist > tmpdist2) {
               q--;
               if (q >= 0) {
-                tmpdist = (t[q] > s[q]) ? t[q] - s[q] : s[q] - t[q];
-                tmpdist = (tmpdist >= pixelsTmp[offset + s[q]])
-                              ? tmpdist
-                              : pixelsTmp[offset + s[q]];
+                tmpdist  = (t[q] > s[q]) ? t[q] - s[q] : s[q] - t[q];
+                tmpdist  = (tmpdist >= pixelsTmp[offset + s[q]])
+                               ? tmpdist
+                               : pixelsTmp[offset + s[q]];
                 tmpdist2 = (t[q] > u) ? t[q] - u : u - t[q];
                 tmpdist2 = (tmpdist2 >= pixelsTmp[offset + u])
                                ? tmpdist2
@@ -650,7 +650,7 @@ namespace smil
     Image<T1> tmp(imIn);
 
     std::vector<IntPoint> sePts;
-    off_t            sePtsNbr;
+    off_t                 sePtsNbr;
 
     typedef size_t                 OffsetT;
     HierarchicalQueue<T2, OffsetT> hq;
@@ -726,15 +726,15 @@ namespace smil
               pixelsOut[i] = 1;
               break;
             }
-          }  // if p1 in image
-        }    // for each ngb
-      }      // if px in object
+          } // if p1 in image
+        } // for each ngb
+      } // if px in object
       else { // NULL Pixel
         pixelsOut[i] = 0;
       }
     } // for each pixel
 
-    //#####################################
+    // #####################################
 
     // Process hierarchical queue. Get a pixel(p0), find ngb without
     // computed distance(p1), p2 is a ngb of p1. If p2 knows its
@@ -753,7 +753,7 @@ namespace smil
 
       bool oddLine = se.odd && ((y0) % 2);
 
-      for (off_t i = 0; i < (off_t ) sePtsNbr; i++) {
+      for (off_t i = 0; i < (off_t) sePtsNbr; i++) {
         IntPoint &pt = sePts[i];
         x1           = x0 + pt.x;
         y1           = y0 + pt.y;
@@ -796,8 +796,8 @@ namespace smil
                     // oo           = p2;
                   }
                 } // if ngb knows its distance
-              }   // if not border
-            }     // for ngb
+              } // if not border
+            } // for ngb
 
             float pr1 = current_dist;
             if (pr1 > T2_maxVal) {
@@ -810,9 +810,9 @@ namespace smil
             pixelsOut[p1] = pr1;
 
           } // if wk[p_suiv] != DONE
-        }   // x1 no border
-      }     // for each ngb of p
-    }       // while § EMPTY
+        } // x1 no border
+      } // for each ngb of p
+    } // while § EMPTY
     return RES_OK;
   } // END distanceGeodesic
 
@@ -859,8 +859,8 @@ namespace smil
     std::vector<long int> s(size[0]);
     // sets of points with the same least minimizer
     std::vector<long int> t(size[0]);
-    long int         q = 0;
-    long int         w;
+    long int              q = 0;
+    long int              w;
 
     for (z = 0; z < size[2]; ++z) {
       // #ifdef USE_OPEN_MP

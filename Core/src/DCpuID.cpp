@@ -60,7 +60,7 @@ CpuID::CpuID()
   std::ifstream fin;
   fin = std::ifstream("/proc/cpuinfo");
   if (fin.good()) {
-    int    nprocs = 0;
+    int         nprocs = 0;
     std::string svendor;
     std::string smodel;
     std::string buffer;
@@ -89,8 +89,9 @@ CpuID::CpuID()
 
 bool CpuID::_get_value(std::string &s, const char *prefix, std::string &value)
 {
-  bool   ok = false;
-  std::regex  re(std::string("^") + std::string(prefix) + "[[:space:]]*:[[:space:]]*");
+  bool        ok = false;
+  std::regex  re(std::string("^") + std::string(prefix) +
+                 "[[:space:]]*:[[:space:]]*");
   std::smatch sm;
   if (regex_search(s, sm, re)) {
     value = sm.suffix();

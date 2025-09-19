@@ -51,29 +51,29 @@ namespace smil
    * @defgroup  AddonFilterCanny        Canny Filter (2D)
    * @brief A 2D Canny filter implementation by Vincent Morard
    *
-   * Canny edge detection: Canny's aim was to discover the optimal edge 
+   * Canny edge detection: Canny's aim was to discover the optimal edge
    * detection algorithm. In this situation, an "optimal" edge detector means:
    *
-   * - good detection - the algorithm should mark as many real edges in the 
+   * - good detection - the algorithm should mark as many real edges in the
    * image as possible.
    *
-   * - good localization - edges marked should be as close as possible to the 
+   * - good localization - edges marked should be as close as possible to the
    * edge in the real image.
    *
    * - minimal response - a given edge in the image should only be marked once,
    * and where possible, image noise should not create false edges.
    *
-   * To satisfy these requirements Canny used the calculus of variations - a 
+   * To satisfy these requirements Canny used the calculus of variations - a
    * technique which finds the function which optimizes a given functional.
    *
-   * The optimal function in Canny's detector is described by the sum of four 
-   * exponential terms, but can be approximated by the first derivative of a 
+   * The optimal function in Canny's detector is described by the sum of four
+   * exponential terms, but can be approximated by the first derivative of a
    * Gaussian.
    *
    * @see
-   * * Canny Edge detector <a href="https://en.wikipedia.org/wiki/Canny_edge_detector">
-   *    on Wikipedia</a>
-   * * John Canny, A computational approach to edge detection, IEEE Pami, 
+   * * Canny Edge detector <a
+   * href="https://en.wikipedia.org/wiki/Canny_edge_detector"> on Wikipedia</a>
+   * * John Canny, A computational approach to edge detection, IEEE Pami,
    * vol. 8, n° 6, novembre 1986, pp 679-698
    *
    * @author Vincent Morard
@@ -88,7 +88,7 @@ namespace smil
    */
   template <class T1, class T2>
   RES_T cannyEdgeDetection(const Image<T1> &imIn, const double sigma,
-                             Image<T2> &imOut);
+                           Image<T2> &imOut);
 
   /** @} */
 } // namespace smil

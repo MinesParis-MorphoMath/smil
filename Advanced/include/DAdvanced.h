@@ -14,7 +14,7 @@
 /* @} */
 
 #include "DLineMorpho.h"
-//#include "DFastLine.h"
+// #include "DFastLine.h"
 #include "DGeodesicAttributes.h"
 #include "DAreaOpen.h"
 

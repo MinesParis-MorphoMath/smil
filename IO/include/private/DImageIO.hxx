@@ -91,7 +91,8 @@ namespace smil
       return new PBMImageFileHandler<T>();
 
     else {
-      std::cout << "No reader/writer available for " << fileExt << " files." << std::endl;
+      std::cout << "No reader/writer available for " << fileExt << " files."
+                << std::endl;
       return NULL;
     }
   }
@@ -100,7 +101,8 @@ namespace smil
   /*
    * Read image file
    */
-  template <class T> RES_T read(const char *filename, Image<T> &image)
+  template <class T>
+  RES_T read(const char *filename, Image<T> &image)
   {
     RES_T res;
 
@@ -132,7 +134,8 @@ namespace smil
       return read(buf.c_str(), image);
     }
 
-    std::unique_ptr<ImageFileHandler<T>> fHandler(getHandlerForFile<T>(filename));
+    std::unique_ptr<ImageFileHandler<T>> fHandler(
+        getHandlerForFile<T>(filename));
 
     if (fHandler.get())
       return fHandler->read(filename, image);
@@ -144,7 +147,8 @@ namespace smil
    * Read a stack of 2D images and convert then into a 3D image
    *
    */
-  template <class T> RES_T read(const std::vector<std::string> fileList, Image<T> &image)
+  template <class T>
+  RES_T read(const std::vector<std::string> fileList, Image<T> &image)
   {
     size_t nFiles = fileList.size();
     if (nFiles == 0)
@@ -155,7 +159,7 @@ namespace smil
     Image<T> tmpIm;
     ASSERT((read((*it++).c_str(), tmpIm) == RES_OK));
 
-    size_t w = tmpIm.getWidth(), h = tmpIm.getHeight();
+    size_t       w = tmpIm.getWidth(), h = tmpIm.getHeight();
     ImageFreezer freezer(image);
 
     ASSERT((image.setSize(w, h, nFiles) == RES_OK));
@@ -177,11 +181,13 @@ namespace smil
   /*
    * Write image file
    */
-  template <class T> RES_T write(const Image<T> &image, const char *filename)
+  template <class T>
+  RES_T write(const Image<T> &image, const char *filename)
   {
     std::string fileExt = getFileExtension(filename);
 
-    std::unique_ptr<ImageFileHandler<T>> fHandler(getHandlerForFile<T>(filename));
+    std::unique_ptr<ImageFileHandler<T>> fHandler(
+        getHandlerForFile<T>(filename));
 
     if (fHandler.get())
       return fHandler->write(image, filename);
@@ -202,7 +208,7 @@ namespace smil
       return RES_ERR;
     }
 
-    size_t w = image.getWidth(), h = image.getHeight();
+    size_t   w = image.getWidth(), h = image.getHeight();
     Image<T> tmpIm(w, h);
 
     for (size_t z = 0; z < nFiles; z++) {
@@ -214,16 +220,15 @@ namespace smil
   }
 
   /*
-  * Get information about file
-  *
-  */
+   * Get information about file
+   *
+   */
   RES_T getFileInfo(const char *filename, ImageFileInfo &fInfo);
 
-
   /*
-  * createFromFile
-  *
-  */
+   * createFromFile
+   *
+   */
   BaseImage *createFromFile(const char *filename);
 
   /* *@}*/

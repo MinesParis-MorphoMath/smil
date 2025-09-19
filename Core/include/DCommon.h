@@ -71,8 +71,8 @@ namespace smil
   // ImageHandler subclasses (in IO/DImageIO_{BMP,JPG,PBM,PNG,TIFF})
 #define IMAGEFILEHANDLER_TEMP_SPEC(FORMAT, PIXELTYPE)                          \
   template <>                                                                  \
-  class FORMAT##ImageFileHandler<PIXELTYPE>                                    \
-      : public ImageFileHandler<PIXELTYPE>                                     \
+  class FORMAT##                                                               \
+      ImageFileHandler<PIXELTYPE> : public ImageFileHandler<PIXELTYPE>         \
   {                                                                            \
   public:                                                                      \
     FORMAT##ImageFileHandler() : ImageFileHandler<PIXELTYPE>(#FORMAT)          \
@@ -118,13 +118,14 @@ namespace smil
   /**
    * Struct Point
    */
-  template <class T=int>
+  template <class T = int>
   class Point
   {
   public:
     T x;
     T y;
     T z;
+
   public:
     /** Contructor - an empty point
      *
@@ -253,7 +254,8 @@ namespace smil
    * Shall be initialized with the dimensions of the image, in order to be able
    * to convert back and forth from @b Points to @b Offsets.
    */
-  class ImageBox {
+  class ImageBox
+  {
   public:
     IntPoint pt;
     off_t    reference;
@@ -275,7 +277,7 @@ namespace smil
       height = Size[1];
       depth  = Size[2];
       pt.x = pt.y = pt.z = 0;
-      reference = 0;
+      reference          = 0;
     }
 
     /** ImageBox - constructor
@@ -288,7 +290,7 @@ namespace smil
       this->height = height;
       this->depth  = depth;
       pt.x = pt.y = pt.z = 0;
-      reference = 0;
+      reference          = 0;
     }
 
     /** setReference() - set reference point
@@ -364,7 +366,6 @@ namespace smil
       pt.z += dp.z;
       this->reference = pt.x + (pt.y + pt.z * height) * width;
     }
-
 
     /** inImage() - check if the reference point is inside image bounds
      *

@@ -127,7 +127,7 @@ namespace smil
   std::map<T, UINT> histogram(const Image<T> &imIn, bool fullRange = false)
   {
     std::vector<T> rVals = rangeVal(imIn);
-    size_t card     = rVals[1] - rVals[0] + 1;
+    size_t         card  = rVals[1] - rVals[0] + 1;
 
     size_t *buf = new size_t[card];
     for (size_t i = 0; i < card; i++)
@@ -177,7 +177,7 @@ namespace smil
     ASSERT(haveSameSize(&imIn, &imMask, NULL), h);
 
     std::vector<T> rVals = rangeVal(imIn);
-    size_t card     = rVals[1] - rVals[0] + 1;
+    size_t         card  = rVals[1] - rVals[0] + 1;
 
     size_t *buf = new size_t[card];
     for (size_t i = 0; i < card; i++)
@@ -330,8 +330,9 @@ namespace smil
    */
   template <class T1, class T2>
   RES_T stretchHistogram(const Image<T1> &imIn, T1 inMinVal, T1 inMaxVal,
-                         Image<T2> &imOut, T2 outMinVal = std::numeric_limits<T2>::min(),
-                         T2 outMaxVal = std::numeric_limits<T2>::max())
+                         Image<T2> &imOut,
+                         T2         outMinVal = std::numeric_limits<T2>::min(),
+                         T2         outMaxVal = std::numeric_limits<T2>::max())
   {
     ASSERT_ALLOCATED(&imIn);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -368,13 +369,13 @@ namespace smil
    */
   template <class T1, class T2>
   RES_T stretchHistogram(const Image<T1> &imIn, Image<T2> &imOut, T2 outMinVal,
-                    T2 outMaxVal)
+                         T2 outMaxVal)
   {
     ASSERT_ALLOCATED(&imIn);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     unaryImageFunction<T1, stretchHistLine<T1, T2>, T2> iFunc;
-    std::vector<T1> rangeV = rangeVal(imIn);
+    std::vector<T1>                                     rangeV = rangeVal(imIn);
     iFunc.lineFunction.coeff =
         double(outMaxVal - outMinVal) / double(rangeV[1] - rangeV[0]);
     iFunc.lineFunction.inOrig  = rangeV[0];
@@ -426,13 +427,13 @@ namespace smil
    */
   template <class T>
   std::vector<T> histogramRange(const Image<T> &imIn, double ignorePercent,
-                           bool cumulative = true)
+                                bool cumulative = true)
   {
     std::vector<T> rVect;
 
     ASSERT(imIn.isAllocated(), rVect);
 
-    size_t *h = new size_t[size_t (ImDtTypes<T>::cardinal())];
+    size_t *h = new size_t[size_t(ImDtTypes<T>::cardinal())];
     histogram(imIn, h);
 
     double imVol;
@@ -441,11 +442,11 @@ namespace smil
     else
       imVol = *std::max_element(h, h + ImDtTypes<T>::cardinal());
 
-    double satVol;
-    double curVol;
-    std::vector<T> rangeV = rangeVal(imIn);
-    T threshValLeft  = rangeV[0];
-    T threshValRight = rangeV[1];
+    double         satVol;
+    double         curVol;
+    std::vector<T> rangeV         = rangeVal(imIn);
+    T              threshValLeft  = rangeV[0];
+    T              threshValRight = rangeV[1];
 
     satVol = imVol * ignorePercent / 100.;
 
@@ -506,9 +507,10 @@ namespace smil
 
   /** @cond */
   template <class T>
-  bool IncrementThresholds(std::vector<double> &thresholdIndexes, std::map<T, UINT> &hist,
-                           UINT threshLevels, double totalFrequency,
-                           double &globalMean, std::vector<double> &classMean,
+  bool IncrementThresholds(std::vector<double> &thresholdIndexes,
+                           std::map<T, UINT> &hist, UINT threshLevels,
+                           double totalFrequency, double &globalMean,
+                           std::vector<double> &classMean,
                            std::vector<double> &classFrequency)
   {
     unsigned long numberOfHistogramBins = hist.size();
@@ -517,11 +519,11 @@ namespace smil
     typedef double MeanType;
     typedef double FrequencyType;
 
-    MeanType meanOld;
+    MeanType      meanOld;
     FrequencyType freqOld;
 
     unsigned int k;
-    int j;
+    int          j;
 
     // from the upper threshold down
     for (j = static_cast<int>(threshLevels - 1); j >= 0; j--) {
@@ -603,23 +605,24 @@ namespace smil
    * @return vector with the threshold levels
    */
   template <class T>
-  std::vector<T> otsuThresholdValues(std::map<T, UINT> &hist, UINT threshLevels = 1)
+  std::vector<T> otsuThresholdValues(std::map<T, UINT> &hist,
+                                     UINT               threshLevels = 1)
   {
-    typedef double MeanType;
+    typedef double                MeanType;
     typedef std::vector<MeanType> MeanVectorType;
 
-    double totalFrequency = 0;
-    MeanType globalMean   = 0;
+    double   totalFrequency = 0;
+    MeanType globalMean     = 0;
 
-    for (typename std::map<T, UINT>::iterator it = hist.begin(); it != hist.end();
-         it++) {
+    for (typename std::map<T, UINT>::iterator it = hist.begin();
+         it != hist.end(); it++) {
       globalMean += double((*it).first) * double((*it).second);
       totalFrequency += (*it).second;
     }
 
     globalMean /= totalFrequency;
 
-    unsigned long numberOfClasses = threshLevels + 1;
+    unsigned long  numberOfClasses = threshLevels + 1;
     MeanVectorType thresholdIndexes(threshLevels, 0);
 
     for (unsigned long j = 0; j < threshLevels; j++) {
@@ -627,7 +630,7 @@ namespace smil
     }
 
     MeanVectorType maxVarThresholdIndexes = thresholdIndexes;
-    double freqSum                        = 0;
+    double         freqSum                = 0;
     MeanVectorType classFrequency(numberOfClasses, 0);
 
     for (unsigned long j = 0; j < numberOfClasses - 1; j++) {
@@ -637,7 +640,7 @@ namespace smil
 
     classFrequency[numberOfClasses - 1] = totalFrequency - freqSum;
 
-    double meanSum = 0;
+    double         meanSum = 0;
     MeanVectorType classMean(numberOfClasses, 0);
 
     for (unsigned long j = 0; j < numberOfClasses - 1; j++) {
@@ -719,7 +722,7 @@ namespace smil
    */
   template <class T>
   std::vector<T> otsuThresholdValues(const Image<T> &im, const Image<T> &imMask,
-                                UINT threshLevels = 1)
+                                     UINT threshLevels = 1)
   {
     std::map<T, UINT> hist = histogram(im, imMask);
     return otsuThresholdValues(hist, threshLevels);
@@ -742,17 +745,17 @@ namespace smil
    */
   template <class T, class T_out>
   std::vector<T> otsuThreshold(const Image<T> &imIn, Image<T_out> &imOut,
-                          UINT nbrThresholds)
+                               UINT nbrThresholds)
   {
     if (!areAllocated(&imIn, &imOut, NULL))
       return std::vector<T>();
 
-    std::vector<T> tVals = otsuThresholdValues<T>(imIn, nbrThresholds);
+    std::vector<T>     tVals = otsuThresholdValues<T>(imIn, nbrThresholds);
     std::map<T, T_out> lut;
-    T i       = ImDtTypes<T>::min();
-    T_out lbl = 0;
-    for (typename std::vector<T>::iterator it = tVals.begin(); it != tVals.end();
-         it++, lbl++) {
+    T                  i   = ImDtTypes<T>::min();
+    T_out              lbl = 0;
+    for (typename std::vector<T>::iterator it = tVals.begin();
+         it != tVals.end(); it++, lbl++) {
       while (i < (*it)) {
         lut[i] = lbl;
         i++;
@@ -812,7 +815,7 @@ namespace smil
    */
   template <class T, class T_out>
   std::vector<T> otsuThreshold(const Image<T> &imIn, const Image<T> &imMask,
-                          Image<T_out> &imOut, UINT nbrThresholds = 1)
+                               Image<T_out> &imOut, UINT nbrThresholds = 1)
   {
     if (!areAllocated(&imIn, &imOut, NULL))
       return std::vector<T>();

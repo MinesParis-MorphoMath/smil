@@ -42,13 +42,13 @@ namespace smil
    */
 
   /**
-    * @defgroup TransformCut Cut and paste
-    * @ingroup Transform
-    *
-    * @addtogroup TransformCut
-    *
-    * @{
-    */
+   * @defgroup TransformCut Cut and paste
+   * @ingroup Transform
+   *
+   * @addtogroup TransformCut
+   *
+   * @{
+   */
 
   /*
    *  ####    ####   #####    #   #
@@ -423,13 +423,13 @@ namespace smil
   /** @} */
 
   /**
-    * @defgroup TransformView Image View
-    * @ingroup Transform
-    *
-    * @addtogroup TransformView
-    *
-    * @{
-    */
+   * @defgroup TransformView Image View
+   * @ingroup Transform
+   *
+   * @addtogroup TransformView
+   *
+   * @{
+   */
   /*
    * ######  #          #    #####
    * #       #          #    #    #
@@ -442,7 +442,8 @@ namespace smil
    * @cond
    * FlipClassFunc
    */
-  template <class T> class FlipClassFunc
+  template <class T>
+  class FlipClassFunc
   {
   private:
     void copyReverse(T *in, size_t width, T *out)
@@ -504,9 +505,10 @@ namespace smil
    * @param[in] imIn : input image
    * @param[out] imOut : output image
    */
-  template <class T> RES_T vertFlip(Image<T> &imIn, Image<T> &imOut)
+  template <class T>
+  RES_T vertFlip(Image<T> &imIn, Image<T> &imOut)
   {
-    std::string direction = "vertical";
+    std::string      direction = "vertical";
     FlipClassFunc<T> flip;
     return flip.flipIt(imIn, imOut, "vertical");
   }
@@ -518,7 +520,8 @@ namespace smil
    *
    * @overload
    */
-  template <class T> RES_T vertFlip(Image<T> &im)
+  template <class T>
+  RES_T vertFlip(Image<T> &im)
   {
     return vertFlip(im, im);
   }
@@ -532,9 +535,10 @@ namespace smil
    * @param[in] imIn : input image
    * @param[out] imOut : output image
    */
-  template <class T> RES_T horizFlip(Image<T> &imIn, Image<T> &imOut)
+  template <class T>
+  RES_T horizFlip(Image<T> &imIn, Image<T> &imOut)
   {
-    std::string direction = "horizontal";
+    std::string      direction = "horizontal";
     FlipClassFunc<T> flip;
     return flip.flipIt(imIn, imOut, direction);
   }
@@ -546,7 +550,8 @@ namespace smil
    *
    * @overload
    */
-  template <class T> RES_T horizFlip(Image<T> &im)
+  template <class T>
+  RES_T horizFlip(Image<T> &im)
   {
     return horizFlip(im, im);
   }
@@ -560,7 +565,8 @@ namespace smil
    * #    #   ####      #    #    #     #    ######
    */
   /** @cond */
-  template <class T> class ImageRotateFunct
+  template <class T>
+  class ImageRotateFunct
   {
   public:
     ImageRotateFunct()
@@ -605,57 +611,57 @@ namespace smil
       ImageFreezer freeze(imOut);
 
       typedef typename ImDtTypes<T>::lineType lineType;
-      lineType pixIn  = imIn.getPixels();
-      lineType pixOut = imOut.getPixels();
+      lineType                                pixIn  = imIn.getPixels();
+      lineType                                pixOut = imOut.getPixels();
 
       switch (angle) {
-      case 90:
+        case 90:
 #ifdef USE_OPEN_MP
 #pragma omp parallel for
 #endif // USE_OPEN_MP
-        for (off_t k = 0; k < d; k++) {
-          off_t offset = k * w * h;
-          T *sIn       = (T *) (pixIn + offset);
-          T *sOut      = (T *) (pixOut + offset);
-          for (off_t j = 0; j < h; j++) {
-            for (off_t i = 0; i < w; i++) {
-              sOut[i * h + (w - 1 - j)] = sIn[j * w + i];
+          for (off_t k = 0; k < d; k++) {
+            off_t offset = k * w * h;
+            T    *sIn    = (T *) (pixIn + offset);
+            T    *sOut   = (T *) (pixOut + offset);
+            for (off_t j = 0; j < h; j++) {
+              for (off_t i = 0; i < w; i++) {
+                sOut[i * h + (w - 1 - j)] = sIn[j * w + i];
+              }
             }
           }
-        }
-        break;
-      case 180:
+          break;
+        case 180:
 #ifdef USE_OPEN_MP
 #pragma omp parallel for
 #endif // USE_OPEN_MP
-        for (off_t k = 0; k < d; k++) {
-          off_t offset = k * w * h;
-          T *sIn       = (T *) (pixIn + offset);
-          T *sOut      = (T *) (pixOut + offset);
-          for (off_t j = 0; j < h; j++) {
-            for (off_t i = 0; i < w; i++) {
-              sOut[(h - 1 - j) * w + (w - 1 - i)] = sIn[j * w + i];
+          for (off_t k = 0; k < d; k++) {
+            off_t offset = k * w * h;
+            T    *sIn    = (T *) (pixIn + offset);
+            T    *sOut   = (T *) (pixOut + offset);
+            for (off_t j = 0; j < h; j++) {
+              for (off_t i = 0; i < w; i++) {
+                sOut[(h - 1 - j) * w + (w - 1 - i)] = sIn[j * w + i];
+              }
             }
           }
-        }
-        break;
-      case 270:
+          break;
+        case 270:
 #ifdef USE_OPEN_MP
 #pragma omp parallel for
 #endif // USE_OPEN_MP
-        for (off_t k = 0; k < d; k++) {
-          off_t offset = k * w * h;
-          T *sIn       = (T *) (pixIn + offset);
-          T *sOut      = (T *) (pixOut + offset);
-          for (off_t j = 0; j < h; j++) {
-            for (off_t i = 0; i < w; i++) {
-              sOut[(w - 1 - i) * h + j] = sIn[j * w + i];
+          for (off_t k = 0; k < d; k++) {
+            off_t offset = k * w * h;
+            T    *sIn    = (T *) (pixIn + offset);
+            T    *sOut   = (T *) (pixOut + offset);
+            for (off_t j = 0; j < h; j++) {
+              for (off_t i = 0; i < w; i++) {
+                sOut[(w - 1 - i) * h + j] = sIn[j * w + i];
+              }
             }
           }
-        }
-        break;
-      default:
-        break;
+          break;
+        default:
+          break;
       }
 
       imOut.modified();
@@ -681,7 +687,8 @@ namespace smil
    *
    * @smilexample{Rotation around axis y, example-3D-image-rotate.py}
    */
-  template <class T> RES_T rotateX90(Image<T> &imIn, int count, Image<T> &imOut)
+  template <class T>
+  RES_T rotateX90(Image<T> &imIn, int count, Image<T> &imOut)
   {
     ImageRotateFunct<T> imr;
 
@@ -701,7 +708,8 @@ namespace smil
    *
    * @overload
    */
-  template <class T> RES_T rotateX90(Image<T> &im, int count)
+  template <class T>
+  RES_T rotateX90(Image<T> &im, int count)
   {
     return rotateX90(im, count, im);
   }
@@ -729,7 +737,7 @@ namespace smil
     ASSERT_ALLOCATED(&imIn)
     ASSERT_SAME_SIZE(&imIn, &imOut)
 
-    size_t lineLen = imIn.getWidth();
+    size_t                          lineLen = imIn.getWidth();
     typename ImDtTypes<T>::lineType borderBuf =
         ImDtTypes<T>::createLine(lineLen);
     fillLine<T>(borderBuf, lineLen, borderValue);
@@ -798,7 +806,8 @@ namespace smil
    * @param[in] dx, dy : shift to be applied
    * @returns translated image
    */
-  template <class T> ResImage<T> translate(const Image<T> &imIn, int dx, int dy)
+  template <class T>
+  ResImage<T> translate(const Image<T> &imIn, int dx, int dy)
   {
     ResImage<T> imOut(imIn);
     translate<T>(imIn, dx, dy, 0, imOut);
@@ -808,13 +817,13 @@ namespace smil
   /** @} */
 
   /**
-    * @defgroup TransformSize Image size
-    * @ingroup Transform
-    *
-    * @addtogroup TransformSize
-    *
-    * @{
-    */
+   * @defgroup TransformSize Image size
+   * @ingroup Transform
+   *
+   * @addtogroup TransformSize
+   *
+   * @{
+   */
   /*
    * #####   ######   ####      #    ######  ######
    * #    #  #       #          #        #   #
@@ -826,7 +835,8 @@ namespace smil
   /** @cond
    *
    */
-  template <class T> class ImageResizeFunc
+  template <class T>
+  class ImageResizeFunc
   {
   public:
     ImageResizeFunc(std::string method)
@@ -1168,8 +1178,8 @@ namespace smil
    * trilinear (default), @b bilinear, @b closest or @b auto.
    */
   template <typename T>
-  RES_T resize(Image<T> &imIn, size_t sx, size_t sy, size_t sz,
-               Image<T> &imOut, std::string method = "trilinear")
+  RES_T resize(Image<T> &imIn, size_t sx, size_t sy, size_t sz, Image<T> &imOut,
+               std::string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
     if (&imIn == &imOut) {
@@ -1268,8 +1278,8 @@ namespace smil
    * trilinear (default), @b bilinear, @b closest or @b auto.
    */
   template <typename T>
-  RES_T scale(Image<T> &imIn, double kx, double ky, double kz,
-              Image<T> &imOut, std::string method = "trilinear")
+  RES_T scale(Image<T> &imIn, double kx, double ky, double kz, Image<T> &imOut,
+              std::string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
     if (&imIn == &imOut) {
@@ -1330,8 +1340,6 @@ namespace smil
     ImageResizeFunc<T> func(method);
     return func.scale(imIn, k, k, k, imOut, method);
   }
-
-
 
   /** @}*/
 

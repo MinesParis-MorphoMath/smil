@@ -45,8 +45,8 @@ namespace smil
    *
    * @details @TB{Morphological Filters}
    *
-   * Morphological filters are morphological image transformations which are 
-   * both @b increasing and @b idempotent, i.e., 
+   * Morphological filters are morphological image transformations which are
+   * both @b increasing and @b idempotent, i.e.,
    * - @f$ A < B => \psi(A) < \psi(B) @f$
    * - @f$ \psi(\psi(A)) = \psi(A) @f$
    *
@@ -163,7 +163,6 @@ namespace smil
     return open(imIn, imOut, DEFAULT_SE(seSize));
   }
 
-
   /**
    * Alternate Sequential Filter beginning by a closing
    *
@@ -227,15 +226,16 @@ namespace smil
   }
 
   /** @cond */
-  template <class T> class meanFunct : public MorphImageFunctionBase<T, T>
+  template <class T>
+  class meanFunct : public MorphImageFunctionBase<T, T>
   {
   public:
     typedef MorphImageFunctionBase<T, T> parentClass;
 
-    virtual inline void processPixel(size_t pointOffset,
+    virtual inline void processPixel(size_t            pointOffset,
                                      std::vector<int> &dOffsetList)
     {
-      double meanVal                = 0;
+      double                     meanVal = 0;
       std::vector<int>::iterator dOffset = dOffsetList.begin();
       while (dOffset != dOffsetList.end()) {
         meanVal += double(parentClass::pixelsIn[pointOffset + *dOffset]);
@@ -269,15 +269,16 @@ namespace smil
   }
 
   /** @cond */
-  template <class T> class medianFunct : public MorphImageFunctionBase<T, T>
+  template <class T>
+  class medianFunct : public MorphImageFunctionBase<T, T>
   {
   public:
     typedef MorphImageFunctionBase<T, T> parentClass;
 
-    virtual inline void processPixel(size_t pointOffset,
+    virtual inline void processPixel(size_t            pointOffset,
                                      std::vector<int> &dOffsetList)
     {
-      std::vector<T> vals;
+      std::vector<T>             vals;
       std::vector<int>::iterator dOffset = dOffsetList.begin();
       while (dOffset != dOffsetList.end()) {
         vals.push_back(parentClass::pixelsIn[pointOffset + *dOffset]);
@@ -311,7 +312,8 @@ namespace smil
   }
 
   /** @cond */
-  template <class T> class rankFunct : public MorphImageFunctionBase<T, T>
+  template <class T>
+  class rankFunct : public MorphImageFunctionBase<T, T>
   {
   public:
     typedef MorphImageFunctionBase<T, T> parentClass;
@@ -319,10 +321,10 @@ namespace smil
     rankFunct(double per) : MorphImageFunctionBase<T, T>(), percentile(per)
     {
     }
-    virtual inline void processPixel(size_t pointOffset,
+    virtual inline void processPixel(size_t            pointOffset,
                                      std::vector<int> &dOffsetList)
     {
-      std::vector<T> vals;
+      std::vector<T>             vals;
       std::vector<int>::iterator dOffset = dOffsetList.begin();
       while (dOffset != dOffsetList.end()) {
         vals.push_back(parentClass::pixelsIn[pointOffset + *dOffset]);

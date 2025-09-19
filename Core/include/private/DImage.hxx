@@ -528,8 +528,8 @@ namespace smil
           if (hexaGrid && j % 2)
             os << std::setw(tSsize / 2 + 1) << " ";
           for (i = 0; i < width; i++)
-            os << std::setw(tSsize + 1) << ImDtTypes<T>::toString(getPixel(i, j, k))
-               << ",";
+            os << std::setw(tSsize + 1)
+               << ImDtTypes<T>::toString(getPixel(i, j, k)) << ",";
           os << std::endl;
         }
         os << std::endl;
@@ -972,8 +972,8 @@ namespace smil
     PyArray_Descr *descr        = NULL;
     int            requirements = NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_ALIGNED;
 
-    arr = (PyArrayObject *) PyArray_FromAny(obj, descr, 0, 0, requirements,
-                                                 NULL);
+    arr =
+        (PyArrayObject *) PyArray_FromAny(obj, descr, 0, 0, requirements, NULL);
     if (arr == NULL) {
       ERR_MSG("Input must be a NumPy array");
       return;

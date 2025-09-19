@@ -6,7 +6,7 @@ namespace smil
 {
   template <class T>
   RES_T meanShiftFilter(const Image<T> &imIn, const UINT8 radius,
-                    const int tonalDistance, Image<T> &imOut)
+                        const int tonalDistance, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -28,15 +28,15 @@ namespace smil
     W = S[0];
     H = S[1];
 
-    int i, j;
+    int    i, j;
     double shift;
 
     // pour tous les pixels
     for (j = 0; j < H; j++)
       for (i = 0; i < W; i++) {
-        int xc = i;
-        int yc = j;
-        int xcOld, ycOld;
+        int    xc = i;
+        int    yc = j;
+        int    xcOld, ycOld;
         double YcOld;
         double Yc = bufferIn[(i + j * W)];
 
@@ -46,10 +46,10 @@ namespace smil
           ycOld = yc;
           YcOld = Yc;
 
-          double mx = 0;
-          double my = 0;
-          double mY = 0;
-          int num   = 0;
+          double mx  = 0;
+          double my  = 0;
+          double mY  = 0;
+          int    num = 0;
 
           for (int ry = -radius; ry <= radius; ry++) {
             int y2 = yc + ry;
@@ -77,8 +77,8 @@ namespace smil
           Yc          = mY * num_;
           xc          = (int) (mx * num_ + 0.5);
           yc          = (int) (my * num_ + 0.5);
-          int dx      = xc - xcOld;
-          int dy      = yc - ycOld;
+          int    dx   = xc - xcOld;
+          int    dy   = yc - ycOld;
           double dY   = Yc - YcOld;
 
           shift = dx * dx + dy * dy + dY * dY;
@@ -93,7 +93,7 @@ namespace smil
 #if 1
   template <class T>
   RES_T meanShiftFilterRGB(const Image<T> &imIn, const UINT8 radius,
-                    const int tonalDistance, Image<T> &imOut)
+                           const int tonalDistance, Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -220,4 +220,3 @@ namespace smil
 
 } // namespace smil
 #endif
-

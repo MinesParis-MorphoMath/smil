@@ -95,8 +95,8 @@ namespace smil
     }
 
   public:
-    Core *getCoreInstance();
-    typedef void parentClass;
+    Core               *getCoreInstance();
+    typedef void        parentClass;
     virtual std::string getInfoString(const char * = "") const
     {
       return {};
@@ -126,7 +126,7 @@ namespace smil
     bool triggerEvents;
 
   protected:
-    bool registered;
+    bool        registered;
     std::string className;
     std::string name;
 

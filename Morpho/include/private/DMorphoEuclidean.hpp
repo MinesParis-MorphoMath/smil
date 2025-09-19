@@ -86,7 +86,7 @@ namespace smil
 
       HierarchicalQueue<T2, off_t> hq;
 
-      off_t         pixelCount = imIn.getPixelCount();
+      off_t              pixelCount = imIn.getPixelCount();
       std::vector<off_t> pixelsOffset(pixelCount, 0);
 
       StrElt seLoc = se.noCenter();
@@ -134,7 +134,7 @@ namespace smil
         }
       } // for each pixel
 
-      //#####################################
+      // #####################################
 
       // Process hierarchical queue. Get a pixel(p0), find ngb without
       // computed distance(p1), p2 is a ngb of p1. If p2 knows its
@@ -202,7 +202,7 @@ namespace smil
                 oo           = p2;
               }
             } // if ngb knows its distance
-          }   // for ngb
+          } // for ngb
           T2 pr1 = T2(std::sqrt(current_dist));
 
           if (pr1 > T2_maxVal)
@@ -213,7 +213,7 @@ namespace smil
           pixelsOut[p1]    = pr1;
           pixelsOffset[p1] = pixelsOffset[oo];
         } // for each ngb of p
-      }   // while ! EMPTY
+      } // while ! EMPTY
 
       return RES_OK;
     } // END euclidian_distance

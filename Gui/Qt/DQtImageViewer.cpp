@@ -47,16 +47,16 @@ namespace smil
 
     if (!parentClass::labelImage && autoRange) {
       std::vector<UINT8> rangeV = rangeVal<UINT8>(*this->image);
-      double        floor  = rangeV[0];
-      double        coeff  = 255. / double(rangeV[1] - rangeV[0]);
-      UINT8 *       destLine;
+      double             floor  = rangeV[0];
+      double             coeff  = 255. / double(rangeV[1] - rangeV[0]);
+      UINT8             *destLine;
 
       for (size_t j = 0; j < h; j++, lines++) {
         Image<UINT8>::lineType pixels = *lines;
         destLine                      = this->qImage->scanLine(j);
         for (size_t i = 0; i < w; i++)
           //           pixels[i] = 0;
-          destLine[i] = (UINT8)(coeff * (double(pixels[i]) - floor));
+          destLine[i] = (UINT8) (coeff * (double(pixels[i]) - floor));
       }
     } else
       for (size_t j = 0; j < h; j++, lines++)
@@ -77,7 +77,7 @@ namespace smil
     this->setImageSize(w, h);
 
     const BIN *lIn;
-    UINT8 *    lOut, *lEnd;
+    UINT8     *lOut, *lEnd;
     size_t     bCount = (w - 1) / BIN::SIZE + 1;
 
     for (int j = 0; j < h; j++) {

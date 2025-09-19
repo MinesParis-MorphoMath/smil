@@ -156,7 +156,7 @@ namespace smil
   };
 
   template <class labelT, class T>
-  void stochasticGraphToPDF(const Image<labelT> &        img,
+  void stochasticGraphToPDF(const Image<labelT>         &img,
                             stochastic_graph<labelT, T> &graph,
                             Image<labelT> &out, const StrElt &s)
   {
@@ -211,10 +211,10 @@ namespace smil
   }
 
   template <class labelT, class T>
-  void displayStochasticMarker(const Image<labelT> &        img,
-                               std::vector<int> &           markers,
+  void displayStochasticMarker(const Image<labelT>         &img,
+                               std::vector<int>            &markers,
                                stochastic_graph<labelT, T> &graph,
-                               std::vector<labelT> &        originals,
+                               std::vector<labelT>         &originals,
                                Image<labelT> &out, const StrElt &s)
   {
     std::map<labelT, labelT> correspondances;
@@ -263,7 +263,7 @@ namespace smil
   template <class labelT, class T>
   void mosaicToStochasticGraph(const Image<labelT> &img, const Image<T> &gradI,
                                stochastic_graph<labelT, T> &graph,
-                               const StrElt &               s)
+                               const StrElt                &s)
   {
     Image<labelT> tmp = Image<labelT>(img);
 
@@ -402,7 +402,7 @@ namespace smil
 
   template <class labelT, class T>
   size_t CCL_stochasticGraph(stochastic_graph<labelT, T> &r,
-                             vector<labelT> &             labels)
+                             vector<labelT>              &labels)
   {
     size_t nbr_nodes  = r.nodes.size();
     size_t nbr_labels = 0;
@@ -425,7 +425,7 @@ namespace smil
 
   template <class labelT, class T>
   size_t CCLUnionFind_stochasticGraph(stochastic_graph<labelT, T> &graph,
-                                      vector<labelT> &             labels)
+                                      vector<labelT>              &labels)
   {
     uint32_t nbr_nodes  = graph.nodes.size() - 1;
     uint32_t nbr_labels = 0;
@@ -572,7 +572,7 @@ namespace smil
     return out;
   }
 
-  std::vector<int> generateMarkers(const std::vector<double> & prob_dist,
+  std::vector<int> generateMarkers(const std::vector<double>  &prob_dist,
                                    std::default_random_engine &generator)
   {
     std::vector<int> markers = std::vector<int>(prob_dist.size(), 0);
@@ -597,7 +597,7 @@ namespace smil
 
   template <class labelT, class T>
   std::vector<size_t> watershedGraph(stochastic_graph<labelT, T> &graph,
-                                     std::vector<int> &           markers)
+                                     std::vector<int>            &markers)
   {
     std::vector<size_t> out;
     std::map<T, int>    dist_altitude;
@@ -745,7 +745,7 @@ namespace smil
   }
 
   template <class labelT, class T>
-  std::vector<double> weightHierarchy(std::vector<hierarchy> &     h,
+  std::vector<double> weightHierarchy(std::vector<hierarchy>      &h,
                                       stochastic_graph<labelT, T> &graph)
   {
     size_t nbr_weights = graph.nodes.size() + h.size();
@@ -789,7 +789,7 @@ namespace smil
   }
 
   template <class labelT, class T>
-  void bottomUpHierarchy(std::vector<double> &   weights,
+  void bottomUpHierarchy(std::vector<double>    &weights,
                          std::vector<hierarchy> &h, const double &r0,
                          stochastic_graph<labelT, T> &graph)
   {
@@ -975,7 +975,7 @@ namespace smil
   // Parallel
   template <class labelT, class T>
   size_t stochasticFlatZonesParallel(const Image<labelT> &primary,
-                                     const Image<T> &     gradient,
+                                     const Image<T>      &gradient,
                                      Image<labelT> &out, const size_t &n_seeds,
                                      const double &t0, const StrElt &se)
   {
@@ -1106,7 +1106,7 @@ namespace smil
   // Parallel
   template <class labelT, class T>
   size_t overSegmentationCorrection(const Image<labelT> &primary,
-                                    const Image<T> &     gradient,
+                                    const Image<T>      &gradient,
                                     Image<labelT> &out, const size_t &n_seeds,
                                     const double &r0, const StrElt &se)
   {

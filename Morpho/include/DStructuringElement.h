@@ -94,7 +94,7 @@ namespace smil
     StrElt(bool oddSE, UINT nbrPts, ...)
         : BaseObject("StrElt"), odd(oddSE), seT(SE_Generic), size(1)
     {
-      UINT index;
+      UINT    index;
       va_list vl;
       va_start(vl, nbrPts);
 
@@ -111,8 +111,8 @@ namespace smil
      * Class constructor
      *
      * Construct a structuring element with points defined by their indexes.
-     * @param[in] oddSE : Specify if we want to use an hexagonal grid (true) or a
-     * square grid (false)
+     * @param[in] oddSE : Specify if we want to use an hexagonal grid (true) or
+     * a square grid (false)
      * @param[in] indexList : The list of point indexes
      *
      * The index values are defined for each grid type as follow:
@@ -195,7 +195,7 @@ namespace smil
      * clone() - Clone a structuring element
      *
      * @param[in] rhs : structuring element to be cloned
-     * 
+     *
      */
     void clone(const StrElt &rhs);
 
@@ -324,8 +324,7 @@ namespace smil
           {SE_Line, "LineSE"},
           {SE_Line3D, "Line3DSE"},
           {SE_CenteredLine, "CenteredLineSE"},
-          {SE_CenteredLine3D, "CenteredLine3DSE"}
-      };
+          {SE_CenteredLine3D, "CenteredLine3DSE"}};
 
       std::map<seType, std::string>::iterator it;
       it = seNames.find(seT);
@@ -347,27 +346,28 @@ namespace smil
     }
 
     /**
-    * printSelf() - Print the contents of the structuring element
-    *
-    * @note
-    * In @TB{Python} this has the same effect than @TB{print(se)}
-    */
-    virtual void printSelf(std::ostream &os = std::cout, std::string indent = "") const;
+     * printSelf() - Print the contents of the structuring element
+     *
+     * @note
+     * In @TB{Python} this has the same effect than @TB{print(se)}
+     */
+    virtual void printSelf(std::ostream &os     = std::cout,
+                           std::string   indent = "") const;
 
     /**
-    * printSelf() - Print the contents of the structuring element
-    *
-    * @note
-    * In @TB{Python} this has the same effect than @TB{print(se)}
-    */
+     * printSelf() - Print the contents of the structuring element
+     *
+     * @note
+     * In @TB{Python} this has the same effect than @TB{print(se)}
+     */
     virtual void printSelf(std::string indent) const
     {
       printSelf(std::cout, indent);
     }
 
-    bool odd;
+    bool   odd;
     seType seT;
-    UINT size;
+    UINT   size;
   };
 
   inline void operator<<(std::ostream &os, StrElt &se)
@@ -640,7 +640,7 @@ namespace smil
    */
   class LineSE : public StrElt
   {
-  public :
+  public:
     /**
      * LineSE() - flat structuring element of arbitrary length and direction
      * starting at the origin.
@@ -661,8 +661,8 @@ namespace smil
 
       // int xf = (int) round(length * cos(-theta * PI / 180.));
       // int yf = (int) round(length * sin(-theta * PI / 180.));
-      int xf = (int) round(length * cos(-theta));
-      int yf = (int) round(length * sin(-theta));
+      int                     xf = (int) round(length * cos(-theta));
+      int                     yf = (int) round(length * sin(-theta));
       std::vector<Point<int>> v;
 
       v = bresenhamPoints(0, 0, xf, yf);
@@ -671,37 +671,37 @@ namespace smil
     }
   };
 
- /**
-   *  Line3DSE - 3D structuring element of arbitrary length and direction
-   * starting at the origin.
-   *
-   * The line is defined with the help of a Besenham algorithm
-   *
-   * @note
-   * - one edge of the structuring element is at the origin. So this S.E. isn't
-   *    symetric. If you need a symetric S.E. you need to compose it with its
-   *    transposed. As an example :
-   @BeginPython
-      import smilPython as sp
+  /**
+    *  Line3DSE - 3D structuring element of arbitrary length and direction
+    * starting at the origin.
+    *
+    * The line is defined with the help of a Besenham algorithm
+    *
+    * @note
+    * - one edge of the structuring element is at the origin. So this S.E. isn't
+    *    symetric. If you need a symetric S.E. you need to compose it with its
+    *    transposed. As an example :
+    @BeginPython
+       import smilPython as sp
 
-      # this way
-      se = sp.Line3DSE(10, 0, PI / 4)
-      se = sp.merge(se.transpose())
+       # this way
+       se = sp.Line3DSE(10, 0, PI / 4)
+       se = sp.merge(se.transpose())
 
-      # or this way
-      se = sp.Line3DSE(10, 0, PI / 4)
-      se = sp.merge(se, se.transpose())
-   @EndPython
-   */
+       # or this way
+       se = sp.Line3DSE(10, 0, PI / 4)
+       se = sp.merge(se, se.transpose())
+    @EndPython
+    */
   class Line3DSE : public StrElt
   {
-  public :
+  public:
     /**
      * Line3DSE() - constructor
      *
      * @param[in] length : length of the segment
-     * @param[in] theta : angle (in radians) from the Structuring Segment projected
-     *    in a slice with the horizontal line
+     * @param[in] theta : angle (in radians) from the Structuring Segment
+     * projected in a slice with the horizontal line
      * @param[in] zeta : elevation angle - angle (in radians) between the
      *    Structuring element and each slice
      *
@@ -722,7 +722,7 @@ namespace smil
       int xf = (int) round(lenXY * cos(-theta));
       int yf = (int) round(lenXY * sin(-theta));
 
-      Bresenham line(0, 0, 0, xf, yf, zf);
+      Bresenham             line(0, 0, 0, xf, yf, zf);
       std::vector<IntPoint> v = line.getPoints();
       for (size_t i = 0; i < v.size(); i++)
         addPoint(v[i].x, v[i].y, v[i].z);
@@ -742,7 +742,7 @@ namespace smil
 #if 1
   class CenteredLineSE : public StrElt
   {
-  public :
+  public:
     /**
      * CenteredLineSE() -
      *
@@ -762,8 +762,8 @@ namespace smil
 
       int xf = (int) round(length * cos(-theta) / 2);
       int yf = (int) round(length * sin(-theta) / 2);
-      //int xf = (int) round(length * cos(-theta));
-      // int yf = (int) round(length * sin(-theta));
+      // int xf = (int) round(length * cos(-theta));
+      //  int yf = (int) round(length * sin(-theta));
 
       std::vector<Point<int>> v;
       v = bresenhamPoints(0, 0, xf, yf);
@@ -788,8 +788,8 @@ namespace smil
    * CenteredLine3DSE() - constructor
    *
    * @param[in] length : length of the segment
-   * @param[in] theta : angle (in radians) from the Structuring Segment projected
-   *    in a slice with the horizontal line
+   * @param[in] theta : angle (in radians) from the Structuring Segment
+   * projected in a slice with the horizontal line
    * @param[in] zeta : elevation angle - angle (in radians) between the
    *    Structuring element and each slice
    *
@@ -800,7 +800,7 @@ namespace smil
 #if 1
   class CenteredLine3DSE : public StrElt
   {
-  public :
+  public:
     /**
      * CenteredLine3DSE() -
      *
@@ -827,7 +827,7 @@ namespace smil
       int xf = (int) round(lenXY * cos(-theta));
       int yf = (int) round(lenXY * sin(-theta));
 
-      Bresenham line(0, 0, 0, xf, yf, zf);
+      Bresenham             line(0, 0, 0, xf, yf, zf);
       std::vector<IntPoint> v = line.getPoints();
 
       for (size_t i = 0; i < v.size(); i++) {
@@ -879,7 +879,8 @@ namespace smil
   /** @endcond */
 
   /**
-   * buildLineSE() - build a line structuring element with arbitrary length and angle.
+   * buildLineSE() - build a line structuring element with arbitrary length and
+   * angle.
    *
    * The line is defined with the help of a Besenham algorithm
    *
@@ -902,7 +903,6 @@ namespace smil
       se.addPoint(v[i].x, v[i].y, v[i].z);
     return se;
   }
-
 
   /**
    * merge() - merge two Structuring Elements

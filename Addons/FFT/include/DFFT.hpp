@@ -72,12 +72,12 @@ namespace smil
     size_t pixNbr = ncols * nrows;
 
     // Allocate arrays for FFT of src and tpl
-    double *      src1_real  = fftw_alloc_real(pixNbr);
+    double       *src1_real  = fftw_alloc_real(pixNbr);
     fftw_complex *src1_compl = fftw_alloc_complex(nccols * nrows);
-    double *      src2_real  = fftw_alloc_real(pixNbr);
+    double       *src2_real  = fftw_alloc_real(pixNbr);
     fftw_complex *src2_compl = fftw_alloc_complex(nccols * nrows);
 
-    double *      res_real  = fftw_alloc_real(pixNbr);
+    double       *res_real  = fftw_alloc_real(pixNbr);
     fftw_complex *res_compl = fftw_alloc_complex(nccols * nrows);
 
     T1 *src1_data = imIn1.getPixels();

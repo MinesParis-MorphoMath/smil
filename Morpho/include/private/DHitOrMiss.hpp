@@ -50,7 +50,7 @@ namespace smil
    * first structuring element fits in the foreground of the input image, and
    * the second structuring element misses it completely.
    *
-   * @see 
+   * @see
    * - @SoilleBook{p. 139}
    * - <a href="https://en.wikipedia.org/wiki/Hit-or-miss_transform">
    * Hit-or-mis Transform</a>
@@ -215,7 +215,7 @@ namespace smil
    * thick() - Thicking transform
    *
    * A @b thickening consists in adding background pixels having a specific
-   * configuration to the set of foreground pixels. This is achieved by adding 
+   * configuration to the set of foreground pixels. This is achieved by adding
    * to the input image the hit or miss transform by the corresponding composite
    * SE.
    *
@@ -375,7 +375,7 @@ namespace smil
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     ImageFreezer freezer(imOut);
-    double v1, v2;
+    double       v1, v2;
     ASSERT((thick<T>(imIn, mhtSE, imOut) == RES_OK));
     v1 = vol(imOut);
     while (true) {

@@ -42,7 +42,7 @@ namespace smil
     if (b.x < S[0] && b.y < S[1] && b.z < S[2]) {                              \
       CoorToIndex(b);
 #define ENDForEachNeighborOf                                                   \
-    }                                                                            \
+  }                                                                            \
   }
 
 #define LIVEVERSION
@@ -51,12 +51,12 @@ namespace smil
   void geoDistance(const Image<T1> &_in_, Image<T2> &_out_, const StrElt &se)
   {
     queue<size_t> *c1 = new queue<size_t>(), *c2 = new queue<size_t>(), *tmp;
-    T1 *in  = _in_.getPixels();
-    T2 *out = _out_.getPixels();
-    index_T p, q;
+    T1            *in  = _in_.getPixels();
+    T2            *out = _out_.getPixels();
+    index_T        p, q;
 
-    UINT sePtsNumber = se.points.size();
-    UINT pts;
+    UINT   sePtsNumber = se.points.size();
+    UINT   pts;
     size_t S[3];
     _in_.getSize(S);
     size_t nbrPixelsInSlice = S[0] * S[1];
@@ -70,7 +70,7 @@ namespace smil
     }
     ENDForEachPixel
 
-    T2 d = 1;
+        T2 d = 1;
     while (!c2->empty()) {
       tmp = c1;
       c1  = c2;

@@ -104,7 +104,8 @@ namespace smil
    * data and not the @b RAW format from camera makers (@b NEF, @b RAF, @b CR2,
    * ...)
    */
-  template <class T> RES_T writeRAW(Image<T> &image, const char *filename)
+  template <class T>
+  RES_T writeRAW(Image<T> &image, const char *filename)
   {
     FILE *fp = NULL;
 

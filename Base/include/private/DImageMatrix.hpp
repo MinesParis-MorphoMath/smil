@@ -44,7 +44,8 @@ namespace smil
    */
 
   /** @cond */
-  template <class T> class ImageTransposeFunc
+  template <class T>
+  class ImageTransposeFunc
   {
   private:
     std::vector<int> lut{1, 0, 2};
@@ -132,7 +133,7 @@ namespace smil
 
 #ifdef USE_OPEN_MP
         int nthreads = Core::getInstance()->getNumberOfThreads();
-#  pragma omp parallel private(ix) num_threads(nthreads)
+#pragma omp parallel private(ix) num_threads(nthreads)
 #endif // USE_OPEN_MP
         for (ix[2] = 0; ix[2] < szIn[2]; ix[2]++) {
           for (ix[1] = 0; ix[1] < szIn[1]; ix[1]++) {
@@ -148,7 +149,7 @@ namespace smil
     }
   };
   /** @endcond */
-  
+
   /**
    * @brief matTranspose() : 3D image transposition
    *
@@ -161,10 +162,10 @@ namespace smil
    * Possible values for parameter @b order are : <b> xyz, xzy, yxz, yzx, zxy,
    * zyx, xy, yx</b> and an empty string.
    * @note
-   * - @b xyz and @b xy, does nothing but just copies input image into output 
+   * - @b xyz and @b xy, does nothing but just copies input image into output
    *   image.
    * - @b yxz or @b yx correspond to the usual transposition of @b 2D matrices.
-   *   When applied to @b 3D images, all slices are transposed. 
+   *   When applied to @b 3D images, all slices are transposed.
    *
    * @param[in]  imIn : input Image
    * @param[in]  order : axis order in the output image
@@ -172,7 +173,8 @@ namespace smil
    *
    */
   template <class T>
-  RES_T matTranspose(const Image<T> &imIn, Image<T> &imOut, std::string order = "yxz")
+  RES_T matTranspose(const Image<T> &imIn, Image<T> &imOut,
+                     std::string order = "yxz")
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ImageTransposeFunc<T> tmat(order);
@@ -206,7 +208,8 @@ namespace smil
    * @parallelized
    */
   template <class T>
-  RES_T matMultiply(const Image<T> &imIn1, const Image<T> &imIn2, Image<T> &imOut)
+  RES_T matMultiply(const Image<T> &imIn1, const Image<T> &imIn2,
+                    Image<T> &imOut)
   {
     ASSERT_ALLOCATED(&imIn1, &imIn2);
     size_t size1[3], size2[3];
@@ -229,14 +232,14 @@ namespace smil
     ASSERT((matTranspose(imIn2, transIm) == RES_OK));
 
     typedef typename ImDtTypes<T>::sliceType sliceType;
-    typedef typename ImDtTypes<T>::lineType lineType;
+    typedef typename ImDtTypes<T>::lineType  lineType;
 
     sliceType lines    = imIn1.getLines();
     sliceType outLines = imOut.getLines();
     sliceType cols     = transIm.getLines();
-    lineType line;
-    lineType outLine;
-    lineType col;
+    lineType  line;
+    lineType  outLine;
+    lineType  col;
 
     size_t y;
 

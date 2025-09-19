@@ -75,8 +75,8 @@ namespace smil
 
     typename Image<T>::sliceType lines = im.getLines();
 
-    for (std::vector<IntPoint>::iterator it = bPoints.begin(); it != bPoints.end();
-         it++)
+    for (std::vector<IntPoint>::iterator it = bPoints.begin();
+         it != bPoints.end(); it++)
       lines[(*it).y][(*it).x] = value;
 
     im.modified();
@@ -135,9 +135,9 @@ namespace smil
     x0 = x0 >= 0 ? x0 : 0;
     y0 = y0 >= 0 ? y0 : 0;
 
-    typename Image<T>::volType slices        = imOut.getSlices();
-    const typename Image<T>::sliceType lines = slices[zSlice];
-    fillLine<T> fillFunc;
+    typename Image<T>::volType         slices = imOut.getSlices();
+    const typename Image<T>::sliceType lines  = slices[zSlice];
+    fillLine<T>                        fillFunc;
 
     if (fill) {
       for (size_t j = y0; j <= y1; j++)
@@ -194,9 +194,9 @@ namespace smil
    * y0, x1, y1)</b>
    */
   template <class T, class MapT>
-  RES_T drawRectangles(Image<T> &imOut,
+  RES_T drawRectangles(Image<T>                                  &imOut,
                        const std::map<MapT, std::vector<size_t>> &coordsVectMap,
-                       bool fill = false)
+                       bool                                       fill = false)
   {
     ASSERT_ALLOCATED(&imOut);
     ImageFreezer freeze(imOut);
@@ -207,7 +207,7 @@ namespace smil
       return RES_ERR;
     for (; it != coordsVectMap.end(); it++) {
       const std::vector<size_t> &coords = it->second;
-      T val                        = T(it->first);
+      T                          val    = T(it->first);
       if (drawRectangle<T>(imOut, coords[0], coords[1],
                            coords[2] - coords[0] + 1, coords[3] - coords[1] + 1,
                            val, fill) != RES_OK) {
@@ -307,9 +307,9 @@ namespace smil
 
     int r2 = radius * radius;
 
-    typename Image<T>::volType slices = imOut.getSlices();
+    typename Image<T>::volType   slices = imOut.getSlices();
     typename Image<T>::sliceType lines;
-    typename Image<T>::lineType curLine;
+    typename Image<T>::lineType  curLine;
 
     for (int z = z1; z <= z2; z++) {
       lines = slices[z];
@@ -357,7 +357,7 @@ namespace smil
     int r2 = radius * radius;
 
     typename Image<T>::sliceType lines = imOut.getSlices()[zSlice];
-    typename Image<T>::lineType curLine;
+    typename Image<T>::lineType  curLine;
 
     for (int y = y1; y <= y2; y++) {
       curLine = lines[y];
@@ -416,7 +416,8 @@ namespace smil
    */
   template <class T>
   RES_T drawText(Image<T> &imOut, size_t x, size_t y, size_t z, std::string txt,
-                 std::string font, UINT size = 20, T value = ImDtTypes<T>::max())
+                 std::string font, UINT size = 20,
+                 T value = ImDtTypes<T>::max())
   {
     ASSERT_ALLOCATED(&imOut);
 
@@ -427,10 +428,10 @@ namespace smil
             z < imOut.getDepth()),
            "Text position out of image range.", RES_ERR);
 
-    FT_Library library;
-    FT_Face face;
+    FT_Library   library;
+    FT_Face      face;
     FT_GlyphSlot slot;
-    const char *text = txt.c_str();
+    const char  *text = txt.c_str();
 
     ASSERT((!FT_Init_FreeType(&library)),
            "Problem initializing freetype library.", RES_ERR);
@@ -456,9 +457,9 @@ namespace smil
       typename ImDtTypes<T>::sliceType slc = imOut.getSlices()[z];
 
       for (j = y_min, q = 0; j < y_max; j++, q++) {
-        unsigned char *in = bitmap->buffer + q * bitmap->pitch;
+        unsigned char                  *in = bitmap->buffer + q * bitmap->pitch;
         typename ImDtTypes<T>::lineType out = slc[j];
-        unsigned char bit                   = 0x80;
+        unsigned char                   bit = 0x80;
         for (i = x_min, p = 0; i < x_max; i++, p++) {
           if (i >= 0 && j >= 0 && i < (int) imW && j < (int) imH)
             if (*in & bit)
@@ -483,8 +484,9 @@ namespace smil
   }
 
   template <class T>
-  RES_T drawText(Image<T> &imOut, size_t x, size_t y, std::string txt, std::string font,
-                 UINT size = 20, T value = ImDtTypes<T>::max())
+  RES_T drawText(Image<T> &imOut, size_t x, size_t y, std::string txt,
+                 std::string font, UINT size = 20,
+                 T value = ImDtTypes<T>::max())
   {
     return drawText(imOut, x, y, 0, txt, font, size, value);
   }
@@ -592,7 +594,8 @@ namespace smil
                     Image<T> &imOut)
   {
     return copyPattern(imIn, x0, y0, width, height, imOut,
-                       std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
+                       std::numeric_limits<int>::max(),
+                       std::numeric_limits<int>::max());
   }
 
   template <class T>
@@ -603,10 +606,12 @@ namespace smil
                        nbr_along_x, nbr_along_y);
   }
 
-  template <class T> RES_T copyPattern(const Image<T> &imIn, Image<T> &imOut)
+  template <class T>
+  RES_T copyPattern(const Image<T> &imIn, Image<T> &imOut)
   {
     return copyPattern(imIn, 0, 0, imIn.getWidth(), imIn.getHeight(), imOut,
-                       std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
+                       std::numeric_limits<int>::max(),
+                       std::numeric_limits<int>::max());
   }
 
   /** @}*/

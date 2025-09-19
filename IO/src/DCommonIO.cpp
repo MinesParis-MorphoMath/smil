@@ -71,7 +71,7 @@ namespace smil
         break;
     }
     os << " colorType   " << s << std::endl;
-    switch(scalarType) {
+    switch (scalarType) {
       case SCALAR_TYPE_UINT8:
         s = "UINT8";
         break;
@@ -110,7 +110,8 @@ namespace smil
         break;
     }
     os << " fileType    " << s << std::endl;
-    os << " size        " << width << "x" << height << "x" << depth << std::endl;
+    os << " size        " << width << "x" << height << "x" << depth
+       << std::endl;
     os << " width       " << width << std::endl;
     os << " height      " << height << std::endl;
     os << " depth       " << depth << std::endl;
@@ -118,9 +119,9 @@ namespace smil
 
   std::string getFileExtension(const char *fileName)
   {
-    std::string fName(fileName);
-    std::string::size_type idx = fName.rfind('.');
-    std::string fExt           = fName.substr(idx + 1);
+    std::string            fName(fileName);
+    std::string::size_type idx  = fName.rfind('.');
+    std::string            fExt = fName.substr(idx + 1);
     transform(fExt.begin(), fExt.end(), fExt.begin(), ::toupper);
     return fExt;
   }
@@ -135,8 +136,8 @@ namespace smil
 
   RES_T getHttpFile(const char *url, const char *outfilename)
   {
-    CURL *curl_handle;
-    FILE *fp;
+    CURL    *curl_handle;
+    FILE    *fp;
     CURLcode res;
     curl_handle = curl_easy_init();
     if (curl_handle) {

@@ -53,17 +53,18 @@ namespace smil
     {
     }
 
-    UINT width, height, depth;
-    UINT pointNbr;
+    UINT                      width, height, depth;
+    UINT                      pointNbr;
     ImageFileInfo::ScalarType scalarType;
-    std::string scalarTypeStr;
-    double scalarCoeff;
-    bool binaryFile;
-    std::streampos startPos;
+    std::string               scalarTypeStr;
+    double                    scalarCoeff;
+    bool                      binaryFile;
+    std::streampos            startPos;
   };
 
   // Big/Little endian swap
-  template <class T> void endswap(T *objp)
+  template <class T>
+  void endswap(T *objp)
   {
     unsigned char *memp = reinterpret_cast<unsigned char *>(objp);
     std::reverse(memp, memp + sizeof(T));
@@ -155,19 +156,20 @@ namespace smil
            scalarType != ImageFileInfo::SCALAR_TYPE_UINT16) ||
           (typeid(T) == typeid(short) &&
            scalarType != ImageFileInfo::SCALAR_TYPE_INT16)) {
-        std::cout << "Error: input file type is " << hStruct.scalarTypeStr << std::endl;
+        std::cout << "Error: input file type is " << hStruct.scalarTypeStr
+                  << std::endl;
         fp.close();
         return RES_ERR_IO;
       }
 
-      int width = hStruct.width;
+      int width  = hStruct.width;
       int height = hStruct.height;
-      int depth = hStruct.depth;
+      int depth  = hStruct.depth;
       image.setSize(width, height, depth);
 
-      typename Image<T>::volType slices = image.getSlices();
+      typename Image<T>::volType   slices = image.getSlices();
       typename Image<T>::sliceType curSlice;
-      typename Image<T>::lineType curLine;
+      typename Image<T>::lineType  curLine;
 
       // Return to the begining of the data
       fp.seekg(hStruct.startPos);
@@ -236,7 +238,8 @@ namespace smil
       fp << "vtk output" << std::endl;
       fp << "BINARY" << std::endl;
       fp << "DATASET STRUCTURED_POINTS" << std::endl;
-      fp << "DIMENSIONS " << width << " " << height << " " << depth << std::endl;
+      fp << "DIMENSIONS " << width << " " << height << " " << depth
+         << std::endl;
       fp << "SPACING 1.0 1.0 1.0" << std::endl;
       fp << "ORIGIN 0 0 0" << std::endl;
       fp << "POINT_DATA " << pixNbr << std::endl;
@@ -253,9 +256,9 @@ namespace smil
         std::cerr << "not implemented (todo..)" << std::endl;
       }
 
-      typename Image<T>::volType slices = image.getSlices();
+      typename Image<T>::volType   slices = image.getSlices();
       typename Image<T>::sliceType curSlice;
-      typename Image<T>::lineType curLine;
+      typename Image<T>::lineType  curLine;
 
       if (writeBinary) {
         // todo : make this generic

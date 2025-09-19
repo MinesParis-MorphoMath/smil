@@ -49,11 +49,11 @@ public:
     end();
   }
 
-  void          start();
+  void start();
 
-  void          stop();
+  void stop();
 
-  bool          running = false;
+  bool running = false;
 
   QApplication *app = nullptr;
 

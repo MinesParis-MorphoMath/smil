@@ -401,7 +401,7 @@ void ImageViewerWidget::load(const QString fileName)
   emit onDataChanged();
 }
 
-void ImageViewerWidget::updatePixmaps(QImage *                      image,
+void ImageViewerWidget::updatePixmaps(QImage                       *image,
                                       QList<QGraphicsPixmapItem *> *pixmaps)
 {
   size_t w = image->width(), h = image->height();
@@ -678,9 +678,9 @@ void ImageViewerWidget::setScrollBarPosition(int x, int y)
 void ImageViewerWidget::wheelEvent(QWheelEvent *event)
 {
   if (event->modifiers() & Qt::ControlModifier) {
-    if(event->angleDelta().y() > 0)
+    if (event->angleDelta().y() > 0)
       zoomIn();
-    else if(event->angleDelta().y() < 0)
+    else if (event->angleDelta().y() < 0)
       zoomOut();
     return;
   }
@@ -879,7 +879,7 @@ void ImageViewerWidget::showContextMenu(const QPoint &pos)
     } else if (selectedItem->text() == "Width...") {
       bool ok;
       int  lWidth = QInputDialog::getInt(this, tr(""), tr("Line width:"),
-                                        drawPen.width(), 1, 10, 1, &ok);
+                                         drawPen.width(), 1, 10, 1, &ok);
       if (ok)
         drawPen.setWidth(lWidth);
     } else if (selectedItem->text() == "Clear Overlay") {

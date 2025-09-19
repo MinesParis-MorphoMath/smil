@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -14,19 +14,18 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' AND ANY
- * EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
  */
-
-
 
 #include "DImage_Bit.h"
 #include "DLineArith_Bit.h"
@@ -34,138 +33,133 @@
 
 namespace smil
 {
-    template <>
-    void Image<Bit>::init() 
-    { 
-        className = "Image";
-        
-        slices = NULL;
-        lines = NULL;
+  template <>
+  void Image<Bit>::init()
+  {
+    className = "Image";
+
+    slices = NULL;
+    lines  = NULL;
     //     pixels = NULL;
 
-        dataTypeSize = sizeof(pixelType); 
-        
-        allocatedSize = 0;
-        
-        viewer = NULL;
-        name = "";
-        
-        updatesEnabled = true;
-        
-        parentClass::init();
+    dataTypeSize = sizeof(pixelType);
+
+    allocatedSize = 0;
+
+    viewer = NULL;
+    name   = "";
+
+    updatesEnabled = true;
+
+    parentClass::init();
+  }
+
+  template <>
+  void *Image<Bit>::getVoidPointer(void)
+  {
+    return pixels.intArray;
+  }
+
+  template <>
+  RES_T Image<Bit>::restruct(void)
+  {
+    if (slices)
+      delete[] slices;
+    if (lines)
+      delete[] lines;
+
+    lines  = new lineType[lineCount];
+    slices = new sliceType[sliceCount];
+
+    lineType  *cur_array = lines;
+    sliceType *cur_slice = slices;
+
+    UINT                intWidth       = pixels.getIntWidth();
+    UINT                intNbrPerSlice = intWidth * height;
+    BitArray::INT_TYPE *int0           = pixels.intArray;
+
+    for (int k = 0; k < (int) depth; k++, cur_slice++) {
+      *cur_slice = cur_array;
+
+      for (int j = 0; j < (int) height; j++, cur_array++) {
+        cur_array->setSize(width);
+        cur_array->intArray = int0 + k * intNbrPerSlice + j * intWidth;
+      }
     }
 
-    template <>
-    void* Image<Bit>::getVoidPointer(void) {
-        return pixels.intArray;
-    }
+    return RES_OK;
+  }
 
+  template <>
+  RES_T Image<Bit>::allocate(void)
+  {
+    if (allocated)
+      return RES_ERR_BAD_ALLOCATION;
 
-    template <>
-    RES_T Image<Bit>::restruct(void)
-    {
-        if (slices)
-            delete[] slices;
-        if (lines)
-            delete[] lines;
-        
-        lines =  new lineType[lineCount];
-        slices = new sliceType[sliceCount];
-        
-        lineType *cur_array = lines;
-        sliceType *cur_slice = slices;
-        
-        UINT intWidth = pixels.getIntWidth();
-        UINT intNbrPerSlice = intWidth * height;
-        BitArray::INT_TYPE *int0 = pixels.intArray;
-        
-        for (int k=0; k<(int)depth; k++, cur_slice++)
-        {
-          *cur_slice = cur_array;
-          
-          for (int j=0; j<(int)height; j++, cur_array++)
-          {
-            cur_array->setSize(width);
-            cur_array->intArray = int0 + k*intNbrPerSlice + j*intWidth;
-          }
-        }
-        
-        return RES_OK;
-    }
+    pixels.setSize(width, height * depth);
+    pixels.createIntArray();
 
-    template <>
-    RES_T Image<Bit>::allocate(void)
-    {
-        if (allocated)
-            return RES_ERR_BAD_ALLOCATION;
-        
-        pixels.setSize(width, height*depth);
-        pixels.createIntArray();
-        
-        allocated = true;
-        allocatedSize = pixels.getIntNbr()*BitArray::INT_TYPE_SIZE;
-        
-        restruct();
-        
-        return RES_OK;
-    }
+    allocated     = true;
+    allocatedSize = pixels.getIntNbr() * BitArray::INT_TYPE_SIZE;
 
-    template <>
-    RES_T Image<Bit>::deallocate(void)
-    {
-        if (!allocated)
-            return RES_OK;
-        
-        if (slices)
-            delete[] slices;
-        if (lines)
-            delete[] lines;
-        if (pixels.intArray)
-            pixels.deleteIntArray();
-        
-        slices = NULL;
-        lines = NULL;
+    restruct();
+
+    return RES_OK;
+  }
+
+  template <>
+  RES_T Image<Bit>::deallocate(void)
+  {
+    if (!allocated)
+      return RES_OK;
+
+    if (slices)
+      delete[] slices;
+    if (lines)
+      delete[] lines;
+    if (pixels.intArray)
+      pixels.deleteIntArray();
+
+    slices = NULL;
+    lines  = NULL;
     //     pixels = NULL;
 
-        allocated = false;
-        allocatedSize = 0;
-        
-        return RES_OK;
-    }
+    allocated     = false;
+    allocatedSize = 0;
 
+    return RES_OK;
+  }
 
-    template <>
-    void Image<Bit>::clone(const Image<Bit> &rhs)
-    { 
-        bool isAlloc = rhs.isAllocated();
-        setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
-        copy(rhs, *this);
-        modified();
-    }
+  template <>
+  void Image<Bit>::clone(const Image<Bit> &rhs)
+  {
+    bool isAlloc = rhs.isAllocated();
+    setSize(rhs.getWidth(), rhs.getHeight(), rhs.getDepth(), isAlloc);
+    copy(rhs, *this);
+    modified();
+  }
 
-    template <>
-    RES_T Image<Bit>::setPixel(size_t offset, const Bit &value)
-    {
-        this->lines[offset/width][offset%width] = value;
-        return RES_OK;
-    }
+  template <>
+  RES_T Image<Bit>::setPixel(size_t offset, const Bit &value)
+  {
+    this->lines[offset / width][offset % width] = value;
+    return RES_OK;
+  }
 
-    template <>
-    RES_T SharedImage<Bit>::allocate()
-    {
-        if (this->allocated)
-            return RES_ERR_BAD_ALLOCATION;
+  template <>
+  RES_T SharedImage<Bit>::allocate()
+  {
+    if (this->allocated)
+      return RES_ERR_BAD_ALLOCATION;
 
-        if (this->pixels.intArray==NULL)
-            return RES_ERR_BAD_ALLOCATION;
-        
-        this->allocated = true;
+    if (this->pixels.intArray == NULL)
+      return RES_ERR_BAD_ALLOCATION;
 
-        this->restruct();
+    this->allocated = true;
 
-        return RES_OK;
-    }
+    this->restruct();
+
+    return RES_OK;
+  }
 
 } // namespace smil
-
-

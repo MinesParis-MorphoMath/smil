@@ -13,18 +13,19 @@
 
 namespace smil
 {
-  template <typename T> class MorardLineMorpho
+  template <typename T>
+  class MorardLineMorpho
   {
   public:
-    MorardLineMorpho(){};
-    ~MorardLineMorpho(){};
+    MorardLineMorpho() {};
+    ~MorardLineMorpho() {};
 
   private:
     struct Node {
       // c'etait unsigned int
-      int StartPos;
+      int           StartPos;
       unsigned char Passed;
-      T Value;
+      T             Value;
     };
 
     int wp, size, *LineIdx; // Writing position
@@ -99,7 +100,7 @@ namespace smil
     }
 
     int ComputeLinePosDiag(T *bufferIn, int W, int H, int x, int y,
-                              Node *MyStack, int *stackSize, T *bufferOut)
+                           Node *MyStack, int *stackSize, T *bufferOut)
     {
       int idx;
       int x0;
@@ -138,7 +139,7 @@ namespace smil
     }
 
     int ComputeLineNegDiag(T *bufferIn, int W, int H, int x, int y,
-                              Node *MyStack, int *stackSize, T *bufferOut)
+                           Node *MyStack, int *stackSize, T *bufferOut)
     {
       int idx;
       int x0;
@@ -174,9 +175,9 @@ namespace smil
       return (x - x0 + 1);
     }
 
-    int ComputeBresenhamLinePX(T *bufferIn, int W, int H, int x, int y,
-                                  int dx, int dy, Node *MyStack, int *stackSize,
-                                  T *bufferOut)
+    int ComputeBresenhamLinePX(T *bufferIn, int W, int H, int x, int y, int dx,
+                               int dy, Node *MyStack, int *stackSize,
+                               T *bufferOut)
     {
       int idx;
       int x0;
@@ -228,9 +229,9 @@ namespace smil
       return (x - x0);
     }
 
-    int ComputeBresenhamLineNX(T *bufferIn, int W, int H, int x, int y,
-                                  int dx, int dy, Node *MyStack, int *stackSize,
-                                  T *bufferOut)
+    int ComputeBresenhamLineNX(T *bufferIn, int W, int H, int x, int y, int dx,
+                               int dy, Node *MyStack, int *stackSize,
+                               T *bufferOut)
     {
       int x0 = x, idx = y * W + x;
       int dp = 2 * dy - 2, twody = 2 * dy, twodydx = 2 * dy - 2 * dx;
@@ -273,9 +274,9 @@ namespace smil
       return (x - x0 + 1);
     }
 
-    int ComputeBresenhamLinePY(T *bufferIn, int W, int H, int x, int y,
-                                  int dx, int dy, Node *MyStack, int *stackSize,
-                                  T *bufferOut)
+    int ComputeBresenhamLinePY(T *bufferIn, int W, int H, int x, int y, int dx,
+                               int dy, Node *MyStack, int *stackSize,
+                               T *bufferOut)
     {
       int y0, idx;
       int dp = 2 * dx - 2, twodx = 2 * dx, twodxdy = 2 * dx - 2 * dy;
@@ -326,9 +327,9 @@ namespace smil
       return (y - y0);
     }
 
-    int ComputeBresenhamLineNY(T *bufferIn, int W, int H, int x, int y,
-                                  int dx, int dy, Node *MyStack, int *stackSize,
-                                  T *bufferOut)
+    int ComputeBresenhamLineNY(T *bufferIn, int W, int H, int x, int y, int dx,
+                               int dy, Node *MyStack, int *stackSize,
+                               T *bufferOut)
     {
       int y0, idx;
       int dp = 2 * dx - 2, twodx = 2 * dx, twodxdy = 2 * dx - 2 * dy;
@@ -378,7 +379,7 @@ namespace smil
       // const...
 
       Node MyStack[256];
-      int stackPos = 0;
+      int  stackPos = 0;
 
       int i, j;
 
@@ -402,7 +403,7 @@ namespace smil
       size = radius * 2 + 1;
 
       Node MyStack[256];
-      int stackPos = 0;
+      int  stackPos = 0;
 
       int i, j;
 
@@ -421,29 +422,29 @@ namespace smil
       }
     }
 
-    void LineOpeningDiag(T *bufferIn, int W, int H, int dx, int dy,
-                            int radius, T *bufferOut)
+    void LineOpeningDiag(T *bufferIn, int W, int H, int dx, int dy, int radius,
+                         T *bufferOut)
     {
       size = radius * 2 + 1;
       int y, x, nx;
 
       Node MyStack[256];
-      int stackPos = 0;
+      int  stackPos = 0;
 
       if (abs(dx) == abs(dy)) {
         if (dx == -dy) {
           y = 0;
           do {
-            nx = ComputeLineNegDiag(bufferIn, W, H, 0, y++, MyStack,
-                                       &stackPos, bufferOut);
+            nx = ComputeLineNegDiag(bufferIn, W, H, 0, y++, MyStack, &stackPos,
+                                    bufferOut);
             EndProcess(MyStack, &stackPos, bufferOut);
           } while (nx > 0);
 
         } else {
           y = H - 2; //-2 to avoid a bug (empty image)
           do {
-            nx = ComputeLinePosDiag(bufferIn, W, H, 0, y--, MyStack,
-                                       &stackPos, bufferOut);
+            nx = ComputeLinePosDiag(bufferIn, W, H, 0, y--, MyStack, &stackPos,
+                                    bufferOut);
             EndProcess(MyStack, &stackPos, bufferOut);
           } while (nx > 0);
         }
@@ -454,8 +455,8 @@ namespace smil
 
           y = H - 1;
           do {
-            nx = ComputeBresenhamLinePX(bufferIn, W, H, 0, y--, dx, dy,
-                                           MyStack, &stackPos, bufferOut);
+            nx = ComputeBresenhamLinePX(bufferIn, W, H, 0, y--, dx, dy, MyStack,
+                                        &stackPos, bufferOut);
             EndProcess(MyStack, &stackPos, bufferOut);
           } while (nx > 0);
         } else {
@@ -464,8 +465,8 @@ namespace smil
 
           y = 0;
           do {
-            nx = ComputeBresenhamLineNX(bufferIn, W, H, 0, y++, dx, dy,
-                                           MyStack, &stackPos, bufferOut);
+            nx = ComputeBresenhamLineNX(bufferIn, W, H, 0, y++, dx, dy, MyStack,
+                                        &stackPos, bufferOut);
             EndProcess(MyStack, &stackPos, bufferOut);
           } while (nx > 0);
         }
@@ -476,8 +477,8 @@ namespace smil
 
           x = W - 1;
           do {
-            nx = ComputeBresenhamLinePY(bufferIn, W, H, x--, 0, dx, dy,
-                                           MyStack, &stackPos, bufferOut);
+            nx = ComputeBresenhamLinePY(bufferIn, W, H, x--, 0, dx, dy, MyStack,
+                                        &stackPos, bufferOut);
             EndProcess(MyStack, &stackPos, bufferOut);
           } while (nx > 0);
         } else {
@@ -486,8 +487,8 @@ namespace smil
 
           x = 0;
           do {
-            nx = ComputeBresenhamLineNY(bufferIn, W, H, x++, 0, dx, dy,
-                                           MyStack, &stackPos, bufferOut);
+            nx = ComputeBresenhamLineNY(bufferIn, W, H, x++, 0, dx, dy, MyStack,
+                                        &stackPos, bufferOut);
             EndProcess(MyStack, &stackPos, bufferOut);
           } while (nx > 0);
         }
@@ -498,7 +499,7 @@ namespace smil
 
   public:
     RES_T ImFastLineOpen(const Image<T> &imIn, const int angle,
-                                const int radius, Image<T> &imOut)
+                         const int radius, Image<T> &imOut)
     {
       // Check inputs
       ASSERT_ALLOCATED(&imIn);
@@ -538,11 +539,11 @@ namespace smil
   //  Start of global code
   //
   template <class T>
-  RES_T imFastLineOpen(const Image<T> &imIn, const int angle,
-                                const int radius, Image<T> &imOut)
+  RES_T imFastLineOpen(const Image<T> &imIn, const int angle, const int radius,
+                       Image<T> &imOut)
   {
     MorardLineMorpho<T> morard;
-    
+
     return morard.ImFastLineOpen(imIn, angle, radius, imOut);
   }
 

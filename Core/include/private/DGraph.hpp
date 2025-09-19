@@ -149,7 +149,8 @@ namespace smil
       return weight > rhs.weight;
     }
 
-    virtual void printSelf(std::ostream &os = std::cout, std::string s = "") const
+    virtual void printSelf(std::ostream &os = std::cout,
+                           std::string   s  = "") const
     {
       os << s << (int) source << "-" << (int) target << " (" << (int) weight
          << ")" << std::endl;
@@ -167,8 +168,9 @@ namespace smil
     if (e1.size() != e2.size())
       return false;
 
-    typedef Edge<NodeT, WeightT>           EdgeT;
-    typename std::vector<EdgeT>::const_iterator it1 = e1.begin(), it2 = e2.begin();
+    typedef Edge<NodeT, WeightT>                EdgeT;
+    typename std::vector<EdgeT>::const_iterator it1 = e1.begin(),
+                                                it2 = e2.begin();
 
     for (; it1 != e1.end() && it2 != e2.end(); it1++, it2++) {
       if ((*it1) != (*it2))
@@ -201,7 +203,7 @@ namespace smil
     typedef NodeT                    NodeType;
     typedef WeightT                  NodeWeightType;
     typedef std::map<NodeT, WeightT> NodeValuesType;
-    typedef std::set<NodeT>               NodeListType;
+    typedef std::set<NodeT>          NodeListType;
 
     typedef Edge<NodeT, WeightT> EdgeType;
     typedef WeightT              EdgeWeightType;
@@ -350,7 +352,7 @@ namespace smil
     }
 
     /**
-     * clone() - 
+     * clone() -
      */
     GraphType clone()
     {
@@ -358,7 +360,7 @@ namespace smil
     }
 
     /**
-     * getNodeNbr() - 
+     * getNodeNbr() -
      */
     size_t getNodeNbr()
     {
@@ -512,7 +514,7 @@ namespace smil
     const NodeEdgeListType &getNodeEdges() const
     {
       return nodeEdgeList;
-    }  // lvalue
+    } // lvalue
 #endif // SWIG
     /** @endcond */
 
@@ -575,11 +577,13 @@ namespace smil
     /**
      * printSelf() -
      */
-    virtual void printSelf(std::ostream &os = std::cout, std::string s = "") const
+    virtual void printSelf(std::ostream &os = std::cout,
+                           std::string   s  = "") const
     {
       os << s << "Number of nodes: " << nodes.size() << std::endl;
       os << s << "Number of edges: " << edges.size() << std::endl;
-      os << s << "Edges: " << std::endl << "source-target (weight) " << std::endl;
+      os << s << "Edges: " << std::endl
+         << "source-target (weight) " << std::endl;
 
       std::string s2 = s + "\t";
       for (typename EdgeListType::const_iterator it = edges.begin();
@@ -590,7 +594,7 @@ namespace smil
 
     /**
      * labelizeNodes() - Labelize the nodes.
-     * 
+     *
      * Give a different label to each group of connected nodes.
      *
      * @returns a map [ node, label_value ]
@@ -609,7 +613,8 @@ namespace smil
 
   protected:
     void propagateLabel(const NodeT ind, const NodeT lbl,
-                        std::map<NodeT, NodeT> &lookup, std::set<NodeT> &nList) const
+                        std::map<NodeT, NodeT> &lookup,
+                        std::set<NodeT>        &nList) const
     {
       typename NodeListType::iterator foundNode = nList.find(ind);
       if (foundNode == nList.end())
@@ -634,7 +639,7 @@ namespace smil
   /** graphMST() - create a Mininum Spanning Tree
    *
    * @param[in] graph : input graph
-   * 
+   *
    * @returns Minimum Spanning Tree built from input graph
    */
   template <class graphT>
@@ -650,7 +655,7 @@ namespace smil
     std::priority_queue<EdgeType> pq;
     graphT                        mst;
 
-    const EdgeListType &    edges        = graph.getEdges();
+    const EdgeListType     &edges        = graph.getEdges();
     const NodeEdgeListType &nodeEdgeList = graph.getNodeEdges();
 
     NodeType curNode = (*nodeEdgeList.begin()).first;

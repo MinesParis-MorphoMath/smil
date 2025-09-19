@@ -97,12 +97,11 @@ namespace smil
     return res;
   }
 
-
   /**
    * topHat() - Top-Hat
    *
    * @TB{Top-Hat} or @TB{Open top-hat} or @TB{White top-hat} is
-   * defined as the difference between the image and its @TB{opening} : 
+   * defined as the difference between the image and its @TB{opening} :
    * @f[ WTH(im) = im - \gamma(im) @f]
    *
    * @see @SoilleBook{p. 121-127}
@@ -127,8 +126,8 @@ namespace smil
    * dualTopHat() - Dual Top-Hat
    *
    * @TB{Dual Top-Hat} or @TB{Close top-hat} or
-   * @TB{Black top-hat} is defined as the difference between the  @TB{closing} of the
-   * image and itself :  @f[ BTH(im) = \phi(im) - im @f]
+   * @TB{Black top-hat} is defined as the difference between the  @TB{closing}
+   * of the image and itself :  @f[ BTH(im) = \phi(im) - im @f]
    *
    * @see @SoilleBook{p. 121-127}
    *

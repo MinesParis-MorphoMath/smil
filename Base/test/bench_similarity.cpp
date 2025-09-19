@@ -30,23 +30,23 @@ using namespace smil;
 
 int main(void)
 {
-  const size_t dim =256;
+  const size_t dim = 256;
 
   Image<UINT8> imGt(dim, dim);
-  Image<UINT8> imIn(dim,dim);
+  Image<UINT8> imIn(dim, dim);
 
   off_t m, M;
 
   fill(imGt, UINT8(0));
-  m = dim/8;
-  M = 5*dim/8;
+  m = dim / 8;
+  M = 5 * dim / 8;
   for (off_t j = m; j < M; j++)
     for (off_t i = m; i < M; i++)
       imGt.setPixel(i, j, 255);
 
   fill(imIn, UINT8(0));
-  m = 2*dim/8;
-  M = 7*dim/8;
+  m = 2 * dim / 8;
+  M = 7 * dim / 8;
   for (off_t j = m; j < M; j++)
     for (off_t i = m; i < M; i++)
       imIn.setPixel(i, j, 255);

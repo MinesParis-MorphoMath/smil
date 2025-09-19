@@ -149,7 +149,7 @@ namespace smil
    * hMinima() - h-Minima
    *
    * @param[in] imIn : input image
-   * @param[in] height : 
+   * @param[in] height :
    * @param[out] imOut : output image
    * @param[in] se : structuring element
    */
@@ -174,7 +174,7 @@ namespace smil
    * hMinimaLabeled() - Calculate the h-minima and labelize them
    *
    * @param[in] imIn : input image
-   * @param[in] height : 
+   * @param[in] height :
    * @param[out] imOut : output image
    * @param[in] se : structuring element
    */
@@ -198,7 +198,7 @@ namespace smil
    * hMaxima() - h-Maxima
    *
    * @param[in] imIn : input image
-   * @param[in] height : 
+   * @param[in] height :
    * @param[out] imOut : output image
    * @param[in] se : structuring element
    */
@@ -223,7 +223,7 @@ namespace smil
    * hMaximaLabeled() - Calculate the h-maxima and labelize them
    *
    * @param[in] imIn : input image
-   * @param[in] height : 
+   * @param[in] height :
    * @param[out] imOut : output image
    * @param[in] se : structuring element
    */
@@ -243,7 +243,7 @@ namespace smil
     return RES_OK;
   }
 
-  /** @cond 
+  /** @cond
    * Local function
    */
   template <class T>
@@ -252,12 +252,12 @@ namespace smil
   {
     // Typedefs
     // typedef Image<T> inT;
-    typedef Image<T> outT;
-    typedef Image<T> arrowT;
-    typedef typename outT::lineType outLineT;
+    typedef Image<T>                  outT;
+    typedef Image<T>                  arrowT;
+    typedef typename outT::lineType   outLineT;
     typedef typename arrowT::lineType arrowLineT;
     // typedef typename inT::volType inVolT;
-    typedef typename outT::volType outVolT;
+    typedef typename outT::volType   outVolT;
     typedef typename arrowT::volType arrowVolT;
 
     // Initialisation.
@@ -273,28 +273,28 @@ namespace smil
       return RES_OK;
     // Images related.
     // inVolT inSlices = imIn.getSlices();
-    outVolT outSlices     = imOut.getSlices();
-    arrowVolT arrowSlices = arrows.getSlices();
-    outLineT *outLines;
+    outVolT     outSlices   = imOut.getSlices();
+    arrowVolT   arrowSlices = arrows.getSlices();
+    outLineT   *outLines;
     arrowLineT *arrowLines;
-    outLineT outP     = imOut.getPixels();
-    arrowLineT arrowP = arrows.getPixels();
+    outLineT    outP   = imOut.getPixels();
+    arrowLineT  arrowP = arrows.getPixels();
     // Buffers.
     arrowLineT cstBuf = ImDtTypes<T>::createLine(size[0]);
     fillLine<T>(cstBuf, size[0], T(0));
     outLineT cstBuf2 = ImDtTypes<T>::createLine(size[0]);
     fillLine<T>(cstBuf2, size[0], ImDtTypes<T>::max());
 
-    equLine<T> equOp;
+    equLine<T>        equOp;
     rightShiftLine<T> shiftOp;
-    testLine<T, T> testOp;
+    testLine<T, T>    testOp;
 
     // Storing steep in imOut.
 #ifdef USE_OPEN_MP
 #pragma omp parallel
 #endif // USE_OPEN_MP
     {
-      size_t offset;
+      size_t                  offset;
       arrowPropagate<T, T, T> funcPropagation;
       funcPropagation.propagationValue = T(1);
 

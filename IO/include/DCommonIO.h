@@ -76,7 +76,7 @@ namespace smil
           dataStartPos(0)
     {
       filename = "Unknown";
-      valid = false;
+      valid    = false;
     }
 
     ~ImageFileInfo()
@@ -104,13 +104,13 @@ namespace smil
 
     enum FileType { FILE_TYPE_ASCII, FILE_TYPE_BINARY };
 
-    bool valid;
-    std::string filename;
-    UINT channels;
-    ColorType colorType;
-    ScalarType scalarType;
-    FileType fileType;
-    size_t width, height, depth;
+    bool           valid;
+    std::string    filename;
+    UINT           channels;
+    ColorType      colorType;
+    ScalarType     scalarType;
+    FileType       fileType;
+    size_t         width, height, depth;
     std::streampos dataStartPos;
 
     // virtual void printSelf(ostream &os) const;
@@ -128,7 +128,7 @@ namespace smil
 #ifdef USE_CURL
 
   /**
-   * Get a file from an URL 
+   * Get a file from an URL
    *
    * @param[in] url : URL where to get the file
    * @param[in] outfilename : name of the file where to save the file
@@ -136,7 +136,7 @@ namespace smil
   RES_T getHttpFile(const char *url, const char *outfilename);
 
   /**
-   * Get a file from an URL 
+   * Get a file from an URL
    *
    * @param[in] url : URL where to get the file
    * @return string : a buffer with file content

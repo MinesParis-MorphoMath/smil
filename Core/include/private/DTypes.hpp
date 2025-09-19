@@ -49,18 +49,18 @@
 
 namespace smil
 {
-  typedef int INT;
-  typedef long LONG;
-  typedef unsigned int UINT;
+  typedef int           INT;
+  typedef long          LONG;
+  typedef unsigned int  UINT;
   typedef unsigned long ULONG;
 #if NEWTDEFS
-  typedef uint8_t UINT8;
+  typedef uint8_t  UINT8;
   typedef uint16_t UINT16;
   typedef uint32_t UINT32;
 #else
-  typedef unsigned char UINT8;
+  typedef unsigned char  UINT8;
   typedef unsigned short UINT16;
-  typedef unsigned int UINT32;
+  typedef unsigned int   UINT32;
 #endif
 #ifdef _MSC_VER
   typedef unsigned __int64 UINT64;
@@ -71,11 +71,11 @@ namespace smil
   // typedef unsigned char __attribute__ ((vector_size (16))) alUINT8;
 
   // Why this directive for msvc (windows) ?
-  //#ifndef _MSC_VER
+  // #ifndef _MSC_VER
   typedef signed char INT8;
-  //#endif // _MSC_VER
+  // #endif // _MSC_VER
   typedef short INT16;
-  typedef int INT32;
+  typedef int   INT32;
 
 #ifndef CHAR_BIT
 #define CHAR_BIT 8
@@ -83,14 +83,15 @@ namespace smil
 
   enum DType { DtUINT8, DtUINT16, DtUINT32, DtUINT64, DtINT, DtUINT };
 
-  template <class T> struct ImDtTypes {
-    typedef T pixelType;
+  template <class T>
+  struct ImDtTypes {
+    typedef T          pixelType;
     typedef pixelType *lineType;
 #ifndef SWIG
     typedef pixelType *restrictLineType;
     // XXX JOE typedef pixelType * __restrict restrictLineType;
 #endif // SWIG
-    typedef lineType *sliceType;
+    typedef lineType  *sliceType;
     typedef sliceType *volType;
 
     typedef std::vector<T, Allocator<T>> vectorType;
@@ -138,7 +139,8 @@ namespace smil
   }
 
 #define DECL_DATA_TYPE_STR(_type)                                              \
-  template <> inline const char *getDataTypeAsString(_type *)                  \
+  template <>                                                                  \
+  inline const char *getDataTypeAsString(_type *)                              \
   {                                                                            \
     return #_type;                                                             \
   }

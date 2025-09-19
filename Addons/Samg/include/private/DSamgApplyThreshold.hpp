@@ -109,19 +109,19 @@ namespace smil
 
     ImageFreezer freeze(imOut);
 
-    typedef Image<T1> imageInType;
-    typedef typename imageInType::lineType lineInType;
-    typedef Image<T2> imageOutType;
+    typedef Image<T1>                       imageInType;
+    typedef typename imageInType::lineType  lineInType;
+    typedef Image<T2>                       imageOutType;
     typedef typename imageOutType::lineType lineOutType;
 
-    lineInType pixelsIn   = imIn.getPixels();
+    lineInType  pixelsIn  = imIn.getPixels();
     lineOutType pixelsOut = imOut.getPixels();
 
     int size[3];
     imIn.getSize(size);
-    size_t offset;
-    int x, y, z;
-    T2 infinite = ImDtTypes<T2>::max();
+    size_t   offset;
+    int      x, y, z;
+    T2       infinite = ImDtTypes<T2>::max();
     long int min;
 
     for (z = 0; z < size[2]; ++z) {
@@ -234,12 +234,12 @@ namespace smil
 
     ImageFreezer freeze(imOut);
 
-    typedef Image<T1> imageInType;
-    typedef typename imageInType::lineType lineInType;
-    typedef Image<T2> imageOutType;
+    typedef Image<T1>                       imageInType;
+    typedef typename imageInType::lineType  lineInType;
+    typedef Image<T2>                       imageOutType;
     typedef typename imageOutType::lineType lineOutType;
 
-    lineInType pixelsIn   = imIn.getPixels();
+    lineInType  pixelsIn  = imIn.getPixels();
     lineOutType pixelsOut = imOut.getPixels();
 
     fill<T2>(imOut, 0);
@@ -263,10 +263,10 @@ namespace smil
     imIn.getSize(size);
     int64_t s = size[0] * size[1] * size[2];
 
-    size_t cur;
+    size_t  cur;
     int64_t x, y, z, n_x, n_y, n_z;
 
-    vector<IntPoint> sePoints = se.points;
+    vector<IntPoint>           sePoints = se.points;
     vector<IntPoint>::iterator pt;
 
     bool oddLine;
@@ -320,21 +320,22 @@ namespace smil
    * rasterLabels
    *
    */
-  template <class T> RES_T rasterLabels(const Image<T> &imIn, Image<T> &imOut)
+  template <class T>
+  RES_T rasterLabels(const Image<T> &imIn, Image<T> &imOut)
   {
     size_t S[3];
     imIn.getSize(S);
 
     size_t s = S[0] * S[1] * S[2];
 
-    T *out = imOut.getPixels();
-    T *im  = imIn.getPixels();
+    T        *out = imOut.getPixels();
+    T        *im  = imIn.getPixels();
     map<T, T> m;
 
     T count = 1;
 
     // UINT nthreads = Core::getInstance()->getNumberOfThreads ();
-    //#pragma omp parallel for num_threads(nthreads)
+    // #pragma omp parallel for num_threads(nthreads)
     for (size_t p = 0; p < s; ++p) {
       if (im[p] != 0) {
         typename map<T, T>::iterator it = m.find(im[p]);
@@ -364,13 +365,13 @@ namespace smil
     size_t nbrPixelsInSlice = S[0] * S[1];
     size_t nbrPixels        = nbrPixelsInSlice * S[2];
     StrElt se               = _se_;
-    UINT sePtsNumber        = se.points.size();
+    UINT   sePtsNumber      = se.points.size();
 
     UINT nthreads = Core::getInstance()->getNumberOfThreads();
 #pragma omp parallel num_threads(nthreads)
     {
-      index_T p, q, l;
-      UINT pts;
+      index_T       p, q, l;
+      UINT          pts;
       map<T1, bool> m;
 
 #pragma omp for
@@ -408,13 +409,13 @@ namespace smil
     size_t nbrPixelsInSlice = S[0] * S[1];
     size_t nbrPixels        = nbrPixelsInSlice * S[2];
     StrElt se               = _se_.noCenter();
-    UINT sePtsNumber        = se.points.size();
+    UINT   sePtsNumber      = se.points.size();
 
     UINT nthreads = Core::getInstance()->getNumberOfThreads();
 #pragma omp parallel num_threads(nthreads)
     {
-      index_T p, q;
-      UINT pts;
+      index_T       p, q;
+      UINT          pts;
       queue<size_t> c;
 #pragma omp for
       ForEachPixel(p)
@@ -427,8 +428,7 @@ namespace smil
         }
       }
       ENDForEachPixel;
-      while (!c.empty())
-      {
+      while (!c.empty()) {
         p.o = c.front();
         c.pop();
         IndexToCoor(p);
@@ -465,14 +465,14 @@ namespace smil
     size_t nbrPixelsInSlice = S[0] * S[1];
     size_t nbrPixels        = nbrPixelsInSlice * S[2];
     StrElt se               = _se_;
-    UINT sePtsNumber        = se.points.size();
+    UINT   sePtsNumber      = se.points.size();
 
     UINT nthreads = Core::getInstance()->getNumberOfThreads();
 #pragma omp parallel num_threads(nthreads)
     {
       index_T p, q;
-      UINT pts;
-      bool up, down;
+      UINT    pts;
+      bool    up, down;
 
 #pragma omp for
       ForEachPixel(p)
@@ -492,9 +492,9 @@ namespace smil
               }
             }
           }
-          ENDForEachNeighborOf 
+          ENDForEachNeighborOf
 
-          if (!up || !down)
+              if (!up || !down)
           {
             out[p.o] = in[p.o];
           }

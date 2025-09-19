@@ -549,7 +549,6 @@ namespace smil
   }
   /** @endcond */
 
-
   /** @} */
 } // namespace smil
 

@@ -80,8 +80,8 @@ namespace smil
    * A Blob contains a vector of PixelSequence.
    */
   struct Blob {
-    std::vector<PixelSequence> sequences;
-    typedef std::vector<PixelSequence>::iterator sequences_iterator;
+    std::vector<PixelSequence>                         sequences;
+    typedef std::vector<PixelSequence>::iterator       sequences_iterator;
     typedef std::vector<PixelSequence>::const_iterator sequences_const_iterator;
     typedef std::vector<PixelSequence>::const_reverse_iterator
         sequences_const_reverse_iterator;
@@ -102,9 +102,9 @@ namespace smil
     ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, blobs);
 
     typename ImDtTypes<T>::sliceType lines = imIn.getLines();
-    typename ImDtTypes<T>::lineType pixels;
-    size_t npix   = imIn.getWidth();
-    size_t nlines = imIn.getLineCount();
+    typename ImDtTypes<T>::lineType  pixels;
+    size_t                           npix   = imIn.getWidth();
+    size_t                           nlines = imIn.getLineCount();
 
     T curVal;
 
@@ -159,9 +159,9 @@ namespace smil
     if (fillFirst)
       ASSERT(fill(imOut, defaultValue) == RES_OK);
 
-    typename ImDtTypes<T>::lineType pixels = imOut.getPixels();
-    size_t pixCount                        = imOut.getPixelCount();
-    bool allBlobsFit                       = true;
+    typename ImDtTypes<T>::lineType pixels      = imOut.getPixels();
+    size_t                          pixCount    = imOut.getPixelCount();
+    bool                            allBlobsFit = true;
 
     typename std::map<labelT, Blob>::const_iterator blob_it;
     for (blob_it = blobs.begin(); blob_it != blobs.end(); blob_it++) {
@@ -210,9 +210,9 @@ namespace smil
     if (fillFirst)
       ASSERT(fill(imOut, defaultValue) == RES_OK);
 
-    typename ImDtTypes<T>::lineType pixels = imOut.getPixels();
-    size_t pixCount                        = imOut.getPixelCount();
-    bool allBlobsFit                       = true;
+    typename ImDtTypes<T>::lineType pixels      = imOut.getPixels();
+    size_t                          pixCount    = imOut.getPixelCount();
+    bool                            allBlobsFit = true;
 
     typename std::map<labelT, Blob>::const_iterator blob_it;
     for (blob_it = blobs.begin(); blob_it != blobs.end(); blob_it++) {
@@ -263,8 +263,7 @@ namespace smil
     for (blob_it = blobs.begin(); blob_it != blobs.end(); blob_it++) {
       seqit_t it_end = blob_it->second.sequences.end();
 
-      for(seqit_t it = blob_it->second.sequences.begin(); it != it_end; it++)
-      {
+      for (seqit_t it = blob_it->second.sequences.begin(); it != it_end; it++) {
         if (offset >= it->offset && offset < it->offset + it->size)
           id = blob_it->first;
       }
@@ -287,7 +286,8 @@ namespace smil
    *
    */
   template <class labelT, class T>
-  int getBlobIDFromOffset(Image<T> imIn, std::map<labelT, Blob> &blobs, int x, int y, int z = 0)
+  int getBlobIDFromOffset(Image<T> imIn, std::map<labelT, Blob> &blobs, int x,
+                          int y, int z = 0)
   {
     int id = 0;
 
@@ -299,8 +299,7 @@ namespace smil
     for (blob_it = blobs.begin(); blob_it != blobs.end(); blob_it++) {
       seqit_t it_end = blob_it->second.sequences.end();
 
-      for(seqit_t it = blob_it->second.sequences.begin(); it != it_end; it++)
-      {
+      for (seqit_t it = blob_it->second.sequences.begin(); it != it_end; it++) {
         if (offset >= it->offset && offset < it->offset + it->size)
           id = blob_it->first;
       }

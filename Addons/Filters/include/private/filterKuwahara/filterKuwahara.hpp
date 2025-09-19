@@ -4,8 +4,7 @@
 namespace smil
 {
   template <class T>
-  RES_T kuwaharaFilter(const Image<T> &imIn, const int radius,
-                         Image<T> &imOut)
+  RES_T kuwaharaFilter(const Image<T> &imIn, const int radius, Image<T> &imOut)
   {
     // MORPHEE_ENTER_FUNCTION("t_kuwaharaFilter");
 
@@ -42,8 +41,8 @@ namespace smil
 
     // Creation of the mean and variance map
     double sum, sum2;
-    int n, xbase, ybase;
-    T v = 0;
+    int    n, xbase, ybase;
+    T      v = 0;
     for (int y1 = -offset; y1 < H; y1++) {
       for (int x1 = -offset; x1 < W; x1++) {
         sum  = 0;
@@ -67,7 +66,7 @@ namespace smil
       }
     }
 
-    int xbase2 = 0, ybase2 = 0;
+    int    xbase2 = 0, ybase2 = 0;
     double var, Min;
     for (int y1 = 0; y1 < H; y1++)
       for (int x1 = 0; x1 < W; x1++) {
@@ -101,7 +100,7 @@ namespace smil
           xbase2 = xbase;
           ybase2 = ybase;
         }
-        bufferOut[x1 + y1 * W] = (T)(mean[xbase2 + ybase2 * width2]);
+        bufferOut[x1 + y1 * W] = (T) (mean[xbase2 + ybase2 * width2]);
       }
 
     delete[] variance;
@@ -112,7 +111,7 @@ namespace smil
 
   template <class T1, class T2>
   RES_T kuwaharaFilterRGB(const Image<T1> &imIn, const int radius,
-                            Image<T2> &imOut)
+                          Image<T2> &imOut)
   {
     return RES_OK;
   }

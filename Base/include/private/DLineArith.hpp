@@ -131,7 +131,7 @@ namespace smil
                        const size_t size, lineType lOut)
     {
       for (size_t i = 0; i < size; i++)
-        lOut[i] = lIn1[i] > (T)(ImDtTypes<T>::max() - lIn2[i])
+        lOut[i] = lIn1[i] > (T) (ImDtTypes<T>::max() - lIn2[i])
                       ? ImDtTypes<T>::max()
                       : lIn1[i] + lIn2[i];
     }
@@ -155,7 +155,7 @@ namespace smil
                        const size_t size, lineType lOut)
     {
       for (size_t i = 0; i < size; i++)
-        lOut[i] = lIn1[i] < (T)(ImDtTypes<T>::min() + lIn2[i])
+        lOut[i] = lIn1[i] < (T) (ImDtTypes<T>::min() + lIn2[i])
                       ? ImDtTypes<T>::min()
                       : lIn1[i] - lIn2[i];
     }
@@ -445,7 +445,7 @@ namespace smil
                        const size_t size, lineType lOut)
     {
       for (size_t i = 0; i < size; i++)
-        lOut[i] = (T)(lIn1[i] * lIn2[i]);
+        lOut[i] = (T) (lIn1[i] * lIn2[i]);
     }
   };
 
@@ -463,13 +463,14 @@ namespace smil
 
   template <class T1, class T2 = T1>
   struct logLine : public unaryLineFunctionBase<T1, T2> {
-    typedef typename unaryLineFunctionBase<T1, T2>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T1, T2>::lineInType  lineInType;
     typedef typename unaryLineFunctionBase<T1, T2>::lineOutType lineOutType;
-    int                                                 base;
+    int                                                         base;
     logLine() : base(0)
     {
     }
-    virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
+    virtual void _exec(const lineInType lIn, const size_t size,
+                       lineOutType lOut)
     {
       if (base != 0) {
         double baseLog = std::log(double(base));
@@ -484,25 +485,26 @@ namespace smil
 
   template <class T1, class T2 = T1>
   struct expLine : public unaryLineFunctionBase<T1, T2> {
-    typedef typename unaryLineFunctionBase<T1, T2>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T1, T2>::lineInType  lineInType;
     typedef typename unaryLineFunctionBase<T1, T2>::lineOutType lineOutType;
-    int                                                 base;
+    int                                                         base;
     expLine() : base(0)
     {
     }
-    virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
+    virtual void _exec(const lineInType lIn, const size_t size,
+                       lineOutType lOut)
     {
       double vmax = std::numeric_limits<T2>::max();
       double v;
       if (base != 0) {
         double baseLog = std::log(double(base));
         for (size_t i = 0; i < size; i++) {
-          v = std::exp(lIn[i] * baseLog);
+          v       = std::exp(lIn[i] * baseLog);
           lOut[i] = std::min(v, vmax);
         }
       } else {
         for (size_t i = 0; i < size; i++) {
-          v = std::exp(lIn[i]);
+          v       = std::exp(lIn[i]);
           lOut[i] = std::min(v, vmax);
         }
       }
@@ -511,14 +513,15 @@ namespace smil
 
   template <class T1, class T2 = T1>
   struct powLine : public unaryLineFunctionBase<T1, T2> {
-    typedef typename unaryLineFunctionBase<T1, T2>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T1, T2>::lineInType  lineInType;
     typedef typename unaryLineFunctionBase<T1, T2>::lineOutType lineOutType;
 
-    double                                              exponent;
+    double exponent;
     powLine() : exponent(1)
     {
     }
-    virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
+    virtual void _exec(const lineInType lIn, const size_t size,
+                       lineOutType lOut)
     {
       double vmax = std::numeric_limits<T2>::max();
       double v;
@@ -533,7 +536,7 @@ namespace smil
         return;
       }
       for (size_t i = 0; i < size; i++) {
-        v = std::pow(lIn[i], exponent);
+        v       = std::pow(lIn[i], exponent);
         lOut[i] = T2(std::min(v, vmax));
       }
     }
@@ -541,13 +544,14 @@ namespace smil
 
   template <class T1, class T2 = T1>
   struct sqrtLine : public unaryLineFunctionBase<T1, T2> {
-    typedef typename unaryLineFunctionBase<T1, T2>::lineInType lineInType;
+    typedef typename unaryLineFunctionBase<T1, T2>::lineInType  lineInType;
     typedef typename unaryLineFunctionBase<T1, T2>::lineOutType lineOutType;
 
     sqrtLine()
     {
     }
-    virtual void _exec(const lineInType lIn, const size_t size, lineOutType lOut)
+    virtual void _exec(const lineInType lIn, const size_t size,
+                       lineOutType lOut)
     {
       for (size_t i = 0; i < size; i++)
         lOut[i] = T2(std::sqrt(lIn[i]));
@@ -561,7 +565,7 @@ namespace smil
                        const size_t size, lineType lOut)
     {
       for (size_t i = 0; i < size; i++)
-        lOut[i] = (T)(lIn1[i] && lIn2[i]);
+        lOut[i] = (T) (lIn1[i] && lIn2[i]);
     }
   };
 
@@ -572,7 +576,7 @@ namespace smil
                        const size_t size, lineType lOut)
     {
       for (size_t i = 0; i < size; i++)
-        lOut[i] = (T)(lIn1[i] & lIn2[i]);
+        lOut[i] = (T) (lIn1[i] & lIn2[i]);
     }
   };
 
@@ -583,7 +587,7 @@ namespace smil
                        const size_t size, lineType lOut)
     {
       for (size_t i = 0; i < size; i++)
-        lOut[i] = (T)(lIn1[i] || lIn2[i]);
+        lOut[i] = (T) (lIn1[i] || lIn2[i]);
     }
   };
 
@@ -594,7 +598,7 @@ namespace smil
                        const size_t size, lineType lOut)
     {
       for (size_t i = 0; i < size; i++)
-        lOut[i] = (T)(lIn1[i] | lIn2[i]);
+        lOut[i] = (T) (lIn1[i] | lIn2[i]);
     }
   };
 
@@ -605,7 +609,7 @@ namespace smil
                        const size_t size, lineType lOut)
     {
       for (size_t i = 0; i < size; i++)
-        lOut[i] = (T)((lIn1[i] && !lIn2[i]) || (!lIn1[i] && lIn2[i]));
+        lOut[i] = (T) ((lIn1[i] && !lIn2[i]) || (!lIn1[i] && lIn2[i]));
     }
   };
 
@@ -616,7 +620,7 @@ namespace smil
                        const size_t size, lineType lOut)
     {
       for (size_t i = 0; i < size; i++)
-        lOut[i] = (T)(lIn1[i] ^ lIn2[i]);
+        lOut[i] = (T) (lIn1[i] ^ lIn2[i]);
     }
   };
 
@@ -630,7 +634,7 @@ namespace smil
                        lineType lOut)
     {
       for (size_t i = 0; i < size; i++)
-        lOut[i] = (T)(lIn1[i] << shift);
+        lOut[i] = (T) (lIn1[i] << shift);
     }
   };
 
@@ -645,7 +649,7 @@ namespace smil
                        lineType lOut)
     {
       for (size_t i = 0; i < size; i++)
-        lOut[i] = (T)(lIn1[i] >> shift);
+        lOut[i] = (T) (lIn1[i] >> shift);
     }
   };
 

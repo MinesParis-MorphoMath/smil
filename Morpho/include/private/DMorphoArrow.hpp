@@ -105,7 +105,7 @@ namespace smil
     size_t l;
 
     for (size_t s = 0; s < nSlices; s++) {
-      lineInType * srcLines  = srcSlices[s];
+      lineInType  *srcLines  = srcSlices[s];
       lineOutType *destLines = destSlices[s];
 
 #ifdef USE_OPEN_MP
@@ -167,8 +167,8 @@ namespace smil
 
   template <class T_in, class T_out>
   RES_T arrowLowOrEqu(const Image<T_in> &imIn, Image<T_out> &imOut,
-                      const StrElt &se          = DEFAULT_SE,
-                      T_in          borderValue = std::numeric_limits<T_in>::min())
+                      const StrElt &se = DEFAULT_SE,
+                      T_in borderValue = std::numeric_limits<T_in>::min())
   {
     unaryMorphArrowImageFunction<T_in, lowOrEquSupLine<T_in, T_out>, T_out>
         iFunc(borderValue);
@@ -187,8 +187,8 @@ namespace smil
 
   template <class T_in, class T_out>
   RES_T arrowGrtOrEqu(const Image<T_in> &imIn, Image<T_out> &imOut,
-                      const StrElt &se          = DEFAULT_SE,
-                      T_in          borderValue = std::numeric_limits<T_in>::min())
+                      const StrElt &se = DEFAULT_SE,
+                      T_in borderValue = std::numeric_limits<T_in>::min())
   {
     unaryMorphArrowImageFunction<T_in, grtOrEquSupLine<T_in, T_out>, T_out>
         iFunc(borderValue);
@@ -389,8 +389,8 @@ namespace smil
 
   template <class T, class arrowT>
   RES_T arrowMinFunction<T, arrowT>::_exec(const imageInType &in,
-                                           imageArrowType &   arrow,
-                                           const StrElt &     se)
+                                           imageArrowType    &arrow,
+                                           const StrElt      &se)
   {
     ASSERT_ALLOCATED(&in, &arrow);
     ASSERT_SAME_SIZE(&in, &arrow);
@@ -410,7 +410,7 @@ namespace smil
 
     volInType      srcSlices  = in.getSlices();
     volArrowType   destSlices = arrow.getSlices();
-    lineInType *   srcLines;
+    lineInType    *srcLines;
     lineArrowType *destLines;
 
     bool oddSe = se.odd, oddLine = 0;
@@ -419,11 +419,11 @@ namespace smil
 #pragma omp parallel private(oddLine)
 #endif // USE_OPEN_MP
     {
-      T *                       borderBuf = ImDtTypes<T>::createLine(lineLen);
-      T *                       cpBuf     = ImDtTypes<T>::createLine(lineLen);
-      T *                       minBuf    = ImDtTypes<T>::createLine(lineLen);
-      T *                       nullBuf   = ImDtTypes<T>::createLine(lineLen);
-      T *                       flagBuf   = ImDtTypes<T>::createLine(lineLen);
+      T                        *borderBuf = ImDtTypes<T>::createLine(lineLen);
+      T                        *cpBuf     = ImDtTypes<T>::createLine(lineLen);
+      T                        *minBuf    = ImDtTypes<T>::createLine(lineLen);
+      T                        *nullBuf   = ImDtTypes<T>::createLine(lineLen);
+      T                        *flagBuf   = ImDtTypes<T>::createLine(lineLen);
       lowLine<T>                low;
       infLine<T>                inf;
       testLine<T, arrowT>       test;
@@ -514,8 +514,8 @@ namespace smil
 
   template <class T, class arrowT>
   RES_T arrowMinStepFunction<T, arrowT>::_exec(const imageInType &in,
-                                               imageArrowType &   arrow,
-                                               const StrElt &     se)
+                                               imageArrowType    &arrow,
+                                               const StrElt      &se)
   {
     ASSERT_ALLOCATED(&in, &arrow);
     ASSERT_SAME_SIZE(&in, &arrow);
@@ -536,7 +536,7 @@ namespace smil
 
     volInType      srcSlices  = in.getSlices();
     volArrowType   destSlices = arrow.getSlices();
-    lineInType *   srcLines;
+    lineInType    *srcLines;
     lineArrowType *destLines;
 
     bool oddSe = cpSe.odd, oddLine = 0;
@@ -545,11 +545,11 @@ namespace smil
 #pragma omp parallel private(oddLine)
 #endif // USE_OPEN_MP
     {
-      T *                       borderBuf = ImDtTypes<T>::createLine(lineLen);
-      T *                       cpBuf     = ImDtTypes<T>::createLine(lineLen);
-      T *                       minBuf    = ImDtTypes<T>::createLine(lineLen);
-      T *                       nullBuf   = ImDtTypes<T>::createLine(lineLen);
-      T *                       flagBuf   = ImDtTypes<T>::createLine(lineLen);
+      T                        *borderBuf = ImDtTypes<T>::createLine(lineLen);
+      T                        *cpBuf     = ImDtTypes<T>::createLine(lineLen);
+      T                        *minBuf    = ImDtTypes<T>::createLine(lineLen);
+      T                        *nullBuf   = ImDtTypes<T>::createLine(lineLen);
+      T                        *flagBuf   = ImDtTypes<T>::createLine(lineLen);
       lowLine<T>                low;
       infLine<T>                inf;
       testLine<T, arrowT>       test;

@@ -47,7 +47,8 @@ namespace smil
 
   RES_T getJPGFileInfo(const char *filename, ImageFileInfo &fInfo);
 
-  template <class T> class Image;
+  template <class T>
+  class Image;
 
   template <class T = void>
   class JPGImageFileHandler : public ImageFileHandler<T>

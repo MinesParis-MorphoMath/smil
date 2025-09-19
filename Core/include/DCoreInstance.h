@@ -68,26 +68,26 @@ namespace smil
     bool keepAlive;
     bool autoResizeImages;
 
-    UINT getNumberOfThreads();
-    UINT getNumberOfCores();
-    UINT getMaxNumberOfThreads();
-    RES_T setNumberOfThreads(UINT nbr);
-    void resetNumberOfThreads();
-    size_t getAllocatedMemory();
+    UINT         getNumberOfThreads();
+    UINT         getNumberOfCores();
+    UINT         getMaxNumberOfThreads();
+    RES_T        setNumberOfThreads(UINT nbr);
+    void         resetNumberOfThreads();
+    size_t       getAllocatedMemory();
     const CpuID &getCpuID()
     {
       return cpuID;
     }
 
-    void registerObject(BaseObject *obj);
-    void unregisterObject(BaseObject *obj);
+    void                      registerObject(BaseObject *obj);
+    void                      unregisterObject(BaseObject *obj);
     std::vector<BaseObject *> getRegisteredObjects();
-    std::vector<BaseImage *> getImages();
+    std::vector<BaseImage *>  getImages();
 
     void showAllImages();
     void hideAllImages();
     void deleteAllImages();
-    int getImageIndex(BaseImage *img);
+    int  getImageIndex(BaseImage *img);
 
     void getCompilationInfos(std::ostream &outStream = std::cout);
 
@@ -101,11 +101,11 @@ namespace smil
 
     const char *systemName;
     const char *targetArchitecture;
-    const bool supportOpenMP;
+    const bool  supportOpenMP;
 
     std::vector<BaseObject *> registeredObjects;
-    std::vector<BaseImage *> registeredImages;
-    void deleteRegisteredObjects();
+    std::vector<BaseImage *>  registeredImages;
+    void                      deleteRegisteredObjects();
 
     const CpuID cpuID;
   };

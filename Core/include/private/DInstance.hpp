@@ -41,7 +41,6 @@ namespace smil
   protected:
     UniqueInstance()
     {
-
     }
 
     virtual ~UniqueInstance()
@@ -74,7 +73,6 @@ namespace smil
   protected:
     // Unique instance
     static T *_instance;
-
   };
 
   template <typename T>
