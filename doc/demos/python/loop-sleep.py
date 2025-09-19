@@ -14,17 +14,16 @@ imIn.show("Input image")
 imOut.show()
 
 input("Hit the enter key to begin")
-for i in range(0,8):
-  s = "Open SE({:})".format(i)
-  print(s)
-  imOut.setName(s)
+for i in range(0, 8):
+    s = "Open SE({:})".format(i)
+    print(s)
+    imOut.setName(s)
 
-  r = sp.open(imIn,  imOut, se(i))
+    r = sp.open(imIn, imOut, se(i))
 
-  # process GUI events and update the image display
-  sp.Gui.processEvents()
-  # an optional wait of 0.4 seconds
-  time.sleep(0.4)
+    # process GUI events and update the image display
+    sp.Gui.processEvents()
+    # an optional wait of 0.4 seconds
+    time.sleep(0.4)
 
 input("Hit the enter key to exit")
-

@@ -13,14 +13,14 @@ imLbl = sp.Image(imIn, "UINT16")
 sp.label(imThr, imLbl)
 
 # compute blobs and get their data
-blobs   = sp.computeBlobs(imLbl)
+blobs = sp.computeBlobs(imLbl)
 central = True
 inertia = sp.blobsInertiaMatrix(imIn, blobs, central)
-barys   = sp.blobsBarycenter(imIn, blobs)
+barys = sp.blobsBarycenter(imIn, blobs)
 
 nshape = (2, 2)
 if imIn.getDimension() == 3:
-  nshape = (3, 3)
+    nshape = (3, 3)
 
 for k in inertia.keys():
     print("=" * 64)
@@ -40,4 +40,3 @@ for k in inertia.keys():
     print(w)
     print("    ====== Eingenvectors")
     print(v)
-

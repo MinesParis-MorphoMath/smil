@@ -1,19 +1,20 @@
-
 #
 # Rewrite deprecated functions names for compatibility
 #
 # -------------------------------------
-from smilAdvancedPython       import *
-from smilBasePython           import *
-from smilCorePython           import *
-from smilGuiPython            import *
-from smilIOPython             import *
-from smilMorphoPython         import *
-  
-from smilColorPython          import *
-from smilFiltersPython        import *
+from smilAdvancedPython import *
+from smilBasePython import *
+from smilCorePython import *
+from smilGuiPython import *
+from smilIOPython import *
+from smilMorphoPython import *
 
-from smil_Python              import *
+from smilColorPython import *
+from smilFiltersPython import *
+
+from smil_Python import *
+
+
 # -------------------------------------
 # Functions renamed
 #
@@ -24,12 +25,14 @@ def GeoDist(*args):
     """
     return distanceGeodesic(*args)
 
+
 def dist(*args):
     """
     Function renamed. Use:
       r = distance(...)
     """
     return distance(*args)
+
 
 def dist_euclidean(*args):
     """
@@ -38,12 +41,14 @@ def dist_euclidean(*args):
     """
     return distanceEuclidean(*args)
 
+
 def fromNumArray(*args):
     """
     Function renamed. Use:
       r = fromNumpyArray(...)
     """
     return fromNumpyArray(*args)
+
 
 def geoDil(*args):
     """
@@ -52,12 +57,14 @@ def geoDil(*args):
     """
     return geoDilate(*args)
 
+
 def geoEro(*args):
     """
     Function renamed. Use:
       r = geoErode(...)
     """
     return geoErode(*args)
+
 
 def getNumArray(*args):
     """
@@ -66,12 +73,14 @@ def getNumArray(*args):
     """
     return getNumpyArray(*args)
 
+
 def hFlip(*args):
     """
     Function renamed. Use:
       r = horizFlip(...)
     """
     return horizFlip(*args)
+
 
 def labelWithMaxima(*args):
     """
@@ -80,12 +89,14 @@ def labelWithMaxima(*args):
     """
     return labelWithMax(*args)
 
+
 def measAreas(*args):
     """
     Function renamed. Use:
       r = blobsArea(...)
     """
     return blobsArea(*args)
+
 
 def measBarycenters(*args):
     """
@@ -94,12 +105,14 @@ def measBarycenters(*args):
     """
     return blobsBarycenter(*args)
 
+
 def measBlobMoments(*args):
     """
     Function renamed. Use:
       r = blobsMoments(...)
     """
     return blobsMoments(*args)
+
 
 def measBlobsEntropy(*args):
     """
@@ -108,12 +121,14 @@ def measBlobsEntropy(*args):
     """
     return blobsEntropy(*args)
 
+
 def measBoundBoxes(*args):
     """
     Function renamed. Use:
       r = blobsBoundBox(...)
     """
     return blobsBoundBox(*args)
+
 
 def measImageEntropy(*args):
     """
@@ -122,12 +137,14 @@ def measImageEntropy(*args):
     """
     return measEntropy(*args)
 
+
 def measInertiaMatrices(*args):
     """
     Function renamed. Use:
       r = blobsMoments(...)
     """
     return blobsMoments(*args)
+
 
 def measMaxVals(*args):
     """
@@ -136,12 +153,14 @@ def measMaxVals(*args):
     """
     return blobsMaxVal(*args)
 
+
 def measMeanVals(*args):
     """
     Function renamed. Use:
       r = blobsMeanVal(...)
     """
     return blobsMeanVal(*args)
+
 
 def measMedianVal(*args):
     """
@@ -150,12 +169,14 @@ def measMedianVal(*args):
     """
     return medianVal(*args)
 
+
 def measMedianVals(*args):
     """
     Function renamed. Use:
       r = blobsMedianVal(...)
     """
     return blobsMedianVal(*args)
+
 
 def measMinVals(*args):
     """
@@ -164,12 +185,14 @@ def measMinVals(*args):
     """
     return blobsMinVal(*args)
 
+
 def measModeVal(*args):
     """
     Function renamed. Use:
       r = modeVal(...)
     """
     return modeVal(*args)
+
 
 def measModeVals(*args):
     """
@@ -178,12 +201,14 @@ def measModeVals(*args):
     """
     return blobsModeVal(*args)
 
+
 def measRangeVals(*args):
     """
     Function renamed. Use:
       r = blobsRangeVal(...)
     """
     return blobsRangeVal(*args)
+
 
 def measVolumes(*args):
     """
@@ -192,12 +217,14 @@ def measVolumes(*args):
     """
     return blobsVolume(*args)
 
+
 def stretchHist(*args):
     """
     Function renamed. Use:
       r = stretchHistogram(...)
     """
     return stretchHistogram(*args)
+
 
 def vFlip(*args):
     """
@@ -206,12 +233,14 @@ def vFlip(*args):
     """
     return vertFlip(*args)
 
+
 def valueLists(*args):
     """
     Function renamed. Use:
       r = blobsValueList(...)
     """
     return blobsValueList(*args)
+
 
 # -------------------------------------
 # Shortcuts
@@ -223,6 +252,7 @@ def getDefaultSE(*args):
     """
     return Morpho.getDefaultSE(*args)
 
+
 def setDefaultSE(*args):
     """
     Shortcut
@@ -230,28 +260,27 @@ def setDefaultSE(*args):
     """
     return Morpho.setDefaultSE(*args)
 
+
 # -------------------------------------
 # Additions
 #
 
-#
-#
-def colorGradientHLS(imIn, se = Morpho.getDefaultSE(), convertFirstToHLS = True):
-  imOut = Image(imIn, imtype = 'UINT8')
-  r = gradientHLS(imIn, imOut, se, convertFirstToHLS)
-  if r == 1:
-    return imOut
-  return None
 
 #
 #
-def colorGradientLAB(imIn, se = Morpho.getDefaultSE(), convertFirstToLAB = True):
-  imOut = Image(imIn, imtype = 'UINT8')
-  r = gradientLAB(imIn, imOut, se, convertFirstToLAB)
-  if r == 1:
-    return imOut
-  return None
+def colorGradientHLS(imIn, se=Morpho.getDefaultSE(), convertFirstToHLS=True):
+    imOut = Image(imIn, imtype="UINT8")
+    r = gradientHLS(imIn, imOut, se, convertFirstToHLS)
+    if r == 1:
+        return imOut
+    return None
 
 
-
-
+#
+#
+def colorGradientLAB(imIn, se=Morpho.getDefaultSE(), convertFirstToLAB=True):
+    imOut = Image(imIn, imtype="UINT8")
+    r = gradientLAB(imIn, imOut, se, convertFirstToLAB)
+    if r == 1:
+        return imOut
+    return None

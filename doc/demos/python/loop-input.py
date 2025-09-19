@@ -14,15 +14,14 @@ imOut.show()
 
 input("Hit the enter key to continue")
 
-for i in range(0,8):
-  s = "Open SE({:})".format(i)
-  print(s)
-  imOut.setName(s)
+for i in range(0, 8):
+    s = "Open SE({:})".format(i)
+    print(s)
+    imOut.setName(s)
 
-  r = sp.open(imIn,  imOut, se(i))
-  # save temporari result, if wanted
-  r = sp.write(imOut, 'res-tmp-{:03d}'.format(i))
-  input("Hit the enter key to continue")
+    r = sp.open(imIn, imOut, se(i))
+    # save temporari result, if wanted
+    r = sp.write(imOut, "res-tmp-{:03d}".format(i))
+    input("Hit the enter key to continue")
 
 input("Hit the enter key to exit")
-

@@ -8,7 +8,7 @@ imMark = sp.Image(im)
 imGeoDist = sp.Image(im)
 
 # create a marker image, the same as the original image except at
-# some point inside the "true" region, which is set to "0" 
+# some point inside the "true" region, which is set to "0"
 nl = sp.HexSE()
 sp.distance(im, imDist, nl)
 sp.compare(imDist, "==", sp.maxVal(imDist), 0, im, imMark)

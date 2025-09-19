@@ -17,6 +17,5 @@ barys = sp.blobsBarycenter(im, blobs)
 # print areas and barycenters of each region
 print("{:3s} - {:>6s} - {:>13s}".format("ID", "Area", "Barycenter"))
 for k in blobs.keys():
-  bary = barys[k]
-  print("{:3d} - {:6.0f} - {:6.0f} {:6.0f}".format(k, areas[k], bary[0], bary[1]))
-
+    bary = barys[k]
+    print("{:3d} - {:6.0f} - {:6.0f} {:6.0f}".format(k, areas[k], bary[0], bary[1]))

@@ -1,4 +1,3 @@
-
 import smilPython as sp
 
 imIn = sp.Image("https://smil.cmm.minesparis.psl.eu/images/lena.png")
@@ -7,4 +6,3 @@ imIn.show()
 imOut.show()
 
 sp.gaussianFilter(imIn, 3, imOut)
-

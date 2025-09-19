@@ -20,12 +20,19 @@ imIn.getViewer().drawOverlay(imRec)
 # Blobs measures
 blobs = computeBlobs(imLbl)
 # areas
-areas = blobsArea(imLbl, blobs) # equivalent but faster than measAreas(imLbl)
+areas = blobsArea(imLbl, blobs)  # equivalent but faster than measAreas(imLbl)
 # barycenters
 barys = blobsBarycenter(imLbl, blobs)
 # volume of blobs in imIn
-vols  = blobsVolume(imIn, blobs)
+vols = blobsVolume(imIn, blobs)
 print("Label\tarea\tvolume\tbarycenter (x,y)")
 for lbl in blobs.keys():
-  print(str(lbl) + "\t" + str(areas[lbl]) + "\t" + str(vols[lbl]) + "\t" + str(barys[lbl]))
-
+    print(
+        str(lbl)
+        + "\t"
+        + str(areas[lbl])
+        + "\t"
+        + str(vols[lbl])
+        + "\t"
+        + str(barys[lbl])
+    )

@@ -1,5 +1,6 @@
 import smilPython as sp
 
+
 # How to print moments
 def printBlobMoments(m, title=""):
     print(title.center(90))
@@ -9,10 +10,11 @@ def printBlobMoments(m, title=""):
         s += h.rjust(16)
     print(s)
     for label in m.keys():
-        s = '{:3} :'.format(label)
+        s = "{:3} :".format(label)
         for v in m[label]:
-            s += '  {:14.2f}'.format(v)
+            s += "  {:14.2f}".format(v)
         print(s)
+
 
 # Serious work begins here
 #
@@ -20,7 +22,7 @@ binaryImage = False
 if binaryImage:
     imageName = "https://smil.cmm.minesparis.psl.eu/images/balls.png"
     imo = sp.Image(imageName)
-    iml = sp.Image(imo, 'UINT16')
+    iml = sp.Image(imo, "UINT16")
     # normalize binary image values
     imo /= 255
     sp.label(imo, iml)

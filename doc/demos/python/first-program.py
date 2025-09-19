@@ -17,7 +17,7 @@ imB = sp.Image(imIn)
 imB.show("dilate")
 
 # erosion and dilation
-r = sp.erode(imIn,  imA, se())
+r = sp.erode(imIn, imA, se())
 r = sp.dilate(imIn, imB, se())
 
 input("Hit enter to continue")

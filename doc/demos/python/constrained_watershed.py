@@ -19,7 +19,7 @@ imMark.setPixel(88, 76, 3)
 
 # Dilate the markers to avoid to be blocked in a minimum
 dilate(imMark, imMark, 2)
-#imMark.showLabel()
+# imMark.showLabel()
 
 # Create the watershed
 imWS = Image(imIn)
@@ -30,4 +30,3 @@ imWS.show()
 
 # Display the output as overlay on the original image
 imIn.getViewer().drawOverlay(imWS & 1)
-

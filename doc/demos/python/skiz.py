@@ -1,23 +1,22 @@
 from smilPython import *
 
+
 def tgdskiz(im1, im2, imMask):
     tmp1 = Image(im1)
     tmp2 = Image(im1)
     sumIm = Image(im1)
     vol0 = -1
     vol1 = 0
-    while vol0<vol1:
-      dilate(im1, tmp1, se)
-      dilate(im2, tmp2, se)
-      addNoSat(tmp1, tmp2, sumIm)
-
-
+    while vol0 < vol1:
+        dilate(im1, tmp1, se)
+        dilate(im2, tmp2, se)
+        addNoSat(tmp1, tmp2, sumIm)
 
 
 def skizBin(label1, label2, maskIm, se=hSE()):
     tmp1 = Image(label1)
     tmp2 = Image(label1)
-    lpe = Image(label1)	
+    lpe = Image(label1)
     oldVol = 0
     newVol = -1
     while oldVol != newVol:
@@ -34,10 +33,11 @@ def skizBin(label1, label2, maskIm, se=hSE()):
         oldVol = newVol
         newVol = vol(label1)
         print(newVol)
-        #raw_input()
+        # raw_input()
+
 
 def trueWatershed(imIn, imMark, imOut, se=hSE()):
-    #global label1, label2, maskIm
+    # global label1, label2, maskIm
     label1 = Image(imIn)
     label2 = Image(imIn)
     maskIm = Image(imIn)
@@ -48,13 +48,13 @@ def trueWatershed(imIn, imMark, imOut, se=hSE()):
     label(imMark, label1)
     mask(~label1, label1, label2)
 
-    for i in range(rangeVal(imIn)[1]+1):
-      threshold(imIn, 0, i, maskIm)
-      sup(maskIm, imMark, maskIm)
-      skizBin(label1, label2, maskIm, se)
+    for i in range(rangeVal(imIn)[1] + 1):
+        threshold(imIn, 0, i, maskIm)
+        sup(maskIm, imMark, maskIm)
+        skizBin(label1, label2, maskIm, se)
 
     copy(label1, imOut)
-    
+
 
 def skizIsotrop(imIn, imOut, se=hSE()):
     label1 = Image(imIn)
@@ -70,7 +70,5 @@ def skizIsotrop(imIn, imOut, se=hSE()):
     lpe.show()
     tmp1.showLabel()
     tmp2.showLabel()
-    
+
     skizBin(label1, label2, maskIm, se)
-    
-    
