@@ -23,7 +23,7 @@ class myWSFlooding(WatershedFlooding_UINT8_UINT16):
             self.nbrPixProcessed += 1
 
 
-if not "imIn" in globals():
+if "imIn" not in globals():
     imIn = Image("https://smil.cmm.minesparis.psl.eu/images/lena.png")
     imGrad = Image(imIn)
     imWS = Image(imIn)

@@ -1,5 +1,4 @@
 import smilPython as sm
-import numpy as np
 
 # read a PNG image file (8 bits gray image)
 file = "my-image.png"

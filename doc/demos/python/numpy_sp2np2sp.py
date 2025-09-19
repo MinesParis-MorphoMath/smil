@@ -1,5 +1,4 @@
 import smilPython as sm
-import numpy as np
 
 # read a 16 bits RAW Image
 file = "Slices-16.raw"

@@ -31,7 +31,6 @@ output will be written (the file will be clobbered).
 from xml.dom import minidom
 import re
 import textwrap
-import sys
 import types
 import os.path
 import optparse

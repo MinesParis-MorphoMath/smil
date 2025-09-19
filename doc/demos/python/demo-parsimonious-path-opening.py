@@ -1,10 +1,8 @@
 #!/usr/bin/python
 
-import time
 import smilPython as smil
 from PIL import Image
 import numpy as np
-import pdb
 
 
 def ImageFromArray(im_arr):

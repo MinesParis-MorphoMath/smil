@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
-import sys, os
-import getopt
+import sys
+import os
 from xml.dom import minidom
 from xml.dom import Node
 import re
@@ -455,7 +455,7 @@ def main():
 
     print(os.getcwd())
 
-    if not "swigMod" in globals():
+    if "swigMod" not in globals():
         doc = minidom.parse(xmlFileName)
         rootNode = doc.childNodes[0]
 

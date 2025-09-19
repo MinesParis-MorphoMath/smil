@@ -64,7 +64,7 @@ def mkDictFromListFile(fin=None, d={}, s={}, a=[]):
             if "__additions__" in line:
                 r = a
                 continue
-            if line.startswith("#") and not r is a:
+            if line.startswith("#") and r is not a:
                 continue
             if isinstance(r, dict):
                 m = re.search("\s*(\S+)\s+(\S+)", line)
