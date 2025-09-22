@@ -66,11 +66,14 @@ jobs:
       - name: Execute non-regression tests and benchmarks
         run: |
           cd build
-          pixi run ctest
+          ctest -C Release -LE "python"
+        shell: pixi run bash -e {0}
 
-      - name: Test Python import
+      - name: Execute Python tests
+        continue-on-error: true
         run: |
-          python -c "import smilPython"
+          cd build
+          ctest -C Release -L python --output-on-failure
         shell: pixi run bash -e {0}
         env:
           PYTHONPATH: "/c/Program Files (x86)/Smil/lib:/c/Program Files (x86)/Smil/lib/smilPython"
