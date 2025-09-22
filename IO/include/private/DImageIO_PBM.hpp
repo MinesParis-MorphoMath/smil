@@ -44,7 +44,7 @@ namespace smil
    */
   /* *@{*/
 
-  RES_T readNetPBMFileInfo(ifstream &fp, ImageFileInfo &fInfo,
+  RES_T readNetPBMFileInfo(std::ifstream &fp, ImageFileInfo &fInfo,
                            unsigned int &maxval);
   RES_T readNetPBMFileInfo(const char *filename, ImageFileInfo &fInfo,
                            unsigned int &maxval);
@@ -93,10 +93,10 @@ namespace smil
     virtual RES_T read(const char *filename, Image<T> &image)
     {
       /* open image file */
-      ifstream fp(filename, ios_base::binary);
+      std::ifstream fp(filename, std::ios_base::binary);
 
       if (!fp.is_open()) {
-        cout << "Cannot open file " << filename << endl;
+        std::cout << "Cannot open file " << filename << std::endl;
         return RES_ERR_IO;
       }
 

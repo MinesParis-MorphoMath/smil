@@ -38,7 +38,7 @@ namespace smil
 {
     struct PNGHeader
     {
-        PNGHeader(const string rw)
+      PNGHeader(const std::string rw)
         {
             if (rw=="r")
             {
@@ -172,7 +172,7 @@ namespace smil
         
         if (!fp)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -221,7 +221,7 @@ namespace smil
         
         if (!fp)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -267,7 +267,7 @@ namespace smil
         
         if (!fp)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -328,7 +328,7 @@ namespace smil
         
         if (!fp)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         
@@ -372,7 +372,7 @@ namespace smil
         
         if (!fp)
         {
-            cout << "Cannot open file " << filename << endl;
+          std::cout << "Cannot open file " << filename << std::endl;
             return RES_ERR_IO;
         }
         

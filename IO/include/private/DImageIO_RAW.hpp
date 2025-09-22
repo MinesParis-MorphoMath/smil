@@ -36,8 +36,6 @@
 
 #include "Core/include/private/DImage.hpp"
 
-using namespace std;
-
 namespace smil
 {
   /**

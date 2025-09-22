@@ -36,8 +36,6 @@
 
 #include "DCommon.h"
 
-using namespace std;
-
 namespace smil
 {
   /**
@@ -69,7 +67,7 @@ namespace smil
 
   class Error
 #ifndef SWIG
-      : public exception
+    : public std::exception
 #endif // SWIG
   {
   public:
@@ -77,12 +75,12 @@ namespace smil
     {
     }
 
-    Error(const string &descr) noexcept(true) : description(cleanDescr(descr))
+    Error(const std::string &descr) noexcept(true) : description(cleanDescr(descr))
     {
       buildMessage();
     }
 
-    Error(const string &descr, const char *func, const char *_file,
+    Error(const std::string &descr, const char *func, const char *_file,
           const int _line, const char *expr) noexcept(true)
         : description(cleanDescr(descr)), function(func), file(_file),
           line(_line), expression(expr)
@@ -90,7 +88,7 @@ namespace smil
       buildMessage();
     }
 
-    Error(const string &descr, const char *func, const char *_file,
+    Error(const std::string &descr, const char *func, const char *_file,
           const int _line) noexcept(true)
         : description(cleanDescr(descr)), function(func), file(_file),
           line(_line)
@@ -105,7 +103,7 @@ namespace smil
       buildMessage();
     }
 
-    Error(const string &descr, const char *func,
+    Error(const std::string &descr, const char *func,
           const char *expr) noexcept(true)
         : description(cleanDescr(descr)), function(func), expression(expr)
     {
@@ -129,12 +127,12 @@ namespace smil
 
     void show()
     {
-      cout << "Error:" << this->what() << endl;
+      std::cout << "Error:" << this->what() << std::endl;
     }
 
     void buildMessage()
     {
-      ostringstream buf;
+      std::ostringstream buf;
       if (!function.empty())
         buf << "\n  in function: " << function;
       if (!description.empty())
@@ -153,7 +151,7 @@ namespace smil
     }
 
   private:
-    inline string cleanDescr(const string descr)
+    inline std::string cleanDescr(const std::string descr)
     {
       if (descr[0] != '"')
         return descr;
@@ -161,15 +159,15 @@ namespace smil
         return descr.substr(1, descr.length() - 2);
     }
 
-    string description;
-    string function;
-    string file;
+    std::string description;
+    std::string function;
+    std::string file;
 #if defined NDEBUG && defined __clang__
     SMIL_UNUSED
 #endif // NDEBUG && __clang__
     int    line;
-    string expression;
-    string message;
+    std::string expression;
+    std::string message;
   };
 
 #define ASSERT_1_ARG(func, file, line, expr)                                   \

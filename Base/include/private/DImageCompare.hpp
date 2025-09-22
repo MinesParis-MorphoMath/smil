@@ -209,7 +209,7 @@ namespace smil
       if (!okTable)
         return 0.;
 
-      return double(TP + DXM) / double(min(aGT, aIM) + DXM);
+      return double(TP + DXM) / double(std::min(aGT, aIM) + DXM);
     }
 
     double Jaccard()
@@ -228,9 +228,9 @@ namespace smil
       return aGT + aIM - TP;
     }
 
-    vector<size_t> getTable()
+    std::vector<size_t> getTable()
     {
-      vector<size_t> table(0);
+      std::vector<size_t> table(0);
 
       if (!okTable)
         return table;
@@ -247,11 +247,11 @@ namespace smil
       if (!okTable)
         return;
 
-      cout << "Predicted Negative \t" << TN << "\t" << FN << endl;
-      cout << "Predicted Positive \t" << FP << "\t" << TP << endl;
-      cout << endl;
-      cout << "Negative \t" << N << endl;
-      cout << "Positive \t" << P << endl;
+      std::cout << "Predicted Negative \t" << TN << "\t" << FN << std::endl;
+      std::cout << "Predicted Positive \t" << FP << "\t" << TP << std::endl;
+      std::cout << std::endl;
+      std::cout << "Negative \t" << N << std::endl;
+      std::cout << "Positive \t" << P << std::endl;
     }
   };
 
@@ -655,16 +655,16 @@ namespace smil
 
     gradient(imGt, imt, SquSE());
     inf(imGt, imt, imt);
-    vector<size_t> pixGt = nonZeroOffsets(imt);
+    std::vector<size_t> pixGt = nonZeroOffsets(imt);
 
     gradient(imIn, imt, SquSE());
     inf(imIn, imt, imt);
-    vector<size_t> pixIn = nonZeroOffsets(imt);
+    std::vector<size_t> pixIn = nonZeroOffsets(imt);
 
     off_t szGt = pixGt.size();
-    vector<double> distGt(szGt, numeric_limits<double>::max());
+    std::vector<double> distGt(szGt, std::numeric_limits<double>::max());
     off_t szIn = pixIn.size();
-    vector<double> distIn(szIn, numeric_limits<double>::max());
+    std::vector<double> distIn(szIn, std::numeric_limits<double>::max());
 
     size_t Size[3];
     imGt.getSize(Size);
@@ -684,11 +684,11 @@ namespace smil
       }
     }
 
-    vector<double>::iterator iGt, iIn;
-    iGt = max_element(distGt.begin(), distGt.end());
-    iIn = max_element(distIn.begin(), distIn.end());
+    std::vector<double>::iterator iGt, iIn;
+    iGt = std::max_element(distGt.begin(), distGt.end());
+    iIn = std::max_element(distIn.begin(), distIn.end());
 
-    return max(*iGt, *iIn);
+    return std::max(*iGt, *iIn);
   }
 
 

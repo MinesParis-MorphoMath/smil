@@ -12,8 +12,6 @@
 // #include <X11/X.h>
 // #include <X11/Xlib.h>
 
-using namespace std;
-
 void *fun(void *_timer)
 {
   timer *t = (timer *) _timer;

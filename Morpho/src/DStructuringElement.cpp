@@ -95,10 +95,10 @@ StrElt StrElt::homothety(const UINT s) const
   newSE.odd    = odd;
   int oddLine  = 0;
   for (UINT i = 0; i < s - 1; i++) {
-    vector<IntPoint> pts = newSE.points;
-    for (vector<IntPoint>::iterator it = pts.begin(); it != pts.end(); it++) {
+    std::vector<IntPoint> pts = newSE.points;
+    for (std::vector<IntPoint>::iterator it = pts.begin(); it != pts.end(); it++) {
       const IntPoint &p = *it;
-      for (vector<IntPoint>::const_iterator it2 = points.begin();
+      for (std::vector<IntPoint>::const_iterator it2 = points.begin();
            it2 != points.end(); it2++) {
         const IntPoint &p2 = *it2;
         if (odd)
@@ -126,7 +126,7 @@ StrElt StrElt::transpose() const
   se.odd  = this->odd;
   se.setName();
 
-  for (vector<IntPoint>::const_iterator it = this->points.begin();
+  for (std::vector<IntPoint>::const_iterator it = this->points.begin();
        it != this->points.end(); it++) {
     const IntPoint &p = *it;
     se.addPoint(-p.x - (this->odd && p.y % 2), -p.y, -p.z);
@@ -165,9 +165,9 @@ StrElt StrElt::noCenter() const
   se.seT  = this->seT;
   se.size = this->size;
 
-  vector<IntPoint>::const_iterator it_start = this->points.begin();
-  vector<IntPoint>::const_iterator it_end   = this->points.end();
-  vector<IntPoint>::const_iterator it;
+  std::vector<IntPoint>::const_iterator it_start = this->points.begin();
+  std::vector<IntPoint>::const_iterator it_end   = this->points.end();
+  std::vector<IntPoint>::const_iterator it;
 
   for (it = it_start; it != it_end; ++it)
     if (it->x != 0 || it->y != 0 || it->z != 0) {
@@ -176,22 +176,22 @@ StrElt StrElt::noCenter() const
   return se;
 }
 
-void StrElt::printSelf(ostream &os, string indent) const
+void StrElt::printSelf(std::ostream &os, std::string indent) const
 {
-  os << indent << "Structuring Element" << endl;
-  os << indent << "Class     : " << className << endl;
-  os << indent << "Name      : " << name << endl;
-  os << indent << "Type      : " << seT << endl;
-  os << indent << "Size      : " << size << endl;
-  os << indent << "Grid      : " << (odd ? "Hexagonal" : "Square") << endl;
+  os << indent << "Structuring Element" << std::endl;
+  os << indent << "Class     : " << className << std::endl;
+  os << indent << "Name      : " << name << std::endl;
+  os << indent << "Type      : " << seT << std::endl;
+  os << indent << "Size      : " << size << std::endl;
+  os << indent << "Grid      : " << (odd ? "Hexagonal" : "Square") << std::endl;
   size_t ptNbr = points.size();
-  os << indent << "Point Nbr : " << ptNbr << endl;
+  os << indent << "Point Nbr : " << ptNbr << std::endl;
   if (!ptNbr)
     return;
 
   for (UINT i = 0; i < ptNbr; i++)
     os << indent << "#" << i + 1 << ": (" << points[i].x << "," << points[i].y
-       << "," << points[i].z << ")" << endl;
+       << "," << points[i].z << ")" << std::endl;
 }
 
 

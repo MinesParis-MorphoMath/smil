@@ -31,6 +31,7 @@
 #include <QColorDialog>
 #include <QInputDialog>
 #include <qwt_legend.h>
+#include <qwt_text.h>
 
 #include "PlotWidget.h"
 

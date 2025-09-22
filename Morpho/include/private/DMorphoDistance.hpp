@@ -136,9 +136,9 @@ namespace smil
 
       ASSERT(copy(tmp, imOut) == RES_OK);
 
-      queue<size_t> *level      = new queue<size_t>();
-      queue<size_t> *next_level = new queue<size_t>();
-      queue<size_t> *swap;
+      std::queue<size_t> *level      = new std::queue<size_t>();
+      std::queue<size_t> *next_level = new std::queue<size_t>();
+      std::queue<size_t> *swap;
       T2             cur_level = T2(2);
 
       size_t size[3];
@@ -160,8 +160,8 @@ namespace smil
       off_t cur;
       off_t x, y, z, n_x, n_y, n_z;
 
-      vector<IntPoint>           sePoints = se.points;
-      vector<IntPoint>::iterator pt;
+      std::vector<IntPoint>           sePoints = se.points;
+      std::vector<IntPoint>::iterator pt;
 
       bool oddLine;
 
@@ -442,9 +442,9 @@ namespace smil
       size_t size_array = MAX(size[0], size[1]);
       // sets of the least minimizers that occurs
       // during the scan from left to right.
-      vector<off_t> s(size_array);
+      std::vector<off_t> s(size_array);
       // sets of points with the same least minimizer
-      vector<off_t> t(size_array);
+      std::vector<off_t> t(size_array);
       s[0]    = 0;
       t[0]    = 0;
       off_t q = 0;
@@ -649,7 +649,7 @@ namespace smil
 
     Image<T1> tmp(imIn);
 
-    vector<IntPoint> sePts;
+    std::vector<IntPoint> sePts;
     off_t            sePtsNbr;
 
     typedef size_t                 OffsetT;
@@ -666,7 +666,7 @@ namespace smil
     sePts.clear();
 
     // set an offset distance for each se point (!=0,0,0)
-    vector<IntPoint>::const_iterator it;
+    std::vector<IntPoint>::const_iterator it;
     for (it = se.points.begin(); it != se.points.end(); it++) {
       if (it->x != 0 || it->y != 0 || it->z != 0) {
         sePts.push_back(*it);
@@ -856,9 +856,9 @@ namespace smil
     // <= f(x,i)) : h )
     // sets of the least minimizers that occurs
     // during the scan from left to right.
-    vector<long int> s(size[0]);
+    std::vector<long int> s(size[0]);
     // sets of points with the same least minimizer
-    vector<long int> t(size[0]);
+    std::vector<long int> t(size[0]);
     long int         q = 0;
     long int         w;
 

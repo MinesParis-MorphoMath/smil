@@ -51,7 +51,7 @@ namespace smil
   class GaussianFilterFunct
   {
   private:
-    vector<double> kernel;
+    std::vector<double> kernel;
     int            radius;
     double         sigma;
 
@@ -281,7 +281,7 @@ namespace smil
     ImageFreezer freeze(imOut);
 
     int            kernelSize = radius * 2 + 1;
-    vector<double> kernel(kernelSize);
+    std::vector<double> kernel(kernelSize);
 
     double sigma = double(radius) / 2.;
     double sum   = 0.;
@@ -324,7 +324,7 @@ namespace smil
    */
   // Inplace safe
   template <class T>
-  RES_T horizConvolve(const Image<T> &imIn, const vector<double> &kernel,
+  RES_T horizConvolve(const Image<T> &imIn, const std::vector<double> &kernel,
                       Image<T> &imOut)
   {
     CHECK_ALLOCATED(&imIn, &imOut);
@@ -408,7 +408,7 @@ namespace smil
    * @see horizConvolve()
    */
   template <class T>
-  RES_T vertConvolve(const Image<T> &imIn, const vector<double> &kernel,
+  RES_T vertConvolve(const Image<T> &imIn, const std::vector<double> &kernel,
                      Image<T> &imOut)
   {
     CHECK_ALLOCATED(&imIn, &imOut);
@@ -494,7 +494,7 @@ namespace smil
    * @see horizConvolve()
    */
   template <class T>
-  RES_T convolve(const Image<T> &imIn, const vector<double> &kernel,
+  RES_T convolve(const Image<T> &imIn, const std::vector<double> &kernel,
                  Image<T> &imOut)
   {
     if (&imIn == &imOut) {

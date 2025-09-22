@@ -32,6 +32,7 @@
 
 #include <queue>
 #include <deque>
+#include <stack>
 
 #include "Core/include/private/DTypes.hpp"
 #include "Morpho/include/DStructuringElement.h"
@@ -74,7 +75,7 @@ namespace smil
     void initialize(size_t newSize)
     {
       reset();
-      realSize = max(newSize + 1, size_t(8)); // Avoid to have to small buffer
+      realSize = std::max(newSize + 1, size_t(8)); // Avoid to have to small buffer
       data     = new T[realSize];
       _size    = 0;
       first    = 0;
@@ -117,17 +118,17 @@ namespace smil
     T *data;
   };
 
-  template <class TokenType = size_t> class STD_Queue : public queue<TokenType>
+  template <class TokenType = size_t> class STD_Queue : public std::queue<TokenType>
   {
   public:
     // Dummy constructor for compatibilty with FIFO_Queue one
-    STD_Queue(size_t /*newSize*/ = 0) : queue<TokenType>()
+    STD_Queue(size_t /*newSize*/ = 0) : std::queue<TokenType>()
     {
     }
     static const bool preallocate = false;
   };
 
-  template <class TokenType = size_t> class STD_Stack : public stack<TokenType>
+  template <class TokenType = size_t> class STD_Stack : public std::stack<TokenType>
   {
   public:
     // Dummy operator for compatibility with other containers from smil

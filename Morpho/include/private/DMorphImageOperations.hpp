@@ -101,8 +101,10 @@ namespace smil
                                      size_t &lineNbr, const StrElt &se);
     virtual inline void processLine(lineInType pixIn, lineOutType pixOut,
                                     size_t &pixNbr, const StrElt &se);
-    virtual inline void processPixel(size_t pointOffset, vector<int> &dOffsets);
-    virtual inline void processPixel(IntPoint &point, vector<IntPoint> &dOffsets)
+    virtual inline void processPixel(size_t pointOffset, std::vector<int> &dOffsets);
+    virtual inline void
+    processPixel([[maybe_unused]] IntPoint         &point,
+                 [[maybe_unused]] std::vector<IntPoint> &dOffsets)
     {
     }
 
@@ -121,9 +123,9 @@ namespace smil
     lineInType  pixelsIn;
     lineOutType pixelsOut;
 
-    vector<IntPoint> sePoints;
+    std::vector<IntPoint> sePoints;
     UINT             sePointNbr;
-    vector<int>      relativeOffsets;
+    std::vector<int>      relativeOffsets;
 
     int se_xmin;
     int se_xmax;

@@ -66,15 +66,15 @@ namespace smil
     virtual RES_T read(const char *, Image<T> &)
     {
       T *dum = NULL;
-      cout << getDataTypeAsString<T>(dum) << " data type not implemented for "
-           << fileExtention << " files (read)." << endl;
+      std::cout << getDataTypeAsString<T>(dum) << " data type not implemented for "
+           << fileExtention << " files (read)." << std::endl;
       return RES_ERR;
     }
     virtual RES_T write(const Image<T> &, const char *)
     {
       T *dum = NULL;
-      cout << getDataTypeAsString<T>(dum) << " data type not implemented for "
-           << fileExtention << " files (write)." << endl;
+      std::cout << getDataTypeAsString<T>(dum) << " data type not implemented for "
+                << fileExtention << " files (write)." << std::endl;
       return RES_ERR;
     }
   };
@@ -111,7 +111,7 @@ namespace smil
    * TIFF @b VTK
    *
    */
-  template <class T> RES_T read(const vector<string> fileList, Image<T> &image);
+  template <class T> RES_T read(const std::vector<std::string> fileList, Image<T> &image);
 
   /**
    * Write image into file
@@ -140,7 +140,7 @@ namespace smil
    * @endcode
    */
   template <class T>
-  RES_T write(const Image<T> &image, const vector<string> fileList);
+  RES_T write(const Image<T> &image, const std::vector<std::string> fileList);
 
   /**
    * Get information about an image file

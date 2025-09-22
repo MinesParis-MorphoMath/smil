@@ -59,17 +59,17 @@ namespace smil
    *  - @UrlWikipedia{Bresenham%27s_line_algorithm, Bresenham's Line algorithm}
    *
    */
-  inline vector<IntPoint> bresenhamPoints(int p1x, int p1y, int p2x, int p2y,
+  inline std::vector<IntPoint> bresenhamPoints(int p1x, int p1y, int p2x, int p2y,
                                           int xMax = 0, int yMax = 0)
   {
-    vector<IntPoint> points;
+    std::vector<IntPoint> points;
     int              F, x, y;
 
     bool swapped = false;
     if (p1x > p2x) // Swap points if p1 is on the right of p2
     {
-      swap(p1x, p2x);
-      swap(p1y, p2y);
+      std::swap(p1x, p2x);
+      std::swap(p1y, p2y);
       swapped = true;
     }
 
@@ -78,7 +78,7 @@ namespace smil
     if (p1x == p2x) {
       if (p1y > p2y) // Swap y-coordinates if p1 is above p2
       {
-        swap(p1y, p2y);
+        std::swap(p1y, p2y);
       }
 
       x = p1x;
@@ -208,7 +208,7 @@ namespace smil
    * @see
    *  - @UrlWikipedia{Bresenham%27s_line_algorithm, Bresenham's Line algorithm}
    */
-  vector<IntPoint> bresenhamLine(int p1x, int p1y, int p2x, int p2y);
+  std::vector<IntPoint> bresenhamLine(int p1x, int p1y, int p2x, int p2y);
 
   /**
    * @brief Bresenham Class
@@ -293,7 +293,7 @@ namespace smil
      *
      * @returns a vector with the points of the line
      */
-    vector<IntPoint> getPoints() const
+    std::vector<IntPoint> getPoints() const
     {
       return pts;
     }
@@ -330,22 +330,22 @@ namespace smil
                        std::pow(pf.z - pi.z, 2));
     }
 
-    void printSelf(ostream &os = std::cout, string indent = "") const
+    void printSelf(std::ostream &os = std::cout, std::string indent = "") const
     {
-      os << indent << "Bresenham Line" << endl;
-      os << indent << "Class     : " << className << endl;
+      os << indent << "Bresenham Line" << std::endl;
+      os << indent << "Class     : " << className << std::endl;
       // os << indent << "Name      : " << name << endl;
 
       for (UINT i = 0; i < pts.size(); i++)
         os << indent << "#" << i + 1 << "\t: (" << pts[i].x << "," << pts[i].y
-           << "," << pts[i].z << ")" << endl;
+           << "," << pts[i].z << ")" << std::endl;
     }
 
   private:
     IntPoint pi;
     IntPoint pf;
 
-    vector<IntPoint> pts;
+    std::vector<IntPoint> pts;
 
     void addPoint(IntPoint &p)
     {

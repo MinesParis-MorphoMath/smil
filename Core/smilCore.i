@@ -24,6 +24,13 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+%{
+#if defined(SWIGPYTHON) && defined(USE_NUMPY)
+// include numpy at the top of the CXX wrapper file
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#include <numpy/arrayobject.h>
+#endif
+%}
 
 %include smilCommon.i
 
@@ -126,7 +133,7 @@ namespace std
     #endif // __clang__
   %}
 
-  TEMPLATE_WRAP_CLASS(vector, Vector);
+  TEMPLATE_WRAP_CLASS(std::vector, Vector);
 
   %{
     #ifdef __clang__
@@ -137,22 +144,22 @@ namespace std
   #ifdef USE_64BIT_IDS
     %template(Vector_size_t) vector<size_t>;
   #endif // USE_64BIT_IDS
-  %template(Vector_int) vector<int>;
-  %template(Vector_double) vector<double>;
-  %template(Vector_string) vector<string>;
+  %template(Vector_int) std::vector<int>;
+  %template(Vector_double) std::vector<double>;
+  %template(Vector_string) std::vector<string>;
 
-  %template(Matrix_double) vector<Vector_double>;
-  %template(Vector_IntPoint) vector< smil::Point<int> >;
+  %template(Matrix_double) std::vector<Vector_double>;
+  %template(Vector_IntPoint) std::vector< smil::Point<int> >;
 
   #ifndef SWIGJAVA
-    TEMPLATE_WRAP_CLASS(set, Set);
+  TEMPLATE_WRAP_CLASS(std::set, Set);
   #endif // SWIGJAVA
 
   #if !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
-    %template(Vector_UINT) vector<UINT>;
+  %template(Vector_UINT) std::vector<UINT>;
 
     #ifndef SWIGJAVA
-      %template(Set_UINT) set<UINT>;
+  %template(Set_UINT) std::set<UINT>;
     #endif // SWIGJAVA
 
   #endif // !defined(SMIL_WRAP_UINT32) && !defined(SMIL_WRAP_UINT)
@@ -334,7 +341,7 @@ namespace smil
   // Base UINT Edge
   TEMPLATE_WRAP_CLASS_2T_CROSS(smil::Edge, Edge);
 
-  TEMPLATE_WRAP_CLASS_2T_SUBTYPES_CROSS(vector, Edge, Vector);
+TEMPLATE_WRAP_CLASS_2T_SUBTYPES_CROSS(std::vector, Edge, Vector);
 
 #ifndef SMIL_WRAP_UINT32
 

@@ -106,7 +106,7 @@ namespace smil
       size_t nbPixels = imIn.getPixelCount();
       for (size_t i = 0; i < nbPixels; i++) {
         if (this->pixelsOut[i] == T2(0)) {
-          vector<int> dum;
+          std::vector<int> dum;
           processPixel(i, dum);
         }
       }
@@ -114,14 +114,14 @@ namespace smil
     }
 
     virtual void processPixel(size_t      pointOffset,
-                              SMIL_UNUSED vector<int> &dOffsets)
+                              SMIL_UNUSED std::vector<int> &dOffsets)
     {
       T1 pVal = this->pixelsIn[pointOffset];
 
       if (pVal == T1(0) || this->pixelsOut[pointOffset] != T2(0))
         return;
 
-      queue<size_t> propagation;
+      std::queue<size_t> propagation;
 
       ++real_labels;
       ++labels;
@@ -241,7 +241,7 @@ namespace smil
         }
       }
 
-      queue<size_t> propagation;
+      std::queue<size_t> propagation;
       int           x, y, z, n_x, n_y, n_z;
       IntPoint      p;
 
@@ -402,7 +402,7 @@ namespace smil
     UINT sePtsNumber = cpSe.points.size();
     if (sePtsNumber == 0)
       return 0;
-    queue<size_t> propagation;
+    std::queue<size_t> propagation;
     size_t        o, nb_o;
     size_t        x, x0, y, y0, z, z0;
     bool          oddLine;
@@ -483,7 +483,7 @@ namespace smil
     UINT sePtsNumber = cpSe.points.size();
     if (sePtsNumber == 0)
       return 0;
-    queue<size_t> propagation;
+    std::queue<size_t> propagation;
     size_t        o, nb_o;
     size_t        x, x0, y, y0, z, z0;
     bool          oddLine;
@@ -685,13 +685,13 @@ namespace smil
 
   /** @cond */
   template <typename T>
-  inline double maxMapValueDouble(map<T, double> &m)
+  inline double maxMapValueDouble(std::map<T, double> &m)
   {
     return std::max_element(m.begin(), m.end(), map_comp_value_less())->second;
   }
 
   template <typename T>
-  inline double minMapValueDouble(map<T, double> &m)
+  inline double minMapValueDouble(std::map<T, double> &m)
   {
     return std::min_element(m.begin(), m.end(), map_comp_value_less())->second;
   }
@@ -738,15 +738,15 @@ namespace smil
   size_t
   labelWithProperty(const Image<T1> &imRegions, const Image<T2> &imIn,
                     Image<T3> &  imLabelOut,
-                    const string property = "area", bool doRescale = false,
+                    const std::string property = "area", bool doRescale = false,
                     double scale = 1., const StrElt &se = DEFAULT_SE)
   {
     ASSERT_ALLOCATED(&imIn, &imRegions, &imLabelOut);
     ASSERT_SAME_SIZE(&imIn, &imRegions, &imLabelOut);
 
-    vector<double> retVal(3);
+    std::vector<double> retVal(3);
 
-    map<string, int> property2key = {
+    std::map<std::string, int> property2key = {
         {"area", 1},     {"volume", 2},  {"max", 3},    {"min", 4},
         {"mean", 5},     {"stddev", 6},  {"median", 7}, {"mode", 8},
         {"nbvalues", 9}, {"entropy", 10}};
@@ -762,8 +762,8 @@ namespace smil
 
     size_t nl = label(imRegions, imLabel, se);
     if (nl > ImDtTypes<T3>::max()) {
-      string msg =
-          "Increase output image type to include value " + to_string(nl);
+      std::string msg =
+        "Increase output image type to include value " + std::to_string(nl);
       ERR_MSG(msg);
       return 0;
     }
@@ -771,8 +771,8 @@ namespace smil
       ERR_MSG("No labels returned");
       return nl;
     }
-    map<T3, Blob>   blobs = computeBlobs(imLabel, true);
-    map<T3, double> markers;
+    std::map<T3, Blob>   blobs = computeBlobs(imLabel, true);
+    std::map<T3, double> markers;
 
     typedef typename std::map<T3, T2>::iterator                  itT2_T;
     typedef typename std::map<T3, std::vector<T2>>::iterator     itT2Vec_T;
@@ -782,70 +782,70 @@ namespace smil
     switch (key) {
       case 1: {
         // area
-        map<T3, double> values = blobsArea(blobs);
+        std::map<T3, double> values = blobsArea(blobs);
         for (itD_T iter = values.begin(); iter != values.end(); ++iter) {
           markers[iter->first] = iter->second;
         }
       } break;
       case 2: {
         // volume
-        map<T3, double> values = blobsVolume(imIn, blobs);
+        std::map<T3, double> values = blobsVolume(imIn, blobs);
         for (itD_T iter = values.begin(); iter != values.end(); ++iter) {
           markers[iter->first] = iter->second;
         }
       } break;
       case 3: {
         // min
-        map<T3, T2> values = blobsMinVal(imIn, blobs);
+        std::map<T3, T2> values = blobsMinVal(imIn, blobs);
         for (itT2_T iter = values.begin(); iter != values.end(); ++iter) {
           markers[iter->first] = iter->second;
         }
       } break;
       case 4: {
         // max
-        map<T3, T2> values = blobsMaxVal(imIn, blobs);
+        std::map<T3, T2> values = blobsMaxVal(imIn, blobs);
         for (itT2_T iter = values.begin(); iter != values.end(); ++iter) {
           markers[iter->first] = iter->second;
         }
       } break;
       case 5: {
         // mean
-        map<T3, std::vector<double>> values = blobsMeanVal(imIn, blobs);
+        std::map<T3, std::vector<double>> values = blobsMeanVal(imIn, blobs);
         for (itDVec_T iter = values.begin(); iter != values.end(); ++iter) {
           markers[iter->first] = (iter->second)[0];
         }
       } break;
       case 6: {
         // stddev
-        map<T3, std::vector<double>> values = blobsMeanVal(imIn, blobs);
+        std::map<T3, std::vector<double>> values = blobsMeanVal(imIn, blobs);
         for (itDVec_T iter = values.begin(); iter != values.end(); ++iter) {
           markers[iter->first] = (iter->second)[1];
         }
       } break;
       case 7: {
         // median
-        map<T3, T2> values = blobsMedianVal(imIn, blobs);
+        std::map<T3, T2> values = blobsMedianVal(imIn, blobs);
         for (itT2_T iter = values.begin(); iter != values.end(); ++iter) {
           markers[iter->first] = iter->second;
         }
       } break;
       case 8: {
         // median
-        map<T3, T2> values = blobsModeVal(imIn, blobs);
+        std::map<T3, T2> values = blobsModeVal(imIn, blobs);
         for (itT2_T iter = values.begin(); iter != values.end(); ++iter) {
           markers[iter->first] = iter->second;
         }
       } break;
       case 9: {
         // values count
-        map<T3, vector<T2>> values = blobsValueList(imIn, blobs);
+        std::map<T3, std::vector<T2>> values = blobsValueList(imIn, blobs);
         for (itT2Vec_T iter = values.begin(); iter != values.end(); ++iter) {
           markers[iter->first] = iter->second.size();
         }
       } break;
       case 10: {
         // entropy
-        map<T3, double> values = blobsEntropy(imIn, blobs);
+        std::map<T3, double> values = blobsEntropy(imIn, blobs);
         for (itD_T iter = values.begin(); iter != values.end(); ++iter) {
           markers[iter->first] = iter->second;
         }
@@ -871,9 +871,9 @@ namespace smil
           if (it->second > 0)
             it->second = 1. + k * (it->second - minV);
         }
-        cout << "  Values where rescaled :" << endl;
-        cout << "    Min : \t" << minV << "\t=> " << 1. << endl;
-        cout << "    Max : \t" << maxV << "\t=> " << maxT << endl;
+        std::cout << "  Values where rescaled :" << std::endl;
+        std::cout << "    Min : \t" << minV << "\t=> " << 1. << std::endl;
+        std::cout << "    Max : \t" << maxV << "\t=> " << maxT << std::endl;
         maxV = maxMapValueDouble(markers);
       }
     } else {
@@ -884,7 +884,7 @@ namespace smil
       }
     }
     if (maxV > maxT) {
-      stringstream ss;
+      std::stringstream ss;
       ss << "Max " << property << " value (" << maxV
          << ") exceeds data type upper limit (" << maxT << ")";
       ERR_MSG(ss.str());
@@ -992,7 +992,7 @@ namespace smil
     double maxV =
         std::max_element(volumes.begin(), volumes.end(), map_comp_value_less())
             ->second;
-    cout << maxV << endl;
+    cout << maxV << std::endl;
     ASSERT((maxV < double(ImDtTypes<T2>::max())),
            "Volumes max value exceeds data type max!", 0);
 
@@ -1046,7 +1046,7 @@ namespace smil
     double maxV =
         std::max_element(markers.begin(), markers.end(), map_comp_value_less())
             ->second;
-    // cout << maxV << endl;
+    // cout << maxV << std::endl;
     ASSERT((maxV < double(ImDtTypes<T2>::max())),
            "Markers max value exceeds data type max!", 0);
 
@@ -1103,7 +1103,7 @@ namespace smil
          iter != meanValsStd.end(); ++iter) {
       markers[iter->first] = (iter->second)[0];
       //    cout << "iter->first = " << iter->first << "  iter->second[0] " <<
-      // iter->second[0] << endl;
+      // iter->second[0] << std::endl;
     }
 
     ASSERT(!markers.empty());
@@ -1128,11 +1128,11 @@ namespace smil
     typedef MorphImageFunctionBase<T1, T2> parentClass;
 
     virtual inline void processPixel(size_t       pointOffset,
-                                     vector<int> &dOffsetList)
+                                     std::vector<int> &dOffsetList)
     {
-      vector<T1>            vals;
+      std::vector<T1>            vals;
       UINT                  nbrValues = 0;
-      vector<int>::iterator dOffset   = dOffsetList.begin();
+      std::vector<int>::iterator dOffset   = dOffsetList.begin();
       while (dOffset != dOffsetList.end()) {
         T1 val = parentClass::pixelsIn[pointOffset + *dOffset];
         if (find(vals.begin(), vals.end(), val) == vals.end()) {

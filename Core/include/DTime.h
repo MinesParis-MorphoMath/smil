@@ -32,6 +32,7 @@
 
 #include <ctime>
 #include <iomanip>
+#include <iostream>
 
 #ifdef _MSC_VER
 #include <sys/timeb.h>
@@ -65,14 +66,14 @@ namespace smil
         struct timeval tv;
         if (gettimeofday(&tv, 0)) 
         {
-            cout << "gettimeofday returned error" << endl;
+          std::cout << "gettimeofday returned error" << std::endl;
         }
         return tv.tv_sec + double(tv.tv_usec)/1E6;
     }
 
-    inline string displayTime(double tSec)
+    inline std::string displayTime(double tSec)
     {
-        stringstream s;
+        std::stringstream s;
         s << std::fixed;
 
         if (tSec>=1.)

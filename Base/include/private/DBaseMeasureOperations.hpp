@@ -258,11 +258,11 @@ namespace smil
    *
    */
   template <class T, class labelT, class funcT>
-  map<labelT, typename funcT::retType>
-  processBlobMeasure(const Image<T> &imIn, const map<labelT, Blob> &blobs)
+  std::map<labelT, typename funcT::retType>
+  processBlobMeasure(const Image<T> &imIn, const std::map<labelT, Blob> &blobs)
   {
     typedef typename funcT::retType retType;
-    map<labelT, typename funcT::retType> res;
+    std::map<labelT, typename funcT::retType> res;
 
     ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, res);
 
@@ -270,7 +270,7 @@ namespace smil
     std::vector<labelT> _keys;
     std::vector<retType> _results(blobNbr);
 
-    for (typename map<labelT, Blob>::const_iterator it = blobs.begin();
+    for (typename std::map<labelT, Blob>::const_iterator it = blobs.begin();
          it != blobs.end(); it++)
       _keys.push_back(it->first);
 
@@ -302,10 +302,10 @@ namespace smil
    *
    */
   template <class T, class labelT, class funcT>
-  map<labelT, typename funcT::retType>
+  std::map<labelT, typename funcT::retType>
   processBlobMeasure(const Image<T> &imIn, bool onlyNonZero = true)
   {
-    map<labelT, Blob> blobs = computeBlobs(imIn, onlyNonZero);
+    std::map<labelT, Blob> blobs = computeBlobs(imIn, onlyNonZero);
     return processBlobMeasure<T, labelT, funcT>(imIn, blobs);
   }
 

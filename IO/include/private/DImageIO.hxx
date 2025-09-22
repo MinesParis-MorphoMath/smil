@@ -30,11 +30,7 @@
 #ifndef _D_IMAGE_IO_HXX
 #define _D_IMAGE_IO_HXX
 
-#if __cplusplus >= 201103L
 #include <memory>
-#define auto_ptr unique_ptr
-#else
-#endif // __cplusplus > 201103L
 
 #include "IO/include/DCommonIO.h"
 #include "DImageIO.hpp"
@@ -65,7 +61,7 @@ namespace smil
   template <class T>
   ImageFileHandler<T> *getHandlerForFile(const char *filename)
   {
-    string fileExt = getFileExtension(filename);
+    std::string fileExt = getFileExtension(filename);
 
     if (fileExt == "BMP")
       return new BMPImageFileHandler<T>();
@@ -95,7 +91,7 @@ namespace smil
       return new PBMImageFileHandler<T>();
 
     else {
-      cout << "No reader/writer available for " << fileExt << " files." << endl;
+      std::cout << "No reader/writer available for " << fileExt << " files." << std::endl;
       return NULL;
     }
   }
@@ -108,15 +104,15 @@ namespace smil
   {
     RES_T res;
 
-    string fileExt    = getFileExtension(filename);
-    string filePrefix = (string(filename).substr(0, 7));
-    string prefix     = string(filename);
+    std::string fileExt    = getFileExtension(filename);
+    std::string filePrefix = (std::string(filename).substr(0, 7));
+    std::string prefix     = std::string(filename);
 
     if (prefix.find("http://") == 0 || prefix.find("https://") == 0) {
 #ifdef USE_CURL
-      string tmpFileName = "_smilTmpIO." + fileExt;
+      std::string tmpFileName = "_smilTmpIO." + fileExt;
       if (getHttpFile(filename, tmpFileName.c_str()) != RES_OK) {
-        ERR_MSG(string("Error downloading file ") + filename);
+        ERR_MSG(std::string("Error downloading file ") + filename);
         return RES_ERR;
       }
       res = read(tmpFileName.c_str(), image);
@@ -131,12 +127,12 @@ namespace smil
     }
 
     if (prefix.find("file://") == 0) {
-      string fName = filename;
-      string buf   = fName.substr(7, fName.length() - 7);
+      std::string fName = filename;
+      std::string buf   = fName.substr(7, fName.length() - 7);
       return read(buf.c_str(), image);
     }
 
-    auto_ptr<ImageFileHandler<T>> fHandler(getHandlerForFile<T>(filename));
+    std::unique_ptr<ImageFileHandler<T>> fHandler(getHandlerForFile<T>(filename));
 
     if (fHandler.get())
       return fHandler->read(filename, image);
@@ -148,13 +144,13 @@ namespace smil
    * Read a stack of 2D images and convert then into a 3D image
    *
    */
-  template <class T> RES_T read(const vector<string> fileList, Image<T> &image)
+  template <class T> RES_T read(const std::vector<std::string> fileList, Image<T> &image)
   {
     size_t nFiles = fileList.size();
     if (nFiles == 0)
       return RES_ERR;
 
-    vector<string>::const_iterator it = fileList.begin();
+    std::vector<std::string>::const_iterator it = fileList.begin();
 
     Image<T> tmpIm;
     ASSERT((read((*it++).c_str(), tmpIm) == RES_OK));
@@ -183,9 +179,9 @@ namespace smil
    */
   template <class T> RES_T write(const Image<T> &image, const char *filename)
   {
-    string fileExt = getFileExtension(filename);
+    std::string fileExt = getFileExtension(filename);
 
-    auto_ptr<ImageFileHandler<T>> fHandler(getHandlerForFile<T>(filename));
+    std::unique_ptr<ImageFileHandler<T>> fHandler(getHandlerForFile<T>(filename));
 
     if (fHandler.get())
       return fHandler->write(image, filename);
@@ -197,7 +193,7 @@ namespace smil
    * Write 3D image into a stack of 2D image files
    */
   template <class T>
-  RES_T write(const Image<T> &image, const vector<string> fileList)
+  RES_T write(const Image<T> &image, const std::vector<std::string> fileList)
   {
     UINT nFiles = fileList.size();
     if (nFiles != image.getDepth()) {

@@ -36,8 +36,6 @@
 #include "Core/include/DCommon.h"
 #include "Core/include/DErrors.h"
 
-using namespace std;
-
 #ifdef USE_JPEG
 
 namespace smil

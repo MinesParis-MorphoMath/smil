@@ -68,7 +68,7 @@ namespace smil
    */
   template <typename T>
   RES_T areaOpening(const Image<T> &imIn, size_t size, Image<T> &imOut,
-                    StrElt &se = DEFAULT_SE, const string method = "unionfind")
+                    StrElt &se = DEFAULT_SE, const std::string method = "unionfind")
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -78,7 +78,7 @@ namespace smil
       return uff.areaOpen(imIn, size, imOut, se);
     }
 
-    cout << "This method isn't implemented : " << method << endl;
+    std::cout << "This method isn't implemented : " << method << std::endl;
     return RES_ERR;
   }
 
@@ -93,7 +93,7 @@ namespace smil
    */
   template <typename T>
   RES_T areaClosing(const Image<T> &imIn, size_t size, Image<T> &imOut,
-                    StrElt &se = DEFAULT_SE, const string method = "unionfind")
+                    StrElt &se = DEFAULT_SE, const std::string method = "unionfind")
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -110,7 +110,7 @@ namespace smil
       return res;
     }
 
-    cout << "This method isn't implemented : " << method << endl;
+    std::cout << "This method isn't implemented : " << method << std::endl;
     return RES_ERR;
   }
 

@@ -42,17 +42,17 @@ namespace smil
   public:
     CpuID();
 
-    string getVendor() const
+    std::string getVendor() const
     {
       return vendor;
     }
 
-    string getModel() const
+    std::string getModel() const
     {
       return model;
     }
 
-    string getFlags() const
+    std::string getFlags() const
     {
       return flags;
     }
@@ -77,11 +77,11 @@ namespace smil
     unsigned logical;
     bool     hyperThreaded;
 
-    string vendor;
-    string model;
-    string flags;
+    std::string vendor;
+    std::string model;
+    std::string flags;
 
-    bool _get_value(string &s, const char *prefix, string &value);
+    bool _get_value(std::string &s, const char *prefix, std::string &value);
   };
 } // namespace smil
 

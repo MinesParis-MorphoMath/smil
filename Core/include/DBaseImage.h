@@ -262,7 +262,7 @@ namespace smil
     //! Get an offset for given x,y(,z) coordinates
     inline size_t getOffsetFromCoords(size_t x, size_t y, size_t z = 0) const
     {
-      size_t vmax = numeric_limits<size_t>::max();
+      size_t vmax = std::numeric_limits<size_t>::max();
       if (x >= this->width)
         return vmax;
       if (y >= this->height)
@@ -275,7 +275,7 @@ namespace smil
     //! Get an offset for given x,y(,z) coordinates
     inline size_t getOffsetFromPoint(IntPoint &p) const
     {
-      size_t vmax = numeric_limits<size_t>::max();
+      size_t vmax = std::numeric_limits<size_t>::max();
       if (p.x < 0 || p.y < 0 || p.z < 0)
         return vmax;
       if (p.x >= int(width))
@@ -306,9 +306,9 @@ namespace smil
     }
 
     //! Get x,y(,z) coordinates for a given offset
-    inline vector<size_t> getCoordsFromOffset(size_t off) const
+    inline std::vector<size_t> getCoordsFromOffset(size_t off) const
     {
-      vector<size_t> coords(3);
+      std::vector<size_t> coords(3);
 
       coords[2] = off / (this->width * this->height);
       coords[1] = (off % (this->width * this->height)) / this->width;
@@ -327,9 +327,9 @@ namespace smil
     }
 
     //! Get the description of the image
-    virtual const char *getInfoString(const char * = "") const
+    virtual std::string getInfoString(const char * = "") const
     {
-      return NULL;
+      return {};
     }
     //! Get the type of the image as a string ("UINT8",...)
     virtual const char *getTypeAsString() = 0;

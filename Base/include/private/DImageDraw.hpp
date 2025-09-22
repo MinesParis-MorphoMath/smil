@@ -64,7 +64,7 @@ namespace smil
     size_t imW = im.getWidth();
     size_t imH = im.getHeight();
 
-    vector<IntPoint> bPoints;
+    std::vector<IntPoint> bPoints;
     if (x0 < 0 || x0 >= int(imW) || y0 < 0 || y0 >= int(imH) || x1 < 0 ||
         x1 >= int(imW) || y1 < 0 || y1 >= int(imH)) {
       bPoints = bresenhamPoints(x0, y0, x1, y1, imW, imH);
@@ -75,7 +75,7 @@ namespace smil
 
     typename Image<T>::sliceType lines = im.getLines();
 
-    for (vector<IntPoint>::iterator it = bPoints.begin(); it != bPoints.end();
+    for (std::vector<IntPoint>::iterator it = bPoints.begin(); it != bPoints.end();
          it++)
       lines[(*it).y][(*it).x] = value;
 
@@ -92,7 +92,7 @@ namespace smil
    * @param[in] value : value to set pixels in the line
    */
   template <class T>
-  RES_T drawLine(Image<T> &imOut, vector<UINT> coords,
+  RES_T drawLine(Image<T> &imOut, std::vector<UINT> coords,
                  T value = ImDtTypes<T>::max())
   {
     if (coords.size() != 4)
@@ -170,7 +170,7 @@ namespace smil
    * x1, y1</b>
    */
   template <class T>
-  RES_T drawRectangle(Image<T> &imOut, vector<UINT> coords,
+  RES_T drawRectangle(Image<T> &imOut, std::vector<UINT> coords,
                       T value = ImDtTypes<T>::max(), bool fill = false)
   {
     if (coords.size() != 4)
@@ -195,18 +195,18 @@ namespace smil
    */
   template <class T, class MapT>
   RES_T drawRectangles(Image<T> &imOut,
-                       const map<MapT, vector<size_t>> &coordsVectMap,
+                       const std::map<MapT, std::vector<size_t>> &coordsVectMap,
                        bool fill = false)
   {
     ASSERT_ALLOCATED(&imOut);
     ImageFreezer freeze(imOut);
 
-    typename map<MapT, vector<size_t>>::const_iterator it =
+    typename std::map<MapT, std::vector<size_t>>::const_iterator it =
         coordsVectMap.begin();
     if (it->second.size() != 4)
       return RES_ERR;
     for (; it != coordsVectMap.end(); it++) {
-      const vector<size_t> &coords = it->second;
+      const std::vector<size_t> &coords = it->second;
       T val                        = T(it->first);
       if (drawRectangle<T>(imOut, coords[0], coords[1],
                            coords[2] - coords[0] + 1, coords[3] - coords[1] + 1,
@@ -415,8 +415,8 @@ namespace smil
    * Requires the FreeType library
    */
   template <class T>
-  RES_T drawText(Image<T> &imOut, size_t x, size_t y, size_t z, string txt,
-                 string font, UINT size = 20, T value = ImDtTypes<T>::max())
+  RES_T drawText(Image<T> &imOut, size_t x, size_t y, size_t z, std::string txt,
+                 std::string font, UINT size = 20, T value = ImDtTypes<T>::max())
   {
     ASSERT_ALLOCATED(&imOut);
 
@@ -483,7 +483,7 @@ namespace smil
   }
 
   template <class T>
-  RES_T drawText(Image<T> &imOut, size_t x, size_t y, string txt, string font,
+  RES_T drawText(Image<T> &imOut, size_t x, size_t y, std::string txt, std::string font,
                  UINT size = 20, T value = ImDtTypes<T>::max())
   {
     return drawText(imOut, x, y, 0, txt, font, size, value);
@@ -523,11 +523,11 @@ namespace smil
     size_t imSize[3];
     imOut.getSize(imSize);
 
-    int nX     = min(int(ceil(double(imSize[0]) / width)), nbr_along_x);
+    int nX     = std::min(int(ceil(double(imSize[0]) / width)), nbr_along_x);
     int xPad   = imSize[0] % width;
     int nXfull = xPad == 0 ? nX : nX - 1;
 
-    int nY     = min(int(ceil(double(imSize[1]) / height)), nbr_along_y);
+    int nY     = std::min(int(ceil(double(imSize[1]) / height)), nbr_along_y);
     int yPad   = imSize[1] % height;
     int nYfull = yPad == 0 ? nY : nY - 1;
 
@@ -592,7 +592,7 @@ namespace smil
                     Image<T> &imOut)
   {
     return copyPattern(imIn, x0, y0, width, height, imOut,
-                       numeric_limits<int>::max(), numeric_limits<int>::max());
+                       std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
   }
 
   template <class T>
@@ -606,7 +606,7 @@ namespace smil
   template <class T> RES_T copyPattern(const Image<T> &imIn, Image<T> &imOut)
   {
     return copyPattern(imIn, 0, 0, imIn.getWidth(), imIn.getHeight(), imOut,
-                       numeric_limits<int>::max(), numeric_limits<int>::max());
+                       std::numeric_limits<int>::max(), std::numeric_limits<int>::max());
   }
 
   /** @}*/

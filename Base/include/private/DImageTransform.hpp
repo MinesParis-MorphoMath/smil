@@ -98,9 +98,9 @@ namespace smil
     ASSERT(startX < inW && startY < inH && startZ < inD);
     ASSERT(outStartX < outW && outStartY < outH && outStartZ < outD);
 
-    size_t realSx = min(min(sizeX, inW - startX), outW - outStartX);
-    size_t realSy = min(min(sizeY, inH - startY), outH - outStartY);
-    size_t realSz = min(min(sizeZ, inD - startZ), outD - outStartZ);
+    size_t realSx = std::min(std::min(sizeX, inW - startX), outW - outStartX);
+    size_t realSy = std::min(std::min(sizeY, inH - startY), outH - outStartY);
+    size_t realSz = std::min(std::min(sizeZ, inD - startZ), outD - outStartZ);
 
     typename Image<T1>::volType slIn  = imIn.getSlices() + startZ;
     typename Image<T2>::volType slOut = imOut.getSlices() + outStartZ;
@@ -304,9 +304,9 @@ namespace smil
     size_t inH = imIn.getHeight();
     size_t inD = imIn.getDepth();
 
-    size_t realSx = min(sizeX, inW - startX);
-    size_t realSy = min(sizeY, inH - startY);
-    size_t realSz = min(sizeZ, inD - startZ);
+    size_t realSx = std::min(sizeX, inW - startX);
+    size_t realSy = std::min(sizeY, inH - startY);
+    size_t realSz = std::min(sizeZ, inD - startZ);
 
     imOut.setSize(realSx, realSy, realSz);
     return copy(imIn, startX, startY, startZ, realSx, realSy, realSz, imOut, 0,
@@ -452,7 +452,7 @@ namespace smil
     }
 
   public:
-    RES_T flipIt(Image<T> &imIn, Image<T> &imOut, string direction)
+    RES_T flipIt(Image<T> &imIn, Image<T> &imOut, std::string direction)
     {
       ASSERT_ALLOCATED(&imIn, &imOut);
       ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -506,7 +506,7 @@ namespace smil
    */
   template <class T> RES_T vertFlip(Image<T> &imIn, Image<T> &imOut)
   {
-    string direction = "vertical";
+    std::string direction = "vertical";
     FlipClassFunc<T> flip;
     return flip.flipIt(imIn, imOut, "vertical");
   }
@@ -534,7 +534,7 @@ namespace smil
    */
   template <class T> RES_T horizFlip(Image<T> &imIn, Image<T> &imOut)
   {
-    string direction = "horizontal";
+    std::string direction = "horizontal";
     FlipClassFunc<T> flip;
     return flip.flipIt(imIn, imOut, direction);
   }
@@ -829,7 +829,7 @@ namespace smil
   template <class T> class ImageResizeFunc
   {
   public:
-    ImageResizeFunc(string method)
+    ImageResizeFunc(std::string method)
     {
       if (method != "linear" && method != "trilinear" && method != "closest")
         this->method = "trilinear";
@@ -850,7 +850,7 @@ namespace smil
      * Public resize members
      */
     RES_T resize(Image<T> &imIn, size_t width, size_t height, size_t depth,
-                 Image<T> &imOut, string method = "trilinear")
+                 Image<T> &imOut, std::string method = "trilinear")
     {
       ASSERT_ALLOCATED(&imIn, &imOut)
 
@@ -880,7 +880,7 @@ namespace smil
     }
 
     RES_T resize(Image<T> &imIn, size_t width, size_t height, Image<T> &imOut,
-                 string method = "trilinear")
+                 std::string method = "trilinear")
     {
       ASSERT_ALLOCATED(&imIn, &imOut)
 
@@ -892,7 +892,7 @@ namespace smil
      * Public scale member
      */
     RES_T scale(Image<T> &imIn, double kx, double ky, double kz,
-                Image<T> &imOut, string method = "trilinear")
+                Image<T> &imOut, std::string method = "trilinear")
     {
       ASSERT_ALLOCATED(&imIn, &imOut)
 
@@ -901,17 +901,17 @@ namespace smil
       size_t depth  = imIn.getDepth();
 
       if (width > 1)
-        width = max(1L, lround(kx * width));
+        width = std::max(1L, lround(kx * width));
       if (height > 1)
-        height = max(1L, lround(ky * height));
+        height = std::max(1L, lround(ky * height));
       if (depth > 1)
-        depth = max(1L, lround(kz * depth));
+        depth = std::max(1L, lround(kz * depth));
 
       return resize(imIn, width, height, depth, imOut, method);
     }
 
     RES_T scale(Image<T> &imIn, size_t kx, size_t ky, Image<T> &imOut,
-                string method = "trilinear")
+                std::string method = "trilinear")
     {
       return scale(imIn, kx, ky, 1., imOut, method);
     }
@@ -956,8 +956,8 @@ namespace smil
           size_t xo = round(cx * i);
           size_t yo = round(cy * j);
 
-          xo = min(xo, width - 1);
-          yo = min(yo, height - 1);
+          xo = std::min(xo, width - 1);
+          yo = std::min(yo, height - 1);
 
           T v                = pixIn[yo * width + xo];
           pixOut[j * sx + i] = v;
@@ -1002,9 +1002,9 @@ namespace smil
             size_t yo = round(cy * j);
             size_t zo = round(cz * k);
 
-            xo = min(xo, width - 1);
-            yo = min(yo, height - 1);
-            zo = min(zo, depth - 1);
+            xo = std::min(xo, width - 1);
+            yo = std::min(yo, height - 1);
+            zo = std::min(zo, depth - 1);
 
             T v = pixIn[(zo * depth + yo) * width + xo];
             pixOut[(k * sy + j) * sx + i] = v;
@@ -1139,7 +1139,7 @@ namespace smil
       return RES_OK;
     }
 
-    string method;
+    std::string method;
   };
   /** @endcond */
 
@@ -1169,7 +1169,7 @@ namespace smil
    */
   template <typename T>
   RES_T resize(Image<T> &imIn, size_t sx, size_t sy, size_t sz,
-                    Image<T> &imOut, string method = "trilinear")
+               Image<T> &imOut, std::string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
     if (&imIn == &imOut) {
@@ -1195,7 +1195,7 @@ namespace smil
    */
   template <typename T>
   RES_T resize(Image<T> &imIn, size_t sx, size_t sy, Image<T> &imOut,
-                    string method = "trilinear")
+               std::string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
     if (&imIn == &imOut) {
@@ -1225,7 +1225,7 @@ namespace smil
    */
   template <typename T>
   RES_T resize(Image<T> &imIn, Image<T> &imOut,
-                    string method = "trilinear")
+               std::string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
 
@@ -1269,7 +1269,7 @@ namespace smil
    */
   template <typename T>
   RES_T scale(Image<T> &imIn, double kx, double ky, double kz,
-                   Image<T> &imOut, string method = "trilinear")
+              Image<T> &imOut, std::string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
     if (&imIn == &imOut) {
@@ -1294,7 +1294,7 @@ namespace smil
    */
   template <typename T>
   RES_T scale(Image<T> &imIn, double kx, double ky, Image<T> &imOut,
-                   string method = "trilinear")
+              std::string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
     if (&imIn == &imOut) {
@@ -1320,7 +1320,7 @@ namespace smil
    */
   template <typename T>
   RES_T scale(Image<T> &imIn, double k, Image<T> &imOut,
-                   string method = "trilinear")
+              std::string method = "trilinear")
   {
     ASSERT_ALLOCATED(&imIn, &imOut)
     if (&imIn == &imOut) {

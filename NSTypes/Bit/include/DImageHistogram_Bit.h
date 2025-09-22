@@ -38,14 +38,14 @@ namespace smil
     std::map<Bit, UINT> histogram(const Image<Bit> &imIn)
     {
         ERR_MSG("Not implemented for type Bit");
-        return map<Bit, UINT>();
+        return std::map<Bit, UINT>();
     }
 
     template <>
-    map<Bit, UINT> histogram(const Image<Bit> &imIn, const Image<Bit> &imMask)
+    std::map<Bit, UINT> histogram(const Image<Bit> &imIn, const Image<Bit> &imMask)
     {
         ERR_MSG("Not implemented for type Bit");
-        return map<Bit, UINT>();
+        return std::map<Bit, UINT>();
     }
 
     template <>
@@ -55,10 +55,10 @@ namespace smil
     }
 
     template <>
-    vector<Bit> otsuThreshold(const Image<Bit> &imIn, Image<Bit> &imOut, UINT nbrThresholds)
+    std::vector<Bit> otsuThreshold(const Image<Bit> &imIn, Image<Bit> &imOut, UINT nbrThresholds)
     {
         ERR_MSG("Not implemented for type Bit");
-        return vector<Bit>();
+        return std::vector<Bit>();
     }
 
 } // namespace smil

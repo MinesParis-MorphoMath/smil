@@ -49,8 +49,6 @@
 #include "Core/include/DCore.h"
 #include "Morpho/include/DMorpho.h"
 
-using namespace std;
-
 namespace smil
 {
   /**
@@ -105,8 +103,8 @@ namespace smil
 
     StrElt se;
 
-    map<T, vector<off_t>> histoMap;
-    vector<off_t> parent;
+    std::map<T, std::vector<off_t>> histoMap;
+    std::vector<off_t> parent;
 
     bool debug;
 
@@ -135,7 +133,7 @@ namespace smil
     void mkHistogram(const Image<T> &im)
     {
       typename Image<T>::lineType pixels = im.getPixels();
-      mutex mtx;
+      std::mutex mtx;
 
 #ifdef USE_OPEN_MP
 #pragma omp for
@@ -198,31 +196,31 @@ namespace smil
 
     // vector
     template <typename TD>
-    void dumpVector(vector<TD> &b, string head = "")
+    void dumpVector(std::vector<TD> &b, std::string head = "")
     {
-      cout << endl;
-      cout << "=========================== " << head << endl;
+      std::cout << std::endl;
+      std::cout << "=========================== " << head << std::endl;
       for (auto i = 0; i < height; i++) {
-        cout << "Line " << setw(4) << i << " - ";
+        std::cout << "Line " << std::setw(4) << i << " - ";
         for (auto j = 0; j < width; j++) {
-          cout << " " << setw(4) << int(b[i * width + j]);
+          std::cout << " " << std::setw(4) << int(b[i * width + j]);
         }
-        cout << endl;
+        std::cout << std::endl;
       }
     }
 
     // image
     template <typename TI>
-    void dumpImage(TI *b, string head = "")
+    void dumpImage(TI *b, std::string head = "")
     {
-      cout << endl;
-      cout << "=========================== " << head << endl;
+      std::cout << std::endl;
+      std::cout << "=========================== " << head << std::endl;
       for (auto i = 0; i < height; i++) {
-        cout << "Line " << setw(4) << i << " - ";
+        std::cout << "Line " << std::setw(4) << i << " - ";
         for (auto j = 0; j < width; j++) {
-          cout << " " << setw(4) << int(b[i * width + j]);
+          std::cout << " " << std::setw(4) << int(b[i * width + j]);
         }
-        cout << endl;
+        std::cout << std::endl;
       }
     }
 
@@ -230,23 +228,23 @@ namespace smil
     void dumpHistogram()
     {
       for (auto itk = histoMap.rbegin(); itk != histoMap.rend(); itk++) {
-        cout << "Level \t" << int(itk->first) << "\t" << itk->second.size()
-             << endl;
+        std::cout << "Level \t" << int(itk->first) << "\t" << itk->second.size()
+             << std::endl;
       }
-      cout << endl;
+      std::cout << std::endl;
 
       for (auto itk = histoMap.begin(); itk != histoMap.end(); itk++) {
         auto i = 0;
-        cout << endl;
-        cout << "* Histogram Level " << setw(4) << int(itk->first) << "\t"
-             << itk->second.size() << endl;
+        std::cout << std::endl;
+        std::cout << "* Histogram Level " << std::setw(4) << int(itk->first) << "\t"
+             << itk->second.size() << std::endl;
         for (auto itv = itk->second.begin(); itv != itk->second.end();
              itv++, i++) {
           if (i % 16 == 0)
-            cout << endl;
-          cout << " " << setw(4) << *itv;
+            std::cout << std::endl;
+          std::cout << " " << std::setw(4) << *itv;
         }
-        cout << endl;
+        std::cout << std::endl;
       }
     }
 

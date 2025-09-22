@@ -70,7 +70,7 @@ namespace smil
         static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return (size_t(p.arrays[0])) & (n-1); }
         static inline std::string toString(const COLOR_UINT8_3 &val)
         {
-            stringstream str;
+          std::stringstream str;
             str << "(";
             for (UINT i=0;i<2;i++)
               str << double(val[i]) << ",";
@@ -128,7 +128,7 @@ namespace smil
               c[i] = rhs.value(i);
             return *this;
         }
-        void printSelf(ostream &os = std::cout, string ="") const 
+      void printSelf(std::ostream &os = std::cout, std::string ="") const 
         {
             os << "(" << double(c[0]) << "," << double(c[1]) << "," << double(c[2]) << ")";
         }
@@ -178,7 +178,7 @@ namespace smil
         static inline unsigned long ptrOffset(lineType p, unsigned long n=SIMD_VEC_SIZE) { return (size_t(p.arrays[0])) & (n-1); }
         static inline std::string toString(const COLOR_32 &val)
         {
-            stringstream str;
+            std::stringstream str;
             for (UINT i=0;i<3;i++)
               str << double(val[i]) << ", ";
             str << double(val[3]);

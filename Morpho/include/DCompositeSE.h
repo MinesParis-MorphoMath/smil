@@ -108,7 +108,7 @@ namespace smil
      * @param[in] os : output stream (default : @b std::cout)
      * @param[in] indent : prefix to each printed line (string)
      */
-    virtual void printSelf(ostream &os = std::cout, string indent = "") const;
+    virtual void printSelf(std::ostream &os = std::cout, std::string indent = "") const;
   };
 
   /**
@@ -186,7 +186,7 @@ namespace smil
       this->name = name;
     }
 
-    virtual void printSelf(ostream &os = std::cout, string indent = "") const;
+    virtual void printSelf(std::ostream &os = std::cout, std::string indent = "") const;
   };
 
   //! Square L1 ([8,1,2], [4,5,6])

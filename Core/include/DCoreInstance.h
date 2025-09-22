@@ -81,15 +81,15 @@ namespace smil
 
     void registerObject(BaseObject *obj);
     void unregisterObject(BaseObject *obj);
-    vector<BaseObject *> getRegisteredObjects();
-    vector<BaseImage *> getImages();
+    std::vector<BaseObject *> getRegisteredObjects();
+    std::vector<BaseImage *> getImages();
 
     void showAllImages();
     void hideAllImages();
     void deleteAllImages();
     int getImageIndex(BaseImage *img);
 
-    void getCompilationInfos(ostream &outStream = std::cout);
+    void getCompilationInfos(std::ostream &outStream = std::cout);
 
     Signal onBaseImageCreated;
     Signal onBaseImageDestroyed;
@@ -103,8 +103,8 @@ namespace smil
     const char *targetArchitecture;
     const bool supportOpenMP;
 
-    vector<BaseObject *> registeredObjects;
-    vector<BaseImage *> registeredImages;
+    std::vector<BaseObject *> registeredObjects;
+    std::vector<BaseImage *> registeredImages;
     void deleteRegisteredObjects();
 
     const CpuID cpuID;

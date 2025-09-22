@@ -87,10 +87,10 @@ namespace smil
       x = off % imSize[0];
     }
 
-    vector<IntPoint> sePts;
+    std::vector<IntPoint> sePts;
     size_t           sePtsNbr;
     bool             oddSE;
-    vector<int>      dOffsets;
+    std::vector<int>      dOffsets;
 
     T currentLevel;
 
@@ -138,7 +138,7 @@ namespace smil
       oddSE = se.odd;
 
       // set an offset distance for each se point (!=0,0,0)
-      for (vector<IntPoint>::const_iterator it = se.points.begin();
+      for (std::vector<IntPoint>::const_iterator it = se.points.begin();
            it != se.points.end(); it++)
         if (it->x != 0 || it->y != 0 || it->z != 0) {
           sePts.push_back(*it);
@@ -241,7 +241,7 @@ namespace smil
 #endif // SWIG
   {
   protected:
-    vector<size_t>                  tmpOffsets;
+    std::vector<size_t>                  tmpOffsets;
     typename ImDtTypes<T>::lineType wsPixels;
     const T STAT_LABELED, STAT_QUEUED, STAT_CANDIDATE, STAT_WS_LINE;
 

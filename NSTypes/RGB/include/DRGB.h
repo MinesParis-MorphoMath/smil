@@ -47,7 +47,7 @@ namespace smil
     BASE_QT_VIEWER::imageFormat = QImage::Format_ARGB32_Premultiplied;
     ImageViewer<RGB>::setImage(im);
     BASE_QT_VIEWER::setImageSize(im.getWidth(), im.getHeight(), im.getDepth());
-    if (im.getName() != string(""))
+    if (im.getName() != std::string(""))
       setName(this->image->getName());
   }
 

@@ -2024,17 +2024,17 @@ namespace smil
   template <class T1, class T2>
   // SFINAE General case
   ENABLE_IF(!IS_SAME(T1, UINT8) && !IS_SAME(T1, UINT16), RES_T)
-      applyLookup(const Image<T1> &imIn, const map<T1, T2> &lut,
+  applyLookup(const Image<T1> &imIn, const std::map<T1, T2> &lut,
                   Image<T2> &imOut, T2 defaultValue = T2(0))
   {
-    return applyLookup<T1, map<T1, T2>, T2>(imIn, lut, imOut, defaultValue);
+    return applyLookup<T1, std::map<T1, T2>, T2>(imIn, lut, imOut, defaultValue);
   }
 
   // Specialization for T1 == UINT8 or T1 == UINT16
   template <class T1, class T2>
   // SFINAE For T1 == UINT8 || T1 == UINT16
   ENABLE_IF(IS_SAME(T1, UINT8) || IS_SAME(T1, UINT16), RES_T)
-      applyLookup(const Image<T1> &imIn, const map<T1, T2> &lut,
+    applyLookup(const Image<T1> &imIn, const std::map<T1, T2> &lut,
                   Image<T2> &imOut, T2 defaultValue = T2(0))
   {
     ASSERT(!lut.empty(), "Input map is empty", RES_ERR);
@@ -2049,7 +2049,7 @@ namespace smil
     typename Image<T1>::lineType pixIn  = imIn.getPixels();
     typename Image<T2>::lineType pixOut = imOut.getPixels();
 
-    for (typename map<T1, T2>::const_iterator it = lut.begin(); it != lut.end();
+    for (typename std::map<T1, T2>::const_iterator it = lut.begin(); it != lut.end();
          it++)
       outVals[it->first] = it->second;
 

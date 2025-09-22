@@ -87,7 +87,7 @@ namespace smil
       HierarchicalQueue<T2, off_t> hq;
 
       off_t         pixelCount = imIn.getPixelCount();
-      vector<off_t> pixelsOffset(pixelCount, 0);
+      std::vector<off_t> pixelsOffset(pixelCount, 0);
 
       StrElt seLoc = se.noCenter();
 

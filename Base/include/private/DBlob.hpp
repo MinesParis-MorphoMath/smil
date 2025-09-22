@@ -80,10 +80,10 @@ namespace smil
    * A Blob contains a vector of PixelSequence.
    */
   struct Blob {
-    vector<PixelSequence> sequences;
-    typedef vector<PixelSequence>::iterator sequences_iterator;
-    typedef vector<PixelSequence>::const_iterator sequences_const_iterator;
-    typedef vector<PixelSequence>::const_reverse_iterator
+    std::vector<PixelSequence> sequences;
+    typedef std::vector<PixelSequence>::iterator sequences_iterator;
+    typedef std::vector<PixelSequence>::const_iterator sequences_const_iterator;
+    typedef std::vector<PixelSequence>::const_reverse_iterator
         sequences_const_reverse_iterator;
   };
 
@@ -95,9 +95,9 @@ namespace smil
    * @return a map of pairs <b><label, blob></b>
    */
   template <class T>
-  map<T, Blob> computeBlobs(const Image<T> &imIn, bool onlyNonZero = true)
+  std::map<T, Blob> computeBlobs(const Image<T> &imIn, bool onlyNonZero = true)
   {
-    map<T, Blob> blobs;
+    std::map<T, Blob> blobs;
 
     ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, blobs);
 
@@ -148,7 +148,7 @@ namespace smil
    * If <c>blobsValue == 0</c>, each blobs is represented with its label value.
    */
   template <class labelT, class T>
-  RES_T drawBlobs(map<labelT, Blob> &blobs, Image<T> &imOut,
+  RES_T drawBlobs(std::map<labelT, Blob> &blobs, Image<T> &imOut,
                   T blobsValue = ImDtTypes<T>::max(), bool fillFirst = true,
                   T defaultValue = T(0))
   {
@@ -163,7 +163,7 @@ namespace smil
     size_t pixCount                        = imOut.getPixelCount();
     bool allBlobsFit                       = true;
 
-    typename map<labelT, Blob>::const_iterator blob_it;
+    typename std::map<labelT, Blob>::const_iterator blob_it;
     for (blob_it = blobs.begin(); blob_it != blobs.end(); blob_it++) {
       // Verify that the blob can fit in the image
       Blob::sequences_const_reverse_iterator last =
@@ -200,7 +200,7 @@ namespace smil
    *
    */
   template <class labelT, class T>
-  RES_T drawBlobs(map<labelT, Blob> &blobs, map<labelT, T> &lut,
+  RES_T drawBlobs(std::map<labelT, Blob> &blobs, std::map<labelT, T> &lut,
                   Image<T> &imOut, bool fillFirst = true, T defaultValue = T(0))
   {
     ASSERT_ALLOCATED(&imOut);
@@ -214,7 +214,7 @@ namespace smil
     size_t pixCount                        = imOut.getPixelCount();
     bool allBlobsFit                       = true;
 
-    typename map<labelT, Blob>::const_iterator blob_it;
+    typename std::map<labelT, Blob>::const_iterator blob_it;
     for (blob_it = blobs.begin(); blob_it != blobs.end(); blob_it++) {
       // Verify that the blob can fit in the image
       Blob::sequences_const_reverse_iterator last =
@@ -225,7 +225,7 @@ namespace smil
         Blob::sequences_const_iterator it = blob_it->second.sequences.begin();
         Blob::sequences_const_iterator it_end = blob_it->second.sequences.end();
 
-        typename map<labelT, T>::const_iterator valIt =
+        typename std::map<labelT, T>::const_iterator valIt =
             lut.find(blob_it->first);
         T outVal = valIt != lut.end() ? valIt->second : defaultValue;
         for (; it != it_end; it++) {
@@ -253,11 +253,11 @@ namespace smil
    *
    */
   template <class labelT>
-  int getBlobIDFromOffset(map<labelT, Blob> &blobs, size_t offset)
+  int getBlobIDFromOffset(std::map<labelT, Blob> &blobs, size_t offset)
   {
     int id = 0;
 
-    typename map<labelT, Blob>::const_iterator blob_it;
+    typename std::map<labelT, Blob>::const_iterator blob_it;
     typedef typename Blob::sequences_const_iterator seqit_t;
 
     for (blob_it = blobs.begin(); blob_it != blobs.end(); blob_it++) {
@@ -287,13 +287,13 @@ namespace smil
    *
    */
   template <class labelT, class T>
-  int getBlobIDFromOffset(Image<T> imIn, map<labelT, Blob> &blobs, int x, int y, int z = 0)
+  int getBlobIDFromOffset(Image<T> imIn, std::map<labelT, Blob> &blobs, int x, int y, int z = 0)
   {
     int id = 0;
 
     size_t offset = imIn.getOffsetFromCoords(x, y, z);
 
-    typename map<labelT, Blob>::const_iterator blob_it;
+    typename std::map<labelT, Blob>::const_iterator blob_it;
     typedef typename Blob::sequences_const_iterator seqit_t;
 
     for (blob_it = blobs.begin(); blob_it != blobs.end(); blob_it++) {

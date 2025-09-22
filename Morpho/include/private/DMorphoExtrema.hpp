@@ -356,7 +356,7 @@ namespace smil
   inline RES_T fastMinima(const Image<T> &imIn, Image<T> &imOut,
                           const StrElt &se)
   {
-    return fastExtrema(imIn, imOut, se, ">", numeric_limits<T>::max());
+    return fastExtrema(imIn, imOut, se, ">", std::numeric_limits<T>::max());
   }
 
   /**
@@ -370,7 +370,7 @@ namespace smil
   inline RES_T fastMaxima(const Image<T> &imIn, Image<T> &imOut,
                           const StrElt &se)
   {
-    return fastExtrema(imIn, imOut, se, "<", numeric_limits<T>::min());
+    return fastExtrema(imIn, imOut, se, "<", std::numeric_limits<T>::min());
   }
 
   /** @} */

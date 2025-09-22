@@ -40,7 +40,7 @@ namespace smil
   {
     RES_T retVal = RES_OK;
 
-    list<TestCase *>::iterator f;
+    std::list<TestCase *>::iterator f;
     int totTestsNbr = funcList.size();
     int curTestNbr  = 1;
     int nPassed     = 0;
@@ -55,7 +55,7 @@ namespace smil
       tc->retVal    = RES_OK;
       tc->outStream = &ss;
 
-      cout << "Test #" << (curTestNbr++) << "/" << totTestsNbr << ": "
+      std::cout << "Test #" << (curTestNbr++) << "/" << totTestsNbr << ": "
            << (*f)->name << "\t";
 
       t1 = getCpuTime();
@@ -69,16 +69,18 @@ namespace smil
       t2 = getCpuTime();
 
       if (tc->retVal == RES_OK) {
-        cout << "Passed\t" << displayTime(t2 - t1) << endl;
+        std::cout << "Passed\t" << displayTime(t2 - t1) << std::endl;
         nPassed += 1;
       } else {
         retVal = RES_ERR;
-        cout << "Failed:" << endl;
-        cout << ss.str();
+        std::cout << "Failed:" << std::endl;
+        std::cout << ss.str();
         nFailed += 1;
       }
       (*f)->end();
     }
+    std::cout << "Passed: " << nPassed << '\n';
+    std::cout << "Failed: " << nFailed << '\n';
     if (retVal == RES_OK)
       return 0;
     else

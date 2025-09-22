@@ -60,12 +60,12 @@ namespace smil
    *
    */
   template <class T>
-  vector<double>
+  std::vector<double>
   measGranulometry(const Image<T> &imIn, const StrElt &se = DEFAULT_SE,
                    const unsigned int stepSize = 1, bool CDF = true,
                    const unsigned int maxSeSize = 0)
   {
-    vector<double> res;
+    std::vector<double> res;
 
     ASSERT(imIn.isAllocated(), res);
 
