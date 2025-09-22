@@ -697,19 +697,12 @@ def bench(func, *args, **keywords):
       if hasattr(arg, "getClassName") and hasattr(arg, "homothety"):
         se_type = arg.getClassName()
 
-  # Choose the right timer depending on the platform
-  # (see http://docs.python.org/2/library/time.html#time.clock)
-  if sys.platform == "win32":
-    timer = time.clock
-  else:
-    timer = time.time
-
-  t1 = timer()
+  t1 = time.time()
 
   for i in range(int(nbr_runs)):
     func(*args)
 
-  t2 = timer()
+  t2 = time.time()
 
   retval = (t2 - t1) * 1E3 / nbr_runs
 
