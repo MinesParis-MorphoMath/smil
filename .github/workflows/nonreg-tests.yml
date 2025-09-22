@@ -21,3 +21,5 @@ jobs:
     uses: ./.github/workflows/nonreg-tests_windows-latest.yml
   call-ubuntu-latest:
     uses: ./.github/workflows/nonreg-tests_ubuntu-latest.yml
+  call-format:
+    uses: ./.github/workflows/format.yml
