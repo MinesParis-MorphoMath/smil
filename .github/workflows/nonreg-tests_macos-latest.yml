@@ -62,7 +62,7 @@ jobs:
       - name: Build Smil
         run: |
           cd build
-          cmake --build . --parallel 3
+          cmake --build .
 
       - name: Install Smil
         run: |
