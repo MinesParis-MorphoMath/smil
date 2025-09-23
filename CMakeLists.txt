@@ -262,15 +262,6 @@ endif(MSVC)
 
 # OPTIMIZATIONS ######
 
-option(USE_SSE_INT "Use sse intrinsics" OFF)
-mark_as_advanced(USE_SSE_INT)
-if(USE_SSE_INT)
-  add_definitions("-DSMIL_USE_SSE_INT")
-endif(USE_SSE_INT)
-
-# INCLUDE(CompilerFlags)
-
-include(OptimizeForArchitecture)
 option(USE_OPTIMIZATION "Use optimizations" ON)
 if(USE_OPTIMIZATION)
   set(TARGET_ARCHITECTURE
@@ -284,25 +275,18 @@ if(USE_OPTIMIZATION)
   mark_as_advanced(VERBOSE_OPTIMIZATION)
 
   if(CMAKE_COMPILER_IS_GNUCC)
-    addcompilerflag("-ftree-vectorize -ftree-slp-vectorize")
     if(TARGET_ARCHITECTURE STREQUAL "auto")
-      addcompilerflag("-march=native -mtune=generic")
-      # OptimizeForArchitecture()
-    else(TARGET_ARCHITECTURE STREQUAL "auto")
-      addcompilerflag("-march=${TARGET_ARCHITECTURE} -mtune=generic")
-    endif(TARGET_ARCHITECTURE STREQUAL "auto")
+      add_compile_options(-march=native -mtune=generic)
+    else()
+      add_compile_options(-march=${TARGET_ARCHITECTURE} -mtune=generic)
+    endif()
+
     if(VERBOSE_OPTIMIZATION)
-      add_definitions("-ftree-vectorizer-verbose=1")
-    endif(VERBOSE_OPTIMIZATION)
-  elseif(CMAKE_COMPILER_IS_CLANGXX)
-    # ADD_DEFINITIONS(" -mllvm -vectorize")
-  else(CMAKE_COMPILER_IS_GNUCC)
-    optimizeforarchitecture()
-  endif(CMAKE_COMPILER_IS_GNUCC)
-  message(STATUS "Compiler flags: ${CMAKE_CXX_FLAGS}")
-else(USE_OPTIMIZATION)
-  addcompilerflag("-fno-tree-vectorize")
-endif(USE_OPTIMIZATION)
+      add_compile_options(-ftree-vectorizer-verbose=1)
+    endif()
+
+  endif()
+endif()
 
 if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT WIN32)
   find_package(OpenMP QUIET)
