@@ -357,6 +357,8 @@ macro(ADD_SMIL_TESTS _LIB_NAME)
           target_link_libraries(${TEST_NAME} ${PYTHON_LIBRARIES})
           add_dependencies(tests ${TEST_NAME})
         elseif(${_EXE_PREFIX} STREQUAL "bench")
+          add_test(NAME "${MOD_NAME}${TEST_NAME}"
+                   COMMAND ${EXECUTABLE_OUTPUT_PATH}/${TEST_NAME})
           add_dependencies(benchs ${TEST_NAME})
         endif(${_EXE_PREFIX} STREQUAL "test")
       endforeach(_SRC ${TEST_SOURCE_FILES})
