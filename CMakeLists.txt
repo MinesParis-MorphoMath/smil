@@ -426,37 +426,17 @@ endif(
 # GUI ######
 
 find_package(Qt5Widgets)
+
 if(Qt5Core_FOUND)
-  set(IGNORE_QT4
-      TRUE
-      CACHE BOOL "")
-  mark_as_advanced(IGNORE_QT4)
-endif(Qt5Core_FOUND)
-
-if(NOT IGNORE_QT4)
-  find_package(Qt4 QUIET)
-endif(NOT IGNORE_QT4)
-
-if(QT4_FOUND OR Qt5Core_FOUND)
   option(USE_QT "Build Qt Gui" ON)
-else(QT4_FOUND OR Qt5Core_FOUND)
+else()
   option(USE_QT "Build Qt Gui" OFF)
-endif(QT4_FOUND OR Qt5Core_FOUND)
+endif()
 
 if(USE_QT)
-  if(Qt5Core_FOUND)
-    set(USE_QT_VERSION
-        "5"
-        CACHE STRING "Qt version to use")
-  elseif(QT4_FOUND)
-    set(USE_QT_VERSION
-        "4"
-        CACHE STRING "Qt version to use")
-  endif(Qt5Core_FOUND)
-
-  if(NOT QT4_FOUND OR NOT Qt5Core_FOUND)
-    mark_as_advanced(USE_QT_VERSION)
-  endif(NOT QT4_FOUND OR NOT Qt5Core_FOUND)
+  set(USE_QT_VERSION
+      "5"
+      CACHE STRING "Qt version to use")
 
   if(CMAKE_CROSSCOMPILING)
     set(QT_HEADERS_DIR "/usr/i686-w64-mingw32/include")
@@ -466,24 +446,12 @@ if(USE_QT)
       OFF
       CACHE INTERNAL "" FORCE)
 
-  if(USE_QT_VERSION EQUAL 5)
-    find_package(Qt5Widgets REQUIRED)
-    # SET(CMAKE_AUTOMOC ON) SET(CMAKE_AUTOUIC ON)
-    include_directories(${Qt5Widgets_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS})
-    list(APPEND SMIL_EXT_DEPS Qt5::Core Qt5::Gui Qt5::Widgets)
-    add_definitions(${Qt5Widgets_DEFINITIONS})
-  else()
-    # QT4
-    find_package(Qt4 REQUIRED)
-    include(${QT_USE_FILE})
-    include_directories(${QT_QTCORE_INCLUDE_DIR}/..)
-    list(APPEND SMIL_EXT_DEPS ${QT_LIBRARIES} ${QT_QTCORE_LIB_DEPENDENCIES}
-         ${QT_QTGUI_LIB_DEPENDENCIES})
-    link_directories(${QT_LIBRARY_DIRS})
-    add_definitions(${QT_DEFINITIONS})
-  endif()
+  find_package(Qt5Widgets REQUIRED)
+  # SET(CMAKE_AUTOMOC ON) SET(CMAKE_AUTOUIC ON)
+  link_libraries(Qt5::Core Qt5::Gui Qt5::Widgets)
+  list(APPEND SMIL_EXT_DEPS Qt5::Core Qt5::Gui Qt5::Widgets)
 
-  add_definitions(-DUSE_QT)
+  add_compile_definitions("USE_QT")
 
   if(USE_STATIC_DEPEND_LIBS)
     add_pkg_config_defs(QtCore STATIC)
@@ -499,7 +467,7 @@ if(USE_QT)
   if(USE_QWT)
     find_package(Qwt REQUIRED)
     if(QWT_FOUND)
-      add_definitions("-DUSE_QWT")
+      add_compile_definitions("USE_QWT")
       if(MSVC)
         add_compile_definitions(_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS)
         add_compile_definitions(QWT_DLL)
