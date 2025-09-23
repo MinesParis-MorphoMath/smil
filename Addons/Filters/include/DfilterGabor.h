@@ -72,12 +72,12 @@ namespace smil
    * @param[out] imOut : output Image (must be F_SIMPLE or F_DOUBLE ???)
    */
   template <class T>
-  RES_T gaborFilterConvolution(const Image<T> &imIn, double sigma,
-                                 double theta, double lambda, double psi,
-                                 double gamma, Image<T> &imOut);
+  RES_T gaborFilterConvolution(const Image<T> &imIn, double sigma, double theta,
+                               double lambda, double psi, double gamma,
+                               Image<T> &imOut);
 
   /**
-   * @brief gaborFilterConvolutionNorm Gabor Filter (normalized between 
+   * @brief gaborFilterConvolutionNorm Gabor Filter (normalized between
    *   Min and Max)
    * @param[in] imIn : input Image
    * @param[in] sigma : size of the gaussian
@@ -92,12 +92,13 @@ namespace smil
    */
   template <class T>
   RES_T gaborFilterConvolutionNorm(const Image<T> &imIn, double sigma,
-                                     double theta, double lambda, double psi,
-                                     double gamma, double Min, double Max,
-                                     Image<T> &imOut, Image<T> &imGabor);
+                                   double theta, double lambda, double psi,
+                                   double gamma, double Min, double Max,
+                                   Image<T> &imOut, Image<T> &imGabor);
 
   /**
-   * @brief gaborFilterConvolutionNormAuto Gabor Filter (automatically normalized)
+   * @brief gaborFilterConvolutionNormAuto Gabor Filter (automatically
+   * normalized)
    * @param[in] imIn : input Image
    * @param[in] sigma : size of the gaussian
    * @param[in] theta : orientation of the kernel (in rad)
@@ -111,10 +112,9 @@ namespace smil
    */
   template <class T>
   RES_T gaborFilterConvolutionNormAuto(const Image<T> &imIn, double sigma,
-                                         double theta, double lambda,
-                                         double psi, double gamma, double *Min,
-                                         double *Max, Image<T> &imOut,
-                                         Image<T> &imGabor);
+                                       double theta, double lambda, double psi,
+                                       double gamma, double *Min, double *Max,
+                                       Image<T> &imOut, Image<T> &imGabor);
   /** @} */
 } // namespace smil
 

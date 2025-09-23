@@ -41,7 +41,8 @@
 namespace smil
 {
   class BaseImageViewer;
-  template <class T> class ImageViewer;
+  template <class T>
+  class ImageViewer;
 
   /**
    * Base Image class
@@ -189,11 +190,13 @@ namespace smil
      *
      * @param[in] x,y,z : coords of a point
      */
-    inline bool areCoordsInImage(const off_t x, const off_t y, const off_t z = 0) const
+    inline bool areCoordsInImage(const off_t x, const off_t y,
+                                 const off_t z = 0) const
     {
       if (x < 0 || y < 0 || z < 0)
         return false;
-      if (x >= off_t(this->width) || y >= off_t(this->height) || z >= off_t(this->depth))
+      if (x >= off_t(this->width) || y >= off_t(this->height) ||
+          z >= off_t(this->depth))
         return false;
       return true;
     }
@@ -206,9 +209,11 @@ namespace smil
      *
      * @overload
      */
-    inline bool areCoordsInImage(const size_t x, const size_t y, const size_t z = 0) const
+    inline bool areCoordsInImage(const size_t x, const size_t y,
+                                 const size_t z = 0) const
     {
-      if (x >= size_t(this->width) || y >= size_t(this->height) || z >= size_t(this->depth))
+      if (x >= size_t(this->width) || y >= size_t(this->height) ||
+          z >= size_t(this->depth))
         return false;
       return true;
     }
@@ -229,7 +234,6 @@ namespace smil
         return false;
       return true;
     }
-
 
     /**
      * isOffsetInImage() - checks if a buffer offset in inside the image
@@ -362,7 +366,7 @@ namespace smil
     virtual BaseImageViewer *getViewer() = 0;
 #endif // SWIG
 
-    bool updatesEnabled;
+    bool   updatesEnabled;
     Signal onModified;
     Signal onShow;
 
@@ -400,8 +404,8 @@ namespace smil
 
   protected:
     BaseImage *image;
-    bool imState;
-    bool update;
+    bool       imState;
+    bool       update;
   };
 
 #ifndef SWIG

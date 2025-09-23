@@ -48,9 +48,9 @@ namespace smil
   /** @cond */
   class BlobOps
   {
-    BlobOps(){};
+    BlobOps() {};
 
-    ~BlobOps(){};
+    ~BlobOps() {};
   };
   /** @endcond */
 
@@ -139,7 +139,7 @@ namespace smil
     ImageFreezer freeze(imOut);
 
     std::map<UINT32, Blob> blobs;
-    Image<UINT32>     imLabel(imOut);
+    Image<UINT32>          imLabel(imOut);
 
     label(imIn, imLabel);
     blobs = computeBlobs(imLabel, true);
@@ -173,9 +173,9 @@ namespace smil
    * @smilexample{example-inertia-matrix.py}
    */
   template <typename T, typename labelT>
-  std::map<labelT, Vector_double> blobsInertiaMatrix(const Image<T> &   imIn,
-                                                     std::map<labelT, Blob> &blobs,
-                                                const bool central = false)
+  std::map<labelT, Vector_double>
+  blobsInertiaMatrix(const Image<T> &imIn, std::map<labelT, Blob> &blobs,
+                     const bool central = false)
   {
     std::map<labelT, Vector_double> inertia;
 
@@ -186,7 +186,8 @@ namespace smil
 
     bool im3d = (imIn.getDimension() == 3);
 
-    std::map<labelT, Vector_double> moments = blobsMoments(imIn, blobs, central);
+    std::map<labelT, Vector_double> moments =
+        blobsMoments(imIn, blobs, central);
 
     typedef typename std::map<labelT, Blob>::iterator blobIter;
     for (blobIter it = blobs.begin(); it != blobs.end(); it++) {
@@ -240,8 +241,8 @@ namespace smil
    */
   template <typename T>
   std::map<T, Vector_double> blobsInertiaMatrix(const Image<T> &imLbl,
-                                           const bool      onlyNonZero = true,
-                                           const bool      central     = false)
+                                                const bool onlyNonZero = true,
+                                                const bool central     = false)
   {
     std::map<T, Vector_double> inertia;
 

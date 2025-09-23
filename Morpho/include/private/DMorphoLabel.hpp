@@ -242,8 +242,8 @@ namespace smil
       }
 
       std::queue<size_t> propagation;
-      int           x, y, z, n_x, n_y, n_z;
-      IntPoint      p;
+      int                x, y, z, n_x, n_y, n_z;
+      IntPoint           p;
 
       T2   current_label    = labels;
       bool is_not_a_gap     = false;
@@ -331,7 +331,7 @@ namespace smil
       for (size_t s = 0; s < nSlices; ++s) {
 #ifdef USE_OPEN_MP
 #pragma omp parallel private(lineIn, lineOut, l, v, previous_value,            \
-                             previous_label)
+                                 previous_label)
 #endif // USE_OPEN_MP
         {
 #ifdef USE_OPEN_MP
@@ -403,9 +403,9 @@ namespace smil
     if (sePtsNumber == 0)
       return 0;
     std::queue<size_t> propagation;
-    size_t        o, nb_o;
-    size_t        x, x0, y, y0, z, z0;
-    bool          oddLine;
+    size_t             o, nb_o;
+    size_t             x, x0, y, y0, z, z0;
+    bool               oddLine;
     // Image related.
     inLineT  inP  = imIn.getPixels();
     outLineT outP = imOut.getPixels();
@@ -417,7 +417,7 @@ namespace smil
           if (inP[o] != T1(0) && outP[o] == T2(0)) {
             ++lblNbr_real;
             ++lblNbr;
-            if (lblNbr == (size_t)(ImDtTypes<T2>::max() - 1))
+            if (lblNbr == (size_t) (ImDtTypes<T2>::max() - 1))
               lblNbr = 1;
 
             outP[o] = T2(lblNbr);
@@ -457,8 +457,8 @@ namespace smil
   template <class T1, class T2>
   size_t labelWithoutFunctor2Partitions(const Image<T1> &imIn,
                                         const Image<T1> &imIn2,
-                                        Image<T2> &      imOut,
-                                        const StrElt &   se = DEFAULT_SE)
+                                        Image<T2>       &imOut,
+                                        const StrElt    &se = DEFAULT_SE)
   {
     // Checks
     ASSERT_ALLOCATED(&imIn, &imIn2, &imOut);
@@ -484,9 +484,9 @@ namespace smil
     if (sePtsNumber == 0)
       return 0;
     std::queue<size_t> propagation;
-    size_t        o, nb_o;
-    size_t        x, x0, y, y0, z, z0;
-    bool          oddLine;
+    size_t             o, nb_o;
+    size_t             x, x0, y, y0, z, z0;
+    bool               oddLine;
     // Image related.
     inLineT  inP  = imIn.getPixels();
     inLineT  in2P = imIn2.getPixels();
@@ -735,11 +735,11 @@ namespace smil
    *   same.
    */
   template <typename T1, typename T2, typename T3>
-  size_t
-  labelWithProperty(const Image<T1> &imRegions, const Image<T2> &imIn,
-                    Image<T3> &  imLabelOut,
-                    const std::string property = "area", bool doRescale = false,
-                    double scale = 1., const StrElt &se = DEFAULT_SE)
+  size_t labelWithProperty(const Image<T1> &imRegions, const Image<T2> &imIn,
+                           Image<T3>        &imLabelOut,
+                           const std::string property = "area",
+                           bool doRescale = false, double scale = 1.,
+                           const StrElt &se = DEFAULT_SE)
   {
     ASSERT_ALLOCATED(&imIn, &imRegions, &imLabelOut);
     ASSERT_SAME_SIZE(&imIn, &imRegions, &imLabelOut);
@@ -763,7 +763,7 @@ namespace smil
     size_t nl = label(imRegions, imLabel, se);
     if (nl > ImDtTypes<T3>::max()) {
       std::string msg =
-        "Increase output image type to include value " + std::to_string(nl);
+          "Increase output image type to include value " + std::to_string(nl);
       ERR_MSG(msg);
       return 0;
     }
@@ -877,8 +877,7 @@ namespace smil
         maxV = maxMapValueDouble(markers);
       }
     } else {
-      if (abs(scale - 1.) > 0.001)
-      {
+      if (abs(scale - 1.) > 0.001) {
         for (auto it = markers.begin(); it != markers.end(); it++)
           it->second *= scale;
       }
@@ -1127,11 +1126,11 @@ namespace smil
   public:
     typedef MorphImageFunctionBase<T1, T2> parentClass;
 
-    virtual inline void processPixel(size_t       pointOffset,
+    virtual inline void processPixel(size_t            pointOffset,
                                      std::vector<int> &dOffsetList)
     {
       std::vector<T1>            vals;
-      UINT                  nbrValues = 0;
+      UINT                       nbrValues = 0;
       std::vector<int>::iterator dOffset   = dOffsetList.begin();
       while (dOffset != dOffsetList.end()) {
         T1 val = parentClass::pixelsIn[pointOffset + *dOffset];

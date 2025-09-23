@@ -9,11 +9,10 @@ namespace smil
    * @ingroup    Advanced
    * @addtogroup AdvAreaOpen
    * @brief      Area Open / Close / Path Open
-   * 
+   *
    * @details Let's talk about Area Open / Close / Path Open...
    *   *
    * @{ */
-
 
   /** @} */
 } // namespace smil

@@ -51,7 +51,7 @@ int getSEPointIndice(IntPoint &pt, bool oddSE)
 IntPoint rotatePoint(IntPoint &pt, int steps, bool oddSE)
 {
   IntPoint newPt;
-  int ind = getSEPointIndice(pt, oddSE);
+  int      ind = getSEPointIndice(pt, oddSE);
   if (ind == 0)
     return newPt;
   if (oddSE)
@@ -166,7 +166,7 @@ void CompStrEltList::add(const StrElt &fgse, const StrElt &bgse)
 void CompStrEltList::add(const StrElt &fgse, const StrElt &bgse, UINT nrot)
 {
   CompStrElt compSE(fgse, bgse);
-  int steps = fgse.odd ? 6 / nrot : 8 / nrot;
+  int        steps = fgse.odd ? 6 / nrot : 8 / nrot;
   compSeList.push_back(compSE);
   for (UINT n = 1; n < nrot; n++)
     compSeList.push_back(compSE.rotate(steps));
@@ -188,7 +188,8 @@ CompStrEltList &CompStrEltList::rotate(int nrot)
 
 void CompStrEltList::printSelf(std::ostream &os, std::string indent) const
 {
-  os << indent << "HitOrMiss SE (composite structuring element list)" << std::endl;
+  os << indent << "HitOrMiss SE (composite structuring element list)"
+     << std::endl;
   os << indent << "Name : " << name << std::endl;
   int i = 0;
   for (std::vector<CompStrElt>::const_iterator it = compSeList.begin();

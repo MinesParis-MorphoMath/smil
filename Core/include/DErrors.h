@@ -56,18 +56,18 @@ namespace smil
   inline const char *getErrorMessage(const RES_T &res)
   {
     switch (res) {
-    case RES_OK:
-      return "ok";
-    case RES_ERR_BAD_ALLOCATION:
-      return "Bad allocation";
-    default:
-      return "Unknown error";
+      case RES_OK:
+        return "ok";
+      case RES_ERR_BAD_ALLOCATION:
+        return "Bad allocation";
+      default:
+        return "Unknown error";
     }
   }
 
   class Error
 #ifndef SWIG
-    : public std::exception
+      : public std::exception
 #endif // SWIG
   {
   public:
@@ -75,7 +75,8 @@ namespace smil
     {
     }
 
-    Error(const std::string &descr) noexcept(true) : description(cleanDescr(descr))
+    Error(const std::string &descr) noexcept(true)
+        : description(cleanDescr(descr))
     {
       buildMessage();
     }
@@ -165,7 +166,7 @@ namespace smil
 #if defined NDEBUG && defined __clang__
     SMIL_UNUSED
 #endif // NDEBUG && __clang__
-    int    line;
+    int         line;
     std::string expression;
     std::string message;
   };

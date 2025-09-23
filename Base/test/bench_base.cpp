@@ -35,8 +35,8 @@ using namespace smil;
 void SSE_INT_Sup(Image<UINT8> &im1, Image<UINT8> &im2, Image<UINT8> &im3)
 {
   __m128i r0, r1;
-  int size   = im1.getWidth();
-  int nlines = im1.getLineCount();
+  int     size   = im1.getWidth();
+  int     nlines = im1.getLineCount();
 
   UINT8 *p1 = im1.getPixels();
   UINT8 *p2 = im2.getPixels();

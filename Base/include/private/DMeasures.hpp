@@ -226,7 +226,7 @@ namespace smil
   template <class T>
   struct measMinValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
-    virtual void                        initialize(const Image<T> & /*imIn*/)
+    virtual void                        initialize(const Image<T>                        &/*imIn*/)
     {
       this->retVal = std::numeric_limits<T>::max();
     }
@@ -242,7 +242,7 @@ namespace smil
   struct measMinValPosFunc : public MeasureFunctionWithPos<T, T> {
     typedef typename Image<T>::lineType lineType;
     Point<UINT>                         pt;
-    virtual void                        initialize(const Image<T> & /*imIn*/)
+    virtual void                        initialize(const Image<T>                        &/*imIn*/)
     {
       this->retVal = std::numeric_limits<T>::max();
     }
@@ -303,7 +303,7 @@ namespace smil
   template <class T>
   struct measMaxValFunc : public MeasureFunctionBase<T, T> {
     typedef typename Image<T>::lineType lineType;
-    virtual void                        initialize(const Image<T> & /*imIn*/)
+    virtual void                        initialize(const Image<T>                        &/*imIn*/)
     {
       this->retVal = std::numeric_limits<T>::min();
     }
@@ -319,7 +319,7 @@ namespace smil
   struct measMaxValPosFunc : public MeasureFunctionWithPos<T, T> {
     typedef typename Image<T>::lineType lineType;
     Point<UINT>                         pt;
-    virtual void                        initialize(const Image<T> & /*imIn*/)
+    virtual void                        initialize(const Image<T>                        &/*imIn*/)
     {
       this->retVal = std::numeric_limits<T>::min();
     }
@@ -381,7 +381,7 @@ namespace smil
   struct measMinMaxValFunc : public MeasureFunctionBase<T, std::vector<T>> {
     typedef typename Image<T>::lineType lineType;
     T                                   minVal, maxVal;
-    virtual void                        initialize(const Image<T> & /*imIn*/)
+    virtual void                        initialize(const Image<T>                        &/*imIn*/)
     {
       this->retVal.clear();
       maxVal = std::numeric_limits<T>::min();
@@ -431,7 +431,7 @@ namespace smil
   template <class T>
   struct valueListFunc : public MeasureFunctionBase<T, std::vector<T>> {
     typedef typename Image<T>::lineType lineType;
-    std::set<T>                              valList;
+    std::set<T>                         valList;
 
     virtual void initialize(const Image<T> & /*imIn*/)
     {
@@ -485,9 +485,9 @@ namespace smil
     typedef typename Image<T>::lineType lineType;
 
     std::map<int, int> nbList;
-    int           maxNb;
-    T             mode;
-    virtual void  initialize(const Image<T> & /*imIn*/)
+    int                maxNb;
+    T                  mode;
+    virtual void       initialize(const Image<T>       &/*imIn*/)
     {
       // BMI            this->retVal.clear();
       nbList.clear();
@@ -509,11 +509,11 @@ namespace smil
             maxNb = nbList[val];
           }
         } // if (val>0)
-      }   // for i= 0; i < size
+      } // for i= 0; i < size
       this->retVal = mode;
 
     } // virtual
-  };  // END measModeValFunc
+  }; // END measModeValFunc
   /** @endcond */
 
   /**
@@ -551,9 +551,9 @@ namespace smil
     typedef typename Image<T>::lineType lineType;
 
     std::map<int, int> nbList;
-    size_t        acc_elem, total_elems;
-    T             medianval;
-    virtual void  initialize(const Image<T> & /*imIn*/)
+    size_t             acc_elem, total_elems;
+    T                  medianval;
+    virtual void       initialize(const Image<T>       &/*imIn*/)
     {
       // BMI            this->retVal.clear();
       nbList.clear();
@@ -574,9 +574,9 @@ namespace smil
             nbList[val]++;
 
         } // if (val>0)
-      }   // for i= 0; i < size
-          //            this->retVal = medianval;
-    }     // virtual processSequence
+      } // for i= 0; i < size
+        //            this->retVal = medianval;
+    } // virtual processSequence
 
     virtual void finalize(const Image<T> & /*imIn*/)
     {
@@ -633,7 +633,7 @@ namespace smil
    */
   template <class T>
   std::vector<T> profile(const Image<T> &im, size_t x0, size_t y0, size_t x1,
-                    size_t y1, size_t z = 0)
+                         size_t y1, size_t z = 0)
   {
     std::vector<T> vec;
     ASSERT(im.isAllocated(), vec);
@@ -650,8 +650,8 @@ namespace smil
 
     typename Image<T>::sliceType lines = im.getSlices()[z];
 
-    for (std::vector<IntPoint>::iterator it = bPoints.begin(); it != bPoints.end();
-         it++)
+    for (std::vector<IntPoint>::iterator it = bPoints.begin();
+         it != bPoints.end(); it++)
       vec.push_back(lines[(*it).y][(*it).x]);
 
     return vec;
@@ -670,7 +670,7 @@ namespace smil
   struct measBarycenterFunc : public MeasureFunctionWithPos<T, Vector_double> {
     typedef typename Image<T>::lineType lineType;
     double                              xSum, ySum, zSum, tSum;
-    virtual void                        initialize(const Image<T> & /*imIn*/)
+    virtual void                        initialize(const Image<T>                        &/*imIn*/)
     {
       this->retVal.clear();
       xSum = ySum = zSum = tSum = 0.;
@@ -718,7 +718,8 @@ namespace smil
   //
   /** @cond */
   template <class T>
-  struct measBoundBoxFunc : public MeasureFunctionWithPos<T, std::vector<size_t>> {
+  struct measBoundBoxFunc
+      : public MeasureFunctionWithPos<T, std::vector<size_t>> {
     typedef typename Image<T>::lineType lineType;
     double                              xMin, xMax, yMin, yMax, zMin, zMax;
     bool                                im3d;
@@ -1026,7 +1027,8 @@ namespace smil
 
     if (normalize) {
       double orig = vec[0];
-      for (std::vector<double>::iterator it = vec.begin(); it != vec.end(); it++)
+      for (std::vector<double>::iterator it = vec.begin(); it != vec.end();
+           it++)
         *it /= orig;
     }
 
@@ -1180,10 +1182,10 @@ namespace smil
    *
    */
   template <class T>
-  std::vector<double> measCovariance(const Image<T> &imIn1, const Image<T> &imIn2,
-                                size_t dx, size_t dy, size_t dz,
-                                size_t maxSteps = 0, bool centered = false,
-                                bool normalize = false)
+  std::vector<double>
+  measCovariance(const Image<T> &imIn1, const Image<T> &imIn2, size_t dx,
+                 size_t dy, size_t dz, size_t maxSteps = 0,
+                 bool centered = false, bool normalize = false)
   {
     if (centered) {
       Image<float> imMean1(imIn1, true);
@@ -1216,10 +1218,10 @@ namespace smil
    * @return vec[h]
    */
   template <class T>
-  std::vector<double> measAutoCovariance(const Image<T> &imIn, size_t dx, size_t dy,
-                                    size_t dz, size_t maxSteps = 0,
-                                    bool centered  = false,
-                                    bool normalize = false)
+  std::vector<double>
+  measAutoCovariance(const Image<T> &imIn, size_t dx, size_t dy, size_t dz,
+                     size_t maxSteps = 0, bool centered = false,
+                     bool normalize = false)
   {
     if (centered) {
       Image<float> imMean(imIn, true);
@@ -1403,7 +1405,7 @@ namespace smil
   {
     CHECK_ALLOCATED(&imIn);
 
-    std::map<T, bool>                h;
+    std::map<T, bool>           h;
     typename Image<T>::lineType pixels = imIn.getPixels();
 
 #if 1

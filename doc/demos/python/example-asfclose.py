@@ -1,4 +1,3 @@
-
 import smilpython as sp
 
 imin = sp.Image("https://smil.cmm.minesparis.psl.eu/images/lena.png")

@@ -97,14 +97,14 @@ namespace smil
 
     off_t lambda;
 
-    Image<T> imIn;
+    Image<T>                    imIn;
     typename Image<T>::lineType bufIn;
     typename Image<T>::lineType bufOut;
 
     StrElt se;
 
     std::map<T, std::vector<off_t>> histoMap;
-    std::vector<off_t> parent;
+    std::vector<off_t>              parent;
 
     bool debug;
 
@@ -133,7 +133,7 @@ namespace smil
     void mkHistogram(const Image<T> &im)
     {
       typename Image<T>::lineType pixels = im.getPixels();
-      std::mutex mtx;
+      std::mutex                  mtx;
 
 #ifdef USE_OPEN_MP
 #pragma omp for
@@ -229,15 +229,15 @@ namespace smil
     {
       for (auto itk = histoMap.rbegin(); itk != histoMap.rend(); itk++) {
         std::cout << "Level \t" << int(itk->first) << "\t" << itk->second.size()
-             << std::endl;
+                  << std::endl;
       }
       std::cout << std::endl;
 
       for (auto itk = histoMap.begin(); itk != histoMap.end(); itk++) {
         auto i = 0;
         std::cout << std::endl;
-        std::cout << "* Histogram Level " << std::setw(4) << int(itk->first) << "\t"
-             << itk->second.size() << std::endl;
+        std::cout << "* Histogram Level " << std::setw(4) << int(itk->first)
+                  << "\t" << itk->second.size() << std::endl;
         for (auto itv = itk->second.begin(); itv != itk->second.end();
              itv++, i++) {
           if (i % 16 == 0)

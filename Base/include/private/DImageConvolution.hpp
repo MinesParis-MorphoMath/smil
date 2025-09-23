@@ -52,8 +52,8 @@ namespace smil
   {
   private:
     std::vector<double> kernel;
-    int            radius;
-    double         sigma;
+    int                 radius;
+    double              sigma;
 
     void setupKernel()
     {
@@ -68,7 +68,7 @@ namespace smil
       }
       for (int i = -radius; i <= radius; i++) {
         kernel[i + radius] /= sum;
-        //cout << "kernel " << i << " " << kernel[i + radius] << "\n";
+        // cout << "kernel " << i << " " << kernel[i + radius] << "\n";
       }
     }
 
@@ -107,6 +107,7 @@ namespace smil
 
       return this->_do_Convolve(imIn, imOut);
     }
+
   private:
     RES_T _do_Convolve(Image<T> &imIn, Image<T> &imOut)
     {
@@ -117,7 +118,7 @@ namespace smil
       off_t H = imIn.getHeight();
       off_t D = imIn.getDepth();
 
-      //size_t nbPixels = imIn.getPixelCount();
+      // size_t nbPixels = imIn.getPixelCount();
 
       Image<T>                        imTmp(imIn);
       typename ImDtTypes<T>::lineType tmp = imTmp.getPixels();
@@ -129,7 +130,7 @@ namespace smil
       /*
        * convolution in X
        */
-      //vector<T> outX(nbPixels, 0);
+      // vector<T> outX(nbPixels, 0);
       double sk = 0.;
 #ifdef USE_OPEN_MP
 #pragma omp parallel num_threads(nthreads) private(sk)
@@ -152,7 +153,7 @@ namespace smil
                 sk += valK;
                 sumV += in[i0 + i] * valK;
               }
-              //sk = 1.;
+              // sk = 1.;
               out[i0] = T(round(sumV / sk));
             }
           }
@@ -186,7 +187,7 @@ namespace smil
                 sk += valK;
                 sumV += tmp[i0 + i * stride] * valK;
               }
-              //sk = 1.;
+              // sk = 1.;
               out[i0] = T(round(sumV / sk));
             }
           }
@@ -280,7 +281,7 @@ namespace smil
 
     ImageFreezer freeze(imOut);
 
-    int            kernelSize = radius * 2 + 1;
+    int                 kernelSize = radius * 2 + 1;
     std::vector<double> kernel(kernelSize);
 
     double sigma = double(radius) / 2.;

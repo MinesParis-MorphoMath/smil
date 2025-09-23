@@ -33,7 +33,8 @@ namespace smil
   /*
    * SoilleLineMorpho defines and hides methods to do Line Based Morphology
    */
-  template <typename T> class SoilleLineMorpho
+  template <typename T>
+  class SoilleLineMorpho
   {
   public:
     SoilleLineMorpho()
@@ -52,14 +53,14 @@ namespace smil
     } SoilleImage;
 
     typedef unsigned char ubyte;
-    typedef unsigned int uint;
+    typedef unsigned int  uint;
     typedef unsigned long ulong;
 
     ulong ComputeLinePosDiag(long x, long y, ulong width, ulong height,
                              ulong *p)
     {
       ulong idx;
-      long x0;
+      long  x0;
 
       if (x < 0) {
         y -= x;
@@ -84,7 +85,7 @@ namespace smil
                              ulong *p)
     {
       ulong idx;
-      long x0;
+      long  x0;
 
       if (y >= (long) height) {
         x += y - height + 1;
@@ -111,8 +112,8 @@ namespace smil
     /* Returns # of pixel coords (num) written to array p (num <= width) */
     {
       ulong idx;
-      long x0;
-      long dp = 2 * dy - 2 * phase, twody = 2 * dy, twodydx = 2 * dy - 2 * dx;
+      long  x0;
+      long  dp = 2 * dy - 2 * phase, twody = 2 * dy, twodydx = 2 * dy - 2 * dx;
 
       while ((x < 0) || (y < 0)) {
         if (dp >= 0) {
@@ -145,7 +146,7 @@ namespace smil
     /* Returns # of pixel coords (num) written to array p (num <= width) */
     {
       ulong x0 = x, idx = y * width + x;
-      long dp = 2 * dy - 2 * phase, twody = 2 * dy, twodydx = 2 * dy - 2 * dx;
+      long  dp = 2 * dy - 2 * phase, twody = 2 * dy, twodydx = 2 * dy - 2 * dx;
 
       while (y >= (long) height) {
         if (dp >= 0) {
@@ -182,7 +183,7 @@ namespace smil
     /* Returns # of pixel coords (num) written to array p (num <= height) */
     {
       ulong y0, idx;
-      long dp = 2 * dx - 2 * phase, twodx = 2 * dx, twodxdy = 2 * dx - 2 * dy;
+      long  dp = 2 * dx - 2 * phase, twodx = 2 * dx, twodxdy = 2 * dx - 2 * dy;
 
       while ((x < 0) || (y < 0)) {
         if (dp >= 0) {
@@ -215,7 +216,7 @@ namespace smil
     /* Returns # of pixel coords (num) written to array p (num <= height) */
     {
       ulong y0, idx;
-      long dp = 2 * dx - 2 * phase, twodx = 2 * dx, twodxdy = 2 * dx - 2 * dy;
+      long  dp = 2 * dx - 2 * phase, twodx = 2 * dx, twodxdy = 2 * dx - 2 * dy;
 
       while (x >= (long) width) {
         if (dp >= 0) {
@@ -407,8 +408,8 @@ namespace smil
     void ImageGrayDilateHor(SoilleImage *img, ulong k, T *g, T *h, T *h2,
                             SoilleImage *out)
     {
-      T *f        = (T *) img->Pixmap;
-      T *r        = (T *) out->Pixmap;
+      T    *f     = (T *) img->Pixmap;
+      T    *r     = (T *) out->Pixmap;
       ulong width = img->Width;
 
       for (ulong y = 0; y < img->Height; y++) {
@@ -421,9 +422,9 @@ namespace smil
     void ImageGrayDilateVer(SoilleImage *img, ulong k, T *g, T *h, T *h2,
                             SoilleImage *out)
     {
-      T *f        = (T *) img->Pixmap;
-      T *r        = (T *) out->Pixmap;
-      ulong width = img->Width;
+      T    *f      = (T *) img->Pixmap;
+      T    *r      = (T *) out->Pixmap;
+      ulong width  = img->Width;
       ulong height = img->Height;
 
       for (ulong x = 0; x < width; x++) {
@@ -437,10 +438,10 @@ namespace smil
                              ulong phase, ulong *p, T *g, T *h, T *h2,
                              SoilleImage *out)
     {
-      T *f        = (T *) img->Pixmap;
-      T *r        = (T *) out->Pixmap;
+      T    *f     = (T *) img->Pixmap;
+      T    *r     = (T *) out->Pixmap;
       ulong width = img->Width, height = img->Height, nx;
-      long x, y;
+      long  x, y;
 
       if (dy == 0)
         ImageGrayDilateHor(img, k, g, h, h2, out);
@@ -513,7 +514,7 @@ namespace smil
 
   public:
     RES_T lineDilate(const Image<T> &imIn, const int angle, const int radius,
-                       Image<T> &imOut)
+                     Image<T> &imOut)
     {
       // Check inputs
       ASSERT_ALLOCATED(&imIn);
@@ -528,11 +529,11 @@ namespace smil
         return RES_ERR;
       }
 
-      int maxnx = MAX(W, H);
-      T *g      = new T[maxnx];
-      T *h      = new T[maxnx];
-      T *h2     = new T[maxnx];
-      ulong *p  = new ulong[maxnx];
+      int    maxnx = MAX(W, H);
+      T     *g     = new T[maxnx];
+      T     *h     = new T[maxnx];
+      T     *h2    = new T[maxnx];
+      ulong *p     = new ulong[maxnx];
 
       SoilleImage MyImgIn, MyImgOut;
 
@@ -545,8 +546,8 @@ namespace smil
       MyImgOut.Pixmap = (void *) imOut.getPixels();
 
       float rd = angle * PI / 180.;
-      int   r = radius;
-      r = (int ) floor(r * std::max(fabs(cos(rd)), fabs(sin(rd))) + 0.5);
+      int   r  = radius;
+      r        = (int) floor(r * std::max(fabs(cos(rd)), fabs(sin(rd))) + 0.5);
 
       int dx = (int) (cos(angle * PI / 180.0) * maxnx);
       int dy = (int) (-sin(angle * PI / 180.0) * maxnx);
@@ -563,9 +564,9 @@ namespace smil
     }
 
     RES_T lineErode(const Image<T> &imIn, const int angle, const int radius,
-                      Image<T> &imOut)
+                    Image<T> &imOut)
     {
-      RES_T r = RES_OK;
+      RES_T    r = RES_OK;
       Image<T> imTmp(imIn);
 
       r = inv(imIn, imTmp);
@@ -577,9 +578,9 @@ namespace smil
     }
 
     RES_T lineOpen(const Image<T> &imIn, const int angle, const int radius,
-                     Image<T> &imOut)
+                   Image<T> &imOut)
     {
-      RES_T r = RES_OK;
+      RES_T    r = RES_OK;
       Image<T> imTmp(imIn);
 
       r = lineErode(imIn, angle, radius, imTmp);
@@ -589,9 +590,9 @@ namespace smil
     }
 
     RES_T lineClose(const Image<T> &imIn, const int angle, const int radius,
-                      Image<T> &imOut)
+                    Image<T> &imOut)
     {
-      RES_T r = RES_OK;
+      RES_T    r = RES_OK;
       Image<T> imTmp(imIn);
 
       r = lineDilate(imIn, angle, radius, imTmp);
@@ -600,11 +601,10 @@ namespace smil
       return r;
     }
 
-    RES_T circleDilate(const Image<T> &imIn, const int radius,
-                         Image<T> &imOut)
+    RES_T circleDilate(const Image<T> &imIn, const int radius, Image<T> &imOut)
     {
-      RES_T r;
-      int i, nbAngle = 8;
+      RES_T  r;
+      int    i, nbAngle = 8;
       double alpha, kalpha, rd, k0;
 
       r = copy(imIn, imOut);
@@ -614,7 +614,7 @@ namespace smil
       k0 = (radius * PI / nbAngle * 0.5);
       for (i = 0; i < nbAngle; i++) {
         alpha  = i * 180. / nbAngle;
-        rd = alpha * PI / 180.;
+        rd     = alpha * PI / 180.;
         kalpha = k0 * std::max(fabs(cos(rd)), fabs(sin(rd))) + 0.5;
 
         r = lineDilate(imOut, (int) alpha, (int) kalpha, imOut);
@@ -626,8 +626,8 @@ namespace smil
 
     RES_T circleErode(const Image<T> &imIn, const int radius, Image<T> &imOut)
     {
-      RES_T r;
-      int i, nbAngle = 8;
+      RES_T  r;
+      int    i, nbAngle = 8;
       double alpha, kalpha, rd, k0;
 
       r = copy(imIn, imOut);
@@ -637,7 +637,7 @@ namespace smil
       k0 = (radius * PI / nbAngle * 0.5);
       for (i = 0; i < nbAngle; i++) {
         alpha  = i * 180. / nbAngle;
-        rd = alpha * PI / 180.;
+        rd     = alpha * PI / 180.;
         kalpha = k0 * std::max(fabs(cos(rd)), fabs(sin(rd))) + 0.5;
 
         r = lineErode(imOut, (int) alpha, (int) kalpha, imOut);
@@ -666,8 +666,7 @@ namespace smil
       return r;
     }
 
-    RES_T squareDilate(const Image<T> &imIn, const int radius,
-                         Image<T> &imOut)
+    RES_T squareDilate(const Image<T> &imIn, const int radius, Image<T> &imOut)
     {
       Image<T> imTmp(imIn);
 
@@ -727,7 +726,7 @@ namespace smil
    */
   template <class T>
   RES_T lineDilate_Soille(const Image<T> &imIn, const int angle,
-                            const int radius, Image<T> &imOut)
+                          const int radius, Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
     return soille.lineDilate(imIn, angle, radius, imOut);
@@ -735,15 +734,15 @@ namespace smil
 
   template <class T>
   RES_T lineErode_Soille(const Image<T> &imIn, const int angle,
-                           const int radius, Image<T> &imOut)
+                         const int radius, Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
     return soille.lineErode(imIn, angle, radius, imOut);
   }
 
   template <class T>
-  RES_T lineOpen_Soille(const Image<T> &imIn, const int angle,
-                          const int radius, Image<T> &imOut)
+  RES_T lineOpen_Soille(const Image<T> &imIn, const int angle, const int radius,
+                        Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
     return soille.lineOpen(imIn, angle, radius, imOut);
@@ -751,7 +750,7 @@ namespace smil
 
   template <class T>
   RES_T lineClose_Soille(const Image<T> &imIn, const int angle,
-                           const int radius, Image<T> &imOut)
+                         const int radius, Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
     return soille.lineClose(imIn, angle, radius, imOut);
@@ -762,7 +761,7 @@ namespace smil
    */
   template <class T>
   RES_T circleDilate_Soille(const Image<T> &imIn, const int radius,
-                              Image<T> &imOut)
+                            Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
     return soille.circleDilate(imIn, radius, imOut);
@@ -770,7 +769,7 @@ namespace smil
 
   template <class T>
   RES_T circleErode_Soille(const Image<T> &imIn, const int radius,
-                             Image<T> &imOut)
+                           Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
     return soille.circleErode(imIn, radius, imOut);
@@ -778,7 +777,7 @@ namespace smil
 
   template <class T>
   RES_T circleOpen_Soille(const Image<T> &imIn, const int radius,
-                            Image<T> &imOut)
+                          Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
     return soille.circleOpen(imIn, radius, imOut);
@@ -786,7 +785,7 @@ namespace smil
 
   template <class T>
   RES_T circleClose_Soille(const Image<T> &imIn, const int radius,
-                             Image<T> &imOut)
+                           Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
     return soille.circleClose(imIn, radius, imOut);
@@ -797,7 +796,7 @@ namespace smil
    */
   template <class T>
   RES_T squareDilate_Soille(const Image<T> &imIn, const int radius,
-                              Image<T> &imOut)
+                            Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
     return soille.squareDilate(imIn, radius, imOut);
@@ -805,7 +804,7 @@ namespace smil
 
   template <class T>
   RES_T squareErode_Soille(const Image<T> &imIn, const int radius,
-                             Image<T> &imOut)
+                           Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
     return soille.squareErode(imIn, radius, imOut);
@@ -813,7 +812,7 @@ namespace smil
 
   template <class T>
   RES_T squareOpen_Soille(const Image<T> &imIn, const int radius,
-                            Image<T> &imOut)
+                          Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
     return soille.squareOpen(imIn, radius, imOut);
@@ -821,7 +820,7 @@ namespace smil
 
   template <class T>
   RES_T squareClose_Soille(const Image<T> &imIn, const int radius,
-                             Image<T> &imOut)
+                           Image<T> &imOut)
   {
     SoilleLineMorpho<T> soille;
     return soille.squareClose(imIn, radius, imOut);

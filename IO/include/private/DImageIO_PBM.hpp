@@ -49,7 +49,8 @@ namespace smil
   RES_T readNetPBMFileInfo(const char *filename, ImageFileInfo &fInfo,
                            unsigned int &maxval);
 
-  template <class T> class Image;
+  template <class T>
+  class Image;
 
   template <class T = void>
   class PGMImageFileHandler : public ImageFileHandler<T>
@@ -101,7 +102,7 @@ namespace smil
       }
 
       ImageFileInfo fInfo;
-      unsigned int dum; // no maxval in PBM format
+      unsigned int  dum; // no maxval in PBM format
       ASSERT(readNetPBMFileInfo(fp, fInfo, dum) == RES_OK, RES_ERR_IO);
       ASSERT(fInfo.colorType == ImageFileInfo::COLOR_TYPE_BINARY,
              "Not an binary image", RES_ERR_IO);
@@ -116,7 +117,7 @@ namespace smil
 
         //  int nBytePerLine = width%8==0 ? width/8 : width/8+1;
         char val;
-        int k;
+        int  k;
 
         for (size_t j = 0; j < height; j++) {
           typename ImDtTypes<T>::lineType pixels = lines[j];

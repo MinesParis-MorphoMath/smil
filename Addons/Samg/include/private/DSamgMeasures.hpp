@@ -50,7 +50,7 @@ namespace smil
   vector<double> measHaralickFeatures(Image<T> &imIn, const StrElt &s)
   {
     map<T, UINT> hist = histogram(imIn);
-    map<T, T> equivalence;
+    map<T, T>    equivalence;
 
     size_t nbr_components = 0;
     for (typename map<T, UINT>::iterator it = hist.begin(); it != hist.end();
@@ -65,21 +65,21 @@ namespace smil
     imIn.getSize(S);
     size_t nbrPixelsInSlice = S[0] * S[1];
     size_t nbrPixels        = nbrPixelsInSlice * S[2];
-    T *in                   = imIn.getPixels();
+    T     *in               = imIn.getPixels();
     StrElt se               = s.noCenter();
-    UINT sePtsNumber        = se.points.size();
+    UINT   sePtsNumber      = se.points.size();
 
     vector<double> vec = vector<double>(nbr_components * nbr_components, 0.0);
 
     UINT SMIL_UNUSED nthreads = Core::getInstance()->getNumberOfThreads();
-    //# pragma omp parallel num_threads(nthreads)
+    // # pragma omp parallel num_threads(nthreads)
     {
-      index_T p, q;
-      UINT pts;
+      index_T        p, q;
+      UINT           pts;
       vector<double> vec_local =
           vector<double>(nbr_components * nbr_components, 0.0);
       T *counts = new T[nbr_components];
-      T max     = 0;
+      T  max    = 0;
 
 #pragma omp for
       ForEachPixel(p)
@@ -97,7 +97,7 @@ namespace smil
         }
         ENDForEachNeighborOf
 
-        for (uint32_t i = 0; i < nbr_components; ++i)
+            for (uint32_t i = 0; i < nbr_components; ++i)
         {
           max = (counts[i] > counts[max] ||
                  (counts[i] == counts[max] && vec_local[i] < vec_local[max]))
@@ -111,7 +111,7 @@ namespace smil
       ENDForEachPixel
 
 #pragma omp for ordered schedule(static, 1)
-      for (int t = 0; t < omp_get_num_threads(); ++t)
+          for (int t = 0; t < omp_get_num_threads(); ++t)
       {
 #pragma omp ordered
         {
@@ -147,14 +147,14 @@ namespace smil
       maxSteps = max(max(s[0], s[1]), s[2]) - 1;
     vec.clear();
 
-    typename ImDtTypes<T>::volType slicesIn = imIn.getSlices();
+    typename ImDtTypes<T>::volType   slicesIn = imIn.getSlices();
     typename ImDtTypes<T>::sliceType curSliceIn1;
     typename ImDtTypes<T>::sliceType curSliceIn2;
-    typename ImDtTypes<T>::lineType lineIn1;
-    typename ImDtTypes<T>::lineType lineIn2;
-    typename ImDtTypes<T>::lineType bufLine1 = ImDtTypes<T>::createLine(s[0]);
-    typename ImDtTypes<T>::lineType bufLine2 = ImDtTypes<T>::createLine(s[0]);
-    typename ImDtTypes<T>::lineType val1L    = ImDtTypes<T>::createLine(s[0]);
+    typename ImDtTypes<T>::lineType  lineIn1;
+    typename ImDtTypes<T>::lineType  lineIn2;
+    typename ImDtTypes<T>::lineType  bufLine1 = ImDtTypes<T>::createLine(s[0]);
+    typename ImDtTypes<T>::lineType  bufLine2 = ImDtTypes<T>::createLine(s[0]);
+    typename ImDtTypes<T>::lineType  val1L    = ImDtTypes<T>::createLine(s[0]);
     fillLine<T>(val1L, s[0], val1);
     typename ImDtTypes<T>::lineType val2L = ImDtTypes<T>::createLine(s[0]);
     fillLine<T>(val2L, s[0], val2);

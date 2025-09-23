@@ -11,24 +11,24 @@ sys.path.insert(0, modulesDir)
 
 all__ = [os.path.basename(f)[:-3] for f in glob.glob(modulesDir + "/*.py")]
 
-smOld = ['smilChabardesPython']
+smOld = ["smilChabardesPython"]
 smGood = []
-smBad  = []
+smBad = []
 smMods = {}
 
 for m in all__:
-  if m in smOld:
-    continue
-  if m != "__init__":
-    try:
-      mod = __import__(m, locals(), globals())
-      d = mod.__dict__
-      for k in d.keys():
-        globals()[k] = d[k]
-      smGood.append(m)
-      smMods[m] = True
-    except:
-      print(" Error loading Smil submodule : ", m)
-      smBad.append(m)
-      smMods[m] = False
-      pass
+    if m in smOld:
+        continue
+    if m != "__init__":
+        try:
+            mod = __import__(m, locals(), globals())
+            d = mod.__dict__
+            for k in d.keys():
+                globals()[k] = d[k]
+            smGood.append(m)
+            smMods[m] = True
+        except:
+            print(" Error loading Smil submodule : ", m)
+            smBad.append(m)
+            smMods[m] = False
+            pass

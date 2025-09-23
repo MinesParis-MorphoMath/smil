@@ -45,7 +45,9 @@ namespace smil
    * Geodesic Transformations
    *
    * @see
-   * - <a href=https://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks/cours/Geodesy.ipynb>Geodesy - Morphological Mathematics courses at Mines-Paristech</a>
+   * - <a
+   * href=https://nbviewer.jupyter.org/url/smil.cmm.mines-paristech.fr/notebooks/cours/Geodesy.ipynb>Geodesy
+   * - Morphological Mathematics courses at Mines-Paristech</a>
    * - @SoilleBook{Chap. 6}
    *
    * @{
@@ -205,7 +207,7 @@ namespace smil
    */
   /** @cond */
   template <class T>
-  RES_T initBuildHierarchicalQueue(const Image<T> &imIn,
+  RES_T initBuildHierarchicalQueue(const Image<T>       &imIn,
                                    HierarchicalQueue<T> &hq)
   {
     // Initialize the priority queue
@@ -229,9 +231,9 @@ namespace smil
   }
 
   template <class T>
-  RES_T initBuildHierarchicalQueue(const Image<T> &imIn,
+  RES_T initBuildHierarchicalQueue(const Image<T>       &imIn,
                                    HierarchicalQueue<T> &hq,
-                                   const T noPushValue)
+                                   const T               noPushValue)
   {
     // Initialize the priority queue
     hq.initialize(imIn);
@@ -257,16 +259,16 @@ namespace smil
 
   template <class T, class operatorT>
   RES_T processBuildHierarchicalQueue(Image<T> &imIn, const Image<T> &imMask,
-                                      Image<UINT8> &imStatus,
+                                      Image<UINT8>         &imStatus,
                                       HierarchicalQueue<T> &hq,
-                                      const StrElt &se)
+                                      const StrElt         &se)
   {
-    typename ImDtTypes<T>::lineType inPixels       = imIn.getPixels();
-    typename ImDtTypes<T>::lineType markPixels     = imMask.getPixels();
+    typename ImDtTypes<T>::lineType     inPixels   = imIn.getPixels();
+    typename ImDtTypes<T>::lineType     markPixels = imMask.getPixels();
     typename ImDtTypes<UINT8>::lineType statPixels = imStatus.getPixels();
 
     std::vector<int> dOffsets;
-    operatorT oper;
+    operatorT        oper;
 
     std::vector<IntPoint>::const_iterator it_start = se.points.begin();
     std::vector<IntPoint>::const_iterator it_end   = se.points.end();
@@ -288,9 +290,9 @@ namespace smil
     size_t x0, y0, z0;
     size_t curOffset;
 
-    int x, y, z;
+    int    x, y, z;
     size_t nbOffset;
-    UINT8 nbStat;
+    UINT8  nbStat;
 
     while (!hq.isEmpty()) {
       curOffset = hq.pop();
@@ -334,14 +336,16 @@ namespace smil
     return RES_OK;
   }
 
-  template <class T> struct minFunctor {
+  template <class T>
+  struct minFunctor {
     inline T operator()(T a, T b)
     {
       return std::min(a, b);
     }
   };
 
-  template <class T> struct maxFunctor {
+  template <class T>
+  struct maxFunctor {
     inline T operator()(T a, T b)
     {
       return std::max(a, b);
@@ -350,7 +354,8 @@ namespace smil
   /** @endcond */
 
   /**
-   * dualBuild() - Reconstruction by erosion - dual build - (using hierarchical queues).
+   * dualBuild() - Reconstruction by erosion - dual build - (using hierarchical
+   * queues).
    *
    * @param[in] imIn : input image
    * @param[in] imMask : mask
@@ -369,7 +374,7 @@ namespace smil
 
     ImageFreezer freeze(imOut);
 
-    Image<UINT8> imStatus(imIn);
+    Image<UINT8>         imStatus(imIn);
     HierarchicalQueue<T> pq;
 
     // Make sure that imIn >= imMask
@@ -622,7 +627,7 @@ namespace smil
    */
   template <class T>
   RES_T asBuildOpen(const Image<T> &imIn, Image<T> &imOut,
-                 const StrElt &se = DEFAULT_SE)
+                    const StrElt &se = DEFAULT_SE)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -639,7 +644,6 @@ namespace smil
     return RES_OK;
   }
 
-
   /**
    * Alternate Sequential reconstructions beginning by a buildClose
    *
@@ -655,7 +659,7 @@ namespace smil
    */
   template <class T>
   RES_T asBuildClose(const Image<T> &imIn, Image<T> &imOut,
-                 const StrElt &se = DEFAULT_SE)
+                     const StrElt &se = DEFAULT_SE)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);

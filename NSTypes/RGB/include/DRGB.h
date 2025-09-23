@@ -61,7 +61,7 @@ namespace smil
     size_t w = this->image->getWidth();
     size_t h = this->image->getHeight();
 
-    QRgb *    destLine;
+    QRgb     *destLine;
     arrayType rArray, gArray, bArray;
 
     for (size_t j = 0; j < h; j++) {

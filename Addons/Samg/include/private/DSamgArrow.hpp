@@ -13,21 +13,22 @@ namespace smil
    * @{
    */
 
-  // Are these functions useful ??? 
+  // Are these functions useful ???
   /** @cond */
   // SIMD version of WP2 - Nifty Revised.
   /**
    * @brief hammingWeight SIMD version of WP2 - Nifty Revised.
    *
    */
-  template <class T> RES_T hammingWeight(const Image<T> &_im_, Image<T> &_out_)
+  template <class T>
+  RES_T hammingWeight(const Image<T> &_im_, Image<T> &_out_)
   {
-    typedef Image<T> imI;
-    typedef Image<T> outI;
-    typedef typename imI::lineType imL;
+    typedef Image<T>                imI;
+    typedef Image<T>                outI;
+    typedef typename imI::lineType  imL;
     typedef typename outI::lineType outL;
-    typedef typename imI::volType imV;
-    typedef typename outI::volType outV;
+    typedef typename imI::volType   imV;
+    typedef typename outI::volType  outV;
 
     size_t S[3];
     _im_.getSize(S);
@@ -39,7 +40,7 @@ namespace smil
     T m4Val = (~0);
     m4Val /= 17;
 
-    imV srcSlices   = _im_.getSlices();
+    imV  srcSlices  = _im_.getSlices();
     outV destSlices = _out_.getSlices();
 
     UINT nthreads = Core::getInstance()->getNumberOfThreads();
@@ -55,18 +56,18 @@ namespace smil
       fillLine<T>(finaland, S[0], 0x7F);
 
       size_t _d, _h, _w;
-      imL *srcLines;
-      outL *destLines;
-      outL buf  = ImDtTypes<T>::createLine(S[0]);
-      outL buf2 = ImDtTypes<T>::createLine(S[0]);
-      imL im;
-      outL out;
+      imL   *srcLines;
+      outL  *destLines;
+      outL   buf  = ImDtTypes<T>::createLine(S[0]);
+      outL   buf2 = ImDtTypes<T>::createLine(S[0]);
+      imL    im;
+      outL   out;
 
       unsigned TEST_BITS = sizeof(T) * 8;
 
-      subNoSatLine<T> snsl;
-      addNoSatLine<T> ansl;
-      bitAndLine<T> andl;
+      subNoSatLine<T>   snsl;
+      addNoSatLine<T>   ansl;
+      bitAndLine<T>     andl;
       rightShiftLine<T> rsl;
 
       for (_d = 0; _d < S[2]; ++_d) {
@@ -131,9 +132,9 @@ namespace smil
    */
   RES_T hammingWeight(const Image<UINT8> &_im_, Image<UINT8> &_out_)
   {
-    typedef Image<UINT8> imI;
+    typedef Image<UINT8>           imI;
     typedef typename imI::lineType imL;
-    typedef typename imI::volType imV;
+    typedef typename imI::volType  imV;
 
     size_t S[3];
     _im_.getSize(S);
@@ -159,16 +160,16 @@ namespace smil
       fillLine<UINT8>(finaland, S[0], 0x7F);
 
       size_t _d, _h, _w;
-      imL im;
-      imL out;
-      imL *srcLines;
-      imL *destLines;
-      imL buf  = ImDtTypes<UINT8>::createLine(S[0]);
-      imL buf2 = ImDtTypes<UINT8>::createLine(S[0]);
+      imL    im;
+      imL    out;
+      imL   *srcLines;
+      imL   *destLines;
+      imL    buf  = ImDtTypes<UINT8>::createLine(S[0]);
+      imL    buf2 = ImDtTypes<UINT8>::createLine(S[0]);
 
-      subNoSatLine<UINT8> snsl;
-      addNoSatLine<UINT8> ansl;
-      bitAndLine<UINT8> andl;
+      subNoSatLine<UINT8>   snsl;
+      addNoSatLine<UINT8>   ansl;
+      bitAndLine<UINT8>     andl;
       rightShiftLine<UINT8> rsl;
 
       for (_d = 0; _d < S[2]; ++_d) {
@@ -216,22 +217,22 @@ namespace smil
   RES_T arrowComplement(const Image<T1> &_im_, Image<T2> &_out_,
                         const StrElt &s)
   {
-    typedef Image<T1> imI;
-    typedef typename imI::lineType imL;
-    typedef Image<T2> outI;
+    typedef Image<T1>               imI;
+    typedef typename imI::lineType  imL;
+    typedef Image<T2>               outI;
     typedef typename outI::lineType outL;
-    typedef typename outI::volType outV;
+    typedef typename outI::volType  outV;
 
     size_t S[3];
     _im_.getSize(S);
 
-    StrElt se  = s.noCenter();
-    StrElt tse = se.transpose();
+    StrElt       se  = s.noCenter();
+    StrElt       tse = se.transpose();
     vector<UINT> inverses;
     generateInverses(inverses, se);
 
-    imL imP         = _im_.getPixels();
-    outV destSlices = _out_.getSlices();
+    imL   imP        = _im_.getPixels();
+    outV  destSlices = _out_.getSlices();
     outL *destLines;
 
     UINT sePtsNumber = se.points.size();
@@ -240,18 +241,18 @@ namespace smil
 #pragma omp parallel num_threads(nthreads)
     {
       outL cpyBuf = ImDtTypes<T2>::createLine(S[0]);
-      imL buf     = ImDtTypes<T1>::createLine(S[0]);
+      imL  buf    = ImDtTypes<T1>::createLine(S[0]);
 
       imL borderBuf = ImDtTypes<T1>::createLine(S[0]);
       fillLine<T1>(borderBuf, S[0], 0);
 
-      T1 flag, flag2;
+      T1     flag, flag2;
       size_t _d, _h, _w;
-      bool _odd = 0;
+      bool   _odd = 0;
       size_t x, y, z;
-      UINT _pts;
+      UINT   _pts;
 
-      imL im = ImDtTypes<T1>::createLine(S[0]);
+      imL  im = ImDtTypes<T1>::createLine(S[0]);
       outL out;
 
       for (_d = 0; _d < S[2]; ++_d) {
@@ -301,15 +302,15 @@ namespace smil
   public:
     typedef MorphImageFunction<T_in, lineFunction_T, T_out> parentClass;
 
-    typedef Image<T_in> imageInType;
-    typedef typename ImDtTypes<T_in>::lineType lineInType;
+    typedef Image<T_in>                         imageInType;
+    typedef typename ImDtTypes<T_in>::lineType  lineInType;
     typedef typename ImDtTypes<T_in>::sliceType sliceInType;
-    typedef typename ImDtTypes<T_in>::volType volInType;
+    typedef typename ImDtTypes<T_in>::volType   volInType;
 
-    typedef Image<T_out> imageOutType;
-    typedef typename ImDtTypes<T_out>::lineType lineOutType;
+    typedef Image<T_out>                         imageOutType;
+    typedef typename ImDtTypes<T_out>::lineType  lineOutType;
     typedef typename ImDtTypes<T_out>::sliceType sliceOutType;
-    typedef typename ImDtTypes<T_out>::volType volOutType;
+    typedef typename ImDtTypes<T_out>::volType   volOutType;
 
     binaryMorphArrowImageFunction(
         T_in border             = numeric_limits<T_in>::min(),
@@ -357,7 +358,7 @@ namespace smil
     this->lineLen = imIn.getWidth();
 
     // JOE volInType srcSlices = imIn.getSlices();
-    volInType src2Slices  = imIn2.getSlices();
+    volInType  src2Slices = imIn2.getSlices();
     volOutType destSlices = imOut.getSlices();
 
     int nthreads = Core::getInstance()->getNumberOfThreads();
@@ -371,7 +372,7 @@ namespace smil
 
     for (size_t s = 0; s < nSlices; s++) {
       // JOE lineInType *srcLines = srcSlices[s];
-      lineInType *src2Lines  = src2Slices[s];
+      lineInType  *src2Lines = src2Slices[s];
       lineOutType *destLines = destSlices[s];
 
 #ifdef USE_OPEN_MP
@@ -380,7 +381,7 @@ namespace smil
       {
         bool oddSe = se.odd, oddLine = 0;
 
-        size_t x, y, z;
+        size_t         x, y, z;
         lineFunction_T arrowLineFunction;
 
         int tid = 0;
@@ -388,14 +389,14 @@ namespace smil
 #ifdef USE_OPEN_MP
         tid = omp_get_thread_num();
 #endif // _OPENMP
-        lineInType tmpBuf   = bufsIn[tid].data();
+        lineInType  tmpBuf  = bufsIn[tid].data();
         lineOutType tmpBuf2 = bufsOut[tid].data();
 
 #ifdef USE_OPEN_MP
 #pragma omp for
 #endif // USE_OPEN_MP
         for (l = 0; l < nLines; l++) {
-          lineInType lineIn   = src2Lines[l];
+          lineInType  lineIn  = src2Lines[l];
           lineOutType lineOut = destLines[l];
 
           oddLine = oddSe && l % 2;
@@ -500,8 +501,8 @@ namespace smil
   template <class T_in, class T_out>
   RES_T arrowDual(const Image<T_in> &imIn, const Image<T_in> &imIn2,
                   const char *operation, Image<T_out> &imOut,
-                  const StrElt &se = DEFAULT_SE,
-                  T_in borderValue = numeric_limits<T_in>::min())
+                  const StrElt &se          = DEFAULT_SE,
+                  T_in          borderValue = numeric_limits<T_in>::min())
   {
     if (strcmp(operation, "==") == 0)
       return arrowEquDual(imIn, imIn2, imOut, se, borderValue);

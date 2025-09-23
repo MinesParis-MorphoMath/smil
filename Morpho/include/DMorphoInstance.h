@@ -44,8 +44,8 @@ namespace smil
    */
 
   /** Morpho
-  *
-  */
+   *
+   */
   class Morpho : public UniqueInstance<Morpho>
   {
     /** @cond */

@@ -47,7 +47,7 @@ namespace smil
     size_t h = this->image->getHeight();
 
     const BitArray::INT_TYPE *lIn;
-    UINT8 *                   lOut, *lEnd;
+    UINT8                    *lOut, *lEnd;
     UINT                      bCount = BitArray::INT_SIZE(w);
 
     for (size_t j = 0; j < h; j++) {

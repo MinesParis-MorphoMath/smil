@@ -59,11 +59,12 @@ namespace smil
    *  - @UrlWikipedia{Bresenham%27s_line_algorithm, Bresenham's Line algorithm}
    *
    */
-  inline std::vector<IntPoint> bresenhamPoints(int p1x, int p1y, int p2x, int p2y,
-                                          int xMax = 0, int yMax = 0)
+  inline std::vector<IntPoint> bresenhamPoints(int p1x, int p1y, int p2x,
+                                               int p2y, int xMax = 0,
+                                               int yMax = 0)
   {
     std::vector<IntPoint> points;
-    int              F, x, y;
+    int                   F, x, y;
 
     bool swapped = false;
     if (p1x > p2x) // Swap points if p1 is on the right of p2

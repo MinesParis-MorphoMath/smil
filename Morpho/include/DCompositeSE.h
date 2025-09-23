@@ -61,8 +61,8 @@ namespace smil
     StrElt fgSE;
     StrElt bgSE;
 
-    CompStrElt() : BaseObject("CompStrElt"){};
-    ~CompStrElt(){};
+    CompStrElt() : BaseObject("CompStrElt") {};
+    ~CompStrElt() {};
 
     /** CompStrElt - Constructor
      *
@@ -108,7 +108,8 @@ namespace smil
      * @param[in] os : output stream (default : @b std::cout)
      * @param[in] indent : prefix to each printed line (string)
      */
-    virtual void printSelf(std::ostream &os = std::cout, std::string indent = "") const;
+    virtual void printSelf(std::ostream &os     = std::cout,
+                           std::string   indent = "") const;
   };
 
   /**
@@ -166,7 +167,7 @@ namespace smil
      * and 8/nrot for Squ
      */
     void add(const StrElt &fgse, const StrElt &bgse, UINT nrot);
-  
+
     /**
      *
      */
@@ -176,17 +177,18 @@ namespace smil
      *
      */
     CompStrEltList &rotate(int steps = 1);
-    
+
     /**
-    *
-    *
-    */
+     *
+     *
+     */
     void setName(const char *name)
     {
       this->name = name;
     }
 
-    virtual void printSelf(std::ostream &os = std::cout, std::string indent = "") const;
+    virtual void printSelf(std::ostream &os     = std::cout,
+                           std::string   indent = "") const;
   };
 
   //! Square L1 ([8,1,2], [4,5,6])

@@ -195,7 +195,7 @@ Gaussian.
 
         // on suit la direction du gradient qui est indique par les vecteurs
         // VectX et VectY et retient uniquement les pixels qui correspondent
-        //a des maximum locaux
+        // a des maximum locaux
 
         if (fabs(VectY) > fabs(VectX)) // la direction du vecteur est verticale
         {
@@ -229,7 +229,7 @@ Gaussian.
 
         // On calcul l'interpolation du gradient
         if (N > (x * N1 + (y - x) * N2) && N > (x * N3 + (y - x) * N4))
-          imNorme[i + j * Width] = (T2)(N * MAG_SCALE);
+          imNorme[i + j * Width] = (T2) (N * MAG_SCALE);
       }
   }
 

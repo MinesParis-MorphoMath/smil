@@ -95,8 +95,8 @@ public:
   void         dataChanged();
   virtual void clearOverlay();
 
-  QStatusBar *      statusBar;
-  QImage *          qImage;
+  QStatusBar       *statusBar;
+  QImage           *qImage;
   QVector<QImage *> qOverlayImage;
   QImage::Format    imageFormat;
 
@@ -125,14 +125,14 @@ protected:
   void updatePixmaps(QImage *image, QList<QGraphicsPixmapItem *> *pixmaps);
 
   double                       scaleFactor;
-  QImageGraphicsScene *        imScene;
+  QImageGraphicsScene         *imScene;
   QList<QGraphicsPixmapItem *> imagePixmaps;
   QList<QGraphicsPixmapItem *> overlayPixmaps;
 
-  QLabel *     valueLabel;
-  QLabel *     hintLabel;
-  QTimer *     hintTimer;
-  QTimer *     iconTimer;
+  QLabel      *valueLabel;
+  QLabel      *hintLabel;
+  QTimer      *hintTimer;
+  QTimer      *iconTimer;
   MagnifyView *magnView;
 
   size_t imWidth, imHeight, imDepth;

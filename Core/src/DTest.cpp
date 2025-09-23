@@ -41,22 +41,22 @@ namespace smil
     RES_T retVal = RES_OK;
 
     std::list<TestCase *>::iterator f;
-    int totTestsNbr = funcList.size();
-    int curTestNbr  = 1;
-    int nPassed     = 0;
-    int nFailed     = 0;
+    int                             totTestsNbr = funcList.size();
+    int                             curTestNbr  = 1;
+    int                             nPassed     = 0;
+    int                             nFailed     = 0;
 
     double t1, t2;
 
     for (f = funcList.begin(); f != funcList.end(); f++) {
-      TestCase *tc = *f;
+      TestCase         *tc = *f;
       std::stringstream ss;
       tc->init();
       tc->retVal    = RES_OK;
       tc->outStream = &ss;
 
       std::cout << "Test #" << (curTestNbr++) << "/" << totTestsNbr << ": "
-           << (*f)->name << "\t";
+                << (*f)->name << "\t";
 
       t1 = getCpuTime();
 

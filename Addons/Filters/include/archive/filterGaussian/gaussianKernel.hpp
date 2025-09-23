@@ -42,12 +42,13 @@
 
 namespace smil
 {
-  template <typename T> class GaussianFilterClass
+  template <typename T>
+  class GaussianFilterClass
   {
   private:
     vector<double> kernel;
-    int radius;
-    double sigma;
+    int            radius;
+    double         sigma;
 
     void setupKernel()
     {
@@ -125,7 +126,7 @@ namespace smil
         for (off_t z = 0; z < D; z++) {
           for (off_t y = 0; y < H; y++) {
             for (off_t x = 0; x < W; x++) {
-              off_t i0    = (z * H + y) * W + x;
+              off_t  i0   = (z * H + y) * W + x;
               double sumV = 0.;
               double sumK = 0.;
 
@@ -136,7 +137,7 @@ namespace smil
                 sumV += in[i0 + i] * valK;
                 sumK += valK;
               }
-              outX[i0] = (T)(sumV / sumK);
+              outX[i0] = (T) (sumV / sumK);
             }
           }
         }
@@ -158,7 +159,7 @@ namespace smil
         for (off_t z = 0; z < D; z++) {
           for (off_t y = 0; y < H; y++) {
             for (off_t x = 0; x < W; x++) {
-              off_t i0    = (z * H + y) * W + x;
+              off_t  i0   = (z * H + y) * W + x;
               double sumV = 0.;
               double sumK = 0.;
 
@@ -169,7 +170,7 @@ namespace smil
                 sumV += outX[i0 + i * stride] * valK;
                 sumK += valK;
               }
-              outY[i0] = (T)(sumV / sumK);
+              outY[i0] = (T) (sumV / sumK);
             }
           }
         }
@@ -190,7 +191,7 @@ namespace smil
         for (off_t z = 0; z < D; z++) {
           for (off_t y = 0; y < H; y++) {
             for (off_t x = 0; x < W; x++) {
-              off_t i0    = (z * H + y) * W + x;
+              off_t  i0   = (z * H + y) * W + x;
               double sumV = 0.;
               double sumK = 0.;
 
@@ -201,7 +202,7 @@ namespace smil
                 sumV += outY[i0 + i * stride] * valK;
                 sumK += valK;
               }
-              out[i0] = (T)(sumV / sumK);
+              out[i0] = (T) (sumV / sumK);
             }
           }
         }

@@ -68,7 +68,8 @@ namespace smil
    */
   template <typename T>
   RES_T areaOpening(const Image<T> &imIn, size_t size, Image<T> &imOut,
-                    StrElt &se = DEFAULT_SE, const std::string method = "unionfind")
+                    StrElt           &se     = DEFAULT_SE,
+                    const std::string method = "unionfind")
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -93,14 +94,15 @@ namespace smil
    */
   template <typename T>
   RES_T areaClosing(const Image<T> &imIn, size_t size, Image<T> &imOut,
-                    StrElt &se = DEFAULT_SE, const std::string method = "unionfind")
+                    StrElt           &se     = DEFAULT_SE,
+                    const std::string method = "unionfind")
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
     if (method == "unionfind") {
       Image<T> imTmp(imIn);
-      RES_T res = inv(imIn, imTmp);
+      RES_T    res = inv(imIn, imTmp);
       if (res == RES_OK) {
         UnionFindFunctions<T> uff;
         res = uff.areaOpen(imTmp, size, imOut, se);

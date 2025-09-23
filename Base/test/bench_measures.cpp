@@ -48,5 +48,4 @@ int main(void)
     for (off_t y = 0; y < 512; y++)
       im.setPixel(x, y, 255);
   BENCH_IMG(isBinary, im);
-
 }

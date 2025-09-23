@@ -41,7 +41,8 @@ namespace smil
 
   /**@{*/
 
-  template <class T = void> class ImageFileHandler
+  template <class T = void>
+  class ImageFileHandler
   {
   public:
     ImageFileHandler(const char *ext) : fileExtention(ext)
@@ -66,15 +67,17 @@ namespace smil
     virtual RES_T read(const char *, Image<T> &)
     {
       T *dum = NULL;
-      std::cout << getDataTypeAsString<T>(dum) << " data type not implemented for "
-           << fileExtention << " files (read)." << std::endl;
+      std::cout << getDataTypeAsString<T>(dum)
+                << " data type not implemented for " << fileExtention
+                << " files (read)." << std::endl;
       return RES_ERR;
     }
     virtual RES_T write(const Image<T> &, const char *)
     {
       T *dum = NULL;
-      std::cout << getDataTypeAsString<T>(dum) << " data type not implemented for "
-                << fileExtention << " files (write)." << std::endl;
+      std::cout << getDataTypeAsString<T>(dum)
+                << " data type not implemented for " << fileExtention
+                << " files (write)." << std::endl;
       return RES_ERR;
     }
   };
@@ -95,7 +98,8 @@ namespace smil
    *
    * @smilexample{example-read.py}
    */
-  template <class T> RES_T read(const char *filename, Image<T> &image);
+  template <class T>
+  RES_T read(const char *filename, Image<T> &image);
 
   /**
    * Read a stack of 2D images and convert then into a 3D image
@@ -111,7 +115,8 @@ namespace smil
    * TIFF @b VTK
    *
    */
-  template <class T> RES_T read(const std::vector<std::string> fileList, Image<T> &image);
+  template <class T>
+  RES_T read(const std::vector<std::string> fileList, Image<T> &image);
 
   /**
    * Write image into file
@@ -119,7 +124,8 @@ namespace smil
    * @param[in] image : image to write to file
    * @param[in] filename : file name
    */
-  template <class T> RES_T write(const Image<T> &image, const char *filename);
+  template <class T>
+  RES_T write(const Image<T> &image, const char *filename);
 
   /**
    * Write a 3D image as a stack of 2D image files

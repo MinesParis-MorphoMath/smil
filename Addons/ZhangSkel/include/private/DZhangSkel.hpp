@@ -30,11 +30,11 @@
 #ifndef _D_ZHANG_SKEL_HPP
 #define _D_ZHANG_SKEL_HPP
 
-//#include "DCore.h"
+// #include "DCore.h"
 #include "Core/include/DCore.h"
 
-//#include "DMorphoBase.hpp"
-//#include "DHitOrMiss.hpp"
+// #include "DMorphoBase.hpp"
+// #include "DHitOrMiss.hpp"
 
 namespace smil
 {
@@ -447,7 +447,7 @@ namespace smil
           ptsDeleted1  = true;
 
         } // for x
-      }   // for y
+      } // for y
 
       // Delete pixels satisfying all previous conditions (phase 1)
       if (ptsDeleted1) {
@@ -511,7 +511,7 @@ namespace smil
           *modifiedPix = 0;
           ptsDeleted2  = true;
         } // for x
-      }   // for y
+      } // for y
 
       // Delete pixels satisfying all previous conditions (phase 2)
       if (ptsDeleted2) {
@@ -613,14 +613,14 @@ namespace smil
       return buf[offset + nbg.x + nbg.y * width];
     }
 
-    void getNeighborhood(Image<T> &im, off_t x, off_t y,
-                                T nghbs[], int &Xr, int &Bp)
+    void getNeighborhood(Image<T> &im, off_t x, off_t y, T nghbs[], int &Xr,
+                         int &Bp)
     {
-      Xr = 0;
-      Bp = 0;
+      Xr     = 0;
+      Bp     = 0;
       T prev = 0;
 
-      T *   buf       = im.getPixels();
+      T    *buf       = im.getPixels();
       off_t pixOffset = x + y * width;
 
       for (auto i = 0; i < 8; i++) {
@@ -719,7 +719,7 @@ namespace smil
 #pragma omp for
 #endif // USE_OPEN_MP
           for (off_t x = 0; x < width; x++) {
-            off_t     pixOffset = lineOffset + x;
+            off_t pixOffset = lineOffset + x;
 
             if (bufTmp[pixOffset] == minV)
               continue;
@@ -755,7 +755,7 @@ namespace smil
 #pragma omp for
 #endif // USE_OPEN_MP
           for (off_t x = 0; x < width; x++) {
-            off_t     pixOffset = lineOffset + x;
+            off_t pixOffset = lineOffset + x;
 
             if (bufTmp[pixOffset] == minV)
               continue;
@@ -801,14 +801,15 @@ namespace smil
    * - DongLinHuang - @cite dong_lin_huang_2016
    */
   template <typename T>
-  RES_T imageThinning(const Image<T> &imIn, Image<T> &imOut, string method = "Zhang")
+  RES_T imageThinning(const Image<T> &imIn, Image<T> &imOut,
+                      string method = "Zhang")
   {
     if (method == "Zhang") {
-        return zhangSkeleton(imIn, imOut);
+      return zhangSkeleton(imIn, imOut);
     }
     if (method == "DongLinHuang") {
-        ZhangThinning<T> zt;
-        return zt.skDongLinHuang(imIn, imOut);
+      ZhangThinning<T> zt;
+      return zt.skDongLinHuang(imIn, imOut);
     }
     ERR_MSG("Method not implemented : " + method);
     return RES_ERR;

@@ -59,12 +59,12 @@ namespace smil
     sePointNbr = sePoints.size();
     relativeOffsets.clear();
     std::vector<IntPoint>::iterator pt = sePoints.begin();
-    se_xmin                       = ImDtTypes<int>::max();
-    se_xmax                       = ImDtTypes<int>::min();
-    se_ymin                       = ImDtTypes<int>::max();
-    se_ymax                       = ImDtTypes<int>::min();
-    se_zmin                       = ImDtTypes<int>::max();
-    se_zmax                       = ImDtTypes<int>::min();
+    se_xmin                            = ImDtTypes<int>::max();
+    se_xmax                            = ImDtTypes<int>::min();
+    se_ymin                            = ImDtTypes<int>::max();
+    se_ymax                            = ImDtTypes<int>::min();
+    se_zmin                            = ImDtTypes<int>::max();
+    se_zmax                            = ImDtTypes<int>::min();
     while (pt != sePoints.end()) {
       if (pt->x < se_xmin)
         se_xmin = pt->x;
@@ -97,8 +97,8 @@ namespace smil
 
   template <class T_in, class T_out>
   RES_T MorphImageFunctionBase<T_in, T_out>::_exec(const imageInType &imIn,
-                                                   imageOutType &     imOut,
-                                                   const StrElt &     se)
+                                                   imageOutType      &imOut,
+                                                   const StrElt      &se)
   {
     ASSERT_ALLOCATED(&imIn)
     ASSERT_SAME_SIZE(&imIn, &imOut)
@@ -128,7 +128,7 @@ namespace smil
   }
   template <class T_in, class T_out>
   RES_T MorphImageFunctionBase<T_in, T_out>::_exec(const imageInType &imIn,
-                                                   const StrElt &     se)
+                                                   const StrElt      &se)
   {
     ASSERT_ALLOCATED(&imIn)
 
@@ -170,7 +170,7 @@ namespace smil
   template <class T_in, class T_out>
   void MorphImageFunctionBase<T_in, T_out>::processSlice(sliceInType   linesIn,
                                                          sliceOutType  linesOut,
-                                                         size_t &      lineNbr,
+                                                         size_t       &lineNbr,
                                                          const StrElt &se)
   {
     for (size_t curLine = 0; curLine < lineNbr; curLine++)
@@ -181,12 +181,12 @@ namespace smil
   template <class T_in, class T_out>
   void MorphImageFunctionBase<T_in, T_out>::processLine(lineInType pixIn,
                                                         lineOutType /*pixOut*/,
-                                                        size_t &      pixNbr,
+                                                        size_t       &pixNbr,
                                                         const StrElt &se)
   {
-    int              x, y, z;
-    IntPoint         p;
-    size_t           offset = pixIn - pixelsIn;
+    int                   x, y, z;
+    IntPoint              p;
+    size_t                offset = pixIn - pixelsIn;
     std::vector<IntPoint> ptList;
     std::vector<int>      relOffsetList;
     std::vector<int>      offsetList;
@@ -260,8 +260,9 @@ namespace smil
   }
 
   template <class T_in, class T_out>
-  void MorphImageFunctionBase<T_in, T_out>::processPixel(size_t /*pointOffset*/,
-                                                         std::vector<int> &dOffsets)
+  void
+  MorphImageFunctionBase<T_in, T_out>::processPixel(size_t /*pointOffset*/,
+                                                    std::vector<int> &dOffsets)
   {
     // Example: dilation function
     std::vector<int>::iterator it = dOffsets.begin();
@@ -503,7 +504,7 @@ namespace smil
 #ifdef USE_OPEN_MP
     int tid;
 #endif // USE_OPEN_MP
-    int              x, y, z;
+    int                   x, y, z;
     std::vector<IntPoint> pts = se.points;
 
     for (int s = 0; s < nSlices; s++) {
@@ -557,7 +558,7 @@ namespace smil
   RES_T
   MorphImageFunction<T_in, lineFunction_T, T_in,
                      true>::_exec_single_hexagonal_SE(const imageType &imIn,
-                                                      imageType &      imOut)
+                                                      imageType       &imOut)
   {
     int nSlices = imIn.getSliceCount();
     int nLines  = imIn.getHeight();
@@ -867,7 +868,7 @@ namespace smil
 
 #ifdef USE_OPEN_MP
 #pragma omp parallel private(tid, blockSize, firstLine, buf1, buf2,            \
-                             firstLineBuf) num_threads(nthreads)
+                                 firstLineBuf) num_threads(nthreads)
 #endif
       {
 #ifdef USE_OPEN_MP
@@ -952,7 +953,7 @@ namespace smil
 
 #ifdef USE_OPEN_MP
 #pragma omp parallel private(tid, blockSize, firstLine, buf1, buf2, buf3,      \
-                             buf4, tmpBuf, firstLineBuf, swap_buf)             \
+                                 buf4, tmpBuf, firstLineBuf, swap_buf)         \
     num_threads(nthreads)
 #endif
       {
@@ -1049,7 +1050,7 @@ namespace smil
     destLines = destSlices[0];
 #ifdef USE_OPEN_MP
 #pragma omp parallel private(tid, blockSize, firstLine, buf1, buf2, buf3,      \
-                             buf4, tmp1, firstLineBuf, swap_buf)               \
+                                 buf4, tmp1, firstLineBuf, swap_buf)           \
     num_threads(nthreads)
 #endif // USE_OPEN_MP
     {
@@ -1245,7 +1246,7 @@ namespace smil
   RES_T
   MorphImageFunction<T_in, lineFunction_T, T_in,
                      true>::_exec_rhombicuboctahedron(const imageType &imIn,
-                                                      imageType &      imOut,
+                                                      imageType       &imOut,
                                                       unsigned int     size)
   {
     double nbSquareDbl   = (((double) size) / (1 + std::sqrt(2.)));

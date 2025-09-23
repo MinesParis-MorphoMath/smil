@@ -26,7 +26,7 @@ imGraphOut.showLabel()
 
 imImgOut = Image(imMark)
 watershedExtinction(imGrad, imMark, imImgOut, imBasins, extType)
-compare(imImgOut, ">", nRegions, 0, imMark, imMark);
+compare(imImgOut, ">", nRegions, 0, imMark, imMark)
 basins(imGrad, imMark, imImgOut)
 # Re-labelize (usefull only to have the same label values in both versions)
 label(imImgOut, imImgOut)

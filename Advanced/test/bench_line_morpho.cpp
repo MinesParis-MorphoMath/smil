@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     read(argv[1], imIn);
   } else {
     char *path = pathTestImage("bw/balls.png");
-    imIn = Image<UINT8>(path);
+    imIn       = Image<UINT8>(path);
   }
   Image<UINT8> imOut(imIn);
 
@@ -61,16 +61,14 @@ int main(int argc, char *argv[])
   cout << endl;
 
   BENCH_IMG(squareDilate, imIn, imOut, 2 * length);
-  BENCH_IMG(squareErode,  imIn, imOut, 2 * length);
-  BENCH_IMG(squareOpen,   imIn, imOut, 2 * length);
-  BENCH_IMG(squareClose,  imIn, imOut, 2 * length);
+  BENCH_IMG(squareErode, imIn, imOut, 2 * length);
+  BENCH_IMG(squareOpen, imIn, imOut, 2 * length);
+  BENCH_IMG(squareClose, imIn, imOut, 2 * length);
   cout << endl;
-
 
   BENCH_IMG(circleDilate, imIn, imOut, length);
-  BENCH_IMG(circleErode,  imIn, imOut, length);
-  BENCH_IMG(circleOpen,   imIn, imOut, length);
-  BENCH_IMG(circleClose,  imIn, imOut, length);
+  BENCH_IMG(circleErode, imIn, imOut, length);
+  BENCH_IMG(circleOpen, imIn, imOut, length);
+  BENCH_IMG(circleClose, imIn, imOut, length);
   cout << endl;
-
 }

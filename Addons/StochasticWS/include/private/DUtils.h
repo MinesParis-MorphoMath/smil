@@ -54,12 +54,12 @@ namespace smil
   void geoDistance(const Image<T1> &_in_, Image<T2> &_out_, const StrElt &se)
   {
     queue<size_t> *c1 = new queue<size_t>(), *c2 = new queue<size_t>(), *tmp;
-    T1 *in  = _in_.getPixels();
-    T2 *out = _out_.getPixels();
-    index p, q;
+    T1            *in  = _in_.getPixels();
+    T2            *out = _out_.getPixels();
+    index          p, q;
 
-    UINT sePtsNumber = se.points.size();
-    UINT pts;
+    UINT   sePtsNumber = se.points.size();
+    UINT   pts;
     size_t S[3];
     _in_.getSize(S);
     size_t nbrPixelsInSlice = S[0] * S[1];

@@ -1,0 +1,42 @@
+name: format
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  check-formatting:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          activate-environment: true
+
+      - name: Install python dependencies
+        run: |
+          uv pip install clang-format cmake-format ruff
+
+      - name: Pass clang-format on C++ sources
+        run: |
+          git ls-files | grep -E "\.cpp$|\.cxx$|\.h$|\.hpp$|\.hxx$" | grep -v "test" | xargs clang-format -n -Werror
+
+      - name: Pass cmake-format on CMake sources
+        run: |
+          git ls-files | grep -E "CMakeLists.txt|\.cmake$" | xargs cmake-format --check
+
+      - name: Pass ruff format on Python sources
+        run: |
+          ruff format --check
+
+      - name: Pass ruff check on Python sources
+        continue-on-error: true
+        run: |
+          ruff check
+
+      - name: Check line endings (Unix rather than DOS)
+        run: |
+          ! git ls-files | xargs file "{}" ";" | grep CRLF

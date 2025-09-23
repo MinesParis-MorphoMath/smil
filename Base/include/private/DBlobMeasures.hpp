@@ -55,7 +55,8 @@ namespace smil
    * @smilexample{blob_measures.py}
    */
   template <class T>
-  std::map<T, double> blobsArea(const Image<T> &imLbl, const bool onlyNonZero = true)
+  std::map<T, double> blobsArea(const Image<T> &imLbl,
+                                const bool      onlyNonZero = true)
   {
     return processBlobMeasure<T, T, measAreaFunc<T>>(imLbl, onlyNonZero);
   }
@@ -86,8 +87,8 @@ namespace smil
    * pixel values) in each blob.
    */
   template <class T, class labelT>
-  std::map<labelT, double> blobsVolume(const Image<T> &imIn,
-                                  std::map<labelT, Blob> &blobs)
+  std::map<labelT, double> blobsVolume(const Image<T>         &imIn,
+                                       std::map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, measVolFunc<T>>(imIn, blobs);
   }
@@ -101,7 +102,8 @@ namespace smil
    * each blob.
    */
   template <class T, class labelT>
-  std::map<labelT, T> blobsMinVal(const Image<T> &imIn, std::map<labelT, Blob> &blobs)
+  std::map<labelT, T> blobsMinVal(const Image<T>         &imIn,
+                                  std::map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, measMinValFunc<T>>(imIn, blobs);
   }
@@ -115,7 +117,8 @@ namespace smil
    * each blob.
    */
   template <class T, class labelT>
-  std::map<labelT, T> blobsMaxVal(const Image<T> &imIn, std::map<labelT, Blob> &blobs)
+  std::map<labelT, T> blobsMaxVal(const Image<T>         &imIn,
+                                  std::map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, measMaxValFunc<T>>(imIn, blobs);
   }
@@ -129,8 +132,8 @@ namespace smil
    * and @b max pixel values in each blob.
    */
   template <class T, class labelT>
-  std::map<labelT, std::vector<T>> blobsRangeVal(const Image<T> &imIn,
-                                       std::map<labelT, Blob> &blobs)
+  std::map<labelT, std::vector<T>> blobsRangeVal(const Image<T>         &imIn,
+                                                 std::map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, measMinMaxValFunc<T>>(imIn, blobs);
   }
@@ -145,8 +148,8 @@ namespace smil
    * the @b mean and <b> standard deviation</b> pixel values in each blob.
    */
   template <class T, class labelT>
-  std::map<labelT, Vector_double> blobsMeanVal(const Image<T> &imIn,
-                                          std::map<labelT, Blob> &blobs)
+  std::map<labelT, Vector_double> blobsMeanVal(const Image<T>         &imIn,
+                                               std::map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, measMeanValFunc<T>>(imIn, blobs);
   }
@@ -160,8 +163,8 @@ namespace smil
    * values in each blob.
    */
   template <class T, class labelT>
-  std::map<labelT, std::vector<T>> blobsValueList(const Image<T> &imIn,
-                                    std::map<labelT, Blob> &blobs)
+  std::map<labelT, std::vector<T>> blobsValueList(const Image<T>         &imIn,
+                                                  std::map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, valueListFunc<T>>(imIn, blobs);
   }
@@ -175,7 +178,8 @@ namespace smil
    * blob.
    */
   template <class T, class labelT>
-  std::map<labelT, T> blobsModeVal(const Image<T> &imIn, std::map<labelT, Blob> &blobs)
+  std::map<labelT, T> blobsModeVal(const Image<T>         &imIn,
+                                   std::map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, measModeValFunc<T>>(imIn, blobs);
   }
@@ -188,7 +192,8 @@ namespace smil
    * blob.
    */
   template <class T, class labelT>
-  std::map<labelT, T> blobsMedianVal(const Image<T> &imIn, std::map<labelT, Blob> &blobs)
+  std::map<labelT, T> blobsMedianVal(const Image<T>         &imIn,
+                                     std::map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, measMedianValFunc<T>>(imIn, blobs);
   }
@@ -205,7 +210,7 @@ namespace smil
    */
   template <class T>
   std::map<T, Vector_double> blobsBarycenter(const Image<T> &imLbl,
-                                        const bool onlyNonZero = true)
+                                             const bool      onlyNonZero = true)
   {
     return processBlobMeasure<T, T, measBarycenterFunc<T>>(imLbl, onlyNonZero);
   }
@@ -219,8 +224,8 @@ namespace smil
    * of the @b barycenter of each blob.
    */
   template <class T, class labelT>
-  std::map<labelT, Vector_double> blobsBarycenter(const Image<T> &imIn,
-                                             std::map<labelT, Blob> &blobs)
+  std::map<labelT, Vector_double> blobsBarycenter(const Image<T>         &imIn,
+                                                  std::map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, measBarycenterFunc<T>>(imIn, blobs);
   }
@@ -235,7 +240,7 @@ namespace smil
    */
   template <class T>
   std::map<T, std::vector<size_t>> blobsBoundBox(const Image<T> &imLbl,
-                                        const bool onlyNonZero = true)
+                                                 const bool onlyNonZero = true)
   {
     return processBlobMeasure<T, T, measBoundBoxFunc<T>>(imLbl, onlyNonZero);
   }
@@ -250,8 +255,8 @@ namespace smil
    * of the <b>bounding box</b> of each label.
    */
   template <class T, class labelT>
-  std::map<labelT, std::vector<size_t>> blobsBoundBox(const Image<T> &imIn,
-                                             std::map<labelT, Blob> &blobs)
+  std::map<labelT, std::vector<size_t>>
+  blobsBoundBox(const Image<T> &imIn, std::map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, measBoundBoxFunc<T>>(imIn, blobs);
   }
@@ -275,9 +280,9 @@ namespace smil
    * @smilexample{Getting blob orientation in space, inertia_moments.py}
    */
   template <class T, class labelT>
-  std::map<labelT, Vector_double> blobsMoments(const Image<T> &imIn,
-                                             std::map<labelT, Blob> &blobs,
-                                             bool central = false)
+  std::map<labelT, Vector_double> blobsMoments(const Image<T>         &imIn,
+                                               std::map<labelT, Blob> &blobs,
+                                               bool central = false)
   {
     std::map<labelT, Vector_double> bmoments;
     bmoments = processBlobMeasure<T, labelT, measMomentsFunc<T>>(imIn, blobs);
@@ -309,8 +314,8 @@ namespace smil
    */
   template <class T>
   std::map<T, Vector_double> blobsMoments(const Image<T> &imLbl,
-                                        const bool onlyNonZero = true,
-                                        bool central          = false)
+                                          const bool      onlyNonZero = true,
+                                          bool            central     = false)
   {
     std::map<T, Vector_double> bmoments;
     bmoments = processBlobMeasure<T, T, measMomentsFunc<T>>(imLbl, onlyNonZero);
@@ -335,8 +340,8 @@ namespace smil
    * @see measEntropy()
    */
   template <class T, class labelT>
-  std::map<labelT, double> blobsEntropy(const Image<T> &imIn,
-                                       std::map<labelT, Blob> &blobs)
+  std::map<labelT, double> blobsEntropy(const Image<T>         &imIn,
+                                        std::map<labelT, Blob> &blobs)
   {
     return processBlobMeasure<T, labelT, measEntropyFunc<T>>(imIn, blobs);
   }

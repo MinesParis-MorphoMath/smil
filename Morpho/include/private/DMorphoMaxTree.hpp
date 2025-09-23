@@ -53,8 +53,8 @@ namespace smil
 
 #ifndef SWIG
 
-  typedef size_t  Offset_T;
-  typedef UINT32  Label_T;
+  typedef size_t Offset_T;
+  typedef UINT32 Label_T;
 
   template <class T, class CriterionT, class Offset_T = size_t,
             class Label_T = UINT32>
@@ -270,8 +270,8 @@ namespace smil
         bool oddLine = oddSE && ((y0) % 2);
 
         // not size_t in order to (possibly be negative!)
-        off_t      x, y, z;
-        Offset_T   p_suiv;
+        off_t    x, y, z;
+        Offset_T p_suiv;
 
         for (UINT i = 0; i < sePtsNbr; i++) {
           IntPoint &pt = sePts[i];
@@ -296,16 +296,14 @@ namespace smil
         } // for each ngb
 
       } // while hq.notEmpty
-    }   // void flood
-
-
+    } // void flood
 
   protected:
     size_t imSize[3];
 
     std::vector<IntPoint> sePts;
-    UINT             sePtsNbr;
-    bool             oddSE;
+    UINT                  sePtsNbr;
+    bool                  oddSE;
     std::vector<int>      dOffsets;
 
   public:
@@ -360,7 +358,7 @@ namespace smil
     // void updateCriteria(const int node);
 
     // Update criteria on a given max-tree node.// From Andres
-    //template <class T, class CriterionT, class Offset_T, class Label_T>
+    // template <class T, class CriterionT, class Offset_T, class Label_T>
     void updateCriteria(const int node)
     {
       Label_T child = getChild(node);
@@ -519,7 +517,6 @@ namespace smil
     // ymax - tree.getCriterion(root).ymin+1;
     if (delta == 0) {
       while (child != 0) {
-
         compute_max(tree, transformee_node, indicatrice_node, child, stopSize,
                     (T1) 0, (T2) 0, hauteur, tree.getLevel(root),
                     tree.getLevel(root));
@@ -668,7 +665,7 @@ namespace smil
         } else {
           stab_residue = 0;
         }
-      }                       // end RGR
+      } // end RGR
       else if (method == 3) { // MSER sustraire
         stability = factor * (((aAncestor - aNode) * 1.0 / (aAncestor)));
         if (current_residue > stability) {
@@ -683,7 +680,7 @@ namespace smil
       current_residue = (lNode - lParent);
       if (method == 1) { // mser stability
         // relative growth rate
-        stability =  1 - ((aParent - aNode) * 1.0 / (aParent));
+        stability    = 1 - ((aParent - aNode) * 1.0 / (aParent));
         stab_residue = round(current_residue * stability);
       } else if (method == 2) { // relative growth rate
         relativeGrowthRate =
@@ -795,7 +792,7 @@ namespace smil
     UINT   hNode, hParent, wNode; // attributes
     size_t aNode, aParent, aAncestor;
     T      lNode, lParent, lAncestor;
-    ///wParent set but not used*/
+    /// wParent set but not used*/
     // node levels, the same type than input image
     float stability, fillRatio, AspectRatio, fac;
 

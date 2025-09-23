@@ -20,7 +20,6 @@
  *
  */
 
-
 #include <cstdio>
 #include <ctime>
 
@@ -31,25 +30,22 @@
 
 using namespace smil;
 
-
 int main()
 {
-    UINT BENCH_NRUNS = 1E3;
-    
-    Image<UINT8> im1("https://smil.cmm.minesparis.psl.eu/images/barbara.png");
-    Image<UINT8> im2(im1);
-    Image<UINT8> im3(im1);
-    threshold(im1, im2);
-    label(im2, im3);
-    
-    BENCH_IMG(blobsArea, im2);
-    
-    BENCH_IMG(computeBlobs, im3);
-    map<UINT8, Blob> blobs = computeBlobs(im3);
-    
-    BENCH_STR(blobsArea, "Blobs", blobs);
-    
-    BENCH_IMG(blobsVolume, im1, blobs);
+  UINT BENCH_NRUNS = 1E3;
 
+  Image<UINT8> im1("https://smil.cmm.minesparis.psl.eu/images/barbara.png");
+  Image<UINT8> im2(im1);
+  Image<UINT8> im3(im1);
+  threshold(im1, im2);
+  label(im2, im3);
+
+  BENCH_IMG(blobsArea, im2);
+
+  BENCH_IMG(computeBlobs, im3);
+  map<UINT8, Blob> blobs = computeBlobs(im3);
+
+  BENCH_STR(blobsArea, "Blobs", blobs);
+
+  BENCH_IMG(blobsVolume, im1, blobs);
 }
-

@@ -70,7 +70,7 @@ namespace smil
    */
   template <class T1, class T2>
   RES_T distanceEuclidean(const Image<T1> &imIn, Image<T2> &imOut,
-                              const StrElt &se = DEFAULT_SE);
+                          const StrElt &se = DEFAULT_SE);
 
   /** @cond */
   template <class T1, class T2>

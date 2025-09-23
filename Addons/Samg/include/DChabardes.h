@@ -2,7 +2,7 @@
 #define _DCHABARDES_H_
 
 @cond
-//#include "DSSE.h"
+// #include "DSSE.h"
 
 #include "DSamgMeasures.hpp"
 
@@ -13,5 +13,4 @@
 #include "DSamgLineArith.hpp"
 
 #endif // _DCHABARDES_H_
-@endcond
-
+    @endcond

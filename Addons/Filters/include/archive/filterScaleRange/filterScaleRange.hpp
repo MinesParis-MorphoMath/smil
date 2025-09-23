@@ -4,7 +4,6 @@
 namespace smil
 {
 
-
   /**
    * @brief expand() - Linear conversion of pixels values to the range
    * [Min, Max]
@@ -26,7 +25,7 @@ namespace smil
    */
   template <class T1, class T2>
   RES_T expand(const Image<T1> &imIn, const T1 inMin, const T1 inMax,
-                        const T2 outMin, const T2 outMax, Image<T2> &imOut)
+               const T2 outMin, const T2 outMax, Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -65,15 +64,15 @@ namespace smil
     size_t iMax = W * H * D;
     for (size_t i = 0; i < iMax; i++) {
       if (bufferIn[i] < inMin) {
-        bufferOut[i] = (T2)(k1 * bufferIn[i]);
+        bufferOut[i] = (T2) (k1 * bufferIn[i]);
         continue;
       }
       if (bufferIn[i] >= inMin && bufferIn[i] < inMax) {
-        bufferOut[i] = (T2)(outMin + k2 * (bufferIn[i] - inMin));
+        bufferOut[i] = (T2) (outMin + k2 * (bufferIn[i] - inMin));
         continue;
       }
       if (bufferIn[i] >= inMax) {
-        bufferOut[i] = (T2)(outMax + k3 * (bufferIn[i] - inMax));
+        bufferOut[i] = (T2) (outMax + k3 * (bufferIn[i] - inMax));
       }
     }
     return RES_OK;
@@ -97,7 +96,7 @@ namespace smil
    */
   template <class T1, class T2>
   RES_T expand(const Image<T1> &imIn, const T2 Min, const T2 Max,
-                        Image<T2> &imOut, bool onlyNonZero)
+               Image<T2> &imOut, bool onlyNonZero)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -132,7 +131,7 @@ namespace smil
 
     size_t iMax = W * H * D;
     for (size_t i = 0; i < iMax; i++)
-      bufferOut[i] = (T2)(Min + k * (bufferIn[i] - vMin));
+      bufferOut[i] = (T2) (Min + k * (bufferIn[i] - vMin));
 
     return RES_OK;
   }
@@ -152,15 +151,14 @@ namespace smil
    * @param[in] onlyNonZero : defines how to find input image range of values
    */
   template <class T1, class T2>
-  RES_T expand(const Image<T1> &imIn, Image<T2> &imOut,
-                        bool onlyNonZero)
+  RES_T expand(const Image<T1> &imIn, Image<T2> &imOut, bool onlyNonZero)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
 
 #if 1
-    return expand(imIn, imOut.getDataTypeMin(), imOut.getDataTypeMax(),
-                           imOut, onlyNonZero);
+    return expand(imIn, imOut.getDataTypeMin(), imOut.getDataTypeMax(), imOut,
+                  onlyNonZero);
 #else
 
     ImageFreezer freeze(imOut);
@@ -197,7 +195,7 @@ namespace smil
 
     size_t iMax = W * H * D;
     for (size_t i = 0; i < iMax; i++)
-      bufferOut[i] = (T2)(Min + k * (bufferIn[i] - vMin));
+      bufferOut[i] = (T2) (Min + k * (bufferIn[i] - vMin));
 
     return RES_OK;
 #endif
@@ -222,8 +220,8 @@ namespace smil
    * @param[out] imOut : output Image
    */
   template <class T1, class T2>
-  RES_T sCurve(const Image<T1> &imIn, const T1 pivot,
-                              const double ratio, Image<T2> &imOut)
+  RES_T sCurve(const Image<T1> &imIn, const T1 pivot, const double ratio,
+               Image<T2> &imOut)
   {
     ASSERT_ALLOCATED(&imIn, &imOut);
     ASSERT_SAME_SIZE(&imIn, &imOut);
@@ -254,11 +252,11 @@ namespace smil
 
     double k = 4. * ratio / (vMax - vMin);
 
-    T2 Max      = imOut.getDataTypeMax();
+    T2     Max  = imOut.getDataTypeMax();
     size_t iMax = W * H * D;
 
     for (size_t i = 0; i < iMax; i++)
-      bufferOut[i] = (T2)(Max / (1. + exp(-k * (bufferIn[i] - ctr))));
+      bufferOut[i] = (T2) (Max / (1. + exp(-k * (bufferIn[i] - ctr))));
 
     return RES_OK;
   }

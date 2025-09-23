@@ -67,8 +67,8 @@ namespace smil
     virtual void reset()                                                = 0;
     virtual void merge(GenericCriterion *other_criteron)                = 0;
     virtual void update(const size_t x, const size_t y, const size_t z) = 0;
-    virtual bool operator<(const Attr_T &other_attribute)             = 0;
-    Attr_T     getAttributeValue()
+    virtual bool operator<(const Attr_T &other_attribute)               = 0;
+    Attr_T       getAttributeValue()
     {
       compute();
       return attribute_value_;

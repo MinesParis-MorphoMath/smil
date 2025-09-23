@@ -76,12 +76,12 @@ namespace smil
         if (NbPixelInKernel < NbPixel * percentageNbMinPixel) {
           if (excludeOutlier) {
             bufferOut[(i + j * W)] =
-                (T)((Mean * NbPixel - bufferIn[(i + j * W)]) /
-                    (double) (NbPixel - 1));
+                (T) ((Mean * NbPixel - bufferIn[(i + j * W)]) /
+                     (double) (NbPixel - 1));
           } else
             bufferOut[(i + j * W)] = (T) Mean;
         } else
-          bufferOut[(i + j * W)] = (T)(Sum / (double) NbPixelInKernel);
+          bufferOut[(i + j * W)] = (T) (Sum / (double) NbPixelInKernel);
       }
     }
     return RES_OK;

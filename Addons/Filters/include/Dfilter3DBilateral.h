@@ -36,7 +36,7 @@ namespace smil
    * @ingroup AddonFilters
    * @defgroup Addon3DBilateral Bilateral Filter (3D)
    *
-   * Fast 3D recursive bilateral filter implementation based on the one 
+   * Fast 3D recursive bilateral filter implementation based on the one
    * proposed by Qingxiong Yang @cite Qingxiong_2012
    *
    * * Possible problems with very large images or images of type UINT32 and
@@ -53,12 +53,12 @@ namespace smil
    * @param[in]  sigmaR : range standard deviation of the kernel
    * @param[out] imOut : output Image
    *
-   * <b>sigmaW</b> and <b>sigmaR</b> heavily depend on the image. A simple rule 
-   * of thumb to choose initial values to try for <b>sigmaW</b> and 
+   * <b>sigmaW</b> and <b>sigmaR</b> heavily depend on the image. A simple rule
+   * of thumb to choose initial values to try for <b>sigmaW</b> and
    * <b>sigmaR</b> is :
-   * * <b>sigmaW</b> : smaller than the mean radius of objects to be 
+   * * <b>sigmaW</b> : smaller than the mean radius of objects to be
    *   preserved (e.g. 10 pixels);
-   * * <b>sigmaR</b> : smaller than the minimal gradient to be preserved 
+   * * <b>sigmaR</b> : smaller than the minimal gradient to be preserved
    *   (e.g. 10 for 8 bits images).
    */
   template <class T>

@@ -88,8 +88,8 @@ namespace smil
     }
 
     std::vector<IntPoint> sePts;
-    size_t           sePtsNbr;
-    bool             oddSE;
+    size_t                sePtsNbr;
+    bool                  oddSE;
     std::vector<int>      dOffsets;
 
     T currentLevel;
@@ -241,7 +241,7 @@ namespace smil
 #endif // SWIG
   {
   protected:
-    std::vector<size_t>                  tmpOffsets;
+    std::vector<size_t>             tmpOffsets;
     typename ImDtTypes<T>::lineType wsPixels;
     const T STAT_LABELED, STAT_QUEUED, STAT_CANDIDATE, STAT_WS_LINE;
 

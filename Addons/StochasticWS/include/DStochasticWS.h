@@ -3,7 +3,7 @@
  * Copyright (c) 2011-2016, Matthieu FAESSEL and ARMINES
  * Copyright (c) 2017-2024, Centre de Morphologie Mathematique
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *
@@ -16,16 +16,16 @@
  *       names of its contributors may be used to endorse or promote products
  *       derived from this software without specific prior written permission.
  *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS'' 
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ``AS IS''
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS AND CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR 
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN 
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF 
+ * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
  * THE POSSIBILITY OF SUCH DAMAGE.
  *
  * Description :
@@ -39,7 +39,6 @@
  *
  * __HEAD__ - Stop here !
  */
-
 
 #ifndef _DSTOCHASTICWS_H_
 #define _DSTOCHASTICWS_H_
@@ -86,7 +85,7 @@ namespace smil
   void stochasticWatershed(const Image<labelT> &primary,
                            const Image<T> &gradient, Image<labelT> &out,
                            const size_t &n_seeds, const StrElt &se);
-                           
+
   /**
    * stochasticFlatZonesParallel
    *
@@ -99,10 +98,10 @@ namespace smil
    */
   template <class labelT, class T>
   size_t stochasticFlatZonesParallel(const Image<labelT> &primary,
-                                     const Image<T> &gradient,
+                                     const Image<T>      &gradient,
                                      Image<labelT> &out, const size_t &n_seeds,
                                      const double &t0, const StrElt &se);
-                                     
+
   /**
    *  Over Segmentation Correction
    *
@@ -131,11 +130,11 @@ namespace smil
    */
   template <class labelT, class T>
   size_t overSegmentationCorrection(const Image<labelT> &primary,
-                                    const Image<T> &gradient,
+                                    const Image<T>      &gradient,
                                     Image<labelT> &out, const size_t &n_seeds,
                                     const double &r0, const StrElt &se);
 
-/** @} */
+  /** @} */
 
 } // namespace smil
 
@@ -144,4 +143,3 @@ namespace smil
 /** @endcond */
 
 #endif // _DSTOCHASTICWS_H_
-

@@ -25,4 +25,3 @@ sup(im3, im4, im4)
 
 im2.getViewer().drawOverlay(im4)
 im2.show()
-

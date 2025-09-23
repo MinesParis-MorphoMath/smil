@@ -71,8 +71,8 @@ namespace smil
    */
   template <class T>
   RES_T sigmaFilter(const Image<T> &imIn, const UINT8 radius,
-                      const double sigma, const double percentageNbMinPixel,
-                      const bool excludeOutlier, Image<T> &imOut);
+                    const double sigma, const double percentageNbMinPixel,
+                    const bool excludeOutlier, Image<T> &imOut);
 
   /**
    * @brief Performs a noise reduction following the Lee paper (RGB Images)
@@ -86,12 +86,11 @@ namespace smil
    */
   template <class T>
   RES_T sigmaFilterRGB(const Image<T> &imIn, const UINT8 radius,
-                         const double sigma, const double percentageNbMinPixel,
-                         const bool excludeOutlier, Image<T> &imOut);
+                       const double sigma, const double percentageNbMinPixel,
+                       const bool excludeOutlier, Image<T> &imOut);
   /** @} */
 } // namespace smil
 
 #include "private/filterSigma/filterSigma.hpp"
 
 #endif // _D_SIGMA_FILTER_H_
-

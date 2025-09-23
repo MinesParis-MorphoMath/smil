@@ -93,23 +93,23 @@ namespace smil
    * - Wikipedia : @UrlWikipedia{Confusion_matrix, Confusion matrix}
    */
   template <typename T>
-  class ConfusionMatrix {
+  class ConfusionMatrix
+  {
   private:
     size_t FP, FN, TP, TN;
     size_t P, N;
     size_t aGT, aIM;
     bool   okTable;
+
   public:
     ConfusionMatrix(const Image<T> &imGt, const Image<T> &imIn)
     {
       okTable = false;
-      if (!imGt.isAllocated() || !imIn.isAllocated())
-      {
+      if (!imGt.isAllocated() || !imIn.isAllocated()) {
         ERR_MSG("imGt or imIn aren't allocated");
         return;
       }
-      if (!haveSameSize(&imGt, &imIn, NULL))
-      {
+      if (!haveSameSize(&imGt, &imIn, NULL)) {
         ERR_MSG("imGt and imIn don't have the same size");
         return;
       }
@@ -157,7 +157,7 @@ namespace smil
       if (!okTable)
         return 0.;
 
-      return double(TP + DXM) / double (TP + FN + DXM);
+      return double(TP + DXM) / double(TP + FN + DXM);
     }
 
     double FScore(double beta = 1.)
@@ -166,8 +166,8 @@ namespace smil
         return 0.;
 
       double b2 = beta * beta;
-      double p = Precision();
-      double r = Recall();
+      double p  = Precision();
+      double r  = Recall();
 
       return (1 + b2) * (p * r) / (b2 * p + r);
     }
@@ -256,8 +256,6 @@ namespace smil
   };
 
   /** @endcond */
-
-
 
   /**
    * indexJaccard()
@@ -363,7 +361,7 @@ namespace smil
       ConfusionMatrix<T> cTable(imGt, imIn);
       return cTable.Accuracy();
     } else {
-      size_t nbPixels = imGt.getPixelCount();
+      size_t   nbPixels = imGt.getPixelCount();
       Image<T> imOut(imGt);
       absDiff(imGt, imIn, imOut);
       T tVal = 0;
@@ -517,7 +515,6 @@ namespace smil
     return cTable.Specificity();
   }
 
-
   /**
    * indexFallOut()
    *
@@ -601,7 +598,6 @@ namespace smil
     return cTable.Overlap();
   }
 
-
   /**
    * distanceHamming()
    *
@@ -661,9 +657,9 @@ namespace smil
     inf(imIn, imt, imt);
     std::vector<size_t> pixIn = nonZeroOffsets(imt);
 
-    off_t szGt = pixGt.size();
+    off_t               szGt = pixGt.size();
     std::vector<double> distGt(szGt, std::numeric_limits<double>::max());
-    off_t szIn = pixIn.size();
+    off_t               szIn = pixIn.size();
     std::vector<double> distIn(szIn, std::numeric_limits<double>::max());
 
     size_t Size[3];
@@ -671,7 +667,7 @@ namespace smil
     ImageBox box(Size);
 
 #ifdef OPEN_MP
-#pragma omp parallel for 
+#pragma omp parallel for
 #endif
     for (off_t i = 0; i < szGt; i++) {
       for (off_t j = 0; j < szIn; j++) {
@@ -690,8 +686,6 @@ namespace smil
 
     return std::max(*iGt, *iIn);
   }
-
-
 
   /** @} */
 

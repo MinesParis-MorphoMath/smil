@@ -15,7 +15,6 @@ namespace smil
    *
    * @{ */
 
-
   /** @} */
 } // namespace smil
 

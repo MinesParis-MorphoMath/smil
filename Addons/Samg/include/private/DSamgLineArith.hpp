@@ -3,7 +3,8 @@
 
 namespace smil
 {
-  template <class T> struct supCstLine : public unaryLineFunctionBase<T> {
+  template <class T>
+  struct supCstLine : public unaryLineFunctionBase<T> {
     typedef typename unaryLineFunctionBase<T>::lineType lineType;
     T threshold, trueVal, falseVal;
     supCstLine() : threshold(0), trueVal(0), falseVal(ImDtTypes<T>::max())
@@ -16,12 +17,13 @@ namespace smil
     }
   };
 
-  template <class T> struct addNoSatCstLine : public unaryLineFunctionBase<T> {
+  template <class T>
+  struct addNoSatCstLine : public unaryLineFunctionBase<T> {
     addNoSatCstLine() : val(1)
     {
     }
 
-    T val;
+    T                                                   val;
     typedef typename unaryLineFunctionBase<T>::lineType lineType;
     virtual void _exec(const lineType lIn1, const size_t size, lineType lOut)
     {
@@ -30,7 +32,8 @@ namespace smil
     }
   };
 
-  template <class T> struct equLines {
+  template <class T>
+  struct equLines {
     equLines()
     {
     }
@@ -43,7 +46,8 @@ namespace smil
     }
   };
 
-  template <class T> struct equLinesMasked {
+  template <class T>
+  struct equLinesMasked {
     equLinesMasked(size_t lineLen)
     {
       eq.trueVal  = ImDtTypes<T>::max();
@@ -58,7 +62,7 @@ namespace smil
     }
 
   private:
-    equLine<T> eq;
+    equLine<T>     eq;
     testLine<T, T> tes;
   };
   /*
@@ -97,7 +101,7 @@ namespace smil
   */
   template <class T1, class T2>
   struct supLines : public binaryLineFunctionBase<T1, T1, T2> {
-    typedef typename binaryLineFunctionBase<T1, T1, T2>::lineType1 lineType1;
+    typedef typename binaryLineFunctionBase<T1, T1, T2>::lineType1   lineType1;
     typedef typename binaryLineFunctionBase<T1, T1, T2>::lineOutType lineType2;
 
     virtual void _exec(const lineType1 lIn1, const lineType1 lIn2,

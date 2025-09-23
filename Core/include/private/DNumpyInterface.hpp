@@ -47,7 +47,8 @@ namespace smil
   /**
    * Numpy Array Interface
    */
-  template <class T> class NumpyInt : public SharedImage<T>
+  template <class T>
+  class NumpyInt : public SharedImage<T>
   {
   public:
     typedef SharedImage<T> parentClass;
@@ -60,7 +61,7 @@ namespace smil
 
       PyArrayObject *arr = (PyArrayObject *) (obj);
 
-      int dim        = PyArray_NDIM(arr);
+      int       dim  = PyArray_NDIM(arr);
       npy_intp *dims = PyArray_DIMS(arr);
 
       T *data = (T *) PyArray_DATA(arr);

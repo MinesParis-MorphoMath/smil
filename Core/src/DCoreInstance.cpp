@@ -156,7 +156,7 @@ void Core::resetNumberOfThreads()
 size_t Core::getAllocatedMemory()
 {
   std::vector<BaseImage *>::iterator it       = this->registeredImages.begin();
-  size_t                        totAlloc = 0;
+  size_t                             totAlloc = 0;
 
   while (it != this->registeredImages.end())
     totAlloc += (*it++)->getAllocatedSize();
@@ -207,7 +207,8 @@ void Core::deleteAllImages()
 
 void Core::getCompilationInfos(std::ostream &outStream)
 {
-  outStream << "Build date: " << __DATE__ << " (" << __TIME__ << ")" << std::endl;
+  outStream << "Build date: " << __DATE__ << " (" << __TIME__ << ")"
+            << std::endl;
 #ifdef DEBUG
   outStream << "Build type: debug" << std::endl;
 #else
@@ -283,5 +284,4 @@ void Core::getCompilationInfos(std::ostream &outStream)
 #endif
   outStream << " RAW";
   outStream << std::endl;
-
 }

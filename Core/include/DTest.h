@@ -60,10 +60,10 @@ namespace smil
     virtual void end()
     {
     }
-    const char *name;
-    bool stopIfError;
+    const char        *name;
+    bool               stopIfError;
     std::stringstream *outStream;
-    RES_T retVal;
+    RES_T              retVal;
 #ifdef __clang__
     SMIL_UNUSED
 #endif // __clang__
@@ -93,7 +93,7 @@ namespace smil
     if (_throw) {                                                              \
       if (outStream)                                                           \
         *outStream << __FILE__ << ":" << __LINE__ << ": error: "               \
-                   << " no throw " << #expr << std::endl;               \
+                   << " no throw " << #expr << std::endl;                      \
       retVal = RES_ERR;                                                        \
       if (stopIfError)                                                         \
         return;                                                                \
@@ -111,7 +111,7 @@ namespace smil
     if (!_throw) {                                                             \
       if (outStream)                                                           \
         *outStream << __FILE__ << ":" << __LINE__ << ": error: "               \
-                   << " throw " << #expr << std::endl;                  \
+                   << " throw " << #expr << std::endl;                         \
       retVal = RES_ERR;                                                        \
       if (stopIfError)                                                         \
         return;                                                                \
@@ -122,7 +122,7 @@ namespace smil
   {
   public:
     void add(TestCase *f);
-    int run();
+    int  run();
 
   private:
     std::list<TestCase *> funcList;

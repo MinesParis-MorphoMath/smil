@@ -52,13 +52,14 @@ namespace smil
   /*
    *
    */
-  template <class T, class _retType> struct MeasureFunctionBase {
+  template <class T, class _retType>
+  struct MeasureFunctionBase {
     virtual ~MeasureFunctionBase()
     {
     }
     typedef typename Image<T>::lineType lineType;
-    typedef _retType retType;
-    retType retVal;
+    typedef _retType                    retType;
+    retType                             retVal;
 
     virtual void initialize(const Image<T> & /*imIn*/)
     {
@@ -78,8 +79,8 @@ namespace smil
       initialize(imIn);
       ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION);
 
-      lineType pixels = imIn.getPixels();
-      size_t pixCount = imIn.getPixelCount();
+      lineType pixels   = imIn.getPixels();
+      size_t   pixCount = imIn.getPixelCount();
 
       if (!onlyNonZero)
         processSequence(pixels, pixCount);
@@ -108,14 +109,14 @@ namespace smil
     /*
      * To be tested - added by Joe in Aug 25, 2020
      */
-    virtual RES_T processImage(const Image<T> &imIn,
+    virtual RES_T processImage(const Image<T>   &imIn,
                                SMIL_UNUSED const Image<T> &imMask)
     {
       initialize(imIn);
       ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION);
 
-      lineType pixels = imIn.getPixels();
-      size_t pixCount = imIn.getPixelCount();
+      lineType pixels   = imIn.getPixels();
+      size_t   pixCount = imIn.getPixelCount();
 
       processSequence(pixels, pixCount);
 
@@ -135,7 +136,7 @@ namespace smil
 
       ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, retVal);
 
-      lineType pixels                       = imIn.getPixels();
+      lineType                       pixels = imIn.getPixels();
       Blob::sequences_const_iterator it     = blob.sequences.begin();
       Blob::sequences_const_iterator it_end = blob.sequences.end();
       for (; it != it_end; it++)
@@ -175,7 +176,7 @@ namespace smil
   template <class T, class _retType>
   struct MeasureFunctionWithPos : public MeasureFunctionBase<T, _retType> {
     typedef typename Image<T>::lineType lineType;
-    typedef _retType retType;
+    typedef _retType                    retType;
     virtual void processSequence(lineType /*lineIn*/, size_t /*size*/,
                                  size_t /*x*/, size_t /*y*/, size_t /*z*/)
     {
@@ -185,10 +186,10 @@ namespace smil
       this->initialize(imIn);
       ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION);
 
-      typename Image<T>::volType slices = imIn.getSlices();
+      typename Image<T>::volType   slices = imIn.getSlices();
       typename Image<T>::sliceType lines;
-      typename Image<T>::lineType pixels;
-      size_t dims[3];
+      typename Image<T>::lineType  pixels;
+      size_t                       dims[3];
       imIn.getSize(dims);
 
       if (!onlyNonZero) {
@@ -228,10 +229,10 @@ namespace smil
 
       ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, this->retVal);
 
-      lineType pixels                       = imIn.getPixels();
+      lineType                       pixels = imIn.getPixels();
       Blob::sequences_const_iterator it     = blob.sequences.begin();
       Blob::sequences_const_iterator it_end = blob.sequences.end();
-      size_t x, y, z;
+      size_t                         x, y, z;
       for (; it != it_end; it++) {
         imIn.getCoordsFromOffset((*it).offset, x, y, z);
         this->processSequence(pixels + (*it).offset, (*it).size, x, y, z);
@@ -261,20 +262,20 @@ namespace smil
   std::map<labelT, typename funcT::retType>
   processBlobMeasure(const Image<T> &imIn, const std::map<labelT, Blob> &blobs)
   {
-    typedef typename funcT::retType retType;
+    typedef typename funcT::retType           retType;
     std::map<labelT, typename funcT::retType> res;
 
     ASSERT(CHECK_ALLOCATED(&imIn), RES_ERR_BAD_ALLOCATION, res);
 
-    size_t blobNbr = blobs.size();
-    std::vector<labelT> _keys;
+    size_t               blobNbr = blobs.size();
+    std::vector<labelT>  _keys;
     std::vector<retType> _results(blobNbr);
 
     for (typename std::map<labelT, Blob>::const_iterator it = blobs.begin();
          it != blobs.end(); it++)
       _keys.push_back(it->first);
 
-    labelT *keys     = _keys.data();
+    labelT  *keys    = _keys.data();
     retType *results = _results.data();
 
     size_t i;
@@ -288,7 +289,7 @@ namespace smil
 #pragma omp for
 #endif // USE_OPEN_MP
       for (i = 0; i < blobNbr; i++) {
-        funcT func;
+        funcT       func;
         const Blob &blob = blobs.at(keys[i]);
         results[i]       = func(imIn, blob);
       }

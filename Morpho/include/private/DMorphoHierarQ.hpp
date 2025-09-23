@@ -50,7 +50,8 @@ namespace smil
   /**
    * Preallocated FIFO Queue
    */
-  template <class T> class FIFO_Queue
+  template <class T>
+  class FIFO_Queue
   {
   public:
     FIFO_Queue(size_t newSize = 0)
@@ -75,11 +76,12 @@ namespace smil
     void initialize(size_t newSize)
     {
       reset();
-      realSize = std::max(newSize + 1, size_t(8)); // Avoid to have to small buffer
-      data     = new T[realSize];
-      _size    = 0;
-      first    = 0;
-      last     = 0;
+      realSize =
+          std::max(newSize + 1, size_t(8)); // Avoid to have to small buffer
+      data  = new T[realSize];
+      _size = 0;
+      first = 0;
+      last  = 0;
     }
     inline size_t size()
     {
@@ -115,10 +117,11 @@ namespace smil
     size_t realSize;
     size_t first;
     size_t last;
-    T *data;
+    T     *data;
   };
 
-  template <class TokenType = size_t> class STD_Queue : public std::queue<TokenType>
+  template <class TokenType = size_t>
+  class STD_Queue : public std::queue<TokenType>
   {
   public:
     // Dummy constructor for compatibilty with FIFO_Queue one
@@ -128,7 +131,8 @@ namespace smil
     static const bool preallocate = false;
   };
 
-  template <class TokenType = size_t> class STD_Stack : public std::stack<TokenType>
+  template <class TokenType = size_t>
+  class STD_Stack : public std::stack<TokenType>
   {
   public:
     // Dummy operator for compatibility with other containers from smil
@@ -139,19 +143,19 @@ namespace smil
   };
 
   template <class T, class TokenType = size_t,
-            class StackType = STD_Queue<TokenType> >
+            class StackType = STD_Queue<TokenType>>
   class HierarchicalQueue
   {
   private:
-    size_t GRAY_LEVEL_NBR;
-    size_t GRAY_LEVEL_MIN;
-    size_t GRAY_LEVEL_MAX;
+    size_t      GRAY_LEVEL_NBR;
+    size_t      GRAY_LEVEL_MIN;
+    size_t      GRAY_LEVEL_MAX;
     StackType **stacks;
-    size_t *tokenNbr;
-    size_t size;
-    size_t higherLevel;
+    size_t     *tokenNbr;
+    size_t      size;
+    size_t      higherLevel;
 
-    bool initialized;
+    bool       initialized;
     const bool reverseOrder;
 
   public:
@@ -278,7 +282,7 @@ namespace smil
 
     inline TokenType pop()
     {
-      size_t hlSize     = tokenNbr[higherLevel];
+      size_t    hlSize  = tokenNbr[higherLevel];
       TokenType dOffset = stacks[higherLevel]->front();
       stacks[higherLevel]->pop();
       size--;

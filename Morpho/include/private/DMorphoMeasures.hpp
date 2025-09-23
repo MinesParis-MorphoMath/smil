@@ -74,9 +74,9 @@ namespace smil
 
     size_t seSize = stepSize;
 
-    double v0 = vol(imIn);
-    T minv = minVal(imEro);
-    T maxv = maxVal(imEro);
+    double v0   = vol(imIn);
+    T      minv = minVal(imEro);
+    T      maxv = maxVal(imEro);
 
     do {
       erode(imEro, imEro, se(stepSize));

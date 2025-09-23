@@ -109,7 +109,8 @@ namespace smil
 #include <stdlib.h>
 namespace smil
 {
-  inline void *aligned_malloc(size_t size, [[maybe_unused]] size_t align = SIMD_VEC_SIZE)
+  inline void *aligned_malloc(size_t                  size,
+                              [[maybe_unused]] size_t align = SIMD_VEC_SIZE)
   {
     return malloc(size);
   }
@@ -123,7 +124,8 @@ namespace smil
 #include <stdlib.h>
 namespace smil
 {
-  inline void *aligned_malloc(size_t size, [[maybe_unused]] size_t align = SIMD_VEC_SIZE)
+  inline void *aligned_malloc(size_t                  size,
+                              [[maybe_unused]] size_t align = SIMD_VEC_SIZE)
   {
     return malloc(size);
   }
@@ -188,9 +190,9 @@ namespace smil
   public:
     //    typedefs
     typedef T                 value_type;
-    typedef value_type *      pointer;
+    typedef value_type       *pointer;
     typedef const value_type *const_pointer;
-    typedef value_type &      reference;
+    typedef value_type       &reference;
     typedef const value_type &const_reference;
     typedef std::size_t       size_type;
     typedef std::ptrdiff_t    difference_type;
@@ -339,11 +341,11 @@ namespace smil
     if (bytes == 0) {
       oss << "0 B";
     } else {
-      const char * units[] = {"B",  "KiB", "MiB", "GiB", "TiB",
-                             "PiB", "EiB", "ZiB", "YiB"};
+      const char  *units[] = {"B",   "KiB", "MiB", "GiB", "TiB",
+                              "PiB", "EiB", "ZiB", "YiB"};
       const double base    = 1024;
       int          c       = std::min((int) (log((double) bytes) / log(base)),
-                       (int) sizeof(units) - 1);
+                                      (int) sizeof(units) - 1);
       oss << bytes / pow(base, c) << units[c];
     }
     return oss.str();

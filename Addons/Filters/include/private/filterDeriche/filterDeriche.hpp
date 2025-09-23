@@ -60,7 +60,8 @@ namespace smil
   // enlevant les bordures ajoutees
   //**************************************************************************
   template <typename T>
-  void debed(T *imOut, int W, SMIL_UNUSED int H, int size, double *Img, int NewW, int NewH)
+  void debed(T *imOut, int W, SMIL_UNUSED int H, int size, double *Img,
+             int NewW, int NewH)
   {
     int i, j;
     size += 2;
@@ -83,7 +84,7 @@ namespace smil
   {
     double c1, c2, a1, a2, g;
     double s1, s2, s;
-    int i, j;
+    int    i, j;
 
     g = ((1 - std::exp(-Alpha)) * (1 - std::exp(-Alpha))) /
         (1 + 2 * Alpha * std::exp(-Alpha) - std::exp(-2 * Alpha));
@@ -146,9 +147,9 @@ namespace smil
   void ApplySmoothing_Vertical(double *x, double *y, double *Causal,
                                double *AntiCausal, int W, int H, double Alpha)
   {
-    float c1, c2, a1, a2, g;
+    float  c1, c2, a1, a2, g;
     double s1, s2, s;
-    int i, j;
+    int    i, j;
 
     g  = (float) (((1 - std::exp(-Alpha)) * (1 - std::exp(-Alpha))) /
                  (1 + 2 * Alpha * std::exp(-Alpha) - std::exp(-2 * Alpha)));
@@ -238,7 +239,7 @@ namespace smil
   //**************************************************************************
   bool *ComputeBli(double *ImgFiltrer, double *ImgBuf, int W, int H)
   {
-    int i, j;
+    int   i, j;
     bool *ImgBli = new bool[W * H];
     if (ImgBli == 0)
       return 0;
@@ -262,7 +263,8 @@ namespace smil
   // On regarde le pixel voisin en on regarde s'il y a un franchissement de
   // zero. On effectue donc la multiplication des 2 pixels et on compare a 0
   //**************************************************************************
-  bool IsCandidateEdge(bool *Buff, double *Orig, int W, SMIL_UNUSED int H, int i, int j)
+  bool IsCandidateEdge(bool *Buff, double *Orig, int W, SMIL_UNUSED int H,
+                       int i, int j)
   {
     // a positive z-c must have a positive 1st derivative,where positive z-c
     // means the second derivative goes from + to - as we cross the edge
@@ -295,13 +297,13 @@ namespace smil
   // On calcule un seuil pour chaque pixel. Le seuil sera determiner grace aux
   // pixels voisins present dans la fenetre WINDOW_SIZE
   //**************************************************************************
-  double ComputeAdaptativeGradient(bool *Bli, double *Orig, int W, SMIL_UNUSED int H, int k,
-                                   int l)
+  double ComputeAdaptativeGradient(bool *Bli, double *Orig, int W,
+                                   SMIL_UNUSED int H, int k, int l)
   {
-    int i, j;
+    int    i, j;
     double SumOn, SumOff;
     double AvgOn, AvgOff;
-    int NbOn, NbOff;
+    int    NbOn, NbOff;
 
     SumOn  = 0.0;
     SumOff = 0.0;
@@ -369,7 +371,7 @@ namespace smil
   bool DericheFilter(double *Img, int W, int H, double Alpha)
   {
     double *BufFiltrer = 0;
-    bool *ImgBli       = 0;
+    bool   *ImgBli     = 0;
 
     BufFiltrer = new double[W * H];
     if (BufFiltrer == 0)
@@ -425,26 +427,26 @@ namespace smil
 
   template <class T>
   RES_T dericheEdgeDetection(const Image<T> &imIn, const double Alpha,
-                               Image<T> &imOut)
+                             Image<T> &imOut)
   {
-      ASSERT_ALLOCATED(&imIn, &imOut);
-      ASSERT_SAME_SIZE(&imIn, &imOut);
+    ASSERT_ALLOCATED(&imIn, &imOut);
+    ASSERT_SAME_SIZE(&imIn, &imOut);
 
-      ImageFreezer freeze(imOut);
+    ImageFreezer freeze(imOut);
 
-      size_t S[3];
-      imIn.getSize(S);
-      
-      // TODO: check that image is 2D
-      if (S[2] > 1) {
-        // Error : this is a 3D image
-        return RES_ERR;
-      }
+    size_t S[3];
+    imIn.getSize(S);
 
-      typename ImDtTypes<T>::lineType bufferIn  = imIn.getPixels();
-      typename ImDtTypes<T>::lineType bufferOut = imOut.getPixels();
-      
-      return Deriche(bufferIn, S[0], S[1], Alpha, bufferOut);
+    // TODO: check that image is 2D
+    if (S[2] > 1) {
+      // Error : this is a 3D image
+      return RES_ERR;
+    }
+
+    typename ImDtTypes<T>::lineType bufferIn  = imIn.getPixels();
+    typename ImDtTypes<T>::lineType bufferOut = imOut.getPixels();
+
+    return Deriche(bufferIn, S[0], S[1], Alpha, bufferOut);
   }
 } // namespace smil
 #endif

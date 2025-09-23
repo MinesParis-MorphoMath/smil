@@ -42,18 +42,22 @@ namespace smil
    * @{
    */
 
-  template <class T> class ImageViewer;
+  template <class T>
+  class ImageViewer;
 
-  template <class T> class ResImage;
+  template <class T>
+  class ResImage;
 
-  template <class T> class SharedImage;
+  template <class T>
+  class SharedImage;
 
   /**
    * Main Image class.
    *
    * @tparam T Image data type (UINT8, UINT16, ...)
    */
-  template <class T> class Image : public BaseImage
+  template <class T>
+  class Image : public BaseImage
   {
     typedef BaseImage parentClass;
 
@@ -71,7 +75,8 @@ namespace smil
     //! Copy constructor
     Image(const Image<T> &rhs, bool cloneData = false);
 
-    template <class T2> Image(const Image<T2> &rhs, bool cloneData = false);
+    template <class T2>
+    Image(const Image<T2> &rhs, bool cloneData = false);
     Image(const ResImage<T> &rhs, bool cloneData = true);
 
     // Assignment operator
@@ -95,11 +100,11 @@ namespace smil
       T *dum = NULL;
       return getDataTypeAsString<T>(dum);
     }
-    typedef typename ImDtTypes<T>::pixelType pixelType;
-    typedef typename ImDtTypes<T>::lineType lineType;
+    typedef typename ImDtTypes<T>::pixelType        pixelType;
+    typedef typename ImDtTypes<T>::lineType         lineType;
     typedef typename ImDtTypes<T>::restrictLineType restrictLineType;
-    typedef typename ImDtTypes<T>::sliceType sliceType;
-    typedef typename ImDtTypes<T>::volType volType;
+    typedef typename ImDtTypes<T>::sliceType        sliceType;
+    typedef typename ImDtTypes<T>::volType          volType;
 
     //! Get the pixels as a 1D array
     lineType getPixels() const
@@ -181,7 +186,7 @@ namespace smil
     void fromArray(const T inArray[]);
 
     //! Copy pixel values to a given char array
-    void toCharArray(signed char outArray[]);
+    void  toCharArray(signed char outArray[]);
     char *toCharArray()
     {
       return (char *) pixels;
@@ -217,7 +222,8 @@ namespace smil
 
     //! Clone from a given image (set same size and copy content)
     virtual void clone(const Image<T> &rhs);
-    template <class T2> void clone(const Image<T2> &rhs);
+    template <class T2>
+    void clone(const Image<T2> &rhs);
     //! Create a clone of the image (with same size and content )
     virtual Image<T> clone(bool cloneData = true)
     {
@@ -264,7 +270,8 @@ namespace smil
     void printSelf(std::ostream &os, bool displayPixVals, bool hexaGrid = false,
                    std::string indent = "") const;
 
-    virtual void printSelf(std::ostream &os = std::cout, std::string indent = "") const
+    virtual void printSelf(std::ostream &os     = std::cout,
+                           std::string   indent = "") const
     {
       printSelf(os, false, false, indent);
     }
@@ -274,7 +281,8 @@ namespace smil
       printSelf(std::cout, false, false, indent);
     }
 
-    void printSelf(bool displayPixVals, bool hexaGrid = false, std::string indent = "")
+    void printSelf(bool displayPixVals, bool hexaGrid = false,
+                   std::string indent = "")
     {
       printSelf(std::cout, displayPixVals, hexaGrid, indent);
     }
@@ -303,9 +311,9 @@ namespace smil
      * Return a NumPy array containing the @b real image pixel values (not a
      * copy).
      *
-     * @param[in] c_contigous : If true, return an array corresponding to the aligment
-     * of C data (C_CONTIGOUS NumPy array flag). If false (default), return a
-     * F_CONTIGOUS array.
+     * @param[in] c_contigous : If true, return an array corresponding to the
+     * aligment of C data (C_CONTIGOUS NumPy array flag). If false (default),
+     * return a F_CONTIGOUS array.
      * @return a pointer to the image data as a @Numpy array
      *
      * See @ref p660 for examples.
@@ -410,8 +418,8 @@ namespace smil
 
     ResImage<T> operator|(const Image<T> &rhs);
     ResImage<T> operator|(const T &value);
-    Image<T> &operator|=(const Image<T> &rhs);
-    Image<T> &operator|=(const T &value);
+    Image<T>   &operator|=(const Image<T> &rhs);
+    Image<T>   &operator|=(const T &value);
 
     //! Bitwise and operator
     ResImage<T> operator&(const Image<T> &rhs);
@@ -443,21 +451,21 @@ namespace smil
       return this->operator<<(s.c_str());
     }
 
-    Image<T> &operator>>(const char *s);
+    Image<T>        &operator>>(const char *s);
     inline Image<T> &operator>>(const std::string s)
     {
       return this->operator>>(s.c_str());
     }
 
   protected:
-    lineType pixels;
+    lineType  pixels;
     sliceType lines;
-    volType slices;
+    volType   slices;
 
     RES_T restruct(void);
 
     ImageViewer<T> *viewer;
-    void createViewer();
+    void            createViewer();
 
     T dumPixel;
     // Specify if the viewer has been created internally
@@ -480,7 +488,8 @@ namespace smil
     virtual void hide();
   };
 
-  template <class T> class ResImage : public Image<T>
+  template <class T>
+  class ResImage : public Image<T>
   {
   public:
     ResImage(const Image<T> &rhs) : Image<T>(rhs, false)
@@ -499,12 +508,14 @@ namespace smil
     }
   };
 
-  template <class T> Image<T> *createImage(const T)
+  template <class T>
+  Image<T> *createImage(const T)
   {
     return new Image<T>();
   }
 
-  template <class T> Image<T> *castBaseImage(BaseImage *img, const T &)
+  template <class T>
+  Image<T> *castBaseImage(BaseImage *img, const T &)
   {
     ASSERT(strcmp(getDataTypeAsString<T>(), img->getTypeAsString()) == 0,
            "Bad type for cast", NULL);
