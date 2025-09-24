@@ -1,4 +1,7 @@
 name: nonreg-tests_windows-latest
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   workflow_call:
