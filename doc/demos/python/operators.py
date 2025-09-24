@@ -18,5 +18,5 @@ sePts = ((0, 0), (0, 1), (1, 1), (1, 0), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1
 im3 << 0
 # Take the sup with each translation of im1...
 for dx, dy in sePts:
-    im3 |= trans(im1, dx, dy)
+    im3 |= translate(im1, dx, dy)
 im3.show()

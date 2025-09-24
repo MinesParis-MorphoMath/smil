@@ -1,6 +1,6 @@
 import smilPython as sp
 
-im = sp.Image("cells.png")
+im = sp.Image("DNA_small.png")
 
 imDist = sp.Image(im)
 imMask = sp.Image(im)

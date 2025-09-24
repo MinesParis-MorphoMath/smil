@@ -623,6 +623,7 @@ if(BUILD_TEST)
   enable_testing()
   add_custom_target(tests)
   add_custom_target(benchs)
+  add_subdirectory(doc/demos/python)
 endif(BUILD_TEST)
 
 # IMAGE TYPES WRAPPED ######

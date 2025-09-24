@@ -1,3 +1,5 @@
+import smilPython as sp
+
 # create an empty image
 im = sp.Image(32, 32)
 # draw a rectangle on it

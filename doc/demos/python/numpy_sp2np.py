@@ -1,7 +1,7 @@
 import smilPython as sm
 
 # read a PNG image file (8 bits gray image)
-file = "my-image.png"
+file = "lena.png"
 img = sm.Image(file)
 
 # show the image

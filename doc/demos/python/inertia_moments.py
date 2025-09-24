@@ -71,4 +71,3 @@ print("on Overlay")
 imIn.getViewer().drawOverlay(imDraw)
 
 print("after overlay")
-input()

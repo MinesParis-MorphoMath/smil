@@ -135,6 +135,14 @@ namespace smil
     {
     }
 
+    ~Point()                          = default;
+    Point(const Point &pt)            = default;
+    Point &operator=(const Point &pt) = default;
+#ifndef SWIG
+    Point(Point &&pt)            = default;
+    Point &operator=(Point &&pt) = default;
+#endif // !SWIG
+
     /** @b 3D Point Constructor
      *
      * @param[in] _x, _y, _z : initial coordinates
@@ -279,6 +287,14 @@ namespace smil
       pt.x = pt.y = pt.z = 0;
       reference          = 0;
     }
+
+    ~ImageBox()                              = default;
+    ImageBox(const ImageBox &box)            = default;
+    ImageBox &operator=(const ImageBox &box) = default;
+#ifndef SWIG
+    ImageBox(ImageBox &&box)            = default;
+    ImageBox &operator=(ImageBox &&box) = default;
+#endif // !SWIG
 
     /** ImageBox - constructor
      *

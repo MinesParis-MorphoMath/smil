@@ -33,6 +33,3 @@ print('2) In the "Tools" menu select "Draw"')
 print(
     "3) Draw markers (with different colors) on im1 and view the resulting segmentation"
 )
-
-# Will crash if not in a "real" Qt loop
-Gui.execLoop()

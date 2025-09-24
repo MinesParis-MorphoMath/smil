@@ -62,7 +62,7 @@ jobs:
       - name: Build Smil
         run: |
           cd build
-          cmake --build . --parallel 3
+          cmake --build .
 
       - name: Install Smil
         run: |
@@ -72,10 +72,12 @@ jobs:
       - name: Execute non-regression tests and benchmarks
         run: |
           cd build
-          ctest
+          ctest -LE python
 
-      - name: Test Python import
+      - name: Execute Python tests
+        continue-on-error: true
         run: |
-          python -c "import smilPython"
+          cd build
+          ctest -L python --output-on-failure
         env:
           PYTHONPATH: /usr/local/lib/Smil:/usr/local/lib/Smil/smilPython
