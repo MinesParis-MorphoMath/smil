@@ -58,6 +58,7 @@ jobs:
             -DBUILD_TEST=ON \
             -DWRAP_PYTHON=ON \
             -DUSE_NUMPY=ON \
+            -DUSE_OPTIMIZATION=OFF \
             $GITHUB_WORKSPACE
         env:
           CMAKE_GENERATOR: Ninja
