@@ -314,7 +314,7 @@ endif(WRAP_CPP)
 
 option(WRAP_PYTHON "Wrap Python" FALSE)
 if(WRAP_PYTHON)
-  find_package(Python3 COMPONENTS Interpreter Development)
+  find_package(Python3 REQUIRED COMPONENTS Development.Embed)
   link_libraries(Python3::Python)
 
   add_custom_target(python)
@@ -731,7 +731,7 @@ if(USE_WRAPPER)
       smil_Python
       LANGUAGE python
       SOURCES ${SWIG_MAIN_INTERFACE})
-    swig_link_libraries(smil_Python ${SMIL_LIBS} ${PYTHON_LIBRARIES})
+    swig_link_libraries(smil_Python ${SMIL_LIBS} Python3::Python)
     file(
       WRITE ${LIBRARY_OUTPUT_PATH}/smilPython.pth
       "${SMIL_LIBRARIES_INSTALL_PATH}\n${SMIL_LIBRARIES_INSTALL_PATH}/smilPython"
