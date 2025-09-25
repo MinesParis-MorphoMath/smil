@@ -170,14 +170,6 @@ if(NOT CMAKE_BUILD_TYPE)
       CACHE STRING "" FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
 
-set(DEBUG_LEVEL
-    "0"
-    CACHE STRING "Debug verbose level")
-mark_as_advanced(DEBUG_LEVEL)
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  add_compile_definitions(DEBUG_LEVEL=${DEBUG_LEVEL})
-endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-
 if(CMAKE_TOOLCHAIN_FILE)
   if(BUILD_SHARED_LIBS)
     option(FORCE_BUILD_SHARED_LIBS_OFF "" ON)
