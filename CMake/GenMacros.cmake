@@ -169,10 +169,10 @@ macro(ADD_SMIL_LIBRARY _LIB_NAME)
 
     set_source_files_properties(${LIB_NAME}.i PROPERTIES CPLUSPLUS ON)
 
-    add_definitions(-DSWIG_WRAP_${UPPER_LIB_NAME})
+    add_compile_definitions(SWIG_WRAP_${UPPER_LIB_NAME})
 
     if(MSVC)
-      add_definitions("/bigobj")
+      add_compile_options(/bigobj)
     endif(MSVC)
 
     if(WRAP_CPP)
@@ -472,7 +472,7 @@ macro(ADD_PKG_CONFIG_DEFS _LIB_NAME)
         endif(_FLAG MATCHES "^-l.*")
       endforeach(_FLAG ${${_LIB_NAME}_LDFLAGS})
 
-      add_definitions(${${_LIB_NAME}_DEFS})
+      add_compile_definitions(${${_LIB_NAME}_DEFS})
       link_directories(${${_LIB_NAME}_LINK_DIRS})
       list(APPEND SMIL_EXT_DEPS ${${_LIB_NAME}_LINK_LIBS})
 
