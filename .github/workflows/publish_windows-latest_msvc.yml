@@ -1,0 +1,154 @@
+name: publish_windows-latest_msvc
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        py: [
+          "3.9",
+          "3.10",
+          "3.11",
+          "3.12",
+          "3.13",
+        ]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare dependencies
+        run: |
+          echo '{
+            "dependencies": [ "libpng", "tiff", "curl", "freetype" ]
+          }' > vcpkg.json
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.py }}
+
+      - name: Install python dependencies
+        run: |
+          pip install swig numpy build
+
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+
+      - name: Create & configure Smil build directory
+        run: |
+          mkdir build && cd build
+          cmake \
+            -DCMAKE_COMPILE_WARNING_AS_ERROR=ON \
+            -DVCPKG_HOST_TRIPLET=x64-windows-static \
+            -DVCPKG_TARGET_TRIPLET=x64-windows-static \
+            -DBUILD_TEST=ON \
+            -DWRAP_PYTHON=ON \
+            -DUSE_NUMPY=ON \
+            $GITHUB_WORKSPACE
+        shell: bash
+        env:
+          CMAKE_GENERATOR: "Visual Studio 17 2022"
+          CMAKE_BUILD_TYPE: Release
+          CMAKE_TOOLCHAIN_FILE : C:\vcpkg\scripts\buildsystems\vcpkg.cmake
+
+      - name: Build Smil
+        run: |
+          cmake --build build --config Release
+
+      - name: Build Python package
+        run: |
+          cmake --build build --config Release --target python_package
+
+      - name: Build wheel from Python package
+        run: |
+          cd build\python
+          python -m build --wheel -C="--build-option=--plat-name=win_amd64"
+          cd ..\..
+          $PKG_PATH = Get-ChildItem -Path "build/python/dist/*" -File
+          echo "MY_PKG=$PKG_PATH" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf8 -Append
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-python-package-x64-${{ matrix.py }}
+          path: ${{ env.MY_PKG }}
+
+  test:
+    runs-on: windows-latest
+    needs: build
+    strategy:
+      matrix:
+        py: [
+          "3.9",
+          "3.10",
+          "3.11",
+          "3.12",
+          "3.13",
+        ]
+    env:
+      QT_QPA_PLATFORM: offscreen
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-python-package-x64-${{ matrix.py }}
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.py }}
+          activate-environment: true
+
+      - name: Install Python package
+        run: |
+          uv pip install "$(ls *.whl)"
+
+      - name: Test Python import
+        run: |
+          python -c 'import smilPython as sp; dir(sp)'
+
+      - name: Test Python scripts
+        run: |
+          Copy-Item -Path "images\*" -Destination "doc\demos\python" -Recurse
+          cd doc/demos/python/
+          python base_graph.py
+          python benchs.py
+          python blob_measures.py
+          python constrained_watershed.py
+          python copy_crop.py
+          python example-3D-image-rotate.py
+          python example-areathreshold.py
+          python example-asfclose.py
+          python example-bresenham.py
+          python example-default-se.py
+          python example-distance-geodesic.py
+          python example-gaussian-filter.py
+          python example-horiz-convolve.py
+          python example-imagefileinfo-print.py
+          python example-inertia-matrix.py
+          python example-intro-blobs.py
+          python example-point-minus.py
+          python example-read.py
+          python example-readRAW.py
+          python extinction_values.py
+          python first-program.py
+          python hit_or_miss.py
+          python loop-input.py
+          python loop-sleep.py
+          python multichannel_operations.py
+          python numpy_array.py
+          python numpy_np2image.py
+          python numpy_np2sp.py
+          python numpy_sp2np2sp.py
+          python numpy_sp2np.py
+          python operators.py
+          python skiz.py
+          python thresholds.py
+          python x_image_01.py
