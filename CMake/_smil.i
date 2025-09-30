@@ -75,9 +75,9 @@ if sys.version_info >= (3, 0, 0):
 else:
   import __builtin__
 
-from smilCorePython import *
-from smilBasePython import *
-from smilIOPython import *
+from .smilCorePython import *
+from .smilBasePython import *
+from .smilIOPython import *
 #from smilMorphoPython import *
 
 numpyOK = False

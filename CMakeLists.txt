@@ -622,7 +622,7 @@ endforeach(_DEF ${COMP_DEFS})
 if(USE_WRAPPER)
   set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} ${COMPILE_FLAGS})
   # SWIG runtime code (see http://www.swig.org/Doc1.3/Modules.html#Modules_nn2)
-  set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -O)
+  set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -O -relativeimport)
 endif(USE_WRAPPER)
 
 set(SMIL_SRC_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
