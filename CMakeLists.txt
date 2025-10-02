@@ -731,7 +731,7 @@ if(USE_WRAPPER)
       smil_Python
       LANGUAGE python
       SOURCES ${SWIG_MAIN_INTERFACE})
-    swig_link_libraries(smil_Python ${SMIL_LIBS} Python3::Python)
+    target_link_libraries(smil_Python PRIVATE ${SMIL_LIBS} Python3::Python)
     file(
       WRITE ${LIBRARY_OUTPUT_PATH}/smilPython.pth
       "${SMIL_LIBRARIES_INSTALL_PATH}\n${SMIL_LIBRARIES_INSTALL_PATH}/smilPython"

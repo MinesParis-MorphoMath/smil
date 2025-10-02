@@ -198,12 +198,12 @@ macro(ADD_SMIL_LIBRARY _LIB_NAME)
         ${PYTHON_LIB_NAME}
         LANGUAGE python
         SOURCES ${LIB_NAME}.i)
-      swig_link_libraries(${PYTHON_LIB_NAME} ${LIB_DEPS} ${PYTHON_LIBRARIES}
-                          ${SWIG_DEPS})
+      target_link_libraries(
+        ${PYTHON_LIB_NAME} PRIVATE ${LIB_DEPS} ${PYTHON_LIBRARIES} ${SWIG_DEPS})
       # SET_TARGET_PROPERTIES(_${PYTHON_LIB_NAME} PROPERTIES
       # LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/smilPython)
       if(LIB_SRCS)
-        swig_link_libraries(${PYTHON_LIB_NAME} ${LIB_NAME} smilCore)
+        target_link_libraries(${PYTHON_LIB_NAME} PRIVATE ${LIB_NAME} smilCore)
       endif(LIB_SRCS)
       install(TARGETS ${PYTHON_LIB_NAME}
               LIBRARY DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}/smilPython
