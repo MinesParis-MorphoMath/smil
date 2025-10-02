@@ -87,4 +87,4 @@ jobs:
           cd build
           ctest -L python --output-on-failure
         env:
-          PYTHONPATH: /usr/local/lib/Smil:/usr/local/lib/Smil/smilPython
+          PYTHONPATH: /usr/local/lib/Smil

@@ -82,4 +82,4 @@ jobs:
           ctest -C Release -L python --output-on-failure
         shell: pixi run bash -e {0}
         env:
-          PYTHONPATH: "/c/Program Files (x86)/Smil/lib:/c/Program Files (x86)/Smil/lib/smilPython"
+          PYTHONPATH: "/c/Program Files (x86)/Smil/lib"
