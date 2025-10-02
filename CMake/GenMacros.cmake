@@ -107,12 +107,10 @@ macro(ADD_SMIL_LIBRARY _LIB_NAME)
     endif()
 
     if(_TARGET_COMPILE_FLAGS)
-      set_target_properties(${LIB_NAME} PROPERTIES COMPILE_FLAGS
-                                                   ${_TARGET_COMPILE_FLAGS})
+      target_compile_options(${LIB_NAME} PRIVATE ${_TARGET_COMPILE_FLAGS})
     endif(_TARGET_COMPILE_FLAGS)
     if(_TARGET_LINK_FLAGS)
-      set_target_properties(${LIB_NAME} PROPERTIES LINK_FLAGS
-                                                   ${_TARGET_LINK_FLAGS})
+      target_link_options(${LIB_NAME} PRIVATE ${_TARGET_LINK_FLAGS})
     endif(_TARGET_LINK_FLAGS)
     if(MINGW)
       set_target_properties(${LIB_NAME} PROPERTIES PREFIX "")
@@ -121,7 +119,7 @@ macro(ADD_SMIL_LIBRARY _LIB_NAME)
       endif(NOT BUILD_SHARED_LIBS)
     endif(MINGW)
     if(LIB_DEPS)
-      target_link_libraries(${LIB_NAME} ${LIB_DEPS}) # gomp pthread)
+      target_link_libraries(${LIB_NAME} PRIVATE ${LIB_DEPS}) # gomp pthread)
     endif(LIB_DEPS)
     set(SMIL_LIBS
         ${SMIL_LIBS} ${LIB_NAME}
@@ -198,8 +196,7 @@ macro(ADD_SMIL_LIBRARY _LIB_NAME)
         ${PYTHON_LIB_NAME}
         LANGUAGE python
         SOURCES ${LIB_NAME}.i)
-      target_link_libraries(
-        ${PYTHON_LIB_NAME} PRIVATE ${LIB_DEPS} ${PYTHON_LIBRARIES} ${SWIG_DEPS})
+      target_link_libraries(${PYTHON_LIB_NAME} PRIVATE ${LIB_DEPS} ${SWIG_DEPS})
       # SET_TARGET_PROPERTIES(_${PYTHON_LIB_NAME} PROPERTIES
       # LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/smilPython)
       if(LIB_SRCS)
