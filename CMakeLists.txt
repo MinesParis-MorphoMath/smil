@@ -744,7 +744,8 @@ if(USE_WRAPPER)
     # SET_TARGET_PROPERTIES(_smilPython PROPERTIES LIBRARY_OUTPUT_DIRECTORY
     # ${LIBRARY_OUTPUT_PATH}/smilPython)
     install(TARGETS smil_Python
-            LIBRARY DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH} COMPONENT python)
+            LIBRARY DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}/smilPython
+                    COMPONENT python)
     install(
       FILES ${LIBRARY_OUTPUT_PATH}/smilPython/smil_Python.py
             ${LIBRARY_OUTPUT_PATH}/smilPython/smilFuncRewrite.py

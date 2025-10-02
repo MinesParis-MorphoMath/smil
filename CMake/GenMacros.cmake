@@ -206,7 +206,7 @@ macro(ADD_SMIL_LIBRARY _LIB_NAME)
         swig_link_libraries(${PYTHON_LIB_NAME} ${LIB_NAME} smilCore)
       endif(LIB_SRCS)
       install(TARGETS ${PYTHON_LIB_NAME}
-              LIBRARY DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}
+              LIBRARY DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}/smilPython
                       COMPONENT ${COMPONENT_PREFIX_}python)
       install(
         FILES ${LIBRARY_OUTPUT_PATH}/smilPython/${LIB_NAME}Python.py
