@@ -766,6 +766,7 @@ if(USE_WRAPPER)
     endif(UNIX)
 
     add_dependencies(python smil_Python)
+    add_subdirectory(python)
   endif(WRAP_PYTHON)
 
   if(WRAP_JAVA)
