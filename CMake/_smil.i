@@ -75,9 +75,9 @@ if sys.version_info >= (3, 0, 0):
 else:
   import __builtin__
 
-from smilCorePython import *
-from smilBasePython import *
-from smilIOPython import *
+from .smilCorePython import *
+from .smilBasePython import *
+from .smilIOPython import *
 #from smilMorphoPython import *
 
 numpyOK = False
@@ -724,117 +724,6 @@ def bench(func, *args, **keywords):
     print(buf)
 
   return retval
-
-#
-#  ####   #       #####
-# #    #  #       #    #
-# #    #  #       #    #
-# #    #  #       #    #
-# #    #  #       #    #
-#  ####   ######  #####
-#
-
-def oldImage(*args):
-    """
-    * Image():
-      Create an empty ${DEFAULT_IMAGE_TYPE} image.
-    * Image(width, height [, depth]):
-      Create a ${DEFAULT_IMAGE_TYPE} image with size 'width'x'height'[x'depth'].
-    * Image(im):
-      Create an image with same type and same size as 'im'.
-    * Image(im, width, height [, depth]):
-      Create an image with same type 'im' and with size
-        'width x height [x depth]'.
-    * Image("TYPE"):
-      Create an empty image with the desired type.
-      The available image types are: ${DATA_TYPES_STR}
-    * Image("TYPE", width, height [, depth]):
-      Will create an image with the desired type and dimensions.
-    * Image(im, "TYPE"):
-      Create an image with type 'TYPE' and with same size as 'im'.
-    * Image("fileName"):
-      Create an image and load the file "fileName".
-      OBS : "filename" can be an URL if Smil was compiled and
-      linked against curl library.
-    * Image("fileName", "TYPE"):
-      Create an image with type 'TYPE' and load the file "fileName".
-
-    """
-
-    argNbr = len(args)
-    argTypeStr = [ str(type(a)) for a in args ]
-
-    img = None
-    fillImg = False
-
-    if argNbr==0:
-        # No argument -> return default image type
-        img = imageTypes[0](256,256)
-        fillImg = True
-
-    elif type(args[0])==int:
-        # First arg is a number (should be a size)
-        img = imageTypes[0](*args)
-        fillImg = True
-
-    elif 'numpy.ndarray' in str(type(args[0])):
-        return NumpyInt(*args)
-
-    elif type(args[0]) in imageTypes or hasattr(args[0], "getTypeAsString"):
-        # First arg is an image
-        srcIm = args[0]
-        if type(srcIm) in imageTypes:
-            srcImgType = type(srcIm)
-        else:
-            srcImgType = imageTypes[dataTypes.index(srcIm.getTypeAsString())]
-        if argNbr>1:
-          if type(args[1])==type(""):
-              # Second arg is an image type string ("UINT8", ...)
-              if args[1] in dataTypes:
-                  imgType = imageTypes[dataTypes.index(args[1])]
-                  img = imgType()
-                  img.setSize(srcIm)
-              else:
-                  print("Unknown image type: " + args[1])
-                  print("List of available image types: " +  ", ".join(dataTypes))
-          else:
-              img = srcImgType(*args[1:])
-        else:
-            img = srcImgType(srcIm, False) # (don t clone data)
-        fillImg = True
-
-    elif args[0] in dataTypes:
-        # First arg is an image type string ("UINT8", ...)
-        imgType = imageTypes[dataTypes.index(args[0])]
-        img = imgType(*args[1:])
-        fillImg = True
-
-    elif argNbr > 0 and type(args[0]) == str:
-        # Create/load from an existing image fileName
-        urlPrefix = ('http://', 'https://')
-        if (os.path.exists(args[0]) or args[0].startswith(urlPrefix)):
-            if argNbr>1 and args[1] in dataTypes:
-                imgType = imageTypes[dataTypes.index(args[1])]
-                img = imgType()
-                read(args[0], img)
-            else:
-                baseImg = createFromFile(args[0])
-                if baseImg != None:
-                  img = autoCastBaseImage(baseImg)
-        else:
-            print("File not found: ", args[0])
-
-    else:
-        img = imageTypes[0](*args)
-        fillImg = True
-
-    if fillImg and img.isAllocated():
-      try:
-        fillValue = type(img).getDataTypeMin()
-        fill(img, fillValue)
-      except:
-        pass
-    return img
 
 %}
 

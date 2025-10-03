@@ -7,7 +7,7 @@ imIn.show()
 imThr = Image(imIn)
 threshold(imIn, imThr)
 
-imLbl = Image(imIn, "UINT16")
+imLbl = Image(imIn)
 label(imThr, imLbl)
 imLbl.showLabel()
 
@@ -20,7 +20,7 @@ imIn.getViewer().drawOverlay(imRec)
 # Blobs measures
 blobs = computeBlobs(imLbl)
 # areas
-areas = blobsArea(imLbl, blobs)  # equivalent but faster than measAreas(imLbl)
+areas = blobsArea(blobs)  # equivalent but faster than measAreas(imLbl)
 # barycenters
 barys = blobsBarycenter(imLbl, blobs)
 # volume of blobs in imIn

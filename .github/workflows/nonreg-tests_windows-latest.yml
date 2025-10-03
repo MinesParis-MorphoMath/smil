@@ -1,4 +1,7 @@
 name: nonreg-tests_windows-latest
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   workflow_call:
@@ -79,4 +82,4 @@ jobs:
           ctest -C Release -L python --output-on-failure
         shell: pixi run bash -e {0}
         env:
-          PYTHONPATH: "/c/Program Files (x86)/Smil/lib:/c/Program Files (x86)/Smil/lib/smilPython"
+          PYTHONPATH: "/c/Program Files (x86)/Smil/lib"

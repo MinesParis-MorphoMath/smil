@@ -169,10 +169,10 @@ macro(ADD_SMIL_LIBRARY _LIB_NAME)
 
     set_source_files_properties(${LIB_NAME}.i PROPERTIES CPLUSPLUS ON)
 
-    add_definitions(-DSWIG_WRAP_${UPPER_LIB_NAME})
+    add_compile_definitions(SWIG_WRAP_${UPPER_LIB_NAME})
 
     if(MSVC)
-      add_definitions("/bigobj")
+      add_compile_options(/bigobj)
     endif(MSVC)
 
     if(WRAP_CPP)
@@ -198,15 +198,15 @@ macro(ADD_SMIL_LIBRARY _LIB_NAME)
         ${PYTHON_LIB_NAME}
         LANGUAGE python
         SOURCES ${LIB_NAME}.i)
-      swig_link_libraries(${PYTHON_LIB_NAME} ${LIB_DEPS} ${PYTHON_LIBRARIES}
-                          ${SWIG_DEPS})
+      target_link_libraries(
+        ${PYTHON_LIB_NAME} PRIVATE ${LIB_DEPS} ${PYTHON_LIBRARIES} ${SWIG_DEPS})
       # SET_TARGET_PROPERTIES(_${PYTHON_LIB_NAME} PROPERTIES
       # LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/smilPython)
       if(LIB_SRCS)
-        swig_link_libraries(${PYTHON_LIB_NAME} ${LIB_NAME} smilCore)
+        target_link_libraries(${PYTHON_LIB_NAME} PRIVATE ${LIB_NAME} smilCore)
       endif(LIB_SRCS)
       install(TARGETS ${PYTHON_LIB_NAME}
-              LIBRARY DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}
+              LIBRARY DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}/smilPython
                       COMPONENT ${COMPONENT_PREFIX_}python)
       install(
         FILES ${LIBRARY_OUTPUT_PATH}/smilPython/${LIB_NAME}Python.py
@@ -354,7 +354,7 @@ macro(ADD_SMIL_TESTS _LIB_NAME)
         elseif(${_EXE_PREFIX} STREQUAL "python")
           add_test("${MOD_NAME}${TEST_NAME}"
                    ${EXECUTABLE_OUTPUT_PATH}/${TEST_NAME})
-          target_link_libraries(${TEST_NAME} ${PYTHON_LIBRARIES})
+          target_link_libraries(${TEST_NAME} Python3::Python)
           add_dependencies(tests ${TEST_NAME})
         elseif(${_EXE_PREFIX} STREQUAL "bench")
           add_test(NAME "${MOD_NAME}${TEST_NAME}"
@@ -472,7 +472,7 @@ macro(ADD_PKG_CONFIG_DEFS _LIB_NAME)
         endif(_FLAG MATCHES "^-l.*")
       endforeach(_FLAG ${${_LIB_NAME}_LDFLAGS})
 
-      add_definitions(${${_LIB_NAME}_DEFS})
+      add_compile_definitions(${${_LIB_NAME}_DEFS})
       link_directories(${${_LIB_NAME}_LINK_DIRS})
       list(APPEND SMIL_EXT_DEPS ${${_LIB_NAME}_LINK_LIBS})
 

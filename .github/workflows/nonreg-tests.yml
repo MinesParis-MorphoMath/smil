@@ -1,4 +1,7 @@
 name: nonreg-tests
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   # Activate the workflow at each push on dev branch

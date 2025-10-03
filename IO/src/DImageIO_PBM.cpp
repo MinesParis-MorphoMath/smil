@@ -151,7 +151,7 @@ namespace smil
     ASSERT((image.setSize(width, height) == RES_OK), RES_ERR_BAD_ALLOCATION);
 
     if (fInfo.fileType == ImageFileInfo::FILE_TYPE_BINARY) {
-      fp.read((char *) image.getPixels(), width * height);
+      fp.read((char *) image.getPixels(), static_cast<long>(width) * height);
     } else {
       ImDtTypes<UINT8>::lineType pixels = image.getPixels();
 
@@ -185,7 +185,7 @@ namespace smil
     fp << width << " " << height << std::endl;
     fp << "255" << std::endl;
 
-    fp.write((char *) image.getPixels(), width * height);
+    fp.write((char *) image.getPixels(), static_cast<long>(width) * height);
 
     fp.close();
 

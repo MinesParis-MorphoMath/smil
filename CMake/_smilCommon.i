@@ -82,7 +82,7 @@ using namespace smil;
 
 #ifdef SWIGPYTHON
 %define SMIL_MODULE(libname)
-    %module(directors="1") libname ## Python
+  %module(package="smilPython", directors="1") libname ## Python
 %enddef
 #endif // SWIGPYTHON
 

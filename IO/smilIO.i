@@ -44,6 +44,8 @@
 
 %include smilCommon.i
 
+SMIL_MODULE(smilIO)
+
 %{
 /* Includes the header in the wrapper code */
 #include "Core/include/DImage.h"

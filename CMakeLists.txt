@@ -69,10 +69,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 set(MODULES Core Gui Base IO Morpho Advanced)
 
 set(SMIL_VERSION ${PROJECT_VERSION})
-add_definitions("-DSMIL_MAJOR_VERSION=${PROJECT_VERSION_MAJOR}")
-add_definitions("-DSMIL_MINOR_VERSION=${PROJECT_VERSION_MINOR}")
-add_definitions("-DSMIL_PATCH_VERSION=${PROJECT_VERSION_PATCH}")
-add_definitions("-DSMIL_VERSION=${PROJECT_VERSION}")
+add_compile_definitions(SMIL_MAJOR_VERSION=${PROJECT_VERSION_MAJOR})
+add_compile_definitions(SMIL_MINOR_VERSION=${PROJECT_VERSION_MINOR})
+add_compile_definitions(SMIL_PATCH_VERSION=${PROJECT_VERSION_PATCH})
+add_compile_definitions(SMIL_VERSION=${PROJECT_VERSION})
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMake"
      "${CMAKE_CURRENT_SOURCE_DIR}/CMake/swig" ${PROJECT_BINARY_DIR})
@@ -170,14 +170,6 @@ if(NOT CMAKE_BUILD_TYPE)
       CACHE STRING "" FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
 
-set(DEBUG_LEVEL
-    "0"
-    CACHE STRING "Debug verbose level")
-mark_as_advanced(DEBUG_LEVEL)
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-  add_definitions("-DDEBUG_LEVEL=${DEBUG_LEVEL}")
-endif(CMAKE_BUILD_TYPE STREQUAL "Debug")
-
 if(CMAKE_TOOLCHAIN_FILE)
   if(BUILD_SHARED_LIBS)
     option(FORCE_BUILD_SHARED_LIBS_OFF "" ON)
@@ -199,7 +191,7 @@ endif(CMAKE_TOOLCHAIN_FILE)
 mark_as_advanced(BUILD_SHARED_LIBS)
 
 if(BUILD_SHARED_LIBS)
-  add_definitions("-DSHARED_LIBS")
+  add_compile_definitions(SHARED_LIBS)
   set(BUILD_SHARED_LIBS
       ON
       CACHE BOOL "" FORCE)
@@ -210,7 +202,7 @@ option(USE_STATIC_DEPEND_LIBS
        OFF)
 mark_as_advanced(USE_STATIC_DEPEND_LIBS)
 if(USE_STATIC_DEPEND_LIBS)
-  add_definitions("-Wl,-Bstatic")
+  add_link_options(-Bstatic)
 endif(USE_STATIC_DEPEND_LIBS)
 
 # 64 Bits
@@ -221,18 +213,16 @@ if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "8" OR "${CMAKE_GENERATOR}" MATCHES
   option(USE_64BIT_IDS "Compile for 64 bits system" ON)
   mark_as_advanced(USE_64BIT_IDS)
   if(USE_64BIT_IDS)
-    add_definitions("-DUSE_64BIT_IDS")
+    add_compile_definitions(USE_64BIT_IDS)
     if(NOT WIN32)
-      add_definitions("-fPIC")
+      add_compile_options(-fPIC)
     endif(NOT WIN32)
   else(USE_64BIT_IDS)
-    add_definitions("-m32")
+    add_compile_options(-m32)
   endif(USE_64BIT_IDS)
 else(CMAKE_SIZEOF_VOID_P EQUAL 8)
   message(STATUS "32 bits system detected")
 endif()
-
-# ADD_DEFINITIONS("-fPIC") ADD_DEFINITIONS("-fPIC -finline-functions")
 
 if(ADDITIONAL_INCLUDE_PATHS)
   include_directories(${ADDITIONAL_INCLUDE_PATHS})
@@ -247,7 +237,7 @@ endif(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 if(WIN32)
   if(USE_64BIT_IDS)
     # Necessary in particular for python 64 bits (PyInitModule4)
-    add_definitions("-DMS_WIN64")
+    add_compile_definitions(MS_WIN64)
   endif(USE_64BIT_IDS)
 endif(WIN32)
 
@@ -257,7 +247,7 @@ if(MINGW)
 endif(MINGW)
 
 if(MSVC)
-  add_definitions("/wd4267 /EHsc")
+  add_compile_options(/wd4267 /EHsc)
 endif(MSVC)
 
 # OPTIMIZATIONS ######
@@ -289,35 +279,28 @@ if(USE_OPTIMIZATION)
 endif()
 
 if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT WIN32)
-  find_package(OpenMP QUIET)
-endif(NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND NOT WIN32)
-if(OPENMP_FOUND)
+  find_package(OpenMP)
+endif()
+if(OpenMP_FOUND)
   option(USE_OPEN_MP "Use OpenMP parallelization" ON)
-else(OPENMP_FOUND)
+else()
   option(USE_OPEN_MP "Use OpenMP parallelization" OFF)
-endif(OPENMP_FOUND)
+endif()
 if(USE_OPEN_MP)
   find_package(OpenMP REQUIRED)
-  add_definitions(-DUSE_OPEN_MP ${OpenMP_CXX_FLAGS})
+  add_compile_definitions(USE_OPEN_MP)
+  link_libraries(OpenMP::OpenMP_CXX)
   if(CMAKE_COMPILER_IS_GNUCXX OR MINGW)
     list(APPEND SMIL_EXT_DEPS gomp)
     if(MINGW)
       list(APPEND SMIL_EXT_DEPS pthread)
-      add_definitions("-mstackrealign")
+      add_compile_options(-mstackrealign)
     endif(MINGW)
   endif(CMAKE_COMPILER_IS_GNUCXX OR MINGW)
   if(CMAKE_COMPILER_IS_CLANGXX)
     list(APPEND SMIL_EXT_DEPS omp)
   endif(CMAKE_COMPILER_IS_CLANGXX)
 endif(USE_OPEN_MP)
-
-# Reduce compilation time with ccache
-find_program(CCACHE_FOUND ccache)
-mark_as_advanced(CCACHE_FOUND)
-if(CCACHE_FOUND)
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
-endif(CCACHE_FOUND)
 
 #
 # WRAPPING ###
@@ -331,7 +314,7 @@ endif(WRAP_CPP)
 
 option(WRAP_PYTHON "Wrap Python" FALSE)
 if(WRAP_PYTHON)
-  find_package(Python3 COMPONENTS Interpreter Development)
+  find_package(Python3 REQUIRED COMPONENTS Development.Embed)
   link_libraries(Python3::Python)
 
   add_custom_target(python)
@@ -403,7 +386,7 @@ if(WRAP_CPP
     list(APPEND CMAKE_MODULE_PATH
          "${CMAKE_CURRENT_SOURCE_DIR}/CMake/CrossCompilation")
     if(USE_64BIT_IDS)
-      add_definitions(-DMS_WIN64)
+      add_compile_definitions(MS_WIN64)
     endif(USE_64BIT_IDS)
     # CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/CMake/_FindSWIG.cmake
     # ${PROJECT_BINARY_DIR}/FindSWIG.cmake) LIST(APPEND CMAKE_FIND_ROOT_PATH
@@ -426,37 +409,17 @@ endif(
 # GUI ######
 
 find_package(Qt5Widgets)
+
 if(Qt5Core_FOUND)
-  set(IGNORE_QT4
-      TRUE
-      CACHE BOOL "")
-  mark_as_advanced(IGNORE_QT4)
-endif(Qt5Core_FOUND)
-
-if(NOT IGNORE_QT4)
-  find_package(Qt4 QUIET)
-endif(NOT IGNORE_QT4)
-
-if(QT4_FOUND OR Qt5Core_FOUND)
   option(USE_QT "Build Qt Gui" ON)
-else(QT4_FOUND OR Qt5Core_FOUND)
+else()
   option(USE_QT "Build Qt Gui" OFF)
-endif(QT4_FOUND OR Qt5Core_FOUND)
+endif()
 
 if(USE_QT)
-  if(Qt5Core_FOUND)
-    set(USE_QT_VERSION
-        "5"
-        CACHE STRING "Qt version to use")
-  elseif(QT4_FOUND)
-    set(USE_QT_VERSION
-        "4"
-        CACHE STRING "Qt version to use")
-  endif(Qt5Core_FOUND)
-
-  if(NOT QT4_FOUND OR NOT Qt5Core_FOUND)
-    mark_as_advanced(USE_QT_VERSION)
-  endif(NOT QT4_FOUND OR NOT Qt5Core_FOUND)
+  set(USE_QT_VERSION
+      "5"
+      CACHE STRING "Qt version to use")
 
   if(CMAKE_CROSSCOMPILING)
     set(QT_HEADERS_DIR "/usr/i686-w64-mingw32/include")
@@ -466,24 +429,12 @@ if(USE_QT)
       OFF
       CACHE INTERNAL "" FORCE)
 
-  if(USE_QT_VERSION EQUAL 5)
-    find_package(Qt5Widgets REQUIRED)
-    # SET(CMAKE_AUTOMOC ON) SET(CMAKE_AUTOUIC ON)
-    include_directories(${Qt5Widgets_INCLUDE_DIRS} ${Qt5Gui_INCLUDE_DIRS})
-    list(APPEND SMIL_EXT_DEPS Qt5::Core Qt5::Gui Qt5::Widgets)
-    add_definitions(${Qt5Widgets_DEFINITIONS})
-  else()
-    # QT4
-    find_package(Qt4 REQUIRED)
-    include(${QT_USE_FILE})
-    include_directories(${QT_QTCORE_INCLUDE_DIR}/..)
-    list(APPEND SMIL_EXT_DEPS ${QT_LIBRARIES} ${QT_QTCORE_LIB_DEPENDENCIES}
-         ${QT_QTGUI_LIB_DEPENDENCIES})
-    link_directories(${QT_LIBRARY_DIRS})
-    add_definitions(${QT_DEFINITIONS})
-  endif()
+  find_package(Qt5Widgets REQUIRED)
+  # SET(CMAKE_AUTOMOC ON) SET(CMAKE_AUTOUIC ON)
+  link_libraries(Qt5::Core Qt5::Gui Qt5::Widgets)
+  list(APPEND SMIL_EXT_DEPS Qt5::Core Qt5::Gui Qt5::Widgets)
 
-  add_definitions(-DUSE_QT)
+  add_compile_definitions(USE_QT)
 
   if(USE_STATIC_DEPEND_LIBS)
     add_pkg_config_defs(QtCore STATIC)
@@ -499,7 +450,7 @@ if(USE_QT)
   if(USE_QWT)
     find_package(Qwt REQUIRED)
     if(QWT_FOUND)
-      add_definitions("-DUSE_QWT")
+      add_compile_definitions(USE_QWT)
       if(MSVC)
         add_compile_definitions(_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS)
         add_compile_definitions(QWT_DLL)
@@ -515,7 +466,7 @@ option(USE_AALIB "Build AALib Gui" OFF)
 if(USE_AALIB)
   find_library(AALIB_LIBRARY aa)
   find_path(AALIB_INCLUDES aalib.h)
-  add_definitions(-DUSE_AALIB)
+  add_compile_definitions(USE_AALIB)
   include_directories(${AALIB_INCLUDES})
   link_libraries(${AALIB_LIBRARY})
   list(APPEND SMIL_EXT_DEPS ${AALIB_LIBRARY})
@@ -530,7 +481,7 @@ else(PNG_FOUND)
   option(USE_PNG "Use PNG" OFF)
 endif(PNG_FOUND)
 if(USE_PNG)
-  add_definitions("-DUSE_PNG")
+  add_compile_definitions(USE_PNG)
   find_package(PNG REQUIRED)
   link_libraries(PNG::PNG)
   list(APPEND SMIL_EXT_DEPS ${PNG_LIBRARIES})
@@ -543,7 +494,7 @@ else(JPEG_FOUND)
   option(USE_JPEG "Use JPEG" OFF)
 endif(JPEG_FOUND)
 if(USE_JPEG)
-  add_definitions("-DUSE_JPEG")
+  add_compile_definitions(USE_JPEG)
   find_package(JPEG REQUIRED)
   link_libraries(JPEG::JPEG)
   list(APPEND SMIL_EXT_DEPS ${JPEG_LIBRARIES})
@@ -556,7 +507,7 @@ else(TIFF_FOUND)
   option(USE_TIFF "Use TIFF IO library" OFF)
 endif(TIFF_FOUND)
 if(USE_TIFF)
-  add_definitions("-DUSE_TIFF")
+  add_compile_definitions(USE_TIFF)
   find_package(TIFF REQUIRED)
   link_libraries(TIFF::TIFF)
   list(APPEND SMIL_EXT_DEPS ${TIFF_LIBRARIES})
@@ -570,7 +521,7 @@ else(CURL_FOUND)
 endif(CURL_FOUND)
 if(USE_CURL)
   find_package(CURL REQUIRED)
-  add_definitions("-DUSE_CURL")
+  add_compile_definitions(USE_CURL)
   link_libraries(CURL::libcurl)
 
   list(APPEND SMIL_EXT_DEPS ${CURL_LIBRARIES})
@@ -591,7 +542,7 @@ endif(FREETYPE_FOUND)
 
 if(USE_FREETYPE)
   find_package(Freetype REQUIRED)
-  add_definitions("-DUSE_FREETYPE")
+  add_compile_definitions(USE_FREETYPE)
   link_libraries(Freetype::Freetype)
   list(APPEND SMIL_EXT_DEPS ${FREETYPE_LIBRARY})
 endif(USE_FREETYPE)
@@ -635,7 +586,7 @@ foreach(_IMG_TYPE ${IMAGE_TYPES} ${IMAGE_TYPES_SUPPL})
     list(APPEND SWIG_DEPS smil${_IMG_TYPE})
   endif(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/NSTypes/${_IMG_TYPE})
   string(TOUPPER ${_IMG_TYPE} _IMG_TYPE_UP)
-  add_definitions("-DSMIL_WRAP_${_IMG_TYPE_UP}")
+  add_compile_definitions(SMIL_WRAP_${_IMG_TYPE_UP})
   set(WRAP_${_IMG_TYPE_UP} ON)
   set(DATA_TYPES_QUOTE_STR ${DATA_TYPES_QUOTE_STR}"${_IMG_TYPE}",)
   set(IMAGE_TYPES_STR ${IMAGE_TYPES_STR}Image_${_IMG_TYPE},)
@@ -671,7 +622,7 @@ endforeach(_DEF ${COMP_DEFS})
 if(USE_WRAPPER)
   set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} ${COMPILE_FLAGS})
   # SWIG runtime code (see http://www.swig.org/Doc1.3/Modules.html#Modules_nn2)
-  set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -O)
+  set(CMAKE_SWIG_FLAGS ${CMAKE_SWIG_FLAGS} -O -relativeimport)
 endif(USE_WRAPPER)
 
 set(SMIL_SRC_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
@@ -780,23 +731,20 @@ if(USE_WRAPPER)
       smil_Python
       LANGUAGE python
       SOURCES ${SWIG_MAIN_INTERFACE})
-    swig_link_libraries(smil_Python ${SMIL_LIBS} ${PYTHON_LIBRARIES})
+    target_link_libraries(smil_Python PRIVATE ${SMIL_LIBS} Python3::Python)
     file(
       WRITE ${LIBRARY_OUTPUT_PATH}/smilPython.pth
       "${SMIL_LIBRARIES_INSTALL_PATH}\n${SMIL_LIBRARIES_INSTALL_PATH}/smilPython"
     )
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/CMake/__init__.py
                    ${LIBRARY_OUTPUT_PATH}/smilPython/__init__.py COPYONLY)
-    configure_file(
-      ${CMAKE_CURRENT_SOURCE_DIR}/CMake/smilFuncRewrite.py
-      ${LIBRARY_OUTPUT_PATH}/smilPython/smilFuncRewrite.py COPYONLY)
     # SET_TARGET_PROPERTIES(_smilPython PROPERTIES LIBRARY_OUTPUT_DIRECTORY
     # ${LIBRARY_OUTPUT_PATH}/smilPython)
     install(TARGETS smil_Python
-            LIBRARY DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH} COMPONENT python)
+            LIBRARY DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}/smilPython
+                    COMPONENT python)
     install(
       FILES ${LIBRARY_OUTPUT_PATH}/smilPython/smil_Python.py
-            ${LIBRARY_OUTPUT_PATH}/smilPython/smilFuncRewrite.py
             ${LIBRARY_OUTPUT_PATH}/smilPython/__init__.py
       DESTINATION ${SMIL_LIBRARIES_INSTALL_PATH}/smilPython
       COMPONENT python)

@@ -1,4 +1,7 @@
 name: nonreg-tests_ubuntu-latest
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   workflow_call:
@@ -55,6 +58,7 @@ jobs:
             -DBUILD_TEST=ON \
             -DWRAP_PYTHON=ON \
             -DUSE_NUMPY=ON \
+            -DUSE_OPTIMIZATION=OFF \
             $GITHUB_WORKSPACE
         env:
           CMAKE_GENERATOR: Ninja
@@ -84,4 +88,4 @@ jobs:
           cd build
           ctest -L python --output-on-failure
         env:
-          PYTHONPATH: /usr/local/lib/Smil:/usr/local/lib/Smil/smilPython
+          PYTHONPATH: /usr/local/lib/Smil
