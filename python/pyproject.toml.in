@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smilPython"
+version = "@CMAKE_PROJECT_VERSION@"
+authors = [
+  {name = "Mathieu Faessel", email = "Mathieu.Faessel@mines-paristech.fr"},
+  {name = "Jose-Marcio Martins da Cruz", email = "Jose-Marcio.Martins@mines-paristech.fr"},
+  {name = "Théodore Chabardès", email = "theodore.chabardes@mines-paristech.fr"},
+  {name = "Beatriz Marcotegui", email = "Beatriz.Marcotegui@mines-paristech.fr"},
+  {name = "Pierre Guillou", email = "pierre.guillou@minesparis.psl.eu"},
+  {name = "Michel Bilodeau", email = "Michel.Bilodeau@mines-paristech.fr"},
+  {name = "Etienne Decenciere", email = "Etienne.Decenciere@mines-paristech.fr"},
+  {name = "Amin Fehri", email = "Amin.Fehri@mines-paristech.fr"},
+  {name = "Serge Koudoro", email = "Serge.Koudoro@mines-paristech.fr"},
+]
+description = "Smil, Simple Morphological Image Library"
+readme = "README.md"
+license = {text = 'GPL'}
+requires-python = '>=3.9'
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: C++",
+    "Development Status :: 4 - Beta",
+    "Environment :: Other Environment",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    # from the oldest supported numpy to the next major version of the
+    # numpy install used in building gstlearn
+    "numpy>=1.24,<@Python3_NumPy_NEXT_MAJOR@",
+]
+
+[project.urls]
+Homepage = "https://github.com/MinesParis-MorphoMath/smil"
+Issues = "https://github.com/MinesParis-MorphoMath/smil/issues"
+
+[tool.setuptools]
+py-modules = []
+packages = ["@PYTHON_PACKAGE_NAME@"]
+package-data = {"@PYTHON_PACKAGE_NAME@" = [
+    "$<TARGET_FILE_NAME:smil_Python>",
+    "$<TARGET_FILE_NAME:smilAdvancedPython>",
+    "$<TARGET_FILE_NAME:smilBasePython>",
+    "$<TARGET_FILE_NAME:smilCorePython>",
+    "$<TARGET_FILE_NAME:smilGuiPython>",
+    "$<TARGET_FILE_NAME:smilIOPython>",
+    "$<TARGET_FILE_NAME:smilMorphoPython>"
+]}
+platforms = ["Windows", "Linux", "Mac OS-X"]
