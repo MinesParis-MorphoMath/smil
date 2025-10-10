@@ -393,7 +393,7 @@ if(WRAP_CPP
     # /usr/local/mingw32)
   endif(CMAKE_CROSSCOMPILING)
 
-  find_package(SWIG 4.0 REQUIRED)
+  find_package(SWIG 4.2.1 REQUIRED)
   message(STATUS "Swig version : ${SWIG_VERSION}")
   include(${SWIG_USE_FILE})
 
