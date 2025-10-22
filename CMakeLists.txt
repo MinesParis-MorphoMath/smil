@@ -314,8 +314,8 @@ endif(WRAP_CPP)
 
 option(WRAP_PYTHON "Wrap Python" FALSE)
 if(WRAP_PYTHON)
-  find_package(Python3 REQUIRED COMPONENTS Development.Embed)
-  link_libraries(Python3::Python)
+  find_package(Python3 REQUIRED COMPONENTS Development.Module)
+  link_libraries(Python3::Module)
 
   add_custom_target(python)
 endif(WRAP_PYTHON)
@@ -393,7 +393,7 @@ if(WRAP_CPP
     # /usr/local/mingw32)
   endif(CMAKE_CROSSCOMPILING)
 
-  find_package(SWIG 4.0 REQUIRED)
+  find_package(SWIG 4.2.1 REQUIRED)
   message(STATUS "Swig version : ${SWIG_VERSION}")
   include(${SWIG_USE_FILE})
 
@@ -731,7 +731,7 @@ if(USE_WRAPPER)
       smil_Python
       LANGUAGE python
       SOURCES ${SWIG_MAIN_INTERFACE})
-    target_link_libraries(smil_Python PRIVATE ${SMIL_LIBS} Python3::Python)
+    target_link_libraries(smil_Python PRIVATE ${SMIL_LIBS} Python3::Module)
     file(
       WRITE ${LIBRARY_OUTPUT_PATH}/smilPython.pth
       "${SMIL_LIBRARIES_INSTALL_PATH}\n${SMIL_LIBRARIES_INSTALL_PATH}/smilPython"
