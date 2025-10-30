@@ -55,6 +55,7 @@ jobs:
           mkdir build && cd build
           cmake \
             -DCMAKE_COMPILE_WARNING_AS_ERROR=ON \
+            -DQt5Widgets_DIR=$(brew --prefix qt@5)/lib/cmake/Qt5Widgets \
             -DBUILD_TEST=ON \
             -DWRAP_PYTHON=ON \
             -DUSE_NUMPY=ON \
