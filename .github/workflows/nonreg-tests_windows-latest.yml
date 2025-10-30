@@ -53,6 +53,8 @@ jobs:
             $GITHUB_WORKSPACE
         shell: pixi run bash -e {0}
         env:
+          CC: clang-cl.exe
+          CXX: clang-cl.exe
           CMAKE_GENERATOR: Ninja
           CMAKE_BUILD_TYPE: Release
           CMAKE_CC_COMPILER_LAUNCHER: sccache

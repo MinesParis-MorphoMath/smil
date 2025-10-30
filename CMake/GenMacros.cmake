@@ -58,7 +58,7 @@ macro(ADD_SMIL_LIBRARY _LIB_NAME)
   set(COMPONENT_LIST)
 
   set(LIB_NAME ${SMIL_LIB_PREFIX}${_LIB_NAME})
-  set(LIB_DEPS ${_TARGET_DEFAULT_ARGS} ${SMIL_EXT_DEPS})
+  set(LIB_DEPS ${_TARGET_DEFAULT_ARGS})
   # Add non-smil libs to ext-deps
   if(_TARGET_DEFAULT_ARGS)
     string(REGEX REPLACE "smil[^;]*" "" LIB_EXT_DEPS ${_TARGET_DEFAULT_ARGS})
@@ -303,7 +303,7 @@ macro(ADD_SMIL_TESTS _LIB_NAME)
 
   parse_arguments(_TARGET "ADDITIONAL_SOURCES;EXCLUDED_SOURCES" "" ${ARGN})
   set(LIB_NAME ${SMIL_LIB_PREFIX}${_LIB_NAME})
-  set(LIB_DEPS ${_TARGET_DEFAULT_ARGS} ${SMIL_EXT_DEPS})
+  set(LIB_DEPS ${_TARGET_DEFAULT_ARGS})
 
   if(BUILD_TEST)
     set(FILE_PATTERNS test/test*.cpp test/bench*.cpp)

@@ -381,7 +381,7 @@ namespace smil
   %init
   %{
     // Required by NumPy in Python initialization
-    import_array();
+    _import_array();
   %}
   %{
   #include "Core/include/private/DNumpyInterface.hpp"
