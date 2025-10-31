@@ -32,4 +32,5 @@
 
 namespace smil
 {
+  int _dummy;
 } // namespace smil

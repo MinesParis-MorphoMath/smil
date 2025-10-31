@@ -33,6 +33,10 @@ jobs:
           brew install libjpeg
           brew install curl
           brew install qwt-qt5
+          echo "/opt/homebrew/opt/llvm/bin" >> $GITHUB_PATH
+          # Fix brew LLVM libc++ includes
+          echo "SDKROOT=$(xcrun --show-sdk-path)" >> $GITHUB_ENV
+          echo "LDFLAGS=-L/opt/homebrew/opt/llvm/lib/c++" >> $GITHUB_ENV
 
       - name: Setup Python Version
         uses: actions/setup-python@v5
@@ -51,11 +55,14 @@ jobs:
           mkdir build && cd build
           cmake \
             -DCMAKE_COMPILE_WARNING_AS_ERROR=ON \
+            -DQt5Widgets_DIR=$(brew --prefix qt@5)/lib/cmake/Qt5Widgets \
             -DBUILD_TEST=ON \
             -DWRAP_PYTHON=ON \
             -DUSE_NUMPY=ON \
             $GITHUB_WORKSPACE
         env:
+          CC: clang
+          CXX: clang++
           CMAKE_GENERATOR: Ninja
           CMAKE_BUILD_TYPE: Release
           CMAKE_CC_COMPILER_LAUNCHER: sccache
