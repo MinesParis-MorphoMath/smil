@@ -54,6 +54,7 @@ jobs:
         shell: bash
         env:
           CMAKE_GENERATOR: "Visual Studio 17 2022"
+          CMAKE_GENERATOR_TOOLSET: ClangCL
           CMAKE_BUILD_TYPE: Release
           CMAKE_TOOLCHAIN_FILE : C:\vcpkg\scripts\buildsystems\vcpkg.cmake
 
