@@ -65,6 +65,11 @@ jobs:
         run: |
           cmake --build build --config Release --target python_package
 
+      - name: Execute non-regression tests and benchmarks
+        run: |
+          cd build
+          ctest -C Release -LE "python"
+
       - name: Build wheel from Python package
         run: |
           cd build\python
