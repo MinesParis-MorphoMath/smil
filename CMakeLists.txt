@@ -233,6 +233,11 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
   set(CMAKE_COMPILER_IS_CLANGXX 1)
 endif()
 
+if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC" AND CMAKE_CXX_COMPILER_ID
+                                                          MATCHES "Clang")
+  add_compile_options(-Wno-error=overloaded-virtual)
+endif()
+
 # Windows 32 and 64 Bits
 if(WIN32)
   if(USE_64BIT_IDS)
@@ -726,6 +731,10 @@ if(USE_WRAPPER)
       smil_Python
       LANGUAGE python
       SOURCES ${SWIG_MAIN_INTERFACE})
+    if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC"
+       AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+      target_compile_options(smil_Python PRIVATE -Wno-unused-function)
+    endif()
     target_link_libraries(smil_Python PRIVATE ${SMIL_LIBS} Python3::Module)
     file(
       WRITE ${LIBRARY_OUTPUT_PATH}/smilPython.pth

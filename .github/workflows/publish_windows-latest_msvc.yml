@@ -54,6 +54,7 @@ jobs:
         shell: bash
         env:
           CMAKE_GENERATOR: "Visual Studio 17 2022"
+          CMAKE_GENERATOR_TOOLSET: ClangCL
           CMAKE_BUILD_TYPE: Release
           CMAKE_TOOLCHAIN_FILE : C:\vcpkg\scripts\buildsystems\vcpkg.cmake
 
@@ -64,6 +65,11 @@ jobs:
       - name: Build Python package
         run: |
           cmake --build build --config Release --target python_package
+
+      - name: Execute non-regression tests and benchmarks
+        run: |
+          cd build
+          ctest -C Release -LE "python"
 
       - name: Build wheel from Python package
         run: |

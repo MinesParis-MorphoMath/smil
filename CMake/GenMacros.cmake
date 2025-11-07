@@ -196,6 +196,10 @@ macro(ADD_SMIL_LIBRARY _LIB_NAME)
         ${PYTHON_LIB_NAME}
         LANGUAGE python
         SOURCES ${LIB_NAME}.i)
+      if(CMAKE_CXX_COMPILER_FRONTEND_VARIANT MATCHES "MSVC"
+         AND CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+        target_compile_options(${PYTHON_LIB_NAME} PRIVATE -Wno-unused-function)
+      endif()
       target_link_libraries(${PYTHON_LIB_NAME} PRIVATE ${LIB_DEPS} ${SWIG_DEPS})
       # SET_TARGET_PROPERTIES(_${PYTHON_LIB_NAME} PROPERTIES
       # LIBRARY_OUTPUT_DIRECTORY ${LIBRARY_OUTPUT_PATH}/smilPython)
